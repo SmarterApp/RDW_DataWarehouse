@@ -5,14 +5,16 @@ Created on Dec 28, 2012
 '''
 from mako.lookup import TemplateLookup
 
-_template_dir = "edware/templates"
+_template_dir = ["edware/templates","../templates"]
 
 #for testing
 #_template_dir = "../templates"
 
 def getSQLTemplate(filename):
-    
-        templates = TemplateLookup(_template_dir)
-        print(templates.has_template(filename))
+        try:
+            templates = TemplateLookup(_template_dir)
+            assert templates.has_template(filename)
+        except Exception as err:
+            raise Exception("Template lookup failed for file {0} in directories {1}".format(filename,_template_dir))    
         return templates.get_template(filename)
     

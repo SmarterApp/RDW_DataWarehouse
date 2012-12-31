@@ -25,8 +25,33 @@
         <div id="left" class="align-right">
         ${comment}
           <form name="report" action="/comPopResults">
-          <textarea name="reportparam" rows="15" cols="80">
-{"segment_by":"student","grades":["K","7","6"],"year_range":["ALL"],"district_filter":[],"time_period":["MOY"],"school_filter":["ALL"],"teacher_filter":["ALL"]}
+          <textarea name="reportparam" rows="25" cols="80">
+{
+    "district_filter": [
+        "677",
+        "678"
+    ],
+    "segment_by": "student",
+    "school_filter": [
+        "6601",
+        "6621"
+    ],
+    "teacher_filter": [
+        "2388",
+        "2389"
+    ],
+    "grades": [
+        "K",
+        "6"
+    ],
+    "time_period": [
+        "MOY"
+    ],
+    "year_range": [
+        "2012-2013",
+        "2011-2012"
+    ]
+}
           </textarea>
           <input name="Generate" type="submit"></input>
           </form>

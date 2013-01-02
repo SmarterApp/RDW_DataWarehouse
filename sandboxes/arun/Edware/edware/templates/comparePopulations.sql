@@ -10,7 +10,7 @@
 		null as student_key,
 		null as student_code,
 		null as student_name,
-		avg(fact.assessment_score) as assessment_score,
+		round(cast (avg(fact.assessment_score) as numeric),2) :: float as assessment_score,
 		null as student_code,
 		count(1) as student_count,
 	% endif
@@ -31,8 +31,13 @@
 	school_grp_t.group_of_school_key as school_group_code,	
 	school_grp_t.name as school_group_name,
 	time_t.id as period_code,
-	grade_t.grade_key as grade_order,	
-	grade_t.name as grade_name,
+	% if (segment_by=="student" or grade_divider=="true"):
+		grade_t.grade_key as grade_order,
+		grade_t.name as grade_name,
+	% else:
+		null as grade_order,
+		null as grade_name,
+	% endif	
 	assessment_t.subject_name as subject_name,
 	assessment_t.time_period as period_name,
 	assessment_t.year_range,
@@ -69,30 +74,30 @@
 	and student_t.student_key = ${student_id}
 	% endif
 	--grade filter if not all -- grade_t.code in () and
-	% if (grades[0] != 'ALL'):
+	% if (grades and grades[0] != 'ALL'):
 	and grade_t.code in ${grades}
 	% endif
 	-- time filter if not all -- assessment_t.year_range in () and
-	% if year_range[0] != 'ALL':
+	% if (year_range and year_range[0] != 'ALL'):
 	and assessment_t.year_range in ${year_range}
 	% endif
 	-- district filter if not null -- school_grp_t.group_of_school_key in () and
-	% if district_filter[0] != 'ALL':
+	% if (district_filter and district_filter[0] != 'ALL'):
 	and school_grp_t.group_of_school_key in ${district_filter}
 	% endif
 	-- period filter if not all --  assessment_t.time_period in () and
-	% if time_period[0] != 'ALL':
+	% if (time_period and time_period[0] != 'ALL'):
 	and assessment_t.time_period in ${time_period}
 	% endif
 	-- school filter if not all - school_t.school_key in () and
-	% if school_filter[0] != 'ALL':
+	% if (school_filter and school_filter[0] != 'ALL'):
 	and school_t.school_key in ${school_filter}
 	% endif
 	-- teacher filter if not all -- 
-	% if teacher_filter[0] != 'ALL':
+	% if (teacher_filter and teacher_filter[0] != 'ALL'):
 	and teacher_t.teacher_key in ${teacher_filter}
 	% endif
-	% if subject_code[0] != 'ALL':
+	% if (subject_code and subject_code[0] != 'ALL'):
 	and assessment_t.subject_code in ${subject_code}
 	% endif
 	% if segment_by !="student":
@@ -108,8 +113,10 @@
 		school_grp_t.group_of_school_key,	
 		school_grp_t.name,
 		time_t.id,
-		grade_t.grade_key,	
-		grade_t.name,
+		% if (segment_by=="student" or grade_divider=="true"):		
+			grade_t.grade_key,	
+			grade_t.name,
+		% endif			
 		assessment_t.subject_name,
 		assessment_t.time_period,
 		assessment_t.year_range,

@@ -18,7 +18,7 @@ def getComparePopulationsQuery(parameters):
             print("got render")
             sql=sql.translate(sql.maketrans("[]","()")) #Convert list representations to sql compatible brackets to be used in IN clause 
         except Exception as err:
-            print("Exception occurred during compare population sql template rendering : ", err)
+            raise Exception("Exception occurred during compare population sql template rendering : ", err)
     else:
         print("Input is empty")
     return sql

@@ -24,7 +24,7 @@
       <div class="bottom">
           The ouput from the service is 
           <br/>
-          ${result}
+          % result
           <br/>
           <FORM><INPUT Type="button" VALUE="Back" onClick="history.go(-1);return true;"></FORM>
       </div>

@@ -36,6 +36,12 @@ to run the project without virtualenv,
 11. [To be verified] I need to test how the python path works inside pyramid. otherwise we will need to add /edware/lib into
     PyDev's PYTHONPATH to make common library code in project searchable for Python interpreters.
 12. [To be verified] I need to check how do we integrated coffeescript.
+13. In Aptana's PyDev - PYTHONPATH, in "string subsitution variables" add variable "pyramid_run" to be the pserve in your system (on windows, it will be pserve-python.py).
+    (please refer the document here in wiki, <https://confluence.wgenhq.net/display/CS/Installation+of+Python+3%2C+related+packages%2C+Pyramid+and+Edware+Developer+Environment>, this is pyramid specific to enable Apatan Pyramid IDE integration, if you can do everything with EDITOR and command line, you can skip those steps)
+14. In project's runtime configuration in Apatan, create a new runtime conf like smarter, then make sure project smarter is selected wth main module being set as "${pyramid_run}" and Arguments to be "development.ini" to run dev version from inside Aptana.
+15. [to be continued] I need to make sure unit test configuratio works. Currently this is broken under Apatan.
+ 
+Please notify Eugene for any error in this document.
 
 ***
 

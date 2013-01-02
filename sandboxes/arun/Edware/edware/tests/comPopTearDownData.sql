@@ -1,0 +1,1 @@
+DELETE FROM dim_state where state_key= 1001 and code ='X6';

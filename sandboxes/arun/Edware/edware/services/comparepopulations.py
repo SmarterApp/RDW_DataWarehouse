@@ -24,13 +24,14 @@ def generateComparePopulationsReport(parameters):
     db_connection = getDatabaseConnection()
     if db_connection:
         print("Got connection to database")
+        results = db_connection.prepare(query)
+        results()
+        resultlist = []
+        for i in results:
+            resultlist.append(i)
+        db_connection.close()
+    #print("Result count from query :",len(resultlist))
     else:
         print("Error getting connection to database")
-    results = db_connection.prepare(query)
-    resultlist = []
-    for i in results:
-        resultlist.append(i)
-    db_connection.close()
-    print("Result count from query :",len(resultlist))
     return resultlist
         

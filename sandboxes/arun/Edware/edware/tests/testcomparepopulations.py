@@ -15,7 +15,7 @@ class Test(unittest.TestCase):
 #        #print(sql)
 #        pass
 
-    keys = ("segment_by","grades","year_range","time_period","teacher_filter","district_filter","school_filter","student_id","subject_code","grade_divider")
+    keys = ("segment_by","grades","year_range","time_period","teacher_filter","district_filter","school_filter","student_id","subject_code","grade_divider","report_level","school_group_type")
 
     def testComparePopulationsQueryALL(self):
         params = {"grade_divider" : "true","subject_code": ["ALL"], "student_id" : "6190",'district_filter': ["677","678"], 'segment_by': 'student', 'school_filter': ['ALL'], 'teacher_filter': ['ALL'], 'grades': ["ALL"], 'time_period': ["ALL"], 'year_range': ['ALL']}
@@ -139,7 +139,7 @@ class Test(unittest.TestCase):
             pass
         except Exception as err:
             raise AssertionError("Exception occurred when running testComparePopulationsDistrictFilter : ", str(err))        
-            
+
         
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testQueryBuilder']

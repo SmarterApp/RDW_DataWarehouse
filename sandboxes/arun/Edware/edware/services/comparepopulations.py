@@ -7,7 +7,7 @@ from edware.services.querybuilder import getComparePopulationsQuery
 from edware.utils.databaseconnections import getDatabaseConnection
 from postgresql.exceptions import Exception
 
-_supported_keys = ("segment_by","grades","year_range","time_period","teacher_filter","district_filter","school_filter","student_id","subject_code","grade_divider")
+_supported_keys = ("segment_by","grades","year_range","time_period","teacher_filter","district_filter","school_filter","student_id","subject_code","grade_divider","report_level","school_group_type")
 
 def generateComparePopulationsReport(parameters):
     if isinstance(parameters,str):

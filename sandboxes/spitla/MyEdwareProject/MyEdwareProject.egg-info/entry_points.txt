@@ -1,0 +1,5 @@
+      [paste.app_factory]
+      main = myedwareproject:main
+      [console_scripts]
+      initialize_MyEdwareProject_db = myedwareproject.scripts.initializedb:main
+      

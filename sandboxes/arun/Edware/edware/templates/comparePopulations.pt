@@ -27,29 +27,28 @@
           <form name="report" action="/comPopResults">
           <textarea name="reportparam" rows="25" cols="80">
 {
+    "grade_divider": "false",
+    "subject_code": [
+        "ALL"
+    ],
     "district_filter": [
-        "677",
-        "678"
+        "ALL"
     ],
     "segment_by": "student",
     "school_filter": [
-        "6601",
-        "6621"
+        "7652"
     ],
     "teacher_filter": [
-        "2388",
-        "2389"
+        "ALL"
     ],
     "grades": [
-        "K",
-        "6"
+        "ALL"
     ],
     "time_period": [
-        "MOY"
+        "ALL"
     ],
     "year_range": [
-        "2012-2013",
-        "2011-2012"
+        "ALL"
     ]
 }
           </textarea>

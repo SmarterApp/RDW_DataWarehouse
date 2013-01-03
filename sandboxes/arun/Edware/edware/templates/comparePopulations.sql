@@ -137,5 +137,7 @@
 	student_t.last_name, 
 	% endif
 	grade_order, 
-	assessment_t.subject_name, 
-	assessment_t.year_range
+	assessment_t.year_range,
+	assessment_t.time_period,
+	assessment_t.subject_name
+	

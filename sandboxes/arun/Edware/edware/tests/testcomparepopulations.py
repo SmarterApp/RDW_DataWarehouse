@@ -3,7 +3,7 @@ Created on Dec 28, 2012
 
 @author: V5102883
 '''
-import unittest, os
+import unittest
 from edware.services.comparepopulations import generateComparePopulationsReport
 from edware.utils.databaseconnections import getDatabaseConnection
 

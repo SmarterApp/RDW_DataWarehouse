@@ -1,7 +1,6 @@
 import unittest
 
 from pyramid import testing
-import os
 
 class ViewTests(unittest.TestCase):
     def setUp(self):

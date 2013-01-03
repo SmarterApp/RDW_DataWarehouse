@@ -3,7 +3,7 @@ Created on Dec 28, 2012
 
 @author: V5102883
 '''
-import unittest
+import unittest, os
 from edware.services.comparepopulations import generateComparePopulationsReport
 from edware.utils.databaseconnections import getDatabaseConnection
 
@@ -16,14 +16,15 @@ class ComparePopulationsReportTest(unittest.TestCase):
     @classmethod
     def insertTestData(self):
         assert self._dbConnection
-        with open('comPopSetupData.sql', 'r') as f:
+
+        with open('edware/tests/comPopSetupData.sql', 'r') as f:
             for line in f:
                 statement = self._dbConnection.prepare(line)
                 statement()
     @classmethod
     def deleteTestData(self):
         assert self._dbConnection
-        with open('comPopTearDownData.sql', 'r') as f:
+        with open('edware/tests/comPopTearDownData.sql', 'r') as f:
             for line in f:
                 statement = self._dbConnection.prepare(line)
                 statement()
@@ -40,6 +41,7 @@ class ComparePopulationsReportTest(unittest.TestCase):
     def tearDownClass(self):
         ComparePopulationsReportTest.deleteTestData()
         print("teardown complete") 
+        print(os.path.relpath("comPopSetupData.sql", "."))
 
 
     def testComparePopulationsQueryALL(self):

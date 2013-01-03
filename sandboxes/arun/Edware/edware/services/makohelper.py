@@ -5,7 +5,7 @@ Created on Dec 28, 2012
 '''
 from mako.lookup import TemplateLookup
 
-_template_dir = ["edware/templates","../templates"]
+_template_dir = ["edware/templates"]
 
 #for testing
 #_template_dir = "../templates"

@@ -16,7 +16,18 @@ def main(global_config, **settings):
     config = Configurator(settings=settings)
     config.add_static_view('static', 'static', cache_max_age=3600)
     config.add_route('home', '/')
-    config.add_route('comparepopulation', '/comparepopulation')
-    config.add_route('rest', '/rest')
+    comparepopulation_view = config.add_view("myedwareproject.controllers.compare_population_criteria.ComparePopulationCriteria",
+                                             route_name='comparepopulation')
+    config.add_route(name='comparepopulation',
+                     pattern='/comparepopulation',
+                     view=comparepopulation_view)
+
+    getcomparepopulation_view = config.add_view(view="myedwareproject.controllers.get_compare_population.GetComparePopulation",
+                                                route_name='getcomparepopulation')
+    config.add_route(name='getcomparepopulation',
+                     pattern='/getcomparepopulation',
+                     view=getcomparepopulation_view)
+
+#    config.add_route('comparepopulation', '/comparepopulation')
     config.scan()
     return config.make_wsgi_app()

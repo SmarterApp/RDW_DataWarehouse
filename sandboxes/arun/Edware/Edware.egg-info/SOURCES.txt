@@ -2,6 +2,7 @@ CHANGES.txt
 MANIFEST.in
 README.txt
 development.ini
+log.txt
 production.ini
 setup.cfg
 setup.py
@@ -17,6 +18,7 @@ edware/tests.py
 edware/views.py
 edware/services/__init__.py
 edware/services/comparepopulations.py
+edware/services/makohelper.py
 edware/services/querybuilder.py
 edware/static/favicon.ico
 edware/static/footerbg.png
@@ -29,7 +31,9 @@ edware/static/pyramid.png
 edware/static/transparent.gif
 edware/templates/checkstatus.pt
 edware/templates/comparePopulations.pt
+edware/templates/comparePopulationsResults.pt
 edware/templates/mytemplate.pt
 edware/tests/__init__.py
+edware/tests/testcomparepopulations.py
 edware/utils/__init__.py
 edware/utils/databaseconnections.py

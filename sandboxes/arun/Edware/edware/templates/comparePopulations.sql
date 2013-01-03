@@ -129,6 +129,9 @@
 	-- performance level if not all -- no column in schema
 	-- student demographics -- no column in schema
 	order by 
+	% if (segment_by=="student" or segment_by=="teacher" or segment_by=="school"):      
+    school_t.name,
+    % endif
 	school_grp_t.name,
 	% if (segment_by=="student" or segment_by=="teacher"):	
 	teacher_t.last_name, 

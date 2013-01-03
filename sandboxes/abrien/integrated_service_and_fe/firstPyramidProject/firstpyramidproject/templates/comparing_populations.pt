@@ -1,0 +1,22 @@
+<html>
+
+<head>
+    <title>Comparing Populations</title>
+</head>
+
+<body>
+    <h1> Welcome, ${name}!</h1>
+    <h2> Here's the raw JSON object</h2>
+    <p>${json}</p>
+
+    <div id="chart" style="height:400px;width:300px;"></div>
+
+    <script language="javascript" type="text/javascript" src="static/js/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="static/js/dist/jquery.jqplot.min.js"></script>
+
+    <script type="text/javascript">
+        $.jqplot('chart',  [[[1, 2],[3,5.12],[5,13.1],[7,33.6],[9,85.9],[11,219.9]]]);
+    </script>
+</body>
+
+</html>

@@ -16,6 +16,11 @@ myedwareproject/__init__.py
 myedwareproject/models.py
 myedwareproject/tests.py
 myedwareproject/views.py
+myedwareproject/controllers/__init__.py
+myedwareproject/controllers/compare_population_criteria.py
+myedwareproject/controllers/get_compare_population.py
+myedwareproject/libs/__init__.py
+myedwareproject/libs/report_utility.py
 myedwareproject/scripts/__init__.py
 myedwareproject/scripts/initializedb.py
 myedwareproject/static/favicon.ico
@@ -27,4 +32,6 @@ myedwareproject/static/pylons.css
 myedwareproject/static/pyramid-small.png
 myedwareproject/static/pyramid.png
 myedwareproject/static/transparent.gif
+myedwareproject/templates/compare_population_criteria.pt
 myedwareproject/templates/mytemplate.pt
+myedwareproject/templates/tpl2.pt

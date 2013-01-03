@@ -4,14 +4,12 @@
 		student_t.eternal_student_id as student_code,
 		student_t.last_name || ', ' ||student_t.first_name as student_name,
 		fact.assessment_score,	
-		student_t.eternal_student_id as student_code,
 		1 as student_count,		
 	% else:
 		null as student_key,
 		null as student_code,
 		null as student_name,
 		round(cast (avg(fact.assessment_score) as numeric),2) :: float as assessment_score,
-		null as student_code,
 		count(1) as student_count,
 	% endif
 	% if (segment_by=="student" or segment_by=="teacher"):
@@ -139,5 +137,7 @@
 	student_t.last_name, 
 	% endif
 	grade_order, 
-	assessment_t.subject_name, 
-	assessment_t.year_range
+	assessment_t.year_range,
+	assessment_t.time_period,
+	assessment_t.subject_name
+	

@@ -1,0 +1,5 @@
+      [paste.app_factory]
+      main = firstpyramidproject:main
+      [console_scripts]
+      initialize_firstPyramidProject_db = firstpyramidproject.scripts.initializedb:main
+      

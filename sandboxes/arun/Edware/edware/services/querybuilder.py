@@ -13,12 +13,10 @@ def getComparePopulationsQuery(parameters):
         print("Input parameters got from UI : " , parameters)
         try:
             sqltemplate = getSQLTemplate(_comparePopultionsTemplate)
-            print("got template ")
             sql = sqltemplate.render(**parameters)
-            print("got render")
             sql=sql.translate(sql.maketrans("[]","()")) #Convert list representations to sql compatible brackets to be used in IN clause 
         except Exception as err:
             raise Exception("Exception occurred during compare population sql template rendering : ", err)
     else:
-        print("Input is empty")
+        raise Exception("Input cannot be empty")
     return sql

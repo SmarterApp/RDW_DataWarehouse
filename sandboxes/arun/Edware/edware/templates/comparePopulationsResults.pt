@@ -20,15 +20,39 @@
           <div><img src="${request.static_url('edware:static/pyramid.png')}" width="750" height="169" alt="pyramid"/></div>
       </div>
     </div>
-    <div id="bottom">
-      <div class="bottom">
-          The ouput from the service is 
-          <br/>
-          % result
-          <br/>
-          <FORM><INPUT Type="button" VALUE="Back" onClick="history.go(-1);return true;"></FORM>
-      </div>
-    </div>
+     Count of records returned : <p tal:content=" len(result)"> 
+     <FORM>
+	<INPUT Type="button" VALUE="Back" onClick="history.go(-1);return true;">     
+	     <table border="1" cellpadding="5">
+	     	<tr>
+				<th>Student Id</th>
+				<th>Student EternalId</th>
+				<th>Student Name</th>
+				<th>Assessment Score</th>
+				<th>Student Count</th>
+				<th>Teacher Id</th>
+				<th>Teacher Name</th>
+				<th>School Id</th>
+				<th>School Name</th>
+				<th>School Group Id</th>
+				<th>School Group Name</th>
+				<th>Period Code</th>
+				<th>Grade Code</th>
+				<th>Grade Name</th>
+				<th>Subject Name</th>
+				<th>Time Period</th>
+				<th>Year Range</th>
+				<th>State Group Name</th>
+				<th>State Name</th>
+				<th>Performance Level</th>
+			</tr>
+	  				<tr tal:repeat="row (result)">
+	  					<td tal:repeat="column range(len(row))">
+	      					<p tal:content="row[column]">test</p>
+	      				</td>
+	  				</tr>
+		 </table>			
+     </FORM>
   </div>
   <div id="footer">
     <div class="footer">&copy; Copyright 2008-2012, Agendaless Consulting.</div>

@@ -129,6 +129,9 @@
 	-- performance level if not all -- no column in schema
 	-- student demographics -- no column in schema
 	order by 
+	% if (segment_by=="student" or segment_by=="teacher" or segment_by=="school"):      
+    school_t.name,
+    % endif
 	school_grp_t.name,
 	% if (segment_by=="student" or segment_by=="teacher"):	
 	teacher_t.last_name, 
@@ -137,5 +140,7 @@
 	student_t.last_name, 
 	% endif
 	grade_order, 
-	assessment_t.subject_name, 
-	assessment_t.year_range
+	assessment_t.year_range,
+	assessment_t.time_period,
+	assessment_t.subject_name
+	

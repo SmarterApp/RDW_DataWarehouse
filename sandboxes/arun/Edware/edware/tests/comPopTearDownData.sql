@@ -1,1 +1,10 @@
+DELETE FROM fact_assessment_result WHERE id IN (999990,999991,999992,999993,999994,999995,999996,999997);
+DELETE FROM dim_student WHERE student_key IN (9888881,9888882,9888883,9888884);
+DELETE FROM dim_assessment WHERE assessment_key IN (999925,999926);
+DELETE FROM dim_grade WHERE grade_key IN (99990,99991,99992,99993);
+DELETE FROM dim_teacher WHERE teacher_key IN (999990,999991,999992,999993);
+DELETE FROM dim_school WHERE school_key IN (999990,999991,999992,999993);
+DELETE FROM dim_group_of_school WHERE group_of_school_key IN (999980,999981);
+DELETE FROM dim_group_of_state WHERE group_of_state_key=999;
+DELETE FROM dim_time WHERE id=999999;
 DELETE FROM dim_state where state_key= 1001 and code ='X6';

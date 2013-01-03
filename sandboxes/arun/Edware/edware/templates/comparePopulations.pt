@@ -32,11 +32,11 @@
         "ALL"
     ],
     "district_filter": [
-        "ALL"
+        "999980"
     ],
     "segment_by": "student",
     "school_filter": [
-        "7652"
+        "ALL"
     ],
     "teacher_filter": [
         "ALL"

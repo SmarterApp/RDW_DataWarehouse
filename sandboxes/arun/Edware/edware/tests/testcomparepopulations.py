@@ -16,7 +16,6 @@ class ComparePopulationsReportTest(unittest.TestCase):
     @classmethod
     def insertTestData(self):
         assert self._dbConnection
-
         with open('edware/tests/comPopSetupData.sql', 'r') as f:
             for line in f:
                 statement = self._dbConnection.prepare(line)
@@ -41,7 +40,6 @@ class ComparePopulationsReportTest(unittest.TestCase):
     def tearDownClass(self):
         ComparePopulationsReportTest.deleteTestData()
         print("teardown complete") 
-        print(os.path.relpath("comPopSetupData.sql", "."))
 
 
     def testComparePopulationsQueryALL(self):

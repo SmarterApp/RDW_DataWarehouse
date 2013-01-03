@@ -13,14 +13,15 @@ import json
 from sqlalchemy import create_engine
 #from sqlalchemy.ext.sqlsoup import SqlSoup
 
-HOST_NAME = "monetdb1.poc.dum.edwdc.net"
-DB_USERNAME = "edware"
-DB_PASSWORD = "edware"
-DBNAME = "edware"
+#HOST_NAME = "monetdb1.poc.dum.edwdc.net"
+#DB_USERNAME = "edware"
+#DB_PASSWORD = "edware"
+#DBNAME = "edware"
 
-engine = create_engine('postgresql+pypostgresql://%s:%s@%s/%s' % (DB_USERNAME, DB_PASSWORD, HOST_NAME, DBNAME))
-print(dir(engine))
-db=engine.connect()
+#engine = create_engine('postgresql+pypostgresql://%s:%s@%s/%s' % (DB_USERNAME, DB_PASSWORD, HOST_NAME, DBNAME))
+
+#print(dir(engine))
+#db=engine.connect()
 #db = SqlSoup(engine)
 
 @view_config(route_name='home', renderer='templates/mytemplate.pt')
@@ -31,31 +32,17 @@ def my_view(request):
         return Response(conn_err_msg, content_type='text/html', status_int=500)
     return {'one': one, 'project': 'MyEdwareProject'}
 
-@view_config(route_name='comparepopulation', renderer='json')
-def comparepopulation_view(request):
-    results = db.execute("select grade_level_name from dim_grade")
-    report_result = []   
+#@view_config(route_name='comparepopulation', renderer='json')
+#def comparepopulation_view(request):
+#    results = db.execute("select grade_level_name from dim_grade")
+#    report_result = []   
+#
+#    for rec in results:
+#        print(rec)
+#        report_result.append({"grade": rec[0]})
+#    return report_result
+#    #return Response("Hello World")
 
-    for rec in results:
-        print(rec)
-        report_result.append({"grade": rec[0]})
-    #return RESTView(report_result)
-    return report_result
-    #return Response("Hello World")
-
-@view_defaults(route_name='rest', renderer='json')
-class RESTView(object):
-    def __init__(self, request):
-        self.request = request
-
-    @view_config(request_method='GET')
-    def get(self):
-        return {"NAME": self.request.params.get('name')}
-
-    @view_config(request_method='POST')
-    def post(self):
-        return {"NAME": self.request.params.get('name')}
-        
 conn_err_msg = """\
 Pyramid is having a problem using your SQL database.  The problem
 might be caused by one of the following things:

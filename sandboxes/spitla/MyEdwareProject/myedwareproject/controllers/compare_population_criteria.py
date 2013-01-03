@@ -12,19 +12,25 @@ class ComparePopulationCriteria(object):
     def get(self):
         report_utility_obj = report_utility.ReportUtility()
         
-        grade_list = report_utility_obj.get_grade_list()
-        assessment_list = report_utility_obj.get_assessment_list()
-        assessment_course_list = report_utility_obj.get_assessment_course_list()
+        
+        assessment_list = report_utility_obj.getAssessmentList()
+        assessment_course_list = report_utility_obj.getAssessmentCourseList()
         
         #bars_are = report_utility_obj.get_bars_are()
-        school_year_list = report_utility_obj.get_school_year()
-        student_attribute_name = report_utility_obj.get_student_attribute_name()
         
-        bars = report_utility_obj.get_bars()
-        reports_for = report_utility_obj.get_reports_for()
-        students_enrolled_list = report_utility_obj.get_students_enrolled()
-        get_type_of_school_group = report_utility_obj.get_type_of_school_group()
+        
+        bars = report_utility_obj.getBars()
+        reports_for = report_utility_obj.getReportsFor()
+        students_enrolled_list = report_utility_obj.getStudentsEnrolled()
+        type_of_school_group = report_utility_obj.getSchoolGroupType()
+        
+        school_year_list = report_utility_obj.getSchoolYear()
+        student_attribute_name = report_utility_obj.getStudentAttributeName()
+        grade_list = report_utility_obj.getGradeList()
+        
+        type_of_measure = report_utility_obj.getMeasureType()
+        measure = report_utility_obj.getMeasure()
         
         #return {'grade_list': grade_list
         
-        return {'grade_list': grade_list, 'assessment_list' : assessment_list, 'assessment_course_list' : assessment_course_list, 'school_year_list' : school_year_list, 'student_attribute_name' : student_attribute_name, 'bars' : bars, 'reports_for' : reports_for, 'students_enrolled_list' : students_enrolled_list, 'get_type_of_school_group' : get_type_of_school_group }
+        return {'grade_list': grade_list, 'assessment_list' : assessment_list, 'assessment_course_list' : assessment_course_list, 'school_year_list' : school_year_list, 'student_attribute_name' : student_attribute_name, 'bars' : bars, 'reports_for' : reports_for, 'students_enrolled_list' : students_enrolled_list, 'type_of_school_group' : type_of_school_group, 'type_of_measure' : type_of_measure, 'measure' : measure }

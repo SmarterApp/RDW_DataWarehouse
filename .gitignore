@@ -3,3 +3,6 @@
 .DS_Store
 .DS_Store?
 
+# IDE generated files #
+#######################
+__pycache__

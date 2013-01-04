@@ -6,7 +6,7 @@ from sqlalchemy.exc import DBAPIError
 from .models import (DBSession, MyModel,)
 
 
-@view_config(route_name='home', renderer='templates/mytemplate.pt')
+@view_config(route_name='home', renderer='templates/common.pt')
 def home_view(request):
     try:
         one = 'haha'  # DBSession.query(MyModel).filter(MyModel.name == 'one').first()

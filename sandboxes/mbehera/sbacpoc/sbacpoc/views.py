@@ -5,13 +5,12 @@ import json
 
 @view_config(route_name='home', renderer='templates/mytemplate.pt')
 def my_view(request):
-    return {'project': 'sbacpoc'}
-
+    return {'name': 'Monalisa', 'project': 'sbacpoc'}
 
 
 @view_config(route_name='test', renderer='json')
 def testJson(request):
-    mystring =  {
+    mystring = {
         "data": {
             "account": {
                 "code": "1209",
@@ -35,31 +34,31 @@ def testJson(request):
     }
     return Response(mystring)
 
+
 @view_config(route_name='template', renderer='json')
 def my_templateview(request):
- mystring =  {
-        'data': {
-            'account': {
-                'code': '1209',
-                'name': 'MCPS Account'
+    mystring = {
+            'data': {
+                'account': {
+                    'code': '1209',
+                    'name': 'MCPS Account'
+                },
+                'scope_groups': {
+                    'school': 'Abc',
+                    'section': 'Xyz',
+                    'school_group': 'Group',
+                    'grade_groups': 'Grade',
+                    'school_group_type': 'Type',
+                    'teacher': 'Def'
+                }
             },
-            'scope_groups': {
-                'school': 'Abc',
-                'section': 'Xyz',
-                'school_group': 'Group',
-                'grade_groups': 'Grade',
-                'school_group_type': 'Type',
-                'teacher': 'Def'
-            }
-        },
-        'parameters': {
-            'selected_rows': 'rows',
-            'all': 'all',
-            'selected': 'selected'
-        },
-        'report_id': 1
+            'parameters': {
+                'selected_rows': 'rows',
+                'all': 'all',
+                'selected': 'selected'
+            },
+            'report_id': 1
     }
- json_str = json.dumps(mystring, sort_keys=True, indent=4)
- return json_str
- 
- 
+    #json_str = json.dumps(mystring, sort_keys=True, indent=4)
+    #return Response(json.dumps(mystring))
+    return mystring

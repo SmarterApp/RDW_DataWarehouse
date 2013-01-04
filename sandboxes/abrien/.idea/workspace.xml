@@ -2,13 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b55477b3-a35e-45ae-a08a-310865f4a87d" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/integrated_service_and_fe/firstPyramidProject/firstpyramidproject/static/js/charts/comparing_populations.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/integrated_service_and_fe/firstPyramidProject/firstpyramidproject/templates/comparing_populations.pt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/integrated_service_and_fe/firstPyramidProject/firstpyramidproject/static/coffeescript/comparing_populations.coffee" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/integrated_service_and_fe/firstPyramidProject/firstpyramidproject/static/js/charts/comparing_populations.js" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/integrated_service_and_fe/firstPyramidProject/firstpyramidproject/__init__.py" afterPath="$PROJECT_DIR$/integrated_service_and_fe/firstPyramidProject/firstpyramidproject/__init__.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/integrated_service_and_fe/firstPyramidProject/firstpyramidproject/templates/comparing_populations.pt" afterPath="$PROJECT_DIR$/integrated_service_and_fe/firstPyramidProject/firstpyramidproject/templates/comparing_populations.pt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/integrated_service_and_fe/firstPyramidProject/firstpyramidproject/views.py" afterPath="$PROJECT_DIR$/integrated_service_and_fe/firstPyramidProject/firstpyramidproject/views.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/javascript_library_research/raphael_replacements" afterPath="$PROJECT_DIR$/javascript_library_research/raphael_replacements" />
     </list>
     <ignored path="abrien.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -37,46 +35,30 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="comparing_populations.pt" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/integrated_service_and_fe/firstPyramidProject/firstpyramidproject/templates/comparing_populations.pt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="13" column="0" selection-start="158" selection-end="158" vertical-scroll-proportion="-8.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="views.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/integrated_service_and_fe/firstPyramidProject/firstpyramidproject/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="1" column="36" selection-start="74" selection-end="74" vertical-scroll-proportion="0.0">
-              <folding />
+            <state line="12" column="12" selection-start="293" selection-end="293" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="e#0#37#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="comparing_populations.pt" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/integrated_service_and_fe/firstPyramidProject/firstpyramidproject/templates/comparing_populations.pt">
+      <file leaf-file-name="comparing_populations.coffee" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/integrated_service_and_fe/firstPyramidProject/firstpyramidproject/static/coffeescript/comparing_populations.coffee">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="17" column="23" selection-start="476" selection-end="476" vertical-scroll-proportion="0.55060726">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="comparing_populations.js" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/integrated_service_and_fe/firstPyramidProject/firstpyramidproject/static/js/charts/comparing_populations.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="0" selection-start="0" selection-end="250" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SOURCES.txt" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/integrated_service_and_fe/firstPyramidProject/firstPyramidProject.egg-info/SOURCES.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="25" column="0" selection-start="785" selection-end="822" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="mytemplate.pt" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/integrated_service_and_fe/firstPyramidProject/firstpyramidproject/templates/mytemplate.pt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+            <state line="19" column="2" selection-start="498" selection-end="498" vertical-scroll-proportion="0.39842725">
               <folding />
             </state>
           </provider>
@@ -98,10 +80,12 @@
         <option value="$PROJECT_DIR$/edWare_report_first_attempt/helloworld.py" />
         <option value="$PROJECT_DIR$/edWare_report_first_attempt/test.txt" />
         <option value="$PROJECT_DIR$/integrated_service_and_fe/firstPyramidProject/firstpyramidproject/__init__.py" />
-        <option value="$PROJECT_DIR$/integrated_service_and_fe/firstPyramidProject/firstpyramidproject/views.py" />
         <option value="$PROJECT_DIR$/integrated_service_and_fe/firstPyramidProject/firstpyramidproject/static/js/print_json.js" />
         <option value="$PROJECT_DIR$/integrated_service_and_fe/firstPyramidProject/firstpyramidproject/static/js/charts/comparing_populations.js" />
+        <option value="$PROJECT_DIR$/integrated_service_and_fe/firstPyramidProject/firstpyramidproject/coffescript/comparing_populations.coffee" />
         <option value="$PROJECT_DIR$/integrated_service_and_fe/firstPyramidProject/firstpyramidproject/templates/comparing_populations.pt" />
+        <option value="$PROJECT_DIR$/integrated_service_and_fe/firstPyramidProject/firstpyramidproject/views.py" />
+        <option value="$PROJECT_DIR$/integrated_service_and_fe/firstPyramidProject/firstpyramidproject/static/coffeescript/comparing_populations.coffee" />
       </list>
     </option>
   </component>
@@ -216,6 +200,32 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="templates" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="abrien" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="abrien" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="integrated_service_and_fe" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="firstPyramidProject" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="firstpyramidproject" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="static" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -246,41 +256,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="js" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="abrien" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="abrien" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="integrated_service_and_fe" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firstPyramidProject" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firstpyramidproject" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="static" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="js" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="charts" />
+              <option name="myItemId" value="coffeescript" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -367,13 +343,13 @@
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32965687" sideWeight="0.497552" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32965687" sideWeight="0.497552" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25581396" sideWeight="0.67034316" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32965687" sideWeight="0.49816403" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32965687" sideWeight="0.49816403" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -472,23 +448,25 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/integrated_service_and_fe/firstPyramidProject/firstpyramidproject/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="1" column="36" selection-start="74" selection-end="74" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/integrated_service_and_fe/firstPyramidProject/firstpyramidproject/static/js/charts/comparing_populations.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="250" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/integrated_service_and_fe/firstPyramidProject/firstpyramidproject/templates/comparing_populations.pt">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="17" column="23" selection-start="476" selection-end="476" vertical-scroll-proportion="0.55060726">
+        <state line="13" column="0" selection-start="158" selection-end="158" vertical-scroll-proportion="-8.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/integrated_service_and_fe/firstPyramidProject/firstpyramidproject/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="12" column="12" selection-start="293" selection-end="293" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="e#0#37#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/integrated_service_and_fe/firstPyramidProject/firstpyramidproject/static/coffeescript/comparing_populations.coffee">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="19" column="2" selection-start="498" selection-end="498" vertical-scroll-proportion="0.39842725">
           <folding />
         </state>
       </provider>

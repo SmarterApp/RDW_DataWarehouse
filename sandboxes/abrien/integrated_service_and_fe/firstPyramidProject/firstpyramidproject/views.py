@@ -10,7 +10,7 @@ from .models import (
 
 @view_config(route_name='compPop', renderer='templates/comparing_populations.pt')
 def compPop_view(request):
-    return {'name':'drew', 'json':example_json}
+    return {'json':example_json}
 
 @view_config(route_name='home', renderer='templates/mytemplate.pt')
 def my_view(request):

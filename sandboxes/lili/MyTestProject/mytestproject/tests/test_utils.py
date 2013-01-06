@@ -3,8 +3,7 @@ def make_data(values):
     key_list = ['student_key',
                 'student_code',
                 'student_name',
-                'score',
-                'student_code',
+                'assessment_score',
                 'student_count', 
                 'teacher_code', 
                 'teacher_name',
@@ -17,14 +16,13 @@ def make_data(values):
                 'grade_name', 
                 'subject_name',
                 'period_name', 
-                'year_name', 
+                'year_range', 
                 'state_group_name', 
                 'state_name', 
-                'perf_level_name', 
-                'perf_level_code'
+                'performance_level'
                     ]
     data = []
     for value in values:
         data.append(dict(zip(key_list, value)))
-    print(data)
+    #print(data)
     return data

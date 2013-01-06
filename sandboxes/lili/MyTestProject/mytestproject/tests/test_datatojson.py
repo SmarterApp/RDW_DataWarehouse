@@ -1,32 +1,135 @@
 import unittest
-from mytestproject.datatojson.comparing_populations import comparing_populations_json
+from mytestproject.datatojson.comparing_populations import comparing_populations
 from mytestproject.tests.test_utils import make_data
+
 class Test(unittest.TestCase):
         
-    def testComparePopulationsQuery_district_teacher(self):        
-        params = {"subject_code": ["ALL"], 
+    def testDataToJson_district_teacher_gradeOff(self):      
+        params = {
+            'subject_code': ["ALL"], 
             'district_filter': ['ALL'], 
             'school_filter': ['ALL'], 
             'teacher_filter': ['ALL'], 
             'grades': ["ALL"], 
             'time_period': ["ALL"], 
             'year_range': ['ALL'], 
-            "report_level":"district", 
+            'report_level':'district', 
             'segment_by': 'teacher',
-            "school_group_type" : "Districts", 
-            "grade_divider":"0"
+            'school_group_type' : 'Districts', 
+            'grade_divider': 'false'
          }
         
         values = [
-                  (None, None, None, 63.0, None, 1, 2077, 'COPELAND, JOHN', 6405, 'School258', 625, 'ALSchoolGroup1', 143790, None, None, 'ELA', 'BOY', '2012-2013', 'Smarter Balanced Assessment Consortium', 'Alabama', 'Above Benchmark', '3'),
-                  (None, None, None, 65.0, None, 1, 2077, 'COPELAND, JOHN', 6405, 'School258', 625, 'ALSchoolGroup1', 143790, None, None, 'ELA', 'EOY', '2012-2013', 'Smarter Balanced Assessment Consortium', 'Alabama', 'Above Benchmark', '3')
+                  (None, None, None, 63.0, 1, 2077, 'COPELAND, JOHN', 6405, 'School258', 625, 'ALSchoolGroup1', 143790, None, None, 'ELA', 'BOY', '2012-2013', 'Smarter Balanced Assessment Consortium', 'Alabama', 'Above Benchmark'),
+                  (None, None, None, 65.0, 1, 2077, 'COPELAND, JOHN', 6405, 'School258', 625, 'ALSchoolGroup1', 143790, None, None, 'ELA', 'EOY', '2012-2013', 'Smarter Balanced Assessment Consortium', 'Alabama', 'Above Benchmark')
                   ]
         
         rows = make_data(values)
-        actual_data = comparing_populations_json.comparing_populations(params, rows)
-        expected_data = {"scope_groups": [{"school_group": {"code": 625, "name": "ALSchoolGroup1"}, "school": None, "grade_groups": [{"bar_groups": [{"bars": [{"segments": [{"performance_level": {"code": "3", "name": "Above Benchmark"}, 
-                         "score": 63, "student_count": 1, "student_percentage": 100}], "student_count": 1, "period": {"code": None, "name": "BOY"}, "year": {"code": None, "name": "2012-2013"}}, {"segments": [{"performance_level": {"code": "3", "name": "Above Benchmark"}, 
+        actual_data = comparing_populations(params, rows)
+        expected_data = {"scope_groups": [{"school_group": {"code": 625, "name": "ALSchoolGroup1"}, "school": None, "grade_groups": [{"bar_groups": [{"bars": [{"segments": [{"performance_level": {"code": "Above Benchmark", "name": "Above Benchmark"}, 
+                         "score": 63, "student_count": 1, "student_percentage": 100}], "student_count": 1, "period": {"code": None, "name": "BOY"}, "year": {"code": None, "name": "2012-2013"}}, {"segments": [{"performance_level": {"code": "Above Benchmark", "name": "Above Benchmark"}, 
                          "score": 65, "student_count": 1, "student_percentage": 100}], "student_count": 1, "period": {"code": None, "name": "EOY"}, "year": {"code": None, "name": "2012-2013"}}], "student": None, "grade": None, 
-                         "school_group": {"code": 625, "name": "ALSchoolGroup1"}, "school": {"code": 6405, "name": "School258"}, "teacher": {"code": 2077, "name": "COPELAND, JOHN"}}], "grade": None}], "teacher": None, "school_group_type": {"code": "Districts", "name": "Districts"}}]}
+                         "school_group": {"code": 625, "name": "ALSchoolGroup1"}, "school": {"code": 6405, "name": "School258"}, "teacher": {"code": 2077, "name": "COPELAND, JOHN"}}], "grade": {'code': None, 'name': None}}], "teacher": None, "school_group_type": {"code": "3", "name": "Districts"}}]}
         self.assertTrue((actual_data) == (expected_data))
         
+        
+    def testDataToJson_district_teacher_gradeOn(self):
+        params = {
+            'subject_code': ["ALL"], 
+            'district_filter': ['ALL'], 
+            'school_filter': ['ALL'], 
+            'teacher_filter': ['ALL'], 
+            'grades': ["ALL"], 
+            'time_period': ["ALL"], 
+            'year_range': ['ALL'], 
+            'report_level':'district', 
+            'segment_by': 'teacher',
+            'school_group_type' : 'Districts', 
+            'grade_divider': 'true'
+         }
+        
+        values = [
+                  (None, None, None, 59.0, 1, 2077, 'COPELAND, JOHN', 6405, 'School258', 625, 'ALSchoolGroup1', 143790, 1, 'Pre-K', 'ELA', 'EOY', '2013-2014', 'Smarter Balanced Assessment Consortium', 'Alabama', 'Benchmark'),
+                  (None, None, None, 61.0, 1, 2077, 'COPELAND, JOHN', 6405, 'School258', 625, 'ALSchoolGroup1', 143790, 3, '1', 'ELA', 'MOY', '2013-2014', 'Smarter Balanced Assessment Consortium', 'Alabama', 'Above Benchmark'),
+                  (None, None, None, 60.0, 1, 2077, 'COPELAND, JOHN', 6405, 'School258', 625, 'ALSchoolGroup1', 143790, 4, '2', 'MATH', 'MOY', '2012-2013', 'Smarter Balanced Assessment Consortium', 'Alabama', 'Above Benchmark')
+                 ]
+        
+        rows = make_data(values)
+        actual_data = comparing_populations(params, rows)
+        expected_data = {"scope_groups": [{"school": None, "teacher": None, "school_group": {"code": 625, "name": "ALSchoolGroup1"}, "school_group_type": {"code": "3", "name": "Districts"}, "grade_groups": [{"grade": {"code": 1, "name": "Pre-K"}, "bar_groups": [{"teacher": {"code": 2077, "name": "COPELAND, JOHN"}, "school_group": {"code": 625, "name": "ALSchoolGroup1"}, "student": None, "grade": None, "bars": [{"year": {"code": None, "name": "2013-2014"}, "segments": [{"performance_level": {"code": "Benchmark", "name": "Benchmark"}, "score": 59, "student_percentage": 100, "student_count": 1}], "period": {"code": None, "name": "EOY"}, "student_count": 1}], "school": {"code": 6405, "name": "School258"}}]}, {"grade": {"code": 3, "name": "1"}, "bar_groups": [{"teacher": {"code": 2077, "name": "COPELAND, JOHN"}, "school_group": {"code": 625, "name": "ALSchoolGroup1"}, "student": None, "grade": None, "bars": [{"year": {"code": None, "name": "2013-2014"}, "segments": [{"performance_level": {"code": "Above Benchmark", "name": "Above Benchmark"}, "score": 61, "student_percentage": 100, "student_count": 1}], "period": {"code": None, "name": "MOY"}, "student_count": 1}], "school": {"code": 6405, "name": "School258"}}]}, {"grade": {"code": 4, "name": "2"}, "bar_groups": [{"teacher": {"code": 2077, "name": "COPELAND, JOHN"}, "school_group": {"code": 625, "name": "ALSchoolGroup1"}, "student": None, "grade": None, "bars": [{"year": {"code": None, "name": "2012-2013"}, "segments": [{"performance_level": {"code": "Above Benchmark", "name": "Above Benchmark"}, "score": 60, "student_percentage": 100, "student_count": 1}], "period": {"code": None, "name": "MOY"}, "student_count": 1}], "school": {"code": 6405, "name": "School258"}}]}]}]}
+        self.assertTrue((actual_data) == (expected_data))
+        
+    def testDataToJson_invalid_params(self):
+        param1 = {
+            'subject_code': ["ALL"], 
+            'district_filter': ['ALL'], 
+            'school_filter': ['ALL'], 
+            'teacher_filter': ['ALL'], 
+            'grades': ["ALL"], 
+            'time_period': ["ALL"], 
+            'year_range': ['ALL'], 
+            'report_level':'invalid_report_level', 
+            'segment_by': 'teacher',
+            'school_group_type' : 'Districts', 
+            'grade_divider': 'true'
+         }
+        param2 = {
+            'subject_code': ["ALL"], 
+            'district_filter': ['ALL'], 
+            'school_filter': ['ALL'], 
+            'teacher_filter': ['ALL'], 
+            'grades': ["ALL"], 
+            'time_period': ["ALL"], 
+            'year_range': ['ALL'], 
+            'report_level':'district', 
+            'segment_by': 'invalid_segment_by',
+            'school_group_type' : 'Districts', 
+            'grade_divider': 'true'
+         }
+        
+        param3 = {
+            'subject_code': ["ALL"], 
+            'district_filter': ['ALL'], 
+            'school_filter': ['ALL'], 
+            'teacher_filter': ['ALL'], 
+            'grades': ["ALL"], 
+            'time_period': ["ALL"], 
+            'year_range': ['ALL'], 
+            'report_level':'district', 
+            'segment_by': 'teacher',
+            'school_group_type' : 'invalid_school_group_type', 
+            'grade_divider': 'true'
+         }
+        
+        param4 = {
+            'subject_code': ["ALL"], 
+            'district_filter': ['ALL'], 
+            'school_filter': ['ALL'], 
+            'teacher_filter': ['ALL'], 
+            'grades': ["ALL"], 
+            'time_period': ["ALL"], 
+            'year_range': ['ALL'], 
+            'report_level':'district', 
+            'segment_by': 'teacher',
+            'school_group_type' : 'Districts', 
+            'grade_divider': 'invalid_grade_divider'
+         }
+        
+        values = [
+                  (None, None, None, 59.0, 1, 2077, 'COPELAND, JOHN', 6405, 'School258', 625, 'ALSchoolGroup1', 143790, 1, 'Pre-K', 'ELA', 'EOY', '2013-2014', 'Smarter Balanced Assessment Consortium', 'Alabama', 'Benchmark'),
+                  (None, None, None, 61.0, 1, 2077, 'COPELAND, JOHN', 6405, 'School258', 625, 'ALSchoolGroup1', 143790, 3, '1', 'ELA', 'MOY', '2013-2014', 'Smarter Balanced Assessment Consortium', 'Alabama', 'Above Benchmark'),
+                  (None, None, None, 60.0, 1, 2077, 'COPELAND, JOHN', 6405, 'School258', 625, 'ALSchoolGroup1', 143790, 4, '2', 'MATH', 'MOY', '2012-2013', 'Smarter Balanced Assessment Consortium', 'Alabama', 'Above Benchmark')
+                 ]
+        
+        rows = make_data(values)
+        
+        actual_data1 = comparing_populations(param1, rows)
+        actual_data2 = comparing_populations(param2, rows)
+        actual_data3 = comparing_populations(param3, rows)
+        actual_data4 = comparing_populations(param4, rows)
+
+        expected_data = "Input is wrong, please try it again"
+        self.assertTrue((actual_data1) == (expected_data))
+        self.assertTrue((actual_data2) == (expected_data))
+        self.assertTrue((actual_data3) == (expected_data))
+        self.assertTrue((actual_data4) == (expected_data))

@@ -6,14 +6,19 @@ def get_param_info(parameters):
     grain_info = None
     scope_info = None
     school_group_type = None
+    grade_dividers_on = None
     
-    grain_info = Grain.get_by_name(str(parameters['segment_by']))
-    scope_info = Scope.get_by_name(str(parameters['report_level']))
-    school_group_type = SchoolGroupType.get_by_name(str(parameters['school_group_type']))
+    if 'segment_by' in parameters.keys():
+        grain_info = Grain.get_by_name(str(parameters['segment_by']))
+    if 'report_level' in parameters.keys():
+        scope_info = Scope.get_by_name(str(parameters['report_level']))
+    if 'school_group_type' in parameters.keys():
+        school_group_type = SchoolGroupType.get_by_name(str(parameters['school_group_type']))
     #grade_dividers_on = GradeDividers.get_by_boolean(str(parameters['grade_divider']))['boolean']
-    grade_dividers_on = str(parameters['grade_divider']).lower()
-    if grade_dividers_on != "true" and grade_dividers_on != "false":
-        grade_dividers_on = None
+    if 'grade_divider' in parameters.keys():
+        grade_dividers_on = str(parameters['grade_divider']).lower()
+        if grade_dividers_on != "true" and grade_dividers_on != "false":
+            grade_dividers_on = None
     return grain_info, scope_info, school_group_type, grade_dividers_on
     
     

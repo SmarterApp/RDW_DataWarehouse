@@ -32,9 +32,12 @@ smarter/static/pyramid-small.png
 smarter/static/pyramid.png
 smarter/static/transparent.gif
 smarter/templates/comparePopulations.pt
+smarter/templates/comparePopulationsAl.pt
 smarter/templates/comparePopulationsResults.pt
+smarter/templates/comparePopulationsResultsAl.pt
 smarter/templates/mytemplate.pt
 smarter/tests/__init__.py
 smarter/tests/testcomparepopulations.py
+smarter/tests/testcomparepopulationssqlalchemy.py
 smarter/utils/__init__.py
 smarter/utils/databaseconnections.py

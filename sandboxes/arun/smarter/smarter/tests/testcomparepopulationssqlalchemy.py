@@ -7,7 +7,7 @@ import unittest
 from smarter.services.comparepopulations import generateComparePopulationsReportAlchemy
 from smarter.utils.databaseconnections import getSQLAlchemyConnection
 
-class ComparePopulationsReportTest(unittest.TestCase):
+class ComparePopulationsReportTestAlchemy(unittest.TestCase):
 
     keys = ("segment_by","grades","year_range","time_period","teacher_filter","district_filter","school_filter","student_id","subject_code","grade_divider","report_level","school_group_type")
 
@@ -19,6 +19,7 @@ class ComparePopulationsReportTest(unittest.TestCase):
         with open('smarter/tests/comPopSetupData.sql', 'r') as f:
             for line in f:
                 self._dbConnection.execute(line)
+                
     @classmethod
     def deleteTestData(self):
         assert self._dbConnection
@@ -29,14 +30,14 @@ class ComparePopulationsReportTest(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         #Clean up test data first, if any
-        ComparePopulationsReportTest.deleteTestData()
+        ComparePopulationsReportTestAlchemy.deleteTestData()
         #Insert test data
-        ComparePopulationsReportTest.insertTestData()
+        ComparePopulationsReportTestAlchemy.insertTestData()
         print("setup complete")
 
     @classmethod
     def tearDownClass(self):
-        ComparePopulationsReportTest.deleteTestData()
+        ComparePopulationsReportTestAlchemy.deleteTestData()
         print("teardown complete") 
 
 

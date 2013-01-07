@@ -5,7 +5,7 @@ from sqlalchemy.exc import DBAPIError
 
 from .models import (DBSession, MyModel,)
 
-from smarter.services.comparepopulations import generateComparePopulationsJSON
+from smarter.services.compare_populations import generateComparePopulationsJSON
 
 @view_config(route_name='home', renderer='templates/common.pt')
 def home_view(request):

@@ -21,3 +21,60 @@ def home_view(request):
     except DBAPIError:
         return Response("wrong", content_type='text/plain', status_int=500)
     return {'one': one, 'project': 'smarter2'}
+
+
+@view_config(route_name='test1', renderer='json')
+def testJson(request):
+    mystring = {
+        "data": {
+            "account": {
+                "code": "1209",
+                "name": "MCPS Account"
+            },
+            "scope_groups": {
+                "school": "Abc",
+                "section": "Xyz",
+                "school_group": "Group",
+                "grade_groups": "Grade",
+                "school_group_type": "Type",
+                "teacher": "Def"
+            }
+        },
+        "parameters": {
+            "selected_rows": "rows",
+            "all": "all",
+            "selected": "selected"
+        },
+        "report_id": 1
+    }
+    #return Response(mystring)
+    return mystring
+
+
+@view_config(route_name='template', renderer='json')
+def my_templateview(request):
+    mystring = {
+        'data': {
+            'account': {
+                'code': '1209',
+                'name': 'MCPS Account'
+            },
+            'scope_groups': {
+                'school': 'Abc',
+                'section': 'Xyz',
+                'school_group': 'Group',
+                'grade_groups': 'Grade',
+                'school_group_type': 'Type',
+                'teacher': 'Def'
+            }
+        },
+        'parameters': {
+            'selected_rows': 'rows',
+            'all': 'all',
+            'selected': 'selected'
+        },
+        'report_id': 1
+    }
+    #json_str = json.dumps(mystring, sort_keys=True, indent=4)
+    #return Response(json.dumps(mystring))
+    return mystring

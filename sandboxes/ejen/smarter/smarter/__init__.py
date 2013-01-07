@@ -15,5 +15,7 @@ def main(global_config, **settings):
 #    config.add_static_view('assets', 'static/assets', cache_max_age=3600)
     config.add_route('home', '/')
     config.add_route('compPop', '/comparing_populations')
+    config.add_route('test1', '/test1')
+    config.add_route('template', '/template')
     config.scan()
     return config.make_wsgi_app()

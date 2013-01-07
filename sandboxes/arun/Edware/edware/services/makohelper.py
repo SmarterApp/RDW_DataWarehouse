@@ -14,7 +14,7 @@ def getSQLTemplate(filename):
         try:
             templates = TemplateLookup(_template_dir)
             assert templates.has_template(filename)
-        except Exception as err:
+        except Exception:
             raise Exception("Template lookup failed for file {0} in directories {1}".format(filename,_template_dir))    
         return templates.get_template(filename)
     

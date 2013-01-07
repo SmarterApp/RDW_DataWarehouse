@@ -17,8 +17,10 @@ def make_data(values):
                 'subject_name',
                 'period_name', 
                 'year_range', 
-                'state_group_name', 
-                'state_name', 
+                'state_group_name',
+                'state_group_code', 
+                'state_name',
+                'state_code',
                 'performance_level'
                     ]
     data = []

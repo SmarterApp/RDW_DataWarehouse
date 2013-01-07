@@ -40,7 +40,9 @@
 	assessment_t.time_period as period_name,
 	assessment_t.year_range,
 	state_grp_t.name as state_group_name,
+	state_grp_t.code as state_group_code,
 	state_t.name as state_name,
+	state_t.code as state_code,
 	case 
 	 when fact.assessment_score < 50 then 'Below Benchmark'
 	 when fact.assessment_score >= 50 and fact.assessment_score < 60 then 'Benchmark'
@@ -119,7 +121,9 @@
 		assessment_t.time_period,
 		assessment_t.year_range,
 		state_grp_t.name,
+		state_grp_t.code,
 		state_t.name,
+		state_t.code,
 		case 
 	 		when fact.assessment_score < 50 then 'Below Benchmark'
 	 		when fact.assessment_score >= 50 and fact.assessment_score < 60 then 'Benchmark'

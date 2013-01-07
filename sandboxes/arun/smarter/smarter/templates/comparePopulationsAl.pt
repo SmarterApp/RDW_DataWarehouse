@@ -20,41 +20,43 @@
           <div><img src="${request.static_url('smarter:static/pyramid.png')}" width="750" height="169" alt="pyramid"/></div>
       </div>
     </div>
-     Count of records returned : <p tal:content=" len(result)"> 
-     <FORM>
-	<INPUT Type="button" VALUE="Back" onClick="history.go(-1);return true;">     
-	     <table border="1" cellpadding="5">
-	     	<tr>
-				<th>Student Id</th>
-				<th>Student EternalId</th>
-				<th>Student Name</th>
-				<th>Assessment Score</th>
-				<th>Student Count</th>
-				<th>Teacher Id</th>
-				<th>Teacher Name</th>
-				<th>School Id</th>
-				<th>School Name</th>
-				<th>School Group Id</th>
-				<th>School Group Name</th>
-				<th>Period Code</th>
-				<th>Grade Code</th>
-				<th>Grade Name</th>
-				<th>Subject Name</th>
-				<th>Time Period</th>
-				<th>Year Range</th>
-				<th>State Group Name</th>
-				<th>State Group Code</th>
-				<th>State Name</th>
-				<th>State Code</th>
-				<th>Performance Level</th>
-			</tr>
-	  				<tr tal:repeat="row (result)">
-	  					<td tal:repeat="column range(len(row))">
-	      					<p tal:content="row[column]">test</p>
-	      				</td>
-	  				</tr>
-		 </table>			
-     </FORM>
+    <div id="bottom">
+      <div class="bottom">
+        <div id="left" class="align-right">
+        ${comment}
+          <form name="report" method="post" action="/comPopResultsAl">
+          <textarea name="reportparam" rows="25" cols="80">
+{
+    "grade_divider": "false",
+    "subject_code": [
+        "ALL"
+    ],
+    "district_filter": [
+        "999980"
+    ],
+    "segment_by": "student",
+    "school_filter": [
+        "ALL"
+    ],
+    "teacher_filter": [
+        "ALL"
+    ],
+    "grades": [
+        "ALL"
+    ],
+    "time_period": [
+        "ALL"
+    ],
+    "year_range": [
+        "ALL"
+    ]
+}
+          </textarea>
+          <input name="Generate" type="submit"></input>
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
   <div id="footer">
     <div class="footer">&copy; Copyright 2008-2012, Agendaless Consulting.</div>

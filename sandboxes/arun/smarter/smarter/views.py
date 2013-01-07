@@ -1,12 +1,9 @@
 from pyramid.response import Response
 from pyramid.view import view_config
-from smarter.services.comparepopulations import generateComparePopulationsReport
+from smarter.services.comparepopulations import generateComparePopulationsReport,generateComparePopulationsReportAlchemy
 from sqlalchemy.exc import DBAPIError
 
-from .models import (
-    DBSession,
-    MyModel,
-    )
+#from models import DBSession, MyModel
 
 
 @view_config(route_name='home', renderer='templates/mytemplate.pt')
@@ -38,4 +35,12 @@ def compare_populations(request):
 
 @view_config(route_name='inputComparePopulations', renderer='templates/comparePopulations.pt')
 def input_populations(request):
+    return {"comment" : "Enter the report parameters"}
+
+@view_config(route_name='generateComparePopulationsAl', renderer='templates/comparePopulationsResultsAl.pt')
+def compare_populations_Al(request):
+    return {"result" : generateComparePopulationsReportAlchemy(request.params["reportparam"])}
+
+@view_config(route_name='inputComparePopulationsAl', renderer='templates/comparePopulationsAl.pt')
+def input_populations_Al(request):
     return {"comment" : "Enter the report parameters"}

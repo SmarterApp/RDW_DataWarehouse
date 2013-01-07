@@ -704,14 +704,14 @@ Scope = _Enum({
         'drilldown_scope_code': '7',
         'inst_hierarchy_order': 2
     },
-    'Student': {
-        'code': '7',
-        'name': 'Student',
-        'order': 7,
-        'drillup_scope_code': '6',
-        'drilldown_scope_code': '7',
-        'inst_hierarchy_order': 1
-    }
+    #'Student': {
+    #    'code': '7',
+    #    'name': 'Student',
+    #    'order': 7,
+    #    'drillup_scope_code': '6',
+    #    'drilldown_scope_code': '7',
+    #    'inst_hierarchy_order': 1
+    #}
 })
 
 

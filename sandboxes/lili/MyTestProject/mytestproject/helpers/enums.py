@@ -320,17 +320,29 @@ GrainType = _Enum({
 })
 
 
-Grain = _Enum({
-    'Account': {
+Grain = _Enum({            
+    'GroupOfState': {
+        'code': '0',
+        'name': 'GroupOfState',
+        'order': 0,
+        'inst_hierarchy_order': 7,
+        'drillup_grain_code': '1',
+        'drilldown_grain_code': '4',
+        'parameter_name': 'state_groups',
+        'type': GrainType.Institution
+    },
+                
+    'State': {
         'code': '1',
-        'name': 'Account',
+        'name': 'State',
         'order': 1,
         'inst_hierarchy_order': 6,
         'drillup_grain_code': '1',
         'drilldown_grain_code': '2',
-        'parameter_name': 'account',
+        'parameter_name': 'state',
         'type': GrainType.Institution
     },
+               
     'District': {
         'code': '2',
         'name': 'District',
@@ -341,16 +353,7 @@ Grain = _Enum({
         'parameter_name': 'school_groups',
         'type': GrainType.Institution
     },
-    'Program': {
-        'code': '3',
-        'name': 'Program',
-        'order': 3,
-        'inst_hierarchy_order': 5,
-        'drillup_grain_code': '1',
-        'drilldown_grain_code': '4',
-        'parameter_name': 'school_groups',
-        'type': GrainType.Institution
-    },
+
     'School': {
         'code': '4',
         'name': 'School',
@@ -646,34 +649,33 @@ SchoolGroupType = _Enum({
         'code': '3',
         'name': 'Districts'
     },
-    'Program': {
-        'code': '4',
-        'name': 'Programs'
-    }
 })
 
 
 Scope = _Enum({
-    'Account': {
+               
+    'GroupOfState': {
+        'code': '0',
+        'name': 'GroupOfState',
+        'order': 0,
+        'drillup_scope_code': '1',
+        'drilldown_scope_code': '4',
+        'inst_hierarchy_order': 7
+    },
+               
+    'State': {
         'code': '1',
-        'name': 'Account',
+        'name': 'State',
         'order': 1,
         'drillup_scope_code': '1',
         'drilldown_scope_code': '2',
         'inst_hierarchy_order': 6
     },
+        
     'District': {
         'code': '2',
         'name': 'District',
         'order': 2,
-        'drillup_scope_code': '1',
-        'drilldown_scope_code': '4',
-        'inst_hierarchy_order': 5
-    },
-    'Program': {
-        'code': '3',
-        'name': 'Program',
-        'order': 3,
         'drillup_scope_code': '1',
         'drilldown_scope_code': '4',
         'inst_hierarchy_order': 5
@@ -714,12 +716,19 @@ Scope = _Enum({
 
 
 ReferencePoint = _Enum({
-    'Account': {
+    'GroupOfState': {
+        'code': '0',
+        'name': 'GroupOfState',
+        'order': 1,
+        'scope': Scope.GroupOfState,
+        'grain': Grain.GroupOfState
+    },
+    'State': {
         'code': '1',
         'name': 'Account',
         'order': 2,
-        'scope': Scope.Account,
-        'grain': Grain.Account
+        'scope': Scope.GroupOfState,
+        'grain': Grain.State
     },
     'District': {
         'code': '2',
@@ -727,13 +736,6 @@ ReferencePoint = _Enum({
         'order': 3,
         'scope': Scope.District,
         'grain': Grain.District
-    },
-    'Program': {
-        'code': '3',
-        'name': 'Program',
-        'order': 4,
-        'scope': Scope.Program,
-        'grain': Grain.Program
     },
     'School': {
         'code': '4',

@@ -20,6 +20,7 @@ class ComparePopulationsReportTest(unittest.TestCase):
             for line in f:
                 statement = self._dbConnection.prepare(line)
                 statement()
+        self._dbConnection.commit()        
     @classmethod
     def deleteTestData(self):
         assert self._dbConnection
@@ -27,6 +28,7 @@ class ComparePopulationsReportTest(unittest.TestCase):
             for line in f:
                 statement = self._dbConnection.prepare(line)
                 statement()
+        self._dbConnection.commit()        
 
     @classmethod
     def setUpClass(self):

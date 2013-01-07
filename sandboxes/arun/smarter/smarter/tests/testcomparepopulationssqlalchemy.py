@@ -19,6 +19,7 @@ class ComparePopulationsReportTest(unittest.TestCase):
         with open('smarter/tests/comPopSetupData.sql', 'r') as f:
             for line in f:
                 self._dbConnection.execute(line)
+                
     @classmethod
     def deleteTestData(self):
         assert self._dbConnection

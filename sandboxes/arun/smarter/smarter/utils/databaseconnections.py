@@ -6,6 +6,8 @@ Created on Dec 26, 2012
 import postgresql.driver.dbapi20 as dbapi
 from sqlalchemy import create_engine
 
+db_engine = create_engine("postgresql+pypostgresql://postgres:password@localhost:5432/postgres")
+
 def getDatabaseConnection():
     '''
     Create and return database connection
@@ -22,7 +24,6 @@ def getDatabaseConnection():
 def getSQLAlchemyConnection():
     print("Connecting to postgres database using sqlalchemy")
     try:
-        db_engine = create_engine("postgresql+pypostgresql://postgres:password@localhost:5432/postgres")
         _db = db_engine.connect()
         assert _db != None
         print("Connected to postgres database using sqlalchemy")

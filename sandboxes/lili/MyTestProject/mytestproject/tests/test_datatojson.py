@@ -90,7 +90,6 @@ class Test(unittest.TestCase):
         
         rows = make_data(values)
         actual_data = comparing_populations(params, rows)
-        print(actual_data)
         expected_data = {'scope_groups': [
                                           {'state': {'code': 'AL', 'name': 'Alabama'}, 
                                            'school': None, 

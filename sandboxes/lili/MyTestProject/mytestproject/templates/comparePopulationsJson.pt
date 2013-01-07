@@ -48,10 +48,10 @@
     "year_range": [
         "ALL"
     ],
-    "report_level":"GroupOfState",
+    "report_level":"district",
     "grade_divider": "false",
-    "segment_by":"State",
-    "school_group_type":"GroupOfStates"
+    "segment_by":"school",
+    "school_group_type":"Districts"
 }
           </textarea>
           <input name="Generate" type="submit"></input>

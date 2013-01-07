@@ -28,6 +28,8 @@ def generateComparePopulationsJSON(parameters):
         dict_data = comparing_populations(parameters, results)
         json_data = json.dumps(dict_data)
         db_connection.close()
+        print("Closed database connection")
+
     else:
         print("Error getting connection to database")
     return json_data

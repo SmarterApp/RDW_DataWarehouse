@@ -63,7 +63,9 @@ class Test(unittest.TestCase):
                                            'state': {'name': 'Alabama', 'code': 'AL'}, 
                                            'teacher': None, 
                                            'state_group': {'name': 'Smarter Balanced Assessment Consortium', 'code': 'SBAC'}, 
-                                           'school': None, 'school_group': {'name': 'ALSchoolGroup1', 'code': 625}}]
+                                           'school': None, 'school_group': {'name': 'ALSchoolGroup1', 'code': 625}
+                                           }
+                                          ]
                          }
         self.assertTrue((actual_data) == (expected_data))
         

@@ -1,6 +1,6 @@
 import unittest
 from mytestproject.datatojson.comparing_populations import comparing_populations
-from mytestproject.tests.test_utils import make_data
+from mytestproject.utils.test_utils import make_data
 
 class Test(unittest.TestCase):
         
@@ -20,18 +20,52 @@ class Test(unittest.TestCase):
          }
         
         values = [
-                  (None, None, None, 63.0, 1, 2077, 'COPELAND, JOHN', 6405, 'School258', 625, 'ALSchoolGroup1', 143790, None, None, 'ELA', 'BOY', '2012-2013', 'Smarter Balanced Assessment Consortium', 'Alabama', 'Above Benchmark'),
-                  (None, None, None, 65.0, 1, 2077, 'COPELAND, JOHN', 6405, 'School258', 625, 'ALSchoolGroup1', 143790, None, None, 'ELA', 'EOY', '2012-2013', 'Smarter Balanced Assessment Consortium', 'Alabama', 'Above Benchmark')
+                  (None, None, None, 63.0, 1, 2077, 'COPELAND, JOHN', 6405, 'School258', 625, 'ALSchoolGroup1', 143790, None, None, 'ELA', 'BOY', '2012-2013', 'Smarter Balanced Assessment Consortium', 'SBAC', 'Alabama', 'AL', 'Above Benchmark'),
+                  (None, None, None, 65.0, 1, 2077, 'COPELAND, JOHN', 6405, 'School258', 625, 'ALSchoolGroup1', 143790, None, None, 'ELA', 'EOY', '2012-2013', 'Smarter Balanced Assessment Consortium', 'SBAC', 'Alabama', 'AL', 'Above Benchmark')
                   ]
         
         rows = make_data(values)
         actual_data = comparing_populations(params, rows)
-        expected_data = {"scope_groups": [{"school_group": {"code": 625, "name": "ALSchoolGroup1"}, "school": None, "grade_groups": [{"bar_groups": [{"bars": [{"segments": [{"performance_level": {"code": "Above Benchmark", "name": "Above Benchmark"}, 
-                         "score": 63, "student_count": 1, "student_percentage": 100}], "student_count": 1, "period": {"code": None, "name": "BOY"}, "year": {"code": None, "name": "2012-2013"}}, {"segments": [{"performance_level": {"code": "Above Benchmark", "name": "Above Benchmark"}, 
-                         "score": 65, "student_count": 1, "student_percentage": 100}], "student_count": 1, "period": {"code": None, "name": "EOY"}, "year": {"code": None, "name": "2012-2013"}}], "student": None, "grade": None, 
-                         "school_group": {"code": 625, "name": "ALSchoolGroup1"}, "school": {"code": 6405, "name": "School258"}, "teacher": {"code": 2077, "name": "COPELAND, JOHN"}}], "grade": {'code': None, 'name': None}}], "teacher": None, "school_group_type": {"code": "3", "name": "Districts"}}]}
+        expected_data = {'scope_groups': [
+                                          {'school_group_type': {'name': 'Districts', 'code': '3'}, 
+                                           'grade_groups': [
+                                                            {'bar_groups': [
+                                                                            {'bars': [
+                                                                                      {'period': {'name': 'BOY', 'code': None}, 
+                                                                                       'student_count': 1, 
+                                                                                       'year': {'name': '2012-2013', 'code': None}, 
+                                                                                       'segments': [
+                                                                                                    {'score': 63, 
+                                                                                                     'student_percentage': 100, 
+                                                                                                     'student_count': 1, 
+                                                                                                     'performance_level': {'name': 'Above Benchmark', 'code': 'Above Benchmark'}}
+                                                                                                    ]
+                                                                                       }, 
+                                                                                      {'period': {'name': 'EOY', 'code': None}, 
+                                                                                       'student_count': 1, 
+                                                                                       'year': {'name': '2012-2013', 'code': None}, 
+                                                                                       'segments': [
+                                                                                                    {'score': 65, 
+                                                                                                     'student_percentage': 100, 
+                                                                                                     'student_count': 1, 
+                                                                                                     'performance_level': {'name': 'Above Benchmark', 'code': 'Above Benchmark'}}
+                                                                                                    ]
+                                                                                       }
+                                                                                      ],
+                                                                             'state': {'name': 'Alabama', 'code': 'AL'}, 
+                                                                             'teacher': {'name': 'COPELAND, JOHN', 'code': 2077}, 
+                                                                             'state_group': {'name': 'Smarter Balanced Assessment Consortium', 'code': 'SBAC'}, 
+                                                                             'student': None, 
+                                                                             'school': {'name': 'School258', 'code': 6405}, 
+                                                                             'grade': None, 
+                                                                             'school_group': {'name': 'ALSchoolGroup1', 'code': 625}}], 
+                                                             'grade': {'name': None, 'code': None}}], 
+                                           'state': {'name': 'Alabama', 'code': 'AL'}, 
+                                           'teacher': None, 
+                                           'state_group': {'name': 'Smarter Balanced Assessment Consortium', 'code': 'SBAC'}, 
+                                           'school': None, 'school_group': {'name': 'ALSchoolGroup1', 'code': 625}}]
+                         }
         self.assertTrue((actual_data) == (expected_data))
-        
         
     def testDataToJson_district_teacher_gradeOn(self):
         params = {
@@ -49,14 +83,86 @@ class Test(unittest.TestCase):
          }
         
         values = [
-                  (None, None, None, 59.0, 1, 2077, 'COPELAND, JOHN', 6405, 'School258', 625, 'ALSchoolGroup1', 143790, 1, 'Pre-K', 'ELA', 'EOY', '2013-2014', 'Smarter Balanced Assessment Consortium', 'Alabama', 'Benchmark'),
-                  (None, None, None, 61.0, 1, 2077, 'COPELAND, JOHN', 6405, 'School258', 625, 'ALSchoolGroup1', 143790, 3, '1', 'ELA', 'MOY', '2013-2014', 'Smarter Balanced Assessment Consortium', 'Alabama', 'Above Benchmark'),
-                  (None, None, None, 60.0, 1, 2077, 'COPELAND, JOHN', 6405, 'School258', 625, 'ALSchoolGroup1', 143790, 4, '2', 'MATH', 'MOY', '2012-2013', 'Smarter Balanced Assessment Consortium', 'Alabama', 'Above Benchmark')
+                  (None, None, None, 59.0, 1, 2077, 'COPELAND, JOHN', 6405, 'School258', 625, 'ALSchoolGroup1', 143790, 1, 'Pre-K', 'ELA', 'EOY', '2013-2014', 'Smarter Balanced Assessment Consortium', 'SBAC', 'Alabama', 'AL', 'Benchmark'),
+                  (None, None, None, 61.0, 1, 2077, 'COPELAND, JOHN', 6405, 'School258', 625, 'ALSchoolGroup1', 143790, 3, '1', 'ELA', 'MOY', '2013-2014', 'Smarter Balanced Assessment Consortium', 'SBAC', 'Alabama', 'AL', 'Above Benchmark'),
+                  (None, None, None, 60.0, 1, 2077, 'COPELAND, JOHN', 6405, 'School258', 625, 'ALSchoolGroup1', 143790, 4, '2', 'MATH', 'MOY', '2012-2013', 'Smarter Balanced Assessment Consortium', 'SBAC', 'Alabama', 'AL', 'Above Benchmark')
                  ]
         
         rows = make_data(values)
         actual_data = comparing_populations(params, rows)
-        expected_data = {"scope_groups": [{"school": None, "teacher": None, "school_group": {"code": 625, "name": "ALSchoolGroup1"}, "school_group_type": {"code": "3", "name": "Districts"}, "grade_groups": [{"grade": {"code": 1, "name": "Pre-K"}, "bar_groups": [{"teacher": {"code": 2077, "name": "COPELAND, JOHN"}, "school_group": {"code": 625, "name": "ALSchoolGroup1"}, "student": None, "grade": None, "bars": [{"year": {"code": None, "name": "2013-2014"}, "segments": [{"performance_level": {"code": "Benchmark", "name": "Benchmark"}, "score": 59, "student_percentage": 100, "student_count": 1}], "period": {"code": None, "name": "EOY"}, "student_count": 1}], "school": {"code": 6405, "name": "School258"}}]}, {"grade": {"code": 3, "name": "1"}, "bar_groups": [{"teacher": {"code": 2077, "name": "COPELAND, JOHN"}, "school_group": {"code": 625, "name": "ALSchoolGroup1"}, "student": None, "grade": None, "bars": [{"year": {"code": None, "name": "2013-2014"}, "segments": [{"performance_level": {"code": "Above Benchmark", "name": "Above Benchmark"}, "score": 61, "student_percentage": 100, "student_count": 1}], "period": {"code": None, "name": "MOY"}, "student_count": 1}], "school": {"code": 6405, "name": "School258"}}]}, {"grade": {"code": 4, "name": "2"}, "bar_groups": [{"teacher": {"code": 2077, "name": "COPELAND, JOHN"}, "school_group": {"code": 625, "name": "ALSchoolGroup1"}, "student": None, "grade": None, "bars": [{"year": {"code": None, "name": "2012-2013"}, "segments": [{"performance_level": {"code": "Above Benchmark", "name": "Above Benchmark"}, "score": 60, "student_percentage": 100, "student_count": 1}], "period": {"code": None, "name": "MOY"}, "student_count": 1}], "school": {"code": 6405, "name": "School258"}}]}]}]}
+        expected_data = {'scope_groups': [
+                                          {'state': {'code': 'AL', 'name': 'Alabama'}, 
+                                           'school': None, 
+                                           'school_group_type': {'code': '3', 'name': 'Districts'}, 
+                                           'teacher': None, 
+                                           'state_group': {'code': 'SBAC', 'name': 'Smarter Balanced Assessment Consortium'}, 
+                                           'grade_groups': [
+                                                            {'bar_groups': [
+                                                                            {'state': {'code': 'AL', 'name': 'Alabama'}, 
+                                                                             'school': {'code': 6405, 'name': 'School258'}, 
+                                                                             'bars': [
+                                                                                      {'period': {'code': None, 'name': 'EOY'}, 
+                                                                                       'student_count': 1, 
+                                                                                       'year': {'code': None, 'name': '2013-2014'}, 
+                                                                                       'segments': [
+                                                                                                    {'score': 59, 
+                                                                                                     'student_percentage': 100, 
+                                                                                                     'performance_level': {'code': 'Benchmark', 'name': 'Benchmark'}, 
+                                                                                                     'student_count': 1}]
+                                                                                       }], 
+                                                                             'grade': None, 
+                                                                             'student': None, 
+                                                                             'teacher': {'code': 2077, 'name': 'COPELAND, JOHN'}, 
+                                                                             'state_group': {'code': 'SBAC', 'name': 'Smarter Balanced Assessment Consortium'}, 
+                                                                             'school_group': {'code': 625, 'name': 'ALSchoolGroup1'}}
+                                                                            ], 
+                                                             'grade': {'code': 1, 'name': 'Pre-K'}
+                                                             }, 
+                                                            {'bar_groups': [
+                                                                            {'state': {'code': 'AL', 'name': 'Alabama'}, 
+                                                                             'school': {'code': 6405, 'name': 'School258'}, 
+                                                                             'bars': [
+                                                                                      {'period': {'code': None, 'name': 'MOY'}, 
+                                                                                       'student_count': 1, 
+                                                                                       'year': {'code': None, 'name': '2013-2014'}, 
+                                                                                       'segments': [
+                                                                                                    {'score': 61, 
+                                                                                                     'student_percentage': 100, 
+                                                                                                     'performance_level': {'code': 'Above Benchmark', 'name': 'Above Benchmark'}, 
+                                                                                                     'student_count': 1}]
+                                                                                       }], 
+                                                                             'grade': None, 
+                                                                             'student': None, 
+                                                                             'teacher': {'code': 2077, 'name': 'COPELAND, JOHN'}, 
+                                                                             'state_group': {'code': 'SBAC', 'name': 'Smarter Balanced Assessment Consortium'}, 
+                                                                             'school_group': {'code': 625, 'name': 'ALSchoolGroup1'}}
+                                                                            ], 
+                                                             'grade': {'code': 3, 'name': '1'}
+                                                             }, 
+                                                            {'bar_groups': [
+                                                                            {'state': {'code': 'AL', 'name': 'Alabama'}, 
+                                                                             'school': {'code': 6405, 'name': 'School258'}, 
+                                                                             'bars': [
+                                                                                      {'period': {'code': None, 'name': 'MOY'}, 
+                                                                                       'student_count': 1, 
+                                                                                       'year': {'code': None, 'name': '2012-2013'}, 
+                                                                                       'segments': [
+                                                                                                    {'score': 60, 
+                                                                                                     'student_percentage': 100, 
+                                                                                                     'performance_level': {'code': 'Above Benchmark', 'name': 'Above Benchmark'}, 
+                                                                                                     'student_count': 1}]
+                                                                                       }], 
+                                                                             'grade': None, 
+                                                                             'student': None, 
+                                                                             'teacher': {'code': 2077, 'name': 'COPELAND, JOHN'}, 
+                                                                             'state_group': {'code': 'SBAC', 'name': 'Smarter Balanced Assessment Consortium'}, 
+                                                                             'school_group': {'code': 625, 'name': 'ALSchoolGroup1'}}
+                                                                            ], 
+                                                             'grade': {'code': 4, 'name': '2'}
+                                                             }], 
+                                           'school_group': {'code': 625, 'name': 'ALSchoolGroup1'}}
+                                          ]
+                         }
         self.assertTrue((actual_data) == (expected_data))
         
     def testDataToJson_invalid_params(self):
@@ -116,9 +222,9 @@ class Test(unittest.TestCase):
          }
         
         values = [
-                  (None, None, None, 59.0, 1, 2077, 'COPELAND, JOHN', 6405, 'School258', 625, 'ALSchoolGroup1', 143790, 1, 'Pre-K', 'ELA', 'EOY', '2013-2014', 'Smarter Balanced Assessment Consortium', 'Alabama', 'Benchmark'),
-                  (None, None, None, 61.0, 1, 2077, 'COPELAND, JOHN', 6405, 'School258', 625, 'ALSchoolGroup1', 143790, 3, '1', 'ELA', 'MOY', '2013-2014', 'Smarter Balanced Assessment Consortium', 'Alabama', 'Above Benchmark'),
-                  (None, None, None, 60.0, 1, 2077, 'COPELAND, JOHN', 6405, 'School258', 625, 'ALSchoolGroup1', 143790, 4, '2', 'MATH', 'MOY', '2012-2013', 'Smarter Balanced Assessment Consortium', 'Alabama', 'Above Benchmark')
+                  (None, None, None, 59.0, 1, 2077, 'COPELAND, JOHN', 6405, 'School258', 625, 'ALSchoolGroup1', 143790, 1, 'Pre-K', 'ELA', 'EOY', '2013-2014', 'Smarter Balanced Assessment Consortium', 'SBAC', 'Alabama', 'AL', 'Benchmark'),
+                  (None, None, None, 61.0, 1, 2077, 'COPELAND, JOHN', 6405, 'School258', 625, 'ALSchoolGroup1', 143790, 3, '1', 'ELA', 'MOY', '2013-2014', 'Smarter Balanced Assessment Consortium', 'SBAC', 'Alabama', 'AL', 'Above Benchmark'),
+                  (None, None, None, 60.0, 1, 2077, 'COPELAND, JOHN', 6405, 'School258', 625, 'ALSchoolGroup1', 143790, 4, '2', 'MATH', 'MOY', '2012-2013', 'Smarter Balanced Assessment Consortium', 'SBAC', 'Alabama', 'AL', 'Above Benchmark')
                  ]
         
         rows = make_data(values)

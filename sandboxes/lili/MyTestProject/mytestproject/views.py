@@ -4,7 +4,7 @@ from edware.services import querybuilder
 from edware.utils.databaseconnections import getDatabaseConnection
 from mytestproject.datatojson.comparing_populations import comparing_populations
 from mytestproject.datatojson.sample_para_query import params
-from mytestproject.services.comparepopulations import generateComparePopulationsJSON
+from mytestproject.services.compare_populations import generateComparePopulationsJSON
 import json
 
 @view_config(route_name='home', renderer='templates/mytemplate.pt')

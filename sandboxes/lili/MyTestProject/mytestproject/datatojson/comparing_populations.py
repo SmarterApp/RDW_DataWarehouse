@@ -7,7 +7,7 @@ def comparing_populations(parameters, filtered_rows):
 
     """
     Main function for the Comparing Populations report service. Returns a dictionary
-    with the report data.        
+    with the report data.
     """
     grain_info, scope_info, school_group_type, grade_dividers_on = get_param_info(parameters)
         
@@ -16,6 +16,8 @@ def comparing_populations(parameters, filtered_rows):
         
     scope_code_column, scope_group_key = get_scope_column_key(scope_info['code'])
     grain_code_column, bar_group_key = get_grain_column_key(grain_info['code'])
+
+    #return
     
     # Turn rows into data dict
     data = {

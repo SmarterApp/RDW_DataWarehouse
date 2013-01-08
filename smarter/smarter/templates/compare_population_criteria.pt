@@ -30,10 +30,6 @@
         <option tal:repeat="school schoolList"> ${school} </option>  
        </select>
        <br></br>    
-<b>Students:</b> <select name="studentList" >
-        <option tal:repeat="student studentList"> ${student} </option>  
-       </select>
-       <br></br>
 <b>Time Period:</b> <select name="timePeriod" >
         <option tal:repeat="timePeriod timePeriod"> ${timePeriod} </option>  
        </select>

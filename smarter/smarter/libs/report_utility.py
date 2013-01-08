@@ -28,8 +28,10 @@ class ReportUtility(object):
     def getGradeList(self):
         results = db.execute("select name from dim_grade")
         grade_list = [rec[0] for rec in results]
+        grade_list.insert(0, "All")
         return grade_list
     
+    #We don't need the below method anymore
     def getAssessmentList(self):
         #results = db.execute("select distinct assmt_name as label from dim_assmt_outcome_type")
         results = db.execute("select assmt_name from dim_assmt_outcome_type group by assmt_name")
@@ -39,6 +41,7 @@ class ReportUtility(object):
     def getAssessmentCourseList(self):
         results = db.execute("select distinct subject as label from dim_assessment")
         course_list = [rec[0] for rec in results]
+        course_list.insert(0, "All")
         return course_list
     
     #def get_bars_are1(self):
@@ -49,23 +52,25 @@ class ReportUtility(object):
     def getSchoolYear(self):
         results = db.execute("select distinct year_range from dim_assessment")
         year_list = [rec[0] for rec in results]
+        year_list.insert(0, "All")
         return year_list
     
     def getTimePeriod(self):
         results = db.execute("select distinct time_period from dim_assessment")
-        year_list = [rec[0] for rec in results]
-        return year_list
+        timePeriod = [rec[0] for rec in results]
+        timePeriod.insert(0, "All")
+        return timePeriod
     
     def getStudentAttributeName(self):
         student_attribute_names = ('Age', 'Gender', 'Section 504', 'ELL Status', 'Race', 'Home language', 'Disability', 'Specific Disability', 'Housing Status', 'Meal Status', 'Economically Disadvantaged', 'Title 1', 'Migrant', 'English Proficiency', 'Special Ed', 'Alternate Assessment', 'Classed Unclassed')
         return student_attribute_names
     
     def getSegmentBy(self):
-        segmentBy = ('By State', 'By Account', 'By School Group', 'By School', 'By Teacher', 'By Class', 'By Student', 'By Grade', 'By Race', 'By Custom Attribute')
+        segmentBy = ('State', 'Account', 'School Group', 'School', 'Teacher', 'Class', 'Student', 'Grade', 'Race', 'Custom Attribute')
         return segmentBy
     
     def getReportsFor(self):
-        reports_for = ('State', 'Account', 'School Group', 'School', 'Teacher', 'Section', 'Student')
+        reports_for = ('GroupOfState', 'Account', 'District', 'School', 'Teacher', 'Section', 'Student')
         return reports_for
     
     def getStudentsEnrolled(self):
@@ -73,7 +78,7 @@ class ReportUtility(object):
         return students_enrolled
     
     def getSchoolGroupType(self):
-        type_of_school_group = ('States', 'Municipalities', 'Districts', 'Programs')
+        type_of_school_group = ('All', 'Municipalities', 'Districts', 'Programs')
         return type_of_school_group
     
     def getMeasureType(self):
@@ -94,11 +99,13 @@ class ReportUtility(object):
     def getTeacherList(self):
         results = db.execute("select distinct first_name, last_name from dim_teacher")
         teachersList = [rec[0]+" "+rec[1] for rec in results]
+        teachersList.insert(0, "All")
         return teachersList
     
     def getSchoolList(self):
         results = db.execute("select distinct name from dim_school")
         schoolList = [rec[0] for rec in results]
+        schoolList.insert(0, "All")
         return schoolList
     
     def getStudentList(self):

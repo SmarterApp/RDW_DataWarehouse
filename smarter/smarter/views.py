@@ -3,6 +3,8 @@ from pyramid.view import view_config
 from smarter.services.comparepopulations import generateComparePopulationsReport,generateComparePopulationsReportAlchemy
 from smarter.services.compare_populations import generateComparePopulationsJSON
 from sqlalchemy.exc import DBAPIError
+from myedwareproject.controllers import compare_population_criteria
+from myedwareproject.controllers import get_compare_population
 
 from .models import (DBSession, MyModel,)
 
@@ -23,6 +25,16 @@ def home_view(request):
         return Response("wrong", content_type='text/plain', status_int=500)
     return {'one': one, 'project': 'smarter2'}
 
+@view_config(route_name='comparepopulation', renderer='templates/compare_population_criteria.pt')
+def comparepopulation_view(request):
+    comparePopulationCriteria = compare_population_criteria.ComparePopulationCriteria()
+    return comparePopulationCriteria.get()
+    #return Response("Hello World")
+
+@view_config(route_name='getcomparepopulation', renderer='json')
+def getcomparepopulation_view(request):
+    getComparePopulation = get_compare_population.GetComparePopulation()
+    return getComparePopulation.get()
 
 @view_config(route_name='test1', renderer='json')
 def testJson(request):

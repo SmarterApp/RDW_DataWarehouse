@@ -25,16 +25,7 @@ def main(global_config, **settings):
     config.add_route('datatojson2', '/datatojson2')
     config.add_route('inputdata2','/inputdata2')
     # splita's code
-    comparepopulation_view = config.add_view(view= "smarter.controllers.compare_population_criteria.ComparePopulationCriteria",
-                                             route_name = 'comparepopulation')
-    config.add_route(name = 'comparepopulation',
-                     pattern = '/comparepopulation',
-                     view = comparepopulation_view)
-
-    getcomparepopulation_view = config.add_view(view = "smarter.controllers.get_compare_population.GetComparePopulation",
-                                                route_name = 'getcomparepopulation')
-    config.add_route(name = 'getcomparepopulation',
-                     pattern = '/getcomparepopulation',
-                     view = getcomparepopulation_view)
+    config.add_route('comparepopulation', '/comparepopulation')
+    config.add_route('getcomparepopulation', '/getcomparepopulation')
     config.scan()
     return config.make_wsgi_app()

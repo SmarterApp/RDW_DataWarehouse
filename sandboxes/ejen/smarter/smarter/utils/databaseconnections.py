@@ -6,13 +6,15 @@ Created on Dec 26, 2012
 import postgresql.driver.dbapi20 as dbapi
 from sqlalchemy import create_engine
 
+db_engine = create_engine("postgresql+pypostgresql://edware:edware@monetdb1.poc.dum.edwdc.net:5432/edware")
+
 def getDatabaseConnection():
     '''
     Create and return database connection
     '''
     print("Connecting to postgres database")
     try:
-        _db = dbapi.connect(user = 'postgres', database = 'postgres', port = 5432, password = 'password', host="localhost");
+        _db = dbapi.connect(user = 'edware', database = 'edware', port = 5432, password = 'edware', host="monetdb1.poc.dum.edwdc.net" );
         assert _db != None
         print("Connected to postgres database")
     except Exception:
@@ -22,7 +24,6 @@ def getDatabaseConnection():
 def getSQLAlchemyConnection():
     print("Connecting to postgres database using sqlalchemy")
     try:
-        db_engine = create_engine("postgresql+pypostgresql://postgres:password@localhost:5432/postgres")
         _db = db_engine.connect()
         assert _db != None
         print("Connected to postgres database using sqlalchemy")

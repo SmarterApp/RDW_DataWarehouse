@@ -359,23 +359,23 @@ class ComparePopulationsReportTest(unittest.TestCase):
                 assert row[7]==None
                 assert row[8]==None                
                 #check if the calculated scores are correct
-                if (row[14]=="T-MATH" and row[15]=="MOY" and row[19]=="Benchmark"):
+                if (row[14]=="T-MATH" and row[15]=="MOY" and row[21]=="Benchmark"):
                     assert row[3]==52.5 #assessment score
                     assert row[4]==2 # student count
                     rows_checked=rows_checked+1
-                elif (row[14]=="T-MATH" and row[15]=="MOY" and row[19]=="Below Benchmark"):
+                elif (row[14]=="T-MATH" and row[15]=="MOY" and row[21]=="Below Benchmark"):
                     assert row[3]==36 #assessment score
                     assert row[4]==1 # student count
                     rows_checked=rows_checked+1
-                elif (row[14]=="T-MATH" and row[15]=="MOY" and row[19]=="Above Benchmark"):
+                elif (row[14]=="T-MATH" and row[15]=="MOY" and row[21]=="Above Benchmark"):
                     assert row[3]==74 #assessment score
                     assert row[4]==1 # student count
                     rows_checked=rows_checked+1
-                elif (row[14]=="T-ELA" and row[15]=="BOY" and row[19]=="Below Benchmark"):
+                elif (row[14]=="T-ELA" and row[15]=="BOY" and row[21]=="Below Benchmark"):
                     assert row[3]==44 #assessment score
                     assert row[4]==2 # student count
                     rows_checked=rows_checked+1
-                elif (row[14]=="T-ELA" and row[15]=="BOY" and row[19]=="Above Benchmark"):
+                elif (row[14]=="T-ELA" and row[15]=="BOY" and row[21]=="Above Benchmark"):
                     assert row[3]==87 #assessment score
                     assert row[4]==2 # student count
                     rows_checked=rows_checked+1

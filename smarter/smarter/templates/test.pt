@@ -1,0 +1,15 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:tal="http://xml.zope.org/namespaces/tal">
+<h1><center>Compare Population</center></h1>
+
+
+<form action="/getgrades">
+<center><h1>Grades<h1> </center>
+<center><b>Grade:</b><center><h2>Fetching grades from database<h2></center> <select name="grade" >
+        <option tal:repeat="grade grade_list"> ${grade} </option>  
+       </select></center>
+       <br></br>    
+      
+     <center>  <input type="submit" value="Go"/></center>
+</form>
+</html>

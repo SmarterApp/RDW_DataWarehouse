@@ -2,7 +2,9 @@
 ######################
 .DS_Store
 .DS_Store?
+.pyc
 
 # IDE generated files #
 #######################
 __pycache__
+pyramid.log

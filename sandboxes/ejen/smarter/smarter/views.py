@@ -1,6 +1,7 @@
 from pyramid.response import Response
 from pyramid.view import view_config
 from smarter.services.comparepopulations import generateComparePopulationsReport,generateComparePopulationsReportAlchemy
+from smarter.services.compare_populations import generateComparePopulationsJSON
 from sqlalchemy.exc import DBAPIError
 
 from .models import (DBSession, MyModel,)
@@ -97,3 +98,14 @@ def compare_populations_Al(request):
 @view_config(route_name='inputComparePopulationsAl', renderer='templates/comparePopulationsAl.pt')
 def input_populations_Al(request):
     return {"comment" : "Enter the report parameters"}
+
+
+@view_config(route_name='datatojson2', renderer='json')
+def compare_populations_json(request):
+    print("this is datajson2")
+    return Response(str(generateComparePopulationsJSON(request.params["reportparam"])))
+
+
+@view_config(route_name='inputdata2', renderer='templates/comparePopulationsJson.pt')
+def input_populations_json(request):
+    return {"comment" : "Enter the report parameters to generate json"}

@@ -109,3 +109,7 @@ def compare_populations_json(request):
 @view_config(route_name='inputdata2', renderer='templates/comparePopulationsJson.pt')
 def input_populations_json(request):
     return {"comment" : "Enter the report parameters to generate json"}
+
+@view_config(route_name='checkstatus', renderer='templates/checkstatus.pt')
+def check_status(request):
+    return {'result': 'Everything is working fine!'}

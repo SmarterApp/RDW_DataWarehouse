@@ -3,8 +3,11 @@
 .DS_Store
 .DS_Store?
 .pyc
+.egg-info?
+smarter.egg-info?
 
 # IDE generated files #
 #######################
 __pycache__
 pyramid.log
+smarter.egg-info

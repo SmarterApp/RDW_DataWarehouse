@@ -28,4 +28,4 @@ class MyModel(Base):
         self.value = value
 
     def __str__(self):
-        return "%s : %s : %s" % (self.id, self.name, self.value)     
+        return "%s : %s : %s" % (self.id, self.name, self.value)

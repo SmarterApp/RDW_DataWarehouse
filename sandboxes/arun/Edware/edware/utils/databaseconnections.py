@@ -11,7 +11,7 @@ def getDatabaseConnection():
     '''
     print("Connecting to postgres database")
     try:
-        _db = dbapi.connect(user = 'postgres', database = 'postgres', port = 5432, password = 'password', host="localhost");
+        _db = dbapi.connect(user = 'edware', database = 'edware', port = 5432, password = 'edware', host="monetdb1.poc.dum.edwdc.net");
         assert _db != None
         print("Connected to postgres database")
     except Exception:

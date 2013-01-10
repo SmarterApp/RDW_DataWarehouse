@@ -11,7 +11,7 @@
 
 <body>
 
-    <div id="chart" style="height:400px;width:300px;"></div>
+    <div id="chart_test" style="height:400px;width:300px;"></div>
     <div id="info"></div>
 
 

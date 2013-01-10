@@ -3,8 +3,8 @@ from pyramid.view import view_config
 from smarter.services.comparepopulations import generateComparePopulationsReport,generateComparePopulationsReportAlchemy
 from smarter.services.compare_populations import generateComparePopulationsJSON
 from sqlalchemy.exc import DBAPIError
-from myedwareproject.controllers import compare_population_criteria
-from myedwareproject.controllers import get_compare_population
+from smarter.controllers import compare_population_criteria
+from smarter.controllers import get_compare_population
 
 from .models import (DBSession, MyModel,)
 

@@ -15,7 +15,8 @@ if [ -d $HOME/prjs/$PROJ ]; then
     git pull $EDWARE_GITHUB_URI
 
 # run the py.test --pep8
-
+cd $HOME/prjs/$PROJ
+find . -type f |grep ".py$" | xargs  py.test --pep8
 # run rhino jslint
 
 fi

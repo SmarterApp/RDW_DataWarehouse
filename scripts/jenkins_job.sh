@@ -9,5 +9,4 @@ cd ..
 find . -type f |grep ".py$" | xargs  py.test --pep8
 # run rhino jslint
 
-fi
-
+# run unit test

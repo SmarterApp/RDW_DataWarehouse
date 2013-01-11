@@ -131,6 +131,6 @@ def check_status(request):
 def get_selection(request):
     sm = selector_manager.SelectorManager
     report = request.matchdict['name']
-    return {'result': 'Everything is working fine!' + report + sm.get_selector(sm, reportName=report)}
+    return {'result': sm.get_selector(sm, reportName=report)}
 
 

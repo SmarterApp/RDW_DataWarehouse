@@ -1,6 +1,6 @@
 import unittest
 from smarter.services.comparepopulations import generateComparePopulationsReport
-from smarter.utils.databaseconnections import getDatabaseConnection
+from edapi.utils.database_connections import getDatabaseConnection
 from smarter.libs.report_utility import ReportUtility
 
 import transaction

@@ -1,4 +1,4 @@
-{
+"selection" : {
     "subject_code": [
         "ALL"
     ],
@@ -20,9 +20,10 @@
     "year_range": [
         "ALL"
     ],
-    "report_level":"district",
+    "report_level": "district",
     "grade_divider": "false",
-    "segment_by":"school",
+    "segment_by": ['State', 'Account', 'School Group', 'School', 'Teacher', 'Class', 'Student', 'Grade', 'Race', 'Custom Attribute'],
     "school_group_type":"Districts"
 }
-          
+
+"source" : "default"

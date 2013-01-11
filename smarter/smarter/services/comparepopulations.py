@@ -4,7 +4,7 @@ Created on Dec 26, 2012
 @author: V5102883
 '''
 from smarter.services.querybuilder import getComparePopulationsQuery
-from smarter.utils.databaseconnections import getDatabaseConnection, getSQLAlchemyConnection
+from edapi.utils.databaseconnections import getDatabaseConnection, getSQLAlchemyConnection
 from postgresql.exceptions import Exception
 
 _supported_keys = ("segment_by", "grades", "year_range", "time_period",

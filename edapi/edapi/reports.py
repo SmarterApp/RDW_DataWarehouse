@@ -16,3 +16,7 @@ class BaseReport(object):
 #        return cls._instance
 #
 # get report from selection criteria
+    
+    def get_selection_criteria(self, reportName):
+        f = open('configs/{0}.json'.format(reportName), 'r')
+        return 

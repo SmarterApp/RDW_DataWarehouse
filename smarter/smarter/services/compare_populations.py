@@ -1,6 +1,6 @@
 from smarter.services.querybuilder import getComparePopulationsQuery
 from smarter.services.comparepopulations import _supported_keys
-from smarter.utils.databaseconnections import getDatabaseConnection
+from edapi.utils.databaseconnections import getDatabaseConnection
 from smarter.datatojson.comparing_populations import comparing_populations
 import json
 
@@ -20,7 +20,7 @@ def generateComparePopulationsJSON(parameters):
     if not set(parameters.keys()).issubset(_supported_keys):
         raise Exception("Input to Compare Populations report should only have keys : {0}".format(_supported_keys))
     query = getComparePopulationsQuery(parameters)
-    db_connection = getDatabaseConnection()
+    db_connection = getDatabaseConnection() 
     if db_connection:
         print("Got connection to database")
         results = db_connection.prepare(query)

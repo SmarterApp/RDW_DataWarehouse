@@ -31,12 +31,10 @@ class TestReport(BaseReport):
     _query = 'test'
     
     def generate(self):
+        pass
         # generate
-        dataSource = getDatabaseConnection()
-        if (dataSource):
-            return "This is a test report!"
-        else:
-            return "No connection!"
+        
+        
     
     
         

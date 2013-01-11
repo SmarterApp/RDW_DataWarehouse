@@ -2,6 +2,9 @@ from pyramid.config import Configurator
 from sqlalchemy import engine_from_config
 
 from .models import (DBSession, Base,)
+import edapi
+
+from edapi import EdApi
 
 
 def main(global_config, **settings):
@@ -27,7 +30,9 @@ def main(global_config, **settings):
     # splita's code
     config.add_route('comparepopulation', '/comparepopulation')
     config.add_route('getcomparepopulation', '/getcomparepopulation')
+
+    EdApi(config)
     
-    config.add_route('report', '/report/{name}')
+    
     config.scan()
     return config.make_wsgi_app()

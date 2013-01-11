@@ -2,6 +2,8 @@
 
 export EDWARE=edware
 export EDWARE_GITHUB_URI=ssh://git@github.wgenhq.net/Ed-Ware-SBAC/edware
+# temporay hardcode python3, it should use virtualenv python3
+export PATH=/usr/local/bin/:$PATH
 
 if [ ! -d $HOME/workspace/repos/$EDWARE ]; then
     mkdir -p $HOME/workspace/repos

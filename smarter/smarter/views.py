@@ -6,7 +6,8 @@ from sqlalchemy.exc import DBAPIError
 from smarter.controllers import compare_population_criteria
 from smarter.controllers import get_compare_population
 
-from .models import (DBSession, MyModel,)
+#from .models import (DBSession, MyModel,)
+from edapi.selectors import selector_manager
 
 
 @view_config(route_name='comparing_populations', renderer='templates/comparing_populations.pt')
@@ -125,3 +126,11 @@ def input_populations_json(request):
 @view_config(route_name='checkstatus', renderer='templates/checkstatus.pt')
 def check_status(request):
     return {'result': 'Everything is working fine!'}
+
+@view_config(route_name='report', renderer='json', request_method='OPTIONS')
+def get_selection(request):
+    sm = selector_manager.SelectorManager
+    report = request.matchdict['name']
+    return {'result': 'Everything is working fine!' + report + sm.get_selector(sm, reportName=report)}
+
+

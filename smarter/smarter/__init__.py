@@ -27,5 +27,7 @@ def main(global_config, **settings):
     # splita's code
     config.add_route('comparepopulation', '/comparepopulation')
     config.add_route('getcomparepopulation', '/getcomparepopulation')
+    
+    config.add_route('report', '/report/{name}')
     config.scan()
     return config.make_wsgi_app()

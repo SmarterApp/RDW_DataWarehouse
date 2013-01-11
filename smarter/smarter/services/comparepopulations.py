@@ -12,14 +12,15 @@ _supported_keys = ("segment_by", "grades", "year_range", "time_period",
                    "student_id", "subject_code", "grade_divider",
                    "report_level", "school_group_type")
 
+
 def generateComparePopulationsReport(parameters):
     if isinstance(parameters, str):
         try:
             # convert string input to dictionary
-            parameters = eval(parameters.strip()) 
+            parameters = eval(parameters.strip())
         except Exception as err:
-                raise Exception("The input value is not a valid dictionary : "
-                                , str(err))
+                raise Exception("The input value is not a valid dictionary: ",
+                                str(err))
     if not isinstance(parameters, dict):
         raise Exception(
                 "Input to Compare Populations report should be a dictionary")

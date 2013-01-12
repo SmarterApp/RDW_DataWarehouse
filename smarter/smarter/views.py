@@ -10,7 +10,7 @@ from smarter.controllers import get_compare_population
 #from .models import (DBSession, MyModel,)
 from edapi.reports import get_report
 import json
-from edapi.repository import report_config_repository
+from edapi.repository.report_config_repository import ReportConfigRepository
 
 @view_config(route_name='comparing_populations', renderer='templates/comparing_populations.pt')
 def compPop_view(request):
@@ -131,10 +131,10 @@ def check_status(request):
 
 @view_config(route_name='report', renderer='json', request_method='OPTIONS')
 def get_selection(request):
-    repo = report_config_repository.ReportConfigRepository();
-    json_obj = repo.get_config("test1.json")
+    name = request.matchdict['name']
+    repo = ReportConfigRepository();
+    json_obj = repo.get_config( name + ".json")
     return {'result' : json_obj}
-
 
 @view_config(route_name='report', renderer='json', request_method='POST')
 def generate_report(request):

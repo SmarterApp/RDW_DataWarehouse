@@ -8,7 +8,7 @@ from edapi.repository.report_config_repository import ReportConfigRepository
 import json
 
 @view_config(route_name='report', renderer='json', request_method='OPTIONS')
-def get_selection(request):
+def get_report_config(request):
     name = request.matchdict['name']
     repo = ReportConfigRepository()
     json_obj = repo.get_config( name + ".json")

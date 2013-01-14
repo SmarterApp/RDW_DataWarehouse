@@ -1,30 +1,18 @@
-{
-	"selection" : {
-	    "subject_code": [
-	        "ALL"
-	    ],
-	    "district_filter": [
-	        "ALL"
-	    ],
-	    "school_filter": [
-	        "ALL"
-	    ],
-	    "teacher_filter": [
-	        "ALL"
-	    ],
-	    "grades": [
-	        "ALL"
-	    ],
-	    "time_period": [
-	        "ALL"
-	    ],
-	    "year_range": [
-	        "ALL"
-	    ],
-	    "report_level": "district",
-	    "grade_divider": "false",
-	    "segment_by": ["State", "Account", "School Group", "School", "Teacher", "Class", "Student", "Grade", "Race", "Custom Attribute"],
-	    "school_group_type":"Districts"
-	},
-	"source" : "default"
+{ 
+    "alias": "test",
+	"params" : {
+	    "freeTextField": {"validation" : {
+	    					"regex":"[A-Za-z0-9\-]"
+	    }},
+	    "staticListField": {"value" : ["State", "Account", "School Group", "School", "Teacher", "Class", "Student", "Grade", "Race", "Custom Attribute"] },
+	    "aliasField": {"alias" : "test1" }
+	}
+	"reference" : "someclass.get_test"
 }
+
+{
+    "alias": "test1"
+    "reference" : "someclass.get_test1"
+}
+
+

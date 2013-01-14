@@ -4,7 +4,7 @@ Created on Jan 10, 2013
 @author: aoren
 '''
 import sys
-from edapi.utils.database_connections import getDatabaseConnection
+#from edapi.utils.database_connections import getDatabaseConnection
 
 
 def get_report(reportName):
@@ -33,16 +33,3 @@ class TestReport(BaseReport):
     def generate(self):
         pass
         # generate
-        
-        
-    
-    
-        
-#    # we would like to have just one instance of each report
-#    def __new__(cls, *args, **kwargs):
-#        if not cls._instance:
-#            cls._instance = super(BaseReport, cls).__new__(
-#                                cls, *args, **kwargs)
-#        return cls._instance
-#
-# get report from selection criteria

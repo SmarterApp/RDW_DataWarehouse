@@ -44,3 +44,6 @@ class ReportConfigRepository:
         else:
             json_data = json.loads('{"error" : "File doesn\'t exist" }')
         return json_data
+    
+    def get_report(self, name):
+        pass

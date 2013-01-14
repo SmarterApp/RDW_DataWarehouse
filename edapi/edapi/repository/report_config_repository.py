@@ -17,14 +17,17 @@ PACKAGE_NAME = "edapi"
 #        return report_config_wrapper
     
 class report_config(object):
-    def __init__(self, **kwargs):
-        self.__dict__.update(kwargs)
+    def __init__(self, alias, params):
+        #self.__dict__.update(alias)
+        self.alias = alias
+        self.params = params
+        print("constructor", self.alias)
         
     def __call__(self, original_func):
-        def wrappee( *args, **kwargs):
-            print('in decorator before wrapee with flag', kwargs)
-            original_func(*args,**kwargs)
-            print('in decorator after wrapee with flag ', kwargs)
+        def wrappee(*args):
+            print('in decorator before wrapee with flag', self.alias)
+            return original_func(self, self.params)
+            #print('in decorator after wrapee with flag ', kwargs)
         return wrappee
 
 class Config:

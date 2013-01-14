@@ -16,27 +16,19 @@ def get_report(reportName):
         raise 'Report Class: {0} is not found'.format(reportName)
     return instance.get_json(instance);
     
-class BaseReport:
-    _query = ''
-    _reportConfig = None
+#class BaseReport:
+#    _query = ''
+#    _reportConfig = None
+#    
+#    def validate(self, params):
+#        return True
+#    
+#    def generate(self, params):
+#        raise NotImplementedError( "Should have implemented this")
 
-    def validate(self, params):
-        return True
-    
-    def generate(self, params):
-        raise NotImplementedError( "Should have implemented this")
-
-           
-class TestReport(BaseReport):
-    def __init__(self):
-        super(BaseReport, self).__init__()
-        
+class TestReport():
     _query = 'test'
-    
-    def generate(self):
-        pass
-        # generate
         
-    @report_config(alias = "test", params = {})
-    def get_config(self):
-        pass
+    @report_config(alias = "test", params = {"adam" : 1})
+    def generate(self, params):
+        return  (params) #todo: return data

@@ -129,6 +129,100 @@ def input_populations_json(request):
 def check_status(request):
     return {'result': 'Everything is working fine!'}
 
+@view_config(route_name='report', renderer='json', request_method='OPTIONS')
+def get_selection(request):
+    sm = selector_manager.SelectorManager
+    report = request.matchdict['name']
+    return {'result': sm.get_selector(sm, reportName=report)}
+
+# Individual Student Report
+@view_config(route_name='indiv_student', renderer='templates/reports/individual_student.pt')
+def individual_student_report(request):
+    id = request.params['id']
+
+    f_name = "First_Name"
+    m_name = "Middle_Name"
+    l_name = "Last_Name"
+
+    if id == "00001":
+        f_name = "Andrew"
+        m_name = "Murphy"
+        l_name = "Brien"
+    elif id == "00002":
+        f_name = "Seth"
+        m_name = "A"
+        l_name = "Wimberly"
+    elif id == "00003":
+        f_name = "Scott"
+        m_name = "B"
+        l_name = "MacGibbon"
+
+    return {'first_name': f_name, 'middle_name': m_name, 'last_name': l_name, 'assmt_name': 'English Language Arts', 'assmt_period': 'Fall 2012', 'claim_name_1': 'Composition', 'claim_score_1': 100, 'claim_name_2': 'Comprehension', 'claim_score_2': 90, 'claim_name_3': 'Grammar', 'claim_score_3': 80, 'claim_name_4': 'Vocabulary', 'claim_score_4': 70, 'assmt_ovr_score': 85}
+
+# Class Report
+@view_config(route_name='class_report', renderer='templates/reports/class.pt')
+def class_report(request):
+
+    """
+    json =
+    [
+        {
+            "middle_name": "SMITH",
+            "subject": "ELA",
+            "time_period": "BOY",
+            "assessment_score": 62.0,
+            "student_id": 2881,
+            "year_range": "2012-2013",
+            "first_name": "MARY"
+        },
+        {
+            "middle_name": "SMITH",
+            "subject": "MATH",
+            "time_period": "MOY",
+            "assessment_score": 67.0,
+            "student_id": 2881,
+            "year_range": "2012-2013",
+            "first_name": "MARY"
+        },
+        {
+            "middle_name": "SMITH",
+            "subject": "ELA",
+            "time_period": "EOY",
+            "assessment_score": 52.0,
+            "student_id": 2881,
+            "year_range": "2012-2013",
+            "first_name": "MARY"
+        },
+        {
+            "middle_name": "SMITH",
+            "subject": "MATH",
+            "time_period": "BOY",
+            "assessment_score": 64.0,
+            "student_id": 2881,
+            "year_range": "2013-2014",
+            "first_name": "MARY"
+        },
+        {
+            "middle_name": "SMITH",
+            "subject": "ELA",
+            "time_period": "MOY",
+            "assessment_score": 67.0,
+            "student_id": 2881,
+            "year_range": "2013-2014",
+            "first_name": "MARY"
+        },
+        {
+            "middle_name": "SMITH",
+            "subject": "ELA",
+            "time_period": "EOY",
+            "assessment_score": 62.0,
+            "student_id": 2881,
+            "year_range": "2013-2014",
+            "first_name": "MARY"
+        }
+    ]
+"""
+
 #@view_config(route_name='report', renderer='json', request_method='OPTIONS')
 #def get_selection(request):
 #    name = request.matchdict['name']
@@ -143,18 +237,18 @@ def check_status(request):
 #    print(body)
 #    report_config = json.dumps(body)
 #    print (report_config)
-#    
+#
 #
 #@view_config(route_name='report', renderer='json', request_method='GET')
 #def generate_report_get(request):
 #    Request = request
-#    
+#
 #    body = Request.json_body
 #    print(body)
 #    report_config = json.dumps(body)
 #    print (report_config)
-#    
-    #sm = selector_manager.SelectorManager
-    #report = request.matchdict['name']
-    #return {'result': sm.get_selector(sm, reportName=report)}
-        
+#
+#sm = selector_manager.SelectorManager
+#report = request.matchdict['name']
+#return {'result': sm.get_selector(sm, reportName=report)}
+

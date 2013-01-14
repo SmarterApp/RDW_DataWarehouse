@@ -30,8 +30,11 @@ def main(global_config, **settings):
     # splita's code
     config.add_route('comparepopulation', '/comparepopulation')
     config.add_route('getcomparepopulation', '/getcomparepopulation')
-
-    EdApi(config)
-
+    config.add_route('report', '/report/{name}')
+    # routing for individual student report
+    config.add_route('indiv_student', '/indiv_student_report')
+    #routing for class report
+    config.add_route('class_report', '/class_report')
     config.scan()
+    EdApi(config)
     return config.make_wsgi_app()

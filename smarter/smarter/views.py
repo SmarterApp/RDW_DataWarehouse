@@ -129,12 +129,6 @@ def input_populations_json(request):
 def check_status(request):
     return {'result': 'Everything is working fine!'}
 
-@view_config(route_name='report', renderer='json', request_method='OPTIONS')
-def get_selection(request):
-    sm = selector_manager.SelectorManager
-    report = request.matchdict['name']
-    return {'result': sm.get_selector(sm, reportName=report)}
-
 # Individual Student Report
 @view_config(route_name='indiv_student', renderer='templates/reports/individual_student.pt')
 def individual_student_report(request):

@@ -3,9 +3,6 @@ Created on Jan 11, 2013
 
 @author: dip
 '''
-import os
-import json
-from pkg_resources import resource_filename #@UnresolvedImport
 import venusian
 
 CONFIG_DIR = "configs"
@@ -24,56 +21,24 @@ class report_config(object):
         print("constructor", self.alias)
         
     def __call__(self, original_func):
-        def wrappee(*args):
-            print('in decorator before wrapee with flag', self.alias)
-            return original_func(self, self.params)
+        def callback(scanner, obj, **kwargs):
+            def wrapper(*args, **kwargs):
+                return original_func(args, kwargs)
+            scanner.registry.add(obj, kwargs)
+        venusian.attach(original_func, callback, category='edapi')
             #print('in decorator after wrapee with flag ', kwargs)
-        return wrappee
-
-class Config:
-    def __init__(self, **settings):
-        self.__dict__.update(settings)
-        
-    def __call__(self, wrapped):
-        settings = self.__dict__.copy()
-        #def callback(config, name, db):
-        def callback(scanner, name, ob):
-            resource = name
-            if not settings['resource'] is None:
-                resource = settings['resource']
-            scanner.registry[resource] = settings
-
-        info = venusian.attach(wrapped, callback, category='config')
-        settings['_info'] = info.codeinfo
-        return wrapped
-        
+        return original_func
+           
 class ReportConfigRepository: 
     '''A repository of report configs'''
     
     def __init__(self):
-        self.registry = {}
-       
-    def get_config(self, name):
-        filePath = resource_filename(PACKAGE_NAME, os.path.join(CONFIG_DIR, name))
-        json_data = None
-        if (os.path.exists(filePath)):
-            try:
-                file = open(filePath);
-                json_data = json.load(file)
-            except (IOError, ValueError):
-                json_data = json.loads('{"error" : "Bad json"}')
-            finally:
-                file.close()
-        else:
-            json_data = json.loads('{"error" : "File doesn\'t exist" }')
-        return json_data
+        self.registered = {}
+        
+    def add(self, obj, **kwargs):
+        self.registered[kwargs['alias']] = kwargs
     
-    def get_report(self, name):
-        pass
-    
-    def config(self, wrapped):
-        def config_wrapper(config):
-            return config
-        return config_wrapper
+    def get_report_config(self, name):
+        return self.registered[name]
     
     

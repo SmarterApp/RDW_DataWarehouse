@@ -11,10 +11,21 @@ import venusian
 CONFIG_DIR = "configs"
 PACKAGE_NAME = "edapi"
 
-def report_config(wrapped):
-        def report_config_wrapper(instance):
-            return json.dumps({})
-        return report_config_wrapper
+#def report_config(wrapped):
+#        def report_config_wrapper(*args, **kwargs):
+#            return json.dumps({})
+#        return report_config_wrapper
+    
+class report_config(object):
+    def __init__(self, **kwargs):
+        self.__dict__.update(kwargs)
+        
+    def __call__(self, original_func):
+        def wrappee( *args, **kwargs):
+            print('in decorator before wrapee with flag', kwargs)
+            original_func(*args,**kwargs)
+            print('in decorator after wrapee with flag ', kwargs)
+        return wrappee
 
 class Config:
     def __init__(self, **settings):

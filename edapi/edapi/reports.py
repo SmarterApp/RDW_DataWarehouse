@@ -5,6 +5,7 @@ Created on Jan 10, 2013
 '''
 import sys
 from edapi.repository.report_config_repository import report_config
+
 #from edapi.utils.database_connections import getDatabaseConnection
 
 def get_report(reportName):
@@ -18,10 +19,13 @@ def get_report(reportName):
 class BaseReport:
     _query = ''
     _reportConfig = None
-    def __init__(self):
-        pass
-    def generate(self):
-        pass
+
+    def validate(self, params):
+        return True
+    
+    def generate(self, params):
+        raise NotImplementedError( "Should have implemented this")
+
            
 class TestReport(BaseReport):
     def __init__(self):
@@ -33,6 +37,6 @@ class TestReport(BaseReport):
         pass
         # generate
         
-    @report_config
+    @report_config(alias = "test", params = {})
     def get_config(self):
         pass

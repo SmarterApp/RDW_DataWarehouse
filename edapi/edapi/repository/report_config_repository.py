@@ -12,7 +12,7 @@ CONFIG_DIR = "configs"
 PACKAGE_NAME = "edapi"
 
 class ReportConfigRepository: 
-    ''''A repository of report configs'''
+    '''A repository of report configs'''
     
     def __init__(self, **settings):
         self.__dict__.update(settings)
@@ -44,5 +44,3 @@ class ReportConfigRepository:
         else:
             json_data = json.loads('{"error" : "File doesn\'t exist" }')
         return json_data
-    
-    return wrapped

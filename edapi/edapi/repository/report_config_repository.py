@@ -12,7 +12,7 @@ CONFIG_DIR = "configs"
 PACKAGE_NAME = "edapi"
 
 class ReportConfigRepository: 
-    ''''A repository of report configs'''
+    '''A repository of report configs'''
     
     def __init__(self, **settings):
         self.__dict__.update(settings)
@@ -26,7 +26,7 @@ class ReportConfigRepository:
                 resource = settings['resource']
             self.registry[resource] = settings
 
-        info = self.venusian.attach(wrapped, callback, category='config')
+        info = venusian.attach(wrapped, callback, category='config')
         settings['_info'] = info.codeinfo
         return wrapped
     
@@ -44,12 +44,3 @@ class ReportConfigRepository:
         else:
             json_data = json.loads('{"error" : "File doesn\'t exist" }')
         return json_data
-    
-def report_config(wrapped):
-    def callback(scanner, name, ob):
-        def jsonified(request):
-            result = wrapped(request)
-            return json.dumps(result)
-        scanner.registry.add(name, jsonified)
-    venusian.attach(wrapped, callback)
-    return wrapped

@@ -132,7 +132,7 @@ def check_status(request):
 @view_config(route_name='report', renderer='json', request_method='OPTIONS')
 def get_selection(request):
     name = request.matchdict['name']
-    repo = ReportConfigRepository();
+    repo = ReportConfigRepository()
     json_obj = repo.get_config( name + ".json")
     return {'result' : json_obj}
 

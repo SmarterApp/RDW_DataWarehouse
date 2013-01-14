@@ -156,7 +156,7 @@ def individual_student_report(request):
 # Class Report
 @view_config(route_name='class_report', renderer='templates/reports/class.pt')
 def class_report(request):
-
+    return {'class_name': 'English'}
     """
     json =
     [

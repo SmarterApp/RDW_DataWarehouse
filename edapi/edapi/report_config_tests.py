@@ -20,7 +20,7 @@ class Test(unittest.TestCase):
 
     def test_get_config(self):
         test_report = TestReport()
-        print(test_report.get_config())
+        print("try", test_report.generate())
         
 
 if __name__ == "__main__":

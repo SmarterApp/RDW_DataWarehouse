@@ -4,9 +4,8 @@ Created on Dec 26, 2012
 @author: V5102883
 '''
 import postgresql.driver.dbapi20 as dbapi
-from sqlalchemy import create_engine
 
-db_engine = create_engine("postgresql+pypostgresql://edware:edware@monetdb1.poc.dum.edwdc.net:5432/edware")
+db_engine = None # create_engine("postgresql+pypostgresql://edware:edware@monetdb1.poc.dum.edwdc.net:5432/edware")
 
 
 def getDatabaseConnection():

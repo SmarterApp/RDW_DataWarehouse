@@ -6,20 +6,30 @@ here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.txt')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 
-requires = [
+install_requires = [
     'pyramid',
-    'SQLAlchemy',
-    'transaction',
-    'pyramid_tm',
-    'pyramid_debugtoolbar',
-    'zope.sqlalchemy',
-    'waitress',
+    'venusian >= 1.0a3'
+    ]
+
+tests_require = [
+    'WebTest >= 1.3.1', # py3 compat
+    ]
+
+testing_extras = tests_require + [
+    'nose',
+    'coverage',
+    'virtualenv', # for scaffolding tests
+    ]
+
+docs_extras = [
+    'Sphinx',
+    'docutils',
+    'repoze.sphinx.autointerface',
     ]
 
 setup(name='edapi',
-      version='0.0',
-      description='edapi',
-      long_description=README + '\n\n' + CHANGES,
+      version='0.1',
+      description='Generic Reporting Platform',
       classifiers=[
         "Programming Language :: Python",
         "Framework :: Pyramid",
@@ -33,12 +43,13 @@ setup(name='edapi',
       packages=find_packages(),
       include_package_data=True,
       zip_safe=False,
-      test_suite='edapi',
-      install_requires=requires,
+      tests_require = tests_require,
+      test_suite="edapi.tests",
+      install_requires = install_requires,
+      extras_require = {
+          'testing':testing_extras,
+          'docs':docs_extras,
+          },
       entry_points="""\
-      [paste.app_factory]
-      main = edapi:main
-      [console_scripts]
-      initialize_edapi_db = edapi.scripts.initializedb:main
       """,
       )

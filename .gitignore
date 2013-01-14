@@ -11,4 +11,4 @@ smarter.egg-info?
 __pycache__
 pyramid.log
 smarter.egg-info
-.idea/
+.idea/edapi/edapi.egg-info

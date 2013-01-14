@@ -3,20 +3,36 @@ Created on Jan 10, 2013
 
 @author: aoren
 '''
+import sys
+from edapi.repository.report_config_repository import report_config
+#from edapi.utils.database_connections import getDatabaseConnection
 
-
-class BaseReport(object):
-    _instance = None
-
-#    # we would like to have just one instance of each report
-#    def __new__(cls, *args, **kwargs):
-#        if not cls._instance:
-#            cls._instance = super(BaseReport, cls).__new__(
-#                                cls, *args, **kwargs)
-#        return cls._instance
-#
-# get report from selection criteria
+def get_report(reportName):
+    try:
+        # TODO: move to util
+        instance =  getattr(sys.modules[__name__], reportName);
+    except AttributeError:
+        raise 'Report Class: {0} is not found'.format(reportName)
+    return instance.get_json(instance);
     
-    def get_selection_criteria(self, reportName):
-        f = open('configs/{0}.json'.format(reportName), 'r')
-        return 
+class BaseReport:
+    _query = ''
+    _reportConfig = None
+    def __init__(self):
+        pass
+    def generate(self):
+        pass
+           
+class TestReport(BaseReport):
+    def __init__(self):
+        super(BaseReport, self).__init__()
+        
+    _query = 'test'
+    
+    def generate(self):
+        pass
+        # generate
+        
+    @report_config
+    def get_config(self):
+        pass

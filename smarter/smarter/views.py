@@ -1,4 +1,5 @@
 from pyramid.response import Response
+from pyramid.request import Request
 from pyramid.view import view_config
 from smarter.services.comparepopulations import generateComparePopulationsReport,generateComparePopulationsReportAlchemy
 from smarter.services.compare_populations import generateComparePopulationsJSON
@@ -7,8 +8,9 @@ from smarter.controllers import compare_population_criteria
 from smarter.controllers import get_compare_population
 
 #from .models import (DBSession, MyModel,)
-from edapi.selectors import selector_manager
-
+from edapi.reports import get_report
+import json
+from edapi.repository.report_config_repository import ReportConfigRepository
 
 @view_config(route_name='comparing_populations', renderer='templates/comparing_populations.pt')
 def compPop_view(request):
@@ -220,4 +222,33 @@ def class_report(request):
         }
     ]
 """
+
+#@view_config(route_name='report', renderer='json', request_method='OPTIONS')
+#def get_selection(request):
+#    name = request.matchdict['name']
+#    repo = ReportConfigRepository()
+#    json_obj = repo.get_config( name + ".json")
+#    return {'result' : json_obj}
+#
+#@view_config(route_name='report', renderer='json', request_method='POST')
+#def generate_report(request):
+#    Request = request
+#    body = Request.json_body
+#    print(body)
+#    report_config = json.dumps(body)
+#    print (report_config)
+#
+#
+#@view_config(route_name='report', renderer='json', request_method='GET')
+#def generate_report_get(request):
+#    Request = request
+#
+#    body = Request.json_body
+#    print(body)
+#    report_config = json.dumps(body)
+#    print (report_config)
+#
+#sm = selector_manager.SelectorManager
+#report = request.matchdict['name']
+#return {'result': sm.get_selector(sm, reportName=report)}
 

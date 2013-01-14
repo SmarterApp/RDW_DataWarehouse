@@ -1,6 +1,6 @@
 from smarter.services.querybuilder import getComparePopulationsQuery
 from smarter.services.comparepopulations import _supported_keys
-from edapi.utils.databaseconnections import getDatabaseConnection
+from smarter.utils.database_connections import getDatabaseConnection
 from smarter.datatojson.comparing_populations import comparing_populations
 import json
 

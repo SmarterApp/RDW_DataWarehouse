@@ -30,14 +30,14 @@ class ReportConfigRepository:
         # __registered = {}
         pass
     
-    def add(self, obj, **kwargs):
+    def add(self, delegate, **kwargs):
         settings = kwargs.copy()
-        settings['reference'] = obj
+        settings['reference'] = delegate
         ReportConfigRepository.registered[settings['alias']] = settings
     
     def get_report_config(self, name):
-        report = ReportConfigRepository.registered.pop(name, "not found!")
-        if (report == "not found!"):
+        report = ReportConfigRepository.registered.get(name, None)
+        if (report == None):
             return None
         return report['params']
     

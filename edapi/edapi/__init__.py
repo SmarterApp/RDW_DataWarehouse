@@ -3,10 +3,11 @@ from edapi.views import generate_report_get,\
     generate_report_post, get_report_config
 from idlelib.WindowList import registry
 import venusian
-from edapi.repository.report_config_repository import ReportConfigRepository
+from edapi.repository.report_config_repository import ReportConfigRepository,\
+    IReportConfigRepository
 from pyramid.path import package_of, caller_package
-from edapi import reports
 import sys
+from zope import component
 
 class EdApi:
     def __init__(self, config, scanCallerPackage = None):
@@ -18,9 +19,11 @@ class EdApi:
         
         registry = ReportConfigRepository()
         scanner = venusian.Scanner(registry=registry)
-        
         scanner.scan(package_of(sys.modules['edapi']), categories=('edapi',))
+        
         if scanCallerPackage: 
             scanner.scan(scanCallerPackage, categories=('edapi',))
-        
-        print(len(ReportConfigRepository.registered))
+
+        component.provideUtility(registry)   
+             
+        print(component.getUtility(IReportConfigRepository).get_report_count())

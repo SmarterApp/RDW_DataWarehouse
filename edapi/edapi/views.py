@@ -4,26 +4,26 @@ Created on Jan 14, 2013
 @author: aoren
 '''
 from edapi.repository.report_config_repository import IReportConfigRepository
-from pyramid.response import Response
 from zope import component
 from edapi.utils import generate_report_config, generate_report
+from pyramid.httpexceptions import HTTPNotFound, HTTPPreconditionFailed
 
 def get_report_config(request):
     name = request.matchdict['name']
     report_config = generate_report_config(name)
     if (report_config is None):
-        return Response('Not found!', status='404 Not Found')
+        return HTTPNotFound()
     return report_config
 
 def generate_report_get(request):
     Request = request
-    reportName = request.matchdict['name']
+    reportName = request.matchdict['name'] 
     report_config = Request.GET
     return generate_report(reportName, report_config)
 
 def generate_report_post(request):
     if (request.content_type != 'application/json'):
-        return Response('Not found!', status='404')
+        return HTTPNotFound()
     Request = request 
     
     try:
@@ -31,7 +31,7 @@ def generate_report_post(request):
         report_config = Request.json_body
         #break
     except:
-        return Response('invalid parameters', status='412')
+        return HTTPPreconditionFailed()
     
     reportName = request.matchdict['name']
     repo = component.getUtility(IReportConfigRepository)

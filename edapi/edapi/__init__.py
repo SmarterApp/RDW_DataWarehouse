@@ -4,12 +4,12 @@ from edapi.views import generate_report_get,\
 from idlelib.WindowList import registry
 import venusian
 from edapi.repository.report_config_repository import ReportConfigRepository
-from pyramid.path import caller_package
+from pyramid.path import package_of, caller_package
 from edapi import reports
-
+import sys
 
 class EdApi:
-    def __init__(self, config):
+    def __init__(self, config, scanCallerPackage = None):
         config.add_route('report', '/report/{name}')
         config.add_route('report_for_post', '/report/{name}/_query')
         config.add_view(view=generate_report_get, route_name='report', renderer='json', request_method='GET')
@@ -18,5 +18,9 @@ class EdApi:
         
         registry = ReportConfigRepository()
         scanner = venusian.Scanner(registry=registry)
-        scanner.scan(reports, categories=('edapi',))
+        
+        scanner.scan(package_of(sys.modules['edapi']), categories=('edapi',))
+        if scanCallerPackage: 
+            scanner.scan(scanCallerPackage, categories=('edapi',))
+        
         print(len(ReportConfigRepository.registered))

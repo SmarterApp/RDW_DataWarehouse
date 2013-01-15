@@ -17,7 +17,7 @@ __time_period = 'time_period'
 __assessment_score = 'assessment_score'
 
 
-# @report_config(alias='student_report')
+@report_config(alias='student_report')
 def student_report(params, user):
     session = DBSession()
     sql_query = """

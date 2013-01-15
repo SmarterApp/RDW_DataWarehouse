@@ -7,10 +7,6 @@ Created on Jan 13, 2013
 from ..models import DBSession
 from edapi.repository.report_config_repository import report_config
 
-# @report_config(alias='student_report', params='{"student_id":{}, "assessment_id":{"alias":"assessment"}}')
-def student_report(parameter, user):
-    studentReport = StudentReport()
-    return studentReport.getReport(parameter)
 
 class StudentReport:
     __student_id = 'student_id'

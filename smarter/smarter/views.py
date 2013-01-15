@@ -6,6 +6,7 @@ from smarter.services.compare_populations import generateComparePopulationsJSON
 from sqlalchemy.exc import DBAPIError
 from smarter.controllers import compare_population_criteria
 from smarter.controllers import get_compare_population
+from edapi.repository.report_config_repository import report_config
 
 #from .models import (DBSession, MyModel,)
 from edapi.reports import get_report

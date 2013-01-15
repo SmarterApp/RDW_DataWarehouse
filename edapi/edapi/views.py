@@ -12,7 +12,7 @@ def get_report_config(request):
     name = request.matchdict['name']
     repo = ReportConfigRepository()
     json_obj = repo.get_report_config(name)
-    return {'result' : json_obj}
+    return json_obj
 
 @view_config(route_name='report', renderer='json', request_method='GET')
 def generate_report_get(request):

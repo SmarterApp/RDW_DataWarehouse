@@ -17,4 +17,5 @@ class EdApi:
         
         registry = ReportConfigRepository()
         scanner = venusian.Scanner(registry=registry)
-        scanner.scan(caller_package(), categories=('edapi',))
+        scanner.scan(reports, categories=('edapi',))
+        print(len(ReportConfigRepository.registered))

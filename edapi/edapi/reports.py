@@ -4,7 +4,8 @@ Created on Jan 10, 2013
 @author: aoren
 '''
 import sys
-from edapi.repository.report_config_repository import report_config
+from edapi.repository.report_config_repository import report_config,\
+    ReportConfigRepository
 
 #from edapi.utils.database_connections import getDatabaseConnection
 
@@ -39,3 +40,18 @@ class TestReport():
                                               })
     def generate_test2(self, params):
         return (params) 
+    
+class ReportManager():
+    
+    @staticmethod
+    def generate_report(reportName, params, repository):
+        generate_report_method = repository.get_report_delegate(reportName)
+        return generate_report_method(generate_report_method, params)
+    
+    @staticmethod
+    def generate_report_config(reportName, repository):
+        return repository.get_report_config(reportName)
+    
+    
+    
+        

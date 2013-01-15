@@ -8,14 +8,12 @@ from edapi.repository.report_config_repository import ReportConfigRepository
 import json
 from distutils.tests.test_upload import Response
 
-@view_config(route_name='report', renderer='json', request_method='OPTIONS')
 def get_report_config(request):
     name = request.matchdict['name']
     repo = ReportConfigRepository()
     json_obj = repo.get_report_config(name)
     return json_obj
 
-@view_config(route_name='report', renderer='json', request_method='GET')
 def generate_report_get(request):
     Request = request
     query = Request.GET["_query"]
@@ -23,10 +21,9 @@ def generate_report_get(request):
     repo = ReportConfigRepository()
     report = repo.get_report_config(params['alias'])
 
-@view_config(route_name='report', renderer='json', request_method='POST')
 def generate_report_post(request):
     if (request.content_type != 'application/json'):
-        return Response('Not found, dude!', status='404 Not Found')
+        return Response('Not found!', status='404 Not Found')
     Request = request
     body = Request.json_body
     report_config = Request.json_body

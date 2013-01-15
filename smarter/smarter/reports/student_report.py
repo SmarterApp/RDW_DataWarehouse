@@ -42,7 +42,7 @@ class StudentReport:
             result_rows.append(result_row)
         return result_rows
     
-    @report_config(alias='student_report', params='{"student_id":{}, "assessment_id":{"alias":"assessment"}}')
+    @report_config(alias='student_report', params={"student_id":{}, "assessment_id":{}})
     def getReport(self, params):
         
         self.__openSession(self)

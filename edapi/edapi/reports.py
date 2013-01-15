@@ -15,16 +15,6 @@ def get_report_delegate(reportName):
     except AttributeError:
         raise 'Report Class: {0} is not found'.format(reportName)
     return instance.get_json(instance);
-    
-#class BaseReport:
-#    _query = ''
-#    _reportConfig = None
-#    
-#    def validate(self, params):
-#        return True
-#    
-#    def generate(self, params):
-#        raise NotImplementedError( "Should have implemented this")
 
 class TestReport():
     _query = 'test'

@@ -45,8 +45,8 @@ class ReportManager():
     
     @staticmethod
     def generate_report(reportName, params, repository):
-        generate_report_method = repository.get_report_delegate(reportName)
-        return generate_report_method(generate_report_method, params)
+        (obj,generate_report_method) = repository.get_report_delegate(reportName)
+        return generate_report_method(obj, params)
     
     @staticmethod
     def generate_report_config(reportName, repository):

@@ -18,17 +18,14 @@ class ReportNotFoundError(EdApiError):
 
 def get_report_delegate(reportName):
     try:
-        # TODO: move to util
         instance =  getattr(sys.modules[__name__], reportName);
     except AttributeError:
         raise 'Report Class: {0} is not found'.format(reportName)
     return instance.get_json(instance);
-    
 
 def generate_report(reportName, params):
     (obj,generate_report_method) = get_config_repository().get_report_delegate(reportName)
     return generate_report_method(obj, params)
-    
     
 def generate_report_config(reportName):
     return get_config_repository().get_report_config(reportName)

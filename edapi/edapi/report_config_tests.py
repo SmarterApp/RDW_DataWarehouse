@@ -17,12 +17,10 @@ class Test(unittest.TestCase):
     def tearDown(self):
         pass
 
-
-    def test_get_config(self):
+    def test_generate_report_for_empty_params(self):
         test_report = TestReport()
-        print("try", test_report.generate())
+        self.assertIsNotNone(test_report.generate(""))
         
-
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.test']
     unittest.main()

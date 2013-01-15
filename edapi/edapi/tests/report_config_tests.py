@@ -4,9 +4,8 @@ Created on Jan 14, 2013
 @author: aoren
 '''
 import unittest
-from edapi.reports import TestReport
-
-
+from edapi.tests.test_reports import TestReport
+ 
 class Test(unittest.TestCase):
 
 

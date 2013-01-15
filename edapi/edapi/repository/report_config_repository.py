@@ -17,7 +17,7 @@ class report_config(object):
             def wrapper(*args, wrapper, **kwargs):
                 print ("Arguments were: %s, %s" % (args, kwargs))
                 return original_func(*args, **kwargs)
-            scanner.registry.add(obj, **settings)
+            scanner.registry.add(original_func, **settings)
         venusian.attach(original_func, callback, category='edapi')
         return original_func
            
@@ -38,9 +38,8 @@ class ReportConfigRepository:
     def get_report_config(self, name):
         return ReportConfigRepository.registered[name]['params']
     
-    def get_report(self, name, **kwargs):
-        func = ReportConfigRepository.registered[name]['reference']
-        return func(**kwargs)
+    def get_report(self, name):
+        return ReportConfigRepository.registered[name]['reference']
     
     
     

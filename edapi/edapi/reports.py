@@ -31,8 +31,8 @@ class TestReport():
         
     @report_config(alias = "test", params = {"adam" : 1}, something = "soemthing")
     def generate(self, params):
-        return  (params) #todo: return data
+        return (params) #todo: return data
     
-    @report_config(alias = "test2", params = {"doris" : "true"})
-    def generate_test2(self):
-        pass
+    @report_config(alias = "test2", params = {"doris" : "true"}, reference = "someclass.get_test")
+    def generate_test2(self, params):
+        return (params) 

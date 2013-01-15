@@ -11,8 +11,9 @@ from edapi import reports
 class EdApi:
     def __init__(self, config):
         config.add_route('report', '/report/{name}')
+        config.add_route('report_for_post', '/report/{name}/_query')
         config.add_view(view=generate_report_get, route_name='report', renderer='json', request_method='GET')
-        config.add_view(view=generate_report_post, route_name='report', renderer='json', request_method='POST')
+        config.add_view(view=generate_report_post, route_name='report_for_post', renderer='json', request_method='POST')
         config.add_view(view=get_report_config, route_name='report', renderer='json', request_method='OPTIONS')
         
         registry = ReportConfigRepository()

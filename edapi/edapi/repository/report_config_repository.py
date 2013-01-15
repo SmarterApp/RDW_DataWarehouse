@@ -16,8 +16,8 @@ class report_config(object):
         def callback(scanner, name, obj):
             def wrapper(*args, wrapper, **kwargs):
                 print ("Arguments were: %s, %s" % (args, kwargs))
-                return original_func(*args, **kwargs)
-            scanner.registry.add(original_func, **settings)
+                return original_func(self, *args, **kwargs)
+            scanner.registry.add((obj,original_func), **settings)
         venusian.attach(original_func, callback, category='edapi')
         return original_func
            

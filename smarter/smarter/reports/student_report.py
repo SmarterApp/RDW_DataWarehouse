@@ -7,21 +7,20 @@ Created on Jan 13, 2013
 from ..models import DBSession
 from edapi.repository.report_config_repository import report_config
 
-@report_config(alias='student_report', params='{"student_id":{}, "assessment_id":{"alias":"assessment"}}')
-def student_report(params, user):
+# @report_config(alias='student_report', params='{"student_id":{}, "assessment_id":{"alias":"assessment"}}')
+def student_report(parameter, user):
     studentReport = StudentReport()
-    return studentReport.getReport(params, user)
+    return studentReport.getReport(parameter)
 
 class StudentReport:
-    def __init__(self):
-        self.__student_id = 'student_id'
-        self.__first_name = 'first_name'
-        self.__middle_name = 'middle_name'
-        self.__last_name = 'last_name'
-        self.__subject = 'subject'
-        self.__year_range = 'year_range'
-        self.__time_period = 'time_period'
-        self.__assessment_score = 'assessment_score'
+    __student_id = 'student_id'
+    __first_name = 'first_name'
+    __middle_name = 'middle_name'
+    __last_name = 'last_name'
+    __subject = 'subject'
+    __year_range = 'year_range'
+    __time_period = 'time_period'
+    __assessment_score = 'assessment_score'
         
     def __openSession(self):
         self.__session = DBSession()
@@ -47,10 +46,10 @@ class StudentReport:
             result_rows.append(result_row)
         return result_rows
     
-    
-    def getReport(self, params, user):
+    @report_config(alias='student_report', params='{"student_id":{}, "assessment_id":{"alias":"assessment"}}')
+    def getReport(self, params):
         
-        self.__openSession()
+        self.__openSession(self)
         
         sql_query = """
         SELECT 
@@ -68,10 +67,10 @@ class StudentReport:
         WHERE fact_assessment_result.student_id=:studentId
         """
         
-        rows = self.__queryReport(sql_query % (self.__student_id, self.__first_name, self.__middle_name, self.__last_name, self.__subject, self.__year_range, self.__time_period, self.__assessment_score), {'studentId':2881})
+        rows = self.__queryReport(self, sql_query % (self.__student_id, self.__first_name, self.__middle_name, self.__last_name, self.__subject, self.__year_range, self.__time_period, self.__assessment_score), {'studentId':2881})
     
-        result_rows = self.__packData(rows)
+        result_rows = self.__packData(self, rows)
     
-        self.__closeSession()
+        self.__closeSession(self)
         
         return result_rows

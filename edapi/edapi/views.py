@@ -18,9 +18,9 @@ def generate_report_get(request):
     Request = request
     repo = ReportConfigRepository()
     reportName = request.matchdict['name']
-    generate_report_method = repo.get_report_delegate(reportName)
+    (obj,generate_report_method) = repo.get_report_delegate(reportName)
     report_config = Request.GET
-    return generate_report_method(generate_report_method, report_config)
+    return generate_report_method(obj, report_config)
 
 def generate_report_post(request):
     if (request.content_type != 'application/json'):

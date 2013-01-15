@@ -9,7 +9,7 @@ from smarter.controllers import get_compare_population
 from edapi.repository.report_config_repository import report_config
 
 #from .models import (DBSession, MyModel,)
-from edapi.reports import get_report
+from edapi.reports import get_report_delegate
 import json
 from edapi.repository.report_config_repository import ReportConfigRepository
 from smarter.reports.student_report import student_report

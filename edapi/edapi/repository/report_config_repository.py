@@ -36,9 +36,12 @@ class ReportConfigRepository:
         ReportConfigRepository.registered[settings['alias']] = settings
     
     def get_report_config(self, name):
-        return ReportConfigRepository.registered[name]['params']
+        report = ReportConfigRepository.registered.pop(name, "not found!")
+        if (report == "not found!"):
+            return None
+        return report['params']
     
-    def get_report(self, name):
+    def get_report_delegate(self, name):
         return ReportConfigRepository.registered[name]['reference']
     
     

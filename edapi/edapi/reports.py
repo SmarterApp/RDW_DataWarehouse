@@ -8,7 +8,7 @@ from edapi.repository.report_config_repository import report_config
 
 #from edapi.utils.database_connections import getDatabaseConnection
 
-def get_report(reportName):
+def get_report_delegate(reportName):
     try:
         # TODO: move to util
         instance =  getattr(sys.modules[__name__], reportName);

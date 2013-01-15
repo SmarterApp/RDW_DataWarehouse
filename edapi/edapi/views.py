@@ -4,8 +4,7 @@ Created on Jan 14, 2013
 @author: aoren
 '''
 from edapi.repository.report_config_repository import ReportConfigRepository
-import json
-from distutils.tests.test_upload import Response
+from pyramid.response import Response
 
 def get_report_config(request):
     name = request.matchdict['name']
@@ -17,10 +16,11 @@ def get_report_config(request):
 
 def generate_report_get(request):
     Request = request
-    query = Request.GET["q"]
-    params = json.dumps(query)
     repo = ReportConfigRepository()
-    report = repo.get_report_config(params['alias'])
+    reportName = request.matchdict['name']
+    generate_report_method = repo.get_report_delegate(reportName)
+    report_config = Request.GET
+    return generate_report_method(generate_report_method, report_config)
 
 def generate_report_post(request):
     if (request.content_type != 'application/json'):

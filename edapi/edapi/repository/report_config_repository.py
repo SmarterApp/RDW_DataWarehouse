@@ -37,7 +37,7 @@ class ReportConfigRepository:
     
     def get_report_config(self, name):
         report = ReportConfigRepository.registered.get(name, None)
-        if (report == None):
+        if (report is None):
             return None
         return report['params']
     

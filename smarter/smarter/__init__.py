@@ -35,6 +35,7 @@ def main(global_config, **settings):
     config.add_route('indiv_student', '/indiv_student_report')
     #routing for class report
     config.add_route('class_report', '/class_report')
+    config.add_route('student_report','/student_report')
     config.scan()
     EdApi(config)
     return config.make_wsgi_app()

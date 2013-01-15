@@ -12,6 +12,7 @@ from edapi.repository.report_config_repository import report_config
 from edapi.reports import get_report
 import json
 from edapi.repository.report_config_repository import ReportConfigRepository
+from smarter.reports.student_report import student_report
 
 @view_config(route_name='comparing_populations', renderer='templates/comparing_populations.pt')
 def compPop_view(request):
@@ -247,3 +248,6 @@ def class_report(request):
 #report = request.matchdict['name']
 #return {'result': sm.get_selector(sm, reportName=report)}
 
+@view_config(route_name='student_report', renderer='json')
+def student_report_view(request):
+    return student_report(None,None)

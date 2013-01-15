@@ -26,7 +26,14 @@ def generate_report_post(request):
     if (request.content_type != 'application/json'):
         return Response('Not found!', status='404')
     Request = request 
-    report_config = Request.json_body
+    
+    try:
+        # basic check that it is a correct json, if not an exception will get raised when accessing json_body.
+        report_config = Request.json_body
+        break
+    except:
+        return Response('invalid parameters', status='412')
+    
     reportName = request.matchdict['name']
     repo = ReportConfigRepository()
     return ReportManager.generate_report(reportName, report_config, repo)

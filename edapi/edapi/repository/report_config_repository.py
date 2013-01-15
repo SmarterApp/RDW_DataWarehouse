@@ -14,11 +14,10 @@ class report_config(object):
         settings = self.__dict__.copy()
         
         def callback(scanner, name, obj):
-            print("In callback ", name)
             def wrapper(*args, wrapper, **kwargs):
                 print ("Arguments were: %s, %s" % (args, kwargs))
                 return original_func(*args, **kwargs)
-            scanner.registry.add(**settings)
+            scanner.registry.add(obj, **settings)
         venusian.attach(original_func, callback, category='edapi')
         return original_func
            
@@ -31,10 +30,17 @@ class ReportConfigRepository:
         # __registered = {}
         pass
     
-    def add(self, **kwargs):
-        ReportConfigRepository.registered[kwargs['alias']] = kwargs
+    def add(self, obj, **kwargs):
+        settings = kwargs.copy()
+        settings['reference'] = obj
+        ReportConfigRepository.registered[settings['alias']] = settings
     
     def get_report_config(self, name):
-        return ReportConfigRepository.registered[name]
+        return ReportConfigRepository.registered[name]['params']
+    
+    def get_report(self, name, **kwargs):
+        func = ReportConfigRepository.registered[name]['reference']
+        return func(**kwargs)
+    
     
     

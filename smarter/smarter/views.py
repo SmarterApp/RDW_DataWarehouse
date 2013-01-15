@@ -1,17 +1,11 @@
 from pyramid.response import Response
-from pyramid.request import Request
 from pyramid.view import view_config
 from smarter.services.comparepopulations import generateComparePopulationsReport,generateComparePopulationsReportAlchemy
 from smarter.services.compare_populations import generateComparePopulationsJSON
 from sqlalchemy.exc import DBAPIError
 from smarter.controllers import compare_population_criteria
 from smarter.controllers import get_compare_population
-from edapi.repository.report_config_repository import report_config
 
-#from .models import (DBSession, MyModel,)
-from edapi.reports import get_report_delegate
-import json
-from edapi.repository.report_config_repository import ReportConfigRepository
 #from smarter.reports.student_report import StudentReport
 
 @view_config(route_name='comparing_populations', renderer='templates/comparing_populations.pt')

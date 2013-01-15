@@ -8,7 +8,8 @@ CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 
 install_requires = [
     'pyramid',
-    'venusian >= 1.0a3'
+    'venusian >= 1.0a3',
+    'zope.component >= 4.0.2'
     ]
 
 tests_require = [

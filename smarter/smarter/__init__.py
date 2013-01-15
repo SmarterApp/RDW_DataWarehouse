@@ -2,11 +2,10 @@ from pyramid.config import Configurator
 from sqlalchemy import engine_from_config
 
 from .models import (DBSession, Base,)
-import edapi
 
-from edapi import EdApi
 from pyramid.path import caller_package, caller_module, package_of
 import sys
+from edapi import EdApi
 
 
 def main(global_config, **settings):

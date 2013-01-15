@@ -16,10 +16,11 @@ def get_report_config(request):
     return report_config
 
 def generate_report_get(request):
-    reportName = request.matchdict['name']
     Request = request
     repo = ReportConfigRepository()
-    return ReportManager.generate_report(reportName, Request.GET, repo)
+    reportName = request.matchdict['name']
+    report_config = Request.GET
+    return ReportManager.generate_report(reportName, report_config, repo)
 
 def generate_report_post(request):
     if (request.content_type != 'application/json'):

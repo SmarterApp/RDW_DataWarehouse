@@ -34,5 +34,4 @@ def generate_report_post(request):
         return HTTPPreconditionFailed()
     
     reportName = request.matchdict['name']
-    repo = component.getUtility(IReportConfigRepository)
-    return generate_report(reportName, report_config, repo)
+    return generate_report(reportName, report_config)

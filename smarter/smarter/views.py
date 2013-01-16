@@ -10,9 +10,10 @@ from edapi.repository.report_config_repository import report_config
 
 #from .models import (DBSession, MyModel,)
 from edapi.reports import get_report
-import json
 from edapi.repository.report_config_repository import ReportConfigRepository
 from smarter.reports.student_report import student_report
+
+import json
 
 @view_config(route_name='comparing_populations', renderer='templates/comparing_populations.pt')
 def compPop_view(request):
@@ -132,6 +133,7 @@ def check_status(request):
     return {'result': 'Everything is working fine!'}
 
 # Individual Student Report
+"""
 @view_config(route_name='indiv_student', renderer='templates/reports/individual_student.pt')
 def individual_student_report(request):
     id = request.params['id']
@@ -154,70 +156,30 @@ def individual_student_report(request):
         l_name = "MacGibbon"
 
     return {'first_name': f_name, 'middle_name': m_name, 'last_name': l_name, 'assmt_name': 'English Language Arts', 'assmt_period': 'Fall 2012', 'claim_name_1': 'Composition', 'claim_score_1': 100, 'claim_name_2': 'Comprehension', 'claim_score_2': 90, 'claim_name_3': 'Grammar', 'claim_score_3': 80, 'claim_name_4': 'Vocabulary', 'claim_score_4': 70, 'assmt_ovr_score': 85}
+"""
+
+# Individual Student Report Take 2
+@view_config(route_name='indiv_student', renderer='templates/reports/individual_student.pt')
+def individual_student_report(request):
+
+    student_id = int(request.params['student'])
+    assessment_id = int(request.params['assmt'])
+
+    params = {'student_id': student_id, 'assessment_id': assessment_id}
+    temp = student_report(params, None)
+
+    # temporary fix to keep this simple
+    # we only want one of the rows returned from the service.
+    json_obj = temp[0]
+
+    return json_obj
+
 
 # Class Report
 @view_config(route_name='class_report', renderer='templates/reports/class.pt')
 def class_report(request):
     return {'class_name': 'English'}
-    """
-    json =
-    [
-        {
-            "middle_name": "SMITH",
-            "subject": "ELA",
-            "time_period": "BOY",
-            "assessment_score": 62.0,
-            "student_id": 2881,
-            "year_range": "2012-2013",
-            "first_name": "MARY"
-        },
-        {
-            "middle_name": "SMITH",
-            "subject": "MATH",
-            "time_period": "MOY",
-            "assessment_score": 67.0,
-            "student_id": 2881,
-            "year_range": "2012-2013",
-            "first_name": "MARY"
-        },
-        {
-            "middle_name": "SMITH",
-            "subject": "ELA",
-            "time_period": "EOY",
-            "assessment_score": 52.0,
-            "student_id": 2881,
-            "year_range": "2012-2013",
-            "first_name": "MARY"
-        },
-        {
-            "middle_name": "SMITH",
-            "subject": "MATH",
-            "time_period": "BOY",
-            "assessment_score": 64.0,
-            "student_id": 2881,
-            "year_range": "2013-2014",
-            "first_name": "MARY"
-        },
-        {
-            "middle_name": "SMITH",
-            "subject": "ELA",
-            "time_period": "MOY",
-            "assessment_score": 67.0,
-            "student_id": 2881,
-            "year_range": "2013-2014",
-            "first_name": "MARY"
-        },
-        {
-            "middle_name": "SMITH",
-            "subject": "ELA",
-            "time_period": "EOY",
-            "assessment_score": 62.0,
-            "student_id": 2881,
-            "year_range": "2013-2014",
-            "first_name": "MARY"
-        }
-    ]
-"""
+
 
 #@view_config(route_name='report', renderer='json', request_method='OPTIONS')
 #def get_selection(request):

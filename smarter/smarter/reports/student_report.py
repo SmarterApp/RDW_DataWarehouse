@@ -19,6 +19,13 @@ __assessment_score = 'assessment_score'
 
 # @report_config(alias='student_report')
 def student_report(params, user):
+    if params:
+        student_id = params['student_id']
+        assessment_id = params['assessment_id']
+    else:
+        student_id = 2881
+        assessment_id = 0000
+
     session = DBSession()
     sql_query = """
     SELECT 
@@ -34,8 +41,9 @@ def student_report(params, user):
     INNER JOIN dim_student ON dim_student.student_key=fact_assessment_result.student_id 
     INNER JOIN dim_assessment ON dim_assessment.assessment_key=fact_assessment_result.assessment_id
     WHERE fact_assessment_result.student_id=:studentId
+    AND fact_assessment_result.assessment_id=:assessmentId
     """
-    rows = session.execute(sql_query % (__student_id, __first_name, __middle_name, __last_name, __subject, __year_range, __time_period, __assessment_score), {'studentId':2881})
+    rows = session.execute(sql_query % (__student_id, __first_name, __middle_name, __last_name, __subject, __year_range, __time_period, __assessment_score), {'studentId':student_id, 'assessmentId':assessment_id})
 
     result_rows = []
     for row in rows:

@@ -44,7 +44,7 @@ class ReportNotFoundError(EdApiError):
         
 # generates a report by calling the report delegate for generating itself (received from the config repository).
 def generate_report(registry, report_name, params):
-    validated = validate_params(report_name, params)
+    validated = validate_params(registry, report_name, params)
     
     if (not validated):
         return False
@@ -103,6 +103,7 @@ def validate_params(registry, report_name, params):
             try:
                 validictory.validate(value, config['validation'])
             except ValidationError:
+                #TODO: log this
                 return False
     return True
 

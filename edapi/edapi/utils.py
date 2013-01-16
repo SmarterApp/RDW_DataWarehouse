@@ -1,8 +1,9 @@
 '''
-Created on Jan 10, 2013
+Created on Jan 16, 2013
 
 @author: aoren
 '''
+
 import sys
 from zope import component
 from edapi.repository.report_config_repository import IReportConfigRepository
@@ -34,5 +35,3 @@ def generate_report_config(reportName):
     
 def get_config_repository():
     return component.getUtility(IReportConfigRepository)
-    
-        

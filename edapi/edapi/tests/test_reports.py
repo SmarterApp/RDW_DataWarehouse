@@ -17,14 +17,21 @@ class TestReport():
                                                 "staticListField": {
                                                     "value" : ["State", "Account", "School Group", "School", "Teacher", "Class", "Student", "Grade", "Race", "Custom Attribute"] 
                                                 },
-                                                "aliasField": {"alias" : "test2" } 
+                                                "aliasField": {"alias" : "test2" }, 
+                                                "noConfigField": {"alias" : "no_config" } 
                                              })
     def generate(self, params):
-        return (params) #todo: return data
+        return params #todo: return data
     
+    #this report requires configuration, and therefore should NOT get expanded automatically.
     @report_config(alias = "test2", params = { "staticListField": {
                                                     "value" : ["State", "Account", "School Group", "School", "Teacher", "Class", "Student", "Grade", "Race", "Custom Attribute"] 
                                                 }
                                               })
     def generate_test2(self, params):
-        return (params) 
+        return params 
+    
+    #this report can get retrieved with no configuration, and therefore gets expanded automatically.
+    @report_config(alias = "no_config")
+    def generate_test_no_config(self, params):
+        return ["State", "Account", "School Group", "School", "Teacher", "Class", "Student", "Grade", "Race", "Custom Attribute"]

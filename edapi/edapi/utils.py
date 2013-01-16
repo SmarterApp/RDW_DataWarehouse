@@ -23,32 +23,38 @@ class ReportNotFoundError(EdApiError):
         self.msg = "Report %s not found".format(name)
 
 #creates an object from a given class name
-def createObjectFromName(className):
+def create_object_from_name(class_name):
     try:
-        instance =  getattr(sys.modules[__name__], className);
+        instance =  getattr(sys.modules[__name__], class_name);
     except AttributeError:
-        raise 'Class {0} is not found'.format(className)
+        raise 'Class {0} is not found'.format(class_name)
     return instance.get_json(instance);
 
 # generates a report by calling the report delegate for generating itself (received from the config repository).
-def generate_report(reportName, params):
-    (obj,generate_report_method) = get_config_repository().get_report_delegate(reportName)
+def generate_report(report_name, params):
+    (obj,generate_report_method) = get_config_repository().get_report_delegate(report_name)
     inst = obj()
     response = getattr(inst, generate_report_method.__name__)(params)
     return response
 
 # generates a report config by loading it from the config repository
-def generate_report_config(reportName):
+def generate_report_config(report_name):
     #load the report configuration from the repository
-    report_config = get_config_repository().get_report_config(reportName)
+    report_config = get_config_repository().get_report_config(report_name)
     # expand the param fields
-    propagateParams(report_config)
+    propagate_params(report_config)
     return report_config
     
 def get_config_repository():
     return component.getUtility(IReportConfigRepository)
 
 # looks for fields that can be expanded with no external configuration and expands them by calling the right method.
-def propagateParams(params):
-    for key in params.values():
-        print(key)
+def propagate_params(params):
+    for dictionary in params.values():
+        for (key, value) in dictionary.items():
+            if (key == 'alias'):
+                dictionary[key] = expand_field(value)
+
+def expand_field(report_name):
+    return report_name
+            

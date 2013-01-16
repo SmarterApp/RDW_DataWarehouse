@@ -20,8 +20,7 @@ class EdApi:
         registry = ReportConfigRepository()
         scanner = venusian.Scanner(registry=registry)
         scanner.scan(package_of(sys.modules['edapi']), categories=('edapi',))
-        
-        if scanCallerPackage: 
+        if scanCallerPackage is not None: 
             scanner.scan(scanCallerPackage, categories=('edapi',))
 
         component.provideUtility(registry)   

@@ -3,8 +3,6 @@ Created on Jan 14, 2013
 
 @author: aoren
 '''
-from edapi.repository.report_config_repository import IReportConfigRepository
-from zope import component
 from edapi.utils import generate_report_config, generate_report
 from pyramid.httpexceptions import HTTPNotFound, HTTPPreconditionFailed
 

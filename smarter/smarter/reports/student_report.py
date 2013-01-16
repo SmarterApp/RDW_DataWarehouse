@@ -41,7 +41,7 @@ class StudentReport(BaseReport):
                             fact_assessment_result.c.assessment_score)\
                             .join(dim_student, dim_student.c.student_key == fact_assessment_result.c.student_id)\
                             .join(dim_assessment, dim_assessment.c.assessment_key == fact_assessment_result.c.assessment_id)\
-                            .filter(fact_assessment_result.c.student_id == student_id, fact_assessment_result.c.assessment_id == assessment_id)
+                            .filter(fact_assessment_result.c.student_id == student_id   )
 
         result = super().get_result(query)
         super().close_session()

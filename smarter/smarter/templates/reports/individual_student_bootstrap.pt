@@ -15,6 +15,23 @@
         padding-top: 60px;
         padding-bottom: 40px;
       }
+      h1.main_header {
+          font-size:40px
+      }
+      .title {
+          float:left;
+          width:300px;
+          font-weight:bold
+      }
+      .footer {
+          position:absolute;
+          bottom:0;
+          width:100%;
+          height:60px;
+      }
+      h1 {
+          padding-bottom:50px;
+      }
     </style>
     <link href="static/css/bootstrap-responsive.css" rel="stylesheet">
 
@@ -41,7 +58,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a class="brand" href="#">Project name</a>
+          <a class="brand" href="#">edWare</a>
           <div class="nav-collapse collapse">
             <ul class="nav">
               <li class="active"><a href="#">Home</a></li>
@@ -74,34 +91,95 @@
 
       <!-- Main hero unit for a primary marketing message or call to action -->
       <div class="hero-unit">
-        <h1>Hello, world!</h1>
-        <p>This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
-        <p><a class="btn btn-primary btn-large">Learn more &raquo;</a></p>
+          <h1 id="main_header">Individual Student Report</h1>
+
+          <div id="student_id">
+              <span class="title">Student ID: </span>
+              <span class="value">${student_id}</span>
+          </div>
+
+          <div id="f_name">
+              <span class="title">First Name: </span>
+              <span class="value">${first_name}</span>
+          </div>
+          <div id="m_name">
+              <span class="title">Middle Name: </span>
+              <span class="value">${middle_name}</span>
+          </div>
+          <div id="l_name">
+              <span class="title">Last Name: </span>
+              <span class="value">${last_name}</span>
+          </div>
+
+
+          <div id="assmt_name">
+              <span class="title">Assessment Name: </span>
+              <span class="value">${subject}</span>
+          </div>
+          <div id="assmt_period">
+              <span class="title">Assessment Period: </span>
+              <span class="value">${year_range} - ${time_period}</span>
+          </div>
+
+
+          <div id="claim_name_1">
+              <span class="title">Claim Name: </span>
+              <span class="value">&nbsp</span>
+          </div>
+          <div id="claim_score_1">
+              <span class="title">Claim Score: </span>
+              <span class="value">&nbsp</span>
+          </div>
+          <div id="claim_name_2">
+              <span class="title">Claim Name: </span>
+              <span class="value">&nbsp</span>
+          </div>
+          <div id="claim_score_2">
+              <span class="title">Claim Score: </span>
+              <span class="value">&nbsp</span>
+          </div>
+          <div id="claim_name_3">
+              <span class="title">Claim Name: </span>
+              <span class="value">&nbsp</span>
+          </div>
+          <div id="claim_score_3">
+              <span class="title">Claim Score: </span>
+              <span class="value">&nbsp</span>
+          </div>
+          <div id="claim_name_4">
+              <span class="title">Claim Name: </span>
+              <span class="value">&nbsp</span>
+          </div>
+          <div id="claim_score_4">
+              <span class="title">Claim Score: </span>
+              <span class="value">&nbsp</span>
+          </div>
+
+
+          <div id="assmt_ovr_score">
+              <span class="title">Overall Assessment Score: </span>
+              <span class="value">${assessment_score}</span>
+          </div>
       </div>
 
       <!-- Example row of columns -->
       <div class="row">
-        <div class="span4">
-          <h2>Heading</h2>
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-          <p><a class="btn" href="#">View details &raquo;</a></p>
+        <div class="span6">
+          <h2>Explanatory Text</h2>
+            <!-- text depends on assmt and results -->
+            <p id="variable_expl_text">The explanatory text that will appear here depends on the given assessment and the student's results for that assessment.</p>
         </div>
-        <div class="span4">
-          <h2>Heading</h2>
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-          <p><a class="btn" href="#">View details &raquo;</a></p>
+        <div class="span6">
+          <h2>Explanatory Text</h2>
+            <!-- state-specific text -->
+            <p id="state_specific_text">The text that will appear here will be given to us by individual states.</p>
        </div>
-        <div class="span4">
-          <h2>Heading</h2>
-          <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-          <p><a class="btn" href="#">View details &raquo;</a></p>
-        </div>
       </div>
 
       <hr>
 
       <footer>
-        <p>&copy; Company 2012</p>
+        <p>&copy; SBAC 2013</p>
       </footer>
 
     </div> <!-- /container -->

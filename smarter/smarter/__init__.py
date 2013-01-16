@@ -37,6 +37,8 @@ def main(global_config, **settings):
     
     # routing for individual student report
     config.add_route('indiv_student', '/indiv_student_report')
+    #r routing for *bootstrapped* individual student report
+    config.add_route('indiv_student_bootstrap', '/indiv_student_report_bootstrap')
     #routing for class report
     config.add_route('class_report', '/class_report')
     config.add_route('student_report','/student_report')

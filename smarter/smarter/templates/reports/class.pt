@@ -20,17 +20,17 @@
     </thead>
     <tbody>
         <tr>
-            <td class="student_name"><a href="/indiv_student_report?id=00001">Andrew Brien</a></td>
+            <td class="student_name"><a href="/indiv_student_report_bootstrap?student=00001&assmt=1">Mary Smith</a></td>
             <td class="ela_score">88</td>
             <td class="math_score">70</td>
         </tr>
         <tr>
-            <td class="student_name"><a href="/indiv_student_report?id=00002">Seth Wimberly</a></td>
+            <td class="student_name"><a href="/indiv_student_report_bootstrap?student=00002&assmt=1">Seth Wimberly</a></td>
             <td class="ela_score">78</td>
             <td class="math_score">89</td>
         </tr>
         <tr>
-            <td class="student_name"><a href="/indiv_student_report?id=00003">Scott MacGibbon</a></td>
+            <td class="student_name"><a href="/indiv_student_report_bootstrap?student=00003&assmt=1">Scott MacGibbon</a></td>
             <td class="ela_score">92</td>
             <td class="math_score">81</td>
         </tr>

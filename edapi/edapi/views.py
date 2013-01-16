@@ -11,7 +11,7 @@ def get_report_config(request):
     # gets the name of the report from the URL
     name = request.matchdict['name']
     # find the report configuration in the repository
-    report_config = generate_report_config(name)
+    report_config = generate_report_config(request.registry, name)
     # if we cannot find the report configuration in the repository, we return 404 error
     if (report_config is None):
         return HTTPNotFound()
@@ -21,7 +21,7 @@ def generate_report_get(request):
     # gets the name of the report from the URL
     reportName = request.matchdict['name'] 
     report_config = request.GET
-    return generate_report(reportName, report_config)
+    return generate_report(request.registry, reportName, report_config)
 
 def generate_report_post(request):
     # if the media type is not application/json, the request is rejected.
@@ -36,4 +36,4 @@ def generate_report_post(request):
         return HTTPPreconditionFailed()
     # gets the name of the report from the URL
     reportName = request.matchdict['name']
-    return generate_report(reportName, report_config)
+    return generate_report(request.registry, reportName, report_config)

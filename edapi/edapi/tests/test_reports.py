@@ -3,7 +3,7 @@ Created on Jan 15, 2013
 
 @author: aoren
 '''
-from edapi.repository.report_config_repository import report_config
+from edapi.utils import report_config
 
 class TestReport():
     _query = 'test'

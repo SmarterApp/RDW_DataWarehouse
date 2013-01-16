@@ -5,7 +5,7 @@ Created on Jan 13, 2013
 '''
 
 
-from edapi.repository.report_config_repository import report_config
+from edapi.utils import report_config
 from .base_report import BaseReport
 
 '''

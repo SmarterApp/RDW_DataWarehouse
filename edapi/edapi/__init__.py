@@ -26,8 +26,7 @@ class EdApi:
         scanner = venusian.Scanner(registry=registry)
         # edapi module is scanned, specifically the edapi category 
         scanner.scan(package_of(sys.modules['edapi']), categories=('edapi',))
-        
-        if scanCallerPackage: 
+        if scanCallerPackage is not None: 
             scanner.scan(scanCallerPackage, categories=('edapi',))
 
         component.provideUtility(registry)   

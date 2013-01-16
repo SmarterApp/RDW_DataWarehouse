@@ -4,30 +4,14 @@ Created on Jan 13, 2013
 @author: tosako
 '''
 
-from ..models import DBSession
+
 from edapi.repository.report_config_repository import report_config
-
-__student_id = 'student_id'
-__first_name = 'first_name'
-__middle_name = 'middle_name'
-__last_name = 'last_name'
-__subject = 'subject'
-__year_range = 'year_range'
-__time_period = 'time_period'
-__assessment_score = 'assessment_score'
+from .base_report import BaseReport
 
 
-# @report_config(alias='student_report')
-def student_report(params, user):
-    if params:
-        student_id = params['student_id']
-        assessment_id = params['assessment_id']
-    else:
-        student_id = 2881
-        assessment_id = 0000
-
-    session = DBSession()
-    sql_query = """
+class StudentReport(BaseReport):
+            
+    __sql_query = """
     SELECT 
     fact_assessment_result.student_id AS %s, 
     dim_student.first_name AS %s, 
@@ -43,20 +27,44 @@ def student_report(params, user):
     WHERE fact_assessment_result.student_id=:studentId
     AND fact_assessment_result.assessment_id=:assessmentId
     """
-    rows = session.execute(sql_query % (__student_id, __first_name, __middle_name, __last_name, __subject, __year_range, __time_period, __assessment_score), {'studentId':student_id, 'assessmentId':assessment_id})
+    __student_id = 'student_id'
+    __first_name = 'first_name'
+    __middle_name = 'middle_name'
+    __last_name = 'last_name'
+    __subject = 'subject'
+    __year_range = 'year_range'
+    __time_period = 'time_period'
+    __assessment_score = 'assessment_score'
+    
 
-    result_rows = []
-    for row in rows:
-        result_row = {}
-        result_row[__student_id] = row[__student_id]
-        result_row[__first_name] = row[__first_name]
-        result_row[__middle_name] = row[__middle_name]
-        result_row[__last_name] = row[__last_name]
-        result_row[__subject] = row[__subject]
-        result_row[__year_range] = row[__year_range]
-        result_row[__time_period] = row[__time_period]
-        result_row[__assessment_score] = row[__assessment_score]
-        result_rows.append(result_row)
+    def __init__(self):
+        super().__init__()
+    
+    @report_config(alias='student_report', params={"student_id":{}, "assessment_id":{}})
+    def get_report(self, params):
 
-    session.close()
-    return result_rows
+        super().open_session()
+
+        rows = super().query_report(self.__sql_query % (self.__student_id, 
+                                                                          self.__first_name, 
+                                                                          self.__middle_name, 
+                                                                          self.__last_name, 
+                                                                          self.__subject, 
+                                                                          self.__year_range, 
+                                                                          self.__time_period, 
+                                                                          self.__assessment_score), 
+                                                      {'studentId':2881})
+    
+        result_rows = super().pack_data(rows, [self.__student_id, 
+                                                                 self.__first_name, 
+                                                                 self.__middle_name, 
+                                                                 self.__last_name, 
+                                                                 self.__subject, 
+                                                                 self.__year_range, 
+                                                                 self.__time_period, 
+                                                                 self.__assessment_score])
+    
+        super().close_session()
+        
+        return result_rows
+

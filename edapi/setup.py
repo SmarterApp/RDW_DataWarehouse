@@ -7,8 +7,10 @@ README = open(os.path.join(here, 'README.txt')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 
 install_requires = [
-    'pyramid',
-    'venusian >= 1.0a3'
+    'pyramid >= 1.3.1',
+    'venusian >= 1.0a3',
+    'zope.component >= 4.0.2',
+    'zope.interface >= 4.0.3'
     ]
 
 tests_require = [

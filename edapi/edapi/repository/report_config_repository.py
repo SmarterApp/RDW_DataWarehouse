@@ -4,6 +4,8 @@ Created on Jan 11, 2013
 @author: dip
 '''
 import venusian
+import zope.interface
+from zope.interface import implementer
 
 class report_config(object):
     def __init__(self, **kwargs):
@@ -16,31 +18,47 @@ class report_config(object):
         def callback(scanner, name, obj):
             def wrapper(*args, wrapper, **kwargs):
                 print ("Arguments were: %s, %s" % (args, kwargs))
-                return original_func(*args, **kwargs)
-            scanner.registry.add(obj, **settings)
+                return original_func(self, *args, **kwargs)
+            scanner.registry.add((obj,original_func), **settings)
         venusian.attach(original_func, callback, category='edapi')
         return original_func
-           
-class ReportConfigRepository: 
+    
+class IReportConfigRepository(zope.interface.Interface):
+    pass
+    
+@implementer(IReportConfigRepository)           
+class ReportConfigRepository(dict): 
     '''A repository of report configs'''
-    #TODO temp class var?
-    registered = {}
     
     def __init__(self):
-        # __registered = {}
+        super(ReportConfigRepository, self).__init__()
         pass
     
-    def add(self, obj, **kwargs):
+    def __getitem__(self, key):
+        if self.has_key(key):
+            return self.get(key)
+        else:
+            return None 
+    
+    def add(self, delegate, **kwargs):
         settings = kwargs.copy()
-        settings['reference'] = obj
-        ReportConfigRepository.registered[settings['alias']] = settings
+        #TODO validation for alias, reference, duplicated alias
+        settings['reference'] = delegate
+        self[settings['alias']] = settings
     
     def get_report_config(self, name):
-        return ReportConfigRepository.registered[name]['params']
+        report = self.get(name)
+        if (report is None):
+            return None
+        return report.get("params")
     
-    def get_report(self, name, **kwargs):
-        func = ReportConfigRepository.registered[name]['reference']
-        return func(**kwargs)
+    def get_report_delegate(self, name):
+        report = self.get(name)
+        if (report is None):
+            return None
+        return report.get('reference')
     
+    def get_report_count(self):
+        return len(self)
     
     

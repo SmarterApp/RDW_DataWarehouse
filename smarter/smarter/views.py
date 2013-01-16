@@ -1,19 +1,10 @@
 from pyramid.response import Response
-from pyramid.request import Request
 from pyramid.view import view_config
 from smarter.services.comparepopulations import generateComparePopulationsReport,generateComparePopulationsReportAlchemy
 from smarter.services.compare_populations import generateComparePopulationsJSON
 from sqlalchemy.exc import DBAPIError
 from smarter.controllers import compare_population_criteria
 from smarter.controllers import get_compare_population
-from edapi.repository.report_config_repository import report_config
-
-#from .models import (DBSession, MyModel,)
-from edapi.reports import get_report
-from edapi.repository.report_config_repository import ReportConfigRepository
-from smarter.reports.student_report import student_report
-
-import json
 
 @view_config(route_name='comparing_populations', renderer='templates/comparing_populations.pt')
 def compPop_view(request):
@@ -179,37 +170,62 @@ def individual_student_report(request):
 @view_config(route_name='class_report', renderer='templates/reports/class.pt')
 def class_report(request):
     return {'class_name': 'English'}
-
-
-#@view_config(route_name='report', renderer='json', request_method='OPTIONS')
-#def get_selection(request):
-#    name = request.matchdict['name']
-#    repo = ReportConfigRepository()
-#    json_obj = repo.get_config( name + ".json")
-#    return {'result' : json_obj}
-#
-#@view_config(route_name='report', renderer='json', request_method='POST')
-#def generate_report(request):
-#    Request = request
-#    body = Request.json_body
-#    print(body)
-#    report_config = json.dumps(body)
-#    print (report_config)
-#
-#
-#@view_config(route_name='report', renderer='json', request_method='GET')
-#def generate_report_get(request):
-#    Request = request
-#
-#    body = Request.json_body
-#    print(body)
-#    report_config = json.dumps(body)
-#    print (report_config)
-#
-#sm = selector_manager.SelectorManager
-#report = request.matchdict['name']
-#return {'result': sm.get_selector(sm, reportName=report)}
-
-@view_config(route_name='student_report', renderer='json')
-def student_report_view(request):
-    return student_report(None,None)
+    """
+    json =
+    [
+        {
+            "middle_name": "SMITH",
+            "subject": "ELA",
+            "time_period": "BOY",
+            "assessment_score": 62.0,
+            "student_id": 2881,
+            "year_range": "2012-2013",
+            "first_name": "MARY"
+        },
+        {
+            "middle_name": "SMITH",
+            "subject": "MATH",
+            "time_period": "MOY",
+            "assessment_score": 67.0,
+            "student_id": 2881,
+            "year_range": "2012-2013",
+            "first_name": "MARY"
+        },
+        {
+            "middle_name": "SMITH",
+            "subject": "ELA",
+            "time_period": "EOY",
+            "assessment_score": 52.0,
+            "student_id": 2881,
+            "year_range": "2012-2013",
+            "first_name": "MARY"
+        },
+        {
+            "middle_name": "SMITH",
+            "subject": "MATH",
+            "time_period": "BOY",
+            "assessment_score": 64.0,
+            "student_id": 2881,
+            "year_range": "2013-2014",
+            "first_name": "MARY"
+        },
+        {
+            "middle_name": "SMITH",
+            "subject": "ELA",
+            "time_period": "MOY",
+            "assessment_score": 67.0,
+            "student_id": 2881,
+            "year_range": "2013-2014",
+            "first_name": "MARY"
+        },
+        {
+            "middle_name": "SMITH",
+            "subject": "ELA",
+            "time_period": "EOY",
+            "assessment_score": 62.0,
+            "student_id": 2881,
+            "year_range": "2013-2014",
+            "first_name": "MARY"
+        }
+    ]
+"""

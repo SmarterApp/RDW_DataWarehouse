@@ -2,8 +2,9 @@ from pyramid.config import Configurator
 from sqlalchemy import engine_from_config
 
 from .models import (DBSession, Base,)
-import edapi
 
+from pyramid.path import caller_package, caller_module, package_of
+import sys
 from edapi import EdApi
 
 
@@ -36,6 +37,6 @@ def main(global_config, **settings):
     #routing for class report
     config.add_route('class_report', '/class_report')
     config.add_route('student_report','/student_report')
-    config.scan()
-    EdApi(config)
+    config.scan(categories=('pyramid',))
+    EdApi(config, sys.modules['smarter'])
     return config.make_wsgi_app()

@@ -4,25 +4,23 @@ Created on Jan 14, 2013
 @author: aoren
 '''
 import unittest
-from edapi.reports import TestReport
-
-
+from edapi.tests.test_reports import TestReport
+ 
 class Test(unittest.TestCase):
 
-
+    # setting up the test class
     def setUp(self):
         pass
 
-
+    # tearing down the test class
     def tearDown(self):
         pass
 
-
-    def test_get_config(self):
+    # checks that the test report can handle empty params (temporary test)
+    def test_generate_report_for_empty_params(self):
         test_report = TestReport()
-        print("try", test_report.generate())
+        self.assertIsNotNone(test_report.generate(""))
         
-
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.test']
     unittest.main()

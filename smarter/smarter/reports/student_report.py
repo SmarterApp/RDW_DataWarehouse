@@ -14,15 +14,16 @@ class StudentReport(BaseReport):
     def __init__(self):
         super().__init__()
     
-    @report_config(alias='student_report', params={"student_id":{}, "assessment_id":{}})
+    @report_config(alias='student_report', params={"studentId": {"validation" : {"regex":"^\d+$"}},"assessmentId" : {"validation" : {"regex":"^\d+$"}}})
     def get_report(self, params):
 
         session = super().open_session()
-        
-        s_student_id = params['student_id']
+        try:
+            student_id = params['studentId']
+        except:
+            pass
         result = {}
-        if s_student_id.isdigit():
-            student_id = int(s_student_id)
+        if isinstance(student_id,int):
             
             fact_assessment_result = super().get_table('fact_assessment_result')
             dim_student = super().get_table('dim_student')

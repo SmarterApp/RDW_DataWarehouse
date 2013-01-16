@@ -7,6 +7,7 @@ Created on Jan 13, 2013
 
 from edapi.utils import report_config
 from .base_report import BaseReport
+from locale import atoi
 
 '''
 student_report and assessment_id for student
@@ -17,16 +18,27 @@ class StudentReport(BaseReport):
     def __init__(self):
         super().__init__()
     
-    @report_config(alias='student_report', params={"studentId": {"validation" : {"regex":"^\d+$"}}, "assessmentId" : {"validation" : {"regex":"^\d+$"}}})
+    @report_config(alias='student_report', params={"studentId": {"validation" : {"type":"integer","required":True}}, "assessmentId" : {"validation" : {"type":"integer","required":False}}})
     def get_student_report(self, params):
 
+        #get studentId, if studentId is not integer, then convert it to integer
         student_id = params['studentId']
-        assessment_id = params['assessmentId']
+        if not isinstance(student_id, int):
+            student_id = atoi(student_id)
         
-        #get sql session
+        #if assessmentId is available, read the value.
+        #if the value is not integer, then convert it to integer
+        assessment_id = None
+        if 'assessmentId' in params:
+            assessment_id = params['assessmentId']
+            if not isinstance(assessment_id, int):
+                assessment_id = atoi(assessment_id)
+        
+        
+        # get sql session
         session = super().open_session()
         
-        #get table metadatas
+        # get table metadatas
         fact_assessment_result = super().get_table('fact_assessment_result')
         dim_student = super().get_table('dim_student')
         dim_assessment = super().get_table('dim_assessment')
@@ -41,21 +53,28 @@ class StudentReport(BaseReport):
                             fact_assessment_result.c.assessment_score)\
                             .join(dim_student, dim_student.c.student_key == fact_assessment_result.c.student_id)\
                             .join(dim_assessment, dim_assessment.c.assessment_key == fact_assessment_result.c.assessment_id)\
-                            .filter(fact_assessment_result.c.student_id == student_id   )
+                            .filter(fact_assessment_result.c.student_id == student_id)
+              
+        #assessment_id is optional, but if assessment_id is available, add to a query filter            
+        if assessment_id is not None:
+            query=query.filter(fact_assessment_result.c.assessment_id == assessment_id)
 
         result = super().get_result(query)
         super().close_session()
         return result
 
-    @report_config(alias='student_assessment_id', params={"studentId": {"validation" : {"regex":"^\d+$"}}})
+    @report_config(alias='student_assessment_id', params={"studentId": {"validation" : {"type":"integer","required":True}}})
     def get_student_assessment_id(self, params):
         
+        #get studentId, if studentId is not integer, then convert it to integer
         student_id = params['studentId']
-        
-        #get sql session
+        if not isinstance(student_id, int):
+            student_id = atoi(student_id)
+            
+        # get sql session
         session = super().open_session()
         
-        #get table metadatas
+        # get table metadatas
         dim_assessment = super().get_table('dim_assessment')
         fact_assessment_result = super().get_table('fact_assessment_result')
         query = session.query(dim_assessment.c.assessment_key,

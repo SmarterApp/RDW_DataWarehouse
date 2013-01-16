@@ -5,6 +5,8 @@ Created on Jan 16, 2013
 '''
 import sys
 import venusian
+import validictory
+from validictory.validator import ValidationError
 
 REPORT_REFERENCE_FIELD_NAME = 'alias'
 VALUE_FIELD_NAME = 'value'
@@ -41,16 +43,21 @@ class ReportNotFoundError(EdApiError):
         self.msg = "Report %s not found".format(name)
         
 # generates a report by calling the report delegate for generating itself (received from the config repository).
-def generate_report(registry, reportName, params):
-    (obj,generate_report_method) = registry[reportName]['reference']
+def generate_report(registry, report_name, params):
+    validated = validate_params(registry, report_name, params)
+    
+    if (not validated):
+        return False
+    
+    (obj,generate_report_method) = registry[report_name]['reference']
     inst = obj()
     response = getattr(inst, generate_report_method.__name__)(params)
     return response
 
 # generates a report config by loading it from the config repository
-def generate_report_config(registry, reportName):
+def generate_report_config(registry, report_name):
     #load the report configuration from the repository
-    report_config = registry[reportName]['params']
+    report_config = registry[report_name]['params']
     # expand the param fields
     propagate_params(registry, report_config)
     return report_config
@@ -85,5 +92,20 @@ def expand_field(registry, report_name):
     report_data = config[1](config[0], None)
     return (report_data, True)
 
-            
+# validates the given parameters with the report configuration validation definition
+def validate_params(registry, report_name, params):
+    params_config = registry[report_name]['params']
+    for (key, value) in params.items():
+        config = params_config.get(key)
+        if (config == None):
+            continue
+        # check if config has validation
+        validatedText = config.get('validation', None)
+        if (validatedText != None):
+            try:
+                validictory.validate(value, config['validation'])
+            except ValidationError:
+                #TODO: log this
+                return False
+    return True
 

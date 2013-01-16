@@ -7,6 +7,11 @@ Created on Jan 15, 2013
 from ..models import (DBSession, metadata,)
 from sqlalchemy.schema import Table
 
+'''
+Inheritate this class if you are making a report class and need to access to database
+BaseReport is just managing session for your database connection and convert result to dictionary
+'''
+
 class BaseReport(object):
     def __init__(self):
         pass
@@ -17,10 +22,9 @@ class BaseReport(object):
         
     def close_session(self):
         self.__session.close()
-        
-    def query_report(self, sql_query, params):
-        return self.__session.execute(sql_query, params)
     
+    #query and get result
+    #Convert from result_set to dictionary.
     def get_result(self, sql_query):
         result_rows = []
         rows = sql_query.all()
@@ -29,6 +33,6 @@ class BaseReport(object):
                 result_rows.append(row._asdict())
         return result_rows
     
+    #return Table Metadata
     def get_table(self, table_name):
-        # TODO, use zope?
         return Table(table_name, metadata, autoload=True)

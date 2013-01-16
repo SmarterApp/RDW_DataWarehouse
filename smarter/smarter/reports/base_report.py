@@ -4,7 +4,8 @@ Created on Jan 15, 2013
 @author: tosako
 '''
 
-from ..models import DBSession
+from ..models import (DBSession, metadata,)
+from sqlalchemy.schema import Table
 
 class BaseReport(object):
     def __init__(self):
@@ -12,6 +13,7 @@ class BaseReport(object):
     
     def open_session(self):
         self.__session = DBSession()
+        return self.__session
         
     def close_session(self):
         self.__session.close()
@@ -19,11 +21,14 @@ class BaseReport(object):
     def query_report(self, sql_query, params):
         return self.__session.execute(sql_query, params)
     
-    def pack_data(self, rows, fields):
+    def get_result(self, sql_query):
         result_rows = []
-        for row in rows:
-            result_row = {}
-            for field in fields:
-                result_row[field] = row[field]
-            result_rows.append(result_row)
+        rows = sql_query.all()
+        if rows is not None:
+            for row in rows:
+                result_rows.append(row._asdict())
         return result_rows
+    
+    def get_table(self, table_name):
+        # TODO, use zope?
+        return Table(table_name, metadata, autoload=True)

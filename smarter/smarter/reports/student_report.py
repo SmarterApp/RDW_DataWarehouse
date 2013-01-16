@@ -7,6 +7,7 @@ Created on Jan 13, 2013
 
 from edapi.utils import report_config
 from .base_report import BaseReport
+from locale import atoi
 
 '''
 student_report and assessment_id for student
@@ -17,16 +18,20 @@ class StudentReport(BaseReport):
     def __init__(self):
         super().__init__()
     
-    @report_config(alias='student_report', params={"studentId": {"validation" : {"regex":"^\d+$"}}, "assessmentId" : {"validation" : {"regex":"^\d+$"}}})
+    @report_config(alias='student_report', params={"studentId": {"validation" : {"type":"integer","required":True}}, "assessmentId" : {"validation" : {"type":"integer","required":False}}})
     def get_student_report(self, params):
 
         student_id = params['studentId']
         assessment_id = params['assessmentId']
         
-        #get sql session
+        if not isinstance(student_id, int):
+            student_id = atoi(student_id)
+        if not isinstance(assessment_id, int):
+            assessment_id = atoi(assessment_id)
+        # get sql session
         session = super().open_session()
         
-        #get table metadatas
+        # get table metadatas
         fact_assessment_result = super().get_table('fact_assessment_result')
         dim_student = super().get_table('dim_student')
         dim_assessment = super().get_table('dim_assessment')
@@ -52,10 +57,10 @@ class StudentReport(BaseReport):
         
         student_id = params['studentId']
         
-        #get sql session
+        # get sql session
         session = super().open_session()
         
-        #get table metadatas
+        # get table metadatas
         dim_assessment = super().get_table('dim_assessment')
         fact_assessment_result = super().get_table('fact_assessment_result')
         query = session.query(dim_assessment.c.assessment_key,

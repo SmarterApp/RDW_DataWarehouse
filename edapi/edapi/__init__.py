@@ -1,12 +1,12 @@
 from edapi.views import generate_report_get,\
     generate_report_post, get_report_config
 
-
 def add_report_config(self, delegate, **kwargs):
-        settings = kwargs.copy()
-        #TODO validation for alias, reference, duplicated alias
-        settings['reference'] = delegate
-        self.registry[settings['alias']] = settings
+    # directive used to save report_config decorators to configurator registry
+    settings = kwargs.copy()
+    #TODO validation for alias, reference, duplicated alias
+    settings['reference'] = delegate
+    self.registry[settings['alias']] = settings
         
 def includeme(config):
     # routing for the GET and OPTIONS verbs

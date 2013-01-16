@@ -7,7 +7,7 @@ from edapi.utils import report_config
 
 class TestReport():
     _query = 'test'
-        
+         
     @report_config(alias = "test", params = {
                                                 "freeTextField": {
                                                     "validation" : {

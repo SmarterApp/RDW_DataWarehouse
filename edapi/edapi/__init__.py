@@ -31,5 +31,5 @@ class EdApi:
 
         component.provideUtility(registry)   
     
-        # todo: remove that
+        #TODO: remove that
         print(component.getUtility(IReportConfigRepository).get_report_count())

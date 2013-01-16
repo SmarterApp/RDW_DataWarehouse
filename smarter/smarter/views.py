@@ -134,7 +134,25 @@ def individual_student_report(request):
 
     params = {'studentId': student_id, 'assessmentId': assessment_id}
 
-    rpt = StudentReport().get_report(params)
+    rpt = StudentReport().get_student_report(params)
+
+    print('TYPE: ' + str(type(rpt)))
+
+    # temporary fix to keep this simple
+    # we only want one of the rows returned from the service.
+    json_obj = rpt[0]
+
+    return json_obj
+
+# Bootstrapped Individual Student Report
+@view_config(route_name='indiv_student_bootstrap', renderer='templates/reports/individual_student_bootstrap.pt')
+def individual_student_report_bootstrap(request):
+    student_id = int(request.params['student'])
+    assessment_id = int(request.params['assmt'])
+
+    params = {'studentId': student_id, 'assessmentId': assessment_id}
+
+    rpt = StudentReport().get_student_report(params)
 
     print('TYPE: ' + str(type(rpt)))
 

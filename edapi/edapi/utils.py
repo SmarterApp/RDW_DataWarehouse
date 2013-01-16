@@ -96,7 +96,9 @@ def expand_field(registry, report_name):
 def validate_params(registry, report_name, params):
     params_config = registry[report_name]['params']
     for (key, value) in params.items():
-        config = params_config[key]
+        config = params_config.get(key)
+        if (config == None):
+            continue
         # check if config has validation
         validatedText = config.get('validation', None)
         if (validatedText != None):

@@ -7,24 +7,24 @@ from edapi.utils import report_config
 
 class TestReport():
     _query = 'test'
-         
+        
     @report_config(alias = "test", params = {
                                                 "freeTextField": {
                                                     "validation" : {
-                                                        "regex":"[A-Za-z0-9\-]"
-                                                    }
+                                                                   "type":"string"
+                                                                   },
                                                 },
                                                 "staticListField": {
                                                     "value" : ["State", "Account", "School Group", "School", "Teacher", "Class", "Student", "Grade", "Race", "Custom Attribute"] 
                                                 },
-                                                "aliasField": {"alias" : "test2" }, 
-                                                "noConfigField": {"alias" : "no_config" } 
+                                                "districts": {"alias" : "district_report" }, 
+                                                "school_size": {"alias" : "school_size" } 
                                              })
     def generate(self, params):
         return params #todo: return data
     
     #this report requires configuration, and therefore should NOT get expanded automatically.
-    @report_config(alias = "test2", params = { "staticListField": {
+    @report_config(alias = "district_report", params = { "staticListField": {
                                                     "value" : ["State", "Account", "School Group", "School", "Teacher", "Class", "Student", "Grade", "Race", "Custom Attribute"] 
                                                 }
                                               })
@@ -32,6 +32,6 @@ class TestReport():
         return params 
     
     #this report can get retrieved with no configuration, and therefore gets expanded automatically.
-    @report_config(alias = "no_config")
+    @report_config(alias = "school_size")
     def generate_test_no_config(self, params):
-        return ["State", "Account", "School Group", "School", "Teacher", "Class", "Student", "Grade", "Race", "Custom Attribute"]
+        return ["100", "200", "1000"]

@@ -6,8 +6,6 @@ from sqlalchemy.exc import DBAPIError
 from smarter.controllers import compare_population_criteria
 from smarter.controllers import get_compare_population
 
-#from smarter.reports.student_report import StudentReport
-
 @view_config(route_name='comparing_populations', renderer='templates/comparing_populations.pt')
 def compPop_view(request):
     example_json = """\
@@ -212,38 +210,3 @@ def class_report(request):
         }
     ]
 """
-
-#@view_config(route_name='report', renderer='json', request_method='OPTIONS')
-#def get_selection(request):
-#    name = request.matchdict['name']
-#    repo = ReportConfigRepository()
-#    json_obj = repo.get_config( name + ".json")
-#    return {'result' : json_obj}
-#
-#@view_config(route_name='report', renderer='json', request_method='POST')
-#def generate_report(request):
-#    Request = request
-#    body = Request.json_body
-#    print(body)
-#    report_config = json.dumps(body)
-#    print (report_config)
-#
-#
-#@view_config(route_name='report', renderer='json', request_method='GET')
-#def generate_report_get(request):
-#    Request = request
-#
-#    body = Request.json_body
-#    print(body)
-#    report_config = json.dumps(body)
-#    print (report_config)
-#
-#sm = selector_manager.SelectorManager
-#report = request.matchdict['name']
-#return {'result': sm.get_selector(sm, reportName=report)}
-'''
-@view_config(route_name='student_report', renderer='json')
-def student_report_view(request):
-    studentReport = StudentReport()
-    return studentReport.getReport(None, None)
-'''

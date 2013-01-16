@@ -42,6 +42,7 @@ class ReportConfigRepository(dict):
     
     def add(self, delegate, **kwargs):
         settings = kwargs.copy()
+        #TODO validation for alias, reference, duplicated alias
         settings['reference'] = delegate
         self[settings['alias']] = settings
     

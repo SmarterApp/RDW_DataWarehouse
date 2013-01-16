@@ -11,7 +11,6 @@ from validictory.validator import ValidationError
 REPORT_REFERENCE_FIELD_NAME = 'alias'
 VALUE_FIELD_NAME = 'value'
 
-
 class report_config(object):
     def __init__(self, **kwargs):
         #TODO ensure certain keywords exist?
@@ -75,21 +74,20 @@ def propagate_params(registry, params):
     for dictionary in params.values():
         for (key, value) in dictionary.items():
             if (key == REPORT_REFERENCE_FIELD_NAME):
-                expanded = expand_field(registry, value)
+                expanded = expand_field(registry, value, params)
                 if (expanded[1]):
                     # if the value has changed, we change the key to be VALUE_FIELD_NAME
-                    dictionary['value'] = expanded[0]
+                    dictionary[VALUE_FIELD_NAME] = expanded[0]
                     del dictionary[key]
     print(params)
 
 # receive a report's name, tries to take it from the repository and see if it requires configuration, if not, generates the report and return the generated value.
 # return True if the value is changing or false otherwise
-def expand_field(registry, report_name):
-    report_config = registry[report_name]['params']
-    if (report_config is not None):
+def expand_field(registry, report_name, params):
+    if (params is not None):
         return (report_name, False)
     config = registry[report_name]['reference']
-    report_data = config[1](config[0], None)
+    report_data = config[1](config[0], params) # params is none
     return (report_data, True)
 
 # validates the given parameters with the report configuration validation definition

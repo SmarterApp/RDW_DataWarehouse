@@ -25,7 +25,9 @@ def get_report_delegate(reportName):
 
 def generate_report(reportName, params):
     (obj,generate_report_method) = get_config_repository().get_report_delegate(reportName)
-    return generate_report_method(obj, params)
+    inst = obj()
+    response = getattr(inst, generate_report_method.__name__)(params)
+    return response
     
 def generate_report_config(reportName):
     return get_config_repository().get_report_config(reportName)

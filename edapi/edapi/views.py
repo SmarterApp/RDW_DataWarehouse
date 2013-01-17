@@ -20,10 +20,22 @@ def get_report_config(request):
     return report_config
 
 @view_config(route_name='report', renderer='json', request_method='GET')
+
+
+def convert_numbers_to_int(report_config):
+    for (key, value) in report_config:
+        if value.isdigit():
+            report_config[key] = int(value)
+    pass
+
+
 def generate_report_get(request):
     # gets the name of the report from the URL
     reportName = request.matchdict['name'] 
     report_config = request.GET
+    
+    convert_numbers_to_int(report_config)
+    
     return generate_report(request.registry, reportName, report_config)
 
 @view_config(route_name='report_for_post', renderer='json', request_method='POST')

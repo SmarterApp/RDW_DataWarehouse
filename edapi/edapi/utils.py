@@ -31,7 +31,6 @@ class report_config(object):
     used for processing decorator '@report_config' in pyramid scans
     '''
     def __init__(self, **kwargs):
-        # TODO ensure certain keywords exist?
         self.__dict__.update(kwargs)
         
     def __call__(self, original_func):

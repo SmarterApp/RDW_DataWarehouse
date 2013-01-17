@@ -35,7 +35,6 @@ class Test(unittest.TestCase):
         result = utils.generate_report(registry, "test", params, validator)
         TestCase.assertFalse(self, result)
         
-    
         
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.test']

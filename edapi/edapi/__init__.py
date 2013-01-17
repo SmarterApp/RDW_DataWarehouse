@@ -1,6 +1,3 @@
-from edapi.views import generate_report_get,\
-    generate_report_post, get_report_config
-
 def add_report_config(self, delegate, **kwargs):
     # directive used to save report_config decorators to configurator registry
     settings = kwargs.copy()

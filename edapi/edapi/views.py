@@ -8,6 +8,10 @@ from edapi.utils import generate_report_config, generate_report,\
 from pyramid.httpexceptions import HTTPNotFound, HTTPPreconditionFailed
 from pyramid.view import view_config
 
+def check_application_json(info, request):
+    if 'application/json' == request.content_type.lower():
+        return True
+
 # handle the OPTIONS verb for the report resource
 @view_config(route_name='report', renderer='json', request_method='OPTIONS')
 def get_report_config(request):
@@ -49,12 +53,8 @@ def generate_report_get(request):
         return HTTPPreconditionFailed()
     return report   
 
-@view_config(route_name='report_for_post', renderer='json', request_method='POST')
+@view_config(route_name='report', renderer='json', request_method='POST', custom_predicates=(check_application_json,))
 def generate_report_post(request):
-    # if the media type is not application/json, the request is rejected.
-    if (request.content_type != 'application/json'):
-        return HTTPNotFound()
-    
     try:
         # basic check that it is a correct json, if not an exception will get raised when accessing json_body.
         report_config = request.json_body

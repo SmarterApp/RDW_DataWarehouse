@@ -5,6 +5,9 @@ from smarter.services.compare_populations import generateComparePopulationsJSON
 from sqlalchemy.exc import DBAPIError
 from smarter.controllers import compare_population_criteria
 from smarter.controllers import get_compare_population
+from smarter.reports.student_report import get_student_report
+import json
+import urllib.request
 
 @view_config(route_name='comparing_populations', renderer='templates/comparing_populations.pt')
 def compPop_view(request):
@@ -123,90 +126,51 @@ def input_populations_json(request):
 def check_status(request):
     return {'result': 'Everything is working fine!'}
 
+
 # Individual Student Report
 @view_config(route_name='indiv_student', renderer='templates/reports/individual_student.pt')
 def individual_student_report(request):
-    id = request.params['id']
 
-    f_name = "First_Name"
-    m_name = "Middle_Name"
-    l_name = "Last_Name"
+    student_id = int(request.params['student'])
+    assessment_id = int(request.params['assmt'])
 
-    if id == "00001":
-        f_name = "Andrew"
-        m_name = "Murphy"
-        l_name = "Brien"
-    elif id == "00002":
-        f_name = "Seth"
-        m_name = "A"
-        l_name = "Wimberly"
-    elif id == "00003":
-        f_name = "Scott"
-        m_name = "B"
-        l_name = "MacGibbon"
+    params = {'studentId': student_id, 'assessmentId': assessment_id}
 
-    return {'first_name': f_name, 'middle_name': m_name, 'last_name': l_name, 'assmt_name': 'English Language Arts', 'assmt_period': 'Fall 2012', 'claim_name_1': 'Composition', 'claim_score_1': 100, 'claim_name_2': 'Comprehension', 'claim_score_2': 90, 'claim_name_3': 'Grammar', 'claim_score_3': 80, 'claim_name_4': 'Vocabulary', 'claim_score_4': 70, 'assmt_ovr_score': 85}
+    rpt = get_student_report(params)
+
+    print('TYPE: ' + str(type(rpt)))
+
+    # temporary fix to keep this simple
+    # we only want one of the rows returned from the service.
+    json_obj = rpt[0]
+
+    return json_obj
+
+# Bootstrapped Individual Student Report
+@view_config(route_name='indiv_student_bootstrap', renderer='templates/reports/individual_student_bootstrap.pt')
+def individual_student_report_bootstrap(request):
+    student_id = int(request.params['student'])
+    assessment_id = int(request.params['assmt'])
+
+    params = json.dumps({"studentId":student_id})
+    params = params.encode('utf-8')
+
+    headers = {}
+    headers['Content-Type'] = 'application/json'
+
+    req = urllib.request.Request('http://127.0.0.1:6543/report/student_report/_query', params, headers)
+    res = json.loads(urllib.request.urlopen(req).read().decode('utf-8'))
+
+    print('TYPE >>>>>>>>>>>>>> ' + str(type(res)))
+
+    # temporary fix to keep this simple
+    # we only want one of the rows returned from the service.
+    res = res[0]
+
+    return res
+
 
 # Class Report
 @view_config(route_name='class_report', renderer='templates/reports/class.pt')
 def class_report(request):
     return {'class_name': 'English'}
-    """
-    json =
-    [
-        {
-            "middle_name": "SMITH",
-            "subject": "ELA",
-            "time_period": "BOY",
-            "assessment_score": 62.0,
-            "student_id": 2881,
-            "year_range": "2012-2013",
-            "first_name": "MARY"
-        },
-        {
-            "middle_name": "SMITH",
-            "subject": "MATH",
-            "time_period": "MOY",
-            "assessment_score": 67.0,
-            "student_id": 2881,
-            "year_range": "2012-2013",
-            "first_name": "MARY"
-        },
-        {
-            "middle_name": "SMITH",
-            "subject": "ELA",
-            "time_period": "EOY",
-            "assessment_score": 52.0,
-            "student_id": 2881,
-            "year_range": "2012-2013",
-            "first_name": "MARY"
-        },
-        {
-            "middle_name": "SMITH",
-            "subject": "MATH",
-            "time_period": "BOY",
-            "assessment_score": 64.0,
-            "student_id": 2881,
-            "year_range": "2013-2014",
-            "first_name": "MARY"
-        },
-        {
-            "middle_name": "SMITH",
-            "subject": "ELA",
-            "time_period": "MOY",
-            "assessment_score": 67.0,
-            "student_id": 2881,
-            "year_range": "2013-2014",
-            "first_name": "MARY"
-        },
-        {
-            "middle_name": "SMITH",
-            "subject": "ELA",
-            "time_period": "EOY",
-            "assessment_score": 62.0,
-            "student_id": 2881,
-            "year_range": "2013-2014",
-            "first_name": "MARY"
-        }
-    ]
-"""

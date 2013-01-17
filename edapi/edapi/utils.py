@@ -3,14 +3,47 @@ Created on Jan 16, 2013
 
 @author: aoren
 '''
-
-import sys
-from zope import component
-from edapi.repository.report_config_repository import IReportConfigRepository
+import venusian
+import validictory
+from validictory.validator import ValidationError
+import time
+from pyramid.httpexceptions import HTTPNotFound, HTTPPreconditionFailed
+import json
 
 REPORT_REFERENCE_FIELD_NAME = 'alias'
+PARAMS_REFERENCE_FIELD_NAME = 'params'
+REF_REFERENCE_FIELD_NAME = 'reference'
 VALUE_FIELD_NAME = 'value'
 
+#def enum(**enums):
+#    return type('Enum', (), enums)
+
+def enum(*sequential, **named):
+    enums = dict(zip(sequential, range(len(sequential))), **named)
+    reverse = dict((value, key) for key, value in enums.items())
+    enums['reverse_mapping'] = reverse
+    return type('Enum', (), enums)
+
+VALID_TYPES = enum(STRING='string', INTEGER='integer', NUMBER='number', BOOLEAN='boolean', ANY='any')
+
+class report_config(object):
+    '''
+    used for processing decorator '@report_config' in pyramid scans
+    '''
+    def __init__(self, **kwargs):
+        self.__dict__.update(kwargs)
+        
+    def __call__(self, original_func):
+        settings = self.__dict__.copy()
+        
+        def callback(scanner, name, obj):
+            def wrapper(*args, **kwargs):
+                print ("Arguments were: %s, %s" % (args, kwargs))
+                return original_func(self, *args, **kwargs)
+            scanner.config.add_report_config((obj, original_func), **settings)
+        venusian.attach(original_func, callback, category='edapi')
+        return original_func
+    
 class EdApiError(Exception):
     '''
     a general EdApi error. 
@@ -20,57 +53,193 @@ class EdApiError(Exception):
 
 class ReportNotFoundError(EdApiError):
     ''' 
-    a custom excetption that raised when a report cannot be found.
+    a custom exception raised when a report cannot be found.
     '''
     def __init__(self, name):
-        self.msg = "Report %s not found".format(name)
+        self.msg = "Report %s is not found" % name
+        
+class InvalidParameterError(EdApiError):
+    '''
+    a custom exception raised when a report parameter is not found.
+    '''
+    def __init__(self, msg):
+        self.msg = "Invalid Parameters"
 
-#creates an object from a given class name
-def create_object_from_name(class_name):
-    try:
-        instance =  getattr(sys.modules[__name__], class_name);
-    except AttributeError:
-        raise 'Class {0} is not found'.format(class_name)
-    return instance.get_json(instance);
-
+class EdApiHTTPNotFound(HTTPNotFound):
+    '''
+    a custom http exception return when resource not found
+    '''
+    #code = 404
+    #title = 'Requested report not found'
+    #explanation = ('The resource could not be found.')
+    
+    def __init__(self, msg):
+        super().__init__(text = json.dumps({'error': msg}), content_type = "application/json")
+        
+class EdApiHTTPPreconditionFailed(HTTPPreconditionFailed):
+    '''
+    a custom http exception when precondition is not met
+    '''
+    #code = 412
+    #title = 'Parameter validation failed'
+    #xplanation = ('Request precondition failed.')
+    
+    def __init__(self, msg):
+        super().__init__(text = json.dumps({'error': msg}), content_type = "application/json")
+    
+# dict lookup and raises an exception if key doesn't exist       
+def get_dict_value(dictionary, key, exception_to_raise=Exception):
+    report = dictionary.get(key)
+    if (report is None):
+        raise exception_to_raise(key)
+    return report
+        
+#def convert_numbers_to_int(report_config):
+#    result = {}
+#    
+#    try:
+#        for (key, value) in report_config.items():
+#            result[key]  = autoconvert(value)
+#    except Exception as e:
+#        print(e.strerror)
+#    return result        
+        
 # generates a report by calling the report delegate for generating itself (received from the config repository).
-def generate_report(report_name, params):
-    (obj,generate_report_method) = get_config_repository().get_report_delegate(report_name)
-    inst = obj()
-    response = getattr(inst, generate_report_method.__name__)(params)
+def generate_report(registry, report_name, params, validator = None):
+    if not validator:
+        validator = Validator()
+        
+    params = validator.fix_types(registry, report_name, params)
+    validated = validator.validate_params_schema(registry, report_name, params)
+    
+    if (not validated):
+        return False
+    
+    report = get_dict_value(registry, report_name, ReportNotFoundError)
+    
+    (obj, generate_report_method) = get_dict_value(report, REF_REFERENCE_FIELD_NAME)
+    
+    # Check if obj variable is object or not
+    # if obj is generate_report_method, then obj is function.
+    # Otherwise, instantiate object first before calling function.
+    if obj == generate_report_method:
+        response = generate_report_method(params)
+    else:
+        inst = obj()
+        response = getattr(inst, generate_report_method.__name__)(params)
     return response
 
 # generates a report config by loading it from the config repository
-def generate_report_config(report_name):
-    #load the report configuration from the repository
-    report_config = get_config_repository().get_report_config(report_name)
+def generate_report_config(registry, report_name):
+    # load the report configuration from registry
+    report = get_dict_value(registry, report_name, ReportNotFoundError)
+    report_config = get_dict_value(report, PARAMS_REFERENCE_FIELD_NAME, InvalidParameterError)
     # expand the param fields
-    propagate_params(report_config)
+    propagate_params(registry, report_config)
     return report_config
-    
-def get_config_repository():
-    return component.getUtility(IReportConfigRepository)
 
 # looks for fields that can be expanded with no external configuration and expands them by calling the right method.
-def propagate_params(params):
+def propagate_params(registry, params):
     for dictionary in params.values():
         for (key, value) in dictionary.items():
             if (key == REPORT_REFERENCE_FIELD_NAME):
-                expanded = expand_field(value)
+                sub_report = get_dict_value(registry, value, ReportNotFoundError)
+                report_config = sub_report.get(PARAMS_REFERENCE_FIELD_NAME)
+                expanded = expand_field(registry, value, report_config)
                 if (expanded[1]):
                     # if the value has changed, we change the key to be VALUE_FIELD_NAME
-                    dictionary['value'] = expanded[0]
+                    dictionary[VALUE_FIELD_NAME] = expanded[0]
                     del dictionary[key]
     print(params)
 
 # receive a report's name, tries to take it from the repository and see if it requires configuration, if not, generates the report and return the generated value.
 # return True if the value is changing or false otherwise
-def expand_field(report_name):
-    report_config = get_config_repository().get_report_config(report_name)
-    if (report_config is not None):
+def expand_field(registry, report_name, params):
+    if (params is not None):
         return (report_name, False)
-    config = get_config_repository().get_report_delegate(report_name)
-    report_data = config[1](config[0], None)
+    config = registry[report_name][REF_REFERENCE_FIELD_NAME]
+    report_data = config[1](config[0], params)  # params is none
     return (report_data, True)
 
-            
+
+def add_configuration_header(params_config):
+    result = {
+              "$schema": "http://json-schema.org/draft-04/schema#",
+                                                "title": "Config",
+                                                "description": "a config",
+                                                "type": "object", 
+                                                "properties" : ""
+              }
+    result['properties'] = params_config
+    return result
+
+
+class Validator:
+    # validates the given parameters with the report configuration validation definition
+    @staticmethod
+    def validate_params_schema(registry, report_name, params):
+        report = get_dict_value(registry, report_name, ReportNotFoundError)
+        params_config = get_dict_value(report, PARAMS_REFERENCE_FIELD_NAME, InvalidParameterError)
+        params_config = add_configuration_header(params_config)
+        try:
+            validictory.validate(params, params_config)
+        except ValueError as e:
+            print(e)
+            return False;
+        return True;
+    @staticmethod
+    def fix_types(registry, report_name, params):
+        result = {}
+        report = get_dict_value(registry, report_name, ReportNotFoundError)
+        params_config = get_dict_value(report, PARAMS_REFERENCE_FIELD_NAME, InvalidParameterError)
+        for (key, value) in params.items():
+            config = params_config.get(key)
+            if (config == None):
+                continue               
+                
+            result[key] = value
+            # check if config has validation
+            validatedText = config
+            if (validatedText != None):
+                try:
+                    # check type for string items
+                    if isinstance(value, str):
+                        #validatedTextJson = json.loads(validatedText)
+                        valueType = validatedText.get('type')
+                        if (valueType is not None and valueType.lower() != VALID_TYPES.STRING):
+                            value = convert(value, VALID_TYPES.reverse_mapping[valueType])
+                            result[key] = value
+                except ValidationError:
+                    # TODO: log this
+                    return False
+        return result
+
+# attempts to convert a string to bool, otherwise raising an error    
+def boolify(s):
+    if s.lower() == 'true':
+        return True
+    if s.lower() == 'false':
+        return False
+    raise ValueError()
+
+# attempt to convert a String to another type, if it can't it returns the original string
+def auto_convert(s):
+    
+    for fn in (boolify, time.strptime, int, float):
+        try:
+            return fn(s)
+        except ValueError:
+            pass
+    return s
+
+def convert(value, valueType):
+    try:
+        return {
+            VALID_TYPES.reverse_mapping[VALID_TYPES.STRING]: value,
+            VALID_TYPES.reverse_mapping[VALID_TYPES.INTEGER] : int(value),
+            VALID_TYPES.reverse_mapping[VALID_TYPES.NUMBER] : float(value),
+            #VALID_TYPES.reverse_mapping[VALID_TYPES.BOOLEAN] : boolify(value),
+            VALID_TYPES.reverse_mapping[VALID_TYPES.ANY] : value
+        }[valueType]
+    except:
+        return value

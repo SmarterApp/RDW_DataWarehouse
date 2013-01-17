@@ -5,8 +5,7 @@ from .models import (DBSession, Base,)
 
 from pyramid.path import caller_package, caller_module, package_of
 import sys
-from edapi import EdApi
-
+import edapi
 
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
@@ -15,6 +14,10 @@ def main(global_config, **settings):
     DBSession.configure(bind=engine)
     Base.metadata.bind = engine
     config = Configurator(settings=settings)
+    
+    # include add routes from edapi. Calls includeme 
+    config.include(edapi)
+    
     config.add_static_view('static', 'static', cache_max_age=3600)
     config.add_route('home', '/')
     config.add_route('checkstatus', '/status')
@@ -34,9 +37,13 @@ def main(global_config, **settings):
     
     # routing for individual student report
     config.add_route('indiv_student', '/indiv_student_report')
+    #r routing for *bootstrapped* individual student report
+    config.add_route('indiv_student_bootstrap', '/indiv_student_report_bootstrap')
     #routing for class report
     config.add_route('class_report', '/class_report')
     config.add_route('student_report','/student_report')
-    config.scan(categories=('pyramid',))
-    EdApi(config, sys.modules['smarter'])
+    
+    # scans smarter
+    config.scan()
+
     return config.make_wsgi_app()

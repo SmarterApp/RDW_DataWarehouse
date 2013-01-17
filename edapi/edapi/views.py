@@ -45,7 +45,7 @@ def get_report_config(request):
     return report_config
 
 
-@view_config(route_name='report_get_option', renderer='json', request_method='GET')
+@view_config(route_name='report_get_option', renderer='json', request_method='GET', custom_predicates=(check_application_json,))
 def generate_report_get(request):
     # gets the name of the report from the URL
     reportName = request.matchdict['name']

@@ -108,12 +108,10 @@ def get_dict_value(dictionary, key, exception_to_raise=Exception):
 def generate_report(registry, report_name, params, validator = None):
     if not validator:
         validator = Validator()
-    validated = validator.validate_params(registry, report_name, params)
+    validated = validator.validate_params_schema(registry, report_name, params)
     
     if (not validated):
         return False
-    
-    params = validated
     
     report = get_dict_value(registry, report_name, ReportNotFoundError)
     
@@ -143,7 +141,9 @@ def propagate_params(registry, params):
     for dictionary in params.values():
         for (key, value) in dictionary.items():
             if (key == REPORT_REFERENCE_FIELD_NAME):
-                expanded = expand_field(registry, value, params)
+                sub_report = get_dict_value(registry, value, ReportNotFoundError)
+                report_config = sub_report.get(PARAMS_REFERENCE_FIELD_NAME)
+                expanded = expand_field(registry, value, report_config)
                 if (expanded[1]):
                     # if the value has changed, we change the key to be VALUE_FIELD_NAME
                     dictionary[VALUE_FIELD_NAME] = expanded[0]
@@ -159,36 +159,32 @@ def expand_field(registry, report_name, params):
     report_data = config[1](config[0], params)  # params is none
     return (report_data, True)
 
+
+def add_configuration_header(params_config):
+    result = {
+              "$schema": "http://json-schema.org/draft-04/schema#",
+                                                "title": "Config",
+                                                "description": "a config",
+                                                "type": "object", 
+                                                "properties" : ""
+              }
+    result['properties'] = params_config
+    return result
+
+
 class Validator:
     # validates the given parameters with the report configuration validation definition
     @staticmethod
-    def validate_params(registry, report_name, params):
-        result = {}
+    def validate_params_schema(registry, report_name, params):
         report = get_dict_value(registry, report_name, ReportNotFoundError)
         params_config = get_dict_value(report, PARAMS_REFERENCE_FIELD_NAME, InvalidParameterError)
-        for (key, value) in params.items():
-            config = params_config.get(key)
-            if (config == None):
-                continue               
-                
-            result[key] = value
-            # check if config has validation
-            validatedText = config.get('validation', None)
-            if (validatedText != None):
-                try:
-                    # check type for string items
-                    if isinstance(value, str):
-                        #validatedTextJson = json.loads(validatedText)
-                        valueType = validatedText.get('type')
-                        if (valueType is not None and valueType.lower() != VALID_TYPES.STRING):
-                            value = convert(value, VALID_TYPES.reverse_mapping[valueType])
-                            result[key] = value
-                        
-                    validictory.validate(value, validatedText)
-                except ValidationError:
-                    # TODO: log this
-                    return False
-        return result
+        params_config = add_configuration_header(params_config)
+        try:
+            validictory.validate(params, params_config)
+        except ValueError as e:
+            print(e)
+            return False;
+        return True;
 
 # attempts to convert a string to bool, otherwise raising an error    
 def boolify(s):

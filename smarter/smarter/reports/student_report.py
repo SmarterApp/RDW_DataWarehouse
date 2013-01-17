@@ -14,7 +14,16 @@ from sqlalchemy.schema import Table
 student_report and assessment_id for student
 '''
     
-@report_config(alias='student_report', params={"studentId": {"validation" : {"type":"integer", "required":True}}, "assessmentId" : {"validation" : {"type":"integer", "required":False}}})
+@report_config(alias='student_report', params={
+                                              "studentId": {
+                                                  "type": "integer",
+                                                  "required": True
+                                              },
+                                              "assessmentId": {
+                                                  "type": "integer",
+                                                  "required": False
+                                              }
+                                               })
 def get_student_report(params, connector=None):
 
     # if connector is not supplied, use DBConnector
@@ -61,7 +70,7 @@ def get_student_report(params, connector=None):
     connector.close_session()
     return result
 
-@report_config(alias='student_assessment_id', params={"studentId": {"validation" : {"type":"integer", "required":True}}})
+@report_config(alias='student_assessment_id', params={"studentId": {"type":"integer", "required":True}})
 def get_student_assessment_id(params, connector=None):
     
     # if connector is not supplied, use DBConnector

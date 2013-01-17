@@ -108,6 +108,8 @@ def get_dict_value(dictionary, key, exception_to_raise=Exception):
 def generate_report(registry, report_name, params, validator = None):
     if not validator:
         validator = Validator()
+        
+    params = validator.fix_types(registry, report_name, params)
     validated = validator.validate_params_schema(registry, report_name, params)
     
     if (not validated):
@@ -185,6 +187,32 @@ class Validator:
             print(e)
             return False;
         return True;
+    @staticmethod
+    def fix_types(registry, report_name, params):
+        result = {}
+        report = get_dict_value(registry, report_name, ReportNotFoundError)
+        params_config = get_dict_value(report, PARAMS_REFERENCE_FIELD_NAME, InvalidParameterError)
+        for (key, value) in params.items():
+            config = params_config.get(key)
+            if (config == None):
+                continue               
+                
+            result[key] = value
+            # check if config has validation
+            validatedText = config
+            if (validatedText != None):
+                try:
+                    # check type for string items
+                    if isinstance(value, str):
+                        #validatedTextJson = json.loads(validatedText)
+                        valueType = validatedText.get('type')
+                        if (valueType is not None and valueType.lower() != VALID_TYPES.STRING):
+                            value = convert(value, VALID_TYPES.reverse_mapping[valueType])
+                            result[key] = value
+                except ValidationError:
+                    # TODO: log this
+                    return False
+        return result
 
 # attempts to convert a string to bool, otherwise raising an error    
 def boolify(s):

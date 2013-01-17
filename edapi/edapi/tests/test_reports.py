@@ -8,18 +8,17 @@ from edapi.utils import report_config
 class TestReport():
     _query = 'test'
         
-    @report_config(alias = "test", params = {
-                                                "freeTextField": {
-                                                    "validation" : {
-                                                                   "type":"string"
+    @report_config(alias = "test", params = 
+                                             {
+                                                "freeTextField" : {
+                                                                   "type" : "string"
                                                                    },
-                                                },
                                                 "staticListField": {
-                                                    "value" : ["State", "Account", "School Group", "School", "Teacher", "Class", "Student", "Grade", "Race", "Custom Attribute"] 
-                                                },
-                                                "districts": {"alias" : "district_report" }, 
+                                                                    "value" : ["State", "Account", "School Group", "School", "Teacher", "Class", "Student", "Grade", "Race", "Custom Attribute"] 
+                                                                    },
                                                 "school_size": {"alias" : "school_size" } 
-                                             })
+                                              }
+                                            )
     def generate(self, params):
         return params #todo: return data
     

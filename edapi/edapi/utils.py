@@ -7,6 +7,7 @@ import venusian
 import validictory
 from validictory.validator import ValidationError
 import time
+from pyramid.httpexceptions import HTTPNotFound, HTTPPreconditionFailed
 import json
 
 REPORT_REFERENCE_FIELD_NAME = 'alias'
@@ -56,17 +57,39 @@ class ReportNotFoundError(EdApiError):
     a custom exception raised when a report cannot be found.
     '''
     def __init__(self, name):
-        self.msg = "Report %s not found".format(name)
+        self.msg = "Report %s is not found" % name
         
 class InvalidParameterError(EdApiError):
     '''
     a custom exception raised when a report parameter is not found.
     '''
-    def __init__(self, name):
-        self.msg = "Invalid Parameter"
+    def __init__(self, msg):
+        self.msg = "Invalid Parameters"
 
+class EdApiHTTPNotFound(HTTPNotFound):
+    '''
+    a custom http exception return when resource not found
+    '''
+    #code = 404
+    #title = 'Requested report not found'
+    #explanation = ('The resource could not be found.')
+    
+    def __init__(self, msg):
+        super().__init__(text = json.dumps({'error': msg}), content_type = "application/json")
+        
+class EdApiHTTPPreconditionFailed(HTTPPreconditionFailed):
+    '''
+    a custom http exception when precondition is not met
+    '''
+    #code = 412
+    #title = 'Parameter validation failed'
+    #xplanation = ('Request precondition failed.')
+    
+    def __init__(self, msg):
+        super().__init__(text = json.dumps({'error': msg}), content_type = "application/json")
+    
 # dict lookup and raises an exception if key doesn't exist       
-def get_dict_value(dictionary, key, exception_to_raise = Exception):
+def get_dict_value(dictionary, key, exception_to_raise=Exception):
     report = dictionary.get(key)
     if (report is None):
         raise exception_to_raise(key)
@@ -94,13 +117,20 @@ def generate_report(registry, report_name, params, validator = None):
     report = get_dict_value(registry, report_name, ReportNotFoundError)
     
     (obj, generate_report_method) = get_dict_value(report, REF_REFERENCE_FIELD_NAME)
-    inst = obj()
-    response = getattr(inst, generate_report_method.__name__)(params)
+    
+    # Check if obj variable is object or not
+    # if obj is generate_report_method, then obj is function.
+    # Otherwise, instantiate object first before calling function.
+    if obj == generate_report_method:
+        response = generate_report_method(params)
+    else:
+        inst = obj()
+        response = getattr(inst, generate_report_method.__name__)(params)
     return response
 
 # generates a report config by loading it from the config repository
 def generate_report_config(registry, report_name):
-    #load the report configuration from registry
+    # load the report configuration from registry
     report = get_dict_value(registry, report_name, ReportNotFoundError)
     report_config = get_dict_value(report, PARAMS_REFERENCE_FIELD_NAME, InvalidParameterError)
     # expand the param fields
@@ -125,7 +155,7 @@ def expand_field(registry, report_name, params):
     if (params is not None):
         return (report_name, False)
     config = registry[report_name][REF_REFERENCE_FIELD_NAME]
-    report_data = config[1](config[0], params) # params is none
+    report_data = config[1](config[0], params)  # params is none
     return (report_data, True)
 
 class Validator:

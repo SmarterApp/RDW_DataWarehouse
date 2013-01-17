@@ -59,9 +59,10 @@ class StudentReport:
                             .join(dim_assessment, dim_assessment.c.assessment_key == fact_assessment_result.c.assessment_id)\
                             .filter(fact_assessment_result.c.student_id == student_id)
 
-        # assessment_id is optional, but if assessment_id is available, add to a query filter            
+        # assessment_id is optional, but if assessment_id is available, add to a query filter
         if assessment_id is not None:
             query = query.filter(fact_assessment_result.c.assessment_id == assessment_id)
+
 
         result = self.connector.get_result(query)
         self.connector.close_session()

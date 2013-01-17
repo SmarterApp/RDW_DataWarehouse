@@ -148,9 +148,10 @@ def individual_student_report(request):
 @view_config(route_name='indiv_student_bootstrap', renderer='templates/reports/individual_student_bootstrap.pt')
 def individual_student_report_bootstrap(request):
     student_id = int(request.params['student'])
-    assessment_id = int(request.params['assmt'])
+    #assessment_id = int(request.params['assmt'])
 
-    params = {'studentId': student_id, 'assessmentId': assessment_id}
+    #params = {'studentId': student_id, 'assessmentId': None}
+    params = {'studentId': student_id}
 
     rpt = StudentReport().get_student_report(params)
 

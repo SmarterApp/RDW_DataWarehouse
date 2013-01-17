@@ -5,7 +5,7 @@ from smarter.services.compare_populations import generateComparePopulationsJSON
 from sqlalchemy.exc import DBAPIError
 from smarter.controllers import compare_population_criteria
 from smarter.controllers import get_compare_population
-from smarter.reports.student_report import StudentReport
+from smarter.reports.student_report import get_student_report
 
 @view_config(route_name='comparing_populations', renderer='templates/comparing_populations.pt')
 def compPop_view(request):
@@ -134,7 +134,7 @@ def individual_student_report(request):
 
     params = {'studentId': student_id, 'assessmentId': assessment_id}
 
-    rpt = StudentReport().get_student_report(params)
+    rpt = get_student_report(params)
 
     print('TYPE: ' + str(type(rpt)))
 
@@ -153,7 +153,7 @@ def individual_student_report_bootstrap(request):
     #params = {'studentId': student_id, 'assessmentId': None}
     params = {'studentId': student_id}
 
-    rpt = StudentReport().get_student_report(params)
+    rpt = get_student_report(params)
 
     print('TYPE: ' + str(type(rpt)))
 

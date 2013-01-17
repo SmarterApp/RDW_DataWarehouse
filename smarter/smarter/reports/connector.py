@@ -13,7 +13,7 @@ Inheritate this class if you are making a report class and need to access to dat
 BaseReport is just managing session for your database connection and convert result to dictionary
 '''
 
-class ReportConnector(Connectable):
+class DBConnector(Connectable):
     def __init__(self):
         pass
     

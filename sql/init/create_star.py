@@ -26,6 +26,7 @@ from argparse import RawDescriptionHelpFormatter
 
 from sqlalchemy import create_engine, Sequence, Table, Column, BigInteger, Integer, String 
 from sqlalchemy import MetaData, ForeignKey, select
+from sqlalchemy.schema import CreateTable
 
 __all__     = []
 __version__ = 0.1
@@ -88,18 +89,21 @@ def createTables(dbConnectionString, schemaName):
     metadata    = MetaData(schema = schemaName)
 
     users       = Table('users', metadata,
-                 Column('id', BigInteger, Sequence('user_id_seq'), primary_key=True),
-                 Column('first_name', String(128)),
-                 Column('last_name', String(256)),
-                 )
+                        Column('id',            BigInteger,     Sequence('user_id_seq'),    primary_key=True),
+                        Column('first_name',    String(128)),
+                        Column('last_name',     String(256)),
+                        )
 
     addresses  = Table('addresses', metadata,
-                       Column('id', Integer, Sequence('address_iq_seq'), primary_key=True),
-                       Column('user_id', None, ForeignKey('users.id')),
-                       Column('email_address', String(256), nullable=False)  
+                       Column('id',             Integer,        Sequence('address_iq_seq'), primary_key=True),
+                       Column('user_id',        None,           ForeignKey('users.id')),
+                       Column('email_address',  String(256),    nullable=False)  
                        )
     
     metadata.create_all(engine)
+    
+    print(CreateTable(users))
+    print(CreateTable(addresses))
     
     return
 

@@ -12,7 +12,7 @@ VALUE_FIELD_NAME = 'value'
 
 class report_config(object):
     def __init__(self, **kwargs):
-        #TODO ensure certain keywords exist?
+        # TODO ensure certain keywords exist?
         self.__dict__.update(kwargs)
         
     def __call__(self, original_func):
@@ -22,7 +22,7 @@ class report_config(object):
             def wrapper(*args, **kwargs):
                 print ("Arguments were: %s, %s" % (args, kwargs))
                 return original_func(self, *args, **kwargs)
-            scanner.config.add_report_config((obj,original_func), **settings)
+            scanner.config.add_report_config((obj, original_func), **settings)
         venusian.attach(original_func, callback, category='edapi')
         return original_func
     
@@ -41,20 +41,22 @@ class ReportNotFoundError(EdApiError):
         self.msg = "Report %s not found".format(name)
         
 # generates a report by calling the report delegate for generating itself (received from the config repository).
-def generate_report(registry, report_name, params, validator):
+def generate_report(registry, report_name, params, validator=None):
+    if not validator:
+        validator = Validator()
     validated = validator.validate_params(registry, report_name, params)
     
     if (not validated):
         return False
     
-    (obj,generate_report_method) = registry[report_name]['reference']
+    (obj, generate_report_method) = registry[report_name]['reference']
     inst = obj()
     response = getattr(inst, generate_report_method.__name__)(params)
     return response
 
 # generates a report config by loading it from the config repository
 def generate_report_config(registry, report_name):
-    #load the report configuration from the repository
+    # load the report configuration from the repository
     report_config = registry[report_name]['params']
     # expand the param fields
     propagate_params(registry, report_config)
@@ -78,7 +80,7 @@ def expand_field(registry, report_name, params):
     if (params is not None):
         return (report_name, False)
     config = registry[report_name]['reference']
-    report_data = config[1](config[0], params) # params is none
+    report_data = config[1](config[0], params)  # params is none
     return (report_data, True)
 
 class Validator:
@@ -96,7 +98,7 @@ class Validator:
                 try:
                     validictory.validate(value, config['validation'])
                 except ValidationError:
-                    #TODO: log this
+                    # TODO: log this
                     return False
         return True
 

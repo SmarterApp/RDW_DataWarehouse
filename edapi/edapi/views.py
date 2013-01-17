@@ -3,9 +3,6 @@ Created on Jan 14, 2013
 
 @author: aoren
 '''
-
-from pyramid.httpexceptions import HTTPNotFound, HTTPPreconditionFailed
-
 from pyramid.view import view_config
 from edapi import EDAPI_REPORTS_PLACEHOLDER
 from edapi.utils import ReportNotFoundError, EdApiHTTPNotFound,\
@@ -16,6 +13,7 @@ def check_application_json(info, request):
     if 'application/json' == request.content_type.lower():
         return True
 
+# given a request, return the registry belonging to edapi reports
 def get_report_registry(request, name = None):
     reg = request.registry.get(EDAPI_REPORTS_PLACEHOLDER)
     if (reg is None):

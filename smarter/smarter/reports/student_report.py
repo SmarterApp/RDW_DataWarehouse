@@ -7,7 +7,6 @@ Created on Jan 13, 2013
 
 from edapi.utils import report_config
 from .connector import DBConnector
-from locale import atoi
 from sqlalchemy.orm.query import Query
 from sqlalchemy.schema import Table
 

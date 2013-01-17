@@ -8,21 +8,21 @@ from edapi.utils import generate_report_config, generate_report,\
      ReportNotFoundError, InvalidParameterError, autoconvert,\
      EdApiHTTPNotFound, EdApiHTTPPreconditionFailed
 from pyramid.view import view_config
-import edapi
+from edapi import EDAPI_REPORTS_PLACEHOLDER
 
 def check_application_json(info, request):
     if 'application/json' == request.content_type.lower():
         return True
 
 def get_report_registry(request, name = None):
-    reg = request.registry.get(edapi.EDAPI_REPORTS_PLACEHOLDER)
+    reg = request.registry.get(EDAPI_REPORTS_PLACEHOLDER)
     if (reg is None):
         raise ReportNotFoundError(name)
     return reg   
 
 # returns list of reports in GET request    
-@view_config(route_name='all_reports', renderer='json', request_method='GET')
-def all_reports(request):
+@view_config(route_name='list_of_reports', renderer='json', request_method='GET')
+def get_list_of_reports(request):
     try:
         reports = get_report_registry(request)
     except ReportNotFoundError:

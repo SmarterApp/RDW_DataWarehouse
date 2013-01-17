@@ -15,7 +15,5 @@ def includeme(config):
     config.add_route('report_for_post', '/report/{name}/_query')
     # directive to handle report_config decorators
     config.add_directive('add_report_config', add_report_config)
-    # adding views for the different verbs (GET, POST, OPTIONS)
-    config.add_view(view=generate_report_get, route_name='report', renderer='json', request_method='GET')
-    config.add_view(view=generate_report_post, route_name='report_for_post', renderer='json', request_method='POST')
-    config.add_view(view=get_report_config, route_name='report', renderer='json', request_method='OPTIONS')
+    # scans edapi, ignoring test package
+    config.scan(ignore='edapi.test')

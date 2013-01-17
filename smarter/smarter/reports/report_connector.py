@@ -6,13 +6,14 @@ Created on Jan 15, 2013
 
 from ..models import (DBSession, metadata,)
 from sqlalchemy.schema import Table
+from smarter.reports.interfaces import Connectable
 
 '''
 Inheritate this class if you are making a report class and need to access to database
 BaseReport is just managing session for your database connection and convert result to dictionary
 '''
 
-class BaseReport(object):
+class ReportConnector(Connectable):
     def __init__(self):
         pass
     
@@ -25,9 +26,10 @@ class BaseReport(object):
     
     #query and get result
     #Convert from result_set to dictionary.
-    def get_result(self, sql_query):
+    def get_result(self, query):
+        query.session=self.__session
         result_rows = []
-        rows = sql_query.all()
+        rows = query.all()
         if rows is not None:
             for row in rows:
                 result_rows.append(row._asdict())

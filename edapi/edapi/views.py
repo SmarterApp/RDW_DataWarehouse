@@ -5,8 +5,10 @@ Created on Jan 14, 2013
 '''
 from edapi.utils import generate_report_config, generate_report
 from pyramid.httpexceptions import HTTPNotFound, HTTPPreconditionFailed
+from pyramid.view import view_config
 
 # handle the OPTIONS verb for the report resource
+@view_config(route_name='report', renderer='json', request_method='OPTIONS')
 def get_report_config(request):
     # gets the name of the report from the URL
     name = request.matchdict['name']
@@ -17,12 +19,14 @@ def get_report_config(request):
         return HTTPNotFound()
     return report_config
 
+@view_config(route_name='report', renderer='json', request_method='GET')
 def generate_report_get(request):
     # gets the name of the report from the URL
     reportName = request.matchdict['name'] 
     report_config = request.GET
     return generate_report(request.registry, reportName, report_config)
 
+@view_config(route_name='report_for_post', renderer='json', request_method='POST')
 def generate_report_post(request):
     # if the media type is not application/json, the request is rejected.
     if (request.content_type != 'application/json'):

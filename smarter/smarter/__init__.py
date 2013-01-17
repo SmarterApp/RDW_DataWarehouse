@@ -45,7 +45,5 @@ def main(global_config, **settings):
     
     # scans smarter
     config.scan()
-    # scans edapi
-    config.scan(edapi, ignore='edapi.test')
 
     return config.make_wsgi_app()

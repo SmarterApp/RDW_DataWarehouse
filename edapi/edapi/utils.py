@@ -188,11 +188,11 @@ class Validator:
 
 # attempts to convert a string to bool, otherwise raising an error    
 def boolify(s):
-    if s == 'True':
+    if s.lower() == 'true':
         return True
-    if s == 'False':
+    if s.lower() == 'false':
         return False
-    raise ValueError("huh?")
+    raise ValueError()
 
 # attempt to convert a String to another type, if it can't it returns the original string
 def auto_convert(s):
@@ -210,9 +210,8 @@ def convert(value, valueType):
             VALID_TYPES.reverse_mapping[VALID_TYPES.STRING]: value,
             VALID_TYPES.reverse_mapping[VALID_TYPES.INTEGER] : int(value),
             VALID_TYPES.reverse_mapping[VALID_TYPES.NUMBER] : float(value),
-            VALID_TYPES.reverse_mapping[VALID_TYPES.BOOLEAN] : bool(value),
-            VALID_TYPES.reverse_mapping[VALID_TYPES.NUMBER] : float(value),
-            
+            #VALID_TYPES.reverse_mapping[VALID_TYPES.BOOLEAN] : boolify(value),
+            VALID_TYPES.reverse_mapping[VALID_TYPES.ANY] : value
         }[valueType]
     except:
         return value

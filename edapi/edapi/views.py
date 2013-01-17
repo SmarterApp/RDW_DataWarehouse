@@ -55,7 +55,7 @@ def generate_report_get(request):
     params = request.GET
     
     try:
-        report = generate_report(get_report_registry(request, reportName), reportName, report_config)
+        report = generate_report(get_report_registry(request, reportName), reportName, params)
     except ReportNotFoundError as e:
         return EdApiHTTPNotFound(e.msg)
     except InvalidParameterError as e:

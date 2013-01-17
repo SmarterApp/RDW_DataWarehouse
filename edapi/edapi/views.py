@@ -4,7 +4,7 @@ Created on Jan 14, 2013
 @author: aoren
 '''
 from edapi.utils import generate_report_config, generate_report,\
-    ReportNotFoundError, InvalidParameterError
+    ReportNotFoundError, InvalidParameterError, autoconvert
 from pyramid.httpexceptions import HTTPNotFound, HTTPPreconditionFailed
 from pyramid.view import view_config
 
@@ -23,21 +23,23 @@ def get_report_config(request):
         return HTTPPreconditionFailed()
     return report_config
 
-@view_config(route_name='report', renderer='json', request_method='GET')
-
-
 def convert_numbers_to_int(report_config):
-    for (key, value) in report_config:
-        if value.isdigit():
-            report_config[key] = int(value)
-    pass
+    configs = {}
+    
+    try:
+        for (key, value) in report_config.items():
+            configs[key]  = autoconvert(value)
+    except Exception as e:
+        print(e.strerror)
+    return configs
+        
 
-
+@view_config(route_name='report', renderer='json', request_method='GET')
 def generate_report_get(request):
     # gets the name of the report from the URL
-    reportName = request.matchdict['name'] 
+    reportName = request.matchdict['name']
     report_config = request.GET
-	convert_numbers_to_int(report_config)
+    report_config = convert_numbers_to_int(report_config)
     
     try:
         report = generate_report(request.registry, reportName, report_config)

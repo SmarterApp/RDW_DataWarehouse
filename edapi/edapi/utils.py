@@ -6,6 +6,7 @@ Created on Jan 16, 2013
 import venusian
 import validictory
 from validictory.validator import ValidationError
+import time
 
 REPORT_REFERENCE_FIELD_NAME = 'alias'
 PARAMS_REFERENCE_FIELD_NAME = 'params'
@@ -123,3 +124,20 @@ class Validator:
                     # TODO: log this
                     return False
         return True
+
+# attempts to convert a string to bool, otherwise raising an error    
+def boolify(s):
+    if s == 'True':
+        return True
+    if s == 'False':
+        return False
+    raise ValueError("huh?")
+
+# attempt to convert a String to another type, if it can't it returns the original string
+def autoconvert(s):
+    for fn in (boolify, time.strptime, int, float):
+        try:
+            return fn(s)
+        except ValueError:
+            pass
+    return s

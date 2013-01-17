@@ -6,6 +6,8 @@ from sqlalchemy.exc import DBAPIError
 from smarter.controllers import compare_population_criteria
 from smarter.controllers import get_compare_population
 from smarter.reports.student_report import get_student_report
+import json
+import urllib.request
 
 @view_config(route_name='comparing_populations', renderer='templates/comparing_populations.pt')
 def compPop_view(request):
@@ -150,17 +152,22 @@ def individual_student_report_bootstrap(request):
     student_id = int(request.params['student'])
     assessment_id = int(request.params['assmt'])
 
-    params = {'studentId': student_id, 'assessmentId': assessment_id}
+    params = json.dumps({"studentId":student_id})
+    params = params.encode('utf-8')
 
-    rpt = get_student_report(params)
+    headers = {}
+    headers['Content-Type'] = 'application/json'
 
-    print('TYPE: ' + str(type(rpt)))
+    req = urllib.request.Request('http://127.0.0.1:6543/report/student_report/_query', params, headers)
+    res = json.loads(urllib.request.urlopen(req).read().decode('utf-8'))
+
+    print('TYPE >>>>>>>>>>>>>> ' + str(type(res)))
 
     # temporary fix to keep this simple
     # we only want one of the rows returned from the service.
-    json_obj = rpt[0]
+    res = res[0]
 
-    return json_obj
+    return res
 
 
 # Class Report

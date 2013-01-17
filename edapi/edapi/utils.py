@@ -3,7 +3,6 @@ Created on Jan 16, 2013
 
 @author: aoren
 '''
-import sys
 import venusian
 import validictory
 from validictory.validator import ValidationError
@@ -20,7 +19,7 @@ class report_config(object):
         settings = self.__dict__.copy()
         
         def callback(scanner, name, obj):
-            def wrapper(*args, wrapper, **kwargs):
+            def wrapper(*args, **kwargs):
                 print ("Arguments were: %s, %s" % (args, kwargs))
                 return original_func(self, *args, **kwargs)
             scanner.config.add_report_config((obj,original_func), **settings)
@@ -42,8 +41,8 @@ class ReportNotFoundError(EdApiError):
         self.msg = "Report %s not found".format(name)
         
 # generates a report by calling the report delegate for generating itself (received from the config repository).
-def generate_report(registry, report_name, params):
-    validated = validate_params(registry, report_name, params)
+def generate_report(registry, report_name, params, validator):
+    validated = validator.validate_params(registry, report_name, params)
     
     if (not validated):
         return False
@@ -60,14 +59,6 @@ def generate_report_config(registry, report_name):
     # expand the param fields
     propagate_params(registry, report_config)
     return report_config
-
-#creates an object from a given class name
-def create_object_from_name(registry, class_name):
-    try:
-        instance =  getattr(sys.modules[__name__], class_name);
-    except AttributeError:
-        raise 'Class {0} is not found'.format(class_name)
-    return instance.get_json(instance);
 
 # looks for fields that can be expanded with no external configuration and expands them by calling the right method.
 def propagate_params(registry, params):
@@ -90,20 +81,22 @@ def expand_field(registry, report_name, params):
     report_data = config[1](config[0], params) # params is none
     return (report_data, True)
 
-# validates the given parameters with the report configuration validation definition
-def validate_params(registry, report_name, params):
-    params_config = registry[report_name]['params']
-    for (key, value) in params.items():
-        config = params_config.get(key)
-        if (config == None):
-            continue
-        # check if config has validation
-        validatedText = config.get('validation', None)
-        if (validatedText != None):
-            try:
-                validictory.validate(value, config['validation'])
-            except ValidationError:
-                #TODO: log this
-                return False
-    return True
+class Validator:
+    # validates the given parameters with the report configuration validation definition
+    @staticmethod
+    def validate_params(registry, report_name, params):
+        params_config = registry[report_name]['params']
+        for (key, value) in params.items():
+            config = params_config.get(key)
+            if (config == None):
+                continue
+            # check if config has validation
+            validatedText = config.get('validation', None)
+            if (validatedText != None):
+                try:
+                    validictory.validate(value, config['validation'])
+                except ValidationError:
+                    #TODO: log this
+                    return False
+        return True
 

@@ -13,7 +13,7 @@ def get_report_config(request):
     # find the report configuration in the repository
     report_config = generate_report_config(request.registry, name)
     # if we cannot find the report configuration in the repository, we return 404 error
-    if (report_config is None):
+    if(report_config is None):
         return HTTPNotFound()
     return report_config
 
@@ -31,7 +31,6 @@ def generate_report_post(request):
     try:
         # basic check that it is a correct json, if not an exception will get raised when accessing json_body.
         report_config = request.json_body
-        #break
     except:
         return HTTPPreconditionFailed()
     # gets the name of the report from the URL

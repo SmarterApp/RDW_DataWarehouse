@@ -27,12 +27,13 @@ class DBConnector(Connectable):
     #query and get result
     #Convert from result_set to dictionary.
     def get_result(self, query):
-        query.session=self.__session
         result_rows = []
-        rows = query.all()
-        if rows is not None:
-            for row in rows:
-                result_rows.append(row._asdict())
+        if query is not None:
+            query.session=self.__session  
+            rows = query.all()
+            if rows is not None:
+                for row in rows:
+                    result_rows.append(row._asdict())
         return result_rows
     
     #return Table Metadata

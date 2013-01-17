@@ -38,6 +38,7 @@ def get_student_report(params, connector=None):
     dim_student = connector.get_table('dim_student')
     dim_assessment = connector.get_table('dim_assessment')
     
+    query = None
     # All tables are required
     if isinstance(fact_assessment_result, Table) and isinstance(dim_student, Table) and isinstance(dim_assessment, Table):
         query = Query([fact_assessment_result.c.student_id,
@@ -56,7 +57,7 @@ def get_student_report(params, connector=None):
         if assessment_id is not None:
             query = query.filter(fact_assessment_result.c.assessment_id == assessment_id)
     
-        result = connector.get_result(query)
+    result = connector.get_result(query)
     connector.close_session()
     return result
 
@@ -77,6 +78,7 @@ def get_student_assessment_id(params, connector=None):
     dim_assessment = connector.get_table('dim_assessment')
     fact_assessment_result = connector.get_table('fact_assessment_result')
     
+    query = None
     # Required both tables
     if isinstance(dim_assessment, Table) and isinstance(fact_assessment_result, Table):
         query = Query([dim_assessment.c.assessment_key,
@@ -89,6 +91,6 @@ def get_student_assessment_id(params, connector=None):
                               .join(fact_assessment_result)\
                               .filter(fact_assessment_result.c.student_id == student_id)
                               
-        result = connector.get_result(query)
+    result = connector.get_result(query)
     connector.close_session()
     return result

@@ -113,6 +113,8 @@ def generate_report(registry, report_name, params, validator = None):
     if (not validated):
         return False
     
+    params = validated
+    
     report = get_dict_value(registry, report_name, ReportNotFoundError)
     
     (obj, generate_report_method) = get_dict_value(report, REF_REFERENCE_FIELD_NAME)
@@ -161,6 +163,7 @@ class Validator:
     # validates the given parameters with the report configuration validation definition
     @staticmethod
     def validate_params(registry, report_name, params):
+        result = {}
         report = get_dict_value(registry, report_name, ReportNotFoundError)
         params_config = get_dict_value(report, PARAMS_REFERENCE_FIELD_NAME, InvalidParameterError)
         for (key, value) in params.items():
@@ -168,6 +171,7 @@ class Validator:
             if (config == None):
                 continue               
                 
+            result[key] = value
             # check if config has validation
             validatedText = config.get('validation', None)
             if (validatedText != None):
@@ -178,12 +182,13 @@ class Validator:
                         valueType = validatedText.get('type')
                         if (valueType is not None and valueType.lower() != VALID_TYPES.STRING):
                             value = convert(value, VALID_TYPES.reverse_mapping[valueType])
+                            result[key] = value
                         
                     validictory.validate(value, validatedText)
                 except ValidationError:
                     # TODO: log this
                     return False
-        return True
+        return result
 
 # attempts to convert a string to bool, otherwise raising an error    
 def boolify(s):

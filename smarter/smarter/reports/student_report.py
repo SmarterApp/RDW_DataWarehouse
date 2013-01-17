@@ -24,8 +24,6 @@ def get_student_report(params, connector=None):
          
     # get studentId
     student_id = params['studentId']
-    if not isinstance(student_id, int):
-        student_id = atoi(student_id)
     
     # if assessmentId is available, read the value.
     assessment_id = None

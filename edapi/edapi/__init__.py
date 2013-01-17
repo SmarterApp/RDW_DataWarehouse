@@ -13,9 +13,9 @@ def includeme(config):
     # routing for retrieving list of report names with GET
     config.add_route('all_reports', '/report')
     # routing for the GET and OPTIONS verbs
-    config.add_route('report', '/report/{name}')
+    config.add_route('report_get_option', '/report/{name}')
     # routing for the POST verb 
-    config.add_route('report_for_post', '/report/{name}/_query')
+    config.add_route('report_post', '/report/{name}/_query')
     # directive to handle report_config decorators
     config.add_directive('add_report_config', add_report_config)
     # scans edapi, ignoring test package

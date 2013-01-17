@@ -3,6 +3,7 @@ Created on Jan 14, 2013
 
 @author: aoren
 '''
+
 from edapi.utils import generate_report_config, generate_report,\
      ReportNotFoundError, InvalidParameterError, autoconvert,\
      EdApiHTTPNotFound, EdApiHTTPPreconditionFailed
@@ -29,7 +30,7 @@ def all_reports(request):
     return list(reports.keys())
 
 # handle the OPTIONS verb for the report resource
-@view_config(route_name='report', renderer='json', request_method='OPTIONS')
+@view_config(route_name='report_get_option', renderer='json', request_method='OPTIONS')
 def get_report_config(request):
     # gets the name of the report from the URL
     reportName = request.matchdict['name']
@@ -54,7 +55,7 @@ def convert_numbers_to_int(report_config):
     return configs
         
 
-@view_config(route_name='report', renderer='json', request_method='GET')
+@view_config(route_name='report_get_option', renderer='json', request_method='GET')
 def generate_report_get(request):
     # gets the name of the report from the URL
     reportName = request.matchdict['name']
@@ -69,7 +70,7 @@ def generate_report_get(request):
         return EdApiHTTPPreconditionFailed(e.msg)
     return report   
 
-@view_config(route_name='report', renderer='json', request_method='POST', custom_predicates=(check_application_json,))
+@view_config(route_name='report_post', renderer='json', request_method='POST', custom_predicates=(check_application_json,))
 def generate_report_post(request):
     try:
         # basic check that it is a correct json, if not an exception will get raised when accessing json_body.

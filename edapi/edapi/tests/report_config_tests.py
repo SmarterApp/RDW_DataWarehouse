@@ -8,6 +8,7 @@ from edapi import utils
 from unittest.mock import MagicMock
 import unittest
 from edapi.utils import Validator
+from unittest.case import TestCase
 from edapi.exceptions import InvalidParameterError
  
 class Test(unittest.TestCase):

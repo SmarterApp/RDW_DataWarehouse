@@ -11,7 +11,7 @@ get_report_config,
 generate_report_get,
 generate_report_post,
 check_content_type)
-from edapi import EDAPI_REPORTS_PLACEHOLDER
+from edapi import EDAPI_REPORTS_PLACEHOLDER, add_report_config
 from edapi.tests.dummy import Dummy, DummyRequest, DummyValidator
 from edapi.exceptions import ReportNotFoundError
 from edapi.httpexceptions import EdApiHTTPNotFound, EdApiHTTPPreconditionFailed
@@ -38,12 +38,7 @@ class TestViews(unittest.TestCase):
         self.assertTrue(val)
     
     def test_get_report_registry_with_no_placehold_undefined(self):
-        testPass = False
-        try:
-            get_report_registry(self.request)
-        except ReportNotFoundError:
-            testPass = True
-        self.assertTrue(testPass)
+        self.assertRaises(ReportNotFoundError, get_report_registry, self.request)
     
     def test_get_list_of_reports_with_placeholder_undefined(self):
         resp = get_list_of_reports(self.request)
@@ -146,6 +141,17 @@ class TestViews(unittest.TestCase):
         self.request.registry[EDAPI_REPORTS_PLACEHOLDER]["test"] = {"params":params, "reference" : (Dummy,  Dummy.some_func)}
         response = generate_report_post(self.request, validator)
         self.assertEqual(response, {"report": self.request.json_body})
+    
+    # tests for add_report_config from __init__.py  
+    def test_add_report_config_with_no_reports_placeholder(self):
+        dummy = Dummy()
+        add_report_config(self.request, dummy)
+        self.assertEquals(self.request.registry[EDAPI_REPORTS_PLACEHOLDER],{})
+    
+    def test_add_report_config_with_reports_placeholder(self):
+        dummy = Dummy()
+        add_report_config(self.request, dummy, alias = "test", params = {})
+        self.assertEquals(self.request.registry[EDAPI_REPORTS_PLACEHOLDER]["test"], {"alias":"test", "params": {}, "reference" : dummy})
         
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.test_get_report_registry']

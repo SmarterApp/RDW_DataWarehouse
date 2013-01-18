@@ -22,7 +22,7 @@ class DummyRequest:
     GET = {}
     json_body = {}
 
-class Test(unittest.TestCase):
+class TestViews(unittest.TestCase):
     
     # setting up the test class
     def setUp(self):

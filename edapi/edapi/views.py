@@ -10,10 +10,12 @@ from edapi.utils import generate_report_config,\
 from edapi.exceptions import ReportNotFoundError, InvalidParameterError
 from edapi.httpexceptions import EdApiHTTPNotFound, EdApiHTTPPreconditionFailed
 
-# validates the content type of the request
-def check_application_json(info, request):
-    if 'application/json' == request.content_type.lower():
-        return True
+def check_content_type(content_type):
+    content_type = content_type.lower()
+    def check_content_type_predicate(info, request):
+        if content_type == request.content_type.lower():
+            return True
+    return check_content_type_predicate
 
 # given a request, return the registry belonging to edapi reports
 def get_report_registry(request, name = None):
@@ -47,8 +49,8 @@ def get_report_config(request):
     return report_config
 
 
-@view_config(route_name='report_get_option', renderer='json', request_method='GET', custom_predicates=(check_application_json,))
-def generate_report_get(request, validator = None):
+@view_config(route_name='report_get_option', renderer='json', request_method='GET', custom_predicates=(check_content_type("application/json"),))
+def generate_report_get(request, validator=None):
     # gets the name of the report from the URL
     reportName = request.matchdict['name']
     
@@ -62,8 +64,8 @@ def generate_report_get(request, validator = None):
         return EdApiHTTPPreconditionFailed(e.msg)
     return report   
 
-@view_config(route_name='report_post', renderer='json', request_method='POST', custom_predicates=(check_application_json,))
-def generate_report_post(request, validator = None):
+@view_config(route_name='report_post', renderer='json', request_method='POST', custom_predicates=(check_content_type("application/json"),))
+def generate_report_post(request, validator=None):
     try:
         # basic check that it is a correct json, if not an exception will get raised when accessing json_body.
         report_config = request.json_body

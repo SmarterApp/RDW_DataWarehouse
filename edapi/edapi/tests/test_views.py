@@ -14,13 +14,7 @@ generate_report_post)
 from edapi.utils import ReportNotFoundError, EdApiHTTPNotFound,\
     EdApiHTTPPreconditionFailed
 from edapi import EDAPI_REPORTS_PLACEHOLDER
-
-class DummyRequest:
-    registry = {}
-    matchdict = {}
-    content_type = ''
-    GET = {}
-    json_body = {}
+from edapi.tests.dummy import Dummy, DummyRequest, DummyValidator
 
 class TestViews(unittest.TestCase):
     
@@ -40,11 +34,11 @@ class TestViews(unittest.TestCase):
     def test_check_application_json(self):
         self.request.content_type = "dummy"
         val = check_application_json(None, self.request)
-        assert(val is None)
+        self.assertIsNone(val)
         
         self.request.content_type = "APPLIcation/jsOn"
         val = check_application_json(None, self.request)
-        assert(val is True)
+        self.assertTrue(val)
     
     def test_get_report_registry(self):
         testPass = False
@@ -52,16 +46,16 @@ class TestViews(unittest.TestCase):
             get_report_registry(self.request)
         except ReportNotFoundError:
             testPass = True
-        assert(testPass)
+        self.assertTrue(testPass)
         
     def test_get_list_of_reports(self):
         self.request.registry[EDAPI_REPORTS_PLACEHOLDER] = {}
         reports = get_list_of_reports(self.request)
-        assert(reports == [])
+        self.assertEqual(reports, [])
         
         self.request.registry[EDAPI_REPORTS_PLACEHOLDER]["test"] = {}
         reports = get_list_of_reports(self.request)
-        assert(reports == ["test"])
+        self.assertEqual(reports, ["test"])
         
     def test_get_report_config(self):
         self.request.registry[EDAPI_REPORTS_PLACEHOLDER] = {}
@@ -69,16 +63,16 @@ class TestViews(unittest.TestCase):
       
         self.request.matchdict['name'] = "testNotFound"    
         response = get_report_config(self.request)
-        assert(type(response) is EdApiHTTPNotFound)
+        self.assertIs(type(response), EdApiHTTPNotFound)
         
         self.request.matchdict['name'] = "test"
         response = get_report_config(self.request)
-        assert(type(response) is EdApiHTTPPreconditionFailed)
+        self.assertIs(type(response), EdApiHTTPPreconditionFailed)
 
         params = {"studentId": {"validation" : {"type":"integer", "required":True}}}
         self.request.registry[EDAPI_REPORTS_PLACEHOLDER]["test"] = {"params":params}
         response = get_report_config(self.request)
-        assert(response == params)
+        self.assertEqual(response, params)
         
     def test_generate_report_get(self):
         self.request.registry[EDAPI_REPORTS_PLACEHOLDER] = {}
@@ -86,16 +80,18 @@ class TestViews(unittest.TestCase):
       
         self.request.matchdict['name'] = "testNotFound"    
         response = generate_report_get(self.request)
-        assert(type(response) is EdApiHTTPNotFound)
+        self.assertIs(type(response),  EdApiHTTPNotFound)
         
         self.request.matchdict['name'] = "test"
         response = generate_report_get(self.request)
-        assert(type(response) is EdApiHTTPPreconditionFailed)
+        self.assertIs(type(response), EdApiHTTPPreconditionFailed)
 
-        params = {"studentId": {"validation" : {"type":"integer", "required":False}}}
-        self.request.registry[EDAPI_REPORTS_PLACEHOLDER]["test"] = {"params":params}
-        response = generate_report_get(self.request)
-        #TODO get a valid response
+        validator = DummyValidator()
+        params = {"studentId": {"type": "integer","required": True}}
+        self.request.GET = {"studentId" : 123}
+        self.request.registry[EDAPI_REPORTS_PLACEHOLDER]["test"] = {"params":params, "reference" : (Dummy,  Dummy.some_func)}
+        response = generate_report_get(self.request, validator)
+        self.assertEqual(response, {"report": self.request.GET})
         
     def test_generate_report_post(self):
         self.request.content_type = "application/json"
@@ -105,16 +101,18 @@ class TestViews(unittest.TestCase):
         
         self.request.matchdict['name'] = "testNotFound"    
         response = generate_report_post(self.request)
-        assert(type(response) is EdApiHTTPNotFound)
+        self.assertIs(type(response), EdApiHTTPNotFound)
         
         self.request.matchdict['name'] = "test"
         response = generate_report_post(self.request)
-        assert(type(response) is EdApiHTTPPreconditionFailed)
+        self.assertIs(type(response), EdApiHTTPPreconditionFailed)
 
-        params = {"studentId": {"validation" : {"type":"integer", "required":False}}}
-        self.request.registry[EDAPI_REPORTS_PLACEHOLDER]["test"] = {"params":params}
-        #response = generate_report_post(self.request)
-        #TODO get a valid response
+        params = {"studentId": {"type": "string","required": True}}
+        self.request.json_body = {"studentId" : "123"}
+        validator = DummyValidator()
+        self.request.registry[EDAPI_REPORTS_PLACEHOLDER]["test"] = {"params":params, "reference" : (Dummy,  Dummy.some_func)}
+        response = generate_report_post(self.request, validator)
+        self.assertEqual(response, {"report": self.request.json_body})
         
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.test_get_report_registry']

@@ -46,14 +46,14 @@ def get_report_config(request):
 
 
 @view_config(route_name='report_get_option', renderer='json', request_method='GET', custom_predicates=(check_application_json,))
-def generate_report_get(request):
+def generate_report_get(request, validator = None):
     # gets the name of the report from the URL
     reportName = request.matchdict['name']
     
     params = request.GET
     
     try:
-        report = generate_report(get_report_registry(request, reportName), reportName, params)
+        report = generate_report(get_report_registry(request, reportName), reportName, params, validator)
     except ReportNotFoundError as e:
         return EdApiHTTPNotFound(e.msg)
     except InvalidParameterError as e:
@@ -61,13 +61,13 @@ def generate_report_get(request):
     return report   
 
 @view_config(route_name='report_post', renderer='json', request_method='POST', custom_predicates=(check_application_json,))
-def generate_report_post(request):
+def generate_report_post(request, validator = None):
     try:
         # basic check that it is a correct json, if not an exception will get raised when accessing json_body.
         report_config = request.json_body
         # gets the name of the report from the URL
         reportName = request.matchdict['name']
-        report = generate_report(get_report_registry(request, reportName), reportName, report_config)
+        report = generate_report(get_report_registry(request, reportName), reportName, report_config, validator)
     except ReportNotFoundError as e:
         return EdApiHTTPNotFound(e.msg)
     except InvalidParameterError as e:

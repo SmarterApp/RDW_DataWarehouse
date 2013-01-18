@@ -14,6 +14,13 @@ class DummyRequest:
     GET = {}
     json_body = {}
     
+    def reset(self):
+        self.registry = {}
+        self.matchdict = {}
+        self.content_type = ''
+        self.GET = {}
+        self.json_body = {}
+    
 class DummyValidator:
     '''
     Mimics Validator class

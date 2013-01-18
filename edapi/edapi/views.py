@@ -5,10 +5,12 @@ Created on Jan 14, 2013
 '''
 from pyramid.view import view_config
 from edapi import EDAPI_REPORTS_PLACEHOLDER
-from edapi.utils import ReportNotFoundError, EdApiHTTPNotFound,\
-    InvalidParameterError, EdApiHTTPPreconditionFailed, generate_report_config,\
+from edapi.utils import generate_report_config,\
     generate_report, report_config
+from edapi.exceptions import ReportNotFoundError, InvalidParameterError
+from edapi.httpexceptions import EdApiHTTPNotFound, EdApiHTTPPreconditionFailed
 
+# validates the content type of the request
 def check_application_json(info, request):
     if 'application/json' == request.content_type.lower():
         return True

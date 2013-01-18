@@ -7,8 +7,7 @@ import venusian
 import validictory
 from validictory.validator import ValidationError
 import time
-from pyramid.httpexceptions import HTTPNotFound, HTTPPreconditionFailed
-import json
+from edapi.exceptions import ReportNotFoundError, InvalidParameterError
 
 REPORT_REFERENCE_FIELD_NAME = 'alias'
 PARAMS_REFERENCE_FIELD_NAME = 'params'
@@ -43,49 +42,6 @@ class report_config(object):
             scanner.config.add_report_config((obj, original_func), **settings)
         venusian.attach(original_func, callback, category='edapi')
         return original_func
-    
-class EdApiError(Exception):
-    '''
-    a general EdApi error. 
-    '''
-    def __init__(self, msg):
-        self.msg = msg
-
-class ReportNotFoundError(EdApiError):
-    ''' 
-    a custom exception raised when a report cannot be found.
-    '''
-    def __init__(self, name):
-        self.msg = "Report %s is not found" % name
-        
-class InvalidParameterError(EdApiError):
-    '''
-    a custom exception raised when a report parameter is not found.
-    '''
-    def __init__(self, msg):
-        self.msg = "Invalid Parameters"
-
-class EdApiHTTPNotFound(HTTPNotFound):
-    '''
-    a custom http exception return when resource not found
-    '''
-    #code = 404
-    #title = 'Requested report not found'
-    #explanation = ('The resource could not be found.')
-    
-    def __init__(self, msg):
-        super().__init__(text = json.dumps({'error': msg}), content_type = "application/json")
-        
-class EdApiHTTPPreconditionFailed(HTTPPreconditionFailed):
-    '''
-    a custom http exception when precondition is not met
-    '''
-    #code = 412
-    #title = 'Parameter validation failed'
-    #xplanation = ('Request precondition failed.')
-    
-    def __init__(self, msg):
-        super().__init__(text = json.dumps({'error': msg}), content_type = "application/json")
     
 # dict lookup and raises an exception if key doesn't exist       
 def get_dict_value(dictionary, key, exception_to_raise=Exception):

@@ -11,22 +11,18 @@ get_list_of_reports,
 get_report_config,
 generate_report_get,
 generate_report_post)
-from edapi.utils import ReportNotFoundError, EdApiHTTPNotFound,\
-    EdApiHTTPPreconditionFailed
 from edapi import EDAPI_REPORTS_PLACEHOLDER
 from edapi.tests.dummy import Dummy, DummyRequest, DummyValidator
+from edapi.exceptions import ReportNotFoundError
+from edapi.httpexceptions import EdApiHTTPNotFound, EdApiHTTPPreconditionFailed
 
 class TestViews(unittest.TestCase):
     
     # setting up the test class
     def setUp(self):
         self.request = DummyRequest()
-        self.request.registry = {}
-        self.request.matchdict = {}
-        self.request.content_type = ''
-        self.request.GET = {}
-        self.request.json_body = {}
-
+        self.request.reset()
+        
     # tearing down the test class
     def tearDown(self):
         self.request = None

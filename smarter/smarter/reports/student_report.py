@@ -15,7 +15,7 @@ report for student and student_assessment
 '''
     
 @report_config(name='individual_student_report', params={"studentId": {"type": "integer", "required": True},
-                                        "assessmentId": {"type": "integer", "required": False, "alias":"student_assessment"}
+                                        "assessmentId": {"type": "integer", "required": False, "name":"student_assessments_report"}
                                         })
 def get_student_report(params, connector=None):
 

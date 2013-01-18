@@ -4,13 +4,13 @@ Created on Jan 17, 2013
 @author: dip
 '''
 import unittest
-from edapi.views import (
-check_application_json,                         
+from edapi.views import (                        
 get_report_registry, 
 get_list_of_reports,
 get_report_config,
 generate_report_get,
-generate_report_post)
+generate_report_post,
+check_content_type)
 from edapi import EDAPI_REPORTS_PLACEHOLDER
 from edapi.tests.dummy import Dummy, DummyRequest, DummyValidator
 from edapi.exceptions import ReportNotFoundError
@@ -28,6 +28,7 @@ class TestViews(unittest.TestCase):
         self.request = None
         
     def test_check_application_json(self):
+        check_application_json = check_content_type("application/json") 
         self.request.content_type = "dummy"
         val = check_application_json(None, self.request)
         self.assertFalse(val)

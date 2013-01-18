@@ -158,7 +158,7 @@ def individual_student_report_bootstrap(request):
     headers = {}
     headers['Content-Type'] = 'application/json'
 
-    req = urllib.request.Request('http://127.0.0.1:6543/report/student/_query', params, headers)
+    req = urllib.request.Request('http://127.0.0.1:6543/data/individual_student_report/_query', params, headers)
     res = json.loads(urllib.request.urlopen(req).read().decode('utf-8'))
 
     print('TYPE >>>>>>>>>>>>>> ' + str(type(res)))

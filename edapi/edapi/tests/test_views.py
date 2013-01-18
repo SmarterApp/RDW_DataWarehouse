@@ -150,8 +150,8 @@ class TestViews(unittest.TestCase):
     
     def test_add_report_config_with_reports_placeholder(self):
         dummy = Dummy()
-        add_report_config(self.request, dummy, alias = "test", params = {})
-        self.assertEquals(self.request.registry[EDAPI_REPORTS_PLACEHOLDER]["test"], {"alias":"test", "params": {}, "reference" : dummy})
+        add_report_config(self.request, dummy, name = "test", params = {})
+        self.assertEquals(self.request.registry[EDAPI_REPORTS_PLACEHOLDER]["test"], {"name":"test", "params": {}, "reference" : dummy})
         
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.test_get_report_registry']

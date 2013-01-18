@@ -69,7 +69,7 @@ def generate_report(registry, report_name, params, validator = None):
     validated = validator.validate_params_schema(registry, report_name, params)
     
     if (not validated):
-        return False
+        raise InvalidParameterError()
     
     report = get_dict_value(registry, report_name, ReportNotFoundError)
     

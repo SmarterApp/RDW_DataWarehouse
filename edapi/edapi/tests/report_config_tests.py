@@ -9,6 +9,7 @@ from unittest.mock import MagicMock
 import unittest
 from edapi.utils import Validator
 from unittest.case import TestCase
+from edapi.exceptions import InvalidParameterError
  
 class Test(unittest.TestCase):
 
@@ -32,8 +33,7 @@ class Test(unittest.TestCase):
         validator = Validator()
         validator.validate_params_schema = MagicMock(return_value=False)
         validator.fix_types = MagicMock(return_value=False)
-        result = utils.generate_report(registry, "test", params, validator)
-        TestCase.assertFalse(self, result)
+        self.assertRaises(InvalidParameterError, utils.generate_report, registry, "test", params, validator)
         
     def validate_params(self):
         params = {}

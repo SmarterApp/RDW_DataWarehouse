@@ -162,19 +162,23 @@ def expand_field(registry, report_name, params):
     return (report_data, True)
 
 
+# turns the schema into an well-formatted JSON schema by adding a header.
 def add_configuration_header(params_config):
     result = {
-              "$schema": "http://json-schema.org/draft-04/schema#",
-                                                "title": "Config",
-                                                "description": "a config",
-                                                "type": "object", 
-                                                "properties" : ""
+                "$schema": "http://json-schema.org/draft-04/schema#",
+                "title": "schema-title", #TODO: move to configuration
+                "description": "schema-description", #TODO: move to configuration
+                "type": "object", 
+                "properties" : params_config
               }
-    result['properties'] = params_config
+    
     return result
 
 
 class Validator:
+    '''
+    This class manages the validation against report schemas
+    '''
     # validates the given parameters with the report configuration validation definition
     @staticmethod
     def validate_params_schema(registry, report_name, params):
@@ -187,6 +191,9 @@ class Validator:
             print(e)
             return False;
         return True;
+    
+    # this method checks String types and attempt to convert them to the defined type. 
+    # This handles 'GET' requests when all parameters are converted into string.
     @staticmethod
     def fix_types(registry, report_name, params):
         result = {}
@@ -207,39 +214,39 @@ class Validator:
                         #validatedTextJson = json.loads(validatedText)
                         valueType = validatedText.get('type')
                         if (valueType is not None and valueType.lower() != VALID_TYPES.STRING):
-                            value = convert(value, VALID_TYPES.reverse_mapping[valueType])
+                            value = Validator.convert(value, VALID_TYPES.reverse_mapping[valueType])
                             result[key] = value
                 except ValidationError:
                     # TODO: log this
                     return False
         return result
-
-# attempts to convert a string to bool, otherwise raising an error    
-def boolify(s):
-    if s.lower() == 'true':
-        return True
-    if s.lower() == 'false':
-        return False
-    raise ValueError()
-
-# attempt to convert a String to another type, if it can't it returns the original string
-def auto_convert(s):
     
-    for fn in (boolify, time.strptime, int, float):
+    # attempts to convert a string to bool, otherwise raising an error    
+    @staticmethod
+    def boolify(s):
+        return s in ['true', 'True']
+    
+    # attempt to convert a String to another type, if it can't it returns the original string
+    @staticmethod
+    def auto_convert(s):
+        
+        for fn in (Validator.boolify, time.strptime, int, float):
+            try:
+                return fn(s)
+            except ValueError:
+                pass
+        return s
+    
+    #converts a value to a given value type, if possible. otherwise, return the original value.
+    @staticmethod
+    def convert(value, value_type):
         try:
-            return fn(s)
-        except ValueError:
-            pass
-    return s
-
-def convert(value, valueType):
-    try:
-        return {
-            VALID_TYPES.reverse_mapping[VALID_TYPES.STRING]: value,
-            VALID_TYPES.reverse_mapping[VALID_TYPES.INTEGER] : int(value),
-            VALID_TYPES.reverse_mapping[VALID_TYPES.NUMBER] : float(value),
-            #VALID_TYPES.reverse_mapping[VALID_TYPES.BOOLEAN] : boolify(value),
-            VALID_TYPES.reverse_mapping[VALID_TYPES.ANY] : value
-        }[valueType]
-    except:
-        return value
+            return {
+                VALID_TYPES.reverse_mapping[VALID_TYPES.STRING]: value,
+                VALID_TYPES.reverse_mapping[VALID_TYPES.INTEGER] : int(value),
+                VALID_TYPES.reverse_mapping[VALID_TYPES.NUMBER] : float(value),
+                #VALID_TYPES.reverse_mapping[VALID_TYPES.BOOLEAN] : Validator.boolify(value),
+                VALID_TYPES.reverse_mapping[VALID_TYPES.ANY] : value
+            }[value_type]
+        except:
+            return value

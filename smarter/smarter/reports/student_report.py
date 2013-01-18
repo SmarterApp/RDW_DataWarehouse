@@ -11,19 +11,12 @@ from sqlalchemy.orm.query import Query
 from sqlalchemy.schema import Table
 
 '''
-student_report and assessment_id for student
+report for student and student_assessment
 '''
     
-@report_config(alias='student_report', params={
-                                              "studentId": {
-                                                  "type": "integer",
-                                                  "required": True
-                                              },
-                                              "assessmentId": {
-                                                  "type": "integer",
-                                                  "required": False
-                                              }
-                                               })
+@report_config(alias='student', params={"studentId": {"type": "integer", "required": True},
+                                        "assessmentId": {"type": "integer", "required": False, "alias":"student_assessment"}
+                                        })
 def get_student_report(params, connector=None):
 
     # if connector is not supplied, use DBConnector
@@ -49,6 +42,7 @@ def get_student_report(params, connector=None):
     
     query = None
     # All tables are required
+    # Check Table object type for UT
     if isinstance(fact_assessment_result, Table) and isinstance(dim_student, Table) and isinstance(dim_assessment, Table):
         query = Query([fact_assessment_result.c.student_id,
                             dim_student.c.first_name,
@@ -70,8 +64,8 @@ def get_student_report(params, connector=None):
     connector.close_session()
     return result
 
-@report_config(alias='student_assessment_id', params={"studentId": {"type":"integer", "required":True}})
-def get_student_assessment_id(params, connector=None):
+@report_config(alias='student_assessment', params={"studentId": {"type":"integer", "required":True}})
+def get_student_assessment(params, connector=None):
     
     # if connector is not supplied, use DBConnector
     if connector is None:
@@ -89,6 +83,7 @@ def get_student_assessment_id(params, connector=None):
     
     query = None
     # Required both tables
+    # Check Table object type for UT
     if isinstance(dim_assessment, Table) and isinstance(fact_assessment_result, Table):
         query = Query([dim_assessment.c.assessment_key,
                               dim_assessment.c.level,

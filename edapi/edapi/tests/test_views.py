@@ -15,6 +15,7 @@ from edapi import EDAPI_REPORTS_PLACEHOLDER, add_report_config
 from edapi.tests.dummy import Dummy, DummyRequest, DummyValidator
 from edapi.exceptions import ReportNotFoundError
 from edapi.httpexceptions import EdApiHTTPNotFound, EdApiHTTPPreconditionFailed
+import json
 
 class TestViews(unittest.TestCase):
     
@@ -78,7 +79,9 @@ class TestViews(unittest.TestCase):
         params = {"studentId": {"validation" : {"type":"integer", "required":True}}}
         self.request.registry[EDAPI_REPORTS_PLACEHOLDER]["test"] = {"params":params}
         response = get_report_config(self.request)
-        self.assertEqual(response, params)
+        self.assertEqual(response.json, params)
+        self.assertEqual(response.status_int, 200)
+        self.assertEqual(response.allow, ("GET","POST","OPTIONS"))
         
     def test_generate_report_get_for_report_not_in_registry(self):
         self.request.registry[EDAPI_REPORTS_PLACEHOLDER] = {}

@@ -9,6 +9,8 @@ from edapi.utils import generate_report_config,\
     generate_report, report_config
 from edapi.exceptions import ReportNotFoundError, InvalidParameterError
 from edapi.httpexceptions import EdApiHTTPNotFound, EdApiHTTPPreconditionFailed
+from pyramid.response import Response
+import json
 
 def check_content_type(content_type):
     content_type = content_type.lower()
@@ -46,7 +48,7 @@ def get_report_config(request):
         return EdApiHTTPNotFound(e.msg)
     except InvalidParameterError as e:
         return EdApiHTTPPreconditionFailed(e.msg)
-    return report_config
+    return Response(body = json.dumps(report_config), content_type = "application/json", allow = 'GET,POST,OPTIONS')
 
 
 @view_config(route_name='report_get_option', renderer='json', request_method='GET', custom_predicates=(check_content_type("application/json"),))

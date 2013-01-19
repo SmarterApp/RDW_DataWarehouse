@@ -14,10 +14,8 @@ def add_report_config(self, delegate, **kwargs):
 def includeme(config):
     # routing for retrieving list of report names with GET
     config.add_route('list_of_reports', '/data')
-    # routing for the GET and OPTIONS verbs
-    config.add_route('report_get_option', '/data/{name}')
-    # routing for the POST verb 
-    config.add_route('report_post', '/data/{name}')
+    # routing for the GET, POST, OPTIONS verbs
+    config.add_route('report_get_option_post', '/data/{name}')
     # directive to handle report_config decorators
     config.add_directive('add_report_config', add_report_config)
     # scans edapi, ignoring test package

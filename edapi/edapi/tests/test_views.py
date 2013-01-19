@@ -15,7 +15,6 @@ from edapi import EDAPI_REPORTS_PLACEHOLDER, add_report_config
 from edapi.tests.dummy import Dummy, DummyRequest, DummyValidator
 from edapi.exceptions import ReportNotFoundError
 from edapi.httpexceptions import EdApiHTTPNotFound, EdApiHTTPPreconditionFailed
-import json
 
 class TestViews(unittest.TestCase):
     

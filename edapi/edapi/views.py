@@ -36,7 +36,7 @@ def get_list_of_reports(request):
     return list(reports.keys())
 
 # handle the OPTIONS verb for the report resource
-@view_config(route_name='report_get_option', renderer='json', request_method='OPTIONS')
+@view_config(route_name='report_get_option_post', renderer='json', request_method='OPTIONS')
 def get_report_config(request):
     # gets the name of the report from the URL
     reportName = request.matchdict['name']
@@ -51,7 +51,7 @@ def get_report_config(request):
     return Response(body = json.dumps(report_config), content_type = "application/json", allow = 'GET,POST,OPTIONS')
 
 
-@view_config(route_name='report_get_option', renderer='json', request_method='GET', custom_predicates=(check_content_type("application/json"),))
+@view_config(route_name='report_get_option_post', renderer='json', request_method='GET', custom_predicates=(check_content_type("application/json"),))
 def generate_report_get(request, validator=None):
     # gets the name of the report from the URL
     reportName = request.matchdict['name']
@@ -66,7 +66,7 @@ def generate_report_get(request, validator=None):
         return EdApiHTTPPreconditionFailed(e.msg)
     return report   
 
-@view_config(route_name='report_post', renderer='json', request_method='POST', custom_predicates=(check_content_type("application/json"),))
+@view_config(route_name='report_get_option_post', renderer='json', request_method='POST', custom_predicates=(check_content_type("application/json"),))
 def generate_report_post(request, validator=None):
     try:
         # basic check that it is a correct json, if not an exception will get raised when accessing json_body.

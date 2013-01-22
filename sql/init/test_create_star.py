@@ -10,6 +10,8 @@ import postgresql.driver.dbapi20 as dbapi
 
 import create_star
 
+# import nose
+
 SERVER          = "localhost"
 PORT            = "5432"
 ROOTUSERNAME    = "postgres"
@@ -74,24 +76,26 @@ if __name__ == "__main__":
     dbServer        = args.server
     dbPort          = args.port
     
+    t = Test()
+    
     if userName:
-        Test.setUserName(userName)
+        t.setUserName(userName)
     else:
-        Test.setUserName(ROOTUSERNAME)
+        t.setUserName(ROOTUSERNAME)
 
     if password:
-        Test.setPassword(password)
+        t.setPassword(password)
     else:
-        Test.setPassword(ROOTUSERPWD)
+        t.setPassword(ROOTUSERPWD)
 
     if dbServer:
-        Test.setServer(dbServer)
+        t.setServer(dbServer)
     else:
-        Test.setServer(SERVER)
+        t.setServer(SERVER)
         
     if dbPort:
-        Test.setPort(dbPort)
+        t.setPort(dbPort)
     else:
-        Test.setPort(PORT)
+        t.setPort(PORT)
 
     unittest.main()

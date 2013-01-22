@@ -14,9 +14,18 @@ from sqlalchemy.schema import Table
 report for student and student_assessment
 '''
     
-@report_config(name='individual_student_report', params={"studentId": {"type": "integer", "required": True},
-                                        "assessmentId": {"name":"student_assessments_report", "type": "integer", "required": False }
-                                        })
+@report_config(name='individual_student_report', 
+               params={"studentId": {
+                                     "type": "integer", 
+                                     "required": True
+                                     },
+                       "assessmentId": {
+                                        "name":"student_assessments_report",
+                                        "type": "integer", 
+                                        "required": False
+                                        }
+                        }
+               )
 def get_student_report(params, connector=None):
 
     # if connector is not supplied, use DBConnector
@@ -80,6 +89,10 @@ def get_student_report(params, connector=None):
         'asmt_subject': 'ELA',
         'asmt_period': '2012 MOY',
         'asmt_score': 198,
+        'asmt_claim_1_name': 'claim name1',
+        'asmt_claim_2_name': 'claim name2',
+        'asmt_claim_3_name': 'claim name3',
+        'asmt_claim_4_name': 'claim name4',
         'asmt_claim_1_score': 30,
         'asmt_claim_2_score': 40,
         'asmt_claim_3_score': 55,

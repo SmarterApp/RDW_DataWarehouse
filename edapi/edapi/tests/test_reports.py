@@ -21,7 +21,7 @@ class TestReport():
                                                                    "type" : "integer",
                                                                    "required" : False
                                                                    },
-                                                "school_sizes": {"name" : "school_size_report" },
+                                                "school_sizes": {"type" : "integer", "name" : "school_size_report" },
                                                 "student_lists": {"name" : "student_list_report" }
                                               }
                                             )

@@ -7,7 +7,7 @@ Created on Jan 17, 2013
 import unittest
 from .test_connector import TestConnector
 from smarter.reports.student_report import get_student_report, \
-    get_student_assessment_id
+    get_student_assessment
 
 class TestStudentReport(unittest.TestCase):
     def setUp(self):
@@ -20,7 +20,7 @@ class TestStudentReport(unittest.TestCase):
         
     def test_student_assessment_id(self):
         params = {"studentId":2188}
-        result = get_student_assessment_id(params, connector=self.__connector)
+        result = get_student_assessment(params, connector=self.__connector)
         self.assertEqual('hello', result['result'])
 
 if __name__ == '__main__':

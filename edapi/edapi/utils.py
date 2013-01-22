@@ -9,7 +9,7 @@ from validictory.validator import ValidationError
 import time
 from edapi.exceptions import ReportNotFoundError, InvalidParameterError
 
-REPORT_REFERENCE_FIELD_NAME = 'alias'
+REPORT_REFERENCE_FIELD_NAME = 'name'
 PARAMS_REFERENCE_FIELD_NAME = 'params'
 REF_REFERENCE_FIELD_NAME = 'reference'
 VALUE_FIELD_NAME = 'value'
@@ -69,7 +69,7 @@ def generate_report(registry, report_name, params, validator = None):
     validated = validator.validate_params_schema(registry, report_name, params)
     
     if (not validated):
-        return False
+        raise InvalidParameterError()
     
     report = get_dict_value(registry, report_name, ReportNotFoundError)
     

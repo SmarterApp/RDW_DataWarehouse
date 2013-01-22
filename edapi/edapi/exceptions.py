@@ -21,6 +21,6 @@ class InvalidParameterError(EdApiError):
     '''
     a custom exception raised when a report parameter is not found.
     '''
-    def __init__(self, msg):
+    def __init__(self, msg = None):
         self.msg = "Invalid Parameters"
         

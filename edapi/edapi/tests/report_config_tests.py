@@ -5,10 +5,11 @@ Created on Jan 14, 2013
 '''
 from edapi.tests.test_reports import TestReport
 from edapi import utils
-from unittest.mock import Mock, MagicMock
+from unittest.mock import MagicMock
 import unittest
 from edapi.utils import Validator
 from unittest.case import TestCase
+from edapi.exceptions import InvalidParameterError
  
 class Test(unittest.TestCase):
 
@@ -30,11 +31,15 @@ class Test(unittest.TestCase):
         registry = {}
         params = {}
         validator = Validator()
-        validator.validate_params = MagicMock(return_value=False)
-        validator.validate_params(registry, "report_name", params)
-        result = utils.generate_report(registry, "test", params, validator)
-        TestCase.assertFalse(self, result)
+        validator.validate_params_schema = MagicMock(return_value=False)
+        validator.fix_types = MagicMock(return_value=False)
+        self.assertRaises(InvalidParameterError, utils.generate_report, registry, "test", params, validator)
         
+    def validate_params(self):
+        params = {}
+        params_config = {}
+        validator = Validator()
+        validator.validate_params(params_config, "report_name", params)
         
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.test']

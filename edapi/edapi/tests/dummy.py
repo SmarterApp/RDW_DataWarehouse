@@ -20,7 +20,7 @@ class DummyRequest:
         self.content_type = ''
         self.GET = {}
         self.json_body = {}
-    
+
 class DummyValidator:
     '''
     Mimics Validator class

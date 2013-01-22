@@ -9,7 +9,7 @@
     <meta name="author" content="">
 
     <!-- Le styles -->
-    <link href="static/css/bootstrap.css" rel="stylesheet">
+    <link href="static/css/cerulean.css" rel="stylesheet">
     <style type="text/css">
       body {
         padding-top: 60px;
@@ -32,8 +32,10 @@
       h1 {
           padding-bottom:50px;
       }
+      span.value {
+          color: green;
+      }
     </style>
-    <link href="static/css/bootstrap-responsive.css" rel="stylesheet">
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -114,51 +116,51 @@
 
           <div id="assmt_name">
               <span class="title">Assessment Name: </span>
-              <span class="value">${subject}</span>
+              <span class="value">${asmt_subject}</span>
           </div>
           <div id="assmt_period">
               <span class="title">Assessment Period: </span>
-              <span class="value">${year_range} - ${time_period}</span>
+              <span class="value">${asmt_period}</span>
           </div>
 
 
           <div id="claim_name_1">
               <span class="title">Claim Name: </span>
-              <span class="value">&nbsp</span>
+              <span class="value">Claim 1</span>
           </div>
           <div id="claim_score_1">
               <span class="title">Claim Score: </span>
-              <span class="value">&nbsp</span>
+              <span class="value">${asmt_claim_1_score}</span>
           </div>
           <div id="claim_name_2">
               <span class="title">Claim Name: </span>
-              <span class="value">&nbsp</span>
+              <span class="value">Claim 2</span>
           </div>
           <div id="claim_score_2">
               <span class="title">Claim Score: </span>
-              <span class="value">&nbsp</span>
+              <span class="value">${asmt_claim_2_score}</span>
           </div>
           <div id="claim_name_3">
               <span class="title">Claim Name: </span>
-              <span class="value">&nbsp</span>
+              <span class="value">Claim 3</span>
           </div>
           <div id="claim_score_3">
               <span class="title">Claim Score: </span>
-              <span class="value">&nbsp</span>
+              <span class="value">${asmt_claim_3_score}</span>
           </div>
           <div id="claim_name_4">
               <span class="title">Claim Name: </span>
-              <span class="value">&nbsp</span>
+              <span class="value">Claim 4</span>
           </div>
           <div id="claim_score_4">
               <span class="title">Claim Score: </span>
-              <span class="value">&nbsp</span>
+              <span class="value">${asmt_claim_4_score}</span>
           </div>
 
 
           <div id="assmt_ovr_score">
               <span class="title">Overall Assessment Score: </span>
-              <span class="value">${assessment_score}</span>
+              <span class="value">${asmt_score}</span>
           </div>
       </div>
 
@@ -187,19 +189,18 @@
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="../assets/js/jquery.js"></script>
-    <script src="../assets/js/bootstrap-transition.js"></script>
-    <script src="../assets/js/bootstrap-alert.js"></script>
-    <script src="../assets/js/bootstrap-modal.js"></script>
-    <script src="../assets/js/bootstrap-dropdown.js"></script>
-    <script src="../assets/js/bootstrap-scrollspy.js"></script>
-    <script src="../assets/js/bootstrap-tab.js"></script>
-    <script src="../assets/js/bootstrap-tooltip.js"></script>
-    <script src="../assets/js/bootstrap-popover.js"></script>
-    <script src="../assets/js/bootstrap-button.js"></script>
-    <script src="../assets/js/bootstrap-collapse.js"></script>
-    <script src="../assets/js/bootstrap-carousel.js"></script>
-    <script src="../assets/js/bootstrap-typeahead.js"></script>
-
+    <script type="text/javascript" src="static/js/jquery.js"></script>
+    <script src="static/assets/js/bootstrap-transition.js"></script>
+    <script src="static/assets/js/bootstrap-alert.js"></script>
+    <script src="static/assets/js/bootstrap-modal.js"></script>
+    <script src="static/assets/js/bootstrap-dropdown.js"></script>
+    <script src="static/assets/js/bootstrap-scrollspy.js"></script>
+    <script src="static/assets/js/bootstrap-tab.js"></script>
+    <script src="static/assets/js/bootstrap-tooltip.js"></script>
+    <script src="static/assets/js/bootstrap-popover.js"></script>
+    <script src="static/assets/js/bootstrap-button.js"></script>
+    <script src="static/assets/js/bootstrap-collapse.js"></script>
+    <script src="static/assets/js/bootstrap-carousel.js"></script>
+    <script src="static/assets/js/bootstrap-typeahead.js"></script>
   </body>
 </html>

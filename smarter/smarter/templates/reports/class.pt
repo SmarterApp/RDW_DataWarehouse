@@ -3,6 +3,7 @@
 
 <head>
     <title>Class Report: ${class_name}</title>
+    <link href="static/css/cerulean.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="static/css/class_report.css">
 </head>
 
@@ -37,8 +38,24 @@
     </tbody>
 </table>
 
+<!-- Le javascript
+    ================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
 <script type="text/javascript" src="static/js/jquery.js"></script>
 <script type="text/javascript" src="static/js/DataTables-1.9.4/media/js/jquery.dataTables.js"></script>
+
+<script src="static/assets/js/bootstrap-transition.js"></script>
+<script src="static/assets/js/bootstrap-alert.js"></script>
+<script src="static/assets/js/bootstrap-modal.js"></script>
+<script src="static/assets/js/bootstrap-dropdown.js"></script>
+<script src="static/assets/js/bootstrap-scrollspy.js"></script>
+<script src="static/assets/js/bootstrap-tab.js"></script>
+<script src="static/assets/js/bootstrap-tooltip.js"></script>
+<script src="static/assets/js/bootstrap-popover.js"></script>
+<script src="static/assets/js/bootstrap-button.js"></script>
+<script src="static/assets/js/bootstrap-collapse.js"></script>
+<script src="static/assets/js/bootstrap-carousel.js"></script>
+<script src="static/assets/js/bootstrap-typeahead.js"></script>
 
 <script>
     $(document).ready(function() {

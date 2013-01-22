@@ -8,6 +8,7 @@ from smarter.controllers import get_compare_population
 from smarter.reports.student_report import get_student_report
 import json
 import urllib.request
+import re
 
 @view_config(route_name='comparing_populations', renderer='templates/comparing_populations.pt')
 def compPop_view(request):
@@ -163,20 +164,18 @@ def individual_student_report_bootstrap(request):
 
     res = get_student_report(params, headers)
 
-    # temporary fix to keep this simple
-    # we only want one of the rows returned from the service.
-    res = res[0]
-
     return res
 
-def get_student_report(self, params, headers):
-    req = urllib.request.Request('http://127.0.0.1:6543/report/student/_query', params, headers)
+def get_student_report(params, headers):
+    req = urllib.request.Request('http://127.0.0.1:6543/data/individual_student_report', params, headers)
+    res = urllib.request.urlopen(req).read().decode('utf-8')
 
-    res = json.loads(urllib.request.urlopen(req).read().decode('utf-8'))
+    jsonObj = json.loads(res)
+    jsonObj = jsonObj[0]
 
-    return res
+    return jsonObj
 
 # Class Report
-@view_config(route_name='class_report', renderer='templates/reports/class.pt')
+@view_config(route_name='class_report', renderer='templates/reports/class_bootstrap.pt')
 def class_report(request):
     return {'class_name': 'English'}

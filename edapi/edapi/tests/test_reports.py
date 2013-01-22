@@ -10,15 +10,24 @@ class TestReport():
         
     @report_config(name="test_report", params=
                                              {
-                                                "freeTextField" : {
-                                                                   "type" : "string"
+                                                "free_text_field" : {
+                                                                   "type" : "string",
+                                                                   "pattern" : "^[a-z]$"
+                                                                   },
+                                                "numeric_field" : {
+                                                                   "type" : "integer"
+                                                                   },
+                                                "optional_field" : {
+                                                                   "type" : "integer",
+                                                                   "required" : False
                                                                    },
                                                 "school_sizes": {"name" : "school_size_report" },
                                                 "student_lists": {"name" : "student_list_report" }
                                               }
                                             )
     def generate(self, params):
-        return params  # todo: return data
+        return [ { "student_id": 1111, "first_name": 'William', "middle_name": 'Henry', "last_name": 'Gates', "asmt_subject": 'ELA', "asmt_period": '2012 MOY', "asmt_score": 198, 
+                  "asmt_claim_1_score": 30, "asmt_claim_2_score": 40, "asmt_claim_3_score": 55, "asmt_claim_4_score": 73 } ] 
     
     # this report can get retrieved with no configuration, and therefore gets expanded automatically.
     @report_config(name="school_size_report")
@@ -32,8 +41,8 @@ class TestReport():
                                               })
     def generate_test2(self, params):
         if params['scope'].lower() == "school":
-            return { "numberOfStudents" : "200" }
+            return { "number_of_students" : "200" }
         else:
-            return{ "numberOfStudents" : "1000" }
+            return{ "number_of_students" : "1000" }
     
 

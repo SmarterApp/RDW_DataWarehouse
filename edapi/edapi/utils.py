@@ -15,9 +15,6 @@ PARAMS_REFERENCE_FIELD_NAME = 'params'
 REF_REFERENCE_FIELD_NAME = 'reference'
 VALUE_FIELD_NAME = 'value'
 
-#def enum(**enums):
-#    return type('Enum', (), enums)
-
 def enum(*sequential, **named):
     enums = dict(zip(sequential, range(len(sequential))), **named)
     reverse = dict((value, key) for key, value in enums.items())
@@ -63,17 +60,7 @@ def call_reference_method(report, params):
     else:
         response = method(params)
     return response
-        
-#def convert_numbers_to_int(report_config):
-#    result = {}
-#    
-#    try:
-#        for (key, value) in report_config.items():
-#            result[key]  = autoconvert(value)
-#    except Exception as e:
-#        print(e.strerror)
-#    return result        
-        
+   
 # generates a report by calling the report delegate for generating itself (received from the config repository).
 def generate_report(registry, report_name, params, validator = None):
     if not validator:

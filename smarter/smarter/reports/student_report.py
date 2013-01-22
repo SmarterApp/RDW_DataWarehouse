@@ -73,17 +73,17 @@ def get_student_report(params, connector=None):
     '''
     json="""[
       {
-        student_id: 1111,
-        first_name: 'William',
-        middle_name: 'Henry',
-        last_name: 'Gates',
-        asmt_subject: 'ELA',
-        asmt_period: '2012 MOY',
-        asmt_score: 198,
-        asmt_claim_1_score: 30,
-        asmt_claim_2_score: 40,
-        asmt_claim_3_score: 55,
-        asmt_claim_4_score: 73
+        'student_id': 1111,
+        'first_name': 'William',
+        'middle_name': 'Henry',
+        'last_name': 'Gates',
+        'asmt_subject': 'ELA',
+        'asmt_period': '2012 MOY',
+        'asmt_score': 198,
+        'asmt_claim_1_score': 30,
+        'asmt_claim_2_score': 40,
+        'asmt_claim_3_score': 55,
+        'asmt_claim_4_score': 73
       }
     ]"""
     return json

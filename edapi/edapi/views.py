@@ -24,7 +24,15 @@ def get_report_registry(request, name = None):
     reg = request.registry.get(EDAPI_REPORTS_PLACEHOLDER)
     if (reg is None):
         raise ReportNotFoundError(name)
-    return reg   
+    return reg 
+
+# returns pyramid request body as json, throws exception if request.json_body isn't valid json
+def get_request_body(request):
+    try:
+        body = request.json_body
+    except ValueError:
+        raise InvalidParameterError
+    return body  
 
 # returns list of reports in GET request    
 @view_config(route_name='list_of_reports', renderer='json', request_method='GET')
@@ -52,7 +60,7 @@ def get_report_config(request):
 
 
 @view_config(route_name='report_get_option_post', renderer='json', request_method='GET', custom_predicates=(check_content_type("application/json"),))
-def generate_report_get(request, validator=None):
+def generate_report_get(request, validator = None):
     # gets the name of the report from the URL
     reportName = request.matchdict['name']
     
@@ -67,10 +75,10 @@ def generate_report_get(request, validator=None):
     return report   
 
 @view_config(route_name='report_get_option_post', renderer='json', request_method='POST', custom_predicates=(check_content_type("application/json"),))
-def generate_report_post(request, validator=None):
+def generate_report_post(request, validator = None):
     try:
         # basic check that it is a correct json, if not an exception will get raised when accessing json_body.
-        report_config = request.json_body
+        report_config = get_request_body(request)
         # gets the name of the report from the URL
         reportName = request.matchdict['name']
         report = generate_report(get_report_registry(request, reportName), reportName, report_config, validator)

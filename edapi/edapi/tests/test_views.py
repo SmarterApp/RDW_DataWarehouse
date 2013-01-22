@@ -10,11 +10,12 @@ get_list_of_reports,
 get_report_config,
 generate_report_get,
 generate_report_post,
-check_content_type)
+check_content_type, get_request_body)
 from edapi import EDAPI_REPORTS_PLACEHOLDER, add_report_config
 from edapi.tests.dummy import Dummy, DummyRequest, DummyValidator
-from edapi.exceptions import ReportNotFoundError
+from edapi.exceptions import ReportNotFoundError, InvalidParameterError
 from edapi.httpexceptions import EdApiHTTPNotFound, EdApiHTTPPreconditionFailed
+import json
 
 class TestViews(unittest.TestCase):
     
@@ -129,12 +130,10 @@ class TestViews(unittest.TestCase):
         response = generate_report_post(self.request)
         self.assertIs(type(response), EdApiHTTPPreconditionFailed)
     
-    
     def test_generate_report_post_for_valid_request(self):
         self.request.content_type = "application/json"
         self.request.registry[EDAPI_REPORTS_PLACEHOLDER] = {}
         self.request.registry[EDAPI_REPORTS_PLACEHOLDER]["test"] = {"some":"thing"}
-        self.request.json_body = "{'a':1}"
         self.request.matchdict['name'] = "test"
 
         params = {"studentId": {"type": "string","required": True}}
@@ -154,6 +153,18 @@ class TestViews(unittest.TestCase):
         dummy = Dummy()
         add_report_config(self.request, dummy, name = "test", params = {})
         self.assertEquals(self.request.registry[EDAPI_REPORTS_PLACEHOLDER]["test"], {"name":"test", "params": {}, "reference" : dummy})
+        
+    def test_get_request_body(self):
+        request = DummyValueError()
+        self.assertRaises(InvalidParameterError, get_request_body, request)
+
+class DummyValueError:
+    '''
+    A dummy class that can has a method that triggers ValueError exception
+    '''
+    @property
+    def json_body(self):
+        return json.loads('error')
         
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.test_get_report_registry']

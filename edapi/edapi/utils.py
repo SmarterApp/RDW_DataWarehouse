@@ -8,6 +8,7 @@ import validictory
 from validictory.validator import ValidationError
 import time
 from edapi.exceptions import ReportNotFoundError, InvalidParameterError
+import inspect
 
 REPORT_REFERENCE_FIELD_NAME = 'name'
 PARAMS_REFERENCE_FIELD_NAME = 'params'
@@ -49,6 +50,20 @@ def get_dict_value(dictionary, key, exception_to_raise=Exception):
     if (report is None):
         raise exception_to_raise(key)
     return report
+
+# given a report (dict), get the value from reference key and call it
+def call_reference_method(report, params):
+    # Check if obj variable is a class or not
+    # if it is, instantiate object first before calling function.
+    # else, just call the method
+    (obj, method) = get_dict_value(report, REF_REFERENCE_FIELD_NAME)
+    
+    if inspect.isclass(obj):
+        inst = obj()
+        response = getattr(inst, method.__name__)(params)
+    else:
+        response = method(params)
+    return response
         
 #def convert_numbers_to_int(report_config):
 #    result = {}
@@ -73,17 +88,7 @@ def generate_report(registry, report_name, params, validator = None):
     
     report = get_dict_value(registry, report_name, ReportNotFoundError)
     
-    (obj, generate_report_method) = get_dict_value(report, REF_REFERENCE_FIELD_NAME)
-    
-    # Check if obj variable is object or not
-    # if obj is generate_report_method, then obj is function.
-    # Otherwise, instantiate object first before calling function.
-    if obj == generate_report_method:
-        response = generate_report_method(params)
-    else:
-        inst = obj()
-        response = getattr(inst, generate_report_method.__name__)(params)
-    return response
+    return call_reference_method(report, params)
 
 # generates a report config by loading it from the config repository
 def generate_report_config(registry, report_name):
@@ -101,10 +106,10 @@ def propagate_params(registry, params):
             if (key == REPORT_REFERENCE_FIELD_NAME):
                 sub_report = get_dict_value(registry, value, ReportNotFoundError)
                 report_config = sub_report.get(PARAMS_REFERENCE_FIELD_NAME)
-                expanded = expand_field(registry, value, report_config)
-                if (expanded[1]):
+                (report_data, expanded) = expand_field(registry, value, report_config)
+                if (expanded):
                     # if the value has changed, we change the key to be VALUE_FIELD_NAME
-                    dictionary[VALUE_FIELD_NAME] = expanded[0]
+                    dictionary[VALUE_FIELD_NAME] = report_data
                     del dictionary[key]
     print(params)
 
@@ -113,8 +118,9 @@ def propagate_params(registry, params):
 def expand_field(registry, report_name, params):
     if (params is not None):
         return (report_name, False)
-    config = registry[report_name][REF_REFERENCE_FIELD_NAME]
-    report_data = config[1](config[0], params)  # params is none
+    report = get_dict_value(registry, report_name, ReportNotFoundError)
+    # params is None
+    report_data = call_reference_method(report, params) 
     return (report_data, True)
 
 
@@ -145,7 +151,7 @@ class Validator:
             validictory.validate(params, params_config)
         except ValueError as e:
             return (False, e)
-        return True
+        return (True, None)
     
     # this method checks String types and attempt to convert them to the defined type. 
     # This handles 'GET' requests when all parameters are converted into string.

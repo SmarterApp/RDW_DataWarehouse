@@ -31,8 +31,8 @@ class Test(unittest.TestCase):
         registry = {}
         params = {}
         validator = Validator()
-        validator.validate_params_schema = MagicMock(return_value=False)
-        validator.fix_types = MagicMock(return_value=False)
+        validator.validate_params_schema = MagicMock(return_value=(False, None))
+        validator.fix_types = MagicMock(return_value=(False, None))
         self.assertRaises(InvalidParameterError, utils.generate_report, registry, "test", params, validator)
         
     def validate_params(self):

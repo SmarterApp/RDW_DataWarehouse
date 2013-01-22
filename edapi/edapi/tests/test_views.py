@@ -152,7 +152,7 @@ class TestViews(unittest.TestCase):
     def test_add_report_config_with_reports_placeholder(self):
         dummy = Dummy()
         add_report_config(self.request, dummy, name = "test", params = {})
-        self.assertEquals(self.request.registry[EDAPI_REPORTS_PLACEHOLDER]["test"], {"name":"test", "params": {}, "reference" : dummy})
+        self.assertEqual(self.request.registry[EDAPI_REPORTS_PLACEHOLDER]["test"], {"name":"test", "params": {}, "reference" : dummy})
         
     def test_get_request_body(self):
         request = DummyValueError()

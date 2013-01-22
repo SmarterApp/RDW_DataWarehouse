@@ -29,7 +29,7 @@ class DummyValidator:
         self._validated = validated
         
     def validate_params_schema(self, registry, report_name, params):
-        return self._validated
+        return (self._validated, None)
     
     def fix_types(self, registry, report_name, params):
         return params
@@ -37,3 +37,5 @@ class DummyValidator:
 class Dummy:
     def some_func(self, params):
         return { "report" : params}
+    def some_func_that_returns(self, params):
+        return {"report" : "123" }

@@ -134,17 +134,20 @@ def individual_student_report(request):
     student_id = int(request.params['student'])
     assessment_id = int(request.params['assmt'])
 
-    params = {'studentId': student_id, 'assessmentId': assessment_id}
+    params = json.dumps({"studentId":student_id})
+    params = params.encode('utf-8')
 
-    rpt = get_student_report(params)
+    headers = {}
+    headers['Content-Type'] = 'application/json'
 
-    print('TYPE: ' + str(type(rpt)))
+    req = urllib.request.Request('http://127.0.0.1:6543/report/student/_query', params, headers)
+    res = json.loads(urllib.request.urlopen(req).read().decode('utf-8'))
 
     # temporary fix to keep this simple
     # we only want one of the rows returned from the service.
-    json_obj = rpt[0]
+    res = res[0]
 
-    return json_obj
+    return res
 
 # Bootstrapped Individual Student Report
 @view_config(route_name='indiv_student_bootstrap', renderer='templates/reports/individual_student_bootstrap.pt')
@@ -158,10 +161,7 @@ def individual_student_report_bootstrap(request):
     headers = {}
     headers['Content-Type'] = 'application/json'
 
-    req = urllib.request.Request('http://127.0.0.1:6543/report/student/_query', params, headers)
-    res = json.loads(urllib.request.urlopen(req).read().decode('utf-8'))
-
-    print('TYPE >>>>>>>>>>>>>> ' + str(type(res)))
+    res = get_student_report(params, headers)
 
     # temporary fix to keep this simple
     # we only want one of the rows returned from the service.
@@ -169,6 +169,12 @@ def individual_student_report_bootstrap(request):
 
     return res
 
+def get_student_report(self, params, headers):
+    req = urllib.request.Request('http://127.0.0.1:6543/report/student/_query', params, headers)
+
+    res = json.loads(urllib.request.urlopen(req).read().decode('utf-8'))
+
+    return res
 
 # Class Report
 @view_config(route_name='class_report', renderer='templates/reports/class.pt')

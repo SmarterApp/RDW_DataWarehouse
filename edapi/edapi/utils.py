@@ -38,14 +38,13 @@ class report_config(object):
         
         def callback(scanner, name, obj):
             def wrapper(*args, **kwargs):
-                print ("Arguments were: %s, %s" % (args, kwargs))
                 return original_func(self, *args, **kwargs)
             scanner.config.add_report_config((obj, original_func), **settings)
         venusian.attach(original_func, callback, category='edapi')
         return original_func
     
 # dict lookup and raises an exception if key doesn't exist       
-def get_dict_value(dictionary, key, exception_to_raise=Exception):
+def get_report_dict_value(dictionary, key, exception_to_raise=Exception):
     report = dictionary.get(key)
     if (report is None):
         raise exception_to_raise(key)
@@ -56,7 +55,7 @@ def call_reference_method(report, params):
     # Check if obj variable is a class or not
     # if it is, instantiate object first before calling function.
     # else, just call the method
-    (obj, method) = get_dict_value(report, REF_REFERENCE_FIELD_NAME)
+    (obj, method) = get_report_dict_value(report, REF_REFERENCE_FIELD_NAME)
     
     if inspect.isclass(obj):
         inst = obj()
@@ -86,15 +85,15 @@ def generate_report(registry, report_name, params, validator = None):
     if (not validated[0]):
         raise InvalidParameterError(msg = str(validated[1]))
     
-    report = get_dict_value(registry, report_name, ReportNotFoundError)
+    report = get_report_dict_value(registry, report_name, ReportNotFoundError)
     
     return call_reference_method(report, params)
 
 # generates a report config by loading it from the config repository
 def generate_report_config(registry, report_name):
     # load the report configuration from registry
-    report = get_dict_value(registry, report_name, ReportNotFoundError)
-    report_config = get_dict_value(report, PARAMS_REFERENCE_FIELD_NAME, InvalidParameterError)
+    report = get_report_dict_value(registry, report_name, ReportNotFoundError)
+    report_config = get_report_dict_value(report, PARAMS_REFERENCE_FIELD_NAME, InvalidParameterError)
     # expand the param fields
     propagate_params(registry, report_config)
     return report_config
@@ -104,7 +103,7 @@ def propagate_params(registry, params):
     for dictionary in params.values():
         for (key, value) in dictionary.items():
             if (key == REPORT_REFERENCE_FIELD_NAME):
-                sub_report = get_dict_value(registry, value, ReportNotFoundError)
+                sub_report = get_report_dict_value(registry, value, ReportNotFoundError)
                 report_config = sub_report.get(PARAMS_REFERENCE_FIELD_NAME)
                 (report_data, expanded) = expand_field(registry, value, report_config)
                 if (expanded):
@@ -118,7 +117,7 @@ def propagate_params(registry, params):
 def expand_field(registry, report_name, params):
     if (params is not None):
         return (report_name, False)
-    report = get_dict_value(registry, report_name, ReportNotFoundError)
+    report = get_report_dict_value(registry, report_name, ReportNotFoundError)
     # params is None
     report_data = call_reference_method(report, params) 
     return (report_data, True)
@@ -144,8 +143,8 @@ class Validator:
     # validates the given parameters with the report configuration validation definition
     @staticmethod
     def validate_params_schema(registry, report_name, params):
-        report = get_dict_value(registry, report_name, ReportNotFoundError)
-        params_config = get_dict_value(report, PARAMS_REFERENCE_FIELD_NAME, InvalidParameterError)
+        report = get_report_dict_value(registry, report_name, ReportNotFoundError)
+        params_config = get_report_dict_value(report, PARAMS_REFERENCE_FIELD_NAME, InvalidParameterError)
         params_config = add_configuration_header(params_config)
         try:
             validictory.validate(params, params_config)
@@ -158,8 +157,8 @@ class Validator:
     @staticmethod
     def fix_types(registry, report_name, params):
         result = {}
-        report = get_dict_value(registry, report_name, ReportNotFoundError)
-        params_config = get_dict_value(report, PARAMS_REFERENCE_FIELD_NAME, InvalidParameterError)
+        report = get_report_dict_value(registry, report_name, ReportNotFoundError)
+        params_config = get_report_dict_value(report, PARAMS_REFERENCE_FIELD_NAME, InvalidParameterError)
         for (key, value) in params.items():
             config = params_config.get(key)
             if (config == None):

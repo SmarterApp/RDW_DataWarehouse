@@ -1,4 +1,6 @@
 '''
+Handles requests to endpoints
+
 Created on Jan 14, 2013
 
 @author: aoren
@@ -12,6 +14,7 @@ from edapi.httpexceptions import EdApiHTTPNotFound, EdApiHTTPPreconditionFailed
 from pyramid.response import Response
 import json
 
+# validates content_type 
 def check_content_type(content_type):
     content_type = content_type.lower()
     def check_content_type_predicate(info, request):
@@ -43,7 +46,7 @@ def get_list_of_reports(request):
         return []
     return list(reports.keys())
 
-# handle the OPTIONS verb for the report resource
+# handle the OPTIONS verb for data resource
 @view_config(route_name='report_get_option_post', renderer='json', request_method='OPTIONS')
 def get_report_config(request):
     # gets the name of the report from the URL
@@ -58,7 +61,7 @@ def get_report_config(request):
         return EdApiHTTPPreconditionFailed(e.msg)
     return Response(body = json.dumps(report_config), content_type = "application/json", allow = 'GET,POST,OPTIONS')
 
-
+# handle GET verb for data resource
 @view_config(route_name='report_get_option_post', renderer='json', request_method='GET', custom_predicates=(check_content_type("application/json"),))
 def generate_report_get(request, validator = None):
     # gets the name of the report from the URL
@@ -74,6 +77,7 @@ def generate_report_get(request, validator = None):
         return EdApiHTTPPreconditionFailed(e.msg)
     return report   
 
+# handle POST verb for data resource
 @view_config(route_name='report_get_option_post', renderer='json', request_method='POST', custom_predicates=(check_content_type("application/json"),))
 def generate_report_post(request, validator = None):
     try:

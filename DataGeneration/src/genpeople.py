@@ -5,11 +5,11 @@ Created on Jan 8, 2013
 '''
 
 
-from src import gennames
+import gennames
 import random
-from src.objects.dimensions import Student, Teacher, Parent
-from src.readnaminglists import PeopleNames
-from src.idgen import IdGen
+from objects.dimensions import Student, Teacher, Parent
+from readnaminglists import PeopleNames
+from idgen import IdGen
 
 
 # constants
@@ -123,7 +123,7 @@ def _assign_parent(student):
 
 if __name__ == '__main__':
 
-    total = 387549  # pop in AL
+    total = 5000  # 387549  # pop in AL
     ratio = 0.51
 
     from time import time

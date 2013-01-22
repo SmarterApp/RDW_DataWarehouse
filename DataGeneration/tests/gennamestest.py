@@ -6,10 +6,10 @@ Created on Jan 14, 2013
 
 import unittest
 import operator
-from src import gennames
-from src.objects.dimensions import Student, Person, Parent
-from src.objects.nameinfo import NameInfo
-from src.readnaminglists import PeopleNames
+import gennames
+from objects.dimensions import Student, Person, Parent
+from objects.nameinfo import NameInfo
+from readnaminglists import PeopleNames
 
 
 class TestGenNames(unittest.TestCase):

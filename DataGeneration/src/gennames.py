@@ -148,8 +148,8 @@ def get_random_entry(name_list):
 
 if __name__ == '__main__':
 
-    from src.readnaminglists import PeopleNames
-    from src.objects.dimensions import Student
+    from readnaminglists import PeopleNames
+    from objects.dimensions import Student
 
     students = []
 

@@ -4,8 +4,8 @@ Created on Jan 16, 2013
 @author: swimberly
 '''
 import unittest
-from src import genpeople
-from src.objects.nameinfo import NameInfo
+import genpeople
+from objects.nameinfo import NameInfo
 
 
 class Test(unittest.TestCase):

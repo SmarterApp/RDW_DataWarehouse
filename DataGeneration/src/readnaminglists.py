@@ -5,8 +5,8 @@ Created on Jan 5, 2013
 '''
 
 import os.path
-from src.objects.nameinfo import NameInfo
-from src import gennames
+from objects.nameinfo import NameInfo
+import gennames
 
 
 def read_name_files():

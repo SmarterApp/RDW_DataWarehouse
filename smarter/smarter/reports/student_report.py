@@ -71,7 +71,7 @@ def get_student_report(params, connector=None):
     
     return result
     '''
-    json="""[
+    json = [
       {
         'student_id': 1111,
         'first_name': 'William',
@@ -85,7 +85,8 @@ def get_student_report(params, connector=None):
         'asmt_claim_3_score': 55,
         'asmt_claim_4_score': 73
       }
-    ]"""
+    ]
+    
     return json
 
 @report_config(name='student_assessments_report', params={"studentId": {"type":"integer", "required":True}})

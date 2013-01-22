@@ -13,24 +13,27 @@ class TestReport():
                                                 "freeTextField" : {
                                                                    "type" : "string"
                                                                    },
-                                                "staticListField": {
-                                                                    "value" : ["State", "Account", "School Group", "School", "Teacher", "Class", "Student", "Grade", "Race", "Custom Attribute"] 
-                                                                    },
-                                                "school_size": {"alias" : "school_size" } 
+                                                "school_sizes": {"name" : "school_size_report" },
+                                                "student_lists": {"name" : "student_list_report" }
                                               }
                                             )
     def generate(self, params):
         return params  # todo: return data
     
-    # this report requires configuration, and therefore should NOT get expanded automatically.
-    @report_config(name="district_report_report", params={ "staticListField": {
-                                                    "value" : ["State", "Account", "School Group", "School", "Teacher", "Class", "Student", "Grade", "Race", "Custom Attribute"] 
-                                                }
-                                              })
-    def generate_test2(self, params):
-        return params 
-    
     # this report can get retrieved with no configuration, and therefore gets expanded automatically.
     @report_config(name="school_size_report")
     def generate_test_no_config(self, params):
         return ["100", "200", "1000"]
+    
+    # this report requires configuration, and therefore should NOT get expanded automatically.
+    @report_config(name="student_list_report", params={ "scope": {
+                                                    "value" : ["State", "Account", "School Group", "School", "Teacher", "Class", "Student", "Grade", "Race", "Custom Attribute"] 
+                                                }
+                                              })
+    def generate_test2(self, params):
+        if params['scope'].lower() == "school":
+            return { "numberOfStudents" : "200" }
+        else:
+            return{ "numberOfStudents" : "1000" }
+    
+

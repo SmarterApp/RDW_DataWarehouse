@@ -68,8 +68,8 @@ def generate_report(registry, report_name, params, validator = None):
     params = validator.fix_types(registry, report_name, params)
     validated = validator.validate_params_schema(registry, report_name, params)
     
-    if (not validated):
-        raise InvalidParameterError()
+    if (not validated[0]):
+        raise InvalidParameterError(msg = str(validated[1]))
     
     report = get_dict_value(registry, report_name, ReportNotFoundError)
     
@@ -144,9 +144,8 @@ class Validator:
         try:
             validictory.validate(params, params_config)
         except ValueError as e:
-            print(e)
-            return False;
-        return True;
+            return (False, e)
+        return True
     
     # this method checks String types and attempt to convert them to the defined type. 
     # This handles 'GET' requests when all parameters are converted into string.

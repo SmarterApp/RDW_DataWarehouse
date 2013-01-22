@@ -40,9 +40,7 @@ def get_student_report(params, connector=None):
     if 'assessmentId' in params:
         assessment_id = params['assessmentId']
     
-    
-    '''
-    comment out until database is ready
+
     # get sql session
     connector.open_session()
     
@@ -79,28 +77,6 @@ def get_student_report(params, connector=None):
     connector.close_session()
     
     return result
-    '''
-    json = [
-      {
-        'student_id': 1111,
-        'first_name': 'William',
-        'middle_name': 'Henry',
-        'last_name': 'Gates',
-        'asmt_subject': 'ELA',
-        'asmt_period': '2012 MOY',
-        'asmt_score': 198,
-        'asmt_claim_1_name': 'claim name1',
-        'asmt_claim_2_name': 'claim name2',
-        'asmt_claim_3_name': 'claim name3',
-        'asmt_claim_4_name': 'claim name4',
-        'asmt_claim_1_score': 30,
-        'asmt_claim_2_score': 40,
-        'asmt_claim_3_score': 55,
-        'asmt_claim_4_score': 73
-      }
-    ]
-    
-    return json
 
 @report_config(name='student_assessments_report', params={"studentId": {"type":"integer", "required":True}})
 def get_student_assessment(params, connector=None):

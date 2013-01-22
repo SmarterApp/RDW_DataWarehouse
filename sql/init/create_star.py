@@ -123,6 +123,7 @@ def createTables(dbConnectionString, schemaName):
                         Column('address_3',     String(32),     nullable = True),
                         Column('city',          String(32),     nullable = False),
                         Column('state',         None,           ForeignKey('dim_state.state_id')),
+                        Column('zip',           String(10),     nullable = False),
                         Column('country',       None,           ForeignKey('dim_country.country_id'))
                         )
     
@@ -152,7 +153,23 @@ def createTables(dbConnectionString, schemaName):
     
     students    = Table('dim_student', metadata,
                         Column('student_id',    BigInteger,     Sequence('student_id_seq'), primary_key = True),
+                        #
+                        Column('first_name',    String(256),    nullable = False),
+                        Column('middle_name',   String(256),    nullable = True),
+                        Column('last_name',     String(256),    nullable = False),
+                        #
+                        Column('address_1',     String(32),     nullable = False),
+                        Column('address_2',     String(32),     nullable = True),
+                        Column('address_3',     String(32),     nullable = True),
+                        Column('city',          String(32),     nullable = False),
+                        Column('state',         None,           ForeignKey('dim_state.state_id')),
+                        Column('zip',           String(10),     nullable = False),
+                        Column('country',       None,           ForeignKey('dim_country.country_id')),
+                        #
+                        Column('gender',        String(6),      nullable = False),
                         Column('school_id',     None,           ForeignKey('dim_school.school_id')),
+                        Column('email',         String(256),    nullable = False),
+                        Column('dob',           Date,           nullable = False),
                         # Teacher?
                         )
     

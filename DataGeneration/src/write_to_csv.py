@@ -68,6 +68,6 @@ def create_parent_csv(parent_list):
 
 def clear_files():
     for f in file_names:
-        cur_file = open(path + f, "w")
+        cur_file = open(f, "w")
         cur_file.truncate()
         cur_file.close()

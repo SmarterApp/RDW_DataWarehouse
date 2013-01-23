@@ -6,8 +6,7 @@ from entities import *
 import postgresql.driver.dbapi20 as dbapi
 from datetime import datetime
 from test.test_iterlen import len
-from ntpath import samefile
-from genpeople import generate_people
+from genpeople import generate_people, STUDENT, TEACHER
 
 birds_file = "../datafiles/birds.txt"
 manmals_file = "../datafiles/manmals.txt"
@@ -30,8 +29,18 @@ subjects = ["Math", "ELA"]
 min_class_size = 20
 min_section_size = 10
 gender_ratio = [0.5, 0.45, 0.55]
-total_stu = [0]
 
+# total count for state, districts, schools, students, teachers
+total_count = [0, 0, 0, 0, 0]
+
+
+'''
+Generate data.
+First step: read files into lists for making names, addresses
+Second step: get statistical data from database
+Third step: if first two steps are successful, start generate data process. 
+(including generate: state, district, school, class, section, student, and teacher)
+'''
 def generate():
 	read_files = prepare_data()
 	db_states = get_statistic()
@@ -42,6 +51,26 @@ def generate():
 	
 	generate_data(db_states)
 
+
+'''
+Read files into lists, which is used for making names, addresses, etc
+'''
+def prepare_data():
+	# clear old files
+	clear_files()
+	
+	try: 
+		birds_list.extend(read_names(birds_file))
+		manmals_list.extend(read_names(manmals_file))
+		fish_list.extend(read_names(fish_file))
+	except:
+		print("Exception for reading files")
+		return False
+	return True
+
+'''
+Get statistical data from database, which will be used in generating the actual data
+'''
 def get_statistic():
 	db = dbapi.connect(user='postgres', database='generate_data', port=5432, password='3423346', host="localhost")
 	dist_num_in_state = []
@@ -51,7 +80,7 @@ def get_statistic():
 		db_states.append((str(count['state_name']), str(count['state_code'])))
 		dist_num_in_state.append(count['dist_num'])
 	dist_num_in_state_made = makeup(dist_num_in_state, len(dist_num_in_state))
-
+	
 	print("Real      -- number of dist in states ", dist_num_in_state, " total ", sum(dist_num_in_state))
 	print("Generated -- number of dist in states ", dist_num_in_state_made, " total ", sum(dist_num_in_state_made))
 
@@ -94,20 +123,9 @@ def get_statistic():
 	return actual_states
 
 
-def prepare_data():
-	# clear old files
-	clear_files()
-	
-	try: 
-		birds_list.extend(read_names(birds_file))
-		manmals_list.extend(read_names(manmals_file))
-		fish_list.extend(read_names(fish_file))
-	except:
-		print("Exception for reading files")
-		return False
-	return True
-
-
+'''
+Main function to generate actual data with input statistical data
+'''
 def generate_data(db_states):
 	c = 0
 	for state in db_states:
@@ -115,6 +133,7 @@ def generate_data(db_states):
 
 		# create state
 		created_state = State(state['name'], state['code'], state['dist_num_in_state'])
+		total_count[0] += 1
 		create_states_csv(created_state)
 		
 		# generate school distribution in districts
@@ -140,30 +159,43 @@ def generate_data(db_states):
 		print("Number of districts ", len(school_num_in_dist), "    ", len(school_num_in_dist_made))
 		print("Number of schools   ", sum(school_num_in_dist), "    ", sum(school_num_in_dist_made))
 		print("Number of students  ", sum(stu_num_in_school), "    ", sum(stu_num_in_school_made))
-		print("Max Number of stu   ", max(stu_num_in_school), "    ", max(stu_num_in_school_made))
+		# print("Max Number of stu   ", max(stu_num_in_school), "    ", max(stu_num_in_school_made))
 		
 		# create districts for each state
 		created_dist_list = create_districts(created_state.name, school_num_in_dist_made, school_type_in_dist);
+		total_count[1] += len(created_dist_list)
 		create_districts_csv(created_dist_list)
-		# created_school_list = []
 		shift = 0
 		
 		for d in created_dist_list:		
 			# create school for each district
-			school_list = create_schools(d.dist_name, stu_num_in_school_made, tea_num_in_school_made, shift, d.num_of_schools, d.school_type_in_dist)			
+			school_list = create_schools(d.dist_name, stu_num_in_school_made, tea_num_in_school_made, shift, d.num_of_schools, d.school_type_in_dist)
+			total_count[2] += len(school_list)		
 			create_schools_csv(school_list)
 			shift += d.num_of_schools
 			
 			# create classes, grades, sections, teachers and students for each school
 			for sch in school_list:
 				create_classes_grades_sections(sch, state['code'])
-				
-		print("expected number of students ", sum(stu_num_in_school_made))
 
 		# if just need one state data
 		if(c == 0): break
+		
+	print("*************************************")
+	print("generated number of states    ", total_count[0])
+	print("generated number of districts ", total_count[1])
+	print("generated number of schools   ", total_count[2])
+	print("generated number of students  ", total_count[3])
+	print("generated number of teachers  ", total_count[4])
+	
 
 
+'''
+input: stu_num_in_school_made:       list of student number in each school
+	   stutea_ratio_in_school_made:  list of student_teacher_ratio in each school
+	   
+output: list of teacher number in each school calculates as: student_number/student_teacher_ratio
+'''
 def make_teacher_num(stu_num_in_school_made, stutea_ratio_in_school_made):
 	assert(len(stu_num_in_school_made) == len(stutea_ratio_in_school_made))
 	teacher_num = []
@@ -186,7 +218,9 @@ def generate_school_type(db_school_type_list):
 	school_type_in_dist.append(cur_type)
 	return school_type_in_dist
 	
-	
+'''
+Main function to generate list of schools for a district
+'''
 def create_schools(d_name, stu_num_in_school_made, tea_num_in_school_made, start, count, school_type_in_dist):
 	# generate random school names
 	try:	
@@ -259,7 +293,9 @@ def cal_school_num_for_type(count, school_type_in_dist):
 				index += 1	
 	return school_for_type	
 	
-
+'''
+Main function to generate list of district for a state
+'''
 def create_districts(state_name, school_num_in_dist_made, school_type_in_dist):
 	total_school = 0;
 	districts_list = []
@@ -281,7 +317,7 @@ def create_districts(state_name, school_num_in_dist_made, school_type_in_dist):
 	assert(total_school == sum(school_num_in_dist_made))		
 	return districts_list
 
-		
+
 def generate_names_from_lists(count, list1, list2):
 	names = []
 	if(count > 0):
@@ -297,7 +333,12 @@ def generate_names_from_lists(count, list1, list2):
 	new_list.extend(names[0:count])
 	return new_list
 
-
+'''
+input: count: total number of addresses
+       words_list: a word list used for generate address
+output: list of addresses
+each address is created as: a number, a random word selected from input words_list, and a suffix
+'''
 def generate_address_from_list(count, words_list):	
 	adds = []
 	if(count > 0):
@@ -311,6 +352,9 @@ def generate_address_from_list(count, words_list):
 	return adds
 
 
+'''
+Main function to generate classes, grades, sections, students and teachers for a school
+'''
 def create_classes_grades_sections(sch, state_code):
 	# calculate number of students in each grade
 	stu_num_in_grade = round(sch.num_of_student / (sch.high_grade - sch.low_grade + 1))
@@ -318,7 +362,8 @@ def create_classes_grades_sections(sch, state_code):
 	
 	# generate teacher list for a school
 	# teacher_list = create_teachers(sch.school_name, sch.num_of_teacher)
-	teacher_list = generate_people(1, sch.num_of_teacher, random.choice(gender_ratio))
+	teacher_list = generate_people(TEACHER, sch.num_of_teacher, random.choice(gender_ratio))
+	total_count[4] += len(teacher_list)
 	
 	# for each grade
 	stu_tea_ratio = sch.num_of_student / sch.num_of_teacher
@@ -326,16 +371,18 @@ def create_classes_grades_sections(sch, state_code):
 	for grade in range(sch.low_grade, sch.high_grade + 1):
 		# generate student list for a grade
 		# grade_students = create_students(sch.school_name, end)
-		grade_students = generate_people(0, end, random.choice(gender_ratio))
+		grade_students = generate_people(STUDENT, end, random.choice(gender_ratio))
 		j += len(grade_students)
-		total_stu[0] += len(grade_students)
+		total_count[3] += len(grade_students)
 		if(grade == sch.high_grade - 1):
 			end = sch.num_of_student - j
 		classforgrade_list = create_classes_for_grade(grade_students, teacher_list, stu_tea_ratio)
 		create_sections_stuandtea_csv(state_code, classforgrade_list, grade, sch.school_name, sch.dist_name)
 	
-	# print("actual number of students  ", total_stu[0])
 
+'''
+Main function to generate classes for a grade
+'''
 def create_classes_for_grade(grade_students, teacher_list, stu_tea_ratio):
 	# calculate number of class for a subject
 	num_of_subjects = len(subjects)
@@ -359,7 +406,7 @@ def create_classes_for_grade(grade_students, teacher_list, stu_tea_ratio):
 	return total_classes
 
 '''
-Create classes for a grade of a subject
+Main function to create classes for a grade of a subject
 '''
 def create_classes(sub_name, count, stu_list, tea_list, stu_tea_ratio):
 	# distribute students in each class
@@ -372,7 +419,7 @@ def create_classes(sub_name, count, stu_list, tea_list, stu_tea_ratio):
 	return class_list
 
 '''
-Create one class in a grade of a subject. Students and teachers are associated with sections
+Main function to create one class in a grade of a subject. Students and teachers are associated with sections
 '''
 def create_one_class(sub_name, class_count, distribute_stu_inaclass, tea_list, stu_tea_ratio):
 	# calculate number of sections
@@ -404,6 +451,9 @@ def create_one_class(sub_name, class_count, distribute_stu_inaclass, tea_list, s
 	
 	return eclass
 
+'''
+Divide list into n parts
+'''
 def list_to_chucks(list1, n):
 	if(n == 1 or len(list1) <= n):
 		return [list1]
@@ -423,7 +473,7 @@ def list_to_chucks(list1, n):
 
 	return chucks_list
 
-# temporary		
+'''	
 def create_students(scho_name, count):
 	student_list = []
 	while(count > 0):
@@ -439,6 +489,8 @@ def create_teachers(scho_name, count):
 		count -= 1
 		student_list.append(student)
 	return student_list
+'''
+
 	
 def makeup(seqin, lengh):
 	avg1 = py1.avg(seqin)

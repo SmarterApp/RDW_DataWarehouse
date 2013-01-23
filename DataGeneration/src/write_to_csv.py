@@ -1,6 +1,6 @@
 import csv
 
-file_names = ['states.csv', 'districts.csv', 'schools.csv', 'students.csv', 'stu_sections.csv', 'tea_sections.csv']
+file_names = ['states.csv', 'districts.csv', 'schools.csv', 'stu_sections.csv', 'tea_sections.csv']
 
 
 def create_states_csv(state):

@@ -77,7 +77,8 @@ class TestUtils(unittest.TestCase):
         report_name = "myTest"
         registry = {}
         registry[report_name] = {}
-        self.assertRaises(InvalidParameterError, generate_report_config, registry, report_name)
+        response = generate_report_config(registry, report_name)
+        self.assertEqual(response, {})
     
     def test_generate_report_config_with_valid_param(self):
         report_name = "myTest"

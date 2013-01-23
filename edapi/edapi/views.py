@@ -57,8 +57,6 @@ def get_report_config(request):
     # if we cannot find the report configuration in the repository, we return 404 error
     except ReportNotFoundError as e:
         return EdApiHTTPNotFound(e.msg)
-    except InvalidParameterError as e:
-        return EdApiHTTPPreconditionFailed(e.msg)
     return Response(body = json.dumps(report_config), content_type = "application/json", allow = 'GET,POST,OPTIONS')
 
 # handle GET verb for data resource

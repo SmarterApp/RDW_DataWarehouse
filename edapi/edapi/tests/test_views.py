@@ -69,7 +69,7 @@ class TestViews(unittest.TestCase):
         self.request.registry[EDAPI_REPORTS_PLACEHOLDER]["test"] = {"some":"thing"}      
         self.request.matchdict['name'] = "test"
         response = get_report_config(self.request)
-        self.assertIs(type(response), EdApiHTTPPreconditionFailed)
+        self.assertEqual(response.json, {})
         
         
     def test_get_report_confg_for_valid_request(self):  

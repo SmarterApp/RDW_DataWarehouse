@@ -48,7 +48,7 @@ def get_report_dict_value(dictionary, key, exception_to_raise=Exception):
     return report
 
 # given a report (dict), get the value from reference key and call it
-def call_reference_method(report, params):
+def call_decorated_method(report, params):
     # Check if obj variable is a class or not
     # if it is, instantiate object first before calling function.
     # else, just call the method
@@ -74,13 +74,18 @@ def generate_report(registry, report_name, params, validator = None):
     
     report = get_report_dict_value(registry, report_name, ReportNotFoundError)
     
-    return call_reference_method(report, params)
+    return call_decorated_method(report, params)
 
 # generates a report config by loading it from the config repository
 def generate_report_config(registry, report_name):
     # load the report configuration from registry
     report = get_report_dict_value(registry, report_name, ReportNotFoundError)
-    report_config = get_report_dict_value(report, PARAMS_REFERENCE_FIELD_NAME, InvalidParameterError)
+    
+    # if params is not defined 
+    if (report.get(PARAMS_REFERENCE_FIELD_NAME) is None):
+        report_config = {}
+    else:
+        report_config =  get_report_dict_value(report, PARAMS_REFERENCE_FIELD_NAME, InvalidParameterError)
     # expand the param fields
     propagate_params(registry, report_config)
     return report_config
@@ -106,7 +111,7 @@ def expand_field(registry, report_name, params):
         return (report_name, False)
     report = get_report_dict_value(registry, report_name, ReportNotFoundError)
     # params is None
-    report_data = call_reference_method(report, params) 
+    report_data = call_decorated_method(report, params) 
     return (report_data, True)
 
 

@@ -154,9 +154,13 @@ def individual_student_report(request):
 @view_config(route_name='indiv_student_bootstrap', renderer='templates/reports/individual_student_bootstrap.pt')
 def individual_student_report_bootstrap(request):
     student_id = int(request.params['student'])
-    assessment_id = int(request.params['assmt'])
 
-    params = json.dumps({"studentId":student_id})
+    if request.params['assmt']:
+        assessment_id = int(request.params['assmt'])
+        params = json.dumps({"studentId":student_id,"assessmentId":assessment_id})
+    else:
+        params = json.dumps({"studentId":student_id})
+
     params = params.encode('utf-8')
 
     headers = {}

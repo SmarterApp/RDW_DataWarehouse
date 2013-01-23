@@ -8,7 +8,7 @@ from smarter.controllers import get_compare_population
 from smarter.reports.student_report import get_student_report
 import json
 import urllib.request
-import re
+from smarter.utils.indiv_student_helper import IndivStudentHelper
 
 @view_config(route_name='comparing_populations', renderer='templates/comparing_populations.pt')
 def compPop_view(request):
@@ -153,33 +153,13 @@ def individual_student_report(request):
 # Bootstrapped Individual Student Report
 @view_config(route_name='indiv_student_bootstrap', renderer='templates/reports/individual_student_bootstrap.pt')
 def individual_student_report_bootstrap(request):
-    student_id = int(request.params['student'])
+    helper = IndivStudentHelper()
 
-    if 'assmt' in request.params.keys():
-        assessment_id = int(request.params['assmt'])
-        params = json.dumps({"studentId":student_id,"assessmentId":assessment_id})
-    else:
-        params = json.dumps({"studentId":student_id})
+    params = helper.extract_parameters(request)
+    headers = helper.create_header()
+    response = helper.get_student_report(params, headers)
 
-    params = params.encode('utf-8')
-
-    headers = {}
-    headers['Content-Type'] = 'application/json'
-
-    res = get_student_report(params, headers)
-
-    return res
-
-def get_student_report(params, headers):
-    req = urllib.request.Request('http://127.0.0.1:6543/data/individual_student_report', params, headers)
-    res = urllib.request.urlopen(req).read().decode('utf-8')
-
-    jsonObj = json.loads(res)
-
-    if jsonObj:
-        return jsonObj[0]
-    else:
-        return Response('No records found for given studentID/assessmentID combination.')
+    return response
 
 
 # Class Report

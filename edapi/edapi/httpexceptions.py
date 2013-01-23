@@ -3,8 +3,12 @@ Created on Jan 18, 2013
 
 @author: dip
 '''
-from pyramid.httpexceptions import HTTPNotFound, HTTPPreconditionFailed
+from pyramid.httpexceptions import HTTPNotFound, HTTPPreconditionFailed, HTTPRequestURITooLong
 import json
+
+# Generates kwargs for an exception response in json format
+def generate_exception_response(msg):
+    return { 'text' : json.dumps({'error': msg}) , 'content_type' : "application/json" }
 
 class EdApiHTTPNotFound(HTTPNotFound):
     '''
@@ -15,7 +19,7 @@ class EdApiHTTPNotFound(HTTPNotFound):
     #explanation = ('The resource could not be found.')
     
     def __init__(self, msg):
-        super().__init__(text = json.dumps({'error': msg}), content_type = "application/json")
+        super().__init__(**generate_exception_response(msg))
         
 class EdApiHTTPPreconditionFailed(HTTPPreconditionFailed):
     '''
@@ -26,4 +30,13 @@ class EdApiHTTPPreconditionFailed(HTTPPreconditionFailed):
     #xplanation = ('Request precondition failed.')
     
     def __init__(self, msg):
-        super().__init__(text = json.dumps({'error': msg}), content_type = "application/json")
+        super().__init__(**generate_exception_response(msg))
+        
+class EdApiHTTPRequestURITooLong(HTTPRequestURITooLong):
+    '''
+    a custom http exception when uri is too long
+    '''
+    
+    def __init__(self, max_length):
+        msg = "Request URI too long - maximum size supported is %s characters" % max_length
+        super().__init__(**generate_exception_response(msg))

@@ -10,9 +10,12 @@ from edapi import EDAPI_REPORTS_PLACEHOLDER
 from edapi.utils import generate_report_config,\
     generate_report, report_config
 from edapi.exceptions import ReportNotFoundError, InvalidParameterError
-from edapi.httpexceptions import EdApiHTTPNotFound, EdApiHTTPPreconditionFailed
+from edapi.httpexceptions import EdApiHTTPNotFound, EdApiHTTPPreconditionFailed,\
+    EdApiHTTPRequestURITooLong
 from pyramid.response import Response
 import json
+
+MAX_REQUEST_URL_LENGTH = 2000
 
 # validates content_type 
 def check_content_type(content_type):
@@ -62,6 +65,11 @@ def get_report_config(request):
 # handle GET verb for data resource
 @view_config(route_name='report_get_option_post', renderer='json', request_method='GET', custom_predicates=(check_content_type("application/json"),))
 def generate_report_get(request, validator = None):
+    
+    # if full request URL with query string is too long
+    if (len(request.url) > MAX_REQUEST_URL_LENGTH):
+        return EdApiHTTPRequestURITooLong(MAX_REQUEST_URL_LENGTH)
+    
     # gets the name of the report from the URL
     reportName = request.matchdict['name']
     

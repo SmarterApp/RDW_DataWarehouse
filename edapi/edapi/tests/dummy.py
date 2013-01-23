@@ -13,6 +13,7 @@ class DummyRequest:
     content_type = ''
     GET = {}
     json_body = {}
+    url = ''
     
     def reset(self):
         self.registry = {}
@@ -20,6 +21,7 @@ class DummyRequest:
         self.content_type = ''
         self.GET = {}
         self.json_body = {}
+        self.url = ''
 
 class DummyValidator:
     '''

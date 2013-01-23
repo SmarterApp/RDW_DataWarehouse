@@ -10,11 +10,13 @@ get_list_of_reports,
 get_report_config,
 generate_report_get,
 generate_report_post,
-check_content_type, get_request_body)
+check_content_type, 
+get_request_body)
 from edapi import EDAPI_REPORTS_PLACEHOLDER, add_report_config
 from edapi.tests.dummy import Dummy, DummyRequest, DummyValidator
 from edapi.exceptions import ReportNotFoundError, InvalidParameterError
-from edapi.httpexceptions import EdApiHTTPNotFound, EdApiHTTPPreconditionFailed
+from edapi.httpexceptions import EdApiHTTPNotFound, EdApiHTTPPreconditionFailed,\
+    EdApiHTTPRequestURITooLong
 import json
 
 class TestViews(unittest.TestCase):
@@ -157,6 +159,11 @@ class TestViews(unittest.TestCase):
     def test_get_request_body(self):
         request = DummyValueError()
         self.assertRaises(InvalidParameterError, get_request_body, request)
+        
+    def test_url_too_long_in_get_request(self):
+        self.request.url = 'h' * 2001
+        response = generate_report_get(self.request)
+        self.assertIs(type(response), EdApiHTTPRequestURITooLong)
 
 class DummyValueError:
     '''

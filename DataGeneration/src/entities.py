@@ -1,6 +1,7 @@
 import random
 import string
 
+
 class State:
     '''
     state object
@@ -13,14 +14,13 @@ class State:
         self.name = name
         self.num_of_dist = num_of_dist
         self.code = code
-        
+
     def __str__(self):
         '''
         String method
         '''
         return ("State:[name: %s, code:%s, num_of_dist: %s]" % (self.name, self.code, self.num_of_dist))
-    
-    
+
 
 class District:
     '''
@@ -40,13 +40,12 @@ class District:
         self.school_type_in_dist = school_type_in_dist
         # self.dist_name = 'district-' + generate_ramdom_name()
 
-        
     def __str__(self):
         '''
         String method
         '''
         return ("District:[state_name: %s, num_of_schools: %s, dist_name: %s, address_1: %s, school_type_in_dist: %s]" % (self.state_name, self.num_of_schools, self.dist_name, self.address_1, self.school_type_in_dist))
-    
+
 
 class School:
     '''
@@ -67,7 +66,7 @@ class School:
         self.school_type = school_type
         self.low_grade = low_grade
         self.high_grade = high_grade
-        
+
     def __str__(self):
         '''
         String method
@@ -90,7 +89,6 @@ class Student:
         self.last_name = generate_ramdom_name()
         self.first_name = generate_ramdom_name()
 
-        
     def __str__(self):
         '''
         String method
@@ -114,7 +112,6 @@ class Class:
         self.section_stu_map = section_stu_map
         self.section_tea_map = section_tea_map
 
-        
     def __str__(self):
         '''
         String method

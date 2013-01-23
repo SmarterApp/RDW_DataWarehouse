@@ -155,7 +155,7 @@ def individual_student_report(request):
 def individual_student_report_bootstrap(request):
     student_id = int(request.params['student'])
 
-    if request.params['assmt']:
+    if 'assmt' in request.params.keys():
         assessment_id = int(request.params['assmt'])
         params = json.dumps({"studentId":student_id,"assessmentId":assessment_id})
     else:

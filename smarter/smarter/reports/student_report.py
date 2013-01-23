@@ -78,7 +78,12 @@ def get_student_report(params, connector=None):
     
     return result
 
-@report_config(name='student_assessments_report', params={"studentId": {"type":"integer", "required":True}})
+@report_config(name='student_assessments_report', 
+               params={"studentId": {
+                                     "type":"integer", "required":True
+                                     }
+                       }
+               )
 def get_student_assessment(params, connector=None):
     
     # if connector is not supplied, use DBConnector
@@ -92,22 +97,21 @@ def get_student_assessment(params, connector=None):
     connector.open_session()
     
     # get table metadatas
-    dim_assessment = connector.get_table('dim_assessment')
-    fact_assessment_result = connector.get_table('fact_assessment_result')
+    dim_asmt_type = connector.get_table('dim_asmt_type')
+    fact_asmt_outcome = connector.get_table('fact_asmt_outcome')
     
     query = None
     # Required both tables
     # Check Table object type for UT
-    if isinstance(dim_assessment, Table) and isinstance(fact_assessment_result, Table):
-        query = Query([dim_assessment.c.assessment_key,
-                              dim_assessment.c.level,
-                              dim_assessment.c.subject,
-                              dim_assessment.c.subject_code,
-                              dim_assessment.c.subject_name,
-                              dim_assessment.c.time_period,
-                              dim_assessment.c.year_range])\
-                              .join(fact_assessment_result)\
-                              .filter(fact_assessment_result.c.student_id == student_id)
+    if isinstance(dim_asmt_type, Table) and isinstance(fact_asmt_outcome, Table):
+        query = Query([dim_asmt_type.c.asmt_type_id,
+                              dim_asmt_type.c.asmt_subject,
+                              dim_asmt_type.c.asmt_type,
+                              dim_asmt_type.c.asmt_period,
+                              dim_asmt_type.c.asmt_version,
+                              dim_asmt_type.c.asmt_grade])\
+                              .join(fact_asmt_outcome)\
+                              .filter(fact_asmt_outcome.c.student_id == student_id)
                               
     result = connector.get_result(query)
     connector.close_session()

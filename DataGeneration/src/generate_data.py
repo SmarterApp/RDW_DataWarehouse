@@ -405,7 +405,11 @@ def create_classes_for_grade(grade_students, teacher_list, stu_tea_ratio):
     # create classes for a subject
     total_classes = []
     for subj in subjects:
-        subject_teachers = random.sample(teacher_list, (int)(round(len(grade_students) / stu_tea_ratio)))
+        num_of_teacher = (int)(round(len(grade_students) / stu_tea_ratio))
+        if(num_of_teacher < 1):
+            num_of_teacher = 1
+        
+        subject_teachers = random.sample(teacher_list, num_of_teacher)
         subject_classes = create_classes(subj, class_num, grade_students, subject_teachers, stu_tea_ratio)
         total_classes.extend(subject_classes)
 

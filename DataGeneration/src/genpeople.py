@@ -10,6 +10,7 @@ import random
 from objects.dimensions import Student, Teacher, Parent
 from readnaminglists import PeopleNames
 from idgen import IdGen
+from write_to_csv import create_parent_csv
 
 
 # constants
@@ -41,7 +42,7 @@ def generate_people(person_type, total, male_ratio=0.5):
     if person_type == STUDENT:
         people, parents = _generate_students(total, male_total)
         #write parents
-        # TODO: write the list of parents to file
+        create_parent_csv(parents)
     elif person_type == TEACHER:
         people = _generate_teachers(total, male_total)
 

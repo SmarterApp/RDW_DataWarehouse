@@ -175,9 +175,12 @@ def get_student_report(params, headers):
     res = urllib.request.urlopen(req).read().decode('utf-8')
 
     jsonObj = json.loads(res)
-    jsonObj = jsonObj[0]
 
-    return jsonObj
+    if jsonObj:
+        return jsonObj[0]
+    else:
+        return Response('No records found for given studentID/assessmentID combination.')
+
 
 # Class Report
 @view_config(route_name='class_report', renderer='templates/reports/class_bootstrap.pt')

@@ -126,7 +126,7 @@
 
           <div id="claim_name_1">
               <span class="title">Claim Name: </span>
-              <span class="value">Claim 1</span>
+              <span class="value">${asmt_claim_1_name}</span>
           </div>
           <div id="claim_score_1">
               <span class="title">Claim Score: </span>
@@ -134,7 +134,7 @@
           </div>
           <div id="claim_name_2">
               <span class="title">Claim Name: </span>
-              <span class="value">Claim 2</span>
+              <span class="value">${asmt_claim_2_name}</span>
           </div>
           <div id="claim_score_2">
               <span class="title">Claim Score: </span>
@@ -142,7 +142,7 @@
           </div>
           <div id="claim_name_3">
               <span class="title">Claim Name: </span>
-              <span class="value">Claim 3</span>
+              <span class="value">${asmt_claim_3_name}</span>
           </div>
           <div id="claim_score_3">
               <span class="title">Claim Score: </span>
@@ -150,7 +150,7 @@
           </div>
           <div id="claim_name_4">
               <span class="title">Claim Name: </span>
-              <span class="value">Claim 4</span>
+              <span class="value">${asmt_claim_4_name}</span>
           </div>
           <div id="claim_score_4">
               <span class="title">Claim Score: </span>

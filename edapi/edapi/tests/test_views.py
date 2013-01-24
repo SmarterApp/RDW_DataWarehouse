@@ -149,7 +149,7 @@ class TestViews(unittest.TestCase):
     def test_add_report_config_with_no_reports_placeholder(self):
         dummy = Dummy()
         add_report_config(self.request, dummy)
-        self.assertEquals(self.request.registry[EDAPI_REPORTS_PLACEHOLDER],{})
+        self.assertEqual(self.request.registry[EDAPI_REPORTS_PLACEHOLDER],{})
     
     def test_add_report_config_with_reports_placeholder(self):
         dummy = Dummy()

@@ -6,7 +6,11 @@ create_star -- create a star schema
 create_star will create a database, a schema within the database, and all the required tables, indexes, 
 and foreign keys required to implement the star schema
 
-It defines classes and methods
+Command line options are available form --help, but as a quick start:
+    to locally create a schema use something like:
+        --database --name <your_star_db> --schema --sname <your_schema_name> --tables --verbose
+    to make a schema on QA:
+        --database --name <qa_star_date> --schema --sname <edware> --tables --server monetdb1.poc.dum.edwdc.net:5432 --user edware --password edware --verbose
 
 @author:     smacgibbon
         

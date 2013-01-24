@@ -3,6 +3,7 @@
 	<name>smarter</name>
 	<comment></comment>
 	<projects>
+		<project>edapi</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

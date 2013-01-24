@@ -5,9 +5,10 @@ from smarter.services.compare_populations import generateComparePopulationsJSON
 from sqlalchemy.exc import DBAPIError
 from smarter.controllers import compare_population_criteria
 from smarter.controllers import get_compare_population
-
-from .models import (DBSession, MyModel,)
-
+from smarter.reports.student_report import get_student_report
+import json
+import urllib.request
+from smarter.utils.indiv_student_helper import IndivStudentHelper
 
 @view_config(route_name='comparing_populations', renderer='templates/comparing_populations.pt')
 def compPop_view(request):
@@ -125,3 +126,43 @@ def input_populations_json(request):
 @view_config(route_name='checkstatus', renderer='templates/checkstatus.pt')
 def check_status(request):
     return {'result': 'Everything is working fine!'}
+
+
+# Individual Student Report
+@view_config(route_name='indiv_student', renderer='templates/reports/individual_student.pt')
+def individual_student_report(request):
+
+    student_id = int(request.params['student'])
+    assessment_id = int(request.params['assmt'])
+
+    params = json.dumps({"studentId":student_id})
+    params = params.encode('utf-8')
+
+    headers = {}
+    headers['Content-Type'] = 'application/json'
+
+    req = urllib.request.Request('http://127.0.0.1:6543/report/student/_query', params, headers)
+    res = json.loads(urllib.request.urlopen(req).read().decode('utf-8'))
+
+    # temporary fix to keep this simple
+    # we only want one of the rows returned from the service.
+    res = res[0]
+
+    return res
+
+# Bootstrapped Individual Student Report
+@view_config(route_name='indiv_student_bootstrap', renderer='templates/reports/individual_student_bootstrap.pt')
+def individual_student_report_bootstrap(request):
+    helper = IndivStudentHelper()
+
+    params = helper.extract_parameters(request)
+    headers = helper.create_header()
+    response = helper.get_student_report(params, headers)
+
+    return response
+
+
+# Class Report
+@view_config(route_name='class_report', renderer='templates/reports/class_bootstrap.pt')
+def class_report(request):
+    return {'class_name': 'English'}

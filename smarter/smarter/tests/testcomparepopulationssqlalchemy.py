@@ -5,7 +5,7 @@ Created on Dec 28, 2012
 '''
 import unittest
 from smarter.services.comparepopulations import generateComparePopulationsReportAlchemy
-from smarter.utils.databaseconnections import getSQLAlchemyConnection
+from smarter.utils.database_connections import getSQLAlchemyConnection 
 
 class ComparePopulationsReportTestAlchemy(unittest.TestCase):
 

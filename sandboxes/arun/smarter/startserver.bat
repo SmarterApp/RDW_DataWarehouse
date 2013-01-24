@@ -1,1 +1,0 @@
-..\Scripts\pserve.exe development.ini

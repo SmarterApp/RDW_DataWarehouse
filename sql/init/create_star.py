@@ -232,7 +232,7 @@ def createTables(dbConnectionString, schemaName):
                         Column('asmt_claim_3_score',SmallInteger,   nullable = True),
                         Column('asmt_claim_4_name', String(255),    nullable = True),
                         Column('asmt_claim_4_score',SmallInteger,   nullable = True),
-                        Column('asmt_create_date',  Date,       nullable = False),
+                        Column('asmt_create_date',  Date,           nullable = False),
                         )
     
     Index('fact_asmt_outcome_idx', assessment_outcome.c.asmnt_outcome_id, unique = True)

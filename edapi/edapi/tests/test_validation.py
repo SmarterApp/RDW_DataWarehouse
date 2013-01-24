@@ -45,8 +45,6 @@ class TestReportConfig(unittest.TestCase):
         response = validator.validate_params_schema(registry, report_name, params)
         self.assertEqual(response[0], True)
         
-        pass
-    
     def test_validate_regex_param(self):
         report_name = "test"
         config = {"id": {"type" : "string","pattern" : "^[a-z]$","required": True}}
@@ -57,11 +55,30 @@ class TestReportConfig(unittest.TestCase):
         response = validator.validate_params_schema(registry, report_name, params)
         self.assertEqual(response[0], True)
         
-        pass
+    def test_validate_missing_required_param(self):
+        report_name = "test"
+        config = {"id": {"type" : "string","pattern" : "^[a-z]$"}}
+        registry = {}
+        registry[report_name] = { "params": config, "reference" : (Dummy,  Dummy.some_func)}
+        params = {}
+        validator = Validator()
+        response = validator.validate_params_schema(registry, report_name, params)
+        self.assertIn("Required field 'id' is missing", response[1])
+        self.assertEqual(response[0], False)
+        
+    def test_validate_missing_optional_param(self):
+        report_name = "test"
+        config = {"id": {"type" : "string","pattern" : "^[a-z]$", "required" : False}}
+        registry = {}
+        registry[report_name] = { "params": config, "reference" : (Dummy,  Dummy.some_func)}
+        params = {}
+        validator = Validator()
+        response = validator.validate_params_schema(registry, report_name, params)
+        self.assertEqual(response[0], True)
         
     def test_invalidate_regex_param(self):
         report_name = "test"
-        config = {"id": {"type" : "string","pattern" : "^[a-z]$","required": True}}
+        config = {"id": {"type" : "string","pattern" : "^[a-z]$"}}
         registry = {}
         registry[report_name] = { "params": config, "reference" : (Dummy,  Dummy.some_func)}
         params = {"id" : "1"}
@@ -69,9 +86,38 @@ class TestReportConfig(unittest.TestCase):
         response = validator.validate_params_schema(registry, report_name, params)
         self.assertIn("does not match regular expression", str(response[1]))
         self.assertEqual(response[0], False)
-        
-        pass
+   
+    def test_fix_types_for_strings(self):
+        report_name = "test"
+        config = {"id": {"type" : "string"}}
+        registry = {}
+        registry[report_name] = { "params": config, "reference" : (Dummy,  Dummy.some_func)}
+        params = {"id" : 1}
+        validator = Validator()
+        fixed_params = validator.fix_types(registry, report_name, params)
+        print(fixed_params)
+        self.assertEqual(params, fixed_params)     
             
+    def test_fix_types_for_integers(self):
+        report_name = "test"
+        config = {"id": {"type" : "integer"}}
+        registry = {}
+        registry[report_name] = { "params": config, "reference" : (Dummy,  Dummy.some_func)}
+        params = {"id" : "1"}
+        validator = Validator()
+        fixed_params = validator.fix_types(registry, report_name, params)
+        self.assertEqual(fixed_params['id'], 1) 
+        
+    def test_fix_types_for_unknown(self):
+        report_name = "test"
+        config = {"id": {"type" : "unknown"}}
+        registry = {}
+        registry[report_name] = { "params": config, "reference" : (Dummy,  Dummy.some_func)}
+        params = {"id" : "1"}
+        validator = Validator()
+        fixed_params = validator.fix_types(registry, report_name, params)
+        self.assertEqual(fixed_params['id'], "1") 
+        
         
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.test']

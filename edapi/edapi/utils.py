@@ -5,8 +5,6 @@ Created on Jan 16, 2013
 '''
 import venusian
 import validictory
-from validictory.validator import ValidationError
-import time
 from edapi.exceptions import ReportNotFoundError, InvalidParameterError
 import inspect
 
@@ -141,7 +139,7 @@ class Validator:
         try:
             validictory.validate(params, params_config)
         except ValueError as e:
-            return (False, e)
+            return (False, str(e))
         return (True, None)
     
     # this method checks String types and attempt to convert them to the defined type. 
@@ -160,17 +158,13 @@ class Validator:
             # check if config has validation
             validatedText = config
             if (validatedText != None):
-                try:
-                    # check type for string items
-                    if isinstance(value, str):
-                        #validatedTextJson = json.loads(validatedText)
-                        valueType = validatedText.get('type')
-                        if (valueType is not None and valueType.lower() != VALID_TYPES.STRING):
-                            value = Validator.convert(value, VALID_TYPES.reverse_mapping[valueType])
-                            result[key] = value
-                except ValidationError:
-                    # TODO: log this
-                    return False
+                # check type for string items
+                if isinstance(value, str):
+                    #validatedTextJson = json.loads(validatedText)
+                    valueType = validatedText.get('type')
+                    if (valueType is not None and valueType.lower() != VALID_TYPES.STRING and valueType in VALID_TYPES.reverse_mapping):
+                        value = Validator.convert(value, VALID_TYPES.reverse_mapping[valueType])
+                        result[key] = value
         return result
     
     # attempts to convert a string to bool, otherwise raising an error    
@@ -178,27 +172,13 @@ class Validator:
     def boolify(s):
         return s in ['true', 'True']
     
-    # attempt to convert a String to another type, if it can't it returns the original string
-    @staticmethod
-    def auto_convert(s):
-        
-        for fn in (Validator.boolify, time.strptime, int, float):
-            try:
-                return fn(s)
-            except ValueError:
-                pass
-        return s
-    
     #converts a value to a given value type, if possible. otherwise, return the original value.
     @staticmethod
     def convert(value, value_type):
-        try:
-            return {
+        return {
                 VALID_TYPES.reverse_mapping[VALID_TYPES.STRING]: value,
                 VALID_TYPES.reverse_mapping[VALID_TYPES.INTEGER] : int(value),
                 VALID_TYPES.reverse_mapping[VALID_TYPES.NUMBER] : float(value),
-                #VALID_TYPES.reverse_mapping[VALID_TYPES.BOOLEAN] : Validator.boolify(value),
+                VALID_TYPES.reverse_mapping[VALID_TYPES.BOOLEAN] : Validator.boolify(value),
                 VALID_TYPES.reverse_mapping[VALID_TYPES.ANY] : value
             }[value_type]
-        except:
-            return value

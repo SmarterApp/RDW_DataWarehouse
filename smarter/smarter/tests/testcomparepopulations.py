@@ -26,15 +26,7 @@ class Test(unittest.TestCase):
         except Exception as err:
             raise AssertionError("Exception occurred when running testGradeList : ", str(err))
 
-    def testAssessmentList(self):
-          
-        try:
-            resultlist = ReportUtility.getAssessmentList(self)
-            for row in resultlist:
-                print(row)
-            pass
-        except Exception as err:
-            raise AssertionError("Exception occurred when running testAssessmentList : ", str(err))
+    
         
     def testAssessmentCourseList(self):
           
@@ -66,15 +58,7 @@ class Test(unittest.TestCase):
         except Exception as err:
             raise AssertionError("Exception occurred when running testStudentAttributeName : ", str(err))
         
-    def testBars(self):
-          
-        try:
-            resultlist = ReportUtility.getBars(self)
-            for row in resultlist:
-                print(row)
-            pass
-        except Exception as err:
-            raise AssertionError("Exception occurred when running testBars : ", str(err))
+    
         
     def testReportsFor(self):
           
@@ -106,35 +90,7 @@ class Test(unittest.TestCase):
         except Exception as err:
             raise AssertionError("Exception occurred when running testSchoolGroupType : ", str(err))
         
-    def testMeasureType(self):
-          
-        try:
-            resultlist = ReportUtility.getMeasureType(self)
-            for row in resultlist:
-                print(row)
-            pass
-        except Exception as err:
-            raise AssertionError("Exception occurred when running testMeasureType : ", str(err))
-
-    def testMeasure(self):
-          
-        try:
-            resultlist = ReportUtility.getMeasure(self)
-            for row in resultlist:
-                print(row)
-            pass
-        except Exception as err:
-            raise AssertionError("Exception occurred when running testMeasure : ", str(err))
-
-    def testPerformanceMeasurement(self):
-          
-        try:
-            resultlist = ReportUtility.getPerformanceMeasurement(self)
-            for row in resultlist:
-                print(row)
-            pass
-        except Exception as err:
-            raise AssertionError("Exception occurred when running testPerformanceMeasurement : ", str(err))
+    
         
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testQueryBuilder']

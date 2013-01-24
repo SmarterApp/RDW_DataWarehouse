@@ -81,21 +81,14 @@ class ReportUtility(object):
         type_of_school_group = ('All', 'Municipalities', 'Districts', 'Programs')
         return type_of_school_group
     
-    def getMeasureType(self):
-        results = db.execute("select distinct daot_hier_level_name from dim_assmt_outcome_type")
-        type_of_measure = [rec[0] for rec in results]
-        return type_of_measure
+    
     
     def getMeasure(self):
         results = db.execute(" select distinct case when daot_hier_level = 1 then daot_hier_level_1_abbrev when daot_hier_level = 2 then daot_hier_level_2_abbrev when daot_hier_level = 3 then daot_hier_level_3_abbrev when daot_hier_level = 4 then daot_hier_level_4_abbrev when daot_hier_level = 5 then daot_hier_level_5_abbrev end from dim_assmt_outcome_type")
         measures = [rec[0] for rec in results]
         return measures
     
-    def getPerformanceMeasurement(self):
-        results = db.execute("select distinct daot_hier_level_name from dim_assmt_outcome_type")
-        type_of_measure = [rec[0] for rec in results]
-        return type_of_measure
-    
+        
     def getTeacherList(self):
         results = db.execute("select distinct first_name, last_name from dim_teacher")
         teachersList = [rec[0]+" "+rec[1] for rec in results]

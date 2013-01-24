@@ -35,10 +35,17 @@ class TestReportConfig(unittest.TestCase):
         self.assertRaises(InvalidParameterError, utils.generate_report, registry, "test", params, validator)
         
     def test_validate_params(self):
-        #params = {}
-        #params_config = {}
-        #validator = Validator()
-        #validator.validate_params(params_config, "report_name", params)
+        params = {}
+        params_config = {}
+        validator = Validator()
+        validator.validate_params(params_config, "report_name", params)
+        pass
+        
+    def test_validate_string_param(self):
+        params = {}
+        params_config = {}
+        validator = Validator()
+        validator.validate_params(params_config, "report_name", params)
         pass
         
 if __name__ == "__main__":

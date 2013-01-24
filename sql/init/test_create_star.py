@@ -7,10 +7,11 @@ import unittest
 import uuid
 
 import os
+import time
 
 #import postgresql.driver.dbapi20 as dbapi
 
-import psycopg2
+import psycopg2 as dbdriver
 
 import create_star
 
@@ -81,7 +82,7 @@ class Test(unittest.TestCase):
         
         create_star.createDatabase(rootDBConnectionString = rootDb, targetDBName = self.randomDBName)
                 
-        db = psycopg2.connect(user = self.getUserName(), password = self.getPassword(),
+        db = dbdriver.connect(user = self.getUserName(), password = self.getPassword(),
                               database = self.randomDBName, port = self.getPort())
         
         # just check the we can do something on the connection
@@ -89,14 +90,14 @@ class Test(unittest.TestCase):
         
         db.close()
         
-        rootDb = psycopg2.connect(user     = self.getUserName(), 
+        rootDb = dbdriver.connect(user     = self.getUserName(), 
                                   password = self.getPassword(),
                                   database = 'postgres', 
                                   port     = self.getPort())
        
         cursor = rootDb.cursor()
         
-        rootDb.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
+        rootDb.set_isolation_level(dbdriver.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
         cursor.execute("drop database {0}".format(self.randomDBName))
             
         rootDb.close()
@@ -115,7 +116,7 @@ class Test(unittest.TestCase):
         create_star.createSchema(  dbConnectionString     = testDb, schemaName   = SCHEMA)
         create_star.createTables(  dbConnectionString     = testDb, schemaName   = SCHEMA)
     
-        db = psycopg2.connect(user = self.getUserName(), password = self.getPassword(),
+        db = dbdriver.connect(user = self.getUserName(), password = self.getPassword(),
                               database = self.randomDBName, port = self.getPort())
         
         cursor = db.cursor()
@@ -133,14 +134,19 @@ class Test(unittest.TestCase):
         cursor.close()
         db.close()
         
-        rootDb = psycopg2.connect(user     = self.getUserName(), 
+        time.sleep(5)
+        
+        while not db.closed:
+            time.sleep(1)
+        
+        rootDb = dbdriver.connect(user     = self.getUserName(), 
                                   password = self.getPassword(),
                                   database = 'postgres', 
                                   port     = self.getPort())
        
         rootCursor = rootDb.cursor()
         
-        rootDb.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
+        rootDb.set_isolation_level(dbdriver.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
         rootCursor.execute("drop database {0}".format(self.randomDBName))
             
         rootDb.close()

@@ -14,12 +14,9 @@ install_requires = [
 
 tests_require = [
     'WebTest >= 1.3.1', # py3 compat
-    ]
-
-testing_extras = tests_require + [
     'nose',
     'coverage',
-    'virtualenv', # for scaffolding tests
+    'virtualenv' # for scaffolding tests
     ]
 
 docs_extras = [
@@ -48,7 +45,6 @@ setup(name='edapi',
       test_suite="edapi.tests",
       install_requires = install_requires,
       extras_require = {
-          'testing':testing_extras,
           'docs':docs_extras,
           },
       entry_points="""\

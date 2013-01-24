@@ -4,7 +4,9 @@ Created on Jan 15, 2013
 @author: aoren
 '''
 from edapi.utils import report_config
+from nose.tools import nottest
 
+@nottest
 class TestReport():
     _query = 'test'
         

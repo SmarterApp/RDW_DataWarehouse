@@ -9,10 +9,9 @@ get_report_registry,
 get_list_of_reports,
 get_report_config,
 generate_report_get,
-generate_report_post,
-check_content_type, 
+generate_report_post, 
 get_request_body)
-from edapi import EDAPI_REPORTS_PLACEHOLDER, add_report_config
+from edapi import EDAPI_REPORTS_PLACEHOLDER, add_report_config, ContentTypePredicate
 from edapi.tests.dummy import Dummy, DummyRequest, DummyValidator
 from edapi.exceptions import ReportNotFoundError, InvalidParameterError
 from edapi.httpexceptions import EdApiHTTPNotFound, EdApiHTTPPreconditionFailed,\
@@ -31,14 +30,16 @@ class TestViews(unittest.TestCase):
         self.request = None
         
     def test_check_application_json(self):
-        check_application_json = check_content_type("application/json") 
+        check_application_json = ContentTypePredicate("application/json", None)
+         
         self.request.content_type = "dummy"
-        val = check_application_json(None, self.request)
-        self.assertFalse(val)
+        self.assertFalse(check_application_json(None, self.request))
         
         self.request.content_type = "APPLIcation/jsOn"
-        val = check_application_json(None, self.request)
-        self.assertTrue(val)
+        self.assertTrue(check_application_json(None, self.request))
+        
+        delattr(self.request, "content_type")
+        self.assertFalse(check_application_json(None, self.request))
     
     def test_get_report_registry_with_no_placehold_undefined(self):
         self.assertRaises(ReportNotFoundError, get_report_registry, self.request)

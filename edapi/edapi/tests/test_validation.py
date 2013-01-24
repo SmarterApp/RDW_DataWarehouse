@@ -4,7 +4,7 @@ Created on Jan 14, 2013
 @author: aoren
 '''
 from edapi.tests.test_reports import TestReport
-from edapi import utils, add_report_config
+from edapi import utils
 from unittest.mock import MagicMock
 import unittest
 from edapi.utils import Validator
@@ -95,7 +95,6 @@ class TestReportConfig(unittest.TestCase):
         params = {"id" : 1}
         validator = Validator()
         fixed_params = validator.fix_types(registry, report_name, params)
-        print(fixed_params)
         self.assertEqual(params, fixed_params)     
             
     def test_fix_types_for_integers(self):
@@ -117,6 +116,16 @@ class TestReportConfig(unittest.TestCase):
         validator = Validator()
         fixed_params = validator.fix_types(registry, report_name, params)
         self.assertEqual(fixed_params['id'], "1") 
+        
+    def test_fix_types_for_unconfigured_param(self):
+        report_name = "test"
+        config = {"id1": {"type" : "integer"}}
+        registry = {}
+        registry[report_name] = { "params": config, "reference" : (Dummy,  Dummy.some_func)}
+        params = {"id2" : "1"}
+        validator = Validator()
+        fixed_params = validator.fix_types(registry, report_name, params)
+        self.assertEqual(not fixed_params, True) 
         
         
 if __name__ == "__main__":

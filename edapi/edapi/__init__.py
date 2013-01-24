@@ -30,7 +30,10 @@ class ContentTypePredicate(object):
     phash = text
     
     def __call__(self, context, request):
-        return getattr(request, 'content_type', ContentTypePredicate.default_content_type()).lower() == self.content_type
+        content_type = getattr(request, 'content_type', None)
+        if not content_type or len(content_type) == 0:
+            content_type = ContentTypePredicate.default_content_type()
+        return content_type.lower() == self.content_type
 
 
 # this is automatically called by consumer of edapi when it calls config.include(edapi)     

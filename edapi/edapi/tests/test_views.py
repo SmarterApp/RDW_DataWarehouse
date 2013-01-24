@@ -38,8 +38,8 @@ class TestViews(unittest.TestCase):
         self.request.content_type = "APPLIcation/jsOn"
         self.assertTrue(check_application_json(None, self.request))
         
-        delattr(self.request, "content_type")
-        self.assertFalse(check_application_json(None, self.request))
+        delattr(self.request, "content_type") # should use default value
+        self.assertTrue(check_application_json(None, self.request))
     
     def test_get_report_registry_with_no_placehold_undefined(self):
         self.assertRaises(ReportNotFoundError, get_report_registry, self.request)

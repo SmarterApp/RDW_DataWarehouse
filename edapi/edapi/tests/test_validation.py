@@ -125,7 +125,7 @@ class TestReportConfig(unittest.TestCase):
         params = {"id2" : "1"}
         validator = Validator()
         fixed_params = validator.fix_types(registry, report_name, params)
-        self.assertEqual(not fixed_params, False) 
+        self.assertEqual(not fixed_params, True) 
         
         
 if __name__ == "__main__":

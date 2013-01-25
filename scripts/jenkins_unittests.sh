@@ -32,12 +32,8 @@ function setup_virtualenv {
 # to find python, paster, nosetests, pep8, pip, easy_install, etc.
     
     source ${VIRTUALENV_DIR}/bin/activate
-
-    # Currently only for edapi
-    #cd "$WORKSPACE/smarter"
-    #python setup.py develop
-
-    cd "$WORKSPACE/edapi"
+    
+    cd "$WORKSPACE/$1"
     python setup.py develop
 
     # Setup test dependencies
@@ -45,8 +41,6 @@ function setup_virtualenv {
     #python setup.py test
     pip install nose
     pip install coverage
-
-    cd $WORKSPACE
 
     echo "Finished setting up virtualenv"
 }
@@ -58,21 +52,21 @@ function check_pep8 {
 }
 
 function run_unit_tests {
-    echo "Running edapi unit tests"
+    echo "Running unit tests"
 
-    cd "$WORKSPACE/edapi"
-    nosetests -v --with-coverage --cover-package=edapi  --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
+    cd "$WORKSPACE/$1"
+    nosetests -v --with-coverage --cover-package=$1  --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
 }
 
 function main {
     check_vars
     set_vars
-    setup_virtualenv
-    run_unit_tests
+    setup_virtualenv $1
+    run_unit_tests $1
     #check_pep8
 }
 
-main
+main $1
 
 # Completed successfully
 exit 0

@@ -52,7 +52,7 @@ function check_pep8 {
    
     ignore="E124,E128,E501"
     
-    pep8 -r --ignore=$ignore $WORKSPACE/$1
+    pep8 --ignore=$ignore $WORKSPACE/$1
 
     echo "Finished checking code style against pep8"
 }
@@ -69,7 +69,7 @@ function main {
     set_vars
     setup_virtualenv $@
     run_unit_tests $1
-    #check_pep8 $1
+    check_pep8 $1
 }
 
 main $@

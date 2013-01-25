@@ -7,9 +7,9 @@ README = open(os.path.join(here, 'README.txt')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 
 install_requires = [
-    'pyramid >= 1.3.1',
+    'pyramid == 1.3.1',
     'venusian >= 1.0a3',
-    'validictory >= 0.8'
+    'validictory == 0.8'
     ]
 
 tests_require = [
@@ -34,19 +34,14 @@ setup(name='edapi',
         "Topic :: Internet :: WWW/HTTP",
         "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
         ],
-      author='',
-      author_email='',
-      url='',
-      keywords='web wsgi bfg pylons pyramid',
       packages=find_packages(),
       include_package_data=True,
       zip_safe=False,
+      dependency_links=["http://packages.wgenhq.net/pynest/"],
       tests_require=tests_require,
-      test_suite="edapi.tests",
+      test_suite="nose.collector",
       install_requires=install_requires,
       extras_require={
           'docs': docs_extras,
           },
-      entry_points="""\
-      """,
       )

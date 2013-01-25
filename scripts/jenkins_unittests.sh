@@ -61,7 +61,7 @@ function run_unit_tests {
     echo "Running unit tests"
 
     cd "$WORKSPACE/$1"
-    nosetests -v --with-coverage --cover-package=$1  --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
+    nosetests -v --with-coverage --cover-package=$1  --with-xunit --xunit-file=$WORKSPACE/nosetests.xml --cover-xml --cover-xml-file=$WORKSPACE/coverage.xml
 }
 
 function main {

@@ -10,6 +10,7 @@ from pyramid import testing
 from smarter.tests.views.indiv_student_test_connector import TestConnector
 from smarter.utils.indiv_student_helper import IndivStudentHelper
 
+
 class TestIndivStudent(unittest.TestCase):
 
     def setUp(self):
@@ -41,7 +42,7 @@ class TestIndivStudent(unittest.TestCase):
         header['Content-Type'] = 'application/json'
 
         res = self.helper.get_student_report(params, header, connector=self.__connector)
-        expected_res = {'result':'hello'}
+        expected_res = {'result': 'hello'}
         self.assertEquals(res, expected_res)
 
 if __name__ == '__main__':

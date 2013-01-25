@@ -17,20 +17,14 @@ import json
 
 MAX_REQUEST_URL_LENGTH = 2000
 
-# validates content_type 
-def check_content_type(content_type):
-    content_type = content_type.lower()
-    def check_content_type_predicate(info, request):
-        if content_type == request.content_type.lower():
-            return True
-    return check_content_type_predicate
 
 # given a request, return the registry belonging to edapi reports
-def get_report_registry(request, name = None):
+def get_report_registry(request, name=None):
     reg = request.registry.get(EDAPI_REPORTS_PLACEHOLDER)
     if (reg is None):
         raise ReportNotFoundError(name)
-    return reg 
+    return reg
+
 
 # returns pyramid request body as json, throws exception if request.json_body isn't valid json
 def get_request_body(request):
@@ -38,9 +32,10 @@ def get_request_body(request):
         body = request.json_body
     except ValueError:
         raise InvalidParameterError
-    return body  
+    return body
 
-# returns list of reports in GET request    
+
+# returns list of reports in GET request
 @view_config(route_name='list_of_reports', renderer='json', request_method='GET')
 def get_list_of_reports(request):
     try:
@@ -48,6 +43,7 @@ def get_list_of_reports(request):
     except ReportNotFoundError:
         return []
     return list(reports.keys())
+
 
 # handle the OPTIONS verb for data resource
 @view_config(route_name='report_get_option_post', renderer='json', request_method='OPTIONS')
@@ -60,32 +56,34 @@ def get_report_config(request):
     # if we cannot find the report configuration in the repository, we return 404 error
     except ReportNotFoundError as e:
         return EdApiHTTPNotFound(e.msg)
-    return Response(body = json.dumps(report_config), content_type = "application/json", allow = 'GET,POST,OPTIONS')
+    return Response(body=json.dumps(report_config), content_type="application/json", allow='GET,POST,OPTIONS')
+
 
 # handle GET verb for data resource
-@view_config(route_name='report_get_option_post', renderer='json', request_method='GET', custom_predicates=(check_content_type("application/json"),))
-def generate_report_get(request, validator = None):
-    
+@view_config(route_name='report_get_option_post', renderer='json', request_method='GET', content_type="application/json",)
+def generate_report_get(request, validator=None):
+
     # if full request URL with query string is too long
     if (len(request.url) > MAX_REQUEST_URL_LENGTH):
         return EdApiHTTPRequestURITooLong(MAX_REQUEST_URL_LENGTH)
-    
+
     # gets the name of the report from the URL
     reportName = request.matchdict['name']
-    
+
     params = request.GET
-    
+
     try:
         report = generate_report(get_report_registry(request, reportName), reportName, params, validator)
     except ReportNotFoundError as e:
         return EdApiHTTPNotFound(e.msg)
     except InvalidParameterError as e:
         return EdApiHTTPPreconditionFailed(e.msg)
-    return report   
+    return report
+
 
 # handle POST verb for data resource
-@view_config(route_name='report_get_option_post', renderer='json', request_method='POST', custom_predicates=(check_content_type("application/json"),))
-def generate_report_post(request, validator = None):
+@view_config(route_name='report_get_option_post', renderer='json', request_method='POST', content_type="application/json",)
+def generate_report_post(request, validator=None):
     try:
         # basic check that it is a correct json, if not an exception will get raised when accessing json_body.
         report_config = get_request_body(request)
@@ -96,4 +94,4 @@ def generate_report_post(request, validator = None):
         return EdApiHTTPNotFound(e.msg)
     except InvalidParameterError as e:
         return EdApiHTTPPreconditionFailed(e.msg)
-    return report  
+    return report

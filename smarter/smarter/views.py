@@ -1,6 +1,6 @@
 from pyramid.response import Response
 from pyramid.view import view_config
-from smarter.services.comparepopulations import generateComparePopulationsReport,generateComparePopulationsReportAlchemy
+from smarter.services.comparepopulations import generateComparePopulationsReport, generateComparePopulationsReportAlchemy
 from smarter.services.compare_populations import generateComparePopulationsJSON
 from sqlalchemy.exc import DBAPIError
 from smarter.controllers import compare_population_criteria
@@ -9,6 +9,7 @@ from smarter.reports.student_report import get_student_report
 import json
 import urllib.request
 from smarter.utils.indiv_student_helper import IndivStudentHelper
+
 
 @view_config(route_name='comparing_populations', renderer='templates/comparing_populations.pt')
 def compPop_view(request):
@@ -26,16 +27,19 @@ def home_view(request):
         return Response("wrong", content_type='text/plain', status_int=500)
     return {'one': one, 'project': 'smarter2'}
 
+
 @view_config(route_name='comparepopulation', renderer='templates/compare_population_criteria.pt')
 def comparepopulation_view(request):
     comparePopulationCriteria = compare_population_criteria.ComparePopulationCriteria()
     return comparePopulationCriteria.get()
     #return Response("Hello World")
 
+
 @view_config(route_name='getcomparepopulation', renderer='json')
 def getcomparepopulation_view(request):
     getComparePopulation = get_compare_population.GetComparePopulation()
     return getComparePopulation.get()
+
 
 @view_config(route_name='test1', renderer='json')
 def testJson(request):
@@ -93,24 +97,25 @@ def my_templateview(request):
     #return Response(json.dumps(mystring))
     return mystring
 
+
 @view_config(route_name='generateComparePopulations', renderer='templates/comparePopulationsResults.pt')
 def compare_populations(request):
-    return {"result" : generateComparePopulationsReport(request.params["reportparam"])}
+    return {"result": generateComparePopulationsReport(request.params["reportparam"])}
 
 
 @view_config(route_name='inputComparePopulations', renderer='templates/comparePopulations.pt')
 def input_populations(request):
-    return {"comment" : "Enter the report parameters"}
+    return {"comment": "Enter the report parameters"}
 
 
 @view_config(route_name='generateComparePopulationsAl', renderer='templates/comparePopulationsResultsAl.pt')
 def compare_populations_Al(request):
-    return {"result" : generateComparePopulationsReportAlchemy(request.params["reportparam"])}
+    return {"result": generateComparePopulationsReportAlchemy(request.params["reportparam"])}
 
 
 @view_config(route_name='inputComparePopulationsAl', renderer='templates/comparePopulationsAl.pt')
 def input_populations_Al(request):
-    return {"comment" : "Enter the report parameters"}
+    return {"comment": "Enter the report parameters"}
 
 
 @view_config(route_name='datatojson2', renderer='json')
@@ -121,7 +126,8 @@ def compare_populations_json(request):
 
 @view_config(route_name='inputdata2', renderer='templates/comparePopulationsJson.pt')
 def input_populations_json(request):
-    return {"comment" : "Enter the report parameters to generate json"}
+    return {"comment": "Enter the report parameters to generate json"}
+
 
 @view_config(route_name='checkstatus', renderer='templates/checkstatus.pt')
 def check_status(request):
@@ -135,7 +141,7 @@ def individual_student_report(request):
     student_id = int(request.params['student'])
     assessment_id = int(request.params['assmt'])
 
-    params = json.dumps({"studentId":student_id})
+    params = json.dumps({"studentId": student_id})
     params = params.encode('utf-8')
 
     headers = {}
@@ -149,6 +155,7 @@ def individual_student_report(request):
     res = res[0]
 
     return res
+
 
 # Bootstrapped Individual Student Report
 @view_config(route_name='indiv_student_bootstrap', renderer='templates/reports/individual_student_bootstrap.pt')

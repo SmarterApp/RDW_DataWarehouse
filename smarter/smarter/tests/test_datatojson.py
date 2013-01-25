@@ -167,68 +167,68 @@ class Test(unittest.TestCase):
         
     def testDataToJson_invalid_params(self):
         param1 = {
-            'subject_code': ["ALL"], 
-            'district_filter': ['ALL'], 
-            'school_filter': ['ALL'], 
-            'teacher_filter': ['ALL'], 
-            'grades': ["ALL"], 
-            'time_period': ["ALL"], 
-            'year_range': ['ALL'], 
-            'report_level':'invalid_report_level', 
+            'subject_code': ["ALL"],
+            'district_filter': ['ALL'],
+            'school_filter': ['ALL'],
+            'teacher_filter': ['ALL'],
+            'grades': ["ALL"],
+            'time_period': ["ALL"],
+            'year_range': ['ALL'],
+            'report_level':'invalid_report_level',
             'segment_by': 'teacher',
-            'school_group_type' : 'Districts', 
+            'school_group_type' : 'Districts',
             'grade_divider': 'true'
          }
         param2 = {
-            'subject_code': ["ALL"], 
-            'district_filter': ['ALL'], 
-            'school_filter': ['ALL'], 
-            'teacher_filter': ['ALL'], 
-            'grades': ["ALL"], 
-            'time_period': ["ALL"], 
-            'year_range': ['ALL'], 
-            'report_level':'district', 
+            'subject_code': ["ALL"],
+            'district_filter': ['ALL'],
+            'school_filter': ['ALL'],
+            'teacher_filter': ['ALL'],
+            'grades': ["ALL"],
+            'time_period': ["ALL"],
+            'year_range': ['ALL'],
+            'report_level':'district',
             'segment_by': 'invalid_segment_by',
             'school_group_type' : 'Districts', 
             'grade_divider': 'true'
          }
         
         param3 = {
-            'subject_code': ["ALL"], 
-            'district_filter': ['ALL'], 
-            'school_filter': ['ALL'], 
-            'teacher_filter': ['ALL'], 
-            'grades': ["ALL"], 
-            'time_period': ["ALL"], 
-            'year_range': ['ALL'], 
-            'report_level':'district', 
+            'subject_code': ["ALL"],
+            'district_filter': ['ALL'],
+            'school_filter': ['ALL'],
+            'teacher_filter': ['ALL'],
+            'grades': ["ALL"],
+            'time_period': ["ALL"],
+            'year_range': ['ALL'],
+            'report_level':'district',
             'segment_by': 'teacher',
-            'school_group_type' : 'invalid_school_group_type', 
+            'school_group_type' : 'invalid_school_group_type',
             'grade_divider': 'true'
          }
         
         param4 = {
-            'subject_code': ["ALL"], 
-            'district_filter': ['ALL'], 
-            'school_filter': ['ALL'], 
-            'teacher_filter': ['ALL'], 
-            'grades': ["ALL"], 
-            'time_period': ["ALL"], 
-            'year_range': ['ALL'], 
-            'report_level':'district', 
+            'subject_code': ["ALL"],
+            'district_filter': ['ALL'],
+            'school_filter': ['ALL'],
+            'teacher_filter': ['ALL'],
+            'grades': ["ALL"],
+            'time_period': ["ALL"],
+            'year_range': ['ALL'],
+            'report_level':'district',
             'segment_by': 'teacher',
-            'school_group_type' : 'Districts', 
+            'school_group_type': 'Districts',
             'grade_divider': 'invalid_grade_divider'
          }
-        
+
         values = [
                   (None, None, None, 59.0, 1, 2077, 'COPELAND, JOHN', 6405, 'School258', 625, 'ALSchoolGroup1', 143790, 1, 'Pre-K', 'ELA', 'EOY', '2013-2014', 'Smarter Balanced Assessment Consortium', 'SBAC', 'Alabama', 'AL', 'Benchmark'),
                   (None, None, None, 61.0, 1, 2077, 'COPELAND, JOHN', 6405, 'School258', 625, 'ALSchoolGroup1', 143790, 3, '1', 'ELA', 'MOY', '2013-2014', 'Smarter Balanced Assessment Consortium', 'SBAC', 'Alabama', 'AL', 'Above Benchmark'),
                   (None, None, None, 60.0, 1, 2077, 'COPELAND, JOHN', 6405, 'School258', 625, 'ALSchoolGroup1', 143790, 4, '2', 'MATH', 'MOY', '2012-2013', 'Smarter Balanced Assessment Consortium', 'SBAC', 'Alabama', 'AL', 'Above Benchmark')
                  ]
-        
+
         rows = make_data(values)
-        
+
         actual_data1 = comparing_populations(param1, rows)
         actual_data2 = comparing_populations(param2, rows)
         actual_data3 = comparing_populations(param3, rows)

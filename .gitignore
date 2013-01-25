@@ -12,3 +12,5 @@ __pycache__
 pyramid.log
 smarter.egg-info
 .idea/edapi/edapi.egg-info
+edapi/build
+edapi/dist

@@ -320,7 +320,7 @@ GrainType = _Enum({
 })
 
 
-Grain = _Enum({            
+Grain = _Enum({
     'GroupOfState': {
         'code': '0',
         'name': 'GroupOfState',
@@ -331,7 +331,7 @@ Grain = _Enum({
         'parameter_name': 'state_groups',
         'type': GrainType.Institution
     },
-                
+
     'State': {
         'code': '1',
         'name': 'State',
@@ -342,7 +342,7 @@ Grain = _Enum({
         'parameter_name': 'state',
         'type': GrainType.Institution
     },
-               
+
     'District': {
         'code': '2',
         'name': 'District',
@@ -653,7 +653,7 @@ SchoolGroupType = _Enum({
 
 
 Scope = _Enum({
-               
+
     'GroupOfState': {
         'code': '0',
         'name': 'GroupOfState',
@@ -662,7 +662,7 @@ Scope = _Enum({
         'drilldown_scope_code': '4',
         'inst_hierarchy_order': 7
     },
-               
+
     'State': {
         'code': '1',
         'name': 'State',
@@ -671,7 +671,7 @@ Scope = _Enum({
         'drilldown_scope_code': '2',
         'inst_hierarchy_order': 6
     },
-        
+
     'District': {
         'code': '2',
         'name': 'District',

@@ -22,12 +22,9 @@ def generateComparePopulationsReport(parameters):
                 raise Exception("The input value is not a valid dictionary: ",
                                 str(err))
     if not isinstance(parameters, dict):
-        raise Exception(
-                "Input to Compare Populations report should be a dictionary")
+        raise Exception("Input to Compare Populations report should be a dictionary")
     if not set(parameters.keys()).issubset(_supported_keys):
-        raise Exception(
-            "Input to Compare Populations report should only have keys : {0}"
-            .format(_supported_keys))
+        raise Exception("Input to Compare Populations report should only have keys : {0}".format(_supported_keys))
     query = getComparePopulationsQuery(parameters)
     #print(query)
     db_connection = getDatabaseConnection()
@@ -54,12 +51,9 @@ def generateComparePopulationsReportAlchemy(parameters):
                 raise Exception("The input value is not a valid dictionary : ",
  str(err))
     if not isinstance(parameters, dict):
-        raise Exception(
-                "Input to Compare Populations report should be a dictionary")
+        raise Exception("Input to Compare Populations report should be a dictionary")
     if not set(parameters.keys()).issubset(_supported_keys):
-        raise Exception(
-            "Input to Compare Populations report should only have keys : {0}"
-            .format(_supported_keys))
+        raise Exception("Input to Compare Populations report should only have keys : {0}".format(_supported_keys))
     query = getComparePopulationsQuery(parameters)
     #print(query)
     db_connection = getSQLAlchemyConnection()

@@ -1,5 +1,6 @@
 from smarter.reports.interfaces import Connectable
 
+
 class TestConnector(Connectable):
     def open_session(self):
         """
@@ -13,7 +14,6 @@ class TestConnector(Connectable):
 
     def get_result(self):
         return '[{"result":"hello"}]'
-
 
     def get_table(self, table_name):
         """

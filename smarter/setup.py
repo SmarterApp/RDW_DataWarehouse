@@ -44,6 +44,6 @@ setup(name='smarter',
       )
 
 #Copying the assets folder during setup to be inside the application folder
-application_asset_folder = os.getcwd() + '/smarter/assets'
+application_asset_folder = os.getcwd() + '/assets'
 shutil.rmtree(application_asset_folder)
 shutil.copytree('../assets', application_asset_folder)

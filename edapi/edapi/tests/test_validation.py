@@ -10,7 +10,8 @@ import unittest
 from edapi.utils import Validator
 from edapi.exceptions import InvalidParameterError
 from edapi.tests.dummy import Dummy
- 
+
+
 class TestReportConfig(unittest.TestCase):
 
     # setting up the test class

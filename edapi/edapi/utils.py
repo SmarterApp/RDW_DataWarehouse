@@ -19,7 +19,7 @@ def enum(*sequential, **named):
     enums['reverse_mapping'] = reverse
     return type('Enum', (), enums)
 
-VALID_TYPES = enum(STRING='string', INTEGER='integer', NUMBER='number', BOOLEAN='boolean', ANY='any')
+VALID_TYPES = enum(STRING='string', INTEGER='integer', NUMBER='number', BOOLEAN='boolean', ANY='any', ARRAY='array')
 
 class report_config(object):
     '''
@@ -63,7 +63,7 @@ def call_decorated_method(report, params):
 def generate_report(registry, report_name, params, validator = None):
     if not validator:
         validator = Validator()
-        
+    
     params = validator.fix_types(registry, report_name, params)
     validated = validator.validate_params_schema(registry, report_name, params)
     
@@ -124,7 +124,7 @@ def add_configuration_header(params_config):
               }
     
     return result
-
+        
 
 class Validator:
     '''
@@ -142,6 +142,7 @@ class Validator:
             return (False, str(e))
         return (True, None)
     
+    
     # this method checks String types and attempt to convert them to the defined type. 
     # This handles 'GET' requests when all parameters are converted into string.
     @staticmethod
@@ -151,21 +152,48 @@ class Validator:
         params_config = get_report_dict_value(report, PARAMS_REFERENCE_FIELD_NAME, InvalidParameterError)
         for (key, value) in params.items():
             config = params_config.get(key)
-            if (config == None):
+            if (config is None):
                 continue               
                 
-            result[key] = value
             # check if config has validation
             validatedText = config
-            if (validatedText != None):
+            if (validatedText is not None):
                 # check type for string items
                 if isinstance(value, str):
                     #validatedTextJson = json.loads(validatedText)
                     valueType = validatedText.get('type')
                     if (valueType is not None and valueType.lower() != VALID_TYPES.STRING and valueType in VALID_TYPES.reverse_mapping):
                         value = Validator.convert(value, VALID_TYPES.reverse_mapping[valueType])
-                        result[key] = value
+                        
+            result[key] = value
+
         return result
+
+    """
+    # convert duplicate query params to arrays
+    @staticmethod
+    def convert_array_query_params(registry, report_name, params):
+        result = {}
+        report = get_report_dict_value(registry, report_name, ReportNotFoundError)
+        params_config = get_report_dict_value(report, PARAMS_REFERENCE_FIELD_NAME, InvalidParameterError)
+        
+        # build dictionary from param list
+        for (key, value) in params.items(): 
+            config = params_config.get(key)
+            if (config is None):
+                continue               
+
+            # make the value either a single value or a list
+            valueType = config.get('type')
+            if (valueType is not None and valueType.lower() != VALID_TYPES.ARRAY):
+                if (key not in result and not isinstance(value, list)):
+                    result[key] = []
+                result[key].append(value)
+            else:
+                result[key] = value
+                
+        return result
+    """
     
     # attempts to convert a string to bool, otherwise raising an error    
     @staticmethod
@@ -173,12 +201,17 @@ class Validator:
         return s in ['true', 'True']
     
     #converts a value to a given value type, if possible. otherwise, return the original value.
+    #TODO - refactor so it doesn't attempt all type conversions
     @staticmethod
     def convert(value, value_type):
-        return {
-                VALID_TYPES.reverse_mapping[VALID_TYPES.STRING]: value,
-                VALID_TYPES.reverse_mapping[VALID_TYPES.INTEGER] : int(value),
-                VALID_TYPES.reverse_mapping[VALID_TYPES.NUMBER] : float(value),
-                VALID_TYPES.reverse_mapping[VALID_TYPES.BOOLEAN] : Validator.boolify(value),
-                VALID_TYPES.reverse_mapping[VALID_TYPES.ANY] : value
-            }[value_type]
+        try:
+            return {
+                    VALID_TYPES.reverse_mapping[VALID_TYPES.STRING]: value,
+                    VALID_TYPES.reverse_mapping[VALID_TYPES.ARRAY] : value,
+                    VALID_TYPES.reverse_mapping[VALID_TYPES.INTEGER] : int(value),
+                    VALID_TYPES.reverse_mapping[VALID_TYPES.NUMBER] : float(value),
+                    VALID_TYPES.reverse_mapping[VALID_TYPES.BOOLEAN] : Validator.boolify(value),
+                    VALID_TYPES.reverse_mapping[VALID_TYPES.ANY] : value
+                }[value_type]
+        except ValueError:
+            return value

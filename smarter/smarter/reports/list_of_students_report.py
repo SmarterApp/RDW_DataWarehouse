@@ -10,7 +10,7 @@ from sqlalchemy.orm.query import Query
 from sqlalchemy.schema import Table
 from sqlalchemy.sql.expression import func
 
-# TODO: add validation: array for asmtSubject
+
 @report_config(name="list_of_students",
                params={"districtId": {
                                       "type":"integer",
@@ -25,8 +25,13 @@ from sqlalchemy.sql.expression import func
                                     "required": True
                                     },
                        "asmtSubject":{
-                                      "type":"string",
-                                      "required":False
+                                      "type":"array",
+                                      "required":False,
+                                      "minLength":0,
+                                      "maxLength":2,
+                                      "items":{
+                                               "type":"string"
+                                               }
                                       }
                        }
                )

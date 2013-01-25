@@ -16,16 +16,13 @@ function check_vars {
 }
 
 function set_vars {
-    # We probably don't want this hardcoded to python3
-    export PATH="/usr/local/bin/:$PATH"
-
     export VIRTUALENV_DIR="$WORKSPACE/edwaretest_venv"
 }
 
 function setup_virtualenv {
-    echo "Setting up virtualenv"
+    echo "Setting up virtualenv using python3.3"
     if [ ! -d "$VIRTUALENV_DIR" ]; then
-        /usr/local/bin/virtualenv --no-site-packages ${VIRTUALENV_DIR}
+        /usr/local/bin/virtualenv -p /usr/local/bin/python3 --no-site-packages ${VIRTUALENV_DIR}
     fi
 
 # This will change your $PATH to point to the virtualenv bin/ directory,

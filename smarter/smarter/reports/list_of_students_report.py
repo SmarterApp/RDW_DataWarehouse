@@ -11,30 +11,31 @@ from sqlalchemy.schema import Table
 from sqlalchemy.sql.expression import func
 
 
-@report_config(name="list_of_students",
-            params={
-                "districtId": {
-                    "type": "integer",
-                    "required": True
-                },
-                "schoolId": {
-                    "type": "integer",
-                    "required": True
-                },
-                "asmtGrade": {
-                    "type": "integer",
-                    "required": True
-                },
-                "asmtSubject": {
-                    "type": "array",
-                    "required": False,
-                    "minLength": 0,
-                    "maxLength": 2,
-                    "items": {
-                        "type": "string"
-                    }
-                }
-            })
+@report_config(
+    name="list_of_students",
+    params={
+        "districtId": {
+            "type": "integer",
+            "required": True
+        },
+        "schoolId": {
+            "type": "integer",
+            "required": True
+        },
+        "asmtGrade": {
+            "type": "integer",
+            "required": True
+        },
+        "asmtSubject": {
+            "type": "array",
+            "required": False,
+            "minLength": 0,
+            "maxLength": 2,
+            "items": {
+                "type": "string"
+            }
+        }
+    })
 def get_list_of_students_report(params, connector=None):
 
     # if connector is not supplied, use DBConnector

@@ -13,10 +13,10 @@ install_requires = [
     ]
 
 tests_require = [
-    'WebTest >= 1.3.1', # py3 compat
+    'WebTest >= 1.3.1',  # py3 compat
     'nose',
     'coverage',
-    'virtualenv' # for scaffolding tests
+    'virtualenv'  # for scaffolding tests
     ]
 
 docs_extras = [
@@ -41,11 +41,11 @@ setup(name='edapi',
       packages=find_packages(),
       include_package_data=True,
       zip_safe=False,
-      tests_require = tests_require,
+      tests_require=tests_require,
       test_suite="edapi.tests",
-      install_requires = install_requires,
-      extras_require = {
-          'docs':docs_extras,
+      install_requires=install_requires,
+      extras_require={
+          'docs': docs_extras,
           },
       entry_points="""\
       """,

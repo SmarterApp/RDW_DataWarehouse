@@ -86,7 +86,7 @@ class ReportUtility(object):
 
     def getTeacherList(self):
         results = db.execute("select distinct first_name, last_name from dim_teacher")
-        teachersList = [rec[0] + " "+ rec[1] for rec in results]
+        teachersList = [rec[0] + " " + rec[1] for rec in results]
         teachersList.insert(0, "All")
         return teachersList
 

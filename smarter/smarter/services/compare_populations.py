@@ -3,24 +3,25 @@ from smarter.services.comparepopulations import _supported_keys
 from smarter.utils.database_connections import getDatabaseConnection
 from smarter.datatojson.comparing_populations import comparing_populations
 import json
-
 '''
 Main function to generate json data for comparing_populcation report
 First step: execute the sql query
 Second step: format sql result to json
 '''
+
+
 def generateComparePopulationsJSON(parameters):
-    if isinstance(parameters,str):
+    if isinstance(parameters, str):
         try:
-            parameters = eval(parameters.strip()) # convert string input to dictionary
+            parameters = eval(parameters.strip())  # convert string input to dictionary
         except Exception as err:
-                raise Exception("The input value is not a valid dictionary : ",str(err))
-    if not isinstance(parameters,dict):
+                raise Exception("The input value is not a valid dictionary : ", str(err))
+    if not isinstance(parameters, dict):
         raise Exception("Input to Compare Populations report should be a dictionary")
     if not set(parameters.keys()).issubset(_supported_keys):
         raise Exception("Input to Compare Populations report should only have keys : {0}".format(_supported_keys))
     query = getComparePopulationsQuery(parameters)
-    db_connection = getDatabaseConnection() 
+    db_connection = getDatabaseConnection()
     if db_connection:
         print("Got connection to database")
         results = db_connection.prepare(query)
@@ -33,4 +34,3 @@ def generateComparePopulationsJSON(parameters):
     else:
         print("Error getting connection to database")
     return json_data
-        

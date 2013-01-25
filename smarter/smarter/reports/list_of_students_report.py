@@ -13,38 +13,38 @@ from sqlalchemy.sql.expression import func
 
 @report_config(name="list_of_students",
                params={"districtId": {
-                                      "type":"integer",
+                                      "type": "integer",
                                       "required": True
                                       },
-                       "schoolId":{
-                                   "type":"integer",
+                       "schoolId": {
+                                   "type": "integer",
                                    "required": True
                                    },
-                       "asmtGrade":{
-                                    "type":"integer",
+                       "asmtGrade": {
+                                    "type": "integer",
                                     "required": True
                                     },
-                       "asmtSubject":{
-                                      "type":"array",
-                                      "required":False,
-                                      "minLength":0,
-                                      "maxLength":2,
+                       "asmtSubject": {
+                                      "type": "array",
+                                      "required": False,
+                                      "minLength": 0,
+                                      "maxLength": 2,
                                       "items":{
-                                               "type":"string"
+                                               "type": "string"
                                                }
                                       }
                        }
                )
 def get_list_of_students_report(params, connector=None):
-    
+
     # if connector is not supplied, use DBConnector
     if connector is None:
         connector = DBConnector()
-        
+
     districtId = params['districtId']
     schoolId = params['schoolId']
     asmtGrade = params['asmtGrade']
-    
+
     # asmtSubject is optional. 
     # TODO: make sure get it as an array
     asmtSubject = None
@@ -53,7 +53,7 @@ def get_list_of_students_report(params, connector=None):
 
     # get sql session
     connector.open_session()
-    
+
 
     '''
     Output:
@@ -64,16 +64,16 @@ def get_list_of_students_report(params, connector=None):
     student enrollment grade
     assessment array [teacher full name, assmt subject, claim scores and descriptions ]
     '''
-    
+
     dim_student = connector.get_table('dim_student')
     dim_stdnt_tmprl_data = connector.get_table('dim_stdnt_tmprl_data')
     dim_grade = connector.get_table('dim_grade')
     fact_asmt_outcome = connector.get_table('fact_asmt_outcome')
     dim_asmt_type = connector.get_table('dim_asmt_type')
-    
+
     #TODO: find out where can we get enrollment grade
     #TODO: missing dim_teacher from the DB
-    
+
 
     #I use label function as experimental.  to eliminate ambiguous column namez
     if isinstance(dim_student, Table) and isinstance(dim_stdnt_tmprl_data, Table) and isinstance(dim_grade, Table) and isinstance(fact_asmt_outcome, Table) and isinstance(dim_asmt_type, Table):
@@ -92,4 +92,4 @@ def get_list_of_students_report(params, connector=None):
                             fact_asmt_outcome.c.asmt_claim_3_score.label('asmt_claim_3_score'),
                             fact_asmt_outcome.c.asmt_claim_4_score.label('asmt_claim_4_score')])\
                             .join(dim_student, dim_student.c.student_id == fact_asmt_outcome.c.student_id)\
-                            .join(dim_asmt_type, dim_asmt_type.c.asmt_type_id == fact_asmt_outcome.c.asmt_type_id)\
+                            .join(dim_asmt_type, dim_asmt_type.c.asmt_type_id == fact_asmt_outcome.c.asmt_type_id)

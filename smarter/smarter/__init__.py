@@ -6,6 +6,7 @@ from .models import (DBSession, Base,)
 from pyramid.path import caller_package, caller_module, package_of
 import sys
 import edapi
+import os
 
 
 def main(global_config, **settings):
@@ -18,6 +19,9 @@ def main(global_config, **settings):
 
     # include add routes from edapi. Calls includeme
     config.include(edapi)
+
+    if not os.path.lexists(os.getcwd() + '/assets'):
+        os.symlink('../assets', os.getcwd() + '/assets')
 
     config.add_static_view('static', 'static', cache_max_age=3600)
     config.add_static_view('assets', '../assets', cache_max_age=3600)

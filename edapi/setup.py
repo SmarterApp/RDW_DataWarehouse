@@ -39,7 +39,7 @@ setup(name='edapi',
       include_package_data=True,
       zip_safe=False,
       tests_require=tests_require,
-      test_suite="edapi.tests",
+      test_suite="nose.collector",
       install_requires=install_requires,
       extras_require={
           'docs': docs_extras, },

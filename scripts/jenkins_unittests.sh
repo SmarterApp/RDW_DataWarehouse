@@ -40,6 +40,7 @@ function setup_virtualenv {
     #python setup.py test
     pip install nose
     pip install coverage
+    pip install pep8
 
     echo "Finished setting up virtualenv"
 }

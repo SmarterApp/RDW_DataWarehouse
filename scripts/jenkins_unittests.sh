@@ -69,7 +69,7 @@ function main {
     set_vars
     setup_virtualenv $@
     run_unit_tests $1
-    check_pep8 $1
+    #check_pep8 $1
 }
 
 main $@

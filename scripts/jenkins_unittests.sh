@@ -61,7 +61,7 @@ function run_unit_tests {
     echo "Running edapi unit tests"
 
     cd "$WORKSPACE/edapi"
-    nosetests -v --with-coverage --cover-package=edapi
+    nosetests -v --with-coverage --cover-package=edapi  --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
 }
 
 function main {

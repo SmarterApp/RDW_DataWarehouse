@@ -32,9 +32,11 @@ function setup_virtualenv {
 # to find python, paster, nosetests, pep8, pip, easy_install, etc.
     
     source ${VIRTUALENV_DIR}/bin/activate
-    
-    cd "$WORKSPACE/$1"
-    python setup.py develop
+    for var in "$@" 
+    do
+        cd "$WORKSPACE/$var"
+        python setup.py develop
+    done 
 
     # Setup test dependencies
     # Need to figure out how to run test with nosetest 
@@ -61,12 +63,12 @@ function run_unit_tests {
 function main {
     check_vars
     set_vars
-    setup_virtualenv $1
+    setup_virtualenv $@
     run_unit_tests $1
     #check_pep8
 }
 
-main $1
+main $@
 
 # Completed successfully
 exit 0

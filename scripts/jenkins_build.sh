@@ -63,14 +63,16 @@ function run_unit_tests {
 }
 
 function start_pserve {
-    cd "$WORKSPACE/smarter"
-    
-    pip install waitress
+  
+    if [ $START_PSERVE -eq 1 ]
 
-    echo "starting pserve"
-    pserve development.ini    
-
+    	cd "$WORKSPACE/smarter"
     
+    	pip install waitress
+
+    	echo "starting pserve"
+    	pserve development.ini    
+    fi
 }
 
 function main {

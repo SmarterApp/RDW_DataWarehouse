@@ -6,7 +6,7 @@ Created on Jan 13, 2013
 
 
 from edapi.utils import report_config
-from .connector import DBConnector
+from smarter.utils.connector import DBConnector
 from sqlalchemy.orm.query import Query
 from sqlalchemy.schema import Table
 

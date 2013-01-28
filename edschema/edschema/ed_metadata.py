@@ -5,6 +5,7 @@ Created on Jan 28, 2013
 '''
 #
 # encoding: utf-8
+from sqlalchemy.schema import MetaData
 '''
 create_star -- create a star schema
 
@@ -29,7 +30,7 @@ Command line options are available form --help, but as a quick start:
 
 from sqlalchemy import Sequence, Table, Column, Index
 from sqlalchemy import BigInteger, SmallInteger, String, Date
-from sqlalchemy import MetaData, ForeignKey
+from sqlalchemy import ForeignKey
 
 __all__ = []
 __version__ = 0.1
@@ -39,6 +40,7 @@ __updated__ = '2013-01-14'
 DBDRIVER = "postgresql+pypostgresql"
 DEBUG = 0
 VERBOSE = False
+
 
 class CLIError(Exception):
     '''Generic exception to raise and log different fatal errors.'''
@@ -50,13 +52,11 @@ class CLIError(Exception):
     def __unicode__(self):
         return self.msg
 
+    
   
-
-def createTables(schemaName):
-    if VERBOSE:
-        print("Called createTables for schema {}".format(schemaName))
-
-    metadata = MetaData(schema=schemaName)
+def getEdMetaData(scheme_name=None):
+    
+    metadata = MetaData(schema=scheme_name)
     
     # For PR, Guam, US VI... etc
     country = Table('dim_country', metadata,

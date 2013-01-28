@@ -32,6 +32,7 @@ class Student(Person):
 
         super().__init__(firstname, middlename, lastname, gender, email, address)
         self.dob = dob
+        self.student_id = None
 
     def __str__(self):
         return ("%s %s %s" % (self.firstname, self.middlename, self.lastname))

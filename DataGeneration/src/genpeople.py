@@ -60,11 +60,13 @@ def _generate_students(total, male_total):
     students = []
     parents = []
     peopleNames = PeopleNames()
+    idgen = IdGen()
 
     for i in range(total):
         student = Student()
         gennames.assign_random_name(i, student, male_total, peopleNames)
 
+        student.student_id = idgen.get_id()
         #Assign DOB
         #Assign Email
         #Assign id?

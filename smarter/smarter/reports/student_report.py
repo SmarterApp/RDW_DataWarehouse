@@ -6,9 +6,9 @@ Created on Jan 13, 2013
 
 
 from edapi.utils import report_config
-from smarter.utils.connector import DBConnector
 from sqlalchemy.orm.query import Query
 from sqlalchemy.schema import Table
+from database.connector import DBConnector
 
 '''
 report for student and student_assessment

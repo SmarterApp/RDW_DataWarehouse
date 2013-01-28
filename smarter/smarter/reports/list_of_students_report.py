@@ -5,10 +5,10 @@ Created on Jan 24, 2013
 '''
 
 from edapi.utils import report_config
-from smarter.utils.connector import DBConnector
 from sqlalchemy.orm.query import Query
 from sqlalchemy.schema import Table
 from sqlalchemy.sql.expression import func
+from database.connector import DBConnector
 
 
 @report_config(

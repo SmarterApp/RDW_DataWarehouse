@@ -193,7 +193,7 @@ class Validator:
             # based on config, make the value either a single value or a list
             valueType = config.get('type')
             if (valueType is not None and valueType.lower() == VALID_TYPES.ARRAY
-                and not isinstance(value, list)):  # if it's already a list, leave it
+               and not isinstance(value, list)):  # if it's already a list, leave it
                 if (key not in result):
                     result[key] = []
                 result[key].append(value)

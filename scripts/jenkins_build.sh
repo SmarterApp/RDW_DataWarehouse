@@ -62,12 +62,22 @@ function run_unit_tests {
     nosetests -v --with-coverage --cover-package=$1  --with-xunit --xunit-file=$WORKSPACE/nosetests.xml --cover-xml --cover-xml-file=$WORKSPACE/coverage.xml
 }
 
+function start_pserve {
+    cd "$WORKSPACE/smarter"
+    
+    echo "starting pserve"
+    pserve development.ini    
+
+    
+}
+
 function main {
     check_vars
     set_vars
     setup_virtualenv $@
     run_unit_tests $1
     check_pep8 $1
+    start_pserve
 }
 
 main $@

@@ -162,19 +162,32 @@ class Validator:
             if (config is None):
                 continue
 
-            # check if config has validation
-            validatedText = config
-            if (validatedText is not None):
-                # check type for string items
-                if isinstance(value, str):
-                    #validatedTextJson = json.loads(validatedText)
-                    valueType = validatedText.get('type')
-                    if (valueType is not None and valueType.lower() != VALID_TYPES.STRING and valueType in VALID_TYPES.reverse_mapping):
-                        value = Validator.convert(value, VALID_TYPES.reverse_mapping[valueType])
-
-            result[key] = value
+            # if single value, convert.
+            if (config.get('type') != VALID_TYPES.ARRAY):
+                result[key] = Validator.fix_type_one_val(value, config)
+            # if array, find sub-type, then convert each.
+            else:
+                config = config.get('items')
+                if (config is None):
+                    continue
+                result[key] = []
+                for list_val in value:
+                    result[key].append(Validator.fix_type_one_val(list_val, config))
 
         return result
+
+    # convert one value from string to defined type
+    @staticmethod
+    def fix_type_one_val(value, config):
+        # check type for string items
+        if not isinstance(value, str):
+            return value
+
+        definedType = config.get('type')
+        if (definedType is not None and definedType.lower() != VALID_TYPES.STRING and definedType in VALID_TYPES.reverse_mapping):
+            return Validator.convert(value, VALID_TYPES.reverse_mapping[definedType])
+
+        return value
 
     # convert duplicate query params to arrays
     @staticmethod

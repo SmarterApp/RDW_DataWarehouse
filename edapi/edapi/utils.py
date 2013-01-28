@@ -69,6 +69,7 @@ def generate_report(registry, report_name, params, validator=None):
     if not validator:
         validator = Validator()
 
+    params = validator.convert_array_query_params(registry, report_name, params)
     params = validator.fix_types(registry, report_name, params)
     validated = validator.validate_params_schema(registry, report_name, params)
 
@@ -175,7 +176,6 @@ class Validator:
 
         return result
 
-    """
     # convert duplicate query params to arrays
     @staticmethod
     def convert_array_query_params(registry, report_name, params):
@@ -183,23 +183,24 @@ class Validator:
         report = get_report_dict_value(registry, report_name, ReportNotFoundError)
         params_config = get_report_dict_value(report, PARAMS_REFERENCE_FIELD_NAME, InvalidParameterError)
 
-        # build dictionary from param list
+        # iterate through params
         for (key, value) in params.items():
+
             config = params_config.get(key)
             if (config is None):
                 continue
 
-            # make the value either a single value or a list
+            # based on config, make the value either a single value or a list
             valueType = config.get('type')
-            if (valueType is not None and valueType.lower() != VALID_TYPES.ARRAY):
-                if (key not in result and not isinstance(value, list)):
+            if (valueType is not None and valueType.lower() == VALID_TYPES.ARRAY
+                and not isinstance(value, list)):  # if it's already a list, leave it
+                if (key not in result):
                     result[key] = []
                 result[key].append(value)
             else:
                 result[key] = value
 
         return result
-    """
 
     # attempts to convert a string to bool, otherwise raising an error
     @staticmethod

@@ -8,6 +8,7 @@ Created on Jan 15, 2013
 from sqlalchemy.schema import Table
 from database.interfaces import Connectable
 from edschema.ed_metadata import getEdMetaData
+from sqlalchemy.engine.base import Engine
 
 
 '''
@@ -15,12 +16,14 @@ Inheritate this class if you are making a report class and need to access to dat
 BaseReport is just managing session for your database connection and convert result to dictionary
 '''
 
-engine=None    
+engine = None
+
 
 class DBConnector(Connectable):
     metadata = getEdMetaData()
-    
+
     def __init__(self):
+        self.__connection = None
         pass
 
     # query and get result
@@ -43,10 +46,16 @@ class DBConnector(Connectable):
         """
         return open connection
         """
-        return engine.connection
+        if self.__connection is None:
+            self.__connection = engine.connect()
+
+        return self.__connection
+#        return engine.Connection
 
     def close_connection(self):
         """
         closes the connection
         """
-        pass
+        if self.__connection is not None:
+            self.__connection.close()
+        self.__connection = None

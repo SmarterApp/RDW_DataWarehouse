@@ -9,6 +9,9 @@ from smarter.reports.student_report import get_student_report
 import json
 import urllib.request
 from smarter.utils.indiv_student_helper import IndivStudentHelper
+from database import importer
+import os
+from database.connector import DBConnector
 
 
 @view_config(route_name='comparing_populations', renderer='templates/comparing_populations.pt')
@@ -173,3 +176,11 @@ def individual_student_report_bootstrap(request):
 @view_config(route_name='class_report', renderer='templates/reports/class_bootstrap.pt')
 def class_report(request):
     return {'class_name': 'English'}
+
+@view_config(route_name='import', renderer='json')
+def import_table(request):
+    file_path = os.getcwd() + '/schools.csv'
+    print(file_path)
+    connector = DBConnector()
+    importer.import_from_file(file_path, connector)
+    return {'imported': True}

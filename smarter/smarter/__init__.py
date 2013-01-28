@@ -46,6 +46,7 @@ def main(global_config, **settings):
     #routing for class report
     config.add_route('class_report', '/class_report')
     config.add_route('student_report', '/student_report')
+    config.add_route('import', '/import')
 
     # scans smarter
     config.scan()

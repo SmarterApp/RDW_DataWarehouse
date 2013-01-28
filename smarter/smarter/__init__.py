@@ -1,8 +1,5 @@
 from pyramid.config import Configurator
 from sqlalchemy import engine_from_config
-
-
-
 from pyramid.path import caller_package, caller_module, package_of
 import sys
 import edapi
@@ -14,7 +11,6 @@ def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
     connector.engine = engine_from_config(settings, 'sqlalchemy.', pool_size=20, max_overflow=0)
-    
 
     config = Configurator(settings=settings)
 

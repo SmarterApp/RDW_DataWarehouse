@@ -5,6 +5,7 @@
 	<projects>
 		<project>edapi</project>
 		<project>eddatabase</project>
+		<project>edschema</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

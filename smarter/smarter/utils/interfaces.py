@@ -25,3 +25,13 @@ class Connectable:
         """
         return table metadata
         """
+
+    def open_connection(self):
+        """
+        return open connection
+        """
+
+    def close_connection(self):
+        """
+        closes the connection
+        """

@@ -6,12 +6,10 @@ Created on Jan 28, 2013
 import datetime
 import csv
 import os
-from sqlalchemy.schema import MetaData
-from smarter.utils import connector
 from smarter.utils.connector import DBConnector
 
 
-def import_from_file(file_path, metadata, connectr):
+def import_from_file(file_path, metadata, connector):
 
     fileName, fileExtension = os.path.splitext(file_path)
 
@@ -22,20 +20,19 @@ def import_from_file(file_path, metadata, connectr):
             start_date = datetime.datetime.now()
             file_reader = csv.reader(csvfile, delimiter=' ', quotechar='|')
 
+            connector = DBConnector()
+            table = connector.get_table(fileName)
+
             for row in file_reader:
                 line_number += 1
                 total_lines += 1
 
-            connectr = DBConnector()
-
-            table = connectr.get_table(fileName)
-
-#            connection.execute(users.insert(), [
-#                                    {'first_name': "A", 'last_name' : "B"},
-#                                    {'first_name': "C", 'last_name' : "D"},
-#                                    {'first_name': "E", 'last_name' : "F"},
-#                                    {'first_name': "G", 'last_name' : "H"},
-#                                    ])
+                connector.execute(users.insert(), [
+                                    {'first_name': "A", 'last_name' : "B"},
+                                    {'first_name': "C", 'last_name' : "D"},
+                                    {'first_name': "E", 'last_name' : "F"},
+                                    {'first_name': "G", 'last_name' : "H"},
+                                    ])
 
             end_date = datetime.datetime.now()
             delta = end_date - start_date

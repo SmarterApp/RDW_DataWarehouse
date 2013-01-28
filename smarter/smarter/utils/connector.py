@@ -6,7 +6,8 @@ Created on Jan 15, 2013
 
 from ..models import (DBSession, metadata,)
 from sqlalchemy.schema import Table
-from smarter.reports.interfaces import Connectable
+from smarter.utils.interfaces import Connectable
+from smarter import models
 
 '''
 Inheritate this class if you are making a report class and need to access to database
@@ -40,3 +41,15 @@ class DBConnector(Connectable):
     #return Table Metadata
     def get_table(self, table_name):
         return Table(table_name, metadata, autoload=True)
+
+    def open_connection(self):
+        """
+        return open connection
+        """
+        return models.connection
+
+    def close_connection(self):
+        """
+        closes the connection
+        """
+        pass

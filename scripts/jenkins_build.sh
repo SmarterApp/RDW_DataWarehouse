@@ -64,7 +64,7 @@ function run_unit_tests {
 
 function start_pserve {
   
-    if [ $START_PSERVE -eq 1 ]
+    if [ $START_PSERVE -eq 1 ]; then
 
     	cd "$WORKSPACE/smarter"
     

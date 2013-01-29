@@ -19,7 +19,7 @@ def main(global_config, **settings):
 
     # include add routes from edapi. Calls includeme
     config.include(edapi)
-    
+
     # TODO symbolic link should be done in development mode only
     try:
         if not os.path.lexists(os.getcwd() + '/assets'):

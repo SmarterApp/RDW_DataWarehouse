@@ -19,9 +19,13 @@ def main(global_config, **settings):
 
     # include add routes from edapi. Calls includeme
     config.include(edapi)
-
-    if not os.path.lexists(os.getcwd() + '/assets'):
-        os.symlink('../assets', os.getcwd() + '/assets')
+    
+    # TODO symbolic link should be done in development mode only
+    try:
+        if not os.path.lexists(os.getcwd() + '/assets'):
+            os.symlink('../assets', os.getcwd() + '/assets')
+    except PermissionError:
+        pass
 
     config.add_static_view('static', 'static', cache_max_age=3600)
     config.add_static_view('assets', '../assets', cache_max_age=3600)

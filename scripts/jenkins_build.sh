@@ -62,26 +62,12 @@ function run_unit_tests {
     nosetests -v --with-coverage --cover-package=$1  --with-xunit --xunit-file=$WORKSPACE/nosetests.xml --cover-xml --cover-xml-file=$WORKSPACE/coverage.xml
 }
 
-function start_pserve {
-  
-    if [ $START_PSERVE -eq 1 ]; then
-
-    	cd "$WORKSPACE/smarter"
-    
-    	pip install waitress
-
-    	echo "starting pserve"
-    	pserve development.ini    
-    fi
-}
-
 function main {
     check_vars
     set_vars
     setup_virtualenv $@
     run_unit_tests $1
     check_pep8 $1
-    start_pserve
 }
 
 main $@

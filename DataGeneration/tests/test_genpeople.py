@@ -6,9 +6,19 @@ Created on Jan 16, 2013
 import unittest
 import genpeople
 from objects.nameinfo import NameInfo
+import os
 
 
 class Test(unittest.TestCase):
+
+    def tearDown(self):
+        try:
+            basepath = os.path.dirname(__file__)
+            parentfile = os.path.abspath(os.path.join(basepath, '..', 'datafiles', 'parents.csv'))
+            os.remove(parentfile)
+        except:
+            # File does not exist
+            pass
 
     def test_generate_people(self):
         result = genpeople.generate_people(genpeople.STUDENT, 10, 0.5)
@@ -20,6 +30,9 @@ class Test(unittest.TestCase):
                 male_count += 1
 
         self.assertEqual(male_count, 5)
+
+        self.assertEqual([], genpeople.generate_people(genpeople.STUDENT, 0, 0))
+
 
 #    def test_generate_student(self):
 #        self.assertIsNone(genpeople.generate_student(0, 0, [], [], []))

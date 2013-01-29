@@ -140,6 +140,25 @@ class Assessment:
 
         return ("Assessment:[id: %s, subject: %s, type: %s, period: %s, version: %s, grade: %s]" % (self.id, self.subject, self.type, self.period, self.version, self.grade))
 
+class Score:
+    '''
+    Score object
+    '''
+    def __init__(self, overall, claims, level):
+        '''
+        Constructor
+        '''
+        self.overall = overall
+        self.claims = claims
+        self.level = level
+        
+
+    def __str__(self):
+        '''
+        String method
+        '''
+        return ("Score:[overall: %s, claims: %s, level: %s]" % (self.overall, self.claims, self.level))
+
 def generate_ramdom_name():
     # temporary
     char_set = string.ascii_uppercase + string.digits

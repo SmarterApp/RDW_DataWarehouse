@@ -9,28 +9,11 @@ from datetime import datetime
 from test.test_iterlen import len
 from genpeople import generate_people, STUDENT, TEACHER
 from gen_assessments import generate_assessments
+from constants import *
 
-birds_file = "../datafiles/birds.txt"
-manmals_file = "../datafiles/manmals.txt"
-fish_file = "../datafiles/fish.txt"
 birds_list = []
 manmals_list = []
 fish_list = []
-
-school_levels_info = [
-                    ['Primary', ['EL SCH', 'ELEM', 'CTR', 'ELEMENTARY SCHOOL', 'CHILDHOOD CENTER', 'PRIMARY', 'ELEMENTARY', 'CETR, ELEM', 'SCH'], [[0, 5], [1, 5], [1, 6]]],
-                    ['Middle', ['MIDDLE SCHOOL', 'COMMUNITY MIDDLE', 'MIDDLE', 'JUNIOR HIGH', 'INTERMEDIATE SCHOOL', 'JR MIDDLE', 'MS'], [[6, 8], [5, 8], [7, 9]]],
-                    ['High', ['HIGH SCH', 'HIGH SCHOOL', 'HIGH', 'HS', 'SENIOR HIGH'], [[9, 12], [10, 12]]],
-                    ['Other', ['SCH', 'SCHOOL'], [[6, 12], [9, 12]]]
-                    ]
-
-dist_suffix = ['DISTRICT', 'SCHOOL DISTRICT', 'SCHOOLS', 'COUNTY SCHOOLS', 'PUBLIC SHCOOLS', 'SD']
-add_suffix = ["ROAD", "AVE", "STREET", "SOUTH AVE", "NORTH AVE", "WAY"]
-
-subjects = ["Math", "ELA"]
-min_class_size = 20
-min_section_size = 10
-gender_ratio = [0.5, 0.45, 0.55]
 
 # total count for state, districts, schools, students, teachers
 total_count = [0, 0, 0, 0, 0]
@@ -62,9 +45,9 @@ def prepare_data():
     clear_files()
 
     try:
-        birds_list.extend(read_names(birds_file))
-        manmals_list.extend(read_names(manmals_file))
-        fish_list.extend(read_names(fish_file))
+        birds_list.extend(read_names(BIRDS_FILE))
+        manmals_list.extend(read_names(MANMALS_FILE))
+        fish_list.extend(read_names(FISH_FILE))
     except:
         print("Exception for reading files")
         return False
@@ -270,9 +253,9 @@ def create_schools(d_name, stu_num_in_school_made, tea_num_in_school_made, start
 
 def get_schoolattr_bytype(pos):
     if(0 <= pos <= 3):
-        school_type = school_levels_info[pos][0]
-        suf = random.choice(school_levels_info[pos][1])
-        grade_range = random.choice(school_levels_info[pos][2])
+        school_type = SCHOOL_LEVELS_INFO[pos][0]
+        suf = random.choice(SCHOOL_LEVELS_INFO[pos][1])
+        grade_range = random.choice(SCHOOL_LEVELS_INFO[pos][2])
         low_grade = grade_range[0]
         high_grade = grade_range[1]
     return school_type, suf, low_grade, high_grade
@@ -318,7 +301,7 @@ def create_districts(state_name, school_num_in_dist_made, school_type_in_dist):
 
         address = generate_address_from_list(n, fish_list)
         for i in range(n):
-            dist = District(state_name, names[i] + " " + random.choice(dist_suffix), school_num_in_dist_made[i], address[i], school_type_in_dist[i % len(school_type_in_dist)])
+            dist = District(state_name, names[i] + " " + random.choice(DIST_SUFFIX), school_num_in_dist_made[i], address[i], school_type_in_dist[i % len(school_type_in_dist)])
             districts_list.append(dist)
             total_school += dist.num_of_schools
 
@@ -357,7 +340,7 @@ def generate_address_from_list(count, words_list):
             road_name = random.sample(words_list, count)
         else:
             road_name.extend(words_list)
-        adds = [str(no[i]) + " " + str(road_name[i % len(road_name)]) + " " + random.choice(add_suffix) for i in range(count)]
+        adds = [str(no[i]) + " " + str(road_name[i % len(road_name)]) + " " + random.choice(ADD_SUFFIX) for i in range(count)]
     return adds
 
 
@@ -371,7 +354,7 @@ def create_classes_grades_sections(sch, state_code):
 
     # generate teacher list for a school
     # teacher_list = create_teachers(sch.school_name, sch.num_of_teacher)
-    teacher_list = generate_people(TEACHER, sch.num_of_teacher, random.choice(gender_ratio))
+    teacher_list = generate_people(TEACHER, sch.num_of_teacher, random.choice(GENDER_RARIO))
     total_count[4] += len(teacher_list)
 
     # for each grade
@@ -380,7 +363,7 @@ def create_classes_grades_sections(sch, state_code):
     for grade in range(sch.low_grade, sch.high_grade + 1):
         # generate student list for a grade
         # grade_students = create_students(sch.school_name, end)
-        grade_students = generate_people(STUDENT, end, random.choice(gender_ratio))
+        grade_students = generate_people(STUDENT, end, random.choice(GENDER_RARIO), grade)
         j += len(grade_students)
         total_count[3] += len(grade_students)
         if(grade == sch.high_grade - 1):
@@ -394,8 +377,8 @@ def create_classes_for_grade(grade_students, teacher_list, stu_tea_ratio):
     Main function to generate classes for a grade
     '''
     # calculate number of class for a subject
-    num_of_subjects = len(subjects)
-    max_num_of_class = round(num_of_subjects * len(grade_students) / min_class_size)
+    num_of_subjects = len(SUBJECTS)
+    max_num_of_class = round(num_of_subjects * len(grade_students) / MIN_ASSMT_SCORE)
     num_of_class = num_of_subjects
     if(max_num_of_class > num_of_subjects):
         # num_of_class = random.choice(range(num_of_subjects, max_num_of_class))
@@ -407,11 +390,11 @@ def create_classes_for_grade(grade_students, teacher_list, stu_tea_ratio):
 
     # create classes for a subject
     total_classes = []
-    for subj in subjects:
+    for subj in SUBJECTS:
         num_of_teacher = (int)(round(len(grade_students) / stu_tea_ratio))
         if(num_of_teacher < 1):
             num_of_teacher = 1
-        
+
         subject_teachers = random.sample(teacher_list, num_of_teacher)
         subject_classes = create_classes(subj, class_num, grade_students, subject_teachers, stu_tea_ratio)
         total_classes.extend(subject_classes)
@@ -440,7 +423,7 @@ def create_one_class(sub_name, class_count, distribute_stu_inaclass, tea_list, s
     # calculate number of sections
     num_of_stu_in_class = len(distribute_stu_inaclass)
     section_num = math.floor(num_of_stu_in_class // stu_tea_ratio)
-    if(num_of_stu_in_class < min_section_size or section_num < 2):
+    if(num_of_stu_in_class < MIN_SECTION_SIZE or section_num < 2):
         section_num = 1
 
     if(num_of_stu_in_class / section_num > 100):
@@ -488,25 +471,6 @@ def list_to_chucks(list1, n):
         start = end
 
     return chucks_list
-
-'''
-def create_students(scho_name, count):
-    student_list = []
-    while(count > 0):
-        student = Student(scho_name)
-        count -= 1
-        student_list.append(student)
-    return student_list
-
-def create_teachers(scho_name, count):
-    student_list = []
-    while(count > 0):
-        student = Student(scho_name)
-        count -= 1
-        student_list.append(student)
-    return student_list
-'''
-
 
 def makeup(seqin, lengh):
     avg1 = py1.avg(seqin)

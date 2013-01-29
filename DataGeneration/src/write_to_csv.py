@@ -63,7 +63,7 @@ def create_parent_csv(parent_list):
     with open(file_names[5], 'a', newline='') as csvfile:
         parentwriter = csv.writer(csvfile, delimiter=',', quoting=csv.QUOTE_MINIMAL)
         for par in parent_list:
-            parentwriter.writerow([par.pid, par.firstname, par.middlename, par.lastname])
+            parentwriter.writerow([par.parent_id, par.firstname, par.middlename, par.lastname])
 
 def create_assessment_csv(assessment_list):
     '''

@@ -47,7 +47,6 @@ def get_list_of_students_report(params, connector=None):
     asmtGrade = params['asmtGrade']
 
     # asmtSubject is optional.
-    # TODO: make sure get it as an array
     asmtSubject = None
     if 'asmtSubject' in params:
         asmtSubject = params['asmtSubject']

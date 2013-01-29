@@ -129,6 +129,16 @@ class TestReportConfig(unittest.TestCase):
         fixed_params = validator.fix_types(registry, report_name, params)
         self.assertEqual(not fixed_params, True)
 
+    def test_fix_types_for_int_array(self):
+        report_name = "test"
+        config = {"id1": {"type": "array", "items": {"type": "integer"}}}
+        registry = {}
+        registry[report_name] = {"params": config, "reference": (Dummy, Dummy.some_func)}
+        params = {"id1": ["1", "2"]}
+        validator = Validator()
+        fixed_params = validator.fix_types(registry, report_name, params)
+        self.assertEqual(fixed_params, {"id1": [1, 2]})
+
     def test_convert_array_query_params_for_get(self):
         report_name = "test"
         config = {"ids": {"type": "array"}, "name": {"type": "string"}}

@@ -6,9 +6,8 @@ Created on Jan 15, 2013
 
 
 from sqlalchemy.schema import Table
-from database.interfaces import Connectable
+from database.interfaces import ConnectionBase
 from edschema.ed_metadata import getEdMetaData
-from sqlalchemy.engine.base import Engine
 
 
 '''
@@ -19,28 +18,33 @@ BaseReport is just managing session for your database connection and convert res
 engine = None
 
 
-class DBConnector(Connectable):
-    metadata = getEdMetaData()
+class DBConnector(ConnectionBase):
+    __metadata = getEdMetaData()
 
     def __init__(self):
         self.__connection = None
-        pass
+    
+    def __del__(self):
+        self.close_connection()
 
     # query and get result
     # Convert from result_set to dictionary.
     def get_result(self, query):
+        result = self.__connection.execute(query)
         result_rows = []
-        if query is not None:
-            query.session = self.__session
-            rows = query.all()
-            if rows is not None:
-                for row in rows:
-                    result_rows.append(row._asdict())
+    
+        rows = result.fetchall()
+        if rows is not None:
+            for row in rows:
+                result_row = {}
+                for key in row.keys():
+                    result_row[key] = row[key]
+                result_rows.append(result_row)
         return result_rows
 
     # return Table Metadata
     def get_table(self, table_name):
-        return Table(table_name, self.metadata)
+        return Table(table_name, self.__metadata)
 
     def open_connection(self):
         """
@@ -50,7 +54,6 @@ class DBConnector(Connectable):
             self.__connection = engine.connect()
 
         return self.__connection
-#        return engine.Connection
 
     def close_connection(self):
         """

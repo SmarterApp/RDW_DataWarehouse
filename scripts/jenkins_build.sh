@@ -113,11 +113,20 @@ function show_help {
 function setup_functional_test_dependencies {
     echo "Setup functional test dependencies"
 
-    cd "$WORKSPACE/funcational_tests"
+    cd "$WORKSPACE/functional_tests"
     python setup.py develop
 
     echo "Finish functional test dependencies setup"
 }
+
+function run_functional_tests {
+    echo "Run functional tests"
+
+    cd "$WORKSPACE/functional_tests/edapi"
+    behave
+
+    echo "Finish running functional tests"
+}	
 
 function create_sym_link_for_apache {
     /bin/ln -sf "$WORKSPACE/lib/python3.3/site-packages" /home/jenkins/pythonpath
@@ -147,6 +156,8 @@ function main {
     elif [ ${MODE:=""} == "FUNC" ]; then
         create_sym_link_for_apache
         restart_apache
+        setup_functional_test_dependencies
+        run_functional_tests
     fi
 }
 

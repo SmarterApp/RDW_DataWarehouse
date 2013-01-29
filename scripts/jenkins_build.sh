@@ -123,7 +123,7 @@ function run_functional_tests {
     echo "Run functional tests"
 
     cd "$WORKSPACE/functional_tests/edapi"
-    behave
+    behave --junit --junit-directory=$WORKSPACE
 
     echo "Finish running functional tests"
 }	

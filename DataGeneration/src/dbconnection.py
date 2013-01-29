@@ -6,7 +6,7 @@ def get_db_conn():
     Create and return database connection
     '''
     try:
-        _db = dbapi.connect(user='postgres', database='generate_data', port=5432, password='3423346', host="localhost")
+        _db = dbapi.connect(user='postgres', database='generate_data', port=5432, password='password', host="localhost")
         assert _db is not None
         print("Connected to postgres database")
     except Exception:

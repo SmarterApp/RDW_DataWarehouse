@@ -127,7 +127,12 @@ function create_sym_link_for_apache {
 }
 
 function restart_apache {
-    /usr/bin/sudo /etc/rc.d/init.d/httpd graceful
+    /usr/bin/sudo /etc/rc.d/init.d/httpd graceful 
+    RES=$?
+    if [ $RES != 0 ]; then
+       echo "httpd graceful failed to restart"
+       exit 1
+    fi
 }
 
 function main {

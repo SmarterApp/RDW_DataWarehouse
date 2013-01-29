@@ -94,7 +94,7 @@ def get_list_of_students_report(params, connector=None):
                     .where(dim_stdnt_tmprl_data.c.school_id == schoolId).where(and_(dim_asmt_type.c.asmt_grade == asmtGrade))
 
         if asmtSubject is not None:
-            query.wher(dim_grade.c.asmt_subject.in_(asmtSubject))
+            query.where(dim_grade.c.asmt_subject.in_(asmtSubject))
 
 
         '''

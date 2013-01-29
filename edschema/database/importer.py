@@ -7,6 +7,7 @@ import datetime
 import csv
 import os
 from collections import Counter
+from sqlalchemy.sql.expression import func, select
 
 
 def import_from_file(file_path, connector):
@@ -19,23 +20,28 @@ def import_from_file(file_path, connector):
         return
 
     with open(file_path, newline='') as csvfile:
-#        total_lines = 0
         line_number = 0
         try:
             start_date = datetime.datetime.now()
-            file_reader = csv.reader(csvfile, delimiter=' ', quotechar='|')
+            file_reader = csv.reader(csvfile, delimiter=',', quotechar='"')
 
             table = connector.get_table(file_name)
             connection = connector.open_connection()
 
             dictionaries = []
+            column_list = [c.name for c in table.columns]
             # convert rows to dictionaries
-            for row in file_reader:
-                c = Counter(row)
-                dictionaries.append(dict((table.columns[k], v) for k, v in c.items()))
 
-#                line_number += 1
-#                total_lines += 1
+            try:
+                result = connection.execute(select([func.count(list(table.c)[0]).label('my_count')]))
+                index = result.fetchone()['my_count']
+                for row in file_reader:
+                    index = index + 1
+                    row.insert(0, index)
+                    dictionary = dict(zip(column_list, row))
+                    dictionaries.append(dictionary)
+            except Exception as e:
+                print(e)
 
             connection.execute(table.insert(), dictionaries)
 

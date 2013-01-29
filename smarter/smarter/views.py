@@ -9,9 +9,10 @@ from smarter.reports.student_report import get_student_report
 import json
 import urllib.request
 from smarter.utils.indiv_student_helper import IndivStudentHelper
-from database import importer
+from database import importer, connector
 import os
 from database.connector import DBConnector
+from edschema.ed_metadata import getEdMetaData
 
 
 @view_config(route_name='comparing_populations', renderer='templates/comparing_populations.pt')
@@ -179,8 +180,23 @@ def class_report(request):
 
 @view_config(route_name='import', renderer='json')
 def import_table(request):
-    file_path = os.getcwd() + '/schools.csv'
+    file_path = os.getcwd() + '/dim_school.csv'
     print(file_path)
     connector = DBConnector()
     importer.import_from_file(file_path, connector)
     return {'imported': True}
+
+@view_config(route_name='create', renderer='json')
+def create_tables(request):
+    schemaName = "edware"
+    metadata = getEdMetaData(schemaName)
+    createSchema(schemaName)
+    metadata.create_all(connector.engine)
+    return {'imported': True}
+
+def createSchema(schemaName):
+    dbConnect = DBConnector()
+    conn = dbConnect.open_connection()
+    conn.execute("commit")
+    conn.execute("create schema {}".format(schemaName))
+    conn.close()

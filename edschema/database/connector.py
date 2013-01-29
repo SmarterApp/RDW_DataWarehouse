@@ -19,7 +19,7 @@ engine = None
 
 
 class DBConnector(ConnectionBase):
-    __metadata = getEdMetaData()
+    __metadata = getEdMetaData("edware_star_20130129_1")
 
     def __init__(self):
         self.__connection = None

@@ -68,11 +68,15 @@ function run_unit_tests {
 }
 
 function get_opts {
-    echo "Checking args"
+    if ( ! getopts ":m:d:ufh" opt); then
+	echo "Usage: `basename $0` options (-m) (-f) (-m main_package) (-d dependencies) -h for help";
+	exit $E_OPTERROR;
+    fi
+ 
     # By default, make the mode to be unit
     MODE='UNIT'
 
-    while getopts ":m:d:uf" opt; do
+    while getopts ":m:d:ufh" opt; do
         case $opt in 
             u)
                echo "Unit test mode"
@@ -81,6 +85,9 @@ function get_opts {
             f)
                echo "Functional test mode"
                MODE='FUNC'
+               ;;
+            h)
+               show_help
                ;;
             m)  
                MAIN_PKG=$OPTARG
@@ -94,6 +101,22 @@ function get_opts {
                ;;
         esac
     done
+}
+
+function show_help {
+    echo "#To set unit test mode with main package as edapi"
+    echo "jenkins_build.sh -u -m edapi" 
+    echo "#To set functional test mode with main package as smarter"
+    echo "jenkins_build.sh -f -m smarter -d edapi"
+}
+
+function setup_functional_test_dependencies {
+    echo "Setup functional test dependencies"
+
+    cd "$WORKSPACE/funcational_tests"
+    python setup.py develop
+
+    echo "Finish functional test dependencies setup"
 }
 
 function create_sym_link_for_apache {

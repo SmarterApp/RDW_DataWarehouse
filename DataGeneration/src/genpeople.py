@@ -7,6 +7,7 @@ Created on Jan 8, 2013
 
 import gennames
 import random
+from datetime import date
 from objects.dimensions import Student, Teacher, Parent
 from readnaminglists import PeopleNames
 from idgen import IdGen
@@ -19,7 +20,7 @@ TEACHER = 1
 PARENT = 2
 
 
-def generate_people(person_type, total, male_ratio=0.5):
+def generate_people(person_type, total, male_ratio=0.5, grade=None):
     '''
     Entry point for generating people. If type = STUDENT parents are generated and saved
     Student objects will include the parents ids.
@@ -41,12 +42,48 @@ def generate_people(person_type, total, male_ratio=0.5):
 
     if person_type == STUDENT:
         people, parents = _generate_students(total, male_total)
+        if grade:
+            assign_dob(people, grade)
         #write parents
         create_parent_csv(parents)
     elif person_type == TEACHER:
         people = _generate_teachers(total, male_total)
 
     return people
+
+
+def assign_dob(students, grade):
+    '''
+    Takes a list of students and assigns them a date of birth
+    students -- a list of students
+    grade -- the grades the students are in as an int
+    '''
+    month_cutoff = 8  # August
+    today = date.today()
+    age_offset = grade + 5
+    month_num_days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]  # number of days in each month
+
+    year_1 = 0
+    year_2 = 0
+
+    if today.month < month_cutoff:
+        year_1 = today.year - (age_offset + 1)
+        year_2 = today.year - age_offset
+    else:
+        year_1 = today.year - age_offset
+        year_2 = today.year - (age_offset - 1)
+
+    for student in students:
+        month = random.randint(1, 12)
+        day = random.randint(1, month_num_days[month - 1])
+        year = 0
+
+        if month > month_cutoff:
+            year = year_1
+        else:
+            year = year_2
+
+        student.dob = date(year, month, day)
 
 
 def _generate_students(total, male_total):
@@ -117,10 +154,10 @@ def _assign_parent(student):
 
     idgen = IdGen()
 
-    parent1.pid = idgen.get_id()
-    parent2.pid = idgen.get_id()
+    parent1.parent_id = idgen.get_id()
+    parent2.parent_id = idgen.get_id()
 
-    student.parents = [parent1.pid, parent2.pid]
+    student.parents = [parent1.parent_id, parent2.parent_id]
 
     return [parent1, parent2]
 
@@ -128,11 +165,12 @@ if __name__ == '__main__':
 
     total = 5000  # 387549  # pop in AL
     ratio = 0.51
+    grade = 12
 
     from time import time
 
     time_start = time()
-    list_of_students = generate_people(STUDENT, total, ratio)
+    list_of_students = generate_people(STUDENT, total, ratio, grade)
     time_end = time()
 
     print("Gen time for %s students generated: %.2fs" % (total, time_end - time_start))
@@ -144,3 +182,5 @@ if __name__ == '__main__':
         if st.gender == 'male':
             male_count += 1
     print('males', male_count)
+    for i in range(0, 5):
+        print(list_of_students[i].dob)

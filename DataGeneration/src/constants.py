@@ -23,8 +23,7 @@ asmt_types = {'Math':[
                        {'8':[{'Number properties and operations': 20}, {'Measurement and Geometry': 35}, {'Data analysis, statistics, and probability': 15}, {'Algebra': 30}]}
                      ],
               'ELA':[
-                       {'4':[{'Number properties and operations': 40}, {'Measurement and Geometry': 35}, {'Data analysis, statistics, and probability': 10}, {'Algebra': 15}]},
-                       {'8':[{'Number properties and operations': 20}, {'Measurement and Geometry': 35}, {'Data analysis, statistics, and probability': 15}, {'Algebra': 30}]}
+                     {'4':[{'Literary text and Fiction': 25}, {'Literary nonfiction and Poetry': 25}, {'Informational text and Exposition': 25}, {'Argumentation and persuasive text': 25}]},
+                     {'8':[{'Literary text and Fiction': 20}, {'Literary nonfiction and Poetry': 25}, {'Informational text and Exposition': 25}, {'Argumentation and persuasive text': 30}]}
                      ],
                }
-              

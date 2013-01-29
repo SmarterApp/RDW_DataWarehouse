@@ -1,7 +1,8 @@
 import unittest, math
 import generate_data
 from entities import Student
-from generate_data import subjects
+from constants import SUBJECTS
+
 
 class TestGenerateData(unittest.TestCase):
     
@@ -226,13 +227,13 @@ class TestGenerateData(unittest.TestCase):
         
         expected_classes = generate_data.create_classes_for_grade(stu_list, tea_list, stu_tea_ratio)
         
-        devided = len(expected_classes) / len(generate_data.subjects)
-        first_part = devided * (len(generate_data.subjects) - 1)
+        devided = len(expected_classes) / len(SUBJECTS)
+        first_part = devided * (len(SUBJECTS) - 1)
         for i in range(len(expected_classes)):
             if(i < first_part):
-                self.assertEqual(expected_classes[i].title, generate_data.subjects[math.floor((int)(i / devided))] + " " + str((int)(i % devided)))
+                self.assertEqual(expected_classes[i].title, SUBJECTS[math.floor((int)(i / devided))] + " " + str((int)(i % devided)))
             else:
-                self.assertEqual(expected_classes[i].title, generate_data.subjects[len(generate_data.subjects) - 1] + " " + str((int)(i % devided)))
+                self.assertEqual(expected_classes[i].title, SUBJECTS[len(SUBJECTS) - 1] + " " + str((int)(i % devided)))
 
 
     def test_create_classes_for_grade_samllstudents(self):
@@ -242,9 +243,9 @@ class TestGenerateData(unittest.TestCase):
         stu_tea_ratio = round(len(stu_list) / len(tea_list))  
         
         expected_classes = generate_data.create_classes_for_grade(stu_list, tea_list, stu_tea_ratio)
-        self.assertEqual(len(expected_classes), len(generate_data.subjects))
+        self.assertEqual(len(expected_classes), len(SUBJECTS))
         for i in range(len(expected_classes)):
-            self.assertEqual(expected_classes[i].title, subjects[i] + " " + str(0))
+            self.assertEqual(expected_classes[i].title, SUBJECTS[i] + " " + str(0))
     
     
     def test_create_one_class_severalsections(self):

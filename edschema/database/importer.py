@@ -6,6 +6,7 @@ Created on Jan 28, 2013
 import datetime
 import csv
 import os
+from collections import Counter
 
 
 def import_from_file(file_path, connector):
@@ -30,7 +31,8 @@ def import_from_file(file_path, connector):
             dictionaries = []
             # convert rows to dictionaries
             for row in file_reader:
-                dictionaries.append(dict((table.columns[k], v) for k, v in row.iteritems()))
+                c = Counter(row)
+                dictionaries.append(dict((table.columns[k], v) for k, v in c.items()))
 
 #                line_number += 1
 #                total_lines += 1

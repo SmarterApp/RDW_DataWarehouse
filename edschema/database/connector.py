@@ -23,7 +23,7 @@ class DBConnector(ConnectionBase):
 
     def __init__(self):
         self.__connection = None
-    
+
     def __del__(self):
         self.close_connection()
 
@@ -32,7 +32,7 @@ class DBConnector(ConnectionBase):
     def get_result(self, query):
         result = self.__connection.execute(query)
         result_rows = []
-    
+
         rows = result.fetchall()
         if rows is not None:
             for row in rows:

@@ -11,6 +11,7 @@ from database.connector import DBConnector
 from sqlalchemy.sql import select
 from sqlalchemy.sql import and_
 
+
 @report_config(
     name="list_of_students",
     params={
@@ -87,34 +88,14 @@ def get_list_of_students_report(params, connector=None):
                     fact_asmt_outcome.c.asmt_claim_2_score.label('asmt_claim_2_score'),
                     fact_asmt_outcome.c.asmt_claim_3_score.label('asmt_claim_3_score'),
                     fact_asmt_outcome.c.asmt_claim_4_score.label('asmt_claim_4_score')],
-                       from_obj=[dim_student\
-                                  .join(fact_asmt_outcome, dim_student.c.student_id == fact_asmt_outcome.c.student_id)\
-                                  .join(dim_asmt_type, dim_asmt_type.c.asmt_type_id == fact_asmt_outcome.c.asmt_type_id)\
-                                  .join(dim_stdnt_tmprl_data, dim_stdnt_tmprl_data.c.student_id == dim_student.c.student_id)])\
-                    .where(dim_stdnt_tmprl_data.c.school_id == schoolId).where(and_(dim_asmt_type.c.asmt_grade == asmtGrade))
+                    from_obj=[dim_student
+                    .join(fact_asmt_outcome, dim_student.c.student_id == fact_asmt_outcome.c.student_id)
+                    .join(dim_asmt_type, dim_asmt_type.c.asmt_type_id == fact_asmt_outcome.c.asmt_type_id)
+                    .join(dim_stdnt_tmprl_data, dim_stdnt_tmprl_data.c.student_id == dim_student.c.student_id)]).where(dim_stdnt_tmprl_data.c.school_id == schoolId).where(and_(dim_asmt_type.c.asmt_grade == asmtGrade))
 
         if asmtSubject is not None:
             query.where(dim_grade.c.asmt_subject.in_(asmtSubject))
 
-
-        '''
-        query = Query([dim_student.c.first_name.label('first_name'),
-                    func.substr(dim_student.c.middle_name, 1, 1).label('middle_name'),
-                    dim_student.c.last_name.label('last_name'),
-                    dim_asmt_type.c.asmt_grade.label('asmt_grade'),
-                    dim_asmt_type.c.asmt_subject.label('asmt_subject'),
-                    fact_asmt_outcome.c.asmt_score.label('asmt_score'),
-                    fact_asmt_outcome.c.asmt_claim_1_name.label('asmt_claim_1_name'),
-                    fact_asmt_outcome.c.asmt_claim_2_name.label('asmt_claim_2_name'),
-                    fact_asmt_outcome.c.asmt_claim_3_name.label('asmt_claim_3_name'),
-                    fact_asmt_outcome.c.asmt_claim_4_name.label('asmt_claim_4_name'),
-                    fact_asmt_outcome.c.asmt_claim_1_score.label('asmt_claim_1_score'),
-                    fact_asmt_outcome.c.asmt_claim_2_score.label('asmt_claim_2_score'),
-                    fact_asmt_outcome.c.asmt_claim_3_score.label('asmt_claim_3_score'),
-                    fact_asmt_outcome.c.asmt_claim_4_score.label('asmt_claim_4_score')])\
-            .join(dim_student, dim_student.c.student_id == fact_asmt_outcome.c.student_id)\
-            .join(dim_asmt_type, dim_asmt_type.c.asmt_type_id == fact_asmt_outcome.c.asmt_type_id)
-        '''
     result = connector.get_result(query)
     connector.close_connection()
 

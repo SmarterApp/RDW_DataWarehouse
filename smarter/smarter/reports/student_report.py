@@ -68,9 +68,8 @@ def get_student_report(params, connector=None):
             fact_asmt_outcome.c.asmt_claim_2_score,
             fact_asmt_outcome.c.asmt_claim_3_score,
             fact_asmt_outcome.c.asmt_claim_4_score],
-                       from_obj=[fact_asmt_outcome.join(dim_student, fact_asmt_outcome.c.student_id == dim_student.c.student_id)\
-                                 .join(dim_asmt_type, dim_asmt_type.c.asmt_type_id == fact_asmt_outcome.c.asmt_type_id)])\
-                                 .where(fact_asmt_outcome.c.student_id == student_id)
+            from_obj=[fact_asmt_outcome.join(dim_student, fact_asmt_outcome.c.student_id == dim_student.c.student_id)
+            .join(dim_asmt_type, dim_asmt_type.c.asmt_type_id == fact_asmt_outcome.c.asmt_type_id)]).where(fact_asmt_outcome.c.student_id == student_id)
         if assessment_id is not None:
             query = query.where(fact_asmt_outcome.c.asmt_type_id == assessment_id)
 
@@ -113,8 +112,7 @@ def get_student_assessment(params, connector=None):
                     dim_asmt_type.c.asmt_period,
                     dim_asmt_type.c.asmt_version,
                     dim_asmt_type.c.asmt_grade],
-                       from_obj=[dim_asmt_type.join(fact_asmt_outcome)])\
-                       .where(fact_asmt_outcome.c.student_id == student_id)
+                    from_obj=[dim_asmt_type.join(fact_asmt_outcome)]).where(fact_asmt_outcome.c.student_id == student_id)
     result = connector.get_result(query)
     connector.close_connection()
     return result

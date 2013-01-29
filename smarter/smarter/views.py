@@ -178,6 +178,7 @@ def individual_student_report_bootstrap(request):
 def class_report(request):
     return {'class_name': 'English'}
 
+
 @view_config(route_name='import', renderer='json')
 def import_table(request):
     file_path = os.getcwd() + '/dim_school.csv'
@@ -186,6 +187,7 @@ def import_table(request):
     importer.import_from_file(file_path, connector)
     return {'imported': True}
 
+
 @view_config(route_name='create', renderer='json')
 def create_tables(request):
     schemaName = "edware"
@@ -193,6 +195,7 @@ def create_tables(request):
     createSchema(schemaName)
     metadata.create_all(connector.engine)
     return {'imported': True}
+
 
 def createSchema(schemaName):
     dbConnect = DBConnector()

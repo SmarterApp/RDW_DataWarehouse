@@ -4,36 +4,18 @@ import py1
 from queries import *
 from write_to_csv import *
 from entities import *
-import postgresql.driver.dbapi20 as dbapi
 from datetime import datetime
 from test.test_iterlen import len
 from genpeople import generate_people, STUDENT, TEACHER
+from dbconnection import get_db_conn
+from constants import *
 
-birds_file = "../datafiles/birds.txt"
-manmals_file = "../datafiles/manmals.txt"
-fish_file = "../datafiles/fish.txt"
 birds_list = []
 manmals_list = []
 fish_list = []
 
-school_levels_info = [
-                    ['Primary', ['EL SCH', 'ELEM', 'CTR', 'ELEMENTARY SCHOOL', 'CHILDHOOD CENTER', 'PRIMARY', 'ELEMENTARY', 'CETR, ELEM', 'SCH'], [[0, 5], [1, 5], [1, 6]]],
-                    ['Middle', ['MIDDLE SCHOOL', 'COMMUNITY MIDDLE', 'MIDDLE', 'JUNIOR HIGH', 'INTERMEDIATE SCHOOL', 'JR MIDDLE', 'MS'], [[6, 8], [5, 8], [7, 9]]],
-                    ['High', ['HIGH SCH', 'HIGH SCHOOL', 'HIGH', 'HS', 'SENIOR HIGH'], [[9, 12], [10, 12]]],
-                    ['Other', ['SCH', 'SCHOOL'], [[6, 12], [9, 12]]]
-                    ]
-
-dist_suffix = ['DISTRICT', 'SCHOOL DISTRICT', 'SCHOOLS', 'COUNTY SCHOOLS', 'PUBLIC SHCOOLS', 'SD']
-add_suffix = ["ROAD", "AVE", "STREET", "SOUTH AVE", "NORTH AVE", "WAY"]
-
-subjects = ["Math", "ELA"]
-min_class_size = 20
-min_section_size = 10
-gender_ratio = [0.5, 0.45, 0.55]
-
 # total count for state, districts, schools, students, teachers
 total_count = [0, 0, 0, 0, 0]
-
 
 def generate():
     '''
@@ -74,7 +56,7 @@ def get_statistic():
     '''
     Get statistical data from database, which will be used in generating the actual data
     '''
-    db = dbapi.connect(user='postgres', database='generate_data', port=5432, password='3423346', host="localhost")
+    db = get_db_conn()
     dist_num_in_state = []
     db_states = []
     dist_count = db.prepare(query0)
@@ -161,7 +143,6 @@ def generate_data(db_states):
         print("Number of districts ", len(school_num_in_dist), "    ", len(school_num_in_dist_made))
         print("Number of schools   ", sum(school_num_in_dist), "    ", sum(school_num_in_dist_made))
         print("Number of students  ", sum(stu_num_in_school), "    ", sum(stu_num_in_school_made))
-        # print("Max Number of stu   ", max(stu_num_in_school), "    ", max(stu_num_in_school_made))
 
         # create districts for each state
         created_dist_list = create_districts(created_state.name, school_num_in_dist_made, school_type_in_dist)
@@ -181,8 +162,8 @@ def generate_data(db_states):
                 create_classes_grades_sections(sch, state['code'])
 
         # if just need one state data
-        if(c == 0):
-            break
+        # if(c == 0):
+        #    break
 
     print("*************************************")
     print("generated number of states    ", total_count[0])
@@ -378,6 +359,7 @@ def create_classes_grades_sections(sch, state_code):
         # generate student list for a grade
         # grade_students = create_students(sch.school_name, end)
         grade_students = generate_people(STUDENT, end, random.choice(gender_ratio))
+        
         j += len(grade_students)
         total_count[3] += len(grade_students)
         if(grade == sch.high_grade - 1):
@@ -485,24 +467,6 @@ def list_to_chucks(list1, n):
         start = end
 
     return chucks_list
-
-'''
-def create_students(scho_name, count):
-    student_list = []
-    while(count > 0):
-        student = Student(scho_name)
-        count -= 1
-        student_list.append(student)
-    return student_list
-
-def create_teachers(scho_name, count):
-    student_list = []
-    while(count > 0):
-        student = Student(scho_name)
-        count -= 1
-        student_list.append(student)
-    return student_list
-'''
 
 
 def makeup(seqin, lengh):

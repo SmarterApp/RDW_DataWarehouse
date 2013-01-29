@@ -10,7 +10,7 @@ from database import connector
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
-    
+
     #TODO: Spike, pool_size, max_overflow, timeout
     connector.engine = engine_from_config(settings, 'sqlalchemy.', pool_size=20, max_overflow=10)
 

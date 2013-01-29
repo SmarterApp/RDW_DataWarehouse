@@ -69,9 +69,9 @@ def get_list_of_students_report(params, connector=None):
     dim_asmt_type = connector.get_table('dim_asmt_type')
 
     query = None
-    #TODO: find out where can we get enrollment grade
-    #TODO: missing dim_teacher from the DB
-    #I use label function as experimental.  to eliminate ambiguous column namez
+    # TODO: find out where can we get enrollment grade
+    # TODO: missing dim_teacher from the DB
+    # I use label function as experimental.  to eliminate ambiguous column namez
     if isinstance(dim_student, Table) and isinstance(dim_stdnt_tmprl_data, Table) and isinstance(dim_grade, Table) and isinstance(fact_asmt_outcome, Table) and isinstance(dim_asmt_type, Table):
         query = select([dim_student.c.first_name.label('first_name'),
                     func.substr(dim_student.c.middle_name, 1, 1).label('middle_name'),
@@ -86,16 +86,16 @@ def get_list_of_students_report(params, connector=None):
                     fact_asmt_outcome.c.asmt_claim_1_score.label('asmt_claim_1_score'),
                     fact_asmt_outcome.c.asmt_claim_2_score.label('asmt_claim_2_score'),
                     fact_asmt_outcome.c.asmt_claim_3_score.label('asmt_claim_3_score'),
-                    fact_asmt_outcome.c.asmt_claim_4_score.label('asmt_claim_4_score')], 
+                    fact_asmt_outcome.c.asmt_claim_4_score.label('asmt_claim_4_score')],
                        from_obj=[dim_student\
-                                  .join(fact_asmt_outcome,dim_student.c.student_id == fact_asmt_outcome.c.student_id)\
+                                  .join(fact_asmt_outcome, dim_student.c.student_id == fact_asmt_outcome.c.student_id)\
                                   .join(dim_asmt_type, dim_asmt_type.c.asmt_type_id == fact_asmt_outcome.c.asmt_type_id)\
                                   .join(dim_stdnt_tmprl_data, dim_stdnt_tmprl_data.c.student_id == dim_student.c.student_id)])\
                     .where(dim_stdnt_tmprl_data.c.school_id == schoolId).where(and_(dim_asmt_type.c.asmt_grade == asmtGrade))
-                    
+
         if asmtSubject is not None:
             query.wher(dim_grade.c.asmt_subject.in_(asmtSubject))
-       
+
 
         '''
         query = Query([dim_student.c.first_name.label('first_name'),

@@ -3,7 +3,7 @@ import requests
 import json
 from hamcrest import *
 
-SMARTER_URL = "http://0.0.0.0:6543"
+SMARTER_URL = "http://localhost"
 
 class Request(dict):
     def __init__(self):

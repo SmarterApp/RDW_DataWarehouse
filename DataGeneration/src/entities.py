@@ -118,6 +118,27 @@ class Class:
         '''
         return ("Class:[title: %s, sub_name: %s, section_stu_map: %s, section_tea_map: %s]" % (self.title, self.sub_name, self.section_stu_map, self.section_tea_map))
 
+class Assessment:
+    '''
+    Assessment Object
+    '''
+    def __init__(self, id, subject, type, period, version, grade):
+        '''
+        Constructor
+        '''
+        self.id = id
+        self.subject = subject
+        self.type = type
+        self.period = period
+        self.version = version
+        self.grade = grade
+
+    def __str__(self):
+        '''
+        toString Method
+        '''
+
+        return ("Assessment:[id: %s, subject: %s, type: %s, period: %s, version: %s, grade: %s]" % (self.id, self.subject, self.type, self.period, self.version, self.grade))
 
 def generate_ramdom_name():
     # temporary

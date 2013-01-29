@@ -1,7 +1,7 @@
 import csv
 
 path = "../datafiles/"
-file_names = [path + 'states.csv', path + 'districts.csv', path + 'schools.csv', path + 'stu_sections.csv', path + 'tea_sections.csv', path + 'parents.csv']
+file_names = [path + 'states.csv', path + 'districts.csv', path + 'schools.csv', path + 'stu_sections.csv', path + 'tea_sections.csv', path + 'parents.csv', path + 'assessments.csv']
 
 
 def create_states_csv(state):
@@ -65,6 +65,14 @@ def create_parent_csv(parent_list):
         for par in parent_list:
             parentwriter.writerow([par.pid, par.firstname, par.middlename, par.lastname])
 
+def create_assessment_csv(assessment_list):
+    '''
+    take a list of assessments and write them to a csv file
+    '''
+    with open(file_names[6], 'a', newline='') as csvfile:
+        assessment_writer = csv.writer(csvfile, delimiter=',', quoting=csv.QUOTE_MINIMAL)
+        for asmt in assessment_list:
+            assessment_writer.writerow([asmt.id, asmt.subject, asmt.type, asmt.period, asmt.version, asmt.grade])
 
 def clear_files():
     for f in file_names:

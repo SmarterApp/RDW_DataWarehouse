@@ -8,6 +8,7 @@ import postgresql.driver.dbapi20 as dbapi
 from datetime import datetime
 from test.test_iterlen import len
 from genpeople import generate_people, STUDENT, TEACHER
+from gen_assessments import generate_assessments
 
 birds_file = "../datafiles/birds.txt"
 manmals_file = "../datafiles/manmals.txt"
@@ -179,6 +180,8 @@ def generate_data(db_states):
             # create classes, grades, sections, teachers and students for each school
             for sch in school_list:
                 create_classes_grades_sections(sch, state['code'])
+
+        generate_assessments()
 
         # if just need one state data
         if(c == 0):

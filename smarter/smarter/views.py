@@ -5,14 +5,14 @@ from smarter.services.compare_populations import generateComparePopulationsJSON
 from sqlalchemy.exc import DBAPIError
 from smarter.controllers import compare_population_criteria
 from smarter.controllers import get_compare_population
-from smarter.reports.student_report import get_student_report
 import json
 import urllib.request
 from smarter.utils.indiv_student_helper import IndivStudentHelper
-from database import importer, connector
+from database import importer
 import os
-from database.connector import DBConnector
+from database.connector import DBConnector, IDbUtil
 from edschema.ed_metadata import generate_ed_metadata
+from zope import component
 
 
 @view_config(route_name='comparing_populations', renderer='templates/comparing_populations.pt')
@@ -193,7 +193,9 @@ def create_tables(request):
     schemaName = "edware"
     metadata = generate_ed_metadata(schemaName)
     createSchema(schemaName)
-    metadata.create_all(connector.engine)
+    dbUtil = component.queryUtility(IDbUtil)
+    engine = dbUtil.get_engine()
+    metadata.create_all(engine)
     return {'imported': True}
 
 

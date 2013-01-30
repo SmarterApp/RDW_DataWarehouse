@@ -20,8 +20,8 @@ class TestReport():
                                                                   },
                                                "school_sizes": {"type": "integer", "name": "school_size_report"},
                                                "student_lists": {"name": "student_list_report"}
-                                              }
-                                            )
+                                               }
+                   )
     def generate(self, params):
         return [{"student_id": 1111, "first_name": 'William', "middle_name": 'Henry', "last_name": 'Gates', "asmt_subject":
                  'ELA', "asmt_period": '2012 MOY', "asmt_score": 198,

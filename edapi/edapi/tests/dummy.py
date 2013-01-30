@@ -38,6 +38,9 @@ class DummyValidator:
     def fix_types(self, registry, report_name, params):
         return params
 
+    def convert_array_query_params(self, registry, report_name, params):
+        return params
+
 
 class Dummy:
     def some_func(self, params):
@@ -45,3 +48,10 @@ class Dummy:
 
     def some_func_that_returns(self, params):
         return {"report": "123"}
+
+
+class DummyGetParams:
+    _items = []
+
+    def items(self):
+        return self._items

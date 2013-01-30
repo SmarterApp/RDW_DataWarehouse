@@ -1,6 +1,7 @@
 import os
 
 from setuptools import setup, find_packages
+import shutil
 
 here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.txt')).read()
@@ -41,3 +42,9 @@ setup(name='smarter',
       initialize_smarter_db = smarter.scripts.initializedb:main
       """,
       )
+
+#Copying the assets folder during setup to be inside the application folder
+application_asset_folder = os.getcwd() + '/assets'
+#if os.path.lexists(application_asset_folder):
+#    shutil.rmtree(application_asset_folder)
+#shutil.copytree('../assets', application_asset_folder)

@@ -1,0 +1,51 @@
+@the-border: 1px;
+@base-color: #111;
+@red: #842210;
+@white: #fff;
+@gray: #333;
+
+.rounded-corners (@radius: 5px) {
+  -webkit-border-radius: @radius;
+  -moz-border-radius: @radius;
+  -ms-border-radius: @radius;
+  -o-border-radius: @radius;
+  border-radius: @radius;
+}
+
+body {
+	font-family: helvetica, arial, sans-serif;
+	margin: 0 auto;
+	width: 98%;
+}
+
+h3 {
+  margin-top: 20px;
+  border-bottom: solid 1px #ccc;   
+ }
+#header {
+  color: (@base-color * 3);
+  border-left: @the-border;
+  border-right: (@the-border * 2);
+  .rounded-corners;
+
+  h1 {
+    font-size: 26px;
+    font-weight: bold;
+  }
+}
+#footer {
+  color: @white;
+  background-color: desaturate(@gray, 10%);
+  margin: 20px 0 10px 0;
+  padding: 5px;
+  font-size: 11px;
+  .rounded-corners(5px);
+}
+
+/* Overlay */
+#simplemodal-overlay { background-color:#000; }
+
+/* Container */
+#simplemodal-container {height:360px; width:600px; color:#bbb; background-color:#333; border:4px solid #444; padding:12px;}
+
+#simplemodal-container a.modalCloseImg {background:url(../images/x.png) no-repeat; width:25px; height:29px; display:inline; z-index:3200; position:absolute; top:-15px; right:-16px; cursor:pointer;}

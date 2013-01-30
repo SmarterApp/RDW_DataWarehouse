@@ -26,15 +26,16 @@ def generate_assmts_for_students(total, grade, state):
     year = date.today().year
     periods = ['BOY', 'MOY', 'EOY']
     subjects = ['Math', 'ELA']
-    years = [year, year - 1]
+    years = [str(year), str(year - 1)]
 
     scores = {}
 
     for year in years:
         for subject in subjects:
             for period in periods:
-                score = generate_assmt_scores(state, subject, year, period, grade, total)
                 string = "%s_%s_%s" % (year, subject, period)
+                score = generate_assmt_scores(state, subject, year, period, grade, total)
+                print('score for string: %s, %s' % (string, score))
                 scores[string] = score
 
     return scores
@@ -141,6 +142,6 @@ def perc_to_count(perc, total):
 
 if __name__ == '__main__':
     # generate_claims(1000, 'Math', '4')
-    #generate_assmt_scores('Delaware', 'ELA', '2011', '', '8', 1000)
+    generate_assmt_scores('Delaware', 'ELA', '2011', '', '8', 1000)
     # generate_claims(500, 'Math', '4')
-    generate_assmts_for_students(4, 4, 'GA')
+    print(generate_assmts_for_students(4, '4', 'Delaware'))

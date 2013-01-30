@@ -69,6 +69,7 @@ def generate_report(registry, report_name, params, validator=None):
     if not validator:
         validator = Validator()
 
+    params = validator.convert_array_query_params(registry, report_name, params)
     params = validator.fix_types(registry, report_name, params)
     validated = validator.validate_params_schema(registry, report_name, params)
 
@@ -161,21 +162,33 @@ class Validator:
             if (config is None):
                 continue
 
-            # check if config has validation
-            validatedText = config
-            if (validatedText is not None):
-                # check type for string items
-                if isinstance(value, str):
-                    #validatedTextJson = json.loads(validatedText)
-                    valueType = validatedText.get('type')
-                    if (valueType is not None and valueType.lower() != VALID_TYPES.STRING and valueType in VALID_TYPES.reverse_mapping):
-                        value = Validator.convert(value, VALID_TYPES.reverse_mapping[valueType])
-
-            result[key] = value
+            # if single value, convert.
+            if (config.get('type') != VALID_TYPES.ARRAY):
+                result[key] = Validator.fix_type_one_val(value, config)
+            # if array, find sub-type, then convert each.
+            else:
+                config = config.get('items')
+                if (config is None):
+                    continue
+                result[key] = []
+                for list_val in value:
+                    result[key].append(Validator.fix_type_one_val(list_val, config))
 
         return result
 
-    """
+    # convert one value from string to defined type
+    @staticmethod
+    def fix_type_one_val(value, config):
+        # check type for string items
+        if not isinstance(value, str):
+            return value
+
+        definedType = config.get('type')
+        if (definedType is not None and definedType.lower() != VALID_TYPES.STRING and definedType in VALID_TYPES.reverse_mapping):
+            return Validator.convert(value, VALID_TYPES.reverse_mapping[definedType])
+
+        return value
+
     # convert duplicate query params to arrays
     @staticmethod
     def convert_array_query_params(registry, report_name, params):
@@ -183,23 +196,23 @@ class Validator:
         report = get_report_dict_value(registry, report_name, ReportNotFoundError)
         params_config = get_report_dict_value(report, PARAMS_REFERENCE_FIELD_NAME, InvalidParameterError)
 
-        # build dictionary from param list
+        # iterate through params
         for (key, value) in params.items():
+
             config = params_config.get(key)
             if (config is None):
                 continue
 
-            # make the value either a single value or a list
+            # based on config, make the value either a single value or a list
             valueType = config.get('type')
-            if (valueType is not None and valueType.lower() != VALID_TYPES.ARRAY):
-                if (key not in result and not isinstance(value, list)):
+            if (valueType is not None and valueType.lower() == VALID_TYPES.ARRAY and not isinstance(value, list)):
+                if (key not in result):
                     result[key] = []
                 result[key].append(value)
             else:
                 result[key] = value
 
         return result
-    """
 
     # attempts to convert a string to bool, otherwise raising an error
     @staticmethod

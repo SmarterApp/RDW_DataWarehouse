@@ -10,12 +10,22 @@ import os
 import time
 
 #import postgresql.driver.dbapi20 as dbapi
+import postgresql.driver.dbapi20 as dbdriver
 
-import psycopg2 as dbdriver
+from subprocess import Popen, PIPE
 
 import create_star
 
 import nose
+
+#
+# To set these for another environment, use environment variables:
+#
+#    db_user (root DB user that has permission to create and drop databases
+#    db_password + PGPASSWORD (root db user's password, one for internal use and one for PG utilities)
+#    db_server
+#    db_port
+#
 
 SERVER          = "localhost"
 PORT            = "5432"
@@ -69,13 +79,34 @@ class Test(unittest.TestCase):
         return port
     
     def setUp(self):
-        pass        
-
-    def tearDown(self):
-        pass
-
-    def testCreateDbOnly(self):
         self.generateRandomDBName()
+
+#    def tearDown(self):
+#        rootDb = dbdriver.connect(user     = self.getUserName(), 
+#                                  password = self.getPassword(),
+#                                  database = 'postgres', 
+#                                  port     = self.getPort())
+#       
+#        cursor = rootDb.cursor()
+#        
+#        rootDb.set_isolation_level(dbdriver.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
+#        cursor.execute("drop database {0}".format(self.randomDBName))
+#            
+#        rootDb.close()
+        
+    def tearDown(self):
+        # NOTE set environment variable PGPASSWORD
+        time.sleep(1)
+        
+        externalProc = Popen(["psql", "--host={0}".format(self.getServer()), "--port={0}".format(self.getPort()), 
+              "--username={0}".format(self.getUserName()), "postgres", "--single-line", "--no-password"], stdin=PIPE)
+        
+        externalProc.stdin.write(bytes("drop database {0}".format(self.randomDBName), 'UTF-8'))
+        externalProc.stdin.close()
+        outStr, errStr = externalProc.communicate()
+        # print("out = " + outStr + " error = " + errStr)
+        
+    def testCreateDbOnly(self):
         (rootDb, dummy) = create_star.getDBConnectionStrings(userName = self.getUserName(), password = self.getPassword(), 
                                                               dbServer = self.getServer() + ":" + self.getPort(), 
                                                               databaseName = self.randomDBName)
@@ -86,26 +117,13 @@ class Test(unittest.TestCase):
                               database = self.randomDBName, port = self.getPort())
         
         # just check the we can do something on the connection
-        self.assertIsNotNone(db.server_version, "Can't get DB version - can't connect?")
-        
+        self.assertIsNotNone(db.version, "Can't get DB version - can't connect?")
+                
         db.close()
-        
-        rootDb = dbdriver.connect(user     = self.getUserName(), 
-                                  password = self.getPassword(),
-                                  database = 'postgres', 
-                                  port     = self.getPort())
-       
-        cursor = rootDb.cursor()
-        
-        rootDb.set_isolation_level(dbdriver.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
-        cursor.execute("drop database {0}".format(self.randomDBName))
-            
-        rootDb.close()
         
         return
     
     def testDBSchemaDimAndFact(self):
-        self.generateRandomDBName()
         (rootDb, testDb) = create_star.getDBConnectionStrings(userName = self.getUserName(), password = self.getPassword(), 
                                                               dbServer = self.getServer() + ":" + self.getPort(), 
                                                               databaseName = self.randomDBName)
@@ -116,45 +134,27 @@ class Test(unittest.TestCase):
         create_star.createSchema(  dbConnectionString     = testDb, schemaName   = SCHEMA)
         create_star.createTables(  dbConnectionString     = testDb, schemaName   = SCHEMA)
     
-        db = dbdriver.connect(user = self.getUserName(), password = self.getPassword(),
+        db2 = dbdriver.connect(user = self.getUserName(), password = self.getPassword(),
                               database = self.randomDBName, port = self.getPort())
         
-        cursor = db.cursor()
-        
+        cursor = db2.cursor()
+
         cursor.execute("INSERT INTO {0}.dim_grade (grade_id, grade_desc) VALUES (%s, %s)".format(SCHEMA), ("1", "Grade 1"))
         
-        db.commit()
-        
+        db2.commit()
+
         # Select a value
         cursor.execute("SELECT * FROM {0}.dim_grade".format(SCHEMA))
         result = cursor.fetchall()
         
         self.assertEqual(len(result), 1, "Can't select grades from dim_grade")
-                
+
         cursor.close()
-        db.close()
+        db2.close()
         
-        time.sleep(5)
-        
-        while not db.closed:
-            time.sleep(1)
-        
-        rootDb = dbdriver.connect(user     = self.getUserName(), 
-                                  password = self.getPassword(),
-                                  database = 'postgres', 
-                                  port     = self.getPort())
-       
-        rootCursor = rootDb.cursor()
-        
-        rootDb.set_isolation_level(dbdriver.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
-        rootCursor.execute("drop database {0}".format(self.randomDBName))
-            
-        rootDb.close()
-        
+        time.sleep(1)
+
         return
-    
-    def testDBEmpty(self):
-        self.assertTrue(True)
 
 if __name__ == "__main__":
     nose.main()

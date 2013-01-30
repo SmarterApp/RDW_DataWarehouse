@@ -1,27 +1,30 @@
 from pyramid.config import Configurator
 from sqlalchemy import engine_from_config
-
-from .models import (DBSession, Base,)
-
 from pyramid.path import caller_package, caller_module, package_of
 import sys
 import edapi
 import os
+from database import connector
 
 
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
-    engine = engine_from_config(settings, 'sqlalchemy.')
-    DBSession.configure(bind=engine)
-    Base.metadata.bind = engine
+
+    #TODO: Spike, pool_size, max_overflow, timeout
+    connector.engine = engine_from_config(settings, 'sqlalchemy.', pool_size=20, max_overflow=10)
+
     config = Configurator(settings=settings)
 
     # include add routes from edapi. Calls includeme
     config.include(edapi)
 
-    if not os.path.lexists(os.getcwd() + '/assets'):
-        os.symlink('../assets', os.getcwd() + '/assets')
+    # TODO symbolic link should be done in development mode only
+    try:
+        if not os.path.lexists(os.getcwd() + '/assets'):
+            os.symlink('../assets', os.getcwd() + '/assets')
+    except PermissionError:
+        pass
 
     config.add_static_view('static', 'static', cache_max_age=3600)
     config.add_static_view('assets', '../assets', cache_max_age=3600)
@@ -49,6 +52,8 @@ def main(global_config, **settings):
     #routing for class report
     config.add_route('class_report', '/class_report')
     config.add_route('student_report', '/student_report')
+    config.add_route('import', '/import')
+    config.add_route('create', '/create')
 
     # scans smarter
     config.scan()

@@ -48,8 +48,7 @@ def generateComparePopulationsReportAlchemy(parameters):
             # convert string input to dictionary
             parameters = eval(parameters.strip())
         except Exception as err:
-                raise Exception("The input value is not a valid dictionary : ",
- str(err))
+            raise Exception("The input value is not a valid dictionary : ", str(err))
     if not isinstance(parameters, dict):
         raise Exception("Input to Compare Populations report should be a dictionary")
     if not set(parameters.keys()).issubset(_supported_keys):

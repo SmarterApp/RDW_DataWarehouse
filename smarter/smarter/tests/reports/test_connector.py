@@ -3,16 +3,16 @@ Created on Jan 16, 2013
 
 @author: tosako
 '''
-from smarter.reports.interfaces import Connectable
+from database.interfaces import ConnectionBase
 
 
-class TestConnector(Connectable):
-    def open_session(self):
+class TestConnector(ConnectionBase):
+    def open_connection(self):
         """
         no session for test
         """
 
-    def close_session(self):
+    def close_connection(self):
         """
         no session for test
         """

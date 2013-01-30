@@ -20,8 +20,7 @@ def make_data(values):
                 'state_group_code',
                 'state_name',
                 'state_code',
-                'performance_level'
-                    ]
+                'performance_level']
     data = []
     for value in values:
         data.append(dict(zip(key_list, value)))

@@ -77,7 +77,7 @@ function run_unit_tests {
 
 function get_opts {
     if ( ! getopts ":m:d:ufh" opt); then
-	echo "Usage: `basename $0` options (-n) (-u) (-f) (-m main_package) (-d dependencies) -h for help";
+	echo "Usage: `basename $0` options (-n) (-u) (-f) (-m main_package) (-d dependencies) (-t test) -h for help";
 	exit $E_OPTERROR;
     fi
  
@@ -85,7 +85,7 @@ function get_opts {
     MODE='UNIT'
     RUN_UNIT_TEST=true
 
-    while getopts ":m:d:ufhn" opt; do
+    while getopts ":m:d:t:ufhn" opt; do
         case $opt in 
             u)
                echo "Unit test mode"
@@ -108,6 +108,8 @@ function get_opts {
             d) 
                INSTALL_PKGS=("${INSTALL_PKGS[@]}" "$OPTARG")
                ;;
+	    t)
+	       TESTS=("${TESTS[@]}" "$OPTARG")
             ?)
                echo "Invalid params"
                ;;
@@ -134,8 +136,11 @@ function setup_functional_test_dependencies {
 function run_functional_tests {
     echo "Run functional tests"
 
-    cd "$WORKSPACE/functional_tests/edapi"
-    behave
+    for var in "${TESTS[@]}"
+    do
+        cd "$WORKSPACE/functional_tests/$var"
+        behave --tags=-wip
+    done
 
     echo "Finish running functional tests"
 }	

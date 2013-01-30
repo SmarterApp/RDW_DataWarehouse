@@ -1,9 +1,9 @@
 define [
   'jquery'
   'jqGrid'
+  'twitterBS'
   'gridLocaleEn'
-], ($, jqGrid, gridLocaleEn) ->
-  console.log 'app name is edware'
+], ($, jqGrid, $1) ->
   
   $(document).ready ->
   "use strict"
@@ -216,3 +216,6 @@ define [
     sortorder: "desc"
     caption: "Just simple local grid"
     height: "100%"
+
+  $1("#bootstrapButton").click ->
+    $1('#bootstrapModal').modal()

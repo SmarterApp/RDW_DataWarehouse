@@ -159,7 +159,7 @@ function main {
     setup_virtualenv $@
     if [ ${MODE:=""} == "UNIT" ]; then
         setup_unit_test_dependencies
-        if [ $RUN_UNIT_TEST ]; then
+        if [ $RUN_UNIT_TEST -eq true ]; then
             run_unit_tests $MAIN_PKG
         fi
         check_pep8 $MAIN_PKG

@@ -79,6 +79,7 @@ function get_opts {
  
     # By default, make the mode to be unit
     MODE='UNIT'
+    RUN_UNIT_TEST=true
 
     while getopts ":m:d:ufhn" opt; do
         case $opt in 
@@ -94,7 +95,7 @@ function get_opts {
                show_help
                ;;
             n)
-               NO_UNIT_TEST=true
+               RUN_UNIT_TEST=false
                ;; 
             m)  
                MAIN_PKG=$OPTARG
@@ -158,7 +159,7 @@ function main {
     setup_virtualenv $@
     if [ ${MODE:=""} == "UNIT" ]; then
         setup_unit_test_dependencies
-        if [ !$NO_UNIT_TEST ]; then
+        if [ $RUN_UNIT_TEST ]; then
             run_unit_tests $MAIN_PKG
         fi
         check_pep8 $MAIN_PKG

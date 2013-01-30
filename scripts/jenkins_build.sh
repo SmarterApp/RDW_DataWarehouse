@@ -69,14 +69,14 @@ function run_unit_tests {
 
 function get_opts {
     if ( ! getopts ":m:d:ufh" opt); then
-	echo "Usage: `basename $0` options (-m) (-f) (-m main_package) (-d dependencies) -h for help";
+	echo "Usage: `basename $0` options (-n) (-m) (-f) (-m main_package) (-d dependencies) -h for help";
 	exit $E_OPTERROR;
     fi
  
     # By default, make the mode to be unit
     MODE='UNIT'
 
-    while getopts ":m:d:ufh" opt; do
+    while getopts ":m:d:ufhn" opt; do
         case $opt in 
             u)
                echo "Unit test mode"
@@ -89,6 +89,9 @@ function get_opts {
             h)
                show_help
                ;;
+            n)
+               NO_UNIT_TEST=true
+               ;; 
             m)  
                MAIN_PKG=$OPTARG
                INSTALL_PKGS=("${INSTALL_PKGS[@]}" "$MAIN_PKG")
@@ -151,7 +154,9 @@ function main {
     setup_virtualenv $@
     if [ ${MODE:=""} == "UNIT" ]; then
         setup_unit_test_dependencies
-        run_unit_tests $MAIN_PKG
+        if [ !$NO_UNIT_TEST ]; then
+            run_unit_tests $MAIN_PKG
+        fi
         check_pep8 $MAIN_PKG
     elif [ ${MODE:=""} == "FUNC" ]; then
         create_sym_link_for_apache

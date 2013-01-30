@@ -11,11 +11,7 @@ from genpeople import generate_people, STUDENT, TEACHER
 from gen_assessments import generate_assessment_types
 from constants import *
 
-STATES = 'states.csv'
-DISTRICTS = 'districts.csv'
-SCHOOLS = 'schools.csv'
-PARENTS = 'parents.csv'
-ASSESSMENT_TYPES = 'assessment_types.csv'
+
 
 birds_list = []
 manmals_list = []

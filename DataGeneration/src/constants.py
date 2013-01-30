@@ -41,3 +41,15 @@ ASSMT_TYPES = {'Math':{
                              }
                         }
                 }
+
+
+# Output files for use in write_to_csv.py and generate data.py
+STATES = '../datafiles/states.csv'
+DISTRICTS = '../datafiles/districts.csv'
+SCHOOLS = '../datafiles/schools.csv'
+PARENTS = '../datafiles/parents.csv'
+ASSESSMENT_TYPES = '../datafiles/assessment_types.csv'
+STUDENT_SECTIONS = '../datafiles/stu_sections.csv'
+TEACHER_SECTIONS = '../datafiles/tea_sections.csv'
+
+ENT_LIST = [STATES, DISTRICTS, SCHOOLS, PARENTS, ASSESSMENT_TYPES, STUDENT_SECTIONS, TEACHER_SECTIONS]

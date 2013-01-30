@@ -1,7 +1,9 @@
 from setuptools import setup, find_packages
 
 requires = [
-    'SQLAlchemy', ]
+    'SQLAlchemy',
+    'zope.component >= 4.0.2',
+    'zope.interface >= 4.0.3']
 
 setup(name='edschema',
       version='0.0',

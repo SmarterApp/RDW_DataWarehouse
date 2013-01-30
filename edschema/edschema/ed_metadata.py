@@ -55,7 +55,7 @@ class CLIError(Exception):
         return self.msg
 
 
-def getEdMetaData(scheme_name=None):
+def generate_ed_metadata(scheme_name=None):
 
     metadata = MetaData(schema=scheme_name)
 

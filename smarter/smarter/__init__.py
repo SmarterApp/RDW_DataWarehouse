@@ -4,7 +4,10 @@ from pyramid.path import caller_package, caller_module, package_of
 import sys
 import edapi
 import os
-from database import connector
+from edschema.ed_metadata import generate_ed_metadata
+import pyramid
+from zope import component
+from database.connector import DbUtil, IDbUtil
 
 
 def main(global_config, **settings):
@@ -12,9 +15,12 @@ def main(global_config, **settings):
     """
 
     #TODO: Spike, pool_size, max_overflow, timeout
-    connector.engine = engine_from_config(settings, 'sqlalchemy.', pool_size=20, max_overflow=10)
 
     config = Configurator(settings=settings)
+
+    # zope registration
+    dbUtil = DbUtil("sqlalchemy.", settings)
+    component.provideUtility(dbUtil, IDbUtil)
 
     # include add routes from edapi. Calls includeme
     config.include(edapi)

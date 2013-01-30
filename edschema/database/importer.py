@@ -6,7 +6,6 @@ Created on Jan 28, 2013
 import datetime
 import csv
 import os
-from collections import Counter
 from sqlalchemy.sql.expression import func, select
 
 

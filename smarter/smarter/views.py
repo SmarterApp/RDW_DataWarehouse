@@ -12,7 +12,7 @@ from smarter.utils.indiv_student_helper import IndivStudentHelper
 from database import importer, connector
 import os
 from database.connector import DBConnector
-from edschema.ed_metadata import getEdMetaData
+from edschema.ed_metadata import generate_ed_metadata
 
 
 @view_config(route_name='comparing_populations', renderer='templates/comparing_populations.pt')
@@ -191,7 +191,7 @@ def import_table(request):
 @view_config(route_name='create', renderer='json')
 def create_tables(request):
     schemaName = "edware"
-    metadata = getEdMetaData(schemaName)
+    metadata = generate_ed_metadata(schemaName)
     createSchema(schemaName)
     metadata.create_all(connector.engine)
     return {'imported': True}

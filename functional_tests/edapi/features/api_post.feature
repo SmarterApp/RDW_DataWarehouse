@@ -3,7 +3,7 @@ Feature: POST request for Individual Student Report Service
 Scenario:  POST request with invalid content-type
 	Given I set request header of "content-type" with value "text/html"
 	Given I send a "POST" request to "/data/individual_student_report"
-	Then the response code is "401"
+	Then the response code is "404"
 
 Scenario:  POST request with Valid content-type but no payload information
 	Given I set request header of "content-type" with value "application/json"

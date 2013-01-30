@@ -49,6 +49,8 @@ class Parent(Person):
     def __str__(self):
         return ("%s %s %s" % (self.firstname, self.middlename, self.lastname))
 
+    def getRow(self):
+        return [self.parent_id, self.firstname, self.middlename, self.lastname]
 
 class Teacher(Person):
     '''

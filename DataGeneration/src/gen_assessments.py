@@ -15,7 +15,7 @@ ELA_SUBJECTS = ['Comprehension', 'Composition', 'Grammar']
 MATH_SUBJECTS = ['Geometry', 'Algebra', 'Statistics']
 
 
-def generate_assessments():
+def generate_assessment_types():
     '''
     Entry point for generating assessments.
     total       : Total number of assessments to generate
@@ -26,7 +26,7 @@ def generate_assessments():
 
     for grade in GRADES:
         for type in TYPES:
-            for per in PERIODS:
+            for period in PERIODS:
                 id = generate_id()
                 subject = generate_subject(type)
                 version = generate_version()
@@ -42,40 +42,17 @@ def generate_id():
 
 def generate_subject(type):
     if type == 'ELA':
-        ela_subjects = ['Comprehension', 'Composition', 'Grammar']
-        rand = randint(0,2)
-        return ela_subjects[rand]
+        rand = randint(0,len(ELA_SUBJECTS)-1)
+        return ELA_SUBJECTS[rand]
     else:
-        math_subjects =
-        rand = randint(0,2)
-        return math_subjects[rand]
-
-def generate_type():
-    rand = randint(0,1)
-    if rand:
-        return('ELA')
-    else:
-        return('MATH')
-
-def generate_period():
-    periods = ['BOY', 'MOY', 'EOY']
-    rand_period_ind = randint(0,2)
-    period = periods[rand_period_ind]
-
-    years = ['2010', '2011', '2012']
-    rand_year_ind = randint(0,2)
-    year = years[rand_year_ind]
-
-    return period + ' ' + year
+        rand = randint(0,len(MATH_SUBJECTS)-1)
+        return MATH_SUBJECTS[rand]
 
 def generate_version():
     return 'V1'
 
-def generate_grade():
-    return randint(0,13)
-
 if __name__ == '__main__':
-    assessments = generate_assessments(20)
+    assessments = generate_assessment_types()
 
     for asmt in assessments:
         print(str(asmt))

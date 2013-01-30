@@ -2,6 +2,8 @@ import random
 import string
 
 
+
+
 class State:
     '''
     state object
@@ -21,6 +23,8 @@ class State:
         '''
         return ("State:[name: %s, code:%s, num_of_dist: %s]" % (self.name, self.code, self.num_of_dist))
 
+    def getRow(self):
+        return [self.name, self.code]
 
 class District:
     '''
@@ -45,6 +49,9 @@ class District:
         String method
         '''
         return ("District:[state_name: %s, num_of_schools: %s, dist_name: %s, address_1: %s, school_type_in_dist: %s]" % (self.state_name, self.num_of_schools, self.dist_name, self.address_1, self.school_type_in_dist))
+
+    def getRow(self):
+        return [self.state_name, self.dist_name, self.address_1]
 
 
 class School:
@@ -73,6 +80,9 @@ class School:
         '''
         return ("School:[dist_name: %s, num_of_student: %s, num_of_teacher: %s, school_name: %s, address1: %s, school_type: %s, low_grade: %s, high_grade: %s]" % (self.dist_name, self.num_of_student, self.num_of_teacher, self.school_name, self.address1, self.school_type, self.low_grade, self.high_grade))
 
+    def getRow(self):
+        return [self.dist_name, self.school_name, self.address1, self.school_type]
+
 
 class Student:
     '''
@@ -95,6 +105,8 @@ class Student:
         '''
         return ("School:[school_name: %s, last_name: %s, first_name: %s]" % (self.school_name, self.last_name, self.first_name))
 
+    def getRow(self):
+        return
 
 class Class:
     '''
@@ -118,7 +130,7 @@ class Class:
         '''
         return ("Class:[title: %s, sub_name: %s, section_stu_map: %s, section_tea_map: %s]" % (self.title, self.sub_name, self.section_stu_map, self.section_tea_map))
 
-class Assessment:
+class AssessmentType:
     '''
     Assessment Object
     '''
@@ -139,6 +151,9 @@ class Assessment:
         '''
 
         return ("Assessment:[id: %s, subject: %s, type: %s, period: %s, version: %s, grade: %s]" % (self.id, self.subject, self.type, self.period, self.version, self.grade))
+
+    def getRow(self):
+        return [self.id, self.subject, self.type, self.period, self.version, self.grade]
 
 class Score:
     '''

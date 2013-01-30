@@ -8,8 +8,14 @@ import postgresql.driver.dbapi20 as dbapi
 from datetime import datetime
 from test.test_iterlen import len
 from genpeople import generate_people, STUDENT, TEACHER
-from gen_assessments import generate_assessments
+from gen_assessments import generate_assessment_types
 from constants import *
+
+STATES = 'states.csv'
+DISTRICTS = 'districts.csv'
+SCHOOLS = 'schools.csv'
+PARENTS = 'parents.csv'
+ASSESSMENT_TYPES = 'assessment_types.csv'
 
 birds_list = []
 manmals_list = []
@@ -120,7 +126,7 @@ def generate_data(db_states):
         # create state
         created_state = State(state['name'], state['code'], state['dist_num_in_state'])
         total_count[0] += 1
-        create_states_csv(created_state)
+        create_csv(created_state, STATES)
 
         # generate school distribution in districts
         school_num_in_dist = state['school_num_in_dist']
@@ -150,32 +156,34 @@ def generate_data(db_states):
         # create districts for each state
         created_dist_list = create_districts(created_state.name, school_num_in_dist_made, school_type_in_dist)
         total_count[1] += len(created_dist_list)
-        create_districts_csv(created_dist_list)
+        create_csv(created_dist_list, DISTRICTS)
         shift = 0
 
         for d in created_dist_list:
             # create school for each district
             school_list = create_schools(d.dist_name, stu_num_in_school_made, tea_num_in_school_made, shift, d.num_of_schools, d.school_type_in_dist)
             total_count[2] += len(school_list)
-            create_schools_csv(school_list)
+            create_csv(school_list, SCHOOLS)
             shift += d.num_of_schools
 
             # create classes, grades, sections, teachers and students for each school
             for sch in school_list:
                 create_classes_grades_sections(sch, state['code'])
 
-        generate_assessments()
+        assessment_types = generate_assessment_types()
+        create_csv(assessment_types, ASSESSMENT_TYPES)
 
         # if just need one state data
         if(c == 0):
             break
 
     print("*************************************")
-    print("generated number of states    ", total_count[0])
-    print("generated number of districts ", total_count[1])
-    print("generated number of schools   ", total_count[2])
-    print("generated number of students  ", total_count[3])
-    print("generated number of teachers  ", total_count[4])
+    print("generated number of states           ", total_count[0])
+    print("generated number of districts        ", total_count[1])
+    print("generated number of schools          ", total_count[2])
+    print("generated number of students         ", total_count[3])
+    print("generated number of teachers         ", total_count[4])
+    print("generated number of assessment types ", total_count[4])
 
 
 def make_teacher_num(stu_num_in_school_made, stutea_ratio_in_school_made):

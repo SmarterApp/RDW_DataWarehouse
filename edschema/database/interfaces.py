@@ -6,10 +6,11 @@ Created on Jan 16, 2013
 
 import abc
 
+
 class ConnectionBase:
-    
+
     __metaclass__ = abc.ABCMeta
-    
+
     @abc.abstractmethod
     def get_result(self, sql_query):
         """
@@ -21,7 +22,7 @@ class ConnectionBase:
         """
         return table metadata
         """
-        
+
     @abc.abstractmethod
     def open_connection(self):
         """

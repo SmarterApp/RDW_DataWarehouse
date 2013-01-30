@@ -1,16 +1,45 @@
 import py1
-import math, random
+import math
+import random
 from entities import Score
 from dbconnection import get_db_conn
 from constants import *
+from datetime import date
+
 
 '''
 Assessment score generator
 '''
+
+
+def generate_assmts_for_students(total, grade, state):
+    '''
+    Generates a set of scores for a given grade and number.
+    method will return a dictionary of 12 items. Keys will be mapped to lists
+    of score objects. Scores include scores for 2 years, 2 subjecs and 3 periods. (2x2x3) = 12
+    total -- integer number of students
+    grade -- integer for the grade to generate scores
+    state -- current state
+    '''
+    year = date.today().year
+    periods = ['BOY', 'MOY', 'EOY']
+    subjects = ['Math', 'ELA']
+    years = [year, year - 1]
+
+    scores = {}
+
+    for year in years:
+        for subject in subjects:
+            for period in periods:
+                score = generate_assmt_scores(state, subject, year, period, grade, total)
+                string = "%s_%s_%s" % (year, subject, period)
+                scores[string] = score
+
+
 def generate_assmt_scores(state, asmt_type, year, period, grade, total):
     '''
     Main function to generate list of scores for the combination of input parameters
-    '''    
+    '''
     # validate parameters
     if(total <= 0 or (int)(grade) < 0 or (int)(grade) > 12):
         return []
@@ -104,5 +133,6 @@ def perc_to_count(perc, total):
 
 if __name__ == '__main__':
     # generate_claims(1000, 'Math', '4')
-    generate_assmt_scores('Delaware', 'ELA', '2011', '', '8', 1000)
+    #generate_assmt_scores('Delaware', 'ELA', '2011', '', '8', 1000)
     # generate_claims(500, 'Math', '4')
+    generate_assmts_for_students(4, 4, 'GA')

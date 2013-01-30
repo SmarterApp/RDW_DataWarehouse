@@ -110,6 +110,7 @@ function get_opts {
                ;;
 	    t)
 	       TESTS=("${TESTS[@]}" "$OPTARG")
+               ;;
             ?)
                echo "Invalid params"
                ;;

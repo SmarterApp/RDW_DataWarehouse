@@ -9,7 +9,7 @@ from edschema.ed_metadata import generate_ed_metadata
 from sqlalchemy.engine import engine_from_config
 from zope import interface, component
 from zope.interface.declarations import implementer
-
+from sqlalchemy import Table
 
 class IDbUtil(interface.Interface):
     def get_engine(self):
@@ -64,8 +64,7 @@ class DBConnector(ConnectionBase):
 
     # return Table Metadata
     def get_table(self, table_name):
-        table = self.__metadata.tables['edware_star_20130129_1.dim_school']
-        return table
+        return Table(table_name, self.__metadata)
 
     def open_connection(self):
         """

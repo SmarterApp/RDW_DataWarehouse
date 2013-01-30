@@ -1,11 +1,10 @@
 import py1
-import math
+# import math
 import random
 from entities import Score
 from dbconnection import get_db_conn
-from constants import *
+from constants import MIN_ASSMT_SCORE, MAX_ASSMT_SCORE, ASSMT_TYPES
 from datetime import date
-
 
 '''
 Assessment score generator
@@ -66,8 +65,9 @@ def generate_assmt_scores(state, asmt_type, year, period, grade, total):
         overallscore_list = py1.makeup_core(stat_avg, stat_sd, MIN_ASSMT_SCORE, MAX_ASSMT_SCORE, total)
         # generate scores for claims
         socre_withclaims_list = generate_allscores(overallscore_list, stat_levles, asmt_type, grade)
+        for t_score in socre_withclaims_list:
+            print(t_score)
 
-    # print("Total number of ", len(socre_withclaims_list), " scores are generated")
     return socre_withclaims_list
 
 
@@ -75,7 +75,6 @@ def get_stat_data(state, asmt_type, year, period, grade):
     '''
     Main function to get statistical assessment data from database
     '''
-
     # connect to db
     db = get_db_conn()
     query = "select * from assmt_raw_stat where state = '" + state + "' and subject = '" + asmt_type + "' and year = '" + year + "' and grade = '" + grade + "'"
@@ -103,12 +102,12 @@ def generate_allscores(score_list, levels, asmt_type, grade):
         level_count = perc_to_count(levels, len(score_list))
 
         start = 0
-        for l in range(len(level_count)):
-            end = start + level_count[l]
+        for lev in range(len(level_count)):
+            end = start + level_count[lev]
             for i in range(start, end):
                 total_score = score_list[i]
                 claims_score = generate_claims(total_score, asmt_type, grade)
-                scores.append(Score(total_score, claims_score, l))
+                scores.append(Score(total_score, claims_score, lev))
             start = end
 
     scores_list = list(scores)
@@ -140,8 +139,8 @@ def perc_to_count(perc, total):
         count.append(max(total - control, 0))
     return count
 
+
 if __name__ == '__main__':
-    # generate_claims(1000, 'Math', '4')
     generate_assmt_scores('Delaware', 'ELA', '2011', '', '8', 1000)
     # generate_claims(500, 'Math', '4')
     print(generate_assmts_for_students(4, '4', 'Delaware'))

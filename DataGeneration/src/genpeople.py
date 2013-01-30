@@ -11,8 +11,8 @@ from datetime import date
 from objects.dimensions import Student, Teacher, Parent
 from readnaminglists import PeopleNames
 from idgen import IdGen
-from write_to_csv import create_parent_csv
-
+from write_to_csv import *
+from constants import *
 
 # constants
 STUDENT = 0
@@ -45,7 +45,7 @@ def generate_people(person_type, total, male_ratio=0.5, grade=None):
         if grade:
             assign_dob(people, grade)
         #write parents
-        create_parent_csv(parents)
+        create_csv(parents, PARENTS)
     elif person_type == TEACHER:
         people = _generate_teachers(total, male_total)
 

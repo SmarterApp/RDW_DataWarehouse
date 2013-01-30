@@ -51,5 +51,8 @@ PARENTS = '../datafiles/parents.csv'
 ASSESSMENT_TYPES = '../datafiles/assessment_types.csv'
 STUDENT_SECTIONS = '../datafiles/stu_sections.csv'
 TEACHER_SECTIONS = '../datafiles/tea_sections.csv'
+CLASSES = '../datafiles/classes.csv'
+SECTIONS = '../datafiles/sections.csv'
+STUDENTS = '../datafiles/students.csv'
 
-ENT_LIST = [STATES, DISTRICTS, SCHOOLS, PARENTS, ASSESSMENT_TYPES, STUDENT_SECTIONS, TEACHER_SECTIONS]
+ENT_LIST = [STATES, DISTRICTS, SCHOOLS, PARENTS, ASSESSMENT_TYPES, STUDENT_SECTIONS, TEACHER_SECTIONS, CLASSES, SECTIONS, STUDENTS]

@@ -6,7 +6,6 @@ Created on Dec 26, 2012
 
 
 import random
-import math
 
 
 def calc():
@@ -126,7 +125,7 @@ def makeup_core(avgin, stdin, minin, maxin, countin):
         out1.append(int(rnd1))
         needmore -= 1
         total -= rnd1
-        
+
     return out1
 
 

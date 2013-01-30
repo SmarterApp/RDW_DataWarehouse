@@ -8,10 +8,10 @@ Created on Jan 22, 2013
 class IdGen(object):
     '''
     Singleton for generating incremental ids
-    ids will start at 1000 unless set_start() is called.
+    ids will start at 0 unless set_start() is called.
     '''
 
-    next_id = 1000
+    next_id = 20
     _instance = None
 
     def __new__(cls, *args, **kwargs):

@@ -6,7 +6,7 @@ Created on Jan 29, 2013
 
 from idgen import IdGen
 from random import randint
-from entities import Assessment
+from entities import AssessmentType
 
 GRADES = [i for i in range(13)]
 TYPES = ['SUMMATIVE', 'INTERIM']
@@ -29,15 +29,17 @@ def generate_assessment_types():
                 for subject in SUBJECTS:
                     id = generate_id()
                     version = generate_version()
-                    asmt = Assessment(id, subject, type, period, version, grade)
-                    assessments.append(asmt)
+                    asmt_type = AssessmentType(id, subject, type, period, version, grade)
+                    assessments.append(asmt_type)
 
     return assessments
+
 
 def generate_id():
     id_generator = IdGen()
     id = id_generator.get_id()
     return id
+
 
 def generate_version():
     return 'V1'

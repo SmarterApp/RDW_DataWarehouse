@@ -61,7 +61,7 @@ function setup_unit_test_dependencies {
 function check_pep8 {
     echo "Checking code style against pep8"
    
-    ignore="E124,E128,E501"
+    ignore="E501"
     
     pep8 --ignore=$ignore $WORKSPACE/$1
 

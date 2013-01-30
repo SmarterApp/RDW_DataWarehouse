@@ -17,6 +17,10 @@ function check_vars {
 
 function set_vars {
     export VIRTUALENV_DIR="$WORKSPACE/edwaretest_venv"
+
+    # delete existing xml files
+    rm $WORKSPACE/coverage.xml
+    rm $WORKSPACE/nosetests.xml
 }
 
 function setup_virtualenv {

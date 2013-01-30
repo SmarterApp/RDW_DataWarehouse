@@ -19,8 +19,12 @@ function set_vars {
     export VIRTUALENV_DIR="$WORKSPACE/edwaretest_venv"
 
     # delete existing xml files
-    rm $WORKSPACE/coverage.xml
-    rm $WORKSPACE/nosetests.xml
+    if [ -f $WORKSPACE/coverage.xml ]; then
+        rm $WORKSPACE/coverage.xml
+    fi
+    if [ -f $WORKSPACE/nosetests.xml ]; then
+        rm $WORKSPACE/nosetests.xml
+    fi
 }
 
 function setup_virtualenv {
@@ -73,7 +77,7 @@ function run_unit_tests {
 
 function get_opts {
     if ( ! getopts ":m:d:ufh" opt); then
-	echo "Usage: `basename $0` options (-n) (-m) (-f) (-m main_package) (-d dependencies) -h for help";
+	echo "Usage: `basename $0` options (-n) (-u) (-f) (-m main_package) (-d dependencies) -h for help";
 	exit $E_OPTERROR;
     fi
  

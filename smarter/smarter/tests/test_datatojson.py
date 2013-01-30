@@ -115,10 +115,10 @@ class Test(unittest.TestCase):
                                      'student_count': 1,
                                      'year': {'code': None, 'name': '2013-2014'},
                                      'segments': [{'score': 59,
-                                         'student_percentage': 100,
-                                         'performance_level': {'code': 'Benchmark', 'name': 'Benchmark'},
-                                         'student_count': 1}]
-                                    }],
+                                                   'student_percentage': 100,
+                                                   'performance_level': {'code': 'Benchmark', 'name': 'Benchmark'},
+                                                   'student_count': 1}]
+                                     }],
                                 'grade': None,
                                 'student': None,
                                 'teacher': {'code': 2077, 'name': 'COPELAND, JOHN'},
@@ -135,9 +135,9 @@ class Test(unittest.TestCase):
                                        'student_count': 1,
                                        'year': {'code': None, 'name': '2013-2014'},
                                        'segments': [{'score': 61,
-                                            'student_percentage': 100,
-                                            'performance_level': {'code': 'Above Benchmark', 'name': 'Above Benchmark'},
-                                            'student_count': 1}]
+                                                     'student_percentage': 100,
+                                                     'performance_level': {'code': 'Above Benchmark', 'name': 'Above Benchmark'},
+                                                     'student_count': 1}]
                                        }],
                              'grade': None,
                              'student': None,
@@ -155,13 +155,13 @@ class Test(unittest.TestCase):
                                        'student_count': 1,
                                        'year': {'code': None, 'name': '2012-2013'},
                                        'segments': [{'score': 60,
-                                            'student_percentage': 100,
-                                            'performance_level': {'code': 'Above Benchmark', 'name': 'Above Benchmark'},
-                                            'student_count': 1}]
-                                        }],
-                            'grade': None,
-                            'student': None,
-                            'teacher': {'code': 2077, 'name': 'COPELAND, JOHN'},
+                                                     'student_percentage': 100,
+                                                     'performance_level': {'code': 'Above Benchmark', 'name': 'Above Benchmark'},
+                                                     'student_count': 1}]
+                                       }],
+                             'grade': None,
+                             'student': None,
+                             'teacher': {'code': 2077, 'name': 'COPELAND, JOHN'},
                                 'state_group': {'code': 'SBAC', 'name': 'Smarter Balanced Assessment Consortium'},
                                 'school_group': {'code': 625, 'name': 'ALSchoolGroup1'}}
                         ],

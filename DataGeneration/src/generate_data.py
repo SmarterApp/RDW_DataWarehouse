@@ -12,7 +12,6 @@ from gen_assessments import generate_assessment_types
 from constants import *
 from dbconnection import get_db_conn
 
-
 birds_list = []
 manmals_list = []
 fish_list = []
@@ -377,8 +376,9 @@ def create_classes_grades_sections(sch, state_code):
     for grade in range(sch.low_grade, sch.high_grade + 1):
         # generate student list for a grade
         # grade_students = create_students(sch.school_name, end)
-        grade_students = generate_people(STUDENT, end, random.choice(GENDER_RARIO), grade)
-        create_students_csv(grade_students, state_code, sch.sch_id)
+
+        grade_students = generate_people(STUDENT, end, sch, state_code, random.choice(GENDER_RARIO), grade)
+        create_csv(grade_students, STUDENTS)
 
         j += len(grade_students)
         total_count[3] += len(grade_students)

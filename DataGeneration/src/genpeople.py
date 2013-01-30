@@ -11,8 +11,9 @@ from datetime import date
 from objects.dimensions import Student, Teacher, Parent
 from readnaminglists import PeopleNames
 from idgen import IdGen
-from write_to_csv import *
-from constants import *
+from write_to_csv import create_csv
+import constants
+
 
 # constants
 STUDENT = 0
@@ -20,7 +21,7 @@ TEACHER = 1
 PARENT = 2
 
 
-def generate_people(person_type, total, male_ratio=0.5, grade=None):
+def generate_people(person_type, total, school, state_code, male_ratio=0.5, grade=None):
     '''
     Entry point for generating people. If type = STUDENT parents are generated and saved
     Student objects will include the parents ids.
@@ -41,13 +42,14 @@ def generate_people(person_type, total, male_ratio=0.5, grade=None):
             female_total += 1
 
     if person_type == STUDENT:
-        people, parents = _generate_students(total, male_total)
+        people, parents = _generate_students(total, male_total, school, state_code)
         if grade:
             assign_dob(people, grade)
         #write parents
-        create_csv(parents, PARENTS)
+        create_csv(parents, constants.PARENTS)
+
     elif person_type == TEACHER:
-        people = _generate_teachers(total, male_total)
+        people = _generate_teachers(total, male_total, school, state_code)
 
     return people
 
@@ -86,7 +88,7 @@ def assign_dob(students, grade):
         student.dob = date(year, month, day)
 
 
-def _generate_students(total, male_total):
+def _generate_students(total, male_total, school, state_code):
     '''
     Private
     generates a list of students with created parents
@@ -104,10 +106,13 @@ def _generate_students(total, male_total):
         gennames.assign_random_name(i, student, male_total, peopleNames)
 
         student.student_id = idgen.get_id()
-        #Assign DOB
-        #Assign Email
-        #Assign id?
-        #eternal studentId???
+        email_string = "%s.%s%d@%s.com" % (student.firstname, student.lastname, random.randint(0, 99), school.school_name.replace(' ', ''))
+        student.email = email_string
+        #set schoolid
+        student.school_id = school.sch_id
+        student.state_id = state_code
+        #assign address?
+
         #assign parents
         parentz = _assign_parent(student)
 
@@ -117,7 +122,7 @@ def _generate_students(total, male_total):
     return students, parents
 
 
-def _generate_teachers(total, male_total):
+def _generate_teachers(total, male_total, school, state_code):
     '''
     Private
     Generate a list of teachers
@@ -149,15 +154,18 @@ def _assign_parent(student):
     parent1.lastname = lastname
     parent2.lastname = lastname
 
-    gennames.assign_random_name(0, parent1, 1, peopleNames, lastname)
-    gennames.assign_random_name(1, parent2, 1, peopleNames, lastname)
+    gennames.assign_random_name(0, parent1, 1, peopleNames, lastname, False)
+    gennames.assign_random_name(1, parent2, 1, peopleNames, lastname, False)
 
     idgen = IdGen()
 
     parent1.parent_id = idgen.get_id()
     parent2.parent_id = idgen.get_id()
 
-    student.parents = [parent1.parent_id, parent2.parent_id]
+    parent1.student_id = student.student_id
+    parent2.student_id = student.student_id
+
+    # student.parents = [parent1.parent_id, parent2.parent_id]
 
     return [parent1, parent2]
 

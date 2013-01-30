@@ -19,23 +19,23 @@ GENDER_RARIO = [0.5, 0.45, 0.55]
 MIN_ASSMT_SCORE = 50
 MAX_ASSMT_SCORE = 500
 
-ASSMT_TYPES = {'Math':{
-                       '4':{ 
+ASSMT_TYPES = {'Math': {
+                       '4': {
                              'claim_names': ['Number properties and operations', 'Measurement and Geometry', 'Data analysis, statistics, and probability', 'Algebra'],
                              'claim_percs': [40, 35, 10, 15]
                              },
-                        '8':{
+                        '8': {
                              'claim_names': ['Number properties and operations', 'Measurement and Geometry', 'Data analysis, statistics, and probability', 'Algebra'],
                              'claim_percs': [20, 35, 15, 30]
                              }
-                        
+
                         },
-               'ELA':{
-                       '4':{ 
+               'ELA': {
+                       '4': {
                              'claim_names': ['Literary text and Fiction', 'Literary nonfiction and Poetry', 'Informational text and Exposition', 'Argumentation and persuasive text'],
                              'claim_percs': [25, 25, 25, 25]
                              },
-                        '8':{
+                        '8': {
                              'claim_names': ['Literary text and Fiction', 'Literary nonfiction and Poetry', 'Informational text and Exposition', 'Argumentation and persuasive text'],
                              'claim_percs': [20, 25, 25, 30]
                              }
@@ -54,5 +54,6 @@ TEACHER_SECTIONS = '../datafiles/tea_sections.csv'
 CLASSES = '../datafiles/classes.csv'
 SECTIONS = '../datafiles/sections.csv'
 STUDENTS = '../datafiles/students.csv'
+
 
 ENT_LIST = [STATES, DISTRICTS, SCHOOLS, PARENTS, ASSESSMENT_TYPES, STUDENT_SECTIONS, TEACHER_SECTIONS, CLASSES, SECTIONS, STUDENTS]

@@ -105,7 +105,7 @@ def name_dict_to_list(name_dict):
     return name_list
 
 
-def assign_random_name(index, person, male_total, peopleNames, cur_lastname=None):
+def assign_random_name(index, person, male_total, peopleNames, cur_lastname=None, has_middle=True):
     '''
     Assign random names to the person object passed over
     index        : the number of people generated so far
@@ -120,11 +120,13 @@ def assign_random_name(index, person, male_total, peopleNames, cur_lastname=None
     #Generate males first
     if index < male_total:
         person.firstname = get_random_entry(male_list)
-        person.middlename = get_random_entry(male_list)
+        if has_middle:
+            person.middlename = get_random_entry(male_list)
         person.gender = 'male'
     else:
         person.firstname = get_random_entry(female_list)
-        person.middlename = get_random_entry(female_list)
+        if has_middle:
+            person.middlename = get_random_entry(female_list)
         person.gender = 'female'
 
     if not cur_lastname:

@@ -143,4 +143,4 @@ def perc_to_count(perc, total):
 if __name__ == '__main__':
     generate_assmt_scores('Delaware', 'ELA', '2011', '', '8', 1000)
     # generate_claims(500, 'Math', '4')
-    print(generate_assmts_for_students(4, '4', 'Delaware'))
+    print(generate_assmts_for_students(1000, '8', 'Delaware'))

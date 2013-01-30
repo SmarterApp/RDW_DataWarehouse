@@ -85,6 +85,31 @@ class School:
         return [self.sch_id, self.school_name, self.dist_name, self.address1, self.school_type]
 
 
+class Student:
+    '''
+    Student object
+    '''
+    # total_id = 0
+    def __init__(self, school_name):
+        '''
+        Constructor
+        '''
+        # self.dist_id   = District.total_id
+        # District.total_id = District.total_id + 1
+        self.school_name = school_name
+        self.last_name = generate_ramdom_name()
+        self.first_name = generate_ramdom_name()
+
+    def __str__(self):
+        '''
+        String method
+        '''
+        return ("School:[school_name: %s, last_name: %s, first_name: %s]" % (self.school_name, self.last_name, self.first_name))
+
+    def getRow(self):
+        return
+
+
 class Class:
     '''
     Student object

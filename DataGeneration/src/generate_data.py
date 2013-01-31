@@ -367,7 +367,7 @@ def create_classes_grades_sections(sch, state_code):
 
     # generate teacher list for a school
     # teacher_list = create_teachers(sch.school_name, sch.num_of_teacher)
-    teacher_list = generate_people(TEACHER, sch.num_of_teacher, random.choice(GENDER_RARIO))
+    teacher_list = generate_people(TEACHER, sch.num_of_teacher, sch, state_code, random.choice(GENDER_RARIO))
     total_count[4] += len(teacher_list)
 
     # for each grade

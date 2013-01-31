@@ -182,7 +182,7 @@ def class_report(request):
 @view_config(route_name='import', renderer='json')
 def import_table(request):
     file_name = request.params['file']
-    file_path = os.getcwd() + file_name # '/dim_school.csv'
+    file_path = os.getcwd() + file_name  # '/dim_school.csv'
     print(file_path)
     connector = DBConnector()
     importer.import_from_file(file_path, connector)

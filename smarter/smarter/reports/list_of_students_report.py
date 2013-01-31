@@ -94,6 +94,7 @@ def get_list_of_students_report(params, connector=None):
                                  .join(dim_stdnt_tmprl_data, dim_stdnt_tmprl_data.c.student_id == dim_student.c.student_id)])
         query = query.where(dim_stdnt_tmprl_data.c.school_id == schoolId)
         query = query.where(and_(dim_asmt_type.c.asmt_grade == asmtGrade))
+        query = query.where(and_(dim_stdnt_tmprl_data.c.district_id == districtId))
 
         if asmtSubject is not None:
             query.where(dim_grade.c.asmt_subject.in_(asmtSubject))

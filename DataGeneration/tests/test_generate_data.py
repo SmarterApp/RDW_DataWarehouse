@@ -1,16 +1,20 @@
 import unittest
 import math
 import generate_data
-from entities import Student
+import random
+from entities import District
 from constants import SUBJECTS
+from objects.dimensions import Student
 
 
 class TestGenerateData(unittest.TestCase):
 
     def setUp(self):
-        generate_data.birds_list = ["birds1", "birds2", "birds3", "birds4", "birds5", "birds6", "birds7"]
-        generate_data.manmals_list = ["flowers1", "flowers2", "flowers3", "flowers4", "flowers5", "flowers6", "flowers7"]
-        generate_data.fish_list = ["fish1", "fish2", "fish3", "fish4", "fish5", "fish6", "fish7"]
+        for i in range(1000):
+            generate_data.birds_list.append('bird' + str(i))
+            generate_data.manmals_list.append('flower' + str(i))
+            generate_data.fish_list.append('fish' + str(i))
+            generate_data.city_list.append('city' + str(i))
 
     # test district generation
     def test_create_districts(self):
@@ -18,7 +22,7 @@ class TestGenerateData(unittest.TestCase):
         school_num_in_dist = [25, 67, 10, 128, 245]
         school_type_in_dist = [[14, 6, 2, 3], [38, 14, 13, 2], [4, 5, 1, 0], [40, 42, 41, 5]]
 
-        created_dist_list = generate_data.create_districts(state_name, school_num_in_dist, school_type_in_dist);
+        created_dist_list = generate_data.create_districts(state_name, school_num_in_dist, school_type_in_dist, 0);
 
         self.assertTrue(len(created_dist_list) == len(school_num_in_dist))
         c = 0
@@ -36,7 +40,7 @@ class TestGenerateData(unittest.TestCase):
         school_num_in_dist = []
         school_type_in_dist = [[14, 6, 2, 3], [38, 14, 13, 2], [4, 5, 1, 0], [40, 42, 41, 5]]
 
-        created_dist_list = generate_data.create_districts(state_name, school_num_in_dist, school_type_in_dist);
+        created_dist_list = generate_data.create_districts(state_name, school_num_in_dist, school_type_in_dist, 0);
         self.assertTrue(len(created_dist_list) == 0)
 
     def test_create_districts_withNotEnoughNames(self):
@@ -48,7 +52,7 @@ class TestGenerateData(unittest.TestCase):
         school_num_in_dist = [25, 67, 10, 128, 15]
         school_type_in_dist = [[14, 6, 2, 3], [38, 14, 13, 2], [4, 5, 1, 0], [40, 42, 41, 5]]
 
-        created_dist_list = generate_data.create_districts(state_name, school_num_in_dist, school_type_in_dist);
+        created_dist_list = generate_data.create_districts(state_name, school_num_in_dist, school_type_in_dist, 0);
         self.assertTrue(len(created_dist_list) == 0)
         self.assertRaises(ValueError, generate_data.generate_names_from_lists, len(school_num_in_dist), generate_data.birds_list, generate_data.manmals_list)
 
@@ -59,7 +63,7 @@ class TestGenerateData(unittest.TestCase):
         school_num_in_dist = [25, 67, 10, 128, 15]
         school_type_in_dist = [[14, 6, 2, 3], [38, 14, 13, 2], [4, 5, 1, 0], [40, 42, 41, 5]]
 
-        created_dist_list = generate_data.create_districts(state_name, school_num_in_dist, school_type_in_dist);
+        created_dist_list = generate_data.create_districts(state_name, school_num_in_dist, school_type_in_dist, 0);
         self.assertEqual(len(created_dist_list), len(school_num_in_dist))
         c = 0
         for d in created_dist_list:
@@ -72,14 +76,15 @@ class TestGenerateData(unittest.TestCase):
 
     # test school generation
     def test_create_schools(self):
-        dist_name = "bridge center district"
+        dist_id = 5555
         stu_num_in_school = [234, 123, 4309, 100, 103, 105, 200, 59, 69, 75, 391, 651, 129]
         tea_num_in_school = [23, 12, 430, 10, 10, 15, 20, 5, 6, 7, 39, 65, 19]
         start = 2
         count = 7
         school_type = [1, 2, 3, 0]
-
-        created_school_list = generate_data.create_schools(dist_name, stu_num_in_school, tea_num_in_school, start, count, school_type)
+        distObj = District(dist_id, 'CA', 'name1', count, 'add1', school_type, (1000, 5000), random.sample(generate_data.city_list, len(stu_num_in_school)))
+        print(len(generate_data.city_list))
+        created_school_list = generate_data.create_schools(stu_num_in_school, tea_num_in_school, start, distObj)
         self.assertTrue(count == len(created_school_list))
         for i in range(len(created_school_list)):
             # self.assertEqual(created_school_list[i].dist_name, dist_name)
@@ -92,27 +97,31 @@ class TestGenerateData(unittest.TestCase):
         generate_data.fish_list = ["fish1"]
 
         dist_id = 5555
+        dist_name = 'name1'
         stu_num_in_school = [234, 123, 4309, 100, 103, 105, 200, 59, 69, 75, 391, 651, 129]
         tea_num_in_school = [23, 12, 430, 10, 10, 15, 20, 5, 6, 7, 39, 65, 19]
         start = 2
         count = 7
         school_type = [1, 2, 3, 0]
+        distObj = District(dist_id, 'CA', dist_name, count, 'add1', school_type, (1000, 5000), random.sample(generate_data.city_list, len(stu_num_in_school)))
 
-        created_school_list = generate_data.create_schools(dist_id, stu_num_in_school, tea_num_in_school, start, count, school_type)
+        created_school_list = generate_data.create_schools(stu_num_in_school, tea_num_in_school, start, distObj)
         self.assertTrue(len(created_school_list) == 0)
         self.assertRaises(ValueError, generate_data.generate_names_from_lists, count, generate_data.fish_list, generate_data.manmals_list)
 
     def test_create_schools_withNotEnoughAddName(self):
         generate_data.birds_list = ["bird1"]
 
-        dist_name = "district one two three"
+        dist_id = 5555
+        dist_name = 'name1'
         stu_num_in_school = [234, 123, 4309, 100, 103, 105, 200, 59, 69, 75, 391, 651, 129]
         tea_num_in_school = [23, 12, 430, 10, 10, 15, 20, 5, 6, 7, 39, 65, 19]
         start = 2
         count = 7
         school_type = [1, 2, 3, 0]
+        distObj = District(dist_id, 'CA', 'name1', count, 'add1', school_type, (1000, 5000), random.sample(generate_data.city_list, len(stu_num_in_school)))
 
-        created_school_list = generate_data.create_schools(dist_name, stu_num_in_school, tea_num_in_school, start, count, school_type)
+        created_school_list = generate_data.create_schools(stu_num_in_school, tea_num_in_school, start, distObj)
         self.assertEqual(count, len(created_school_list))
         for i in range(len(created_school_list)):
             self.assertEqual(created_school_list[i].dist_name, dist_name)
@@ -278,6 +287,22 @@ class TestGenerateData(unittest.TestCase):
         self.assertEqual(len(expected_class.section_tea_map), expected_sec_num)
         for key, value in expected_class.section_tea_map.items():
             self.assertEqual(len(value), 1)
+
+    def test_generate_city_zipcode(self):
+        city_names = []
+        zipcode_range = [1000, 5000]
+        num_of_sch = 20
+        for i in range(num_of_sch):
+            city_names.append('city' + str(i))
+
+        expected_map = generate_data.generate_city_zipcode(city_names, zipcode_range, num_of_sch)
+
+        for k, v in expected_map.items():
+            print(k, v)
+            self.assertTrue(k in city_names)
+            self.assertTrue(v[0] >= zipcode_range[0] and v[1] <= zipcode_range[1])
+
+        self.assertTrue(len(expected_map) <= num_of_sch)
 
 
 def make_stus_or_teas(count):

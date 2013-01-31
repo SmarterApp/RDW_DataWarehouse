@@ -148,6 +148,7 @@ def generate_ed_metadata(scheme_name=None):
                     Column('parent_uniq_id', BigInteger, primary_key=True),
                     Column('parent_id', BigInteger, nullable=False),
                     Column('first_name', String(128), nullable=False),
+                    Column('middle_name', String(128), nullable=True),
                     Column('last_name', String(256), nullable=False),
                     Column('student_id', None, ForeignKey('dim_student.student_id')),
                     )

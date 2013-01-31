@@ -80,8 +80,7 @@ def generate_ed_metadata(scheme_name=None):
                     Column('institution_id', BigInteger, primary_key=True),
                     Column('institution_category', Enum('State Education Agency', 'Education Service Center', 'Local Education Agency', 'School', name='institution_category_enum'), nullable=False),
                     Column('institution_name', String(255), nullable=False),
-                    Column('institution_address_1', String(255), nullable=True),
-                    Column('type', String(50), nullable=False)
+                    Column('institution_address_1', String(255), nullable=True)
                     )
 
     Index('dim_institution_idx', institution.c.institution_id, unique=True)

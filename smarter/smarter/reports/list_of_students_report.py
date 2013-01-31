@@ -68,15 +68,20 @@ def get_list_of_students_report(params, connector=None):
     dim_grade = connector.get_table('dim_grade')
     fact_asmt_outcome = connector.get_table('fact_asmt_outcome')
     dim_asmt_type = connector.get_table('dim_asmt_type')
+    dim_teacher = connector.get_table('dim_teacher')
 
     query = None
     # TODO: find out where can we get enrollment grade
     # TODO: missing dim_teacher from the DB
     # I use label function as experimental.  to eliminate ambiguous column namez
     if isinstance(dim_student, Table) and isinstance(dim_stdnt_tmprl_data, Table) and isinstance(dim_grade, Table) and isinstance(fact_asmt_outcome, Table) and isinstance(dim_asmt_type, Table):
-        query = select([dim_student.c.first_name.label('first_name'),
-                        func.substr(dim_student.c.middle_name, 1, 1).label('middle_name'),
-                        dim_student.c.last_name.label('last_name'),
+        query = select([dim_student.c.student_id.label('student_id'),
+                        dim_student.c.first_name.label('student_first_name'),
+                        func.substr(dim_student.c.middle_name, 1, 1).label('student_middle_name'),
+                        dim_student.c.last_name.label('student_last_name'),
+                        dim_stdnt_tmprl_data.c.grade_id.label('enrollment_grade'),
+                        dim_teacher.c.first_name.label('teacher_first_name'),
+                        dim_teacher.c.last_name.label('teacher_last_name'),
                         dim_asmt_type.c.asmt_grade.label('asmt_grade'),
                         dim_asmt_type.c.asmt_subject.label('asmt_subject'),
                         fact_asmt_outcome.c.asmt_score.label('asmt_score'),
@@ -90,6 +95,7 @@ def get_list_of_students_report(params, connector=None):
                         fact_asmt_outcome.c.asmt_claim_4_score.label('asmt_claim_4_score')],
                        from_obj=[dim_student
                                  .join(fact_asmt_outcome, dim_student.c.student_id == fact_asmt_outcome.c.student_id)
+                                 .join(dim_teacher, dim_teacher.c.teacher_id == fact_asmt_outcome.c.teacher_id)
                                  .join(dim_asmt_type, dim_asmt_type.c.asmt_type_id == fact_asmt_outcome.c.asmt_type_id)
                                  .join(dim_stdnt_tmprl_data, dim_stdnt_tmprl_data.c.student_id == dim_student.c.student_id)])
         query = query.where(dim_stdnt_tmprl_data.c.school_id == schoolId)
@@ -99,7 +105,41 @@ def get_list_of_students_report(params, connector=None):
         if asmtSubject is not None:
             query.where(dim_grade.c.asmt_subject.in_(asmtSubject))
 
-    result = connector.get_result(query)
+    results = connector.get_result(query)
     connector.close_connection()
 
-    return result
+    students = {}
+    for result in results:
+        student_id = result['student_id']
+        student = {}
+        assessments = []
+        if student_id in students:
+            student = students[student_id]
+            assessments = student['assessments']
+        else:
+            student['student_first_name'] = result['student_first_name']
+            student['student_middle_name'] = result['student_middle_name']
+            student['student_last_name'] = result['student_last_name']
+            student['asmt_grade'] = result['asmt_grade']
+            student['enrollment_grade'] = result['enrollment_grade']
+
+        assessment = {}
+        assessment['teacher_first_name'] = result['teacher_first_name']
+        assessment['teacher_last_name'] = result['teacher_last_name']
+        assessment['asmt_subject'] = result['asmt_subject']
+        assessment['asmt_score'] = result['asmt_score']
+        assessment['asmt_claim_1_name'] = result['asmt_claim_1_name']
+        assessment['asmt_claim_2_name'] = result['asmt_claim_2_name']
+        assessment['asmt_claim_3_name'] = result['asmt_claim_3_name']
+        assessment['asmt_claim_4_name'] = result['asmt_claim_4_name']
+        assessment['asmt_claim_1_score'] = result['asmt_claim_1_score']
+        assessment['asmt_claim_2_score'] = result['asmt_claim_2_score']
+        assessment['asmt_claim_3_score'] = result['asmt_claim_3_score']
+        assessment['asmt_claim_4_score'] = result['asmt_claim_4_score']
+
+        assessments.append(assessment)
+        student['assessments'] = assessments
+
+        students[student_id] = student
+
+    return students.values()

@@ -77,11 +77,11 @@ def generate_ed_metadata(scheme_name=None):
     Index('dim_state_idx', state_prov.c.state_id, unique=True)
 
     institution = Table('dim_institution', metadata,
-                    Column('institution_id', BigInteger, primary_key=True),
-                    Column('institution_category', Enum('State Education Agency', 'Education Service Center', 'Local Education Agency', 'School', name='institution_category_enum'), nullable=False),
-                    Column('institution_name', String(255), nullable=False),
-                    Column('institution_address_1', String(255), nullable=True)
-                    )
+                        Column('institution_id', BigInteger, primary_key=True),
+                        Column('institution_category', Enum('State Education Agency', 'Education Service Center', 'Local Education Agency', 'School', name='institution_category_enum'), nullable=False),
+                        Column('institution_name', String(255), nullable=False),
+                        Column('institution_address_1', String(255), nullable=True)
+                        )
 
     Index('dim_institution_idx', institution.c.institution_id, unique=True)
 
@@ -139,7 +139,6 @@ def generate_ed_metadata(scheme_name=None):
                      Column('institution_id', None, ForeignKey('dim_institution.institution_id')),
                      Column('email', String(256), nullable=False),
                      Column('dob', Date, nullable=False),
-                     # Teacher?
                      )
 
     Index('dim_student_idx', students.c.student_id, unique=True)
@@ -156,6 +155,15 @@ def generate_ed_metadata(scheme_name=None):
     Index('dim_parent_uniq_idx', parents.c.parent_uniq_id, unique=True)
     Index('dim_parent_id_idx', parents.c.parent_id, unique=False)
     Index('dim_parent_student_idx', parents.c.parent_id, parents.c.student_id, unique=True)
+
+    teacher = Table('dim_teacher', metadata,
+                    Column('teacher_id', BigInteger, primary_key=True),
+                    Column('first_name', String(256), nullable=False),
+                    Column('middle_name', String(256), nullable=False),
+                    Column('last_name', String(256), nullable=False),
+                    )
+
+    Index('dim_teacher_idx', teacher.c.teacher_id, unique=True)
 
     stdnt_tmp = Table('dim_stdnt_tmprl_data', metadata,
                       Column('stdnt_tmprl_id', BigInteger, primary_key=True),
@@ -187,6 +195,7 @@ def generate_ed_metadata(scheme_name=None):
                                Column('asmt_type_id', None, ForeignKey('dim_asmt_type.asmt_type_id')),
                                Column('student_id', None, ForeignKey('dim_student.student_id')),
                                Column('stdnt_tmprl_id', None, ForeignKey('dim_stdnt_tmprl_data.stdnt_tmprl_id')),
+                               Column('teacher_id', None, ForeignKey('dim_teacher.teacher_id')),
                                Column('date_taken', Date, nullable=False),
                                Column('date_taken_day', SmallInteger, nullable=False),
                                Column('date_taken_month', SmallInteger, nullable=False),

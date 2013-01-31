@@ -5,13 +5,13 @@
 .pyc
 .egg-info?
 smarter.egg-info?
+*.egg-info
 
 # IDE generated files #
 #######################
 __pycache__
 pyramid.log
-smarter.egg-info
 .idea/edapi/edapi.egg-info
 edapi/build
 edapi/dist
-sql/init/.pydevproject
+smarter/smarter/assets

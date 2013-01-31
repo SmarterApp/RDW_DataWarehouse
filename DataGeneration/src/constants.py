@@ -1,6 +1,7 @@
 BIRDS_FILE = "../datafiles/birds.txt"
 MANMALS_FILE = "../datafiles/manmals.txt"
 FISH_FILE = "../datafiles/fish.txt"
+
 SCHOOL_LEVELS_INFO = [
                     ['Primary', ['EL SCH', 'ELEM', 'CTR', 'ELEMENTARY SCHOOL', 'CHILDHOOD CENTER', 'PRIMARY', 'ELEMENTARY', 'CETR, ELEM', 'SCH'], [[0, 5], [1, 5], [1, 6]]],
                     ['Middle', ['MIDDLE SCHOOL', 'COMMUNITY MIDDLE', 'MIDDLE', 'JUNIOR HIGH', 'INTERMEDIATE SCHOOL', 'JR MIDDLE', 'MS'], [[6, 8], [5, 8], [7, 9]]],
@@ -54,6 +55,9 @@ TEACHER_SECTIONS = '../datafiles/tea_sections.csv'
 CLASSES = '../datafiles/classes.csv'
 SECTIONS = '../datafiles/sections.csv'
 STUDENTS = '../datafiles/students.csv'
+WHERETAKEN = '../datafiles/wheretaken.csv'
 
+ENT_LIST = [STATES, DISTRICTS, SCHOOLS, PARENTS, ASSESSMENT_TYPES, STUDENT_SECTIONS, TEACHER_SECTIONS, CLASSES, SECTIONS, STUDENTS, WHERETAKEN]
 
-ENT_LIST = [STATES, DISTRICTS, SCHOOLS, PARENTS, ASSESSMENT_TYPES, STUDENT_SECTIONS, TEACHER_SECTIONS, CLASSES, SECTIONS, STUDENTS]
+ZIPCODE_START = 10000
+ZIPCODE_RANG_INSTATE = 5000

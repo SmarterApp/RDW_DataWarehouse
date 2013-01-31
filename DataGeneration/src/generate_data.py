@@ -155,16 +155,19 @@ def generate_data(db_states):
         # print("Max Number of stu   ", max(stu_num_in_school), "    ", max(stu_num_in_school_made))
 
         # create districts for each state
-        created_dist_list = create_districts(created_state.state_name, school_num_in_dist_made, school_type_in_dist)
+        created_dist_list = create_districts(created_state.state_name, school_num_in_dist_made, school_type_in_dist, c)
         total_count[1] += len(created_dist_list)
         create_csv(created_dist_list, DISTRICTS)
         shift = 0
 
         for d in created_dist_list:
             # create school for each district
-            school_list = create_schools(d.dist_name, stu_num_in_school_made, tea_num_in_school_made, shift, d.num_of_schools, d.school_type_in_dist)
+            # school_list = create_schools(d.dist_name, stu_num_in_school_made, tea_num_in_school_made, shift, d.num_of_schools, d.school_type_in_dist)
+            school_list, wheretaken_list = create_schools(stu_num_in_school_made, tea_num_in_school_made, shift, d)
             total_count[2] += len(school_list)
             create_csv(school_list, SCHOOLS)
+            create_csv(wheretaken_list, WHERETAKEN)
+
             shift += d.num_of_schools
 
             # create classes, grades, sections, teachers and students for each school
@@ -219,10 +222,11 @@ def generate_school_type(db_school_type_list):
     return school_type_in_dist
 
 
-def create_schools(dist_name, stu_num_in_school_made, tea_num_in_school_made, start, count, school_type_in_dist):
+def create_schools(stu_num_in_school_made, tea_num_in_school_made, start, distr):
     '''
     Main function to generate list of schools for a district
     '''
+    count = distr.num_of_schools
     # generate random school names
     try:
         names = generate_names_from_lists(count, fish_list, manmals_list)
@@ -231,12 +235,16 @@ def create_schools(dist_name, stu_num_in_school_made, tea_num_in_school_made, st
         return []
     # generate addresses
     address = generate_address_from_list(count, birds_list)
-    assert(len(names) == len(address))
+    # assert(len(names) == len(address))
 
-    school_num_for_type = cal_school_num_for_type(count, school_type_in_dist)
-    assert(sum(school_num_for_type) == count)
+    school_num_for_type = cal_school_num_for_type(count, distr.school_type_in_dist)
+    # assert(sum(school_num_for_type) == count)
+
+    # generate zipcode and citynames
+    city_zipcode_map = generate_city_zipcode(distr.city_names, distr.zipcode_range, count)
 
     school_list = []
+    wheretaken_list = []
     while(count > 0):
 
         if(school_num_for_type[0] > 0):
@@ -255,12 +263,47 @@ def create_schools(dist_name, stu_num_in_school_made, tea_num_in_school_made, st
         school_type, suf, low_grade, high_grade = get_schoolattr_bytype(index)
 
         count -= 1
+        # create one row of where-taken
+        sch_add1 = address[count]
+        place_id = idgen.get_id()
+        r_city = random.choice(list(city_zipcode_map.items()))
+        r_zip = random.choice(range(r_city[1][0], r_city[1][1]))
+        where_taken = WhereTaken(place_id, sch_add1, '', '', r_city[0], distr.state_name, r_zip, 'US')
+
+        # create one row of school
         sch_id = idgen.get_id()
-        school = School(sch_id, dist_name, (names[count] + " " + suf), stu_num_in_school_made[start], tea_num_in_school_made[start], address[count], school_type, low_grade, high_grade)
+        sch_name = names[count] + " " + suf
+        school = School(sch_id, distr.dist_name, sch_name, stu_num_in_school_made[start], tea_num_in_school_made[start], sch_add1, school_type, low_grade, high_grade, place_id)
+
+        # print(where_taken)
+
         start += 1
         school_list.append(school)
+        wheretaken_list.append(where_taken)
 
-    return school_list
+    return school_list, wheretaken_list
+
+
+def generate_city_zipcode(city_names, zipcode_range, num_of_schools):
+    maxnum_of_city = min((zipcode_range[1] - zipcode_range[0]), num_of_schools)
+    num_of_city = 1
+    if(num_of_schools > 1):
+        num_of_city = random.choice(range(1, maxnum_of_city))
+
+    # city_cand = random.sample(city_names, num_of_city)
+    city_cand = generate_names_from_lists(num_of_city, birds_list, fish_list)
+    ziprange_incity = (zipcode_range[1] - zipcode_range[0]) // num_of_city
+    zip_start = zipcode_range[0]
+
+    city_zip_map = {}
+    for i in range(len(city_cand) - 1):
+        zip_end = (int)(zip_start + ziprange_incity)
+        city_zip_map[city_cand[i]] = [zip_start, zip_end]
+        zip_start = zipcode_range[0] + ziprange_incity * (i + 1)
+
+    city_zip_map[city_cand[len(city_cand) - 1]] = [zip_start, (int)(zipcode_range[1])]
+
+    return city_zip_map
 
 
 def get_schoolattr_bytype(pos):
@@ -296,7 +339,7 @@ def cal_school_num_for_type(count, school_type_in_dist):
     return school_for_type
 
 
-def create_districts(state_name, school_num_in_dist_made, school_type_in_dist):
+def create_districts(state_name, school_num_in_dist_made, school_type_in_dist, pos):
     '''
     Main function to generate list of district for a state
     '''
@@ -304,19 +347,28 @@ def create_districts(state_name, school_num_in_dist_made, school_type_in_dist):
     districts_list = []
     n = len(school_num_in_dist_made)
     if(n > 0):
-        # generate random district names, and address
+        # generate random district names
         try:
             names = generate_names_from_lists(n, birds_list, manmals_list)
         except:
             ValueError
             return []
-
+        # generate random district addresses
         address = generate_address_from_list(n, fish_list)
+
+        # generate random district zip range
+        zip_init = (pos + 1) * ZIPCODE_START
+        zip_dist = math.floor((zip_init + ZIPCODE_RANG_INSTATE) / n)
         for i in range(n):
             dist_id = idgen.get_id()
-            dist = District(dist_id, state_name, names[i] + " " + random.choice(DIST_SUFFIX), school_num_in_dist_made[i], address[i], school_type_in_dist[i % len(school_type_in_dist)])
+            # generate random city names for a district
+            city_names = generate_names_from_lists(school_num_in_dist_made[i], birds_list, fish_list)
+            dist = District(dist_id, state_name, (names[i] + " " + random.choice(DIST_SUFFIX)),
+                            school_num_in_dist_made[i], address[i], school_type_in_dist[i % len(school_type_in_dist)],
+                            (zip_init, zip_init + zip_init), city_names)
             districts_list.append(dist)
             total_school += dist.num_of_schools
+            zip_init += zip_dist
 
     assert(total_school == sum(school_num_in_dist_made))
     return districts_list
@@ -528,7 +580,7 @@ def get_index(seqin):
 
 
 def read_names(file_name):
-    mfile = open(file_name, 'r')
+    mfile = open(file_name, 'rb')
     lines = mfile.readlines()
     names = []
     for line in lines:

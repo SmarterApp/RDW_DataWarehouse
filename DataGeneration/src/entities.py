@@ -30,7 +30,7 @@ class District:
     District object
     '''
     # total_id = 0
-    def __init__(self, dist_id, state_name, dist_name, num_of_schools, address_1, school_type_in_dist):
+    def __init__(self, dist_id, state_name, dist_name, num_of_schools, address_1, school_type_in_dist, zipcode_range, city_names):
         '''
         Constructor
         '''
@@ -42,7 +42,8 @@ class District:
         self.num_of_schools = num_of_schools
         self.address_1 = address_1
         self.school_type_in_dist = school_type_in_dist
-        # self.dist_name = 'district-' + generate_ramdom_name()
+        self.zipcode_range = zipcode_range
+        self.city_names = city_names
 
     def __str__(self):
         '''
@@ -59,7 +60,7 @@ class School:
     School object
     '''
     # total_id = 0
-    def __init__(self, sch_id, dist_name, school_name, num_of_student, num_of_teacher, address1, school_type, low_grade, high_grade):
+    def __init__(self, sch_id, dist_name, school_name, num_of_student, num_of_teacher, address1, school_type, low_grade, high_grade, place_id):
         '''
         Constructor
         '''
@@ -75,39 +76,17 @@ class School:
         self.low_grade = low_grade
         self.high_grade = high_grade
 
+        # place_id is where_taken_id
+        self.place_id = place_id
+
     def __str__(self):
         '''
         String method
         '''
-        return ("School:[sch_id: %s, dist_name: %s, num_of_student: %s, num_of_teacher: %s, school_name: %s, address1: %s, school_type: %s, low_grade: %s, high_grade: %s]" % (self.sch_id, self.dist_name, self.num_of_student, self.num_of_teacher, self.school_name, self.address1, self.school_type, self.low_grade, self.high_grade))
+        return ("School:[sch_id: %s, dist_name: %s, num_of_student: %s, num_of_teacher: %s, school_name: %s, address1: %s, school_type: %s, low_grade: %s, high_grade: %s, place_id:%s]" % (self.sch_id, self.dist_name, self.num_of_student, self.num_of_teacher, self.school_name, self.address1, self.school_type, self.low_grade, self.high_grade, self.place_id))
 
     def getRow(self):
         return [self.sch_id, self.school_name, self.dist_name, self.address1, self.school_type]
-
-
-class Student:
-    '''
-    Student object
-    '''
-    # total_id = 0
-    def __init__(self, school_name):
-        '''
-        Constructor
-        '''
-        # self.dist_id   = District.total_id
-        # District.total_id = District.total_id + 1
-        self.school_name = school_name
-        self.last_name = generate_ramdom_name()
-        self.first_name = generate_ramdom_name()
-
-    def __str__(self):
-        '''
-        String method
-        '''
-        return ("School:[school_name: %s, last_name: %s, first_name: %s]" % (self.school_name, self.last_name, self.first_name))
-
-    def getRow(self):
-        return
 
 
 class Class:
@@ -180,6 +159,33 @@ class Score:
         String method
         '''
         return ("Score:[overall: %s, claims: %s, level: %s]" % (self.overall, self.claims, self.level))
+
+
+class WhereTaken:
+    '''
+    Where-taken object
+    '''
+    def __init__(self, place_id, address_1, address_2, address_3, city, state, zip, country):
+        '''
+        Constructor
+        '''
+        self.place_id = place_id
+        self.address_1 = address_1
+        self.address_2 = address_2
+        self.address_3 = address_3
+        self.city = city
+        self.state = state
+        self.zip = zip
+        self.country = country
+
+    def __str__(self):
+        '''
+        String method
+        '''
+        return ("WhereTaken:[place_id: %s, address_1: %s, city: %s, state:%s, zip: %s, country: %s]" % (self.place_id, self.address_1, self.city, self.state, self.zip, self.country))
+
+    def getRow(self):
+        return [self.place_id, self.address_1, self.address_2, self.address_3, self.city, self.state, self.zip, self.country]
 
 
 def generate_ramdom_name():

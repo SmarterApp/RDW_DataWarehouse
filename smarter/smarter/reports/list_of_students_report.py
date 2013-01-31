@@ -71,9 +71,6 @@ def get_list_of_students_report(params, connector=None):
     dim_teacher = connector.get_table('dim_teacher')
 
     query = None
-    # TODO: find out where can we get enrollment grade
-    # TODO: missing dim_teacher from the DB
-    # I use label function as experimental.  to eliminate ambiguous column namez
     if isinstance(dim_student, Table) and isinstance(dim_stdnt_tmprl_data, Table) and isinstance(dim_grade, Table) and isinstance(fact_asmt_outcome, Table) and isinstance(dim_asmt_type, Table):
         query = select([dim_student.c.student_id.label('student_id'),
                         dim_student.c.first_name.label('student_first_name'),
@@ -95,9 +92,9 @@ def get_list_of_students_report(params, connector=None):
                         fact_asmt_outcome.c.asmt_claim_4_score.label('asmt_claim_4_score')],
                        from_obj=[dim_student
                                  .join(fact_asmt_outcome, dim_student.c.student_id == fact_asmt_outcome.c.student_id)
-                                 .join(dim_teacher, dim_teacher.c.teacher_id == fact_asmt_outcome.c.teacher_id)
                                  .join(dim_asmt_type, dim_asmt_type.c.asmt_type_id == fact_asmt_outcome.c.asmt_type_id)
-                                 .join(dim_stdnt_tmprl_data, dim_stdnt_tmprl_data.c.student_id == dim_student.c.student_id)])
+                                 .join(dim_stdnt_tmprl_data, dim_stdnt_tmprl_data.c.student_id == dim_student.c.student_id)
+                                 .outerjoin(dim_teacher, dim_teacher.c.teacher_id == fact_asmt_outcome.c.teacher_id)])
         query = query.where(dim_stdnt_tmprl_data.c.school_id == schoolId)
         query = query.where(and_(dim_asmt_type.c.asmt_grade == asmtGrade))
         query = query.where(and_(dim_stdnt_tmprl_data.c.district_id == districtId))

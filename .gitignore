@@ -14,3 +14,4 @@ smarter.egg-info
 .idea/edapi/edapi.egg-info
 edapi/build
 edapi/dist
+sql/init/.pydevproject

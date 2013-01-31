@@ -1,7 +1,6 @@
 import os
 
 from setuptools import setup, find_packages
-import shutil
 
 here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.txt')).read()
@@ -15,7 +14,10 @@ requires = [
     'pyramid_debugtoolbar',
     'zope.sqlalchemy',
     'waitress',
+    'edapi',
+    'edschema',
     'py-postgresql', ]
+
 
 setup(name='smarter',
       version='0.0',
@@ -41,10 +43,13 @@ setup(name='smarter',
       [console_scripts]
       initialize_smarter_db = smarter.scripts.initializedb:main
       """,
+      dependency_links=[
+          'file://' + here + '/../edapi#egg=edapi',
+          'file://' + here + '/../edschema#egg=edschema', ]
       )
 
-#Copying the assets folder during setup to be inside the application folder
+# Copying the assets folder during setup to be inside the application folder
 application_asset_folder = os.getcwd() + '/assets'
-#if os.path.lexists(application_asset_folder):
+# if os.path.lexists(application_asset_folder):
 #    shutil.rmtree(application_asset_folder)
-#shutil.copytree('../assets', application_asset_folder)
+# shutil.copytree('../assets', application_asset_folder)

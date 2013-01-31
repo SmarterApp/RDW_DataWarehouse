@@ -22,6 +22,8 @@ def enum(*sequential, **named):
 
 VALID_TYPES = enum(STRING='string', INTEGER='integer', NUMBER='number', BOOLEAN='boolean', ANY='any', ARRAY='array')
 
+# hello
+
 
 class report_config(object):
     '''

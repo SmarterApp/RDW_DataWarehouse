@@ -13,6 +13,8 @@ TYPES = ['SUMMATIVE', 'INTERIM']
 PERIODS = ['BOY', 'MOY', 'EOY']
 SUBJECTS = ['ELA', 'MATH']
 
+NUM_ASSMT = len(GRADES) * len(TYPES) * len(PERIODS) * len(SUBJECTS)
+
 
 def generate_assessment_types():
     '''
@@ -44,8 +46,15 @@ def generate_id():
 def generate_version():
     return 'V1'
 
+
+ASSESSMENT_TYPES_LIST = [AssessmentType(generate_id(), sub, ty, per, generate_version(), gr) for gr in GRADES for ty in TYPES for per in PERIODS for sub in SUBJECTS]
+
 if __name__ == '__main__':
     assessments = generate_assessment_types()
 
     for asmt in assessments:
+        print(str(asmt))
+
+    print('version2: ')
+    for asmt in ASSESSMENT_TYPES_LIST:
         print(str(asmt))

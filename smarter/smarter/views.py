@@ -181,7 +181,8 @@ def class_report(request):
 
 @view_config(route_name='import', renderer='json')
 def import_table(request):
-    file_path = os.getcwd() + '/dim_school.csv'
+    file_name = request.params['file']
+    file_path = os.getcwd() + file_name # '/dim_school.csv'
     print(file_path)
     connector = DBConnector()
     importer.import_from_file(file_path, connector)
@@ -190,9 +191,9 @@ def import_table(request):
 
 @view_config(route_name='create', renderer='json')
 def create_tables(request):
-    schemaName = "edware"
-    metadata = generate_ed_metadata(schemaName)
-    createSchema(schemaName)
+    schema_name = request.params['schema']
+    metadata = generate_ed_metadata(schema_name)
+    createSchema(schema_name)
     dbUtil = component.queryUtility(IDbUtil)
     engine = dbUtil.get_engine()
     metadata.create_all(engine)

@@ -1,0 +1,164 @@
+[{
+	"student_first_name": "Joe",
+	"student_middle_name": "A",
+	"student_last_name": "Doe",
+	"student_fullname": "Joe A Doe",
+	"enrollment_grade": "6",
+	"assessments": {
+	  "MATH": {
+	    "asmt_subject": "MATH",
+		"asmt_grade": "6",
+	    "teacher_first_name": "Jane",
+	    "teacher_last_name": "Doe",
+	    "teacher_fullname": "Jane Doe",
+	    "asmt_score": 100,
+	    "asmt_claim_1_name": "asmt_claim_1_name",
+	    "asmt_claim_2_name": "asmt_claim_2_name",
+	    "asmt_claim_3_name": "asmt_claim_3_name",
+	    "asmt_claim_4_name": "asmt_claim_4_name",
+	    "asmt_claim_1_score": 10,
+	    "asmt_claim_2_score": 20,
+	    "asmt_claim_3_score": 30,
+	    "asmt_claim_4_score": 40
+	  },
+	  "ELA": {
+	    "asmt_subject": "ELA",
+		"asmt_grade": "6",
+	    "teacher_first_name": "Jack",
+	    "teacher_last_name": "Daniel",
+	    "teacher_fullname": "Jack Daniel",
+	    "asmt_score": 100,
+	    "asmt_claim_1_name": "asmt_claim_1_name",
+	    "asmt_claim_2_name": "asmt_claim_2_name",
+	    "asmt_claim_3_name": "asmt_claim_3_name",
+	    "asmt_claim_4_name": "asmt_claim_4_name",
+	    "asmt_claim_1_score": 10,
+	    "asmt_claim_2_score": 20,
+	    "asmt_claim_3_score": 30,
+	    "asmt_claim_4_score": 40
+	      }
+	    }
+ },
+ {
+	"student_first_name": "Joe",
+	"student_middle_name": "A",
+	"student_last_name": "Doe",
+	"student_fullname": "Joe A Doe",
+	"enrollment_grade": "6",
+	"assessments": {
+	  "MATH": {
+	    "asmt_subject": "MATH",
+		"asmt_grade": "6",
+	    "teacher_first_name": "Jane",
+	    "teacher_last_name": "Doe",
+	    "teacher_fullname": "Jane Doe",
+	    "asmt_score": 100,
+	    "asmt_claim_1_name": "asmt_claim_1_name",
+	    "asmt_claim_2_name": "asmt_claim_2_name",
+	    "asmt_claim_3_name": "asmt_claim_3_name",
+	    "asmt_claim_4_name": "asmt_claim_4_name",
+	    "asmt_claim_1_score": 10,
+	    "asmt_claim_2_score": 20,
+	    "asmt_claim_3_score": 30,
+	    "asmt_claim_4_score": 40
+	  },
+	  "ELA": {
+	    "asmt_subject": "ELA",
+		"asmt_grade": "6",
+	    "teacher_first_name": "Jack",
+	    "teacher_last_name": "Daniel",
+	    "teacher_fullname": "Jack Daniel",
+	    "asmt_score": 100,
+	    "asmt_claim_1_name": "asmt_claim_1_name",
+	    "asmt_claim_2_name": "asmt_claim_2_name",
+	    "asmt_claim_3_name": "asmt_claim_3_name",
+	    "asmt_claim_4_name": "asmt_claim_4_name",
+	    "asmt_claim_1_score": 10,
+	    "asmt_claim_2_score": 20,
+	    "asmt_claim_3_score": 30,
+	    "asmt_claim_4_score": 40
+	      }
+	    }
+ },
+ {
+	"student_first_name": "Joe",
+	"student_middle_name": "A",
+	"student_last_name": "Doe",
+	"student_fullname": "Joe A Doe",
+	"enrollment_grade": "6",
+	"assessments": {
+	  "MATH": {
+	    "asmt_subject": "MATH",
+		"asmt_grade": "6",
+	    "teacher_first_name": "Jane",
+	    "teacher_last_name": "Doe",
+	    "teacher_fullname": "Jane Doe",
+	    "asmt_score": 100,
+	    "asmt_claim_1_name": "asmt_claim_1_name",
+	    "asmt_claim_2_name": "asmt_claim_2_name",
+	    "asmt_claim_3_name": "asmt_claim_3_name",
+	    "asmt_claim_4_name": "asmt_claim_4_name",
+	    "asmt_claim_1_score": 10,
+	    "asmt_claim_2_score": 20,
+	    "asmt_claim_3_score": 30,
+	    "asmt_claim_4_score": 40
+	  },
+	  "ELA": {
+	    "asmt_subject": "ELA",
+		"asmt_grade": "6",
+	    "teacher_first_name": "Jack",
+	    "teacher_last_name": "Daniel",
+	    "teacher_fullname": "Jack Daniel",
+	    "asmt_score": 100,
+	    "asmt_claim_1_name": "asmt_claim_1_name",
+	    "asmt_claim_2_name": "asmt_claim_2_name",
+	    "asmt_claim_3_name": "asmt_claim_3_name",
+	    "asmt_claim_4_name": "asmt_claim_4_name",
+	    "asmt_claim_1_score": 10,
+	    "asmt_claim_2_score": 20,
+	    "asmt_claim_3_score": 30,
+	    "asmt_claim_4_score": 40
+	      }
+	    }
+ },
+ {
+	"student_first_name": "Joe",
+	"student_middle_name": "A",
+	"student_last_name": "Doe",
+	"student_fullname": "Joe A Doe",
+	"enrollment_grade": "6",
+	"assessments": {
+	  "MATH": {
+	    "asmt_subject": "MATH",
+		"asmt_grade": "6",
+	    "teacher_first_name": "Jane",
+	    "teacher_last_name": "Doe",
+	    "teacher_fullname": "Jane Doe",
+	    "asmt_score": 100,
+	    "asmt_claim_1_name": "asmt_claim_1_name",
+	    "asmt_claim_2_name": "asmt_claim_2_name",
+	    "asmt_claim_3_name": "asmt_claim_3_name",
+	    "asmt_claim_4_name": "asmt_claim_4_name",
+	    "asmt_claim_1_score": 10,
+	    "asmt_claim_2_score": 20,
+	    "asmt_claim_3_score": 30,
+	    "asmt_claim_4_score": 40
+	  },
+	  "ELA": {
+	    "asmt_subject": "ELA",
+		"asmt_grade": "6",
+	    "teacher_first_name": "Jack",
+	    "teacher_last_name": "Daniel",
+	    "teacher_fullname": "Jack Daniel",
+	    "asmt_score": 100,
+	    "asmt_claim_1_name": "asmt_claim_1_name",
+	    "asmt_claim_2_name": "asmt_claim_2_name",
+	    "asmt_claim_3_name": "asmt_claim_3_name",
+	    "asmt_claim_4_name": "asmt_claim_4_name",
+	    "asmt_claim_1_score": 10,
+	    "asmt_claim_2_score": 20,
+	    "asmt_claim_3_score": 30,
+	    "asmt_claim_4_score": 40
+	      }
+	    }
+ }]

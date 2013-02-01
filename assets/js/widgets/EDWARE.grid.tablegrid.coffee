@@ -29,7 +29,7 @@ define [
             if item.items and item.items.length > 0
               items = item.items
               groupHeaders.push
-                startColumnName: item.items[0].name
+                startColumnName: item.items[0].field
                 numberOfColumns: item.items.length
                 titleText: item.name
             
@@ -42,8 +42,8 @@ define [
               item1 = items[j]
               colNames.push item1.name
               colModelItem =
-                name: item1.name
-                index: item1.index
+                name: item1.field
+                index: item1.field
                 width: item1.width
   
               colModelItem.align = item1.align  if item1.align
@@ -62,7 +62,7 @@ define [
         
         if groupHeaders.length > 0
           $(this).jqGrid "setGroupHeaders",
-            useColSpanStyle: true
+            useColSpanStyle: false
             groupHeaders: groupHeaders
             fixed: true
         
@@ -86,6 +86,8 @@ define [
         viewrecords: true
         autoencode: true
         rowNum: 10000
+        loadComplete: ->
+           $("tr.jqgrow:odd").css "background", "#DDDDDC"
   
       if panelData is null or panelData is `undefined` or panelData.length < 1
         util.displayErrorMessage "There is no data available for your request. Please contact your IT administrator."

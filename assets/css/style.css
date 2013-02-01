@@ -44,6 +44,15 @@ h3 {
   color: #fff;
 }
 /* grid styles */
+th.ui-th-column div {
+  height: auto !important;
+  padding: 4px 5px;
+  text-align: left;
+  white-space: normal !important;
+}
+.ui-jqgrid tr.jqgrow td {
+  padding: 4px 5px;
+}
 .ui-state-default,
 .ui-widget-content .ui-state-default,
 .ui-widget-header .ui-state-default {

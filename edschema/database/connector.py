@@ -39,12 +39,6 @@ class DBConnector(ConnectionBase):
     BaseReport is just managing session for your database connection and convert result to dictionary
     '''
 
-    def __init__(self):
-        dbUtil = component.queryUtility(IDbUtil)
-        self.__engine = dbUtil.get_engine()
-        self.__metadata = dbUtil.get_metadata()
-        self.__connection = None
-
     def __del__(self):
         self.close_connection()
 
@@ -65,14 +59,18 @@ class DBConnector(ConnectionBase):
 
     # return Table Metadata
     def get_table(self, table_name):
-        return Table(table_name, self.__metadata)
+        dbUtil = component.queryUtility(IDbUtil)
+        metadata = dbUtil.get_metadata()
+        return Table(table_name, metadata)
 
     def open_connection(self):
         """
         return open connection
         """
         if self.__connection is None:
-            self.__connection = self.__engine.connect()
+            dbUtil = component.queryUtility(IDbUtil)
+            engine = dbUtil.get_engine()
+            self.__connection = engine.connect()
 
         return self.__connection
 

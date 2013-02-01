@@ -38,6 +38,8 @@ class DBConnector(ConnectionBase):
     Inheritate this class if you are making a report class and need to access to database
     BaseReport is just managing session for your database connection and convert result to dictionary
     '''
+    def __init__(self):
+        self.__connection = None
 
     def __del__(self):
         self.close_connection()

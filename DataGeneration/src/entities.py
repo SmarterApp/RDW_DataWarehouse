@@ -188,6 +188,27 @@ class WhereTaken:
         return [self.place_id, self.address_1, self.address_2, self.address_3, self.city, self.state, self.zip, self.country]
 
 
+class AssessmentOutcome:
+    '''
+    Assessment outcome object
+    Should map to the fact_asmt_outcome table
+    '''
+    def __init__(self, asmnt_out_id, student_id, stdnt_tmprl_id, teacher_id, date_taken, date_taken_day, date_taken_month, date_taken_year,
+                 where_taken_id, score, asmt_create_date):
+
+        self.asmnt_out_id = asmnt_out_id
+        self.student_id = student_id
+        self.stdnt_tmprl_id = stdnt_tmprl_id
+        self.teacher_id = teacher_id
+        self.date_taken = date_taken
+        self.date_taken_day = date_taken_day
+        self.date_taken_month = date_taken_month
+        self.date_taken_year = date_taken_year
+        self.where_taken_id = where_taken_id
+        self.score = score
+        self.asmt_create_date = asmt_create_date
+
+
 def generate_ramdom_name():
     # temporary
     char_set = string.ascii_uppercase + string.digits

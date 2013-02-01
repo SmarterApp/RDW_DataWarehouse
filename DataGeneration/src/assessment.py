@@ -20,27 +20,28 @@ def generate_assmts_for_students(total, grade, state):
     total -- integer number of students
     grade -- integer for the grade to generate scores
     state -- current state
-    Returns a dictionary that contains 12 items where the key is a string: '<year>_<type>_<period>'
+    Returns a dictionary that contains 24 items where the key is a string: '<year>_<assmt_id>'
     and the value is a list of score objects
     '''
-    #year = date.today().year
+    cur_year = date.today().year
     #periods = ['BOY', 'MOY', 'EOY']
     #subjects = ['Math', 'ELA']
     years = ['2011', '2009']  # str(year), str(year - 1)]
+    real_years = [str(cur_year), str(cur_year - 1)]
 
     asmt_types = [x for x in asmt_list if int(x.grade) == int(grade)]
 
     scores = {}
 
-    for year in years:
+    for i in range(len(years)):
         for asmt in asmt_types:
-            string = "%s_%s" % (year, asmt.assmt_id)
+            string = "%s_%s" % (real_years[i], asmt.assmt_id)
             subject = asmt.subject
 
             if subject == 'MATH':
                 subject = 'Math'
 
-            score = generate_assmt_scores(state, subject, year, asmt.period, grade, total)
+            score = generate_assmt_scores(state, subject, years[i], asmt.period, grade, total)
             scores[string] = score
 
     return scores

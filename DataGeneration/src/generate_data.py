@@ -1,5 +1,7 @@
 import math
 import random
+from datetime import date
+
 import py1
 from queries import *
 from write_to_csv import *
@@ -8,9 +10,10 @@ from datetime import datetime
 from test.test_iterlen import len
 from genpeople import generate_people, STUDENT, TEACHER
 from idgen import IdGen
-from gen_assessments import generate_assessment_types
+from gen_assessments import generate_assessment_types, ASSESSMENT_TYPES_LIST
 from constants import *
 from dbconnection import get_db_conn
+from assessment import generate_assmts_for_students
 
 birds_list = []
 manmals_list = []
@@ -438,6 +441,30 @@ def create_classes_grades_sections(sch, state_code):
             end = sch.num_of_student - j
         classforgrade_list = create_classes_for_grade(grade_students, teacher_list, stu_tea_ratio)
         create_sections_stuandtea_csv(state_code, classforgrade_list, grade, sch.sch_id, sch.dist_name, idgen)
+
+        scores = generate_assmts_for_students(len(grade_students), grade, state_code)
+        assessment_outcome_list = []
+        hist_assessment_outcome_list = []
+
+        for aclass in classforgrade_list:
+            for section in aclass.section_stu_map.items():
+                for student in section[1]:
+                    for score in scores.items():
+                        asmt_id = score[0].split('_')[1]
+                        year = score[0].split('_')[0]
+                        asmt = [x for x in ASSESSMENT_TYPES_LIST if x.assmt_id == asmt_id]
+                        if year == date.today().year:
+                            ###
+                            #### START HERE 2/1/13
+                            if asmt:
+                                asmt = asmt[0]
+                            assessment_outcome_list.append()
+                        else:
+                            pass
+                        #if score[0].split('_')[1]
+#        for it in scores.items():
+#            pass
+        #fds2f
 
 
 def create_classes_for_grade(grade_students, teacher_list, stu_tea_ratio):

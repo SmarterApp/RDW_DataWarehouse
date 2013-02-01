@@ -6,7 +6,7 @@ Created on Jan 28, 2013
 #
 # encoding: utf-8
 from sqlalchemy.schema import MetaData
-from sqlalchemy.types import Enum
+from sqlalchemy.types import Enum, Integer
 '''
 create_star -- create a star schema
 
@@ -60,10 +60,11 @@ def generate_ed_metadata(scheme_name=None):
 
     metadata = MetaData(schema=scheme_name)
 
-    # For PR, Guam, US VI... etc
+    # For PR, Guam, US VI, Brazil... etc
     country = Table('dim_country', metadata,
                     Column('country_id', String(2), primary_key=True),
-                    Column('country', String(64), nullable=False),
+                    Column('country_name', String(100), nullable=False),
+                    Column('country_code', String(3), nullable=False),
                     )
 
     Index('dim_country_idx', country.c.country_id, unique=True)
@@ -71,178 +72,207 @@ def generate_ed_metadata(scheme_name=None):
     # Two-letter state - some countries have 3 or more, but two will do for US
     state_prov = Table('dim_state', metadata,
                        Column('state_id', String(2), primary_key=True),
-                       Column('state', String(32), nullable=False)
+                       Column('state_name', String(32), nullable=False),
+                       Column('state_code', String(2), nullable=True),
                        )
 
     Index('dim_state_idx', state_prov.c.state_id, unique=True)
+    Index('dim_state_codex', state_prov.c.state_code, unique=True)
 
-    institution = Table('dim_institution', metadata,
-                        Column('institution_id', BigInteger, primary_key=True),
-                        Column('institution_category', Enum('State Education Agency', 'Education Service Center', 'Local Education Agency', 'School', name='institution_category_enum'), nullable=False),
-                        Column('institution_name', String(255), nullable=False),
-                        Column('institution_address_1', String(255), nullable=True)
+    district = Table('dim_district', metadata,
+                        Column('district_id', BigInteger, primary_key=True),
+                        Column('district_external_id', String(255)),
+                        Column('district_name', String(255), nullable=False),
+                        Column('state_code', String(2), nullable=False),
+                        Column('address_1', String(255), nullable=True),
+                        Column('address_2', String(255), nullable=True),
+                        Column('zip_code', String(5), nullable=True),
                         )
 
-    Index('dim_institution_idx', institution.c.institution_id, unique=True)
+    Index('dim_district_idx', district.c.dim_district, unique=True)
+
+    school = Table('dim_school', metadata,
+                        Column('school_id', BigInteger, primary_key=True),
+                        Column('school_external_id', String(255)),
+                        Column('school_name', String(255), nullable=False),
+                        Column('district_name', String(255), nullable=False),
+                        Column('state_code', String(2), nullable=False),
+                        Column('school_type', String(50), nullable=True),  # TODO!
+                        Column('address_1', String(255), nullable=True),
+                        Column('address_2', String(255), nullable=True),
+                        Column('city', String(100), nullable=True),
+                        Column('zip_code', String(5), nullable=True),
+                        )
+
+    Index('dim_school_idx', school.c.school_id, unique=True)
 
     where_taken = Table('dim_where_taken', metadata,
-                        Column('place_id', BigInteger, primary_key=True),
+                        Column('where_taken_id', BigInteger, primary_key=True),
+                        Column('where_taken_name', String(255), primary_key=True),
+                        Column('district_name', String(255), nullable=False),
+                        Column('state_code', String(2), nullable=False),
                         Column('address_1', String(32), nullable=False),
                         Column('address_2', String(32), nullable=True),
-                        Column('address_3', String(32), nullable=True),
                         Column('city', String(32), nullable=False),
-                        Column('state', None, ForeignKey('dim_state.state_id')),
-                        Column('zip', String(10), nullable=False),
-                        Column('country', None, ForeignKey('dim_country.country_id'))
+                        Column('zip_code', String(5), nullable=False),
+                        Column('state_code', None, ForeignKey('dim_state.state_code')),
+                        Column('country_id', None, ForeignKey('dim_country.country_id'))
                         )
 
     Index('dim_where_taken_idx', where_taken.c.place_id, unique=True)
 
-    grades = Table('dim_grade', metadata,
+    grade = Table('dim_grade', metadata,
                    Column('grade_id', String(2), primary_key=True),
+                   Column('grade_code', String(10), nullable=False),
                    Column('grade_desc', String(32)),
                    )
 
-    Index('dim_grade_idx', grades.c.grade_id, unique=True)
-
-    classes = Table('dim_class', metadata,
-                    Column('class_id', BigInteger, primary_key=True),
-                    Column('things', String(128)),
-                    )
-
-    Index('dim_class_idx', classes.c.class_id, unique=True)
+    Index('dim_grade_idx', grade.c.grade_id, unique=True)
+    Index('dim_grade_codex', grade.c.grade_code, unique=True)
 
     sections = Table('dim_section', metadata,
                      Column('section_id', BigInteger, primary_key=True),
-                     Column('things', String(128)),
-                     Column('class_id', None, ForeignKey('dim_class.class_id')),
+                     Column('section_external_id', String(255), nullable=False),
+                     Column('section_name', String(255)),
+                     Column('class_name', String(255)),
+                     Column('subject', String(100)),
+                     Column('school_id', None, ForeignKey('dim_school.school_id'), nullable=False),
                      )
 
     Index('dim_section_idx', sections.c.section_id, unique=True)
 
     students = Table('dim_student', metadata,
                      Column('student_id', BigInteger, primary_key=True),
-                     #
+                     Column('student_external_id', String(255), primary_key=True),
                      Column('first_name', String(256), nullable=False),
                      Column('middle_name', String(256), nullable=True),
                      Column('last_name', String(256), nullable=False),
-                     #
                      Column('address_1', String(32), nullable=False),
                      Column('address_2', String(32), nullable=True),
-                     Column('address_3', String(32), nullable=True),
                      Column('city', String(32), nullable=False),
-                     Column('state', None, ForeignKey('dim_state.state_id')),
-                     Column('zip', String(10), nullable=False),
-                     Column('country', None, ForeignKey('dim_country.country_id')),
-                     #
-                     Column('gender', String(6), nullable=False),
-                     Column('institution_id', None, ForeignKey('dim_institution.institution_id')),
+                     Column('state_code', None, ForeignKey('dim_state.state_code')),
+                     Column('zip_code', String(5), nullable=False),
+                     Column('gender', String(10), nullable=False),
                      Column('email', String(256), nullable=False),
                      Column('dob', Date, nullable=False),
+                     Column('school_id', None, ForeignKey('dim_school.school_id'), nullable=False),
+                     Column('district_id', None, 'dim_district.district_id', nullable=False),
+                     Column('state_code', None, 'dim_state.state_code', nullable=False),
                      )
 
     Index('dim_student_idx', students.c.student_id, unique=True)
 
     parents = Table('dim_parent', metadata,
-                    Column('parent_uniq_id', BigInteger, primary_key=True),
-                    Column('parent_id', BigInteger, nullable=False),
+                    Column('parent_id', BigInteger, primary_key=True),
+                    Column('parent_external_id', String(255), nullable=False),
                     Column('first_name', String(128), nullable=False),
                     Column('middle_name', String(128), nullable=True),
                     Column('last_name', String(256), nullable=False),
-                    Column('student_id', None, ForeignKey('dim_student.student_id')),
+                    Column('address_1', String(32), nullable=False),
+                    Column('address_2', String(32), nullable=True),
+                    Column('city', String(32), nullable=False),
+                    Column('state_code', None, ForeignKey('dim_state.state_code')),
+                    Column('zip_code', String(5), nullable=False),
                     )
 
-    Index('dim_parent_uniq_idx', parents.c.parent_uniq_id, unique=True)
-    Index('dim_parent_id_idx', parents.c.parent_id, unique=False)
-    Index('dim_parent_student_idx', parents.c.parent_id, parents.c.student_id, unique=True)
+    Index('dim_parent_id_idx', parents.c.parent_id, unique=True)
+
+    external_user_student = Table('dim_external_user_student', metadata,
+                          Column('external_user_student_id', BigInteger, primary_key=True),
+                          Column('external_user_id', BigInteger, nullable=False),
+                          Column('student_id', BigInteger, ForeignKey('dim_student.student_id'), nullable=False),
+                          )
+
+    Index('dim_external_user_student_idx', external_user_student.c.external_user_student_id, unique=True)
+
+    Index('dim_external_user_student_student_x', external_user_student.c.external_user_id, external_user_student.c.student_id, unique=True)
 
     teacher = Table('dim_teacher', metadata,
                     Column('teacher_id', BigInteger, primary_key=True),
+                    Column('teacher_external_id', String(255), nullable=False),
                     Column('first_name', String(256), nullable=False),
                     Column('middle_name', String(256), nullable=False),
                     Column('last_name', String(256), nullable=False),
+                    Column('district_id', None, ForeignKey('dim_district.district_id'), nullable=False),
+                    Column('state_code', None, ForeignKey('dim_state.state_code'), nullable=False),
                     )
 
     Index('dim_teacher_idx', teacher.c.teacher_id, unique=True)
 
-    stdnt_tmp = Table('dim_stdnt_tmprl_data', metadata,
-                      Column('stdnt_tmprl_id', BigInteger, primary_key=True),
-                      Column('student_id', None, ForeignKey('dim_student.student_id')),
-                      Column('effective_date', Date, nullable=False),
-                      Column('end_date', Date, nullable=False),
-                      Column('grade_id', None, ForeignKey('dim_grade.grade_id')),
-                      Column('district_id', None, ForeignKey('dim_institution.institution_id')),
-                      Column('school_id', None, ForeignKey('dim_institution.institution_id')),
-                      Column('class_id', None, ForeignKey('dim_class.class_id')),
-                      Column('section_id', None, ForeignKey('dim_section.section_id'))
-                      )
+    teacher_section = Table('dim_teacher_section', metadata,
+                          Column('teacher_section_id', BigInteger, primary_key=True),
+                          Column('teacher_id', BigInteger, ForeignKey('dim_teacher.teacher_id'), nullable=False),
+                          Column('section_id', BigInteger, ForeignKey('dim_section.section_id'), nullable=False),
+                          )
 
-    Index('dim_stdnt_tmprl_data_idx', stdnt_tmp.c.stdnt_tmprl_id, unique=True)
+    Index('dim_teacher_section_idx', teacher_section.c.teacher_section_id, unique=True)
 
-    assessment_type = Table('dim_asmt_type', metadata,
-                            Column('asmt_type_id', BigInteger, primary_key=True),
-                            Column('asmt_subject', String(16), nullable=False),
-                            Column('asmt_type', String(16), nullable=False),
-                            Column('asmt_period', String(16), nullable=False),
-                            Column('asmt_version', String(16), nullable=False),
-                            Column('asmt_grade', None, ForeignKey('dim_grade.grade_id'))
-                            )
+    Index('dim_teacher_section_x', teacher_section.c.teacher_id, teacher_section.c.section_id, unique=True)
 
-    Index('dim_asmt_type_idx', assessment_type.c.asmt_type_id, unique=True)
+    staff = Table('dim_staff', metadata,
+                    Column('staff_id', BigInteger, primary_key=True),
+                    Column('staff_external_id', String(255), nullable=False),
+                    Column('first_name', String(256), nullable=False),
+                    Column('middle_name', String(256), nullable=False),
+                    Column('last_name', String(256), nullable=False),
+                    Column('district_id', None, ForeignKey('dim_district.district_id')),
+                    Column('state_code', None, ForeignKey('dim_state.state_code')),
+                    Column('school_id', None, ForeignKey('dim_school.school_id')),
+                    )
+
+    Index('dim_staff_idx', staff.c.staff_id, unique=True)
+
+    assessment = Table('dim_asmt', metadata,
+                      Column('asmt_id', BigInteger, primary_key=True),
+                      Column('asmt_external_id', String(255), nullable=False),
+                      Column('asmt_type', String(16), nullable=False),
+                        Column('asmt_period', String(32), nullable=False),
+                        Column('asmt_period_year', SmallInteger, nullable=False),
+                        Column('asmt_version', String(16), nullable=False),
+                        Column('asmt_grade', None, ForeignKey('dim_grade.grade_id')),
+                        Column('asmt_claim_1_name', String(255), nullable=True),
+                        Column('asmt_claim_2_name', String(255), nullable=True),
+                        Column('asmt_claim_3_name', String(255), nullable=True),
+                        Column('asmt_claim_4_name', String(255), nullable=True),
+                        Column('asmt_cut_point_1', SmallInteger, nullable=True),
+                        Column('asmt_cut_point_2', SmallInteger, nullable=True),
+                        Column('asmt_cut_point_3', SmallInteger, nullable=True),
+                        Column('asmt_cut_point_4', SmallInteger, nullable=True),
+                        Column('asmt_cut_point_name_1', String(100), nullable=True),
+                        Column('asmt_cut_point_name_2', String(100), nullable=True),
+                        Column('asmt_cut_point_name_3', String(100), nullable=True),
+                        Column('asmt_cut_point_name_4', String(100), nullable=True),
+                        )
+
+    Index('dim_asmt_idx', assessment.c.asmt_id, unique=True)
 
     assessment_outcome = Table('fact_asmt_outcome', metadata,
                                Column('asmnt_outcome_id', BigInteger, primary_key=True),
-                               Column('asmt_type_id', None, ForeignKey('dim_asmt_type.asmt_type_id')),
-                               Column('student_id', None, ForeignKey('dim_student.student_id')),
-                               Column('stdnt_tmprl_id', None, ForeignKey('dim_stdnt_tmprl_data.stdnt_tmprl_id')),
-                               Column('teacher_id', None, ForeignKey('dim_teacher.teacher_id')),
+                               Column('asmnt_outcome_external_id', String(255), nullable=False),
+                               Column('asmt_id', None, ForeignKey('dim_asmt.asmt_id'), nullable=False),
+                               Column('student_id', None, ForeignKey('dim_student.student_id'), nullable=False),
+                               Column('stdnt_tmprl_id', None, ForeignKey('dim_stdnt_tmprl_data.stdnt_tmprl_id'), nullable=False),
+                               Column('teacher_id', None, ForeignKey('dim_teacher.teacher_id'), nullable=False),
+                               Column('state_code', None, ForeignKey('dim_state.state_code'), nullable=False),
+                               Column('district_id', None, ForeignKey('dim_district.district_id'), nullable=False),
+                               Column('school_id', None, ForeignKey('dim_school.school_id'), nullable=False),
+                               Column('asmt_grade_id', None, ForeignKey('dim_grade.grade_id'), nullable=False),
+                               Column('asmt_grade_code', None, ForeignKey('dim_grade.grade_code'), nullable=False),
+                               Column('enrl_grade_id', None, ForeignKey('dim_grade.grade_id'), nullable=False),
+                               Column('enrl_grade_code', None, ForeignKey('dim_grade.grade_code'), nullable=False),
                                Column('date_taken', Date, nullable=False),
                                Column('date_taken_day', SmallInteger, nullable=False),
                                Column('date_taken_month', SmallInteger, nullable=False),
                                Column('date_taken_year', SmallInteger, nullable=False),
-                               Column('where_taken_id', None, ForeignKey('dim_where_taken.place_id')),
+                               Column('where_taken_id', None, ForeignKey('dim_where_taken.place_id'), nullable=False),
                                Column('asmt_score', SmallInteger, nullable=False),
-                               Column('asmt_claim_1_name', String(255), nullable=True),
                                Column('asmt_claim_1_score', SmallInteger, nullable=True),
-                               Column('asmt_claim_2_name', String(255), nullable=True),
                                Column('asmt_claim_2_score', SmallInteger, nullable=True),
-                               Column('asmt_claim_3_name', String(255), nullable=True),
                                Column('asmt_claim_3_score', SmallInteger, nullable=True),
-                               Column('asmt_claim_4_name', String(255), nullable=True),
                                Column('asmt_claim_4_score', SmallInteger, nullable=True),
                                Column('asmt_create_date', Date, nullable=False),
                                )
 
     Index('fact_asmt_outcome_idx', assessment_outcome.c.asmnt_outcome_id, unique=True)
-
-    # Clone the assessment outcome, and add some columns
-    # assessment_outcome_hist = assessment_outcome.name('hist_fact_asmt_outcome')
-    # assessment_outcome_hist.append_column('hist_create_date', Date, nullable = False)
-
-    hist_assessment_outcome = Table('hist_asmt_outcome', metadata,
-                                    Column('asmnt_outcome_id', BigInteger, primary_key=True),  # NOTE sequence deleted
-                                    Column('asmt_type_id', None, ForeignKey('dim_asmt_type.asmt_type_id')),
-                                    Column('student_id', None, ForeignKey('dim_student.student_id')),
-                                    Column('stdnt_tmprl_id', None, ForeignKey('dim_stdnt_tmprl_data.stdnt_tmprl_id')),
-                                    Column('date_taken', Date, nullable=False),
-                                    Column('date_taken_day', SmallInteger, nullable=False),
-                                    Column('date_taken_month', SmallInteger, nullable=False),
-                                    Column('date_taken_year', SmallInteger, nullable=False),
-                                    Column('where_taken_id', None, ForeignKey('dim_where_taken.place_id')),
-                                    Column('asmt_score', SmallInteger, nullable=False),
-                                    Column('asmt_claim_1_name', String(255), nullable=True),
-                                    Column('asmt_claim_1_score', SmallInteger, nullable=True),
-                                    Column('asmt_claim_2_name', String(255), nullable=True),
-                                    Column('asmt_claim_2_score', SmallInteger, nullable=True),
-                                    Column('asmt_claim_3_name', String(255), nullable=True),
-                                    Column('asmt_claim_3_score', SmallInteger, nullable=True),
-                                    Column('asmt_claim_4_name', String(255), nullable=True),
-                                    Column('asmt_claim_4_score', SmallInteger, nullable=True),
-                                    Column('asmt_create_date', Date, nullable=False),
-                                    #
-                                    Column('hist_create_date', Date, nullable=False),
-                                    )
-
-    Index('hist_asmt_outcome_idx', hist_assessment_outcome.c.asmnt_outcome_id, unique=True)
 
     return metadata

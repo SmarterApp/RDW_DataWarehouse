@@ -102,6 +102,7 @@ def get_list_of_students_report(params, connector=None):
         if asmtSubject is not None:
             query.where(dim_grade.c.asmt_subject.in_(asmtSubject))
 
+    query = query.limit(30)
     results = connector.get_result(query)
     connector.close_connection()
 
@@ -109,7 +110,7 @@ def get_list_of_students_report(params, connector=None):
     for result in results:
         student_id = result['student_id']
         student = {}
-        assessments = []
+        assessments = {}
         if student_id in students:
             student = students[student_id]
             assessments = student['assessments']
@@ -117,12 +118,14 @@ def get_list_of_students_report(params, connector=None):
             student['student_first_name'] = result['student_first_name']
             student['student_middle_name'] = result['student_middle_name']
             student['student_last_name'] = result['student_last_name']
+            student['student_full_name'] = result['student_first_name'] + ' ' + result['student_middle_name'] + ' ' + result['student_last_name']
             student['asmt_grade'] = result['asmt_grade']
             student['enrollment_grade'] = result['enrollment_grade']
 
         assessment = {}
         assessment['teacher_first_name'] = result['teacher_first_name']
         assessment['teacher_last_name'] = result['teacher_last_name']
+        assessment['teacher_full_name'] = result['teacher_first_name'] + ' ' + result['teacher_last_name']
         assessment['asmt_subject'] = result['asmt_subject']
         assessment['asmt_score'] = result['asmt_score']
         assessment['asmt_claim_1_name'] = result['asmt_claim_1_name']
@@ -134,93 +137,12 @@ def get_list_of_students_report(params, connector=None):
         assessment['asmt_claim_3_score'] = result['asmt_claim_3_score']
         assessment['asmt_claim_4_score'] = result['asmt_claim_4_score']
 
-        assessments.append(assessment)
+        assessments[result['asmt_subject']] = assessment
         student['assessments'] = assessments
 
         students[student_id] = student
 
-    fake = '''
-[
-  {
-    "student_first_name": "Joe",
-    "student_middle_name": "A",
-    "student_last_name": "Doe",
-    "student_fullname": "Joe A Doe",
-    "enrollment_grade": "6",
-    "assessments": {
-      "MATH": {
-        "asmt_subject": "MATH",
-        "teacher_first_name": "Jane",
-        "teacher_last_name": "Doe",
-        "teacher_fullname": "Jane Doe",
-        "asmt_grade": "6",
-        "asmt_score": 100,
-        "asmt_claim_1_name": "asmt_claim_1_name",
-        "asmt_claim_2_name": "asmt_claim_2_name",
-        "asmt_claim_3_name": "asmt_claim_3_name",
-        "asmt_claim_4_name": "asmt_claim_4_name",
-        "asmt_claim_1_score": 10,
-        "asmt_claim_2_score": 20,
-        "asmt_claim_3_score": 30,
-        "asmt_claim_4_score": 40
-      },
-      "ELA": {
-        "asmt_subject": "ELA",
-        "teacher_first_name": "Jack",
-        "teacher_last_name": "Daniel",
-        "asmt_grade": "6",
-        "asmt_score": 100,
-        "asmt_claim_1_name": "asmt_claim_1_name",
-        "asmt_claim_2_name": "asmt_claim_2_name",
-        "asmt_claim_3_name": "asmt_claim_3_name",
-        "asmt_claim_4_name": "asmt_claim_4_name",
-        "asmt_claim_1_score": 10,
-        "asmt_claim_2_score": 20,
-        "asmt_claim_3_score": 30,
-        "asmt_claim_4_score": 40
-      }
-    }
-  }.{
-    "student_first_name": "Joe1",
-    "student_middle_name": "A",
-    "student_last_name": "Doe1",
-    "student_fullname": "Joe A Doe1",
-    "enrollment_grade": "6",
-    "assessments": {
-      "MATH": {
-        "asmt_subject": "MATH",
-        "teacher_first_name": "Jane",
-        "teacher_last_name": "Doe",
-        "teacher_fullname": "Jane Doe",
-        "asmt_grade": "6",
-        "asmt_score": 100,
-        "asmt_claim_1_name": "asmt_claim_1_name",
-        "asmt_claim_2_name": "asmt_claim_2_name",
-        "asmt_claim_3_name": "asmt_claim_3_name",
-        "asmt_claim_4_name": "asmt_claim_4_name",
-        "asmt_claim_1_score": 10,
-        "asmt_claim_2_score": 20,
-        "asmt_claim_3_score": 30,
-        "asmt_claim_4_score": 40
-      },
-      "ELA": {
-        "asmt_subject": "ELA",
-        "teacher_first_name": "Jack",
-        "teacher_last_name": "Daniel",
-        "asmt_grade": "6",
-        "asmt_score": 100,
-        "asmt_claim_1_name": "asmt_claim_1_name",
-        "asmt_claim_2_name": "asmt_claim_2_name",
-        "asmt_claim_3_name": "asmt_claim_3_name",
-        "asmt_claim_4_name": "asmt_claim_4_name",
-        "asmt_claim_1_score": 10,
-        "asmt_claim_2_score": 20,
-        "asmt_claim_3_score": 30,
-        "asmt_claim_4_score": 40
-      }
-    }
-  }
-]
-    '''
-    #return students.values()
-    return fake
+    results = []
+    for key, value in students.items():
+        results.append(value)
+    return results

@@ -16,10 +16,75 @@ h3 {
   -ms-border-radius: 5px;
   -o-border-radius: 5px;
   border-radius: 5px;
+  height: 30px;
+  margin: 10px 0 20px 0;
 }
 #header h1 {
   font-size: 26px;
   font-weight: bold;
+}
+#header #logo {
+  width: 100px;
+  height: 20px;
+  padding: 5px;
+  background: #999;
+  color: #fff;
+  float: left;
+}
+#header .topLinks {
+  float: right;
+}
+#breadcrumb {
+  background: #999999;
+  color: #333;
+  padding: 5px;
+  margin-bottom: 20px;
+}
+#breadcrumb a {
+  color: #fff;
+}
+/* grid styles */
+.ui-state-default,
+.ui-widget-content .ui-state-default,
+.ui-widget-header .ui-state-default {
+  background: none;
+  border: solid 1px #ccc;
+  color: #333;
+}
+.ui-widget-content {
+  border: none;
+  border-top: solid 1px #ccc;
+}
+.ui-corner-all,
+.ui-corner-bottom,
+.ui-corner-left,
+.ui-corner-bl {
+  border-bottom-left-radius: 0;
+}
+.ui-corner-all,
+.ui-corner-top,
+.ui-corner-left,
+.ui-corner-tl {
+  border-top-left-radius: 0;
+}
+.ui-jqgrid tr.ui-row-ltr td {
+  border-right: solid 1px #ccc;
+}
+.ui-jqgrid tr.jqgrow td {
+  border-bottom: solid 1px #ccc;
+}
+.ui-th-column-header {
+  background: #ccc !important;
+  font-size: 14px;
+}
+.ui-state-hover,
+.ui-widget-content .ui-state-hover,
+.ui-widget-header .ui-state-hover,
+.ui-state-focus,
+.ui-widget-content .ui-state-focus,
+.ui-widget-header .ui-state-focus {
+  background: #ccc;
+  color: #333;
 }
 #footer {
   color: #ffffff;

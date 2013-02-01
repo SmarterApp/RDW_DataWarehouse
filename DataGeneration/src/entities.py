@@ -60,14 +60,14 @@ class School:
     School object
     '''
     # total_id = 0
-    def __init__(self, sch_id, dist_name, school_name, num_of_student, num_of_teacher, address1, school_type, low_grade, high_grade, place_id):
+    def __init__(self, sch_id, dist_id, school_name, num_of_student, num_of_teacher, address1, school_type, low_grade, high_grade, place_id):
         '''
         Constructor
         '''
         # self.dist_id   = District.total_id
         # District.total_id = District.total_id + 1
         self.sch_id = sch_id
-        self.dist_name = dist_name
+        self.dist_id = dist_id
         self.school_name = school_name
         self.num_of_student = num_of_student
         self.num_of_teacher = num_of_teacher
@@ -83,10 +83,10 @@ class School:
         '''
         String method
         '''
-        return ("School:[sch_id: %s, dist_name: %s, num_of_student: %s, num_of_teacher: %s, school_name: %s, address1: %s, school_type: %s, low_grade: %s, high_grade: %s, place_id:%s]" % (self.sch_id, self.dist_name, self.num_of_student, self.num_of_teacher, self.school_name, self.address1, self.school_type, self.low_grade, self.high_grade, self.place_id))
+        return ("School:[sch_id: %s, dist_id: %s, num_of_student: %s, num_of_teacher: %s, school_name: %s, address1: %s, school_type: %s, low_grade: %s, high_grade: %s, place_id:%s]" % (self.sch_id, self.dist_id, self.num_of_student, self.num_of_teacher, self.school_name, self.address1, self.school_type, self.low_grade, self.high_grade, self.place_id))
 
     def getRow(self):
-        return [self.sch_id, self.school_name, self.dist_name, self.address1, self.school_type]
+        return [self.sch_id, self.school_name, self.dist_id, self.address1, self.school_type]
 
 
 class Class:

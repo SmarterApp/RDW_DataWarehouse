@@ -276,7 +276,7 @@ def create_schools(stu_num_in_school_made, tea_num_in_school_made, start, distr)
         # create one row of school
         sch_id = idgen.get_id()
         sch_name = names[count] + " " + suf
-        school = School(sch_id, distr.dist_name, sch_name, stu_num_in_school_made[start], tea_num_in_school_made[start], sch_add1, school_type, low_grade, high_grade, place_id)
+        school = School(sch_id, distr.dist_id, sch_name, stu_num_in_school_made[start], tea_num_in_school_made[start], sch_add1, school_type, low_grade, high_grade, place_id)
 
         # print(where_taken)
 
@@ -293,8 +293,7 @@ def generate_city_zipcode(city_names, zipcode_range, num_of_schools):
     if(num_of_schools > 1):
         num_of_city = random.choice(range(1, maxnum_of_city))
 
-    # city_cand = random.sample(city_names, num_of_city)
-    city_cand = generate_names_from_lists(num_of_city, birds_list, fish_list)
+    city_cand = random.sample(city_names, num_of_city)
     ziprange_incity = (zipcode_range[1] - zipcode_range[0]) // num_of_city
     zip_start = zipcode_range[0]
 
@@ -368,7 +367,7 @@ def create_districts(state_name, school_num_in_dist_made, school_type_in_dist, p
             city_names = generate_names_from_lists(school_num_in_dist_made[i], birds_list, fish_list)
             dist = District(dist_id, state_name, (names[i] + " " + random.choice(DIST_SUFFIX)),
                             school_num_in_dist_made[i], address[i], school_type_in_dist[i % len(school_type_in_dist)],
-                            (zip_init, zip_init + zip_init), city_names)
+                            (zip_init, (zip_init + zip_dist)), city_names)
             districts_list.append(dist)
             total_school += dist.num_of_schools
             zip_init += zip_dist
@@ -381,9 +380,9 @@ def generate_names_from_lists(count, list1, list2):
     names = []
     if(count > 0):
         base = math.ceil(math.sqrt(count))
-        if(base < len(list1) and base < len(list2)):
-            names1 = random.sample(list1, base)
-            names2 = random.sample(list2, base)
+        if(base < len(list1) * len(list2)):
+            names1 = random.sample(list1, min(len(list1), base))
+            names2 = random.sample(list2, min(len(list2), base))
             names = [str(name1) + " " + str(name2) for name1 in names1 for name2 in names2]
         else:
             print("not enough...", base, " ", len(list1), " ", len(list2))
@@ -440,7 +439,7 @@ def create_classes_grades_sections(sch, state_code):
         if(grade == sch.high_grade - 1):
             end = sch.num_of_student - j
         classforgrade_list = create_classes_for_grade(grade_students, teacher_list, stu_tea_ratio)
-        create_sections_stuandtea_csv(state_code, classforgrade_list, grade, sch.sch_id, sch.dist_name, idgen)
+        create_sections_stuandtea_csv(state_code, classforgrade_list, grade, sch.sch_id, sch.dist_id, idgen)
 
         scores = generate_assmts_for_students(len(grade_students), grade, state_code)
         assessment_outcome_list = []

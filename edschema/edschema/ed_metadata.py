@@ -181,6 +181,8 @@ def generate_ed_metadata(scheme_name=None):
                           Column('external_user_student_id', BigInteger, primary_key=True),
                           Column('external_user_id', BigInteger, nullable=False),
                           Column('student_id', BigInteger, ForeignKey('dim_student.student_id'), nullable=False),
+                          Column('rel_start_date', Date, nullable=False),
+                          Column('rel_end_date', Date, nullable=True),
                           )
 
     Index('dim_external_user_student_idx', external_user_student.c.external_user_student_id, unique=True)
@@ -203,6 +205,8 @@ def generate_ed_metadata(scheme_name=None):
                           Column('teacher_section_id', BigInteger, primary_key=True),
                           Column('teacher_id', BigInteger, ForeignKey('dim_teacher.teacher_id'), nullable=False),
                           Column('section_id', BigInteger, ForeignKey('dim_section.section_id'), nullable=False),
+                          Column('rel_start_date', Date, nullable=False),
+                          Column('rel_end_date', Date, nullable=True),
                           )
 
     Index('dim_teacher_section_idx', teacher_section.c.teacher_section_id, unique=True)

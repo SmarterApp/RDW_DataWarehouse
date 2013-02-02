@@ -75,10 +75,10 @@ def generate_ed_metadata(scheme_name=None):
                      Column('district_id', BigInteger, primary_key=True),
                      Column('district_external_id', String(256)),
                      Column('district_name', String(256), nullable=False),
-                     Column('state_code', String(2), nullable=False),
                      Column('address_1', String(256), nullable=True),
                      Column('address_2', String(256), nullable=True),
                      Column('zip_code', String(5), nullable=True),
+                     Column('state_code', None, ForeignKey('dim_state.state_code'), nullable=False),
                      )
 
     Index('dim_district_idx', district.c.dim_district, unique=True)
@@ -88,7 +88,6 @@ def generate_ed_metadata(scheme_name=None):
                    Column('school_external_id', String(256)),
                    Column('school_name', String(256), nullable=False),
                    Column('district_name', String(256), nullable=False),
-                   Column('state_code', String(2), nullable=False),
                    Column('school_categories_type', nullable=True,
                           Enum("Elementary/Secondary School",
                                "Elementary School",
@@ -116,6 +115,7 @@ def generate_ed_metadata(scheme_name=None):
                    Column('address_2', String(256), nullable=True),
                    Column('city', String(100), nullable=True),
                    Column('zip_code', String(5), nullable=True),
+                   Column('state_code', None, ForeignKey('dim_state.state_code'), nullable=False),
                    )
 
     Index('dim_school_idx', school.c.school_id, unique=True)
@@ -124,16 +124,15 @@ def generate_ed_metadata(scheme_name=None):
                         Column('where_taken_id', BigInteger, primary_key=True),
                         Column('where_taken_name', String(256), primary_key=True),
                         Column('district_name', String(256), nullable=False),
-                        Column('state_code', String(2), nullable=False),
                         Column('address_1', String(32), nullable=False),
                         Column('address_2', String(32), nullable=True),
                         Column('city', String(32), nullable=False),
                         Column('zip_code', String(5), nullable=False),
-                        Column('state_code', None, ForeignKey('dim_state.state_code')),
+                        Column('state_code', None, ForeignKey('dim_state.state_code'), nullable=False),
                         Column('country_id', None, ForeignKey('dim_country.country_id'))
                         )
 
-    Index('dim_where_taken_idx', where_taken.c.place_id, unique=True)
+    Index('dim_where_taken_idx', where_taken.c.where_taken_id, unique=True)
 
     grade = Table('dim_grade', metadata,
                   Column('grade_id', String(2), primary_key=True),
@@ -164,14 +163,13 @@ def generate_ed_metadata(scheme_name=None):
                      Column('address_1', String(32), nullable=False),
                      Column('address_2', String(32), nullable=True),
                      Column('city', String(32), nullable=False),
-                     Column('state_code', None, ForeignKey('dim_state.state_code')),
+                     Column('state_code', None, ForeignKey('dim_state.state_code'), nullable=False),
                      Column('zip_code', String(5), nullable=False),
                      Column('gender', String(10), nullable=False),
                      Column('email', String(256), nullable=False),
                      Column('dob', Date, nullable=False),
                      Column('school_id', None, ForeignKey('dim_school.school_id'), nullable=False),
-                     Column('district_id', None, 'dim_district.district_id', nullable=False),
-                     Column('state_code', None, 'dim_state.state_code', nullable=False),
+                     Column('district_id', None, ForeignKey('dim_district.district_id'), nullable=False),
                      )
 
     Index('dim_student_idx', students.c.student_id, unique=True)
@@ -185,7 +183,7 @@ def generate_ed_metadata(scheme_name=None):
                     Column('address_1', String(32), nullable=False),
                     Column('address_2', String(32), nullable=True),
                     Column('city', String(32), nullable=False),
-                    Column('state_code', None, ForeignKey('dim_state.state_code')),
+                    Column('state_code', None, ForeignKey('dim_state.state_code'), nullable=False),
                     Column('zip_code', String(5), nullable=False),
                     )
 
@@ -280,7 +278,7 @@ def generate_ed_metadata(scheme_name=None):
                                Column('date_taken_day', SmallInteger, nullable=False),
                                Column('date_taken_month', SmallInteger, nullable=False),
                                Column('date_taken_year', SmallInteger, nullable=False),
-                               Column('where_taken_id', None, ForeignKey('dim_where_taken.place_id'), nullable=False),
+                               Column('where_taken_id', None, ForeignKey('dim_where_taken.where_taken_id'), nullable=False),
                                Column('asmt_score', SmallInteger, nullable=False),
                                Column('asmt_claim_1_score', SmallInteger, nullable=True),
                                Column('asmt_claim_2_score', SmallInteger, nullable=True),

@@ -27,8 +27,8 @@ from sqlalchemy.types import Enum
 
 __all__ = []
 __version__ = 0.1
-__date__ = '2013-01-31'
-__updated__ = '2013-01-31'
+__date__ = '2013-02-02'
+__updated__ = '2013-02-02'
 
 DBDRIVER = "postgresql+pypostgresql"
 DEBUG = 0

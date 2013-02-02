@@ -119,13 +119,13 @@ def get_list_of_students_report(params, connector=None):
             student['student_middle_name'] = result['student_middle_name']
             student['student_last_name'] = result['student_last_name']
             student['student_full_name'] = result['student_first_name'] + ' ' + result['student_middle_name'] + ' ' + result['student_last_name']
-            student['asmt_grade'] = result['asmt_grade']
             student['enrollment_grade'] = result['enrollment_grade']
 
         assessment = {}
         assessment['teacher_first_name'] = result['teacher_first_name']
         assessment['teacher_last_name'] = result['teacher_last_name']
         assessment['teacher_full_name'] = result['teacher_first_name'] + ' ' + result['teacher_last_name']
+        assessment['asmt_grade'] = result['asmt_grade']
         assessment['asmt_subject'] = result['asmt_subject']
         assessment['asmt_score'] = result['asmt_score']
         assessment['asmt_claim_1_name'] = result['asmt_claim_1_name']

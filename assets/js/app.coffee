@@ -3,12 +3,32 @@ define ["jquery", "cs!widgets/EDWARE.grid.tablegrid"], ($, edwareGrid) ->
   
   columnData = []
   columnItems = []
+  assessmentCutpoints = {}
   
+  getStudentData = (soureURL, callback) ->
+    return false  if soureURL is `undefined` or soureURL is "" or typeof soureURL is "number"
+      
+    myData =
+      districtId: 2
+      schoolId: 1
+      asmtGrade: "1" 
+    
+    $.ajax(
+      type: "POST"
+      url: "/data/list_of_students"
+      data:
+        JSON.stringify(myData);
+      dataType: "json"
+      contentType: "application/json"
+    ).done (data) ->
+      columnData = data
+      callback()
+      
   createStudentGrid = ->
     columnItems = [
       name: "Student"
       index: "Student"
-      field: "student_fullname"
+      field: "student_full_name"
       width: 150
       style: "ui-ellipsis"
       hidden: true
@@ -25,8 +45,8 @@ define ["jquery", "cs!widgets/EDWARE.grid.tablegrid"], ($, edwareGrid) ->
       items: [
         name: "Teacher"
         index: "Teacher"
-        field: "assessments.MATH.teacher_fullname"
-        width: 150
+        field: "assessments.MATH.teacher_full_name"
+        width: 100
         style: "ui-ellipsis"
         resizable: false
       ,
@@ -44,12 +64,13 @@ define ["jquery", "cs!widgets/EDWARE.grid.tablegrid"], ($, edwareGrid) ->
         width: 50
         formatter: "number"
         sorttype: "int"
-        align: "right"
+        align: "center"
+        style:"color-widget-red"
       ,
         name: "Claim 1"
         index: "Claim 1"
         field: "assessments.MATH.asmt_claim_1_score"
-        width: 55
+        width: 60
         formatter: "number"
         sorttype: "int"
         align: "right"
@@ -57,7 +78,7 @@ define ["jquery", "cs!widgets/EDWARE.grid.tablegrid"], ($, edwareGrid) ->
         name: "Claim 2"
         index: "Claim 2"
         field: "assessments.MATH.asmt_claim_2_score"
-        width: 55
+        width: 60
         formatter: "number"
         sorttype: "int"
         align: "right"
@@ -65,7 +86,7 @@ define ["jquery", "cs!widgets/EDWARE.grid.tablegrid"], ($, edwareGrid) ->
         name: "Claim 3"
         index: "Claim 3"
         field: "assessments.MATH.asmt_claim_3_score"
-        width: 55
+        width: 60
         formatter: "number"
         sorttype: "int"
         align: "right"
@@ -73,7 +94,7 @@ define ["jquery", "cs!widgets/EDWARE.grid.tablegrid"], ($, edwareGrid) ->
         name: "Claim 4"
         index: "Claim 4"
         field: "assessments.MATH.asmt_claim_4_score"
-        width: 55
+        width: 60
         formatter: "number"
         sorttype: "int"
         align: "right"
@@ -83,8 +104,8 @@ define ["jquery", "cs!widgets/EDWARE.grid.tablegrid"], ($, edwareGrid) ->
       items: [
         name: "Teacher"
         index: "Teacher"
-        field: "assessments.ELA.teacher_fullname"
-        width: 150
+        field: "assessments.ELA.teacher_full_name"
+        width: 100
         style: "ui-ellipsis"
         resizable: false
       ,
@@ -102,12 +123,13 @@ define ["jquery", "cs!widgets/EDWARE.grid.tablegrid"], ($, edwareGrid) ->
         width: 50
         formatter: "number"
         sorttype: "int"
-        align: "right"
+        align: "center"
+        style:"color-widget-yellow"
       ,
         name: "Claim 1"
         index: "Claim 1"
         field: "assessments.ELA.asmt_claim_1_score"
-        width: 55
+        width: 60
         formatter: "number"
         sorttype: "int"
         align: "right"
@@ -115,7 +137,7 @@ define ["jquery", "cs!widgets/EDWARE.grid.tablegrid"], ($, edwareGrid) ->
         name: "Claim 2"
         index: "Claim 2"
         field: "assessments.ELA.asmt_claim_2_score"
-        width: 55
+        width: 60
         formatter: "number"
         sorttype: "int"
         align: "right"
@@ -123,7 +145,7 @@ define ["jquery", "cs!widgets/EDWARE.grid.tablegrid"], ($, edwareGrid) ->
         name: "Claim 3"
         index: "Claim 3"
         field: "assessments.ELA.asmt_claim_3_score"
-        width: 55
+        width: 60
         formatter: "number"
         sorttype: "int"
         align: "right"
@@ -131,23 +153,19 @@ define ["jquery", "cs!widgets/EDWARE.grid.tablegrid"], ($, edwareGrid) ->
         name: "Claim 4"
         index: "Claim 4"
         field: "assessments.ELA.asmt_claim_4_score"
-        width: 55
+        width: 60
         formatter: "number"
         sorttype: "int"
         align: "right"
       ]
     ]
-    edwareGrid.create "gridTable", columnItems, columnData
     
-  getStudentData = (soureURL) ->
-    return false  if soureURL is `undefined` or soureURL is "" or typeof soureURL is "number"
+    getStudentData "../data/student.json", ->
+      edwareGrid.create "gridTable", columnItems, columnData, assessmentCutpoints
     
-    $.get soureURL, (data) ->
-      columnData = data
-      createStudentGrid()
 
   initialize = ->
     $(document).ready ->
-      getStudentData "../data/student.json"
+      createStudentGrid()
 
   initialize: initialize

@@ -1,3 +1,23 @@
+.color-widget-red {
+  color: #fff;
+  background: #d63b40;
+  font-weight: bold;
+}
+.color-widget-blue {
+  color: #fff;
+  background: #2881cc;
+  font-weight: bold;
+}
+.color-widget-yellow {
+  color: #fff;
+  background: #e3c703;
+  font-weight: bold;
+}
+.color-widget-green {
+  color: #fff;
+  background: #4aa31b;
+  font-weight: bold;
+}
 body {
   font-family: helvetica, arial, sans-serif;
   margin: 0 auto;
@@ -27,23 +47,35 @@ h3 {
   width: 100px;
   height: 20px;
   padding: 5px;
-  background: #999;
+  background: #dbdbdb;
   color: #fff;
   float: left;
+  text-align: center;
 }
 #header .topLinks {
   float: right;
+  color: #565656;
+}
+#header .topLinks a {
+  color: #9f9f9f;
 }
 #breadcrumb {
-  background: #999999;
+  background: #b1b1b1;
   color: #333;
   padding: 5px;
   margin-bottom: 20px;
 }
 #breadcrumb a {
   color: #fff;
+  margin: 0 5px;
+}
+#breadcrumb span {
+  margin: 0 5px;
 }
 /* grid styles */
+.ui-jqgrid .ui-jqgrid-view {
+  font-size: 12px;
+}
 th.ui-th-column div {
   height: auto !important;
   padding: 4px 5px;
@@ -56,13 +88,17 @@ th.ui-th-column div {
 .ui-state-default,
 .ui-widget-content .ui-state-default,
 .ui-widget-header .ui-state-default {
-  background: none;
+  background: #fafafa;
   border: solid 1px #ccc;
   color: #333;
 }
+.ui-state-default .ui-th-column-header {
+  text-align: left;
+  padding-left: 10px !important;
+}
 .ui-widget-content {
   border: none;
-  border-top: solid 1px #ccc;
+  border-top: solid 1px #cbcbcb;
 }
 .ui-corner-all,
 .ui-corner-bottom,
@@ -77,13 +113,14 @@ th.ui-th-column div {
   border-top-left-radius: 0;
 }
 .ui-jqgrid tr.ui-row-ltr td {
-  border-right: solid 1px #ccc;
+  border-right: solid 1px #cbcbcb;
 }
 .ui-jqgrid tr.jqgrow td {
-  border-bottom: solid 1px #ccc;
+  border-bottom: solid 1px #cbcbcb;
 }
 .ui-th-column-header {
-  background: #ccc !important;
+  background: #ebebeb !important;
+  color: #5e5e5e !important;
   font-size: 14px;
 }
 .ui-state-hover,
@@ -97,7 +134,7 @@ th.ui-th-column div {
 }
 #footer {
   color: #ffffff;
-  background-color: #333333;
+  background-color: #b1b1b1;
   margin: 20px 0 10px 0;
   padding: 5px;
   font-size: 11px;

@@ -94,7 +94,7 @@ def get_list_of_students_report(params, connector=None):
                                  .join(fact_asmt_outcome, dim_student.c.student_id == fact_asmt_outcome.c.student_id)
                                  .join(dim_asmt_type, dim_asmt_type.c.asmt_type_id == fact_asmt_outcome.c.asmt_type_id)
                                  .join(dim_stdnt_tmprl_data, dim_stdnt_tmprl_data.c.student_id == dim_student.c.student_id)
-                                 .outerjoin(dim_teacher, dim_teacher.c.teacher_id == fact_asmt_outcome.c.teacher_id)])
+                                 .join(dim_teacher, dim_teacher.c.teacher_id == fact_asmt_outcome.c.teacher_id)])
         query = query.where(dim_stdnt_tmprl_data.c.school_id == schoolId)
         query = query.where(and_(dim_asmt_type.c.asmt_grade == asmtGrade))
         query = query.where(and_(dim_stdnt_tmprl_data.c.district_id == districtId))
@@ -102,6 +102,7 @@ def get_list_of_students_report(params, connector=None):
         if asmtSubject is not None:
             query.where(dim_grade.c.asmt_subject.in_(asmtSubject))
 
+    query = query.limit(30)
     results = connector.get_result(query)
     connector.close_connection()
 
@@ -109,7 +110,7 @@ def get_list_of_students_report(params, connector=None):
     for result in results:
         student_id = result['student_id']
         student = {}
-        assessments = []
+        assessments = {}
         if student_id in students:
             student = students[student_id]
             assessments = student['assessments']
@@ -117,12 +118,15 @@ def get_list_of_students_report(params, connector=None):
             student['student_first_name'] = result['student_first_name']
             student['student_middle_name'] = result['student_middle_name']
             student['student_last_name'] = result['student_last_name']
-            student['asmt_grade'] = result['asmt_grade']
-            student['enrollment_grade'] = result['enrollment_grade']
+            student['student_full_name'] = result['student_first_name'] + ' ' + result['student_middle_name'] + ' ' + result['student_last_name']
+            #student['enrollment_grade'] = result['enrollment_grade']
+            student['enrollment_grade'] = '5'
 
         assessment = {}
         assessment['teacher_first_name'] = result['teacher_first_name']
         assessment['teacher_last_name'] = result['teacher_last_name']
+        assessment['teacher_full_name'] = result['teacher_first_name'] + ' ' + result['teacher_last_name']
+        assessment['asmt_grade'] = result['asmt_grade']
         assessment['asmt_subject'] = result['asmt_subject']
         assessment['asmt_score'] = result['asmt_score']
         assessment['asmt_claim_1_name'] = result['asmt_claim_1_name']
@@ -134,9 +138,12 @@ def get_list_of_students_report(params, connector=None):
         assessment['asmt_claim_3_score'] = result['asmt_claim_3_score']
         assessment['asmt_claim_4_score'] = result['asmt_claim_4_score']
 
-        assessments.append(assessment)
+        assessments[result['asmt_subject']] = assessment
         student['assessments'] = assessments
 
         students[student_id] = student
 
-    return students.values()
+    results = []
+    for key, value in students.items():
+        results.append(value)
+    return results

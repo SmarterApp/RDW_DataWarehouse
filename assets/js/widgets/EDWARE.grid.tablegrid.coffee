@@ -65,6 +65,8 @@ define [
             useColSpanStyle: false
             groupHeaders: groupHeaders
             fixed: true
+            
+        $(this).find(".jqg-second-row-header th:first-child").css "background", "#ffffff"
         
     ) jQuery
     
@@ -72,24 +74,25 @@ define [
     #    * Creates EDWARE grid
     #    * @param tableId - The container id for grid
     #    * @param columnItems
-    #    * @param panelData
+    #    * @param columnData
+    #    * @param assessmentCutpoints
     #    * @param options
     #    
-    create = (tableId, columnItems, panelData, options) ->
+    create = (tableId, columnItems, columnData, assessmentCutpoints, options) ->
       
-      panelData = panelData[columnItems.root]  if columnItems.root and panelData isnt null and panelData isnt `undefined`
+      columnData = columnData[columnItems.root]  if columnItems.root and columnData isnt null and columnData isnt `undefined`
       
       gridOptions =
-        data: panelData
+        data: columnData
         datatype: "local"
         height: "auto"
         viewrecords: true
         autoencode: true
         rowNum: 10000
         loadComplete: ->
-           $("tr.jqgrow:odd").css "background", "#DDDDDC"
+           $("tr.jqgrow:odd").css "background", "#f8f8f8"
   
-      if panelData is null or panelData is `undefined` or panelData.length < 1
+      if columnData is null or columnData is `undefined` or columnData.length < 1
         util.displayErrorMessage "There is no data available for your request. Please contact your IT administrator."
       else
         gridOptions = $.extend(gridOptions, options)  if options

@@ -130,6 +130,8 @@ function setup_functional_test_dependencies {
 
     cd "$WORKSPACE/functional_tests"
     python setup.py develop
+    
+    pip install pep8
 
     echo "Finish functional test dependencies setup"
 }
@@ -140,7 +142,7 @@ function run_functional_tests {
     for var in "${TESTS[@]}"
     do
         cd "$WORKSPACE/functional_tests/$var"
-        behave --tags=-wip
+        nosetests -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
     done
 
     echo "Finish running functional tests"
@@ -178,6 +180,7 @@ function main {
         restart_apache
         setup_functional_test_dependencies
         run_functional_tests
+        check_pep8 "functional_tests"
     fi
 }
 

@@ -25,7 +25,7 @@ class ApiHelper:
         requests_log.setLevel(logging.FATAL)
 
     # Makes http requests
-    def make_request(self, verb, end_point):
+    def send_request(self, verb, end_point):
         verb = verb.upper()
         if (verb == "OPTIONS"):
             self._response = requests.options(SMARTER_URL + end_point)
@@ -42,7 +42,7 @@ class ApiHelper:
         assert_that(expected, is_(code), 'Actual return code: {0} Expected: {1}'.format(expected, code))
 
     # Checks the size of json response
-    def check_resp_elements(self, expected_size):
+    def check_number_resp_elements(self, expected_size):
         json_body = self._response.json()
         assert_that((type(json_body) is list), "Response body is not a list")
         assert_that(len(json_body), equal_to(int(expected_size)), 'Actual size: {0} Expected: {1}'.format(len(json_body), expected_size))

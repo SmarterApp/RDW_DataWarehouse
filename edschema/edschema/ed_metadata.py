@@ -148,7 +148,6 @@ def generate_ed_metadata(scheme_name=None):
                      Column('section_external_id', String(256), nullable=False),
                      Column('section_name', String(256)),
                      Column('class_name', String(256)),
-                     Column('subject', String(100)),
                      Column('school_id', None, ForeignKey('dim_school.school_id'), nullable=False),
                      )
 
@@ -244,6 +243,7 @@ def generate_ed_metadata(scheme_name=None):
                        Column('asmt_period_year', SmallInteger, nullable=False),
                        Column('asmt_version', String(16), nullable=False),
                        Column('asmt_grade', None, ForeignKey('dim_grade.grade_id')),
+                       Column('asmt_subject', String(100)),
                        Column('asmt_claim_1_name', String(256), nullable=True),
                        Column('asmt_claim_2_name', String(256), nullable=True),
                        Column('asmt_claim_3_name', String(256), nullable=True),

@@ -5,7 +5,7 @@
 			{"name":"Math","items":[
 				{"name":"Teacher","index":"Teacher","field":"assessments.MATH.teacher_full_name","width":100,"style":"ui-ellipsis","resizable":false},
 				{"name":"Grade","index":"Grade","field":"assessments.MATH.asmt_grade","width":50,"sorttype":"int","align":"center","resizable":false},
-				{"name":"Overall","index":"Overall","field":"assessments.MATH.asmt_score","width":60,"formatter":"number","sorttype":"int","align":"center","style":"color-widget-red"},
+				{"name":"Overall","index":"Overall","field":"assessments.MATH.asmt_score","width":60,"formatter":"number","sorttype":"int","align":"center"},
 				{"name":"Concepts and Procedures","index":"Concepts and Procedures","field":"assessments.MATH.asmt_claim_1_score","width":110,"formatter":"number","sorttype":"int","align":"right"},
 				{"name":"Problem Solving","index":"Problem Solving","field":"assessments.MATH.asmt_claim_2_score","width":60,"formatter":"number","sorttype":"int","align":"right"},
 				{"name":"Communicating Reasoning","index":"Communicating Reasoning","field":"assessments.MATH.asmt_claim_3_score","width":110,"formatter":"number","sorttype":"int","align":"right"},
@@ -14,7 +14,7 @@
 			{"name":"ELA","items":[
 				{"name":"Teacher","index":"Teacher","field":"assessments.ELA.teacher_full_name","width":100,"style":"ui-ellipsis","resizable":false},
 				{"name":"Grade","index":"Grade","field":"assessments.ELA.asmt_grade","width":50,"sorttype":"int","align":"center","resizable":false},
-				{"name":"Overall","index":"Overall","field":"assessments.ELA.asmt_score","width":60,"formatter":"number","sorttype":"int","align":"center","style":"color-widget-yellow"},
+				{"name":"Overall","index":"Overall","field":"assessments.ELA.asmt_score","width":60,"formatter":"number","sorttype":"int","align":"center"},
 				{"name":"Reading","index":"Reading","field":"assessments.ELA.asmt_claim_1_score","width":60,"formatter":"number","sorttype":"int","align":"right"},
 				{"name":"Writing","index":"Writing","field":"assessments.ELA.asmt_claim_2_score","width":60,"formatter":"number","sorttype":"int","align":"right"},
 				{"name":"Speaking & Listening","index":"Speaking & Listening","field":"assessments.ELA.asmt_claim_3_score","width":90,"formatter":"number","sorttype":"int","align":"right"},

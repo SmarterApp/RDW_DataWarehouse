@@ -148,19 +148,19 @@ class Score:
     '''
     Score object
     '''
-    def __init__(self, overall, claims, level):
+    def __init__(self, overall, claims):
         '''
         Constructor
         '''
         self.overall = overall
         self.claims = claims
-        self.level = level
+        # self.level = level
 
     def __str__(self):
         '''
         String method
         '''
-        return ("Score:[overall: %s, claims: %s, level: %s]" % (self.overall, self.claims, self.level))
+        return ("Score:[overall: %s, claims: %s]" % (self.overall, self.claims))
 
 
 class WhereTaken:

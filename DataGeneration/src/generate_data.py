@@ -458,7 +458,12 @@ def create_classes_grades_sections(sch, state):
         total_count[3] += len(grade_students)
         if(grade == sch.high_grade - 1):
             end = sch.num_of_student - j
-        classforgrade_list = create_classes_for_grade(grade_students, teacher_list, sch.stu_tea_ratio)
+
+        teach = teacher_list
+        if(num_of_tea_for_grade < len(teacher_list)):
+            teach = random.sample(teacher_list, num_of_tea_for_grade)
+
+        classforgrade_list = create_classes_for_grade(grade_students, teach, sch.stu_tea_ratio)
 
         # create_sections_stuandtea_csv(state['code'], classforgrade_list, grade, sch.sch_id, sch.dist_name, idgen)
         student_temporal_list = create_student_temporal_data(state['code'], classforgrade_list, grade, sch.sch_id, sch.dist_id)

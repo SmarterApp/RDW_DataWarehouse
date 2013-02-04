@@ -107,22 +107,22 @@ def generate_assmt_scores(state, asmt_type, year, period, grade, total):
 def generate_allscores(score_list, levels, asmt_type, grade):
     scores = []
     if(score_list is not None and len(score_list) > 0):
-        score_list.sort()
+        # score_list.sort()
         # generate absolute count for each of levels
-        level_count = perc_to_count(levels, len(score_list))
+        # level_count = perc_to_count(levels, len(score_list))
 
-        start = 0
-        print(len(score_list), levels)
-        for lev in range(len(level_count)):
-            end = start + level_count[lev]
-            for i in range(start, end):
-                if(i >= len(score_list)):
-                    print("**************")
-
-                total_score = score_list[i]
-                claims_score = generate_claims(total_score, asmt_type, grade)
-                scores.append(Score(total_score, claims_score, lev))
-            start = end
+        # start = 0
+        # print(len(score_list), levels)
+        # for lev in range(len(level_count)):
+        #    end = start + level_count[lev]
+        # for i in range(start, end):
+                # if(i >= len(score_list)):
+        #   print("**************")
+        for over_score in score_list:
+            total_score = over_score
+            claims_score = generate_claims(total_score, asmt_type, grade)
+            scores.append(Score(total_score, claims_score))
+        # start = end
 
     scores_list = list(scores)
     random.shuffle(scores_list)

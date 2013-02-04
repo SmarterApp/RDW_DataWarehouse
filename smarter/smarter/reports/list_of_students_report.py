@@ -102,7 +102,7 @@ def get_list_of_students_report(params, connector=None):
         if asmtSubject is not None:
             query.where(dim_grade.c.asmt_subject.in_(asmtSubject))
 
-    query = query.limit(30)
+    #query = query.limit(30)
     results = connector.get_result(query)
     connector.close_connection()
 
@@ -120,7 +120,6 @@ def get_list_of_students_report(params, connector=None):
             student['student_last_name'] = result['student_last_name']
             student['student_full_name'] = result['student_first_name'] + ' ' + result['student_middle_name'] + ' ' + result['student_last_name']
             student['enrollment_grade'] = result['enrollment_grade']
-            # student['enrollment_grade'] = '5'
 
         assessment = {}
         assessment['teacher_first_name'] = result['teacher_first_name']
@@ -158,10 +157,10 @@ def get_cut_points():
     math_cutpoint["asmt_cut_point_name_2"] = "MATH cutpoint name2"
     math_cutpoint["asmt_cut_point_name_3"] = "MATH cutpoint name3"
     math_cutpoint["asmt_cut_point_name_4"] = "MATH cutpoint name4"
-    math_cutpoint["asmt_cut_point_1"] = 40
-    math_cutpoint["asmt_cut_point_2"] = 50
-    math_cutpoint["asmt_cut_point_3"] = 60
-    math_cutpoint["asmt_cut_point_4"] = 70
+    math_cutpoint["asmt_cut_point_1"] = 400
+    math_cutpoint["asmt_cut_point_2"] = 600
+    math_cutpoint["asmt_cut_point_3"] = 800
+    math_cutpoint["asmt_cut_point_4"] = 1000
     cutpoints['MATH'] = math_cutpoint
 
     ela_cutpoint = {}
@@ -169,10 +168,10 @@ def get_cut_points():
     ela_cutpoint["asmt_cut_point_name_2"] = "ELA cutpoint name2"
     ela_cutpoint["asmt_cut_point_name_3"] = "ELA cutpoint name3"
     ela_cutpoint["asmt_cut_point_name_4"] = "ELA cutpoint name4"
-    ela_cutpoint["asmt_cut_point_1"] = 80
-    ela_cutpoint["asmt_cut_point_2"] = 90
-    ela_cutpoint["asmt_cut_point_3"] = 100
-    ela_cutpoint["asmt_cut_point_4"] = 110
+    ela_cutpoint["asmt_cut_point_1"] = 200
+    ela_cutpoint["asmt_cut_point_2"] = 500
+    ela_cutpoint["asmt_cut_point_3"] = 800
+    ela_cutpoint["asmt_cut_point_4"] = 1100
     cutpoints['ELA'] = ela_cutpoint
 
     return cutpoints

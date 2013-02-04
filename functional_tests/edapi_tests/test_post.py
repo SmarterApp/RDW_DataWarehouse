@@ -36,7 +36,7 @@ class TestPost(unittest.TestCase):
 
     def test_valid_case(self):
         self._api_helper.set_request_header("content-type", "application/json")
-        payload = {'studentId': 1001, 'assessmentId': 1}
+        payload = {'studentId': 1, 'assessmentId': 1}
         self._api_helper.set_payload(json.dumps(payload))
         self._api_helper.send_request("POST", "/data/individual_student_report")
         self._api_helper.check_response_code(200)

@@ -38,7 +38,7 @@ class TestGet(unittest.TestCase):
 
     def test_get_valid_parameters(self):
         self._api_helper.set_request_header("content-type", "application/json")
-        self._api_helper.send_request("GET", "/data/individual_student_report?studentId=1001&assessmentId=1")
+        self._api_helper.send_request("GET", "/data/individual_student_report?studentId=1&assessmentId=1")
         self._api_helper.check_response_code(200)
         self._api_helper.check_number_resp_elements(1)
         self._api_helper.check_each_item_in_body_for_fields(["asmt_period", "asmt_claim_2_score", "asmt_claim_4_name", "asmt_claim_3_name", "last_name", "asmt_claim_1_name", "asmt_claim_4_score", "asmt_claim_1_score", "asmt_claim_3_score", "first_name", "asmt_claim_2_name", "asmt_score", "student_id", "asmt_subject", "middle_name"])

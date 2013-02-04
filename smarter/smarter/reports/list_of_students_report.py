@@ -12,25 +12,48 @@ from sqlalchemy.sql import select
 from sqlalchemy.sql import and_
 
 
+__districtId = 'districtId'
+__schoolId = 'schoolId'
+__asmtGrade = 'asmtGrade'
+__asmtSubject = 'asmtSubject'
+
+# Report for List of Students.
+# This function will be refactor when schema is updated to the latest.
+# Output:
+#    Cutpoint for each subject
+#    and
+#    Array of
+#     Student last name
+#     student first name
+#     student middle initial
+#     student assessment grade
+#     student enrollment grade
+#     assessment array [teacher full name, assmt subject, claim scores and descriptions ]
+
+
 @report_config(
     name="list_of_students",
     params={
-        "districtId": {
+        __districtId: {
             "type": "integer",
             "required": True
         },
-        "schoolId": {
+        __schoolId: {
             "type": "integer",
             "required": True
         },
-        "asmtGrade": {
+        __asmtGrade: {
             "type": "string",
             "maxLength": 2,
-            "required": True
+            "required": True,
+            "pattern": "^[K0-9]+$"
         },
-        "asmtSubject": {
+        __asmtSubject: {
             "type": "array",
             "required": False,
+            "minLength": 1,
+            "maxLength": 100,
+            "pattern": "^[a-zA-Z0-9\.]+$",
             "items": {
                 "type": "string"
             }
@@ -42,26 +65,17 @@ def get_list_of_students_report(params, connector=None):
     if connector is None:
         connector = DBConnector()
 
-    districtId = params['districtId']
-    schoolId = params['schoolId']
-    asmtGrade = params['asmtGrade']
+    districtId = params[__districtId]
+    schoolId = params[__schoolId]
+    asmtGrade = params[__asmtGrade]
 
     # asmtSubject is optional.
     asmtSubject = None
-    if 'asmtSubject' in params:
-        asmtSubject = params['asmtSubject']
+    if __asmtSubject in params:
+        asmtSubject = params[__asmtSubject]
 
     # get sql session
     connector.open_connection()
-    '''
-    Output:
-    Student last name
-    student first name
-    student middle initial
-    student assessment grade
-    student enrollment grade
-    assessment array [teacher full name, assmt subject, claim scores and descriptions ]
-    '''
 
     dim_student = connector.get_table('dim_student')
     dim_stdnt_tmprl_data = connector.get_table('dim_stdnt_tmprl_data')
@@ -100,12 +114,12 @@ def get_list_of_students_report(params, connector=None):
         query = query.where(and_(dim_stdnt_tmprl_data.c.district_id == districtId))
 
         if asmtSubject is not None:
-            query.where(dim_grade.c.asmt_subject.in_(asmtSubject))
+            query = query.where(dim_asmt_type.c.asmt_subject.in_(asmtSubject))
 
-    #query = query.limit(30)
     results = connector.get_result(query)
     connector.close_connection()
 
+    # Formatting data for Front End
     students = {}
     for result in results:
         student_id = result['student_id']
@@ -141,6 +155,7 @@ def get_list_of_students_report(params, connector=None):
 
         students[student_id] = student
 
+    # including assessments and cutpoints to returning JSON
     results = {}
     assessments = []
     for key, value in students.items():
@@ -150,6 +165,9 @@ def get_list_of_students_report(params, connector=None):
     return results
 
 
+# This is throw away function.
+# returning cutpoints in JSON.
+# returing when new schema is used
 def get_cut_points():
     cutpoints = {}
     math_cutpoint = {}

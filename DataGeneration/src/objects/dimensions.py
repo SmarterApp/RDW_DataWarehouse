@@ -66,8 +66,8 @@ class Teacher(Person):
     '''
 
     def __init__(self, firstname=None, middlename=None, lastname=None, gender=None, email=None, address=None):
-
         super().__init__(firstname, middlename, lastname, gender, email, address)
+        self.teacher_id = None
 
     def __str__(self):
         return ("%s %s %s" % (self.firstname, self.middlename, self.lastname))

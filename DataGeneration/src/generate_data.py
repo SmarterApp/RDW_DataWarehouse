@@ -175,7 +175,7 @@ def generate_data(db_states):
 
             # create classes, grades, sections, teachers and students for each school
             for sch in school_list:
-                create_classes_grades_sections(sch, state['code'])
+                create_classes_grades_sections(sch, state)
 
         assessment_types = generate_assessment_types()
         create_csv(assessment_types, ASSESSMENT_TYPES)
@@ -411,7 +411,7 @@ def generate_address_from_list(count, words_list):
     return adds
 
 
-def create_classes_grades_sections(sch, state_code):
+def create_classes_grades_sections(sch, state):
     '''
     Main function to generate classes, grades, sections, students and teachers for a school
     '''
@@ -421,7 +421,7 @@ def create_classes_grades_sections(sch, state_code):
 
     # generate teacher list for a school
     # teacher_list = create_teachers(sch.school_name, sch.num_of_teacher)
-    teacher_list = generate_people(TEACHER, sch.num_of_teacher, sch, state_code, random.choice(GENDER_RARIO))
+    teacher_list = generate_people(TEACHER, sch.num_of_teacher, sch, state['code'], random.choice(GENDER_RARIO))
     total_count[4] += len(teacher_list)
 
     # for each grade
@@ -431,7 +431,7 @@ def create_classes_grades_sections(sch, state_code):
         # generate student list for a grade
         # grade_students = create_students(sch.school_name, end)
 
-        grade_students = generate_people(STUDENT, end, sch, state_code, random.choice(GENDER_RARIO), grade)
+        grade_students = generate_people(STUDENT, end, sch, state['code'], random.choice(GENDER_RARIO), grade)
         create_csv(grade_students, STUDENTS)
 
         j += len(grade_students)
@@ -439,31 +439,76 @@ def create_classes_grades_sections(sch, state_code):
         if(grade == sch.high_grade - 1):
             end = sch.num_of_student - j
         classforgrade_list = create_classes_for_grade(grade_students, teacher_list, stu_tea_ratio)
-        create_sections_stuandtea_csv(state_code, classforgrade_list, grade, sch.sch_id, sch.dist_id, idgen)
+        # create_sections_stuandtea_csv(state['code'], classforgrade_list, grade, sch.sch_id, sch.dist_name, idgen)
+        student_temporal_list = create_student_temporal_data(state['code'], classforgrade_list, grade, sch.sch_id, sch.dist_name)
+        create_csv(student_temporal_list, STUDENT_SECTIONS)
+        create_csv(classforgrade_list, CLASSES)
 
-        scores = generate_assmts_for_students(len(grade_students), grade, state_code)
+        scores = generate_assmts_for_students(len(grade_students), grade, state['name'])
         assessment_outcome_list = []
         hist_assessment_outcome_list = []
 
-        for aclass in classforgrade_list:
-            for section in aclass.section_stu_map.items():
-                for student in section[1]:
-                    for score in scores.items():
-                        asmt_id = score[0].split('_')[1]
-                        year = score[0].split('_')[0]
-                        asmt = [x for x in ASSESSMENT_TYPES_LIST if x.assmt_id == asmt_id]
-                        if year == date.today().year:
-                            ###
-                            #### START HERE 2/1/13
-                            if asmt:
-                                asmt = asmt[0]
-                            assessment_outcome_list.append()
-                        else:
-                            pass
+#START HERE 2/1/13
+#START HERE 2/1/13
+#START HERE 2/1/13
+        for stu_tmprl in student_temporal_list:
+            for score in scores.items():
+                asmt_id = int(score[0].split('_')[1])
+                year = score[0].split('_')[0]
+                asmt = [x for x in ASSESSMENT_TYPES_LIST if x.assmt_id == asmt_id][0]
+                subject = stu_tmprl.student_class.sub_name
+                if subject == 'Math':
+                    subject = 'MATH'
+                if int(year) == date.today().year and stu_tmprl.student_class.sub_name == asmt.subject:
+                    new_id = idgen.get_id()
+                    teacher_list = list(stu_tmprl.student_class.section_tea_map.values())
+                    teacher_list = [item for sub in teacher_list for item in sub]  # flatten teacher_list
+                    teacher = teacher_list[0]
+                    teacher_id = teacher.teacher_id
+                    if len(score[1]) == 0:
+                        print(score, stu_tmprl)
+                    outcome = AssessmentOutcome(new_id, asmt_id, stu_tmprl.student_id, stu_tmprl.student_tmprl_id, teacher_id, 'date_taken', 'dtd', 'dtm', 'dty', 'wti', score[1].pop(), 'dtaken')
+                    assessment_outcome_list.append(outcome)
+
+        create_csv(assessment_outcome_list, ASSESSMENT_OUTCOME)
+#        print('hist_asses')
+#        for aclass in classforgrade_list:
+#            for section in aclass.section_stu_map.items():
+#                for student in section[1]:
+#                    for score in scores.items():
+#                        asmt_id = score[0].split('_')[1]
+#                        year = score[0].split('_')[0]
+#                        asmt = [x for x in ASSESSMENT_TYPES_LIST if x.assmt_id == asmt_id]
+#                        print('year')
+#                        if int(year) == date.today().year:
+#                            ###
+#                            #### START HERE 2/1/13
+#                            new_id = idgen.get_id()
+#                            outcome = AssessmentOutcome(new_id, student.student_id, )
+#                            assessment_outcome_list.append()
+#                        else:
+#                            pass
                         #if score[0].split('_')[1]
 #        for it in scores.items():
 #            pass
         #fds2f
+
+
+def create_student_temporal_data(state_code, class_list, grade, school_id, district_name):
+    '''
+    Creates and returns a list of StudentTemporalData objects
+    '''
+    temporal_list = []
+
+    for cls in class_list:
+
+        for sect, stus in cls.section_stu_map.items():
+            for stu in stus:
+                tmprl_id = idgen.get_id()
+                student_temporal = StudentTemporalData(tmprl_id, stu.student_id, grade, school_id, cls, sect)
+                temporal_list.append(student_temporal)
+
+    return temporal_list
 
 
 def create_classes_for_grade(grade_students, teacher_list, stu_tea_ratio):
@@ -489,6 +534,8 @@ def create_classes_for_grade(grade_students, teacher_list, stu_tea_ratio):
         if(num_of_teacher < 1):
             num_of_teacher = 1
 
+        if len(teacher_list) < num_of_teacher:
+            print('tlist')
         subject_teachers = random.sample(teacher_list, num_of_teacher)
         subject_classes = create_classes(subj, class_num, grade_students, subject_teachers, stu_tea_ratio)
         total_classes.extend(subject_classes)

@@ -129,10 +129,12 @@ def _generate_teachers(total, male_total, school, state_code):
     '''
 
     teachers = []
+    idgen = IdGen()
     peopleNames = PeopleNames()
     for i in range(total):
         teacher = Teacher()
         gennames.assign_random_name(i, teacher, male_total, peopleNames)
+        teacher.teacher_id = idgen.get_id()
 
         # other teacher stuff?
         teachers.append(teacher)

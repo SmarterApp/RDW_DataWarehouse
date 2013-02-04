@@ -188,15 +188,16 @@ class WhereTaken:
         return [self.place_id, self.address_1, self.address_2, self.address_3, self.city, self.state, self.zip, self.country]
 
 
-class AssessmentOutcome:
+class AssessmentOutcome(object):
     '''
     Assessment outcome object
     Should map to the fact_asmt_outcome table
     '''
-    def __init__(self, asmnt_out_id, student_id, stdnt_tmprl_id, teacher_id, date_taken, date_taken_day, date_taken_month, date_taken_year,
+    def __init__(self, asmnt_out_id, asmnt_type_id, student_id, stdnt_tmprl_id, teacher_id, date_taken, date_taken_day, date_taken_month, date_taken_year,
                  where_taken_id, score, asmt_create_date):
 
         self.asmnt_out_id = asmnt_out_id
+        self.asmnt_type_id = asmnt_type_id
         self.student_id = student_id
         self.stdnt_tmprl_id = stdnt_tmprl_id
         self.teacher_id = teacher_id
@@ -207,6 +208,39 @@ class AssessmentOutcome:
         self.where_taken_id = where_taken_id
         self.score = score
         self.asmt_create_date = asmt_create_date
+
+    def getRow(self):
+        claims = list(self.score.claims.items())
+
+        return [self.asmnt_out_id, self.asmnt_type_id, self.student_id, self.stdnt_tmprl_id, self.teacher_id, self.date_taken, self.date_taken_day, self.date_taken_month, self.date_taken_year,
+                self.where_taken_id, self.score.overall, claims[0][0], claims[0][1], claims[1][0], claims[1][1], claims[2][0], claims[2][1], claims[3][0], claims[3][1], self.asmt_create_date]
+
+
+class StudentTemporalData(object):
+    '''
+    Object to match the student_tmprl_data table
+    '''
+    def __init__(self, student_tmprl_id, student_id, grade_id, school_id, student_class, section_id):
+        self.student_tmprl_id = student_tmprl_id
+        self.student_id = student_id
+        self.grade_id = grade_id
+        self.school_id = school_id
+        self.student_class = student_class
+        self.section_id = section_id
+        self.district_id = None
+        self.effective_date = None
+        self.end_date = None
+
+    def getRow(self):
+        eff_date = self.effective_date
+        end_date = self.end_date
+
+        if eff_date is None:
+            eff_date = ''
+        if end_date is None:
+            end_date = ''
+
+        return [self.student_tmprl_id, self.student_id, self.effective_date, self.end_date, self.grade_id, self.district_id, self.school_id, self.student_class.class_id, self.section_id]
 
 
 def generate_ramdom_name():

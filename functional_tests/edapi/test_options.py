@@ -7,7 +7,7 @@ import unittest
 from edapi.api_helper import ApiHelper
 
 
-class Test(unittest.TestCase):
+class TestOptions(unittest.TestCase):
 
     def setUp(self):
         self._api_helper = ApiHelper()
@@ -29,6 +29,11 @@ class Test(unittest.TestCase):
         self._api_helper.check_response_code("200")
         values = {'type': 'integer', 'required': 'true'}
         self._api_helper.check_response_fields_and_values("studentId", values)
+
+    def test_options_invalid_endpoint(self):
+        self._api_helper.make_request("OPTIONS", "/data/dummy_report")
+        self._api_helper.check_response_code("404")
+        self._api_helper.check_resp_error("Report dummy_report is not found")
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

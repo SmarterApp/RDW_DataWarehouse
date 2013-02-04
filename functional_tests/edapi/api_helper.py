@@ -76,6 +76,13 @@ class ApiHelper:
     def set_request_header(self, key, value):
         self._request_header['headers'] = {key: value}
 
+    def set_payload(self, payload):
+        self._request_header['data'] = payload
+
+    def check_resp_error(self, msg):
+        json_body = self._response.json()
+        assert_that(json_body['error'], equal_to(msg))
+
     # key is a string, dictionary based, separated by :
     # Map is the data from the table from the test steps (Feature file)
     def recursively_get_map(self, body, key):

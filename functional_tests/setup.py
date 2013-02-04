@@ -22,4 +22,3 @@ setup(name='functional_tests',
       dependency_links=["http://packages.wgenhq.net/pynest/"],
       install_requires=install_requires,
       )
-

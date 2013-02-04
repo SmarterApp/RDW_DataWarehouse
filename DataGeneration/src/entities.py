@@ -222,7 +222,7 @@ class StudentTemporalData(object):
     '''
     Object to match the student_tmprl_data table
     '''
-    def __init__(self, student_tmprl_id, student_id, grade_id, district_id,school_id, student_class, section_id):
+    def __init__(self, student_tmprl_id, student_id, grade_id, district_id, school_id, student_class, section_id):
         self.student_tmprl_id = student_tmprl_id
         self.student_id = student_id
         self.grade_id = grade_id

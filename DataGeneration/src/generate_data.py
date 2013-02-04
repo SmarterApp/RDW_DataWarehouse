@@ -446,6 +446,7 @@ def create_classes_grades_sections(sch, state):
     print("num_of_tea_for_grade2 ", num_of_tea_for_grade, len(teacher_list), num_of_tea_for_grade)
 
     total_count[4] += len(teacher_list)
+    create_csv(teacher_list, TEACHERS)
 
     j = 0
     for grade in range(sch.low_grade, sch.high_grade + 1):

@@ -2,9 +2,9 @@ from setuptools import setup, find_packages
 
 install_requires = [
     'nose',  # functional testing framework
-    'selenium', # for UI testing		
-    'Requests', # for restful web services
-    'PyHamcrest', # for assertion
+    'selenium',  # for UI testing
+    'Requests',  # for restful web services
+    'PyHamcrest',  # for assertion
     'virtualenv'  # for scaffolding tests
     ]
 
@@ -22,3 +22,4 @@ setup(name='functional_tests',
       dependency_links=["http://packages.wgenhq.net/pynest/"],
       install_requires=install_requires,
       )
+

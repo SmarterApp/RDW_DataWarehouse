@@ -30,7 +30,7 @@ class District:
     District object
     '''
     # total_id = 0
-    def __init__(self, dist_id, state_name, dist_name, num_of_schools, address_1, school_type_in_dist, zipcode_range, city_names):
+    def __init__(self, dist_id, state_name, dist_name, num_of_schools, address_1, school_type_in_dist, zipcode_range, city_names, category):
         '''
         Constructor
         '''
@@ -44,6 +44,7 @@ class District:
         self.school_type_in_dist = school_type_in_dist
         self.zipcode_range = zipcode_range
         self.city_names = city_names
+        self.category = category
 
     def __str__(self):
         '''
@@ -52,7 +53,7 @@ class District:
         return ("District:[dist_id: %s, state_name: %s, num_of_schools: %s, dist_name: %s, address_1: %s, school_type_in_dist: %s]" % (self.dist_id, self.state_name, self.num_of_schools, self.dist_name, self.address_1, self.school_type_in_dist))
 
     def getRow(self):
-        return [self.dist_id, self.state_name, self.dist_name, self.address_1]
+        return [self.dist_id, self.category, self.dist_name, self.address_1]
 
 
 class School:
@@ -60,7 +61,7 @@ class School:
     School object
     '''
     # total_id = 0
-    def __init__(self, sch_id, dist_id, school_name, num_of_student, num_of_teacher, address1, school_type, low_grade, high_grade, place_id):
+    def __init__(self, sch_id, dist_id, school_name, num_of_student, stu_tea_ratio, address1, school_type, low_grade, high_grade, place_id, category):
         '''
         Constructor
         '''
@@ -70,11 +71,12 @@ class School:
         self.dist_id = dist_id
         self.school_name = school_name
         self.num_of_student = num_of_student
-        self.num_of_teacher = num_of_teacher
+        self.stu_tea_ratio = stu_tea_ratio
         self.address1 = address1
         self.school_type = school_type
         self.low_grade = low_grade
         self.high_grade = high_grade
+        self.category = category
 
         # place_id is where_taken_id
         self.place_id = place_id
@@ -83,10 +85,10 @@ class School:
         '''
         String method
         '''
-        return ("School:[sch_id: %s, dist_id: %s, num_of_student: %s, num_of_teacher: %s, school_name: %s, address1: %s, school_type: %s, low_grade: %s, high_grade: %s, place_id:%s]" % (self.sch_id, self.dist_id, self.num_of_student, self.num_of_teacher, self.school_name, self.address1, self.school_type, self.low_grade, self.high_grade, self.place_id))
+        return ("School:[sch_id: %s, dist_id: %s, num_of_student: %s, stu_tea_ratio: %s, school_name: %s, address1: %s, school_type: %s, low_grade: %s, high_grade: %s, place_id:%s]" % (self.sch_id, self.dist_id, self.num_of_student, self.stu_tea_ratio, self.school_name, self.address1, self.school_type, self.low_grade, self.high_grade, self.place_id))
 
     def getRow(self):
-        return [self.sch_id, self.school_name, self.dist_id, self.address1, self.school_type]
+        return [self.sch_id, self.category, self.school_name, self.address1]
 
 
 class Class:
@@ -220,14 +222,14 @@ class StudentTemporalData(object):
     '''
     Object to match the student_tmprl_data table
     '''
-    def __init__(self, student_tmprl_id, student_id, grade_id, school_id, student_class, section_id):
+    def __init__(self, student_tmprl_id, student_id, grade_id, district_id,school_id, student_class, section_id):
         self.student_tmprl_id = student_tmprl_id
         self.student_id = student_id
         self.grade_id = grade_id
+        self.district_id = district_id
         self.school_id = school_id
         self.student_class = student_class
         self.section_id = section_id
-        self.district_id = None
         self.effective_date = None
         self.end_date = None
 

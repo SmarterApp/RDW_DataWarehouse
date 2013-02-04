@@ -51,7 +51,7 @@ def generate_assmt_scores(state, asmt_type, year, period, grade, total):
     '''
     Main function to generate list of scores for the combination of input parameters
     '''
-    #print('gen_assmt_sc:', state, asmt_type, year, period, grade, total)
+    # print('gen_assmt_sc:', state, asmt_type, year, period, grade, total)
     # validate parameters
     if(total <= 0 or (int)(grade) < 0 or (int)(grade) > 12):
         return []
@@ -64,6 +64,7 @@ def generate_assmt_scores(state, asmt_type, year, period, grade, total):
 
     # get statistical data. Average score, standard deviation, and four percentage numbers of levels
     stat_avg, stat_sd, stat_levles = get_stat_data(state, asmt_type, year, period, grade)
+    print(state, asmt_type, year, period, grade, total, stat_avg, stat_sd, stat_levles)
 
     # generate list
     overallscore_list = []
@@ -85,7 +86,7 @@ def get_stat_data(state, asmt_type, year, period, grade):
     '''
     # connect to db
     db = get_db_conn()
-    query = "select * from assmt_raw_stat where state = '" + state + "' and subject = '" + asmt_type + "' and year = '" + year + "' and grade = '" + grade + "'"
+    query = "select * from assmt_raw_stat where state = '" + state + "' and subject = '" + asmt_type + "' and year = '" + str(year) + "' and grade = '" + str(grade) + "'"
     row = db.prepare(query)
 
     stat_avg = None
@@ -110,9 +111,13 @@ def generate_allscores(score_list, levels, asmt_type, grade):
         level_count = perc_to_count(levels, len(score_list))
 
         start = 0
+        print(len(score_list), levels)
         for lev in range(len(level_count)):
             end = start + level_count[lev]
             for i in range(start, end):
+                if(i >= len(score_list)):
+                    print("**************")
+
                 total_score = score_list[i]
                 claims_score = generate_claims(total_score, asmt_type, grade)
                 scores.append(Score(total_score, claims_score, lev))

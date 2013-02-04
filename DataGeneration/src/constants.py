@@ -3,7 +3,7 @@ MANMALS_FILE = "../datafiles/manmals.txt"
 FISH_FILE = "../datafiles/fish.txt"
 
 SCHOOL_LEVELS_INFO = [
-                    ['Primary', ['EL SCH', 'ELEM', 'CTR', 'ELEMENTARY SCHOOL', 'CHILDHOOD CENTER', 'PRIMARY', 'ELEMENTARY', 'CETR, ELEM', 'SCH'], [[0, 5], [1, 5], [1, 6]]],
+                    ['Primary', ['EL SCH', 'ELEM', 'CTR', 'ELEMENTARY SCHOOL', 'PRIMARY', 'ELEMENTARY', 'CETR, ELEM', 'SCH'], [[0, 5], [1, 5], [1, 6]]],
                     ['Middle', ['MIDDLE SCHOOL', 'COMMUNITY MIDDLE', 'MIDDLE', 'JUNIOR HIGH', 'INTERMEDIATE SCHOOL', 'JR MIDDLE', 'MS'], [[6, 8], [5, 8], [7, 9]]],
                     ['High', ['HIGH SCH', 'HIGH SCHOOL', 'HIGH', 'HS', 'SENIOR HIGH'], [[9, 12], [10, 12]]],
                     ['Other', ['SCH', 'SCHOOL'], [[6, 12], [9, 12]]]
@@ -46,8 +46,8 @@ ASSMT_TYPES = {'Math': {
 
 # Output files for use in write_to_csv.py and generate data.py
 STATES = '../datafiles/states.csv'
-DISTRICTS = '../datafiles/districts.csv'
-SCHOOLS = '../datafiles/schools.csv'
+# DISTRICTS = '../datafiles/districts.csv'
+# SCHOOLS = '../datafiles/schools.csv'
 PARENTS = '../datafiles/parents.csv'
 ASSESSMENT_TYPES = '../datafiles/assessment_types.csv'
 ASSESSMENT_OUTCOME = '../datafiles/assessment_outcome.csv'
@@ -57,8 +57,11 @@ CLASSES = '../datafiles/classes.csv'
 SECTIONS = '../datafiles/sections.csv'
 STUDENTS = '../datafiles/students.csv'
 WHERETAKEN = '../datafiles/wheretaken.csv'
+INSTITUTIONS = '../datafiles/institutions.csv'
 
-ENT_LIST = [STATES, DISTRICTS, SCHOOLS, PARENTS, ASSESSMENT_TYPES, STUDENT_SECTIONS, TEACHER_SECTIONS, CLASSES, SECTIONS, STUDENTS, WHERETAKEN]
+ENT_LIST = [STATES, PARENTS, ASSESSMENT_TYPES, STUDENT_SECTIONS, TEACHER_SECTIONS, CLASSES, SECTIONS, STUDENTS, WHERETAKEN, INSTITUTIONS]
 
 ZIPCODE_START = 10000
 ZIPCODE_RANG_INSTATE = 5000
+
+INST_CATEGORIES = ['State Education Agency', 'Education Service Center', 'Local Education Agency', 'School']

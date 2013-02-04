@@ -12,7 +12,11 @@ import os
 class EdTestBase(unittest.TestCase):
 
     config = configparser.ConfigParser()
-    test_config_path = os.getcwd() + '../test.ini'
+    test_config_path = os.getcwd() + '/../../test.ini'
+
+    if not os.path.exists(test_config_path):
+        raise IOError(test_config_path)
+
     config.read(test_config_path)
 
     driver_name = config['DEFAULT']['driver']

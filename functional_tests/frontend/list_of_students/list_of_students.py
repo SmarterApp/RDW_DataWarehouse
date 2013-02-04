@@ -1,7 +1,7 @@
 import unittest
 import time
 from selenium import webdriver
-from frontend.test_base import EdTestBase
+from test.test_base import EdTestBase
 
 
 class ListOfStudents (EdTestBase):

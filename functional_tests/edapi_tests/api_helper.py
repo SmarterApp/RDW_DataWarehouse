@@ -8,11 +8,10 @@ from hamcrest import assert_that
 from hamcrest.core.core import is_
 from hamcrest.core.core.isequal import equal_to
 import logging
+from test.test_base import EdTestBase
 
-SMARTER_URL = "http://sc1.poc.dum.edwdc.net/"
 
-
-class ApiHelper:
+class ApiHelper(EdTestBase):
     '''
     Helper methods for EdApi calls
     '''
@@ -20,19 +19,22 @@ class ApiHelper:
         self._response = None
         self._request_header = {}
         self._entities_to_check = None
+        self._url = "http://" + self.default_config()['host'] + ":" + self.default_config()['port']
+        
         # TODO any way to disable requests library logging? It causes asserts to fail
         requests_log = logging.getLogger("requests")
         requests_log.setLevel(logging.FATAL)
+    
 
     # Makes http requests
     def send_request(self, verb, end_point):
         verb = verb.upper()
         if (verb == "OPTIONS"):
-            self._response = requests.options(SMARTER_URL + end_point)
+            self._response = requests.options(self._url + end_point)
         elif (verb == "GET"):
-            self._response = requests.get(SMARTER_URL + end_point, **self._request_header)
+            self._response = requests.get(self._url + end_point, **self._request_header)
         elif (verb == "POST"):
-            self._response = requests.post(SMARTER_URL + end_point, **self._request_header)
+            self._response = requests.post(self._url + end_point, **self._request_header)
         else:
             print("Error: Entered an invalid request verb: " + verb)
 

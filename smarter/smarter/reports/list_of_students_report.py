@@ -119,15 +119,14 @@ def get_list_of_students_report(params, connector=None):
             student['student_middle_name'] = result['student_middle_name']
             student['student_last_name'] = result['student_last_name']
             student['student_full_name'] = result['student_first_name'] + ' ' + result['student_middle_name'] + ' ' + result['student_last_name']
-            #student['enrollment_grade'] = result['enrollment_grade']
-            student['enrollment_grade'] = '5'
+            student['enrollment_grade'] = result['enrollment_grade']
+            # student['enrollment_grade'] = '5'
 
         assessment = {}
         assessment['teacher_first_name'] = result['teacher_first_name']
         assessment['teacher_last_name'] = result['teacher_last_name']
         assessment['teacher_full_name'] = result['teacher_first_name'] + ' ' + result['teacher_last_name']
         assessment['asmt_grade'] = result['asmt_grade']
-        assessment['asmt_subject'] = result['asmt_subject']
         assessment['asmt_score'] = result['asmt_score']
         assessment['asmt_claim_1_name'] = result['asmt_claim_1_name']
         assessment['asmt_claim_2_name'] = result['asmt_claim_2_name']
@@ -143,7 +142,37 @@ def get_list_of_students_report(params, connector=None):
 
         students[student_id] = student
 
-    results = []
+    results = {}
+    assessments = []
     for key, value in students.items():
-        results.append(value)
+        assessments.append(value)
+    results['assessments'] = assessments
+    results['cutpoints'] = get_cut_points()
     return results
+
+
+def get_cut_points():
+    cutpoints = {}
+    math_cutpoint = {}
+    math_cutpoint["asmt_cut_point_name_1"] = "MATH cutpoint name1"
+    math_cutpoint["asmt_cut_point_name_2"] = "MATH cutpoint name2"
+    math_cutpoint["asmt_cut_point_name_3"] = "MATH cutpoint name3"
+    math_cutpoint["asmt_cut_point_name_4"] = "MATH cutpoint name4"
+    math_cutpoint["asmt_cut_point_1"] = 40
+    math_cutpoint["asmt_cut_point_2"] = 50
+    math_cutpoint["asmt_cut_point_3"] = 60
+    math_cutpoint["asmt_cut_point_4"] = 70
+    cutpoints['MATH'] = math_cutpoint
+
+    ela_cutpoint = {}
+    ela_cutpoint["asmt_cut_point_name_1"] = "ELA cutpoint name1"
+    ela_cutpoint["asmt_cut_point_name_2"] = "ELA cutpoint name2"
+    ela_cutpoint["asmt_cut_point_name_3"] = "ELA cutpoint name3"
+    ela_cutpoint["asmt_cut_point_name_4"] = "ELA cutpoint name4"
+    ela_cutpoint["asmt_cut_point_1"] = 80
+    ela_cutpoint["asmt_cut_point_2"] = 90
+    ela_cutpoint["asmt_cut_point_3"] = 100
+    ela_cutpoint["asmt_cut_point_4"] = 110
+    cutpoints['ELA'] = ela_cutpoint
+
+    return cutpoints

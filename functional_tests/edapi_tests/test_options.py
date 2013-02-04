@@ -4,7 +4,7 @@ Created on Feb 4, 2013
 @author: dip
 '''
 import unittest
-from edapi.api_helper import ApiHelper
+from edapi_tests.api_helper import ApiHelper
 
 
 class TestOptions(unittest.TestCase):

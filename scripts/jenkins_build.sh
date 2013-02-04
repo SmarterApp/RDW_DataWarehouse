@@ -136,7 +136,7 @@ function setup_functional_test_dependencies {
 function run_functional_tests {
     echo "Run functional tests"
 
-    cd "$WORKSPACE/functional_tests"
+    cd "$WORKSPACE/functional_tests/edapi_tests"
 
     sed -i.bak 's/port = 6543/port = 80/g' test.ini
 

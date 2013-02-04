@@ -1,7 +1,8 @@
 from setuptools import setup, find_packages
 
 install_requires = [
-    'behave',  # BDD tool
+    'nose',  # functional testing framework
+    'webdriver', # for UI testing		
     'Requests', # for restful web services
     'PyHamcrest', # for assertion
     'virtualenv'  # for scaffolding tests

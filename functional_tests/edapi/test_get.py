@@ -17,31 +17,31 @@ class TestGet(unittest.TestCase):
 
     def test_get_request(self):
         self._api_helper.make_request("GET", "/data")
-        self._api_helper.check_response_code("200")
+        self._api_helper.check_response_code(200)
         self._api_helper.check_resp_elements(3)
         self._api_helper.check_resp_body_fields(["list_of_students", "student_assessments_report", "individual_student_report"])
 
     def test_get_invalid_endpoint(self):
         self._api_helper.set_request_header("content-type", "application/json")
         self._api_helper.make_request("GET", "/dummy")
-        self._api_helper.check_response_code("404")
+        self._api_helper.check_response_code(404)
 
     def test_get_invalid_content_type(self):
         self._api_helper.set_request_header("content-type", "text/plain")
         self._api_helper.make_request("GET", "/data/individual_student_report")
-        self._api_helper.check_response_code("404")
+        self._api_helper.check_response_code(404)
 
     def test_get_invalid_parameters(self):
         self._api_helper.set_request_header("content-type", "application/json")
         self._api_helper.make_request("GET", "/data/individual_student_report")
-        self._api_helper.check_response_code("412")
+        self._api_helper.check_response_code(412)
 
     def test_get_valid_parameters(self):
         self._api_helper.set_request_header("content-type", "application/json")
         self._api_helper.make_request("GET", "/data/individual_student_report?studentId=1001&assessmentId=1")
-        self._api_helper.check_response_code("200")
+        self._api_helper.check_response_code(200)
         self._api_helper.check_resp_elements(1)
-        self._api_helper.check_each_entity_in_body_for_fields(["asmt_period", "asmt_claim_2_score", "asmt_claim_4_name", "asmt_claim_3_name", "last_name", "asmt_claim_1_name", "asmt_claim_4_score", "asmt_claim_1_score", "asmt_claim_3_score", "first_name", "asmt_claim_2_name", "asmt_score", "student_id", "asmt_subject", "middle_name"])
+        self._api_helper.check_each_item_in_body_for_fields(["asmt_period", "asmt_claim_2_score", "asmt_claim_4_name", "asmt_claim_3_name", "last_name", "asmt_claim_1_name", "asmt_claim_4_score", "asmt_claim_1_score", "asmt_claim_3_score", "first_name", "asmt_claim_2_name", "asmt_score", "student_id", "asmt_subject", "middle_name"])
 
 
 if __name__ == "__main__":

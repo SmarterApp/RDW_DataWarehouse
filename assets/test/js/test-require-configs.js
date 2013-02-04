@@ -8,7 +8,9 @@ var baseConfigs = {
 	    sourceJS: '../../js',
 	    
 	    EDWARE: '../../js/EDWARE',
-	    edwareUtil: '../../js/EDWARE.util'
+	    edwareUtil: '../../js/EDWARE.util',
+	    edwareDataProxy: '../../js/EDWARE.dataProxy',
+	    edwareGrid: '../../js/widgets/EDWARE.grid.tablegrid'
 	}
 };
 

@@ -8,6 +8,7 @@ smarter.egg-info?
 *.egg-info
 *.egg
 *.swp
+selenium-2.29.0-wgen
 
 # IDE generated files #
 #######################

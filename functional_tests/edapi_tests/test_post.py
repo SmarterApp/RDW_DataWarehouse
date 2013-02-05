@@ -5,7 +5,6 @@ Created on Feb 4, 2013
 '''
 import unittest
 from edapi_tests.api_helper import ApiHelper
-import json
 
 
 class TestPost(unittest.TestCase):
@@ -34,7 +33,7 @@ class TestPost(unittest.TestCase):
         self._api_helper.check_response_code(412)
         self._api_helper.check_resp_error("Value 'abc' for field 'studentId' is not of type integer")
 
-    def test_valid_case(self):
+    def test_individual_student_report(self):
         self._api_helper.set_request_header("content-type", "application/json")
         payload = {'studentId': 1, 'assessmentId': 1}
         self._api_helper.set_payload(payload)
@@ -42,6 +41,14 @@ class TestPost(unittest.TestCase):
         self._api_helper.check_response_code(200)
         self._api_helper.check_number_resp_elements(1)
         self._api_helper.check_each_item_in_body_for_fields(["asmt_period", "asmt_claim_2_score", "asmt_claim_4_name", "asmt_claim_3_name", "last_name", "asmt_claim_1_name", "asmt_claim_4_score", "asmt_claim_1_score", "asmt_claim_3_score", "first_name", "asmt_claim_2_name", "asmt_score", "student_id", "asmt_subject", "middle_name"])
+
+    def test_list_of_student(self):
+        self._api_helper.set_request_header("content-type", "application/json")
+        payload = {"districtId": 4, "schoolId": 3, "asmtGrade": "1"}
+        self._api_helper.set_payload(payload)
+        self._api_helper.send_request("POST", "/data/list_of_students")
+        self._api_helper.check_response_code(200)
+        self._api_helper.check_number_resp_elements(15, "assessments")
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

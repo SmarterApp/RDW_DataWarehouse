@@ -243,11 +243,21 @@ def generate_ed_metadata(scheme_name=None):
                        Column('asmt_perf_lvl_name_2', String(256), nullable=True),
                        Column('asmt_perf_lvl_name_3', String(256), nullable=True),
                        Column('asmt_perf_lvl_name_4', String(256), nullable=True),
+                       Column('asmt_perf_lvl_name_5', String(256), nullable=True),
                        Column('asmt_score_min', SmallInteger, nullable=True),
                        Column('asmt_score_max', SmallInteger, nullable=True),
+                       Column('asmt_claim_1_score_min', SmallInteger, nullable=True),
+                       Column('asmt_claim_1_score_max', SmallInteger, nullable=True),
+                       Column('asmt_claim_2_score_min', SmallInteger, nullable=True),
+                       Column('asmt_claim_2_score_max', SmallInteger, nullable=True),
+                       Column('asmt_claim_3_score_min', SmallInteger, nullable=True),
+                       Column('asmt_claim_3_score_max', SmallInteger, nullable=True),
+                       Column('asmt_claim_4_score_min', SmallInteger, nullable=True),
+                       Column('asmt_claim_4_score_max', SmallInteger, nullable=True),
                        Column('asmt_cut_point_1', SmallInteger, nullable=True),
                        Column('asmt_cut_point_2', SmallInteger, nullable=True),
                        Column('asmt_cut_point_3', SmallInteger, nullable=True),
+                       Column('asmt_cut_point_4', SmallInteger, nullable=True),
                        )
 
     Index('dim_asmt_idx', assessment.c.asmt_id, unique=True)

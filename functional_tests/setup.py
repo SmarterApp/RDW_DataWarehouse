@@ -1,4 +1,7 @@
+import os
 from setuptools import setup, find_packages
+
+here = os.path.abspath(os.path.dirname(__file__))
 
 install_requires = [
     'nose',  # functional testing framework
@@ -18,6 +21,6 @@ setup(name='functional_tests',
       packages=find_packages(),
       include_package_data=True,
       zip_safe=False,
-      dependency_links=["http://packages.wgenhq.net/pynest/"],
+      dependency_links=["file://"+os.path.abspath(here + "/../" + "resource/selenium-2.29.0-wgen#egg=selenium-wgen")],
       install_requires=install_requires,
       )

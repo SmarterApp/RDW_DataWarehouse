@@ -18,7 +18,6 @@ class ApiHelper(EdTestBase):
         self._response = None
         self._request_header = {}
         self._entities_to_check = None
-        self._url = "http://" + self.default_config()['host'] + ":" + self.default_config()['port']
 
         # TODO any way to disable requests library logging? It causes asserts to fail
         requests_log = logging.getLogger("requests")
@@ -28,11 +27,11 @@ class ApiHelper(EdTestBase):
     def send_request(self, verb, end_point):
         verb = verb.upper()
         if (verb == "OPTIONS"):
-            self._response = requests.options(self._url + end_point)
+            self._response = requests.options(self.get_url() + end_point)
         elif (verb == "GET"):
-            self._response = requests.get(self._url + end_point, **self._request_header)
+            self._response = requests.get(self.get_url() + end_point, **self._request_header)
         elif (verb == "POST"):
-            self._response = requests.post(self._url + end_point, **self._request_header)
+            self._response = requests.post(self.get_url() + end_point, **self._request_header)
         else:
             print("Error: Entered an invalid request verb: " + verb)
 

@@ -19,7 +19,8 @@ class ListOfStudents (EdTestBase):
         try:
             WebDriverWait(self.driver, 10).until(lambda driver: self.driver.find_element_by_id("gbox_gridTable"))
         except:
-            raise AssertionError("Web page did not load correctly.")
+            #raise AssertionError("Web page did not load correctly.")
+            self.assertTrue(False, "no driver")
         print("Opened web page")
         
     def test_dummy(self):

@@ -48,7 +48,7 @@ class ApiHelper(EdTestBase):
         self.assertIs(type(json_body), list, "Response body is not a list")
         self.assertEqual(len(json_body), expected_size, 'Actual size: {0} Expected: {1}'.format(len(json_body), expected_size))
 
-    # Checks the Fields in json response body
+    # Checks the Fields in main json response body
     def check_resp_body_fields(self, expected_fields):
         self.__check_number_of_fields(self._response.json(), expected_fields)
         self.__check_contains_fields(self._response.json(), expected_fields)
@@ -60,22 +60,14 @@ class ApiHelper(EdTestBase):
             self.__check_number_of_fields(row, expected_fields)
 
     # Checks both response fields and values
-    # expected_key_values is a dict
+    # expected_key_values is a list
     def check_response_fields(self, item, expected_key_values):
-        self._items_to_check = []
-        self.__recursively_get_map(self._response.json(), item)
-        for row in self._items_to_check:
-            self.__check_contains_fields(row, expected_key_values, False)
-            self.__check_number_of_fields(row, expected_key_values)
+        self.__check_response_field_or_values(item, expected_key_values)
 
     # Checks both response fields and values
     # expected_key_values is a dict
     def check_response_fields_and_values(self, item, expected_key_values):
-        self._items_to_check = []
-        self.__recursively_get_map(self._response.json(), item)
-        for row in self._items_to_check:
-            self.__check_contains_fields(row, expected_key_values, True)
-            self.__check_number_of_fields(row, expected_key_values)
+        self.__check_response_field_or_values(item, expected_key_values, True)
 
     # Sets request header
     def set_request_header(self, key, value):
@@ -114,6 +106,15 @@ class ApiHelper(EdTestBase):
                     self.__check_contains_fields(body[row], body[row], True)
                 else:
                     self.assertEqual(expected_fields[row].lower(), str(body[row]).lower(), "{0} is not found".format(expected_fields[row]))
+
+    # Checks both response fields and values
+    # expected_key_values is a dict
+    def __check_response_field_or_values(self, item, expected_key_values, check_value=False):
+        self._items_to_check = []
+        self.__recursively_get_map(self._response.json(), item)
+        for row in self._items_to_check:
+            self.__check_contains_fields(row, expected_key_values, check_value)
+            self.__check_number_of_fields(row, expected_key_values)
 
     # key is a string, dictionary based, separated by :
     # Map is the data from the table from the test steps (Feature file)

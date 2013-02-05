@@ -12,6 +12,7 @@ import os
 class EdTestBase(unittest.TestCase):
 
     def __init__(self):
+        super(unittest.TestCase, self).__init__()
         self.config = configparser.ConfigParser()
         self.test_config_path = os.path.abspath(os.path.dirname(__file__)) + '/../test.ini'
 

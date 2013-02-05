@@ -5,7 +5,7 @@ Created on Feb 5, 2013
 '''
 import unittest
 from selenium import webdriver
-from frontend.test_base import EdTestBase
+from test.test_base import EdTestBase
 from selenium.webdriver.support.ui import WebDriverWait
 
 

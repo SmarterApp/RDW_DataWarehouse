@@ -1,687 +1,578 @@
-176,Local Education Agency,b'Ornate hawk-eagle' b'American Lion' COUNTY SCHOOLS,1734 b'Manta Ray' STREET
-177,Local Education Agency,b'Ornate hawk-eagle' b'The Bearded Seal' SD,746 b'Cornetfish' STREET
-178,Local Education Agency,b'Ornate hawk-eagle' b'Svalbard Reindeer' SCHOOLS,353 b'Canary rockfish' ROAD
-179,Local Education Agency,b'Ornate hawk-eagle' b'Red-ruffed Lemur' PUBLIC SHCOOLS,504 b'Sandroller' NORTH AVE
-180,Local Education Agency,b'Ornate hawk-eagle' b'Arizona Cottontail' COUNTY SCHOOLS,1015 b'Lefteye flounder' AVE
-181,Local Education Agency,b'Ornate hawk-eagle' b'Northern Elephant Seal Pup' PUBLIC SHCOOLS,765 b'Spiny dwarf catfish' ROAD
-182,Local Education Agency,b'Ornate hawk-eagle' b'Eurasian Reindeer' SCHOOL DISTRICT,1554 b'Queen danio' WAY
-183,Local Education Agency,b'Ornate hawk-eagle' b'Long-tailed Weasel' PUBLIC SHCOOLS,934 b'Rabbitfish' SOUTH AVE
-184,Local Education Agency,b'Ornate hawk-eagle' b'Southern Brown Bandicoot' SCHOOL DISTRICT,1253 b'Midshipman' SOUTH AVE
-185,Local Education Agency,b'Ornate hawk-eagle' b'Dwarf Wild Guinea Pig' COUNTY SCHOOLS,631 b'Alaska blackfish' AVE
-186,Local Education Agency,b'Ornate hawk-eagle' b'Sacred Cow' PUBLIC SHCOOLS,1575 b'Hake' AVE
-187,Local Education Agency,b'Ornate hawk-eagle' b'Wombat' DISTRICT,1351 b'Ayu' STREET
-188,Local Education Agency,b'Ornate hawk-eagle' b'Vaca Brava' SCHOOL DISTRICT,121 b'Tubeshoulder' STREET
-189,Local Education Agency,b'Ornate hawk-eagle' b'Castor' SCHOOL DISTRICT,18 b'Boafish' AVE
-190,Local Education Agency,b'Sirystes' b'American Lion' SCHOOLS,1480 b'Nase' WAY
-191,Local Education Agency,b'Sirystes' b'The Bearded Seal' COUNTY SCHOOLS,1367 b'Monkeyface prickleback' SOUTH AVE
-192,Local Education Agency,b'Sirystes' b'Svalbard Reindeer' PUBLIC SHCOOLS,724 b'Sleeper shark' SOUTH AVE
-193,Local Education Agency,b'Sirystes' b'Red-ruffed Lemur' SD,531 b'Spinyfin' ROAD
-194,Local Education Agency,b'Sirystes' b'Arizona Cottontail' SCHOOL DISTRICT,407 b'Noodlefish' AVE
-195,Local Education Agency,b'Sirystes' b'Northern Elephant Seal Pup' SCHOOLS,145 b'Orbicular velvetfish' ROAD
-196,Local Education Agency,b'Sirystes' b'Eurasian Reindeer' DISTRICT,1453 b'Parrotfish' STREET
-197,Local Education Agency,b'Sirystes' b'Long-tailed Weasel' SD,878 b'Tiger shovelnose catfish' SOUTH AVE
-198,Local Education Agency,b'Sirystes' b'Southern Brown Bandicoot' SD,180 b'Antarctic cod' STREET
-199,Local Education Agency,b'Sirystes' b'Dwarf Wild Guinea Pig' DISTRICT,1090 b'Murray cod' STREET
-200,Local Education Agency,b'Sirystes' b'Sacred Cow' COUNTY SCHOOLS,215 b'Alewife' SOUTH AVE
-201,Local Education Agency,b'Sirystes' b'Wombat' SCHOOLS,1078 b'Flathead' NORTH AVE
-202,Local Education Agency,b'Sirystes' b'Vaca Brava' PUBLIC SHCOOLS,129 b'Summer flounder' WAY
-203,Local Education Agency,b'Sirystes' b'Castor' SD,1158 b'Bengal danio' NORTH AVE
-204,Local Education Agency,b'Southern martin' b'American Lion' SCHOOLS,953 b'Morid cod' AVE
-205,Local Education Agency,b'Southern martin' b'The Bearded Seal' COUNTY SCHOOLS,1104 b'Electric ray' WAY
-206,Local Education Agency,b'Southern martin' b'Svalbard Reindeer' DISTRICT,1513 b'Ghost fish' STREET
-207,Local Education Agency,b'Southern martin' b'Red-ruffed Lemur' DISTRICT,1211 b'Brown trout' SOUTH AVE
-208,Local Education Agency,b'Southern martin' b'Arizona Cottontail' COUNTY SCHOOLS,1200 b'Graveldiver' NORTH AVE
-209,Local Education Agency,b'Southern martin' b'Northern Elephant Seal Pup' COUNTY SCHOOLS,1134 b'Swordfish' STREET
-210,Local Education Agency,b'Southern martin' b'Eurasian Reindeer' DISTRICT,319 b'Australian herring' AVE
-211,Local Education Agency,b'Southern martin' b'Long-tailed Weasel' COUNTY SCHOOLS,1596 b'Armoured catfish' NORTH AVE
-212,Local Education Agency,b'Southern martin' b'Southern Brown Bandicoot' SCHOOLS,1339 b'Medusafish' NORTH AVE
-213,Local Education Agency,b'Southern martin' b'Dwarf Wild Guinea Pig' PUBLIC SHCOOLS,42 b'Blue danio' NORTH AVE
-214,Local Education Agency,b'Southern martin' b'Sacred Cow' SCHOOLS,755 b'Wallago' WAY
-215,Local Education Agency,b'Southern martin' b'Wombat' COUNTY SCHOOLS,1217 b'Greenling' SOUTH AVE
-216,Local Education Agency,b'Southern martin' b'Vaca Brava' DISTRICT,327 b'Skilfish' WAY
-217,Local Education Agency,b'Southern martin' b'Castor' DISTRICT,1197 b'Black triggerfish' ROAD
-218,Local Education Agency,b'Chestnut-fronted macaw' b'American Lion' DISTRICT,714 b'Trout' ROAD
-219,Local Education Agency,b'Chestnut-fronted macaw' b'The Bearded Seal' PUBLIC SHCOOLS,723 b'Sailfish' ROAD
-220,Local Education Agency,b'Chestnut-fronted macaw' b'Svalbard Reindeer' SD,1658 b'Flyingfish' AVE
-221,Local Education Agency,b'Chestnut-fronted macaw' b'Red-ruffed Lemur' DISTRICT,1302 b'Conger eel' SOUTH AVE
-222,Local Education Agency,b'Chestnut-fronted macaw' b'Arizona Cottontail' PUBLIC SHCOOLS,1182 b'Australian lungfish' NORTH AVE
-223,Local Education Agency,b'Chestnut-fronted macaw' b'Northern Elephant Seal Pup' SCHOOL DISTRICT,1245 b'Freshwater eel' STREET
-224,Local Education Agency,b'Chestnut-fronted macaw' b'Eurasian Reindeer' DISTRICT,978 b'Sea lamprey' AVE
-225,Local Education Agency,b'Chestnut-fronted macaw' b'Long-tailed Weasel' SD,485 b'Electric knifefish' STREET
-226,Local Education Agency,b'Chestnut-fronted macaw' b'Southern Brown Bandicoot' COUNTY SCHOOLS,245 b'Ponyfish' WAY
-227,Local Education Agency,b'Chestnut-fronted macaw' b'Dwarf Wild Guinea Pig' COUNTY SCHOOLS,1744 b'Mudminnow' ROAD
-228,Local Education Agency,b'Chestnut-fronted macaw' b'Sacred Cow' SCHOOLS,1074 b'Topminnow' STREET
-229,Local Education Agency,b'Chestnut-fronted macaw' b'Wombat' PUBLIC SHCOOLS,288 b'Bigmouth buffalo' ROAD
-230,Local Education Agency,b'Chestnut-fronted macaw' b'Vaca Brava' PUBLIC SHCOOLS,236 b'Cat shark' NORTH AVE
-231,Local Education Agency,b'Chestnut-fronted macaw' b'Castor' SCHOOLS,653 b'Zingel' STREET
-232,Local Education Agency,b'Mouse-colored antshrike' b'American Lion' DISTRICT,1029 b'Red snapper' ROAD
-233,Local Education Agency,b'Mouse-colored antshrike' b'The Bearded Seal' SD,790 b'Zebra danio' WAY
-234,Local Education Agency,b'Mouse-colored antshrike' b'Svalbard Reindeer' DISTRICT,132 b'Sablefish' NORTH AVE
-235,Local Education Agency,b'Mouse-colored antshrike' b'Red-ruffed Lemur' DISTRICT,1506 b'Southern hake' WAY
-236,Local Education Agency,b'Mouse-colored antshrike' b'Arizona Cottontail' SCHOOLS,635 b'Sabertooth' SOUTH AVE
-237,Local Education Agency,b'Mouse-colored antshrike' b'Northern Elephant Seal Pup' SD,500 b'Searobin' NORTH AVE
-238,Local Education Agency,b'Mouse-colored antshrike' b'Eurasian Reindeer' DISTRICT,1271 b'Black scalyfin' SOUTH AVE
-239,Local Education Agency,b'Mouse-colored antshrike' b'Long-tailed Weasel' DISTRICT,1229 b'Sweeper' STREET
-240,Local Education Agency,b'Mouse-colored antshrike' b'Southern Brown Bandicoot' SD,607 b'Garden eel' AVE
-241,Local Education Agency,b'Mouse-colored antshrike' b'Dwarf Wild Guinea Pig' DISTRICT,1220 b'Zebra pleco' STREET
-242,Local Education Agency,b'Mouse-colored antshrike' b'Sacred Cow' DISTRICT,1288 b'Labyrinth fish' STREET
-243,Local Education Agency,b'Mouse-colored antshrike' b'Wombat' SCHOOL DISTRICT,1280 b'Golden shiner' AVE
-244,Local Education Agency,b'Mouse-colored antshrike' b'Vaca Brava' SD,165 b'Kuhli loach' STREET
-245,Local Education Agency,b'Mouse-colored antshrike' b'Castor' COUNTY SCHOOLS,1082 b'Bat ray' SOUTH AVE
-246,Local Education Agency,b'Blackish nightjar' b'American Lion' DISTRICT,1578 b'Banded killifish' WAY
-247,Local Education Agency,b'Blackish nightjar' b'The Bearded Seal' COUNTY SCHOOLS,1428 b'Cardinalfish' AVE
-248,Local Education Agency,b'Blackish nightjar' b'Svalbard Reindeer' DISTRICT,1742 b'Giant wels' NORTH AVE
-249,Local Education Agency,b'Blackish nightjar' b'Red-ruffed Lemur' DISTRICT,781 b'Brook lamprey' ROAD
-250,Local Education Agency,b'Blackish nightjar' b'Arizona Cottontail' DISTRICT,323 b'Stingray' AVE
-251,Local Education Agency,b'Blackish nightjar' b'Northern Elephant Seal Pup' SCHOOL DISTRICT,84 b'Sand stargazer' SOUTH AVE
-252,Local Education Agency,b'Blackish nightjar' b'Eurasian Reindeer' PUBLIC SHCOOLS,1234 b'Bass' STREET
-253,Local Education Agency,b'Blackish nightjar' b'Long-tailed Weasel' SCHOOLS,700 b'Madtom' ROAD
-254,Local Education Agency,b'Blackish nightjar' b'Southern Brown Bandicoot' SD,1081 b'Frogfish' SOUTH AVE
-255,Local Education Agency,b'Blackish nightjar' b'Dwarf Wild Guinea Pig' PUBLIC SHCOOLS,562 b'European perch' SOUTH AVE
-256,Local Education Agency,b'Blackish nightjar' b'Sacred Cow' COUNTY SCHOOLS,636 b'X-ray tetra' SOUTH AVE
-257,Local Education Agency,b'Blackish nightjar' b'Wombat' PUBLIC SHCOOLS,116 b'Chimaera' AVE
-258,Local Education Agency,b'Blackish nightjar' b'Vaca Brava' PUBLIC SHCOOLS,766 b'Powen' SOUTH AVE
-259,Local Education Agency,b'Blackish nightjar' b'Castor' PUBLIC SHCOOLS,334 b'Batfish' STREET
-260,Local Education Agency,b'White woodpecker' b'American Lion' SD,1077 b'Blackchin' ROAD
-261,Local Education Agency,b'White woodpecker' b'The Bearded Seal' SCHOOL DISTRICT,1523 b'Olive flounder' WAY
-262,Local Education Agency,b'White woodpecker' b'Svalbard Reindeer' SD,1634 b'Red velvetfish' NORTH AVE
-263,Local Education Agency,b'White woodpecker' b'Red-ruffed Lemur' SD,729 b'Longnose sucker' WAY
-264,Local Education Agency,b'White woodpecker' b'Arizona Cottontail' SD,170 b'Nibble Fish' STREET
-265,Local Education Agency,b'White woodpecker' b'Northern Elephant Seal Pup' SCHOOL DISTRICT,898 b'Sheatfish' NORTH AVE
-266,Local Education Agency,b'White woodpecker' b'Eurasian Reindeer' DISTRICT,80 b'Slimehead' WAY
-267,Local Education Agency,b'White woodpecker' b'Long-tailed Weasel' SCHOOLS,144 b'Tailor' AVE
-268,Local Education Agency,b'White woodpecker' b'Southern Brown Bandicoot' SCHOOLS,952 b'Pike eel' NORTH AVE
-269,Local Education Agency,b'White woodpecker' b'Dwarf Wild Guinea Pig' SCHOOLS,1593 b'Spookfish' WAY
-270,Local Education Agency,b'White woodpecker' b'Sacred Cow' SD,927 b'Dogteeth tetra' NORTH AVE
-271,Local Education Agency,b'White woodpecker' b'Wombat' SCHOOL DISTRICT,1265 b'Oregon chub' SOUTH AVE
-272,Local Education Agency,b'White woodpecker' b'Vaca Brava' COUNTY SCHOOLS,642 b'Squarehead catfish' ROAD
-273,Local Education Agency,b'White woodpecker' b'Castor' PUBLIC SHCOOLS,687 b'Sand tiger' STREET
-274,Local Education Agency,b'Long-winged harrier' b'American Lion' SCHOOLS,172 b'Mooneye' SOUTH AVE
-275,Local Education Agency,b'Long-winged harrier' b'The Bearded Seal' PUBLIC SHCOOLS,1304 b'Snoek' WAY
-276,Local Education Agency,b'Long-winged harrier' b'Svalbard Reindeer' SCHOOL DISTRICT,1260 b'Barred danio' AVE
-277,Local Education Agency,b'Long-winged harrier' b'Red-ruffed Lemur' PUBLIC SHCOOLS,668 b'Morwong' WAY
-278,Local Education Agency,b'Long-winged harrier' b'Arizona Cottontail' DISTRICT,798 b'Chinook salmon' SOUTH AVE
-279,Local Education Agency,b'Long-winged harrier' b'Northern Elephant Seal Pup' SD,574 b'Round whitefish' SOUTH AVE
-280,Local Education Agency,b'Long-winged harrier' b'Eurasian Reindeer' COUNTY SCHOOLS,1135 b'Yellowtail' AVE
-281,Local Education Agency,b'Long-winged harrier' b'Long-tailed Weasel' PUBLIC SHCOOLS,1726 b'Lemon sole' ROAD
-282,Local Education Agency,b'Long-winged harrier' b'Southern Brown Bandicoot' SD,1411 b'Hillstream loach' ROAD
-283,Local Education Agency,b'Long-winged harrier' b'Dwarf Wild Guinea Pig' COUNTY SCHOOLS,552 b'Collared carpetshark' NORTH AVE
-284,Local Education Agency,b'Long-winged harrier' b'Sacred Cow' DISTRICT,139 b'Flounder' AVE
-285,Local Education Agency,b'Long-winged harrier' b'Wombat' PUBLIC SHCOOLS,477 b'Angelfish' NORTH AVE
-286,Local Education Agency,b'Long-winged harrier' b'Vaca Brava' COUNTY SCHOOLS,416 b'Butterfly ray' ROAD
-287,Local Education Agency,b'Long-winged harrier' b'Castor' PUBLIC SHCOOLS,989 b'False cat shark' SOUTH AVE
-288,Local Education Agency,b'Red-capped cardinal' b'American Lion' SCHOOLS,1472 b'Zebra bullhead shark' STREET
-289,Local Education Agency,b'Red-capped cardinal' b'The Bearded Seal' SD,1702 b'Kelp perch' SOUTH AVE
-290,Local Education Agency,b'Red-capped cardinal' b'Svalbard Reindeer' SD,1226 b'Dottyback' WAY
-291,Local Education Agency,b'Red-capped cardinal' b'Red-ruffed Lemur' SD,69 b'Dragon goby' WAY
-292,Local Education Agency,b'Red-capped cardinal' b'Arizona Cottontail' SD,1372 b'Tilefish' NORTH AVE
-293,Local Education Agency,b'Red-capped cardinal' b'Northern Elephant Seal Pup' SCHOOL DISTRICT,326 b'Grouper' NORTH AVE
-294,Local Education Agency,b'Red-capped cardinal' b'Eurasian Reindeer' PUBLIC SHCOOLS,679 b'Sturgeon' AVE
-295,Local Education Agency,b'Red-capped cardinal' b'Long-tailed Weasel' SCHOOLS,260 b'Lionfish' STREET
-296,Local Education Agency,b'Red-capped cardinal' b'Southern Brown Bandicoot' PUBLIC SHCOOLS,36 b'Zebra loach' SOUTH AVE
-297,Local Education Agency,b'Red-capped cardinal' b'Dwarf Wild Guinea Pig' PUBLIC SHCOOLS,999 b'Sabertooth fish' ROAD
-298,Local Education Agency,b'Red-capped cardinal' b'Sacred Cow' SCHOOLS,109 b'Southern flounder' STREET
-299,Local Education Agency,b'Red-capped cardinal' b'Wombat' SCHOOL DISTRICT,289 b'Tope' SOUTH AVE
-300,Local Education Agency,b'Red-capped cardinal' b'Vaca Brava' SCHOOLS,819 b'Pupfish' NORTH AVE
-301,Local Education Agency,b'Red-capped cardinal' b'Castor' SCHOOLS,476 b'Rockweed gunnel' ROAD
-302,Local Education Agency,b'Collared puffbird' b'American Lion' DISTRICT,808 b'Trout-perch' ROAD
-303,Local Education Agency,b'Collared puffbird' b'The Bearded Seal' SD,1402 b'Spiny eel' NORTH AVE
-304,Local Education Agency,b'Collared puffbird' b'Svalbard Reindeer' SD,1013 b'Yellowtail clownfish' WAY
-305,Local Education Agency,b'Collared puffbird' b'Red-ruffed Lemur' COUNTY SCHOOLS,452 b'Duckbill' AVE
-306,Local Education Agency,b'Collared puffbird' b'Arizona Cottontail' SCHOOL DISTRICT,1004 b'Kanyu' STREET
-307,Local Education Agency,b'Collared puffbird' b'Northern Elephant Seal Pup' PUBLIC SHCOOLS,1592 b'Freshwater hatchetfish' WAY
-308,Local Education Agency,b'Collared puffbird' b'Eurasian Reindeer' DISTRICT,433 b'Northern anchovy' NORTH AVE
-309,Local Education Agency,b'Collared puffbird' b'Long-tailed Weasel' DISTRICT,394 b'Smooth dogfish' ROAD
-310,Local Education Agency,b'Collared puffbird' b'Southern Brown Bandicoot' SD,1714 b'Lake chub' STREET
-311,Local Education Agency,b'Collared puffbird' b'Dwarf Wild Guinea Pig' SCHOOLS,71 b'Airsac catfish' ROAD
-312,Local Education Agency,b'Collared puffbird' b'Sacred Cow' DISTRICT,369 b'Atka mackerel' ROAD
-313,Local Education Agency,b'Collared puffbird' b'Wombat' SCHOOLS,548 b'Molly' WAY
-314,Local Education Agency,b'Collared puffbird' b'Vaca Brava' SD,1184 b'Catla' NORTH AVE
-315,Local Education Agency,b'Collared puffbird' b'Castor' DISTRICT,1178 b'Ratfish' WAY
-316,Local Education Agency,b'Rufous-bellied antwren' b'American Lion' SCHOOLS,232 b'Black angelfish' AVE
-317,Local Education Agency,b'Rufous-bellied antwren' b'The Bearded Seal' SD,1423 b'Ballan wrasse' STREET
-318,Local Education Agency,b'Rufous-bellied antwren' b'Svalbard Reindeer' SD,1704 b'Longjaw mudsucker' NORTH AVE
-319,Local Education Agency,b'Rufous-bellied antwren' b'Red-ruffed Lemur' SCHOOL DISTRICT,414 b'Sand lance' AVE
-320,Local Education Agency,b'Rufous-bellied antwren' b'Arizona Cottontail' COUNTY SCHOOLS,1409 b'Spiny basslet' SOUTH AVE
-321,Local Education Agency,b'Rufous-bellied antwren' b'Northern Elephant Seal Pup' SCHOOL DISTRICT,73 b'Jewfish' AVE
-322,Local Education Agency,b'Rufous-bellied antwren' b'Eurasian Reindeer' COUNTY SCHOOLS,754 b'Rainbow trout' ROAD
-323,Local Education Agency,b'Rufous-bellied antwren' b'Long-tailed Weasel' SCHOOL DISTRICT,964 b'African lungfish' SOUTH AVE
-324,Local Education Agency,b'Rufous-bellied antwren' b'Southern Brown Bandicoot' DISTRICT,663 b'Snake mudhead' ROAD
-325,Local Education Agency,b'Rufous-bellied antwren' b'Dwarf Wild Guinea Pig' SCHOOL DISTRICT,847 b'Pike conger' SOUTH AVE
-326,Local Education Agency,b'Rufous-bellied antwren' b'Sacred Cow' PUBLIC SHCOOLS,351 b'Vendace' NORTH AVE
-327,Local Education Agency,b'Rufous-bellied antwren' b'Wombat' SCHOOLS,371 b'Stickleback' WAY
-328,Local Education Agency,b'Rufous-bellied antwren' b'Vaca Brava' DISTRICT,35 b'Salamanderfish' SOUTH AVE
-329,Local Education Agency,b'Rufous-bellied antwren' b'Castor' SD,367 b'Marine hatchetfish' NORTH AVE
-330,Local Education Agency,b'White-tailed hawk' b'American Lion' DISTRICT,657 b'Char' STREET
-331,Local Education Agency,b'White-tailed hawk' b'The Bearded Seal' DISTRICT,1363 b'Horn shark' STREET
-332,Local Education Agency,b'White-tailed hawk' b'Svalbard Reindeer' SCHOOLS,1623 b'Scup' STREET
-333,Local Education Agency,b'White-tailed hawk' b'Red-ruffed Lemur' PUBLIC SHCOOLS,884 b'Clingfish' SOUTH AVE
-334,Local Education Agency,b'White-tailed hawk' b'Arizona Cottontail' SCHOOLS,150 b'Anchovy' NORTH AVE
-335,Local Education Agency,b'White-tailed hawk' b'Northern Elephant Seal Pup' SCHOOLS,421 b'Mackerel shark' STREET
-336,Local Education Agency,b'White-tailed hawk' b'Eurasian Reindeer' DISTRICT,539 b'Scorpionfish' STREET
-337,Local Education Agency,b'White-tailed hawk' b'Long-tailed Weasel' DISTRICT,1038 b'Pirate perch' ROAD
-338,Local Education Agency,b'White-tailed hawk' b'Southern Brown Bandicoot' COUNTY SCHOOLS,1252 b'Spadefish' SOUTH AVE
-339,Local Education Agency,b'White-tailed hawk' b'Dwarf Wild Guinea Pig' SD,529 b'Crevice kelpfish' NORTH AVE
-340,Local Education Agency,b'White-tailed hawk' b'Sacred Cow' SD,822 b'Mudskipper' SOUTH AVE
-341,Local Education Agency,b'White-tailed hawk' b'Wombat' SCHOOL DISTRICT,392 b'Frogmouth catfish' SOUTH AVE
-342,Local Education Agency,b'White-tailed hawk' b'Vaca Brava' PUBLIC SHCOOLS,1631 b'Sind danio' NORTH AVE
-343,Local Education Agency,b'White-tailed hawk' b'Castor' SD,1292 b'Driftwood catfish' STREET
-344,Local Education Agency,b'Savanna hawk' b'American Lion' SCHOOL DISTRICT,582 b'Africano glass catfish' WAY
-345,Local Education Agency,b'Savanna hawk' b'The Bearded Seal' SCHOOLS,744 b'Spikefish' NORTH AVE
-346,Local Education Agency,b'Savanna hawk' b'Svalbard Reindeer' DISTRICT,749 b'Redtooth triggerfish' STREET
-347,Local Education Agency,b'Savanna hawk' b'Red-ruffed Lemur' PUBLIC SHCOOLS,1361 b'Featherfin knifefish' ROAD
-348,Local Education Agency,b'Savanna hawk' b'Arizona Cottontail' DISTRICT,1032 b'Northern lampfish' STREET
-349,Local Education Agency,b'Savanna hawk' b'Northern Elephant Seal Pup' SCHOOLS,1025 b'Peacock flounder' NORTH AVE
-350,Local Education Agency,b'Savanna hawk' b'Eurasian Reindeer' SCHOOL DISTRICT,65 b'Cherry salmon' NORTH AVE
-352,School,b'Graveldiver' b'Persian Fallow Deer' ELEM,5 b'Ruby-topaz hummingbird' SOUTH AVE
-1143,School,b'Roach' b'Least Pygmy Squirrel' CTR,4 b'Fork-tailed palm-swift' WAY
-1145,School,b'Roach' b'Bison cow And Calf' ELEMENTARY SCHOOL,17 b'Common potoo' STREET
-1147,School,b'Warmouth' b'Least Pygmy Squirrel' ELEMENTARY,21 b'Ornate hawk-eagle' WAY
-1149,School,b'Warmouth' b'Bison cow And Calf' COMMUNITY MIDDLE,29 b'King vulture' SOUTH AVE
-23752,School,b'Golden trout' b'Brahman Calf' ELEMENTARY,6 b'Turquoise tanager' NORTH AVE
-30990,School,"b'Three-toothed puffer' b'Tiger Cat' CETR, ELEM",7 b'Caica parrot' ROAD
-36742,School,b'Cichlid' b'Domestic Dog feral' EL SCH,35 b'White-flanked antwren' WAY
-36744,School,b'Cichlid' b'Alaskan Fur Seal' PRIMARY,32 b'Great tinamou' STREET
-36746,School,"b'Nase' b'Bearded Pig' CETR, ELEM",22 b'Turkey vulture' STREET
-36748,School,b'Nase' b'Domestic Dog feral' ELEM,1 b'Brown pelican' AVE
-36750,School,b'Nase' b'Alaskan Fur Seal' ELEMENTARY,20 b'Laughing falcon' WAY
-62857,School,b'Channel catfish' b'Eurasian Badger' SCHOOL,9 b'Pauraque' SOUTH AVE
-66306,School,b'Squarehead catfish' b'Sulawesi Macaque' CTR,5 b'Long-tailed hermit' WAY
-72458,School,b'Roosterfish' b'Epaulard' SCH,6 b'Tufted coquette' NORTH AVE
-80608,School,b'Halfmoon' b'American Bison baby' EL SCH,4 b'White-flanked antwren' NORTH AVE
-84567,School,b'Queen parrotfish' b'Tree-Kangaroo' CTR,23 b'Bare-necked fruitcrow' SOUTH AVE
-84569,School,"b'Sixgill shark' b'Hoary Bats' CETR, ELEM",12 b'Sooty tern' ROAD
-84571,School,b'Sixgill shark' b'Tree-Kangaroo' MS,25 b'Black-necked aracari' WAY
-107885,School,b'Kafue pike' b'Western Gray Squirrel' ELEMENTARY SCHOOL,1 b'House sparrow' AVE
-112097,School,b'Handfish' b'Pipistrelles' SCH,5 b'Common tern' AVE
-123292,School,b'Soldierfish' b'Cyprus Bull' SCHOOL,7 b'Long-winged antwren' ROAD
-125654,School,b'Deepwater cardinalfish' b'Acouchi' SCH,3 b'Cinereous becard' WAY
-134945,School,b'Walleye' b'Long-nosed Cusimanse' ELEMENTARY SCHOOL,9 b'Sunbittern' AVE
-141570,School,b'Emperor' b'Damara Zebra' CTR,15 b'Crested eagle' NORTH AVE
-141572,School,b'Emperor' b'Northern Raccoon' PRIMARY,27 b'Rusty-margined flycatcher' NORTH AVE
-141574,School,b'Reedfish' b'Sabertoothed Cat' ELEMENTARY SCHOOL,10 b'Greater yellowlegs' WAY
-141576,School,b'Reedfish' b'Damara Zebra' ELEMENTARY SCHOOL,17 b'White-throated manakin' NORTH AVE
-141578,School,b'Reedfish' b'Northern Raccoon' PRIMARY,46 b'Bay-headed tanager' AVE
-164917,School,"b'Pencil catfish' b'Cozumel' CETR, ELEM",2 b'Channel-billed Toucan' NORTH AVE
-169578,School,b'Common tunny' b'Grey Squirrel' ELEM,1 b'Purple-throated fruitcrow' NORTH AVE
-169580,School,b'Common tunny' b'Bushy-tailed Woodrat' PRIMARY,38 b'Small-billed elaenia' AVE
-169582,School,b'Common tunny' b'Scimitar-horned Oryx' ELEM,9 b'Crimson-hooded manakin' ROAD
-169584,School,b'Neon tetra' b'Grey Squirrel' ELEM,31 b'Pompadour cotinga' AVE
-169586,School,b'Neon tetra' b'Bushy-tailed Woodrat' ELEM,29 b'Ruddy ground-dove' WAY
-169588,School,b'Neon tetra' b'Scimitar-horned Oryx' CTR,35 b'Cattle egret' NORTH AVE
-196995,School,b'Dace' b'Coyote' EL SCH,38 b'White-tailed trogon' WAY
-196997,School,b'Dace' b'Armadillo Nueve Bandas' PRIMARY,21 b'Arrowhead piculet' AVE
-196999,School,b'Escolar' b'Manatee Cow And Calf' ELEM,69 b'Black-headed antbird' ROAD
-197001,School,"b'Escolar' b""Rothschild's Giraffe"" ELEMENTARY",105 b'Short-tailed hawk' SOUTH AVE
-197003,School,b'Escolar' b'Coyote' EL SCH,52 b'Blue-chinned sapphire' SOUTH AVE
-197005,School,b'Escolar' b'Armadillo Nueve Bandas' SCH,79 b'White bellbird' ROAD
-197007,School,b'Mozambique tilapia' b'Manatee Cow And Calf' CTR,125 b'White-winged becard' NORTH AVE
-197009,School,"b'Mozambique tilapia' b""Rothschild's Giraffe"" JUNIOR HIGH",116 b'Brown noddy' SOUTH AVE
-197011,School,b'Mozambique tilapia' b'Coyote' JR MIDDLE,55 b'Slate-colored seedeater' ROAD
-197013,School,b'Mozambique tilapia' b'Armadillo Nueve Bandas' INTERMEDIATE SCHOOL,130 b'Marail guan' NORTH AVE
-197015,School,b'Blue triggerfish' b'Manatee Cow And Calf' MS,96 b'Sapphire-rumped parrotlet' WAY
-197017,School,"b'Blue triggerfish' b""Rothschild's Giraffe"" INTERMEDIATE SCHOOL",73 b'Green ibis' SOUTH AVE
-197019,School,b'Blue triggerfish' b'Coyote' HIGH,132 b'Thrush-like manakin' NORTH AVE
-197021,School,b'Blue triggerfish' b'Armadillo Nueve Bandas' HIGH,31 b'White hawk' SOUTH AVE
-295790,School,b'Pelagic cod' b'Lodgepole Chipmunk' ELEM,18 b'Long-tailed hermit' ROAD
-295792,School,b'Vendace' b'Sitatunga' MIDDLE SCHOOL,1 b'Southern lapwing' WAY
-295794,School,b'Vendace' b'Lodgepole Chipmunk' HIGH SCH,24 b'Rusty-margined flycatcher' AVE
-321844,School,b'Unicorn fish' b'Striped Hyaena' ELEM,21 b'Silver-beaked tanager' AVE
-321846,School,b'Bigeye' b'Weddell Seal' PRIMARY,10 b'Laughing gull' NORTH AVE
-321848,School,b'Bigeye' b'Striped Hyaena' SCHOOL,17 b'Southern martin' STREET
-328401,School,b'California flyingfish' b'West European Hedgehog' PRIMARY,4 b'Palm tanager' SOUTH AVE
-332994,School,"b'Sixgill ray' b""Bailey's Pocket Mouse"" CTR",10 b'Grey-crowned flycatcher' ROAD
-332996,School,b'Sixgill ray' b'Lowland Gorilla' CTR,22 b'Greater ani' NORTH AVE
-332998,School,b'Sixgill ray' b'Sloth Bear' PRIMARY,36 b'Green-tailed goldenthroat' SOUTH AVE
-333000,School,"b'Colorado squawfish' b""Bailey's Pocket Mouse"" ELEMENTARY",43 b'Yellow-rumped cacique' AVE
-333002,School,b'Colorado squawfish' b'Lowland Gorilla' PRIMARY,50 b'Laughing falcon' AVE
-333004,School,b'Colorado squawfish' b'Sloth Bear' ELEMENTARY SCHOOL,12 b'Great kiskadee' AVE
-380114,School,b'Moray eel' b'Jack Rabbits' CTR,6 b'Pectoral sparrow' AVE
-387374,School,"b'Hammerjaw' b""Hooker's Sea Lion"" ELEM",9 b'Palm tanager' ROAD
-393161,School,b'French angelfish' b'Northern Birch Mouse' ELEMENTARY,60 b'Pectoral sandpiper' SOUTH AVE
-393163,School,b'French angelfish' b'Sea Lion' ELEMENTARY,73 b'Pearl kite' SOUTH AVE
-393165,School,b'Shad' b'Guanaco' CTR,26 b'Gull-billed tern' SOUTH AVE
-393167,School,b'Shad' b'Short-beaked Echidna' SCH,46 b'Long-tailed potoo' AVE
-393169,School,b'Shad' b'Northern Birch Mouse' EL SCH,39 b'Amazon kingfisher' AVE
-393171,School,b'Shad' b'Sea Lion' PRIMARY,11 b'Osprey' NORTH AVE
-393173,School,"b'Grunion' b'Guanaco' CETR, ELEM",6 b'Dusky-chested flycatcher' SOUTH AVE
-393175,School,b'Grunion' b'Short-beaked Echidna' EL SCH,68 b'Cliff flycatcher' NORTH AVE
-393177,School,b'Grunion' b'Northern Birch Mouse' CTR,30 b'Masked duck' NORTH AVE
-393179,School,b'Grunion' b'Sea Lion' PRIMARY,12 b'Spot-breasted woodpecker' AVE
-458004,School,b'Cuckoo wrasse' b'White Handed Gibbon' CTR,7 b'Tropical gnatcatcher' NORTH AVE
-468514,School,"b'Orbicular batfish' b'Celebes Monkey' CETR, ELEM",4 b'White-bearded manakin' NORTH AVE
-479892,School,b'Snook' b'Tree Kangaroo' EL SCH,12 b'Ornate hawk-eagle' SOUTH AVE
-479894,School,b'Rocket danio' b'Buck' SCH,17 b'Tepui greenlet' AVE
-479896,School,b'Rocket danio' b'Tree Kangaroo' EL SCH,4 b'Osprey' NORTH AVE
-496884,School,b'Pineapplefish' b'Capuchin Monkey' PRIMARY,5 b'Great potoo' WAY
-496886,School,b'Pineapplefish' b'Volcano Rabbit' EL SCH,9 b'Paradise jacamar' ROAD
-517676,School,b'Combtail gourami' b'Indri' ELEMENTARY SCHOOL,2 b'Black-tailed trogon' STREET
-526815,School,"b'Titan triggerfish' b'Big hairy armadillo' CETR, ELEM",19 b'Carib grackle' NORTH AVE
-526817,School,b'Alooh' b'Feral Cats' PRIMARY,4 b'Cinnamon attila' NORTH AVE
-526819,School,b'Alooh' b'Big hairy armadillo' SCH,12 b'Purple gallinule' AVE
-558455,School,b'Southern sandfish' b'Kit Fox' ELEM,6 b'Spotted tody-flycatcher' AVE
-563281,School,b'Bristlemouth' b'Pygmy Marmoset' ELEM,55 b'White-banded swallow' SOUTH AVE
-563283,School,b'Bristlemouth' b'Sumatran Orangutan' SCH,53 b'Ladder-tailed nightjar' NORTH AVE
-563285,School,b'Bristlemouth' b'Tammar Wallaby' CTR,17 b'Ruddy-breasted seedeater' STREET
-563287,School,b'Skipjack tuna' b'Pygmy Marmoset' ELEMENTARY,34 b'Cliff flycatcher' SOUTH AVE
-563289,School,b'Skipjack tuna' b'Sumatran Orangutan' MS,16 b'Musician wren' NORTH AVE
-563291,School,b'Skipjack tuna' b'Tammar Wallaby' HIGH,10 b'Blue dacnis' AVE
-604953,School,b'Porcupinefish' b'American Porcupine' ELEMENTARY,9 b'Spotted puffbird' ROAD
-612050,School,"b'Bream' b'Dassie' CETR, ELEM",1 b'Yellow-crowned tyrannulet' SOUTH AVE
-619434,School,b'Panga' b'Orang-utan' PRIMARY,33 b'Least grebe' AVE
-619436,School,b'Panga' b'Vinta Ground Squirrel' CTR,10 b'Northern scrub flycatcher' NORTH AVE
-619438,School,b'Sandperch' b'Silver-backed Jackal' EL SCH,86 b'Rufous-throated sapphire' NORTH AVE
-619440,School,b'Sandperch' b'White Headed Capuchin' ELEM,92 b'White-ringed flycatcher' AVE
-619442,School,b'Sandperch' b'Orang-utan' SCH,27 b'Zone-tailed hawk' ROAD
-619444,School,b'Sandperch' b'Vinta Ground Squirrel' ELEM,23 b'Screaming piha' ROAD
-619446,School,b'Antarctic cod' b'Silver-backed Jackal' SCH,59 b'Aplomado falcon' ROAD
-619448,School,b'Antarctic cod' b'White Headed Capuchin' CTR,68 b'Sapphire-rumped parrotlet' SOUTH AVE
-619450,School,b'Antarctic cod' b'Orang-utan' ELEMENTARY SCHOOL,83 b'Laughing gull' STREET
-619452,School,"b'Antarctic cod' b'Vinta Ground Squirrel' CETR, ELEM",7 b'Paradise jacamar' AVE
-699600,School,b'Sleeper shark' b'Cuis Chico' ELEMENTARY SCHOOL,2 b'White-headed piping-guan' ROAD
-699602,School,b'Sleeper shark' b'Lemurien Noir' MIDDLE SCHOOL,9 b'Small-billed elaenia' STREET
-699604,School,b'Smelt-whiting' b'Cuis Chico' HIGH SCH,29 b'White-eyed parakeet' AVE
-699606,School,b'Smelt-whiting' b'Lemurien Noir' SCHOOL,1 b'Sanderling' ROAD
-729789,School,b'Opah' b'Wild Burros' CTR,6 b'Oilbird' ROAD
-731519,School,b'Pearl perch' b'Short-nosed Echidna' ELEMENTARY,118 b'Pied lapwing' STREET
-731521,School,b'Pearl perch' b'Hoary Marmot' SCH,40 b'Orange-winged parrot' WAY
-731523,School,"b'Pearl perch' b'Unstriped Ground Squirrel' CETR, ELEM",115 b'Red-legged honeycreeper' STREET
-731525,School,"b'Pearl perch' b'Coarse-haired Wombat' CETR, ELEM",42 b'Red-eyed vireo' SOUTH AVE
-731527,School,b'Streamer fish' b'Short-nosed Echidna' CTR,22 b'Burrowing owl' AVE
-731529,School,"b'Streamer fish' b'Hoary Marmot' CETR, ELEM",91 b'Tufted coquette' SOUTH AVE
-731531,School,b'Streamer fish' b'Unstriped Ground Squirrel' EL SCH,99 b'Common stilt' NORTH AVE
-731533,School,b'Streamer fish' b'Coarse-haired Wombat' PRIMARY,29 b'Cliff flycatcher' STREET
-731535,School,b'Flat loach' b'Short-nosed Echidna' INTERMEDIATE SCHOOL,13 b'Grey-crowned flycatcher' NORTH AVE
-731537,School,b'Flat loach' b'Hoary Marmot' COMMUNITY MIDDLE,3 b'Mealy amazon' AVE
-731539,School,b'Flat loach' b'Unstriped Ground Squirrel' COMMUNITY MIDDLE,77 b'Barred antshrike' NORTH AVE
-731541,School,b'Flat loach' b'Coarse-haired Wombat' HIGH,51 b'Straight-billed hermit' AVE
-731543,School,b'Pearl perch' b'Short-nosed Echidna' HIGH SCH,118 b'Pied lapwing' STREET
-802331,School,b'Squarehead catfish' b'Jebeer Gazelle' PRIMARY,7 b'Black-necked aracari' SOUTH AVE
-808761,School,b'Buffalofish' b'Yuma Antelope Squirrel' CTR,8 b'Black vulture' AVE
-817533,School,b'Beachsalmon' b'Porcupine Caribou' PRIMARY,5 b'Crested eagle' WAY
-824916,School,b'Longfin escolar' b'Bushbuck' SCHOOL,4 b'Bank swallow' WAY
-834727,School,"b'Spiny basslet' b'Crested Black Macaque' CETR, ELEM",2 b'King vulture' ROAD
-843072,School,b'Tuna' b'Roosevelt Elk' SCH,3 b'White bellbird' ROAD
-846396,School,b'Tarwhine' b'Tule Elk' ELEM,6 b'Ruddy turnstone' STREET
-852689,School,b'Nurseryfish' b'Damara Zebra' ELEM,5 b'Red-billed pied-tanager' STREET
-866190,School,b'Ganges shark' b'Sika Deer' PRIMARY,77 b'Yellow-rumped cacique' AVE
-866192,School,b'Ganges shark' b'Gudauri Vole' PRIMARY,51 b'Blue-backed manakin' STREET
-866194,School,b'Ganges shark' b'Asian Lion' PRIMARY,98 b'Spotted tanager' NORTH AVE
-866196,School,b'Stonecat' b'Cotton Tail Rabbit' PRIMARY,20 b'Yellow-bellied elaenia' SOUTH AVE
-866198,School,b'Stonecat' b'Sika Deer' ELEMENTARY SCHOOL,109 b'White-throated manakin' NORTH AVE
-866200,School,b'Stonecat' b'Gudauri Vole' EL SCH,16 b'Eared dove' WAY
-866202,School,b'Stonecat' b'Asian Lion' CTR,48 b'Chestnut-fronted macaw' SOUTH AVE
-866204,School,b'Trumpeter' b'Cotton Tail Rabbit' PRIMARY,86 b'White-rumped sandpiper' STREET
-866206,School,"b'Trumpeter' b'Sika Deer' CETR, ELEM",73 b'White-crowned manakin' NORTH AVE
-866208,School,b'Trumpeter' b'Gudauri Vole' PRIMARY,55 b'Great jacamar' SOUTH AVE
-866210,School,"b'Trumpeter' b'Asian Lion' CETR, ELEM",44 b'Giant cowbird' SOUTH AVE
-951890,School,b'Australian lungfish' b'Dromedary' PRIMARY,1 b'Dusky antbird' ROAD
-959840,School,b'Spotted dogfish' b'Black Lemur' SCHOOL,4 b'Barred antshrike' ROAD
-969304,School,b'Cavefish' b'Mexican Free-tailed Bat' ELEMENTARY,4 b'Thrush-like manakin' WAY
-975875,School,b'Green swordtail' b'Persian Wolf' SCH,20 b'Black-tailed tityra' WAY
-975877,School,b'Green swordtail' b'Shrew Mole' ELEM,10 b'Sapphire-rumped parrotlet' AVE
-975879,School,b'Green swordtail' b'King Cheetah' PRIMARY,"71 b'Rock pigeon, feral' AVE"
-975881,School,b'Gudgeon' b'Persian Wolf' CTR,56 b'Lesser kiskadee' ROAD
-975883,School,b'Gudgeon' b'Shrew Mole' EL SCH,1 b'Black-collared hawk' ROAD
-975885,School,b'Gudgeon' b'King Cheetah' EL SCH,25 b'Large-billed tern' NORTH AVE
-975887,School,b'Straptail' b'Persian Wolf' ELEM,33 b'Yellow-tufted woodpecker' STREET
-975889,School,b'Straptail' b'Shrew Mole' ELEMENTARY,64 b'Common stilt' NORTH AVE
-975891,School,b'Straptail' b'King Cheetah' ELEMENTARY SCHOOL,67 b'Tropical gnatcatcher' ROAD
-1047339,School,b'Nurseryfish' b'Cow' ELEM,2 b'Tropical kingbird' WAY
-1048582,School,"b'Dogfish' b'Coatimundi' CETR, ELEM",13 b'Tiny hawk' SOUTH AVE
-1048584,School,b'Dogfish' b'American Pine Marten' SCH,"8 b""Spix's guan"" WAY"
-1060022,School,"b'Slender mola' b""Heermann's Kangaroo Rat"" CTR",22 b'Amethyst woodstar' NORTH AVE
-1060024,School,b'Lagena' b'Pronghorn Antelope' ELEMENTARY,26 b'Hoatzin' AVE
-1060026,School,"b'Lagena' b""Heermann's Kangaroo Rat"" ELEMENTARY",15 b'Green honeycreeper' ROAD
-1078509,School,b'Oldwife' b'muriqui-do-sul' ELEMENTARY,30 b'Barn swallow' STREET
-1078511,School,b'Oldwife' b'Pastore Abruzzese' ELEMENTARY SCHOOL,2 b'Green ibis' NORTH AVE
-1078513,School,b'Barramundi' b'Mink' MS,4 b'Mealy amazon' STREET
-1078515,School,b'Barramundi' b'muriqui-do-sul' MIDDLE SCHOOL,3 b'Collared trogon' AVE
-1078517,School,b'Barramundi' b'Pastore Abruzzese' HIGH SCH,19 b'Purple honeycreeper' ROAD
-1115947,School,b'Spotted dogfish' b'Coyote Pups' SCH,8 b'Red-capped cardinal' WAY
-1117202,School,b'Pumpkinseed' b'Colilargo' ELEMENTARY SCHOOL,22 b'Squirrel cuckoo' SOUTH AVE
-1117204,School,b'Pumpkinseed' b'Dolphin' ELEMENTARY SCHOOL,9 b'Scale-backed Antbird' ROAD
-1117206,School,b'Silver driftfish' b'Common Wombat' CTR,82 b'Limpkin' AVE
-1117208,School,b'Silver driftfish' b'Tundra Wolf' ELEMENTARY SCHOOL,48 b'White bellbird' AVE
-1117210,School,b'Silver driftfish' b'Colilargo' CTR,3 b'Spangled cotinga' SOUTH AVE
-1117212,School,b'Silver driftfish' b'Dolphin' MIDDLE SCHOOL,34 b'Hooded tanager' NORTH AVE
-1117214,School,b'Snook' b'Common Wombat' MIDDLE SCHOOL,5 b'Eastern meadowlark' AVE
-1117216,School,b'Snook' b'Tundra Wolf' SENIOR HIGH,46 b'Savanna hawk' STREET
-1117218,School,b'Snook' b'Colilargo' HS,63 b'Black-tailed trogon' STREET
-1117220,School,b'Snook' b'Dolphin' SCH,89 b'Chestnut-bellied seedeater' STREET
-1183172,School,b'European chub' b'Scrub Hare' ELEM,22 b'Large-billed tern' STREET
-1183174,School,b'European chub' b'Tule Elk' ELEMENTARY SCHOOL,27 b'Violaceous trogon' AVE
-1183176,School,b'Aholehole' b'Scrub Hare' PRIMARY,36 b'Red-legged honeycreeper' NORTH AVE
-1183178,School,b'Aholehole' b'Tule Elk' ELEMENTARY,17 b'Chestnut-fronted macaw' NORTH AVE
-1205255,School,b'Lizardfish' b'Northern Elephant Seals' ELEMENTARY SCHOOL,2 b'Rufous-crowned elaenia' ROAD
-1213539,School,b'Ocean perch' b'Beisa Gemsbok' ELEMENTARY,19 b'Guianan toucanet' AVE
-1213541,School,b'Ocean perch' b'Cliff Chipmunk' CTR,18 b'Fork-tailed woodnymph' STREET
-1213543,School,b'Whiting' b'Thomson Gazelle' PRIMARY,8 b'Greater ani' WAY
-1213545,School,b'Whiting' b'Beisa Gemsbok' ELEMENTARY,28 b'Great egret' STREET
-1213547,School,b'Whiting' b'Cliff Chipmunk' ELEMENTARY,42 b'Grey-crowned flycatcher' ROAD
-1251132,School,b'Atlantic cod' b'Dik-dik' EL SCH,6 b'Great black hawk' WAY
-1251134,School,b'Atlantic cod' b'Mountain Goat' SCH,12 b'Green aracari' WAY
-1252838,School,b'Cod icefish' b'Scimitar-horned Oryx' ELEMENTARY SCHOOL,88 b'Pied lapwing' ROAD
-1252840,School,"b'Bonnetmouth' b""Dall's Sheep"" PRIMARY",104 b'Black-tailed trogon' AVE
-1252842,School,"b'Bonnetmouth' b'Tricolored Disk Bat' CETR, ELEM",75 b'Cocoa thrush' SOUTH AVE
-1252844,School,b'Bonnetmouth' b'Grey Kangaroo' PRIMARY,22 b'Rufous-throated sapphire' STREET
-1252846,School,"b'Bonnetmouth' b'Scimitar-horned Oryx' CETR, ELEM",12 b'King vulture' WAY
-1252848,School,"b'Freshwater flyingfish' b""Dall's Sheep"" SCH",126 b'Jabiru' AVE
-1252850,School,b'Freshwater flyingfish' b'Tricolored Disk Bat' ELEM,98 b'Squirrel cuckoo' SOUTH AVE
-1252852,School,b'Freshwater flyingfish' b'Grey Kangaroo' ELEMENTARY SCHOOL,27 b'Ornate hawk-eagle' NORTH AVE
-1252854,School,b'Freshwater flyingfish' b'Scimitar-horned Oryx' PRIMARY,99 b'Grey-crowned flycatcher' WAY
-1252856,School,"b'Snake mackerel' b""Dall's Sheep"" ELEMENTARY",123 b'Green aracari' WAY
-1252858,School,b'Snake mackerel' b'Tricolored Disk Bat' ELEMENTARY SCHOOL,47 b'White-throated toucan' NORTH AVE
-1252860,School,b'Snake mackerel' b'Grey Kangaroo' EL SCH,116 b'Greater yellowlegs' NORTH AVE
-1252862,School,b'Snake mackerel' b'Scimitar-horned Oryx' ELEMENTARY SCHOOL,84 b'Toco toucan' STREET
-1336827,School,"b'Tilapia' b""Bailey's Pocket Mouse"" CTR",8 b'Collared plover' AVE
-1337630,School,b'Candlefish' b'Brahman Calf' CTR,2 b'Pale-breasted spinetail' SOUTH AVE
-1337632,School,b'Candlefish' b'Blacktail Deer' CTR,44 b'Blue-tailed emerald' SOUTH AVE
-1337634,School,b'Candlefish' b'Brahman Bull' PRIMARY,26 b'Maguari stork' STREET
-1337636,School,b'Loweye catfish' b'Brahman Calf' ELEMENTARY SCHOOL,13 b'Bank swallow' WAY
-1337638,School,b'Loweye catfish' b'Blacktail Deer' SCH,8 b'Marail guan' AVE
-1337640,School,b'Loweye catfish' b'Brahman Bull' ELEMENTARY,6 b'Common tern' ROAD
-1368093,School,b'Waryfish' b'Cachicamo' CTR,4 b'Blue-cheeked parrot' AVE
-1371883,School,b'Peacock flounder' b'Manati Del Caribe' ELEM,12 b'Black-collared swallow' SOUTH AVE
-1371885,School,b'Marblefish' b'Red Ruffed Lemur' PRIMARY,23 b'Rufous-crowned elaenia' AVE
-1371887,School,b'Marblefish' b'Manati Del Caribe' ELEMENTARY,26 b'Tropical parula' AVE
-1382563,School,b'False cat shark' b'Naked Mole Rat' SCH,"28 b""Swainson's flycatcher"" SOUTH AVE"
-1382565,School,b'Longnose lancetfish' b'Eurasian Badger' EL SCH,52 b'King vulture' STREET
-1382567,School,b'Longnose lancetfish' b'Woodrats' ELEMENTARY SCHOOL,68 b'Mealy amazon' SOUTH AVE
-1382569,School,b'Longnose lancetfish' b'Naked Mole Rat' ELEMENTARY,24 b'Short-billed dowitcher' NORTH AVE
-1382571,School,b'Pricklefish' b'Eurasian Badger' ELEMENTARY,36 b'Brown pelican' ROAD
-1382573,School,b'Pricklefish' b'Woodrats' PRIMARY,22 b'Ruddy pigeon' WAY
-1382575,School,b'Pricklefish' b'Naked Mole Rat' PRIMARY,2 b'Red-eyed vireo' NORTH AVE
-1427519,School,b'Cornetfish' b'Wildebeest' EL SCH,13 b'Ruddy ground-dove' SOUTH AVE
-1427521,School,b'Yellow tang' b'Moholi-galago' ELEM,44 b'Red-shouldered tanager' SOUTH AVE
-1427523,School,b'Yellow tang' b'Aardvark' CTR,33 b'American kestrel' NORTH AVE
-1427525,School,b'Yellow tang' b'Wildebeest' CTR,58 b'Piratic flycatcher' ROAD
-1427527,School,b'Bull shark' b'Moholi-galago' ELEM,19 b'Pompadour cotinga' AVE
-1427529,School,b'Bull shark' b'Aardvark' SCH,42 b'Wattled jacana' STREET
-1427531,School,b'Bull shark' b'Wildebeest' SCH,35 b'Lesser seed-finch' NORTH AVE
-1456990,School,b'Springfish' b'Wild Dog' ELEMENTARY,8 b'Bank swallow' NORTH AVE
-1458187,School,b'Speckled trout' b'Western Pipistrelle' ELEMENTARY SCHOOL,8 b'Yellow oriole' WAY
-1465292,School,b'Requiem shark' b'Lesser Bush Baby' ELEMENTARY,"8 b""Lesson's seedeater"" ROAD"
-1472598,School,b'Manefish' b'Northern Raccoon' PRIMARY,8 b'Masked yellowthroat' AVE
-1478311,School,b'Kelpfish' b'Ardilla Gris' CTR,2 b'Piratic flycatcher' WAY
-1487520,School,b'Coho salmon' b'The Bearded Seal' SCH,4 b'Masked duck' SOUTH AVE
-1495529,School,b'Banjo catfish' b'Dahomey Dwarf Cattle' SCH,13 b'Red-legged honeycreeper' WAY
-1495531,School,"b'Harelip sucker' b'Deer Mouse' CETR, ELEM",45 b'Little hermit' STREET
-1495533,School,b'Harelip sucker' b'Pallid Bats' ELEMENTARY,55 b'Muscovy duck' NORTH AVE
-1495535,School,b'Harelip sucker' b'Dahomey Dwarf Cattle' ELEM,69 b'Savanna hawk' SOUTH AVE
-1495537,School,b'Pineconefish' b'Deer Mouse' EL SCH,37 b'Red-eyed vireo' ROAD
-1495539,School,b'Pineconefish' b'Pallid Bats' ELEMENTARY,"12 b'Common gallinule, Moorhen' AVE"
-1495541,School,b'Pineconefish' b'Dahomey Dwarf Cattle' ELEMENTARY SCHOOL,46 b'Capped seedeater' SOUTH AVE
-1547961,School,b'Carpetshark' b'Mountain Goat' ELEM,19 b'White-winged swallow' NORTH AVE
-1547963,School,"b'Carpetshark' b'Grande Musaraigne' CETR, ELEM",6 b'Pinnated bittern' NORTH AVE
-1547965,School,b'Squawfish' b'White-faced Capuchin' ELEMENTARY SCHOOL,22 b'House sparrow' NORTH AVE
-1547967,School,b'Squawfish' b'Mountain Goat' PRIMARY,35 b'Pale-breasted spinetail' AVE
-1547969,School,b'Squawfish' b'Grande Musaraigne' EL SCH,74 b'Snowy egret' SOUTH AVE
-1547971,School,b'Jewelfish' b'White-faced Capuchin' MIDDLE SCHOOL,30 b'Burnished-buff tanager' SOUTH AVE
-1547973,School,b'Jewelfish' b'Mountain Goat' COMMUNITY MIDDLE,"32 b""Spix's guan"" STREET"
-1547975,School,b'Jewelfish' b'Grande Musaraigne' SENIOR HIGH,58 b'Piratic flycatcher' NORTH AVE
-1598301,School,b'Peacock flounder' b'Marmotte Commune' PRIMARY,39 b'White-tailed trogon' ROAD
-1598303,School,"b'Peacock flounder' b'Northern Short-tailed Shrew' CETR, ELEM",19 b'White-fringed antwren' ROAD
-1598305,School,b'Sea chub' b'Marmotte Commune' JR MIDDLE,32 b'Waved woodpecker' WAY
-1598307,School,b'Sea chub' b'Northern Short-tailed Shrew' HIGH,12 b'Black nunbird' SOUTH AVE
-1626372,School,b'Sweeper' b'American Badger' CTR,5 b'Striated heron' WAY
-1630661,School,b'Trumpeter' b'Spotted Hyena' CTR,8 b'Black caracara' ROAD
-1636151,School,b'Minnow' b'Common Waterbuck' SCHOOL,5 b'Swallow-tanager' WAY
-1639026,School,b'Arrowtooth eel' b'Squirrel' PRIMARY,2 b'Spotted tody-flycatcher' NORTH AVE
-1639028,School,b'Arrowtooth eel' b'Indian Rhinoceros' SCHOOL,19 b'Southern martin' ROAD
-1655851,School,b'Sea catfish' b'Nutria' ELEM,4 b'Guianan toucanet' ROAD
-1655853,School,b'Monkfish' b'Eastern Fox Squirrel' SCH,22 b'Spangled cotinga' AVE
-1655855,School,b'Monkfish' b'Nutria' SCH,17 b'Rufous crab-hawk' AVE
-1675300,School,"b'Yellow-edged moray' b""Grant's Caribou"" ELEMENTARY SCHOOL",5 b'Toco toucan' STREET
-1681660,School,b'Tripletail' b'Horses' ELEM,48 b'Black-headed gull' SOUTH AVE
-1681662,School,b'Tripletail' b'Common Warthog' ELEMENTARY SCHOOL,2 b'Long-tailed tyrant' SOUTH AVE
-1681664,School,b'Garpike' b'Bobcat Tracks' EL SCH,32 b'Roadside Hawk' WAY
-1681666,School,b'Garpike' b'Horses' JUNIOR HIGH,23 b'Bank swallow' ROAD
-1681668,School,b'Garpike' b'Common Warthog' SCHOOL,31 b'Hooded tanager' SOUTH AVE
-1716541,School,b'Tilefish' b'Prehensile-tailed Porcupine' CTR,2 b'Chestnut-fronted macaw' AVE
-1725802,School,b'Sand eel' b'Potoroo' ELEMENTARY,4 b'Common potoo' AVE
-1727850,School,b'Longnose lancetfish' b'White-tailed Prairie Dog' SCHOOL,3 b'Pectoral sparrow' AVE
-1735976,School,b'Shingle Fish' b'Rock Squirrel' ELEMENTARY SCHOOL,5 b'Black-tailed trogon' STREET
-1743196,School,b'Goldeye' b'Southern White Rhinoceros' ELEMENTARY SCHOOL,14 b'Hook-billed kite' AVE
-1743198,School,b'Goldeye' b'Marmotte Commune' EL SCH,1 b'Black-collared hawk' SOUTH AVE
-1758030,School,b'Yellowhead jawfish' b'Lobo Gris' ELEMENTARY,79 b'Osprey' STREET
-1758032,School,b'Yellowhead jawfish' b'Bushpig' PRIMARY,1 b'Red-shouldered tanager' NORTH AVE
-1758034,School,"b'Whale shark' b""Verraux's Sifaka"" CTR",49 b'Lesser elaenia' WAY
-1758036,School,b'Whale shark' b'Chinkara' ELEMENTARY,58 b'Lesser seed-finch' WAY
-1758038,School,b'Whale shark' b'Lobo Gris' ELEM,8 b'Oilbird' NORTH AVE
-1758040,School,b'Whale shark' b'Bushpig' CTR,11 b'Yellow-rumped cacique' STREET
-1758042,School,"b'Channel bass' b""Verraux's Sifaka"" PRIMARY",65 b'Striped cuckoo' NORTH AVE
-1758044,School,b'Channel bass' b'Chinkara' PRIMARY,54 b'Eared dove' SOUTH AVE
-1758046,School,b'Channel bass' b'Lobo Gris' PRIMARY,5 b'Roadside Hawk' STREET
-1758048,School,b'Channel bass' b'Bushpig' SCH,37 b'Green kingfisher' NORTH AVE
-1828447,School,"b'Burbot' b'White-footed sportive lemur' CETR, ELEM",13 b'Bananaquit' WAY
-1828449,School,"b'Hammerhead shark' b'Caribbean Manatee' CETR, ELEM",18 b'Little hermit' ROAD
-1828451,School,b'Hammerhead shark' b'White-footed sportive lemur' MIDDLE,14 b'Laughing falcon' ROAD
-1860234,School,b'Redlip blenny' b'Culpeo Fox english' SCH,6 b'Screaming piha' STREET
-1871443,School,b'Dogfish shark' b'Southern Roan' SCH,21 b'Sun parakeet complex' ROAD
-1871445,School,b'Pacific viperfish' b'Asian Small-clawed Otter' CTR,7 b'Green kingfisher' SOUTH AVE
-1871447,School,b'Pacific viperfish' b'Southern Roan' MIDDLE,10 b'Yellow-hooded oriole' STREET
-1894809,School,b'Limia' b'Common Eland' SCH,4 b'Slender-billed kite' NORTH AVE
-1905497,School,b'Prowfish' b'Chinkara' SCH,8 b'Blue-headed parrot' NORTH AVE
-1916671,School,b'Chub' b'Caribou' ELEM,5 b'Brown jacamar' SOUTH AVE
-1927170,School,b'Zebra trout' b'Pygmy Chimpanzee' CTR,5 b'Fulvous tree-duck' NORTH AVE
-1933356,School,b'Hammerjaw' b'Domestic Dog feral' PRIMARY,3 b'Chestnut woodpecker' AVE
-1947583,School,b'California flyingfish' b'Deer Mouse' ELEMENTARY,4 b'Greater ani' ROAD
-1956511,School,b'Walu' b'Aya-aye' ELEMENTARY,8 b'Channel-billed Toucan' SOUTH AVE
-1957643,School,b'Tetra' b'Southern White Rhinoceros' CTR,2 b'Rufous-browed peppershrike' ROAD
-1965264,School,b'Bigscale pomfret' b'Sengi' EL SCH,13 b'Blackish antbird' STREET
-1965266,School,b'Duckbilled barracudina' b'Western Lowland Gorilla' ELEM,14 b'American wigeon' ROAD
-1965268,School,b'Duckbilled barracudina' b'Sengi' ELEMENTARY,20 b'Sanderling' STREET
-1979292,School,b'Whalefish' b'European Hare' ELEM,8 b'White-plumed antbird' AVE
-1990426,School,b'Snipefish' b'Spotted Hyena' SCH,7 b'White-banded swallow' NORTH AVE
-1998532,School,b'Great white shark' b'Kudu' EL SCH,8 b'Rusty-margined flycatcher' AVE
-2001436,School,b'Atlantic herring' b'Cusimanse' PRIMARY,4 b'White-fronted manakin' AVE
-2005681,School,b'Pikeblenny' b'Crested Black Macaque' PRIMARY,36 b'Amazon kingfisher' STREET
-2005683,School,b'Mudfish' b'Harp Seal' EL SCH,46 b'Black manakin' NORTH AVE
-2005685,School,"b'Mudfish' b""Spix's Disk-wing Bat"" ELEMENTARY SCHOOL",13 b'Spotted tody-flycatcher' WAY
-2005687,School,b'Mudfish' b'Crested Black Macaque' EL SCH,1 b'Little chachalaca' STREET
-2005689,School,b'Loweye catfish' b'Harp Seal' MS,51 b'Red-crowned woodpecker' ROAD
-2005691,School,"b'Loweye catfish' b""Spix's Disk-wing Bat"" HIGH",52 b'Long-winged antwren' STREET
-2005693,School,b'Loweye catfish' b'Crested Black Macaque' SCHOOL,15 b'Brown-crested flycatcher' AVE
-2049019,School,b'European minnow' b'Moutain Reedbuck' ELEMENTARY,3 b'Fork-tailed flycatcher' WAY
-2049021,School,b'European minnow' b'Arizona Cottontail' SCHOOL,12 b'Turkey vulture' AVE
-2057709,School,b'Rock cod' b'Horses' ELEMENTARY,20 b'Sanderling' ROAD
-2057711,School,"b'Rock cod' b""Steller's Sea Cow"" ELEMENTARY SCHOOL",28 b'Tepui greenlet' AVE
-2057713,School,b'Tadpole cod' b'Llama' ELEM,48 b'Yellow-hooded oriole' AVE
-2057715,School,b'Tadpole cod' b'Horses' ELEMENTARY SCHOOL,71 b'Musician wren' SOUTH AVE
-2057717,School,"b'Tadpole cod' b""Steller's Sea Cow"" ELEM",56 b'Crimson-hooded manakin' WAY
-2057719,School,b'Codling' b'Llama' COMMUNITY MIDDLE,67 b'Cream-colored woodpecker' NORTH AVE
-2057721,School,b'Codling' b'Horses' INTERMEDIATE SCHOOL,23 b'Southern lapwing' STREET
-2057723,School,"b'Codling' b""Steller's Sea Cow"" HIGH SCH",55 b'Mouse-colored antshrike' AVE
-2109037,School,b'Thorny catfish' b'Ringtail' EL SCH,70 b'Bananaquit' NORTH AVE
-2109039,School,b'Thorny catfish' b'Leopard' PRIMARY,41 b'Long-winged antwren' AVE
-2109041,School,b'Thorny catfish' b'Damara Dik-dik' EL SCH,108 b'Laughing gull' WAY
-2109043,School,b'Thorny catfish' b'Lobo Gris' ELEMENTARY,33 b'Yellow-green grosbeak' SOUTH AVE
-2109045,School,b'Snubnose parasitic eel' b'Ringtail' ELEMENTARY SCHOOL,97 b'White-rumped sandpiper' WAY
-2109047,School,b'Snubnose parasitic eel' b'Leopard' ELEM,93 b'Swallow-tanager' STREET
-2109049,School,b'Snubnose parasitic eel' b'Damara Dik-dik' ELEMENTARY SCHOOL,114 b'Spectacled owl' STREET
-2109051,School,b'Snubnose parasitic eel' b'Lobo Gris' ELEMENTARY SCHOOL,98 b'White-crowned manakin' ROAD
-2109053,School,b'Righteye flounder' b'Ringtail' ELEMENTARY,11 b'Golden-olive woodpecker' NORTH AVE
-2109055,School,b'Righteye flounder' b'Leopard' ELEMENTARY SCHOOL,90 b'White bellbird' STREET
-2109057,School,b'Righteye flounder' b'Damara Dik-dik' ELEM,123 b'Scarlet macaw' ROAD
-2109059,School,b'Righteye flounder' b'Lobo Gris' ELEM,18 b'White-plumed antbird' ROAD
-2109061,School,b'Remora' b'Ringtail' ELEMENTARY,45 b'Yellow-rumped cacique' WAY
-2109063,School,b'Remora' b'Leopard' SCH,58 b'Double-toothed kite' ROAD
-2109065,School,b'Remora' b'Damara Dik-dik' ELEM,65 b'Bicoloured hawk' NORTH AVE
-2109067,School,b'Remora' b'Lobo Gris' ELEM,40 b'Large-billed seed-finch' AVE
-2201416,School,b'Bent-tooth' b'Sulawesi Macaque' SCH,7 b'Tropical mockingbird' ROAD
-2213588,School,b'Moses sole' b'Blacktail Deer' SCHOOL,9 b'White-throated manakin' ROAD
-2218626,School,b'Dorado' b'Brown Bear' SCH,2 b'Maguari stork' WAY
-2227581,School,"b'Flathead catfish' b'Gato Huina' CETR, ELEM",7 b'Gull-billed tern' STREET
-2239641,School,b'Loweye catfish' b'White-nosed Coati' CTR,4 b'Blue-tailed emerald' WAY
-2245479,School,"b'Arowana' b'Okapi' CETR, ELEM",12 b'Blue-black grosbeak' NORTH AVE
-2245481,School,b'Arowana' b'Siberian Tiger' ELEM,150 b'Campo flicker' SOUTH AVE
-2245483,School,b'Arowana' b'Polled Hereford' EL SCH,45 b'Barn swallow' STREET
-2245485,School,b'Tompot blenny' b'muriqui-do-sul' EL SCH,128 b'Slate-colored seedeater' STREET
-2245487,School,b'Tompot blenny' b'African Bush Squirrel' PRIMARY,148 b'Collared puffbird' STREET
-2245489,School,b'Tompot blenny' b'Okapi' EL SCH,71 b'Red-and-green macaw' AVE
-2245491,School,b'Tompot blenny' b'Siberian Tiger' EL SCH,67 b'Swallow-tailed kite' ROAD
-2245493,School,b'Tompot blenny' b'Polled Hereford' SCH,98 b'White-lined tanager' WAY
-2245495,School,b'Flying characin' b'muriqui-do-sul' PRIMARY,121 b'Spotted tody-flycatcher' WAY
-2245497,School,b'Flying characin' b'African Bush Squirrel' ELEM,137 b'Spot-breasted woodpecker' AVE
-2245499,School,b'Flying characin' b'Okapi' INTERMEDIATE SCHOOL,115 b'Crimson-hooded manakin' NORTH AVE
-2245501,School,b'Flying characin' b'Siberian Tiger' MIDDLE SCHOOL,88 b'Bicolored conebill' SOUTH AVE
-2245503,School,b'Flying characin' b'Polled Hereford' MS,126 b'Ruddy turnstone' ROAD
-2245505,School,b'Flat loach' b'muriqui-do-sul' MIDDLE SCHOOL,164 b'Yellow oriole' NORTH AVE
-2245507,School,b'Flat loach' b'African Bush Squirrel' HIGH,2 b'Hoatzin' STREET
-2245509,School,b'Flat loach' b'Okapi' HS,146 b'Mouse-colored antshrike' AVE
-2245511,School,b'Flat loach' b'Siberian Tiger' SCHOOL,44 b'Collared plover' ROAD
-2245513,School,b'Flat loach' b'Polled Hereford' SCHOOL,9 b'Orange-winged parrot' NORTH AVE
-2336807,School,b'Lost River sucker' b'Eastern Fox Squirrel' CTR,4 b'Lesser yellowlegs' WAY
-2342716,School,b'Amago' b'Honey Badger' SCH,6 b'Green-throated mango' WAY
-2346239,School,b'Flatfish' b'Vizcacha' SCH,1 b'Great egret' SOUTH AVE
-2354150,School,b'Tarpon' b'Camel' EL SCH,16 b'Violaceous euphonia' ROAD
-2354152,School,b'Tarpon' b'Bearded Pig' ELEM,14 b'Burrowing owl' WAY
-2378356,School,b'Flagfin' b'White Tailed Deer' ELEMENTARY SCHOOL,6 b'Pectoral sandpiper' SOUTH AVE
-2378358,School,b'Flagfin' b'Grizzly Bear' SCH,11 b'Golden-sided euphonia' STREET
-2393286,School,"b'Sand dab' b'Mole Rat' CETR, ELEM",75 b'Channel-billed Toucan' AVE
-2393288,School,b'Sand dab' b'Cow' SCH,47 b'Roadside Hawk' ROAD
-2393290,School,b'Ribbonbearer' b'Pichiciego' CTR,34 b'Black-tailed trogon' NORTH AVE
-2393292,School,b'Ribbonbearer' b'Mole Rat' SCH,67 b'Bicolored conebill' AVE
-2393294,School,"b'Ribbonbearer' b'Cow' CETR, ELEM",40 b'Blue-grey tanager' ROAD
-2393296,School,b'Ballan wrasse' b'Pichiciego' COMMUNITY MIDDLE,61 b'Pearl kite' AVE
-2393298,School,b'Ballan wrasse' b'Mole Rat' COMMUNITY MIDDLE,66 b'Snowy egret' ROAD
-2393300,School,b'Ballan wrasse' b'Cow' HIGH SCHOOL,64 b'Rufous-browed peppershrike' WAY
-2445920,School,b'Golden dojo' b'Beaver' ELEMENTARY,21 b'Black-throated mango' AVE
-2445922,School,"b'Golden dojo' b'Prairie Dog' CETR, ELEM",14 b'King vulture' WAY
-2445924,School,b'Dogfish' b'Beaver' ELEM,25 b'Scarlet macaw' NORTH AVE
-2445926,School,b'Dogfish' b'Prairie Dog' ELEM,2 b'Tropical screech-owl' SOUTH AVE
-2478916,School,b'Oarfish' b'Natal Red Duiker' SCH,27 b'Eared dove' WAY
-2478918,School,b'Ghost pipefish' b'Desert Cottontail Rabbit' SCH,9 b'Common tern' SOUTH AVE
-2478920,School,b'Ghost pipefish' b'Natal Red Duiker' ELEMENTARY,25 b'Rufous-throated antbird' AVE
-2496204,School,b'Clownfish' b'African Wild Dog' SCHOOL,5 b'Pale-breasted barbthroat' WAY
-2501876,School,b'Pearl danio' b'Western Pocket Gopher' ELEM,51 b'Zone-tailed hawk' NORTH AVE
-2501878,School,"b'Pearl danio' b'Spiny Mouse' CETR, ELEM",15 b'Roadside Hawk' WAY
-2501880,School,b'Pearl danio' b'Valley Pocket Gopher' ELEMENTARY SCHOOL,129 b'Short-tailed pygmy-tyrant' SOUTH AVE
-2501882,School,b'Dab' b'Common Genet' ELEMENTARY SCHOOL,99 b'Green oropendola' WAY
-2501884,School,b'Dab' b'Western Pocket Gopher' PRIMARY,105 b'Red-shouldered tanager' NORTH AVE
-2501886,School,b'Dab' b'Spiny Mouse' SCH,118 b'Fulvous-crested tanager' ROAD
-2501888,School,b'Dab' b'Valley Pocket Gopher' CTR,33 b'Northern scrub flycatcher' NORTH AVE
-2501890,School,b'Piranha' b'Common Genet' EL SCH,76 b'Black skimmer' SOUTH AVE
-2501892,School,"b'Piranha' b'Western Pocket Gopher' CETR, ELEM",68 b'Little cuckoo' NORTH AVE
-2501894,School,"b'Piranha' b'Spiny Mouse' CETR, ELEM",133 b'Common stilt' WAY
-2501896,School,b'Piranha' b'Valley Pocket Gopher' ELEM,106 b'Rufous-crowned elaenia' STREET
-2501898,School,b'Spinyfin' b'Common Genet' PRIMARY,148 b'Black-collared swallow' WAY
-2501900,School,b'Spinyfin' b'Western Pocket Gopher' PRIMARY,123 b'Brown-crested flycatcher' STREET
-2501902,School,b'Spinyfin' b'Spiny Mouse' ELEM,95 b'Ringed woodpecker' AVE
-2501904,School,b'Spinyfin' b'Valley Pocket Gopher' SCH,13 b'Snowy egret' ROAD
-2604583,School,b'False moray' b'Tule Elk' SCH,2 b'House sparrow' STREET
-2614887,School,b'Duckbill' b'Northern Birch Mouse' ELEMENTARY,7 b'Lesser yellowlegs' STREET
-2620819,School,b'Ide' b'Manati Del Caribe' PRIMARY,7 b'Streaked flycatcher' ROAD
-2626242,School,b'Moorish idol' b'Woolly False Vampire Bat' CTR,8 b'Ash-throated crake' SOUTH AVE
-2637517,School,b'Forehead brooder' b'Mapuro' SCHOOL,6 b'Rufous-crowned elaenia' STREET
-2645894,School,b'Panga' b'Eastern Gray Squirrel' SCH,2 b'Jabiru' WAY
-2647880,School,b'Harelip sucker' b'Southern Fur Seal' EL SCH,60 b'Barn owl' ROAD
-2647882,School,b'Harelip sucker' b'Holstein' CTR,84 b'Magnificent frigatebird' SOUTH AVE
-2647884,School,b'Midshipman' b'Beisa Gemsbok' SCH,68 b'Fork-tailed palm-swift' AVE
-2647886,School,b'Midshipman' b'Black-tailed Prairie Dog' ELEMENTARY,21 b'Red-legged honeycreeper' ROAD
-2647888,School,b'Midshipman' b'Southern Fur Seal' EL SCH,81 b'Green kingfisher' STREET
-2647890,School,b'Midshipman' b'Holstein' ELEMENTARY SCHOOL,1 b'Black-tailed tityra' SOUTH AVE
-2647892,School,b'Tuna' b'Beisa Gemsbok' PRIMARY,138 b'Orange-winged parrot' STREET
-2647894,School,b'Tuna' b'Black-tailed Prairie Dog' JR MIDDLE,8 b'White-rumped sandpiper' NORTH AVE
-2647896,School,b'Tuna' b'Southern Fur Seal' MS,62 b'Semipalmated plover' NORTH AVE
-2647898,School,b'Tuna' b'Holstein' SENIOR HIGH,63 b'Streaked flycatcher' WAY
-2647900,School,b'Bream' b'Beisa Gemsbok' HIGH,108 b'Peach-fronted parakeet' STREET
-2647902,School,b'Bream' b'Black-tailed Prairie Dog' SCHOOL,2 b'Black-collared hawk' STREET
-2647904,School,b'Bream' b'Southern Fur Seal' SCHOOL,7 b'Grey-necked woodrail' STREET
-2647906,School,b'Bream' b'Holstein' SCH,105 b'Osprey' AVE
-2730113,School,b'Pickerel' b'Achuni' ELEM,7 b'American kestrel' SOUTH AVE
-2741935,School,"b'Clownfish' b'Eurasian Badger' CETR, ELEM",9 b'Caica parrot' AVE
-2752641,School,b'Mahi-mahi' b'Wild Boar' ELEMENTARY SCHOOL,3 b'Greyish saltator' STREET
-2759969,School,b'Scythe butterfish' b'American Bison' CTR,2 b'Green-tailed goldenthroat' ROAD
-2772622,School,b'Pelican gulper' b'Rousettus Bat' ELEMENTARY,15 b'Capuchin bird' ROAD
-2772624,School,b'Pelican gulper' b'Pygmy Shrew' CTR,41 b'Pectoral sandpiper' SOUTH AVE
-2772626,School,b'Pelican gulper' b'Brocket Deer' SCH,69 b'Marail guan' WAY
-2772628,School,b'Sea chub' b'Rousettus Bat' ELEM,87 b'Yellow-billed jacamar' SOUTH AVE
-2772630,School,b'Sea chub' b'Pygmy Shrew' ELEM,71 b'Yellow warbler' STREET
-2772632,School,b'Sea chub' b'Brocket Deer' PRIMARY,45 b'Royal tern' WAY
-2772634,School,b'Weatherfish' b'Rousettus Bat' PRIMARY,16 b'Cayenne tern' ROAD
-2772636,School,b'Weatherfish' b'Pygmy Shrew' ELEMENTARY SCHOOL,48 b'Blackish antbird' SOUTH AVE
-2772638,School,b'Weatherfish' b'Brocket Deer' CTR,26 b'Hoatzin' WAY
-2865119,School,b'Fangtooth' b'Hippopotamus' EL SCH,5 b'Brown-bellied antwren' WAY
-2868281,School,b'Ribbonfish' b'Black Squirrel' SCH,3 b'Pauraque' STREET
-2868283,School,b'Freshwater herring' b'Dwarf Cavy' PRIMARY,27 b'Chestnut-fronted macaw' ROAD
-2868285,School,"b'Freshwater herring' b'Black Squirrel' CETR, ELEM",21 b'Great kiskadee' STREET
-2887178,School,b'Grunter' b'Longnosed Bats' ELEMENTARY,5 b'Turkey vulture' ROAD
-2887956,School,b'Black tetra' b'Pallid Bat' ELEMENTARY SCHOOL,32 b'Tufted coquette' WAY
-2887958,School,b'Herring' b'Deer' SCH,10 b'Semipalmated sandpiper' ROAD
-2887960,School,b'Herring' b'Marteja' SCH,53 b'Eared dove' NORTH AVE
-2887962,School,b'Herring' b'Pallid Bat' CTR,8 b'Rufous-throated sapphire' STREET
-2887964,School,"b'Arctic char' b'Deer' CETR, ELEM",6 b'White-throated manakin' SOUTH AVE
-2887966,School,b'Arctic char' b'Marteja' PRIMARY,61 b'Pale-breasted thrush' WAY
-2887968,School,b'Arctic char' b'Pallid Bat' SCH,62 b'Northern scrub flycatcher' AVE
-2934919,School,b'Round whitefish' b'Golden Lion Tamarin' SCH,3 b'Crested caracara' WAY
-2940368,School,b'Barfish' b'Tayra' PRIMARY,10 b'Capped heron' ROAD
-2940370,School,b'Barfish' b'Baboon' EL SCH,9 b'Black-faced dacnis' AVE
-2965889,School,b'Cuskfish' b'White Rhinoceros' SCH,7 b'Glossy-backed becard' STREET
-2968529,School,b'Pirarucu' b'Belding Ground Squirrel' SCH,3 b'Magnificent frigatebird' WAY
-2979105,School,b'Oldwife' b'Eurasian Red Squirrel' SCH,3 b'Plain-bellied hummingbird' ROAD
-2983758,School,b'Waryfish' b'Brown Hyaena' SCH,13 b'Mouse-colored tyrannulet' NORTH AVE
-2983760,School,b'Waryfish' b'White-handed Gibbon' ELEM,6 b'Crested caracara' ROAD
-2992557,School,b'Lefteye flounder' b'Cony' ELEM,1 b'Blue-grey tanager' AVE
-2995740,School,"b'Trahira' b'Plains Zebra' CETR, ELEM","17 b""Lesson's seedeater"" AVE"
-2995742,School,b'Trahira' b'Black-footed Ferret' JUNIOR HIGH,11 b'Blue ground-dove' AVE
-3005186,School,b'Mudfish' b'Wolf' SCH,8 b'Black caracara' AVE
-3007191,School,b'Inanga' b'Bengal Tiger' SCH,4 b'American kestrel' SOUTH AVE
-3017466,School,b'Trout' b'Pig' EL SCH,45 b'Golden-spangled piculet' NORTH AVE
-3017468,School,b'Trout' b'North American Beaver' EL SCH,54 b'Northern scrub flycatcher' NORTH AVE
-3017470,School,b'Trout' b'Packrats' ELEMENTARY SCHOOL,82 b'Little chachalaca' AVE
-3017472,School,b'Stonecat' b'Pig' ELEM,77 b'Short-tailed pygmy-tyrant' NORTH AVE
-3017474,School,b'Stonecat' b'North American Beaver' PRIMARY,32 b'Mouse-colored tyrannulet' AVE
-3017476,School,b'Stonecat' b'Packrats' PRIMARY,80 b'Blue-backed manakin' WAY
-3017478,School,b'Pricklefish' b'Pig' COMMUNITY MIDDLE,3 b'Plumbeous seedeater' AVE
-3017480,School,b'Pricklefish' b'North American Beaver' JR MIDDLE,63 b'Rusty-margined flycatcher' NORTH AVE
-3017482,School,b'Pricklefish' b'Packrats' HIGH,22 b'Musician wren' SOUTH AVE
-3017484,School,b'Trout' b'Pig' HS,45 b'Golden-spangled piculet' NORTH AVE
-3072055,School,b'Candiru' b'Southern Oryx Gemsbok' ELEM,8 b'Great jacamar' NORTH AVE
-3078541,School,"b'Armorhead catfish' b""Grant's Caribou"" CTR",4 b'Violaceous euphonia' NORTH AVE
-3090091,School,b'Houndshark' b'Pygmy Anteater' SCH,3 b'Eastern meadowlark' WAY
-3100399,School,b'Flagblenny' b'Cactus Mouse' ELEMENTARY SCHOOL,55 b'Red-crested finch' WAY
-3100401,School,b'Flagblenny' b'Kangaroo Rats' CTR,19 b'Masked duck' NORTH AVE
-3100403,School,"b'Flagblenny' b'Epauletted Bat' CETR, ELEM",40 b'White-winged becard' STREET
-3100405,School,b'False brotula' b'Cactus Mouse' PRIMARY,18 b'Variegated flycatcher' ROAD
-3100407,School,b'False brotula' b'Kangaroo Rats' MS,38 b'Red-capped cardinal' SOUTH AVE
-3100409,School,b'False brotula' b'Epauletted Bat' HIGH SCHOOL,20 b'Crested oropendola' AVE
-3123600,School,b'Reedfish' b'Mountain Tapir' ELEMENTARY SCHOOL,1 b'Little hermit' NORTH AVE
-3127648,School,b'Triggerfish' b'Patagonian Mara' SCH,2 b'Grey-fronted dove' SOUTH AVE
-3130851,School,"b'Pikehead' b""Grant's Caribou"" CETR, ELEM",10 b'Pygmy kingfisher' STREET
-3130853,School,b'Pikehead' b'Pacific Harbor Seal' CTR,7 b'Grey-winged trumpeter' STREET
-3130855,School,"b'Glassfish' b'Heermann Kangaroo Rat' CETR, ELEM",48 b'Blue ground-dove' STREET
-3130857,School,"b'Glassfish' b""Grant's Caribou"" MIDDLE",47 b'Tropical screech-owl' ROAD
-3130859,School,b'Glassfish' b'Pacific Harbor Seal' SCH,49 b'Brown pelican' NORTH AVE
-3156427,School,b'Clownfish' b'Orangutan' ELEMENTARY,33 b'Royal tern' AVE
-3156429,School,b'Clownfish' b'Black Bear Track' SCH,13 b'Black-crested antshrike' SOUTH AVE
-3156431,School,b'New Zealand smelt' b'Orangutan' ELEMENTARY,17 b'Yellow-bellied elaenia' ROAD
-3156433,School,b'New Zealand smelt' b'Black Bear Track' SCH,"38 b""McConnell's flycatcher"" WAY"
-3185572,School,b'Bent-tooth' b'Cheetah' SCH,4 b'Long-tailed tyrant' STREET
-3198445,School,b'Mudminnow' b'Jaguar' ELEMENTARY,65 b'Golden-sided euphonia' SOUTH AVE
-3198447,School,"b'Mudminnow' b'Chincoteague Ponies' CETR, ELEM",12 b'Tropical kingbird' NORTH AVE
-3198449,School,b'Mudminnow' b'Water Buffalo domestic' EL SCH,9 b'Eared dove' WAY
-3198451,School,b'Platyfish' b'Jaguar' ELEM,43 b'Ruddy ground-dove' STREET
-3198453,School,b'Platyfish' b'Chincoteague Ponies' JR MIDDLE,33 b'Bare-eyed thrush' ROAD
-3198455,School,b'Platyfish' b'Water Buffalo domestic' INTERMEDIATE SCHOOL,32 b'Striped cuckoo' AVE
-3198457,School,b'Mozambique tilapia' b'Jaguar' MIDDLE,1 b'Screaming piha' NORTH AVE
-3198459,School,b'Mozambique tilapia' b'Chincoteague Ponies' INTERMEDIATE SCHOOL,11 b'Lesser yellowlegs' STREET
-3198461,School,b'Mozambique tilapia' b'Water Buffalo domestic' SCHOOL,22 b'Blue-chinned sapphire' WAY
-3246332,School,"b'Vimba' b'Sika Deer' CETR, ELEM",4 b'Brown noddy' ROAD
-3251769,School,b'Luderick' b'Southern Brown Bandicoot' ELEMENTARY SCHOOL,8 b'Common potoo' NORTH AVE
-3258085,School,b'Deepwater stingray' b'Baboon' SCH,9 b'Yellow-throated spinetail' STREET
-3262594,School,b'Black scabbardfish' b'Ermine' ELEMENTARY SCHOOL,5 b'White-fronted manakin' ROAD
-3268578,School,"b'John Dory' b'North American Beaver' CETR, ELEM",1 b'Red-bellied macaw' WAY
-3268580,School,b'John Dory' b'Ardilla Zorra' EL SCH,17 b'Laughing falcon' STREET
-3270262,School,b'Emperor bream' b'California Harbor Seal' PRIMARY,21 b'White-winged swallow' STREET
-3270264,School,b'Pumpkinseed' b'Horse' EL SCH,1 b'Yellow-rumped cacique' SOUTH AVE
-3270266,School,b'Pumpkinseed' b'California Harbor Seal' MIDDLE,19 b'Horned screamer' NORTH AVE
-3299064,School,b'Bream' b'Northern Gray Squirrel' SCH,13 b'Long-tailed hermit' WAY
-3299066,School,b'Bream' b'Sable Antelope' INTERMEDIATE SCHOOL,5 b'Bronzy jacamar' NORTH AVE
-3312490,School,b'Redside' b'Roosevelt Elk' SCH,3 b'Snail kite' NORTH AVE
-3322002,School,"b'Elver' b'Domestic Dog feral' CETR, ELEM",12 b'Red-and-black grosbeak' NORTH AVE
-3322004,School,b'Elver' b'Axis Deer' ELEM,14 b'Lineated woodpecker' ROAD
-3322006,School,"b'Lizardfish' b'Domestic Dog feral' CETR, ELEM",7 b'Wood stork' WAY
-3322008,School,b'Lizardfish' b'Axis Deer' CTR,1 b'Black-tailed trogon' WAY
-3346676,School,b'Convict cichlid' b'Baboon' ELEMENTARY SCHOOL,4 b'Grey-breasted martin' SOUTH AVE
+176,Local Education Agency,b'Rufous-bellied antwren' b'Tiger Cat' SCHOOL DISTRICT,354 b'Viperfish' NORTH AVE
+177,Local Education Agency,"b'Rufous-bellied antwren' b""Verraux's Sifaka"" COUNTY SCHOOLS",588 b'Ballan wrasse' WAY
+178,Local Education Agency,b'Rufous-bellied antwren' b'Hartebeest' COUNTY SCHOOLS,529 b'Kelp perch' STREET
+179,Local Education Agency,b'Rufous-bellied antwren' b'Black Tail Prairie Dog' DISTRICT,931 b'Cuskfish' SOUTH AVE
+180,Local Education Agency,b'Rufous-bellied antwren' b'Southern Impala' SD,855 b'Thornyhead' WAY
+181,Local Education Agency,b'Rufous-bellied antwren' b'Northern Elelphant Seal' SCHOOL DISTRICT,866 b'Flathead' SOUTH AVE
+182,Local Education Agency,b'Rufous-bellied antwren' b'Killer Whale' SD,485 b'Glowlight danio' ROAD
+183,Local Education Agency,b'Rufous-bellied antwren' b'Virginia Opossom' PUBLIC SHCOOLS,348 b'Wobbegong' ROAD
+184,Local Education Agency,b'Rufous-bellied antwren' b'Bengal Tiger' SCHOOLS,486 b'Great white shark' SOUTH AVE
+185,Local Education Agency,b'Rufous-bellied antwren' b'Gato Huina' SD,593 b'Southern sandfish' AVE
+186,Local Education Agency,b'Rufous-bellied antwren' b'Grizzly' SCHOOL DISTRICT,532 b'Sergeant major' ROAD
+187,Local Education Agency,b'Rufous-bellied antwren' b'Olingo' SD,1124 b'Bristlenose catfish' SOUTH AVE
+188,Local Education Agency,b'Gull-billed tern' b'Tiger Cat' SCHOOLS,1 b'Ropefish' NORTH AVE
+189,Local Education Agency,"b'Gull-billed tern' b""Verraux's Sifaka"" DISTRICT",508 b'Flabby whalefish' ROAD
+190,Local Education Agency,b'Gull-billed tern' b'Hartebeest' PUBLIC SHCOOLS,1262 b'Sea bream' AVE
+191,Local Education Agency,b'Gull-billed tern' b'Black Tail Prairie Dog' DISTRICT,572 b'Menhaden' WAY
+192,Local Education Agency,b'Gull-billed tern' b'Southern Impala' PUBLIC SHCOOLS,976 b'Lagena' ROAD
+193,Local Education Agency,b'Gull-billed tern' b'Northern Elelphant Seal' SCHOOLS,1274 b'Bangus' NORTH AVE
+194,Local Education Agency,b'Gull-billed tern' b'Killer Whale' SCHOOL DISTRICT,1087 b'Atlantic cod' NORTH AVE
+195,Local Education Agency,b'Gull-billed tern' b'Virginia Opossom' SCHOOL DISTRICT,781 b'Cod icefish' WAY
+196,Local Education Agency,b'Gull-billed tern' b'Bengal Tiger' DISTRICT,716 b'Orangestriped triggerfish' SOUTH AVE
+197,Local Education Agency,b'Gull-billed tern' b'Gato Huina' SCHOOL DISTRICT,1292 b'Morid cod' NORTH AVE
+198,Local Education Agency,b'Gull-billed tern' b'Grizzly' COUNTY SCHOOLS,859 b'Long-finned pike' ROAD
+199,Local Education Agency,b'Gull-billed tern' b'Olingo' SD,712 b'Kissing gourami' STREET
+200,Local Education Agency,b'Spectacled owl' b'Tiger Cat' DISTRICT,1224 b'Weeverfish' STREET
+201,Local Education Agency,"b'Spectacled owl' b""Verraux's Sifaka"" COUNTY SCHOOLS",178 b'Pacific salmon' STREET
+202,Local Education Agency,b'Spectacled owl' b'Hartebeest' DISTRICT,1180 b'False moray' NORTH AVE
+203,Local Education Agency,b'Spectacled owl' b'Black Tail Prairie Dog' SCHOOLS,391 b'Parrotfish' NORTH AVE
+204,Local Education Agency,b'Spectacled owl' b'Southern Impala' SCHOOLS,30 b'Northern clingfish' WAY
+205,Local Education Agency,b'Spectacled owl' b'Northern Elelphant Seal' DISTRICT,1236 b'Slickhead' WAY
+206,Local Education Agency,b'Spectacled owl' b'Killer Whale' SD,1290 b'Electric catfish' STREET
+207,Local Education Agency,b'Spectacled owl' b'Virginia Opossom' DISTRICT,720 b'Glass knifefish' STREET
+208,Local Education Agency,b'Spectacled owl' b'Bengal Tiger' PUBLIC SHCOOLS,772 b'Russian sturgeon' NORTH AVE
+209,Local Education Agency,b'Spectacled owl' b'Gato Huina' SD,1324 b'Sea raven' STREET
+210,Local Education Agency,b'Spectacled owl' b'Grizzly' DISTRICT,1000 b'Lighthousefish' WAY
+211,Local Education Agency,b'Spectacled owl' b'Olingo' SCHOOL DISTRICT,886 b'Ponyfish' WAY
+212,Local Education Agency,b'White-tailed kite' b'Tiger Cat' DISTRICT,1299 b'Atlantic silverside' AVE
+213,Local Education Agency,"b'White-tailed kite' b""Verraux's Sifaka"" DISTRICT",1288 b'Stingray' ROAD
+214,Local Education Agency,b'White-tailed kite' b'Hartebeest' PUBLIC SHCOOLS,1253 b'Cavefish' ROAD
+215,Local Education Agency,b'White-tailed kite' b'Black Tail Prairie Dog' SCHOOLS,136 b'Bramble shark' SOUTH AVE
+216,Local Education Agency,b'White-tailed kite' b'Southern Impala' SD,471 b'Freshwater flyingfish' NORTH AVE
+217,Local Education Agency,b'White-tailed kite' b'Northern Elelphant Seal' PUBLIC SHCOOLS,1036 b'Gianttail' ROAD
+218,Local Education Agency,b'White-tailed kite' b'Killer Whale' PUBLIC SHCOOLS,724 b'Pompano' NORTH AVE
+219,Local Education Agency,b'White-tailed kite' b'Virginia Opossom' SD,233 b'Sind danio' ROAD
+220,Local Education Agency,b'White-tailed kite' b'Bengal Tiger' PUBLIC SHCOOLS,115 b'Yellowfin grouper' NORTH AVE
+221,Local Education Agency,b'White-tailed kite' b'Gato Huina' COUNTY SCHOOLS,1238 b'Warbonnet' NORTH AVE
+222,Local Education Agency,b'White-tailed kite' b'Grizzly' DISTRICT,613 b'Ratfish' AVE
+223,Local Education Agency,b'White-tailed kite' b'Olingo' COUNTY SCHOOLS,1008 b'Swampfish' WAY
+224,Local Education Agency,b'Red-throated caracara' b'Tiger Cat' PUBLIC SHCOOLS,962 b'Modoc sucker' STREET
+225,Local Education Agency,"b'Red-throated caracara' b""Verraux's Sifaka"" SCHOOLS",1191 b'Snipe eel' STREET
+226,Local Education Agency,b'Red-throated caracara' b'Hartebeest' DISTRICT,658 b'Mojarra' STREET
+227,Local Education Agency,b'Red-throated caracara' b'Black Tail Prairie Dog' SCHOOLS,735 b'Greeneye' SOUTH AVE
+228,Local Education Agency,b'Red-throated caracara' b'Southern Impala' COUNTY SCHOOLS,412 b'Trevally' ROAD
+229,Local Education Agency,b'Red-throated caracara' b'Northern Elelphant Seal' PUBLIC SHCOOLS,396 b'Ziege' SOUTH AVE
+230,Local Education Agency,b'Red-throated caracara' b'Killer Whale' DISTRICT,911 b'Queen triggerfish' AVE
+231,Local Education Agency,b'Red-throated caracara' b'Virginia Opossom' COUNTY SCHOOLS,1090 b'Mosquitofish' AVE
+232,Local Education Agency,b'Red-throated caracara' b'Bengal Tiger' SD,882 b'Sleeper shark' NORTH AVE
+233,Local Education Agency,b'Red-throated caracara' b'Gato Huina' PUBLIC SHCOOLS,538 b'Dab' ROAD
+234,Local Education Agency,b'Red-throated caracara' b'Grizzly' SCHOOLS,1154 b'Darter' SOUTH AVE
+235,Local Education Agency,b'Red-throated caracara' b'Olingo' PUBLIC SHCOOLS,950 b'Blue shark' AVE
+236,Local Education Agency,b'Piratic flycatcher' b'Tiger Cat' SCHOOL DISTRICT,401 b'Tarwhine' SOUTH AVE
+237,Local Education Agency,"b'Piratic flycatcher' b""Verraux's Sifaka"" SD",922 b'Seahorse' ROAD
+238,Local Education Agency,b'Piratic flycatcher' b'Hartebeest' DISTRICT,285 b'European perch' ROAD
+239,Local Education Agency,b'Piratic flycatcher' b'Black Tail Prairie Dog' SCHOOLS,1286 b'Flier' AVE
+240,Local Education Agency,b'Piratic flycatcher' b'Southern Impala' SD,676 b'Antarctic cod' AVE
+241,Local Education Agency,b'Piratic flycatcher' b'Northern Elelphant Seal' SCHOOL DISTRICT,1103 b'Elephantnose fish' NORTH AVE
+242,Local Education Agency,b'Piratic flycatcher' b'Killer Whale' SCHOOLS,734 b'Yellowfin croaker' WAY
+243,Local Education Agency,b'Piratic flycatcher' b'Virginia Opossom' SCHOOLS,119 b'River shark' AVE
+244,Local Education Agency,b'Piratic flycatcher' b'Bengal Tiger' SCHOOLS,1082 b'Marblefish' STREET
+245,Local Education Agency,b'Piratic flycatcher' b'Gato Huina' COUNTY SCHOOLS,38 b'Mola' SOUTH AVE
+246,Local Education Agency,b'Piratic flycatcher' b'Grizzly' PUBLIC SHCOOLS,461 b'Reedfish' NORTH AVE
+247,Local Education Agency,b'Piratic flycatcher' b'Olingo' SD,587 b'Bigeye squaretail' ROAD
+248,Local Education Agency,"b'Rock pigeon, feral' b'Tiger Cat' PUBLIC SHCOOLS",578 b'Snapper' STREET
+249,Local Education Agency,"b'Rock pigeon, feral' b""Verraux's Sifaka"" PUBLIC SHCOOLS",152 b'Bullhead shark' NORTH AVE
+250,Local Education Agency,"b'Rock pigeon, feral' b'Hartebeest' COUNTY SCHOOLS",845 b'Sundaland noodlefish' NORTH AVE
+251,Local Education Agency,"b'Rock pigeon, feral' b'Black Tail Prairie Dog' SCHOOL DISTRICT",59 b'Oarfish' AVE
+252,Local Education Agency,"b'Rock pigeon, feral' b'Southern Impala' DISTRICT",416 b'Hussar' STREET
+253,Local Education Agency,"b'Rock pigeon, feral' b'Northern Elelphant Seal' DISTRICT",193 b'Lightfish' WAY
+254,Local Education Agency,"b'Rock pigeon, feral' b'Killer Whale' PUBLIC SHCOOLS",910 b'Pencilfish' WAY
+255,Local Education Agency,"b'Rock pigeon, feral' b'Virginia Opossom' PUBLIC SHCOOLS",75 b'Rainbow trout' STREET
+256,Local Education Agency,"b'Rock pigeon, feral' b'Bengal Tiger' SCHOOL DISTRICT",216 b'Knifefish' WAY
+257,Local Education Agency,"b'Rock pigeon, feral' b'Gato Huina' COUNTY SCHOOLS",125 b'Rock cod' ROAD
+258,Local Education Agency,"b'Rock pigeon, feral' b'Grizzly' DISTRICT",1050 b'Temperate perch' STREET
+259,Local Education Agency,"b'Rock pigeon, feral' b'Olingo' COUNTY SCHOOLS",749 b'Slimehead' AVE
+260,Local Education Agency,b'Grey-breasted crake' b'Tiger Cat' COUNTY SCHOOLS,147 b'Shortnose greeneye' STREET
+261,Local Education Agency,"b'Grey-breasted crake' b""Verraux's Sifaka"" DISTRICT",26 b'Straptail' WAY
+262,Local Education Agency,b'Grey-breasted crake' b'Hartebeest' PUBLIC SHCOOLS,678 b'Quillback' STREET
+263,Local Education Agency,b'Grey-breasted crake' b'Black Tail Prairie Dog' SCHOOLS,146 b'Marlin' SOUTH AVE
+264,Local Education Agency,b'Grey-breasted crake' b'Southern Impala' PUBLIC SHCOOLS,460 b'Betta' NORTH AVE
+265,Local Education Agency,b'Grey-breasted crake' b'Northern Elelphant Seal' SCHOOLS,1327 b'Asiatic glassfish' NORTH AVE
+266,Local Education Agency,b'Grey-breasted crake' b'Killer Whale' SD,170 b'Zebra loach' WAY
+267,Local Education Agency,b'Grey-breasted crake' b'Virginia Opossom' COUNTY SCHOOLS,655 b'Riffle dace' WAY
+268,Local Education Agency,b'Grey-breasted crake' b'Bengal Tiger' PUBLIC SHCOOLS,694 b'King-of-the-salmon' ROAD
+269,Local Education Agency,b'Grey-breasted crake' b'Gato Huina' COUNTY SCHOOLS,746 b'Squaretail' WAY
+270,Local Education Agency,b'Grey-breasted crake' b'Grizzly' COUNTY SCHOOLS,602 b'Footballfish' NORTH AVE
+271,Local Education Agency,b'Grey-breasted crake' b'Olingo' COUNTY SCHOOLS,745 b'Spiny dogfish' WAY
+272,Local Education Agency,b'Variable seedeater' b'Tiger Cat' SCHOOL DISTRICT,357 b'Dragon goby' STREET
+273,Local Education Agency,"b'Variable seedeater' b""Verraux's Sifaka"" DISTRICT",154 b'Whitefish' AVE
+274,Local Education Agency,b'Variable seedeater' b'Hartebeest' PUBLIC SHCOOLS,870 b'Creek chub' AVE
+275,Local Education Agency,b'Variable seedeater' b'Black Tail Prairie Dog' COUNTY SCHOOLS,925 b'Paradise fish' ROAD
+276,Local Education Agency,b'Variable seedeater' b'Southern Impala' PUBLIC SHCOOLS,904 b'Orbicular batfish' STREET
+277,Local Education Agency,b'Variable seedeater' b'Northern Elelphant Seal' SD,1207 b'Beaked salmon' STREET
+278,Local Education Agency,b'Variable seedeater' b'Killer Whale' SD,729 b'Sea chub' WAY
+279,Local Education Agency,b'Variable seedeater' b'Virginia Opossom' SD,833 b'Spiderfish' AVE
+280,Local Education Agency,b'Variable seedeater' b'Bengal Tiger' SD,974 b'Wolf-eel' STREET
+281,Local Education Agency,b'Variable seedeater' b'Gato Huina' SCHOOL DISTRICT,245 b'Sea devil' STREET
+282,Local Education Agency,b'Variable seedeater' b'Grizzly' COUNTY SCHOOLS,523 b'Cuchia' AVE
+283,Local Education Agency,b'Variable seedeater' b'Olingo' PUBLIC SHCOOLS,1189 b'Australian lungfish' NORTH AVE
+284,Local Education Agency,b'Fulvous-crested tanager' b'Tiger Cat' SCHOOL DISTRICT,651 b'Black scalyfin' ROAD
+285,Local Education Agency,"b'Fulvous-crested tanager' b""Verraux's Sifaka"" SCHOOLS",424 b'Snubnose eel' SOUTH AVE
+286,Local Education Agency,b'Fulvous-crested tanager' b'Hartebeest' DISTRICT,110 b'Marine hatchetfish' STREET
+287,Local Education Agency,b'Fulvous-crested tanager' b'Black Tail Prairie Dog' COUNTY SCHOOLS,224 b'Dhufish' AVE
+288,Local Education Agency,b'Fulvous-crested tanager' b'Southern Impala' PUBLIC SHCOOLS,990 b'Electric knifefish' NORTH AVE
+289,Local Education Agency,b'Fulvous-crested tanager' b'Northern Elelphant Seal' PUBLIC SHCOOLS,1150 b'Codling' AVE
+290,Local Education Agency,b'Fulvous-crested tanager' b'Killer Whale' SCHOOL DISTRICT,58 b'Southern smelt' NORTH AVE
+291,Local Education Agency,b'Fulvous-crested tanager' b'Virginia Opossom' SCHOOL DISTRICT,492 b'Pikeperch' NORTH AVE
+292,Local Education Agency,b'Fulvous-crested tanager' b'Bengal Tiger' SCHOOLS,693 b'Topminnow' NORTH AVE
+293,Local Education Agency,b'Fulvous-crested tanager' b'Gato Huina' PUBLIC SHCOOLS,951 b'Sarcastic fringehead' ROAD
+294,Local Education Agency,b'Fulvous-crested tanager' b'Grizzly' COUNTY SCHOOLS,302 b'Zebra shark' AVE
+295,Local Education Agency,b'Fulvous-crested tanager' b'Olingo' DISTRICT,392 b'Rainbowfish' SOUTH AVE
+296,Local Education Agency,b'Long-winged antwren' b'Tiger Cat' DISTRICT,631 b'Red salmon' ROAD
+297,Local Education Agency,"b'Long-winged antwren' b""Verraux's Sifaka"" COUNTY SCHOOLS",848 b'Handfish' ROAD
+298,Local Education Agency,b'Long-winged antwren' b'Hartebeest' DISTRICT,803 b'Green swordtail' WAY
+299,Local Education Agency,b'Long-winged antwren' b'Black Tail Prairie Dog' SCHOOLS,930 b'Tenpounder' SOUTH AVE
+300,Local Education Agency,b'Long-winged antwren' b'Southern Impala' PUBLIC SHCOOLS,623 b'Warty angler' STREET
+301,Local Education Agency,b'Long-winged antwren' b'Northern Elelphant Seal' DISTRICT,130 b'Chimaera' ROAD
+302,Local Education Agency,b'Long-winged antwren' b'Killer Whale' SCHOOLS,114 b'Northern Stargazer' WAY
+303,Local Education Agency,b'Long-winged antwren' b'Virginia Opossom' PUBLIC SHCOOLS,1190 b'Torpedo' ROAD
+304,Local Education Agency,b'Long-winged antwren' b'Bengal Tiger' DISTRICT,1031 b'Soldierfish' WAY
+305,Local Education Agency,b'Long-winged antwren' b'Gato Huina' PUBLIC SHCOOLS,388 b'Trumpetfish' ROAD
+306,Local Education Agency,b'Long-winged antwren' b'Grizzly' SD,116 b'Grouper' WAY
+307,Local Education Agency,b'Long-winged antwren' b'Olingo' DISTRICT,92 b'Lost River sucker' ROAD
+308,Local Education Agency,b'Great tinamou' b'Tiger Cat' DISTRICT,430 b'Icefish' ROAD
+310,School,b'Ziege' b'Badger captive' ELEMENTARY,6 b'Red-crowned woodpecker' AVE
+1533,School,b'Skilfish' b'Florida Manatee' ELEM,"5 b""Finsch's euphonia"" NORTH AVE"
+14298,School,b'Crocodile shark' b'Chauve-souris Cendree' ELEMENTARY SCHOOL,9 b'Dusky parrot' STREET
+14300,School,"b'Crocodile shark' b'False Killer Whale' CETR, ELEM",14 b'Yellow-crowned parrot' STREET
+14302,School,b'Pacific viperfish' b'Chauve-souris Cendree' JUNIOR HIGH,17 b'Lesser elaenia' NORTH AVE
+14304,School,b'Pacific viperfish' b'False Killer Whale' SENIOR HIGH,5 b'Caica parrot' ROAD
+70688,School,b'Japanese eel' b'Northern Elephant Seal Pup' EL SCH,2 b'Waved woodpecker' WAY
+71891,School,b'Ratfish' b'Cape Hare' EL SCH,1 b'Lesser kiskadee' STREET
+85174,School,"b'Surfperch' b""Crawshay's Zebra"" SCHOOL",9 b'White-necked heron' ROAD
+94159,School,b'Broadband dogfish' b'Snow Leopard' SCH,4 b'Black-headed gull' NORTH AVE
+104300,School,b'Red snapper' b'Cape Golden Mole' SCH,8 b'Pale-breasted spinetail' WAY
+119755,School,b'Ragfish' b'Deer Mice' EL SCH,8 b'Shiny cowbird' ROAD
+129133,School,b'Bull shark' b'Blacktail Prairie Dog' ELEM,9 b'Short-tailed pygmy-tyrant' STREET
+144872,School,b'Shortnose chimaera' b'Tasmanian Pademelon' PRIMARY,"76 b""Finsch's euphonia"" WAY"
+144874,School,b'Shortnose chimaera' b'Giraffe' EL SCH,54 b'Variable seedeater' STREET
+144876,School,b'Barracudina' b'Musk Ox' ELEMENTARY,14 b'White-winged swallow' WAY
+144878,School,"b'Barracudina' b'Tasmanian Pademelon' CETR, ELEM",12 b'Crested bobwhite' ROAD
+144880,School,b'Barracudina' b'Giraffe' PRIMARY,17 b'Collared plover' SOUTH AVE
+144882,School,b'Sleeper' b'Musk Ox' EL SCH,6 b'Paradise jacamar' STREET
+144884,School,b'Sleeper' b'Tasmanian Pademelon' PRIMARY,4 b'Chestnut-bellied seedeater' STREET
+144886,School,b'Sleeper' b'Giraffe' EL SCH,71 b'Black-collared hawk' NORTH AVE
+228051,School,b'Rice eel' b'Long-legged Myotis' SCH,1 b'Masked duck' ROAD
+237486,School,b'Lake trout' b'Orangutan' ELEMENTARY SCHOOL,74 b'American wigeon' WAY
+237488,School,"b'Lake trout' b'Bison' CETR, ELEM",38 b'Smooth-billed ani' STREET
+237490,School,b'Soapfish' b'Cat' SCH,52 b'Guira tanager' WAY
+237492,School,b'Soapfish' b'Orangutan' ELEMENTARY SCHOOL,72 b'Bank swallow' STREET
+237494,School,b'Soapfish' b'Bison' COMMUNITY MIDDLE,35 b'Pied lapwing' AVE
+237496,School,b'Gurnard' b'Cat' MS,61 b'Plumbeous seedeater' SOUTH AVE
+237498,School,b'Gurnard' b'Orangutan' MIDDLE,43 b'Aplomado falcon' SOUTH AVE
+237500,School,b'Gurnard' b'Bison' MIDDLE,58 b'Grey-crowned flycatcher' WAY
+329177,School,b'Pompano dolphinfish' b'Venado Cola Blanca' CTR,3 b'Green-throated mango' AVE
+336341,School,b'Neon tetra' b'Northern Red Backed Vole' SCH,7 b'Guianan red cotinga' STREET
+336343,School,b'Snipe eel' b'Domestic cow' ELEM,23 b'Point-tailed palmcreeper' STREET
+336345,School,b'Snipe eel' b'Northern Red Backed Vole' ELEM,9 b'Green aracari' SOUTH AVE
+370734,School,b'Dorado' b'Grey Wolf' ELEMENTARY,39 b'White-breasted woodwren' AVE
+370736,School,b'Dorado' b'Cape Mountain Zebra' ELEMENTARY SCHOOL,37 b'Black-tailed tityra' SOUTH AVE
+370738,School,b'Algae eater' b'Grey Wolf' CTR,29 b'Black-throated mango' SOUTH AVE
+370740,School,b'Algae eater' b'Cape Mountain Zebra' EL SCH,2 b'Purple gallinule' ROAD
+406046,School,b'Handfish' b'False Killer Whale' CTR,4 b'Masked duck' STREET
+420567,School,"b'Black tetra' b'Coyote Track' CETR, ELEM",2 b'Blue-crowned motmot' WAY
+423066,School,b'Flagfin' b'Gaur' SCH,4 b'Plain-bellied hummingbird' NORTH AVE
+423068,School,b'Flagfin' b'Lesser Bush Baby' MIDDLE,16 b'Semipalmated sandpiper' SOUTH AVE
+443381,School,"b'Tiger shark' b""Douglas' Squirrel"" SCH",5 b'Black curassow' WAY
+451912,School,"b'Spearfish' b'Common Wildebeest' CETR, ELEM",6 b'Fork-tailed palm-swift' NORTH AVE
+451914,School,b'Spearfish' b'Yellow-bellied Marmot' SCH,13 b'Mouse-colored tyrannulet' NORTH AVE
+457991,School,b'Yellow perch' b'Blacktail Prairie Dog' ELEM,2 b'Silvered antbird' WAY
+461922,School,b'Sculpin' b'Malayan Tapir' PRIMARY,33 b'Musician wren' NORTH AVE
+461924,School,b'Sculpin' b'Desert Woodrat nest' ELEMENTARY,7 b'Eared dove' WAY
+461926,School,b'French angelfish' b'Malayan Tapir' ELEMENTARY SCHOOL,5 b'Grey(-lined) hawk' ROAD
+461928,School,b'French angelfish' b'Desert Woodrat nest' SCH,36 b'Black-headed parrot' AVE
+503256,School,b'Trumpetfish' b'Jabali' CTR,13 b'Royal tern' ROAD
+503258,School,b'Trumpetfish' b'Gray Fox' ELEMENTARY,46 b'Red-shouldered tanager' SOUTH AVE
+503260,School,b'Lake trout' b'Gray Wolf' PRIMARY,27 b'White-chinned sapphire' ROAD
+503262,School,b'Lake trout' b'Jabali' ELEMENTARY,39 b'Yellow-green grosbeak' SOUTH AVE
+503264,School,"b'Lake trout' b'Gray Fox' CETR, ELEM",31 b'Black caracara' NORTH AVE
+543826,School,b'Torpedo' b'Horses' PRIMARY,12 b'Yellow-headed caracara' NORTH AVE
+543828,School,b'Torpedo' b'Brown Hyaena' SCH,15 b'Large-billed seed-finch' NORTH AVE
+553208,School,b'Damselfish' b'Raccoon' PRIMARY,9 b'White-necked jacobin' NORTH AVE
+553210,School,b'Damselfish' b'Asian Elephant' PRIMARY,6 b'Palm tanager' STREET
+553212,School,b'Peladillo' b'Raccoon' PRIMARY,38 b'Red-eyed vireo' NORTH AVE
+553214,School,"b'Peladillo' b'Asian Elephant' CETR, ELEM",28 b'Gull-billed tern' STREET
+601731,School,b'Seatrout' b'African Bush Elephant' EL SCH,33 b'Bobolink' SOUTH AVE
+601733,School,b'Seatrout' b'Meerkat' SCH,23 b'Black-necked aracari' ROAD
+601735,School,"b'Silverside' b'African Bush Elephant' CETR, ELEM",21 b'Fork-tailed palm-swift' SOUTH AVE
+601737,School,b'Silverside' b'Meerkat' ELEM,6 b'Plain-crowned spinetail' WAY
+645998,School,b'Tetra' b'Pika Or Cony' ELEMENTARY,6 b'Red-bellied macaw' AVE
+646000,School,b'Tetra' b'Moutain Reedbuck' ELEMENTARY SCHOOL,7 b'Black-faced hawk' NORTH AVE
+646002,School,b'Dragonfish' b'Cape Hunting Dogs dens' CTR,"16 b""Swainson's flycatcher"" STREET"
+646004,School,b'Dragonfish' b'Pika Or Cony' PRIMARY,41 b'Black-tailed tityra' STREET
+646006,School,b'Dragonfish' b'Moutain Reedbuck' EL SCH,48 b'Collared plover' ROAD
+680705,School,b'Basking shark' b'Manatee Calf' ELEMENTARY,6 b'Buff-breasted wren' AVE
+692566,School,b'Yellow bass' b'Coastal Sheathtail Bat' SCH,4 b'White-necked puffbird' ROAD
+704605,School,b'Marblefish' b'African Civet' PRIMARY,10 b'Hooded tanager' AVE
+704607,School,b'Marblefish' b'Aardwolf' ELEMENTARY,33 b'Aplomado falcon' NORTH AVE
+704609,School,b'Bigeye squaretail' b'Achuni' ELEMENTARY SCHOOL,36 b'Toco toucan' STREET
+704611,School,b'Bigeye squaretail' b'African Civet' ELEM,43 b'Golden-olive woodpecker' NORTH AVE
+704613,School,b'Bigeye squaretail' b'Aardwolf' ELEMENTARY SCHOOL,70 b'Crested bobwhite' SOUTH AVE
+704615,School,b'Milkfish' b'Achuni' EL SCH,59 b'Masked yellowthroat' AVE
+704617,School,b'Milkfish' b'African Civet' ELEM,62 b'Collared trogon' STREET
+704619,School,b'Milkfish' b'Aardwolf' CTR,73 b'Great horned owl' NORTH AVE
+791793,School,b'Bleak' b'Harbor Seals' ELEMENTARY,4 b'Spot-tailed nightjar' AVE
+802203,School,"b'Pigfish' b'South American Coati' CETR, ELEM",63 b'House wren' NORTH AVE
+802205,School,b'Pigfish' b'Golden Lion Tamarin' ELEM,8 b'Ash-throated crake' SOUTH AVE
+802207,School,b'Pigfish' b'New Zealand Fur-seal' ELEMENTARY,16 b'Common snipe' STREET
+802209,School,b'Trout' b'South American Coati' ELEMENTARY SCHOOL,70 b'Rufous-throated antbird' ROAD
+802211,School,b'Trout' b'Golden Lion Tamarin' EL SCH,28 b'Harpy eagle' ROAD
+802213,School,b'Trout' b'New Zealand Fur-seal' INTERMEDIATE SCHOOL,66 b'Ruddy ground-dove' ROAD
+802215,School,b'Sailfin silverside' b'South American Coati' HIGH,18 b'White-chinned sapphire' NORTH AVE
+802217,School,b'Sailfin silverside' b'Golden Lion Tamarin' SCH,83 b'Red-capped cardinal' STREET
+802219,School,b'Sailfin silverside' b'New Zealand Fur-seal' SCHOOL,79 b'Cream-colored woodpecker' SOUTH AVE
+885818,School,b'Electric knifefish' b'Chipmunk' CTR,30 b'Capped heron' SOUTH AVE
+885820,School,b'Electric knifefish' b'Mantled Howler Monkey' PRIMARY,42 b'Maguari stork' AVE
+885822,School,b'Gizzard shad' b'Gorilla' ELEM,22 b'Streaked antwren' ROAD
+885824,School,b'Gizzard shad' b'Chipmunk' CTR,62 b'Yellow-bellied elaenia' SOUTH AVE
+885826,School,"b'Gizzard shad' b'Mantled Howler Monkey' CETR, ELEM",8 b'Black-tailed trogon' AVE
+885828,School,b'Pike conger' b'Gorilla' JUNIOR HIGH,17 b'Blue-headed parrot' AVE
+885830,School,b'Pike conger' b'Chipmunk' HIGH,73 b'Grey-breasted crake' SOUTH AVE
+885832,School,b'Pike conger' b'Mantled Howler Monkey' SCHOOL,45 b'Guira tanager' AVE
+965641,School,b'Squaretail' b'Axis Deer' ELEMENTARY SCHOOL,11 b'Screaming piha' ROAD
+965643,School,b'Mooneye' b'Whale' ELEM,44 b'Point-tailed palmcreeper' ROAD
+965645,School,"b'Mooneye' b'Slender-horned Gazelle' CETR, ELEM",63 b'White woodpecker' NORTH AVE
+965647,School,b'Mooneye' b'Axis Deer' EL SCH,12 b'Whimbrel' WAY
+965649,School,b'Zebrafish' b'Whale' JR MIDDLE,38 b'White-tailed kite' AVE
+965651,School,b'Zebrafish' b'Slender-horned Gazelle' COMMUNITY MIDDLE,29 b'American golden plover' ROAD
+965653,School,b'Zebrafish' b'Axis Deer' HIGH SCHOOL,46 b'Capuchin bird' NORTH AVE
+1052819,School,b'Hoki' b'Eastern Grey Kangaroo' ELEMENTARY SCHOOL,2 b'Wood stork' ROAD
+1056683,School,b'Whale shark' b'Western Pocket Gopher' PRIMARY,5 b'Brown pelican' ROAD
+1056685,School,"b'Whale shark' b'Pig-tailed Macaque' CETR, ELEM",47 b'Blue-and-yellow macaw' NORTH AVE
+1056687,School,b'Bowfin' b'Gaur' CTR,21 b'Ringed kingfisher' SOUTH AVE
+1056689,School,b'Bowfin' b'Western Pocket Gopher' ELEMENTARY SCHOOL,48 b'Painted parakeet' SOUTH AVE
+1056691,School,b'Bowfin' b'Pig-tailed Macaque' EL SCH,"1 b""McConnell's flycatcher"" WAY"
+1105350,School,b'Arctic char' b'African Savannah Elephant' ELEM,147 b'Yellow warbler' SOUTH AVE
+1105352,School,b'Arctic char' b'Wild Boar' ELEMENTARY SCHOOL,"144 b""Lesson's seedeater"" SOUTH AVE"
+1105354,School,b'Arctic char' b'Bushpig' ELEM,13 b'Mouse-colored antshrike' WAY
+1105356,School,"b'Arctic char' b'Yellow Baboon' CETR, ELEM",60 b'Waved woodpecker' NORTH AVE
+1105358,School,b'Electric ray' b'African Savannah Elephant' ELEMENTARY SCHOOL,137 b'Crested oropendola' NORTH AVE
+1105360,School,b'Electric ray' b'Wild Boar' MS,17 b'Burrowing owl' NORTH AVE
+1105362,School,b'Electric ray' b'Bushpig' JR MIDDLE,51 b'Black-headed gull' SOUTH AVE
+1105364,School,b'Electric ray' b'Yellow Baboon' JR MIDDLE,97 b'Squirrel cuckoo' STREET
+1105366,School,b'Jawfish' b'African Savannah Elephant' MS,65 b'Pectoral sparrow' NORTH AVE
+1105368,School,b'Jawfish' b'Wild Boar' COMMUNITY MIDDLE,39 b'Southern martin' SOUTH AVE
+1105370,School,b'Jawfish' b'Bushpig' HS,95 b'Plain-crowned spinetail' AVE
+1105372,School,b'Jawfish' b'Yellow Baboon' HIGH SCHOOL,67 b'Lesser elaenia' STREET
+1105374,School,b'Bigmouth buffalo' b'African Savannah Elephant' SENIOR HIGH,85 b'Black-crested antshrike' STREET
+1105376,School,b'Bigmouth buffalo' b'Wild Boar' HS,14 b'Guira tanager' SOUTH AVE
+1105378,School,b'Bigmouth buffalo' b'Bushpig' HIGH,135 b'Green ibis' SOUTH AVE
+1105380,School,b'Bigmouth buffalo' b'Yellow Baboon' SCH,41 b'Black hawk-eagle' NORTH AVE
+1266344,School,b'Coelacanth' b'Reticulated Giraffe' SCH,2 b'Glossy-backed becard' NORTH AVE
+1277372,School,b'Brotula' b'Antarctic Fur Seal' PRIMARY,3 b'Plumbeous kite' ROAD
+1295912,School,"b'Lake trout' b'Scrub Hare' CETR, ELEM",3 b'Warbling antwren' WAY
+1304454,School,b'Toadfish' b'White Fruit-bat' CTR,18 b'Grey-crowned flycatcher' SOUTH AVE
+1304456,School,"b'Dragonfish' b'Bull' CETR, ELEM",7 b'Yellow-crowned tyrannulet' NORTH AVE
+1304458,School,b'Dragonfish' b'White Fruit-bat' JUNIOR HIGH,17 b'Black manakin' AVE
+1329920,School,b'Black prickleback' b'Chillingham Wild Cattle' SCH,10 b'White-throated toucan' SOUTH AVE
+1329922,School,b'Cuskfish' b'Northern Elelphant Seal' ELEMENTARY,25 b'Screaming piha' AVE
+1329924,School,b'Cuskfish' b'Chillingham Wild Cattle' CTR,18 b'Spangled cotinga' ROAD
+1349631,School,b'Pollock' b'Spotted Hyena' SCH,8 b'Sanderling' NORTH AVE
+1350906,School,b'Black scalyfin' b'Common Raccoon' CTR,7 b'Ruddy quail-dove' STREET
+1353012,School,b'Pacific albacore' b'Northern Pocket Gopher' ELEM,7 b'Savanna hawk' NORTH AVE
+1371093,School,b'Pineconefish' b'Pastore Abruzzese' SCH,6 b'Capped heron' STREET
+1379631,School,b'Lemon sole' b'Long-nosed Cusimanse' SCH,6 b'Screaming piha' AVE
+1380886,School,b'Rock bass' b'Asian Elephant' EL SCH,2 b'Swallow-tailed kite' AVE
+1406241,School,b'Surgeonfish' b'Dama Wallaby' ELEMENTARY,81 b'Ruddy quail-dove' STREET
+1406243,School,b'Squawfish' b'Honduran White Bat' CTR,5 b'White-winged swallow' AVE
+1406245,School,b'Squawfish' b'Peninsular Bighorn Sheep' SCH,56 b'King vulture' NORTH AVE
+1406247,School,b'Squawfish' b'Pygmy Marmoset' ELEMENTARY SCHOOL,91 b'Yellow-rumped cacique' NORTH AVE
+1406249,School,"b'Squawfish' b'Dama Wallaby' CETR, ELEM",16 b'Tufted coquette' STREET
+1406251,School,b'Bonefish' b'Honduran White Bat' ELEMENTARY,89 b'Black hawk-eagle' AVE
+1406253,School,b'Bonefish' b'Peninsular Bighorn Sheep' PRIMARY,28 b'Rufous-breasted hermit' SOUTH AVE
+1406255,School,b'Bonefish' b'Pygmy Marmoset' ELEMENTARY SCHOOL,103 b'Golden-olive woodpecker' NORTH AVE
+1406257,School,b'Bonefish' b'Dama Wallaby' CTR,65 b'Fork-tailed woodnymph' WAY
+1406259,School,b'Longfin' b'Honduran White Bat' ELEMENTARY SCHOOL,123 b'Short-tailed pygmy-tyrant' WAY
+1406261,School,b'Longfin' b'Peninsular Bighorn Sheep' SCH,36 b'Cattle egret' STREET
+1406263,School,b'Longfin' b'Pygmy Marmoset' CTR,20 b'Pygmy kingfisher' AVE
+1406265,School,b'Longfin' b'Dama Wallaby' PRIMARY,102 b'Chestnut-fronted macaw' WAY
+1538541,School,b'Oriental loach' b'Pygmy Hippopotamus' SCH,11 b'Ruddy pigeon' STREET
+1538543,School,b'Bigeye' b'Persian Fallow Deer' ELEM,"3 b'Rock pigeon, feral' NORTH AVE"
+1538545,School,b'Bigeye' b'Muriqui' SCH,42 b'Snail kite' SOUTH AVE
+1538547,School,b'Bigeye' b'Pygmy Hippopotamus' ELEM,22 b'Yellow warbler' AVE
+1538549,School,b'Slickhead' b'Persian Fallow Deer' JUNIOR HIGH,20 b'Ruddy-breasted seedeater' WAY
+1538551,School,b'Slickhead' b'Muriqui' INTERMEDIATE SCHOOL,67 b'Great black hawk' WAY
+1538553,School,b'Slickhead' b'Pygmy Hippopotamus' MS,33 b'Masked duck' WAY
+1538555,School,b'Oriental loach' b'Pygmy Hippopotamus' JUNIOR HIGH,11 b'Ruddy pigeon' STREET
+1612117,School,b'Longnose lancetfish' b'African Lion Male' PRIMARY,4 b'Snowy egret' NORTH AVE
+1620948,School,b'Stonecat' b'Burro feral' EL SCH,67 b'White-banded swallow' AVE
+1620950,School,b'Temperate perch' b'Western Gray Squirrel' PRIMARY,5 b'Common snipe' SOUTH AVE
+1620952,School,b'Temperate perch' b'Guanaco' ELEMENTARY SCHOOL,45 b'Spangled cotinga' SOUTH AVE
+1620954,School,b'Temperate perch' b'Burro feral' EL SCH,59 b'Little cuckoo' SOUTH AVE
+1620956,School,b'Bristlenose catfish' b'Western Gray Squirrel' PRIMARY,60 b'Long-winged harrier' AVE
+1620958,School,b'Bristlenose catfish' b'Guanaco' ELEMENTARY,57 b'White-tailed hawk' SOUTH AVE
+1620960,School,"b'Bristlenose catfish' b'Burro feral' CETR, ELEM",40 b'Long-winged antwren' NORTH AVE
+1705237,School,b'Lightfish' b'Short-nosed Bandicoot' ELEMENTARY,16 b'Red-and-green macaw' STREET
+1705239,School,b'Lightfish' b'Tapiti' ELEM,3 b'Black skimmer' NORTH AVE
+1736970,School,"b'Elver' b""Douglas' Squirrel"" EL SCH","13 b""McConnell's flycatcher"" NORTH AVE"
+1736972,School,b'Elver' b'Golden-mantled Squirrel' SCHOOL,7 b'Tiny hawk' ROAD
+1751472,School,"b'Lionfish' b'Common Reedbuck' CETR, ELEM",16 b'Pectoral sparrow' ROAD
+1751474,School,"b'Lionfish' b""Coke's Hartebeest"" CETR, ELEM",14 b'Sirystes' WAY
+1751476,School,b'Hatchetfish' b'Common Reedbuck' CTR,30 b'Cayenne jay' SOUTH AVE
+1751478,School,"b'Hatchetfish' b""Coke's Hartebeest"" SCH",4 b'Black-faced dacnis' STREET
+1787020,School,b'Smalleye squaretail' b'Green Guenon' ELEM,34 b'Sanderling' NORTH AVE
+1787022,School,b'Smalleye squaretail' b'African Hare' EL SCH,"1 b""McConnell's flycatcher"" STREET"
+1787024,School,b'Squarehead catfish' b'Green Guenon' MIDDLE SCHOOL,22 b'Dusky antbird' STREET
+1787026,School,b'Squarehead catfish' b'African Hare' SENIOR HIGH,2 b'Pygmy kingfisher' STREET
+1816489,School,b'Silver driftfish' b'Pig-tailed Macaque' SCH,95 b'Common ground-dove' SOUTH AVE
+1816491,School,b'Silver driftfish' b'Horse feral' PRIMARY,93 b'Solitary sandpiper' NORTH AVE
+1816493,School,b'Silver driftfish' b'Southern Giraffe' ELEM,45 b'Collared trogon' ROAD
+1816495,School,b'Silver driftfish' b'Giant Anteater' ELEM,26 b'Barn swallow' WAY
+1816497,School,b'Kuhli loach' b'Pig-tailed Macaque' EL SCH,27 b'Golden-winged parakeet' AVE
+1816499,School,b'Kuhli loach' b'Horse feral' MIDDLE SCHOOL,38 b'Marail guan' WAY
+1816501,School,b'Kuhli loach' b'Southern Giraffe' MS,75 b'Great black hawk' ROAD
+1816503,School,b'Kuhli loach' b'Giant Anteater' JR MIDDLE,41 b'White-necked jacobin' WAY
+1816505,School,b'Flathead' b'Pig-tailed Macaque' JUNIOR HIGH,23 b'Pauraque' ROAD
+1816507,School,b'Flathead' b'Horse feral' JR MIDDLE,55 b'Green-rumped parrotlet' STREET
+1816509,School,b'Flathead' b'Southern Giraffe' SENIOR HIGH,104 b'Painted parakeet' AVE
+1816511,School,b'Flathead' b'Giant Anteater' SENIOR HIGH,106 b'Greater ani' AVE
+1953001,School,b'Pelican eel' b'Venado Bura' SCH,2 b'Rufous-breasted hermit' SOUTH AVE
+1968102,School,b'Inconnu' b'Flying Squirrel' EL SCH,2 b'White-headed piping-guan' SOUTH AVE
+1980443,School,b'Tompot blenny' b'Nutria Marina' CTR,2 b'Yellow-billed cuckoo' ROAD
+1982790,School,"b'Thorny catfish' b'Wart Hog' CETR, ELEM",8 b'Anhinga' ROAD
+1999561,School,b'Rasbora' b'Long-nosed Potoroo' PRIMARY,3 b'American wigeon' SOUTH AVE
+2004741,School,b'Boxfish' b'Desert Cavy' ELEM,19 b'Blue dacnis' SOUTH AVE
+2004743,School,"b'Boxfish' b""Grant's Caribou"" ELEMENTARY SCHOOL",9 b'Yellow-rumped cacique' NORTH AVE
+2025140,School,b'Dojo loach' b'Yellow Baboon' SCH,24 b'Rufous-bellied antwren' ROAD
+2025142,School,b'Searobin' b'Siberian Tiger' ELEMENTARY,18 b'Green honeycreeper' ROAD
+2025144,School,b'Searobin' b'Yellow Baboon' ELEM,22 b'Striped owl' ROAD
+2073099,School,b'Bull trout' b'African Buffalo' ELEM,3 b'Roadside Hawk' NORTH AVE
+2080213,School,b'Warmouth' b'Mountain Chamois' EL SCH,6 b'Least grebe' SOUTH AVE
+2099215,School,b'Seamoth' b'Mearns Coyote' EL SCH,8 b'Saffron finch' SOUTH AVE
+2099217,School,b'Seamoth' b'Giant Anteater' PRIMARY,21 b'Scaled pigeon' NORTH AVE
+2099219,School,b'Archerfish' b'Western Red-backed Vole' CTR,85 b'Black-throated mango' ROAD
+2099221,School,b'Archerfish' b'False Killer Whale' PRIMARY,52 b'Musician wren' STREET
+2099223,School,b'Archerfish' b'Mearns Coyote' SCH,68 b'Bank swallow' AVE
+2099225,School,b'Archerfish' b'Giant Anteater' PRIMARY,59 b'Short-tailed hawk' ROAD
+2099227,School,b'Tench' b'Western Red-backed Vole' CTR,42 b'Slate-colored seedeater' NORTH AVE
+2099229,School,b'Tench' b'False Killer Whale' CTR,24 b'Little cuckoo' SOUTH AVE
+2099231,School,b'Tench' b'Mearns Coyote' ELEMENTARY SCHOOL,32 b'White-throated manakin' SOUTH AVE
+2099233,School,b'Tench' b'Giant Anteater' SCH,31 b'Boat-billed heron' SOUTH AVE
+2183060,School,b'Eucla cod' b'Domestic Cat' ELEMENTARY SCHOOL,13 b'Golden-sided euphonia' NORTH AVE
+2183062,School,b'Eucla cod' b'Bongo' EL SCH,7 b'Common tern' WAY
+2183064,School,b'Giant danio' b'Honduran Fruit Bat' ELEMENTARY SCHOOL,26 b'Pale-breasted thrush' NORTH AVE
+2183066,School,b'Giant danio' b'Domestic Cat' CTR,46 b'Purple-throated fruitcrow' NORTH AVE
+2183068,School,b'Giant danio' b'Bongo' CTR,5 b'Green-tailed goldenthroat' AVE
+2223600,School,"b'Long-finned pike' b'Silver-backed Jackal' CETR, ELEM",3 b'Short-crested flycatcher' STREET
+2223602,School,b'Hoki' b'Pygmy Chimpanzee' CTR,4 b'Little hermit' WAY
+2223604,School,b'Hoki' b'Small Indian Mongoose' CTR,58 b'Spectacled owl' NORTH AVE
+2223606,School,b'Hoki' b'Silver-backed Jackal' SCH,17 b'Cliff flycatcher' NORTH AVE
+2223608,School,b'Flagblenny' b'Pygmy Chimpanzee' PRIMARY,32 b'White-necked heron' AVE
+2223610,School,b'Flagblenny' b'Small Indian Mongoose' PRIMARY,23 b'Black-spotted barbet' ROAD
+2223612,School,"b'Flagblenny' b'Silver-backed Jackal' CETR, ELEM",48 b'Wattled jacana' WAY
+2289360,School,b'French angelfish' b'Quolls' PRIMARY,8 b'Giant cowbird' NORTH AVE
+2301988,School,b'Skipjack tuna' b'Sable Antelope' SCH,8 b'Carib grackle' WAY
+2308143,School,b'Giant sea bass' b'White Rhinoceros' PRIMARY,4 b'Caica parrot' AVE
+2324966,School,b'Threadsail' b'Golden Takin' CTR,68 b'Cattle egret' AVE
+2324968,School,b'Threadsail' b'Southern Flying Squirrel' SCH,16 b'Long-tailed hermit' WAY
+2324970,School,b'Threadsail' b'Chital Deer' ELEM,48 b'American wigeon' WAY
+2324972,School,b'Silver driftfish' b'White-tailed Prairie Dog' ELEMENTARY,23 b'Rufous-breasted hermit' AVE
+2324974,School,b'Silver driftfish' b'Golden Takin' ELEM,104 b'White-necked puffbird' AVE
+2324976,School,b'Silver driftfish' b'Southern Flying Squirrel' PRIMARY,80 b'Brown-chested martin' SOUTH AVE
+2324978,School,b'Silver driftfish' b'Chital Deer' ELEM,9 b'Lesser kiskadee' SOUTH AVE
+2324980,School,b'Goosefish' b'White-tailed Prairie Dog' ELEMENTARY SCHOOL,31 b'White-tailed trogon' AVE
+2324982,School,b'Goosefish' b'Golden Takin' ELEM,46 b'Red-legged honeycreeper' ROAD
+2324984,School,b'Goosefish' b'Southern Flying Squirrel' ELEMENTARY SCHOOL,66 b'Spotted tody-flycatcher' AVE
+2324986,School,b'Goosefish' b'Chital Deer' ELEM,25 b'Green-tailed goldenthroat' SOUTH AVE
+2459082,School,b'Convict blenny' b'Panamint Chipmunk' SCH,"116 b""Finsch's euphonia"" ROAD"
+2459084,School,b'Convict blenny' b'Domestic Goat' ELEMENTARY SCHOOL,49 b'White bellbird' NORTH AVE
+2459086,School,"b'Convict blenny' b""Baird's Tapir"" PRIMARY",80 b'Grey-breasted martin' WAY
+2459088,School,b'Convict blenny' b'Nile Lechwe' SCH,70 b'Purple honeycreeper' SOUTH AVE
+2459090,School,b'Manta Ray' b'Panamint Chipmunk' CTR,1 b'Red-throated caracara' NORTH AVE
+2459092,School,b'Manta Ray' b'Domestic Goat' ELEMENTARY,24 b'Amethyst woodstar' STREET
+2459094,School,"b'Manta Ray' b""Baird's Tapir"" EL SCH",41 b'Warbling antwren' WAY
+2459096,School,b'Manta Ray' b'Nile Lechwe' ELEMENTARY SCHOOL,28 b'Grey-necked woodrail' NORTH AVE
+2459098,School,b'Largemouth bass' b'Panamint Chipmunk' ELEMENTARY SCHOOL,36 b'Palm tanager' STREET
+2459100,School,b'Largemouth bass' b'Domestic Goat' EL SCH,30 b'Anhinga' ROAD
+2459102,School,"b'Largemouth bass' b""Baird's Tapir"" PRIMARY",8 b'White-headed piping-guan' AVE
+2459104,School,b'Largemouth bass' b'Nile Lechwe' ELEM,37 b'Cliff flycatcher' NORTH AVE
+2589503,School,b'Mahseer' b'Silver Backed Jackal' ELEMENTARY SCHOOL,60 b'Swallow-wing' WAY
+2589505,School,b'Mahseer' b'Sonoma Chipmunk' EL SCH,43 b'Black-collared swallow' SOUTH AVE
+2589507,School,"b'Mahseer' b'Black Rhinocerus' CETR, ELEM",59 b'Rufous-throated sapphire' SOUTH AVE
+2589509,School,b'Straptail' b'Silver Backed Jackal' JUNIOR HIGH,50 b'Scarlet macaw' NORTH AVE
+2589511,School,b'Straptail' b'Sonoma Chipmunk' JR MIDDLE,64 b'Peregrine falcon' STREET
+2589513,School,b'Straptail' b'Black Rhinocerus' MIDDLE,2 b'Striped owl' STREET
+2589515,School,b'Yellowtail' b'Silver Backed Jackal' HIGH,52 b'Violaceous trogon' STREET
+2589517,School,b'Yellowtail' b'Sonoma Chipmunk' HIGH SCH,61 b'Black-crested antshrike' ROAD
+2589519,School,b'Yellowtail' b'Black Rhinocerus' HIGH SCHOOL,65 b'Black-headed parrot' AVE
+2689278,School,b'Gudgeon' b'Suricate' PRIMARY,6 b'Thrush-like manakin' STREET
+2707293,School,"b'Smalltooth sawfish' b'Domestic Dog' CETR, ELEM",29 b'Hudsonian godwit' AVE
+2707295,School,b'Smalltooth sawfish' b'Guadalupe Fur Seal' PRIMARY,25 b'Sun parakeet complex' STREET
+2707297,School,b'Longfin smelt' b'Domestic Dog' ELEM,9 b'Tufted coquette' NORTH AVE
+2707299,School,b'Longfin smelt' b'Guadalupe Fur Seal' INTERMEDIATE SCHOOL,10 b'Straight-billed hermit' ROAD
+2737353,School,b'Ghoul' b'Sitatunga' SCH,6 b'Red-throated caracara' STREET
+2752823,School,"b'Flyingfish' b'Bisonte Americano' CETR, ELEM",4 b'Slender-billed kite' SOUTH AVE
+2766592,School,b'Banjo catfish' b'Southern African porcupine' PRIMARY,1 b'Wattled jacana' NORTH AVE
+2776160,School,"b'Loach goby' b'Japanese Macaque' CETR, ELEM",3 b'Gull-billed tern' SOUTH AVE
+2776162,School,b'Loach goby' b'Hares' ELEM,38 b'White-necked jacobin' AVE
+2776164,School,b'Threadtail' b'Japanese Macaque' MS,36 b'Pied lapwing' STREET
+2776166,School,b'Threadtail' b'Hares' SCH,22 b'Blackish antbird' AVE
+2820137,School,b'Mudskipper' b'Moutain Reedbuck' ELEMENTARY SCHOOL,16 b'Scaled pigeon' ROAD
+2820139,School,b'Mudskipper' b'Antarctic Fur Seal' SCH,8 b'Cayenne tern' SOUTH AVE
+2838657,School,b'Queen parrotfish' b'Spotted Hyaena' ELEM,9 b'Tropical mockingbird' SOUTH AVE
+2847189,School,b'Bonefish' b'Fresno Kangaroo Rat' CTR,6 b'Ornate hawk-eagle' STREET
+2853683,School,b'Yellow-eye mullet' b'Sulawesi Macaque' EL SCH,8 b'Southern martin' STREET
+2854919,School,b'Torrent fish' b'Bushpig' ELEMENTARY SCHOOL,2 b'Large-billed tern' AVE
+2869516,School,b'Opaleye' b'Antillean Manatee' ELEMENTARY,8 b'Blue-and-yellow macaw' SOUTH AVE
+2877733,School,b'Zebra tilapia' b'Elephant Seal' SCH,9 b'Peregrine falcon' AVE
+2881826,School,b'Hammerhead shark' b'Brush Tailed Bettong' SCH,28 b'Cinereous becard' AVE
+2881828,School,b'Hammerhead shark' b'Clouded Leopard' ELEMENTARY SCHOOL,59 b'Southern martin' NORTH AVE
+2881830,School,b'Hammerhead shark' b'Jack Rabbits' PRIMARY,8 b'Scarlet ibis' NORTH AVE
+2881832,School,b'Skipjack tuna' b'Brush Tailed Bettong' ELEMENTARY,53 b'Fork-tailed woodnymph' WAY
+2881834,School,b'Skipjack tuna' b'Clouded Leopard' EL SCH,27 b'Blue-grey tanager' WAY
+2881836,School,b'Skipjack tuna' b'Jack Rabbits' CTR,24 b'Black-throated mango' AVE
+2928864,School,b'Mako shark' b'Naked Mole-rat' ELEMENTARY,1 b'Tricolored heron' SOUTH AVE
+2951715,School,"b'Nase' b'Chital' CETR, ELEM",1 b'Rufous-crowned elaenia' WAY
+2952986,School,b'Walleye' b'Vaca Brava' ELEMENTARY SCHOOL,1 b'Thrush-like antpitta' AVE
+2958154,School,b'Stargazer' b'Capuchin Monkey' ELEMENTARY SCHOOL,63 b'Purple-throated fruitcrow' SOUTH AVE
+2958156,School,b'Stargazer' b'African Hunting Dog' EL SCH,59 b'Red-shouldered tanager' WAY
+2958158,School,"b'Boafish' b'Eastern Fox Squirrel' CETR, ELEM",5 b'Black-spotted barbet' WAY
+2958160,School,b'Boafish' b'Capuchin Monkey' ELEM,60 b'Blue dacnis' NORTH AVE
+2958162,School,b'Boafish' b'African Hunting Dog' ELEM,65 b'Violaceous trogon' SOUTH AVE
+2958164,School,"b'Sculpin' b'Eastern Fox Squirrel' CETR, ELEM",23 b'Giant cowbird' SOUTH AVE
+2958166,School,b'Sculpin' b'Capuchin Monkey' PRIMARY,14 b'Red-and-black grosbeak' STREET
+2958168,School,b'Sculpin' b'African Hunting Dog' PRIMARY,30 b'Grey-breasted sabrewing' AVE
+3032195,School,b'Grouper' b'Cottontails' ELEM,32 b'Black-faced dacnis' AVE
+3032197,School,b'Grouper' b'Red Lechwe' PRIMARY,6 b'White-necked heron' AVE
+3032199,School,b'Quillfish' b'Eastern Red Bat' COMMUNITY MIDDLE,8 b'Eared dove' ROAD
+3032201,School,b'Quillfish' b'Cottontails' MIDDLE,20 b'Stilt sandpiper' AVE
+3032203,School,b'Quillfish' b'Red Lechwe' HS,13 b'Silver-beaked tanager' NORTH AVE
+3080377,School,b'Jewfish' b'Red-bellied Pademelon' ELEM,6 b'Red-and-green macaw' AVE
+3080379,School,b'Jewfish' b'Atlantic Grey Seal' CTR,51 b'Red-eyed vireo' SOUTH AVE
+3080381,School,b'Jewfish' b'Black Rhinocerus' INTERMEDIATE SCHOOL,19 b'Yellow-headed caracara' WAY
+3080383,School,b'Midshipman' b'Red-bellied Pademelon' JUNIOR HIGH,16 b'Pinnated bittern' WAY
+3080385,School,b'Midshipman' b'Atlantic Grey Seal' SENIOR HIGH,22 b'Hook-billed kite' STREET
+3080387,School,b'Midshipman' b'Black Rhinocerus' SCH,44 b'Pale-bellied mourner' WAY
+3158414,School,b'Long-finned pike' b'Wildebeeste' SCHOOL,2 b'Grey-winged trumpeter' SOUTH AVE
+3182744,School,b'Cat shark' b'Chipmonk' PRIMARY,4 b'Musician wren' STREET
+3192983,School,b'Limia' b'Southamerican See Lion' ELEM,65 b'Brown-chested martin' ROAD
+3192985,School,b'Limia' b'Pichi' ELEMENTARY SCHOOL,12 b'Grassland yellow-finch' WAY
+3192987,School,b'Northern lampfish' b'Antarctic Fur Seals' CTR,70 b'White-fringed antwren' STREET
+3192989,School,b'Northern lampfish' b'Southamerican See Lion' CTR,6 b'Striped cuckoo' SOUTH AVE
+3192991,School,b'Northern lampfish' b'Pichi' ELEMENTARY SCHOOL,21 b'Muscovy duck' STREET
+3192993,School,b'Driftwood catfish' b'Antarctic Fur Seals' CTR,31 b'Long-tailed potoo' NORTH AVE
+3192995,School,b'Driftwood catfish' b'Southamerican See Lion' CTR,32 b'Black caracara' AVE
+3192997,School,b'Driftwood catfish' b'Pichi' PRIMARY,71 b'Black hawk-eagle' AVE
+3254580,School,b'Bala shark' b'African Hunting Dogs' CTR,8 b'Sunbittern' SOUTH AVE
+3263469,School,b'Lenok' b'Lodgepole Chipmunk' ELEM,2 b'Swallow-tailed kite' STREET
+3275274,School,b'John Dory' b'Sumatra Tiger' ELEMENTARY,22 b'Ladder-tailed nightjar' ROAD
+3275276,School,b'John Dory' b'African Wildcat' ELEMENTARY SCHOOL,34 b'Blue-grey tanager' SOUTH AVE
+3275278,School,b'African lungfish' b'Sumatra Tiger' ELEMENTARY,39 b'Plain-bellied hummingbird' NORTH AVE
+3275280,School,"b'African lungfish' b'African Wildcat' CETR, ELEM",1 b'Ruddy turnstone' SOUTH AVE
+3321738,School,b'Mullet' b'Rabbit' SCH,4 b'Harpy eagle' AVE
+3339712,School,b'Ghost pipefish' b'Dromedary' ELEM,7 b'Common tody-flycatcher' WAY
+3363170,School,b'Tailor' b'Lemurien Noir' SCH,70 b'Short-tailed hawk' SOUTH AVE
+3363172,School,b'Tailor' b'Northern Sea Elephant' ELEMENTARY SCHOOL,68 b'Blue ground-dove' NORTH AVE
+3363174,School,b'Longfin smelt' b'Leopard' PRIMARY,6 b'Laughing gull' WAY
+3363176,School,"b'Longfin smelt' b'Lemurien Noir' CETR, ELEM",75 b'Musician wren' WAY
+3363178,School,b'Longfin smelt' b'Northern Sea Elephant' ELEMENTARY SCHOOL,14 b'Least bittern' SOUTH AVE
+3363180,School,b'Sculpin' b'Leopard' ELEMENTARY,62 b'Wattled jacana' STREET
+3363182,School,b'Sculpin' b'Lemurien Noir' ELEMENTARY,67 b'Point-tailed palmcreeper' WAY
+3363184,School,b'Sculpin' b'Northern Sea Elephant' PRIMARY,51 b'Streaked antwren' NORTH AVE
+3479736,School,"b'Telescopefish' b'Giant Panda' CETR, ELEM",18 b'Dusky-chested flycatcher' SOUTH AVE
+3479738,School,b'Telescopefish' b'New Zealand Fur Seal' PRIMARY,41 b'Plumbeous kite' NORTH AVE
+3479740,School,"b'Emperor angelfish' b'White Leaf-nosed Bat' CETR, ELEM",24 b'Long-tailed hermit' WAY
+3479742,School,b'Emperor angelfish' b'Giant Panda' ELEMENTARY,10 b'Common tern' ROAD
+3479744,School,b'Emperor angelfish' b'New Zealand Fur Seal' CTR,29 b'Chestnut-fronted macaw' SOUTH AVE
+3495384,School,b'Oarfish' b'Polar Bear' ELEM,57 b'Red fan parrot' ROAD
+3495386,School,b'Oarfish' b'Water Vole' ELEMENTARY SCHOOL,17 b'Carib grackle' NORTH AVE
+3495388,School,b'Oarfish' b'Cape Bushbuck' ELEMENTARY SCHOOL,46 b'Masked duck' AVE
+3495390,School,b'Pike characid' b'Polar Bear' ELEM,32 b'Greater yellowlegs' NORTH AVE
+3495392,School,b'Pike characid' b'Water Vole' EL SCH,4 b'Yellow-bellied elaenia' AVE
+3495394,School,b'Pike characid' b'Cape Bushbuck' EL SCH,56 b'Blue-chinned sapphire' NORTH AVE
+3551464,School,b'Long-whiskered catfish' b'Giant Forest Hog' CTR,78 b'Rufous-throated antbird' WAY
+3551466,School,b'Long-whiskered catfish' b'African Cape Buffalo' PRIMARY,49 b'Crested oropendola' NORTH AVE
+3551468,School,b'Long-whiskered catfish' b'Asiatic Cheetah' ELEM,81 b'Bronzy jacamar' STREET
+3551470,School,b'Long-whiskered catfish' b'Cotia' CTR,127 b'Blue-backed manakin' NORTH AVE
+3551472,School,b'Starry flounder' b'Giant Forest Hog' ELEMENTARY,1 b'Oilbird' AVE
+3551474,School,b'Starry flounder' b'African Cape Buffalo' ELEM,153 b'Green kingfisher' WAY
+3551476,School,b'Starry flounder' b'Asiatic Cheetah' ELEMENTARY,17 b'Pale-breasted thrush' SOUTH AVE
+3551478,School,b'Starry flounder' b'Cotia' ELEMENTARY,31 b'Red-bellied macaw' STREET
+3551480,School,b'Threadtail' b'Giant Forest Hog' ELEM,29 b'Roadside Hawk' WAY
+3551482,School,"b'Threadtail' b'African Cape Buffalo' CETR, ELEM",151 b'Grey kingbird' ROAD
+3551484,School,"b'Threadtail' b'Asiatic Cheetah' CETR, ELEM",58 b'Least grebe' NORTH AVE
+3551486,School,b'Threadtail' b'Cotia' ELEMENTARY,136 b'Pygmy kingfisher' STREET
+3551488,School,b'Blacktip reef shark' b'Giant Forest Hog' CTR,154 b'Striated heron' AVE
+3551490,School,b'Blacktip reef shark' b'African Cape Buffalo' EL SCH,32 b'Bare-eyed thrush' AVE
+3551492,School,b'Blacktip reef shark' b'Asiatic Cheetah' SCH,118 b'Zone-tailed hawk' AVE
+3551494,School,b'Blacktip reef shark' b'Cotia' PRIMARY,45 b'Pied lapwing' STREET
+3712264,School,b'Flathead catfish' b'Spectacled Bear' EL SCH,5 b'Zone-tailed hawk' NORTH AVE
+3727024,School,b'Telescopefish' b'Vicuna' SCH,38 b'Semipalmated plover' NORTH AVE
+3727026,School,b'Telescopefish' b'Prehensile-tailed Porcupine' PRIMARY,10 b'Semipalmated sandpiper' SOUTH AVE
+3727028,School,b'Flatfish' b'Vicuna' ELEMENTARY SCHOOL,30 b'Brown pelican' NORTH AVE
+3727030,School,b'Flatfish' b'Prehensile-tailed Porcupine' INTERMEDIATE SCHOOL,28 b'Scaled pigeon' STREET
+3767576,School,b'Pufferfish' b'Dromedary Camel' SCH,19 b'Guianan toucanet' AVE
+3767578,School,b'Pufferfish' b'Golden Lion Tamarin' EL SCH,32 b'Pied lapwing' NORTH AVE
+3767580,School,"b'Pufferfish' b'Ground Squirrel' CETR, ELEM",25 b'White hawk' NORTH AVE
+3767582,School,b'Electric eel' b'Dromedary Camel' MIDDLE SCHOOL,22 b'Tropical kingbird' STREET
+3767584,School,b'Electric eel' b'Golden Lion Tamarin' JR MIDDLE,59 b'Tropical screech-owl' SOUTH AVE
+3767586,School,b'Electric eel' b'Ground Squirrel' HIGH SCH,14 b'Black nunbird' ROAD
+3831878,School,b'Bristlemouth' b'Common Long-tongued Bat' ELEM,7 b'Thrush-like antpitta' SOUTH AVE
+3831880,School,b'Whitetip reef shark' b'Ringtail Track' CTR,1 b'White-necked thrush' NORTH AVE
+3831882,School,b'Whitetip reef shark' b'Common Long-tongued Bat' ELEMENTARY,28 b'Opal-rumped tanager' STREET
+3853662,School,b'Roundhead' b'California Mule Deer' ELEM,3 b'Spot-backed antbird' ROAD
+3866854,School,b'Whiting' b'Potoroo' EL SCH,39 b'White-necked jacobin' SOUTH AVE
+3866856,School,b'Whiting' b'Domesticated Cattle' PRIMARY,6 b'Dusky antbird' STREET
+3866858,School,b'Albacore' b'Lodgepole Chipmunk' INTERMEDIATE SCHOOL,24 b'Sun parakeet complex' WAY
+3866860,School,b'Albacore' b'Potoroo' JR MIDDLE,42 b'Sanderling' ROAD
+3866862,School,b'Albacore' b'Domesticated Cattle' HIGH SCHOOL,3 b'Lineated woodpecker' STREET
+3866864,School,b'Whiting' b'Potoroo' HIGH SCHOOL,39 b'White-necked jacobin' SOUTH AVE
+3935519,School,b'Hoki' b'Mapuro' SCH,7 b'Red-crowned woodpecker' SOUTH AVE
+3950206,School,b'Blue gourami' b'Western Pipistrelle' CTR,62 b'Crimson-hooded manakin' AVE
+3950208,School,b'Blue gourami' b'Rat Noir' ELEMENTARY,53 b'Collared puffbird' AVE
+3950210,School,b'Flathead catfish' b'Brahman Bull' ELEM,72 b'Grassland yellow-finch' AVE
+3950212,School,b'Flathead catfish' b'Western Pipistrelle' PRIMARY,7 b'Violaceous trogon' SOUTH AVE
+3950214,School,b'Flathead catfish' b'Rat Noir' SCH,38 b'Ladder-tailed nightjar' WAY
+3950216,School,b'Cat shark' b'Brahman Bull' JUNIOR HIGH,77 b'Yellow warbler' STREET
+3950218,School,b'Cat shark' b'Western Pipistrelle' JR MIDDLE,39 b'Fork-tailed woodnymph' ROAD
+3950220,School,b'Cat shark' b'Rat Noir' SENIOR HIGH,46 b'Red-eyed vireo' STREET
+4033259,School,b'Barbeled dragonfish' b'Scrub Hare' CTR,14 b'Green ibis' NORTH AVE
+4033261,School,b'Barbeled dragonfish' b'Male' SCHOOL,15 b'Red-shouldered tanager' NORTH AVE
+4059930,School,"b'Atlantic herring' b'Pika Or Cony' CETR, ELEM",1 b'Short-tailed hawk' WAY
+4073620,School,b'Slimy sculpin' b'Pale-headed Saki' ELEMENTARY,16 b'Collared puffbird' WAY
+4073622,School,b'Inanga' b'Pocket Gopher' SCH,1 b'Red-billed pied-tanager' AVE
+4073624,School,"b'Inanga' b'Pale-headed Saki' CETR, ELEM",24 b'Golden-olive woodpecker' SOUTH AVE
+4107583,School,b'Panga' b'Oomingmak' ELEMENTARY,25 b'Cayenne jay' AVE
+4107585,School,"b'Panga' b'Rabbit' CETR, ELEM",15 b'Red-crowned woodpecker' NORTH AVE
+4107587,School,"b'Panga' b'Bongo' CETR, ELEM",22 b'White-necked heron' STREET
+4107589,School,b'Icefish' b'Oomingmak' INTERMEDIATE SCHOOL,6 b'Green-tailed jacamar' NORTH AVE
+4107591,School,b'Icefish' b'Rabbit' MIDDLE,35 b'Green oropendola' STREET
+4107593,School,b'Icefish' b'Bongo' HS,54 b'Great potoo' ROAD
+4174717,School,b'Drum' b'Marsh Rabbit' SCH,11 b'Black-necked aracari' NORTH AVE
+4174719,School,b'Drum' b'Galapagos Sea Lion' SCHOOL,16 b'Wood stork' AVE
+4195405,School,b'Tilapia' b'Beluga Whale' ELEM,2 b'Masked yellowthroat' AVE
+4198014,School,"b'Pupfish' b'Mhorr Gazelle' CETR, ELEM",71 b'Black-headed parrot' WAY
+4198016,School,"b'Madtom' b'Quolls' CETR, ELEM",27 b'White bellbird' NORTH AVE
+4198018,School,b'Madtom' b'Coyote' ELEMENTARY,101 b'Red-and-green macaw' STREET
+4198020,School,b'Madtom' b'Japanese Macaque' ELEMENTARY SCHOOL,86 b'Green aracari' NORTH AVE
+4198022,School,b'Madtom' b'Mhorr Gazelle' EL SCH,18 b'Lesser elaenia' SOUTH AVE
+4198024,School,b'Pollock' b'Quolls' PRIMARY,65 b'Fulvous tree-duck' AVE
+4198026,School,b'Pollock' b'Coyote' SCH,102 b'Blue dacnis' AVE
+4198028,School,b'Pollock' b'Japanese Macaque' SCH,66 b'Brown-chested martin' SOUTH AVE
+4198030,School,b'Pollock' b'Mhorr Gazelle' JR MIDDLE,45 b'Green-tailed jacamar' AVE
+4198032,School,b'Mudminnow' b'Quolls' MIDDLE,109 b'Black vulture' STREET
+4198034,School,b'Mudminnow' b'Coyote' HIGH SCH,"92 b'Common gallinule, Moorhen' STREET"
+4198036,School,b'Mudminnow' b'Japanese Macaque' SCH,63 b'Green heron' WAY
+4198038,School,b'Mudminnow' b'Mhorr Gazelle' SCH,87 b'Bicolored conebill' SOUTH AVE
+4339388,School,b'Armorhead' b'White-footed Mouse' ELEMENTARY,3 b'Masked duck' STREET
+4350838,School,b'Clownfish' b'Ring-tailed Possum' ELEM,9 b'American kestrel' STREET
+4354054,School,b'Needlefish' b'Cuis Chico' CTR,4 b'Striped woodcreeper' NORTH AVE
+4354056,School,b'Needlefish' b'Bontebok' CTR,15 b'Blue-chinned sapphire' SOUTH AVE
+4368847,School,b'Lake chub' b'Sea Otter' SCHOOL,4 b'Little cuckoo' NORTH AVE
+4382225,School,b'Thorny catfish' b'Rocky Mountain Sheep' ELEMENTARY,4 b'Purple-throated fruitcrow' WAY
+4382227,School,b'Thorny catfish' b'Hanuman Langur' ELEM,3 b'Black-headed antbird' STREET
+4382229,School,b'Lagena' b'Plains Rat' ELEM,15 b'Fork-tailed palm-swift' ROAD
+4382231,School,b'Lagena' b'Rocky Mountain Sheep' ELEMENTARY SCHOOL,28 b'White-plumed antbird' STREET
+4382233,School,b'Lagena' b'Hanuman Langur' ELEMENTARY,23 b'Ringed woodpecker' ROAD
+4443151,School,"b'Yellowfin croaker' b'Pack Rat' CETR, ELEM",17 b'White-plumed antbird' NORTH AVE
+4443153,School,"b'Yellowfin croaker' b""Cookson's Wildebeest"" EL SCH",20 b'Crimson-hooded manakin' NORTH AVE
+4443155,School,"b'Minnow' b'South American Fur Seal' CETR, ELEM",51 b'Black-tailed trogon' NORTH AVE
+4443157,School,"b'Minnow' b'Pack Rat' CETR, ELEM",58 b'Sun parakeet complex' WAY
+4443159,School,"b'Minnow' b""Cookson's Wildebeest"" PRIMARY",60 b'Mouse-colored antshrike' SOUTH AVE
+4443161,School,"b'Ladyfish' b'South American Fur Seal' CETR, ELEM",50 b'White-winged swallow' AVE
+4443163,School,b'Ladyfish' b'Pack Rat' CTR,3 b'Blue-chinned sapphire' WAY
+4443165,School,"b'Ladyfish' b""Cookson's Wildebeest"" ELEMENTARY SCHOOL",71 b'Little cuckoo' ROAD
+4537843,School,b'Ayu' b'Wildebeest' SCH,6 b'Fork-tailed woodnymph' NORTH AVE
+4546636,School,b'Flashlight fish' b'Guanaco' ELEM,6 b'Green ibis' SOUTH AVE
+4553100,School,b'Ribbon sawtail fish' b'Indri' CTR,1 b'Greater ani' STREET
+4561529,School,"b'Chubsucker' b""Grevy's Zebra"" SCH",5 b'Sapphire-rumped parrotlet' STREET

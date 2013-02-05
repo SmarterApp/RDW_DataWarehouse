@@ -50,9 +50,6 @@ def _generate_names(name_type, total_num, all_names, scale):
                from the greatest cumulative frequency in the names collections
     RETURNS a dictionary of names mapped to frequencies for the given type of name
     '''
-    print("type:", name_type)
-    print("total num", total_num)
-    print("scale", scale)
 
     generated_names = {}
     count = 0
@@ -63,8 +60,6 @@ def _generate_names(name_type, total_num, all_names, scale):
         if (num >= 1):
             generated_names[name.name] = num
             count += num
-
-    print("type: %s, 1st round: %s, short: %s" % (name_type, count, total_num - count))
 
     #Generate enough people to fill remaining slots (total_num - count)
     ks = list(generated_names.keys())
@@ -84,7 +79,6 @@ def _generate_names(name_type, total_num, all_names, scale):
                 generated_names = 1
             add_count += 1
 
-    print("type: %s, 2nd round: %s" % (name_type, count + add_count))
     return generated_names
 
 

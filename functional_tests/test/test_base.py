@@ -11,17 +11,15 @@ import os
 
 class EdTestBase(unittest.TestCase):
 
-    def __init__(self):
-        super(EdTestBase, self).__init__()
-        self.config = configparser.ConfigParser()
-        self.test_config_path = os.path.abspath(os.path.dirname(__file__)) + '/../test.ini'
+    config = configparser.ConfigParser()
+    test_config_path = os.path.abspath(os.path.dirname(__file__)) + '/../test.ini'
 
-        if not os.path.exists(self.test_config_path):
-            raise IOError(self.test_config_path)
+    if not os.path.exists(test_config_path):
+        raise IOError(test_config_path)
 
-        self.config.read(self.test_config_path)
+    config.read(test_config_path)
 
-        self.driver_name = self.config['DEFAULT']['driver']
+    driver_name = config['DEFAULT']['driver']
 
     def get_driver(self):
         if self.driver_name == 'firefox':

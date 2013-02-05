@@ -17,7 +17,7 @@ class ApiHelper(EdTestBase):
         super(ApiHelper, self).__init__()
         self._response = None
         self._request_header = {}
-        self._entities_to_check = None
+        self._items_to_check = None
 
         # TODO any way to disable requests library logging? It causes asserts to fail
         requests_log = logging.getLogger("requests")
@@ -61,10 +61,10 @@ class ApiHelper(EdTestBase):
 
     # Checks both response fields and values
     # expected_key_values is a dict
-    def check_response_fields_and_values(self, entity, expected_key_values):
-        self._entities_to_check = []
-        self.__recursively_get_map(self._response.json(), entity)
-        for row in self._entities_to_check:
+    def check_response_fields_and_values(self, item, expected_key_values):
+        self._items_to_check = []
+        self.__recursively_get_map(self._response.json(), item)
+        for row in self._items_to_check:
             self.__check_contains_fields(row, expected_key_values, True)
             self.__check_number_of_fields(row, expected_key_values)
 
@@ -115,11 +115,11 @@ class ApiHelper(EdTestBase):
             if (len(keys) > 1):
                 self.__recursively_get_map(body[keys[0]], keys.pop(0).join(':'))
             else:
-                self._entities_to_check.append(body[keys[0]])
+                self._items_to_check.append(body[keys[0]])
         elif (type(body) is list):
             for elem in body:
                 self.assertIn(keys[0], elem)
                 if (len(keys) > 1):
                     self.__recursively_get_map(elem[keys[0]], keys.pop(0).join(':'))
                 else:
-                    self._entities_to_check.append(elem[keys[0]])
+                    self._items_to_check.append(elem[keys[0]])

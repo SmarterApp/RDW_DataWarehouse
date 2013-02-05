@@ -4,7 +4,6 @@ install_requires = [
     'nose',  # functional testing framework
     'selenium',  # for UI testing
     'Requests',  # for restful web services
-    'PyHamcrest',  # for assertion
     'virtualenv'  # for scaffolding tests
 ]
 

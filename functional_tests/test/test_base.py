@@ -10,7 +10,7 @@ import os
 
 
 class EdTestBase(unittest.TestCase):
-
+    # TODO why does this stuff have to be static?
     config = configparser.ConfigParser()
     test_config_path = os.path.abspath(os.path.dirname(__file__)) + '/../test.ini'
 

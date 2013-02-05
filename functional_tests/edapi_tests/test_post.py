@@ -49,6 +49,8 @@ class TestPost(unittest.TestCase):
         self._api_helper.send_request("POST", "/data/list_of_students")
         self._api_helper.check_response_code(200)
         self._api_helper.check_number_resp_elements(15, "assessments")
+        self._api_helper.check_response_fields("cutpoints:ELA", ['asmt_cut_point_name_4', 'asmt_cut_point_name_1', 'asmt_cut_point_name_2', 'asmt_cut_point_name_3', 'asmt_cut_point_4', 'asmt_cut_point_3', 'asmt_cut_point_2', 'asmt_cut_point_1'])
+
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

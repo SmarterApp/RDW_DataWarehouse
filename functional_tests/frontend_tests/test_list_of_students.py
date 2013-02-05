@@ -14,8 +14,8 @@ class ListOfStudents (EdTestBase):
 
     ''' test_open_website: Open webpage '''
     def setUp(self):
-        self.driver = webdriver.Firefox()
-        self.driver.get("http://localhost:6543/assets/html/gridDemo.html#")
+        self.driver = self.get_driver()
+        self.driver.get(self.get_url() + "/assets/html/gridDemo.html#")
         try:
             WebDriverWait(self.driver, 10).until(lambda driver: self.driver.find_element_by_id("gbox_gridTable"))
         except:
@@ -75,36 +75,69 @@ class ListOfStudents (EdTestBase):
     def test_grid_headers_row2(self):
         print("Test Case: LOS: Validate that the grid headers are displayed correctly")
         grid_header = self.driver.find_elements_by_class_name("jqg-third-row-header")
-
-        self._helper_match_headers(grid_header, "gridTable_student_full_name", "Student")
-        self._helper_match_headers(grid_header, "gridTable_enrollment_grade", "Grade")
-        self._helper_match_headers(grid_header, "gridTable_assessments.MATH.teacher_full_name", "Teacher")
-        self._helper_match_headers(grid_header, "gridTable_assessments.MATH.asmt_grade", "Grade")
-        self._helper_match_headers(grid_header, "gridTable_assessments.MATH.asmt_score", "Overall")
-        self._helper_match_headers(grid_header, "gridTable_assessments.MATH.asmt_claim_1_score", "Concepts and Procedures")
-        self._helper_match_headers(grid_header, "gridTable_assessments.MATH.asmt_claim_2_score", "Problem Solving")
-        self._helper_match_headers(grid_header, "gridTable_assessments.MATH.asmt_claim_3_score", "Communicating Reasoning")
-        self._helper_match_headers(grid_header, "gridTable_assessments.MATH.asmt_claim_4_score", "Modeling and Data Analysis")
-        self._helper_match_headers(grid_header, "gridTable_assessments.ELA.teacher_full_name", "Teacher")
-        self._helper_match_headers(grid_header, "gridTable_assessments.ELA.asmt_grade", "Grade")
-        self._helper_match_headers(grid_header, "gridTable_assessments.ELA.asmt_score", "Overall")
-        self._helper_match_headers(grid_header, "gridTable_assessments.ELA.asmt_claim_1_score", "Reading")
-        self._helper_match_headers(grid_header, "gridTable_assessments.ELA.asmt_claim_2_score", "Writing")
-        self._helper_match_headers(grid_header, "gridTable_assessments.ELA.asmt_claim_3_score", "Speaking & Listening")
-        self._helper_match_headers(grid_header, "gridTable_assessments.ELA.asmt_claim_4_score", "Research & Inquiry")
-
-    ###_helper_match_headers: Helper function to validate the grid header###
-    def _helper_match_headers(self, grid_header, key, value):
-        header_list = grid_header
-        key = key
-        value = value
-        for each in header_list:
-            assert each.find_element_by_id(key).text == value, ("Header ' %s ' not found on the page") % value
+        header_dict = {"gridTable_student_full_name": "Student",
+                       "gridTable_enrollment_grade": "Grade",
+                       "gridTable_assessments.MATH.teacher_full_name": "Teacher",
+                       "gridTable_assessments.MATH.asmt_grade": "Grade",
+                       "gridTable_assessments.MATH.asmt_score": "Overall",
+                       "gridTable_assessments.MATH.asmt_claim_1_score": "Concepts and Procedures",
+                       "gridTable_assessments.MATH.asmt_claim_2_score": "Problem Solving",
+                       "gridTable_assessments.MATH.asmt_claim_3_score": "Communicating Reasoning",
+                       "gridTable_assessments.MATH.asmt_claim_4_score": "Modeling and Data Analysis",
+                       "gridTable_assessments.ELA.teacher_full_name": "Teacher",
+                       "gridTable_assessments.ELA.asmt_grade": "Grade",
+                       "gridTable_assessments.ELA.asmt_score": "Overall",
+                       "gridTable_assessments.ELA.asmt_claim_1_score": "Reading",
+                       "gridTable_assessments.ELA.asmt_claim_2_score": "Writing",
+                       "gridTable_assessments.ELA.asmt_claim_3_score": "Speaking & Listening",
+                       "gridTable_assessments.ELA.asmt_claim_4_score": "Research & Inquiry"}
+        for each_key in header_dict.keys():
+            grid_value = self._helper_find_headers(grid_header, each_key)
+            value = header_dict[each_key]
+            assert grid_value == value, ("Header ' %s ' not found on the page") % value
             print("Passed Scenario: Header '" + value + "' found")
 
-    ### test_grid_contents: Validate total number of students displayed on the page ###
+    ###_helper_match_headers: Helper function to identify and return the grid header values###
+    def _helper_find_headers(self, header_list, key):
+        for each in header_list:
+            if each.find_element_by_id(key):
+                return each.find_element_by_id(key).text
 
     ### test_grid_headers_row2_sortable: Validate the default sorting and that the following headers are sortable: LastName and each of the measures ###
+
+    ### test_student_data: Validate student data displayed on the List of Students grid page ###
+    def test_student_data(self):
+        grid_table = self.driver.find_element_by_id("gridTable")
+        grid_rows = grid_table.find_elements_by_tag_name("tr")
+        student_list = []
+        for each in grid_rows:
+            student_info = {}
+            if each.get_attribute("id"):
+                for each_value in each.find_elements_by_tag_name("td"):
+                    student_info[each_value.get_attribute("aria-describedby")] = each_value.text
+                student_list.append(student_info)
+        for each_row in student_list:
+            for each_key in each_row.keys():
+                print(each_row[each_key])
+
+        found = False
+        for each_row in student_list:
+            for each_key in each_row.keys():
+                if 'THOMAS G TOOMEY' in each_row[each_key]:
+                    found = True
+        assert found, "Student not found"
+        for each_row in student_list:
+            if 'THOMAS G TOOMEY' in each_row['gridTable_student_full_name']:
+                found = True
+        assert found, "Student not found"
+
+    ### test_grid_contents: Validate total number of students displayed on the page ###
+    def test_grid_contents(self):
+        expected_count = 15
+        grid_table = self.driver.find_element_by_id("gridTable")
+        length = len(grid_table.find_elements_by_tag_name("tr")) - 1
+        assert length == expected_count, ("Expected '%s' of students but found '%s'", ('expected_count', 'length'))
+        print("Passed Scenario: Found '" + str(length) + "' students in the grid.")
 
     ### test_footer: Validate that footer is displayed and the text is valid ###
     def test_footer(self):

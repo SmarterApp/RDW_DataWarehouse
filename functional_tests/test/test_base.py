@@ -10,9 +10,9 @@ import os
 
 
 class EdTestBase(unittest.TestCase):
-
+    # TODO why does this stuff have to be static?
     config = configparser.ConfigParser()
-    test_config_path = os.getcwd() + '/../../test.ini'
+    test_config_path = os.path.abspath(os.path.dirname(__file__)) + '/../test.ini'
 
     if not os.path.exists(test_config_path):
         raise IOError(test_config_path)
@@ -31,3 +31,6 @@ class EdTestBase(unittest.TestCase):
 
     def default_config(self):
         return self.config['DEFAULT']
+
+    def get_url(self):
+        return "http://{0}:{1}".format(self.default_config()['host'], self.default_config()['port'])

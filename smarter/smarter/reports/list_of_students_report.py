@@ -84,6 +84,7 @@ def get_list_of_students_report(params, connector=None):
     dim_asmt_type = connector.get_table('dim_asmt_type')
     dim_teacher = connector.get_table('dim_teacher')
 
+    students = {}
     query = None
     if isinstance(dim_student, Table) and isinstance(dim_stdnt_tmprl_data, Table) and isinstance(dim_grade, Table) and isinstance(fact_asmt_outcome, Table) and isinstance(dim_asmt_type, Table):
         query = select([dim_student.c.student_id.label('student_id'),
@@ -116,45 +117,44 @@ def get_list_of_students_report(params, connector=None):
         if asmtSubject is not None:
             query = query.where(dim_asmt_type.c.asmt_subject.in_(asmtSubject))
 
-    results = connector.get_result(query)
-    connector.close_connection()
+        results = connector.get_result(query)
+        connector.close_connection()
 
-    # Formatting data for Front End
-    students = {}
-    for result in results:
-        student_id = result['student_id']
-        student = {}
-        assessments = {}
-        if student_id in students:
-            student = students[student_id]
-            assessments = student['assessments']
-        else:
-            student['student_id'] = result['student_id']
-            student['student_first_name'] = result['student_first_name']
-            student['student_middle_name'] = result['student_middle_name']
-            student['student_last_name'] = result['student_last_name']
-            student['student_full_name'] = result['student_first_name'] + ' ' + result['student_middle_name'] + ' ' + result['student_last_name']
-            student['enrollment_grade'] = result['enrollment_grade']
+        # Formatting data for Front End
+        for result in results:
+            student_id = result['student_id']
+            student = {}
+            assessments = {}
+            if student_id in students:
+                student = students[student_id]
+                assessments = student['assessments']
+            else:
+                student['student_id'] = result['student_id']
+                student['student_first_name'] = result['student_first_name']
+                student['student_middle_name'] = result['student_middle_name']
+                student['student_last_name'] = result['student_last_name']
+                student['student_full_name'] = result['student_first_name'] + ' ' + result['student_middle_name'] + ' ' + result['student_last_name']
+                student['enrollment_grade'] = result['enrollment_grade']
 
-        assessment = {}
-        assessment['teacher_first_name'] = result['teacher_first_name']
-        assessment['teacher_last_name'] = result['teacher_last_name']
-        assessment['teacher_full_name'] = result['teacher_first_name'] + ' ' + result['teacher_last_name']
-        assessment['asmt_grade'] = result['asmt_grade']
-        assessment['asmt_score'] = result['asmt_score']
-        assessment['asmt_claim_1_name'] = result['asmt_claim_1_name']
-        assessment['asmt_claim_2_name'] = result['asmt_claim_2_name']
-        assessment['asmt_claim_3_name'] = result['asmt_claim_3_name']
-        assessment['asmt_claim_4_name'] = result['asmt_claim_4_name']
-        assessment['asmt_claim_1_score'] = result['asmt_claim_1_score']
-        assessment['asmt_claim_2_score'] = result['asmt_claim_2_score']
-        assessment['asmt_claim_3_score'] = result['asmt_claim_3_score']
-        assessment['asmt_claim_4_score'] = result['asmt_claim_4_score']
+            assessment = {}
+            assessment['teacher_first_name'] = result['teacher_first_name']
+            assessment['teacher_last_name'] = result['teacher_last_name']
+            assessment['teacher_full_name'] = result['teacher_first_name'] + ' ' + result['teacher_last_name']
+            assessment['asmt_grade'] = result['asmt_grade']
+            assessment['asmt_score'] = result['asmt_score']
+            assessment['asmt_claim_1_name'] = result['asmt_claim_1_name']
+            assessment['asmt_claim_2_name'] = result['asmt_claim_2_name']
+            assessment['asmt_claim_3_name'] = result['asmt_claim_3_name']
+            assessment['asmt_claim_4_name'] = result['asmt_claim_4_name']
+            assessment['asmt_claim_1_score'] = result['asmt_claim_1_score']
+            assessment['asmt_claim_2_score'] = result['asmt_claim_2_score']
+            assessment['asmt_claim_3_score'] = result['asmt_claim_3_score']
+            assessment['asmt_claim_4_score'] = result['asmt_claim_4_score']
 
-        assessments[result['asmt_subject']] = assessment
-        student['assessments'] = assessments
+            assessments[result['asmt_subject']] = assessment
+            student['assessments'] = assessments
 
-        students[student_id] = student
+            students[student_id] = student
 
     # including assessments and cutpoints to returning JSON
     results = {}

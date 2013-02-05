@@ -37,6 +37,41 @@ class TestReportConfig(unittest.TestCase):
         validator.convert_array_query_params = MagicMock(return_value=(False, None))
         self.assertRaises(InvalidParameterError, utils.generate_report, registry, "test", params, validator)
 
+    def test_validate_string_param(self):
+        report_name = "test"
+        config = {"id": {"type": "string", "required": True}}
+        registry = {}
+        registry[report_name] = {"params": config, "reference": (Dummy, Dummy.some_func)}
+        params = {"id": "some_id"}
+        validator = Validator()
+        response = validator.validate_params_schema(registry, report_name, params)
+        self.assertEqual(response[0], True)
+
+    def test_validate_string_with_min_max_param(self):
+        report_name = "test"
+        config = {"id": {"type": "string", "required": True, "minLength": 2, "maxLength": 5}}
+        registry = {}
+        registry[report_name] = {"params": config, "reference": (Dummy, Dummy.some_func)}
+        params = {"id": "A"}
+        validator = Validator()
+        response = validator.validate_params_schema(registry, report_name, params)
+        self.assertEqual(response[0], False)
+
+        params = {"id": "AAAAAA"}
+        validator = Validator()
+        response = validator.validate_params_schema(registry, report_name, params)
+        self.assertEqual(response[0], False)
+
+    def test_invalidate_string_param(self):
+        report_name = "test"
+        config = {"id": {"type": "string", "required": True}}
+        registry = {}
+        registry[report_name] = {"params": config, "reference": (Dummy, Dummy.some_func)}
+        params = {"id": 123}
+        validator = Validator()
+        response = validator.validate_params_schema(registry, report_name, params)
+        self.assertEqual(response[0], False)
+
     def test_validate_integer_param(self):
         report_name = "test"
         config = {"id": {"type": "integer", "required": True}}
@@ -46,6 +81,21 @@ class TestReportConfig(unittest.TestCase):
         validator = Validator()
         response = validator.validate_params_schema(registry, report_name, params)
         self.assertEqual(response[0], True)
+
+    def test_validate_integer_with_min_max_param(self):
+        report_name = "test"
+        config = {"id": {"type": "integer", "required": True, "minimum": 1, "maximum": 5}}
+        registry = {}
+        registry[report_name] = {"params": config, "reference": (Dummy, Dummy.some_func)}
+        params = {"id": 0}
+        validator = Validator()
+        response = validator.validate_params_schema(registry, report_name, params)
+        self.assertEqual(response[0], False)
+
+        params = {"id": 6}
+        validator = Validator()
+        response = validator.validate_params_schema(registry, report_name, params)
+        self.assertEqual(response[0], False)
 
     def test_validate_regex_param(self):
         report_name = "test"
@@ -87,6 +137,51 @@ class TestReportConfig(unittest.TestCase):
         validator = Validator()
         response = validator.validate_params_schema(registry, report_name, params)
         self.assertIn("does not match regular expression", str(response[1]))
+        self.assertEqual(response[0], False)
+
+    def test_validate_bool_param(self):
+        report_name = "test"
+        config = {"id": {"type": "boolean", "required": True}}
+        registry = {}
+        registry[report_name] = {"params": config, "reference": (Dummy, Dummy.some_func)}
+        params = {"id": True}
+        validator = Validator()
+        response = validator.validate_params_schema(registry, report_name, params)
+        self.assertEqual(response[0], True)
+
+    def test_invalidate_bool_param(self):
+        report_name = "test"
+        config = {"id": {"type": "boolean", "required": True}}
+        registry = {}
+        registry[report_name] = {"params": config, "reference": (Dummy, Dummy.some_func)}
+        params = {"id": "not-a-bool"}
+        validator = Validator()
+        response = validator.validate_params_schema(registry, report_name, params)
+        self.assertEqual(response[0], False)
+
+    def test_validate_date_param(self):
+        report_name = "test"
+        config = {"id": {"type": "string", "format": "date"}}
+        registry = {}
+        registry[report_name] = {"params": config, "reference": (Dummy, Dummy.some_func)}
+        params = {"id": "2013-01-31"}
+        validator = Validator()
+        response = validator.validate_params_schema(registry, report_name, params)
+        self.assertEqual(response[0], True)
+
+    def test_invalidate_date_param(self):
+        report_name = "test"
+        config = {"id": {"type": "string", "format": "date"}}
+        registry = {}
+        registry[report_name] = {"params": config, "reference": (Dummy, Dummy.some_func)}
+        params = {"id": "2013-01-0101"}
+        validator = Validator()
+        response = validator.validate_params_schema(registry, report_name, params)
+        self.assertEqual(response[0], False)
+
+        params = {"id": "2013-01-32"}
+        validator = Validator()
+        response = validator.validate_params_schema(registry, report_name, params)
         self.assertEqual(response[0], False)
 
     def test_fix_types_for_strings(self):

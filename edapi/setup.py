@@ -13,7 +13,7 @@ install_requires = [
 
 tests_require = [
     'WebTest >= 1.3.1',  # py3 compat
-    'nose',
+    'nose >= 1.2.1',
     'coverage',
     'virtualenv']  # for scaffolding tests
 

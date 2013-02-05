@@ -12,25 +12,48 @@ from sqlalchemy.sql import select
 from sqlalchemy.sql import and_
 
 
+__districtId = 'districtId'
+__schoolId = 'schoolId'
+__asmtGrade = 'asmtGrade'
+__asmtSubject = 'asmtSubject'
+
+# Report for List of Students.
+# This function will be refactor when schema is updated to the latest.
+# Output:
+#    Cutpoint for each subject
+#    and
+#    Array of
+#     Student last name
+#     student first name
+#     student middle initial
+#     student assessment grade
+#     student enrollment grade
+#     assessment array [teacher full name, assmt subject, claim scores and descriptions ]
+
+
 @report_config(
     name="list_of_students",
     params={
-        "districtId": {
+        __districtId: {
             "type": "integer",
             "required": True
         },
-        "schoolId": {
+        __schoolId: {
             "type": "integer",
             "required": True
         },
-        "asmtGrade": {
+        __asmtGrade: {
             "type": "string",
             "maxLength": 2,
-            "required": True
+            "required": True,
+            "pattern": "^[K0-9]+$"
         },
-        "asmtSubject": {
+        __asmtSubject: {
             "type": "array",
             "required": False,
+            "minLength": 1,
+            "maxLength": 100,
+            "pattern": "^[a-zA-Z0-9\.]+$",
             "items": {
                 "type": "string"
             }
@@ -42,26 +65,17 @@ def get_list_of_students_report(params, connector=None):
     if connector is None:
         connector = DBConnector()
 
-    districtId = params['districtId']
-    schoolId = params['schoolId']
-    asmtGrade = params['asmtGrade']
+    districtId = params[__districtId]
+    schoolId = params[__schoolId]
+    asmtGrade = params[__asmtGrade]
 
     # asmtSubject is optional.
     asmtSubject = None
-    if 'asmtSubject' in params:
-        asmtSubject = params['asmtSubject']
+    if __asmtSubject in params:
+        asmtSubject = params[__asmtSubject]
 
     # get sql session
     connector.open_connection()
-    '''
-    Output:
-    Student last name
-    student first name
-    student middle initial
-    student assessment grade
-    student enrollment grade
-    assessment array [teacher full name, assmt subject, claim scores and descriptions ]
-    '''
 
     dim_student = connector.get_table('dim_student')
     dim_stdnt_tmprl_data = connector.get_table('dim_stdnt_tmprl_data')
@@ -70,6 +84,7 @@ def get_list_of_students_report(params, connector=None):
     dim_asmt_type = connector.get_table('dim_asmt_type')
     dim_teacher = connector.get_table('dim_teacher')
 
+    students = {}
     query = None
     if isinstance(dim_student, Table) and isinstance(dim_stdnt_tmprl_data, Table) and isinstance(dim_grade, Table) and isinstance(fact_asmt_outcome, Table) and isinstance(dim_asmt_type, Table):
         query = select([dim_student.c.student_id.label('student_id'),
@@ -100,50 +115,81 @@ def get_list_of_students_report(params, connector=None):
         query = query.where(and_(dim_stdnt_tmprl_data.c.district_id == districtId))
 
         if asmtSubject is not None:
-            query.where(dim_grade.c.asmt_subject.in_(asmtSubject))
+            query = query.where(dim_asmt_type.c.asmt_subject.in_(asmtSubject))
 
-    query = query.limit(30)
-    results = connector.get_result(query)
-    connector.close_connection()
+        results = connector.get_result(query)
+        connector.close_connection()
 
-    students = {}
-    for result in results:
-        student_id = result['student_id']
-        student = {}
-        assessments = {}
-        if student_id in students:
-            student = students[student_id]
-            assessments = student['assessments']
-        else:
-            student['student_first_name'] = result['student_first_name']
-            student['student_middle_name'] = result['student_middle_name']
-            student['student_last_name'] = result['student_last_name']
-            student['student_full_name'] = result['student_first_name'] + ' ' + result['student_middle_name'] + ' ' + result['student_last_name']
-            #student['enrollment_grade'] = result['enrollment_grade']
-            student['enrollment_grade'] = '5'
+        # Formatting data for Front End
+        for result in results:
+            student_id = result['student_id']
+            student = {}
+            assessments = {}
+            if student_id in students:
+                student = students[student_id]
+                assessments = student['assessments']
+            else:
+                student['student_first_name'] = result['student_first_name']
+                student['student_middle_name'] = result['student_middle_name']
+                student['student_last_name'] = result['student_last_name']
+                student['student_full_name'] = result['student_first_name'] + ' ' + result['student_middle_name'] + ' ' + result['student_last_name']
+                student['enrollment_grade'] = result['enrollment_grade']
 
-        assessment = {}
-        assessment['teacher_first_name'] = result['teacher_first_name']
-        assessment['teacher_last_name'] = result['teacher_last_name']
-        assessment['teacher_full_name'] = result['teacher_first_name'] + ' ' + result['teacher_last_name']
-        assessment['asmt_grade'] = result['asmt_grade']
-        assessment['asmt_subject'] = result['asmt_subject']
-        assessment['asmt_score'] = result['asmt_score']
-        assessment['asmt_claim_1_name'] = result['asmt_claim_1_name']
-        assessment['asmt_claim_2_name'] = result['asmt_claim_2_name']
-        assessment['asmt_claim_3_name'] = result['asmt_claim_3_name']
-        assessment['asmt_claim_4_name'] = result['asmt_claim_4_name']
-        assessment['asmt_claim_1_score'] = result['asmt_claim_1_score']
-        assessment['asmt_claim_2_score'] = result['asmt_claim_2_score']
-        assessment['asmt_claim_3_score'] = result['asmt_claim_3_score']
-        assessment['asmt_claim_4_score'] = result['asmt_claim_4_score']
+            assessment = {}
+            assessment['teacher_first_name'] = result['teacher_first_name']
+            assessment['teacher_last_name'] = result['teacher_last_name']
+            assessment['teacher_full_name'] = result['teacher_first_name'] + ' ' + result['teacher_last_name']
+            assessment['asmt_grade'] = result['asmt_grade']
+            assessment['asmt_score'] = result['asmt_score']
+            assessment['asmt_claim_1_name'] = result['asmt_claim_1_name']
+            assessment['asmt_claim_2_name'] = result['asmt_claim_2_name']
+            assessment['asmt_claim_3_name'] = result['asmt_claim_3_name']
+            assessment['asmt_claim_4_name'] = result['asmt_claim_4_name']
+            assessment['asmt_claim_1_score'] = result['asmt_claim_1_score']
+            assessment['asmt_claim_2_score'] = result['asmt_claim_2_score']
+            assessment['asmt_claim_3_score'] = result['asmt_claim_3_score']
+            assessment['asmt_claim_4_score'] = result['asmt_claim_4_score']
 
-        assessments[result['asmt_subject']] = assessment
-        student['assessments'] = assessments
+            assessments[result['asmt_subject']] = assessment
+            student['assessments'] = assessments
 
-        students[student_id] = student
+            students[student_id] = student
 
-    results = []
+    # including assessments and cutpoints to returning JSON
+    results = {}
+    assessments = []
     for key, value in students.items():
-        results.append(value)
+        assessments.append(value)
+    results['assessments'] = assessments
+    results['cutpoints'] = get_cut_points()
     return results
+
+
+# This is throw away function.
+# returning cutpoints in JSON.
+# returing when new schema is used
+def get_cut_points():
+    cutpoints = {}
+    math_cutpoint = {}
+    math_cutpoint["asmt_cut_point_name_1"] = "MATH cutpoint name1"
+    math_cutpoint["asmt_cut_point_name_2"] = "MATH cutpoint name2"
+    math_cutpoint["asmt_cut_point_name_3"] = "MATH cutpoint name3"
+    math_cutpoint["asmt_cut_point_name_4"] = "MATH cutpoint name4"
+    math_cutpoint["asmt_cut_point_1"] = 400
+    math_cutpoint["asmt_cut_point_2"] = 600
+    math_cutpoint["asmt_cut_point_3"] = 800
+    math_cutpoint["asmt_cut_point_4"] = 1000
+    cutpoints['MATH'] = math_cutpoint
+
+    ela_cutpoint = {}
+    ela_cutpoint["asmt_cut_point_name_1"] = "ELA cutpoint name1"
+    ela_cutpoint["asmt_cut_point_name_2"] = "ELA cutpoint name2"
+    ela_cutpoint["asmt_cut_point_name_3"] = "ELA cutpoint name3"
+    ela_cutpoint["asmt_cut_point_name_4"] = "ELA cutpoint name4"
+    ela_cutpoint["asmt_cut_point_1"] = 200
+    ela_cutpoint["asmt_cut_point_2"] = 500
+    ela_cutpoint["asmt_cut_point_3"] = 800
+    ela_cutpoint["asmt_cut_point_4"] = 1100
+    cutpoints['ELA'] = ela_cutpoint
+
+    return cutpoints

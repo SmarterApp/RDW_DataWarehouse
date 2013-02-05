@@ -4,7 +4,9 @@ require({
     'coffee-script': '3p/coffee-script',
     jquery: '3p/jquery-1.7.2.min',
     jqGrid: '3p/jquery.jqGrid.min',
-    edwareUtil: 'EDWARE.util'
+    edwareUtil: 'EDWARE.util',
+    edwareDataProxy: 'EDWARE.dataProxy',
+    edwareGrid: 'widgets/EDWARE.grid.tablegrid'
   }
 });
 

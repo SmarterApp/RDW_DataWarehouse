@@ -14,8 +14,8 @@ class ListOfStudents (EdTestBase):
 
     ''' test_open_website: Open webpage '''
     def setUp(self):
-        self.driver = webdriver.Firefox()
-        self.driver.get("http://localhost:6543/assets/html/gridDemo.html#")
+        self.driver = self.get_driver()
+        self.driver.get(self.get_url() + "/assets/html/gridDemo.html#")
         try:
             WebDriverWait(self.driver, 10).until(lambda driver: self.driver.find_element_by_id("gbox_gridTable"))
         except:

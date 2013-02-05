@@ -41,8 +41,10 @@ class ApiHelper(EdTestBase):
         self.assertEqual(expected, code, 'Actual return code: {0} Expected: {1}'.format(expected, code))
 
     # Checks the size of json response
-    def check_number_resp_elements(self, expected_size):
+    def check_number_resp_elements(self, expected_size, item_name=None):
         json_body = self._response.json()
+        if (item_name is not None):
+            json_body = json_body[item_name]
         self.assertIs(type(json_body), list, "Response body is not a list")
         self.assertEqual(len(json_body), expected_size, 'Actual size: {0} Expected: {1}'.format(len(json_body), expected_size))
 
@@ -74,6 +76,13 @@ class ApiHelper(EdTestBase):
     def set_payload(self, payload):
         self._request_header['data'] = json.dumps(payload)
 
+    def set_query_params(self, key, value):
+        try:
+            params = self._request_header['params']
+        except KeyError:
+            params = self._request_header['params'] = {}
+        params[key] = value
+
     # Checks response body for error message
     def check_resp_error(self, msg):
         json_body = self._response.json()
@@ -92,7 +101,10 @@ class ApiHelper(EdTestBase):
         for row in expected_fields:
             self.assertIn(row, body, "{0} is not found".format(row))
             if (verify_value):
-                self.assertEqual(expected_fields[row].lower(), str(body[row]).lower(), "{0} is not found".format(expected_fields[row]))
+                if (type(body[row]) == dict):
+                    self.__check_contains_fields(body[row], body[row], True)
+                else:
+                    self.assertEqual(expected_fields[row].lower(), str(body[row]).lower(), "{0} is not found".format(expected_fields[row]))
 
     # key is a string, dictionary based, separated by :
     # Map is the data from the table from the test steps (Feature file)

@@ -21,6 +21,6 @@ setup(name='functional_tests',
       packages=find_packages(),
       include_package_data=True,
       zip_safe=False,
-      dependency_links=["file://"+os.path.abspath(here + "/../" + "resource/selenium-2.29.0-wgen#egg=selenium-wgen")],
+      dependency_links=["file://" + os.path.abspath(here + "/../" + "resource/selenium-2.29.0-wgen#egg=selenium-wgen")],
       install_requires=install_requires,
       )

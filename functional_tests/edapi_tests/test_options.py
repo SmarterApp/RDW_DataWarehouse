@@ -35,6 +35,21 @@ class TestOptions(unittest.TestCase):
         self._api_helper.check_response_code(404)
         self._api_helper.check_resp_error("Report dummy_report is not found")
 
+    def test_options_list_of_students(self):
+        self._api_helper.send_request("OPTIONS", "/data/list_of_students")
+        self._api_helper.check_response_code(200)
+        # check asmtGrade
+        values = {'pattern': '^[K0-9]+$', 'required': 'True', 'type': 'string', 'maxLength': '2'}
+        self._api_helper.check_response_fields_and_values("asmtGrade", values)
+        # check schoolId
+        values = {'required': 'true', 'type': 'integer'}
+        self._api_helper.check_response_fields_and_values("schoolId", values)
+        # Check districtId
+        self._api_helper.check_response_fields_and_values("districtId", values)
+        # Check asmtSubject
+        values = {'minLength': '1', 'required': 'false', 'type': 'array', 'pattern': '^[a-zA-Z0-9\.]+$', 'maxLength': '100', 'items': {'type': 'string'}}
+        self._api_helper.check_response_fields_and_values("asmtSubject", values)
+
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

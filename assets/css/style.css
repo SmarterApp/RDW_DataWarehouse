@@ -36,8 +36,8 @@ h3 {
   -ms-border-radius: 5px;
   -o-border-radius: 5px;
   border-radius: 5px;
-  height: 30px;
-  margin: 10px 0 20px 0;
+  height: 60px;
+  background: #fbfbfb;
 }
 #header h1 {
   font-size: 26px;
@@ -51,10 +51,14 @@ h3 {
   color: #fff;
   float: left;
   text-align: center;
+  margin-top: 20px;
+  margin-left: 20px;
 }
 #header .topLinks {
   float: right;
   color: #565656;
+  margin-top: 30px;
+  margin-right: 20px;
 }
 #header .topLinks a {
   color: #9f9f9f;
@@ -73,8 +77,33 @@ h3 {
   margin: 0 5px;
 }
 /* grid styles */
+table {
+  border-collapse: separate;
+}
+.ui-widget {
+  font-family: arial;
+}
+.ui-jqgrid tr.jqgrow td.bold {
+  font-weight: bold;
+}
+.ui-ellipsis {
+  text-overflow: ellipsis;
+  white-space: nowrap !important;
+}
+.ui-widget-content a {
+  color: #333;
+  text-decoration: underline;
+}
+.ui-widget-content a:hover {
+  color: #333;
+}
 .ui-jqgrid .ui-jqgrid-view {
   font-size: 12px;
+}
+.ui-th-column,
+.ui-jqgrid .ui-jqgrid-htable th.ui-th-column {
+  color: #B4B3B3;
+  font-weight: normal;
 }
 th.ui-th-column div {
   height: auto !important;
@@ -118,10 +147,10 @@ th.ui-th-column div {
 .ui-jqgrid tr.jqgrow td {
   border-bottom: solid 1px #cbcbcb;
 }
-.ui-th-column-header {
-  background: #ebebeb !important;
-  color: #5e5e5e !important;
-  font-size: 14px;
+.ui-jqgrid .ui-jqgrid-htable .jqg-second-row-header th {
+  background: #ebebeb;
+  color: #5e5e5e;
+  font-size: 16px;
 }
 .ui-state-hover,
 .ui-widget-content .ui-state-hover,
@@ -129,7 +158,7 @@ th.ui-th-column div {
 .ui-state-focus,
 .ui-widget-content .ui-state-focus,
 .ui-widget-header .ui-state-focus {
-  background: #ccc;
+  background: #fafafa;
   color: #333;
 }
 #footer {

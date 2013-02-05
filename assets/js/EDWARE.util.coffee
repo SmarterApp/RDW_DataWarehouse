@@ -12,4 +12,12 @@ define [
   displayErrorMessage = (error) ->
     $("#errorMessage").html(error);
     
+  getUrlParams = ->
+    params = {}
+    window.location.search.replace /[?&]+([^=&]+)=([^&]*)/g, (str, key, value) ->
+      params[key] = value
+  
+    params
+    
   displayErrorMessage: displayErrorMessage
+  getUrlParams: getUrlParams

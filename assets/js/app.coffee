@@ -1,24 +1,13 @@
 #global define
-define ["jquery", "cs!edwareDataProxy", "cs!edwareGrid"], ($, edwareDataProxy, edwareGrid) ->
-  
-  assessmentCutpoints = {}
-      
-  #
-  #    * Create Student data grid
-  #    
-      
-  createStudentGrid = ->
-      
-    edwareDataProxy.getStudentData "/data/list_of_students", (assessmentsData, assessmentCutpoints) ->
-      
-      edwareDataProxy.getStudentsConfig "../data/student.json", (studentsConfig) ->
-        edwareGrid.create "gridTable", studentsConfig, assessmentsData, assessmentCutpoints
+define ["jquery", "cs!edwareStudentList"], ($, edwareStudentList) ->
     
   #
   #    * Initialize the app
   #    
   initialize = ->
     $(document).ready ->
-      createStudentGrid()
+      
+      # This is temporary method until we know which initial page will be displayed
+      edwareStudentList.createStudentGrid()
 
   initialize: initialize

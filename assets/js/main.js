@@ -6,7 +6,9 @@ require({
     jqGrid: '3p/jquery.jqGrid.min',
     edwareUtil: 'EDWARE.util',
     edwareDataProxy: 'EDWARE.dataProxy',
-    edwareGrid: 'widgets/EDWARE.grid.tablegrid'
+    edwareGrid: 'widgets/EDWARE.grid.tablegrid',
+    edwareGridFormatters: 'widgets/EDWARE.grid.formatters',
+    edwareStudentList: 'EDWARE.studentList'
   }
 });
 

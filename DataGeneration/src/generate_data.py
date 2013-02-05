@@ -184,6 +184,7 @@ def generate_data(db_states):
 
         for d in created_dist_list:
             # create school for each district
+            print('Genearting data for district %s' % d)
             school_list, wheretaken_list = create_schools(stu_num_in_school_made, stutea_ratio_in_school_made, shift, d)
             total_count[2] += len(school_list)
             create_csv(school_list, INSTITUTIONS)
@@ -441,9 +442,9 @@ def create_classes_grades_sections(sch, state):
     num_of_teacher = max(1, (sch.num_of_student // sch.stu_tea_ratio))
     teacher_list = generate_people(TEACHER, num_of_teacher, sch, state['code'], random.choice(GENDER_RARIO))
     num_of_tea_for_grade = max(1, (num_of_teacher // (sch.high_grade - sch.low_grade + 1)))
-    print("num_of_tea_for_grade1 ", num_of_tea_for_grade, (num_of_teacher // (sch.high_grade - sch.low_grade + 1)))
+    #print("num_of_tea_for_grade1 ", num_of_tea_for_grade, (num_of_teacher // (sch.high_grade - sch.low_grade + 1)))
     num_of_tea_for_grade = min(len(teacher_list), num_of_tea_for_grade)
-    print("num_of_tea_for_grade2 ", num_of_tea_for_grade, len(teacher_list), num_of_tea_for_grade)
+    #print("num_of_tea_for_grade2 ", num_of_tea_for_grade, len(teacher_list), num_of_tea_for_grade)
 
     total_count[4] += len(teacher_list)
     create_csv(teacher_list, TEACHERS)
@@ -474,9 +475,9 @@ def create_classes_grades_sections(sch, state):
         assessment_outcome_list = []
         hist_assessment_outcome_list = []
 
-# START HERE 2/1/13
-# START HERE 2/1/13
-# START HERE 2/1/13
+        dates_taken1 = generate_dates_taken(2000)
+        dates_taken2 = generate_dates_taken(2000)
+
         for stu_tmprl in student_temporal_list:
             for score in scores.items():
                 asmt_id = int(score[0].split('_')[1])
@@ -491,33 +492,61 @@ def create_classes_grades_sections(sch, state):
                     teacher_list = [item for sub in teacher_list for item in sub]  # flatten teacher_list
                     teacher = teacher_list[0]
                     teacher_id = teacher.teacher_id
-                    if len(score[1]) == 0:
-                        print(score, stu_tmprl)
-                    outcome = AssessmentOutcome(new_id, asmt_id, stu_tmprl.student_id, stu_tmprl.student_tmprl_id, teacher_id, 'date_taken', 'dtd', 'dtm', 'dty', 'wti', score[1].pop(), 'dtaken')
+
+                    date_taken = None
+                    if asmt.period == 'BOY':
+                        date_taken = dates_taken1['BOY']
+                    elif asmt.period == 'MOY':
+                        date_taken = dates_taken1['MOY']
+                    elif asmt.period == 'EOY':
+                        date_taken = dates_taken1['EOY']
+                    date_taken = date_taken.replace(year=int(year))
+
+                    outcome = AssessmentOutcome(new_id, asmt_id, stu_tmprl.student_id, stu_tmprl.student_tmprl_id, teacher_id, date_taken, sch.place_id, score[1].pop(), 'cdate?')
                     assessment_outcome_list.append(outcome)
+                elif stu_tmprl.student_class.sub_name == asmt.subject:
+                    new_id = idgen.get_id()
+                    teacher_list = list(stu_tmprl.student_class.section_tea_map.values())
+                    teacher_list = [item for sub in teacher_list for item in sub]  # flatten teacher_list
+                    teacher = teacher_list[0]
+                    teacher_id = teacher.teacher_id
+
+                    date_taken = None
+                    if asmt.period == 'BOY':
+                        date_taken = dates_taken2['BOY']
+                    elif asmt.period == 'MOY':
+                        date_taken = dates_taken2['MOY']
+                    elif asmt.period == 'EOY':
+                        date_taken = dates_taken2['EOY']
+                    date_taken = date_taken.replace(year=int(year))
+
+                    outcome = HistAssessmentOutcome(new_id, asmt_id, stu_tmprl.student_id, stu_tmprl.student_tmprl_id, date_taken, sch.place_id, score[1].pop(), 'cdate?', 'hdate?')
+                    hist_assessment_outcome_list.append(outcome)
 
         create_csv(assessment_outcome_list, ASSESSMENT_OUTCOME)
-#        print('hist_asses')
-#        for aclass in classforgrade_list:
-#            for section in aclass.section_stu_map.items():
-#                for student in section[1]:
-#                    for score in scores.items():
-#                        asmt_id = score[0].split('_')[1]
-#                        year = score[0].split('_')[0]
-#                        asmt = [x for x in ASSESSMENT_TYPES_LIST if x.assmt_id == asmt_id]
-#                        print('year')
-#                        if int(year) == date.today().year:
-#                            ###
-#                            #### START HERE 2/1/13
-#                            new_id = idgen.get_id()
-#                            outcome = AssessmentOutcome(new_id, student.student_id, )
-#                            assessment_outcome_list.append()
-#                        else:
-#                            pass
-                        # if score[0].split('_')[1]
-#        for it in scores.items():
-#            pass
-        # fds2f
+        create_csv(hist_assessment_outcome_list, HIST_ASSESSMENT_OUTCOME)
+
+
+def generate_dates_taken(year):
+    '''
+    generates a list of dates for a given year when tests are taken
+    three dates correspond to BOY, MOY, EOY
+    returns a dict containing three dates with keys: 'BOY', 'MOY', 'EOY'
+    '''
+    boy_pool = [9, 10]
+    moy_pool = [11, 12, 1, 2, 3]
+    eoy_pool = [4, 5, 6]
+
+    boy_date = date(year, random.choice(boy_pool), random.randint(1, 28))
+
+    moy_month = random.choice(moy_pool)
+    moy_year = year
+    if moy_month <= 3:
+        moy_year += 1
+    moy_date = date(moy_year, moy_month, random.randint(1, 28))
+    eoy_date = date(year + 1, random.choice(eoy_pool), random.randint(1, 28))
+
+    return {'BOY': boy_date, 'MOY': moy_date, 'EOY': eoy_date}
 
 
 def create_student_temporal_data(state_code, class_list, grade, school_id, district_id):

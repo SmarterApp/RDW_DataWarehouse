@@ -195,18 +195,13 @@ class AssessmentOutcome(object):
     Assessment outcome object
     Should map to the fact_asmt_outcome table
     '''
-    def __init__(self, asmnt_out_id, asmnt_type_id, student_id, stdnt_tmprl_id, teacher_id, date_taken, date_taken_day, date_taken_month, date_taken_year,
-                 where_taken_id, score, asmt_create_date):
-
+    def __init__(self, asmnt_out_id, asmnt_type_id, student_id, stdnt_tmprl_id, teacher_id, date_taken, where_taken_id, score, asmt_create_date):
         self.asmnt_out_id = asmnt_out_id
         self.asmnt_type_id = asmnt_type_id
         self.student_id = student_id
         self.stdnt_tmprl_id = stdnt_tmprl_id
         self.teacher_id = teacher_id
         self.date_taken = date_taken
-        self.date_taken_day = date_taken_day
-        self.date_taken_month = date_taken_month
-        self.date_taken_year = date_taken_year
         self.where_taken_id = where_taken_id
         self.score = score
         self.asmt_create_date = asmt_create_date
@@ -214,8 +209,30 @@ class AssessmentOutcome(object):
     def getRow(self):
         claims = list(self.score.claims.items())
 
-        return [self.asmnt_out_id, self.asmnt_type_id, self.student_id, self.stdnt_tmprl_id, self.teacher_id, self.date_taken, self.date_taken_day, self.date_taken_month, self.date_taken_year,
+        return [self.asmnt_out_id, self.asmnt_type_id, self.student_id, self.stdnt_tmprl_id, self.teacher_id, self.date_taken, self.date_taken.day, self.date_taken.month, self.date_taken.year,
                 self.where_taken_id, self.score.overall, claims[0][0], claims[0][1], claims[1][0], claims[1][1], claims[2][0], claims[2][1], claims[3][0], claims[3][1], self.asmt_create_date]
+
+
+class HistAssessmentOutcome(object):
+    '''
+    maps to hist_asmt_outcome table
+    '''
+    def __init__(self, asmnt_out_id, asmnt_type_id, student_id, stdnt_tmprl_id, date_taken, where_taken_id, score, asmt_create_date, hist_create_date):
+        self.asmnt_out_id = asmnt_out_id
+        self.asmnt_type_id = asmnt_type_id
+        self.student_id = student_id
+        self.stdnt_tmprl_id = stdnt_tmprl_id
+        self.date_taken = date_taken
+        self.where_taken_id = where_taken_id
+        self.score = score
+        self.asmt_create_date = asmt_create_date
+        self.hist_create_date = hist_create_date
+
+    def getRow(self):
+        claims = list(self.score.claims.items())
+
+        return [self.asmnt_out_id, self.asmnt_type_id, self.student_id, self.stdnt_tmprl_id, self.date_taken, self.date_taken.day, self.date_taken.month, self.date_taken.year, self.where_taken_id,
+                self.score.overall, claims[0][0], claims[0][1], claims[1][0], claims[1][1], claims[2][0], claims[2][1], claims[3][0], claims[3][1], self.asmt_create_date, self.hist_create_date]
 
 
 class StudentTemporalData(object):

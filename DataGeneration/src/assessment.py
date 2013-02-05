@@ -65,7 +65,7 @@ def generate_assmt_scores(state, asmt_type, year, period, grade, total):
     state_data = StateData()
     # get statistical data. Average score, standard deviation, and four percentage numbers of levels
     stat_avg, stat_sd, stat_levles = state_data.get_state_data(state, asmt_type, year, grade)
-    print(state, asmt_type, year, period, grade, total, stat_avg, stat_sd, stat_levles)
+    #print(state, asmt_type, year, period, grade, total, stat_avg, stat_sd, stat_levles)
 
     # generate list
     overallscore_list = []

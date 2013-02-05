@@ -51,6 +51,7 @@ STATES = '../datafiles/states.csv'
 PARENTS = '../datafiles/parents.csv'
 ASSESSMENT_TYPES = '../datafiles/assessment_types.csv'
 ASSESSMENT_OUTCOME = '../datafiles/assessment_outcome.csv'
+HIST_ASSESSMENT_OUTCOME = '../datafiles/hist_assessment_outcome.csv'
 STUDENT_SECTIONS = '../datafiles/stu_sections.csv'
 TEACHER_SECTIONS = '../datafiles/tea_sections.csv'
 TEACHERS = '../datafiles/teachers.csv'
@@ -60,7 +61,7 @@ STUDENTS = '../datafiles/students.csv'
 WHERETAKEN = '../datafiles/wheretaken.csv'
 INSTITUTIONS = '../datafiles/institutions.csv'
 
-ENT_LIST = [STATES, PARENTS, ASSESSMENT_TYPES, STUDENT_SECTIONS, TEACHER_SECTIONS, CLASSES, SECTIONS, STUDENTS, WHERETAKEN, INSTITUTIONS, TEACHERS, ASSESSMENT_OUTCOME]
+ENT_LIST = [STATES, PARENTS, ASSESSMENT_TYPES, STUDENT_SECTIONS, TEACHER_SECTIONS, CLASSES, SECTIONS, STUDENTS, WHERETAKEN, INSTITUTIONS, TEACHERS, ASSESSMENT_OUTCOME, HIST_ASSESSMENT_OUTCOME]
 
 ZIPCODE_START = 10000
 ZIPCODE_RANG_INSTATE = 5000

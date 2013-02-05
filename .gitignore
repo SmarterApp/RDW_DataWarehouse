@@ -6,6 +6,8 @@
 .egg-info?
 smarter.egg-info?
 *.egg-info
+*.egg
+*.swp
 
 # IDE generated files #
 #######################

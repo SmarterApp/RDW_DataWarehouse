@@ -19,7 +19,6 @@ class ListOfStudents (EdTestBase):
             WebDriverWait(self.driver, 10).until(lambda driver: driver.find_element_by_id("gbox_gridTable"))
         except:
             self.driver.save_screenshot('/tmp/screenshot.png')
-            self.driver.get_screenshot_as_file('/tmp/screenshot2.png')
             self.assertTrue(False, "no driver")
         print("Opened web page")
 

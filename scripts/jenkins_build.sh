@@ -130,7 +130,7 @@ function setup_functional_test_dependencies {
     deactivate 
      
     if [ ! -d "$FUNC_VIRTUALENV_DIR" ]; then
-         /opt/python2.7.3/bin/virtualenv --distributable $FUNC_VIRTUALENV_DIR
+         /opt/python2.7.3/bin/virtualenv --distribute $FUNC_VIRTUALENV_DIR
     fi
    
     source ${FUNC_VIRTUALENV_DIR}/bin/activate

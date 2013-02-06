@@ -29,14 +29,15 @@ def main(global_config, **settings):
 
     # TODO symbolic link should be done in development mode only
     here = os.path.abspath(os.path.dirname(__file__))
+    assets_dir = os.path.abspath(here + '/../assets')
+    parent_assets_dir = os.path.abspath(here + '/../../assets')
     try:
-        assets_dir = os.path.abspath(here + '/../assets')
-        parent_assets_dir = os.path.abspath(here + '/../../assets')
         if not os.path.lexists(assets_dir):
             os.symlink(parent_assets_dir, assets_dir)
-        LessCSS(media_dir=parent_assets_dir + "/less", output_dir=parent_assets_dir + "/css", based=False)
     except PermissionError:
         pass
+
+    LessCSS(media_dir=parent_assets_dir + "/less", output_dir=parent_assets_dir + "/css", based=False)
 
     config.add_static_view('static', 'static', cache_max_age=3600)
     config.add_static_view('assets', '../assets', cache_max_age=3600)

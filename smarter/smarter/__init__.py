@@ -14,8 +14,8 @@ from lesscss import LessCSS
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
-
-    #TODO: Spike, pool_size, max_overflow, timeout
+    os.environ['PATH'] += os.pathsep + settings['PATH']
+    # TODO: Spike, pool_size, max_overflow, timeout
 
     config = Configurator(settings=settings)
 
@@ -58,9 +58,9 @@ def main(global_config, **settings):
 
     # routing for individual student report
     config.add_route('indiv_student', '/indiv_student_report')
-    #r routing for *bootstrapped* individual student report
+    # r routing for *bootstrapped* individual student report
     config.add_route('indiv_student_bootstrap', '/indiv_student_report_bootstrap')
-    #routing for class report
+    # routing for class report
     config.add_route('class_report', '/class_report')
     config.add_route('student_report', '/student_report')
     config.add_route('import', '/import')

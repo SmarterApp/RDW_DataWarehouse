@@ -51,6 +51,8 @@ define [
               colModelItem.sorttype = item1.sorttype  if item1.sorttype
               colModelItem.align = item1.align  if item1.align
               colModelItem.classes = item1.style  if item1.style
+              options.sortorder = item1.sortorder  if item1.sortorder
+              options.sortname = item1.field  if item1.sortorder
               colModelItem.resizable = false # prevent the user from manually resizing the columns
               colModel.push colModelItem
               j++

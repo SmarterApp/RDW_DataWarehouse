@@ -3,7 +3,8 @@ define [
   'jqGrid'
   'cs!EDWARE'
   'cs!edwareUtil'
-], ($, jqGrid, EDWARE, edwareUtil) ->
+  'cs!edwareGridFormatters'
+], ($, jqGrid, EDWARE, edwareUtil, edwareGridFormatters) ->
   #
   # * EDWARE grid
   # * The module contains EDWARE grid plugin and grid creation method
@@ -15,7 +16,6 @@ define [
     #    *  @param options
     #    *  Example: $("#table1").edwareGrid(columnItems, gridOptions)
     #    
-    util = edwareUtil
     
     (($) ->
       $.fn.edwareGrid = (panelConfig, options) ->
@@ -46,8 +46,13 @@ define [
                 index: item1.field
                 width: item1.width
   
+              colModelItem.formatter = (if (edwareGridFormatters[item1.formatter]) then edwareGridFormatters[item1.formatter] else item1.formatter)  if item1.formatter
+              colModelItem.formatoptions = item1.params  if item1.params
+              colModelItem.sorttype = item1.sorttype  if item1.sorttype
               colModelItem.align = item1.align  if item1.align
               colModelItem.classes = item1.style  if item1.style
+              options.sortorder = item1.sortorder  if item1.sortorder
+              options.sortname = item1.field  if item1.sortorder
               colModelItem.resizable = false # prevent the user from manually resizing the columns
               colModel.push colModelItem
               j++
@@ -56,10 +61,29 @@ define [
           options = $.extend(options,
             colNames: colNames
             colModel: colModel
+            onSortCol: (index, idxcol, sortorder) ->
+          
+              # show the icons of last sorted column
+              $(@grid.headers[@p.lastsort].el).find(">div.ui-jqgrid-sortable>span.s-ico").show()  if @p.lastsort >= 0 and @p.lastsort isnt idxcol and @p.colModel[@p.lastsort].sortable isnt false
           )
         $(this).jqGrid options
         $(this).jqGrid "hideCol", "rn"
         
+
+        
+        colModel = $(this).jqGrid("getGridParam", "colModel")
+        $("#gbox_" + $.jgrid.jqID($(this)[0].id) + " tr.ui-jqgrid-labels th.ui-th-column").each (i) ->
+          cmi = colModel[i]
+          colName = cmi.name
+          if cmi.sortable isnt false
+            
+            # show the sorting icons
+            $(this).find(">div.ui-jqgrid-sortable>span.s-ico").show()
+          
+          # change the mouse cursor on the columns which are non-sortable
+          else $(this).find(">div.ui-jqgrid-sortable").css cursor: "default"  if not cmi.sortable and colName isnt "rn" and colName isnt "cb" and colName isnt "subgrid"
+
+
         if groupHeaders.length > 0
           $(this).jqGrid "setGroupHeaders",
             useColSpanStyle: false
@@ -78,7 +102,7 @@ define [
     #    * @param assessmentCutpoints
     #    * @param options
     #    
-    create = (tableId, columnItems, columnData, assessmentCutpoints, options) ->
+    create = (tableId, columnItems, columnData, options) ->
       
       columnData = columnData[columnItems.root]  if columnItems.root and columnData isnt null and columnData isnt `undefined`
       
@@ -93,7 +117,7 @@ define [
            $("tr.jqgrow:odd").css "background", "#f8f8f8"
   
       if columnData is null or columnData is `undefined` or columnData.length < 1
-        util.displayErrorMessage "There is no data available for your request. Please contact your IT administrator."
+        edwareUtil.displayErrorMessage "There is no data available for your request. Please contact your IT administrator."
       else
         gridOptions = $.extend(gridOptions, options)  if options
         $("#" + tableId).edwareGrid columnItems, gridOptions

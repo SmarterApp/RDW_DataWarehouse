@@ -19,10 +19,6 @@ class ApiHelper(EdTestBase):
         self._request_header = {}
         self._items_to_check = None
 
-        # TODO any way to disable requests library logging? It causes asserts to fail
-        requests_log = logging.getLogger("requests")
-        requests_log.setLevel(logging.FATAL)
-
     # Makes http requests
     def send_request(self, verb, end_point):
         verb = verb.upper()

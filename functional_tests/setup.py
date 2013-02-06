@@ -6,8 +6,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 install_requires = [
     'nose',  # functional testing framework
     'selenium',  # for UI testing
-    'Requests',  # for restful web services
-    'virtualenv'  # for scaffolding tests
+    'Requests'  # for restful web services
 ]
 
 setup(name='functional_tests',

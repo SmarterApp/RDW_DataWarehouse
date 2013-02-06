@@ -129,6 +129,7 @@ def get_list_of_students_report(params, connector=None):
                 student = students[student_id]
                 assessments = student['assessments']
             else:
+                student['student_id'] = result['student_id']
                 student['student_first_name'] = result['student_first_name']
                 student['student_middle_name'] = result['student_middle_name']
                 student['student_last_name'] = result['student_last_name']

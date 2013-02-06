@@ -18,3 +18,4 @@ pyramid.log
 edapi/build
 edapi/dist
 smarter/smarter/assets
+style.css

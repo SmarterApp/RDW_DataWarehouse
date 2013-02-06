@@ -8,13 +8,15 @@ from edschema.ed_metadata import generate_ed_metadata
 import pyramid
 from zope import component
 from database.connector import DbUtil, IDbUtil
+from lesscss import LessCSS
 
 
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
-
-    #TODO: Spike, pool_size, max_overflow, timeout
+    if 'smarter.PATH' in settings:
+        os.environ['PATH'] += os.pathsep + settings['smarter.PATH']
+    # TODO: Spike, pool_size, max_overflow, timeout
 
     config = Configurator(settings=settings)
 
@@ -26,11 +28,16 @@ def main(global_config, **settings):
     config.include(edapi)
 
     # TODO symbolic link should be done in development mode only
+    here = os.path.abspath(os.path.dirname(__file__))
+    assets_dir = os.path.abspath(here + '/../assets')
+    parent_assets_dir = os.path.abspath(here + '/../../assets')
     try:
-        if not os.path.lexists(os.getcwd() + '/assets'):
-            os.symlink('../assets', os.getcwd() + '/assets')
+        if not os.path.lexists(assets_dir):
+            os.symlink(parent_assets_dir, assets_dir)
     except PermissionError:
         pass
+
+    LessCSS(media_dir=parent_assets_dir + "/less", output_dir=parent_assets_dir + "/css", based=False)
 
     config.add_static_view('static', 'static', cache_max_age=3600)
     config.add_static_view('assets', '../assets', cache_max_age=3600)
@@ -53,9 +60,9 @@ def main(global_config, **settings):
 
     # routing for individual student report
     config.add_route('indiv_student', '/indiv_student_report')
-    #r routing for *bootstrapped* individual student report
+    # r routing for *bootstrapped* individual student report
     config.add_route('indiv_student_bootstrap', '/indiv_student_report_bootstrap')
-    #routing for class report
+    # routing for class report
     config.add_route('class_report', '/class_report')
     config.add_route('student_report', '/student_report')
     config.add_route('import', '/import')

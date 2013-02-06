@@ -1,29 +1,37 @@
 #globals ok $ EDWARE test require module equals deepEqual
 require ["jquery", "cs!edwareDataProxy"], ($, dataProxy) ->
   
-  module "EDWARE.dataProxy.getStudentData",
+  module "EDWARE.dataProxy.getDatafromSource",
   setup: ->
-    $("body").append "<table id='gridTable'></table>"
+    $("body").append "<div id='errorMessage'></div>"
 
   teardown: ->
-    $(".ui-jqgrid").remove()
+    $("#errorMessage").remove()
     
-  test "Test getStudentData method", ->
-    ok dataProxy.getStudentData isnt "undefined", "dataProxy getStudentData method should be defined"
-    ok typeof dataProxy.getStudentData is "function", "dataProxy getStudentData method should be function"
+  test "Test getDatafromSource method", ->
+    ok dataProxy.getDatafromSource isnt "undefined", "dataProxy getDatafromSource method should be defined"
+    ok typeof dataProxy.getDatafromSource is "function", "dataProxy getDatafromSource method should be function"
     
-    deepEqual typeof dataProxy.getStudentData("/data/list_of_students"), "object", "getStudentData method should return student data object if sourceURL is in string format"
-    deepEqual dataProxy.getStudentData(->), false, "If sourceURL is not passed as a parameter, then the method should return false"
-    deepEqual dataProxy.getStudentData(1234, ->), false, "If sourceURL is passed as a number, then the method should return false"
-    deepEqual dataProxy.getStudentData({}, ->), false, "If sourceURL is passed as an object, then the method should return false"
+    dataProxy.getDatafromSource("/data/list_of_students1", {"districtId": 4, "schoolId":3,"asmtGrade":"1"}, ->)
+    
+    stop();
+    
+    setTimeout (->
+      deepEqual $("#errorMessage").html(), "404: Not Found", "If there is an ajax error, then it should displayed on the page"
+      start()
+    ), 1000
+      
+    deepEqual dataProxy.getDatafromSource(->), false, "If sourceURL is not passed as a parameter, then the method should return false"
+    deepEqual dataProxy.getDatafromSource(1234, ->), false, "If sourceURL is passed as a number, then the method should return false"
+    deepEqual dataProxy.getDatafromSource({}, ->), false, "If sourceURL is passed as an object, then the method should return false"
   
-  module "EDWARE.dataProxy.getStudentsConfig"
+  module "EDWARE.dataProxy.getConfigs"
   
-  test "Test getStudentsConfig method", ->
-    ok dataProxy.getStudentsConfig isnt "undefined", "dataProxy getStudentsConfig method should be defined"
-    ok typeof dataProxy.getStudentsConfig is "function", "dataProxy getStudentsConfig method should be function"
+  test "Test getConfigs method", ->
+    ok dataProxy.getConfigs isnt "undefined", "dataProxy getConfigs method should be defined"
+    ok typeof dataProxy.getConfigs is "function", "dataProxy getConfigs method should be function"
     
-    deepEqual typeof dataProxy.getStudentsConfig("../../data/student.json"), "object", "getStudentsConfig method should return students grid column configuration object if config is in string format"
-    deepEqual dataProxy.getStudentsConfig(->), false, "If config is not passed as a parameter, then the method should return false"
-    deepEqual dataProxy.getStudentsConfig(1234, ->), false, "If config is passed as a number, then the method should return false"
-    deepEqual dataProxy.getStudentsConfig({}, ->), false, "If config is passed as an object, then the method should return false"
+    deepEqual typeof dataProxy.getConfigs("../../data/student.json"), "object", "getConfigs method should return students grid column configuration object if config is in string format"
+    deepEqual dataProxy.getConfigs(->), false, "If config is not passed as a parameter, then the method should return false"
+    deepEqual dataProxy.getConfigs(1234, ->), false, "If config is passed as a number, then the method should return false"
+    deepEqual dataProxy.getConfigs({}, ->), false, "If config is passed as an object, then the method should return false"

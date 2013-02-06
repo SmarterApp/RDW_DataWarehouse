@@ -1,42 +1,37 @@
 #global define
-define ["jquery"], ($) ->
+define ["jquery", "cs!edwareUtil"], ($, edwareUtil) ->
   
   #
   #    * Get Student data from the server
   #    * @param sourceURL - The student data API call
   #    * @param callback - callback function
   #    
-  getStudentData = (sourceURL, callback) ->
-    return false  if sourceURL is "undefined" or typeof sourceURL is "number" or typeof sourceURL is "function" or typeof sourceURL is "object"
-      
-    assessment_query_params =
-      districtId: 4
-      schoolId: 3
-      asmtGrade: "1" 
+  getDatafromSource = (sourceURL, params, callback) ->
+    return false if sourceURL is "undefined" or typeof sourceURL is "number" or typeof sourceURL is "function" or typeof sourceURL is "object"
     
     $.ajax(
       type: "POST"
       url: sourceURL
       data:
-        JSON.stringify(assessment_query_params);
+        JSON.stringify(params);
       dataType: "json"
       contentType: "application/json"
-    ).done (data) ->
-      assessmentsData = data.assessments
-      assessmentCutpoints = data.cutpoints
-      
-      if callback
-        callback assessmentsData, assessmentCutpoints
-      else
-        assessmentArray = [assessmentsData, assessmentCutpoints]
+      success: (data) ->
+        if callback
+          callback data
+        else
+          data
+      error: (xhr, ajaxOptions, thrownError) ->
+        edwareUtil.displayErrorMessage xhr.status + ": " + thrownError
+      )
 
   #
   #    * Get student list columns configuration
   # 
-  getStudentsConfig = (studentColumnCfgs, callback) ->
-      return false  if studentColumnCfgs is "undefined" or typeof studentColumnCfgs is "number" or typeof studentColumnCfgs is "function" or typeof studentColumnCfgs is "object"
+  getConfigs = (configURL, callback) ->
+      return false if configURL is "undefined" or typeof configURL is "number" or typeof configURL is "function" or typeof configURL is "object"
         
-      $.getJSON studentColumnCfgs, (data) ->
+      $.getJSON configURL, (data) ->
         studentsConfig = data.students
         
         if callback
@@ -45,5 +40,5 @@ define ["jquery"], ($) ->
            studentsConfig
          
       
-  getStudentData: getStudentData
-  getStudentsConfig: getStudentsConfig
+  getDatafromSource: getDatafromSource
+  getConfigs: getConfigs

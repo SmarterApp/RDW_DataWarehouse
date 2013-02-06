@@ -16,7 +16,8 @@ requires = [
     'waitress',
     'edapi',
     'edschema',
-    'py-postgresql', ]
+    'py-postgresql',
+    'lesscss', ]
 
 
 setup(name='smarter',

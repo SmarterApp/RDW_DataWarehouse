@@ -14,7 +14,8 @@ from lesscss import LessCSS
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
-    os.environ['PATH'] += os.pathsep + settings['PATH']
+    if 'smarter.PATH' in settings:
+        os.environ['PATH'] += os.pathsep + settings['smarter.PATH']
     # TODO: Spike, pool_size, max_overflow, timeout
 
     config = Configurator(settings=settings)

@@ -24,8 +24,8 @@ def generate_assmts_for_students(total, grade, state):
     and the value is a list of score objects
     '''
     cur_year = date.today().year
-    #periods = ['BOY', 'MOY', 'EOY']
-    #subjects = ['Math', 'ELA']
+    # periods = ['BOY', 'MOY', 'EOY']
+    # subjects = ['Math', 'ELA']
     years = ['2011', '2009']  # str(year), str(year - 1)]
     real_years = [str(cur_year), str(cur_year - 1)]
 
@@ -65,7 +65,7 @@ def generate_assmt_scores(state, asmt_type, year, period, grade, total):
     state_data = StateData()
     # get statistical data. Average score, standard deviation, and four percentage numbers of levels
     stat_avg, stat_sd, stat_levles = state_data.get_state_data(state, asmt_type, year, grade)
-    #print(state, asmt_type, year, period, grade, total, stat_avg, stat_sd, stat_levles)
+    # print(state, asmt_type, year, period, grade, total, stat_avg, stat_sd, stat_levles)
 
     # generate list
     overallscore_list = []
@@ -81,7 +81,7 @@ def generate_assmt_scores(state, asmt_type, year, period, grade, total):
     return socre_withclaims_list
 
 #
-#def get_stat_data(state, asmt_type, year, period, grade):
+# def get_stat_data(state, asmt_type, year, period, grade):
 #    '''
 #    Main function to get statistical assessment data from database
 #    '''
@@ -125,7 +125,7 @@ def generate_allscores(score_list, levels, asmt_type, grade):
         # start = end
 
     scores_list = list(scores)
-    random.shuffle(scores_list)
+    # random.shuffle(scores_list)
 
     return scores_list
 
@@ -135,10 +135,13 @@ def generate_claims(total_score, asmt_type, grade):
     if(total_score >= 0):
         if(asmt_type in ASSMT_TYPES.keys()):
             ass = ASSMT_TYPES.get(asmt_type)
-            if(str(grade) in ass):
-                ass_grade = ass.get(str(grade))
-                c_sores = perc_to_count(ass_grade.get('claim_percs'), total_score)
-                claim_scores = dict(zip(ass_grade.get('claim_names'), c_sores))
+        else:
+            ass = ASSMT_TYPES.get('Math')
+
+        if(str(grade) in ass):
+            ass_grade = ass.get(str(grade))
+            c_sores = perc_to_count(ass_grade.get('claim_percs'), total_score)
+            claim_scores = dict(zip(ass_grade.get('claim_names'), c_sores))
 
     return claim_scores
 

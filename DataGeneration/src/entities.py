@@ -30,7 +30,7 @@ class District:
     District object
     '''
     # total_id = 0
-    def __init__(self, dist_id, state_name, dist_name, num_of_schools, address_1, school_type_in_dist, zipcode_range, city_names, category):
+    def __init__(self, dist_id, state_name, dist_name, num_of_schools, address_1, zipcode_range, city_names, category):
         '''
         Constructor
         '''
@@ -41,7 +41,6 @@ class District:
         self.dist_name = dist_name
         self.num_of_schools = num_of_schools
         self.address_1 = address_1
-        self.school_type_in_dist = school_type_in_dist
         self.zipcode_range = zipcode_range
         self.city_names = city_names
         self.category = category
@@ -50,7 +49,7 @@ class District:
         '''
         String method
         '''
-        return ("District:[dist_id: %s, state_name: %s, num_of_schools: %s, dist_name: %s, address_1: %s, school_type_in_dist: %s]" % (self.dist_id, self.state_name, self.num_of_schools, self.dist_name, self.address_1, self.school_type_in_dist))
+        return ("District:[dist_id: %s, state_name: %s, num_of_schools: %s, dist_name: %s, address_1: %s]" % (self.dist_id, self.state_name, self.num_of_schools, self.dist_name, self.address_1))
 
     def getRow(self):
         return [self.dist_id, self.category, self.dist_name, self.address_1]

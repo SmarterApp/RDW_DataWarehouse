@@ -8,6 +8,7 @@ from edschema.ed_metadata import generate_ed_metadata
 import pyramid
 from zope import component
 from database.connector import DbUtil, IDbUtil
+from lesscss import LessCSS
 
 
 def main(global_config, **settings):
@@ -26,9 +27,13 @@ def main(global_config, **settings):
     config.include(edapi)
 
     # TODO symbolic link should be done in development mode only
+    here = os.path.abspath(os.path.dirname(__file__))
     try:
-        if not os.path.lexists(os.getcwd() + '/assets'):
-            os.symlink('../assets', os.getcwd() + '/assets')
+        assets_dir = os.path.abspath(here + '/../assets')
+        parent_assets_dir = os.path.abspath(here + '/../../assets')
+        if not os.path.lexists(assets_dir):
+            os.symlink(parent_assets_dir, assets_dir)
+        LessCSS(media_dir=assets_dir + "/less", output_dir=assets_dir + "/css", based=False)
     except PermissionError:
         pass
 

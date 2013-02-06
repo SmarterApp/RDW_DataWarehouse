@@ -17,6 +17,7 @@ function check_vars {
 
 function set_vars {
     export VIRTUALENV_DIR="$WORKSPACE/edwaretest_venv"
+    export FUNC_VIRTUALENV_DIR="$WORKSPACE/functest_venv"
 
     # delete existing xml files
     if [ -f $WORKSPACE/coverage.xml ]; then
@@ -124,6 +125,15 @@ function show_help {
 
 function setup_functional_test_dependencies {
     echo "Setup functional test dependencies"
+
+    # we should be inside the python 3.3 venv, so deactivate that first
+    deactivate 
+     
+    if [ ! -d "$FUNC_VIRTUALENV_DIR" ]; then
+        /usr/local/bin/virtualenv -p /opt/python2.7.3 --no-site-packages ${VIRTUALENV_DIR}
+    fi
+   
+    source ${FUNC_VIRTUALENV_DIR}/bin/activate
 
     cd "$WORKSPACE/functional_tests"
     python setup.py develop

@@ -150,7 +150,7 @@ function create_sym_link_for_apache {
     /bin/ln -sf "$VIRTUALENV_DIR/lib/python3.3/site-packages" /home/jenkins/pythonpath
     /bin/ln -sf "$WORKSPACE/smarter/test.ini" /home/jenkins/development_ini
     /bin/ln -sf "$WORKSPACE/test_deploy/pyramid.wsgi" /home/jenkins/pyramid_conf
-    /bin/ln -sf "$VIRTUALENV_DIR" /home/jenkins/venv
+    /bin/ln -sf "$WORKSPACE" /home/jenkins/venv
 }
 
 function restart_apache {

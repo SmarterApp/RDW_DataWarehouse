@@ -4,7 +4,6 @@ Created on Feb 5, 2013
 @author: nparoha
 '''
 import unittest
-from selenium import webdriver
 from test.test_base import EdTestBase
 from selenium.webdriver.support.ui import WebDriverWait
 
@@ -17,7 +16,7 @@ class ListOfStudents (EdTestBase):
         self.driver = self.get_driver()
         self.driver.get(self.get_url() + "/assets/html/gridDemo.html#")
         try:
-            WebDriverWait(self.driver, 10).until(lambda driver: self.driver.find_element_by_id("gbox_gridTable"))
+            WebDriverWait(self.driver, 10).until(lambda driver: driver.find_element_by_id("gbox_gridTable"))
         except:
             #raise AssertionError("Web page did not load correctly.")
             self.assertTrue(False, "no driver")

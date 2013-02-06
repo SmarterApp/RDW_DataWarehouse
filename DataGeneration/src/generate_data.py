@@ -184,7 +184,6 @@ def generate_data(db_states):
 
         for d in created_dist_list:
             # create school for each district
-            print('Genearting data for district %s' % d)
             school_list, wheretaken_list = create_schools(stu_num_in_school_made, stutea_ratio_in_school_made, shift, d)
             total_count[2] += len(school_list)
             create_csv(school_list, INSTITUTIONS)
@@ -703,7 +702,7 @@ def get_index(seqin):
 
 
 def read_names(file_name):
-    mfile = open(file_name, 'rb')
+    mfile = open(file_name, 'r')
     lines = mfile.readlines()
     names = []
     for line in lines:

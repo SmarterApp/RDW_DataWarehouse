@@ -67,13 +67,3 @@ ZIPCODE_START = 10000
 ZIPCODE_RANG_INSTATE = 5000
 
 INST_CATEGORIES = ['State Education Agency', 'Education Service Center', 'Local Education Agency', 'School']
-
-STAT_COLUMNS = ['state_code', 'state_name', 'total_district', 'total_school', 'total_student', 'total_teacher',
-                'min_school_per_district', 'max_school_per_district', 'std_school_per_district', 'avg_school_per_district',
-                'min_student_per_school', 'max_student_per_school', 'std_student_per_school', 'avg_student_per_school',
-                'min_stutea_ratio_per_school', 'max_stutea_ratio_per_school', 'std_stutea_ratio_per_school', 'avg_stutea_ratio_per_school',
-                'primary_perc', 'middle_perc', 'high_perc', 'other_perc']
-
-RETRY_CAL_STAT = 50
-DIST_LOW_VALUE = 0.9
-DIST_HIGH_VALUE = 1.2

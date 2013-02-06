@@ -18,7 +18,6 @@ class ListOfStudents (EdTestBase):
         try:
             WebDriverWait(self.driver, 10).until(lambda driver: driver.find_element_by_id("gbox_gridTable"))
         except:
-            #raise AssertionError("Web page did not load correctly.")
             self.assertTrue(False, "no driver")
         print("Opened web page")
 
@@ -75,7 +74,7 @@ class ListOfStudents (EdTestBase):
     def test_grid_headers_row2(self):
         print("Test Case: LOS: Validate that the grid headers are displayed correctly")
         grid_header = self.driver.find_elements_by_class_name("jqg-third-row-header")
-        header_dict = {"gridTable_student_full_name": "Student",
+        header_dict = {"gridTable_student_full_name": "Students",
                        "gridTable_enrollment_grade": "Grade",
                        "gridTable_assessments.MATH.teacher_full_name": "Teacher",
                        "gridTable_assessments.MATH.asmt_grade": "Grade",
@@ -103,12 +102,51 @@ class ListOfStudents (EdTestBase):
             if each.find_element_by_id(key):
                 return each.find_element_by_id(key).text
 
-    ### test_grid_headers_row2_sortable: Validate the default sorting and that the following headers are sortable: LastName and each of the measures ###
+    def test_sortable(self):
+        expected_values = {"gridTable_student_full_name": "BILL G ROMAN",
+                           "gridTable_assessments.MATH.teacher_full_name": "Adam Oren",
+                           "gridTable_assessments.ELA.teacher_full_name": "Adam Oren",
+                           "gridTable_assessments.MATH.asmt_score": "410",
+                           "gridTable_assessments.ELA.asmt_score": "410"}
 
-    ### test_student_data: Validate student data displayed on the List of Students grid page ###
-    def test_student_data(self):
-        grid_table = self.driver.find_element_by_id("gridTable")
-        grid_rows = grid_table.find_elements_by_tag_name("tr")
+        for each_key in expected_values.keys():
+            value = expected_values[each_key]
+            self._helper_grid_sortable(each_key, value)
+
+    ### test_grid_sortable: Validate the default sorting and that the following headers are sortable: LastName and each of the measures ###
+    def _helper_grid_sortable(self, key, value):
+        # Find the class containing all the grid headers
+        grid_headers = self.driver.find_elements_by_class_name("jqg-third-row-header")
+        search_element = self._helper_get_column_header_attribute(key)
+        for each_header in grid_headers:
+            if each_header.find_element_by_id(search_element):
+                each_header.find_element_by_id(search_element).click()
+
+        grid_table2 = self.driver.find_element_by_id("gridTable")
+        grid_list2 = self._helper_parse_grid_table(grid_table2)
+        sorted_list = self._helper_retrieve_grid_column(grid_list2, key)
+        assert(sorted_list[0] == value), "Column is not sorted correctly"
+        print("Passed Scenario: Columns are sorted correctly")
+
+    ### This helper function makes
+    def _helper_get_column_header_attribute(self, header):
+        header_to_click = ''
+        if header == "gridTable_student_full_name":
+            header_to_click = "jqgh_gridTable_student_full_name"
+        elif header == "gridTable_assessments.MATH.teacher_full_name":
+            header_to_click = "jqgh_gridTable_assessments.MATH.teacher_full_name"
+        elif header == "gridTable_assessments.MATH.asmt_score":
+            header_to_click = "jqgh_gridTable_assessments.MATH.asmt_score"
+        elif header == "gridTable_assessments.ELA.teacher_full_name":
+            header_to_click = "jqgh_gridTable_assessments.ELA.teacher_full_name"
+        elif header == "gridTable_assessments.ELA.asmt_score":
+            header_to_click = "jqgh_gridTable_assessments.ELA.asmt_score"
+        return header_to_click
+
+    ### makes a list consisting of dictionaries where each dictionary holds the key value pairs for each row in the table ###
+    def _helper_parse_grid_table(self, grid):
+        grid_rows = grid.find_elements_by_tag_name("tr")
+        # List of dictionaries which holds the header name and their values
         student_list = []
         for each in grid_rows:
             student_info = {}
@@ -116,20 +154,27 @@ class ListOfStudents (EdTestBase):
                 for each_value in each.find_elements_by_tag_name("td"):
                     student_info[each_value.get_attribute("aria-describedby")] = each_value.text
                 student_list.append(student_info)
-        for each_row in student_list:
-            for each_key in each_row.keys():
-                print(each_row[each_key])
+        return student_list
 
+    ### Returns a list of values that were requested for the column_name in the grid ###
+    def _helper_retrieve_grid_column(self, grid_list, column_name):
+        column_list = []
+        for each in grid_list:
+            column_list.append(each[column_name])
+        return column_list
+
+    def test_student_data(self):
+        print("Test Case: LOS: Validate student information is displayed in the grid.")
+        grid_table = self.driver.find_element_by_id("gridTable")
+        # grid_list: List of dictionaries
+        grid_list = self._helper_parse_grid_table(grid_table)
         found = False
-        for each_row in student_list:
+        for each_row in grid_list:
             for each_key in each_row.keys():
                 if 'THOMAS G TOOMEY' in each_row[each_key]:
                     found = True
         assert found, "Student not found"
-        for each_row in student_list:
-            if 'THOMAS G TOOMEY' in each_row['gridTable_student_full_name']:
-                found = True
-        assert found, "Student not found"
+        print("Passed Scenario: Student found.")
 
     ### test_grid_contents: Validate total number of students displayed on the page ###
     def test_grid_contents(self):

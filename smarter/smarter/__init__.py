@@ -33,7 +33,7 @@ def main(global_config, **settings):
         parent_assets_dir = os.path.abspath(here + '/../../assets')
         if not os.path.lexists(assets_dir):
             os.symlink(parent_assets_dir, assets_dir)
-        LessCSS(media_dir=assets_dir + "/less", output_dir=assets_dir + "/css", based=False)
+        LessCSS(media_dir=parent_assets_dir + "/less", output_dir=parent_assets_dir + "/css", based=False)
     except PermissionError:
         pass
 

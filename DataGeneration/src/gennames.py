@@ -145,7 +145,7 @@ def get_random_entry(name_list):
 if __name__ == '__main__':
 
     from readnaminglists import PeopleNames
-    from objects.dimensions import Student
+    from entities import Student
 
     students = []
 

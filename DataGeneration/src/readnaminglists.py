@@ -5,7 +5,8 @@ Created on Jan 5, 2013
 '''
 
 import os.path
-from objects.nameinfo import NameInfo
+
+from nameinfo import NameInfo
 import gennames
 
 

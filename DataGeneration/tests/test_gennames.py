@@ -7,8 +7,8 @@ Created on Jan 14, 2013
 import unittest
 import operator
 import gennames
-from objects.dimensions import Student, Person, Parent
-from objects.nameinfo import NameInfo
+from entities import Student, Person, Parent
+from nameinfo import NameInfo
 from readnaminglists import PeopleNames
 
 
@@ -49,18 +49,6 @@ class TestGenNames(unittest.TestCase):
         self.male_info_list.sort(key=operator.attrgetter('rank'))
         self.female_info_list.sort(key=operator.attrgetter('rank'))
         self.last_info_list.sort(key=operator.attrgetter('rank'))
-
-#    def test_generate_names(self):
-#        '''
-#        test for gennames.generate_names(...)
-#        '''
-#
-#        # Normal behavior test
-#        male_dict = gennames.generate_names('male', 100, self.male_info_list, self.male_info_list[-1].cum_freq * gennames.FREQUENCY_OFFSET)
-#        male_dict2 = gennames.generate_names('male', 100000, self.male_info_list, self.male_info_list[-1].cum_freq * gennames.FREQUENCY_OFFSET)
-#
-#        self.assertEqual(sum(male_dict.values()), 100)
-#        self.assertEqual(sum(male_dict2.values()), 100000)
 
     def test_generate_all_names(self):
         '''

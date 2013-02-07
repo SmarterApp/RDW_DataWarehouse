@@ -2,9 +2,8 @@ import unittest
 import math
 import generate_data
 import random
-from entities import District, School, State
+from entities import District, School, State, Student
 from constants import SUBJECTS, INST_CATEGORIES, ZIPCODE_START, ZIPCODE_RANG_INSTATE, SCHOOL_LEVELS_INFO, ADD_SUFFIX
-from objects.dimensions import Student
 
 
 class TestGenerateData(unittest.TestCase):

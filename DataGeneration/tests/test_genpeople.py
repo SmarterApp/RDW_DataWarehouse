@@ -14,15 +14,6 @@ from entities import School
 
 class Test(unittest.TestCase):
 
-    def tearDown(self):
-        try:
-            basepath = os.path.dirname(__file__)
-            parentfile = os.path.abspath(os.path.join(basepath, '..', 'datafiles', 'parents.csv'))
-            os.remove(parentfile)
-        except:
-            # File does not exist
-            pass
-
     def test_generate_people(self):
         school = School(1, 1, 'school1', 10, 15, 'address1', 'primary', 0, 5, 1, 'cat')
         result = genpeople.generate_people(genpeople.STUDENT, 10, school, 'DE', 0.5, 2)

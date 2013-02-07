@@ -400,7 +400,7 @@ def create_classes_grades_sections(sch, state):
 
         dates_taken1 = generate_dates_taken(2000)
         dates_taken2 = generate_dates_taken(2000)
-        print("len of grade students ", len(grade_students), "len of classforgrade_list ", len(classforgrade_list), 
+        print("len of grade students ", len(grade_students), "len of classforgrade_list ", len(classforgrade_list),
               "len of student_temporal_list ", len(student_temporal_list), "len of scores ", len(scores))
         for stu_tmprl in student_temporal_list:
             for score in scores.items():

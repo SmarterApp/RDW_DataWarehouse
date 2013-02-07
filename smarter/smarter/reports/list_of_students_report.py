@@ -36,17 +36,20 @@ __asmtSubject = 'asmtSubject'
     params={
         __districtId: {
             "type": "integer",
-            "required": True
+            "required": True,
+            "name": "list_of_districts"
         },
         __schoolId: {
             "type": "integer",
-            "required": True
+            "required": True,
+            "name": "list_of_schools"
         },
         __asmtGrade: {
             "type": "string",
             "maxLength": 2,
             "required": True,
-            "pattern": "^[K0-9]+$"
+            "pattern": "^[K0-9]+$",
+            "name": "list_of_grades"
         },
         __asmtSubject: {
             "type": "array",
@@ -56,7 +59,8 @@ __asmtSubject = 'asmtSubject'
             "pattern": "^[a-zA-Z0-9\.]+$",
             "items": {
                 "type": "string"
-            }
+            },
+            "name": "list_of_subjects"
         }
     })
 def get_list_of_students_report(params, connector=None):

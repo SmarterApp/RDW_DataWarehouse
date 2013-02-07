@@ -13,4 +13,4 @@ pyramid.log
 smarter.egg-info
 .idea/
 .project
-.pydevproject
+.pydevproject*.csv

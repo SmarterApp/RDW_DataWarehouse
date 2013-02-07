@@ -17,6 +17,7 @@ function check_vars {
 
 function set_vars {
     export VIRTUALENV_DIR="$WORKSPACE/edwaretest_venv"
+    export FUNC_VIRTUALENV_DIR="$WORKSPACE/functest_venv"
 
     # delete existing xml files
     if [ -f $WORKSPACE/coverage.xml ]; then
@@ -125,6 +126,15 @@ function show_help {
 function setup_functional_test_dependencies {
     echo "Setup functional test dependencies"
 
+    # we should be inside the python 3.3 venv, so deactivate that first
+    deactivate 
+     
+    if [ ! -d "$FUNC_VIRTUALENV_DIR" ]; then
+         /opt/python2.7.3/bin/virtualenv --distribute $FUNC_VIRTUALENV_DIR
+    fi
+   
+    source ${FUNC_VIRTUALENV_DIR}/bin/activate
+
     cd "$WORKSPACE/functional_tests"
     python setup.py develop
     
@@ -150,7 +160,7 @@ function create_sym_link_for_apache {
     /bin/ln -sf "$VIRTUALENV_DIR/lib/python3.3/site-packages" /home/jenkins/pythonpath
     /bin/ln -sf "$WORKSPACE/smarter/test.ini" /home/jenkins/development_ini
     /bin/ln -sf "$WORKSPACE/test_deploy/pyramid.wsgi" /home/jenkins/pyramid_conf
-    /bin/ln -sf "$WORKSPACE" /home/jenkins/venv
+    /bin/ln -sf "$VIRTUALENV_DIR" /home/jenkins/venv
 }
 
 function restart_apache {

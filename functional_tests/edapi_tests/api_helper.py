@@ -4,7 +4,6 @@ Created on Feb 4, 2013
 @author: dip
 '''
 import requests
-import logging
 from test.test_base import EdTestBase
 import json
 
@@ -13,8 +12,8 @@ class ApiHelper(EdTestBase):
     '''
     Helper methods for EdApi calls
     '''
-    def __init__(self):
-        super(ApiHelper, self).__init__()
+    def __init__(self, *args, **kwargs):
+        EdTestBase.__init__(self, *args, **kwargs)
         self._response = None
         self._request_header = {}
         self._items_to_check = None

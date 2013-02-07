@@ -18,6 +18,7 @@ function check_vars {
 function set_vars {
     export VIRTUALENV_DIR="$WORKSPACE/edwaretest_venv"
     export FUNC_VIRTUALENV_DIR="$WORKSPACE/functest_venv"
+    export FUNC_DIR="edware_test/functional_tests"
 
     # delete existing xml files
     if [ -f $WORKSPACE/coverage.xml ]; then
@@ -125,6 +126,9 @@ function show_help {
 
 function setup_functional_test_dependencies {
     echo "Setup functional test dependencies"
+    
+    rm -rf $WORKSPACE/edware-test
+    git clone git@github.wgenhq.net:Ed-Ware-SBAC/edware_test.git
 
     # we should be inside the python 3.3 venv, so deactivate that first
     deactivate 
@@ -135,7 +139,7 @@ function setup_functional_test_dependencies {
    
     source ${FUNC_VIRTUALENV_DIR}/bin/activate
 
-    cd "$WORKSPACE/functional_tests"
+    cd "$WORKSPACE/$FUNC_DIR"
     python setup.py develop
     
     pip install pep8
@@ -146,7 +150,7 @@ function setup_functional_test_dependencies {
 function run_functional_tests {
     echo "Run functional tests"
 
-    cd "$WORKSPACE/functional_tests"
+    cd "$WORKSPACE/$FUNC_DIR"
 
     sed -i.bak 's/port = 6543/port = 80/g' test.ini
     export DISPLAY=:6.0
@@ -188,7 +192,7 @@ function main {
         restart_apache
         setup_functional_test_dependencies
         run_functional_tests
-        check_pep8 "functional_tests"
+        check_pep8 "$FUNC_DIR"
     fi
 }
 

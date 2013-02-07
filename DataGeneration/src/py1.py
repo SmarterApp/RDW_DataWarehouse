@@ -6,6 +6,7 @@ Created on Dec 26, 2012
 
 
 import random
+import math
 
 
 def calc():
@@ -144,18 +145,6 @@ def std(seqin):
         sds = sum([(val - ave) ** 2 for val in seqin])
         dev = (sds / (len(seqin))) ** 0.5
         return dev
-
-
-def mean(seqin):
-    if(len(seqin) > 0):
-        s_seqin = sorted(seqin)
-        half = round(len(s_seqin) / 2)
-        if(len(s_seqin) % 2 == 0):
-            return round(s_seqin[half] + s_seqin[half - 1]) / 2
-        else:
-            return round(s_seqin[half])
-    return None
-
 
 if __name__ == '__main__':
     calc()

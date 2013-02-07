@@ -1,5 +1,10 @@
 #global define
-define ["jquery", "cs!edwareDataProxy", "cs!edwareGrid", "cs!edwareUtil"], ($, edwareDataProxy, edwareGrid, edwareUtil) ->
+define [
+  "jquery"
+  "cs!edwareDataProxy"
+  "cs!edwareGrid"
+  "cs!edwareUtil"
+], ($, edwareDataProxy, edwareGrid, edwareUtil) ->
   
   assessmentsData = []
   assessmentsCutPoints = []
@@ -11,7 +16,7 @@ define ["jquery", "cs!edwareDataProxy", "cs!edwareGrid", "cs!edwareUtil"], ($, e
       
   createStudentGrid = ->
       
-    getStudentData "/data/list_of_students", (assessmentsData, assessmentCutpoints) ->
+    getStudentData "/data/list_of_students1", (assessmentsData, assessmentCutpoints) ->
       
       getStudentsConfig "../data/student.json", (studentsConfig) ->
         edwareGrid.create "gridTable", studentsConfig, assessmentsData, assessmentCutpoints
@@ -51,7 +56,5 @@ define ["jquery", "cs!edwareDataProxy", "cs!edwareGrid", "cs!edwareUtil"], ($, e
         else
           studentColumnCfgs
 
-  createStudentGrid: createStudentGrid
-  getStudentData: getStudentData
-  getStudentsConfig: getStudentsConfig
+  createStudentGrid()
   

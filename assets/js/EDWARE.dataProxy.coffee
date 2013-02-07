@@ -1,5 +1,8 @@
 #global define
-define ["jquery", "cs!edwareUtil"], ($, edwareUtil) ->
+define [
+  "jquery"
+  "cs!edwareUtil"
+], ($, edwareUtil) ->
   
   #
   #    * Get Student data from the server
@@ -23,6 +26,7 @@ define ["jquery", "cs!edwareUtil"], ($, edwareUtil) ->
           data
       error: (xhr, ajaxOptions, thrownError) ->
         edwareUtil.displayErrorMessage xhr.status + ": " + thrownError
+        check401Error xhr.status
       )
 
   #
@@ -39,6 +43,8 @@ define ["jquery", "cs!edwareUtil"], ($, edwareUtil) ->
         else
            studentsConfig
          
-      
+  check401Error = (status) ->
+    location.href = "login.html" if status is 404
+        
   getDatafromSource: getDatafromSource
   getConfigs: getConfigs

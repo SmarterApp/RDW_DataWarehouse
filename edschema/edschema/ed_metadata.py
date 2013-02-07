@@ -19,11 +19,13 @@ Command line options are available form --help, but as a quick start:
 @contact:    edwaredevs@wgen.net
 @deffield    updated: Updated
 '''
-from sqlalchemy.schema import MetaData
+from sqlalchemy.schema import MetaData, CreateSchema
 from sqlalchemy import Table, Column, Index
 from sqlalchemy import BigInteger, SmallInteger, String, Date
 from sqlalchemy import ForeignKey
 from sqlalchemy.types import Enum
+import argparse
+from sqlalchemy.engine import create_engine
 
 __all__ = []
 __version__ = 0.1
@@ -48,9 +50,9 @@ class CLIError(Exception):
         return self.msg
 
 
-def generate_ed_metadata(scheme_name=None):
+def generate_ed_metadata(scheme_name=None, bind=None):
 
-    metadata = MetaData(schema=scheme_name)
+    metadata = MetaData(schema=scheme_name, bind=bind)
 
     # For PR, Guam, US VI, Brazil... etc
     country = Table('dim_country', metadata,
@@ -81,26 +83,28 @@ def generate_ed_metadata(scheme_name=None):
                      Column('state_code', None, ForeignKey('dim_state.state_code'), nullable=False),
                      )
 
-    Index('dim_district_idx', district.c.dim_district, unique=True)
+    Index('dim_district_idx', district.c.district_id, unique=True)
 
     school = Table('dim_school', metadata,
                    Column('school_id', BigInteger, primary_key=True),
                    Column('school_external_id', String(256)),
                    Column('school_name', String(256), nullable=False),
                    Column('district_name', String(256), nullable=False),
-                   Column('school_categories_type', nullable=True,
-                          Enum("Elementary School",
+                   Column(Enum("Elementary School",
                                "High School",
                                "Middle School",
-                               )
-                          ),
-                   Column('school_type', nullable=True,
-                          Enum("Alternative",
+                               name="school_categories_type_enum"),
+                          name='school_categories_type',
+                          nullable=True),
+                   Column(Enum("Alternative",
                                "Regular",
                                "Special Education",
                                "Vocational",
                                "JJAEP",
-                               "DAEP")
+                               "DAEP",
+                               name="school_type_enum"),
+                          name='school_type',
+                          nullable=True
                           ),  # From Ed-Fi SchoolType
                    Column('address_1', String(256), nullable=True),
                    Column('address_2', String(256), nullable=True),
@@ -267,7 +271,6 @@ def generate_ed_metadata(scheme_name=None):
                                Column('asmnt_outcome_external_id', String(256), nullable=False),
                                Column('asmt_id', None, ForeignKey('dim_asmt.asmt_id'), nullable=False),
                                Column('student_id', None, ForeignKey('dim_student.student_id'), nullable=False),
-                               Column('stdnt_tmprl_id', None, ForeignKey('dim_stdnt_tmprl_data.stdnt_tmprl_id'), nullable=False),
                                Column('teacher_id', None, ForeignKey('dim_teacher.teacher_id'), nullable=False),
                                Column('state_code', None, ForeignKey('dim_state.state_code'), nullable=False),
                                Column('district_id', None, ForeignKey('dim_district.district_id'), nullable=False),
@@ -302,3 +305,36 @@ def generate_ed_metadata(scheme_name=None):
     Index('fact_asmt_outcome_idx', assessment_outcome.c.asmnt_outcome_id, unique=True)
 
     return metadata
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Create New Schema for EdWare')
+    parser.add_argument("-s", "--schema", help="set schema name.  required")
+    parser.add_argument("-d", "--database", default="edware", help="set database name default[edware]")
+    parser.add_argument("--host", default="127.0.0.1:5432", help="postgre host default[127.0.0.1:5432]")
+    parser.add_argument("-u", "--user", default="edware", help="postgre username default[edware]")
+    parser.add_argument("-p", "--passwd", default="edware", help="postgre password default[edware]")
+    args = parser.parse_args()
+
+    __schema = args.schema
+    __database = args.database
+    __host = args.host
+    __user = args.user
+    __passwd = args.passwd
+
+    if __schema is None:
+        print("Please specifiy --schema option")
+        exit(-1)
+    __URL = DBDRIVER + "://" + __user + ":" + __passwd + "@" + __host + "/" + __database
+    print("DB Driver:" + DBDRIVER)
+    print("     User:" + __user)
+    print("  Password:" + __passwd)
+    print("      Host:" + __host)
+    print("  Database:" + __database)
+    print("    Schema:" + __schema)
+    print("####################")
+    engine = create_engine(__URL)
+    connection = engine.connect()
+    connection.execute(CreateSchema(__schema))
+    metadata = generate_ed_metadata(scheme_name=__schema, bind=engine)
+    metadata.create_all(engine)

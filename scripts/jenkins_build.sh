@@ -18,6 +18,7 @@ function check_vars {
 function set_vars {
     export VIRTUALENV_DIR="$WORKSPACE/edwaretest_venv"
     export FUNC_VIRTUALENV_DIR="$WORKSPACE/functest_venv"
+    export FUNC_DIR="edware_test/edware_test/functional_tests"
 
     # delete existing xml files
     if [ -f $WORKSPACE/coverage.xml ]; then
@@ -41,7 +42,13 @@ function setup_virtualenv {
     for var in "${INSTALL_PKGS[@]}" 
     do
         cd "$WORKSPACE/$var"
-        python setup.py develop
+        if [ -f setup-developer.py ];  then
+           echo "running setup-developer.py"
+           python setup-developer.py develop
+        else 
+           echo "running setup.py"
+           python setup.py develop
+        fi
     done
  
     echo "Finished setting up virtualenv"
@@ -125,6 +132,11 @@ function show_help {
 
 function setup_functional_test_dependencies {
     echo "Setup functional test dependencies"
+    
+    rm -rf $WORKSPACE/edware_test
+    mkdir  $WORKSPACE/edware_test
+    cd $WORKSPACE/edware_test
+    git clone git@github.wgenhq.net:Ed-Ware-SBAC/edware_test.git
 
     # we should be inside the python 3.3 venv, so deactivate that first
     deactivate 
@@ -135,7 +147,7 @@ function setup_functional_test_dependencies {
    
     source ${FUNC_VIRTUALENV_DIR}/bin/activate
 
-    cd "$WORKSPACE/functional_tests"
+    cd "$WORKSPACE/$FUNC_DIR"
     python setup.py develop
     
     pip install pep8
@@ -146,7 +158,7 @@ function setup_functional_test_dependencies {
 function run_functional_tests {
     echo "Run functional tests"
 
-    cd "$WORKSPACE/functional_tests"
+    cd "$WORKSPACE/$FUNC_DIR"
 
     sed -i.bak 's/port = 6543/port = 80/g' test.ini
     export DISPLAY=:6.0
@@ -188,7 +200,7 @@ function main {
         restart_apache
         setup_functional_test_dependencies
         run_functional_tests
-        check_pep8 "functional_tests"
+        check_pep8 "$FUNC_DIR"
     fi
 }
 

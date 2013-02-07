@@ -14,6 +14,7 @@ from gen_assessments import generate_assessment_types, ASSESSMENT_TYPES_LIST
 from constants import *
 from dbconnection import get_db_conn
 from assessment import generate_assmts_for_students
+from xmlrpc.client import MAXINT
 
 birds_list = []
 manmals_list = []
@@ -61,151 +62,97 @@ def prepare_data():
 
 
 def get_statistic():
-    '''
-    Get statistical data from database, which will be used in
-    generating the actual data
-    '''
     db = get_db_conn()
-    dist_num_in_state = []
     db_states = []
-    dist_count = db.prepare(query0)
-    for count in dist_count:
-        db_states.append((str(count['state_name']), str(count['state_code'])))
-        dist_num_in_state.append(count['dist_num'])
-    dist_num_in_state_made = makeup(dist_num_in_state, len(dist_num_in_state))
-
-    print("Real      -- number of dist in states ", dist_num_in_state,
-          " total ", sum(dist_num_in_state))
-    print("Generated -- number of dist in states ", dist_num_in_state_made,
-          " total ", sum(dist_num_in_state_made))
-
-    actual_states = []
-    c = 0
-    for db_state_name in db_states:
-        cur_state = {
-                    'name': db_state_name[0],
-                    'code': db_state_name[1],
-                    'dist_num_in_state': dist_num_in_state_made[c],
-                    'school_num_in_dist': [],
-                    'stu_num_in_school': [],
-                    'stutea_ratio_in_school': [],
-                    'school_type_in_dist': []
-                    }
-        # get actual school_num distribution in state
-        school_num = db.prepare(query2_first + db_state_name[0] + query2_second)
-        for num in school_num:
-            cur_state['school_num_in_dist'].append(num[0])
-
-        # get actual student_num distribution in state
-        stu_num = db.prepare(query3_first + db_state_name[0] + query3_second)
-        for num in stu_num:
-            cur_state['stu_num_in_school'].append(num[2])
-
-        # get actual teacher_num distribution in state
-        stutea_ratio = db.prepare(query6_first + db_state_name[0] + query6_second)
-        for num in stutea_ratio:
-            cur_state['stutea_ratio_in_school'].append(num[2])
-
-        # get actual school_type distribution in state
-        school_type = db.prepare(query4_first + db_state_name[0] + query4_second)
-        cur_state['school_type_in_dist'] = generate_school_type(school_type)
-        actual_states.append(cur_state)
-
-        c += 1
-
+    dist_count = db.prepare('select * from school_generate_stat')
+    for row in dist_count:
+        db_states.append(dict(zip(STAT_COLUMNS, row)))
     db.close()
-
-    return actual_states
-
-
-def generate_school_type(db_school_type_list):
-    '''
-    Input: database results, which has 3 columns: district_name, school_level, count
-    Output: List of list. Each list has 4 items. Each item is the number of certain type of schools for a district
-    '''
-    school_type_in_dist = []
-    types = {"Primary": 0, "Middle": 1, "High": 2, "Other": 3}
-    cur_dist_name = ""
-    cur_type = [0, 0, 0, 0]
-    for s_type in db_school_type_list:
-        if(s_type[0] != cur_dist_name):
-            if(cur_dist_name != ""):
-                school_type_in_dist.append(cur_type)
-            cur_type = [0, 0, 0, 0]
-            cur_dist_name = s_type[0]
-        index = (int)(str(types.get(s_type[1].strip())))
-        cur_type[index] = s_type[2]
-    school_type_in_dist.append(cur_type)
-    return school_type_in_dist
+    return db_states
 
 
-def generate_data(db_states):
+def generate_data(db_states_stat):
     '''
     Main function to generate actual data with input statistical data
     '''
+    # generate all assessment types
+    assessment_types = generate_assessment_types()
+    create_csv(assessment_types, ASSESSMENT_TYPES)
+
     c = 0
     record_states = []
-    for state in db_states:
-        print("This is state ", state['name'])
-
+    for state in db_states_stat:
         # create state
-        created_state = State(state['code'], state['name'], state['dist_num_in_state'])
+        created_state = State(state['state_code'], state['state_name'], state['total_district'])
         total_count[0] += 1
         record_states.append(created_state)
 
         # generate school distribution in districts
-        school_num_in_dist = state['school_num_in_dist']
-        school_num_in_dist_made = makeup(school_num_in_dist, state['dist_num_in_state'])
+        min_dis = max(1, math.ceil(state['total_district'] * DIST_LOW_VALUE))
+        max_dis = round(state['total_district'] * DIST_HIGH_VALUE)
+        num_of_dist = min_dis
+        if(min_dis < max_dis):
+            num_of_dist = random.choice(range(min_dis, max_dis))
+        school_num_in_dist_made = makeup_list(state['avg_school_per_district'], state['std_school_per_district'],
+                                              state['min_school_per_district'], state['max_school_per_district'],
+                                              num_of_dist, state['total_school'])
+        # for test
+        # print("real four numbers      ", state['avg_school_per_district'], state['std_school_per_district'], state['min_school_per_district'], state['max_school_per_district'])
+        # print("generated four numbers ", py1.avg(school_num_in_dist_made), py1.std(school_num_in_dist_made), min(school_num_in_dist_made), max(school_num_in_dist_made))
 
         # generate student distribution in schools
-        stu_num_in_school = state['stu_num_in_school']
-        stu_num_in_school_made = makeup(stu_num_in_school, sum(school_num_in_dist_made))
+        stu_num_in_school_made = makeup_list(state['avg_student_per_school'], state['std_student_per_school'],
+                                           state['min_student_per_school'], state['max_student_per_school'],
+                                           sum(school_num_in_dist_made), state['total_student'])
+        # for test
+        # print("real four numbers      ", state['avg_student_per_school'], state['std_student_per_school'], state['min_student_per_school'], state['max_student_per_school'])
+        # print("generated four numbers ", py1.avg(stu_num_in_school_made), py1.std(stu_num_in_school_made), min(stu_num_in_school_made), max(stu_num_in_school_made))
 
-        # generate teacher distribution in schools
-        stutea_ratio_in_school = state['stutea_ratio_in_school']
-        stutea_ratio_in_school_made = makeup(stutea_ratio_in_school, sum(school_num_in_dist_made))
-        # tea_num_in_school_made = make_teacher_num(stu_num_in_school_made, stutea_ratio_in_school_made)
+        # generate student teacher ratio distribution in schools
+        stutea_ratio_in_school_made = py1.makeup_core(state['avg_stutea_ratio_per_school'], state['std_stutea_ratio_per_school'],
+                                                      state['min_stutea_ratio_per_school'], state['max_stutea_ratio_per_school'],
+                                                      sum(school_num_in_dist_made))
 
-        # list of lists. For each list in it, it maps to district level
-        school_type_in_dist = state['school_type_in_dist']
+        # generate school type distribution in state
+        school_type_in_state = make_school_types([state['primary_perc'], state['middle_perc'],
+                                                  state['high_perc'], state['other_perc']], sum(school_num_in_dist_made))
 
         # print out
         print("************** State ", created_state.state_name, " **************")
         print("                     Real     Generated")
-        print("Number of districts ", len(school_num_in_dist), "    ", len(school_num_in_dist_made))
-        print("Number of schools   ", sum(school_num_in_dist), "    ", sum(school_num_in_dist_made))
-        print("Number of students  ", sum(stu_num_in_school), "    ", sum(stu_num_in_school_made))
-
+        print("Number of districts ", state['total_district'], "    ", len(school_num_in_dist_made))
+        print("Number of schools   ", state['total_school'], "    ", sum(school_num_in_dist_made))
+        print("Number of students  ", state['total_student'], "    ", sum(stu_num_in_school_made))
+        # continue
         # create districts for each state
-        created_dist_list = create_districts(created_state.state_name, school_num_in_dist_made, school_type_in_dist, c)
+        created_dist_list = create_districts(created_state.state_name, school_num_in_dist_made, c)
         total_count[1] += len(created_dist_list)
         create_csv(created_dist_list, INSTITUTIONS)
         shift = 0
 
-        for d in created_dist_list:
+        for dist in created_dist_list:
             # create school for each district
-            school_list, wheretaken_list = create_schools(stu_num_in_school_made, stutea_ratio_in_school_made, shift, d)
+            school_list, wheretaken_list = create_schools(stu_num_in_school_made[shift: shift + dist.num_of_schools],
+                                                          stutea_ratio_in_school_made[shift: shift + dist.num_of_schools],
+                                                          dist, school_type_in_state)
             total_count[2] += len(school_list)
             create_csv(school_list, INSTITUTIONS)
             create_csv(wheretaken_list, WHERETAKEN)
 
-            shift += d.num_of_schools
+            shift += dist.num_of_schools
 
-            # create classes, grades, sections, teachers and students for each school
+            # create classes, grades, sections, teachers students, parents and assessment scores for each school
             for sch in school_list:
-                create_classes_grades_sections(sch, state)
-
-        assessment_types = generate_assessment_types()
-        create_csv(assessment_types, ASSESSMENT_TYPES)
+                create_classes_grades_sections(sch, created_state)
 
         # if just need one state data
-        if(c == 0):
-            break
+        # if(c == 0):
+        #    break
         c += 1
 
     create_csv(record_states, STATES)
 
-    print("*************************************")
+    print("**************Results***********************")
     print("generated number of states    ", total_count[0])
     print("generated number of districts ", total_count[1])
     print("generated number of schools   ", total_count[2])
@@ -213,48 +160,50 @@ def generate_data(db_states):
     print("generated number of teachers  ", total_count[4])
 
 
-def make_teacher_num(stu_num_in_school_made, stutea_ratio_in_school_made):
+def make_school_types(perc, total):
     '''
-    input: stu_num_in_school_made:       list of student number in each school
-           stutea_ratio_in_school_made:  list of student_teacher_ratio in each school
-
-    output: list of teacher number in each school calculates as: student_number/student_teacher_ratio
+    Given percentage of different types of school, and total number of shools
+    Returns absolute number for each type of school
     '''
-    assert(len(stu_num_in_school_made) == len(stutea_ratio_in_school_made))
-    teacher_num = []
-    for i in range(len(stu_num_in_school_made)):
-        teacher_num.append(max(1, (int)(round(stu_num_in_school_made[i] / stutea_ratio_in_school_made[i]))))
-    return teacher_num
+    count = []
+    repeat_types = []
+    if(total > 0):
+        control = 0
+        for i in range(len(perc) - 1):
+            count.append(round(total * perc[i]))
+            repeat_types.extend([SCHOOL_LEVELS_INFO[i][0]] * count[-1])
+            control = sum(count)
+
+        count.append(max(total - control, 0))
+        repeat_types.extend([SCHOOL_LEVELS_INFO[-1][0]] * count[-1])
+
+    return repeat_types
 
 
-def create_districts(state_name, school_num_in_dist_made, school_type_in_dist, pos):
+def create_districts(state_name, school_num_in_dist_made, pos):
     '''
     Main function to generate list of district for a state
     '''
     total_school = 0
     districts_list = []
     n = len(school_num_in_dist_made)
-    # assert(n == len(school_type_in_dist_made[0]))
+
     if(n > 0):
         # generate random district names
         try:
             names = generate_names_from_lists(n, birds_list, manmals_list)
         except ValueError:
             print("ValueError: Not enough list to create", n, " number of district names", n, len(birds_list), len(manmals_list))
-
             return []
 
         # generate random district addresses
         address = generate_address_from_list(n, fish_list)
 
         # generate random district zip range
-        zip_init = (pos + 1) * ZIPCODE_START
-        zip_dist = max(1, (ZIPCODE_RANG_INSTATE // n))
+        zip_init, zip_dist = cal_zipvalues(pos, n)
 
         # generate each district
         for i in range(n):
-            # generate district id
-            dist_id = idgen.get_id()
             # generate random city names for a district
             try:
                 city_names = generate_names_from_lists(school_num_in_dist_made[i], birds_list, fish_list)
@@ -262,23 +211,18 @@ def create_districts(state_name, school_num_in_dist_made, school_type_in_dist, p
                 print("ValueError: Not enough list to create", school_num_in_dist_made[i], " number of city names")
                 return []
 
-            # calculate school_type
-            # school_type = [school_type_in_dist_made[t][i] for t in range(len(school_type_in_dist_made))]
-
             # create district object
-            dist = District(dist_id, state_name, (names[i] + " " + random.choice(DIST_SUFFIX)),
-                            school_num_in_dist_made[i], address[i], school_type_in_dist[i % len(school_type_in_dist)],
+            dist = District(idgen.get_id(), state_name, (names[i] + " " + random.choice(DIST_SUFFIX)),
+                            school_num_in_dist_made[i], address[i],
                             (zip_init, (zip_init + zip_dist)), city_names, INST_CATEGORIES[2])
             districts_list.append(dist)
             total_school += dist.num_of_schools
             zip_init += zip_dist
 
-    assert(total_school == sum(school_num_in_dist_made))
-
     return districts_list
 
 
-def create_schools(stu_num_in_school_made, stutea_ratio_in_school_made, start, distr):
+def create_schools(stu_num_in_school_made, stutea_ratio_in_school_made, distr, school_type_in_state):
     '''
     Main function to generate list of schools for a district
     '''
@@ -293,56 +237,48 @@ def create_schools(stu_num_in_school_made, stutea_ratio_in_school_made, start, d
     # generate addresses
     address = generate_address_from_list(count, birds_list)
 
-    # generate number of schools for each type
-    school_num_for_type = cal_school_num_for_type(count, distr.school_type_in_dist)
-    assert(count == sum(school_num_for_type))
-
     # generate zipcode and citynames
     city_zipcode_map = generate_city_zipcode(distr.city_names, distr.zipcode_range, count)
 
     school_list = []
     wheretaken_list = []
 
-    sch_type_index = 0
-    s_index = 0
-    e_index = school_num_for_type[sch_type_index]
-
     # generate each school and where-taken row
-    while(count > 0):
-        if(e_index > s_index):
-            for i in range(s_index, e_index):
-                # get school_type
-                school_type, suf, low_grade, high_grade = get_schoolattr_bytype(sch_type_index)
-                count -= 1
+    for i in range(count):
+        # get school_type
+        school_type = random.choice(school_type_in_state)
+        scho_map = {'Primary': 0, 'Middle': 1, 'High': 2, 'Other': 3}
+        suf = random.choice(SCHOOL_LEVELS_INFO[scho_map.get(school_type)][1])
+        grade_range = random.choice(SCHOOL_LEVELS_INFO[scho_map.get(school_type)][2])
+        low_grade = grade_range[0]
+        high_grade = grade_range[1]
 
-                # create one row of where-taken
-                sch_add1 = address[count]
-                place_id = idgen.get_id()
-                r_city = random.choice(list(city_zipcode_map.items()))
-                r_zip = random.choice(range(r_city[1][0], r_city[1][1]))
-                where_taken = WhereTaken(place_id, sch_add1, '', '', r_city[0], distr.state_name, r_zip, 'US')
-                wheretaken_list.append(where_taken)
+        # create one row of where-taken
+        sch_add1 = address[i]
+        place_id = idgen.get_id()
+        r_city = random.choice(list(city_zipcode_map.items()))
+        r_zip = random.choice(range(r_city[1][0], r_city[1][1]))
+        where_taken = WhereTaken(place_id, sch_add1, '', '', r_city[0], distr.state_name, r_zip, 'US')
+        wheretaken_list.append(where_taken)
 
-                # create one row of school
-                sch_id = idgen.get_id()
-                sch_name = names[count] + " " + suf
-                school = School(sch_id, distr.dist_id, sch_name, stu_num_in_school_made[start + i],
-                        stutea_ratio_in_school_made[start + i], sch_add1, school_type,
-                        low_grade, high_grade, place_id, INST_CATEGORIES[3])
-                school_list.append(school)
-
-        sch_type_index += 1
-        s_index = e_index
-        if(sch_type_index < len(school_num_for_type)):
-            e_index = s_index + school_num_for_type[sch_type_index]
+        # create one row of school
+        sch_id = idgen.get_id()
+        sch_name = names[i] + " " + suf
+        school = School(sch_id, distr.dist_id, sch_name, stu_num_in_school_made[i],
+                stutea_ratio_in_school_made[i], sch_add1, school_type,
+                low_grade, high_grade, place_id, INST_CATEGORIES[3])
+        school_list.append(school)
 
     return school_list, wheretaken_list
 
 
 def generate_city_zipcode(city_names, zipcode_range, num_of_schools):
+    '''
+    Generate zip code range for cities
+    '''
     maxnum_of_city = min((zipcode_range[1] - zipcode_range[0]), num_of_schools)
     num_of_city = 1
-    if(num_of_schools > 1):
+    if(num_of_schools > 1 and maxnum_of_city > 1):
         num_of_city = random.choice(range(1, maxnum_of_city))
 
     city_cand = random.sample(city_names, num_of_city)
@@ -360,32 +296,10 @@ def generate_city_zipcode(city_names, zipcode_range, num_of_schools):
     return city_zip_map
 
 
-def get_schoolattr_bytype(pos):
-    if(0 <= pos <= 3):
-        school_type = SCHOOL_LEVELS_INFO[pos][0]
-        suf = random.choice(SCHOOL_LEVELS_INFO[pos][1])
-        grade_range = random.choice(SCHOOL_LEVELS_INFO[pos][2])
-        low_grade = grade_range[0]
-        high_grade = grade_range[1]
-    return school_type, suf, low_grade, high_grade
-
-
-def cal_school_num_for_type(count, school_type_in_dist):
-    school_for_type = []
-    if(count > 0 and len(school_type_in_dist) == 4):
-        total = sum(school_type_in_dist)
-        if(total == 0):
-            school_type_in_dist[0] = count
-            total = sum(school_type_in_dist)
-
-        school_type_in_dist.sort(reverse=True)
-        school_for_type = [round(count * (s_num / total)) for s_num in school_type_in_dist[:-1]]
-        school_for_type.append(count - sum(school_for_type))
-
-    return school_for_type
-
-
 def generate_names_from_lists(count, list1, list2):
+    '''
+    Generate total 'count' number of random combination of names from input lists
+    '''
     names = []
     if(count > 0):
         base = math.ceil(math.sqrt(count))
@@ -429,54 +343,65 @@ def generate_address_from_list(count, words_list):
     return adds
 
 
+def cal_zipvalues(pos, n):
+    '''
+    Input: pos: greater than 0
+           n: total number of zip. It is greater than 0
+    Output: zip_init: the starting zipcode
+            zio_dist: the basic distance of zipcode
+    '''
+
+    zip_init = (pos + 1) * ZIPCODE_START
+    zip_dist = max(1, (ZIPCODE_RANG_INSTATE // n))
+    return zip_init, zip_dist
+
+
 def create_classes_grades_sections(sch, state):
     '''
     Main function to generate classes, grades, sections, students and teachers for a school
     '''
-    # calculate number of students in each grade
-    stu_num_in_grade = round(sch.num_of_student / (sch.high_grade - sch.low_grade + 1))
-    end = stu_num_in_grade
-
     # generate teacher list for a school
-    num_of_teacher = max(1, (sch.num_of_student // sch.stu_tea_ratio))
-    teacher_list = generate_people(TEACHER, num_of_teacher, sch, state['code'], random.choice(GENDER_RARIO))
-    num_of_tea_for_grade = max(1, (num_of_teacher // (sch.high_grade - sch.low_grade + 1)))
-    #print("num_of_tea_for_grade1 ", num_of_tea_for_grade, (num_of_teacher // (sch.high_grade - sch.low_grade + 1)))
-    num_of_tea_for_grade = min(len(teacher_list), num_of_tea_for_grade)
-    #print("num_of_tea_for_grade2 ", num_of_tea_for_grade, len(teacher_list), num_of_tea_for_grade)
-
+    num_of_teacher = max(1, round(sch.num_of_student // sch.stu_tea_ratio))
+    teacher_list = generate_people(TEACHER, num_of_teacher, sch, state.state_id, random.choice(GENDER_RARIO))
     total_count[4] += len(teacher_list)
     create_csv(teacher_list, TEACHERS)
 
+    # calculate number of students and teachers in each grade
+    stu_num_in_grade = max(1, round(sch.num_of_student / (sch.high_grade - sch.low_grade + 1)))
+    tea_num_in_grade = max(1, round(num_of_teacher / (sch.high_grade - sch.low_grade + 1)))
+
+    # for each grade
     j = 0
     for grade in range(sch.low_grade, sch.high_grade + 1):
         # generate student list for a grade
-        grade_students = generate_people(STUDENT, end, sch, state['code'], random.choice(GENDER_RARIO), grade)
+        grade_students = generate_people(STUDENT, stu_num_in_grade, sch, state.state_id, random.choice(GENDER_RARIO), grade)
         create_csv(grade_students, STUDENTS)
-
         j += len(grade_students)
         total_count[3] += len(grade_students)
         if(grade == sch.high_grade - 1):
-            end = sch.num_of_student - j
+            stu_num_in_grade = sch.num_of_student - j
 
-        teach = teacher_list
-        if(num_of_tea_for_grade < len(teacher_list)):
-            teach = random.sample(teacher_list, num_of_tea_for_grade)
+        # assign teachers in the school to current grade
+        grade_teachers = teacher_list
+        if(tea_num_in_grade < len(teacher_list)):
+            grade_teachers = random.sample(teacher_list, tea_num_in_grade)
 
-        classforgrade_list = create_classes_for_grade(grade_students, teach, sch.stu_tea_ratio)
+        # create classes, sections for the current grade
+        classforgrade_list = create_classes_for_grade(grade_students, grade_teachers)
 
         # create_sections_stuandtea_csv(state['code'], classforgrade_list, grade, sch.sch_id, sch.dist_name, idgen)
-        student_temporal_list = create_student_temporal_data(state['code'], classforgrade_list, grade, sch.sch_id, sch.dist_id)
+        student_temporal_list = create_student_temporal_data(state.state_id, classforgrade_list, grade, sch.sch_id, sch.dist_id)
         create_csv(student_temporal_list, STUDENT_SECTIONS)
         create_csv(classforgrade_list, CLASSES)
 
-        scores = generate_assmts_for_students(len(grade_students), grade, state['name'])
+        scores = generate_assmts_for_students(len(grade_students), grade, state.state_name)
         assessment_outcome_list = []
         hist_assessment_outcome_list = []
 
         dates_taken1 = generate_dates_taken(2000)
         dates_taken2 = generate_dates_taken(2000)
-
+        print("len of grade students ", len(grade_students), "len of classforgrade_list ", len(classforgrade_list), 
+              "len of student_temporal_list ", len(student_temporal_list), "len of scores ", len(scores))
         for stu_tmprl in student_temporal_list:
             for score in scores.items():
                 asmt_id = int(score[0].split('_')[1])
@@ -500,7 +425,8 @@ def create_classes_grades_sections(sch, state):
                     elif asmt.period == 'EOY':
                         date_taken = dates_taken1['EOY']
                     date_taken = date_taken.replace(year=int(year))
-
+                    if (len(score[1]) == 0):
+                        print("*********Import**********", new_id, asmt_id, stu_tmprl.student_id, stu_tmprl.student_tmprl_id, teacher_id, date_taken, sch.place_id)
                     outcome = AssessmentOutcome(new_id, asmt_id, stu_tmprl.student_id, stu_tmprl.student_tmprl_id, teacher_id, date_taken, sch.place_id, score[1].pop(), 'cdate?')
                     assessment_outcome_list.append(outcome)
                 elif stu_tmprl.student_class.sub_name == asmt.subject:
@@ -518,6 +444,9 @@ def create_classes_grades_sections(sch, state):
                     elif asmt.period == 'EOY':
                         date_taken = dates_taken2['EOY']
                     date_taken = date_taken.replace(year=int(year))
+
+                    if (len(score[1]) == 0):
+                        print("*********Import**********", new_id, asmt_id, stu_tmprl.student_id, stu_tmprl.student_tmprl_id, teacher_id, date_taken, sch.place_id)
 
                     outcome = HistAssessmentOutcome(new_id, asmt_id, stu_tmprl.student_id, stu_tmprl.student_tmprl_id, date_taken, sch.place_id, score[1].pop(), 'cdate?', 'hdate?')
                     hist_assessment_outcome_list.append(outcome)
@@ -565,28 +494,27 @@ def create_student_temporal_data(state_code, class_list, grade, school_id, distr
     return temporal_list
 
 
-def create_classes_for_grade(grade_students, teacher_list, stu_tea_ratio):
+def create_classes_for_grade(grade_students, teacher_list):
     '''
     Main function to generate classes for a grade
     '''
-    # calculate number of class for a subject
-    num_of_subjects = len(SUBJECTS)
-    max_num_of_class = round(num_of_subjects * len(grade_students) / MIN_CLASS_SIZE)
-    num_of_class = num_of_subjects
-    if(max_num_of_class > num_of_subjects):
-        # num_of_class = random.choice(range(num_of_subjects, max_num_of_class))
-        num_of_class = random.choice(range((int)(round(max_num_of_class / 2)), max_num_of_class))
-    if(num_of_subjects == 0 or round(num_of_class / num_of_subjects) < 1):
-        class_num = 1
-    else:
-        class_num = round(num_of_class / num_of_subjects)
+    stu_tea_ratio = len(grade_students) / len(teacher_list)
 
-    # create classes for a subject
+    # calculate max number of class for a subject
+    max_num_of_class = max(1, round(len(grade_students) / MIN_CLASS_SIZE))
+
     total_classes = []
     for subj in SUBJECTS:
-        num_of_teacher_forsub = min(len(teacher_list), max(1, (len(teacher_list) // len(SUBJECTS))))
+        # calculate number of classes for a subject
+        if(max_num_of_class >= 2):
+            class_num = random.choice(range((int)(round(max_num_of_class / 2)), max_num_of_class))
+        else:
+            class_num = max_num_of_class
 
-        subject_teachers = random.sample(teacher_list, num_of_teacher_forsub)
+        # calculate number of teacher for a subject
+        teacher_num = min(len(teacher_list), max(1, round(len(teacher_list) / len(SUBJECTS))))
+        subject_teachers = random.sample(teacher_list, teacher_num)
+
         subject_classes = create_classes(subj, class_num, grade_students, subject_teachers, stu_tea_ratio)
         total_classes.extend(subject_classes)
 
@@ -614,12 +542,9 @@ def create_one_class(sub_name, class_count, distribute_stu_inaclass, tea_list, s
     '''
     # calculate number of sections
     num_of_stu_in_class = len(distribute_stu_inaclass)
-    section_num = math.floor(num_of_stu_in_class // stu_tea_ratio)
+    section_num = round(num_of_stu_in_class // stu_tea_ratio)
     if(num_of_stu_in_class < MIN_SECTION_SIZE or section_num < 2):
         section_num = 1
-
-    if(num_of_stu_in_class / section_num > 100):
-        print("big section", section_num, stu_tea_ratio, num_of_stu_in_class)
 
     # distribute student in each section
     distribute_stu_insection = list_to_chucks(distribute_stu_inaclass, section_num)
@@ -633,9 +558,8 @@ def create_one_class(sub_name, class_count, distribute_stu_inaclass, tea_list, s
     for i in range(len(distribute_stu_insection)):
         section_id = idgen.get_id()
         section_stu_map[str(section_id)] = distribute_stu_insection[i]
-        num_of_tea = max(1, (int)(round(len(distribute_stu_insection[i]) / stu_tea_ratio)))
-        num_of_tea = min(num_of_tea, len(tea_list))
-        section_tea_map[str(i)] = random.sample(tea_list, num_of_tea)
+        # one section has only one teacher
+        section_tea_map[str(i)] = random.sample(tea_list, 1)
 
     # create class, with sections
     eclass = Class(class_id, title, sub_name, section_stu_map, section_tea_map)
@@ -651,7 +575,7 @@ def list_to_chucks(list1, n):
         return [list1]
     chucks_list = []
     random.shuffle(list1)
-    chunk_length = len(list1) // n
+    chunk_length = round(len(list1) // n)
     needs_extra = len(list1) % n
 
     start = 0
@@ -666,39 +590,18 @@ def list_to_chucks(list1, n):
     return chucks_list
 
 
-def makeup(seqin, lengh):
-    # avg1 = py1.avg(seqin)
-    mean1 = py1.mean(seqin)
-    std1 = py1.std(seqin)
-    min1 = min(seqin)
-    max1 = max(seqin)
-    out1 = py1.makeup_core(mean1, std1, min1, max1, lengh)
-    out_data1 = fit_in_order(out1, seqin)
-    return out_data1
-
-
-def fit_in_order(data_list, orig_list):
-    index_list = get_index(orig_list)
-    sorted_data = sorted(data_list)
-    len_dis = len(data_list) - len(orig_list)
-    d = dict(zip(index_list, sorted_data))
-    v = []
-    for dd in d.values():
-        v.append(dd)
-    while(len_dis > 0):
-        cur = sorted_data[len(sorted_data) - len_dis]
-        len_dis -= 1
-        v.insert(random.randint(1, len(v) - 1), cur)
-    return v
-
-
-def get_index(seqin):
-    d = {}
-    for i in range(len(seqin)):
-        d[i] = seqin[i]
-    res = sorted(d.items(), key=lambda x: x[1])
-    final = [x[0] for x in res]
-    return final
+def makeup_list(avgin, stdin, minin, maxin, countin, target_sum):
+    min_dist = MAXINT
+    candidate_list = []
+    for i in range(RETRY_CAL_STAT):
+        generated_list1 = py1.makeup_core(avgin, stdin, minin, maxin, countin)
+        # generated_list2 = py1.makeup_core(py1.avg(generated_list1), py1.std(generated_list1), min(generated_list1), max(generated_list1), countin)
+        # generated_list3 = py1.makeup_core(py1.avg(generated_list2), py1.std(generated_list2), min(generated_list2), max(generated_list2), countin)
+        distance = abs(sum(generated_list1) - target_sum)
+        if (distance < min_dist and distance != 0):
+            min_dist = distance
+            candidate_list = generated_list1
+    return candidate_list
 
 
 def read_names(file_name):
@@ -714,7 +617,8 @@ def read_names(file_name):
 if __name__ == '__main__':
     t1 = datetime.now()
     generate()
-    # print(read_names("../datafiles/temp.txt"))
+    # print(get_statistic3())
+    # print(make_school_types([0.5, 0.3, 0.1, 0.1], 100))
     t2 = datetime.now()
     print("starts ", t1)
     print("ends   ", t2)

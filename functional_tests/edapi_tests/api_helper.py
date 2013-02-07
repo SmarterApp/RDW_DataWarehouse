@@ -6,7 +6,6 @@ Created on Feb 4, 2013
 import requests
 from test.test_base import EdTestBase
 import json
-import unittest
 
 
 class ApiHelper(EdTestBase):

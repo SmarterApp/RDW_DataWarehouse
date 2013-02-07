@@ -287,6 +287,7 @@ def generate_ed_metadata(scheme_name=None, bind=None):
                                Column('asmt_score', SmallInteger, nullable=False),
                                Column('asmt_score_range_min', SmallInteger, nullable=False),
                                Column('asmt_score_range_max', SmallInteger, nullable=False),
+                               Column('asmt_perf_lvl', SmallInteger, nullable=False),
                                Column('asmt_claim_1_score', SmallInteger, nullable=True),
                                Column('asmt_claim_1_score_range_min', SmallInteger, nullable=True),
                                Column('asmt_claim_1_score_range_max', SmallInteger, nullable=True),

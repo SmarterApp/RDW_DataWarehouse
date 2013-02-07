@@ -133,7 +133,7 @@ function show_help {
 function setup_functional_test_dependencies {
     echo "Setup functional test dependencies"
     
-    rm -rf $WORKSPACE/edware-test
+    rm -rf $WORKSPACE/edware_test
     git clone git@github.wgenhq.net:Ed-Ware-SBAC/edware_test.git
 
     # we should be inside the python 3.3 venv, so deactivate that first

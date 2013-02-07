@@ -8,7 +8,7 @@ Created on Jan 8, 2013
 import gennames
 import random
 from datetime import date
-from dimensions import Student, Teacher, Parent
+from entities import Student, Teacher, Parent
 from readnaminglists import PeopleNames
 from idgen import IdGen
 from write_to_csv import create_csv

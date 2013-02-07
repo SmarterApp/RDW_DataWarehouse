@@ -10,7 +10,9 @@ from edapi_tests.api_helper import ApiHelper
 class TestOptions(unittest.TestCase):
 
     def setUp(self):
-        self._api_helper = ApiHelper()
+        args = []
+        kwargs = {}
+        self._api_helper = ApiHelper(*args, **kwargs)
 
     def tearDown(self):
         pass

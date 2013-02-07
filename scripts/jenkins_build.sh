@@ -18,7 +18,7 @@ function check_vars {
 function set_vars {
     export VIRTUALENV_DIR="$WORKSPACE/edwaretest_venv"
     export FUNC_VIRTUALENV_DIR="$WORKSPACE/functest_venv"
-    export FUNC_DIR="edware_test/functional_tests"
+    export FUNC_DIR="edware_test/edware_test/functional_tests"
 
     # delete existing xml files
     if [ -f $WORKSPACE/coverage.xml ]; then
@@ -134,6 +134,8 @@ function setup_functional_test_dependencies {
     echo "Setup functional test dependencies"
     
     rm -rf $WORKSPACE/edware_test
+    mkdir  $WORKSPACE/edware_test
+    cd $WORKSPACE/edware_test
     git clone git@github.wgenhq.net:Ed-Ware-SBAC/edware_test.git
 
     # we should be inside the python 3.3 venv, so deactivate that first

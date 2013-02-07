@@ -13,6 +13,14 @@ define [
     link = options.colModel.formatoptions.linkUrl
     "<a href=\"" + link + "?studentId=" + rowObject.student_id + "\">" + $.jgrid.htmlEncode(value) + "</a>"
   
-  showlink: showlink
-    
+  showConfidenceRange = (value, options, rowObject) ->
+    subjectType = options.colModel.formatoptions.type.toLowerCase()
+    if subjectType == 'math'
+      subject = rowObject.assessments.MATH
+    else if subjectType == 'ela'
+      subject = rowObject.assessments.ELA
+   
+    "<div>P" + subject.asmt_perf_lvl + " [" + subject.asmt_score_range_min + "] " + value + " [" + subject.asmt_score_range_max + "]</div>"
   
+  showlink: showlink
+  showConfidenceRange: showConfidenceRange

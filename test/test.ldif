@@ -1,0 +1,245 @@
+version: 1
+
+dn: ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+objectClass: organizationalUnit
+objectClass: top
+ou: people
+
+dn: ou=deployemnt_administrators,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+objectClass: organizationalUnit
+objectClass: top
+ou: deployment_administrators
+
+dn: ou=system_administrators,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+objectClass: organizationalUnit
+objectClass: top
+ou: system_administrators
+
+dn: ou=data_loaders,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+objectClass: organizationalUnit
+objectClass: top
+ou: data_loaders
+
+dn: ou=data_correctors,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+objectClass: organizationalUnit
+objectClass: top
+ou: data_correctors
+
+dn: ou=psychometricians,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+objectClass: organizationalUnit
+objectClass: top
+ou: psychometricians
+
+dn: ou=state_data_extractors,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+objectClass: organizationalUnit
+objectClass: top
+ou: state_data_extractors
+
+dn: ou=higher_education_admissions_officers,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+objectClass: organizationalUnit
+objectClass: top
+ou: higher_education_admissions_officers
+
+dn: ou=teachers,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+objectClass: organizationalUnit
+objectClass: top
+ou: teachers
+
+dn: ou=students,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+objectClass: organizationalUnit
+objectClass: top
+ou: students
+
+dn: ou=parents,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+objectClass: organizationalUnit
+objectClass: top
+ou: parents
+
+dn: ou=school_education_administrators_1,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+objectClass: organizationalUnit
+objectClass: top
+ou: school_education_administrators_1
+
+dn: ou=school_education_administrators_2,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+objectClass: organizationalUnit
+objectClass: top
+ou: school_education_administrators_2
+
+dn: ou=district_education_administrators_1,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+objectClass: organizationalUnit
+objectClass: top
+ou: district_education_administrators_1
+
+dn: ou=district_education_administrators_2,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+objectClass: organizationalUnit
+objectClass: top
+ou: district_education_administrators_2
+
+dn: ou=state_education_administrators_1,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+objectClass: organizationalUnit
+objectClass: top
+ou: state_education_administrators_1
+
+dn: ou=state_education_administrators_2,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+objectClass: organizationalUnit
+objectClass: top
+ou: state_education_administrators_2
+
+dn: ou=consortium_education_administrators_1,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+objectClass: organizationalUnit
+objectClass: top
+ou: consortium_education_administrators_1
+
+dn: ou=consortium_education_administrators_2,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+objectClass: organizationalUnit
+objectClass: top
+ou: consortium_education_administrators_2
+
+dn: cn=Linda Kim,ou=teachers,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Linda Kim
+sn: Kim
+uid: linda.kim
+
+dn: cn=Charles Gray,ou=teachers,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Charles Gray
+sn: Gray
+uid: cgray
+
+dn: cn=Rebecca Braverman,ou=teachers,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Rebecca Braverman
+sn: Braverman
+uid: rbraverman
+
+dn: cn=James Stevenson,ou=system_administrators,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: James Stevenson
+sn: Stevenson
+uid: jstevenson
+
+dn: cn=Matt Sollars,ou=students,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Matt Sollars
+sn: Sollares
+uid: msollars
+
+dn: cn=Jamie Hine,ou=deployemnt_administrators,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Jamie Hine
+sn: Hine
+uid: jhine
+
+dn: cn=Kelly Tidd,ou=system_administrators,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Kelly Tidd
+sn: Tidd
+uid: ktidd
+
+dn: cn=Louisa Mui,ou=data_loaders,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Louisa Mui
+sn: Mui
+uid: lmui
+
+dn: cn=Hugh Goree,ou=data_correctors,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Hugh Goree
+sn: Goree
+uid: hgoree
+
+dn: cn=Clare Seabaugh,ou=psychometricians,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Clare Seabaugh
+sn: Seabaugh
+uid: cseabaugh
+
+dn: cn=Katy Bester,ou=state_data_extractors,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Katy Bester
+sn: Bester
+uid: kbester
+
+dn: cn=Erik Croker,ou=higher_education_admissions_officers,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Erik Croker
+sn: Croker
+uid: ecroker
+
+dn: cn=Clayton Croxton,ou=parents,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Clayton Croxton
+sn: Croxton
+uid: ccroxton
+
+dn: cn=Amie Stroop,ou=school_education_administrators_1,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Amie Stroop
+sn: Stroop
+uid: astroop
+
+dn: cn=Ted Lazaro,ou=school_education_administrators_2,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Ted Lazaro
+sn: Lazaro
+uid: tlazaro
+
+dn: cn=Guy Man,ou=district_education_administrators_1,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Guy Man
+sn: Man
+uid: gman
+
+dn: cn=Selena Magnusson,ou=district_education_administrators_2,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Selena Magnusson
+sn: Magnusson
+uid: smagnusson
+
+dn: cn=Jessie Mollica,ou=state_education_administrators_1,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Jessie Mollica
+sn: Mollica
+uid: jmollica
+
+dn: cn=Liza Bopp,ou=state_education_administrators_2,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Liza Bopp
+sn: Bopp
+uid: lbopp
+
+dn: cn=Clinton Degraw,ou=consortium_education_administrators_1,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Clinton Degraw
+sn: Degraw
+uid: cdegraw
+
+dn: cn=Elnora Seinfeld,ou=consortium_education_administrators_2,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Elnora Seinfeld
+sn: Seinfeld
+uid: eseinfeld
+
+

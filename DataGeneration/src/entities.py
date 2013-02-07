@@ -7,13 +7,14 @@ class State:
     state object
     '''
 
-    def __init__(self, state_id, state_name, num_of_dist):
+    def __init__(self, state_id, state_name, num_of_dist, state_code=None):
         '''
         Constructor
         '''
         self.state_id = state_id
         self.state_name = state_name
         self.num_of_dist = num_of_dist
+        self.state_code = state_code
 
     def __str__(self):
         '''
@@ -22,7 +23,7 @@ class State:
         return ("State:[state_id: %s, state_name:%s, num_of_dist: %s]" % (self.state_id, self.state_name, self.num_of_dist))
 
     def getRow(self):
-        return [self.state_id, self.state_name]
+        return [self.state_id, self.state_name, self.state_code]
 
 
 class District:
@@ -30,29 +31,30 @@ class District:
     District object
     '''
     # total_id = 0
-    def __init__(self, dist_id, state_name, dist_name, num_of_schools, address_1, zipcode_range, city_names, category):
+    def __init__(self, district_id, district_external_id, district_name, state_code, num_of_schools, zipcode_range, city_names, address_1=None, zipcode=None, address_2=None):
         '''
         Constructor
         '''
-        # self.dist_id   = District.total_id
-        # District.total_id = District.total_id + 1
-        self.dist_id = dist_id
-        self.state_name = state_name
-        self.dist_name = dist_name
-        self.num_of_schools = num_of_schools
+        self.district_id = district_id
+        self.district_external_id = district_external_id
+        self.district_name = district_name
         self.address_1 = address_1
+        self.address_2 = address_2
+        self.zipcode = zipcode
+        self.state_code = state_code
+
+        self.num_of_schools = num_of_schools
         self.zipcode_range = zipcode_range
         self.city_names = city_names
-        self.category = category
 
     def __str__(self):
         '''
         String method
         '''
-        return ("District:[dist_id: %s, state_name: %s, num_of_schools: %s, dist_name: %s, address_1: %s]" % (self.dist_id, self.state_name, self.num_of_schools, self.dist_name, self.address_1))
+        return ("District:[district_id: %s, district_external_id: %s, district_name: %s]" % (self.district_id, self.district_external_id, self.district_name))
 
     def getRow(self):
-        return [self.dist_id, self.category, self.dist_name, self.address_1]
+        return [self.district_id, self.district_external_id, self.district_name, self.address_1, self.address_2, self.zipcode, self.state_code]
 
 
 class School:
@@ -60,25 +62,27 @@ class School:
     School object
     '''
     # total_id = 0
-    def __init__(self, sch_id, dist_id, school_name, num_of_student, stu_tea_ratio, address1, school_type, low_grade, high_grade, place_id, category):
+    def __init__(self, sch_id, school_external_id, school_name, dist_name, state_code, num_of_student, stu_tea_ratio, low_grade, high_grade, school_categories_type=None, school_type=None, address1=None, city=None, zip_code=None, address2=None):
         '''
         Constructor
         '''
         # self.dist_id   = District.total_id
         # District.total_id = District.total_id + 1
         self.sch_id = sch_id
-        self.dist_id = dist_id
+        self.school_external_id = school_external_id
         self.school_name = school_name
+        self.dist_name = dist_name
+        self.state_code = state_code
         self.num_of_student = num_of_student
         self.stu_tea_ratio = stu_tea_ratio
-        self.address1 = address1
-        self.school_type = school_type
         self.low_grade = low_grade
         self.high_grade = high_grade
-        self.category = category
-
-        # place_id is where_taken_id
-        self.place_id = place_id
+        self.school_categories_type = school_categories_type
+        self.school_type = school_type
+        self.address1 = address1
+        self.city = city
+        self.zip_code = zip_code
+        self.address2 = address2
 
     def __str__(self):
         '''
@@ -87,7 +91,7 @@ class School:
         return ("School:[sch_id: %s, dist_id: %s, num_of_student: %s, stu_tea_ratio: %s, school_name: %s, address1: %s, school_type: %s, low_grade: %s, high_grade: %s, place_id:%s]" % (self.sch_id, self.dist_id, self.num_of_student, self.stu_tea_ratio, self.school_name, self.address1, self.school_type, self.low_grade, self.high_grade, self.place_id))
 
     def getRow(self):
-        return [self.sch_id, self.category, self.school_name, self.address1]
+        return [self.sch_id, self.school_external_id, self.school_name, self.dist_name, self.school_categories_type, self.school_type, self.address1, self.address2, self.city, self.zip_code, self.state_code, ]
 
 
 class Class:
@@ -166,27 +170,29 @@ class WhereTaken:
     '''
     Where-taken object
     '''
-    def __init__(self, place_id, address_1, address_2, address_3, city, state, zip, country):
+    def __init__(self, wheretaken_id, wheretaken_name, district_name, address_1, city_name, zip_code, state_code, country_id, address_2=None):
         '''
+        wheretaken_id, wheretaken_name, distr.district_name, address_1, city_name, zip_code, distr.state_code, 'US'
         Constructor
         '''
-        self.place_id = place_id
+        self.wheretaken_id = wheretaken_id
+        self.wheretaken_name = wheretaken_name
+        self.district_name = district_name
         self.address_1 = address_1
+        self.city_name = city_name
+        self.zip_code = zip_code
+        self.state_code = state_code
+        self.country_id = country_id
         self.address_2 = address_2
-        self.address_3 = address_3
-        self.city = city
-        self.state = state
-        self.zip = zip
-        self.country = country
 
     def __str__(self):
         '''
         String method
         '''
-        return ("WhereTaken:[place_id: %s, address_1: %s, city: %s, state:%s, zip: %s, country: %s]" % (self.place_id, self.address_1, self.city, self.state, self.zip, self.country))
+        return ("WhereTaken:[wheretaken_id: %s, wheretaken_name: %s, district_name: %s, address_1: %s, address_2: %s,city_name:%s, zip_code:%s, state_code :%s, country_id: %s]" % (self.wheretaken_id, self.wheretaken_name, self.district_name, self. address_1, self.address_2, self.city_name, self.zip_code, self.country_id))
 
     def getRow(self):
-        return [self.place_id, self.address_1, self.address_2, self.address_3, self.city, self.state, self.zip, self.country]
+        return [self.wheretaken_id, self.wheretaken_name, self.district_name, self. address_1, self.address_2, self.city_name, self.zip_code, self.state_code, self.country_id]
 
 
 class AssessmentOutcome(object):
@@ -238,11 +244,11 @@ class StudentTemporalData(object):
     '''
     Object to match the student_tmprl_data table
     '''
-    def __init__(self, student_tmprl_id, student_id, grade_id, district_id, school_id, student_class, section_id):
+    def __init__(self, student_tmprl_id, student_id, grade_id, dist_name, school_id, student_class, section_id):
         self.student_tmprl_id = student_tmprl_id
         self.student_id = student_id
         self.grade_id = grade_id
-        self.district_id = district_id
+        self.dist_name = dist_name
         self.school_id = school_id
         self.student_class = student_class
         self.section_id = section_id
@@ -258,9 +264,7 @@ class StudentTemporalData(object):
         if end_date is None:
             end_date = ''
 
-        return [self.student_tmprl_id, self.student_id, self.effective_date, self.end_date, self.grade_id, self.district_id, self.school_id, self.student_class.class_id, self.section_id]
-
-
+        return [self.student_tmprl_id, self.student_id, self.effective_date, self.end_date, self.grade_id, self.dist_name, self.school_id, self.student_class.class_id, self.section_id]
 class Person(object):
     '''
     classdocs

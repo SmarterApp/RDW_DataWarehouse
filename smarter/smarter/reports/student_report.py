@@ -48,32 +48,34 @@ def get_student_report(params, connector=None):
     # get table metadatas
     fact_asmt_outcome = connector.get_table('fact_asmt_outcome')
     dim_student = connector.get_table('dim_student')
-    dim_asmt_type = connector.get_table('dim_asmt_type')
+    dim_asmt = connector.get_table('dim_asmt')
 
     query = None
     # All tables are required
     # Check Table object type for UT
-    if isinstance(fact_asmt_outcome, Table) and isinstance(dim_student, Table) and isinstance(dim_asmt_type, Table):
+    if isinstance(fact_asmt_outcome, Table) and isinstance(dim_student, Table) and isinstance(dim_asmt, Table):
         query = select([fact_asmt_outcome.c.student_id,
                         dim_student.c.first_name,
                         dim_student.c.middle_name,
                         dim_student.c.last_name,
-                        dim_asmt_type.c.asmt_subject,
-                        dim_asmt_type.c.asmt_period,
+                        dim_asmt.c.asmt_subject,
+                        dim_asmt.c.asmt_period,
                         fact_asmt_outcome.c.asmt_score,
-                        fact_asmt_outcome.c.asmt_claim_1_name,
-                        fact_asmt_outcome.c.asmt_claim_2_name,
-                        fact_asmt_outcome.c.asmt_claim_3_name,
-                        fact_asmt_outcome.c.asmt_claim_4_name,
+                        dim_asmt.c.asmt_claim_1_name,
+                        dim_asmt.c.asmt_claim_2_name,
+                        dim_asmt.c.asmt_claim_3_name,
+                        dim_asmt.c.asmt_claim_4_name,
                         fact_asmt_outcome.c.asmt_claim_1_score,
                         fact_asmt_outcome.c.asmt_claim_2_score,
                         fact_asmt_outcome.c.asmt_claim_3_score,
                         fact_asmt_outcome.c.asmt_claim_4_score],
-                       from_obj=[fact_asmt_outcome.join(dim_student, fact_asmt_outcome.c.student_id == dim_student.c.student_id)
-                                 .join(dim_asmt_type, dim_asmt_type.c.asmt_type_id == fact_asmt_outcome.c.asmt_type_id)])
+                       from_obj=[fact_asmt_outcome
+                                 .join(dim_student, fact_asmt_outcome.c.student_id == dim_student.c.student_id)
+                                 .join(dim_asmt, dim_asmt.c.asmt_id == fact_asmt_outcome.c.asmt_id)])
         query = query.where(fact_asmt_outcome.c.student_id == student_id)
+        # TODO - what assessment input do we want? assessment_id, type, subject?
         if assessment_id is not None:
-            query = query.where(fact_asmt_outcome.c.asmt_type_id == assessment_id)
+            query = query.where(fact_asmt_outcome.c.asmt_id == assessment_id)
 
     result = connector.get_result(query)
     connector.close_connection()
@@ -102,20 +104,21 @@ def get_student_assessment(params, connector=None):
     connector.open_connection()
 
     # get table metadatas
-    dim_asmt_type = connector.get_table('dim_asmt_type')
+    dim_asmt = connector.get_table('dim_asmt')
     fact_asmt_outcome = connector.get_table('fact_asmt_outcome')
 
     query = None
     # Required both tables
     # Check Table object type for UT
-    if isinstance(dim_asmt_type, Table) and isinstance(fact_asmt_outcome, Table):
-        query = select([dim_asmt_type.c.asmt_type_id,
-                        dim_asmt_type.c.asmt_subject,
-                        dim_asmt_type.c.asmt_type,
-                        dim_asmt_type.c.asmt_period,
-                        dim_asmt_type.c.asmt_version,
-                        dim_asmt_type.c.asmt_grade],
-                       from_obj=[dim_asmt_type.join(fact_asmt_outcome)])
+    if isinstance(dim_asmt, Table) and isinstance(fact_asmt_outcome, Table):
+        query = select([dim_asmt.c.asmt_id,
+                        dim_asmt.c.asmt_subject,
+                        dim_asmt.c.asmt_type,
+                        dim_asmt.c.asmt_period,
+                        dim_asmt.c.asmt_version,
+                        dim_asmt.c.asmt_grade],
+                       from_obj=[dim_asmt
+                                 .join(fact_asmt_outcome)])
         query = query.where(fact_asmt_outcome.c.student_id == student_id)
     result = connector.get_result(query)
     connector.close_connection()

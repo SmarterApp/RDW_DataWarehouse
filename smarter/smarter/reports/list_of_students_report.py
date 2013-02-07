@@ -77,48 +77,48 @@ def get_list_of_students_report(params, connector=None):
     # get sql session
     connector.open_connection()
 
+    # get handle to tables
     dim_student = connector.get_table('dim_student')
-    dim_stdnt_tmprl_data = connector.get_table('dim_stdnt_tmprl_data')
-    dim_grade = connector.get_table('dim_grade')
-    fact_asmt_outcome = connector.get_table('fact_asmt_outcome')
-    dim_asmt_type = connector.get_table('dim_asmt_type')
     dim_teacher = connector.get_table('dim_teacher')
+    dim_asmt = connector.get_table('dim_asmt')
+    fact_asmt_outcome = connector.get_table('fact_asmt_outcome')
 
     students = {}
     query = None
-    if isinstance(dim_student, Table) and isinstance(dim_stdnt_tmprl_data, Table) and isinstance(dim_grade, Table) and isinstance(fact_asmt_outcome, Table) and isinstance(dim_asmt_type, Table):
+    if isinstance(dim_student, Table) and isinstance(dim_teacher, Table) and isinstance(dim_asmt, Table) and isinstance(fact_asmt_outcome, Table):
+
         query = select([dim_student.c.student_id.label('student_id'),
                         dim_student.c.first_name.label('student_first_name'),
                         func.substr(dim_student.c.middle_name, 1, 1).label('student_middle_name'),
                         dim_student.c.last_name.label('student_last_name'),
-                        dim_stdnt_tmprl_data.c.grade_id.label('enrollment_grade'),
+                        fact_asmt_outcome.c.enrl_grade_id.label('enrollment_grade'),
                         dim_teacher.c.first_name.label('teacher_first_name'),
                         dim_teacher.c.last_name.label('teacher_last_name'),
-                        dim_asmt_type.c.asmt_grade.label('asmt_grade'),
-                        dim_asmt_type.c.asmt_subject.label('asmt_subject'),
+                        fact_asmt_outcome.c.asmt_grade_id.label('asmt_grade'),
+                        dim_asmt.c.asmt_subject.label('asmt_subject'),
                         fact_asmt_outcome.c.asmt_score.label('asmt_score'),
-                        fact_asmt_outcome.c.asmt_claim_1_name.label('asmt_claim_1_name'),
-                        fact_asmt_outcome.c.asmt_claim_2_name.label('asmt_claim_2_name'),
-                        fact_asmt_outcome.c.asmt_claim_3_name.label('asmt_claim_3_name'),
-                        fact_asmt_outcome.c.asmt_claim_4_name.label('asmt_claim_4_name'),
+                        fact_asmt_outcome.c.asmt_score_range_min.label('asmt_score_range_min'),
+                        fact_asmt_outcome.c.asmt_score_range_max.label('asmt_score_range_max'),
+                        dim_asmt.c.asmt_claim_1_name.label('asmt_claim_1_name'),
+                        dim_asmt.c.asmt_claim_2_name.label('asmt_claim_2_name'),
+                        dim_asmt.c.asmt_claim_3_name.label('asmt_claim_3_name'),
+                        dim_asmt.c.asmt_claim_4_name.label('asmt_claim_4_name'),
                         fact_asmt_outcome.c.asmt_claim_1_score.label('asmt_claim_1_score'),
                         fact_asmt_outcome.c.asmt_claim_2_score.label('asmt_claim_2_score'),
                         fact_asmt_outcome.c.asmt_claim_3_score.label('asmt_claim_3_score'),
                         fact_asmt_outcome.c.asmt_claim_4_score.label('asmt_claim_4_score')],
                        from_obj=[dim_student
                                  .join(fact_asmt_outcome, dim_student.c.student_id == fact_asmt_outcome.c.student_id)
-                                 .join(dim_asmt_type, dim_asmt_type.c.asmt_type_id == fact_asmt_outcome.c.asmt_type_id)
-                                 .join(dim_stdnt_tmprl_data, dim_stdnt_tmprl_data.c.student_id == dim_student.c.student_id)
+                                 .join(dim_asmt, dim_asmt.c.asmt_id == fact_asmt_outcome.c.asmt_id)
                                  .join(dim_teacher, dim_teacher.c.teacher_id == fact_asmt_outcome.c.teacher_id)])
-        query = query.where(dim_stdnt_tmprl_data.c.school_id == schoolId)
-        query = query.where(and_(dim_asmt_type.c.asmt_grade == asmtGrade))
-        query = query.where(and_(dim_stdnt_tmprl_data.c.district_id == districtId))
+        query = query.where(fact_asmt_outcome.c.school_id == schoolId)
+        query = query.where(and_(fact_asmt_outcome.c.asmt_grade_id == asmtGrade))
+        query = query.where(and_(fact_asmt_outcome.c.district_id == districtId))
 
         if asmtSubject is not None:
-            query = query.where(dim_asmt_type.c.asmt_subject.in_(asmtSubject))
+            query = query.where(dim_asmt.c.asmt_subject.in_(asmtSubject))
 
         results = connector.get_result(query)
-        connector.close_connection()
 
         # Formatting data for Front End
         for result in results:
@@ -142,6 +142,8 @@ def get_list_of_students_report(params, connector=None):
             assessment['teacher_full_name'] = result['teacher_first_name'] + ' ' + result['teacher_last_name']
             assessment['asmt_grade'] = result['asmt_grade']
             assessment['asmt_score'] = result['asmt_score']
+            assessment['asmt_score_range_min'] = result['asmt_score_range_min']
+            assessment['asmt_score_range_max'] = result['asmt_score_range_max']
             assessment['asmt_claim_1_name'] = result['asmt_claim_1_name']
             assessment['asmt_claim_2_name'] = result['asmt_claim_2_name']
             assessment['asmt_claim_3_name'] = result['asmt_claim_3_name']
@@ -162,35 +164,46 @@ def get_list_of_students_report(params, connector=None):
     for key, value in students.items():
         assessments.append(value)
     results['assessments'] = assessments
-    results['cutpoints'] = get_cut_points()
+    results['cutpoints'] = get_cut_points(connector, asmtGrade, asmtSubject)
+    #TODO - restructure this method
+    #       make sure connection always closed even on error
+    connector.close_connection()
     return results
 
 
-# This is throw away function.
 # returning cutpoints in JSON.
-# returing when new schema is used
-def get_cut_points():
+def get_cut_points(connector, asmtGrade, asmtSubject):
     cutpoints = {}
-    math_cutpoint = {}
-    math_cutpoint["asmt_cut_point_name_1"] = "MATH cutpoint name1"
-    math_cutpoint["asmt_cut_point_name_2"] = "MATH cutpoint name2"
-    math_cutpoint["asmt_cut_point_name_3"] = "MATH cutpoint name3"
-    math_cutpoint["asmt_cut_point_name_4"] = "MATH cutpoint name4"
-    math_cutpoint["asmt_cut_point_1"] = 400
-    math_cutpoint["asmt_cut_point_2"] = 600
-    math_cutpoint["asmt_cut_point_3"] = 800
-    math_cutpoint["asmt_cut_point_4"] = 1000
-    cutpoints['MATH'] = math_cutpoint
+    dim_asmt = connector.get_table('dim_asmt')
 
-    ela_cutpoint = {}
-    ela_cutpoint["asmt_cut_point_name_1"] = "ELA cutpoint name1"
-    ela_cutpoint["asmt_cut_point_name_2"] = "ELA cutpoint name2"
-    ela_cutpoint["asmt_cut_point_name_3"] = "ELA cutpoint name3"
-    ela_cutpoint["asmt_cut_point_name_4"] = "ELA cutpoint name4"
-    ela_cutpoint["asmt_cut_point_1"] = 200
-    ela_cutpoint["asmt_cut_point_2"] = 500
-    ela_cutpoint["asmt_cut_point_3"] = 800
-    ela_cutpoint["asmt_cut_point_4"] = 1100
-    cutpoints['ELA'] = ela_cutpoint
+    # construct the query
+    if isinstance(dim_asmt, Table):
+        query = select([dim_asmt.c.asmt_subject.label("asmt_subject"),
+                        dim_asmt.c.asmt_perf_lvl_name_1.label("asmt_cut_point_name_1"),
+                        dim_asmt.c.asmt_perf_lvl_name_2.label("asmt_cut_point_name_2"),
+                        dim_asmt.c.asmt_perf_lvl_name_3.label("asmt_cut_point_name_3"),
+                        dim_asmt.c.asmt_perf_lvl_name_4.label("asmt_cut_point_name_4"),
+                        dim_asmt.c.asmt_cut_point_1.label("asmt_cut_point_1"),
+                        dim_asmt.c.asmt_cut_point_2.label("asmt_cut_point_2"),
+                        dim_asmt.c.asmt_cut_point_3.label("asmt_cut_point_3"),
+                        dim_asmt.c.asmt_cut_point_4.label("asmt_cut_point_4")],
+                       from_obj=[dim_asmt])
+        query = query.where(dim_asmt.c.asmt_grade == asmtGrade)
+        if asmtSubject is not None:
+            query = query.where(dim_asmt.c.asmt_subject.in_(asmtSubject))
+
+        # run it and format the results
+        results = connector.get_result(query)
+        for result in results:
+            cutpoint = {}
+            cutpoint["asmt_cut_point_name_1"] = result["asmt_cut_point_name_1"]
+            cutpoint["asmt_cut_point_name_2"] = result["asmt_cut_point_name_2"]
+            cutpoint["asmt_cut_point_name_3"] = result["asmt_cut_point_name_3"]
+            cutpoint["asmt_cut_point_name_4"] = result["asmt_cut_point_name_4"]
+            cutpoint["asmt_cut_point_1"] = result["asmt_cut_point_1"]
+            cutpoint["asmt_cut_point_2"] = result["asmt_cut_point_2"]
+            cutpoint["asmt_cut_point_3"] = result["asmt_cut_point_3"]
+            cutpoint["asmt_cut_point_4"] = result["asmt_cut_point_4"]
+            cutpoints[result["asmt_subject"]] = cutpoint
 
     return cutpoints

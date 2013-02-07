@@ -145,7 +145,7 @@ class TestGenerateData(unittest.TestCase):
         school_num_in_dist = [25, 67, 10, 128, 245, 199]
         school_type_in_dist = [[14, 6, 2, 3], [38, 14, 13, 2], [4, 5, 1, 0], [40, 42, 41, 5]]
         pos = 0
-        created_dist_list = generate_data.create_districts(state_name, school_num_in_dist, pos);
+        created_dist_list = generate_data.create_districts(state_name, school_num_in_dist, pos)
         self.assertTrue(len(created_dist_list) == len(school_num_in_dist))
 
         expected_zipinit = ZIPCODE_START
@@ -167,7 +167,7 @@ class TestGenerateData(unittest.TestCase):
         state_name = "California"
         school_num_in_dist = []
         pos = 1
-        created_dist_list = generate_data.create_districts(state_name, school_num_in_dist, pos);
+        created_dist_list = generate_data.create_districts(state_name, school_num_in_dist, pos)
         self.assertTrue(len(created_dist_list) == 0)
 
     def test_create_districts_withNotEnoughNames(self):
@@ -178,7 +178,7 @@ class TestGenerateData(unittest.TestCase):
         state_name = "California"
         school_num_in_dist = [25, 67, 10, 128, 15]
 
-        created_dist_list = generate_data.create_districts(state_name, school_num_in_dist, 0);
+        created_dist_list = generate_data.create_districts(state_name, school_num_in_dist, 0)
         self.assertEqual(len(created_dist_list), 0)
         self.assertRaises(ValueError, generate_data.generate_names_from_lists, len(school_num_in_dist), generate_data.birds_list, generate_data.manmals_list)
 
@@ -188,7 +188,7 @@ class TestGenerateData(unittest.TestCase):
         school_num_in_dist = [25, 67, 10, 128, 15]
         pos = 2
 
-        created_dist_list = generate_data.create_districts(state_name, school_num_in_dist, pos);
+        created_dist_list = generate_data.create_districts(state_name, school_num_in_dist, pos)
         self.assertEqual(len(created_dist_list), len(school_num_in_dist))
 
         expected_zipinit = (pos + 1) * ZIPCODE_START
@@ -214,7 +214,7 @@ class TestGenerateData(unittest.TestCase):
         school_type_in_dist = [[14, 6, 2, 3], [38, 14, 13, 2], [4, 5, 1, 0], [40, 42, 41, 5]]
         pos = 2
 
-        created_dist_list = generate_data.create_districts(state_name, school_num_in_dist, pos);
+        created_dist_list = generate_data.create_districts(state_name, school_num_in_dist, pos)
         self.assertEqual(len(created_dist_list), 0)
         self.assertRaises(ValueError, generate_data.generate_names_from_lists, school_num_in_dist[0], generate_data.birds_list, generate_data.fish_list)
 

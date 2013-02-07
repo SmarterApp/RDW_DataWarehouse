@@ -4,7 +4,6 @@ Created on Jan 16, 2013
 @author: swimberly
 '''
 
-import os
 import unittest
 
 import genpeople

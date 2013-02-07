@@ -43,8 +43,10 @@ function setup_virtualenv {
     do
         cd "$WORKSPACE/$var"
         if [ -f setup-develop.py ];  then
+           echo "running setup-develop.py"
            python setup-develop.py develop
         else 
+           echo "running setup.py"
            python setup.py develop
         fi
     done

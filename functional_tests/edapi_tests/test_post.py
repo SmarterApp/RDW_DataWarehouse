@@ -31,7 +31,7 @@ class TestPost(ApiHelper):
 
     def test_valid_content_type_invalid_payload(self):
         self.set_request_header("content-type", "application/json")
-        self._api_helper.set_payload({'studentId': 'abc'})
+        self.set_payload({'studentId': 'abc'})
         self.send_request("POST", "/data/individual_student_report")
         self.check_response_code(412)
         self.check_resp_error("Value 'abc' for field 'studentId' is not of type integer")
@@ -46,7 +46,7 @@ class TestPost(ApiHelper):
         self.check_each_item_in_body_for_fields(["asmt_period", "asmt_claim_2_score", "asmt_claim_4_name", "asmt_claim_3_name", "last_name", "asmt_claim_1_name", "asmt_claim_4_score", "asmt_claim_1_score", "asmt_claim_3_score", "first_name", "asmt_claim_2_name", "asmt_score", "student_id", "asmt_subject", "middle_name"])
 
     def test_list_of_student(self):
-        self._api_helper.set_request_header("content-type", "application/json")
+        self.set_request_header("content-type", "application/json")
         payload = {"districtId": 4, "schoolId": 3, "asmtGrade": "1"}
         self.set_payload(payload)
         self.send_request("POST", "/data/list_of_students")

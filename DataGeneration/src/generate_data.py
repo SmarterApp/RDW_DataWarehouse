@@ -146,8 +146,8 @@ def generate_data(db_states_stat):
                 create_classes_grades_sections(sch, created_state)
 
         # if just need one state data
-        # if(c == 0):
-        #    break
+        if(c == 0):
+            break
         c += 1
 
     create_csv(record_states, STATES)

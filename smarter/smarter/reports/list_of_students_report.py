@@ -103,6 +103,7 @@ def get_list_of_students_report(params, connector=None):
                         fact_asmt_outcome.c.asmt_score.label('asmt_score'),
                         fact_asmt_outcome.c.asmt_score_range_min.label('asmt_score_range_min'),
                         fact_asmt_outcome.c.asmt_score_range_max.label('asmt_score_range_max'),
+                        fact_asmt_outcome.c.asmt_perf_lvl.label('asmt_perf_lvl'),
                         dim_asmt.c.asmt_claim_1_name.label('asmt_claim_1_name'),
                         dim_asmt.c.asmt_claim_2_name.label('asmt_claim_2_name'),
                         dim_asmt.c.asmt_claim_3_name.label('asmt_claim_3_name'),
@@ -148,6 +149,7 @@ def get_list_of_students_report(params, connector=None):
             assessment['asmt_score'] = result['asmt_score']
             assessment['asmt_score_range_min'] = result['asmt_score_range_min']
             assessment['asmt_score_range_max'] = result['asmt_score_range_max']
+            assessment['asmt_perf_lvl'] = result['asmt_perf_lvl']
             assessment['asmt_claim_1_name'] = result['asmt_claim_1_name']
             assessment['asmt_claim_2_name'] = result['asmt_claim_2_name']
             assessment['asmt_claim_3_name'] = result['asmt_claim_3_name']

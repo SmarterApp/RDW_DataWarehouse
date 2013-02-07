@@ -42,9 +42,9 @@ function setup_virtualenv {
     for var in "${INSTALL_PKGS[@]}" 
     do
         cd "$WORKSPACE/$var"
-        if [ -f setup-develop.py ];  then
-           echo "running setup-develop.py"
-           python setup-develop.py develop
+        if [ -f setup-developer.py ];  then
+           echo "running setup-developer.py"
+           python setup-developer.py develop
         else 
            echo "running setup.py"
            python setup.py develop

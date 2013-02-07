@@ -32,7 +32,8 @@ class EdTestBase(unittest.TestCase):
             return webdriver.Firefox()
 
     def default_config(self):
+        # TODO: fix this
         return self._config.items('DEFAULT')
 
     def get_url(self):
-        return "http://{0}:{1}".format(self.default_config()['host'], self.default_config()['port'])
+        return "http://{0}:{1}".format(self._config.get('DEFAULT','host'), self._config.get('DEFAULT','port'))

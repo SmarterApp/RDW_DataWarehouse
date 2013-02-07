@@ -12,7 +12,6 @@ class ListOfStudents (EdTestBase):
     """Tests for List of Students"""
     def __init__(self, *args, **kwargs):
         EdTestBase.__init__(self, *args, **kwargs)
-        unittest.TestCase.__init__(self, *args, **kwargs)
 
     ''' test_open_website: Open webpage '''
     def setUp(self):

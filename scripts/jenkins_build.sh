@@ -174,7 +174,6 @@ function run_functional_tests {
 
 function create_sym_link_for_apache {
     echo "inside create_sym_link_for_apache 1"
-    ls -l  ${APACHE_DIR}/pythonpath/
     APACHE_DIR="/home/jenkins/apache_dir"
     echo "inside create_sym_link_for_apache 2"
     ls -l  ${APACHE_DIR}/pythonpath/

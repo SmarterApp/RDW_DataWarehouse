@@ -29,6 +29,9 @@ def get_districts(params, connector=None):
 
     state_code = params[__state_code]
 
+    # get sql session
+    connector.open_connection()
+
     dim_district = connector.get_table(__dim_district)
 
     query = None

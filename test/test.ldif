@@ -101,6 +101,7 @@ objectClass: top
 cn: Linda Kim
 sn: Kim
 uid: linda.kim
+userPassword: linda.kim1234
 
 dn: cn=Charles Gray,ou=teachers,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
 objectClass: inetOrgPerson
@@ -108,6 +109,7 @@ objectClass: top
 cn: Charles Gray
 sn: Gray
 uid: cgray
+userPassword: cgray1234
 
 dn: cn=Rebecca Braverman,ou=teachers,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
 objectClass: inetOrgPerson
@@ -115,6 +117,7 @@ objectClass: top
 cn: Rebecca Braverman
 sn: Braverman
 uid: rbraverman
+userPassword: rbraverman1234
 
 dn: cn=James Stevenson,ou=system_administrators,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
 objectClass: inetOrgPerson
@@ -122,6 +125,7 @@ objectClass: top
 cn: James Stevenson
 sn: Stevenson
 uid: jstevenson
+userPassword: jstevenson1234
 
 dn: cn=Matt Sollars,ou=students,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
 objectClass: inetOrgPerson
@@ -129,6 +133,7 @@ objectClass: top
 cn: Matt Sollars
 sn: Sollares
 uid: msollars
+userPassword: msollars1234
 
 dn: cn=Jamie Hine,ou=deployemnt_administrators,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
 objectClass: inetOrgPerson
@@ -136,6 +141,7 @@ objectClass: top
 cn: Jamie Hine
 sn: Hine
 uid: jhine
+userPassword: jhine1234
 
 dn: cn=Kelly Tidd,ou=system_administrators,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
 objectClass: inetOrgPerson
@@ -143,6 +149,7 @@ objectClass: top
 cn: Kelly Tidd
 sn: Tidd
 uid: ktidd
+userPassword: ktidd1234
 
 dn: cn=Louisa Mui,ou=data_loaders,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
 objectClass: inetOrgPerson
@@ -150,6 +157,7 @@ objectClass: top
 cn: Louisa Mui
 sn: Mui
 uid: lmui
+userPassword: lmui1234
 
 dn: cn=Hugh Goree,ou=data_correctors,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
 objectClass: inetOrgPerson
@@ -157,6 +165,7 @@ objectClass: top
 cn: Hugh Goree
 sn: Goree
 uid: hgoree
+userPassword: hgoree1234
 
 dn: cn=Clare Seabaugh,ou=psychometricians,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
 objectClass: inetOrgPerson
@@ -164,6 +173,7 @@ objectClass: top
 cn: Clare Seabaugh
 sn: Seabaugh
 uid: cseabaugh
+userPassword: cseabaugh1234
 
 dn: cn=Katy Bester,ou=state_data_extractors,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
 objectClass: inetOrgPerson
@@ -171,6 +181,7 @@ objectClass: top
 cn: Katy Bester
 sn: Bester
 uid: kbester
+userPassword: kbester1234
 
 dn: cn=Erik Croker,ou=higher_education_admissions_officers,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
 objectClass: inetOrgPerson
@@ -178,6 +189,7 @@ objectClass: top
 cn: Erik Croker
 sn: Croker
 uid: ecroker
+userPassword: ecroker1234
 
 dn: cn=Clayton Croxton,ou=parents,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
 objectClass: inetOrgPerson
@@ -185,6 +197,7 @@ objectClass: top
 cn: Clayton Croxton
 sn: Croxton
 uid: ccroxton
+userPassword: ccroxton1234
 
 dn: cn=Amie Stroop,ou=school_education_administrators_1,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
 objectClass: inetOrgPerson
@@ -192,6 +205,7 @@ objectClass: top
 cn: Amie Stroop
 sn: Stroop
 uid: astroop
+userPassword: astroop1234
 
 dn: cn=Ted Lazaro,ou=school_education_administrators_2,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
 objectClass: inetOrgPerson
@@ -199,6 +213,7 @@ objectClass: top
 cn: Ted Lazaro
 sn: Lazaro
 uid: tlazaro
+userPassword: tlazaro1234
 
 dn: cn=Guy Man,ou=district_education_administrators_1,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
 objectClass: inetOrgPerson
@@ -206,6 +221,7 @@ objectClass: top
 cn: Guy Man
 sn: Man
 uid: gman
+userPassword: gman1234
 
 dn: cn=Selena Magnusson,ou=district_education_administrators_2,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
 objectClass: inetOrgPerson
@@ -213,6 +229,7 @@ objectClass: top
 cn: Selena Magnusson
 sn: Magnusson
 uid: smagnusson
+userPassword: smagnusson1234
 
 dn: cn=Jessie Mollica,ou=state_education_administrators_1,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
 objectClass: inetOrgPerson
@@ -220,6 +237,7 @@ objectClass: top
 cn: Jessie Mollica
 sn: Mollica
 uid: jmollica
+userPassword: jmollica1234
 
 dn: cn=Liza Bopp,ou=state_education_administrators_2,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
 objectClass: inetOrgPerson
@@ -227,6 +245,7 @@ objectClass: top
 cn: Liza Bopp
 sn: Bopp
 uid: lbopp
+userPassword: lbopp1234
 
 dn: cn=Clinton Degraw,ou=consortium_education_administrators_1,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
 objectClass: inetOrgPerson
@@ -234,6 +253,7 @@ objectClass: top
 cn: Clinton Degraw
 sn: Degraw
 uid: cdegraw
+userPassword: cdegraw1234
 
 dn: cn=Elnora Seinfeld,ou=consortium_education_administrators_2,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
 objectClass: inetOrgPerson
@@ -241,5 +261,4 @@ objectClass: top
 cn: Elnora Seinfeld
 sn: Seinfeld
 uid: eseinfeld
-
-
+userPassword: eseinfeld1234

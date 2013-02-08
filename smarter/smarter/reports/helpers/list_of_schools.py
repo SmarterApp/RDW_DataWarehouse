@@ -33,6 +33,10 @@ def get_schools(params, connector=None):
     # if connector is not supplied, use DBConnector
     if connector is None:
         connector = DBConnector()
+
+    # get sql session
+    connector.open_connection()
+
     district_name = params[__district_name]
     dim_school = connector.get_table(__dim_school)
 

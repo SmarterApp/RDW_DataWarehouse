@@ -1,10 +1,7 @@
 #!/bin/bash
 
 set -e # Exit on errors
-function test {
-    echo $@
-    ls -l /var/lib/jenkins/jobs/Smarter_Functional_Tests/workspace/edwaretest_venv/lib/python3.3/site-packages
-}
+
 function check_vars {
 
     # This is really just to make sure that we're running this on Jenkins
@@ -173,38 +170,19 @@ function run_functional_tests {
 }	
 
 function create_sym_link_for_apache {
-    echo "inside create_sym_link_for_apache 1"
     APACHE_DIR="/home/jenkins/apache_dir"
-    echo "inside create_sym_link_for_apache 2"
-    ls -l  ${APACHE_DIR}/pythonpath/
-    if [ -d {APACHE_DIR} ]; then
+    if [ -d ${APACHE_DIR} ]; then
         rm -rf ${APACHE_DIR}
     fi
-    echo "inside create_sym_link_for_apache 3"
-    ls -l  ${APACHE_DIR}/pythonpath/
     mkdir -p ${APACHE_DIR}
-    echo "inside create_sym_link_for_apache 4"
-    ls -l  ${APACHE_DIR}/pythonpath/
     /bin/ln -sf ${VIRTUALENV_DIR}/lib/python3.3/site-packages ${APACHE_DIR}/pythonpath
-    echo "inside create_sym_link_for_apache 5"
-    ls -l  ${APACHE_DIR}/pythonpath/
     /bin/ln -sf ${WORKSPACE}/smarter/test.ini ${APACHE_DIR}/development_ini
-    echo "inside create_sym_link_for_apache 6"
-    ls -l  ${APACHE_DIR}/pythonpath/
     /bin/ln -sf ${WORKSPACE}/test_deploy/pyramid.wsgi ${APACHE_DIR}/pyramid_conf
-    echo "inside create_sym_link_for_apache 7"
-    ls -l  ${APACHE_DIR}/pythonpath/
     /bin/ln -sf ${VIRTUALENV_DIR} ${APACHE_DIR}/venv
-    echo "inside create_sym_link_for_apache 8"
-    ls -l  ${APACHE_DIR}/pythonpath/
-    echo "inside create_sym_link_for_apache 9"
 
    # temp solution for LESS
-    echo "inside create_sym_link_for_apache 10"
    PATH=$PATH:/usr/local/bin
-    echo "inside create_sym_link_for_apache 11"
    /usr/local/bin/lessc ${WORKSPACE}/assets/less/style.less ${WORKSPACE}/assets/css/style.css
-    echo "exiting create_sym_link_for_apache 12"
 }
 
 function restart_apache {
@@ -217,44 +195,26 @@ function restart_apache {
 }
 
 function main {
-    test 1
     get_opts $@
-    test 2
     check_vars
-    test 3
     set_vars
-    test 4
     setup_virtualenv $@
-    test 5
     if [ ${MODE:=""} == "UNIT" ]; then
-    test 6
         setup_unit_test_dependencies
-    test 7
         if $RUN_UNIT_TEST ; then
-    test 8
             run_unit_tests $MAIN_PKG
         fi
-    test 9
         check_pep8 $MAIN_PKG
-    test 10
     elif [ ${MODE:=""} == "FUNC" ]; then
-    test 11
         create_sym_link_for_apache
-    test 12 
         restart_apache
-    test 13
         setup_functional_test_dependencies
-    test 14
         run_functional_tests
-    test 15
         check_pep8 "$FUNC_DIR"
-    test 16
     fi
 }
 
-    test
 main $@
-    test
 
 # Completed successfully
 exit 0

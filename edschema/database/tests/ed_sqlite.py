@@ -3,6 +3,7 @@ Created on Feb 8, 2013
 
 @author: tosako
 '''
+import os
 from sqlalchemy.engine import create_engine
 from database.connector import DbUtil, IDbUtil, DBConnector
 from zope import component
@@ -26,15 +27,9 @@ def generate_data():
 
     table = dbconnector.get_table('dim_district')
 
-    with open('resources/dim_district.csv') as file:
+    here = os.path.abspath(os.path.dirname(__file__))
+
+    with open(here + '/resources/dim_district.csv') as file:
         reader = csv.DictReader(file, delimiter=',')
         for row in reader:
             connection.execute(table.insert().values(**row))
-
-    query = select([table.c.district_id],
-                   from_obj=[table])
-    # Temp test
-    results = dbconnector.get_result(query)
-    assert len(results) == 1
-
-    return results

@@ -179,11 +179,11 @@ function create_sym_link_for_apache {
     /bin/ln -sf ${WORKSPACE}/smarter/test.ini ${APACHE_DIR}/development_ini
     /bin/ln -sf ${WORKSPACE}/test_deploy/pyramid.wsgi ${APACHE_DIR}/pyramid_conf
     /bin/ln -sf ${VIRTUALENV_DIR} ${APACHE_DIR}/venv
-
+    ls -l  ${APACHE_DIR}/pythonpath
 
    # temp solution for LESS
    PATH=$PATH:/usr/local/bin
-   /usr/local/bin/lessc "$WORKSPACE/assets/less/style.less" "$WORKSPACE/assets/css/style.css"
+   /usr/local/bin/lessc ${WORKSPACE}/assets/less/style.less ${WORKSPACE}/assets/css/style.css
 }
 
 function restart_apache {

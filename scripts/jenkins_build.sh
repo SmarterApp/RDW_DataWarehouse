@@ -173,6 +173,7 @@ function run_functional_tests {
 }	
 
 function create_sym_link_for_apache {
+    echo "inside create_sym_link_for_apache"
     APACHE_DIR="/home/jenkins/apache_dir"
     if [ -d {APACHE_DIR} ]; then
         rm -rf ${APACHE_DIR}
@@ -187,6 +188,7 @@ function create_sym_link_for_apache {
    # temp solution for LESS
    PATH=$PATH:/usr/local/bin
    /usr/local/bin/lessc ${WORKSPACE}/assets/less/style.less ${WORKSPACE}/assets/css/style.css
+    echo "exiting create_sym_link_for_apache"
 }
 
 function restart_apache {

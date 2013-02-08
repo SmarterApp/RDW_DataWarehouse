@@ -1,7 +1,9 @@
 #!/bin/bash
 
 set -e # Exit on errors
-
+function test {
+    ls -l /var/lib/jenkins/jobs/Smarter_Functional_Tests/workspace/edwaretest_venv/lib/python3.3/site-packages
+}
 function check_vars {
 
     # This is really just to make sure that we're running this on Jenkins
@@ -196,26 +198,44 @@ function restart_apache {
 }
 
 function main {
+    test
     get_opts $@
+    test
     check_vars
+    test
     set_vars
+    test
     setup_virtualenv $@
+    test
     if [ ${MODE:=""} == "UNIT" ]; then
+    test
         setup_unit_test_dependencies
+    test
         if $RUN_UNIT_TEST ; then
+    test
             run_unit_tests $MAIN_PKG
         fi
+    test
         check_pep8 $MAIN_PKG
+    test
     elif [ ${MODE:=""} == "FUNC" ]; then
+    test
         create_sym_link_for_apache
+    test
         restart_apache
+    test
         setup_functional_test_dependencies
+    test
         run_functional_tests
+    test
         check_pep8 "$FUNC_DIR"
+    test
     fi
 }
 
+    test
 main $@
+    test
 
 # Completed successfully
 exit 0

@@ -174,20 +174,27 @@ function run_functional_tests {
 
 function create_sym_link_for_apache {
     echo "inside create_sym_link_for_apache 1"
+    ls -l  ${APACHE_DIR}/pythonpath/
     APACHE_DIR="/home/jenkins/apache_dir"
     echo "inside create_sym_link_for_apache 2"
+    ls -l  ${APACHE_DIR}/pythonpath/
     if [ -d {APACHE_DIR} ]; then
         rm -rf ${APACHE_DIR}
     fi
     echo "inside create_sym_link_for_apache 3"
+    ls -l  ${APACHE_DIR}/pythonpath/
     mkdir -p ${APACHE_DIR}
     echo "inside create_sym_link_for_apache 4"
+    ls -l  ${APACHE_DIR}/pythonpath/
     /bin/ln -sf ${VIRTUALENV_DIR}/lib/python3.3/site-packages ${APACHE_DIR}/pythonpath
     echo "inside create_sym_link_for_apache 5"
+    ls -l  ${APACHE_DIR}/pythonpath/
     /bin/ln -sf ${WORKSPACE}/smarter/test.ini ${APACHE_DIR}/development_ini
     echo "inside create_sym_link_for_apache 6"
+    ls -l  ${APACHE_DIR}/pythonpath/
     /bin/ln -sf ${WORKSPACE}/test_deploy/pyramid.wsgi ${APACHE_DIR}/pyramid_conf
     echo "inside create_sym_link_for_apache 7"
+    ls -l  ${APACHE_DIR}/pythonpath/
     /bin/ln -sf ${VIRTUALENV_DIR} ${APACHE_DIR}/venv
     echo "inside create_sym_link_for_apache 8"
     ls -l  ${APACHE_DIR}/pythonpath/

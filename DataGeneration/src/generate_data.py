@@ -1,6 +1,6 @@
 import math
-import random
 from datetime import date
+import random
 
 import py1
 from queries import *
@@ -83,7 +83,7 @@ def generate_data(db_states_stat):
     record_states = []
     for state in db_states_stat:
         # create state
-        created_state = State(state['state_code'], state['state_name'], state['total_district'])
+        created_state = State(state['state_code'], state['state_name'], state['total_district'], state['state_code'])
         total_count[0] += 1
         record_states.append(created_state)
 
@@ -125,9 +125,9 @@ def generate_data(db_states_stat):
         print("Number of students  ", state['total_student'], "    ", sum(stu_num_in_school_made))
         # continue
         # create districts for each state
-        created_dist_list = create_districts(created_state.state_name, school_num_in_dist_made, c)
+        created_dist_list = create_districts(created_state.state_id, school_num_in_dist_made, c)
         total_count[1] += len(created_dist_list)
-        create_csv(created_dist_list, INSTITUTIONS)
+        create_csv(created_dist_list, DISTRICTS)
         shift = 0
 
         for dist in created_dist_list:
@@ -136,7 +136,7 @@ def generate_data(db_states_stat):
                                                           stutea_ratio_in_school_made[shift: shift + dist.num_of_schools],
                                                           dist, school_type_in_state)
             total_count[2] += len(school_list)
-            create_csv(school_list, INSTITUTIONS)
+            create_csv(school_list, SCHOOLS)
             create_csv(wheretaken_list, WHERETAKEN)
 
             shift += dist.num_of_schools
@@ -175,12 +175,12 @@ def make_school_types(perc, total):
             control = sum(count)
 
         count.append(max(total - control, 0))
-        repeat_types.extend([SCHOOL_LEVELS_INFO[-1][0]] * count[-1])
+        repeat_types.extend([SCHOOL_LEVELS_INFO[i][0]] * count[-1])
 
     return repeat_types
 
 
-def create_districts(state_name, school_num_in_dist_made, pos):
+def create_districts(state_code, school_num_in_dist_made, pos):
     '''
     Main function to generate list of district for a state
     '''
@@ -212,9 +212,11 @@ def create_districts(state_name, school_num_in_dist_made, pos):
                 return []
 
             # create district object
-            dist = District(idgen.get_id(), state_name, (names[i] + " " + random.choice(DIST_SUFFIX)),
-                            school_num_in_dist_made[i], address[i],
-                            (zip_init, (zip_init + zip_dist)), city_names, INST_CATEGORIES[2])
+            district_id = idgen.get_id()
+            district_external_id = 'district_external_id'
+            district_name = names[i] + " " + random.choice(DIST_SUFFIX)
+            address1 = address[i]
+            dist = District(district_id, district_external_id, district_name, state_code, school_num_in_dist_made[i], (zip_init, (zip_init + zip_dist)), city_names, address1, zip_init)
             districts_list.append(dist)
             total_school += dist.num_of_schools
             zip_init += zip_dist
@@ -245,28 +247,33 @@ def create_schools(stu_num_in_school_made, stutea_ratio_in_school_made, distr, s
 
     # generate each school and where-taken row
     for i in range(count):
-        # get school_type
-        school_type = random.choice(school_type_in_state)
-        scho_map = {'Primary': 0, 'Middle': 1, 'High': 2, 'Other': 3}
-        suf = random.choice(SCHOOL_LEVELS_INFO[scho_map.get(school_type)][1])
-        grade_range = random.choice(SCHOOL_LEVELS_INFO[scho_map.get(school_type)][2])
+        # get categories
+        school_categories_type = random.choice(school_type_in_state)
+        suf = random.choice(SCHOOL_LEVELS_INFO[SCHOOL_ORDER_MAP.get(school_categories_type)][1])
+        grade_range = random.choice(SCHOOL_LEVELS_INFO[SCHOOL_ORDER_MAP.get(school_categories_type)][2])
         low_grade = grade_range[0]
         high_grade = grade_range[1]
 
+        # create common fields
+        sch_name = names[i] + " " + suf
+        address_1 = address[i]
+        city = random.choice(list(city_zipcode_map.items()))
+        city_name = city[0]
+        zip_code = random.choice(range(city[1][0], city[1][1]))
+
         # create one row of where-taken
-        sch_add1 = address[i]
-        place_id = idgen.get_id()
-        r_city = random.choice(list(city_zipcode_map.items()))
-        r_zip = random.choice(range(r_city[1][0], r_city[1][1]))
-        where_taken = WhereTaken(place_id, sch_add1, '', '', r_city[0], distr.state_name, r_zip, 'US')
+        wheretaken_id = idgen.get_id()
+        wheretaken_name = 'wheretaken_name'
+        where_taken = WhereTaken(wheretaken_id, wheretaken_name, distr.district_name, address_1, city_name, zip_code, distr.state_code, 'US')
         wheretaken_list.append(where_taken)
 
         # create one row of school
         sch_id = idgen.get_id()
-        sch_name = names[i] + " " + suf
-        school = School(sch_id, distr.dist_id, sch_name, stu_num_in_school_made[i],
-                stutea_ratio_in_school_made[i], sch_add1, school_type,
-                low_grade, high_grade, place_id, INST_CATEGORIES[3])
+        school_external_id = 'school_external_id'
+        school_type = random.choice(SCHOOL_TYPES)
+        school = School(sch_id, school_external_id, sch_name, distr.district_name, distr.state_code,
+                        stu_num_in_school_made[i], stutea_ratio_in_school_made[i], low_grade, high_grade,
+                        school_categories_type, school_type, address_1, city_name, zip_code)
         school_list.append(school)
 
     return school_list, wheretaken_list
@@ -390,7 +397,7 @@ def create_classes_grades_sections(sch, state):
         classforgrade_list = create_classes_for_grade(grade_students, grade_teachers)
 
         # create_sections_stuandtea_csv(state['code'], classforgrade_list, grade, sch.sch_id, sch.dist_name, idgen)
-        student_temporal_list = create_student_temporal_data(state.state_id, classforgrade_list, grade, sch.sch_id, sch.dist_id)
+        student_temporal_list = create_student_temporal_data(state.state_id, classforgrade_list, grade, sch.sch_id, sch.dist_name)
         create_csv(student_temporal_list, STUDENT_SECTIONS)
         create_csv(classforgrade_list, CLASSES)
 
@@ -400,7 +407,7 @@ def create_classes_grades_sections(sch, state):
 
         dates_taken1 = generate_dates_taken(2000)
         dates_taken2 = generate_dates_taken(2000)
-        print("len of grade students ", len(grade_students), "len of classforgrade_list ", len(classforgrade_list), 
+        print("len of grade students ", len(grade_students), "len of classforgrade_list ", len(classforgrade_list),
               "len of student_temporal_list ", len(student_temporal_list), "len of scores ", len(scores))
         for stu_tmprl in student_temporal_list:
             for score in scores.items():
@@ -427,7 +434,7 @@ def create_classes_grades_sections(sch, state):
                     date_taken = date_taken.replace(year=int(year))
                     if (len(score[1]) == 0):
                         print("*********Import**********", new_id, asmt_id, stu_tmprl.student_id, stu_tmprl.student_tmprl_id, teacher_id, date_taken, sch.place_id)
-                    outcome = AssessmentOutcome(new_id, asmt_id, stu_tmprl.student_id, stu_tmprl.student_tmprl_id, teacher_id, date_taken, sch.place_id, score[1].pop(), 'cdate?')
+                    outcome = AssessmentOutcome(new_id, asmt_id, stu_tmprl.student_id, stu_tmprl.student_tmprl_id, teacher_id, date_taken, sch.sch_id, score[1].pop(), 'cdate?')
                     assessment_outcome_list.append(outcome)
                 elif stu_tmprl.student_class.sub_name == asmt.subject:
                     new_id = idgen.get_id()
@@ -448,7 +455,7 @@ def create_classes_grades_sections(sch, state):
                     if (len(score[1]) == 0):
                         print("*********Import**********", new_id, asmt_id, stu_tmprl.student_id, stu_tmprl.student_tmprl_id, teacher_id, date_taken, sch.place_id)
 
-                    outcome = HistAssessmentOutcome(new_id, asmt_id, stu_tmprl.student_id, stu_tmprl.student_tmprl_id, date_taken, sch.place_id, score[1].pop(), 'cdate?', 'hdate?')
+                    outcome = HistAssessmentOutcome(new_id, asmt_id, stu_tmprl.student_id, stu_tmprl.student_tmprl_id, date_taken, sch.sch_id, score[1].pop(), 'cdate?', 'hdate?')
                     hist_assessment_outcome_list.append(outcome)
 
         create_csv(assessment_outcome_list, ASSESSMENT_OUTCOME)
@@ -477,7 +484,7 @@ def generate_dates_taken(year):
     return {'BOY': boy_date, 'MOY': moy_date, 'EOY': eoy_date}
 
 
-def create_student_temporal_data(state_code, class_list, grade, school_id, district_id):
+def create_student_temporal_data(state_code, class_list, grade, school_id, dist_name):
     '''
     Creates and returns a list of StudentTemporalData objects
     '''
@@ -488,7 +495,7 @@ def create_student_temporal_data(state_code, class_list, grade, school_id, distr
         for sect, stus in cls.section_stu_map.items():
             for stu in stus:
                 tmprl_id = idgen.get_id()
-                student_temporal = StudentTemporalData(tmprl_id, stu.student_id, grade, district_id, school_id, cls, sect)
+                student_temporal = StudentTemporalData(tmprl_id, stu.student_id, grade, dist_name, school_id, cls, sect)
                 temporal_list.append(student_temporal)
 
     return temporal_list

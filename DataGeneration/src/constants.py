@@ -7,11 +7,14 @@ MAMMALS_FILE = DATAFILE_PATH + "/datafiles/name_lists/mammals.txt"
 FISH_FILE = DATAFILE_PATH + "/datafiles/name_lists/fish.txt"
 
 SCHOOL_LEVELS_INFO = [
-                    ['Primary', ['EL SCH', 'ELEM', 'CTR', 'ELEMENTARY SCHOOL', 'PRIMARY', 'ELEMENTARY', 'CETR, ELEM', 'SCH'], [[0, 5], [1, 5], [1, 6]]],
-                    ['Middle', ['MIDDLE SCHOOL', 'COMMUNITY MIDDLE', 'MIDDLE', 'JUNIOR HIGH', 'INTERMEDIATE SCHOOL', 'JR MIDDLE', 'MS'], [[6, 8], [5, 8], [7, 9]]],
-                    ['High', ['HIGH SCH', 'HIGH SCHOOL', 'HIGH', 'HS', 'SENIOR HIGH'], [[9, 12], [10, 12]]],
-                    ['Other', ['SCH', 'SCHOOL'], [[6, 12], [9, 12]]]
-                    ]
+                      ['Elementary School', ['EL SCH', 'ELEM', 'CTR', 'ELEMENTARY SCHOOL', 'PRIMARY', 'ELEMENTARY', 'CETR, ELEM', 'SCH'], [[0, 5], [1, 5], [1, 6]]],
+                     ['Middle School', ['MIDDLE SCHOOL', 'COMMUNITY MIDDLE', 'MIDDLE', 'JUNIOR HIGH', 'INTERMEDIATE SCHOOL', 'JR MIDDLE', 'MS'], [[6, 8], [5, 8], [7, 9]]],
+                     ['High School', ['HIGH SCH', 'HIGH SCHOOL', 'HIGH', 'HS', 'SENIOR HIGH'], [[9, 12], [10, 12]]],
+                     ['Other', ['SCH', 'SCHOOL'], [[6, 12], [9, 12]]]
+                     ]
+
+SCHOOL_ORDER_MAP = {'Elementary School': 0, 'Middle School':1, 'High School':2, 'Other':3}
+SCHOOL_TYPES = ['Alternative', 'Regular', 'Special Education', 'Vocational', 'JJAEP', 'DAEP']
 
 DIST_SUFFIX = ['DISTRICT', 'SCHOOL DISTRICT', 'SCHOOLS', 'COUNTY SCHOOLS', 'PUBLIC SHCOOLS', 'SD']
 ADD_SUFFIX = ["ROAD", "AVE", "STREET", "SOUTH AVE", "NORTH AVE", "WAY"]
@@ -65,7 +68,7 @@ STUDENTS = DATAFILE_PATH + '/datafiles/csv/students.csv'
 WHERETAKEN = DATAFILE_PATH + '/datafiles/csv/wheretaken.csv'
 INSTITUTIONS = DATAFILE_PATH + '/datafiles/csv/institutions.csv'
 
-ENT_LIST = [STATES, PARENTS, ASSESSMENT_TYPES, STUDENT_SECTIONS, TEACHER_SECTIONS, CLASSES, SECTIONS, STUDENTS, WHERETAKEN, INSTITUTIONS, TEACHERS, ASSESSMENT_OUTCOME, HIST_ASSESSMENT_OUTCOME]
+ENT_LIST = [STATES, DISTRICTS, SCHOOLS, PARENTS, ASSESSMENT_TYPES, STUDENT_SECTIONS, TEACHER_SECTIONS, CLASSES, SECTIONS, STUDENTS, WHERETAKEN, TEACHERS, ASSESSMENT_OUTCOME, HIST_ASSESSMENT_OUTCOME]
 
 ZIPCODE_START = 10000
 ZIPCODE_RANG_INSTATE = 5000

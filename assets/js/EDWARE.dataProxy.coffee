@@ -26,7 +26,7 @@ define [
           data
       error: (xhr, ajaxOptions, thrownError) ->
         edwareUtil.displayErrorMessage xhr.status + ": " + thrownError
-        check401Error xhr.status
+        #check401Error xhr.status
       )
 
   #

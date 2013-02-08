@@ -5,6 +5,9 @@ requires = [
     'zope.component >= 4.0.2',
     'zope.interface >= 4.0.3']
 
+tests_require = requires + [
+    'sqlite3']
+
 setup(name='edschema',
       version='0.0',
       description='Schema for EdWare',
@@ -22,6 +25,7 @@ setup(name='edschema',
       zip_safe=False,
       test_suite='nose.collector',
       install_requires=requires,
+      tests_require=tests_require,
       entry_points="""\
       """,
       )

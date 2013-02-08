@@ -21,7 +21,9 @@ def main(global_config, **settings):
     config = Configurator(settings=settings)
 
     # zope registration
-    dbUtil = DbUtil("sqlalchemy.", settings)
+    engine = engine_from_config(settings, "sqlalchemy.", pool_size=20, max_overflow=10)
+    metadata = generate_ed_metadata(settings['edschema.schema_name'])
+    dbUtil = DbUtil(engine=engine, metadata=metadata)
     component.provideUtility(dbUtil, IDbUtil)
 
     # include add routes from edapi. Calls includeme

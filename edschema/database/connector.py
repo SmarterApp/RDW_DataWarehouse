@@ -22,9 +22,9 @@ class IDbUtil(interface.Interface):
 
 @implementer(IDbUtil)
 class DbUtil:
-    def __init__(self, prefix, configuration):
-        self.__engine = engine_from_config(configuration, prefix, pool_size=20, max_overflow=10)
-        self.__metadata = generate_ed_metadata(configuration['edschema.schema_name'])
+    def __init__(self, engine, metadata=None):
+        self.__engine = engine
+        self.__metadata = metadata
 
     def get_engine(self):
         return self.__engine

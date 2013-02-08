@@ -176,6 +176,7 @@ function create_sym_link_for_apache {
 
 
    # temp solution for LESS
+   export PATH=$PATH:/usr/local/bin
    /usr/local/bin/lessc "$WORKSPACE/assets/less/style.less" "$WORKSPACE/assets/css/style.css"
 }
 

@@ -2,6 +2,7 @@
 
 set -e # Exit on errors
 function test {
+    echo $@
     ls -l /var/lib/jenkins/jobs/Smarter_Functional_Tests/workspace/edwaretest_venv/lib/python3.3/site-packages
 }
 function check_vars {
@@ -198,38 +199,38 @@ function restart_apache {
 }
 
 function main {
-    test
+    test 1
     get_opts $@
-    test
+    test 2
     check_vars
-    test
+    test 3
     set_vars
-    test
+    test 4
     setup_virtualenv $@
-    test
+    test 5
     if [ ${MODE:=""} == "UNIT" ]; then
-    test
+    test 6
         setup_unit_test_dependencies
-    test
+    test 7
         if $RUN_UNIT_TEST ; then
-    test
+    test 8
             run_unit_tests $MAIN_PKG
         fi
-    test
+    test 9
         check_pep8 $MAIN_PKG
-    test
+    test 10
     elif [ ${MODE:=""} == "FUNC" ]; then
-    test
+    test 11
         create_sym_link_for_apache
-    test
+    test 12 
         restart_apache
-    test
+    test 13
         setup_functional_test_dependencies
-    test
+    test 14
         run_functional_tests
-    test
+    test 15
         check_pep8 "$FUNC_DIR"
-    test
+    test 16
     fi
 }
 

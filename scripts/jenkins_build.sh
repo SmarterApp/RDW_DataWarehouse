@@ -173,22 +173,32 @@ function run_functional_tests {
 }	
 
 function create_sym_link_for_apache {
-    echo "inside create_sym_link_for_apache"
+    echo "inside create_sym_link_for_apache 1"
     APACHE_DIR="/home/jenkins/apache_dir"
+    echo "inside create_sym_link_for_apache 2"
     if [ -d {APACHE_DIR} ]; then
         rm -rf ${APACHE_DIR}
     fi
+    echo "inside create_sym_link_for_apache 3"
     mkdir -p ${APACHE_DIR}
+    echo "inside create_sym_link_for_apache 4"
     /bin/ln -sf ${VIRTUALENV_DIR}/lib/python3.3/site-packages ${APACHE_DIR}/pythonpath
+    echo "inside create_sym_link_for_apache 5"
     /bin/ln -sf ${WORKSPACE}/smarter/test.ini ${APACHE_DIR}/development_ini
+    echo "inside create_sym_link_for_apache 6"
     /bin/ln -sf ${WORKSPACE}/test_deploy/pyramid.wsgi ${APACHE_DIR}/pyramid_conf
+    echo "inside create_sym_link_for_apache 7"
     /bin/ln -sf ${VIRTUALENV_DIR} ${APACHE_DIR}/venv
+    echo "inside create_sym_link_for_apache 8"
     ls -l  ${APACHE_DIR}/pythonpath/
+    echo "inside create_sym_link_for_apache 9"
 
    # temp solution for LESS
+    echo "inside create_sym_link_for_apache 10"
    PATH=$PATH:/usr/local/bin
+    echo "inside create_sym_link_for_apache 11"
    /usr/local/bin/lessc ${WORKSPACE}/assets/less/style.less ${WORKSPACE}/assets/css/style.css
-    echo "exiting create_sym_link_for_apache"
+    echo "exiting create_sym_link_for_apache 12"
 }
 
 function restart_apache {

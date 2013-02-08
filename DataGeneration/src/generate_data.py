@@ -15,6 +15,7 @@ from constants import *
 from dbconnection import get_db_conn
 from assessment import generate_assmts_for_students
 from xmlrpc.client import MAXINT
+import uuid
 
 birds_list = []
 mammals_list = []
@@ -213,7 +214,7 @@ def create_districts(state_code, school_num_in_dist_made, pos):
 
             # create district object
             district_id = idgen.get_id()
-            district_external_id = 'district_external_id'
+            district_external_id = uuid.uuid4()
             district_name = names[i] + " " + random.choice(DIST_SUFFIX)
             address1 = address[i]
             dist = District(district_id, district_external_id, district_name, state_code, school_num_in_dist_made[i], (zip_init, (zip_init + zip_dist)), city_names, address1, zip_init)
@@ -263,13 +264,13 @@ def create_schools(stu_num_in_school_made, stutea_ratio_in_school_made, distr, s
 
         # create one row of where-taken
         wheretaken_id = idgen.get_id()
-        wheretaken_name = 'wheretaken_name'
+        wheretaken_name = sch_name
         where_taken = WhereTaken(wheretaken_id, wheretaken_name, distr.district_name, address_1, city_name, zip_code, distr.state_code, 'US')
         wheretaken_list.append(where_taken)
 
         # create one row of school
         sch_id = idgen.get_id()
-        school_external_id = 'school_external_id'
+        school_external_id = uuid.uuid4()
         school_type = random.choice(SCHOOL_TYPES)
         school = School(sch_id, school_external_id, sch_name, distr.district_name, distr.state_code,
                         stu_num_in_school_made[i], stutea_ratio_in_school_made[i], low_grade, high_grade,
@@ -368,7 +369,7 @@ def create_classes_grades_sections(sch, state):
     Main function to generate classes, grades, sections, students and teachers for a school
     '''
     # generate teacher list for a school
-    num_of_teacher = max(1, round(sch.num_of_student // sch.stu_tea_ratio))
+    num_of_teacher = max(1, round(sch.num_of_student / sch.stu_tea_ratio))
     teacher_list = generate_people(TEACHER, num_of_teacher, sch, state.state_id, random.choice(GENDER_RARIO))
     total_count[4] += len(teacher_list)
     create_csv(teacher_list, TEACHERS)

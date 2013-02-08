@@ -12,7 +12,7 @@ class TestGenerateData(unittest.TestCase):
     def setUp(self):
         for i in range(1000):
             generate_data.birds_list.append('bird' + str(i))
-            generate_data.manmals_list.append('flower' + str(i))
+            generate_data.mammals_list.append('flower' + str(i))
             generate_data.fish_list.append('fish' + str(i))
 
     # test make_school_types(perc, total)
@@ -173,7 +173,7 @@ class TestGenerateData(unittest.TestCase):
 
     def test_create_districts_withNotEnoughNames(self):
         generate_data.birds_list = ["birds1", ]
-        generate_data.manmals_list = ["flowers1"]
+        generate_data.mammals_list = ["flowers1"]
         generate_data.fish_list = ["fish1"]
 
         state_name = "California"
@@ -181,7 +181,7 @@ class TestGenerateData(unittest.TestCase):
 
         created_dist_list = generate_data.create_districts(state_name, school_num_in_dist, 0);
         self.assertEqual(len(created_dist_list), 0)
-        self.assertRaises(ValueError, generate_data.generate_names_from_lists, len(school_num_in_dist), generate_data.birds_list, generate_data.manmals_list)
+        self.assertRaises(ValueError, generate_data.generate_names_from_lists, len(school_num_in_dist), generate_data.birds_list, generate_data.mammals_list)
 
     def test_create_districts_withNotEnoughAddName(self):
         generate_data.fish_list = ['fish1']
@@ -354,7 +354,7 @@ class TestGenerateData(unittest.TestCase):
 
     def test_create_schools_withNotEnoughNames(self):
         # generate_data.birds_list = ["birds1"]
-        generate_data.manmals_list = ["flowers1"]
+        generate_data.mammals_list = ["flowers1"]
         generate_data.fish_list = ["fish1"]
 
         dist_id = 5555
@@ -372,7 +372,7 @@ class TestGenerateData(unittest.TestCase):
         created_school_list, wheretaken_list = generate_data.create_schools(stu_num_in_school, stutea_ratio_in_school, distObj, school_type_in_stat)
         self.assertTrue(len(created_school_list) == 0)
         self.assertTrue(len(wheretaken_list) == 0)
-        self.assertRaises(ValueError, generate_data.generate_names_from_lists, count, generate_data.fish_list, generate_data.manmals_list)
+        self.assertRaises(ValueError, generate_data.generate_names_from_lists, count, generate_data.fish_list, generate_data.mammals_list)
 
     def test_create_schools_withNotEnoughAddName(self):
         generate_data.birds_list = ["bird1"]

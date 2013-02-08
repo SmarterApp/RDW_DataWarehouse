@@ -17,7 +17,7 @@ from assessment import generate_assmts_for_students
 from xmlrpc.client import MAXINT
 
 birds_list = []
-manmals_list = []
+mammals_list = []
 fish_list = []
 
 # total count for state, districts, schools, students, teachers
@@ -53,10 +53,10 @@ def prepare_data():
 
     try:
         birds_list.extend(read_names(BIRDS_FILE))
-        manmals_list.extend(read_names(MANMALS_FILE))
+        mammals_list.extend(read_names(MAMMALS_FILE))
         fish_list.extend(read_names(FISH_FILE))
-    except:
-        print("Exception for reading files")
+    except IOError as e:
+        print("Exception for reading files: " + str(e))
         return False
     return True
 
@@ -191,9 +191,9 @@ def create_districts(state_name, school_num_in_dist_made, pos):
     if(n > 0):
         # generate random district names
         try:
-            names = generate_names_from_lists(n, birds_list, manmals_list)
+            names = generate_names_from_lists(n, birds_list, mammals_list)
         except ValueError:
-            print("ValueError: Not enough list to create", n, " number of district names", n, len(birds_list), len(manmals_list))
+            print("ValueError: Not enough list to create", n, " number of district names", n, len(birds_list), len(mammals_list))
             return []
 
         # generate random district addresses
@@ -229,7 +229,7 @@ def create_schools(stu_num_in_school_made, stutea_ratio_in_school_made, distr, s
     count = distr.num_of_schools
     # generate random school names
     try:
-        names = generate_names_from_lists(count, fish_list, manmals_list)
+        names = generate_names_from_lists(count, fish_list, mammals_list)
     except ValueError:
         print("ValueError: Not enough list to create", count, " number of school names")
         return [], []

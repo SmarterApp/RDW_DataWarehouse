@@ -1,6 +1,10 @@
-BIRDS_FILE = "../datafiles/birds.txt"
-MANMALS_FILE = "../datafiles/manmals.txt"
-FISH_FILE = "../datafiles/fish.txt"
+import os
+
+DATAFILE_PATH = str(os.path.split(os.path.abspath(os.path.dirname(__file__)))[0])
+
+BIRDS_FILE = DATAFILE_PATH + "/datafiles/name_lists/birds.txt"
+MAMMALS_FILE = DATAFILE_PATH + "/datafiles/name_lists/mammals.txt"
+FISH_FILE = DATAFILE_PATH + "/datafiles/name_lists/fish.txt"
 
 SCHOOL_LEVELS_INFO = [
                     ['Primary', ['EL SCH', 'ELEM', 'CTR', 'ELEMENTARY SCHOOL', 'PRIMARY', 'ELEMENTARY', 'CETR, ELEM', 'SCH'], [[0, 5], [1, 5], [1, 6]]],
@@ -45,21 +49,21 @@ ASSMT_TYPES = {'Math': {
 
 
 # Output files for use in write_to_csv.py and generate data.py
-STATES = '../datafiles/states.csv'
-# DISTRICTS = '../datafiles/districts.csv'
-# SCHOOLS = '../datafiles/schools.csv'
-PARENTS = '../datafiles/parents.csv'
-ASSESSMENT_TYPES = '../datafiles/assessment_types.csv'
-ASSESSMENT_OUTCOME = '../datafiles/assessment_outcome.csv'
-HIST_ASSESSMENT_OUTCOME = '../datafiles/hist_assessment_outcome.csv'
-STUDENT_SECTIONS = '../datafiles/stu_sections.csv'
-TEACHER_SECTIONS = '../datafiles/tea_sections.csv'
-TEACHERS = '../datafiles/teachers.csv'
-CLASSES = '../datafiles/classes.csv'
-SECTIONS = '../datafiles/sections.csv'
-STUDENTS = '../datafiles/students.csv'
-WHERETAKEN = '../datafiles/wheretaken.csv'
-INSTITUTIONS = '../datafiles/institutions.csv'
+STATES = DATAFILE_PATH + '/datafiles/csv/states.csv'
+DISTRICTS = DATAFILE_PATH + '/datafiles/csv/districts.csv'
+SCHOOLS = DATAFILE_PATH + '/datafiles/csv/schools.csv'
+PARENTS = DATAFILE_PATH + '/datafiles/csv/parents.csv'
+ASSESSMENT_TYPES = DATAFILE_PATH + '/datafiles/csv/assessment_types.csv'
+ASSESSMENT_OUTCOME = DATAFILE_PATH + '/datafiles/csv/assessment_outcome.csv'
+HIST_ASSESSMENT_OUTCOME = DATAFILE_PATH + '/datafiles/csv/hist_assessment_outcome.csv'
+STUDENT_SECTIONS = DATAFILE_PATH + '/datafiles/csv/stu_sections.csv'
+TEACHER_SECTIONS = DATAFILE_PATH + '/datafiles/csv/tea_sections.csv'
+TEACHERS = DATAFILE_PATH + '/datafiles/csv/teachers.csv'
+CLASSES = DATAFILE_PATH + '/datafiles/csv/classes.csv'
+SECTIONS = DATAFILE_PATH + '/datafiles/csv/sections.csv'
+STUDENTS = DATAFILE_PATH + '/datafiles/csv/students.csv'
+WHERETAKEN = DATAFILE_PATH + '/datafiles/csv/wheretaken.csv'
+INSTITUTIONS = DATAFILE_PATH + '/datafiles/csv/institutions.csv'
 
 ENT_LIST = [STATES, PARENTS, ASSESSMENT_TYPES, STUDENT_SECTIONS, TEACHER_SECTIONS, CLASSES, SECTIONS, STUDENTS, WHERETAKEN, INSTITUTIONS, TEACHERS, ASSESSMENT_OUTCOME, HIST_ASSESSMENT_OUTCOME]
 

@@ -19,9 +19,9 @@ def read_name_files():
 
     try:
         basepath = os.path.dirname(__file__)
-        malefilename = os.path.abspath(os.path.join(basepath, '..', 'datafiles', 'dist.male.first'))
-        femalefilename = os.path.abspath(os.path.join(basepath, '..', 'datafiles', 'dist.female.first'))
-        lastfilename = os.path.abspath(os.path.join(basepath, '..', 'datafiles', 'dist.all.last'))
+        malefilename = os.path.abspath(os.path.join(basepath, '..', 'datafiles', 'name_lists', 'dist.male.first'))
+        femalefilename = os.path.abspath(os.path.join(basepath, '..', 'datafiles', 'name_lists', 'dist.female.first'))
+        lastfilename = os.path.abspath(os.path.join(basepath, '..', 'datafiles', 'name_lists', 'dist.all.last'))
 
         mfile = open(malefilename, 'r')
         male_names = _load_names(mfile)

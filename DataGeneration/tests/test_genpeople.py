@@ -17,7 +17,7 @@ class Test(unittest.TestCase):
     def tearDown(self):
         try:
             basepath = os.path.dirname(__file__)
-            parentfile = os.path.abspath(os.path.join(basepath, '..', 'datafiles', 'parents.csv'))
+            parentfile = os.path.abspath(os.path.join(basepath, '..', 'datafiles', 'csv', 'parents.csv'))
             os.remove(parentfile)
         except:
             # File does not exist

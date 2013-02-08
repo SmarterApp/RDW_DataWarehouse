@@ -1,5 +1,6 @@
 import csv
 from constants import *
+import os
 
 
 def create_csv(entities, filename):

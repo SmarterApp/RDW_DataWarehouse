@@ -66,7 +66,7 @@ def get_statistic2():
     db.close()
 
     # generate one csv file
-    with open('../datafiles/statistics.csv', 'w', newline='') as csvfile:
+    with open('../datafiles/stats/statistics.csv', 'w', newline='') as csvfile:
         spamwriter = csv.writer(csvfile, delimiter=',', quoting=csv.QUOTE_MINIMAL)
         for state_info in actual_states_stat:
             spamwriter.writerow(state_info)

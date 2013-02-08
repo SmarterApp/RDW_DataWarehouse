@@ -16,7 +16,7 @@ define [
       
   createStudentGrid = ->
       
-    getStudentData "/data/list_of_students", (assessmentsData, assessmentCutpoints) ->
+    getStudentData "/data/list_of_students1", (assessmentsData, assessmentCutpoints) ->
       
       getStudentsConfig "../data/student.json", (studentsConfig) ->
         edwareGrid.create "gridTable", studentsConfig, assessmentsData, assessmentCutpoints

@@ -44,7 +44,7 @@ define [
            studentsConfig
          
   check401Error = (status) ->
-    location.href = "login.html" if status is 404
+    location.href = "login.html?redirectURL=" + window.location.href if status is 404
         
   getDatafromSource: getDatafromSource
   getConfigs: getConfigs

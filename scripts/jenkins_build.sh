@@ -42,6 +42,7 @@ function setup_virtualenv {
     for var in "${INSTALL_PKGS[@]}" 
     do
         cd "$WORKSPACE/$var"
+        pwd
         if [ -f setup-developer.py ];  then
            echo "running setup-developer.py"
            python setup-developer.py develop

@@ -111,7 +111,15 @@ def get_list_of_students_report(params, connector=None):
                         fact_asmt_outcome.c.asmt_claim_1_score.label('asmt_claim_1_score'),
                         fact_asmt_outcome.c.asmt_claim_2_score.label('asmt_claim_2_score'),
                         fact_asmt_outcome.c.asmt_claim_3_score.label('asmt_claim_3_score'),
-                        fact_asmt_outcome.c.asmt_claim_4_score.label('asmt_claim_4_score')],
+                        fact_asmt_outcome.c.asmt_claim_4_score.label('asmt_claim_4_score'),
+                        dim_asmt.c.asmt_claim_1_score_min.label('asmt_claim_1_score_min'),
+                        dim_asmt.c.asmt_claim_2_score_min.label('asmt_claim_2_score_min'),
+                        dim_asmt.c.asmt_claim_3_score_min.label('asmt_claim_3_score_min'),
+                        dim_asmt.c.asmt_claim_4_score_min.label('asmt_claim_4_score_min'),
+                        dim_asmt.c.asmt_claim_1_score_max.label('asmt_claim_1_score_max'),
+                        dim_asmt.c.asmt_claim_2_score_max.label('asmt_claim_2_score_max'),
+                        dim_asmt.c.asmt_claim_3_score_max.label('asmt_claim_3_score_max'),
+                        dim_asmt.c.asmt_claim_4_score_max.label('asmt_claim_4_score_max')],
                        from_obj=[dim_student
                                  .join(fact_asmt_outcome, dim_student.c.student_id == fact_asmt_outcome.c.student_id)
                                  .join(dim_asmt, dim_asmt.c.asmt_id == fact_asmt_outcome.c.asmt_id)
@@ -158,6 +166,14 @@ def get_list_of_students_report(params, connector=None):
             assessment['asmt_claim_2_score'] = result['asmt_claim_2_score']
             assessment['asmt_claim_3_score'] = result['asmt_claim_3_score']
             assessment['asmt_claim_4_score'] = result['asmt_claim_4_score']
+            assessment['asmt_claim_1_score_min'] = result['asmt_claim_1_score_min']
+            assessment['asmt_claim_2_score_min'] = result['asmt_claim_2_score_min']
+            assessment['asmt_claim_3_score_min'] = result['asmt_claim_3_score_min']
+            assessment['asmt_claim_4_score_min'] = result['asmt_claim_4_score_min']
+            assessment['asmt_claim_1_score_max'] = result['asmt_claim_1_score_max']
+            assessment['asmt_claim_2_score_max'] = result['asmt_claim_2_score_max']
+            assessment['asmt_claim_3_score_max'] = result['asmt_claim_3_score_max']
+            assessment['asmt_claim_4_score_max'] = result['asmt_claim_4_score_max']
 
             assessments[result['asmt_subject']] = assessment
             student['assessments'] = assessments

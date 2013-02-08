@@ -16,9 +16,9 @@ function check_vars {
 }
 
 function set_vars {
-    export VIRTUALENV_DIR="$WORKSPACE/edwaretest_venv"
-    export FUNC_VIRTUALENV_DIR="$WORKSPACE/functest_venv"
-    export FUNC_DIR="edware_test/edware_test/functional_tests"
+    VIRTUALENV_DIR="$WORKSPACE/edwaretest_venv"
+    FUNC_VIRTUALENV_DIR="$WORKSPACE/functest_venv"
+    FUNC_DIR="edware_test/edware_test/functional_tests"
 
     # delete existing xml files
     if [ -f $WORKSPACE/coverage.xml ]; then
@@ -32,7 +32,7 @@ function set_vars {
 function setup_virtualenv {
     echo "Setting up virtualenv using python3.3"
     if [ ! -d "$VIRTUALENV_DIR" ]; then
-        /usr/local/bin/virtualenv -p /usr/local/bin/python3 --no-site-packages ${VIRTUALENV_DIR}
+        /usr/local/bin/virtualenv-3.3 --distribute ${VIRTUALENV_DIR}
     fi
 
 # This will change your $PATH to point to the virtualenv bin/ directory,
@@ -170,14 +170,18 @@ function run_functional_tests {
 }	
 
 function create_sym_link_for_apache {
-    /bin/ln -sf "$VIRTUALENV_DIR/lib/python3.3/site-packages" /home/jenkins/pythonpath
-    /bin/ln -sf "$WORKSPACE/smarter/test.ini" /home/jenkins/development_ini
-    /bin/ln -sf "$WORKSPACE/test_deploy/pyramid.wsgi" /home/jenkins/pyramid_conf
-    /bin/ln -sf "$VIRTUALENV_DIR" /home/jenkins/venv
+    APACHE_DIR="/home/jenkins/apache_dir"
+    if [ -d {APACHE_DIR} ]; then
+        rm -rf ${APACHE_DIR}
+    fi
+    /bin/ln -sf ${VIRTUALENV_DIR}/lib/python3.3/site-packages ${APACHE_DIR}/pythonpath
+    /bin/ln -sf ${WORKSPACE}/smarter/test.ini ${APACHE_DIR}/development_ini
+    /bin/ln -sf ${WORKSPACE}/test_deploy/pyramid.wsgi ${APACHE_DIR}/pyramid_conf
+    /bin/ln -sf ${VIRTUALENV_DIR} ${APACHE_DIR}/venv
 
 
    # temp solution for LESS
-   export PATH=$PATH:/usr/local/bin
+   PATH=$PATH:/usr/local/bin
    /usr/local/bin/lessc "$WORKSPACE/assets/less/style.less" "$WORKSPACE/assets/css/style.css"
 }
 

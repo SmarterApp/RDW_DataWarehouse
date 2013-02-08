@@ -91,12 +91,13 @@ class School:
         return ("School:[sch_id: %s, dist_id: %s, num_of_student: %s, stu_tea_ratio: %s, school_name: %s, address1: %s, school_type: %s, low_grade: %s, high_grade: %s, place_id:%s]" % (self.sch_id, self.dist_id, self.num_of_student, self.stu_tea_ratio, self.school_name, self.address1, self.school_type, self.low_grade, self.high_grade, self.place_id))
 
     def getRow(self):
-        return [self.sch_id, self.school_external_id, self.school_name, self.dist_name, self.school_categories_type, self.school_type, self.address1, self.address2, self.city, self.zip_code, self.state_code, ]
+        return [self.sch_id, self.school_external_id, self.school_name, self.dist_name, self.school_categories_type, self.school_type, self.address1, self.address2, self.city, self.zip_code, self.state_code]
 
 
 class Class:
     '''
-    Student object
+    NOT PRESENT IN NEW SCHEMA
+    Class Object
     '''
     # total_id = 0
     def __init__(self, class_id, title, sub_name, section_stu_map, section_tea_map):
@@ -124,17 +125,44 @@ class Class:
 class AssessmentType:
     '''
     AssessmentType Object
+    ****Adding placeholders for fields so not to break things***
+    ****Should we have an asmt_claim table?
     '''
     def __init__(self, assmt_id, subject, assmt_type, period, version, grade):
         '''
         Constructor
         '''
-        self.assmt_id = assmt_id
-        self.subject = subject
-        self.assmt_type = assmt_type
-        self.period = period
-        self.version = version
-        self.grade = grade
+        self.assmt_id = assmt_id  # asmt_id in new schema. (may not wish to change)
+        self.asmt_external_id = None  # NEW
+        self.assmt_type = assmt_type  # asmt_type
+        self.period = period  # asmt_period in new schema
+        self.asmt_period_year = None  # NEW
+        self.version = version  # NEW
+        self.grade = grade  # asmt_grade
+        self.subject = subject  # asmt_subject
+        # ALL NEW BELOW
+        self.asmt_claim_1_name = None
+        self.asmt_claim_2_name = None
+        self.asmt_claim_3_name = None
+        self.asmt_claim_4_name = None
+        self.asmt_perf_M_name_1 = None
+        self.asmt_perf_M_name_2 = None
+        self.asmt_perf_M_name_3 = None
+        self.asmt_perf_M_name_4 = None
+        self.asmt_score_min = None
+        self.asmt_score_max = None
+        self.asmt_claim_1_score_min = None
+        self.asmt_claim_1_score_max = None
+        self.asmt_claim_2_score_min = None
+        self.asmt_claim_2_score_max = None
+        self.asmt_claim_3_score_min = None
+        self.asmt_claim_3_score_max = None
+        self.asmt_claim_4_score_min = None
+        self.asmt_claim_4_score_max = None
+        self.asmt_cut_point_1 = None
+        self.asmt_cut_point_2 = None
+        self.asmt_cut_point_3 = None
+        self.asmt_cut_point_4 = None
 
     def __str__(self):
         '''
@@ -199,17 +227,28 @@ class AssessmentOutcome(object):
     '''
     Assessment outcome object
     Should map to the fact_asmt_outcome table
+    ****Adding placeholders for fields so not to break things***
     '''
     def __init__(self, asmnt_out_id, asmnt_type_id, student_id, stdnt_tmprl_id, teacher_id, date_taken, where_taken_id, score, asmt_create_date):
         self.asmnt_out_id = asmnt_out_id
-        self.asmnt_type_id = asmnt_type_id
+        self.asmt_outcome_external_id = None  # NEW
+        self.asmnt_type_id = asmnt_type_id  # asmt_id
         self.student_id = student_id
-        self.stdnt_tmprl_id = stdnt_tmprl_id
         self.teacher_id = teacher_id
+        self.state_code = None  # NEW
+        self.district_id = None  # NEW
+        self.school_id = None  # NEW
+        self.asmt_grade_id = None  # NEW
+        self.asmt_grade_code = None  # NEW
+        self.enrl_grade_id = None  # NEW
+        self.enrl_grade_code = None  # NEW
         self.date_taken = date_taken
         self.where_taken_id = where_taken_id
         self.score = score
+        self.asmt_type = None  # Should be an AssessmentType object
         self.asmt_create_date = asmt_create_date
+        self.stdnt_tmprl_id = stdnt_tmprl_id  # REMOVED
+        self.asmt_perf_M = None  # NEW
 
     def getRow(self):
         claims = list(self.score.claims.items())
@@ -220,6 +259,7 @@ class AssessmentOutcome(object):
 
 class HistAssessmentOutcome(object):
     '''
+    NOT PRESENT IN NEW SCHEMA
     maps to hist_asmt_outcome table
     '''
     def __init__(self, asmnt_out_id, asmnt_type_id, student_id, stdnt_tmprl_id, date_taken, where_taken_id, score, asmt_create_date, hist_create_date):
@@ -242,6 +282,7 @@ class HistAssessmentOutcome(object):
 
 class StudentTemporalData(object):
     '''
+    NOT PRESENT IN NEW SCHEMA
     Object to match the student_tmprl_data table
     '''
     def __init__(self, student_tmprl_id, student_id, grade_id, dist_name, school_id, student_class, section_id):
@@ -265,6 +306,8 @@ class StudentTemporalData(object):
             end_date = ''
 
         return [self.student_tmprl_id, self.student_id, self.effective_date, self.end_date, self.grade_id, self.dist_name, self.school_id, self.student_class.class_id, self.section_id]
+
+
 class Person(object):
     '''
     classdocs
@@ -292,10 +335,16 @@ class Student(Person):
     def __init__(self, firstname=None, middlename=None, lastname=None, gender=None, dob=None, email=None, address=None):
 
         super().__init__(firstname, middlename, lastname, gender, email, address)
-        self.dob = dob
         self.student_id = None
+        self.student_external_id = None
+        self.dob = dob
+        self.address1 = None  # NEW
+        self.address2 = None  # NEW
+        self.city
+        self.zip
         self.school_id = None
-        self.state_id = None
+        self.district_id = None  # NEW
+        self.state_id = None  # State Code in new
 
     def __str__(self):
         return ("%s %s %s" % (self.firstname, self.middlename, self.lastname))
@@ -314,6 +363,12 @@ class Parent(Person):
     def __init__(self, firstname=None, middlename=None, lastname=None, gender=None, email=None, address=None):
         super().__init__(firstname, middlename, lastname, gender, email, address)
         self.parent_id = None
+        self.parent_external_id = None  # NEW
+        self.address1 = None  # NEW
+        self.address2 = None  # NEW
+        self.city = None  # NEW
+        self.state_code = None  # NEW
+        self.zip = None  # NEW
         self.student_id = None
 
     def __str__(self):
@@ -332,6 +387,8 @@ class Teacher(Person):
     def __init__(self, firstname=None, middlename=None, lastname=None, gender=None, email=None, address=None):
         super().__init__(firstname, middlename, lastname, gender, email, address)
         self.teacher_id = None
+        self.district_id = None  # NEW
+        self.state_code = None  # NEW
 
     def __str__(self):
         return ("%s %s %s" % (self.firstname, self.middlename, self.lastname))

@@ -7,7 +7,7 @@
 				{"name":"Grade","index":"Grade","field":"assessments.MATH.asmt_grade","width":50,"sorttype":"int","align":"center","resizable":false},
 				{"name":"Overall","index":"Overall","field":"assessments.MATH.asmt_score","width":130,"formatter":"showOverallConfidence","params":{"type":"Math"},"sorttype":"int","align":"center"},
 				{"name":"Concepts and Procedures","index":"Concepts and Procedures","field":"assessments.MATH.asmt_claim_1_score","width":90,"formatter":"showClaimsMinMax","sorttype":"int","align":"center"},
-				{"name":"Problem Solving","index":"Problem Solving","field":"assessments.MATH.asmt_claim_2_score","width":100,"formatter":"showClaimsMinMax","sorttype":"int","align":"center"},
+				{"name":"Problem Solving","index":"Problem Solving","field":"assessments.MATH.asmt_claim_2_score","width":110,"formatter":"showClaimsMinMax","sorttype":"int","align":"center"},
 				{"name":"Communicating Reasoning","index":"Communicating Reasoning","field":"assessments.MATH.asmt_claim_3_score","width":100,"formatter":"showClaimsMinMax","sorttype":"int","align":"center"},
 				{"name":"Modeling and Data Analysis","index":"Modeling and Data Analysis","field":"assessments.MATH.asmt_claim_4_score","width":110,"formatter":"showClaimsMinMax","sorttype":"int","align":"center"}]
 			},

@@ -13,6 +13,7 @@ from readnaminglists import PeopleNames
 from idgen import IdGen
 from write_to_csv import create_csv
 import constants
+import gennames
 
 
 # constants
@@ -136,17 +137,24 @@ def _generate_teachers(total, male_total, school, state_code):
 
     return teachers
 
-
 def _assign_parent(student):
     '''
     takes a student object and assigns it two parents with the same last name.
     parents will be saved to file. Parent id's will be saved in student object.
     Returns a list of 2 parents
     '''
-    lastname = student.lastname
+
+    parent_1_params = {
+        first_name:         gennames.generate_first_or_middle_name('male'),
+        last_name:          student.last_name,
+        address_1:          ,
+        city:               ,
+        state_code:         ,
+        zipe_code:          ,
+    }
     parent1 = Parent()
     parent2 = Parent()
-    peopleNames = PeopleNames()
+
 
     parent1.lastname = lastname
     parent2.lastname = lastname

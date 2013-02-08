@@ -1,5 +1,6 @@
 import random
 import string
+from idgen import IdGen
 
 
 class State:
@@ -310,20 +311,18 @@ class StudentTemporalData(object):
 
 class Person(object):
     '''
-    classdocs
+    Base class for teacher, parent, student
+    Right now, it only handles name fields
     '''
 
-    def __init__(self, firstname=None, middlename=None, lastname=None, gender=None, email=None, address=None):
+    def __init__(self, first_name, last_name, middle_name=None):
         '''
         Constructor
         if email and dob are not specified they are set to dummy values
         '''
-        self.firstname = firstname
-        self.middlename = middlename
-        self.lastname = lastname
-        self.gender = gender
-        self.email = email
-        self.address = address
+        self.first_name= first_name
+        self.middle_name = middle_name
+        self.last_name = last_name
 
 
 class Student(Person):
@@ -332,9 +331,9 @@ class Student(Person):
     Corresponds to student Table
     '''
 
-    def __init__(self, firstname=None, middlename=None, lastname=None, gender=None, dob=None, email=None, address=None):
+    def __init__(self, first_name, last_name, gender=None, dob=None, email=None, address=None):
 
-        super().__init__(firstname, middlename, lastname, gender, email, address)
+        super().__init__(firstname, last_name, middle_name)
         self.student_id = None
         self.student_external_id = None
         self.dob = dob
@@ -360,22 +359,29 @@ class Parent(Person):
     Corresponds to parent table
     '''
 
-    def __init__(self, firstname=None, middlename=None, lastname=None, gender=None, email=None, address=None):
-        super().__init__(firstname, middlename, lastname, gender, email, address)
-        self.parent_id = None
-        self.parent_external_id = None  # NEW
-        self.address1 = None  # NEW
-        self.address2 = None  # NEW
-        self.city = None  # NEW
-        self.state_code = None  # NEW
-        self.zip = None  # NEW
-        self.student_id = None
+    def __init__(self, first_name, last_name, address_1, city, state_code, zip_code, parent_id=None, parent_external_id=None, middle_name=None, address_2=None):
+        super().__init__(first_name, middle_name, last_name)
+
+        # Ids can either be given to the constructor or provided by constructor
+        # Either way, both Id fields must have a value
+        if parent_id == None or parent_external_id == None:
+            id_generator = IdGen()
+            if parent_id == None:
+                self.parent_id = id_generator.get_id()
+            if parent_external_id == None:
+                self.parent_external_id = id_generator.get_id()
+
+        self.address_1 = address_1
+        self.address_2 = address_2
+        self.city = city
+        self.state_code =state_code
+        self.zip_code = zip_code
 
     def __str__(self):
         return ("%s %s %s" % (self.firstname, self.middlename, self.lastname))
 
     def getRow(self):
-        return ['parent_uniq_id', self.parent_id, self.firstname, self.lastname, self.student_id]
+        return [self.parent_id, self.parent_external_id, self.first_name, self.middle_name, self.last_name, self.address_1, self.address_2, self.city, self.state_code, self.zip_code]
 
 
 class Teacher(Person):

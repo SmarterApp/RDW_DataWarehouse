@@ -173,6 +173,10 @@ function create_sym_link_for_apache {
     /bin/ln -sf "$WORKSPACE/smarter/test.ini" /home/jenkins/development_ini
     /bin/ln -sf "$WORKSPACE/test_deploy/pyramid.wsgi" /home/jenkins/pyramid_conf
     /bin/ln -sf "$VIRTUALENV_DIR" /home/jenkins/venv
+
+
+   # temp solution for LESS
+   /usr/local/bin/lessc "$WORKSPACE/assets/less/style.less" "$WORKSPACE/assets/css/style.css"
 }
 
 function restart_apache {

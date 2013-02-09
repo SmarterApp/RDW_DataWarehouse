@@ -10,14 +10,19 @@ from zope import component
 from edschema.ed_metadata import generate_ed_metadata
 import csv
 import sqlite3
+from sqlalchemy.schema import MetaData
 
 
 # create sqlite from static metadata
 def create_sqlite():
     __engine = create_engine('sqlite:///:memory:', connect_args={'detect_types': sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES}, native_datetime=True)
     __metadata = generate_ed_metadata()
+    # create tables from static metadata
     __metadata.create_all(__engine)
-    dbUtil = DbUtil(engine=__engine, metadata=__metadata)
+    # since we want to test db creation, read metadata from sqlite
+    __metadata_from_sqlite = MetaData()
+    __metadata_from_sqlite.reflect(bind=__engine)
+    dbUtil = DbUtil(engine=__engine, metadata=__metadata_from_sqlite)
     component.provideUtility(dbUtil, IDbUtil)
 
 

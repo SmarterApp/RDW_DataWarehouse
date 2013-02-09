@@ -4,35 +4,19 @@ Created on Feb 8, 2013
 @author: tosako
 '''
 import unittest
-from database.connector import DbUtil, IDbUtil, DBConnector
-from zope import component
-from sqlalchemy.schema import MetaData, Table
-from database.tests.ed_sqlite import create_sqlite, generate_data
+from database.connector import DBConnector
+from database.tests.unittest_with_sqlite import Unittest_with_sqlite
 
 
-class Test(unittest.TestCase):
-
-    @classmethod
-    def setUpClass(cls):
-        # create db engine for sqlite
-        create_sqlite()
-        # create test data in the sqlite
-        generate_data()
-
-        # get engine from zope
-        dbUtil = component.queryUtility(IDbUtil)
-        __engine = dbUtil.get_engine()
-        # read metadata from database direclty instead of static metadata
-        cls.__metadata = MetaData()
-        cls.__metadata.reflect(bind=__engine)
+class Test(Unittest_with_sqlite):
 
     def test_number_of_tables(self):
         # check number of tables
-        self.assertEqual(15, len(self.__metadata.tables), "Number of table does not match")
+        self.assertEqual(15, len(self.get_Metadata().tables), "Number of table does not match")
 
     # Test dim_district data
     def test_dim_district(self):
-        self.assertTrue('dim_district' in self.__metadata.tables, "missing dim_district")
+        self.assertTrue('dim_district' in self.get_Metadata().tables, "missing dim_district")
         connector = DBConnector()
         connector.open_connection()
         dim_district = connector.get_table("dim_district")

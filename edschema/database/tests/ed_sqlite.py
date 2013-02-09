@@ -18,12 +18,22 @@ def create_sqlite():
     __engine = create_engine('sqlite:///:memory:', connect_args={'detect_types': sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES}, native_datetime=True)
     __metadata = generate_ed_metadata()
     # create tables from static metadata
-    __metadata.create_all(__engine)
+    __metadata.create_all(bind=__engine, checkfirst=False)
     # since we want to test db creation, read metadata from sqlite
     __metadata_from_sqlite = MetaData()
     __metadata_from_sqlite.reflect(bind=__engine)
     dbUtil = DbUtil(engine=__engine, metadata=__metadata_from_sqlite)
     component.provideUtility(dbUtil, IDbUtil)
+
+
+# drop tables from memory
+def destroy_sqlite():
+    dbUtil = component.queryUtility(IDbUtil)
+    __engine = dbUtil.get_engine()
+    __metadata = dbUtil.get_metadata()
+    __metadata.drop_all(bind=__engine, checkfirst=False)
+    __engine.dispose()
+    component.provideUtility(None, IDbUtil)
 
 
 # import data from csv files

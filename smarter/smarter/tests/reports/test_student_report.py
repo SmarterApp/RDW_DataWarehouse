@@ -5,24 +5,28 @@ Created on Jan 17, 2013
 '''
 
 import unittest
-from .test_connector import TestConnector
 from smarter.reports.student_report import get_student_report, \
     get_student_assessment
+from database.tests.unittest_with_sqlite import Unittest_with_sqlite
 
 
-class TestStudentReport(unittest.TestCase):
-    def setUp(self):
-        self.__connector = TestConnector()
+class TestStudentReport(Unittest_with_sqlite):
 
     def test_student_report(self):
-        params = {"studentId": 2188, "assessmentId": 25}
-        result = get_student_report(params, connector=self.__connector)
-        self.assertEqual('hello', result['result'])
+        params = {"studentId": 1, "assessmentId": 1}
+        result = get_student_report(params)
+        self.assertEqual(1, len(result), "studentId should have 1 report")
+        self.assertEqual('ELA', result[0]['asmt_subject'], 'asmt_subject')
+        self.assertEqual(400, result[0]['asmt_claim_1_score'], 'asmt_claim_1_score 400')
+        self.assertEqual('Spelling', result[0]['asmt_claim_4_name'], 'asmt_claim_4_name Spelling')
 
     def test_student_assessment_id(self):
-        params = {"studentId": 2188}
-        result = get_student_assessment(params, connector=self.__connector)
-        self.assertEqual('hello', result['result'])
+        params = {"studentId": 1}
+        result = get_student_assessment(params)
+
+        self.assertEqual(2, len(result), "studentId should have 2 assessments")
+        self.assertEqual('ELA', result[0]['asmt_subject'], 'asmt_subject ELA')
+        self.assertEqual('MATH', result[1]['asmt_subject'], 'asmt_subject MATH')
 
 if __name__ == '__main__':
     unittest.main()

@@ -6,7 +6,6 @@ Created on Jan 13, 2013
 
 
 from edapi.utils import report_config
-from sqlalchemy.schema import Table
 from sqlalchemy.sql import select
 from database.connector import DBConnector
 

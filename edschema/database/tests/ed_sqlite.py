@@ -33,6 +33,8 @@ def generate_data():
     here = os.path.abspath(os.path.dirname(__file__))
     resources_dir = os.path.join(os.path.join(here, 'resources'))
 
+    # Test data is generated from:
+    # https://docs.google.com/folder/d/0B3TkaEXHzX2TcWw3bnVZZDZoVEk/edit?usp=sharing
     # Remember that the order of table insert matters
     resources = ['dim_country',
                  'dim_state',

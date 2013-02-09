@@ -329,7 +329,7 @@ class Person(object):
         Constructor
         if email and dob are not specified they are set to dummy values
         '''
-        self.first_name= first_name
+        self.first_name = first_name
         self.middle_name = middle_name
         self.last_name = last_name
 
@@ -340,9 +340,9 @@ class Student(Person):
     Corresponds to student Table
     '''
 
-    def __init__(self, first_name, last_name, gender=None, dob=None, email=None, address=None):
+    def __init__(self, first_name, last_name, middle_name=None, gender=None, dob=None, email=None, address=None):
 
-        super().__init__(firstname, last_name, middle_name)
+        super().__init__(first_name, last_name, middle_name)
         self.student_id = None
         self.student_external_id = None
         self.dob = dob
@@ -383,7 +383,7 @@ class Parent(Person):
         self.address_1 = address_1
         self.address_2 = address_2
         self.city = city
-        self.state_code =state_code
+        self.state_code = state_code
         self.zip_code = zip_code
 
     def __str__(self):

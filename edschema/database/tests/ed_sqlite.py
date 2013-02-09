@@ -21,12 +21,14 @@ def create_sqlite():
     component.provideUtility(dbUtil, IDbUtil)
 
 
+# import data from csv files
 def generate_data():
     dbconnector = DBConnector()
     connection = dbconnector.open_connection()
     here = os.path.abspath(os.path.dirname(__file__))
     resources_dir = os.path.join(os.path.join(here, 'resources'))
 
+    # Remember that the order of table insert matters
     resources = ['dim_country',
                  'dim_state',
                  'dim_district',

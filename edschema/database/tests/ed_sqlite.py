@@ -9,8 +9,6 @@ from database.connector import DbUtil, IDbUtil, DBConnector
 from zope import component
 from edschema.ed_metadata import generate_ed_metadata
 import csv
-from sqlalchemy.sql.expression import select
-import os
 import sqlite3
 
 

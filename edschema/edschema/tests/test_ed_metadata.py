@@ -36,9 +36,11 @@ class Test(unittest.TestCase):
         connector = DBConnector()
         connector.open_connection()
         dim_district = connector.get_table("dim_district")
-        query = dim_district.select(dim_district.c.district_id == 1)
+
         # check number of field in the table
         self.assertEqual(7, len(dim_district.c), "Number of fields in dim_district")
+
+        query = dim_district.select(dim_district.c.district_id == 1)
         result = connector.get_result(query)
         self.assertEqual(1, result[0]['district_id'], 'district_id')
         self.assertEqual("Daybreak District", result[0]['district_name'], "district_name")

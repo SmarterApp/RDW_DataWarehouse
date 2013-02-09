@@ -1,0 +1,4 @@
+asmt_id,asmt_external_id,asmt_type,asmt_period,asmt_period_year,asmt_version,asmt_grade,asmt_subject,asmt_claim_1_name,asmt_claim_2_name,asmt_claim_3_name,asmt_claim_4_name,asmt_perf_lvl_name_1,asmt_perf_lvl_name_2,asmt_perf_lvl_name_3,asmt_perf_lvl_name_4,asmt_perf_lvl_name_5,asmt_score_min,asmt_score_max,asmt_claim_1_score_min,asmt_claim_1_score_max,asmt_claim_2_score_min,asmt_claim_2_score_max,asmt_claim_3_score_min,asmt_claim_3_score_max,"asmt_claim_4_score_min
+",asmt_claim_4_score_max,asmt_cut_point_1,asmt_cut_point_2,asmt_cut_point_3,asmt_cut_point_4
+1,1,ELA,1,Spring 2013,1,1,ELA,Reading,Writing,Speaking,Spelling,Minimal,Partial,Sufficient,Deep,N/A,0,1600,0,450,451,720,721,1375,1376,1500,450,720,1375,1500
+2,2,MATH,1,Winter 2013,1,1,MATH,Concepts & Procedures,Problem Solviing,Communication,Claim 4,Minimal,Partial,Sufficient,Deep,N/A,0,1600,0,450,451,720,721,1375,1376,1500,450,720,1375,1500

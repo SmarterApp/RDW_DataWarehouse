@@ -29,19 +29,19 @@ def generate_assmts_for_students(total, grade, state):
     years = ['2011', '2009']  # str(year), str(year - 1)]
     real_years = [str(cur_year), str(cur_year - 1)]
 
-    asmt_types = [x for x in asmt_list if int(x.grade) == int(grade)]
+    asmt_types = [x for x in asmt_list if int(x.asmt_grade) == int(grade)]
 
     scores = {}
 
     for i in range(len(years)):
         for asmt in asmt_types:
-            string = "%s_%s" % (real_years[i], asmt.assmt_id)
-            subject = asmt.subject
+            string = "%s_%s" % (real_years[i], asmt.asmt_id)
+            subject = asmt.asmt_subject
 
             if subject == 'MATH':
                 subject = 'Math'
 
-            score = generate_assmt_scores(state, subject, years[i], asmt.period, grade, total)
+            score = generate_assmt_scores(state, subject, years[i], asmt.asmt_period, grade, total)
             scores[string] = score
 
     return scores

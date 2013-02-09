@@ -13,7 +13,7 @@ SCHOOL_LEVELS_INFO = [
                      ['Other', ['SCH', 'SCHOOL'], [[6, 12], [9, 12]]]
                      ]
 
-SCHOOL_ORDER_MAP = {'Elementary School': 0, 'Middle School':1, 'High School':2, 'Other':3}
+SCHOOL_ORDER_MAP = {'Elementary School': 0, 'Middle School': 1, 'High School': 2, 'Other': 3}
 SCHOOL_TYPES = ['Alternative', 'Regular', 'Special Education', 'Vocational', 'JJAEP', 'DAEP']
 
 DIST_SUFFIX = ['DISTRICT', 'SCHOOL DISTRICT', 'SCHOOLS', 'COUNTY SCHOOLS', 'PUBLIC SHCOOLS', 'SD']

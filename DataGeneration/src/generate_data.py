@@ -414,11 +414,11 @@ def create_classes_grades_sections(sch, state):
             for score in scores.items():
                 asmt_id = int(score[0].split('_')[1])
                 year = score[0].split('_')[0]
-                asmt = [x for x in ASSESSMENT_TYPES_LIST if x.assmt_id == asmt_id][0]
+                asmt = [x for x in ASSESSMENT_TYPES_LIST if x.asmt_id == asmt_id][0]
                 subject = stu_tmprl.student_class.sub_name
                 if subject == 'Math':
                     subject = 'MATH'
-                if int(year) == date.today().year and stu_tmprl.student_class.sub_name == asmt.subject:
+                if int(year) == date.today().year and stu_tmprl.student_class.sub_name == asmt.asmt_subject:
                     new_id = idgen.get_id()
                     teacher_list = list(stu_tmprl.student_class.section_tea_map.values())
                     teacher_list = [item for sub in teacher_list for item in sub]  # flatten teacher_list
@@ -426,18 +426,18 @@ def create_classes_grades_sections(sch, state):
                     teacher_id = teacher.teacher_id
 
                     date_taken = None
-                    if asmt.period == 'BOY':
+                    if asmt.asmt_period == 'BOY':
                         date_taken = dates_taken1['BOY']
-                    elif asmt.period == 'MOY':
+                    elif asmt.asmt_period == 'MOY':
                         date_taken = dates_taken1['MOY']
-                    elif asmt.period == 'EOY':
+                    elif asmt.asmt_period == 'EOY':
                         date_taken = dates_taken1['EOY']
                     date_taken = date_taken.replace(year=int(year))
                     if (len(score[1]) == 0):
                         print("*********Import**********", new_id, asmt_id, stu_tmprl.student_id, stu_tmprl.student_tmprl_id, teacher_id, date_taken, sch.place_id)
                     outcome = AssessmentOutcome(new_id, asmt_id, stu_tmprl.student_id, stu_tmprl.student_tmprl_id, teacher_id, date_taken, sch.sch_id, score[1].pop(), 'cdate?')
                     assessment_outcome_list.append(outcome)
-                elif stu_tmprl.student_class.sub_name == asmt.subject:
+                elif stu_tmprl.student_class.sub_name == asmt.asmt_subject:
                     new_id = idgen.get_id()
                     teacher_list = list(stu_tmprl.student_class.section_tea_map.values())
                     teacher_list = [item for sub in teacher_list for item in sub]  # flatten teacher_list
@@ -445,11 +445,11 @@ def create_classes_grades_sections(sch, state):
                     teacher_id = teacher.teacher_id
 
                     date_taken = None
-                    if asmt.period == 'BOY':
+                    if asmt.asmt_period == 'BOY':
                         date_taken = dates_taken2['BOY']
-                    elif asmt.period == 'MOY':
+                    elif asmt.asmt_period == 'MOY':
                         date_taken = dates_taken2['MOY']
-                    elif asmt.period == 'EOY':
+                    elif asmt.asmt_period == 'EOY':
                         date_taken = dates_taken2['EOY']
                     date_taken = date_taken.replace(year=int(year))
 

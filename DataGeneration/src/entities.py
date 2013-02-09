@@ -123,57 +123,66 @@ class Class:
         return [self.class_id, self.title]
 
 
-class AssessmentType:
+class Claim(object):
+    '''
+    claim information to be used by the assessment object
+    '''
+    def __init__(self, claim_name, claim_score_min=None, claim_score_max=None):
+        self.claim_name = claim_name
+        self.claim_score_min = claim_score_min
+        self.claim_score_max = claim_score_max
+
+
+class Assessment:
     '''
     AssessmentType Object
     ****Adding placeholders for fields so not to break things***
     ****Should we have an asmt_claim table?
     '''
-    def __init__(self, assmt_id, subject, assmt_type, period, version, grade):
+    def __init__(self, asmt_id, asmt_external_id, asmt_type, asmt_period, asmt_period_year, asmt_version, asmt_grade, asmt_subject, claim_1=None, claim_2=None, claim_3=None, claim_4=None, asmt_score_min=None, asmt_score_max=None,
+                 asmt_perf_lvl_name_1=None, asmt_perf_lvl_name_2=None, asmt_perf_lvl_name_3=None, asmt_perf_lvl_name_4=None, asmt_perf_lvl_name_5=None, asmt_cut_point_1=None, asmt_cut_point_2=None, asmt_cut_point_3=None, asmt_cut_point_4=None):
         '''
         Constructor
         '''
-        self.assmt_id = assmt_id  # asmt_id in new schema. (may not wish to change)
-        self.asmt_external_id = None  # NEW
-        self.assmt_type = assmt_type  # asmt_type
-        self.period = period  # asmt_period in new schema
-        self.asmt_period_year = None  # NEW
-        self.version = version  # NEW
-        self.grade = grade  # asmt_grade
-        self.subject = subject  # asmt_subject
-        # ALL NEW BELOW
-        self.asmt_claim_1_name = None
-        self.asmt_claim_2_name = None
-        self.asmt_claim_3_name = None
-        self.asmt_claim_4_name = None
-        self.asmt_perf_M_name_1 = None
-        self.asmt_perf_M_name_2 = None
-        self.asmt_perf_M_name_3 = None
-        self.asmt_perf_M_name_4 = None
-        self.asmt_score_min = None
-        self.asmt_score_max = None
-        self.asmt_claim_1_score_min = None
-        self.asmt_claim_1_score_max = None
-        self.asmt_claim_2_score_min = None
-        self.asmt_claim_2_score_max = None
-        self.asmt_claim_3_score_min = None
-        self.asmt_claim_3_score_max = None
-        self.asmt_claim_4_score_min = None
-        self.asmt_claim_4_score_max = None
-        self.asmt_cut_point_1 = None
-        self.asmt_cut_point_2 = None
-        self.asmt_cut_point_3 = None
-        self.asmt_cut_point_4 = None
+        self.asmt_id = asmt_id
+        self.asmt_external_id = asmt_external_id
+        self.asmt_type = asmt_type
+        self.asmt_period = asmt_period
+        self.asmt_period_year = asmt_period_year
+        self.asmt_version = asmt_version
+        self.asmt_grade = asmt_grade
+        self.asmt_subject = asmt_subject
+
+        self.claim_1 = claim_1
+        self.claim_2 = claim_2
+        self.claim_3 = claim_3
+        self.claim_4 = claim_4
+
+        self.asmt_perf_lvl_name_1 = asmt_perf_lvl_name_1
+        self.asmt_perf_lvl_name_2 = asmt_perf_lvl_name_2
+        self.asmt_perf_lvl_name_3 = asmt_perf_lvl_name_3
+        self.asmt_perf_lvl_name_4 = asmt_perf_lvl_name_4
+        self.asmt_perf_lvl_name_5 = asmt_perf_lvl_name_5
+        self.asmt_score_min = asmt_score_min
+        self.asmt_score_max = asmt_score_max
+
+        self.asmt_cut_point_1 = asmt_cut_point_1
+        self.asmt_cut_point_2 = asmt_cut_point_2
+        self.asmt_cut_point_3 = asmt_cut_point_3
+        self.asmt_cut_point_4 = asmt_cut_point_4
 
     def __str__(self):
         '''
         toString Method
         '''
 
-        return ("Assessment:[assmt_type: %s, subject: %s, assmt_type: %s, period: %s, version: %s, grade: %s]" % (self.assmt_type, self.subject, self.assmt_type, self.period, self.version, self.grade))
+        return ("Assessment:[asmt_type: %s, subject: %s, asmt_type: %s, period: %s, version: %s, grade: %s]" % (self.asmt_type, self.asmt_subject, self.asmt_type, self.asmt_period, self.asmt_version, self.asmt_grade))
 
     def getRow(self):
-        return [self.assmt_id, self.subject, self.assmt_type, self.period, self.version, self.grade]
+        return [self.asmt_id, self.asmt_external_id, self.asmt_type, self.asmt_period, self.asmt_period_year, self.asmt_version, self.asmt_grade, self.asmt_subject, self.claim_1.claim_name, self.claim_2.claim_name,
+                self.claim_3.claim_name, self.claim_4.claim_name, self.asmt_perf_lvl_name_1, self.asmt_perf_lvl_name_2, self.asmt_perf_lvl_name_3, self.asmt_perf_lvl_name_4, self.asmt_perf_lvl_name_5, self.asmt_score_min,
+                self.asmt_score_max, self.claim_1.claim_score_min, self.claim_1.claim_score_max, self.claim_2.claim_score_min, self.claim_2.claim_score_max, self.claim_3.claim_score_min, self.claim_3.claim_score_max,
+                self.claim_4.claim_score_min, self.claim_4.claim_score_max, self.asmt_cut_point_1, self.asmt_cut_point_2, self.asmt_cut_point_3, self.asmt_cut_point_4]
 
 
 class Score:
@@ -339,8 +348,8 @@ class Student(Person):
         self.dob = dob
         self.address1 = None  # NEW
         self.address2 = None  # NEW
-        self.city
-        self.zip
+        self.city = None
+        self.zip = None
         self.school_id = None
         self.district_id = None  # NEW
         self.state_id = None  # State Code in new

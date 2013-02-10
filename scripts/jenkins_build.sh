@@ -62,6 +62,7 @@ function setup_unit_test_dependencies {
     pip install nose
     pip install coverage
     pip install pep8
+    pip install nose-cov
 
     echo "Finished setting up unit tests dependencies"
 }

@@ -36,7 +36,6 @@ function setup_virtualenv {
     fi
 
 # This will change your $PATH to point to the virtualenv bin/ directory,
-# to find python, paster, nosetests, pep8, pip, easy_install, etc.
     
     source ${VIRTUALENV_DIR}/bin/activate
     for var in "${INSTALL_PKGS[@]}" 
@@ -81,7 +80,12 @@ function run_unit_tests {
     echo "Running unit tests"
 
     cd "$WORKSPACE/$1"
-    nosetests -v --with-coverage --with-xunit --xunit-file=$WORKSPACE/nosetests.xml --cover-xml --cover-xml-file=$WORKSPACE/coverage.xml
+    nosetests --with-xunit --xunit-file=$WORKSPACE/nosetests.xml --cov-report xml
+
+    if [ -f coverage.xml ]; then
+       # move coverage results
+       mv coverage.xml $WORKSPACE/coverage.xml
+    fi
 }
 
 function get_opts {

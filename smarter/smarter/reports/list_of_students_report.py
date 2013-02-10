@@ -185,8 +185,11 @@ def get_list_of_students_report(params, connector=None):
     assessments = []
 
     # keep them in orders from result set
+    student_id_track = {}
     for result in results:
-        assessments.append(students[result['student_id']])
+        if result['student_id'] not in student_id_track:
+            assessments.append(students[result['student_id']])
+            student_id_track[result['student_id']] = True
 
     los_results['assessments'] = assessments
     los_results['cutpoints'] = __get_cut_points(connector, asmtGrade, asmtSubject)

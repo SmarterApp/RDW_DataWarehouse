@@ -19,6 +19,11 @@ requires = [
     'py-postgresql',
     'lesscss', ]
 
+setup_requires = [
+    'nose',
+    'coverage',
+    'nose-cov', ]
+
 
 setup(name='smarter',
       version='0.0',
@@ -38,6 +43,7 @@ setup(name='smarter',
       zip_safe=False,
       test_suite='nose.collector',
       install_requires=requires,
+      setup_requires=setup_requires,
       entry_points="""\
       [paste.app_factory]
       main = smarter:main

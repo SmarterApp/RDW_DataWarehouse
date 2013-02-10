@@ -8,11 +8,6 @@ requires = [
 tests_require = requires + [
     'sqlite3']
 
-setup_requires = [
-    'nose',
-    'coverage',
-    'nose-cov', ]
-
 setup(name='edschema',
       version='0.0',
       description='Schema for EdWare',
@@ -31,7 +26,6 @@ setup(name='edschema',
       test_suite='nose.collector',
       install_requires=requires,
       tests_require=tests_require,
-      setup_requires=setup_requires,
       entry_points="""\
       """,
       )

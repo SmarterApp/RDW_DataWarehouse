@@ -13,12 +13,9 @@ install_requires = [
 
 tests_require = [
     'WebTest >= 1.3.1',  # py3 compat
-    'virtualenv']  # for scaffolding tests
-
-setup_requires = [
-    'nose',
+    'nose >= 1.2.1',
     'coverage',
-    'nose-cov', ]
+    'virtualenv']  # for scaffolding tests
 
 
 docs_extras = [
@@ -42,7 +39,6 @@ setup(name='edapi',
       include_package_data=True,
       zip_safe=False,
       tests_require=tests_require,
-      setup_requires=setup_requires,
       test_suite="nose.collector",
       install_requires=install_requires,
       extras_require={

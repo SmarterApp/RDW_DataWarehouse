@@ -85,8 +85,10 @@ def generate_single_asmt(grade, asmt_type, period, subject):
               'asmt_perf_lvl_name_1': PERFORMANCE_LEVELS[0],
               'asmt_perf_lvl_name_2': PERFORMANCE_LEVELS[1],
               'asmt_perf_lvl_name_3': PERFORMANCE_LEVELS[2],
-              'asmt_perf_lvl_name_4': PERFORMANCE_LEVELS[3]
-              #Assessment cutpoints, percentages?
+              'asmt_perf_lvl_name_4': PERFORMANCE_LEVELS[3],
+              'asmt_cut_point_1': int((MAX_ASSMT_SCORE + MIN_ASSMT_SCORE) * .25),
+              'asmt_cut_point_2': int((MAX_ASSMT_SCORE + MIN_ASSMT_SCORE) * .5),
+              'asmt_cut_point_3': int((MAX_ASSMT_SCORE + MIN_ASSMT_SCORE) * .75)
               }
 
     return Assessment(**params)

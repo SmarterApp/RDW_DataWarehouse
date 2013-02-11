@@ -6,6 +6,7 @@ Created on Feb 11, 2013
 import unittest
 
 import gen_assessments as genasmt
+from constants import MIN_ASSMT_SCORE, MAX_ASSMT_SCORE
 
 
 class Test(unittest.TestCase):
@@ -28,6 +29,12 @@ class Test(unittest.TestCase):
         self.assertEqual(asmt.asmt_type, 'INTERIM')
         self.assertIsNotNone(asmt.asmt_period_year)
         self.assertIsNotNone(asmt.asmt_version)
+        self.assertLess(asmt.asmt_cut_point_1, MAX_ASSMT_SCORE)
+        self.assertGreater(asmt.asmt_cut_point_1, MIN_ASSMT_SCORE)
+        self.assertLess(asmt.asmt_cut_point_2, MAX_ASSMT_SCORE)
+        self.assertGreater(asmt.asmt_cut_point_2, MIN_ASSMT_SCORE)
+        self.assertLess(asmt.asmt_cut_point_3, MAX_ASSMT_SCORE)
+        self.assertGreater(asmt.asmt_cut_point_3, MIN_ASSMT_SCORE)
 
     def test_generate_id(self):
         res = genasmt.generate_id()

@@ -24,10 +24,11 @@ STUDENT = 0
 TEACHER = 1
 PARENT = 2
 
+
 def generate_teacher(state, district):
 
     teacher_gender = random.choice(['male', 'female'])
-    teacher_has_middle_name = random.randint(0,1)
+    teacher_has_middle_name = random.randint(0, 1)
     id_generator = IdGen()
 
     teacher_params = {
@@ -45,7 +46,7 @@ def generate_teacher(state, district):
     return teacher
 
 
-def generate_student(state, district, school, grade, street_list, gender = None, has_middle_name = False):
+def generate_student(state, district, school, grade, street_list, gender=None, has_middle_name=False):
 
     id_generator = IdGen()
 
@@ -63,7 +64,6 @@ def generate_student(state, district, school, grade, street_list, gender = None,
 
     last_name = gennames.generate_last_name()
     domain = school.school_name
-
 
     student_params = {
         'student_id':                   id_generator.get_id(),
@@ -86,6 +86,7 @@ def generate_student(state, district, school, grade, street_list, gender = None,
 
     return student, parentz
 
+
 def assign_parents(student):
 
     parent_1_params = {
@@ -105,7 +106,6 @@ def assign_parents(student):
         'state_code':         student.state_code,
         'zip_code':           student.zip_code
     }
-
 
     parent1 = Parent(**parent_1_params)
     parent2 = Parent(**parent_2_params)
@@ -231,6 +231,7 @@ def _generate_teachers(total, male_total, school, state_code):
 
     return teachers
 
+
 def _assign_parent(student):
     '''
     takes a student object and assigns it two parents with the same last name.
@@ -248,7 +249,6 @@ def _assign_parent(student):
     }
     parent1 = Parent()
     parent2 = Parent()
-
 
     parent1.lastname = lastname
     parent2.lastname = lastname

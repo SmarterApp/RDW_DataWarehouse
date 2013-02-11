@@ -170,8 +170,6 @@ class Claim(object):
 class Assessment:
     '''
     AssessmentType Object
-    ****Adding placeholders for fields so not to break things***
-    ****Should we have an asmt_claim table?
     '''
     def __init__(self, asmt_id, asmt_external_id, asmt_type, asmt_period, asmt_period_year, asmt_version, asmt_grade, asmt_subject, claim_1=None, claim_2=None, claim_3=None, claim_4=None, asmt_score_min=None, asmt_score_max=None,
                  asmt_perf_lvl_name_1=None, asmt_perf_lvl_name_2=None, asmt_perf_lvl_name_3=None, asmt_perf_lvl_name_4=None, asmt_perf_lvl_name_5=None, asmt_cut_point_1=None, asmt_cut_point_2=None, asmt_cut_point_3=None, asmt_cut_point_4=None):
@@ -270,12 +268,9 @@ class WhereTaken:
 class AssessmentOutcome(object):
     '''
     Assessment outcome object
-    Should map to the fact_asmt_outcome table
-    ****Adding placeholders for fields so not to break things***
     '''
     def __init__(self, asmt_out_id, asmt_out_ext_id, assessment, student_id, teacher_id, state_code, district_id, school_id, enrl_grade_id, enrl_grade_code,
                  date_taken, where_taken_id, asmt_score, asmt_create_date):
-        #stdnt_tmprl_id, teacher_id, date_taken, where_taken_id, score, asmt_create_date):
         self.asmt_out_id = asmt_out_id
         self.asmt_out_ext_id = asmt_out_ext_id
         self.assessment = assessment
@@ -317,31 +312,6 @@ class AssessmentOutcome(object):
                 self.asmt_score.overall, self.assessment.asmt_score_min, self.assessment.asmt_score_max, asmt_perf_lvl, claims[0][1], self.assessment.claim_1.claim_score_min,
                 self.assessment.claim_1.claim_score_max, claims[1][1], self.assessment.claim_2.claim_score_min, self.assessment.claim_2.claim_score_max, claims[2][1], self.assessment.claim_3.claim_score_min,
                 self.assessment.claim_3.claim_score_max, claims[3][1], self.assessment.claim_4.claim_score_min, self.assessment.claim_4.claim_score_max, self.asmt_create_date]
-#                self.asmnt_type_id, self.student_id, self.stdnt_tmprl_id, self.teacher_id, self.date_taken, self.date_taken.day, self.date_taken.month, self.date_taken.year,
-#                self.where_taken_id, self.score.overall, claims[0][0], claims[0][1], claims[1][0], claims[1][1], claims[2][0], claims[2][1], claims[3][0], claims[3][1], self.asmt_create_date]
-
-
-class HistAssessmentOutcome(object):
-    '''
-    NOT PRESENT IN NEW SCHEMA
-    maps to hist_asmt_outcome table
-    '''
-    def __init__(self, asmnt_out_id, asmnt_type_id, student_id, stdnt_tmprl_id, date_taken, where_taken_id, score, asmt_create_date, hist_create_date):
-        self.asmnt_out_id = asmnt_out_id
-        self.asmnt_type_id = asmnt_type_id
-        self.student_id = student_id
-        self.stdnt_tmprl_id = stdnt_tmprl_id
-        self.date_taken = date_taken
-        self.where_taken_id = where_taken_id
-        self.score = score
-        self.asmt_create_date = asmt_create_date
-        self.hist_create_date = hist_create_date
-
-    def getRow(self):
-        claims = list(self.score.claims.items())
-
-        return [self.asmnt_out_id, self.asmnt_type_id, self.student_id, self.stdnt_tmprl_id, self.date_taken, self.date_taken.day, self.date_taken.month, self.date_taken.year, self.where_taken_id,
-                self.score.overall, claims[0][0], claims[0][1], claims[1][0], claims[1][1], claims[2][0], claims[2][1], claims[3][0], claims[3][1], self.asmt_create_date, self.hist_create_date]
 
 
 class StudentTemporalData(object):
@@ -414,7 +384,7 @@ class Student(Person):
         city_zip_map = district.city_zip_map
         city = random.choice(list(city_zip_map.keys()))
         zip_range = city_zip_map[city]
-        zip_code =  random.randint(zip_range[0], zip_range[1])
+        zip_code = random.randint(zip_range[0], zip_range[1])
 
         self.address_1 = address_1
         self.address_2 = address_2
@@ -441,7 +411,7 @@ class Parent(Person):
     '''
 
     def __init__(self, first_name, last_name, address_1, city, state_code, zip_code, parent_id=None, parent_external_id=None, middle_name=None, address_2=None):
-        super().__init__(first_name, last_name, middle_name = middle_name)
+        super().__init__(first_name, last_name, middle_name=middle_name)
 
         # Ids can either be given to the constructor or provided by constructor
         # Either way, both Id fields must have a value
@@ -474,7 +444,7 @@ class Teacher(Person):
     Corresponds to teacher table
     '''
 
-    def __init__(self, first_name, last_name, district_id, state_code, teacher_id = None, teacher_external_id = None, middle_name = None):
+    def __init__(self, first_name, last_name, district_id, state_code, teacher_id=None, teacher_external_id=None, middle_name=None):
         super().__init__(first_name, last_name, middle_name=middle_name)
         # Ids can either be given to the constructor or provided by constructor
         # Either way, both Id fields must have a value

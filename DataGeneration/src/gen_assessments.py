@@ -57,10 +57,10 @@ def generate_single_asmt(grade, asmt_type, period, subject):
     asmt_gr = '4' if grade < 8 else '8'
     asmt_info = ASSMT_TYPES[subject][asmt_gr]
 
-    claim1 = Claim(asmt_info['claim_names'][0])
-    claim2 = Claim(asmt_info['claim_names'][1])
-    claim3 = Claim(asmt_info['claim_names'][2])
-    claim4 = Claim(asmt_info['claim_names'][3])
+    claim1 = Claim(asmt_info['claim_names'][0], MIN_ASSMT_SCORE, MAX_ASSMT_SCORE)
+    claim2 = Claim(asmt_info['claim_names'][1], MIN_ASSMT_SCORE, MAX_ASSMT_SCORE)
+    claim3 = Claim(asmt_info['claim_names'][2], MIN_ASSMT_SCORE, MAX_ASSMT_SCORE)
+    claim4 = Claim(asmt_info['claim_names'][3], MIN_ASSMT_SCORE, MAX_ASSMT_SCORE)
     #TODO: set assessment year
     params = {
               'asmt_id': asmt_id,
@@ -106,6 +106,7 @@ def generate_version():
 
 
 ASSESSMENT_TYPES_LIST = generate_assessment_types()
+
 
 if __name__ == '__main__':
     assessments = generate_assessment_types()

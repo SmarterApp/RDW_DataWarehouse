@@ -27,3 +27,5 @@ DataGeneration/datafiles/students.csv
 DataGeneration/datafiles/tea_sections.csv
 DataGeneration/datafiles/teachers.csv
 DataGeneration/datafiles/wheretaken.csv
+DataGeneration/datafiles/districts.csv
+DataGeneration/datafiles/schools.csv

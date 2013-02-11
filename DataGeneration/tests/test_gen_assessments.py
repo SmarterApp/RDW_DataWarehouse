@@ -40,6 +40,17 @@ class Test(unittest.TestCase):
 
         self.assertIsNotNone(res)
 
+    def test_calc_claim_min_max(self):
+        res = genasmt.calc_claim_min_max(100, 500, 10)
+
+        self.assertEqual(res[0], 10)
+        self.assertEqual(res[1], 50)
+
+        res = genasmt.calc_claim_min_max(100, 500, 40)
+
+        self.assertEqual(res[0], int(100 * .4))
+        self.assertEqual(res[1], int(500 * .4))
+
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

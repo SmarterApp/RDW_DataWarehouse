@@ -123,6 +123,36 @@ class Class:
         return [self.class_id, self.title]
 
 
+class Section:
+    '''
+    Section Object
+    '''
+    def __init__(self, section_id, section_external_id, school_id, section_name=None, class_name=None):
+        self.section_id = section_id
+        self.section_external_id = section_external_id
+        self.school_id = school_id
+        self.section_name = section_name
+        self.class_name = class_name
+
+    def getRow(self):
+        return [self.section_id, self.section_external_id, self.section_name, self.class_name, self.school_id]
+
+
+class TeacherSection:
+    '''
+    TeacherSection Object
+    '''
+    def __init__(self, teacher_section_id, teacher_id, section_id, rel_start_date, rel_end_date=None):
+        self.teacher_section_id = teacher_section_id
+        self.teacher_id = teacher_id
+        self.section_id = section_id
+        self.rel_start_date = rel_start_date
+        self.rel_end_date = rel_end_date
+
+    def getRow(self):
+        return [self.teacher_section_id, self.teacher_id, self.section_id, self.rel_start_date, self.rel_end_date]
+
+
 class Claim(object):
     '''
     claim information to be used by the assessment object

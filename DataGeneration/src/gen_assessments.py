@@ -1,7 +1,7 @@
 '''
 Created on Jan 29, 2013
 
-@author: abrien
+@author: abrien, swimberly
 '''
 
 from uuid import uuid4
@@ -57,10 +57,15 @@ def generate_single_asmt(grade, asmt_type, period, subject):
     asmt_gr = '4' if grade < 8 else '8'
     asmt_info = ASSMT_TYPES[subject][asmt_gr]
 
-    claim1 = Claim(asmt_info['claim_names'][0], MIN_ASSMT_SCORE, MAX_ASSMT_SCORE)
-    claim2 = Claim(asmt_info['claim_names'][1], MIN_ASSMT_SCORE, MAX_ASSMT_SCORE)
-    claim3 = Claim(asmt_info['claim_names'][2], MIN_ASSMT_SCORE, MAX_ASSMT_SCORE)
-    claim4 = Claim(asmt_info['claim_names'][3], MIN_ASSMT_SCORE, MAX_ASSMT_SCORE)
+    claim1_min_max = calc_claim_min_max(MIN_ASSMT_SCORE, MAX_ASSMT_SCORE, asmt_info['claim_percs'][0])
+    claim2_min_max = calc_claim_min_max(MIN_ASSMT_SCORE, MAX_ASSMT_SCORE, asmt_info['claim_percs'][1])
+    claim3_min_max = calc_claim_min_max(MIN_ASSMT_SCORE, MAX_ASSMT_SCORE, asmt_info['claim_percs'][2])
+    claim4_min_max = calc_claim_min_max(MIN_ASSMT_SCORE, MAX_ASSMT_SCORE, asmt_info['claim_percs'][3])
+
+    claim1 = Claim(asmt_info['claim_names'][0], claim1_min_max[0], claim1_min_max[1])
+    claim2 = Claim(asmt_info['claim_names'][1], claim2_min_max[0], claim2_min_max[1])
+    claim3 = Claim(asmt_info['claim_names'][2], claim3_min_max[0], claim3_min_max[1])
+    claim4 = Claim(asmt_info['claim_names'][3], claim4_min_max[0], claim4_min_max[1])
     #TODO: set assessment year
     params = {
               'asmt_id': asmt_id,
@@ -80,11 +85,24 @@ def generate_single_asmt(grade, asmt_type, period, subject):
               'asmt_perf_lvl_name_1': PERFORMANCE_LEVELS[0],
               'asmt_perf_lvl_name_2': PERFORMANCE_LEVELS[1],
               'asmt_perf_lvl_name_3': PERFORMANCE_LEVELS[2],
-              'asmt_perf_lvl_name_4': PERFORMANCE_LEVELS[3]
-              #Assessment cutpoints, percentages?
+              'asmt_perf_lvl_name_4': PERFORMANCE_LEVELS[3],
+              'asmt_cut_point_1': int((MAX_ASSMT_SCORE + MIN_ASSMT_SCORE) * .25),
+              'asmt_cut_point_2': int((MAX_ASSMT_SCORE + MIN_ASSMT_SCORE) * .5),
+              'asmt_cut_point_3': int((MAX_ASSMT_SCORE + MIN_ASSMT_SCORE) * .75)
               }
 
     return Assessment(**params)
+
+
+def calc_claim_min_max(asmt_min, asmt_max, claim_perc):
+    '''
+    returns a minimum and maximum score for a claim given the minimum for the asmt and percentage
+    that the claim makes up in the total score
+    '''
+    claim_min = asmt_min * (claim_perc * .01)
+    claim_max = asmt_max * (claim_perc * .01)
+
+    return int(claim_min), int(claim_max)
 
 
 def generate_id():

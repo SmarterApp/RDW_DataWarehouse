@@ -1,7 +1,7 @@
 '''
 Created on Jan 29, 2013
 
-@author: abrien
+@author: abrien, swimberly
 '''
 
 from uuid import uuid4

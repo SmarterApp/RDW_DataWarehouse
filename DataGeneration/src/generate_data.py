@@ -57,7 +57,7 @@ def prepare_data():
         mammals_list.extend(read_names(MAMMALS_FILE))
         fish_list.extend(read_names(FISH_FILE))
     except IOError as e:
-        print("Exception for reading files: " + str(e))
+        print("Exception for reading bird, mammals, or fish files: " + str(e))
         return False
     return True
 
@@ -365,17 +365,14 @@ def cal_zipvalues(pos, n):
     return zip_init, zip_dist
 
 
-def create_classes_grades_sections(sch, state, district_id):
+def create_classes_grades_sections(sch, state, district):
     '''
     Main function to generate classes, grades, sections, students and teachers for a school
     '''
+
     # generate teacher list for a school
     num_of_teacher = max(1, round(sch.num_of_student / sch.stu_tea_ratio))
-    #teacher_list = generate_people(TEACHER, num_of_teacher, sch, state.state_id, random.choice(GENDER_RARIO))
-    teacher_list = []
-    for i in range(num_of_teacher):
-        teacher = generate_teacher(state, district_id)
-        teacher_list.append(teacher)
+    teacher_list = generate_teachers(num_of_teacher, state, district)
     total_count[4] += len(teacher_list)
     create_csv(teacher_list, TEACHERS)
 
@@ -387,11 +384,10 @@ def create_classes_grades_sections(sch, state, district_id):
     j = 0
     for grade in range(sch.low_grade, sch.high_grade + 1):
         # generate student list for a grade
-        #grade_students = generate_people(STUDENT, stu_num_in_grade, sch, state.state_id, random.choice(GENDER_RARIO), grade)
-        grade_students = []
-        for i in range(stu_num_in_grade):
-            grade_students.append(generate_student(state.state_id, district_id, city, zip_code, sch.sch_id, grade))
+
+        grade_students = generate_students(stu_num_in_grade, state, district, sch, grade)
         create_csv(grade_students, STUDENTS)
+
         j += len(grade_students)
         total_count[3] += len(grade_students)
         if(grade == sch.high_grade - 1):
@@ -469,6 +465,23 @@ def create_classes_grades_sections(sch, state, district_id):
 
         create_csv(assessment_outcome_list, ASSESSMENT_OUTCOME)
         create_csv(hist_assessment_outcome_list, HIST_ASSESSMENT_OUTCOME)
+
+def generate_teachers(num_teachers, state, district):
+    teachers = []
+
+    for i in range(num_teachers):
+        teacher = generate_teacher(state, district)
+        teachers.append(teacher)
+
+    return teachers
+
+def generate_students(num_students, state, district, school, grade):
+    students = []
+
+    for i in range(num_students):
+        students.append(generate_student(state, district, school, grade))
+
+    return students
 
 
 def generate_dates_taken(year):

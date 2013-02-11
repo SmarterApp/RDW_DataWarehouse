@@ -14,6 +14,9 @@ smarter.egg-info
 .idea/
 .project
 .pydevproject
+
+# program oupt #
+################
 DataGeneration/datafiles/assessment_outcome.csv
 DataGeneration/datafiles/assessment_types.csv
 DataGeneration/datafiles/classes.csv

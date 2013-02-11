@@ -89,6 +89,7 @@ def generate_ed_metadata(scheme_name=None, bind=None):
                    Column('school_id', BigInteger, primary_key=True),
                    Column('school_external_id', String(256)),
                    Column('school_name', String(256), nullable=False),
+                   Column('district_id', None, ForeignKey('dim_district.district_id'), nullable=False),
                    Column('district_name', String(256), nullable=False),
                    Column(Enum("Elementary School",
                                "High School",

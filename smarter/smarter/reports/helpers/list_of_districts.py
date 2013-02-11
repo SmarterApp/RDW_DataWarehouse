@@ -34,12 +34,9 @@ def get_districts(params, connector=None):
 
     dim_district = connector.get_table(__dim_district)
 
-    query = None
-
-    if dim_district is not None:
-        query = select([dim_district.c.district_id.lable('district_id'),
-                        dim_district.c.district_name.label('district_name')])
-        query = query.where(dim_district.c.state_code == state_code)
+    query = select([dim_district.c.district_id.label('district_id'),
+                    dim_district.c.district_name.label('district_name')])
+    query = query.where(dim_district.c.state_code == state_code).order_by(dim_district.c.district_name)
     result = connector.get_result(query)
     connector.close_connection()
     return result

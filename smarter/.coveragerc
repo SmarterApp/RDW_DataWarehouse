@@ -2,6 +2,8 @@
 omit = 
 	setup.py
 	setup-developer.py
+    smarter/__init__.py
+    smarter/views.py
 
 [report]
 exclude_lines = 

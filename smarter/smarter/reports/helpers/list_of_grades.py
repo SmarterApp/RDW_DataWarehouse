@@ -23,12 +23,10 @@ def get_grades(params, connector=None):
 
     dim_grade = connector.get_table(__dim_grade)
 
-    query = None
-
-    if dim_grade is not None:
-        query = select([dim_grade.c.grade_id.label('grade_id'),
-                        dim_grade.c.grade_code.label('grade_code'),
-                        dim_grade.c.grade_desc.label('grade_desc')])
+    query = select([dim_grade.c.grade_id.label('grade_id'),
+                    dim_grade.c.grade_code.label('grade_code'),
+                    dim_grade.c.grade_desc.label('grade_desc')])
+    query = query.order_by(dim_grade.c.grade_code)
     result = connector.get_result(query)
     connector.close_connection()
     return result

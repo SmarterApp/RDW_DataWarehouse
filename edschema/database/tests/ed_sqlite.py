@@ -37,7 +37,7 @@ def destroy_sqlite():
 
 
 # import data from csv files
-def generate_data():
+def importing_data():
     dbconnector = DBConnector()
     connection = dbconnector.open_connection()
     here = os.path.abspath(os.path.dirname(__file__))

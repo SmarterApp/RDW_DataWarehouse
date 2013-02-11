@@ -399,17 +399,24 @@ class Teacher(Person):
     Corresponds to teacher table
     '''
 
-    def __init__(self, firstname=None, middlename=None, lastname=None, gender=None, email=None, address=None):
-        super().__init__(firstname, middlename, lastname, gender, email, address)
-        self.teacher_id = None
-        self.district_id = None  # NEW
-        self.state_code = None  # NEW
+    def __init__(self, first_name, last_name, district_id, state_code, teacher_id = None, teacher_external_id = None, middle_name = None):
+        super().__init__(first_name, middle_name, last_name)
+        # Ids can either be given to the constructor or provided by constructor
+        # Either way, both Id fields must have a value
+        if teacher_id == None or teacher_external_id == None:
+            id_generator = IdGen()
+            if teacher_id == None:
+                self.teacher_id = id_generator.get_id()
+            if teacher_external_id == None:
+                self.teacher_external_id = id_generator.get_id()
+        self.district_id = district_id
+        self.state_code = state_code
 
     def __str__(self):
-        return ("%s %s %s" % (self.firstname, self.middlename, self.lastname))
+        return ("%s %s %s" % (self.first_name, self.middle_name, self.last_name))
 
     def getRow(self):
-        return [self.teacher_id, self.firstname, self.middlename, self.lastname]
+        return [self.teacher_id, self.teacher_external_id, self.first_name, self.middle_name, self.last_name, self.district_id, self.state_code]
 
 
 def generate_ramdom_name():

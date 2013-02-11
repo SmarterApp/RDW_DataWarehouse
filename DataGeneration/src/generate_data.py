@@ -8,7 +8,7 @@ from write_to_csv import *
 from entities import *
 from datetime import datetime
 from test.test_iterlen import len
-from genpeople import generate_people, STUDENT, TEACHER
+from genpeople import generate_people, STUDENT, TEACHER, generate_teacher, generate_student
 from idgen import IdGen
 from gen_assessments import generate_assessment_types, ASSESSMENT_TYPES_LIST
 from constants import *
@@ -76,6 +76,7 @@ def generate_data(db_states_stat):
     '''
     Main function to generate actual data with input statistical data
     '''
+
     # generate all assessment types
     assessment_types = generate_assessment_types()
     create_csv(assessment_types, ASSESSMENT_TYPES)
@@ -144,7 +145,7 @@ def generate_data(db_states_stat):
 
             # create classes, grades, sections, teachers students, parents and assessment scores for each school
             for sch in school_list:
-                create_classes_grades_sections(sch, created_state)
+                create_classes_grades_sections(sch, created_state, dist)
 
         # if just need one state data
         if(c == 0):
@@ -364,13 +365,17 @@ def cal_zipvalues(pos, n):
     return zip_init, zip_dist
 
 
-def create_classes_grades_sections(sch, state):
+def create_classes_grades_sections(sch, state, district_id):
     '''
     Main function to generate classes, grades, sections, students and teachers for a school
     '''
     # generate teacher list for a school
     num_of_teacher = max(1, round(sch.num_of_student / sch.stu_tea_ratio))
-    teacher_list = generate_people(TEACHER, num_of_teacher, sch, state.state_id, random.choice(GENDER_RARIO))
+    #teacher_list = generate_people(TEACHER, num_of_teacher, sch, state.state_id, random.choice(GENDER_RARIO))
+    teacher_list = []
+    for i in range(num_of_teacher):
+        teacher = generate_teacher(state, district_id)
+        teacher_list.append(teacher)
     total_count[4] += len(teacher_list)
     create_csv(teacher_list, TEACHERS)
 
@@ -382,7 +387,10 @@ def create_classes_grades_sections(sch, state):
     j = 0
     for grade in range(sch.low_grade, sch.high_grade + 1):
         # generate student list for a grade
-        grade_students = generate_people(STUDENT, stu_num_in_grade, sch, state.state_id, random.choice(GENDER_RARIO), grade)
+        #grade_students = generate_people(STUDENT, stu_num_in_grade, sch, state.state_id, random.choice(GENDER_RARIO), grade)
+        grade_students = []
+        for i in range(stu_num_in_grade):
+            grade_students.append(generate_student(state.state_id, district_id, city, zip_code, sch.sch_id, grade))
         create_csv(grade_students, STUDENTS)
         j += len(grade_students)
         total_count[3] += len(grade_students)

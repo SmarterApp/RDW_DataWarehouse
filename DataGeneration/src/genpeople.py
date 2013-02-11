@@ -13,7 +13,10 @@ from readnaminglists import PeopleNames
 from idgen import IdGen
 from write_to_csv import create_csv
 import constants
+from idgen import IdGen
 import gennames
+import util
+import random
 
 
 # constants
@@ -21,6 +24,65 @@ STUDENT = 0
 TEACHER = 1
 PARENT = 2
 
+def generate_teacher(state_code, district_id):
+
+    teacher_gender = random.choice(['male', 'female'])
+    teacher_has_middle_name = random.randint(0,1)
+    id_generator = IdGen()
+
+    teacher_params = {
+        'teacher_id':                   id_generator.get_id(),
+        'teacher_external_id':          id_generator.get_id(),
+        'first_name':                   gennames.generate_first_or_middle_name(teacher_gender),
+        'middle_name':                  gennames.generate_first_or_middle_name(teacher_gender) if teacher_has_middle_name else None,
+        'last_name':                    gennames.generate_last_name(),
+        'district_id':                  district_id,
+        'state_code':                   state_code
+    }
+
+    teacher = Teacher(**teacher_params)
+
+    return teacher
+
+def generate_student(state_code, district_id, city, zip_code, school, grade, gender = None, has_middle_name = False):
+
+    id_generator = IdGen()
+
+    if gender:
+        student_gender = gender
+    else:
+        student_gender = random.choice(['male', 'female'])
+
+    first_name = gennames.generate_first_or_middle_name(gender)
+
+    if has_middle_name:
+        middle_name = gennames.generate_first_or_middle_name(gender)
+    else:
+        middle_name = None
+
+    last_name = gennames.generate_last_name()
+    domain = '@' + school + '.edu'
+
+
+    student_params = {
+        'student_id':                   id_generator.get_id(),
+        'student_external_id':          id_generator.get_id(),
+        'first_name':                   first_name,
+        'middle_name':                  middle_name,
+        'last_name':                    last_name,
+        'address_1':                    util.generate_address(),
+        'dob':                          util.generate_dob(grade),
+        'city':                         city,
+        'state_code':                   state_code,
+        'zip_code':                     zip_code,
+        'gender':                       student_gender,
+        'email':                        util.generate_email_address(first_name, last_name, domain),
+        'district_id':                  district_id,
+    }
+
+    student = Student(**student_params)
+
+    return student
 
 def generate_people(person_type, total, school, state_code, male_ratio=0.5, grade=None):
     '''
@@ -145,12 +207,12 @@ def _assign_parent(student):
     '''
 
     parent_1_params = {
-        first_name:         gennames.generate_first_or_middle_name('male'),
-        last_name:          student.last_name,
-        address_1:          ,
-        city:               ,
-        state_code:         ,
-        zipe_code:          ,
+        'first_name':         gennames.generate_first_or_middle_name('male'),
+        'last_name':          student.last_name,
+        'address_1':          student.address1,
+        'city':               student.city,
+        'state_code':         student.state_id,
+        'zip_code':           student.zip
     }
     parent1 = Parent()
     parent2 = Parent()

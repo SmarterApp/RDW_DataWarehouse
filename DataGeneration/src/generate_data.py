@@ -143,6 +143,7 @@ def generate_data(db_states_stat):
 
             shift += dist.num_of_schools
 
+            dist.wheretaken_list = wheretaken_list
             # create classes, grades, sections, teachers students, parents and assessment scores for each school
             for sch in school_list:
                 create_classes_grades_sections(dist, sch, created_state)
@@ -277,7 +278,7 @@ def create_schools(stu_num_in_school_made, stutea_ratio_in_school_made, distr, s
         school_type = random.choice(SCHOOL_TYPES)
         school = School(sch_id, school_external_id, sch_name, distr.district_name, distr.state_code,
                         stu_num_in_school_made[i], stutea_ratio_in_school_made[i], low_grade, high_grade,
-                        school_categories_type, school_type, address_1, city_name, zip_code)
+                        school_categories_type, school_type, address_1, city_name, zip_code, distr.district_id)
         school_list.append(school)
 
     return school_list, wheretaken_list
@@ -411,64 +412,92 @@ def create_classes_grades_sections(district, sch, state):
         # create_csv(classforgrade_list, CLASSES)
 
         scores = generate_assmts_for_students(len(grade_students), grade, state.state_name)
-        assessment_outcome_list = []
-        hist_assessment_outcome_list = []
 
-        dates_taken1 = generate_dates_taken(2000)
-        dates_taken2 = generate_dates_taken(2000)
-        print("len of grade students ", len(grade_students), "len of classforgrade_list ", len(classforgrade_list),
-              "len of student_temporal_list ", len(student_temporal_list), "len of scores ", len(scores))
-        for stu_tmprl in student_temporal_list:
-            for score in scores.items():
-                asmt_id = int(score[0].split('_')[1])
-                year = score[0].split('_')[0]
-                asmt = [x for x in ASSESSMENT_TYPES_LIST if x.asmt_id == asmt_id][0]
-                subject = stu_tmprl.student_class.sub_name
-                if subject == 'Math':
-                    subject = 'MATH'
-                if int(year) == date.today().year and stu_tmprl.student_class.sub_name == asmt.asmt_subject:
-                    new_id = idgen.get_id()
-                    teacher_list = list(stu_tmprl.student_class.section_tea_map.values())
-                    teacher_list = [item for sub in teacher_list for item in sub]  # flatten teacher_list
-                    teacher = teacher_list[0]
-                    teacher_id = teacher.teacher_id
-
-                    date_taken = None
-                    if asmt.asmt_period == 'BOY':
-                        date_taken = dates_taken1['BOY']
-                    elif asmt.asmt_period == 'MOY':
-                        date_taken = dates_taken1['MOY']
-                    elif asmt.asmt_period == 'EOY':
-                        date_taken = dates_taken1['EOY']
-                    date_taken = date_taken.replace(year=int(year))
-                    if (len(score[1]) == 0):
-                        print("*********Import**********", new_id, asmt_id, stu_tmprl.student_id, stu_tmprl.student_tmprl_id, teacher_id, date_taken, sch.place_id)
-                    outcome = AssessmentOutcome(new_id, asmt_id, stu_tmprl.student_id, stu_tmprl.student_tmprl_id, teacher_id, date_taken, sch.sch_id, score[1].pop(), 'cdate?')
-                    assessment_outcome_list.append(outcome)
-                elif stu_tmprl.student_class.sub_name == asmt.asmt_subject:
-                    new_id = idgen.get_id()
-                    teacher_list = list(stu_tmprl.student_class.section_tea_map.values())
-                    teacher_list = [item for sub in teacher_list for item in sub]  # flatten teacher_list
-                    teacher = teacher_list[0]
-                    teacher_id = teacher.teacher_id
-
-                    date_taken = None
-                    if asmt.asmt_period == 'BOY':
-                        date_taken = dates_taken2['BOY']
-                    elif asmt.asmt_period == 'MOY':
-                        date_taken = dates_taken2['MOY']
-                    elif asmt.asmt_period == 'EOY':
-                        date_taken = dates_taken2['EOY']
-                    date_taken = date_taken.replace(year=int(year))
-
-                    if (len(score[1]) == 0):
-                        print("*********Import**********", new_id, asmt_id, stu_tmprl.student_id, stu_tmprl.student_tmprl_id, teacher_id, date_taken, sch.place_id)
-
-                    outcome = HistAssessmentOutcome(new_id, asmt_id, stu_tmprl.student_id, stu_tmprl.student_tmprl_id, date_taken, sch.sch_id, score[1].pop(), 'cdate?', 'hdate?')
-                    hist_assessment_outcome_list.append(outcome)
-
+        wheretaken_id = random.choice(district.wheretaken_list).wheretaken_id
+        assessment_outcome_list = associate_students_and_scores(student_temporal_list, scores, sch, wheretaken_id)
         create_csv(assessment_outcome_list, ASSESSMENT_OUTCOME)
-        create_csv(hist_assessment_outcome_list, HIST_ASSESSMENT_OUTCOME)
+
+
+def associate_students_and_scores(student_temporal_list, scores, school, wheretaken_id):
+    '''
+    creates association between students and scores
+    student_temporal_list -- a list of student_temporal objects
+    scores -- a list of scores that will be mapped to students
+    school -- the school that the students belong to
+    wheretaken_id -- id of where taken
+    returns a list of AssessmentOutcome Objects
+    '''
+
+    assessment_outcome_list = []
+    dates_taken1 = generate_dates_taken(2000)
+    dates_taken2 = generate_dates_taken(2000)
+    prev_year = 0
+
+    for stu_tmprl in student_temporal_list:
+        for score in scores.items():
+            asmt_id = int(score[0].split('_')[1])
+            year = score[0].split('_')[0]
+            asmt = [x for x in ASSESSMENT_TYPES_LIST if x.asmt_id == asmt_id][0]
+            subject = stu_tmprl.student_class.sub_name
+
+            if subject == 'Math':
+                subject = 'MATH'
+
+            if stu_tmprl.student_class.sub_name == asmt.asmt_subject:  # check that subjects match as there is a std_tmprl object for each subject
+                new_id = idgen.get_id()
+                teacher_list = list(stu_tmprl.student_class.section_tea_map.values())
+                teacher_list = [item for sub in teacher_list for item in sub]  # flatten teacher_list
+                teacher = teacher_list[0]
+                teacher_id = teacher.teacher_id
+
+                date_taken = None
+                if prev_year == year:
+                    date_taken = map_asmt_date_to_period(asmt.asmt_period, dates_taken1, year)
+                else:
+                    date_taken = map_asmt_date_to_period(asmt.asmt_period, dates_taken2, year)
+                prev_year = year
+
+#                if (len(score[1]) == 0):
+#                    print("*********Import**********", new_id, asmt_id, stu_tmprl.student_id, stu_tmprl.student_tmprl_id, teacher_id, date_taken, school.place_id)
+
+                params = {
+                          'asmt_out_id': new_id,
+                          'asmt_out_ext_id': uuid.uuid4(),
+                          'assessment': asmt,
+                          'student_id': stu_tmprl.student_id,
+                          'teacher_id': teacher_id,
+                          'state_code': school.state_code,
+                          'district_id': school.district_id,
+                          'school_id': school.sch_id,
+                          'enrl_grade_id': stu_tmprl.grade_id,
+                          'enrl_grade_code': stu_tmprl.grade_id,
+                          'date_taken': date_taken,
+                          'where_taken_id': wheretaken_id,
+                          'asmt_score': score[1].pop(),
+                          'asmt_create_date': date.today().replace(year=date.today().year - 5)
+                          }
+
+                outcome = AssessmentOutcome(**params)
+                assessment_outcome_list.append(outcome)
+
+    return assessment_outcome_list
+
+
+def map_asmt_date_to_period(period, dates_taken, year):
+    '''
+    returns a date given the attributes
+    period -- the period that the asmt was taken
+    dates_taken -- a dict of dates whose keys are periods
+    year -- the year the asmt was taken
+    '''
+    if period == 'BOY':
+        date_taken = dates_taken['BOY']
+    elif period == 'MOY':
+        date_taken = dates_taken['MOY']
+    elif period == 'EOY':
+        date_taken = dates_taken['EOY']
+    return date_taken.replace(year=int(year))
+
 
 def generate_teachers(num_teachers, state, district):
     teachers = []
@@ -478,6 +507,7 @@ def generate_teachers(num_teachers, state, district):
         teachers.append(teacher)
 
     return teachers
+
 
 def generate_students(num_students, state, district, school, grade):
     students = []

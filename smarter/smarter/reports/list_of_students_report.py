@@ -5,7 +5,6 @@ Created on Jan 24, 2013
 '''
 
 from edapi.utils import report_config
-from sqlalchemy.schema import Table
 from sqlalchemy.sql.expression import func
 from database.connector import DBConnector
 from sqlalchemy.sql import select

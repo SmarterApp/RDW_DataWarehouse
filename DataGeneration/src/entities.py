@@ -32,7 +32,7 @@ class District:
     District object
     '''
     # total_id = 0
-    def __init__(self, district_id, district_external_id, district_name, state_code, num_of_schools, zipcode_range, city_names, address_1=None, zipcode=None, address_2=None):
+    def __init__(self, district_id, district_external_id, district_name, state_code, num_of_schools, zipcode_range, city_names, address_1=None, zipcode=None, address_2=None, city_zip_map=None):
         '''
         Constructor
         '''
@@ -47,6 +47,7 @@ class District:
         self.num_of_schools = num_of_schools
         self.zipcode_range = zipcode_range
         self.city_names = city_names
+        self.city_zip_map = city_zip_map
 
     def __str__(self):
         '''

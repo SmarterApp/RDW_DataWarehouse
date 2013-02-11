@@ -8,7 +8,7 @@ from write_to_csv import *
 from entities import *
 from datetime import datetime
 from test.test_iterlen import len
-from genpeople import generate_people, STUDENT, TEACHER, generate_teacher, generate_student
+from genpeople import *
 from idgen import IdGen
 from gen_assessments import generate_assessment_types, ASSESSMENT_TYPES_LIST
 from constants import *
@@ -481,7 +481,7 @@ def generate_students(num_students, state, district, school, grade):
     students = []
 
     for i in range(num_students):
-        students.append(generate_student(state, district, school, grade))
+        students.append(generate_student(state, district, school, grade, fish_list))
 
     return students
 

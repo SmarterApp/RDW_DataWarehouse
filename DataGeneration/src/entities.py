@@ -373,7 +373,7 @@ class Student(Person):
 
     def __init__(self, student_id, student_external_id, first_name, last_name, address_1, dob, district, state, gender, email, school, middle_name=None, address_2 = None):
 
-        super().__init__(first_name, last_name, middle_name)
+        super().__init__(first_name, last_name, middle_name=middle_name)
 
         # Ids can either be given to the constructor or provided by constructor
         # Either way, both Id fields must have a value
@@ -447,7 +447,7 @@ class Teacher(Person):
     '''
 
     def __init__(self, first_name, last_name, district_id, state_code, teacher_id = None, teacher_external_id = None, middle_name = None):
-        super().__init__(first_name, middle_name, last_name)
+        super().__init__(first_name, last_name, middle_name=middle_name)
         # Ids can either be given to the constructor or provided by constructor
         # Either way, both Id fields must have a value
 

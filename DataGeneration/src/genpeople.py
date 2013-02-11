@@ -24,7 +24,7 @@ STUDENT = 0
 TEACHER = 1
 PARENT = 2
 
-def generate_teacher(state_code, district_id):
+def generate_teacher(state, district):
 
     teacher_gender = random.choice(['male', 'female'])
     teacher_has_middle_name = random.randint(0,1)
@@ -36,15 +36,16 @@ def generate_teacher(state_code, district_id):
         'first_name':                   gennames.generate_first_or_middle_name(teacher_gender),
         'middle_name':                  gennames.generate_first_or_middle_name(teacher_gender) if teacher_has_middle_name else None,
         'last_name':                    gennames.generate_last_name(),
-        'district_id':                  district_id,
-        'state_code':                   state_code
+        'district_id':                  district.district_id,
+        'state_code':                   state.state_code
     }
 
     teacher = Teacher(**teacher_params)
 
     return teacher
 
-def generate_student(state_code, district_id, city, zip_code, school, grade, gender = None, has_middle_name = False):
+
+def generate_student(state, district, school, grade, street_list, gender = None, has_middle_name = False):
 
     id_generator = IdGen()
 
@@ -53,15 +54,15 @@ def generate_student(state_code, district_id, city, zip_code, school, grade, gen
     else:
         student_gender = random.choice(['male', 'female'])
 
-    first_name = gennames.generate_first_or_middle_name(gender)
+    first_name = gennames.generate_first_or_middle_name(student_gender)
 
     if has_middle_name:
-        middle_name = gennames.generate_first_or_middle_name(gender)
+        middle_name = gennames.generate_first_or_middle_name(student_gender)
     else:
         middle_name = None
 
     last_name = gennames.generate_last_name()
-    domain = '@' + school + '.edu'
+    domain = school.school_name
 
 
     student_params = {
@@ -70,14 +71,13 @@ def generate_student(state_code, district_id, city, zip_code, school, grade, gen
         'first_name':                   first_name,
         'middle_name':                  middle_name,
         'last_name':                    last_name,
-        'address_1':                    util.generate_address(),
+        'address_1':                    util.generate_address(street_list),
         'dob':                          util.generate_dob(grade),
-        'city':                         city,
-        'state_code':                   state_code,
-        'zip_code':                     zip_code,
+        'state':                        state,
         'gender':                       student_gender,
         'email':                        util.generate_email_address(first_name, last_name, domain),
-        'district_id':                  district_id,
+        'district':                     district,
+        'school':                       school
     }
 
     student = Student(**student_params)

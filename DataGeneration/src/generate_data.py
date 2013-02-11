@@ -395,12 +395,12 @@ def create_classes_grades_sections(sch, state):
             grade_teachers = random.sample(teacher_list, tea_num_in_grade)
 
         # create classes, sections for the current grade
-        classforgrade_list = create_classes_for_grade(grade_students, grade_teachers)
+        classforgrade_list = create_classes_for_grade(grade_students, grade_teachers, sch.sch_id, sch.stu_tea_ratio)
 
         # create_sections_stuandtea_csv(state['code'], classforgrade_list, grade, sch.sch_id, sch.dist_name, idgen)
         student_temporal_list = create_student_temporal_data(state.state_id, classforgrade_list, grade, sch.sch_id, sch.dist_name)
-        create_csv(student_temporal_list, STUDENT_SECTIONS)
-        create_csv(classforgrade_list, CLASSES)
+        # create_csv(student_temporal_list, STUDENT_SECTIONS)
+        # create_csv(classforgrade_list, CLASSES)
 
         scores = generate_assmts_for_students(len(grade_students), grade, state.state_name)
         assessment_outcome_list = []
@@ -502,11 +502,11 @@ def create_student_temporal_data(state_code, class_list, grade, school_id, dist_
     return temporal_list
 
 
-def create_classes_for_grade(grade_students, teacher_list):
+def create_classes_for_grade(grade_students, teacher_list, school_id, stu_tea_ratio):
     '''
     Main function to generate classes for a grade
     '''
-    stu_tea_ratio = len(grade_students) / len(teacher_list)
+    # stu_tea_ratio = len(grade_students) / len(teacher_list)
 
     # calculate max number of class for a subject
     max_num_of_class = max(1, round(len(grade_students) / MIN_CLASS_SIZE))
@@ -515,7 +515,7 @@ def create_classes_for_grade(grade_students, teacher_list):
     for subj in SUBJECTS:
         # calculate number of classes for a subject
         if(max_num_of_class >= 2):
-            class_num = random.choice(range((int)(round(max_num_of_class / 2)), max_num_of_class))
+            class_num = random.choice(range((int)(round(max_num_of_class / 3)), max_num_of_class))
         else:
             class_num = max_num_of_class
 
@@ -523,45 +523,48 @@ def create_classes_for_grade(grade_students, teacher_list):
         teacher_num = min(len(teacher_list), max(1, round(len(teacher_list) / len(SUBJECTS))))
         subject_teachers = random.sample(teacher_list, teacher_num)
 
-        subject_classes = create_classes(subj, class_num, grade_students, subject_teachers, stu_tea_ratio)
+        subject_classes = create_classes(subj, class_num, grade_students, subject_teachers, stu_tea_ratio, school_id)
         total_classes.extend(subject_classes)
 
     return total_classes
 
 
-def create_classes(sub_name, count, stu_list, tea_list, stu_tea_ratio):
+def create_classes(sub_name, count, stu_list, tea_list, stu_tea_ratio, school_id):
     '''
     Main function to create classes for a grade of a subject
     '''
     # distribute students in each class
     distribute_stu_inclass = list_to_chucks(stu_list, count)
-    assert (0 <= len(distribute_stu_inclass) <= count)
+    # assert (0 <= len(distribute_stu_inclass) <= count)
 
     # create classes
-    class_list = [create_one_class(sub_name, i, distribute_stu_inclass[i], tea_list, stu_tea_ratio) for i in range(len(distribute_stu_inclass))]
+    class_list = [create_one_class(sub_name, i, distribute_stu_inclass[i], tea_list, stu_tea_ratio, school_id) for i in range(len(distribute_stu_inclass))]
 
     return class_list
 
 
-def create_one_class(sub_name, class_count, distribute_stu_inaclass, tea_list, stu_tea_ratio):
+def create_one_class(sub_name, class_count, distribute_stu_inaclass, tea_list, stu_tea_ratio, school_id):
     '''
     Main function to create one class in a grade of a subject.
     Students and teachers are associated with sections
     '''
     # calculate number of sections
     num_of_stu_in_class = len(distribute_stu_inaclass)
-    section_num = round(num_of_stu_in_class // stu_tea_ratio)
+    section_num = round(num_of_stu_in_class / stu_tea_ratio)
     if(num_of_stu_in_class < MIN_SECTION_SIZE or section_num < 2):
         section_num = 1
 
     # distribute student in each section
     distribute_stu_insection = list_to_chucks(distribute_stu_inaclass, section_num)
-    title = sub_name + " " + str(class_count)
+    class_name = sub_name + " " + str(class_count)
 
     section_stu_map = {}
     section_tea_map = {}
 
     class_id = idgen.get_id()
+    section_list = []
+    teacher_section_list = []
+    print("students in class ", num_of_stu_in_class, " section number ", section_num, " students in section ", (num_of_stu_in_class // section_num), "ratio ", stu_tea_ratio)
     # for each section, add students and teachers
     for i in range(len(distribute_stu_insection)):
         section_id = idgen.get_id()
@@ -569,8 +572,24 @@ def create_one_class(sub_name, class_count, distribute_stu_inaclass, tea_list, s
         # one section has only one teacher
         section_tea_map[str(i)] = random.sample(tea_list, 1)
 
+        # create section object
+        section_name = 'section ' + str(i + 1)
+        section_id = idgen.get_id()
+        section = Section(section_id, uuid.uuid4(), school_id, section_name, class_name)
+        section_list.append(section)
+
+        # create teacher_section subject
+        teacher_section = TeacherSection(idgen.get_id(), section_tea_map[str(i)][0].teacher_id, section_id, 'rel_start_date')
+        teacher_section_list.append(teacher_section)
+
+    # write section into csv
+    create_csv(section_list, SECTIONS)
+
+    # write teacher_section into csv
+    create_csv(teacher_section_list, TEACHER_SECTIONS)
+
     # create class, with sections
-    eclass = Class(class_id, title, sub_name, section_stu_map, section_tea_map)
+    eclass = Class(class_id, class_name, sub_name, section_stu_map, section_tea_map)
 
     return eclass
 

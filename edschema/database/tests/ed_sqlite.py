@@ -45,26 +45,17 @@ def generate_data():
 
     # Test data is generated from:
     # https://docs.google.com/folder/d/0B3TkaEXHzX2TcWw3bnVZZDZoVEk/edit?usp=sharing
-    # Remember that the order of table insert matters
-    resources = ['dim_country',
-                 'dim_state',
-                 'dim_district',
-                 'dim_school',
-                 'dim_where_taken',
-                 'dim_grade',
-                 'dim_student',
-                 'dim_teacher',
-                 'dim_asmt',
-                 'fact_asmt_outcome'
-                 ]
 
-    for resource in resources:
-        table = dbconnector.get_table(resource)
-        with open(os.path.join(resources_dir, resource + ".csv")) as file:
-            reader = csv.DictReader(file, delimiter=',')
-            for row in reader:
-                new_row = {}
-                for field_name in row.keys():
-                    clean_field_name = field_name.rstrip()
-                    new_row[clean_field_name] = row[field_name]
-                connection.execute(table.insert().values(**new_row))
+    for (paths, dirs, files) in os.walk(resources_dir):
+        for file in files:
+            file_name, file_extension = os.path.splitext(file)
+            if (file_extension == '.csv'):
+                table = dbconnector.get_table(file_name)
+                with open(os.path.join(resources_dir, file)) as file_obj:
+                    reader = csv.DictReader(file_obj, delimiter=',')
+                    for row in reader:
+                        new_row = {}
+                        for field_name in row.keys():
+                            clean_field_name = field_name.rstrip()
+                            new_row[clean_field_name] = row[field_name]
+                        connection.execute(table.insert().values(**new_row))

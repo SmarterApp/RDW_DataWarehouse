@@ -387,8 +387,10 @@ def create_classes_grades_sections(district, sch, state):
     for grade in range(sch.low_grade, sch.high_grade + 1):
         # generate student list for a grade
 
-        grade_students = generate_students(stu_num_in_grade, state, district, sch, grade)
+        grade_students, parentz = generate_students(stu_num_in_grade, state, district, sch, grade)
+
         create_csv(grade_students, STUDENTS)
+        create_csv(parentz, PARENTS)
 
         j += len(grade_students)
         total_count[3] += len(grade_students)
@@ -479,11 +481,15 @@ def generate_teachers(num_teachers, state, district):
 
 def generate_students(num_students, state, district, school, grade):
     students = []
+    parents = []
 
     for i in range(num_students):
-        students.append(generate_student(state, district, school, grade, fish_list))
+        stu, pars = generate_student(state, district, school, grade, fish_list)
+        students.append(stu)
+        for par in pars:
+            parents.append(par)
 
-    return students
+    return students, parents
 
 
 def generate_dates_taken(year):

@@ -82,7 +82,39 @@ def generate_student(state, district, school, grade, street_list, gender = None,
 
     student = Student(**student_params)
 
-    return student
+    parentz = assign_parents(student)
+
+    return student, parentz
+
+def assign_parents(student):
+
+    parent_1_params = {
+        'first_name':         gennames.generate_first_or_middle_name('male'),
+        'last_name':          student.last_name,
+        'address_1':          student.address_1,
+        'city':               student.city,
+        'state_code':         student.state_code,
+        'zip_code':           student.zip_code
+    }
+
+    parent_2_params = {
+        'first_name':         gennames.generate_first_or_middle_name('female'),
+        'last_name':          student.last_name,
+        'address_1':          student.address_1,
+        'city':               student.city,
+        'state_code':         student.state_code,
+        'zip_code':           student.zip_code
+    }
+
+
+    parent1 = Parent(**parent_1_params)
+    parent2 = Parent(**parent_2_params)
+
+    # parent1.student_id = student.student_id
+    # parent2.student_id = student.student_id
+
+    return [parent1, parent2]
+
 
 def generate_people(person_type, total, school, state_code, male_ratio=0.5, grade=None):
     '''

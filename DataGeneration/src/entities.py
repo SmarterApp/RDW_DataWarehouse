@@ -371,26 +371,39 @@ class Student(Person):
     Corresponds to student Table
     '''
 
-    def __init__(self, first_name, last_name, middle_name=None, gender=None, dob=None, email=None, address=None):
+    def __init__(self, student_id, student_external_id, first_name, last_name, address_1, dob, district, state, gender, email, school, middle_name=None, address_2 = None):
 
         super().__init__(first_name, last_name, middle_name)
-        self.student_id = None
-        self.student_external_id = None
+
+        # Ids can either be given to the constructor or provided by constructor
+        # Either way, both Id fields must have a value
+        id_generator = IdGen()
+        if student_id == None:
+            self.student_id = id_generator.get_id()
+        else:
+            self.student_id = student_id
+        if student_external_id == None:
+            self.student_external_id = id_generator.get_id()
+        else:
+            self.student_external_id = student_external_id
+
+        self.address_1 = address_1
+        self.address_2 = address_2
         self.dob = dob
-        self.address1 = None  # NEW
-        self.address2 = None  # NEW
-        self.city = None
-        self.zip = None
-        self.school_id = None
-        self.district_id = None  # NEW
-        self.state_code = None  # State Code in new
+        self.district_id = district.district_id
+        self.city = 'New York'
+        self.state_code = state.state_code
+        self.zip_code = '10002'
+        self.gender = gender
+        self.email = email
+        self.school_id = school.sch_id
 
     def __str__(self):
         return ("%s %s %s" % (self.firstname, self.middlename, self.lastname))
 
     def getRow(self):
-        return [self.student_id, self.firstname, self.middlename, self.lastname, 'address1', 'address2', 'address3', 'city',
-                self.state_id, 'zip', 'country', self.gender, self.school_id, self.email, self.dob]
+        return [self.student_id, self.student_external_id, self.first_name, self.middle_name, self.last_name, self.address_1, self.address_2, self.city, self.state_code, self.zip_code, self.gender, self.email, self.dob, self.school_id, self.district_id]
+
 
 
 class Parent(Person):
@@ -404,12 +417,15 @@ class Parent(Person):
 
         # Ids can either be given to the constructor or provided by constructor
         # Either way, both Id fields must have a value
-        if parent_id == None or parent_external_id == None:
-            id_generator = IdGen()
-            if parent_id == None:
-                self.parent_id = id_generator.get_id()
-            if parent_external_id == None:
-                self.parent_external_id = id_generator.get_id()
+        id_generator = IdGen()
+        if parent_id == None:
+            self.parent_id = id_generator.get_id()
+        else:
+            self.parent_id = parent_id
+        if parent_external_id == None:
+            self.parent_external_id = id_generator.get_id()
+        else:
+            self.parent_external_id = parent_external_id
 
         self.address_1 = address_1
         self.address_2 = address_2
@@ -418,7 +434,7 @@ class Parent(Person):
         self.zip_code = zip_code
 
     def __str__(self):
-        return ("%s %s %s" % (self.firstname, self.middlename, self.lastname))
+        return ("%s %s %s" % (self.first_name, self.middle_name, self.last_name))
 
     def getRow(self):
         return [self.parent_id, self.parent_external_id, self.first_name, self.middle_name, self.last_name, self.address_1, self.address_2, self.city, self.state_code, self.zip_code]

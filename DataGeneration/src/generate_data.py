@@ -663,7 +663,7 @@ def create_one_class(sub_name, class_count, distribute_stu_inaclass, tea_list, s
     create_csv(section_list, SECTIONS)
 
     # write teacher_section into csv
-    create_csv(teacher_section_list, TEACHER_SECTIONS)
+    # create_csv(teacher_section_list, TEACHER_SECTIONS)
 
     # create class, with sections
     eclass = Class(class_id, class_name, sub_name, section_stu_map, section_tea_map)

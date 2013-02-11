@@ -46,16 +46,22 @@ def importing_data():
     # Test data is generated from:
     # https://docs.google.com/folder/d/0B3TkaEXHzX2TcWw3bnVZZDZoVEk/edit?usp=sharing
 
+    # Traverse through the resources directory for .csv files
+    # We assume that the name of the file is the name of the table
     for (paths, dirs, files) in os.walk(resources_dir):
         for file in files:
+            # splits the path name and the extension
             file_name, file_extension = os.path.splitext(file)
             if (file_extension == '.csv'):
                 table = dbconnector.get_table(file_name)
                 with open(os.path.join(resources_dir, file)) as file_obj:
+                    # first row of the csv file is the header names
                     reader = csv.DictReader(file_obj, delimiter=',')
                     for row in reader:
                         new_row = {}
                         for field_name in row.keys():
+                            # strip out spaces and \n
                             clean_field_name = field_name.rstrip()
                             new_row[clean_field_name] = row[field_name]
+                        # Inserts to the table one row at a time
                         connection.execute(table.insert().values(**new_row))

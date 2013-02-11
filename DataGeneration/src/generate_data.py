@@ -145,7 +145,7 @@ def generate_data(db_states_stat):
 
             # create classes, grades, sections, teachers students, parents and assessment scores for each school
             for sch in school_list:
-                create_classes_grades_sections(sch, created_state, dist)
+                create_classes_grades_sections(dist, sch, created_state)
 
         # if just need one state data
         if(c == 0):
@@ -367,7 +367,7 @@ def cal_zipvalues(pos, n):
     return zip_init, zip_dist
 
 
-def create_classes_grades_sections(city_zip_map, sch, state):
+def create_classes_grades_sections(district, sch, state):
     '''
     Main function to generate classes, grades, sections, students and teachers for a school
     '''

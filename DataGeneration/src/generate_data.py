@@ -176,6 +176,7 @@ def make_school_types(perc, total):
             repeat_types.extend([SCHOOL_LEVELS_INFO[i][0]] * count[-1])
             control = sum(count)
 
+        i += 1
         count.append(max(total - control, 0))
         repeat_types.extend([SCHOOL_LEVELS_INFO[i][0]] * count[-1])
 
@@ -243,6 +244,7 @@ def create_schools(stu_num_in_school_made, stutea_ratio_in_school_made, distr, s
 
     # generate zipcode and citynames
     city_zipcode_map = generate_city_zipcode(distr.city_names, distr.zipcode_range, count)
+    distr.city_zip_map = city_zipcode_map
 
     school_list = []
     wheretaken_list = []
@@ -365,7 +367,7 @@ def cal_zipvalues(pos, n):
     return zip_init, zip_dist
 
 
-def create_classes_grades_sections(sch, state, district):
+def create_classes_grades_sections(city_zip_map, sch, state):
     '''
     Main function to generate classes, grades, sections, students and teachers for a school
     '''

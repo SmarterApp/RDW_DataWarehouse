@@ -382,7 +382,7 @@ class Student(Person):
         self.zip = None
         self.school_id = None
         self.district_id = None  # NEW
-        self.state_id = None  # State Code in new
+        self.state_code = None  # State Code in new
 
     def __str__(self):
         return ("%s %s %s" % (self.firstname, self.middlename, self.lastname))
@@ -433,12 +433,18 @@ class Teacher(Person):
         super().__init__(first_name, middle_name, last_name)
         # Ids can either be given to the constructor or provided by constructor
         # Either way, both Id fields must have a value
-        if teacher_id == None or teacher_external_id == None:
-            id_generator = IdGen()
-            if teacher_id == None:
-                self.teacher_id = id_generator.get_id()
-            if teacher_external_id == None:
-                self.teacher_external_id = id_generator.get_id()
+
+        id_generator = IdGen()
+
+        if teacher_id == None:
+            self.teacher_id = id_generator.get_id()
+        else:
+            self.teacher_id = teacher_id
+        if teacher_external_id == None:
+            self.teacher_external_id = id_generator.get_id()
+        else:
+            self.teacher_external_id = teacher_external_id
+
         self.district_id = district_id
         self.state_code = state_code
 

@@ -8,11 +8,6 @@ from smarter.controllers import get_compare_population
 import json
 import urllib.request
 from smarter.utils.indiv_student_helper import IndivStudentHelper
-from database import importer
-import os
-from database.connector import DBConnector, IDbUtil
-from edschema.ed_metadata import generate_ed_metadata
-from zope import component
 
 
 @view_config(route_name='comparing_populations', renderer='templates/comparing_populations.pt')
@@ -177,32 +172,3 @@ def individual_student_report_bootstrap(request):
 @view_config(route_name='class_report', renderer='templates/reports/class_bootstrap.pt')
 def class_report(request):
     return {'class_name': 'English'}
-
-
-@view_config(route_name='import', renderer='json')
-def import_table(request):
-    file_name = request.params['file']
-    file_path = os.getcwd() + '/' + file_name  # '/dim_school.csv'
-    print(file_path)
-    connector = DBConnector()
-    importer.import_student_from_file(file_path, connector)
-    return {'imported': True}
-
-
-@view_config(route_name='create', renderer='json')
-def create_tables(request):
-    schema_name = request.params['schema']
-    metadata = generate_ed_metadata(schema_name)
-    createSchema(schema_name)
-    dbUtil = component.queryUtility(IDbUtil)
-    engine = dbUtil.get_engine()
-    metadata.create_all(engine)
-    return {'imported': True}
-
-
-def createSchema(schemaName):
-    dbConnect = DBConnector()
-    conn = dbConnect.open_connection()
-    conn.execute("commit")
-    conn.execute("create schema {}".format(schemaName))
-    conn.close()

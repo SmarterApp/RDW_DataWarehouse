@@ -80,6 +80,10 @@ STAT_COLUMNS = ['state_code', 'state_name', 'total_district', 'total_school', 't
                 'min_stutea_ratio_per_school', 'max_stutea_ratio_per_school', 'std_stutea_ratio_per_school', 'avg_stutea_ratio_per_school',
                 'primary_perc', 'middle_perc', 'high_perc', 'other_perc']
 
-RETRY_CAL_STAT = 50
+RETRY_CAL_STAT = 100
 DIST_LOW_VALUE = 0.9
 DIST_HIGH_VALUE = 1.2
+
+DIST_SCHOOL_NAME_LENGTH = 256
+CITY_NAME_LENGTH = 100
+ADDRESS_LENGTH = 256

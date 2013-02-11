@@ -173,7 +173,11 @@ def make_school_types(perc, total):
     if(total > 0):
         control = 0
         for i in range(len(perc) - 1):
-            count.append(round(total * perc[i]))
+            num = round(total * perc[i])
+            if(num + control > total):
+                count.append(total - control)
+            else:
+                count.append(num)
             repeat_types.extend([SCHOOL_LEVELS_INFO[i][0]] * count[-1])
             control = sum(count)
 
@@ -195,13 +199,13 @@ def create_districts(state_code, school_num_in_dist_made, pos):
     if(n > 0):
         # generate random district names
         try:
-            names = generate_names_from_lists(n, birds_list, mammals_list)
+            names = generate_names_from_lists(n, birds_list, mammals_list, DIST_SCHOOL_NAME_LENGTH)
         except ValueError:
             print("ValueError: Not enough list to create", n, " number of district names", n, len(birds_list), len(mammals_list))
             return []
 
         # generate random district addresses
-        address = generate_address_from_list(n, fish_list)
+        address = generate_address_from_list(n, fish_list, ADDRESS_LENGTH)
 
         # generate random district zip range
         zip_init, zip_dist = cal_zipvalues(pos, n)
@@ -210,7 +214,7 @@ def create_districts(state_code, school_num_in_dist_made, pos):
         for i in range(n):
             # generate random city names for a district
             try:
-                city_names = generate_names_from_lists(school_num_in_dist_made[i], birds_list, fish_list)
+                city_names = generate_names_from_lists(school_num_in_dist_made[i], birds_list, fish_list, CITY_NAME_LENGTH)
             except ValueError:
                 print("ValueError: Not enough list to create", school_num_in_dist_made[i], " number of city names")
                 return []
@@ -235,13 +239,13 @@ def create_schools(stu_num_in_school_made, stutea_ratio_in_school_made, distr, s
     count = distr.num_of_schools
     # generate random school names
     try:
-        names = generate_names_from_lists(count, fish_list, mammals_list)
+        names = generate_names_from_lists(count, fish_list, mammals_list, DIST_SCHOOL_NAME_LENGTH)
     except ValueError:
         print("ValueError: Not enough list to create", count, " number of school names")
         return [], []
 
     # generate addresses
-    address = generate_address_from_list(count, birds_list)
+    address = generate_address_from_list(count, birds_list, ADDRESS_LENGTH)
 
     # generate zipcode and citynames
     city_zipcode_map = generate_city_zipcode(distr.city_names, distr.zipcode_range, count)
@@ -299,16 +303,16 @@ def generate_city_zipcode(city_names, zipcode_range, num_of_schools):
 
     city_zip_map = {}
     for i in range(len(city_cand) - 1):
-        zip_end = (int)(zip_start + ziprange_incity)
+        zip_end = int((zip_start + ziprange_incity))
         city_zip_map[city_cand[i]] = [zip_start, zip_end]
         zip_start = zipcode_range[0] + ziprange_incity * (i + 1)
 
-    city_zip_map[city_cand[len(city_cand) - 1]] = [zip_start, (int)(zipcode_range[1])]
+    city_zip_map[city_cand[len(city_cand) - 1]] = [zip_start, int(zipcode_range[1])]
 
     return city_zip_map
 
 
-def generate_names_from_lists(count, list1, list2):
+def generate_names_from_lists(count, list1, list2, name_length=None):
     '''
     Generate total 'count' number of random combination of names from input lists
     '''
@@ -329,14 +333,18 @@ def generate_names_from_lists(count, list1, list2):
             print("not enough...", base, " ", len(list1), " ", len(list2))
             raise ValueError
 
-        names = [str(name1) + " " + str(name2) for name1 in names1 for name2 in names2]
+        if(name_length is not None):
+            # print("Substring of names...")
+            names = [(str(name1) + " " + str(name2))[0: name_length] for name1 in names1 for name2 in names2]
+        else:
+            names = [str(name1) + " " + str(name2) for name1 in names1 for name2 in names2]
 
     new_list = []
     new_list.extend(names[0:count])
     return new_list
 
 
-def generate_address_from_list(count, words_list):
+def generate_address_from_list(count, words_list, name_length=None):
     '''
     input: count: total number of addresses
            words_list: a word list used for generate address
@@ -349,9 +357,19 @@ def generate_address_from_list(count, words_list):
         road_name = []
         if(count < len(words_list)):
             road_name = random.sample(words_list, count)
+
         else:
             road_name.extend(words_list)
-        adds = [str(no[i]) + " " + str(road_name[i % len(road_name)]) + " " + random.choice(ADD_SUFFIX) for i in range(count)]
+        if(name_length is not None):
+            for i in range(count):
+                first_no = str(no[i])
+                suff = random.choice(ADD_SUFFIX)
+                middle_add = str(road_name[i % len(road_name)])
+                compose_add = first_no + " " + middle_add[0: (name_length - len(first_no) - len(suff) - 2)].strip() + " " + suff
+                adds.append(compose_add)
+        else:
+            adds = [str(no[i]) + " " + str(road_name[i % len(road_name)]) + " " + random.choice(ADD_SUFFIX) for i in range(count)]
+
     return adds
 
 
@@ -574,7 +592,7 @@ def create_classes_for_grade(grade_students, teacher_list, school_id, stu_tea_ra
     for subj in SUBJECTS:
         # calculate number of classes for a subject
         if(max_num_of_class >= 2):
-            class_num = random.choice(range((int)(round(max_num_of_class / 3)), max_num_of_class))
+            class_num = random.choice(range(int(round(max_num_of_class / 3)), max_num_of_class))
         else:
             class_num = max_num_of_class
 

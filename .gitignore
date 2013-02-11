@@ -13,7 +13,7 @@ pyramid.log
 smarter.egg-info
 .idea/
 .project
-.pydevproject*.csv
+.pydevproject
 DataGeneration/datafiles/assessment_outcome.csv
 DataGeneration/datafiles/assessment_types.csv
 DataGeneration/datafiles/classes.csv

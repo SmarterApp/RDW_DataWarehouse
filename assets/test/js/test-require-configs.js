@@ -11,6 +11,7 @@ var baseConfigs = {
 	    edwareUtil: '../../js/EDWARE.util',
 	    edwareDataProxy: '../../js/EDWARE.dataProxy',
 	    edwareGrid: '../../js/widgets/EDWARE.grid.tablegrid',
+	    edwareGridFormatters: '../../js/widgets/EDWARE.grid.formatters',
 	    edwareStudentList: '../../js/EDWARE.studentList'
 	}
 };

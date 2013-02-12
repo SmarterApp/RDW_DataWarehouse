@@ -143,6 +143,7 @@ def generate_data(db_states_stat):
 
             shift += dist.num_of_schools
 
+            dist.wheretaken_list = wheretaken_list
             # create classes, grades, sections, teachers students, parents and assessment scores for each school
             for sch in school_list:
                 create_classes_grades_sections(dist, sch, created_state)
@@ -172,7 +173,11 @@ def make_school_types(perc, total):
     if(total > 0):
         control = 0
         for i in range(len(perc) - 1):
-            count.append(round(total * perc[i]))
+            num = round(total * perc[i])
+            if(num + control > total):
+                count.append(total - control)
+            else:
+                count.append(num)
             repeat_types.extend([SCHOOL_LEVELS_INFO[i][0]] * count[-1])
             control = sum(count)
 
@@ -194,32 +199,36 @@ def create_districts(state_code, school_num_in_dist_made, pos):
     if(n > 0):
         # generate random district names
         try:
-            names = generate_names_from_lists(n, birds_list, mammals_list)
+            names = generate_names_from_lists(n, birds_list, mammals_list, DIST_SCHOOL_NAME_LENGTH)
         except ValueError:
             print("ValueError: Not enough list to create", n, " number of district names", n, len(birds_list), len(mammals_list))
             return []
 
         # generate random district addresses
-        address = generate_address_from_list(n, fish_list)
+        address = generate_address_from_list(n, fish_list, ADDRESS_LENGTH)
 
         # generate random district zip range
         zip_init, zip_dist = cal_zipvalues(pos, n)
+        zipcode_range = (zip_init, (zip_init + zip_dist))
 
         # generate each district
         for i in range(n):
             # generate random city names for a district
             try:
-                city_names = generate_names_from_lists(school_num_in_dist_made[i], birds_list, fish_list)
+                city_names = generate_names_from_lists(school_num_in_dist_made[i], birds_list, fish_list, CITY_NAME_LENGTH)
             except ValueError:
                 print("ValueError: Not enough list to create", school_num_in_dist_made[i], " number of city names")
                 return []
+
+            # generate zipcode and citynames map
+            city_zipcode_map = generate_city_zipcode(city_names, zipcode_range, school_num_in_dist_made[i])
 
             # create district object
             district_id = idgen.get_id()
             district_external_id = uuid.uuid4()
             district_name = names[i] + " " + random.choice(DIST_SUFFIX)
             address1 = address[i]
-            dist = District(district_id, district_external_id, district_name, state_code, school_num_in_dist_made[i], (zip_init, (zip_init + zip_dist)), city_names, address1, zip_init)
+            dist = District(district_id, district_external_id, district_name, state_code, school_num_in_dist_made[i], zipcode_range, city_names, address1, zip_init, city_zip_map=city_zipcode_map)
             districts_list.append(dist)
             total_school += dist.num_of_schools
             zip_init += zip_dist
@@ -234,21 +243,16 @@ def create_schools(stu_num_in_school_made, stutea_ratio_in_school_made, distr, s
     count = distr.num_of_schools
     # generate random school names
     try:
-        names = generate_names_from_lists(count, fish_list, mammals_list)
+        names = generate_names_from_lists(count, fish_list, mammals_list, DIST_SCHOOL_NAME_LENGTH)
     except ValueError:
         print("ValueError: Not enough list to create", count, " number of school names")
         return [], []
 
     # generate addresses
-    address = generate_address_from_list(count, birds_list)
-
-    # generate zipcode and citynames
-    city_zipcode_map = generate_city_zipcode(distr.city_names, distr.zipcode_range, count)
-    distr.city_zip_map = city_zipcode_map
+    address = generate_address_from_list(count, birds_list, ADDRESS_LENGTH)
 
     school_list = []
     wheretaken_list = []
-
     # generate each school and where-taken row
     for i in range(count):
         # get categories
@@ -261,7 +265,7 @@ def create_schools(stu_num_in_school_made, stutea_ratio_in_school_made, distr, s
         # create common fields
         sch_name = names[i] + " " + suf
         address_1 = address[i]
-        city = random.choice(list(city_zipcode_map.items()))
+        city = random.choice(list(distr.city_zip_map.items()))
         city_name = city[0]
         zip_code = random.choice(range(city[1][0], city[1][1]))
 
@@ -277,7 +281,7 @@ def create_schools(stu_num_in_school_made, stutea_ratio_in_school_made, distr, s
         school_type = random.choice(SCHOOL_TYPES)
         school = School(sch_id, school_external_id, sch_name, distr.district_name, distr.state_code,
                         stu_num_in_school_made[i], stutea_ratio_in_school_made[i], low_grade, high_grade,
-                        school_categories_type, school_type, address_1, city_name, zip_code)
+                        school_categories_type, school_type, address_1, city_name, zip_code, distr.district_id)
         school_list.append(school)
 
     return school_list, wheretaken_list
@@ -298,16 +302,16 @@ def generate_city_zipcode(city_names, zipcode_range, num_of_schools):
 
     city_zip_map = {}
     for i in range(len(city_cand) - 1):
-        zip_end = (int)(zip_start + ziprange_incity)
+        zip_end = int((zip_start + ziprange_incity))
         city_zip_map[city_cand[i]] = [zip_start, zip_end]
         zip_start = zipcode_range[0] + ziprange_incity * (i + 1)
 
-    city_zip_map[city_cand[len(city_cand) - 1]] = [zip_start, (int)(zipcode_range[1])]
+    city_zip_map[city_cand[len(city_cand) - 1]] = [zip_start, int(zipcode_range[1])]
 
     return city_zip_map
 
 
-def generate_names_from_lists(count, list1, list2):
+def generate_names_from_lists(count, list1, list2, name_length=None):
     '''
     Generate total 'count' number of random combination of names from input lists
     '''
@@ -328,14 +332,18 @@ def generate_names_from_lists(count, list1, list2):
             print("not enough...", base, " ", len(list1), " ", len(list2))
             raise ValueError
 
-        names = [str(name1) + " " + str(name2) for name1 in names1 for name2 in names2]
+        if(name_length is not None):
+            # print("Substring of names...")
+            names = [(str(name1) + " " + str(name2))[0: name_length] for name1 in names1 for name2 in names2]
+        else:
+            names = [str(name1) + " " + str(name2) for name1 in names1 for name2 in names2]
 
     new_list = []
     new_list.extend(names[0:count])
     return new_list
 
 
-def generate_address_from_list(count, words_list):
+def generate_address_from_list(count, words_list, name_length=None):
     '''
     input: count: total number of addresses
            words_list: a word list used for generate address
@@ -348,9 +356,19 @@ def generate_address_from_list(count, words_list):
         road_name = []
         if(count < len(words_list)):
             road_name = random.sample(words_list, count)
+
         else:
             road_name.extend(words_list)
-        adds = [str(no[i]) + " " + str(road_name[i % len(road_name)]) + " " + random.choice(ADD_SUFFIX) for i in range(count)]
+        if(name_length is not None):
+            for i in range(count):
+                first_no = str(no[i])
+                suff = random.choice(ADD_SUFFIX)
+                middle_add = str(road_name[i % len(road_name)])
+                compose_add = first_no + " " + middle_add[0: (name_length - len(first_no) - len(suff) - 2)].strip() + " " + suff
+                adds.append(compose_add)
+        else:
+            adds = [str(no[i]) + " " + str(road_name[i % len(road_name)]) + " " + random.choice(ADD_SUFFIX) for i in range(count)]
+
     return adds
 
 
@@ -359,7 +377,7 @@ def cal_zipvalues(pos, n):
     Input: pos: greater than 0
            n: total number of zip. It is greater than 0
     Output: zip_init: the starting zipcode
-            zio_dist: the basic distance of zipcode
+            zip_dist: the basic distance of zipcode
     '''
 
     zip_init = (pos + 1) * ZIPCODE_START
@@ -411,64 +429,92 @@ def create_classes_grades_sections(district, sch, state):
         # create_csv(classforgrade_list, CLASSES)
 
         scores = generate_assmts_for_students(len(grade_students), grade, state.state_name)
-        assessment_outcome_list = []
-        hist_assessment_outcome_list = []
 
-        dates_taken1 = generate_dates_taken(2000)
-        dates_taken2 = generate_dates_taken(2000)
-        print("len of grade students ", len(grade_students), "len of classforgrade_list ", len(classforgrade_list),
-              "len of student_temporal_list ", len(student_temporal_list), "len of scores ", len(scores))
-        for stu_tmprl in student_temporal_list:
-            for score in scores.items():
-                asmt_id = int(score[0].split('_')[1])
-                year = score[0].split('_')[0]
-                asmt = [x for x in ASSESSMENT_TYPES_LIST if x.asmt_id == asmt_id][0]
-                subject = stu_tmprl.student_class.sub_name
-                if subject == 'Math':
-                    subject = 'MATH'
-                if int(year) == date.today().year and stu_tmprl.student_class.sub_name == asmt.asmt_subject:
-                    new_id = idgen.get_id()
-                    teacher_list = list(stu_tmprl.student_class.section_tea_map.values())
-                    teacher_list = [item for sub in teacher_list for item in sub]  # flatten teacher_list
-                    teacher = teacher_list[0]
-                    teacher_id = teacher.teacher_id
-
-                    date_taken = None
-                    if asmt.asmt_period == 'BOY':
-                        date_taken = dates_taken1['BOY']
-                    elif asmt.asmt_period == 'MOY':
-                        date_taken = dates_taken1['MOY']
-                    elif asmt.asmt_period == 'EOY':
-                        date_taken = dates_taken1['EOY']
-                    date_taken = date_taken.replace(year=int(year))
-                    if (len(score[1]) == 0):
-                        print("*********Import**********", new_id, asmt_id, stu_tmprl.student_id, stu_tmprl.student_tmprl_id, teacher_id, date_taken, sch.place_id)
-                    outcome = AssessmentOutcome(new_id, asmt_id, stu_tmprl.student_id, stu_tmprl.student_tmprl_id, teacher_id, date_taken, sch.sch_id, score[1].pop(), 'cdate?')
-                    assessment_outcome_list.append(outcome)
-                elif stu_tmprl.student_class.sub_name == asmt.asmt_subject:
-                    new_id = idgen.get_id()
-                    teacher_list = list(stu_tmprl.student_class.section_tea_map.values())
-                    teacher_list = [item for sub in teacher_list for item in sub]  # flatten teacher_list
-                    teacher = teacher_list[0]
-                    teacher_id = teacher.teacher_id
-
-                    date_taken = None
-                    if asmt.asmt_period == 'BOY':
-                        date_taken = dates_taken2['BOY']
-                    elif asmt.asmt_period == 'MOY':
-                        date_taken = dates_taken2['MOY']
-                    elif asmt.asmt_period == 'EOY':
-                        date_taken = dates_taken2['EOY']
-                    date_taken = date_taken.replace(year=int(year))
-
-                    if (len(score[1]) == 0):
-                        print("*********Import**********", new_id, asmt_id, stu_tmprl.student_id, stu_tmprl.student_tmprl_id, teacher_id, date_taken, sch.place_id)
-
-                    outcome = HistAssessmentOutcome(new_id, asmt_id, stu_tmprl.student_id, stu_tmprl.student_tmprl_id, date_taken, sch.sch_id, score[1].pop(), 'cdate?', 'hdate?')
-                    hist_assessment_outcome_list.append(outcome)
-
+        wheretaken_id = random.choice(district.wheretaken_list).wheretaken_id
+        assessment_outcome_list = associate_students_and_scores(student_temporal_list, scores, sch, wheretaken_id)
         create_csv(assessment_outcome_list, ASSESSMENT_OUTCOME)
-        create_csv(hist_assessment_outcome_list, HIST_ASSESSMENT_OUTCOME)
+
+
+def associate_students_and_scores(student_temporal_list, scores, school, wheretaken_id):
+    '''
+    creates association between students and scores
+    student_temporal_list -- a list of student_temporal objects
+    scores -- a list of scores that will be mapped to students
+    school -- the school that the students belong to
+    wheretaken_id -- id of where taken
+    returns a list of AssessmentOutcome Objects
+    '''
+
+    assessment_outcome_list = []
+    dates_taken1 = generate_dates_taken(2000)
+    dates_taken2 = generate_dates_taken(2000)
+    prev_year = 0
+
+    for stu_tmprl in student_temporal_list:
+        for score in scores.items():
+            asmt_id = int(score[0].split('_')[1])
+            year = score[0].split('_')[0]
+            asmt = [x for x in ASSESSMENT_TYPES_LIST if x.asmt_id == asmt_id][0]
+            subject = stu_tmprl.student_class.sub_name
+
+            if subject == 'Math':
+                subject = 'MATH'
+
+            if stu_tmprl.student_class.sub_name == asmt.asmt_subject:  # check that subjects match as there is a std_tmprl object for each subject
+                new_id = idgen.get_id()
+                teacher_list = list(stu_tmprl.student_class.section_tea_map.values())
+                teacher_list = [item for sub in teacher_list for item in sub]  # flatten teacher_list
+                teacher = teacher_list[0]
+                teacher_id = teacher.teacher_id
+
+                date_taken = None
+                if prev_year == year:
+                    date_taken = map_asmt_date_to_period(asmt.asmt_period, dates_taken1, year)
+                else:
+                    date_taken = map_asmt_date_to_period(asmt.asmt_period, dates_taken2, year)
+                prev_year = year
+
+#                if (len(score[1]) == 0):
+#                    print("*********Import**********", new_id, asmt_id, stu_tmprl.student_id, stu_tmprl.student_tmprl_id, teacher_id, date_taken, school.place_id)
+
+                params = {
+                          'asmt_out_id': new_id,
+                          'asmt_out_ext_id': uuid.uuid4(),
+                          'assessment': asmt,
+                          'student_id': stu_tmprl.student_id,
+                          'teacher_id': teacher_id,
+                          'state_code': school.state_code,
+                          'district_id': school.district_id,
+                          'school_id': school.sch_id,
+                          'enrl_grade_id': stu_tmprl.grade_id,
+                          'enrl_grade_code': stu_tmprl.grade_id,
+                          'date_taken': date_taken,
+                          'where_taken_id': wheretaken_id,
+                          'asmt_score': score[1].pop(),
+                          'asmt_create_date': date.today().replace(year=date.today().year - 5)
+                          }
+
+                outcome = AssessmentOutcome(**params)
+                assessment_outcome_list.append(outcome)
+
+    return assessment_outcome_list
+
+
+def map_asmt_date_to_period(period, dates_taken, year):
+    '''
+    returns a date given the attributes
+    period -- the period that the asmt was taken
+    dates_taken -- a dict of dates whose keys are periods
+    year -- the year the asmt was taken
+    '''
+    if period == 'BOY':
+        date_taken = dates_taken['BOY']
+    elif period == 'MOY':
+        date_taken = dates_taken['MOY']
+    elif period == 'EOY':
+        date_taken = dates_taken['EOY']
+    return date_taken.replace(year=int(year))
+
 
 def generate_teachers(num_teachers, state, district):
     teachers = []
@@ -478,6 +524,7 @@ def generate_teachers(num_teachers, state, district):
         teachers.append(teacher)
 
     return teachers
+
 
 def generate_students(num_students, state, district, school, grade):
     students = []
@@ -544,7 +591,7 @@ def create_classes_for_grade(grade_students, teacher_list, school_id, stu_tea_ra
     for subj in SUBJECTS:
         # calculate number of classes for a subject
         if(max_num_of_class >= 2):
-            class_num = random.choice(range((int)(round(max_num_of_class / 3)), max_num_of_class))
+            class_num = random.choice(range(int(round(max_num_of_class / 3)), max_num_of_class))
         else:
             class_num = max_num_of_class
 
@@ -615,7 +662,7 @@ def create_one_class(sub_name, class_count, distribute_stu_inaclass, tea_list, s
     create_csv(section_list, SECTIONS)
 
     # write teacher_section into csv
-    create_csv(teacher_section_list, TEACHER_SECTIONS)
+    # create_csv(teacher_section_list, TEACHER_SECTIONS)
 
     # create class, with sections
     eclass = Class(class_id, class_name, sub_name, section_stu_map, section_tea_map)

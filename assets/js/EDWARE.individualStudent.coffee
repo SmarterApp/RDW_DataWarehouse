@@ -3,9 +3,8 @@ define [
   "jquery"
   "mustache"
   "cs!edwareDataProxy"
-  "cs!edwareUtil"
   "text!templates/individual_student_template.html"
-], ($, Mustache, edwareDataProxy, edwareUtil, indivStudentReportTemplate) ->
+], ($, Mustache, edwareDataProxy, indivStudentReportTemplate) ->
    
   #
   #    * Generate individual student report

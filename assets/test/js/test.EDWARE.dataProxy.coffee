@@ -31,7 +31,7 @@ require ["jquery", "cs!edwareDataProxy"], ($, dataProxy) ->
     ok dataProxy.getConfigs isnt "undefined", "dataProxy getConfigs method should be defined"
     ok typeof dataProxy.getConfigs is "function", "dataProxy getConfigs method should be function"
     
-    deepEqual typeof dataProxy.getConfigs("../../data/student.json"), "object", "getConfigs method should return students grid column configuration object if config is in string format"
+    deepEqual typeof dataProxy.getConfigs("../data/student.json"), "object", "getConfigs method should return students grid column configuration object if config is in string format"
     deepEqual dataProxy.getConfigs(->), false, "If config is not passed as a parameter, then the method should return false"
     deepEqual dataProxy.getConfigs(1234, ->), false, "If config is passed as a number, then the method should return false"
     deepEqual dataProxy.getConfigs({}, ->), false, "If config is passed as an object, then the method should return false"

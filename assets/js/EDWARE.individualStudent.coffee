@@ -1,23 +1,20 @@
 #global define
 define [
   "jquery"
+  "mustache"
   "cs!edwareDataProxy"
   "cs!edwareUtil"
-], ($, edwareDataProxy, edwareUtil) ->
+  "text!templates/individual_student_template.html"
+], ($, Mustache, edwareDataProxy, edwareUtil, indivStudentReportTemplate) ->
    
   #
-  #    * Create Student data grid
+  #    * Generate individual student report
   #    
-      
   generateIndividualStudentReport = (params) ->
       
     getIndividualStudentReport "/data/individual_student_report", params, (studentData) -> 
-    
-        $("#assessmentTitle").html studentData.asmt_subject
-        $("#assessmentPeriod").html studentData.asmt_period
-        $("#techerName").html studentData.teacher_last_name
-        $("#assessmentDate").html studentData.date_taken_day
- 
+        output = Mustache.to_html indivStudentReportTemplate, studentData
+        $("#assesmentInfo").html output
 
   getIndividualStudentReport = (sourceURL, params, callback) ->
     
@@ -25,7 +22,7 @@ define [
     
     edwareDataProxy.getDatafromSource sourceURL, params, (data) ->
       
-      studentData = data[0]
+      studentData = data
       if callback
         callback studentData
       else

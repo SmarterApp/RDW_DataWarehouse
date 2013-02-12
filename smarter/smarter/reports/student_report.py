@@ -82,6 +82,8 @@ def get_student_report(params, connector=None):
 
     result = connector.get_result(query)
 
+    result = {"items": result}
+
     connector.close_connection()
 
     return result

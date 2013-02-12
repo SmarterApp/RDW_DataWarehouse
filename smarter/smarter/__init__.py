@@ -9,6 +9,9 @@ import pyramid
 from zope import component
 from database.connector import DbUtil, IDbUtil
 from lesscss import LessCSS
+from pyramid.authorization import ACLAuthorizationPolicy
+from smarter.security.security import verify_user
+from pyramid.authentication import AuthTktAuthenticationPolicy
 
 
 def main(global_config, **settings):
@@ -18,7 +21,16 @@ def main(global_config, **settings):
         os.environ['PATH'] += os.pathsep + settings['smarter.PATH']
     # TODO: Spike, pool_size, max_overflow, timeout
 
-    config = Configurator(settings=settings)
+    authentication_policy = AuthTktAuthenticationPolicy(
+        settings.get('auth.secret'), cookie_name=settings.get('auth.token'), callback=verify_user, hashalg=settings.get('auth.hashalg'),
+        timeout=int(settings.get('auth.timeout')))
+
+    authorization_policy = ACLAuthorizationPolicy()
+
+    config = Configurator(settings=settings,
+                          root_factory='smarter.security.models.RootFactory',
+                          authentication_policy=authentication_policy,
+                          authorization_policy=authorization_policy)
 
     # zope registration
     engine = engine_from_config(settings, "sqlalchemy.", pool_size=20, max_overflow=10)
@@ -67,8 +79,13 @@ def main(global_config, **settings):
     # routing for class report
     config.add_route('class_report', '/class_report')
     config.add_route('student_report', '/student_report')
-    config.add_route('import', '/import')
-    config.add_route('create', '/create')
+
+    config.add_route('login', '/login')
+    config.add_route('logout', '/logout')
+    config.add_route('oauth', '/oauth')
+
+    # Set default permission on all views
+    config.set_default_permission('view')
 
     # scans smarter
     config.scan()

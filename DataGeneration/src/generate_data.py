@@ -209,6 +209,7 @@ def create_districts(state_code, school_num_in_dist_made, pos):
 
         # generate random district zip range
         zip_init, zip_dist = cal_zipvalues(pos, n)
+        zipcode_range = (zip_init, (zip_init + zip_dist))
 
         # generate each district
         for i in range(n):
@@ -219,12 +220,15 @@ def create_districts(state_code, school_num_in_dist_made, pos):
                 print("ValueError: Not enough list to create", school_num_in_dist_made[i], " number of city names")
                 return []
 
+            # generate zipcode and citynames map
+            city_zipcode_map = generate_city_zipcode(city_names, zipcode_range, school_num_in_dist_made[i])
+
             # create district object
             district_id = idgen.get_id()
             district_external_id = uuid.uuid4()
             district_name = names[i] + " " + random.choice(DIST_SUFFIX)
             address1 = address[i]
-            dist = District(district_id, district_external_id, district_name, state_code, school_num_in_dist_made[i], (zip_init, (zip_init + zip_dist)), city_names, address1, zip_init)
+            dist = District(district_id, district_external_id, district_name, state_code, school_num_in_dist_made[i], zipcode_range, city_names, address1, zip_init, city_zip_map=city_zipcode_map)
             districts_list.append(dist)
             total_school += dist.num_of_schools
             zip_init += zip_dist
@@ -247,13 +251,8 @@ def create_schools(stu_num_in_school_made, stutea_ratio_in_school_made, distr, s
     # generate addresses
     address = generate_address_from_list(count, birds_list, ADDRESS_LENGTH)
 
-    # generate zipcode and citynames
-    city_zipcode_map = generate_city_zipcode(distr.city_names, distr.zipcode_range, count)
-    distr.city_zip_map = city_zipcode_map
-
     school_list = []
     wheretaken_list = []
-
     # generate each school and where-taken row
     for i in range(count):
         # get categories
@@ -266,7 +265,7 @@ def create_schools(stu_num_in_school_made, stutea_ratio_in_school_made, distr, s
         # create common fields
         sch_name = names[i] + " " + suf
         address_1 = address[i]
-        city = random.choice(list(city_zipcode_map.items()))
+        city = random.choice(list(distr.city_zip_map.items()))
         city_name = city[0]
         zip_code = random.choice(range(city[1][0], city[1][1]))
 
@@ -378,7 +377,7 @@ def cal_zipvalues(pos, n):
     Input: pos: greater than 0
            n: total number of zip. It is greater than 0
     Output: zip_init: the starting zipcode
-            zio_dist: the basic distance of zipcode
+            zip_dist: the basic distance of zipcode
     '''
 
     zip_init = (pos + 1) * ZIPCODE_START

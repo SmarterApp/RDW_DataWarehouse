@@ -6,12 +6,12 @@ BIRDS_FILE = DATAFILE_PATH + "/datafiles/name_lists/birds.txt"
 MAMMALS_FILE = DATAFILE_PATH + "/datafiles/name_lists/mammals.txt"
 FISH_FILE = DATAFILE_PATH + "/datafiles/name_lists/fish.txt"
 
-SCHOOL_LEVELS_INFO = [
-                      ['Elementary School', ['EL SCH', 'ELEM', 'CTR', 'ELEMENTARY SCHOOL', 'PRIMARY', 'ELEMENTARY', 'ELEM', 'SCH'], [[0, 5], [1, 5], [1, 6]]],
-                     ['Middle School', ['MIDDLE SCHOOL', 'COMMUNITY MIDDLE', 'MIDDLE', 'JUNIOR HIGH', 'INTERMEDIATE SCHOOL', 'JR MIDDLE', 'MS'], [[6, 8], [5, 8], [7, 9]]],
-                     ['High School', ['HIGH SCH', 'HIGH SCHOOL', 'HIGH', 'HS', 'SENIOR HIGH'], [[9, 12], [10, 12]]],
-                     ['Other', ['SCH', 'SCHOOL'], [[6, 12], [9, 12]]]
-                     ]
+SCHOOL_LEVELS_INFO = [['Elementary School', ['EL SCH', 'ELEM', 'CTR', 'ELEMENTARY SCHOOL', 'PRIMARY', 'ELEMENTARY', 'ELEM', 'SCH'], [[0, 5], [1, 5], [1, 6]]],
+                      ['Middle School', ['MIDDLE SCHOOL', 'COMMUNITY MIDDLE', 'MIDDLE', 'JUNIOR HIGH', 'INTERMEDIATE SCHOOL', 'JR MIDDLE', 'MS'], [[6, 8], [5, 8], [7, 9]]],
+                      ['High School', ['HIGH SCH', 'HIGH SCHOOL', 'HIGH', 'HS', 'SENIOR HIGH'], [[9, 12], [10, 12]]],
+                      ['Other', ['SCH', 'SCHOOL'], [[6, 12], [9, 12]]]
+                      ]
+
 
 SCHOOL_ORDER_MAP = {'Elementary School': 0, 'Middle School': 1, 'High School': 2, 'Other': 3}
 SCHOOL_TYPES = ['Alternative', 'Regular', 'Special Education', 'Vocational', 'JJAEP', 'DAEP']
@@ -27,28 +27,23 @@ GENDER_RARIO = [0.5, 0.45, 0.55]
 MIN_ASSMT_SCORE = 50
 MAX_ASSMT_SCORE = 500
 
-ASSMT_TYPES = {'Math': {
-                       '4': {
-                             'claim_names': ['Number properties and operations', 'Measurement and Geometry', 'Data analysis, statistics, and probability', 'Algebra'],
-                             'claim_percs': [40, 35, 10, 15]
-                             },
-                        '8': {
-                             'claim_names': ['Number properties and operations', 'Measurement and Geometry', 'Data analysis, statistics, and probability', 'Algebra'],
-                             'claim_percs': [20, 35, 15, 30]
-                             }
-
-                        },
-               'ELA': {
-                       '4': {
-                             'claim_names': ['Literary text and Fiction', 'Literary nonfiction and Poetry', 'Informational text and Exposition', 'Argumentation and persuasive text'],
-                             'claim_percs': [25, 25, 25, 25]
-                             },
-                        '8': {
-                             'claim_names': ['Literary text and Fiction', 'Literary nonfiction and Poetry', 'Informational text and Exposition', 'Argumentation and persuasive text'],
-                             'claim_percs': [20, 25, 25, 30]
-                             }
-                        }
+ASSMT_TYPES = {'Math':
+               {'4':
+                {'claim_names': ['Number properties and operations', 'Measurement and Geometry', 'Data analysis, statistics, and probability', 'Algebra'],
+                 'claim_percs': [40, 35, 10, 15]},
+                '8':
+                {'claim_names': ['Number properties and operations', 'Measurement and Geometry', 'Data analysis, statistics, and probability', 'Algebra'],
+                 'claim_percs': [20, 35, 15, 30]}
+                },
+               'ELA':
+               {'4':
+                {'claim_names': ['Literary text and Fiction', 'Literary nonfiction and Poetry', 'Informational text and Exposition', 'Argumentation and persuasive text'],
+                 'claim_percs': [25, 25, 25, 25]},
+                '8':
+                {'claim_names': ['Literary text and Fiction', 'Literary nonfiction and Poetry', 'Informational text and Exposition', 'Argumentation and persuasive text'],
+                 'claim_percs': [20, 25, 25, 30]}
                 }
+               }
 
 
 # Output files for use in write_to_csv.py and generate data.py

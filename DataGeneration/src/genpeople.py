@@ -17,6 +17,7 @@ from idgen import IdGen
 import gennames
 import util
 import random
+from uuid import uuid4
 
 
 # constants
@@ -33,7 +34,7 @@ def generate_teacher(state, district):
 
     teacher_params = {
         'teacher_id':                   id_generator.get_id(),
-        'teacher_external_id':          id_generator.get_id(),
+        'teacher_external_id':          uuid4(),
         'first_name':                   gennames.generate_first_or_middle_name(teacher_gender),
         'middle_name':                  gennames.generate_first_or_middle_name(teacher_gender) if teacher_has_middle_name else None,
         'last_name':                    gennames.generate_last_name(),
@@ -67,7 +68,7 @@ def generate_student(state, district, school, grade, street_list, gender=None, h
 
     student_params = {
         'student_id':                   id_generator.get_id(),
-        'student_external_id':          id_generator.get_id(),
+        'student_external_id':          uuid4(),
         'first_name':                   first_name,
         'middle_name':                  middle_name,
         'last_name':                    last_name,

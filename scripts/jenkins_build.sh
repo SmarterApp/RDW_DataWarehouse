@@ -175,7 +175,7 @@ function run_functional_tests {
 }	
 
 function create_sym_link_for_apache {
-    APACHE_DIR="/home/jenkins/apache_dir"
+    APACHE_DIR="/var/lib/jenkins/apache_dir"
     if [ -d ${APACHE_DIR} ]; then
         rm -rf ${APACHE_DIR}
     fi

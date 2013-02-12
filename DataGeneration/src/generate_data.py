@@ -474,25 +474,22 @@ def associate_students_and_scores(student_temporal_list, scores, school, whereta
                     date_taken = map_asmt_date_to_period(asmt.asmt_period, dates_taken2, year)
                 prev_year = year
 
-#                if (len(score[1]) == 0):
-#                    print("*********Import**********", new_id, asmt_id, stu_tmprl.student_id, stu_tmprl.student_tmprl_id, teacher_id, date_taken, school.place_id)
-
                 params = {
-                          'asmt_out_id': new_id,
-                          'asmt_out_ext_id': uuid.uuid4(),
-                          'assessment': asmt,
-                          'student_id': stu_tmprl.student_id,
-                          'teacher_id': teacher_id,
-                          'state_code': school.state_code,
-                          'district_id': school.district_id,
-                          'school_id': school.sch_id,
-                          'enrl_grade_id': stu_tmprl.grade_id,
-                          'enrl_grade_code': stu_tmprl.grade_id,
-                          'date_taken': date_taken,
-                          'where_taken_id': wheretaken_id,
-                          'asmt_score': score[1].pop(),
-                          'asmt_create_date': date.today().replace(year=date.today().year - 5)
-                          }
+                    'asmt_out_id': new_id,
+                    'asmt_out_ext_id': uuid.uuid4(),
+                    'assessment': asmt,
+                    'student_id': stu_tmprl.student_id,
+                    'teacher_id': teacher_id,
+                    'state_code': school.state_code,
+                    'district_id': school.district_id,
+                    'school_id': school.sch_id,
+                    'enrl_grade_id': stu_tmprl.grade_id,
+                    'enrl_grade_code': stu_tmprl.grade_id,
+                    'date_taken': date_taken,
+                    'where_taken_id': wheretaken_id,
+                    'asmt_score': score[1].pop(),
+                    'asmt_create_date': date.today().replace(year=date.today().year - 5)
+                }
 
                 outcome = AssessmentOutcome(**params)
                 assessment_outcome_list.append(outcome)

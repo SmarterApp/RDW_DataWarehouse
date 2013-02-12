@@ -68,28 +68,28 @@ def generate_single_asmt(grade, asmt_type, period, subject):
     claim4 = Claim(asmt_info['claim_names'][3], claim4_min_max[0], claim4_min_max[1])
     #TODO: set assessment year
     params = {
-              'asmt_id': asmt_id,
-              'asmt_external_id': uuid4(),
-              'asmt_type': asmt_type,
-              'asmt_period': period,
-              'asmt_period_year': 2012,
-              'asmt_version': version,
-              'asmt_grade': grade,
-              'asmt_subject': subject,
-              'claim_1': claim1,
-              'claim_2': claim2,
-              'claim_3': claim3,
-              'claim_4': claim4,
-              'asmt_score_min': MIN_ASSMT_SCORE,
-              'asmt_score_max': MAX_ASSMT_SCORE,
-              'asmt_perf_lvl_name_1': PERFORMANCE_LEVELS[0],
-              'asmt_perf_lvl_name_2': PERFORMANCE_LEVELS[1],
-              'asmt_perf_lvl_name_3': PERFORMANCE_LEVELS[2],
-              'asmt_perf_lvl_name_4': PERFORMANCE_LEVELS[3],
-              'asmt_cut_point_1': int((MAX_ASSMT_SCORE + MIN_ASSMT_SCORE) * .25),
-              'asmt_cut_point_2': int((MAX_ASSMT_SCORE + MIN_ASSMT_SCORE) * .5),
-              'asmt_cut_point_3': int((MAX_ASSMT_SCORE + MIN_ASSMT_SCORE) * .75)
-              }
+        'asmt_id': asmt_id,
+        'asmt_external_id': uuid4(),
+        'asmt_type': asmt_type,
+        'asmt_period': period,
+        'asmt_period_year': 2012,
+        'asmt_version': version,
+        'asmt_grade': grade,
+        'asmt_subject': subject,
+        'claim_1': claim1,
+        'claim_2': claim2,
+        'claim_3': claim3,
+        'claim_4': claim4,
+        'asmt_score_min': MIN_ASSMT_SCORE,
+        'asmt_score_max': MAX_ASSMT_SCORE,
+        'asmt_perf_lvl_name_1': PERFORMANCE_LEVELS[0],
+        'asmt_perf_lvl_name_2': PERFORMANCE_LEVELS[1],
+        'asmt_perf_lvl_name_3': PERFORMANCE_LEVELS[2],
+        'asmt_perf_lvl_name_4': PERFORMANCE_LEVELS[3],
+        'asmt_cut_point_1': int((MAX_ASSMT_SCORE + MIN_ASSMT_SCORE) * .25),
+        'asmt_cut_point_2': int((MAX_ASSMT_SCORE + MIN_ASSMT_SCORE) * .5),
+        'asmt_cut_point_3': int((MAX_ASSMT_SCORE + MIN_ASSMT_SCORE) * .75)
+    }
 
     return Assessment(**params)
 

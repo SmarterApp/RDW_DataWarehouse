@@ -33,13 +33,13 @@ def generate_teacher(state, district):
     id_generator = IdGen()
 
     teacher_params = {
-        'teacher_id':                   id_generator.get_id(),
-        'teacher_external_id':          uuid4(),
-        'first_name':                   gennames.generate_first_or_middle_name(teacher_gender),
-        'middle_name':                  gennames.generate_first_or_middle_name(teacher_gender) if teacher_has_middle_name else None,
-        'last_name':                    gennames.generate_last_name(),
-        'district_id':                  district.district_id,
-        'state_code':                   state.state_code
+        'teacher_id': id_generator.get_id(),
+        'teacher_external_id': uuid4(),
+        'first_name': gennames.generate_first_or_middle_name(teacher_gender),
+        'middle_name': gennames.generate_first_or_middle_name(teacher_gender) if teacher_has_middle_name else None,
+        'last_name': gennames.generate_last_name(),
+        'district_id': district.district_id,
+        'state_code': state.state_code
     }
 
     teacher = Teacher(**teacher_params)
@@ -67,18 +67,18 @@ def generate_student(state, district, school, grade, street_list, gender=None, h
     domain = school.school_name
 
     student_params = {
-        'student_id':                   id_generator.get_id(),
-        'student_external_id':          uuid4(),
-        'first_name':                   first_name,
-        'middle_name':                  middle_name,
-        'last_name':                    last_name,
-        'address_1':                    util.generate_address(street_list),
-        'dob':                          util.generate_dob(grade),
-        'state':                        state,
-        'gender':                       student_gender,
-        'email':                        util.generate_email_address(first_name, last_name, domain),
-        'district':                     district,
-        'school':                       school
+        'student_id': id_generator.get_id(),
+        'student_external_id': uuid4(),
+        'first_name': first_name,
+        'middle_name': middle_name,
+        'last_name': last_name,
+        'address_1': util.generate_address(street_list),
+        'dob': util.generate_dob(grade),
+        'state': state,
+        'gender': student_gender,
+        'email': util.generate_email_address(first_name, last_name, domain),
+        'district': district,
+        'school': school
     }
 
     student = Student(**student_params)
@@ -91,21 +91,21 @@ def generate_student(state, district, school, grade, street_list, gender=None, h
 def assign_parents(student):
 
     parent_1_params = {
-        'first_name':         gennames.generate_first_or_middle_name('male'),
-        'last_name':          student.last_name,
-        'address_1':          student.address_1,
-        'city':               student.city,
-        'state_code':         student.state_code,
-        'zip_code':           student.zip_code
+        'first_name': gennames.generate_first_or_middle_name('male'),
+        'last_name': student.last_name,
+        'address_1': student.address_1,
+        'city': student.city,
+        'state_code': student.state_code,
+        'zip_code': student.zip_code
     }
 
     parent_2_params = {
-        'first_name':         gennames.generate_first_or_middle_name('female'),
-        'last_name':          student.last_name,
-        'address_1':          student.address_1,
-        'city':               student.city,
-        'state_code':         student.state_code,
-        'zip_code':           student.zip_code
+        'first_name': gennames.generate_first_or_middle_name('female'),
+        'last_name': student.last_name,
+        'address_1': student.address_1,
+        'city': student.city,
+        'state_code': student.state_code,
+        'zip_code': student.zip_code
     }
 
     parent1 = Parent(**parent_1_params)
@@ -241,12 +241,12 @@ def _assign_parent(student):
     '''
 
     parent_1_params = {
-        'first_name':         gennames.generate_first_or_middle_name('male'),
-        'last_name':          student.last_name,
-        'address_1':          student.address1,
-        'city':               student.city,
-        'state_code':         student.state_id,
-        'zip_code':           student.zip
+        'first_name': gennames.generate_first_or_middle_name('male'),
+        'last_name': student.last_name,
+        'address_1': student.address1,
+        'city': student.city,
+        'state_code': student.state_id,
+        'zip_code': student.zip
     }
     parent1 = Parent()
     parent2 = Parent()

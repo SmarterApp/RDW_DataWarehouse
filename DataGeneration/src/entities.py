@@ -371,11 +371,11 @@ class Student(Person):
         # Ids can either be given to the constructor or provided by constructor
         # Either way, both Id fields must have a value
         id_generator = IdGen()
-        if student_id == None:
+        if student_id is None:
             self.student_id = id_generator.get_id()
         else:
             self.student_id = student_id
-        if student_external_id == None:
+        if student_external_id is None:
             self.student_external_id = id_generator.get_id()
         else:
             self.student_external_id = student_external_id
@@ -416,11 +416,11 @@ class Parent(Person):
         # Ids can either be given to the constructor or provided by constructor
         # Either way, both Id fields must have a value
         id_generator = IdGen()
-        if parent_id == None:
+        if parent_id is None:
             self.parent_id = id_generator.get_id()
         else:
             self.parent_id = parent_id
-        if parent_external_id == None:
+        if parent_external_id is None:
             self.parent_external_id = id_generator.get_id()
         else:
             self.parent_external_id = parent_external_id
@@ -451,11 +451,11 @@ class Teacher(Person):
 
         id_generator = IdGen()
 
-        if teacher_id == None:
+        if teacher_id is None:
             self.teacher_id = id_generator.get_id()
         else:
             self.teacher_id = teacher_id
-        if teacher_external_id == None:
+        if teacher_external_id is None:
             self.teacher_external_id = id_generator.get_id()
         else:
             self.teacher_external_id = teacher_external_id

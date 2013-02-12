@@ -7,7 +7,7 @@ MAMMALS_FILE = DATAFILE_PATH + "/datafiles/name_lists/mammals.txt"
 FISH_FILE = DATAFILE_PATH + "/datafiles/name_lists/fish.txt"
 
 SCHOOL_LEVELS_INFO = [
-                      ['Elementary School', ['EL SCH', 'ELEM', 'CTR', 'ELEMENTARY SCHOOL', 'PRIMARY', 'ELEMENTARY', 'CETR, ELEM', 'SCH'], [[0, 5], [1, 5], [1, 6]]],
+                      ['Elementary School', ['EL SCH', 'ELEM', 'CTR', 'ELEMENTARY SCHOOL', 'PRIMARY', 'ELEMENTARY', 'ELEM', 'SCH'], [[0, 5], [1, 5], [1, 6]]],
                      ['Middle School', ['MIDDLE SCHOOL', 'COMMUNITY MIDDLE', 'MIDDLE', 'JUNIOR HIGH', 'INTERMEDIATE SCHOOL', 'JR MIDDLE', 'MS'], [[6, 8], [5, 8], [7, 9]]],
                      ['High School', ['HIGH SCH', 'HIGH SCHOOL', 'HIGH', 'HS', 'SENIOR HIGH'], [[9, 12], [10, 12]]],
                      ['Other', ['SCH', 'SCHOOL'], [[6, 12], [9, 12]]]

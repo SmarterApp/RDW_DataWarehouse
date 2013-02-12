@@ -12,20 +12,8 @@ define [
   #    
   generateIndividualStudentReport = (params) ->
       
-    getIndividualStudentReport "/data/individual_student_report", params, (studentData) -> 
-        output = Mustache.to_html indivStudentReportTemplate, studentData
-        $("#assesmentInfo").html output
-
-  getIndividualStudentReport = (sourceURL, params, callback) ->
-    
-    return false if sourceURL is "undefined" or typeof sourceURL is "number" or typeof sourceURL is "function" or typeof sourceURL is "object"
-    
-    edwareDataProxy.getDatafromSource sourceURL, params, (data) ->
-      
-      studentData = data
-      if callback
-        callback studentData
-      else
-        studentData
+    edwareDataProxy.getDatafromSource "/data/individual_student_report", params, (data) ->    
+      output = Mustache.to_html indivStudentReportTemplate, data
+      $("#assesmentInfo").html output
 
   generateIndividualStudentReport: generateIndividualStudentReport

@@ -52,7 +52,7 @@ def get_student_report(params, connector=None):
 
     query = select([fact_asmt_outcome.c.student_id,
                     dim_student.c.first_name.label('student_first_name'),
-                    dim_student.c.middle_name.label('student_last_name'),
+                    dim_student.c.middle_name.label('student_middle_name'),
                     dim_student.c.last_name.label('student_last_name'),
                     dim_asmt.c.asmt_subject.label('asmt_subject'),
                     dim_asmt.c.asmt_period.label('asmt_period'),

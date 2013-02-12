@@ -14,24 +14,19 @@ define [
   #    * Create Student data grid
   #    
       
-  createStudentGrid = ->
+  createStudentGrid = (params) ->
       
-    getStudentData "/data/list_of_students", (assessmentsData, assessmentCutpoints) ->
+    getStudentData "/data/list_of_students", params, (assessmentsData, assessmentCutpoints) ->
       
       getStudentsConfig "../data/student.json", (studentsConfig) ->
         edwareGrid.create "gridTable", studentsConfig, assessmentsData, assessmentCutpoints
         
         
-  getStudentData = (sourceURL, callback) ->
+  getStudentData = (sourceURL, params, callback) ->
     
     assessmentArray = []
     
     return false if sourceURL is "undefined" or typeof sourceURL is "number" or typeof sourceURL is "function" or typeof sourceURL is "object"
-    
-    params = edwareUtil.getUrlParams()
-    
-    params.districtId = parseInt(params.districtId)
-    params.schoolId = parseInt(params.schoolId)
     
     edwareDataProxy.getDatafromSource sourceURL, params, (data) ->
       assessmentsData = data.assessments
@@ -56,5 +51,5 @@ define [
         else
           studentColumnCfgs
 
-  createStudentGrid()
+  createStudentGrid: createStudentGrid
   

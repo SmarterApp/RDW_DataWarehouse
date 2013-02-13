@@ -8,11 +8,10 @@ from entities import Score
 from dbconnection import get_db_conn
 from constants import MIN_ASSMT_SCORE, MAX_ASSMT_SCORE, ASSMT_TYPES
 from datetime import date
-from gen_assessments import ASSESSMENT_TYPES_LIST as asmt_list
 import py1
 
 
-def generate_assmts_for_students(total, grade, state):
+def generate_assmts_for_students(total, grade, state, asmt_list):
     '''
     Generates a set of scores for a given grade and number.
     method will return a dictionary of a scores for each assessment type for a given grade in the
@@ -20,6 +19,7 @@ def generate_assmts_for_students(total, grade, state):
     total -- integer number of students
     grade -- integer for the grade to generate scores
     state -- current state
+    asmt_list -- list of all assessments
     Returns a dictionary that contains 24 items where the key is a string: '<year>_<assmt_id>'
     and the value is a list of score objects
     '''
@@ -28,7 +28,6 @@ def generate_assmts_for_students(total, grade, state):
     # subjects = ['Math', 'ELA']
     years = ['2011', '2009']  # str(year), str(year - 1)]
     real_years = [str(cur_year), str(cur_year - 1)]
-
     asmt_types = [x for x in asmt_list if int(x.asmt_grade) == int(grade)]
 
     scores = {}

@@ -1,12 +1,11 @@
 import math
-from datetime import date
+import datetime
 import random
 
 import py1
 from queries import *
 from write_to_csv import *
 from entities import *
-from datetime import datetime
 from test.test_iterlen import len
 from genpeople import *
 from idgen import IdGen
@@ -149,7 +148,7 @@ def generate_data(db_states_stat):
                 create_classes_grades_sections(dist, sch, created_state)
 
         # if just need one state data
-        if(c == 1):
+        if c == 1:
             break
         c += 1
 
@@ -689,7 +688,7 @@ def create_one_class(sub_name, class_count, distribute_stu_inaclass, tea_list, s
         section_list.append(section)
 
         # create teacher_section subject
-        teacher_section = TeacherSection(idgen.get_id(), section_tea_map[str(i)][0].teacher_id, section_id, 'rel_start_date')
+        teacher_section = TeacherSection(idgen.get_id(), section_tea_map[str(i)][0].teacher_id, section_id, datetime.date(2013, 2, 13))
         teacher_section_list.append(teacher_section)
 
     # write section into csv
@@ -752,10 +751,10 @@ def read_names(file_name):
 
 
 if __name__ == '__main__':
-    t1 = datetime.now()
+    t1 = datetime.datetime.now()
     generate()
     # print(get_statistic3())
     # print(make_school_types([0.5, 0.3, 0.1, 0.1], 100))
-    t2 = datetime.now()
+    t2 = datetime.datetime.now()
     print("starts ", t1)
     print("ends   ", t2)

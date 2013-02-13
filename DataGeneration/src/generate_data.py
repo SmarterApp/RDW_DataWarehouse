@@ -79,7 +79,7 @@ def generate_data(db_states_stat):
     '''
 
     # generate all assessment types
-    asmt_list = generate_assessment_types()
+    asmt_list.extend(generate_assessment_types())
     create_csv(asmt_list, ASSESSMENT_TYPES)
 
     c = 0
@@ -136,7 +136,6 @@ def generate_data(db_states_stat):
         dist_count = 0
         for dist in created_dist_list:
             # create school for each district
-            print()
             print("creating district %d of %d" % (dist_count, len(created_dist_list)))
             dist_count += 1
             school_list, wheretaken_list = create_schools(stu_num_in_school_made[shift: shift + dist.num_of_schools],
@@ -154,7 +153,7 @@ def generate_data(db_states_stat):
                 create_classes_grades_sections(dist, sch, created_state)
 
         # if just need one state data
-        if(c == 1):
+        if(c == 0):
             break
         c += 1
 
@@ -470,8 +469,7 @@ def create_classes_grades_sections(district, sch, state):
         student_temporal_list = create_student_temporal_data(state.state_id, classforgrade_list, grade, sch.sch_id, sch.dist_name)
         # create_csv(student_temporal_list, STUDENT_SECTIONS)
         # create_csv(classforgrade_list, CLASSES)
-
-        scores = generate_assmts_for_students(len(grade_students), grade, state.state_name)
+        scores = generate_assmts_for_students(len(grade_students), grade, state.state_name, asmt_list)
 
         wheretaken_id = random.choice(district.wheretaken_list).wheretaken_id
         assessment_outcome_list = associate_students_and_scores(student_temporal_list, scores, sch, wheretaken_id)
@@ -680,8 +678,6 @@ def create_one_class(sub_name, class_count, distribute_stu_inaclass, tea_list, s
     class_id = idgen.get_id()
     section_list = []
     teacher_section_list = []
-    #print("students in class ", num_of_stu_in_class, " section number ", section_num, " students in section ", (num_of_stu_in_class // section_num), "ratio ", stu_tea_ratio)
-    print('.', end='')
     # for each section, add students and teachers
     for i in range(len(distribute_stu_insection)):
         section_id = idgen.get_id()

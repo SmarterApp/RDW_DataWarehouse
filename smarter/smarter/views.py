@@ -8,7 +8,8 @@ from smarter.controllers import get_compare_population
 import json
 import urllib.request
 from smarter.utils.indiv_student_helper import IndivStudentHelper
-from pyramid.security import remember, forget, authenticated_userid
+from pyramid.security import remember, forget, authenticated_userid,\
+    NO_PERMISSION_REQUIRED
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from urllib.error import HTTPError
 
@@ -177,7 +178,7 @@ def class_report(request):
     return {'class_name': 'English'}
 
 
-@view_config(route_name='login', renderer='templates/login.pt')
+@view_config(route_name='login', renderer='templates/login.pt', permission=NO_PERMISSION_REQUIRED)
 #TODO for accessign a view that user aren't allowed to do
 @forbidden_view_config(renderer='json')
 def login(request):
@@ -188,7 +189,7 @@ def login(request):
         return HTTPFound(location='https://api.sandbox.inbloom.org/api/oauth/authorize?response_type=code&redirect_uri=' + REDIRECT_URL + '&client_id=' + CLIENT_ID)
 
 
-@view_config(route_name='oauth', renderer='json', permission='none')
+@view_config(route_name='oauth', renderer='json', permission=NO_PERMISSION_REQUIRED)
 def oauth(request):
     REDIRECT_URL = 'http://localhost:6543/oauth'
     CLIENT_ID = 'GLpqLbxCB9'

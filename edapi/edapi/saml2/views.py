@@ -71,6 +71,6 @@ def logout(request):
     return HTTPFound(location=request.route_url('login'), headers=headers)
 
 
-@view_config(route_name='get_auth_request', renderer='json', permission=NO_PERMISSION_REQUIRED)
-def get_auth_request(request):
+@view_config(route_name='saml2_post_consumer', renderer='json', permission=NO_PERMISSION_REQUIRED)
+def saml2_post_consumer(request):
     return {"Hello": "Dip"}

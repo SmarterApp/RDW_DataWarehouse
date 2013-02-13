@@ -51,7 +51,7 @@ def includeme(config):
     config.add_route('login', '/login')
     config.add_route('logout', '/logout')
     config.add_route('oauth', '/oauth')
-    config.add_route('get_auth_request', '/Hello_dip')
+    config.add_route('saml2_post_consumer', '/Hello_dip')
 
     # directive to handle report_config decorators
     config.add_directive('add_report_config', add_report_config)

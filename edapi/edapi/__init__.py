@@ -46,6 +46,13 @@ def includeme(config):
     # routing for the GET, POST, OPTIONS verbs
     config.add_route('report_get_option_post', '/data/{name}')
 
+    # TODO: possible to put this inside SAML2 incase one day we don't want to use it
+    # TODO: clean up and derive from ini?
+    config.add_route('login', '/login')
+    config.add_route('logout', '/logout')
+    config.add_route('oauth', '/oauth')
+    config.add_route('get_auth_request', '/Hello_dip')
+
     # directive to handle report_config decorators
     config.add_directive('add_report_config', add_report_config)
 

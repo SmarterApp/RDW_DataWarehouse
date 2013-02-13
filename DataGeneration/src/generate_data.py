@@ -104,8 +104,8 @@ def generate_data(db_states_stat):
 
         # generate student distribution in schools
         stu_num_in_school_made = makeup_list(state['avg_student_per_school'], state['std_student_per_school'],
-                                           state['min_student_per_school'], state['max_student_per_school'],
-                                           sum(school_num_in_dist_made), state['total_student'])
+                                             state['min_student_per_school'], state['max_student_per_school'],
+                                             sum(school_num_in_dist_made), state['total_student'])
         # for test
         # print("real four numbers      ", state['avg_student_per_school'], state['std_student_per_school'], state['min_student_per_school'], state['max_student_per_school'])
         # print("generated four numbers ", py1.avg(stu_num_in_school_made), py1.std(stu_num_in_school_made), min(stu_num_in_school_made), max(stu_num_in_school_made))
@@ -231,7 +231,7 @@ def create_districts(state_id, school_num_in_dist_made, pos):
                 'city_zip_map': city_zip_map,
                 'address_1': address[i],
                 'zipcode': zip_init
-                }
+            }
 
             # dist = District(district_id, district_external_id, district_name, state_id, school_num_in_dist_made[i], city_zip_map, address1, zip_init)
             dist = District(**params)
@@ -282,15 +282,15 @@ def create_schools(stu_num_in_school_made, stutea_ratio_in_school_made, distr, s
         # wheretaken_id = idgen.get_id()
         # wheretaken_name = sch_name
         params_wheretaken = {
-                             'wheretaken_id': idgen.get_id(),
-                             'wheretaken_name': sch_name,
-                             'district_name': distr.district_name,
-                             'address_1': address_1,
-                             'city_name': city_name,
-                             'zip_code': zip_code,
-                             'state_code': distr.state_code,
-                             'country_id': 'US'
-                           }
+            'wheretaken_id': idgen.get_id(),
+            'wheretaken_name': sch_name,
+            'district_name': distr.district_name,
+            'address_1': address_1,
+            'city_name': city_name,
+            'zip_code': zip_code,
+            'state_code': distr.state_code,
+            'country_id': 'US'
+        }
         # where_taken = WhereTaken(wheretaken_id, wheretaken_name, distr.district_name, address_1, city_name, zip_code, distr.state_code, 'US')
         where_taken = WhereTaken(**params_wheretaken)
         wheretaken_list.append(where_taken)
@@ -312,7 +312,7 @@ def create_schools(stu_num_in_school_made, stutea_ratio_in_school_made, distr, s
             'address1': address_1,
             'city': city_name,
             'zip_code': zip_code
-                }
+        }
 
         '''
         school = School(sch_id, school_external_id, sch_name, distr.district_name, distr.state_code,

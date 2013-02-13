@@ -75,5 +75,8 @@ class TestAssessment(unittest.TestCase):
         generated_counts = assessment.perc_to_count(perc, total)
         self.assertEqual(generated_counts, [22, 20, 6, 8])
 
+    def test_generate_assmts_for_students(self):
+        pass
+
 if __name__ == "__main__":
     unittest.main()

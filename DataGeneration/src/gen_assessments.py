@@ -128,7 +128,3 @@ if __name__ == '__main__':
 
     for asmt in assessments:
         print(str(asmt))
-
-    print('version2: ')
-    for asmt in ASSESSMENT_TYPES_LIST:
-        print(str(asmt))

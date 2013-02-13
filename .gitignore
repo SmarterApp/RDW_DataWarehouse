@@ -15,21 +15,5 @@ smarter.egg-info
 .project
 .pydevproject
 
-# program oupt #
-################
-DataGeneration/datafiles/assessment_outcome.csv
-DataGeneration/datafiles/assessment_types.csv
-DataGeneration/datafiles/classes.csv
-DataGeneration/datafiles/hist_assessment_outcome.csv
-DataGeneration/datafiles/institutions.csv
-DataGeneration/datafiles/parents.csv
-DataGeneration/datafiles/sections.csv
-DataGeneration/datafiles/states.csv
-DataGeneration/datafiles/stu_sections.csv
-DataGeneration/datafiles/students.csv
-DataGeneration/datafiles/tea_sections.csv
-DataGeneration/datafiles/teachers.csv
-DataGeneration/datafiles/wheretaken.csv
-DataGeneration/datafiles/districts.csv
-DataGeneration/datafiles/schools.csv
-DataGeneration/datafiles/csv/*.csv
+# csv's will be ignored
+# added gitignore file to the csv directory

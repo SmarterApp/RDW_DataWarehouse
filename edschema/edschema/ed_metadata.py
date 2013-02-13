@@ -93,7 +93,7 @@ def generate_ed_metadata(scheme_name=None, bind=None):
                    Column(Enum("Elementary School",
                                "High School",
                                "Middle School",
-                                "Other",
+                               "Other",
                                name="school_categories_type_enum"),
                           name='school_categories_type',
                           nullable=True),

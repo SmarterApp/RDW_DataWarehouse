@@ -199,13 +199,11 @@ Format="urn:oasis:names:tc:SAML:2.0:nameid-format:transient"/>
 </samlp:AuthnRequest>'''
     
     url = 'http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp?%s'
-    byte_data = data.encode() 
-    compressed = zlib.compress(data)
-    encoded = base64.urlsafe_b64encode(compressed.encoded)
+    compressed = zlib.compress(data.encode())
+    encoded = base64.b64encode(compressed[2:-4])
     params = urllib.parse.urlencode({'SAMLRequest':encoded})
     final_url = url % params
     return HTTPFound(location=final_url)
-    #url_request = urllib.request.urlopen(url)
     
     #resp = url_request.read().decode('utf-8')
 #    REDIRECT_URL = 'http://localhost:6543/oauth'
@@ -241,6 +239,6 @@ def logout(request):
     headers = forget(request)
     return HTTPFound(location=request.route_url('login'), headers=headers)
 
-@view_config(route_name = 'get_auth_request', permission=NO_PERMISSION_REQUIRED)
+@view_config(route_name = 'get_auth_request', renderer='json', permission=NO_PERMISSION_REQUIRED)
 def get_auth_request(request):
- pass
+    return {"Hello": "Dip"}

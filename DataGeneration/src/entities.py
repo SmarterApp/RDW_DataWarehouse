@@ -32,7 +32,7 @@ class District:
     District object
     '''
     # total_id = 0
-    def __init__(self, district_id, district_external_id, district_name, state_code, num_of_schools, zipcode_range, city_names, address_1=None, zipcode=None, address_2=None, city_zip_map=None):
+    def __init__(self, district_id, district_external_id, district_name, state_code, num_of_schools, city_zip_map, address_1=None, zipcode=None, address_2=None):
         '''
         Constructor
         '''
@@ -45,8 +45,6 @@ class District:
         self.state_code = state_code
 
         self.num_of_schools = num_of_schools
-        self.zipcode_range = zipcode_range
-        self.city_names = city_names
         self.city_zip_map = city_zip_map
 
         self.wheretaken_list = None
@@ -65,13 +63,10 @@ class School:
     '''
     School object
     '''
-    # total_id = 0
-    def __init__(self, sch_id, school_external_id, school_name, dist_name, state_code, num_of_student, stu_tea_ratio, low_grade, high_grade, school_categories_type=None, school_type=None, address1=None, city=None, zip_code=None, district_id=None, address2=None):
+    def __init__(self, sch_id, school_external_id, school_name, dist_name, district_id, state_code, num_of_student, stu_tea_ratio, low_grade, high_grade, school_categories_type=None, school_type=None, address1=None, city=None, zip_code=None, address2=None):
         '''
         Constructor
         '''
-        # self.dist_id   = District.total_id
-        # District.total_id = District.total_id + 1
         self.sch_id = sch_id
         self.school_external_id = school_external_id
         self.school_name = school_name

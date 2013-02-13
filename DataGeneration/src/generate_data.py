@@ -21,8 +21,8 @@ birds_list = []
 mammals_list = []
 fish_list = []
 
-# total count for state, districts, schools, students, teachers
-total_count = [0, 0, 0, 0, 0]
+# total count for state, districts, schools, students, teachers, parents
+total_count = [0, 0, 0, 0, 0, 0]
 idgen = IdGen()
 
 
@@ -149,7 +149,7 @@ def generate_data(db_states_stat):
                 create_classes_grades_sections(dist, sch, created_state)
 
         # if just need one state data
-        if(c == 0):
+        if(c == 1):
             break
         c += 1
 
@@ -161,6 +161,7 @@ def generate_data(db_states_stat):
     print("generated number of schools   ", total_count[2])
     print("generated number of students  ", total_count[3])
     print("generated number of teachers  ", total_count[4])
+    print("generated number of parents   ", total_count[5])
 
 
 def make_school_types(perc, total):
@@ -188,7 +189,7 @@ def make_school_types(perc, total):
     return repeat_types
 
 
-def create_districts(state_code, school_num_in_dist_made, pos):
+def create_districts(state_id, school_num_in_dist_made, pos):
     '''
     Main function to generate list of district for a state
     '''
@@ -209,26 +210,28 @@ def create_districts(state_code, school_num_in_dist_made, pos):
 
         # generate random district zip range
         zip_init, zip_dist = cal_zipvalues(pos, n)
-        zipcode_range = (zip_init, (zip_init + zip_dist))
 
         # generate each district
         for i in range(n):
-            # generate random city names for a district
-            try:
-                city_names = generate_names_from_lists(school_num_in_dist_made[i], birds_list, fish_list, CITY_NAME_LENGTH)
-            except ValueError:
-                print("ValueError: Not enough list to create", school_num_in_dist_made[i], " number of city names")
-                return []
-
-            # generate zipcode and citynames map
-            city_zipcode_map = generate_city_zipcode(city_names, zipcode_range, school_num_in_dist_made[i])
+            # generate city zipcode map
+            city_zip_map = generate_city_zipcode(zip_init, (zip_init + zip_dist), school_num_in_dist_made[i])
+            if(city_zip_map is None):
+                continue
 
             # create district object
-            district_id = idgen.get_id()
-            district_external_id = uuid.uuid4()
-            district_name = names[i] + " " + random.choice(DIST_SUFFIX)
-            address1 = address[i]
-            dist = District(district_id, district_external_id, district_name, state_code, school_num_in_dist_made[i], zipcode_range, city_names, address1, zip_init, city_zip_map=city_zipcode_map)
+            params = {
+                'district_id': idgen.get_id(),
+                'district_external_id': uuid.uuid4(),
+                'district_name': names[i] + " " + random.choice(DIST_SUFFIX),
+                'state_code': state_id,
+                'num_of_schools': school_num_in_dist_made[i],
+                'city_zip_map': city_zip_map,
+                'address_1': address[i],
+                'zipcode': zip_init
+                }
+
+            # dist = District(district_id, district_external_id, district_name, state_id, school_num_in_dist_made[i], city_zip_map, address1, zip_init)
+            dist = District(**params)
             districts_list.append(dist)
             total_school += dist.num_of_schools
             zip_init += zip_dist
@@ -253,6 +256,7 @@ def create_schools(stu_num_in_school_made, stutea_ratio_in_school_made, distr, s
 
     school_list = []
     wheretaken_list = []
+
     # generate each school and where-taken row
     for i in range(count):
         # get categories
@@ -267,47 +271,80 @@ def create_schools(stu_num_in_school_made, stutea_ratio_in_school_made, distr, s
         address_1 = address[i]
         city = random.choice(list(distr.city_zip_map.items()))
         city_name = city[0]
-        zip_code = random.choice(range(city[1][0], city[1][1]))
+        zip_code = city[1][0]
+        if(city[1][0] < city[1][1]):
+            zip_code = random.choice(range(city[1][0], city[1][1]))
 
         # create one row of where-taken
-        wheretaken_id = idgen.get_id()
-        wheretaken_name = sch_name
-        where_taken = WhereTaken(wheretaken_id, wheretaken_name, distr.district_name, address_1, city_name, zip_code, distr.state_code, 'US')
+        # wheretaken_id = idgen.get_id()
+        # wheretaken_name = sch_name
+        params_wheretaken = {
+                             'wheretaken_id': idgen.get_id(),
+                             'wheretaken_name': sch_name,
+                             'district_name': distr.district_name,
+                             'address_1': address_1,
+                             'city_name': city_name,
+                             'zip_code': zip_code,
+                             'state_code': distr.state_code,
+                             'country_id': 'US'
+                           }
+        # where_taken = WhereTaken(wheretaken_id, wheretaken_name, distr.district_name, address_1, city_name, zip_code, distr.state_code, 'US')
+        where_taken = WhereTaken(**params_wheretaken)
         wheretaken_list.append(where_taken)
 
         # create one row of school
-        sch_id = idgen.get_id()
-        school_external_id = uuid.uuid4()
-        school_type = random.choice(SCHOOL_TYPES)
+        params = {
+            'sch_id': idgen.get_id(),
+            'school_external_id': uuid.uuid4(),
+            'school_name': sch_name,
+            'dist_name': distr.district_name,
+            'district_id': distr.district_id,
+            'state_code': distr.state_code,
+            'num_of_student': stu_num_in_school_made[i],
+            'stu_tea_ratio': stutea_ratio_in_school_made[i],
+            'low_grade': low_grade,
+            'high_grade': high_grade,
+            'school_categories_type': school_categories_type,
+            'school_type': random.choice(SCHOOL_TYPES),
+            'address1': address_1,
+            'city': city_name,
+            'zip_code': zip_code
+                }
+
+        '''
         school = School(sch_id, school_external_id, sch_name, distr.district_name, distr.state_code,
                         stu_num_in_school_made[i], stutea_ratio_in_school_made[i], low_grade, high_grade,
                         school_categories_type, school_type, address_1, city_name, zip_code, distr.district_id)
+        '''
+        school = School(**params)
         school_list.append(school)
 
     return school_list, wheretaken_list
 
 
-def generate_city_zipcode(city_names, zipcode_range, num_of_schools):
+def generate_city_zipcode(zipcode_start, zipcode_end, num_of_schools):
     '''
-    Generate zip code range for cities
+    Generate zip code range for cities in a district
     '''
-    maxnum_of_city = min((zipcode_range[1] - zipcode_range[0]), num_of_schools)
+    try:
+        city_names = generate_names_from_lists(num_of_schools, birds_list, fish_list, CITY_NAME_LENGTH)
+    except ValueError:
+        print("ValueError: Not enough list to create", num_of_schools, " number of city names in generate_city_zipcode")
+        return None
+
+    maxnum_of_city = min((zipcode_end - zipcode_start), num_of_schools)
     num_of_city = 1
     if(num_of_schools > 1 and maxnum_of_city > 1):
         num_of_city = random.choice(range(1, maxnum_of_city))
 
     city_cand = random.sample(city_names, num_of_city)
-    ziprange_incity = (zipcode_range[1] - zipcode_range[0]) // num_of_city
-    zip_start = zipcode_range[0]
-
+    ziprange_incity = (zipcode_end - zipcode_start) // num_of_city
     city_zip_map = {}
     for i in range(len(city_cand) - 1):
-        zip_end = int((zip_start + ziprange_incity))
-        city_zip_map[city_cand[i]] = [zip_start, zip_end]
-        zip_start = zipcode_range[0] + ziprange_incity * (i + 1)
-
-    city_zip_map[city_cand[len(city_cand) - 1]] = [zip_start, int(zipcode_range[1])]
-
+        zip_end = int((zipcode_start + ziprange_incity))
+        city_zip_map[city_cand[i]] = [zipcode_start, zip_end]
+        zipcode_start = zipcode_start + ziprange_incity
+    city_zip_map[city_cand[len(city_cand) - 1]] = [zipcode_start, zipcode_end]
     return city_zip_map
 
 
@@ -412,6 +449,7 @@ def create_classes_grades_sections(district, sch, state):
 
         j += len(grade_students)
         total_count[3] += len(grade_students)
+        total_count[5] += len(parentz)
         if(grade == sch.high_grade - 1):
             stu_num_in_grade = sch.num_of_student - j
 
@@ -637,7 +675,6 @@ def create_one_class(sub_name, class_count, distribute_stu_inaclass, tea_list, s
     class_id = idgen.get_id()
     section_list = []
     teacher_section_list = []
-    print("students in class ", num_of_stu_in_class, " section number ", section_num, " students in section ", (num_of_stu_in_class // section_num), "ratio ", stu_tea_ratio)
     # for each section, add students and teachers
     for i in range(len(distribute_stu_insection)):
         section_id = idgen.get_id()

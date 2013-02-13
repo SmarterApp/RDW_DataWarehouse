@@ -14,6 +14,6 @@ define [
     edwareDataProxy.getDatafromSource "/data/individual_student_report", params, (data) ->
       # use template from file to display the json data    
       output = Mustache.to_html indivStudentReportTemplate, data
-      $("#assesmentInfo").html output
+      $("#assessmentInfo").html output
 
   generateIndividualStudentReport: generateIndividualStudentReport

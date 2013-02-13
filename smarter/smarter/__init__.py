@@ -83,6 +83,7 @@ def main(global_config, **settings):
     config.add_route('login', '/login')
     config.add_route('logout', '/logout')
     config.add_route('oauth', '/oauth')
+    config.add_route('get_auth_request', '/Hello_dip')
 
     # Set default permission on all views
     config.set_default_permission('view')

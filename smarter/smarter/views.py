@@ -12,6 +12,8 @@ from pyramid.security import remember, forget, authenticated_userid,\
     NO_PERMISSION_REQUIRED
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from urllib.error import HTTPError
+import base64
+import zlib
 
 
 @view_config(route_name='comparing_populations', renderer='templates/comparing_populations.pt')
@@ -182,11 +184,35 @@ def class_report(request):
 #TODO for accessign a view that user aren't allowed to do
 @forbidden_view_config(renderer='json')
 def login(request):
-    REDIRECT_URL = 'http://localhost:6543/oauth'
-    CLIENT_ID = 'GLpqLbxCB9'
-    token = authenticated_userid(request)
-    if token is None:
-        return HTTPFound(location='https://api.sandbox.inbloom.org/api/oauth/authorize?response_type=code&redirect_uri=' + REDIRECT_URL + '&client_id=' + CLIENT_ID)
+    data = '''<samlp:AuthnRequest
+xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol"
+xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion"
+ID="aaf23196-1773-2113-474a-fe114412ab72"
+Version="2.0"
+IssueInstant="2013-02-12T23:02:59"
+AssertionConsumerServiceIndex="0"
+AttributeConsumingServiceIndex="0">
+<saml:Issuer>http://localhost:6543/sp.xml</saml:Issuer>
+<samlp:NameIDPolicy
+AllowCreate="true"
+Format="urn:oasis:names:tc:SAML:2.0:nameid-format:transient"/>
+</samlp:AuthnRequest>'''
+    
+    url = 'http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp?%s'
+    byte_data = data.encode() 
+    compressed = zlib.compress(data)
+    encoded = base64.urlsafe_b64encode(compressed.encoded)
+    params = urllib.parse.urlencode({'SAMLRequest':encoded})
+    final_url = url % params
+    return HTTPFound(location=final_url)
+    #url_request = urllib.request.urlopen(url)
+    
+    #resp = url_request.read().decode('utf-8')
+#    REDIRECT_URL = 'http://localhost:6543/oauth'
+#    CLIENT_ID = 'GLpqLbxCB9'
+#    token = authenticated_userid(request)
+#    if token is None:
+#        return HTTPFound(location='https://api.sandbox.inbloom.org/api/oauth/authorize?response_type=code&redirect_uri=' + REDIRECT_URL + '&client_id=' + CLIENT_ID)
 
 
 @view_config(route_name='oauth', renderer='json', permission=NO_PERMISSION_REQUIRED)
@@ -214,3 +240,7 @@ def logout(request):
     # remove cookie
     headers = forget(request)
     return HTTPFound(location=request.route_url('login'), headers=headers)
+
+@view_config(route_name = 'get_auth_request', permission=NO_PERMISSION_REQUIRED)
+def get_auth_request(request):
+ pass

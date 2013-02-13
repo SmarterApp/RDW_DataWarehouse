@@ -123,9 +123,6 @@ def generate_version():
     return 'V1'
 
 
-ASSESSMENT_TYPES_LIST = generate_assessment_types()
-
-
 if __name__ == '__main__':
     assessments = generate_assessment_types()
 

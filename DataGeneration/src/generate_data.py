@@ -10,7 +10,7 @@ from datetime import datetime
 from test.test_iterlen import len
 from genpeople import *
 from idgen import IdGen
-from gen_assessments import generate_assessment_types, ASSESSMENT_TYPES_LIST
+from gen_assessments import generate_assessment_types
 from constants import *
 from dbconnection import get_db_conn
 from assessment import generate_assmts_for_students
@@ -20,6 +20,7 @@ import uuid
 birds_list = []
 mammals_list = []
 fish_list = []
+asmt_list = []
 
 # total count for state, districts, schools, students, teachers, parents
 total_count = [0, 0, 0, 0, 0, 0]
@@ -78,8 +79,8 @@ def generate_data(db_states_stat):
     '''
 
     # generate all assessment types
-    assessment_types = generate_assessment_types()
-    create_csv(assessment_types, ASSESSMENT_TYPES)
+    asmt_list = generate_assessment_types()
+    create_csv(asmt_list, ASSESSMENT_TYPES)
 
     c = 0
     record_states = []
@@ -132,8 +133,12 @@ def generate_data(db_states_stat):
         create_csv(created_dist_list, DISTRICTS)
         shift = 0
 
+        dist_count = 0
         for dist in created_dist_list:
             # create school for each district
+            print()
+            print("creating district %d of %d" % (dist_count, len(created_dist_list)))
+            dist_count += 1
             school_list, wheretaken_list = create_schools(stu_num_in_school_made[shift: shift + dist.num_of_schools],
                                                           stutea_ratio_in_school_made[shift: shift + dist.num_of_schools],
                                                           dist, school_type_in_state)
@@ -492,7 +497,7 @@ def associate_students_and_scores(student_temporal_list, scores, school, whereta
         for score in scores.items():
             asmt_id = int(score[0].split('_')[1])
             year = score[0].split('_')[0]
-            asmt = [x for x in ASSESSMENT_TYPES_LIST if x.asmt_id == asmt_id][0]
+            asmt = [x for x in asmt_list if x.asmt_id == asmt_id][0]
             subject = stu_tmprl.student_class.sub_name
 
             if subject == 'Math':
@@ -675,6 +680,8 @@ def create_one_class(sub_name, class_count, distribute_stu_inaclass, tea_list, s
     class_id = idgen.get_id()
     section_list = []
     teacher_section_list = []
+    #print("students in class ", num_of_stu_in_class, " section number ", section_num, " students in section ", (num_of_stu_in_class // section_num), "ratio ", stu_tea_ratio)
+    print('.', end='')
     # for each section, add students and teachers
     for i in range(len(distribute_stu_insection)):
         section_id = idgen.get_id()

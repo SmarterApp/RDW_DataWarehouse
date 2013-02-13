@@ -22,6 +22,7 @@ def __prepare_query(connector, student_id, assessment_id):
                     dim_student.c.last_name.label('student_last_name'),
                     dim_asmt.c.asmt_subject.label('asmt_subject'),
                     dim_asmt.c.asmt_period.label('asmt_period'),
+                    dim_asmt.c.asmt_type.label('asmt_type'),
                     fact_asmt_outcome.c.asmt_score.label('asmt_score'),
                     fact_asmt_outcome.c.date_taken_day.label('date_taken_day'),
                     fact_asmt_outcome.c.date_taken_month.label('date_taken_month'),

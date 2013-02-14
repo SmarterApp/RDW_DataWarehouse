@@ -2,9 +2,10 @@
 Entry point for edapi
 
 '''
-from pyramid.authentication import AuthTktAuthenticationPolicy
+from pyramid.authentication import SessionAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from edapi.security.security import verify_user
+from pyramid.session import UnencryptedCookieSessionFactoryConfig
 
 EDAPI_REPORTS_PLACEHOLDER = 'edapi_reports'
 
@@ -45,14 +46,16 @@ class ContentTypePredicate(object):
 # this is automatically called by consumer of edapi when it calls config.include(edapi)
 def includeme(config):
 
-    # TODO: derive from configuration but we need access to settings
-    authentication_policy = AuthTktAuthenticationPolicy(
-        'edware_secret', cookie_name='edware', callback=verify_user, hashalg='sha512', timeout=600)
+    authentication_policy = SessionAuthenticationPolicy(prefix='edware', callback=verify_user)
+
+    # TODO:  Is unencrypted OK?
+    session_factory = UnencryptedCookieSessionFactoryConfig('edwaresession')
 
     authorization_policy = ACLAuthorizationPolicy()
 
     config.set_authentication_policy(authentication_policy)
     config.set_authorization_policy(authorization_policy)
+    config.set_session_factory(session_factory)
     config.set_root_factory('edapi.security.models.RootFactory')
 
     # routing for retrieving list of report names with GET

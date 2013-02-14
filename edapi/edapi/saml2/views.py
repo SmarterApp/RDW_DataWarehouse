@@ -2,7 +2,6 @@ from pyramid.security import NO_PERMISSION_REQUIRED, forget, remember
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config, forbidden_view_config
 from edapi.saml2.saml_request import get_auth_request
-from pyramid.response import Response
 '''
 Created on Feb 13, 2013
 
@@ -21,20 +20,18 @@ def login(request):
 
 @view_config(route_name='logout')
 def logout(request):
-    # remove cookie
-    headers = forget(request)
-    return HTTPFound(location=request.route_url('login'), headers=headers)
+    # remove session
+    forget(request)
+    # need to really log out from openam
+    return HTTPFound(location=request.route_url('login'))
 
 
 @view_config(route_name='saml2_post_consumer', permission=NO_PERMISSION_REQUIRED)
 def saml2_post_consumer(request):
-    data = None
-    userid = "linda.kim"
     role = "teacher"
 
-    # Save the cookie
-    # TODO: we might have to make sure the role fits the regex, else customize our policy
-    headers = remember(request, userid, tokens=role)
+    # Save principle to session
+    remember(request, role)
 
     # TODO how to fwd back to the original page?
-    return HTTPFound(location="http://localhost:6543/data", headers=headers)
+    return HTTPFound(location="http://localhost:6543/data")

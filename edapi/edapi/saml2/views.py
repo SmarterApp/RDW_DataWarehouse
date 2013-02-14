@@ -14,7 +14,8 @@ Created on Feb 13, 2013
 @forbidden_view_config(renderer='json')
 def login(request):
     url = 'http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp?%s'
-    params = get_auth_request()
+    (uuid, params) = get_auth_request()
+    request.session['saml_id'] = uuid
     return HTTPFound(location=url % params)
 
 
@@ -29,6 +30,8 @@ def logout(request):
 @view_config(route_name='saml2_post_consumer', permission=NO_PERMISSION_REQUIRED)
 def saml2_post_consumer(request):
     role = "teacher"
+    
+    # Validate the response id against session
 
     # Save principle to session
     remember(request, role)

@@ -15,12 +15,12 @@ import base64
 # returns a byte string of a SAML AuthnRequest
 def get_auth_request():
     doc = Document()
-
+    # UUID based on host ID and current time, or use 4 to get random
+    request_id = str(uuid.uuid1())
     samlp_Auth_Request = doc.createElement('samlp:AuthnRequest')
     samlp_Auth_Request.setAttribute('xmlns:samlp', "urn:oasis:names:tc:SAML:2.0:protocol")
     samlp_Auth_Request.setAttribute('xmlns:saml', "urn:oasis:names:tc:SAML:2.0:assertion")
-    # UUID based on host ID and current time, or use 4 to get random
-    samlp_Auth_Request.setAttribute('ID', str(uuid.uuid1()))
+    samlp_Auth_Request.setAttribute('ID', request_id)
     samlp_Auth_Request.setAttribute('Version', "2.0")
     samlp_Auth_Request.setAttribute('IssueInstant', strftime("%Y-%m-%dT%H:%M:%S", gmtime()))
     samlp_Auth_Request.setAttribute('AssertionConsumerServiceIndex', "0")
@@ -41,7 +41,7 @@ def get_auth_request():
     # This will strip out the xml version text
     data = doc.documentElement.toxml('utf-8')
 
-    return encode_saml_request(data)
+    return (request_id, encode_saml_request(data))
 
 
 def encode_saml_request(data):

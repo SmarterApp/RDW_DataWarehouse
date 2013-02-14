@@ -46,7 +46,7 @@ class ContentTypePredicate(object):
 # this is automatically called by consumer of edapi when it calls config.include(edapi)
 def includeme(config):
 
-    authentication_policy = SessionAuthenticationPolicy(prefix='edware', callback=verify_user)
+    authentication_policy = SessionAuthenticationPolicy(prefix='edware.', callback=verify_user)
 
     # TODO:  Is unencrypted OK?
     session_factory = UnencryptedCookieSessionFactoryConfig('edwaresession')

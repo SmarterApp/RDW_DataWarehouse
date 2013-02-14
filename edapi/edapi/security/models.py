@@ -10,7 +10,7 @@ from pyramid.security import (
 
 
 class RootFactory(object):
-    __acl__ = [(Allow, 'group:allow', 'view')]
+    __acl__ = [(Allow, 'teacher', 'view')]
 
     def __init__(self, request):
         pass

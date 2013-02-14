@@ -179,18 +179,17 @@ class TestGenerateData(unittest.TestCase):
         school_num_in_dist = [25, 67, 10, 128, 245, 199]
         pos = 0
         created_dist_list = generate_data.create_districts(state_code, school_num_in_dist, pos, make_namelists(1000, 1000, 1000))
-        self.assertTrue(len(created_dist_list) == len(school_num_in_dist))
+        self.assertEqual(len(created_dist_list), len(school_num_in_dist))
 
         expected_zipinit = ZIPCODE_START
         expected_zipdist = ZIPCODE_RANG_INSTATE // len(school_num_in_dist)
-        # expected_zipbigmax = expected_zipinit + ZIPCODE_RANG_INSTATE
         c = 0
         for d in created_dist_list:
             self.assertEqual(d.state_code, state_code)
             self.assertEqual(d.num_of_schools, school_num_in_dist[c])
             self.assertTrue(len(d.district_name) > 0)
             self.assertTrue(len(d.address_1) > 0)
-            # self.assertEqual(d.zipcode_range, (expected_zipinit, expected_zipinit + expected_zipdist))
+            self.assertEqual(d.zipcode, expected_zipinit)
             expected_zipinit += expected_zipdist
             c += 1
 
@@ -199,7 +198,7 @@ class TestGenerateData(unittest.TestCase):
         school_num_in_dist = []
         pos = 1
         created_dist_list = generate_data.create_districts(state_code, school_num_in_dist, pos, make_namelists(1000, 1000, 1000))
-        self.assertTrue(len(created_dist_list) == 0)
+        self.assertEqual(len(created_dist_list), 0)
 
     def test_create_districts_withNotEnoughNames(self):
         name_lists = make_namelists(1, 1, 1)
@@ -226,6 +225,7 @@ class TestGenerateData(unittest.TestCase):
             self.assertEqual(d.num_of_schools, school_num_in_dist[c])
             self.assertTrue(len(d.district_name) > 0)
             self.assertTrue(len(d.address_1) > 0)
+            self.assertEqual(d.zipcode, expected_zipinit)
             expected_zipinit = expected_zipinit + expected_zipdist
             c += 1
 
@@ -259,14 +259,26 @@ class TestGenerateData(unittest.TestCase):
         for city, ziprange in generated_zipmap.items():
             self.assertEqual(zipcode_range, ziprange)
 
-        self.assertTrue(len(generated_zipmap) <= num_of_schools)
+        self.assertEqual(len(generated_zipmap), 1)
+
+    def test_generate_city_zipcode_wrongzip(self):
+        zipcode_range = [1000, 234]
+        num_of_schools = 1900
+
+        generated_zipmap = generate_data.generate_city_zipcode(zipcode_range[0], zipcode_range[1], num_of_schools, make_namelists(1000, 1000, 1000))
+        self.assertEqual(1, len(generated_zipmap))
+
+        for city, ziprange in generated_zipmap.items():
+            self.assertEqual(zipcode_range, ziprange)
+
+        self.assertEqual(len(generated_zipmap), 1)
 
     def test_generate_city_withNotEnoughCityName(self):
         name_lists = make_namelists(1, 1, 1)
         zipcode_range = [1000, 5000]
         num_of_schools = 5
 
-        generated_zipmap = generate_data.generate_city_zipcode(zipcode_range[0], zipcode_range[1], num_of_schools, name_lists)
+        generate_data.generate_city_zipcode(zipcode_range[0], zipcode_range[1], num_of_schools, name_lists)
         self.assertRaises(ValueError, generate_data.generate_names_from_lists, num_of_schools, name_lists[0], name_lists[1])
 
     def test_generate_city_onecity(self):
@@ -598,6 +610,7 @@ class TestGenerateData(unittest.TestCase):
     # test generate_date
     def test_generate_date(self):
         generated_date = generate_data.generate_date()
+        print(generated_date)
         self.assertTrue(generated_date <= datetime.date.today())
 
     def test_get_name_lists_nofiles(self):
@@ -625,9 +638,17 @@ class TestGenerateData(unittest.TestCase):
 
     def test_generate_twostates(self):
         generate_count = generate_data.generate(generate_data.get_name_lists, mock_f_get_state_stats_twostates)
-        self.assertEqual(generate_count[0], 2)
+        # self.assertEqual(generate_count[0], 2)
         for i in range(1, len(generate_count)):
             self.assertTrue(generate_count[i] > 0)
+
+    def test_generate_notEnoughNameLists1(self):
+        generate_count = generate_data.generate(mock_f_get_name_lists_shortlists1, mock_f_get_state_stats_onestate)
+        self.assertEqual(generate_count, [1, 0, 0, 0, 0, 0])
+
+
+def mock_f_get_name_lists_shortlists1():
+    return make_namelists(1, 1, 1)
 
 
 def mock_f_get_state_stats_emptydb():

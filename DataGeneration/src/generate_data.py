@@ -47,7 +47,7 @@ def get_state_stats():
     for row in dist_count:
         db_states.append(dict(zip(STAT_COLUMNS, row)))
     db.close()
-    print(db_states)
+    # print(db_states)
     return db_states
 
 
@@ -89,35 +89,8 @@ def generate_data(name_lists, db_states_stat):
         total_count[0] += 1
         record_states.append(created_state)
 
-        # generate school distribution in districts
-        min_dis = max(1, math.ceil(state['total_district'] * DIST_LOW_VALUE))
-        max_dis = round(state['total_district'] * DIST_HIGH_VALUE)
-        num_of_dist = min_dis
-        if(min_dis < max_dis):
-            num_of_dist = random.choice(range(min_dis, max_dis))
-        school_num_in_dist_made = makeup_list(state['avg_school_per_district'], state['std_school_per_district'],
-                                              state['min_school_per_district'], state['max_school_per_district'],
-                                              num_of_dist, state['total_school'])
-        # for test
-        # print("real four numbers      ", state['avg_school_per_district'], state['std_school_per_district'], state['min_school_per_district'], state['max_school_per_district'])
-        # print("generated four numbers ", py1.avg(school_num_in_dist_made), py1.std(school_num_in_dist_made), min(school_num_in_dist_made), max(school_num_in_dist_made))
 
-        # generate student distribution in schools
-        stu_num_in_school_made = makeup_list(state['avg_student_per_school'], state['std_student_per_school'],
-                                             state['min_student_per_school'], state['max_student_per_school'],
-                                             sum(school_num_in_dist_made), state['total_student'])
-        # for test
-        # print("real four numbers      ", state['avg_student_per_school'], state['std_student_per_school'], state['min_student_per_school'], state['max_student_per_school'])
-        # print("generated four numbers ", py1.avg(stu_num_in_school_made), py1.std(stu_num_in_school_made), min(stu_num_in_school_made), max(stu_num_in_school_made))
-
-        # generate student teacher ratio distribution in schools
-        stutea_ratio_in_school_made = py1.makeup_core(state['avg_stutea_ratio_per_school'], state['std_stutea_ratio_per_school'],
-                                                      state['min_stutea_ratio_per_school'], state['max_stutea_ratio_per_school'],
-                                                      sum(school_num_in_dist_made))
-
-        # generate school type distribution in state
-        school_type_in_state = make_school_types([state['primary_perc'], state['middle_perc'],
-                                                  state['high_perc'], state['other_perc']], sum(school_num_in_dist_made))
+        school_num_in_dist_made, stu_num_in_school_made, stutea_ratio_in_school_made, school_type_in_state = generate_distribution_lists(state)
 
         # print out result for a state
         print("************** State ", created_state.state_name, " **************")
@@ -169,6 +142,40 @@ def generate_data(name_lists, db_states_stat):
     print("generated number of parents   ", total_count[5])
 
     return total_count
+
+
+def generate_distribution_lists(state):
+    # generate school distribution in districts
+    min_dis = max(1, math.floor(state['total_district'] * DIST_LOW_VALUE))
+    max_dis = math.ceil(state['total_district'] * DIST_HIGH_VALUE)
+    num_of_dist = min_dis
+    if(min_dis < max_dis):
+        num_of_dist = random.choice(range(min_dis, max_dis))
+    school_num_in_dist_made = makeup_list(state['avg_school_per_district'], state['std_school_per_district'],
+                                          state['min_school_per_district'], state['max_school_per_district'],
+                                          num_of_dist, state['total_school'])
+    # for test
+    # print("real four numbers      ", state['avg_school_per_district'], state['std_school_per_district'], state['min_school_per_district'], state['max_school_per_district'])
+    # print("generated four numbers ", py1.avg(school_num_in_dist_made), py1.std(school_num_in_dist_made), min(school_num_in_dist_made), max(school_num_in_dist_made))
+
+    # generate student distribution in schools
+    stu_num_in_school_made = makeup_list(state['avg_student_per_school'], state['std_student_per_school'],
+                                         state['min_student_per_school'], state['max_student_per_school'],
+                                         sum(school_num_in_dist_made), state['total_student'])
+    # for test
+    # print("real four numbers      ", state['avg_student_per_school'], state['std_student_per_school'], state['min_student_per_school'], state['max_student_per_school'])
+    # print("generated four numbers ", py1.avg(stu_num_in_school_made), py1.std(stu_num_in_school_made), min(stu_num_in_school_made), max(stu_num_in_school_made))
+
+    # generate student teacher ratio distribution in schools
+    stutea_ratio_in_school_made = py1.makeup_core(state['avg_stutea_ratio_per_school'], state['std_stutea_ratio_per_school'],
+                                                  state['min_stutea_ratio_per_school'], state['max_stutea_ratio_per_school'],
+                                                  sum(school_num_in_dist_made))
+
+        # generate school type distribution in state
+    school_type_in_state = make_school_types([state['primary_perc'], state['middle_perc'],
+                                              state['high_perc'], state['other_perc']], sum(school_num_in_dist_made))
+
+    return school_num_in_dist_made, stu_num_in_school_made, stutea_ratio_in_school_made, school_type_in_state
 
 
 def make_school_types(perc, total):
@@ -318,11 +325,6 @@ def create_schools(stu_num_in_school_made, stutea_ratio_in_school_made, distr, s
             'zip_code': zip_code
         }
 
-        '''
-        school = School(sch_id, school_external_id, sch_name, distr.district_name, distr.state_code,
-                        stu_num_in_school_made[i], stutea_ratio_in_school_made[i], low_grade, high_grade,
-                        school_categories_type, school_type, address_1, city_name, zip_code, distr.district_id)
-        '''
         school = School(**params)
         school_list.append(school)
 
@@ -716,7 +718,7 @@ def generate_date():
     '''
     today = datetime.date.today()
     current_year = today.year
-    generate_year = current_year - random.randint(0, YEAR_SHIFT)
+    generate_year = current_year - random.randint(1, YEAR_SHIFT)
     generate_month = random.randint(1, MONTH_TOTAL)
     generate_day = 1
     if(generate_month in MONTH_LIST_31DAYS):

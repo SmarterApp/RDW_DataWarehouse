@@ -6,6 +6,7 @@ from xml.dom.minidom import parseString
 import base64
 from edapi.saml2.SamlAuth import SamlAuth
 from edapi.saml2.SAMLResponse import SAMLResponse
+import urllib
 '''
 Created on Feb 13, 2013
 
@@ -18,8 +19,22 @@ Created on Feb 13, 2013
 @forbidden_view_config(renderer='json')
 def login(request):
     url = 'http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp?%s'
-    (uuid, params) = get_auth_request()
+
+    referrer = request.url
+    if referrer == request.route_url('login'):
+        # Never redirect back to login page
+        referrer = '/'
+    params = {'RelayState': request.params.get('came_from', referrer)}
+
+    (uuid, saml_request) = get_auth_request()
+
+    # combined saml_request into url params and url encode it
+    params.update(saml_request)
+    params = urllib.parse.urlencode(params)
+
+    # Save the authentication request id into session
     request.session['auth_request_id'] = uuid
+    # Redirect to openam
     return HTTPFound(location=url % params)
 
 
@@ -48,5 +63,9 @@ def saml2_post_consumer(request):
     # Save principle to session
     remember(request, role)
 
-    # TODO how to fwd back to the original page?
-    return HTTPFound(location=request.route_url('list_of_reports'))
+    # Get the url saved in RelayState from SAML request, redirect it back to it
+
+    # If it's not found, redirect to list of reports
+    # TODO: Need a landing other page
+    redirect_url = request.POST.get('RelayState', request.route_url('list_of_reports'))
+    return HTTPFound(location=redirect_url)

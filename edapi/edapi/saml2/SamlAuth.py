@@ -5,6 +5,7 @@ Created on Feb 13, 2013
 '''
 from xml.dom.minidom import parseString
 from edapi.saml2.SAMLResponse import SAMLResponse
+from edapi.security.roles import Roles
 
 
 class SamlAuth:
@@ -20,7 +21,7 @@ class SamlAuth:
         return status_code[-7:] == "Success"
 
     def get_role(self):
-        return "teacher"
+        return Roles.TEACHER
 
 xml = '''<samlp:Response xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" ID="s242006af1c228c11bb10f535f54f92d3e522e640e" InResponseTo="aaf23196-1773-2113-474a-fe114412ab72" Version="2.0" IssueInstant="2013-02-13T22:07:58Z" Destination="http://localhost:6543/Hello_dip"><saml:Issuer xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion">http://edwappsrv4.poc.dum.edwdc.net:18080/opensso</saml:Issuer><samlp:Status xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol">
         <samlp:StatusCode  xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol"

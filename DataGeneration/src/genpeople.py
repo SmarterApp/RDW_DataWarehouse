@@ -8,7 +8,7 @@ Created on Jan 8, 2013
 import gennames
 import random
 from datetime import date
-from entities import Student, Teacher, Parent
+from entities import Student, Teacher, Parent, Staff
 from readnaminglists import PeopleNames
 from idgen import IdGen
 from write_to_csv import create_csv
@@ -115,6 +115,18 @@ def generate_parents(student):
     # parent2.student_id = student.student_id
 
     return [parent1, parent2]
+
+def generate_staff(first_name, last_name, district, state, school):
+     staff_params = {
+         'first_name': first_name,
+         'last_name': last_name,
+         'district_id': district.district_id,
+         'state_id': state.state_id,
+         'school_id': school.sch_id
+     }
+
+     staff = Staff(**staff_params)
+     return staff
 
 
 def assign_dob(grade, boy_year):

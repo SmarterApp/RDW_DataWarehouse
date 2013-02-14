@@ -1,6 +1,7 @@
 import random
 import string
 from idgen import IdGen
+from uuid import uuid4
 
 
 class State:
@@ -463,6 +464,22 @@ class Teacher(Person):
 
     def getRow(self):
         return [self.teacher_id, self.teacher_external_id, self.first_name, self.middle_name, self.last_name, self.district_id, self.state_code]
+
+class Staff(Person):
+    def __init__(self, first_name, last_name, district_id, state_id, school_id, middle_name=None, staff_id = None, staff_external_id=None):
+        super().__init__(first_name, last_name, middle_name=middle_name)
+        idgen = IdGen()
+        if(staff_id):
+            self.staff_id = staff_id
+        else:
+            self.staff_id = idgen.get_id()
+        if(staff_external_id):
+            self.staff_external_id = staff_external_id
+        else:
+            self.staff_external_id = uuid4()
+        self.district_id = district_id
+        self.state_id = state_id
+        self.school_id = school_id
 
 
 def generate_ramdom_name():

@@ -7,9 +7,9 @@ Created on Jan 16, 2013
 import os
 import unittest
 
-from genpeople import generate_teacher, generate_student, assign_dob, generate_parents
+from genpeople import generate_teacher, generate_student, assign_dob, generate_parents, generate_staff
 from nameinfo import NameInfo
-from entities import State, District, Teacher, School, Student, Parent
+from entities import State, District, Teacher, School, Student, Parent, Staff
 from uuid import UUID, uuid4
 from datetime import date
 
@@ -56,6 +56,10 @@ class Test(unittest.TestCase):
         for p in parents:
             self.assertIsNotNone(p)
             self.assertIsInstance(p, Parent)
+
+    def test_generate_staff(self):
+        staff = generate_staff('John', 'Doe', self.district_1, self.delaware, self.school_1)
+        self.assertIsInstance(staff, Staff)
 
 
     def test_assign_dob(self):

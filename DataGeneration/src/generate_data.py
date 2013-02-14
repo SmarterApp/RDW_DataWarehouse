@@ -16,17 +16,42 @@ from assessment import generate_assmts_for_students
 from xmlrpc.client import MAXINT
 import uuid
 
-birds_list = []
-mammals_list = []
-fish_list = []
-asmt_list = []
 
-# total count for state, districts, schools, students, teachers, parents
-total_count = [0, 0, 0, 0, 0, 0]
-idgen = IdGen()
+def get_name_lists():
+    '''
+    Read files into lists, which is used for making names, addresses, etc
+    '''
+    # clear old files
+    clear_files()
+
+    name_lists = []
+    try:
+        name_lists.append(read_names(BIRDS_FILE))
+        name_lists.append(read_names(MAMMALS_FILE))
+        name_lists.append(read_names(FISH_FILE))
+
+    except IOError as e:
+        print("Exception for reading bird, mammals, or fish files: " + str(e))
+        return None
+
+    return name_lists
 
 
-def generate():
+def get_state_stats():
+    '''
+    Connect to db to get statistical data
+    '''
+    db = get_db_conn()
+    db_states = []
+    dist_count = db.prepare('select * from school_generate_stat')
+    for row in dist_count:
+        db_states.append(dict(zip(STAT_COLUMNS, row)))
+    db.close()
+    print(db_states)
+    return db_states
+
+
+def generate(f_get_name_lists, f_get_state_stats):
     '''
     Generate data.
     First step: read files into lists for making names, addresses
@@ -35,56 +60,31 @@ def generate():
     (including generate: state, district, school, class, section, student,
     and teacher)
     '''
-    read_files = prepare_data()
-    db_states = get_statistic()
+    name_lists = f_get_name_lists()
+    state_stats = f_get_state_stats()
 
-    if(read_files is False or db_states is None or len(db_states) == 0):
+    if(name_lists is None or state_stats is None or len(name_lists) == 0 or len(state_stats) == 0):
         print("Initializing....Error")
-        return
+        return None
 
-    generate_data(db_states)
-
-
-def prepare_data():
-    '''
-    Read files into lists, which is used for making names, addresses, etc
-    '''
-    # clear old files
-    clear_files()
-
-    try:
-        birds_list.extend(read_names(BIRDS_FILE))
-        mammals_list.extend(read_names(MAMMALS_FILE))
-        fish_list.extend(read_names(FISH_FILE))
-    except IOError as e:
-        print("Exception for reading bird, mammals, or fish files: " + str(e))
-        return False
-    return True
+    return generate_data(name_lists, state_stats)
 
 
-def get_statistic():
-    db = get_db_conn()
-    db_states = []
-    dist_count = db.prepare('select * from school_generate_stat')
-    for row in dist_count:
-        db_states.append(dict(zip(STAT_COLUMNS, row)))
-    db.close()
-    return db_states
-
-
-def generate_data(db_states_stat):
+def generate_data(name_lists, db_states_stat):
     '''
     Main function to generate actual data with input statistical data
     '''
+    # total count for state, districts, schools, students, teachers, parents
+    total_count = [0, 0, 0, 0, 0, 0]
 
     # generate all assessment types
-    asmt_list.extend(generate_assessment_types())
+    asmt_list = generate_assessment_types()
     create_csv(asmt_list, ASSESSMENT_TYPES)
 
     c = 0
     record_states = []
     for state in db_states_stat:
-        # create state
+        # create a state
         created_state = State(state['state_code'], state['state_name'], state['total_district'], state['state_code'])
         total_count[0] += 1
         record_states.append(created_state)
@@ -119,7 +119,7 @@ def generate_data(db_states_stat):
         school_type_in_state = make_school_types([state['primary_perc'], state['middle_perc'],
                                                   state['high_perc'], state['other_perc']], sum(school_num_in_dist_made))
 
-        # print out
+        # print out result for a state
         print("************** State ", created_state.state_name, " **************")
         print("                     Real     Generated")
         print("Number of districts ", state['total_district'], "    ", len(school_num_in_dist_made))
@@ -127,33 +127,35 @@ def generate_data(db_states_stat):
         print("Number of students  ", state['total_student'], "    ", sum(stu_num_in_school_made))
         # continue
         # create districts for each state
-        created_dist_list = create_districts(created_state.state_id, school_num_in_dist_made, c)
+        created_dist_list = create_districts(created_state.state_id, school_num_in_dist_made, c, name_lists)
         total_count[1] += len(created_dist_list)
         create_csv(created_dist_list, DISTRICTS)
         shift = 0
 
         dist_count = 0
         for dist in created_dist_list:
-            # create school for each district
-            print("creating district %d of %d" % (dist_count, len(created_dist_list)))
+            print("creating district %d of %d for state %s" % (dist_count, len(created_dist_list), state['state_name']))
             dist_count += 1
+
+            # create school for each district
             school_list, wheretaken_list = create_schools(stu_num_in_school_made[shift: shift + dist.num_of_schools],
                                                           stutea_ratio_in_school_made[shift: shift + dist.num_of_schools],
-                                                          dist, school_type_in_state)
+                                                          dist, school_type_in_state, name_lists)
             total_count[2] += len(school_list)
             create_csv(school_list, SCHOOLS)
             create_csv(wheretaken_list, WHERETAKEN)
-
             shift += dist.num_of_schools
 
+            # associate wheretaken_list to current district
             dist.wheretaken_list = wheretaken_list
+
             # create classes, grades, sections, teachers students, parents and assessment scores for each school
             for sch in school_list:
-                create_classes_grades_sections(dist, sch, created_state)
+                create_classes_grades_sections(dist, sch, created_state, name_lists[2], total_count, asmt_list)
 
         # if just need one state data
-        if(c == 0):
-            break
+        #if(c == 0):
+        #    break
         c += 1
 
     create_csv(record_states, STATES)
@@ -165,6 +167,8 @@ def generate_data(db_states_stat):
     print("generated number of students  ", total_count[3])
     print("generated number of teachers  ", total_count[4])
     print("generated number of parents   ", total_count[5])
+
+    return total_count
 
 
 def make_school_types(perc, total):
@@ -192,7 +196,7 @@ def make_school_types(perc, total):
     return repeat_types
 
 
-def create_districts(state_id, school_num_in_dist_made, pos):
+def create_districts(state_id, school_num_in_dist_made, pos, name_lists):
     '''
     Main function to generate list of district for a state
     '''
@@ -203,13 +207,13 @@ def create_districts(state_id, school_num_in_dist_made, pos):
     if(n > 0):
         # generate random district names
         try:
-            names = generate_names_from_lists(n, birds_list, mammals_list, DIST_SCHOOL_NAME_LENGTH)
+            names = generate_names_from_lists(n, name_lists[0], name_lists[1], DIST_SCHOOL_NAME_LENGTH)
         except ValueError:
-            print("ValueError: Not enough list to create", n, " number of district names", n, len(birds_list), len(mammals_list))
+            print("ValueError: Not enough list to create", n, " number of district names", n, len(name_lists[0]), len(name_lists[1]))
             return []
 
         # generate random district addresses
-        address = generate_address_from_list(n, fish_list, ADDRESS_LENGTH)
+        address = generate_address_from_list(n, name_lists[2], ADDRESS_LENGTH)
 
         # generate random district zip range
         zip_init, zip_dist = cal_zipvalues(pos, n)
@@ -217,13 +221,13 @@ def create_districts(state_id, school_num_in_dist_made, pos):
         # generate each district
         for i in range(n):
             # generate city zipcode map
-            city_zip_map = generate_city_zipcode(zip_init, (zip_init + zip_dist), school_num_in_dist_made[i])
+            city_zip_map = generate_city_zipcode(zip_init, (zip_init + zip_dist), school_num_in_dist_made[i], name_lists)
             if(city_zip_map is None):
                 continue
 
             # create district object
             params = {
-                'district_id': idgen.get_id(),
+                'district_id': IdGen().get_id(),
                 'district_external_id': uuid.uuid4(),
                 'district_name': names[i] + " " + random.choice(DIST_SUFFIX),
                 'state_code': state_id,
@@ -242,20 +246,20 @@ def create_districts(state_id, school_num_in_dist_made, pos):
     return districts_list
 
 
-def create_schools(stu_num_in_school_made, stutea_ratio_in_school_made, distr, school_type_in_state):
+def create_schools(stu_num_in_school_made, stutea_ratio_in_school_made, distr, school_type_in_state, name_lists):
     '''
     Main function to generate list of schools for a district
     '''
     count = distr.num_of_schools
     # generate random school names
     try:
-        names = generate_names_from_lists(count, fish_list, mammals_list, DIST_SCHOOL_NAME_LENGTH)
+        names = generate_names_from_lists(count, name_lists[2], name_lists[1], DIST_SCHOOL_NAME_LENGTH)
     except ValueError:
         print("ValueError: Not enough list to create", count, " number of school names")
         return [], []
 
     # generate addresses
-    address = generate_address_from_list(count, birds_list, ADDRESS_LENGTH)
+    address = generate_address_from_list(count, name_lists[0], ADDRESS_LENGTH)
 
     school_list = []
     wheretaken_list = []
@@ -282,7 +286,7 @@ def create_schools(stu_num_in_school_made, stutea_ratio_in_school_made, distr, s
         # wheretaken_id = idgen.get_id()
         # wheretaken_name = sch_name
         params_wheretaken = {
-            'wheretaken_id': idgen.get_id(),
+            'wheretaken_id': IdGen().get_id(),
             'wheretaken_name': sch_name,
             'district_name': distr.district_name,
             'address_1': address_1,
@@ -297,7 +301,7 @@ def create_schools(stu_num_in_school_made, stutea_ratio_in_school_made, distr, s
 
         # create one row of school
         params = {
-            'sch_id': idgen.get_id(),
+            'sch_id': IdGen().get_id(),
             'school_external_id': uuid.uuid4(),
             'school_name': sch_name,
             'dist_name': distr.district_name,
@@ -325,12 +329,12 @@ def create_schools(stu_num_in_school_made, stutea_ratio_in_school_made, distr, s
     return school_list, wheretaken_list
 
 
-def generate_city_zipcode(zipcode_start, zipcode_end, num_of_schools):
+def generate_city_zipcode(zipcode_start, zipcode_end, num_of_schools, name_lists):
     '''
     Generate zip code range for cities in a district
     '''
     try:
-        city_names = generate_names_from_lists(num_of_schools, birds_list, fish_list, CITY_NAME_LENGTH)
+        city_names = generate_names_from_lists(num_of_schools, name_lists[0], name_lists[2], CITY_NAME_LENGTH)
     except ValueError:
         print("ValueError: Not enough list to create", num_of_schools, " number of city names in generate_city_zipcode")
         return None
@@ -425,7 +429,7 @@ def cal_zipvalues(pos, n):
     return zip_init, zip_dist
 
 
-def create_classes_grades_sections(district, sch, state):
+def create_classes_grades_sections(district, sch, state, fish_names, total_count, asmt_list):
     '''
     Main function to generate classes, grades, sections, students and teachers for a school
     '''
@@ -445,7 +449,7 @@ def create_classes_grades_sections(district, sch, state):
     for grade in range(sch.low_grade, sch.high_grade + 1):
         # generate student list for a grade
 
-        grade_students, parentz = generate_students(stu_num_in_grade, state, district, sch, grade)
+        grade_students, parentz = generate_students(stu_num_in_grade, state, district, sch, grade, fish_names)
 
         create_csv(grade_students, STUDENTS)
         create_csv(parentz, PARENTS)
@@ -471,11 +475,11 @@ def create_classes_grades_sections(district, sch, state):
         scores = generate_assmts_for_students(len(grade_students), grade, state.state_name, asmt_list)
 
         wheretaken_id = (random.choice(district.wheretaken_list)).wheretaken_id
-        assessment_outcome_list = associate_students_and_scores(student_temporal_list, scores, sch, wheretaken_id)
+        assessment_outcome_list = associate_students_and_scores(student_temporal_list, scores, sch, wheretaken_id, asmt_list)
         create_csv(assessment_outcome_list, ASSESSMENT_OUTCOME)
 
 
-def associate_students_and_scores(student_temporal_list, scores, school, wheretaken_id):
+def associate_students_and_scores(student_temporal_list, scores, school, wheretaken_id, asmt_list):
     '''
     creates association between students and scores
     student_temporal_list -- a list of student_temporal objects
@@ -501,7 +505,7 @@ def associate_students_and_scores(student_temporal_list, scores, school, whereta
                 subject = 'MATH'
 
             if stu_tmprl.student_class.sub_name == asmt.asmt_subject:  # check that subjects match as there is a std_tmprl object for each subject
-                new_id = idgen.get_id()
+                new_id = IdGen().get_id()
                 teacher_list = list(stu_tmprl.student_class.section_tea_map.values())
                 teacher_list = [item for sub in teacher_list for item in sub]  # flatten teacher_list
                 teacher = teacher_list[0]
@@ -562,12 +566,12 @@ def generate_teachers(num_teachers, state, district):
     return teachers
 
 
-def generate_students(num_students, state, district, school, grade):
+def generate_students(num_students, state, district, school, grade, fish_names):
     students = []
     parents = []
 
     for i in range(num_students):
-        stu, pars = generate_student(state, district, school, grade, fish_list)
+        stu, pars = generate_student(state, district, school, grade, fish_names)
         students.append(stu)
         for par in pars:
             parents.append(par)
@@ -607,7 +611,7 @@ def create_student_temporal_data(state_code, class_list, grade, school_id, dist_
 
         for sect, stus in cls.section_stu_map.items():
             for stu in stus:
-                tmprl_id = idgen.get_id()
+                tmprl_id = IdGen().get_id()
                 student_temporal = StudentTemporalData(tmprl_id, stu.student_id, grade, dist_name, school_id, cls, sect)
                 temporal_list.append(student_temporal)
 
@@ -673,25 +677,25 @@ def create_one_class(sub_name, class_count, distribute_stu_inaclass, tea_list, s
     section_stu_map = {}
     section_tea_map = {}
 
-    class_id = idgen.get_id()
+    class_id = IdGen().get_id()
     section_list = []
     teacher_section_list = []
     # for each section, add students and teachers
     for i in range(len(distribute_stu_insection)):
-        section_id = idgen.get_id()
+        section_id = IdGen().get_id()
         section_stu_map[str(section_id)] = distribute_stu_insection[i]
         # one section has only one teacher
         section_tea_map[str(i)] = random.sample(tea_list, 1)
 
         # create section object
         section_name = 'section ' + str(i + 1)
-        section_id = idgen.get_id()
+        section_id = IdGen().get_id()
         section = Section(section_id, uuid.uuid4(), school_id, section_name, class_name)
         section_list.append(section)
 
         # create teacher_section subject
         teacher_startdata = generate_date().strftime("%Y-%m-%d")
-        teacher_section = TeacherSection(idgen.get_id(), section_tea_map[str(i)][0].teacher_id, section_id, teacher_startdata)
+        teacher_section = TeacherSection(IdGen().get_id(), section_tea_map[str(i)][0].teacher_id, section_id, teacher_startdata)
         teacher_section_list.append(teacher_section)
 
     # write section into csv
@@ -722,7 +726,6 @@ def generate_date():
     else:
         generate_day = random.choice(range(1, MONTH_DAY_MAX[2]))
 
-    #return date(generate_year, generate_month, generate_day).strftime("%Y-%m-%d")
     return date(generate_year, generate_month, generate_day)
 
 
@@ -775,9 +778,8 @@ def read_names(file_name):
 
 if __name__ == '__main__':
     t1 = datetime.datetime.now()
-    generate()
-    # print(get_statistic3())
-    # print(make_school_types([0.5, 0.3, 0.1, 0.1], 100))
+    #generate(get_name_lists, get_state_stats)
+    get_state_stats()
     t2 = datetime.datetime.now()
-    print("starts ", t1)
-    print("ends   ", t2)
+    print("data_generation starts ", t1)
+    print("data_generation ends   ", t2)

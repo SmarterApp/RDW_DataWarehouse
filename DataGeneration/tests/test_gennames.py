@@ -98,60 +98,6 @@ class TestGenNames(unittest.TestCase):
         expected = ['c'] * 10
         self.assertEqual(res_list, expected)
 
-    def test_assign_random_name(self):
-        '''
-        test for gennames.assign_random_names(...)
-        '''
-
-        # Normal behavior test
-        person1 = Student()  # male
-        person2 = Person()  # male
-        person3 = Student()  # female
-        person4 = Person()  # female
-
-        gennames.assign_random_name(0, person1, 5, self.peopleNames)
-        gennames.assign_random_name(7, person3, 5, self.peopleNames)
-
-        person2 = gennames.assign_random_name(1, person2, 5, self.peopleNames)
-        person4 = gennames.assign_random_name(8, person4, 5, self.peopleNames)
-
-        self.assertIsNotNone(person1.firstname)
-        self.assertIsNotNone(person1.middlename)
-        self.assertIsNotNone(person1.lastname)
-        self.assertIn(person1.firstname, self.male_list)
-        self.assertIn(person1.middlename, self.male_list)
-        self.assertIn(person1.lastname, self.last_list)
-
-        self.assertIsNotNone(person2.firstname)
-        self.assertIsNotNone(person2.middlename)
-        self.assertIsNotNone(person2.lastname)
-        self.assertIn(person2.firstname, self.male_list)
-        self.assertIn(person2.middlename, self.male_list)
-        self.assertIn(person2.lastname, self.last_list)
-
-        self.assertIsNotNone(person3.firstname)
-        self.assertIsNotNone(person3.middlename)
-        self.assertIsNotNone(person3.lastname)
-        self.assertIn(person3.firstname, self.female_list)
-        self.assertIn(person3.middlename, self.female_list)
-        self.assertIn(person3.lastname, self.last_list)
-
-        self.assertIsNotNone(person4.firstname)
-        self.assertIsNotNone(person4.middlename)
-        self.assertIsNotNone(person4.lastname)
-        self.assertIn(person4.firstname, self.female_list)
-        self.assertIn(person4.middlename, self.female_list)
-        self.assertIn(person4.lastname, self.last_list)
-
-        parent1 = Parent()
-        parent2 = Parent()
-
-        gennames.assign_random_name(0, parent1, 1, self.peopleNames)
-        gennames.assign_random_name(1, parent2, 1, self.peopleNames)
-
-        self.assertEqual(parent1.gender, 'male')
-        self.assertEqual(parent2.gender, 'female')
-
     def test_get_random_entry(self):
         '''
         test for gennames.get_random_entry
@@ -163,7 +109,7 @@ class TestGenNames(unittest.TestCase):
         self.assertIn(result, alist)
 
         result = gennames.get_random_entry([2])
-        self.assertEquals(result, 2)
+        self.assertEqual(result, 2)
         self.assertIsNone(gennames.get_random_entry([]))
         self.assertRaises(TypeError, gennames.get_random_entry, 12345)
 

@@ -2,9 +2,12 @@ import unittest
 import math
 import generate_data
 import random
-from entities import District, Student, Teacher, State, School
+from entities import District, Student, Teacher, State, School, WhereTaken
 from constants import SUBJECTS, ZIPCODE_START, ZIPCODE_RANG_INSTATE, SCHOOL_LEVELS_INFO, ADD_SUFFIX
 import uuid
+from gen_assessments import generate_assessment_types
+import os.path
+import datetime
 
 
 class TestGenerateData(unittest.TestCase):
@@ -226,7 +229,7 @@ class TestGenerateData(unittest.TestCase):
 
         expected_zipinit = (pos + 1) * ZIPCODE_START
         expected_zipdist = max(1, (ZIPCODE_RANG_INSTATE // len(school_num_in_dist)))
-        expected_zipbigmax = expected_zipinit + ZIPCODE_RANG_INSTATE
+        # expected_zipbigmax = expected_zipinit + ZIPCODE_RANG_INSTATE
         c = 0
         for d in created_dist_list:
             self.assertEqual(d.state_code, state_code)
@@ -541,6 +544,73 @@ class TestGenerateData(unittest.TestCase):
         self.assertEqual(len(expected_class.section_tea_map), expected_sec_num)
         for key, value in expected_class.section_tea_map.items():
             self.assertEqual(len(value), 1)
+
+    # test makeup_list()
+    def test_makeup_list(self):
+        avgin = 5.32
+        stdin = 6.76
+        minin = 1
+        maxin = 28
+        countin = 30
+        target_sum = 220
+
+        generate_makeup_list = generate_data.makeup_list(avgin, stdin, minin, maxin, countin, target_sum)
+        self.assertEqual(len(generate_makeup_list), countin)
+
+    # test create_classes_grades_sections
+    def test_create_classes_grades_sections(self):
+        # make assessment list
+        generate_data.asmt_list.extend(generate_assessment_types())
+
+        # make a state
+        state = State('DE', 'Delaware', 39, 'DE')
+
+        # make a district
+        dist_name = 'dist1'
+        dist_id = 1234
+        dist_exte_id = uuid.uuid4()
+        state_id = 'CA'
+        stu_num_in_school = [234, 123, 4309, 100, 103, 105, 200, 59, 69, 75, 391, 651, 129]
+        sch_num = len(stu_num_in_school)
+        zip_range = (50000, 60000)
+        city_zip_map = generate_data.generate_city_zipcode(zip_range[0], zip_range[1], sch_num)
+        distObj = District(dist_id, dist_exte_id, dist_name, state_id, sch_num, city_zip_map, 'address1', 50000)
+
+        # make a school
+        stu_num = 120
+        school = School(random.randint, uuid.uuid4(), 'ABC Primary', distObj.district_name, distObj.district_id,
+                        distObj.state_code, stu_num, 23, 1, 6, 'category_t', address1='450 west 78th street', city='city123', zip_code='50897')
+
+        # make a wheretaken
+        where_taken_list = []
+        for i in range(0, sch_num - 1):
+            where_taken = WhereTaken(random.randint, school.school_name + str(i), distObj.district_name, school.address1 + str(i), school.city + str(i), int(school.zip_code) + i, distObj.state_code, 'US')
+            where_taken_list.append(where_taken)
+
+        where_taken = WhereTaken(random.randint, school.school_name, distObj.district_name, school.address1, school.city, school.zip_code, distObj.state_code, 'US')
+        where_taken_list.append(where_taken)
+        distObj.wheretaken_list = where_taken_list
+
+        generate_data.create_classes_grades_sections(distObj, school, state)
+
+        expected_teacher_number = 5
+        expected_student_number = stu_num
+
+        self.assertEqual(generate_data.total_count[3], expected_student_number)
+        self.assertEqual(generate_data.total_count[4], expected_teacher_number)
+        self.assertEqual(generate_data.total_count[5], expected_student_number * 2)
+
+    # test read files
+    def test_read_names(self):
+        basepath = os.path.dirname(__file__)
+        file_name = os.path.abspath(os.path.join(basepath, '..', 'datafiles', 'name_lists', 'birds.txt'))
+        generated_names = generate_data.read_names(file_name)
+        self.assertTrue(len(generated_names) > 0)
+
+    # test generate_date
+    def test_generate_date(self):
+        generated_date = generate_data.generate_date()
+        self.assertTrue(generated_date <= datetime.date.today())
 
 
 def make_state():

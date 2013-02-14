@@ -437,8 +437,8 @@ def create_classes_grades_sections(district, sch, state):
     create_csv(teacher_list, TEACHERS)
 
     # calculate number of students and teachers in each grade
-    stu_num_in_grade = max(1, round(sch.num_of_student / (sch.high_grade - sch.low_grade + 1)))
-    tea_num_in_grade = max(1, round(num_of_teacher / (sch.high_grade - sch.low_grade + 1)))
+    stu_num_in_grade = max(1, math.ceil(sch.num_of_student / (sch.high_grade - sch.low_grade + 1)))
+    tea_num_in_grade = max(1, math.ceil(num_of_teacher / (sch.high_grade - sch.low_grade + 1)))
 
     # for each grade
     j = 0
@@ -470,7 +470,7 @@ def create_classes_grades_sections(district, sch, state):
         # create_csv(classforgrade_list, CLASSES)
         scores = generate_assmts_for_students(len(grade_students), grade, state.state_name, asmt_list)
 
-        wheretaken_id = random.choice(district.wheretaken_list).wheretaken_id
+        wheretaken_id = (random.choice(district.wheretaken_list)).wheretaken_id
         assessment_outcome_list = associate_students_and_scores(student_temporal_list, scores, sch, wheretaken_id)
         create_csv(assessment_outcome_list, ASSESSMENT_OUTCOME)
 
@@ -530,7 +530,6 @@ def associate_students_and_scores(student_temporal_list, scores, school, whereta
                     'asmt_score': score[1].pop(),
                     'asmt_create_date': date.today().replace(year=date.today().year - 5)
                 }
-
                 outcome = AssessmentOutcome(**params)
                 assessment_outcome_list.append(outcome)
 
@@ -691,19 +690,40 @@ def create_one_class(sub_name, class_count, distribute_stu_inaclass, tea_list, s
         section_list.append(section)
 
         # create teacher_section subject
-        teacher_section = TeacherSection(idgen.get_id(), section_tea_map[str(i)][0].teacher_id, section_id, datetime.date(2013, 2, 13))
+        teacher_startdata = generate_date().strftime("%Y-%m-%d")
+        teacher_section = TeacherSection(idgen.get_id(), section_tea_map[str(i)][0].teacher_id, section_id, teacher_startdata)
         teacher_section_list.append(teacher_section)
 
     # write section into csv
     create_csv(section_list, SECTIONS)
 
     # write teacher_section into csv
-    # create_csv(teacher_section_list, TEACHER_SECTIONS)
+    create_csv(teacher_section_list, TEACHER_SECTIONS)
 
     # create class, with sections
     eclass = Class(class_id, class_name, sub_name, section_stu_map, section_tea_map)
 
     return eclass
+
+
+def generate_date():
+    '''
+    Generate a random date
+    '''
+    today = datetime.date.today()
+    current_year = today.year
+    generate_year = current_year - random.randint(0, YEAR_SHIFT)
+    generate_month = random.randint(1, MONTH_TOTAL)
+    generate_day = 1
+    if(generate_month in MONTH_LIST_31DAYS):
+        generate_day = random.choice(range(1, MONTH_DAY_MAX[0]))
+    elif(generate_month in MONTH_LIST_30DAYS):
+        generate_day = random.choice(range(1, MONTH_DAY_MAX[1]))
+    else:
+        generate_day = random.choice(range(1, MONTH_DAY_MAX[2]))
+
+    #return date(generate_year, generate_month, generate_day).strftime("%Y-%m-%d")
+    return date(generate_year, generate_month, generate_day)
 
 
 def list_to_chucks(list1, n):

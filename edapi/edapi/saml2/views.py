@@ -2,6 +2,7 @@ from pyramid.security import NO_PERMISSION_REQUIRED, forget, remember
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config, forbidden_view_config
 from edapi.saml2.saml_request import get_auth_request
+from pyramid.response import Response
 '''
 Created on Feb 13, 2013
 
@@ -28,8 +29,8 @@ def logout(request):
 @view_config(route_name='saml2_post_consumer', permission=NO_PERMISSION_REQUIRED)
 def saml2_post_consumer(request):
     data = None
-    userid = data['userid']
-    role = data['role']
+    userid = "linda.kim"
+    role = "teacher"
 
     # Save the cookie
     # TODO: we might have to make sure the role fits the regex, else customize our policy

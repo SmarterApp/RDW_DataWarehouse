@@ -4,7 +4,7 @@ Created on Feb 13, 2013
 @author: tosako
 '''
 from xml.dom.minidom import parseString
-from edapi.saml2.SAMLResponse import SAMLResponse
+from edapi.saml2.saml_response import SAMLResponse
 from edapi.security.roles import Roles
 
 

@@ -1,11 +1,11 @@
 from pyramid.security import NO_PERMISSION_REQUIRED, forget, remember
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config, forbidden_view_config
-from edapi.saml2.saml_request import get_auth_request
 from xml.dom.minidom import parseString
 import base64
-from edapi.saml2.SamlAuth import SamlAuth
-from edapi.saml2.SAMLResponse import SAMLResponse
+from edapi.saml2.saml_request import SamlRequest
+from edapi.saml2.saml_auth import SamlAuth
+from edapi.saml2.saml_response import SAMLResponse
 import urllib
 '''
 Created on Feb 13, 2013
@@ -23,17 +23,18 @@ def login(request):
     referrer = request.url
     if referrer == request.route_url('login'):
         # Never redirect back to login page
+        # TODO redirect to some landing home page
         referrer = '/'
     params = {'RelayState': request.params.get('came_from', referrer)}
 
-    (uuid, saml_request) = get_auth_request()
+    saml_request = SamlRequest()
 
     # combined saml_request into url params and url encode it
-    params.update(saml_request)
+    params.update(saml_request.get_auth_request())
     params = urllib.parse.urlencode(params)
 
     # Save the authentication request id into session
-    request.session['auth_request_id'] = uuid
+    request.session['auth_request_id'] = saml_request.get_id()
     # Redirect to openam
     return HTTPFound(location=url % params)
 
@@ -48,8 +49,7 @@ def logout(request):
 
 @view_config(route_name='saml2_post_consumer', permission=NO_PERMISSION_REQUIRED)
 def saml2_post_consumer(request):
-    # TODO: Validate the response id against session
-    # Session doesn't have an authentication request id defined, redirect to login
+    # If session doesn't have an authentication request id defined, redirect to login
     auth_request_id = request.session.get('auth_request_id')
     if auth_request_id is None:
         return HTTPFound(location=request.route_url('login'))

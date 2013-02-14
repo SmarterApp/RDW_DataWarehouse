@@ -83,12 +83,12 @@ def generate_student(state, district, school, grade, street_list, gender=None, h
 
     student = Student(**student_params)
 
-    parentz = assign_parents(student)
+    parentz = generate_parents(student)
 
     return student, parentz
 
 
-def assign_parents(student):
+def generate_parents(student):
 
     parent_1_params = {
         'first_name': gennames.generate_first_or_middle_name('male'),

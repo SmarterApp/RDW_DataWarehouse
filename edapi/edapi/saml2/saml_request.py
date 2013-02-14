@@ -38,7 +38,7 @@ def get_auth_request():
 
     doc.appendChild(samlp_Auth_Request)
 
-    # This will strip out the xml version text
+    # Seriailize the doc's root element so that it will strip out the xml declaration
     data = doc.documentElement.toxml('utf-8')
 
     return (request_id, encode_saml_request(data))
@@ -46,5 +46,6 @@ def get_auth_request():
 
 def encode_saml_request(data):
     compressed = zlib.compress(data)
+    # TODO comment on this
     encoded = base64.b64encode(compressed[2:-4])
     return urllib.parse.urlencode({'SAMLRequest': encoded})

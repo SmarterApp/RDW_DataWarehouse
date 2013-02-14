@@ -19,7 +19,7 @@ Created on Feb 13, 2013
 def login(request):
     url = 'http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp?%s'
     (uuid, params) = get_auth_request()
-    request.session['saml_id'] = uuid
+    request.session['auth_request_id'] = uuid
     return HTTPFound(location=url % params)
 
 
@@ -40,8 +40,13 @@ def saml2_post_consumer(request):
     token = SamlAuth(response)
     role = token.get_role()
 
+    # TODO: Validate the response id against session
+    # Session doesn't have an authentication request id defined, redirect to login
+    if request.session.get('auth_request_id') is None:
+        return HTTPFound(location=request.route_url('login'))
+
     # Save principle to session
     remember(request, role)
 
     # TODO how to fwd back to the original page?
-    return HTTPFound(location="http://localhost:6543/data")
+    return HTTPFound(location=request.route_url('list_of_reports'))

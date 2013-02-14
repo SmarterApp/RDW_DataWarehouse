@@ -7,6 +7,14 @@
 @yellow: #e3c703;
 @blue: #2881cc;
 
+.left {
+  float: left;
+}
+
+.right {
+  float: right;
+}
+
 .rounded-corners (@radius: 5px) {
   -webkit-border-radius: @radius;
   -moz-border-radius: @radius;
@@ -109,7 +117,10 @@ h3 {
   }
 }
 
-#content { margin-top: 20px;}
+#content { 
+  margin-top: 20px; 
+  min-height: 200px;
+}
 
 /* grid styles */
 
@@ -169,6 +180,72 @@ th.ui-th-column div {
 .ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus {
    background: #fafafa; color: #333; 
   }
+  
+  
+/* Indivial Student Report styles */
+.placeholder {
+  background: #E2E2E2;
+  margin: 20px 3% 20px 0;
+  color: #fff;
+  text-align: center;
+}
+.grayBox {
+  background: #E2E2E2
+}
+
+#individualStudentContent {
+    float: left;
+    padding-bottom: 20px;
+    width: 100%;
+}
+.assessmentSection {
+  background: #fff;
+  border: solid 1px #cecece;
+  .rounded-corners(5px);
+  float: left;
+  margin: 20px 20px 0;
+  width: 97%;
+  
+  #assesmentSummary {
+    background: #F8F8F8;
+    height: 520px;
+    padding: 15px;
+    width: 15%;
+  }
+  
+  #assessmentDetails {
+    float: right;
+    width: 80%;
+    
+    #overallScoreInfo {
+      height: 100px;
+    }
+    
+    #confidenceLevel {
+      height: 100px;
+    }
+    
+    #claimsSection {
+      
+      h4 {
+        margin: 0;
+      }
+      
+      ul {
+        height: 270px;
+        margin-left: 0;
+        
+        li {
+          display: inline-block;
+          height: 250px;
+          width: 30%;
+        }
+      }
+      
+      
+    }
+  }
+}
 
 
 #footer {
@@ -177,7 +254,6 @@ th.ui-th-column div {
   margin: 20px 0 10px 0;
   padding: 5px;
   font-size: 11px;
-  .rounded-corners(5px);
 }
 
 /* Overlay */

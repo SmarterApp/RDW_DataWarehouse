@@ -12,7 +12,7 @@ class Test(Unittest_with_sqlite):
 
     def testReport(self):
         params = {}
-        params['state_code'] = 'NY'
+        params['state_id'] = 'NY'
         results = get_districts(params)
         self.assertEqual(1, len(results), "Number of districts for NY")
         self.assertEqual("Daybreak District", results[0]['district_name'], "district_name")

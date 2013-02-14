@@ -1,2 +1,2 @@
-where_taken_id,where_taken_name,district_name,address_1,address_2,city,zip_code,state_code,country_id
+where_taken_id,where_taken_name,district_name,address_1,address_2,city,zip_code,state_id,country_id
 1,Community Center,Daybreak District,456 5th Ave,,New York,98004,NY,US

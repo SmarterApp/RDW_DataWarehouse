@@ -71,7 +71,6 @@ def generate_ed_metadata(scheme_name=None, bind=None):
                        )
 
     Index('dim_state_idx', state_prov.c.state_id, unique=True)
-    Index('dim_state_codex', state_prov.c.state_code, unique=True)
 
     district = Table('dim_district', metadata,
                      Column('district_id', BigInteger, primary_key=True),
@@ -94,7 +93,7 @@ def generate_ed_metadata(scheme_name=None, bind=None):
                    Column(Enum("Elementary School",
                                "High School",
                                "Middle School",
-                                "Other",
+                               "Other",
                                name="school_categories_type_enum"),
                           name='school_categories_type',
                           nullable=True),

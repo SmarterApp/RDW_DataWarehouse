@@ -154,8 +154,8 @@ def generate_data(name_lists, db_states_stat):
                 create_classes_grades_sections(dist, sch, created_state, name_lists[2], total_count, asmt_list)
 
         # if just need one state data
-        #if(c == 0):
-        #    break
+        if(c == 0):
+            break
         c += 1
 
     create_csv(record_states, STATES)
@@ -778,8 +778,8 @@ def read_names(file_name):
 
 if __name__ == '__main__':
     t1 = datetime.datetime.now()
-    #generate(get_name_lists, get_state_stats)
-    get_state_stats()
+    generate(get_name_lists, get_state_stats)
+    # get_state_stats()
     t2 = datetime.datetime.now()
     print("data_generation starts ", t1)
     print("data_generation ends   ", t2)

@@ -9,6 +9,7 @@ import operator
 import gennames
 from nameinfo import NameInfo
 from readnaminglists import PeopleNames
+from gennames import generate_first_or_middle_name
 
 
 class TestGenNames(unittest.TestCase):
@@ -74,6 +75,17 @@ class TestGenNames(unittest.TestCase):
         self.assertIsNone(m1)
         self.assertIsNone(f1)
         self.assertIsNone(l1)
+
+
+    # TODO: mock the reading of people names
+    def test_generate_first_or_middle_name(self):
+        name = generate_first_or_middle_name('male')
+        self.assertIsInstance(name, str)
+
+    # TODO: mock the reading of people names
+    def test_generate_last_name(self):
+        name = generate_first_or_middle_name('male')
+        self.assertIsInstance(name, str)
 
     def test_name_dict_to_list(self):
         '''

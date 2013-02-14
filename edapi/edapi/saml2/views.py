@@ -2,6 +2,10 @@ from pyramid.security import NO_PERMISSION_REQUIRED, forget, remember
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config, forbidden_view_config
 from edapi.saml2.saml_request import get_auth_request
+from xml.dom.minidom import parseString
+import base64
+from edapi.saml2.SamlAuth import SamlAuth
+from edapi.saml2.SAMLResponse import SAMLResponse
 '''
 Created on Feb 13, 2013
 
@@ -29,9 +33,12 @@ def logout(request):
 
 @view_config(route_name='saml2_post_consumer', permission=NO_PERMISSION_REQUIRED)
 def saml2_post_consumer(request):
-    role = "teacher"
-    
     # Validate the response id against session
+    __SAMLResponse = base64.b64decode(request.POST['SAMLResponse'])
+    __dom_SAMLResponse = parseString(__SAMLResponse.decode('utf-8')).childNodes[0]
+    response = SAMLResponse(__dom_SAMLResponse)
+    token = SamlAuth(response)
+    role = token.get_role()
 
     # Save principle to session
     remember(request, role)

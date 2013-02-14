@@ -10,11 +10,12 @@ import zlib
 import urllib
 import base64
 
+
 # Create XML SAML Auth Request
-# returns a byte string of a SAML AuthnRequest 
+# returns a byte string of a SAML AuthnRequest
 def get_auth_request():
     doc = Document()
-    
+
     samlp_Auth_Request = doc.createElement('samlp:AuthnRequest')
     samlp_Auth_Request.setAttribute('xmlns:samlp', "urn:oasis:names:tc:SAML:2.0:protocol")
     samlp_Auth_Request.setAttribute('xmlns:saml', "urn:oasis:names:tc:SAML:2.0:assertion")
@@ -39,8 +40,9 @@ def get_auth_request():
 
     # This will strip out the xml version text
     data = doc.documentElement.toxml('utf-8')
-    
+
     return encode_saml_request(data)
+
 
 def encode_saml_request(data):
     compressed = zlib.compress(data)

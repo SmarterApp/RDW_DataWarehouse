@@ -1,4 +1,4 @@
-from pyramid.security import NO_PERMISSION_REQUIRED, forget
+from pyramid.security import NO_PERMISSION_REQUIRED, forget, remember
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config, forbidden_view_config
 from edapi.saml2.saml_request import get_auth_request
@@ -25,6 +25,15 @@ def logout(request):
     return HTTPFound(location=request.route_url('login'), headers=headers)
 
 
-@view_config(route_name='saml2_post_consumer', renderer='json', permission=NO_PERMISSION_REQUIRED)
+@view_config(route_name='saml2_post_consumer', permission=NO_PERMISSION_REQUIRED)
 def saml2_post_consumer(request):
-    return {"Hello": "Dip"}
+    data = None
+    userid = data['userid']
+    role = data['role']
+
+    # Save the cookie
+    # TODO: we might have to make sure the role fits the regex, else customize our policy
+    headers = remember(request, userid, tokens=role)
+
+    # TODO how to fwd back to the original page?
+    return HTTPFound(location="http://localhost:6543/data", headers=headers)

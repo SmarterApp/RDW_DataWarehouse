@@ -32,6 +32,9 @@ class SAMLResponse:
     def __get_value(self, node, name):
         return node.getAttribute(name)
 
+    def get_id(self):
+        return self.__ID
+
     def get_status(self):
         return self.__status
 

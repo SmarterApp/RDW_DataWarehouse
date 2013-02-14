@@ -8,12 +8,15 @@ from edapi.saml2.SAMLResponse import SAMLResponse
 
 
 class SamlAuth:
-    def __init__(self, response):
-        self.__resposne = response
+    def __init__(self, response, auth_request_id):
+        self.__response = response
+        self.__id = auth_request_id
 
-    def is_auth(self):
+    def is_validate(self):
         status = self.__resposne.get_status()
         status_code = status.get_status_code()
+        if self.__id != self.__response.get_id():
+            return False
         return status_code[-7:] == "Success"
 
     def get_role(self):

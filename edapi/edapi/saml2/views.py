@@ -14,7 +14,7 @@ Created on Feb 13, 2013
 
 
 @view_config(route_name='login', permission=NO_PERMISSION_REQUIRED)
-#TODO for accessign a view that user aren't allowed to do
+# TODO for accessign a view that user aren't allowed to do
 @forbidden_view_config(renderer='json')
 def login(request):
     url = 'http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp?%s'
@@ -33,17 +33,17 @@ def logout(request):
 
 @view_config(route_name='saml2_post_consumer', permission=NO_PERMISSION_REQUIRED)
 def saml2_post_consumer(request):
+    # TODO: Validate the response id against session
+    # Session doesn't have an authentication request id defined, redirect to login
+    auth_request_id = request.session.get('auth_request_id')
+    if auth_request_id is None:
+        return HTTPFound(location=request.route_url('login'))
     # Validate the response id against session
     __SAMLResponse = base64.b64decode(request.POST['SAMLResponse'])
     __dom_SAMLResponse = parseString(__SAMLResponse.decode('utf-8')).childNodes[0]
     response = SAMLResponse(__dom_SAMLResponse)
-    token = SamlAuth(response)
+    token = SamlAuth(response, auth_request_id=auth_request_id)
     role = token.get_role()
-
-    # TODO: Validate the response id against session
-    # Session doesn't have an authentication request id defined, redirect to login
-    if request.session.get('auth_request_id') is None:
-        return HTTPFound(location=request.route_url('login'))
 
     # Save principle to session
     remember(request, role)

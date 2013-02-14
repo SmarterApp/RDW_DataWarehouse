@@ -23,7 +23,7 @@ from sqlalchemy.schema import MetaData, CreateSchema
 from sqlalchemy import Table, Column, Index
 from sqlalchemy import BigInteger, SmallInteger, String, Date
 from sqlalchemy import ForeignKey
-from sqlalchemy.types import Enum
+from sqlalchemy.types import Enum, UnicodeText, DateTime
 import argparse
 from sqlalchemy.engine import create_engine
 
@@ -305,6 +305,13 @@ def generate_ed_metadata(scheme_name=None, bind=None):
                                )
 
     Index('fact_asmt_outcome_idx', assessment_outcome.c.asmnt_outcome_id, unique=True)
+
+    user_session = Table('user_session', metadata,
+                    Column('session_id', String(256), primary_key=True, nullable=True),
+                    Column('session_context', UnicodeText, nullable=True),
+                    Column('last_access', DateTime, nullable=False),
+                    )
+    Index('user_session_idx', user_session.c.session_id, unique=True)
 
     return metadata
 

@@ -55,10 +55,10 @@ function setup_unit_test_dependencies {
 
 	echo "Setting up unit tests dependencies"
 
-	/opt/python3/bin/pip install nose
-	/opt/python3/bin/pip install coverage
-	/opt/python3/bin/pip install pep8
-	/opt/python3/bin/pip install nose-cov
+	pip install nose
+	pip install coverage
+	pip install pep8
+	pip install nose-cov
 
 	echo "Finished setting up unit tests dependencies"
 }
@@ -68,7 +68,7 @@ function check_pep8 {
 
 	ignore="E501"
 
-	/opt/python3/bin/pep8 --ignore=$ignore $WORKSPACE/$1
+	pep8 --ignore=$ignore $WORKSPACE/$1
 
 	echo "finished check code style against pep8"
 }
@@ -77,7 +77,7 @@ function run_unit_tests {
     echo "Running unit tests"
 
     cd "$WORKSPACE/$1"
-    /opt/python3/bin/nosetests --with-xunit --xunit-file=$WORKSPACE/nosetests.xml --cov-report xml
+    nosetests --with-xunit --xunit-file=$WORKSPACE/nosetests.xml --cov-report xml
 
     if [ -f coverage.xml ]; then
        # move coverage results

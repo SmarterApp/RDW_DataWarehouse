@@ -119,35 +119,35 @@ def name_dict_to_list(name_dict):
     return name_list
 
 
-#def assign_random_name(index, person, male_total, peopleNames, cur_lastname=None, has_middle=True):
-#    '''
-#    Assign random names to the person object passed over
-#    index        : the number of people generated so far
-#    person       : a Person object
-#    male_total   : total number of males to generate
-#    RETURNS      : the person object passed in
-#    '''
-#
-#    male_list = peopleNames.male_names
-#    female_list = peopleNames.female_names
-#
-#    #Generate males first
-#    if index < male_total:
-#        person.firstname = get_random_entry(male_list)
-#        if has_middle:
-#            person.middlename = get_random_entry(male_list)
-#        person.gender = 'male'
-#    else:
-#        person.firstname = get_random_entry(female_list)
-#        if has_middle:
-#            person.middlename = get_random_entry(female_list)
-#        person.gender = 'female'
-#
-#    if not cur_lastname:
-#        last_list = peopleNames.last_names
-#        person.lastname = get_random_entry(last_list)
-#
-#    return person
+def assign_random_name(index, person, male_total, peopleNames, cur_lastname=None, has_middle=True):
+    '''
+    Assign random names to the person object passed over
+    index        : the number of people generated so far
+    person       : a Person object
+    male_total   : total number of males to generate
+    RETURNS      : the person object passed in
+    '''
+
+    male_list = peopleNames.male_names
+    female_list = peopleNames.female_names
+
+    #Generate males first
+    if index < male_total:
+        person.firstname = get_random_entry(male_list)
+        if has_middle:
+            person.middlename = get_random_entry(male_list)
+        person.gender = 'male'
+    else:
+        person.firstname = get_random_entry(female_list)
+        if has_middle:
+            person.middlename = get_random_entry(female_list)
+        person.gender = 'female'
+
+    if not cur_lastname:
+        last_list = peopleNames.last_names
+        person.lastname = get_random_entry(last_list)
+
+    return person
 
 
 def get_random_entry(name_list):
@@ -164,6 +164,7 @@ def get_random_entry(name_list):
 
 if __name__ == '__main__':
 
+    from readnaminglists import PeopleNames
     from entities import Student
 
     students = []
@@ -176,6 +177,7 @@ if __name__ == '__main__':
 
     for i in range(total):
         student = Student()
+        assign_random_name(i, student, male_tot, pn)
         students.append(str(student))
 
     print(students)

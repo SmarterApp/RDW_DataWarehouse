@@ -17,7 +17,7 @@ class SamlAuth:
         return status_code[-7:] == "Success"
 
     def get_role(self):
-        return "Teacher"
+        return "teacher"
 
 xml = '''<samlp:Response xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" ID="s242006af1c228c11bb10f535f54f92d3e522e640e" InResponseTo="aaf23196-1773-2113-474a-fe114412ab72" Version="2.0" IssueInstant="2013-02-13T22:07:58Z" Destination="http://localhost:6543/Hello_dip"><saml:Issuer xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion">http://edwappsrv4.poc.dum.edwdc.net:18080/opensso</saml:Issuer><samlp:Status xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol">
         <samlp:StatusCode  xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol"
@@ -75,7 +75,3 @@ xml = '''<samlp:Response xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" ID="
             </saml:Conditions>
             <saml:AuthnStatement AuthnInstant="2013-02-13T22:07:58Z" SessionIndex="s29eb4b669b0901b70bbf5efb9c63b89d4dd9e1e01"><saml:AuthnContext><saml:AuthnContextClassRef>urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport</saml:AuthnContextClassRef></saml:AuthnContext></saml:AuthnStatement><saml:AttributeStatement>
             <saml:Attribute Name="username"><saml:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">Linda Kim</saml:AttributeValue></saml:Attribute></saml:AttributeStatement></saml:Assertion></samlp:Response>'''
-
-res = parseString(xml)
-auth = SamlAuth(SAMLResponse(res))
-print (auth.is_auth())

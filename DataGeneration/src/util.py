@@ -29,11 +29,3 @@ def generate_dob(grade):
     dob = datetime.date(birth_year, birth_month, birth_day)
 
     return dob
-
-
-def generate_city():
-    pass
-
-
-def generate_zip():
-    pass

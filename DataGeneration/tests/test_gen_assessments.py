@@ -19,7 +19,6 @@ class Test(unittest.TestCase):
         result = genasmt.generate_assessment_types()
 
         self.assertEqual(len(result), expect_asmt_num)
-        self.assertEqual(len(genasmt.ASSESSMENT_TYPES_LIST), expect_asmt_num)
 
     def test_generate_single_asmt(self):
         asmt = genasmt.generate_single_asmt(10, 'INTERIM', 'BOY', 'ELA')

@@ -3,7 +3,8 @@ import math
 import generate_data
 import random
 from entities import District, Student, Teacher, State, School, WhereTaken
-from constants import SUBJECTS, ZIPCODE_START, ZIPCODE_RANG_INSTATE, SCHOOL_LEVELS_INFO, ADD_SUFFIX
+from constants import SUBJECTS, ZIPCODE_START, ZIPCODE_RANG_INSTATE, SCHOOL_LEVELS_INFO, ADD_SUFFIX, \
+    BIRDS_FILE
 import uuid
 from gen_assessments import generate_assessment_types
 import os.path
@@ -11,12 +12,6 @@ import datetime
 
 
 class TestGenerateData(unittest.TestCase):
-
-    def setUp(self):
-        for i in range(1000):
-            generate_data.birds_list.append('bird' + str(i))
-            generate_data.mammals_list.append('flower' + str(i))
-            generate_data.fish_list.append('fish' + str(i))
 
     # test make_school_types(perc, total)
     def test_make_school_types1(self):
@@ -183,7 +178,7 @@ class TestGenerateData(unittest.TestCase):
         state_code = "CA"
         school_num_in_dist = [25, 67, 10, 128, 245, 199]
         pos = 0
-        created_dist_list = generate_data.create_districts(state_code, school_num_in_dist, pos)
+        created_dist_list = generate_data.create_districts(state_code, school_num_in_dist, pos, make_namelists(1000, 1000, 1000))
         self.assertTrue(len(created_dist_list) == len(school_num_in_dist))
 
         expected_zipinit = ZIPCODE_START
@@ -203,59 +198,52 @@ class TestGenerateData(unittest.TestCase):
         state_code = "CA"
         school_num_in_dist = []
         pos = 1
-        created_dist_list = generate_data.create_districts(state_code, school_num_in_dist, pos)
+        created_dist_list = generate_data.create_districts(state_code, school_num_in_dist, pos, make_namelists(1000, 1000, 1000))
         self.assertTrue(len(created_dist_list) == 0)
 
     def test_create_districts_withNotEnoughNames(self):
-        generate_data.birds_list = ["birds1", ]
-        generate_data.mammals_list = ["flowers1"]
-        generate_data.fish_list = ["fish1"]
-
+        name_lists = make_namelists(1, 1, 1)
         state_code = "CA"
         school_num_in_dist = [25, 67, 10, 128, 15]
 
-        created_dist_list = generate_data.create_districts(state_code, school_num_in_dist, 0)
+        created_dist_list = generate_data.create_districts(state_code, school_num_in_dist, 0, name_lists)
         self.assertEqual(len(created_dist_list), 0)
-        self.assertRaises(ValueError, generate_data.generate_names_from_lists, len(school_num_in_dist), generate_data.birds_list, generate_data.mammals_list)
+        self.assertRaises(ValueError, generate_data.generate_names_from_lists, len(school_num_in_dist), name_lists[0], name_lists[1])
 
     def test_create_districts_withNotEnoughAddName(self):
-        generate_data.fish_list = ['fish1']
         state_code = "CA"
         school_num_in_dist = [25, 67, 10, 128, 15]
         pos = 2
 
-        created_dist_list = generate_data.create_districts(state_code, school_num_in_dist, pos)
+        created_dist_list = generate_data.create_districts(state_code, school_num_in_dist, pos, make_namelists(1000, 1000, 1))
         self.assertEqual(len(created_dist_list), len(school_num_in_dist))
 
         expected_zipinit = (pos + 1) * ZIPCODE_START
         expected_zipdist = max(1, (ZIPCODE_RANG_INSTATE // len(school_num_in_dist)))
-        # expected_zipbigmax = expected_zipinit + ZIPCODE_RANG_INSTATE
         c = 0
         for d in created_dist_list:
             self.assertEqual(d.state_code, state_code)
             self.assertEqual(d.num_of_schools, school_num_in_dist[c])
             self.assertTrue(len(d.district_name) > 0)
             self.assertTrue(len(d.address_1) > 0)
-            # self.assertEqual(d.zipcode_range, (expected_zipinit, expected_zipinit + expected_zipdist))
             expected_zipinit = expected_zipinit + expected_zipdist
             c += 1
 
     def test_create_districts_withNotEnoughCityName(self):
-        generate_data.fish_list = ['fish1']
-        generate_data.birds_list = ['bird1']
         state_name = "California"
         school_num_in_dist = [25, 67, 10, 128, 15]
         pos = 2
+        name_lists = make_namelists(1, 1000, 1)
 
-        created_dist_list = generate_data.create_districts(state_name, school_num_in_dist, pos)
+        created_dist_list = generate_data.create_districts(state_name, school_num_in_dist, pos, name_lists)
         self.assertEqual(len(created_dist_list), 0)
-        self.assertRaises(ValueError, generate_data.generate_names_from_lists, school_num_in_dist[0], generate_data.birds_list, generate_data.fish_list)
+        self.assertRaises(ValueError, generate_data.generate_names_from_lists, school_num_in_dist[0], name_lists[0], name_lists[2])
 
     def test_generate_city_zipcode_city(self):
         zipcode_range = (2000, 2025)
         num_of_schools = 100
 
-        generated_zipmap = generate_data.generate_city_zipcode(zipcode_range[0], zipcode_range[1], num_of_schools)
+        generated_zipmap = generate_data.generate_city_zipcode(zipcode_range[0], zipcode_range[1], num_of_schools, make_namelists(1000, 1000, 1000))
         self.assertTrue(1 <= len(generated_zipmap) <= (zipcode_range[1] - zipcode_range[0]))
         for city, ziprange in generated_zipmap.items():
             self.assertTrue(zipcode_range[0] <= ziprange[0] and ziprange[1] <= zipcode_range[1])
@@ -265,7 +253,7 @@ class TestGenerateData(unittest.TestCase):
         zipcode_range = [1000, 1001]
         num_of_schools = 1900
 
-        generated_zipmap = generate_data.generate_city_zipcode(zipcode_range[0], zipcode_range[1], num_of_schools)
+        generated_zipmap = generate_data.generate_city_zipcode(zipcode_range[0], zipcode_range[1], num_of_schools, make_namelists(1000, 1000, 1000))
         self.assertEqual(1, len(generated_zipmap))
 
         for city, ziprange in generated_zipmap.items():
@@ -274,20 +262,18 @@ class TestGenerateData(unittest.TestCase):
         self.assertTrue(len(generated_zipmap) <= num_of_schools)
 
     def test_generate_city_withNotEnoughCityName(self):
-        generate_data.birds_list = ["birds1", ]
-        generate_data.mammals_list = ["flowers1"]
-        generate_data.fish_list = ["fish1"]
+        name_lists = make_namelists(1, 1, 1)
         zipcode_range = [1000, 5000]
         num_of_schools = 5
 
-        generated_zipmap = generate_data.generate_city_zipcode(zipcode_range[0], zipcode_range[1], num_of_schools)
-        self.assertRaises(ValueError, generate_data.generate_names_from_lists, num_of_schools, generate_data.birds_list, generate_data.mammals_list)
+        generated_zipmap = generate_data.generate_city_zipcode(zipcode_range[0], zipcode_range[1], num_of_schools, name_lists)
+        self.assertRaises(ValueError, generate_data.generate_names_from_lists, num_of_schools, name_lists[0], name_lists[1])
 
     def test_generate_city_onecity(self):
         zipcode_range = [1000, 5000]
         num_of_schools = 1
 
-        generated_zipmap = generate_data.generate_city_zipcode(zipcode_range[0], zipcode_range[1], num_of_schools)
+        generated_zipmap = generate_data.generate_city_zipcode(zipcode_range[0], zipcode_range[1], num_of_schools, make_namelists(1000, 1000, 1000))
         self.assertEqual(1, len(generated_zipmap))
 
         for city, ziprange in generated_zipmap.items():
@@ -312,9 +298,10 @@ class TestGenerateData(unittest.TestCase):
         state_id = 'CA'
         sch_num = len(stu_num_in_school)
         zip_range = (50000, 60000)
-        city_zip_map = generate_data.generate_city_zipcode(zip_range[0], zip_range[1], sch_num)
+        name_list = make_namelists(1000, 1000, 1000)
+        city_zip_map = generate_data.generate_city_zipcode(zip_range[0], zip_range[1], sch_num, name_list)
         distObj = District(dist_id, dist_exte_id, dist_name, state_id, sch_num, city_zip_map, 'address1', 50000)
-        created_school_list, created_wheretaken_list = generate_data.create_schools(stu_num_in_school, stutea_ratio_in_school, distObj, school_type_in_stat)
+        created_school_list, created_wheretaken_list = generate_data.create_schools(stu_num_in_school, stutea_ratio_in_school, distObj, school_type_in_stat, name_list)
 
         self.assertEqual(sch_num, len(created_school_list))
         self.assertEqual(sch_num, len(created_wheretaken_list))
@@ -339,8 +326,7 @@ class TestGenerateData(unittest.TestCase):
             self.assertEqual(created_wheretaken_list[j].country_id, 'US')
 
     def test_create_schools_withNotEnoughNames(self):
-        generate_data.mammals_list = ["flowers1"]
-        generate_data.fish_list = ["fish1"]
+        name_lists = make_namelists(1000, 1, 1)
 
         stu_num_in_school = [234, 123, 4309, 100, 103, 105, 200, 59, 69, 75, 391, 651, 129]
         stutea_ratio_in_school = [23, 12, 20, 19, 10, 15, 20, 5, 6, 7, 8, 21, 19]
@@ -356,16 +342,16 @@ class TestGenerateData(unittest.TestCase):
         state_id = 'CA'
         sch_num = len(stu_num_in_school)
         zip_range = (50000, 60000)
-        city_zip_map = generate_data.generate_city_zipcode(zip_range[0], zip_range[1], sch_num)
+        city_zip_map = generate_data.generate_city_zipcode(zip_range[0], zip_range[1], sch_num, name_lists)
         distObj = District(dist_id, dist_exte_id, dist_name, state_id, sch_num, city_zip_map, 'address1', 50000)
 
-        created_school_list, wheretaken_list = generate_data.create_schools(stu_num_in_school, stutea_ratio_in_school, distObj, school_type_in_stat)
+        created_school_list, wheretaken_list = generate_data.create_schools(stu_num_in_school, stutea_ratio_in_school, distObj, school_type_in_stat, name_lists)
         self.assertTrue(len(created_school_list) == 0)
         self.assertTrue(len(wheretaken_list) == 0)
-        self.assertRaises(ValueError, generate_data.generate_names_from_lists, sch_num, generate_data.fish_list, generate_data.mammals_list)
+        self.assertRaises(ValueError, generate_data.generate_names_from_lists, sch_num, name_lists[2], name_lists[1])
 
     def test_create_schools_withNotEnoughAddName(self):
-        generate_data.birds_list = ["bird1"]
+        name_lists = make_namelists(1, 1000, 1000)
         stu_num_in_school = [234, 123, 4309, 100, 103, 105, 200, 59, 69, 75, 391, 651, 129]
         stutea_ratio_in_school = [23, 12, 20, 19, 10, 15, 20, 5, 6, 7, 8, 21, 19]
         school_type_in_stat = []
@@ -380,9 +366,9 @@ class TestGenerateData(unittest.TestCase):
         state_id = 'CA'
         sch_num = len(stu_num_in_school)
         zip_range = (50000, 60000)
-        city_zip_map = generate_data.generate_city_zipcode(zip_range[0], zip_range[1], sch_num)
+        city_zip_map = generate_data.generate_city_zipcode(zip_range[0], zip_range[1], sch_num, name_lists)
         distObj = District(dist_id, dist_exte_id, dist_name, state_id, sch_num, city_zip_map, 'address1', 50000)
-        created_school_list, created_wheretaken_list = generate_data.create_schools(stu_num_in_school, stutea_ratio_in_school, distObj, school_type_in_stat)
+        created_school_list, created_wheretaken_list = generate_data.create_schools(stu_num_in_school, stutea_ratio_in_school, distObj, school_type_in_stat, name_lists)
         self.assertEqual(sch_num, len(created_school_list))
         expected_sch_types = [sch_level[0] for sch_level in SCHOOL_LEVELS_INFO]
 
@@ -560,7 +546,9 @@ class TestGenerateData(unittest.TestCase):
     # test create_classes_grades_sections
     def test_create_classes_grades_sections(self):
         # make assessment list
-        generate_data.asmt_list.extend(generate_assessment_types())
+        asmt_list = generate_assessment_types()
+        total_count = [0, 0, 0, 0, 0, 0]
+        name_lists = make_namelists(1000, 1000, 1000)
 
         # make a state
         state = State('DE', 'Delaware', 39, 'DE')
@@ -573,7 +561,7 @@ class TestGenerateData(unittest.TestCase):
         stu_num_in_school = [234, 123, 4309, 100, 103, 105, 200, 59, 69, 75, 391, 651, 129]
         sch_num = len(stu_num_in_school)
         zip_range = (50000, 60000)
-        city_zip_map = generate_data.generate_city_zipcode(zip_range[0], zip_range[1], sch_num)
+        city_zip_map = generate_data.generate_city_zipcode(zip_range[0], zip_range[1], sch_num, name_lists)
         distObj = District(dist_id, dist_exte_id, dist_name, state_id, sch_num, city_zip_map, 'address1', 50000)
 
         # make a school
@@ -591,14 +579,14 @@ class TestGenerateData(unittest.TestCase):
         where_taken_list.append(where_taken)
         distObj.wheretaken_list = where_taken_list
 
-        generate_data.create_classes_grades_sections(distObj, school, state)
+        generate_data.create_classes_grades_sections(distObj, school, state, name_lists[2], total_count, asmt_list)
 
         expected_teacher_number = 5
         expected_student_number = stu_num
 
-        self.assertEqual(generate_data.total_count[3], expected_student_number)
-        self.assertEqual(generate_data.total_count[4], expected_teacher_number)
-        self.assertEqual(generate_data.total_count[5], expected_student_number * 2)
+        self.assertEqual(total_count[3], expected_student_number)
+        self.assertEqual(total_count[4], expected_teacher_number)
+        self.assertEqual(total_count[5], expected_student_number * 2)
 
     # test read files
     def test_read_names(self):
@@ -612,9 +600,120 @@ class TestGenerateData(unittest.TestCase):
         generated_date = generate_data.generate_date()
         self.assertTrue(generated_date <= datetime.date.today())
 
+    def test_get_name_lists_nofiles(self):
+        # rename file into wrong file
+        bird_file = BIRDS_FILE
+        rename_file = bird_file.split('.')[0] + '_test' + '.txt'
+        os.rename(bird_file, rename_file)
+        result = generate_data.get_name_lists()
+        self.assertFalse(result)
+        os.rename(rename_file, bird_file)
+
+    def test_generate_nonedbstat(self):
+        generate_count = generate_data.generate(generate_data.get_name_lists, mock_f_get_state_stats_fail)
+        self.assertEqual(generate_count, None)
+
+    def test_generate_emptystatdata(self):
+        generate_count = generate_data.generate(generate_data.get_name_lists, mock_f_get_state_stats_emptydb)
+        self.assertEqual(generate_count, None)
+
+    def test_generate_onestate(self):
+        generate_count = generate_data.generate(generate_data.get_name_lists, mock_f_get_state_stats_onestate)
+        self.assertEqual(generate_count[0], 1)
+        for i in range(1, len(generate_count)):
+            self.assertTrue(generate_count[i] > 0)
+
+    def test_generate_twostates(self):
+        generate_count = generate_data.generate(generate_data.get_name_lists, mock_f_get_state_stats_twostates)
+        self.assertEqual(generate_count[0], 2)
+        for i in range(1, len(generate_count)):
+            self.assertTrue(generate_count[i] > 0)
+
+
+def mock_f_get_state_stats_emptydb():
+    return []
+
+
+def mock_f_get_state_stats_fail():
+    return None
+
+
+def mock_f_get_state_stats_onestate():
+    return [{'state_code': 'DE',
+             'state_name': 'Delaware',
+             'total_district': 2,
+             'total_school': 10,
+             'total_student': 6441,
+             'total_teacher': 436,
+             'min_school_per_district': 1,
+             'max_school_per_district': 4,
+             'std_school_per_district': 2.759419404987443,
+             'avg_school_per_district': 5,
+             'min_student_per_school': 3,
+             'max_student_per_school': 100,
+             'std_student_per_school': 17.5283806160176,
+             'avg_student_per_school': 33.3333333333333,
+             'min_stutea_ratio_per_school': 1.71,
+             'max_stutea_ratio_per_school': 22.24,
+             'std_stutea_ratio_per_school': 3.0400201846801003,
+             'avg_stutea_ratio_per_school': 14.754455445544567,
+             'primary_perc': 0.5643564356435643,
+             'middle_perc': 0.19306930693069307,
+             'high_perc': 0.16831683168316833,
+             'other_perc': 0.07425742574257421}
+            ]
+
+
+def mock_f_get_state_stats_twostates():
+    return [{'state_code': 'DE',
+             'state_name': 'Delaware',
+             'total_district': 2,
+             'total_school': 10,
+             'total_student': 6441,
+             'total_teacher': 436,
+             'min_school_per_district': 1,
+             'max_school_per_district': 4,
+             'std_school_per_district': 2.759419404987443,
+             'avg_school_per_district': 5,
+             'min_student_per_school': 3,
+             'max_student_per_school': 100,
+             'std_student_per_school': 17.5283806160176,
+             'avg_student_per_school': 33.3333333333333,
+             'min_stutea_ratio_per_school': 1.71,
+             'max_stutea_ratio_per_school': 22.24,
+             'std_stutea_ratio_per_school': 3.0400201846801003,
+             'avg_stutea_ratio_per_school': 14.754455445544567,
+             'primary_perc': 0.5643564356435643,
+             'middle_perc': 0.19306930693069307,
+             'high_perc': 0.16831683168316833,
+             'other_perc': 0.07425742574257421},
+            {'state_code': 'KA',
+             'state_name': 'Kansas',
+             'total_district': 2,
+             'total_school': 10,
+             'total_student': 6441,
+             'total_teacher': 436,
+             'min_school_per_district': 1,
+             'max_school_per_district': 4,
+             'std_school_per_district': 2.759419404987443,
+             'avg_school_per_district': 5,
+             'min_student_per_school': 3,
+             'max_student_per_school': 100,
+             'std_student_per_school': 17.5283806160176,
+             'avg_student_per_school': 33.3333333333333,
+             'min_stutea_ratio_per_school': 1.71,
+             'max_stutea_ratio_per_school': 22.24,
+             'std_stutea_ratio_per_school': 3.0400201846801003,
+             'avg_stutea_ratio_per_school': 14.754455445544567,
+             'primary_perc': 0.5643564356435643,
+             'middle_perc': 0.19306930693069307,
+             'high_perc': 0.16831683168316833,
+             'other_perc': 0.07425742574257421}
+            ]
+
 
 def make_state():
-    state = State('CA', 'California', 20, 'CA')
+    state = State('DE', 'Delaware', 20, 'DE')
     return state
 
 
@@ -622,7 +721,7 @@ def make_district(state):
     sch_num = 10
     zip_s = 50000
     zip_e = 60000
-    city_zip_map = generate_data.generate_city_zipcode(zip_s, zip_e, sch_num)
+    city_zip_map = generate_data.generate_city_zipcode(zip_s, zip_e, sch_num, make_namelists(1000, 1000, 1000))
     distObj = District(random.choice(range(1000, 2000)), 'dist_external_id', 'dist1', state.state_id, sch_num, city_zip_map, 'address1', 1000)
     return distObj
 
@@ -657,6 +756,20 @@ def make_teachers(count):
         count -= 1
         teacher_list.append(teacher)
     return teacher_list
+
+
+def make_namelists(b_count, m_count, f_count):
+    name_lists = []
+
+    birds_list = ['bird' + str(i) for i in range(b_count)]
+    mammals_list = ['mammal' + str(i) for i in range(m_count)]
+    fish_list = ['fish' + str(i) for i in range(f_count)]
+
+    name_lists.append(birds_list)
+    name_lists.append(mammals_list)
+    name_lists.append(fish_list)
+
+    return name_lists
 
 if __name__ == "__main__":
     unittest.main()

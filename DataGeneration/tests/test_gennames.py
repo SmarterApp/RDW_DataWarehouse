@@ -7,7 +7,6 @@ Created on Jan 14, 2013
 import unittest
 import operator
 import gennames
-from entities import Student, Person, Parent
 from nameinfo import NameInfo
 from readnaminglists import PeopleNames
 

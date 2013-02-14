@@ -5,6 +5,7 @@ Created on Feb 14, 2013
 '''
 from edapi import utils
 
+# Enum representing Roles
 Roles = utils.enum(DEPLOYMENT_ADMINISTRATOR='deployment-administrator',
                    SYSTEM_ADMINISTRATOR='system-administrator',
                    DATA_LOADER='data-loader',

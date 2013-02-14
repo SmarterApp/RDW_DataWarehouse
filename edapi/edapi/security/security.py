@@ -12,11 +12,12 @@ def verify_user(principle, request):
     rtn_val = []
 
     if authenticated:
-        # if authenticated, just return a non-empty list, an empty list signifies that it's not authorized
-        # this is just some temp priniciple for authorization
+        # if authenticated, we want to return the group/role of the user
+        # this has to match acl defined in models.py
         rtn_val = [principle]
     return rtn_val
 
 
+# Session check with token
 def session_check(principle, request):
     return True

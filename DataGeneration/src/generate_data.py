@@ -18,7 +18,7 @@ from entities import (
     State, District, WhereTaken, School, Class,
     AssessmentOutcome, StudentTemporalData, Section, TeacherSection)
 from gen_assessments import generate_assessment_types
-from genpeople import generate_teacher, generate_student
+from genpeople import generate_teacher, generate_student, generate_staff
 from idgen import IdGen
 from write_to_csv import clear_files, create_csv
 import constants
@@ -449,6 +449,13 @@ def create_classes_grades_sections(district, sch, state, fish_names, total_count
     total_count[4] += len(teacher_list)
     create_csv(teacher_list, constants.TEACHERS)
 
+    # generate staff for a school
+    prc = random.uniform(.4, .6)
+    num_of_staff = int(math.floor(prc*num_of_teacher))
+    staff_list = generate_multiple_staff(num_of_staff, state, district, sch)
+    # total count?
+    create_csv(staff_list, constants.STAFF)
+
     # calculate number of students and teachers in each grade
     stu_num_in_grade = max(1, math.floor(sch.num_of_student / (sch.high_grade - sch.low_grade + 1)))
     tea_num_in_grade = max(1, math.floor(num_of_teacher / (sch.high_grade - sch.low_grade + 1)))
@@ -588,6 +595,15 @@ def generate_students(num_students, state, district, school, grade, fish_names):
             parents.append(par)
 
     return students, parents, external_users
+
+def generate_multiple_staff(num_staff, state, district, school):
+    staff = []
+
+    for i in range(num_staff):
+        staff_member = generate_staff(district, state, school)
+        staff.append(staff_member)
+
+    return staff
 
 
 def generate_dates_taken(year):

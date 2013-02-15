@@ -120,16 +120,22 @@ def generate_parents(student):
     return [parent1, parent2]
 
 
-def generate_staff(first_name, last_name, district, state, school):
+def generate_staff(district, state, school):
+
+    staff_gender = random.choice(['male', 'female'])
+    staff_has_middle_name = random.randint(0, 1)
+
     staff_params = {
-        'first_name': first_name,
-        'last_name': last_name,
+        'first_name': gennames.generate_first_or_middle_name(staff_gender),
+        'middle_name': gennames.generate_first_or_middle_name(staff_gender) if staff_has_middle_name else None,
+        'last_name': gennames.generate_last_name(),
         'district_id': district.district_id,
         'state_id': state.state_id,
         'school_id': school.sch_id
     }
 
     staff = Staff(**staff_params)
+
     return staff
 
 

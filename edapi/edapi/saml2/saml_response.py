@@ -87,12 +87,7 @@ class SAMLResponse:
                             if node0.nodeType == Node.ELEMENT_NODE:
                                 if node0.localName == "Attribute":
                                     attribute = SAMLResponse.Assertion.Attribute(node0)
-
-                                    item = self.__attributes.get(attribute.get_name(), None)
-                                    if item is None:
-                                        self.__attributes[attribute.get_name()] = attribute.get_value()
-                                    else:
-                                        item.append(attribute.get_value())
+                                    self.__attributes[attribute.get_name()] = attribute.get_value()
 
         def get_attributes(self):
             return self.__attributes

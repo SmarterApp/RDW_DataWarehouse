@@ -11,6 +11,7 @@ from edschema.ed_metadata import generate_ed_metadata
 import csv
 import sqlite3
 from sqlalchemy.schema import MetaData
+from database.tests.data_gen import generate_data
 
 
 # create sqlite from static metadata
@@ -36,8 +37,19 @@ def destroy_sqlite():
     component.provideUtility(None, IDbUtil)
 
 
+def import_data():
+    dbconnector = DBConnector()
+    connection = dbconnector.open_connection()
+
+    def insert(table_name, rows):
+        table = dbconnector.get_table(table_name)
+        print(rows)
+        connection.execute(table.insert(), rows)
+    generate_data(insert)
+
+
 # import data from csv files
-def importing_data():
+def import_csv_data():
     dbconnector = DBConnector()
     connection = dbconnector.open_connection()
     here = os.path.abspath(os.path.dirname(__file__))
@@ -48,20 +60,19 @@ def importing_data():
 
     # Traverse through the resources directory for .csv files
     # We assume that the name of the file is the name of the table
-    for (paths, dirs, files) in os.walk(resources_dir):
-        for file in files:
-            # splits the path name and the extension
-            file_name, file_extension = os.path.splitext(file)
-            if (file_extension == '.csv'):
-                table = dbconnector.get_table(file_name)
-                with open(os.path.join(resources_dir, file)) as file_obj:
-                    # first row of the csv file is the header names
-                    reader = csv.DictReader(file_obj, delimiter=',')
-                    for row in reader:
-                        new_row = {}
-                        for field_name in row.keys():
-                            # strip out spaces and \n
-                            clean_field_name = field_name.rstrip()
-                            new_row[clean_field_name] = row[field_name]
-                        # Inserts to the table one row at a time
-                        connection.execute(table.insert().values(**new_row))
+    for file in os.listdir(resources_dir):
+        # splits the path name and the extension
+        file_name, file_extension = os.path.splitext(file)
+        if (file_extension == '.csv'):
+            table = dbconnector.get_table(file_name)
+            with open(os.path.join(resources_dir, file)) as file_obj:
+                # first row of the csv file is the header names
+                reader = csv.DictReader(file_obj, delimiter=',')
+                for row in reader:
+                    new_row = {}
+                    for field_name in row.keys():
+                        # strip out spaces and \n
+                        clean_field_name = field_name.rstrip()
+                        new_row[clean_field_name] = row[field_name]
+                    # Inserts to the table one row at a time
+                    connection.execute(table.insert().values(**new_row))

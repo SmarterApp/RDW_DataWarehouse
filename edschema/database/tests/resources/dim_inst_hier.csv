@@ -1,0 +1,6 @@
+inst_hier_id,state_name,state_code,district_id,district_name,school_id,school_name,school_category,from_date,to_date,most_recent
+463a1408-54c2-4509-92f3-a46d8d289387,State Name 66,NJ,d1,Sunset,sc2,School Name 67,School Category 68,2012-12-01,9999-12-01,1
+968d310c-7376-4550-9889-9fd5123362c3,State Name 69,NY,d2,Daybreak,sc2,School Name 70,School Category 71,2012-12-01,9999-12-01,1
+fab64965-5082-4e17-a17a-5798a6bdf8ce,State Name 72,CA,d3,Sunset,sc2,School Name 73,School Category 74,2012-12-01,9999-12-01,1
+152e3dd7-152f-4f4a-a6e5-ad7c0835a9a4,State Name 66,NJ,d2,Daybreak,sc2,School Name 76,School Category 77,2012-12-01,9999-12-01,1
+2aaeeccf-5775-4acc-b1ef-187df062ef60,State Name 69,NY,d2,Daybreak,sc1,School Name 79,School Category 80,2012-12-01,9999-12-01,1

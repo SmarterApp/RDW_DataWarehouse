@@ -6,7 +6,7 @@ Created on Feb 11, 2013
 from pyramid.security import (
     Allow,
     Everyone,
-)
+    Deny)
 from edapi.security.roles import Roles
 
 
@@ -29,7 +29,8 @@ class RootFactory(object):
                (Allow, Roles.STATE_EDUCATION_ADMINISTRATOR_1, 'view'),
                (Allow, Roles.STATE_EDUCATION_ADMINISTRATOR_2, 'view'),
                (Allow, Roles.CONSORTIUM_EDUCATION_ADMINISTRATOR_1, 'view'),
-               (Allow, Roles.CONSORTIUM_EDUCATION_ADMINISTRATOR_2, 'view')]
+               (Allow, Roles.CONSORTIUM_EDUCATION_ADMINISTRATOR_2, 'view'),
+               (Deny, Roles.NONE, 'view')]
 
     def __init__(self, request):
         pass

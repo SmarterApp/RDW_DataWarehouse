@@ -5,7 +5,7 @@ Entry point for edapi
 from pyramid.authentication import SessionAuthenticationPolicy,\
     AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
-from edapi.security.security import verify_user
+from edapi.security.security import session_check
 from pyramid.session import UnencryptedCookieSessionFactoryConfig
 
 EDAPI_REPORTS_PLACEHOLDER = 'edapi_reports'
@@ -48,7 +48,7 @@ class ContentTypePredicate(object):
 def includeme(config):
 
     # TODO derive from config
-    authentication_policy = AuthTktAuthenticationPolicy('edware_secret', cookie_name='edware', callback=verify_user, hashalg='sha512')
+    authentication_policy = AuthTktAuthenticationPolicy('edware_secret', cookie_name='edware', callback=session_check, hashalg='sha512')
 
     authorization_policy = ACLAuthorizationPolicy()
 

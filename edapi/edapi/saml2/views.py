@@ -7,6 +7,7 @@ from edapi.saml2.saml_request import SamlRequest
 from edapi.saml2.saml_auth import SamlAuth
 from edapi.saml2.saml_response import SAMLResponse
 import urllib
+from edapi.security.session_manager import create_new_user_session
 '''
 Created on Feb 13, 2013
 
@@ -47,23 +48,26 @@ def logout(request):
 @view_config(route_name='saml2_post_consumer', permission=NO_PERMISSION_REQUIRED, request_method='POST')
 def saml2_post_consumer(request):
     auth_request_id = "retrieve the id"
-#    auth_request_id = request.session.get('auth_request_id')
-#    if auth_request_id is None:
-#        return HTTPFound(location=request.route_url('login'))
+
     # Validate the response id against session
     __SAMLResponse = base64.b64decode(request.POST['SAMLResponse'])
     __dom_SAMLResponse = parseString(__SAMLResponse.decode('utf-8'))
 
     response = SAMLResponse(__dom_SAMLResponse)
     saml_response = SamlAuth(response, auth_request_id=auth_request_id)
-    role = saml_response.get_role()
+    if saml_response.is_validate():
 
-    session_id = "1"
-    # Save principle to cookie
-    headers = remember(request, session_id)
+        # create a session
+        session_id = create_new_user_session(response).get_session_id()
 
-    # Get the url saved in RelayState from SAML request, redirect it back to it
-    # If it's not found, redirect to list of reports
-    # TODO: Need a landing other page
-    redirect_url = request.POST.get('RelayState', request.route_url('list_of_reports'))
+        # Save principle to cookie
+        headers = remember(request, session_id)
+
+        # Get the url saved in RelayState from SAML request, redirect it back to it
+        # If it's not found, redirect to list of reports
+        # TODO: Need a landing other page
+        redirect_url = request.POST.get('RelayState', request.route_url('list_of_reports'))
+    else:
+        redirect_url = request.route_url('login')
+        headers = None
     return HTTPFound(location=redirect_url, headers=headers)

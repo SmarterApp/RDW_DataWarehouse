@@ -26,6 +26,7 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.types import Enum, UnicodeText, DateTime
 import argparse
 from sqlalchemy.engine import create_engine
+from sqlalchemy.sql.expression import func
 
 __all__ = []
 __version__ = 0.1
@@ -307,10 +308,11 @@ def generate_ed_metadata(scheme_name=None, bind=None):
     Index('fact_asmt_outcome_idx', assessment_outcome.c.asmnt_outcome_id, unique=True)
 
     user_session = Table('user_session', metadata,
-                    Column('session_id', String(256), primary_key=True, nullable=True),
-                    Column('session_context', UnicodeText, nullable=True),
-                    Column('last_access', DateTime, nullable=False),
-                    )
+                         Column('session_id', String(256), primary_key=True, nullable=True),
+                         Column('session_context', UnicodeText, nullable=True),
+                         Column('last_access', DateTime, default=func.now()),
+                         Column('expiration', DateTime, default=func.now()),
+                         )
     Index('user_session_idx', user_session.c.session_id, unique=True)
 
     return metadata
@@ -342,7 +344,7 @@ if __name__ == "__main__":
     print("  Database:" + __database)
     print("    Schema:" + __schema)
     print("####################")
-    engine = create_engine(__URL)
+    engine = create_engine(__URL, echo=True)
     connection = engine.connect()
     connection.execute(CreateSchema(__schema))
     metadata = generate_ed_metadata(scheme_name=__schema, bind=engine)

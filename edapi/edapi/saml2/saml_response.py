@@ -110,17 +110,11 @@ class SAMLResponse:
         class Attribute:
             def __init__(self, attribute_node):
                 self.__name = attribute_node.getAttribute("Name")
-                self.__attributeValue = None
+                self.__attributeValue = []
                 for node in attribute_node.childNodes:
                     if node.nodeType == Node.ELEMENT_NODE:
                         if node.localName == "AttributeValue":
-                            value = node.childNodes[0].data
-                            if self.__attributeValue is None:
-                                self.__attributeValue = value
-                            else:
-                                if type(self.__attributeValue) is not list:
-                                    self.__attributeValue = [self.__attributeValue]
-                                self.__attributeValue.append(value)
+                            self.__attributeValue.append(node.childNodes[0].data)
 
             def get_name(self):
                 return self.__name

@@ -63,6 +63,9 @@ class DBConnector(ConnectionBase):
         metadata = dbUtil.get_metadata()
         return Table(table_name, metadata)
 
+    def execute(self, statement, *multiparams, **params):
+        return self.__connection.execute(statement, *multiparams, **params)
+
     def open_connection(self):
         """
         return open connection

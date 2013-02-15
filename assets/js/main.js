@@ -11,6 +11,7 @@ require({
 		edwareDataProxy: 'EDWARE.dataProxy',
 		edwareGrid: 'widgets/EDWARE.grid.tablegrid',
 		edwareGridFormatters: 'widgets/EDWARE.grid.formatters',
-		edwareStudentList: 'EDWARE.studentList'
+		edwareStudentList: 'EDWARE.studentList',
+		edwareIndividualStudent: 'EDWARE.individualStudent'
 	}
 });

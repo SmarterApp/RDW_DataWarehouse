@@ -6,13 +6,17 @@ var baseConfigs = {
 	    jquery: '../../js/3p/jquery-1.7.2.min',
 	    jqGrid: '../../js/3p/jquery.jqGrid.min',
 	    sourceJS: '../../js',
-	    
+	    text: '../../js/3p/text',
+		mustache: '../../js/3p/mustache',
+		templates: '../../js/templates',
+		
 	    EDWARE: '../../js/EDWARE',
 	    edwareUtil: '../../js/EDWARE.util',
 	    edwareDataProxy: '../../js/EDWARE.dataProxy',
 	    edwareGrid: '../../js/widgets/EDWARE.grid.tablegrid',
 	    edwareGridFormatters: '../../js/widgets/EDWARE.grid.formatters',
-	    edwareStudentList: '../../js/EDWARE.studentList'
+	    edwareStudentList: '../../js/EDWARE.studentList',
+	    edwareIndividualStudent: '../../js/EDWARE.individualStudent'
 	}
 };
 

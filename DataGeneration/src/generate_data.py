@@ -450,8 +450,8 @@ def create_classes_grades_sections(district, sch, state, fish_names, total_count
     create_csv(teacher_list, constants.TEACHERS)
 
     # calculate number of students and teachers in each grade
-    stu_num_in_grade = max(1, math.ceil(sch.num_of_student / (sch.high_grade - sch.low_grade + 1)))
-    tea_num_in_grade = max(1, math.ceil(num_of_teacher / (sch.high_grade - sch.low_grade + 1)))
+    stu_num_in_grade = max(1, math.floor(sch.num_of_student / (sch.high_grade - sch.low_grade + 1)))
+    tea_num_in_grade = max(1, math.floor(num_of_teacher / (sch.high_grade - sch.low_grade + 1)))
 
     # for each grade
     j = 0
@@ -459,7 +459,6 @@ def create_classes_grades_sections(district, sch, state, fish_names, total_count
         # generate student list for a grade
 
         grade_students, parentz = generate_students(stu_num_in_grade, state, district, sch, grade, fish_names)
-
         create_csv(grade_students, constants.STUDENTS)
         create_csv(parentz, constants.PARENTS)
 

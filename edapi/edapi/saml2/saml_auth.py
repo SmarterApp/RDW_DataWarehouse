@@ -6,7 +6,7 @@ Created on Feb 13, 2013
 from xml.dom.minidom import parseString
 from edapi.saml2.saml_response import SAMLResponse
 from edapi.security.roles import Roles
-
+import re
 
 class SamlAuth:
     def __init__(self, response, auth_request_id):
@@ -14,14 +14,24 @@ class SamlAuth:
         self.__id = auth_request_id
 
     def is_validate(self):
-        status = self.__resposne.get_status()
+        status = self.__response.get_status()
         status_code = status.get_status_code()
         if self.__id != self.__response.get_id():
             return False
         return status_code[-7:] == "Success"
 
     def get_role(self):
-        return Roles.TEACHER
+        assertion = self.__response.get_assertion()
+        attributes = assertion.get_attributes()
+        roles = []
+        memberOf = attributes.get("memberOf", None)
+        if memberOf is not None:
+            cn = re.search('cn=(.*?),', memberOf)
+            if cn is not None:
+                role = cn.group(1).lower()
+                roles.append(role)
+            #roles.append(Roles.reverse_mapping[r])
+        return roles
 
 xml = '''<samlp:Response xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" ID="s242006af1c228c11bb10f535f54f92d3e522e640e" InResponseTo="aaf23196-1773-2113-474a-fe114412ab72" Version="2.0" IssueInstant="2013-02-13T22:07:58Z" Destination="http://localhost:6543/Hello_dip"><saml:Issuer xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion">http://edwappsrv4.poc.dum.edwdc.net:18080/opensso</saml:Issuer><samlp:Status xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol">
         <samlp:StatusCode  xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol"

@@ -15,7 +15,6 @@ Created on Feb 13, 2013
 
 
 @view_config(route_name='login', permission=NO_PERMISSION_REQUIRED)
-# TODO for accessign a view that user aren't allowed to do
 @forbidden_view_config(renderer='json')
 def login(request):
     url = 'http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp?%s'
@@ -45,26 +44,26 @@ def logout(request):
     return HTTPFound(location=request.route_url('login'), headers=headers)
 
 
-@view_config(route_name='saml2_post_consumer', permission=NO_PERMISSION_REQUIRED)
+@view_config(route_name='saml2_post_consumer', permission=NO_PERMISSION_REQUIRED, request_method='POST')
 def saml2_post_consumer(request):
-    # If session doesn't have an authentication request id defined, redirect to login
     auth_request_id = "retrieve the id"
 #    auth_request_id = request.session.get('auth_request_id')
 #    if auth_request_id is None:
 #        return HTTPFound(location=request.route_url('login'))
     # Validate the response id against session
     __SAMLResponse = base64.b64decode(request.POST['SAMLResponse'])
-    __dom_SAMLResponse = parseString(__SAMLResponse.decode('utf-8')).childNodes[0]
+    __dom_SAMLResponse = parseString(__SAMLResponse.decode('utf-8'))
+
     response = SAMLResponse(__dom_SAMLResponse)
-    token = SamlAuth(response, auth_request_id=auth_request_id)
-    role = token.get_role()
+    saml_response = SamlAuth(response, auth_request_id=auth_request_id)
+    role = saml_response.get_role()
+    
 
     session_id = "1"
-    # Save principle to session
+    # Save principle to cookie
     headers = remember(request, session_id)
 
     # Get the url saved in RelayState from SAML request, redirect it back to it
-
     # If it's not found, redirect to list of reports
     # TODO: Need a landing other page
     redirect_url = request.POST.get('RelayState', request.route_url('list_of_reports'))

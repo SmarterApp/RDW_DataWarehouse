@@ -37,6 +37,9 @@ class SAMLResponse:
 
     def get_status(self):
         return self.__status
+    
+    def get_assertion(self):
+        return self.__assertion
 
     class Issuer:
         def __init__(self, issuer_node):
@@ -55,6 +58,7 @@ class SAMLResponse:
 
     class Assertion:
         def __init__(self, assertion_node):
+            self.__attributes = {}
             for node in assertion_node.childNodes:
                 if node.nodeType == Node.ELEMENT_NODE:
                     if node.localName == "Issuer":
@@ -82,7 +86,16 @@ class SAMLResponse:
                         for node0 in node.childNodes:
                             if node0.nodeType == Node.ELEMENT_NODE:
                                 if node0.localName == "Attribute":
-                                    self.__attribute = SAMLResponse.Assertion.Attribute(node0)
+                                    attribute = SAMLResponse.Assertion.Attribute(node0)
+
+                                    item = self.__attributes.get(attribute.get_name(), None)
+                                    if item is None:
+                                        self.__attributes[attribute.get_name()] = attribute.get_value()
+                                    else:
+                                        item.append(attribute.get_value())
+
+        def get_attributes(self):
+            return self.__attributes
 
         class SubjectConfirmation:
             def __init__(self, subjectConfirmation_node):
@@ -106,3 +119,9 @@ class SAMLResponse:
                     if node.nodeType == Node.ELEMENT_NODE:
                         if node.localName == "AttributeValue":
                             self.__attributeValue = node.childNodes[0].data
+
+            def get_name(self):
+                return self.__name
+
+            def get_value(self):
+                return self.__attributeValue

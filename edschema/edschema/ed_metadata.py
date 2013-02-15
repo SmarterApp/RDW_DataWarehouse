@@ -91,7 +91,6 @@ def generate_ed_metadata(scheme_name=None, bind=None):
     Index('dim_section_current_idx', sections.c.section_id, sections.c.subject_name, sections.c.grade, sections.c.most_recent, unique=False)
     Index('dim_section_dim_inst_hier_idx', sections.c.state_code, sections.c.district_id, sections.c.school_id, sections.c.from_date, sections.c.to_date, unique=False)
 
-    ForeignKeyConstraint([sections.c.state_code, sections.c.district_id, sections.c.school_id], [instit_hier.c.state_code, instit_hier.c.district_id, instit_hier.c.school_id])
     # NB! Figure out uniques in dim_student
     students = Table('dim_student', metadata,
                      Column('row_id', String(50), primary_key=True),
@@ -121,8 +120,6 @@ def generate_ed_metadata(scheme_name=None, bind=None):
     Index('dim_student_dim_inst_hier_idx',
           students.c.state_code, students.c.district_id, students.c.school_id, students.c.section_id, students.c.grade,
           students.c.from_date, students.c.to_date, unique=False)
-
-    ForeignKeyConstraint([students.c.state_code, students.c.district_id, students.c.school_id], [instit_hier.c.state_code, instit_hier.c.district_id, instit_hier.c.school_id])
 
     parents = Table('dim_parent', metadata,
                     Column('parent_id', String(50), primary_key=True),
@@ -169,7 +166,6 @@ def generate_ed_metadata(scheme_name=None, bind=None):
     Index('dim_staff_idx', staff.c.row_id, unique=True)
     Index('dim_staff_id_currentx', staff.c.staff_id, staff.c.most_recent, unique=False)
     Index('dim_staff_dim_inst_hier_idx', staff.c.state_code, staff.c.district_id, staff.c.school_id, staff.c.from_date, staff.c.to_date, unique=False)
-    ForeignKeyConstraint([staff.c.state_code, staff.c.district_id, staff.c.school_id], [instit_hier.c.state_code, instit_hier.c.district_id, instit_hier.c.school_id])
 
     assessment = Table('dim_asmt', metadata,
                        Column('asmt_id', String(50), primary_key=True),
@@ -188,6 +184,11 @@ def generate_ed_metadata(scheme_name=None, bind=None):
                        Column('asmt_perf_lvl_name_3', String(256), nullable=True),
                        Column('asmt_perf_lvl_name_4', String(256), nullable=True),
                        Column('asmt_perf_lvl_name_5', String(256), nullable=True),
+                       Column('asmt_perf_lvl_style_1', String(256), default="background-color: #BB231C;background-image: -moz-linear-gradient(center top , #C32C25, #E14A45);", nullable=True),
+                       Column('asmt_perf_lvl_style_2', String(256), default="background-color: #E4C904;background-image: -moz-linear-gradient(center top , #E3C703, #EED909);", nullable=True),
+                       Column('asmt_perf_lvl_style_3', String(256), default="background-color: #3B9F0A;background-image: -moz-linear-gradient(center top , #3D9913, #65B92C);", nullable=True),
+                       Column('asmt_perf_lvl_style_4', String(256), default="background-color: #237CCB;background-image: -moz-linear-gradient(center top , #2078CA, #3A98D1);", nullable=True),
+                       Column('asmt_perf_lvl_style_5', String(256), default="background-color: #CCCCCC;background-image: -moz-linear-gradient(center top , #CCCCCC, #CCCCCC);", nullable=True),
                        Column('asmt_score_min', SmallInteger, nullable=True),
                        Column('asmt_score_max', SmallInteger, nullable=True),
                        Column('asmt_claim_1_score_min', SmallInteger, nullable=True),
@@ -215,7 +216,9 @@ def generate_ed_metadata(scheme_name=None, bind=None):
                                Column('state_code', String(2), nullable=False),
                                Column('district_id', String(50), nullable=False),
                                Column('school_id', String(50), nullable=False),
-                               Column('where_taken_id', String(50), primary_key=True),
+                               Column('inst_hier_id', None, ForeignKey(instit_hier.c.row_id), nullable=False),
+                               Column('section_subject_id', None, ForeignKey(sections.c.row_id), nullable=False),
+                               Column('where_taken_id', String(50), nullable=True),  # external id if provided
                                Column('where_taken_name', String(256), primary_key=True),
                                Column('asmt_grade_code', String(10), nullable=False),
                                Column('enrl_grade_code', String(10), nullable=False),

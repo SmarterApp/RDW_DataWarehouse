@@ -37,7 +37,7 @@ class SAMLResponse:
 
     def get_status(self):
         return self.__status
-    
+
     def get_assertion(self):
         return self.__assertion
 

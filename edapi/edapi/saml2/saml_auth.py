@@ -8,6 +8,7 @@ from edapi.saml2.saml_response import SAMLResponse
 from edapi.security.roles import Roles
 import re
 
+
 class SamlAuth:
     def __init__(self, response, auth_request_id):
         self.__response = response

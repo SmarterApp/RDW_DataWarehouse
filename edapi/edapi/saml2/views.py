@@ -57,7 +57,6 @@ def saml2_post_consumer(request):
     response = SAMLResponse(__dom_SAMLResponse)
     saml_response = SamlAuth(response, auth_request_id=auth_request_id)
     role = saml_response.get_role()
-    
 
     session_id = "1"
     # Save principle to cookie

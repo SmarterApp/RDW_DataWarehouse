@@ -1,109 +1,27 @@
 version: 1
 
-dn: ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+DN: ou=environment,dc=edwdc,dc=net
+ou: environment
 objectClass: organizationalUnit
-objectClass: top
+
+DN: ou=people,ou=environment,dc=edwdc,dc=net
 ou: people
-
-dn: ou=deployemnt_administrators,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
 objectClass: organizationalUnit
-objectClass: top
-ou: deployment_administrators
 
-dn: ou=system_administrators,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+DN: ou=groups,ou=environment,dc=edwdc,dc=net
+ou: groups
 objectClass: organizationalUnit
-objectClass: top
-ou: system_administrators
 
-dn: ou=data_loaders,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
-objectClass: organizationalUnit
-objectClass: top
-ou: data_loaders
-
-dn: ou=data_correctors,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
-objectClass: organizationalUnit
-objectClass: top
-ou: data_correctors
-
-dn: ou=psychometricians,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
-objectClass: organizationalUnit
-objectClass: top
-ou: psychometricians
-
-dn: ou=state_data_extractors,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
-objectClass: organizationalUnit
-objectClass: top
-ou: state_data_extractors
-
-dn: ou=higher_education_admissions_officers,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
-objectClass: organizationalUnit
-objectClass: top
-ou: higher_education_admissions_officers
-
-dn: ou=teachers,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
-objectClass: organizationalUnit
-objectClass: top
-ou: teachers
-
-dn: ou=students,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
-objectClass: organizationalUnit
-objectClass: top
-ou: students
-
-dn: ou=parents,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
-objectClass: organizationalUnit
-objectClass: top
-ou: parents
-
-dn: ou=school_education_administrators_1,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
-objectClass: organizationalUnit
-objectClass: top
-ou: school_education_administrators_1
-
-dn: ou=school_education_administrators_2,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
-objectClass: organizationalUnit
-objectClass: top
-ou: school_education_administrators_2
-
-dn: ou=district_education_administrators_1,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
-objectClass: organizationalUnit
-objectClass: top
-ou: district_education_administrators_1
-
-dn: ou=district_education_administrators_2,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
-objectClass: organizationalUnit
-objectClass: top
-ou: district_education_administrators_2
-
-dn: ou=state_education_administrators_1,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
-objectClass: organizationalUnit
-objectClass: top
-ou: state_education_administrators_1
-
-dn: ou=state_education_administrators_2,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
-objectClass: organizationalUnit
-objectClass: top
-ou: state_education_administrators_2
-
-dn: ou=consortium_education_administrators_1,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
-objectClass: organizationalUnit
-objectClass: top
-ou: consortium_education_administrators_1
-
-dn: ou=consortium_education_administrators_2,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
-objectClass: organizationalUnit
-objectClass: top
-ou: consortium_education_administrators_2
-
-dn: cn=Linda Kim,ou=teachers,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+dn: cn=Linda Kim,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Linda Kim
 sn: Kim
 uid: linda.kim
+givenName: Linda
 userPassword: linda.kim1234
 
-dn: cn=Charles Gray,ou=teachers,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+dn: cn=Charles Gray,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Charles Gray
@@ -111,7 +29,7 @@ sn: Gray
 uid: cgray
 userPassword: cgray1234
 
-dn: cn=Rebecca Braverman,ou=teachers,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+dn: cn=Rebecca Braverman,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Rebecca Braverman
@@ -119,23 +37,15 @@ sn: Braverman
 uid: rbraverman
 userPassword: rbraverman1234
 
-dn: cn=James Stevenson,ou=system_administrators,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
-objectClass: inetOrgPerson
+dn: cn=Teacher,ou=groups,ou=environment,dc=edwdc,dc=net
+objectClass: groupOfNames
 objectClass: top
-cn: James Stevenson
-sn: Stevenson
-uid: jstevenson
-userPassword: jstevenson1234
+cn: Teacher
+member: cn=Linda Kim,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Charles Gray,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Rebecca Braverman,ou=people,ou=environment,dc=edwdc,dc=net
 
-dn: cn=Matt Sollars,ou=students,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
-objectClass: inetOrgPerson
-objectClass: top
-cn: Matt Sollars
-sn: Sollares
-uid: msollars
-userPassword: msollars1234
-
-dn: cn=Jamie Hine,ou=deployemnt_administrators,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+dn: cn=Jamie Hine,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Jamie Hine
@@ -143,7 +53,21 @@ sn: Hine
 uid: jhine
 userPassword: jhine1234
 
-dn: cn=Kelly Tidd,ou=system_administrators,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+dn: cn=Deployment Administrator,ou=groups,ou=environment,dc=edwdc,dc=net
+objectClass: groupOfNames
+objectClass: top
+cn: Deployment Administrator
+member: cn=Jamie Hine,ou=people,ou=environment,dc=edwdc,dc=net
+
+dn: cn=James Stevenson,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: James Stevenson
+sn: Stevenson
+uid: jstevenson
+userPassword: jstevenson1234
+
+dn: cn=Kelly Tidd,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Kelly Tidd
@@ -151,7 +75,14 @@ sn: Tidd
 uid: ktidd
 userPassword: ktidd1234
 
-dn: cn=Louisa Mui,ou=data_loaders,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+dn: ou=System Administrator,ou=groups,ou=environment,dc=edwdc,dc=net
+objectClass: groupOfNames
+objectClass: top
+cn: System Administrator
+member: cn=James Stevenson,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Kelly Tidd,ou=people,ou=environment,dc=edwdc,dc=net
+
+dn: cn=Louisa Mui,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Louisa Mui
@@ -159,7 +90,13 @@ sn: Mui
 uid: lmui
 userPassword: lmui1234
 
-dn: cn=Hugh Goree,ou=data_correctors,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+dn: ou=Data Loader,ou=groups,ou=environment,dc=edwdc,dc=net
+objectClass: groupOfNames
+objectClass: top
+cn: Data Loader
+member: cn=Louisa Mui,ou=people,ou=environment,dc=edwdc,dc=net
+
+dn: cn=Hugh Goree,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Hugh Goree
@@ -167,7 +104,13 @@ sn: Goree
 uid: hgoree
 userPassword: hgoree1234
 
-dn: cn=Clare Seabaugh,ou=psychometricians,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+dn: ou=Data Corrector,ou=groups,ou=environment,dc=edwdc,dc=net
+objectClass: groupOfNames
+objectClass: top
+cn: Data Corrector
+member: cn=Hugh Goree,ou=people,ou=environment,dc=edwdc,dc=net
+
+dn: cn=Clare Seabaugh,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Clare Seabaugh
@@ -175,7 +118,13 @@ sn: Seabaugh
 uid: cseabaugh
 userPassword: cseabaugh1234
 
-dn: cn=Katy Bester,ou=state_data_extractors,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+dn: ou=Psychometrician,ou=groups,ou=environment,dc=edwdc,dc=net
+objectClass: groupOfNames
+objectClass: top
+cn: Psychometrician
+member: cn=Clare Seabaugh,ou=people,ou=environment,dc=edwdc,dc=net
+
+dn: cn=Katy Bester,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Katy Bester
@@ -183,7 +132,13 @@ sn: Bester
 uid: kbester
 userPassword: kbester1234
 
-dn: cn=Erik Croker,ou=higher_education_admissions_officers,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+dn: ou=State Data Extractor,ou=groups,ou=environment,dc=edwdc,dc=net
+objectClass: groupOfNames
+objectClass: top
+cn: State Data Extractor
+member: cn=Katy Bester,ou=people,ou=environment,dc=edwdc,dc=net
+
+dn: cn=Erik Croker,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Erik Croker
@@ -191,7 +146,27 @@ sn: Croker
 uid: ecroker
 userPassword: ecroker1234
 
-dn: cn=Clayton Croxton,ou=parents,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+dn: ou=Higher Education Admissions Officer,ou=groups,ou=environment,dc=edwdc,dc=net
+objectClass: groupOfNames
+objectClass: top
+cn: Higher Education Admissions Officer
+member: cn=Erik Croker,ou=people,ou=environment,dc=edwdc,dc=net
+
+dn: cn=Matt Sollars,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Matt Sollars
+sn: Sollares
+uid: msollars
+userPassword: msollars1234
+
+dn: ou=Student,ou=groups,ou=environment,dc=edwdc,dc=net
+objectClass: groupOfNames
+objectClass: top
+cn: Student
+member: cn=Matt Sollars,ou=people,ou=environment,dc=edwdc,dc=net
+
+dn: cn=Clayton Croxton,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Clayton Croxton
@@ -199,7 +174,13 @@ sn: Croxton
 uid: ccroxton
 userPassword: ccroxton1234
 
-dn: cn=Amie Stroop,ou=school_education_administrators_1,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+dn: ou=Parent,ou=groups,ou=environment,dc=edwdc,dc=net
+objectClass: groupOfNames
+objectClass: top
+cn: Student
+member: cn=Clayton Croxton,ou=people,ou=environment,dc=edwdc,dc=net
+
+dn: cn=Amie Stroop,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Amie Stroop
@@ -207,7 +188,13 @@ sn: Stroop
 uid: astroop
 userPassword: astroop1234
 
-dn: cn=Ted Lazaro,ou=school_education_administrators_2,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+dn: ou=School Education Administrator 1,ou=groups,ou=environment,dc=edwdc,dc=net
+objectClass: groupOfNames
+objectClass: top
+cn: School Education Administrator 1
+member: cn=Amie Stroop,ou=people,ou=environment,dc=edwdc,dc=net
+
+dn: cn=Ted Lazaro,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Ted Lazaro
@@ -215,7 +202,13 @@ sn: Lazaro
 uid: tlazaro
 userPassword: tlazaro1234
 
-dn: cn=Guy Man,ou=district_education_administrators_1,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+dn: ou=School Education Administrator 2,ou=groups,ou=environment,dc=edwdc,dc=net
+objectClass: groupOfNames
+objectClass: top
+cn: School Education Administrator 2
+member: cn=Ted Lazaro,ou=people,ou=environment,dc=edwdc,dc=net
+
+dn: cn=Guy Man,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Guy Man
@@ -223,7 +216,13 @@ sn: Man
 uid: gman
 userPassword: gman1234
 
-dn: cn=Selena Magnusson,ou=district_education_administrators_2,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+dn: ou=District Education Administrator 1,ou=groups,ou=environment,dc=edwdc,dc=net
+objectClass: groupOfNames
+objectClass: top
+cn: District Education Administrator 1
+member: cn=Guy Man,ou=people,ou=environment,dc=edwdc,dc=net
+
+dn: cn=Selena Magnusson,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Selena Magnusson
@@ -231,7 +230,13 @@ sn: Magnusson
 uid: smagnusson
 userPassword: smagnusson1234
 
-dn: cn=Jessie Mollica,ou=state_education_administrators_1,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+dn: ou=District Education Administrator 2,ou=groups,ou=environment,dc=edwdc,dc=net
+objectClass: groupOfNames
+objectClass: top
+cn: District Education Administrator 2
+member: cn=Selena Magnusson,ou=people,ou=environment,dc=edwdc,dc=net
+
+dn: cn=Jessie Mollica,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Jessie Mollica
@@ -239,7 +244,13 @@ sn: Mollica
 uid: jmollica
 userPassword: jmollica1234
 
-dn: cn=Liza Bopp,ou=state_education_administrators_2,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+dn: ou=State Education Administrator 1,ou=groups,ou=environment,dc=edwdc,dc=net
+objectClass: groupOfNames
+objectClass: top
+cn: State Education Administrator 1
+member: cn=Jessie Mollica,ou=people,ou=environment,dc=edwdc,dc=net
+
+dn: cn=Liza Bopp,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Liza Bopp
@@ -247,7 +258,13 @@ sn: Bopp
 uid: lbopp
 userPassword: lbopp1234
 
-dn: cn=Clinton Degraw,ou=consortium_education_administrators_1,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+dn: ou=State Education Administrator 2,ou=groups,ou=environment,dc=edwdc,dc=net
+objectClass: groupOfNames
+objectClass: top
+cn: State Education Administrator 2
+member: cn=James Stevenson,ou=people,ou=environment,dc=edwdc,dc=net
+
+dn: cn=Clinton Degraw,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Clinton Degraw
@@ -255,10 +272,22 @@ sn: Degraw
 uid: cdegraw
 userPassword: cdegraw1234
 
-dn: cn=Elnora Seinfeld,ou=consortium_education_administrators_2,ou=people,dc=edwappsrv4,dc=poc,dc=dum,dc=edwdc,dc=net
+dn: ou=Consortium Education Administrator 1,ou=groups,ou=environment,dc=edwdc,dc=net
+objectClass: groupOfNames
+objectClass: top
+cn: Consortium Education Administrator 1
+member: cn=Clinton Degraw,ou=people,ou=environment,dc=edwdc,dc=net
+
+dn: cn=Elnora Seinfeld,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Elnora Seinfeld
 sn: Seinfeld
 uid: eseinfeld
 userPassword: eseinfeld1234
+
+dn: ou=Consortium Education Administrator 2,ou=groups,ou=environment,dc=edwdc,dc=net
+objectClass: groupOfNames
+objectClass: top
+cn: Consortium Education Administrator 2
+member: cn=Elnora Seinfeld,ou=people,ou=environment,dc=edwdc,dc=net

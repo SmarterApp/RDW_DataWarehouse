@@ -148,7 +148,7 @@ function setup_functional_test_dependencies {
     deactivate 
      
     if [ ! -d "$FUNC_VIRTUALENV_DIR" ]; then
-         /opt/python2.7.3/bin/virtualenv --distribute $FUNC_VIRTUALENV_DIR
+         /opt/python2.7/bin/virtualenv --distribute $FUNC_VIRTUALENV_DIR
     fi
    
     source ${FUNC_VIRTUALENV_DIR}/bin/activate
@@ -175,7 +175,7 @@ function run_functional_tests {
 }	
 
 function create_sym_link_for_apache {
-    APACHE_DIR="/home/jenkins/apache_dir"
+    APACHE_DIR="/var/lib/jenkins/apache_dir"
     if [ -d ${APACHE_DIR} ]; then
         rm -rf ${APACHE_DIR}
     fi

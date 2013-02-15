@@ -20,3 +20,4 @@ edapi/dist
 smarter/smarter/assets
 style.css
 .coverage
+edschema/database/tests/resources/tmpl

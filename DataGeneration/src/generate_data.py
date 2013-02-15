@@ -14,7 +14,8 @@ import uuid
 
 from assessment import generate_assmts_for_students
 from dbconnection import get_db_conn
-from entities import (State, District, WhereTaken, School, Class,
+from entities import (
+    State, District, WhereTaken, School, Class,
     AssessmentOutcome, StudentTemporalData, Section, TeacherSection)
 from gen_assessments import generate_assessment_types
 from genpeople import generate_teacher, generate_student

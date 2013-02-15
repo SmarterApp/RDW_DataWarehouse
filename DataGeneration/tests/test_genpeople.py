@@ -14,7 +14,6 @@ from uuid import UUID, uuid4
 from datetime import date
 
 
-
 class Test(unittest.TestCase):
 
     def tearDown(self):
@@ -26,10 +25,10 @@ class Test(unittest.TestCase):
             # File does not exist
             pass
 
-    delaware = State('DE', 'Delaware', 1, state_code = 'DE')
-    district_1 = District(1000, uuid4(), 'district_1', 'DE', 1, {'Dover':[10000,20000]})
+    delaware = State('DE', 'Delaware', 1, state_code='DE')
+    district_1 = District(1000, uuid4(), 'district_1', 'DE', 1, {'Dover': [10000, 20000]})
     school_1 = School(2000, uuid4(), 'School 1', district_1.district_name, district_1.district_id, 'DE', 1, 1, 1, 12)
-    student_1 = Student(3000,uuid4(),'John','Doe','55 Washington St',date(2013,2,14),district_1,delaware,'male','johndoe@school.edu',school_1)
+    student_1 = Student(3000, uuid4(), 'John', 'Doe', '55 Washington St', date(2013, 2, 14), district_1, delaware, 'male', 'johndoe@school.edu', school_1)
 
     def test_generate_teacher(self):
         teacher = generate_teacher(self.delaware, self.district_1)
@@ -44,12 +43,10 @@ class Test(unittest.TestCase):
         self.assertIsInstance(teacher.district_id, int)
         self.assertIsInstance(teacher.state_code, str)
 
-
     def test_generate_student(self):
         student, parents = generate_student(self.delaware, self.district_1, self.school_1, 1, ['park'])
         self.assertIsNotNone(student)
         self.assertIsInstance(student, Student)
-
 
     def test_generate_parents(self):
         parents = generate_parents(self.student_1)
@@ -60,7 +57,6 @@ class Test(unittest.TestCase):
     def test_generate_staff(self):
         staff = generate_staff('John', 'Doe', self.district_1, self.delaware, self.school_1)
         self.assertIsInstance(staff, Staff)
-
 
     def test_assign_dob(self):
         grade = 1

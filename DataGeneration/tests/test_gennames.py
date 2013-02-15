@@ -76,7 +76,6 @@ class TestGenNames(unittest.TestCase):
         self.assertIsNone(f1)
         self.assertIsNone(l1)
 
-
     # TODO: mock the reading of people names
     def test_generate_first_or_middle_name(self):
         name = generate_first_or_middle_name('male')

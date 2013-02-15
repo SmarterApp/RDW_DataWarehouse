@@ -4,20 +4,14 @@ Created on Jan 8, 2013
 @author: swimberly
 '''
 
-
-import gennames
-import random
 from datetime import date
+from uuid import uuid4
+import random
+
 from entities import Student, Teacher, Parent, Staff
-from readnaminglists import PeopleNames
-from idgen import IdGen
-from write_to_csv import create_csv
-import constants
 from idgen import IdGen
 import gennames
 import util
-import random
-from uuid import uuid4
 
 
 # constants
@@ -116,17 +110,18 @@ def generate_parents(student):
 
     return [parent1, parent2]
 
-def generate_staff(first_name, last_name, district, state, school):
-     staff_params = {
-         'first_name': first_name,
-         'last_name': last_name,
-         'district_id': district.district_id,
-         'state_id': state.state_id,
-         'school_id': school.sch_id
-     }
 
-     staff = Staff(**staff_params)
-     return staff
+def generate_staff(first_name, last_name, district, state, school):
+    staff_params = {
+        'first_name': first_name,
+        'last_name': last_name,
+        'district_id': district.district_id,
+        'state_id': state.state_id,
+        'school_id': school.sch_id
+    }
+
+    staff = Staff(**staff_params)
+    return staff
 
 
 def assign_dob(grade, boy_year):

@@ -3,6 +3,7 @@ from util import generate_email_address, generate_address, generate_dob
 import re
 from datetime import datetime, date
 
+
 class TestUtil(unittest.TestCase):
 
     def test_generate_email_address(self):
@@ -10,7 +11,7 @@ class TestUtil(unittest.TestCase):
         self.assertIsNotNone(re.match("[^@]+@[^@]+\.[^@]+", email))
 
     def test_generate_address(self):
-        streets = ['Main','Park','Front']
+        streets = ['Main', 'Park', 'Front']
         address = generate_address(streets)
         self.assertIsNotNone(re.match("\d+ [A-Za-z]+ [A-Za-z]+", address))
 

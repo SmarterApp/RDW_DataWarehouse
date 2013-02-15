@@ -9,7 +9,7 @@ import unittest
 
 from genpeople import generate_teacher, generate_student, assign_dob, generate_parents, generate_staff
 from nameinfo import NameInfo
-from entities import State, District, Teacher, School, Student, Parent, Staff
+from entities import State, District, Teacher, School, Student, Parent, Staff, ExternalUserStudent
 from uuid import UUID, uuid4
 from datetime import date
 
@@ -44,9 +44,12 @@ class Test(unittest.TestCase):
         self.assertIsInstance(teacher.state_code, str)
 
     def test_generate_student(self):
-        student, parents = generate_student(self.delaware, self.district_1, self.school_1, 1, ['park'])
+        student, parents, exter_user = generate_student(self.delaware, self.district_1, self.school_1, 1, ['park'])
         self.assertIsNotNone(student)
         self.assertIsInstance(student, Student)
+
+        self.assertIsNotNone(exter_user)
+        self.assertIsInstance(exter_user, ExternalUserStudent)
 
     def test_generate_parents(self):
         parents = generate_parents(self.student_1)

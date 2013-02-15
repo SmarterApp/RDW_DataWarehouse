@@ -8,7 +8,7 @@ from datetime import date
 from uuid import uuid4
 import random
 
-from entities import Student, Teacher, Parent, Staff
+from entities import Student, Teacher, Parent, Staff, ExternalUserStudent
 from idgen import IdGen
 import gennames
 import util
@@ -79,7 +79,16 @@ def generate_student(state, district, school, grade, street_list, gender=None, h
 
     parentz = generate_parents(student)
 
-    return student, parentz
+    ext_user_params = {
+        'external_user_student_id': id_generator.get_id(),
+        'external_user_id': uuid4(),
+        'student_id': student.school_id,
+        'rel_start_date': util.generate_start_date(grade),
+        'rel_end_date': ''
+    }
+    ext_user = ExternalUserStudent(**ext_user_params)
+
+    return student, parentz, ext_user
 
 
 def generate_parents(student):
@@ -149,7 +158,7 @@ def assign_dob(grade, boy_year):
     return date(year, month, day)
 
 
-#if __name__ == '__main__':
+# if __name__ == '__main__':
 #
 #    total = 5000  # 387549  # pop in AL
 #    ratio = 0.51

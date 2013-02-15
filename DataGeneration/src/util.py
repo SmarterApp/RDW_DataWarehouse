@@ -29,3 +29,19 @@ def generate_dob(grade):
     dob = datetime.date(birth_year, birth_month, birth_day)
 
     return dob
+
+
+def generate_start_date(grade):
+    today = datetime.datetime.now()
+    current_year = int(today.year)
+    current_month = int(today.month)
+
+    start_year = current_year - grade
+    if(grade == 0 and current_month <= 9):
+        start_year = current_year - 1
+    # generate the first day of school
+    start_month = 9
+    start_day = random.randint(1, 8)
+
+    return datetime.date(start_year, start_month, start_day)
+

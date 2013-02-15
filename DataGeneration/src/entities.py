@@ -483,6 +483,34 @@ class Staff(Person):
         self.school_id = school_id
 
 
+class ExternalUserStudent():
+    '''
+    ExternalUserStudent Object
+    Corresponds to dim_external_user_student table
+    '''
+
+    def __init__(self, external_user_student_id, external_user_id, student_id, rel_start_date, rel_end_date=None):
+
+        # Ids can either be given to the constructor or provided by constructor
+        # Either way, both Id fields must have a value
+        id_generator = IdGen()
+        if external_user_student_id is None:
+            self.external_user_student_id = id_generator.get_id()
+        else:
+            self.external_user_student_id = external_user_student_id
+        if external_user_id is None:
+            self.external_user_id = uuid4()
+        else:
+            self.external_user_id = external_user_id
+
+        self.student_id = student_id
+        self.rel_start_date = rel_start_date
+        self.rel_end_date = rel_end_date
+
+    def getRow(self):
+        return [self.external_user_student_id, self.external_user_id, self.student_id, self.rel_start_date, self.rel_end_date]
+
+
 def generate_ramdom_name():
     # temporary
     char_set = string.ascii_uppercase + string.digits

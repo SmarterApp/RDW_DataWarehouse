@@ -114,7 +114,7 @@ def generate_data(name_lists, db_states_stat):
 
         dist_count = 0
         for dist in created_dist_list:
-            print("creating district %d of %d for state %s" % (dist_count, len(created_dist_list), state['state_name']))
+            print("creating district %d of %d for state %s" % ((dist_count + 1), len(created_dist_list), state['state_name']))
             dist_count += 1
 
             # create school for each district
@@ -458,9 +458,10 @@ def create_classes_grades_sections(district, sch, state, fish_names, total_count
     for grade in range(sch.low_grade, sch.high_grade + 1):
         # generate student list for a grade
 
-        grade_students, parentz = generate_students(stu_num_in_grade, state, district, sch, grade, fish_names)
+        grade_students, parentz, external_user_stus = generate_students(stu_num_in_grade, state, district, sch, grade, fish_names)
         create_csv(grade_students, constants.STUDENTS)
         create_csv(parentz, constants.PARENTS)
+        create_csv(external_user_stus, constants.EXTERNAL_USER_STUDENT)
 
         j += len(grade_students)
         total_count[3] += len(grade_students)
@@ -577,14 +578,16 @@ def generate_teachers(num_teachers, state, district):
 def generate_students(num_students, state, district, school, grade, fish_names):
     students = []
     parents = []
+    external_users = []
 
     for i in range(num_students):
-        stu, pars = generate_student(state, district, school, grade, fish_names)
+        stu, pars, ext_user = generate_student(state, district, school, grade, fish_names)
         students.append(stu)
+        external_users.append(ext_user)
         for par in pars:
             parents.append(par)
 
-    return students, parents
+    return students, parents, external_users
 
 
 def generate_dates_taken(year):

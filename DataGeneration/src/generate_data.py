@@ -1,20 +1,27 @@
-import math
-import datetime
-import random
+'''
+generate_data.py
 
-import py1
-from queries import *
-from write_to_csv import *
-from entities import *
+Entry point for generating all data.
+'''
+
+from datetime import date
 from test.test_iterlen import len
-from genpeople import *
-from idgen import IdGen
-from gen_assessments import generate_assessment_types
-from constants import *
-from dbconnection import get_db_conn
-from assessment import generate_assmts_for_students
 from xmlrpc.client import MAXINT
+import datetime
+import math
+import random
 import uuid
+
+from assessment import generate_assmts_for_students
+from dbconnection import get_db_conn
+from entities import (State, District, WhereTaken, School, Class,
+    AssessmentOutcome, StudentTemporalData, Section, TeacherSection)
+from gen_assessments import generate_assessment_types
+from genpeople import generate_teacher, generate_student
+from idgen import IdGen
+from write_to_csv import clear_files, create_csv
+import constants
+import py1
 
 
 def get_name_lists():
@@ -26,9 +33,9 @@ def get_name_lists():
 
     name_lists = []
     try:
-        name_lists.append(read_names(BIRDS_FILE))
-        name_lists.append(read_names(MAMMALS_FILE))
-        name_lists.append(read_names(FISH_FILE))
+        name_lists.append(read_names(constants.BIRDS_FILE))
+        name_lists.append(read_names(constants.MAMMALS_FILE))
+        name_lists.append(read_names(constants.FISH_FILE))
 
     except IOError as e:
         print("Exception for reading bird, mammals, or fish files: " + str(e))
@@ -45,7 +52,7 @@ def get_state_stats():
     db_states = []
     dist_count = db.prepare('select * from school_generate_stat')
     for row in dist_count:
-        db_states.append(dict(zip(STAT_COLUMNS, row)))
+        db_states.append(dict(zip(constants.STAT_COLUMNS, row)))
     db.close()
     # print(db_states)
     return db_states
@@ -79,7 +86,7 @@ def generate_data(name_lists, db_states_stat):
 
     # generate all assessment types
     asmt_list = generate_assessment_types()
-    create_csv(asmt_list, ASSESSMENT_TYPES)
+    create_csv(asmt_list, constants.ASSESSMENT_TYPES)
 
     c = 0
     record_states = []
@@ -88,7 +95,6 @@ def generate_data(name_lists, db_states_stat):
         created_state = State(state['state_code'], state['state_name'], state['total_district'], state['state_code'])
         total_count[0] += 1
         record_states.append(created_state)
-
 
         school_num_in_dist_made, stu_num_in_school_made, stutea_ratio_in_school_made, school_type_in_state = generate_distribution_lists(state)
 
@@ -102,7 +108,7 @@ def generate_data(name_lists, db_states_stat):
         # create districts for each state
         created_dist_list = create_districts(created_state.state_id, school_num_in_dist_made, c, name_lists)
         total_count[1] += len(created_dist_list)
-        create_csv(created_dist_list, DISTRICTS)
+        create_csv(created_dist_list, constants.DISTRICTS)
         shift = 0
 
         dist_count = 0
@@ -115,8 +121,8 @@ def generate_data(name_lists, db_states_stat):
                                                           stutea_ratio_in_school_made[shift: shift + dist.num_of_schools],
                                                           dist, school_type_in_state, name_lists)
             total_count[2] += len(school_list)
-            create_csv(school_list, SCHOOLS)
-            create_csv(wheretaken_list, WHERETAKEN)
+            create_csv(school_list, constants.SCHOOLS)
+            create_csv(wheretaken_list, constants.WHERETAKEN)
             shift += dist.num_of_schools
 
             # associate wheretaken_list to current district
@@ -131,7 +137,7 @@ def generate_data(name_lists, db_states_stat):
             break
         c += 1
 
-    create_csv(record_states, STATES)
+    create_csv(record_states, constants.STATES)
 
     print("**************Results***********************")
     print("generated number of states    ", total_count[0])
@@ -146,8 +152,8 @@ def generate_data(name_lists, db_states_stat):
 
 def generate_distribution_lists(state):
     # generate school distribution in districts
-    min_dis = max(1, math.floor(state['total_district'] * DIST_LOW_VALUE))
-    max_dis = math.ceil(state['total_district'] * DIST_HIGH_VALUE)
+    min_dis = max(1, math.floor(state['total_district'] * constants.DIST_LOW_VALUE))
+    max_dis = math.ceil(state['total_district'] * constants.DIST_HIGH_VALUE)
     num_of_dist = min_dis
     if(min_dis < max_dis):
         num_of_dist = random.choice(range(min_dis, max_dis))
@@ -193,12 +199,12 @@ def make_school_types(perc, total):
                 count.append(total - control)
             else:
                 count.append(num)
-            repeat_types.extend([SCHOOL_LEVELS_INFO[i][0]] * count[-1])
+            repeat_types.extend([constants.SCHOOL_LEVELS_INFO[i][0]] * count[-1])
             control = sum(count)
 
         i += 1
         count.append(max(total - control, 0))
-        repeat_types.extend([SCHOOL_LEVELS_INFO[i][0]] * count[-1])
+        repeat_types.extend([constants.SCHOOL_LEVELS_INFO[i][0]] * count[-1])
 
     return repeat_types
 
@@ -214,13 +220,13 @@ def create_districts(state_id, school_num_in_dist_made, pos, name_lists):
     if(n > 0):
         # generate random district names
         try:
-            names = generate_names_from_lists(n, name_lists[0], name_lists[1], DIST_SCHOOL_NAME_LENGTH)
+            names = generate_names_from_lists(n, name_lists[0], name_lists[1], constants.DIST_SCHOOL_NAME_LENGTH)
         except ValueError:
             print("ValueError: Not enough list to create", n, " number of district names", n, len(name_lists[0]), len(name_lists[1]))
             return []
 
         # generate random district addresses
-        address = generate_address_from_list(n, name_lists[2], ADDRESS_LENGTH)
+        address = generate_address_from_list(n, name_lists[2], constants.ADDRESS_LENGTH)
 
         # generate random district zip range
         zip_init, zip_dist = cal_zipvalues(pos, n)
@@ -236,7 +242,7 @@ def create_districts(state_id, school_num_in_dist_made, pos, name_lists):
             params = {
                 'district_id': IdGen().get_id(),
                 'district_external_id': uuid.uuid4(),
-                'district_name': names[i] + " " + random.choice(DIST_SUFFIX),
+                'district_name': names[i] + " " + random.choice(constants.DIST_SUFFIX),
                 'state_code': state_id,
                 'num_of_schools': school_num_in_dist_made[i],
                 'city_zip_map': city_zip_map,
@@ -260,13 +266,13 @@ def create_schools(stu_num_in_school_made, stutea_ratio_in_school_made, distr, s
     count = distr.num_of_schools
     # generate random school names
     try:
-        names = generate_names_from_lists(count, name_lists[2], name_lists[1], DIST_SCHOOL_NAME_LENGTH)
+        names = generate_names_from_lists(count, name_lists[2], name_lists[1], constants.DIST_SCHOOL_NAME_LENGTH)
     except ValueError:
         print("ValueError: Not enough list to create", count, " number of school names")
         return [], []
 
     # generate addresses
-    address = generate_address_from_list(count, name_lists[0], ADDRESS_LENGTH)
+    address = generate_address_from_list(count, name_lists[0], constants.ADDRESS_LENGTH)
 
     school_list = []
     wheretaken_list = []
@@ -275,8 +281,8 @@ def create_schools(stu_num_in_school_made, stutea_ratio_in_school_made, distr, s
     for i in range(count):
         # get categories
         school_categories_type = random.choice(school_type_in_state)
-        suf = random.choice(SCHOOL_LEVELS_INFO[SCHOOL_ORDER_MAP.get(school_categories_type)][1])
-        grade_range = random.choice(SCHOOL_LEVELS_INFO[SCHOOL_ORDER_MAP.get(school_categories_type)][2])
+        suf = random.choice(constants.SCHOOL_LEVELS_INFO[constants.SCHOOL_ORDER_MAP.get(school_categories_type)][1])
+        grade_range = random.choice(constants.SCHOOL_LEVELS_INFO[constants.SCHOOL_ORDER_MAP.get(school_categories_type)][2])
         low_grade = grade_range[0]
         high_grade = grade_range[1]
 
@@ -319,7 +325,7 @@ def create_schools(stu_num_in_school_made, stutea_ratio_in_school_made, distr, s
             'low_grade': low_grade,
             'high_grade': high_grade,
             'school_categories_type': school_categories_type,
-            'school_type': random.choice(SCHOOL_TYPES),
+            'school_type': random.choice(constants.SCHOOL_TYPES),
             'address1': address_1,
             'city': city_name,
             'zip_code': zip_code
@@ -336,7 +342,7 @@ def generate_city_zipcode(zipcode_start, zipcode_end, num_of_schools, name_lists
     Generate zip code range for cities in a district
     '''
     try:
-        city_names = generate_names_from_lists(num_of_schools, name_lists[0], name_lists[2], CITY_NAME_LENGTH)
+        city_names = generate_names_from_lists(num_of_schools, name_lists[0], name_lists[2], constants.CITY_NAME_LENGTH)
     except ValueError:
         print("ValueError: Not enough list to create", num_of_schools, " number of city names in generate_city_zipcode")
         return None
@@ -408,12 +414,12 @@ def generate_address_from_list(count, words_list, name_length=None):
         if(name_length is not None):
             for i in range(count):
                 first_no = str(no[i])
-                suff = random.choice(ADD_SUFFIX)
+                suff = random.choice(constants.ADD_SUFFIX)
                 middle_add = str(road_name[i % len(road_name)])
                 compose_add = first_no + " " + middle_add[0: (name_length - len(first_no) - len(suff) - 2)].strip() + " " + suff
                 adds.append(compose_add)
         else:
-            adds = [str(no[i]) + " " + str(road_name[i % len(road_name)]) + " " + random.choice(ADD_SUFFIX) for i in range(count)]
+            adds = [str(no[i]) + " " + str(road_name[i % len(road_name)]) + " " + random.choice(constants.ADD_SUFFIX) for i in range(count)]
 
     return adds
 
@@ -426,8 +432,8 @@ def cal_zipvalues(pos, n):
             zip_dist: the basic distance of zipcode
     '''
 
-    zip_init = (pos + 1) * ZIPCODE_START
-    zip_dist = max(1, (ZIPCODE_RANG_INSTATE // n))
+    zip_init = (pos + 1) * constants.ZIPCODE_START
+    zip_dist = max(1, (constants.ZIPCODE_RANG_INSTATE // n))
     return zip_init, zip_dist
 
 
@@ -440,7 +446,7 @@ def create_classes_grades_sections(district, sch, state, fish_names, total_count
     num_of_teacher = max(1, round(sch.num_of_student / sch.stu_tea_ratio))
     teacher_list = generate_teachers(num_of_teacher, state, district)
     total_count[4] += len(teacher_list)
-    create_csv(teacher_list, TEACHERS)
+    create_csv(teacher_list, constants.TEACHERS)
 
     # calculate number of students and teachers in each grade
     stu_num_in_grade = max(1, math.ceil(sch.num_of_student / (sch.high_grade - sch.low_grade + 1)))
@@ -453,8 +459,8 @@ def create_classes_grades_sections(district, sch, state, fish_names, total_count
 
         grade_students, parentz = generate_students(stu_num_in_grade, state, district, sch, grade, fish_names)
 
-        create_csv(grade_students, STUDENTS)
-        create_csv(parentz, PARENTS)
+        create_csv(grade_students, constants.STUDENTS)
+        create_csv(parentz, constants.PARENTS)
 
         j += len(grade_students)
         total_count[3] += len(grade_students)
@@ -478,7 +484,7 @@ def create_classes_grades_sections(district, sch, state, fish_names, total_count
 
         wheretaken_id = (random.choice(district.wheretaken_list)).wheretaken_id
         assessment_outcome_list = associate_students_and_scores(student_temporal_list, scores, sch, wheretaken_id, asmt_list)
-        create_csv(assessment_outcome_list, ASSESSMENT_OUTCOME)
+        create_csv(assessment_outcome_list, constants.ASSESSMENT_OUTCOME)
 
 
 def associate_students_and_scores(student_temporal_list, scores, school, wheretaken_id, asmt_list):
@@ -627,10 +633,10 @@ def create_classes_for_grade(grade_students, teacher_list, school_id, stu_tea_ra
     # stu_tea_ratio = len(grade_students) / len(teacher_list)
 
     # calculate max number of class for a subject
-    max_num_of_class = max(1, round(len(grade_students) / MIN_CLASS_SIZE))
+    max_num_of_class = max(1, round(len(grade_students) / constants.MIN_CLASS_SIZE))
 
     total_classes = []
-    for subj in SUBJECTS:
+    for subj in constants.SUBJECTS:
         # calculate number of classes for a subject
         if(max_num_of_class >= 2):
             class_num = random.choice(range(int(round(max_num_of_class / 3)), max_num_of_class))
@@ -638,7 +644,7 @@ def create_classes_for_grade(grade_students, teacher_list, school_id, stu_tea_ra
             class_num = max_num_of_class
 
         # calculate number of teacher for a subject
-        teacher_num = min(len(teacher_list), max(1, round(len(teacher_list) / len(SUBJECTS))))
+        teacher_num = min(len(teacher_list), max(1, round(len(teacher_list) / len(constants.SUBJECTS))))
         subject_teachers = random.sample(teacher_list, teacher_num)
 
         subject_classes = create_classes(subj, class_num, grade_students, subject_teachers, stu_tea_ratio, school_id)
@@ -669,7 +675,7 @@ def create_one_class(sub_name, class_count, distribute_stu_inaclass, tea_list, s
     # calculate number of sections
     num_of_stu_in_class = len(distribute_stu_inaclass)
     section_num = round(num_of_stu_in_class / stu_tea_ratio)
-    if(num_of_stu_in_class < MIN_SECTION_SIZE or section_num < 2):
+    if(num_of_stu_in_class < constants.MIN_SECTION_SIZE or section_num < 2):
         section_num = 1
 
     # distribute student in each section
@@ -701,10 +707,10 @@ def create_one_class(sub_name, class_count, distribute_stu_inaclass, tea_list, s
         teacher_section_list.append(teacher_section)
 
     # write section into csv
-    create_csv(section_list, SECTIONS)
+    create_csv(section_list, constants.SECTIONS)
 
     # write teacher_section into csv
-    create_csv(teacher_section_list, TEACHER_SECTIONS)
+    create_csv(teacher_section_list, constants.TEACHER_SECTIONS)
 
     # create class, with sections
     eclass = Class(class_id, class_name, sub_name, section_stu_map, section_tea_map)
@@ -718,15 +724,15 @@ def generate_date():
     '''
     today = datetime.date.today()
     current_year = today.year
-    generate_year = current_year - random.randint(1, YEAR_SHIFT)
-    generate_month = random.randint(1, MONTH_TOTAL)
+    generate_year = current_year - random.randint(1, constants.YEAR_SHIFT)
+    generate_month = random.randint(1, constants.MONTH_TOTAL)
     generate_day = 1
-    if(generate_month in MONTH_LIST_31DAYS):
-        generate_day = random.choice(range(1, MONTH_DAY_MAX[0]))
-    elif(generate_month in MONTH_LIST_30DAYS):
-        generate_day = random.choice(range(1, MONTH_DAY_MAX[1]))
+    if(generate_month in constants.MONTH_LIST_31DAYS):
+        generate_day = random.choice(range(1, constants.MONTH_DAY_MAX[0]))
+    elif(generate_month in constants.MONTH_LIST_30DAYS):
+        generate_day = random.choice(range(1, constants.MONTH_DAY_MAX[1]))
     else:
-        generate_day = random.choice(range(1, MONTH_DAY_MAX[2]))
+        generate_day = random.choice(range(1, constants.MONTH_DAY_MAX[2]))
 
     return date(generate_year, generate_month, generate_day)
 
@@ -757,7 +763,7 @@ def list_to_chucks(list1, n):
 def makeup_list(avgin, stdin, minin, maxin, countin, target_sum):
     min_dist = MAXINT
     candidate_list = []
-    for i in range(RETRY_CAL_STAT):
+    for i in range(constants.RETRY_CAL_STAT):
         generated_list1 = py1.makeup_core(avgin, stdin, minin, maxin, countin)
         # generated_list2 = py1.makeup_core(py1.avg(generated_list1), py1.std(generated_list1), min(generated_list1), max(generated_list1), countin)
         # generated_list3 = py1.makeup_core(py1.avg(generated_list2), py1.std(generated_list2), min(generated_list2), max(generated_list2), countin)

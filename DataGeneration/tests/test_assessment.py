@@ -1,3 +1,5 @@
+from mock import MagicMock
+
 from constants import MIN_ASSMT_SCORE, MAX_ASSMT_SCORE, ASSMT_TYPES
 from datetime import date
 import assessment
@@ -33,6 +35,8 @@ class TestAssessment(unittest.TestCase):
         grade = 11
         total = 1378
 
+        state_data = assessment.StateData()
+        state_data.get_state_data = MagicMock(return_value=(284, 32, [25, 44, 26, 6]))
         expected_scorelist = assessment.generate_assmt_scores(state, asmt_type, year, period, grade, total)
         expected_claimnames = ASSMT_TYPES[asmt_type]['8']['claim_names']
 

@@ -82,7 +82,7 @@ def generate_student(state, district, school, grade, street_list, gender=None, h
     ext_user_params = {
         'external_user_student_id': id_generator.get_id(),
         'external_user_id': uuid4(),
-        'student_id': student.school_id,
+        'student_id': student.student_id,
         'rel_start_date': util.generate_start_date(grade),
         'rel_end_date': ''
     }

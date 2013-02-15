@@ -40,10 +40,10 @@ function setup_virtualenv {
         pwd
         if [ -f setup-developer.py ];  then
            echo "running setup-developer.py"
-           /opt/python3/bin/python setup-developer.py develop
+           python setup-developer.py develop
         else 
            echo "running setup.py"
-           /opt/python3/bin/python setup.py develop
+           python setup.py develop
         fi
     done
  

@@ -14,6 +14,10 @@ smarter.egg-info
 .idea/
 .project
 .pydevproject
+.coverage
 
-# csv's will be ignored
-# added gitignore file to the csv directory
+#########################
+# csv's will be ignored #
+# added gitignore file  # 
+# to the csv directory  #
+#########################

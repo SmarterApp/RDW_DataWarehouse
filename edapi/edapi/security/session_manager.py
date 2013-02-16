@@ -7,6 +7,12 @@ from database.connector import DBConnector
 from sqlalchemy.sql.expression import select, func
 from edapi.security.session import Session
 from datetime import datetime, timedelta
+import uuid
+import re
+import json
+from edapi.security.roles import Roles
+
+# TODO: remove datetime.now() and use func.now()
 
 
 # get user session
@@ -25,24 +31,21 @@ def get_user_session(user_session_id):
         if result:
             if 'session_context' in result[0]:
                 session_context = result[0]['session_context']
-                session = Session()
-                session.create_from_session_json_context(user_session_id, session_context)
-                session.set_expiration(result[0]['expiration'])
+                expiration = result[0]['expiration']
+                session = __create_from_session_json_context(user_session_id, session_context, expiration)
             connection.close_connection()
 
     return session
 
 
 def create_new_user_session(saml_response):
-    session = Session()
-    session.create_from_SAMLResponse(saml_response)
+    current_datetime = datetime.now()
+    expiration_datetime = current_datetime + timedelta(seconds=30)
+    session = __create_from_SAMLResponse(saml_response, expiration_datetime)
     connection = DBConnector()
     connection.open_connection()
     user_session = connection.get_table('user_session')
-    current_datetime = datetime.now()
-    expireation_datetime = current_datetime + timedelta(seconds=30)
-    connection.execute(user_session.insert(), session_id=session.get_session_id(), session_context=session.get_session_json_context(), last_access=current_datetime, expiration=expireation_datetime)
-    session.set_expiration(expireation_datetime)
+    connection.execute(user_session.insert(), session_id=session.get_session_id(), session_context=session.get_session_json_context(), last_access=current_datetime, expiration=expiration_datetime)
     connection.close_connection()
     return session
 
@@ -58,3 +61,59 @@ def update_session_access(session):
                        where(user_session.c.session_id == __session_id).
                        values(last_access=datetime.now()))
     connection.close_connection()
+
+
+# delete session by session_id
+def delete_session(session_id):
+    connection = DBConnector()
+    connection.open_connection()
+    user_session = connection.get_table('user_session')
+    connection.execute(user_session.delete(user_session.c.session_id == session_id))
+    connection.close_connection()
+
+
+# populate session from SAMLResponse
+def __create_from_SAMLResponse(saml_response, expiration):
+    # make a UUID based on the host ID and current time
+    __session_id = str(uuid.uuid1())
+
+    # get Attributes
+    __assertion = saml_response.get_assertion()
+    __attributes = __assertion.get_attributes()
+    session = Session()
+    session.set_session_id(__session_id)
+    # get fullName
+    if 'fullName' in __attributes:
+        if __attributes['fullName']:
+            session.set_fullName(__attributes['fullName'][0])
+    # get uid
+    if 'uid' in __attributes:
+        if __attributes['uid']:
+            session.set_uid(__attributes['uid'][0])
+    # get roles
+    session.set_roles(__get_roles(__attributes))
+    session.set_expiration(expiration)
+    return session
+
+
+# deserialize from text
+def __create_from_session_json_context(session_id, session_json_context, expiration):
+    session = Session()
+    session.set_session_id(session_id)
+    session.set_sessio(json.loads(session_json_context))
+    session.set_expiration(expiration)
+    return session
+
+
+def __get_roles(attributes):
+    roles = []
+    values = attributes.get("memberOf", None)
+    if values is not None:
+        for value in values:
+            cn = re.search('cn=(.*?),', value)
+            if cn is not None:
+                role = cn.group(1).upper()
+                roles.append(role)
+    if not roles:
+        roles.append(Roles.NONE)
+    return roles

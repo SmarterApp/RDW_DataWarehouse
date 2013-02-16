@@ -18,7 +18,7 @@ def session_check(session_id, request):
         if session.is_expire():
             pass
         else:
-            roles = session.get_roles()
+            roles = session.__get_roles()
             update_session_access(session)
     else:
         # There is no user session, set the roles to none, when do we get into this situation?

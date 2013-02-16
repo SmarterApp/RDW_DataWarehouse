@@ -4,24 +4,7 @@ Created on Feb 15, 2013
 @author: tosako
 '''
 import json
-import uuid
-import re
 from datetime import datetime
-from edapi.security.roles import Roles
-
-
-def get_roles(attributes):
-    roles = []
-    values = attributes.get("memberOf", None)
-    if values is not None:
-        for value in values:
-            cn = re.search('cn=(.*?),', value)
-            if cn is not None:
-                role = cn.group(1).upper()
-                roles.append(role)
-    if not roles:
-        roles.append(Roles.NONE)
-    return roles
 
 
 class Session:
@@ -38,30 +21,6 @@ class Session:
         self.__session['roles'] = []
         self.__session['name'] = {'fullName': None}
 
-    # populate session from SAMLResponse
-    def create_from_SAMLResponse(self, saml_response):
-        # make a UUID based on the host ID and current time
-        self.__session_id = str(uuid.uuid1())
-
-        # get Attributes
-        __assertion = saml_response.get_assertion()
-        __attributes = __assertion.get_attributes()
-        # get fullName
-        if 'fullName' in __attributes:
-            if __attributes['fullName']:
-                self.__session['name']['fullName'] = __attributes['fullName'][0]
-        # get uid
-        if 'uid' in __attributes:
-            if __attributes['uid']:
-                self.__session['uid'] = __attributes['uid'][0]
-        # get roles
-        self.__session['roles'] = get_roles(__attributes)
-
-    # deserialize from text
-    def create_from_session_json_context(self, session_id, session_json_context):
-        self.__session_id = session_id
-        self.__session = json.loads(session_json_context)
-
     # serialize to text
     def get_session_json_context(self):
         return json.dumps(self.__session)
@@ -69,11 +28,26 @@ class Session:
     def get_session_id(self):
         return self.__session_id
 
-    def get_roles(self):
+    def __get_roles(self):
         return self.__session['roles']
 
     def get_name(self):
         return self.__session['name']
+
+    def set_session_id(self, session_id):
+        self.__session_id = session_id
+
+    def set_uid(self, uid):
+        self.__session['uid'] = uid
+
+    def set_roles(self, roles):
+        self.__session['roles'] = roles
+
+    def set_fullName(self, fullName):
+        self.__session['name']['fullName'] = fullName
+
+    def set_session(self, session):
+        self.__session = session
 
     def set_expiration(self, datetime):
         self.__expiration = datetime

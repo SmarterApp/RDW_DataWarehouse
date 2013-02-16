@@ -1,5 +1,6 @@
-from pyramid.security import NO_PERMISSION_REQUIRED, forget, remember
-from pyramid.httpexceptions import HTTPFound
+from pyramid.security import NO_PERMISSION_REQUIRED, forget, remember,\
+    authenticated_userid, effective_principals
+from pyramid.httpexceptions import HTTPFound, HTTPForbidden
 from pyramid.view import view_config, forbidden_view_config
 from xml.dom.minidom import parseString
 import base64
@@ -8,6 +9,7 @@ from edapi.saml2.saml_auth import SamlAuth
 from edapi.saml2.saml_response import SAMLResponse
 import urllib
 from edapi.security.session_manager import create_new_user_session
+from edapi.security.roles import Roles
 '''
 Created on Feb 13, 2013
 
@@ -15,17 +17,33 @@ Created on Feb 13, 2013
 '''
 
 
+# forbidden_view_config decorator indicates that this is the route to redirect to when an user
+# has no access to a page
 @view_config(route_name='login', permission=NO_PERMISSION_REQUIRED)
 @forbidden_view_config(renderer='json')
 def login(request):
+    # TODO:  derive from configuration
     url = 'http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp?%s'
+
+    # Both of these calls will trigger our callback
+    session_id = authenticated_userid(request)
+    principle = effective_principals(request)
+
+    # Requests will be forwarded here when users aren't authorized to those pages, how to prevent it?
+    # Here, we return 403 for users with a no role
+    if Roles.NONE in principle:
+        return HTTPForbidden()
 
     referrer = request.url
     if referrer == request.route_url('login'):
         # Never redirect back to login page
         # TODO redirect to some landing home page
-        referrer = '/'
+        referrer = request.route_url('list_of_reports')
     params = {'RelayState': request.params.get('came_from', referrer)}
+
+    # clear out the session if we found one in the cookie
+    if session_id is not None:
+        pass
 
     saml_request = SamlRequest()
 
@@ -60,7 +78,7 @@ def saml2_post_consumer(request):
         # create a session
         session_id = create_new_user_session(response).get_session_id()
 
-        # Save principle to cookie
+        # Save session id to cookie
         headers = remember(request, session_id)
 
         # Get the url saved in RelayState from SAML request, redirect it back to it

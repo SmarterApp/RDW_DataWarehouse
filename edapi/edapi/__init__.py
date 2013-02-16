@@ -2,8 +2,7 @@
 Entry point for edapi
 
 '''
-from pyramid.authentication import SessionAuthenticationPolicy,\
-    AuthTktAuthenticationPolicy
+from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from edapi.security.security import session_check
 from pyramid.session import UnencryptedCookieSessionFactoryConfig

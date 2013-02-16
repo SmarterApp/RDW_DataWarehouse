@@ -7,6 +7,7 @@ import json
 import uuid
 import re
 from datetime import datetime
+from edapi.security.roles import Roles
 
 
 def get_roles(attributes):
@@ -16,10 +17,10 @@ def get_roles(attributes):
         for value in values:
             cn = re.search('cn=(.*?),', value)
             if cn is not None:
-                role = cn.group(1).lower()
+                role = cn.group(1).upper()
                 roles.append(role)
     if not roles:
-        roles.append("NONE")
+        roles.append(Roles.NONE)
     return roles
 
 

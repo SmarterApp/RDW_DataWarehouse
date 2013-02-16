@@ -4,8 +4,7 @@ Entry point for edapi
 '''
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
-from edapi.security.security import session_check
-from pyramid.session import UnencryptedCookieSessionFactoryConfig
+from edapi.security.callback import session_check
 
 EDAPI_REPORTS_PLACEHOLDER = 'edapi_reports'
 
@@ -53,7 +52,7 @@ def includeme(config):
 
     config.set_authentication_policy(authentication_policy)
     config.set_authorization_policy(authorization_policy)
-    config.set_root_factory('edapi.security.models.RootFactory')
+    config.set_root_factory('edapi.security.root_factory.RootFactory')
 
     # routing for retrieving list of report names with GET
     config.add_route('list_of_reports', '/data')

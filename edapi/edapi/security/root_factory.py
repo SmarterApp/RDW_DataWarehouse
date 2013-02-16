@@ -4,9 +4,8 @@ Created on Feb 11, 2013
 @author: dip
 '''
 from pyramid.security import (
-    Allow,
-    Everyone,
-    Deny)
+    Allow
+)
 from edapi.security.roles import Roles
 
 

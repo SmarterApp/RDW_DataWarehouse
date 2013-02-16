@@ -45,8 +45,12 @@ class ContentTypePredicate(object):
 # this is automatically called by consumer of edapi when it calls config.include(edapi)
 def includeme(config):
 
-    # TODO derive from config
-    authentication_policy = AuthTktAuthenticationPolicy('edware_secret', cookie_name='edware', callback=session_check, hashalg='sha512')
+    settings = config.get_settings()
+    authentication_policy = AuthTktAuthenticationPolicy(settings['auth.secret'],
+                                                        cookie_name=settings['auth.cookie_name'],
+                                                        callback=session_check,
+                                                        hashalg=settings['auth.hashalg'],
+                                                        timeout=int(settings['auth.timeout']))
 
     authorization_policy = ACLAuthorizationPolicy()
 

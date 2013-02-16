@@ -8,7 +8,8 @@ from edapi.saml2.saml_request import SamlRequest
 from edapi.saml2.saml_auth import SamlAuth
 from edapi.saml2.saml_response import SAMLResponse
 import urllib
-from edapi.security.session_manager import create_new_user_session
+from edapi.security.session_manager import create_new_user_session,\
+    delete_session
 from edapi.security.roles import Roles
 '''
 Created on Feb 13, 2013
@@ -43,7 +44,7 @@ def login(request):
 
     # clear out the session if we found one in the cookie
     if session_id is not None:
-        pass
+        delete_session(session_id)
 
     saml_request = SamlRequest()
 

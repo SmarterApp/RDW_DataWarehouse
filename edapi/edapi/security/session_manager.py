@@ -100,7 +100,7 @@ def __create_from_SAMLResponse(saml_response, expiration):
 def __create_from_session_json_context(session_id, session_json_context, expiration):
     session = Session()
     session.set_session_id(session_id)
-    session.set_sessio(json.loads(session_json_context))
+    session.set_session(json.loads(session_json_context))
     session.set_expiration(expiration)
     return session
 

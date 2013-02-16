@@ -28,7 +28,7 @@ class Session:
     def get_session_id(self):
         return self.__session_id
 
-    def __get_roles(self):
+    def get_roles(self):
         return self.__session['roles']
 
     def get_name(self):

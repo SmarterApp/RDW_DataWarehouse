@@ -29,8 +29,7 @@ class RootFactory(object):
                (Allow, Roles.STATE_EDUCATION_ADMINISTRATOR_1, 'view'),
                (Allow, Roles.STATE_EDUCATION_ADMINISTRATOR_2, 'view'),
                (Allow, Roles.CONSORTIUM_EDUCATION_ADMINISTRATOR_1, 'view'),
-               (Allow, Roles.CONSORTIUM_EDUCATION_ADMINISTRATOR_2, 'view'),
-               (Deny, Roles.NONE, 'view')]
+               (Allow, Roles.CONSORTIUM_EDUCATION_ADMINISTRATOR_2, 'view')]
 
     def __init__(self, request):
         pass

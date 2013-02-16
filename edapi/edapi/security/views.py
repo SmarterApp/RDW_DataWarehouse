@@ -23,8 +23,7 @@ from edapi.security.roles import Roles
 @view_config(route_name='login', permission=NO_PERMISSION_REQUIRED)
 @forbidden_view_config(renderer='json')
 def login(request):
-    # TODO:  derive from configuration or SAML metadata.xml from IDP
-    url = 'http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp?%s'
+    url = request.registry.settings['auth.idp_server_login_url']
 
     # Both of these calls will trigger our callback
     session_id = authenticated_userid(request)
@@ -47,14 +46,14 @@ def login(request):
     if session_id is not None:
         delete_session(session_id)
 
-    saml_request = SamlAuthnRequest()
+    saml_request = SamlAuthnRequest(request.registry.settings['auth.issuer_name'])
 
     # combined saml_request into url params and url encode it
     params.update(saml_request.create_request())
     params = urllib.parse.urlencode(params)
 
     # Redirect to openam
-    return HTTPFound(location=url % params)
+    return HTTPFound(location=url + "?%s" % params)
 
 
 @view_config(route_name='logout', permission=NO_PERMISSION_REQUIRED)
@@ -73,16 +72,15 @@ def logout(request):
         session = get_user_session(session_id)
 
         # Logout request to identity provider
-        logout_request = SamlLogoutRequest(session.get_idp_session_index())
+        logout_request = SamlLogoutRequest(request.registry.settings['auth.issuer_name'], session.get_idp_session_index())
         params = logout_request.create_request()
         params = urllib.parse.urlencode(params)
-        # TODO: derive from config
-        url = 'http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp?%s'
+        url = request.registry.settings['auth.idp_server_logout_url'] + "?%s" % params
 
         # delete our session
         delete_session(session_id)
 
-    return HTTPFound(location=url % params, headers=headers)
+    return HTTPFound(location=url, headers=headers)
 
 
 @view_config(route_name='saml2_post_consumer', permission=NO_PERMISSION_REQUIRED, request_method='POST')

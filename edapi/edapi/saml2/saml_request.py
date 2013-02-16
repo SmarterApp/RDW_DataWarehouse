@@ -13,7 +13,7 @@ import base64
 #Represents a SamlRequest
 class SamlRequest:
 
-    def __init__(self, issuer_name='http://localhost:6543/sp.xml'):
+    def __init__(self, issuer_name):
         # UUID based on host ID and current time, or use 4 to get random
         self._uuid = str(uuid.uuid1())
         self._issuer_name = issuer_name
@@ -34,8 +34,8 @@ class SamlRequest:
 
 class SamlAuthnRequest(SamlRequest):
 
-    def __init__(self):
-        SamlRequest.__init__(self)
+    def __init__(self, issuer_name):
+        SamlRequest.__init__(self, issuer_name)
 
     # Create XML SAML Auth Request
     # returns a byte string of a SAML AuthnRequest
@@ -70,8 +70,8 @@ class SamlAuthnRequest(SamlRequest):
 
 class SamlLogoutRequest(SamlRequest):
 
-    def __init__(self, session_index):
-        SamlRequest.__init__(self)
+    def __init__(self, issuer_name, session_index):
+        SamlRequest.__init__(self, issuer_name)
         self._session_index = session_index
 
     def create_request(self):

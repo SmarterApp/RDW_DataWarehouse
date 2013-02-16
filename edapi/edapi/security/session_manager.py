@@ -93,6 +93,8 @@ def __create_from_SAMLResponse(saml_response, expiration):
     # get roles
     session.set_roles(__get_roles(__attributes))
     session.set_expiration(expiration)
+    # get auth response session index that identifies the session with identity provider
+    session.set_idp_session_index(__assertion.get_session_index())
     return session
 
 
@@ -110,7 +112,7 @@ def __get_roles(attributes):
     values = attributes.get("memberOf", None)
     if values is not None:
         for value in values:
-            cn = re.search('cn=(.*?),', value)
+            cn = re.search('cn=(.*?),', value.lower())
             if cn is not None:
                 role = cn.group(1).upper()
                 roles.append(role)

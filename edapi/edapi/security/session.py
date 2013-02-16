@@ -20,6 +20,7 @@ class Session:
         self.__session['uid'] = None
         self.__session['roles'] = []
         self.__session['name'] = {'fullName': None}
+        self.__session['idpSessionIndex'] = None
 
     # serialize to text
     def get_session_json_context(self):
@@ -34,6 +35,9 @@ class Session:
     def get_name(self):
         return self.__session['name']
 
+    def get_idp_session_index(self):
+        return self.__session['idpSessionIndex']
+
     def set_session_id(self, session_id):
         self.__session_id = session_id
 
@@ -45,6 +49,9 @@ class Session:
 
     def set_fullName(self, fullName):
         self.__session['name']['fullName'] = fullName
+
+    def set_idp_session_index(self, index):
+        self.__session['idpSessionIndex'] = index
 
     def set_session(self, session):
         self.__session = session

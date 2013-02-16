@@ -1,21 +1,21 @@
+'''
+Created on Feb 13, 2013
+
+@author: dip
+'''
 from pyramid.security import NO_PERMISSION_REQUIRED, forget, remember,\
     authenticated_userid, effective_principals
 from pyramid.httpexceptions import HTTPFound, HTTPForbidden
 from pyramid.view import view_config, forbidden_view_config
 from xml.dom.minidom import parseString
 import base64
-from edapi.saml2.saml_request import SamlRequest
+from edapi.saml2.saml_request import SamlAuthnRequest, SamlLogoutRequest
 from edapi.saml2.saml_auth import SamlAuth
 from edapi.saml2.saml_response import SAMLResponse
 import urllib
 from edapi.security.session_manager import create_new_user_session,\
-    delete_session
+    delete_session, get_user_session
 from edapi.security.roles import Roles
-'''
-Created on Feb 13, 2013
-
-@author: dip
-'''
 
 
 # forbidden_view_config decorator indicates that this is the route to redirect to when an user
@@ -37,8 +37,8 @@ def login(request):
         return HTTPForbidden()
 
     referrer = request.url
-    if referrer == request.route_url('login'):
-        # Never redirect back to login page
+    if referrer == request.route_url('login') or referrer == request.route_url('logout'):
+        # Never redirect back to login page or logout
         # TODO redirect to some landing home page
         referrer = request.route_url('list_of_reports')
     params = {'RelayState': request.params.get('came_from', referrer)}
@@ -47,22 +47,42 @@ def login(request):
     if session_id is not None:
         delete_session(session_id)
 
-    saml_request = SamlRequest()
+    saml_request = SamlAuthnRequest()
 
     # combined saml_request into url params and url encode it
-    params.update(saml_request.get_auth_request())
+    params.update(saml_request.create_request())
     params = urllib.parse.urlencode(params)
 
     # Redirect to openam
     return HTTPFound(location=url % params)
 
 
-@view_config(route_name='logout')
+@view_config(route_name='logout', permission=NO_PERMISSION_REQUIRED)
 def logout(request):
-    # remove cookie
-    headers = forget(request)
-    # need to really log out from openam
-    return HTTPFound(location=request.route_url('login'), headers=headers)
+    # Get the current session
+    session_id = authenticated_userid(request)
+
+    # Redirect to login if no session exist
+    url = request.route_url('login')
+    headers = None
+    params = {}
+
+    if session_id is not None:
+        # remove cookie
+        headers = forget(request)
+        session = get_user_session(session_id)
+
+        # Logout request to identity provider
+        logout_request = SamlLogoutRequest(session.get_idp_session_index())
+        params = logout_request.create_request()
+        params = urllib.parse.urlencode(params)
+        # TODO: derive from config
+        url = 'http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp?%s'
+
+        # delete our session
+        delete_session(session_id)
+
+    return HTTPFound(location=url % params, headers=headers)
 
 
 @view_config(route_name='saml2_post_consumer', permission=NO_PERMISSION_REQUIRED, request_method='POST')

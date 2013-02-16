@@ -88,9 +88,14 @@ class SAMLResponse:
                                 if node0.localName == "Attribute":
                                     attribute = SAMLResponse.Assertion.Attribute(node0)
                                     self.__attributes[attribute.get_name()] = attribute.get_value()
+                    elif node.localName == "AuthnStatement":
+                        self.__session_index = node.getAttribute("SessionIndex")
 
         def get_attributes(self):
             return self.__attributes
+
+        def get_session_index(self):
+            return self.__session_index
 
         class SubjectConfirmation:
             def __init__(self, subjectConfirmation_node):

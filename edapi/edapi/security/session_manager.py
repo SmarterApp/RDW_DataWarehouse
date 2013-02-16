@@ -14,6 +14,8 @@ from edapi.security.session import Session
 
 # TODO: remove datetime.now() and use func.now()
 
+__expiration_in_seconds = 30
+
 
 # get user session
 # if user session does not exist, then return None
@@ -32,16 +34,17 @@ def get_user_session(user_session_id):
             if 'session_context' in result[0]:
                 session_context = result[0]['session_context']
                 expiration = result[0]['expiration']
-                session = __create_from_session_json_context(user_session_id, session_context, expiration)
+                last_access = result[0]['last_access']
+                session = __create_from_session_json_context(user_session_id, session_context, last_access, expiration)
             connection.close_connection()
 
     return session
 
 
-def create_new_user_session(saml_response):
+def create_new_user_session(saml_response, session_expire_after_in_secs=__expiration_in_seconds):
     current_datetime = datetime.now()
-    expiration_datetime = current_datetime + timedelta(seconds=30)
-    session = __create_from_SAMLResponse(saml_response, expiration_datetime)
+    expiration_datetime = current_datetime + timedelta(seconds=session_expire_after_in_secs)
+    session = __create_from_SAMLResponse(saml_response, current_datetime, expiration_datetime)
     connection = DBConnector()
     connection.open_connection()
     user_session = connection.get_table('user_session')
@@ -73,7 +76,7 @@ def delete_session(session_id):
 
 
 # populate session from SAMLResponse
-def __create_from_SAMLResponse(saml_response, expiration):
+def __create_from_SAMLResponse(saml_response, last_access, expiration):
     # make a UUID based on the host ID and current time
     __session_id = str(uuid.uuid1())
 
@@ -92,18 +95,23 @@ def __create_from_SAMLResponse(saml_response, expiration):
             session.set_uid(__attributes['uid'][0])
     # get roles
     session.set_roles(__get_roles(__attributes))
+
     session.set_expiration(expiration)
+    session.set_last_access(last_access)
+
     # get auth response session index that identifies the session with identity provider
     session.set_idp_session_index(__assertion.get_session_index())
+
     return session
 
 
 # deserialize from text
-def __create_from_session_json_context(session_id, session_json_context, expiration):
+def __create_from_session_json_context(session_id, session_json_context, last_access, expiration):
     session = Session()
     session.set_session_id(session_id)
     session.set_session(json.loads(session_json_context))
     session.set_expiration(expiration)
+    session.set_last_access(last_access)
     return session
 
 

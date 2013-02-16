@@ -11,8 +11,9 @@ class Session:
     def __init__(self):
         self.__session = {}
         self.__prepare()
-        # keep datetime only this class, not session context
+        # leave datetime only this class, not save in session context
         self.__expiration = None
+        self.__last_access = None
 
     # initialize all session values
     def __prepare(self):
@@ -29,6 +30,9 @@ class Session:
     def get_session_id(self):
         return self.__session_id
 
+    def get_uid(self):
+        return self.__session['uid']
+
     def get_roles(self):
         return self.__session['roles']
 
@@ -37,6 +41,9 @@ class Session:
 
     def get_idp_session_index(self):
         return self.__session['idpSessionIndex']
+
+    def get_last_access(self):
+        return self.__last_access
 
     def set_session_id(self, session_id):
         self.__session_id = session_id
@@ -58,6 +65,9 @@ class Session:
 
     def set_expiration(self, datetime):
         self.__expiration = datetime
+
+    def set_last_access(self, datetime):
+        self.__last_access = datetime
 
     def is_expire(self):
         is_expire = datetime.now() > self.__expiration

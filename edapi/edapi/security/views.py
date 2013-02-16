@@ -23,7 +23,7 @@ from edapi.security.roles import Roles
 @view_config(route_name='login', permission=NO_PERMISSION_REQUIRED)
 @forbidden_view_config(renderer='json')
 def login(request):
-    # TODO:  derive from configuration
+    # TODO:  derive from configuration or SAML metadata.xml from IDP
     url = 'http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp?%s'
 
     # Both of these calls will trigger our callback

@@ -5,12 +5,12 @@ Created on Feb 14, 2013
 '''
 from database.connector import DBConnector
 from sqlalchemy.sql.expression import select, func
-from edapi.security.session import Session
 from datetime import datetime, timedelta
 import uuid
 import re
 import json
 from edapi.security.roles import Roles
+from edapi.security.session import Session
 
 # TODO: remove datetime.now() and use func.now()
 

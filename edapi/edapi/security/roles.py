@@ -28,3 +28,11 @@ Roles = utils.enum(DEPLOYMENT_ADMINISTRATOR='DEPLOYMENT_ADMINISTRATOR',
                    CONSORTIUM_EDUCATION_ADMINISTRATOR_1='CONSORTIUM_EDUCATION_ADMINISTRATOR_1',
                    CONSORTIUM_EDUCATION_ADMINISTRATOR_2='CONSORTIUM_EDUCATION_ADMINISTRATOR_2',
                    )
+
+
+# Given a list of roles, return true if there is an unknown role
+def has_undefined_roles(roles):
+    for role in roles:
+        if Roles.reverse_mapping.get(role) is None:
+            return True
+    return False

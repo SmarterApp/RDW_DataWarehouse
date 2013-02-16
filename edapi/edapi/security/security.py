@@ -21,6 +21,7 @@ def session_check(session_id, request):
             roles = session.get_roles()
             update_session_access(session)
     else:
-        # There is no user session, set the roles to none, when do we get into this situation?
+        # There is no user session, set the roles to none
+        # TODO: scenario is cookie has our session, but db doesn't
         roles = [Roles.NONE]
     return roles

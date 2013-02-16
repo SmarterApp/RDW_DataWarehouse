@@ -9,7 +9,7 @@ from datetime import datetime, timedelta
 import uuid
 import re
 import json
-from edapi.security.roles import Roles
+from edapi.security.roles import Roles, has_undefined_roles
 from edapi.security.session import Session
 
 # TODO: remove datetime.now() and use func.now()
@@ -114,6 +114,7 @@ def __get_roles(attributes):
             if cn is not None:
                 role = cn.group(1).upper()
                 roles.append(role)
-    if not roles:
+    # If user has no roles or has a role that is not defined
+    if not roles or has_undefined_roles(roles):
         roles.append(Roles.NONE)
     return roles

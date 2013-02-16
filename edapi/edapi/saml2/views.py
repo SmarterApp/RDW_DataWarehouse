@@ -31,7 +31,8 @@ def login(request):
     principle = effective_principals(request)
 
     # Requests will be forwarded here when users aren't authorized to those pages, how to prevent it?
-    # Here, we return 403 for users with a no role
+    # Here, we return 403 for users that has a role of None
+    # This can be an user that has no role from IDP or has a role that we don't know of
     if Roles.NONE in principle:
         return HTTPForbidden()
 

@@ -13,9 +13,9 @@ class SamlAuth:
     def is_validate(self):
         status = self.__response.get_status()
         status_code = status.get_status_code()
-        # TODO: make it work!
-        if self.__id != self.__response.get_id():
-            return False
+        # TODO: make it work!  We don't know where to save the auth_request_id right now
+#        if self.__id != self.__response.get_id():
+#            return False
         if status_code[-7:] != "Success":
             return False
         return True

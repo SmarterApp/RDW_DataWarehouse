@@ -27,12 +27,12 @@ def login(request):
 
     # Both of these calls will trigger our callback
     session_id = authenticated_userid(request)
-    principle = effective_principals(request)
+    principals = effective_principals(request)
 
     # Requests will be forwarded here when users aren't authorized to those pages, how to prevent it?
     # Here, we return 403 for users that has a role of None
     # This can be an user that has no role from IDP or has a role that we don't know of
-    if Roles.NONE in principle:
+    if Roles.NONE in principals:
         return HTTPForbidden()
 
     referrer = request.url
@@ -72,7 +72,9 @@ def logout(request):
         session = get_user_session(session_id)
 
         # Logout request to identity provider
-        logout_request = SamlLogoutRequest(request.registry.settings['auth.issuer_name'], session.get_idp_session_index())
+        logout_request = SamlLogoutRequest(request.registry.settings['auth.issuer_name'],
+                                           session.get_idp_session_index(),
+                                           request.registry.settings['auth.name_qualifier'])
         params = logout_request.create_request()
         params = urllib.parse.urlencode(params)
         url = request.registry.settings['auth.idp_server_logout_url'] + "?%s" % params
@@ -85,6 +87,7 @@ def logout(request):
 
 @view_config(route_name='saml2_post_consumer', permission=NO_PERMISSION_REQUIRED, request_method='POST')
 def saml2_post_consumer(request):
+    # TODO: compare with auth response id
     auth_request_id = "retrieve the id"
 
     # Validate the response id against session

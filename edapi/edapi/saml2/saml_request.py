@@ -10,7 +10,7 @@ import zlib
 import base64
 
 
-#Represents a SamlRequest
+# Represents a SamlRequest
 class SamlRequest:
 
     def __init__(self, issuer_name):
@@ -22,9 +22,9 @@ class SamlRequest:
         pass
 
     # Deflate, base64 encode a byte string representing a SAMLRequest
-    def encode_saml_request(self, data):
+    def deflate_base64_encode(self, data):
         compressed = zlib.compress(data)
-        # TODO comment on this
+        # Strip away the first 2 bytes (header) and 4 bytes (checksum)
         encoded = base64.b64encode(compressed[2:-4])
         return {'SAMLRequest': encoded}
 
@@ -32,6 +32,7 @@ class SamlRequest:
         return self._uuid
 
 
+# Represents a Saml AuthnRequest for Login
 class SamlAuthnRequest(SamlRequest):
 
     def __init__(self, issuer_name):
@@ -42,22 +43,22 @@ class SamlAuthnRequest(SamlRequest):
     def create_request(self):
         doc = Document()
         samlp_auth_request = doc.createElement('samlp:AuthnRequest')
-        samlp_auth_request.setAttribute('xmlns:samlp', "urn:oasis:names:tc:SAML:2.0:protocol")
-        samlp_auth_request.setAttribute('xmlns:saml', "urn:oasis:names:tc:SAML:2.0:assertion")
+        samlp_auth_request.setAttribute('xmlns:samlp', 'urn:oasis:names:tc:SAML:2.0:protocol')
+        samlp_auth_request.setAttribute('xmlns:saml', 'urn:oasis:names:tc:SAML:2.0:assertion')
         samlp_auth_request.setAttribute('ID', self._uuid)
-        samlp_auth_request.setAttribute('Version', "2.0")
-        samlp_auth_request.setAttribute('IssueInstant', strftime("%Y-%m-%dT%H:%M:%S", gmtime()))
-        samlp_auth_request.setAttribute('AssertionConsumerServiceIndex', "0")
-        samlp_auth_request.setAttribute("AttributeConsumingServiceIndex", "0")
+        samlp_auth_request.setAttribute('Version', '2.0')
+        samlp_auth_request.setAttribute('IssueInstant', strftime('%Y-%m-%dT%H:%M:%S', gmtime()))
+        samlp_auth_request.setAttribute('AssertionConsumerServiceIndex', '0')
+        samlp_auth_request.setAttribute('AttributeConsumingServiceIndex', '0')
 
-        saml_issuer = doc.createElement("saml:Issuer")
+        saml_issuer = doc.createElement('saml:Issuer')
         saml_issuer_text = doc.createTextNode(self._issuer_name)
         saml_issuer.appendChild(saml_issuer_text)
         samlp_auth_request.appendChild(saml_issuer)
 
-        samlp_name_id_policy = doc.createElement("samlp:NameIDPolicy")
-        samlp_name_id_policy.setAttribute("AllowCreate", "true")
-        samlp_name_id_policy.setAttribute("Format", "urn:oasis:names:tc:SAML:2.0:nameid-format:transient")
+        samlp_name_id_policy = doc.createElement('samlp:NameIDPolicy')
+        samlp_name_id_policy.setAttribute('AllowCreate', 'true')
+        samlp_name_id_policy.setAttribute('Format', 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient')
         samlp_auth_request.appendChild(samlp_name_id_policy)
 
         doc.appendChild(samlp_auth_request)
@@ -65,39 +66,41 @@ class SamlAuthnRequest(SamlRequest):
         # Seriailize the doc's root element so that it will strip out the xml declaration
         data = doc.documentElement.toxml('utf-8')
 
-        return self.encode_saml_request(data)
+        return self.deflate_base64_encode(data)
 
 
+# Represents a Saml LogoutRequest
 class SamlLogoutRequest(SamlRequest):
 
-    def __init__(self, issuer_name, session_index):
+    def __init__(self, issuer_name, session_index, name_qualifier):
         SamlRequest.__init__(self, issuer_name)
         self._session_index = session_index
+        self._name_qualifier = name_qualifier
 
     def create_request(self):
         doc = Document()
 
         samlp_logout_request = doc.createElement('saml2p:SamlLogoutRequest')
-        samlp_logout_request.setAttribute('xmlns:saml2p', "urn:oasis:names:tc:SAML:2.0:protocol")
+        samlp_logout_request.setAttribute('xmlns:saml2p', 'urn:oasis:names:tc:SAML:2.0:protocol')
         samlp_logout_request.setAttribute('ID', self._uuid)
-        samlp_logout_request.setAttribute('Version', "2.0")
-        samlp_logout_request.setAttribute('IssueInstant', strftime("%Y-%m-%dT%H:%M:%S", gmtime()))
+        samlp_logout_request.setAttribute('Version', '2.0')
+        samlp_logout_request.setAttribute('IssueInstant', strftime('%Y-%m-%dT%H:%M:%S', gmtime()))
 
-        saml_issuer = doc.createElement("saml2:Issuer")
-        saml_issuer.setAttribute('xmlns:saml2', "urn:oasis:names:tc:SAML:2.0:assertion")
+        saml_issuer = doc.createElement('saml2:Issuer')
+        saml_issuer.setAttribute('xmlns:saml2', 'urn:oasis:names:tc:SAML:2.0:assertion')
         saml_issuer_text = doc.createTextNode(self._issuer_name)
         saml_issuer.appendChild(saml_issuer_text)
         samlp_logout_request.appendChild(saml_issuer)
 
-        samlp_name_id = doc.createElement("saml2:NameID")
-        samlp_name_id.setAttribute("xmlns:saml2", "urn:oasis:names:tc:SAML:2.0:assertion")
-        samlp_name_id.setAttribute("NameQualifier", "http://edwappsrv4.poc.dum.edwdc.net:18080/opensso")
-        samlp_name_id.setAttribute("Format", "urn:oasis:names:tc:SAML:2.0:nameid-format:transient")
-        samlp_name_id_text = doc.createTextNode("iTOWZVDc4u3txlVB/RJMMw5ZSAPW")
+        samlp_name_id = doc.createElement('saml2:NameID')
+        samlp_name_id.setAttribute('xmlns:saml2', 'urn:oasis:names:tc:SAML:2.0:assertion')
+        samlp_name_id.setAttribute('NameQualifier', self._name_qualifier)
+        samlp_name_id.setAttribute('Format', 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient')
+        samlp_name_id_text = doc.createTextNode('iTOWZVDc4u3txlVB/RJMMw5ZSAPW')
         samlp_name_id.appendChild(samlp_name_id_text)
         samlp_logout_request.appendChild(samlp_name_id)
 
-        samlp_session_index = doc.createElement("saml2p:SessionIndex")
+        samlp_session_index = doc.createElement('saml2p:SessionIndex')
         samlp_session_index_text = doc.createTextNode(self._session_index)
         samlp_session_index.appendChild(samlp_session_index_text)
         samlp_logout_request.appendChild(samlp_session_index)
@@ -107,4 +110,4 @@ class SamlLogoutRequest(SamlRequest):
         # Seriailize the doc's root element so that it will strip out the xml declaration
         data = doc.documentElement.toxml('utf-8')
 
-        return self.encode_saml_request(data)
+        return self.deflate_base64_encode(data)

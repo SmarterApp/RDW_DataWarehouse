@@ -12,7 +12,7 @@ class Test(Unittest_with_sqlite):
 
     def test_number_of_tables(self):
         # check number of tables
-        self.assertEqual(15, len(self.get_Metadata().tables), "Number of table does not match")
+        self.assertEqual(16, len(self.get_Metadata().tables), "Number of table does not match")
 
     # Test dim_district data
     def test_dim_district(self):

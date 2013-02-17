@@ -49,8 +49,9 @@ def includeme(config):
     authentication_policy = AuthTktAuthenticationPolicy(settings['auth.secret'],
                                                         cookie_name=settings['auth.cookie_name'],
                                                         callback=session_check,
-                                                        hashalg=settings['auth.hashalg'],
-                                                        timeout=int(settings['auth.timeout']))
+                                                        hashalg=settings['auth.hashalg'],)
+                                                        #max_age=int(settings['auth.max_age']),
+                                                        #timeout=int(settings['auth.timeout']))
 
     authorization_policy = ACLAuthorizationPolicy()
 

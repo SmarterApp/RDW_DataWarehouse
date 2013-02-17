@@ -69,7 +69,7 @@ def includeme(config):
     # TODO: clean up and derive from ini?
     config.add_route('login', '/login')
     config.add_route('logout', '/logout')
-    config.add_route('saml2_post_consumer', '/Hello_dip')
+    config.add_route('saml2_post_consumer', '/saml_post')
 
     # directive to handle report_config decorators
     config.add_directive('add_report_config', add_report_config)

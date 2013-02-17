@@ -28,7 +28,7 @@ class Test(Unittest_with_sqlite):
         connection.close_connection()
 
     def test_create_session_from_SAMLResponse(self):
-        session = create_new_user_session(create_SAML())
+        session = create_new_user_session(create_SAMLResponse())
         self.assertIsNotNone(session, "session should not be None")
         self.assertEqual(len(session.get_session_id()), 36, "session id Length must be 36, UUID")
         self.assertEqual(session.get_uid(), "linda.kim", "uid is linda.kim")
@@ -56,7 +56,7 @@ class Test(Unittest_with_sqlite):
         self.assertEqual(session.get_name()['fullName'], "Linda Kim", "name is Linda Kim")
 
     def test_update_last_access_session(self):
-        session = create_new_user_session(create_SAML())
+        session = create_new_user_session(create_SAMLResponse())
         session_id = session.get_session_id()
         last_access = session.get_last_access()
         time.sleep(1)
@@ -66,20 +66,20 @@ class Test(Unittest_with_sqlite):
         self.assertTrue(last_access < latest_last_access, "last_access should be updated")
 
     def test_delete_session(self):
-        session = create_new_user_session(create_SAML())
+        session = create_new_user_session(create_SAMLResponse())
         session_id = session.get_session_id()
         delete_session(session_id)
         latest_session = get_user_session(session_id)
         self.assertIsNone(latest_session, "session should be deleted")
 
     def test_session_expiration(self):
-        session = create_new_user_session(create_SAML(), session_expire_after_in_secs=1)
+        session = create_new_user_session(create_SAMLResponse(), session_expire_after_in_secs=1)
         self.assertFalse(session.is_expire(), "session should not be expired yet")
         time.sleep(2)
         self.assertTrue(session.is_expire(), "session should be expired")
 
 
-def create_SAML():
+def create_SAMLResponse():
     saml_xml = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'resources', 'SAMLResponse.xml'))
     with open(saml_xml, 'r') as f:
         xml = f.read()

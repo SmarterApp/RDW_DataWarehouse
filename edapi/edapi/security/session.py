@@ -4,7 +4,6 @@ Created on Feb 15, 2013
 @author: tosako
 '''
 import json
-from datetime import datetime
 
 
 class Session:
@@ -45,6 +44,9 @@ class Session:
     def get_last_access(self):
         return self.__last_access
 
+    def get_expiration(self):
+        return self.__expiration
+
     def set_session_id(self, session_id):
         self.__session_id = session_id
 
@@ -68,7 +70,3 @@ class Session:
 
     def set_last_access(self, datetime):
         self.__last_access = datetime
-
-    def is_expire(self):
-        is_expire = datetime.now() > self.__expiration
-        return is_expire

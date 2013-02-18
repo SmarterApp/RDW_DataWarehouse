@@ -4,7 +4,7 @@ Created on Feb 11, 2013
 @author: dip
 '''
 from edapi.security.session_manager import get_user_session,\
-    update_session_access
+    update_session_access, is_session_expired
 from edapi.security.roles import Roles
 
 
@@ -15,7 +15,7 @@ def session_check(session_id, request):
     session = get_user_session(session_id)
 
     if session is not None:
-        if session.is_expire():
+        if is_session_expired(session):
             pass
         else:
             roles = session.get_roles()

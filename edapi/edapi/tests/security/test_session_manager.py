@@ -7,7 +7,8 @@ import os
 import unittest
 from database.tests.unittest_with_sqlite import Unittest_with_sqlite
 from edapi.security.session_manager import get_user_session, \
-    create_new_user_session, update_session_access, delete_session
+    create_new_user_session, update_session_access, delete_session, \
+    is_session_expired
 from database.connector import DBConnector
 from edapi.saml2.saml_response import SAMLResponse
 from edapi.security.roles import Roles
@@ -74,9 +75,9 @@ class Test(Unittest_with_sqlite):
 
     def test_session_expiration(self):
         session = create_new_user_session(create_SAMLResponse(), session_expire_after_in_secs=1)
-        self.assertFalse(session.is_expire(), "session should not be expired yet")
+        self.assertFalse(is_session_expired(session), "session should not be expired yet")
         time.sleep(2)
-        self.assertTrue(session.is_expire(), "session should be expired")
+        self.assertTrue(is_session_expired(session), "session should be expired")
 
 
 def create_SAMLResponse():

@@ -115,6 +115,12 @@ def __create_from_session_json_context(session_id, session_json_context, last_ac
     return session
 
 
+# check if current session is expired or not
+def is_session_expired(session):
+    is_expire = datetime.now() > session.get_expiration()
+    return is_expire
+
+
 def __get_roles(attributes):
     roles = []
     values = attributes.get("memberOf", None)

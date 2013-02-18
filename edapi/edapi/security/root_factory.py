@@ -10,6 +10,11 @@ from edapi.security.roles import Roles
 
 
 class RootFactory(object):
+    '''
+    Called on every request sent to the application by pyramid
+    The root factory returns the traversal root of an application
+    Right now, we're saying that all roles have permission
+    '''
     __acl__ = [(Allow, Roles.DEPLOYMENT_ADMINISTRATOR, 'view'),
                (Allow, Roles.SYSTEM_ADMINISTRATOR, 'view'),
                (Allow, Roles.DATA_LOADER, 'view'),

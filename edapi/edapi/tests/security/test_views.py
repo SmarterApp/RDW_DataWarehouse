@@ -152,6 +152,11 @@ class Test(Unittest_with_sqlite):
         self.assertTrue(len(queries) == 1)
         self.assertIsNotNone(queries['SAMLRequest'])
 
+    def test_logout_with_session_in_cookie_but_no_session_in_db(self):
+        self.__config.testing_securitypolicy("123", ['TEACHER'])
+        http = logout(self.__request)
+        self.assertEquals(http.location, 'http://example.com/dummy/login')
+
     def test_saml2_post_consumer_Invalid_SAML(self):
         self.__request.POST = {}
         self.__request.POST['SAMLResponse'] = get_saml_from_resource_file("InvalidSAMLResponse.txt")

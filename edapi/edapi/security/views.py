@@ -71,16 +71,20 @@ def logout(request):
         headers = forget(request)
         session = get_user_session(session_id)
 
-        # Logout request to identity provider
-        logout_request = SamlLogoutRequest(request.registry.settings['auth.issuer_name'],
-                                           session.get_idp_session_index(),
-                                           request.registry.settings['auth.name_qualifier'])
-        params = logout_request.create_request()
-        params = urllib.parse.urlencode(params)
-        url = request.registry.settings['auth.idp_server_logout_url'] + "?%s" % params
+        # Check that there is a session in db, else we can't log out from IDP
+        # If for some reason, we get into this case where session is not found in db, it'll redirect back to login route
+        # and if the user still has a valid session with IDP, it'll redirect to default landing page
+        if session is not None:
+            # Logout request to identity provider
+            logout_request = SamlLogoutRequest(request.registry.settings['auth.issuer_name'],
+                                               session.get_idp_session_index(),
+                                               request.registry.settings['auth.name_qualifier'])
+            params = logout_request.create_request()
+            params = urllib.parse.urlencode(params)
+            url = request.registry.settings['auth.idp_server_logout_url'] + "?%s" % params
 
-        # delete our session
-        delete_session(session_id)
+            # delete our session
+            delete_session(session_id)
 
     return HTTPFound(location=url, headers=headers)
 

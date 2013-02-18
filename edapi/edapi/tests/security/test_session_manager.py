@@ -79,9 +79,13 @@ class Test(Unittest_with_sqlite):
         time.sleep(2)
         self.assertTrue(is_session_expired(session), "session should be expired")
 
+    def test_create_session_with_no_roles(self):
+        session = create_new_user_session(create_SAMLResponse('SAMLResponse_no_memberOf.xml'))
+        self.assertEquals(session.get_roles(), [Roles.NONE], "no memberOf should have insert a role of none")
 
-def create_SAMLResponse():
-    saml_xml = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'resources', 'SAMLResponse.xml'))
+
+def create_SAMLResponse(file_name='SAMLResponse.xml'):
+    saml_xml = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'resources', file_name))
     with open(saml_xml, 'r') as f:
         xml = f.read()
     f.close()

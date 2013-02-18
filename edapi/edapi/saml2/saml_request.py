@@ -21,8 +21,13 @@ class SamlRequest:
     def create_request(self):
         pass
 
+    def format_request(self, doc):
+        # Seriailize the doc's root element so that it will strip out the xml declaration
+        data = doc.documentElement.toxml('utf-8')
+        return self.__deflate_base64_encode(data)
+
     # Deflate, base64 encode a byte string representing a SAMLRequest
-    def deflate_base64_encode(self, data):
+    def __deflate_base64_encode(self, data):
         compressed = zlib.compress(data)
         # Strip away the first 2 bytes (header) and 4 bytes (checksum)
         encoded = base64.b64encode(compressed[2:-4])
@@ -36,7 +41,7 @@ class SamlRequest:
 class SamlAuthnRequest(SamlRequest):
 
     def __init__(self, issuer_name):
-        SamlRequest.__init__(self, issuer_name)
+        super().__init__(issuer_name)
 
     # Create XML SAML Auth Request
     # returns a byte string of a SAML AuthnRequest
@@ -63,17 +68,14 @@ class SamlAuthnRequest(SamlRequest):
 
         doc.appendChild(samlp_auth_request)
 
-        # Seriailize the doc's root element so that it will strip out the xml declaration
-        data = doc.documentElement.toxml('utf-8')
-
-        return self.deflate_base64_encode(data)
+        return self.format_request(doc)
 
 
 # Represents a Saml LogoutRequest
 class SamlLogoutRequest(SamlRequest):
 
     def __init__(self, issuer_name, session_index, name_qualifier):
-        SamlRequest.__init__(self, issuer_name)
+        super().__init__(issuer_name)
         self._session_index = session_index
         self._name_qualifier = name_qualifier
 
@@ -107,7 +109,4 @@ class SamlLogoutRequest(SamlRequest):
 
         doc.appendChild(samlp_logout_request)
 
-        # Seriailize the doc's root element so that it will strip out the xml declaration
-        data = doc.documentElement.toxml('utf-8')
-
-        return self.deflate_base64_encode(data)
+        return self.format_request(doc)

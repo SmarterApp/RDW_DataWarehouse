@@ -25,10 +25,10 @@ class TestCallback(Unittest_with_sqlite):
     def tearDown(self):
         pass
 
-    def test_no_session_role_of_None_returned(self):
+    def test_no_session_found_in_db(self):
         session_id = "1"
         roles = session_check(session_id, None)
-        self.assertTrue(roles, [Roles.NONE])
+        self.assertEquals(roles, [])
 
     def test_session_with_role_returned(self):
         session_id = str(uuid.uuid1())

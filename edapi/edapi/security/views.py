@@ -103,7 +103,7 @@ def saml2_post_consumer(request):
     if saml_response.is_validate():
 
         # create a session
-        session_timeout = request.registry.settings['auth.session.timeout']
+        session_timeout = int(request.registry.settings['auth.session.timeout'])
         session_id = create_new_user_session(response, session_timeout).get_session_id()
 
         # Save session id to cookie

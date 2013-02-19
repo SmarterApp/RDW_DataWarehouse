@@ -11,6 +11,7 @@ import datetime
 import math
 import random
 import uuid
+import queries
 
 from assessment import generate_assmts_for_students
 from dbconnection import get_db_conn
@@ -51,7 +52,9 @@ def get_state_stats():
     '''
     db = get_db_conn()
     db_states = []
-    dist_count = db.prepare('select * from school_generate_stat')
+    q = 'select * from ' + queries.SCHEMA + '.school_generate_stat'
+    print(q)
+    dist_count = db.prepare(q)
     for row in dist_count:
         db_states.append(dict(zip(constants.STAT_COLUMNS, row)))
     db.close()
@@ -451,7 +454,7 @@ def create_classes_grades_sections(district, sch, state, fish_names, total_count
 
     # generate staff for a school
     prc = random.uniform(.4, .6)
-    num_of_staff = int(math.floor(prc*num_of_teacher))
+    num_of_staff = int(math.floor(prc * num_of_teacher))
     staff_list = generate_multiple_staff(num_of_staff, state, district, sch)
     # total count?
     create_csv(staff_list, constants.STAFF)

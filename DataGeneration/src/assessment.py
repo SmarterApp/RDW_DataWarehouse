@@ -9,6 +9,7 @@ from dbconnection import get_db_conn
 from constants import MIN_ASSMT_SCORE, MAX_ASSMT_SCORE, ASSMT_TYPES
 from datetime import date
 import py1
+import queries
 
 
 def generate_assmts_for_students(total, grade, state, asmt_list):
@@ -214,7 +215,7 @@ class StateData(object):
         '''
         # connect to db
         db = get_db_conn()
-        query = "select * from assmt_raw_stat where state = '" + state + "' and subject = '" + asmt_type + "' and year = '" + str(year) + "' and grade = '" + str(grade) + "'"
+        query = "select * from " + queries.SCHEMA + ".assmt_raw_stat where state = '" + state + "' and subject = '" + asmt_type + "' and year = '" + str(year) + "' and grade = '" + str(grade) + "'"
         row = db.prepare(query)
 
         stat_avg = None

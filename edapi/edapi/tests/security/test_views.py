@@ -38,10 +38,10 @@ class Test(Unittest_with_sqlite):
         self.__config.add_route('list_of_reports', '/dummy/report')
 
         self.__request.registry.settings = {}
-        self.__request.registry.settings['auth.idp_server_login_url'] = 'http://dummyidp.com'
-        self.__request.registry.settings['auth.idp_server_logout_url'] = 'http://logout.com'
-        self.__request.registry.settings['auth.name_qualifier'] = 'http://myName'
-        self.__request.registry.settings['auth.issuer_name'] = 'dummyIssuer'
+        self.__request.registry.settings['auth.saml.idp_server_login_url'] = 'http://dummyidp.com'
+        self.__request.registry.settings['auth.saml.idp_server_logout_url'] = 'http://logout.com'
+        self.__request.registry.settings['auth.saml.name_qualifier'] = 'http://myName'
+        self.__request.registry.settings['auth.saml.issuer_name'] = 'dummyIssuer'
 
         # delete all user_session before test
         connection = DBConnector()
@@ -62,7 +62,7 @@ class Test(Unittest_with_sqlite):
 
         # Format: scheme://netloc/path;parameters?query#fragment
         actual_url = urlparse(http.location)
-        expected_url = urlparse(self.__request.registry.settings['auth.idp_server_login_url'])
+        expected_url = urlparse(self.__request.registry.settings['auth.saml.idp_server_login_url'])
 
         self.assertEquals(actual_url.scheme, expected_url.scheme)
         self.assertEquals(actual_url.netloc, actual_url.netloc)
@@ -117,6 +117,10 @@ class Test(Unittest_with_sqlite):
         session_id = str(uuid.uuid1())
         self.__config.testing_securitypolicy(session_id, ['TEACHER'])
         self.__request.url = 'http://example.com/dummy/page'
+        self.__request.registry.settings = {}
+        self.__request.registry.settings['auth.saml.idp_server_login_url'] = 'http://dummyidp.com'
+        self.__request.registry.settings['auth.saml.issuer_name'] = 'dummyIssuer'
+        self.__request.registry.settings['auth.session.timeout'] = 1
         http = login(self.__request)
         url = urlparse(http.location)
         queries = urllib.parse.parse_qs(url.query)
@@ -143,7 +147,7 @@ class Test(Unittest_with_sqlite):
         http = logout(self.__request)
 
         actual_url = urlparse(http.location)
-        expected_url = urlparse(self.__request.registry.settings['auth.idp_server_logout_url'])
+        expected_url = urlparse(self.__request.registry.settings['auth.saml.idp_server_logout_url'])
 
         self.assertEquals(actual_url.scheme, expected_url.scheme)
         self.assertEquals(actual_url.netloc, actual_url.netloc)
@@ -167,6 +171,10 @@ class Test(Unittest_with_sqlite):
     def test_saml2_post_consumer_valid_response(self):
         self.__request.POST = {}
         self.__request.POST['SAMLResponse'] = get_saml_from_resource_file("ValidSAMLResponse.txt")
+        self.__request.registry.settings = {}
+        #self.__request.registry.settings['auth.saml.idp_server_login_url'] = 'http://dummyidp.com'
+        #self.__request.registry.settings['auth.saml.issuer_name'] = 'dummyIssuer'
+        self.__request.registry.settings['auth.session.timeout'] = 1
         http = saml2_post_consumer(self.__request)
         self.assertEquals(http.location, 'http://example.com/dummy/report')
 

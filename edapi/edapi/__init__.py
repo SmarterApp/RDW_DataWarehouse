@@ -47,14 +47,14 @@ class ContentTypePredicate(object):
 def includeme(config):
 
     settings = config.get_settings()
-    max_age = convert_to_int(settings.get('auth.max_age'))
-    timeout = convert_to_int(settings.get('auth.timeout'))
-    authentication_policy = AuthTktAuthenticationPolicy(settings['auth.secret'],
-                                                        cookie_name=settings['auth.cookie_name'],
+    cookie_max_age = convert_to_int(settings.get('auth.cookie.max_age'))
+    session_timeout = convert_to_int(settings.get('auth.session.timeout'))
+    authentication_policy = AuthTktAuthenticationPolicy(settings['auth.cookie.secret'],
+                                                        cookie_name=settings['auth.cookie.name'],
                                                         callback=session_check,
-                                                        hashalg=settings['auth.hashalg'],
-                                                        max_age=max_age,
-                                                        timeout=timeout)
+                                                        hashalg=settings['auth.cookie.hashalg'],
+                                                        max_age=cookie_max_age,
+                                                        timeout=session_timeout)
 
     authorization_policy = ACLAuthorizationPolicy()
 

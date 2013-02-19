@@ -3,7 +3,7 @@ Created on Feb 13, 2013
 
 @author: dip
 '''
-from pyramid.security import NO_PERMISSION_REQUIRED, forget, remember,\
+from pyramid.security import NO_PERMISSION_REQUIRED, forget, remember, \
     authenticated_userid, effective_principals
 from pyramid.httpexceptions import HTTPFound, HTTPForbidden
 from pyramid.view import view_config, forbidden_view_config
@@ -13,7 +13,7 @@ from edapi.saml2.saml_request import SamlAuthnRequest, SamlLogoutRequest
 from edapi.saml2.saml_auth import SamlAuth
 from edapi.saml2.saml_response import SAMLResponse
 import urllib
-from edapi.security.session_manager import create_new_user_session,\
+from edapi.security.session_manager import create_new_user_session, \
     delete_session, get_user_session
 from edapi.security.roles import Roles
 
@@ -23,7 +23,7 @@ from edapi.security.roles import Roles
 @view_config(route_name='login', permission=NO_PERMISSION_REQUIRED)
 @forbidden_view_config()
 def login(request):
-    url = request.registry.settings['auth.idp_server_login_url']
+    url = request.registry.settings['auth.saml.idp_server_login_url']
 
     # Both of these calls will trigger our callback
     session_id = authenticated_userid(request)
@@ -46,7 +46,7 @@ def login(request):
     if session_id is not None:
         delete_session(session_id)
 
-    saml_request = SamlAuthnRequest(request.registry.settings['auth.issuer_name'])
+    saml_request = SamlAuthnRequest(request.registry.settings['auth.saml.issuer_name'])
 
     # combined saml_request into url params and url encode it
     params.update(saml_request.create_request())
@@ -76,12 +76,12 @@ def logout(request):
         # and if the user still has a valid session with IDP, it'll redirect to default landing page
         if session is not None:
             # Logout request to identity provider
-            logout_request = SamlLogoutRequest(request.registry.settings['auth.issuer_name'],
+            logout_request = SamlLogoutRequest(request.registry.settings['auth.saml.issuer_name'],
                                                session.get_idp_session_index(),
-                                               request.registry.settings['auth.name_qualifier'])
+                                               request.registry.settings['auth.saml.name_qualifier'])
             params = logout_request.create_request()
             params = urllib.parse.urlencode(params)
-            url = request.registry.settings['auth.idp_server_logout_url'] + "?%s" % params
+            url = request.registry.settings['auth.saml.idp_server_logout_url'] + "?%s" % params
 
             # delete our session
             delete_session(session_id)
@@ -103,7 +103,8 @@ def saml2_post_consumer(request):
     if saml_response.is_validate():
 
         # create a session
-        session_id = create_new_user_session(response).get_session_id()
+        session_timeout = request.registry.settings['auth.session.timeout']
+        session_id = create_new_user_session(response, session_timeout).get_session_id()
 
         # Save session id to cookie
         headers = remember(request, session_id)

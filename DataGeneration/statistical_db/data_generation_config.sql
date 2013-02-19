@@ -4,13 +4,32 @@
 
 -- Dumped from database version 9.2.2
 -- Dumped by pg_dump version 9.2.2
--- Started on 2013-02-12 17:41:01
+-- Started on 2013-02-19 13:38:27
 
 SET statement_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
+
+--
+-- TOC entry 6 (class 2615 OID 2200)
+-- Name: data_generation_config; Type: SCHEMA; Schema: -; Owner: postgres
+--
+
+CREATE SCHEMA data_generation_config;
+
+
+ALTER SCHEMA data_generation_config OWNER TO postgres;
+
+--
+-- TOC entry 1933 (class 0 OID 0)
+-- Dependencies: 6
+-- Name: SCHEMA data_generation_config; Type: COMMENT; Schema: -; Owner: postgres
+--
+
+COMMENT ON SCHEMA data_generation_config IS 'standard public schema';
+
 
 --
 -- TOC entry 171 (class 3079 OID 11727)
@@ -29,7 +48,7 @@ CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
 
 
-SET search_path = public, pg_catalog;
+SET search_path = data_generation_config, pg_catalog;
 
 SET default_tablespace = '';
 
@@ -37,7 +56,7 @@ SET default_with_oids = false;
 
 --
 -- TOC entry 169 (class 1259 OID 18117)
--- Name: assmt_raw_stat; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: assmt_raw_stat; Type: TABLE; Schema: data_generation_config; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE assmt_raw_stat (
@@ -60,11 +79,11 @@ CREATE TABLE assmt_raw_stat (
 );
 
 
-ALTER TABLE public.assmt_raw_stat OWNER TO postgres;
+ALTER TABLE data_generation_config.assmt_raw_stat OWNER TO postgres;
 
 --
 -- TOC entry 170 (class 1259 OID 18126)
--- Name: school_generate_stat; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: school_generate_stat; Type: TABLE; Schema: data_generation_config; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE school_generate_stat (
@@ -93,11 +112,11 @@ CREATE TABLE school_generate_stat (
 );
 
 
-ALTER TABLE public.school_generate_stat OWNER TO postgres;
+ALTER TABLE data_generation_config.school_generate_stat OWNER TO postgres;
 
 --
 -- TOC entry 168 (class 1259 OID 17935)
--- Name: school_raw_stat; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: school_raw_stat; Type: TABLE; Schema: data_generation_config; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE school_raw_stat (
@@ -114,12 +133,12 @@ CREATE TABLE school_raw_stat (
 );
 
 
-ALTER TABLE public.school_raw_stat OWNER TO postgres;
+ALTER TABLE data_generation_config.school_raw_stat OWNER TO postgres;
 
 --
 -- TOC entry 1926 (class 0 OID 18117)
 -- Dependencies: 169
--- Data for Name: assmt_raw_stat; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: assmt_raw_stat; Type: TABLE DATA; Schema: data_generation_config; Owner: postgres
 --
 
 COPY assmt_raw_stat (state, year, grade, subject, "average score", "standard error", "standard deviation", "standard error0", "below basic", "standard error1", "at basic", "standard error2", "at proficient", "standard error3", "at advanced", "standard error4") FROM stdin;
@@ -169,7 +188,7 @@ Washington	2009	8	ELA	267	1.1399999999999999	35	0.78000000000000003	22	1.22	42	1
 --
 -- TOC entry 1927 (class 0 OID 18126)
 -- Dependencies: 170
--- Data for Name: school_generate_stat; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: school_generate_stat; Type: TABLE DATA; Schema: data_generation_config; Owner: postgres
 --
 
 COPY school_generate_stat (state_code, state_name, total_district, total_school, total_student, total_teacher, min_sch_per_dist, max_sch_per_dist, std_sch_per_dist, avg_sch_per_dist, min_stu_per_sch, max_stu_per_sch, std_stu_per_sch, avg_stu_per_sch, min_stutearatio_per_sch, max_stutearatio_per_sch, std_stutearatio_per_sch, avg_stutearatio_per_sch, primary_perc, middle_perc, high_perc, other_perc) FROM stdin;
@@ -184,7 +203,7 @@ WA	Washington	279	1990	1025931	52359	1	90	10.053992803368926	7.1326164874551967	
 --
 -- TOC entry 1925 (class 0 OID 17935)
 -- Dependencies: 168
--- Data for Name: school_raw_stat; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: school_raw_stat; Type: TABLE DATA; Schema: data_generation_config; Owner: postgres
 --
 
 COPY school_raw_stat (school_name, dist_name, state_name, state_code, stu_teacher_rario, num_of_teacher, num_of_stu, school_level, low_grade, high_grade) FROM stdin;
@@ -9372,17 +9391,17 @@ BALDI C C A MS	PHILADELPHIA CITY SD	Pennsylvania	PA	16.91	76	1284	Middle School 
 
 --
 -- TOC entry 1934 (class 0 OID 0)
--- Dependencies: 5
--- Name: public; Type: ACL; Schema: -; Owner: postgres
+-- Dependencies: 6
+-- Name: data_generation_config; Type: ACL; Schema: -; Owner: postgres
 --
 
-REVOKE ALL ON SCHEMA public FROM PUBLIC;
-REVOKE ALL ON SCHEMA public FROM postgres;
-GRANT ALL ON SCHEMA public TO postgres;
-GRANT ALL ON SCHEMA public TO PUBLIC;
+REVOKE ALL ON SCHEMA data_generation_config FROM PUBLIC;
+REVOKE ALL ON SCHEMA data_generation_config FROM postgres;
+GRANT ALL ON SCHEMA data_generation_config TO postgres;
+GRANT ALL ON SCHEMA data_generation_config TO PUBLIC;
 
 
--- Completed on 2013-02-12 17:41:01
+-- Completed on 2013-02-19 13:38:27
 
 --
 -- PostgreSQL database dump complete

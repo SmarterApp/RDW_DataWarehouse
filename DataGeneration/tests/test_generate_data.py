@@ -498,6 +498,11 @@ class TestGenerateData(unittest.TestCase):
         self.assertEqual(len(expected_classes), len(SUBJECTS))
         for i in range(len(expected_classes)):
             self.assertEqual(expected_classes[i].title, SUBJECTS[i] + " " + str(0))
+            self.assertEqual(len(expected_classes[i].section_stu_map), 1)
+            section_id = list(expected_classes[i].section_stu_map.keys())
+            self.assertEqual(len(section_id), 1)
+            self.assertEqual(len(expected_classes[i].section_stu_map[section_id[0]]), stu_num)
+            self.assertEqual(expected_classes[i].section_stu_map[section_id[0]], stu_list)
 
     def test_create_one_class_severalsections(self):
         sub_name = "Math"
@@ -514,12 +519,18 @@ class TestGenerateData(unittest.TestCase):
         self.assertEqual(expected_class.title, sub_name + " " + str(class_count))
         self.assertEqual(len(expected_class.section_stu_map), expected_sec_num)
 
-        for key, value in expected_class.section_stu_map.items():
+        expected_students = []
+        for value in expected_class.section_stu_map.values():
             self.assertEqual(len(value), 15)
+            expected_students.extend(value)
 
         self.assertEqual(len(expected_class.section_tea_map), expected_sec_num)
-        for key, value in expected_class.section_tea_map.items():
+        for value in expected_class.section_tea_map.values():
             self.assertEqual(len(value), 1)
+            self.assertTrue(value[0] in tea_list)
+        self.assertEqual(len(expected_students), len(distribute_stu_inaclass))
+        for g_stu in expected_students:
+            self.assertTrue(g_stu in distribute_stu_inaclass)
 
     def test_create_one_class_onesection(self):
         sub_name = "Math"
@@ -536,12 +547,13 @@ class TestGenerateData(unittest.TestCase):
         self.assertEqual(expected_class.title, sub_name + " " + str(class_count))
         self.assertEqual(len(expected_class.section_stu_map), expected_sec_num)
 
-        for key, value in expected_class.section_stu_map.items():
+        for value in expected_class.section_stu_map.values():
             self.assertEqual(len(value), 45)
 
         self.assertEqual(len(expected_class.section_tea_map), expected_sec_num)
-        for key, value in expected_class.section_tea_map.items():
+        for value in expected_class.section_tea_map.values():
             self.assertEqual(len(value), 1)
+            self.assertTrue(value[0] in tea_list)
 
     # test makeup_list()
     def test_makeup_list(self):

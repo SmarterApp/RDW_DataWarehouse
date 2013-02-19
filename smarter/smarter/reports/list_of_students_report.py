@@ -209,6 +209,7 @@ def __get_cut_points(connector, asmtGrade, asmtSubject):
                     dim_asmt.c.asmt_perf_lvl_name_2.label("asmt_cut_point_name_2"),
                     dim_asmt.c.asmt_perf_lvl_name_3.label("asmt_cut_point_name_3"),
                     dim_asmt.c.asmt_perf_lvl_name_4.label("asmt_cut_point_name_4"),
+                    dim_asmt.c.asmt_perf_lvl_name_5.label("asmt_cut_point_name_5"),
                     dim_asmt.c.asmt_cut_point_1.label("asmt_cut_point_1"),
                     dim_asmt.c.asmt_cut_point_2.label("asmt_cut_point_2"),
                     dim_asmt.c.asmt_cut_point_3.label("asmt_cut_point_3"),
@@ -226,6 +227,7 @@ def __get_cut_points(connector, asmtGrade, asmtSubject):
         cutpoint["asmt_cut_point_name_2"] = result["asmt_cut_point_name_2"]
         cutpoint["asmt_cut_point_name_3"] = result["asmt_cut_point_name_3"]
         cutpoint["asmt_cut_point_name_4"] = result["asmt_cut_point_name_4"]
+        cutpoint["asmt_cut_point_name_5"] = result["asmt_cut_point_name_5"]
         cutpoint["asmt_cut_point_1"] = result["asmt_cut_point_1"]
         cutpoint["asmt_cut_point_2"] = result["asmt_cut_point_2"]
         cutpoint["asmt_cut_point_3"] = result["asmt_cut_point_3"]

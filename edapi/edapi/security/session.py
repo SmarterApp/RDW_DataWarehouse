@@ -8,14 +8,14 @@ import json
 
 class Session:
     def __init__(self):
-        self.__session = {}
-        self.__prepare()
+        self.__initialize_session()
         # leave datetime only this class, not save in session context
         self.__expiration = None
         self.__last_access = None
 
     # initialize all session values
-    def __prepare(self):
+    def __initialize_session(self):
+        self.__session = {}
         self.__session_id = None
         self.__session['uid'] = None
         self.__session['roles'] = []

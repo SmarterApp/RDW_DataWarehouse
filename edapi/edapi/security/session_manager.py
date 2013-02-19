@@ -14,12 +14,12 @@ from edapi.security.session import Session
 
 # TODO: remove datetime.now() and use func.now()
 
-__expiration_in_seconds = 30
 
-
-# get user session from DB
-# if user session does not exist, then return None
 def get_user_session(user_session_id):
+    '''
+    get user session from DB
+    if user session does not exist, then return None
+    '''
     session = None
     if user_session_id is not None:
         connection = DBConnector()
@@ -41,8 +41,10 @@ def get_user_session(user_session_id):
     return session
 
 
-# Create new user session from SAMLResponse
-def create_new_user_session(saml_response, session_expire_after_in_secs=__expiration_in_seconds):
+def create_new_user_session(saml_response, session_expire_after_in_secs=30):
+    '''
+    Create new user session from SAMLResponse
+    '''
     # current local time
     current_datetime = datetime.now()
     # How long session lasts
@@ -58,8 +60,10 @@ def create_new_user_session(saml_response, session_expire_after_in_secs=__expira
     return session
 
 
-# update user_session.last_access
 def update_session_access(session):
+    '''
+    update user_session.last_access
+    '''
     __session_id = session.get_session_id()
     connection = DBConnector()
     connection.open_connection()
@@ -72,8 +76,10 @@ def update_session_access(session):
     connection.close_connection()
 
 
-# delete session by session_id
 def delete_session(session_id):
+    '''
+    delete session by session_id
+    '''
     connection = DBConnector()
     connection.open_connection()
     user_session = connection.get_table('user_session')
@@ -81,8 +87,10 @@ def delete_session(session_id):
     connection.close_connection()
 
 
-# populate session from SAMLResponse
 def __create_from_SAMLResponse(saml_response, last_access, expiration):
+    '''
+    populate session from SAMLResponse
+    '''
     # make a UUID based on the host ID and current time
     __session_id = str(uuid.uuid1())
 
@@ -111,8 +119,10 @@ def __create_from_SAMLResponse(saml_response, last_access, expiration):
     return session
 
 
-# deserialize from text
 def __create_from_session_json_context(session_id, session_json_context, last_access, expiration):
+    '''
+    deserialize from text
+    '''
     session = Session()
     session.set_session_id(session_id)
     session.set_session(json.loads(session_json_context))
@@ -121,14 +131,18 @@ def __create_from_session_json_context(session_id, session_json_context, last_ac
     return session
 
 
-# check if current session is expired or not
 def is_session_expired(session):
+    '''
+    check if current session is expired or not
+    '''
     is_expire = datetime.now() > session.get_expiration()
     return is_expire
 
 
-# find roles from Attributes Element (SAMLResponse)
 def __get_roles(attributes):
+    '''
+    find roles from Attributes Element (SAMLResponse)
+    '''
     roles = []
     values = attributes.get("memberOf", None)
     if values is not None:

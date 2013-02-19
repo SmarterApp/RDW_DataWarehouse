@@ -7,11 +7,16 @@ from xml.dom.minidom import Node
 
 
 class SAMLResponse:
+    '''
+    class to parse that XML receives from OpenAM
+    '''
     def __init__(self, response_xml):
         self.__parse(response_xml)
 
     def __parse(self, __response_xml):
-        # get parent Element "Response"
+        '''
+        get parent Element "Response
+        '''
         __Response_node = __response_xml.childNodes[0]
 
         self.__ID = self.__get_value(__Response_node, "ID")
@@ -42,13 +47,17 @@ class SAMLResponse:
     def get_assertion(self):
         return self.__assertion
 
-    # Issuer Element
     class Issuer:
+        '''
+        Issuer Element
+        '''
         def __init__(self, issuer_node):
             self.__issuer = issuer_node.childNodes[0].data
 
-    # Status Element
     class Status:
+        '''
+        Status Element
+        '''
         def __init__(self, status_node):
             for node in status_node.childNodes:
                 if node.nodeType == Node.ELEMENT_NODE:
@@ -59,8 +68,10 @@ class SAMLResponse:
         def get_status_code(self):
             return self.__status
 
-    # Assertion Element
     class Assertion:
+        '''
+        Assertion Element
+        '''
         def __init__(self, assertion_node):
             self.__attributes = {}
             for node in assertion_node.childNodes:
@@ -101,8 +112,10 @@ class SAMLResponse:
         def get_session_index(self):
             return self.__session_index
 
-        # SubjectConfirmation Element
         class SubjectConfirmation:
+            '''
+            SubjectConfirmation Element
+            '''
             def __init__(self, subjectConfirmation_node):
                 self.__method = subjectConfirmation_node.getAttribute("Method")
                 for node in subjectConfirmation_node.childNodes:
@@ -112,14 +125,18 @@ class SAMLResponse:
                             self.__notOnOrAfter = node.getAttribute("NotOnOrAfter")
                             self.__Recipient = node.getAttribute("Recipient")
 
-        # Condition Element
         class Conditions:
+            '''
+            Condition Element
+            '''
             def __init__(self, condition_node):
                 self.__notBefore = condition_node.getAttribute("NotBefore")
                 self.__notOnOrAfter = condition_node.getAttribute("NotOnOrAfter")
 
-        # Attribute Element
         class Attribute:
+            '''
+            Attribute Element
+            '''
             def __init__(self, attribute_node):
                 self.__name = attribute_node.getAttribute("Name")
                 self.__attributeValue = []

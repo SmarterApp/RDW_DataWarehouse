@@ -5,8 +5,10 @@ Created on Feb 13, 2013
 '''
 
 
-# Class to check SAMLResponse
 class SamlAuth:
+    '''
+    Class to check SAMLResponse
+    '''
     def __init__(self, response, auth_request_id):
         self.__response = response
         self.__id = auth_request_id

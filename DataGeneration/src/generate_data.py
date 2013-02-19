@@ -101,7 +101,7 @@ def generate_data(name_lists, db_states_stat):
 
         # print out result for a state
         print("************** State ", created_state.state_name, " **************")
-        print("                     Real     Generated")
+        print("                     Real     To Be Generated")
         print("Number of districts ", state['total_district'], "    ", len(school_num_in_dist_made))
         print("Number of schools   ", state['total_school'], "    ", sum(school_num_in_dist_made))
         print("Number of students  ", state['total_student'], "    ", sum(stu_num_in_school_made))
@@ -134,8 +134,8 @@ def generate_data(name_lists, db_states_stat):
                 create_classes_grades_sections(dist, sch, created_state, name_lists[2], total_count, asmt_list)
 
         # if just need one state data
-        if(c == 0):
-            break
+        # if(c == 0):
+        #    break
         c += 1
 
     create_csv(record_states, constants.STATES)
@@ -596,6 +596,7 @@ def generate_students(num_students, state, district, school, grade, fish_names):
 
     return students, parents, external_users
 
+
 def generate_multiple_staff(num_staff, state, district, school):
     staff = []
 
@@ -716,7 +717,6 @@ def create_one_class(sub_name, class_count, distribute_stu_inaclass, tea_list, s
 
         # create section object
         section_name = 'section ' + str(i + 1)
-        section_id = IdGen().get_id()
         section = Section(section_id, uuid.uuid4(), school_id, section_name, class_name)
         section_list.append(section)
 

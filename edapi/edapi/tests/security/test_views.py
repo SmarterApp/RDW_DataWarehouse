@@ -70,7 +70,7 @@ class TestViews(Unittest_with_sqlite):
         queries = urllib.parse.parse_qs(actual_url.query)
         self.assertTrue(len(queries) == 2)
         self.assertIsNotNone(queries['SAMLRequest'])
-        self.assertEquals(queries['RelayState'], ['http://example.com/dummy/report'])
+        self.assertTrue(queries['RelayState'][0].endswith('/dummy/report'))
 
     def test_login_referred_by_logout_url(self):
         self.__request.url = 'http://example.com/dummy/logout'
@@ -78,7 +78,7 @@ class TestViews(Unittest_with_sqlite):
 
         actual_url = urlparse(http.location)
         queries = urllib.parse.parse_qs(actual_url.query)
-        self.assertEqual(queries['RelayState'], ['http://example.com/dummy/logout'])
+        self.assertTrue(queries['RelayState'][0].endswith('/dummy/logout'))
 
     def test_login_referred_by_protected_page(self):
         self.__request.url = 'http://example.com/dummy/data'

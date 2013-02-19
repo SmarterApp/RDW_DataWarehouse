@@ -5,11 +5,14 @@ Created on Feb 13, 2013
 '''
 
 
+# Class to check SAMLResponse
 class SamlAuth:
     def __init__(self, response, auth_request_id):
         self.__response = response
         self.__id = auth_request_id
 
+    # validate SAMLResponse is good or not
+    # TODO: Implement signature validation
     def is_validate(self):
         status = self.__response.get_status()
         status_code = status.get_status_code()

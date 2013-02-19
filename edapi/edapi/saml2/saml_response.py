@@ -20,6 +20,7 @@ class SAMLResponse:
         self.__IssueInstant = self.__get_value(__Response_node, "IssueInstant")
         self.__Destination = self.__get_value(__Response_node, "Destination")
 
+        # get Issuer, Status, and Assertion element
         for node in __Response_node.childNodes:
             if node.nodeType == Node.ELEMENT_NODE:
                 if node.localName == "Issuer":
@@ -41,10 +42,12 @@ class SAMLResponse:
     def get_assertion(self):
         return self.__assertion
 
+    # Issuer Element
     class Issuer:
         def __init__(self, issuer_node):
             self.__issuer = issuer_node.childNodes[0].data
 
+    # Status Element
     class Status:
         def __init__(self, status_node):
             for node in status_node.childNodes:
@@ -56,6 +59,7 @@ class SAMLResponse:
         def get_status_code(self):
             return self.__status
 
+    # Assertion Element
     class Assertion:
         def __init__(self, assertion_node):
             self.__attributes = {}
@@ -97,6 +101,7 @@ class SAMLResponse:
         def get_session_index(self):
             return self.__session_index
 
+        # SubjectConfirmation Element
         class SubjectConfirmation:
             def __init__(self, subjectConfirmation_node):
                 self.__method = subjectConfirmation_node.getAttribute("Method")
@@ -107,11 +112,13 @@ class SAMLResponse:
                             self.__notOnOrAfter = node.getAttribute("NotOnOrAfter")
                             self.__Recipient = node.getAttribute("Recipient")
 
+        # Condition Element
         class Conditions:
             def __init__(self, condition_node):
                 self.__notBefore = condition_node.getAttribute("NotBefore")
                 self.__notOnOrAfter = condition_node.getAttribute("NotOnOrAfter")
 
+        # Attribute Element
         class Attribute:
             def __init__(self, attribute_node):
                 self.__name = attribute_node.getAttribute("Name")

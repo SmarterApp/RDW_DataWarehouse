@@ -17,7 +17,7 @@ from edapi.security.session import Session
 __expiration_in_seconds = 30
 
 
-# get user session
+# get user session from DB
 # if user session does not exist, then return None
 def get_user_session(user_session_id):
     session = None
@@ -41,13 +41,18 @@ def get_user_session(user_session_id):
     return session
 
 
+# Create new user session from SAMLResponse
 def create_new_user_session(saml_response, session_expire_after_in_secs=__expiration_in_seconds):
+    # current local time
     current_datetime = datetime.now()
+    # How long session lasts
     expiration_datetime = current_datetime + timedelta(seconds=session_expire_after_in_secs)
+    # create session SAML Response
     session = __create_from_SAMLResponse(saml_response, current_datetime, expiration_datetime)
     connection = DBConnector()
     connection.open_connection()
     user_session = connection.get_table('user_session')
+    # store the session into DB
     connection.execute(user_session.insert(), session_id=session.get_session_id(), session_context=session.get_session_json_context(), last_access=current_datetime, expiration=expiration_datetime)
     connection.close_connection()
     return session
@@ -60,6 +65,7 @@ def update_session_access(session):
     connection.open_connection()
     user_session = connection.get_table('user_session')
 
+    # update last_access field
     connection.execute(user_session.update().
                        where(user_session.c.session_id == __session_id).
                        values(last_access=datetime.now()))
@@ -121,6 +127,7 @@ def is_session_expired(session):
     return is_expire
 
 
+# find roles from Attributes Element (SAMLResponse)
 def __get_roles(attributes):
     roles = []
     values = attributes.get("memberOf", None)

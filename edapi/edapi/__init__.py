@@ -5,6 +5,7 @@ Entry point for edapi
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from edapi.security.callback import session_check
+from edapi.utils import convert_to_int
 
 EDAPI_REPORTS_PLACEHOLDER = 'edapi_reports'
 
@@ -46,12 +47,14 @@ class ContentTypePredicate(object):
 def includeme(config):
 
     settings = config.get_settings()
+    max_age = convert_to_int(settings.get('auth.max_age'))
+    timeout = convert_to_int(settings.get('auth.timeout'))
     authentication_policy = AuthTktAuthenticationPolicy(settings['auth.secret'],
                                                         cookie_name=settings['auth.cookie_name'],
                                                         callback=session_check,
-                                                        hashalg=settings['auth.hashalg'],)
-                                                        #max_age=int(settings['auth.max_age']),
-                                                        #timeout=int(settings['auth.timeout']))
+                                                        hashalg=settings['auth.hashalg'],
+                                                        max_age=max_age,
+                                                        timeout=timeout)
 
     authorization_policy = ACLAuthorizationPolicy()
 

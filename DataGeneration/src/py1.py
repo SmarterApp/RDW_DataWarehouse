@@ -8,7 +8,7 @@ Created on Dec 26, 2012
 import random
 import math
 
-
+'''
 def calc():
     # real counts of schools in the 25 SBAC states
     s1 = [10124, 3233, 3877, 2567, 2338, 2410, 2238, 1600, 1214, 1296, 1157, 1436, 1378, 645, 757, 748, 289, 631, 480, 827, 214, 710, 516, 320, 360]
@@ -101,6 +101,7 @@ def makeup(seqin):
 
     out2 = sorted(out1)
     return out2
+'''
 
 
 def makeup_core(avgin, stdin, minin, maxin, countin):
@@ -146,5 +147,7 @@ def std(seqin):
         dev = (sds / (len(seqin))) ** 0.5
         return dev
 
+'''
 if __name__ == '__main__':
     calc()
+'''

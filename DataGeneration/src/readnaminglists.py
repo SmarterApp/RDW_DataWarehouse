@@ -85,7 +85,7 @@ class PeopleNames(object):
             cls._instance.last_names = last_list
         return cls._instance
 
-
+'''
 if __name__ == '__main__':
 
     import time
@@ -100,3 +100,4 @@ if __name__ == '__main__':
     print(len(peopleNames.female_names))
 
     print('size of peopleNames', sys.getsizeof(peopleNames.male_names))
+'''

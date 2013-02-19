@@ -122,9 +122,10 @@ def generate_version():
 
     return 'V1'
 
-
+'''
 if __name__ == '__main__':
     assessments = generate_assessment_types()
 
     for asmt in assessments:
         print(str(asmt))
+'''

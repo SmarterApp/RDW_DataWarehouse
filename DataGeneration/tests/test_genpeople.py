@@ -51,6 +51,17 @@ class Test(unittest.TestCase):
         self.assertIsNotNone(exter_user)
         self.assertIsInstance(exter_user, ExternalUserStudent)
 
+        self.assertEqual(student.student_id, exter_user.student_id)
+
+        self.assertEqual(len(parents), 2)
+        for par in parents:
+            self.assertIsInstance(par, Parent)
+            self.assertEqual(par.address_1, student.address_1)
+            self.assertEqual(par.city, student.city)
+            self.assertEqual(par.state_code, student.state_code)
+            self.assertEqual(par.zip_code, student.zip_code)
+            self.assertEqual(par.last_name, student.last_name)
+
     def test_generate_parents(self):
         parents = generate_parents(self.student_1)
         for p in parents:
@@ -58,7 +69,7 @@ class Test(unittest.TestCase):
             self.assertIsInstance(p, Parent)
 
     def test_generate_staff(self):
-        staff = generate_staff('John', 'Doe', self.district_1, self.delaware, self.school_1)
+        staff = generate_staff(self.district_1, self.delaware, self.school_1)
         self.assertIsInstance(staff, Staff)
 
     def test_assign_dob(self):
@@ -75,5 +86,5 @@ class Test(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

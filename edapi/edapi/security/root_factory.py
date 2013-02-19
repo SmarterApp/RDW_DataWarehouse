@@ -15,25 +15,26 @@ class RootFactory(object):
     The root factory returns the traversal root of an application
     Right now, we're saying that all roles have permission
     '''
-    __acl__ = [(Allow, Roles.DEPLOYMENT_ADMINISTRATOR, 'view'),
-               (Allow, Roles.SYSTEM_ADMINISTRATOR, 'view'),
-               (Allow, Roles.DATA_LOADER, 'view'),
-               (Allow, Roles.DATA_CORRECTOR, 'view'),
-               (Allow, Roles.PSYCHOMETRICIAN, 'view'),
-               (Allow, Roles.NO_ROLE, 'view'),
-               (Allow, Roles.STATE_DATA_EXTRACTOR, 'view'),
-               (Allow, Roles.HIGHER_EDUCATION_ADMISSIONS_OFFICIER, 'view'),
-               (Allow, Roles.STUDENT, 'view'),
-               (Allow, Roles.PARENT, 'view'),
-               (Allow, Roles.TEACHER, 'view'),
-               (Allow, Roles.SCHOOL_EDUCATION_ADMINISTRATOR_1, 'view'),
-               (Allow, Roles.SCHOOL_EDUCATION_ADMINISTRATOR_2, 'view'),
-               (Allow, Roles.DISTRICT_EDUCATION_ADMINISTRATOR_1, 'view'),
-               (Allow, Roles.DISTRICT_EDUCATION_ADMINISTRATOR_2, 'view'),
-               (Allow, Roles.STATE_EDUCATION_ADMINISTRATOR_1, 'view'),
-               (Allow, Roles.STATE_EDUCATION_ADMINISTRATOR_2, 'view'),
-               (Allow, Roles.CONSORTIUM_EDUCATION_ADMINISTRATOR_1, 'view'),
-               (Allow, Roles.CONSORTIUM_EDUCATION_ADMINISTRATOR_2, 'view')]
+    __acl__ = [(Allow, Roles.DEPLOYMENT_ADMINISTRATOR, ('view', 'logout')),
+               (Allow, Roles.SYSTEM_ADMINISTRATOR, ('view', 'logout')),
+               (Allow, Roles.DATA_LOADER, ('view', 'logout')),
+               (Allow, Roles.DATA_CORRECTOR, ('view', 'logout')),
+               (Allow, Roles.PSYCHOMETRICIAN, ('view', 'logout')),
+               (Allow, Roles.NO_ROLE, ('view', 'logout')),
+               (Allow, Roles.STATE_DATA_EXTRACTOR, ('view', 'logout')),
+               (Allow, Roles.HIGHER_EDUCATION_ADMISSIONS_OFFICIER, ('view', 'logout')),
+               (Allow, Roles.STUDENT, ('view', 'logout')),
+               (Allow, Roles.PARENT, ('view', 'logout')),
+               (Allow, Roles.TEACHER, ('view', 'logout')),
+               (Allow, Roles.SCHOOL_EDUCATION_ADMINISTRATOR_1, ('view', 'logout')),
+               (Allow, Roles.SCHOOL_EDUCATION_ADMINISTRATOR_2, ('view', 'logout')),
+               (Allow, Roles.DISTRICT_EDUCATION_ADMINISTRATOR_1, ('view', 'logout')),
+               (Allow, Roles.DISTRICT_EDUCATION_ADMINISTRATOR_2, ('view', 'logout')),
+               (Allow, Roles.STATE_EDUCATION_ADMINISTRATOR_1, ('view', 'logout')),
+               (Allow, Roles.STATE_EDUCATION_ADMINISTRATOR_2, ('view', 'logout')),
+               (Allow, Roles.CONSORTIUM_EDUCATION_ADMINISTRATOR_1, ('view', 'logout')),
+               (Allow, Roles.CONSORTIUM_EDUCATION_ADMINISTRATOR_2, ('view', 'logout')),
+               (Allow, Roles.NONE, 'logout')]
 
     def __init__(self, request):
         pass

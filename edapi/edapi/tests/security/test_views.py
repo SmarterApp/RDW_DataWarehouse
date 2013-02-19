@@ -78,7 +78,7 @@ class Test(Unittest_with_sqlite):
 
         actual_url = urlparse(http.location)
         queries = urllib.parse.parse_qs(actual_url.query)
-        self.assertEqual(queries['RelayState'], ['http://example.com/dummy/report'])
+        self.assertEqual(queries['RelayState'], ['http://example.com/dummy/logout'])
 
     def test_login_referred_by_protected_page(self):
         self.__request.url = 'http://example.com/dummy/data'

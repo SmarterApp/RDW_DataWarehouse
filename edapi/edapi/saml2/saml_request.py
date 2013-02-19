@@ -18,9 +18,6 @@ class SamlRequest:
         self._uuid = str(uuid.uuid1())
         self._issuer_name = issuer_name
 
-    def create_request(self):
-        pass
-
     def format_request(self, doc):
         # Seriailize the doc's root element so that it will strip out the xml declaration
         data = doc.documentElement.toxml('utf-8')

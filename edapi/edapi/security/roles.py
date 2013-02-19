@@ -12,7 +12,6 @@ Roles = utils.enum(DEPLOYMENT_ADMINISTRATOR='DEPLOYMENT_ADMINISTRATOR',
                    DATA_CORRECTOR='DATA_LOADER',
                    # TODO _ no role?  Document was not clear
                    NO_ROLE='NOT_RESTRICTED',
-                   NONE='NONE',
                    PSYCHOMETRICIAN='PSYCHOMETRICIAN',
                    STATE_DATA_EXTRACTOR='STATE_DATA_EXTRACTOR',
                    HIGHER_EDUCATION_ADMISSIONS_OFFICIER='HIGHER_EDUCATION_ADMISSIONS_OFFICER',
@@ -27,6 +26,8 @@ Roles = utils.enum(DEPLOYMENT_ADMINISTRATOR='DEPLOYMENT_ADMINISTRATOR',
                    STATE_EDUCATION_ADMINISTRATOR_2='STATE_EDUCATION_ADMINISTRATOR_2',
                    CONSORTIUM_EDUCATION_ADMINISTRATOR_1='CONSORTIUM_EDUCATION_ADMINISTRATOR_1',
                    CONSORTIUM_EDUCATION_ADMINISTRATOR_2='CONSORTIUM_EDUCATION_ADMINISTRATOR_2',
+                   # We defined the role of NONE for users that are authenticated but do not have 'memberOf' from SAML response
+                   NONE='NONE',
                    )
 
 

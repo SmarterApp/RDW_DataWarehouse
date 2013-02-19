@@ -21,7 +21,7 @@ from edapi.security.roles import Roles
 # forbidden_view_config decorator indicates that this is the route to redirect to when an user
 # has no access to a page
 @view_config(route_name='login', permission=NO_PERMISSION_REQUIRED)
-@forbidden_view_config(renderer='json')
+@forbidden_view_config()
 def login(request):
     url = request.registry.settings['auth.idp_server_login_url']
 
@@ -36,7 +36,7 @@ def login(request):
         return HTTPForbidden()
 
     referrer = request.url
-    if referrer == request.route_url('login') or referrer == request.route_url('logout'):
+    if referrer == request.route_url('login'):
         # Never redirect back to login page or logout
         # TODO redirect to some landing home page
         referrer = request.route_url('list_of_reports')
@@ -56,7 +56,7 @@ def login(request):
     return HTTPFound(location=url + "?%s" % params)
 
 
-@view_config(route_name='logout', permission=NO_PERMISSION_REQUIRED)
+@view_config(route_name='logout', permission='logout')
 def logout(request):
     # Get the current session
     session_id = authenticated_userid(request)

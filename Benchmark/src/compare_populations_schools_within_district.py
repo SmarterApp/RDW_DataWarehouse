@@ -40,8 +40,42 @@ def schools_in_a_district(district_id, asmt_type, asmt_subject):
     return results
 
 
-def district_statistics():
-    pass
+def district_statistics(district_id):
+    school_count_query = '''
+    select count(*)
+    from edware_star_20130212_fixture_3.dim_school school
+    where school.district_id = {district_id}
+    '''.format(district_id=district_id)
+
+    student_count_query = '''
+    select count(*)
+    from edware_star_20130212_fixture_3.dim_student student
+    where student.district_id = {district_id}
+    '''.format(district_id=district_id)
+
+    total_students_query = '''
+    select count(*)
+    from edware_star_20130212_fixture_3.dim_student
+    '''
+
+    total_dist_query = '''
+    select count(*)
+    from edware_star_20130212_fixture_3.dim_district
+    '''
+
+    total_schools_query = '''
+    select count(*)
+    from edware_star_20130212_fixture_3.dim_schools
+    '''
+
+    school_count_set = engine.execute(school_count_query)
+    stu_count_set = engine.execute(student_count_query)
+    tot_stu_set = engine.execute(total_students_query)
+    tot_dist_set = engine.execute(total_dist_query)
+    tot_sch_set = engine.execute(total_schools_query)
+
+    print('*********************** Benchmarks for District %d ***********************')
+    print('Total Districts:\t\t', tot_dist_set.fetchall())
 
 
 if __name__ == '__main__':
@@ -53,3 +87,4 @@ if __name__ == '__main__':
     print(res)
     print(len(res))
     print(duration)
+    district_statistics(161)

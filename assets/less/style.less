@@ -105,7 +105,8 @@ h3 {
 #breadcrumb {
   background: #b1b1b1;
   color: #333;
-  padding: 5px;
+  height: 20px;
+  padding: 10px;
   
   a {
     color: #fff; 
@@ -211,6 +212,46 @@ th.ui-th-column div {
     height: 520px;
     padding: 15px;
     width: 15%;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    
+    .subject {
+      font-size: 34px;
+      font-weight: bold;
+      color: #18577e;
+      line-height: 40px;
+    }
+    
+    .type {
+      font-size: 15px;
+      font-weight: bold;
+      color: #707070;
+    }
+    
+    .teacher {
+      
+      font-size: 13px;
+      
+      .text {
+        color: #000000;
+      }
+      
+      .value {
+        color: #474747;
+      }  
+    }
+    
+    .date {
+      font-size: 13px;
+      
+      .text {
+        color: #000000;
+      }
+      
+      .value {
+        color: #474747;
+      }
+    }
   }
   
   #assessmentDetails {
@@ -223,6 +264,58 @@ th.ui-th-column div {
     
     #confidenceLevel {
       height: 100px;
+      display:none;
+      
+      .overall_score {
+        position: absolute;
+      }
+      .transWrapper {
+        margin-left: 5%;
+        position: absolute;
+        width: 800px;
+        z-index: 99;
+      }
+      .transImage {
+        height: 85px;
+        background-image: url("../images/progressbar_overlay1600.png");
+        background-repeat: no-repeat;
+      }
+      
+      .progress {
+        background-color: transparent;
+        background-image: none;
+        border-radius: 0;
+        height: 32px;
+        box-shadow: none;
+        margin-left: 5%;
+        position: absolute;
+        margin-top: 27px;
+        width: 800px;
+        z-index:1;
+        
+        .bar {
+          padding-top: 7px;
+          font-size: 10px;
+        }
+      }
+      
+      .cutPointsBar {
+        margin-left: 5%;
+        margin-top: 60px;
+        position: absolute;
+        width: 800px;
+        
+        .cutPoints {
+          float: left;
+          text-align: right;
+          font-size: 11px;
+          color: #9c9c9c;
+        }
+        
+        .startPoint {
+          position: absolute;
+        }
+      }
     }
     
     #claimsSection {

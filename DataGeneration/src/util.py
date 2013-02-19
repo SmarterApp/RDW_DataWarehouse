@@ -44,4 +44,3 @@ def generate_start_date(grade):
     start_day = random.randint(1, 8)
 
     return datetime.date(start_year, start_month, start_day)
-

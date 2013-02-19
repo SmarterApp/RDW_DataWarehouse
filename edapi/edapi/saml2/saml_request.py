@@ -10,8 +10,8 @@ import zlib
 import base64
 
 
-# Represents a SamlRequest
 class SamlRequest:
+    '''Represents a SamlRequest'''
 
     def __init__(self, issuer_name):
         # UUID based on host ID and current time, or use 4 to get random
@@ -34,15 +34,15 @@ class SamlRequest:
         return self._uuid
 
 
-# Represents a Saml AuthnRequest for Login
 class SamlAuthnRequest(SamlRequest):
+    '''Represents a Saml AuthnRequest for Login'''
 
     def __init__(self, issuer_name):
         super().__init__(issuer_name)
 
     # Create XML SAML Auth Request
     # returns a byte string of a SAML AuthnRequest
-    def create_request(self):
+    def generate_saml_request(self):
         doc = Document()
         samlp_auth_request = doc.createElement('samlp:AuthnRequest')
         samlp_auth_request.setAttribute('xmlns:samlp', 'urn:oasis:names:tc:SAML:2.0:protocol')
@@ -68,15 +68,15 @@ class SamlAuthnRequest(SamlRequest):
         return self.format_request(doc)
 
 
-# Represents a Saml LogoutRequest
 class SamlLogoutRequest(SamlRequest):
+    '''Represents a Saml LogoutRequest'''
 
     def __init__(self, issuer_name, session_index, name_qualifier):
         super().__init__(issuer_name)
         self._session_index = session_index
         self._name_qualifier = name_qualifier
 
-    def create_request(self):
+    def generate_saml_request(self):
         doc = Document()
 
         samlp_logout_request = doc.createElement('saml2p:SamlLogoutRequest')

@@ -26,7 +26,7 @@ def get_saml_from_resource_file(file_mame):
     return xml
 
 
-class Test(Unittest_with_sqlite):
+class TestViews(Unittest_with_sqlite):
 
     def setUp(self):
         self.__request = DummyRequest()
@@ -172,8 +172,6 @@ class Test(Unittest_with_sqlite):
         self.__request.POST = {}
         self.__request.POST['SAMLResponse'] = get_saml_from_resource_file("ValidSAMLResponse.txt")
         self.__request.registry.settings = {}
-        #self.__request.registry.settings['auth.saml.idp_server_login_url'] = 'http://dummyidp.com'
-        #self.__request.registry.settings['auth.saml.issuer_name'] = 'dummyIssuer'
         self.__request.registry.settings['auth.session.timeout'] = 1
         http = saml2_post_consumer(self.__request)
         self.assertEquals(http.location, 'http://example.com/dummy/report')

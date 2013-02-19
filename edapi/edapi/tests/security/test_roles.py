@@ -13,7 +13,7 @@ class TestRoles(unittest.TestCase):
         self.assertTrue(has_undefined_roles(['I do not exist']))
 
     def test_no_bad_roles(self):
-        self.assertFalse(has_undefined_roles([Roles.SYSTEM_ADMINISTRATOR, Roles.TEACHER, Roles.CONSORTIUM_EDUCATION_ADMINISTRATOR_1, "STUDENT"]))
+        self.assertFalse(has_undefined_roles([Roles.SYSTEM_ADMINISTRATOR, Roles.TEACHER, Roles.CONSORTIUM_EDUCATION_ADMINISTRATOR_1, Roles.STUDENT]))
 
     def test_good_and_bad_roles(self):
         self.assertTrue(has_undefined_roles([Roles.PARENT, Roles.STATE_DATA_EXTRACTOR, "Bad Role", Roles.STATE_EDUCATION_ADMINISTRATOR_1]))

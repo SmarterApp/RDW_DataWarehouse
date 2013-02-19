@@ -16,13 +16,16 @@ import urllib
 from edapi.security.session_manager import create_new_user_session, \
     delete_session, get_user_session
 from edapi.security.roles import Roles
+from edapi.utils import convert_to_int
 
 
-# forbidden_view_config decorator indicates that this is the route to redirect to when an user
-# has no access to a page
 @view_config(route_name='login', permission=NO_PERMISSION_REQUIRED)
 @forbidden_view_config()
 def login(request):
+    '''
+    forbidden_view_config decorator indicates that this is the route to redirect to when an user
+    has no access to a page
+    '''
     url = request.registry.settings['auth.saml.idp_server_login_url']
 
     # Both of these calls will trigger our callback
@@ -35,6 +38,10 @@ def login(request):
     if Roles.NONE in principals:
         return HTTPForbidden()
 
+    # clear out the session if we found one in the cookie
+    if session_id is not None:
+        delete_session(session_id)
+
     referrer = request.url
     if referrer == request.route_url('login'):
         # Never redirect back to login page or logout
@@ -42,14 +49,10 @@ def login(request):
         referrer = request.route_url('list_of_reports')
     params = {'RelayState': request.params.get('came_from', referrer)}
 
-    # clear out the session if we found one in the cookie
-    if session_id is not None:
-        delete_session(session_id)
-
     saml_request = SamlAuthnRequest(request.registry.settings['auth.saml.issuer_name'])
 
     # combined saml_request into url params and url encode it
-    params.update(saml_request.create_request())
+    params.update(saml_request.generate_saml_request())
     params = urllib.parse.urlencode(params)
 
     # Redirect to openam
@@ -79,7 +82,7 @@ def logout(request):
             logout_request = SamlLogoutRequest(request.registry.settings['auth.saml.issuer_name'],
                                                session.get_idp_session_index(),
                                                request.registry.settings['auth.saml.name_qualifier'])
-            params = logout_request.create_request()
+            params = logout_request.generate_saml_request()
             params = urllib.parse.urlencode(params)
             url = request.registry.settings['auth.saml.idp_server_logout_url'] + "?%s" % params
 
@@ -91,6 +94,9 @@ def logout(request):
 
 @view_config(route_name='saml2_post_consumer', permission=NO_PERMISSION_REQUIRED, request_method='POST')
 def saml2_post_consumer(request):
+    '''
+    This is the postback from IDP
+    '''
     # TODO: compare with auth response id
     auth_request_id = "retrieve the id"
 
@@ -103,7 +109,7 @@ def saml2_post_consumer(request):
     if saml_response.is_validate():
 
         # create a session
-        session_timeout = int(request.registry.settings['auth.session.timeout'])
+        session_timeout = convert_to_int(request.registry.settings['auth.session.timeout'])
         session_id = create_new_user_session(response, session_timeout).get_session_id()
 
         # Save session id to cookie

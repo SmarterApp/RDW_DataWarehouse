@@ -32,7 +32,7 @@ class SamlRequestTest(unittest.TestCase):
     def test_SamlAuthnRequest(self):
         issuer = "http://IamIssuer.com"
         request = SamlAuthnRequest(issuer)
-        params = request.create_request()
+        params = request.generate_saml_request()
         str_decoded = base64_decode_inflate(params)
         self.assertTrue(str_decoded.find(issuer) > 0)
 
@@ -40,7 +40,7 @@ class SamlRequestTest(unittest.TestCase):
         issuer = "http://iamSomeIssuer.net"
         session_id = "123"
         request = SamlLogoutRequest(issuer, session_id, issuer)
-        params = request.create_request()
+        params = request.generate_saml_request()
         str_decoded = base64_decode_inflate(params)
         expected_issuer = '<saml2:Issuer xmlns:saml2="urn:oasis:names:tc:SAML:2.0:assertion">' + issuer + '</saml2:Issuer>'
         expected_session = '<saml2p:SessionIndex>' + session_id + '</saml2p:SessionIndex>'

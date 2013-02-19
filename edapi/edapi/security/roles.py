@@ -9,7 +9,7 @@ from edapi import utils
 Roles = utils.enum(DEPLOYMENT_ADMINISTRATOR='DEPLOYMENT_ADMINISTRATOR',
                    SYSTEM_ADMINISTRATOR='SYSTEM_ADMINISTRATOR',
                    DATA_LOADER='DATA_LOADER',
-                   DATA_CORRECTOR='DATA_LOADER',
+                   DATA_CORRECTOR='DATA_CORRECTOR',
                    # TODO _ no role?  Document was not clear
                    NO_ROLE='NOT_RESTRICTED',
                    PSYCHOMETRICIAN='PSYCHOMETRICIAN',
@@ -31,8 +31,10 @@ Roles = utils.enum(DEPLOYMENT_ADMINISTRATOR='DEPLOYMENT_ADMINISTRATOR',
                    )
 
 
-# Given a list of roles, return true if there is an unknown role
 def has_undefined_roles(roles):
+    '''
+    Given a list of roles, return true if there is an unknown role
+    '''
     for role in roles:
         if Roles.reverse_mapping.get(role) is None:
             return True

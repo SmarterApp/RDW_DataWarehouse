@@ -9,6 +9,8 @@ import pyramid
 from zope import component
 from database.connector import DbUtil, IDbUtil
 from lesscss import LessCSS
+from pyramid.authorization import ACLAuthorizationPolicy
+from pyramid.authentication import AuthTktAuthenticationPolicy
 
 
 def main(global_config, **settings):
@@ -41,8 +43,8 @@ def main(global_config, **settings):
 
     LessCSS(media_dir=parent_assets_dir + "/less", output_dir=parent_assets_dir + "/css", based=False)
 
-    config.add_static_view('static', 'static', cache_max_age=3600)
-    config.add_static_view('assets', '../assets', cache_max_age=3600)
+    config.add_static_view('static', 'static', cache_max_age=0)
+    config.add_static_view('assets', '../assets', cache_max_age=0)
 
     config.add_route('home', '/')
     config.add_route('checkstatus', '/status')
@@ -67,8 +69,6 @@ def main(global_config, **settings):
     # routing for class report
     config.add_route('class_report', '/class_report')
     config.add_route('student_report', '/student_report')
-    config.add_route('import', '/import')
-    config.add_route('create', '/create')
 
     # scans smarter
     config.scan()

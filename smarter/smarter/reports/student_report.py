@@ -27,6 +27,7 @@ def __prepare_query(connector, student_id, assessment_id):
                     dim_asmt.c.asmt_perf_lvl_name_2.label("asmt_cut_point_name_2"),
                     dim_asmt.c.asmt_perf_lvl_name_3.label("asmt_cut_point_name_3"),
                     dim_asmt.c.asmt_perf_lvl_name_4.label("asmt_cut_point_name_4"),
+                    dim_asmt.c.asmt_perf_lvl_name_5.label("asmt_cut_point_name_5"),
                     dim_asmt.c.asmt_cut_point_1.label("asmt_cut_point_1"),
                     dim_asmt.c.asmt_cut_point_2.label("asmt_cut_point_2"),
                     dim_asmt.c.asmt_cut_point_3.label("asmt_cut_point_3"),
@@ -90,10 +91,6 @@ def get_student_report(params, connector=None):
     query = __prepare_query(connector, student_id, assessment_id)
 
     result = connector.get_result(query)
-
-#    for asmt in result:
-#        asmt['cutpoints'] = list_of_students_report.__get_cut_points(connector, asmt['asmt_grade'], asmt['asmt_subject'])
-#        pass
 
     # rearranging the json so we could use it more easily with mustache
     result = {"items": result}

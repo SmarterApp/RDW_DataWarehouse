@@ -65,26 +65,58 @@ def district_statistics(district_id):
 
     total_schools_query = '''
     select count(*)
-    from edware_star_20130212_fixture_3.dim_schools
+    from edware_star_20130212_fixture_3.dim_school
     '''
 
+    start_time = time.time()
     school_count_set = engine.execute(school_count_query)
     stu_count_set = engine.execute(student_count_query)
     tot_stu_set = engine.execute(total_students_query)
     tot_dist_set = engine.execute(total_dist_query)
     tot_sch_set = engine.execute(total_schools_query)
+    query_time = time.time() - start_time
 
-    print('*********************** Benchmarks for District %d ***********************')
-    print('Total Districts:\t\t', tot_dist_set.fetchall())
+    print('************* Benchmarks for District %d *************' % district_id)
+    print('Total Districts:\t%6d' % tot_dist_set.fetchall()[0][0])
+    print('Total Schools:\t\t%6d' % tot_sch_set.fetchall()[0][0])
+    print('Total Students:\t\t%6d' % tot_stu_set.fetchall()[0][0])
+    print('Schools in district:\t%6d' % school_count_set.fetchall()[0][0])
+    print('Students in district:\t%6d' % stu_count_set.fetchall()[0][0])
+    print('Time to run counts:\t%6.3fs' % query_time)
+    print('**** Benchmarks for Queries ****')
+
+    start_time1 = time.time()
+    schools_in_a_district(district_id, 'SUMMATIVE', 'ELA')
+    query_time = time.time() - start_time1
+    print('Summative-ELA:\t\t%6.2fs' % query_time)
+
+    start_time1 = time.time()
+    schools_in_a_district(district_id, 'INTERIM', 'ELA')
+    query_time = time.time() - start_time1
+    print('Interim-ELA:\t\t%6.2fs' % query_time)
+
+    start_time1 = time.time()
+    schools_in_a_district(district_id, 'SUMMATIVE', 'Math')
+    query_time = time.time() - start_time1
+    print('Summative-Math:\t\t%6.2fs' % query_time)
+
+    start_time1 = time.time()
+    schools_in_a_district(district_id, 'INTERIM', 'Math')
+    query_time = time.time() - start_time1
+    print('Summative-Math:\t\t%6.2fs' % query_time)
 
 
 if __name__ == '__main__':
     import time
-    stime = time.time()
-    res = schools_in_a_district(161, 'SUMMATIVE', 'ELA')
-    duration = time.time() - stime
-    res.sort(key=lambda tup: tup[0])
-    print(res)
-    print(len(res))
-    print(duration)
+
     district_statistics(161)
+    district_statistics(127)
+    district_statistics(143)
+
+    stime = time.time()
+    result = schools_in_a_district(161, 'SUMMATIVE', 'ELA')
+    duration = time.time() - stime
+    result.sort(key=lambda tup: tup[0])
+
+    for res in result:
+        print(res)

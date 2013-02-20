@@ -483,7 +483,7 @@ class Staff(Person):
         self.school_id = school_id
 
     def getRow(self):
-        return [self.staff_id, self.staff_external_id, self.first_name, self.middle_name, self.last_name, self.district_id, self.state_id, self.school_id]
+        return [self.staff_id, self.staff_external_id, self.first_name, self.middle_name, self.last_name, self.district_id, self.state_id, int(self.school_id)]
 
 
 class ExternalUserStudent():

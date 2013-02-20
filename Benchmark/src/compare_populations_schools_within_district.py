@@ -86,32 +86,37 @@ def district_statistics(district_id):
     print('**** Benchmarks for Queries ****')
 
     start_time1 = time.time()
-    res1 = schools_in_a_district(district_id, 'SUMMATIVE', 'ELA')
+    schools_in_a_district(district_id, 'SUMMATIVE', 'ELA')
     query_time = time.time() - start_time1
     print('Summative-ELA:\t\t%6.2fs' % query_time)
 
     start_time1 = time.time()
-    res2 = schools_in_a_district(district_id, 'INTERIM', 'ELA')
+    schools_in_a_district(district_id, 'INTERIM', 'ELA')
     query_time = time.time() - start_time1
     print('Interim-ELA:\t\t%6.2fs' % query_time)
 
     start_time1 = time.time()
-    res3 = schools_in_a_district(district_id, 'SUMMATIVE', 'Math')
+    schools_in_a_district(district_id, 'SUMMATIVE', 'Math')
     query_time = time.time() - start_time1
     print('Summative-Math:\t\t%6.2fs' % query_time)
 
     start_time1 = time.time()
-    res4 = schools_in_a_district(district_id, 'INTERIM', 'Math')
+    schools_in_a_district(district_id, 'INTERIM', 'Math')
     query_time = time.time() - start_time1
     print('Summative-Math:\t\t%6.2fs' % query_time)
 
 
 if __name__ == '__main__':
     import time
-    stime = time.time()
-    res = schools_in_a_district(161, 'SUMMATIVE', 'ELA')
-    duration = time.time() - stime
-    res.sort(key=lambda tup: tup[0])
+
     district_statistics(161)
     district_statistics(127)
     district_statistics(143)
+
+    stime = time.time()
+    result = schools_in_a_district(161, 'SUMMATIVE', 'ELA')
+    duration = time.time() - stime
+    result.sort(key=lambda tup: tup[0])
+
+    for res in result:
+        print(res)

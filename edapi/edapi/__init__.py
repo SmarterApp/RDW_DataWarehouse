@@ -73,6 +73,7 @@ def includeme(config):
     config.add_route('login', '/login')
     config.add_route('logout', '/logout')
     config.add_route('saml2_post_consumer', '/saml_post')
+    config.add_route('logout_redirect', '/logout_redirect')
 
     # directive to handle report_config decorators
     config.add_directive('add_report_config', add_report_config)

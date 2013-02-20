@@ -123,3 +123,11 @@ def saml2_post_consumer(request):
         redirect_url = request.route_url('login')
         headers = None
     return HTTPFound(location=redirect_url, headers=headers)
+
+
+@view_config(route_name='logout_redirect', permission=NO_PERMISSION_REQUIRED)
+def logout_redirect(request):
+    #TODO validate response
+    saml_request = request.GET.get('SAMLResponse')
+    redirect_url = request.GET.get('RelayState', request.route_url('list_of_reports'))
+    return HTTPFound(location=redirect_url)

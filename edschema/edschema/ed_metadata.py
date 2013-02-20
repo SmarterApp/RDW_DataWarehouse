@@ -23,7 +23,7 @@ from sqlalchemy.schema import MetaData, CreateSchema
 from sqlalchemy import Table, Column, Index, ForeignKeyConstraint
 from sqlalchemy import SmallInteger, String, Date, Boolean
 from sqlalchemy import ForeignKey
-from sqlalchemy.types import Enum
+from sqlalchemy.types import Enum, Text
 import argparse
 from sqlalchemy.engine import create_engine
 
@@ -121,21 +121,7 @@ def generate_ed_metadata(scheme_name=None, bind=None):
           students.c.state_code, students.c.district_id, students.c.school_id, students.c.section_id, students.c.grade,
           students.c.from_date, students.c.to_date, unique=False)
 
-    parents = Table('dim_parent', metadata,
-                    Column('parent_id', String(50), primary_key=True),
-                    Column('first_name', String(256), nullable=False),
-                    Column('middle_name', String(256), nullable=True),
-                    Column('last_name', String(256), nullable=False),
-                    Column('address_1', String(256), nullable=False),
-                    Column('address_2', String(256), nullable=True),
-                    Column('city', String(100), nullable=False),
-                    Column('state_code', String(2), nullable=False),
-                    Column('zip_code', String(5), nullable=False),
-                    )
-
-    Index('dim_parent_id_idx', parents.c.parent_id, unique=True)
-
-    external_user_student = Table('dim_external_user_student', metadata,
+    external_user_student = Table('external_user_student_rel', metadata,
                                   Column('external_user_student_id', String(50), primary_key=True),
                                   Column('external_user_id', String(256), nullable=False),
                                   Column('student_id', String(50), nullable=False),  # NB! Figure out uniques in dim_student
@@ -184,11 +170,6 @@ def generate_ed_metadata(scheme_name=None, bind=None):
                        Column('asmt_perf_lvl_name_3', String(256), nullable=True),
                        Column('asmt_perf_lvl_name_4', String(256), nullable=True),
                        Column('asmt_perf_lvl_name_5', String(256), nullable=True),
-                       Column('asmt_perf_lvl_style_1', String(256), default="#BB231C;#C32C25;#E14A45);", nullable=True),
-                       Column('asmt_perf_lvl_style_2', String(256), default="#E4C904;#E3C703;#EED909);", nullable=True),
-                       Column('asmt_perf_lvl_style_3', String(256), default="#3B9F0A;#3D9913;#65B92C);", nullable=True),
-                       Column('asmt_perf_lvl_style_4', String(256), default="#237CCB;#2078CA;#3A98D1);", nullable=True),
-                       Column('asmt_perf_lvl_style_5', String(256), default="#CCCCCC;#CCCCCC;#CCCCCC);", nullable=True),
                        Column('asmt_score_min', SmallInteger, nullable=True),
                        Column('asmt_score_max', SmallInteger, nullable=True),
                        Column('asmt_claim_1_score_min', SmallInteger, nullable=True),
@@ -203,6 +184,10 @@ def generate_ed_metadata(scheme_name=None, bind=None):
                        Column('asmt_cut_point_2', SmallInteger, nullable=True),
                        Column('asmt_cut_point_3', SmallInteger, nullable=True),
                        Column('asmt_cut_point_4', SmallInteger, nullable=True),
+                       Column('asmt_custom_metadata', Text, nullable=True),
+                       Column('from_date', String(8), nullable=False),
+                       Column('to_date', String(8), nullable=True),
+                       Column('most_recent', Boolean),
                        )
 
     Index('dim_asmt_idx', assessment.c.asmt_id, unique=True)
@@ -216,6 +201,7 @@ def generate_ed_metadata(scheme_name=None, bind=None):
                                Column('state_code', String(2), nullable=False),
                                Column('district_id', String(50), nullable=False),
                                Column('school_id', String(50), nullable=False),
+                               Column('section_id', String(50), nullable=False),
                                Column('inst_hier_id', None, ForeignKey(instit_hier.c.row_id), nullable=False),
                                Column('section_subject_id', None, ForeignKey(sections.c.row_id), nullable=False),
                                Column('where_taken_id', String(50), nullable=True),  # external id if provided

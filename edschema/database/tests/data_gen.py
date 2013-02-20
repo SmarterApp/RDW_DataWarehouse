@@ -17,7 +17,7 @@ __sample_data = {
     "first_name": ["Takashi", "Adam", "Doris", "David", "Nidhi", "Nitesh", "Seth", "Lili", "Drew", "Ken", "Anna"],
     "last_name": ["Osako", "Oren", "Ip", "Wu", "Paroha", "Sanhkalkar", "Wimberly", "Chen", "Brien", "Allen", "Grebneva"],
     "middle_name": ["", "J", "L"],
-    "state_code": ["NY", "NJ", "CA"],
+    "state_code": ["NY"],
     "from_date": ["2012-12-01"],
     "to_date": ["9999-12-01"],
     "district_id": ["d1", "d2"],

@@ -5,7 +5,7 @@ requires = [
     'zope.component >= 4.0.2',
     'zope.interface >= 4.0.3']
 
-tests_require = requires + ["nose-cov"]
+tests_require = requires
 
 setup(name='edschema',
       version='0.0',

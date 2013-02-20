@@ -43,8 +43,8 @@ def main(global_config, **settings):
 
     LessCSS(media_dir=parent_assets_dir + "/less", output_dir=parent_assets_dir + "/css", based=False)
 
-    config.add_static_view('static', 'static', cache_max_age=0)
-    config.add_static_view('assets', '../assets', cache_max_age=0)
+    config.add_static_view('static', 'static', cache_max_age=0, permission='view')
+    config.add_static_view('assets', '../assets', cache_max_age=0, permission='view')
 
     config.add_route('home', '/')
     config.add_route('checkstatus', '/status')

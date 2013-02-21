@@ -103,7 +103,7 @@ def district_statistics(district_id):
     start_time1 = time.time()
     schools_in_a_district(district_id, 'INTERIM', 'Math')
     query_time = time.time() - start_time1
-    print('Summative-Math:\t\t%6.2fs' % query_time)
+    print('Interim-Math:\t\t%6.2fs' % query_time)
 
 
 if __name__ == '__main__':

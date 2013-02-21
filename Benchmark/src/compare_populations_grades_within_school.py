@@ -9,7 +9,7 @@ engine = create_engine('postgresql+psycopg2://postgres:postgres@monetdb1.poc.dum
 #district=sys.argv[1]
 
 
-def grades_in_a_school(school_id, asmt_type, asmt_subject):
+def grades_in_a_school(school_id, asmt_type, asmt_subject, engine):
     query = """
     select fact.asmt_grade_id, count(fact.student_id),
     case
@@ -96,7 +96,7 @@ def school_statistics(school_id):
     start_time1 = time.time()
     grades_in_a_school(school_id, 'INTERIM', 'Math')
     query_time = time.time() - start_time1
-    print('Summative-Math:\t\t%6.2fs' % query_time)
+    print('Interim-Math:\t\t%6.2fs' % query_time)
 
 
 if __name__ == '__main__':

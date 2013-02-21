@@ -12,8 +12,6 @@ __pycache__
 pyramid.log
 smarter.egg-info
 .idea/
-.project
-.pydevproject
 .coverage
 
 #########################

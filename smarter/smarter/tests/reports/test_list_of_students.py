@@ -27,10 +27,9 @@ class Test(Unittest_with_sqlite):
         self.assertTrue('MATH' in cutpoints, 'MATH')
 
         assessments = results['assessments']
-        self.assertEqual(3, len(assessments), "3 assessments")
+        self.assertEqual(2, len(assessments), "2 assessments")
         self.assertEqual("Adam", assessments[0]['student_first_name'], "student_first_name")
-        self.assertEqual("Doris", assessments[1]['student_first_name'], "student_first_name")
-        self.assertEqual("Takashi", assessments[2]['student_first_name'], "student_first_name")
+        self.assertEqual("Takashi", assessments[1]['student_first_name'], "student_first_name")
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testReport']

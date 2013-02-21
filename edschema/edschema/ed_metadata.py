@@ -20,7 +20,7 @@ Command line options are available form --help, but as a quick start:
 @deffield    updated: Updated
 '''
 from sqlalchemy.schema import MetaData, CreateSchema
-from sqlalchemy import Table, Column, Index, ForeignKeyConstraint
+from sqlalchemy import Table, Column, Index
 from sqlalchemy import SmallInteger, String, Date, Boolean
 from sqlalchemy import ForeignKey
 from sqlalchemy.types import Enum, UnicodeText, DateTime, Text
@@ -57,18 +57,18 @@ def generate_ed_metadata(scheme_name=None, bind=None):
 
     # Two-letter state - some countries have 3 or more, but two will do for US
     instit_hier = Table('dim_inst_hier', metadata,
-                       Column('row_id', String(50), primary_key=True),
-                       Column('state_name', String(32), nullable=False),
-                       Column('state_code', String(2), nullable=False),
-                       Column('district_id', String(50), nullable=False),
-                       Column('district_name', String(256), nullable=False),
-                       Column('school_id', String(50), nullable=False),
-                       Column('school_name', String(256), nullable=False),
-                       Column('school_category', String(20), nullable=False),
-                       Column('from_date', String(8), nullable=False),
-                       Column('to_date', String(8), nullable=True),
-                       Column('most_recent', Boolean),
-                     )
+                        Column('row_id', String(50), primary_key=True),
+                        Column('state_name', String(32), nullable=False),
+                        Column('state_code', String(2), nullable=False),
+                        Column('district_id', String(50), nullable=False),
+                        Column('district_name', String(256), nullable=False),
+                        Column('school_id', String(50), nullable=False),
+                        Column('school_name', String(256), nullable=False),
+                        Column('school_category', String(20), nullable=False),
+                        Column('from_date', String(8), nullable=False),
+                        Column('to_date', String(8), nullable=True),
+                        Column('most_recent', Boolean),
+                        )
 
     Index('dim_inst_hier_idx', instit_hier.c.row_id, unique=True)
     Index('dim_inst_hier_codex', instit_hier.c.state_code, instit_hier.c.district_id, instit_hier.c.school_id, unique=False)

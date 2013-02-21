@@ -113,7 +113,7 @@ def get_list_of_students_report(params, connector=None):
                     dim_asmt.c.asmt_claim_2_score_max.label('asmt_claim_2_score_max'),
                     dim_asmt.c.asmt_claim_3_score_max.label('asmt_claim_3_score_max'),
                     dim_asmt.c.asmt_claim_4_score_max.label('asmt_claim_4_score_max')],
-                    from_obj=[dim_student
+                   from_obj=[dim_student
                              .join(fact_asmt_outcome, dim_student.c.student_id == fact_asmt_outcome.c.student_id)
                              .join(dim_asmt, dim_asmt.c.asmt_id == fact_asmt_outcome.c.asmt_id)
                              .join(dim_staff, dim_staff.c.staff_id == fact_asmt_outcome.c.teacher_id)])

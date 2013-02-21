@@ -8,6 +8,7 @@ Created on Jan 13, 2013
 from edapi.utils import report_config
 from sqlalchemy.sql import select
 from database.connector import DBConnector
+import json
 
 
 def __prepare_query(connector, student_id, assessment_id):
@@ -32,7 +33,16 @@ def __prepare_query(connector, student_id, assessment_id):
                     dim_asmt.c.asmt_cut_point_2.label("asmt_cut_point_2"),
                     dim_asmt.c.asmt_cut_point_3.label("asmt_cut_point_3"),
                     dim_asmt.c.asmt_cut_point_4.label("asmt_cut_point_4"),
-                    fact_asmt_outcome.c.asmt_grade_id.label('asmt_grade'),
+                    dim_asmt.c.asmt_claim_1_score_min.label('asmt_claim_1_score_min'),
+                    dim_asmt.c.asmt_claim_2_score_min.label('asmt_claim_2_score_min'),
+                    dim_asmt.c.asmt_claim_3_score_min.label('asmt_claim_3_score_min'),
+                    dim_asmt.c.asmt_claim_4_score_min.label('asmt_claim_4_score_min'),
+                    dim_asmt.c.asmt_claim_1_score_max.label('asmt_claim_1_score_max'),
+                    dim_asmt.c.asmt_claim_2_score_max.label('asmt_claim_2_score_max'),
+                    dim_asmt.c.asmt_claim_3_score_max.label('asmt_claim_3_score_max'),
+                    dim_asmt.c.asmt_claim_4_score_max.label('asmt_claim_4_score_max'),
+                    dim_asmt.c.asmt_custom_metadata.label('asmt_custom_metadata'),
+                    fact_asmt_outcome.c.asmt_grade.label('asmt_grade'),
                     fact_asmt_outcome.c.asmt_score.label('asmt_score'),
                     fact_asmt_outcome.c.date_taken_day.label('date_taken_day'),
                     fact_asmt_outcome.c.date_taken_month.label('date_taken_month'),
@@ -91,6 +101,8 @@ def get_student_report(params, connector=None):
     query = __prepare_query(connector, student_id, assessment_id)
 
     result = connector.get_result(query)
+
+    #result['asmt_custom_metadata'] = json.load(result['asmt_custom_metadata'])
 
     # rearranging the json so we could use it more easily with mustache
     result = {"items": result}

@@ -34,9 +34,9 @@ class TestStudentReport(Unittest_with_sqlite):
         student_report = result[0]
 
         self.assertEqual('MATH', student_report['asmt_subject'], 'asmt_subject')
-        self.assertEqual('Lili', student_report['teacher_first_name'], 'teacher first name should be David')
-        self.assertEqual('', student_report['teacher_middle_name'], 'teacher middle name should be A')
-        self.assertEqual('Chen', student_report['teacher_last_name'], 'teacher last name should be Wu')
+        self.assertEqual('Lili', student_report['teacher_first_name'], 'teacher first name should be Lili')
+        self.assertEqual('M', student_report['teacher_middle_name'], 'teacher middle name should be M')
+        self.assertEqual('Chen', student_report['teacher_last_name'], 'teacher last name should be Chen')
         self.assertEqual(1, student_report['date_taken_day'])
         self.assertEqual(1, student_report['date_taken_month'])
         self.assertEqual(2013, student_report['date_taken_year'])

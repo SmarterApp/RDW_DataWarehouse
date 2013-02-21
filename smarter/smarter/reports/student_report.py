@@ -65,6 +65,19 @@ def __prepare_query(connector, student_id, assessment_id):
     return query
 
 
+def arrage_results(results):
+    for result in results:
+        custom = json.loads(result['asmt_custom_metadata'])
+        result['cut_points'] = []
+
+        for i in range(1, 5):
+            if result['asmt_cut_point_{0}'.format(i)] > 0:
+                result['cut_points'].append(dict(list({
+                                'name': result['asmt_claim_{0}_name'.format(i)],
+                                'cut_point': result['asmt_cut_point_{0}'.format(i)],
+                                }.items()) + list(custom[i - 1].items())))
+
+
 @report_config(name='individual_student_report',
                params={
                    "studentId": {
@@ -102,7 +115,7 @@ def get_student_report(params, connector=None):
 
     result = connector.get_result(query)
 
-    #result['asmt_custom_metadata'] = json.load(result['asmt_custom_metadata'])
+    arrage_results(result)
 
     # rearranging the json so we could use it more easily with mustache
     result = {"items": result}

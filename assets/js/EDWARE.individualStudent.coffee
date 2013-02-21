@@ -3,8 +3,10 @@ define [
   "jquery"
   "mustache"
   "cs!edwareDataProxy"
-  "text!templates/individual_student_template.html"
-], ($, Mustache, edwareDataProxy, indivStudentReportTemplate) ->
+  "text!templates/individualStudent_report/individual_student_template.html"
+  "text!templates/individualStudent_report/confidenceLevelBar.html"
+  "text!templates/individualStudent_report/claimsInfo.html"
+], ($, Mustache, edwareDataProxy, indivStudentReportTemplate, confidenceLevelBarTemplate, claimsInfoTemplate) ->
    
   #
   #    * Generate individual student report
@@ -37,12 +39,14 @@ define [
       
       data.items[1].asmt_score_pos = ((data.items[1].asmt_score / data.items[1].asmt_score_max) * 100)
       data.items[1].asmt_score_percent =  100 - data.items[1].asmt_score_pos
-      
-      #$.extend data.items[0], cutpoints.ELA
-      #$.extend data.items[1], cutpoints.MATH
         
-      # use template from file to display the json data    
-      output = Mustache.to_html indivStudentReportTemplate, data
+      # use template from file to display the json data  
+      
+      partials = 
+        confidenceLevelBar: confidenceLevelBarTemplate
+        claimsInfo: claimsInfoTemplate
+      
+      output = Mustache.to_html indivStudentReportTemplate, data, partials
       
       $("#individualStudentContent").html output
 

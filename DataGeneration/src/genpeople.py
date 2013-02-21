@@ -130,8 +130,8 @@ def generate_staff(district, state, school):
         'middle_name': gennames.generate_first_or_middle_name(staff_gender) if staff_has_middle_name else None,
         'last_name': gennames.generate_last_name(),
         'district_id': district.district_id,
-        'state_id': state.state_id,
-        'school_id': school.sch_id
+        'state_code': state.state_code,
+        'school_id': school.school_id
     }
 
     staff = Staff(**staff_params)

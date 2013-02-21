@@ -64,9 +64,9 @@ def get_list_of_students_report(params, connector=None):
     if connector is None:
         connector = DBConnector()
 
-    districtId = params[__districtId]
-    schoolId = params[__schoolId]
-    asmtGrade = params[__asmtGrade]
+    districtId = str(params[__districtId])
+    schoolId = str(params[__schoolId])
+    asmtGrade = str(params[__asmtGrade])
 
     # asmtSubject is optional.
     asmtSubject = None

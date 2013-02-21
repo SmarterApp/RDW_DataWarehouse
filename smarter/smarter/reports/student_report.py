@@ -101,12 +101,12 @@ def get_student_report(params, connector=None):
         connector = DBConnector()
 
     # get studentId
-    student_id = params['studentId']
+    student_id = str(params['studentId'])
 
     # if assessmentId is available, read the value.
     assessment_id = None
     if 'assessmentId' in params:
-        assessment_id = params['assessmentId']
+        assessment_id = str(params['assessmentId'])
 
     # get sql session
     connector.open_connection()

@@ -102,7 +102,6 @@ def generate_ed_metadata(scheme_name=None, bind=None):
                      Column('address_1', String(256), nullable=False),
                      Column('address_2', String(256), nullable=True),
                      Column('city', String(100), nullable=False),
-                     Column('state_code', String(10), nullable=False),
                      Column('zip_code', String(5), nullable=False),
                      Column('gender', String(10), nullable=False),
                      Column('email', String(256), nullable=False),

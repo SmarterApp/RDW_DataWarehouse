@@ -4,7 +4,8 @@ Created on Feb 16, 2013
 @author: dip
 '''
 import unittest
-from edapi.security.views import login, saml2_post_consumer
+from edapi.security.views import login, saml2_post_consumer, login_callback,\
+    logout_redirect
 from pyramid import testing
 from pyramid.testing import DummyRequest
 from pyramid.httpexceptions import HTTPFound, HTTPForbidden
@@ -16,6 +17,7 @@ from database.tests.unittest_with_sqlite import Unittest_with_sqlite
 import uuid
 from datetime import timedelta, datetime
 from database.connector import DBConnector
+from pyramid.response import Response
 
 
 def get_saml_from_resource_file(file_mame):
@@ -34,6 +36,7 @@ class TestViews(Unittest_with_sqlite):
         self.__config = testing.setUp(request=self.__request, hook_zca=False)
 
         self.__config.add_route('login', '/dummy/login')
+        self.__config.add_route('login_callback', '/dummy/callback')
         self.__config.add_route('logout', '/dummy/logout')
         self.__config.add_route('list_of_reports', '/dummy/report')
 
@@ -86,7 +89,7 @@ class TestViews(Unittest_with_sqlite):
 
         actual_url = urlparse(http.location)
         queries = urllib.parse.parse_qs(actual_url.query)
-        self.assertEqual(queries['RelayState'], [self.__request.url])
+        self.assertTrue(queries['RelayState'][0].endswith(self.__request.route_path('login_callback') + "?request=" + self.__request.url))
 
     def test_login_redirected_due_to_no_role(self):
         self.__config.testing_securitypolicy("sessionId123", ['NONE'])
@@ -111,7 +114,7 @@ class TestViews(Unittest_with_sqlite):
         http = login(self.__request)
         url = urlparse(http.location)
         queries = urllib.parse.parse_qs(url.query)
-        self.assertEqual(queries['RelayState'], [self.__request.url])
+        self.assertTrue(queries['RelayState'][0].endswith(self.__request.route_path('login_callback') + "?request=" + self.__request.url))
 
     def test_login_with_no_existing_session(self):
         session_id = str(uuid.uuid1())
@@ -124,7 +127,7 @@ class TestViews(Unittest_with_sqlite):
         http = login(self.__request)
         url = urlparse(http.location)
         queries = urllib.parse.parse_qs(url.query)
-        self.assertEqual(queries['RelayState'], [self.__request.url])
+        self.assertTrue(queries['RelayState'][0].endswith(self.__request.route_path('login_callback') + "?request=" + self.__request.url))
 
     def test_logout_with_no_existing_session(self):
         http = logout(self.__request)
@@ -176,7 +179,30 @@ class TestViews(Unittest_with_sqlite):
         http = saml2_post_consumer(self.__request)
         self.assertEquals(http.location, 'http://example.com/dummy/report')
 
+    def test_login_callback(self):
+        self.__request.GET = {}
+        self.__request.GET['request'] = "http://mydirecturl.com"
+        expected = '<a href="http://mydirecturl.com" id=url>'
+        resp = login_callback(self.__request)
+        self.assertIsInstance(resp, Response)
+        self.assertIn(expected, str(resp.body))
+
+    def test_logout_redirect(self):
+        self.__request.GET = {}
+        self.__request.GET['SAMLResponse'] = 'junk'
+        self.__request.GET['RelayState'] = 'http://redirect.me'
+        http = logout_redirect(self.__request)
+        self.assertIsInstance(http, HTTPFound)
+        self.assertEquals(http.location, self.__request.GET['RelayState'])
+
+    def test_logout_redirect_with_no_relay_state(self):
+        self.__request.GET = {}
+        self.__request.GET['SAMLResponse'] = 'junk'
+        http = logout_redirect(self.__request)
+        self.assertIsInstance(http, HTTPFound)
+        self.assertTrue(http.location.endswith('/dummy/report'))
+
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

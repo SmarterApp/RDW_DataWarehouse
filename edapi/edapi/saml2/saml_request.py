@@ -79,7 +79,7 @@ class SamlLogoutRequest(SamlRequest):
     def generate_saml_request(self):
         doc = Document()
 
-        samlp_logout_request = doc.createElement('saml2p:SamlLogoutRequest')
+        samlp_logout_request = doc.createElement('saml2p:LogoutRequest')
         samlp_logout_request.setAttribute('xmlns:saml2p', 'urn:oasis:names:tc:SAML:2.0:protocol')
         samlp_logout_request.setAttribute('ID', self._uuid)
         samlp_logout_request.setAttribute('Version', '2.0')

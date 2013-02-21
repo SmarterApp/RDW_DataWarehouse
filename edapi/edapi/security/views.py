@@ -17,6 +17,7 @@ from edapi.security.session_manager import create_new_user_session, \
     delete_session, get_user_session
 from edapi.security.roles import Roles
 from edapi.utils import convert_to_int
+from pyramid.response import Response
 
 
 @view_config(route_name='login', permission=NO_PERMISSION_REQUIRED)
@@ -47,7 +48,7 @@ def login(request):
         # Never redirect back to login page or logout
         # TODO redirect to some landing home page
         referrer = request.route_url('list_of_reports')
-    params = {'RelayState': request.params.get('came_from', referrer)}
+    params = {'RelayState': request.route_url('login_callback') + "?" + "request=" + request.params.get('came_from', referrer)}
 
     saml_request = SamlAuthnRequest(request.registry.settings['auth.saml.issuer_name'])
 
@@ -56,7 +57,30 @@ def login(request):
     params = urllib.parse.urlencode(params)
 
     # Redirect to openam
-    return HTTPFound(location=url + "?%s" % params)
+    return HTTPFound(location=url + "?%s" % params, pragma='no-cache', cache_control='no-cache')
+
+
+@view_config(route_name='login_callback')
+def login_callback(request):
+    '''
+    Login callback for redirect
+    '''
+    redirect_url = request.GET.get('request')
+    html = '''
+    <html><header>
+    <title>Processing %s</title>
+    <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
+    <META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">
+    <META HTTP-EQUIV="Expires" CONTENT="-1">
+    <meta http-equiv="refresh" content="0;url=/login_callback?request=%s">
+    <script type="text/javascript">
+    function redirect() {
+        document.getElementById('url').click()
+        }
+    </script>
+    </header><body onload="redirect()"><a href="%s" id=url></a></body></html>
+    ''' % (redirect_url, redirect_url, redirect_url)
+    return Response(body=html, content_type='text/html')
 
 
 @view_config(route_name='logout', permission='logout')

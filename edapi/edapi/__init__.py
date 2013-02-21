@@ -71,6 +71,7 @@ def includeme(config):
     # TODO: possible to put this inside SAML2 incase one day we don't want to use it
     # TODO: clean up and derive from ini?
     config.add_route('login', '/login')
+    config.add_route('login_callback', '/login_callback')
     config.add_route('logout', '/logout')
     config.add_route('saml2_post_consumer', '/saml_post')
     config.add_route('logout_redirect', '/logout_redirect')

@@ -34,11 +34,11 @@ __asmtSubject = 'asmtSubject'
     name="list_of_students",
     params={
         __districtId: {
-            "type": "integer",
+            "type": "string",
             "required": True,
         },
         __schoolId: {
-            "type": "integer",
+            "type": "string",
             "required": True,
         },
         __asmtGrade: {

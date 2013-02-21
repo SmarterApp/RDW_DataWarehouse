@@ -81,12 +81,12 @@ def arrage_results(results):
 @report_config(name='individual_student_report',
                params={
                    "studentId": {
-                   "type": "integer",
+                   "type": "string",
                    "required": True
                    },
                    "assessmentId": {
                    "name": "student_assessments_report",
-                   "type": "integer",
+                   "type": "string",
                    "required": False
                    }
                }
@@ -128,7 +128,7 @@ def get_student_report(params, connector=None):
 @report_config(name='student_assessments_report',
                params={
                    "studentId": {
-                   "type": "integer",
+                   "type": "string",
                    "required": True
                    }
                }

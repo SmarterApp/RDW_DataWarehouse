@@ -78,7 +78,7 @@ def get_list_of_students_report(params, connector=None):
 
     # get handle to tables
     dim_student = connector.get_table('dim_student')
-    dim_teacher = connector.get_table('dim_teacher')
+    dim_staff = connector.get_table('dim_staff')
     dim_asmt = connector.get_table('dim_asmt')
     fact_asmt_outcome = connector.get_table('fact_asmt_outcome')
 
@@ -88,10 +88,10 @@ def get_list_of_students_report(params, connector=None):
                     dim_student.c.first_name.label('student_first_name'),
                     func.substr(dim_student.c.middle_name, 1, 1).label('student_middle_name'),
                     dim_student.c.last_name.label('student_last_name'),
-                    fact_asmt_outcome.c.enrl_grade_id.label('enrollment_grade'),
-                    dim_teacher.c.first_name.label('teacher_first_name'),
-                    dim_teacher.c.last_name.label('teacher_last_name'),
-                    fact_asmt_outcome.c.asmt_grade_id.label('asmt_grade'),
+                    fact_asmt_outcome.c.enrl_grade.label('enrollment_grade'),
+                    dim_staff.c.first_name.label('teacher_first_name'),
+                    dim_staff.c.last_name.label('teacher_last_name'),
+                    fact_asmt_outcome.c.asmt_grade.label('asmt_grade'),
                     dim_asmt.c.asmt_subject.label('asmt_subject'),
                     fact_asmt_outcome.c.asmt_score.label('asmt_score'),
                     fact_asmt_outcome.c.asmt_score_range_min.label('asmt_score_range_min'),
@@ -113,12 +113,12 @@ def get_list_of_students_report(params, connector=None):
                     dim_asmt.c.asmt_claim_2_score_max.label('asmt_claim_2_score_max'),
                     dim_asmt.c.asmt_claim_3_score_max.label('asmt_claim_3_score_max'),
                     dim_asmt.c.asmt_claim_4_score_max.label('asmt_claim_4_score_max')],
-                   from_obj=[dim_student
+                    from_obj=[dim_student
                              .join(fact_asmt_outcome, dim_student.c.student_id == fact_asmt_outcome.c.student_id)
                              .join(dim_asmt, dim_asmt.c.asmt_id == fact_asmt_outcome.c.asmt_id)
-                             .join(dim_teacher, dim_teacher.c.teacher_id == fact_asmt_outcome.c.teacher_id)])
+                             .join(dim_staff, dim_staff.c.staff_id == fact_asmt_outcome.c.teacher_id)])
     query = query.where(fact_asmt_outcome.c.school_id == schoolId)
-    query = query.where(and_(fact_asmt_outcome.c.asmt_grade_id == asmtGrade))
+    query = query.where(and_(fact_asmt_outcome.c.asmt_grade == asmtGrade))
     query = query.where(and_(fact_asmt_outcome.c.district_id == districtId))
 
     if asmtSubject is not None:

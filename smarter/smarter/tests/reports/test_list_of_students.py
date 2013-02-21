@@ -12,8 +12,8 @@ class Test(Unittest_with_sqlite):
 
     def testReport(self):
         testParam = {}
-        testParam['districtId'] = 1
-        testParam['schoolId'] = 1
+        testParam['districtId'] = 'd1'
+        testParam['schoolId'] = 'sc1'
         testParam['asmtGrade'] = 1
         testParam['asmtSubject'] = ['ELA', 'MATH']
         results = get_list_of_students_report(testParam)

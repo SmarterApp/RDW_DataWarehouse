@@ -15,7 +15,7 @@ def __prepare_query(connector, student_id, assessment_id):
     fact_asmt_outcome = connector.get_table('fact_asmt_outcome')
     dim_student = connector.get_table('dim_student')
     dim_asmt = connector.get_table('dim_asmt')
-    dim_teacher = connector.get_table('dim_teacher')
+    dim_staff = connector.get_table('dim_staff')
     query = select([fact_asmt_outcome.c.student_id,
                     dim_student.c.first_name.label('student_first_name'),
                     dim_student.c.middle_name.label('student_middle_name'),
@@ -45,10 +45,10 @@ def __prepare_query(connector, student_id, assessment_id):
                     fact_asmt_outcome.c.asmt_claim_2_score.label('asmt_claim_2_score'),
                     fact_asmt_outcome.c.asmt_claim_3_score.label('asmt_claim_3_score'),
                     fact_asmt_outcome.c.asmt_claim_4_score.label('asmt_claim_4_score'),
-                    dim_teacher.c.first_name.label('teacher_first_name'),
-                    dim_teacher.c.middle_name.label('teacher_middle_name'),
-                    dim_teacher.c.last_name.label('teacher_last_name')],
-                   from_obj=[fact_asmt_outcome.join(dim_student, fact_asmt_outcome.c.student_id == dim_student.c.student_id).join(dim_teacher, fact_asmt_outcome.c.teacher_id == dim_teacher.c.teacher_id).join(dim_asmt, dim_asmt.c.asmt_id == fact_asmt_outcome.c.asmt_id)])
+                    dim_staff.c.first_name.label('teacher_first_name'),
+                    dim_staff.c.middle_name.label('teacher_middle_name'),
+                    dim_staff.c.last_name.label('teacher_last_name')],
+                   from_obj=[fact_asmt_outcome.join(dim_student, fact_asmt_outcome.c.student_id == dim_student.c.student_id).join(dim_staff, fact_asmt_outcome.c.teacher_id == dim_staff.c.staff_id).join(dim_asmt, dim_asmt.c.asmt_id == fact_asmt_outcome.c.asmt_id)])
     query = query.where(fact_asmt_outcome.c.student_id == student_id)
     if assessment_id is not None:
         query = query.where(fact_asmt_outcome.c.asmt_id == assessment_id)

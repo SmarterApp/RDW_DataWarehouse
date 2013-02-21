@@ -207,8 +207,8 @@ def generate_ed_metadata(scheme_name=None, bind=None):
                                Column('section_subject_id', None, ForeignKey(sections.c.row_id), nullable=False),
                                Column('where_taken_id', String(50), nullable=True),  # external id if provided
                                Column('where_taken_name', String(256), primary_key=True),
-                               Column('asmt_grade_code', String(10), nullable=False),
-                               Column('enrl_grade_code', String(10), nullable=False),
+                               Column('asmt_grade', String(10), nullable=False),
+                               Column('enrl_grade', String(10), nullable=False),
                                Column('date_taken', Date, nullable=False),
                                Column('date_taken_day', SmallInteger, nullable=False),
                                Column('date_taken_month', SmallInteger, nullable=False),

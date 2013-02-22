@@ -81,7 +81,7 @@ def login_callback(request):
         }
     </script>
     </header><body onload="redirect()"><a href="%s" id=url></a></body></html>
-    ''' % (redirect_url_decoded, redirect_url, redirect_url_decoded)
+    ''' % (redirect_url_decoded, request.path_qs, redirect_url_decoded)
     return Response(body=html, content_type='text/html')
 
 

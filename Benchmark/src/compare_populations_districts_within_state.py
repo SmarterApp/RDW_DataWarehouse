@@ -6,8 +6,8 @@ Created on Feb 15, 2013
 Districts withing a state query
 
 Public interface:
-state_statistics(state_id, engine, schema_name)
-districts_in_a_state(state_id, asmt_type, asmt_subject, engine, schema_name)
+state_statistics(state_id, connection, schema_name)
+districts_in_a_state(state_id, asmt_type, asmt_subject, connection, schema_name)
 
 Descriptions:
 'state_statistics()' prints statistics for how long it takes for the query to return
@@ -18,20 +18,22 @@ Summative-ELA, Summative-Math, Interim-ELA, Interim-Math
 given parameters
 '''
 
+import time
+
 from sqlalchemy import create_engine
 
 
-def state_statistics(state_id, engine, schema_name):
+def state_statistics(state_id, connection, schema_name):
     '''
     Runs queries that print out the statistics and benchmarks for a state
     INPUT:
     state_id -- an id for a state from the database
-    engine -- the db engine created by a sqlAlchemy create_engine() statement
+    connection -- the db connection created by a sqlAlchemy connect() statement
     schema_name -- the name of the schema to use in the queries
     '''
 
-    if state_id is None or engine is None:
-        raise ValueError('Bad Params for state_id or engine')
+    if state_id is None or connection is None:
+        raise ValueError('Bad Params for state_id or connection')
 
     district_count_query = '''
     select count(*)
@@ -61,11 +63,11 @@ def state_statistics(state_id, engine, schema_name):
     '''.format(schema=schema_name)
 
     start_time = time.time()
-    school_count_set = engine.execute(district_count_query)
-    stu_count_set = engine.execute(student_count_query)
-    tot_stu_set = engine.execute(total_students_query)
-    tot_dist_set = engine.execute(total_dist_query)
-    tot_sch_set = engine.execute(total_schools_query)
+    school_count_set = connection.execute(district_count_query)
+    stu_count_set = connection.execute(student_count_query)
+    tot_stu_set = connection.execute(total_students_query)
+    tot_dist_set = connection.execute(total_dist_query)
+    tot_sch_set = connection.execute(total_schools_query)
     query_time = time.time() - start_time
 
     print('************* Benchmarks for State %s *************' % state_id)
@@ -78,34 +80,34 @@ def state_statistics(state_id, engine, schema_name):
     print('**** Benchmarks for Queries ****')
 
     start_time1 = time.time()
-    districts_in_a_state(state_id, 'SUMMATIVE', 'ELA', engine, schema_name)
+    districts_in_a_state(state_id, 'SUMMATIVE', 'ELA', connection, schema_name)
     query_time = time.time() - start_time1
     print('Summative-ELA:\t\t%6.2fs' % query_time)
 
     start_time1 = time.time()
-    districts_in_a_state(state_id, 'INTERIM', 'ELA', engine, schema_name)
+    districts_in_a_state(state_id, 'INTERIM', 'ELA', connection, schema_name)
     query_time = time.time() - start_time1
     print('Interim-ELA:\t\t%6.2fs' % query_time)
 
     start_time1 = time.time()
-    districts_in_a_state(state_id, 'SUMMATIVE', 'Math', engine, schema_name)
+    districts_in_a_state(state_id, 'SUMMATIVE', 'Math', connection, schema_name)
     query_time = time.time() - start_time1
     print('Summative-Math:\t\t%6.2fs' % query_time)
 
     start_time1 = time.time()
-    districts_in_a_state(state_id, 'INTERIM', 'Math', engine, schema_name)
+    districts_in_a_state(state_id, 'INTERIM', 'Math', connection, schema_name)
     query_time = time.time() - start_time1
     print('Interim-Math:\t\t%6.2fs' % query_time)
 
 
-def districts_in_a_state(state_id, asmt_type, asmt_subject, engine, schema_name):
+def districts_in_a_state(state_id, asmt_type, asmt_subject, connection, schema_name):
     '''
     Run a query for assessment performance for districts within a state.
     INPUT:
     state_id -- the id of the state that you want to use in the query (ie. 'DE' for deleware)
     asmt_type -- the type of assessment to use in the query ('SUMMATIVE' or 'INTERIM')
     asmt_subject -- the subject of assessment to use in the query ('ELA' or 'Math')
-    engine -- the db engine created by a sqlAlchemy create_engine() statement
+    connection -- the db connection created by a sqlAlchemy connect() statement
     schema_name -- the name of the schema to use in the queries
     RETURNS: result -- a list of tuples (district, count, performance level)
     '''
@@ -135,7 +137,7 @@ def districts_in_a_state(state_id, asmt_type, asmt_subject, engine, schema_name)
 
     # print(state)
     # resultset = engine.execute(query,{'state':state, 'year':year})
-    resultset = engine.execute(query)
+    resultset = connection.execute(query)
     results = resultset.fetchall()
     # print(results)
     return results
@@ -145,10 +147,11 @@ if __name__ == '__main__':
 
     engine = create_engine('postgresql+psycopg2://postgres:postgres@monetdb1.poc.dum.edwdc.net:5432/edware')
     schema_name = 'edware_star_20130212_fixture_3'
+    connection = engine.connect()
 
     stime = time.time()
-    res = districts_in_a_state('DE', 'SUMMATIVE', 'ELA', engine, schema_name)
+    res = districts_in_a_state('DE', 'SUMMATIVE', 'ELA', connection, schema_name)
     duration = time.time() - stime
 
     res.sort(key=lambda tup: tup[0])
-    state_statistics('DE', engine, schema_name)
+    state_statistics('DE', connection, schema_name)

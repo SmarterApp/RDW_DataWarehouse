@@ -6,8 +6,8 @@ Created on Feb 15, 2013
 schools withing a district query
 
 Public interface:
-district_statistics(state_id, engine)
-schools_in_a_district(state_id, asmt_type, asmt_subject, engine)
+district_statistics(state_id, connection)
+schools_in_a_district(state_id, asmt_type, asmt_subject, connection)
 
 Descriptions:
 'district_statistics()' prints statistics for how long it takes for the query to return
@@ -18,15 +18,17 @@ Summative-ELA, Summative-Math, Interim-ELA, Interim-Math
 given parameters
 '''
 
+import time
+
 from sqlalchemy import create_engine
 
 
-def district_statistics(district_id, engine, schema_name):
+def district_statistics(district_id, connection, schema_name):
     '''
     Runs queries that print out the statistics and benchmarks for a district
     INPUT:
     state_id -- an id for a state from the database
-    engine -- the db engine created by a sqlAlchemy create_engine() statement
+    connection -- the db connection created by a sqlAlchemy connection() statement
     schema_name -- the name of the schema to use in the queries
     '''
 
@@ -58,11 +60,11 @@ def district_statistics(district_id, engine, schema_name):
     '''.format(schema=schema_name)
 
     start_time = time.time()
-    school_count_set = engine.execute(school_count_query)
-    stu_count_set = engine.execute(student_count_query)
-    tot_stu_set = engine.execute(total_students_query)
-    tot_dist_set = engine.execute(total_dist_query)
-    tot_sch_set = engine.execute(total_schools_query)
+    school_count_set = connection.execute(school_count_query)
+    stu_count_set = connection.execute(student_count_query)
+    tot_stu_set = connection.execute(total_students_query)
+    tot_dist_set = connection.execute(total_dist_query)
+    tot_sch_set = connection.execute(total_schools_query)
     query_time = time.time() - start_time
 
     print('************* Benchmarks for District %d *************' % district_id)
@@ -75,34 +77,34 @@ def district_statistics(district_id, engine, schema_name):
     print('**** Benchmarks for Queries ****')
 
     start_time1 = time.time()
-    schools_in_a_district(district_id, 'SUMMATIVE', 'ELA', engine, schema_name)
+    schools_in_a_district(district_id, 'SUMMATIVE', 'ELA', connection, schema_name)
     query_time = time.time() - start_time1
     print('Summative-ELA:\t\t%6.2fs' % query_time)
 
     start_time1 = time.time()
-    schools_in_a_district(district_id, 'INTERIM', 'ELA', engine, schema_name)
+    schools_in_a_district(district_id, 'INTERIM', 'ELA', connection, schema_name)
     query_time = time.time() - start_time1
     print('Interim-ELA:\t\t%6.2fs' % query_time)
 
     start_time1 = time.time()
-    schools_in_a_district(district_id, 'SUMMATIVE', 'Math', engine, schema_name)
+    schools_in_a_district(district_id, 'SUMMATIVE', 'Math', connection, schema_name)
     query_time = time.time() - start_time1
     print('Summative-Math:\t\t%6.2fs' % query_time)
 
     start_time1 = time.time()
-    schools_in_a_district(district_id, 'INTERIM', 'Math', engine, schema_name)
+    schools_in_a_district(district_id, 'INTERIM', 'Math', connection, schema_name)
     query_time = time.time() - start_time1
     print('Interim-Math:\t\t%6.2fs' % query_time)
 
 
-def schools_in_a_district(district_id, asmt_type, asmt_subject, engine, schema_name):
+def schools_in_a_district(district_id, asmt_type, asmt_subject, connection, schema_name):
     '''
     Run a query for assessment performance for grades within a school.
     INPUT:
     state_id -- the id of the state that you want to use in the query (ie. 'DE' for deleware)
     asmt_type -- the type of assessment to use in the query ('SUMMATIVE' or 'INTERIM')
     asmt_subject -- the subject of assessment to use in the query ('ELA' or 'Math')
-    engine -- the db engine created by a sqlAlchemy create_engine() statement
+    connection -- the db connection created by a sqlAlchemy connection() statement
     schema_name -- the name of the schema to use in the queries
     RETURNS: results -- a list of tuples (school, count, performance level)
     '''
@@ -131,7 +133,7 @@ def schools_in_a_district(district_id, asmt_type, asmt_subject, engine, schema_n
     group by school.school_name, performance_level
     """.format(district_id=district_id, asmt_type=asmt_type, asmt_subject=asmt_subject, schema=schema_name)
     #print(district)
-    resultset = engine.execute(query)
+    resultset = connection.execute(query)
     results = resultset.fetchall()
     #print(results)
     return results
@@ -142,13 +144,14 @@ if __name__ == '__main__':
 
     engine = create_engine('postgresql://postgres:postgres@monetdb1.poc.dum.edwdc.net:5432/edware')
     schema_name = 'edware_star_20130212_fixture_3'
+    connection = engine.connect()
 
-    district_statistics(161, engine, schema_name)
-    district_statistics(127, engine, schema_name)
-    district_statistics(143, engine, schema_name)
+    district_statistics(161, connection, schema_name)
+    district_statistics(127, connection, schema_name)
+    district_statistics(143, connection, schema_name)
 
     stime = time.time()
-    result = schools_in_a_district(161, 'SUMMATIVE', 'ELA', engine, schema_name)
+    result = schools_in_a_district(161, 'SUMMATIVE', 'ELA', connection, schema_name)
     duration = time.time() - stime
     result.sort(key=lambda tup: tup[0])
 

@@ -66,7 +66,8 @@ def login_callback(request):
     '''
     Login callback for redirect
     '''
-    redirect_url = inflate_base64_decode((request.GET.get('request'))).decode()
+    redirect_url = request.GET.get('request')
+    redirect_url_decoded = inflate_base64_decode(redirect_url).decode()
     html = '''
     <html><header>
     <title>Processing %s</title>
@@ -80,7 +81,7 @@ def login_callback(request):
         }
     </script>
     </header><body onload="redirect()"><a href="%s" id=url></a></body></html>
-    ''' % (redirect_url, redirect_url, redirect_url)
+    ''' % (redirect_url_decoded, redirect_url, redirect_url_decoded)
     return Response(body=html, content_type='text/html')
 
 

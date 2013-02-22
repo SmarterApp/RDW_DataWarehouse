@@ -17,7 +17,16 @@ var baseConfigs = {
 	    edwareGridFormatters: '../../js/widgets/EDWARE.grid.formatters',
 	    edwareStudentList: '../../js/EDWARE.studentList',
 	    edwareIndividualStudent: '../../js/EDWARE.individualStudent'
-	}
+	},
+	shim: {
+        'jqGrid': {
+            //These script dependencies should be loaded before loading
+            //jqGrid
+            deps: ['jquery'],
+            
+            exports: 'jqGrid'
+        }
+   }
 };
 
 require.config(baseConfigs);

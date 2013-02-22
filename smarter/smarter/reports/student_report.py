@@ -90,7 +90,6 @@ def __arrage_results(results):
 
     # rearranging the json so we could use it more easily with mustache
     results = {"items": results}
-    
     return results
 
 

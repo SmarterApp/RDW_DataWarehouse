@@ -498,7 +498,7 @@ def create_classes_for_school(district, school, state, name_list, total_count, a
     for grade in range(school.low_grade, school.high_grade + 1):
 
         # generate student list for a grade
-        students_in_grade = generate_students(number_of_students_per_grade, state, district, school, grade, name_list)
+        students_in_grade, external_users = generate_students(number_of_students_per_grade, state, district, school, grade, name_list)
         create_csv(students_in_grade, constants.STUDENTS)
 
         # Each parent of the student will have a row in external_user_student

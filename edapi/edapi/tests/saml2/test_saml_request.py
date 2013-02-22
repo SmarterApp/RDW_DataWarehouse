@@ -11,7 +11,7 @@ import zlib
 from xml.dom.minidom import parseString
 
 
-def base64_decode_inflate(params):
+def inflate_base64_decode(params):
     byte_request = params["SAMLRequest"]
     base_decoded = base64.b64decode(byte_request)
     return zlib.decompress(base_decoded, -15).decode()
@@ -33,7 +33,7 @@ class SamlRequestTest(unittest.TestCase):
         issuer = "http://IamIssuer.com"
         request = SamlAuthnRequest(issuer)
         params = request.generate_saml_request()
-        str_decoded = base64_decode_inflate(params)
+        str_decoded = inflate_base64_decode(params)
         self.assertTrue(str_decoded.find(issuer) > 0)
 
     def test_SamlLogoutRequest(self):
@@ -42,7 +42,7 @@ class SamlRequestTest(unittest.TestCase):
         name_id = "abc"
         request = SamlLogoutRequest(issuer, session_id, issuer, name_id)
         params = request.generate_saml_request()
-        str_decoded = base64_decode_inflate(params)
+        str_decoded = inflate_base64_decode(params)
         expected_issuer = '<saml2:Issuer xmlns:saml2="urn:oasis:names:tc:SAML:2.0:assertion">' + issuer + '</saml2:Issuer>'
         expected_session = '<saml2p:SessionIndex>' + session_id + '</saml2p:SessionIndex>'
         expected_name_id = '>' + name_id + '</saml2:NameID>'

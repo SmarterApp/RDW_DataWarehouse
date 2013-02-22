@@ -36,10 +36,12 @@ __asmtSubject = 'asmtSubject'
         __districtId: {
             "type": "string",
             "required": True,
+            "pattern": "^[a-zA-Z0-9\-]{0,50}$",
         },
         __schoolId: {
             "type": "string",
             "required": True,
+            "pattern": "^[a-zA-Z0-9\-]{0,50}$",
         },
         __asmtGrade: {
             "type": "string",

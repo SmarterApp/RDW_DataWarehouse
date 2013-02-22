@@ -11,6 +11,9 @@ from database.connector import DbUtil, IDbUtil
 from lesscss import LessCSS
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.authentication import AuthTktAuthenticationPolicy
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def main(global_config, **settings):
@@ -18,13 +21,13 @@ def main(global_config, **settings):
     """
     if 'smarter.PATH' in settings:
         os.environ['PATH'] += os.pathsep + settings['smarter.PATH']
-    # TODO: Spike, pool_size, max_overflow, timeout
 
     config = Configurator(settings=settings)
 
-    # zope registration
-    engine = engine_from_config(settings, "sqlalchemy.", pool_size=20, max_overflow=10)
+    engine = engine_from_config(settings, "edware.db.main.")
     metadata = generate_ed_metadata(settings['edschema.schema_name'])
+
+    # zope registration
     dbUtil = DbUtil(engine=engine, metadata=metadata)
     component.provideUtility(dbUtil, IDbUtil)
 
@@ -47,5 +50,7 @@ def main(global_config, **settings):
 
     # scans smarter
     config.scan()
+
+    logger.info("Smarter started")
 
     return config.make_wsgi_app()

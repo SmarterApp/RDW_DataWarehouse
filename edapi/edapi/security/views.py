@@ -18,6 +18,7 @@ from edapi.security.session_manager import create_new_user_session, \
 from edapi.security.roles import Roles
 from edapi.utils import convert_to_int
 from pyramid.response import Response
+from edapi.security.utils import deflate_base64_encode, inflate_base64_decode
 
 
 @view_config(route_name='login', permission=NO_PERMISSION_REQUIRED)
@@ -48,7 +49,7 @@ def login(request):
         # Never redirect back to login page or logout
         # TODO redirect to some landing home page
         referrer = request.route_url('list_of_reports')
-    params = {'RelayState': request.route_url('login_callback') + "?" + "request=" + request.params.get('came_from', referrer)}
+    params = {'RelayState': deflate_base64_encode((request.params.get('came_from', referrer)).encode())}
 
     saml_request = SamlAuthnRequest(request.registry.settings['auth.saml.issuer_name'])
 
@@ -65,7 +66,7 @@ def login_callback(request):
     '''
     Login callback for redirect
     '''
-    redirect_url = request.GET.get('request')
+    redirect_url = inflate_base64_decode((request.GET.get('request'))).decode()
     html = '''
     <html><header>
     <title>Processing %s</title>
@@ -143,16 +144,17 @@ def saml2_post_consumer(request):
         # Get the url saved in RelayState from SAML request, redirect it back to it
         # If it's not found, redirect to list of reports
         # TODO: Need a landing other page
-        redirect_url = request.POST.get('RelayState', request.route_url('list_of_reports'))
+        redirect_url = request.POST.get('RelayState', deflate_base64_encode(request.route_url('list_of_reports').encode()))
+        params = urllib.parse.urlencode({'request': redirect_url})
+        new_location = request.route_url('login_callback') + '?' + params
     else:
-        redirect_url = request.route_url('login')
+        new_location = request.route_url('login')
         headers = None
-    return HTTPFound(location=redirect_url, headers=headers)
+    return HTTPFound(location=new_location, headers=headers)
 
 
 @view_config(route_name='logout_redirect', permission=NO_PERMISSION_REQUIRED)
 def logout_redirect(request):
-    #TODO validate response
-    saml_request = request.GET.get('SAMLResponse')
+    # TODO validate response
     redirect_url = request.GET.get('RelayState', request.route_url('list_of_reports'))
     return HTTPFound(location=redirect_url)

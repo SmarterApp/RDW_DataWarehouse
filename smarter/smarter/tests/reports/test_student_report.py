@@ -18,7 +18,7 @@ class TestStudentReport(Unittest_with_sqlite):
         self.assertEqual(1, len(result), "studentId should have 1 report")
         self.assertEqual('ELA', result[0]['asmt_subject'], 'asmt_subject')
         self.assertEqual(447, result[0]['asmt_claim_1_score'], 'asmt_claim_1_score 400')
-        self.assertEqual('Spelling', result[0]['asmt_claim_4_name'], 'asmt_claim_4_name Spelling')
+        self.assertEqual('Research', result[0]['asmt_claim_4_name'], 'asmt_claim_4_name Spelling')
 
     def test_student_assessment_id(self):
         params = {"studentId": '286ee893-dad0-4833-ae6c-adef78a11567'}

@@ -71,15 +71,16 @@ class SamlAuthnRequest(SamlRequest):
 class SamlLogoutRequest(SamlRequest):
     '''Represents a Saml LogoutRequest'''
 
-    def __init__(self, issuer_name, session_index, name_qualifier):
+    def __init__(self, issuer_name, session_index, name_qualifier, name_id):
         super().__init__(issuer_name)
         self._session_index = session_index
         self._name_qualifier = name_qualifier
+        self._name_id = name_id
 
     def generate_saml_request(self):
         doc = Document()
 
-        samlp_logout_request = doc.createElement('saml2p:SamlLogoutRequest')
+        samlp_logout_request = doc.createElement('saml2p:LogoutRequest')
         samlp_logout_request.setAttribute('xmlns:saml2p', 'urn:oasis:names:tc:SAML:2.0:protocol')
         samlp_logout_request.setAttribute('ID', self._uuid)
         samlp_logout_request.setAttribute('Version', '2.0')
@@ -95,7 +96,7 @@ class SamlLogoutRequest(SamlRequest):
         samlp_name_id.setAttribute('xmlns:saml2', 'urn:oasis:names:tc:SAML:2.0:assertion')
         samlp_name_id.setAttribute('NameQualifier', self._name_qualifier)
         samlp_name_id.setAttribute('Format', 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient')
-        samlp_name_id_text = doc.createTextNode('iTOWZVDc4u3txlVB/RJMMw5ZSAPW')
+        samlp_name_id_text = doc.createTextNode(self._name_id)
         samlp_name_id.appendChild(samlp_name_id_text)
         samlp_logout_request.appendChild(samlp_name_id)
 

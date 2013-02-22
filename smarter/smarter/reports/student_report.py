@@ -24,6 +24,8 @@ def __prepare_query(connector, student_id, assessment_id):
                     dim_asmt.c.asmt_subject.label('asmt_subject'),
                     dim_asmt.c.asmt_period.label('asmt_period'),
                     dim_asmt.c.asmt_type.label('asmt_type'),
+                    dim_asmt.c.asmt_score_min.label('asmt_score_min'),
+                    dim_asmt.c.asmt_score_max.label('asmt_score_max'),
                     dim_asmt.c.asmt_perf_lvl_name_1.label("asmt_cut_point_name_1"),
                     dim_asmt.c.asmt_perf_lvl_name_2.label("asmt_cut_point_name_2"),
                     dim_asmt.c.asmt_perf_lvl_name_3.label("asmt_cut_point_name_3"),

@@ -35,14 +35,6 @@ def __prepare_query(connector, student_id, assessment_id):
                     dim_asmt.c.asmt_cut_point_2.label("asmt_cut_point_2"),
                     dim_asmt.c.asmt_cut_point_3.label("asmt_cut_point_3"),
                     dim_asmt.c.asmt_cut_point_4.label("asmt_cut_point_4"),
-                    dim_asmt.c.asmt_claim_1_score_min.label('asmt_claim_1_score_min'),
-                    dim_asmt.c.asmt_claim_2_score_min.label('asmt_claim_2_score_min'),
-                    dim_asmt.c.asmt_claim_3_score_min.label('asmt_claim_3_score_min'),
-                    dim_asmt.c.asmt_claim_4_score_min.label('asmt_claim_4_score_min'),
-                    dim_asmt.c.asmt_claim_1_score_max.label('asmt_claim_1_score_max'),
-                    dim_asmt.c.asmt_claim_2_score_max.label('asmt_claim_2_score_max'),
-                    dim_asmt.c.asmt_claim_3_score_max.label('asmt_claim_3_score_max'),
-                    dim_asmt.c.asmt_claim_4_score_max.label('asmt_claim_4_score_max'),
                     dim_asmt.c.asmt_custom_metadata.label('asmt_custom_metadata'),
                     fact_asmt_outcome.c.asmt_grade.label('asmt_grade'),
                     fact_asmt_outcome.c.asmt_score.label('asmt_score'),
@@ -57,6 +49,14 @@ def __prepare_query(connector, student_id, assessment_id):
                     fact_asmt_outcome.c.asmt_claim_2_score.label('asmt_claim_2_score'),
                     fact_asmt_outcome.c.asmt_claim_3_score.label('asmt_claim_3_score'),
                     fact_asmt_outcome.c.asmt_claim_4_score.label('asmt_claim_4_score'),
+                    dim_asmt.c.asmt_claim_1_score_min.label('asmt_claim_1_score_min'),
+                    dim_asmt.c.asmt_claim_2_score_min.label('asmt_claim_2_score_min'),
+                    dim_asmt.c.asmt_claim_3_score_min.label('asmt_claim_3_score_min'),
+                    dim_asmt.c.asmt_claim_4_score_min.label('asmt_claim_4_score_min'),
+                    dim_asmt.c.asmt_claim_1_score_max.label('asmt_claim_1_score_max'),
+                    dim_asmt.c.asmt_claim_2_score_max.label('asmt_claim_2_score_max'),
+                    dim_asmt.c.asmt_claim_3_score_max.label('asmt_claim_3_score_max'),
+                    dim_asmt.c.asmt_claim_4_score_max.label('asmt_claim_4_score_max'),
                     dim_staff.c.first_name.label('teacher_first_name'),
                     dim_staff.c.middle_name.label('teacher_middle_name'),
                     dim_staff.c.last_name.label('teacher_last_name')],
@@ -99,11 +99,9 @@ def __arrage_results(results):
                    "type": "string",
                    "required": True
                    },
-                   "assessmentId": {
-                   "name": "student_assessments_report",
-                   "type": "string",
-                   "required": False
-                   }
+                   "assessmentId": {"name": "student_assessments_report",
+                                    "type": "string",
+                                    "required": False}
                }
                )
 def get_student_report(params, connector=None):

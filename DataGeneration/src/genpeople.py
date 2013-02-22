@@ -77,8 +77,6 @@ def generate_student(state, district, school, grade, street_list, gender=None, h
 
     student = Student(**student_params)
 
-    parentz = generate_parents(student)
-
     ext_user_params = {
         'external_user_student_id': id_generator.get_id(),
         'external_user_id': uuid4(),
@@ -88,7 +86,7 @@ def generate_student(state, district, school, grade, street_list, gender=None, h
     }
     ext_user = ExternalUserStudent(**ext_user_params)
 
-    return student, parentz, ext_user
+    return student, ext_user
 
 
 def generate_parents(student):

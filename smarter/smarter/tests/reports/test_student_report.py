@@ -8,6 +8,7 @@ import unittest
 from smarter.reports.student_report import get_student_report, \
     get_student_assessment
 from database.tests.unittest_with_sqlite import Unittest_with_sqlite
+import json
 
 
 class TestStudentReport(Unittest_with_sqlite):
@@ -41,18 +42,23 @@ class TestStudentReport(Unittest_with_sqlite):
         self.assertEqual(1, student_report['date_taken_month'])
         self.assertEqual(2013, student_report['date_taken_year'])
 
-#    def test_metadata(self):
-#        params = {"studentId": '286ee893-dad0-4833-ae6c-adef78a11567'}
-#        result = get_student_report(params)['items']
-#        student_report = result[0]
-#
-#        self.assertEqual('MATH', student_report['asmt_custom_metadata'], 'asmt_subject')
-#        self.assertEqual('Lili', student_report['teacher_first_name'], 'teacher first name should be Lili')
-#        self.assertEqual('M', student_report['teacher_middle_name'], 'teacher middle name should be M')
-#        self.assertEqual('Chen', student_report['teacher_last_name'], 'teacher last name should be Chen')
-#        self.assertEqual(1, student_report['date_taken_day'])
-#        self.assertEqual(1, student_report['date_taken_month'])
-#        self.assertEqual(2013, student_report['date_taken_year'])
+    def test_custom_metadata(self):
+        params = {"studentId": '286ee893-dad0-4833-ae6c-adef78a11567'}
+        result = get_student_report(params)['items']
+        student_report = result[0]
+
+        cut_points_list = student_report['cut_points']
+        self.assertEqual(4, len(cut_points_list), "we should have 4 cut points")
+
+        for cut_point in cut_points_list:
+            self.assertIsInstance(cut_point, dict, "each cut point should be a dictionary")
+
+            self.assertIn("name", cut_point.keys(), "should contain the name of the cut point")
+            self.assertIn("cut_point", cut_point.keys(), "should contain the value of the cut point")
+            self.assertIn("text_color", cut_point.keys(), "should contain the text_color of the cut point")
+            self.assertIn("end_gradient_bg_color", cut_point.keys(), "should contain the end_gradient_bg_color of the cut point")
+            self.assertIn("start_gradient_bg_color", cut_point.keys(), "should contain the start_gradient_bg_color of the cut point")
+            self.assertIn("bg_color", cut_point.keys(), "should contain the bg_color of the cut point")
 
 
 if __name__ == '__main__':

@@ -97,17 +97,16 @@ def __arrage_results(results):
 
 @report_config(name='individual_student_report',
                params={
-                   "studentId": {
+                    "studentId": {
                         "type": "string",
                         "required": True,
-                        "pattern": "^[a-zA-Z0-9\-]{0,50}$",
-                    },
-                   "assessmentId": {
+                        "pattern": "^[a-zA-Z0-9\-]{0,50}$"},
+                    "assessmentId": {
                         "name": "student_assessments_report",
                         "type": "string",
                         "required": False,
                         "pattern": "^[a-zA-Z0-9\-]{0,50}$",
-                   },
+                    },
                })
 def get_student_report(params, connector=None):
     '''

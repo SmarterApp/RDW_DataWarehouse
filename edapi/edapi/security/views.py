@@ -57,7 +57,7 @@ def login(request):
     params = urllib.parse.urlencode(params)
 
     # Redirect to openam
-    return HTTPFound(location=url + "?%s" % params, pragma='no-cache', cache_control='no-cache')
+    return HTTPFound(location=url + "?%s" % params)
 
 
 @view_config(route_name='login_callback')

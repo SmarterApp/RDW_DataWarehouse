@@ -54,7 +54,9 @@ def includeme(config):
                                                         callback=session_check,
                                                         hashalg=settings['auth.cookie.hashalg'],
                                                         max_age=cookie_max_age,
-                                                        timeout=session_timeout)
+                                                        timeout=session_timeout,
+                                                        wild_domain=False,
+                                                        http_only=True)
 
     authorization_policy = ACLAuthorizationPolicy()
 

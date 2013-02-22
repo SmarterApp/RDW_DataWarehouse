@@ -15,7 +15,7 @@ class Test(Unittest_with_sqlite):
         testParam['districtId'] = 'd1'
         testParam['schoolId'] = 'sc1'
         testParam['asmtGrade'] = 1
-        testParam['asmtSubject'] = ['ELA', 'MATH']
+        testParam['asmtSubject'] = ['ELA', 'Math']
         results = get_list_of_students_report(testParam)
 
         self.assertTrue('cutpoints' in results, "returning JSON must have cutpoints")
@@ -24,7 +24,7 @@ class Test(Unittest_with_sqlite):
         cutpoints = results['cutpoints']
         self.assertEqual(2, len(cutpoints), "cutpoints are ELA and MATH")
         self.assertTrue('ELA' in cutpoints, 'ELA')
-        self.assertTrue('MATH' in cutpoints, 'MATH')
+        self.assertTrue('Math' in cutpoints, 'Math')
 
         assessments = results['assessments']
         self.assertEqual(3, len(assessments), "3 assessments")

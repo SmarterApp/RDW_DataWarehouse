@@ -67,16 +67,31 @@ def __prepare_query(connector, student_id, assessment_id):
     return query
 
 
-def arrage_results(results):
+def __arrage_results(results):
+    '''
+    This method arranges the data retreievd from the db to make it easier to consume by the client
+    '''
     for result in results:
         custom = json.loads(result['asmt_custom_metadata'])
+        # once we use the data, we clean it from the result
+        del(result['asmt_custom_metadata'])
         result['cut_points'] = []
 
+        # go over the 4 cut points
         for i in range(1, 5):
             if result['asmt_cut_point_{0}'.format(i)] > 0:
-                cut_point_object = {'name': result['asmt_cut_point_name_{0}'.format(i)],
-                                    'cut_point': result['asmt_cut_point_{0}'.format(i)]}
+                cut_point_object = {'name': str(result['asmt_cut_point_name_{0}'.format(i)]),
+                                    'cut_point': str(result['asmt_cut_point_{0}'.format(i)])}
+                # once we use the data, we clean it from the result
+                del(result['asmt_cut_point_name_{0}'.format(i)])
+                del(result['asmt_cut_point_{0}'.format(i)])
+                # connect the custom metadata content to the cut_point object
                 result['cut_points'].append(dict(list(cut_point_object.items()) + list(custom[i - 1].items())))
+
+    # rearranging the json so we could use it more easily with mustache
+    results = {"items": results}
+    
+    return results
 
 
 @report_config(name='individual_student_report',
@@ -109,19 +124,15 @@ def get_student_report(params, connector=None):
     if 'assessmentId' in params:
         assessment_id = str(params['assessmentId'])
 
-    # get sql session
-    connector.open_connection()
-
     query = __prepare_query(connector, student_id, assessment_id)
 
+    # get sql session
+    connector.open_connection()
     result = connector.get_result(query)
-
-    arrage_results(result)
-
-    # rearranging the json so we could use it more easily with mustache
-    result = {"items": result}
-
     connector.close_connection()
+
+    # prepare the result for the client
+    result = __arrage_results(result)
 
     return result
 

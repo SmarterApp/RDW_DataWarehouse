@@ -4,7 +4,7 @@
 </div>
 <div class="progress">
 	{{#cut_points}}
-		<div class="bar" style="background-color: {{bg_color}}; background-image: -moz-linear-gradient(center top , {{start_gradient_bg_color}}, {{end_gradient_bg_color}}); background-repeat: repeat-x; color: {{text_color}}; width: {{asmt_cut_point_percent}}%;">{{name}}</div>
+		<div class="bar" style="background-color: {{bg_color}}; background-image: -moz-linear-gradient(center top , {{start_gradient_bg_color}}, {{end_gradient_bg_color}}); background-image: -webkit-linear-gradient(top , {{start_gradient_bg_color}}, {{end_gradient_bg_color}}); background-image: -ms-linear-gradient(top , {{start_gradient_bg_color}}, {{end_gradient_bg_color}}); background-repeat: repeat-x; color: {{text_color}}; width: {{asmt_cut_point_percent}}%;">{{name}}</div>
 	{{/cut_points}}
 </div>
 <div class="cutPointsBar">

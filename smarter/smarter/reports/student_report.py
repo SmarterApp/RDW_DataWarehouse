@@ -74,7 +74,7 @@ def arrage_results(results):
 
         for i in range(1, 5):
             if result['asmt_cut_point_{0}'.format(i)] > 0:
-                cut_point_object = {'name': result['asmt_claim_{0}_name'.format(i)],
+                cut_point_object = {'name': result['asmt_cut_point_name_{0}'.format(i)],
                                     'cut_point': result['asmt_cut_point_{0}'.format(i)]}
                 result['cut_points'].append(dict(list(cut_point_object.items()) + list(custom[i - 1].items())))
 

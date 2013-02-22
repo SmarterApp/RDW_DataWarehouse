@@ -13,5 +13,13 @@ require({
 		edwareGridFormatters: 'widgets/EDWARE.grid.formatters',
 		edwareStudentList: 'EDWARE.studentList',
 		edwareIndividualStudent: 'EDWARE.individualStudent'
-	}
+	},
+	shim: {
+        'jqGrid': {
+            //These script dependencies should be loaded before loading
+            //jqGrid
+            deps: ['jquery'],
+            exports: 'jqGrid'
+        }
+   }
 });

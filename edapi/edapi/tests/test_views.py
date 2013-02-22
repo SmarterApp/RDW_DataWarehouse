@@ -78,7 +78,7 @@ class TestViews(unittest.TestCase):
         self.request.registry[EDAPI_REPORTS_PLACEHOLDER] = {}
         self.request.registry[EDAPI_REPORTS_PLACEHOLDER]["test"] = {"some": "thing"}
         self.request.matchdict['name'] = "test"
-        params = {"studentId": {"validation": {"type": "integer", "required": True}}}
+        params = {"studentId": {"type": "integer", "required": True}}
         self.request.registry[EDAPI_REPORTS_PLACEHOLDER]["test"] = {"params": params}
         response = get_report_config(self.request)
         self.assertEqual(response.json, params)

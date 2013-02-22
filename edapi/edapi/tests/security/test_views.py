@@ -18,6 +18,7 @@ import uuid
 from datetime import timedelta, datetime
 from database.connector import DBConnector
 from pyramid.response import Response
+from edapi.security.utils import deflate_base64_encode, inflate_base64_decode
 
 
 def get_saml_from_resource_file(file_mame):
@@ -73,7 +74,7 @@ class TestViews(Unittest_with_sqlite):
         queries = urllib.parse.parse_qs(actual_url.query)
         self.assertTrue(len(queries) == 2)
         self.assertIsNotNone(queries['SAMLRequest'])
-        self.assertTrue(queries['RelayState'][0].endswith('/dummy/report'))
+        self.assertTrue(inflate_base64_decode(queries['RelayState'][0]).decode('utf-8').endswith('/dummy/report'))
 
     def test_login_referred_by_logout_url(self):
         self.__request.url = 'http://example.com/dummy/logout'
@@ -81,7 +82,7 @@ class TestViews(Unittest_with_sqlite):
 
         actual_url = urlparse(http.location)
         queries = urllib.parse.parse_qs(actual_url.query)
-        self.assertTrue(queries['RelayState'][0].endswith('/dummy/logout'))
+        self.assertTrue(inflate_base64_decode(queries['RelayState'][0]).decode('utf-8').endswith('/dummy/logout'))
 
     def test_login_referred_by_protected_page(self):
         self.__request.url = 'http://example.com/dummy/data'
@@ -89,7 +90,7 @@ class TestViews(Unittest_with_sqlite):
 
         actual_url = urlparse(http.location)
         queries = urllib.parse.parse_qs(actual_url.query)
-        self.assertTrue(queries['RelayState'][0].endswith(self.__request.route_path('login_callback') + "?request=" + self.__request.url))
+        self.assertTrue(inflate_base64_decode(queries['RelayState'][0]).decode('utf-8').endswith(self.__request.url))
 
     def test_login_redirected_due_to_no_role(self):
         self.__config.testing_securitypolicy("sessionId123", ['NONE'])
@@ -114,7 +115,7 @@ class TestViews(Unittest_with_sqlite):
         http = login(self.__request)
         url = urlparse(http.location)
         queries = urllib.parse.parse_qs(url.query)
-        self.assertTrue(queries['RelayState'][0].endswith(self.__request.route_path('login_callback') + "?request=" + self.__request.url))
+        self.assertTrue(inflate_base64_decode(queries['RelayState'][0]).decode('utf-8').endswith(self.__request.url))
 
     def test_login_with_no_existing_session(self):
         session_id = str(uuid.uuid1())
@@ -127,7 +128,7 @@ class TestViews(Unittest_with_sqlite):
         http = login(self.__request)
         url = urlparse(http.location)
         queries = urllib.parse.parse_qs(url.query)
-        self.assertTrue(queries['RelayState'][0].endswith(self.__request.route_path('login_callback') + "?request=" + self.__request.url))
+        self.assertTrue(inflate_base64_decode(queries['RelayState'][0]).decode('utf-8').endswith(self.__request.url))
 
     def test_logout_with_no_existing_session(self):
         http = logout(self.__request)
@@ -177,11 +178,11 @@ class TestViews(Unittest_with_sqlite):
         self.__request.registry.settings = {}
         self.__request.registry.settings['auth.session.timeout'] = 1
         http = saml2_post_consumer(self.__request)
-        self.assertEquals(http.location, 'http://example.com/dummy/report')
+        self.assertEquals(http.location, 'http://example.com/dummy/callback?request=yygpKbDS10%2BtSMwtyEnVS87P1U8pzc2t1C9KLcgvKgEA')
 
     def test_login_callback(self):
         self.__request.GET = {}
-        self.__request.GET['request'] = "http://mydirecturl.com"
+        self.__request.GET['request'] = deflate_base64_encode("http://mydirecturl.com".encode())
         expected = '<a href="http://mydirecturl.com" id=url>'
         resp = login_callback(self.__request)
         self.assertIsInstance(resp, Response)

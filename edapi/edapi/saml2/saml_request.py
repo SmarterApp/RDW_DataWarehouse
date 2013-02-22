@@ -6,8 +6,7 @@ Created on Feb 13, 2013
 from xml.dom.minidom import Document
 import uuid
 from time import gmtime, strftime
-import zlib
-import base64
+from edapi.security.utils import deflate_base64_encode
 
 
 class SamlRequest:
@@ -21,14 +20,7 @@ class SamlRequest:
     def format_request(self, doc):
         # Seriailize the doc's root element so that it will strip out the xml declaration
         data = doc.documentElement.toxml('utf-8')
-        return self.__deflate_base64_encode(data)
-
-    # Deflate, base64 encode a byte string representing a SAMLRequest
-    def __deflate_base64_encode(self, data):
-        compressed = zlib.compress(data)
-        # Strip away the first 2 bytes (header) and 4 bytes (checksum)
-        encoded = base64.b64encode(compressed[2:-4])
-        return {'SAMLRequest': encoded}
+        return {'SAMLRequest': deflate_base64_encode(data)}
 
     def get_id(self):
         return self._uuid

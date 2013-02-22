@@ -74,7 +74,7 @@ def login_callback(request):
     <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
     <META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">
     <META HTTP-EQUIV="Expires" CONTENT="-1">
-    <meta http-equiv="refresh" content="0;url=/login_callback?request=%s">
+    <meta http-equiv="refresh" content="0;url=%s">
     <script type="text/javascript">
     function redirect() {
         document.getElementById('url').click()

@@ -41,6 +41,7 @@ def __prepare_query(connector, student_id, assessment_id):
                     fact_asmt_outcome.c.date_taken_day.label('date_taken_day'),
                     fact_asmt_outcome.c.date_taken_month.label('date_taken_month'),
                     fact_asmt_outcome.c.date_taken_year.label('date_taken_year'),
+                    fact_asmt_outcome.c.asmt_perf_lvl.label('asmt_perf_lvl'),
                     dim_asmt.c.asmt_claim_1_name.label('asmt_claim_1_name'),
                     dim_asmt.c.asmt_claim_2_name.label('asmt_claim_2_name'),
                     dim_asmt.c.asmt_claim_3_name.label('asmt_claim_3_name'),

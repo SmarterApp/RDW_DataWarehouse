@@ -97,6 +97,7 @@ def __create_from_SAMLResponse(saml_response, last_access, expiration):
     # get Attributes
     __assertion = saml_response.get_assertion()
     __attributes = __assertion.get_attributes()
+    __name_id = __assertion.get_name_id()
     session = Session()
     session.set_session_id(__session_id)
     # get fullName
@@ -109,6 +110,8 @@ def __create_from_SAMLResponse(saml_response, last_access, expiration):
             session.set_uid(__attributes['uid'][0])
     # get roles
     session.set_roles(__get_roles(__attributes))
+    # set nameId
+    session.set_name_id(__name_id)
 
     session.set_expiration(expiration)
     session.set_last_access(last_access)

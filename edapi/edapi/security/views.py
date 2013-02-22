@@ -105,7 +105,8 @@ def logout(request):
             # Logout request to identity provider
             logout_request = SamlLogoutRequest(request.registry.settings['auth.saml.issuer_name'],
                                                session.get_idp_session_index(),
-                                               request.registry.settings['auth.saml.name_qualifier'])
+                                               request.registry.settings['auth.saml.name_qualifier'],
+                                               session.get_name_id())
             params = logout_request.generate_saml_request()
             params = urllib.parse.urlencode(params)
             url = request.registry.settings['auth.saml.idp_server_logout_url'] + "?%s" % params

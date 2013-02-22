@@ -3,15 +3,13 @@
 	<div class="transImage" style="background-position: {{asmt_score_percent}}% 0%"></div>
 </div>
 <div class="progress">
-	<div class="bar bar-danger" style="width: {{asmt_cut_point_percent_1}}%;">{{asmt_cut_point_name_1}}</div>
-	<div class="bar bar-warning" style="width: {{asmt_cut_point_percent_2}}%;">{{asmt_cut_point_name_2}}</div>
-	<div class="bar bar-success" style="width: {{asmt_cut_point_percent_3}}%;">{{asmt_cut_point_name_3}}</div>
-	<div class="bar bar-info" style="width: {{asmt_cut_point_percent_4}}%;">{{asmt_cut_point_name_4}}</div>
+	{{#cut_points}}
+		<div class="bar" style="background-color: {{bg_color}}; background-image: -moz-linear-gradient(center top , {{start_gradient_bg_color}}, {{end_gradient_bg_color}}); background-repeat: repeat-x; color: {{text_color}}; width: {{asmt_cut_point_percent}}%;">{{name}}</div>
+	{{/cut_points}}
 </div>
 <div class="cutPointsBar">
 	<div class="cutPoints startPoint">{{asmt_score_min}}</div>
-	<div class="cutPoints" style="width: {{asmt_cut_point_percent_1}}%;">{{asmt_cut_point_1}}</div>
-	<div class="cutPoints" style="width: {{asmt_cut_point_percent_2}}%;">{{asmt_cut_point_2}}</div>
-	<div class="cutPoints" style="width: {{asmt_cut_point_percent_3}}%;">{{asmt_cut_point_3}}</div>
-	<div class="cutPoints" style="width: {{asmt_cut_point_percent_4}}%;">{{asmt_score_max}}</div>
+	{{#cut_points}}
+		<div class="cutPoints" style="width: {{asmt_cut_point_percent}}%;">{{cut_point}}</div>
+	{{/cut_points}}
 </div>

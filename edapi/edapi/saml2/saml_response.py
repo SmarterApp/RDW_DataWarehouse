@@ -93,7 +93,9 @@ class SAMLResponse:
                                                             self.__x509Certificate = node2.childNodes[0].data
                     elif node.localName == "Subject":
                         for node0 in node.childNodes:
-                            if node0.localName == "SubjectConfirmation":
+                            if node0.localName == "NameID":
+                                self.__name_id = node0.childNodes[0].data
+                            elif node0.localName == "SubjectConfirmation":
                                 self.__subjectConfirmation = SAMLResponse.Assertion.SubjectConfirmation(node0)
                     elif node.localName == "Conditions":
                         self.__conditions = SAMLResponse.Assertion.Conditions(node)
@@ -111,6 +113,9 @@ class SAMLResponse:
 
         def get_session_index(self):
             return self.__session_index
+
+        def get_name_id(self):
+            return self.__name_id
 
         class SubjectConfirmation:
             '''

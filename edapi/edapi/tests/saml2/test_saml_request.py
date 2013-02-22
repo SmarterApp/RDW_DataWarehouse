@@ -39,13 +39,16 @@ class SamlRequestTest(unittest.TestCase):
     def test_SamlLogoutRequest(self):
         issuer = "http://iamSomeIssuer.net"
         session_id = "123"
-        request = SamlLogoutRequest(issuer, session_id, issuer)
+        name_id = "abc"
+        request = SamlLogoutRequest(issuer, session_id, issuer, name_id)
         params = request.generate_saml_request()
         str_decoded = base64_decode_inflate(params)
         expected_issuer = '<saml2:Issuer xmlns:saml2="urn:oasis:names:tc:SAML:2.0:assertion">' + issuer + '</saml2:Issuer>'
         expected_session = '<saml2p:SessionIndex>' + session_id + '</saml2p:SessionIndex>'
+        expected_name_id = '>' + name_id + '</saml2:NameID>'
         self.assertTrue(str_decoded.find(expected_issuer) > 0)
         self.assertTrue(str_decoded.find(expected_session) > 0)
+        self.assertTrue(str_decoded.find(expected_name_id) > 0)
 
 
 if __name__ == "__main__":

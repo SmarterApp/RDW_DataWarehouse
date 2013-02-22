@@ -137,7 +137,7 @@ class TestViews(Unittest_with_sqlite):
     def test_logout_with_existing_session(self):
         # set up db data
         session_id = str(uuid.uuid1())
-        session_json = '{"roles": ["TEACHER"], "idpSessionIndex": "123", "name": {"fullName": "Linda Kim"}, "uid": "linda.kim"}'
+        session_json = '{"roles": ["TEACHER"], "idpSessionIndex": "123", "name": {"fullName": "Linda Kim"}, "uid": "linda.kim", "nameId": "abc"}'
         current_datetime = datetime.now()
         expiration_datetime = current_datetime + timedelta(seconds=30)
         connection = DBConnector()

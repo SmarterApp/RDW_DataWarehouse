@@ -53,12 +53,13 @@ class TestStudentReport(Unittest_with_sqlite):
         for cut_point in cut_points_list:
             self.assertIsInstance(cut_point, dict, "each cut point should be a dictionary")
 
-            self.assertIn("name", cut_point.keys(), "should contain the name of the cut point")
-            self.assertIn("cut_point", cut_point.keys(), "should contain the value of the cut point")
-            self.assertIn("text_color", cut_point.keys(), "should contain the text_color of the cut point")
-            self.assertIn("end_gradient_bg_color", cut_point.keys(), "should contain the end_gradient_bg_color of the cut point")
-            self.assertIn("start_gradient_bg_color", cut_point.keys(), "should contain the start_gradient_bg_color of the cut point")
-            self.assertIn("bg_color", cut_point.keys(), "should contain the bg_color of the cut point")
+            keys = cut_point.keys()
+            self.assertIn("name", keys, "should contain the name of the cut point")
+            self.assertIn("cut_point", keys, "should contain the value of the cut point")
+            self.assertIn("text_color", keys, "should contain the text_color of the cut point")
+            self.assertIn("end_gradient_bg_color", keys, "should contain the end_gradient_bg_color of the cut point")
+            self.assertIn("start_gradient_bg_color", keys, "should contain the start_gradient_bg_color of the cut point")
+            self.assertIn("bg_color", keys, "should contain the bg_color of the cut point")
 
 
 if __name__ == '__main__':

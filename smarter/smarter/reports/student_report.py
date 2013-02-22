@@ -79,6 +79,7 @@ def __arrage_results(results):
 
         # go over the 4 cut points
         for i in range(1, 5):
+            # we only take cutpoints with values > 0
             if result['asmt_cut_point_{0}'.format(i)] > 0:
                 cut_point_object = {'name': str(result['asmt_cut_point_name_{0}'.format(i)]),
                                     'cut_point': str(result['asmt_cut_point_{0}'.format(i)])}
@@ -112,10 +113,6 @@ def get_student_report(params, connector=None):
     report for student and student_assessment
     '''
 
-    # if connector is not supplied, use DBConnector
-    if connector is None:
-        connector = DBConnector()
-
     # get studentId
     student_id = str(params['studentId'])
 
@@ -123,6 +120,10 @@ def get_student_report(params, connector=None):
     assessment_id = None
     if 'assessmentId' in params:
         assessment_id = str(params['assessmentId'])
+
+    # if connector is not supplied, use DBConnector
+    if connector is None:
+        connector = DBConnector()
 
     query = __prepare_query(connector, student_id, assessment_id)
 

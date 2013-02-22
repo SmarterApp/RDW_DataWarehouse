@@ -6,9 +6,10 @@ Created on Feb 15, 2013
 Districts withing a state query
 
 Public interface:
-state_statistics(state_id, engine)
-districts_in_a_state(state_id, asmt_type, asmt_subject, engine)
+state_statistics(state_id, engine, schema_name)
+districts_in_a_state(state_id, asmt_type, asmt_subject, engine, schema_name)
 
+Descriptions:
 'state_statistics()' prints statistics for how long it takes for the query to return
 for each of the different types of queries:
 Summative-ELA, Summative-Math, Interim-ELA, Interim-Math
@@ -20,41 +21,44 @@ given parameters
 from sqlalchemy import create_engine
 
 
-def state_statistics(state_id, engine):
+def state_statistics(state_id, engine, schema_name):
     '''
     Runs queries that print out the statistics and benchmarks for a state
     INPUT:
     state_id -- an id for a state from the database
+    engine -- the db engine created by a sqlAlchemy create_engine() statement
+    schema_name -- the name of the schema to use in the queries
     '''
+
     if state_id is None or engine is None:
         raise ValueError('Bad Params for state_id or engine')
 
     district_count_query = '''
     select count(*)
-    from edware_star_20130212_fixture_3.dim_district district
+    from {schema}.dim_district district
     where district.state_id = '{state_id}'
-    '''.format(state_id=state_id)
+    '''.format(state_id=state_id, schema=schema_name)
 
     student_count_query = '''
     select count(*)
-    from edware_star_20130212_fixture_3.dim_student student
+    from {schema}.dim_student student
     where student.state_id = '{state_id}'
-    '''.format(state_id=state_id)
+    '''.format(state_id=state_id, schema=schema_name)
 
     total_students_query = '''
     select count(*)
-    from edware_star_20130212_fixture_3.dim_student
-    '''
+    from {schema}.dim_student
+    '''.format(schema=schema_name)
 
     total_dist_query = '''
     select count(*)
-    from edware_star_20130212_fixture_3.dim_district
-    '''
+    from {schema}.dim_district
+    '''.format(schema=schema_name)
 
     total_schools_query = '''
     select count(*)
-    from edware_star_20130212_fixture_3.dim_school
-    '''
+    from {schema}.dim_school
+    '''.format(schema=schema_name)
 
     start_time = time.time()
     school_count_set = engine.execute(district_count_query)
@@ -74,27 +78,38 @@ def state_statistics(state_id, engine):
     print('**** Benchmarks for Queries ****')
 
     start_time1 = time.time()
-    districts_in_a_state(state_id, 'SUMMATIVE', 'ELA', engine)
+    districts_in_a_state(state_id, 'SUMMATIVE', 'ELA', engine, schema_name)
     query_time = time.time() - start_time1
     print('Summative-ELA:\t\t%6.2fs' % query_time)
 
     start_time1 = time.time()
-    districts_in_a_state(state_id, 'INTERIM', 'ELA', engine)
+    districts_in_a_state(state_id, 'INTERIM', 'ELA', engine, schema_name)
     query_time = time.time() - start_time1
     print('Interim-ELA:\t\t%6.2fs' % query_time)
 
     start_time1 = time.time()
-    districts_in_a_state(state_id, 'SUMMATIVE', 'Math', engine)
+    districts_in_a_state(state_id, 'SUMMATIVE', 'Math', engine, schema_name)
     query_time = time.time() - start_time1
     print('Summative-Math:\t\t%6.2fs' % query_time)
 
     start_time1 = time.time()
-    districts_in_a_state(state_id, 'INTERIM', 'Math', engine)
+    districts_in_a_state(state_id, 'INTERIM', 'Math', engine, schema_name)
     query_time = time.time() - start_time1
     print('Interim-Math:\t\t%6.2fs' % query_time)
 
 
-def districts_in_a_state(state_id, asmt_type, asmt_subject, engine):
+def districts_in_a_state(state_id, asmt_type, asmt_subject, engine, schema_name):
+    '''
+    Run a query for assessment performance for districts within a state.
+    INPUT:
+    state_id -- the id of the state that you want to use in the query (ie. 'DE' for deleware)
+    asmt_type -- the type of assessment to use in the query ('SUMMATIVE' or 'INTERIM')
+    asmt_subject -- the subject of assessment to use in the query ('ELA' or 'Math')
+    engine -- the db engine created by a sqlAlchemy create_engine() statement
+    schema_name -- the name of the schema to use in the queries
+    RETURNS: result -- a list of tuples (district, count, performance level)
+    '''
+
     query = """
     select dist.district_name, count(fact.student_id),
     case when fact.asmt_score <= asmt.asmt_cut_point_1 then asmt.asmt_perf_lvl_name_1
@@ -104,10 +119,10 @@ def districts_in_a_state(state_id, asmt_type, asmt_subject, engine):
     end
     as performance_level
     from
-    edware_star_20130212_fixture_3.dim_asmt asmt,
-    edware_star_20130212_fixture_3.dim_district dist,
-    edware_star_20130212_fixture_3.fact_asmt_outcome fact,
-    edware_star_20130212_fixture_3.dim_student stu
+    {schema}.dim_asmt asmt,
+    {schema}.dim_district dist,
+    {schema}.fact_asmt_outcome fact,
+    {schema}.dim_student stu
     where asmt.asmt_id = fact.asmt_id
     and dist.district_id = fact.district_id
     and stu.student_id = fact.student_id
@@ -116,7 +131,7 @@ def districts_in_a_state(state_id, asmt_type, asmt_subject, engine):
     and asmt.asmt_type = '{asmt_type}'
     and asmt.asmt_subject = '{asmt_subject}'
     group by dist.district_name, performance_level
-    """.format(state_id=state_id, asmt_type=asmt_type, asmt_subject=asmt_subject)
+    """.format(state_id=state_id, asmt_type=asmt_type, asmt_subject=asmt_subject, schema=schema_name)
 
     # print(state)
     # resultset = engine.execute(query,{'state':state, 'year':year})
@@ -129,9 +144,11 @@ if __name__ == '__main__':
     import time
 
     engine = create_engine('postgresql+psycopg2://postgres:postgres@monetdb1.poc.dum.edwdc.net:5432/edware')
+    schema_name = 'edware_star_20130212_fixture_3'
+
     stime = time.time()
-    res = districts_in_a_state('DE', 'SUMMATIVE', 'ELA', engine)
+    res = districts_in_a_state('DE', 'SUMMATIVE', 'ELA', engine, schema_name)
     duration = time.time() - stime
 
     res.sort(key=lambda tup: tup[0])
-    state_statistics('DE', engine)
+    state_statistics('DE', engine, schema_name)

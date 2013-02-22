@@ -66,21 +66,22 @@ def login_callback(request):
     '''
     Login callback for redirect
     '''
-    redirect_url = inflate_base64_decode((request.GET.get('request'))).decode()
+    redirect_url = request.GET.get('request')
+    redirect_url_decoded = inflate_base64_decode(redirect_url).decode()
     html = '''
     <html><header>
     <title>Processing %s</title>
     <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
     <META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">
     <META HTTP-EQUIV="Expires" CONTENT="-1">
-    <meta http-equiv="refresh" content="0;url=/login_callback?request=%s">
+    <meta http-equiv="refresh" content="0;url=%s">
     <script type="text/javascript">
     function redirect() {
         document.getElementById('url').click()
         }
     </script>
     </header><body onload="redirect()"><a href="%s" id=url></a></body></html>
-    ''' % (redirect_url, redirect_url, redirect_url)
+    ''' % (redirect_url_decoded, request.path_qs, redirect_url_decoded)
     return Response(body=html, content_type='text/html')
 
 

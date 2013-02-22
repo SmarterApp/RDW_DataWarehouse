@@ -64,19 +64,34 @@ class Class:
         return [self.class_id, self.title]
 
 
-class Section:
+class SectionSubject:
     '''
-    Section Object
+    SectionSubject Object
     '''
-    def __init__(self, section_id, section_external_id, school_id, section_name=None, class_name=None):
+    def __init__(self, section_id, section_name, grade, class_name, subject_name, state_code, district_id, school_id, from_date, most_recent, to_date=None, row_id=None):
+
+        # Ids can either be given to the constructor or provided by constructor
+        # Either way, the row_id field must have a value
+        id_generator = IdGen()
+        if row_id is None:
+            self.row_id = id_generator.get_id()
+        else:
+            self.row_id = row_id
+
         self.section_id = section_id
-        self.section_external_id = section_external_id
-        self.school_id = school_id
         self.section_name = section_name
+        self.grade = grade
         self.class_name = class_name
+        self.subject_name = subject_name
+        self.state_code = state_code
+        self.district_id = district_id
+        self.school_id = school_id
+        self.from_date = from_date
+        self.most_recent = most_recent
+        self.to_date = to_date
 
     def getRow(self):
-        return [self.section_id, self.section_external_id, self.section_name, self.class_name, self.school_id]
+        return [self.row_id, self.section_id, self.section_name, self.grade, self.class_name, self.subject_name, self.state_code, self.district_id, self.school_id, self.from_date, self.to_date, self.most_recent]
 
 
 class TeacherSection:

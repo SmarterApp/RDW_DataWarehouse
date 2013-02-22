@@ -64,6 +64,7 @@ WHERETAKEN = DATAFILE_PATH + '/datafiles/csv/wheretaken.csv'
 INSTITUTIONS = DATAFILE_PATH + '/datafiles/csv/institutions.csv'
 INSTITUTION_HIERARCHY = DATAFILE_PATH + '/datafiles/csv/institution_hierarchy.csv'
 EXTERNAL_USER_STUDENT = DATAFILE_PATH + '/datafiles/csv/external_user_students.csv'
+SECTION_SUBJECT = DATAFILE_PATH + '/datafiles/csv/section_subjects.csv'
 
 ENT_LIST = [STATES, DISTRICTS, SCHOOLS, PARENTS, ASSESSMENT_TYPES, SECTIONS, STUDENTS, WHERETAKEN, TEACHERS, ASSESSMENT_OUTCOME, TEACHER_SECTIONS, EXTERNAL_USER_STUDENT, STAFF]
 

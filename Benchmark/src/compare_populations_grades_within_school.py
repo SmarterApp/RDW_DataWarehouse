@@ -27,6 +27,7 @@ def school_statistics(school_id, engine, schema_name):
     INPUT:
     state_id -- an id for a state from the database
     engine -- the db engine created by a sqlAlchemy create_engine() statement
+    schema_name -- the name of the schema to use in the queries
     '''
 
     student_count_query = '''
@@ -94,6 +95,7 @@ def grades_in_a_school(school_id, asmt_type, asmt_subject, engine, schema_name):
     asmt_type -- the type of assessment to use in the query ('SUMMATIVE' or 'INTERIM')
     asmt_subject -- the subject of assessment to use in the query ('ELA' or 'Math')
     engine -- the db engine created by a sqlAlchemy create_engine() statement
+    schema_name -- the name of the schema to use in the queries
     RETURNS: result -- a list of tuples (grade, count, performance level)
     '''
 

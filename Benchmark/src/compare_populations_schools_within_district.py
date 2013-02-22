@@ -22,6 +22,14 @@ from sqlalchemy import create_engine
 
 
 def district_statistics(district_id, engine, schema_name):
+    '''
+    Runs queries that print out the statistics and benchmarks for a district
+    INPUT:
+    state_id -- an id for a state from the database
+    engine -- the db engine created by a sqlAlchemy create_engine() statement
+    schema_name -- the name of the schema to use in the queries
+    '''
+
     school_count_query = '''
     select count(*)
     from {schema}.dim_school school
@@ -95,6 +103,7 @@ def schools_in_a_district(district_id, asmt_type, asmt_subject, engine, schema_n
     asmt_type -- the type of assessment to use in the query ('SUMMATIVE' or 'INTERIM')
     asmt_subject -- the subject of assessment to use in the query ('ELA' or 'Math')
     engine -- the db engine created by a sqlAlchemy create_engine() statement
+    schema_name -- the name of the schema to use in the queries
     RETURNS: results -- a list of tuples (school, count, performance level)
     '''
 

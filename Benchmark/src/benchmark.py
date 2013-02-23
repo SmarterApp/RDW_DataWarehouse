@@ -1,10 +1,20 @@
 '''
+benchmark.py
+a command line tool to run benchmarks on the postgresql db
+usage instructions: python benchmark.py -h
+
+Runs benchmarks for the following types of comparing populations reports
+
+
+main method at bottom of file
+
 Created on Feb 21, 2013
 
 @author: swimberly
 '''
 
 import random
+import argparse
 
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.sql import select, func
@@ -21,6 +31,7 @@ def run_benchmarks(metadata, connection, schema, district_num=4, state_num=1, sc
     INPUT:
     metadata -- A SQLAlchemy metadata object that reflects the database
     connection -- A connection to the db
+    schema -- the name of the schema to run queries on
     district_num -- the number of districts to run benchmarks on
     state_num -- the number of states to run benchmarks on
     school_num -- the number of schools to run benchmarks on
@@ -37,7 +48,16 @@ def run_benchmarks(metadata, connection, schema, district_num=4, state_num=1, sc
 
 def run_statistics(metadata, connection, schema, statistics_method, count_num, object_list):
     '''
+    Helper method to call the statistic methods for each of the different types of queries
+    INPUT:
+    metadata -- A SQLAlchemy metadata object that reflects the database
+    connection -- A connection to the db
+    schema -- the name of the schema to run queries on
+    statistics_method -- the statistics method that will do the benchmarks to call for the given data
+    count_num -- the number of times to run the benchmark
+    object_list -- a list of tuples that include the id of the object to query, where an objece is a state, school or district
     '''
+
     if count_num >= len(object_list):
         for obj in object_list:
             statistics_method(obj[0], connection, schema)
@@ -145,24 +165,43 @@ def get_school_list_by_size(metadata, connection, district_id=None, state_id=Non
     return district_list
 
 
-if __name__ == '__main__':
+def get_input_args():
+    '''
+    Creats parser for command line args
+    RETURS vars(args) -- A dict of the command line args
+    '''
 
-    engine = create_engine('postgresql+psycopg2://postgres:edware2013@edwdbsrv2.poc.dum.edwdc.net:5432/edware')
+    parser = argparse.ArgumentParser(description='Script to run benchmarks on predefined queries')
+    parser.add_argument('server', help='server path (ie. edwdbsrv2.poc.dum.edwdc.net')
+    parser.add_argument('database', help='name of the database to connect to (ie. edware)')
+    parser.add_argument('username', help='username for the db')
+    parser.add_argument('password', help='password for the user')
+    parser.add_argument('schema', help='schema to use')
+    parser.add_argument('-p', '--port', type=int, help='port to connect to. Default: 5432', default=5432)
+    parser.add_argument('--state_count', help='number of states to run benchmarks on. Default: 1', default=1)
+    parser.add_argument('--district_count', help='number of districts to run benchmarks on. Default: 4', default=4)
+    parser.add_argument('--school_count', help='number of schools to run benchmarks on. Default: 10', default=10)
+    parser.add_argument('-v', '--verbose', action='store_true', help='print out query results. NOT IMPLEMENTED YET')
+
+    args = parser.parse_args()
+    return vars(args)
+
+
+def main():
+    '''
+    Entry point main method
+    '''
+    input_args = get_input_args()
+    print(input_args)
+    db_string = 'postgresql+psycopg2://{username}:{password}@{server}:{port}/{database}'.format(**input_args)
+    print(db_string)
+    engine = create_engine(db_string)
     db_connection = engine.connect()
-    schema_name = 'edware_star_20130215_2'
     metadata = MetaData()
-    metadata.reflect(engine, schema_name)
+    metadata.reflect(engine, input_args['schema'])
 
-    res1 = get_district_id_list_by_size(metadata, db_connection)
+    run_benchmarks(metadata, db_connection, input_args['schema'], input_args['district_count'], input_args['state_count'], input_args['school_count'])
 
-    for r in res1:
-        print(r)
-    print(len(res1))
 
-    for r in get_state_id_list_by_size(metadata, db_connection):
-        print(r)
-
-    for r in get_school_list_by_size(metadata, db_connection):
-        print(r)
-
-    run_benchmarks(metadata, db_connection, schema_name, 1, 1, 1)
+if __name__ == '__main__':
+    main()

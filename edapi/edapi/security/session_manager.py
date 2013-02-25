@@ -80,11 +80,13 @@ def delete_session(session_id):
     '''
     delete session by session_id
     '''
-    connection = DBConnector()
-    connection.open_connection()
-    user_session = connection.get_table('user_session')
-    connection.execute(user_session.delete(user_session.c.session_id == session_id))
-    connection.close_connection()
+    # Do not delete long lived sessions (prefix with 'L-')
+    if session_id.startswith('L-') is False:
+        connection = DBConnector()
+        connection.open_connection()
+        user_session = connection.get_table('user_session')
+        connection.execute(user_session.delete(user_session.c.session_id == session_id))
+        connection.close_connection()
 
 
 def __create_from_SAMLResponse(saml_response, last_access, expiration):

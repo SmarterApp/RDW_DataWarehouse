@@ -7,9 +7,9 @@ Created on Jan 16, 2013
 import os
 import unittest
 
-from genpeople import generate_teacher, generate_student, assign_dob, generate_parents, generate_staff
-from nameinfo import NameInfo
-from entities import State, District, Teacher, School, Student, Parent, Staff, ExternalUserStudent
+from genpeople import generate_teacher, generate_student, generate_staff
+from entities import Student, Staff, ExternalUserStudent, InstitutionHierarchy
+from helper_entities import State, District, Teacher
 from uuid import UUID, uuid4
 from datetime import date
 
@@ -25,9 +25,9 @@ class Test(unittest.TestCase):
             # File does not exist
             pass
 
-    delaware = State('DE', 'Delaware', 1, state_code='DE')
-    district_1 = District(1000, uuid4(), 'district_1', 'DE', 1, {'Dover': [10000, 20000]})
-    school_1 = School(2000, uuid4(), 'School 1', district_1.district_name, district_1.district_id, 'DE', 1, 1, 1, 12)
+    delaware = State('DE', 'Delaware', 1)
+    district_1 = District(1000, 'district_1', 'DE', 'Delaware', 1, {'Dover': [10000, 20000]})
+    school_1 = InstitutionHierarchy(1, 1, 1, 12, 'Delaware', 'DE', 'district_id', 'district_name', 'school_id', 'school_name', 'school_category', '2012-09-19', True)
     student_1 = Student(3000, uuid4(), 'John', 'Doe', '55 Washington St', date(2013, 2, 14), district_1, delaware, 'male', 'johndoe@school.edu', school_1)
 
     def test_generate_teacher(self):
@@ -44,7 +44,7 @@ class Test(unittest.TestCase):
         self.assertIsInstance(teacher.state_code, str)
 
     def test_generate_student(self):
-        student, parents, exter_user = generate_student(self.delaware, self.district_1, self.school_1, 1, ['park'])
+        student, exter_user = generate_student(self.delaware, self.district_1, self.school_1, 1, ['park'])
         self.assertIsNotNone(student)
         self.assertIsInstance(student, Student)
 
@@ -53,36 +53,9 @@ class Test(unittest.TestCase):
 
         self.assertEqual(student.student_id, exter_user.student_id)
 
-        self.assertEqual(len(parents), 2)
-        for par in parents:
-            self.assertIsInstance(par, Parent)
-            self.assertEqual(par.address_1, student.address_1)
-            self.assertEqual(par.city, student.city)
-            self.assertEqual(par.state_code, student.state_code)
-            self.assertEqual(par.zip_code, student.zip_code)
-            self.assertEqual(par.last_name, student.last_name)
-
-    def test_generate_parents(self):
-        parents = generate_parents(self.student_1)
-        for p in parents:
-            self.assertIsNotNone(p)
-            self.assertIsInstance(p, Parent)
-
     def test_generate_staff(self):
         staff = generate_staff(self.district_1, self.delaware, self.school_1)
         self.assertIsInstance(staff, Staff)
-
-    def test_assign_dob(self):
-        grade = 1
-        grade_offset = 6 + grade
-        boy_year = 2010
-
-        for i in range(20):
-            dob = assign_dob(grade, boy_year)
-            expected_year1 = boy_year - grade_offset
-            expected_year2 = (boy_year + 1) - grade_offset
-
-            self.assertIn(dob.year, [expected_year1, expected_year2])
 
 
 if __name__ == "__main__":

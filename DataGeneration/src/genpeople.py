@@ -8,10 +8,11 @@ from datetime import date
 from uuid import uuid4
 import random
 
-from entities import Student, Teacher, Parent, Staff, ExternalUserStudent
+from entities import Student, Teacher, Parent, Staff, StudentSection, ExternalUserStudent
 from idgen import IdGen
 import gennames
 import util
+import uuid
 
 
 # constants
@@ -118,23 +119,53 @@ def generate_parents(student):
     return [parent1, parent2]
 
 
-def generate_staff(district, state, school):
-
+def generate_staff(hier_user_type, state_code='None', district_id='None', school_id='None', section_id='None', first_name=None, middle_name=None, last_Name=None, staff_id=None):
+    '''
+    Generate one staff who can be state_staff, district_staff, school_non_teaching_staff, and school_teaching_staff
+    '''
+    id_generator = IdGen()
     staff_gender = random.choice(['male', 'female'])
-    staff_has_middle_name = random.randint(0, 1)
+    if(first_name is None):
+        first_name = gennames.generate_first_or_middle_name(staff_gender)
+    if(middle_name is None):
+        middle_name = gennames.generate_first_or_middle_name(staff_gender)
+    if(last_Name is None):
+        last_Name = gennames.generate_last_name()
+    if(staff_id is None):
+        staff_id = id_generator.get_id()
 
     staff_params = {
-        'first_name': gennames.generate_first_or_middle_name(staff_gender),
-        'middle_name': gennames.generate_first_or_middle_name(staff_gender) if staff_has_middle_name else None,
-        'last_name': gennames.generate_last_name(),
-        'district_id': district.district_id,
-        'state_code': state.state_code,
-        'school_id': school.school_id
-    }
-
+            'staff_id': staff_id,
+            'staff_external_id': uuid.uuid4(),
+            'first_name': first_name,
+            'middle_name': middle_name,
+            'last_name': last_Name,
+            'section_id': section_id,
+            'hier_user_type': hier_user_type,
+            'state_code': state_code,
+            'district_id': district_id,
+            'school_id': school_id,
+            'from_date': date(2012, 9, 1),
+            'to_date': date(2999, 12, 1),
+            'most_recent': True
+        }
     staff = Staff(**staff_params)
-
     return staff
+
+
+def generate_student_section(school, student, section_subject_id, section_id, grade, teacher_id):
+        student_section_params = {
+        'student': student,
+        'section_id': section_id,
+        'grade': grade,
+        'from_date': date(2012, 9, 1),
+        'to_date': date(2999, 12, 1),
+        'most_recent': True,
+        'teacher_id': teacher_id,
+        'section_subject_id': section_subject_id
+        }
+        student_section = StudentSection(**student_section_params)
+        return student_section
 
 
 def assign_dob(grade, boy_year):

@@ -9,6 +9,7 @@ from uuid import uuid4
 from idgen import IdGen
 from entities import Assessment, Claim
 from constants import ASSMT_TYPES, MIN_ASSMT_SCORE, MAX_ASSMT_SCORE
+import datetime
 
 GRADES = [i for i in range(13)]
 TYPES = ['SUMMATIVE', 'INTERIM']
@@ -88,7 +89,10 @@ def generate_single_asmt(grade, asmt_type, period, subject):
         'asmt_perf_lvl_name_4': PERFORMANCE_LEVELS[3],
         'asmt_cut_point_1': int((MAX_ASSMT_SCORE + MIN_ASSMT_SCORE) * .25),
         'asmt_cut_point_2': int((MAX_ASSMT_SCORE + MIN_ASSMT_SCORE) * .5),
-        'asmt_cut_point_3': int((MAX_ASSMT_SCORE + MIN_ASSMT_SCORE) * .75)
+        'asmt_cut_point_3': int((MAX_ASSMT_SCORE + MIN_ASSMT_SCORE) * .75),
+
+        'from_date': datetime.date(2012, 9, 1),
+        'most_recent': True
     }
 
     return Assessment(**params)

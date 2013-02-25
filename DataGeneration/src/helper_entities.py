@@ -1,6 +1,7 @@
 from entities import InstitutionHierarchy
 from datetime import date
 
+
 class State:
     '''
     state object
@@ -27,7 +28,7 @@ class District:
     District object
     '''
 
-    def __init__(self, district_id, district_name, state_code, state_name, number_of_schools, city_zip_map):
+    def __init__(self, district_id, district_name, state_code, state_name, number_of_schools, city_zip_map, wheretaken_list=None):
         '''
         Constructor
         '''
@@ -38,6 +39,7 @@ class District:
 
         self.number_of_schools = number_of_schools
         self.city_zip_map = city_zip_map
+        self.wheretaken_list = wheretaken_list
 
     def __str__(self):
         '''

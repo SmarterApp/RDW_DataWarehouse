@@ -1,14 +1,12 @@
 import unittest
 import generate_data
 import random
-from entities import Student, Teacher, WhereTaken, InstitutionHierarchy, \
-    StudentSection
-from helper_entities import District, State
-from constants import ZIPCODE_START, ZIPCODE_RANG_INSTATE, SCHOOL_LEVELS_INFO, ADD_SUFFIX, \
+from entities import Student, InstitutionHierarchy, StudentSection
+from helper_entities import District, State, Teacher, WhereTaken
+from constants import ZIPCODE_START, ZIPCODE_RANG_INSTATE, SCHOOL_LEVELS_INFO, \
     BIRDS_FILE
 from gen_assessments import generate_assessment_types
 import os.path
-import datetime
 
 
 class TestGenerateData(unittest.TestCase):
@@ -93,67 +91,6 @@ class TestGenerateData(unittest.TestCase):
         self.assertEqual(len(expected_names), count)
         for name in expected_names:
             self.assertTrue(len(name) <= name_length)
-
-    # test generate_address_from_list()
-    def test_generate_address_from_list_uniqueroadname(self):
-        count = 10
-        words_list = ['road' + str(i) for i in range(100, 200)]
-
-        expected_add = generate_data.generate_address_from_list(count, words_list)
-        self.assertEqual(len(expected_add), count)
-        expected_roadword = []
-        for add in expected_add:
-            expected_roadword.append((add.split(' '))[1])
-            suf = (add.split(' '))[2]
-            for part in (add.split(' '))[3:]:
-                suf = suf + ' ' + part
-            self.assertTrue(suf in ADD_SUFFIX)
-        self.assertEqual(len(set(expected_roadword)), len(expected_add))
-
-    def test_generate_address_from_list_duproadname(self):
-        count = 1000
-        words_list = ['road' + str(i) for i in range(100, 221)]
-
-        expected_add = generate_data.generate_address_from_list(count, words_list)
-        self.assertEqual(len(expected_add), count)
-        expected_roadname_count = {}
-        for add in expected_add:
-            road_name = (add.split(' '))[1]
-            if(road_name in expected_roadname_count.keys()):
-                expected_roadname_count[road_name] += 1
-            else:
-                expected_roadname_count[road_name] = 1
-        self.assertEqual(len(expected_roadname_count), len(words_list))
-
-        for k, v in expected_roadname_count.items():
-            self.assertTrue(k in words_list)
-            self.assertTrue(v in [(count // len(words_list)), ((count // len(words_list)) + 1)])
-
-    def test_generate_address_from_list_longerName(self):
-        add_length = 15
-        count = 10
-        words_list = ['road' + str(i) for i in range(100, 200)]
-        expected_add = generate_data.generate_address_from_list(count, words_list, add_length)
-        self.assertEqual(len(expected_add), count)
-        expected_roadword = []
-        for add in expected_add:
-            print(add)
-            expected_roadword.append((add.split(' '))[1])
-            suf = (add.split(' '))[2]
-            for part in (add.split(' '))[3:]:
-                suf = suf + ' ' + part
-            self.assertTrue(suf in ADD_SUFFIX)
-            self.assertTrue(len(add) <= add_length)
-
-    # test calculate_zipvalues(pos, n)
-    def test_cal_zipvalues_firststate(self):
-        pos = 0
-        n = 12
-
-        expected_zipinit, expected_zipdist = generate_data.cal_zipvalues(pos, n)
-
-        self.assertEqual(ZIPCODE_START, expected_zipinit)
-        self.assertEqual(expected_zipdist, (ZIPCODE_RANG_INSTATE // n))
 
     def test_cal_zipvalues_thirdstate(self):
         pos = 2
@@ -607,12 +544,6 @@ class TestGenerateData(unittest.TestCase):
         file_name = os.path.abspath(os.path.join(basepath, '..', 'datafiles', 'name_lists', 'birds.txt'))
         generated_names = generate_data.read_names(file_name)
         self.assertTrue(len(generated_names) > 0)
-
-    # test generate_date
-    def test_generate_date(self):
-        generated_date = generate_data.generate_date()
-        print(generated_date)
-        self.assertTrue(generated_date <= datetime.date.today())
 
     def test_get_name_lists_nofiles(self):
         # rename file into wrong file

@@ -41,12 +41,12 @@ def run_benchmarks(metadata, connection, schema, district_num=4, state_num=1, sc
     districts = get_district_id_list_by_size(metadata, connection)
     schools = get_school_list_by_size(metadata, connection)
 
-    run_statistics(metadata, connection, schema, state_statistics, state_num, states)
-    run_statistics(metadata, connection, schema, district_statistics, district_num, districts)
-    run_statistics(metadata, connection, schema, school_statistics, school_num, schools)
+    run_statistics(metadata, connection, schema, state_statistics, state_num, states, 'State')
+    run_statistics(metadata, connection, schema, district_statistics, district_num, districts, 'District')
+    run_statistics(metadata, connection, schema, school_statistics, school_num, schools, 'School')
 
 
-def run_statistics(metadata, connection, schema, statistics_method, count_num, object_list):
+def run_statistics(metadata, connection, schema, statistics_method, count_num, object_list, descriptor):
     '''
     Helper method to call the statistic methods for each of the different types of queries
     INPUT:
@@ -56,15 +56,21 @@ def run_statistics(metadata, connection, schema, statistics_method, count_num, o
     statistics_method -- the statistics method that will do the benchmarks to call for the given data
     count_num -- the number of times to run the benchmark
     object_list -- a list of tuples that include the id of the object to query, where an objece is a state, school or district
+    descriptor -- a non-plural string that describes the objects (ie. school, state, district)
     '''
 
     if count_num >= len(object_list):
         for obj in object_list:
-            statistics_method(obj[0], connection, schema)
+            res = statistics_method(obj[0], connection, schema)
+            description = descriptor + ' ' + str(obj[0])
+            print_results(res, description)
     else:
-        for i in range(count_num):
+        for _i in range(count_num):
             index = random.randint(0, len(object_list) - 1)
-            statistics_method(object_list.pop(index)[0], connection, schema)
+            obj_id = object_list.pop(index)[0]
+            res = statistics_method(obj_id, connection, schema)
+            description = descriptor + ' ' + str(obj_id)
+            print_results(res, description)
 
 
 def get_district_id_list_by_size(metadata, connection, state_id=None):
@@ -163,6 +169,43 @@ def get_school_list_by_size(metadata, connection, district_id=None, state_id=Non
 
     district_list = connection.execute(school_select).fetchall()
     return district_list
+
+
+def print_results(result_dict, description, is_verbose=False):
+    '''
+    prints the result dictionary returned by one of the statistic methods
+    INPUT:
+    result_dict -- dict with two items
+    description -- a string to describe benchmark data ('Benchmarks for {description})
+    is_verbose -- boolean flag for whether to print query results
+    RETURNS: None
+    '''
+
+    num_offset = 6
+    string_space = 7
+    float_places = 3
+    db_stats = result_dict['stats']
+    benchmarks = result_dict['benchmarks']
+
+    print('************* Benchmarks for %s *************' % description)
+
+    #Get longest string
+    max_str_len = len(max((x[0] for x in db_stats['data']), key=len))
+
+    for stat in db_stats['data']:
+        string = '{0:{1}}{2:{3}}'.format(stat[0] + ':', max_str_len + string_space, stat[1], num_offset)
+        print(string)
+
+    print('{0:{1}}{2:{3}.{4}f}s'.format('Time to run counts:', max_str_len + string_space, db_stats['query_time'], num_offset, float_places))
+    print('**** Benchmarks for Queries ****')
+
+    max_str_len = max(max_str_len, len(max((x['type'] for x in benchmarks), key=len)))
+    for mark in benchmarks:
+        string = '{0:{1}}{2:{3}.{4}f}s'.format(mark['type'], max_str_len + string_space, mark['query_time'], num_offset, float_places)
+        print(string)
+
+        if is_verbose:
+            pass
 
 
 def get_input_args():

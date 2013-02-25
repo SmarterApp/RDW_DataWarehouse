@@ -20,6 +20,7 @@ DIST_SUFFIX = ['DISTRICT', 'SCHOOL DISTRICT', 'SCHOOLS', 'COUNTY SCHOOLS', 'PUBL
 ADD_SUFFIX = ["ROAD", "AVE", "STREET", "SOUTH AVE", "NORTH AVE", "WAY"]
 
 SUBJECTS = ["Math", "ELA"]
+
 MIN_CLASS_SIZE = 20
 MIN_SECTION_SIZE = 10
 GENDER_RARIO = [0.5, 0.45, 0.55]
@@ -47,26 +48,17 @@ ASSMT_TYPES = {'Math':
 
 
 # Output files for use in write_to_csv.py and generate data.py
-STATES = DATAFILE_PATH + '/datafiles/csv/states.csv'
-DISTRICTS = DATAFILE_PATH + '/datafiles/csv/districts.csv'
-SCHOOLS = DATAFILE_PATH + '/datafiles/csv/schools.csv'
-PARENTS = DATAFILE_PATH + '/datafiles/csv/parents.csv'
-ASSESSMENT_TYPES = DATAFILE_PATH + '/datafiles/csv/assessment_types.csv'
-ASSESSMENT_OUTCOME = DATAFILE_PATH + '/datafiles/csv/assessment_outcome.csv'
-STUDENT_SECTIONS = DATAFILE_PATH + '/datafiles/csv/stu_sections.csv'
-TEACHER_SECTIONS = DATAFILE_PATH + '/datafiles/csv/tea_sections.csv'
-TEACHERS = DATAFILE_PATH + '/datafiles/csv/teachers.csv'
-STAFF = DATAFILE_PATH + '/datafiles/csv/staff.csv'
-CLASSES = DATAFILE_PATH + '/datafiles/csv/classes.csv'
-SECTIONS = DATAFILE_PATH + '/datafiles/csv/sections.csv'
-STUDENTS = DATAFILE_PATH + '/datafiles/csv/students.csv'
-WHERETAKEN = DATAFILE_PATH + '/datafiles/csv/wheretaken.csv'
-INSTITUTIONS = DATAFILE_PATH + '/datafiles/csv/institutions.csv'
-INSTITUTION_HIERARCHY = DATAFILE_PATH + '/datafiles/csv/institution_hierarchy.csv'
-EXTERNAL_USER_STUDENT = DATAFILE_PATH + '/datafiles/csv/external_user_students.csv'
-SECTION_SUBJECT = DATAFILE_PATH + '/datafiles/csv/section_subjects.csv'
 
-ENT_LIST = [ASSESSMENT_TYPES, SECTION_SUBJECT, STUDENTS, ASSESSMENT_OUTCOME, EXTERNAL_USER_STUDENT, STAFF, INSTITUTION_HIERARCHY]
+STAFF = DATAFILE_PATH + '/datafiles/csv/staff.csv'
+STUDENTS = DATAFILE_PATH + '/datafiles/csv/students.csv'
+INSTITUTION_HIERARCHY = DATAFILE_PATH + '/datafiles/csv/institution_hierarchy.csv'
+ASSESSMENT_OUTCOME = DATAFILE_PATH + '/datafiles/csv/assessment_outcome.csv'
+SECTION_SUBJECT = DATAFILE_PATH + '/datafiles/csv/section_subjects.csv'
+ASSESSMENT_TYPES = DATAFILE_PATH + '/datafiles/csv/assessment_types.csv'
+EXTERNAL_USER_STUDENT = DATAFILE_PATH + '/datafiles/csv/external_user_students.csv'
+USER_SESSION = DATAFILE_PATH + '/datafiles/csv/user_sessions.csv'
+
+ENT_LIST = [STAFF, STUDENTS, INSTITUTION_HIERARCHY, ASSESSMENT_OUTCOME, SECTION_SUBJECT, ASSESSMENT_TYPES, EXTERNAL_USER_STUDENT, USER_SESSION]
 
 ZIPCODE_START = 10000
 ZIPCODE_RANG_INSTATE = 5000

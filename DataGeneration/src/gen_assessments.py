@@ -5,9 +5,10 @@ Created on Jan 29, 2013
 '''
 
 from uuid import uuid4
+from helper_entities import Claim
 
 from idgen import IdGen
-from entities import Assessment, Claim
+from entities import Assessment
 from constants import ASSMT_TYPES, MIN_ASSMT_SCORE, MAX_ASSMT_SCORE
 import datetime
 

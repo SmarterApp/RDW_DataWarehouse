@@ -7,8 +7,9 @@ Created on Jan 8, 2013
 from datetime import date
 from uuid import uuid4
 import random
+from helper_entities import Teacher
 
-from entities import Student, Teacher, Parent, Staff, StudentSection, ExternalUserStudent
+from entities import Student, Staff, StudentSection, ExternalUserStudent
 from idgen import IdGen
 import gennames
 import util
@@ -90,35 +91,6 @@ def generate_student(state, district, school, grade, street_list, gender=None, h
     return student, ext_user
 
 
-def generate_parents(student):
-
-    parent_1_params = {
-        'first_name': gennames.generate_first_or_middle_name('male'),
-        'last_name': student.last_name,
-        'address_1': student.address_1,
-        'city': student.city,
-        'state_code': student.state_code,
-        'zip_code': student.zip_code
-    }
-
-    parent_2_params = {
-        'first_name': gennames.generate_first_or_middle_name('female'),
-        'last_name': student.last_name,
-        'address_1': student.address_1,
-        'city': student.city,
-        'state_code': student.state_code,
-        'zip_code': student.zip_code
-    }
-
-    parent1 = Parent(**parent_1_params)
-    parent2 = Parent(**parent_2_params)
-
-    # parent1.student_id = student.student_id
-    # parent2.student_id = student.student_id
-
-    return [parent1, parent2]
-
-
 def generate_staff(hier_user_type, state_code='None', district_id='None', school_id='None', section_id='None', first_name=None, middle_name=None, last_Name=None, staff_id=None):
     '''
     Generate one staff who can be state_staff, district_staff, school_non_teaching_staff, and school_teaching_staff
@@ -166,53 +138,3 @@ def generate_student_section(school, student, section_subject_id, section_id, gr
         }
         student_section = StudentSection(**student_section_params)
         return student_section
-
-
-def assign_dob(grade, boy_year):
-    '''
-    Takes a grade and returns a dob that fits in that range
-    grade -- the grade the student is in as an int
-    boy_year -- the year during the beginning of year as int
-    '''
-    month_cutoff = 8  # August
-    age_offset = grade + 6
-    month_num_days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]  # number of days in each month
-
-    year_1 = boy_year
-    year_2 = boy_year + 1
-
-    month = random.randint(1, 12)
-    day = random.randint(1, month_num_days[month - 1])
-    year = 0
-
-    if month > month_cutoff:
-        year = year_1 - age_offset
-    else:
-        year = year_2 - age_offset
-
-    return date(year, month, day)
-
-
-# if __name__ == '__main__':
-#
-#    total = 5000  # 387549  # pop in AL
-#    ratio = 0.51
-#    grade = 12
-#
-#    from time import time
-#
-#    time_start = time()
-#    list_of_students = generate_people(STUDENT, total, ratio, grade)
-#    time_end = time()
-#
-#    print("Gen time for %s students generated: %.2fs" % (total, time_end - time_start))
-#
-#    male_count = 0
-#
-#    print("num gen:", len(list_of_students))
-#    for st in list_of_students:
-#        if st.gender == 'male':
-#            male_count += 1
-#    print('males', male_count)
-#    for i in range(0, 5):
-#        print(list_of_students[i].dob)

@@ -117,15 +117,3 @@ def name_dict_to_list(name_dict):
             name_list.extend([name_pair[0]] * name_pair[1])
 
     return name_list
-
-
-def get_random_entry(name_list):
-    '''
-    takes a list of names to choose from randomly.
-    name_list : list of objects
-    RETURNS   : a random name from the list
-                if the list is empty returns None
-    '''
-
-    if (name_list):
-        return name_list[random.randint(0, len(name_list) - 1)]

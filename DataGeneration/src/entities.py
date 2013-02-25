@@ -1,7 +1,8 @@
 import random
 import string
-from idgen import IdGen
 from uuid import uuid4
+
+from idgen import IdGen
 import util
 
 
@@ -43,34 +44,6 @@ class InstitutionHierarchy:
         return [self.row_id, self.state_name, self.state_code, self.district_id, self.district_name, self.school_id, self.school_name, self.school_category, self.from_date, self.to_date, self.most_recent]
 
 
-class Class:
-    '''
-    NOT PRESENT IN NEW SCHEMA
-    Class Object
-    '''
-    # total_id = 0
-    def __init__(self, class_id, title, sub_name, section_stu_map, section_tea_map):
-        '''
-        Constructor
-        '''
-        # self.dist_id   = District.total_id
-        # District.total_id = District.total_id + 1
-        self.class_id = class_id
-        self.title = title
-        self.sub_name = sub_name
-        self.section_stu_map = section_stu_map
-        self.section_tea_map = section_tea_map
-
-    def __str__(self):
-        '''
-        String method
-        '''
-        return ("Class:[class_id: %s, title: %s, sub_name: %s, section_stu_map: %s, section_tea_map: %s]" % (self.class_id, self.title, self.sub_name, self.section_stu_map, self.section_tea_map))
-
-    def getRow(self):
-        return [self.class_id, self.title]
-
-
 class SectionSubject:
     '''
     SectionSubject Object
@@ -99,31 +72,6 @@ class SectionSubject:
 
     def getRow(self):
         return [self.row_id, self.section_id, self.section_name, self.grade, self.class_name, self.subject_name, self.state_code, self.district_id, self.school_id, self.from_date, self.to_date, self.most_recent]
-
-
-class TeacherSection:
-    '''
-    TeacherSection Object
-    '''
-    def __init__(self, teacher_section_id, teacher_id, section_id, rel_start_date, rel_end_date=None):
-        self.teacher_section_id = teacher_section_id
-        self.teacher_id = teacher_id
-        self.section_id = section_id
-        self.rel_start_date = rel_start_date
-        self.rel_end_date = rel_end_date
-
-    def getRow(self):
-        return [self.teacher_section_id, self.teacher_id, self.section_id, self.rel_start_date, self.rel_end_date]
-
-
-class Claim(object):
-    '''
-    claim information to be used by the assessment object
-    '''
-    def __init__(self, claim_name, claim_score_min=None, claim_score_max=None):
-        self.claim_name = claim_name
-        self.claim_score_min = claim_score_min
-        self.claim_score_max = claim_score_max
 
 
 class Assessment:
@@ -186,54 +134,6 @@ class Assessment:
                 self.asmt_custom_metadata, self.from_date, self.to_date, self.most_recent]
 
 
-class Score:
-    '''
-    Score object
-    '''
-    def __init__(self, overall, claims):
-        '''
-        Constructor
-        '''
-        self.overall = overall
-        self.claims = claims
-        # self.level = level
-
-    def __str__(self):
-        '''
-        String method
-        '''
-        return ("Score:[overall: %s, claims: %s]" % (self.overall, self.claims))
-
-
-class WhereTaken:
-    '''
-    Where-taken object
-    '''
-    def __init__(self, where_taken_id, where_taken_name, district_name=None, address_1=None, city_name=None, zip_code=None, state_code=None, country_id=None, address_2=None):
-        '''
-        wheretaken_id, wheretaken_name, distr.district_name, address_1, city_name, zip_code, distr.state_code, 'US'
-        Constructor
-        '''
-        self.where_taken_id = where_taken_id
-        self.where_taken_name = where_taken_name
-        self.district_name = district_name
-        self.address_1 = address_1
-        self.city_name = city_name
-        self.zip_code = zip_code
-        self.state_code = state_code
-        self.country_id = country_id
-        self.address_2 = address_2
-
-    def __str__(self):
-        '''
-        String method
-        '''
-        return ("WhereTaken:[wheretaken_id: %s, wheretaken_name: %s, district_name: %s, address_1: %s, address_2: %s,city_name:%s, zip_code:%s, state_code :%s, country_id: %s]" % (self.wheretaken_id, self.wheretaken_name, self.district_name, self. address_1, self.address_2, self.city_name, self.zip_code, self.country_id))
-
-    def getRow(self):
-        return [self.where_taken_id, self.where_taken_name, self.district_name, self. address_1, self.address_2, self.city_name, self.zip_code, self.state_code, self.country_id]
-
-
 class AssessmentOutcome(object):
     '''
     Assessment outcome object
@@ -283,34 +183,6 @@ class AssessmentOutcome(object):
                 claims[2][1], self.assessment.claim_3.claim_score_min, self.assessment.claim_3.claim_score_max,
                 claims[3][1], self.assessment.claim_4.claim_score_min, self.assessment.claim_4.claim_score_max,
                 self.asmt_create_date, self.most_recent]
-
-
-class StudentTemporalData(object):
-    '''
-    NOT PRESENT IN NEW SCHEMA
-    Object to match the student_tmprl_data table
-    '''
-    def __init__(self, student_tmprl_id, student_id, grade_id, dist_name, school_id, student_class, section_id):
-        self.student_tmprl_id = student_tmprl_id
-        self.student_id = student_id
-        self.grade_id = grade_id
-        self.dist_name = dist_name
-        self.school_id = school_id
-        self.student_class = student_class
-        self.section_id = section_id
-        self.effective_date = None
-        self.end_date = None
-
-    def getRow(self):
-        eff_date = self.effective_date
-        end_date = self.end_date
-
-        if eff_date is None:
-            eff_date = ''
-        if end_date is None:
-            end_date = ''
-
-        return [self.student_tmprl_id, self.student_id, self.effective_date, self.end_date, self.grade_id, self.dist_name, self.school_id, self.student_class.class_id, self.section_id]
 
 
 class Person(object):
@@ -373,72 +245,6 @@ class Student(Person):
 
     def getRow(self):
         return [self.student_id, self.student_external_id, self.first_name, self.middle_name, self.last_name, self.address_1, self.address_2, self.city, self.state_code, self.zip_code, self.gender, self.email, self.dob, self.school_id, self.district_id]
-
-
-class Parent(Person):
-    '''
-    Parent Object
-    Corresponds to parent table
-    '''
-
-    def __init__(self, first_name, last_name, address_1, city, state_code, zip_code, parent_id=None, parent_external_id=None, middle_name=None, address_2=None):
-        super().__init__(first_name, last_name, middle_name=middle_name)
-
-        # Ids can either be given to the constructor or provided by constructor
-        # Either way, both Id fields must have a value
-        id_generator = IdGen()
-        if parent_id is None:
-            self.parent_id = id_generator.get_id()
-        else:
-            self.parent_id = parent_id
-        if parent_external_id is None:
-            self.parent_external_id = id_generator.get_id()
-        else:
-            self.parent_external_id = parent_external_id
-
-        self.address_1 = address_1
-        self.address_2 = address_2
-        self.city = city
-        self.state_code = state_code
-        self.zip_code = zip_code
-
-    def __str__(self):
-        return ("%s %s %s" % (self.first_name, self.middle_name, self.last_name))
-
-    def getRow(self):
-        return [self.parent_id, self.parent_external_id, self.first_name, self.middle_name, self.last_name, self.address_1, self.address_2, self.city, self.state_code, self.zip_code]
-
-
-class Teacher(Person):
-    '''
-    Teacher Object
-    Corresponds to teacher table
-    '''
-
-    def __init__(self, first_name, last_name, district_id, state_code, teacher_id=None, teacher_external_id=None, middle_name=None):
-        super().__init__(first_name, last_name, middle_name=middle_name)
-        # Ids can either be given to the constructor or provided by constructor
-        # Either way, both Id fields must have a value
-
-        id_generator = IdGen()
-
-        if teacher_id is None:
-            self.teacher_id = id_generator.get_id()
-        else:
-            self.teacher_id = teacher_id
-        if teacher_external_id is None:
-            self.teacher_external_id = id_generator.get_id()
-        else:
-            self.teacher_external_id = teacher_external_id
-
-        self.district_id = district_id
-        self.state_code = state_code
-
-    def __str__(self):
-        return ("%s %s %s" % (self.first_name, self.middle_name, self.last_name))
-
-    def getRow(self):
-        return [self.teacher_id, self.teacher_external_id, self.first_name, self.middle_name, self.last_name, self.district_id, self.state_code]
 
 
 class Staff(Person):
@@ -527,9 +333,3 @@ class StudentSection():
         return [self.row_id, self.student_id, self.first_name, self.middle_name, self.last_name, self.address_1, self.address_2,
                 self.city, self.zip_code, self.gender, self.email, self.dob, self.section_id, self.grade,
                 self.state_code, self.district_id, self.school_id, self.from_date, self.to_date, self.most_recent]
-
-
-def generate_ramdom_name():
-    # temporary
-    char_set = string.ascii_uppercase + string.digits
-    return(''.join(random.sample(char_set, 10)))

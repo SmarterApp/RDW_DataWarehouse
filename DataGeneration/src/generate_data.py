@@ -17,9 +17,8 @@ from assessment import generate_assmt_scores_for_subject
 from dbconnection import get_db_conn
 from entities import (
     InstitutionHierarchy,
-    AssessmentOutcome, SectionSubject,
-    WhereTaken)
-from helper_entities import State, District
+    AssessmentOutcome, SectionSubject )
+from helper_entities import State, District, WhereTaken
 from gen_assessments import generate_assessment_types
 from genpeople import generate_teacher, generate_student, generate_staff, generate_student_section
 from idgen import IdGen
@@ -154,7 +153,7 @@ def generate_data(name_lists, db_states_stat):
                 create_classes_for_school(district, school, created_state, name_lists[2], total_count, asmt_list)
 
         # if just need one state data
-        if(c == 2):
+        if c == 0:
             break
         c += 1
 
@@ -163,8 +162,6 @@ def generate_data(name_lists, db_states_stat):
     print("generated number of districts ", total_count[1])
     print("generated number of schools   ", total_count[2])
     print("generated number of students  ", total_count[3])
-    # print("generated number of teachers  ", total_count[4])
-    # print("generated number of parents   ", total_count[5])
 
     return total_count
 
@@ -379,7 +376,6 @@ def generate_names_from_lists(count, list1, list2, name_length=None):
             raise ValueError
 
         if(name_length is not None):
-            # print("Substring of names...")
             names = [(str(name1) + " " + str(name2))[0: name_length] for name1 in names1 for name2 in names2]
         else:
             names = [str(name1) + " " + str(name2) for name1 in names1 for name2 in names2]
@@ -387,36 +383,6 @@ def generate_names_from_lists(count, list1, list2, name_length=None):
     new_list = []
     new_list.extend(names[0:count])
     return new_list
-
-
-def generate_address_from_list(count, words_list, name_length=None):
-    '''
-    input: count: total number of addresses
-           words_list: a word list used for generate address
-    output: list of addresses
-    each address is created as: a number, a random word selected from input words_list, and a suffix
-    '''
-    adds = []
-    if(count > 0):
-        no = random.sample(range(1, count * 10), count)
-        road_name = []
-        if(count < len(words_list)):
-            road_name = random.sample(words_list, count)
-
-        else:
-            road_name.extend(words_list)
-        if(name_length is not None):
-            for i in range(count):
-                first_no = str(no[i])
-                suff = random.choice(constants.ADD_SUFFIX)
-                middle_add = str(road_name[i % len(road_name)])
-                compose_add = first_no + " " + middle_add[0: (name_length - len(first_no) - len(suff) - 2)].strip() + " " + suff
-                adds.append(compose_add)
-        else:
-            adds = [str(no[i]) + " " + str(road_name[i % len(road_name)]) + " " + random.choice(constants.ADD_SUFFIX) for i in range(count)]
-
-    return adds
-
 
 def cal_zipvalues(pos, n):
     '''
@@ -734,25 +700,6 @@ def create_sections_in_one_class(subject_name, class_count, distribute_stu_inacl
     create_csv(student_section_list, constants.STUDENTS)
 
     return student_section_list
-
-
-def generate_date():
-    '''
-    Generate a random date
-    '''
-    today = datetime.date.today()
-    current_year = today.year
-    generate_year = current_year - random.randint(1, constants.YEAR_SHIFT)
-    generate_month = random.randint(1, constants.MONTH_TOTAL)
-    generate_day = 1
-    if(generate_month in constants.MONTH_LIST_31DAYS):
-        generate_day = random.choice(range(1, constants.MONTH_DAY_MAX[0]))
-    elif(generate_month in constants.MONTH_LIST_30DAYS):
-        generate_day = random.choice(range(1, constants.MONTH_DAY_MAX[1]))
-    else:
-        generate_day = random.choice(range(1, constants.MONTH_DAY_MAX[2]))
-
-    return date(generate_year, generate_month, generate_day)
 
 
 def split_list(list_to_split, n):

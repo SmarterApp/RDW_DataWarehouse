@@ -1,7 +1,7 @@
 define [
   'jquery'
   "mustache"
-  "text!widgets/breadcrumb/template.html"
+  "text!edwareBreadcrumbsTemplate"
 ], 
   #
   # * EDWARE breadcrumbs

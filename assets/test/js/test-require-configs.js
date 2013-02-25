@@ -13,10 +13,13 @@ var baseConfigs = {
 	    EDWARE: '../../js/EDWARE',
 	    edwareUtil: '../../js/EDWARE.util',
 	    edwareDataProxy: '../../js/EDWARE.dataProxy',
-	    edwareGrid: '../../js/widgets/EDWARE.grid.tablegrid',
-	    edwareGridFormatters: '../../js/widgets/EDWARE.grid.formatters',
+	    edwareGrid: '../../js/widgets/grid/EDWARE.grid.tablegrid',
+	    edwareGridFormatters: '../../js/widgets/grid/EDWARE.grid.formatters',
 	    edwareStudentList: '../../js/EDWARE.studentList',
-	    edwareIndividualStudent: '../../js/EDWARE.individualStudent'
+	    edwareIndividualStudent: '../../js/EDWARE.individualStudent',
+	    edwareBreadcrumbs: '../../js/widgets/breadcrumb/EDWARE.breadcrumbs',
+	    
+	    edwareBreadcrumbsTemplate: '../../js/widgets/breadcrumb/template.html'
 	},
 	shim: {
         'jqGrid': {

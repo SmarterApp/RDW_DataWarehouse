@@ -9,11 +9,13 @@ require({
 		templates: 'templates',
 		edwareUtil: 'EDWARE.util',
 		edwareDataProxy: 'EDWARE.dataProxy',
-		edwareGrid: 'widgets/EDWARE.grid.tablegrid',
-		edwareGridFormatters: 'widgets/EDWARE.grid.formatters',
+		edwareGrid: 'widgets/grid/EDWARE.grid.tablegrid',
+		edwareGridFormatters: 'widgets/grid/EDWARE.grid.formatters',
 		edwareStudentList: 'EDWARE.studentList',
 		edwareIndividualStudent: 'EDWARE.individualStudent',
 		edwareBreadcrumbs: 'widgets/breadcrumb/EDWARE.breadcrumbs'
+		
+		edwareBreadcrumbsTemplate: 'widgets/breadcrumb/template.html'
 	},
 	shim: {
         'jqGrid': {

@@ -20,8 +20,6 @@ given parameters
 
 import time
 
-from sqlalchemy import create_engine
-
 
 def state_statistics(state_id, connection, schema_name):
     '''
@@ -85,39 +83,26 @@ def state_statistics(state_id, connection, schema_name):
     result_dict['stats']['data'].append(('Schools in District', school_count_set))
     result_dict['stats']['data'].append(('Students in District', stu_count_set))
 
-    print('************* Benchmarks for State %s *************' % state_id)
-    print('Total Districts:\t%6d' % tot_dist_set)
-    print('Total Schools:\t\t%6d' % tot_sch_set)
-    print('Total Students:\t\t%6d' % tot_stu_set)
-    print('Schools in district:\t%6d' % school_count_set)
-    print('Students in district:\t%6d' % stu_count_set)
-    print('Time to run counts:\t%6.3fs' % query_time)
-    print('**** Benchmarks for Queries ****')
-
     result_dict['benchmarks'] = []
 
     start_time1 = time.time()
     res = districts_in_a_state(state_id, 'SUMMATIVE', 'ELA', connection, schema_name)
     query_time = time.time() - start_time1
-    print('Summative-ELA:\t\t%6.2fs' % query_time)
     result_dict['benchmarks'].append({'type': 'Summative-ELA', 'query_time': query_time, 'result': res})
 
     start_time1 = time.time()
     res = districts_in_a_state(state_id, 'INTERIM', 'ELA', connection, schema_name)
     query_time = time.time() - start_time1
-    print('Interim-ELA:\t\t%6.2fs' % query_time)
     result_dict['benchmarks'].append({'type': 'Interim-ELA', 'query_time': query_time, 'result': res})
 
     start_time1 = time.time()
     districts_in_a_state(state_id, 'SUMMATIVE', 'Math', connection, schema_name)
     query_time = time.time() - start_time1
-    print('Summative-Math:\t\t%6.2fs' % query_time)
     result_dict['benchmarks'].append({'type': 'Summative-Math', 'query_time': query_time, 'result': res})
 
     start_time1 = time.time()
     districts_in_a_state(state_id, 'INTERIM', 'Math', connection, schema_name)
     query_time = time.time() - start_time1
-    print('Interim-Math:\t\t%6.2fs' % query_time)
     result_dict['benchmarks'].append({'type': 'Interim-Math', 'query_time': query_time, 'result': res})
 
     return result_dict
@@ -158,25 +143,17 @@ def districts_in_a_state(state_id, asmt_type, asmt_subject, connection, schema_n
     group by dist.district_name, performance_level
     """.format(state_id=state_id, asmt_type=asmt_type, asmt_subject=asmt_subject, schema=schema_name)
 
-    # print(state)
-    # resultset = engine.execute(query,{'state':state, 'year':year})
     resultset = connection.execute(query)
     results = resultset.fetchall()
-    # print(results)
+
     return results
 
 if __name__ == '__main__':
-    import time
+#    #engine = create_engine('postgresql+psycopg2://postgres:postgres@monetdb1.poc.dum.edwdc.net:5432/edware')
+#    engine = create_engine('postgresql+psycopg2://postgres:edware2013@edwdbsrv2.poc.dum.edwdc.net:5432/edware')
+#    #schema_name = 'edware_star_20130212_fixture_3'
+#    schema_name = 'edware_star_20130215_2'
+#    connection = engine.connect()
 
-    #engine = create_engine('postgresql+psycopg2://postgres:postgres@monetdb1.poc.dum.edwdc.net:5432/edware')
-    engine = create_engine('postgresql+psycopg2://postgres:edware2013@edwdbsrv2.poc.dum.edwdc.net:5432/edware')
-    #schema_name = 'edware_star_20130212_fixture_3'
-    schema_name = 'edware_star_20130215_2'
-    connection = engine.connect()
-
-    stime = time.time()
-    res = districts_in_a_state('DE', 'SUMMATIVE', 'ELA', connection, schema_name)
-    duration = time.time() - stime
-
-    res.sort(key=lambda tup: tup[0])
-    state_statistics('DE', connection, schema_name)
+    print("This module is not runnable from the command line. For usage instructions:")
+    print("python benchmark.py -h")

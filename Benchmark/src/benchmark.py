@@ -235,9 +235,9 @@ def main():
     Entry point main method
     '''
     input_args = get_input_args()
-    print(input_args)
+
     db_string = 'postgresql+psycopg2://{username}:{password}@{server}:{port}/{database}'.format(**input_args)
-    print(db_string)
+
     engine = create_engine(db_string)
     db_connection = engine.connect()
     metadata = MetaData()

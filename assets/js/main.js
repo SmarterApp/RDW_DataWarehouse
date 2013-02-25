@@ -13,7 +13,7 @@ require({
 		edwareGridFormatters: 'widgets/EDWARE.grid.formatters',
 		edwareStudentList: 'EDWARE.studentList',
 		edwareIndividualStudent: 'EDWARE.individualStudent',
-		edwareBreadcrumbs: 'widgets/EDWARE.breadcrumbs'
+		edwareBreadcrumbs: 'widgets/breadcrumb/EDWARE.breadcrumbs'
 	},
 	shim: {
         'jqGrid': {

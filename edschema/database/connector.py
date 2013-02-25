@@ -74,6 +74,7 @@ class DBConnector(ConnectionBase):
             dbUtil = component.queryUtility(IDbUtil)
             engine = dbUtil.get_engine()
             self.__connection = engine.connect()
+            self.__connection.execute('pragma foreign_keys=ON')
 
         return self.__connection
 

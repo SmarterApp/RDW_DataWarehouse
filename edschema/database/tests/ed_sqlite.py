@@ -55,17 +55,15 @@ def import_csv_data():
     here = os.path.abspath(os.path.dirname(__file__))
     resources_dir = os.path.join(os.path.join(here, 'resources'))
 
-    # Test data is generated from:
-    # https://docs.google.com/folder/d/0B3TkaEXHzX2TcWw3bnVZZDZoVEk/edit?usp=sharing
+    metadata = component.queryUtility(IDbUtil).get_metadata()
+    sorted_tables = metadata.sorted_tables
+    # Look through metadata and upload available imports with the same and and ext csv
+    for table in sorted_tables:
+        file = os.path.join(resources_dir, table.name + '.csv')
 
-    # Traverse through the resources directory for .csv files
-    # We assume that the name of the file is the name of the table
-    for file in os.listdir(resources_dir):
-        # splits the path name and the extension
-        file_name, file_extension = os.path.splitext(file)
-        if (file_extension == '.csv'):
-            table = dbconnector.get_table(file_name)
-            with open(os.path.join(resources_dir, file)) as file_obj:
+        # if import exists, upload it
+        if os.path.exists(file):
+            with open(file) as file_obj:
                 # first row of the csv file is the header names
                 reader = csv.DictReader(file_obj, delimiter=',')
                 for row in reader:

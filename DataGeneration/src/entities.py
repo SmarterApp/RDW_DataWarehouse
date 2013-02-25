@@ -169,11 +169,11 @@ class AssessmentOutcome(object):
         claims = list(self.asmt_score.claims.items())
         asmt_perf_lvl = self.calc_perf_lvl(self.asmt_score, self.assessment)
 
-        return [self.asmnt_outcome_id, self.where_taken.where_taken_name, self.asmnt_outcome_external_id, self.assessment.asmt_id,
+        return [self.asmnt_outcome_id, self.asmnt_outcome_external_id, self.assessment.asmt_id,
                 self.student.student_id, self.student.teacher_id, self.student.state_code,
                 self.student.district_id, self.student.school_id, self.student.section_id,
                 self.inst_hier_id, self.student.section_subject_id,
-                self.where_taken.where_taken_id, self.assessment.asmt_grade, self.student.grade,
+                self.where_taken.where_taken_id, self.where_taken.where_taken_name, self.assessment.asmt_grade, self.student.grade,
                 self.date_taken, self.date_taken.day, self.date_taken.month, self.date_taken.year,
                 self.asmt_score.overall, self.assessment.asmt_score_min, self.assessment.asmt_score_max, asmt_perf_lvl,
                 claims[0][1], self.assessment.claim_1.claim_score_min, self.assessment.claim_1.claim_score_max,

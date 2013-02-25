@@ -1,11 +1,11 @@
 import unittest
-import math
 import generate_data
 import random
-from entities import District, Student, Teacher, State, School, WhereTaken
-from constants import SUBJECTS, ZIPCODE_START, ZIPCODE_RANG_INSTATE, SCHOOL_LEVELS_INFO, ADD_SUFFIX, \
+from entities import Student, Teacher, WhereTaken, InstitutionHierarchy, \
+    StudentSection
+from helper_entities import District, State
+from constants import ZIPCODE_START, ZIPCODE_RANG_INSTATE, SCHOOL_LEVELS_INFO, ADD_SUFFIX, \
     BIRDS_FILE
-import uuid
 from gen_assessments import generate_assessment_types
 import os.path
 import datetime
@@ -175,46 +175,51 @@ class TestGenerateData(unittest.TestCase):
 
     # test district generation
     def test_create_districts(self):
-        state_code = "CA"
+        state_code = "DE"
+        state_name = 'Delaware'
         school_num_in_dist = [25, 67, 10, 128, 245, 199]
         pos = 0
-        created_dist_list = generate_data.create_districts(state_code, school_num_in_dist, pos, make_namelists(1000, 1000, 1000))
+        created_dist_list = generate_data.create_districts(state_code, state_name, school_num_in_dist, pos, make_namelists(1000, 1000, 1000))
         self.assertEqual(len(created_dist_list), len(school_num_in_dist))
 
         expected_zipinit = ZIPCODE_START
         expected_zipdist = ZIPCODE_RANG_INSTATE // len(school_num_in_dist)
         c = 0
-        for d in created_dist_list:
-            self.assertEqual(d.state_code, state_code)
-            self.assertEqual(d.num_of_schools, school_num_in_dist[c])
-            self.assertTrue(len(d.district_name) > 0)
-            self.assertTrue(len(d.address_1) > 0)
-            self.assertEqual(d.zipcode, expected_zipinit)
+        for district in created_dist_list:
+            self.assertIsInstance(district, District)
+            self.assertEqual(district.state_code, state_code)
+            self.assertEqual(district.state_name, state_name)
+            self.assertTrue(district.district_id > 0)
+            self.assertTrue(len(district.district_name) > 0)
+            self.assertEqual(district.number_of_schools, school_num_in_dist[c])
             expected_zipinit += expected_zipdist
             c += 1
 
     def test_create_empty_districts(self):
         state_code = "CA"
+        state_name = "California"
         school_num_in_dist = []
         pos = 1
-        created_dist_list = generate_data.create_districts(state_code, school_num_in_dist, pos, make_namelists(1000, 1000, 1000))
+        created_dist_list = generate_data.create_districts(state_code, state_name, school_num_in_dist, pos, make_namelists(1000, 1000, 1000))
         self.assertEqual(len(created_dist_list), 0)
 
     def test_create_districts_withNotEnoughNames(self):
         name_lists = make_namelists(1, 1, 1)
         state_code = "CA"
+        state_name = "California"
         school_num_in_dist = [25, 67, 10, 128, 15]
 
-        created_dist_list = generate_data.create_districts(state_code, school_num_in_dist, 0, name_lists)
+        created_dist_list = generate_data.create_districts(state_code, state_name, school_num_in_dist, 0, name_lists)
         self.assertEqual(len(created_dist_list), 0)
         self.assertRaises(ValueError, generate_data.generate_names_from_lists, len(school_num_in_dist), name_lists[0], name_lists[1])
 
     def test_create_districts_withNotEnoughAddName(self):
-        state_code = "CA"
+        state_code = "DE"
+        state_name = "Delaware"
         school_num_in_dist = [25, 67, 10, 128, 15]
         pos = 2
 
-        created_dist_list = generate_data.create_districts(state_code, school_num_in_dist, pos, make_namelists(1000, 1000, 1))
+        created_dist_list = generate_data.create_districts(state_code, state_name, school_num_in_dist, pos, make_namelists(1000, 1000, 1))
         self.assertEqual(len(created_dist_list), len(school_num_in_dist))
 
         expected_zipinit = (pos + 1) * ZIPCODE_START
@@ -222,23 +227,25 @@ class TestGenerateData(unittest.TestCase):
         c = 0
         for d in created_dist_list:
             self.assertEqual(d.state_code, state_code)
-            self.assertEqual(d.num_of_schools, school_num_in_dist[c])
+            self.assertEqual(d.state_name, state_name)
+            self.assertEqual(d.number_of_schools, school_num_in_dist[c])
             self.assertTrue(len(d.district_name) > 0)
-            self.assertTrue(len(d.address_1) > 0)
-            self.assertEqual(d.zipcode, expected_zipinit)
+            self.assertTrue(d.district_id > 0)
             expected_zipinit = expected_zipinit + expected_zipdist
             c += 1
 
     def test_create_districts_withNotEnoughCityName(self):
         state_name = "California"
+        state_code = "CA"
         school_num_in_dist = [25, 67, 10, 128, 15]
         pos = 2
         name_lists = make_namelists(1, 1000, 1)
 
-        created_dist_list = generate_data.create_districts(state_name, school_num_in_dist, pos, name_lists)
+        created_dist_list = generate_data.create_districts(state_code, state_name, school_num_in_dist, pos, name_lists)
         self.assertEqual(len(created_dist_list), 0)
         self.assertRaises(ValueError, generate_data.generate_names_from_lists, school_num_in_dist[0], name_lists[0], name_lists[2])
 
+    # test generate_city_zipcode()
     def test_generate_city_zipcode_city(self):
         zipcode_range = (2000, 2025)
         num_of_schools = 100
@@ -293,9 +300,8 @@ class TestGenerateData(unittest.TestCase):
 
         self.assertEqual(len(generated_zipmap), num_of_schools)
 
-    # test school generation
-    def test_create_schools(self):
-
+    # test institution_hierarchies(school) generation
+    def test_create_institution_hierarchies(self):
         stu_num_in_school = [234, 123, 4309, 100, 103, 105, 200, 59, 69, 75, 391, 651, 129]
         stutea_ratio_in_school = [23, 12, 20, 19, 10, 15, 20, 5, 6, 7, 8, 21, 19]
         school_type_in_stat = []
@@ -306,38 +312,42 @@ class TestGenerateData(unittest.TestCase):
 
         dist_name = 'dist1'
         dist_id = 1234
-        dist_exte_id = uuid.uuid4()
-        state_id = 'CA'
+        state_code = 'DE'
+        state_name = 'Delaware'
         sch_num = len(stu_num_in_school)
         zip_range = (50000, 60000)
         name_list = make_namelists(1000, 1000, 1000)
         city_zip_map = generate_data.generate_city_zipcode(zip_range[0], zip_range[1], sch_num, name_list)
-        distObj = District(dist_id, dist_exte_id, dist_name, state_id, sch_num, city_zip_map, 'address1', 50000)
-        created_school_list, created_wheretaken_list = generate_data.create_schools(stu_num_in_school, stutea_ratio_in_school, distObj, school_type_in_stat, name_list)
+        distObj = District(dist_id, dist_name, state_code, state_name, sch_num, city_zip_map)
+
+        created_school_list, created_wheretaken_list = generate_data.create_institution_hierarchies(stu_num_in_school, stutea_ratio_in_school, distObj, school_type_in_stat, name_list)
 
         self.assertEqual(sch_num, len(created_school_list))
         self.assertEqual(sch_num, len(created_wheretaken_list))
-        expected_school_categories_type = [sch_level[0] for sch_level in SCHOOL_LEVELS_INFO]
 
         for i in range(len(created_school_list)):
-            self.assertEqual(created_school_list[i].dist_name, dist_name)
+            self.assertIsInstance(created_school_list[i], InstitutionHierarchy)
+            self.assertEqual(created_school_list[i].number_of_students, stu_num_in_school[i])
+            self.assertEqual(created_school_list[i].student_teacher_ratio, stutea_ratio_in_school[i])
+            self.assertTrue(created_school_list[i].low_grade >= 0)
+            self.assertTrue(created_school_list[i].high_grade < 13)
+
+            self.assertEqual(created_school_list[i].state_code, state_code)
+            self.assertEqual(created_school_list[i].state_name, state_name)
+            self.assertEqual(created_school_list[i].district_name, dist_name)
             self.assertEqual(created_school_list[i].district_id, dist_id)
-            self.assertEqual(created_school_list[i].state_code, state_id)
             self.assertTrue(len(created_school_list[i].school_name) > 0)
-            self.assertEqual(created_school_list[i].num_of_student, stu_num_in_school[i])
-            self.assertEqual(created_school_list[i].stu_tea_ratio, stutea_ratio_in_school[i])
-            self.assertTrue(len(created_school_list[i].address1) > 0)
-            self.assertTrue(created_school_list[i].school_categories_type in expected_school_categories_type)
+            self.assertTrue(created_school_list[i].school_id > 0)
+            self.assertTrue(len(created_school_list[i].school_category) > 0)
+            self.assertTrue(created_school_list[i].row_id > 0)
+            self.assertIsNotNone(created_school_list[i].from_date)
 
         for j in range(len(created_wheretaken_list)):
-            self.assertTrue(len(created_wheretaken_list[j].address_1) > 0)
-            self.assertEqual(created_wheretaken_list[j].address_1, created_school_list[j].address1)
-            self.assertTrue(created_wheretaken_list[j].zip_code >= zip_range[0])
-            self.assertTrue(created_wheretaken_list[j].zip_code <= zip_range[1])
-            self.assertEqual(created_wheretaken_list[j].state_code, state_id)
-            self.assertEqual(created_wheretaken_list[j].country_id, 'US')
+            self.assertIsInstance(created_wheretaken_list[j], WhereTaken)
+            self.assertEqual(created_wheretaken_list[i].where_taken_name, created_school_list[i].school_name)
+            self.assertTrue(created_wheretaken_list[i].where_taken_id > 0)
 
-    def test_create_schools_withNotEnoughNames(self):
+    def test_create_institution_hierarchies_withNotEnoughNames(self):
         name_lists = make_namelists(1000, 1, 1)
 
         stu_num_in_school = [234, 123, 4309, 100, 103, 105, 200, 59, 69, 75, 391, 651, 129]
@@ -350,19 +360,20 @@ class TestGenerateData(unittest.TestCase):
 
         dist_name = 'dist1'
         dist_id = 1234
-        dist_exte_id = uuid.uuid4()
-        state_id = 'CA'
+        state_code = 'CA'
+        state_name = 'California'
         sch_num = len(stu_num_in_school)
         zip_range = (50000, 60000)
         city_zip_map = generate_data.generate_city_zipcode(zip_range[0], zip_range[1], sch_num, name_lists)
-        distObj = District(dist_id, dist_exte_id, dist_name, state_id, sch_num, city_zip_map, 'address1', 50000)
+        distObj = District(dist_id, dist_name, state_code, state_name, sch_num, city_zip_map)
 
-        created_school_list, wheretaken_list = generate_data.create_schools(stu_num_in_school, stutea_ratio_in_school, distObj, school_type_in_stat, name_lists)
+        created_school_list, wheretaken_list = generate_data.create_institution_hierarchies(stu_num_in_school, stutea_ratio_in_school, distObj, school_type_in_stat, name_lists)
         self.assertTrue(len(created_school_list) == 0)
         self.assertTrue(len(wheretaken_list) == 0)
         self.assertRaises(ValueError, generate_data.generate_names_from_lists, sch_num, name_lists[2], name_lists[1])
+        self.assertRaises(ValueError, generate_data.generate_names_from_lists, sch_num, name_lists[2], name_lists[1])
 
-    def test_create_schools_withNotEnoughAddName(self):
+    def test_create_institution_hierarchies_withNotEnoughAddName(self):
         name_lists = make_namelists(1, 1000, 1000)
         stu_num_in_school = [234, 123, 4309, 100, 103, 105, 200, 59, 69, 75, 391, 651, 129]
         stutea_ratio_in_school = [23, 12, 20, 19, 10, 15, 20, 5, 6, 7, 8, 21, 19]
@@ -374,186 +385,164 @@ class TestGenerateData(unittest.TestCase):
 
         dist_name = 'dist1'
         dist_id = 1234
-        dist_exte_id = uuid.uuid4()
-        state_id = 'CA'
+        state_code = 'CA'
+        state_name = 'California'
         sch_num = len(stu_num_in_school)
         zip_range = (50000, 60000)
         city_zip_map = generate_data.generate_city_zipcode(zip_range[0], zip_range[1], sch_num, name_lists)
-        distObj = District(dist_id, dist_exte_id, dist_name, state_id, sch_num, city_zip_map, 'address1', 50000)
-        created_school_list, created_wheretaken_list = generate_data.create_schools(stu_num_in_school, stutea_ratio_in_school, distObj, school_type_in_stat, name_lists)
+        distObj = District(dist_id, dist_name, state_code, state_name, sch_num, city_zip_map)
+        created_school_list, created_wheretaken_list = generate_data.create_institution_hierarchies(stu_num_in_school, stutea_ratio_in_school, distObj, school_type_in_stat, name_lists)
         self.assertEqual(sch_num, len(created_school_list))
-        expected_sch_types = [sch_level[0] for sch_level in SCHOOL_LEVELS_INFO]
 
         for i in range(len(created_school_list)):
-            self.assertEqual(created_school_list[i].dist_name, dist_name)
+            self.assertIsInstance(created_school_list[i], InstitutionHierarchy)
+            self.assertEqual(created_school_list[i].number_of_students, stu_num_in_school[i])
+            self.assertEqual(created_school_list[i].student_teacher_ratio, stutea_ratio_in_school[i])
+            self.assertTrue(created_school_list[i].low_grade >= 0)
+            self.assertTrue(created_school_list[i].high_grade < 13)
+
+            self.assertEqual(created_school_list[i].state_code, state_code)
+            self.assertEqual(created_school_list[i].state_name, state_name)
+            self.assertEqual(created_school_list[i].district_name, dist_name)
+            self.assertEqual(created_school_list[i].district_id, dist_id)
             self.assertTrue(len(created_school_list[i].school_name) > 0)
-            self.assertEqual(created_school_list[i].num_of_student, stu_num_in_school[i])
-            self.assertEqual(created_school_list[i].stu_tea_ratio, stutea_ratio_in_school[i])
-            self.assertTrue(len(created_school_list[i].address1) > 0)
-            self.assertTrue(created_school_list[i].school_categories_type in expected_sch_types)
+            self.assertTrue(created_school_list[i].school_id > 0)
+            self.assertTrue(len(created_school_list[i].school_category) > 0)
+            self.assertTrue(created_school_list[i].row_id > 0)
+            self.assertIsNotNone(created_school_list[i].from_date)
 
         for j in range(len(created_wheretaken_list)):
-            self.assertTrue(len(created_wheretaken_list[j].address_1) > 0)
-            self.assertTrue(created_wheretaken_list[j].zip_code >= zip_range[0])
-            self.assertTrue(created_wheretaken_list[j].zip_code <= zip_range[1])
-            self.assertEqual(created_wheretaken_list[j].state_code, state_id)
-            self.assertEqual(created_wheretaken_list[j].country_id, 'US')
+            self.assertIsInstance(created_wheretaken_list[j], WhereTaken)
+            self.assertEqual(created_wheretaken_list[i].where_taken_name, created_school_list[i].school_name)
+            self.assertTrue(created_wheretaken_list[i].where_taken_id > 0)
 
-    def test_list_to_chucks_average(self):
+    # test split_list()
+    def test_split_list_average(self):
         list1 = [9, 8, 62, 123, 345, 1, 2, 98, 100]
         size1 = 3
 
-        chunks1 = generate_data.list_to_chucks(list1, size1)
+        chunks1 = generate_data.split_list(list1, size1)
         self.assertEqual(size1, len(chunks1))
 
         for little in chunks1:
             self.assertEqual(3, len(little))
 
-    def test_list_to_chucks_notaverage(self):
+    def test_split_list_notaverage(self):
         list1 = [9, 8, 62, 123, 345, 1, 2, 98]
         size1 = 3
-        chunks1 = generate_data.list_to_chucks(list1, size1)
+        chunks1 = generate_data.split_list(list1, size1)
         self.assertEqual(size1, len(chunks1))
 
         for little in chunks1[:-1]:
             self.assertEqual(3, len(little))
         self.assertEqual(2, len(chunks1[-1]))
 
-    def test_list_to_chucks_one(self):
+    def test_split_list_one(self):
         list2 = [1, 2, 3]
         size2 = 1
-        chunks2 = generate_data.list_to_chucks(list2, size2)
+        chunks2 = generate_data.split_list(list2, size2)
         self.assertEqual(size2, len(chunks2))
 
         for little in chunks2:
             for item in little:
                 self.assertTrue(item in list2)
 
-    def test_create_classes(self):
+    # test create_student_sections_for_subject()
+    def test_create_student_sections_for_subject(self):
         sub_name = "Math"
-        count = 10
-        stu_list = make_students(800, make_district(make_state()))
-        tea_list = make_teachers(45)
-        stu_tea_ratio = round(len(stu_list) / len(tea_list))
-        school_id = 98123
+        class_count = 2
+        student_num = 90
+        teacher_num = 5
+        ratio = student_num / teacher_num
+        grade = 9
+        asmt_list = generate_assessment_types()
+        school = InstitutionHierarchy(student_num, ratio, 7, 9, 'Delaware', 'DE', 'district_id', 'district_name', 'school_id', 'school_name', 'school_category', '2012-09-19', True)
 
-        expected_classes = generate_data.create_classes(sub_name, count, stu_list, tea_list, stu_tea_ratio, school_id)
+        state = State('DE', 'Delaware', 10)
+        students_list = make_students(student_num, state, None, school)
+        self.assertTrue(len(students_list), student_num)
+        teachers_list = make_teachers(teacher_num, state)
 
-        self.assertEqual(len(expected_classes), count)
+        expected_students_inclass = student_num / class_count
+        expected_section_num = round(expected_students_inclass / school.student_teacher_ratio)
+        expected_student_sections_for_subject = generate_data.create_student_sections_for_subject(sub_name, class_count, students_list, teachers_list, school, grade, asmt_list)
+        expected_section_list = []
+        self.assertEqual(len(expected_student_sections_for_subject), student_num)
+        for student_section in expected_student_sections_for_subject:
+            self.assertIsInstance(student_section, StudentSection)
+            expected_section_list.append(student_section.section_id)
+        self.assertTrue(len(set(expected_section_list)) == expected_section_num * class_count)
 
-        expected_stu_num = 0
-        expected_tea_num = 0
-        for i in range(len(expected_classes)):
-            self.assertEqual(expected_classes[i].title, sub_name + " " + str(i))
-            self.assertEqual(expected_classes[i].sub_name, sub_name)
-            for value in expected_classes[i].section_stu_map.values():
-                expected_stu_num += len(value)
-            for value in expected_classes[i].section_tea_map.values():
-                expected_tea_num += len(value)
-        self.assertEqual(expected_stu_num, 800)
-        self.assertTrue(expected_tea_num <= 45)
-
-    def test_create_classes_smallstudents(self):
-        sub_name = "Math"
-        count = 2
-        stu_list = make_students(16)
-        tea_list = make_teachers(1)
-        stu_tea_ratio = round(len(stu_list) / len(tea_list))
-        school_id = 98123
-
-        expected_classes = generate_data.create_classes(sub_name, count, stu_list, tea_list, stu_tea_ratio, school_id)
-
-        self.assertEqual(len(expected_classes), count)
-
-        expected_stu_num = 0
-        for i in range(len(expected_classes)):
-            self.assertEqual(expected_classes[i].title, sub_name + " " + str(i))
-            self.assertEqual(expected_classes[i].sub_name, sub_name)
-            for value in expected_classes[i].section_stu_map.values():
-                expected_stu_num += len(value)
-        self.assertEqual(expected_stu_num, 16)
-
+    # test create_classes_for_grade()
     def test_create_classes_for_grade(self):
-        stu_list = make_students(160)
-        tea_list = make_teachers(12)
-        school_id = 912343
-        ratio = len(stu_list) / len(tea_list)
+        student_num = 160
+        teacher_num = 12
+        ratio = student_num / teacher_num
 
-        expected_classes = generate_data.create_classes_for_grade(stu_list, tea_list, school_id, ratio)
-        expected_max_class_for_sub = 8
+        grade = 8
+        asmt_list = generate_assessment_types()
+        school = InstitutionHierarchy(student_num, ratio, 7, 9, 'Delaware', 'DE', 'district_id', 'district_name', 'school_id', 'school_name', 'school_category', '2012-09-19', True)
+        where_taken = WhereTaken('where_taken_id', 'where_taken_name')
+        state = State('DE', 'Delaware', 10)
+        students_list = make_students(student_num, state, None, school)
+        teachers_list = make_teachers(teacher_num, state)
 
-        for generated_class in expected_classes:
-            split = generated_class.title.split(' ')
-            self.assertTrue(split[0] in SUBJECTS)
-            self.assertTrue((int)(split[1]) < expected_max_class_for_sub)
+        total_count = [0, 0, 0, 0, 0, 0]
 
-    def test_create_classes_for_grade_samllstudents(self):
-        stu_num = 20
-        stu_list = make_students(stu_num)
-        tea_list = make_teachers(1)
-        school_id = 912343
-        ratio = len(stu_list) / len(tea_list)
+        generate_data.create_classes_for_grade(students_list, teachers_list, school, grade, asmt_list, where_taken, total_count)
+        self.assertEqual(school.number_of_students * 2, total_count[5])
 
-        expected_classes = generate_data.create_classes_for_grade(stu_list, tea_list, school_id, ratio)
-        self.assertEqual(len(expected_classes), len(SUBJECTS))
-        for i in range(len(expected_classes)):
-            self.assertEqual(expected_classes[i].title, SUBJECTS[i] + " " + str(0))
-            self.assertEqual(len(expected_classes[i].section_stu_map), 1)
-            section_id = list(expected_classes[i].section_stu_map.keys())
-            self.assertEqual(len(section_id), 1)
-            self.assertEqual(len(expected_classes[i].section_stu_map[section_id[0]]), stu_num)
-            self.assertEqual(expected_classes[i].section_stu_map[section_id[0]], stu_list)
+    # TODO: add one test case for create_classes_for_grade_oneclass_onesection
 
-    def test_create_one_class_severalsections(self):
+    # test create_sections_in_one_class()
+    def test_create_sections_in_one_class_severalsections(self):
+        student_num = 160
+        teacher_num = 12
+        ratio = student_num / teacher_num
         sub_name = "Math"
         class_count = 2
-        distribute_stu_inaclass = make_students(45)
-        tea_list = make_teachers(10)
-        stu_tea_ratio = 15
-        school_id = 87123
+        school = InstitutionHierarchy(student_num, ratio, 7, 9, 'Delaware', 'DE', 'district_id', 'district_name', 'school_id', 'school_name', 'school_category', '2012-09-19', True)
+        state = State('DE', 'Delaware', 10)
+        students_list = make_students(student_num, state, None, school)
+        teachers_list = make_teachers(teacher_num, state)
+        grade = 8
 
-        expected_class = generate_data.create_one_class(sub_name, class_count, distribute_stu_inaclass, tea_list, stu_tea_ratio, school_id)
-        expected_sec_num = math.floor(45 // stu_tea_ratio)
+        expected_create_sections = generate_data.create_sections_in_one_class(sub_name, class_count, students_list, teachers_list, school, grade)
 
-        self.assertEqual(expected_class.sub_name, sub_name)
-        self.assertEqual(expected_class.title, sub_name + " " + str(class_count))
-        self.assertEqual(len(expected_class.section_stu_map), expected_sec_num)
+        expected_section_num = round(student_num / ratio)
 
-        expected_students = []
-        for value in expected_class.section_stu_map.values():
-            self.assertEqual(len(value), 15)
-            expected_students.extend(value)
+        self.assertEqual(len(expected_create_sections), student_num)
 
-        self.assertEqual(len(expected_class.section_tea_map), expected_sec_num)
-        for value in expected_class.section_tea_map.values():
-            self.assertEqual(len(value), 1)
-            self.assertTrue(value[0] in tea_list)
-        self.assertEqual(len(expected_students), len(distribute_stu_inaclass))
-        for g_stu in expected_students:
-            self.assertTrue(g_stu in distribute_stu_inaclass)
+        expected_section_list = []
+        for student_section in expected_create_sections:
+            self.assertIsInstance(student_section, StudentSection)
+            expected_section_list.append(student_section.section_id)
+        self.assertTrue(len(set(expected_section_list)) == expected_section_num)
 
-    def test_create_one_class_onesection(self):
+    def test_create_sections_in_one_class_onesection(self):
+
+        student_num = 45
+        teacher_num = 5
+        ratio = 78
         sub_name = "Math"
         class_count = 2
-        distribute_stu_inaclass = make_students(45)
-        tea_list = make_teachers(5)
-        stu_tea_ratio = 78
-        school_id = 87123
+        school = InstitutionHierarchy(student_num, ratio, 7, 9, 'Delaware', 'DE', 'district_id', 'district_name', 'school_id', 'school_name', 'school_category', '2012-09-19', True)
+        state = State('DE', 'Delaware', 10)
+        students_list = make_students(student_num, state, None, school)
+        teachers_list = make_teachers(teacher_num, state)
+        grade = 8
 
-        expected_class = generate_data.create_one_class(sub_name, class_count, distribute_stu_inaclass, tea_list, stu_tea_ratio, school_id)
-        expected_sec_num = 1
+        expected_create_sections = generate_data.create_sections_in_one_class(sub_name, class_count, students_list, teachers_list, school, grade)
 
-        self.assertEqual(expected_class.sub_name, sub_name)
-        self.assertEqual(expected_class.title, sub_name + " " + str(class_count))
-        self.assertEqual(len(expected_class.section_stu_map), expected_sec_num)
+        expected_section_num = 1
 
-        for value in expected_class.section_stu_map.values():
-            self.assertEqual(len(value), 45)
+        self.assertEqual(len(expected_create_sections), student_num)
 
-        self.assertEqual(len(expected_class.section_tea_map), expected_sec_num)
-        for value in expected_class.section_tea_map.values():
-            self.assertEqual(len(value), 1)
-            self.assertTrue(value[0] in tea_list)
+        expected_section_list = []
+        for student_section in expected_create_sections:
+            self.assertIsInstance(student_section, StudentSection)
+            expected_section_list.append(student_section.section_id)
+        self.assertTrue(len(set(expected_section_list)) == expected_section_num)
 
     # test makeup_list()
     def test_makeup_list(self):
@@ -567,49 +556,49 @@ class TestGenerateData(unittest.TestCase):
         generate_makeup_list = generate_data.makeup_list(avgin, stdin, minin, maxin, countin, target_sum)
         self.assertEqual(len(generate_makeup_list), countin)
 
-    # test create_classes_grades_sections
-    def test_create_classes_grades_sections(self):
+    # test create_classes_for_school
+    def test_create_classes_for_school(self):
+        stu_num_in_school = [234, 123, 4309, 100, 103, 105, 200, 59, 69, 75, 391, 651, 129]
+        # stutea_ratio_in_school = [23, 12, 20, 19, 10, 15, 20, 5, 6, 7, 8, 21, 19]
+
         # make assessment list
         asmt_list = generate_assessment_types()
         total_count = [0, 0, 0, 0, 0, 0]
         name_lists = make_namelists(1000, 1000, 1000)
 
         # make a state
-        state = State('DE', 'Delaware', 39, 'DE')
+        state_code = 'DE'
+        state_name = 'Delaware'
+        state = State(state_code, state_name, 39)
 
         # make a district
         dist_name = 'dist1'
         dist_id = 1234
-        dist_exte_id = uuid.uuid4()
-        state_id = 'CA'
-        stu_num_in_school = [234, 123, 4309, 100, 103, 105, 200, 59, 69, 75, 391, 651, 129]
-        sch_num = len(stu_num_in_school)
+        school_num = len(stu_num_in_school)
         zip_range = (50000, 60000)
-        city_zip_map = generate_data.generate_city_zipcode(zip_range[0], zip_range[1], sch_num, name_lists)
-        distObj = District(dist_id, dist_exte_id, dist_name, state_id, sch_num, city_zip_map, 'address1', 50000)
+        city_zip_map = generate_data.generate_city_zipcode(zip_range[0], zip_range[1], school_num, name_lists)
+        distObj = District(dist_id, dist_name, state_code, state_name, school_num, city_zip_map)
 
         # make a school
-        stu_num = 120
-        school = School(random.randint, uuid.uuid4(), 'ABC Primary', distObj.district_name, distObj.district_id,
-                        distObj.state_code, stu_num, 23, 1, 6, 'category_t', address1='450 west 78th street', city='city123', zip_code='50897')
+        student_num = 120
+        ratio = 13
+        school = InstitutionHierarchy(student_num, ratio, 7, 9, 'Delaware', 'DE', 'district_id', 'district_name', 'school_id', 'school_name', 'school_category', '2012-09-19', True)
 
-        # make a wheretaken
+        # make where_taken
         where_taken_list = []
-        for i in range(0, sch_num - 1):
-            where_taken = WhereTaken(random.randint, school.school_name + str(i), distObj.district_name, school.address1 + str(i), school.city + str(i), int(school.zip_code) + i, distObj.state_code, 'US')
+        for i in range(0, school_num - 1):
+            where_taken = WhereTaken(random.randint, school.school_name + str(i))
             where_taken_list.append(where_taken)
 
-        where_taken = WhereTaken(random.randint, school.school_name, distObj.district_name, school.address1, school.city, school.zip_code, distObj.state_code, 'US')
+        where_taken = WhereTaken(random.randint, school.school_name)
         where_taken_list.append(where_taken)
         distObj.wheretaken_list = where_taken_list
 
-        generate_data.create_classes_grades_sections(distObj, school, state, name_lists[2], total_count, asmt_list)
+        generate_data.create_classes_for_school(distObj, school, state, name_lists[2], total_count, asmt_list)
 
-        expected_teacher_number = 5
-        expected_student_number = stu_num
+        expected_student_number = student_num
 
         self.assertEqual(total_count[3], expected_student_number)
-        self.assertEqual(total_count[4], expected_teacher_number)
         self.assertEqual(total_count[5], expected_student_number * 2)
 
     # test read files
@@ -645,14 +634,16 @@ class TestGenerateData(unittest.TestCase):
     def test_generate_onestate(self):
         generate_count = generate_data.generate(generate_data.get_name_lists, mock_f_get_state_stats_onestate)
         self.assertEqual(generate_count[0], 1)
-        for i in range(1, len(generate_count)):
-            self.assertTrue(generate_count[i] > 0)
+        for i in range(0, len(generate_count)):
+            if(i != 4):
+                self.assertTrue(generate_count[i] > 0)
 
     def test_generate_twostates(self):
         generate_count = generate_data.generate(generate_data.get_name_lists, mock_f_get_state_stats_twostates)
         # self.assertEqual(generate_count[0], 2)
-        for i in range(1, len(generate_count)):
-            self.assertTrue(generate_count[i] > 0)
+        for i in range(0, len(generate_count)):
+            if(i != 4):
+                self.assertTrue(generate_count[i] > 0)
 
     def test_generate_notEnoughNameLists1(self):
         generate_count = generate_data.generate(mock_f_get_name_lists_shortlists1, mock_f_get_state_stats_onestate)
@@ -755,37 +746,27 @@ def make_district(state):
     zip_s = 50000
     zip_e = 60000
     city_zip_map = generate_data.generate_city_zipcode(zip_s, zip_e, sch_num, make_namelists(1000, 1000, 1000))
-    distObj = District(random.choice(range(1000, 2000)), 'dist_external_id', 'dist1', state.state_id, sch_num, city_zip_map, 'address1', 1000)
+    distObj = District(random.choice(range(1000, 2000)), 'dist1', state.state_code, state.state_name, sch_num, city_zip_map)
     return distObj
 
 
-def make_school(district):
-    num_of_stu = 100
-    stu_tea_ratio = 25
-    low_grade = 1
-    high_grade = 6
-    school = School(random.randint, uuid.uuid4(), 'school_test_name', district.district_name, district.district_id, district.state_code, num_of_stu, stu_tea_ratio, low_grade, high_grade, 'category_t')
-    return school
-
-
-def make_students(count, district=None):
+def make_students(count, state, district, school):
+    if(district is None):
+        district = make_district(state)
     student_list = []
-    sta = make_state()
-    dis = make_district(sta)
-    sch = make_school(dis)
     while(count > 0):
-        student = Student(count, 2 * count, ('first_name' + str(count)), ('last_name' + str(count)), ('address1' + str(count)), '08/02/2000', dis, sta, 'male', 'email', sch)
+        student = Student(count, 2 * count, ('first_name' + str(count)), ('last_name' + str(count)), ('address1' + str(count)), '08/02/2000', district, state, 'male', 'email', school)
         count -= 1
         student_list.append(student)
     return student_list
 
 
-def make_teachers(count):
+def make_teachers(count, state, district=None):
+    if(district is None):
+        district = make_district(state)
     teacher_list = []
-    sta = make_state()
-    dis = make_district(sta)
     while(count > 0):
-        teacher = Teacher('tfirst_name' + str(count), 'tlast_name' + str(count), dis.district_id, sta.state_id, teacher_id=count)
+        teacher = Teacher('tfirst_name' + str(count), 'tlast_name' + str(count), district.district_id, state.state_code, teacher_id=count)
         count -= 1
         teacher_list.append(teacher)
     return teacher_list

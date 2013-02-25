@@ -32,8 +32,20 @@ define [
         
           j++
         
-        items.asmt_score_pos = ((items.asmt_score / items.asmt_score_max) * 100)
-        items.asmt_score_percent =  100 - items.asmt_score_pos
+        
+        minmax_score = 20
+        
+        items.asmt_score_pos = ((items.asmt_score - (minmax_score / 2)) / items.asmt_score_max) * 100
+        items.asmt_min_score_percent = 100 - (((items.asmt_score - minmax_score) / items.asmt_score_max) * 100)
+        items.asmt_max_score_percent = ((items.asmt_score + minmax_score) / items.asmt_score_max) * 100
+        
+        
+        # apply text color and background color for overall score
+        
+        items.score_color = items.cut_points[items.asmt_perf_lvl-1].bg_color
+        items.score_text_color = items.cut_points[items.asmt_perf_lvl-1].text_color
+        items.score_bg_color = items.cut_points[items.asmt_perf_lvl-1].bg_color
+        items.score_name = items.cut_points[items.asmt_perf_lvl-1].name
         
         i++
     

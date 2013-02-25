@@ -14,7 +14,6 @@ require({
 		edwareStudentList: 'EDWARE.studentList',
 		edwareIndividualStudent: 'EDWARE.individualStudent',
 		edwareBreadcrumbs: 'widgets/breadcrumb/EDWARE.breadcrumbs',
-		
 		edwareBreadcrumbsTemplate: 'widgets/breadcrumb/template.html'
 	},
 	shim: {

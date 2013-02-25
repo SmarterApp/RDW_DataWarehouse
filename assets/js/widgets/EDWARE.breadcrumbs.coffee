@@ -1,5 +1,7 @@
 define [
   'jquery'
+  "mustache"
+  "text!widgets/breadcrumb/template.html"
 ], 
   #
   # * EDWARE breadcrumbs
@@ -12,10 +14,10 @@ define [
     #    *  Example: $("#table1").edwareBreadcrumbs(data)
     #    
 
-    ($) ->
+    ($, Mustache, template) ->
       $.fn.breadcrumbs = (data) ->
         data2 = 
-          [
+          { "items": [
             {
               name: "State"
               link: "http://www.google.com" 
@@ -31,18 +33,11 @@ define [
             {
               name: "Grade"
             },
-          ]
+          ]}
         htmlResult = ""
         
         data = data2
         
-        for section in data
-          if (section.link != undefined)
-            htmlResult = htmlResult + "<a href='" + section.link + "'>" + section.name + "</a>" + " / "
-          else
-            htmlResult = htmlResult + section.name + " / "
-            
-        htmlResult = htmlResult.substring 0, htmlResult.length - 3
-
-        this.html htmlResult
+        output = Mustache.to_html template, data
+        this.html output
 

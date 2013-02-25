@@ -1,5 +1,3 @@
-import random
-import string
 from uuid import uuid4
 
 from idgen import IdGen
@@ -201,52 +199,6 @@ class Person(object):
         self.last_name = last_name
 
 
-class Student(Person):
-    '''
-    Student Object
-    Corresponds to student Table
-    '''
-
-    def __init__(self, student_id, student_external_id, first_name, last_name, address_1, dob, district, state, gender, email, school, middle_name=None, address_2=None):
-
-        super().__init__(first_name, last_name, middle_name=middle_name)
-
-        # Ids can either be given to the constructor or provided by constructor
-        # Either way, both Id fields must have a value
-        id_generator = IdGen()
-        if student_id is None:
-            self.student_id = id_generator.get_id()
-        else:
-            self.student_id = student_id
-        if student_external_id is None:
-            self.student_external_id = id_generator.get_id()
-        else:
-            self.student_external_id = student_external_id
-
-        # TODO: We probably want to select cities/zips in a more intelligent way
-        city_zip_map = district.city_zip_map
-        city = random.choice(list(city_zip_map.keys()))
-        zip_range = city_zip_map[city]
-        zip_code = random.randint(zip_range[0], zip_range[1])
-
-        self.address_1 = address_1
-        self.address_2 = address_2
-        self.dob = dob
-        self.district_id = district.district_id
-        self.city = city
-        self.state_code = state.state_code
-        self.zip_code = zip_code
-        self.gender = gender
-        self.email = email
-        self.school_id = school.school_id
-
-    def __str__(self):
-        return ("%s %s %s" % (self.first_name, self.middle_name, self.last_name))
-
-    def getRow(self):
-        return [self.student_id, self.student_external_id, self.first_name, self.middle_name, self.last_name, self.address_1, self.address_2, self.city, self.state_code, self.zip_code, self.gender, self.email, self.dob, self.school_id, self.district_id]
-
-
 class Staff(Person):
     def __init__(self, first_name, last_name, section_id, hier_user_type, state_code, district_id, school_id, from_date, to_date=None, most_recent=None, middle_name=None, staff_id=None, staff_external_id=None):
         super().__init__(first_name, last_name, middle_name=middle_name)
@@ -301,6 +253,7 @@ class ExternalUserStudent():
         return [self.external_user_student_id, self.external_user_id, self.student_id, self.rel_start_date, self.rel_end_date]
 
 
+# For now, maps to dim_student
 class StudentSection():
     def __init__(self, student, section_id, grade, from_date=None, to_date=None, most_recent=None, teacher_id=None, section_subject_id=None):
         idgen = IdGen()

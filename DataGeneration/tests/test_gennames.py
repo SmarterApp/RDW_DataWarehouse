@@ -108,21 +108,6 @@ class TestGenNames(unittest.TestCase):
         expected = ['c'] * 10
         self.assertEqual(res_list, expected)
 
-    def test_get_random_entry(self):
-        '''
-        test for gennames.get_random_entry
-        '''
-
-        # Normal behavior test
-        alist = [1, 2, 3, 4, 5, 6, 7, 8, 9, 12]
-        result = gennames.get_random_entry(alist)
-        self.assertIn(result, alist)
-
-        result = gennames.get_random_entry([2])
-        self.assertEqual(result, 2)
-        self.assertIsNone(gennames.get_random_entry([]))
-        self.assertRaises(TypeError, gennames.get_random_entry, 12345)
-
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

@@ -11,6 +11,7 @@ from datetime import date
 import py1
 import queries
 
+
 def generate_assmt_scores_for_subject(total, grade, state, asmt_list, subject_name):
     cur_year = date.today().year
     # periods = ['BOY', 'MOY', 'EOY']
@@ -19,15 +20,13 @@ def generate_assmt_scores_for_subject(total, grade, state, asmt_list, subject_na
         subject_name = 'Math'
     years = ['2011', '2009']  # str(year), str(year - 1)]
     real_years = [str(cur_year), str(cur_year - 1)]
-    asmt_types_and_subject = [x for x in asmt_list if int(x.asmt_grade) == int(grade) and x.asmt_subject == subject_name]
+    asmt_types_and_subject = [x for x in asmt_list if int(x.asmt_grade) == int(grade) and x.asmt_subject.lower() == subject_name.lower()]
     scores = {}
 
     for i in range(len(years)):
         for asmt in asmt_types_and_subject:
             string = "%s_%s" % (real_years[i], asmt.asmt_id)
             subject = asmt.asmt_subject
-            # if subject != subject_name:
-            #    continue
 
             score = generate_assmt_scores(state, subject, years[i], asmt.asmt_period, grade, total)
             scores[string] = score

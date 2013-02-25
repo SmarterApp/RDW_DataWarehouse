@@ -5,6 +5,7 @@ from datetime import date
 import assessment
 import entities
 import unittest
+import helper_entities
 
 
 class TestAssessment(unittest.TestCase):
@@ -80,6 +81,29 @@ class TestAssessment(unittest.TestCase):
 
         generated_counts = assessment.perc_to_count(perc, total)
         self.assertEqual(generated_counts, [22, 20, 6, 8])
+
+    def test_generate_assmt_scores_for_subject(self):
+        asmt1 = entities.Assessment(897, '897', 'SUMMATIVE', 'EOY', 2010, 'V1', 10, 'Math', '2012-09-10')
+        asmt2 = entities.Assessment(898, '898', 'SUMMATIVE', 'EOY', 2010, 'V1', 10, 'ELA', '2012-09-10')
+        asmt3 = entities.Assessment(899, '899', 'ITERATIVE', 'BOY', 2010, 'V1', 10, 'Math', '2012-09-10')
+        asmt_list = [asmt1, asmt2, asmt3]
+        subject_name = 'Math'
+        res = assessment.generate_assmt_scores_for_subject(30, 10, 'Delaware', asmt_list, subject_name)
+
+        self.assertEqual(len(res), 2 * 2)
+        key1 = '%d_%d' % (date.today().year, asmt1.asmt_id)
+        key3 = '%d_%d' % (date.today().year, asmt3.asmt_id)
+        key4 = '%d_%d' % (date.today().year - 1, asmt1.asmt_id)
+        key6 = '%d_%d' % (date.today().year - 1, asmt3.asmt_id)
+        self.assertEqual(len(res[key1]), 30)
+        self.assertEqual(len(res[key3]), 30)
+        self.assertEqual(len(res[key4]), 30)
+        self.assertEqual(len(res[key6]), 30)
+
+        key_list = [key1, key3, key4, key6]
+        for key in key_list:
+            for score in res[key]:
+                self.assertIsInstance(score, helper_entities.Score)
 
 if __name__ == "__main__":
     unittest.main()

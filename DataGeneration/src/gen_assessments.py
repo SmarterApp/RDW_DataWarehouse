@@ -92,7 +92,7 @@ def generate_single_asmt(grade, asmt_type, period, subject):
         'asmt_cut_point_2': int((MAX_ASSMT_SCORE + MIN_ASSMT_SCORE) * .5),
         'asmt_cut_point_3': int((MAX_ASSMT_SCORE + MIN_ASSMT_SCORE) * .75),
 
-        'from_date': datetime.date(2012, 9, 1),
+        'from_date': '20120901',
         'most_recent': True
     }
 

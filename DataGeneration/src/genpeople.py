@@ -118,8 +118,8 @@ def generate_staff(hier_user_type, state_code='None', district_id='None', school
         'state_code': state_code,
         'district_id': district_id,
         'school_id': school_id,
-        'from_date': date(2012, 9, 1),
-        'to_date': date(2999, 12, 1),
+        'from_date': '29991201',
+        'to_date': '29991201',
         'most_recent': True
     }
     staff = Staff(**staff_params)

@@ -243,8 +243,11 @@ def main():
     metadata = MetaData()
     metadata.reflect(engine, input_args['schema'])
 
+    print("Starting Benchmarks")
+    print()
     run_benchmarks(metadata, db_connection, input_args['schema'], input_args['district_count'], input_args['state_count'], input_args['school_count'])
-
+    print()
+    print("Benchmarking Complete")
 
 if __name__ == '__main__':
     main()

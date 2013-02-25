@@ -10,13 +10,17 @@
 	
 	<div id="assessmentDetails">
 		<div id="overallScoreSection">
-			<div class="indicator" style="background-color: #e4c904; color: #000;">{{asmt_score}}</div>
+			<div class="indicator" style="background-color: {{score_bg_color}}; color: {{score_text_color}};">{{asmt_score}}</div>
 			<div class="info">
-				<div class="overallText">Overall</div>
-				<div class="overallDesc">Sufficent Command</div>
+				<dl>
+					<dt class="overallText">Overall</dt>
+					<dd class="overallDesc" style="color: {{score_color}}">{{score_name}}</dd>
+				</dl>
 			</div>
 			<div class="info2">
-				Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet
+				Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet 
+				Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet 
+				<a href="#">Find out more >></a>
 			</div>
 		</div>
 		<div id="confidenceLevel">

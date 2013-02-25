@@ -260,6 +260,7 @@ th.ui-th-column div {
     
     #overallScoreSection {
       height: 100px;
+      margin-top: 20px;
       
       .indicator {
         background-image: url("../images/ScoreCircle.png");
@@ -274,26 +275,70 @@ th.ui-th-column div {
       
       .info {
         float: left;
+        margin: 0px 10px;
+        
+        dl, dd {
+          margin: 0;
+        }
+        
+        .overallText {
+          font-size: 16px;
+          color: #4a4a4a;
+          line-height: 40px;
+        }
+        
+        .overallDesc {
+          font-size: 22px;
+        }
+      }
+      
+      .info2 {
+        border-left: 1px dotted #606263;
+        margin-left: 300px;
+        margin-right: 20px;
+        padding-left: 20px;
+        font-size: 14px;
+        color: #606263;
       }
     }
     
     #confidenceLevel {
       height: 100px;
       
+      .scoreWrapper {
+        margin-left: 5%;
+        position: absolute;
+        width: 800px;
+        overflow: hidden;
+        z-index: 3000;
+        height: 20px;
+      }
       .overall_score {
         position: absolute;
+        z-index: 3000;
+        font-size: 18px;
       }
       .transWrapper {
         margin-left: 5%;
         position: absolute;
         width: 800px;
+        overflow: hidden;
         z-index: 99;
+        margin-top: 1px;
       }
       .transImage1 {
         height: 85px;
         background-image: url("../images/progressbar_minScoreLevel.png");
         background-repeat: no-repeat;
         width: 800px;
+      }
+      
+      .indicator {     
+        height: 85px;
+        background-image: url("../images/progressbar_indicator.png");
+        background-repeat: no-repeat;
+        width: 800px;
+        position: absolute;
       }
       
       .transImage2 {

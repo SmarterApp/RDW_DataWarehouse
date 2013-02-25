@@ -46,7 +46,7 @@ def login(request):
 
     referrer = request.url
     if referrer == request.route_url('login'):
-        # Never redirect back to login page or logout
+        # Never redirect back to login page
         # TODO redirect to some landing home page
         referrer = request.route_url('list_of_reports')
     params = {'RelayState': deflate_base64_encode((request.params.get('came_from', referrer)).encode())}

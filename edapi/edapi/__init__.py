@@ -48,7 +48,7 @@ def includeme(config):
 
     settings = config.get_settings()
     cookie_max_age = convert_to_int(settings.get('auth.cookie.max_age'))
-    session_timeout = convert_to_int(settings.get('auth.session.timeout'))
+    session_timeout = convert_to_int(settings.get('auth.cookie.timeout'))
     authentication_policy = AuthTktAuthenticationPolicy(settings['auth.cookie.secret'],
                                                         cookie_name=settings['auth.cookie.name'],
                                                         callback=session_check,

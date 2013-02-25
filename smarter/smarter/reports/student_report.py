@@ -38,6 +38,8 @@ def __prepare_query(connector, student_id, assessment_id):
                     dim_asmt.c.asmt_custom_metadata.label('asmt_custom_metadata'),
                     fact_asmt_outcome.c.asmt_grade.label('asmt_grade'),
                     fact_asmt_outcome.c.asmt_score.label('asmt_score'),
+                    fact_asmt_outcome.c.asmt_score_range_min.label('asmt_score_range_min'),
+                    fact_asmt_outcome.c.asmt_score_range_max.label('asmt_score_range_max'),
                     fact_asmt_outcome.c.date_taken_day.label('date_taken_day'),
                     fact_asmt_outcome.c.date_taken_month.label('date_taken_month'),
                     fact_asmt_outcome.c.date_taken_year.label('date_taken_year'),
@@ -76,6 +78,8 @@ def __arrage_results(results):
         custom = json.loads(result['asmt_custom_metadata'])
         # once we use the data, we clean it from the result
         del(result['asmt_custom_metadata'])
+
+        result['asmt_score_interval'] = result['asmt_score'] - result['asmt_score_range_min']
         result['cut_points'] = []
 
         # go over the 4 cut points

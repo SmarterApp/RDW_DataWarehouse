@@ -61,6 +61,14 @@ class TestStudentReport(Unittest_with_sqlite):
             self.assertIn("start_gradient_bg_color", keys, "should contain the start_gradient_bg_color of the cut point")
             self.assertIn("bg_color", keys, "should contain the bg_color of the cut point")
 
+    def test_score_interval(self):
+        params = {"studentId": '286ee893-dad0-4833-ae6c-adef78a11567'}
+        result = get_student_report(params)['items']
+        student_report = result[0]
+
+        self.assertEqual(student_report['asmt_score'], student_report['asmt_score_range_min'] + student_report['asmt_score_interval'])
+        self.assertEqual(student_report['asmt_score'], student_report['asmt_score_range_max'] - student_report['asmt_score_interval'])
+
 
 if __name__ == '__main__':
     unittest.main()

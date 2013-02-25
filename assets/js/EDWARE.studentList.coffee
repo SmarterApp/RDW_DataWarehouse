@@ -4,7 +4,8 @@ define [
   "cs!edwareDataProxy"
   "cs!edwareGrid"
   "cs!edwareUtil"
-], ($, edwareDataProxy, edwareGrid, edwareUtil) ->
+  "cs!edwareBreadcrumbs"
+], ($, edwareDataProxy, edwareGrid, edwareUtil, edwareBreadcrumbs) ->
   
   assessmentsData = []
   assessmentsCutPoints = []
@@ -13,9 +14,9 @@ define [
   #
   #    * Create Student data grid
   #    
-      
+  
   createStudentGrid = (params) ->
-      
+    
     getStudentData "/data/list_of_students", params, (assessmentsData, assessmentCutpoints) ->
       
       getStudentsConfig "../data/student.json", (studentsConfig) ->
@@ -51,5 +52,6 @@ define [
         else
           studentColumnCfgs
 
+  $('#breadcrumb').breadcrumbs()
   createStudentGrid: createStudentGrid
   

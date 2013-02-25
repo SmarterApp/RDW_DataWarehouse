@@ -23,7 +23,7 @@ define [
     names = options.colModel.name.split "."
     subject = rowObject[names[0]][names[1]]
    
-    "<div>[" + subject[names[2]+ "_min"] + "] " + value  + " [" + subject[names[2]+ "_max"] + "]</div>"
+    "<div>[" + subject[names[2]+ "_range_min"] + "] " + value  + " [" + subject[names[2]+ "_range_max"] + "]</div>"
  
   showlink: showlink
   showOverallConfidence: showOverallConfidence

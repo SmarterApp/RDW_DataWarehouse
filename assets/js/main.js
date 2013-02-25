@@ -13,7 +13,7 @@ require({
 		edwareGridFormatters: 'widgets/grid/EDWARE.grid.formatters',
 		edwareStudentList: 'EDWARE.studentList',
 		edwareIndividualStudent: 'EDWARE.individualStudent',
-		edwareBreadcrumbs: 'widgets/breadcrumb/EDWARE.breadcrumbs'
+		edwareBreadcrumbs: 'widgets/breadcrumb/EDWARE.breadcrumbs',
 		
 		edwareBreadcrumbsTemplate: 'widgets/breadcrumb/template.html'
 	},

@@ -17,7 +17,7 @@ from assessment import generate_assmt_scores_for_subject
 from dbconnection import get_db_conn
 from entities import (
     InstitutionHierarchy,
-    AssessmentOutcome, SectionSubject )
+    AssessmentOutcome, SectionSubject)
 from helper_entities import State, District, WhereTaken
 from gen_assessments import generate_assessment_types
 from genpeople import generate_teacher, generate_student, generate_staff, generate_student_section
@@ -124,8 +124,8 @@ def generate_data(name_lists, db_states_stat):
 
             # create school for each district
             school_list, wheretaken_list = create_institution_hierarchies(stu_num_in_school_made[shift: shift + district.number_of_schools],
-                                                          stutea_ratio_in_school_made[shift: shift + district.number_of_schools],
-                                                          district, school_type_in_state, name_lists)
+                                                                          stutea_ratio_in_school_made[shift: shift + district.number_of_schools],
+                                                                          district, school_type_in_state, name_lists)
             create_csv(school_list, constants.INSTITUTION_HIERARCHY)
             # associate wheretaken_list to current district
             district.wheretaken_list = wheretaken_list
@@ -384,6 +384,7 @@ def generate_names_from_lists(count, list1, list2, name_length=None):
     new_list.extend(names[0:count])
     return new_list
 
+
 def cal_zipvalues(pos, n):
     '''
     Input: pos: greater than 0
@@ -493,16 +494,16 @@ def associate_students_and_scores(student_sections_list, scores, inst_hier_id, s
             prev_year = year
 
             params = {
-                    'asmnt_outcome_id': new_id,
-                    'asmnt_outcome_external_id': uuid.uuid4(),
-                    'assessment': asmt,
-                    'student': student_section,
-                    'inst_hier_id': inst_hier_id,
-                    'where_taken': where_taken,
-                    'date_taken': date_taken,
-                    'asmt_score': score[1].pop(),
-                    'asmt_create_date': date.today().replace(year=date.today().year - 5),
-                    'most_recent': True
+                'asmnt_outcome_id': new_id,
+                'asmnt_outcome_external_id': uuid.uuid4(),
+                'assessment': asmt,
+                'student': student_section,
+                'inst_hier_id': inst_hier_id,
+                'where_taken': where_taken,
+                'date_taken': date_taken,
+                'asmt_score': score[1].pop(),
+                'asmt_create_date': date.today().replace(year=date.today().year - 5),
+                'most_recent': True
             }
             outcome = AssessmentOutcome(**params)
             assessment_outcome_list.append(outcome)

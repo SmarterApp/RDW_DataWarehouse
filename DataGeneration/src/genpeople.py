@@ -107,34 +107,34 @@ def generate_staff(hier_user_type, state_code='None', district_id='None', school
         staff_id = id_generator.get_id()
 
     staff_params = {
-            'staff_id': staff_id,
-            'staff_external_id': uuid.uuid4(),
-            'first_name': first_name,
-            'middle_name': middle_name,
-            'last_name': last_Name,
-            'section_id': section_id,
-            'hier_user_type': hier_user_type,
-            'state_code': state_code,
-            'district_id': district_id,
-            'school_id': school_id,
-            'from_date': date(2012, 9, 1),
-            'to_date': date(2999, 12, 1),
-            'most_recent': True
-        }
+        'staff_id': staff_id,
+        'staff_external_id': uuid.uuid4(),
+        'first_name': first_name,
+        'middle_name': middle_name,
+        'last_name': last_Name,
+        'section_id': section_id,
+        'hier_user_type': hier_user_type,
+        'state_code': state_code,
+        'district_id': district_id,
+        'school_id': school_id,
+        'from_date': date(2012, 9, 1),
+        'to_date': date(2999, 12, 1),
+        'most_recent': True
+    }
     staff = Staff(**staff_params)
     return staff
 
 
 def generate_student_section(school, student, section_subject_id, section_id, grade, teacher_id):
         student_section_params = {
-        'student': student,
-        'section_id': section_id,
-        'grade': grade,
-        'from_date': date(2012, 9, 1),
-        'to_date': date(2999, 12, 1),
-        'most_recent': True,
-        'teacher_id': teacher_id,
-        'section_subject_id': section_subject_id
+            'student': student,
+            'section_id': section_id,
+            'grade': grade,
+            'from_date': date(2012, 9, 1),
+            'to_date': date(2999, 12, 1),
+            'most_recent': True,
+            'teacher_id': teacher_id,
+            'section_subject_id': section_subject_id
         }
         student_section = StudentSection(**student_section_params)
         return student_section

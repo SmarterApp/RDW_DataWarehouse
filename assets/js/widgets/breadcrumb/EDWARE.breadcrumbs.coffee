@@ -41,3 +41,12 @@ define [
         output = Mustache.to_html template, data
         this.html output
 
+      #
+      #    * Creates EDWARE grid
+      #    * @param containerId - The container id for breadcrumbs
+      #    * @param data
+      #    
+      create = (containerId, data) ->
+        $("#" + containerId).breadcrumbs data
+          
+      create: create

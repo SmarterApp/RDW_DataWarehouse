@@ -84,20 +84,3 @@ class PeopleNames(object):
             cls._instance.female_names = female_list
             cls._instance.last_names = last_list
         return cls._instance
-
-'''
-if __name__ == '__main__':
-
-    import time
-    import sys
-    t1 = time.time()
-    peopleNames = PeopleNames()
-    t2 = time.time()
-
-    print('time to create lists: %.2f' % (t2 - t1))
-    print('500th name of male list', peopleNames.male_names[500])
-    print(len(peopleNames.last_names))
-    print(len(peopleNames.female_names))
-
-    print('size of peopleNames', sys.getsizeof(peopleNames.male_names))
-'''

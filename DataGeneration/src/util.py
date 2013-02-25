@@ -43,4 +43,5 @@ def generate_start_date(grade):
     start_month = 9
     start_day = random.randint(1, 8)
 
-    return datetime.date(start_year, start_month, start_day)
+    # Need to return a string (not a date object), but using the library to ensure formatint (YYYYMMDD)
+    return datetime.date(start_year, start_month, start_day).strftime('%Y%m%d')

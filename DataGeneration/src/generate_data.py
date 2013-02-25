@@ -310,7 +310,7 @@ def create_institution_hierarchies(stu_num_in_school_made, stutea_ratio_in_schoo
             'school_id': IdGen().get_id(),
             'school_name': school_name,
             'school_category': school_categories_type,
-            'from_date': datetime.date(2012, 9, 1),
+            'from_date': '20120901',
             'most_recent': True,
         }
 
@@ -678,9 +678,9 @@ def create_sections_in_one_class(subject_name, class_count, distribute_stu_inacl
             'state_code': school.state_code,
             'district_id': school.district_id,
             'school_id': school.school_id,
-            'from_date': date(2012, 9, 1),
+            'from_date': '20120901',
             'most_recent': True,
-            'to_date': date(2999, 12, 1)
+            'to_date': '20120901'
         }
         section_subject = SectionSubject(**section_subject_params)
         section_subject_list.append(section_subject)

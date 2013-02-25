@@ -7,9 +7,10 @@ Created on Jan 8, 2013
 from datetime import date
 from uuid import uuid4
 import random
+from DataGeneration.src.helper_entities import Student
 from helper_entities import Teacher
 
-from entities import Student, Staff, StudentSection, ExternalUserStudent
+from entities import Staff, StudentSection, ExternalUserStudent
 from idgen import IdGen
 import gennames
 import util
@@ -130,8 +131,8 @@ def generate_student_section(school, student, section_subject_id, section_id, gr
             'student': student,
             'section_id': section_id,
             'grade': grade,
-            'from_date': date(2012, 9, 1),
-            'to_date': date(2999, 12, 1),
+            'from_date': '20120901',
+            'to_date': '20120901',
             'most_recent': True,
             'teacher_id': teacher_id,
             'section_subject_id': section_subject_id

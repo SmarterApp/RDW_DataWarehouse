@@ -9,8 +9,8 @@ from datetime import datetime, timedelta
 import uuid
 import re
 import json
-from edapi.security.roles import Roles, has_undefined_roles
-from edapi.security.session import Session
+from edauth.security.session import Session
+from edauth.security.roles import has_undefined_roles, Roles
 
 # TODO: remove datetime.now() and use func.now()
 

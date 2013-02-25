@@ -6,12 +6,12 @@ Created on Feb 15, 2013
 import os
 import unittest
 from database.tests.unittest_with_sqlite import Unittest_with_sqlite
-from edapi.security.session_manager import get_user_session, \
+from edauth.security.session_manager import get_user_session, \
     create_new_user_session, update_session_access, delete_session, \
     is_session_expired
 from database.connector import DBConnector
-from edapi.saml2.saml_response import SAMLResponse
-from edapi.security.roles import Roles
+from edauth.saml2.saml_response import SAMLResponse
+from edauth.security.roles import Roles
 from xml.dom.minidom import parseString
 import uuid
 from datetime import datetime, timedelta

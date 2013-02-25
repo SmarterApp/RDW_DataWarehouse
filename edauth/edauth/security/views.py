@@ -9,16 +9,16 @@ from pyramid.httpexceptions import HTTPFound, HTTPForbidden
 from pyramid.view import view_config, forbidden_view_config
 from xml.dom.minidom import parseString
 import base64
-from edapi.saml2.saml_request import SamlAuthnRequest, SamlLogoutRequest
-from edapi.saml2.saml_auth import SamlAuth
-from edapi.saml2.saml_response import SAMLResponse
+from edauth.saml2.saml_request import SamlAuthnRequest, SamlLogoutRequest
+from edauth.saml2.saml_auth import SamlAuth
+from edauth.saml2.saml_response import SAMLResponse
 import urllib
-from edapi.security.session_manager import create_new_user_session, \
+from edauth.security.session_manager import create_new_user_session, \
     delete_session, get_user_session
-from edapi.security.roles import Roles
-from edapi.utils import convert_to_int
+from edauth.security.roles import Roles
+from edauth.utils import convert_to_int
 from pyramid.response import Response
-from edapi.security.utils import deflate_base64_encode, inflate_base64_decode
+from edauth.security.utils import deflate_base64_encode, inflate_base64_decode
 
 
 @view_config(route_name='login', permission=NO_PERMISSION_REQUIRED)

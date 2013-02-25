@@ -5,8 +5,8 @@ Created on Feb 16, 2013
 '''
 from database.tests.unittest_with_sqlite import Unittest_with_sqlite
 from database.connector import DBConnector
-from edapi.security.callback import session_check
-from edapi.security.roles import Roles
+from edauth.security.callback import session_check
+from edauth.security.roles import Roles
 import unittest
 import uuid
 from datetime import timedelta, datetime

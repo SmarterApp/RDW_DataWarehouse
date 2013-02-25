@@ -2,6 +2,7 @@ from pyramid.config import Configurator
 from sqlalchemy import engine_from_config
 from pyramid.path import caller_package, caller_module, package_of
 import sys
+import edauth
 import edapi
 import os
 from edschema.ed_metadata import generate_ed_metadata
@@ -30,6 +31,9 @@ def main(global_config, **settings):
     # zope registration
     dbUtil = DbUtil(engine=engine, metadata=metadata)
     component.provideUtility(dbUtil, IDbUtil)
+    
+    # include edauth. Calls includeme
+    config.include(edauth)
 
     # include add routes from edapi. Calls includeme
     config.include(edapi)

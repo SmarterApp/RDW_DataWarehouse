@@ -4,7 +4,7 @@ Created on Feb 16, 2013
 @author: dip
 '''
 import unittest
-from edapi.saml2.saml_request import SamlRequest, SamlAuthnRequest,\
+from edauth.saml2.saml_request import SamlRequest, SamlAuthnRequest,\
     SamlLogoutRequest
 import base64
 import zlib

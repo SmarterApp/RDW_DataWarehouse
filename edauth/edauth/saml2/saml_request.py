@@ -6,7 +6,7 @@ Created on Feb 13, 2013
 from xml.dom.minidom import Document
 import uuid
 from time import gmtime, strftime
-from edapi.security.utils import deflate_base64_encode
+from edauth.security.utils import deflate_base64_encode
 
 
 class SamlRequest:

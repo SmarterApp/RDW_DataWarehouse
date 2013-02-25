@@ -3,7 +3,7 @@ Created on Feb 14, 2013
 
 @author: dip
 '''
-from edapi import utils
+from edauth import utils
 
 # Enum representing Roles
 Roles = utils.enum(DEPLOYMENT_ADMINISTRATOR='DEPLOYMENT_ADMINISTRATOR',

@@ -49,7 +49,7 @@ class District:
         '''
         return ("District:[district_id: %s, district_name: %s]" % (self.district_id, self.district_name))
 
-
+"""
 class School:
     '''
     School object
@@ -86,7 +86,7 @@ class School:
         }
 
         return InstitutionHierarchy(**institution_hierarchy_params)
-
+"""
 
 
 class Claim(object):

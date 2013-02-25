@@ -16,8 +16,6 @@ def generate_assmt_scores_for_subject(total, grade, state, asmt_list, subject_na
     cur_year = date.today().year
     # periods = ['BOY', 'MOY', 'EOY']
     # subjects = ['Math', 'ELA']
-    if subject_name == 'MATH':
-        subject_name = 'Math'
     years = ['2011', '2009']  # str(year), str(year - 1)]
     real_years = [str(cur_year), str(cur_year - 1)]
     asmt_types_and_subject = [x for x in asmt_list if int(x.asmt_grade) == int(grade) and x.asmt_subject.lower() == subject_name.lower()]

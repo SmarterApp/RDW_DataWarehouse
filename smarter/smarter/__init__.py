@@ -31,7 +31,7 @@ def main(global_config, **settings):
     # zope registration
     dbUtil = DbUtil(engine=engine, metadata=metadata)
     component.provideUtility(dbUtil, IDbUtil)
-    
+
     # include edauth. Calls includeme
     config.include(edauth)
 

@@ -9,7 +9,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 dependencies = [
     'edapi',
     'edschema',
-    'edauth' ]
+    'edauth']
 
 
 for dependency in dependencies:

@@ -9,7 +9,8 @@ define [
 ], ($, Mustache, edwareDataProxy, indivStudentReportTemplate, confidenceLevelBarTemplate, claimsInfoTemplate) ->
    
   #
-  #    * Generate confidence level bar cutpoint percentage width, score position, score percentage
+  #    * Generate confidence level bar cutpoint percentage width, score position, score percentage and
+  #    * score text color, score background color, confidence level for overall score summary section
   #    
   generateConfidenceLvlCutPoints = (data) ->
     
@@ -32,12 +33,9 @@ define [
         
           j++
         
-        
-        minmax_score = 20
-        
-        items.asmt_score_pos = ((items.asmt_score - (minmax_score / 2)) / items.asmt_score_max) * 100
-        items.asmt_min_score_percent = 100 - (((items.asmt_score - minmax_score) / items.asmt_score_max) * 100)
-        items.asmt_max_score_percent = ((items.asmt_score + minmax_score) / items.asmt_score_max) * 100
+        items.asmt_score_pos = ((items.asmt_score - (items.asmt_score_interval / 2)) / items.asmt_score_max) * 100
+        items.asmt_min_score_percent = 100 - (((items.asmt_score - items.asmt_score_interval) / items.asmt_score_max) * 100)
+        items.asmt_max_score_percent = ((items.asmt_score + items.asmt_score_interval) / items.asmt_score_max) * 100
         
         
         # apply text color and background color for overall score

@@ -1,6 +1,6 @@
 import random
-from DataGeneration.src.entities import Person
-from DataGeneration.src.idgen import IdGen
+from entities import Person
+from idgen import IdGen
 from entities import Person
 from idgen import IdGen
 from entities import InstitutionHierarchy

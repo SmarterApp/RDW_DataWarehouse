@@ -7,8 +7,7 @@ Created on Jan 8, 2013
 from datetime import date
 from uuid import uuid4
 import random
-from DataGeneration.src.helper_entities import Student
-from helper_entities import Teacher
+from helper_entities import Teacher, Student
 
 from entities import Staff, StudentSection, ExternalUserStudent
 from idgen import IdGen

@@ -15,29 +15,7 @@ define [
     #    
 
     ($, Mustache, template) ->
-      $.fn.breadcrumbs = (data) ->
-        data2 = 
-          { "items": [
-            {
-              name: "State"
-              link: "http://www.google.com" 
-            },
-            {
-              name: "District"
-              link: "http://www.cnn.com" 
-            },
-            {
-              name: "School"
-              link: "http://www.cnn.com" 
-            },
-            {
-              name: "Grade"
-            },
-          ]}
-        htmlResult = ""
-        
-        data = data2
-        
+      $.fn.breadcrumbs = (data) ->       
         output = Mustache.to_html template, data
         this.html output
 

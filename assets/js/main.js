@@ -14,8 +14,11 @@ require({
 		edwareStudentList: 'EDWARE.studentList',
 		edwareIndividualStudent: 'EDWARE.individualStudent',
 		edwareBreadcrumbs: 'widgets/breadcrumb/EDWARE.breadcrumbs',
+		edwareConfidenceLevelBar: 'widgets/confidenceLevelBar/EDWARE.confidenceBar',
 		
-		edwareBreadcrumbsTemplate: 'widgets/breadcrumb/template.html'
+		// Templates
+		edwareBreadcrumbsTemplate: 'widgets/breadcrumb/template.html',
+		edwareConfidenceLevelBarTemplate: 'widgets/confidenceLevelBar/template.html'
 	},
 	shim: {
         'jqGrid': {

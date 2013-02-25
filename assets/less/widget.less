@@ -1,0 +1,173 @@
+//
+// BreadCrumb
+//
+
+#breadcrumb {
+  background: #b1b1b1;
+  color: #333;
+  height: 20px;
+  padding: 10px;
+  
+  a {
+    color: #fff; 
+    margin: 0 5px; 
+  }
+  
+  span {
+    margin: 0 5px;
+  }
+}
+
+
+//
+// Table Grid
+//
+
+
+table { border-collapse: separate; }
+.ui-widget { font-family: arial; }
+.ui-jqgrid tr.jqgrow td.bold { font-weight: bold; }
+
+.ui-ellipsis {
+  text-overflow: ellipsis;
+  white-space: nowrap !important;
+}
+
+.ui-widget-content a { color: #333; text-decoration: underline; }
+.ui-widget-content a:hover { color: #333; }
+
+.ui-jqgrid .ui-jqgrid-view {
+  font-size: 12px;
+}
+
+.ui-th-column, .ui-jqgrid .ui-jqgrid-htable th.ui-th-column {
+    color: #B4B3B3;
+    font-weight: normal;
+}
+th.ui-th-column div {
+    height: auto !important;
+    padding: 4px 5px;
+    text-align: left;
+    white-space: normal !important;
+}
+
+.ui-jqgrid tr.jqgrow td { 
+  padding: 4px 5px;
+}
+
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+  background: #fafafa;
+  border: solid 1px #ccc;
+  color: #333;
+}
+
+.ui-state-default .ui-th-column-header {
+  text-align: left;
+  padding-left: 10px !important;
+}
+
+.ui-widget-content { border: none; border-top: solid 1px #cbcbcb; }
+.ui-corner-all, .ui-corner-bottom, .ui-corner-left, .ui-corner-bl { border-bottom-left-radius: 0; }
+
+.ui-corner-all, .ui-corner-top, .ui-corner-left, .ui-corner-tl { border-top-left-radius: 0 }
+
+.ui-jqgrid tr.ui-row-ltr td { border-right: solid 1px #cbcbcb; }
+
+.ui-jqgrid tr.jqgrow td { border-bottom: solid 1px #cbcbcb; }
+
+.ui-jqgrid .ui-jqgrid-htable .jqg-second-row-header th {  background: #ebebeb; color: #5e5e5e; font-size: 16px; }
+
+.ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus {
+   background: #fafafa; color: #333; 
+  }
+  
+
+//
+// Confidence Level Bar
+//
+
+.confidenceLevel {
+      height: 100px;
+      margin-top: 20px;
+      
+      .scoreWrapper {
+        margin-left: 3%;
+        position: absolute;
+        width: 640px;
+        overflow: hidden;
+        z-index: 3000;
+        height: 20px;
+      }
+      .overall_score {
+        position: absolute;
+        z-index: 3000;
+        font-size: 18px;
+      }
+      .transWrapper {
+        margin-left: 3%;
+        position: absolute;
+        width: 640px;
+        overflow: hidden;
+        z-index: 99;
+        margin-top: 11px;
+      }
+      .transImage1 {
+        height: 85px;
+        background-image: url("../images/progressbar_minScoreLevel.png");
+        background-repeat: no-repeat;
+        width: 640px;
+      }
+      
+      .indicator {     
+        height: 85px;
+        background-image: url("../images/progressbar_indicator.png");
+        background-repeat: no-repeat;
+        width: 640px;
+        position: absolute;
+        margin-top: 9px;
+      }
+      
+      .transImage2 {
+        height: 85px;
+        background-image: url("../images/progressbar_maxScoreLevel.png");
+        background-repeat: no-repeat;
+        width: 640px;
+        position: absolute;
+      }
+      
+      .progress {
+        background-color: transparent;
+        background-image: none;
+        border-radius: 0;
+        height: 30px;
+        box-shadow: none;
+        margin-left: 3%;
+        position: absolute;
+        margin-top: 30px;
+        width: 640px;
+        z-index:1;
+        
+        .bar {
+          padding-top: 7px;
+          font-size: 10px;
+        }
+      }
+      
+      .cutPointsBar {
+        margin-left: 3%;
+        margin-top: 60px;
+        position: absolute;
+        width: 640px;
+        
+        .cutPoints {
+          float: left;
+          text-align: right;
+          font-size: 11px;
+          color: #9c9c9c;
+        }
+        
+        .startPoint {
+          position: absolute;
+        }
+      }
+    }

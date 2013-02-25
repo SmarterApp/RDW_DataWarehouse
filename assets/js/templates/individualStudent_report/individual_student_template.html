@@ -1,15 +1,14 @@
-<div id="assessmentInfoContent">
 {{#items}}
-<div class="assessmentSection">
-	<div id="assesmentSummary" class="left">
+<div id="assessmentSection{{count}}" class="assessmentSection">
+	<div class="assesmentSummary left">
 		<div class="subject">{{asmt_subject}}</div>
 		<div class="type">{{asmt_type}} {{asmt_period}} </div>
 		<div class="teacher"><span class="text">Teacher:</span> <span class="value">{{teacher_first_name}} {{teacher_middle_name}} {{teacher_last_name}}</span></div>
 		<div class="date"><span class="text">Date:</span> <span class="value">{{date_taken_month}}/{{date_taken_day}}/{{date_taken_year}}</span></div>
 	</div>
 	
-	<div id="assessmentDetails">
-		<div id="overallScoreSection">
+	<div class="assessmentDetails">
+		<div class="overallScoreSection">
 			<div class="indicator" style="background-color: {{score_bg_color}}; color: {{score_text_color}};">{{asmt_score}}</div>
 			<div class="info">
 				<dl>
@@ -18,15 +17,14 @@
 				</dl>
 			</div>
 			<div class="info2">
-				Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet 
 				Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet 
 				<a href="#">Find out more >></a>
 			</div>
 		</div>
-		<div id="confidenceLevel">
-			{{> confidenceLevelBar}}
+		<div class="confidenceLevel">
+			
 		</div>
-		<div id="claimsSection">
+		<div class="claimsSection">
 			{{> claimsInfo}}
 		</div>
 	</div>

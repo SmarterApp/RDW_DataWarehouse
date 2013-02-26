@@ -6,8 +6,7 @@ define [
 ], ($, Mustache, confidenceLevelBarTemplate) ->
    
   #
-  #    * Generate confidence level bar cutpoint percentage width, score position, score percentage and
-  #    * score text color, score background color, confidence level for overall score summary section
+  #    * Generate confidence level bar cutpoint percentage width, score position, score percentage 
   #    
   $.fn.confidenceLevelBar = (items) ->
     
@@ -27,7 +26,12 @@ define [
       
       items.asmt_score_pos = ((items.asmt_score - (items.asmt_score_interval / 2)) / items.asmt_score_max) * 100
       items.asmt_min_score_percent = 100 - (((items.asmt_score - items.asmt_score_interval) / items.asmt_score_max) * 100)
-      items.asmt_max_score_percent = ((items.asmt_score + items.asmt_score_interval) / items.asmt_score_max) * 100
+      items.asmt_max_score_percent = ((items.asmt_score + items.asmt_score_interval) / items.asmt_score_max) * 100 
+      
+      items.leftBracketConfidenceLevel = true
+      
+      if items.asmt_max_score_percent > 80
+        items.leftBracketConfidenceLevel = false
       
       output = Mustache.to_html confidenceLevelBarTemplate, items
       this.html output

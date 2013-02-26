@@ -112,14 +112,14 @@ th.ui-th-column div {
         margin-top: 11px;
       }
       .transImage1 {
-        height: 85px;
+        height: 67px;
         background-image: url("../images/progressbar_minScoreLevel.png");
         background-repeat: no-repeat;
         width: 640px;
       }
       
       .indicator {     
-        height: 85px;
+        height: 67px;
         background-image: url("../images/progressbar_indicator.png");
         background-repeat: no-repeat;
         width: 640px;
@@ -128,11 +128,19 @@ th.ui-th-column div {
       }
       
       .transImage2 {
-        height: 85px;
+        height: 67px;
         background-image: url("../images/progressbar_maxScoreLevel.png");
         background-repeat: no-repeat;
         width: 640px;
         position: absolute;
+      }
+      
+      .transImage1.confLevelRight {
+        background-image: url("../images/progressbar_minScoreLevel2.png");
+      }
+      
+      .transImage2.confLevelRight {
+        background-image: url("../images/progressbar_maxScoreLevel2.png");
       }
       
       .progress {
@@ -158,12 +166,15 @@ th.ui-th-column div {
         margin-top: 60px;
         position: absolute;
         width: 640px;
+        background: url("../images/score_line.png") no-repeat scroll right top;
         
         .cutPoints {
           float: left;
           text-align: right;
           font-size: 11px;
           color: #9c9c9c;
+          background: url("../images/score_line.png") no-repeat scroll left top;
+          padding-top: 6px;
         }
         
         .startPoint {

@@ -3,8 +3,15 @@
 </div>
 <div class="transWrapper">
 	<div class="indicator" style="margin-left: {{asmt_score_pos}}%"></div>
-	<div class="transImage2" style="margin-left: {{asmt_max_score_percent}}%"></div>
-	<div class="transImage1" style="margin-left: -{{asmt_min_score_percent}}%"></div>
+	
+	{{#leftBracketConfidenceLevel}}
+		<div class="transImage2" style="margin-left: {{asmt_max_score_percent}}%"></div>
+		<div class="transImage1" style="margin-left: -{{asmt_min_score_percent}}%"></div>
+	{{/leftBracketConfidenceLevel}}
+	{{^leftBracketConfidenceLevel}}
+		<div class="transImage2 confLevelRight" style="margin-left: {{asmt_max_score_percent}}%"></div>
+		<div class="transImage1 confLevelRight" style="margin-left: -{{asmt_min_score_percent}}%"></div>
+	{{/leftBracketConfidenceLevel}}
 	
 </div>
 <div class="progress">

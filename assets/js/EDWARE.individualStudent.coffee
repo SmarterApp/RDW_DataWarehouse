@@ -22,7 +22,7 @@ define [
       
         items = data.items[i]
         
-        # apply text color and background color for overall score
+        # Apply text color and background color for overall score summary info section
         
         items.count = i
       

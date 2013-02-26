@@ -1,7 +1,6 @@
 from pyramid.config import Configurator
 from sqlalchemy import engine_from_config
 from pyramid.path import caller_package, caller_module, package_of
-import sys
 import edauth
 import edapi
 import os
@@ -9,11 +8,12 @@ from edschema.ed_metadata import generate_ed_metadata
 import pyramid
 from zope import component
 from database.connector import DbUtil, IDbUtil
-from lesscss import LessCSS
-from pyramid.authorization import ACLAuthorizationPolicy
-from pyramid.authentication import AuthTktAuthenticationPolicy
 import logging
 from smarter.security.root_factory import RootFactory
+import platform
+import ctypes
+import subprocess
+
 
 logger = logging.getLogger(__name__)
 
@@ -43,29 +43,10 @@ def main(global_config, **settings):
     # include add routes from edapi. Calls includeme
     config.include(edapi)
 
-    # TODO symbolic link should be done in development mode only
-    here = os.path.abspath(os.path.dirname(__file__))
-    assets_dir = os.path.abspath(here + '/../assets')
-    parent_assets_dir = os.path.abspath(here + '/../../assets')
-    try:
-        if not os.path.lexists(assets_dir):
-            os.symlink(parent_assets_dir, assets_dir)
-    except PermissionError:
-        pass
-
-    # LessCSS has a bug and this is workaround solution.
-    # delete all css file before lessc generates css files from less files
-    css_dir = os.path.join(parent_assets_dir, "css")
-    less_dir = os.path.join(parent_assets_dir, "less")
-    css_filelist = [f for f in os.listdir(css_dir) if f.endswith('.css')]
-    for f in css_filelist:
-        target_file = os.path.join(css_dir, f)
-        if os.access(target_file, os.W_OK):
-            os.unlink(target_file)
-    if os.access(less_dir, os.W_OK):
-        LessCSS(media_dir=less_dir, output_dir=css_dir, based=False)
-
     config.add_static_view('assets', '../assets', cache_max_age=0, permission='view')
+
+    mode = settings.get('mode', 'prod')
+    prepare_env(mode.upper())
 
     # scans smarter
     config.scan()
@@ -76,3 +57,41 @@ def main(global_config, **settings):
     logger.info("Smarter started")
 
     return config.make_wsgi_app()
+
+
+def prepare_env(mode):
+    if mode == 'DEV':
+        here = os.path.abspath(os.path.dirname(__file__))
+        assets_dir = os.path.abspath(here + '/../assets')
+        parent_assets_dir = os.path.abspath(here + '/../../assets')
+        css_dir = os.path.join(parent_assets_dir, "css")
+        less_dir = os.path.join(parent_assets_dir, "less")
+        # We're assuming we only have one less file to compile
+        less_file = os.path.join(less_dir, 'style.less')
+        css_file = os.path.join(css_dir, 'style.css')
+
+        # delete all css file before lessc generates css files from less files
+        css_filelist = [f for f in os.listdir(css_dir) if f.endswith('.css')]
+        for f in css_filelist:
+            target_file = os.path.join(css_dir, f)
+            if os.access(target_file, os.W_OK):
+                os.unlink(target_file)
+
+        command_opts = []
+        if platform.system() == 'Windows':
+            # Create a sym link
+            if not os.path.lexists(assets_dir):
+                kernel_dll = ctypes.windll.LoadLibrary("kernel32.dll")
+                # TODO check error for failures
+                kernel_dll.CreateSymbolicLink(parent_assets_dir, assets_dir, 1)
+            command_opts = ['node', 'lessc', '-x', less_file, css_file]
+        else:
+            if not os.path.lexists(assets_dir):
+                os.symlink(parent_assets_dir, assets_dir)
+            command_opts = ['lessc', '-x', less_file, css_file]
+
+        if os.access(less_dir, os.W_OK):
+            rtn_code = subprocess.call(command_opts)
+            if rtn_code != 0:
+                pass
+                # Failed

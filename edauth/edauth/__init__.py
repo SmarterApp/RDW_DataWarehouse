@@ -37,7 +37,7 @@ def includeme(config):
     config.add_route('saml2_post_consumer', '/saml_post')
     config.add_route('logout_redirect', '/logout_redirect')
 
-    # scans edapi, ignoring test package
+    # scans edauth, ignoring test package
     config.scan(ignore='edauth.test')
 
 

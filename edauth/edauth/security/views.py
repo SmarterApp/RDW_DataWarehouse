@@ -15,10 +15,10 @@ from edauth.saml2.saml_response import SAMLResponse
 import urllib
 from edauth.security.session_manager import create_new_user_session, \
     delete_session, get_user_session
-from edauth.security.roles import Roles
 from edauth.utils import convert_to_int
 from pyramid.response import Response
 from edauth.security.utils import deflate_base64_encode, inflate_base64_decode
+from edauth.security.roles import Roles
 
 
 @view_config(route_name='login', permission=NO_PERMISSION_REQUIRED)
@@ -37,7 +37,7 @@ def login(request):
     # Requests will be forwarded here when users aren't authorized to those pages, how to prevent it?
     # Here, we return 403 for users that has a role of None
     # This can be an user that has no role from IDP or has a role that we don't know of
-    if Roles.NONE in principals:
+    if Roles.get_invalid_role() in principals:
         return HTTPForbidden()
 
     # clear out the session if we found one in the cookie

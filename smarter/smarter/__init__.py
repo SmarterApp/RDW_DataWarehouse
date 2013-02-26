@@ -13,6 +13,7 @@ from lesscss import LessCSS
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.authentication import AuthTktAuthenticationPolicy
 import logging
+from smarter.security.root_factory import RootFactory
 
 logger = logging.getLogger(__name__)
 
@@ -32,8 +33,12 @@ def main(global_config, **settings):
     dbUtil = DbUtil(engine=engine, metadata=metadata)
     component.provideUtility(dbUtil, IDbUtil)
 
+    # set role-permission mapping
+    config.set_root_factory('smarter.security.root_factory.RootFactory')
+
     # include edauth. Calls includeme
     config.include(edauth)
+    edauth.set_roles(RootFactory.__acl__)
 
     # include add routes from edapi. Calls includeme
     config.include(edapi)
@@ -51,15 +56,22 @@ def main(global_config, **settings):
     # LessCSS has a bug and this is workaround solution.
     # delete all css file before lessc generates css files from less files
     css_dir = os.path.join(parent_assets_dir, "css")
+    less_dir = os.path.join(parent_assets_dir, "less")
     css_filelist = [f for f in os.listdir(css_dir) if f.endswith('.css')]
     for f in css_filelist:
-        os.unlink(os.path.join(css_dir, f))
-    LessCSS(media_dir=os.path.join(parent_assets_dir, "less"), output_dir=os.path.join(parent_assets_dir, "css"), based=False)
+        target_file = os.path.join(css_dir, f)
+        if os.access(target_file, os.W_OK):
+            os.unlink(target_file)
+    if os.access(less_dir, os.W_OK):
+        LessCSS(media_dir=less_dir, output_dir=css_dir, based=False)
 
     config.add_static_view('assets', '../assets', cache_max_age=0, permission='view')
 
     # scans smarter
     config.scan()
+
+    # Set default permission on all views
+    config.set_default_permission('view')
 
     logger.info("Smarter started")
 

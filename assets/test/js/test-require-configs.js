@@ -18,8 +18,10 @@ var baseConfigs = {
 	    edwareStudentList: '../../js/EDWARE.studentList',
 	    edwareIndividualStudent: '../../js/EDWARE.individualStudent',
 	    edwareBreadcrumbs: '../../js/widgets/breadcrumb/EDWARE.breadcrumbs',
+		edwareConfidenceLevelBar: '../../js/widgets/confidenceLevelBar/EDWARE.confidenceBar',
 	    
-	    edwareBreadcrumbsTemplate: '../../js/widgets/breadcrumb/template.html'
+	    edwareBreadcrumbsTemplate: '../../js/widgets/breadcrumb/template.html',
+		edwareConfidenceLevelBarTemplate: '../../js/widgets/confidenceLevelBar/template.html'
 	},
 	shim: {
         'jqGrid': {

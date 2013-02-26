@@ -5,37 +5,41 @@ Created on Feb 14, 2013
 '''
 from edauth import utils
 
-# Enum representing Roles
-Roles = utils.enum(DEPLOYMENT_ADMINISTRATOR='DEPLOYMENT_ADMINISTRATOR',
-                   SYSTEM_ADMINISTRATOR='SYSTEM_ADMINISTRATOR',
-                   DATA_LOADER='DATA_LOADER',
-                   DATA_CORRECTOR='DATA_CORRECTOR',
-                   # TODO _ no role?  Document was not clear
-                   NO_ROLE='NOT_RESTRICTED',
-                   PSYCHOMETRICIAN='PSYCHOMETRICIAN',
-                   STATE_DATA_EXTRACTOR='STATE_DATA_EXTRACTOR',
-                   HIGHER_EDUCATION_ADMISSIONS_OFFICIER='HIGHER_EDUCATION_ADMISSIONS_OFFICER',
-                   STUDENT='STUDENT',
-                   PARENT='PARENT',
-                   TEACHER='TEACHER',
-                   SCHOOL_EDUCATION_ADMINISTRATOR_1='SCHOOL_EDUCATION_ADMINISTRATOR_1',
-                   SCHOOL_EDUCATION_ADMINISTRATOR_2='SCHOOL_EDUCATION_ADMINISTRATOR_2',
-                   DISTRICT_EDUCATION_ADMINISTRATOR_1='DISTRICT_EDUCATION_ADMINISTRATOR_1',
-                   DISTRICT_EDUCATION_ADMINISTRATOR_2='DISTRICT_EDUCATION_ADMINISTRATOR_2',
-                   STATE_EDUCATION_ADMINISTRATOR_1='STATE_EDUCATION_ADMINISTRATOR_1',
-                   STATE_EDUCATION_ADMINISTRATOR_2='STATE_EDUCATION_ADMINISTRATOR_2',
-                   CONSORTIUM_EDUCATION_ADMINISTRATOR_1='CONSORTIUM_EDUCATION_ADMINISTRATOR_1',
-                   CONSORTIUM_EDUCATION_ADMINISTRATOR_2='CONSORTIUM_EDUCATION_ADMINISTRATOR_2',
-                   # We defined the role of NONE for users that are authenticated but do not have 'memberOf' from SAML response
-                   NONE='NONE',
-                   )
 
+class Roles:
+    # Pre-Populate a role of none
+    defined_roles = utils.enum(NONE='NONE')
 
-def has_undefined_roles(roles):
-    '''
-    Given a list of roles, return true if there is an unknown role
-    '''
-    for role in roles:
-        if Roles.reverse_mapping.get(role) is None:
-            return True
-    return False
+    @staticmethod
+    def set_roles(mappings):
+        '''
+        Sets the roles
+        mappings is a list of tuple of the form [(Allow, 'role_name', ('permissions'))]
+        TODO:  We probably don't need to make it as an enum anymore
+        '''
+        kwargs = {}
+        for mapping in mappings:
+            role = mapping[1].upper()
+            #permission = mapping[2]
+            kwargs[role] = role
+        # Make sure we have a role of None
+        if 'NONE' not in kwargs.keys():
+            kwargs['NONE'] = 'NONE'
+        Roles.defined_roles = utils.enum(**kwargs)
+
+    @staticmethod
+    def get_invalid_role():
+        '''
+        Returns the value of a role of None (empty memberOf from SAML response)
+        '''
+        return Roles.defined_roles.NONE
+
+    @staticmethod
+    def has_undefined_roles(roles):
+        '''
+        Given a list of roles, return true if there is an unknown role
+        '''
+        for role in roles:
+            if Roles.defined_roles.reverse_mapping.get(role) is None:
+                return True
+        return False

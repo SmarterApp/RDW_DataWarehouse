@@ -10,7 +10,7 @@ import uuid
 import re
 import json
 from edauth.security.session import Session
-from edauth.security.roles import has_undefined_roles, Roles
+from edauth.security.roles import Roles
 
 # TODO: remove datetime.now() and use func.now()
 
@@ -157,6 +157,6 @@ def __get_roles(attributes):
                 role = cn.group(1).upper()
                 roles.append(role)
     # If user has no roles or has a role that is not defined
-    if not roles or has_undefined_roles(roles):
-        roles.append(Roles.NONE)
+    if not roles or Roles.has_undefined_roles(roles):
+        roles.append(Roles.get_invalid_role())
     return roles

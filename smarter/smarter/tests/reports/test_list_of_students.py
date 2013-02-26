@@ -40,7 +40,7 @@ class Test(Unittest_with_sqlite):
         testParam['asmtSubject'] = ['ELA', 'Math']
         results = get_list_of_students_report(testParam)
 
-        self.assertTrue('breadcrumbs' in results, "returning JSON must have cutpoints")
+        self.assertTrue('context' in results, "returning JSON must have context")
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testReport']

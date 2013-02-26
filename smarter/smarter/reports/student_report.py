@@ -9,6 +9,7 @@ from edapi.utils import report_config
 from sqlalchemy.sql import select
 from database.connector import DBConnector
 import json
+from sqlalchemy.sql.expression import and_
 
 
 def __prepare_query(connector, student_id, assessment_id):
@@ -21,6 +22,10 @@ def __prepare_query(connector, student_id, assessment_id):
                     dim_student.c.first_name.label('student_first_name'),
                     dim_student.c.middle_name.label('student_middle_name'),
                     dim_student.c.last_name.label('student_last_name'),
+                    dim_student.c.grade.label('grade'),
+                    dim_student.c.district_id.label('district_id'),
+                    dim_student.c.school_id.label('school_id'),
+                    dim_student.c.state_code.label('state_code'),
                     dim_asmt.c.asmt_subject.label('asmt_subject'),
                     dim_asmt.c.asmt_period.label('asmt_period'),
                     dim_asmt.c.asmt_type.label('asmt_type'),
@@ -87,6 +92,7 @@ def __arrage_results(results):
         result['cut_points'] = []
 
         # go over the 4 cut points
+        # TODO: take care of less than 4 cutpoints
         for i in range(1, 5):
             # we only take cutpoints with values > 0
             if result['asmt_cut_point_{0}'.format(i)] > 0:
@@ -141,8 +147,8 @@ def get_student_report(params, connector=None):
     # get sql session
     connector.open_connection()
     result = connector.get_result(query)
+    __get_context(connector, result[0]['school_id'], result[0]['district_id'])
     connector.close_connection()
-
     # prepare the result for the client
     result = __arrage_results(result)
 
@@ -185,4 +191,25 @@ def get_student_assessment(params, connector=None):
     query = query.order_by(dim_asmt.c.asmt_subject)
     result = connector.get_result(query)
     connector.close_connection()
+    return result
+
+
+def __get_context(connector, school_id, district_id):
+    dim_district = connector.get_table('dim_inst_hier')
+
+    query = select([dim_district.c.district_name.label('district_name'),
+                dim_district.c.school_name.label('school_name'),
+                dim_district.c.state_name.label('state_name')],
+               from_obj=[dim_district])
+
+    query = query.where(and_(dim_district.c.school_id == school_id))
+    query = query.where(and_(dim_district.c.district_id == district_id))
+    query = query.where(and_(dim_district.c.most_recent == True))
+
+    # run it and format the results
+    results = connector.get_result(query)
+    if (not results):
+        return results
+    result = results[0]
+
     return result

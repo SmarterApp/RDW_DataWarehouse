@@ -13,6 +13,7 @@ from lesscss import LessCSS
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.authentication import AuthTktAuthenticationPolicy
 import logging
+from smarter.security.root_factory import RootFactory
 
 logger = logging.getLogger(__name__)
 
@@ -32,8 +33,12 @@ def main(global_config, **settings):
     dbUtil = DbUtil(engine=engine, metadata=metadata)
     component.provideUtility(dbUtil, IDbUtil)
 
+    # set role-permission mapping
+    config.set_root_factory('smarter.security.root_factory.RootFactory')
+
     # include edauth. Calls includeme
     config.include(edauth)
+    edauth.set_roles(RootFactory.__acl__)
 
     # include add routes from edapi. Calls includeme
     config.include(edapi)
@@ -64,6 +69,9 @@ def main(global_config, **settings):
 
     # scans smarter
     config.scan()
+
+    # Set default permission on all views
+    config.set_default_permission('view')
 
     logger.info("Smarter started")
 

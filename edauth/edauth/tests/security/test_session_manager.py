@@ -27,13 +27,18 @@ class Test(Unittest_with_sqlite):
         user_session = connection.get_table('user_session')
         connection.execute(user_session.delete())
         connection.close_connection()
+        mappings = {('Allow', 'TEACHER', ('view', 'logout')),
+                    ('Allow', 'SYSTEM_ADMINISTRATOR', ('view', 'logout')),
+                    ('Allow', 'DATA_LOADER', ('view', 'logout')),
+                    ('Allow', 'NONE', ('logout'))}
+        Roles.set_roles(mappings)
 
     def test_create_session_from_SAMLResponse(self):
         session = create_new_user_session(create_SAMLResponse())
         self.assertIsNotNone(session, "session should not be None")
         self.assertEqual(len(session.get_session_id()), 36, "session id Length must be 36, UUID")
         self.assertEqual(session.get_uid(), "linda.kim", "uid is linda.kim")
-        self.assertTrue(Roles.TEACHER in session.get_roles(), "role is teacher")
+        self.assertTrue("TEACHER" in session.get_roles(), "role is teacher")
         self.assertEqual(session.get_name()['fullName'], "Linda Kim", "name is Linda Kim")
 
     def test_create_session_from_json(self):
@@ -53,7 +58,7 @@ class Test(Unittest_with_sqlite):
         self.assertIsNotNone(session, "session should not be None")
         self.assertEqual(len(session.get_session_id()), 36, "session id Length must be 36, UUID")
         self.assertEqual(session.get_uid(), "linda.kim", "uid is linda.kim")
-        self.assertTrue(Roles.TEACHER in session.get_roles(), "role is teacher")
+        self.assertTrue("TEACHER" in session.get_roles(), "role is teacher")
         self.assertEqual(session.get_name()['fullName'], "Linda Kim", "name is Linda Kim")
 
     def test_update_last_access_session(self):
@@ -81,7 +86,7 @@ class Test(Unittest_with_sqlite):
 
     def test_create_session_with_no_roles(self):
         session = create_new_user_session(create_SAMLResponse('SAMLResponse_no_memberOf.xml'))
-        self.assertEquals(session.get_roles(), [Roles.NONE], "no memberOf should have insert a role of none")
+        self.assertEquals(session.get_roles(), [Roles.get_invalid_role()], "no memberOf should have insert a role of none")
 
 
 def create_SAMLResponse(file_name='SAMLResponse.xml'):

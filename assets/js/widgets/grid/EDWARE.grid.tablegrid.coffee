@@ -68,6 +68,7 @@ define [
           )
         $(this).jqGrid options
         $(this).jqGrid "hideCol", "rn"
+        $(this).setGridWidth 980, false
         
 
         
@@ -113,6 +114,7 @@ define [
         viewrecords: true
         autoencode: true
         rowNum: 10000
+        shrinkToFit: false
         loadComplete: ->
            $("tr.jqgrow:odd").css "background", "#f8f8f8"
   

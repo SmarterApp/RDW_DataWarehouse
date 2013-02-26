@@ -51,12 +51,14 @@ def main(global_config, **settings):
     # LessCSS has a bug and this is workaround solution.
     # delete all css file before lessc generates css files from less files
     css_dir = os.path.join(parent_assets_dir, "css")
+    less_dir = os.path.join(parent_assets_dir, "less")
     css_filelist = [f for f in os.listdir(css_dir) if f.endswith('.css')]
     for f in css_filelist:
         target_file = os.path.join(css_dir, f)
         if os.access(target_file, os.W_OK):
             os.unlink(target_file)
-    LessCSS(media_dir=os.path.join(parent_assets_dir, "less"), output_dir=os.path.join(parent_assets_dir, "css"), based=False)
+    if os.access(less_dir, os.W_OK):
+        LessCSS(media_dir=less_dir, output_dir=css_dir, based=False)
 
     config.add_static_view('assets', '../assets', cache_max_age=0, permission='view')
 

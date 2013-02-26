@@ -2,9 +2,7 @@
 Assessment score generator
 '''
 
-import random
 from helper_entities import Score
-
 from dbconnection import get_db_conn
 from constants import MIN_ASSMT_SCORE, MAX_ASSMT_SCORE, ASSMT_TYPES
 from datetime import date
@@ -16,8 +14,8 @@ def generate_assmt_scores_for_subject(total, grade, state, asmt_list, subject_na
     cur_year = date.today().year
     # periods = ['BOY', 'MOY', 'EOY']
     # subjects = ['Math', 'ELA']
-    years = ['2011', '2009']  # str(year), str(year - 1)]
-    real_years = [str(cur_year), str(cur_year - 1)]
+    years = ['2011']  # str(year), str(year - 1)]
+    real_years = [str(cur_year - 1), str(cur_year)]
     asmt_types_and_subject = [x for x in asmt_list if int(x.asmt_grade) == int(grade) and x.asmt_subject.lower() == subject_name.lower()]
     scores = {}
 
@@ -28,7 +26,6 @@ def generate_assmt_scores_for_subject(total, grade, state, asmt_list, subject_na
 
             score = generate_assmt_scores(state, subject, years[i], asmt.asmt_period, grade, total)
             scores[string] = score
-
     return scores
 
 
@@ -62,6 +59,9 @@ def generate_assmt_scores(state, asmt_type, year, period, grade, total):
         socre_withclaims_list = generate_allscores(overallscore_list, stat_levles, asmt_type, grade)
 #        for t_score in socre_withclaims_list:
 #            print(t_score)
+    else:
+        print("No assessment score from configuration database of", state, asmt_type, year, grade)
+        raise ValueError
 
     return socre_withclaims_list
 

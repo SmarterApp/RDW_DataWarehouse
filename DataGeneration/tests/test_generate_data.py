@@ -1,8 +1,8 @@
 import unittest
 import generate_data
 import random
-from entities import Student, InstitutionHierarchy, StudentSection
-from helper_entities import District, State, Teacher, WhereTaken
+from entities import InstitutionHierarchy, StudentSection
+from helper_entities import District, State, Teacher, WhereTaken, Student
 from constants import ZIPCODE_START, ZIPCODE_RANG_INSTATE, SCHOOL_LEVELS_INFO, \
     BIRDS_FILE
 from gen_assessments import generate_assessment_types

@@ -8,8 +8,8 @@ import os
 import unittest
 
 from genpeople import generate_teacher, generate_student, generate_staff
-from entities import Student, Staff, ExternalUserStudent, InstitutionHierarchy
-from helper_entities import State, District, Teacher
+from entities import Staff, ExternalUserStudent, InstitutionHierarchy
+from helper_entities import State, District, Teacher, Student
 from uuid import UUID, uuid4
 from datetime import date
 

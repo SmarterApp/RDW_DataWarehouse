@@ -484,47 +484,50 @@ def associate_students_and_scores(student_sections_list, scores, inst_hier_id, s
             if subject == 'Math':
                 subject = 'MATH'
 
-            new_id = IdGen().get_id()
+            if asmt.asmt_subject.lower() == subject.lower():  # check that subjects match as there is a std_tmprl object for each subject
+                new_id = IdGen().get_id()
+                date_taken = None
+                if prev_year == year:
+                    date_taken = map_asmt_date_to_period(asmt.asmt_period, dates_taken1, year, asmt.asmt_type)
+                else:
+                    date_taken = map_asmt_date_to_period(asmt.asmt_period, dates_taken2, year, asmt.asmt_type)
+                prev_year = year
 
-            date_taken = None
-            if prev_year == year:
-                date_taken = map_asmt_date_to_period(asmt.asmt_period, dates_taken1, year)
-            else:
-                date_taken = map_asmt_date_to_period(asmt.asmt_period, dates_taken2, year)
-            prev_year = year
-
-            params = {
-                'asmnt_outcome_id': new_id,
-                'asmnt_outcome_external_id': uuid.uuid4(),
-                'assessment': asmt,
-                'student': student_section,
-                'inst_hier_id': inst_hier_id,
-                'where_taken': where_taken,
-                'date_taken': date_taken,
-                'asmt_score': score[1].pop(),
-                'asmt_create_date': date.today().replace(year=date.today().year - 5),
-                'most_recent': True
-            }
-            outcome = AssessmentOutcome(**params)
-            assessment_outcome_list.append(outcome)
+                params = {
+                    'asmnt_outcome_id': new_id,
+                    'asmnt_outcome_external_id': uuid.uuid4(),
+                    'assessment': asmt,
+                    'student': student_section,
+                    'inst_hier_id': inst_hier_id,
+                    'where_taken': where_taken,
+                    'date_taken': date_taken,
+                    'asmt_score': score[1].pop(),
+                    'asmt_create_date': date.today().replace(year=date.today().year - 5),
+                    'most_recent': True
+                }
+                outcome = AssessmentOutcome(**params)
+                assessment_outcome_list.append(outcome)
 
     return assessment_outcome_list
 
 
-def map_asmt_date_to_period(period, dates_taken, year):
+def map_asmt_date_to_period(period, dates_taken, year, asmt_type):
     '''
     returns a date given the attributes
     period -- the period that the asmt was taken
     dates_taken -- a dict of dates whose keys are periods
     year -- the year the asmt was taken
     '''
+    year_int = int(year)
     if period == 'BOY':
         date_taken = dates_taken['BOY']
     elif period == 'MOY':
         date_taken = dates_taken['MOY']
     elif period == 'EOY':
         date_taken = dates_taken['EOY']
-    return date_taken.replace(year=int(year))
+    if asmt_type.upper() == 'SUMMATIVE':
+        year_int += 1
+    return date_taken.replace(year=year_int)
 
 
 def generate_teachers(num_teachers, state, district):

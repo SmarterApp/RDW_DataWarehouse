@@ -48,7 +48,13 @@ def main(global_config, **settings):
     except PermissionError:
         pass
 
-    LessCSS(media_dir=parent_assets_dir + "/less", output_dir=parent_assets_dir + "/css", based=False)
+    # LessCSS has a bug and this is workaround solution.
+    # delete all css file before lessc generates css files from less files
+    css_dir = os.path.join(parent_assets_dir, "css")
+    css_filelist = [f for f in os.listdir(css_dir) if f.endswith('.css')]
+    for f in css_filelist:
+        os.unlink(os.path.join(css_dir, f))
+    LessCSS(media_dir=os.path.join(parent_assets_dir, "less"), output_dir=os.path.join(parent_assets_dir, "css"), based=False)
 
     config.add_static_view('assets', '../assets', cache_max_age=0, permission='view')
 

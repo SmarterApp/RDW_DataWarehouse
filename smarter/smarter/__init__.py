@@ -77,18 +77,17 @@ def prepare_env(mode):
             if os.access(target_file, os.W_OK):
                 os.unlink(target_file)
 
-        command_opts = []
+        command_opts = ['lessc', less_file, css_file]
         if platform.system() == 'Windows':
             # Create a sym link
             if not os.path.lexists(assets_dir):
                 kernel_dll = ctypes.windll.LoadLibrary("kernel32.dll")
                 # TODO check error for failures
                 kernel_dll.CreateSymbolicLink(parent_assets_dir, assets_dir, 1)
-            command_opts = ['node', 'lessc', '-x', less_file, css_file]
+            command_opts.insert(0, 'node')
         else:
             if not os.path.lexists(assets_dir):
                 os.symlink(parent_assets_dir, assets_dir)
-            command_opts = ['lessc', '-x', less_file, css_file]
 
         if os.access(less_dir, os.W_OK):
             rtn_code = subprocess.call(command_opts)

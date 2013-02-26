@@ -1,0 +1,11 @@
+{
+    "content" : {
+        "psychometric_implications" : "Psychometric Implications",
+        "policy_content" : "Policy Content",
+        "admin_details" : "Test Administration Details",
+        "overall_ald" : "Achievement Level Descriptor",
+        "claim_1_ald" : "Achievement Level Descriptor",
+        "claim_2_ald" : "Achievement Level Descriptor",
+        "claim_3_ald" : "Achievement Level Descriptor"
+        }
+}

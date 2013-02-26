@@ -12,6 +12,10 @@ define [
   #    * Generate individual student report
   #    
   generateIndividualStudentReport = (params) ->
+    
+    content = {}
+    getContent "../data/content.json", (tempContent) ->
+      content = tempContent
       
     edwareDataProxy.getDatafromSource "/data/individual_student_report", params, (data) ->
         
@@ -30,6 +34,9 @@ define [
         items.score_text_color = items.cut_points[items.asmt_perf_lvl-1].text_color
         items.score_bg_color = items.cut_points[items.asmt_perf_lvl-1].bg_color
         items.score_name = items.cut_points[items.asmt_perf_lvl-1].name
+
+        # set role-based content
+        items.content = content
         
         i++
         
@@ -50,5 +57,21 @@ define [
         edwareConfidenceLevelBar.create barContainer, item
         
         i++
+
+  #
+  # get role-based content
+  #
+  getContent = (configURL, callback) ->
+      content = {}
+      
+      return false  if configURL is "undefined" or typeof configURL is "number" or typeof configURL is "function" or typeof configURL is "object"
+      
+      $.getJSON configURL, (data) ->
+        content = data.content
+
+        if callback
+          callback content
+        else
+          content
 
   generateIndividualStudentReport: generateIndividualStudentReport

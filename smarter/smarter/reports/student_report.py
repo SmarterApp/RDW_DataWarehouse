@@ -75,7 +75,11 @@ def __arrage_results(results):
     This method arranges the data retreievd from the db to make it easier to consume by the client
     '''
     for result in results:
-        custom = json.loads(result['asmt_custom_metadata'])
+        custom_metadata = result['asmt_custom_metadata']
+        if not custom_metadata:
+            custom = None
+        else:
+            custom = json.loads(custom_metadata)
         # once we use the data, we clean it from the result
         del(result['asmt_custom_metadata'])
 
@@ -92,7 +96,8 @@ def __arrage_results(results):
                 del(result['asmt_cut_point_name_{0}'.format(i)])
                 del(result['asmt_cut_point_{0}'.format(i)])
                 # connect the custom metadata content to the cut_point object
-                result['cut_points'].append(dict(list(cut_point_object.items()) + list(custom[i - 1].items())))
+                if custom != None:
+                    result['cut_points'].append(dict(list(cut_point_object.items()) + list(custom[i - 1].items())))
 
     # rearranging the json so we could use it more easily with mustache
     results = {"items": results}

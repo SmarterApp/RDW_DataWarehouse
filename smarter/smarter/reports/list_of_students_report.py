@@ -66,14 +66,14 @@ def get_list_of_students_report(params, connector=None):
     if connector is None:
         connector = DBConnector()
 
-    districtId = str(params[__districtId])
-    schoolId = str(params[__schoolId])
-    asmtGrade = str(params[__asmtGrade])
+    district_id = str(params[__districtId])
+    school_id = str(params[__schoolId])
+    asmt_grade = str(params[__asmtGrade])
 
-    # asmtSubject is optional.
-    asmtSubject = None
+    # asmt_subject is optional.
+    asmt_subject = None
     if __asmtSubject in params:
-        asmtSubject = params[__asmtSubject]
+        asmt_subject = params[__asmtSubject]
 
     # get sql session
     connector.open_connection()
@@ -119,12 +119,12 @@ def get_list_of_students_report(params, connector=None):
                              .join(fact_asmt_outcome, dim_student.c.student_id == fact_asmt_outcome.c.student_id)
                              .join(dim_asmt, dim_asmt.c.asmt_id == fact_asmt_outcome.c.asmt_id)
                              .join(dim_staff, dim_staff.c.staff_id == fact_asmt_outcome.c.teacher_id)])
-    query = query.where(fact_asmt_outcome.c.school_id == schoolId)
-    query = query.where(and_(fact_asmt_outcome.c.asmt_grade == asmtGrade))
-    query = query.where(and_(fact_asmt_outcome.c.district_id == districtId))
+    query = query.where(fact_asmt_outcome.c.school_id == school_id)
+    query = query.where(and_(fact_asmt_outcome.c.asmt_grade == asmt_grade))
+    query = query.where(and_(fact_asmt_outcome.c.district_id == district_id))
 
-    if asmtSubject is not None:
-        query = query.where(dim_asmt.c.asmt_subject.in_(asmtSubject))
+    if asmt_subject is not None:
+        query = query.where(dim_asmt.c.asmt_subject.in_(asmt_subject))
 
     query = query.order_by(dim_student.c.first_name).order_by(dim_student.c.last_name)
 
@@ -189,7 +189,9 @@ def get_list_of_students_report(params, connector=None):
             student_id_track[result['student_id']] = True
 
     los_results['assessments'] = assessments
-    los_results['cutpoints'] = __get_cut_points(connector, asmtGrade, asmtSubject)
+    los_results['cutpoints'] = __get_cut_points(connector, asmt_grade, asmt_subject)
+    los_results['context'] = __get_context(connector, asmt_grade, school_id, district_id)
+
     #TODO - restructure this method
     #       make sure connection always closed even on error
     connector.close_connection()
@@ -233,3 +235,26 @@ def __get_cut_points(connector, asmtGrade, asmtSubject):
         cutpoints[result["asmt_subject"]] = cutpoint
 
     return cutpoints
+
+
+def __get_context(connector, grade, school_id, district_id):
+    dim_district = connector.get_table('dim_inst_hier')
+
+    query = select([dim_district.c.district_name.label('district_name'),
+                dim_district.c.school_name.label('school_name'),
+                dim_district.c.state_name.label('state_name')],
+               from_obj=[dim_district])
+
+    query = query.where(and_(dim_district.c.school_id == school_id))
+    query = query.where(and_(dim_district.c.district_id == district_id))
+    query = query.where(and_(dim_district.c.most_recent == True))
+
+    # run it and format the results
+    results = connector.get_result(query)
+    if (not results):
+        return results
+    result = results[0]
+
+    result['grade'] = grade
+
+    return result

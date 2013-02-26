@@ -34,7 +34,6 @@ define [
               name: "Grade"
             },
           ]}
-        htmlResult = ""
         
         if data == undefined
           data = data2
@@ -46,8 +45,8 @@ define [
       #    * Creates EDWARE grid
       #    * @param containerId - The container id for breadcrumbs
       #    * @param data
-      #    
+      # 
       create = (containerId, data) ->
-        $("#" + containerId).breadcrumbs data
+        $(containerId).breadcrumbs data
           
       create: create

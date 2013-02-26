@@ -10,7 +10,7 @@ from database.tests.unittest_with_sqlite import Unittest_with_sqlite
 
 class Test(Unittest_with_sqlite):
 
-    def testReport(self):
+    def test_assessments(self):
         testParam = {}
         testParam['districtId'] = 'd1'
         testParam['schoolId'] = 'sc1'
@@ -31,6 +31,16 @@ class Test(Unittest_with_sqlite):
         self.assertEqual("Adam", assessments[0]['student_first_name'], "student_first_name")
         self.assertEqual("Drew", assessments[1]['student_first_name'], "student_first_name")
         self.assertEqual("Takashi", assessments[2]['student_first_name'], "student_first_name")
+
+    def test_breadcrumbs(self):
+        testParam = {}
+        testParam['districtId'] = 'd1'
+        testParam['schoolId'] = 'sc1'
+        testParam['asmtGrade'] = 1
+        testParam['asmtSubject'] = ['ELA', 'Math']
+        results = get_list_of_students_report(testParam)
+
+        self.assertTrue('breadcrumbs' in results, "returning JSON must have cutpoints")
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testReport']

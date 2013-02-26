@@ -32,6 +32,6 @@ require ["jquery", "cs!edwareBreadcrumbs"], ($, edwareBreadcrumbs) ->
           ]}
           
     equal $("#breadcrumbs")[0].innerHTML.length, 0, "breadcrumbs should be empty before test is running"
-    edwareBreadcrumbs.create("breadcrumbs", test_data)
+    edwareBreadcrumbs.create("#breadcrumbs", test_data)
     
     notEqual $("#breadcrumbs")[0].innerHTML.length, 0, "Create method should create breadcrumbs"

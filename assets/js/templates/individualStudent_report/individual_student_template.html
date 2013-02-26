@@ -6,11 +6,11 @@
 		<div class="teacher"><span class="text">Teacher:</span> <span class="value">{{teacher_first_name}} {{teacher_middle_name}} {{teacher_last_name}}</span></div>
 		<div class="date"><span class="text">Date:</span> <span class="value">{{date_taken_month}}/{{date_taken_day}}/{{date_taken_year}}</span></div>
 		<hr>
-		<div class="psychometric"><span class="text">Psychometric Implications</span></div>
+		<div class="psychometric"><span class="text">{{content.psychometric_implications}}</span></div>
 		<hr>
-		<div class="policy"><span class="text">Policy Content</span></div>
+		<div class="policy"><span class="text">{{content.policy_content}}</span></div>
 		<hr>
-		<div class="adminDetails"><span class="text">Test Administration Details</span></div>
+		<div class="adminDetails"><span class="text">{{content.admin_details}}</span></div>
 	</div>
 	
 	<div class="assessmentDetails">
@@ -23,7 +23,7 @@
 				</dl>
 			</div>
 			<div class="info2">
-				Achievement Level Descriptor <a href="#">Find out more >></a>
+				{{content.overall_ald}} <a href="#">Find out more >></a>
 			</div>
 		</div>
 		<div class="confidenceLevel">

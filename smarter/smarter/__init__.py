@@ -53,7 +53,9 @@ def main(global_config, **settings):
     css_dir = os.path.join(parent_assets_dir, "css")
     css_filelist = [f for f in os.listdir(css_dir) if f.endswith('.css')]
     for f in css_filelist:
-        os.unlink(os.path.join(css_dir, f))
+        target_file = os.path.join(css_dir, f)
+        if os.access(target_file, os.W_OK):
+            os.unlink(target_file)
     LessCSS(media_dir=os.path.join(parent_assets_dir, "less"), output_dir=os.path.join(parent_assets_dir, "css"), based=False)
 
     config.add_static_view('assets', '../assets', cache_max_age=0, permission='view')

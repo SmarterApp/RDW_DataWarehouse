@@ -50,10 +50,13 @@ class TestStudentReport(Unittest_with_sqlite):
         cut_points_list = student_report['cut_points']
         self.assertEqual(4, len(cut_points_list), "we should have 4 cut points")
 
+        expected_cut_point_names = set(['Minimal Command', 'Partial Command', 'Sufficient Command', 'Deep Command'])
         for cut_point in cut_points_list:
             self.assertIsInstance(cut_point, dict, "each cut point should be a dictionary")
 
             keys = cut_point.keys()
+            cut_point_name = cut_point['name']
+            self.assertIn(cut_point_name.strip(), expected_cut_point_names, "unexpected cut point name")
             self.assertIn("name", keys, "should contain the name of the cut point")
             self.assertIn("cut_point", keys, "should contain the value of the cut point")
             self.assertIn("text_color", keys, "should contain the text_color of the cut point")

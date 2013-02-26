@@ -14,6 +14,7 @@ requires = [
     'pyramid_debugtoolbar',
     'zope.sqlalchemy',
     'waitress',
+    'edauth',
     'edapi',
     'edschema',
     'py-postgresql',

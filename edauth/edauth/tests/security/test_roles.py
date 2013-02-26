@@ -4,7 +4,7 @@ Created on Feb 16, 2013
 @author: dip
 '''
 import unittest
-from edapi.security.roles import has_undefined_roles, Roles
+from edauth.security.roles import has_undefined_roles, Roles
 
 
 class TestRoles(unittest.TestCase):

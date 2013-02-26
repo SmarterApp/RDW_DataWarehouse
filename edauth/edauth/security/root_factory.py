@@ -6,7 +6,7 @@ Created on Feb 11, 2013
 from pyramid.security import (
     Allow
 )
-from edapi.security.roles import Roles
+from edauth.security.roles import Roles
 
 
 class RootFactory(object):

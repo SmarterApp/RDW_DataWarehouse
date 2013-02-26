@@ -4,7 +4,7 @@ Created on Feb 17, 2013
 @author: tosako
 '''
 import unittest
-from edapi.security.session import Session
+from edauth.security.session import Session
 
 
 class Test(unittest.TestCase):

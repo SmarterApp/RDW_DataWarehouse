@@ -3,8 +3,8 @@ Created on Feb 11, 2013
 
 @author: dip
 '''
-from edapi.security.session_manager import get_user_session,\
-    update_session_access, is_session_expired
+from edauth.security.session_manager import is_session_expired, get_user_session,\
+    update_session_access
 
 
 def session_check(session_id, request):

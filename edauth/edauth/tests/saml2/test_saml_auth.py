@@ -6,8 +6,8 @@ Created on Feb 16, 2013
 import unittest
 import os
 from xml.dom.minidom import parseString
-from edapi.saml2.saml_response import SAMLResponse
-from edapi.saml2.saml_auth import SamlAuth
+from edauth.saml2.saml_response import SAMLResponse
+from edauth.saml2.saml_auth import SamlAuth
 
 
 class Test(unittest.TestCase):

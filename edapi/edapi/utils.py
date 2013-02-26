@@ -28,14 +28,6 @@ def enum(*sequential, **named):
 VALID_TYPES = enum(STRING='string', INTEGER='integer', NUMBER='number', BOOLEAN='boolean', ANY='any', ARRAY='array')
 
 
-# converts a string value to int, returns None if value is None
-def convert_to_int(value):
-    converted_value = None
-    if value is not None:
-        converted_value = int(value)
-    return converted_value
-
-
 class report_config(object):
     '''
     used for processing decorator '@report_config' in pyramid scans

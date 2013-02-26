@@ -4,21 +4,21 @@ Created on Feb 16, 2013
 @author: dip
 '''
 import unittest
-from edapi.security.views import login, saml2_post_consumer, login_callback,\
+from edauth.security.views import login, saml2_post_consumer, login_callback,\
     logout_redirect
 from pyramid import testing
 from pyramid.testing import DummyRequest
 from pyramid.httpexceptions import HTTPFound, HTTPForbidden
 from urllib.parse import urlparse
 import urllib
-from edapi.security.views import logout
+from edauth.security.views import logout
 import os
 from database.tests.unittest_with_sqlite import Unittest_with_sqlite
 import uuid
 from datetime import timedelta, datetime
 from database.connector import DBConnector
 from pyramid.response import Response
-from edapi.security.utils import deflate_base64_encode, inflate_base64_decode
+from edauth.security.utils import deflate_base64_encode, inflate_base64_decode
 
 
 def get_saml_from_resource_file(file_mame):

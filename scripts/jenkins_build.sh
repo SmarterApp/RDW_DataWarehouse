@@ -189,6 +189,9 @@ function create_sym_link_for_apache {
    # temp solution for LESS
    PATH=$PATH:/usr/local/bin
    /usr/local/bin/lessc ${WORKSPACE}/assets/less/style.less ${WORKSPACE}/assets/css/style.css
+   /usr/local/bin/lessc ${WORKSPACE}/assets/less/base.less ${WORKSPACE}/assets/css/base.css
+   /usr/local/bin/lessc ${WORKSPACE}/assets/less/color.less ${WORKSPACE}/assets/css/color.css
+   /usr/local/bin/lessc ${WORKSPACE}/assets/less/widget.less ${WORKSPACE}/assets/css/widget.css
 }
 
 function restart_apache {

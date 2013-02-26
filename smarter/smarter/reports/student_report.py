@@ -98,6 +98,8 @@ def __arrage_results(results):
                 # connect the custom metadata content to the cut_point object
                 if custom != None:
                     result['cut_points'].append(dict(list(cut_point_object.items()) + list(custom[i - 1].items())))
+                else:
+                    result['cut_points'] = cut_point_object
 
     # rearranging the json so we could use it more easily with mustache
     results = {"items": results}

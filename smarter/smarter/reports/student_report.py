@@ -73,6 +73,7 @@ def __prepare_query(connector, student_id, assessment_id):
     query = query.where(fact_asmt_outcome.c.student_id == student_id)
     if assessment_id is not None:
         query = query.where(fact_asmt_outcome.c.asmt_id == assessment_id)
+    query = query.order_by(dim_asmt.c.asmt_subject.desc())
     return query
 
 

@@ -6,7 +6,8 @@ define [
   "cs!edwareConfidenceLevelBar"
   "text!templates/individualStudent_report/individual_student_template.html"
   "text!templates/individualStudent_report/claimsInfo.html"
-], ($, Mustache, edwareDataProxy, edwareConfidenceLevelBar, indivStudentReportTemplate, claimsInfoTemplate) ->
+  "cs!edwareBreadcrumbs"
+], ($, Mustache, edwareDataProxy, edwareConfidenceLevelBar, indivStudentReportTemplate, claimsInfoTemplate, edwareBreadcrumbs) ->
     
   #
   #    * Generate individual student report
@@ -58,10 +59,14 @@ define [
           },
           {
             name: contextData['grade']
+            link: "http://www.cnn.com"
           },
+          {
+            name: contextData['student_name']
+          }
         ]}
       
-      #$('#breadcrumb').breadcrumbs(breadcrumbsData)
+      $('#breadcrumb').breadcrumbs(breadcrumbsData)
         
       partials = 
         claimsInfo: claimsInfoTemplate

@@ -208,12 +208,13 @@ def __get_context(connector, school_id, district_id, grade, student_name):
 
     query = select([dim_district.c.district_name.label('district_name'),
                     dim_district.c.school_name.label('school_name'),
+                    dim_district.c.most_recent.label('most_recent'),
                     dim_district.c.state_name.label('state_name')],
                    from_obj=[dim_district])
 
     query = query.where(and_(dim_district.c.school_id == school_id))
     query = query.where(and_(dim_district.c.district_id == district_id))
-    query = query.where(and_(dim_district.c.most_recent is True))
+    query = query.where(and_(dim_district.c.most_recent == 1))
 
     # run it and format the results
     results = connector.get_result(query)

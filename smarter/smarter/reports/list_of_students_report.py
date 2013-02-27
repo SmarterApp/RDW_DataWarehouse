@@ -247,7 +247,7 @@ def __get_context(connector, grade, school_id, district_id):
 
     query = query.where(and_(dim_district.c.school_id == school_id))
     query = query.where(and_(dim_district.c.district_id == district_id))
-    query = query.where(and_(dim_district.c.most_recent is True))
+    query = query.where(and_(dim_district.c.most_recent == 1))
 
     # run it and format the results
     results = connector.get_result(query)

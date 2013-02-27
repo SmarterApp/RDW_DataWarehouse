@@ -134,7 +134,7 @@ def saml2_post_consumer(request):
     __skip_verification = request.registry.settings.get('auth.skip.verify', False)
     # TODO: enable auth_request_id
     # if __SAMLResposne_manager.is_auth_request_id_ok(auth_request_id)
-    if  __skip_verification or (__SAMLResposne_manager.is_condition_ok() and __SAMLResposne_manager.is_status_ok() and __SAMLResposne_manager.is_signature_ok(__SAMLResponse_IDP_Metadata_manager.get_trusted_pem_filename())):
+    if __SAMLResposne_manager.is_condition_ok() and __SAMLResposne_manager.is_status_ok() and (__skip_verification or __SAMLResposne_manager.is_signature_ok(__SAMLResponse_IDP_Metadata_manager.get_trusted_pem_filename())):
 
         # create a session
         session_timeout = convert_to_int(request.registry.settings['auth.session.timeout'])

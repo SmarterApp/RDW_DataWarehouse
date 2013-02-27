@@ -3,8 +3,8 @@ Created on Feb 14, 2013
 
 @author: tosako
 '''
-from database.connector import DBConnector
-from sqlalchemy.sql.expression import select, func
+from database.connector import DBConnection
+from sqlalchemy.sql.expression import select
 from datetime import datetime, timedelta
 import uuid
 import re
@@ -22,21 +22,19 @@ def get_user_session(user_session_id):
     '''
     session = None
     if user_session_id is not None:
-        connection = DBConnector()
-        connection.open_connection()
-        user_session = connection.get_table('user_session')
-        query = select([user_session.c.session_context.label('session_context'),
-                        user_session.c.last_access.label('last_access'),
-                        user_session.c.expiration.label('expiration')]).where(user_session.c.session_id == user_session_id)
-        result = connection.get_result(query)
-        session_context = None
-        if result:
-            if 'session_context' in result[0]:
-                session_context = result[0]['session_context']
-                expiration = result[0]['expiration']
-                last_access = result[0]['last_access']
-                session = __create_from_session_json_context(user_session_id, session_context, last_access, expiration)
-            connection.close_connection()
+        with DBConnection() as connection:
+            user_session = connection.get_table('user_session')
+            query = select([user_session.c.session_context.label('session_context'),
+                            user_session.c.last_access.label('last_access'),
+                            user_session.c.expiration.label('expiration')]).where(user_session.c.session_id == user_session_id)
+            result = connection.get_result(query)
+            session_context = None
+            if result:
+                if 'session_context' in result[0]:
+                    session_context = result[0]['session_context']
+                    expiration = result[0]['expiration']
+                    last_access = result[0]['last_access']
+                    session = __create_from_session_json_context(user_session_id, session_context, last_access, expiration)
 
     return session
 
@@ -51,12 +49,10 @@ def create_new_user_session(saml_response, session_expire_after_in_secs=30):
     expiration_datetime = current_datetime + timedelta(seconds=session_expire_after_in_secs)
     # create session SAML Response
     session = __create_from_SAMLResponse(saml_response, current_datetime, expiration_datetime)
-    connection = DBConnector()
-    connection.open_connection()
-    user_session = connection.get_table('user_session')
-    # store the session into DB
-    connection.execute(user_session.insert(), session_id=session.get_session_id(), session_context=session.get_session_json_context(), last_access=current_datetime, expiration=expiration_datetime)
-    connection.close_connection()
+    with DBConnection() as connection:
+        user_session = connection.get_table('user_session')
+        # store the session into DB
+        connection.execute(user_session.insert(), session_id=session.get_session_id(), session_context=session.get_session_json_context(), last_access=current_datetime, expiration=expiration_datetime)
     return session
 
 
@@ -65,15 +61,12 @@ def update_session_access(session):
     update user_session.last_access
     '''
     __session_id = session.get_session_id()
-    connection = DBConnector()
-    connection.open_connection()
-    user_session = connection.get_table('user_session')
-
-    # update last_access field
-    connection.execute(user_session.update().
-                       where(user_session.c.session_id == __session_id).
-                       values(last_access=datetime.now()))
-    connection.close_connection()
+    with DBConnection() as connection:
+        user_session = connection.get_table('user_session')
+        # update last_access field
+        connection.execute(user_session.update().
+                           where(user_session.c.session_id == __session_id).
+                           values(last_access=datetime.now()))
 
 
 def delete_session(session_id):
@@ -82,11 +75,9 @@ def delete_session(session_id):
     '''
     # Do not delete long lived sessions (prefix with 'L-')
     if session_id.startswith('L-') is False:
-        connection = DBConnector()
-        connection.open_connection()
-        user_session = connection.get_table('user_session')
-        connection.execute(user_session.delete(user_session.c.session_id == session_id))
-        connection.close_connection()
+        with DBConnection() as connection:
+            user_session = connection.get_table('user_session')
+            connection.execute(user_session.delete(user_session.c.session_id == session_id))
 
 
 def __create_from_SAMLResponse(saml_response, last_access, expiration):

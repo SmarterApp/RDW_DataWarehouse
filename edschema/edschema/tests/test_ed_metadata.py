@@ -4,7 +4,7 @@ Created on Feb 8, 2013
 @author: tosako
 '''
 import unittest
-from database.connector import DBConnector
+from database.connector import DBConnection
 from database.tests.unittest_with_sqlite import Unittest_with_sqlite
 
 
@@ -17,7 +17,7 @@ class Test(Unittest_with_sqlite):
     # Test dim_district data
     def test_dim_dim_inst_hier_type(self):
         self.assertTrue('dim_inst_hier' in self.get_Metadata().tables, "missing dim_inst_hier")
-        connector = DBConnector()
+        connector = DBConnection()
         connector.open_connection()
         dim_inst_hier = connector.get_table("dim_inst_hier")
 

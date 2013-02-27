@@ -3,6 +3,8 @@ Created on Jan 18, 2013
 
 @author: dip
 '''
+from pyramid.httpexceptions import HTTPNotFound
+from edapi.httpexceptions import generate_exception_response
 
 
 class EdApiError(Exception):
@@ -30,3 +32,15 @@ class InvalidParameterError(EdApiError):
             self.msg = "Invalid Parameters"
         else:
             self.msg = msg
+
+
+class NotFoundException(HTTPNotFound):
+    '''
+    a custom http exception return when resource not found
+    '''
+    #code = 404
+    #title = 'Requested report not found'
+    #explanation = ('The resource could not be found.')
+
+    def __init__(self, msg):
+        super().__init__(**generate_exception_response(msg))

@@ -7,10 +7,10 @@ Created on Jan 13, 2013
 
 from edapi.utils import report_config
 from sqlalchemy.sql import select
-from database.connector import DBConnector
+from database.connector import DBConnection
 import json
 from sqlalchemy.sql.expression import and_
-from edapi.httpexceptions import EdApiHTTPNotFound
+from edapi.exceptions import NotFoundException
 
 
 def __prepare_query(connector, student_id, assessment_id):
@@ -73,6 +73,7 @@ def __prepare_query(connector, student_id, assessment_id):
     query = query.where(fact_asmt_outcome.c.student_id == student_id)
     if assessment_id is not None:
         query = query.where(fact_asmt_outcome.c.asmt_id == assessment_id)
+    query = query.order_by(dim_asmt.c.asmt_subject.desc())
     return query
 
 
@@ -96,9 +97,10 @@ def __arrage_results(results):
         # TODO: take care of less than 4 cutpoints
         for i in range(1, 5):
             # we only take cutpoints with values > 0
-            if result['asmt_cut_point_{0}'.format(i)] > 0:
+            cut_point = result['asmt_cut_point_{0}'.format(i)]
+            if cut_point and cut_point > 0:
                 cut_point_object = {'name': str(result['asmt_cut_point_name_{0}'.format(i)]),
-                                    'cut_point': str(result['asmt_cut_point_{0}'.format(i)])}
+                                    'cut_point': str(cut_point)}
                 # once we use the data, we clean it from the result
                 del(result['asmt_cut_point_name_{0}'.format(i)])
                 del(result['asmt_cut_point_{0}'.format(i)])
@@ -126,7 +128,7 @@ def __arrage_results(results):
                         "pattern": "^[a-zA-Z0-9\-]{0,50}$",
                     },
                })
-def get_student_report(params, connector=None):
+def get_student_report(params):
     '''
     report for student and student_assessment
     '''
@@ -139,29 +141,23 @@ def get_student_report(params, connector=None):
     if 'assessmentId' in params:
         assessment_id = str(params['assessmentId'])
 
-    # if connector is not supplied, use DBConnector
-    if connector is None:
-        connector = DBConnector()
+    with DBConnection() as connection:
+        query = __prepare_query(connection, student_id, assessment_id)
 
-    query = __prepare_query(connector, student_id, assessment_id)
+        result = connection.get_result(query)
+        if result:
+            first_student = result[0]
+            student_name = '{0} {1} {2}'.format(first_student['student_first_name'], first_student['student_middle_name'], first_student['student_last_name'])
+            context = __get_context(connection, first_student['school_id'], first_student['district_id'], first_student['grade'], student_name)
+        else:
+            raise NotFoundException("Could not find student with id {0}".format(student_id))
 
-    # get sql session
-    connector.open_connection()
-    result = connector.get_result(query)
-    if result:
-        first_student = result[0]
-        student_name = '{0} {1} {2}'.format(first_student['student_first_name'], first_student['student_middle_name'], first_student['student_last_name'])
-        context = __get_context(connector, first_student['school_id'], first_student['district_id'], first_student['grade'], student_name)
-    else:
-        raise EdApiHTTPNotFound("Could not find student with id {0}".format(student_id))
-    connector.close_connection()
+        # prepare the result for the client
+        result = __arrage_results(result)
 
-    # prepare the result for the client
-    result = __arrage_results(result)
+        result['context'] = context
 
-    result['context'] = context
-
-    return result
+        return result
 
 
 @report_config(name='student_assessments_report',
@@ -172,35 +168,28 @@ def get_student_report(params, connector=None):
                    }
                }
                )
-def get_student_assessment(params, connector=None):
-
-    # if connector is not supplied, use DBConnector
-    if connector is None:
-        connector = DBConnector()
+def get_student_assessment(params):
 
     # get studentId
     student_id = params['studentId']
 
-    # get sql session
-    connector.open_connection()
+    with DBConnection() as connection:
+        # get table metadatas
+        dim_asmt = connection.get_table('dim_asmt')
+        fact_asmt_outcome = connection.get_table('fact_asmt_outcome')
 
-    # get table metadatas
-    dim_asmt = connector.get_table('dim_asmt')
-    fact_asmt_outcome = connector.get_table('fact_asmt_outcome')
-
-    query = select([dim_asmt.c.asmt_id,
-                    dim_asmt.c.asmt_subject,
-                    dim_asmt.c.asmt_type,
-                    dim_asmt.c.asmt_period,
-                    dim_asmt.c.asmt_version,
-                    dim_asmt.c.asmt_grade],
-                   from_obj=[dim_asmt
-                             .join(fact_asmt_outcome)])
-    query = query.where(fact_asmt_outcome.c.student_id == student_id)
-    query = query.order_by(dim_asmt.c.asmt_subject)
-    result = connector.get_result(query)
-    connector.close_connection()
-    return result
+        query = select([dim_asmt.c.asmt_id,
+                        dim_asmt.c.asmt_subject,
+                        dim_asmt.c.asmt_type,
+                        dim_asmt.c.asmt_period,
+                        dim_asmt.c.asmt_version,
+                        dim_asmt.c.asmt_grade],
+                       from_obj=[fact_asmt_outcome
+                                 .join(dim_asmt)])
+        query = query.where(fact_asmt_outcome.c.student_id == student_id)
+        query = query.order_by(dim_asmt.c.asmt_subject)
+        result = connection.get_result(query)
+        return result
 
 
 def __get_context(connector, school_id, district_id, grade, student_name):

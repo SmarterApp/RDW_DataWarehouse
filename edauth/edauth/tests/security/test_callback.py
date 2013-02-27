@@ -4,9 +4,8 @@ Created on Feb 16, 2013
 @author: dip
 '''
 from database.tests.unittest_with_sqlite import Unittest_with_sqlite
-from database.connector import DBConnector
+from database.connector import DBConnection
 from edauth.security.callback import session_check
-from edauth.security.roles import Roles
 import unittest
 import uuid
 from datetime import timedelta, datetime
@@ -16,11 +15,9 @@ class TestCallback(Unittest_with_sqlite):
 
     def setUp(self):
         # delete all user_session before test
-        connection = DBConnector()
-        connection.open_connection()
-        user_session = connection.get_table('user_session')
-        connection.execute(user_session.delete())
-        connection.close_connection()
+        with DBConnection() as connection:
+            user_session = connection.get_table('user_session')
+            connection.execute(user_session.delete())
 
     def tearDown(self):
         pass
@@ -35,11 +32,9 @@ class TestCallback(Unittest_with_sqlite):
         session_json = '{"roles": ["TEACHER", "STAFF"], "name": {"fullName": "Linda Kim"}, "uid": "linda.kim"}'
         current_datetime = datetime.now()
         expiration_datetime = current_datetime + timedelta(seconds=30)
-        connection = DBConnector()
-        connection.open_connection()
-        user_session = connection.get_table('user_session')
-        connection.execute(user_session.insert(), session_id=session_id, session_context=session_json, last_access=current_datetime, expiration=expiration_datetime)
-        connection.close_connection()
+        with DBConnection() as connection:
+            user_session = connection.get_table('user_session')
+            connection.execute(user_session.insert(), session_id=session_id, session_context=session_json, last_access=current_datetime, expiration=expiration_datetime)
 
         roles = session_check(session_id, None)
         self.assertEquals(roles, ["TEACHER", "STAFF"])
@@ -50,11 +45,9 @@ class TestCallback(Unittest_with_sqlite):
         session_json = '{"roles": ["TEACHER", "STAFF"], "name": {"fullName": "Linda Kim"}, "uid": "linda.kim"}'
         current_datetime = datetime.now() + timedelta(seconds=-30)
         expiration_datetime = current_datetime
-        connection = DBConnector()
-        connection.open_connection()
-        user_session = connection.get_table('user_session')
-        connection.execute(user_session.insert(), session_id=session_id, session_context=session_json, last_access=current_datetime, expiration=expiration_datetime)
-        connection.close_connection()
+        with DBConnection() as connection:
+            user_session = connection.get_table('user_session')
+            connection.execute(user_session.insert(), session_id=session_id, session_context=session_json, last_access=current_datetime, expiration=expiration_datetime)
 
         roles = session_check(session_id, None)
         self.assertEquals(roles, [])

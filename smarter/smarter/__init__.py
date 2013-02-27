@@ -77,7 +77,7 @@ def prepare_env(settings):
             if os.access(target_file, os.W_OK):
                 os.unlink(target_file)
 
-        command_opts = ['lessc', less_file, css_file]
+        command_opts = ['lessc', '-x', less_file, css_file]
         if platform.system() == 'Windows':
             # Create a sym link
             if not os.path.lexists(assets_dir):

@@ -7,6 +7,7 @@ import tempfile
 import os
 import subprocess
 from subprocess import STDOUT
+import traceback
 
 
 class SAMLResposneSignatureVerification():
@@ -38,5 +39,6 @@ class SAMLResposneSignatureVerification():
                     if token == "OK":
                         verify = True
             except:
+                traceback.print_exc()
                 verify = False
         return verify

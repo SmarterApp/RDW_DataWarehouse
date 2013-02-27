@@ -125,7 +125,7 @@ def get_list_of_students_report(params):
 
         results = connector.get_result(query)
 
-        # Formatting data for Front End 
+        # Formatting data for Front End
         for result in results:
             student_id = result['student_id']
             student = {}

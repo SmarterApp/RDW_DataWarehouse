@@ -151,13 +151,15 @@ def get_student_report(params, connector=None):
     if result:
         first_student = result[0]
         student_name = '{0} {1} {2}'.format(first_student['student_first_name'], first_student['student_middle_name'], first_student['student_last_name'])
-        result['context'] = __get_context(connector, first_student['school_id'], first_student['district_id'], student_name)
+        context = __get_context(connector, first_student['school_id'], first_student['district_id'], first_student['grade'], student_name)
     else:
         raise EdApiHTTPNotFound("Could not find student with id {0}".format(student_id))
     connector.close_connection()
 
     # prepare the result for the client
     result = __arrage_results(result)
+
+    result['context'] = context
 
     return result
 

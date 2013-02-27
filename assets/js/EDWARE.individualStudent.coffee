@@ -39,6 +39,29 @@ define [
         items.content = content
         
         i++
+      
+      contextData = data.context
+      
+      breadcrumbsData = 
+        { "items": [
+          {
+            name: contextData['state_name']
+            link: "http://www.google.com" 
+          },
+          {
+            name: contextData['district_name']
+            link: "http://www.cnn.com" 
+          },
+          {
+            name: contextData['school_name']
+            link: "http://www.cnn.com" 
+          },
+          {
+            name: contextData['grade']
+          },
+        ]}
+      
+      #$('#breadcrumb').breadcrumbs(breadcrumbsData)
         
       partials = 
         claimsInfo: claimsInfoTemplate

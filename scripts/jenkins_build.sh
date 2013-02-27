@@ -183,6 +183,7 @@ function create_sym_link_for_apache {
     mkdir -p ${APACHE_DIR}
     /bin/ln -sf ${VIRTUALENV_DIR}/lib/python3.3/site-packages ${APACHE_DIR}/pythonpath
     /bin/ln -sf ${WORKSPACE}/smarter/test.ini ${APACHE_DIR}/development_ini
+    /bin/ln -sf ${WORKSPACE}/assets ${WORKSPACE}/smarter/assets
     /bin/ln -sf ${WORKSPACE}/test_deploy/pyramid.wsgi ${APACHE_DIR}/pyramid_conf
     /bin/ln -sf ${VIRTUALENV_DIR} ${APACHE_DIR}/venv
 

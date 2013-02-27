@@ -31,7 +31,7 @@ define [
           },
           {
             name: contextData['school_name']
-            link: "http://www.cnn.com" 
+            link: "/assets/html/studentList.html?districtId={0}" 
           },
           {
             name: contextData['grade']

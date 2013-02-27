@@ -10,12 +10,12 @@ from database.tests.unittest_with_sqlite import Unittest_with_sqlite
 
 class Test(Unittest_with_sqlite):
 
-    def testReport(self):
+    def test_assessments(self):
         testParam = {}
-        testParam['districtId'] = 1
-        testParam['schoolId'] = 1
+        testParam['districtId'] = 'd1'
+        testParam['schoolId'] = 'sc1'
         testParam['asmtGrade'] = 1
-        testParam['asmtSubject'] = ['ELA', 'MATH']
+        testParam['asmtSubject'] = ['ELA', 'Math']
         results = get_list_of_students_report(testParam)
 
         self.assertTrue('cutpoints' in results, "returning JSON must have cutpoints")
@@ -24,13 +24,23 @@ class Test(Unittest_with_sqlite):
         cutpoints = results['cutpoints']
         self.assertEqual(2, len(cutpoints), "cutpoints are ELA and MATH")
         self.assertTrue('ELA' in cutpoints, 'ELA')
-        self.assertTrue('MATH' in cutpoints, 'MATH')
+        self.assertTrue('Math' in cutpoints, 'Math')
 
         assessments = results['assessments']
         self.assertEqual(3, len(assessments), "3 assessments")
         self.assertEqual("Adam", assessments[0]['student_first_name'], "student_first_name")
-        self.assertEqual("Doris", assessments[1]['student_first_name'], "student_first_name")
+        self.assertEqual("Drew", assessments[1]['student_first_name'], "student_first_name")
         self.assertEqual("Takashi", assessments[2]['student_first_name'], "student_first_name")
+
+    def test_breadcrumbs(self):
+        testParam = {}
+        testParam['districtId'] = 'd1'
+        testParam['schoolId'] = 'sc1'
+        testParam['asmtGrade'] = 1
+        testParam['asmtSubject'] = ['ELA', 'Math']
+        results = get_list_of_students_report(testParam)
+
+        self.assertTrue('context' in results, "returning JSON must have context")
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testReport']

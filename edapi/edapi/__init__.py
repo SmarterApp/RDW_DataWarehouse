@@ -2,6 +2,10 @@
 Entry point for edapi
 
 '''
+from pyramid.authentication import AuthTktAuthenticationPolicy
+from pyramid.authorization import ACLAuthorizationPolicy
+
+
 EDAPI_REPORTS_PLACEHOLDER = 'edapi_reports'
 
 
@@ -40,6 +44,7 @@ class ContentTypePredicate(object):
 
 # this is automatically called by consumer of edapi when it calls config.include(edapi)
 def includeme(config):
+
     # routing for retrieving list of report names with GET
     config.add_route('list_of_reports', '/data')
 

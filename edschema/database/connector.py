@@ -5,8 +5,6 @@ Created on Jan 15, 2013
 '''
 
 from database.interfaces import ConnectionBase
-from edschema.ed_metadata import generate_ed_metadata
-from sqlalchemy.engine import engine_from_config
 from zope import interface, component
 from zope.interface.declarations import implementer
 from sqlalchemy import Table
@@ -64,6 +62,9 @@ class DBConnector(ConnectionBase):
         dbUtil = component.queryUtility(IDbUtil)
         metadata = dbUtil.get_metadata()
         return Table(table_name, metadata)
+
+    def execute(self, statement, *multiparams, **params):
+        return self.__connection.execute(statement, *multiparams, **params)
 
     def open_connection(self):
         """

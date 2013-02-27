@@ -11,15 +11,6 @@ require ["jquery", "cs!edwareDataProxy"], ($, dataProxy) ->
   test "Test getDatafromSource method", ->
     ok dataProxy.getDatafromSource isnt "undefined", "dataProxy getDatafromSource method should be defined"
     ok typeof dataProxy.getDatafromSource is "function", "dataProxy getDatafromSource method should be function"
-    
-    dataProxy.getDatafromSource("/data/list_of_students1", {"districtId": 4, "schoolId":3,"asmtGrade":"1"}, ->)
-    
-    stop();
-    
-    setTimeout (->
-      deepEqual $("#errorMessage").html(), "404: Not Found", "If there is an ajax error, then it should displayed on the page"
-      start()
-    ), 1000
       
     deepEqual dataProxy.getDatafromSource(->), false, "If sourceURL is not passed as a parameter, then the method should return false"
     deepEqual dataProxy.getDatafromSource(1234, ->), false, "If sourceURL is passed as a number, then the method should return false"

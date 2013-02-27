@@ -4,7 +4,8 @@ define [
   "cs!edwareDataProxy"
   "cs!edwareGrid"
   "cs!edwareUtil"
-], ($, edwareDataProxy, edwareGrid, edwareUtil) ->
+  "cs!edwareBreadcrumbs"
+], ($, edwareDataProxy, edwareGrid, edwareUtil, edwareBreadcrumbs) ->
   
   assessmentsData = []
   assessmentsCutPoints = []
@@ -13,10 +14,31 @@ define [
   #
   #    * Create Student data grid
   #    
-      
+  
   createStudentGrid = (params) ->
+    
+    getStudentData "/data/list_of_students", params, (assessmentsData, assessmentCutpoints, contextData) ->
       
-    getStudentData "/data/list_of_students", params, (assessmentsData, assessmentCutpoints) ->
+      breadcrumbsData = 
+        { "items": [
+          {
+            name: contextData['state_name']
+            link: "http://www.google.com" 
+          },
+          {
+            name: contextData['district_name']
+            link: "http://www.cnn.com" 
+          },
+          {
+            name: contextData['school_name']
+            link: "http://www.cnn.com" 
+          },
+          {
+            name: contextData['grade']
+          },
+        ]}
+      
+      $('#breadcrumb').breadcrumbs(breadcrumbsData)
       
       getStudentsConfig "../data/student.json", (studentsConfig) ->
         edwareGrid.create "gridTable", studentsConfig, assessmentsData, assessmentCutpoints
@@ -31,11 +53,12 @@ define [
     edwareDataProxy.getDatafromSource sourceURL, params, (data) ->
       assessmentsData = data.assessments
       assessmentsCutPoints = data.cutpoints
+      contextData = data.context
       
       if callback
-        callback assessmentsData, assessmentsCutPoints
+        callback assessmentsData, assessmentsCutPoints, contextData
       else
-        assessmentArray assessmentsData, assessmentsCutPoints
+        assessmentArray assessmentsData, assessmentsCutPoints, contextData
       
       
   getStudentsConfig = (configURL, callback) ->

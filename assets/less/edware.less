@@ -1,0 +1,229 @@
+@import "base";
+@import "color";
+
+body {
+  font-family: helvetica, arial, sans-serif;
+  margin: 0 auto;
+  width: 980px;
+}
+
+h3 {
+  margin-top: 20px;
+  border-bottom: solid 1px #ccc;   
+ }
+#header {
+  color: @base-color;
+  height: 60px;
+  background: #fbfbfb;
+
+  h1 {
+    font-size: 26px;
+    font-weight: bold;
+  }
+  
+  #logo {
+    width: 100px;
+    height: 20px;
+    padding: 5px;
+    background: #dbdbdb;
+    color: #fff;
+    float: left;
+    text-align: center;
+    margin-top: 20px;
+    margin-left: 20px;
+  }
+  
+  .topLinks {
+    float: right;
+    color: #565656;
+    margin-top: 30px;
+    margin-right: 20px;
+    
+    a {
+      color: #9f9f9f;
+    }
+  }
+}
+
+#content { 
+  margin-top: 20px; 
+  min-height: 200px;
+}
+  
+  
+/* Indivial Student Report styles */
+.placeholder {
+  background: #E2E2E2;
+  margin: 20px 3% 20px 0;
+  color: #fff;
+  text-align: center;
+}
+.grayBox {
+  background: #E2E2E2
+}
+
+#individualStudentContent {
+    float: left;
+    padding-bottom: 20px;
+    width: 100%;
+}
+.assessmentSection {
+  background: #fff;
+  border: solid 1px #cecece;
+  .rounded-corners(5px);
+  float: left;
+  margin: 20px 20px 0;
+  
+  .assesmentSummary {
+    background: #F8F8F8;
+    height: 520px;
+    padding: 15px;
+    width: 170px;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    
+    .text {
+        color: #000000;
+      }
+      
+    .value {
+      color: #474747;
+    }
+    
+    .subject {
+      font-size: 34px;
+      font-weight: bold;
+      color: #18577e;
+      line-height: 40px;
+    }
+    
+    .type {
+      font-size: 15px;
+      font-weight: bold;
+      color: #707070;
+    }
+    
+    .teacher, .date, .psychometric, .policy, .adminDetails {     
+      font-size: 13px; 
+    }
+  }
+  
+  .assessmentDetails {
+    width: 740px;
+    margin-left: 200px;
+    
+    .overallScoreSection {
+      min-height: 70px;
+      margin: 20px 0 0 20px;
+      
+      .indicator {
+        background-image: url("../images/ScoreCircle.png");
+        background-position: no-repeat;
+        float: left;
+        width: 65px;
+        height: 40px;
+        padding-top: 25px;
+        font-size: 18px;
+        text-align: center;
+      }
+      
+      .info {
+        float: left;
+        margin: 0px 10px;
+        
+        dl, dd {
+          margin: 0;
+        }
+        
+        .overallText {
+          font-size: 16px;
+          color: #4a4a4a;
+          line-height: 32px;
+        }
+        
+        .overallDesc {
+          font-size: 22px;
+        }
+      }
+      
+      .info2 {
+        background: url("../images/dottedline.png") no-repeat top left;
+        margin-left: 300px;
+        margin-right: 20px;
+        padding-left: 20px;
+        font-size: 14px;
+        color: #606263;
+        min-height: 70px;
+      }
+    }
+    
+    .claimsSection {
+      
+      padding: 10px;
+      
+      h4 {
+        margin: 0;
+      }
+      
+      ul {
+        height: 270px;
+        margin-left: 0;
+        
+        li {
+          display: inline-block;
+          height: 250px;
+          width: 28%;
+        }
+      }
+      
+      .claim {
+        height: 270px;
+        width: 200px;
+        float: left;
+        background: #F8F8F8;
+        margin: 10px;
+        padding: 10px;
+        
+        .claimHeader {
+          height: 70px;
+        }
+        
+        .claimScore {
+          height: 50px;
+        }
+        
+        .claimDesc {
+          height: 90px;
+        }
+      }
+      
+    }
+  }
+}
+
+
+#footer {
+  color: @white;
+  background-color: #b1b1b1;
+  float: left;
+  width: 100%;
+  font-size: 12px;
+}
+
+#copyright {
+  float: left;
+  padding: 10px;
+  padding-left: 20px;
+}
+
+#purpose {
+  float: right;
+  padding: 10px;
+}
+
+#legend {
+  float: right;
+  padding: 10px;
+  padding-right: 20px;
+}
+

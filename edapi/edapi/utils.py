@@ -7,11 +7,16 @@ import venusian
 import validictory
 from edapi.exceptions import ReportNotFoundError, InvalidParameterError
 import inspect
+import logging
 
 REPORT_REFERENCE_FIELD_NAME = 'name'
 PARAMS_REFERENCE_FIELD_NAME = 'params'
 REF_REFERENCE_FIELD_NAME = 'reference'
 VALUE_FIELD_NAME = 'value'
+
+REPORT_CONFIG_INCLUDE_PARAMS = ['type', 'required', 'value']
+
+logger = logging.getLogger(__name__)
 
 
 def enum(*sequential, **named):
@@ -21,8 +26,6 @@ def enum(*sequential, **named):
     return type('Enum', (), enums)
 
 VALID_TYPES = enum(STRING='string', INTEGER='integer', NUMBER='number', BOOLEAN='boolean', ANY='any', ARRAY='array')
-
-# hello
 
 
 class report_config(object):
@@ -94,23 +97,29 @@ def generate_report_config(registry, report_name):
     else:
         report_config = get_report_dict_value(report, PARAMS_REFERENCE_FIELD_NAME, InvalidParameterError)
     # expand the param fields
-    propagate_params(registry, report_config)
-    return report_config
+    return prepare_params(registry, report_config)
 
 
 # looks for fields that can be expanded with no external configuration and expands them by calling the right method.
-def propagate_params(registry, params):
-    for dictionary in params.values():
+def prepare_params(registry, params):
+    response_dict = {}
+    for (name, dictionary) in params.items():
+        item = {}
+        response_dict[name] = item
         for (key, value) in dictionary.items():
+            if key in REPORT_CONFIG_INCLUDE_PARAMS:
+                item[key] = value
             if (key == REPORT_REFERENCE_FIELD_NAME):
                 sub_report = get_report_dict_value(registry, value, ReportNotFoundError)
                 report_config = sub_report.get(PARAMS_REFERENCE_FIELD_NAME)
                 (report_data, expanded) = expand_field(registry, value, report_config)
                 if (expanded):
-                    # if the value has changed, we change the key to be VALUE_FIELD_NAME
-                    dictionary[VALUE_FIELD_NAME] = report_data
-                    del dictionary[key]
-    print(params)
+                        # if the value has changed, we change the key to be VALUE_FIELD_NAME
+                    item[VALUE_FIELD_NAME] = report_data
+                else:
+                    item[key] = value
+    logger.debug(response_dict)
+    return response_dict
 
 
 # receive a report's name, tries to take it from the repository and see if it requires configuration, if not, generates the report and return the generated value.

@@ -9,8 +9,23 @@ require({
 		templates: 'templates',
 		edwareUtil: 'EDWARE.util',
 		edwareDataProxy: 'EDWARE.dataProxy',
-		edwareGrid: 'widgets/EDWARE.grid.tablegrid',
-		edwareGridFormatters: 'widgets/EDWARE.grid.formatters',
-		edwareStudentList: 'EDWARE.studentList'
-	}
+		edwareGrid: 'widgets/grid/EDWARE.grid.tablegrid',
+		edwareGridFormatters: 'widgets/grid/EDWARE.grid.formatters',
+		edwareStudentList: 'EDWARE.studentList',
+		edwareIndividualStudent: 'EDWARE.individualStudent',
+		edwareBreadcrumbs: 'widgets/breadcrumb/EDWARE.breadcrumbs',
+		edwareConfidenceLevelBar: 'widgets/confidenceLevelBar/EDWARE.confidenceBar',
+		
+		// Templates
+		edwareBreadcrumbsTemplate: 'widgets/breadcrumb/template.html',
+		edwareConfidenceLevelBarTemplate: 'widgets/confidenceLevelBar/template.html'
+	},
+	shim: {
+        'jqGrid': {
+            //These script dependencies should be loaded before loading
+            //jqGrid
+            deps: ['jquery'],
+            exports: 'jqGrid'
+        }
+   }
 });

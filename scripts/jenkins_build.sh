@@ -32,7 +32,7 @@ function set_vars {
 function setup_virtualenv {
     echo "Setting up virtualenv using python3.3"
     if [ ! -d "$VIRTUALENV_DIR" ]; then
-        /usr/local/bin/virtualenv-3.3 --distribute ${VIRTUALENV_DIR}
+        /opt/python3/bin/virtualenv-3.3 --distribute ${VIRTUALENV_DIR}
     fi
 
 # This will change your $PATH to point to the virtualenv bin/ directory,
@@ -167,6 +167,7 @@ function run_functional_tests {
     cd "$WORKSPACE/$FUNC_DIR"
 
     sed -i.bak 's/port = 6543/port = 80/g' test.ini
+    sed -i.bak "s/host=localhost/host=$HOSTNAME/g" test.ini
     export DISPLAY=:6.0
 
     nosetests -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
@@ -187,6 +188,7 @@ function create_sym_link_for_apache {
 
    # temp solution for LESS
    PATH=$PATH:/usr/local/bin
+   rm -f ${WORKSPACE}/assets/css/*.css
    /usr/local/bin/lessc ${WORKSPACE}/assets/less/style.less ${WORKSPACE}/assets/css/style.css
 }
 

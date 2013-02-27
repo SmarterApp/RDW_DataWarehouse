@@ -5,7 +5,7 @@ Created on Jan 18, 2013
 '''
 import unittest
 from edapi.utils import get_report_dict_value, generate_report, generate_report_config,\
-    expand_field, propagate_params, add_configuration_header
+    expand_field, prepare_params, add_configuration_header
 from edapi.exceptions import ReportNotFoundError, InvalidParameterError
 from edapi.tests.dummy import DummyValidator, Dummy
 
@@ -80,13 +80,13 @@ class TestUtils(unittest.TestCase):
         response = generate_report_config(registry, report_name)
         self.assertEqual(response, {})
 
-    def test_generate_report_config_with_valid_param(self):
+    def test_generate_report_config_filtering(self):
         report_name = "myTest"
-        config = {"id": {"type": "integer", "required": True}}
+        config = {"id": {"type": "integer", "required": True, "someotherfield": "testdata"}}
         registry = {}
         registry[report_name] = {"params": config, "reference": (dummy_method, dummy_method)}
         response = generate_report_config(registry, report_name)
-        self.assertEqual(response, config)
+        self.assertEqual(response, {"id": {"type": "integer", "required": True}})
 
     def test_expand_field_with_parms_not_equal_to_none(self):
         registry = {}
@@ -117,14 +117,14 @@ class TestUtils(unittest.TestCase):
     def test_propagate_params_with_no_expansion(self):
         registry = {}
         config = {"id": {"type": "integer", "required": True}}
-        propagate_params(registry, config)
+        prepare_params(registry, config)
         self.assertEqual(config.items(), config.items())
 
     def test_propagate_params_with_expansion(self):
         registry = {}
         config = {"id": {"type": "integer", "required": True}, "assessmentId": {"type": "integer", "name": "expandIt"}}
         registry['expandIt'] = {"params": None, "reference": (dummy_method_with_data, dummy_method_with_data)}
-        propagate_params(registry, config)
+        config = prepare_params(registry, config)
         expected = {"id": {"type": "integer", "required": True}, "assessmentId": {"type": "integer", "value": dummy_method_with_data(None)}}
         self.assertEqual(config, expected)
 
@@ -132,7 +132,7 @@ class TestUtils(unittest.TestCase):
         registry = {}
         config = {"id": {"type": "integer", "required": True}, "assessmentId": {"type": "integer", "name": "expandIt"}}
         registry['expandIt'] = {"params": None, "reference": (Dummy, Dummy.some_func_that_returns)}
-        propagate_params(registry, config)
+        config = prepare_params(registry, config)
         expected = {"id": {"type": "integer", "required": True}, "assessmentId": {"type": "integer", "value": Dummy().some_func_that_returns(None)}}
         self.assertEqual(config, expected)
 

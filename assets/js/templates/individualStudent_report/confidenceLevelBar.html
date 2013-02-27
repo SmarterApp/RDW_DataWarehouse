@@ -1,0 +1,20 @@
+<div class="scoreWrapper">
+	<div class="overall_score" style="margin-left: {{asmt_score_pos}}%;color: {{score_color}}">{{asmt_score}}</div>
+</div>
+<div class="transWrapper">
+	<div class="indicator" style="margin-left: {{asmt_score_pos}}%"></div>
+	<div class="transImage2" style="margin-left: {{asmt_max_score_percent}}%"></div>
+	<div class="transImage1" style="margin-left: -{{asmt_min_score_percent}}%"></div>
+	
+</div>
+<div class="progress">
+	{{#cut_points}}
+		<div class="bar" style="background-color: {{bg_color}}; background-image: -moz-linear-gradient(center top , {{start_gradient_bg_color}}, {{end_gradient_bg_color}}); background-image: -webkit-linear-gradient(top , {{start_gradient_bg_color}}, {{end_gradient_bg_color}}); background-image: -ms-linear-gradient(top , {{start_gradient_bg_color}}, {{end_gradient_bg_color}}); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr={{start_gradient_bg_color}}, endColorstr={{end_gradient_bg_color}}, GradientType=0); background-repeat: repeat-x; color: {{text_color}}; width: {{asmt_cut_point_percent}}%;"></div>
+	{{/cut_points}}
+</div>
+<div class="cutPointsBar">
+	<div class="cutPoints startPoint">{{asmt_score_min}}</div>
+	{{#cut_points}}
+		<div class="cutPoints" style="width: {{asmt_cut_point_percent}}%;">{{cut_point}}</div>
+	{{/cut_points}}
+</div>

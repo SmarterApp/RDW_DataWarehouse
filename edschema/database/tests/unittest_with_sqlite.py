@@ -4,7 +4,8 @@ Created on Feb 9, 2013
 @author: tosako
 '''
 import unittest
-from database.tests.ed_sqlite import create_sqlite, importing_data, destroy_sqlite
+from database.tests.ed_sqlite import create_sqlite, import_csv_data, destroy_sqlite
+from database.tests.data_gen import generate_cvs_templates
 from zope import component
 from database.connector import IDbUtil
 
@@ -16,7 +17,8 @@ class Unittest_with_sqlite(unittest.TestCase):
         # create db engine for sqlite
         create_sqlite()
         # create test data in the sqlite
-        importing_data()
+        generate_cvs_templates()
+        import_csv_data()
 
     @classmethod
     def tearDownClass(cls):

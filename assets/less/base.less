@@ -1,0 +1,31 @@
+@the-border: 1px;
+
+.left {
+  float: left;
+}
+
+.right {
+  float: right;
+}
+
+.rounded-corners (@radius: 5px) {
+  -webkit-border-radius: @radius;
+  -moz-border-radius: @radius;
+  -ms-border-radius: @radius;
+  -o-border-radius: @radius;
+  border-radius: @radius;
+}
+
+.form-horizontal .help-inline { 
+  display: none;
+}
+.form-horizontal .control-group.error .help-inline {
+  color: #B94A48;
+  display: inline-block;
+}
+
+hr {
+  height:1px;
+  background-color:#cecece;
+  border:0px;
+}

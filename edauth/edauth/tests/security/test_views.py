@@ -182,7 +182,7 @@ class TestViews(Unittest_with_sqlite):
         self.__request.registry.settings['auth.idp.metadata'] = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'resource', 'idp_metadata.xml'))
         self.__request.registry.settings['auth.skip.verify'] = True
         http = saml2_post_consumer(self.__request)
-        self.assertEquals(http.location, 'http://example.com/dummy/callback?request=yygpKbDS10%2BtSMwtyEnVS87P1U8pzc2t1C9KLcgvKgEA')
+        self.assertEquals(http.location, 'http://example.com/dummy/login')
 
     def test_login_callback(self):
         self.__request.GET = {}

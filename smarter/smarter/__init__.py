@@ -21,6 +21,8 @@ logger = logging.getLogger(__name__)
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
+    # Prepare for environment specific
+    prepare_env(settings)
     if 'smarter.PATH' in settings:
         os.environ['PATH'] += os.pathsep + settings['smarter.PATH']
 
@@ -44,8 +46,6 @@ def main(global_config, **settings):
     config.include(edapi)
 
     config.add_static_view('assets', '../assets', cache_max_age=0, permission='view')
-
-    prepare_env(settings)
 
     # scans smarter
     config.scan()

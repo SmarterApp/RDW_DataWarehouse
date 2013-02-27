@@ -19,11 +19,11 @@ class SAMLResponse:
         '''
         __Response_node = __response_xml.childNodes[0]
 
-        self.__ID = self.__get_value(__Response_node, "ID")
-        self.__InResponseTo = self.__get_value(__Response_node, "InResponseTo")
-        self.__Version = self.__get_value(__Response_node, "Version")
-        self.__IssueInstant = self.__get_value(__Response_node, "IssueInstant")
-        self.__Destination = self.__get_value(__Response_node, "Destination")
+        self.ID = self.__get_value(__Response_node, "ID")
+        self.InResponseTo = self.__get_value(__Response_node, "InResponseTo")
+        self.Version = self.__get_value(__Response_node, "Version")
+        self.IssueInstant = self.__get_value(__Response_node, "IssueInstant")
+        self.Destination = self.__get_value(__Response_node, "Destination")
 
         # get Issuer, Status, and Assertion element
         for node in __Response_node.childNodes:
@@ -39,7 +39,10 @@ class SAMLResponse:
         return node.getAttribute(name)
 
     def get_id(self):
-        return self.__ID
+        return self.ID
+
+    def get_InResponseTo(self):
+        return self.InResponseTo
 
     def get_status(self):
         return self.__status
@@ -108,6 +111,9 @@ class SAMLResponse:
                     elif node.localName == "AuthnStatement":
                         self.__session_index = node.getAttribute("SessionIndex")
 
+        def get_conditions(self):
+            return self.__conditions
+
         def get_attributes(self):
             return self.__attributes
 
@@ -137,6 +143,12 @@ class SAMLResponse:
             def __init__(self, condition_node):
                 self.__notBefore = condition_node.getAttribute("NotBefore")
                 self.__notOnOrAfter = condition_node.getAttribute("NotOnOrAfter")
+
+            def get_notBefore(self):
+                return self.__notBefore
+
+            def get_notOnOrAfter(self):
+                return self.__notOnOrAfter
 
         class Attribute:
             '''

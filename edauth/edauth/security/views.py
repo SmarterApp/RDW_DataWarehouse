@@ -7,11 +7,8 @@ from pyramid.security import NO_PERMISSION_REQUIRED, forget, remember, \
     authenticated_userid, effective_principals
 from pyramid.httpexceptions import HTTPFound, HTTPForbidden
 from pyramid.view import view_config, forbidden_view_config
-from xml.dom.minidom import parseString
 import base64
 from edauth.saml2.saml_request import SamlAuthnRequest, SamlLogoutRequest
-from edauth.saml2.saml_auth import SamlAuth
-from edauth.saml2.saml_response import SAMLResponse
 import urllib
 from edauth.security.session_manager import create_new_user_session, \
     delete_session, get_user_session
@@ -19,6 +16,8 @@ from edauth.utils import convert_to_int
 from pyramid.response import Response
 from edauth.security.utils import deflate_base64_encode, inflate_base64_decode
 from edauth.security.roles import Roles
+from edauth.saml2.saml_response_manager import SAMLResponseManager
+from edauth.saml2.saml_idp_metadata_manager import IDP_metadata_manger
 
 
 @view_config(route_name='login', permission=NO_PERMISSION_REQUIRED)
@@ -129,15 +128,17 @@ def saml2_post_consumer(request):
 
     # Validate the response id against session
     __SAMLResponse = base64.b64decode(request.POST['SAMLResponse'])
-    __dom_SAMLResponse = parseString(__SAMLResponse.decode('utf-8'))
+    __SAMLResposne_manager = SAMLResponseManager(__SAMLResponse.decode('utf-8'))
+    __SAMLResponse_IDP_Metadata_manager = IDP_metadata_manger(request.registry.settings['auth.idp.metadata'])
 
-    response = SAMLResponse(__dom_SAMLResponse)
-    saml_response = SamlAuth(response, auth_request_id=auth_request_id)
-    if saml_response.is_validate():
+    __skip_verification = request.registry.settings.get('auth.skip.verify', False)
+    # TODO: enable auth_request_id
+    # if __SAMLResposne_manager.is_auth_request_id_ok(auth_request_id)
+    if  __skip_verification or (__SAMLResposne_manager.is_condition_ok() and __SAMLResposne_manager.is_status_ok() and __SAMLResposne_manager.is_signature_ok(__SAMLResponse_IDP_Metadata_manager.get_trusted_pem_filename())):
 
         # create a session
         session_timeout = convert_to_int(request.registry.settings['auth.session.timeout'])
-        session_id = create_new_user_session(response, session_timeout).get_session_id()
+        session_id = create_new_user_session(__SAMLResposne_manager.get_SAMLResponse(), session_timeout).get_session_id()
 
         # Save session id to cookie
         headers = remember(request, session_id)

@@ -4,7 +4,7 @@ Created on Feb 16, 2013
 @author: dip
 '''
 import unittest
-from edauth.security.views import login, saml2_post_consumer, login_callback,\
+from edauth.security.views import login, saml2_post_consumer, login_callback, \
     logout_redirect
 from pyramid import testing
 from pyramid.testing import DummyRequest
@@ -168,6 +168,8 @@ class TestViews(Unittest_with_sqlite):
     def test_saml2_post_consumer_Invalid_SAML(self):
         self.__request.POST = {}
         self.__request.POST['SAMLResponse'] = get_saml_from_resource_file("InvalidSAMLResponse.txt")
+        self.__request.registry.settings = {}
+        self.__request.registry.settings['auth.idp.metadata'] = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'resource', 'idp_metadata.xml'))
         http = saml2_post_consumer(self.__request)
         self.assertIsInstance(http, HTTPFound)
         self.assertEquals(http.location, 'http://example.com/dummy/login')
@@ -177,6 +179,8 @@ class TestViews(Unittest_with_sqlite):
         self.__request.POST['SAMLResponse'] = get_saml_from_resource_file("ValidSAMLResponse.txt")
         self.__request.registry.settings = {}
         self.__request.registry.settings['auth.session.timeout'] = 1
+        self.__request.registry.settings['auth.idp.metadata'] = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'resource', 'idp_metadata.xml'))
+        self.__request.registry.settings['auth.skip.verify'] = True
         http = saml2_post_consumer(self.__request)
         self.assertEquals(http.location, 'http://example.com/dummy/callback?request=yygpKbDS10%2BtSMwtyEnVS87P1U8pzc2t1C9KLcgvKgEA')
 

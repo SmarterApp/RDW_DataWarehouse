@@ -93,8 +93,8 @@ def prepare_env(settings):
             if rtn_code != 0:
                 pass
                 # Failed
-    else:
-        auth_idp_metadata = settings.get('auth.idp.metadata', None)
-        if auth_idp_metadata is not None:
-            if auth_idp_metadata.startswith('../'):
-                settings['auth.idp.metadata'] = os.path.abspath(os.path.join(os.path.dirname(__file__), auth_idp_metadata))
+
+    auth_idp_metadata = settings.get('auth.idp.metadata', None)
+    if auth_idp_metadata is not None:
+        if auth_idp_metadata.startswith('../'):
+            settings['auth.idp.metadata'] = os.path.abspath(os.path.join(os.path.dirname(__file__), auth_idp_metadata))

@@ -45,8 +45,7 @@ def main(global_config, **settings):
 
     config.add_static_view('assets', '../assets', cache_max_age=0, permission='view')
 
-    mode = settings.get('mode', 'prod')
-    prepare_env(mode.upper())
+    prepare_env(settings)
 
     # scans smarter
     config.scan()
@@ -59,7 +58,8 @@ def main(global_config, **settings):
     return config.make_wsgi_app()
 
 
-def prepare_env(mode):
+def prepare_env(settings):
+    mode = settings.get('mode', 'prod').upper()
     if mode == 'DEV':
         here = os.path.abspath(os.path.dirname(__file__))
         assets_dir = os.path.abspath(here + '/../assets')
@@ -94,3 +94,8 @@ def prepare_env(mode):
             if rtn_code != 0:
                 pass
                 # Failed
+    else:
+        auth_idp_metadata = settings.get('auth.idp.metadata', None)
+        if auth_idp_metadata is not None:
+            if auth_idp_metadata.startswith('../'):
+                settings['auth.idp.metadata'] = os.path.abspath(os.path.join(os.path.dirname(__file__), auth_idp_metadata))

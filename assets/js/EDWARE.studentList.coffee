@@ -23,15 +23,15 @@ define [
         { "items": [
           {
             name: contextData['state_name']
-            link: "http://www.google.com" 
+            link: "/assets/html/stateStudentList.html"
           },
           {
             name: contextData['district_name']
-            link: "http://www.cnn.com" 
+            link: "/assets/html/districtStudentList.html" 
           },
           {
             name: contextData['school_name']
-            link: "http://www.cnn.com" 
+            link: "/assets/html/schoolStudentList.html" 
           },
           {
             name: contextData['grade']

@@ -22,10 +22,9 @@ def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
     # Prepare for environment specific
-    prepare_env(settings)
     if 'smarter.PATH' in settings:
         os.environ['PATH'] += os.pathsep + settings['smarter.PATH']
-
+    prepare_env(settings)
     config = Configurator(settings=settings)
 
     engine = engine_from_config(settings, "edware.db.main.")

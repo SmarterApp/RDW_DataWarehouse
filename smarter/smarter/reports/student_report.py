@@ -10,6 +10,7 @@ from sqlalchemy.sql import select
 from database.connector import DBConnector
 import json
 from sqlalchemy.sql.expression import and_
+from edapi.httpexceptions import EdApiHTTPNotFound
 
 
 def __prepare_query(connector, student_id, assessment_id):
@@ -147,8 +148,14 @@ def get_student_report(params, connector=None):
     # get sql session
     connector.open_connection()
     result = connector.get_result(query)
-    __get_context(connector, result[0]['school_id'], result[0]['district_id'])
+    if result:
+        first_student = result[0]
+        student_name = '{0} {1} {2}'.format(first_student['student_first_name'], first_student['student_middle_name'], first_student['student_last_name'])
+        result['context'] = __get_context(connector, first_student['school_id'], first_student['district_id'], student_name)
+    else:
+        raise EdApiHTTPNotFound("Could not find student with id {0}".format(student_id))
     connector.close_connection()
+
     # prepare the result for the client
     result = __arrage_results(result)
 
@@ -194,7 +201,7 @@ def get_student_assessment(params, connector=None):
     return result
 
 
-def __get_context(connector, school_id, district_id):
+def __get_context(connector, school_id, district_id, grade, student_name):
     dim_district = connector.get_table('dim_inst_hier')
 
     query = select([dim_district.c.district_name.label('district_name'),
@@ -211,5 +218,8 @@ def __get_context(connector, school_id, district_id):
     if (not results):
         return results
     result = results[0]
+
+    result['grade'] = grade
+    result['student_name'] = student_name
 
     return result

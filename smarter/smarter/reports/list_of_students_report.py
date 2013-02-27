@@ -92,6 +92,7 @@ def get_list_of_students_report(params, connector=None):
                     dim_student.c.last_name.label('student_last_name'),
                     fact_asmt_outcome.c.enrl_grade.label('enrollment_grade'),
                     dim_staff.c.first_name.label('teacher_first_name'),
+                    func.substr(dim_staff.c.middle_name, 1, 1).label('teacher_middle_name'),
                     dim_staff.c.last_name.label('teacher_last_name'),
                     fact_asmt_outcome.c.asmt_grade.label('asmt_grade'),
                     dim_asmt.c.asmt_subject.label('asmt_subject'),
@@ -126,7 +127,7 @@ def get_list_of_students_report(params, connector=None):
     if asmt_subject is not None:
         query = query.where(dim_asmt.c.asmt_subject.in_(asmt_subject))
 
-    query = query.order_by(dim_student.c.first_name).order_by(dim_student.c.last_name)
+    query = query.order_by(dim_student.c.last_name).order_by(dim_student.c.first_name)
 
     results = connector.get_result(query)
 
@@ -143,13 +144,17 @@ def get_list_of_students_report(params, connector=None):
             student['student_first_name'] = result['student_first_name']
             student['student_middle_name'] = result['student_middle_name']
             student['student_last_name'] = result['student_last_name']
-            student['student_full_name'] = result['student_first_name'] + ' ' + result['student_middle_name'] + ' ' + result['student_last_name']
+            student['student_full_name'] = result['student_last_name'] + ', ' + result['student_first_name']
+            if result['student_middle_name'] is not None:
+                student['student_full_name'] = student['student_full_name'] + ' ' + result['student_middle_name'] + '.'
             student['enrollment_grade'] = result['enrollment_grade']
 
         assessment = {}
         assessment['teacher_first_name'] = result['teacher_first_name']
         assessment['teacher_last_name'] = result['teacher_last_name']
-        assessment['teacher_full_name'] = result['teacher_first_name'] + ' ' + result['teacher_last_name']
+        assessment['teacher_full_name'] = result['teacher_last_name'] + ', ' + result['teacher_first_name']
+        if result['teacher_middle_name'] is not None:
+            assessment['teacher_full_name'] = assessment['teacher_full_name'] + ' ' + result['teacher_middle_name'] + '.'
         assessment['asmt_grade'] = result['asmt_grade']
         assessment['asmt_score'] = result['asmt_score']
         assessment['asmt_score_range_min'] = result['asmt_score_range_min']

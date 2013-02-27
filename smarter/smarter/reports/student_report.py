@@ -10,7 +10,7 @@ from sqlalchemy.sql import select
 from database.connector import DBConnector
 import json
 from sqlalchemy.sql.expression import and_
-from edapi.httpexceptions import EdApiHTTPNotFound
+from edapi.exceptions import NotFoundException
 
 
 def __prepare_query(connector, student_id, assessment_id):
@@ -96,9 +96,10 @@ def __arrage_results(results):
         # TODO: take care of less than 4 cutpoints
         for i in range(1, 5):
             # we only take cutpoints with values > 0
-            if result['asmt_cut_point_{0}'.format(i)] > 0:
+            cut_point = result['asmt_cut_point_{0}'.format(i)]
+            if cut_point and cut_point > 0:
                 cut_point_object = {'name': str(result['asmt_cut_point_name_{0}'.format(i)]),
-                                    'cut_point': str(result['asmt_cut_point_{0}'.format(i)])}
+                                    'cut_point': str(cut_point)}
                 # once we use the data, we clean it from the result
                 del(result['asmt_cut_point_name_{0}'.format(i)])
                 del(result['asmt_cut_point_{0}'.format(i)])
@@ -153,7 +154,7 @@ def get_student_report(params, connector=None):
         student_name = '{0} {1} {2}'.format(first_student['student_first_name'], first_student['student_middle_name'], first_student['student_last_name'])
         context = __get_context(connector, first_student['school_id'], first_student['district_id'], first_student['grade'], student_name)
     else:
-        raise EdApiHTTPNotFound("Could not find student with id {0}".format(student_id))
+        raise NotFoundException("Could not find student with id {0}".format(student_id))
     connector.close_connection()
 
     # prepare the result for the client

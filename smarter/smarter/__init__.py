@@ -77,22 +77,22 @@ def prepare_env(settings):
                 os.unlink(target_file)
 
         command_opts = ['lessc', '-x', less_file, css_file]
-        if platform.system() == 'Windows':
-            # Create a sym link
-            if not os.path.lexists(assets_dir):
-                kernel_dll = ctypes.windll.LoadLibrary("kernel32.dll")
-                # TODO check error for failures
-                kernel_dll.CreateSymbolicLink(parent_assets_dir, assets_dir, 1)
-            command_opts.insert(0, 'node')
-        else:
-            if not os.path.lexists(assets_dir):
-                os.symlink(parent_assets_dir, assets_dir)
+        shell = False
 
+        # For windows env, set shell to true
+        if platform.system() == 'Windows':
+            shell = True
+
+        # Create a symlink if it doesn't exist
+        if not os.path.lexists(assets_dir):
+            os.symlink(parent_assets_dir, assets_dir, target_is_directory=True)
+
+        # Call lessc
         if os.access(less_dir, os.W_OK):
-            rtn_code = subprocess.call(command_opts)
+            rtn_code = subprocess.call(command_opts, shell=shell)
+            # Failed when return code is nonz-zero
             if rtn_code != 0:
                 pass
-                # Failed
 
     auth_idp_metadata = settings.get('auth.idp.metadata', None)
     if auth_idp_metadata is not None:

@@ -17,7 +17,7 @@ class Unittest_with_sqlite(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         # create db engine for sqlite
-        create_sqlite()
+        create_sqlite(use_metadata_from_db=True, echo=True)
         # create test data in the sqlite
         generate_cvs_templates()
         here = os.path.abspath(os.path.dirname(__file__))

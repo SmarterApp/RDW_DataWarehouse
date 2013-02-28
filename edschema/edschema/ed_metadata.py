@@ -180,7 +180,7 @@ def generate_ed_metadata(scheme_name=None, bind=None):
     assessment_outcome = Table('fact_asmt_outcome', metadata,
                                Column('asmnt_outcome_id', String(50), primary_key=True),
                                Column('asmnt_outcome_external_id', String(256), nullable=False),
-                               Column('asmt_id', None, ForeignKey('dim_asmt.asmt_id'), nullable=False),
+                               Column('asmt_id', None, ForeignKey(assessment.c.asmt_id), nullable=False),
                                Column('student_id', String(50), nullable=False),
                                Column('teacher_id', String(50), nullable=False),
                                Column('state_code', String(2), nullable=False),

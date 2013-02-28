@@ -14,8 +14,6 @@ Command line options are available form --help, but as a quick start:
 
 @copyright:  2013 Wireless Generation. All rights reserved.
 
-@license:    boiler plate goes here - open source? is it in RFP?
-
 @contact:    edwaredevs@wgen.net
 @deffield    updated: Updated
 '''
@@ -36,19 +34,6 @@ __updated__ = '2013-02-02'
 DBDRIVER = "postgresql+pypostgresql"
 DEBUG = 0
 VERBOSE = False
-
-
-class CLIError(Exception):
-    '''Generic exception to raise and log different fatal errors.'''
-    def __init__(self, msg):
-        super(CLIError).__init__(type(self))
-        self.msg = "E: %s" % msg
-
-    def __str__(self):
-        return self.msg
-
-    def __unicode__(self):
-        return self.msg
 
 
 def generate_ed_metadata(scheme_name=None, bind=None):

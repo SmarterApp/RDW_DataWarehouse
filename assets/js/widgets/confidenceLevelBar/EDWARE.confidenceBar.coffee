@@ -26,8 +26,11 @@ define [
         items.cut_points[j].asmt_cut_point_percent =  ((items.cut_points[j].cut_point - items.cut_points[j-1].cut_point) / items.last_cut_point.cut_point) * 100
         j++
       
+      #score indicator image width
+      score_indicator_width = 13
+      
       # Calculate position for indicator and score text
-      items.asmt_score_pos = ((items.asmt_score - (items.asmt_score_interval / 2)) / items.last_cut_point.cut_point) * 100
+      items.asmt_score_pos = ((items.asmt_score - score_indicator_width) / items.last_cut_point.cut_point) * 100
       
       # Adjust score position if percentage is more than 98% or less than or equal to 0,
       # So the indicator wouldn't cut off
@@ -47,6 +50,11 @@ define [
       output = Mustache.to_html confidenceLevelBarTemplate, items
       this.html output
       
+      # Align the score text to the center of indicator
+      score_text_element = $(this).find(".overall_score")
+      score_width = score_text_element.width() / 2
+      score_text_pos = items.asmt_score_pos - (score_width / items.last_cut_point.cut_point) * 100
+      score_text_element.css "margin-left", score_text_pos + "%"
       
   create = (containerId, data) ->
     

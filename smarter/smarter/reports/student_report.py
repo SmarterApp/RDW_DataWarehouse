@@ -242,4 +242,3 @@ def __get_context(connector, school_id, district_id, grade, student_name):
     result['student_name'] = student_name
 
     return result
-

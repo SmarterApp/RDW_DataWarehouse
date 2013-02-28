@@ -157,13 +157,13 @@ class AssessmentOutcome(object):
         '''
         if score.overall > asmt.asmt_cut_point_3:
             if asmt.asmt_cut_point_4:
-                return 3
+                return 4
             else:
-                return 2
+                return 3
         elif score.overall > asmt.asmt_cut_point_2:
-            return 1
+            return 2
         else:
-            return 0
+            return 1
 
     def getRow(self):
         claims = list(self.asmt_score.claims.items())

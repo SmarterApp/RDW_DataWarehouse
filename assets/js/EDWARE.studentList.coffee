@@ -11,8 +11,7 @@ define [
   assessmentsCutPoints = []
   assessmentCutpoints = {}
    
-   
-               
+
   #
   #    * Create Student data grid
   #    
@@ -20,24 +19,15 @@ define [
     
     getStudentData "/data/list_of_students", params, (assessmentsData, assessmentCutpoints, contextData) ->
       
-      breadcrumbsData = 
-        { "items": [
-          {
-            name: contextData['state_name']
-            link: "/assets/html/stateStudentList.html"
-          },
-          {
-            name: contextData['district_name']
-            link: "/assets/html/districtStudentList.html" 
-          },
-          {
-            name: contextData['school_name']
-            link: "/assets/html/schoolStudentList.html" 
-          },
-          {
-            name: contextData['grade']
-          },
-        ]}
+      breadcrumbsData = {}
+        
+      readBreadcrumbs "../data/list_of_students_breadcrumbs.json", (tempData) ->
+        breadcrumbsData = tempData
+        
+      breadcrumbsData['items'][0].name = contextData['state_name']
+      breadcrumbsData['items'][1].name = contextData['district_name']
+      breadcrumbsData['items'][2].name = contextData['school_name']
+      breadcrumbsData['items'][3].name = contextData['grade']
       
       $('#breadcrumb').breadcrumbs(breadcrumbsData)
       
@@ -74,6 +64,24 @@ define [
           callback studentColumnCfgs
         else
           studentColumnCfgs
+          
+  #
+  #    * Get breadcrumbs data
+  # 
+  readBreadcrumbs = (templateURL, callback) ->
+      return false if templateURL is "undefined" or typeof templateURL is "number" or typeof templateURL is "function" or typeof templateURL is "object"
+        
+      $.ajax
+        url: templateURL
+        dataType: "json"
+        async: false
+        success: (data) ->
+          content = data
+
+          if callback
+            callback content
+          else
+            content
 
   createStudentGrid: createStudentGrid
   

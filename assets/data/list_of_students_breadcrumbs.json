@@ -13,10 +13,6 @@
     		"link" : "/assets/html/schoolStudentList.html" 
     	},
     	{
-    		"name" : "grade",
-    		"link" : "/assets/html/studentList.html"
-    	},
-    	{
-    		"name" : "student_name" 
+    		"name" : "grade"
     	}]
 }

@@ -125,7 +125,7 @@ def generate_ed_metadata(scheme_name=None, bind=None):
                   Column('middle_name', String(256), nullable=False),
                   Column('last_name', String(256), nullable=False),
                   Column('section_id', String(50), nullable=False),
-                  Column('hier_user_type', Enum("Teacher", "Staff", name="hier_user_type")),
+                  Column('hier_user_type', Enum("Teacher", "Staff", name="hier_user_type_enum")),
                   Column('state_code', String(2), nullable=False),
                   Column('district_id', String(50), nullable=False),
                   Column('school_id', String(50), nullable=False),

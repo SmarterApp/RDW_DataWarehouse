@@ -25,6 +25,7 @@ from idgen import IdGen
 from write_to_csv import clear_files, create_csv
 import constants
 import py1
+import argparse
 
 
 def get_name_lists():
@@ -755,11 +756,29 @@ def read_names(file_name):
     mfile.close()
     return names
 
+def get_test_state_stats():
+    db = get_db_conn()
+    db_states = []
+    q = 'select * from ' + queries.SCHEMA + '.school_generate_stat where state_code = \'TS\''
+    dist_count = db.prepare(q)
+    for row in dist_count:
+        db_states.append(dict(zip(constants.STAT_COLUMNS, row)))
+    db.close()
+
+    return db_states
+
+
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Generate fixture data.')
+    parser.add_argument('--validate', dest='do_validation', action='store_true', default=False, help='Validate the script output against the current schema.', required=False)
+    args = parser.parse_args()
+
+    state_statistic_function = get_test_state_stats if args.do_validation else get_state_stats
+
     t1 = datetime.datetime.now()
-    generate(get_name_lists, get_state_stats)
-    # get_state_stats()
+    generate(get_name_lists, state_statistic_function)
     t2 = datetime.datetime.now()
+
     print("data_generation starts ", t1)
     print("data_generation ends   ", t2)

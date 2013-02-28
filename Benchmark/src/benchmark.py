@@ -15,6 +15,7 @@ Created on Feb 21, 2013
 
 import random
 import argparse
+import locale
 
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.sql import select, func
@@ -195,7 +196,7 @@ def print_results(result_dict, description):
     RETURNS: None
     '''
 
-    num_offset = 6
+    num_offset = 10
     string_space = 7
     float_places = 3
     db_stats = result_dict['stats']
@@ -206,9 +207,9 @@ def print_results(result_dict, description):
     #Get length of longest string, use to help with output formatting, so that columns line-up
     max_str_len = len(max((x['name'] for x in db_stats['data']), key=len))
 
-    #loop through statistics gathered and print each one out
+    #loop through statistics gathered and print each one out, Use local to format number with commas
     for stat in db_stats['data']:
-        string = '{0:{1}}{2:{3}}'.format(stat['name'] + ':', max_str_len + string_space, stat['value'], num_offset)
+        string = '{0:{1}}{2:>{3}}'.format(stat['name'] + ':', max_str_len + string_space, locale.format("%d", stat['value'], grouping=True), num_offset)
         print(string)
 
     #print out amount of time used to gather overall counts
@@ -250,6 +251,9 @@ def main():
     '''
     Entry point main method
     '''
+
+    # set locale, for string formatting
+    locale.setlocale(locale.LC_ALL, 'en_US')
 
     #Get command line args
     input_args = get_input_args()

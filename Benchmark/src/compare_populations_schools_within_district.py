@@ -74,9 +74,9 @@ def district_statistics(district_id, connection, schema_name):
 
     result_dict['stats'] = {'query_time': query_time, 'data': []}
 
-    result_dict['stats']['data'].append({'name': 'Total Districts', 'value': tot_dist_set})
-    result_dict['stats']['data'].append({'name': 'Total Schools', 'value': tot_sch_set})
-    result_dict['stats']['data'].append({'name': 'Total Students', 'value': tot_stu_set})
+    result_dict['stats']['data'].append({'name': 'Total Districts in DB', 'value': tot_dist_set})
+    result_dict['stats']['data'].append({'name': 'Total Schools in DB', 'value': tot_sch_set})
+    result_dict['stats']['data'].append({'name': 'Total Students in DB', 'value': tot_stu_set})
     result_dict['stats']['data'].append({'name': 'Schools in District', 'value': school_count_set})
     result_dict['stats']['data'].append({'name': 'Students in District', 'value': stu_count_set})
 

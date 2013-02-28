@@ -58,6 +58,7 @@ def school_statistics(school_id, connection, schema_name):
     from {schema}.dim_school
     '''.format(schema=schema_name)
 
+    # Execute queries
     start_time = time.time()
     stu_count_set = connection.execute(student_count_query).fetchall()[0][0]
     tot_stu_set = connection.execute(total_students_query).fetchall()[0][0]
@@ -67,10 +68,10 @@ def school_statistics(school_id, connection, schema_name):
 
     result_dict['stats'] = {'query_time': query_time, 'data': []}
 
-    result_dict['stats']['data'].append({'name': 'Total Districts', 'value': tot_dist_set})
-    result_dict['stats']['data'].append({'name': 'Total Schools', 'value': tot_sch_set})
-    result_dict['stats']['data'].append(('Total Students', tot_stu_set))
-    result_dict['stats']['data'].append(('Students in District', stu_count_set))
+    result_dict['stats']['data'].append({'name': 'Total Districts in DB', 'value': tot_dist_set})
+    result_dict['stats']['data'].append({'name': 'Total Schools in DB', 'value': tot_sch_set})
+    result_dict['stats']['data'].append({'name': 'Total Students in DB', 'value': tot_stu_set})
+    result_dict['stats']['data'].append({'name': 'Students in School', 'value': stu_count_set})
 
     result_dict['benchmarks'] = []
 

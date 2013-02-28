@@ -67,6 +67,7 @@ def state_statistics(state_id, connection, schema_name):
     from {schema}.dim_school
     '''.format(schema=schema_name)
 
+    # Execute Queries
     start_time = time.time()
     school_count_set = connection.execute(district_count_query).fetchall()[0][0]
     stu_count_set = connection.execute(student_count_query).fetchall()[0][0]
@@ -77,14 +78,15 @@ def state_statistics(state_id, connection, schema_name):
 
     result_dict['stats'] = {'query_time': query_time, 'data': []}
 
-    result_dict['stats']['data'].append({'name': 'Total Districts', 'value': tot_dist_set})
-    result_dict['stats']['data'].append({'name': 'Total Schools', 'value': tot_sch_set})
-    result_dict['stats']['data'].append({'name': 'Total Students', 'value': tot_stu_set})
-    result_dict['stats']['data'].append({'name': 'Schools in District', 'value': school_count_set})
-    result_dict['stats']['data'].append({'name': 'Students in District', 'value': stu_count_set})
+    result_dict['stats']['data'].append({'name': 'Total Districts in DB', 'value': tot_dist_set})
+    result_dict['stats']['data'].append({'name': 'Total Schools in DB', 'value': tot_sch_set})
+    result_dict['stats']['data'].append({'name': 'Total Students in DB', 'value': tot_stu_set})
+    result_dict['stats']['data'].append({'name': 'Schools in State', 'value': school_count_set})
+    result_dict['stats']['data'].append({'name': 'Students in State', 'value': stu_count_set})
 
     result_dict['benchmarks'] = []
 
+    # Run Queries for each of the 4 types of assessments
     start_time1 = time.time()
     res = districts_in_a_state(state_id, 'SUMMATIVE', 'ELA', connection, schema_name)
     query_time = time.time() - start_time1

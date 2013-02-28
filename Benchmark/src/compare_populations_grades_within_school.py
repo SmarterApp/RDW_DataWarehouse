@@ -31,7 +31,7 @@ def school_statistics(school_id, connection, schema_name):
     RETURNS:
     result_dict -- A dictionary of results. The dictionary will have two items: 'stats' and 'benchmarks'
         'stats' is a dictionary of two items a float and a list of dicts 'query_time' and 'data' respectively.
-            'data' is a list of query results in a (name, value) tuple
+            'data' is a list of query results in a dict with keys: name and value
         'benchmarks' is a list of dictionaries. Each dictionary has keys: 'type', 'query_time' and 'result'
     '''
 
@@ -67,8 +67,8 @@ def school_statistics(school_id, connection, schema_name):
 
     result_dict['stats'] = {'query_time': query_time, 'data': []}
 
-    result_dict['stats']['data'].append(('Total Districts', tot_dist_set))
-    result_dict['stats']['data'].append(('Total Schools', tot_sch_set))
+    result_dict['stats']['data'].append({'name': 'Total Districts', 'value': tot_dist_set})
+    result_dict['stats']['data'].append({'name': 'Total Schools', 'value': tot_sch_set})
     result_dict['stats']['data'].append(('Total Students', tot_stu_set))
     result_dict['stats']['data'].append(('Students in District', stu_count_set))
 

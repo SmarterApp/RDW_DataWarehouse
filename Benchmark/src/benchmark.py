@@ -37,6 +37,7 @@ def run_benchmarks(metadata, connection, schema, district_num=4, state_num=1, sc
     school_num -- the number of schools to run benchmarks on
     '''
 
+    # get lists of items sorted ascending by size
     states = get_state_id_list_by_size(metadata, connection)
     districts = get_district_id_list_by_size(metadata, connection)
     schools = get_school_list_by_size(metadata, connection)
@@ -59,6 +60,8 @@ def run_statistics(metadata, connection, schema, statistics_method, count_num, o
     descriptor -- a non-plural string that describes the objects (ie. school, state, district)
     '''
 
+    # if count is greater the len. run stats for all items in object_list
+    # otherwise for the x largest where x is count_num
     if count_num >= len(object_list):
         for obj in object_list:
             res = statistics_method(obj[0], connection, schema)
@@ -66,8 +69,7 @@ def run_statistics(metadata, connection, schema, statistics_method, count_num, o
             print_results(res, description)
     else:
         for _i in range(count_num):
-            index = random.randint(0, len(object_list) - 1)
-            obj_id = object_list.pop(index)[0]
+            obj_id = object_list.pop(0)[0]
             res = statistics_method(obj_id, connection, schema)
             description = descriptor + ' ' + str(obj_id)
             print_results(res, description)
@@ -86,6 +88,9 @@ def get_district_id_list_by_size(metadata, connection, state_id=None):
 
     dim_district = None
     dim_school = None
+
+    # TODO: Change to use table name as key, Will require schema name be passed in
+    # Loop through table list to find desired tables
     for t in metadata.sorted_tables:
         if t.name == 'dim_district':
             dim_district = t
@@ -99,6 +104,7 @@ def get_district_id_list_by_size(metadata, connection, state_id=None):
     district_select = select([dim_district.c.district_id, func.count(dim_school.c.school_id)], dim_district.c.district_id == dim_school.c.district_id)
     district_select = district_select.group_by(dim_district.c.district_id).order_by(func.count(dim_school.c.school_id))
 
+    # add where based on state id
     if state_id:
         # add where condition to match state_id
         district_select = district_select.where(state_id == dim_school.c.district_id)
@@ -119,6 +125,9 @@ def get_state_id_list_by_size(metadata, connection):
 
     dim_state = None
     dim_district = None
+
+    # TODO: Change to use table name as key, Will require schema name be passed in
+    # Loop through table list to find desired tables
     for t in metadata.sorted_tables:
         if t.name == 'dim_state':
             dim_state = t
@@ -128,6 +137,7 @@ def get_state_id_list_by_size(metadata, connection):
     if dim_state is None or dim_district is None:
         raise AttributeError('metadata table list missing a desired table')
 
+    # build select statement
     state_select = select([dim_state, func.count(dim_district.c.district_id)], dim_state.c.state_id == dim_district.c.state_id)
     state_select = state_select.group_by(dim_state.c.state_id).order_by(func.count(dim_district.c.district_id))
 
@@ -150,6 +160,8 @@ def get_school_list_by_size(metadata, connection, district_id=None, state_id=Non
     dim_school = None
     dim_student = None
 
+    # TODO: Change to use table name as key, Will require schema name be passed in
+    # Loop through table list to find desired tables
     for t in metadata.sorted_tables:
         if t.name == 'dim_school':
             dim_school = t
@@ -159,9 +171,11 @@ def get_school_list_by_size(metadata, connection, district_id=None, state_id=Non
     if dim_school is None or dim_student is None:
         raise AttributeError('metadata table list missing a desired table')
 
+    # Build select statement
     school_select = select([dim_school.c.school_id, func.count(dim_student.c.student_id)], dim_student.c.school_id == dim_school.c.school_id)
     school_select = school_select.group_by(dim_school.c.school_id).order_by(func.count(dim_student.c.student_id))
 
+    #Specify where by district id or state id if there is no district id
     if district_id:
         school_select = school_select.where(dim_school.c.district_id == district_id)
     elif state_id:
@@ -171,7 +185,7 @@ def get_school_list_by_size(metadata, connection, district_id=None, state_id=Non
     return district_list
 
 
-def print_results(result_dict, description, is_verbose=False):
+def print_results(result_dict, description):
     '''
     prints the result dictionary returned by one of the statistic methods
     INPUT:
@@ -189,29 +203,31 @@ def print_results(result_dict, description, is_verbose=False):
 
     print('************* Benchmarks for %s *************' % description)
 
-    #Get longest string
-    max_str_len = len(max((x[0] for x in db_stats['data']), key=len))
+    #Get length of longest string, use to help with output formatting, so that columns line-up
+    max_str_len = len(max((x['name'] for x in db_stats['data']), key=len))
 
+    #loop through statistics gathered and print each one out
     for stat in db_stats['data']:
-        string = '{0:{1}}{2:{3}}'.format(stat[0] + ':', max_str_len + string_space, stat[1], num_offset)
+        string = '{0:{1}}{2:{3}}'.format(stat['name'] + ':', max_str_len + string_space, stat['value'], num_offset)
         print(string)
 
+    #print out amount of time used to gather overall counts
     print('{0:{1}}{2:{3}.{4}f}s'.format('Time to run counts:', max_str_len + string_space, db_stats['query_time'], num_offset, float_places))
     print('**** Benchmarks for Queries ****')
 
+    #Get Length of longest string and use to format output
     max_str_len = max(max_str_len, len(max((x['type'] for x in benchmarks), key=len)))
+
+    # Loop through benchmark results and print
     for mark in benchmarks:
         string = '{0:{1}}{2:{3}.{4}f}s'.format(mark['type'], max_str_len + string_space, mark['query_time'], num_offset, float_places)
         print(string)
 
-        if is_verbose:
-            pass
-
 
 def get_input_args():
     '''
-    Creats parser for command line args
-    RETURS vars(args) -- A dict of the command line args
+    Creates parser for command line args
+    RETURNS vars(args) -- A dict of the command line args
     '''
 
     parser = argparse.ArgumentParser(description='Script to run benchmarks on predefined queries')
@@ -234,20 +250,26 @@ def main():
     '''
     Entry point main method
     '''
+
+    #Get command line args
     input_args = get_input_args()
 
+    # Have SQLAlchemy connect to and reflect the database
     db_string = 'postgresql+psycopg2://{username}:{password}@{server}:{port}/{database}'.format(**input_args)
-
     engine = create_engine(db_string)
     db_connection = engine.connect()
     metadata = MetaData()
     metadata.reflect(engine, input_args['schema'])
 
+    # Run benchmarks
     print("Starting Benchmarks")
     print()
     run_benchmarks(metadata, db_connection, input_args['schema'], input_args['district_count'], input_args['state_count'], input_args['school_count'])
     print()
     print("Benchmarking Complete")
+
+    #Close db connection
+    db_connection.close()
 
 if __name__ == '__main__':
     main()

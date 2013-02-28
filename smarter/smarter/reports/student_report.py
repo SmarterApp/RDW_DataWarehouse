@@ -224,7 +224,6 @@ def __get_context(connector, school_id, district_id, grade, student_name):
 
     query = select([dim_district.c.district_name.label('district_name'),
                     dim_district.c.school_name.label('school_name'),
-                    dim_district.c.most_recent.label('most_recent'),
                     dim_district.c.state_name.label('state_name')],
                    from_obj=[dim_district])
 

@@ -122,7 +122,7 @@ def generate_ed_metadata(scheme_name=None, bind=None):
                   Column('staff_id', String(50), nullable=False),
                   Column('staff_external_id', String(256), nullable=False),
                   Column('first_name', String(256), nullable=False),
-                  Column('middle_name', String(256), nullable=False),
+                  Column('middle_name', String(256), nullable=True),
                   Column('last_name', String(256), nullable=False),
                   Column('section_id', String(50), nullable=False),
                   Column('hier_user_type', Enum("Teacher", "Staff", name="hier_user_type_enum")),

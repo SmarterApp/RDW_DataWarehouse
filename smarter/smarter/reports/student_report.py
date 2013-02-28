@@ -79,8 +79,8 @@ def __prepare_query(connector, student_id, assessment_id):
                     dim_staff.c.last_name.label('teacher_last_name')],
                    from_obj=[fact_asmt_outcome
                              .join(dim_student, fact_asmt_outcome.c.student_id == dim_student.c.student_id and fact_asmt_outcome.c.section_id == dim_student.c.section_id and fact_asmt_outcome.c.most_recent == 1)
-                             .join(dim_staff, fact_asmt_outcome.c.teacher_id == dim_staff.c.staff_id and fact_asmt_outcome.c.section_id == dim_staff.section_id and dim_staff.c.most_recent == 1)
-                             .join(dim_asmt, dim_asmt.c.asmt_id == fact_asmt_outcome.c.asmt_id and dim_asmt.most_recent == 1)])
+                             .join(dim_staff, fact_asmt_outcome.c.teacher_id == dim_staff.c.staff_id and fact_asmt_outcome.c.section_id == dim_staff.c.section_id and dim_staff.c.most_recent == 1)
+                             .join(dim_asmt, dim_asmt.c.asmt_id == fact_asmt_outcome.c.asmt_id and dim_asmt.c.most_recent == 1)])
     query = query.where(fact_asmt_outcome.c.student_id == student_id)
     if assessment_id is not None:
         query = query.where(fact_asmt_outcome.c.asmt_id == assessment_id)
@@ -102,24 +102,26 @@ def __arrage_results(results):
         del(result['asmt_custom_metadata'])
 
         result['asmt_score_interval'] = result['asmt_score'] - result['asmt_score_range_min']
-        result['cut_points'] = []
+        result['cut_point_intervals'] = []
 
         # go over the 4 cut points
         # TODO: take care of less than 4 cutpoints
         for i in range(1, 5):
             # we only take cutpoints with values > 0
-            cut_point = result['asmt_cut_point_{0}'.format(i)]
-            if cut_point and cut_point > 0:
-                cut_point_object = {'name': str(result['asmt_cut_point_name_{0}'.format(i)]),
-                                    'cut_point': str(cut_point)}
+            cut_point_interval = result['asmt_cut_point_{0}'.format(i)]
+            if i == 4 or (cut_point_interval and cut_point_interval > 0):
+                cut_point_interval_object = {'name': str(result['asmt_cut_point_name_{0}'.format(i)]),
+                                             'interval': str(cut_point_interval)}
+                if (i == 4):
+                    cut_point_interval_object['interval'] = str(result['asmt_score_max'])
                 # once we use the data, we clean it from the result
                 del(result['asmt_cut_point_name_{0}'.format(i)])
                 del(result['asmt_cut_point_{0}'.format(i)])
-                # connect the custom metadata content to the cut_point object
+                # connect the custom metadata content to the cut_point_interval object
                 if custom is not None:
-                    result['cut_points'].append(dict(list(cut_point_object.items()) + list(custom[i - 1].items())))
+                    result['cut_point_intervals'].append(dict(list(cut_point_interval_object.items()) + list(custom[i - 1].items())))
                 else:
-                    result['cut_points'].append(cut_point_object)
+                    result['cut_point_intervals'].append(cut_point_interval_object)
 
         result['claims'] = []
 

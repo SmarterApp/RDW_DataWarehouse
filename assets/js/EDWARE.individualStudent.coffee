@@ -49,9 +49,9 @@ define [
         
         # if cut points don't have background colors, then it will use default background colors
         j = 0
-        while j < items.cut_points.length
-          if !items.cut_points[j].bg_color
-            $.extend(items.cut_points[j], default_cutPointColors[j])
+        while j < items.cut_point_intervals.length
+          if !items.cut_point_intervals[j].bg_color
+            $.extend(items.cut_point_intervals[j], default_cutPointColors[j])
           j++
         
         # Generate unique id for each assessment section. This is important to generate confidence level bar for each assessment
@@ -62,7 +62,7 @@ define [
         items.content = content
 
         # Select cutpoint color and background color properties for the overall score info section
-        performance_level = items.cut_points[items.asmt_perf_lvl-1]
+        performance_level = items.cut_point_intervals[items.asmt_perf_lvl-1]
         
         # Apply text color and background color for overall score summary info section
         items.score_color = performance_level.bg_color

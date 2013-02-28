@@ -187,12 +187,10 @@ function create_sym_link_for_apache {
     /bin/ln -sf ${VIRTUALENV_DIR} ${APACHE_DIR}/venv
 
     cd "$WORKSPACE/scripts"
-    echo $WORKSPACE > workspace.tmp 
-    sed -i.bak 's/\//\\\//g' workspace.tmp
-    WORKSPACE_PATH=`cat workspace.tmp`
-    
-    sed -i.bak "s/assets.directory = \/path\/assets/assets.directory = $WORKSPACE_PATH\/assets/g" compile_assets.ini
-    sed -i.bak "s/smarter.directory = \/path\/smarter/smarter.directory = $WORKSPACE_PATH\/smarter/g" compile_assets.ini
+    WORKSPACE_PATH=${WORKSPACE///\//\\\/}
+
+    sed -i.bak "s/assets.directory = \/path\/assets/assets.directory = ${WORKSPACE_PATH}\/assets/g" compile_assets.ini
+    sed -i.bak "s/smarter.directory = \/path\/smarter/smarter.directory = ${WORKSPACE_PATH}\/smarter/g" compile_assets.ini
     python compile_assets.py
 }
 

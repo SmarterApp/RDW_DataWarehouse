@@ -12,7 +12,8 @@ import calendar
 
 class SAMLResponseManager():
     '''
-    Managing SAMLResponse
+    Managing SAMLResponse - verify signature, check time condition
+    and status.
     '''
     def __init__(self, saml_response_string):
         self.__saml_response = None

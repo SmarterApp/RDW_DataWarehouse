@@ -9,7 +9,7 @@ from xml.dom.minidom import parse
 from edauth.saml2.saml_idp_metadata import SAML_IDP_Metadata
 
 
-class IDP_metadata_manger():
+class IDP_metadata_manager():
     '''
     IPD metadata manager class
     class SAML_IDP_Metadata is required for constructor

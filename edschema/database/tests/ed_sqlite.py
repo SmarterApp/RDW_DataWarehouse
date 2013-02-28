@@ -17,7 +17,7 @@ from database.tests.data_gen import generate_data
 
 # create sqlite from static metadata
 def create_sqlite():
-    __engine = create_engine('sqlite:///:memory:', connect_args={'detect_types': sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES}, native_datetime=True, echo=True)
+    __engine = create_engine('sqlite:///:memory:', connect_args={'detect_types': sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES}, native_datetime=True, echo=False)
     event.listen(__engine, 'connect', fk_on)
     __metadata = generate_ed_metadata()
     # create tables from static metadata

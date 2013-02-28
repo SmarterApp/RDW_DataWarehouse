@@ -43,7 +43,6 @@ define [
       
     edwareDataProxy.getDatafromSource "/data/individual_student_report", params, (data) ->
       
-      # Apply text color and background color for overall score summary info section
       i = 0
       while i < data.items.length
         items = data.items[i]
@@ -65,11 +64,17 @@ define [
         # Select cutpoint color and background color properties for the overall score info section
         performance_level = items.cut_points[items.asmt_perf_lvl-1]
         
-
+        # Apply text color and background color for overall score summary info section
         items.score_color = performance_level.bg_color
         items.score_text_color = performance_level.text_color
         items.score_bg_color = performance_level.bg_color
         items.score_name = performance_level.name
+        
+        # Claim section
+        # For less than 4 claims, then width of the claim box would be 28%
+        # For 4 claims, the width of the claim box would be 20%
+        items.claim_box_width = "28%" if items.claims.length < 4
+        items.claim_box_width = "20%" if items.claims.length == 4
         
         i++
         
@@ -86,6 +91,7 @@ define [
       breadcrumbsData['items'][3].name = contextData['grade']
       breadcrumbsData['items'][3].link = breadcrumbsData['items'][3].link + "?districtId=" + contextData['district_id'] + "&schoolId=" + contextData['school_id']+ "&asmtGrade=" + contextData['grade']
       breadcrumbsData['items'][4].name = contextData['student_name'] + "'s Results"
+
       
       $('#breadcrumb').breadcrumbs(breadcrumbsData)
 

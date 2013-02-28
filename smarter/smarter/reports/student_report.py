@@ -88,7 +88,7 @@ def __prepare_query(connector, student_id, assessment_id):
     return query
 
 
-def __arrage_results(results):
+def __arrange_results(results):
     '''
     This method arranges the data retreievd from the db to make it easier to consume by the client
     '''
@@ -182,7 +182,7 @@ def get_student_report(params):
             raise NotFoundException("Could not find student with id {0}".format(student_id))
 
         # prepare the result for the client
-        result = __arrage_results(result)
+        result = __arrange_results(result)
 
         result['context'] = context
 

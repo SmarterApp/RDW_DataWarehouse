@@ -61,8 +61,8 @@ def prepare_env(settings):
     mode = settings.get('mode', 'prod').upper()
     if mode == 'DEV':
         here = os.path.abspath(os.path.dirname(__file__))
-        assets_dir = os.path.abspath(here + '/../assets')
-        parent_assets_dir = os.path.abspath(here + '/../../assets')
+        assets_dir = os.path.abspath(os.path.join(os.path.join(here, '..'), 'assets'))
+        parent_assets_dir = os.path.abspath(os.path.join(os.path.join(os.path.join(here, '..'), '..'), 'assets'))
         css_dir = os.path.join(parent_assets_dir, "css")
         less_dir = os.path.join(parent_assets_dir, "less")
         # We're assuming we only have one less file to compile
@@ -90,9 +90,8 @@ def prepare_env(settings):
         # Call lessc
         if os.access(less_dir, os.W_OK):
             rtn_code = subprocess.call(command_opts, shell=shell)
-            # Failed when return code is nonz-zero
             if rtn_code != 0:
-                pass
+                logger.warning('Less command failed')
 
     auth_idp_metadata = settings.get('auth.idp.metadata', None)
     if auth_idp_metadata is not None:

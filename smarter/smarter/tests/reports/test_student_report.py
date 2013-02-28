@@ -72,6 +72,15 @@ class TestStudentReport(Unittest_with_sqlite):
         self.assertEqual(student_report['asmt_score'], student_report['asmt_score_range_min'] + student_report['asmt_score_interval'])
         self.assertEqual(student_report['asmt_score'], student_report['asmt_score_range_max'] - student_report['asmt_score_interval'])
 
+    def test_context(self):
+        params = {"studentId": '286ee893-dad0-4833-ae6c-adef78a11567'}
+        result = get_student_report(params)['context']
+        self.assertEqual('NY', result['state_name'])
+        self.assertEqual('Sunset', result['district_name'])
+        self.assertEqual("2", result['grade'])
+        self.assertEqual("School Name 2", result['school_name'])
+        self.assertEqual("Adam C Osako", result['student_name'])
+
 
 if __name__ == '__main__':
     unittest.main()

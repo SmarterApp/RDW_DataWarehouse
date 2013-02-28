@@ -54,6 +54,14 @@ def __prepare_query(connector, student_id, assessment_id):
                     dim_asmt.c.asmt_claim_2_name.label('asmt_claim_2_name'),
                     dim_asmt.c.asmt_claim_3_name.label('asmt_claim_3_name'),
                     dim_asmt.c.asmt_claim_4_name.label('asmt_claim_4_name'),
+                    dim_asmt.c.asmt_claim_1_score_min.label('asmt_claim_1_score_min'),
+                    dim_asmt.c.asmt_claim_2_score_min.label('asmt_claim_2_score_min'),
+                    dim_asmt.c.asmt_claim_3_score_min.label('asmt_claim_3_score_min'),
+                    dim_asmt.c.asmt_claim_4_score_min.label('asmt_claim_4_score_min'),
+                    dim_asmt.c.asmt_claim_1_score_max.label('asmt_claim_1_score_max'),
+                    dim_asmt.c.asmt_claim_2_score_max.label('asmt_claim_2_score_max'),
+                    dim_asmt.c.asmt_claim_3_score_max.label('asmt_claim_3_score_max'),
+                    dim_asmt.c.asmt_claim_4_score_max.label('asmt_claim_4_score_max'),
                     fact_asmt_outcome.c.asmt_claim_1_score.label('asmt_claim_1_score'),
                     fact_asmt_outcome.c.asmt_claim_2_score.label('asmt_claim_2_score'),
                     fact_asmt_outcome.c.asmt_claim_3_score.label('asmt_claim_3_score'),
@@ -69,7 +77,10 @@ def __prepare_query(connector, student_id, assessment_id):
                     dim_staff.c.first_name.label('teacher_first_name'),
                     dim_staff.c.middle_name.label('teacher_middle_name'),
                     dim_staff.c.last_name.label('teacher_last_name')],
-                   from_obj=[fact_asmt_outcome.join(dim_student, fact_asmt_outcome.c.student_id == dim_student.c.student_id).join(dim_staff, fact_asmt_outcome.c.teacher_id == dim_staff.c.staff_id).join(dim_asmt, dim_asmt.c.asmt_id == fact_asmt_outcome.c.asmt_id)])
+                   from_obj=[fact_asmt_outcome
+                             .join(dim_student, fact_asmt_outcome.c.student_id == dim_student.c.student_id and fact_asmt_outcome.c.section_id == dim_student.c.section_id and fact_asmt_outcome.c.most_recent == 1)
+                             .join(dim_staff, fact_asmt_outcome.c.teacher_id == dim_staff.c.staff_id and fact_asmt_outcome.c.section_id == dim_staff.section_id and dim_staff.c.most_recent == 1)
+                             .join(dim_asmt, dim_asmt.c.asmt_id == fact_asmt_outcome.c.asmt_id and dim_asmt.most_recent == 1)])
     query = query.where(fact_asmt_outcome.c.student_id == student_id)
     if assessment_id is not None:
         query = query.where(fact_asmt_outcome.c.asmt_id == assessment_id)
@@ -109,6 +120,22 @@ def __arrage_results(results):
                     result['cut_points'].append(dict(list(cut_point_object.items()) + list(custom[i - 1].items())))
                 else:
                     result['cut_points'].append(cut_point_object)
+
+        result['claims'] = []
+
+        for i in range(1, 5):
+            claim_score = result['asmt_claim_{0}_score'.format(i)]
+            if claim_score > 0:
+                claim_object = {'name': str(result['asmt_claim_{0}_name'.format(i)]),
+                                'score': str(claim_score),
+                                'indexer': str(i),
+                                'range_min_score': str(result['asmt_claim_{0}_score_range_min'.format(i)]),
+                                'range_max_score': str(result['asmt_claim_{0}_score_range_max'.format(i)]),
+                                'max_score': str(result['asmt_claim_{0}_score_max'.format(i)]),
+                                'min_score': str(result['asmt_claim_{0}_score_min'.format(i)]),
+                                'confidence': str(claim_score - result['asmt_claim_{0}_score_range_min'.format(i)]),
+                                }
+                result['claims'].append(claim_object)
 
     # rearranging the json so we could use it more easily with mustache
     results = {"items": results}
@@ -197,7 +224,6 @@ def __get_context(connector, school_id, district_id, grade, student_name):
 
     query = select([dim_district.c.district_name.label('district_name'),
                     dim_district.c.school_name.label('school_name'),
-                    dim_district.c.most_recent.label('most_recent'),
                     dim_district.c.state_name.label('state_name')],
                    from_obj=[dim_district])
 

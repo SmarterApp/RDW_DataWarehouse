@@ -94,7 +94,7 @@ define [
             link: "/assets/html/gradeStudentList.html"
           },
           {
-            name: contextData['student_name']
+            name: contextData['student_name'] + "'s Results"
           }
         ]}
       

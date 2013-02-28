@@ -193,6 +193,7 @@ function create_sym_link_for_apache {
    #/usr/local/bin/lessc ${WORKSPACE}/assets/less/style.less ${WORKSPACE}/assets/css/style.css
     
     cd "$WORKSPACE/scripts"
+    ls
     sed -i.bak "s/assets.directory = \/path\/assets/assets.directory = $WORKSPACE\/assets/g" compile_assets.ini 
     sed -i.bak "s/smarter.directory = \/path\/smarter/smarter.directory = $WORKSPACE\/smarter/g" compile_assets.ini
     python compile_assets.py

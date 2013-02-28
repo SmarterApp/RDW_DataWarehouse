@@ -17,7 +17,7 @@ from pyramid.response import Response
 from edauth.security.utils import deflate_base64_encode, inflate_base64_decode
 from edauth.security.roles import Roles
 from edauth.saml2.saml_response_manager import SAMLResponseManager
-from edauth.saml2.saml_idp_metadata_manager import IDP_metadata_manger
+from edauth.saml2.saml_idp_metadata_manager import IDP_metadata_manager
 
 
 @view_config(route_name='login', permission=NO_PERMISSION_REQUIRED)
@@ -64,6 +64,8 @@ def login(request):
 def login_callback(request):
     '''
     Login callback for redirect
+    This is a blank page with redireect to the requested resource page.
+    To prevent from a user from clicking back botton to OpenAM login page
     '''
     redirect_url = request.GET.get('request')
     redirect_url_decoded = inflate_base64_decode(redirect_url).decode()
@@ -129,7 +131,7 @@ def saml2_post_consumer(request):
     # Validate the response id against session
     __SAMLResponse = base64.b64decode(request.POST['SAMLResponse'])
     __SAMLResposne_manager = SAMLResponseManager(__SAMLResponse.decode('utf-8'))
-    __SAMLResponse_IDP_Metadata_manager = IDP_metadata_manger(request.registry.settings['auth.idp.metadata'])
+    __SAMLResponse_IDP_Metadata_manager = IDP_metadata_manager(request.registry.settings['auth.idp.metadata'])
 
     __skip_verification = request.registry.settings.get('auth.skip.verify', False)
     # TODO: enable auth_request_id

@@ -10,7 +10,7 @@ from edauth.tests.test_helper.read_resource import create_xml_from_resources
 
 class Test(unittest.TestCase):
 
-    def test_no_dom_imput(self):
+    def test_no_dom_input(self):
         no_saml_dom_metadata = SAML_IDP_Metadata(None)
         self.assertIsNone(no_saml_dom_metadata.get_entityID())
         self.assertIsNone(no_saml_dom_metadata.get_X509Certificate())

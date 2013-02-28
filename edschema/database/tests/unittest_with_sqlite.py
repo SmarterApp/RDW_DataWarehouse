@@ -4,10 +4,12 @@ Created on Feb 9, 2013
 @author: tosako
 '''
 import unittest
-from database.tests.ed_sqlite import create_sqlite, import_csv_data, destroy_sqlite
+from database.sqlite_connector import create_sqlite, destroy_sqlite
 from database.tests.data_gen import generate_cvs_templates
 from zope import component
 from database.connector import IDbUtil
+import os
+from database.data_importor import import_csv_data
 
 
 class Unittest_with_sqlite(unittest.TestCase):
@@ -18,7 +20,9 @@ class Unittest_with_sqlite(unittest.TestCase):
         create_sqlite()
         # create test data in the sqlite
         generate_cvs_templates()
-        import_csv_data()
+        here = os.path.abspath(os.path.dirname(__file__))
+        resources_dir = os.path.join(os.path.join(here, 'resources'))
+        import_csv_data(resources_dir)
 
     @classmethod
     def tearDownClass(cls):

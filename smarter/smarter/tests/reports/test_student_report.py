@@ -5,10 +5,8 @@ Created on Jan 17, 2013
 '''
 
 import unittest
-from smarter.reports.student_report import get_student_report, \
-    get_student_assessment
+from smarter.reports.student_report import get_student_report, get_student_assessment
 from database.tests.unittest_with_sqlite import Unittest_with_sqlite
-import json
 
 
 class TestStudentReport(Unittest_with_sqlite):
@@ -35,9 +33,9 @@ class TestStudentReport(Unittest_with_sqlite):
         student_report = result[0]
 
         self.assertEqual('Math', student_report['asmt_subject'], 'asmt_subject')
-        self.assertEqual('Lili', student_report['teacher_first_name'], 'teacher first name should be Lili')
-        self.assertEqual('M', student_report['teacher_middle_name'], 'teacher middle name should be M')
-        self.assertEqual('Chen', student_report['teacher_last_name'], 'teacher last name should be Chen')
+        self.assertEqual('Brandon', student_report['teacher_first_name'], 'teacher first name')
+        self.assertEqual('C', student_report['teacher_middle_name'], 'teacher middle name')
+        self.assertEqual('Suzuki', student_report['teacher_last_name'], 'teacher last name')
         self.assertEqual(1, student_report['date_taken_day'])
         self.assertEqual(1, student_report['date_taken_month'])
         self.assertEqual(2013, student_report['date_taken_year'])
@@ -47,8 +45,8 @@ class TestStudentReport(Unittest_with_sqlite):
         result = get_student_report(params)['items']
         student_report = result[0]
 
-        cut_points_list = student_report['cut_points']
-        self.assertEqual(4, len(cut_points_list), "we should have 4 cut points")
+        cut_points_list = student_report['cut_point_intervals']
+        self.assertEqual(4, len(cut_points_list), "we should have 4 cut point intervals")
 
         expected_cut_point_names = set(['Minimal Command', 'Partial Command', 'Sufficient Command', 'Deep Command'])
         for cut_point in cut_points_list:
@@ -58,7 +56,7 @@ class TestStudentReport(Unittest_with_sqlite):
             cut_point_name = cut_point['name']
             self.assertIn(cut_point_name.strip(), expected_cut_point_names, "unexpected cut point name")
             self.assertIn("name", keys, "should contain the name of the cut point")
-            self.assertIn("cut_point", keys, "should contain the value of the cut point")
+            self.assertIn("interval", keys, "should contain the value of the cut point")
             self.assertIn("text_color", keys, "should contain the text_color of the cut point")
             self.assertIn("end_gradient_bg_color", keys, "should contain the end_gradient_bg_color of the cut point")
             self.assertIn("start_gradient_bg_color", keys, "should contain the start_gradient_bg_color of the cut point")
@@ -79,7 +77,7 @@ class TestStudentReport(Unittest_with_sqlite):
         self.assertEqual('Sunset', result['district_name'])
         self.assertEqual("2", result['grade'])
         self.assertEqual("School Name 2", result['school_name'])
-        self.assertEqual("Adam C Osako", result['student_name'])
+        self.assertEqual("Verda Herriman", result['student_name'])
 
 
 if __name__ == '__main__':

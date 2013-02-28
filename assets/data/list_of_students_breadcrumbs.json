@@ -1,0 +1,18 @@
+{
+    "items" : [
+    	{
+    		"name" : "state",
+    		"link" : "/assets/html/stateStudentList.html" 
+    	},
+    	{
+    		"name" : "district",
+    		"link" : "/assets/html/districtStudentList.html" 
+    	},
+    	{
+    		"name" : "school",
+    		"link" : "/assets/html/schoolStudentList.html" 
+    	},
+    	{
+    		"name" : "grade"
+    	}]
+}

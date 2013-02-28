@@ -4,19 +4,19 @@ Created on Feb 25, 2013
 @author: tosako
 '''
 import unittest
-from edauth.saml2.saml_idp_metadata_manager import IDP_metadata_manger
 import os
 import hashlib
+from edauth.saml2.saml_idp_metadata_manager import IDP_metadata_manager
 
 
 class Test(unittest.TestCase):
 
     def test_no_file_creation(self):
-        manager = IDP_metadata_manger(None)
+        manager = IDP_metadata_manager(None)
         self.assertIsNone(manager.get_trusted_pem_filename())
 
     def test_temp_file_management(self):
-        manager = IDP_metadata_manger(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'resources', 'IDP_Metadata.xml')))
+        manager = IDP_metadata_manager(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'resources', 'IDP_Metadata.xml')))
         temp_file = manager.get_trusted_pem_filename()
         self.assertTrue(os.path.exists(temp_file))
         manager = None
@@ -38,7 +38,7 @@ WvlcwcNSZJmTJ8ARvVYOMEVNbsT4OFcfu2/PeYoAdiDAcGy/F2Zuj8XJJpuQRSE6
 PtQqBuDEHjjmOQJ0rV/r8mO1ZCtHRhpZ5zYRjhRC9eCbjx9VrFax0JDC/FfwWigm
 rW0Y0Q==
 -----END CERTIFICATE-----'''
-        manager = IDP_metadata_manger(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'resources', 'IDP_Metadata.xml')))
+        manager = IDP_metadata_manager(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'resources', 'IDP_Metadata.xml')))
         metadata_content_md5 = None
         with open(manager.get_trusted_pem_filename(), 'r') as f:
             m = hashlib.md5()

@@ -20,7 +20,7 @@ define [
         this.html output
 
       #
-      #    * Creates EDWARE grid
+      #    * Creates breadcrumbs widget
       #    * @param containerId - The container id for breadcrumbs
       #    * @param data
       # 

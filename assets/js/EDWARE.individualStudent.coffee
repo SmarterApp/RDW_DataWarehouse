@@ -8,7 +8,7 @@ define [
   "text!templates/individualStudent_report/claimsInfo.html"
   "cs!edwareBreadcrumbs"
 ], ($, Mustache, edwareDataProxy, edwareConfidenceLevelBar, indivStudentReportTemplate, claimsInfoTemplate, edwareBreadcrumbs) ->
-    
+  
   #
   #    * Generate individual student report
   #    
@@ -43,7 +43,6 @@ define [
       
     edwareDataProxy.getDatafromSource "/data/individual_student_report", params, (data) ->
       
-      # Apply text color and background color for overall score summary info section
       i = 0
       while i < data.items.length
         items = data.items[i]
@@ -65,38 +64,34 @@ define [
         # Select cutpoint color and background color properties for the overall score info section
         performance_level = items.cut_points[items.asmt_perf_lvl-1]
         
-
+        # Apply text color and background color for overall score summary info section
         items.score_color = performance_level.bg_color
         items.score_text_color = performance_level.text_color
         items.score_bg_color = performance_level.bg_color
         items.score_name = performance_level.name
         
+        # Claim section
+        # For less than 4 claims, then width of the claim box would be 28%
+        # For 4 claims, the width of the claim box would be 20%
+        items.claim_box_width = "28%" if items.claims.length < 4
+        items.claim_box_width = "20%" if items.claims.length == 4
+        
         i++
         
       contextData = data.context
       
-      breadcrumbsData = 
-        { "items": [
-          {
-            name: contextData['state_name']
-            link: "/assets/html/stateStudentList.html" 
-          },
-          {
-            name: contextData['district_name']
-            link: "/assets/html/districtStudentList.html" 
-          },
-          {
-            name: contextData['school_name']
-            link: "/assets/html/schoolStudentList.html" 
-          },
-          {
-            name: contextData['grade']
-            link: "/assets/html/gradeStudentList.html"
-          },
-          {
-            name: contextData['student_name'] + "'s Results"
-          }
-        ]}
+      breadcrumbsData = {}
+        
+      readBreadcrumbs "../data/student_breadcrumbs.json", (tempData) ->
+        breadcrumbsData = tempData
+        
+      breadcrumbsData['items'][0].name = contextData['state_name']
+      breadcrumbsData['items'][1].name = contextData['district_name']
+      breadcrumbsData['items'][2].name = contextData['school_name']
+      breadcrumbsData['items'][3].name = contextData['grade']
+      breadcrumbsData['items'][3].link = breadcrumbsData['items'][3].link + "?districtId=" + contextData['district_id'] + "&schoolId=" + contextData['school_id']+ "&asmtGrade=" + contextData['grade']
+      breadcrumbsData['items'][4].name = contextData['student_name'] + "'s Results"
+
       
       $('#breadcrumb').breadcrumbs(breadcrumbsData)
 
@@ -129,6 +124,24 @@ define [
         async: false
         success: (data) ->
           content = data.content
+
+          if callback
+            callback content
+          else
+            content
+            
+  #
+  #    * Get breadcrumbs data
+  # 
+  readBreadcrumbs = (templateURL, callback) ->
+      return false if templateURL is "undefined" or typeof templateURL is "number" or typeof templateURL is "function" or typeof templateURL is "object"
+        
+      $.ajax
+        url: templateURL
+        dataType: "json"
+        async: false
+        success: (data) ->
+          content = data
 
           if callback
             callback content

@@ -7,7 +7,7 @@ import unittest
 from edauth.saml2.saml_response_manager import SAMLResponseManager,\
     time_convert_utc
 from edauth.tests.test_helper.read_resource import read_resource
-from edauth.saml2.saml_idp_metadata_manager import IDP_metadata_manger
+from edauth.saml2.saml_idp_metadata_manager import IDP_metadata_manager
 import os
 
 
@@ -22,7 +22,7 @@ class Test(unittest.TestCase):
 
     def test_is_signature_ok(self):
         manager = SAMLResponseManager(read_resource('SAMLResponse.txt'))
-        metadata_manager = IDP_metadata_manger(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'resources', 'IDP_Metadata.xml')))
+        metadata_manager = IDP_metadata_manager(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'resources', 'IDP_Metadata.xml')))
         self.assertTrue(manager.is_signature_ok(metadata_manager.get_trusted_pem_filename()))
 
     def test_is_auth_request_id_ok(self):

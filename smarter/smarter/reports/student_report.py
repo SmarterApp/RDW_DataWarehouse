@@ -239,5 +239,7 @@ def __get_context(connector, school_id, district_id, grade, student_name):
 
     result['grade'] = grade
     result['student_name'] = student_name
+    result['district_id'] = district_id
+    result['school_id'] = school_id
 
     return result

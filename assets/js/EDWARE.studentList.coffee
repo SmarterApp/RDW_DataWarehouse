@@ -11,10 +11,11 @@ define [
   assessmentsCutPoints = []
   assessmentCutpoints = {}
    
+   
+               
   #
   #    * Create Student data grid
   #    
-  
   createStudentGrid = (params) ->
     
     getStudentData "/data/list_of_students", params, (assessmentsData, assessmentCutpoints, contextData) ->

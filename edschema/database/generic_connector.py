@@ -10,6 +10,9 @@ from zope import component
 
 
 def setup_connection(settings, prefix, schema_name):
+    '''
+    Create a generic db connection
+    '''
     engine = engine_from_config(settings, prefix)
     metadata = generate_ed_metadata(schema_name)
 

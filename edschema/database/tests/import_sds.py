@@ -11,19 +11,24 @@ import configparser
 from database.connector import DBConnection
 
 
-def main(config_file):
+def main(config_file, resource_dir):
+    '''
+    Imports data from csv
+    '''
     config = configparser.ConfigParser()
     config.read(config_file)
-    
+
     schema_name = config.get('app:main', 'edschema.schema_name')
     setup_connection(config['app:main'], 'edware.db.main.', schema_name)
-    here = os.path.abspath(os.path.dirname(__file__))
-    resources_dir = os.path.join(os.path.join(here, 'resources'))
+
     delete_data()
-    import_csv_dir(resources_dir)
+    import_csv_dir(resource_dir)
 
 
 def delete_data():
+    '''
+    Delete all the data in all the tabls
+    '''
     with DBConnection() as connection:
         metadata = connection.get_metadata()
         for table in reversed(metadata.sorted_tables):
@@ -33,15 +38,26 @@ def delete_data():
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Import csv')
     parser.add_argument('-config', help='Set the path to ini file')
-    parser.add_argument('--resource', help='Set path to resource file')
+    parser.add_argument('--resource', help='Set path to resource directory containing csv')
     args = parser.parse_args()
-    
+
     __config = args.config
     __resource = args.resource
-    
+
     if __config is None:
         print('Please specify path to ini file')
         exit(-1)
-    
-    main(args.config)
-    
+
+    if os.path.exists(__config) is False:
+        print('Error: config file does not exist')
+        exit(-1)
+
+    if __resource is None:
+        here = os.path.abspath(os.path.dirname(__file__))
+        __resource = os.path.join(os.path.join(here, 'resources'))
+
+    if os.path.exists(__resource) is False:
+        print('Error: resources directory does not exist')
+        exit(-1)
+
+    main(__config, __resource)

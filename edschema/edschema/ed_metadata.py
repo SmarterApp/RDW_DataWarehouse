@@ -19,9 +19,9 @@ Command line options are available form --help, but as a quick start:
 '''
 from sqlalchemy.schema import MetaData, CreateSchema
 from sqlalchemy import Table, Column, Index
-from sqlalchemy import SmallInteger, String, Date, Boolean
+from sqlalchemy import SmallInteger, String, Boolean
 from sqlalchemy import ForeignKey
-from sqlalchemy.types import Enum, UnicodeText, DateTime, Text
+from sqlalchemy.types import UnicodeText, DateTime, Text
 import argparse
 from sqlalchemy.engine import create_engine
 from sqlalchemy.sql.expression import func
@@ -90,7 +90,7 @@ def generate_ed_metadata(scheme_name=None, bind=None):
                      Column('zip_code', String(5), nullable=False),
                      Column('gender', String(10), nullable=False),
                      Column('email', String(256), nullable=False),
-                     Column('dob', Date, nullable=False),
+                     Column('dob', String(8), nullable=False),
                      Column('section_id', String(50), nullable=False),
                      Column('grade', String(10), nullable=False),
                      Column('state_code', String(2), nullable=False),
@@ -125,7 +125,7 @@ def generate_ed_metadata(scheme_name=None, bind=None):
                   Column('middle_name', String(256), nullable=True),
                   Column('last_name', String(256), nullable=False),
                   Column('section_id', String(50), nullable=False),
-                  Column('hier_user_type', Enum("Teacher", "Staff", name="hier_user_type_enum")),
+                  Column('hier_user_type', String(10), nullable=False),
                   Column('state_code', String(2), nullable=False),
                   Column('district_id', String(50), nullable=False),
                   Column('school_id', String(50), nullable=False),
@@ -193,7 +193,7 @@ def generate_ed_metadata(scheme_name=None, bind=None):
                                Column('where_taken_name', String(256), primary_key=True),
                                Column('asmt_grade', String(10), nullable=False),
                                Column('enrl_grade', String(10), nullable=False),
-                               Column('date_taken', Date, nullable=False),
+                               Column('date_taken', String(8), nullable=False),
                                Column('date_taken_day', SmallInteger, nullable=False),
                                Column('date_taken_month', SmallInteger, nullable=False),
                                Column('date_taken_year', SmallInteger, nullable=False),
@@ -213,7 +213,7 @@ def generate_ed_metadata(scheme_name=None, bind=None):
                                Column('asmt_claim_4_score', SmallInteger, nullable=True),
                                Column('asmt_claim_4_score_range_min', SmallInteger, nullable=True),
                                Column('asmt_claim_4_score_range_max', SmallInteger, nullable=True),
-                               Column('asmt_create_date', Date, nullable=False),
+                               Column('asmt_create_date', String(8), nullable=False),
                                Column('most_recent', Boolean),
                                )
 

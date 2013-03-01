@@ -13,6 +13,7 @@ from smarter.security.root_factory import RootFactory
 import platform
 import ctypes
 import subprocess
+from database.generic_connector import setup_connection
 
 
 logger = logging.getLogger(__name__)
@@ -26,13 +27,9 @@ def main(global_config, **settings):
         os.environ['PATH'] += os.pathsep + settings['smarter.PATH']
     prepare_env(settings)
     config = Configurator(settings=settings)
-
-    engine = engine_from_config(settings, "edware.db.main.")
-    metadata = generate_ed_metadata(settings['edschema.schema_name'])
-
-    # zope registration
-    dbUtil = DbUtil(engine=engine, metadata=metadata)
-    component.provideUtility(dbUtil, IDbUtil)
+    
+    # setup database connection
+    setup_connection(settings, 'edware.db.main.', settings['edschema.schema_name'])
 
     # set role-permission mapping
     config.set_root_factory('smarter.security.root_factory.RootFactory')

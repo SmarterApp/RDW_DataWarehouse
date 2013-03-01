@@ -6,6 +6,7 @@ Created on Feb 27, 2013
 from database.connector import DBConnection
 import os
 import csv
+from sqlalchemy.types import Boolean, SmallInteger
 
 
 def import_csv_file(csv_file, connection, table):
@@ -17,7 +18,13 @@ def import_csv_file(csv_file, connection, table):
             for field_name in row.keys():
                 # strip out spaces and \n
                 clean_field_name = field_name.rstrip()
-                new_row[clean_field_name] = row[field_name]
+                value = row[field_name]
+                column_type = type(table.columns._data[clean_field_name].type)
+                if column_type is Boolean:
+                    value = bool(value)
+                elif column_type is SmallInteger:
+                    value = int(value)
+                new_row[clean_field_name] = value
             # Inserts to the table one row at a time
             connection.execute(table.insert().values(**new_row))
 

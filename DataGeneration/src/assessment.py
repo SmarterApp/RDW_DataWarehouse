@@ -71,17 +71,18 @@ def generate_allscores(score_list, levels, asmt_type, grade):
     if(score_list is not None and len(score_list) > 0):
         for over_score in score_list:
             total_score = over_score
+            # claims_score is a list, each score is for ordered claims
             claims_score = generate_claims(total_score, asmt_type, grade)
             scores.append(Score(total_score, claims_score))
         # start = end
 
-    scores_list = list(scores)
-
-    return scores_list
+    #scores_list = list(scores)
+    return scores
 
 
 def generate_claims(total_score, asmt_type, grade):
     claim_scores = {}
+    claim_scores_list = []
     if(total_score >= 0):
         if(asmt_type in ASSMT_TYPES.keys()):
             ass = ASSMT_TYPES.get(asmt_type)
@@ -90,10 +91,9 @@ def generate_claims(total_score, asmt_type, grade):
 
         if(str(grade) in ass):
             ass_grade = ass.get(str(grade))
-            c_sores = perc_to_count(ass_grade.get('claim_percs'), total_score)
-            claim_scores = dict(zip(ass_grade.get('claim_names'), c_sores))
-
-    return claim_scores
+            claim_scores_list = perc_to_count(ass_grade.get('claim_percs'), total_score)
+            claim_scores = dict(zip(ass_grade.get('claim_names'), claim_scores_list))
+    return claim_scores_list
 
 
 def perc_to_count(perc, total):

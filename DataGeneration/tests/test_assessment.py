@@ -19,14 +19,12 @@ class TestAssessment(unittest.TestCase):
         total = 200
 
         expected_scorelist = assessment.generate_assmt_scores(state, asmt_type, year, period, grade, total)
-        expected_claimnames = ASSMT_TYPES[asmt_type]['4']['claim_names']
 
         self.assertEqual(len(expected_scorelist), total)
         for score in expected_scorelist:
             self.assertTrue(MIN_ASSMT_SCORE <= score.overall <= MAX_ASSMT_SCORE)
-            calculate_overall = sum(score.claims.values())
+            calculate_overall = sum(score.claims)
             self.assertEqual(calculate_overall, score.overall)
-            self.assertEqual(sorted(score.claims.keys()), sorted(expected_claimnames))
 
     def test_generate_assmt_scores_higherthansixgrade(self):
         state = 'Delaware'
@@ -39,14 +37,12 @@ class TestAssessment(unittest.TestCase):
         state_data = assessment.StateData()
         state_data.get_state_data = MagicMock(return_value=(284, 32, [25, 44, 26, 6]))
         expected_scorelist = assessment.generate_assmt_scores(state, asmt_type, year, period, grade, total)
-        expected_claimnames = ASSMT_TYPES[asmt_type]['8']['claim_names']
 
         self.assertEqual(len(expected_scorelist), total)
         for score in expected_scorelist:
             self.assertTrue(MIN_ASSMT_SCORE <= score.overall <= MAX_ASSMT_SCORE)
-            calculate_overall = sum(score.claims.values())
+            calculate_overall = sum(score.claims)
             self.assertEqual(calculate_overall, score.overall)
-            self.assertEqual(sorted(score.claims.keys()), sorted(expected_claimnames))
 
     # test generate_allscores()
     def test_generate_allscores(self):

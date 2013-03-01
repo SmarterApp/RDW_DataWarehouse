@@ -254,7 +254,7 @@ def create_districts(state_code, state_name, school_num_in_dist_made, pos, name_
             # create district object
             params = {
                 'district_id': IdGen().get_id(),
-                'district_name': names[i] + " " + random.choice(constants.DIST_SUFFIX),
+                'district_name': (names[i] + " " + random.choice(constants.DIST_SUFFIX)).title(),
                 'state_code': state_code,
                 'state_name': state_name,
                 'number_of_schools': school_num_in_dist_made[i],
@@ -294,7 +294,7 @@ def create_institution_hierarchies(stu_num_in_school_made, stutea_ratio_in_schoo
         low_grade = grade_range[0]
         high_grade = grade_range[1]
 
-        school_name = names[i] + " " + suf
+        school_name = (names[i] + " " + suf).title()
         # create one row of InstitutionHierarchy
         params = {
             'number_of_students': stu_num_in_school_made[i],
@@ -477,6 +477,7 @@ def associate_students_and_scores(student_sections_list, scores, inst_hier_id, s
 
     for student_section in student_sections_list:
         for score in scores.items():
+            # print(score[0], score[1])
             asmt_id = int(score[0].split('_')[1])
             year = score[0].split('_')[0]
             asmt = [x for x in asmt_list if x.asmt_id == asmt_id][0]
@@ -492,7 +493,6 @@ def associate_students_and_scores(student_sections_list, scores, inst_hier_id, s
                 else:
                     date_taken = map_asmt_date_to_period(asmt.asmt_period, dates_taken2, year, asmt.asmt_type)
                 prev_year = year
-
                 params = {
                     'asmnt_outcome_id': new_id,
                     'asmnt_outcome_external_id': uuid.uuid4(),

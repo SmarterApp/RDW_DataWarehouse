@@ -30,18 +30,18 @@ MAX_ASSMT_SCORE = 500
 
 ASSMT_TYPES = {'Math':
                {'4':
-                {'claim_names': ['Number properties and operations', 'Measurement and Geometry', 'Data analysis, statistics, and probability', 'Algebra'],
-                 'claim_percs': [40, 35, 10, 15]},
+                {'claim_names': ['Concepts & Procedures', 'Problem Solving/Modeling & Data Analysis', 'Communicating & Reasoning'],
+                 'claim_percs': [40, 45, 15]},
                 '8':
-                {'claim_names': ['Number properties and operations', 'Measurement and Geometry', 'Data analysis, statistics, and probability', 'Algebra'],
-                 'claim_percs': [20, 35, 15, 30]}
+                {'claim_names': ['Concepts & Procedures', 'Problem Solving/Modeling & Data Analysis', 'Communicating & Reasoning'],
+                 'claim_percs': [20, 50, 30]}
                 },
                'ELA':
                {'4':
-                {'claim_names': ['Literary text and Fiction', 'Literary nonfiction and Poetry', 'Informational text and Exposition', 'Argumentation and persuasive text'],
+                {'claim_names': ['Reading', 'Writing', 'Speaking & Listening', 'Research'],
                  'claim_percs': [25, 25, 25, 25]},
                 '8':
-                {'claim_names': ['Literary text and Fiction', 'Literary nonfiction and Poetry', 'Informational text and Exposition', 'Argumentation and persuasive text'],
+                {'claim_names': ['Reading', 'Writing', 'Speaking & Listening', 'Research'],
                  'claim_percs': [20, 25, 25, 30]}
                 }
                }
@@ -88,3 +88,5 @@ MONTH_TOTAL = 12
 MONTH_DAY_MAX = [31, 30, 28]
 
 HIER_USER_TYPE = ['Teacher', 'Staff']
+
+SCORE_MIN_MAX_RANGE = 20

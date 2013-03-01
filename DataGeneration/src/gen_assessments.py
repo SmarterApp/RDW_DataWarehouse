@@ -62,13 +62,12 @@ def generate_single_asmt(grade, asmt_type, period, subject):
     claim1_min_max = calc_claim_min_max(MIN_ASSMT_SCORE, MAX_ASSMT_SCORE, asmt_info['claim_percs'][0])
     claim2_min_max = calc_claim_min_max(MIN_ASSMT_SCORE, MAX_ASSMT_SCORE, asmt_info['claim_percs'][1])
     claim3_min_max = calc_claim_min_max(MIN_ASSMT_SCORE, MAX_ASSMT_SCORE, asmt_info['claim_percs'][2])
-    claim4_min_max = calc_claim_min_max(MIN_ASSMT_SCORE, MAX_ASSMT_SCORE, asmt_info['claim_percs'][3])
 
     claim1 = Claim(asmt_info['claim_names'][0], claim1_min_max[0], claim1_min_max[1])
     claim2 = Claim(asmt_info['claim_names'][1], claim2_min_max[0], claim2_min_max[1])
     claim3 = Claim(asmt_info['claim_names'][2], claim3_min_max[0], claim3_min_max[1])
-    claim4 = Claim(asmt_info['claim_names'][3], claim4_min_max[0], claim4_min_max[1])
-    #TODO: set assessment year
+
+    # TODO: set assessment year
     params = {
         'asmt_id': asmt_id,
         'asmt_external_id': uuid4(),
@@ -81,7 +80,7 @@ def generate_single_asmt(grade, asmt_type, period, subject):
         'claim_1': claim1,
         'claim_2': claim2,
         'claim_3': claim3,
-        'claim_4': claim4,
+        #'claim_4': claim4,
         'asmt_score_min': MIN_ASSMT_SCORE,
         'asmt_score_max': MAX_ASSMT_SCORE,
         'asmt_perf_lvl_name_1': PERFORMANCE_LEVELS[0],
@@ -95,6 +94,11 @@ def generate_single_asmt(grade, asmt_type, period, subject):
         'from_date': '20120901',
         'most_recent': True
     }
+
+    if len(asmt_info['claim_names']) >= 4 and len(asmt_info['claim_percs']) >= 4:
+        claim4_min_max = calc_claim_min_max(MIN_ASSMT_SCORE, MAX_ASSMT_SCORE, asmt_info['claim_percs'][3])
+        claim4 = Claim(asmt_info['claim_names'][3], claim4_min_max[0], claim4_min_max[1])
+        params['claim_4'] = claim4
 
     return Assessment(**params)
 

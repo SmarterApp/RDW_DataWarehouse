@@ -2,6 +2,7 @@ from uuid import uuid4
 
 from idgen import IdGen
 import util
+from constants import SCORE_MIN_MAX_RANGE
 
 
 class InstitutionHierarchy:
@@ -123,11 +124,12 @@ class Assessment:
 
     def getRow(self):
         return [self.asmt_id, self.asmt_type, self.asmt_period, self.asmt_period_year, self.asmt_version, self.asmt_grade, self.asmt_subject,
-                self.claim_1.claim_name, self.claim_2.claim_name, self.claim_3.claim_name, self.claim_4.claim_name,
+                self.claim_1.claim_name, self.claim_2.claim_name, self.claim_3.claim_name, self.claim_4.claim_name if self.claim_4 is not None else '',
                 self.asmt_perf_lvl_name_1, self.asmt_perf_lvl_name_2, self.asmt_perf_lvl_name_3, self.asmt_perf_lvl_name_4, self.asmt_perf_lvl_name_5,
                 self.asmt_score_min, self.asmt_score_max,
                 self.claim_1.claim_score_min, self.claim_1.claim_score_max, self.claim_2.claim_score_min, self.claim_2.claim_score_max,
-                self.claim_3.claim_score_min, self.claim_3.claim_score_max, self.claim_4.claim_score_min, self.claim_4.claim_score_max,
+                self.claim_3.claim_score_min, self.claim_3.claim_score_max,
+                self.claim_4.claim_score_min if self.claim_4 is not None else '', self.claim_4.claim_score_max if self.claim_4 is not None else '',
                 self.asmt_cut_point_1, self.asmt_cut_point_2, self.asmt_cut_point_3, self.asmt_cut_point_4,
                 self.asmt_custom_metadata, self.from_date, self.to_date, self.most_recent]
 
@@ -157,16 +159,19 @@ class AssessmentOutcome(object):
         '''
         if score.overall > asmt.asmt_cut_point_3:
             if asmt.asmt_cut_point_4:
-                return 4
+                return 5
             else:
-                return 3
+                return 4
         elif score.overall > asmt.asmt_cut_point_2:
+            return 3
+        elif score.overall > asmt.asmt_cut_point_1:
             return 2
         else:
             return 1
 
     def getRow(self):
-        claims = list(self.asmt_score.claims.items())
+        claims = self.asmt_score.claims
+
         asmt_perf_lvl = self.calc_perf_lvl(self.asmt_score, self.assessment)
 
         return [self.asmnt_outcome_id, self.asmnt_outcome_external_id, self.assessment.asmt_id,
@@ -175,11 +180,13 @@ class AssessmentOutcome(object):
                 self.inst_hier_id, self.student.section_subject_id,
                 self.where_taken.where_taken_id, self.where_taken.where_taken_name, self.assessment.asmt_grade, self.student.grade,
                 self.date_taken, self.date_taken.day, self.date_taken.month, self.date_taken.year,
-                self.asmt_score.overall, self.assessment.asmt_score_min, self.assessment.asmt_score_max, asmt_perf_lvl,
-                claims[0][1], self.assessment.claim_1.claim_score_min, self.assessment.claim_1.claim_score_max,
-                claims[1][1], self.assessment.claim_2.claim_score_min, self.assessment.claim_2.claim_score_max,
-                claims[2][1], self.assessment.claim_3.claim_score_min, self.assessment.claim_3.claim_score_max,
-                claims[3][1], self.assessment.claim_4.claim_score_min, self.assessment.claim_4.claim_score_max,
+                self.asmt_score.overall, max(0, self.asmt_score.overall - SCORE_MIN_MAX_RANGE), self.asmt_score.overall + SCORE_MIN_MAX_RANGE,
+                asmt_perf_lvl,
+                claims[0], max(0, claims[0] - SCORE_MIN_MAX_RANGE), claims[0] + SCORE_MIN_MAX_RANGE,
+                claims[1], max(0, claims[1] - SCORE_MIN_MAX_RANGE), claims[1] + SCORE_MIN_MAX_RANGE,
+                claims[2], max(0, claims[2] - SCORE_MIN_MAX_RANGE), claims[2] + SCORE_MIN_MAX_RANGE,
+                claims[3] if len(claims) >= 4 else '', (max(0, claims[3] - SCORE_MIN_MAX_RANGE)) if len(claims) >= 4 else '',
+                (claims[3] + SCORE_MIN_MAX_RANGE) if len(claims) >= 4 else '',
                 self.asmt_create_date, self.most_recent]
 
 
@@ -194,9 +201,9 @@ class Person(object):
         Constructor
         if email and dob are not specified they are set to dummy values
         '''
-        self.first_name = first_name
-        self.middle_name = middle_name
-        self.last_name = last_name
+        self.first_name = first_name.title()
+        self.middle_name = middle_name.title() if middle_name is not None else middle_name
+        self.last_name = last_name.title()
 
 
 class Staff(Person):

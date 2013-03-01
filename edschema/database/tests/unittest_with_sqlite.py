@@ -9,7 +9,7 @@ from database.tests.data_gen import generate_cvs_templates
 from zope import component
 from database.connector import IDbUtil
 import os
-from database.data_importor import import_csv_dir
+from database.data_importer import import_csv_dir
 
 
 class Unittest_with_sqlite(unittest.TestCase):

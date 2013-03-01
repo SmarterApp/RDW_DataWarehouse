@@ -78,10 +78,10 @@ def __prepare_query(connector, student_id, assessment_id):
                     dim_staff.c.middle_name.label('teacher_middle_name'),
                     dim_staff.c.last_name.label('teacher_last_name')],
                    from_obj=[fact_asmt_outcome
-                             .join(dim_student, fact_asmt_outcome.c.student_id == dim_student.c.student_id and fact_asmt_outcome.c.section_id == dim_student.c.section_id and fact_asmt_outcome.c.most_recent == 1)
-                             .join(dim_staff, fact_asmt_outcome.c.teacher_id == dim_staff.c.staff_id and fact_asmt_outcome.c.section_id == dim_staff.c.section_id and dim_staff.c.most_recent == 1)
-                             .join(dim_asmt, dim_asmt.c.asmt_id == fact_asmt_outcome.c.asmt_id and dim_asmt.c.most_recent == 1)])
-    query = query.where(fact_asmt_outcome.c.student_id == student_id)
+                             .join(dim_student, and_(fact_asmt_outcome.c.student_id == dim_student.c.student_id, fact_asmt_outcome.c.section_id == dim_student.c.section_id))
+                             .join(dim_staff, and_(fact_asmt_outcome.c.teacher_id == dim_staff.c.staff_id, fact_asmt_outcome.c.section_id == dim_staff.c.section_id))
+                             .join(dim_asmt, dim_asmt.c.asmt_id == fact_asmt_outcome.c.asmt_id)])
+    query = query.where(and_(fact_asmt_outcome.c.student_id == student_id, dim_asmt.c.most_recent, dim_staff.c.most_recent, fact_asmt_outcome.c.most_recent, dim_asmt.c.asmt_type == 'SUMMATIVE'))
     if assessment_id is not None:
         query = query.where(fact_asmt_outcome.c.asmt_id == assessment_id)
     query = query.order_by(dim_asmt.c.asmt_subject.desc())
@@ -105,13 +105,15 @@ def __arrange_results(results):
         result['cut_point_intervals'] = []
 
         # go over the 4 cut points
-        # TODO: take care of less than 4 cutpoints
         for i in range(1, 5):
             # we only take cutpoints with values > 0
             cut_point_interval = result['asmt_cut_point_{0}'.format(i)]
+            # if it's the forth interval, we would have a value anyway.
             if i == 4 or (cut_point_interval and cut_point_interval > 0):
                 cut_point_interval_object = {'name': str(result['asmt_cut_point_name_{0}'.format(i)]),
                                              'interval': str(cut_point_interval)}
+
+                # the value of the 4th interval is the assessment max score
                 if (i == 4):
                     cut_point_interval_object['interval'] = str(result['asmt_score_max'])
                 # once we use the data, we clean it from the result
@@ -176,7 +178,9 @@ def get_student_report(params):
         result = connection.get_result(query)
         if result:
             first_student = result[0]
+            # handling null middle name by making it empty string
             middle_name = first_student['student_middle_name'] if first_student['student_middle_name'] else ''
+            # handling empty string middle name
             student_name = '{0} {1} {2}'.format(first_student['student_first_name'], middle_name, first_student['student_last_name']).replace('  ', ' ')
             context = __get_context(connection, first_student['school_id'], first_student['district_id'], first_student['grade'], student_name)
         else:

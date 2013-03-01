@@ -79,6 +79,15 @@ class TestStudentReport(Unittest_with_sqlite):
         self.assertEqual("Sunset Central High", result['school_name'])
         self.assertEqual("Verda Herriman", result['student_name'])
 
+    def test_claims(self):
+        params = {"studentId": '286ee893-dad0-4833-ae6c-adef78a11567'}
+        result = get_student_report(params)['context']
+        self.assertEqual('NY', result['state_name'])
+        self.assertEqual('Sunset School District', result['district_name'])
+        self.assertEqual("2", result['grade'])
+        self.assertEqual("Sunset Central High", result['school_name'])
+        self.assertEqual("Verda Herriman", result['student_name'])
+
 
 if __name__ == '__main__':
     unittest.main()

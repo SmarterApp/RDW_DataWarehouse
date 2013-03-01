@@ -176,7 +176,8 @@ def get_student_report(params):
         result = connection.get_result(query)
         if result:
             first_student = result[0]
-            student_name = '{0} {1} {2}'.format(first_student['student_first_name'], first_student['student_middle_name'], first_student['student_last_name']).replace('  ', ' ')
+            middle_name = first_student['student_middle_name'] if first_student['student_middle_name'] else ''
+            student_name = '{0} {1} {2}'.format(first_student['student_first_name'], middle_name, first_student['student_last_name']).replace('  ', ' ')
             context = __get_context(connection, first_student['school_id'], first_student['district_id'], first_student['grade'], student_name)
         else:
             raise NotFoundException("Could not find student with id {0}".format(student_id))

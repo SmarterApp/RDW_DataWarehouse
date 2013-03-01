@@ -9,12 +9,12 @@ from database.connector import DbUtil, IDbUtil
 from zope import component
 
 
-def setup_connection(settings, prefix, schema_name):
+def setup_connection_from_ini(settings, prefix):
     '''
     Create a generic db connection
     '''
     engine = engine_from_config(settings, prefix)
-    metadata = generate_ed_metadata(schema_name)
+    metadata = generate_ed_metadata(settings['edschema.schema_name'])
 
     # zope registration
     dbUtil = DbUtil(engine=engine, metadata=metadata)

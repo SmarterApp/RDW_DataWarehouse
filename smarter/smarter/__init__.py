@@ -13,7 +13,7 @@ from smarter.security.root_factory import RootFactory
 import platform
 import ctypes
 import subprocess
-from database.generic_connector import setup_connection
+from database.generic_connector import setup_connection_from_ini
 
 
 logger = logging.getLogger(__name__)
@@ -27,9 +27,9 @@ def main(global_config, **settings):
         os.environ['PATH'] += os.pathsep + settings['smarter.PATH']
     prepare_env(settings)
     config = Configurator(settings=settings)
-    
+
     # setup database connection
-    setup_connection(settings, 'edware.db.main.', settings['edschema.schema_name'])
+    setup_connection_from_ini(settings, 'edware.db.main.')
 
     # set role-permission mapping
     config.set_root_factory('smarter.security.root_factory.RootFactory')

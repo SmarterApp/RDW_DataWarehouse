@@ -9,7 +9,7 @@ from database.tests.data_gen import generate_cvs_templates
 from zope import component
 from database.connector import IDbUtil
 import os
-from database.data_importor import import_csv_data
+from database.data_importor import import_csv_dir
 
 
 class Unittest_with_sqlite(unittest.TestCase):
@@ -22,7 +22,7 @@ class Unittest_with_sqlite(unittest.TestCase):
         generate_cvs_templates()
         here = os.path.abspath(os.path.dirname(__file__))
         resources_dir = os.path.join(os.path.join(here, 'resources'))
-        import_csv_data(resources_dir)
+        import_csv_dir(resources_dir)
 
     @classmethod
     def tearDownClass(cls):

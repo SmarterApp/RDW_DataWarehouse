@@ -41,6 +41,12 @@ class InstitutionHierarchy:
     def getRow(self):
         return [self.row_id, self.state_name, self.state_code, self.district_id, self.district_name, self.school_id, self.school_name, self.school_category, self.from_date, self.to_date, self.most_recent]
 
+    # TODO: For all these getHeader methods, there must be a better way to return a list of the fields (in a defined order)
+    # hard coding probably is not the best approach
+    @classmethod
+    def getHeader(cls):
+        return ['row_id', 'state_name', 'state_code', 'district_id', 'district_name', 'school_id', 'school_name', 'school_category', 'from_date', 'to_date', 'most_recent']
+
 
 class SectionSubject:
     '''
@@ -70,6 +76,10 @@ class SectionSubject:
 
     def getRow(self):
         return [self.row_id, self.section_id, self.section_name, self.grade, self.class_name, self.subject_name, self.state_code, self.district_id, self.school_id, self.from_date, self.to_date, self.most_recent]
+    
+    @classmethod
+    def getHeader(cls):
+        return ['row_id', 'section_id', 'section_name', 'grade', 'class_name', 'subject_name', 'state_code', 'district_id', 'school_id', 'from_date', 'to_date', 'most_recent']
 
 
 class Assessment:
@@ -131,6 +141,16 @@ class Assessment:
                 self.asmt_cut_point_1, self.asmt_cut_point_2, self.asmt_cut_point_3, self.asmt_cut_point_4,
                 self.asmt_custom_metadata, self.from_date, self.to_date, self.most_recent]
 
+    @classmethod
+    def getHeader(cls):
+        return ['asmt_id', 'asmt_type', 'asmt_period', 'asmt_period_year', 'asmt_version', 'asmt_grade', 'asmt_subject',
+                'claim_1.claim_name', 'claim_2.claim_name', 'claim_3.claim_name', 'claim_4.claim_name',
+                'asmt_perf_lvl_name_1', 'asmt_perf_lvl_name_2', 'asmt_perf_lvl_name_3', 'asmt_perf_lvl_name_4', 'asmt_perf_lvl_name_5',
+                'asmt_score_min', 'asmt_score_max',
+                'claim_1.claim_score_min', 'claim_1.claim_score_max', 'claim_2.claim_score_min', 'claim_2.claim_score_max',
+                'claim_3.claim_score_min', 'claim_3.claim_score_max', 'claim_4.claim_score_min', 'claim_4.claim_score_max',
+                'asmt_cut_point_1', 'asmt_cut_point_2', 'asmt_cut_point_3', 'asmt_cut_point_4',
+                'asmt_custom_metadata', 'from_date', 'to_date', 'most_recent']
 
 class AssessmentOutcome(object):
     '''
@@ -182,6 +202,21 @@ class AssessmentOutcome(object):
                 claims[3][1], self.assessment.claim_4.claim_score_min, self.assessment.claim_4.claim_score_max,
                 self.asmt_create_date, self.most_recent]
 
+    @classmethod
+    def getHeader(cls):
+        return ['asmnt_outcome_id', 'asmnt_outcome_external_id', 'asmt_id',
+                'student_id', 'teacher_id', 'state_code',
+                'district_id', 'school_id', 'section_id',
+                'inst_hier_id', 'section_subject_id',
+                'where_taken_id', 'where_taken_name', 'asmt_grade', 'enrl_grade',
+                'date_taken', 'date_taken_day', 'date_taken_month', 'date_taken_year',
+                'asmt_score', 'asmt_score_range_min', 'asmt_score_range_max', 'asmt_perf_lvl',
+                'asmt_claim_1_score', 'asmt_claim_1_score_range_min', 'asmt_claim_1_score_range_max',
+                'asmt_claim_2_score', 'asmt_claim_2_score_range_min', 'asmt_claim_2_score_range_max',
+                'asmt_claim_3_score', 'asmt_claim_3_score_range_min', 'asmt_claim_3_score_range_max',
+                'asmt_claim_4_score', 'asmt_claim_4_score_range_min', 'asmt_claim_4_score_range_max',
+                'asmt_create_date', 'most_recent']
+
 
 class Person(object):
     '''
@@ -224,6 +259,9 @@ class Staff(Person):
     def getRow(self):
         return [self.row_id, self.staff_id, self.staff_external_id, self.first_name, self.middle_name, self.last_name, self.section_id, self.hier_user_type, self.state_code, self.district_id, self.school_id, self.from_date, self.to_date, self.most_recent]
 
+    @classmethod
+    def getHeader(cls):
+        return ['row_id', 'staff_id', 'staff_external_id', 'first_name', 'middle_name', 'last_name', 'section_id', 'hier_user_type', 'state_code', 'district_id', 'school_id', 'from_date', 'to_date', 'most_recent']
 
 class ExternalUserStudent():
     '''
@@ -251,6 +289,11 @@ class ExternalUserStudent():
 
     def getRow(self):
         return [self.external_user_student_id, self.external_user_id, self.student_id, self.rel_start_date, self.rel_end_date]
+    
+    @classmethod
+    def getHeader(cls):
+        def getRow(self):
+            return ['external_user_student_id', 'external_user_id', 'student_id', 'rel_start_date', 'rel_end_date']
 
 
 # For now, maps to dim_student
@@ -286,3 +329,9 @@ class StudentSection():
         return [self.row_id, self.student_id, self.first_name, self.middle_name, self.last_name, self.address_1, self.address_2,
                 self.city, self.zip_code, self.gender, self.email, self.dob, self.section_id, self.grade,
                 self.state_code, self.district_id, self.school_id, self.from_date, self.to_date, self.most_recent]
+    
+    @classmethod
+    def getHeader(cls):
+        return ['row_id', 'student_id', 'first_name', 'middle_name', 'last_name', 'address_1', 'address_2',
+                'city', 'zip_code', 'gender', 'email', 'dob', 'section_id', 'grade',
+                'state_code', 'district_id', 'school_id', 'from_date', 'to_date', 'most_recent']

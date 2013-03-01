@@ -9,14 +9,7 @@ define [
   "cs!edwareBreadcrumbs"
 ], ($, Mustache, edwareDataProxy, edwareConfidenceLevelBar, indivStudentReportTemplate, claimsInfoTemplate, edwareBreadcrumbs) ->
   
-  #
-  #    * Generate individual student report
-  #    
-  generateIndividualStudentReport = (params) ->
-    
-    content = {}
-    
-    default_cutPointColors = [{
+  default_cutPointColors = [{
           "text_color": "#ffffff",
           "bg_color": "#DD514C",
           "start_gradient_bg_color": "#EE5F5B",
@@ -37,6 +30,19 @@ define [
           "start_gradient_bg_color": "#2078ca",
           "end_gradient_bg_color": "#3a98d1"
       }]
+      
+  # claim score weight in percentage
+  claims = {
+      "Math": ["40", "30", "20", "10"],
+      "ELA": ["40", "40", "20"]
+    }
+  
+  #
+  #    * Generate individual student report
+  #    
+  generateIndividualStudentReport = (params) ->
+    
+    content = {}
       
     getContent "../data/content.json", (tempContent) ->
       content = tempContent

@@ -1,9 +1,8 @@
 <div class="scoreWrapper">
 	<div class="overall_score" style="margin-left: {{asmt_score_pos}}%;color: {{score_color}}"><strong>{{asmt_score}}</strong></div>
+	<div class="indicator" style="margin-left: {{asmt_score_pos}}%"><img src="../images/progressbar_indicator.png" /></div>
 </div>
 <div class="transWrapper">
-	<div class="indicator" style="margin-left: {{asmt_score_pos}}%"></div>
-	
 	{{#leftBracketConfidenceLevel}}
 		<div class="transImage2" style="margin-left: {{asmt_score_max_range_percent}}%"></div>
 		<div class="transImage1" style="margin-left: -{{asmt_score_min_range_percent}}%"></div>

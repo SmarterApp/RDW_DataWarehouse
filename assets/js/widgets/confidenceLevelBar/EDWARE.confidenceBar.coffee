@@ -36,8 +36,8 @@ define [
       
       # Adjust score position if percentage is more than 98% or less than or equal to 0,
       # So the indicator wouldn't cut off
-      items.asmt_score_pos -= 1 if items.asmt_score_pos > 98
-      items.asmt_score_pos += 0.5 if items.asmt_score_pos <= 0
+      items.asmt_score_pos -= 0.2 if items.asmt_score_pos > 98
+      items.asmt_score_pos += 0.2 if items.asmt_score_pos <= 0
       
       # Set position for left bracket
       items.asmt_score_min_range_percent = 100 - (((items.asmt_score - items.asmt_score_min - items.asmt_score_interval) / items.score_min_max_difference) * 100)

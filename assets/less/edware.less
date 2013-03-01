@@ -163,10 +163,12 @@ h3 {
         padding: 10px;
         border: solid 1px #f1f1f1;
         .rounded-corners(5px);
+        position: relative;
         
         .scoreBox {
           font-size: 18px;
           color: #676767;
+          margin-top: 10px;
           
           .interval {
             font-size: 15px;
@@ -175,7 +177,9 @@ h3 {
         }
         
         .icon {
-          margin-top: 5px;
+          
+          position: absolute;
+          right: 10px;
           
           img {
             width: 26px;
@@ -190,14 +194,21 @@ h3 {
           height: 65px;
         }
         .description {
-          height: 110px;
+          height: 70px;
           font-size: 13px;
           color: #838383;
         }
         
+        .link {
+          position: absolute;
+          bottom: 30px;
+          right: 10px;
+        }
         .questionsCompleted {
           font-size: 9px;
           color: #303030;
+          position: absolute;
+          bottom: 5px;
         }
         
         .graph {

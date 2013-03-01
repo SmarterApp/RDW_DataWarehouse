@@ -51,6 +51,7 @@ define [
               colModelItem.sorttype = item1.sorttype  if item1.sorttype
               colModelItem.align = item1.align  if item1.align
               colModelItem.classes = item1.style  if item1.style
+              colModelItem.frozen = item1.frozen  if item1.frozen
               options.sortorder = item1.sortorder  if item1.sortorder
               options.sortname = item1.field  if item1.sortorder
               colModelItem.resizable = false # prevent the user from manually resizing the columns
@@ -90,7 +91,8 @@ define [
             useColSpanStyle: false
             groupHeaders: groupHeaders
             fixed: true
-            
+        
+        $(this).jqGrid 'setFrozenColumns'
         $(this).find(".jqg-second-row-header th:first-child").css "background", "#ffffff"
         
     ) jQuery
@@ -110,7 +112,7 @@ define [
       gridOptions =
         data: columnData
         datatype: "local"
-        height: "auto"
+        height: "250"
         viewrecords: true
         autoencode: true
         rowNum: 10000

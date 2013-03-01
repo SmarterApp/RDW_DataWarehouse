@@ -2,15 +2,12 @@ import subprocess
 import os
 import configparser
 import shutil
-import sys
+import argparse
 
 
-def main():
-    this_file = os.path.abspath(__file__)
-    current_dir = os.path.dirname(this_file)
-
+def main(config_file):
     config = configparser.ConfigParser()
-    config.read(os.path.join(current_dir, 'compile_assets.ini'))
+    config.read(config_file)
     assets_dir = config.get('default', 'assets.directory')
     smarter_dir = config.get('default', 'smarter.directory')
 
@@ -43,4 +40,11 @@ def main():
 
 
 if __name__ == '__main__':
-    sys.exit(main())
+    this_file = os.path.abspath(__file__)
+    current_dir = os.path.dirname(this_file)
+    
+    parser = argparse.ArgumentParser(description='Compile Assets and Copy Asssets into Smarter')
+    parser.add_argument('--config', default=os.path.join(current_dir, 'compile_assets.ini'), help='Set the path to configuration ini file (defaults to compile_assets.ini')
+    args = parser.parse_args()
+
+    main(args.config)

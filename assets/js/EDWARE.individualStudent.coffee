@@ -32,10 +32,10 @@ define [
       }]
       
   # claim score weight in percentage
-  claims = {
-      "Math": ["40", "30", "20", "10"],
-      "ELA": ["40", "40", "20"]
-    }
+  claimScoreWeightArray = {
+    "MATH": ["40", "40", "20", "10"],
+    "ELA": ["40", "30", "20", "10"]
+  }
   
   #
   #    * Generate individual student report
@@ -81,6 +81,15 @@ define [
         # For 4 claims, the width of the claim box would be 20%
         items.claim_box_width = "28%" if items.claims.length < 4
         items.claim_box_width = "20%" if items.claims.length == 4
+        
+        
+        # Add claim score weight 
+        j = 0
+        while j < items.claims.length
+          claim = items.claims[j]
+          assessment = items.asmt_subject.toUpperCase()
+          claim.claim_score_weight = claimScoreWeightArray[assessment][j]
+          j++
         
         i++
         

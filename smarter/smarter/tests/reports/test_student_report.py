@@ -75,7 +75,7 @@ class TestStudentReport(Unittest_with_sqlite):
         result = get_student_report(params)['context']
         self.assertEqual('NY', result['state_name'])
         self.assertEqual('Sunset School District', result['district_name'])
-        self.assertEqual("2", result['grade'])
+        self.assertEqual("1", result['grade'])
         self.assertEqual("Sunset Central High", result['school_name'])
         self.assertEqual("Verda Herriman", result['student_name'])
 
@@ -84,7 +84,7 @@ class TestStudentReport(Unittest_with_sqlite):
         result = get_student_report(params)['context']
         self.assertEqual('NY', result['state_name'])
         self.assertEqual('Sunset School District', result['district_name'])
-        self.assertEqual("2", result['grade'])
+        self.assertEqual("1", result['grade'])
         self.assertEqual("Sunset Central High", result['school_name'])
         self.assertEqual("Verda Herriman", result['student_name'])
 

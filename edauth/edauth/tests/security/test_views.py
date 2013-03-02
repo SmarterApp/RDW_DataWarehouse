@@ -13,7 +13,7 @@ from urllib.parse import urlparse
 import urllib
 from edauth.security.views import logout
 import os
-from database.tests.unittest_with_sqlite import Unittest_with_sqlite
+from database.tests.utils.unittest_with_sqlite import Unittest_with_sqlite
 import uuid
 from datetime import timedelta, datetime
 from database.connector import DBConnection

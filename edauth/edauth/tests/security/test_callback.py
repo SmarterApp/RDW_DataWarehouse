@@ -3,7 +3,7 @@ Created on Feb 16, 2013
 
 @author: dip
 '''
-from database.tests.unittest_with_sqlite import Unittest_with_sqlite
+from database.tests.utils.unittest_with_sqlite import Unittest_with_sqlite
 from database.connector import DBConnection
 from edauth.security.callback import session_check
 import unittest

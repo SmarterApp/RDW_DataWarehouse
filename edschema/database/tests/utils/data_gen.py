@@ -35,7 +35,7 @@ __counter = 0
 # Get resource dir
 def get_resource_dir():
     here = os.path.abspath(os.path.dirname(__file__))
-    return os.path.join(here, 'resources')
+    return os.path.abspath(os.path.join(here, '..', 'resources'))
 
 
 # helper to call generate data with csv funciton

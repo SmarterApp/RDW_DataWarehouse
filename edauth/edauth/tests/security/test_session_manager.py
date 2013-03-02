@@ -4,7 +4,7 @@ Created on Feb 15, 2013
 @author: tosako
 '''
 import unittest
-from database.tests.unittest_with_sqlite import Unittest_with_sqlite
+from database.tests.utils.unittest_with_sqlite import Unittest_with_sqlite
 from edauth.security.session_manager import get_user_session, \
     create_new_user_session, update_session_access, delete_session, \
     is_session_expired

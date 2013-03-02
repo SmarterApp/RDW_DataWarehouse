@@ -5,7 +5,7 @@ Created on Feb 8, 2013
 '''
 import unittest
 from database.connector import DBConnection
-from database.tests.unittest_with_sqlite import Unittest_with_sqlite
+from database.tests.utils.unittest_with_sqlite import Unittest_with_sqlite
 
 
 class Test(Unittest_with_sqlite):

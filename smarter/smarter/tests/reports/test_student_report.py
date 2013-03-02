@@ -6,7 +6,7 @@ Created on Jan 17, 2013
 
 import unittest
 from smarter.reports.student_report import get_student_report, get_student_assessment
-from database.tests.unittest_with_sqlite import Unittest_with_sqlite
+from database.tests.utils.unittest_with_sqlite import Unittest_with_sqlite
 
 
 class TestStudentReport(Unittest_with_sqlite):

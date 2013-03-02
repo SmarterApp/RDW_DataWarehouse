@@ -3,19 +3,20 @@
 	<li id="claim{{indexer}}" class="lightGrayBox" style="width: {{claim_box_width}}">
 		<div class="header">
 			<div class="name small left"><strong>Claim {{indexer}}</strong></div>
-			<div class="icon right"><img src="../images/icons/{{asmt_subject}}_{{indexer}}_icon.png"/></div>
+			<div class="icon"><img src="../images/icons/{{asmt_subject}}_{{indexer}}_icon.png"/></div>
 			<div class="clear"></div>
 			<h5>{{name}}</h5>
 		</div>
+		<hr class="margin0" />
 		<div class="scoreBox">
 			<span class="score"></span><strong>{{score}}</strong>/{{max_score}}</span>
 			<span class="interval">(&#177; {{confidence}})</span>
 		</div>
 		<div class="description">{{content.claim_1_ald}}</div>
-		<div class="pull-right"><a href="#">Find out more >></a></div>
+		<div class="link pull-right"><a href="#">Find out more >></a></div>
 		<div class="clear"></div>
 		<div class="questionsCompleted">
-			<span class="graph"><img src="../images/icons/questions_percentage_icon1.png" /></span>40% of Test Questions
+			<span class="graph"><img src="../images/icons/questions_percentage_{{claim_score_weight}}.png" /></span>{{claim_score_weight}}% of Test Questions
 		</div>
 	</li>
 	{{/claims}}

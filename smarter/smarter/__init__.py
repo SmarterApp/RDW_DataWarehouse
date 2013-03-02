@@ -41,7 +41,13 @@ def main(global_config, **settings):
     # include add routes from edapi. Calls includeme
     config.include(edapi)
 
-    config.add_static_view('assets', '../assets', cache_max_age=0, permission='view')
+    config.add_static_view('assets/css', '../assets/css', cache_max_age=0)
+    config.add_static_view('assets/data', '../assets/data', cache_max_age=0)
+    config.add_static_view('assets/images', '../assets/images', cache_max_age=0)
+    config.add_static_view('assets/js', '../assets/js', cache_max_age=0)
+    config.add_static_view('assets/test', '../assets/test', cache_max_age=0)
+
+    config.add_static_view('assets/html', '../assets/html', cache_max_age=0, permission='view')
 
     # scans smarter
     config.scan()
@@ -58,8 +64,8 @@ def prepare_env(settings):
     mode = settings.get('mode', 'prod').upper()
     if mode == 'DEV':
         here = os.path.abspath(os.path.dirname(__file__))
-        assets_dir = os.path.abspath(here + '/../assets')
-        parent_assets_dir = os.path.abspath(here + '/../../assets')
+        assets_dir = os.path.abspath(os.path.join(os.path.join(here, '..'), 'assets'))
+        parent_assets_dir = os.path.abspath(os.path.join(os.path.join(os.path.join(here, '..'), '..'), 'assets'))
         css_dir = os.path.join(parent_assets_dir, "css")
         less_dir = os.path.join(parent_assets_dir, "less")
         # We're assuming we only have one less file to compile
@@ -87,9 +93,8 @@ def prepare_env(settings):
         # Call lessc
         if os.access(less_dir, os.W_OK):
             rtn_code = subprocess.call(command_opts, shell=shell)
-            # Failed when return code is nonz-zero
             if rtn_code != 0:
-                pass
+                logger.warning('Less command failed')
 
     auth_idp_metadata = settings.get('auth.idp.metadata', None)
     if auth_idp_metadata is not None:

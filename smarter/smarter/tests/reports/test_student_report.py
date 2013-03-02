@@ -17,7 +17,7 @@ class TestStudentReport(Unittest_with_sqlite):
         self.assertEqual(1, len(result), "studentId should have 1 report")
         self.assertEqual('ELA', result[0]['asmt_subject'], 'asmt_subject')
         self.assertEqual(88, result[0]['asmt_claim_1_score'], 'asmt_claim_1_score 88')
-        self.assertEqual('Research', result[0]['asmt_claim_4_name'], 'asmt_claim_4_name Spelling')
+        self.assertEqual('Research & Inquiry', result[0]['asmt_claim_4_name'], 'asmt_claim_4_name Spelling')
 
     def test_student_assessment_id(self):
         params = {"studentId": '286ee893-dad0-4833-ae6c-adef78a11567'}
@@ -74,9 +74,18 @@ class TestStudentReport(Unittest_with_sqlite):
         params = {"studentId": '286ee893-dad0-4833-ae6c-adef78a11567'}
         result = get_student_report(params)['context']
         self.assertEqual('NY', result['state_name'])
-        self.assertEqual('Sunset', result['district_name'])
-        self.assertEqual("2", result['grade'])
-        self.assertEqual("School Name 2", result['school_name'])
+        self.assertEqual('Sunset School District', result['district_name'])
+        self.assertEqual("1", result['grade'])
+        self.assertEqual("Sunset Central High", result['school_name'])
+        self.assertEqual("Verda Herriman", result['student_name'])
+
+    def test_claims(self):
+        params = {"studentId": '286ee893-dad0-4833-ae6c-adef78a11567'}
+        result = get_student_report(params)['context']
+        self.assertEqual('NY', result['state_name'])
+        self.assertEqual('Sunset School District', result['district_name'])
+        self.assertEqual("1", result['grade'])
+        self.assertEqual("Sunset Central High", result['school_name'])
         self.assertEqual("Verda Herriman", result['student_name'])
 
 

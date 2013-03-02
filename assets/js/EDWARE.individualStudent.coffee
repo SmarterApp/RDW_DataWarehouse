@@ -9,14 +9,7 @@ define [
   "cs!edwareBreadcrumbs"
 ], ($, Mustache, edwareDataProxy, edwareConfidenceLevelBar, indivStudentReportTemplate, claimsInfoTemplate, edwareBreadcrumbs) ->
   
-  #
-  #    * Generate individual student report
-  #    
-  generateIndividualStudentReport = (params) ->
-    
-    content = {}
-    
-    default_cutPointColors = [{
+  default_cutPointColors = [{
           "text_color": "#ffffff",
           "bg_color": "#DD514C",
           "start_gradient_bg_color": "#EE5F5B",
@@ -38,6 +31,19 @@ define [
           "end_gradient_bg_color": "#3a98d1"
       }]
       
+  # claim score weight in percentage
+  claimScoreWeightArray = {
+    "MATH": ["40", "40", "20", "10"],
+    "ELA": ["40", "30", "20", "10"]
+  }
+  
+  #
+  #    * Generate individual student report
+  #    
+  generateIndividualStudentReport = (params) ->
+    
+    content = {}
+      
     getContent "../data/content.json", (tempContent) ->
       content = tempContent
       
@@ -49,9 +55,9 @@ define [
         
         # if cut points don't have background colors, then it will use default background colors
         j = 0
-        while j < items.cut_points.length
-          if !items.cut_points[j].bg_color
-            $.extend(items.cut_points[j], default_cutPointColors[j])
+        while j < items.cut_point_intervals.length
+          if !items.cut_point_intervals[j].bg_color
+            $.extend(items.cut_point_intervals[j], default_cutPointColors[j])
           j++
         
         # Generate unique id for each assessment section. This is important to generate confidence level bar for each assessment
@@ -62,7 +68,7 @@ define [
         items.content = content
 
         # Select cutpoint color and background color properties for the overall score info section
-        performance_level = items.cut_points[items.asmt_perf_lvl-1]
+        performance_level = items.cut_point_intervals[items.asmt_perf_lvl-1]
         
         # Apply text color and background color for overall score summary info section
         items.score_color = performance_level.bg_color
@@ -75,6 +81,15 @@ define [
         # For 4 claims, the width of the claim box would be 20%
         items.claim_box_width = "28%" if items.claims.length < 4
         items.claim_box_width = "20%" if items.claims.length == 4
+        
+        
+        # Add claim score weight 
+        j = 0
+        while j < items.claims.length
+          claim = items.claims[j]
+          assessment = items.asmt_subject.toUpperCase()
+          claim.claim_score_weight = claimScoreWeightArray[assessment][j]
+          j++
         
         i++
         

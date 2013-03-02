@@ -209,7 +209,7 @@ function import_data_from_csv {
     
     # This needs to run in python3.3 
     cd "$WORKSPACE/test_utils"
-    python import_data.py -config ${WORKSPACE}/smarter/test.ini --resource ${WORKSPACE}/edschema/database/tests/resources
+    python import_data.py --config ${WORKSPACE}/smarter/test.ini --resource ${WORKSPACE}/edschema/database/tests/resources
 }
 
 function main {

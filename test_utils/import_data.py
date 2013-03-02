@@ -36,24 +36,24 @@ def delete_data():
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Import csv')
-    parser.add_argument('-config', help='Set the path to ini file')
-    parser.add_argument('--resource', help='Set path to resource directory containing csv')
+    parser.add_argument('-c', '--config', help='Set the path to ini file')
+    parser.add_argument('-r', '--resource', help='Set path to resource directory containing csv')
     args = parser.parse_args()
 
     __config = args.config
     __resource = args.resource
 
+    parent_dir = os.path.abspath(os.path.join('..', os.path.dirname(__file__)))
+
     if __config is None:
-        print('Please specify path to ini file')
-        exit(-1)
+        __config = os.path.join(os.path.join(parent_dir, 'smarter'), 'test.ini')
 
     if os.path.exists(__config) is False:
         print('Error: config file does not exist')
         exit(-1)
 
     if __resource is None:
-        here = os.path.abspath(os.path.dirname(__file__))
-        __resource = os.path.join(os.path.join(here, 'resources'))
+        __resource = os.path.join(os.path.join(os.path.join(os.path.join(parent_dir, 'edschema'), 'database'), 'tests'), 'resources')
 
     if os.path.exists(__resource) is False:
         print('Error: resources directory does not exist')

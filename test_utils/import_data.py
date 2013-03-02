@@ -3,7 +3,7 @@ Created on Mar 1, 2013
 
 @author: dip
 '''
-from database.generic_connector import setup_connection
+from database.generic_connector import setup_connection_from_ini
 import os
 from database.data_importer import import_csv_dir
 import argparse
@@ -18,8 +18,7 @@ def main(config_file, resource_dir):
     config = configparser.ConfigParser()
     config.read(config_file)
 
-    schema_name = config.get('app:main', 'edschema.schema_name')
-    setup_connection(config['app:main'], 'edware.db.main.', schema_name)
+    setup_connection_from_ini(config['app:main'], 'edware.db.main.')
 
     delete_data()
     import_csv_dir(resource_dir)

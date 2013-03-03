@@ -49,13 +49,3 @@ def destroy_sqlite():
     __metadata.drop_all(bind=__engine, checkfirst=False)
     __engine.dispose()
     component.provideUtility(None, IDbUtil)
-
-
-def delete_data():
-    '''
-    delete all data from the db
-    '''
-    dbUtil = component.queryUtility(IDbUtil)
-    __engine = dbUtil.get_engine()
-    __metadata = dbUtil.get_metadata()
-    __metadata.drop_all(bind=__engine, checkfirst=False)

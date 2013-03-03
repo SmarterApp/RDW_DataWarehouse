@@ -44,7 +44,6 @@ def __import_csv_file(csv_file, connection, table):
                 # strip out spaces and \n
                 clean_field_name = field_name.rstrip()
                 value = row[field_name]
-                # column_type = type(table.columns._data[clean_field_name].type)
                 column_type = table.c[clean_field_name].type
                 value = __cast_data_type(column_type, value)
                 __check_data_length(column_type, value)

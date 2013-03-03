@@ -11,7 +11,6 @@ def generate_test_metadata(scheme_name=None, bind=None):
 
     metadata = MetaData(schema=scheme_name, bind=bind)
 
-    # Two-letter state - some countries have 3 or more, but two will do for US
     table_a = Table('table_a', metadata,
                     Column('row_int_primary', SMALLINT, primary_key=True),
                     Column('row_int', Integer, nullable=False),

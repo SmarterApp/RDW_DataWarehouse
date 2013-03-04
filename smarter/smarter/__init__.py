@@ -41,13 +41,14 @@ def main(global_config, **settings):
     # include add routes from edapi. Calls includeme
     config.include(edapi)
 
-    config.add_static_view('assets/css', '../assets/css', cache_max_age=0)
-    config.add_static_view('assets/data', '../assets/data', cache_max_age=0)
-    config.add_static_view('assets/images', '../assets/images', cache_max_age=0)
-    config.add_static_view('assets/js', '../assets/js', cache_max_age=0)
-    config.add_static_view('assets/test', '../assets/test', cache_max_age=0)
+    static_max_age = settings.get('smarter.resources.static.max_age', 3600)
+    config.add_static_view('assets/css', '../assets/css', cache_max_age=static_max_age)
+    config.add_static_view('assets/data', '../assets/data', cache_max_age=static_max_age)
+    config.add_static_view('assets/images', '../assets/images', cache_max_age=static_max_age)
+    config.add_static_view('assets/js', '../assets/js', cache_max_age=static_max_age)
+    config.add_static_view('assets/test', '../assets/test', cache_max_age=static_max_age)
 
-    config.add_static_view('assets/html', '../assets/html', cache_max_age=0, permission='view')
+    config.add_static_view('assets/html', '../assets/html', cache_max_age=static_max_age, permission='view')
 
     # scans smarter
     config.scan()

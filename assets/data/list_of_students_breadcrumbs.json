@@ -1,18 +1,18 @@
 {
     "items" : [
     	{
-    		"name" : "state",
+    		"field_name" : "state_name",
     		"link" : "/assets/html/stateStudentList.html" 
     	},
     	{
-    		"name" : "district",
+    		"field_name" : "district_name",
     		"link" : "/assets/html/districtStudentList.html" 
     	},
     	{
-    		"name" : "school",
+    		"field_name" : "school_name",
     		"link" : "/assets/html/schoolStudentList.html" 
     	},
     	{
-    		"name" : "grade"
+    		"field_name" : "grade"
     	}]
 }

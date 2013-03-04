@@ -7,7 +7,8 @@ define [
   "text!templates/individualStudent_report/individual_student_template.html"
   "text!templates/individualStudent_report/claimsInfo.html"
   "cs!edwareBreadcrumbs"
-], ($, Mustache, edwareDataProxy, edwareConfidenceLevelBar, indivStudentReportTemplate, claimsInfoTemplate, edwareBreadcrumbs) ->
+  "cs!edwareUtil"
+], ($, Mustache, edwareDataProxy, edwareConfidenceLevelBar, indivStudentReportTemplate, claimsInfoTemplate, edwareBreadcrumbs, edwareUtil) ->
   
   default_cutPointColors = [{
           "text_color": "#ffffff",
@@ -97,17 +98,27 @@ define [
       
       breadcrumbsData = {}
         
-      readBreadcrumbs "../data/student_breadcrumbs.json", (tempData) ->
+      edwareUtil.readJson "../data/student_breadcrumbs.json", (tempData) ->
         breadcrumbsData = tempData
         
-      breadcrumbsData['items'][0].name = contextData['state_name']
-      breadcrumbsData['items'][1].name = contextData['district_name']
-      breadcrumbsData['items'][2].name = contextData['school_name']
-      breadcrumbsData['items'][3].name = contextData['grade']
-      breadcrumbsData['items'][3].link = breadcrumbsData['items'][3].link + "?districtId=" + contextData['district_id'] + "&schoolId=" + contextData['school_id']+ "&asmtGrade=" + contextData['grade']
-      breadcrumbsData['items'][4].name = contextData['student_name'] + "'s Results"
-
+      # for each breadcrumb item
+      # item.name = contextData[item.field_name]
+      # if item.field_name = 'grade', update item.link
       
+      arr = breadcrumbsData['items']
+      length = arr.length
+      element = null
+      i = 0
+      
+      while i < length
+        element = arr[i]
+        element.name = contextData[element.field_name]
+        if element.field_name == 'grade'
+          element.link = element.link + "?districtId=" + contextData['district_id'] + "&schoolId=" + contextData['school_id']+ "&asmtGrade=" + contextData['grade']
+        if element.field_name == 'student_name'
+          element.name = element.name + "'s Results"
+        i++
+
       $('#breadcrumb').breadcrumbs(breadcrumbsData)
 
       partials = 
@@ -148,19 +159,19 @@ define [
   #
   #    * Get breadcrumbs data
   # 
-  readBreadcrumbs = (templateURL, callback) ->
-      return false if templateURL is "undefined" or typeof templateURL is "number" or typeof templateURL is "function" or typeof templateURL is "object"
-        
-      $.ajax
-        url: templateURL
-        dataType: "json"
-        async: false
-        success: (data) ->
-          content = data
-
-          if callback
-            callback content
-          else
-            content
+  # readBreadcrumbs = (templateURL, callback) ->
+      # return false if templateURL is "undefined" or typeof templateURL is "number" or typeof templateURL is "function" or typeof templateURL is "object"
+#         
+      # $.ajax
+        # url: templateURL
+        # dataType: "json"
+        # async: false
+        # success: (data) ->
+          # content = data
+# 
+          # if callback
+            # callback content
+          # else
+            # content
 
   generateIndividualStudentReport: generateIndividualStudentReport

@@ -21,13 +21,19 @@ define [
       
       breadcrumbsData = {}
         
-      readBreadcrumbs "../data/list_of_students_breadcrumbs.json", (tempData) ->
+      edwareUtil.readJson "../data/list_of_students_breadcrumbs.json", (tempData) ->
         breadcrumbsData = tempData
         
-      breadcrumbsData['items'][0].name = contextData['state_name']
-      breadcrumbsData['items'][1].name = contextData['district_name']
-      breadcrumbsData['items'][2].name = contextData['school_name']
-      breadcrumbsData['items'][3].name = contextData['grade']
+        
+      arr = breadcrumbsData['items']
+      length = arr.length
+      element = null
+      i = 0
+      
+      while i < length
+        element = arr[i]
+        element.name = contextData[element.field_name]
+        i++
       
       $('#breadcrumb').breadcrumbs(breadcrumbsData)
       
@@ -68,20 +74,20 @@ define [
   #
   #    * Get breadcrumbs data
   # 
-  readBreadcrumbs = (templateURL, callback) ->
-      return false if templateURL is "undefined" or typeof templateURL is "number" or typeof templateURL is "function" or typeof templateURL is "object"
-        
-      $.ajax
-        url: templateURL
-        dataType: "json"
-        async: false
-        success: (data) ->
-          content = data
-
-          if callback
-            callback content
-          else
-            content
+  # readBreadcrumbs = (templateURL, callback) ->
+      # return false if templateURL is "undefined" or typeof templateURL is "number" or typeof templateURL is "function" or typeof templateURL is "object"
+#         
+      # $.ajax
+        # url: templateURL
+        # dataType: "json"
+        # async: false
+        # success: (data) ->
+          # content = data
+# 
+          # if callback
+            # callback content
+          # else
+            # content
 
   createStudentGrid: createStudentGrid
   

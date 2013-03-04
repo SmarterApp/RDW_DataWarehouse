@@ -87,8 +87,8 @@ define [
         j = 0
         while j < items.claims.length
           claim = items.claims[j]
-          assessment = items.asmt_subject.toUpperCase()
-          claim.claim_score_weight = claimScoreWeightArray[assessment][j]
+          claim.assessmentUC = items.asmt_subject.toUpperCase()
+          claim.claim_score_weight = claimScoreWeightArray[claim.assessmentUC][j]
           j++
         
         i++

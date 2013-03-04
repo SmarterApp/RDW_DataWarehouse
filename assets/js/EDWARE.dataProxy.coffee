@@ -42,9 +42,28 @@ define [
            callback studentsConfig
         else
            studentsConfig
+           
+  #
+  #    * Get breadcrumbs data
+  # 
+  readJson = (templateURL, callback) ->
+      return false if templateURL is "undefined" or typeof templateURL is "number" or typeof templateURL is "function" or typeof templateURL is "object"
+        
+      $.ajax
+        url: templateURL
+        dataType: "json"
+        async: false
+        success: (data) ->
+          content = data
+
+          if callback
+            callback content
+          else
+            content
          
   check401Error = (status) ->
     location.href = "login.html?redirectURL=" + window.location.href if status is 401
         
   getDatafromSource: getDatafromSource
   getConfigs: getConfigs
+  readJson: readJson

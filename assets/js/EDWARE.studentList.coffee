@@ -3,9 +3,8 @@ define [
   "jquery"
   "cs!edwareDataProxy"
   "cs!edwareGrid"
-  "cs!edwareUtil"
   "cs!edwareBreadcrumbs"
-], ($, edwareDataProxy, edwareGrid, edwareUtil, edwareBreadcrumbs) ->
+], ($, edwareDataProxy, edwareGrid, edwareBreadcrumbs) ->
   
   assessmentsData = []
   assessmentsCutPoints = []
@@ -21,7 +20,7 @@ define [
       
       breadcrumbsData = {}
         
-      edwareUtil.readJson "../data/list_of_students_breadcrumbs.json", (tempData) ->
+      edwareDataProxy.readJson "../data/list_of_students_breadcrumbs.json", (tempData) ->
         breadcrumbsData = tempData
         
         
@@ -70,24 +69,7 @@ define [
           callback studentColumnCfgs
         else
           studentColumnCfgs
-          
-  #
-  #    * Get breadcrumbs data
-  # 
-  # readBreadcrumbs = (templateURL, callback) ->
-      # return false if templateURL is "undefined" or typeof templateURL is "number" or typeof templateURL is "function" or typeof templateURL is "object"
-#         
-      # $.ajax
-        # url: templateURL
-        # dataType: "json"
-        # async: false
-        # success: (data) ->
-          # content = data
-# 
-          # if callback
-            # callback content
-          # else
-            # content
+
 
   createStudentGrid: createStudentGrid
   

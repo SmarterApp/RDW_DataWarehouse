@@ -7,8 +7,7 @@ define [
   "text!templates/individualStudent_report/individual_student_template.html"
   "text!templates/individualStudent_report/claimsInfo.html"
   "cs!edwareBreadcrumbs"
-  "cs!edwareUtil"
-], ($, Mustache, edwareDataProxy, edwareConfidenceLevelBar, indivStudentReportTemplate, claimsInfoTemplate, edwareBreadcrumbs, edwareUtil) ->
+], ($, Mustache, edwareDataProxy, edwareConfidenceLevelBar, indivStudentReportTemplate, claimsInfoTemplate, edwareBreadcrumbs) ->
   
   default_cutPointColors = [{
           "text_color": "#ffffff",
@@ -104,7 +103,7 @@ define [
       
       breadcrumbsData = {}
         
-      edwareUtil.readJson "../data/student_breadcrumbs.json", (tempData) ->
+      edwareDataProxy.readJson "../data/student_breadcrumbs.json", (tempData) ->
         breadcrumbsData = tempData
         
       # for each breadcrumb item
@@ -166,23 +165,5 @@ define [
             callback content
           else
             content
-            
-  #
-  #    * Get breadcrumbs data
-  # 
-  # readBreadcrumbs = (templateURL, callback) ->
-      # return false if templateURL is "undefined" or typeof templateURL is "number" or typeof templateURL is "function" or typeof templateURL is "object"
-#         
-      # $.ajax
-        # url: templateURL
-        # dataType: "json"
-        # async: false
-        # success: (data) ->
-          # content = data
-# 
-          # if callback
-            # callback content
-          # else
-            # content
 
   generateIndividualStudentReport: generateIndividualStudentReport

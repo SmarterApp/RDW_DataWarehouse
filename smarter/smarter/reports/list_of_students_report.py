@@ -139,7 +139,7 @@ def get_list_of_students_report(params):
                 student['student_middle_name'] = result['student_middle_name']
                 student['student_last_name'] = result['student_last_name']
                 student['student_full_name'] = result['student_last_name'] + ', ' + result['student_first_name']
-                if result['student_middle_name'] is not None:
+                if (result['student_middle_name'] is not None) and (len(result['student_middle_name']) > 0):
                     student['student_full_name'] = student['student_full_name'] + ' ' + result['student_middle_name'] + '.'
                 student['enrollment_grade'] = result['enrollment_grade']
 
@@ -147,7 +147,7 @@ def get_list_of_students_report(params):
             assessment['teacher_first_name'] = result['teacher_first_name']
             assessment['teacher_last_name'] = result['teacher_last_name']
             assessment['teacher_full_name'] = result['teacher_last_name'] + ', ' + result['teacher_first_name']
-            if result['teacher_middle_name'] is not None:
+            if (result['teacher_middle_name'] is not None) and (len(result['teacher_middle_name']) > 0):
                 assessment['teacher_full_name'] = assessment['teacher_full_name'] + ' ' + result['teacher_middle_name'] + '.'
             assessment['asmt_grade'] = result['asmt_grade']
             assessment['asmt_score'] = result['asmt_score']

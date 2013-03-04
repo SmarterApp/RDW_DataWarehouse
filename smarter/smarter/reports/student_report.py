@@ -10,6 +10,7 @@ from sqlalchemy.sql import select
 from database.connector import DBConnection
 import json
 from sqlalchemy.sql.expression import and_
+from sqlalchemy.sql.expression import func
 from edapi.exceptions import NotFoundException
 from string import capwords
 
@@ -76,7 +77,7 @@ def __prepare_query(connector, student_id, assessment_id):
                     fact_asmt_outcome.c.asmt_claim_3_score_range_max.label('asmt_claim_3_score_range_max'),
                     fact_asmt_outcome.c.asmt_claim_4_score_range_max.label('asmt_claim_4_score_range_max'),
                     dim_staff.c.first_name.label('teacher_first_name'),
-                    dim_staff.c.middle_name.label('teacher_middle_name'),
+                    func.substr(dim_staff.c.middle_name, 1, 1).label('teacher_middle_name'),
                     dim_staff.c.last_name.label('teacher_last_name')],
                    from_obj=[fact_asmt_outcome
                              .join(dim_student, and_(fact_asmt_outcome.c.student_id == dim_student.c.student_id, fact_asmt_outcome.c.section_id == dim_student.c.section_id))

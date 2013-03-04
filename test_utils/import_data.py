@@ -3,12 +3,16 @@ Created on Mar 1, 2013
 
 @author: dip
 '''
-from database.generic_connector import setup_connection_from_ini
+from database.generic_connector import setup_db_connection_from_ini
 import os
 from database.data_importer import import_csv_dir
 import argparse
 import configparser
 from database.connector import DBConnection
+from edschema.ed_metadata import generate_ed_metadata
+
+
+ENGINE_NAME = 'importer'
 
 
 def main(config_file, resource_dir):
@@ -18,17 +22,18 @@ def main(config_file, resource_dir):
     config = configparser.ConfigParser()
     config.read(config_file)
 
-    setup_connection_from_ini(config['app:main'], 'edware.db.main.')
+    metadata = generate_ed_metadata(config.get('app:main', 'edware.schema_name'))
+    setup_db_connection_from_ini(config['app:main'], 'edware', metadata, ENGINE_NAME)
 
     delete_data()
-    import_csv_dir(resource_dir)
+    import_csv_dir(resource_dir, name=ENGINE_NAME)
 
 
 def delete_data():
     '''
     Delete all the data in all the tabls
     '''
-    with DBConnection() as connection:
+    with DBConnection(name=ENGINE_NAME) as connection:
         metadata = connection.get_metadata()
         for table in reversed(metadata.sorted_tables):
             connection.execute(table.delete())

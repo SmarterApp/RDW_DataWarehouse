@@ -21,10 +21,9 @@ from sqlalchemy.schema import MetaData, CreateSchema
 from sqlalchemy import Table, Column, Index
 from sqlalchemy import SmallInteger, String, Boolean
 from sqlalchemy import ForeignKey
-from sqlalchemy.types import UnicodeText, DateTime, Text
 import argparse
 from sqlalchemy.engine import create_engine
-from sqlalchemy.sql.expression import func
+from sqlalchemy.types import Text
 
 __all__ = []
 __version__ = 0.1
@@ -36,9 +35,9 @@ DEBUG = 0
 VERBOSE = False
 
 
-def generate_ed_metadata(scheme_name=None, bind=None):
+def generate_ed_metadata(schema_name=None, bind=None):
 
-    metadata = MetaData(schema=scheme_name, bind=bind)
+    metadata = MetaData(schema=schema_name, bind=bind)
 
     # Two-letter state - some countries have 3 or more, but two will do for US
     instit_hier = Table('dim_inst_hier', metadata,
@@ -218,14 +217,6 @@ def generate_ed_metadata(scheme_name=None, bind=None):
                                )
 
     Index('fact_asmt_outcome_idx', assessment_outcome.c.asmnt_outcome_id, unique=True)
-
-    user_session = Table('user_session', metadata,
-                         Column('session_id', String(256), primary_key=True, nullable=True),
-                         Column('session_context', UnicodeText, nullable=True),
-                         Column('last_access', DateTime, default=func.now()),
-                         Column('expiration', DateTime, default=func.now()),
-                         )
-    Index('user_session_idx', user_session.c.session_id, unique=True)
 
     return metadata
 

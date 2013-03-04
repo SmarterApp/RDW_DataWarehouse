@@ -1,19 +1,14 @@
 from pyramid.config import Configurator
-from sqlalchemy import engine_from_config
-from pyramid.path import caller_package, caller_module, package_of
 import edauth
 import edapi
 import os
-from edschema.ed_metadata import generate_ed_metadata
 import pyramid
-from zope import component
-from database.connector import DbUtil, IDbUtil
 import logging
 from smarter.security.root_factory import RootFactory
 import platform
-import ctypes
 import subprocess
-from database.generic_connector import setup_connection_from_ini
+from database.generic_connector import setup_db_connection_from_ini
+from edschema.ed_metadata import generate_ed_metadata
 
 
 logger = logging.getLogger(__name__)
@@ -29,13 +24,15 @@ def main(global_config, **settings):
     config = Configurator(settings=settings)
 
     # setup database connection
-    setup_connection_from_ini(settings, 'edware.db.main.')
+    metadata = generate_ed_metadata(settings['edware.schema_name'])
+    setup_db_connection_from_ini(settings, 'edware', metadata, 'smarter')
 
     # set role-permission mapping
     config.set_root_factory('smarter.security.root_factory.RootFactory')
 
     # include edauth. Calls includeme
     config.include(edauth)
+    # Pass edauth the roles/permission mapping that is defined in smarter
     edauth.set_roles(RootFactory.__acl__)
 
     # include add routes from edapi. Calls includeme

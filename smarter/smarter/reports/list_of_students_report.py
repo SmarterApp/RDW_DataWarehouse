@@ -71,7 +71,7 @@ def get_list_of_students_report(params):
     if __asmtSubject in params:
         asmt_subject = params[__asmtSubject]
 
-    with DBConnection() as connector:
+    with DBConnection(name='smarter') as connector:
         # get handle to tables
         dim_student = connector.get_table('dim_student')
         dim_staff = connector.get_table('dim_staff')

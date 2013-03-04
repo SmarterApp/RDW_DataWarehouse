@@ -176,7 +176,7 @@ def get_student_report(params):
     if 'assessmentId' in params:
         assessment_id = str(params['assessmentId'])
 
-    with DBConnection() as connection:
+    with DBConnection(name='smarter') as connection:
         query = __prepare_query(connection, student_id, assessment_id)
 
         result = connection.get_result(query)
@@ -211,7 +211,7 @@ def get_student_assessment(params):
     # get studentId
     student_id = params['studentId']
 
-    with DBConnection() as connection:
+    with DBConnection(name='smarter') as connection:
         # get table metadatas
         dim_asmt = connection.get_table('dim_asmt')
         fact_asmt_outcome = connection.get_table('fact_asmt_outcome')

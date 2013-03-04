@@ -12,9 +12,6 @@ from database.connector import DBConnection
 from edschema.ed_metadata import generate_ed_metadata
 
 
-ENGINE_NAME = 'importer'
-
-
 def main(config_file, resource_dir):
     '''
     Imports data from csv
@@ -23,17 +20,17 @@ def main(config_file, resource_dir):
     config.read(config_file)
 
     metadata = generate_ed_metadata(config.get('app:main', 'edware.schema_name'))
-    setup_db_connection_from_ini(config['app:main'], 'edware', metadata, ENGINE_NAME)
+    setup_db_connection_from_ini(config['app:main'], 'edware', metadata)
 
     delete_data()
-    import_csv_dir(resource_dir, name=ENGINE_NAME)
+    import_csv_dir(resource_dir)
 
 
 def delete_data():
     '''
     Delete all the data in all the tabls
     '''
-    with DBConnection(name=ENGINE_NAME) as connection:
+    with DBConnection() as connection:
         metadata = connection.get_metadata()
         for table in reversed(metadata.sorted_tables):
             connection.execute(table.delete())

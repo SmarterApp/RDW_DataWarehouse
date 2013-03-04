@@ -10,12 +10,13 @@ from sqlalchemy.schema import MetaData, CreateSchema
 from sqlalchemy.exc import DBAPIError
 
 
-def setup_db_connection_from_ini(settings, prefix, metadata, name, allow_create=False):
+def setup_db_connection_from_ini(settings, prefix, metadata, name='', allow_create=False):
     '''
     Setup a generic db connection
     '''
     engine = engine_from_config(settings, prefix + '.db.main.')
 
+    # Create schema and its tables
     if allow_create is True:
         __metadata = MetaData(schema=metadata.schema, bind=engine)
         __metadata.reflect(bind=engine)

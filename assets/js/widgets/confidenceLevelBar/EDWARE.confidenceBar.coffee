@@ -31,8 +31,8 @@ define [
       #score indicator image width
       score_indicator_width = 13
       
-      # Calculate position for indicator and score text
-      items.asmt_score_pos = ((items.asmt_score - items.asmt_score_min - score_indicator_width) / items.score_min_max_difference) * 100
+      # Calculate position for indicator
+      items.asmt_score_pos = ((items.asmt_score - items.asmt_score_min - (score_indicator_width / 2)) / items.score_min_max_difference) * 100
       
       # Adjust score position if percentage is more than 98% or less than or equal to 0,
       # So the indicator wouldn't cut off
@@ -54,8 +54,8 @@ define [
       
       # Align the score text to the center of indicator
       score_text_element = $(this).find(".overall_score")
-      score_width = score_text_element.width() / 2
-      score_text_pos = items.asmt_score_pos - (score_width / items.score_min_max_difference) * 100
+      score_width = score_text_element.width() / 2.25
+      score_text_pos = ((items.asmt_score - items.asmt_score_min - score_width) / items.score_min_max_difference) * 100
       score_text_element.css "margin-left", score_text_pos + "%"
       
   create = (containerId, data) ->

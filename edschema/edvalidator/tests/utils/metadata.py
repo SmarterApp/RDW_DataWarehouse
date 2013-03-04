@@ -14,11 +14,11 @@ def generate_test_metadata(scheme_name=None, bind=None):
     table_a = Table('table_a', metadata,
                     Column('row_int_primary', SMALLINT, primary_key=True),
                     Column('row_int', Integer, nullable=False),
-                    Column('row_string_5', String(5), nullable=False),
+                    Column('row_string_5', String(5), nullable=True),
                     )
     table_b = Table('table_b', metadata,
                     Column('row_int_primary', SMALLINT, primary_key=True),
                     Column('row_int', Integer, nullable=False),
-                    Column('updated', Boolean, nullable=False),
+                    Column('updated', Boolean, nullable=True),
                     )
     return metadata

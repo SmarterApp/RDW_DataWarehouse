@@ -13,7 +13,7 @@ from database.tests.utils.metadata import generate_test_metadata
 class Test(unittest.TestCase):
 
     def setUp(self):
-        create_sqlite(use_metadata_from_db=False, echo=True, metadata=generate_test_metadata())
+        create_sqlite(use_metadata_from_db=False, echo=False, metadata=generate_test_metadata())
 
     def tearDown(self):
         destroy_sqlite()

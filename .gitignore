@@ -5,6 +5,11 @@
 .pyc
 .egg-info?
 smarter.egg-info?
+DataGeneration.egg-info?
+*.egg-info
+*.egg
+*.swp
+*.pyc
 
 # IDE generated files #
 #######################

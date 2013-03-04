@@ -10,7 +10,7 @@ from sqlalchemy.schema import MetaData, CreateSchema
 from sqlalchemy.exc import DBAPIError
 
 
-def setup_db_connection_from_ini(settings, prefix, metadata, name='', allow_create=False):
+def setup_db_connection_from_ini(settings, prefix, metadata, engine_name='', allow_create=False):
     '''
     Setup a generic db connection
     '''
@@ -33,4 +33,4 @@ def setup_db_connection_from_ini(settings, prefix, metadata, name='', allow_crea
 
     # zope registration
     dbUtil = DbUtil(engine=engine, metadata=metadata)
-    component.provideUtility(dbUtil, IDbUtil, name=name)
+    component.provideUtility(dbUtil, IDbUtil, name=engine_name)

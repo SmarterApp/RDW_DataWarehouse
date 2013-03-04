@@ -1,26 +1,26 @@
 <div class="scoreWrapper">
-	<div class="overall_score" style="margin-left: {{asmt_score_pos}}%;color: {{score_color}}"><strong>{{asmt_score}}</strong></div>
-	<div class="indicator" style="margin-left: {{asmt_score_pos}}%"><img src="../images/progressbar_indicator.png" with="13" height="40" /></div>
+	<div class="overall_score" style="margin-left: {{asmt_score_pos}}px;color: {{score_color}}"><strong>{{asmt_score}}</strong></div>
+	<div class="indicator" style="margin-left: {{asmt_score_pos}}px"><img src="../images/progressbar_indicator.png" with="13" height="40" /></div>
 </div>
 <div class="transWrapper">
 	{{#leftBracketConfidenceLevel}}
-		<div class="transImage2" style="margin-left: {{asmt_score_max_range_percent}}%"></div>
-		<div class="transImage1" style="margin-left: -{{asmt_score_min_range_percent}}%"></div>
+		<div class="transImage2" style="margin-left: {{asmt_score_max_range}}px"></div>
+		<div class="transImage1" style="margin-left: -{{asmt_score_min_range}}px"></div>
 	{{/leftBracketConfidenceLevel}}
 	{{^leftBracketConfidenceLevel}}
-		<div class="transImage2 confLevelRight" style="margin-left: {{asmt_score_max_range_percent}}%"></div>
-		<div class="transImage1 confLevelRight" style="margin-left: -{{asmt_score_min_range_percent}}%"></div>
+		<div class="transImage2 confLevelRight" style="margin-left: {{asmt_score_max_range}}px"></div>
+		<div class="transImage1 confLevelRight" style="margin-left: -{{asmt_score_min_range}}px"></div>
 	{{/leftBracketConfidenceLevel}}
 	
 </div>
 <div class="progress">
 	{{#cut_point_intervals}}
-		<div class="bar" style="background-color: {{bg_color}}; background-image: -moz-linear-gradient(center top , {{start_gradient_bg_color}}, {{end_gradient_bg_color}}); background-image: -webkit-linear-gradient(top , {{start_gradient_bg_color}}, {{end_gradient_bg_color}}); background-image: -ms-linear-gradient(top , {{start_gradient_bg_color}}, {{end_gradient_bg_color}}); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr={{start_gradient_bg_color}}, endColorstr={{end_gradient_bg_color}}, GradientType=0); background-repeat: repeat-x; color: {{text_color}}; width: {{asmt_cut_point_percent}}%;"></div>
+		<div class="bar" style="background-color: {{bg_color}}; background-image: -moz-linear-gradient(center top , {{start_gradient_bg_color}}, {{end_gradient_bg_color}}); background-image: -webkit-linear-gradient(top , {{start_gradient_bg_color}}, {{end_gradient_bg_color}}); background-image: -ms-linear-gradient(top , {{start_gradient_bg_color}}, {{end_gradient_bg_color}}); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr={{start_gradient_bg_color}}, endColorstr={{end_gradient_bg_color}}, GradientType=0); background-repeat: repeat-x; color: {{text_color}}; width: {{asmt_cut_point}}px;"></div>
 	{{/cut_point_intervals}}
 </div>
 <div class="cutPointsBar">
 	<div class="cutPoints startPoint">{{asmt_score_min}}</div>
 	{{#cut_point_intervals}}
-		<div class="cutPoints" style="width: {{asmt_cut_point_percent}}%;">{{interval}}</div>
+		<div class="cutPoints" style="width: {{asmt_cut_point}}px;">{{interval}}</div>
 	{{/cut_point_intervals}}
 </div>

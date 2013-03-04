@@ -16,9 +16,9 @@ require ["jquery", "cs!edwareConfidenceLevelBar"], ($, edwareConfidenceLevelBar)
     
     data =
       asmt_perf_lvl: 2
-      asmt_score: 275
+      asmt_score: 350
       asmt_score_min: 50
-      asmt_score_interval: 80
+      asmt_score_interval: 20
       asmt_score_range_max: 500
       cut_point_intervals: [
         interval: "137"
@@ -99,7 +99,7 @@ require ["jquery", "cs!edwareConfidenceLevelBar"], ($, edwareConfidenceLevelBar)
     
     data3 =
       asmt_perf_lvl: 3
-      asmt_score: 1800
+      asmt_score: 1600
       asmt_score_min: 1200
       asmt_score_interval: 20
       asmt_score_range_max: 2400

@@ -78,7 +78,7 @@ define [
         items.score_name = performance_level.name
         
         # Claim section
-        # For less than 4 claims, then width of the claim box would be 28%
+        # For less than 4 claims, width of the claim box would be 28%
         # For 4 claims, the width of the claim box would be 20%
         items.claim_box_width = "28%" if items.claims.length < 4
         items.claim_box_width = "20%" if items.claims.length == 4
@@ -89,6 +89,12 @@ define [
         while j < items.claims.length
           claim = items.claims[j]
           claim.assessmentUC = items.asmt_subject.toUpperCase()
+          
+          # Temporary fix for displaying claim number
+          claim.number = "Claim " + claim.indexer
+          claim.number = "Claim 2 & 4" if claim.indexer is "2" and claim.assessmentUC is "MATH"
+          
+          
           claim.claim_score_weight = claimScoreWeightArray[claim.assessmentUC][j]
           j++
         

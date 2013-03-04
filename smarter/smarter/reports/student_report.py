@@ -11,6 +11,7 @@ from database.connector import DBConnection
 import json
 from sqlalchemy.sql.expression import and_
 from edapi.exceptions import NotFoundException
+from string import capwords
 
 
 def __prepare_query(connector, student_id, assessment_id):
@@ -101,6 +102,9 @@ def __arrange_results(results):
         # once we use the data, we clean it from the result
         del(result['asmt_custom_metadata'])
 
+        # asmt_type is an enum, so we would to capitalize it to make it presentable
+        result['asmt_type'] = capwords(result['asmt_type'], ' ')
+
         result['asmt_score_interval'] = result['asmt_score'] - result['asmt_score_range_min']
         result['cut_point_intervals'] = []
 
@@ -129,7 +133,7 @@ def __arrange_results(results):
 
         for i in range(1, 5):
             claim_score = result['asmt_claim_{0}_score'.format(i)]
-            if claim_score > 0:
+            if claim_score is not None and claim_score > 0:
                 claim_object = {'name': str(result['asmt_claim_{0}_name'.format(i)]),
                                 'score': str(claim_score),
                                 'indexer': str(i),

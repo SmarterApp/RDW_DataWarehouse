@@ -5,16 +5,16 @@
 #breadcrumb {
   background: #b1b1b1;
   color: #333;
-  height: 20px;
+  min-height: 20px;
   padding: 10px;
   
   a {
     color: #fff; 
-    margin: 0 5px; 
+    margin: 0; 
   }
   
   span {
-    margin: 0 5px;
+    margin: 0;
   }
 }
 
@@ -94,7 +94,6 @@ th.ui-th-column div {
         margin-left: 3%;
         position: absolute;
         width: 640px;
-        overflow: hidden;
         z-index: 3000;
         height: 20px;
       }
@@ -102,6 +101,8 @@ th.ui-th-column div {
         position: absolute;
         z-index: 3000;
         font-size: 18px;
+        width: 60px;
+        text-align: center;
       }
       .transWrapper {
         margin-left: 3%;
@@ -119,12 +120,11 @@ th.ui-th-column div {
       }
       
       .indicator {     
-        height: 67px;
-        background-image: url("../images/progressbar_indicator.png");
+        height: 40px;
         background-repeat: no-repeat;
-        width: 640px;
         position: absolute;
-        margin-top: 9px;
+        margin-top: 20px;
+        width: 13px;
       }
       
       .transImage2 {

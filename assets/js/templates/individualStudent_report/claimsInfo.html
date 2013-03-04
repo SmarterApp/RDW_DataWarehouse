@@ -1,21 +1,23 @@
-
-		<div class="claim">
-			<div class="claimHeader">Header</div>
-			<div class="claimScore">Score</div>
-			<div class="claimDesc">{{content.claim_1_ald}}</div>
-			<div></div>
+<ul class="inline unstyled">
+	{{#claims}}
+	<li id="claim{{indexer}}" class="lightGrayBox" style="width: {{claim_box_width}}">
+		<div class="header">
+			<div class="name small left"><strong>{{number}}</strong></div>
+			<div class="icon"><img src="../images/icons/{{assessmentUC}}_{{indexer}}_icon.png"/></div>
+			<div class="clear"></div>
+			<h5>{{name}}</h5>
 		</div>
-
-		<div class="claim">
-			<div class="claimHeader">Header</div>
-			<div class="claimScore">Score</div>
-			<div class="claimDesc">{{content.claim_2_ald}}</div>
-			<div></div>
+		<hr class="margin0" />
+		<div class="scoreBox">
+			<span class="score"></span><strong>{{score}}</strong>/{{max_score}}</span>
+			<span class="interval">(&#177; {{confidence}})</span>
 		</div>
-
-		<div class="claim">
-			<div class="claimHeader">Header</div>
-			<div class="claimScore">Score</div>
-			<div class="claimDesc">{{content.claim_3_ald}}</div>
-			<div></div>
+		<div class="description">{{content.claim_1_ald}}</div>
+		<div class="link pull-right"><a href="#">Find out more >></a></div>
+		<div class="clear"></div>
+		<div class="questionsCompleted">
+			<span class="graph"><img src="../images/icons/questions_percentage_{{claim_score_weight}}.png" /></span>{{claim_score_weight}}% of Test
 		</div>
+	</li>
+	{{/claims}}
+</ul>

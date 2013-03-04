@@ -14,16 +14,14 @@ Command line options are available form --help, but as a quick start:
 
 @copyright:  2013 Wireless Generation. All rights reserved.
 
-@license:    boiler plate goes here - open source? is it in RFP?
-
 @contact:    edwaredevs@wgen.net
 @deffield    updated: Updated
 '''
 from sqlalchemy.schema import MetaData, CreateSchema
 from sqlalchemy import Table, Column, Index
-from sqlalchemy import SmallInteger, String, Date, Boolean
+from sqlalchemy import SmallInteger, String, Boolean
 from sqlalchemy import ForeignKey
-from sqlalchemy.types import Enum, UnicodeText, DateTime, Text
+from sqlalchemy.types import UnicodeText, DateTime, Text
 import argparse
 from sqlalchemy.engine import create_engine
 from sqlalchemy.sql.expression import func
@@ -36,19 +34,6 @@ __updated__ = '2013-02-02'
 DBDRIVER = "postgresql+pypostgresql"
 DEBUG = 0
 VERBOSE = False
-
-
-class CLIError(Exception):
-    '''Generic exception to raise and log different fatal errors.'''
-    def __init__(self, msg):
-        super(CLIError).__init__(type(self))
-        self.msg = "E: %s" % msg
-
-    def __str__(self):
-        return self.msg
-
-    def __unicode__(self):
-        return self.msg
 
 
 def generate_ed_metadata(scheme_name=None, bind=None):
@@ -105,7 +90,7 @@ def generate_ed_metadata(scheme_name=None, bind=None):
                      Column('zip_code', String(5), nullable=False),
                      Column('gender', String(10), nullable=False),
                      Column('email', String(256), nullable=False),
-                     Column('dob', Date, nullable=False),
+                     Column('dob', String(8), nullable=False),
                      Column('section_id', String(50), nullable=False),
                      Column('grade', String(10), nullable=False),
                      Column('state_code', String(2), nullable=False),
@@ -137,10 +122,10 @@ def generate_ed_metadata(scheme_name=None, bind=None):
                   Column('staff_id', String(50), nullable=False),
                   Column('staff_external_id', String(256), nullable=False),
                   Column('first_name', String(256), nullable=False),
-                  Column('middle_name', String(256), nullable=False),
+                  Column('middle_name', String(256), nullable=True),
                   Column('last_name', String(256), nullable=False),
                   Column('section_id', String(50), nullable=False),
-                  Column('hier_user_type', Enum("Teacher", "Staff", name="hier_user_type")),
+                  Column('hier_user_type', String(10), nullable=False),
                   Column('state_code', String(2), nullable=False),
                   Column('district_id', String(50), nullable=False),
                   Column('school_id', String(50), nullable=False),
@@ -195,7 +180,7 @@ def generate_ed_metadata(scheme_name=None, bind=None):
     assessment_outcome = Table('fact_asmt_outcome', metadata,
                                Column('asmnt_outcome_id', String(50), primary_key=True),
                                Column('asmnt_outcome_external_id', String(256), nullable=False),
-                               Column('asmt_id', None, ForeignKey('dim_asmt.asmt_id'), nullable=False),
+                               Column('asmt_id', None, ForeignKey(assessment.c.asmt_id), nullable=False),
                                Column('student_id', String(50), nullable=False),
                                Column('teacher_id', String(50), nullable=False),
                                Column('state_code', String(2), nullable=False),
@@ -208,7 +193,7 @@ def generate_ed_metadata(scheme_name=None, bind=None):
                                Column('where_taken_name', String(256), primary_key=True),
                                Column('asmt_grade', String(10), nullable=False),
                                Column('enrl_grade', String(10), nullable=False),
-                               Column('date_taken', Date, nullable=False),
+                               Column('date_taken', String(8), nullable=False),
                                Column('date_taken_day', SmallInteger, nullable=False),
                                Column('date_taken_month', SmallInteger, nullable=False),
                                Column('date_taken_year', SmallInteger, nullable=False),
@@ -228,7 +213,7 @@ def generate_ed_metadata(scheme_name=None, bind=None):
                                Column('asmt_claim_4_score', SmallInteger, nullable=True),
                                Column('asmt_claim_4_score_range_min', SmallInteger, nullable=True),
                                Column('asmt_claim_4_score_range_max', SmallInteger, nullable=True),
-                               Column('asmt_create_date', Date, nullable=False),
+                               Column('asmt_create_date', String(8), nullable=False),
                                Column('most_recent', Boolean),
                                )
 

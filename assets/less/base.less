@@ -1,5 +1,14 @@
+@import "color";
+
 @the-border: 1px;
 
+.pad0 {
+  padding: 0
+}
+
+.margin0 {
+  margin: 0
+}
 .left {
   float: left;
 }
@@ -8,6 +17,48 @@
   float: right;
 }
 
+.clear {
+  clear: both;
+  display: block;
+  overflow: hidden;
+  visibility: hidden;
+  width: 0;
+  height: 0;
+}
+
+// http://www.yuiblog.com/blog/2010/09/27/clearfix-reloaded-overflowhidden-demystified
+
+.clearfix:before,
+.clearfix:after {
+  content: ".";
+  display: block;
+  overflow: hidden;
+  visibility: hidden;
+  font-size: 0;
+  line-height: 0;
+  width: 0;
+  height: 0;
+}
+
+.clearfix:after {
+  clear: both
+}
+
+.clearfix {
+  *zoom: 1;
+}
+
+h4 {
+  color: #494949;
+}
+
+ul.inline li {
+  display: inline-block;
+}
+
+.small {
+  font-size: 11px;
+}
 .rounded-corners (@radius: 5px) {
   -webkit-border-radius: @radius;
   -moz-border-radius: @radius;
@@ -19,6 +70,7 @@
 .form-horizontal .help-inline { 
   display: none;
 }
+
 .form-horizontal .control-group.error .help-inline {
   color: #B94A48;
   display: inline-block;
@@ -28,4 +80,12 @@ hr {
   height:1px;
   background-color:#cecece;
   border:0px;
+}
+
+.darkGrayBox {
+  background: @darkGray;
+}
+
+.lightGrayBox {
+  background: @lightGray;
 }

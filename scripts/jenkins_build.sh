@@ -68,8 +68,9 @@ function setup_unit_test_dependencies {
 }
 
 function check_pep8 {
+    echo "********************************"
     echo "Checking code style against pep8"
-   
+    echo "********************************" 
     ignore="E501"
     
     pep8 --ignore=$ignore $WORKSPACE/$1
@@ -183,13 +184,15 @@ function create_sym_link_for_apache {
     mkdir -p ${APACHE_DIR}
     /bin/ln -sf ${VIRTUALENV_DIR}/lib/python3.3/site-packages ${APACHE_DIR}/pythonpath
     /bin/ln -sf ${WORKSPACE}/smarter/test.ini ${APACHE_DIR}/development_ini
-    /bin/ln -sf ${WORKSPACE}/test_deploy/pyramid.wsgi ${APACHE_DIR}/pyramid_conf
+    /bin/ln -sf ${WORKSPACE}/test_utils/pyramid.wsgi ${APACHE_DIR}/pyramid_conf
     /bin/ln -sf ${VIRTUALENV_DIR} ${APACHE_DIR}/venv
 
-   # temp solution for LESS
-   PATH=$PATH:/usr/local/bin
-   rm -f ${WORKSPACE}/assets/css/*.css
-   /usr/local/bin/lessc ${WORKSPACE}/assets/less/style.less ${WORKSPACE}/assets/css/style.css
+    cd "$WORKSPACE/scripts"
+    WORKSPACE_PATH=${WORKSPACE//\//\\\/}
+
+    sed -i.bak "s/assets.directory = \/path\/assets/assets.directory = ${WORKSPACE_PATH}\/assets/g" compile_assets.ini
+    sed -i.bak "s/smarter.directory = \/path\/smarter/smarter.directory = ${WORKSPACE_PATH}\/smarter/g" compile_assets.ini
+    python compile_assets.py
 }
 
 function restart_apache {
@@ -199,6 +202,14 @@ function restart_apache {
        echo "httpd graceful failed to restart"
        exit 1
     fi
+}
+
+function import_data_from_csv {
+    echo "Import data from csv"
+    
+    # This needs to run in python3.3 
+    cd "$WORKSPACE/test_utils"
+    python import_data.py --config ${WORKSPACE}/smarter/test.ini --resource ${WORKSPACE}/edschema/database/tests/resources
 }
 
 function main {
@@ -215,6 +226,7 @@ function main {
     elif [ ${MODE:=""} == "FUNC" ]; then
         create_sym_link_for_apache
         restart_apache
+        import_data_from_csv
         setup_functional_test_dependencies
         run_functional_tests
         check_pep8 "$FUNC_DIR"

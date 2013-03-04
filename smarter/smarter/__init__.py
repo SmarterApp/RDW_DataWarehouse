@@ -13,6 +13,7 @@ from smarter.security.root_factory import RootFactory
 import platform
 import ctypes
 import subprocess
+from database.generic_connector import setup_connection_from_ini
 
 
 logger = logging.getLogger(__name__)
@@ -22,18 +23,13 @@ def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
     # Prepare for environment specific
-    prepare_env(settings)
     if 'smarter.PATH' in settings:
         os.environ['PATH'] += os.pathsep + settings['smarter.PATH']
-
+    prepare_env(settings)
     config = Configurator(settings=settings)
 
-    engine = engine_from_config(settings, "edware.db.main.")
-    metadata = generate_ed_metadata(settings['edschema.schema_name'])
-
-    # zope registration
-    dbUtil = DbUtil(engine=engine, metadata=metadata)
-    component.provideUtility(dbUtil, IDbUtil)
+    # setup database connection
+    setup_connection_from_ini(settings, 'edware.db.main.')
 
     # set role-permission mapping
     config.set_root_factory('smarter.security.root_factory.RootFactory')
@@ -45,7 +41,14 @@ def main(global_config, **settings):
     # include add routes from edapi. Calls includeme
     config.include(edapi)
 
-    config.add_static_view('assets', '../assets', cache_max_age=0, permission='view')
+    static_max_age = int(settings.get('smarter.resources.static.max_age', 3600))
+    config.add_static_view('assets/css', '../assets/css', cache_max_age=static_max_age)
+    config.add_static_view('assets/data', '../assets/data', cache_max_age=static_max_age)
+    config.add_static_view('assets/images', '../assets/images', cache_max_age=static_max_age)
+    config.add_static_view('assets/js', '../assets/js', cache_max_age=static_max_age)
+    config.add_static_view('assets/test', '../assets/test', cache_max_age=static_max_age)
+
+    config.add_static_view('assets/html', '../assets/html', cache_max_age=static_max_age, permission='view')
 
     # scans smarter
     config.scan()
@@ -62,8 +65,8 @@ def prepare_env(settings):
     mode = settings.get('mode', 'prod').upper()
     if mode == 'DEV':
         here = os.path.abspath(os.path.dirname(__file__))
-        assets_dir = os.path.abspath(here + '/../assets')
-        parent_assets_dir = os.path.abspath(here + '/../../assets')
+        assets_dir = os.path.abspath(os.path.join(os.path.join(here, '..'), 'assets'))
+        parent_assets_dir = os.path.abspath(os.path.join(os.path.join(os.path.join(here, '..'), '..'), 'assets'))
         css_dir = os.path.join(parent_assets_dir, "css")
         less_dir = os.path.join(parent_assets_dir, "less")
         # We're assuming we only have one less file to compile
@@ -78,24 +81,23 @@ def prepare_env(settings):
                 os.unlink(target_file)
 
         command_opts = ['lessc', '-x', less_file, css_file]
-        if platform.system() == 'Windows':
-            # Create a sym link
-            if not os.path.lexists(assets_dir):
-                kernel_dll = ctypes.windll.LoadLibrary("kernel32.dll")
-                # TODO check error for failures
-                kernel_dll.CreateSymbolicLink(parent_assets_dir, assets_dir, 1)
-            command_opts.insert(0, 'node')
-        else:
-            if not os.path.lexists(assets_dir):
-                os.symlink(parent_assets_dir, assets_dir)
+        shell = False
 
+        # For windows env, set shell to true
+        if platform.system() == 'Windows':
+            shell = True
+
+        # Create a symlink if it doesn't exist
+        if not os.path.lexists(assets_dir):
+            os.symlink(parent_assets_dir, assets_dir, target_is_directory=True)
+
+        # Call lessc
         if os.access(less_dir, os.W_OK):
-            rtn_code = subprocess.call(command_opts)
+            rtn_code = subprocess.call(command_opts, shell=shell)
             if rtn_code != 0:
-                pass
-                # Failed
-    else:
-        auth_idp_metadata = settings.get('auth.idp.metadata', None)
-        if auth_idp_metadata is not None:
-            if auth_idp_metadata.startswith('../'):
-                settings['auth.idp.metadata'] = os.path.abspath(os.path.join(os.path.dirname(__file__), auth_idp_metadata))
+                logger.warning('Less command failed')
+
+    auth_idp_metadata = settings.get('auth.idp.metadata', None)
+    if auth_idp_metadata is not None:
+        if auth_idp_metadata.startswith('../'):
+            settings['auth.idp.metadata'] = os.path.abspath(os.path.join(os.path.dirname(__file__), auth_idp_metadata))

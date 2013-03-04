@@ -4,11 +4,11 @@ Created on Feb 15, 2013
 @author: tosako
 '''
 import unittest
-from database.tests.unittest_with_sqlite import Unittest_with_sqlite
+from database.tests.utils.unittest_with_sqlite import Unittest_with_sqlite
 from edauth.security.session_manager import get_user_session, \
     create_new_user_session, update_session_access, delete_session, \
     is_session_expired
-from database.connector import DBConnector
+from database.connector import DBConnection
 from edauth.security.roles import Roles
 import uuid
 from datetime import datetime, timedelta
@@ -20,11 +20,9 @@ class Test(Unittest_with_sqlite):
 
     def setUp(self):
         # delete all user_session before test
-        connection = DBConnector()
-        connection.open_connection()
-        user_session = connection.get_table('user_session')
-        connection.execute(user_session.delete())
-        connection.close_connection()
+        with DBConnection() as connection:
+            user_session = connection.get_table('user_session')
+            connection.execute(user_session.delete())
         mappings = {('Allow', 'TEACHER', ('view', 'logout')),
                     ('Allow', 'SYSTEM_ADMINISTRATOR', ('view', 'logout')),
                     ('Allow', 'DATA_LOADER', ('view', 'logout')),
@@ -45,11 +43,9 @@ class Test(Unittest_with_sqlite):
         session_json = '{"roles": ["TEACHER"], "name": {"fullName": "Linda Kim"}, "uid": "linda.kim"}'
         current_datetime = datetime.now()
         expiration_datetime = current_datetime + timedelta(seconds=30)
-        connection = DBConnector()
-        connection.open_connection()
-        user_session = connection.get_table('user_session')
-        connection.execute(user_session.insert(), session_id=session_id, session_context=session_json, last_access=current_datetime, expiration=expiration_datetime)
-        connection.close_connection()
+        with DBConnection() as connection:
+            user_session = connection.get_table('user_session')
+            connection.execute(user_session.insert(), session_id=session_id, session_context=session_json, last_access=current_datetime, expiration=expiration_datetime)
 
         # Test start
         session = get_user_session(session_id)

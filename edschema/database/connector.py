@@ -8,6 +8,9 @@ from database.interfaces import ConnectionBase
 from zope import interface, component
 from zope.interface.declarations import implementer
 from sqlalchemy import Table
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class IDbUtil(interface.Interface):
@@ -31,13 +34,21 @@ class DbUtil:
         return self.__metadata
 
 
-class DBConnector(ConnectionBase):
+class DBConnection(ConnectionBase):
     '''
     Inheritate this class if you are making a report class and need to access to database
     BaseReport is just managing session for your database connection and convert result to dictionary
     '''
     def __init__(self):
-        self.__connection = None
+        dbUtil = component.queryUtility(IDbUtil)
+        engine = dbUtil.get_engine()
+        self.__connection = engine.connect()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, value, tb):
+        return self.close_connection()
 
     def __del__(self):
         self.close_connection()
@@ -59,22 +70,19 @@ class DBConnector(ConnectionBase):
 
     # return Table Metadata
     def get_table(self, table_name):
+        return Table(table_name, self.get_metadata())
+
+    def get_metadata(self):
         dbUtil = component.queryUtility(IDbUtil)
-        metadata = dbUtil.get_metadata()
-        return Table(table_name, metadata)
+        return dbUtil.get_metadata()
 
     def execute(self, statement, *multiparams, **params):
         return self.__connection.execute(statement, *multiparams, **params)
 
-    def open_connection(self):
+    def get_connection(self):
         """
         return open connection
         """
-        if self.__connection is None:
-            dbUtil = component.queryUtility(IDbUtil)
-            engine = dbUtil.get_engine()
-            self.__connection = engine.connect()
-
         return self.__connection
 
     def close_connection(self):

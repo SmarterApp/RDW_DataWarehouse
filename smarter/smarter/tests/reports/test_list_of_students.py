@@ -5,7 +5,7 @@ Created on Feb 4, 2013
 '''
 import unittest
 from smarter.reports.list_of_students_report import get_list_of_students_report
-from database.tests.unittest_with_sqlite import Unittest_with_sqlite
+from database.tests.utils.unittest_with_sqlite import Unittest_with_sqlite
 
 
 class Test(Unittest_with_sqlite):
@@ -28,9 +28,9 @@ class Test(Unittest_with_sqlite):
 
         assessments = results['assessments']
         self.assertEqual(3, len(assessments), "3 assessments")
-        self.assertEqual("Adam", assessments[0]['student_first_name'], "student_first_name")
-        self.assertEqual("Drew", assessments[1]['student_first_name'], "student_first_name")
-        self.assertEqual("Takashi", assessments[2]['student_first_name'], "student_first_name")
+        self.assertEqual("Verda", assessments[0]['student_first_name'], "student_first_name")
+        self.assertEqual("Lettie", assessments[1]['student_first_name'], "student_first_name")
+        self.assertEqual("Mi-Ha", assessments[2]['student_first_name'], "student_first_name")
 
     def test_breadcrumbs(self):
         testParam = {}

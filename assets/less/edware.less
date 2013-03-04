@@ -58,9 +58,6 @@ h3 {
   color: #fff;
   text-align: center;
 }
-.grayBox {
-  background: #E2E2E2
-}
 
 #individualStudentContent {
     float: left;
@@ -75,7 +72,6 @@ h3 {
   margin: 20px 20px 0;
   
   .assesmentSummary {
-    background: #F8F8F8;
     height: 520px;
     padding: 15px;
     width: 170px;
@@ -158,42 +154,65 @@ h3 {
     }
     
     .claimsSection {
+      margin-left: 20px;
       
-      padding: 10px;
-      
-      h4 {
-        margin: 0;
-      }
-      
-      ul {
-        height: 270px;
-        margin-left: 0;
-        
-        li {
-          display: inline-block;
-          height: 250px;
-          width: 28%;
-        }
-      }
-      
-      .claim {
-        height: 270px;
-        width: 200px;
+      ul li {
+        height: 250px;
         float: left;
-        background: #F8F8F8;
-        margin: 10px;
+        margin: 10px 10px 0 0;
         padding: 10px;
+        border: solid 1px #f1f1f1;
+        .rounded-corners(5px);
+        position: relative;
         
-        .claimHeader {
-          height: 70px;
+        .scoreBox {
+          font-size: 18px;
+          color: #676767;
+          margin-top: 10px;
+          
+          .interval {
+            font-size: 15px;
+            line-height: 30px;
+          }
         }
         
-        .claimScore {
+        .icon {
+          
+          position: absolute;
+          right: 10px;
+          
+          img {
+            width: 26px;
+            height: 26px;
+          }
+        }
+        
+        h5  {
+          padding-bottom: 5px;
+          display: table-cell;
+          vertical-align: bottom;
           height: 50px;
         }
+        .description {
+          height: 70px;
+          font-size: 13px;
+          color: #838383;
+        }
         
-        .claimDesc {
-          height: 90px;
+        .link {
+          position: absolute;
+          bottom: 30px;
+          right: 10px;
+        }
+        .questionsCompleted {
+          font-size: 9px;
+          color: #303030;
+          position: absolute;
+          bottom: 5px;
+        }
+        
+        .graph {
+          margin-right: 10px;
         }
       }
       
@@ -217,12 +236,10 @@ h3 {
 }
 
 #purpose {
-  float: right;
   padding: 10px;
 }
 
 #legend {
-  float: right;
   padding: 10px;
   padding-right: 20px;
 }

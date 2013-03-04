@@ -13,10 +13,10 @@ from urllib.parse import urlparse
 import urllib
 from edauth.security.views import logout
 import os
-from database.tests.unittest_with_sqlite import Unittest_with_sqlite
+from database.tests.utils.unittest_with_sqlite import Unittest_with_sqlite
 import uuid
 from datetime import timedelta, datetime
-from database.connector import DBConnector
+from database.connector import DBConnection
 from pyramid.response import Response
 from edauth.security.utils import deflate_base64_encode, inflate_base64_decode
 
@@ -48,11 +48,9 @@ class TestViews(Unittest_with_sqlite):
         self.__request.registry.settings['auth.saml.issuer_name'] = 'dummyIssuer'
 
         # delete all user_session before test
-        connection = DBConnector()
-        connection.open_connection()
-        user_session = connection.get_table('user_session')
-        connection.execute(user_session.delete())
-        connection.close_connection()
+        with DBConnection() as connection:
+            user_session = connection.get_table('user_session')
+            connection.execute(user_session.delete())
 
     def tearDown(self):
         # reset the registry
@@ -104,11 +102,9 @@ class TestViews(Unittest_with_sqlite):
         session_json = '{"roles": ["TEACHER"], "idpSessionIndex": "123", "name": {"fullName": "Linda Kim"}, "uid": "linda.kim"}'
         current_datetime = datetime.now()
         expiration_datetime = current_datetime + timedelta(seconds=30)
-        connection = DBConnector()
-        connection.open_connection()
-        user_session = connection.get_table('user_session')
-        connection.execute(user_session.insert(), session_id=session_id, session_context=session_json, last_access=current_datetime, expiration=expiration_datetime)
-        connection.close_connection()
+        with DBConnection() as connection:
+            user_session = connection.get_table('user_session')
+            connection.execute(user_session.insert(), session_id=session_id, session_context=session_json, last_access=current_datetime, expiration=expiration_datetime)
 
         self.__config.testing_securitypolicy(session_id, ['TEACHER'])
         self.__request.url = 'http://example.com/dummy/page'
@@ -141,11 +137,9 @@ class TestViews(Unittest_with_sqlite):
         session_json = '{"roles": ["TEACHER"], "idpSessionIndex": "123", "name": {"fullName": "Linda Kim"}, "uid": "linda.kim", "nameId": "abc"}'
         current_datetime = datetime.now()
         expiration_datetime = current_datetime + timedelta(seconds=30)
-        connection = DBConnector()
-        connection.open_connection()
-        user_session = connection.get_table('user_session')
-        connection.execute(user_session.insert(), session_id=session_id, session_context=session_json, last_access=current_datetime, expiration=expiration_datetime)
-        connection.close_connection()
+        with DBConnection() as connection:
+            user_session = connection.get_table('user_session')
+            connection.execute(user_session.insert(), session_id=session_id, session_context=session_json, last_access=current_datetime, expiration=expiration_datetime)
 
         self.__config.testing_securitypolicy(session_id, ['TEACHER'])
         http = logout(self.__request)
@@ -182,7 +176,7 @@ class TestViews(Unittest_with_sqlite):
         self.__request.registry.settings['auth.idp.metadata'] = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'resource', 'idp_metadata.xml'))
         self.__request.registry.settings['auth.skip.verify'] = True
         http = saml2_post_consumer(self.__request)
-        self.assertEquals(http.location, 'http://example.com/dummy/callback?request=yygpKbDS10%2BtSMwtyEnVS87P1U8pzc2t1C9KLcgvKgEA')
+        self.assertEquals(http.location, 'http://example.com/dummy/login')
 
     def test_login_callback(self):
         self.__request.GET = {}

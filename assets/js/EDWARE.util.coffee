@@ -19,5 +19,24 @@ define [
   
     params
     
+    #
+  #    * Get breadcrumbs data
+  # 
+  readJson = (templateURL, callback) ->
+      return false if templateURL is "undefined" or typeof templateURL is "number" or typeof templateURL is "function" or typeof templateURL is "object"
+        
+      $.ajax
+        url: templateURL
+        dataType: "json"
+        async: false
+        success: (data) ->
+          content = data
+
+          if callback
+            callback content
+          else
+            content
+    
   displayErrorMessage: displayErrorMessage
   getUrlParams: getUrlParams
+  readJson: readJson  

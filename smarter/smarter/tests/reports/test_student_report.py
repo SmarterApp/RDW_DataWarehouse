@@ -81,13 +81,16 @@ class TestStudentReport(Unittest_with_sqlite):
 
     def test_claims(self):
         params = {"studentId": '286ee893-dad0-4833-ae6c-adef78a11567'}
-        result = get_student_report(params)['context']
-        self.assertEqual('NY', result['state_name'])
-        self.assertEqual('Sunset School District', result['district_name'])
-        self.assertEqual("1", result['grade'])
-        self.assertEqual("Sunset Central High", result['school_name'])
-        self.assertEqual("Verda Herriman", result['student_name'])
-
-
+        items = get_student_report(params)['items']
+        result = items[0]
+        self.assertEqual('Concepts & Procedures', result['asmt_claim_1_name'])
+        self.assertEqual('Problem Solving & Modeling and Data Analysis', result['asmt_claim_2_name'])
+        self.assertEqual('Communicating Reasoning', result['asmt_claim_3_name'])
+        self.assertEqual('', result['asmt_claim_4_name'])
+        result = items[1]
+        self.assertEqual('Reading', result['asmt_claim_1_name'])
+        self.assertEqual('Writing', result['asmt_claim_2_name'])
+        self.assertEqual('Speaking & Listening', result['asmt_claim_3_name'])
+        self.assertEqual('Research & Inquiry', result['asmt_claim_4_name'])
 if __name__ == '__main__':
     unittest.main()

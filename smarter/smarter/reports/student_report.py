@@ -23,7 +23,7 @@ def __prepare_query(connector, student_id, assessment_id):
     dim_staff = connector.get_table('dim_staff')
     query = select([fact_asmt_outcome.c.student_id,
                     dim_student.c.first_name.label('student_first_name'),
-                    dim_student.c.middle_name.label('student_middle_name'),
+                    func.substr(dim_student.c.middle_name, 1, 1).label('student_middle_name'),
                     dim_student.c.last_name.label('student_last_name'),
                     dim_student.c.grade.label('grade'),
                     dim_student.c.district_id.label('district_id'),

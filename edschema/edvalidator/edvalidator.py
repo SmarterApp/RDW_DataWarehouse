@@ -89,7 +89,7 @@ def check_fields(target_table, target_csv_file):
     return missing_fields, unnecessary_fields
 
 
-def run_validation(metadata=None, force_foreign=True, missing_table_ignore=False, missing_field_ignore=False, dir_name='.', verbose=False):
+def run_validation(metadata=None, force_foreign=True, missing_table_ignore=False, missing_field_ignore=False, dir_name='/please_specify_dir', verbose=False):
     create_sqlite(force_foreign_keys=force_foreign, use_metadata_from_db=False, echo=verbose, metadata=metadata)
     if not os.path.exists(dir_name):
         return 1
@@ -147,10 +147,10 @@ def __exit_run_validation(exit_code):
 def main():
     parser = argparse.ArgumentParser(description='Validating for EdWare Data')
     parser.add_argument("-d", "--dir", help="Specify a csv directory")
-    parser.add_argument("-n", "--no-foreign", help="Disable Foreign key constraint", type=bool, default=False)
-    parser.add_argument("-t", "--table-ignore", help="Ignore missing tables", type=bool, default=False)
-    parser.add_argument("-f", "--field-ignore", help="Ignore missing fields", type=bool, default=False)
-    parser.add_argument("-v", "--verbose", help="Verbose", type=bool, default=False)
+    parser.add_argument("-n", "--no-foreign", help="Disable Foreign key constraint", action='store_true', default=False)
+    parser.add_argument("-t", "--table-ignore", help="Ignore missing tables", action='store_true', default=False)
+    parser.add_argument("-f", "--field-ignore", help="Ignore missing fields", action='store_true', default=False)
+    parser.add_argument("-v", "--verbose", help="Verbose", action='store_true', default=False)
     args = parser.parse_args()
 
     __dir_name = args.dir
@@ -162,7 +162,14 @@ def main():
     __missing_field_ignore = args.field_ignore
     __verbose = args.verbose
 
-    sys.exit(run_validation(__force_foreign, __missing_table_ignore, __missing_field_ignore, __dir_name, __verbose))
+    rtn_value = run_validation(force_foreign=__force_foreign, missing_table_ignore=__missing_table_ignore, missing_field_ignore=__missing_field_ignore, dir_name=__dir_name, verbose=__verbose)
+
+    print('###################')
+    if rtn_value != 0:
+        print('Validation: FAIL')
+    else:
+        print('Validation: SUCCESS')
+    sys.exit(rtn_value)
 
 if __name__ == '__main__':
     main()

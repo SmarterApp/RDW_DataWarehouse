@@ -7,8 +7,7 @@ define [
   "text!templates/individualStudent_report/individual_student_template.html"
   "text!templates/individualStudent_report/claimsInfo.html"
   "cs!edwareBreadcrumbs"
-  "cs!edwareUtil"
-], ($, Mustache, edwareDataProxy, edwareConfidenceLevelBar, indivStudentReportTemplate, claimsInfoTemplate, edwareBreadcrumbs, edwareUtil) ->
+], ($, Mustache, edwareDataProxy, edwareConfidenceLevelBar, indivStudentReportTemplate, claimsInfoTemplate, edwareBreadcrumbs) ->
   
   default_cutPointColors = [{
           "text_color": "#ffffff",
@@ -78,7 +77,7 @@ define [
         items.score_name = performance_level.name
         
         # Claim section
-        # For less than 4 claims, then width of the claim box would be 28%
+        # For less than 4 claims, width of the claim box would be 28%
         # For 4 claims, the width of the claim box would be 20%
         items.claim_box_width = "28%" if items.claims.length < 4
         items.claim_box_width = "20%" if items.claims.length == 4
@@ -89,6 +88,12 @@ define [
         while j < items.claims.length
           claim = items.claims[j]
           claim.assessmentUC = items.asmt_subject.toUpperCase()
+          
+          # Temporary fix for displaying claim number
+          claim.number = "Claim " + claim.indexer
+          claim.number = "Claim 2 & 4" if claim.indexer is "2" and claim.assessmentUC is "MATH"
+          
+          
           claim.claim_score_weight = claimScoreWeightArray[claim.assessmentUC][j]
           j++
         
@@ -98,7 +103,7 @@ define [
       
       breadcrumbsData = {}
         
-      edwareUtil.readJson "../data/student_breadcrumbs.json", (tempData) ->
+      edwareDataProxy.readJson "../data/student_breadcrumbs.json", (tempData) ->
         breadcrumbsData = tempData
         
       # for each breadcrumb item
@@ -116,7 +121,12 @@ define [
         if element.field_name == 'grade'
           element.link = element.link + "?districtId=" + contextData['district_id'] + "&schoolId=" + contextData['school_id']+ "&asmtGrade=" + contextData['grade']
         if element.field_name == 'student_name'
-          element.name = element.name + "'s Results"
+          # add 's to student name. if name ends in s, only add '.
+          if element.name.substr(element.name.length - 1) == 's'
+            element.name = element.name + "'"
+          else
+            element.name = element.name + "'s"
+          element.name = element.name + " Results"
         i++
 
       $('#breadcrumb').breadcrumbs(breadcrumbsData)
@@ -155,23 +165,5 @@ define [
             callback content
           else
             content
-            
-  #
-  #    * Get breadcrumbs data
-  # 
-  # readBreadcrumbs = (templateURL, callback) ->
-      # return false if templateURL is "undefined" or typeof templateURL is "number" or typeof templateURL is "function" or typeof templateURL is "object"
-#         
-      # $.ajax
-        # url: templateURL
-        # dataType: "json"
-        # async: false
-        # success: (data) ->
-          # content = data
-# 
-          # if callback
-            # callback content
-          # else
-            # content
 
   generateIndividualStudentReport: generateIndividualStudentReport

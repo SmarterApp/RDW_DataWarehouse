@@ -38,7 +38,7 @@ def main(global_config, **settings):
     # include add routes from edapi. Calls includeme
     config.include(edapi)
 
-    static_max_age = settings.get('smarter.resources.static.max_age', 3600)
+    static_max_age = int(settings.get('smarter.resources.static.max_age', 3600))
     config.add_static_view('assets/css', '../assets/css', cache_max_age=static_max_age)
     config.add_static_view('assets/data', '../assets/data', cache_max_age=static_max_age)
     config.add_static_view('assets/images', '../assets/images', cache_max_age=static_max_age)

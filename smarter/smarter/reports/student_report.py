@@ -6,10 +6,12 @@ Created on Jan 13, 2013
 
 
 from edapi.utils import report_config
+from smarter.reports.helpers.name_formatter import format_full_name
 from sqlalchemy.sql import select
 from database.connector import DBConnection
 import json
 from sqlalchemy.sql.expression import and_
+from sqlalchemy.sql.expression import func
 from edapi.exceptions import NotFoundException
 from string import capwords
 
@@ -102,6 +104,8 @@ def __arrange_results(results):
         # once we use the data, we clean it from the result
         del(result['asmt_custom_metadata'])
 
+        result['teacher_full_name'] = format_full_name(result['teacher_first_name'], result['teacher_middle_name'], result['teacher_last_name'])
+
         # asmt_type is an enum, so we would to capitalize it to make it presentable
         result['asmt_type'] = capwords(result['asmt_type'], ' ')
 
@@ -143,6 +147,10 @@ def __arrange_results(results):
                                 'min_score': str(result['asmt_claim_{0}_score_min'.format(i)]),
                                 'confidence': str(claim_score - result['asmt_claim_{0}_score_range_min'.format(i)]),
                                 }
+                del(result['asmt_claim_{0}_score_range_min'.format(i)])
+                del(result['asmt_claim_{0}_score_range_max'.format(i)])
+                del(result['asmt_claim_{0}_score_min'.format(i)])
+                del(result['asmt_claim_{0}_score_max'.format(i)])
                 result['claims'].append(claim_object)
 
     # rearranging the json so we could use it more easily with mustache
@@ -182,10 +190,7 @@ def get_student_report(params):
         result = connection.get_result(query)
         if result:
             first_student = result[0]
-            # handling null middle name by making it empty string
-            middle_name = first_student['student_middle_name'] if first_student['student_middle_name'] else ''
-            # handling empty string middle name
-            student_name = '{0} {1} {2}'.format(first_student['student_first_name'], middle_name, first_student['student_last_name']).replace('  ', ' ')
+            student_name = format_full_name(first_student['student_first_name'], first_student['student_middle_name'], first_student['student_last_name'])
             context = __get_context(connection, first_student['school_id'], first_student['district_id'], first_student['grade'], student_name)
         else:
             raise NotFoundException("Could not find student with id {0}".format(student_id))

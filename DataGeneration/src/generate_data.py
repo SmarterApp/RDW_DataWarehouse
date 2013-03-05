@@ -454,21 +454,15 @@ def associate_students_and_scores(student_sections_list, scores, inst_hier_id, s
     for student_section in student_sections_list:
         for score in scores.items():
             asmt_id = int(score[0].split('_')[1])
+            # year is the assessment period year
             year = score[0].split('_')[0]
-            dates_taken1 = generate_dates_taken(int(year))
+            dates_taken_map = generate_dates_taken(int(year))
 
             asmt = [x for x in asmt_list if x.asmt_id == asmt_id and str(x.asmt_period_year) == str(year)][0]
 
             if asmt.asmt_subject.lower() == subject.lower():  # check that subjects match as there is a std_tmprl object for each subject
                 new_id = IdGen().get_id()
-                # date_taken = map_asmt_date_to_period(asmt.asmt_period, dates_taken1, year, asmt.asmt_type)
-                date_taken = dates_taken1[asmt.asmt_period]
-                #date_taken = None
-                #if prev_year == year:
-                #    date_taken = map_asmt_date_to_period(asmt.asmt_period, dates_taken1, year, asmt.asmt_type)
-                #else:
-                #    date_taken = map_asmt_date_to_period(asmt.asmt_period, dates_taken2, year, asmt.asmt_type)
-                #prev_year = year
+                date_taken = dates_taken_map[asmt.asmt_period]
                 params = {
                     'asmnt_outcome_id': new_id,
                     'asmnt_outcome_external_id': uuid.uuid4(),
@@ -494,17 +488,17 @@ def map_asmt_date_to_period(period, dates_taken, year, asmt_type):
     dates_taken -- a dict of dates whose keys are periods
     year -- the year the asmt was taken
     '''
-    #year_int = int(year)
+    # year_int = int(year)
     if period == 'BOY':
         date_taken = dates_taken['BOY']
     elif period == 'MOY':
         date_taken = dates_taken['MOY']
     elif period == 'EOY':
         date_taken = dates_taken['EOY']
-    #if asmt_type.upper() == 'SUMMATIVE':
+    # if asmt_type.upper() == 'SUMMATIVE':
     #    year_int += 1
     return date_taken
-    #return date_taken.replace(year=year_int)
+    # return date_taken.replace(year=year_int)
 
 
 def generate_teachers(num_teachers, state, district):

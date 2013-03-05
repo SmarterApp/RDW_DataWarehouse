@@ -151,6 +151,7 @@ def get_logger(name=None):
 
     logger = logging.getLogger(name)
 
+    # if there are no handlers we add a file handler with the given name
     if (len(logger.handlers) == 0):
         # create file handler which logs even debug messages
         fh = logging.FileHandler('{0}.log'.format(name))

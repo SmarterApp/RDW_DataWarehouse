@@ -6,6 +6,7 @@ Created on Jan 13, 2013
 
 
 from edapi.utils import report_config
+from smarter.reports.helpers.name_formatter import format_full_name
 from sqlalchemy.sql import select
 from database.connector import DBConnection
 import json
@@ -23,7 +24,7 @@ def __prepare_query(connector, student_id, assessment_id):
     dim_staff = connector.get_table('dim_staff')
     query = select([fact_asmt_outcome.c.student_id,
                     dim_student.c.first_name.label('student_first_name'),
-                    func.substr(dim_student.c.middle_name, 1, 1).label('student_middle_name'),
+                    dim_student.c.middle_name.label('student_middle_name'),
                     dim_student.c.last_name.label('student_last_name'),
                     dim_student.c.grade.label('grade'),
                     dim_student.c.district_id.label('district_id'),
@@ -77,7 +78,7 @@ def __prepare_query(connector, student_id, assessment_id):
                     fact_asmt_outcome.c.asmt_claim_3_score_range_max.label('asmt_claim_3_score_range_max'),
                     fact_asmt_outcome.c.asmt_claim_4_score_range_max.label('asmt_claim_4_score_range_max'),
                     dim_staff.c.first_name.label('teacher_first_name'),
-                    func.substr(dim_staff.c.middle_name, 1, 1).label('teacher_middle_name'),
+                    dim_staff.c.middle_name.label('teacher_middle_name'),
                     dim_staff.c.last_name.label('teacher_last_name')],
                    from_obj=[fact_asmt_outcome
                              .join(dim_student, and_(fact_asmt_outcome.c.student_id == dim_student.c.student_id, fact_asmt_outcome.c.section_id == dim_student.c.section_id))
@@ -102,6 +103,8 @@ def __arrange_results(results):
             custom = json.loads(custom_metadata)
         # once we use the data, we clean it from the result
         del(result['asmt_custom_metadata'])
+
+        result['teacher_full_name'] = format_full_name(result['teacher_first_name'], result['teacher_middle_name'], result['teacher_last_name'])
 
         # asmt_type is an enum, so we would to capitalize it to make it presentable
         result['asmt_type'] = capwords(result['asmt_type'], ' ')
@@ -183,10 +186,7 @@ def get_student_report(params):
         result = connection.get_result(query)
         if result:
             first_student = result[0]
-            # handling null middle name by making it empty string
-            middle_name = first_student['student_middle_name'] if first_student['student_middle_name'] else ''
-            # handling empty string middle name
-            student_name = '{0} {1} {2}'.format(first_student['student_first_name'], middle_name, first_student['student_last_name']).replace('  ', ' ')
+            student_name = format_full_name(first_student['student_first_name'], first_student['student_middle_name'], first_student['student_last_name'])
             context = __get_context(connection, first_student['school_id'], first_student['district_id'], first_student['grade'], student_name)
         else:
             raise NotFoundException("Could not find student with id {0}".format(student_id))

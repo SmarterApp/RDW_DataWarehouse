@@ -5,6 +5,7 @@ Created on Jan 24, 2013
 '''
 
 from edapi.utils import report_config
+from smarter.reports.helpers.name_formatter import format_full_name_rev
 from sqlalchemy.sql.expression import func
 from database.connector import DBConnection
 from sqlalchemy.sql import select
@@ -82,11 +83,11 @@ def get_list_of_students_report(params):
 
         query = select([dim_student.c.student_id.label('student_id'),
                         dim_student.c.first_name.label('student_first_name'),
-                        func.substr(dim_student.c.middle_name, 1, 1).label('student_middle_name'),
+                        dim_student.c.middle_name.label('student_middle_name'),
                         dim_student.c.last_name.label('student_last_name'),
                         fact_asmt_outcome.c.enrl_grade.label('enrollment_grade'),
                         dim_staff.c.first_name.label('teacher_first_name'),
-                        func.substr(dim_staff.c.middle_name, 1, 1).label('teacher_middle_name'),
+                        dim_staff.c.middle_name.label('teacher_middle_name'),
                         dim_staff.c.last_name.label('teacher_last_name'),
                         fact_asmt_outcome.c.asmt_grade.label('asmt_grade'),
                         dim_asmt.c.asmt_subject.label('asmt_subject'),
@@ -138,17 +139,13 @@ def get_list_of_students_report(params):
                 student['student_first_name'] = result['student_first_name']
                 student['student_middle_name'] = result['student_middle_name']
                 student['student_last_name'] = result['student_last_name']
-                student['student_full_name'] = result['student_last_name'] + ', ' + result['student_first_name']
-                if (result['student_middle_name'] is not None) and (len(result['student_middle_name']) > 0):
-                    student['student_full_name'] = student['student_full_name'] + ' ' + result['student_middle_name'] + '.'
+                student['student_full_name'] = format_full_name_rev(result['student_first_name'], result['student_middle_name'], result['student_last_name'])
                 student['enrollment_grade'] = result['enrollment_grade']
 
             assessment = {}
             assessment['teacher_first_name'] = result['teacher_first_name']
             assessment['teacher_last_name'] = result['teacher_last_name']
-            assessment['teacher_full_name'] = result['teacher_last_name'] + ', ' + result['teacher_first_name']
-            if (result['teacher_middle_name'] is not None) and (len(result['teacher_middle_name']) > 0):
-                assessment['teacher_full_name'] = assessment['teacher_full_name'] + ' ' + result['teacher_middle_name'] + '.'
+            assessment['teacher_full_name'] = format_full_name_rev(result['teacher_first_name'], result['teacher_middle_name'], result['teacher_last_name'])
             assessment['asmt_grade'] = result['asmt_grade']
             assessment['asmt_score'] = result['asmt_score']
             assessment['asmt_score_range_min'] = result['asmt_score_range_min']

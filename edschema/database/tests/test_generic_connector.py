@@ -29,11 +29,12 @@ class TestGenericConnector(unittest.TestCase):
         self.assertIsNotNone(dbUtil)
 
     def test_create_with_engine_name(self):
-        setup_db_connection_from_ini(self._settings, self._prefix, self._metadata, 'unitTest')
+        setup_db_connection_from_ini(self._settings, self._prefix, self._metadata, datasource_name='unitTest')
         dbUtil = component.queryUtility(IDbUtil, 'unitTest')
         self.assertIsNotNone(dbUtil)
         dbUtil = component.queryUtility(IDbUtil)
         self.assertIsNone(dbUtil)
+
 
 if __name__ == "__main__":
     unittest.main()

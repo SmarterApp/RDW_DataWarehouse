@@ -6,11 +6,11 @@ Created on Mar 1, 2013
 from sqlalchemy.engine import engine_from_config
 from database.connector import DbUtil, IDbUtil
 from zope import component
-from sqlalchemy.schema import MetaData, CreateSchema
+from sqlalchemy.schema import CreateSchema
 from sqlalchemy.exc import DBAPIError
 
 
-def setup_db_connection_from_ini(settings, prefix, metadata, engine_name='', allow_create=False):
+def setup_db_connection_from_ini(settings, prefix, metadata, datasource_name='', allow_create=False):
     '''
     Setup a generic db connection
     '''
@@ -18,8 +18,6 @@ def setup_db_connection_from_ini(settings, prefix, metadata, engine_name='', all
 
     # Create schema and its tables
     if allow_create is True:
-        __metadata = MetaData(schema=metadata.schema, bind=engine)
-        __metadata.reflect(bind=engine)
         connection = engine.connect()
         try:
             connection.execute(CreateSchema(metadata.schema))
@@ -33,4 +31,4 @@ def setup_db_connection_from_ini(settings, prefix, metadata, engine_name='', all
 
     # zope registration
     dbUtil = DbUtil(engine=engine, metadata=metadata)
-    component.provideUtility(dbUtil, IDbUtil, name=engine_name)
+    component.provideUtility(dbUtil, IDbUtil, name=datasource_name)

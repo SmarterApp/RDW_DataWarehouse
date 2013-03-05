@@ -31,15 +31,28 @@ class UT_Base(unittest.TestCase):
 
 class Unittest_with_sqlite(UT_Base):
 
+    datasource_name = 'smarter'
+
     @classmethod
-    def setUpClass(cls):
+    def setUpClass(cls, datasource_name=None):
+        if datasource_name is not None:
+            Unittest_with_sqlite.datasource_name = datasource_name
         # create db engine for sqlite
-        create_sqlite(use_metadata_from_db=True, echo=False)
+        create_sqlite(use_metadata_from_db=True, echo=False, datasource_name=Unittest_with_sqlite.datasource_name)
         # create test data in the sqlite
-        generate_cvs_templates()
+        generate_cvs_templates(name=Unittest_with_sqlite.datasource_name)
         here = os.path.abspath(os.path.dirname(__file__))
         resources_dir = os.path.abspath(os.path.join(os.path.join(here, '..', 'resources')))
-        import_csv_dir(resources_dir)
+        import_csv_dir(resources_dir, name=Unittest_with_sqlite.datasource_name)
+
+    @classmethod
+    def tearDownClass(cls):
+        # destroy sqlite just in case
+        destroy_sqlite(datasource_name=Unittest_with_sqlite.datasource_name)
+
+    def get_Metadata(self):
+        dbUtil = component.queryUtility(IDbUtil, name=Unittest_with_sqlite.datasource_name)
+        return dbUtil.get_metadata()
 
 
 class Unittest_with_sqlite_no_data_load(UT_Base):

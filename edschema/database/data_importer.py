@@ -52,7 +52,7 @@ def __import_csv_file(csv_file, connection, table):
             connection.execute(table.insert().values(**new_row))
 
 
-def import_csv_dir(resources_dir):
+def import_csv_dir(resources_dir, datasource_name=''):
     '''
     import data from csv files
     return
@@ -60,7 +60,7 @@ def import_csv_dir(resources_dir):
         False: no data loaded or failed to load data
     '''
     __success = False
-    with DBConnection() as connection:
+    with DBConnection(name=datasource_name) as connection:
         metadata = connection.get_metadata()
         # Look through metadata and upload available imports with the same and and ext csv
         # use transaction.

@@ -17,8 +17,8 @@ def includeme(config):
     settings = config.get_settings()
     # Set up db pool
     metadata = generate_persistence(schema_name=settings['edauth.schema_name'])
-    setup_db_connection_from_ini(settings, 'edauth', metadata, engine_name='edauth', allow_create=True)
-    
+    setup_db_connection_from_ini(settings, 'edauth', metadata, datasource_name='edauth', allow_create=True)
+
     cookie_max_age = convert_to_int(settings.get('auth.cookie.max_age'))
     session_timeout = convert_to_int(settings.get('auth.cookie.timeout'))
     authentication_policy = AuthTktAuthenticationPolicy(settings['auth.cookie.secret'],

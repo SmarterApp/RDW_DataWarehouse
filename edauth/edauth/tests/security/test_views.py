@@ -13,12 +13,13 @@ from urllib.parse import urlparse
 import urllib
 from edauth.security.views import logout
 import os
-from database.tests.utils.unittest_with_sqlite import Unittest_with_sqlite
 import uuid
 from datetime import timedelta, datetime
 from database.connector import DBConnection
 from pyramid.response import Response
 from edauth.security.utils import deflate_base64_encode, inflate_base64_decode
+from database.sqlite_connector import create_sqlite, destroy_sqlite
+from edauth.persistence.persistence import generate_persistence
 
 
 def get_saml_from_resource_file(file_mame):
@@ -29,9 +30,10 @@ def get_saml_from_resource_file(file_mame):
     return xml
 
 
-class TestViews(Unittest_with_sqlite):
+class TestViews(unittest.TestCase):
 
     def setUp(self):
+        create_sqlite(use_metadata_from_db=False, echo=False, metadata=generate_persistence(), datasource_name='edauth')
         self.__request = DummyRequest()
         # Must set hook_zca to false to work with uniittest_with_sqlite
         self.__config = testing.setUp(request=self.__request, hook_zca=False)
@@ -48,13 +50,14 @@ class TestViews(Unittest_with_sqlite):
         self.__request.registry.settings['auth.saml.issuer_name'] = 'dummyIssuer'
 
         # delete all user_session before test
-        with DBConnection() as connection:
+        with DBConnection('edauth') as connection:
             user_session = connection.get_table('user_session')
             connection.execute(user_session.delete())
 
     def tearDown(self):
         # reset the registry
         testing.tearDown()
+        destroy_sqlite(datasource_name='edauth')
 
     def test_login_referred_by_login_page(self):
         self.assertTrue(True)
@@ -102,7 +105,7 @@ class TestViews(Unittest_with_sqlite):
         session_json = '{"roles": ["TEACHER"], "idpSessionIndex": "123", "name": {"fullName": "Linda Kim"}, "uid": "linda.kim"}'
         current_datetime = datetime.now()
         expiration_datetime = current_datetime + timedelta(seconds=30)
-        with DBConnection() as connection:
+        with DBConnection('edauth') as connection:
             user_session = connection.get_table('user_session')
             connection.execute(user_session.insert(), session_id=session_id, session_context=session_json, last_access=current_datetime, expiration=expiration_datetime)
 
@@ -137,7 +140,7 @@ class TestViews(Unittest_with_sqlite):
         session_json = '{"roles": ["TEACHER"], "idpSessionIndex": "123", "name": {"fullName": "Linda Kim"}, "uid": "linda.kim", "nameId": "abc"}'
         current_datetime = datetime.now()
         expiration_datetime = current_datetime + timedelta(seconds=30)
-        with DBConnection() as connection:
+        with DBConnection('edauth') as connection:
             user_session = connection.get_table('user_session')
             connection.execute(user_session.insert(), session_id=session_id, session_context=session_json, last_access=current_datetime, expiration=expiration_datetime)
 

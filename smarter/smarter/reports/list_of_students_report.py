@@ -191,9 +191,6 @@ def get_list_of_students_report(params):
         los_results['cutpoints'] = __get_cut_points(connector, asmt_grade, asmt_subject)
         los_results['context'] = __get_context(connector, asmt_grade, school_id, district_id)
 
-        #TODO - restructure this method
-        #       make sure connection always closed even on error
-        connector.close_connection()
         return los_results
 
 

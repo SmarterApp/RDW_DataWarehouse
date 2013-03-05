@@ -109,9 +109,6 @@ def generate_data(name_lists, db_states_stat):
     # add headers to all csv files
     add_headers_to_csvs()
 
-    # total count for state, districts, schools, students, teachers, parents
-    total_count = [0, 0, 0, 0, 0, 0]
-
     # generate all assessment types
     asmt_list = generate_dim_assessment()
     create_csv(asmt_list, ENTITY_TO_PATH_DICT[Assessment])

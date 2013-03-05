@@ -6,10 +6,10 @@ Created on Jan 17, 2013
 
 import unittest
 from smarter.reports.student_report import get_student_report, get_student_assessment
-from database.tests.utils.unittest_with_sqlite import Unittest_with_sqlite
+from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite
 
 
-class TestStudentReport(Unittest_with_sqlite):
+class TestStudentReport(Unittest_with_smarter_sqlite):
 
     def test_student_report(self):
         params = {"studentId": '286ee893-dad0-4833-ae6c-adef78a11567', "assessmentId": 1}

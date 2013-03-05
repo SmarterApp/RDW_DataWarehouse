@@ -4,30 +4,32 @@ Created on Feb 15, 2013
 @author: tosako
 '''
 import unittest
-from database.tests.utils.unittest_with_sqlite import Unittest_with_sqlite
 from edauth.security.session_manager import get_user_session, \
     create_new_user_session, update_session_access, delete_session, \
     is_session_expired
-from database.connector import DBConnection
 from edauth.security.roles import Roles
 import uuid
 from datetime import datetime, timedelta
 import time
 from edauth.tests.test_helper.read_resource import create_SAMLResponse
+from database.sqlite_connector import create_sqlite, destroy_sqlite
+from edauth.persistence.persistence import generate_persistence
+from edauth.database.connector import EdauthDBConnection
 
 
-class Test(Unittest_with_sqlite):
+class TestSessionManager(unittest.TestCase):
 
     def setUp(self):
         # delete all user_session before test
-        with DBConnection() as connection:
-            user_session = connection.get_table('user_session')
-            connection.execute(user_session.delete())
+        create_sqlite(use_metadata_from_db=False, echo=False, metadata=generate_persistence(), datasource_name='edauth')
         mappings = {('Allow', 'TEACHER', ('view', 'logout')),
                     ('Allow', 'SYSTEM_ADMINISTRATOR', ('view', 'logout')),
                     ('Allow', 'DATA_LOADER', ('view', 'logout')),
                     ('Allow', 'NONE', ('logout'))}
         Roles.set_roles(mappings)
+
+    def tearDown(self):
+        destroy_sqlite(datasource_name='edauth')
 
     def test_create_session_from_SAMLResponse(self):
         session = create_new_user_session(create_SAMLResponse('SAMLResponse.xml'))
@@ -43,7 +45,7 @@ class Test(Unittest_with_sqlite):
         session_json = '{"roles": ["TEACHER"], "name": {"fullName": "Linda Kim"}, "uid": "linda.kim"}'
         current_datetime = datetime.now()
         expiration_datetime = current_datetime + timedelta(seconds=30)
-        with DBConnection() as connection:
+        with EdauthDBConnection() as connection:
             user_session = connection.get_table('user_session')
             connection.execute(user_session.insert(), session_id=session_id, session_context=session_json, last_access=current_datetime, expiration=expiration_datetime)
 

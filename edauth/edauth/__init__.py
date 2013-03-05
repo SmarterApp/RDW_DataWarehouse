@@ -7,12 +7,18 @@ from pyramid.authorization import ACLAuthorizationPolicy
 from edauth.security.callback import session_check
 from edauth.utils import convert_to_int
 from edauth.security.roles import Roles
+from database.generic_connector import setup_db_connection_from_ini
+from edauth.persistence.persistence import generate_persistence
 
 
 # this is automatically called by consumer of edauth when it calls config.include(edauth)
 def includeme(config):
 
     settings = config.get_settings()
+    # Set up db pool
+    metadata = generate_persistence(schema_name=settings['edauth.schema_name'])
+    setup_db_connection_from_ini(settings, 'edauth', metadata, datasource_name='edauth', allow_create=True)
+
     cookie_max_age = convert_to_int(settings.get('auth.cookie.max_age'))
     session_timeout = convert_to_int(settings.get('auth.cookie.timeout'))
     authentication_policy = AuthTktAuthenticationPolicy(settings['auth.cookie.secret'],

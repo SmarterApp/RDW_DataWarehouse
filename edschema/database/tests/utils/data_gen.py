@@ -39,18 +39,18 @@ def get_resource_dir():
 
 
 # helper to call generate data with csv funciton
-def generate_cvs_templates():
+def generate_cvs_templates(datasource_name=''):
     templ_resources = os.path.join(get_resource_dir(), 'tmpl')
     if os.path.exists(templ_resources):
         shutil.rmtree(templ_resources)
     os.makedirs(templ_resources)
 
-    generate_data(write_to_csv)
+    generate_data(write_to_csv, datasource_name=datasource_name)
 
 
 # generate data for each found table and execute table_data_func for each set of rows
-def generate_data(table_data_func):
-    metadata = component.queryUtility(IDbUtil).get_metadata()
+def generate_data(table_data_func, datasource_name=''):
+    metadata = component.queryUtility(IDbUtil, datasource_name).get_metadata()
     for table in metadata.sorted_tables:
         rows = []
         for _ in range(5):

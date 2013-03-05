@@ -8,11 +8,11 @@ Created on Jan 13, 2013
 from edapi.utils import report_config
 from smarter.reports.helpers.name_formatter import format_full_name
 from sqlalchemy.sql import select
-from database.connector import DBConnection
 import json
 from sqlalchemy.sql.expression import and_
 from edapi.exceptions import NotFoundException
 from string import capwords
+from smarter.database.connector import SmarterDBConnection
 
 
 def __prepare_query(connector, student_id, assessment_id):
@@ -183,7 +183,7 @@ def get_student_report(params):
     if 'assessmentId' in params:
         assessment_id = str(params['assessmentId'])
 
-    with DBConnection() as connection:
+    with SmarterDBConnection() as connection:
         query = __prepare_query(connection, student_id, assessment_id)
 
         result = connection.get_result(query)
@@ -215,7 +215,7 @@ def get_student_assessment(params):
     # get studentId
     student_id = params['studentId']
 
-    with DBConnection() as connection:
+    with SmarterDBConnection() as connection:
         # get table metadatas
         dim_asmt = connection.get_table('dim_asmt')
         fact_asmt_outcome = connection.get_table('fact_asmt_outcome')

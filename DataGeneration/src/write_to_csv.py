@@ -17,11 +17,11 @@ def create_csv(entity_list, filename):
             entity_writer.writerow(row)
 
 
-def clear_files(entity_class_list):
+def clear_files(entity_to_path_dict):
     '''
     Truncate csv files in constants.ENT_LIST
     '''
-    for entity in entity_class_list:
-        cur_file = open(entity.path, "w")
+    for path in entity_to_path_dict.values():
+        cur_file = open(path, "w")
         cur_file.truncate()
         cur_file.close()

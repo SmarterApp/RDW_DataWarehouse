@@ -28,14 +28,20 @@ import constants
 import py1
 import argparse
 
-ENTITY_CLASS_LIST = [InstitutionHierarchy, SectionSubject, Assessment, AssessmentOutcome, Staff, ExternalUserStudent, StudentSection]
+ENTITY_TO_PATH_DICT = {InstitutionHierarchy: constants.DATAFILE_PATH + '/datafiles/csv/dim_inst_hier.csv',
+                     SectionSubject: constants.DATAFILE_PATH + '/datafiles/csv/dim_section_subject.csv',
+                     Assessment: constants.DATAFILE_PATH + '/datafiles/csv/dim_asmt.csv',
+                     AssessmentOutcome: constants.DATAFILE_PATH + '/datafiles/csv/fact_asmt_outcome.csv',
+                     Staff: constants.DATAFILE_PATH + '/datafiles/csv/dim_staff.csv',
+                     ExternalUserStudent: constants.DATAFILE_PATH + '/datafiles/csv/external_user_student_rel.csv',
+                     StudentSection: constants.DATAFILE_PATH + '/datafiles/csv/dim_student.csv'}
 
 def get_name_lists():
     '''
     Read files into lists, which is used for making names, addresses, etc
     '''
     # clear old files
-    clear_files(ENTITY_CLASS_LIST)
+    clear_files(ENTITY_TO_PATH_DICT)
 
     name_lists = []
     try:
@@ -69,8 +75,8 @@ def add_headers_to_csvs():
     Add headers to all csv files
     '''
 
-    for entity in ENTITY_CLASS_LIST:
-        with open(entity.path, 'a', newline='') as csvfile:
+    for entity in ENTITY_TO_PATH_DICT.keys():
+        with open(ENTITY_TO_PATH_DICT[entity], 'a', newline='') as csvfile:
             entity_writer = csv.writer(csvfile, delimiter=',', quoting=csv.QUOTE_MINIMAL)
             entity_writer.writerow(entity.getHeader())
 
@@ -107,7 +113,7 @@ def generate_data(name_lists, db_states_stat):
 
     # generate all assessment types
     asmt_list = generate_assessment_types()
-    create_csv(asmt_list, Assessment.path)
+    create_csv(asmt_list, ENTITY_TO_PATH_DICT[Assessment])
 
     c = 0
     for state in db_states_stat:
@@ -131,7 +137,7 @@ def generate_data(name_lists, db_states_stat):
         # generate state_staff
         num_of_state_staff = len(created_dist_list) * random.choice(range(2, 4))
         state_staff_list = [generate_staff(constants.HIER_USER_TYPE[1], created_state.state_code)for i in range(num_of_state_staff)]
-        create_csv(state_staff_list, Staff.path)
+        create_csv(state_staff_list, ENTITY_TO_PATH_DICT[Staff])
 
         shift = 0
         dist_count = 0
@@ -143,14 +149,14 @@ def generate_data(name_lists, db_states_stat):
             school_list, wheretaken_list = create_institution_hierarchies(stu_num_in_school_made[shift: shift + district.number_of_schools],
                                                                           stutea_ratio_in_school_made[shift: shift + district.number_of_schools],
                                                                           district, school_type_in_state, name_lists)
-            create_csv(school_list, InstitutionHierarchy.path)
+            create_csv(school_list, ENTITY_TO_PATH_DICT[InstitutionHierarchy])
             # associate wheretaken_list to current district
             district.wheretaken_list = wheretaken_list
 
             # create district staff
             num_of_district_staff = len(school_list) * random.choice(range(2, 4))
             district_staff_list = [generate_staff(constants.HIER_USER_TYPE[1], created_state.state_code, district.district_id)for i in range(num_of_district_staff)]
-            create_csv(district_staff_list, Staff.path)
+            create_csv(district_staff_list, ENTITY_TO_PATH_DICT[Staff])
 
             '''
             # TODO: merge school entity and institution_hierarchy entity so we don't have to convert
@@ -430,7 +436,7 @@ def create_classes_for_school(district, school, state, name_list, total_count, a
     staff_percentage = random.uniform(.1, .3)
     num_of_school_staff = int(math.floor(staff_percentage * number_of_teachers))
     school_staff_list = [generate_staff(constants.HIER_USER_TYPE[1], district.state_code, district.district_id, school.school_id)for i in range(num_of_school_staff)]
-    create_csv(school_staff_list, Staff.path)
+    create_csv(school_staff_list, ENTITY_TO_PATH_DICT[Staff])
 
     number_of_grades = school.high_grade - school.low_grade + 1
     number_of_students = school.number_of_students
@@ -444,7 +450,7 @@ def create_classes_for_school(district, school, state, name_list, total_count, a
 
         # generate student list for a grade
         students_in_grade, external_users = generate_students(number_of_students_per_grade, state, district, school, grade, name_list)
-        create_csv(external_users, ExternalUserStudent.path)
+        create_csv(external_users, ENTITY_TO_PATH_DICT[ExternalUserStudent])
 
         # Each parent of the student will have a row in external_user_student
         # So, create 1 or 2 external_user_student rows per student
@@ -627,7 +633,7 @@ def create_classes_for_grade(students_in_grade, teachers_in_grade, school, grade
         total_count[5] += len(student_sections)
         # associate students with scores of this subject
         assessment_outcome_list = associate_students_and_scores(student_sections, scores_for_subject, school.row_id, subject, asmt_list, where_taken)
-        create_csv(assessment_outcome_list, AssessmentOutcome.path)
+        create_csv(assessment_outcome_list, ENTITY_TO_PATH_DICT[AssessmentOutcome])
 
 
 def create_student_sections_for_subject(subject_name, number_of_classes, students, teachers, school, grade, asmt_list):
@@ -716,9 +722,9 @@ def create_sections_in_one_class(subject_name, class_count, distribute_stu_inacl
             student_section_list.append(student_section)
 
     # write subjects into csv
-    create_csv(section_subject_list, SectionSubject.path)
-    create_csv(staff_list, Staff.path)
-    create_csv(student_section_list, StudentSection.path)
+    create_csv(section_subject_list, ENTITY_TO_PATH_DICT[SectionSubject])
+    create_csv(staff_list, ENTITY_TO_PATH_DICT[Staff])
+    create_csv(student_section_list, ENTITY_TO_PATH_DICT[StudentSection])
 
     return student_section_list
 
@@ -788,6 +794,7 @@ def get_test_state_stats():
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Generate fixture data.')
     parser.add_argument('--validate', dest='do_validation', action='store_true', default=False, help='Validate the script output against the current schema.', required=False)
+    # TODO: Add flag to turn headers off
     args = parser.parse_args()
 
     state_statistic_function = get_test_state_stats if args.do_validation else get_state_stats

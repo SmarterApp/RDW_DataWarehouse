@@ -47,20 +47,6 @@ ASSMT_TYPES = {'Math':
                }
 
 
-# Output files for use in write_to_csv.py and generate data.py
-
-STAFF = DATAFILE_PATH + '/datafiles/csv/dim_staff.csv'
-STUDENTS = DATAFILE_PATH + '/datafiles/csv/dim_student.csv'
-INSTITUTION_HIERARCHY = DATAFILE_PATH + '/datafiles/csv/dim_inst_hier.csv'
-ASSESSMENT_OUTCOME = DATAFILE_PATH + '/datafiles/csv/fact_asmt_outcome.csv'
-SECTION_SUBJECT = DATAFILE_PATH + '/datafiles/csv/dim_section_subject.csv'
-ASSESSMENT_TYPES = DATAFILE_PATH + '/datafiles/csv/dim_asmt.csv'
-EXTERNAL_USER_STUDENT = DATAFILE_PATH + '/datafiles/csv/external_user_student_rel.csv'
-USER_SESSION = DATAFILE_PATH + '/datafiles/csv/user_session.csv'
-
-ENT_LIST = [STAFF, STUDENTS, INSTITUTION_HIERARCHY, ASSESSMENT_OUTCOME, SECTION_SUBJECT, ASSESSMENT_TYPES, EXTERNAL_USER_STUDENT, USER_SESSION]
-
-
 ZIPCODE_START = 10000
 ZIPCODE_RANG_INSTATE = 5000
 

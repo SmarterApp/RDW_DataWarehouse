@@ -1,5 +1,4 @@
 import csv
-from constants import ENT_LIST
 
 
 def create_csv(entity_list, filename):

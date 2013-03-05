@@ -147,6 +147,10 @@ def __arrange_results(results):
                                 'min_score': str(result['asmt_claim_{0}_score_min'.format(i)]),
                                 'confidence': str(claim_score - result['asmt_claim_{0}_score_range_min'.format(i)]),
                                 }
+                del(result['asmt_claim_{0}_score_range_min'.format(i)])
+                del(result['asmt_claim_{0}_score_range_max'.format(i)])
+                del(result['asmt_claim_{0}_score_min'.format(i)])
+                del(result['asmt_claim_{0}_score_max'.format(i)])
                 result['claims'].append(claim_object)
 
     # rearranging the json so we could use it more easily with mustache

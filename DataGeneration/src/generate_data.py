@@ -84,7 +84,7 @@ def generate_data(name_lists, db_states_stat):
     '''
     Main function to generate actual data with input statistical data
     '''
-    # total count for state, districts, schools, students, teachers, student_sections
+    # total count for state, districts, schools, students, student_sections
     total_count = {'state_count': 0, 'district_count': 0, 'school_count': 0, 'student_count': 0, 'student_section_count': 0}
 
     # generate all assessment types

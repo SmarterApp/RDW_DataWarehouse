@@ -22,7 +22,7 @@ class Test(unittest.TestCase):
         self.assertEqual(len(result), expect_asmt_num)
 
     def test_generate_single_asmt(self):
-        asmt = genasmt.generate_single_asmt(10, 'INTERIM', 'BOY', 'ELA', 2012)
+        asmt = genasmt.generate_single_asmt(10, 'INTERIM', 'BOY', 'ELA', 2012, True)
 
         self.assertIsNotNone(asmt.asmt_id)
         self.assertIsNotNone(asmt.asmt_external_id)

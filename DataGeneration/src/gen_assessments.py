@@ -25,27 +25,23 @@ def generate_dim_assessment():
     Entry point for generating assessments.
     Returns     : a list of assessment objects
     '''
-
     assessments = []
-
+    assmt_years = sorted(ASSMT_SCORE_YEARS)
+    periods = []
     for grade in GRADES:
         for atype in TYPES:
-            if atype == 'INTERIM':
-                for period in PERIODS:
-                    for subject in SUBJECTS:
-                        for year in ASSMT_SCORE_YEARS:
-                            assessment = generate_single_asmt(grade, atype, period, subject, year)
-                            assessments.append(assessment)
-            else:  # not ITERMIN therefore SUMMATIVE
+            # INTERIM assessment has 3 periods, SUMMATIVE assessment has 1 'EOY' period
+            periods = PERIODS if atype == 'INTERIM' else ['EOY']
+            for period in periods:
                 for subject in SUBJECTS:
-                    for year in ASSMT_SCORE_YEARS:
-                        assessment = generate_single_asmt(grade, atype, 'EOY', subject, year)
+                    for index_of_year in range(len(assmt_years)):
+                        most_recent = (index_of_year == len(assmt_years) - 1)
+                        assessment = generate_single_asmt(grade, atype, period, subject, assmt_years[index_of_year], most_recent)
                         assessments.append(assessment)
-
     return assessments
 
 
-def generate_single_asmt(student_grade, asmt_type, period, subject, year):
+def generate_single_asmt(student_grade, asmt_type, period, subject, year, most_recent):
     '''
     returns an Assessment object
     student_grade -- the student_grade for the current assessment
@@ -90,7 +86,7 @@ def generate_single_asmt(student_grade, asmt_type, period, subject, year):
         'asmt_cut_point_3': int((MAX_ASSMT_SCORE + MIN_ASSMT_SCORE) * .75),
 
         'from_date': '20120901',
-        'most_recent': True
+        'most_recent': most_recent
     }
 
     if len(asmt_info['claim_names']) >= 4 and len(asmt_info['claim_percs']) >= 4:

@@ -25,7 +25,7 @@ def generate_dob(grade):
     birth_month = random.randint(1, 12)
     birth_day = random.randint(1, 28)
 
-    dob = datetime.date(birth_year, birth_month, birth_day)
+    dob = datetime.date(birth_year, birth_month, birth_day).strftime('%Y%m%d')
 
     return dob
 

@@ -19,7 +19,7 @@ from entities import (
     InstitutionHierarchy,
     AssessmentOutcome, SectionSubject)
 from helper_entities import State, District, WhereTaken
-from gen_assessments import generate_assessment_types
+from gen_assessments import generate_dim_assessment
 from genpeople import generate_teacher, generate_student, generate_staff, generate_student_section
 from idgen import IdGen
 from write_to_csv import clear_files, create_csv
@@ -85,17 +85,18 @@ def generate_data(name_lists, db_states_stat):
     Main function to generate actual data with input statistical data
     '''
     # total count for state, districts, schools, students, teachers, student_sections
-    total_count = [0, 0, 0, 0, 0, 0]
+    # TODO: change to dict
+    total_count = {'state_count': 0, 'district_count': 0, 'school_count': 0, 'student_count': 0, 'student_section_count': 0}
 
     # generate all assessment types
-    asmt_list = generate_assessment_types()
+    asmt_list = generate_dim_assessment()
     create_csv(asmt_list, constants.ASSESSMENT_TYPES)
 
     c = 0
     for state in db_states_stat:
         # create a state
         created_state = State(state['state_code'], state['state_name'], state['total_district'])
-        total_count[0] += 1
+        total_count['state_count'] += 1
 
         school_num_in_dist_made, stu_num_in_school_made, stutea_ratio_in_school_made, school_type_in_state = generate_distribution_lists(state)
 
@@ -108,11 +109,12 @@ def generate_data(name_lists, db_states_stat):
 
         # create districts for each state
         created_dist_list = create_districts(created_state.state_code, created_state.state_name, school_num_in_dist_made, c, name_lists)
-        total_count[1] += len(created_dist_list)
+        total_count['district_count'] += len(created_dist_list)
 
         # generate non-teaching state_staff
+        # assuming here between 2 and 4 staff per district at the state level
         num_of_state_staff = len(created_dist_list) * random.choice(range(2, 4))
-        state_staff_list = [generate_staff(constants.HIER_USER_TYPE[1], created_state.state_code)for i in range(num_of_state_staff)]
+        state_staff_list = [generate_staff(constants.HIER_USER_TYPE[1], created_state.state_code)for _i in range(num_of_state_staff)]
         create_csv(state_staff_list, constants.STAFF)
 
         shift = 0
@@ -131,10 +133,10 @@ def generate_data(name_lists, db_states_stat):
 
             # create district staff
             num_of_district_staff = len(school_list) * random.choice(range(2, 4))
-            district_staff_list = [generate_staff(constants.HIER_USER_TYPE[1], created_state.state_code, district.district_id)for i in range(num_of_district_staff)]
+            district_staff_list = [generate_staff(constants.HIER_USER_TYPE[1], created_state.state_code, district.district_id)for _i in range(num_of_district_staff)]
             create_csv(district_staff_list, constants.STAFF)
 
-            total_count[2] += len(school_list)
+            total_count['school_count'] += len(school_list)
             shift += district.number_of_schools
 
             # create sections, teachers, students and assessment scores for each school
@@ -147,10 +149,10 @@ def generate_data(name_lists, db_states_stat):
         c += 1
 
     print("**************Results***********************")
-    print("generated number of states    ", total_count[0])
-    print("generated number of districts ", total_count[1])
-    print("generated number of schools   ", total_count[2])
-    print("generated number of students  ", total_count[3])
+    print("generated number of states    ", total_count['state_count'])
+    print("generated number of districts ", total_count['district_count'])
+    print("generated number of schools   ", total_count['school_count'])
+    print("generated number of students  ", total_count['student_count'])
 
     return total_count
 
@@ -259,9 +261,10 @@ def create_districts(state_code, state_name, school_num_in_dist_made, pos, name_
     return districts_list
 
 
-def create_institution_hierarchies(stu_num_in_school_made, stutea_ratio_in_school_made, district, school_type_in_state, name_lists):
+def create_institution_hierarchies(student_counts, student_teacher_ratios, district, school_type_in_state, name_lists):
     '''
     Main function to generate list of schools for a district
+    Database table is institution_hierarchies
     '''
     count = district.number_of_schools
     # generate random school names
@@ -286,8 +289,8 @@ def create_institution_hierarchies(stu_num_in_school_made, stutea_ratio_in_schoo
         school_name = (names[i] + " " + suf).title()
         # create one row of InstitutionHierarchy
         params = {
-            'number_of_students': stu_num_in_school_made[i],
-            'student_teacher_ratio': stutea_ratio_in_school_made[i],
+            'number_of_students': student_counts[i],
+            'student_teacher_ratio': student_teacher_ratios[i],
             'low_grade': low_grade,
             'high_grade': high_grade,
 
@@ -401,7 +404,7 @@ def create_classes_for_school(district, school, state, name_list, total_count, a
     # generate school non-teaching staff
     staff_percentage = random.uniform(.1, .3)
     num_of_school_staff = int(math.floor(staff_percentage * number_of_teachers))
-    school_staff_list = [generate_staff(constants.HIER_USER_TYPE[1], district.state_code, district.district_id, school.school_id)for i in range(num_of_school_staff)]
+    school_staff_list = [generate_staff(constants.HIER_USER_TYPE[1], district.state_code, district.district_id, school.school_id)for _i in range(num_of_school_staff)]
     create_csv(school_staff_list, constants.STAFF)
 
     number_of_grades = school.high_grade - school.low_grade + 1
@@ -419,7 +422,7 @@ def create_classes_for_school(district, school, state, name_list, total_count, a
         students_in_grade, external_users = generate_students(number_of_students_per_grade, state, district, school, grade, name_list)
         create_csv(external_users, constants.EXTERNAL_USER_STUDENT)
         generated_student_count += len(students_in_grade)
-        total_count[3] += len(students_in_grade)
+        total_count['student_count'] += len(students_in_grade)
 
         if grade == (school.high_grade - 1):
             number_of_students_per_grade = school.number_of_students - generated_student_count
@@ -504,7 +507,7 @@ def map_asmt_date_to_period(period, dates_taken, year, asmt_type):
 def generate_teachers(num_teachers, state, district):
     teachers = []
 
-    for i in range(num_teachers):
+    for _loop_variable_not_used in range(num_teachers):
         teacher = generate_teacher(state, district)
         teachers.append(teacher)
 
@@ -515,7 +518,7 @@ def generate_students(num_students, state, district, school, grade, fish_names):
     students = []
     external_users = []
 
-    for i in range(num_students):
+    for _loop_variable_not_used in range(num_students):
         stu, ext_user = generate_student(state, district, school, grade, fish_names)
         students.append(stu)
         external_users.append(ext_user)
@@ -578,7 +581,7 @@ def create_classes_for_grade(students_in_grade, teachers_in_grade, school, grade
         scores_for_subject = generate_assmt_scores_for_subject(len(students_in_grade), grade, school.state_name, asmt_list, subject)
         # generate all student_section in this subject
         student_sections = create_student_sections_for_subject(subject, number_of_classes, students_in_grade, subject_teachers, school, grade, asmt_list)
-        total_count[5] += len(student_sections)
+        total_count['student_section_count'] += len(student_sections)
         # associate students with scores of this subject
         assessment_outcome_list = associate_students_and_scores(student_sections, scores_for_subject, school.row_id, subject, asmt_list, where_taken)
         create_csv(assessment_outcome_list, constants.ASSESSMENT_OUTCOME)
@@ -705,7 +708,7 @@ def split_list(list_to_split, n):
 def makeup_list(avgin, stdin, minin, maxin, countin, target_sum):
     min_dist = MAXINT
     candidate_list = []
-    for i in range(constants.RETRY_CAL_STAT):
+    for _loop_variable_not_used in range(constants.RETRY_CAL_STAT):
         generated_list1 = py1.makeup_core(avgin, stdin, minin, maxin, countin)
         distance = abs(sum(generated_list1) - target_sum)
         if (distance < min_dist and distance != 0):

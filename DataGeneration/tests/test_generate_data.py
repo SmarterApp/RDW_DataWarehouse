@@ -5,7 +5,7 @@ from entities import InstitutionHierarchy, StudentSection
 from helper_entities import District, State, Teacher, WhereTaken, Student
 from constants import ZIPCODE_START, ZIPCODE_RANG_INSTATE, SCHOOL_LEVELS_INFO, \
     BIRDS_FILE
-from gen_assessments import generate_assessment_types
+from gen_assessments import generate_dim_assessment
 import os.path
 
 
@@ -189,7 +189,7 @@ class TestGenerateData(unittest.TestCase):
 
         generated_zipmap = generate_data.generate_city_zipcode(zipcode_range[0], zipcode_range[1], num_of_schools, make_namelists(1000, 1000, 1000))
         self.assertTrue(1 <= len(generated_zipmap) <= (zipcode_range[1] - zipcode_range[0]))
-        for city, ziprange in generated_zipmap.items():
+        for ziprange in generated_zipmap.values():
             self.assertTrue(zipcode_range[0] <= ziprange[0] and ziprange[1] <= zipcode_range[1])
         self.assertTrue(len(generated_zipmap) <= num_of_schools)
 
@@ -200,7 +200,7 @@ class TestGenerateData(unittest.TestCase):
         generated_zipmap = generate_data.generate_city_zipcode(zipcode_range[0], zipcode_range[1], num_of_schools, make_namelists(1000, 1000, 1000))
         self.assertEqual(1, len(generated_zipmap))
 
-        for city, ziprange in generated_zipmap.items():
+        for ziprange in generated_zipmap.values():
             self.assertEqual(zipcode_range, ziprange)
 
         self.assertEqual(len(generated_zipmap), 1)
@@ -212,7 +212,7 @@ class TestGenerateData(unittest.TestCase):
         generated_zipmap = generate_data.generate_city_zipcode(zipcode_range[0], zipcode_range[1], num_of_schools, make_namelists(1000, 1000, 1000))
         self.assertEqual(1, len(generated_zipmap))
 
-        for city, ziprange in generated_zipmap.items():
+        for ziprange in generated_zipmap.values():
             self.assertEqual(zipcode_range, ziprange)
 
         self.assertEqual(len(generated_zipmap), 1)
@@ -232,7 +232,7 @@ class TestGenerateData(unittest.TestCase):
         generated_zipmap = generate_data.generate_city_zipcode(zipcode_range[0], zipcode_range[1], num_of_schools, make_namelists(1000, 1000, 1000))
         self.assertEqual(1, len(generated_zipmap))
 
-        for city, ziprange in generated_zipmap.items():
+        for ziprange in generated_zipmap.values():
             self.assertEqual(zipcode_range, ziprange)
 
         self.assertEqual(len(generated_zipmap), num_of_schools)
@@ -392,7 +392,7 @@ class TestGenerateData(unittest.TestCase):
         teacher_num = 5
         ratio = student_num / teacher_num
         grade = 9
-        asmt_list = generate_assessment_types()
+        asmt_list = generate_dim_assessment()
         school = InstitutionHierarchy(student_num, ratio, 7, 9, 'Delaware', 'DE', 'district_id', 'district_name', 'school_id', 'school_name', 'school_category', '2012-09-19', True)
 
         state = State('DE', 'Delaware', 10)
@@ -417,19 +417,17 @@ class TestGenerateData(unittest.TestCase):
         ratio = student_num / teacher_num
 
         grade = 8
-        asmt_list = generate_assessment_types()
+        asmt_list = generate_dim_assessment()
         school = InstitutionHierarchy(student_num, ratio, 7, 9, 'Delaware', 'DE', 'district_id', 'district_name', 'school_id', 'school_name', 'school_category', '2012-09-19', True)
         where_taken = WhereTaken('where_taken_id', 'where_taken_name')
         state = State('DE', 'Delaware', 10)
         students_list = make_students(student_num, state, None, school)
         teachers_list = make_teachers(teacher_num, state)
 
-        total_count = [0, 0, 0, 0, 0, 0]
+        total_count = {'state_count': 0, 'district_count': 0, 'school_count': 0, 'student_count': 0, 'student_section_count': 0}
 
         generate_data.create_classes_for_grade(students_list, teachers_list, school, grade, asmt_list, where_taken, total_count)
-        self.assertEqual(school.number_of_students * 2, total_count[5])
-
-    # TODO: add one test case for create_classes_for_grade_oneclass_onesection
+        self.assertEqual(school.number_of_students * 2, total_count['student_section_count'])
 
     # test create_sections_in_one_class()
     def test_create_sections_in_one_class_severalsections(self):
@@ -499,8 +497,8 @@ class TestGenerateData(unittest.TestCase):
         # stutea_ratio_in_school = [23, 12, 20, 19, 10, 15, 20, 5, 6, 7, 8, 21, 19]
 
         # make assessment list
-        asmt_list = generate_assessment_types()
-        total_count = [0, 0, 0, 0, 0, 0]
+        asmt_list = generate_dim_assessment()
+        total_count = {'state_count': 0, 'district_count': 0, 'school_count': 0, 'student_count': 0, 'student_section_count': 0}
         name_lists = make_namelists(1000, 1000, 1000)
 
         # make a state
@@ -535,8 +533,8 @@ class TestGenerateData(unittest.TestCase):
 
         expected_student_number = student_num
 
-        self.assertEqual(total_count[3], expected_student_number)
-        self.assertEqual(total_count[5], expected_student_number * 2)
+        self.assertEqual(total_count['student_count'], expected_student_number)
+        self.assertEqual(total_count['student_section_count'], expected_student_number * 2)
 
     # test read files
     def test_read_names(self):
@@ -564,21 +562,19 @@ class TestGenerateData(unittest.TestCase):
 
     def test_generate_onestate(self):
         generate_count = generate_data.generate(generate_data.get_name_lists, mock_f_get_state_stats_onestate)
-        self.assertEqual(generate_count[0], 1)
-        for i in range(0, len(generate_count)):
-            if(i != 4):
-                self.assertTrue(generate_count[i] > 0)
+        self.assertEqual(generate_count['state_count'], 1)
+        for value in generate_count.values():
+            self.assertTrue(value > 0)
 
     def test_generate_twostates(self):
         generate_count = generate_data.generate(generate_data.get_name_lists, mock_f_get_state_stats_twostates)
         # self.assertEqual(generate_count[0], 2)
-        for i in range(0, len(generate_count)):
-            if(i != 4):
-                self.assertTrue(generate_count[i] > 0)
+        for value in generate_count.values():
+            self.assertTrue(value > 0)
 
     def test_generate_notEnoughNameLists1(self):
         generate_count = generate_data.generate(mock_f_get_name_lists_shortlists1, mock_f_get_state_stats_onestate)
-        self.assertEqual(generate_count, [1, 0, 0, 0, 0, 0])
+        self.assertEqual(generate_count, {'state_count': 1, 'district_count': 0, 'school_count': 0, 'student_count': 0, 'student_section_count': 0})
 
 
 def mock_f_get_name_lists_shortlists1():

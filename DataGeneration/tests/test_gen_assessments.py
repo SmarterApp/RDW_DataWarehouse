@@ -17,7 +17,7 @@ class Test(unittest.TestCase):
     def test_generate_assessment_types(self):
         # 13 grades X 2 subjects X 4 assessments per subject (3 interim, 1 summative) * number of years
         expect_asmt_num = 13 * 2 * 4 * len(ASSMT_SCORE_YEARS)
-        result = genasmt.generate_assessment_types()
+        result = genasmt.generate_dim_assessment()
 
         self.assertEqual(len(result), expect_asmt_num)
 

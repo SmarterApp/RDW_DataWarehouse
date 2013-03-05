@@ -20,10 +20,9 @@ PERFORMANCE_LEVELS = ['Minimal Command', 'Partial Command', 'Sufficient Command'
 NUM_ASSMT = len(GRADES) * len(TYPES) * len(PERIODS) * len(SUBJECTS)
 
 
-def generate_assessment_types():
+def generate_dim_assessment():
     '''
     Entry point for generating assessments.
-    total       : Total number of assessments to generate
     Returns     : a list of assessment objects
     '''
 
@@ -37,7 +36,7 @@ def generate_assessment_types():
                         for year in ASSMT_SCORE_YEARS:
                             assessment = generate_single_asmt(grade, atype, period, subject, year)
                             assessments.append(assessment)
-            else:
+            else:  # not ITERMIN therefore SUMMATIVE
                 for subject in SUBJECTS:
                     for year in ASSMT_SCORE_YEARS:
                         assessment = generate_single_asmt(grade, atype, 'EOY', subject, year)
@@ -46,10 +45,10 @@ def generate_assessment_types():
     return assessments
 
 
-def generate_single_asmt(grade, asmt_type, period, subject, year):
+def generate_single_asmt(student_grade, asmt_type, period, subject, year):
     '''
     returns an Assessment object
-    grade -- the grade for the current assessment
+    student_grade -- the student_grade for the current assessment
     asmt_type -- the type of assessment to generate either 'INTERIM' or 'SUMMATIVE'
     period -- the period of the assessment. 'BOY', 'MOY' or 'EOY'
     subject -- the subject of the assessment. 'Math' or 'ELA'
@@ -57,8 +56,8 @@ def generate_single_asmt(grade, asmt_type, period, subject, year):
 
     asmt_id = generate_id()
     version = generate_version()
-    asmt_gr = '4' if grade < 8 else '8'
-    asmt_info = ASSMT_TYPES[subject][asmt_gr]
+    asmt_grade = '4' if student_grade < 8 else '8'
+    asmt_info = ASSMT_TYPES[subject][asmt_grade]
 
     claim1_min_max = calc_claim_min_max(MIN_ASSMT_SCORE, MAX_ASSMT_SCORE, asmt_info['claim_percs'][0])
     claim2_min_max = calc_claim_min_max(MIN_ASSMT_SCORE, MAX_ASSMT_SCORE, asmt_info['claim_percs'][1])
@@ -75,7 +74,7 @@ def generate_single_asmt(grade, asmt_type, period, subject, year):
         'asmt_period': period,
         'asmt_period_year': year,
         'asmt_version': version,
-        'asmt_grade': grade,
+        'asmt_grade': student_grade,
         'asmt_subject': subject,
         'claim_1': claim1,
         'claim_2': claim2,
@@ -132,7 +131,7 @@ def generate_version():
 
 '''
 if __name__ == '__main__':
-    assessments = generate_assessment_types()
+    assessments = generate_dim_assessment()
 
     for asmt in assessments:
         print(str(asmt))

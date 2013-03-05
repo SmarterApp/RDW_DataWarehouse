@@ -88,6 +88,21 @@ def check_fields(target_table, target_csv_file):
     return missing_fields, unnecessary_fields
 
 
+def check_fields_in_order(target_table, target_csv_file):
+    '''
+    check whether fiedls in csv header are in order.
+    return true or false
+    '''
+    result = True
+    list_of_fields = read_fields_name(target_csv_file)
+    number_of_fields = len(target_table.c)
+    for index in range(0, number_of_fields):
+        if list_of_fields[index] != target_table.c.items()[index][0]:
+            result = False
+            break
+    return result
+
+
 def run_validation(metadata=None, force_foreign=True, missing_table_ignore=False, missing_field_ignore=False, dir_name='/please_specify_dir', verbose=False):
     '''
     run validation
@@ -136,6 +151,17 @@ def run_validation(metadata=None, force_foreign=True, missing_table_ignore=False
                         print('cvs[%s]: unnecessary field(s):' % csv_file_map[table.name])
                         for field in unnecessary_fields:
                             print('    ' + field)
+                        exit_me = True
+            if exit_me:
+                return 1
+
+            # check fields are in order
+            # use this checker when missing fields ignore flag is False
+            for table in tables:
+                if table.name in csv_file_map:
+                    fields_in_order = check_fields_in_order(table, csv_file_map[table.name])
+                    if not fields_in_order:
+                        print('cvs[%s]: fields are not in order' % csv_file_map[table.name])
                         exit_me = True
             if exit_me:
                 return 1

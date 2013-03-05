@@ -90,6 +90,15 @@ def check_fields(target_table, target_csv_file):
 
 
 def run_validation(metadata=None, force_foreign=True, missing_table_ignore=False, missing_field_ignore=False, dir_name='/please_specify_dir', verbose=False):
+    '''
+    run validation
+    metadata: specify metadata for validation
+    force_foreign: enforce foreign key
+    missing_table_ignore: ignoring missing table from the list of csv
+    missing_field_ignore: ignoring missing fields from the csv
+    dir_name: the directory has all csv files
+    verbose: verboseing sqlite output
+    '''
     create_sqlite(force_foreign_keys=force_foreign, use_metadata_from_db=False, echo=verbose, metadata=metadata)
     if not os.path.exists(dir_name):
         return 1

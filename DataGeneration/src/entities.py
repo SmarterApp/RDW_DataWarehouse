@@ -2,12 +2,15 @@ from uuid import uuid4
 
 from idgen import IdGen
 import util
+from constants import DATAFILE_PATH
 
 
 class InstitutionHierarchy:
     '''
     Institution Hierarchy object
     '''
+
+    path = DATAFILE_PATH + '/datafiles/csv/dim_inst_hier.csv'
 
     def __init__(self, number_of_students, student_teacher_ratio, low_grade, high_grade,
                  state_name, state_code, district_id, district_name, school_id, school_name, school_category, from_date, most_recent, row_id=None, to_date=None):
@@ -52,6 +55,9 @@ class SectionSubject:
     '''
     SectionSubject Object
     '''
+
+    path = DATAFILE_PATH + '/datafiles/csv/dim_section_subject.csv'
+
     def __init__(self, section_id, section_name, grade, class_name, subject_name, state_code, district_id, school_id, from_date, most_recent, to_date=None, row_id=None):
 
         # Ids can either be given to the constructor or provided by constructor
@@ -86,6 +92,9 @@ class Assessment:
     '''
     AssessmentType Object
     '''
+
+    path = DATAFILE_PATH + '/datafiles/csv/dim_asmt.csv'
+
     def __init__(self, asmt_id, asmt_external_id, asmt_type, asmt_period, asmt_period_year, asmt_version, asmt_grade, asmt_subject, from_date, claim_1=None, claim_2=None, claim_3=None, claim_4=None, asmt_score_min=None, asmt_score_max=None,
                  asmt_perf_lvl_name_1=None, asmt_perf_lvl_name_2=None, asmt_perf_lvl_name_3=None, asmt_perf_lvl_name_4=None, asmt_perf_lvl_name_5=None, asmt_cut_point_1=None, asmt_cut_point_2=None, asmt_cut_point_3=None, asmt_cut_point_4=None,
                  asmt_custom_metadata=None, to_date=None, most_recent=None):
@@ -156,6 +165,9 @@ class AssessmentOutcome(object):
     '''
     Assessment outcome object
     '''
+
+    path = DATAFILE_PATH + '/datafiles/csv/fact_asmt_outcome.csv'
+
     def __init__(self, asmnt_outcome_id, asmnt_outcome_external_id, assessment, student, inst_hier_id, where_taken, date_taken, asmt_score, asmt_create_date, most_recent):
         self.asmnt_outcome_id = asmnt_outcome_id
         self.asmnt_outcome_external_id = asmnt_outcome_external_id
@@ -235,6 +247,9 @@ class Person(object):
 
 
 class Staff(Person):
+
+    path = DATAFILE_PATH + '/datafiles/csv/dim_staff.csv'
+
     def __init__(self, first_name, last_name, section_id, hier_user_type, state_code, district_id, school_id, from_date, to_date=None, most_recent=None, middle_name=None, staff_id=None, staff_external_id=None):
         super().__init__(first_name, last_name, middle_name=middle_name)
         idgen = IdGen()
@@ -269,6 +284,8 @@ class ExternalUserStudent():
     Corresponds to dim_external_user_student table
     '''
 
+    path = DATAFILE_PATH + '/datafiles/csv/external_user_student_rel.csv'
+
     def __init__(self, external_user_student_id, external_user_id, student_id, rel_start_date, rel_end_date=None):
 
         # Ids can either be given to the constructor or provided by constructor
@@ -292,12 +309,14 @@ class ExternalUserStudent():
     
     @classmethod
     def getHeader(cls):
-        def getRow(self):
-            return ['external_user_student_id', 'external_user_id', 'student_id', 'rel_start_date', 'rel_end_date']
+        return ['external_user_student_id', 'external_user_id', 'student_id', 'rel_start_date', 'rel_end_date']
 
 
 # For now, maps to dim_student
 class StudentSection():
+
+    path = DATAFILE_PATH + '/datafiles/csv/dim_student.csv'
+
     def __init__(self, student, section_id, grade, from_date=None, to_date=None, most_recent=None, teacher_id=None, section_subject_id=None):
         idgen = IdGen()
         self.row_id = idgen.get_id()

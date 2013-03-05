@@ -12,12 +12,13 @@ import math
 import random
 import uuid
 import queries
+import csv
 
 from assessment import generate_assmt_scores_for_subject
 from dbconnection import get_db_conn
 from entities import (
     InstitutionHierarchy,
-    AssessmentOutcome, SectionSubject)
+    AssessmentOutcome, SectionSubject, Assessment, Staff, StudentSection, ExternalUserStudent)
 from helper_entities import State, District, WhereTaken
 from gen_assessments import generate_assessment_types
 from genpeople import generate_teacher, generate_student, generate_staff, generate_student_section
@@ -62,6 +63,18 @@ def get_state_stats():
     # print(db_states)
     return db_states
 
+def add_headers_to_csvs():
+    '''
+    Add headers to all csv files
+    '''
+
+    entity_class_list = [InstitutionHierarchy, SectionSubject, Assessment, AssessmentOutcome, Staff, ExternalUserStudent, StudentSection]
+
+    for entity in entity_class_list:
+        with open(entity.path, 'a', newline='') as csvfile:
+            entity_writer = csv.writer(csvfile, delimiter=',', quoting=csv.QUOTE_MINIMAL)
+            entity_writer.writerow(entity.getHeader())
+
 
 def generate(f_get_name_lists, f_get_state_stats):
     '''
@@ -86,6 +99,10 @@ def generate_data(name_lists, db_states_stat):
     '''
     Main function to generate actual data with input statistical data
     '''
+
+    # add headers to all csv files
+    add_headers_to_csvs()
+
     # total count for state, districts, schools, students, teachers, parents
     total_count = [0, 0, 0, 0, 0, 0]
 

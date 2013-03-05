@@ -18,11 +18,11 @@ def create_csv(entity_list, filename):
             entity_writer.writerow(row)
 
 
-def clear_files():
+def clear_files(entity_class_list):
     '''
     Truncate csv files in constants.ENT_LIST
     '''
-    for f in ENT_LIST:
-        cur_file = open(f, "w")
+    for entity in entity_class_list:
+        cur_file = open(entity.path, "w")
         cur_file.truncate()
         cur_file.close()

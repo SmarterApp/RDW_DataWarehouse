@@ -28,13 +28,14 @@ import constants
 import py1
 import argparse
 
+ENTITY_CLASS_LIST = [InstitutionHierarchy, SectionSubject, Assessment, AssessmentOutcome, Staff, ExternalUserStudent, StudentSection]
 
 def get_name_lists():
     '''
     Read files into lists, which is used for making names, addresses, etc
     '''
     # clear old files
-    clear_files()
+    clear_files(ENTITY_CLASS_LIST)
 
     name_lists = []
     try:
@@ -68,9 +69,7 @@ def add_headers_to_csvs():
     Add headers to all csv files
     '''
 
-    entity_class_list = [InstitutionHierarchy, SectionSubject, Assessment, AssessmentOutcome, Staff, ExternalUserStudent, StudentSection]
-
-    for entity in entity_class_list:
+    for entity in ENTITY_CLASS_LIST:
         with open(entity.path, 'a', newline='') as csvfile:
             entity_writer = csv.writer(csvfile, delimiter=',', quoting=csv.QUOTE_MINIMAL)
             entity_writer.writerow(entity.getHeader())

@@ -13,7 +13,7 @@ def shorten_string(obj):
     Where to put gritty heuristics to make an object appear in most useful
     form. defaults to __str__.
     """
-    if "wx." in str(obj.__class__)  or  obj.__class__.__name__.startswith("wx"):
+    if "wx." in str(obj.__class__) or obj.__class__.__name__.startswith("wx"):
         shortclassname = obj.__class__.__name__
         if hasattr(obj, "blockItem") and hasattr(obj.blockItem, "blockName"):
             moreInfo = "block:'{0}'".format(obj.blockItem.blockName)

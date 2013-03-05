@@ -108,7 +108,7 @@ def generate_data(name_lists, db_states_stat):
 
     # generate all assessment types
     asmt_list = generate_assessment_types()
-    create_csv(asmt_list, constants.ASSESSMENT_TYPES)
+    create_csv(asmt_list, Assessment.path)
 
     c = 0
     for state in db_states_stat:
@@ -132,7 +132,7 @@ def generate_data(name_lists, db_states_stat):
         # generate state_staff
         num_of_state_staff = len(created_dist_list) * random.choice(range(2, 4))
         state_staff_list = [generate_staff(constants.HIER_USER_TYPE[1], created_state.state_code)for i in range(num_of_state_staff)]
-        create_csv(state_staff_list, constants.STAFF)
+        create_csv(state_staff_list, Staff.path)
 
         shift = 0
         dist_count = 0
@@ -144,14 +144,14 @@ def generate_data(name_lists, db_states_stat):
             school_list, wheretaken_list = create_institution_hierarchies(stu_num_in_school_made[shift: shift + district.number_of_schools],
                                                                           stutea_ratio_in_school_made[shift: shift + district.number_of_schools],
                                                                           district, school_type_in_state, name_lists)
-            create_csv(school_list, constants.INSTITUTION_HIERARCHY)
+            create_csv(school_list, InstitutionHierarchy.path)
             # associate wheretaken_list to current district
             district.wheretaken_list = wheretaken_list
 
             # create district staff
             num_of_district_staff = len(school_list) * random.choice(range(2, 4))
             district_staff_list = [generate_staff(constants.HIER_USER_TYPE[1], created_state.state_code, district.district_id)for i in range(num_of_district_staff)]
-            create_csv(district_staff_list, constants.STAFF)
+            create_csv(district_staff_list, Staff.path)
 
             '''
             # TODO: merge school entity and institution_hierarchy entity so we don't have to convert
@@ -431,7 +431,7 @@ def create_classes_for_school(district, school, state, name_list, total_count, a
     staff_percentage = random.uniform(.1, .3)
     num_of_school_staff = int(math.floor(staff_percentage * number_of_teachers))
     school_staff_list = [generate_staff(constants.HIER_USER_TYPE[1], district.state_code, district.district_id, school.school_id)for i in range(num_of_school_staff)]
-    create_csv(school_staff_list, constants.STAFF)
+    create_csv(school_staff_list, Staff.path)
 
     number_of_grades = school.high_grade - school.low_grade + 1
     number_of_students = school.number_of_students
@@ -445,7 +445,7 @@ def create_classes_for_school(district, school, state, name_list, total_count, a
 
         # generate student list for a grade
         students_in_grade, external_users = generate_students(number_of_students_per_grade, state, district, school, grade, name_list)
-        create_csv(external_users, constants.EXTERNAL_USER_STUDENT)
+        create_csv(external_users, ExternalUserStudent.path)
 
         # Each parent of the student will have a row in external_user_student
         # So, create 1 or 2 external_user_student rows per student
@@ -628,7 +628,7 @@ def create_classes_for_grade(students_in_grade, teachers_in_grade, school, grade
         total_count[5] += len(student_sections)
         # associate students with scores of this subject
         assessment_outcome_list = associate_students_and_scores(student_sections, scores_for_subject, school.row_id, subject, asmt_list, where_taken)
-        create_csv(assessment_outcome_list, constants.ASSESSMENT_OUTCOME)
+        create_csv(assessment_outcome_list, AssessmentOutcome.path)
 
 
 def create_student_sections_for_subject(subject_name, number_of_classes, students, teachers, school, grade, asmt_list):
@@ -717,9 +717,9 @@ def create_sections_in_one_class(subject_name, class_count, distribute_stu_inacl
             student_section_list.append(student_section)
 
     # write subjects into csv
-    create_csv(section_subject_list, constants.SECTION_SUBJECT)
-    create_csv(staff_list, constants.STAFF)
-    create_csv(student_section_list, constants.STUDENTS)
+    create_csv(section_subject_list, SectionSubject.path)
+    create_csv(staff_list, Staff.path)
+    create_csv(student_section_list, StudentSection.path)
 
     return student_section_list
 

@@ -40,10 +40,10 @@ class Unittest_with_sqlite(UT_Base):
         # create db engine for sqlite
         create_sqlite(use_metadata_from_db=True, echo=False, datasource_name=Unittest_with_sqlite.datasource_name)
         # create test data in the sqlite
-        generate_cvs_templates(name=Unittest_with_sqlite.datasource_name)
+        generate_cvs_templates(datasource_name=Unittest_with_sqlite.datasource_name)
         here = os.path.abspath(os.path.dirname(__file__))
         resources_dir = os.path.abspath(os.path.join(os.path.join(here, '..', 'resources')))
-        import_csv_dir(resources_dir, name=Unittest_with_sqlite.datasource_name)
+        import_csv_dir(resources_dir, datasource_name=Unittest_with_sqlite.datasource_name)
 
     @classmethod
     def tearDownClass(cls):

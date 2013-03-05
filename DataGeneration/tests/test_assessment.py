@@ -1,7 +1,6 @@
 from mock import MagicMock
 
-from constants import MIN_ASSMT_SCORE, MAX_ASSMT_SCORE, ASSMT_TYPES
-from datetime import date
+from constants import MIN_ASSMT_SCORE, MAX_ASSMT_SCORE
 import assessment
 import entities
 import unittest
@@ -57,12 +56,6 @@ class TestAssessment(unittest.TestCase):
         for i in range(len(generated_allscores)):
             self.assertEqual(generated_allscores[i].overall, score_list[i])
 
-    # test generate_claims(total_score, asmt_type, grade)
-    def test_generate_claims(self):
-        total_score = []
-        asmt_type = 'Math'
-        grade = '4'
-
     # test perc_to_count(perc, total)
     def test_perc_to_count1(self):
         perc = [40, 35, 10, 15]
@@ -79,20 +72,16 @@ class TestAssessment(unittest.TestCase):
         self.assertEqual(generated_counts, [22, 20, 6, 8])
 
     def test_generate_assmt_scores_for_subject(self):
-        asmt1 = entities.Assessment(897, '897', 'SUMMATIVE', 'EOY', 2010, 'V1', 10, 'Math', '2012-09-10')
-        asmt2 = entities.Assessment(898, '898', 'SUMMATIVE', 'EOY', 2010, 'V1', 10, 'ELA', '2012-09-10')
-        asmt3 = entities.Assessment(899, '899', 'ITERATIVE', 'BOY', 2010, 'V1', 10, 'Math', '2012-09-10')
+        year = 2010
+        asmt1 = entities.Assessment(897, '897', 'SUMMATIVE', 'EOY', year, 'V1', 10, 'Math', '2012-09-10')
+        asmt2 = entities.Assessment(898, '898', 'SUMMATIVE', 'EOY', year, 'V1', 10, 'ELA', '2012-09-10')
+        asmt3 = entities.Assessment(899, '899', 'ITERATIVE', 'BOY', year, 'V1', 10, 'Math', '2012-09-10')
         asmt_list = [asmt1, asmt2, asmt3]
         subject_name = 'Math'
         res = assessment.generate_assmt_scores_for_subject(30, 10, 'Delaware', asmt_list, subject_name)
-
         self.assertEqual(len(res), 2)
-        # key1 = '%d_%d' % (date.today().year, asmt1.asmt_id)
-        # key3 = '%d_%d' % (date.today().year, asmt3.asmt_id)
-        key4 = '%d_%d' % (date.today().year - 1, asmt1.asmt_id)
-        key6 = '%d_%d' % (date.today().year - 1, asmt3.asmt_id)
-        # self.assertEqual(len(res[key1]), 30)
-        # self.assertEqual(len(res[key3]), 30)
+        key4 = '%d_%d' % (year, asmt1.asmt_id)
+        key6 = '%d_%d' % (year, asmt3.asmt_id)
         self.assertEqual(len(res[key4]), 30)
         self.assertEqual(len(res[key6]), 30)
 

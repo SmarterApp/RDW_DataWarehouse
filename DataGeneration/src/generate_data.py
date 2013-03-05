@@ -58,7 +58,6 @@ def get_state_stats():
     for row in dist_count:
         db_states.append(dict(zip(constants.STAT_COLUMNS, row)))
     db.close()
-    # print(db_states)
     return db_states
 
 
@@ -85,7 +84,7 @@ def generate_data(name_lists, db_states_stat):
     '''
     Main function to generate actual data with input statistical data
     '''
-    # total count for state, districts, schools, students, teachers, parents
+    # total count for state, districts, schools, students, teachers, student_sections
     total_count = [0, 0, 0, 0, 0, 0]
 
     # generate all assessment types
@@ -111,7 +110,7 @@ def generate_data(name_lists, db_states_stat):
         created_dist_list = create_districts(created_state.state_code, created_state.state_name, school_num_in_dist_made, c, name_lists)
         total_count[1] += len(created_dist_list)
 
-        # generate state_staff
+        # generate non-teaching state_staff
         num_of_state_staff = len(created_dist_list) * random.choice(range(2, 4))
         state_staff_list = [generate_staff(constants.HIER_USER_TYPE[1], created_state.state_code)for i in range(num_of_state_staff)]
         create_csv(state_staff_list, constants.STAFF)
@@ -135,20 +134,10 @@ def generate_data(name_lists, db_states_stat):
             district_staff_list = [generate_staff(constants.HIER_USER_TYPE[1], created_state.state_code, district.district_id)for i in range(num_of_district_staff)]
             create_csv(district_staff_list, constants.STAFF)
 
-            '''
-            # TODO: merge school entity and institution_hierarchy entity so we don't have to convert
-            institution_hierarchy_list = []
-            for school in school_list:
-                institution_hierarchy = school.covert_to_institution_hierarchy()
-                institution_hierarchy_list.append(institution_hierarchy)
-
-            create_csv(institution_hierarchy_list, constants.INSTITUTION_HIERARCHY)
-            '''
-
             total_count[2] += len(school_list)
             shift += district.number_of_schools
 
-            # create classes, grades, sections, teachers students, parents and assessment scores for each school
+            # create sections, teachers, students and assessment scores for each school
             for school in school_list:
                 create_classes_for_school(district, school, created_state, name_lists[2], total_count, asmt_list)
 
@@ -403,10 +392,10 @@ def create_classes_for_school(district, school, state, name_list, total_count, a
     Main function to generate classes, grades, sections, students and teachers for a school
     '''
 
-    # generate TEACHERS for a school
-    maximum = round(school.number_of_students / school.student_teacher_ratio)
+    # generate teachers for a school
+    maximum_num_of_teachers = round(school.number_of_students / school.student_teacher_ratio)
     # we want one or more teachers
-    number_of_teachers = max(1, maximum)
+    number_of_teachers = max(1, maximum_num_of_teachers)
     teachers_in_school = generate_teachers(number_of_teachers, state, district)
 
     # generate school non-teaching staff
@@ -417,6 +406,7 @@ def create_classes_for_school(district, school, state, name_list, total_count, a
 
     number_of_grades = school.high_grade - school.low_grade + 1
     number_of_students = school.number_of_students
+
     # calculate number of students and teachers in each grade
     number_of_students_per_grade = max(1, math.floor(number_of_students / number_of_grades))
     number_of_teachers_per_grade = max(1, math.floor(number_of_teachers / number_of_grades))
@@ -428,17 +418,6 @@ def create_classes_for_school(district, school, state, name_list, total_count, a
         # generate student list for a grade
         students_in_grade, external_users = generate_students(number_of_students_per_grade, state, district, school, grade, name_list)
         create_csv(external_users, constants.EXTERNAL_USER_STUDENT)
-
-        # Each parent of the student will have a row in external_user_student
-        # So, create 1 or 2 external_user_student rows per student
-        '''
-        external_user_students = []
-        for student in students_in_grade:
-            parent_logins = generate_external_user_student(student.student_id)
-            external_user_students = external_user_students + parent_logins
-        create_csv(external_user_stus, constants.EXTERNAL_USER_STUDENT)
-        '''
-
         generated_student_count += len(students_in_grade)
         total_count[3] += len(students_in_grade)
 
@@ -449,7 +428,7 @@ def create_classes_for_school(district, school, state, name_list, total_count, a
         # if there are enough teachers in the school, assign a subset
         # of them to the current grade
         # otherwise, assign all of them to the current grade
-        if(number_of_teachers_per_grade < len(teachers_in_school)):
+        if number_of_teachers_per_grade < len(teachers_in_school):
             teachers_in_grade = random.sample(teachers_in_school, number_of_teachers_per_grade)
         else:
             teachers_in_grade = teachers_in_school
@@ -471,28 +450,25 @@ def associate_students_and_scores(student_sections_list, scores, inst_hier_id, s
     '''
 
     assessment_outcome_list = []
-    dates_taken1 = generate_dates_taken(2000)
-    dates_taken2 = generate_dates_taken(2000)
-    prev_year = 0
 
     for student_section in student_sections_list:
         for score in scores.items():
-            # print(score[0], score[1])
             asmt_id = int(score[0].split('_')[1])
             year = score[0].split('_')[0]
-            asmt = [x for x in asmt_list if x.asmt_id == asmt_id][0]
+            dates_taken1 = generate_dates_taken(int(year))
 
-            if subject == 'Math':
-                subject = 'MATH'
+            asmt = [x for x in asmt_list if x.asmt_id == asmt_id and str(x.asmt_period_year) == str(year)][0]
 
             if asmt.asmt_subject.lower() == subject.lower():  # check that subjects match as there is a std_tmprl object for each subject
                 new_id = IdGen().get_id()
-                date_taken = None
-                if prev_year == year:
-                    date_taken = map_asmt_date_to_period(asmt.asmt_period, dates_taken1, year, asmt.asmt_type)
-                else:
-                    date_taken = map_asmt_date_to_period(asmt.asmt_period, dates_taken2, year, asmt.asmt_type)
-                prev_year = year
+                # date_taken = map_asmt_date_to_period(asmt.asmt_period, dates_taken1, year, asmt.asmt_type)
+                date_taken = dates_taken1[asmt.asmt_period]
+                #date_taken = None
+                #if prev_year == year:
+                #    date_taken = map_asmt_date_to_period(asmt.asmt_period, dates_taken1, year, asmt.asmt_type)
+                #else:
+                #    date_taken = map_asmt_date_to_period(asmt.asmt_period, dates_taken2, year, asmt.asmt_type)
+                #prev_year = year
                 params = {
                     'asmnt_outcome_id': new_id,
                     'asmnt_outcome_external_id': uuid.uuid4(),
@@ -518,16 +494,17 @@ def map_asmt_date_to_period(period, dates_taken, year, asmt_type):
     dates_taken -- a dict of dates whose keys are periods
     year -- the year the asmt was taken
     '''
-    year_int = int(year)
+    #year_int = int(year)
     if period == 'BOY':
         date_taken = dates_taken['BOY']
     elif period == 'MOY':
         date_taken = dates_taken['MOY']
     elif period == 'EOY':
         date_taken = dates_taken['EOY']
-    if asmt_type.upper() == 'SUMMATIVE':
-        year_int += 1
-    return date_taken.replace(year=year_int)
+    #if asmt_type.upper() == 'SUMMATIVE':
+    #    year_int += 1
+    return date_taken
+    #return date_taken.replace(year=year_int)
 
 
 def generate_teachers(num_teachers, state, district):
@@ -585,14 +562,14 @@ def create_classes_for_grade(students_in_grade, teachers_in_grade, school, grade
 
     # calculate minimum number of classes per subject
     # roughly 1/3 of the maximum
-    min_number_of_classes = int(round(max_number_of_classes / 3))
+    min_number_of_classes = max(1, int(round(max_number_of_classes / 3)))
 
     # for each subject of a grade
     for subject in constants.SUBJECTS:
 
         # select a number of classes for each subject
         # it should be in between our minimum and our maximum
-        if(max_number_of_classes >= 2):
+        if max_number_of_classes >= 2:
             number_of_classes = random.choice(range(min_number_of_classes, max_number_of_classes))
         else:
             number_of_classes = max_number_of_classes
@@ -630,9 +607,6 @@ def create_student_sections_for_subject(subject_name, number_of_classes, student
         teachers_in_current_class = teachers_assigned_to_classes[i % len(teachers_assigned_to_classes)]
         sections_in_one_class = create_sections_in_one_class(subject_name, i, students_in_current_class, teachers_in_current_class, school, grade)
         student_in_sections_list.extend(sections_in_one_class)
-
-        # associate scores and students
-    assert(len(student_in_sections_list) == len(students))
 
     # student_in_sections_list contains each student_section object
     return student_in_sections_list

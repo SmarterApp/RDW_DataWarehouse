@@ -6,14 +6,13 @@ import datetime
 def generate_email_address(first_name, last_name, domain):
     domain = '@' + domain.replace(' ', '') + '.edu'
     address = first_name + '.' + last_name
-    return address + domain
+    return (address + domain).lower()
 
 
 def generate_address(word_list):
     address = str(random.randint(1, 1000))
     street = random.choice(word_list)
-    full_address = address + " " + street + " " + random.choice(ADD_SUFFIX)
-
+    full_address = (address + " " + street + " " + random.choice(ADD_SUFFIX)).title()
     return full_address
 
 

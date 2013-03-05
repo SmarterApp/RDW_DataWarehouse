@@ -9,8 +9,7 @@ from helper_entities import Claim
 
 from idgen import IdGen
 from entities import Assessment
-from constants import ASSMT_TYPES, MIN_ASSMT_SCORE, MAX_ASSMT_SCORE
-import datetime
+from constants import ASSMT_TYPES, MIN_ASSMT_SCORE, MAX_ASSMT_SCORE, ASSMT_SCORE_YEARS
 
 GRADES = [i for i in range(13)]
 TYPES = ['SUMMATIVE', 'INTERIM']
@@ -35,17 +34,19 @@ def generate_assessment_types():
             if atype == 'INTERIM':
                 for period in PERIODS:
                     for subject in SUBJECTS:
-                        assessment = generate_single_asmt(grade, atype, period, subject)
-                        assessments.append(assessment)
+                        for year in ASSMT_SCORE_YEARS:
+                            assessment = generate_single_asmt(grade, atype, period, subject, year)
+                            assessments.append(assessment)
             else:
                 for subject in SUBJECTS:
-                    assessment = generate_single_asmt(grade, atype, 'EOY', subject)
-                    assessments.append(assessment)
+                    for year in ASSMT_SCORE_YEARS:
+                        assessment = generate_single_asmt(grade, atype, 'EOY', subject, year)
+                        assessments.append(assessment)
 
     return assessments
 
 
-def generate_single_asmt(grade, asmt_type, period, subject):
+def generate_single_asmt(grade, asmt_type, period, subject, year):
     '''
     returns an Assessment object
     grade -- the grade for the current assessment
@@ -67,20 +68,18 @@ def generate_single_asmt(grade, asmt_type, period, subject):
     claim2 = Claim(asmt_info['claim_names'][1], claim2_min_max[0], claim2_min_max[1])
     claim3 = Claim(asmt_info['claim_names'][2], claim3_min_max[0], claim3_min_max[1])
 
-    # TODO: set assessment year
     params = {
         'asmt_id': asmt_id,
         'asmt_external_id': uuid4(),
         'asmt_type': asmt_type,
         'asmt_period': period,
-        'asmt_period_year': 2012,
+        'asmt_period_year': year,
         'asmt_version': version,
         'asmt_grade': grade,
         'asmt_subject': subject,
         'claim_1': claim1,
         'claim_2': claim2,
         'claim_3': claim3,
-        #'claim_4': claim4,
         'asmt_score_min': MIN_ASSMT_SCORE,
         'asmt_score_max': MAX_ASSMT_SCORE,
         'asmt_perf_lvl_name_1': PERFORMANCE_LEVELS[0],

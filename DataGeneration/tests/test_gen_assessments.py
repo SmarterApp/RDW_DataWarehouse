@@ -9,19 +9,20 @@ Test for gen_assessments.py
 import unittest
 
 import gen_assessments as genasmt
-from constants import MIN_ASSMT_SCORE, MAX_ASSMT_SCORE
+from constants import MIN_ASSMT_SCORE, MAX_ASSMT_SCORE, ASSMT_SCORE_YEARS
 
 
 class Test(unittest.TestCase):
 
     def test_generate_assessment_types(self):
-        expect_asmt_num = 13 * 2 * 4  # 13 grades X 2 subjects X 4 assessments per subject (3 interim, 1 summative)
+        # 13 grades X 2 subjects X 4 assessments per subject (3 interim, 1 summative) * number of years
+        expect_asmt_num = 13 * 2 * 4 * len(ASSMT_SCORE_YEARS)
         result = genasmt.generate_assessment_types()
 
         self.assertEqual(len(result), expect_asmt_num)
 
     def test_generate_single_asmt(self):
-        asmt = genasmt.generate_single_asmt(10, 'INTERIM', 'BOY', 'ELA')
+        asmt = genasmt.generate_single_asmt(10, 'INTERIM', 'BOY', 'ELA', 2012)
 
         self.assertIsNotNone(asmt.asmt_id)
         self.assertIsNotNone(asmt.asmt_external_id)
@@ -29,6 +30,7 @@ class Test(unittest.TestCase):
         self.assertEqual(asmt.asmt_period, 'BOY')
         self.assertEqual(asmt.asmt_subject, 'ELA')
         self.assertEqual(asmt.asmt_type, 'INTERIM')
+        self.assertEqual(asmt.asmt_period_year, 2012)
         self.assertIsNotNone(asmt.asmt_period_year)
         self.assertIsNotNone(asmt.asmt_version)
         self.assertLess(asmt.asmt_cut_point_1, MAX_ASSMT_SCORE)
@@ -62,5 +64,5 @@ class Test(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

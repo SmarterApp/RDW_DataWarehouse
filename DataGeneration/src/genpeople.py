@@ -4,7 +4,6 @@ Created on Jan 8, 2013
 @author: swimberly
 '''
 
-from datetime import date
 from uuid import uuid4
 import random
 from helper_entities import Teacher, Student

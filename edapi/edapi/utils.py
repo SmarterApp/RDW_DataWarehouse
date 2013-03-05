@@ -145,6 +145,25 @@ def add_configuration_header(params_config):
     return result
 
 
+def get_logger(name=None):
+    if name is None:
+        name = __name__
+
+    logger = logging.getLogger(name)
+
+    if (len(logger.handlers) == 0):
+        # create file handler which logs even debug messages
+        fh = logging.FileHandler('{0}.log'.format(name))
+        fh.setLevel(logging.DEBUG)
+        # create formatter and add it to the handlers
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        fh.setFormatter(formatter)
+        # add the handlers to the logger
+        logger.addHandler(fh)
+
+    return logger
+
+
 class Validator:
     '''
     This class manages the validation against report schemas

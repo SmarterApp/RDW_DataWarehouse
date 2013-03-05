@@ -11,7 +11,6 @@ from sqlalchemy.sql import select
 from database.connector import DBConnection
 import json
 from sqlalchemy.sql.expression import and_
-from sqlalchemy.sql.expression import func
 from edapi.exceptions import NotFoundException
 from string import capwords
 

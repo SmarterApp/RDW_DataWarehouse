@@ -153,11 +153,11 @@ class Assessment:
     @classmethod
     def getHeader(cls):
         return ['asmt_id', 'asmt_type', 'asmt_period', 'asmt_period_year', 'asmt_version', 'asmt_grade', 'asmt_subject',
-                'claim_1.claim_name', 'claim_2.claim_name', 'claim_3.claim_name', 'claim_4.claim_name',
+                'asmt_claim_1_name', 'asmt_claim_2_name', 'asmt_claim_3_name', 'asmt_claim_4_name',
                 'asmt_perf_lvl_name_1', 'asmt_perf_lvl_name_2', 'asmt_perf_lvl_name_3', 'asmt_perf_lvl_name_4', 'asmt_perf_lvl_name_5',
                 'asmt_score_min', 'asmt_score_max',
-                'claim_1.claim_score_min', 'claim_1.claim_score_max', 'claim_2.claim_score_min', 'claim_2.claim_score_max',
-                'claim_3.claim_score_min', 'claim_3.claim_score_max', 'claim_4.claim_score_min', 'claim_4.claim_score_max',
+                'asmt_claim_1_score_min', 'asmt_claim_1_score_max', 'asmt_claim_2_score_min', 'asmt_claim_2_score_max',
+                'asmt_claim_3_score_min', 'asmt_claim_3_score_max', 'casmt_claim_4_score_min', 'asmt_claim_4_score_max',
                 'asmt_cut_point_1', 'asmt_cut_point_2', 'asmt_cut_point_3', 'asmt_cut_point_4',
                 'asmt_custom_metadata', 'from_date', 'to_date', 'most_recent']
 
@@ -309,7 +309,7 @@ class ExternalUserStudent():
     
     @classmethod
     def getHeader(cls):
-        return ['external_user_student_id', 'external_user_id', 'student_id', 'rel_start_date', 'rel_end_date']
+        return ['external_user_student_id', 'external_user_id', 'student_id', 'from_date', 'to_date']
 
 
 # For now, maps to dim_student

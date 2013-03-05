@@ -31,14 +31,11 @@ class UT_Base(unittest.TestCase):
 
 class Unittest_with_sqlite(UT_Base):
 
-    datasource_name = 'smarter'
-
     @classmethod
-    def setUpClass(cls, datasource_name=None):
-        if datasource_name is not None:
-            Unittest_with_sqlite.datasource_name = datasource_name
+    def setUpClass(cls, datasource_name=''):
+        Unittest_with_sqlite.datasource_name = datasource_name
         # create db engine for sqlite
-        create_sqlite(use_metadata_from_db=True, echo=False, datasource_name=Unittest_with_sqlite.datasource_name)
+        create_sqlite(use_metadata_from_db=True, echo=False, datasource_name=datasource_name)
         # create test data in the sqlite
         generate_cvs_templates(datasource_name=Unittest_with_sqlite.datasource_name)
         here = os.path.abspath(os.path.dirname(__file__))

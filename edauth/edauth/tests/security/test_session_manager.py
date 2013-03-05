@@ -7,7 +7,6 @@ import unittest
 from edauth.security.session_manager import get_user_session, \
     create_new_user_session, update_session_access, delete_session, \
     is_session_expired
-from database.connector import DBConnection
 from edauth.security.roles import Roles
 import uuid
 from datetime import datetime, timedelta
@@ -15,6 +14,7 @@ import time
 from edauth.tests.test_helper.read_resource import create_SAMLResponse
 from database.sqlite_connector import create_sqlite, destroy_sqlite
 from edauth.persistence.persistence import generate_persistence
+from edauth.database.connector import EdauthDBConnection
 
 
 class TestSessionManager(unittest.TestCase):
@@ -45,7 +45,7 @@ class TestSessionManager(unittest.TestCase):
         session_json = '{"roles": ["TEACHER"], "name": {"fullName": "Linda Kim"}, "uid": "linda.kim"}'
         current_datetime = datetime.now()
         expiration_datetime = current_datetime + timedelta(seconds=30)
-        with DBConnection('edauth') as connection:
+        with EdauthDBConnection() as connection:
             user_session = connection.get_table('user_session')
             connection.execute(user_session.insert(), session_id=session_id, session_context=session_json, last_access=current_datetime, expiration=expiration_datetime)
 

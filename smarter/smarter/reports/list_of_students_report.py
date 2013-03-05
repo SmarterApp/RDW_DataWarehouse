@@ -6,10 +6,9 @@ Created on Jan 24, 2013
 
 from edapi.utils import report_config
 from smarter.reports.helpers.name_formatter import format_full_name_rev
-from sqlalchemy.sql.expression import func
-from database.connector import DBConnection
 from sqlalchemy.sql import select
 from sqlalchemy.sql import and_
+from smarter.database.connector import SmarterDBConnection
 
 
 __districtId = 'districtId'
@@ -72,7 +71,7 @@ def get_list_of_students_report(params):
     if __asmtSubject in params:
         asmt_subject = params[__asmtSubject]
 
-    with DBConnection(name='smarter') as connector:
+    with SmarterDBConnection() as connector:
         # get handle to tables
         dim_student = connector.get_table('dim_student')
         dim_staff = connector.get_table('dim_staff')

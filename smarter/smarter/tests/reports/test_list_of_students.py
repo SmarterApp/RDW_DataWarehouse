@@ -5,10 +5,10 @@ Created on Feb 4, 2013
 '''
 import unittest
 from smarter.reports.list_of_students_report import get_list_of_students_report
-from database.tests.utils.unittest_with_sqlite import Unittest_with_sqlite
+from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite
 
 
-class TestLOS(Unittest_with_sqlite):
+class TestLOS(Unittest_with_smarter_sqlite):
 
     def test_assessments(self):
         testParam = {}

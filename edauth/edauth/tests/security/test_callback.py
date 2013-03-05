@@ -3,13 +3,13 @@ Created on Feb 16, 2013
 
 @author: dip
 '''
-from database.connector import DBConnection
 from edauth.security.callback import session_check
 import unittest
 import uuid
 from datetime import timedelta, datetime
 from database.sqlite_connector import create_sqlite, destroy_sqlite
 from edauth.persistence.persistence import generate_persistence
+from edauth.database.connector import EdauthDBConnection
 
 
 class TestCallback(unittest.TestCase):
@@ -30,7 +30,7 @@ class TestCallback(unittest.TestCase):
         session_json = '{"roles": ["TEACHER", "STAFF"], "name": {"fullName": "Linda Kim"}, "uid": "linda.kim"}'
         current_datetime = datetime.now()
         expiration_datetime = current_datetime + timedelta(seconds=30)
-        with DBConnection(name='edauth') as connection:
+        with EdauthDBConnection() as connection:
             user_session = connection.get_table('user_session')
             connection.execute(user_session.insert(), session_id=session_id, session_context=session_json, last_access=current_datetime, expiration=expiration_datetime)
 
@@ -43,7 +43,7 @@ class TestCallback(unittest.TestCase):
         session_json = '{"roles": ["TEACHER", "STAFF"], "name": {"fullName": "Linda Kim"}, "uid": "linda.kim"}'
         current_datetime = datetime.now() + timedelta(seconds=-30)
         expiration_datetime = current_datetime
-        with DBConnection(name='edauth') as connection:
+        with EdauthDBConnection() as connection:
             user_session = connection.get_table('user_session')
             connection.execute(user_session.insert(), session_id=session_id, session_context=session_json, last_access=current_datetime, expiration=expiration_datetime)
 

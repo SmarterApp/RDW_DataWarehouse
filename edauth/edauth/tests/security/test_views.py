@@ -15,11 +15,11 @@ from edauth.security.views import logout
 import os
 import uuid
 from datetime import timedelta, datetime
-from database.connector import DBConnection
 from pyramid.response import Response
 from edauth.security.utils import deflate_base64_encode, inflate_base64_decode
 from database.sqlite_connector import create_sqlite, destroy_sqlite
 from edauth.persistence.persistence import generate_persistence
+from edauth.database.connector import EdauthDBConnection
 
 
 def get_saml_from_resource_file(file_mame):
@@ -50,7 +50,7 @@ class TestViews(unittest.TestCase):
         self.__request.registry.settings['auth.saml.issuer_name'] = 'dummyIssuer'
 
         # delete all user_session before test
-        with DBConnection('edauth') as connection:
+        with EdauthDBConnection() as connection:
             user_session = connection.get_table('user_session')
             connection.execute(user_session.delete())
 
@@ -105,7 +105,7 @@ class TestViews(unittest.TestCase):
         session_json = '{"roles": ["TEACHER"], "idpSessionIndex": "123", "name": {"fullName": "Linda Kim"}, "uid": "linda.kim"}'
         current_datetime = datetime.now()
         expiration_datetime = current_datetime + timedelta(seconds=30)
-        with DBConnection('edauth') as connection:
+        with EdauthDBConnection() as connection:
             user_session = connection.get_table('user_session')
             connection.execute(user_session.insert(), session_id=session_id, session_context=session_json, last_access=current_datetime, expiration=expiration_datetime)
 
@@ -140,7 +140,7 @@ class TestViews(unittest.TestCase):
         session_json = '{"roles": ["TEACHER"], "idpSessionIndex": "123", "name": {"fullName": "Linda Kim"}, "uid": "linda.kim", "nameId": "abc"}'
         current_datetime = datetime.now()
         expiration_datetime = current_datetime + timedelta(seconds=30)
-        with DBConnection('edauth') as connection:
+        with EdauthDBConnection() as connection:
             user_session = connection.get_table('user_session')
             connection.execute(user_session.insert(), session_id=session_id, session_context=session_json, last_access=current_datetime, expiration=expiration_datetime)
 

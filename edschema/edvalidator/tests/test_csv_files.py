@@ -13,7 +13,7 @@ class Test(unittest.TestCase):
     def test_read_csv_from_good_csv_dir(self):
         csv_dir = get_resource_dir('good_csv')
         csv_filelist = read_csv(csv_dir)
-        # number of file is 7 csv files
+        # number of file is 2 csv files
         self.assertEqual(2, len(csv_filelist))
 
     def test_read_fields_name(self):

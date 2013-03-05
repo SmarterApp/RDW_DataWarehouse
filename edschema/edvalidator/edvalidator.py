@@ -77,7 +77,6 @@ def check_fields(target_table, target_csv_file):
     return tuplet, if everything is okay, each values in the tuplet is empty.
     '''
     missing_fields = []
-    unnecessary_fields = []
     list_of_fields = read_fields_name(target_csv_file)
     unnecessary_fields = list(list_of_fields)
     for column in target_table.c:
@@ -99,58 +98,56 @@ def run_validation(metadata=None, force_foreign=True, missing_table_ignore=False
     dir_name: the directory has all csv files
     verbose: verboseing sqlite output
     '''
-    create_sqlite(force_foreign_keys=force_foreign, use_metadata_from_db=False, echo=verbose, metadata=metadata)
-    if not os.path.exists(dir_name):
-        return 1
-    csv_file_map = read_csv(dir_name)
-    tables = get_list_of_tables(force_foreign)
+    try:
+        create_sqlite(force_foreign_keys=force_foreign, use_metadata_from_db=False, echo=verbose, metadata=metadata)
+        if not os.path.exists(dir_name):
+            return 1
+        csv_file_map = read_csv(dir_name)
+        tables = get_list_of_tables(force_foreign)
+        # check table consistency
+        if not missing_table_ignore:
+            missing_file_for_tables, unnecessary_files = check_tables(tables, csv_file_map)
+            exit_me = False
+            if len(missing_file_for_tables) > 0:
+                print('No CSV file(s) for following table(s):')
+                for table in missing_file_for_tables:
+                    print('    ' + table.name)
+                exit_me = True
+            if len(unnecessary_files) > 0:
+                print('Unnecessary CSV file(s):')
+                for file in unnecessary_files:
+                    print('    ' + file)
+                exit_me = True
+            if exit_me:
+                return 1
 
-    # check table consistency
-    if not missing_table_ignore:
-        missing_file_for_tables, unnecessary_files = check_tables(tables, csv_file_map)
-        exit_me = False
-        if len(missing_file_for_tables) > 0:
-            print('No CSV file(s) for following table(s):')
-            for table in missing_file_for_tables:
-                print('    ' + table.name)
-            exit_me = True
-        if len(unnecessary_files) > 0:
-            print('Unnecessary CSV file(s):')
-            for file in unnecessary_files:
-                print('    ' + file)
-            exit_me = True
-        if exit_me:
-            return __exit_run_validation(1)
+        # check field consistency
+        if not missing_field_ignore:
+            exit_me = False
+            for table in tables:
+                if table.name in csv_file_map:
+                    missing_fields, unnecessary_fields = check_fields(table, csv_file_map[table.name])
+                    if len(missing_fields) > 0:
+                        print('cvs[%s]: missing field(s):' % csv_file_map[table.name])
+                        for field in missing_fields:
+                            print('    ' + field)
+                        exit_me = True
+                    if len(unnecessary_fields) > 0:
+                        print('cvs[%s]: unnecessary field(s):' % csv_file_map[table.name])
+                        for field in unnecessary_fields:
+                            print('    ' + field)
+                        exit_me = True
+            if exit_me:
+                return 1
 
-    # check field consistency
-    if not missing_field_ignore:
-        exit_me = False
-        for table in tables:
-            if table.name in csv_file_map:
-                missing_fields, unnecessary_fields = check_fields(table, csv_file_map[table.name])
-                if len(missing_fields) > 0:
-                    print('cvs[%s]: missing field(s):' % csv_file_map[table.name])
-                    for field in missing_fields:
-                        print('    ' + field)
-                    exit_me = True
-                if len(unnecessary_fields) > 0:
-                    print('cvs[%s]: unnecessary field(s):' % csv_file_map[table.name])
-                    for field in unnecessary_fields:
-                        print('    ' + field)
-                    exit_me = True
-        if exit_me:
-            return __exit_run_validation(1)
-
-    # import data
-    import_ok = import_csv_dir(dir_name)
-    if not import_ok:
-        print('failed to import csv data')
-    return __exit_run_validation(0)
-
-
-def __exit_run_validation(exit_code):
-    destroy_sqlite()
-    return exit_code
+        # import data
+        import_ok = import_csv_dir(dir_name)
+        if not import_ok:
+            print('failed to import csv data')
+            return 1
+        return 0
+    finally:
+        destroy_sqlite()
 
 
 def main():

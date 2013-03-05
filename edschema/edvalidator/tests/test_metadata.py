@@ -5,9 +5,9 @@ Created on Mar 1, 2013
 '''
 import unittest
 from edvalidator.edvalidator import get_list_of_tables, read_csv, check_tables, \
-    check_fields
+    check_fields, check_fields_in_order
 from database.connector import DBConnection
-from edvalidator.tests.test_csv_files import get_resource_file,\
+from edvalidator.tests.test_csv_files import get_resource_file, \
     get_resource_dir
 from database.sqlite_connector import create_sqlite, destroy_sqlite
 from edvalidator.tests.utils.metadata import generate_test_metadata
@@ -79,6 +79,21 @@ class Test(unittest.TestCase):
         self.assertEqual(0, len(missing_fields))
         self.assertEqual(1, len(unnecessary_fields))
         self.assertIn('extra_field', unnecessary_fields)
+
+    def test_check_fields_in_order_correct(self):
+        result = False
+        with DBConnection() as connection:
+            csv_file = get_resource_file('good_csv', 'table_a.csv')
+            result = check_fields_in_order(connection.get_table('table_a'), csv_file)
+        self.assertTrue(result)
+
+    def test_check_fields_in_order_incorrect(self):
+        result = False
+        with DBConnection() as connection:
+            result = True
+            csv_file = get_resource_file('wrong_field_order', 'table_a.csv')
+            result = check_fields_in_order(connection.get_table('table_a'), csv_file)
+        self.assertFalse(result)
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testReport']

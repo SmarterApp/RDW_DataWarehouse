@@ -35,6 +35,10 @@ class Test(unittest.TestCase):
         rtn_code = run_validation(metadata=generate_test_metadata(), force_foreign=True, missing_table_ignore=False, missing_field_ignore=False, dir_name=get_resource_dir('no_such_dir'), verbose=False)
         self.assertEqual(1, rtn_code)
 
+    def test_validator_with_wrong_fields_order(self):
+        rtn_code = run_validation(metadata=generate_test_metadata(), force_foreign=True, missing_table_ignore=True, missing_field_ignore=False, dir_name=get_resource_dir('wrong_field_order'), verbose=False)
+        self.assertEqual(1, rtn_code)
+
 
 def get_resource_dir(dir_name):
     return os.path.abspath(os.path.join(os.path.dirname(__file__), 'resources', dir_name))

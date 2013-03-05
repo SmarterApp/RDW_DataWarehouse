@@ -19,18 +19,38 @@ class DataImporterLengthException(Exception):
     pass
 
 
-def __cast_data_type(data_type, value):
+class DataImporterCastException(Exception):
+    '''
+    Exception for Data Importer Cast
+    '''
+    pass
+
+
+def __cast_data_type(column, value):
     '''
     cast value dynamically
     '''
+    # if value is not None and length is not 0 AND not nullable
     # get python_type property, then cast
-    return data_type.python_type(value)
+    cast = False
+    if (value is not None and len(value) != 0):
+        cast = True
+    else:
+        if not column.nullable:
+            cast = True
+    if cast:
+        try:
+            value = column.type.python_type(value)
+        except:
+            msg = 'Cast Failure [%s.%s]' % (column.table.name, column.name)
+            raise DataImporterCastException(msg)
+    return value
 
 
-def __check_data_length(data_type, value):
-    if data_type.python_type == str:
-        if data_type.length is not None and data_type.length < len(value):
-            msg = 'max length is %d, but the length of value was %d' % (data_type.length, len(value))
+def __check_data_length(column, value):
+    if column.type.python_type == str:
+        if column.type.length is not None and column.type.length < len(value):
+            msg = 'column[%s.%s] max length is %d, but the length of value was %d' % (column.table.name, column.name, column.type.length, len(value))
             raise DataImporterLengthException(msg)
 
 
@@ -40,13 +60,14 @@ def __import_csv_file(csv_file, connection, table):
         reader = csv.DictReader(file_obj, delimiter=',')
         for row in reader:
             new_row = {}
-            for field_name in row.keys():
+            for field_name in list(row.keys()):
                 # strip out spaces and \n
                 clean_field_name = field_name.rstrip()
                 value = row[field_name]
+                column = table.c[clean_field_name]
+                value = __cast_data_type(column, value)
                 column_type = table.c[clean_field_name].type
-                value = __cast_data_type(column_type, value)
-                __check_data_length(column_type, value)
+                __check_data_length(column, value)
                 new_row[clean_field_name] = value
             # Inserts to the table one row at a time
             connection.execute(table.insert().values(**new_row))

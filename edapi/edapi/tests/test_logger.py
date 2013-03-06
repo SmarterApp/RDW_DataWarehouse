@@ -4,10 +4,10 @@ Created on Mar 6, 2013
 @author: aoren
 '''
 from edapi.autolog import log_instance_method, log_function
-from logging import INFO
+from logging import INFO, DEBUG
 
 
-@log_function(INFO, None, "test2")
+@log_function(DEBUG, None, "test2")
 def test_function(param1, param2):
     pass
 

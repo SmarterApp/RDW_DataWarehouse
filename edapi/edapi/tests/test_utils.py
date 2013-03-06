@@ -158,6 +158,7 @@ class TestUtils(unittest.TestCase):
                 self.assertIn("param2value", line, "missing param")
                 self.assertIn("test_method", line, "method name is missing")
                 self.assertIn("TestLogger", line, "class name is missing")
+                self.assertIn("INFO", line, "incorrect log level")
                 lines += 1
             self.assertEqual(lines, 1, "there should be only a single row")
         finally:
@@ -172,6 +173,7 @@ class TestUtils(unittest.TestCase):
                 self.assertIn("param1value", line, "missing param")
                 self.assertIn("param2value", line, "missing param")
                 self.assertIn("test_function", line, "method name is missing")
+                self.assertIn("DEBUG", line, "incorrect log level")
                 lines += 1
             self.assertEqual(lines, 1, "there should be only a single row")
         finally:

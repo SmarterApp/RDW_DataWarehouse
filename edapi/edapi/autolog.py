@@ -42,13 +42,18 @@ class log_function(object):
     Logs a function name and the arguments it was called with
     '''
     def __init__(self, level=INFO, display_name=None, logger_name=None):
-        """a decorator."""
+        """
+        the function to be decorated is not passed to the constructor!.
+        """
         self.level = level
         self.display_name = display_name
         self.logger_name = logger_name
 
     def __call__(self, original_func):
-        """a decorator."""
+        """
+        __call__() is only called once, as part of the decoration process! It hasa single argument,
+        which is the function object.
+        """
         if not self.display_name:
             self.display_name = original_func.__name__
 
@@ -68,13 +73,18 @@ class log_instance_method(object):
     Logs an instance method name, its class name and the arguments it was called with
     '''
     def __init__(self, level=INFO, display_name=None, logger_name=None):
-        """a decorator."""
+        """
+        the function to be decorated is not passed to the constructor!.
+        """
         self.level = level
         self.display_name = display_name
         self.logger_name = logger_name
 
     def __call__(self, original_func):
-        """a decorator."""
+        """
+        __call__() is only called once, as part of the decoration process! It hasa single argument,
+        which is the function object.
+        """
         if not self.display_name:
             self.display_name = original_func.__name__
 

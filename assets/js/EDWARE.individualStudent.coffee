@@ -44,10 +44,17 @@ define [
     
     content = {}
       
+    # Get temporary CMS data from data/content.json file
     getContent "../data/content.json", (tempContent) ->
       content = tempContent
       
-    edwareDataProxy.getDatafromSource "/data/individual_student_report", params, (data) ->
+    # Get individual student report data from the server
+    options =
+      async: true
+      method: "POST"
+      params: params
+      
+    edwareDataProxy.getDatafromSource "/data/individual_student_report", options, (data) ->
       
       i = 0
       while i < data.items.length
@@ -103,7 +110,12 @@ define [
       
       breadcrumbsData = {}
         
-      edwareDataProxy.readJson "../data/student_breadcrumbs.json", (tempData) ->
+      # Get breadcrumb data from the server
+      options =
+        async: false
+        method: "GET"
+        
+      edwareDataProxy.getDatafromSource "../data/student_breadcrumbs.json", options, (tempData) ->
         breadcrumbsData = tempData
         
       # for each breadcrumb item
@@ -154,11 +166,11 @@ define [
       
       return false  if configURL is "undefined" or typeof configURL is "number" or typeof configURL is "function" or typeof configURL is "object"
       
-      $.ajax
-        url: configURL
-        dataType: "json"
+      options =
         async: false
-        success: (data) ->
+        method: "GET"
+      
+      edwareDataProxy.getDatafromSource configURL, options, (data) ->
           content = data.content
 
           if callback

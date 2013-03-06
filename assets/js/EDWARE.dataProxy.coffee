@@ -5,65 +5,34 @@ define [
 ], ($, edwareUtil) ->
   
   #
-  #    * Get Student data from the server
-  #    * @param sourceURL - The student data API call
+  #    * Get data from the server via ajax call
+  #    * @param sourceURL - The API call
+  #    * @param options -  contains configs like method, async, data for "POST" etc.
   #    * @param callback - callback function
   #    
-  getDatafromSource = (sourceURL, params, callback) ->
-    return false if sourceURL is "undefined" or typeof sourceURL is "number" or typeof sourceURL is "function" or typeof sourceURL is "object"
-    
-    $.ajax(
-      type: "POST"
-      url: sourceURL
-      data:
-        JSON.stringify(params);
-      dataType: "json"
-      contentType: "application/json"
-      success: (data) ->
-        if callback
-          callback data
-        else
-          data
-      error: (xhr, ajaxOptions, thrownError) ->
-        edwareUtil.displayErrorMessage xhr.status + ": " + thrownError
-        #check401Error xhr.status
-      )
-
-  #
-  #    * Get student list columns configuration
-  # 
-  getConfigs = (configURL, callback) ->
-      return false if configURL is "undefined" or typeof configURL is "number" or typeof configURL is "function" or typeof configURL is "object"
-        
-      $.getJSON configURL, (data) ->
-        studentsConfig = data.students
-        
-        if callback
-           callback studentsConfig
-        else
-           studentsConfig
-           
-  #
-  #    * Get breadcrumbs data
-  # 
-  readJson = (templateURL, callback) ->
-      return false if templateURL is "undefined" or typeof templateURL is "number" or typeof templateURL is "function" or typeof templateURL is "object"
-        
-      $.ajax
-        url: templateURL
+  getDatafromSource = (sourceURL, options, callback) ->
+      
+      $.ajax(
+        type: options.method
+        url: sourceURL
+        async: options.async
+        data:
+          JSON.stringify(options.params) if options.params
         dataType: "json"
-        async: false
+        contentType: "application/json"
         success: (data) ->
-          content = data
-
           if callback
-            callback content
+            callback data
           else
-            content
+            data
+        error: (xhr, ajaxOptions, thrownError) ->
+          edwareUtil.displayErrorMessage xhr.status + ": " + thrownError
+        #check401Error xhr.status
+      )          
          
+  
+  # Check 401 error
   check401Error = (status) ->
     location.href = "login.html?redirectURL=" + window.location.href if status is 401
         
   getDatafromSource: getDatafromSource
-  getConfigs: getConfigs
-  readJson: readJson

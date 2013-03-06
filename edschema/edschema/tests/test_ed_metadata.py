@@ -15,7 +15,7 @@ class TestEdMetadata(Unittest_with_sqlite):
         self.assertEqual(7, len(self.get_Metadata().tables), "Number of table does not match")
 
     # Test dim_district data
-    def test_dim_dim_inst_hier_type(self):
+    def test_dim_inst_hier_type(self):
         self.assertTrue('dim_inst_hier' in self.get_Metadata().tables, "missing dim_inst_hier")
         with DBConnection() as connector:
             dim_inst_hier = connector.get_table("dim_inst_hier")

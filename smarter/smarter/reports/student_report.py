@@ -82,10 +82,11 @@ def __prepare_query(connector, student_id, assessment_id):
                    from_obj=[fact_asmt_outcome
                              .join(dim_student, and_(fact_asmt_outcome.c.student_id == dim_student.c.student_id, fact_asmt_outcome.c.section_id == dim_student.c.section_id))
                              .join(dim_staff, and_(fact_asmt_outcome.c.teacher_id == dim_staff.c.staff_id, fact_asmt_outcome.c.section_id == dim_staff.c.section_id))
-                             .join(dim_asmt, dim_asmt.c.asmt_id == fact_asmt_outcome.c.asmt_id)])
-    query = query.where(and_(fact_asmt_outcome.c.student_id == student_id, dim_asmt.c.most_recent, dim_staff.c.most_recent, fact_asmt_outcome.c.most_recent, dim_asmt.c.asmt_type == 'SUMMATIVE'))
+                             .join(dim_asmt, dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id)])
+    query = query.where(and_(fact_asmt_outcome.c.student_id == student_id, dim_asmt.c.most_recent, dim_staff.c.most_recent,
+                             fact_asmt_outcome.c.most_recent, dim_asmt.c.asmt_type == 'SUMMATIVE', fact_asmt_outcome.c.status == 'C'))
     if assessment_id is not None:
-        query = query.where(fact_asmt_outcome.c.asmt_id == assessment_id)
+        query = query.where(dim_asmt.c.asmt_id == assessment_id)
     query = query.order_by(dim_asmt.c.asmt_subject.desc())
     return query
 

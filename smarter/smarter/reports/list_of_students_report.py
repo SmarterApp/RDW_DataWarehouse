@@ -110,13 +110,15 @@ def get_list_of_students_report(params):
                         fact_asmt_outcome.c.asmt_claim_2_score_range_max.label('asmt_claim_2_score_range_max'),
                         fact_asmt_outcome.c.asmt_claim_3_score_range_max.label('asmt_claim_3_score_range_max'),
                         fact_asmt_outcome.c.asmt_claim_4_score_range_max.label('asmt_claim_4_score_range_max')],
-                       from_obj=[dim_student
-                                 .join(fact_asmt_outcome, dim_student.c.student_id == fact_asmt_outcome.c.student_id)
-                                 .join(dim_asmt, dim_asmt.c.asmt_id == fact_asmt_outcome.c.asmt_id)
+                       from_obj=[fact_asmt_outcome
+                                 .join(dim_student, dim_student.c.student_id == fact_asmt_outcome.c.student_id)
+                                 .join(dim_asmt, dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id)
                                  .join(dim_staff, dim_staff.c.staff_id == fact_asmt_outcome.c.teacher_id)])
         query = query.where(fact_asmt_outcome.c.school_id == school_id)
         query = query.where(and_(fact_asmt_outcome.c.asmt_grade == asmt_grade))
         query = query.where(and_(fact_asmt_outcome.c.district_id == district_id))
+        query = query.where(and_(fact_asmt_outcome.c.most_recent))
+        query = query.where(and_(fact_asmt_outcome.c.status == 'C'))
 
         if asmt_subject is not None:
             query = query.where(dim_asmt.c.asmt_subject.in_(asmt_subject))

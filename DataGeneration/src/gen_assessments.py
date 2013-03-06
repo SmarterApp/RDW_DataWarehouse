@@ -66,7 +66,7 @@ def generate_single_asmt(student_grade, asmt_type, period, subject, year, most_r
 
     params = {
         'asmt_id': asmt_id,
-        'asmt_rec_id' : asmt_rec_id,
+        'asmt_rec_id': asmt_rec_id,
         'asmt_type': asmt_type,
         'asmt_period': period,
         'asmt_period_year': year,

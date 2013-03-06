@@ -46,19 +46,24 @@ class report_config(object):
         return original_func
 
 
-# dict lookup and raises an exception if key doesn't exist
 def get_report_dict_value(dictionary, key, exception_to_raise=Exception):
+    '''
+    dict lookup and raises an exception if key doesn't exist
+    '''
     report = dictionary.get(key)
     if (report is None):
         raise exception_to_raise(key)
     return report
 
 
-# given a report (dict), get the value from reference key and call it
 def call_decorated_method(report, params):
-    # Check if obj variable is a class or not
-    # if it is, instantiate object first before calling function.
-    # else, just call the method
+    '''
+    given a report (dict), get the value from reference key and call it
+
+    Check if obj variable is a class or not
+    if it is, instantiate object first before calling function.
+    else, just call the method
+    '''
     (obj, method) = get_report_dict_value(report, REF_REFERENCE_FIELD_NAME)
 
     if inspect.isclass(obj):
@@ -69,8 +74,10 @@ def call_decorated_method(report, params):
     return response
 
 
-# generates a report by calling the report delegate for generating itself (received from the config repository).
 def generate_report(registry, report_name, params, validator=None):
+    '''
+    generates a report by calling the report delegate for generating itself (received from the config repository).
+    '''
     if not validator:
         validator = Validator()
 
@@ -86,8 +93,10 @@ def generate_report(registry, report_name, params, validator=None):
     return call_decorated_method(report, params)
 
 
-# generates a report config by loading it from the config repository
 def generate_report_config(registry, report_name):
+    '''
+    generates a report config by loading it from the config repository
+    '''
     # load the report configuration from registry
     report = get_report_dict_value(registry, report_name, ReportNotFoundError)
 
@@ -100,8 +109,10 @@ def generate_report_config(registry, report_name):
     return prepare_params(registry, report_config)
 
 
-# looks for fields that can be expanded with no external configuration and expands them by calling the right method.
 def prepare_params(registry, params):
+    '''
+    looks for fields that can be expanded with no external configuration and expands them by calling the right method.
+    '''
     response_dict = {}
     for (name, dictionary) in params.items():
         item = {}
@@ -122,9 +133,11 @@ def prepare_params(registry, params):
     return response_dict
 
 
-# receive a report's name, tries to take it from the repository and see if it requires configuration, if not, generates the report and return the generated value.
-# return True if the value is changing or false otherwise
 def expand_field(registry, report_name, params):
+    '''
+    receives a report's name, tries to take it from the repository and see if it requires configuration, if not, generates the report and return the generated value.
+    returns True if the value is changing or false otherwise
+    '''
     if (params is not None):
         return (report_name, False)
     report = get_report_dict_value(registry, report_name, ReportNotFoundError)
@@ -133,8 +146,10 @@ def expand_field(registry, report_name, params):
     return (report_data, True)
 
 
-# turns the schema into an well-formatted JSON schema by adding a header.
 def add_configuration_header(params_config):
+    '''
+    turns the schema into an well-formatted JSON schema by adding a header.
+    '''
     result = {
         "$schema": "http://json-schema.org/draft-04/schema#",
         "title": "schema-title",  # TODO: move to configuration
@@ -173,9 +188,12 @@ class Validator:
     '''
     This class manages the validation against report schemas
     '''
-    # validates the given parameters with the report configuration validation definition
+
     @staticmethod
     def validate_params_schema(registry, report_name, params):
+        '''
+        validates the given parameters with the report configuration validation definition
+        '''
         report = get_report_dict_value(registry, report_name, ReportNotFoundError)
         params_config = get_report_dict_value(report, PARAMS_REFERENCE_FIELD_NAME, InvalidParameterError)
         params_config = add_configuration_header(params_config)
@@ -185,10 +203,12 @@ class Validator:
             return (False, str(e))
         return (True, None)
 
-    # this method checks String types and attempt to convert them to the defined type.
-    # This handles 'GET' requests when all parameters are converted into string.
     @staticmethod
     def fix_types(registry, report_name, params):
+        '''
+        This method checks String types and attempt to convert them to the defined type.
+        This handles 'GET' requests when all parameters are converted into string.
+        '''
         result = {}
         report = get_report_dict_value(registry, report_name, ReportNotFoundError)
         params_config = get_report_dict_value(report, PARAMS_REFERENCE_FIELD_NAME, InvalidParameterError)
@@ -211,9 +231,12 @@ class Validator:
 
         return result
 
-    # convert one value from string to defined type
     @staticmethod
     def fix_type_one_val(value, config):
+        '''
+        convert one value from string to defined type
+        '''
+
         # check type for string items
         if not isinstance(value, str):
             return value
@@ -224,9 +247,11 @@ class Validator:
 
         return value
 
-    # convert duplicate query params to arrays
     @staticmethod
     def convert_array_query_params(registry, report_name, params):
+        '''
+        convert duplicate query params to arrays
+        '''
         result = {}
         report = get_report_dict_value(registry, report_name, ReportNotFoundError)
         params_config = get_report_dict_value(report, PARAMS_REFERENCE_FIELD_NAME, InvalidParameterError)
@@ -249,15 +274,19 @@ class Validator:
 
         return result
 
-    # attempts to convert a string to bool, otherwise raising an error
     @staticmethod
     def boolify(s):
+        '''
+        attempts to convert a string to bool, otherwise raising an error
+        '''
         return s in ['true', 'True']
 
-    #converts a value to a given value type, if possible. otherwise, return the original value.
-    #TODO - refactor so it doesn't attempt all type conversions
+    # TODO: refactor so it doesn't attempt all type conversions
     @staticmethod
     def convert(value, value_type):
+        '''
+        converts a value to a given value type, if possible. otherwise, return the original value.
+        '''
         try:
             return {
                 VALID_TYPES.reverse_mapping[VALID_TYPES.STRING]: value,

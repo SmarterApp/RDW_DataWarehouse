@@ -11,7 +11,7 @@ class InstitutionHierarchy:
     '''
 
     def __init__(self, number_of_students, student_teacher_ratio, low_grade, high_grade,
-                 state_name, state_code, district_id, district_name, school_id, school_name, school_category, from_date, most_recent, row_id=None, to_date=None):
+                 state_name, state_code, district_id, district_name, school_id, school_name, school_category, from_date, most_recent, inst_hier_rec_id=None, to_date=None):
         '''
         Constructor
         '''
@@ -21,12 +21,12 @@ class InstitutionHierarchy:
         self.high_grade = high_grade
 
         # Ids can either be given to the constructor or provided by constructor
-        # Either way, the row_id field must have a value
+        # Either way, the inst_hier_rec_id field must have a value
         id_generator = IdGen()
-        if row_id is None:
-            self.row_id = id_generator.get_id()
+        if inst_hier_rec_id is None:
+            self.inst_hier_rec_id = id_generator.get_id()
         else:
-            self.row_id = row_id
+            self.inst_hier_rec_id = inst_hier_rec_id
 
         self.state_name = state_name
         self.state_code = state_code
@@ -40,7 +40,7 @@ class InstitutionHierarchy:
         self.most_recent = most_recent
 
     def getRow(self):
-        return [self.row_id, self.state_name, self.state_code, self.district_id, self.district_name, self.school_id, self.school_name, self.school_category, self.from_date, self.to_date, self.most_recent]
+        return [self.inst_hier_rec_id, self.state_name, self.state_code, self.district_id, self.district_name, self.school_id, self.school_name, self.school_category, self.from_date, self.to_date, self.most_recent]
 
     # TODO: For all these getHeader methods, there must be a better way to return a list of the fields (in a defined order)
     # hard coding probably is not the best approach
@@ -53,16 +53,15 @@ class SectionSubject:
     '''
     SectionSubject Object
     '''
-
-    def __init__(self, section_id, section_name, grade, class_name, subject_name, state_code, district_id, school_id, from_date, most_recent, to_date=None, row_id=None):
+    def __init__(self, section_id, section_name, grade, class_name, subject_name, state_code, district_id, school_id, from_date, most_recent, to_date=None, section_rec_id=None):
 
         # Ids can either be given to the constructor or provided by constructor
-        # Either way, the row_id field must have a value
+        # Either way, the section_rec_id field must have a value
         id_generator = IdGen()
-        if row_id is None:
-            self.row_id = id_generator.get_id()
+        if section_rec_id is None:
+            self.section_rec_id = id_generator.get_id()
         else:
-            self.row_id = row_id
+            self.section_rec_id = section_rec_id
 
         self.section_id = section_id
         self.section_name = section_name
@@ -77,8 +76,8 @@ class SectionSubject:
         self.to_date = to_date
 
     def getRow(self):
-        return [self.row_id, self.section_id, self.section_name, self.grade, self.class_name, self.subject_name, self.state_code, self.district_id, self.school_id, self.from_date, self.to_date, self.most_recent]
-
+         return [self.section_rec_id, self.section_id, self.section_name, self.grade, self.class_name, self.subject_name, self.state_code, self.district_id, self.school_id, self.from_date, self.to_date, self.most_recent]
+    
     @classmethod
     def getHeader(cls):
         return ['row_id', 'section_id', 'section_name', 'grade', 'class_name', 'subject_name', 'state_code', 'district_id', 'school_id', 'from_date', 'to_date', 'most_recent']
@@ -87,16 +86,15 @@ class SectionSubject:
 class Assessment:
     '''
     AssessmentType Object
-    '''
-
-    def __init__(self, asmt_id, asmt_external_id, asmt_type, asmt_period, asmt_period_year, asmt_version, asmt_grade, asmt_subject, from_date, claim_1=None, claim_2=None, claim_3=None, claim_4=None, asmt_score_min=None, asmt_score_max=None,
+    ''' 
+    def __init__(self, asmt_rec_id, asmt_id, asmt_type, asmt_period, asmt_period_year, asmt_version, asmt_grade, asmt_subject, from_date, claim_1=None, claim_2=None, claim_3=None, claim_4=None, asmt_score_min=None, asmt_score_max=None,
                  asmt_perf_lvl_name_1=None, asmt_perf_lvl_name_2=None, asmt_perf_lvl_name_3=None, asmt_perf_lvl_name_4=None, asmt_perf_lvl_name_5=None, asmt_cut_point_1=None, asmt_cut_point_2=None, asmt_cut_point_3=None, asmt_cut_point_4=None,
                  asmt_custom_metadata=None, to_date=None, most_recent=None):
         '''
         Constructor
         '''
         self.asmt_id = asmt_id
-        self.asmt_external_id = asmt_external_id
+        self.asmt_rec_id = asmt_rec_id
         self.asmt_type = asmt_type
         self.asmt_period = asmt_period
         self.asmt_period_year = asmt_period_year
@@ -135,13 +133,15 @@ class Assessment:
         return ("Assessment:[asmt_type: %s, subject: %s, asmt_type: %s, period: %s, version: %s, grade: %s]" % (self.asmt_type, self.asmt_subject, self.asmt_type, self.asmt_period, self.asmt_version, self.asmt_grade))
 
     def getRow(self):
-        return [self.asmt_id, self.asmt_type, self.asmt_period, self.asmt_period_year, self.asmt_version, self.asmt_grade, self.asmt_subject,
+
+        return [self.asmt_rec_id, self.asmt_id, self.asmt_type, self.asmt_period, self.asmt_period_year, self.asmt_version, self.asmt_grade, self.asmt_subject,
                 self.claim_1.claim_name, self.claim_2.claim_name, self.claim_3.claim_name, self.claim_4.claim_name if self.claim_4 is not None else '',
                 self.asmt_perf_lvl_name_1, self.asmt_perf_lvl_name_2, self.asmt_perf_lvl_name_3, self.asmt_perf_lvl_name_4, self.asmt_perf_lvl_name_5,
                 self.asmt_score_min, self.asmt_score_max,
-                self.claim_1.claim_score_min, self.claim_1.claim_score_max, self.claim_2.claim_score_min, self.claim_2.claim_score_max,
-                self.claim_3.claim_score_min, self.claim_3.claim_score_max,
-                self.claim_4.claim_score_min if self.claim_4 is not None else '', self.claim_4.claim_score_max if self.claim_4 is not None else '',
+                self.claim_1.claim_score_min, self.claim_1.claim_score_max, self.claim_1.claim_score_weight, 
+                self.claim_2.claim_score_min, self.claim_2.claim_score_max, self.claim_2.claim_score_weight,
+                self.claim_3.claim_score_min, self.claim_3.claim_score_max, self.claim_3.claim_score_weight,
+                self.claim_4.claim_score_min if self.claim_4 is not None else '', self.claim_4.claim_score_max if self.claim_4 is not None else '', self.claim_4.claim_score_weight if self.claim_4 is not None else '',
                 self.asmt_cut_point_1, self.asmt_cut_point_2, self.asmt_cut_point_3, self.asmt_cut_point_4,
                 self.asmt_custom_metadata, self.from_date, self.to_date, self.most_recent]
 
@@ -161,18 +161,20 @@ class AssessmentOutcome(object):
     '''
     Assessment outcome object
     '''
-
-    def __init__(self, asmnt_outcome_id, asmnt_outcome_external_id, assessment, student, inst_hier_id, where_taken, date_taken, asmt_score, asmt_create_date, most_recent):
+    def __init__(self, asmnt_outcome_id, asmnt_outcome_external_id, assessment, student, inst_hier_rec_id, section_rec_id, where_taken, 
+                 date_taken, asmt_score, asmt_create_date, most_recent, status='C'):
         self.asmnt_outcome_id = asmnt_outcome_id
         self.asmnt_outcome_external_id = asmnt_outcome_external_id
         self.assessment = assessment
         self.student = student
-        self.inst_hier_id = inst_hier_id
+        self.inst_hier_rec_id = inst_hier_rec_id
+        self.section_rec_id = section_rec_id
         self.where_taken = where_taken
         self.date_taken = date_taken
         self.asmt_score = asmt_score
         self.asmt_create_date = asmt_create_date
         self.most_recent = most_recent
+        self.status = status
 
     def calc_perf_lvl(self, score, asmt):
         '''
@@ -196,10 +198,10 @@ class AssessmentOutcome(object):
 
         asmt_perf_lvl = self.calc_perf_lvl(self.asmt_score, self.assessment)
 
-        return [self.asmnt_outcome_id, self.asmnt_outcome_external_id, self.assessment.asmt_id,
+        return [self.asmnt_outcome_id, self.asmnt_outcome_external_id, self.assessment.asmt_rec_id,
                 self.student.student_id, self.student.teacher_id, self.student.state_code,
                 self.student.district_id, self.student.school_id, self.student.section_id,
-                self.inst_hier_id, self.student.section_subject_id,
+                self.inst_hier_rec_id, self.section_rec_id,
                 self.where_taken.where_taken_id, self.where_taken.where_taken_name, self.assessment.asmt_grade, self.student.grade,
                 self.date_taken.strftime('%Y%m%d'), self.date_taken.day, self.date_taken.month, self.date_taken.year,
                 self.asmt_score.overall, max(0, self.asmt_score.overall - SCORE_MIN_MAX_RANGE), self.asmt_score.overall + SCORE_MIN_MAX_RANGE,
@@ -209,7 +211,7 @@ class AssessmentOutcome(object):
                 claims[2], max(0, claims[2] - SCORE_MIN_MAX_RANGE), claims[2] + SCORE_MIN_MAX_RANGE,
                 claims[3] if len(claims) >= 4 else '', (max(0, claims[3] - SCORE_MIN_MAX_RANGE)) if len(claims) >= 4 else '',
                 (claims[3] + SCORE_MIN_MAX_RANGE) if len(claims) >= 4 else '',
-                self.asmt_create_date, self.most_recent]
+                self.asmt_create_date, self.status, self.most_recent]
 
     @classmethod
     def getHeader(cls):
@@ -245,18 +247,14 @@ class Person(object):
 
 class Staff(Person):
 
-    def __init__(self, first_name, last_name, section_id, hier_user_type, state_code, district_id, school_id, from_date, to_date=None, most_recent=None, middle_name=None, staff_id=None, staff_external_id=None):
+    def __init__(self, first_name, last_name, section_id, hier_user_type, state_code, district_id, school_id, from_date, to_date=None, most_recent=None, middle_name=None, staff_id=None, staff_rec_id=None):
         super().__init__(first_name, last_name, middle_name=middle_name)
         idgen = IdGen()
-        self.row_id = idgen.get_id()
+        self.staff_rec_id = idgen.get_id()
         if(staff_id):
             self.staff_id = staff_id
         else:
             self.staff_id = idgen.get_id()
-        if(staff_external_id):
-            self.staff_external_id = staff_external_id
-        else:
-            self.staff_external_id = uuid4()
         self.section_id = section_id
         self.hier_user_type = hier_user_type
         self.state_code = state_code
@@ -267,7 +265,7 @@ class Staff(Person):
         self.most_recent = most_recent
 
     def getRow(self):
-        return [self.row_id, self.staff_id, self.staff_external_id, self.first_name, self.middle_name, self.last_name, self.section_id, self.hier_user_type, self.state_code, self.district_id, self.school_id, self.from_date, self.to_date, self.most_recent]
+        return [self.staff_rec_id, self.staff_id, self.first_name, self.middle_name, self.last_name, self.section_id, self.hier_user_type, self.state_code, self.district_id, self.school_id, self.from_date, self.to_date, self.most_recent]
 
     @classmethod
     def getHeader(cls):
@@ -308,8 +306,7 @@ class ExternalUserStudent():
 
 # For now, maps to dim_student
 class StudentSection():
-
-    def __init__(self, student, section_id, grade, from_date=None, to_date=None, most_recent=None, teacher_id=None, section_subject_id=None):
+    def __init__(self, student, section_id, grade, from_date=None, to_date=None, most_recent=None, teacher_id=None, section_rec_id=None):
         idgen = IdGen()
         self.row_id = idgen.get_id()
 
@@ -334,7 +331,7 @@ class StudentSection():
         self.most_recent = most_recent
 
         self.teacher_id = teacher_id
-        self.section_subject_id = section_subject_id
+        self.section_rec_id = section_rec_id
 
     def getRow(self):
         return [self.row_id, self.student_id, self.first_name, self.middle_name, self.last_name, self.address_1, self.address_2,

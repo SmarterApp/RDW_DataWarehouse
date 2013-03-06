@@ -326,6 +326,7 @@ def create_institution_hierarchies(student_counts, student_teacher_ratios, distr
             'school_name': school_name,
             'school_category': school_categories_type,
             'from_date': '20120901',
+            'to_date': '99991231',
             'most_recent': True,
         }
 
@@ -476,7 +477,7 @@ def create_classes_for_school(district, school, state, name_list, total_count, a
         create_classes_for_grade(students_in_grade, teachers_in_grade, school, grade, asmt_list, where_taken, total_count)
 
 
-def associate_students_and_scores(student_sections_list, scores, inst_hier_id, subject, asmt_list, where_taken):
+def associate_students_and_scores(student_sections_list, scores, inst_hier_rec_id, subject, asmt_list, where_taken):
     '''
     creates association between students and scores
     student_temporal_list -- a list of student_temporal objects
@@ -490,12 +491,12 @@ def associate_students_and_scores(student_sections_list, scores, inst_hier_id, s
 
     for student_section in student_sections_list:
         for score in scores.items():
-            asmt_id = int(score[0].split('_')[1])
+            asmt_rec_id = int(score[0].split('_')[1])
             # year is the assessment period year
             year = score[0].split('_')[0]
             dates_taken_map = generate_dates_taken(int(year))
 
-            asmt = [x for x in asmt_list if x.asmt_id == asmt_id and str(x.asmt_period_year) == str(year)][0]
+            asmt = [x for x in asmt_list if x.asmt_rec_id == asmt_rec_id and str(x.asmt_period_year) == str(year)][0]
 
             if asmt.asmt_subject.lower() == subject.lower():  # check that subjects match as there is a std_tmprl object for each subject
                 new_id = IdGen().get_id()
@@ -505,7 +506,8 @@ def associate_students_and_scores(student_sections_list, scores, inst_hier_id, s
                     'asmnt_outcome_external_id': uuid.uuid4(),
                     'assessment': asmt,
                     'student': student_section,
-                    'inst_hier_id': inst_hier_id,
+                    'inst_hier_rec_id': inst_hier_rec_id,
+                    'section_rec_id': student_section.section_rec_id,
                     'where_taken': where_taken,
                     'date_taken': date_taken,
                     'asmt_score': score[1].pop(),
@@ -617,7 +619,7 @@ def create_classes_for_grade(students_in_grade, teachers_in_grade, school, grade
         student_sections = create_student_sections_for_subject(subject, number_of_classes, students_in_grade, subject_teachers, school, grade, asmt_list)
         total_count['student_section_count'] += len(student_sections)
         # associate students with scores of this subject
-        assessment_outcome_list = associate_students_and_scores(student_sections, scores_for_subject, school.row_id, subject, asmt_list, where_taken)
+        assessment_outcome_list = associate_students_and_scores(student_sections, scores_for_subject, school.inst_hier_rec_id, subject, asmt_list, where_taken)
         create_csv(assessment_outcome_list, ENTITY_TO_PATH_DICT[AssessmentOutcome])
 
 
@@ -669,7 +671,7 @@ def create_sections_in_one_class(subject_name, class_count, distribute_stu_inacl
     # for each section, add students and teachers
     for i in range(len(distribute_stu_insection)):
         section_id = IdGen().get_id()
-        row_id = IdGen().get_id()
+        section_rec_id = IdGen().get_id()
         section_stu_map[str(section_id)] = distribute_stu_insection[i]
         teacher_for_section = tea_list[i % len(tea_list)]
         section_tea_map[str(i)] = [teacher_for_section]
@@ -677,7 +679,7 @@ def create_sections_in_one_class(subject_name, class_count, distribute_stu_inacl
         # create section_subject object
         section_name = 'section ' + str(i + 1)
         section_subject_params = {
-            'row_id': row_id,
+            'section_rec_id': section_rec_id,
             'section_id': section_id,
             'section_name': section_name,
             'grade': grade,
@@ -700,7 +702,7 @@ def create_sections_in_one_class(subject_name, class_count, distribute_stu_inacl
 
         # create students
         for student in section_stu_map[str(section_id)]:
-            student_section = generate_student_section(school, student, row_id, section_id, grade, teacher_for_section.teacher_id)
+            student_section = generate_student_section(school, student, section_rec_id, section_id, grade, teacher_for_section.teacher_id)
             student_section_list.append(student_section)
 
     # write subjects into csv

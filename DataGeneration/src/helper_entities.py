@@ -96,10 +96,11 @@ class Claim(object):
     '''
     claim information to be used by the assessment object
     '''
-    def __init__(self, claim_name, claim_score_min=None, claim_score_max=None):
+    def __init__(self, claim_name, claim_score_min=None, claim_score_max=None, claim_score_weight=None):
         self.claim_name = claim_name
         self.claim_score_min = claim_score_min
         self.claim_score_max = claim_score_max
+        self.claim_score_weight = claim_score_weight
 
 
 class Score:
@@ -182,7 +183,7 @@ class Student(Person):
     Student Object
     '''
 
-    def __init__(self, student_id, student_external_id, first_name, last_name, address_1, dob, district, state, gender, email, school, middle_name=None, address_2=None):
+    def __init__(self, student_rec_id, student_id, first_name, last_name, address_1, dob, district, state, gender, email, school, middle_name=None, address_2=None):
 
         super().__init__(first_name, last_name, middle_name=middle_name)
 
@@ -193,10 +194,10 @@ class Student(Person):
             self.student_id = id_generator.get_id()
         else:
             self.student_id = student_id
-        if student_external_id is None:
-            self.student_external_id = id_generator.get_id()
+        if student_rec_id is None:
+            self.student_rec_id = id_generator.get_id()
         else:
-            self.student_external_id = student_external_id
+            self.student_rec_id = student_rec_id
 
         # TODO: We probably want to select cities/zips in a more intelligent way
         city_zip_map = district.city_zip_map

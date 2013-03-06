@@ -62,8 +62,8 @@ def generate_student(state, district, school, grade, street_list, gender=None, h
     domain = school.school_name
 
     student_params = {
-        'student_id': id_generator.get_id(),
-        'student_external_id': uuid4(),
+        'student_rec_id': id_generator.get_id(),
+        'student_id': uuid4(),
         'first_name': first_name,
         'middle_name': middle_name,
         'last_name': last_name,
@@ -107,7 +107,7 @@ def generate_staff(hier_user_type, state_code='None', district_id='None', school
 
     staff_params = {
         'staff_id': staff_id,
-        'staff_external_id': uuid.uuid4(),
+        'staff_rec_id': uuid.uuid4(),
         'first_name': first_name,
         'middle_name': middle_name,
         'last_name': last_Name,
@@ -124,7 +124,7 @@ def generate_staff(hier_user_type, state_code='None', district_id='None', school
     return staff
 
 
-def generate_student_section(school, student, section_subject_id, section_id, grade, teacher_id):
+def generate_student_section(school, student, section_rec_id, section_id, grade, teacher_id):
         student_section_params = {
             'student': student,
             'section_id': section_id,
@@ -133,7 +133,7 @@ def generate_student_section(school, student, section_subject_id, section_id, gr
             'to_date': '20120901',
             'most_recent': True,
             'teacher_id': teacher_id,
-            'section_subject_id': section_subject_id
+            'section_rec_id': section_rec_id
         }
         student_section = StudentSection(**student_section_params)
         return student_section

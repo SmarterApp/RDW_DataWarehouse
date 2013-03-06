@@ -22,7 +22,7 @@ def generate_assmt_scores_for_subject(total, grade, state, asmt_list, subject_na
 
     i = 0
     for asmt in asmt_types_and_subject:
-        string = "%s_%s" % (asmt.asmt_period_year, asmt.asmt_id)
+        string = "%s_%s" % (asmt.asmt_period_year, asmt.asmt_rec_id)
         subject = asmt.asmt_subject
         index_of_year = unique_years.index(asmt.asmt_period_year)
         score = generate_assmt_scores(state, subject, ASSMT_SCORE_YEARS_IN_DB[index_of_year % len(ASSMT_SCORE_YEARS_IN_DB)], asmt.asmt_period, grade, total)

@@ -51,6 +51,7 @@ def generate_single_asmt(student_grade, asmt_type, period, subject, year, most_r
     '''
 
     asmt_id = generate_id()
+    asmt_rec_id = generate_id()
     version = generate_version()
     asmt_grade = '4' if student_grade < 8 else '8'
     asmt_info = ASSMT_TYPES[subject][asmt_grade]
@@ -59,13 +60,13 @@ def generate_single_asmt(student_grade, asmt_type, period, subject, year, most_r
     claim2_min_max = calc_claim_min_max(MIN_ASSMT_SCORE, MAX_ASSMT_SCORE, asmt_info['claim_percs'][1])
     claim3_min_max = calc_claim_min_max(MIN_ASSMT_SCORE, MAX_ASSMT_SCORE, asmt_info['claim_percs'][2])
 
-    claim1 = Claim(asmt_info['claim_names'][0], claim1_min_max[0], claim1_min_max[1])
-    claim2 = Claim(asmt_info['claim_names'][1], claim2_min_max[0], claim2_min_max[1])
-    claim3 = Claim(asmt_info['claim_names'][2], claim3_min_max[0], claim3_min_max[1])
+    claim1 = Claim(asmt_info['claim_names'][0], claim1_min_max[0], claim1_min_max[1], asmt_info['claim_percs'][0])
+    claim2 = Claim(asmt_info['claim_names'][1], claim2_min_max[0], claim2_min_max[1], asmt_info['claim_percs'][1])
+    claim3 = Claim(asmt_info['claim_names'][2], claim3_min_max[0], claim3_min_max[1], asmt_info['claim_percs'][2])
 
     params = {
         'asmt_id': asmt_id,
-        'asmt_external_id': uuid4(),
+        'asmt_rec_id' : asmt_rec_id,
         'asmt_type': asmt_type,
         'asmt_period': period,
         'asmt_period_year': year,
@@ -91,7 +92,7 @@ def generate_single_asmt(student_grade, asmt_type, period, subject, year, most_r
 
     if len(asmt_info['claim_names']) >= 4 and len(asmt_info['claim_percs']) >= 4:
         claim4_min_max = calc_claim_min_max(MIN_ASSMT_SCORE, MAX_ASSMT_SCORE, asmt_info['claim_percs'][3])
-        claim4 = Claim(asmt_info['claim_names'][3], claim4_min_max[0], claim4_min_max[1])
+        claim4 = Claim(asmt_info['claim_names'][3], claim4_min_max[0], claim4_min_max[1], asmt_info['claim_percs'][3])
         params['claim_4'] = claim4
 
     return Assessment(**params)

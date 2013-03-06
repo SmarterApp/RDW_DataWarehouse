@@ -145,14 +145,18 @@ def add_configuration_header(params_config):
     return result
 
 
-def get_logger(name=None):
+def get_logger(name=None, add_file_handler=True):
+    '''
+    Gets a logger by name, and add a file handler, with the same name, to it
+    '''
+    # if no name is provided we use the module name
     if name is None:
         name = __name__
 
     logger = logging.getLogger(name)
 
     # if there are no handlers we add a file handler with the given name
-    if (len(logger.handlers) == 0):
+    if add_file_handler and len(logger.handlers) == 0:
         # create file handler which logs even debug messages
         fh = logging.FileHandler('{0}.log'.format(name))
         fh.setLevel(logging.DEBUG)

@@ -5,9 +5,11 @@ Created on Jan 18, 2013
 '''
 import unittest
 from edapi.utils import get_report_dict_value, generate_report, generate_report_config,\
-    expand_field, prepare_params, add_configuration_header
+    expand_field, prepare_params, add_configuration_header, get_logger
 from edapi.exceptions import ReportNotFoundError, InvalidParameterError
 from edapi.tests.dummy import DummyValidator, Dummy
+from edapi.tests.test_logger import TestLogger, test_function
+import os
 
 
 def dummy_method(params):
@@ -141,6 +143,36 @@ class TestUtils(unittest.TestCase):
         result = add_configuration_header(params)
         self.assertEqual(result['properties'], params)
 
-if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()
+    def test_get_logger(self):
+        logger = get_logger("test", False)
+        self.assertEqual(len(logger.handlers), 0, "there should be no file handlers")
+
+    def test_method_log(self):
+        try:
+            test_logger = TestLogger()
+            test_logger.test_method("param1value", "param2value")
+            f = open('test.log')
+            lines = 0
+            for line in f:
+                self.assertIn("param1value", line, "missing param")
+                self.assertIn("param2value", line, "missing param")
+                self.assertIn("test_method", line, "method name is missing")
+                self.assertIn("TestLogger", line, "class name is missing")
+                lines += 1
+            self.assertEqual(lines, 1, "there should be only a single row")
+        finally:
+            os.remove('test.log')
+
+    def test_function_log(self):
+        try:
+            test_function("param1value", "param2value")
+            f = open('test2.log')
+            lines = 0
+            for line in f:
+                self.assertIn("param1value", line, "missing param")
+                self.assertIn("param2value", line, "missing param")
+                self.assertIn("test_function", line, "method name is missing")
+                lines += 1
+            self.assertEqual(lines, 1, "there should be only a single row")
+        finally:
+            os.remove('test2.log')

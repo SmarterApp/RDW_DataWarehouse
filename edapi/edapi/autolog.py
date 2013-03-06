@@ -9,10 +9,10 @@ from logging import INFO
 
 
 def shorten_string(obj):
-    """
+    '''
     Where to put gritty heuristics to make an object appear in most useful
     form. defaults to __str__.
-    """
+    '''
     if "wx." in str(obj.__class__) or obj.__class__.__name__.startswith("wx"):
         shortclassname = obj.__class__.__name__
         if hasattr(obj, "blockItem") and hasattr(obj.blockItem, "blockName"):
@@ -25,9 +25,9 @@ def shorten_string(obj):
 
 
 def format_all_args(args, kwds):
-    """
+    '''
     makes a nice string representation of all the arguments
-    """
+    '''
     allargs = []
     for item in args:
         allargs.append('{0}'.format(shorten_string(item)))
@@ -38,6 +38,9 @@ def format_all_args(args, kwds):
 
 
 class log_function(object):
+    '''
+    Logs a function name and the arguments it was called with
+    '''
     def __init__(self, level=INFO, display_name=None, logger_name=None):
         """a decorator."""
         self.level = level
@@ -61,6 +64,9 @@ class log_function(object):
 
 
 class log_instance_method(object):
+    '''
+    Logs an instance method name, its class name and the arguments it was called with
+    '''
     def __init__(self, level=INFO, display_name=None, logger_name=None):
         """a decorator."""
         self.level = level

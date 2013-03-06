@@ -29,12 +29,13 @@ import py1
 import argparse
 
 ENTITY_TO_PATH_DICT = {InstitutionHierarchy: constants.DATAFILE_PATH + '/datafiles/csv/dim_inst_hier.csv',
-                     SectionSubject: constants.DATAFILE_PATH + '/datafiles/csv/dim_section_subject.csv',
-                     Assessment: constants.DATAFILE_PATH + '/datafiles/csv/dim_asmt.csv',
-                     AssessmentOutcome: constants.DATAFILE_PATH + '/datafiles/csv/fact_asmt_outcome.csv',
-                     Staff: constants.DATAFILE_PATH + '/datafiles/csv/dim_staff.csv',
-                     ExternalUserStudent: constants.DATAFILE_PATH + '/datafiles/csv/external_user_student_rel.csv',
-                     StudentSection: constants.DATAFILE_PATH + '/datafiles/csv/dim_student.csv'}
+                       SectionSubject: constants.DATAFILE_PATH + '/datafiles/csv/dim_section_subject.csv',
+                       Assessment: constants.DATAFILE_PATH + '/datafiles/csv/dim_asmt.csv',
+                       AssessmentOutcome: constants.DATAFILE_PATH + '/datafiles/csv/fact_asmt_outcome.csv',
+                       Staff: constants.DATAFILE_PATH + '/datafiles/csv/dim_staff.csv',
+                       ExternalUserStudent: constants.DATAFILE_PATH + '/datafiles/csv/external_user_student_rel.csv',
+                       StudentSection: constants.DATAFILE_PATH + '/datafiles/csv/dim_student.csv'}
+
 
 def get_name_lists():
     '''
@@ -68,6 +69,7 @@ def get_state_stats():
         db_states.append(dict(zip(constants.STAT_COLUMNS, row)))
     db.close()
     return db_states
+
 
 def add_headers_to_csvs():
     '''
@@ -758,6 +760,7 @@ def read_names(file_name):
     mfile.close()
     return names
 
+
 def get_test_state_stats():
     db = get_db_conn()
     db_states = []
@@ -768,7 +771,6 @@ def get_test_state_stats():
     db.close()
 
     return db_states
-
 
 
 if __name__ == '__main__':

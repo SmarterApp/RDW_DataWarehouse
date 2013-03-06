@@ -11,7 +11,6 @@ def create_csv(entity_list, filename):
         # The first line of each file should be a header containing the field names.
         # The class method 'getHeader' of each entity will provide this
 
-
         for e in entity_list:
             row = e.getRow()
             entity_writer.writerow(row)

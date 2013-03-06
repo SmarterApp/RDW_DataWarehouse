@@ -78,7 +78,7 @@ class SectionSubject:
 
     def getRow(self):
         return [self.row_id, self.section_id, self.section_name, self.grade, self.class_name, self.subject_name, self.state_code, self.district_id, self.school_id, self.from_date, self.to_date, self.most_recent]
-    
+
     @classmethod
     def getHeader(cls):
         return ['row_id', 'section_id', 'section_name', 'grade', 'class_name', 'subject_name', 'state_code', 'district_id', 'school_id', 'from_date', 'to_date', 'most_recent']
@@ -155,6 +155,7 @@ class Assessment:
                 'asmt_claim_3_score_min', 'asmt_claim_3_score_max', 'asmt_claim_4_score_min', 'asmt_claim_4_score_max',
                 'asmt_cut_point_1', 'asmt_cut_point_2', 'asmt_cut_point_3', 'asmt_cut_point_4',
                 'asmt_custom_metadata', 'from_date', 'to_date', 'most_recent']
+
 
 class AssessmentOutcome(object):
     '''
@@ -272,6 +273,7 @@ class Staff(Person):
     def getHeader(cls):
         return ['row_id', 'staff_id', 'staff_external_id', 'first_name', 'middle_name', 'last_name', 'section_id', 'hier_user_type', 'state_code', 'district_id', 'school_id', 'from_date', 'to_date', 'most_recent']
 
+
 class ExternalUserStudent():
     '''
     ExternalUserStudent Object
@@ -298,7 +300,7 @@ class ExternalUserStudent():
 
     def getRow(self):
         return [self.external_user_student_id, self.external_user_id, self.student_id, self.rel_start_date, self.rel_end_date]
-    
+
     @classmethod
     def getHeader(cls):
         return ['external_user_student_id', 'external_user_id', 'student_id', 'from_date', 'to_date']
@@ -338,7 +340,7 @@ class StudentSection():
         return [self.row_id, self.student_id, self.first_name, self.middle_name, self.last_name, self.address_1, self.address_2,
                 self.city, self.zip_code, self.gender, self.email, self.dob, self.section_id, self.grade,
                 self.state_code, self.district_id, self.school_id, self.from_date, self.to_date, self.most_recent]
-    
+
     @classmethod
     def getHeader(cls):
         return ['row_id', 'student_id', 'first_name', 'middle_name', 'last_name', 'address_1', 'address_2',

@@ -42,7 +42,7 @@ def __cast_data_type(column, value):
         try:
             value = column.type.python_type(value)
         except:
-            msg = 'Cast Failure [%s.%s]' % (column.table.name, column.name)
+            msg = 'Cast Exception: Column[%s.%s] value[%s] cast to[%s]' % (column.table.name, column.name, value, column.type.python_type)
             raise DataImporterCastException(msg)
     return value
 
@@ -50,7 +50,7 @@ def __cast_data_type(column, value):
 def __check_data_length(column, value):
     if column.type.python_type == str:
         if column.type.length is not None and column.type.length < len(value):
-            msg = 'column[%s.%s] max length is %d, but the length of value was %d. value[%s]' % (column.table.name, column.name, column.type.length, len(value), value)
+            msg = 'Length Exception: Column[%s.%s] max length is %d, but the length of value was %d. value[%s]' % (column.table.name, column.name, column.type.length, len(value), value)
             raise DataImporterLengthException(msg)
 
 
@@ -96,8 +96,8 @@ def import_csv_dir(resources_dir, datasource_name=''):
                     __import_csv_file(csv_file=file, connection=connection, table=table)
             # if there is not an error, then commit
             transaction.commit()
-        except:
-            logging.error("Exception has occured", exc_info=1)
+        except Exception as e:
+            logging.error("Exception has occured: %s" % e)
             # if there is an error, then roll back
             transaction.rollback()
             __success = False

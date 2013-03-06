@@ -9,7 +9,6 @@ requires = ['py-postgresql',
             'mock']
 
 tests_require = requires + [
-    'sqlite3',
     'nose >= 1.2.1',
     'coverage', ]
 

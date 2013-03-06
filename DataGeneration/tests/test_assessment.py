@@ -80,8 +80,8 @@ class TestAssessment(unittest.TestCase):
         subject_name = 'Math'
         res = assessment.generate_assmt_scores_for_subject(30, 10, 'Delaware', asmt_list, subject_name)
         self.assertEqual(len(res), 2)
-        key4 = '%d_%d' % (year, asmt1.asmt_id)
-        key6 = '%d_%d' % (year, asmt3.asmt_id)
+        key4 = '%d_%d' % (year, asmt1.asmt_rec_id)
+        key6 = '%d_%d' % (year, asmt3.asmt_rec_id)
         self.assertEqual(len(res[key4]), 30)
         self.assertEqual(len(res[key6]), 30)
 

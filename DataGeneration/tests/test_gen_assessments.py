@@ -25,7 +25,7 @@ class Test(unittest.TestCase):
         asmt = genasmt.generate_single_asmt(10, 'INTERIM', 'BOY', 'ELA', 2012, True)
 
         self.assertIsNotNone(asmt.asmt_id)
-        self.assertIsNotNone(asmt.asmt_external_id)
+        self.assertIsNotNone(asmt.asmt_rec_id)
         self.assertEqual(asmt.asmt_grade, 10)
         self.assertEqual(asmt.asmt_period, 'BOY')
         self.assertEqual(asmt.asmt_subject, 'ELA')

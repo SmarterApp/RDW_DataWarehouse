@@ -276,7 +276,7 @@ class TestGenerateData(unittest.TestCase):
             self.assertTrue(len(created_school_list[i].school_name) > 0)
             self.assertTrue(created_school_list[i].school_id > 0)
             self.assertTrue(len(created_school_list[i].school_category) > 0)
-            self.assertTrue(created_school_list[i].row_id > 0)
+            self.assertTrue(created_school_list[i].inst_hier_rec_id > 0)
             self.assertIsNotNone(created_school_list[i].from_date)
 
         for j in range(len(created_wheretaken_list)):
@@ -345,7 +345,7 @@ class TestGenerateData(unittest.TestCase):
             self.assertTrue(len(created_school_list[i].school_name) > 0)
             self.assertTrue(created_school_list[i].school_id > 0)
             self.assertTrue(len(created_school_list[i].school_category) > 0)
-            self.assertTrue(created_school_list[i].row_id > 0)
+            self.assertTrue(created_school_list[i].inst_hier_rec_id > 0)
             self.assertIsNotNone(created_school_list[i].from_date)
 
         for j in range(len(created_wheretaken_list)):

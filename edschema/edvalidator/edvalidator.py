@@ -27,16 +27,12 @@ def read_csv(dir_name):
     return csv_file_map
 
 
-def get_list_of_tables(force_foreign_keys=True):
+def get_list_of_tables():
     '''
     Read tables from metadata
     '''
-    tables = []
     metadata = component.queryUtility(IDbUtil).get_metadata()
-    if force_foreign_keys:
-        tables = metadata.sorted_tables
-    else:
-        tables = metadata.tables
+    tables = metadata.sorted_tables
     return list(tables)
 
 
@@ -103,7 +99,7 @@ def check_fields_in_order(target_table, target_csv_file):
     return result
 
 
-def run_validation(metadata=None, force_foreign=True, missing_table_ignore=False, missing_field_ignore=False, dir_name='/please_specify_dir', verbose=False):
+def run_validation(metadata=None, missing_table_ignore=False, missing_field_ignore=False, dir_name='/please_specify_dir', verbose=False):
     '''
     run validation
     metadata: specify metadata for validation
@@ -114,11 +110,11 @@ def run_validation(metadata=None, force_foreign=True, missing_table_ignore=False
     verbose: verboseing sqlite output
     '''
     try:
-        create_sqlite(force_foreign_keys=force_foreign, use_metadata_from_db=False, echo=verbose, metadata=metadata)
+        create_sqlite(use_metadata_from_db=False, echo=verbose, metadata=metadata)
         if not os.path.exists(dir_name):
             return 1
         csv_file_map = read_csv(dir_name)
-        tables = get_list_of_tables(force_foreign)
+        tables = get_list_of_tables()
         # check table consistency
         if not missing_table_ignore:
             missing_file_for_tables, unnecessary_files = check_tables(tables, csv_file_map)
@@ -179,7 +175,6 @@ def run_validation(metadata=None, force_foreign=True, missing_table_ignore=False
 def main():
     parser = argparse.ArgumentParser(description='Validating for EdWare Data')
     parser.add_argument("-d", "--dir", help="Specify a csv directory")
-    parser.add_argument("-n", "--no-foreign", help="Disable Foreign key constraint", action='store_true', default=False)
     parser.add_argument("-t", "--table-ignore", help="Ignore missing tables", action='store_true', default=False)
     parser.add_argument("-f", "--field-ignore", help="Ignore missing fields", action='store_true', default=False)
     parser.add_argument("-v", "--verbose", help="Verbose", action='store_true', default=False)
@@ -189,12 +184,11 @@ def main():
     if __dir_name is None:
         print('please specify a directory.  use -d')
         sys.exit(1)
-    __force_foreign = not args.no_foreign
     __missing_table_ignore = args.table_ignore
     __missing_field_ignore = args.field_ignore
     __verbose = args.verbose
 
-    rtn_value = run_validation(force_foreign=__force_foreign, missing_table_ignore=__missing_table_ignore, missing_field_ignore=__missing_field_ignore, dir_name=__dir_name, verbose=__verbose)
+    rtn_value = run_validation(missing_table_ignore=__missing_table_ignore, missing_field_ignore=__missing_field_ignore, dir_name=__dir_name, verbose=__verbose)
 
     print('###################')
     if rtn_value != 0:

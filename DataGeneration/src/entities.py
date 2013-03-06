@@ -200,7 +200,7 @@ class AssessmentOutcome(object):
                 self.student.district_id, self.student.school_id, self.student.section_id,
                 self.inst_hier_id, self.student.section_subject_id,
                 self.where_taken.where_taken_id, self.where_taken.where_taken_name, self.assessment.asmt_grade, self.student.grade,
-                self.date_taken, self.date_taken.day, self.date_taken.month, self.date_taken.year,
+                self.date_taken.strftime('%Y%m%d'), self.date_taken.day, self.date_taken.month, self.date_taken.year,
                 self.asmt_score.overall, max(0, self.asmt_score.overall - SCORE_MIN_MAX_RANGE), self.asmt_score.overall + SCORE_MIN_MAX_RANGE,
                 asmt_perf_lvl,
                 claims[0], max(0, claims[0] - SCORE_MIN_MAX_RANGE), claims[0] + SCORE_MIN_MAX_RANGE,

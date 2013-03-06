@@ -507,7 +507,7 @@ def associate_students_and_scores(student_sections_list, scores, inst_hier_id, s
                     'where_taken': where_taken,
                     'date_taken': date_taken,
                     'asmt_score': score[1].pop(),
-                    'asmt_create_date': date.today().replace(year=date.today().year - 5),
+                    'asmt_create_date': date.today().replace(year=date.today().year - 5).strftime('%Y%m%d'),
                     'most_recent': True
                 }
                 outcome = AssessmentOutcome(**params)

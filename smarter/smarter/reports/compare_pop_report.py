@@ -21,12 +21,16 @@ __schoolId = 'schoolId'
 #    overall context id - state, district, or school
 #    overall context name - state, district, or school
 #    Array of
-#     population id (district, school, or grade)
-#     population name (district, school, or grade)
-#     asmt subject
-#     achievement level name
-#     number of students
-#     total number of students
+#     id (district, school, or grade)
+#     name (district, school, or grade)
+#     Map of results
+#      asmt subject
+#      count of students in level 1
+#      count of students in level 2
+#      count of students in level 3
+#      count of students in level 4
+#      count of students in level 5
+#      total number of students
 
 
 @report_config(
@@ -108,6 +112,9 @@ def __arrange_results(results):
     '''
     arranged_results = []
     curr_result = None
+    # abstract the subject names in the response results
+    subjects = {"Math": "subject1", "ELA": "subject2"}
+
     for result in results:
         if (curr_result is None) or (result['district_name'] != curr_result['name']):
             curr_result = {}
@@ -121,6 +128,8 @@ def __arrange_results(results):
         subject_result['level3'] = result['level3']
         subject_result['level4'] = result['level4']
         subject_result['total'] = result['total']
-        curr_result['results'][result['asmt_subject']] = subject_result
+        subject_result['asmt_subject'] = result['asmt_subject']
+        subject = subjects[result['asmt_subject']]
+        curr_result['results'][subject] = subject_result
 
     return arranged_results

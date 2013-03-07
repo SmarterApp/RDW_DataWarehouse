@@ -13,7 +13,7 @@ Created on Feb 21, 2013
 @author: swimberly
 '''
 
-import random
+from datetime import date
 import argparse
 import locale
 
@@ -25,7 +25,7 @@ from compare_populations_schools_within_district import district_statistics
 from compare_populations_grades_within_school import school_statistics
 
 
-def run_benchmarks(metadata, connection, schema, district_num=4, state_num=1, school_num=10):
+def run_benchmarks(metadata, connection, schema, is_verbose, district_num=1, state_num=1, school_num=1, as_csv=False):
     '''
     runs the three benchmark methods which print out their results
     also runs queries to get the id's of districts and states to run
@@ -38,17 +38,37 @@ def run_benchmarks(metadata, connection, schema, district_num=4, state_num=1, sc
     school_num -- the number of schools to run benchmarks on
     '''
 
+    # check for is_verbose.
+    # If is_verbose is not true but the number of queries to run for any of the objects is greater than 1
+    # set is_verbose to true
+    if not is_verbose:
+        if not (district_num == state_num == school_num == 1):
+            is_verbose = True
+
     # get lists of items sorted ascending by size
     states = get_state_id_list_by_size(metadata, connection)
     districts = get_district_id_list_by_size(metadata, connection)
     schools = get_school_list_by_size(metadata, connection)
 
-    run_statistics(metadata, connection, schema, state_statistics, state_num, states, 'State')
-    run_statistics(metadata, connection, schema, district_statistics, district_num, districts, 'District')
-    run_statistics(metadata, connection, schema, school_statistics, school_num, schools, 'School')
+    db_stats = get_database_statistics(metadata, connection, schema)
+
+    # print out the database stats if verbose mode is on
+    if is_verbose:
+        print_db_stats(db_stats)
+
+    state_results = run_statistics(metadata, connection, schema, state_statistics, state_num, states, is_verbose)
+    district_results = run_statistics(metadata, connection, schema, district_statistics, district_num, districts, is_verbose)
+    school_results = run_statistics(metadata, connection, schema, school_statistics, school_num, schools, is_verbose)
+
+    if len(state_results) == len(district_results) == len(school_results) == 1:
+        total_time = state_results[0]['benchmarks']['total_time']
+        total_time += district_results[0]['benchmarks']['total_time']
+        total_time += school_results[0]['benchmarks']['total_time']
+
+        print_short_result(total_time, db_stats, state_results[0], district_results[0], school_results[0], as_csv)
 
 
-def run_statistics(metadata, connection, schema, statistics_method, count_num, object_list, descriptor):
+def run_statistics(metadata, connection, schema, statistics_method, count_num, object_list, is_verbose):
     '''
     Helper method to call the statistic methods for each of the different types of queries
     INPUT:
@@ -58,22 +78,27 @@ def run_statistics(metadata, connection, schema, statistics_method, count_num, o
     statistics_method -- the statistics method that will do the benchmarks to call for the given data
     count_num -- the number of times to run the benchmark
     object_list -- a list of tuples that include the id of the object to query, where an objece is a state, school or district
-    descriptor -- a non-plural string that describes the objects (ie. school, state, district)
+    RETURNS: res_list -- a list of the results received during the queries.
     '''
 
+    res_list = []
     # if count is greater the len. run stats for all items in object_list
     # otherwise for the x largest where x is count_num
     if count_num >= len(object_list):
         for obj in object_list:
             res = statistics_method(obj[0], connection, schema)
-            description = descriptor + ' ' + str(obj[0])
-            print_results(res, description)
+            res_list.append(res)
+            if is_verbose:
+                print_results(res)
     else:
-        for _i in range(count_num):
-            obj_id = object_list.pop(0)[0]
+        for i in range(count_num):
+            obj_id = object_list[i][0]
             res = statistics_method(obj_id, connection, schema)
-            description = descriptor + ' ' + str(obj_id)
-            print_results(res, description)
+            res_list.append(res)
+            if is_verbose:
+                print_results(res)
+
+    return res_list
 
 
 def get_district_id_list_by_size(metadata, connection, state_id=None):
@@ -186,12 +211,127 @@ def get_school_list_by_size(metadata, connection, district_id=None, state_id=Non
     return district_list
 
 
-def print_results(result_dict, description):
+def get_database_statistics(metadata, connection, schema):
+    '''
+    Get statistics for the database, including:
+    number of states, number of schools, number of students, number of districts
+    INPUT:
+    metadata -- SQLAlchemy metadata object
+    connection -- SQLAlchemy connection object. A connection to the db
+    schema -- the name of the schema to use in the queries
+    RETURNS:
+    result -- a dict of counts
+    '''
+
+    dim_state = metadata.tables.get('%s.dim_state' % schema)
+    dim_district = metadata.tables.get('%s.dim_district' % schema)
+    dim_school = metadata.tables.get('%s.dim_school' % schema)
+    dim_student = metadata.tables.get('%s.dim_student' % schema)
+
+    if dim_state is None or dim_district is None or dim_school is None or dim_student is None:
+        raise AttributeError('metadata table list missing a desired table')
+
+    state_count_select = select([func.count(dim_state.c.state_id)])
+    districts_count_select = select([func.count(dim_district.c.district_id)])
+    school_count_select = select([func.count(dim_school.c.school_id)])
+    student_count_select = select([func.count(dim_student.c.student_id)])
+
+    state_count = connection.execute(state_count_select).fetchall()[0][0]
+    district_count = connection.execute(districts_count_select).fetchall()[0][0]
+    school_count = connection.execute(school_count_select).fetchall()[0][0]
+    student_count = connection.execute(student_count_select).fetchall()[0][0]
+
+    result = {
+        'state_count': state_count,
+        'district_count': district_count,
+        'school_count': school_count,
+        'student_count': student_count,
+    }
+
+    return result
+
+
+def print_db_stats(db_stats):
+    '''
+    format and print results gather in the get_database_statistics method
+    INPUT:
+    db_stats -- dictionary returned by get_database_statistics
+    '''
+    print('******** Data Base Stats ********')
+    print('State Count:    ', db_stats['state_count'])
+    print('District Count: ', db_stats['district_count'])
+    print('School Count:   ', db_stats['school_count'])
+    print('Student Count:  ', db_stats['student_count'])
+    print('\n')
+
+
+def print_short_result(total_time, db_stats, state_res_dict, district_res_dict, school_res_dict, as_csv=False):
+    '''
+    Formats and prints a one line summary of the benchmark that can be easily stored
+    in a database or table. Includes a header. Will print either formatted as csv or as tab separated
+    INPUT:
+    total_time -- float, the amount of time it took to run all queries
+    db_stats -- dictionary of database stats returned by get_database_statistics
+    state_res_dict -- the result dictionary for a state
+    district_res_dict -- the result dictionary for a district
+    school_res_dict -- the result dictionary for a district
+    as_csv -- boolean, format as a csv with commas or not.
+    RETURNS:
+    '''
+
+    state_bench = state_res_dict['benchmarks']
+    district_bench = district_res_dict['benchmarks']
+    school_bench = school_res_dict['benchmarks']
+
+    # Small output headers
+    headings = [
+        'Date', 'Total Time', 'State DB Count', 'State', 'State Time', 'State Result Count',
+        'District DB Count', 'District ID', 'District Time', 'District Result Count',
+        'School DB Count', 'School ID', 'School Time', 'School Result Count',
+    ]
+
+    # Small output data, Convert all data to string object (and format if necessary)
+    data = [
+        str(date.today()), '%.2fs' % total_time, str(db_stats['state_count']), state_res_dict['id'],
+        '%.2fs' % state_bench['total_time'], str(state_bench['total_rows']), str(db_stats['district_count']),
+        str(district_res_dict['id']), '%.2fs' % district_bench['total_time'],
+        str(district_bench['total_rows']), str(db_stats['school_count']), str(school_res_dict['id']),
+        '%.2fs' % school_bench['total_time'], str(school_bench['total_rows'])
+    ]
+
+    head_string = ''
+    data_string = ''
+
+    # loop through headings and construct the output string, Either as tab separated or comma separated
+    for i in range(len(headings)):
+        if as_csv:
+            head_string += (headings[i] + ',')
+        else:
+            width = max(len(headings[i]), len(data[i]))
+            head_string += '{0:>{1}}'.format(headings[i], width + 2)
+
+    # remove trailing comma (if present)
+    head_string = head_string.rstrip(',')
+    print(head_string)
+
+    # loop through data and construct the output string, Either as tab separated or comma separated
+    for i in range(len(headings)):
+        if as_csv:
+            data_string += (data[i] + ',')
+        else:
+            width = max(len(headings[i]), len(data[i]))
+            data_string += '{0:>{1}}'.format(data[i], width + 2)
+
+    # remove trailing comma (if present)
+    data_string = data_string.rstrip(',')
+    print(data_string)
+
+
+def print_results(result_dict):
     '''
     prints the result dictionary returned by one of the statistic methods
     INPUT:
     result_dict -- dict with two items
-    description -- a string to describe benchmark data ('Benchmarks for {description})
     is_verbose -- boolean flag for whether to print query results
     RETURNS: None
     '''
@@ -201,6 +341,7 @@ def print_results(result_dict, description):
     float_places = 3
     db_stats = result_dict['stats']
     benchmarks = result_dict['benchmarks']
+    description = result_dict['descriptor'] + ' ' + str(result_dict['id'])
 
     print('************* Benchmarks for %s *************' % description)
 
@@ -217,12 +358,14 @@ def print_results(result_dict, description):
     print('**** Benchmarks for Queries ****')
 
     #Get Length of longest string and use to format output
-    max_str_len = max(max_str_len, len(max((x['type'] for x in benchmarks), key=len)))
+    max_str_len = max(max_str_len, len(max((x['type'] for x in benchmarks['data']), key=len)))
 
     # Loop through benchmark results and print
-    for mark in benchmarks:
+    for mark in benchmarks['data']:
         string = '{0:{1}}{2:{3}.{4}f}s'.format(mark['type'], max_str_len + string_space, mark['query_time'], num_offset, float_places)
         print(string)
+
+    print()
 
 
 def get_input_args():
@@ -238,10 +381,14 @@ def get_input_args():
     parser.add_argument('password', help='password for the user')
     parser.add_argument('schema', help='schema to use')
     parser.add_argument('-p', '--port', type=int, help='port to connect to. Default: 5432', default=5432)
-    parser.add_argument('--state_count', help='number of states to run benchmarks on. Default: 1', default=1)
-    parser.add_argument('--district_count', help='number of districts to run benchmarks on. Default: 4', default=4)
-    parser.add_argument('--school_count', help='number of schools to run benchmarks on. Default: 10', default=10)
-    parser.add_argument('-v', '--verbose', action='store_true', help='print out query results. NOT IMPLEMENTED YET')
+    parser.add_argument('--state_count', help='number of states to run benchmarks on. Benchmarks run on the n largest. Default: 1', default=1)
+    parser.add_argument('--district_count', help='number of districts to run benchmarks on. Benchmarks run on the n largest. Default: 1', default=1)
+    parser.add_argument('--school_count', help='number of schools to run benchmarks on. Benchmarks run on the n largest. Default: 1', default=1)
+    parser.add_argument('--state', help='State code you wish to run benchmarks for')
+    parser.add_argument('--district', help='District ID you wish to run benchmarks for')
+    parser.add_argument('--school', help='District ID you wish to run benchmarks for')
+    parser.add_argument('-v', '--verbose', action='store_true', help='print out query results.')
+    parser.add_argument('-c', '--csv', action='store_true', help='whether or not to print short output as csv')
 
     args = parser.parse_args()
     return vars(args)
@@ -268,7 +415,8 @@ def main():
     # Run benchmarks
     print("Starting Benchmarks")
     print()
-    run_benchmarks(metadata, db_connection, input_args['schema'], input_args['district_count'], input_args['state_count'], input_args['school_count'])
+    run_benchmarks(metadata, db_connection, input_args['schema'], input_args['verbose'], input_args['district_count'],
+                   input_args['state_count'], input_args['school_count'], input_args['csv'])
     print()
     print("Benchmarking Complete")
 

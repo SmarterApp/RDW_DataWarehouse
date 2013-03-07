@@ -49,58 +49,48 @@ def district_statistics(district_id, connection, schema_name):
     where student.district_id = {district_id}
     '''.format(district_id=district_id, schema=schema_name)
 
-    total_students_query = '''
-    select count(*)
-    from {schema}.dim_student
-    '''.format(schema=schema_name)
-
-    total_dist_query = '''
-    select count(*)
-    from {schema}.dim_district
-    '''.format(schema=schema_name)
-
-    total_schools_query = '''
-    select count(*)
-    from {schema}.dim_school
-    '''.format(schema=schema_name)
-
     start_time = time.time()
     school_count_set = connection.execute(school_count_query).fetchall()[0][0]
     stu_count_set = connection.execute(student_count_query).fetchall()[0][0]
-    tot_stu_set = connection.execute(total_students_query).fetchall()[0][0]
-    tot_dist_set = connection.execute(total_dist_query).fetchall()[0][0]
-    tot_sch_set = connection.execute(total_schools_query).fetchall()[0][0]
     query_time = time.time() - start_time
 
     result_dict['stats'] = {'query_time': query_time, 'data': []}
 
-    result_dict['stats']['data'].append({'name': 'Total Districts in DB', 'value': tot_dist_set})
-    result_dict['stats']['data'].append({'name': 'Total Schools in DB', 'value': tot_sch_set})
-    result_dict['stats']['data'].append({'name': 'Total Students in DB', 'value': tot_stu_set})
+    result_dict['descriptor'] = 'District'
+    result_dict['id'] = district_id
+
     result_dict['stats']['data'].append({'name': 'Schools in District', 'value': school_count_set})
     result_dict['stats']['data'].append({'name': 'Students in District', 'value': stu_count_set})
 
-    result_dict['benchmarks'] = []
+    result_dict['benchmarks'] = {'total_time': 0, 'total_rows': 0, 'data': []}
 
     start_time1 = time.time()
     res = schools_in_a_district(district_id, 'SUMMATIVE', 'ELA', connection, schema_name)
     query_time = time.time() - start_time1
-    result_dict['benchmarks'].append({'type': 'Summative-ELA', 'query_time': query_time, 'result': res})
+    result_dict['benchmarks']['data'].append({'type': 'Summative-ELA', 'query_time': query_time, 'result': res})
+    result_dict['benchmarks']['total_time'] += query_time
+    result_dict['benchmarks']['total_rows'] += len(res)
 
     start_time1 = time.time()
     res = schools_in_a_district(district_id, 'INTERIM', 'ELA', connection, schema_name)
     query_time = time.time() - start_time1
-    result_dict['benchmarks'].append({'type': 'Interim-ELA', 'query_time': query_time, 'result': res})
+    result_dict['benchmarks']['data'].append({'type': 'Interim-ELA', 'query_time': query_time, 'result': res})
+    result_dict['benchmarks']['total_time'] += query_time
+    result_dict['benchmarks']['total_rows'] += len(res)
 
     start_time1 = time.time()
     res = schools_in_a_district(district_id, 'SUMMATIVE', 'Math', connection, schema_name)
     query_time = time.time() - start_time1
-    result_dict['benchmarks'].append({'type': 'Summative-Math', 'query_time': query_time, 'result': res})
+    result_dict['benchmarks']['data'].append({'type': 'Summative-Math', 'query_time': query_time, 'result': res})
+    result_dict['benchmarks']['total_time'] += query_time
+    result_dict['benchmarks']['total_rows'] += len(res)
 
     start_time1 = time.time()
     res = schools_in_a_district(district_id, 'INTERIM', 'Math', connection, schema_name)
     query_time = time.time() - start_time1
-    result_dict['benchmarks'].append({'type': 'Interim-Math', 'query_time': query_time, 'result': res})
+    result_dict['benchmarks']['data'].append({'type': 'Interim-Math', 'query_time': query_time, 'result': res})
+    result_dict['benchmarks']['total_time'] += query_time
+    result_dict['benchmarks']['total_rows'] += len(res)
 
     return result_dict
 

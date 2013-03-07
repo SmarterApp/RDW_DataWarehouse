@@ -12,6 +12,8 @@ define [
   #    
   getDatafromSource = (sourceURL, options, callback) ->
       
+      return false  if sourceURL is "undefined" or typeof sourceURL is "number" or typeof sourceURL is "function" or typeof sourceURL is "object"
+      
       $.ajax(
         type: options.method
         url: sourceURL

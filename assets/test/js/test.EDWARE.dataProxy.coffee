@@ -12,9 +12,9 @@ require ["jquery", "cs!edwareDataProxy"], ($, dataProxy) ->
     ok dataProxy.getDatafromSource isnt "undefined", "dataProxy getDatafromSource method should be defined"
     ok typeof dataProxy.getDatafromSource is "function", "dataProxy getDatafromSource method should be function"
       
-    #deepEqual dataProxy.getDatafromSource(->), false, "If sourceURL is not passed as a parameter, then the method should return false"
-    #deepEqual dataProxy.getDatafromSource(1234, ->), false, "If sourceURL is passed as a number, then the method should return false"
-    #deepEqual dataProxy.getDatafromSource({}, ->), false, "If sourceURL is passed as an object, then the method should return false"
+    deepEqual dataProxy.getDatafromSource(->), false, "If sourceURL is not passed as a parameter, then the method should return false"
+    deepEqual dataProxy.getDatafromSource(1234, ->), false, "If sourceURL is passed as a number, then the method should return false"
+    deepEqual dataProxy.getDatafromSource({}, ->), false, "If sourceURL is passed as an object, then the method should return false"
   
   #module "EDWARE.dataProxy.getConfigs"
   

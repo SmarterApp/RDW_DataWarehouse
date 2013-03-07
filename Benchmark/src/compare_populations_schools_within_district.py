@@ -6,8 +6,8 @@ Created on Feb 15, 2013
 schools withing a district query
 
 Public interface:
-district_statistics(state_id, connection)
-schools_in_a_district(state_id, asmt_type, asmt_subject, connection)
+district_statistics(state_code, connection)
+schools_in_a_district(state_code, asmt_type, asmt_subject, connection)
 
 Descriptions:
 'district_statistics()' prints statistics for how long it takes for the query to return
@@ -25,7 +25,7 @@ def district_statistics(district_id, connection, schema_name):
     '''
     Runs queries that print out the statistics and benchmarks for a district
     INPUT:
-    state_id -- an id for a state from the database
+    state_code -- an id for a state from the database
     connection -- the db connection created by a sqlAlchemy connection() statement
     schema_name -- the name of the schema to use in the queries
     RETURNS:
@@ -39,14 +39,14 @@ def district_statistics(district_id, connection, schema_name):
 
     school_count_query = '''
     select count(*)
-    from {schema}.dim_school school
-    where school.district_id = {district_id}
+    from {schema}.dim_inst_hier inst
+    where inst.district_id = '{district_id}'
     '''.format(district_id=district_id, schema=schema_name)
 
     student_count_query = '''
     select count(*)
     from {schema}.dim_student student
-    where student.district_id = {district_id}
+    where student.district_id = '{district_id}'
     '''.format(district_id=district_id, schema=schema_name)
 
     start_time = time.time()
@@ -99,7 +99,7 @@ def schools_in_a_district(district_id, asmt_type, asmt_subject, connection, sche
     '''
     Run a query for assessment performance for grades within a school.
     INPUT:
-    state_id -- the id of the state that you want to use in the query (ie. 'DE' for deleware)
+    state_code -- the id of the state that you want to use in the query (ie. 'DE' for deleware)
     asmt_type -- the type of assessment to use in the query ('SUMMATIVE' or 'INTERIM')
     asmt_subject -- the subject of assessment to use in the query ('ELA' or 'Math')
     connection -- the db connection created by a sqlAlchemy connection() statement
@@ -108,7 +108,7 @@ def schools_in_a_district(district_id, asmt_type, asmt_subject, connection, sche
     '''
 
     query = """
-    select school.school_name, count(fact.student_id),
+    select inst.school_name, count(fact.student_id),
     case
     when fact.asmt_score <= asmt.asmt_cut_point_1 then asmt.asmt_perf_lvl_name_1
     when fact.asmt_score > asmt.asmt_cut_point_1 and fact.asmt_score <= asmt.asmt_cut_point_2 then asmt.asmt_perf_lvl_name_2
@@ -118,17 +118,17 @@ def schools_in_a_district(district_id, asmt_type, asmt_subject, connection, sche
     as performance_level
     from
     {schema}.dim_asmt asmt,
-    {schema}.dim_school school,
+    {schema}.dim_inst_hier inst,
     {schema}.fact_asmt_outcome fact,
     {schema}.dim_student stu
     where asmt.asmt_id = fact.asmt_id
-    and school.school_id = fact.school_id
+    and inst.school_id = fact.school_id
     and stu.student_id = fact.student_id
     and fact.date_taken_year='2012'
-    and fact.district_id = {district_id}
+    and fact.district_id = '{district_id}'
     and asmt.asmt_type = '{asmt_type}'
     and asmt.asmt_subject = '{asmt_subject}'
-    group by school.school_name, performance_level
+    group by inst.school_name, performance_level
     """.format(district_id=district_id, asmt_type=asmt_type, asmt_subject=asmt_subject, schema=schema_name)
 
     resultset = connection.execute(query)

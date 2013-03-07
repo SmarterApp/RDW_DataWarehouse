@@ -263,7 +263,7 @@ def print_short_result(total_time, schema, db_stats, state_res_dict, district_re
     headings = [
         'Date', 'Schema', 'Total Time', 'State DB Count', 'State', 'State Time', 'State Result Count',
         'District DB Count', 'District ID', 'District Time', 'District Result Count',
-        'School DB Count', 'School ID', 'School Time', 'School Result Count',
+        'School DB Count', 'School ID', 'School Time', 'School Result Count', 'Student DB Count'
     ]
 
     # Small output data, Convert all data to string object (and format if necessary)
@@ -272,7 +272,7 @@ def print_short_result(total_time, schema, db_stats, state_res_dict, district_re
         '%.2fs' % state_bench['total_time'], str(state_bench['total_rows']), str(db_stats['district_count']),
         str(district_res_dict['id']), '%.2fs' % district_bench['total_time'],
         str(district_bench['total_rows']), str(db_stats['school_count']), str(school_res_dict['id']),
-        '%.2fs' % school_bench['total_time'], str(school_bench['total_rows'])
+        '%.2fs' % school_bench['total_time'], str(school_bench['total_rows']), locale.format('%d', db_stats['student_count'], grouping=True)
     ]
 
     head_string = ''

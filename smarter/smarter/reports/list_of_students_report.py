@@ -186,14 +186,14 @@ def get_list_of_students_report(params):
                 student_id_track[result['student_id']] = True
 
         los_results['assessments'] = assessments
-        los_results['cutpoints'] = __get_cut_points(connector, asmt_grade, asmt_subject)
+        los_results['cutpoints'] = __get_cut_points(connector, asmt_subject)
         los_results['context'] = __get_context(connector, asmt_grade, school_id, district_id)
 
         return los_results
 
 
 # returning cutpoints in JSON.
-def __get_cut_points(connector, asmtGrade, asmtSubject):
+def __get_cut_points(connector, asmtSubject):
     cutpoints = {}
     dim_asmt = connector.get_table('dim_asmt')
 
@@ -209,7 +209,6 @@ def __get_cut_points(connector, asmtGrade, asmtSubject):
                     dim_asmt.c.asmt_cut_point_3.label("asmt_cut_point_3"),
                     dim_asmt.c.asmt_cut_point_4.label("asmt_cut_point_4")],
                    from_obj=[dim_asmt])
-    query = query.where(dim_asmt.c.asmt_grade == asmtGrade)
     if asmtSubject is not None:
         query = query.where(dim_asmt.c.asmt_subject.in_(asmtSubject))
 

@@ -12,7 +12,14 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class DataImporterLengthException(Exception):
+class DataException(Exception):
+    '''
+    Exception for Data Related problems
+    '''
+    pass
+
+
+class DataImporterLengthException(DataException):
     '''
     Exception for Data Importer
     '''
@@ -32,13 +39,7 @@ def __cast_data_type(column, value):
     '''
     # if value is not None and length is not 0 AND not nullable
     # get python_type property, then cast
-    cast = False
-    if (value is not None and len(value) != 0):
-        cast = True
-    else:
-        if not column.nullable:
-            cast = True
-    if cast:
+    if (value is not None and len(value) != 0 or not column.nullable):
         try:
             value = column.type.python_type(value)
         except:
@@ -60,16 +61,20 @@ def __import_csv_file(csv_file, connection, table):
         reader = csv.DictReader(file_obj, delimiter=',')
         for row in reader:
             new_row = {}
-            for field_name in list(row.keys()):
-                # strip out spaces and \n
-                clean_field_name = field_name.rstrip()
-                value = row[field_name]
-                column = table.c[clean_field_name]
-                value = __cast_data_type(column, value)
-                __check_data_length(column, value)
-                new_row[clean_field_name] = value
-            # Inserts to the table one row at a time
-            connection.execute(table.insert().values(**new_row))
+            try:
+                for field_name in list(row.keys()):
+                    # strip out spaces and \n
+                    clean_field_name = field_name.rstrip()
+                    value = row[field_name]
+                    column = table.c[clean_field_name]
+                    value = __cast_data_type(column, value)
+                    __check_data_length(column, value)
+                    new_row[clean_field_name] = value
+                # Inserts to the table one row at a time
+                connection.execute(table.insert().values(**new_row))
+            except Exception as x:
+                logger.exception(x)
+                raise
 
 
 def import_csv_dir(resources_dir, datasource_name=''):

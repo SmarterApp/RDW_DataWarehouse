@@ -226,9 +226,8 @@ def get_student_assessment(params):
                         dim_asmt.c.asmt_type,
                         dim_asmt.c.asmt_period,
                         dim_asmt.c.asmt_version,
-                        dim_asmt.c.asmt_grade],
-                       from_obj=[fact_asmt_outcome
-                                 .join(dim_asmt)])
+                        fact_asmt_outcome.c.asmt_grade],
+                       from_obj=[fact_asmt_outcome.join(dim_asmt, fact_asmt_outcome.c.asmt_rec_id == dim_asmt.c.asmt_rec_id)])
         query = query.where(fact_asmt_outcome.c.student_id == student_id)
         query = query.order_by(dim_asmt.c.asmt_subject)
         result = connection.get_result(query)

@@ -187,12 +187,12 @@ class AssessmentOutcome(object):
         score -- a score object
         asmt -- an assessment object
         '''
+        # print(asmt.asmt_cut_point_3, asmt.asmt_cut_point_2, asmt.asmt_cut_point_1, score)
         if score.overall > asmt.asmt_cut_point_3:
-            if asmt.asmt_cut_point_4:
-                return 4
-            else:
-                return 3
+            return 4
         elif score.overall > asmt.asmt_cut_point_2:
+            return 3
+        elif score.overall > asmt.asmt_cut_point_1:
             return 2
         else:
             return 1

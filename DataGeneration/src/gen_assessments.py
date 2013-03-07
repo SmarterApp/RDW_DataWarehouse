@@ -83,8 +83,8 @@ def generate_single_asmt(student_grade, asmt_type, period, subject, year, most_r
         'asmt_perf_lvl_name_3': PERFORMANCE_LEVELS[2],
         'asmt_perf_lvl_name_4': PERFORMANCE_LEVELS[3],
         'asmt_cut_point_1': int((MAX_ASSMT_SCORE + MIN_ASSMT_SCORE) * .25),
-        'asmt_cut_point_2': int((MAX_ASSMT_SCORE + MIN_ASSMT_SCORE) * .5),
-        'asmt_cut_point_3': int((MAX_ASSMT_SCORE + MIN_ASSMT_SCORE) * .75),
+        'asmt_cut_point_2': int((MAX_ASSMT_SCORE + MIN_ASSMT_SCORE) * .50),
+        'asmt_cut_point_3': int((MAX_ASSMT_SCORE + MIN_ASSMT_SCORE) * .65),
 
         'from_date': '20120901',
         'most_recent': most_recent

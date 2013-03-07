@@ -29,10 +29,13 @@ def district_statistics(district_id, connection, schema_name):
     connection -- the db connection created by a sqlAlchemy connection() statement
     schema_name -- the name of the schema to use in the queries
     RETURNS:
-    result_dict -- A dictionary of results. The dictionary will have two items: 'stats' and 'benchmarks'
+    result_dict -- A dictionary of results. The dictionary will have four items: 'stats',descriptor', 'id' and 'benchmarks'
         'stats' is a dictionary of two items a float and a list of dicts 'query_time' and 'data' respectively.
             'data' is a list of query results in a dict with keys: name and value
-        'benchmarks' is a list of dictionaries. Each dictionary has keys: 'type', 'query_time' and 'result'
+        'descriptor' is the string 'District' to help identify the result
+        'id' is the id that was used for the query
+        'benchmarks' is a dictionary of 'total_time', 'total_rows' and 'data'. 'data' is a list of dictionaries.
+            Each dictionary in 'data' has keys: 'type', 'query_time' and 'result'
     '''
 
     result_dict = {}

@@ -32,7 +32,10 @@ def state_statistics(state_id, connection, schema_name):
     result_dict -- A dictionary of results. The dictionary will have two items: 'stats' and 'benchmarks'
         'stats' is a dictionary of two items a float and a list of dicts 'query_time' and 'data' respectively.
             'data' is a list of query results in a dict with keys: name and value
-        'benchmarks' is a list of dictionaries. Each dictionary has keys: 'type', 'query_time' and 'result'
+        'descriptor' is the string 'State' to help identify the result
+        'id' is the id that was used for the query
+        'benchmarks' is a dictionary of 'total_time', 'total_rows' and 'data'. 'data' is a list of dictionaries.
+            Each dictionary in 'data' has keys: 'type', 'query_time' and 'result'
     '''
 
     result_dict = {}

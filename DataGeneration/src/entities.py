@@ -135,7 +135,7 @@ class Assessment:
     def getRow(self):
 
         return [self.asmt_rec_id, self.asmt_id, self.asmt_type, self.asmt_period, self.asmt_period_year, self.asmt_version,
-                self.asmt_grade, self.asmt_subject, self.claim_1.claim_name, self.claim_2.claim_name, self.claim_3.claim_name,
+                self.asmt_subject, self.claim_1.claim_name, self.claim_2.claim_name, self.claim_3.claim_name,
                 self.claim_4.claim_name if self.claim_4 is not None else '',
                 self.asmt_perf_lvl_name_1, self.asmt_perf_lvl_name_2, self.asmt_perf_lvl_name_3,
                 self.asmt_perf_lvl_name_4, self.asmt_perf_lvl_name_5,
@@ -149,7 +149,7 @@ class Assessment:
 
     @classmethod
     def getHeader(cls):
-        return ['asmt_rec_id', 'asmt_id', 'asmt_type', 'asmt_period', 'asmt_period_year', 'asmt_version', 'asmt_grade', 'asmt_subject',
+        return ['asmt_rec_id', 'asmt_id', 'asmt_type', 'asmt_period', 'asmt_period_year', 'asmt_version', 'asmt_subject',
                 'asmt_claim_1_name', 'asmt_claim_2_name', 'asmt_claim_3_name', 'asmt_claim_4_name',
                 'asmt_perf_lvl_name_1', 'asmt_perf_lvl_name_2', 'asmt_perf_lvl_name_3', 'asmt_perf_lvl_name_4', 'asmt_perf_lvl_name_5',
                 'asmt_score_min', 'asmt_score_max',
@@ -187,12 +187,12 @@ class AssessmentOutcome(object):
         score -- a score object
         asmt -- an assessment object
         '''
+        # print(asmt.asmt_cut_point_3, asmt.asmt_cut_point_2, asmt.asmt_cut_point_1, score)
         if score.overall > asmt.asmt_cut_point_3:
-            if asmt.asmt_cut_point_4:
-                return 4
-            else:
-                return 3
+            return 4
         elif score.overall > asmt.asmt_cut_point_2:
+            return 3
+        elif score.overall > asmt.asmt_cut_point_1:
             return 2
         else:
             return 1

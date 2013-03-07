@@ -24,30 +24,30 @@ class Test(unittest.TestCase):
 
     def test_school_statistics(self):
         res = school_statistics(1, self.connection, 'schema_name')
-        self.assertEquals(len(res), 2)
+        self.assertEquals(len(res), 4)
         benchmarks = res.get('benchmarks')
         stats = res.get('stats')
         self.assertIsNotNone(benchmarks)
         self.assertIsNotNone(stats)
-        self.assertIsNotNone(benchmarks[0])
+        self.assertIsNotNone(benchmarks['data'][0])
 
     def test_district_statistics(self):
         res = district_statistics(1, self.connection, 'schema_name')
-        self.assertEquals(len(res), 2)
+        self.assertEquals(len(res), 4)
         benchmarks = res.get('benchmarks')
         stats = res.get('stats')
         self.assertIsNotNone(benchmarks)
         self.assertIsNotNone(stats)
-        self.assertIsNotNone(benchmarks[0])
+        self.assertIsNotNone(benchmarks['data'][0])
 
     def test_state_statistics(self):
         res = state_statistics(1, self.connection, 'schema_name')
-        self.assertEquals(len(res), 2)
+        self.assertEquals(len(res), 4)
         benchmarks = res.get('benchmarks')
         stats = res.get('stats')
         self.assertIsNotNone(benchmarks)
         self.assertIsNotNone(stats)
-        self.assertIsNotNone(benchmarks[0])
+        self.assertIsNotNone(benchmarks['data'][0])
 
 
 class Connection(object):

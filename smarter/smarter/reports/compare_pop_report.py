@@ -106,4 +106,21 @@ def __arrange_results(results):
     '''
     Arrange the results in optimal way to be consumed by front-end
     '''
-    return results
+    arranged_results = []
+    curr_result = None
+    for result in results:
+        if (curr_result is None) or (result['district_name'] != curr_result['name']):
+            curr_result = {}
+            curr_result['name'] = result['district_name']
+            curr_result['results'] = {}
+            arranged_results.append(curr_result)
+
+        subject_result = {}
+        subject_result['level1'] = result['level1']
+        subject_result['level2'] = result['level2']
+        subject_result['level3'] = result['level3']
+        subject_result['level4'] = result['level4']
+        subject_result['total'] = result['total']
+        curr_result['results'][result['asmt_subject']] = subject_result
+
+    return arranged_results

@@ -75,7 +75,7 @@ class TestViews(unittest.TestCase):
         queries = urllib.parse.parse_qs(actual_url.query)
         self.assertTrue(len(queries) == 2)
         self.assertIsNotNone(queries['SAMLRequest'])
-        self.assertTrue(inflate_base64_decode(queries['RelayState'][0]).decode('utf-8').endswith('/dummy/report'))
+        self.assertTrue(inflate_base64_decode(queries['RelayState'][0]).decode('utf-8').endswith('/assets/html/stateStudentList.html'))
 
     def test_login_referred_by_logout_url(self):
         self.__request.url = 'http://example.com/dummy/logout'
@@ -202,7 +202,7 @@ class TestViews(unittest.TestCase):
         self.__request.GET['SAMLResponse'] = 'junk'
         http = logout_redirect(self.__request)
         self.assertIsInstance(http, HTTPFound)
-        self.assertTrue(http.location.endswith('/dummy/report'))
+        self.assertTrue(http.location.endswith('/assets/html/stateStudentList.html'))
 
 
 if __name__ == "__main__":

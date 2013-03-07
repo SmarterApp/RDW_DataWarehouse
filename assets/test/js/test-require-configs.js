@@ -19,9 +19,11 @@ var baseConfigs = {
 	    edwareIndividualStudent: '../../js/EDWARE.individualStudent',
 	    edwareBreadcrumbs: '../../js/widgets/breadcrumb/EDWARE.breadcrumbs',
 		edwareConfidenceLevelBar: '../../js/widgets/confidenceLevelBar/EDWARE.confidenceBar',
+		edwarePopulationBar: '../../js/widgets/populationBar/EDWARE.populationBar',
 	    
 	    edwareBreadcrumbsTemplate: '../../js/widgets/breadcrumb/template.html',
-		edwareConfidenceLevelBarTemplate: '../../js/widgets/confidenceLevelBar/template.html'
+		edwareConfidenceLevelBarTemplate: '../../js/widgets/confidenceLevelBar/template.html',
+		edwarePopulationBarTemplate: '../../js/widgets/populationBar/template.html'
 	},
 	shim: {
         'jqGrid': {

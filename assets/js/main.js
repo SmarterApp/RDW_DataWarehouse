@@ -12,13 +12,16 @@ require({
 		edwareGrid: 'widgets/grid/EDWARE.grid.tablegrid',
 		edwareGridFormatters: 'widgets/grid/EDWARE.grid.formatters',
 		edwareStudentList: 'EDWARE.studentList',
+		edwareStateStudentList: 'EDWARE.stateStudentList',
 		edwareIndividualStudent: 'EDWARE.individualStudent',
 		edwareBreadcrumbs: 'widgets/breadcrumb/EDWARE.breadcrumbs',
 		edwareConfidenceLevelBar: 'widgets/confidenceLevelBar/EDWARE.confidenceBar',
+		edwarePopulationBar: 'widgets/populationBar/EDWARE.populationBar',
 		
 		// Templates
 		edwareBreadcrumbsTemplate: 'widgets/breadcrumb/template.html',
-		edwareConfidenceLevelBarTemplate: 'widgets/confidenceLevelBar/template.html'
+		edwareConfidenceLevelBarTemplate: 'widgets/confidenceLevelBar/template.html',
+		edwarePopulationBarTemplate: 'widgets/populationBar/template.html'
 	},
 	shim: {
         'jqGrid': {

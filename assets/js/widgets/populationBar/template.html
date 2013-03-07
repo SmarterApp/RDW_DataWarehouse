@@ -1,0 +1,5 @@
+<div class="progress">
+	{{#intervals}}
+  	<div class="bar" style="background-color: {{color.bg_color}}; background-image: -moz-linear-gradient(center top , {{color.start_gradient_bg_color}}, {{color.end_gradient_bg_color}}); background-image: -webkit-linear-gradient(top , {{color.start_gradient_bg_color}}, {{color.end_gradient_bg_color}}); background-image: -ms-linear-gradient(top , {{color.start_gradient_bg_color}}, {{color.end_gradient_bg_color}}); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr={{color.start_gradient_bg_color}}, endColorstr={{color.end_gradient_bg_color}}, GradientType=0); background-repeat: repeat-x; color: {{color.text_color}}; width: {{percentage}}%;">{{percentage}}%</div>
+  	{{/intervals}}
+</div>

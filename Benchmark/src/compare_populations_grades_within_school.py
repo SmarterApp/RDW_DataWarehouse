@@ -6,8 +6,8 @@ Created on Feb 15, 2013
 Grades withing a school query & benchmarks
 
 Public interface:
-school_statistics(state_id, connection, schema_name)
-grades_in_a_school(state_id, asmt_type, asmt_subject, connection, schema_name)
+school_statistics(state_code, connection, schema_name)
+grades_in_a_school(state_code, asmt_type, asmt_subject, connection, schema_name)
 
 Descriptions:
 'school_statistics()' prints statistics for how long it takes for the query to return
@@ -25,7 +25,7 @@ def school_statistics(school_id, connection, schema_name):
     '''
     Runs queries that print out the statistics and benchmarks for a school
     INPUT:
-    state_id -- an id for a state from the database
+    state_code -- an id for a state from the database
     connection -- the db connection created by a sqlAlchemy connection() statement
     schema_name -- the name of the schema to use in the queries
     RETURNS:
@@ -43,7 +43,7 @@ def school_statistics(school_id, connection, schema_name):
     student_count_query = '''
     select count(*)
     from {schema}.dim_student student
-    where student.school_id = {school_id}
+    where student.school_id = '{school_id}'
     '''.format(school_id=school_id, schema=schema_name)
 
     # Execute queries
@@ -96,7 +96,7 @@ def grades_in_a_school(school_id, asmt_type, asmt_subject, connection, schema_na
     '''
     Run a query for assessment performance for grades within a school.
     INPUT:
-    state_id -- the id of the state that you want to use in the query (ie. 'DE' for deleware)
+    state_code -- the id of the state that you want to use in the query (ie. 'DE' for deleware)
     asmt_type -- the type of assessment to use in the query ('SUMMATIVE' or 'INTERIM')
     asmt_subject -- the subject of assessment to use in the query ('ELA' or 'Math')
     connection -- the db connection created by a sqlAlchemy connect() statement
@@ -105,7 +105,7 @@ def grades_in_a_school(school_id, asmt_type, asmt_subject, connection, schema_na
     '''
 
     query = """
-    select fact.asmt_grade_id, count(fact.student_id),
+    select fact.asmt_grade, count(fact.student_id),
     case
     when fact.asmt_score <= asmt.asmt_cut_point_1 then asmt.asmt_perf_lvl_name_1
     when fact.asmt_score > asmt.asmt_cut_point_1 and fact.asmt_score <= asmt.asmt_cut_point_2 then asmt.asmt_perf_lvl_name_2
@@ -115,17 +115,17 @@ def grades_in_a_school(school_id, asmt_type, asmt_subject, connection, schema_na
     as performance_level
     from
     {schema}.dim_asmt asmt,
-    {schema}.dim_school school,
+    {schema}.dim_inst_hier inst,
     {schema}.fact_asmt_outcome fact,
     {schema}.dim_student stu
     where asmt.asmt_id = fact.asmt_id
-    and school.school_id = fact.school_id
+    and inst.school_id = fact.school_id
     and stu.student_id = fact.student_id
     and fact.date_taken_year='2012'
-    and fact.school_id = {school_id}
+    and fact.school_id = '{school_id}'
     and asmt.asmt_type = '{asmt_type}'
     and asmt.asmt_subject = '{asmt_subject}'
-    group by fact.asmt_grade_id, performance_level
+    group by fact.asmt_grade, performance_level
     """.format(school_id=school_id, asmt_type=asmt_type, asmt_subject=asmt_subject, schema=schema_name)
 
     resultset = connection.execute(query)

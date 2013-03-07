@@ -17,7 +17,7 @@ from datetime import date
 import argparse
 import locale
 
-from sqlalchemy import create_engine, MetaData
+from sqlalchemy import create_engine, MetaData, distinct
 from sqlalchemy.sql import select, func
 
 from compare_populations_districts_within_state import state_statistics
@@ -46,9 +46,9 @@ def run_benchmarks(metadata, connection, schema, is_verbose, district_num=1, sta
             is_verbose = True
 
     # get lists of items sorted ascending by size
-    states = get_state_id_list_by_size(metadata, connection)
-    districts = get_district_id_list_by_size(metadata, connection)
-    schools = get_school_list_by_size(metadata, connection)
+    states = get_state_code_list_by_size(metadata, connection, schema)
+    districts = get_district_id_list_by_size(metadata, connection, schema)
+    schools = get_school_list_by_size(metadata, connection, schema)
 
     db_stats = get_database_statistics(metadata, connection, schema)
 
@@ -65,7 +65,7 @@ def run_benchmarks(metadata, connection, schema, is_verbose, district_num=1, sta
         total_time += district_results[0]['benchmarks']['total_time']
         total_time += school_results[0]['benchmarks']['total_time']
 
-        print_short_result(total_time, db_stats, state_results[0], district_results[0], school_results[0], as_csv)
+        print_short_result(total_time, schema, db_stats, state_results[0], district_results[0], school_results[0], as_csv)
 
 
 def run_statistics(metadata, connection, schema, statistics_method, count_num, object_list, is_verbose):
@@ -101,111 +101,88 @@ def run_statistics(metadata, connection, schema, statistics_method, count_num, o
     return res_list
 
 
-def get_district_id_list_by_size(metadata, connection, state_id=None):
+def get_district_id_list_by_size(metadata, connection, schema, state_code=None):
     '''
     Queries for a list of districts sorted ascending by size
     size calculated by number of schools
     INPUT:
     metadata -- SQLAlchemy metadata object
     connection -- SQLAlchemy connection object. A connection to the db
-    state_id -- optional parameter to limit the query to districts within a state
+    schema -- the name of the schema
+    state_code -- optional parameter to limit the query to districts within a state
     RETURNS: district_list -- a list of districts sorted by size
     '''
 
-    dim_district = None
-    dim_school = None
+    dim_inst_hier = metadata.tables.get('%s.dim_inst_hier' % schema)
 
-    # TODO: Change to use table name as key, Will require schema name be passed in
-    # Loop through table list to find desired tables
-    for t in metadata.sorted_tables:
-        if t.name == 'dim_district':
-            dim_district = t
-        elif t.name == 'dim_school':
-            dim_school = t
-
-    if dim_district is None or dim_school is None:
+    if dim_inst_hier is None:
         raise AttributeError('metadata table list missing a desired table')
 
     # create select object, group by dim_district, order by number of schools
-    district_select = select([dim_district.c.district_id, func.count(dim_school.c.school_id)], dim_district.c.district_id == dim_school.c.district_id)
-    district_select = district_select.group_by(dim_district.c.district_id).order_by(func.count(dim_school.c.school_id))
+    district_select = select([dim_inst_hier.c.district_id, func.count(distinct(dim_inst_hier.c.school_id)).label('count')])
+    district_select = district_select.group_by(dim_inst_hier.c.district_id).order_by('count desc')
 
     # add where based on state id
-    if state_id:
-        # add where condition to match state_id
-        district_select = district_select.where(state_id == dim_school.c.district_id)
+    if state_code:
+        # add where condition to match state_code
+        district_select = district_select.where(dim_inst_hier.c.state_code == state_code)
 
     district_list = connection.execute(district_select).fetchall()
     return district_list
 
 
-def get_state_id_list_by_size(metadata, connection):
+def get_state_code_list_by_size(metadata, connection, schema):
     '''
     queries for a list of states sorted by size
     size calculated by number of districts
     INPUT:
     metadata -- SQLAlchemy metadata object
     connection -- SQLAlchemy connection object. A connection to the db
+    schema -- the name of the schema
     RETURNS: state_list -- a list of states sorted by the size
     '''
 
-    dim_state = None
-    dim_district = None
+    dim_inst_hier = metadata.tables.get('%s.dim_inst_hier' % schema)
 
-    # TODO: Change to use table name as key, Will require schema name be passed in
-    # Loop through table list to find desired tables
-    for t in metadata.sorted_tables:
-        if t.name == 'dim_state':
-            dim_state = t
-        elif t.name == 'dim_district':
-            dim_district = t
-
-    if dim_state is None or dim_district is None:
+    if dim_inst_hier is None:
         raise AttributeError('metadata table list missing a desired table')
 
     # build select statement
-    state_select = select([dim_state, func.count(dim_district.c.district_id)], dim_state.c.state_id == dim_district.c.state_id)
-    state_select = state_select.group_by(dim_state.c.state_id).order_by(func.count(dim_district.c.district_id))
+    state_select = select([dim_inst_hier.c.state_code, func.count(distinct(dim_inst_hier.c.district_id)).label('count')])
+    state_select = state_select.group_by(dim_inst_hier.c.state_code).order_by('count desc')
 
     state_list = connection.execute(state_select).fetchall()
     return state_list
 
 
-def get_school_list_by_size(metadata, connection, district_id=None, state_id=None):
+def get_school_list_by_size(metadata, connection, schema, district_id=None, state_code=None):
     '''
     Queries for a list of school ids sorted by size.
     size is based on students
     INPUT
     metadata -- SQLAlchemy metadata object
     connection -- SQLAlchemy connection object. A connection to the db
-    state_id -- the id of the state to pull the schools from if district_id provided this will be ignored
+    schema -- the name of the schema
+    state_code -- the id of the state to pull the schools from if district_id provided this will be ignored
     district_id -- the id of the district to pull the schools from
     RETURNS: school_list -- a list of schools sorted by size
     '''
 
-    dim_school = None
-    dim_student = None
+    dim_inst_hier = metadata.tables.get('%s.dim_inst_hier' % schema)
+    dim_student = metadata.tables.get('%s.dim_student' % schema)
 
-    # TODO: Change to use table name as key, Will require schema name be passed in
-    # Loop through table list to find desired tables
-    for t in metadata.sorted_tables:
-        if t.name == 'dim_school':
-            dim_school = t
-        elif t.name == 'dim_student':
-            dim_student = t
-
-    if dim_school is None or dim_student is None:
+    if dim_inst_hier is None or dim_student is None:
         raise AttributeError('metadata table list missing a desired table')
 
     # Build select statement
-    school_select = select([dim_school.c.school_id, func.count(dim_student.c.student_id)], dim_student.c.school_id == dim_school.c.school_id)
-    school_select = school_select.group_by(dim_school.c.school_id).order_by(func.count(dim_student.c.student_id))
+    school_select = select([dim_inst_hier.c.school_id, func.count(dim_student.c.student_id).label('count')], dim_inst_hier.c.school_id == dim_student.c.school_id)
+    school_select = school_select.group_by(dim_inst_hier.c.school_id).order_by('count desc')
 
     #Specify where by district id or state id if there is no district id
     if district_id:
-        school_select = school_select.where(dim_school.c.district_id == district_id)
-    elif state_id:
-        school_select = school_select.where(dim_school.c.state_id == state_id)
+        school_select = school_select.where(dim_inst_hier.c.district_id == district_id)
+    elif state_code:
+        school_select = school_select.where(dim_inst_hier.c.state_code == state_code)
 
     district_list = connection.execute(school_select).fetchall()
     return district_list
@@ -223,17 +200,15 @@ def get_database_statistics(metadata, connection, schema):
     result -- a dict of counts
     '''
 
-    dim_state = metadata.tables.get('%s.dim_state' % schema)
-    dim_district = metadata.tables.get('%s.dim_district' % schema)
-    dim_school = metadata.tables.get('%s.dim_school' % schema)
     dim_student = metadata.tables.get('%s.dim_student' % schema)
+    dim_inst_hier = metadata.tables.get('%s.dim_inst_hier' % schema)
 
-    if dim_state is None or dim_district is None or dim_school is None or dim_student is None:
+    if dim_inst_hier is None or dim_student is None:
         raise AttributeError('metadata table list missing a desired table')
 
-    state_count_select = select([func.count(dim_state.c.state_id)])
-    districts_count_select = select([func.count(dim_district.c.district_id)])
-    school_count_select = select([func.count(dim_school.c.school_id)])
+    state_count_select = select([func.count(distinct(dim_inst_hier.c.state_code))])
+    districts_count_select = select([func.count(distinct(dim_inst_hier.c.district_id))])
+    school_count_select = select([func.count(distinct(dim_inst_hier.c.school_id))])
     student_count_select = select([func.count(dim_student.c.student_id)])
 
     state_count = connection.execute(state_count_select).fetchall()[0][0]
@@ -257,20 +232,21 @@ def print_db_stats(db_stats):
     INPUT:
     db_stats -- dictionary returned by get_database_statistics
     '''
-    print('******** Data Base Stats ********')
-    print('State Count:    ', db_stats['state_count'])
-    print('District Count: ', db_stats['district_count'])
-    print('School Count:   ', db_stats['school_count'])
-    print('Student Count:  ', db_stats['student_count'])
+    print('******** Database Stats ********')
+    print('State Count:    ', locale.format('%d', db_stats['state_count'], grouping=True))
+    print('District Count: ', locale.format('%d', db_stats['district_count'], grouping=True))
+    print('School Count:   ', locale.format('%d', db_stats['school_count'], grouping=True))
+    print('Student Count:  ', locale.format('%d', db_stats['student_count'], grouping=True))
     print('\n')
 
 
-def print_short_result(total_time, db_stats, state_res_dict, district_res_dict, school_res_dict, as_csv=False):
+def print_short_result(total_time, schema, db_stats, state_res_dict, district_res_dict, school_res_dict, as_csv=False):
     '''
     Formats and prints a one line summary of the benchmark that can be easily stored
     in a database or table. Includes a header. Will print either formatted as csv or as tab separated
     INPUT:
     total_time -- float, the amount of time it took to run all queries
+    schema -- the name of the schema
     db_stats -- dictionary of database stats returned by get_database_statistics
     state_res_dict -- the result dictionary for a state
     district_res_dict -- the result dictionary for a district
@@ -285,18 +261,18 @@ def print_short_result(total_time, db_stats, state_res_dict, district_res_dict, 
 
     # Small output headers
     headings = [
-        'Date', 'Total Time', 'State DB Count', 'State', 'State Time', 'State Result Count',
+        'Date', 'Schema', 'Total Time', 'State DB Count', 'State', 'State Time', 'State Result Count',
         'District DB Count', 'District ID', 'District Time', 'District Result Count',
-        'School DB Count', 'School ID', 'School Time', 'School Result Count',
+        'School DB Count', 'School ID', 'School Time', 'School Result Count', 'Student DB Count'
     ]
 
     # Small output data, Convert all data to string object (and format if necessary)
     data = [
-        str(date.today()), '%.2fs' % total_time, str(db_stats['state_count']), state_res_dict['id'],
+        str(date.today()), schema, '%.2fs' % total_time, str(db_stats['state_count']), state_res_dict['id'],
         '%.2fs' % state_bench['total_time'], str(state_bench['total_rows']), str(db_stats['district_count']),
         str(district_res_dict['id']), '%.2fs' % district_bench['total_time'],
         str(district_bench['total_rows']), str(db_stats['school_count']), str(school_res_dict['id']),
-        '%.2fs' % school_bench['total_time'], str(school_bench['total_rows'])
+        '%.2fs' % school_bench['total_time'], str(school_bench['total_rows']), locale.format('%d', db_stats['student_count'], grouping=True)
     ]
 
     head_string = ''

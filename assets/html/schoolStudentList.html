@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Ed-Ware List of Students Report</title>
-     <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/themes/redmond/jquery-ui.css" />
+    <title>Ed-Ware List of Schools Report</title>
      <link rel="stylesheet" type="text/css" href="../css/3p/bootstrap.min.css" />
      <link rel="stylesheet" type="text/css" href="../css/3p/ui.jqgrid.css" />
      <link rel="stylesheet" type="text/css" href="../css/style.css" />
+     <script data-main="../js/EDWARE.schoolListReport" src="../js/3p/require.js"></script>
 </head>
 <body>
 	<div id="header">
@@ -18,7 +18,8 @@
    		<a href="#">State</a> / <a href="#">District</a> / <a href="#">School</a> / <a href="#">Grade</a> / <span>Student Name</span>  
    	</div>
    	<div id="content">
-   		School
+   		<div id="errorMessage"></div>
+	    <table id="gridTable"></table>
     </div>
     <div id="footer">
     	<div id="legend" class="pull-right">Legend / Informational</div>

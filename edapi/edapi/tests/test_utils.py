@@ -8,7 +8,7 @@ from edapi.utils import get_report_dict_value, generate_report, generate_report_
     expand_field, prepare_params, add_configuration_header, get_logger
 from edapi.exceptions import ReportNotFoundError, InvalidParameterError
 from edapi.tests.dummy import DummyValidator, Dummy
-from edapi.tests.test_logger import TestLogger, test_function
+from edapi.tests.test_logger import TestLogger, test_function, test_display_name
 import os
 
 
@@ -178,3 +178,15 @@ class TestUtils(unittest.TestCase):
             self.assertEqual(lines, 1, "there should be only a single row")
         finally:
             os.remove('test2.log')
+
+    def test_display_text_log(self):
+        try:
+            test_display_name()
+            f = open('test3.log')
+            lines = 0
+            for line in f:
+                self.assertIn("test_display", line, "missing param")
+                lines += 1
+            self.assertEqual(lines, 1, "there should be only a single row")
+        finally:
+            os.remove('test3.log')

@@ -21,14 +21,11 @@ def main(global_config, **settings):
     if 'smarter.PATH' in settings:
         os.environ['PATH'] += os.pathsep + settings['smarter.PATH']
     prepare_env(settings)
-    config = Configurator(settings=settings)
+    config = Configurator(settings=settings, root_factory=RootFactory)
 
     # setup database connection
     metadata = generate_ed_metadata(settings['edware.schema_name'])
     setup_db_connection_from_ini(settings, 'edware', metadata, datasource_name='smarter')
-
-    # set role-permission mapping
-    config.set_root_factory('smarter.security.root_factory.RootFactory')
 
     # include edauth. Calls includeme
     config.include(edauth)

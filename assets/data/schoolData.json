@@ -7,102 +7,103 @@
     },
 	"schoolData": [
 		{
-			"name": "school 1", 
-			"students_math_performance": "1200",
-			"total_math_students": "1253435",
-			"students_ela_performance": "2100",
-			"total_ela_students": "53232634" 
+			"name": "school 1",
+			"subject1": {
+				"score": "1200",
+				"total_students": "1253435"
+			},
+			"subject2": {
+				"score": "1400",
+				"total_students": "1454545"
+			} 
 		},
 		{
-			"name": "school 1", 
-			"students_math_performance": "1200",
-			"total_math_students": "1253435",
-			"students_ela_performance": "2100",
-			"total_ela_students": "53232634" 
+			"name": "school 1",
+			"subject1": {
+				"score": "1200",
+				"total_students": "1253435"
+			},
+			"subject2": {
+				"score": "1400",
+				"total_students": "1454545"
+			} 
 		},
 		{
-			"name": "school 1", 
-			"students_math_performance": "1200",
-			"total_math_students": "1253435",
-			"students_ela_performance": "2100",
-			"total_ela_students": "53232634" 
+			"name": "school 1",
+			"subject1": {
+				"score": "1200",
+				"total_students": "1253435"
+			},
+			"subject2": {
+				"score": "1400",
+				"total_students": "1454545"
+			} 
 		},
 		{
-			"name": "school 1", 
-			"students_math_performance": "1200",
-			"total_math_students": "1253435",
-			"students_ela_performance": "2100",
-			"total_ela_students": "53232634" 
+			"name": "school 1",
+			"subject1": {
+				"score": "1200",
+				"total_students": "1253435"
+			},
+			"subject2": {
+				"score": "1400",
+				"total_students": "1454545"
+			} 
 		},
 		{
-			"name": "school 1", 
-			"students_math_performance": "1200",
-			"total_math_students": "1253435",
-			"students_ela_performance": "2100",
-			"total_ela_students": "53232634" 
+			"name": "school 1",
+			"subject1": {
+				"score": "1200",
+				"total_students": "1253435"
+			},
+			"subject2": {
+				"score": "1400",
+				"total_students": "1454545"
+			} 
 		},
 		{
-			"name": "school 1", 
-			"students_math_performance": "1200",
-			"total_math_students": "1253435",
-			"students_ela_performance": "2100",
-			"total_ela_students": "53232634" 
+			"name": "school 1",
+			"subject1": {
+				"score": "1200",
+				"total_students": "1253435"
+			},
+			"subject2": {
+				"score": "1400",
+				"total_students": "1454545"
+			} 
 		},
 		{
-			"name": "school 1", 
-			"students_math_performance": "1200",
-			"total_math_students": "1253435",
-			"students_ela_performance": "2100",
-			"total_ela_students": "53232634" 
+			"name": "school 1",
+			"subject1": {
+				"score": "1200",
+				"total_students": "1253435"
+			},
+			"subject2": {
+				"score": "1400",
+				"total_students": "1454545"
+			} 
 		},
 		{
-			"name": "school 1", 
-			"students_math_performance": "1200",
-			"total_math_students": "1253435",
-			"students_ela_performance": "2100",
-			"total_ela_students": "53232634" 
+			"name": "school 1",
+			"subject1": {
+				"score": "1200",
+				"total_students": "1253435"
+			},
+			"subject2": {
+				"score": "1400",
+				"total_students": "1454545"
+			} 
 		},
 		{
-			"name": "school 1", 
-			"students_math_performance": "1200",
-			"total_math_students": "1253435",
-			"students_ela_performance": "2100",
-			"total_ela_students": "53232634" 
-		},
-		{
-			"name": "school 1", 
-			"students_math_performance": "1200",
-			"total_math_students": "1253435",
-			"students_ela_performance": "2100",
-			"total_ela_students": "53232634" 
-		},
-		{
-			"name": "school 1", 
-			"students_math_performance": "1200",
-			"total_math_students": "1253435",
-			"students_ela_performance": "2100",
-			"total_ela_students": "53232634" 
-		},
-		{
-			"name": "school 1", 
-			"students_math_performance": "1200",
-			"total_math_students": "1253435",
-			"students_ela_performance": "2100",
-			"total_ela_students": "53232634" 
-		},
-		{
-			"name": "school 1", 
-			"students_math_performance": "1200",
-			"total_math_students": "1253435",
-			"students_ela_performance": "2100",
-			"total_ela_students": "53232634" 
-		},
-		{
-			"name": "school 1", 
-			"students_math_performance": "1200",
-			"total_math_students": "1253435",
-			"students_ela_performance": "2100",
-			"total_ela_students": "53232634" 
+			"name": "school 1",
+			"subject1": {
+				"score": "1200",
+				"total_students": "1253435"
+			},
+			"subject2": {
+				"score": "1400",
+				"total_students": "1454545"
+			} 
 		}
 	],
 	"summaryData": {

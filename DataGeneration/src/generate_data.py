@@ -766,7 +766,7 @@ def read_names(file_name):
 def get_test_state_stats():
     db = get_db_conn()
     db_states = []
-    q = 'select * from ' + queries.SCHEMA + '.school_generate_stat where state_code = \'TS\''
+    q = 'select * from ' + queries.SCHEMA + '.school_generate_stat where state_code = \'NY\''
     dist_count = db.prepare(q)
     for row in dist_count:
         db_states.append(dict(zip(constants.STAT_COLUMNS, row)))

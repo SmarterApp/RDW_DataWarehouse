@@ -91,13 +91,14 @@ def get_input_args():
     parser.add_argument("-p", "--password", default="3423346", help="postgre password default[edware]")
 
     # query related arguments
-    parser.add_argument('--state_code', default=None, help='set state code.', required=False)
-    parser.add_argument('--district_id', default=None, help='set district id.', required=False)
-    parser.add_argument('--school_id', default=None, help='set school id.', required=False)
-    parser.add_argument('--section_id', default=None, help='set section id.', required=False)
-    parser.add_argument('--grade', default=None, help='set grade id.', required=False)
+    parser.add_argument('--state_code', help='set state code.', required=False)
+    parser.add_argument('--district_id', help='set district id.', required=False)
+    parser.add_argument('--school_id', help='set school id.', required=False)
+    parser.add_argument('--section_id', help='set section id.', required=False)
+    parser.add_argument('--grade', help='set grade id.', required=False)
 
     args = parser.parse_args()
+
     return vars(args)
 
 

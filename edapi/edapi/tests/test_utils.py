@@ -5,11 +5,12 @@ Created on Jan 18, 2013
 '''
 import unittest
 from edapi.utils import get_report_dict_value, generate_report, generate_report_config,\
-    expand_field, prepare_params, add_configuration_header, get_logger
+    expand_field, prepare_params, add_configuration_header
 from edapi.exceptions import ReportNotFoundError, InvalidParameterError
 from edapi.tests.dummy import DummyValidator, Dummy
 from edapi.tests.test_logger import TestLogger, test_function, test_display_name
 import os
+from edapi.autolog import get_logger
 
 
 def dummy_method(params):

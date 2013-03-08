@@ -94,8 +94,8 @@ class log_instance_method(object):
             self.display_name = original_func.__name__
 
         def __wrapper(*args, **kwds):
-            argstr = format_all_args(args, kwds)
-            self_str = shorten_string(self)
+            argstr = format_all_args(args[1:], kwds)
+            self_str = str(args[0])
 
             log = get_logger(self.logger_name)
             # Log the entry into the method

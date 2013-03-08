@@ -158,7 +158,7 @@ class TestUtils(unittest.TestCase):
 #                    self.assertIn("param1value", line, "missing param")
 #                    self.assertIn("param2value", line, "missing param")
                     self.assertIn("test_method", line, "method name is missing")
-                    #self.assertIn("TestLogger", line, "class name is missing")
+                    self.assertIn("TestLogger", line, "class name is missing")
                     self.assertIn("INFO", line, "incorrect log level")
         finally:
             os.remove('test.log')

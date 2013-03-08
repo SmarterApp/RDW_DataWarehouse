@@ -13,7 +13,7 @@ from sqlalchemy.sql.expression import and_
 from edapi.exceptions import NotFoundException
 from string import capwords
 from smarter.database.connector import SmarterDBConnection
-from logging import DEBUG, INFO
+from logging import INFO
 from edapi.autolog import log_function
 
 

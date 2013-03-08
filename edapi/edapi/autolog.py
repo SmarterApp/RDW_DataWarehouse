@@ -7,6 +7,7 @@ Created on Mar 5, 2013
 #from edapi import utils
 from logging import INFO
 import logging
+import json
 
 
 def shorten_string(obj):
@@ -31,9 +32,11 @@ def format_all_args(args, kwds):
     '''
     allargs = []
     for item in args:
-        allargs.append('{0}'.format(shorten_string(item)))
+        pretty_string = json.dumps(item, indent=4) if isinstance(item, dict) else shorten_string(item)
+        allargs.append(pretty_string)
     for key, item in kwds.items():
-        allargs.append('{0}={1}'.format(key, shorten_string(item)))
+        pretty_string = json.dumps(item, indent=4) if isinstance(item, dict) else shorten_string(item)
+        allargs.append('{0}={1}'.format(key, pretty_string))
     formattedArgs = ', '.join(allargs)
     return formattedArgs
 
@@ -64,7 +67,7 @@ class log_function(object):
 
             log = get_logger(self.logger_name)
             # Log the entry into the function
-            log.log(self.level, "{2}: {0} ({1}) ".format(self.display_name, argstr, self.report_name))
+            log.log(self.level, "{2}: {0} \n({1}) ".format(self.display_name, argstr, self.report_name))
 
             return original_func(*args, **kwds)
         return __wrapper
@@ -96,7 +99,7 @@ class log_instance_method(object):
 
             log = get_logger(self.logger_name)
             # Log the entry into the method
-            log.log(self.level, "{0}{1} ({2}) ".format(self_str, self.display_name, argstr))
+            log.log(self.level, "{0}{1} \n({2}) ".format(self_str, self.display_name, argstr))
 
             return original_func(*args, **kwds)
         return __wrapper

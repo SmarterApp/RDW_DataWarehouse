@@ -71,8 +71,8 @@ define [
       combined =
         intervals: data
       
-      results = edwarePopulationBar.create ".populationBar", combined
-      "<div id = 'populationBar'>" + results + "</div>"
+      edwarePopulationBar.create ".populationBar", combined
+      "<div class='populationBar'></div>"
  
   showlink: showlink
   showOverallConfidence: showOverallConfidence

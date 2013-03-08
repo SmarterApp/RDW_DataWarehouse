@@ -10,7 +10,7 @@ define [
   #    
   $.fn.populationBar = (items) ->
     output = Mustache.to_html populationBarTemplate, items
-    this.html output
+    #this.html output
         
   create = (containerId, data) ->
     $(containerId).populationBar data

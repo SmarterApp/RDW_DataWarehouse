@@ -9,34 +9,27 @@ from sqlalchemy.sql import and_
 DBDRIVER = "postgresql+pypostgresql"
 
 
-def get_students_for_assessment(schema_name=None, bind=None, parameters=None):
+def get_students_for_assessment(schema_name, metadata, db_connection, parameters=None):
     '''
     Method to get list of students in the input schema with optional input parameters
     '''
     # create query
-    query = prepare_query(schema_name, bind, parameters)
+    query = prepare_query(schema_name, metadata, parameters)
 
-    # execute the query
     students = []
     if query is not None:
-        connection = bind.connect()
-        result = connection.execute(query)
-
+        # execute the query
+        result = db_connection.execute(query)
         # format the result
-        students = format_result(result)
+        students = [dict(row) for row in result]
 
-        connection.close()
     return students
 
 
-def prepare_query(schema_name, bind, parameters):
+def prepare_query(schema_name, metadata, parameters=None):
     '''
     Mathod of creating one query to get list of students in the given schema, with optional parameters
     '''
-    # get schema object
-    metadata = MetaData(schema=schema_name)
-    metadata.reflect(bind=bind)
-
     # get all needed tables
     try:
         dim_student = metadata.tables[schema_name + ".dim_student"]
@@ -65,55 +58,37 @@ def prepare_query(schema_name, bind, parameters):
 
         # add where clause
         if parameters is not None:
-            if 'state_code' in parameters.keys() and parameters['state_code']:
+            if parameters['state_code']:
                 query = query.where(and_(dim_student.c.state_code == parameters['state_code']))
-            if 'district_id' in parameters.keys() and parameters['district_id']:
+            if parameters['district_id']:
                 query = query.where(and_(dim_student.c.district_id == parameters['district_id']))
-            if 'school_id' in parameters.keys() and parameters['school_id']:
+            if parameters['school_id']:
                 query = query.where(and_(dim_student.c.school_id == parameters['school_id']))
-            if 'section_id' in parameters.keys() and parameters['section_id']:
+            if parameters['section_id']:
                 query = query.where(and_(dim_student.c.section_id == parameters['section_id']))
-            if 'grade' in parameters.keys() and parameters['grade']:
+            if parameters['grade']:
                 query = query.where(and_(dim_student.c.grade == parameters['grade']))
 
     except AttributeError as err:
         print("This column does not exist -- ", err)
         return None
 
-    print(query)
+    # print(query)
     return query
 
 
-def format_result(result):
+def get_input_args():
     '''
-    Method to format database returned result to a list
-    Each item in list is a dictionary
+    Creates parser for command line arguments
+    RETURNS vars(arguments) -- A dictionary of the command line arguments
     '''
-    students = []
-    for row in result:
-        # format each row to a dictionary
-        student = {}
-        student['student_id'] = row['student_id']
-        student['teacher_id'] = row['teacher_id']
-        student['state_code'] = row['state_code']
-        student['district_id'] = row['district_id']
-        student['school_id'] = row['school_id']
-        student['section_id'] = row['section_id']
-        student['inst_hier_rec_id'] = row['inst_hier_rec_id']
-        student['section_rec_id'] = row['section_rec_id']
-        student['enrl_grade'] = row['enrl_grade']
-        students.append(student)
-    return students
-
-
-if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Get list of students for assessment generation')
     # database related arguments
     parser.add_argument("-s", "--schema", help="set schema name.  required")
     parser.add_argument("-d", "--database", default="edware", help="set database name default[edware]")
     parser.add_argument("--host", default="127.0.0.1:5432", help="postgre host default[127.0.0.1:5432]")
     parser.add_argument("-u", "--user", default="postgres", help="postgre username default[edware]")
-    parser.add_argument("-p", "--passwd", default="3423346", help="postgre password default[edware]")
+    parser.add_argument("-p", "--password", default="3423346", help="postgre password default[edware]")
 
     # query related arguments
     parser.add_argument('--state_code', default=None, help='set state code.', required=False)
@@ -123,41 +98,41 @@ if __name__ == '__main__':
     parser.add_argument('--grade', default=None, help='set grade id.', required=False)
 
     args = parser.parse_args()
+    return vars(args)
 
-    # get the value of database related arguments
-    schema = args.schema
-    database = args.database
-    host = args.host
-    user = args.user
-    passwd = args.passwd
 
-    # get the value of table related arguments
-    params = {'state_code': args.state_code,
-              'district_id': args.district_id,
-              'school_id': args.school_id,
-              'section_id': args.section_id,
-              'grade': args.grade
-             }
-    # print(params)
+def main():
+    '''
+    Entry point main method
+    '''
+    # Get command line arguments
+    input_args = get_input_args()
 
-    if schema is None:
+    # Check for required value of schema
+    if input_args['schema'] is None:
         print("Please specify --schema option")
         exit(-1)
-    __URL = DBDRIVER + "://" + user + ":" + passwd + "@" + host + "/" + database
+    else:
+        schema = input_args['schema']
 
-    print("DB Driver:" + DBDRIVER)
-    print("     User:" + user)
-    print("  Password:" + passwd)
-    print("      Host:" + host)
-    print("  Database:" + database)
-    print("    Schema:" + schema)
-    print("####################")
-    print("")
+    # Have SQLAlchemy connect to and reflect the database, get the input schema
+    db_string = DBDRIVER + '://{user}:{password}@{host}/{database}'.format(**input_args)
+    engine = create_engine(db_string)
+    db_connection = engine.connect()
+    metadata = MetaData(schema=schema)
+    metadata.reflect(engine)
 
-    __engine = create_engine(__URL, echo=False)
+    # Get list of students in database
+    print("Starting get list of students")
     start_time = datetime.now()
-    student_list = get_students_for_assessment(schema_name=schema, bind=__engine, parameters=params)
+    student_list = get_students_for_assessment(schema, metadata, db_connection, input_args)
     finish_time = datetime.now()
-    print("Length of generated student list is ", len(student_list))
+    print("Length of student list is ", len(student_list))
     print("Start  at -- ", start_time)
     print("Finish at -- ", finish_time)
+
+    # Close database connection
+    db_connection.close()
+
+if __name__ == '__main__':
+    main()

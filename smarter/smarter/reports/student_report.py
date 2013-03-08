@@ -82,11 +82,15 @@ def __prepare_query(connector, student_id, assessment_id):
                     dim_staff.c.middle_name.label('teacher_middle_name'),
                     dim_staff.c.last_name.label('teacher_last_name')],
                    from_obj=[fact_asmt_outcome
-                             .join(dim_student, and_(fact_asmt_outcome.c.student_id == dim_student.c.student_id, fact_asmt_outcome.c.section_id == dim_student.c.section_id))
-                             .join(dim_staff, and_(fact_asmt_outcome.c.teacher_id == dim_staff.c.staff_id, fact_asmt_outcome.c.section_id == dim_staff.c.section_id))
-                             .join(dim_asmt, dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id)])
-    query = query.where(and_(fact_asmt_outcome.c.student_id == student_id, dim_asmt.c.most_recent, dim_staff.c.most_recent,
-                             fact_asmt_outcome.c.most_recent, dim_asmt.c.asmt_type == 'SUMMATIVE', fact_asmt_outcome.c.status == 'C'))
+                             .join(dim_student, and_(fact_asmt_outcome.c.student_id == dim_student.c.student_id,
+                                                     fact_asmt_outcome.c.section_id == dim_student.c.section_id))
+                             .join(dim_staff, and_(fact_asmt_outcome.c.teacher_id == dim_staff.c.staff_id,
+                                                   fact_asmt_outcome.c.section_id == dim_staff.c.section_id,
+                                                   dim_staff.c.most_recent))
+                             .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id,
+                                                  dim_asmt.c.most_recent,
+                                                  dim_asmt.c.asmt_type == 'SUMMATIVE'))])
+    query = query.where(and_(fact_asmt_outcome.c.most_recent, fact_asmt_outcome.c.status == 'C', fact_asmt_outcome.c.student_id == student_id))
     if assessment_id is not None:
         query = query.where(dim_asmt.c.asmt_id == assessment_id)
     query = query.order_by(dim_asmt.c.asmt_subject.desc())
@@ -99,10 +103,7 @@ def __arrange_results(results):
     '''
     for result in results:
         custom_metadata = result['asmt_custom_metadata']
-        if not custom_metadata:
-            custom = None
-        else:
-            custom = json.loads(custom_metadata)
+        custom = None if not custom_metadata else json.loads(custom_metadata)
         # once we use the data, we clean it from the result
         del(result['asmt_custom_metadata'])
 

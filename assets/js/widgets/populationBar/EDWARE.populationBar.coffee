@@ -10,9 +10,12 @@ define [
   #    
   $.fn.populationBar = (items) ->
     output = Mustache.to_html populationBarTemplate, items
-    this.html output
+    if this.length > 0
+      this.html output
+    else
+      output
         
-  create = (containerId, data) ->
-    $(containerId).populationBar data
+  create = (data, container) ->    
+    $(container).populationBar data      
           
   create: create

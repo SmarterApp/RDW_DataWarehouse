@@ -89,7 +89,7 @@ def arrange_results(results, param_manager):
     total_results = {}
     asmt_custom_metadata_results = {}
     # abstract the subject names in the response results
-    subjects = {"Math": "subject1", "ELA": "subject2"}
+    subjects = {Constants.MATH: Constants.SUBJECT1, Constants.ELA: Constants.SUBJECT2}
 
     for result in results:
         # if this is the first time processing data for the group record,
@@ -135,10 +135,11 @@ def arrange_results(results, param_manager):
         calculate_percentage_for_summary(total_results[subject])
 
     # bind the results
-    arranged_results['subjects'] = subjects
-    arranged_results['colors'] = asmt_custom_metadata_results
-    arranged_results['summary'] = total_results
-    arranged_results['records'] = consolidated_results
+    # reverse map keys and values
+    arranged_results[Constants.SUBJECTS] = {v: k for k, v in subjects.items()}
+    arranged_results[Constants.COLORS] = asmt_custom_metadata_results
+    arranged_results[Constants.SUMMARY] = total_results
+    arranged_results[Constants.RECORDS] = consolidated_results
     return arranged_results
 
 
@@ -363,3 +364,11 @@ class Constants():
     DIM_ASMT = 'dim_asmt'
     FACT_ASMT_OUTCOME = 'fact_asmt_outcome'
     ASMT_CUSTOM_METADATA = 'asmt_custom_metadata'
+    MATH = 'Math'
+    ELA = 'ELA'
+    SUBJECTS = 'subjects'
+    SUBJECT1 = 'subject1'
+    SUBJECT2 = 'subject2'
+    COLORS = 'colors'
+    SUMMARY = 'summary'
+    RECORDS = 'records'

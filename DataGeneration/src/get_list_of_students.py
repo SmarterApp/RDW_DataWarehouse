@@ -13,6 +13,26 @@ def get_students_for_assessment(schema_name=None, bind=None, parameters=None):
     '''
     Method to get list of students in the input schema with optional input parameters
     '''
+    # create query
+    query = prepare_query(schema_name, bind, parameters)
+
+    # execute the query
+    students = []
+    if query is not None:
+        connection = bind.connect()
+        result = connection.execute(query)
+
+        # format the result
+        students = format_result(result)
+
+        connection.close()
+    return students
+
+
+def prepare_query(schema_name, bind, parameters):
+    '''
+    Mathod of creating one query to get list of students in the given schema, with optional parameters
+    '''
     # get schema object
     metadata = MetaData(schema=schema_name)
     metadata.reflect(bind=bind)
@@ -25,7 +45,7 @@ def get_students_for_assessment(schema_name=None, bind=None, parameters=None):
         dim_inst_hier = metadata.tables[schema_name + ".dim_inst_hier"]
     except KeyError as err:
         print("This table does not exist -- ", err)
-        return []
+        return None
 
     # prepare the query
     try:
@@ -46,7 +66,7 @@ def get_students_for_assessment(schema_name=None, bind=None, parameters=None):
         # add where clause
         if parameters is not None:
             if 'state_code' in parameters.keys() and parameters['state_code']:
-                query = query.where(dim_student.c.state_code == parameters['state_code'])
+                query = query.where(and_(dim_student.c.state_code == parameters['state_code']))
             if 'district_id' in parameters.keys() and parameters['district_id']:
                 query = query.where(and_(dim_student.c.district_id == parameters['district_id']))
             if 'school_id' in parameters.keys() and parameters['school_id']:
@@ -58,14 +78,18 @@ def get_students_for_assessment(schema_name=None, bind=None, parameters=None):
 
     except AttributeError as err:
         print("This column does not exist -- ", err)
-        return []
+        return None
 
-    # print(query)
+    print(query)
+    return query
 
-    # execute the query
+
+def format_result(result):
+    '''
+    Method to format database returned result to a list
+    Each item in list is a dictionary
+    '''
     students = []
-    connection = __engine.connect()
-    result = connection.execute(query)
     for row in result:
         # format each row to a dictionary
         student = {}
@@ -79,12 +103,11 @@ def get_students_for_assessment(schema_name=None, bind=None, parameters=None):
         student['section_rec_id'] = row['section_rec_id']
         student['enrl_grade'] = row['enrl_grade']
         students.append(student)
-
-    connection.close()
     return students
 
+
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Create New Schema for EdWare')
+    parser = argparse.ArgumentParser(description='Get list of students for assessment generation')
     # database related arguments
     parser.add_argument("-s", "--schema", help="set schema name.  required")
     parser.add_argument("-d", "--database", default="edware", help="set database name default[edware]")
@@ -93,51 +116,48 @@ if __name__ == '__main__':
     parser.add_argument("-p", "--passwd", default="3423346", help="postgre password default[edware]")
 
     # query related arguments
-
-    parser.add_argument('--state_code', default=False, help='set state code.', required=False)
-    parser.add_argument('--district_id', default=False, help='set district id.', required=False)
-    parser.add_argument('--school_id', default=False, help='set school id.', required=False)
-    parser.add_argument('--section_id', default=False, help='set section id.', required=False)
-    parser.add_argument('--grade', default=False, help='set grade id.', required=False)
+    parser.add_argument('--state_code', default=None, help='set state code.', required=False)
+    parser.add_argument('--district_id', default=None, help='set district id.', required=False)
+    parser.add_argument('--school_id', default=None, help='set school id.', required=False)
+    parser.add_argument('--section_id', default=None, help='set section id.', required=False)
+    parser.add_argument('--grade', default=None, help='set grade id.', required=False)
 
     args = parser.parse_args()
-    print(args)
+
     # get the value of database related arguments
-    __schema = args.schema
-    __database = args.database
-    __host = args.host
-    __user = args.user
-    __passwd = args.passwd
+    schema = args.schema
+    database = args.database
+    host = args.host
+    user = args.user
+    passwd = args.passwd
 
     # get the value of table related arguments
-
-    params = {'state_code': args.state_code if args.state_code else None,
-             'district_id': args.district_id if args.district_id else None,
-             'school_id': args.school_id if args.school_id else None,
-             'section_id': args.section_id if args.section_id else None,
-             'grade': args.grade if args.grade else None,
+    params = {'state_code': args.state_code,
+              'district_id': args.district_id,
+              'school_id': args.school_id,
+              'section_id': args.section_id,
+              'grade': args.grade
              }
-
     # print(params)
 
-    if __schema is None:
+    if schema is None:
         print("Please specify --schema option")
         exit(-1)
-    __URL = DBDRIVER + "://" + __user + ":" + __passwd + "@" + __host + "/" + __database
-    start_time = datetime.now()
+    __URL = DBDRIVER + "://" + user + ":" + passwd + "@" + host + "/" + database
 
     print("DB Driver:" + DBDRIVER)
-    print("     User:" + __user)
-    print("  Password:" + __passwd)
-    print("      Host:" + __host)
-    print("  Database:" + __database)
-    print("    Schema:" + __schema)
+    print("     User:" + user)
+    print("  Password:" + passwd)
+    print("      Host:" + host)
+    print("  Database:" + database)
+    print("    Schema:" + schema)
     print("####################")
-    print("Getting list of students for assessment generation...")
+    print("")
 
     __engine = create_engine(__URL, echo=False)
-    student_list = get_students_for_assessment(schema_name=__schema, bind=__engine, parameters=params)
+    start_time = datetime.now()
+    student_list = get_students_for_assessment(schema_name=schema, bind=__engine, parameters=params)
     finish_time = datetime.now()
     print("Length of generated student list is ", len(student_list))
-    print("Start at --  ", start_time)
+    print("Start  at -- ", start_time)
     print("Finish at -- ", finish_time)

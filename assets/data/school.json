@@ -1,0 +1,9 @@
+{
+	"schools": [
+			{"name":"School Name","index":"school","field":"name","width":200,"style":"ui-ellipsis bold", "formatter":"showlink", "params":{"linkUrl":"indivStudentReport.html"}, "hidden":true, "sortorder":"asc"},
+			{"name":"Math","index":"students_math_performance","field":"students_math_performance","width":250,"formatter":"performanceBar","sorttype":"int","align":"center", "colspan":true},
+			{"name":"Total Students","index":"total_math_students","field":"total_math_students","width":110,"sorttype":"int","align":"center", "hide": true},
+			{"name":"ELA","index":"students_ela_performance","field":"students_ela_performance","width":250,"formatter":"performanceBar","sorttype":"int","align":"center", "colspan":true},
+			{"name":"Total Students","index":"total_ela_students","field":"total_ela_students","width":110,"sorttype":"int","align":"center", "hide": true}
+		]
+}

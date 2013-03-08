@@ -13,6 +13,8 @@ from sqlalchemy.sql.expression import and_
 from edapi.exceptions import NotFoundException
 from string import capwords
 from smarter.database.connector import SmarterDBConnection
+from logging import INFO
+from edapi.autolog import log_function
 
 
 def __prepare_query(connector, student_id, assessment_id):
@@ -171,11 +173,11 @@ def __arrange_results(results):
                         "pattern": "^[a-zA-Z0-9\-]{0,50}$",
                     },
                })
+@log_function(INFO, None, 'smarter', 'Individual Student Report')
 def get_student_report(params):
     '''
     report for student and student_assessment
     '''
-
     # get studentId
     student_id = str(params['studentId'])
 

@@ -25,9 +25,11 @@ define [
     edwareDataProxy.getDatafromSource "../data/list_of_students_breadcrumbs.json", options, (tempData) ->
       breadcrumbsData = tempData
       
-    getStudentData "/data/list_of_students", params, (assessmentsData, contextData) ->
+    # Get school data from the server
+    getSchoolsData "../data/schoolData.json", params, (schoolData, summaryData, contextData) ->
       
-      getStudentsConfig "../data/student.json", (studentsConfig) ->
+      # Get school grid column configs
+      getSchoolsConfig "../data/school.json", (schoolConfig) ->
         arr = breadcrumbsData['items']
         length = arr.length
         element = null
@@ -40,10 +42,10 @@ define [
           
         $('#breadcrumb').breadcrumbs(breadcrumbsData)
         
-        edwareGrid.create "gridTable", studentsConfig, assessmentsData
+        edwareGrid.create "gridTable", schoolConfig, schoolData, summaryData
         
         
-  getStudentData = (sourceURL, params, callback) ->
+  getSchoolsData = (sourceURL, params, callback) ->
     
     assessmentArray = []
     
@@ -52,20 +54,20 @@ define [
     options =
       async: true
       method: "POST"
-      params: params
   
     edwareDataProxy.getDatafromSource sourceURL, options, (data) ->
-      assessmentsData = data.assessments
+      schoolData = data.schoolData
+      summaryData = data.summaryData
       contextData = data.context
       
       if callback
-        callback assessmentsData, contextData
+        callback schoolData, summaryData, contextData
       else
-        assessmentArray assessmentsData, contextData
+        assessmentArray schoolData, summaryData, contextData
       
       
-  getStudentsConfig = (configURL, callback) ->
-      studentColumnCfgs = {}
+  getSchoolsConfig = (configURL, callback) ->
+      schoolColumnCfgs = {}
       
       return false  if configURL is "undefined" or typeof configURL is "number" or typeof configURL is "function" or typeof configURL is "object"
       
@@ -74,12 +76,12 @@ define [
         method: "GET"
       
       edwareDataProxy.getDatafromSource configURL, options, (data) ->
-        studentColumnCfgs = data.students
+        schoolColumnCfgs = data.schools
          
         if callback
-          callback studentColumnCfgs
+          callback schoolColumnCfgs
         else
-          studentColumnCfgs
+          schoolColumnCfgs
 
 
   createStudentGrid: createStudentGrid

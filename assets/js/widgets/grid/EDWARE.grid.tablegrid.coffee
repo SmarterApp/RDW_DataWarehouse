@@ -18,7 +18,7 @@ define [
     #    
     
     (($) ->
-      $.fn.edwareGrid = (panelConfig, options) ->
+      $.fn.edwareGrid = (panelConfig, options, footerData) ->
         colNames = []
         colModel = []
         groupHeaders = []
@@ -52,6 +52,12 @@ define [
               colModelItem.align = item1.align  if item1.align
               colModelItem.classes = item1.style  if item1.style
               colModelItem.frozen = item1.frozen  if item1.frozen
+              if item1.colspan
+                colModelItem.cellattr = (rowId, tv, rawObject, cm, rdata) ->
+                  ' colspan=2'
+              if item1.hide
+                colModelItem.cellattr = (rowId, tv, rawObject, cm, rdata) ->
+                  ' style="display:none;"'
               options.sortorder = item1.sortorder  if item1.sortorder
               options.sortname = item1.field  if item1.sortorder
               colModelItem.resizable = false # prevent the user from manually resizing the columns
@@ -94,6 +100,8 @@ define [
         
         $(this).jqGrid 'setFrozenColumns'
         $(this).find(".jqg-second-row-header th:first-child").css "background", "#ffffff"
+        if footerData
+          $(this).jqGrid('footerData','set', footerData, false);
         
     ) jQuery
     
@@ -105,7 +113,7 @@ define [
     #    * @param assessmentCutpoints
     #    * @param options
     #    
-    create = (tableId, columnItems, columnData, options) ->
+    create = (tableId, columnItems, columnData, footerData, options) ->
       
       columnData = columnData[columnItems.root]  if columnItems.root and columnData isnt null and columnData isnt `undefined`
       
@@ -118,12 +126,18 @@ define [
         rowNum: 10000
         shrinkToFit: false
         loadComplete: ->
-           $("tr.jqgrow:odd").css "background", "#f8f8f8"
-  
+           #$("tr.jqgrow:odd").css "background", "#f8f8f8"
+           $("div.ui-jqgrid-sdiv").css(
+              "background": "#f2f2f2"
+           ).insertBefore $("div.ui-jqgrid-bdiv")
+
+      if footerData
+        gridOptions.footerrow = true
+        
       if columnData is null or columnData is `undefined` or columnData.length < 1
         edwareUtil.displayErrorMessage "There is no data available for your request. Please contact your IT administrator."
       else
         gridOptions = $.extend(gridOptions, options)  if options
-        $("#" + tableId).edwareGrid columnItems, gridOptions
+        $("#" + tableId).edwareGrid columnItems, gridOptions, footerData
         
     create: create

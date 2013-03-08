@@ -14,6 +14,7 @@ require({
 		edwareStudentList: 'EDWARE.studentList',
 		edwareStateStudentList: 'EDWARE.stateStudentList',
 		edwareIndividualStudent: 'EDWARE.individualStudent',
+		edwareSchoolList: 'EDWARE.schoolList',
 		edwareBreadcrumbs: 'widgets/breadcrumb/EDWARE.breadcrumbs',
 		edwareConfidenceLevelBar: 'widgets/confidenceLevelBar/EDWARE.confidenceBar',
 		edwarePopulationBar: 'widgets/populationBar/EDWARE.populationBar',

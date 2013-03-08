@@ -9,6 +9,8 @@ from smarter.reports.helpers.name_formatter import format_full_name_rev
 from sqlalchemy.sql import select
 from sqlalchemy.sql import and_
 from smarter.database.connector import SmarterDBConnection
+from logging import INFO
+from edapi.autolog import log_function
 
 
 __districtId = 'districtId'
@@ -60,6 +62,7 @@ __asmtSubject = 'asmtSubject'
             },
         }
     })
+@log_function(INFO, None, 'smarter', 'List of Students Report')
 def get_list_of_students_report(params):
 
     district_id = str(params[__districtId])

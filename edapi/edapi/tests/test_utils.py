@@ -152,36 +152,30 @@ class TestUtils(unittest.TestCase):
         try:
             test_logger = TestLogger()
             test_logger.test_method("param1value", "param2value")
-            f = open('test.log')
-            for line in f:
-                if "INFO" in line:
-#                    self.assertIn("param1value", line, "missing param")
-#                    self.assertIn("param2value", line, "missing param")
-                    self.assertIn("test_method", line, "method name is missing")
-                    self.assertIn("TestLogger", line, "class name is missing")
-                    self.assertIn("INFO", line, "incorrect log level")
+            f = open('test.log').read()
+            self.assertIn("param1value", f, "missing param")
+            self.assertIn("param2value", f, "missing param")
+            self.assertIn("test_method", f, "method name is missing")
+            self.assertIn("TestLogger", f, "class name is missing")
+            self.assertIn("INFO", f, "incorrect log level")
         finally:
             os.remove('test.log')
 
     def test_function_log(self):
         try:
             test_function("param1value", "param2value")
-            f = open('test2.log')
-            for line in f:
-                if ("DEBUG" in line):
-#                    self.assertIn("param1value", line, "missing param")
-#                    self.assertIn("param2value", line, "missing param")
-                    self.assertIn("test_function", line, "method name is missing")
-                    self.assertIn("DEBUG", line, "incorrect log level")
+            f = open('test2.log').read()
+            self.assertIn("param1value", f, "missing param")
+            self.assertIn("param2value", f, "missing param")
+            self.assertIn("test_function", f, "method name is missing")
+            self.assertIn("DEBUG", f, "incorrect log level")
         finally:
             os.remove('test2.log')
 
     def test_display_text_log(self):
         try:
             test_display_name()
-            f = open('test3.log')
-            for line in f:
-                if "DEBUG" in line:
-                    self.assertIn("test_display", line, "missing param")
+            f = open('test3.log').read()
+            self.assertIn("test_display", f, "missing param")
         finally:
             os.remove('test3.log')

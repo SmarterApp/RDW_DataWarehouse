@@ -2,10 +2,10 @@
 require ["jquery", "cs!edwarePopulationBar"], ($, edwarePopulationBar) ->
   module "EDWARE.populationBar.create",
     setup: ->
-      $("body").append "<div class='populationBar'></div>"
+      $("body").append "<div id='populationBar'></div>"
 
     teardown: ->
-      #$(".populationBar").remove()
+      $("#populationBar").remove()
 
   test "Test create method", ->
     ok edwarePopulationBar.create isnt "undefined", "edwarePopulationBar.create method should be defined"
@@ -34,7 +34,6 @@ require ["jquery", "cs!edwarePopulationBar"], ($, edwarePopulationBar) ->
         text_color: "#FFFFFF"
     ]
             
-    edwarePopulationBar.create ".populationBar", test_data
-    "<div class='populationBar'></div>"
+    edwarePopulationBar.create test_data, "#populationBar"
     
     equal $(".bar").length, 3, "Create method should create 3 interval bars"

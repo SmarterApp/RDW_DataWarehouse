@@ -83,30 +83,116 @@ def arrange_results(results, param_manager):
     '''
     Arrange the results in optimal way to be consumed by front-end
     '''
-    arranged_results = []
-    curr_result = None
+    arranged_results = {}
+    consolidated_results = []
+    curr_result = {}
+    total_results = {}
+    asmt_custom_metadata_results = {}
     # abstract the subject names in the response results
     subjects = {"Math": "subject1", "ELA": "subject2"}
 
     for result in results:
-        if (curr_result is None) or (result[param_manager.get_name_of_field()] != curr_result[Constants.NAME]):
+        # if this is the first time processing data for the group record,
+        # then initialize temporary dictionary to hold data to use calcualtion
+        if result[param_manager.get_name_of_field()] != curr_result.get(Constants.NAME, None):
             curr_result = {}
             curr_result[Constants.NAME] = result[param_manager.get_name_of_field()]
+            curr_result[Constants.ID] = result[param_manager.get_id_of_field()]
             curr_result[Constants.RESULTS] = {}
-            arranged_results.append(curr_result)
+            consolidated_results.append(curr_result)
 
         subject_result = {}
-        subject_result[Constants.LEVEL1] = result[Constants.LEVEL1]
-        subject_result[Constants.LEVEL2] = result[Constants.LEVEL2]
-        subject_result[Constants.LEVEL3] = result[Constants.LEVEL3]
-        subject_result[Constants.LEVEL4] = result[Constants.LEVEL4]
-        subject_result[Constants.LEVEL5] = result[Constants.LEVEL5]
-        subject_result[Constants.TOTAL] = result[Constants.TOTAL]
-        subject_result[Constants.ASMT_SUBJECT] = result[Constants.ASMT_SUBJECT]
+
+        # get alias name for subject
         subject = subjects[result[Constants.ASMT_SUBJECT]]
+
+        # get placeholder for overall records
+        total_result = total_results.get(subject, {})
+
+        # get total number for the subject
+        subject_result[Constants.TOTAL] = result[Constants.TOTAL]
+
+        # process each level for the subject
+        process_result(result, subject_result, Constants.LEVEL1)
+        process_result(result, subject_result, Constants.LEVEL2)
+        process_result(result, subject_result, Constants.LEVEL3)
+        process_result(result, subject_result, Constants.LEVEL4)
+        process_result(result, subject_result, Constants.LEVEL5)
+
+        subject_result[Constants.ASMT_SUBJECT] = result[Constants.ASMT_SUBJECT]
         curr_result[Constants.RESULTS][subject] = subject_result
 
+        calculate_sum_for_total(subject_result, total_result)
+
+        # if asmt_custom_metadata has not read, then store the record
+        if subject not in asmt_custom_metadata_results:
+            asmt_custom_metadata_results[subject] = result[Constants.ASMT_CUSTOM_METADATA]
+
+        total_results[subject] = total_result
+
+    # calculate ratio for each subject totals
+    for subject in subjects.values():
+        calculate_percentage_for_summary(total_results[subject])
+
+    # bind the results
+    arranged_results['subjects'] = subjects
+    arranged_results['colors'] = asmt_custom_metadata_results
+    arranged_results['summary'] = total_results
+    arranged_results['records'] = consolidated_results
     return arranged_results
+
+
+def process_result(read_from, subject_result, level_name):
+    intervals = subject_result.get(Constants.INTERVALS, [])
+    interval = {}
+    interval[Constants.COUNT] = read_from[level_name]
+    calulate_percentage(read_from, interval, level_name)
+    # strip out "level" from level_name
+    interval[Constants.LEVEL] = int(level_name[5:])
+    intervals.append(interval)
+    subject_result[Constants.INTERVALS] = intervals
+
+
+def calculate_percentage_for_summary(total_result):
+    __total = total_result.get(Constants.TOTAL, 0)
+    __intervals = total_result[Constants.INTERVALS]
+    for index in range(len(__intervals)):
+        __percentage = 0
+        if __total != 0:
+            __percentage = int(__intervals[index][Constants.COUNT] / __total * 100 + 0.5)
+        __intervals[index][Constants.PERCENTAGE] = __percentage
+
+
+def calulate_percentage(read_from, write_out, level_name):
+    __total = read_from.get(Constants.TOTAL, 0)
+    if __total == 0:
+        write_out[Constants.PERCENTAGE] = 0
+    write_out[Constants.PERCENTAGE] = int(read_from.get(level_name, 0) / __total * 100 + 0.5)
+
+
+def calculate_sum_for_total(read_from, write_out):
+    '''
+    read_from: subject record
+    '''
+    read_from_total = read_from[Constants.TOTAL]
+    read_from_intervals = read_from[Constants.INTERVALS]
+
+    write_out_total = write_out.get(Constants.TOTAL, 0)
+    write_out_intervals = write_out.get(Constants.INTERVALS, None)
+
+    # initialize array with dict
+    if write_out_intervals is None:
+        write_out_intervals = []
+        for index in range(len(read_from_intervals)):
+            write_out_intervals.append({})
+
+    for index in range(len(read_from_intervals)):
+        write_out_intervals[index][Constants.LEVEL] = read_from_intervals[index][Constants.LEVEL]
+        write_out_intervals[index][Constants.COUNT] = write_out_intervals[index].get(Constants.COUNT, 0) + read_from_intervals[index][Constants.COUNT]
+
+    write_out_total = write_out_total + read_from_total
+    write_out[Constants.TOTAL] = write_out_total
+    write_out[Constants.INTERVALS] = write_out_intervals
 
 
 class Parameters():
@@ -151,6 +237,16 @@ class ParameterManager():
             __field_name = Constants.ASMT_GRADE
         return __field_name
 
+    def get_id_of_field(self):
+        __field_id = None
+        if self.is_state_view():
+            __field_id = Constants.DISTRICT_ID
+        elif self.is_district_view():
+            __field_id = Constants.SCHOOL_ID
+        elif self.is_school_view():
+            __field_name = Constants.ASMT_GRADE
+        return __field_id
+
     @property
     def p(self):
         return self._parameters
@@ -176,11 +272,12 @@ class QueryHelper():
             columns = [self._dim_inst_hier.c.district_name.label(Constants.DISTRICT_NAME), self._dim_inst_hier.c.district_id.label(Constants.DISTRICT_ID), self._dim_asmt.c.asmt_subject.label(Constants.ASMT_SUBJECT)]
         elif self._param_manager.is_district_view():
             columns = [self._dim_inst_hier.c.school_name.label(Constants.SCHOOL_NAME), self._dim_inst_hier.c.school_id.label(Constants.SCHOOL_ID), self._dim_asmt.c.asmt_subject.label(Constants.ASMT_SUBJECT)]
-        else:
+        elif self._param_manager.is_school_view():
             columns = [self._fact_asmt_outcome.c.asmt_grade.label(Constants.ASMT_GRADE), self._dim_asmt.c.asmt_subject.label(Constants.ASMT_SUBJECT)]
 
         # this is always static
-        columns_for_perf_level = [func.count(case([(self._fact_asmt_outcome.c.asmt_perf_lvl == 1, self._fact_asmt_outcome.c.student_id)])).label(Constants.LEVEL1),
+        columns_for_perf_level = [self._dim_asmt.c.asmt_custom_metadata.label(Constants.ASMT_CUSTOM_METADATA),
+                                  func.count(case([(self._fact_asmt_outcome.c.asmt_perf_lvl == 1, self._fact_asmt_outcome.c.student_id)])).label(Constants.LEVEL1),
                                   func.count(case([(self._fact_asmt_outcome.c.asmt_perf_lvl == 2, self._fact_asmt_outcome.c.student_id)])).label(Constants.LEVEL2),
                                   func.count(case([(self._fact_asmt_outcome.c.asmt_perf_lvl == 3, self._fact_asmt_outcome.c.student_id)])).label(Constants.LEVEL3),
                                   func.count(case([(self._fact_asmt_outcome.c.asmt_perf_lvl == 4, self._fact_asmt_outcome.c.student_id)])).label(Constants.LEVEL4),
@@ -213,7 +310,7 @@ class QueryHelper():
             group_by = self._dim_inst_hier.c.school_name, self._dim_inst_hier.c.school_id, self._dim_asmt.c.asmt_subject
         elif self._param_manager.is_school_view():
             group_by = self._fact_asmt_outcome.c.asmt_grade, self._dim_asmt.c.asmt_subject
-        return group_by
+        return group_by + (self._dim_asmt.c.asmt_custom_metadata,)
 
     def build_order_by(self):
         order_by = None
@@ -249,6 +346,10 @@ class Constants():
     DISTRICT_ID = 'district_id'
     SCHOOL_NAME = 'school_name'
     SCHOOL_ID = 'school_id'
+    PERCENTAGE = 'percentage'
+    COUNT = 'count'
+    INTERVALS = 'intervals'
+    LEVEL = 'level'
     LEVEL1 = 'level1'
     LEVEL2 = 'level2'
     LEVEL3 = 'level3'
@@ -256,7 +357,9 @@ class Constants():
     LEVEL5 = 'level5'
     TOTAL = 'total'
     NAME = 'name'
+    ID = 'id'
     RESULTS = 'results'
     DIM_INST_HIER = 'dim_inst_hier'
     DIM_ASMT = 'dim_asmt'
     FACT_ASMT_OUTCOME = 'fact_asmt_outcome'
+    ASMT_CUSTOM_METADATA = 'asmt_custom_metadata'

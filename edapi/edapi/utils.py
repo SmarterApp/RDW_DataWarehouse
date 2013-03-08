@@ -8,6 +8,8 @@ import validictory
 from edapi.exceptions import ReportNotFoundError, InvalidParameterError
 import inspect
 import logging
+from logging import INFO
+from edapi.autolog import log_function
 
 REPORT_REFERENCE_FIELD_NAME = 'name'
 PARAMS_REFERENCE_FIELD_NAME = 'params'
@@ -90,7 +92,8 @@ def generate_report(registry, report_name, params, validator=None):
 
     report = get_report_dict_value(registry, report_name, ReportNotFoundError)
 
-    return call_decorated_method(report, params)
+    result = call_decorated_method(report, params)
+    return result
 
 
 def generate_report_config(registry, report_name):
@@ -158,30 +161,6 @@ def add_configuration_header(params_config):
         "properties": params_config}
 
     return result
-
-
-def get_logger(name=None, add_file_handler=True):
-    '''
-    Gets a logger by name, and add a file handler, with the same name, to it
-    '''
-    # if no name is provided we use the module name
-    if name is None:
-        name = __name__
-
-    logger = logging.getLogger(name)
-
-    # if there are no handlers we add a file handler with the given name
-    if add_file_handler and len(logger.handlers) == 0:
-        # create file handler which logs even debug messages
-        fh = logging.FileHandler('{0}.log'.format(name))
-        fh.setLevel(logging.DEBUG)
-        # create formatter and add it to the handlers
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        fh.setFormatter(formatter)
-        # add the handlers to the logger
-        logger.addHandler(fh)
-
-    return logger
 
 
 class Validator:

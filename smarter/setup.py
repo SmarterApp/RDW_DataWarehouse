@@ -17,7 +17,8 @@ requires = [
     'edauth',
     'edapi',
     'edschema',
-    'py-postgresql', ]
+    'py-postgresql',
+    'pyramid_exclog']
 
 
 setup(name='smarter',

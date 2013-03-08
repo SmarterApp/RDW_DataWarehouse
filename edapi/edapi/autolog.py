@@ -4,8 +4,9 @@ Created on Mar 5, 2013
 @author: aoren
 '''
 
-from edapi import utils
+#from edapi import utils
 from logging import INFO
+import logging
 
 
 def shorten_string(obj):
@@ -41,13 +42,14 @@ class log_function(object):
     '''
     Logs a function name and the arguments it was called with
     '''
-    def __init__(self, level=INFO, display_name=None, logger_name=None):
+    def __init__(self, level=INFO, display_name=None, logger_name=None, report_name=""):
         """
         the function to be decorated is not passed to the constructor!.
         """
         self.level = level
         self.display_name = display_name
         self.logger_name = logger_name
+        self.report_name = report_name
 
     def __call__(self, original_func):
         """
@@ -60,9 +62,9 @@ class log_function(object):
         def __wrapper(*args, **kwds):
             argstr = format_all_args(args, kwds)
 
-            log = utils.get_logger(self.logger_name)
+            log = get_logger(self.logger_name)
             # Log the entry into the function
-            log.log(self.level, "{0} ({1}) ".format(self.display_name, argstr))
+            log.log(self.level, "{2}: {0} ({1}) ".format(self.display_name, argstr, self.report_name))
 
             return original_func(*args, **kwds)
         return __wrapper
@@ -92,9 +94,34 @@ class log_instance_method(object):
             argstr = format_all_args(args, kwds)
             self_str = shorten_string(self)
 
-            log = utils.get_logger(self.logger_name)
+            log = get_logger(self.logger_name)
             # Log the entry into the method
             log.log(self.level, "{0}{1} ({2}) ".format(self_str, self.display_name, argstr))
 
             return original_func(*args, **kwds)
         return __wrapper
+
+
+def get_logger(name=None, add_file_handler=True):
+    '''
+    Gets a logger by name, and add a file handler, with the same name, to it
+    '''
+    # if no name is provided we use the module name
+    if name is None:
+        name = __name__
+
+    logger = logging.getLogger(name)
+
+    # if there are no handlers we add a file handler with the given name
+    if add_file_handler and len(logger.handlers) == 0:
+        # create file handler which logs even debug messages
+        # TODO: add configurable folder
+        fh = logging.FileHandler('{0}.log'.format(name))
+        fh.setLevel(logging.DEBUG)
+        # create formatter and add it to the handlers
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        fh.setFormatter(formatter)
+        # add the handlers to the logger
+        logger.addHandler(fh)
+
+    return logger

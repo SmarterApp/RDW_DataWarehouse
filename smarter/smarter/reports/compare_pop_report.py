@@ -83,149 +83,186 @@ def arrange_results(results, param_manager):
     '''
     Arrange the results in optimal way to be consumed by front-end
     '''
-    arranged_results = {}
-    consolidated_results = []
-    curr_result = {}
-    total_results = {}
-    asmt_custom_metadata_results = {}
-    # abstract the subject names in the response results
     subjects = {Constants.MATH: Constants.SUBJECT1, Constants.ELA: Constants.SUBJECT2}
+    arranged_results = {}
+    record_manager = RecordManager(param_manager, subjects)
 
     for result in results:
-        # if this is the first time processing data for the group record,
-        # then initialize temporary dictionary to hold data to use calcualtion
-        if result[param_manager.get_name_of_field()] != curr_result.get(Constants.NAME, None):
-            curr_result = {}
-            curr_result[Constants.NAME] = result[param_manager.get_name_of_field()]
-            curr_result[Constants.ID] = result[param_manager.get_id_of_field()]
-            curr_result[Constants.RESULTS] = {}
-            consolidated_results.append(curr_result)
-
-        subject_result = {}
-
-        # get alias name for subject
-        subject = subjects[result[Constants.ASMT_SUBJECT]]
-
-        # get placeholder for overall records
-        total_result = total_results.get(subject, {})
-
-        # get total number for the subject
-        subject_result[Constants.TOTAL] = result[Constants.TOTAL]
-
-        # process each level for the subject
-        process_result(result, subject_result, Constants.LEVEL1)
-        process_result(result, subject_result, Constants.LEVEL2)
-        process_result(result, subject_result, Constants.LEVEL3)
-        process_result(result, subject_result, Constants.LEVEL4)
-        process_result(result, subject_result, Constants.LEVEL5)
-
-        subject_result[Constants.ASMT_SUBJECT] = result[Constants.ASMT_SUBJECT]
-        curr_result[Constants.RESULTS][subject] = subject_result
-
-        calculate_sum_for_total(subject_result, total_result)
-
-        # if asmt_custom_metadata has not read, then store the record
-        if subject not in asmt_custom_metadata_results:
-            asmt_custom_metadata_results[subject] = result[Constants.ASMT_CUSTOM_METADATA]
-
-        total_results[subject] = total_result
-
-    # calculate ratio for each subject totals
-    for subject in subjects.values():
-        calculate_percentage_for_summary(total_results[subject])
+        # use record manager to update record with result set
+        record_manager.update_record(result)
 
     # bind the results
-    arranged_results[Constants.COLORS] = asmt_custom_metadata_results
-    arranged_results[Constants.SUMMARY] = total_results
-    arranged_results[Constants.RECORDS] = consolidated_results
-    # reverse map keys and values
-    arranged_results[Constants.SUBJECTS] = {v: k for k, v in subjects.items()}
-    return arranged_results
+    arranged_results[Constants.COLORS] = record_manager.get_asmt_custom_metadata()
+    arranged_results[Constants.SUMMARY] = record_manager.get_summary()
+    arranged_results[Constants.RECORDS] = record_manager.get_records()
+    # reverse map keys and values for subject
+    arranged_results[Constants.SUBJECTS] = record_manager.get_subjects()
+    return {Constants.CONTEXT: arranged_results}
 
 
-def process_result(read_from, subject_result, level_name):
+class Constants():
     '''
-    read_from: result set
-    process the result for each "level" names.
-    read the result, then pack data for
-    count, level, and a map of intervals
+    constants for this report
     '''
-    # get interval array, if this is the first time.
-    # then get an empty arraay
-    intervals = subject_result.get(Constants.INTERVALS, [])
-    interval = {}
+    STATEID = 'stateId'
+    DISTRICTID = 'districtId'
+    SCHOOLID = 'schoolId'
+    SUMMATIVE = 'SUMMATIVE'
+    ASMT_SUBJECT = 'asmt_subject'
+    ASMT_GRADE = 'asmt_grade'
+    DISTRICT_NAME = 'district_name'
+    DISTRICT_ID = 'district_id'
+    SCHOOL_NAME = 'school_name'
+    SCHOOL_ID = 'school_id'
+    PERCENTAGE = 'percentage'
+    COUNT = 'count'
+    INTERVALS = 'intervals'
+    LEVEL = 'level'
+    LEVEL1 = 'level1'
+    LEVEL2 = 'level2'
+    LEVEL3 = 'level3'
+    LEVEL4 = 'level4'
+    LEVEL5 = 'level5'
+    TOTAL = 'total'
+    NAME = 'name'
+    ID = 'id'
+    RESULTS = 'results'
+    DIM_INST_HIER = 'dim_inst_hier'
+    DIM_ASMT = 'dim_asmt'
+    FACT_ASMT_OUTCOME = 'fact_asmt_outcome'
+    ASMT_CUSTOM_METADATA = 'asmt_custom_metadata'
+    MATH = 'Math'
+    ELA = 'ELA'
+    SUBJECTS = 'subjects'
+    SUBJECT1 = 'subject1'
+    SUBJECT2 = 'subject2'
+    COLORS = 'colors'
+    SUMMARY = 'summary'
+    RECORDS = 'records'
+    TRUE = True
+    CONTEXT = 'context'
 
-    # get count for the level
-    interval[Constants.COUNT] = read_from[level_name]
 
-    # calculate the percentage
-    calculate_percentage(read_from, interval, level_name)
-    # strip out "level" from level_name
-    interval[Constants.LEVEL] = int(level_name[5:])
-    # append to the end of intervals array
-    intervals.append(interval)
+class RecordManager():
 
-    # assign to "intervals" property
-    subject_result[Constants.INTERVALS] = intervals
+    def __init__(self, param_manager, subjects_map):
+        self._param_manager = param_manager
+        self._subjects_map = subjects_map
+        self._tracking_record = {}
+        self._asmt_custom_metadata_results = {}
 
+    def update_record(self, result):
+        rec_id = result[self._param_manager.get_id_of_field()]
+        name = result[self._param_manager.get_name_of_field()]
+        # get record from the memory
+        record = self._tracking_record.get(rec_id, None)
+        # otherwise, create new empty reord
+        if record is None:
+            # it requires unique ID and and name
+            record = Record(rec_id, name)
+            self._tracking_record[rec_id] = record
 
-def calculate_percentage_for_summary(total_result):
-    '''
-    calculate percentage for overall summary result sets
-    '''
-    __total = total_result.get(Constants.TOTAL, 0)
-    __intervals = total_result[Constants.INTERVALS]
-    for index in range(len(__intervals)):
+        subject_name = result[Constants.ASMT_SUBJECT]
+        subject_alias_name = self._subjects_map[subject_name]
+        total = result[Constants.TOTAL]
+        intervals = []
+        intervals.append(self.__create_interval(result, Constants.LEVEL1))
+        intervals.append(self.__create_interval(result, Constants.LEVEL2))
+        intervals.append(self.__create_interval(result, Constants.LEVEL3))
+        intervals.append(self.__create_interval(result, Constants.LEVEL4))
+        intervals.append(self.__create_interval(result, Constants.LEVEL5))
+        record.update(subject_alias_name, subject_name, intervals, total)
+        if subject_alias_name not in self._asmt_custom_metadata_results:
+            self._asmt_custom_metadata_results[subject_alias_name] = result[Constants.ASMT_CUSTOM_METADATA]
+
+    def get_asmt_custom_metadata(self):
+        return self._asmt_custom_metadata_results
+
+    def get_subjects(self):
+        return {v: k for k, v in self._subjects_map.items()}
+
+    def get_summary(self):
+        summary_records = {}
+        for record in self._tracking_record.values():
+            subjects_record = record.get_subjects()
+            for subject_alias_name in subjects_record.keys():
+                subject_record = subjects_record[subject_alias_name]
+                if subject_alias_name not in summary_records:
+                    summary_records[subject_alias_name] = {}
+                summary_record = summary_records[subject_alias_name]
+                summary_record[Constants.TOTAL] = summary_record.get(Constants.TOTAL, 0) + subject_record[Constants.TOTAL]
+                summary_record[Constants.ASMT_SUBJECT] = subject_record[Constants.ASMT_SUBJECT]
+                subject_intervals = subject_record[Constants.INTERVALS]
+                size_of_interval = len(subject_intervals)
+                summary_record_intervals = summary_record.get(Constants.INTERVALS, None)
+                if summary_record_intervals is None:
+                    summary_record_intervals = [None] * size_of_interval
+                    summary_record[Constants.INTERVALS] = summary_record_intervals
+                for index in range(size_of_interval):
+                    if summary_record_intervals[index] is None:
+                        summary_record_intervals[index] = {}
+                    summary_interval = summary_record_intervals[index]
+                    subject_interval = subject_intervals[index]
+                    summary_interval[Constants.COUNT] = summary_interval.get(Constants.COUNT, 0) + subject_interval[Constants.COUNT]
+                    summary_interval[Constants.PERCENTAGE] = self.calculate_percentage(summary_interval[Constants.COUNT], summary_record[Constants.TOTAL])
+                    summary_interval[Constants.LEVEL] = subject_interval[Constants.LEVEL]
+        return summary_records
+
+    def get_records(self):
+        records = []
+        for record in self._tracking_record.values():
+            records.append(record.get())
+        return records
+
+    def __create_interval(self, result, level_name):
+        level_count = result[level_name]
+        total = result[Constants.TOTAL]
+        level = level_name[5:]
+        interval = {}
+        interval[Constants.COUNT] = level_count
+        interval[Constants.LEVEL] = level
+        interval[Constants.PERCENTAGE] = self.calculate_percentage(level_count, total)
+        return interval
+
+    def calculate_percentage(self, count, total):
+        '''
+        calculate percentage
+        '''
         __percentage = 0
-        if __total != 0:
+        if total != 0:
             # use 0.5 to round up
-            __percentage = int(__intervals[index][Constants.COUNT] / __total * 100 + 0.5)
-        __intervals[index][Constants.PERCENTAGE] = __percentage
+            __percentage = int(count / total * 100 + 0.5)
+        return __percentage
 
 
-def calculate_percentage(read_from, write_out, level_name):
-    '''
-    calculate percentage for each records
-    '''
-    __total = read_from.get(Constants.TOTAL, 0)
-    __percentage = 0
-    if __total != 0:
-        # use 0.5 to round up
-        __percentage = int(read_from.get(level_name, 0) / __total * 100 + 0.5)
-    write_out[Constants.PERCENTAGE] = __percentage
+class Record():
+    def __init__(self, record_id=None, name=None):
+        self._id = record_id
+        self._name = name
+        self._subjects = {}
 
+    def update(self, subject_alias_name, subject_name, intervals, total):
+        '''
+        subject_alias_name: alias name for the subject, such as 'subject1', 'subject2' etc.
+        subjec_name: name of subject, such as Math, ELA
+        intervals: array that contains dict{count:, level:, percentage:}
+        total: total number of all the count in the intervals array
+        '''
+        subject = {}
+        subject[Constants.TOTAL] = total
+        subject[Constants.ASMT_SUBJECT] = subject_name
+        subject[Constants.INTERVALS] = intervals
+        self._subjects[subject_alias_name] = subject
 
-def calculate_sum_for_total(read_from, write_out):
-    '''
-    sum up for overall total and each levels
-    read_from: subject record
-    write_out: total subject
-    '''
+    def get_subjects(self):
+        return self._subjects
 
-    # read record
-    read_from_total = read_from[Constants.TOTAL]
-    read_from_intervals = read_from[Constants.INTERVALS]
-
-    # read total record or initialize if it does not exist
-    write_out_total = write_out.get(Constants.TOTAL, 0)
-    write_out_intervals = write_out.get(Constants.INTERVALS, None)
-
-    # initialize array with dict
-    if write_out_intervals is None:
-        write_out_intervals = []
-        for index in range(len(read_from_intervals)):
-            write_out_intervals.append({})
-
-    # create information for level and total count
-    for index in range(len(read_from_intervals)):
-        write_out_intervals[index][Constants.LEVEL] = read_from_intervals[index][Constants.LEVEL]
-        write_out_intervals[index][Constants.COUNT] = write_out_intervals[index].get(Constants.COUNT, 0) + read_from_intervals[index][Constants.COUNT]
-
-    # sum overall total
-    write_out_total = write_out_total + read_from_total
-
-    write_out[Constants.TOTAL] = write_out_total
-    write_out[Constants.INTERVALS] = write_out_intervals
+    def get(self):
+        record = {}
+        record[Constants.ID] = self._id
+        record[Constants.NAME] = self._name
+        record[Constants.RESULTS] = self._subjects
+        return record
 
 
 class Parameters():
@@ -298,7 +335,7 @@ class ParameterManager():
         elif self.is_district_view():
             __field_id = Constants.SCHOOL_ID
         elif self.is_school_view():
-            __field_name = Constants.ASMT_GRADE
+            __field_id = Constants.ASMT_GRADE
         return __field_id
 
     @property
@@ -405,45 +442,3 @@ class QueryHelper():
         elif self._param_manager.is_school_view():
             where = and_(self._fact_asmt_outcome.c.state_code == self._param_manager.p.state_id, self._fact_asmt_outcome.c.district_id == self._param_manager.p.district_id, self._fact_asmt_outcome.c.school_id == self._param_manager.p.school_id)
         return where
-
-
-class Constants():
-    '''
-    constants for this report
-    '''
-    STATEID = 'stateId'
-    DISTRICTID = 'districtId'
-    SCHOOLID = 'schoolId'
-    SUMMATIVE = 'SUMMATIVE'
-    ASMT_SUBJECT = 'asmt_subject'
-    ASMT_GRADE = 'asmt_grade'
-    DISTRICT_NAME = 'district_name'
-    DISTRICT_ID = 'district_id'
-    SCHOOL_NAME = 'school_name'
-    SCHOOL_ID = 'school_id'
-    PERCENTAGE = 'percentage'
-    COUNT = 'count'
-    INTERVALS = 'intervals'
-    LEVEL = 'level'
-    LEVEL1 = 'level1'
-    LEVEL2 = 'level2'
-    LEVEL3 = 'level3'
-    LEVEL4 = 'level4'
-    LEVEL5 = 'level5'
-    TOTAL = 'total'
-    NAME = 'name'
-    ID = 'id'
-    RESULTS = 'results'
-    DIM_INST_HIER = 'dim_inst_hier'
-    DIM_ASMT = 'dim_asmt'
-    FACT_ASMT_OUTCOME = 'fact_asmt_outcome'
-    ASMT_CUSTOM_METADATA = 'asmt_custom_metadata'
-    MATH = 'Math'
-    ELA = 'ELA'
-    SUBJECTS = 'subjects'
-    SUBJECT1 = 'subject1'
-    SUBJECT2 = 'subject2'
-    COLORS = 'colors'
-    SUMMARY = 'summary'
-    RECORDS = 'records'
-    TRUE = True

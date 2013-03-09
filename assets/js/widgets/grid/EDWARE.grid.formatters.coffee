@@ -13,7 +13,11 @@ define [
     
   showlink = (value, options, rowObject) ->
     link = options.colModel.formatoptions.linkUrl
-    "<a href=\"" + link + "?studentId=" + rowObject.student_id + "\">" + $.jgrid.htmlEncode(value) + "</a>"
+    params = options.colModel.formatoptions.params
+    unless value is "Overall Summary"
+      "<a href=\"" + link + "?"+params.id+"=" + rowObject.student_id + "\">" + $.jgrid.htmlEncode(value) + "</a>"
+    else
+      "<span class=subTitle2>Reference Point:</span><br/><h6>"+value+":</h6>"
   
   showOverallConfidence = (value, options, rowObject) ->
     names = options.colModel.name.split "."
@@ -28,6 +32,7 @@ define [
     "<div>[" + subject[names[2]+ "_range_min"] + "] " + value  + " [" + subject[names[2]+ "_range_max"] + "]</div>"
     
   performanceBar = (value, options, rowObject) ->
+    asmt_type = options.colModel.formatoptions.asmt_type
     defaultColors =
         0:
           bg_color: "#DD514C"
@@ -71,8 +76,12 @@ define [
       combined =
         intervals: data
       
+      
       results = edwarePopulationBar.create combined
-      "<div class = 'populationBar'>" + results + "</div>"
+      unless rowObject.headerRow
+        "<div class = 'populationBar'>" + results + "</div>"+ rowObject[""+asmt_type+""].total_students
+      else
+        "<div class = 'populationBar'>" + results + "</div>"+ rowObject[""+asmt_type+".total_students"]
  
   showlink: showlink
   showOverallConfidence: showOverallConfidence

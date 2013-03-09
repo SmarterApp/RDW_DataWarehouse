@@ -9,27 +9,27 @@ define [
   "cs!edwareBreadcrumbs"
 ], ($, Mustache, edwareDataProxy, edwareConfidenceLevelBar, indivStudentReportTemplate, claimsInfoTemplate, edwareBreadcrumbs) ->
   
-  default_cutPointColors = [{
-          "text_color": "#ffffff",
-          "bg_color": "#DD514C",
-          "start_gradient_bg_color": "#EE5F5B",
-          "end_gradient_bg_color": "#C43C35"
-      }, {
-          "text_color": "#000",
-          "bg_color": "#e4c904",
-          "start_gradient_bg_color": "#e3c703",
-          "end_gradient_bg_color": "#eed909"
-      }, {
-          "text_color": "#ffffff",
-          "bg_color": "#3b9f0a",
-          "start_gradient_bg_color": "#3d9913",
-          "end_gradient_bg_color": "#65b92c"
-      }, {
-          "text_color": "#ffffff",
-          "bg_color": "#237ccb",
-          "start_gradient_bg_color": "#2078ca",
-          "end_gradient_bg_color": "#3a98d1"
-      }]
+  default_cutPointColors = [
+    text_color: "#ffffff"
+    bg_color: "#DD514C"
+    start_gradient_bg_color: "#EE5F5B"
+    end_gradient_bg_color: "#C43C35"
+  ,
+    text_color: "#000"
+    bg_color: "#e4c904"
+    start_gradient_bg_color: "#e3c703"
+    end_gradient_bg_color: "#eed909"
+  ,
+    text_color: "#ffffff"
+    bg_color: "#3b9f0a"
+    start_gradient_bg_color: "#3d9913"
+    end_gradient_bg_color: "#65b92c"
+  ,
+    text_color: "#ffffff"
+    bg_color: "#237ccb"
+    start_gradient_bg_color: "#2078ca"
+    end_gradient_bg_color: "#3a98d1"
+  ]
       
   # claim score weight in percentage
   claimScoreWeightArray = {

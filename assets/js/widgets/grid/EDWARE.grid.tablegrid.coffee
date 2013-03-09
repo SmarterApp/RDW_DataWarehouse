@@ -47,7 +47,7 @@ define [
                 width: item1.width
   
               colModelItem.formatter = (if (edwareGridFormatters[item1.formatter]) then edwareGridFormatters[item1.formatter] else item1.formatter)  if item1.formatter
-              colModelItem.formatoptions = item1.params  if item1.params
+              colModelItem.formatoptions = item1.options  if item1.options
               colModelItem.sorttype = item1.sorttype  if item1.sorttype
               colModelItem.align = item1.align  if item1.align
               colModelItem.classes = item1.style  if item1.style
@@ -101,7 +101,7 @@ define [
         $(this).jqGrid 'setFrozenColumns'
         $(this).find(".jqg-second-row-header th:first-child").css "background", "#ffffff"
         if footerData
-          $(this).jqGrid('footerData','set', footerData, false);
+          $(this).jqGrid('footerData','set', footerData, true);
         
     ) jQuery
     

@@ -257,7 +257,7 @@ class TestGenerateData(unittest.TestCase):
         city_zip_map = generate_data.generate_city_zipcode(zip_range[0], zip_range[1], sch_num, name_list)
         distObj = District(dist_id, dist_name, state_code, state_name, sch_num, city_zip_map)
 
-        created_school_list, created_wheretaken_list = generate_data.create_institution_hierarchies(stu_num_in_school, stutea_ratio_in_school, distObj, school_type_in_stat, name_list)
+        created_school_list, created_wheretaken_list = generate_data.create_institution_hierarchies(stu_num_in_school, stutea_ratio_in_school, distObj, school_type_in_stat, name_list, False)
 
         self.assertEqual(sch_num, len(created_school_list))
         self.assertEqual(sch_num, len(created_wheretaken_list))
@@ -304,7 +304,7 @@ class TestGenerateData(unittest.TestCase):
         city_zip_map = generate_data.generate_city_zipcode(zip_range[0], zip_range[1], sch_num, name_lists)
         distObj = District(dist_id, dist_name, state_code, state_name, sch_num, city_zip_map)
 
-        created_school_list, wheretaken_list = generate_data.create_institution_hierarchies(stu_num_in_school, stutea_ratio_in_school, distObj, school_type_in_stat, name_lists)
+        created_school_list, wheretaken_list = generate_data.create_institution_hierarchies(stu_num_in_school, stutea_ratio_in_school, distObj, school_type_in_stat, name_lists, False)
         self.assertTrue(len(created_school_list) == 0)
         self.assertTrue(len(wheretaken_list) == 0)
         self.assertRaises(ValueError, generate_data.generate_names_from_lists, sch_num, name_lists[2], name_lists[1])
@@ -328,7 +328,7 @@ class TestGenerateData(unittest.TestCase):
         zip_range = (50000, 60000)
         city_zip_map = generate_data.generate_city_zipcode(zip_range[0], zip_range[1], sch_num, name_lists)
         distObj = District(dist_id, dist_name, state_code, state_name, sch_num, city_zip_map)
-        created_school_list, created_wheretaken_list = generate_data.create_institution_hierarchies(stu_num_in_school, stutea_ratio_in_school, distObj, school_type_in_stat, name_lists)
+        created_school_list, created_wheretaken_list = generate_data.create_institution_hierarchies(stu_num_in_school, stutea_ratio_in_school, distObj, school_type_in_stat, name_lists, False)
         self.assertEqual(sch_num, len(created_school_list))
 
         for i in range(len(created_school_list)):
@@ -425,8 +425,7 @@ class TestGenerateData(unittest.TestCase):
         teachers_list = make_teachers(teacher_num, state)
 
         total_count = {'state_count': 0, 'district_count': 0, 'school_count': 0, 'student_count': 0, 'student_section_count': 0}
-
-        generate_data.create_classes_for_grade(students_list, teachers_list, school, grade, asmt_list, where_taken, total_count)
+        generate_data.create_classes_for_grade(students_list, teachers_list, school, grade, asmt_list, where_taken, total_count, False)
         self.assertEqual(school.number_of_students * 2, total_count['student_section_count'])
 
     # test create_sections_in_one_class()
@@ -529,7 +528,7 @@ class TestGenerateData(unittest.TestCase):
         where_taken_list.append(where_taken)
         distObj.wheretaken_list = where_taken_list
 
-        generate_data.create_classes_for_school(distObj, school, state, name_lists[2], total_count, asmt_list)
+        generate_data.create_classes_for_school(distObj, school, state, name_lists[2], total_count, asmt_list, False)
 
         expected_student_number = student_num
 
@@ -553,27 +552,27 @@ class TestGenerateData(unittest.TestCase):
         os.rename(rename_file, bird_file)
 
     def test_generate_nonedbstat(self):
-        generate_count = generate_data.generate(generate_data.get_name_lists, mock_f_get_state_stats_fail)
+        generate_count = generate_data.generate(generate_data.get_name_lists, mock_f_get_state_stats_fail, False)
         self.assertEqual(generate_count, None)
 
     def test_generate_emptystatdata(self):
-        generate_count = generate_data.generate(generate_data.get_name_lists, mock_f_get_state_stats_emptydb)
+        generate_count = generate_data.generate(generate_data.get_name_lists, mock_f_get_state_stats_emptydb, False)
         self.assertEqual(generate_count, None)
 
     def test_generate_onestate(self):
-        generate_count = generate_data.generate(generate_data.get_name_lists, mock_f_get_state_stats_onestate)
+        generate_count = generate_data.generate(generate_data.get_name_lists, mock_f_get_state_stats_onestate, False)
         self.assertEqual(generate_count['state_count'], 1)
         for value in generate_count.values():
             self.assertTrue(value > 0)
 
     def test_generate_twostates(self):
-        generate_count = generate_data.generate(generate_data.get_name_lists, mock_f_get_state_stats_twostates)
+        generate_count = generate_data.generate(generate_data.get_name_lists, mock_f_get_state_stats_twostates, False)
         # self.assertEqual(generate_count[0], 2)
         for value in generate_count.values():
             self.assertTrue(value > 0)
 
     def test_generate_notEnoughNameLists1(self):
-        generate_count = generate_data.generate(mock_f_get_name_lists_shortlists1, mock_f_get_state_stats_onestate)
+        generate_count = generate_data.generate(mock_f_get_name_lists_shortlists1, mock_f_get_state_stats_onestate, False)
         self.assertEqual(generate_count, {'state_count': 1, 'district_count': 0, 'school_count': 0, 'student_count': 0, 'student_section_count': 0})
 
 

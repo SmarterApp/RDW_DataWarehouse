@@ -5,7 +5,9 @@ here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.txt')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 
-requires = ['py-postgresql',
+requires = ['psycopg2',
+            'SQLAlchemy',
+            'py-postgresql',
             'mock']
 
 tests_require = requires + [

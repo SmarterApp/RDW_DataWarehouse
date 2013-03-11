@@ -10,6 +10,8 @@ from sqlalchemy.sql import and_
 from smarter.database.connector import SmarterDBConnection
 from sqlalchemy.sql.expression import case, func, true
 from smarter.reports.helpers.context import get_context
+import json
+from operator import attrgetter
 
 # Report service for Comparing Populations
 # Output:
@@ -55,6 +57,7 @@ def get_comparing_populations_report(params):
     results = run_query(param_manager)
 
     # arrange results
+    json.dumps(results)
     results = arrange_results(results, param_manager)
 
     return results
@@ -148,7 +151,9 @@ class Constants():
 
 
 class RecordManager():
-
+    '''
+    record manager class
+    '''
     def __init__(self, param_manager, subjects_map):
         self._param_manager = param_manager
         self._subjects_map = subjects_map
@@ -170,12 +175,21 @@ class RecordManager():
         subject_alias_name = self._subjects_map[subject_name]
         total = result[Constants.TOTAL]
         intervals = []
-        intervals.append(self.__create_interval(result, Constants.LEVEL1))
-        intervals.append(self.__create_interval(result, Constants.LEVEL2))
-        intervals.append(self.__create_interval(result, Constants.LEVEL3))
-        intervals.append(self.__create_interval(result, Constants.LEVEL4))
-        intervals.append(self.__create_interval(result, Constants.LEVEL5))
-        record.update(subject_alias_name, subject_name, intervals, total)
+        intervals.append(self.create_interval(result, Constants.LEVEL1))
+        intervals.append(self.create_interval(result, Constants.LEVEL2))
+        intervals.append(self.create_interval(result, Constants.LEVEL3))
+        intervals.append(self.create_interval(result, Constants.LEVEL4))
+        intervals.append(self.create_interval(result, Constants.LEVEL5))
+
+        # reformatting for record object
+        __subject = {}
+        __subject[Constants.TOTAL] = total
+        __subject[Constants.ASMT_SUBJECT] = subject_name
+        __subject[Constants.INTERVALS] = intervals
+        __subjects = record.subjects
+        __subjects[subject_alias_name] = __subject
+        record.subjects = __subjects
+
         if subject_alias_name not in self._asmt_custom_metadata_results:
             self._asmt_custom_metadata_results[subject_alias_name] = result[Constants.ASMT_CUSTOM_METADATA]
 
@@ -213,22 +227,33 @@ class RecordManager():
         return summary_records
 
     def get_records(self):
+        '''
+        return record in array and ordered by name
+        '''
         records = []
         for record in self._tracking_record.values():
-            records.append(record.get())
-        return records
+            __record = {}
+            __record[Constants.ID] = record.id
+            __record[Constants.NAME] = record.name
+            __record[Constants.RESULTS] = record.subjects
+            records.append(__record)
+        return sorted(records, key=attrgetter(Constants.NAME))
 
-    def __create_interval(self, result, level_name):
+    def create_interval(self, result, level_name):
+        '''
+        create interval for paritular level
+        '''
         level_count = result[level_name]
         total = result[Constants.TOTAL]
-        level = level_name[5:]
+        level = int(level_name[5:])
         interval = {}
         interval[Constants.COUNT] = level_count
         interval[Constants.LEVEL] = level
         interval[Constants.PERCENTAGE] = self.calculate_percentage(level_count, total)
         return interval
 
-    def calculate_percentage(self, count, total):
+    @staticmethod
+    def calculate_percentage(count, total):
         '''
         calculate percentage
         '''
@@ -245,28 +270,21 @@ class Record():
         self._name = name
         self._subjects = {}
 
-    def update(self, subject_alias_name, subject_name, intervals, total):
-        '''
-        subject_alias_name: alias name for the subject, such as 'subject1', 'subject2' etc.
-        subjec_name: name of subject, such as Math, ELA
-        intervals: array that contains dict{count:, level:, percentage:}
-        total: total number of all the count in the intervals array
-        '''
-        subject = {}
-        subject[Constants.TOTAL] = total
-        subject[Constants.ASMT_SUBJECT] = subject_name
-        subject[Constants.INTERVALS] = intervals
-        self._subjects[subject_alias_name] = subject
+    @property
+    def id(self):
+        return self._id
 
-    def get_subjects(self):
+    @property
+    def name(self):
+        return self._name
+
+    @property
+    def subjects(self):
         return self._subjects
 
-    def get(self):
-        record = {}
-        record[Constants.ID] = self._id
-        record[Constants.NAME] = self._name
-        record[Constants.RESULTS] = self._subjects
-        return record
+    @subjects.setter
+    def subjects(self, value):
+        self._subjects = value
 
 
 class Parameters():

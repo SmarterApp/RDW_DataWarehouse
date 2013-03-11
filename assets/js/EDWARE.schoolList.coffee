@@ -32,7 +32,8 @@ define [
 
         getSchoolsConfig "../data/school.json", (schoolConfig) ->
           $('#breadcrumb').breadcrumbs(contextData)
-          edwareGrid.create "gridTable", schoolConfig, schoolData, summaryData
+          formmatedSummary = formatSummaryData(summaryData)
+          edwareGrid.create "gridTable", schoolConfig, schoolData, formmatedSummary
         
         
   getSchoolData = (sourceURL, params, callback) ->
@@ -77,6 +78,7 @@ define [
           schoolColumnCfgs
   
   appendColorToData = (data, subjectsData, colorsData, defaultColors, nodeName, resultLen) ->
+    
     # Append data with colors
     if !resultLen
       recordsLen = data.length
@@ -84,10 +86,10 @@ define [
       j = 0
       while (j < recordsLen)
         if nodeName
-          node = data[j][nodeName][k].intervals
+          data[j][nodeName][k].intervals = appendColor data[j][nodeName][k].intervals, colorsData[k], defaultColors
         else
-          node = data[k].intervals  
-        node = appendColor node, colorsData[k], defaultColors
+          data[k].intervals = appendColor data[k].intervals, colorsData[k], defaultColors
+        #node = appendColor node, colorsData[k], defaultColors
         j++
     data
   
@@ -108,5 +110,13 @@ define [
       i++
     intervals
 
+  formatSummaryData = (summaryData) ->
+    data = {}
+    for k of summaryData
+      name = 'results.' + k + '.total'
+      data[name] = summaryData[k].total
+    data['name'] = 'Overall Summary'
+    data
+            
   createStudentGrid: createStudentGrid
   

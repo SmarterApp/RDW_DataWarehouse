@@ -130,17 +130,17 @@ def saml2_post_consumer(request):
 
     # Validate the response id against session
     __SAMLResponse = base64.b64decode(request.POST['SAMLResponse'])
-    __SAMLResposne_manager = SAMLResponseManager(__SAMLResponse.decode('utf-8'))
+    __SAMLResponse_manager = SAMLResponseManager(__SAMLResponse.decode('utf-8'))
     __SAMLResponse_IDP_Metadata_manager = IDP_metadata_manager(request.registry.settings['auth.idp.metadata'])
 
     __skip_verification = request.registry.settings.get('auth.skip.verify', False)
     # TODO: enable auth_request_id
-    # if __SAMLResposne_manager.is_auth_request_id_ok(auth_request_id)
-    if __SAMLResposne_manager.is_condition_ok() and __SAMLResposne_manager.is_status_ok() and (__skip_verification or __SAMLResposne_manager.is_signature_ok(__SAMLResponse_IDP_Metadata_manager.get_trusted_pem_filename())):
+    # if __SAMLResponse_manager.is_auth_request_id_ok(auth_request_id)
+    if __SAMLResponse_manager.is_condition_ok() and __SAMLResponse_manager.is_status_ok() and (__skip_verification or __SAMLResponse_manager.is_signature_ok(__SAMLResponse_IDP_Metadata_manager.get_trusted_pem_filename())):
 
         # create a session
         session_timeout = convert_to_int(request.registry.settings['auth.session.timeout'])
-        session_id = create_new_user_session(__SAMLResposne_manager.get_SAMLResponse(), session_timeout).get_session_id()
+        session_id = create_new_user_session(__SAMLResponse_manager.get_SAMLResponse(), session_timeout).get_session_id()
 
         # Save session id to cookie
         headers = remember(request, session_id)

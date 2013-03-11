@@ -12,6 +12,7 @@ require({
 		edwareGrid: 'widgets/grid/EDWARE.grid.tablegrid',
 		edwareGridFormatters: 'widgets/grid/EDWARE.grid.formatters',
 		edwareStudentList: 'EDWARE.studentList',
+		edwareDistrictList: 'EDWARE.districtList',
 		edwareStateStudentList: 'EDWARE.stateStudentList',
 		edwareIndividualStudent: 'EDWARE.individualStudent',
 		edwareSchoolList: 'EDWARE.schoolList',

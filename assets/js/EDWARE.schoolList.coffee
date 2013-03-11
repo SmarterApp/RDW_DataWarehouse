@@ -16,54 +16,38 @@ define [
   #    
   createStudentGrid = (params) ->
     
-    breadcrumbsData = {}
-      
-    options =
-      async: false
-      method: "GET"
-    
-    edwareDataProxy.getDatafromSource "../data/list_of_students_breadcrumbs.json", options, (tempData) ->
-      breadcrumbsData = tempData
-      
     # Get school data from the server
-    getSchoolsData "../data/schoolData.json", params, (schoolData, summaryData, contextData) ->
+    getSchoolData "/data/comparing_populations", params, (schoolData, summaryData, subjectsData, colorsData, contextData) ->
       
       # Get school grid column configs
       getSchoolsConfig "../data/school.json", (schoolConfig) ->
-        arr = breadcrumbsData['items']
-        length = arr.length
-        element = null
-        i = 0
-        
-        while i < length
-          element = arr[i]
-          element.name = contextData[element.field_name]
-          i++
-          
-        $('#breadcrumb').breadcrumbs(breadcrumbsData)
-        
+    
+        $('#breadcrumb').breadcrumbs(contextData)
         edwareGrid.create "gridTable", schoolConfig, schoolData, summaryData
         
         
-  getSchoolsData = (sourceURL, params, callback) ->
+  getSchoolData = (sourceURL, params, callback) ->
     
-    assessmentArray = []
+    dataArray = []
     
     return false if sourceURL is "undefined" or typeof sourceURL is "number" or typeof sourceURL is "function" or typeof sourceURL is "object"
     
     options =
       async: true
       method: "POST"
+      params: params
   
     edwareDataProxy.getDatafromSource sourceURL, options, (data) ->
-      schoolData = data.schoolData
-      summaryData = data.summaryData
+      schoolData = data.records
+      summaryData = data.summary
+      subjectsData = data.subjects
+      colorsData = data.colors
       contextData = data.context
       
       if callback
-        callback schoolData, summaryData, contextData
+        callback schoolData, summaryData, subjectsData, colorsData, contextData
       else
-        assessmentArray schoolData, summaryData, contextData
+        dataArray schoolData, summaryData, subjectsData, colorsData, contextData
       
       
   getSchoolsConfig = (configURL, callback) ->

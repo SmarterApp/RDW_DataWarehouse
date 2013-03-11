@@ -1,11 +1,10 @@
 define [
   'jquery'
-  'mustache'
   'jqGrid'
   'cs!EDWARE'
   'cs!edwareUtil'
   'cs!edwarePopulationBar'
-], ($, Mustache, jqGrid, EDWARE, edwareUtil, edwarePopulationBar) ->
+], ($, jqGrid, EDWARE, edwareUtil, edwarePopulationBar) ->
   #
   # * EDWARE grid formatters
   # * Handles all the methods for displaying cutpoints, link in the grid
@@ -33,6 +32,8 @@ define [
     
   performanceBar = (value, options, rowObject) ->
     asmt_type = options.colModel.formatoptions.asmt_type
+    subject = rowObject.results[asmt_type]
+    intervals = subject.intervals
     defaultColors =
         0:
           bg_color: "#DD514C"
@@ -57,31 +58,23 @@ define [
           start_gradient_bg_color: "#2078ca"
           end_gradient_bg_color: "#3a98d1"
           text_color: "#FFFFFF"
-
-      
-      data = [
-        percentage: 40
-        color : defaultColors[0]
-      ,
-        percentage: 30
-        color : defaultColors[1]
-      ,
-        percentage: 20
-        color : defaultColors[2]
-      ,
-        percentage: 10
-        color : defaultColors[3]
-      ]
-      
-      combined =
-        intervals: data
-      
-      
-      results = edwarePopulationBar.create combined
-      unless rowObject.headerRow
-        "<div class = 'populationBar'>" + results + "</div>"+ rowObject[""+asmt_type+""].total_students
-      else
-        "<div class = 'populationBar'>" + results + "</div>"+ rowObject[""+asmt_type+".total_students"]
+        
+    i = 0
+    len = intervals.length
+    # For now, ignore everything behind the 4th interval
+    if len > 4
+      intervals = intervals[0..3]
+      len = intervals.length
+    while (i < len)
+      element = intervals[i]
+      element.color = defaultColors[i]
+      i++
+    subject.intervals = intervals
+    results = edwarePopulationBar.create subject
+    unless rowObject.headerRow
+      "<div class = 'populationBar'>" + results + "</div>"+ rowObject['results'][""+asmt_type+""].total
+    else
+      "<div class = 'populationBar'>" + results + "</div>"+ rowObject['results'][""+asmt_type+".total"]
  
   showlink: showlink
   showOverallConfidence: showOverallConfidence

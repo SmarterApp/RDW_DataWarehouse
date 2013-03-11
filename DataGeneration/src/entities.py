@@ -202,7 +202,6 @@ class AssessmentOutcome(object):
 
         asmt_perf_lvl = self.calc_perf_lvl(self.asmt_score, self.assessment)
 
-
         # TODO: shouldn't return things like self.student.teacher_id
         # There should be a field called something like teacher_id
         # can still pass student object into constructor, but extract relevant

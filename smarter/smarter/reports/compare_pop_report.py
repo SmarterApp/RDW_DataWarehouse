@@ -146,6 +146,7 @@ class Constants():
     SUMMARY = 'summary'
     RECORDS = 'records'
     CONTEXT = 'context'
+    PARAMS = 'params'
 
 
 class RecordManager():
@@ -175,6 +176,7 @@ class RecordManager():
         subject_name = result[Constants.ASMT_SUBJECT]
         subject_alias_name = self._subjects_map[subject_name]
         total = result[Constants.TOTAL]
+        # create intervals
         intervals = []
         intervals.append(self.create_interval(result, Constants.LEVEL1))
         intervals.append(self.create_interval(result, Constants.LEVEL2))
@@ -182,7 +184,6 @@ class RecordManager():
         intervals.append(self.create_interval(result, Constants.LEVEL4))
         intervals.append(self.create_interval(result, Constants.LEVEL5))
 
-        # reformatting for record object
         __subject = {}
         __subject[Constants.TOTAL] = total
         __subject[Constants.ASMT_SUBJECT] = subject_name
@@ -195,6 +196,9 @@ class RecordManager():
             self._asmt_custom_metadata_results[subject_alias_name] = result[Constants.ASMT_CUSTOM_METADATA]
 
     def get_asmt_custom_metadata(self):
+        '''
+        for FE color information for each subjects
+        '''
         return self._asmt_custom_metadata_results
 
     def get_subjects(self):
@@ -210,14 +214,21 @@ class RecordManager():
         results = {}
         summary_records = {Constants.RESULTS: results}
         for record in self._tracking_record.values():
+            # get subjects record from "record"
             subjects_record = record.subjects
+            # interate each subjects
             for subject_alias_name in subjects_record.keys():
+                # get subject record
                 subject_record = subjects_record[subject_alias_name]
+                # get processed subject record. If this is the first time, then create empty record
                 if subject_alias_name not in results:
                     results[subject_alias_name] = {}
                 summary_record = results[subject_alias_name]
+                # sum up total
                 summary_record[Constants.TOTAL] = summary_record.get(Constants.TOTAL, 0) + subject_record[Constants.TOTAL]
+                # add subject name
                 summary_record[Constants.ASMT_SUBJECT] = subject_record[Constants.ASMT_SUBJECT]
+                # get intervals
                 subject_intervals = subject_record[Constants.INTERVALS]
                 size_of_interval = len(subject_intervals)
                 summary_record_intervals = summary_record.get(Constants.INTERVALS, None)
@@ -245,9 +256,17 @@ class RecordManager():
             __record[Constants.ID] = record.id
             __record[Constants.NAME] = record.name
             __record[Constants.RESULTS] = record.subjects
-            __record[Constants.STATEID] = record.state_id
-            __record[Constants.DISTRICTID] = record.id if self._param_manager.is_state_view() else record.district_id
-            __record[Constants.SCHOOLID] = record.id if self._param_manager.is_district_view() else record.school_id
+            __record[Constants.PARAMS] = {}
+            __record[Constants.PARAMS][Constants.STATEID] = record.state_id
+            if self._param_manager.is_state_view():
+                __record[Constants.PARAMS][Constants.DISTRICTID] = record.id
+            elif self._param_manager.is_district_view():
+                __record[Constants.PARAMS][Constants.DISTRICTID] = record.district_id
+                __record[Constants.PARAMS][Constants.SCHOOLID] = record.id
+            elif self._param_manager.is_school_view():
+                __record[Constants.PARAMS][Constants.DISTRICTID] = record.district_id
+                __record[Constants.PARAMS][Constants.SCHOOLID] = record.school_id
+                __record[Constants.PARAMS][Constants.ASMT_GRADE] = record.id
             records.append(__record)
         return records
 

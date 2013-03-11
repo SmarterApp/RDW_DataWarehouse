@@ -232,6 +232,8 @@ class RecordManager():
                 subject_intervals = subject_record[Constants.INTERVALS]
                 size_of_interval = len(subject_intervals)
                 summary_record_intervals = summary_record.get(Constants.INTERVALS, None)
+                # if there is not intervals in summary record,
+                # then initialize fixed-size list
                 if summary_record_intervals is None:
                     summary_record_intervals = [None] * size_of_interval
                     summary_record[Constants.INTERVALS] = summary_record_intervals

@@ -13,10 +13,10 @@ define [
   showlink = (value, options, rowObject) ->
     link = options.colModel.formatoptions.linkUrl
     params = options.colModel.formatoptions.params
-    unless value is "Overall Summary"
+    unless rowObject.header
       "<a href=\"" + link + "?"+params.id+"=" + rowObject.student_id + "\">" + $.jgrid.htmlEncode(value) + "</a>"
     else
-      "<span class=subTitle2>Reference Point:</span><br/><h6>"+value+":</h6>"
+      "<span class=subTitle2>" + rowObject.subtitle + ":</span><br/><h6>"+value+":</h6>"
   
   showOverallConfidence = (value, options, rowObject) ->
     names = options.colModel.name.split "."
@@ -34,10 +34,7 @@ define [
     asmt_type = options.colModel.formatoptions.asmt_type
     subject = rowObject.results[asmt_type]
     results = edwarePopulationBar.create subject
-    unless value is "Overall Summary"
-      "<div class = 'populationBar'>" + results + "</div>"+ rowObject['results'][""+asmt_type+""].total
-    else
-      "<div class = 'populationBar'>" + results + "</div>"+ rowObject['results'][""+asmt_type+".total"]
+    "<div class = 'populationBar'>" + results + "</div>"+ rowObject['results'][""+asmt_type+""].total
  
   showlink: showlink
   showOverallConfidence: showOverallConfidence

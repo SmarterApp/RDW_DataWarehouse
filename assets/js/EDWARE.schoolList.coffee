@@ -28,8 +28,8 @@ define [
     
       edwareDataProxy.getDatafromSource "../data/color.json", options, (defaultColors) ->
         
-        schoolData = appendColorToData schoolData, subjectsData, colorsData, defaultColors, "results"
-        summaryData = appendColorToData summaryData, subjectsData, colorsData, defaultColors, null, 1
+        schoolData = appendColorToData schoolData, subjectsData, colorsData, defaultColors
+        summaryData = appendColorToData summaryData, subjectsData, colorsData, defaultColors, 1
 
         getSchoolsConfig "../data/school.json", (schoolConfig) ->
           $('#breadcrumb').breadcrumbs(contextData)
@@ -89,18 +89,20 @@ define [
         else
           schoolColumnCfgs
   
-  appendColorToData = (data, subjectsData, colorsData, defaultColors, nodeName, resultLen) ->
+  appendColorToData = (data, subjectsData, colorsData, defaultColors, resultLen) ->
     
     # Append data with colors
     if !resultLen
       recordsLen = data.length
+    else
+      recordsLen = resultLen
     for k of subjectsData
       j = 0
       while (j < recordsLen)
-        if nodeName
-          data[j][nodeName][k].intervals = appendColor data[j][nodeName][k].intervals, colorsData[k], defaultColors
+        if !resultLen
+          data[j]['results'][k].intervals = appendColor data[j]['results'][k].intervals, colorsData[k], defaultColors
         else
-          data[k].intervals = appendColor data[k].intervals, colorsData[k], defaultColors
+          data['results'][k].intervals = appendColor data['results'][k].intervals, colorsData[k], defaultColors
         #node = appendColor node, colorsData[k], defaultColors
         j++
     data
@@ -124,10 +126,13 @@ define [
 
   formatSummaryData = (summaryData) ->
     data = {}
-    for k of summaryData
+    for k of summaryData.results
       name = 'results.' + k + '.total'
-      data[name] = summaryData[k].total
+      data[name] = summaryData.results[k].total
+    data['subtitle'] = 'Reference Point'
     data['name'] = 'Overall Summary'
+    data['header'] = true
+    data['results'] = summaryData.results
     data
             
   createStudentGrid: createStudentGrid

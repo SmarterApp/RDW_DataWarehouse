@@ -1,9 +1,9 @@
 {
-	"schools": [
-			{"name":"School Name","index":"name","field":"name","width":200,"style":"ui-ellipsis bold", "formatter":"showlink", "options":{"linkUrl":"studentList.html", "params":{"id":"schoolId"}}, "hidden":true, "sortorder":"asc"},
-			{"name":"Total Students","index":"subject1.total_students","field":"subject1.total_students","width":90,"sorttype":"int","align":"center"},
-			{"name":"Total Students","index":"subject2.total_students","field":"subject2.total_students","width":90,"sorttype":"int","align":"center"}
-			{"name":"Math","index":"subject1.total","field":"subject1.total","width":280,"formatter":"performanceBar", "options":{"asmt_type":"subject1"}, "sorttype":"int","align":"center"},
-			{"name":"ELA","index":"subject2.total","field":"subject2.total","width":280,"formatter":"performanceBar", "options":{"asmt_type":"subject2"}, "sorttype":"int","align":"center"},
-		]
+    "schools": [
+            {"name":"School Name","index":"name","field":"name","width":200,"style":"ui-ellipsis bold", "formatter":"showlink", "options":{"linkUrl":"studentList.html", "params":{"id":"schoolId"}}, "hidden":true, "sortorder":"asc"},
+            {"name":"Math","index":"subject1.score","field":"subject1.score","width":280,"formatter":"performanceBar", "options":{"asmt_type":"subject1"}, "sorttype":"int","align":"center"},
+            {"name":"Total Students","index":"subject1.total_students","field":"subject1.total_students","width":90,"sorttype":"int","align":"center"},
+            {"name":"ELA","index":"subject2.score","field":"subject2.score","width":280,"formatter":"performanceBar", "options":{"asmt_type":"subject2"}, "sorttype":"int","align":"center"},
+            {"name":"Total Students","index":"subject2.total_students","field":"subject2.total_students","width":90,"sorttype":"int","align":"center"}
+        ]
 }

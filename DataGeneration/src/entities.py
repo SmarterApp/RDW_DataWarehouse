@@ -2,7 +2,7 @@ from uuid import uuid4
 
 from idgen import IdGen
 import util
-from constants import DATAFILE_PATH, SCORE_MIN_MAX_RANGE
+from constants import SCORE_MIN_MAX_RANGE
 
 
 class InstitutionHierarchy:

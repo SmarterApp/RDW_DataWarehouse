@@ -30,18 +30,18 @@ MAX_ASSMT_SCORE = 500
 
 ASSMT_TYPES = {'Math':
                {'4':
-                {'claim_names': ['Concepts & Procedures', 'Problem Solving/Modeling & Data Analysis', 'Communicating & Reasoning'],
+                {'claim_names': ['Concepts & Procedures', 'Problem Solving and Modeling & Data Analysis', 'Communicating Reasoning'],
                  'claim_percs': [40, 45, 15]},
                 '8':
-                {'claim_names': ['Concepts & Procedures', 'Problem Solving/Modeling & Data Analysis', 'Communicating & Reasoning'],
+                {'claim_names': ['Concepts & Procedures', 'Problem Solving and Modeling & Data Analysis', 'Communicating Reasoning'],
                  'claim_percs': [20, 50, 30]}
                 },
                'ELA':
                {'4':
-                {'claim_names': ['Reading', 'Writing', 'Speaking & Listening', 'Research'],
+                {'claim_names': ['Reading', 'Writing', 'Speaking & Listening', 'Research & Inquiry'],
                  'claim_percs': [25, 25, 25, 25]},
                 '8':
-                {'claim_names': ['Reading', 'Writing', 'Speaking & Listening', 'Research'],
+                {'claim_names': ['Reading', 'Writing', 'Speaking & Listening', 'Research & Inquiry'],
                  'claim_percs': [20, 25, 25, 30]}
                 }
                }

@@ -50,10 +50,11 @@ class Test(unittest.TestCase):
         self.assertEqual(0, interval_level5[Constants.PERCENTAGE])
 
     def test_RecordManager_get_record(self):
-        manager = RecordManager(None, None)
-        record1 = Record(record_id=1, name='bbb')
-        record2 = Record(record_id=2, name='ccc')
-        record3 = Record(record_id=3, name='aaa')
+        parameterManager = ParameterManager(Parameters({Constants.STATEID: 'DE'}))
+        manager = RecordManager(parameterManager, None)
+        record1 = Record(record_id=1, name='bbb', state_id=parameterManager.p.state_id, district_id=parameterManager.p.district_id, school_id=parameterManager.p.school_id)
+        record2 = Record(record_id=2, name='ccc', state_id=parameterManager.p.state_id, district_id=parameterManager.p.district_id, school_id=parameterManager.p.school_id)
+        record3 = Record(record_id=3, name='aaa', state_id=parameterManager.p.state_id, district_id=parameterManager.p.district_id, school_id=parameterManager.p.school_id)
 
         records = {}
         records[record1.id] = record1
@@ -64,10 +65,16 @@ class Test(unittest.TestCase):
         self.assertEqual(3, len(records))
         self.assertEqual(records[0][Constants.ID], 3)
         self.assertEqual(records[0][Constants.NAME], 'aaa')
+        self.assertEqual(records[0][Constants.STATEID], parameterManager.p.state_id)
+        self.assertEqual(records[0][Constants.DISTRICTID], 3)
         self.assertEqual(records[1][Constants.ID], 1)
         self.assertEqual(records[1][Constants.NAME], 'bbb')
+        self.assertEqual(records[1][Constants.STATEID], parameterManager.p.state_id)
+        self.assertEqual(records[1][Constants.DISTRICTID], 1)
         self.assertEqual(records[2][Constants.ID], 2)
         self.assertEqual(records[2][Constants.NAME], 'ccc')
+        self.assertEqual(records[2][Constants.STATEID], parameterManager.p.state_id)
+        self.assertEqual(records[2][Constants.DISTRICTID], 2)
 
     def test_RecordManager_summary(self):
         parameterManager = ParameterManager(Parameters({Constants.STATEID: 'DE'}))

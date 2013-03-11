@@ -169,7 +169,7 @@ class RecordManager():
         # otherwise, create new empty reord
         if record is None:
             # it requires unique ID and and name
-            record = Record(rec_id, name)
+            record = Record(record_id=rec_id, name=name, state_id=self._param_manager.p.state_id, district_id=self._param_manager.p.district_id, school_id=self._param_manager.p.school_id)
             self._tracking_record[rec_id] = record
 
         subject_name = result[Constants.ASMT_SUBJECT]
@@ -245,6 +245,9 @@ class RecordManager():
             __record[Constants.ID] = record.id
             __record[Constants.NAME] = record.name
             __record[Constants.RESULTS] = record.subjects
+            __record[Constants.STATEID] = record.state_id
+            __record[Constants.DISTRICTID] = record.id if self._param_manager.is_state_view() else record.district_id
+            __record[Constants.SCHOOLID] = record.id if self._param_manager.is_district_view() else record.school_id
             records.append(__record)
         return records
 
@@ -274,9 +277,12 @@ class RecordManager():
 
 
 class Record():
-    def __init__(self, record_id=None, name=None):
+    def __init__(self, record_id=None, name=None, state_id=None, district_id=None, school_id=None):
         self._id = record_id
         self._name = name
+        self._state_id = state_id
+        self._district_id = district_id
+        self._school_id = school_id
         self._subjects = {}
 
     def __repr__(self):
@@ -289,6 +295,18 @@ class Record():
     @property
     def name(self):
         return self._name
+
+    @property
+    def state_id(self):
+        return self._state_id
+
+    @property
+    def district_id(self):
+        return self._district_id
+
+    @property
+    def school_id(self):
+        return self._school_id
 
     @property
     def subjects(self):

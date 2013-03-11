@@ -147,10 +147,12 @@ def generate_data(name_lists, db_states_stat, is_small_data_mode):
         state_staff_list = [generate_staff(constants.HIER_USER_TYPE[1], created_state.state_code)for _i in range(num_of_state_staff)]
         create_csv(state_staff_list, ENTITY_TO_PATH_DICT[Staff])
 
+        # TODO: should be more explicit. What is shift?
         shift = 0
         dist_count = 0
         for district in created_dist_list:
             dist_count += 1
+            # TODO: Misleading. Isn't district already created?
             print("creating district %d of %d for state %s" % ((dist_count), len(created_dist_list), state['state_name']))
 
             # create school for each district
@@ -158,6 +160,8 @@ def generate_data(name_lists, db_states_stat, is_small_data_mode):
                                                                           stutea_ratio_in_school_made[shift: shift + district.number_of_schools],
                                                                           district, school_type_in_state, name_lists, is_small_data_mode)
             create_csv(school_list, ENTITY_TO_PATH_DICT[InstitutionHierarchy])
+
+            # TODO: wheretaken still necessary?
             # associate wheretaken_list to current district
             district.wheretaken_list = wheretaken_list
 
@@ -170,6 +174,7 @@ def generate_data(name_lists, db_states_stat, is_small_data_mode):
             shift += district.number_of_schools
 
             # create sections, teachers, students and assessment scores for each school
+            # TODO: use of 'institution_hierarchy' and 'school' is confusing
             for school in school_list:
                 create_classes_for_school(district, school, created_state, name_lists[2], total_count, asmt_list, is_small_data_mode)
 
@@ -214,7 +219,7 @@ def generate_distribution_lists(state):
                                                   state['min_stutea_ratio_per_school'], state['max_stutea_ratio_per_school'],
                                                   sum(school_num_in_dist_made))
 
-        # generate school type distribution in state
+    # generate school type distribution in state
     school_type_in_state = make_school_types([state['primary_perc'], state['middle_perc'],
                                               state['high_perc'], state['other_perc']], sum(school_num_in_dist_made))
 
@@ -222,10 +227,13 @@ def generate_distribution_lists(state):
 
 
 def make_school_types(perc, total):
+
     '''
     Given percentage of different types of school, and total number of schools
     Returns absolute number for each type of school
     '''
+
+    # TODO: we should comment this more heavily. Difficult to follow.
     count = []
     repeat_types = []
     if(total > 0):
@@ -252,23 +260,27 @@ def create_districts(state_code, state_name, school_num_in_dist_made, pos, name_
     '''
     total_school = 0
     districts_list = []
-    n = len(school_num_in_dist_made)
 
-    if(n > 0):
+    # number_of_districts = number of districts in the state
+    number_of_districts = len(school_num_in_dist_made)
+
+    if(number_of_districts > 0):
         # generate random district names
         try:
-            names = generate_names_from_lists(n, name_lists[0], name_lists[1], constants.DIST_SCHOOL_NAME_LENGTH)
+            names = generate_names_from_lists(number_of_districts, name_lists[0], name_lists[1], constants.DIST_SCHOOL_NAME_LENGTH)
         except ValueError:
-            print("ValueError: Not enough list to create", n, " number of district names", n, len(name_lists[0]), len(name_lists[1]))
+            print("ValueError: Not enough list to create", number_of_districts, " number of district names", number_of_districts, len(name_lists[0]), len(name_lists[1]))
             return []
 
         # generate random district zip range
-        zip_init, zip_dist = cal_zipvalues(pos, n)
+        zip_init, zip_dist = cal_zipvalues(pos, number_of_districts)
 
         # generate each district
-        for i in range(n):
+        for i in range(number_of_districts):
             # generate city zipcode map
             city_zip_map = generate_city_zipcode(zip_init, (zip_init + zip_dist), school_num_in_dist_made[i], name_lists)
+
+            # TODO: Is this necessary?
             if(city_zip_map is None):
                 continue
 
@@ -285,7 +297,10 @@ def create_districts(state_code, state_name, school_num_in_dist_made, pos, name_
             # dist = District(district_id, district_external_id, district_name, state_id, school_num_in_dist_made[i], city_zip_map, address1, zip_init)
             dist = District(**params)
             districts_list.append(dist)
+
+            # TODO: Is total_school ever used?
             total_school += dist.number_of_schools
+
             zip_init += zip_dist
 
     return districts_list
@@ -389,6 +404,8 @@ def generate_names_from_lists(count, list1, list2, name_length=None):
     '''
     Generate total 'count' number of random combination of names from input lists
     '''
+
+    # TODO: Add comments to this function. Difficult to follow.
     names = []
     if(count > 0):
         base = math.ceil(math.sqrt(count))
@@ -464,6 +481,7 @@ def create_classes_for_school(district, school, state, name_list, total_count, a
         students_in_grade, external_users = generate_students(number_of_students_per_grade, state, district, school, grade, name_list)
         create_csv(external_users, ENTITY_TO_PATH_DICT[ExternalUserStudent])
 
+        # TODO: get rid of this code? Necessary?
         # Each parent of the student will have a row in external_user_student
         # So, create 1 or 2 external_user_student rows per student
         '''
@@ -477,6 +495,7 @@ def create_classes_for_school(district, school, state, name_list, total_count, a
         generated_student_count += len(students_in_grade)
         total_count['student_count'] += len(students_in_grade)
 
+        # TODO: We should explain this condition more clearly
         if grade == (school.high_grade - 1):
             number_of_students_per_grade = school.number_of_students - generated_student_count
 
@@ -523,6 +542,7 @@ def associate_students_and_scores(student_sections_list, scores, inst_hier_rec_i
                     'asmnt_outcome_id': new_id,
                     'asmnt_outcome_external_id': uuid.uuid4(),
                     'assessment': asmt,
+                    # TODO: student and student_section now equivalent?
                     'student': student_section,
                     'inst_hier_rec_id': inst_hier_rec_id,
                     'section_rec_id': student_section.section_rec_id,
@@ -640,7 +660,9 @@ def create_classes_for_grade(students_in_grade, teachers_in_grade, school, grade
         # generate all student_section in this subject
         student_sections = create_student_sections_for_subject(subject, number_of_classes, students_in_grade, subject_teachers, school, grade, asmt_list)
         total_count['student_section_count'] += len(student_sections)
+
         # associate students with scores of this subject
+        # TODO: Refactor associate_students_and_scores() so it takes a bunch of student_sections and generates scores.
         assessment_outcome_list = associate_students_and_scores(student_sections, scores_for_subject, school.inst_hier_rec_id, subject, asmt_list, where_taken)
         create_csv(assessment_outcome_list, ENTITY_TO_PATH_DICT[AssessmentOutcome])
 
@@ -764,6 +786,7 @@ def split_list(list_to_split, n):
 
 
 def makeup_list(avgin, stdin, minin, maxin, countin, target_sum):
+    # TODO: Add comments/more helpful variable names
     min_dist = MAXINT
     candidate_list = []
     for _loop_variable_not_used in range(constants.RETRY_CAL_STAT):

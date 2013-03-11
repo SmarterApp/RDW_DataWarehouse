@@ -12,9 +12,15 @@ define [
     
   showlink = (value, options, rowObject) ->
     link = options.colModel.formatoptions.linkUrl
-    params = options.colModel.formatoptions.params
     unless rowObject.header
-      "<a href=\"" + link + "?"+params.id+"=" + rowObject.student_id + "\">" + $.jgrid.htmlEncode(value) + "</a>"
+      params = ""
+      i = 0 
+      for k, v of rowObject.params
+        if (i != 0)
+          params = params + "&"
+        params = params + k + "=" + v
+        i++
+      "<a href=\"" + link + "?" + params + "\">" + $.jgrid.htmlEncode(value) + "</a>"
     else
       "<span class=subTitle2>" + rowObject.subtitle + ":</span><br/><h6>"+value+":</h6>"
   

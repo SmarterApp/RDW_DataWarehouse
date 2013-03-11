@@ -146,6 +146,8 @@ def get_list_of_students_report(params):
                 student['student_last_name'] = result['student_last_name']
                 student['student_full_name'] = format_full_name_rev(result['student_first_name'], result['student_middle_name'], result['student_last_name'])
                 student['enrollment_grade'] = result['enrollment_grade']
+                # This is for links in drill down
+                student['params'] = {"studentId": result['student_id']}
 
             assessment = {}
             assessment['teacher_first_name'] = result['teacher_first_name']

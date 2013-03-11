@@ -4,6 +4,7 @@ require({
 		'coffee-script': '3p/coffee-script',
 		jquery: '3p/jquery-1.7.2.min',
 		jqGrid: '3p/jquery.jqGrid.min',
+		bootstrap: '3p/bootstrap.min',
 		text: '3p/text',
 		mustache: '3p/mustache',
 		templates: 'templates',
@@ -31,6 +32,10 @@ require({
             //jqGrid
             deps: ['jquery'],
             exports: 'jqGrid'
+        },
+        'bootstrap': {
+        	deps: ['jquery'],
+            exports: 'bootstrap'
         }
    }
 });

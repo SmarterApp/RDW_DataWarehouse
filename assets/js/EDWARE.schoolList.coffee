@@ -1,10 +1,11 @@
 #global define
 define [
   "jquery"
+  "bootstrap"
   "cs!edwareDataProxy"
   "cs!edwareGrid"
   "cs!edwareBreadcrumbs"
-], ($, edwareDataProxy, edwareGrid, edwareBreadcrumbs) ->
+], ($, bootstrap, edwareDataProxy, edwareGrid, edwareBreadcrumbs) ->
   
   assessmentsData = []
   assessmentsCutPoints = []
@@ -35,6 +36,17 @@ define [
           formmatedSummary = formatSummaryData(summaryData)
           edwareGrid.create "gridTable", schoolConfig, schoolData, formmatedSummary
         
+          $(".progress").hover ->
+            e = $(this)
+            e.popover
+              html: true
+              placement: "top"
+              content: ->
+                e.find(".progressBar_tooltip").html()
+            .popover("show")
+          , ->
+            e = $(this)
+            e.popover("hide")      
         
   getSchoolData = (sourceURL, params, callback) ->
     

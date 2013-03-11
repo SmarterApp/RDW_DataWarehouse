@@ -50,6 +50,7 @@ define [
               colModelItem.formatoptions = item1.options  if item1.options
               colModelItem.sorttype = item1.sorttype  if item1.sorttype
               colModelItem.align = item1.align  if item1.align
+              colModelItem.title = item1.title  if item1.title
               colModelItem.classes = item1.style  if item1.style
               colModelItem.frozen = item1.frozen  if item1.frozen
               if item1.colspan

@@ -4,7 +4,7 @@ Created on Mar 11, 2013
 @author: dwu
 '''
 import unittest
-from smarter.reports.compare_pop_report import get_comparing_populations_report
+from smarter.reports.compare_pop_report import get_comparing_populations_report, Constants
 from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite
 
 
@@ -12,7 +12,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
 
     def test_school_view(self):
         testParam = {}
-        testParam['stateId'] = 'NY'
+        testParam[Constants.STATEID] = 'NY'
         testParam['districtId'] = 'd1'
         testParam['schoolId'] = 'sc1'
         results = get_comparing_populations_report(testParam)
@@ -61,7 +61,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         self.assertEqual('Sunset Central High', context_items[2]['name'])
 
         # check summary results
-        summ_results = results['summary']
+        summ_results = results['summary']['results']
         self.assertEqual(2, len(summ_results))
         subject1 = summ_results['subject1']
         self.assertEqual(3, subject1['total'])
@@ -130,7 +130,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         self.assertEqual('Sunset School District', context_items[1]['name'])
 
         # check summary results
-        summ_results = results['summary']
+        summ_results = results['summary']['results']
         self.assertEqual(2, len(summ_results))
         subject1 = summ_results['subject1']
         self.assertEqual(3, subject1['total'])
@@ -197,7 +197,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         self.assertEqual('NY', context_items[0]['name'])
 
         # check summary results
-        summ_results = results['summary']
+        summ_results = results['summary']['results']
         self.assertEqual(2, len(summ_results))
         subject1 = summ_results['subject1']
         self.assertEqual(3, subject1['total'])

@@ -83,16 +83,16 @@ class TestGetListOfStudents(unittest.TestCase):
 
 
 def make_expected_from_clause(schema_name):
-    return (schema_name + '.dim_student JOIN ' + schema_name + '.dim_section_subject ON ' + schema_name + \
-                                '.dim_student.section_id = ' + schema_name + '.dim_section_subject.section_id JOIN ' + schema_name + \
-                                '.dim_staff ON ' + schema_name + '.dim_student.section_id = ' + schema_name + \
-                                '.dim_staff.section_id JOIN ' + schema_name + '.dim_inst_hier ON ' + schema_name + \
-                                '.dim_student.school_id = ' + schema_name + '.dim_inst_hier.school_id').lower()
+    return (schema_name + '.dim_student JOIN ' + schema_name + '.dim_section_subject ON ' + schema_name +
+            '.dim_student.section_id = ' + schema_name + '.dim_section_subject.section_id JOIN ' + schema_name +
+            '.dim_staff ON ' + schema_name + '.dim_student.section_id = ' + schema_name +
+            '.dim_staff.section_id JOIN ' + schema_name + '.dim_inst_hier ON ' + schema_name +
+            '.dim_student.school_id = ' + schema_name + '.dim_inst_hier.school_id').lower()
 
 
 def make_expected_where_clause(schema_name):
-    return ('WHERE ' + schema_name + '.dim_student.state_code = :state_code_1 AND ' + schema_name + '.dim_student.district_id = :district_id_1 AND ' + \
-            schema_name + '.dim_student.school_id = :school_id_1 AND ' + schema_name + '.dim_student.section_id = :section_id_1 AND ' + \
+    return ('WHERE ' + schema_name + '.dim_student.state_code = :state_code_1 AND ' + schema_name + '.dim_student.district_id = :district_id_1 AND ' +
+            schema_name + '.dim_student.school_id = :school_id_1 AND ' + schema_name + '.dim_student.section_id = :section_id_1 AND ' +
             schema_name + '.dim_student.grade = :grade_1').lower()
 
 

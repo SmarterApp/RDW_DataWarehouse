@@ -159,6 +159,9 @@ class RecordManager():
         self._asmt_custom_metadata_results = {}
 
     def update_record(self, result):
+        '''
+        add a result set to manager and calculate percentage, then store by the name of subjects
+        '''
         rec_id = result[self._param_manager.get_id_of_field()]
         name = result[self._param_manager.get_name_of_field()]
         # get record from the memory
@@ -204,14 +207,15 @@ class RecordManager():
         '''
         return summary of all records
         '''
-        summary_records = {}
+        results = {}
+        summary_records = {Constants.RESULTS: results}
         for record in self._tracking_record.values():
             subjects_record = record.subjects
             for subject_alias_name in subjects_record.keys():
                 subject_record = subjects_record[subject_alias_name]
-                if subject_alias_name not in summary_records:
-                    summary_records[subject_alias_name] = {}
-                summary_record = summary_records[subject_alias_name]
+                if subject_alias_name not in results:
+                    results[subject_alias_name] = {}
+                summary_record = results[subject_alias_name]
                 summary_record[Constants.TOTAL] = summary_record.get(Constants.TOTAL, 0) + subject_record[Constants.TOTAL]
                 summary_record[Constants.ASMT_SUBJECT] = subject_record[Constants.ASMT_SUBJECT]
                 subject_intervals = subject_record[Constants.INTERVALS]

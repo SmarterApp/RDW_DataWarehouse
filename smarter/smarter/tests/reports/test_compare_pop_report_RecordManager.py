@@ -90,12 +90,14 @@ class Test(unittest.TestCase):
 
         summary_records = manager.get_summary()
 
-        self.assertEqual(2, len(summary_records))
-        subject1 = summary_records.get(Constants.SUBJECT1)
+        self.assertEqual(1, len(summary_records))
+        results = summary_records[Constants.RESULTS]
+        self.assertEqual(2, len(results))
+        subject1 = results.get(Constants.SUBJECT1)
         self.assertIsNotNone(subject1)
         self.assertEqual(1000, subject1[Constants.TOTAL])
 
-        subject2 = summary_records.get(Constants.SUBJECT2)
+        subject2 = results.get(Constants.SUBJECT2)
         self.assertIsNotNone(subject2)
         self.assertEqual(1500, subject2[Constants.TOTAL])
 

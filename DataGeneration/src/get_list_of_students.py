@@ -21,7 +21,7 @@ def get_students_for_assessment(schema_name, metadata, db_connection, parameters
         # execute the query
         result = db_connection.execute(query)
         # format the result
-        students = [dict(row) for row in result]
+        students = [dict(row) for row in result] if result else []
 
     return students
 

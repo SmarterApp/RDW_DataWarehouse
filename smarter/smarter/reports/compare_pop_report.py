@@ -11,7 +11,7 @@ from smarter.database.connector import SmarterDBConnection
 from sqlalchemy.sql.expression import case, func, true
 from smarter.reports.helpers.context import get_context
 import json
-from operator import attrgetter
+from operator import itemgetter, attrgetter
 
 # Report service for Comparing Populations
 # Output:
@@ -57,7 +57,6 @@ def get_comparing_populations_report(params):
     results = run_query(param_manager)
 
     # arrange results
-    json.dumps(results)
     results = arrange_results(results, param_manager)
 
     return results
@@ -197,12 +196,18 @@ class RecordManager():
         return self._asmt_custom_metadata_results
 
     def get_subjects(self):
+        '''
+        reverse subjects map for FE
+        '''
         return {v: k for k, v in self._subjects_map.items()}
 
     def get_summary(self):
+        '''
+        return summary of all records
+        '''
         summary_records = {}
         for record in self._tracking_record.values():
-            subjects_record = record.get_subjects()
+            subjects_record = record.subjects
             for subject_alias_name in subjects_record.keys():
                 subject_record = subjects_record[subject_alias_name]
                 if subject_alias_name not in summary_records:
@@ -231,13 +236,14 @@ class RecordManager():
         return record in array and ordered by name
         '''
         records = []
-        for record in self._tracking_record.values():
+        # iterate list sorted by "Record.name"
+        for record in sorted(self._tracking_record.values(), key=attrgetter('name')):
             __record = {}
             __record[Constants.ID] = record.id
             __record[Constants.NAME] = record.name
             __record[Constants.RESULTS] = record.subjects
             records.append(__record)
-        return sorted(records, key=attrgetter(Constants.NAME))
+        return records
 
     def create_interval(self, result, level_name):
         '''
@@ -269,6 +275,9 @@ class Record():
         self._id = record_id
         self._name = name
         self._subjects = {}
+
+    def __repr__(self):
+        return repr((self._name,))
 
     @property
     def id(self):

@@ -116,6 +116,7 @@ class Constants():
     SUMMATIVE = 'SUMMATIVE'
     ASMT_SUBJECT = 'asmt_subject'
     ASMT_GRADE = 'asmt_grade'
+    ASMTGRADE = 'asmtGrade'
     DISTRICT_NAME = 'district_name'
     DISTRICT_ID = 'district_id'
     SCHOOL_NAME = 'school_name'
@@ -268,7 +269,7 @@ class RecordManager():
             elif self._param_manager.is_school_view():
                 __record[Constants.PARAMS][Constants.DISTRICTID] = record.district_id
                 __record[Constants.PARAMS][Constants.SCHOOLID] = record.school_id
-                __record[Constants.PARAMS][Constants.ASMT_GRADE] = record.id
+                __record[Constants.PARAMS][Constants.ASMTGRADE] = record.id
             records.append(__record)
         return records
 

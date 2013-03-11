@@ -62,7 +62,7 @@ def generate_assmt_scores(state, asmt_type, year, period, grade, total):
 #        for t_score in socre_withclaims_list:
 #            print(t_score)
     else:
-        print("No assessment score from configuration database of", state, asmt_type, year, grade)
+        print("No assessment score from configuration database of ", state, asmt_type, year, grade)
         raise ValueError
 
     return socre_withclaims_list

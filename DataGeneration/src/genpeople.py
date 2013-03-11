@@ -130,7 +130,7 @@ def generate_student_section(school, student, section_rec_id, section_id, grade,
             'section_id': section_id,
             'grade': grade,
             'from_date': '20120901',
-            'to_date': '20120901',
+            'to_date': '29990901',
             'most_recent': True,
             'teacher_id': teacher_id,
             'section_rec_id': section_rec_id

@@ -16,7 +16,7 @@ SMALL_SET_SCHOOL_STAFF_NUM_IN_SCHOOL = 1
 
 # dictionary of low, high grade of each type of school.
 # Key is the school type, value is a tuple. First value in tuple is the low grade, and second value in tuple is the high grade
-SMALL_SET_SHOOL_TYPE_GRADES = {'Elementary School': (3, 3),
+SMALL_SET_SCHOOL_TYPE_GRADES = {'Elementary School': (3, 3),
                                'Middle School': (8, 8),
                                'High School': (11, 11)
                                }

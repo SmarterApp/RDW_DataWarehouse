@@ -19,11 +19,20 @@ define [
     # Get school data from the server
     getSchoolData "/data/comparing_populations", params, (schoolData, summaryData, subjectsData, colorsData, contextData) ->
       
-      # Get school grid column configs
-      getSchoolsConfig "../data/school.json", (schoolConfig) ->
+      # Read Default colors from json
+      defaultColors = {}
+      options =
+        async: false
+        method: "GET"
     
-        $('#breadcrumb').breadcrumbs(contextData)
-        edwareGrid.create "gridTable", schoolConfig, schoolData, summaryData
+      edwareDataProxy.getDatafromSource "../data/color.json", options, (defaultColors) ->
+        
+        schoolData = appendColorToData schoolData, subjectsData, colorsData, defaultColors, "results"
+        summaryData = appendColorToData summaryData, subjectsData, colorsData, defaultColors, null, 1
+
+        getSchoolsConfig "../data/school.json", (schoolConfig) ->
+          $('#breadcrumb').breadcrumbs(contextData)
+          edwareGrid.create "gridTable", schoolConfig, schoolData, summaryData
         
         
   getSchoolData = (sourceURL, params, callback) ->
@@ -66,7 +75,38 @@ define [
           callback schoolColumnCfgs
         else
           schoolColumnCfgs
-
+  
+  appendColorToData = (data, subjectsData, colorsData, defaultColors, nodeName, resultLen) ->
+    # Append data with colors
+    if !resultLen
+      recordsLen = data.length
+    for k of subjectsData
+      j = 0
+      while (j < recordsLen)
+        if nodeName
+          node = data[j][nodeName][k].intervals
+        else
+          node = data[k].intervals  
+        node = appendColor node, colorsData[k], defaultColors
+        j++
+    data
+  
+  appendColor = (intervals, colorsData, defaultColors) ->
+    i = 0
+    len = intervals.length
+    colorsData = JSON.parse(colorsData)
+    # For now, ignore everything behind the 4th interval
+    if len > 4
+      intervals = intervals[0..3]
+      len = intervals.length
+    while (i < len)
+      element = intervals[i]
+      if colorsData[i]
+        element.color = colorsData[i]
+      else
+        element.color = defaultColors[i]
+      i++
+    intervals
 
   createStudentGrid: createStudentGrid
   

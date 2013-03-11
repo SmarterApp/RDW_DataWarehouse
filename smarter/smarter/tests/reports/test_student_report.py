@@ -72,12 +72,12 @@ class TestStudentReport(Unittest_with_smarter_sqlite):
 
     def test_context(self):
         params = {"studentId": '286ee893-dad0-4833-ae6c-adef78a11567'}
-        result = get_student_report(params)['context']
-        self.assertEqual('NY', result['state_name'])
-        self.assertEqual('Sunset School District', result['district_name'])
-        self.assertEqual("1", result['grade'])
-        self.assertEqual("Sunset Central High", result['school_name'])
-        self.assertEqual("Verda Herriman", result['student_name'])
+        result = get_student_report(params)['context']['items']
+        self.assertEqual('NY', result[0]['name'])
+        self.assertEqual('Sunset School District', result[1]['name'])
+        self.assertEqual("1", result[3]['name'])
+        self.assertEqual("Sunset Central High", result[2]['name'])
+        self.assertEqual("Verda Herriman", result[4]['name'])
 
     def test_claims(self):
         params = {"studentId": '286ee893-dad0-4833-ae6c-adef78a11567'}

@@ -11,6 +11,7 @@ from sqlalchemy.sql import and_
 from smarter.database.connector import SmarterDBConnection
 from logging import INFO
 from edapi.autolog import log_function
+from smarter.reports.helpers.context import get_context
 
 
 __districtId = 'districtId'
@@ -190,7 +191,7 @@ def get_list_of_students_report(params):
 
         los_results['assessments'] = assessments
         los_results['cutpoints'] = __get_cut_points(connector, asmt_subject)
-        los_results['context'] = __get_context(connector, asmt_grade, school_id, district_id)
+        los_results['context'] = get_context(district_id=district_id, school_id=school_id, asmt_grade=asmt_grade)
 
         return los_results
 
@@ -231,26 +232,3 @@ def __get_cut_points(connector, asmtSubject):
         cutpoints[result["asmt_subject"]] = cutpoint
 
     return cutpoints
-
-
-def __get_context(connector, grade, school_id, district_id):
-    dim_district = connector.get_table('dim_inst_hier')
-
-    query = select([dim_district.c.district_name.label('district_name'),
-                    dim_district.c.school_name.label('school_name'),
-                    dim_district.c.state_name.label('state_name')],
-                   from_obj=[dim_district])
-
-    query = query.where(and_(dim_district.c.school_id == school_id))
-    query = query.where(and_(dim_district.c.district_id == district_id))
-    query = query.where(and_(dim_district.c.most_recent == 1))
-
-    # run it and format the results
-    results = connector.get_result(query)
-    if (not results):
-        return results
-    result = results[0]
-
-    result['grade'] = grade
-
-    return result

@@ -8,7 +8,8 @@ from edapi.utils import report_config
 from sqlalchemy.sql import select
 from sqlalchemy.sql import and_
 from smarter.database.connector import SmarterDBConnection
-from sqlalchemy.sql.expression import case, func
+from sqlalchemy.sql.expression import case, func, true
+from smarter.reports.helpers.context import get_context
 
 # Report service for Comparing Populations
 # Output:
@@ -97,7 +98,11 @@ def arrange_results(results, param_manager):
     arranged_results[Constants.RECORDS] = record_manager.get_records()
     # reverse map keys and values for subject
     arranged_results[Constants.SUBJECTS] = record_manager.get_subjects()
-    return {Constants.CONTEXT: arranged_results}
+
+    # get breadcrumb context
+    arranged_results[Constants.CONTEXT] = get_context(state_id=param_manager.p.state_id, district_id=param_manager.p.district_id, school_id=param_manager.p.school_id)
+
+    return arranged_results
 
 
 class Constants():
@@ -139,7 +144,6 @@ class Constants():
     COLORS = 'colors'
     SUMMARY = 'summary'
     RECORDS = 'records'
-    TRUE = True
     CONTEXT = 'context'
 
 
@@ -389,18 +393,17 @@ class QueryHelper():
         '''
         from_obj = None
         # building join clause based on request
-        # used Constants.TRUE for pep8 E712 issue
         if self._param_manager.is_state_view():
             from_obj = [self._fact_asmt_outcome
-                        .join(self._dim_asmt, and_(self._dim_asmt.c.asmt_rec_id == self._fact_asmt_outcome.c.asmt_rec_id, self._dim_asmt.c.asmt_type == Constants.SUMMATIVE, self._dim_asmt.c.most_recent == Constants.TRUE, self._fact_asmt_outcome.c.most_recent == Constants.TRUE))
-                        .join(self._dim_inst_hier, and_(self._dim_inst_hier.c.inst_hier_rec_id == self._fact_asmt_outcome.c.inst_hier_rec_id, self._dim_inst_hier.c.most_recent == Constants.TRUE))]
+                        .join(self._dim_asmt, and_(self._dim_asmt.c.asmt_rec_id == self._fact_asmt_outcome.c.asmt_rec_id, self._dim_asmt.c.asmt_type == Constants.SUMMATIVE, self._dim_asmt.c.most_recent == true(), self._fact_asmt_outcome.c.most_recent == true()))
+                        .join(self._dim_inst_hier, and_(self._dim_inst_hier.c.inst_hier_rec_id == self._fact_asmt_outcome.c.inst_hier_rec_id, self._dim_inst_hier.c.most_recent == true()))]
         elif self._param_manager.is_district_view():
             from_obj = [self._fact_asmt_outcome
-                        .join(self._dim_asmt, and_(self._dim_asmt.c.asmt_rec_id == self._fact_asmt_outcome.c.asmt_rec_id, self._dim_asmt.c.asmt_type == Constants.SUMMATIVE, self._dim_asmt.c.most_recent == Constants.TRUE, self._fact_asmt_outcome.c.most_recent == Constants.TRUE))
-                        .join(self._dim_inst_hier, and_(self._dim_inst_hier.c.inst_hier_rec_id == self._fact_asmt_outcome.c.inst_hier_rec_id, self._dim_inst_hier.c.most_recent == Constants.TRUE))]
+                        .join(self._dim_asmt, and_(self._dim_asmt.c.asmt_rec_id == self._fact_asmt_outcome.c.asmt_rec_id, self._dim_asmt.c.asmt_type == Constants.SUMMATIVE, self._dim_asmt.c.most_recent == true(), self._fact_asmt_outcome.c.most_recent == true()))
+                        .join(self._dim_inst_hier, and_(self._dim_inst_hier.c.inst_hier_rec_id == self._fact_asmt_outcome.c.inst_hier_rec_id, self._dim_inst_hier.c.most_recent == true()))]
         elif self._param_manager.is_school_view():
             from_obj = [self._fact_asmt_outcome
-                        .join(self._dim_asmt, and_(self._dim_asmt.c.asmt_rec_id == self._fact_asmt_outcome.c.asmt_rec_id, self._dim_asmt.c.asmt_type == Constants.SUMMATIVE, self._dim_asmt.c.most_recent == Constants.TRUE, self._fact_asmt_outcome.c.most_recent == Constants.TRUE))]
+                        .join(self._dim_asmt, and_(self._dim_asmt.c.asmt_rec_id == self._fact_asmt_outcome.c.asmt_rec_id, self._dim_asmt.c.asmt_type == Constants.SUMMATIVE, self._dim_asmt.c.most_recent == true(), self._fact_asmt_outcome.c.most_recent == true()))]
         return from_obj
 
     def build_group_by(self):

@@ -107,41 +107,7 @@ define [
         i++
         
       contextData = data.context
-      
-      breadcrumbsData = {}
-        
-      # Get breadcrumb data from the server
-      options =
-        async: false
-        method: "GET"
-        
-      edwareDataProxy.getDatafromSource "../data/student_breadcrumbs.json", options, (tempData) ->
-        breadcrumbsData = tempData
-        
-      # for each breadcrumb item
-      # item.name = contextData[item.field_name]
-      # if item.field_name = 'grade', update item.link
-      
-      arr = breadcrumbsData['items']
-      length = arr.length
-      element = null
-      i = 0
-      
-      while i < length
-        element = arr[i]
-        element.name = contextData[element.field_name]
-        if element.field_name == 'grade'
-          element.link = element.link + "?districtId=" + contextData['district_id'] + "&schoolId=" + contextData['school_id']+ "&asmtGrade=" + contextData['grade']
-        if element.field_name == 'student_name'
-          # add 's to student name. if name ends in s, only add '.
-          if element.name.substr(element.name.length - 1) == 's'
-            element.name = element.name + "'"
-          else
-            element.name = element.name + "'s"
-          element.name = element.name + " Results"
-        i++
-
-      $('#breadcrumb').breadcrumbs(breadcrumbsData)
+      $('#breadcrumb').breadcrumbs(contextData)
 
       partials = 
         claimsInfo: claimsInfoTemplate

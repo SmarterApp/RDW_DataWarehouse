@@ -34,7 +34,7 @@ define [
     asmt_type = options.colModel.formatoptions.asmt_type
     subject = rowObject.results[asmt_type]
     results = edwarePopulationBar.create subject
-    "<div class = 'populationBar'>" + results + "</div>"+ rowObject['results'][""+asmt_type+""].total
+    "<div class = 'populationBar'>" + results + "</div>"
  
   showlink: showlink
   showOverallConfidence: showOverallConfidence

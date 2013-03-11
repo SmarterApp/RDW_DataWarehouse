@@ -116,6 +116,7 @@ class Constants():
     SUMMATIVE = 'SUMMATIVE'
     ASMT_SUBJECT = 'asmt_subject'
     ASMT_GRADE = 'asmt_grade'
+    ASMT_GRADE_NAME = 'asmt_grade_name'
     ASMTGRADE = 'asmtGrade'
     DISTRICT_NAME = 'district_name'
     DISTRICT_ID = 'district_id'
@@ -148,6 +149,7 @@ class Constants():
     RECORDS = 'records'
     CONTEXT = 'context'
     PARAMS = 'params'
+    GRADE = 'Grade'
 
 
 class RecordManager():
@@ -396,7 +398,7 @@ class ParameterManager():
         elif self.is_district_view():
             __field_name = Constants.SCHOOL_NAME
         elif self.is_school_view():
-            __field_name = Constants.ASMT_GRADE
+            __field_name = Constants.ASMT_GRADE_NAME
         return __field_name
 
     def get_id_of_field(self):
@@ -442,7 +444,7 @@ class QueryHelper():
         elif self._param_manager.is_district_view():
             columns = [self._dim_inst_hier.c.school_name.label(Constants.SCHOOL_NAME), self._dim_inst_hier.c.school_id.label(Constants.SCHOOL_ID), self._dim_asmt.c.asmt_subject.label(Constants.ASMT_SUBJECT)]
         elif self._param_manager.is_school_view():
-            columns = [self._fact_asmt_outcome.c.asmt_grade.label(Constants.ASMT_GRADE), self._dim_asmt.c.asmt_subject.label(Constants.ASMT_SUBJECT)]
+            columns = [(Constants.GRADE + ' ' + self._fact_asmt_outcome.c.asmt_grade).label(Constants.ASMT_GRADE_NAME), self._fact_asmt_outcome.c.asmt_grade.label(Constants.ASMT_GRADE), self._dim_asmt.c.asmt_subject.label(Constants.ASMT_SUBJECT)]
 
         # these are static
         # get information about bar colors

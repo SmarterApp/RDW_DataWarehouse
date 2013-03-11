@@ -48,7 +48,7 @@ class Test(unittest.TestCase):
 
     def test_ParameterManager_school_field_name(self):
         manager = ParameterManager(Parameters(get_param_school_view()))
-        self.assertEqual(Constants.ASMT_GRADE, manager.get_name_of_field())
+        self.assertEqual(Constants.ASMT_GRADE_NAME, manager.get_name_of_field())
 
     def test_ParameterManager_district_field_name(self):
         manager = ParameterManager(Parameters(get_param_district_view()))

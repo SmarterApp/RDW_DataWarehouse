@@ -766,7 +766,18 @@ def read_names(file_name):
 def get_test_state_stats():
     db = get_db_conn()
     db_states = []
-    q = 'select * from ' + queries.SCHEMA + '.school_generate_stat where state_code = \'NY\''
+    q = 'select * from ' + queries.SCHEMA + '.school_generate_stat where state_code = \'TS\''
+    dist_count = db.prepare(q)
+    for row in dist_count:
+        db_states.append(dict(zip(constants.STAT_COLUMNS, row)))
+    db.close()
+
+    return db_states
+
+def get_sds_stats():
+    db = get_db_conn()
+    db_states = []
+    q = 'select * from ' + queries.SCHEMA + '.school_generate_stat where state_code = \'TS\''
     dist_count = db.prepare(q)
     for row in dist_count:
         db_states.append(dict(zip(constants.STAT_COLUMNS, row)))
@@ -777,11 +788,21 @@ def get_test_state_stats():
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Generate fixture data.')
-    parser.add_argument('--validate', dest='do_validation', action='store_true', default=False, help='Validate the script output against the current schema.', required=False)
+    parser.add_argument('--validate', dest='do_validation', action='store_true', default=False,
+                        help='Only generate data for "Test State." This creates a small set of data meant for the validation tool',
+                        required=False)
+    parser.add_argument('--sds', dest='small_data_set', action='store_true', default=False,
+                        help='Create a small data set.', required=False)
     # TODO: Add flag to turn headers off
     args = parser.parse_args()
 
-    state_statistic_function = get_test_state_stats if args.do_validation else get_state_stats
+    # Determine which function to use to get state statistical data
+    if args.do_validation:
+        state_statistic_function = get_test_state_stats
+    elif args.small_data_set:
+        state_statistic_function = get_sds_stats
+    else:
+        state_statistic_function = get_state_stats
 
     t1 = datetime.datetime.now()
     generate(get_name_lists, state_statistic_function)

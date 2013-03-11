@@ -12,7 +12,7 @@ from smarter.reports.compare_pop_report import RecordManager, Constants, \
 
 class Test(unittest.TestCase):
 
-    def test_calculate_percentage(self):
+    def test_RecordManager_calculate_percentage(self):
         percentage = RecordManager.calculate_percentage(100, 0)
         self.assertEqual(0, percentage)
 
@@ -49,7 +49,7 @@ class Test(unittest.TestCase):
         self.assertEqual(5, interval_level5[Constants.LEVEL])
         self.assertEqual(0, interval_level5[Constants.PERCENTAGE])
 
-    def test_get_record(self):
+    def test_RecordManager_get_record(self):
         manager = RecordManager(None, None)
         record1 = Record(record_id=1, name='bbb')
         record2 = Record(record_id=2, name='ccc')
@@ -69,23 +69,52 @@ class Test(unittest.TestCase):
         self.assertEqual(records[2][Constants.ID], 2)
         self.assertEqual(records[2][Constants.NAME], 'ccc')
 
-    def test_summary(self):
+    def test_RecordManager_summary(self):
         parameterManager = ParameterManager(Parameters({Constants.STATEID: 'DE'}))
         subjects = {Constants.MATH: Constants.SUBJECT1, Constants.ELA: Constants.SUBJECT2}
         manager = RecordManager(parameterManager, subjects)
         record1 = Record(record_id=1, name='bbb')
-        record1.subjects[Constants.SUBJECT1] = {Constants.ASMT_SUBJECT: Constants.MATH, Constants.TOTAL: 150, Constants.INTERVALS: [{Constants.LEVEL: Constants.LEVEL1, Constants.COUNT: 10}, {Constants.LEVEL: Constants.LEVEL2, Constants.COUNT: 20}, {Constants.LEVEL: Constants.LEVEL3, Constants.COUNT: 30}, {Constants.LEVEL: Constants.LEVEL4, Constants.COUNT: 40}, {Constants.LEVEL: Constants.LEVEL5, Constants.COUNT: 50}]}
-        record1.subjects[Constants.SUBJECT2] = {Constants.ASMT_SUBJECT: Constants.ELA, Constants.TOTAL: 150, Constants.INTERVALS: [{Constants.LEVEL: Constants.LEVEL1, Constants.COUNT: 10}, {Constants.LEVEL: Constants.LEVEL2, Constants.COUNT: 20}, {Constants.LEVEL: Constants.LEVEL3, Constants.COUNT: 30}, {Constants.LEVEL: Constants.LEVEL4, Constants.COUNT: 40}, {Constants.LEVEL: Constants.LEVEL5, Constants.COUNT: 50}]}
+        record1.subjects[Constants.SUBJECT1] = {Constants.ASMT_SUBJECT: Constants.MATH, Constants.TOTAL: 150, Constants.INTERVALS: [{Constants.LEVEL: 1, Constants.COUNT: 10}, {Constants.LEVEL: 2, Constants.COUNT: 20}, {Constants.LEVEL: 3, Constants.COUNT: 30}, {Constants.LEVEL: 4, Constants.COUNT: 40}, {Constants.LEVEL: 5, Constants.COUNT: 50}]}
+        record1.subjects[Constants.SUBJECT2] = {Constants.ASMT_SUBJECT: Constants.ELA, Constants.TOTAL: 150, Constants.INTERVALS: [{Constants.LEVEL: 1, Constants.COUNT: 10}, {Constants.LEVEL: 2, Constants.COUNT: 20}, {Constants.LEVEL: 3, Constants.COUNT: 30}, {Constants.LEVEL: 4, Constants.COUNT: 40}, {Constants.LEVEL: 5, Constants.COUNT: 50}]}
         record2 = Record(record_id=2, name='ccc')
-        record2.subjects[Constants.SUBJECT1] = {Constants.ASMT_SUBJECT: Constants.MATH, Constants.TOTAL: 700, Constants.INTERVALS: [{Constants.LEVEL: Constants.LEVEL1, Constants.COUNT: 100}, {Constants.LEVEL: Constants.LEVEL2, Constants.COUNT: 120}, {Constants.LEVEL: Constants.LEVEL3, Constants.COUNT: 140}, {Constants.LEVEL: Constants.LEVEL4, Constants.COUNT: 160}, {Constants.LEVEL: Constants.LEVEL5, Constants.COUNT: 180}]}
-        record2.subjects[Constants.SUBJECT2] = {Constants.ASMT_SUBJECT: Constants.ELA, Constants.TOTAL: 1200, Constants.INTERVALS: [{Constants.LEVEL: Constants.LEVEL1, Constants.COUNT: 200}, {Constants.LEVEL: Constants.LEVEL2, Constants.COUNT: 220}, {Constants.LEVEL: Constants.LEVEL3, Constants.COUNT: 240}, {Constants.LEVEL: Constants.LEVEL4, Constants.COUNT: 260}, {Constants.LEVEL: Constants.LEVEL5, Constants.COUNT: 280}]}
-
+        record2.subjects[Constants.SUBJECT1] = {Constants.ASMT_SUBJECT: Constants.MATH, Constants.TOTAL: 700, Constants.INTERVALS: [{Constants.LEVEL: 1, Constants.COUNT: 100}, {Constants.LEVEL: 2, Constants.COUNT: 120}, {Constants.LEVEL: 3, Constants.COUNT: 140}, {Constants.LEVEL: 4, Constants.COUNT: 160}, {Constants.LEVEL: 5, Constants.COUNT: 180}]}
+        record2.subjects[Constants.SUBJECT2] = {Constants.ASMT_SUBJECT: Constants.ELA, Constants.TOTAL: 1200, Constants.INTERVALS: [{Constants.LEVEL: 1, Constants.COUNT: 200}, {Constants.LEVEL: 2, Constants.COUNT: 220}, {Constants.LEVEL: 3, Constants.COUNT: 240}, {Constants.LEVEL: 4, Constants.COUNT: 260}, {Constants.LEVEL: 5, Constants.COUNT: 280}]}
+        record3 = Record(record_id=3, name='aaa')
+        record3.subjects[Constants.SUBJECT1] = {Constants.ASMT_SUBJECT: Constants.MATH, Constants.TOTAL: 150, Constants.INTERVALS: [{Constants.LEVEL: 1, Constants.COUNT: 10}, {Constants.LEVEL: 2, Constants.COUNT: 20}, {Constants.LEVEL: 3, Constants.COUNT: 30}, {Constants.LEVEL: 4, Constants.COUNT: 40}, {Constants.LEVEL: 5, Constants.COUNT: 50}]}
+        record3.subjects[Constants.SUBJECT2] = {Constants.ASMT_SUBJECT: Constants.ELA, Constants.TOTAL: 150, Constants.INTERVALS: [{Constants.LEVEL: 1, Constants.COUNT: 10}, {Constants.LEVEL: 2, Constants.COUNT: 20}, {Constants.LEVEL: 3, Constants.COUNT: 30}, {Constants.LEVEL: 4, Constants.COUNT: 40}, {Constants.LEVEL: 5, Constants.COUNT: 50}]}
         records = {}
         records[record1.id] = record1
         records[record2.id] = record2
+        records[record3.id] = record3
         manager._tracking_record = records
 
         summary_records = manager.get_summary()
+
+        self.assertEqual(2, len(summary_records))
+        subject1 = summary_records.get(Constants.SUBJECT1)
+        self.assertIsNotNone(subject1)
+        self.assertEqual(1000, subject1[Constants.TOTAL])
+
+        subject2 = summary_records.get(Constants.SUBJECT2)
+        self.assertIsNotNone(subject2)
+        self.assertEqual(1500, subject2[Constants.TOTAL])
+
+    def test_RecordManager_get_subjects(self):
+        parameterManager = ParameterManager(Parameters({Constants.STATEID: 'DE'}))
+        subjects = {'a': 'b', 'c': 'd'}
+        manager = RecordManager(parameterManager, subjects)
+        subjects = manager.get_subjects()
+        self.assertEqual('a', subjects['b'])
+
+    def test_RecordManager_update_record(self):
+        results = get_results('state_view_results.json')
+        parameterManager = ParameterManager(Parameters({Constants.STATEID: 'DE'}))
+        subjects = {Constants.MATH: Constants.SUBJECT1, Constants.ELA: Constants.SUBJECT2}
+        manager = RecordManager(parameterManager, subjects)
+        for result in results:
+            manager.update_record(result)
+        self.assertEqual(2, len(manager.get_asmt_custom_metadata()))
+        self.assertEqual(34, len(manager._tracking_record))
 
 
 def get_results(file_name):

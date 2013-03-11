@@ -10,8 +10,7 @@ from sqlalchemy.sql import and_
 from smarter.database.connector import SmarterDBConnection
 from sqlalchemy.sql.expression import case, func, true
 from smarter.reports.helpers.context import get_context
-import json
-from operator import itemgetter, attrgetter
+from operator import attrgetter
 
 # Report service for Comparing Populations
 # Output:

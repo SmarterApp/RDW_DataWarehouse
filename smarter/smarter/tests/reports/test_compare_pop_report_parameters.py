@@ -4,7 +4,7 @@ Created on Mar 8, 2013
 @author: tosako
 '''
 import unittest
-from smarter.reports.compare_pop_report import Constants, Parameters,\
+from smarter.reports.compare_pop_report import Constants, Parameters, \
     ParameterManager
 
 
@@ -30,21 +30,18 @@ class Test(unittest.TestCase):
 
     def test_ParameterManager_school_view(self):
         manager = ParameterManager(Parameters(get_param_school_view()))
-        self.assertTrue(manager.is_school_view())
-        self.assertFalse(manager.is_district_view())
-        self.assertFalse(manager.is_state_view())
+        view = manager.get_type_of_view()
+        self.assertTrue(ParameterManager.Views.SCHOOL_VIEW == view)
 
     def test_ParameterManager_district_view(self):
         manager = ParameterManager(Parameters(get_param_district_view()))
-        self.assertFalse(manager.is_school_view())
-        self.assertTrue(manager.is_district_view())
-        self.assertFalse(manager.is_state_view())
+        view = manager.get_type_of_view()
+        self.assertTrue(ParameterManager.Views.DISTRICT_VIEW == view)
 
     def test_ParameterManager_state_view(self):
         manager = ParameterManager(Parameters(get_param_state_view()))
-        self.assertFalse(manager.is_school_view())
-        self.assertFalse(manager.is_district_view())
-        self.assertTrue(manager.is_state_view())
+        view = manager.get_type_of_view()
+        self.assertTrue(ParameterManager.Views.STATE_VIEW == view)
 
     def test_ParameterManager_school_field_name(self):
         manager = ParameterManager(Parameters(get_param_school_view()))
@@ -94,5 +91,5 @@ def get_param_state_view():
 
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

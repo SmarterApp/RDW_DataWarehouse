@@ -21,7 +21,7 @@ class Test(Unittest_with_smarter_sqlite_no_data_load):
             dim_inst_hier = connection.get_table(Constants.DIM_INST_HIER)
             dim_asmt = connection.get_table(Constants.DIM_ASMT)
 
-        self.assertEquals(10, len(columns))
+        self.assertEquals(11, len(columns))
         # first three columns are for state view columns
         # test alias name
         self.assertEqual(columns[0].name, Constants.DISTRICT_NAME, 'test for alias name')
@@ -43,7 +43,7 @@ class Test(Unittest_with_smarter_sqlite_no_data_load):
             dim_inst_hier = connection.get_table(Constants.DIM_INST_HIER)
             dim_asmt = connection.get_table(Constants.DIM_ASMT)
 
-        self.assertEquals(10, len(columns))
+        self.assertEquals(11, len(columns))
         # first three columns are for district view columns
         # test alias name
         self.assertEqual(columns[0].name, Constants.SCHOOL_NAME, 'test for alias name')
@@ -65,7 +65,7 @@ class Test(Unittest_with_smarter_sqlite_no_data_load):
             dim_asmt = connection.get_table(Constants.DIM_ASMT)
             fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
 
-        self.assertEquals(10, len(columns))
+        self.assertEquals(11, len(columns))
         # first two columns are for school view columns
         # test alias name
         self.assertEqual(columns[0].name, Constants.ASMT_GRADE_NAME, 'test for alias name')

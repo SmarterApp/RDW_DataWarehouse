@@ -26,24 +26,24 @@ class Test(unittest.TestCase):
         self.assertEqual(1, percentage)
 
     def test_RecordManager_create_interval(self):
-        results = get_results('state_view_results.json')
+        results = get_results('school_view_results.json')
         manager = RecordManager(None, None)
         interval_level1 = manager.create_interval(results[0], Constants.LEVEL1)
-        self.assertEqual(1, interval_level1[Constants.COUNT])
+        self.assertEqual(0, interval_level1[Constants.COUNT])
         self.assertEqual(1, interval_level1[Constants.LEVEL])
-        self.assertEqual('0.028', '%.3f' % interval_level1[Constants.PERCENTAGE])
+        self.assertEqual('0.000', '%.3f' % interval_level1[Constants.PERCENTAGE])
         interval_level2 = manager.create_interval(results[0], Constants.LEVEL2)
-        self.assertEqual(2883, interval_level2[Constants.COUNT])
+        self.assertEqual(110, interval_level2[Constants.COUNT])
         self.assertEqual(2, interval_level2[Constants.LEVEL])
-        self.assertEqual('80.306', '%.3f' % interval_level2[Constants.PERCENTAGE])
+        self.assertEqual('83.969', '%.3f' % interval_level2[Constants.PERCENTAGE])
         interval_level3 = manager.create_interval(results[0], Constants.LEVEL3)
-        self.assertEqual(693, interval_level3[Constants.COUNT])
+        self.assertEqual(21, interval_level3[Constants.COUNT])
         self.assertEqual(3, interval_level3[Constants.LEVEL])
-        self.assertEqual('19.304', '%.3f' % interval_level3[Constants.PERCENTAGE])
+        self.assertEqual('16.031', '%.3f' % interval_level3[Constants.PERCENTAGE])
         interval_level4 = manager.create_interval(results[0], Constants.LEVEL4)
-        self.assertEqual(13, interval_level4[Constants.COUNT])
+        self.assertEqual(0, interval_level4[Constants.COUNT])
         self.assertEqual(4, interval_level4[Constants.LEVEL])
-        self.assertEqual('0.362', '%.3f' % interval_level4[Constants.PERCENTAGE])
+        self.assertEqual('0.000', '%.3f' % interval_level4[Constants.PERCENTAGE])
         interval_level5 = manager.create_interval(results[0], Constants.LEVEL5)
         self.assertEqual(0, interval_level5[Constants.COUNT])
         self.assertEqual(5, interval_level5[Constants.LEVEL])
@@ -52,9 +52,9 @@ class Test(unittest.TestCase):
         intervals = [interval_level1, interval_level2, interval_level3, interval_level4, interval_level5]
         manager.adjust_percentages(intervals)
         self.assertEqual(0, interval_level1[Constants.PERCENTAGE])
-        self.assertEqual(80, interval_level2[Constants.PERCENTAGE])
-        self.assertEqual(19, interval_level3[Constants.PERCENTAGE])
-        self.assertEqual(1, interval_level4[Constants.PERCENTAGE])
+        self.assertEqual(84, interval_level2[Constants.PERCENTAGE])
+        self.assertEqual(16, interval_level3[Constants.PERCENTAGE])
+        self.assertEqual(0, interval_level4[Constants.PERCENTAGE])
         self.assertEqual(0, interval_level5[Constants.PERCENTAGE])
 
     def test_RecordManager_get_record(self):
@@ -129,14 +129,14 @@ class Test(unittest.TestCase):
         self.assertEqual('a', subjects['b'])
 
     def test_RecordManager_update_record(self):
-        results = get_results('state_view_results.json')
-        parameterManager = ParameterManager(Parameters({Constants.STATEID: 'DE'}))
+        results = get_results('school_view_results.json')
+        parameterManager = ParameterManager(Parameters({Constants.STATEID: 'DE', Constants.DISTRICTID: '245', Constants.SCHOOLID: '92499'}))
         subjects = {Constants.MATH: Constants.SUBJECT1, Constants.ELA: Constants.SUBJECT2}
         manager = RecordManager(parameterManager, subjects)
         for result in results:
             manager.update_record(result)
         self.assertEqual(2, len(manager.get_asmt_custom_metadata()))
-        self.assertEqual(34, len(manager._tracking_record))
+        self.assertEqual(6, len(manager._tracking_record))
 
 
 def get_results(file_name):

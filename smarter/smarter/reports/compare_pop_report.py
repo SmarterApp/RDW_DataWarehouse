@@ -9,9 +9,11 @@ from smarter.reports.helpers.percentage_calc import normalize_percentages
 from sqlalchemy.sql import select
 from sqlalchemy.sql import and_
 from smarter.database.connector import SmarterDBConnection
-from sqlalchemy.sql.expression import case, func, true
 from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
+from sqlalchemy.sql.expression import case, func, true, null, cast
 from operator import attrgetter
+from sqlalchemy.types import INTEGER
+from smarter.reports.exceptions.parameter_exception import InvalidParamterException
 
 # Report service for Comparing Populations
 # Output:
@@ -151,6 +153,7 @@ class Constants():
     CONTEXT = 'context'
     PARAMS = 'params'
     GRADE = 'Grade'
+    DISPLAY_LEVEL = 'display_level'
 
 
 class RecordManager():
@@ -181,12 +184,18 @@ class RecordManager():
         subject_alias_name = self._subjects_map[subject_name]
         total = result[Constants.TOTAL]
         # create intervals
+        display_level = result[Constants.DISPLAY_LEVEL]
         intervals = []
-        intervals.append(self.create_interval(result, Constants.LEVEL1))
-        intervals.append(self.create_interval(result, Constants.LEVEL2))
-        intervals.append(self.create_interval(result, Constants.LEVEL3))
-        intervals.append(self.create_interval(result, Constants.LEVEL4))
-        intervals.append(self.create_interval(result, Constants.LEVEL5))
+        if display_level >= 1:
+            intervals.append(self.create_interval(result, Constants.LEVEL1))
+        if display_level >= 2:
+            intervals.append(self.create_interval(result, Constants.LEVEL2))
+        if display_level >= 3:
+            intervals.append(self.create_interval(result, Constants.LEVEL3))
+        if display_level >= 4:
+            intervals.append(self.create_interval(result, Constants.LEVEL4))
+        if display_level >= 5:
+            intervals.append(self.create_interval(result, Constants.LEVEL5))
 
         # make sure percentages add to 100%
         self.adjust_percentages(intervals)
@@ -265,19 +274,20 @@ class RecordManager():
         '''
         records = []
         # iterate list sorted by "Record.name"
-        for record in sorted(self._tracking_record.values(), key=attrgetter('name')):
+        for record in sorted(self._tracking_record.values(), key=attrgetter(Constants.NAME)):
             __record = {}
             __record[Constants.ID] = record.id
             __record[Constants.NAME] = record.name
             __record[Constants.RESULTS] = record.subjects
             __record[Constants.PARAMS] = {}
             __record[Constants.PARAMS][Constants.STATEID] = record.state_id
-            if self._param_manager.is_state_view():
+            view = self._param_manager.get_type_of_view()
+            if view == ParameterManager.Views.STATE_VIEW:
                 __record[Constants.PARAMS][Constants.DISTRICTID] = record.id
-            elif self._param_manager.is_district_view():
+            elif view == ParameterManager.Views.DISTRICT_VIEW:
                 __record[Constants.PARAMS][Constants.DISTRICTID] = record.district_id
                 __record[Constants.PARAMS][Constants.SCHOOLID] = record.id
-            elif self._param_manager.is_school_view():
+            elif view == ParameterManager.Views.SCHOOL_VIEW:
                 __record[Constants.PARAMS][Constants.DISTRICTID] = record.district_id
                 __record[Constants.PARAMS][Constants.SCHOOLID] = record.school_id
                 __record[Constants.PARAMS][Constants.ASMTGRADE] = record.id
@@ -387,41 +397,39 @@ class Parameters():
         return self._school_id
 
 
+def enum(** enums):
+    return type('Enum', (), enums)
+
+
 class ParameterManager():
+    Views = enum(STATE_VIEW=1, DISTRICT_VIEW=2, SCHOOL_VIEW=3)
+
     '''
     Manager class for class Parameter
     '''
     def __init__(self, parameters):
         self._parameters = parameters
 
-    def is_state_view(self):
-        '''
-        return true if it is the state view
-        '''
-        return self._parameters.state_id is not None and self._parameters.district_id is None and self._parameters.school_id is None
-
-    def is_district_view(self):
-        '''
-        return true if it is the district view
-        '''
-        return self._parameters.state_id is not None and self._parameters.district_id is not None and self._parameters.school_id is None
-
-    def is_school_view(self):
-        '''
-        return true if it is the school vieww
-        '''
-        return self._parameters.state_id is not None and self._parameters.district_id is not None and self._parameters.school_id is not None
+    def get_type_of_view(self):
+        if self._parameters.state_id is not None and self._parameters.district_id is None and self._parameters.school_id is None:
+            return self.Views.STATE_VIEW
+        elif self._parameters.state_id is not None and self._parameters.district_id is not None and self._parameters.school_id is None:
+            return self.Views.DISTRICT_VIEW
+        elif self._parameters.state_id is not None and self._parameters.district_id is not None and self._parameters.school_id is not None:
+            return self.Views.SCHOOL_VIEW
+        raise InvalidParamterException()
 
     def get_name_of_field(self):
         '''
         return name of the field based on the view
         '''
         __field_name = None
-        if self.is_state_view():
+        view = self.get_type_of_view()
+        if view == self.Views.STATE_VIEW:
             __field_name = Constants.DISTRICT_NAME
-        elif self.is_district_view():
+        elif view == self.Views.DISTRICT_VIEW:
             __field_name = Constants.SCHOOL_NAME
-        elif self.is_school_view():
+        elif view == self.Views.SCHOOL_VIEW:
             __field_name = Constants.ASMT_GRADE_NAME
         return __field_name
 
@@ -430,11 +438,12 @@ class ParameterManager():
         return id name of the field based on the view
         '''
         __field_id = None
-        if self.is_state_view():
+        view = self.get_type_of_view()
+        if view == self.Views.STATE_VIEW:
             __field_id = Constants.DISTRICT_ID
-        elif self.is_district_view():
+        elif view == self.Views.DISTRICT_VIEW:
             __field_id = Constants.SCHOOL_ID
-        elif self.is_school_view():
+        elif view == self.Views.SCHOOL_VIEW:
             __field_id = Constants.ASMT_GRADE
         return __field_id
 
@@ -463,11 +472,12 @@ class QueryHelper():
         '''
 
         # building columns based on request
-        if self._param_manager.is_state_view():
+        view = self._param_manager.get_type_of_view()
+        if view == ParameterManager.Views.STATE_VIEW:
             columns = [self._dim_inst_hier.c.district_name.label(Constants.DISTRICT_NAME), self._dim_inst_hier.c.district_id.label(Constants.DISTRICT_ID), self._dim_asmt.c.asmt_subject.label(Constants.ASMT_SUBJECT)]
-        elif self._param_manager.is_district_view():
+        elif view == ParameterManager.Views.DISTRICT_VIEW:
             columns = [self._dim_inst_hier.c.school_name.label(Constants.SCHOOL_NAME), self._dim_inst_hier.c.school_id.label(Constants.SCHOOL_ID), self._dim_asmt.c.asmt_subject.label(Constants.ASMT_SUBJECT)]
-        elif self._param_manager.is_school_view():
+        elif view == ParameterManager.Views.SCHOOL_VIEW:
             columns = [(Constants.GRADE + ' ' + self._fact_asmt_outcome.c.asmt_grade).label(Constants.ASMT_GRADE_NAME), self._fact_asmt_outcome.c.asmt_grade.label(Constants.ASMT_GRADE), self._dim_asmt.c.asmt_subject.label(Constants.ASMT_SUBJECT)]
 
         # these are static
@@ -480,7 +490,15 @@ class QueryHelper():
                                   func.count(case([(self._fact_asmt_outcome.c.asmt_perf_lvl == 3, self._fact_asmt_outcome.c.student_id)])).label(Constants.LEVEL3),
                                   func.count(case([(self._fact_asmt_outcome.c.asmt_perf_lvl == 4, self._fact_asmt_outcome.c.student_id)])).label(Constants.LEVEL4),
                                   func.count(case([(self._fact_asmt_outcome.c.asmt_perf_lvl == 5, self._fact_asmt_outcome.c.student_id)])).label(Constants.LEVEL5),
-                                  func.count(self._fact_asmt_outcome.c.student_id).label(Constants.TOTAL)]
+                                  func.count(self._fact_asmt_outcome.c.student_id).label(Constants.TOTAL),
+                                  # if asmt_perf_lvl_name_# is null, it means data should not be displayed.
+                                  # Find display level
+                                  func.max(cast(case([(self._dim_asmt.c.asmt_perf_lvl_name_5 != null(), '5'),
+                                                 (self._dim_asmt.c.asmt_perf_lvl_name_4 != null(), '4'),
+                                                 (self._dim_asmt.c.asmt_perf_lvl_name_3 != null(), '3'),
+                                                 (self._dim_asmt.c.asmt_perf_lvl_name_2 != null(), '2'),
+                                                 (self._dim_asmt.c.asmt_perf_lvl_name_1 != null(), '1')],
+                                                else_='0'), INTEGER)).label(Constants.DISPLAY_LEVEL)]
         return columns + bar_widget_color_info + columns_for_perf_level
 
     def build_from_obj(self):
@@ -489,15 +507,16 @@ class QueryHelper():
         '''
         from_obj = None
         # building join clause based on request
-        if self._param_manager.is_state_view():
+        view = self._param_manager.get_type_of_view()
+        if view == ParameterManager.Views.STATE_VIEW:
             from_obj = [self._fact_asmt_outcome
                         .join(self._dim_asmt, and_(self._dim_asmt.c.asmt_rec_id == self._fact_asmt_outcome.c.asmt_rec_id, self._dim_asmt.c.asmt_type == Constants.SUMMATIVE, self._dim_asmt.c.most_recent == true(), self._fact_asmt_outcome.c.most_recent == true()))
                         .join(self._dim_inst_hier, and_(self._dim_inst_hier.c.inst_hier_rec_id == self._fact_asmt_outcome.c.inst_hier_rec_id, self._dim_inst_hier.c.most_recent == true()))]
-        elif self._param_manager.is_district_view():
+        elif view == ParameterManager.Views.DISTRICT_VIEW:
             from_obj = [self._fact_asmt_outcome
                         .join(self._dim_asmt, and_(self._dim_asmt.c.asmt_rec_id == self._fact_asmt_outcome.c.asmt_rec_id, self._dim_asmt.c.asmt_type == Constants.SUMMATIVE, self._dim_asmt.c.most_recent == true(), self._fact_asmt_outcome.c.most_recent == true()))
                         .join(self._dim_inst_hier, and_(self._dim_inst_hier.c.inst_hier_rec_id == self._fact_asmt_outcome.c.inst_hier_rec_id, self._dim_inst_hier.c.most_recent == true()))]
-        elif self._param_manager.is_school_view():
+        elif view == ParameterManager.Views.SCHOOL_VIEW:
             from_obj = [self._fact_asmt_outcome
                         .join(self._dim_asmt, and_(self._dim_asmt.c.asmt_rec_id == self._fact_asmt_outcome.c.asmt_rec_id, self._dim_asmt.c.asmt_type == Constants.SUMMATIVE, self._dim_asmt.c.most_recent == true(), self._fact_asmt_outcome.c.most_recent == true()))]
         return from_obj
@@ -507,11 +526,12 @@ class QueryHelper():
         build group by clause based on the view
         '''
         group_by = None
-        if self._param_manager.is_state_view():
+        view = self._param_manager.get_type_of_view()
+        if view == ParameterManager.Views.STATE_VIEW:
             group_by = self._dim_inst_hier.c.district_name, self._dim_inst_hier.c.district_id, self._dim_asmt.c.asmt_subject
-        elif self._param_manager.is_district_view():
+        elif view == ParameterManager.Views.DISTRICT_VIEW:
             group_by = self._dim_inst_hier.c.school_name, self._dim_inst_hier.c.school_id, self._dim_asmt.c.asmt_subject
-        elif self._param_manager.is_school_view():
+        elif view == ParameterManager.Views.SCHOOL_VIEW:
             group_by = self._fact_asmt_outcome.c.asmt_grade, self._dim_asmt.c.asmt_subject
         return group_by + (self._dim_asmt.c.asmt_custom_metadata,)
 
@@ -520,11 +540,12 @@ class QueryHelper():
         build order by clause based on the view
         '''
         order_by = None
-        if self._param_manager.is_state_view():
+        view = self._param_manager.get_type_of_view()
+        if view == ParameterManager.Views.STATE_VIEW:
             order_by = self._dim_inst_hier.c.district_name, self._dim_asmt.c.asmt_subject.desc()
-        elif self._param_manager.is_district_view():
+        elif view == ParameterManager.Views.DISTRICT_VIEW:
             order_by = self._dim_inst_hier.c.school_name, self._dim_asmt.c.asmt_subject.desc()
-        elif self._param_manager.is_school_view():
+        elif view == ParameterManager.Views.SCHOOL_VIEW:
             order_by = self._fact_asmt_outcome.c.asmt_grade, self._dim_asmt.c.asmt_subject.desc()
         return order_by
 
@@ -534,10 +555,11 @@ class QueryHelper():
         '''
         where = None
         # building group by clause based on request
-        if self._param_manager.is_state_view():
+        view = self._param_manager.get_type_of_view()
+        if view == ParameterManager.Views.STATE_VIEW:
             where = self._fact_asmt_outcome.c.state_code == self._param_manager.p.state_id
-        elif self._param_manager.is_district_view():
+        elif view == ParameterManager.Views.DISTRICT_VIEW:
             where = and_(self._fact_asmt_outcome.c.state_code == self._param_manager.p.state_id, self._fact_asmt_outcome.c.district_id == self._param_manager.p.district_id)
-        elif self._param_manager.is_school_view():
+        elif view == ParameterManager.Views.SCHOOL_VIEW:
             where = and_(self._fact_asmt_outcome.c.state_code == self._param_manager.p.state_id, self._fact_asmt_outcome.c.district_id == self._param_manager.p.district_id, self._fact_asmt_outcome.c.school_id == self._param_manager.p.school_id)
         return where

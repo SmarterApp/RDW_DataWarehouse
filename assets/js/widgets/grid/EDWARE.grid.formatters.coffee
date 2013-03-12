@@ -22,7 +22,7 @@ define [
         i++
       "<a href=\"" + link + "?" + params + "\">" + $.jgrid.htmlEncode(value) + "</a>"
     else
-      "<span class=subTitle2>" + rowObject.subtitle + ":</span><br/><h6>"+value+":</h6>"
+      "<span class=subTitle2>" + rowObject.subtitle + ":</span><br/><h6>"+value+"</h6>"
   
   showOverallConfidence = (value, options, rowObject) ->
     names = options.colModel.name.split "."

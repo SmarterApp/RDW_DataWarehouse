@@ -23,7 +23,7 @@ define [
       edwareDataProxy.getDatafromSource "../data/color.json", options, (defaultColors) ->
         # Append colors to records and summary section
         schoolData = appendColorToData schoolData, subjectsData, colorsData, defaultColors
-        summaryData = appendColorToData summaryData, subjectsData, colorsData, defaultColors, 1
+        summaryData = appendColorToData summaryData, subjectsData, colorsData, defaultColors
 
         getSchoolsConfig "../data/school.json", (schoolConfig, comparePopConfig) ->
           # Change the column name based on the type of report the user is querying for
@@ -33,8 +33,9 @@ define [
           
           $('#breadcrumb').breadcrumbs(contextData)
           # Format the summary data for static summary row purposes
-          formmatedSummary = formatSummaryData(summaryData)
-          edwareGrid.create "gridTable", schoolConfig, schoolData, formmatedSummary
+          summaryRowName = getSummaryRowRefName(contextData, reportType)
+          summaryData = formatSummaryData(summaryData, summaryRowName)
+          edwareGrid.create "gridTable", schoolConfig, schoolData, summaryData
         
           $(".progress").hover ->
             e = $(this)
@@ -91,17 +92,17 @@ define [
         else
           dataArray schoolColumnCfgs, comparePopCfgs
   
-  appendColorToData = (data, subjectsData, colorsData, defaultColors, resultLen) ->
+  appendColorToData = (data, subjectsData, colorsData, defaultColors) ->
     
     # Append data with colors
-    if !resultLen
+    if data instanceof Array
       recordsLen = data.length
     else
-      recordsLen = resultLen
+      recordsLen = 1
     for k of subjectsData
       j = 0
       while (j < recordsLen)
-        if !resultLen
+        if data instanceof Array
           data[j]['results'][k].intervals = appendColor data[j]['results'][k].intervals, colorsData[k], defaultColors
         else
           data['results'][k].intervals = appendColor data['results'][k].intervals, colorsData[k], defaultColors
@@ -125,16 +126,33 @@ define [
       i++
     intervals
 
-  formatSummaryData = (summaryData) ->
+  formatSummaryData = (summaryData, summaryRowName) ->
     data = {}
     for k of summaryData.results
       name = 'results.' + k + '.total'
       data[name] = summaryData.results[k].total
     data['subtitle'] = 'Reference Point'
-    data['name'] = 'Overall Summary'
     data['header'] = true
     data['results'] = summaryData.results
+    data['name'] = summaryRowName
     data
+    
+  getSummaryRowRefName = (contextData, reportType) ->
+    map =
+      state: 0
+      district: 1
+      school: 2    
+    
+    data = 'Overall '
+    if reportType is 'state'
+      data = data + contextData.items[map[reportType]].id + ' District'
+    else if reportType is 'district'
+      data = data + contextData.items[map[reportType]].name + ' School'
+    else if reportType is 'school'
+      data = data + contextData.items[map[reportType]].name + ' Grade'
+    data = data + ' Summary'
+    data
+      
 
   getReportType = (params) ->
     type = null

@@ -95,14 +95,17 @@ define [
   appendColorToData = (data, subjectsData, colorsData, defaultColors) ->
     
     # Append data with colors
+    # records come in as an array, whereas summary doesn't 
+    isArray = false
     if data instanceof Array
       recordsLen = data.length
+      isArray = true
     else
       recordsLen = 1
     for k of subjectsData
       j = 0
       while (j < recordsLen)
-        if data instanceof Array
+        if isArray
           data[j]['results'][k].intervals = appendColor data[j]['results'][k].intervals, colorsData[k], defaultColors
         else
           data['results'][k].intervals = appendColor data['results'][k].intervals, colorsData[k], defaultColors
@@ -114,6 +117,7 @@ define [
     len = intervals.length
     colorsData = JSON.parse(colorsData)
     # For now, ignore everything behind the 4th interval
+    # This is temporary until we have a backend fix
     if len > 4
       intervals = intervals[0..3]
       len = intervals.length
@@ -127,6 +131,7 @@ define [
     intervals
 
   formatSummaryData = (summaryData, summaryRowName) ->
+    # Format the summary data for summary row rendering purposes
     data = {}
     for k of summaryData.results
       name = 'results.' + k + '.total'
@@ -138,6 +143,7 @@ define [
     data
     
   getSummaryRowRefName = (contextData, reportType) ->
+    # Returns the overall summary row name based on the type of report
     map =
       state: 0
       district: 1

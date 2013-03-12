@@ -9,7 +9,8 @@ from sqlalchemy import event
 from sqlalchemy.schema import MetaData
 from sqlalchemy.schema import Table
 from edschema.ed_metadata import generate_ed_metadata
-from sqlalchemy.types import NULLTYPE
+from sqlalchemy.types import NULLTYPE,FLOAT
+from sqlalchemy.dialects.postgresql import DOUBLE_PRECISION
 
 class EdTestSchema(TestBase):
 
@@ -39,7 +40,10 @@ class EdTestSchema(TestBase):
             assert table in self.ed_metadata.tables, "Unexpected table in live db"
             for column in self.live_db_metadata.tables[table].columns.keys():
                 assert column in self.ed_metadata.tables[table].columns.keys(), "Unexpected column in live db"
-                assert str(self.live_db_metadata.tables[table].columns[column].type) == str(self.ed_metadata.tables[table].columns[column].type), "Column datatype mismatch"
+                if str(self.ed_metadata.tables[table].columns[column].type) == 'FLOAT': 
+                    assert str(self.live_db_metadata.tables[table].columns[column].type) == 'DOUBLE PRECISION'
+                else:
+                    assert str(self.live_db_metadata.tables[table].columns[column] == str(self.ed_metadata.tables[table].columns[column].type), "Column datatype mismatch"
                
     def tearDown(self):
         self.pgengine.dispose()

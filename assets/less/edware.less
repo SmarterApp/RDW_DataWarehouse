@@ -12,8 +12,13 @@ h3 {
   border-bottom: solid 1px #ccc;   
  }
  
+h4 {
+  font-weight: normal;
+  color: #00496d;
+}
+ 
 h6 {
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .subTitle2 {
@@ -230,22 +235,45 @@ h6 {
 }
 
 .gridHeight100 {
-  tr.jqgrow td, .ui-jqgrid tr.footrow td {
+  tr.jqgrow td {
     height: 100px;
+  }
+  .ui-jqgrid tr.footrow {
+    h6 {
+      white-space: normal;
+    }
+    td {
+      height: 100px;
+    }
   }
   
   .ui-jqgrid tr.jqgrow td {
     white-space: normal;
   }
+  
+  .ui-jqgrid .ui-jqgrid-view {
+    font-size: 13px;
+  }
 }
 
+.populationBar {
+  width: 265px;
+  margin-left: 10px;
+  
+  .bar {
+    font-size: 11px;
+    font-weight: normal;
+  }
+}
 /* Popover/Tooltip styles*/
 
 .popover {
   width: auto;
   h3 { display: none; }
   
-  ul li { margin: 0 10px; }
+  ul li { 
+    margin: 0 10px;
+    font-size: 13px; }
 }
 
 /* Footer styles */
@@ -253,8 +281,11 @@ h6 {
   color: @white;
   background-color: #b1b1b1;
   float: left;
-  width: 100%;
+  width: 980px;
   font-size: 12px;
+  position: fixed;
+  bottom: 0px;
+  height: 40px;
 }
 
 #copyright {

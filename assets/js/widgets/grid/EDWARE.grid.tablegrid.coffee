@@ -127,7 +127,7 @@ define [
       gridOptions =
         data: columnData
         datatype: "local"
-        height: "250"
+        height: "auto"
         viewrecords: true
         autoencode: true
         rowNum: 10000

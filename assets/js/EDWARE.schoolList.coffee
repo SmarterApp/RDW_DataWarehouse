@@ -32,7 +32,9 @@ define [
           schoolConfig[0].name = comparePopConfig[reportType].name
           schoolConfig[0].options.linkUrl = comparePopConfig[reportType].link
           
+          # Render breadcrumbs on the page
           $('#breadcrumb').breadcrumbs(contextData)
+          
           # Set the Report title depending on the report that we're looking at
           reportTitle = getReportTitle(contextData, reportType)
           $('#content h4').html 'Comparing ' + reportTitle + ' on Math & ELA'
@@ -40,8 +42,12 @@ define [
           # Format the summary data for static summary row purposes
           summaryRowName = 'Overall ' + reportTitle + ' Summary'
           summaryData = formatSummaryData(summaryData, summaryRowName)
+          
+          # Create compare population grid for State/District/School view
           edwareGrid.create "gridTable", schoolConfig, schoolData, summaryData
         
+          
+          # Show tooltip for population bar on mouseover
           $(".progress").hover ->
             e = $(this)
             e.popover
@@ -52,7 +58,8 @@ define [
             .popover("show")
           , ->
             e = $(this)
-            e.popover("hide")      
+            e.popover("hide")
+                  
         
   getSchoolData = (sourceURL, params, callback) ->
     

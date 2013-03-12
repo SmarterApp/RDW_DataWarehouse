@@ -12,6 +12,7 @@ define [
     
   showlink = (value, options, rowObject) ->
     link = options.colModel.formatoptions.linkUrl
+    cssClass = options.colModel.formatoptions.style
     unless rowObject.header
       params = ""
       i = 0 
@@ -20,9 +21,9 @@ define [
           params = params + "&"
         params = params + k + "=" + v
         i++
-      "<a href=\"" + link + "?" + params + "\">" + $.jgrid.htmlEncode(value) + "</a>"
+      "<a class="+cssClass+" href=\"" + link + "?" + params + "\">" + $.jgrid.htmlEncode(value) + "</a>"
     else
-      "<span class=subTitle2>" + rowObject.subtitle + ":</span><br/><h6>"+value+"</h6>"
+      "<div class="+cssClass+"><span class=subTitle2>" + rowObject.subtitle + ":</span><br/><h6>"+value+"</h6></div>"
   
   showOverallConfidence = (value, options, rowObject) ->
     names = options.colModel.name.split "."

@@ -8,7 +8,7 @@ from smarter.database.connector import SmarterDBConnection
 from sqlalchemy.sql.expression import true
 
 
-def get_context(state_id=None, district_id=None, school_id=None, asmt_grade=None, student_name=None):
+def get_breadcrumbs_context(state_id=None, district_id=None, school_id=None, asmt_grade=None, student_name=None):
     '''
     Given certain known information, returns breadcrumbs context
     '''

@@ -11,7 +11,7 @@ from sqlalchemy.sql import and_
 from smarter.database.connector import SmarterDBConnection
 from logging import INFO
 from edapi.autolog import log_function
-from smarter.reports.helpers.context import get_context
+from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
 
 
 __districtId = 'districtId'
@@ -193,7 +193,7 @@ def get_list_of_students_report(params):
 
         los_results['assessments'] = assessments
         los_results['cutpoints'] = __get_cut_points(connector, asmt_subject)
-        los_results['context'] = get_context(district_id=district_id, school_id=school_id, asmt_grade=asmt_grade)
+        los_results['context'] = get_breadcrumbs_context(district_id=district_id, school_id=school_id, asmt_grade=asmt_grade)
 
         return los_results
 

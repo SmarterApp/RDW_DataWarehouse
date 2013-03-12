@@ -9,7 +9,7 @@ from sqlalchemy.sql import select
 from sqlalchemy.sql import and_
 from smarter.database.connector import SmarterDBConnection
 from sqlalchemy.sql.expression import case, func, true
-from smarter.reports.helpers.context import get_context
+from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
 from operator import attrgetter
 
 # Report service for Comparing Populations
@@ -101,7 +101,7 @@ def arrange_results(results, param_manager):
     arranged_results[Constants.SUBJECTS] = record_manager.get_subjects()
 
     # get breadcrumb context
-    arranged_results[Constants.CONTEXT] = get_context(state_id=param_manager.p.state_id, district_id=param_manager.p.district_id, school_id=param_manager.p.school_id)
+    arranged_results[Constants.CONTEXT] = get_breadcrumbs_context(state_id=param_manager.p.state_id, district_id=param_manager.p.district_id, school_id=param_manager.p.school_id)
 
     return arranged_results
 

@@ -6,8 +6,9 @@ Created on Mar 11, 2013
 import unittest
 import os
 import json
-from smarter.reports.compare_pop_report import RecordManager, Constants, \
+from smarter.reports.compare_pop_report import RecordManager, \
     Record, ParameterManager, Parameters
+from smarter.reports.helpers.constants import Constants
 
 
 class Test(unittest.TestCase):

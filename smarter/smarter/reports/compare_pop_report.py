@@ -14,6 +14,7 @@ from sqlalchemy.sql.expression import case, func, true, null, cast
 from operator import attrgetter
 from sqlalchemy.types import INTEGER
 from smarter.reports.exceptions.parameter_exception import InvalidParamterException
+from smarter.reports.helpers.constants import Constants
 
 # Report service for Comparing Populations
 # Output:
@@ -107,53 +108,6 @@ def arrange_results(results, param_manager):
     arranged_results[Constants.CONTEXT] = get_breadcrumbs_context(state_id=param_manager.p.state_id, district_id=param_manager.p.district_id, school_id=param_manager.p.school_id)
 
     return arranged_results
-
-
-class Constants():
-    '''
-    constants for this report
-    '''
-    STATEID = 'stateId'
-    DISTRICTID = 'districtId'
-    SCHOOLID = 'schoolId'
-    SUMMATIVE = 'SUMMATIVE'
-    ASMT_SUBJECT = 'asmt_subject'
-    ASMT_GRADE = 'asmt_grade'
-    ASMT_GRADE_NAME = 'asmt_grade_name'
-    ASMTGRADE = 'asmtGrade'
-    DISTRICT_NAME = 'district_name'
-    DISTRICT_ID = 'district_id'
-    SCHOOL_NAME = 'school_name'
-    SCHOOL_ID = 'school_id'
-    PERCENTAGE = 'percentage'
-    COUNT = 'count'
-    INTERVALS = 'intervals'
-    LEVEL = 'level'
-    LEVEL1 = 'level1'
-    LEVEL2 = 'level2'
-    LEVEL3 = 'level3'
-    LEVEL4 = 'level4'
-    LEVEL5 = 'level5'
-    TOTAL = 'total'
-    NAME = 'name'
-    ID = 'id'
-    RESULTS = 'results'
-    DIM_INST_HIER = 'dim_inst_hier'
-    DIM_ASMT = 'dim_asmt'
-    FACT_ASMT_OUTCOME = 'fact_asmt_outcome'
-    ASMT_CUSTOM_METADATA = 'asmt_custom_metadata'
-    MATH = 'Math'
-    ELA = 'ELA'
-    SUBJECTS = 'subjects'
-    SUBJECT1 = 'subject1'
-    SUBJECT2 = 'subject2'
-    COLORS = 'colors'
-    SUMMARY = 'summary'
-    RECORDS = 'records'
-    CONTEXT = 'context'
-    PARAMS = 'params'
-    GRADE = 'Grade'
-    DISPLAY_LEVEL = 'display_level'
 
 
 class RecordManager():

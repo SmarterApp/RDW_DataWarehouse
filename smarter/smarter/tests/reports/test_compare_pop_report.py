@@ -4,8 +4,9 @@ Created on Mar 11, 2013
 @author: dwu
 '''
 import unittest
-from smarter.reports.compare_pop_report import get_comparing_populations_report, Constants
+from smarter.reports.compare_pop_report import get_comparing_populations_report
 from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite
+from smarter.reports.helpers.constants import Constants
 
 
 class TestComparingPopulations(Unittest_with_smarter_sqlite):

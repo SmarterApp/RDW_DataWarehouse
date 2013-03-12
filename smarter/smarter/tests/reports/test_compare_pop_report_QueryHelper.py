@@ -6,10 +6,11 @@ Created on Mar 8, 2013
 import unittest
 from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite_no_data_load
 from smarter.reports.compare_pop_report import ParameterManager, Parameters, \
-    QueryHelper, Constants
+    QueryHelper
 from smarter.tests.reports.test_compare_pop_report_parameters import get_param_state_view, \
     get_param_district_view, get_param_school_view
 from smarter.database.connector import SmarterDBConnection
+from smarter.reports.helpers.constants import Constants
 
 
 class Test(Unittest_with_smarter_sqlite_no_data_load):

@@ -12,6 +12,7 @@ def get_breadcrumbs_context(state_id=None, district_id=None, school_id=None, asm
     '''
     Given certain known information, returns breadcrumbs context
     '''
+    formatted_results = []
     with SmarterDBConnection() as connector:
         dim_inst_hier = connector.get_table('dim_inst_hier')
 
@@ -33,18 +34,18 @@ def get_breadcrumbs_context(state_id=None, district_id=None, school_id=None, asm
 
         # run it and format the results
         results = connector.get_result(query)
-        result = results[0]
+        if results:
+            result = results[0]
 
-        # return an hierarchical ordered list
-        formatted_results = []
-        formatted_results.append({'type': 'state', 'name': result['state_name'], 'id': result['state_code']})
-        if district_id is not None:
-            formatted_results.append({'type': 'district', 'name': result['district_name'], 'id': district_id})
-            if school_id is not None:
-                formatted_results.append({'type': 'school', 'name': result['school_name'], 'id': school_id})
-                if asmt_grade is not None:
-                    formatted_results.append({'type': 'grade', 'name': asmt_grade})
-                    if student_name is not None:
-                        formatted_results.append({'type': 'student', 'name': student_name})
+            # return an hierarchical ordered list
+            formatted_results.append({'type': 'state', 'name': result['state_name'], 'id': result['state_code']})
+            if district_id is not None:
+                formatted_results.append({'type': 'district', 'name': result['district_name'], 'id': district_id})
+                if school_id is not None:
+                    formatted_results.append({'type': 'school', 'name': result['school_name'], 'id': school_id})
+                    if asmt_grade is not None:
+                        formatted_results.append({'type': 'grade', 'name': asmt_grade})
+                        if student_name is not None:
+                            formatted_results.append({'type': 'student', 'name': student_name})
 
     return {'items': formatted_results}

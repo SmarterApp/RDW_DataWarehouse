@@ -6,12 +6,6 @@ define [
   "cs!edwareGrid"
   "cs!edwareBreadcrumbs"
 ], ($, bootstrap, edwareDataProxy, edwareGrid, edwareBreadcrumbs) ->
-  
-  assessmentsData = []
-  assessmentsCutPoints = []
-  assessmentCutpoints = {}
-   
-
   #
   #    * Create Student data grid
   #    
@@ -27,12 +21,18 @@ define [
         method: "GET"
     
       edwareDataProxy.getDatafromSource "../data/color.json", options, (defaultColors) ->
-        
+        # Append colors to records and summary section
         schoolData = appendColorToData schoolData, subjectsData, colorsData, defaultColors
         summaryData = appendColorToData summaryData, subjectsData, colorsData, defaultColors, 1
 
-        getSchoolsConfig "../data/school.json", (schoolConfig) ->
+        getSchoolsConfig "../data/school.json", (schoolConfig, comparePopConfig) ->
+          # Change the column name based on the type of report the user is querying for
+          reportType = getReportType(params)
+          schoolConfig[0].name = comparePopConfig[reportType].name
+          schoolConfig[0].options.linkUrl = comparePopConfig[reportType].link
+          
           $('#breadcrumb').breadcrumbs(contextData)
+          # Format the summary data for static summary row purposes
           formmatedSummary = formatSummaryData(summaryData)
           edwareGrid.create "gridTable", schoolConfig, schoolData, formmatedSummary
         
@@ -73,8 +73,9 @@ define [
       
       
   getSchoolsConfig = (configURL, callback) ->
-      schoolColumnCfgs = {}
       
+      dataArray = []
+            
       return false  if configURL is "undefined" or typeof configURL is "number" or typeof configURL is "function" or typeof configURL is "object"
       
       options =
@@ -83,11 +84,12 @@ define [
       
       edwareDataProxy.getDatafromSource configURL, options, (data) ->
         schoolColumnCfgs = data.schools
+        comparePopCfgs = data.comparePopulation
          
         if callback
-          callback schoolColumnCfgs
+          callback schoolColumnCfgs, comparePopCfgs
         else
-          schoolColumnCfgs
+          dataArray schoolColumnCfgs, comparePopCfgs
   
   appendColorToData = (data, subjectsData, colorsData, defaultColors, resultLen) ->
     
@@ -103,7 +105,6 @@ define [
           data[j]['results'][k].intervals = appendColor data[j]['results'][k].intervals, colorsData[k], defaultColors
         else
           data['results'][k].intervals = appendColor data['results'][k].intervals, colorsData[k], defaultColors
-        #node = appendColor node, colorsData[k], defaultColors
         j++
     data
   
@@ -134,6 +135,21 @@ define [
     data['header'] = true
     data['results'] = summaryData.results
     data
+
+  getReportType = (params) ->
+    type = null
+    # convert to lower case first
+    lowerCaseParams = {}
+    for k, v of params
+      name = k.toLowerCase()
+      lowerCaseParams[name] = v
+    if lowerCaseParams['schoolid']
+      type = 'school'
+    else if lowerCaseParams['districtid']
+      type = 'district'
+    else if lowerCaseParams['stateid']
+      type = 'state'
+    type
             
   createStudentGrid: createStudentGrid
   

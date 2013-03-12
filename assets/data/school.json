@@ -5,5 +5,9 @@
             {"name":"Total Students","index":"results.subject1.total","field":"results.subject1.total","width":90,"sorttype":"int","align":"center"},
             {"name":"ELA","index":"results.subject2.total","field":"results.subject2.total","width":280,"formatter":"performanceBar", "options":{"asmt_type":"subject2"}, "title":false, "sorttype":"int","align":"center"},
             {"name":"Total Students","index":"results.subject2.total","field":"results.subject2.total","width":90,"sorttype":"int","align":"center"}
-        ]
+        ],
+    "comparePopulation" : {"school": {"name": "Assessment Grade", "link": "studentList.html"}, 
+                           "district": {"name": "School Name", "link": "schoolStudentList.html"}, 
+                           "state": {"name": "District Name", "link": "schoolStudentList.html"}
+                           }
 }

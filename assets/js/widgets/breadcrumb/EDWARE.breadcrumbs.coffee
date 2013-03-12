@@ -51,6 +51,7 @@ define [
               element.link = staticElement.link + "?stateId=" + stateId + "&districtId=" + districtId + "&schoolId=" + schoolId
             else if element.type is "grade"
               grade = element.name
+              element.name = "Grade " + grade
               element.link = staticElement.link + "?stateId=" + stateId + "&districtId=" + districtId + "&schoolId=" + schoolId + "&asmtGrade=" + grade
             else if element.type is "student"
               if element.name.substr(element.name.length - 1) is "s"

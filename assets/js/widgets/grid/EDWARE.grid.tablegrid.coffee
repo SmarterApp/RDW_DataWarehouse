@@ -50,14 +50,21 @@ define [
               colModelItem.formatoptions = item1.options  if item1.options
               colModelItem.sorttype = item1.sorttype  if item1.sorttype
               colModelItem.align = item1.align  if item1.align
-              colModelItem.title = item1.title  if item1.title
+              
+              if item1.title isnt undefined
+                colModelItem.title = item1.title
+                
               colModelItem.classes = item1.style  if item1.style
               colModelItem.frozen = item1.frozen  if item1.frozen
+                  
+              # Merge two column cells
               if item1.colspan
-                colModelItem.cellattr = (rowId, tv, rawObject, cm, rdata) ->
+                colModelItem.cellattr = (rowId, val, rawObject, cm, rdata) ->
                   ' colspan=2'
+              
+              # Hide column if the value is true
               if item1.hide
-                colModelItem.cellattr = (rowId, tv, rawObject, cm, rdata) ->
+                colModelItem.cellattr = (rowId, val, rawObject, cm, rdata) ->
                   ' style="display:none;"'
               options.sortorder = item1.sortorder  if item1.sortorder
               options.sortname = item1.field  if item1.sortorder
@@ -99,8 +106,7 @@ define [
             groupHeaders: groupHeaders
             fixed: true
         
-        $(this).jqGrid 'setFrozenColumns'
-        $(this).find(".jqg-second-row-header th:first-child").css "background", "#ffffff"
+        # Add footer row to the grid
         if footerData
           $(this).jqGrid('footerData','set', footerData, true);
         
@@ -111,7 +117,7 @@ define [
     #    * @param tableId - The container id for grid
     #    * @param columnItems
     #    * @param columnData
-    #    * @param assessmentCutpoints
+    #    * @param footerData - Grid footer row 
     #    * @param options
     #    
     create = (tableId, columnItems, columnData, footerData, options) ->
@@ -127,7 +133,7 @@ define [
         rowNum: 10000
         shrinkToFit: false
         loadComplete: ->
-           #$("tr.jqgrow:odd").css "background", "#f8f8f8"
+           # Move footer row to the top of the table
            $("div.ui-jqgrid-sdiv").css(
               "background": "#f2f2f2"
            ).insertBefore $("div.ui-jqgrid-bdiv")

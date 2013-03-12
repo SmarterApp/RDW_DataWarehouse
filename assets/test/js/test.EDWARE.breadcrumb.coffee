@@ -9,6 +9,7 @@ require ["jquery", "cs!edwareBreadcrumbs"], ($, edwareBreadcrumbs) ->
       
 
   test "Test create method", ->
+    stop()
     ok edwareBreadcrumbs.create isnt `undefined`, "edwareBreadcrumbs.create method should be defined"
     ok typeof edwareBreadcrumbs.create is "function", "edwareBreadcrumbs.create method should be function"
     
@@ -34,9 +35,10 @@ require ["jquery", "cs!edwareBreadcrumbs"], ($, edwareBreadcrumbs) ->
     edwareBreadcrumbs.create("#breadcrumbs", test_data)
     deepEqual $("#breadcrumbs a").length, 3, "3 links should have been created"
     deepEqual $("#breadcrumbs a")[0].text, "Washington", "wrong text shown"
+    start()
 
   test "Test breadcrumb with no links", ->
-    
+    stop()
     test_data = items: [
       type: "state"
       name: "Washington"
@@ -46,3 +48,4 @@ require ["jquery", "cs!edwareBreadcrumbs"], ($, edwareBreadcrumbs) ->
     edwareBreadcrumbs.create("#breadcrumbs", test_data)
     
     deepEqual $("#breadcrumbs a").length, 0, "0 links should have been created"
+    start()

@@ -32,8 +32,12 @@ define [
           schoolConfig[0].options.linkUrl = comparePopConfig[reportType].link
           
           $('#breadcrumb').breadcrumbs(contextData)
+          # Set the Report title depending on the report that we're looking at
+          reportTitle = getReportTitle(contextData, reportType)
+          $('#content h4').html 'Comparing ' + reportTitle + ' on Math & ELA'
+          
           # Format the summary data for static summary row purposes
-          summaryRowName = getSummaryRowRefName(contextData, reportType)
+          summaryRowName = 'Overall ' + reportTitle + ' Summary'
           summaryData = formatSummaryData(summaryData, summaryRowName)
           edwareGrid.create "gridTable", schoolConfig, schoolData, summaryData
         
@@ -142,21 +146,20 @@ define [
     data['name'] = summaryRowName
     data
     
-  getSummaryRowRefName = (contextData, reportType) ->
+  getReportTitle = (contextData, reportType) ->
     # Returns the overall summary row name based on the type of report
     map =
       state: 0
       district: 1
       school: 2    
     
-    data = 'Overall '
+    data = ''
     if reportType is 'state'
-      data = data + contextData.items[map[reportType]].id + ' District'
+      data = contextData.items[map[reportType]].id + ' Districts'
     else if reportType is 'district'
-      data = data + contextData.items[map[reportType]].name + ' School'
+      data = contextData.items[map[reportType]].name + ' Schools'
     else if reportType is 'school'
-      data = data + contextData.items[map[reportType]].name + ' Grade'
-    data = data + ' Summary'
+      data = contextData.items[map[reportType]].name + ' Grades'
     data
       
 

@@ -9,6 +9,7 @@ var baseConfigs = {
 	    text: '../../js/3p/text',
 		mustache: '../../js/3p/mustache',
 		templates: '../../js/templates',
+		bootstrap: '../../js/3p/bootstrap.min',
 		
 	    EDWARE: '../../js/EDWARE',
 	    edwareUtil: '../../js/EDWARE.util',
@@ -20,6 +21,7 @@ var baseConfigs = {
 	    edwareBreadcrumbs: '../../js/widgets/breadcrumb/EDWARE.breadcrumbs',
 		edwareConfidenceLevelBar: '../../js/widgets/confidenceLevelBar/EDWARE.confidenceBar',
 		edwarePopulationBar: '../../js/widgets/populationBar/EDWARE.populationBar',
+		edwareSchoolList: '../../js/EDWARE.schoolList',
 	    
 	    edwareBreadcrumbsTemplate: '../../js/widgets/breadcrumb/template.html',
 		edwareConfidenceLevelBarTemplate: '../../js/widgets/confidenceLevelBar/template.html',

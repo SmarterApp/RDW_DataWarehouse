@@ -22,6 +22,7 @@ define [
     
       edwareDataProxy.getDatafromSource "../data/color.json", options, (defaultColors) ->
         # Append colors to records and summary section
+        # TODO: check if data is not empty, etc first (or do we get a 404?)
         schoolData = appendColorToData schoolData, subjectsData, colorsData, defaultColors
         summaryData = appendColorToData summaryData, subjectsData, colorsData, defaultColors
 
@@ -120,11 +121,6 @@ define [
     i = 0
     len = intervals.length
     colorsData = JSON.parse(colorsData)
-    # For now, ignore everything behind the 4th interval
-    # This is temporary until we have a backend fix
-    if len > 4
-      intervals = intervals[0..3]
-      len = intervals.length
     while (i < len)
       element = intervals[i]
       if colorsData[i]

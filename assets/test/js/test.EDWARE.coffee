@@ -7,5 +7,6 @@ require ["cs!test.EDWARE.dataProxy",
 "cs!test.EDWARE.populationBar",
 #"cs!test.EDWARE.confidenceLevelBar",
 "cs!test.EDWARE.breadcrumb",
+"cs!test.EDWARE.comparingPopulation"
 ]
 

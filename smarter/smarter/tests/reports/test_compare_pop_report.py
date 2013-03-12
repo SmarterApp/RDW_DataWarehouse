@@ -62,7 +62,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         self.assertEqual('Sunset Central High', context_items[2][Constants.NAME])
 
         # check summary results
-        summ_results = results[Constants.SUMMARY][Constants.RESULTS]
+        summ_results = results[Constants.SUMMARY][0][Constants.RESULTS]
         self.assertEqual(2, len(summ_results))
         subject1 = summ_results[Constants.SUBJECT1]
         self.assertEqual(3, subject1[Constants.TOTAL])
@@ -131,7 +131,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         self.assertEqual('Sunset School District', context_items[1][Constants.NAME])
 
         # check summary results
-        summ_results = results[Constants.SUMMARY][Constants.RESULTS]
+        summ_results = results[Constants.SUMMARY][0][Constants.RESULTS]
         self.assertEqual(2, len(summ_results))
         subject1 = summ_results[Constants.SUBJECT1]
         self.assertEqual(3, subject1[Constants.TOTAL])
@@ -198,7 +198,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         self.assertEqual('NY', context_items[0][Constants.NAME])
 
         # check summary results
-        summ_results = results[Constants.SUMMARY][Constants.RESULTS]
+        summ_results = results[Constants.SUMMARY][0][Constants.RESULTS]
         self.assertEqual(2, len(summ_results))
         subject1 = summ_results[Constants.SUBJECT1]
         self.assertEqual(3, subject1[Constants.TOTAL])

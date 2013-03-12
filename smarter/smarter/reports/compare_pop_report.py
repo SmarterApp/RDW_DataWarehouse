@@ -183,7 +183,7 @@ class RecordManager():
         return summary of all records
         '''
         results = {}
-        summary_records = {Constants.RESULTS: results}
+        summary_records = [{Constants.RESULTS: results}]
         for record in self._tracking_record.values():
             # get subjects record from "record"
             subjects_record = record.subjects

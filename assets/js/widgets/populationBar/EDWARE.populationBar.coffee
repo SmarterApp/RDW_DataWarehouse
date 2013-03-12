@@ -10,6 +10,7 @@ define [
   #    
   $.fn.populationBar = (items) ->
     output = Mustache.to_html populationBarTemplate, items
+    # If there is no container, return the output
     if this.length > 0
       this.html output
     else

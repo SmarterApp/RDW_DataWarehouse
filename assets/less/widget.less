@@ -23,7 +23,7 @@
 // Table Grid
 //
 
-
+#gbox_gridTable { overflow: hidden; }
 table { border-collapse: separate; }
 table td .progress {
   margin-bottom: 0;
@@ -84,6 +84,13 @@ th.ui-th-column div {
    background: #fafafa; color: #333; 
   }
   
+.ui-jqgrid-sdiv {
+  .box-shadow(0 1px 4px, 25%);
+  z-index: 100;
+}
+
+.ui-jqgrid tr.footrow td { border-bottom: solid 1px #cbcbcb; }
+
 
 //
 // Confidence Level Bar
@@ -185,15 +192,15 @@ th.ui-th-column div {
         }
       }
     }
-//
-// Population Bar
-//
-#populationBar {
+
+.populationBar {
   .progress {
     border-radius: 0;
+    
     .bar {
-      text-align: right; 
-      padding-right: 3px; 
+      text-align: right;
     }
+    
+    
   }
 }

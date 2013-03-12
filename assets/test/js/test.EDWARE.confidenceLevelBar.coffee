@@ -8,7 +8,7 @@ require ["jquery", "cs!edwareConfidenceLevelBar"], ($, edwareConfidenceLevelBar)
       $("body").append "<div id='bar4' class='confidenceLevel'></div>"   
 
     teardown: ->
-      #$(".confidenceLevel").remove()
+      $(".confidenceLevel").remove()
 
   test "Test create method", ->
     ok edwareConfidenceLevelBar.create isnt "undefined", "EDWARE.confidenceLevelBar create method should be defined"

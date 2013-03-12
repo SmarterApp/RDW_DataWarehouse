@@ -15,7 +15,7 @@ from string import capwords
 from smarter.database.connector import SmarterDBConnection
 from logging import INFO
 from edapi.autolog import log_function
-from smarter.reports.helpers.context import get_context
+from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
 
 
 def __prepare_query(connector, student_id, assessment_id):
@@ -195,7 +195,7 @@ def get_student_report(params):
         if result:
             first_student = result[0]
             student_name = format_full_name(first_student['student_first_name'], first_student['student_middle_name'], first_student['student_last_name'])
-            context = get_context(district_id=first_student['district_id'], school_id=first_student['school_id'], asmt_grade=first_student['grade'], student_name=student_name)
+            context = get_breadcrumbs_context(district_id=first_student['district_id'], school_id=first_student['school_id'], asmt_grade=first_student['grade'], student_name=student_name)
         else:
             raise NotFoundException("Could not find student with id {0}".format(student_id))
 

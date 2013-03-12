@@ -1,16 +1,11 @@
 #global define
 define [
   "jquery"
+  "bootstrap"
   "cs!edwareDataProxy"
   "cs!edwareGrid"
   "cs!edwareBreadcrumbs"
-], ($, edwareDataProxy, edwareGrid, edwareBreadcrumbs) ->
-  
-  assessmentsData = []
-  assessmentsCutPoints = []
-  assessmentCutpoints = {}
-   
-
+], ($, bootstrap, edwareDataProxy, edwareGrid, edwareBreadcrumbs) ->
   #
   #    * Create Student data grid
   #    
@@ -19,12 +14,44 @@ define [
     # Get school data from the server
     getSchoolData "/data/comparing_populations", params, (schoolData, summaryData, subjectsData, colorsData, contextData) ->
       
-      # Get school grid column configs
-      getSchoolsConfig "../data/school.json", (schoolConfig) ->
+      # Read Default colors from json
+      defaultColors = {}
+      options =
+        async: false
+        method: "GET"
     
-        $('#breadcrumb').breadcrumbs(contextData)
-        edwareGrid.create "gridTable", schoolConfig, schoolData, summaryData
+      edwareDataProxy.getDatafromSource "../data/color.json", options, (defaultColors) ->
+        # Append colors to records and summary section
+        schoolData = appendColorToData schoolData, subjectsData, colorsData, defaultColors
+        summaryData = appendColorToData summaryData, subjectsData, colorsData, defaultColors
+
+        getSchoolsConfig "../data/school.json", (schoolConfig, comparePopConfig) ->
+          # Change the column name based on the type of report the user is querying for
+          reportType = getReportType(params)
+          schoolConfig[0].name = comparePopConfig[reportType].name
+          schoolConfig[0].options.linkUrl = comparePopConfig[reportType].link
+          
+          $('#breadcrumb').breadcrumbs(contextData)
+          # Set the Report title depending on the report that we're looking at
+          reportTitle = getReportTitle(contextData, reportType)
+          $('#content h4').html 'Comparing ' + reportTitle + ' on Math & ELA'
+          
+          # Format the summary data for static summary row purposes
+          summaryRowName = 'Overall ' + reportTitle + ' Summary'
+          summaryData = formatSummaryData(summaryData, summaryRowName)
+          edwareGrid.create "gridTable", schoolConfig, schoolData, summaryData
         
+          $(".progress").hover ->
+            e = $(this)
+            e.popover
+              html: true
+              placement: "top"
+              content: ->
+                e.find(".progressBar_tooltip").html()
+            .popover("show")
+          , ->
+            e = $(this)
+            e.popover("hide")      
         
   getSchoolData = (sourceURL, params, callback) ->
     
@@ -51,8 +78,9 @@ define [
       
       
   getSchoolsConfig = (configURL, callback) ->
-      schoolColumnCfgs = {}
       
+      dataArray = []
+            
       return false  if configURL is "undefined" or typeof configURL is "number" or typeof configURL is "function" or typeof configURL is "object"
       
       options =
@@ -61,12 +89,94 @@ define [
       
       edwareDataProxy.getDatafromSource configURL, options, (data) ->
         schoolColumnCfgs = data.schools
+        comparePopCfgs = data.comparePopulation
          
         if callback
-          callback schoolColumnCfgs
+          callback schoolColumnCfgs, comparePopCfgs
         else
-          schoolColumnCfgs
+          dataArray schoolColumnCfgs, comparePopCfgs
+  
+  appendColorToData = (data, subjectsData, colorsData, defaultColors) ->
+    
+    # Append data with colors
+    # records come in as an array, whereas summary doesn't 
+    isArray = false
+    if data instanceof Array
+      recordsLen = data.length
+      isArray = true
+    else
+      recordsLen = 1
+    for k of subjectsData
+      j = 0
+      while (j < recordsLen)
+        if isArray
+          data[j]['results'][k].intervals = appendColor data[j]['results'][k].intervals, colorsData[k], defaultColors
+        else
+          data['results'][k].intervals = appendColor data['results'][k].intervals, colorsData[k], defaultColors
+        j++
+    data
+  
+  appendColor = (intervals, colorsData, defaultColors) ->
+    i = 0
+    len = intervals.length
+    colorsData = JSON.parse(colorsData)
+    # For now, ignore everything behind the 4th interval
+    # This is temporary until we have a backend fix
+    if len > 4
+      intervals = intervals[0..3]
+      len = intervals.length
+    while (i < len)
+      element = intervals[i]
+      if colorsData[i]
+        element.color = colorsData[i]
+      else
+        element.color = defaultColors[i]
+      i++
+    intervals
 
+  formatSummaryData = (summaryData, summaryRowName) ->
+    # Format the summary data for summary row rendering purposes
+    data = {}
+    for k of summaryData.results
+      name = 'results.' + k + '.total'
+      data[name] = summaryData.results[k].total
+    data['subtitle'] = 'Reference Point'
+    data['header'] = true
+    data['results'] = summaryData.results
+    data['name'] = summaryRowName
+    data
+    
+  getReportTitle = (contextData, reportType) ->
+    # Returns the overall summary row name based on the type of report
+    map =
+      state: 0
+      district: 1
+      school: 2    
+    
+    data = ''
+    if reportType is 'state'
+      data = contextData.items[map[reportType]].id + ' Districts'
+    else if reportType is 'district'
+      data = contextData.items[map[reportType]].name + ' Schools'
+    else if reportType is 'school'
+      data = contextData.items[map[reportType]].name + ' Grades'
+    data
+      
 
+  getReportType = (params) ->
+    type = null
+    # convert to lower case first
+    lowerCaseParams = {}
+    for k, v of params
+      name = k.toLowerCase()
+      lowerCaseParams[name] = v
+    if lowerCaseParams['schoolid']
+      type = 'school'
+    else if lowerCaseParams['districtid']
+      type = 'district'
+    else if lowerCaseParams['stateid']
+      type = 'state'
+    type
+            
   createStudentGrid: createStudentGrid
   

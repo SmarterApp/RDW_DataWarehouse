@@ -2,11 +2,11 @@
     "items" : [
     	{
     		"type" : "state",
-    		"link" : "/assets/html/stateStudentList.html" 
+    		"link" : "/assets/html/schoolStudentList.html" 
     	},
     	{
     		"type" : "district",
-    		"link" : "/assets/html/districtStudentList.html" 
+    		"link" : "/assets/html/schoolStudentList.html" 
     	},
     	{
     		"type" : "school",

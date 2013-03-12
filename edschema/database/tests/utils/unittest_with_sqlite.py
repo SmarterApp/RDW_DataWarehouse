@@ -55,6 +55,12 @@ class Unittest_with_sqlite(UT_Base):
 class Unittest_with_sqlite_no_data_load(UT_Base):
 
     @classmethod
-    def setUpClass(cls):
+    def setUpClass(cls, datasource_name=''):
+        Unittest_with_sqlite.datasource_name = datasource_name
         # create db engine for sqlite
-        create_sqlite(use_metadata_from_db=True, echo=False)
+        create_sqlite(use_metadata_from_db=True, echo=False, datasource_name=datasource_name)
+
+    @classmethod
+    def tearDownClass(cls):
+        # destroy sqlite just in case
+        destroy_sqlite(datasource_name=Unittest_with_sqlite.datasource_name)

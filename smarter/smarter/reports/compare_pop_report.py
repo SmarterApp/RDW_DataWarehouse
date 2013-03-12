@@ -5,6 +5,7 @@ Created on Mar 7, 2013
 '''
 
 from edapi.utils import report_config
+from smarter.reports.helpers.percentage_calc import round_percentages
 from sqlalchemy.sql import select
 from sqlalchemy.sql import and_
 from smarter.database.connector import SmarterDBConnection
@@ -187,6 +188,10 @@ class RecordManager():
         intervals.append(self.create_interval(result, Constants.LEVEL4))
         intervals.append(self.create_interval(result, Constants.LEVEL5))
 
+        # make sure percentages add to 100%
+        self.adjust_percentages(intervals)
+
+        # reformatting for record object
         __subject = {}
         __subject[Constants.TOTAL] = total
         __subject[Constants.ASMT_SUBJECT] = subject_name
@@ -197,6 +202,16 @@ class RecordManager():
 
         if subject_alias_name not in self._asmt_custom_metadata_results:
             self._asmt_custom_metadata_results[subject_alias_name] = result[Constants.ASMT_CUSTOM_METADATA]
+
+    def adjust_percentages(self, intervals):
+        percentages = []
+        for interval in intervals:
+            percentages.append(interval[Constants.PERCENTAGE])
+
+        percentages = round_percentages(percentages)
+
+        for idx, val in enumerate(percentages):
+            intervals[idx][Constants.PERCENTAGE] = val
 
     def get_asmt_custom_metadata(self):
         '''
@@ -219,7 +234,7 @@ class RecordManager():
         for record in self._tracking_record.values():
             # get subjects record from "record"
             subjects_record = record.subjects
-            # interate each subjects
+            # iterate each subjects
             for subject_alias_name in subjects_record.keys():
                 # get subject record
                 subject_record = subjects_record[subject_alias_name]
@@ -248,6 +263,10 @@ class RecordManager():
                     summary_interval[Constants.COUNT] = summary_interval.get(Constants.COUNT, 0) + subject_interval[Constants.COUNT]
                     summary_interval[Constants.PERCENTAGE] = self.calculate_percentage(summary_interval[Constants.COUNT], summary_record[Constants.TOTAL])
                     summary_interval[Constants.LEVEL] = subject_interval[Constants.LEVEL]
+
+                # make sure percentages add to 100%
+                self.adjust_percentages(summary_record_intervals)
+
         return summary_records
 
     def get_records(self):
@@ -295,8 +314,9 @@ class RecordManager():
         '''
         __percentage = 0
         if total != 0:
-            # use 0.5 to round up
-            __percentage = int(count / total * 100 + 0.5)
+        #    # use 0.5 to round up
+        #    __percentage = int(count / total * 100 + 0.5)
+            __percentage = count / total * 100
         return __percentage
 
 

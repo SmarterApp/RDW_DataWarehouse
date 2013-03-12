@@ -20,7 +20,7 @@ class Test(unittest.TestCase):
         self.assertEqual(0, percentage)
 
         percentage = RecordManager.calculate_percentage(1, 300)
-        self.assertEqual(0, percentage)
+        self.assertEqual('0.33', '%.2f' % percentage)
 
         percentage = RecordManager.calculate_percentage(1, 100)
         self.assertEqual(1, percentage)
@@ -31,22 +31,30 @@ class Test(unittest.TestCase):
         interval_level1 = manager.create_interval(results[0], Constants.LEVEL1)
         self.assertEqual(1, interval_level1[Constants.COUNT])
         self.assertEqual(1, interval_level1[Constants.LEVEL])
-        self.assertEqual(0, interval_level1[Constants.PERCENTAGE])
+        self.assertEqual('0.028', '%.3f' % interval_level1[Constants.PERCENTAGE])
         interval_level2 = manager.create_interval(results[0], Constants.LEVEL2)
         self.assertEqual(2883, interval_level2[Constants.COUNT])
         self.assertEqual(2, interval_level2[Constants.LEVEL])
-        self.assertEqual(80, interval_level2[Constants.PERCENTAGE])
+        self.assertEqual('80.306', '%.3f' % interval_level2[Constants.PERCENTAGE])
         interval_level3 = manager.create_interval(results[0], Constants.LEVEL3)
         self.assertEqual(693, interval_level3[Constants.COUNT])
         self.assertEqual(3, interval_level3[Constants.LEVEL])
-        self.assertEqual(19, interval_level3[Constants.PERCENTAGE])
+        self.assertEqual('19.304', '%.3f' % interval_level3[Constants.PERCENTAGE])
         interval_level4 = manager.create_interval(results[0], Constants.LEVEL4)
         self.assertEqual(13, interval_level4[Constants.COUNT])
         self.assertEqual(4, interval_level4[Constants.LEVEL])
-        self.assertEqual(0, interval_level4[Constants.PERCENTAGE])
+        self.assertEqual('0.362', '%.3f' % interval_level4[Constants.PERCENTAGE])
         interval_level5 = manager.create_interval(results[0], Constants.LEVEL5)
         self.assertEqual(0, interval_level5[Constants.COUNT])
         self.assertEqual(5, interval_level5[Constants.LEVEL])
+        self.assertEqual(0, interval_level5[Constants.PERCENTAGE])
+
+        intervals = [interval_level1, interval_level2, interval_level3, interval_level4, interval_level5]
+        manager.adjust_percentages(intervals)
+        self.assertEqual(0, interval_level1[Constants.PERCENTAGE])
+        self.assertEqual(80, interval_level2[Constants.PERCENTAGE])
+        self.assertEqual(19, interval_level3[Constants.PERCENTAGE])
+        self.assertEqual(1, interval_level4[Constants.PERCENTAGE])
         self.assertEqual(0, interval_level5[Constants.PERCENTAGE])
 
     def test_RecordManager_get_record(self):

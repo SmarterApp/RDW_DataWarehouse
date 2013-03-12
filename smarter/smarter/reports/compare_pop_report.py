@@ -494,11 +494,11 @@ class QueryHelper():
                                   # if asmt_perf_lvl_name_# is null, it means data should not be displayed.
                                   # Find display level
                                   func.max(cast(case([(self._dim_asmt.c.asmt_perf_lvl_name_5 != null(), '5'),
-                                                 (self._dim_asmt.c.asmt_perf_lvl_name_4 != null(), '4'),
-                                                 (self._dim_asmt.c.asmt_perf_lvl_name_3 != null(), '3'),
-                                                 (self._dim_asmt.c.asmt_perf_lvl_name_2 != null(), '2'),
-                                                 (self._dim_asmt.c.asmt_perf_lvl_name_1 != null(), '1')],
-                                                else_='0'), INTEGER)).label(Constants.DISPLAY_LEVEL)]
+                                                      (self._dim_asmt.c.asmt_perf_lvl_name_4 != null(), '4'),
+                                                      (self._dim_asmt.c.asmt_perf_lvl_name_3 != null(), '3'),
+                                                      (self._dim_asmt.c.asmt_perf_lvl_name_2 != null(), '2'),
+                                                      (self._dim_asmt.c.asmt_perf_lvl_name_1 != null(), '1')],
+                                                     else_='0'), INTEGER)).label(Constants.DISPLAY_LEVEL)]
         return columns + bar_widget_color_info + columns_for_perf_level
 
     def build_from_obj(self):

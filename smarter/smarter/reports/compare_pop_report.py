@@ -5,7 +5,7 @@ Created on Mar 7, 2013
 '''
 
 from edapi.utils import report_config
-from smarter.reports.helpers.percentage_calc import round_percentages
+from smarter.reports.helpers.percentage_calc import normalize_percentages
 from sqlalchemy.sql import select
 from sqlalchemy.sql import and_
 from smarter.database.connector import SmarterDBConnection
@@ -203,16 +203,6 @@ class RecordManager():
         if subject_alias_name not in self._asmt_custom_metadata_results:
             self._asmt_custom_metadata_results[subject_alias_name] = result[Constants.ASMT_CUSTOM_METADATA]
 
-    def adjust_percentages(self, intervals):
-        percentages = []
-        for interval in intervals:
-            percentages.append(interval[Constants.PERCENTAGE])
-
-        percentages = round_percentages(percentages)
-
-        for idx, val in enumerate(percentages):
-            intervals[idx][Constants.PERCENTAGE] = val
-
     def get_asmt_custom_metadata(self):
         '''
         for FE color information for each subjects
@@ -314,10 +304,24 @@ class RecordManager():
         '''
         __percentage = 0
         if total != 0:
-        #    # use 0.5 to round up
-        #    __percentage = int(count / total * 100 + 0.5)
             __percentage = count / total * 100
         return __percentage
+
+    def adjust_percentages(self, intervals):
+        '''
+        normalize interval percentages to always add up to 100
+        '''
+        # read percentages into a list
+        percentages = []
+        for interval in intervals:
+            percentages.append(interval[Constants.PERCENTAGE])
+
+        # do the normalization
+        percentages = normalize_percentages(percentages)
+
+        # set percentages back in intervals
+        for idx, val in enumerate(percentages):
+            intervals[idx][Constants.PERCENTAGE] = val
 
 
 class Record():

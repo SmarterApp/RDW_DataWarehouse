@@ -5,7 +5,10 @@ Created on Mar 11, 2013
 '''
 
 
-def round_percentages(percentages):
+def normalize_percentages(percentages):
+    '''
+    normalize a list of percentages to always add up to 100
+    '''
 
     # round each percentage down and calculate sum
     # also, keep track of decimal values

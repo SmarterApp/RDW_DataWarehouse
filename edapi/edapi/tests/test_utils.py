@@ -10,7 +10,8 @@ from edapi.exceptions import ReportNotFoundError, InvalidParameterError
 from edapi.tests.dummy import DummyValidator, Dummy
 from edapi.tests.test_logger import TestLogger, test_function, test_display_name
 import os
-from edapi.autolog import get_logger
+from edapi.logging import audit_event
+import logging
 
 
 def dummy_method(params):
@@ -21,13 +22,39 @@ def dummy_method_with_data(params):
     return {"report": "123"}
 
 
+class InMemHandler(logging.Handler):
+    """
+    test handler that maintains log array
+    """
+    log_entries = ''
+
+    def emit(self, record):
+        try:
+            msg = self.format(record)
+            self.log_entries += os.linesep + msg
+        except (KeyboardInterrupt, SystemExit):
+            raise
+        except:
+            self.handleError(record)
+
+    def delete(self):
+        self.log_entries = ''
+
+    def get(self):
+        return self.log_entries
+
+
 class TestUtils(unittest.TestCase):
+    log_handler = InMemHandler()
 
     def setUp(self):
-        pass
+        logging.basicConfig(handlers=[self.log_handler],
+                            format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
+                            datefmt='%H:%M:%S',
+                            level=logging.DEBUG)
 
     def tearDown(self):
-        pass
+        self.log_handler.delete()
 
     def test_get_dict_value_with_key_not_found(self):
         dictionary = {}
@@ -144,38 +171,24 @@ class TestUtils(unittest.TestCase):
         result = add_configuration_header(params)
         self.assertEqual(result['properties'], params)
 
-    def test_get_logger(self):
-        logger = get_logger("test", False)
-        self.assertEqual(len(logger.handlers), 0, "there should be no file handlers")
-
     def test_method_log(self):
-        try:
-            test_logger = TestLogger()
-            test_logger.test_method("param1value", "param2value")
-            f = open('/tmp/test.log').read()
-            self.assertIn("param1value", f, "missing param")
-            self.assertIn("param2value", f, "missing param")
-            self.assertIn("test_method", f, "method name is missing")
-            self.assertIn("TestLogger", f, "class name is missing")
-            self.assertIn("INFO", f, "incorrect log level")
-        finally:
-            os.remove('/tmp/test.log')
+        test_logger = TestLogger()
+        test_logger.test_method("param1value", "param2value")
+        f = self.log_handler.get()
+        self.assertIn("param1value", f, "missing param")
+        self.assertIn("param2value", f, "missing param")
+        self.assertIn("test_method", f, "method name is missing")
+        self.assertIn("TestLogger", f, "class name is missing")
+        self.assertIn("INFO", f, "incorrect log level")
 
     def test_function_log(self):
-        try:
-            test_function("param1value", "param2value")
-            f = open('/tmp/test2.log').read()
-            self.assertIn("param1value", f, "missing param")
-            self.assertIn("param2value", f, "missing param")
-            self.assertIn("test_function", f, "method name is missing")
-            self.assertIn("DEBUG", f, "incorrect log level")
-        finally:
-            os.remove('/tmp/test2.log')
+        test_function('param1value', 'param2value')
+        f = self.log_handler.get()
+        self.assertIn('param1value', f, 'missing param')
+        self.assertIn('param2value', f, 'missing param')
+        self.assertIn('test_function', f, 'method name is missing')
 
     def test_display_text_log(self):
-        try:
-            test_display_name()
-            f = open('/tmp/test3.log').read()
-            self.assertIn("test_display", f, "missing param")
-        finally:
-            os.remove('/tmp/test3.log')
+        test_display_name()
+        f = self.log_handler.get()
+        self.assertIn("test_display", f, "missing param")

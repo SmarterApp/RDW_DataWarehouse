@@ -5,7 +5,6 @@ Created on Mar 7, 2013
 '''
 
 from edapi.utils import report_config
-from smarter.reports.helpers.name_formatter import format_full_name_rev
 from sqlalchemy.sql import select
 from sqlalchemy.sql import and_
 from smarter.database.connector import SmarterDBConnection

@@ -14,6 +14,7 @@ from edapi.exceptions import NotFoundException
 from string import capwords
 from smarter.database.connector import SmarterDBConnection
 from edapi.logging import audit_event
+from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
 
 
 def __prepare_query(connector, student_id, assessment_id):
@@ -193,7 +194,7 @@ def get_student_report(params):
         if result:
             first_student = result[0]
             student_name = format_full_name(first_student['student_first_name'], first_student['student_middle_name'], first_student['student_last_name'])
-            context = __get_context(connection, first_student['school_id'], first_student['district_id'], first_student['grade'], student_name)
+            context = get_breadcrumbs_context(district_id=first_student['district_id'], school_id=first_student['school_id'], asmt_grade=first_student['grade'], student_name=student_name)
         else:
             raise NotFoundException("Could not find student with id {0}".format(student_id))
 
@@ -234,29 +235,3 @@ def get_student_assessment(params):
         query = query.order_by(dim_asmt.c.asmt_subject)
         result = connection.get_result(query)
         return result
-
-
-def __get_context(connector, school_id, district_id, grade, student_name):
-    dim_district = connector.get_table('dim_inst_hier')
-
-    query = select([dim_district.c.district_name.label('district_name'),
-                    dim_district.c.school_name.label('school_name'),
-                    dim_district.c.state_name.label('state_name')],
-                   from_obj=[dim_district])
-
-    query = query.where(and_(dim_district.c.school_id == school_id))
-    query = query.where(and_(dim_district.c.district_id == district_id))
-    query = query.where(and_(dim_district.c.most_recent == 1))
-
-    # run it and format the results
-    results = connector.get_result(query)
-    if (not results):
-        return results
-    result = results[0]
-
-    result['grade'] = grade
-    result['student_name'] = student_name
-    result['district_id'] = district_id
-    result['school_id'] = school_id
-
-    return result

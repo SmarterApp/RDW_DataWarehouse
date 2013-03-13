@@ -1,5 +1,16 @@
 <div class="progress">
 	{{#intervals}}
-  	<div class="bar" style="background-color: {{#color}}{{bg_color}}; background-image: -moz-linear-gradient(center top , {{start_gradient_bg_color}}, {{end_gradient_bg_color}}); background-image: -webkit-linear-gradient(top , {{start_gradient_bg_color}}, {{end_gradient_bg_color}}); background-image: -ms-linear-gradient(top , {{start_gradient_bg_color}}, {{end_gradient_bg_color}}); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr={{start_gradient_bg_color}}, endColorstr={{end_gradient_bg_color}}, GradientType=0); background-repeat: repeat-x; color: {{text_color}}{{/color}}; width: {{percentage}}%;">{{percentage}}%</div>
+  	<div class="bar" style="background-color: {{#color}}{{bg_color}}; background-image: -moz-linear-gradient(center top , {{start_gradient_bg_color}}, {{end_gradient_bg_color}}); background-image: -webkit-linear-gradient(top , {{start_gradient_bg_color}}, {{end_gradient_bg_color}}); background-image: -ms-linear-gradient(top , {{start_gradient_bg_color}}, {{end_gradient_bg_color}}); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr={{start_gradient_bg_color}}, endColorstr={{end_gradient_bg_color}}, GradientType=0); background-repeat: repeat-x; color: {{text_color}}{{/color}}; width: {{percentage}}%;">
+  		<span class="marginRight5">{{percentage}}%</span>
+  	</div>
   	{{/intervals}}
+  	<div class="progressBar_tooltip hide">
+  		<ul class="unstyled inline">
+		{{#intervals}}
+			<li>
+				<div style="width: 10px; height: 10px; background-color:{{color.bg_color}}; display: inline-block;"></div> <strong>{{count}}</strong> ({{percentage}}%)
+			</li>
+		{{/intervals}}
+		</ul>
+	</div>
 </div>

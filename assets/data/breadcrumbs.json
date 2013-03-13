@@ -1,0 +1,27 @@
+{
+    "items" : [
+    	{
+    		"type" : "state",
+    		"queryParam" : "stateId",
+    		"link" : "/assets/html/comparingPopulations.html" 
+    	},
+    	{
+    		"type" : "district",
+    		"queryParam" : "districtId",
+    		"link" : "/assets/html/comparingPopulations.html" 
+    	},
+    	{
+    		"type" : "school",
+    		"queryParam" : "schoolId",
+    		"link" : "/assets/html/comparingPopulations.html" 
+    	},
+    	{
+    		"type" : "grade",
+    		"queryParam" : "asmtGrade",
+    		"link" : "/assets/html/studentList.html"
+    	},
+    	{
+    		"type" : "student",
+    		"queryParam": "student"
+    	}]
+}

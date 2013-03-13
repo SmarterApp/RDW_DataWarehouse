@@ -16,29 +16,10 @@ define [
   #    
   createStudentGrid = (params) ->
     
-    breadcrumbsData = {}
-      
-    options =
-      async: false
-      method: "GET"
-    
-    edwareDataProxy.getDatafromSource "../data/list_of_students_breadcrumbs.json", options, (tempData) ->
-      breadcrumbsData = tempData
-      
     getStudentData "/data/list_of_students", params, (assessmentsData, contextData) ->
       
       getStudentsConfig "../data/student.json", (studentsConfig) ->
-        arr = breadcrumbsData['items']
-        length = arr.length
-        element = null
-        i = 0
-        
-        while i < length
-          element = arr[i]
-          element.name = contextData[element.field_name]
-          i++
-          
-        $('#breadcrumb').breadcrumbs(breadcrumbsData)
+        $('#breadcrumb').breadcrumbs(contextData)
         
         edwareGrid.create "gridTable", studentsConfig, assessmentsData
         

@@ -1,6 +1,6 @@
 {
 	"students": [
-			{"name":"Students","index":"Students","field":"student_full_name","width":150,"style":"ui-ellipsis bold", "formatter":"showlink", "params":{"linkUrl":"indivStudentReport.html"}, "hidden":true, "sortorder":"asc"},
+			{"name":"Students","index":"Students","field":"student_full_name","width":150,"style":"ui-ellipsis bold", "formatter":"showlink", "options":{"linkUrl":"indivStudentReport.html"}, "hidden":true, "sortorder":"asc"},
 			{"name":"Grade","index":"Grade","field":"enrollment_grade","width":50,"sorttype":"int","align":"center","resizable":false},
 			{"name":"Math","items":[
 				{"name":"Teacher","index":"Teacher","field":"assessments.Math.teacher_full_name","width":100,"style":"ui-ellipsis","resizable":false},

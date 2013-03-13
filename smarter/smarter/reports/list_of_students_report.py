@@ -10,6 +10,8 @@ from sqlalchemy.sql import select
 from sqlalchemy.sql import and_
 from smarter.database.connector import SmarterDBConnection
 from edapi.logging import audit_event
+from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
+
 
 __districtId = 'districtId'
 __schoolId = 'schoolId'
@@ -143,6 +145,8 @@ def get_list_of_students_report(params):
                 student['student_last_name'] = result['student_last_name']
                 student['student_full_name'] = format_full_name_rev(result['student_first_name'], result['student_middle_name'], result['student_last_name'])
                 student['enrollment_grade'] = result['enrollment_grade']
+                # This is for links in drill down
+                student['params'] = {"studentId": result['student_id']}
 
             assessment = {}
             assessment['teacher_first_name'] = result['teacher_first_name']
@@ -188,7 +192,7 @@ def get_list_of_students_report(params):
 
         los_results['assessments'] = assessments
         los_results['cutpoints'] = __get_cut_points(connector, asmt_subject)
-        los_results['context'] = __get_context(connector, asmt_grade, school_id, district_id)
+        los_results['context'] = get_breadcrumbs_context(district_id=district_id, school_id=school_id, asmt_grade=asmt_grade)
 
         return los_results
 
@@ -229,26 +233,3 @@ def __get_cut_points(connector, asmtSubject):
         cutpoints[result["asmt_subject"]] = cutpoint
 
     return cutpoints
-
-
-def __get_context(connector, grade, school_id, district_id):
-    dim_district = connector.get_table('dim_inst_hier')
-
-    query = select([dim_district.c.district_name.label('district_name'),
-                    dim_district.c.school_name.label('school_name'),
-                    dim_district.c.state_name.label('state_name')],
-                   from_obj=[dim_district])
-
-    query = query.where(and_(dim_district.c.school_id == school_id))
-    query = query.where(and_(dim_district.c.district_id == district_id))
-    query = query.where(and_(dim_district.c.most_recent == 1))
-
-    # run it and format the results
-    results = connector.get_result(query)
-    if (not results):
-        return results
-    result = results[0]
-
-    result['grade'] = grade
-
-    return result

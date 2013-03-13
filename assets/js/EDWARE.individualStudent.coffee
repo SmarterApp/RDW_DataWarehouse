@@ -9,27 +9,27 @@ define [
   "cs!edwareBreadcrumbs"
 ], ($, Mustache, edwareDataProxy, edwareConfidenceLevelBar, indivStudentReportTemplate, claimsInfoTemplate, edwareBreadcrumbs) ->
   
-  default_cutPointColors = [{
-          "text_color": "#ffffff",
-          "bg_color": "#DD514C",
-          "start_gradient_bg_color": "#EE5F5B",
-          "end_gradient_bg_color": "#C43C35"
-      }, {
-          "text_color": "#000",
-          "bg_color": "#e4c904",
-          "start_gradient_bg_color": "#e3c703",
-          "end_gradient_bg_color": "#eed909"
-      }, {
-          "text_color": "#ffffff",
-          "bg_color": "#3b9f0a",
-          "start_gradient_bg_color": "#3d9913",
-          "end_gradient_bg_color": "#65b92c"
-      }, {
-          "text_color": "#ffffff",
-          "bg_color": "#237ccb",
-          "start_gradient_bg_color": "#2078ca",
-          "end_gradient_bg_color": "#3a98d1"
-      }]
+  default_cutPointColors = [
+    text_color: "#ffffff"
+    bg_color: "#DD514C"
+    start_gradient_bg_color: "#EE5F5B"
+    end_gradient_bg_color: "#C43C35"
+  ,
+    text_color: "#000"
+    bg_color: "#e4c904"
+    start_gradient_bg_color: "#e3c703"
+    end_gradient_bg_color: "#eed909"
+  ,
+    text_color: "#ffffff"
+    bg_color: "#3b9f0a"
+    start_gradient_bg_color: "#3d9913"
+    end_gradient_bg_color: "#65b92c"
+  ,
+    text_color: "#ffffff"
+    bg_color: "#237ccb"
+    start_gradient_bg_color: "#2078ca"
+    end_gradient_bg_color: "#3a98d1"
+  ]
       
   # claim score weight in percentage
   claimScoreWeightArray = {
@@ -107,41 +107,7 @@ define [
         i++
         
       contextData = data.context
-      
-      breadcrumbsData = {}
-        
-      # Get breadcrumb data from the server
-      options =
-        async: false
-        method: "GET"
-        
-      edwareDataProxy.getDatafromSource "../data/student_breadcrumbs.json", options, (tempData) ->
-        breadcrumbsData = tempData
-        
-      # for each breadcrumb item
-      # item.name = contextData[item.field_name]
-      # if item.field_name = 'grade', update item.link
-      
-      arr = breadcrumbsData['items']
-      length = arr.length
-      element = null
-      i = 0
-      
-      while i < length
-        element = arr[i]
-        element.name = contextData[element.field_name]
-        if element.field_name == 'grade'
-          element.link = element.link + "?districtId=" + contextData['district_id'] + "&schoolId=" + contextData['school_id']+ "&asmtGrade=" + contextData['grade']
-        if element.field_name == 'student_name'
-          # add 's to student name. if name ends in s, only add '.
-          if element.name.substr(element.name.length - 1) == 's'
-            element.name = element.name + "'"
-          else
-            element.name = element.name + "'s"
-          element.name = element.name + " Results"
-        i++
-
-      $('#breadcrumb').breadcrumbs(breadcrumbsData)
+      $('#breadcrumb').breadcrumbs(contextData)
 
       partials = 
         claimsInfo: claimsInfoTemplate

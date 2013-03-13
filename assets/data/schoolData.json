@@ -107,8 +107,11 @@
 		}
 	],
 	"summaryData": {
-        "students_math_performance": 322320,
-        "students_ela_performance": 3423232,
-        "name": "Overall Summary:"
+        "subject1.score": 322320,
+        "subject1.total_students": 32343423,
+        "subject2.score": 3423232,
+        "subject2.total_students": 32343423,
+        "name": "Overall Summary",
+        "headerRow":true
     }
 }

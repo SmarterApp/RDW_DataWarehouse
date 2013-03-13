@@ -26,6 +26,7 @@ objectClass: inetOrgPerson
 objectClass: top
 cn: Charles Gray
 sn: Gray
+givenName: Charles
 uid: cgray
 userPassword:: Y2dyYXkxMjM0
 
@@ -34,6 +35,7 @@ objectClass: inetOrgPerson
 objectClass: top
 cn: Rebecca Braverman
 sn: Braverman
+givenName: Rebecca
 uid: rbraverman
 userPassword:: cmJyYXZlcm1hbjEyMzQ=
 
@@ -50,6 +52,7 @@ objectClass: inetOrgPerson
 objectClass: top
 cn: Jamie Hine
 sn: Hine
+givenName: Jamie
 uid: jhine
 userPassword:: amhpbmUxMjM0
 
@@ -64,6 +67,7 @@ objectClass: inetOrgPerson
 objectClass: top
 cn: James Stevenson
 sn: Stevenson
+givenName: James
 uid: jstevenson
 userPassword:: anN0ZXZlbnNvbjEyMzQ=
 
@@ -72,6 +76,7 @@ objectClass: inetOrgPerson
 objectClass: top
 cn: Kelly Tidd
 sn: Tidd
+givenName: Kelly
 uid: ktidd
 userPassword:: a3RpZGQxMjM0
 
@@ -87,6 +92,7 @@ objectClass: inetOrgPerson
 objectClass: top
 cn: Louisa Mui
 sn: Mui
+givenName: Louisa
 uid: lmui
 userPassword:: bG11aTEyMzQ=
 
@@ -101,6 +107,7 @@ objectClass: inetOrgPerson
 objectClass: top
 cn: Hugh Goree
 sn: Goree
+givenName: Hugh
 uid: hgoree
 userPassword:: aGdvcmVlMTIzNA==
 
@@ -115,6 +122,7 @@ objectClass: inetOrgPerson
 objectClass: top
 cn: Clare Seabaugh
 sn: Seabaugh
+givenName: Clare
 uid: cseabaugh
 userPassword:: Y3NlYWJhdWdoMTIzNA==
 
@@ -128,6 +136,7 @@ dn: cn=Katy Bester,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Katy Bester
+givenName: Katy
 sn: Bester
 uid: kbester
 userPassword:: a2Jlc3RlcjEyMzQ=
@@ -143,6 +152,7 @@ objectClass: inetOrgPerson
 objectClass: top
 cn: Erik Croker
 sn: Croker
+givenName: Erik
 uid: ecroker
 userPassword:: ZWNyb2tlcjEyMzQ=
 
@@ -158,6 +168,7 @@ objectClass: inetOrgPerson
 objectClass: top
 cn: Matt Sollars
 sn: Sollars
+givenName: Matt
 uid: msollars
 userPassword:: bXNvbGxhcnMxMjM0
 
@@ -172,6 +183,7 @@ objectClass: inetOrgPerson
 objectClass: top
 cn: Clayton Croxton
 sn: Croxton
+givenName: Clayton
 uid: ccroxton
 userPassword:: Y2Nyb3h0b24xMjM0
 
@@ -185,6 +197,7 @@ dn: cn=Amie Stroop,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Amie Stroop
+givenName: Amie
 sn: Stroop
 uid: astroop
 userPassword:: YXN0cm9vcDEyMzQ=
@@ -201,6 +214,7 @@ objectClass: inetOrgPerson
 objectClass: top
 cn: Ted Lazaro
 sn: Lazaro
+givenName: Ted
 uid: tlazaro
 userPassword:: dGxhemFybzEyMzQ=
 
@@ -216,6 +230,7 @@ objectClass: inetOrgPerson
 objectClass: top
 cn: Guy Man
 sn: Man
+givenName: Guy
 uid: gman
 userPassword:: Z21hbjEyMzQ=
 
@@ -230,6 +245,7 @@ dn: cn=Selena Magnusson,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Selena Magnusson
+givenName: Selena
 sn: Magnusson
 uid: smagnusson
 userPassword:: c21hZ251c3NvbjEyMzQ=
@@ -246,6 +262,7 @@ objectClass: inetOrgPerson
 objectClass: top
 cn: Jessie Mollica
 sn: Mollica
+givenName: Jessie
 uid: jmollica
 userPassword:: am1vbGxpY2ExMjM0
 
@@ -261,6 +278,7 @@ objectClass: inetOrgPerson
 objectClass: top
 cn: Liza Bopp
 sn: Bopp
+givenName: Liza
 uid: lbopp
 userPassword:: bGJvcHAxMjM0
 
@@ -276,6 +294,7 @@ objectClass: inetOrgPerson
 objectClass: top
 cn: Clinton Degraw
 sn: Degraw
+givenName: Clinton
 uid: cdegraw
 userPassword:: Y2RlZ3JhdzEyMzQ=
 
@@ -290,6 +309,7 @@ dn: cn=Elnora Seinfeld,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Elnora Seinfeld
+givenName: Elnora
 sn: Seinfeld
 uid: eseinfeld
 userPassword:: ZXNlaW5mZWxkMTIzNA==

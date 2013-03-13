@@ -46,6 +46,7 @@ class TestContext(Unittest_with_smarter_sqlite):
         results = get_breadcrumbs_context(district_id='d1', school_id='sc1', asmt_grade='1')
         self.assertEqual(len(results['items']), 4)
         self.assertEqual(results['items'][3]['name'], '1')
+        self.assertEqual(results['items'][3]['id'], '1')
         self.assertEqual(results['items'][3]['type'], 'grade')
 
     def testStudentContext(self):

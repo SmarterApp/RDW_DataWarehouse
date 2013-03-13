@@ -47,7 +47,7 @@ def get_breadcrumbs_context(state_id=None, district_id=None, school_id=None, asm
                 if school_id is not None:
                     formatted_results.append({'type': 'school', 'name': result[Constants.SCHOOL_NAME], 'id': school_id})
                     if asmt_grade is not None:
-                        formatted_results.append({'type': 'grade', 'name': asmt_grade})
+                        formatted_results.append({'type': 'grade', 'name': asmt_grade, 'id': asmt_grade})
                         if student_name is not None:
                             formatted_results.append({'type': 'student', 'name': student_name})
 

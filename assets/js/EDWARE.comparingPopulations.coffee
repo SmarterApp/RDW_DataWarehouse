@@ -21,28 +21,31 @@ define [
         method: "GET"
     
       edwareDataProxy.getDatafromSource "../data/color.json", options, (defaultColors) ->
-        # Append colors to records and summary section
-        # TODO: check if data is not empty, etc first (or do we get a 404?)
-        populationData = appendColorToData populationData, asmtSubjectsData, colorsData, defaultColors
-        summaryData = appendColorToData summaryData, asmtSubjectsData, colorsData, defaultColors
 
         getColumnConfig "../data/comparingPopulations.json", (gridConfig, customViews) ->
-          # Change the column name and link url based on the type of report the user is querying for
-          reportType = getReportType(params)
-          gridConfig[0].name = customViews[reportType].name
-          gridConfig[0].options.linkUrl = customViews[reportType].link
           
-          # Render breadcrumbs on the page
-          $('#breadcrumb').breadcrumbs(breadcrumbsData)
-          
-          # Set the Report title depending on the report that we're looking at
-          reportTitle = getReportTitle(breadcrumbsData, reportType)
-          $('#content h4').html 'Comparing ' + reportTitle + ' on Math & ELA'
-          
-          # Format the summary data for summary row purposes
-          summaryRowName = 'Overall ' + reportTitle + ' Summary'
-          summaryData = formatSummaryData(summaryData, summaryRowName)
-          
+          # Append colors to records and summary section
+          # Do not format data, or get breadcrumbs if the result is empty
+          if populationData.length > 0
+            populationData = appendColorToData populationData, asmtSubjectsData, colorsData, defaultColors
+            summaryData = appendColorToData summaryData, asmtSubjectsData, colorsData, defaultColors
+  
+            # Change the column name and link url based on the type of report the user is querying for
+            reportType = getReportType(params)
+            gridConfig[0].name = customViews[reportType].name
+            gridConfig[0].options.linkUrl = customViews[reportType].link
+            
+            # Render breadcrumbs on the page
+            $('#breadcrumb').breadcrumbs(breadcrumbsData)
+            
+            # Set the Report title depending on the report that we're looking at
+            reportTitle = getReportTitle(breadcrumbsData, reportType)
+            $('#content h4').html 'Comparing ' + reportTitle + ' on Math & ELA'
+            
+            # Format the summary data for summary row purposes
+            summaryRowName = 'Overall ' + reportTitle + ' Summary'
+            summaryData = formatSummaryData(summaryData, summaryRowName)
+            
           # Create compare population grid for State/District/School view
           edwareGrid.create "gridTable", gridConfig, populationData, summaryData
         

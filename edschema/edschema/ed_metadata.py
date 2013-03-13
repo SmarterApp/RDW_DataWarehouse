@@ -24,7 +24,7 @@ from sqlalchemy import ForeignKey
 import argparse
 from sqlalchemy.engine import create_engine
 from sqlalchemy.types import Text
-from sqlalchemy.dialects.postgresql import *
+
 __all__ = []
 __version__ = 0.1
 __date__ = '2013-02-02'

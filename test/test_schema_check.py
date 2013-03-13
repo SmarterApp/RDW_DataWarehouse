@@ -35,6 +35,7 @@ class EdTestSchema(TestBase):
         self.create_mismatch_schema()
 
     #in each table in the live db, if a column has a foreign key, check the data type matches primary column
+    #added qa_test variable to allow switching from default 'edware' database to one that has bad data to confirm the test works
     def test_foreign_key_datatypes(self, qa_test=None):
         if qa_test:
             qa_engine = create_engine(self.qa_db_url)

@@ -6,9 +6,9 @@ Created on Jan 8, 2013
 
 from uuid import uuid4
 import random
-from helper_entities import Teacher, Student
+from helper_entities import Teacher, StudentBioInfo
 
-from entities import Staff, StudentSection, ExternalUserStudent
+from entities import Staff, Student, ExternalUserStudent
 from idgen import IdGen
 import gennames
 import util
@@ -76,7 +76,7 @@ def generate_student(state, district, school, grade, street_list, gender=None, h
         'school': school
     }
 
-    student = Student(**student_params)
+    student = StudentBioInfo(**student_params)
 
     ext_user_params = {
         'external_user_student_id': id_generator.get_id(),
@@ -135,5 +135,5 @@ def generate_student_section(school, student, section_rec_id, section_id, grade,
             'teacher_id': teacher_id,
             'section_rec_id': section_rec_id
         }
-        student_section = StudentSection(**student_section_params)
+        student_section = Student(**student_section_params)
         return student_section

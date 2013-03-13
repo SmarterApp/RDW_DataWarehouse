@@ -25,26 +25,24 @@ MIN_CLASS_SIZE = 20
 MIN_SECTION_SIZE = 10
 GENDER_RARIO = [0.5, 0.45, 0.55]
 
-MIN_ASSMT_SCORE = 50
-MAX_ASSMT_SCORE = 500
+MINIMUM_ASSESSMENT_SCORE = 1200
+MAXIMUM_ASSESSMENT_SCORE = 2400
+AVERAGE_ASSESSMENT_SCORE = (MINIMUM_ASSESSMENT_SCORE + MAXIMUM_ASSESSMENT_SCORE) / 2
+ASSESSMENT_SCORE_STANDARD_DEVIATION = (AVERAGE_ASSESSMENT_SCORE - MINIMUM_ASSESSMENT_SCORE) / 4
 
-ASSMT_TYPES = {'Math':
-               {'4':
-                {'claim_names': ['Concepts & Procedures', 'Problem Solving and Modeling & Data Analysis', 'Communicating Reasoning'],
-                 'claim_percs': [40, 45, 15]},
-                '8':
-                {'claim_names': ['Concepts & Procedures', 'Problem Solving and Modeling & Data Analysis', 'Communicating Reasoning'],
-                 'claim_percs': [20, 50, 30]}
-                },
-               'ELA':
-               {'4':
-                {'claim_names': ['Reading', 'Writing', 'Speaking & Listening', 'Research & Inquiry'],
-                 'claim_percs': [25, 25, 25, 25]},
-                '8':
-                {'claim_names': ['Reading', 'Writing', 'Speaking & Listening', 'Research & Inquiry'],
-                 'claim_percs': [20, 25, 25, 30]}
-                }
-               }
+
+
+# TODO: Add note about how this is used to create Assessment objects. What other info comes from the db?
+# TODO: change claim_percs to claim_weights
+CLAIM_DEFINITIONS = \
+
+    # END OF TUESDAY: Rewrite this dictionary to contain claim names and weights
+    # we're going to generate scales on the fly to ensure interesting data
+
+    {
+        'Math': {'claim_name':, 'claim_weight': },
+                {}
+    }
 
 
 ZIPCODE_START = 10000

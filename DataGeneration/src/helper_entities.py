@@ -52,74 +52,47 @@ class District:
         '''
         return ("District:[district_id: %s, district_name: %s]" % (self.district_id, self.district_name))
 
-"""
-class School:
+class Claim:
     '''
-    School object
+    claim information to be used by the assessment object. Simply defines basic parameters about claim.
     '''
-    def __init__(self, school_id, school_name, school_category, district_name, district_id, state_code, state_name, number_of_students, student_teacher_ratio, low_grade, high_grade):
-        '''
-        Constructor
-        '''
-        self.school_id = school_id
-        self.school_name = school_name
-        self.school_category = school_category
-        self.district_id = district_id
-        self.district_name = district_name
-        self.state_code = state_code
-        self.state_name = state_name
-        self.number_of_students = number_of_students
-        self.student_teacher_ratio = student_teacher_ratio
-        self.low_grade = low_grade
-        self.high_grade = high_grade
-
-    def covert_to_institution_hierarchy(self):
-
-        institution_hierarchy_params = {
-            'state_name': self.district_name,
-            'state_code': self.state_code,
-            'district_id': self.district_id,
-            'district_name': self.district_name,
-            'school_id': self.school_id,
-            'school_name': self.school_name,
-            'school_category': self.school_category,
-            'from_date': date(2012, 9, 1),
-            'to_date': date(2999, 12, 31),
-            'most_recent': True
-        }
-
-        return InstitutionHierarchy(**institution_hierarchy_params)
-"""
-
-
-class Claim(object):
-    '''
-    claim information to be used by the assessment object
-    '''
-    def __init__(self, claim_name, claim_score_min=None, claim_score_max=None, claim_score_weight=None):
+    def __init__(self, claim_name, claim_score_min, claim_score_max, claim_score_weight):
         self.claim_name = claim_name
         self.claim_score_min = claim_score_min
         self.claim_score_max = claim_score_max
         self.claim_score_weight = claim_score_weight
 
 
-class Score:
+class ClaimScore():
     '''
-    Score object
+    This is a claim object with scores. Used to create assessment_outcome row.
     '''
-    def __init__(self, overall, claims):
+    def __init__(self, claim_score, claim_score_interval_minimum, claim_score_interval_maximum):
+        self.claim_score = claim_score
+        self.claim_score_interval_minimum = claim_score_interval_minimum
+        self.claim_score_interval_maximum = claim_score_interval_maximum
+
+
+class AssessmentScore:
+    '''
+    Assessment Score object
+    '''
+    def __init__(self, overall_score, performance_level, interval_min, interval_max, claim_scores):
         '''
         Constructor
         '''
-        self.overall = overall
-        self.claims = claims
-        # self.level = level
+        self.overall_score = overall_score
+        self.performance_level = performance_level
+        self.interval_min = interval_min
+        self.interval_max = interval_max
+        self.claim_scores = claim_scores
+
 
     def __str__(self):
         '''
         String method
         '''
-        return ("Score:[overall: %s, claims: %s]" % (self.overall, self.claims))
+        return ("Score:[overall: %s, claims: %s]" % (self.overall_score, self.claim_scores))
 
 
 class WhereTaken:
@@ -178,9 +151,10 @@ class Teacher(Person):
 
 
 # TODO: Need to clarify the distinction between student and student_section
-class Student(Person):
+class StudentBioInfo(Person):
     '''
-    Student Object
+    Student Biographical Information Object
+    Used to hold student information until it can be passed to Student Object
     '''
 
     def __init__(self, student_rec_id, student_id, first_name, last_name, address_1, dob, district, state, gender, email, school, middle_name=None, address_2=None):

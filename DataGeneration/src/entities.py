@@ -1,8 +1,7 @@
 from uuid import uuid4
 
 from idgen import IdGen
-import util
-from constants import SCORE_MIN_MAX_RANGE
+from constants import SCORE_MIN_MAX_RANGE, MAXIMUM_ASSESSMENT_SCORE, MINIMUM_ASSESSMENT_SCORE, AVERAGE_ASSESSMENT_SCORE, ASSESSMENT_SCORE_STANDARD_DEVIATION
 
 
 class InstitutionHierarchy:
@@ -85,11 +84,11 @@ class SectionSubject:
 
 class Assessment:
     '''
-    AssessmentType Object
+    Assessment Object
     '''
     def __init__(self, asmt_rec_id, asmt_id, asmt_type, asmt_period, asmt_period_year, asmt_version, asmt_grade, asmt_subject, from_date, claim_1=None, claim_2=None, claim_3=None, claim_4=None, asmt_score_min=None, asmt_score_max=None,
                  asmt_perf_lvl_name_1=None, asmt_perf_lvl_name_2=None, asmt_perf_lvl_name_3=None, asmt_perf_lvl_name_4=None, asmt_perf_lvl_name_5=None, asmt_cut_point_1=None, asmt_cut_point_2=None, asmt_cut_point_3=None, asmt_cut_point_4=None,
-                 asmt_custom_metadata=None, to_date=None, most_recent=None):
+                 asmt_custom_metadata=None, to_date=None, most_recent=None, minimum_assessment_score=MINIMUM_ASSESSMENT_SCORE, maximum_assessment_score=MAXIMUM_ASSESSMENT_SCORE, average_assessment_score=AVERAGE_ASSESSMENT_SCORE, assessment_score_standard_deviation = ASSESSMENT_SCORE_STANDARD_DEVIATION):
         '''
         Constructor
         '''
@@ -125,15 +124,25 @@ class Assessment:
         self.to_date = to_date
         self.most_recent = most_recent
 
+        # These values are not output by get_row. They are only used to generate assessment_outcomes.
+        self.average_score = average_assessment_score
+        self.standard_deviation = assessment_score_standard_deviation
+        self.score_minimum = minimum_assessment_score
+        self.score_maximum = maximum_assessment_score
+
+    def get_claim_list(self):
+        claims = [self.claim_1, self.claim_2, self.claim_3]
+        if self.claim_4:
+            claims.append(self.claim_4)
+        return claims
+
     def __str__(self):
         '''
         toString Method
         '''
-
         return ("Assessment:[asmt_type: %s, subject: %s, asmt_type: %s, period: %s, version: %s, grade: %s]" % (self.asmt_type, self.asmt_subject, self.asmt_type, self.asmt_period, self.asmt_version, self.asmt_grade))
 
     def getRow(self):
-
         return [self.asmt_rec_id, self.asmt_id, self.asmt_type, self.asmt_period, self.asmt_period_year, self.asmt_version,
                 self.asmt_subject, self.claim_1.claim_name, self.claim_2.claim_name, self.claim_3.claim_name,
                 self.claim_4.claim_name if self.claim_4 is not None else '',
@@ -165,37 +174,53 @@ class AssessmentOutcome(object):
     '''
     Assessment outcome object
     '''
-    def __init__(self, asmnt_outcome_id, asmnt_outcome_external_id, assessment, student, inst_hier_rec_id, section_rec_id, where_taken,
-                 date_taken, asmt_score, asmt_create_date, most_recent, status='C'):
+    def __init__(self, asmnt_outcome_id, asmnt_outcome_external_id, assessment, assessment_score, student, inst_hier_rec_id, section_rec_id, where_taken,
+                 date_taken, most_recent, status='C'):
         self.asmnt_outcome_id = asmnt_outcome_id
         self.asmnt_outcome_external_id = asmnt_outcome_external_id
-        self.assessment = assessment
-        self.student = student
+        self.asmt_rec_id = assessment.asmt_rec_id
+        self.student_id = student.student_id
+        self.teacher_id = student.teacher_id
+        self.state_code = student.state_code
+        self.district_id = student.district_id
+        self.school_id = student.school_id
+        self.section_id = student.section_id,
         self.inst_hier_rec_id = inst_hier_rec_id
         self.section_rec_id = section_rec_id
-        self.where_taken = where_taken
-        self.date_taken = date_taken
-        self.asmt_score = asmt_score
-        self.asmt_create_date = asmt_create_date
-        self.most_recent = most_recent
-        self.status = status
+        self.where_taken_id = where_taken.where_taken_id
+        self.where_taken_name = where_taken.where_taken_name
+        self.asmt_grade = assessment.asmt_grade,
+        self.enrl_grade = student.grade
+        self.date_taken = date_taken.strftime('%Y%m%d')
+        self.date_taken_day = date_taken.day
+        self.date_taken_month = date_taken.month
+        self.date_taken_year = date_taken.year
 
-    def calc_perf_lvl(self, score, asmt):
-        '''
-        calculates a performance level as an integer based on a students overall score and
-        the cutoffs for the assessment (0, 1 or 2)
-        score -- a score object
-        asmt -- an assessment object
-        '''
-        # print(asmt.asmt_cut_point_3, asmt.asmt_cut_point_2, asmt.asmt_cut_point_1, score)
-        if score.overall > asmt.asmt_cut_point_3:
-            return 4
-        elif score.overall > asmt.asmt_cut_point_2:
-            return 3
-        elif score.overall > asmt.asmt_cut_point_1:
-            return 2
-        else:
-            return 1
+        # Overall Assessment Data
+        self.asmt_score = assessment_score.score
+        self.asmt_score_range_min = assessment_score.interval_min
+        self.asmt_score_range_max = assessment_score.interval_max
+        self.asmt_perf_lvl = assessment_score.perf_lvl
+
+        # Assessment Claim Data
+        self.asmt_claim_1_score = assessment_score.claims[0].score
+        self.asmt_claim_1_score_range_min = assessment_score.claims[0].interval_min
+        self.asmt_claim_1_score_range_max = assessment_score.claims[0].interval_max
+        self.asmt_claim_2_score = assessment_score.claims[1].score
+        self.asmt_claim_2_score_range_min = assessment_score.claims[1].interval_min
+        self.asmt_claim_2_score_range_max = assessment_score.claims[1].interval_max
+        self.asmt_claim_3_score = assessment_score.claims[2].score
+        self.asmt_claim_3_score_range_min = assessment_score.claims[2].interval_min
+        self.asmt_claim_3_score_range_max = assessment_score.claims[2].interval_max
+        # These fields may or may not be null (Some have a 4th claim, others don't)
+        self.asmt_claim_4_score = assessment_score.claims[3].score
+        self.asmt_claim_4_score_range_min = assessment_score.claims[3].interval_min
+        self.asmt_claim_4_score_range_max = assessment_score.claims[3].interval_max
+
+        self.asmt_create_date = assessment_score.asmt_create_date
+        self.status = status
+        self.most_recent = most_recent
+
 
     def getRow(self):
         claims = self.asmt_score.claims
@@ -312,32 +337,42 @@ class ExternalUserStudent():
         return ['external_user_student_id', 'external_user_id', 'student_id', 'from_date', 'to_date']
 
 
-# For now, maps to dim_student
-class StudentSection():
-    def __init__(self, student, section_id, grade, from_date=None, to_date=None, most_recent=None, teacher_id=None, section_rec_id=None):
+class Student():
+    '''
+        Student Object maps to dim_student table
+
+        StudentBioInfo contains most of the data used to create a Student object
+        Student Objects hold additional information (section, grade, from_date, etc.)
+    '''
+
+    # TODO: This class shouldn't have to hold teacher_id or section_rec_id since dim_student doesn't
+    # have this info. Think of a better way to pass this information.
+    # For now, we use this class to hold this info for later injection into fao.
+    def __init__(self, student_bio_info, section_id, grade, from_date, most_recent, to_date=None, teacher_id=None, section_rec_id=None):
         idgen = IdGen()
         self.student_rec_id = idgen.get_id()
 
-        self.student_id = student.student_id
-        self.first_name = student.first_name
-        self.middle_name = student.middle_name
-        self.last_name = student.last_name
-        self.address_1 = student.address_1
-        self.address_2 = student.address_2
-        self.city = student.city
-        self.zip_code = student.zip_code
-        self.gender = student.gender
-        self.email = student.email
-        self.dob = util.generate_dob(grade)
+        self.student_id = student_bio_info.student_id
+        self.first_name = student_bio_info.first_name
+        self.middle_name = student_bio_info.middle_name
+        self.last_name = student_bio_info.last_name
+        self.address_1 = student_bio_info.address_1
+        self.address_2 = student_bio_info.address_2
+        self.city = student_bio_info.city
+        self.zip_code = student_bio_info.zip_code
+        self.gender = student_bio_info.gender
+        self.email = student_bio_info.email
+        self.dob = student_bio_info.dob
         self.section_id = section_id
         self.grade = grade
-        self.state_code = student.state_code
-        self.district_id = student.district_id
-        self.school_id = student.school_id
+        self.state_code = student_bio_info.state_code
+        self.district_id = student_bio_info.district_id
+        self.school_id = student_bio_info.school_id
         self.from_date = from_date
         self.to_date = to_date
         self.most_recent = most_recent
 
+        # TODO: get rid of me!
         self.teacher_id = teacher_id
         self.section_rec_id = section_rec_id
 

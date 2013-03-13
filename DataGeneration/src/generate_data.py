@@ -13,12 +13,11 @@ import uuid
 import queries
 import csv
 
-from assessment import generate_assmt_scores_for_subject
 from dbconnection import get_db_conn
 from entities import (
     InstitutionHierarchy,
-    AssessmentOutcome, SectionSubject, Assessment, Staff, StudentSection, ExternalUserStudent)
-from helper_entities import State, District, WhereTaken
+    AssessmentOutcome, SectionSubject, Assessment, Staff, Student, ExternalUserStudent)
+from helper_entities import State, District, WhereTaken, ClaimScore, AssessmentScore
 from gen_assessments import generate_dim_assessment
 from genpeople import generate_teacher, generate_student, generate_staff, generate_student_section
 from idgen import IdGen
@@ -35,7 +34,7 @@ ENTITY_TO_PATH_DICT = {InstitutionHierarchy: constants.DATAFILE_PATH + '/datafil
                        AssessmentOutcome: constants.DATAFILE_PATH + '/datafiles/csv/fact_asmt_outcome.csv',
                        Staff: constants.DATAFILE_PATH + '/datafiles/csv/dim_staff.csv',
                        ExternalUserStudent: constants.DATAFILE_PATH + '/datafiles/csv/external_user_student_rel.csv',
-                       StudentSection: constants.DATAFILE_PATH + '/datafiles/csv/dim_student.csv'}
+                       Student: constants.DATAFILE_PATH + '/datafiles/csv/dim_student.csv'}
 
 
 def get_name_lists():
@@ -514,50 +513,6 @@ def create_classes_for_school(district, school, state, name_list, total_count, a
         create_classes_for_grade(students_in_grade, teachers_in_grade, school, grade, asmt_list, where_taken, total_count, is_small_data_mode)
 
 
-def associate_students_and_scores(student_sections_list, scores, inst_hier_rec_id, subject, asmt_list, where_taken):
-    '''
-    creates association between students and scores
-    student_temporal_list -- a list of student_temporal objects
-    scores -- a list of scores that will be mapped to students
-    school -- the school that the students belong to
-    wheretaken_id -- id of where taken
-    returns a list of AssessmentOutcome Objects
-    '''
-
-    assessment_outcome_list = []
-
-    for student_section in student_sections_list:
-        for score in scores.items():
-            asmt_rec_id = int(score[0].split('_')[1])
-            # year is the assessment period year
-            year = score[0].split('_')[0]
-            dates_taken_map = generate_dates_taken(int(year))
-
-            asmt = [x for x in asmt_list if x.asmt_rec_id == asmt_rec_id and str(x.asmt_period_year) == str(year)][0]
-
-            if asmt.asmt_subject.lower() == subject.lower():  # check that subjects match as there is a std_tmprl object for each subject
-                new_id = IdGen().get_id()
-                date_taken = dates_taken_map[asmt.asmt_period]
-                params = {
-                    'asmnt_outcome_id': new_id,
-                    'asmnt_outcome_external_id': uuid.uuid4(),
-                    'assessment': asmt,
-                    # TODO: student and student_section now equivalent?
-                    'student': student_section,
-                    'inst_hier_rec_id': inst_hier_rec_id,
-                    'section_rec_id': student_section.section_rec_id,
-                    'where_taken': where_taken,
-                    'date_taken': date_taken,
-                    'asmt_score': score[1].pop(),
-                    'asmt_create_date': date.today().replace(year=date.today().year - 5).strftime('%Y%m%d'),
-                    'most_recent': True
-                }
-                outcome = AssessmentOutcome(**params)
-                assessment_outcome_list.append(outcome)
-
-    return assessment_outcome_list
-
-
 def map_asmt_date_to_period(period, dates_taken, year, asmt_type):
     '''
     returns a date given the attributes
@@ -622,7 +577,7 @@ def generate_dates_taken(year):
     return {'BOY': boy_date, 'MOY': moy_date, 'EOY': eoy_date}
 
 
-def create_classes_for_grade(students_in_grade, teachers_in_grade, school, grade, asmt_list, where_taken, total_count, is_small_data_mode):
+def create_classes_for_grade(students_in_grade, teachers_in_grade, school, grade, assessment_list, where_taken, total_count, is_small_data_mode):
     '''
     Function to generate classes for a grade, assign students in sections in each class, and associate student with assessment scores
     '''
@@ -651,25 +606,177 @@ def create_classes_for_grade(students_in_grade, teachers_in_grade, school, grade
         number_of_teachers = min(len(teachers_in_grade), max_number_of_teachers)
         subject_teachers = random.sample(teachers_in_grade, number_of_teachers)
 
-        # generate scores for this subject of given students
-        if is_small_data_mode:
-            # use 'Delaware' as the state name to get statistical data for scores
-            scores_for_subject = generate_assmt_scores_for_subject(len(students_in_grade), grade, 'Delaware', asmt_list, subject)
-        else:
-            scores_for_subject = generate_assmt_scores_for_subject(len(students_in_grade), grade, school.state_name, asmt_list, subject)
-        # generate all student_section in this subject
-        student_sections = create_student_sections_for_subject(subject, number_of_classes, students_in_grade, subject_teachers, school, grade, asmt_list)
-        total_count['student_section_count'] += len(student_sections)
+        students = create_students_for_subject(subject, number_of_classes, students_in_grade, subject_teachers, school, grade, assessment_list)
 
-        # associate students with scores of this subject
-        # TODO: Refactor associate_students_and_scores() so it takes a bunch of student_sections and generates scores.
-        assessment_outcome_list = associate_students_and_scores(student_sections, scores_for_subject, school.inst_hier_rec_id, subject, asmt_list, where_taken)
+        # TODO: change 'student_section_count' key to 'student_count'
+        total_count['student_section_count'] += len(students)
+
+        assessment_outcome_list = generate_assessment_outcomes(assessment_list, students, subject, school.inst_hier_rec_id, where_taken)
         create_csv(assessment_outcome_list, ENTITY_TO_PATH_DICT[AssessmentOutcome])
 
+def generate_single_assessment_outcome(assessment, student, inst_hier_rec_id, where_taken, date_taken):
 
-def create_student_sections_for_subject(subject_name, number_of_classes, students, teachers, school, grade, asmt_list):
+    params = {
+        'assessment_outcome_id': IdGen().get_id(),
+        'assessment_outcome_external_id': uuid.uuid4(),
+        'assessment': assessment,
+        'assessment_score': generate_assessment_score(assessment),
+        'student': student,
+        'institution_hierarchy_rec_id': inst_hier_rec_id,
+        'section_rec_id': student.section_rec_id,
+        'where_taken': where_taken,
+        'date_taken': date_taken,
+        # TODO: write function that takes asmt_year and current year into account when generating most_recent
+        'most_recent': True
+    }
+
+    assessment_outcome = AssessmentOutcome(**params)
+    return assessment_outcome
+
+def generate_assessment_score(assessment):
+    average = assessment.average_score
+    standard_deviation = assessment.standard_deviation
+    minimum = assessment.score_minimum
+    maximum = assessment.score_maximum
+
+    overall_score = py1.extract_value_from_normal_distribution(average, standard_deviation, minimum, maximum)
+    performance_level = calculate_performance_level(overall_score, assessment)
+
+    plus_minus = generate_plus_minus(overall_score, average, standard_deviation, minimum, maximum)
+    interval_minimum = overall_score - plus_minus
+    interval_maximum = overall_score + plus_minus
+
+    claim_scores = generate_claim_scores(overall_score, assessment)
+
+    params = {
+        'overall_score': overall_score,
+        'performance_level': performance_level,
+        'interval_min': interval_minimum,
+        'interval_max': interval_maximum,
+        'claim_scores': claim_scores
+    }
+
+    assessment_score = AssessmentScore(**params)
+    return assessment_score
+
+def generate_claim_scores(overall_score, assessment):
+    claim_scores = []
+    for claim in assessment.get_claim_list():
+        claim_minimum_score = claim.claim_score_min
+        claim_maximum_score = claim.claim_score_max
+        claim_weight = claim.claim_score_weight
+        # scaled_claim_score is the score of the claim before we scale it down to
+        # the claim's range
+        # if you sum the scaled_claim_scores for every claim, it should equal overall_score
+        unscaled_claim_score = overall_score * claim_weight
+        overall_score_range = (assessment.minimum_assessment_score, assessment.maximum_assessment_score)
+        claim_score_range = (claim_minimum_score, claim_maximum_score)
+        # now, take the scaled_claim_score and translate it to the claim's range
+        scaled_claim_score = rescale_value(unscaled_claim_score, overall_score_range, claim_score_range)
+        # need to cast to an int, must be a whole integer value
+        scaled_claim_score = int(scaled_claim_score)
+
+        plus_minus = generate_plus_minus(scaled_claim_score, claim_minimum_score, claim_maximum_score)
+
+        claim_interval_minimum = scaled_claim_score - plus_minus
+        claim_interval_maximum = scaled_claim_score + plus_minus
+        claim_score = ClaimScore(scaled_claim_score, claim_interval_minimum, claim_interval_maximum)
+        claim_scores.append(claim_score)
+    return claim_scores
+
+# see http://stackoverflow.com/questions/5294955/how-to-scale-down-a-range-of-numbers-with-a-known-min-and-max-value
+# for a complete explanation of this logic
+def rescale_value(old_value, old_scale, new_scale):
     '''
-    Function to create student_sections for a grade of a subject
+        old_scale and new_scale are tuples
+        the first value represents the minimum score
+        the second value represents the maxiumu score
+    '''
+
+    old_min = old_scale[0]
+    old_max = old_scale[1]
+
+    new_min = new_scale[0]
+    new_max = new_scale[1]
+
+    numerator = (new_max - new_min) * (old_value - old_min)
+    denominator = old_max - old_min
+
+    result = (numerator/denominator) + new_min
+    return result
+
+def calculate_performance_level(score, assessment):
+    '''
+    calculates a performance level as an integer based on a students overall score and
+    the cutoffs for the assessment (0, 1 or 2)
+    score -- a score object
+    assessment -- an assessment object
+    '''
+    # print(asmt.asmt_cut_point_3, asmt.asmt_cut_point_2, asmt.asmt_cut_point_1, score)
+    if score > assessment.asmt_cut_point_3:
+        return 4
+    elif score > assessment.asmt_cut_point_2:
+        return 3
+    elif score > assessment.asmt_cut_point_1:
+        return 2
+    else:
+        return 1
+
+def generate_plus_minus(overall_score, average_score, standard_deviation, minimum, maximum):
+    # calculate the difference between the score and the average score
+    difference = abs(average_score - overall_score)
+    # divide this difference by the standard deviation, and you'll have
+    # the number of standard deviations between the score and the average
+    number_of_standard_deviations = difference / standard_deviation
+    # we use the number of standard deviations to determine the value added to and subtracted from
+    # the score (the endpoints of the confidence interval)
+    # this number should be large when the score is near average
+    # and small when closer to the min/max
+    if number_of_standard_deviations <= 1:
+        # 2% of the average score
+        plus_minus = .02 * average_score
+    elif number_of_standard_deviations <= 2:
+        # 1% of the average score
+        plus_minus =  .01 * average_score
+    elif number_of_standard_deviations <= 3:
+        # .5% of the average score
+        plus_minus = .005 * average_score
+    else:
+        # 0
+        plus_minus =  0
+    # ensure that the endpoints of our confidence interval falls within the min/max of our score range
+    if (overall_score + plus_minus <= maximum) and (overall_score - plus_minus >= minimum):
+        return plus_minus
+    else:
+        raise Exception('Score interval extends beyond acceptable score range.')
+
+def generate_assessment_outcomes(assessment_list, students, grade, subject, inst_hier_rec_id, where_taken):
+    assessment_outcomes = []
+    filtered_assessments = get_filtered_assessments(subject, grade, assessment_list)
+    for student in students:
+        for assessment in filtered_assessments:
+            date_taken = create_date_taken(assessment.asmt_period_year, assessment.asmt_period)
+            assessment_outcome = generate_single_assessment_outcome(assessment, student, inst_hier_rec_id, where_taken, date_taken)
+            assessment_outcomes.append(assessment_outcome)
+    return assessment_outcomes
+
+def get_filtered_assessments(subject, grade, assessment_list):
+    filtered_assessments = []
+    for assessment in assessment_list:
+        if assessment.asmt_subject.lower() == subject.lower() and assessment.asmt_grade == grade:
+            filtered_assessments.append(assessment)
+    return filtered_assessments
+
+
+def create_date_taken(year, period):
+    dates_taken_map = generate_dates_taken(int(year))
+    date_taken = dates_taken_map[period]
+    return date_taken
+
+
+def create_students_for_subject(subject_name, number_of_classes, students, teachers, school, grade, asmt_list):
+    '''
+    Function to create students for a grade of a subject
     '''
     # distribute students in each class
     # students_assigned_to_classes is a list of lists
@@ -752,7 +859,7 @@ def create_sections_in_one_class(subject_name, class_count, distribute_stu_inacl
     # write subjects into csv
     create_csv(section_subject_list, ENTITY_TO_PATH_DICT[SectionSubject])
     create_csv(staff_list, ENTITY_TO_PATH_DICT[Staff])
-    create_csv(student_section_list, ENTITY_TO_PATH_DICT[StudentSection])
+    create_csv(student_section_list, ENTITY_TO_PATH_DICT[Student])
 
     return student_section_list
 

@@ -19,7 +19,7 @@ from entities import (
     AssessmentOutcome, SectionSubject, Assessment, Staff, Student, ExternalUserStudent)
 from helper_entities import State, District, WhereTaken, ClaimScore, AssessmentScore
 from gen_assessments import generate_dim_assessment
-from genpeople import generate_teacher, generate_student, generate_staff, generate_student_section
+from genpeople import generate_teacher, generate_student_bio_info, generate_staff, generate_student
 from idgen import IdGen
 from write_to_csv import clear_files, create_csv
 import constants
@@ -548,7 +548,7 @@ def generate_students(num_students, state, district, school, grade, fish_names):
     external_users = []
 
     for _loop_variable_not_used in range(num_students):
-        stu, ext_user = generate_student(state, district, school, grade, fish_names)
+        stu, ext_user = generate_student_bio_info(state, district, school, grade, fish_names)
         students.append(stu)
         external_users.append(ext_user)
 
@@ -611,18 +611,18 @@ def create_classes_for_grade(students_in_grade, teachers_in_grade, school, grade
         # TODO: change 'student_section_count' key to 'student_count'
         total_count['student_section_count'] += len(students)
 
-        assessment_outcome_list = generate_assessment_outcomes(assessment_list, students, subject, school.inst_hier_rec_id, where_taken)
+        assessment_outcome_list = generate_assessment_outcomes(assessment_list, students, grade, subject, school.inst_hier_rec_id, where_taken)
         create_csv(assessment_outcome_list, ENTITY_TO_PATH_DICT[AssessmentOutcome])
 
 def generate_single_assessment_outcome(assessment, student, inst_hier_rec_id, where_taken, date_taken):
 
     params = {
-        'assessment_outcome_id': IdGen().get_id(),
-        'assessment_outcome_external_id': uuid.uuid4(),
-        'assessment': assessment,
-        'assessment_score': generate_assessment_score(assessment),
+        'asmnt_outcome_id': IdGen().get_id(),
+        'asmnt_outcome_external_id': uuid.uuid4(),
+        'asmnt': assessment,
+        'asmnt_score': generate_assessment_score(assessment),
         'student': student,
-        'institution_hierarchy_rec_id': inst_hier_rec_id,
+        'inst_hier_rec_id': inst_hier_rec_id,
         'section_rec_id': student.section_rec_id,
         'where_taken': where_taken,
         'date_taken': date_taken,
@@ -650,39 +650,59 @@ def generate_assessment_score(assessment):
 
     params = {
         'overall_score': overall_score,
-        'performance_level': performance_level,
+        'perf_lvl': performance_level,
         'interval_min': interval_minimum,
         'interval_max': interval_maximum,
-        'claim_scores': claim_scores
+        'claim_scores': claim_scores,
+        'asmt_create_date': datetime.date(2012,3,13).strftime('%Y%m%d')
     }
 
     assessment_score = AssessmentScore(**params)
     return assessment_score
 
-def generate_claim_scores(overall_score, assessment):
+def generate_claim_scores(assessment_score, assessment):
     claim_scores = []
     for claim in assessment.get_claim_list():
+
+        # Get basic claim information from claim object
         claim_minimum_score = claim.claim_score_min
         claim_maximum_score = claim.claim_score_max
+        claim_score_scale = (claim_minimum_score, claim_maximum_score)
         claim_weight = claim.claim_score_weight
-        # scaled_claim_score is the score of the claim before we scale it down to
-        # the claim's range
-        # if you sum the scaled_claim_scores for every claim, it should equal overall_score
-        unscaled_claim_score = overall_score * claim_weight
-        overall_score_range = (assessment.minimum_assessment_score, assessment.maximum_assessment_score)
-        claim_score_range = (claim_minimum_score, claim_maximum_score)
-        # now, take the scaled_claim_score and translate it to the claim's range
-        scaled_claim_score = rescale_value(unscaled_claim_score, overall_score_range, claim_score_range)
-        # need to cast to an int, must be a whole integer value
-        scaled_claim_score = int(scaled_claim_score)
 
-        plus_minus = generate_plus_minus(scaled_claim_score, claim_minimum_score, claim_maximum_score)
+        # calculate the claim score
+        weighted_assessment_scale = (assessment.score_minimum * claim_weight, assessment.score_maximum * claim_weight)
+        unscaled_claim_score = assessment_score * claim_weight
+        scaled_claim_score = rescale_value(unscaled_claim_score, weighted_assessment_scale, claim_score_scale)
 
-        claim_interval_minimum = scaled_claim_score - plus_minus
-        claim_interval_maximum = scaled_claim_score + plus_minus
-        claim_score = ClaimScore(scaled_claim_score, claim_interval_minimum, claim_interval_maximum)
+        claim_average_score = calculate_claim_average_score(claim_minimum_score, claim_maximum_score)
+        claim_standard_deviation = calculate_claim_standard_deviation(claim_average_score, claim_minimum_score)
+        claim_plus_minus = generate_plus_minus(scaled_claim_score, claim_average_score, claim_standard_deviation, claim_minimum_score, claim_maximum_score)
+        claim_interval_min = scaled_claim_score - claim_plus_minus
+        claim_interval_max = scaled_claim_score + claim_plus_minus
+
+        claim_score = ClaimScore(scaled_claim_score, claim_interval_min, claim_interval_max)
+
         claim_scores.append(claim_score)
     return claim_scores
+
+def generate_single_claim_score():
+    pass
+
+
+def calculate_claim_average_score(minimum, maximum):
+    # assuming the average is in the middle of the range of scores
+    difference = maximum - minimum
+    half_difference = difference / 2
+    average = minimum + half_difference
+    return average
+
+def calculate_claim_standard_deviation(average, minimum):
+    # find the difference between the average and the minimum
+    difference = average - minimum
+    # Approximately 4 standard deviations should exist between the average and the min
+    standard_deviation = difference / 4
+    return standard_deviation
 
 # see http://stackoverflow.com/questions/5294955/how-to-scale-down-a-range-of-numbers-with-a-known-min-and-max-value
 # for a complete explanation of this logic
@@ -722,12 +742,14 @@ def calculate_performance_level(score, assessment):
     else:
         return 1
 
-def generate_plus_minus(overall_score, average_score, standard_deviation, minimum, maximum):
+def generate_plus_minus(score, average_score, standard_deviation, minimum, maximum):
     # calculate the difference between the score and the average score
-    difference = abs(average_score - overall_score)
+    difference = abs(average_score - score)
     # divide this difference by the standard deviation, and you'll have
     # the number of standard deviations between the score and the average
+
     number_of_standard_deviations = difference / standard_deviation
+
     # we use the number of standard deviations to determine the value added to and subtracted from
     # the score (the endpoints of the confidence interval)
     # this number should be large when the score is near average
@@ -745,10 +767,10 @@ def generate_plus_minus(overall_score, average_score, standard_deviation, minimu
         # 0
         plus_minus =  0
     # ensure that the endpoints of our confidence interval falls within the min/max of our score range
-    if (overall_score + plus_minus <= maximum) and (overall_score - plus_minus >= minimum):
+    if (score + plus_minus <= maximum) and (score - plus_minus >= minimum):
         return plus_minus
     else:
-        raise Exception('Score interval extends beyond acceptable score range.')
+        raise Exception('Acceptable range:%d - %d, interval boundaries are %d - %d' % (minimum, maximum, score + plus_minus, score - plus_minus))
 
 def generate_assessment_outcomes(assessment_list, students, grade, subject, inst_hier_rec_id, where_taken):
     assessment_outcomes = []
@@ -853,8 +875,8 @@ def create_sections_in_one_class(subject_name, class_count, distribute_stu_inacl
 
         # create students
         for student in section_stu_map[str(section_id)]:
-            student_section = generate_student_section(school, student, section_rec_id, section_id, grade, teacher_for_section.teacher_id)
-            student_section_list.append(student_section)
+            student = generate_student(student, section_rec_id, section_id, grade, teacher_for_section.teacher_id)
+            student_section_list.append(student)
 
     # write subjects into csv
     create_csv(section_subject_list, ENTITY_TO_PATH_DICT[SectionSubject])

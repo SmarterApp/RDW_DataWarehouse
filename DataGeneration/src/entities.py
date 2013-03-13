@@ -86,7 +86,7 @@ class Assessment:
     '''
     Assessment Object
     '''
-    def __init__(self, asmt_rec_id, asmt_id, asmt_type, asmt_period, asmt_period_year, asmt_version, asmt_grade, asmt_subject, from_date, claim_1=None, claim_2=None, claim_3=None, claim_4=None, asmt_score_min=None, asmt_score_max=None,
+    def __init__(self, asmt_rec_id, asmt_id, asmt_type, asmt_period, asmt_period_year, asmt_version, asmt_grade, asmt_subject, from_date, claim_list, asmt_score_min=None, asmt_score_max=None,
                  asmt_perf_lvl_name_1=None, asmt_perf_lvl_name_2=None, asmt_perf_lvl_name_3=None, asmt_perf_lvl_name_4=None, asmt_perf_lvl_name_5=None, asmt_cut_point_1=None, asmt_cut_point_2=None, asmt_cut_point_3=None, asmt_cut_point_4=None,
                  asmt_custom_metadata=None, to_date=None, most_recent=None, minimum_assessment_score=MINIMUM_ASSESSMENT_SCORE, maximum_assessment_score=MAXIMUM_ASSESSMENT_SCORE, average_assessment_score=AVERAGE_ASSESSMENT_SCORE, assessment_score_standard_deviation = ASSESSMENT_SCORE_STANDARD_DEVIATION):
         '''
@@ -101,10 +101,20 @@ class Assessment:
         self.asmt_grade = asmt_grade
         self.asmt_subject = asmt_subject
 
-        self.claim_1 = claim_1
-        self.claim_2 = claim_2
-        self.claim_3 = claim_3
-        self.claim_4 = claim_4
+        # TODO: Make this more general. Hard coding acceptable length values doesn't seem ideal.
+        # All assessments have either 3 or 4 claims
+        if len(claim_list) == 3:
+            self.claim_1 = claim_list[0]
+            self.claim_2 = claim_list[1]
+            self.claim_3 = claim_list[2]
+            self.claim_4 = None
+        elif len(claim_list) == 4:
+            self.claim_1 = claim_list[0]
+            self.claim_2 = claim_list[1]
+            self.claim_3 = claim_list[2]
+            self.claim_4 = claim_list[3]
+        else:
+            raise Exception('claim_list contains ' + str(len(claim_list)) + ' claims, but it should only contain 3 or 4 claims.')
 
         self.asmt_perf_lvl_name_1 = asmt_perf_lvl_name_1
         self.asmt_perf_lvl_name_2 = asmt_perf_lvl_name_2
@@ -142,6 +152,7 @@ class Assessment:
         '''
         return ("Assessment:[asmt_type: %s, subject: %s, asmt_type: %s, period: %s, version: %s, grade: %s]" % (self.asmt_type, self.asmt_subject, self.asmt_type, self.asmt_period, self.asmt_version, self.asmt_grade))
 
+    # TODO: set all fields in init function, not in getRow
     def getRow(self):
         return [self.asmt_rec_id, self.asmt_id, self.asmt_type, self.asmt_period, self.asmt_period_year, self.asmt_version,
                 self.asmt_subject, self.claim_1.claim_name, self.claim_2.claim_name, self.claim_3.claim_name,
@@ -174,11 +185,11 @@ class AssessmentOutcome(object):
     '''
     Assessment outcome object
     '''
-    def __init__(self, asmnt_outcome_id, asmnt_outcome_external_id, assessment, assessment_score, student, inst_hier_rec_id, section_rec_id, where_taken,
+    def __init__(self, asmnt_outcome_id, asmnt_outcome_external_id, asmnt, asmnt_score, student, inst_hier_rec_id, section_rec_id, where_taken,
                  date_taken, most_recent, status='C'):
         self.asmnt_outcome_id = asmnt_outcome_id
         self.asmnt_outcome_external_id = asmnt_outcome_external_id
-        self.asmt_rec_id = assessment.asmt_rec_id
+        self.asmt_rec_id = asmnt.asmt_rec_id
         self.student_id = student.student_id
         self.teacher_id = student.teacher_id
         self.state_code = student.state_code
@@ -189,7 +200,7 @@ class AssessmentOutcome(object):
         self.section_rec_id = section_rec_id
         self.where_taken_id = where_taken.where_taken_id
         self.where_taken_name = where_taken.where_taken_name
-        self.asmt_grade = assessment.asmt_grade,
+        self.asmt_grade = asmnt.asmt_grade,
         self.enrl_grade = student.grade
         self.date_taken = date_taken.strftime('%Y%m%d')
         self.date_taken_day = date_taken.day
@@ -197,53 +208,53 @@ class AssessmentOutcome(object):
         self.date_taken_year = date_taken.year
 
         # Overall Assessment Data
-        self.asmt_score = assessment_score.score
-        self.asmt_score_range_min = assessment_score.interval_min
-        self.asmt_score_range_max = assessment_score.interval_max
-        self.asmt_perf_lvl = assessment_score.perf_lvl
+        self.asmt_score = asmnt_score.overall_score
+        self.asmt_score_range_min = asmnt_score.interval_min
+        self.asmt_score_range_max = asmnt_score.interval_max
+        self.asmt_perf_lvl = asmnt_score.perf_lvl
 
         # Assessment Claim Data
-        self.asmt_claim_1_score = assessment_score.claims[0].score
-        self.asmt_claim_1_score_range_min = assessment_score.claims[0].interval_min
-        self.asmt_claim_1_score_range_max = assessment_score.claims[0].interval_max
-        self.asmt_claim_2_score = assessment_score.claims[1].score
-        self.asmt_claim_2_score_range_min = assessment_score.claims[1].interval_min
-        self.asmt_claim_2_score_range_max = assessment_score.claims[1].interval_max
-        self.asmt_claim_3_score = assessment_score.claims[2].score
-        self.asmt_claim_3_score_range_min = assessment_score.claims[2].interval_min
-        self.asmt_claim_3_score_range_max = assessment_score.claims[2].interval_max
+        self.asmt_claim_1_score = asmnt_score.claim_scores[0].claim_score
+        self.asmt_claim_1_score_range_min = asmnt_score.claim_scores[0].claim_score_interval_minimum
+        self.asmt_claim_1_score_range_max = asmnt_score.claim_scores[0].claim_score_interval_maximum
+        self.asmt_claim_2_score = asmnt_score.claim_scores[1].claim_score
+        self.asmt_claim_2_score_range_min = asmnt_score.claim_scores[1].claim_score_interval_minimum
+        self.asmt_claim_2_score_range_max = asmnt_score.claim_scores[1].claim_score_interval_maximum
+        self.asmt_claim_3_score = asmnt_score.claim_scores[2].claim_score
+        self.asmt_claim_3_score_range_min = asmnt_score.claim_scores[2].claim_score_interval_minimum
+        self.asmt_claim_3_score_range_max = asmnt_score.claim_scores[2].claim_score_interval_maximum
         # These fields may or may not be null (Some have a 4th claim, others don't)
-        self.asmt_claim_4_score = assessment_score.claims[3].score
-        self.asmt_claim_4_score_range_min = assessment_score.claims[3].interval_min
-        self.asmt_claim_4_score_range_max = assessment_score.claims[3].interval_max
+        if len(asmnt_score.claim_scores) == 4:
+            self.asmt_claim_4_score = asmnt_score.claim_scores[3].claim_score
+            self.asmt_claim_4_score_range_min = asmnt_score.claim_scores[3].claim_score_interval_minimum
+            self.asmt_claim_4_score_range_max = asmnt_score.claim_scores[3].claim_score_interval_maximum
+        else:
+            self.asmt_claim_4_score = None
+            self.asmt_claim_4_score_range_min = None
+            self.asmt_claim_4_score_range_max = None
 
-        self.asmt_create_date = assessment_score.asmt_create_date
+        self.asmt_create_date = asmnt_score.asmt_create_date
         self.status = status
         self.most_recent = most_recent
 
 
     def getRow(self):
-        claims = self.asmt_score.claims
-
-        asmt_perf_lvl = self.calc_perf_lvl(self.asmt_score, self.assessment)
-
         # TODO: shouldn't return things like self.student.teacher_id
         # There should be a field called something like teacher_id
         # can still pass student object into constructor, but extract relevant
         # data from the object and set the fields immediately
-        return [self.asmnt_outcome_id, self.asmnt_outcome_external_id, self.assessment.asmt_rec_id,
-                self.student.student_id, self.student.teacher_id, self.student.state_code,
-                self.student.district_id, self.student.school_id, self.student.section_id,
+        return [self.asmnt_outcome_id, self.asmnt_outcome_external_id, self.asmt_rec_id,
+                self.student_id, self.teacher_id, self.state_code,
+                self.district_id, self.school_id, self.section_id,
                 self.inst_hier_rec_id, self.section_rec_id,
-                self.where_taken.where_taken_id, self.where_taken.where_taken_name, self.assessment.asmt_grade, self.student.grade,
-                self.date_taken.strftime('%Y%m%d'), self.date_taken.day, self.date_taken.month, self.date_taken.year,
-                self.asmt_score.overall, max(0, self.asmt_score.overall - SCORE_MIN_MAX_RANGE), self.asmt_score.overall + SCORE_MIN_MAX_RANGE,
-                asmt_perf_lvl,
-                claims[0], max(0, claims[0] - SCORE_MIN_MAX_RANGE), claims[0] + SCORE_MIN_MAX_RANGE,
-                claims[1], max(0, claims[1] - SCORE_MIN_MAX_RANGE), claims[1] + SCORE_MIN_MAX_RANGE,
-                claims[2], max(0, claims[2] - SCORE_MIN_MAX_RANGE), claims[2] + SCORE_MIN_MAX_RANGE,
-                claims[3] if len(claims) >= 4 else '', (max(0, claims[3] - SCORE_MIN_MAX_RANGE)) if len(claims) >= 4 else '',
-                (claims[3] + SCORE_MIN_MAX_RANGE) if len(claims) >= 4 else '',
+                self.where_taken_id, self.where_taken_name, self.asmt_grade, self.asmt_grade,
+                self.date_taken, self.date_taken_day, self.date_taken_month, self.date_taken_year,
+                self.asmt_score, self.asmt_score_range_min, self.asmt_score_range_min,
+                self.asmt_perf_lvl,
+                self.asmt_claim_1_score, self.asmt_claim_1_score_range_min,self.asmt_claim_1_score_range_max,
+                self.asmt_claim_2_score, self.asmt_claim_2_score_range_min,self.asmt_claim_2_score_range_max,
+                self.asmt_claim_3_score, self.asmt_claim_3_score_range_min,self.asmt_claim_3_score_range_max,
+                self.asmt_claim_4_score, self.asmt_claim_4_score_range_min,self.asmt_claim_4_score_range_max,
                 self.asmt_create_date, self.status, self.most_recent]
 
     @classmethod

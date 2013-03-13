@@ -77,15 +77,16 @@ class AssessmentScore:
     '''
     Assessment Score object
     '''
-    def __init__(self, overall_score, performance_level, interval_min, interval_max, claim_scores):
+    def __init__(self, overall_score, perf_lvl, interval_min, interval_max, claim_scores, asmt_create_date):
         '''
         Constructor
         '''
         self.overall_score = overall_score
-        self.performance_level = performance_level
+        self.perf_lvl = perf_lvl
         self.interval_min = interval_min
         self.interval_max = interval_max
         self.claim_scores = claim_scores
+        self.asmt_create_date = asmt_create_date
 
 
     def __str__(self):

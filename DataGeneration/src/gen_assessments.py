@@ -10,7 +10,8 @@ from helper_entities import ClaimScore
 from idgen import IdGen
 from entities import Assessment
 from helper_entities import Claim
-from constants import CLAIM_DEFINITIONS, MINIMUM_ASSESSMENT_SCORE, MAXIMUM_ASSESSMENT_SCORE, ASSMT_SCORE_YEARS
+from constants import CLAIM_DEFINITIONS, MINIMUM_ASSESSMENT_SCORE, MAXIMUM_ASSESSMENT_SCORE, ASSMT_SCORE_YEARS, CLAIM_SCORE_MASTER_MAX, CLAIM_SCORE_MASTER_MIN
+from random import randint
 
 
 GRADES = [i for i in range(13)]
@@ -54,16 +55,19 @@ def generate_single_asmt(student_grade, asmt_type, period, subject, year, most_r
     asmt_id = generate_id()
     asmt_rec_id = generate_id()
     version = generate_version()
-    assessment_names_and_weights = CLAIM_DEFINITIONS[subject]
 
-    # TODO: calc_claim_min_max() will generate min, max for a claim, in range(10, 99)
-    claim1_min_max = calc_claim_min_max()
-    claim2_min_max = calc_claim_min_max()
-    claim3_min_max = calc_claim_min_max()
-
-    claim1 = Claim(assessment_names_and_weights[0][0], claim1_min_max[0], claim1_min_max[1], assessment_names_and_weights[0][1])
-    claim2 = Claim(assessment_names_and_weights[1][0], claim2_min_max[0], claim2_min_max[1], assessment_names_and_weights[1][1])
-    claim3 = Claim(assessment_names_and_weights[2][0], claim3_min_max[0], claim3_min_max[1], assessment_names_and_weights[2][1])
+    # Generating claim objects for assessment constructor. Claims are defined by CLAIM_DEFINITIONS in constants.py
+    # CLAIM_DEFINITIONS contains claim names, weights
+    assessment_claim_info = CLAIM_DEFINITIONS[subject]
+    claims = []
+    for claim_info in assessment_claim_info:
+        claim_name = claim_info['claim_name']
+        min_max = generate_claim_score_min_max(CLAIM_SCORE_MASTER_MIN, CLAIM_SCORE_MASTER_MAX)
+        claim_score_min = min_max[0]
+        claim_score_max = min_max[1]
+        claim_score_weight = claim_info['claim_weight']
+        claim = Claim(claim_name, claim_score_min, claim_score_max, claim_score_weight)
+        claims.append(claim)
 
     params = {
         'asmt_id': asmt_id,
@@ -74,9 +78,7 @@ def generate_single_asmt(student_grade, asmt_type, period, subject, year, most_r
         'asmt_version': version,
         'asmt_grade': student_grade,
         'asmt_subject': subject,
-        'claim_1': claim1,
-        'claim_2': claim2,
-        'claim_3': claim3,
+        'claim_list': claims,
         'asmt_score_min': MINIMUM_ASSESSMENT_SCORE,
         'asmt_score_max': MAXIMUM_ASSESSMENT_SCORE,
         'asmt_perf_lvl_name_1': PERFORMANCE_LEVELS[0],
@@ -91,23 +93,23 @@ def generate_single_asmt(student_grade, asmt_type, period, subject, year, most_r
         'most_recent': most_recent
     }
 
-    if len(assessment_names_and_weights) >= 4:
-        claim4_min_max = calc_claim_min_max()
-        claim4 = Claim(assessment_names_and_weights[3][0], claim4_min_max[0], claim4_min_max[1], assessment_names_and_weights[3][1])
-        params['claim_4'] = claim4
-
     return Assessment(**params)
 
 
-def calc_claim_min_max(asmt_min, asmt_max, claim_perc):
-    '''
-    returns a minimum and maximum score for a claim given the minimum for the asmt and percentage
-    that the claim makes up in the total score
-    '''
-    claim_min = asmt_min * (claim_perc * .01)
-    claim_max = asmt_max * (claim_perc * .01)
+def generate_claim_score_min_max(lower_bound, upper_bound):
+    if upper_bound - lower_bound < 10:
+        raise Exception('lower bound and upper bound are too close')
+    # We want at least 10 points between our min and our max
 
-    return int(claim_min), int(claim_max)
+    # Don't want to pick a lower bound greater than (upper bound - 10)
+    # If we do, we won't be able to have 10 points separating min and max
+    minimum = randint(lower_bound, upper_bound - 10)
+    maximum = randint(minimum + 10, upper_bound)
+
+    return (minimum, maximum)
+
+
+
 
 
 def generate_id():

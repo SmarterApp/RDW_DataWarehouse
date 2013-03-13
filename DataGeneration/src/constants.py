@@ -31,22 +31,21 @@ AVERAGE_ASSESSMENT_SCORE = (MINIMUM_ASSESSMENT_SCORE + MAXIMUM_ASSESSMENT_SCORE)
 ASSESSMENT_SCORE_STANDARD_DEVIATION = (AVERAGE_ASSESSMENT_SCORE - MINIMUM_ASSESSMENT_SCORE) / 4
 
 # TODO: Add note about how this is used to create Assessment objects. What other info comes from the db?
-# TODO: change claim_percs to claim_weights
-# END OF TUESDAY: Rewrite this dictionary to contain claim names and weights
-# we're going to generate scales on the fly to ensure interesting data
 CLAIM_DEFINITIONS = {
         'Math': [
-                 ('Concepts & Procedures', 40),
-                 ('Problem Solving and Modeling & Data Analysis', 45),
-                 ('Communicating Reasoning', 15)
-                 ],
+            {'claim_name': 'Concepts & Procedures', 'claim_weight': .4},
+            {'claim_name': 'Problem Solving and Modeling & Data Analysis', 'claim_weight': .45},
+            {'claim_name': 'Communicating Reasoning', 'claim_weight': .15}
+        ],
         'ELA': [
-                ('Reading', 20),
-                ('Writing', 25),
-                ('Speaking & Listening', 25),
-                ('Research & Inquiry', 30)
-                ]
+            {'claim_name': 'Reading','claim_weight': .20},
+            {'claim_name': 'Writing', 'claim_weight': .25},
+            {'claim_name': 'Speaking & Listening', 'claim_weight': .25},
+            {'claim_name': 'Research & Inquiry', 'claim_weight': .30}
+        ]
     }
+CLAIM_SCORE_MASTER_MIN = 10
+CLAIM_SCORE_MASTER_MAX = 99
 
 ZIPCODE_START = 10000
 ZIPCODE_RANG_INSTATE = 5000

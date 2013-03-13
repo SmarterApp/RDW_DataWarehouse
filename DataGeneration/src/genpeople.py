@@ -42,7 +42,7 @@ def generate_teacher(state, district):
     return teacher
 
 
-def generate_student(state, district, school, grade, street_list, gender=None, has_middle_name=False):
+def generate_student_bio_info(state, district, school, grade, street_list, gender=None, has_middle_name=False):
 
     id_generator = IdGen()
 
@@ -124,9 +124,9 @@ def generate_staff(hier_user_type, state_code='None', district_id='None', school
     return staff
 
 
-def generate_student_section(school, student, section_rec_id, section_id, grade, teacher_id):
-        student_section_params = {
-            'student': student,
+def generate_student(student_bio_info, section_rec_id, section_id, grade, teacher_id):
+        student_params = {
+            'student_bio_info': student_bio_info,
             'section_id': section_id,
             'grade': grade,
             'from_date': '20120901',
@@ -135,5 +135,5 @@ def generate_student_section(school, student, section_rec_id, section_id, grade,
             'teacher_id': teacher_id,
             'section_rec_id': section_rec_id
         }
-        student_section = Student(**student_section_params)
-        return student_section
+        student_student = Student(**student_params)
+        return student_student

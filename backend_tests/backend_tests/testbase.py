@@ -13,7 +13,7 @@ class TestBase(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         unittest.TestCase.__init__(self, *args, **kwargs)
         self._config = configparser.ConfigParser()
-        test_config_path = os.path.abspath(os.path.dirname(__file__)) + '/../smarter/development.ini'
+        test_config_path = os.path.abspath(os.path.dirname(__file__)) + '/../../smarter/development.ini'
 
         if not os.path.exists(test_config_path):
             raise IOError(test_config_path)

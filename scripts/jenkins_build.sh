@@ -162,6 +162,30 @@ function setup_functional_test_dependencies {
     echo "Finish functional test dependencies setup"
 }
 
+function setup_python33_functional_test_dependencies {
+    echo "Setup python 33functional test dependencies"
+    pip install sqlalchemy
+    
+    cd "$WORKSPACE/backend_tests"
+    python setup.py develop
+
+    echo "Finish python33 functional test dependencies setup"
+}
+
+function run_python33_functional_tests {
+    echo "Run python33 functional tests"
+
+    cd "$WORKSPACE/backend_tests"
+
+    sed -i.bak 's/port = 6543/port = 80/g' test.ini
+    sed -i.bak "s/host=localhost/host=$HOSTNAME/g" test.ini
+    export DISPLAY=:6.0
+
+    nosetests -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
+
+    echo "Finish running python33 functional tests"
+}	
+
 function run_functional_tests {
     echo "Run functional tests"
 
@@ -227,6 +251,8 @@ function main {
         create_sym_link_for_apache
         restart_apache
         import_data_from_csv
+        setup_python33_functional_test_dependencies
+        run_python33_functional_tests
         setup_functional_test_dependencies
         run_functional_tests
         check_pep8 "$FUNC_DIR"

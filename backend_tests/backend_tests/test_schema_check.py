@@ -3,7 +3,7 @@ Created on Mar 12, 2013
 
 @author: igill
 '''
-from testbase import TestBase
+from backend_tests.testbase import TestBase
 from sqlalchemy.engine import create_engine
 from sqlalchemy import event
 from sqlalchemy.schema import MetaData

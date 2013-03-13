@@ -21,7 +21,7 @@ var baseConfigs = {
 	    edwareBreadcrumbs: '../../js/widgets/breadcrumb/EDWARE.breadcrumbs',
 		edwareConfidenceLevelBar: '../../js/widgets/confidenceLevelBar/EDWARE.confidenceBar',
 		edwarePopulationBar: '../../js/widgets/populationBar/EDWARE.populationBar',
-		edwareSchoolList: '../../js/EDWARE.schoolList',
+		edwareComparingPopulations: '../../js/EDWARE.comparingPopulations',
 	    
 	    edwareBreadcrumbsTemplate: '../../js/widgets/breadcrumb/template.html',
 		edwareConfidenceLevelBarTemplate: '../../js/widgets/confidenceLevelBar/template.html',

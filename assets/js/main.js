@@ -14,7 +14,7 @@ require({
 		edwareGridFormatters: 'widgets/grid/EDWARE.grid.formatters',
 		edwareStudentList: 'EDWARE.studentList',
 		edwareIndividualStudent: 'EDWARE.individualStudent',
-		edwareSchoolList: 'EDWARE.schoolList',
+		edwareComparingPopulations: 'EDWARE.comparingPopulations',
 		edwareBreadcrumbs: 'widgets/breadcrumb/EDWARE.breadcrumbs',
 		edwareConfidenceLevelBar: 'widgets/confidenceLevelBar/EDWARE.confidenceBar',
 		edwarePopulationBar: 'widgets/populationBar/EDWARE.populationBar',

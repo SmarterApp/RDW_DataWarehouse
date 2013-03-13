@@ -2,15 +2,15 @@
     "items" : [
     	{
     		"type" : "state",
-    		"link" : "/assets/html/schoolStudentList.html" 
+    		"link" : "/assets/html/comparingPopulations.html" 
     	},
     	{
     		"type" : "district",
-    		"link" : "/assets/html/schoolStudentList.html" 
+    		"link" : "/assets/html/comparingPopulations.html" 
     	},
     	{
     		"type" : "school",
-    		"link" : "/assets/html/schoolStudentList.html" 
+    		"link" : "/assets/html/comparingPopulations.html" 
     	},
     	{
     		"type" : "grade",

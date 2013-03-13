@@ -9,10 +9,10 @@ define [
   #
   #    * Create Student data grid
   #    
-  createStudentGrid = (params) ->
+  createPopulationGrid = (params) ->
     
     # Get school data from the server
-    getSchoolData "/data/comparing_populations", params, (schoolData, summaryData, subjectsData, colorsData, contextData) ->
+    getPopulationData "/data/comparing_populations", params, (populationData, summaryData, asmtSubjectsData, colorsData, breadcrumbsData) ->
       
       # Read Default colors from json
       defaultColors = {}
@@ -23,28 +23,28 @@ define [
       edwareDataProxy.getDatafromSource "../data/color.json", options, (defaultColors) ->
         # Append colors to records and summary section
         # TODO: check if data is not empty, etc first (or do we get a 404?)
-        schoolData = appendColorToData schoolData, subjectsData, colorsData, defaultColors
-        summaryData = appendColorToData summaryData, subjectsData, colorsData, defaultColors
+        populationData = appendColorToData populationData, asmtSubjectsData, colorsData, defaultColors
+        summaryData = appendColorToData summaryData, asmtSubjectsData, colorsData, defaultColors
 
-        getSchoolsConfig "../data/school.json", (schoolConfig, comparePopConfig) ->
-          # Change the column name based on the type of report the user is querying for
+        getColumnConfig "../data/comparingPopulations.json", (gridConfig, customViews) ->
+          # Change the column name and link url based on the type of report the user is querying for
           reportType = getReportType(params)
-          schoolConfig[0].name = comparePopConfig[reportType].name
-          schoolConfig[0].options.linkUrl = comparePopConfig[reportType].link
+          gridConfig[0].name = customViews[reportType].name
+          gridConfig[0].options.linkUrl = customViews[reportType].link
           
           # Render breadcrumbs on the page
-          $('#breadcrumb').breadcrumbs(contextData)
+          $('#breadcrumb').breadcrumbs(breadcrumbsData)
           
           # Set the Report title depending on the report that we're looking at
-          reportTitle = getReportTitle(contextData, reportType)
+          reportTitle = getReportTitle(breadcrumbsData, reportType)
           $('#content h4').html 'Comparing ' + reportTitle + ' on Math & ELA'
           
-          # Format the summary data for static summary row purposes
+          # Format the summary data for summary row purposes
           summaryRowName = 'Overall ' + reportTitle + ' Summary'
           summaryData = formatSummaryData(summaryData, summaryRowName)
           
           # Create compare population grid for State/District/School view
-          edwareGrid.create "gridTable", schoolConfig, schoolData, summaryData
+          edwareGrid.create "gridTable", gridConfig, populationData, summaryData
         
           
           # Show tooltip for population bar on mouseover
@@ -60,8 +60,8 @@ define [
             e = $(this)
             e.popover("hide")
                   
-        
-  getSchoolData = (sourceURL, params, callback) ->
+  # Get population data from server       
+  getPopulationData = (sourceURL, params, callback) ->
     
     dataArray = []
     
@@ -73,19 +73,19 @@ define [
       params: params
   
     edwareDataProxy.getDatafromSource sourceURL, options, (data) ->
-      schoolData = data.records
+      populationData = data.records
       summaryData = data.summary
-      subjectsData = data.subjects
+      asmtSubjectsData = data.subjects
       colorsData = data.colors
-      contextData = data.context
+      breadcrumbsData = data.context
       
       if callback
-        callback schoolData, summaryData, subjectsData, colorsData, contextData
+        callback populationData, summaryData, asmtSubjectsData, colorsData, breadcrumbsData
       else
-        dataArray schoolData, summaryData, subjectsData, colorsData, contextData
+        dataArray populationData, summaryData, asmtSubjectsData, colorsData, breadcrumbsData
       
-      
-  getSchoolsConfig = (configURL, callback) ->
+  # Returns column configurations for population grid   
+  getColumnConfig = (configURL, callback) ->
       
       dataArray = []
             
@@ -96,34 +96,24 @@ define [
         method: "GET"
       
       edwareDataProxy.getDatafromSource configURL, options, (data) ->
-        schoolColumnCfgs = data.schools
-        comparePopCfgs = data.comparePopulation
+        schoolColumnCfgs = data.grid
+        comparePopCfgs = data.customViews
          
         if callback
           callback schoolColumnCfgs, comparePopCfgs
         else
           dataArray schoolColumnCfgs, comparePopCfgs
-  
-  appendColorToData = (data, subjectsData, colorsData, defaultColors) ->
-    
-    # Append data with colors
-    # records come in as an array, whereas summary doesn't 
-    isArray = false
-    if data instanceof Array
-      recordsLen = data.length
-      isArray = true
-    else
-      recordsLen = 1
-    for k of subjectsData
+          
+  # Traverse through to intervals to prepare to append color to data
+  appendColorToData = (data, asmtSubjectsData, colorsData, defaultColors) ->
+    for k of asmtSubjectsData
       j = 0
-      while (j < recordsLen)
-        if isArray
-          data[j]['results'][k].intervals = appendColor data[j]['results'][k].intervals, colorsData[k], defaultColors
-        else
-          data['results'][k].intervals = appendColor data['results'][k].intervals, colorsData[k], defaultColors
+      while (j < data.length)
+        data[j]['results'][k].intervals = appendColor data[j]['results'][k].intervals, colorsData[k], defaultColors
         j++
     data
   
+  # Add color for each intervals
   appendColor = (intervals, colorsData, defaultColors) ->
     i = 0
     len = intervals.length
@@ -136,50 +126,40 @@ define [
         element.color = defaultColors[i]
       i++
     intervals
-
+  
+  # Format the summary data for summary row rendering purposes
   formatSummaryData = (summaryData, summaryRowName) ->
-    # Format the summary data for summary row rendering purposes
     data = {}
+    summaryData = summaryData[0]
     for k of summaryData.results
       name = 'results.' + k + '.total'
       data[name] = summaryData.results[k].total
     data['subtitle'] = 'Reference Point'
+    # Set header row to be true to indicate that it's the summary row
     data['header'] = true
     data['results'] = summaryData.results
     data['name'] = summaryRowName
     data
-    
-  getReportTitle = (contextData, reportType) ->
-    # Returns the overall summary row name based on the type of report
-    map =
-      state: 0
-      district: 1
-      school: 2    
-    
-    data = ''
+ 
+  # Returns the overall summary row name based on the type of report
+  getReportTitle = (breadcrumbsData, reportType) ->
     if reportType is 'state'
-      data = contextData.items[map[reportType]].id + ' Districts'
+      data = breadcrumbsData.items[0].id + ' Districts'
     else if reportType is 'district'
-      data = contextData.items[map[reportType]].name + ' Schools'
+      data = breadcrumbsData.items[1].name + ' Schools'
     else if reportType is 'school'
-      data = contextData.items[map[reportType]].name + ' Grades'
+      data = breadcrumbsData.items[2].name + ' Grades'
     data
       
-
+  # Based on query parameters, return the type of report that the user is requesting for
   getReportType = (params) ->
-    type = null
-    # convert to lower case first
-    lowerCaseParams = {}
-    for k, v of params
-      name = k.toLowerCase()
-      lowerCaseParams[name] = v
-    if lowerCaseParams['schoolid']
-      type = 'school'
-    else if lowerCaseParams['districtid']
-      type = 'district'
-    else if lowerCaseParams['stateid']
-      type = 'state'
-    type
+    if params['schoolId']
+      reportType = 'school'
+    else if params['districtId']
+      reportType = 'district'
+    else if params['stateId']
+      reportType = 'state'
+    reportType
             
-  createStudentGrid: createStudentGrid
+  createPopulationGrid: createPopulationGrid
   

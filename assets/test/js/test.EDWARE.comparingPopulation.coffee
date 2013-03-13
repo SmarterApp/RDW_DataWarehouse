@@ -1,10 +1,10 @@
 #globals ok $ EDWARE test require module equals deepEqual
-require ["jquery", "cs!edwareSchoolList"], ($, edwareSchoolList) ->
-  module "EDWARE.schoolList.createStudentGrid", 
+require ["jquery", "cs!edwareComparingPopulations"], ($, edwareComparingPopulations) ->
+  module "EDWARE.comparingPopulations.createPopulationGrid", 
     setup: ->
 
     teardown: ->
 
   test "Test create method", ->
-    ok edwareSchoolList.createStudentGrid isnt "undefined", "edwareSchoolList.createStudentGrid method should be defined"
-    ok typeof edwareSchoolList.createStudentGrid is "function", "edwareSchoolList.createStudentGrid method should be function"
+    ok edwareComparingPopulations.createPopulationGrid isnt "undefined", "edwareSchoolList.createPopulationGrid method should be defined"
+    ok typeof edwareComparingPopulations.createPopulationGrid is "function", "edwareSchoolList.createPopulationGrid method should be function"

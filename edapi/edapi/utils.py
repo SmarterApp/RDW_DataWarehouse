@@ -289,11 +289,11 @@ class decorator_adapter(object):
         return self.decorator(self.func)(*args, **kwargs)
 
     def __get__(self, instance, owner):
-        return self.method_decorator(self.func.__get__(instance, owner))
+        return self.decorator(self.func.__get__(instance, owner))
 
 
 def adopt_to_method_and_func(decorator):
-    @wraps
+    @wraps(decorator)
     def adapter(func):
         return decorator_adapter(decorator, func)
     return adapter

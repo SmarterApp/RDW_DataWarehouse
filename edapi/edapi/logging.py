@@ -4,13 +4,12 @@ Created on Mar 5, 2013
 @author: aoren, agrebneva
 '''
 
-import json
+import simplejson as json
 import re
 from collections import OrderedDict
 import logging
 import pyramid
 from edapi.utils import adopt_to_method_and_func
-from functools import wraps
 
 
 def audit_event(logger_name="audit"):
@@ -18,42 +17,51 @@ def audit_event(logger_name="audit"):
     '''
     the function to be decorated is not passed to the constructor!.
     '''
-    def wrapper(original_func):
-        pos_arg_names = original_func.__code__.co_varnames[:original_func.__code__.co_argcount]
+    @adopt_to_method_and_func
+    def audit_event_wrapper(original_func):
         func_name = original_func.__name__
+        class_name = None
+        if hasattr(original_func, '__self__'):
+            class_name = original_func.__self__.__class__.__name__
 
-        @wraps(logger_name)
-        def __wrapper(*args, **kwds):
+        def __wrapped(*args, **kwds):
+            allargs = {'callable': func_name}
             # Log the entry into the function
-            allargs = dict({'callable': func_name})
-            for i in range(len(args)):
-                allargs[pos_arg_names[i]] = args[i]
-            allargs.update(kwds)
+            if not class_name is None:
+                allargs['class'] = class_name
+            params = {}
+            params['args'] = args
+            params.update(kwds)
+            allargs['params'] = params
             if not 'user' in allargs.keys():
-                allargs["user"] = pyramid.security.effective_principals(pyramid.threadlocal.get_current_request())
+                allargs['user'] = pyramid.security.effective_principals(pyramid.threadlocal.get_current_request())
+            if 'self' in allargs.keys():
+                allargs['self'] = allargs['self'].__class__.__name__
             log.info(allargs)
             return original_func(*args, **kwds)
-        return __wrapper
+        return __wrapped
 
-    return wrapper
+    return audit_event_wrapper
 
 
 class JsonDictLoggingFormatter(logging.Formatter):
     '''Json logging formatter'''
-    def __init__(self, fmt=None):
-        logging.Formatter.__init__(self, fmt)
+
+    def __init__(self, fmt=None, datefmt='%yyyymmdd %H:%M:%S'):
+        logging.Formatter.__init__(self, fmt, datefmt)
         self.fmt_tkn = re.compile(r'\((.*?)\)', re.IGNORECASE).findall(self._fmt)
 
     def format(self, record):
-        """Formats a log record and serializes to json"""
+        '''Formats a log record and serializes to json'''
         loggable = OrderedDict()
+        keys = record.__dict__
+        for formatter in self.fmt_tkn:
+            if formatter in keys:
+                loggable[formatter] = record.__dict__[formatter]
         if self.usesTime():
-            loggable["asctime"] = self.formatTime(record, self.datefmt)
-
-        for key, value in record.__dict__:
-            if isinstance(value, dict):
-                loggable.update(value)
-            else:
-                loggable[key] = value
-
+            loggable['asctime'] = self.formatTime(record, self.datefmt)
+        if isinstance(record.msg, dict):
+            loggable['msg'] = record.msg
+        else:
+            loggable['msg'] = record.getMessage()
         return json.dumps(loggable)

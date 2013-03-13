@@ -10,8 +10,8 @@ from edapi.exceptions import ReportNotFoundError, InvalidParameterError
 from edapi.tests.dummy import DummyValidator, Dummy
 from edapi.tests.test_logger import TestLogger, test_function, test_display_name
 import os
-from edapi.logging import audit_event
 import logging
+from edapi.logging import JsonDictLoggingFormatter
 
 
 def dummy_method(params):
@@ -23,10 +23,13 @@ def dummy_method_with_data(params):
 
 
 class InMemHandler(logging.Handler):
-    """
+    '''
     test handler that maintains log array
-    """
-    log_entries = ''
+    '''
+    def __init__(self):
+        self.log_entries = ''
+        logging.Handler.__init__(self)
+        self.setFormatter(JsonDictLoggingFormatter(fmt='%(asctime)s %(message)s', datefmt='%y%m%d %H:%M:%S'))
 
     def emit(self, record):
         try:
@@ -48,10 +51,7 @@ class TestUtils(unittest.TestCase):
     log_handler = InMemHandler()
 
     def setUp(self):
-        logging.basicConfig(handlers=[self.log_handler],
-                            format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
-                            datefmt='%H:%M:%S',
-                            level=logging.DEBUG)
+        logging.basicConfig(handlers=[self.log_handler], level='INFO')
 
     def tearDown(self):
         self.log_handler.delete()
@@ -179,7 +179,6 @@ class TestUtils(unittest.TestCase):
         self.assertIn("param2value", f, "missing param")
         self.assertIn("test_method", f, "method name is missing")
         self.assertIn("TestLogger", f, "class name is missing")
-        self.assertIn("INFO", f, "incorrect log level")
 
     def test_function_log(self):
         test_function('param1value', 'param2value')

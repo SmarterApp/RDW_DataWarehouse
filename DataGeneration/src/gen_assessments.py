@@ -54,23 +54,16 @@ def generate_single_asmt(student_grade, asmt_type, period, subject, year, most_r
     asmt_id = generate_id()
     asmt_rec_id = generate_id()
     version = generate_version()
-    asmt_grade = '4' if student_grade < 8 else '8'
-    asmt_info = CLAIM_DEFINITIONS[subject][asmt_grade]
+    assessment_names_and_weights = CLAIM_DEFINITIONS[subject]
 
-    claim1_min_max = calc_claim_min_max(MINIMUM_ASSESSMENT_SCORE, MAXIMUM_ASSESSMENT_SCORE, asmt_info['claim_percs'][0])
-    claim2_min_max = calc_claim_min_max(MINIMUM_ASSESSMENT_SCORE, MAXIMUM_ASSESSMENT_SCORE, asmt_info['claim_percs'][1])
-    claim3_min_max = calc_claim_min_max(MINIMUM_ASSESSMENT_SCORE, MAXIMUM_ASSESSMENT_SCORE, asmt_info['claim_percs'][2])
+    # TODO: calc_claim_min_max() will generate min, max for a claim, in range(10, 99)
+    claim1_min_max = calc_claim_min_max()
+    claim2_min_max = calc_claim_min_max()
+    claim3_min_max = calc_claim_min_max()
 
-    claim_1_name = None
-    claim_1_score_min = None
-    claim_1_score_max = None
-    claim_1_weight = None
-
-    claim1 = Claim(claim_1_name, claim_1_score_min, claim_1_score_max, claim_1_weight)
-    #CLAIM_DEFINITIONS[subject][4]
-    #Claim(asmt_info['claim_names'][0], claim1_min_max[0], claim1_min_max[1], asmt_info['claim_percs'][0])
-    claim2 = ClaimScore(asmt_info['claim_names'][1], claim2_min_max[0], claim2_min_max[1], asmt_info['claim_percs'][1])
-    claim3 = ClaimScore(asmt_info['claim_names'][2], claim3_min_max[0], claim3_min_max[1], asmt_info['claim_percs'][2])
+    claim1 = Claim(assessment_names_and_weights[0][0], claim1_min_max[0], claim1_min_max[1], assessment_names_and_weights[0][1])
+    claim2 = Claim(assessment_names_and_weights[1][0], claim2_min_max[0], claim2_min_max[1], assessment_names_and_weights[1][1])
+    claim3 = Claim(assessment_names_and_weights[2][0], claim3_min_max[0], claim3_min_max[1], assessment_names_and_weights[2][1])
 
     params = {
         'asmt_id': asmt_id,
@@ -98,9 +91,9 @@ def generate_single_asmt(student_grade, asmt_type, period, subject, year, most_r
         'most_recent': most_recent
     }
 
-    if len(asmt_info['claim_names']) >= 4 and len(asmt_info['claim_percs']) >= 4:
-        claim4_min_max = calc_claim_min_max(MINIMUM_ASSESSMENT_SCORE, MAXIMUM_ASSESSMENT_SCORE, asmt_info['claim_percs'][3])
-        claim4 = ClaimScore(asmt_info['claim_names'][3], claim4_min_max[0], claim4_min_max[1], asmt_info['claim_percs'][3])
+    if len(assessment_names_and_weights) >= 4:
+        claim4_min_max = calc_claim_min_max()
+        claim4 = Claim(assessment_names_and_weights[3][0], claim4_min_max[0], claim4_min_max[1], assessment_names_and_weights[3][1])
         params['claim_4'] = claim4
 
     return Assessment(**params)

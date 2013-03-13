@@ -30,20 +30,23 @@ MAXIMUM_ASSESSMENT_SCORE = 2400
 AVERAGE_ASSESSMENT_SCORE = (MINIMUM_ASSESSMENT_SCORE + MAXIMUM_ASSESSMENT_SCORE) / 2
 ASSESSMENT_SCORE_STANDARD_DEVIATION = (AVERAGE_ASSESSMENT_SCORE - MINIMUM_ASSESSMENT_SCORE) / 4
 
-
-
 # TODO: Add note about how this is used to create Assessment objects. What other info comes from the db?
 # TODO: change claim_percs to claim_weights
-CLAIM_DEFINITIONS = \
-
-    # END OF TUESDAY: Rewrite this dictionary to contain claim names and weights
-    # we're going to generate scales on the fly to ensure interesting data
-
-    {
-        'Math': {'claim_name':, 'claim_weight': },
-                {}
+# END OF TUESDAY: Rewrite this dictionary to contain claim names and weights
+# we're going to generate scales on the fly to ensure interesting data
+CLAIM_DEFINITIONS = {
+        'Math': [
+                 ('Concepts & Procedures', 40),
+                 ('Problem Solving and Modeling & Data Analysis', 45),
+                 ('Communicating Reasoning', 15)
+                 ],
+        'ELA': [
+                ('Reading', 20),
+                ('Writing', 25),
+                ('Speaking & Listening', 25),
+                ('Research & Inquiry', 30)
+                ]
     }
-
 
 ZIPCODE_START = 10000
 ZIPCODE_RANG_INSTATE = 5000

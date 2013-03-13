@@ -18,12 +18,11 @@ def audit_event(logger_name="audit"):
     '''
     the function to be decorated is not passed to the constructor!.
     '''
-    @adopt_to_method_and_func
     def wrapper(original_func):
         pos_arg_names = original_func.__code__.co_varnames[:original_func.__code__.co_argcount]
         func_name = original_func.__name__
 
-        @wraps
+        @wraps(logger_name)
         def __wrapper(*args, **kwds):
             # Log the entry into the function
             allargs = dict({'callable': func_name})

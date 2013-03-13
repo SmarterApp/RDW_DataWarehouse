@@ -49,9 +49,15 @@ class EdTestSchema(TestBase):
                     try:
                         print('Primary key is:' + str(live_metadata.tables[table].columns[column].type))
                         print('Foreign key is:' + str(list(live_metadata.tables[table].columns[column].foreign_keys)[0].column.type))
-                        assert str(live_metadata.tables[table].columns[column].type) == str(list(live_metadata.tables[table].columns[column].foreign_keys)[0].column.type)
+                        assert str(live_metadata.tables[table].columns[column].type) == str(list(live_metadata.tables[table].columns[column].foreign_keys)[0].column.type), "Foreign key mismatch"
                     except AssertionError as e:
-                        print('Mismatch!')
+                        #normal test should pass
+                        if not qa_test:
+                            raise AssertionError(e)
+                    else:
+                        #all qa_test should fail
+                        if qa_test:
+                            raise AssertionError('Failure expected!')
 
     #check that the ed_metadata matches the live metadata in tables,columns, and datatypes
     def test_live_metadata_to_ed_metadata(self):

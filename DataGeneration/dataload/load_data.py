@@ -15,7 +15,7 @@ from sqlalchemy import create_engine, MetaData
 __all__ = ['load_csvs_to_database']
 
 
-def load_csvs_to_database(schema, passwd, csvdir=None, database='edware', host='127.0.0.1', user='edware', port=5432):
+def load_csvs_to_database(schema, passwd, csvdir=None, database='edware', host='127.0.0.1', user='edware', port=5432, truncate=False):
     '''
     Entry point for this being used as a module
     INPUT:
@@ -26,6 +26,7 @@ def load_csvs_to_database(schema, passwd, csvdir=None, database='edware', host='
     host -- the host address or name
     user -- the username to be used
     port -- the port to use when connecting to the db
+    truncate -- truncate the tables before doing data load
     '''
     input_args = {
         'schema': schema,
@@ -34,13 +35,18 @@ def load_csvs_to_database(schema, passwd, csvdir=None, database='edware', host='
         'database': database,
         'host': host,
         'user': user,
-        'port': port
+        'port': port,
+        'truncate': truncate
     }
 
-    load_data(input_args)
+    load_data_main(input_args)
 
 
 def system(*args, **kwargs):
+    '''
+    Method for running system calls
+    Taken from the pre-commit file for python3 in the scripts directory
+    '''
     kwargs.setdefault('stdout', subprocess.PIPE)
     proc = subprocess.Popen(args, **kwargs)
     out, _err = proc.communicate()
@@ -108,7 +114,7 @@ def get_table_order(input_args):
     return table_names
 
 
-def load_data(input_args):
+def load_data_main(input_args):
     '''
     Main method for all the work that is to be done.
     INPUT:
@@ -136,7 +142,7 @@ def load_data(input_args):
     files = [x.decode("utf-8") for x in files]
 
     fileset = {x.split('.')[0] for x in files}
-    missing_tables = fileset ^ set(ordered_tables)
+    missing_tables = set(ordered_tables) - fileset
 
     if missing_tables:
         raise AttributeError('The following table(s) are not present in one of the locations %s' % missing_tables)
@@ -159,10 +165,9 @@ def load_data(input_args):
         tot_time = time.time() - start
         print('Loaded table: %s in %.2f' % (table, tot_time))
         print()
-        break
 
     os.remove(pgpass_file)
 
 
 if __name__ == '__main__':
-    load_data(get_input_args())
+    load_data_main(get_input_args())

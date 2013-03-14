@@ -7,7 +7,7 @@ from database.connector import DBConnection
 import os
 import csv
 import logging
-
+from sqlalchemy.types import Boolean
 
 logger = logging.getLogger(__name__)
 
@@ -41,6 +41,13 @@ def __cast_data_type(column, value):
     # get python_type property, then cast
     if (value is not None and len(value) != 0 or not column.nullable):
         try:
+            # need to explicitly convert booleans because they are read from file as strings
+            if isinstance(column.type, Boolean):
+                if value.lower() == 'true' or value == '1':
+                    value = True
+                elif value.lower() == 'false' or value == '0':
+                    value = False
+
             value = column.type.python_type(value)
         except:
             msg = 'Cast Exception: Column[%s.%s] value[%s] cast to[%s]' % (column.table.name, column.name, value, column.type.python_type)

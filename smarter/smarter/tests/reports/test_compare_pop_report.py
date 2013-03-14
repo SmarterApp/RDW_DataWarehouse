@@ -14,8 +14,8 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
     def test_school_view(self):
         testParam = {}
         testParam[Constants.STATEID] = 'NY'
-        testParam[Constants.DISTRICTID] = 'd1'
-        testParam[Constants.SCHOOLID] = 'sc1'
+        testParam[Constants.DISTRICTID] = '228'
+        testParam[Constants.SCHOOLID] = '242'
         results = get_comparing_populations_report(testParam)
 
         # check top-level attributes
@@ -28,27 +28,30 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         # check grade-level results
         records = results[Constants.RECORDS]
         self.assertEqual(1, len(records), "1 grade in the list")
-        self.assertEqual('1', records[0][Constants.ID])
-        self.assertEqual('Grade 1', records[0][Constants.NAME])
+        self.assertEqual('3', records[0][Constants.ID])
+        self.assertEqual('Grade 3', records[0][Constants.NAME])
         asmt_results = records[0][Constants.RESULTS]
         self.assertEqual(2, len(asmt_results))
         subject1 = asmt_results[Constants.SUBJECT1]
-        self.assertEqual(3, subject1[Constants.TOTAL])
+        self.assertEqual(35, subject1[Constants.TOTAL])
         self.assertEqual(Constants.MATH, subject1[Constants.ASMT_SUBJECT])
         intervals = subject1[Constants.INTERVALS]
-        self.assertEqual(5, len(intervals))
+        #self.assertEqual(4, len(intervals))
         self.assertEqual(1, intervals[0][Constants.LEVEL])
-        self.assertEqual(0, intervals[0][Constants.PERCENTAGE])
-        self.assertEqual(0, intervals[0][Constants.COUNT])
-        subject2 = asmt_results[Constants.SUBJECT2]
-        self.assertEqual(3, subject2[Constants.TOTAL])
-        self.assertEqual(Constants.ELA, subject2[Constants.ASMT_SUBJECT])
-        self.assertEqual(5, len(subject2[Constants.INTERVALS]))
-        intervals = subject2[Constants.INTERVALS]
-        self.assertEqual(5, len(intervals))
+        self.assertEqual(11, intervals[0][Constants.PERCENTAGE])
+        self.assertEqual(4, intervals[0][Constants.COUNT])
+
+        # check summary results
+        summ_results = results[Constants.SUMMARY][0][Constants.RESULTS]
+        self.assertEqual(2, len(summ_results))
+        subject1 = summ_results[Constants.SUBJECT1]
+        self.assertEqual(35, subject1[Constants.TOTAL])
+        self.assertEqual(Constants.MATH, subject1[Constants.ASMT_SUBJECT])
+        intervals = subject1[Constants.INTERVALS]
+        #self.assertEqual(4, len(intervals))
         self.assertEqual(1, intervals[0][Constants.LEVEL])
-        self.assertEqual(67, intervals[0][Constants.PERCENTAGE])
-        self.assertEqual(2, intervals[0][Constants.COUNT])
+        self.assertEqual(11, intervals[0][Constants.PERCENTAGE])
+        self.assertEqual(4, intervals[0][Constants.COUNT])
 
         # check subjects
         self.assertEqual(Constants.MATH, results[Constants.SUBJECTS][Constants.SUBJECT1])
@@ -57,26 +60,9 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         # check context
         context_items = results['context']['items']
         self.assertEqual(3, len(context_items))
-        self.assertEqual('NY', context_items[0][Constants.NAME])
+        self.assertEqual('New York', context_items[0][Constants.NAME])
         self.assertEqual('Sunset School District', context_items[1][Constants.NAME])
-        self.assertEqual('Sunset Central High', context_items[2][Constants.NAME])
-
-        # check summary results
-        summ_results = results[Constants.SUMMARY][0][Constants.RESULTS]
-        self.assertEqual(2, len(summ_results))
-        subject1 = summ_results[Constants.SUBJECT1]
-        self.assertEqual(3, subject1[Constants.TOTAL])
-        self.assertEqual(Constants.MATH, subject1[Constants.ASMT_SUBJECT])
-        self.assertEqual(5, len(subject1[Constants.INTERVALS]))
-        subject2 = summ_results[Constants.SUBJECT2]
-        self.assertEqual(3, subject2[Constants.TOTAL])
-        self.assertEqual(Constants.ELA, subject2[Constants.ASMT_SUBJECT])
-        self.assertEqual(5, len(subject2[Constants.INTERVALS]))
-        intervals = subject2[Constants.INTERVALS]
-        self.assertEqual(5, len(intervals))
-        self.assertEqual(1, intervals[0][Constants.LEVEL])
-        self.assertEqual(67, intervals[0][Constants.PERCENTAGE])
-        self.assertEqual(2, intervals[0][Constants.COUNT])
+        self.assertEqual('Sunset - Eastern Elementary', context_items[2][Constants.NAME])
 
         # check colors
         self.assertTrue('text_color' in results[Constants.COLORS][Constants.SUBJECT1])
@@ -85,7 +71,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
     def test_district_view(self):
         testParam = {}
         testParam[Constants.STATEID] = 'NY'
-        testParam[Constants.DISTRICTID] = 'd1'
+        testParam[Constants.DISTRICTID] = '228'
         results = get_comparing_populations_report(testParam)
 
         # check top-level attributes
@@ -95,30 +81,38 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         self.assertTrue('context' in results, "returning JSON must have context")
         self.assertTrue(Constants.SUMMARY in results, "returning JSON must have summary")
 
-        # check grade-level results
+        # check school-level results
         records = results[Constants.RECORDS]
-        self.assertEqual(1, len(records), "1 school in the list")
-        self.assertEqual('sc1', records[0][Constants.ID])
-        self.assertEqual('Sunset Central High', records[0][Constants.NAME])
-        asmt_results = records[0][Constants.RESULTS]
-        self.assertEqual(2, len(asmt_results))
-        subject1 = asmt_results[Constants.SUBJECT1]
-        self.assertEqual(3, subject1[Constants.TOTAL])
+        self.assertEqual(3, len(records), "3 schools in the list")
+        found_school = False
+        for record in records:
+            if record[Constants.ID] == '242':
+                found_school = True
+                self.assertEqual('Sunset - Eastern Elementary', record[Constants.NAME])
+                asmt_results = record[Constants.RESULTS]
+                self.assertEqual(2, len(asmt_results))
+                subject1 = asmt_results[Constants.SUBJECT1]
+                self.assertEqual(35, subject1[Constants.TOTAL])
+                self.assertEqual(Constants.MATH, subject1[Constants.ASMT_SUBJECT])
+                intervals = subject1[Constants.INTERVALS]
+                #self.assertEqual(4, len(intervals))
+                self.assertEqual(1, intervals[0][Constants.LEVEL])
+                self.assertEqual(11, intervals[0][Constants.PERCENTAGE])
+                self.assertEqual(4, intervals[0][Constants.COUNT])
+                break
+        self.assertTrue(found_school, 'Did not find school in list')
+
+        # check summary results
+        summ_results = results[Constants.SUMMARY][0][Constants.RESULTS]
+        self.assertEqual(2, len(summ_results))
+        subject1 = summ_results[Constants.SUBJECT1]
+        self.assertEqual(51, subject1[Constants.TOTAL])
         self.assertEqual(Constants.MATH, subject1[Constants.ASMT_SUBJECT])
         intervals = subject1[Constants.INTERVALS]
-        self.assertEqual(5, len(intervals))
+        #self.assertEqual(4, len(intervals))
         self.assertEqual(1, intervals[0][Constants.LEVEL])
-        self.assertEqual(0, intervals[0][Constants.PERCENTAGE])
-        self.assertEqual(0, intervals[0][Constants.COUNT])
-        subject2 = asmt_results[Constants.SUBJECT2]
-        self.assertEqual(3, subject2[Constants.TOTAL])
-        self.assertEqual(Constants.ELA, subject2[Constants.ASMT_SUBJECT])
-        self.assertEqual(5, len(subject2[Constants.INTERVALS]))
-        intervals = subject2[Constants.INTERVALS]
-        self.assertEqual(5, len(intervals))
-        self.assertEqual(1, intervals[0][Constants.LEVEL])
-        self.assertEqual(67, intervals[0][Constants.PERCENTAGE])
-        self.assertEqual(2, intervals[0][Constants.COUNT])
+        self.assertEqual(16, intervals[0][Constants.PERCENTAGE])
+        self.assertEqual(8, intervals[0][Constants.COUNT])
 
         # check subjects
         self.assertEqual(Constants.MATH, results[Constants.SUBJECTS][Constants.SUBJECT1])
@@ -127,25 +121,8 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         # check context
         context_items = results['context']['items']
         self.assertEqual(2, len(context_items))
-        self.assertEqual('NY', context_items[0][Constants.NAME])
+        self.assertEqual('New York', context_items[0][Constants.NAME])
         self.assertEqual('Sunset School District', context_items[1][Constants.NAME])
-
-        # check summary results
-        summ_results = results[Constants.SUMMARY][0][Constants.RESULTS]
-        self.assertEqual(2, len(summ_results))
-        subject1 = summ_results[Constants.SUBJECT1]
-        self.assertEqual(3, subject1[Constants.TOTAL])
-        self.assertEqual(Constants.MATH, subject1[Constants.ASMT_SUBJECT])
-        self.assertEqual(5, len(subject1[Constants.INTERVALS]))
-        subject2 = summ_results[Constants.SUBJECT2]
-        self.assertEqual(3, subject2[Constants.TOTAL])
-        self.assertEqual(Constants.ELA, subject2[Constants.ASMT_SUBJECT])
-        self.assertEqual(5, len(subject2[Constants.INTERVALS]))
-        intervals = subject2[Constants.INTERVALS]
-        self.assertEqual(5, len(intervals))
-        self.assertEqual(1, intervals[0][Constants.LEVEL])
-        self.assertEqual(67, intervals[0][Constants.PERCENTAGE])
-        self.assertEqual(2, intervals[0][Constants.COUNT])
 
         # check colors
         self.assertTrue('text_color' in results[Constants.COLORS][Constants.SUBJECT1])
@@ -163,30 +140,38 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         self.assertTrue('context' in results, "returning JSON must have context")
         self.assertTrue(Constants.SUMMARY in results, "returning JSON must have summary")
 
-        # check grade-level results
+        # check district-level results
         records = results[Constants.RECORDS]
-        self.assertEqual(1, len(records), "1 district in the list")
-        self.assertEqual('d1', records[0][Constants.ID])
-        self.assertEqual('Sunset School District', records[0][Constants.NAME])
-        asmt_results = records[0][Constants.RESULTS]
-        self.assertEqual(2, len(asmt_results))
-        subject1 = asmt_results[Constants.SUBJECT1]
-        self.assertEqual(3, subject1[Constants.TOTAL])
+        self.assertEqual(2, len(records), "2 districts in the list")
+        found_district = False
+        for record in records:
+            if record[Constants.ID] == '228':
+                found_district = True
+                self.assertEqual('Sunset School District', record[Constants.NAME])
+                asmt_results = record[Constants.RESULTS]
+                self.assertEqual(2, len(asmt_results))
+                subject1 = asmt_results[Constants.SUBJECT1]
+                self.assertEqual(51, subject1[Constants.TOTAL])
+                self.assertEqual(Constants.MATH, subject1[Constants.ASMT_SUBJECT])
+                intervals = subject1[Constants.INTERVALS]
+                #self.assertEqual(4, len(intervals))
+                self.assertEqual(1, intervals[0][Constants.LEVEL])
+                self.assertEqual(16, intervals[0][Constants.PERCENTAGE])
+                self.assertEqual(8, intervals[0][Constants.COUNT])
+                break
+        self.assertTrue(found_district, 'Did not find district in list')
+
+        # check summary results
+        summ_results = results[Constants.SUMMARY][0][Constants.RESULTS]
+        self.assertEqual(2, len(summ_results))
+        subject1 = summ_results[Constants.SUBJECT1]
+        self.assertEqual(81, subject1[Constants.TOTAL])
         self.assertEqual(Constants.MATH, subject1[Constants.ASMT_SUBJECT])
         intervals = subject1[Constants.INTERVALS]
-        self.assertEqual(5, len(intervals))
+        #self.assertEqual(4, len(intervals))
         self.assertEqual(1, intervals[0][Constants.LEVEL])
-        self.assertEqual(0, intervals[0][Constants.PERCENTAGE])
-        self.assertEqual(0, intervals[0][Constants.COUNT])
-        subject2 = asmt_results[Constants.SUBJECT2]
-        self.assertEqual(3, subject2[Constants.TOTAL])
-        self.assertEqual(Constants.ELA, subject2[Constants.ASMT_SUBJECT])
-        self.assertEqual(5, len(subject2[Constants.INTERVALS]))
-        intervals = subject2[Constants.INTERVALS]
-        self.assertEqual(5, len(intervals))
-        self.assertEqual(1, intervals[0][Constants.LEVEL])
-        self.assertEqual(67, intervals[0][Constants.PERCENTAGE])
-        self.assertEqual(2, intervals[0][Constants.COUNT])
+        self.assertEqual(15, intervals[0][Constants.PERCENTAGE])
+        self.assertEqual(12, intervals[0][Constants.COUNT])
 
         # check subjects
         self.assertEqual(Constants.MATH, results[Constants.SUBJECTS][Constants.SUBJECT1])
@@ -195,24 +180,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         # check context
         context_items = results['context']['items']
         self.assertEqual(1, len(context_items))
-        self.assertEqual('NY', context_items[0][Constants.NAME])
-
-        # check summary results
-        summ_results = results[Constants.SUMMARY][0][Constants.RESULTS]
-        self.assertEqual(2, len(summ_results))
-        subject1 = summ_results[Constants.SUBJECT1]
-        self.assertEqual(3, subject1[Constants.TOTAL])
-        self.assertEqual(Constants.MATH, subject1[Constants.ASMT_SUBJECT])
-        self.assertEqual(5, len(subject1[Constants.INTERVALS]))
-        subject2 = summ_results[Constants.SUBJECT2]
-        self.assertEqual(3, subject2[Constants.TOTAL])
-        self.assertEqual(Constants.ELA, subject2[Constants.ASMT_SUBJECT])
-        self.assertEqual(5, len(subject2[Constants.INTERVALS]))
-        intervals = subject2[Constants.INTERVALS]
-        self.assertEqual(5, len(intervals))
-        self.assertEqual(1, intervals[0][Constants.LEVEL])
-        self.assertEqual(67, intervals[0][Constants.PERCENTAGE])
-        self.assertEqual(2, intervals[0][Constants.COUNT])
+        self.assertEqual('New York', context_items[0][Constants.NAME])
 
         # check colors
         self.assertTrue('text_color' in results[Constants.COLORS][Constants.SUBJECT1])

@@ -46,11 +46,11 @@ class TestDataLoad(unittest.TestCase):
         load_data.get_table_order = MagicMock(side_effect=self.get_table_order_mock2)
         load_data.load_data_main(self.input_args)
 
-    def get_table_order_mock(self, input_args):
+    def get_table_order_mock(self, *args, **kwargs):
         ''' Mock of get_table_order'''
         return ['dim_fake', 'dim_fake2', 'dim_fake3']
 
-    def get_table_order_mock2(self, input_args):
+    def get_table_order_mock2(self, *args, **kwargs):
         ''' Mock of get_table_order'''
         return ['dim_fake', 'dim_fake2']
 

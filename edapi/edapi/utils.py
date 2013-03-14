@@ -8,8 +8,6 @@ import validictory
 from edapi.exceptions import ReportNotFoundError, InvalidParameterError
 import inspect
 import logging
-from logging import INFO
-from edapi.autolog import log_function
 
 REPORT_REFERENCE_FIELD_NAME = 'name'
 PARAMS_REFERENCE_FIELD_NAME = 'params'
@@ -41,8 +39,6 @@ class report_config(object):
         settings = self.__dict__.copy()
 
         def callback(scanner, name, obj):
-            def wrapper(*args, **kwargs):
-                return original_func(self, *args, **kwargs)
             scanner.config.add_report_config((obj, original_func), **settings)
         venusian.attach(original_func, callback, category='edapi')
         return original_func
@@ -58,7 +54,7 @@ def get_report_dict_value(dictionary, key, exception_to_raise=Exception):
     return report
 
 
-def call_decorated_method(report, params):
+def call_report(report, params):
     '''
     given a report (dict), get the value from reference key and call it
 
@@ -92,7 +88,7 @@ def generate_report(registry, report_name, params, validator=None):
 
     report = get_report_dict_value(registry, report_name, ReportNotFoundError)
 
-    result = call_decorated_method(report, params)
+    result = call_report(report, params)
     return result
 
 
@@ -145,7 +141,7 @@ def expand_field(registry, report_name, params):
         return (report_name, False)
     report = get_report_dict_value(registry, report_name, ReportNotFoundError)
     # params is None
-    report_data = call_decorated_method(report, params)
+    report_data = call_report(report, params)
     return (report_data, True)
 
 
@@ -276,3 +272,28 @@ class Validator:
                 VALID_TYPES.reverse_mapping[VALID_TYPES.ANY]: value}[value_type]
         except ValueError:
             return value
+
+from functools import update_wrapper, wraps
+
+
+class decorator_adapter(object):
+    '''
+    adapter for decorator used for instance methods and functions
+    '''
+    def __init__(self, decorator, func):
+        update_wrapper(self, func)
+        self.decorator = decorator
+        self.func = func
+
+    def __call__(self, *args, **kwargs):
+        return self.decorator(self.func)(*args, **kwargs)
+
+    def __get__(self, instance, owner):
+        return self.decorator(self.func.__get__(instance, owner))
+
+
+def adopt_to_method_and_func(decorator):
+    @wraps(decorator)
+    def adapter(func):
+        return decorator_adapter(decorator, func)
+    return adapter

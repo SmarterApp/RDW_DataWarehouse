@@ -3,7 +3,6 @@ Created on Jan 16, 2013
 
 @author: aoren
 '''
-import venusian
 import validictory
 from edapi.exceptions import ReportNotFoundError, InvalidParameterError
 import inspect
@@ -26,22 +25,6 @@ def enum(*sequential, **named):
     return type('Enum', (), enums)
 
 VALID_TYPES = enum(STRING='string', INTEGER='integer', NUMBER='number', BOOLEAN='boolean', ANY='any', ARRAY='array')
-
-
-class report_config(object):
-    '''
-    used for processing decorator '@report_config' in pyramid scans
-    '''
-    def __init__(self, **kwargs):
-        self.__dict__.update(kwargs)
-
-    def __call__(self, original_func):
-        settings = self.__dict__.copy()
-
-        def callback(scanner, name, obj):
-            scanner.config.add_report_config((obj, original_func), **settings)
-        venusian.attach(original_func, callback, category='edapi')
-        return original_func
 
 
 def get_report_dict_value(dictionary, key, exception_to_raise=Exception):

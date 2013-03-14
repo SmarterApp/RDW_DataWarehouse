@@ -35,7 +35,9 @@ def audit_event(logger_name="audit"):
             params.update(kwds)
             allargs['params'] = params
             if not 'user' in allargs.keys():
-                allargs['user'] = authenticated_userid(get_current_request()).get_name()
+                user = authenticated_userid(get_current_request())
+                if user is not None:
+                    allargs['user'] = user.get_name()
             if not 'principals' in allargs.keys():
                 allargs['principals'] = effective_principals(get_current_request())
             log.info(allargs)

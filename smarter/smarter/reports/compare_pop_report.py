@@ -236,6 +236,8 @@ class RecordManager():
             __record[Constants.RESULTS] = record.subjects
             __record[Constants.PARAMS] = {}
             __record[Constants.PARAMS][Constants.STATEID] = state_id
+            # if state view, then district_id is record.id
+            # if district view, then school_id is record.id
             if district_id is None and school_id is None:
                 __record[Constants.PARAMS][Constants.DISTRICTID] = record.id
             elif school_id is None:

@@ -72,11 +72,7 @@ def run_query(params):
 
         query_helper = QueryHelper(connector, params)
 
-        query = select(query_helper.build_columns(),
-                       from_obj=query_helper.build_from_obj())
-        query = query.group_by(*query_helper.build_group_by())
-        query = query.order_by(*query_helper.build_order_by())
-        query = query.where(query_helper.build_where())
+        query = query_helper.get_query()
 
         results = connector.get_result(query)
 
@@ -236,13 +232,11 @@ class RecordManager():
             __record[Constants.RESULTS] = record.subjects
             __record[Constants.PARAMS] = {}
             __record[Constants.PARAMS][Constants.STATEID] = state_id
-            # if state view, then district_id is record.id
-            # if district view, then school_id is record.id
-            if district_id is None and school_id is None:
-                __record[Constants.PARAMS][Constants.DISTRICTID] = record.id
-            elif school_id is None:
+            __record[Constants.PARAMS][Constants.ID] = record.id
+            if district_id is not None:
                 __record[Constants.PARAMS][Constants.DISTRICTID] = district_id
-                __record[Constants.PARAMS][Constants.SCHOOLID] = record.id
+            if school_id is not None:
+                __record[Constants.PARAMS][Constants.SCHOOLID] = school_id
             records.append(__record)
         return records
 
@@ -372,52 +366,49 @@ class QueryHelper():
                                                      else_='0'), INTEGER)).label(Constants.DISPLAY_LEVEL)]
         return columns + bar_widget_color_info + columns_for_perf_level
 
-    def build_from_obj(self):
-        '''
-        build join clause based on the view
-        '''
-        join_stmt = self._fact_asmt_outcome.join(self._dim_asmt, and_(self._dim_asmt.c.asmt_rec_id == self._fact_asmt_outcome.c.asmt_rec_id, self._dim_asmt.c.asmt_type == Constants.SUMMATIVE, self._dim_asmt.c.most_recent == true(), self._fact_asmt_outcome.c.most_recent == true()))
-        # building join clause based on request
-        if self._view == self.VIEWS.STATE_VIEW or self._view == self.VIEWS.DISTRICT_VIEW:
-            join_stmt = join_stmt.join(self._dim_inst_hier, and_(self._dim_inst_hier.c.inst_hier_rec_id == self._fact_asmt_outcome.c.inst_hier_rec_id, self._dim_inst_hier.c.most_recent == true()))
-        return [join_stmt]
-
-    def build_group_by(self):
-        '''
-        build group by clause based on the view
-        '''
-        group_by = None
+    def get_query(self):
         if self._view == self.VIEWS.STATE_VIEW:
-            group_by = self._dim_inst_hier.c.district_name, self._dim_inst_hier.c.district_id, self._dim_asmt.c.asmt_subject
+            return self.get_query_for_state_view()
         elif self._view == self.VIEWS.DISTRICT_VIEW:
-            group_by = self._dim_inst_hier.c.school_name, self._dim_inst_hier.c.school_id, self._dim_asmt.c.asmt_subject
+            return self.get_query_for_district_view()
         elif self._view == self.VIEWS.SCHOOL_VIEW:
-            group_by = self._fact_asmt_outcome.c.asmt_grade, self._dim_asmt.c.asmt_subject
-        return group_by + (self._dim_asmt.c.asmt_custom_metadata,)
+            return self.get_query_for_school_view()
 
-    def build_order_by(self):
-        '''
-        build order by clause based on the view
-        '''
-        order_by = None
-        if self._view == self.VIEWS.STATE_VIEW:
-            order_by = self._dim_inst_hier.c.district_name, self._dim_asmt.c.asmt_subject.desc()
-        elif self._view == self.VIEWS.DISTRICT_VIEW:
-            order_by = self._dim_inst_hier.c.school_name, self._dim_asmt.c.asmt_subject.desc()
-        elif self._view == self.VIEWS.SCHOOL_VIEW:
-            order_by = self._fact_asmt_outcome.c.asmt_grade, self._dim_asmt.c.asmt_subject.desc()
-        return order_by
+    def get_query_for_state_view(self):
+        query = select(self.build_columns(),
+                       from_obj=[self._fact_asmt_outcome
+                                 .join(self._dim_asmt,
+                                       and_(self._dim_asmt.c.asmt_rec_id == self._fact_asmt_outcome.c.asmt_rec_id, self._dim_asmt.c.asmt_type == Constants.SUMMATIVE, self._dim_asmt.c.most_recent == true(), self._fact_asmt_outcome.c.most_recent == true())
+                                       )
+                                 .join(self._dim_inst_hier,
+                                       and_(self._dim_inst_hier.c.inst_hier_rec_id == self._fact_asmt_outcome.c.inst_hier_rec_id, self._dim_inst_hier.c.most_recent == true())
+                                       )])
+        query = query.group_by(self._dim_inst_hier.c.district_name, self._dim_inst_hier.c.district_id, self._dim_asmt.c.asmt_subject, self._dim_asmt.c.asmt_custom_metadata)
+        query = query.order_by(self._dim_inst_hier.c.district_name, self._dim_asmt.c.asmt_subject.desc())
+        query = query.where(self._fact_asmt_outcome.c.state_code == self._state_id)
+        return query
 
-    def build_where(self):
-        '''
-        build where by clause based on the view
-        '''
-        where = None
-        # building group by clause based on request
-        if self._view == self.VIEWS.STATE_VIEW:
-            where = self._fact_asmt_outcome.c.state_code == self._state_id
-        elif self._view == self.VIEWS.DISTRICT_VIEW:
-            where = and_(self._fact_asmt_outcome.c.state_code == self._state_id, self._fact_asmt_outcome.c.district_id == self._district_id)
-        elif self._view == self.VIEWS.SCHOOL_VIEW:
-            where = and_(self._fact_asmt_outcome.c.state_code == self._state_id, self._fact_asmt_outcome.c.district_id == self._district_id, self._fact_asmt_outcome.c.school_id == self._school_id)
-        return where
+    def get_query_for_district_view(self):
+        query = select(self.build_columns(),
+                       from_obj=[self._fact_asmt_outcome
+                                 .join(self._dim_asmt,
+                                       and_(self._dim_asmt.c.asmt_rec_id == self._fact_asmt_outcome.c.asmt_rec_id, self._dim_asmt.c.asmt_type == Constants.SUMMATIVE, self._dim_asmt.c.most_recent == true(), self._fact_asmt_outcome.c.most_recent == true())
+                                       )
+                                 .join(self._dim_inst_hier,
+                                       and_(self._dim_inst_hier.c.inst_hier_rec_id == self._fact_asmt_outcome.c.inst_hier_rec_id, self._dim_inst_hier.c.most_recent == true())
+                                       )])
+        query = query.group_by(self._dim_inst_hier.c.school_name, self._dim_inst_hier.c.school_id, self._dim_asmt.c.asmt_subject, self._dim_asmt.c.asmt_custom_metadata)
+        query = query.order_by(self._dim_inst_hier.c.school_name, self._dim_asmt.c.asmt_subject.desc())
+        query = query.where(and_(self._fact_asmt_outcome.c.state_code == self._state_id, self._fact_asmt_outcome.c.district_id == self._district_id))
+        return query
+
+    def get_query_for_school_view(self):
+        query = select(self.build_columns(),
+                       from_obj=[self._fact_asmt_outcome
+                                 .join(self._dim_asmt,
+                                       and_(self._dim_asmt.c.asmt_rec_id == self._fact_asmt_outcome.c.asmt_rec_id, self._dim_asmt.c.asmt_type == Constants.SUMMATIVE, self._dim_asmt.c.most_recent == true(), self._fact_asmt_outcome.c.most_recent == true())
+                                       )])
+        query = query.group_by(self._fact_asmt_outcome.c.asmt_grade, self._dim_asmt.c.asmt_subject, self._dim_asmt.c.asmt_custom_metadata)
+        query = query.order_by(self._fact_asmt_outcome.c.asmt_grade, self._dim_asmt.c.asmt_subject.desc())
+        query = query.where(and_(self._fact_asmt_outcome.c.state_code == self._state_id, self._fact_asmt_outcome.c.district_id == self._district_id, self._fact_asmt_outcome.c.school_id == self._school_id))
+        return query

@@ -79,7 +79,7 @@ class Test(unittest.TestCase):
                 self.assertEqual(records[0][Constants.NAME], 'aaa')
                 self.assertEqual(2, len(records[0][Constants.PARAMS]))
                 self.assertEqual(records[0][Constants.PARAMS][Constants.STATEID], param.get(Constants.STATEID))
-                self.assertEqual(records[0][Constants.PARAMS][Constants.DISTRICTID], 3)
+                self.assertEqual(records[0][Constants.PARAMS][Constants.ID], 3)
                 self.assertIsNone(records[0][Constants.PARAMS].get(Constants.SCHOOLID))
                 self.assertIsNone(records[0][Constants.PARAMS].get(Constants.ASMT_GRADE))
             elif index == 1:
@@ -87,13 +87,13 @@ class Test(unittest.TestCase):
                 self.assertEqual(records[1][Constants.NAME], 'bbb')
                 self.assertEqual(2, len(records[1][Constants.PARAMS]))
                 self.assertEqual(records[1][Constants.PARAMS][Constants.STATEID], param.get(Constants.STATEID))
-                self.assertEqual(records[1][Constants.PARAMS][Constants.DISTRICTID], 1)
+                self.assertEqual(records[1][Constants.PARAMS][Constants.ID], 1)
             elif index == 2:
                 self.assertEqual(records[2][Constants.ID], 2)
                 self.assertEqual(records[2][Constants.NAME], 'ccc')
                 self.assertEqual(2, len(records[1][Constants.PARAMS]))
                 self.assertEqual(records[2][Constants.PARAMS][Constants.STATEID], param.get(Constants.STATEID))
-                self.assertEqual(records[2][Constants.PARAMS][Constants.DISTRICTID], 2)
+                self.assertEqual(records[2][Constants.PARAMS][Constants.ID], 2)
 
     def test_RecordManager_summary(self):
         param = {Constants.STATEID: 'DE'}

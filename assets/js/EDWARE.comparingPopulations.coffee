@@ -34,6 +34,7 @@ define [
             reportType = getReportType(params)
             gridConfig[0].name = customViews[reportType].name
             gridConfig[0].options.linkUrl = customViews[reportType].link
+            gridConfig[0].options.id_name = customViews[reportType].id_name
             
             # Render breadcrumbs on the page
             $('#breadcrumb').breadcrumbs(breadcrumbsData)

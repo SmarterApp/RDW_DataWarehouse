@@ -7,8 +7,9 @@ import unittest
 import os
 import json
 from smarter.reports.compare_pop_report import RecordManager, \
-    Record, ParameterManager, Parameters
+    Record
 from smarter.reports.helpers.constants import Constants
+import collections
 
 
 class Test(unittest.TestCase):
@@ -59,41 +60,45 @@ class Test(unittest.TestCase):
         self.assertEqual(0, interval_level5[Constants.PERCENTAGE])
 
     def test_RecordManager_get_record(self):
-        parameterManager = ParameterManager(Parameters({Constants.STATEID: 'DE'}))
-        manager = RecordManager(parameterManager, None)
-        record1 = Record(record_id=1, name='bbb', state_id=parameterManager.p.state_id, district_id=parameterManager.p.district_id, school_id=parameterManager.p.school_id)
-        record2 = Record(record_id=2, name='ccc', state_id=parameterManager.p.state_id, district_id=parameterManager.p.district_id, school_id=parameterManager.p.school_id)
-        record3 = Record(record_id=3, name='aaa', state_id=parameterManager.p.state_id, district_id=parameterManager.p.district_id, school_id=parameterManager.p.school_id)
+        param = {Constants.STATEID: 'DE'}
+        manager = RecordManager(param, None)
+        record3 = Record(record_id=3, name='aaa')
+        record1 = Record(record_id=1, name='bbb')
+        record2 = Record(record_id=2, name='ccc')
 
-        records = {}
+        records = collections.OrderedDict()
+        records[record3.id] = record3
         records[record1.id] = record1
         records[record2.id] = record2
-        records[record3.id] = record3
         manager._tracking_record = records
         records = manager.get_records()
         self.assertEqual(3, len(records))
-        self.assertEqual(records[0][Constants.ID], 3)
-        self.assertEqual(records[0][Constants.NAME], 'aaa')
-        self.assertEqual(2, len(records[0][Constants.PARAMS]))
-        self.assertEqual(records[0][Constants.PARAMS][Constants.STATEID], parameterManager.p.state_id)
-        self.assertEqual(records[0][Constants.PARAMS][Constants.DISTRICTID], 3)
-        self.assertIsNone(records[0][Constants.PARAMS].get(Constants.SCHOOLID))
-        self.assertIsNone(records[0][Constants.PARAMS].get(Constants.ASMT_GRADE))
-        self.assertEqual(records[1][Constants.ID], 1)
-        self.assertEqual(records[1][Constants.NAME], 'bbb')
-        self.assertEqual(2, len(records[1][Constants.PARAMS]))
-        self.assertEqual(records[1][Constants.PARAMS][Constants.STATEID], parameterManager.p.state_id)
-        self.assertEqual(records[1][Constants.PARAMS][Constants.DISTRICTID], 1)
-        self.assertEqual(records[2][Constants.ID], 2)
-        self.assertEqual(records[2][Constants.NAME], 'ccc')
-        self.assertEqual(2, len(records[1][Constants.PARAMS]))
-        self.assertEqual(records[2][Constants.PARAMS][Constants.STATEID], parameterManager.p.state_id)
-        self.assertEqual(records[2][Constants.PARAMS][Constants.DISTRICTID], 2)
+        for index in range(len(records)):
+            if index == 0:
+                self.assertEqual(records[0][Constants.ID], 3)
+                self.assertEqual(records[0][Constants.NAME], 'aaa')
+                self.assertEqual(2, len(records[0][Constants.PARAMS]))
+                self.assertEqual(records[0][Constants.PARAMS][Constants.STATEID], param.get(Constants.STATEID))
+                self.assertEqual(records[0][Constants.PARAMS][Constants.DISTRICTID], 3)
+                self.assertIsNone(records[0][Constants.PARAMS].get(Constants.SCHOOLID))
+                self.assertIsNone(records[0][Constants.PARAMS].get(Constants.ASMT_GRADE))
+            elif index == 1:
+                self.assertEqual(records[1][Constants.ID], 1)
+                self.assertEqual(records[1][Constants.NAME], 'bbb')
+                self.assertEqual(2, len(records[1][Constants.PARAMS]))
+                self.assertEqual(records[1][Constants.PARAMS][Constants.STATEID], param.get(Constants.STATEID))
+                self.assertEqual(records[1][Constants.PARAMS][Constants.DISTRICTID], 1)
+            elif index == 2:
+                self.assertEqual(records[2][Constants.ID], 2)
+                self.assertEqual(records[2][Constants.NAME], 'ccc')
+                self.assertEqual(2, len(records[1][Constants.PARAMS]))
+                self.assertEqual(records[2][Constants.PARAMS][Constants.STATEID], param.get(Constants.STATEID))
+                self.assertEqual(records[2][Constants.PARAMS][Constants.DISTRICTID], 2)
 
     def test_RecordManager_summary(self):
-        parameterManager = ParameterManager(Parameters({Constants.STATEID: 'DE'}))
+        param = {Constants.STATEID: 'DE'}
         subjects = {Constants.MATH: Constants.SUBJECT1, Constants.ELA: Constants.SUBJECT2}
-        manager = RecordManager(parameterManager, subjects)
+        manager = RecordManager(param, subjects)
         record1 = Record(record_id=1, name='bbb')
         record1.subjects[Constants.SUBJECT1] = {Constants.ASMT_SUBJECT: Constants.MATH, Constants.TOTAL: 150, Constants.INTERVALS: [{Constants.LEVEL: 1, Constants.COUNT: 10}, {Constants.LEVEL: 2, Constants.COUNT: 20}, {Constants.LEVEL: 3, Constants.COUNT: 30}, {Constants.LEVEL: 4, Constants.COUNT: 40}, {Constants.LEVEL: 5, Constants.COUNT: 50}]}
         record1.subjects[Constants.SUBJECT2] = {Constants.ASMT_SUBJECT: Constants.ELA, Constants.TOTAL: 150, Constants.INTERVALS: [{Constants.LEVEL: 1, Constants.COUNT: 10}, {Constants.LEVEL: 2, Constants.COUNT: 20}, {Constants.LEVEL: 3, Constants.COUNT: 30}, {Constants.LEVEL: 4, Constants.COUNT: 40}, {Constants.LEVEL: 5, Constants.COUNT: 50}]}
@@ -123,17 +128,17 @@ class Test(unittest.TestCase):
         self.assertEqual(1500, subject2[Constants.TOTAL])
 
     def test_RecordManager_get_subjects(self):
-        parameterManager = ParameterManager(Parameters({Constants.STATEID: 'DE'}))
+        param = {Constants.STATEID: 'DE'}
         subjects = {'a': 'b', 'c': 'd'}
-        manager = RecordManager(parameterManager, subjects)
+        manager = RecordManager(param, subjects)
         subjects = manager.get_subjects()
         self.assertEqual('a', subjects['b'])
 
     def test_RecordManager_update_record(self):
         results = get_results('school_view_results.json')
-        parameterManager = ParameterManager(Parameters({Constants.STATEID: 'DE', Constants.DISTRICTID: '245', Constants.SCHOOLID: '92499'}))
+        param = {Constants.STATEID: 'DE', Constants.DISTRICTID: '245', Constants.SCHOOLID: '92499'}
         subjects = {Constants.MATH: Constants.SUBJECT1, Constants.ELA: Constants.SUBJECT2}
-        manager = RecordManager(parameterManager, subjects)
+        manager = RecordManager(param, subjects)
         for result in results:
             manager.update_record(result)
         self.assertEqual(2, len(manager.get_asmt_custom_metadata()))

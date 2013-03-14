@@ -29,7 +29,7 @@ class EdAuthAuthenticationPolicy(AuthTktAuthenticationPolicy):
         Returns a list of roles for the user
         '''
         effective_principals = []
-        session_id = self.unauthenticated_userid(request)
+        session_id = unauthenticated_userid(request)
 
         if session_id is None:
             return effective_principals

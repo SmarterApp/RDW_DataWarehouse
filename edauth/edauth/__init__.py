@@ -22,8 +22,8 @@ def includeme(config):
     cookie_max_age = convert_to_int(settings.get('auth.cookie.max_age'))
     session_timeout = convert_to_int(settings.get('auth.cookie.timeout'))
     authentication_policy = EdAuthAuthenticationPolicy(settings['auth.cookie.secret'],
-                                                       cookie_name=settings['auth.cookie.name'],
                                                        callback=session_check,
+                                                       cookie_name=settings['auth.cookie.name'],
                                                        hashalg=settings['auth.cookie.hashalg'],
                                                        max_age=cookie_max_age,
                                                        timeout=session_timeout,

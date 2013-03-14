@@ -17,7 +17,7 @@ class TestDataLoad(unittest.TestCase):
     def setUp(self):
         load_data.system = MagicMock(side_effect=self.system_mock)
         load_data.get_table_order = MagicMock(side_effect=self.get_table_order_mock)
-        load_data.set_postres_passwd = MagicMock(return_value='filename')
+        load_data.setup_pg_passwd_file = MagicMock(return_value={'PGPASSFILE': 'filename'})
         os.remove = MagicMock()
         self.input_args = {
             'schema': 'schema',
@@ -47,11 +47,11 @@ class TestDataLoad(unittest.TestCase):
         load_data.load_data_main(self.input_args)
 
     def get_table_order_mock(self, input_args):
-        '''Mock of get_table_order'''
+        ''' Mock of get_table_order'''
         return ['dim_fake', 'dim_fake2', 'dim_fake3']
 
     def get_table_order_mock2(self, input_args):
-        '''Mock of get_table_order'''
+        ''' Mock of get_table_order'''
         return ['dim_fake', 'dim_fake2']
 
     def system_mock(self, *args, **kwargs):

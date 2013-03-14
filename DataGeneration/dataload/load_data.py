@@ -1,4 +1,11 @@
 '''
+load_data.py
+Script for loading csv's to a database schema.
+
+main at bottom of page
+If module is being imported use:
+load_csvs_to_database()
+
 Created on Mar 12, 2013
 
 @author: swimberly
@@ -72,7 +79,7 @@ def get_input_args():
     return vars(args)
 
 
-def set_postres_passwd(host, database, user, passwd, directory, port=5432):
+def setup_pg_passwd_file(host, database, user, passwd, directory, port=5432):
     '''
     Create the '~/.pgpass' file and set necessary attributes to allow
     connection to the postgres db
@@ -84,7 +91,7 @@ def set_postres_passwd(host, database, user, passwd, directory, port=5432):
     directory -- the directory to store the pgpass file
     port -- the port to use for postgres
     RETURNS:
-    filename -- the name and path to the file
+    env -- the dict containing the environment vars to use when running psql command
     '''
 
     string = '{host}:{port}:{db}:{user}:{passwd}'.format(host=host, port=port, db=database, user=user, passwd=passwd)
@@ -95,7 +102,19 @@ def set_postres_passwd(host, database, user, passwd, directory, port=5432):
 
     system('chmod', '600', filename)
 
-    return filename
+    env = dict(os.environ)
+    env['PGPASSFILE'] = filename
+
+    return env
+
+
+def remove_pg_passwd_file(filename):
+    """ Cleanup: remove the file used to store the pg password """
+    try:
+        os.remove(filename)
+    except FileNotFoundError:
+        print('Unable to locate file %s, the file may still remain.' % filename)
+        print('Consider removing manually.')
 
 
 def get_table_order(input_args):
@@ -114,13 +133,10 @@ def get_table_order(input_args):
     return table_names
 
 
-def load_data_main(input_args):
+def get_csv_list(csvpath):
     '''
-    Main method for all the work that is to be done.
-    INPUT:
-    input_args -- a dictionary of all of the parameters received by the arg parser
+    Gets the list of csv files in the specified directory
     '''
-    csvpath = input_args.get('csvdir')
 
     if not csvpath:
         csvpath = os.getcwd()
@@ -132,42 +148,74 @@ def load_data_main(input_args):
     if not files:
         raise AttributeError('There are no CSV files in this Directory: %s' % csvpath)
 
-    pgpass_file = set_postres_passwd(input_args['host'], input_args['database'], input_args['user'], input_args['passwd'], csvpath, input_args['port'])
-    env = dict(os.environ)
-    env['PGPASSFILE'] = pgpass_file
+    #transform names from byte strings to strings and remove '.csv'
+    files = [x.decode("utf-8").split('.')[0] for x in files]
 
-    ordered_tables = get_table_order(input_args)
+    return files, csvpath
 
-    #transform names from byte strings to strings
-    files = [x.decode("utf-8") for x in files]
 
-    fileset = {x.split('.')[0] for x in files}
-    missing_tables = set(ordered_tables) - fileset
+def truncate_db_tables(tables, schema, user, host, database, env):
+    """ truncate all the tables in the list of tables """
 
-    if missing_tables:
-        raise AttributeError('The following table(s) are not present in one of the locations %s' % missing_tables)
+    for table in tables:
+        truncate_string = "TRUNCATE {schema}.{name} CASCADE".format(schema=schema, name=table)
+        system('psql', '-U', user, '-h', host, '-d', database, '-c', truncate_string, env=env)
 
-    # truncate tables
-    if input_args['truncate']:
-        for table in ordered_tables:
-            truncate_string = "TRUNCATE {schema}.{name} CASCADE".format(schema=input_args['schema'], name=table)
-            system('psql', '-U', input_args['user'], '-h', input_args['host'], '-d', input_args['database'], '-c', truncate_string, env=env)
 
-    for table in ordered_tables:
+def copy_db_tables(tables, csvpath, schema, user, host, database, env):
+    """ run psql copy command for each of the tables in the list """
+
+    for table in tables:
         filename = os.path.join(csvpath, table + '.csv')
-        copy_string = "\copy {schema}.{name} from {filename} USING DELIMITERS ',' CSV HEADER".format(schema=input_args['schema'], name=table, filename=filename)
+        copy_string = "\copy {schema}.{name} from {filename} USING DELIMITERS ',' CSV HEADER".format(schema=schema, name=table, filename=filename)
 
         start = time.time()
         print('Loading table:', table)
 
         # Load data from csv using psql \copy command
-        system('psql', '-U', input_args['user'], '-h', input_args['host'], '-d', input_args['database'], '-c', copy_string, env=env)
+        system('psql', '-U', user, '-h', host, '-d', database, '-c', copy_string, env=env)
         tot_time = time.time() - start
         print('Loaded table: %s in %.2f' % (table, tot_time))
         print()
 
-    os.remove(pgpass_file)
+
+def load_data_main(input_args):
+    '''
+    Main method for all the work that is to be done.
+    INPUT:
+    input_args -- a dictionary of all of the parameters received by the arg parser
+    '''
+
+    # get csv file names and the path to csvs
+    csv_file_names, csvpath = get_csv_list(input_args.get('csvdir'))
+
+    # get a copy of the environment that includes 'PGPASSFILE' that points to the new password file
+    env = setup_pg_passwd_file(input_args['host'], input_args['database'], input_args['user'], input_args['passwd'], csvpath, input_args['port'])
+
+    # get an ordered list of tables
+    ordered_tables = get_table_order(input_args)
+
+    # convert the list of files to a set
+    fileset = set(csv_file_names)
+
+    # determine if any csv files are missing from the list of tables
+    missing_tables = set(ordered_tables) - fileset
+    if missing_tables:
+        raise AttributeError('The following table(s) are not present in one of the locations %s' % missing_tables)
+
+    # truncate tables
+    if input_args['truncate']:
+        truncate_db_tables(ordered_tables, input_args['schema'], input_args['user'], input_args['host'], input_args['database'], env)
+
+    # copy csvs to tables
+    copy_db_tables(ordered_tables, csvpath, input_args['schema'], input_args['user'], input_args['host'], input_args['database'], env)
+
+    # clean up
+    remove_pg_passwd_file(env['PGPASSFILE'])
+
+    print('Data Load Complete')
 
 
 if __name__ == '__main__':
-    load_data_main(get_input_args())
+    input_args = get_input_args()
+    load_data_main(input_args)

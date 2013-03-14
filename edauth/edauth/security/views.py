@@ -4,7 +4,7 @@ Created on Feb 13, 2013
 @author: dip
 '''
 from pyramid.security import NO_PERMISSION_REQUIRED, forget, remember, \
-    authenticated_userid, effective_principals
+    effective_principals, unauthenticated_userid
 from pyramid.httpexceptions import HTTPFound, HTTPForbidden
 from pyramid.view import view_config, forbidden_view_config
 import base64
@@ -29,8 +29,9 @@ def login(request):
     '''
     url = request.registry.settings['auth.saml.idp_server_login_url']
 
-    # Both of these calls will trigger our callback
-    session_id = authenticated_userid(request)
+    # Get session id from cookie
+    session_id = unauthenticated_userid(request)
+    # Get roles
     principals = effective_principals(request)
 
     # Requests will be forwarded here when users aren't authorized to those pages, how to prevent it?
@@ -89,7 +90,7 @@ def login_callback(request):
 @view_config(route_name='logout', permission='logout')
 def logout(request):
     # Get the current session
-    session_id = authenticated_userid(request)
+    session_id = unauthenticated_userid(request)
 
     # Redirect to login if no session exist
     url = request.route_url('login')

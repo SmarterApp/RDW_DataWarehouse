@@ -6,6 +6,7 @@ Created on Mar 13, 2013
 import venusian
 import pyramid
 from functools import wraps
+from pyramid.security import authenticated_userid
 
 
 class report_config(object):
@@ -33,11 +34,7 @@ def user_info(orig_func):
     @wraps(orig_func)
     def wrap(*args, **kwds):
         results = orig_func(*args, **kwds)
-        principals = pyramid.security.effective_principals(pyramid.threadlocal.get_current_request())
-        if principals is not None:
-            for principal in principals:
-                if type(principal) == dict:
-                    results['user_info'] = principal
-                    break
+        user = authenticated_userid(pyramid.threadlocal.get_current_request())
+        results['user_info'] = user.get_name()
         return results
     return wrap

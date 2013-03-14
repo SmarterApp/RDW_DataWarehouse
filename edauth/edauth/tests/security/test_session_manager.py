@@ -37,7 +37,7 @@ class TestSessionManager(unittest.TestCase):
         self.assertEqual(len(session.get_session_id()), 36, "session id Length must be 36, UUID")
         self.assertEqual(session.get_uid(), "linda.kim", "uid is linda.kim")
         self.assertTrue("TEACHER" in session.get_roles(), "role is teacher")
-        self.assertEqual(session.get_name()['fullName'], "Linda Kim", "name is Linda Kim")
+        self.assertEqual(session.get_name()['name']['fullName'], "Linda Kim", "name is Linda Kim")
 
     def test_create_session_from_json(self):
         # prepare mock session in database
@@ -55,7 +55,7 @@ class TestSessionManager(unittest.TestCase):
         self.assertEqual(len(session.get_session_id()), 36, "session id Length must be 36, UUID")
         self.assertEqual(session.get_uid(), "linda.kim", "uid is linda.kim")
         self.assertTrue("TEACHER" in session.get_roles(), "role is teacher")
-        self.assertEqual(session.get_name()['fullName'], "Linda Kim", "name is Linda Kim")
+        self.assertEqual(session.get_name()['name']['fullName'], "Linda Kim", "name is Linda Kim")
 
     def test_update_last_access_session(self):
         session = create_new_user_session(create_SAMLResponse('SAMLResponse.xml'))

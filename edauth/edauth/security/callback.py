@@ -14,16 +14,13 @@ def session_check(session_id, request):
     Return an empty list of roles if no session is found in db, but cookie exists or if user session expired
     By returning an empty list, it will redirect user back to IDP to reauthenticate, and we will recreate new session
     '''
-    callback_array = []
+    roles = []
     session = get_user_session(session_id)
 
     if session is not None:
         if is_session_expired(session):
             pass
         else:
-            callback_array.extend(session.get_roles())
-            name = session.get_name()
-            user_info = {'name': name}
-            callback_array.append(user_info)
+            roles = session.get_roles()
             update_session_access(session)
-    return callback_array
+    return roles

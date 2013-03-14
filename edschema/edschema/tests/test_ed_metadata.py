@@ -23,9 +23,9 @@ class TestEdMetadata(Unittest_with_sqlite):
             # check number of field in the table
             self.assertEqual(11, len(dim_inst_hier.c), "Number of fields in dim_district")
 
-            query = dim_inst_hier.select(dim_inst_hier.c.district_id == 'd1')
+            query = dim_inst_hier.select(dim_inst_hier.c.district_id == '228')
             result = connector.get_result(query)
-            self.assertEqual('d1', result[0]['district_id'])
+            self.assertEqual('228', result[0]['district_id'])
 
 
 if __name__ == "__main__":

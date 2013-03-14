@@ -12,36 +12,38 @@ from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smart
 class TestStudentReport(Unittest_with_smarter_sqlite):
 
     def test_student_report(self):
-        params = {"studentId": '286ee893-dad0-4833-ae6c-adef78a11567', "assessmentId": 1}
+        params = {"studentId": 'dae1acf4-afb0-4013-90ba-9dcde4b25621', "assessmentId": 20}
         result = get_student_report(params)['items']
         self.assertEqual(1, len(result), "studentId should have 1 report")
         self.assertEqual('ELA', result[0]['asmt_subject'], 'asmt_subject')
-        self.assertEqual(88, result[0]['asmt_claim_1_score'], 'asmt_claim_1_score 88')
+        self.assertEqual(89, result[0]['asmt_claim_1_score'], 'asmt_claim_1_score 88')
         self.assertEqual('Research & Inquiry', result[0]['asmt_claim_4_name'], 'asmt_claim_4_name Spelling')
 
     def test_student_assessment_id(self):
-        params = {"studentId": '286ee893-dad0-4833-ae6c-adef78a11567'}
+        params = {"studentId": 'dae1acf4-afb0-4013-90ba-9dcde4b25621'}
         result = get_student_assessment(params)
 
-        self.assertEqual(2, len(result), "studentId should have 2 assessments")
+        self.assertEqual(4, len(result), "studentId should have 4 assessments")
         self.assertEqual('ELA', result[0]['asmt_subject'], 'asmt_subject ELA')
-        self.assertEqual('Math', result[1]['asmt_subject'], 'asmt_subject MATH')
+        self.assertEqual('ELA', result[1]['asmt_subject'], 'asmt_subject ELA')
+        self.assertEqual('Math', result[2]['asmt_subject'], 'asmt_subject Math')
+        self.assertEqual('Math', result[3]['asmt_subject'], 'asmt_subject Math')
 
     def test_assessment_header_info(self):
-        params = {"studentId": '286ee893-dad0-4833-ae6c-adef78a11567'}
+        params = {"studentId": 'dae1acf4-afb0-4013-90ba-9dcde4b25621'}
         result = get_student_report(params)['items']
         student_report = result[0]
 
         self.assertEqual('Math', student_report['asmt_subject'], 'asmt_subject')
-        self.assertEqual('Brandon', student_report['teacher_first_name'], 'teacher first name')
-        self.assertEqual('Christopher', student_report['teacher_middle_name'], 'teacher middle name')
-        self.assertEqual('Suzuki', student_report['teacher_last_name'], 'teacher last name')
-        self.assertEqual(1, student_report['date_taken_day'])
-        self.assertEqual(1, student_report['date_taken_month'])
-        self.assertEqual(2013, student_report['date_taken_year'])
+        self.assertEqual('Linda', student_report['teacher_first_name'], 'teacher first name')
+        self.assertEqual('', student_report['teacher_middle_name'], 'teacher middle name')
+        self.assertEqual('Kim', student_report['teacher_last_name'], 'teacher last name')
+        self.assertEqual(21, student_report['date_taken_day'])
+        self.assertEqual(9, student_report['date_taken_month'])
+        self.assertEqual(2012, student_report['date_taken_year'])
 
     def test_custom_metadata(self):
-        params = {"studentId": '286ee893-dad0-4833-ae6c-adef78a11567'}
+        params = {"studentId": 'dae1acf4-afb0-4013-90ba-9dcde4b25621'}
         result = get_student_report(params)['items']
         student_report = result[0]
 
@@ -63,7 +65,7 @@ class TestStudentReport(Unittest_with_smarter_sqlite):
             self.assertIn("bg_color", keys, "should contain the bg_color of the cut point")
 
     def test_score_interval(self):
-        params = {"studentId": '286ee893-dad0-4833-ae6c-adef78a11567'}
+        params = {"studentId": 'dae1acf4-afb0-4013-90ba-9dcde4b25621'}
         result = get_student_report(params)['items']
         student_report = result[0]
 
@@ -71,20 +73,20 @@ class TestStudentReport(Unittest_with_smarter_sqlite):
         self.assertEqual(student_report['asmt_score'], student_report['asmt_score_range_max'] - student_report['asmt_score_interval'])
 
     def test_context(self):
-        params = {"studentId": '286ee893-dad0-4833-ae6c-adef78a11567'}
+        params = {"studentId": 'dae1acf4-afb0-4013-90ba-9dcde4b25621'}
         result = get_student_report(params)['context']['items']
-        self.assertEqual('NY', result[0]['name'])
+        self.assertEqual('New York', result[0]['name'])
         self.assertEqual('Sunset School District', result[1]['name'])
-        self.assertEqual("1", result[3]['name'])
-        self.assertEqual("Sunset Central High", result[2]['name'])
-        self.assertEqual("Verda Herriman", result[4]['name'])
+        self.assertEqual("3", result[3]['name'])
+        self.assertEqual("Sunset - Eastern Elementary", result[2]['name'])
+        self.assertEqual("Lettie L. Hose", result[4]['name'])
 
     def test_claims(self):
-        params = {"studentId": '286ee893-dad0-4833-ae6c-adef78a11567'}
+        params = {"studentId": 'dae1acf4-afb0-4013-90ba-9dcde4b25621'}
         items = get_student_report(params)['items']
         result = items[0]
         self.assertEqual('Concepts & Procedures', result['asmt_claim_1_name'])
-        self.assertEqual('Problem Solving & Modeling and Data Analysis', result['asmt_claim_2_name'])
+        self.assertEqual('Problem Solving and Modeling & Data Analysis', result['asmt_claim_2_name'])
         self.assertEqual('Communicating Reasoning', result['asmt_claim_3_name'])
         self.assertEqual('', result['asmt_claim_4_name'])
         result = items[1]

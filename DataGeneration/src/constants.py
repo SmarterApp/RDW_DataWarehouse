@@ -38,7 +38,7 @@ CLAIM_DEFINITIONS = {
             {'claim_name': 'Communicating Reasoning', 'claim_weight': .15}
         ],
         'ELA': [
-            {'claim_name': 'Reading','claim_weight': .20},
+            {'claim_name': 'Reading', 'claim_weight': .20},
             {'claim_name': 'Writing', 'claim_weight': .25},
             {'claim_name': 'Speaking & Listening', 'claim_weight': .25},
             {'claim_name': 'Research & Inquiry', 'claim_weight': .30}

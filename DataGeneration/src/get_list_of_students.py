@@ -22,7 +22,6 @@ def get_students_for_assessment(schema_name, metadata, db_connection, parameters
         result = db_connection.execute(query)
         # format the result
         students = [dict(row) for row in result] if result else []
-
     return students
 
 
@@ -127,6 +126,8 @@ def main():
     print("Starting get list of students")
     start_time = datetime.now()
     student_list = get_students_for_assessment(schema, metadata, db_connection, input_args)
+    for student in student_list:
+        print(student)
     finish_time = datetime.now()
     print("Length of student list is ", len(student_list))
     print("Start  at -- ", start_time)

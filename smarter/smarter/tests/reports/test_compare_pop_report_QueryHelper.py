@@ -8,6 +8,7 @@ from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smart
 from smarter.reports.compare_pop_report import QueryHelper
 from smarter.database.connector import SmarterDBConnection
 from smarter.reports.helpers.constants import Constants
+from smarter.reports.exceptions.parameter_exception import InvalidParamterException
 
 
 class Test(Unittest_with_smarter_sqlite_no_data_load):
@@ -91,6 +92,9 @@ class Test(Unittest_with_smarter_sqlite_no_data_load):
 
     def check_performance_level_column(self, column, alias_name):
         self.assertEqual(column.key, alias_name)
+
+    def test_invalid_parameters(self):
+        self.assertRaises(InvalidParamterException, QueryHelper, None, {'stateId': 'DE', 'schoolId': 'BAC'})
 
 
 def get_param_school_view():

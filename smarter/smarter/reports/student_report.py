@@ -175,7 +175,6 @@ def __arrange_results(results):
                     },
                })
 @audit_event()
-@log_function(INFO, None, 'smarter', 'Individual Student Report')
 @user_info
 def get_student_report(params):
     '''

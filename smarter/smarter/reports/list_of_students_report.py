@@ -63,7 +63,6 @@ __asmtSubject = 'asmtSubject'
         }
     })
 @audit_event()
-@log_function(INFO, None, 'smarter', 'List of Students Report')
 @user_info
 def get_list_of_students_report(params):
 

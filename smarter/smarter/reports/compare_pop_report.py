@@ -15,6 +15,7 @@ from operator import attrgetter
 from sqlalchemy.types import INTEGER
 from smarter.reports.exceptions.parameter_exception import InvalidParamterException
 from smarter.reports.helpers.constants import Constants
+from edapi.logging import audit_event
 
 # Report service for Comparing Populations
 # Output:
@@ -52,6 +53,7 @@ from smarter.reports.helpers.constants import Constants
             "pattern": "^[a-zA-Z0-9\-]{0,50}$",
         }
     })
+@audit_event()
 @user_info
 def get_comparing_populations_report(params):
 

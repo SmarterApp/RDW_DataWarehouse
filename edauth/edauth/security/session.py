@@ -19,7 +19,6 @@ class Session:
         self.__session = {}
         self.__user = User()
         self.__session_id = None
-        self.__session['roles'] = []
         self.__session['idpSessionIndex'] = None
         self.__session['nameId'] = None
 
@@ -37,7 +36,7 @@ class Session:
         return self.__user.get_uid()
 
     def get_roles(self):
-        return self.__session['roles']
+        return self.__user.get_roles()
 
     def get_name(self):
         return self.__user.get_name()
@@ -64,7 +63,7 @@ class Session:
         self.__user.set_uid(uid)
 
     def set_roles(self, roles):
-        self.__session['roles'] = roles
+        self.__user.set_roles(roles)
 
     def set_fullName(self, fullName):
         self.__user.set_full_name(fullName)

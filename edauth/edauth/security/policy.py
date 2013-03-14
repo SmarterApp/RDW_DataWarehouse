@@ -33,12 +33,12 @@ class EdAuthAuthenticationPolicy(AuthTktAuthenticationPolicy):
 
         if session_id is None:
             return effective_principals
-
+        # if no callback method is registrered, return empty list
         if self.callback is None:
             groups = []
         else:
             groups = self.callback(session_id, request)
-
+        # if callback returns none, return empty list
         if groups is None:
             return effective_principals
 

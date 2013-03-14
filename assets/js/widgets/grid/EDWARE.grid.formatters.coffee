@@ -19,6 +19,8 @@ define [
       for k, v of rowObject.params
         if (i != 0)
           params = params + "&"
+        if k == "id"
+          k = options.colModel.formatoptions.id_name
         params = params + k + "=" + v
         i++
       "<a class="+cssClass+" href=\"" + link + "?" + params + "\">" + $.jgrid.htmlEncode(value) + "</a>"

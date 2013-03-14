@@ -6,8 +6,8 @@
             {"name":"ELA","index":"results.subject2.total","field":"results.subject2.total","width":285,"formatter":"performanceBar", "options":{"asmt_type":"subject2"}, "title":false, "sorttype":"int","align":"center"},
             {"name":"Total Students","index":"results.subject2.total","field":"results.subject2.total","formatter":"number","options":{"thousandsSeparator": ","},"width":80,"sorttype":"int","align":"center"}
         ],
-    "customViews" : {"school": {"name": "Grade", "link": "studentList.html"}, 
-                           "district": {"name": "School Name", "link": "comparingPopulations.html"}, 
-                           "state": {"name": "District Name", "link": "comparingPopulations.html"}
+    "customViews" : {"school": {"name": "Grade", "link": "studentList.html", "id_name": "asmtGrade"}, 
+                           "district": {"name": "School Name", "link": "comparingPopulations.html", "id_name": "schoolId"}, 
+                           "state": {"name": "District Name", "link": "comparingPopulations.html", "id_name": "districtId"}
                            }
 }

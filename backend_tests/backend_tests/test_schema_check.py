@@ -29,8 +29,10 @@ class EdTestSchema(TestBase):
         super(TestBase, self).setUp()
         self.pgengine = create_engine(self.db_url)
         self.connection = self.pgengine.connect()
+        #retrieving schema information (as Metadata) from live database
         self.live_db_metadata = MetaData(schema=self.db_schema)
         self.live_db_metadata.reflect(bind=self.pgengine)
+        #retrieving Metadata information from edmetadata.py prior to db creation (to ensure live metadata matches expected metadata)
         self.ed_metadata = generate_ed_metadata(schema_name=self.get_schema_name('edware'))
         self.create_mismatch_schema()
 
@@ -48,6 +50,7 @@ class EdTestSchema(TestBase):
             for column in live_metadata.tables[table].columns.keys():
                 if len(list(live_metadata.tables[table].columns[column].foreign_keys)) > 0:
                     try:
+                        #when running using nosetests, print statements will not be displayed unless there is a test failure or nose is set to verbose
                         print('Primary key is:' + str(live_metadata.tables[table].columns[column].type))
                         print('Foreign key is:' + str(list(live_metadata.tables[table].columns[column].foreign_keys)[0].column.type))
                         assert str(live_metadata.tables[table].columns[column].type) == str(list(live_metadata.tables[table].columns[column].foreign_keys)[0].column.type), "Foreign key mismatch"
@@ -66,9 +69,12 @@ class EdTestSchema(TestBase):
             assert table in self.ed_metadata.tables, "Unexpected table in live db"
             for column in self.live_db_metadata.tables[table].columns.keys():
                 assert column in self.ed_metadata.tables[table].columns.keys(), "Unexpected column in live db"
+
                 if str(self.ed_metadata.tables[table].columns[column].type) == 'FLOAT':
+                    #need to do a manual comparison of FLOAT (SQLAlchemy type) and DOUBLE PRECISION(Postgres type)
                     assert str(self.live_db_metadata.tables[table].columns[column].type) == 'DOUBLE PRECISION'
                 else:
+                    #All other SQLAlchemy and equivalent Postgres types comparisons can be done with string casting
                     assert str(self.live_db_metadata.tables[table].columns[column].type) == str(self.ed_metadata.tables[table].columns[column].type), "Column datatype mismatch"
 
     def test_with_bad_schema(self):

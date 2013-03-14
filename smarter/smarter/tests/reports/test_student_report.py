@@ -36,7 +36,7 @@ class TestStudentReport(Unittest_with_smarter_sqlite):
 
         self.assertEqual('Math', student_report['asmt_subject'], 'asmt_subject')
         self.assertEqual('Linda', student_report['teacher_first_name'], 'teacher first name')
-        self.assertEqual('', student_report['teacher_middle_name'], 'teacher middle name')
+        self.assertEqual(None, student_report['teacher_middle_name'], 'teacher middle name')
         self.assertEqual('Kim', student_report['teacher_last_name'], 'teacher last name')
         self.assertEqual(21, student_report['date_taken_day'])
         self.assertEqual(9, student_report['date_taken_month'])
@@ -88,7 +88,7 @@ class TestStudentReport(Unittest_with_smarter_sqlite):
         self.assertEqual('Concepts & Procedures', result['asmt_claim_1_name'])
         self.assertEqual('Problem Solving and Modeling & Data Analysis', result['asmt_claim_2_name'])
         self.assertEqual('Communicating Reasoning', result['asmt_claim_3_name'])
-        self.assertEqual('', result['asmt_claim_4_name'])
+        self.assertEqual(None, result['asmt_claim_4_name'])
         result = items[1]
         self.assertEqual('Reading', result['asmt_claim_1_name'])
         self.assertEqual('Writing', result['asmt_claim_2_name'])

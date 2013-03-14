@@ -36,7 +36,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         self.assertEqual(35, subject1[Constants.TOTAL])
         self.assertEqual(Constants.MATH, subject1[Constants.ASMT_SUBJECT])
         intervals = subject1[Constants.INTERVALS]
-        #self.assertEqual(4, len(intervals))
+        self.assertEqual(4, len(intervals))
         self.assertEqual(1, intervals[0][Constants.LEVEL])
         self.assertEqual(11, intervals[0][Constants.PERCENTAGE])
         self.assertEqual(4, intervals[0][Constants.COUNT])
@@ -48,7 +48,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         self.assertEqual(35, subject1[Constants.TOTAL])
         self.assertEqual(Constants.MATH, subject1[Constants.ASMT_SUBJECT])
         intervals = subject1[Constants.INTERVALS]
-        #self.assertEqual(4, len(intervals))
+        self.assertEqual(4, len(intervals))
         self.assertEqual(1, intervals[0][Constants.LEVEL])
         self.assertEqual(11, intervals[0][Constants.PERCENTAGE])
         self.assertEqual(4, intervals[0][Constants.COUNT])
@@ -95,7 +95,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
                 self.assertEqual(35, subject1[Constants.TOTAL])
                 self.assertEqual(Constants.MATH, subject1[Constants.ASMT_SUBJECT])
                 intervals = subject1[Constants.INTERVALS]
-                #self.assertEqual(4, len(intervals))
+                self.assertEqual(4, len(intervals))
                 self.assertEqual(1, intervals[0][Constants.LEVEL])
                 self.assertEqual(11, intervals[0][Constants.PERCENTAGE])
                 self.assertEqual(4, intervals[0][Constants.COUNT])
@@ -109,7 +109,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         self.assertEqual(51, subject1[Constants.TOTAL])
         self.assertEqual(Constants.MATH, subject1[Constants.ASMT_SUBJECT])
         intervals = subject1[Constants.INTERVALS]
-        #self.assertEqual(4, len(intervals))
+        self.assertEqual(4, len(intervals))
         self.assertEqual(1, intervals[0][Constants.LEVEL])
         self.assertEqual(16, intervals[0][Constants.PERCENTAGE])
         self.assertEqual(8, intervals[0][Constants.COUNT])
@@ -154,7 +154,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
                 self.assertEqual(51, subject1[Constants.TOTAL])
                 self.assertEqual(Constants.MATH, subject1[Constants.ASMT_SUBJECT])
                 intervals = subject1[Constants.INTERVALS]
-                #self.assertEqual(4, len(intervals))
+                self.assertEqual(4, len(intervals))
                 self.assertEqual(1, intervals[0][Constants.LEVEL])
                 self.assertEqual(16, intervals[0][Constants.PERCENTAGE])
                 self.assertEqual(8, intervals[0][Constants.COUNT])
@@ -168,7 +168,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         self.assertEqual(81, subject1[Constants.TOTAL])
         self.assertEqual(Constants.MATH, subject1[Constants.ASMT_SUBJECT])
         intervals = subject1[Constants.INTERVALS]
-        #self.assertEqual(4, len(intervals))
+        self.assertEqual(4, len(intervals))
         self.assertEqual(1, intervals[0][Constants.LEVEL])
         self.assertEqual(15, intervals[0][Constants.PERCENTAGE])
         self.assertEqual(12, intervals[0][Constants.COUNT])

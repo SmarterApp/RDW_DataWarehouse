@@ -39,6 +39,8 @@ def __cast_data_type(column, value):
     '''
     # if value is not None and length is not 0 AND not nullable
     # get python_type property, then cast
+    if (len(value) == 0):
+        return None
     if (value is not None and len(value) != 0 or not column.nullable):
         try:
             # need to explicitly convert booleans because they are read from file as strings
@@ -56,6 +58,9 @@ def __cast_data_type(column, value):
 
 
 def __check_data_length(column, value):
+    if value is None:
+        return
+
     if column.type.python_type == str:
         if column.type.length is not None and column.type.length < len(value):
             msg = 'Length Exception: Column[%s.%s] max length is %d, but the length of value was %d. value[%s]' % (column.table.name, column.name, column.type.length, len(value), value)

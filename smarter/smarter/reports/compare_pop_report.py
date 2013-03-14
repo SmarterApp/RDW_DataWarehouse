@@ -4,7 +4,7 @@ Created on Mar 7, 2013
 @author: dwu
 '''
 
-from edapi.utils import report_config
+from edapi.decorators import report_config, user_info
 from smarter.reports.helpers.percentage_calc import normalize_percentages
 from sqlalchemy.sql import select
 from sqlalchemy.sql import and_
@@ -52,6 +52,7 @@ from smarter.reports.helpers.constants import Constants
             "pattern": "^[a-zA-Z0-9\-]{0,50}$",
         }
     })
+@user_info
 def get_comparing_populations_report(params):
 
     param_manager = ParameterManager(Parameters(params))

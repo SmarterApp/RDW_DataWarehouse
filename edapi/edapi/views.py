@@ -8,12 +8,13 @@ Created on Jan 14, 2013
 from pyramid.view import view_config
 from edapi import EDAPI_REPORTS_PLACEHOLDER
 from edapi.utils import generate_report_config,\
-    generate_report, report_config
+    generate_report
 from edapi.exceptions import ReportNotFoundError, InvalidParameterError
 from edapi.httpexceptions import EdApiHTTPNotFound, EdApiHTTPPreconditionFailed,\
     EdApiHTTPRequestURITooLong
 from pyramid.response import Response
 import json
+from edapi.decorators import user_info
 
 MAX_REQUEST_URL_LENGTH = 2000
 
@@ -61,6 +62,7 @@ def get_report_config(request):
 
 # handle GET verb for data resource
 @view_config(route_name='report_get_option_post', renderer='json', request_method='GET', content_type="application/json",)
+@user_info
 def generate_report_get(request, validator=None):
 
     # if full request URL with query string is too long

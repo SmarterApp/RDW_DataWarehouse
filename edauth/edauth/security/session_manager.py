@@ -94,9 +94,20 @@ def __create_from_SAMLResponse(saml_response, last_access, expiration):
     session = Session()
     session.set_session_id(__session_id)
     # get fullName
-    if 'fullName' in __attributes:
-        if __attributes['fullName']:
-            session.set_fullName(__attributes['fullName'][0])
+    fullName = __attributes.get('fullName')
+    if fullName is not None:
+        session.set_fullName(fullName[0])
+
+    # get firstName
+    firstName = __attributes.get('firstName')
+    if firstName is not None:
+        session.set_firstName(firstName[0])
+
+    # get lastName
+    lastName = __attributes.get('lastName')
+    if lastName is not None:
+        session.set_lastName(lastName[0])
+
     # get uid
     if 'uid' in __attributes:
         if __attributes['uid']:

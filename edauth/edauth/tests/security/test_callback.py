@@ -35,7 +35,8 @@ class TestCallback(unittest.TestCase):
             connection.execute(user_session.insert(), session_id=session_id, session_context=session_json, last_access=current_datetime, expiration=expiration_datetime)
 
         roles = session_check(session_id, None)
-        self.assertEquals(roles, ["TEACHER", "STAFF"])
+        self.assertIn("TEACHER", roles)
+        self.assertIn("STAFF", roles)
 
     def test_expired_session(self):
         # expired sessions return empty roles

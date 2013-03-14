@@ -19,7 +19,7 @@ class Session:
         self.__session_id = None
         self.__session['uid'] = None
         self.__session['roles'] = []
-        self.__session['name'] = {'fullName': None}
+        self.__session['name'] = {'fullName': None, 'firstName': None, 'lastName': None}
         self.__session['idpSessionIndex'] = None
         self.__session['nameId'] = None
 
@@ -62,6 +62,12 @@ class Session:
 
     def set_fullName(self, fullName):
         self.__session['name']['fullName'] = fullName
+
+    def set_lastName(self, lastName):
+        self.__session['name']['lastName'] = lastName
+
+    def set_firstName(self, firstName):
+        self.__session['name']['firstName'] = firstName
 
     def set_idp_session_index(self, index):
         self.__session['idpSessionIndex'] = index

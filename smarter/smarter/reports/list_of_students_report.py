@@ -4,7 +4,7 @@ Created on Jan 24, 2013
 @author: tosako
 '''
 
-from edapi.utils import report_config
+from edapi.decorators import report_config, user_info
 from smarter.reports.helpers.name_formatter import format_full_name_rev
 from sqlalchemy.sql import select
 from sqlalchemy.sql import and_
@@ -63,6 +63,8 @@ __asmtSubject = 'asmtSubject'
         }
     })
 @audit_event()
+@log_function(INFO, None, 'smarter', 'List of Students Report')
+@user_info
 def get_list_of_students_report(params):
 
     district_id = str(params[__districtId])

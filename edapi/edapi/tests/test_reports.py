@@ -3,7 +3,7 @@ Created on Jan 15, 2013
 
 @author: aoren
 '''
-from edapi.utils import report_config
+from edapi.decorators import report_config, user_info
 from nose.tools import nottest
 
 

@@ -5,7 +5,7 @@ Created on Jan 13, 2013
 '''
 
 
-from edapi.utils import report_config
+from edapi.decorators import report_config, user_info
 from smarter.reports.helpers.name_formatter import format_full_name
 from sqlalchemy.sql import select
 import json
@@ -175,6 +175,8 @@ def __arrange_results(results):
                     },
                })
 @audit_event()
+@log_function(INFO, None, 'smarter', 'Individual Student Report')
+@user_info
 def get_student_report(params):
     '''
     report for student and student_assessment

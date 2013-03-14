@@ -12,7 +12,7 @@ define [
   createPopulationGrid = (params) ->
     
     # Get school data from the server
-    getPopulationData "/data/comparing_populations", params, (populationData, summaryData, asmtSubjectsData, colorsData, breadcrumbsData) ->
+    getPopulationData "/data/comparing_populations", params, (populationData, summaryData, asmtSubjectsData, colorsData, breadcrumbsData, user_info) ->
       
       # Read Default colors from json
       defaultColors = {}
@@ -24,6 +24,10 @@ define [
 
         getColumnConfig "../data/comparingPopulations.json", (gridConfig, customViews) ->
           
+          # append user_info (e.g. first and last name)
+          if user_info
+            $('#header .topLinks .user').html user_info.name.firstName + ' ' + user_info.name.lastName
+            
           # Append colors to records and summary section
           # Do not format data, or get breadcrumbs if the result is empty
           if populationData.length > 0
@@ -81,11 +85,12 @@ define [
       asmtSubjectsData = data.subjects
       colorsData = data.colors
       breadcrumbsData = data.context
+      user_info = data.user_info
       
       if callback
-        callback populationData, summaryData, asmtSubjectsData, colorsData, breadcrumbsData
+        callback populationData, summaryData, asmtSubjectsData, colorsData, breadcrumbsData, user_info
       else
-        dataArray populationData, summaryData, asmtSubjectsData, colorsData, breadcrumbsData
+        dataArray populationData, summaryData, asmtSubjectsData, colorsData, breadcrumbsData, user_info
       
   # Returns column configurations for population grid   
   getColumnConfig = (configURL, callback) ->

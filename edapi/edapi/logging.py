@@ -35,8 +35,6 @@ def audit_event(logger_name="audit"):
             allargs['params'] = params
             if not 'user' in allargs.keys():
                 allargs['user'] = pyramid.security.effective_principals(pyramid.threadlocal.get_current_request())
-            if 'self' in allargs.keys():
-                allargs['self'] = allargs['self'].__class__.__name__
             log.info(allargs)
             return original_func(*args, **kwds)
         return __wrapped

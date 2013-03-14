@@ -6,10 +6,10 @@ Created on Mar 5, 2013
 
 import simplejson as json
 import re
-from collections import OrderedDict
 import logging
 import pyramid
 from edapi.utils import adopt_to_method_and_func
+from collections import OrderedDict
 
 
 def audit_event(logger_name="audit"):
@@ -62,6 +62,4 @@ class JsonDictLoggingFormatter(logging.Formatter):
             loggable['asctime'] = self.formatTime(record, self.datefmt)
         if isinstance(record.msg, dict):
             loggable['msg'] = record.msg
-        else:
-            loggable['msg'] = record.getMessage()
         return json.dumps(loggable)

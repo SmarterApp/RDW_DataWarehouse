@@ -35,6 +35,8 @@ def user_info(orig_func):
     def wrap(*args, **kwds):
         results = orig_func(*args, **kwds)
         user = authenticated_userid(pyramid.threadlocal.get_current_request())
-        results['user_info'] = user.get_name()
+        # Only append user info if we get an User object returned
+        if user:
+            results['user_info'] = user.get_name()
         return results
     return wrap

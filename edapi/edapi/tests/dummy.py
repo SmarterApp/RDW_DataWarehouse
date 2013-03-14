@@ -55,3 +55,8 @@ class DummyGetParams:
 
     def items(self):
         return self._items
+
+
+class DummyUser:
+    def get_name(self):
+        return "dummy"

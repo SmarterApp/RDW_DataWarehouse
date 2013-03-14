@@ -62,7 +62,6 @@ def get_report_config(request):
 
 # handle GET verb for data resource
 @view_config(route_name='report_get_option_post', renderer='json', request_method='GET', content_type="application/json",)
-@user_info
 def generate_report_get(request, validator=None):
 
     # if full request URL with query string is too long

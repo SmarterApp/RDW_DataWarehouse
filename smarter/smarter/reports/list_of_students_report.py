@@ -115,7 +115,9 @@ def get_list_of_students_report(params):
                         fact_asmt_outcome.c.asmt_claim_3_score_range_max.label('asmt_claim_3_score_range_max'),
                         fact_asmt_outcome.c.asmt_claim_4_score_range_max.label('asmt_claim_4_score_range_max')],
                        from_obj=[fact_asmt_outcome
-                                 .join(dim_student, and_(dim_student.c.student_id == fact_asmt_outcome.c.student_id, dim_student.c.most_recent))
+                                 .join(dim_student, and_(dim_student.c.student_id == fact_asmt_outcome.c.student_id, 
+                                                         dim_student.c.most_recent,
+                                                         dim_student.c.section_id == fact_asmt_outcome.c.section_id))
                                  .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id, dim_asmt.c.asmt_type == 'SUMMATIVE'))
                                  .join(dim_staff, and_(dim_staff.c.staff_id == fact_asmt_outcome.c.teacher_id,
                                        dim_staff.c.most_recent, dim_staff.c.section_id == fact_asmt_outcome.c.section_id))])

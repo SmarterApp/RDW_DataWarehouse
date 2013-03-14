@@ -45,7 +45,7 @@ define [
             
             # Set the Report title depending on the report that we're looking at
             reportTitle = getReportTitle(breadcrumbsData, reportType)
-            $('#content h4').html 'Comparing ' + reportTitle + ' on Math & ELA'
+            $('#content h2').html 'Comparing ' + reportTitle + ' on Math & ELA'
             
             # Format the summary data for summary row purposes
             summaryRowName = 'Overall ' + reportTitle + ' Summary'
@@ -133,6 +133,12 @@ define [
         element.color = colorsData[i]
       else
         element.color = defaultColors[i]
+        
+      # if percentage is less than 9 then remove the percentage text from the bar
+      if element.percentage > 9
+        element.showPercentage = true
+      else
+        element.showPercentage = false
       i++
     intervals
   

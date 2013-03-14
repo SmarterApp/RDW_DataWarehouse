@@ -1,12 +1,34 @@
 @import "color";
 
-@the-border: 1px;
+a {
+  color: @color-A4;
+  text-decoration: none;
+  
+  &:hover {
+    color: @color-A1;
+    text-decoration: underline;
+  }
+}
+
+.labelText {
+  color: @color-black;
+}
+
+.outerBox {
+  background: @color-B5;
+}
+
+.innerBox {
+  background: @color-white;
+  border: solid 1px @color-B4;
+  .rounded-corners(5px);
+  float: left;
+  margin: 20px 20px 0;
+}
 
 .pad0 {
   padding: 0
 }
-
-
 
 .margin0 {
   margin: 0
@@ -58,10 +80,6 @@
   *zoom: 1;
 }
 
-h4 {
-  color: #494949;
-}
-
 ul.inline li {
   display: inline-block;
 }
@@ -80,9 +98,9 @@ ul.inline li {
 }
 
 hr {
-  height:1px;
-  background-color:#cecece;
-  border:0px;
+  height: 1px;
+  background-color: @color-B5;
+  border: 0px;
 }
 
 // Mixins
@@ -102,12 +120,4 @@ hr {
 
 .box-shadow(@style, @alpha: 50%) when (isnumber(@alpha)) {
   .box-shadow(@style, rgba(0, 0, 0, @alpha));
-}
-
-.darkGrayBox {
-  background: @darkGray;
-}
-
-.lightGrayBox {
-  background: @lightGray;
 }

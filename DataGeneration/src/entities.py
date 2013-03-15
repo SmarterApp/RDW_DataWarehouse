@@ -182,66 +182,66 @@ class Assessment:
 
 
 class AssessmentOutcome(object):
-    '''
-    Assessment outcome object
-    '''
-    def __init__(self, asmnt_outcome_id, asmnt_outcome_external_id, asmnt, asmnt_score, student, inst_hier_rec_id, section_rec_id, where_taken,
-                 date_taken, most_recent, status='C'):
+
+    def __init__(self, asmnt_outcome_id, asmnt_outcome_external_id, asmt_rec_id, student_id,
+                 teacher_id, state_code, district_id, school_id, section_id, inst_hier_rec_id, section_rec_id,
+                 where_taken_id, where_taken_name, asmt_grade, enrl_grade, date_taken, date_taken_day,
+                 date_taken_month, date_taken_year,
+                 asmt_score, asmt_score_range_min, asmt_score_range_max, asmt_perf_lvl,
+                 asmt_claim_1_score, asmt_claim_1_score_range_min, asmt_claim_1_score_range_max,
+                 asmt_claim_2_score, asmt_claim_2_score_range_min, asmt_claim_2_score_range_max,
+                 asmt_claim_3_score, asmt_claim_3_score_range_min, asmt_claim_3_score_range_max,
+                 asmt_claim_4_score, asmt_claim_4_score_range_min, asmt_claim_4_score_range_max,
+                 asmt_create_date, status, most_recent):
+
         self.asmnt_outcome_id = asmnt_outcome_id
         self.asmnt_outcome_external_id = asmnt_outcome_external_id
-        self.asmt_rec_id = asmnt.asmt_rec_id
-        self.student_id = student.student_id
-        self.teacher_id = student.teacher_id
-        self.state_code = student.state_code
-        self.district_id = student.district_id
-        self.school_id = student.school_id
-        self.section_id = student.section_id
+        self.asmt_rec_id = asmt_rec_id
+        self.student_id = student_id
+        self.teacher_id = teacher_id
+        self.state_code = state_code
+        self.district_id = district_id
+        self.school_id = school_id
+        self.section_id = section_id
         self.inst_hier_rec_id = inst_hier_rec_id
         self.section_rec_id = section_rec_id
-        self.where_taken_id = where_taken.where_taken_id
-        self.where_taken_name = where_taken.where_taken_name
-        self.asmt_grade = asmnt.asmt_grade
-        self.enrl_grade = student.grade
-        self.date_taken = date_taken.strftime('%Y%m%d')
-        self.date_taken_day = date_taken.day
-        self.date_taken_month = date_taken.month
-        self.date_taken_year = date_taken.year
+        self.where_taken_id = where_taken_id
+        self.where_taken_name = where_taken_name
+        self.asmt_grade = asmt_grade
+        self.enrl_grade = enrl_grade
+        self.date_taken = date_taken
+        self.date_taken_day = date_taken_day
+        self.date_taken_month = date_taken_month
+        self.date_taken_year = date_taken_year
 
         # Overall Assessment Data
-        self.asmt_score = asmnt_score.overall_score
-        self.asmt_score_range_min = asmnt_score.interval_min
-        self.asmt_score_range_max = asmnt_score.interval_max
-        self.asmt_perf_lvl = asmnt_score.perf_lvl
+        self.asmt_score = asmt_score
+        self.asmt_score_range_min = asmt_score_range_min
+        self.asmt_score_range_max = asmt_score_range_max
+        self.asmt_perf_lvl = asmt_perf_lvl
 
         # Assessment Claim Data
-        self.asmt_claim_1_score = asmnt_score.claim_scores[0].claim_score
-        self.asmt_claim_1_score_range_min = asmnt_score.claim_scores[0].claim_score_interval_minimum
-        self.asmt_claim_1_score_range_max = asmnt_score.claim_scores[0].claim_score_interval_maximum
-        self.asmt_claim_2_score = asmnt_score.claim_scores[1].claim_score
-        self.asmt_claim_2_score_range_min = asmnt_score.claim_scores[1].claim_score_interval_minimum
-        self.asmt_claim_2_score_range_max = asmnt_score.claim_scores[1].claim_score_interval_maximum
-        self.asmt_claim_3_score = asmnt_score.claim_scores[2].claim_score
-        self.asmt_claim_3_score_range_min = asmnt_score.claim_scores[2].claim_score_interval_minimum
-        self.asmt_claim_3_score_range_max = asmnt_score.claim_scores[2].claim_score_interval_maximum
-        # These fields may or may not be null (Some have a 4th claim, others don't)
-        if len(asmnt_score.claim_scores) == 4:
-            self.asmt_claim_4_score = asmnt_score.claim_scores[3].claim_score
-            self.asmt_claim_4_score_range_min = asmnt_score.claim_scores[3].claim_score_interval_minimum
-            self.asmt_claim_4_score_range_max = asmnt_score.claim_scores[3].claim_score_interval_maximum
-        else:
-            self.asmt_claim_4_score = None
-            self.asmt_claim_4_score_range_min = None
-            self.asmt_claim_4_score_range_max = None
+        self.asmt_claim_1_score = asmt_claim_1_score
+        self.asmt_claim_1_score_range_min = asmt_claim_1_score_range_min
+        self.asmt_claim_1_score_range_max = asmt_claim_1_score_range_max
+        self.asmt_claim_2_score = asmt_claim_2_score
+        self.asmt_claim_2_score_range_min = asmt_claim_2_score_range_min
+        self.asmt_claim_2_score_range_max = asmt_claim_2_score_range_max
+        self.asmt_claim_3_score = asmt_claim_3_score
+        self.asmt_claim_3_score_range_min = asmt_claim_3_score_range_min
+        self.asmt_claim_3_score_range_max = asmt_claim_3_score_range_max
 
-        self.asmt_create_date = asmnt_score.asmt_create_date
+        # These fields may or may not be null (Some have a 4th claim, others don't)
+        self.asmt_claim_4_score = asmt_claim_4_score
+        self.asmt_claim_4_score_range_min = asmt_claim_4_score_range_min
+        self.asmt_claim_4_score_range_max = asmt_claim_4_score_range_max
+
+        self.asmt_create_date = asmt_create_date
         self.status = status
         self.most_recent = most_recent
 
+
     def getRow(self):
-        # TODO: shouldn't return things like self.student.teacher_id
-        # There should be a field called something like teacher_id
-        # can still pass student object into constructor, but extract relevant
-        # data from the object and set the fields immediately
         return [self.asmnt_outcome_id, self.asmnt_outcome_external_id, self.asmt_rec_id,
                 self.student_id, self.teacher_id, self.state_code,
                 self.district_id, self.school_id, self.section_id,

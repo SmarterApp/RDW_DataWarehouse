@@ -1,19 +1,21 @@
-from gen_assessment_outcome import generate_assessment_outcomes
+from gen_assessment_outcome import generate_assessment_outcomes_from_student_list, generate_assessment_outcomes_from_query
 from get_list_of_students import get_students_for_assessment
 from gen_assessments import generate_dim_assessment
 import argparse
 from sqlalchemy.engine import create_engine
 from sqlalchemy.schema import MetaData
 from datetime import datetime
+from write_to_csv import create_csv
+from constants import DATAFILE_PATH
 
 DBDRIVER = "postgresql+pypostgresql"
 
-def generate_fao_from_enrollment(assessment_list, grade, subject, inst_hier_rec_id, where_taken, schema_name,
-                                metadata, db_connection):
+def generate_fao_from_enrollment(assessment_list, schema_name, metadata, db_connection):
     # Main function, will delegate calls to appropriate functions
     rows = get_student_list_from_db(schema_name, metadata, db_connection)
-    students = cast_rows_to_students(rows)
-    generate_assessment_outcomes(assessment_list, students, grade, subject, inst_hier_rec_id, where_taken)
+    assessment_outcomes = generate_assessment_outcomes_from_query(assessment_list, rows)
+    create_csv(assessment_outcomes, DATAFILE_PATH + "/datafiles/fao_csv/fact_assessment_outcome.csv")
+
 
 def get_student_list_from_db(schema_name, metadata, db_connection):
     # Will return a student list from the database.
@@ -73,10 +75,8 @@ def main():
         start_time = datetime.now()
         #student_list = get_students_for_assessment(schema, metadata, db_connection, input_args)
         assessment_list = generate_dim_assessment()
-        generate_fao_from_enrollment(assessment_list, grade, subject, inst_hier_rec_id, where_taken, schema_name,
-                                     metadata, db_connection)
-        finish_time = datetime.now()
-        print("Length of student list is ", len(student_list))
+        generate_fao_from_enrollment(assessment_list, schema_name, metadata, db_connection)
+        finish_time = datetime.now()    
         print("Start  at -- ", start_time)
         print("Finish at -- ", finish_time)
 

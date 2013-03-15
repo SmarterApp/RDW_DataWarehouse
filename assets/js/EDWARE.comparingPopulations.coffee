@@ -159,7 +159,7 @@ define [
   # Returns the overall summary row name based on the type of report
   getReportTitle = (breadcrumbsData, reportType) ->
     if reportType is 'state'
-      data = breadcrumbsData.items[0].id + ' Districts'
+      data = breadcrumbsData.items[0].name + ' Districts'
     else if reportType is 'district'
       data = breadcrumbsData.items[1].name + ' Schools'
     else if reportType is 'school'

@@ -61,6 +61,12 @@ def generate_student_bio_info(state, district, school, grade, street_list, gende
     last_name = gennames.generate_last_name()
     domain = school.school_name
 
+    # zip code and city name
+    city_zip_map = district.city_zip_map
+    city = random.choice(list(city_zip_map.keys()))
+    zip_range = city_zip_map[city]
+    zip_code = random.randint(zip_range[0], zip_range[1])
+
     student_params = {
         'student_rec_id': id_generator.get_id(),
         'student_id': uuid4(),
@@ -69,11 +75,13 @@ def generate_student_bio_info(state, district, school, grade, street_list, gende
         'last_name': last_name,
         'address_1': util.generate_address(street_list),
         'dob': util.generate_dob(grade),
-        'state': state,
+        'state_code': state.state_code,
         'gender': student_gender,
         'email': util.generate_email_address(first_name, last_name, domain),
-        'district': district,
-        'school': school
+        'district_id': district.district_id,
+        'school_id': school.school_id,
+        'zip_code': zip_code,
+        'city': city
     }
 
     student = StudentBioInfo(**student_params)

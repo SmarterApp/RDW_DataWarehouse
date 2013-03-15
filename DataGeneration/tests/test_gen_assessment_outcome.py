@@ -1,13 +1,87 @@
 import unittest
 import gen_assessment_outcome
+from datetime import date
+from gen_assessments import generate_dim_assessment
+from constants import ASSMT_SCORE_YEARS
+from src.helper_entities import WhereTaken
+from helper_entities import StudentBioInfo, Claim
+from entities import Student, AssessmentOutcome, Assessment
 
 
 class TestGenerateData(unittest.TestCase):
-    def test_generate_assessment_outcomes(self):
-        pass
+    def test_generate_assessment_outcomes_three_claims(self):
+        assessment_list = generate_dim_assessment()
+        students = make_students_for_test(5)
+        grade = 5
+        subject = 'Math'
+        inst_hier_rec_id = 12345
+        where_taken = WhereTaken(91845, 'where_taken_test_name')
+        actual_assessment_outcomes = gen_assessment_outcome.generate_assessment_outcomes(assessment_list, students, grade, subject, inst_hier_rec_id, where_taken)
+        self.assertEqual(len(actual_assessment_outcomes), len(students) * len(ASSMT_SCORE_YEARS) * 4)
+        for outcome in actual_assessment_outcomes:
+            self.assertEqual(outcome.where_taken_id, where_taken.where_taken_id)
+            self.assertEqual(outcome.where_taken_name, where_taken.where_taken_name)
+            self.assertEqual(outcome.enrl_grade, grade)
+            # score related
+            self.assertTrue(outcome.asmt_score in range(1200, 2401))
+            self.assertTrue(outcome.asmt_perf_lvl in [1, 2, 3, 4])
+            self.assertTrue(10 < outcome.asmt_claim_1_score < 99)
+            self.assertTrue(10 < outcome.asmt_claim_2_score < 99)
+            self.assertTrue(10 < outcome.asmt_claim_3_score < 99)
+            self.assertTrue(outcome.asmt_claim_1_score_range_min <= outcome.asmt_claim_1_score <= outcome.asmt_claim_1_score_range_max)
+            self.assertTrue(outcome.asmt_claim_2_score_range_min <= outcome.asmt_claim_2_score <= outcome.asmt_claim_2_score_range_max)
+            self.assertTrue(outcome.asmt_claim_3_score_range_min <= outcome.asmt_claim_3_score <= outcome.asmt_claim_3_score_range_max)
 
-    def test_get_filtered_assessments(self):
-        pass
+            # claim 4 is none
+            self.assertIsNone(outcome.asmt_claim_4_score)
+            self.assertIsNone(outcome.asmt_claim_4_score_range_min)
+            self.assertIsNone(outcome.asmt_claim_4_score_range_max)
+
+    def test_generate_assessment_outcomes_four_claims(self):
+        assessment_list = generate_dim_assessment()
+        students = make_students_for_test(5)
+        grade = 5
+        subject = 'ELA'
+        inst_hier_rec_id = 12345
+        where_taken = WhereTaken(91845, 'where_taken_test_name')
+        actual_assessment_outcomes = gen_assessment_outcome.generate_assessment_outcomes(assessment_list, students, grade, subject, inst_hier_rec_id, where_taken)
+        self.assertEqual(len(actual_assessment_outcomes), len(students) * len(ASSMT_SCORE_YEARS) * 4)
+        for outcome in actual_assessment_outcomes:
+            self.assertEqual(outcome.where_taken_id, where_taken.where_taken_id)
+            self.assertEqual(outcome.where_taken_name, where_taken.where_taken_name)
+            self.assertEqual(outcome.enrl_grade, grade)
+            # score related
+            self.assertTrue(outcome.asmt_score in range(1200, 2401))
+            self.assertTrue(outcome.asmt_perf_lvl in [1, 2, 3, 4])
+            self.assertTrue(10 < outcome.asmt_claim_1_score < 99)
+            self.assertTrue(10 < outcome.asmt_claim_2_score < 99)
+            self.assertTrue(10 < outcome.asmt_claim_3_score < 99)
+            self.assertTrue(10 < outcome.asmt_claim_4_score < 99)
+
+            self.assertTrue(outcome.asmt_claim_1_score_range_min <= outcome.asmt_claim_1_score <= outcome.asmt_claim_1_score_range_max)
+            self.assertTrue(outcome.asmt_claim_2_score_range_min <= outcome.asmt_claim_2_score <= outcome.asmt_claim_2_score_range_max)
+            self.assertTrue(outcome.asmt_claim_3_score_range_min <= outcome.asmt_claim_3_score <= outcome.asmt_claim_3_score_range_max)
+            self.assertTrue(outcome.asmt_claim_4_score_range_min <= outcome.asmt_claim_4_score <= outcome.asmt_claim_4_score_range_max)
+
+    def test_get_filtered_assessments_same_case_subject(self):
+        subject = 'Math'
+        grade = 5
+        assessment_list = generate_dim_assessment()
+        actual_filtered_assessments = gen_assessment_outcome.get_filtered_assessments(subject, grade, assessment_list)
+        self.assertEqual(len(actual_filtered_assessments), len(ASSMT_SCORE_YEARS) * 4)
+        for assessment in actual_filtered_assessments:
+            self.assertEqual(assessment.asmt_grade, grade)
+            self.assertEqual(assessment.asmt_subject.lower(), subject.lower())
+
+    def test_get_filtered_assessments_different_case_subject(self):
+        subject = 'ela'
+        grade = 10
+        assessment_list = generate_dim_assessment()
+        actual_filtered_assessments = gen_assessment_outcome.get_filtered_assessments(subject, grade, assessment_list)
+        self.assertEqual(len(actual_filtered_assessments), len(ASSMT_SCORE_YEARS) * 4)
+        for assessment in actual_filtered_assessments:
+            self.assertEqual(assessment.asmt_grade, grade)
+            self.assertEqual(assessment.asmt_subject.lower(), subject.lower())
 
     def test_create_date_taken_BOY(self):
         year = 2012
@@ -37,7 +111,13 @@ class TestGenerateData(unittest.TestCase):
         self.assertTrue(actual_date.month in range(1, 29))
 
     def test_generate_single_assessment_outcome(self):
-        pass
+        assessment = make_an_assessment('ELA')
+        student = make_students_for_test(1)[0]
+        inst_hier_rec_id = 81723
+        where_taken = WhereTaken(91845, 'where_taken_test_name')
+        date_taken = date(2012, 3, 13)
+        actual_assessment_outcome = gen_assessment_outcome.generate_single_assessment_outcome(assessment, student, inst_hier_rec_id, where_taken, date_taken)
+        self.assertIsInstance(actual_assessment_outcome, AssessmentOutcome)
 
     def test_generate_assessment_score(self):
         pass
@@ -90,9 +170,17 @@ class TestGenerateData(unittest.TestCase):
         actual_plus_minus = gen_assessment_outcome.generate_plus_minus(overall_score, average_score, standard_deviation, minimum, maximum)
         self.assertEqual(expected_plus_minus, actual_plus_minus)
 
-    # TODO: need to change input parameter: assessment to fields used in this method
-    def test_generate_claim_scores(self):
-        pass
+    def test_generate_claim_scores_for_math(self):
+        assessment_score = 1670
+        assessment = make_an_assessment('Math')
+        actual_claim_scores = gen_assessment_outcome.generate_claim_scores(assessment_score, assessment)
+        self.assertEqual(len(actual_claim_scores), 3)
+
+    def test_generate_claim_scores_for_ela(self):
+        assessment_score = 2370
+        assessment = make_an_assessment('ELA')
+        actual_claim_scores = gen_assessment_outcome.generate_claim_scores(assessment_score, assessment)
+        self.assertEqual(len(actual_claim_scores), 4)
 
     def test_rescale_value(self):
         old_value = 245
@@ -115,3 +203,81 @@ class TestGenerateData(unittest.TestCase):
         expected_claim_standard_deviation = (average - minimum) / 4
         actual_claim_standard_deviation = gen_assessment_outcome.calculate_claim_standard_deviation(average, minimum)
         self.assertEqual(expected_claim_standard_deviation, actual_claim_standard_deviation)
+
+
+def make_an_assessment(subject):
+    number_of_claims = 4 if subject.lower == 'ELA'.lower else 3
+    params = {
+              'asmt_rec_id': 1234,
+              'asmt_id': 273491,
+              'asmt_type': 'SUMMATIVE',
+              'asmt_period': 'EOY',
+              'asmt_period_year': 2012,
+              'asmt_version': 'V1',
+              'asmt_grade': 1,
+              'asmt_subject': subject,
+              'from_date': '20120101',
+              'claim_list': make_claim_list(number_of_claims),
+              'asmt_score_min': 1200,
+              'asmt_score_max': 2400,
+              'asmt_cut_point_1': 1400,
+              'asmt_cut_point_2': 1800,
+              'asmt_cut_point_3': 2100,
+              }
+    assessment = Assessment(**params)
+    return assessment
+
+
+def make_claim_list(number_of_claims):
+    claims = []
+    if number_of_claims == 4:
+        weights = [0.25, 0.15, 0.35, 0.25]
+    elif number_of_claims == 3:
+        weights = [0.25, 0.45, 0.2]
+    else:
+        return None
+    for i in range(number_of_claims):
+        claim_name = 'claim ' + str(i + 1)
+        claim_score_min = 14
+        claim_score_max = 95
+        claim_score_weight = weights[i]
+        claim = Claim(claim_name, claim_score_min, claim_score_max, claim_score_weight)
+        claims.append(claim)
+    return claims
+
+
+def make_students_for_test(number_of_students):
+    # make student_bio_info objects
+    student_bio_info = []
+    for index in range(number_of_students):
+        student_rec_id = index
+        student_id = 1000 - student_rec_id
+        first_name = 'first_name' + str(index)
+        last_name = 'last_name' + str(index)
+        address_1 = 'address' + str(index)
+        dob = '1998'
+        district_id = 98124
+        state_code = 'DE'
+        gender = 'male'
+        email = 'email' + str(index)
+        school_id = 91827
+        zip_code = 99876
+        city = 'city name'
+        student_bio_info.append(StudentBioInfo(student_rec_id, student_id, first_name, last_name, address_1, dob, district_id, state_code, gender, email, school_id, zip_code, city))
+
+    # make student objects
+    students = []
+    for student_bio in student_bio_info:
+        student_params = {
+            'student_bio_info': student_bio,
+            'section_id': index + 3000,
+            'grade': 5,
+            'from_date': '20120901',
+            'to_date': '29990901',
+            'most_recent': True,
+            'teacher_id': index + 7000,
+            'section_rec_id': index + 9000
+        }
+        student = Student(**student_params)
+        students.append(student)
+    return students

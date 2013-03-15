@@ -28,7 +28,7 @@ class Test(unittest.TestCase):
     state = State('DE', 'Delaware', 1)
     district_1 = District(1000, 'district_1', 'DE', 'Delaware', 1, {'Dover': [10000, 20000]})
     school_1 = InstitutionHierarchy(1, 1, 1, 12, 'Delaware', 'DE', 'district_id', 'district_name', 'school_id', 'school_name', 'school_category', '2012-09-19', True)
-    student_bio_info_1 = StudentBioInfo(3000, uuid4(), 'John', 'Doe', '55 Washington St', date(2013, 2, 14), district_1, state, 'male', 'johndoe@school.edu', school_1)
+    student_bio_info_1 = StudentBioInfo(3000, uuid4(), 'John', 'Doe', '55 Washington St', date(2013, 2, 14), district_1.district_id, state.state_code, 'male', 'johndoe@school.edu', school_1.school_id, 94108, 'city_1')
 
     def test_generate_teacher(self):
         teacher = generate_teacher(self.state, self.district_1)

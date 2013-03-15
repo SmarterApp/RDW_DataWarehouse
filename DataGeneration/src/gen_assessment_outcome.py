@@ -81,7 +81,7 @@ def generate_assessment_score(assessment):
     maximum = assessment.score_maximum
 
     overall_score = int(py1.extract_value_from_normal_distribution(average, standard_deviation, minimum, maximum))
-    performance_level = calculate_performance_level(overall_score, assessment)
+    performance_level = calculate_performance_level(overall_score, assessment.asmt_cut_point_3, assessment.asmt_cut_point_2, assessment.asmt_cut_point_1)
 
     plus_minus = generate_plus_minus(overall_score, average, standard_deviation, minimum, maximum)
     interval_minimum = int(overall_score - plus_minus)
@@ -102,7 +102,7 @@ def generate_assessment_score(assessment):
     return assessment_score
 
 
-def calculate_performance_level(score, assessment):
+def calculate_performance_level(score, asmt_cut_point_3, asmt_cut_point_2, asmt_cut_point_1):
     '''
     calculates a performance level as an integer based on a students overall score and
     the cutoffs for the assessment (0, 1 or 2)
@@ -110,11 +110,11 @@ def calculate_performance_level(score, assessment):
     assessment -- an assessment object
     '''
     # print(asmt.asmt_cut_point_3, asmt.asmt_cut_point_2, asmt.asmt_cut_point_1, score)
-    if score > assessment.asmt_cut_point_3:
+    if score > asmt_cut_point_3:
         return 4
-    elif score > assessment.asmt_cut_point_2:
+    elif score > asmt_cut_point_2:
         return 3
-    elif score > assessment.asmt_cut_point_1:
+    elif score > asmt_cut_point_1:
         return 2
     else:
         return 1

@@ -15,7 +15,7 @@ class Test(Unittest_with_smarter_sqlite_no_data_load):
 
     def test_build_columns_state_view(self):
         with SmarterDBConnection() as connection:
-            helper = QueryHelper(connection, get_param_state_view())
+            helper = QueryHelper(connection, **get_param_state_view())
             columns = helper.build_columns()
             dim_inst_hier = connection.get_table(Constants.DIM_INST_HIER)
             dim_asmt = connection.get_table(Constants.DIM_ASMT)
@@ -37,7 +37,7 @@ class Test(Unittest_with_smarter_sqlite_no_data_load):
 
     def test_build_columns_district_view(self):
         with SmarterDBConnection() as connection:
-            helper = QueryHelper(connection, get_param_district_view())
+            helper = QueryHelper(connection, **get_param_district_view())
             columns = helper.build_columns()
             dim_inst_hier = connection.get_table(Constants.DIM_INST_HIER)
             dim_asmt = connection.get_table(Constants.DIM_ASMT)
@@ -59,7 +59,7 @@ class Test(Unittest_with_smarter_sqlite_no_data_load):
 
     def test_build_columns_school_view(self):
         with SmarterDBConnection() as connection:
-            helper = QueryHelper(connection, get_param_school_view())
+            helper = QueryHelper(connection, **get_param_school_view())
             columns = helper.build_columns()
             dim_asmt = connection.get_table(Constants.DIM_ASMT)
             fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
@@ -94,7 +94,8 @@ class Test(Unittest_with_smarter_sqlite_no_data_load):
         self.assertEqual(column.key, alias_name)
 
     def test_invalid_parameters(self):
-        self.assertRaises(InvalidParamterException, QueryHelper, None, {'stateId': 'DE', 'schoolId': 'BAC'})
+        param = {'stateId': 'DE', 'schoolId': 'BAC'}
+        self.assertRaises(InvalidParamterException, QueryHelper, None, **param)
 
 
 def get_param_school_view():

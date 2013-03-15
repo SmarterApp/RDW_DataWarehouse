@@ -58,22 +58,22 @@ import collections
 def get_comparing_populations_report(params):
 
     # run query
-    results = run_query(params)
+    results = run_query(**params)
 
     # arrange results
-    results = arrange_results(results, params)
+    results = arrange_results(results, **params)
 
     return results
 
 
-def run_query(params):
+def run_query(**params):
     '''
     Run comparing populations query and return the results
     '''
 
     with SmarterDBConnection() as connector:
 
-        query_helper = QueryHelper(connector, params)
+        query_helper = QueryHelper(connector, **params)
 
         query = query_helper.get_query()
 
@@ -82,13 +82,13 @@ def run_query(params):
     return results
 
 
-def arrange_results(results, param):
+def arrange_results(results, **param):
     '''
     Arrange the results in optimal way to be consumed by front-end
     '''
     subjects = {Constants.MATH: Constants.SUBJECT1, Constants.ELA: Constants.SUBJECT2}
     arranged_results = {}
-    record_manager = RecordManager(param, subjects)
+    record_manager = RecordManager(subjects, **param)
 
     for result in results:
         # use record manager to update record with result set
@@ -111,8 +111,10 @@ class RecordManager():
     '''
     record manager class
     '''
-    def __init__(self, param, subjects_map):
-        self._param = param
+    def __init__(self, subjects_map, stateId=None, districtId=None, schoolId=None):
+        self._stateId = stateId
+        self._districtId = districtId
+        self._schoolId = schoolId
         self._subjects_map = subjects_map
         self._tracking_record = collections.OrderedDict()
         self._asmt_custom_metadata_results = {}
@@ -224,9 +226,6 @@ class RecordManager():
         return record in array and ordered by name
         '''
         records = []
-        state_id = self._param.get(Constants.STATEID)
-        district_id = self._param.get(Constants.DISTRICTID)
-        school_id = self._param.get(Constants.SCHOOLID)
         # iterate list sorted by "Record.name"
         for record in self._tracking_record.values():
             __record = {}
@@ -234,12 +233,12 @@ class RecordManager():
             __record[Constants.NAME] = record.name
             __record[Constants.RESULTS] = record.subjects
             __record[Constants.PARAMS] = {}
-            __record[Constants.PARAMS][Constants.STATEID] = state_id
+            __record[Constants.PARAMS][Constants.STATEID] = self._stateId
             __record[Constants.PARAMS][Constants.ID] = record.id
-            if district_id is not None:
-                __record[Constants.PARAMS][Constants.DISTRICTID] = district_id
-            if school_id is not None:
-                __record[Constants.PARAMS][Constants.SCHOOLID] = school_id
+            if self._districtId is not None:
+                __record[Constants.PARAMS][Constants.DISTRICTID] = self._districtId
+            if self._schoolId is not None:
+                __record[Constants.PARAMS][Constants.SCHOOLID] = self._schoolId
             records.append(__record)
         return records
 
@@ -317,10 +316,10 @@ class QueryHelper():
     '''
     VIEWS = enum(STATE_VIEW=1, DISTRICT_VIEW=2, SCHOOL_VIEW=3)
 
-    def __init__(self, connector, params):
-        self._state_id = params.get(Constants.STATEID)
-        self._district_id = params.get(Constants.DISTRICTID)
-        self._school_id = params.get(Constants.SCHOOLID)
+    def __init__(self, connector, stateId=None, districtId=None, schoolId=None):
+        self._state_id = stateId
+        self._district_id = districtId
+        self._school_id = schoolId
         self._view = self.VIEWS.STATE_VIEW
         if self._state_id is not None and self._district_id is None and self._school_id is None:
             self._view = self.VIEWS.STATE_VIEW

@@ -61,7 +61,7 @@ class Test(unittest.TestCase):
 
     def test_RecordManager_get_record(self):
         param = {Constants.STATEID: 'DE'}
-        manager = RecordManager(param, None)
+        manager = RecordManager(None, **param)
         record3 = Record(record_id=3, name='aaa')
         record1 = Record(record_id=1, name='bbb')
         record2 = Record(record_id=2, name='ccc')
@@ -130,7 +130,7 @@ class Test(unittest.TestCase):
     def test_RecordManager_get_subjects(self):
         param = {Constants.STATEID: 'DE'}
         subjects = {'a': 'b', 'c': 'd'}
-        manager = RecordManager(param, subjects)
+        manager = RecordManager(subjects, **param)
         subjects = manager.get_subjects()
         self.assertEqual('a', subjects['b'])
 
@@ -138,7 +138,7 @@ class Test(unittest.TestCase):
         results = get_results('school_view_results.json')
         param = {Constants.STATEID: 'DE', Constants.DISTRICTID: '245', Constants.SCHOOLID: '92499'}
         subjects = {Constants.MATH: Constants.SUBJECT1, Constants.ELA: Constants.SUBJECT2}
-        manager = RecordManager(param, subjects)
+        manager = RecordManager(subjects, **param)
         for result in results:
             manager.update_record(result)
         self.assertEqual(2, len(manager.get_asmt_custom_metadata()))

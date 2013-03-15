@@ -5,17 +5,18 @@ import argparse
 from sqlalchemy.engine import create_engine
 from sqlalchemy.schema import MetaData
 from datetime import datetime
-from write_to_csv import create_csv
+from write_to_csv import create_csv, clear_file
 from constants import DATAFILE_PATH
 
 DBDRIVER = "postgresql+pypostgresql"
+FAO_PATH = DATAFILE_PATH + "/datafiles/fao_csv/fact_assessment_outcome.csv"
 
 def generate_fao_from_enrollment(assessment_list, schema_name, metadata, db_connection):
     # Main function, will delegate calls to appropriate functions
+    clear_file(FAO_PATH)
     rows = get_student_list_from_db(schema_name, metadata, db_connection)
-    print(str(len(rows)))
     assessment_outcomes = generate_assessment_outcomes_from_query(assessment_list, rows)
-    create_csv(assessment_outcomes, DATAFILE_PATH + "/datafiles/fao_csv/fact_assessment_outcome.csv")
+    create_csv(assessment_outcomes, FAO_PATH)
 
 
 def get_student_list_from_db(schema_name, metadata, db_connection):

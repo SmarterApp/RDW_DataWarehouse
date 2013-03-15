@@ -51,7 +51,8 @@ def prepare_query(schema_name, metadata, parameters=None):
                         dim_inst_hier.c.inst_hier_rec_id.label('inst_hier_rec_id'),
                         dim_section_subject.c.section_rec_id.label('section_rec_id'),
                         dim_student.c.grade.label('enrl_grade'),
-                        dim_inst_hier.c.school_name.label('school_name')],
+                        dim_inst_hier.c.school_name.label('school_name'),
+                        dim_section_subject.c.subject_name.label('subject_name')],
                        from_obj=[dim_student
                                  .join(dim_section_subject, dim_student.c.section_id == dim_section_subject.c.section_id and dim_student.c.school_id == dim_section_subject.c.school_id)
                                  .join(dim_staff, dim_student.c.section_id == dim_staff.c.section_id and dim_student.c.school_id == dim_staff.c.school_id)

@@ -91,11 +91,10 @@ def generate_single_assessment_outcome_from_student(assessment, student, inst_hi
 def generate_assessment_outcomes_from_query(assessment_list, rows):
     assessment_outcomes = []
     for row in rows:
-        for subject in SUBJECTS:
-            filtered_assessments = get_filtered_assessments(subject, row['enrl_grade'], assessment_list)
-            for assessment in filtered_assessments:
-                assessment_outcome = generate_single_assessment_outcome_from_row(assessment, row)
-                assessment_outcomes.append(assessment_outcome)
+        filtered_assessments = get_filtered_assessments(row['subject_name'], row['enrl_grade'], assessment_list)
+        for assessment in filtered_assessments:
+            assessment_outcome = generate_single_assessment_outcome_from_row(assessment, row)
+            assessment_outcomes.append(assessment_outcome)
     return assessment_outcomes
 
 def generate_single_assessment_outcome_from_row(assessment, row):

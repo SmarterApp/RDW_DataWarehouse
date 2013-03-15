@@ -110,11 +110,11 @@ def calculate_performance_level(score, asmt_cut_point_3, asmt_cut_point_2, asmt_
     assessment -- an assessment object
     '''
     # print(asmt.asmt_cut_point_3, asmt.asmt_cut_point_2, asmt.asmt_cut_point_1, score)
-    if score > asmt_cut_point_3:
+    if score >= asmt_cut_point_3:
         return 4
-    elif score > asmt_cut_point_2:
+    elif score >= asmt_cut_point_2:
         return 3
-    elif score > asmt_cut_point_1:
+    elif score >= asmt_cut_point_1:
         return 2
     else:
         return 1

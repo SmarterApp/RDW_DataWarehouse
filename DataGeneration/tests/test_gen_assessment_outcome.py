@@ -19,7 +19,13 @@ class TestGenerateData(unittest.TestCase):
         pass
 
     def test_calculate_performance_level(self):
-        pass
+        score = 2100
+        asmt_cut_point_3 = 2100
+        asmt_cut_point_2 = 1800
+        asmt_cut_point_1 = 120
+        expected_performance_level = 4
+        actual_performance_level = gen_assessment_outcome.calculate_performance_level(score, asmt_cut_point_3, asmt_cut_point_2, asmt_cut_point_1)
+        self.assertEqual(expected_performance_level, actual_performance_level)
 
     def test_generate_plus_minus_normal_overall_score(self):
         overall_score = 1912
@@ -27,9 +33,29 @@ class TestGenerateData(unittest.TestCase):
         standard_deviation = 150.0
         minimum = 1200
         maximum = 2400
-        expected_value = 36
-        actual_value = gen_assessment_outcome.generate_plus_minus(overall_score, average_score, standard_deviation, minimum, maximum)
-        self.assertEqual(actual_value, expected_value)
+        expected_plus_minus = 36
+        actual_plus_minus = gen_assessment_outcome.generate_plus_minus(overall_score, average_score, standard_deviation, minimum, maximum)
+        self.assertEqual(expected_plus_minus, actual_plus_minus)
+
+    def test_generate_plus_minus_small_overall_score(self):
+        overall_score = 1201
+        average_score = 1800.0
+        standard_deviation = 150.0
+        minimum = 1200
+        maximum = 2400
+        expected_plus_minus = 0
+        actual_plus_minus = gen_assessment_outcome.generate_plus_minus(overall_score, average_score, standard_deviation, minimum, maximum)
+        self.assertEqual(expected_plus_minus, actual_plus_minus)
+
+    def test_generate_plus_minus_high_overall_score(self):
+        overall_score = 2390
+        average_score = 1800.0
+        standard_deviation = 150.0
+        minimum = 1200
+        maximum = 2400
+        expected_plus_minus = 0
+        actual_plus_minus = gen_assessment_outcome.generate_plus_minus(overall_score, average_score, standard_deviation, minimum, maximum)
+        self.assertEqual(expected_plus_minus, actual_plus_minus)
 
     # TODO: need to change input parameter: assessment to fields used in this method
     def test_generate_claim_scores(self):
@@ -39,9 +65,9 @@ class TestGenerateData(unittest.TestCase):
         old_value = 245
         old_scale = [50, 500]
         new_scale = [1200, 2400]
-        expected_value = (old_value - old_scale[0]) * (new_scale[1] - new_scale[0]) / (old_scale[1] - old_scale[0]) + new_scale[0]
-        actual_value = gen_assessment_outcome.rescale_value(old_value, old_scale, new_scale)
-        self.assertEqual(expected_value, actual_value)
+        expected_rescaled_value = (old_value - old_scale[0]) * (new_scale[1] - new_scale[0]) / (old_scale[1] - old_scale[0]) + new_scale[0]
+        actual_rescaled_value = gen_assessment_outcome.rescale_value(old_value, old_scale, new_scale)
+        self.assertEqual(expected_rescaled_value, actual_rescaled_value)
 
     def test_calculate_claim_average_score(self):
         minimum = 35

@@ -1,8 +1,8 @@
 import unittest
 import generate_data
 import random
-from entities import InstitutionHierarchy, StudentSection
-from helper_entities import District, State, Teacher, WhereTaken, Student
+from entities import InstitutionHierarchy, Student
+from helper_entities import District, State, Teacher, WhereTaken, StudentBioInfo
 from constants import ZIPCODE_START, ZIPCODE_RANG_INSTATE, SCHOOL_LEVELS_INFO, \
     BIRDS_FILE
 from gen_assessments import generate_dim_assessment
@@ -384,8 +384,8 @@ class TestGenerateData(unittest.TestCase):
             for item in little:
                 self.assertTrue(item in list2)
 
-    # test create_student_sections_for_subject()
-    def test_create_student_sections_for_subject(self):
+    # test create_students_for_subject()
+    def test_create_students_for_subject(self):
         sub_name = "Math"
         class_count = 2
         student_num = 90
@@ -402,11 +402,11 @@ class TestGenerateData(unittest.TestCase):
 
         expected_students_inclass = student_num / class_count
         expected_section_num = round(expected_students_inclass / school.student_teacher_ratio)
-        expected_student_sections_for_subject = generate_data.create_student_sections_for_subject(sub_name, class_count, students_list, teachers_list, school, grade, asmt_list)
+        expected_student_sections_for_subject = generate_data.create_students_for_subject(sub_name, class_count, students_list, teachers_list, school, grade, asmt_list)
         expected_section_list = []
         self.assertEqual(len(expected_student_sections_for_subject), student_num)
         for student_section in expected_student_sections_for_subject:
-            self.assertIsInstance(student_section, StudentSection)
+            self.assertIsInstance(student_section, Student)
             expected_section_list.append(student_section.section_id)
         self.assertTrue(len(set(expected_section_list)) == expected_section_num * class_count)
 
@@ -449,7 +449,7 @@ class TestGenerateData(unittest.TestCase):
 
         expected_section_list = []
         for student_section in expected_create_sections:
-            self.assertIsInstance(student_section, StudentSection)
+            self.assertIsInstance(student_section, Student)
             expected_section_list.append(student_section.section_id)
         self.assertTrue(len(set(expected_section_list)) == expected_section_num)
 
@@ -474,7 +474,7 @@ class TestGenerateData(unittest.TestCase):
 
         expected_section_list = []
         for student_section in expected_create_sections:
-            self.assertIsInstance(student_section, StudentSection)
+            self.assertIsInstance(student_section, Student)
             expected_section_list.append(student_section.section_id)
         self.assertTrue(len(set(expected_section_list)) == expected_section_num)
 
@@ -681,7 +681,7 @@ def make_students(count, state, district, school):
         district = make_district(state)
     student_list = []
     while(count > 0):
-        student = Student(count, 2 * count, ('first_name' + str(count)), ('last_name' + str(count)), ('address1' + str(count)), '08/02/2000', district, state, 'male', 'email', school)
+        student = StudentBioInfo(count, 2 * count, ('first_name' + str(count)), ('last_name' + str(count)), ('address1' + str(count)), '08/02/2000', district, state, 'male', 'email', school)
         count -= 1
         student_list.append(student)
     return student_list

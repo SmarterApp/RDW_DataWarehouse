@@ -592,10 +592,6 @@ def create_classes_for_grade(students_in_grade, teachers_in_grade, school, grade
         create_csv(assessment_outcome_list, ENTITY_TO_PATH_DICT[AssessmentOutcome])
 
 
-def generate_single_claim_score():
-    pass
-
-
 def create_students_for_subject(subject_name, number_of_classes, students, teachers, school, grade, asmt_list):
     '''
     Function to create students for a grade of a subject

@@ -18,7 +18,7 @@ class TestGetListOfStudents(unittest.TestCase):
                            'section_id': None,
                            'grade': None
                            }
-        self.columns = ['student_id', 'teacher_id', 'state_code', 'district_id', 'school_id', 'section_id', 'inst_hier_rec_id', 'section_rec_id', 'enrl_grade']
+        self.columns = ['student_id', 'teacher_id', 'state_code', 'district_id', 'school_id', 'section_id', 'inst_hier_rec_id', 'section_rec_id', 'enrl_grade', 'school_name']
 
     def test_prepare_query_noOptionalParameters(self):
         schema_name = 'test_schema'

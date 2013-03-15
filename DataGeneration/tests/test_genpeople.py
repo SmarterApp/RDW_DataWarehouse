@@ -9,7 +9,7 @@ import unittest
 
 from genpeople import generate_teacher, generate_student, generate_staff
 from entities import Staff, ExternalUserStudent, InstitutionHierarchy
-from helper_entities import State, District, Teacher, Student
+from helper_entities import State, District, Teacher, StudentBioInfo
 from uuid import UUID, uuid4
 from datetime import date
 
@@ -28,7 +28,7 @@ class Test(unittest.TestCase):
     delaware = State('DE', 'Delaware', 1)
     district_1 = District(1000, 'district_1', 'DE', 'Delaware', 1, {'Dover': [10000, 20000]})
     school_1 = InstitutionHierarchy(1, 1, 1, 12, 'Delaware', 'DE', 'district_id', 'district_name', 'school_id', 'school_name', 'school_category', '2012-09-19', True)
-    student_1 = Student(3000, uuid4(), 'John', 'Doe', '55 Washington St', date(2013, 2, 14), district_1, delaware, 'male', 'johndoe@school.edu', school_1)
+    student_1 = StudentBioInfo(3000, uuid4(), 'John', 'Doe', '55 Washington St', date(2013, 2, 14), district_1, delaware, 'male', 'johndoe@school.edu', school_1)
 
     def test_generate_teacher(self):
         teacher = generate_teacher(self.delaware, self.district_1)
@@ -46,7 +46,7 @@ class Test(unittest.TestCase):
     def test_generate_student(self):
         student, exter_user = generate_student(self.delaware, self.district_1, self.school_1, 1, ['park'])
         self.assertIsNotNone(student)
-        self.assertIsInstance(student, Student)
+        self.assertIsInstance(student, StudentBioInfo)
 
         self.assertIsNotNone(exter_user)
         self.assertIsInstance(exter_user, ExternalUserStudent)

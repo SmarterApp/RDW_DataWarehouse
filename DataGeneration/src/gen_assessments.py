@@ -4,9 +4,6 @@ Created on Jan 29, 2013
 @author: abrien, swimberly
 '''
 
-from uuid import uuid4
-from helper_entities import ClaimScore
-
 from idgen import IdGen
 from entities import Assessment
 from helper_entities import Claim

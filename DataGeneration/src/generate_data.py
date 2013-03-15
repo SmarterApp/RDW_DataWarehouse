@@ -801,32 +801,48 @@ def validate_small_set_data():
         return False
 
 if __name__ == '__main__':
+
+    # Argument parsing
+    # TODO: do we need both test state and small data set? Maybe just use small data set?
     parser = argparse.ArgumentParser(description='Generate fixture data.')
     parser.add_argument('--validate', dest='do_validation', action='store_true', default=False,
                         help='Only generate data for "Test State." This creates a small set of data meant for the validation tool',
                         required=False)
     parser.add_argument('--sds', dest='small_data_set', action='store_true', default=False,
                         help='Create a small data set.', required=False)
+    parser.add_argument('--update', dest='update', action='store_true', default=False,
+                        help='Use existing enrollment data to create new FAO rows.', required=False)
     # TODO: Add flag to turn headers off
     args = parser.parse_args()
 
-    # Determine which function to use to get state statistical data
-    is_small_data_mode = False
-    if args.do_validation:
-        state_statistic_function = get_test_state_stats
-    elif args.small_data_set:
-        if validate_small_set_data():
-            state_statistic_function = get_sds_state_stats
-            is_small_data_mode = True
-        else:
-            print("Please provide valid data in small_set_data_input.py to generate small set of data")
-            exit(-1)
+    # Determine whether we're generating a whole data set or using existing enrollment data from the db.
+    if args.update:
+        pass
+    # Generate whole data set.
     else:
-        state_statistic_function = get_state_stats
+        # Determine which function to use to get state statistical data
+        is_small_data_mode = False
+        # Generate validation dataset
+        if args.do_validation:
+            state_statistic_function = get_test_state_stats
+        # Generate small data set (QA purposes)
+        elif args.small_data_set:
+            # Make sure small data set defined in 'small_set_data_input.py' is valid
+            if validate_small_set_data():
+                state_statistic_function = get_sds_state_stats
+                is_small_data_mode = True
+            else:
+                print("Please provide valid data in small_set_data_input.py to generate small set of data")
+                exit(-1)
+        else:
+            state_statistic_function = get_state_stats
 
-    t1 = datetime.datetime.now()
-    generate(get_name_lists, state_statistic_function, is_small_data_mode)
-    t2 = datetime.datetime.now()
+        t1 = datetime.datetime.now()
+        generate(get_name_lists, state_statistic_function, is_small_data_mode)
+        t2 = datetime.datetime.now()
 
-    print("data_generation starts ", t1)
-    print("data_generation ends   ", t2)
+        print("data_generation starts ", t1)
+        print("data_generation ends   ", t2)
+
+
+

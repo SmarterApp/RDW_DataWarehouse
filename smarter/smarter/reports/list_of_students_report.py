@@ -15,6 +15,7 @@ from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
 
 __districtId = 'districtId'
 __schoolId = 'schoolId'
+__stateId = 'stateId'
 __asmtGrade = 'asmtGrade'
 __asmtSubject = 'asmtSubject'
 
@@ -35,6 +36,11 @@ __asmtSubject = 'asmtSubject'
 @report_config(
     name="list_of_students",
     params={
+        __stateId: {
+            "type": "string",
+            "required": True,
+            "pattern": "^[a-zA-Z0-9\-]{0,50}$",
+        },
         __districtId: {
             "type": "string",
             "required": True,
@@ -65,16 +71,14 @@ __asmtSubject = 'asmtSubject'
 @audit_event()
 @user_info
 def get_list_of_students_report(params):
-
-    district_id = str(params[__districtId])
-    school_id = str(params[__schoolId])
-    asmt_grade = str(params[__asmtGrade])
-
+    stateId = str(params[__stateId])
+    districtId = str(params[__districtId])
+    schoolId = str(params[__schoolId])
+    asmtGrade = str(params[__asmtGrade])
     # asmt_subject is optional.
-    asmt_subject = None
+    asmtSubject = None
     if __asmtSubject in params:
-        asmt_subject = params[__asmtSubject]
-
+        asmtSubject = params[__asmtSubject]
     with SmarterDBConnection() as connector:
         # get handle to tables
         dim_student = connector.get_table('dim_student')
@@ -121,14 +125,15 @@ def get_list_of_students_report(params):
                                  .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id, dim_asmt.c.asmt_type == 'SUMMATIVE'))
                                  .join(dim_staff, and_(dim_staff.c.staff_id == fact_asmt_outcome.c.teacher_id,
                                        dim_staff.c.most_recent, dim_staff.c.section_id == fact_asmt_outcome.c.section_id))])
-        query = query.where(fact_asmt_outcome.c.school_id == school_id)
-        query = query.where(and_(fact_asmt_outcome.c.asmt_grade == asmt_grade))
-        query = query.where(and_(fact_asmt_outcome.c.district_id == district_id))
+        query = query.where(fact_asmt_outcome.c.state_code == stateId)
+        query = query.where(fact_asmt_outcome.c.school_id == schoolId)
+        query = query.where(and_(fact_asmt_outcome.c.asmt_grade == asmtGrade))
+        query = query.where(and_(fact_asmt_outcome.c.district_id == districtId))
         query = query.where(and_(fact_asmt_outcome.c.most_recent))
         query = query.where(and_(fact_asmt_outcome.c.status == 'C'))
 
-        if asmt_subject is not None:
-            query = query.where(dim_asmt.c.asmt_subject.in_(asmt_subject))
+        if asmtSubject is not None:
+            query = query.where(dim_asmt.c.asmt_subject.in_(asmtSubject))
 
         query = query.order_by(dim_student.c.last_name).order_by(dim_student.c.first_name)
 
@@ -195,8 +200,8 @@ def get_list_of_students_report(params):
                 student_id_track[result['student_id']] = True
 
         los_results['assessments'] = assessments
-        los_results['cutpoints'] = __get_cut_points(connector, asmt_subject)
-        los_results['context'] = get_breadcrumbs_context(district_id=district_id, school_id=school_id, asmt_grade=asmt_grade)
+        los_results['cutpoints'] = __get_cut_points(connector, asmtSubject)
+        los_results['context'] = get_breadcrumbs_context(district_id=districtId, school_id=schoolId, asmt_grade=asmtGrade)
 
         return los_results
 

@@ -1,7 +1,7 @@
 from uuid import uuid4
 
 from idgen import IdGen
-from constants import SCORE_MIN_MAX_RANGE, MAXIMUM_ASSESSMENT_SCORE, MINIMUM_ASSESSMENT_SCORE, AVERAGE_ASSESSMENT_SCORE, ASSESSMENT_SCORE_STANDARD_DEVIATION
+from constants import MAXIMUM_ASSESSMENT_SCORE, MINIMUM_ASSESSMENT_SCORE, AVERAGE_ASSESSMENT_SCORE, ASSESSMENT_SCORE_STANDARD_DEVIATION
 
 
 class InstitutionHierarchy:
@@ -88,7 +88,7 @@ class Assessment:
     '''
     def __init__(self, asmt_rec_id, asmt_id, asmt_type, asmt_period, asmt_period_year, asmt_version, asmt_grade, asmt_subject, from_date, claim_list, asmt_score_min=None, asmt_score_max=None,
                  asmt_perf_lvl_name_1=None, asmt_perf_lvl_name_2=None, asmt_perf_lvl_name_3=None, asmt_perf_lvl_name_4=None, asmt_perf_lvl_name_5=None, asmt_cut_point_1=None, asmt_cut_point_2=None, asmt_cut_point_3=None, asmt_cut_point_4=None,
-                 asmt_custom_metadata=None, to_date=None, most_recent=None, minimum_assessment_score=MINIMUM_ASSESSMENT_SCORE, maximum_assessment_score=MAXIMUM_ASSESSMENT_SCORE, average_assessment_score=AVERAGE_ASSESSMENT_SCORE, assessment_score_standard_deviation = ASSESSMENT_SCORE_STANDARD_DEVIATION):
+                 asmt_custom_metadata=None, to_date=None, most_recent=None, minimum_assessment_score=MINIMUM_ASSESSMENT_SCORE, maximum_assessment_score=MAXIMUM_ASSESSMENT_SCORE, average_assessment_score=AVERAGE_ASSESSMENT_SCORE, assessment_score_standard_deviation=ASSESSMENT_SCORE_STANDARD_DEVIATION):
         '''
         Constructor
         '''
@@ -195,12 +195,12 @@ class AssessmentOutcome(object):
         self.state_code = student.state_code
         self.district_id = student.district_id
         self.school_id = student.school_id
-        self.section_id = student.section_id,
+        self.section_id = student.section_id
         self.inst_hier_rec_id = inst_hier_rec_id
         self.section_rec_id = section_rec_id
         self.where_taken_id = where_taken.where_taken_id
         self.where_taken_name = where_taken.where_taken_name
-        self.asmt_grade = asmnt.asmt_grade,
+        self.asmt_grade = asmnt.asmt_grade
         self.enrl_grade = student.grade
         self.date_taken = date_taken.strftime('%Y%m%d')
         self.date_taken_day = date_taken.day
@@ -237,7 +237,6 @@ class AssessmentOutcome(object):
         self.status = status
         self.most_recent = most_recent
 
-
     def getRow(self):
         # TODO: shouldn't return things like self.student.teacher_id
         # There should be a field called something like teacher_id
@@ -247,14 +246,14 @@ class AssessmentOutcome(object):
                 self.student_id, self.teacher_id, self.state_code,
                 self.district_id, self.school_id, self.section_id,
                 self.inst_hier_rec_id, self.section_rec_id,
-                self.where_taken_id, self.where_taken_name, self.asmt_grade, self.asmt_grade,
+                self.where_taken_id, self.where_taken_name, self.asmt_grade, self.enrl_grade,
                 self.date_taken, self.date_taken_day, self.date_taken_month, self.date_taken_year,
                 self.asmt_score, self.asmt_score_range_min, self.asmt_score_range_min,
                 self.asmt_perf_lvl,
-                self.asmt_claim_1_score, self.asmt_claim_1_score_range_min,self.asmt_claim_1_score_range_max,
-                self.asmt_claim_2_score, self.asmt_claim_2_score_range_min,self.asmt_claim_2_score_range_max,
-                self.asmt_claim_3_score, self.asmt_claim_3_score_range_min,self.asmt_claim_3_score_range_max,
-                self.asmt_claim_4_score, self.asmt_claim_4_score_range_min,self.asmt_claim_4_score_range_max,
+                self.asmt_claim_1_score, self.asmt_claim_1_score_range_min, self.asmt_claim_1_score_range_max,
+                self.asmt_claim_2_score, self.asmt_claim_2_score_range_min, self.asmt_claim_2_score_range_max,
+                self.asmt_claim_3_score, self.asmt_claim_3_score_range_min, self.asmt_claim_3_score_range_max,
+                self.asmt_claim_4_score, self.asmt_claim_4_score_range_min, self.asmt_claim_4_score_range_max,
                 self.asmt_create_date, self.status, self.most_recent]
 
     @classmethod

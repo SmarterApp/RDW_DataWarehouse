@@ -80,12 +80,12 @@ def generate_assessment_score(assessment):
     minimum = assessment.score_minimum
     maximum = assessment.score_maximum
 
-    overall_score = py1.extract_value_from_normal_distribution(average, standard_deviation, minimum, maximum)
-    performance_level = calculate_performance_level(overall_score, assessment)
+    overall_score = int(py1.extract_value_from_normal_distribution(average, standard_deviation, minimum, maximum))
+    performance_level = calculate_performance_level(overall_score, assessment.asmt_cut_point_3, assessment.asmt_cut_point_2, assessment.asmt_cut_point_1)
 
     plus_minus = generate_plus_minus(overall_score, average, standard_deviation, minimum, maximum)
-    interval_minimum = overall_score - plus_minus
-    interval_maximum = overall_score + plus_minus
+    interval_minimum = int(overall_score - plus_minus)
+    interval_maximum = int(overall_score + plus_minus)
 
     claim_scores = generate_claim_scores(overall_score, assessment)
 
@@ -102,7 +102,7 @@ def generate_assessment_score(assessment):
     return assessment_score
 
 
-def calculate_performance_level(score, assessment):
+def calculate_performance_level(score, asmt_cut_point_3, asmt_cut_point_2, asmt_cut_point_1):
     '''
     calculates a performance level as an integer based on a students overall score and
     the cutoffs for the assessment (0, 1 or 2)
@@ -110,11 +110,11 @@ def calculate_performance_level(score, assessment):
     assessment -- an assessment object
     '''
     # print(asmt.asmt_cut_point_3, asmt.asmt_cut_point_2, asmt.asmt_cut_point_1, score)
-    if score > assessment.asmt_cut_point_3:
+    if score > asmt_cut_point_3:
         return 4
-    elif score > assessment.asmt_cut_point_2:
+    elif score > asmt_cut_point_2:
         return 3
-    elif score > assessment.asmt_cut_point_1:
+    elif score > asmt_cut_point_1:
         return 2
     else:
         return 1
@@ -164,13 +164,13 @@ def generate_claim_scores(assessment_score, assessment):
         # calculate the claim score
         weighted_assessment_scale = (assessment.score_minimum * claim_weight, assessment.score_maximum * claim_weight)
         unscaled_claim_score = assessment_score * claim_weight
-        scaled_claim_score = rescale_value(unscaled_claim_score, weighted_assessment_scale, claim_score_scale)
+        scaled_claim_score = int(rescale_value(unscaled_claim_score, weighted_assessment_scale, claim_score_scale))
 
         claim_average_score = calculate_claim_average_score(claim_minimum_score, claim_maximum_score)
         claim_standard_deviation = calculate_claim_standard_deviation(claim_average_score, claim_minimum_score)
         claim_plus_minus = generate_plus_minus(scaled_claim_score, claim_average_score, claim_standard_deviation, claim_minimum_score, claim_maximum_score)
-        claim_interval_min = scaled_claim_score - claim_plus_minus
-        claim_interval_max = scaled_claim_score + claim_plus_minus
+        claim_interval_min = int(scaled_claim_score - claim_plus_minus)
+        claim_interval_max = int(scaled_claim_score + claim_plus_minus)
 
         claim_score = ClaimScore(scaled_claim_score, claim_interval_min, claim_interval_max)
 

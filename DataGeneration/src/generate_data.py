@@ -518,26 +518,6 @@ def create_classes_for_school(district, school, state, name_list, total_count, a
         create_classes_for_grade(students_in_grade, teachers_in_grade, school, grade, asmt_list, where_taken, total_count, is_small_data_mode)
 
 
-def map_asmt_date_to_period(period, dates_taken, year, asmt_type):
-    '''
-    returns a date given the attributes
-    period -- the period that the asmt was taken
-    dates_taken -- a dict of dates whose keys are periods
-    year -- the year the asmt was taken
-    '''
-    # year_int = int(year)
-    if period == 'BOY':
-        date_taken = dates_taken['BOY']
-    elif period == 'MOY':
-        date_taken = dates_taken['MOY']
-    elif period == 'EOY':
-        date_taken = dates_taken['EOY']
-    # if asmt_type.upper() == 'SUMMATIVE':
-    #    year_int += 1
-    return date_taken
-    # return date_taken.replace(year=year_int)
-
-
 def generate_teachers(num_teachers, state, district):
     teachers = []
 
@@ -589,7 +569,7 @@ def create_classes_for_grade(students_in_grade, teachers_in_grade, school, grade
         number_of_teachers = min(len(teachers_in_grade), max_number_of_teachers)
         subject_teachers = random.sample(teachers_in_grade, number_of_teachers)
 
-        students = create_students_for_subject(subject, number_of_classes, students_in_grade, subject_teachers, school, grade, assessment_list)
+        students = create_students_for_subject(subject, number_of_classes, students_in_grade, subject_teachers, school, grade)
 
         # TODO: change 'student_section_count' key to 'student_count'
         total_count['student_section_count'] += len(students)
@@ -598,7 +578,7 @@ def create_classes_for_grade(students_in_grade, teachers_in_grade, school, grade
         create_csv(assessment_outcome_list, ENTITY_TO_PATH_DICT[AssessmentOutcome])
 
 
-def create_students_for_subject(subject_name, number_of_classes, students, teachers, school, grade, asmt_list):
+def create_students_for_subject(subject_name, number_of_classes, students, teachers, school, grade):
     '''
     Function to create students for a grade of a subject
     '''

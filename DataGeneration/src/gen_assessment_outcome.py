@@ -293,7 +293,6 @@ def generate_claim_scores(assessment_score, assessment):
         weighted_assessment_scale = (assessment.score_minimum * claim_weight, assessment.score_maximum * claim_weight)
         unscaled_claim_score = assessment_score * claim_weight
         scaled_claim_score = int(rescale_value(unscaled_claim_score, weighted_assessment_scale, claim_score_scale))
-
         claim_average_score = calculate_claim_average_score(claim_minimum_score, claim_maximum_score)
         claim_standard_deviation = calculate_claim_standard_deviation(claim_average_score, claim_minimum_score)
         claim_plus_minus = generate_plus_minus(scaled_claim_score, claim_average_score, claim_standard_deviation, claim_minimum_score, claim_maximum_score)

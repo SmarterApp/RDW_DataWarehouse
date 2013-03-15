@@ -1,4 +1,3 @@
-import random
 from entities import Person
 from idgen import IdGen
 
@@ -154,7 +153,7 @@ class StudentBioInfo(Person):
     Used to hold student information until it can be passed to Student Object
     '''
 
-    def __init__(self, student_rec_id, student_id, first_name, last_name, address_1, dob, district, state, gender, email, school, middle_name=None, address_2=None):
+    def __init__(self, student_rec_id, student_id, first_name, last_name, address_1, dob, district_id, state_code, gender, email, school_id, zip_code, city, middle_name=None, address_2=None):
 
         super().__init__(first_name, last_name, middle_name=middle_name)
 
@@ -170,22 +169,16 @@ class StudentBioInfo(Person):
         else:
             self.student_rec_id = student_rec_id
 
-        # TODO: We probably want to select cities/zips in a more intelligent way
-        city_zip_map = district.city_zip_map
-        city = random.choice(list(city_zip_map.keys()))
-        zip_range = city_zip_map[city]
-        zip_code = random.randint(zip_range[0], zip_range[1])
-
         self.address_1 = address_1
         self.address_2 = address_2
         self.dob = dob
-        self.district_id = district.district_id
+        self.district_id = district_id
         self.city = city
-        self.state_code = state.state_code
+        self.state_code = state_code
         self.zip_code = zip_code
         self.gender = gender
         self.email = email
-        self.school_id = school.school_id
+        self.school_id = school_id
 
     def __str__(self):
         return ("%s %s %s" % (self.first_name, self.middle_name, self.last_name))

@@ -17,7 +17,7 @@ class EdAuthAuthenticationPolicy(AuthTktAuthenticationPolicy):
 
     def authenticated_userid(self, request):
         '''
-        Returns a dictionary of user information
+        Returns an User object
         '''
         session_id = unauthenticated_userid(request)
         if session_id is not None:

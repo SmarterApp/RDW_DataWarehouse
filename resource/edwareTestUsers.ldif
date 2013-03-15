@@ -65,7 +65,7 @@ member: cn=Jamie Hine,ou=people,ou=environment,dc=edwdc,dc=net
 dn: cn=James Stevenson,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
-cn: James Stevenson
+cn: James Michael Stevenson
 sn: Stevenson
 givenName: James
 uid: jstevenson

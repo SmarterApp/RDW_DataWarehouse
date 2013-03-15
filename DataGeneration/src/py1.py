@@ -33,6 +33,7 @@ def makeup_core(avgin, stdin, minin, maxin, countin):
 
     return out1
 
+
 def extract_value_from_normal_distribution(avgin, stdin, minin, maxin):
 
     rnd1 = random.gauss(avgin, stdin)

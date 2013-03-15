@@ -85,9 +85,10 @@ def generate_single_asmt(student_grade, asmt_type, period, subject, year, most_r
         'asmt_perf_lvl_name_2': PERFORMANCE_LEVELS[1],
         'asmt_perf_lvl_name_3': PERFORMANCE_LEVELS[2],
         'asmt_perf_lvl_name_4': PERFORMANCE_LEVELS[3],
-        'asmt_cut_point_1': int((MAXIMUM_ASSESSMENT_SCORE + MINIMUM_ASSESSMENT_SCORE) * .25),
-        'asmt_cut_point_2': int((MAXIMUM_ASSESSMENT_SCORE + MINIMUM_ASSESSMENT_SCORE) * .50),
-        'asmt_cut_point_3': int((MAXIMUM_ASSESSMENT_SCORE + MINIMUM_ASSESSMENT_SCORE) * .65),
+        # TODO: not hard code cut points
+        'asmt_cut_point_1': 1200,
+        'asmt_cut_point_2': 1400,
+        'asmt_cut_point_3': 1800,
 
         'from_date': '20120901',
         'most_recent': most_recent
@@ -107,9 +108,6 @@ def generate_claim_score_min_max(lower_bound, upper_bound):
     maximum = randint(minimum + 10, upper_bound)
 
     return (minimum, maximum)
-
-
-
 
 
 def generate_id():

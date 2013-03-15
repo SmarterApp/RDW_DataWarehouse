@@ -237,7 +237,6 @@ class AssessmentOutcome(object):
         self.status = status
         self.most_recent = most_recent
 
-
     def getRow(self):
         # TODO: shouldn't return things like self.student.teacher_id
         # There should be a field called something like teacher_id
@@ -251,10 +250,10 @@ class AssessmentOutcome(object):
                 self.date_taken, self.date_taken_day, self.date_taken_month, self.date_taken_year,
                 self.asmt_score, self.asmt_score_range_min, self.asmt_score_range_min,
                 self.asmt_perf_lvl,
-                self.asmt_claim_1_score, self.asmt_claim_1_score_range_min,self.asmt_claim_1_score_range_max,
-                self.asmt_claim_2_score, self.asmt_claim_2_score_range_min,self.asmt_claim_2_score_range_max,
-                self.asmt_claim_3_score, self.asmt_claim_3_score_range_min,self.asmt_claim_3_score_range_max,
-                self.asmt_claim_4_score, self.asmt_claim_4_score_range_min,self.asmt_claim_4_score_range_max,
+                self.asmt_claim_1_score, self.asmt_claim_1_score_range_min, self.asmt_claim_1_score_range_max,
+                self.asmt_claim_2_score, self.asmt_claim_2_score_range_min, self.asmt_claim_2_score_range_max,
+                self.asmt_claim_3_score, self.asmt_claim_3_score_range_min, self.asmt_claim_3_score_range_max,
+                self.asmt_claim_4_score, self.asmt_claim_4_score_range_min, self.asmt_claim_4_score_range_max,
                 self.asmt_create_date, self.status, self.most_recent]
 
     @classmethod

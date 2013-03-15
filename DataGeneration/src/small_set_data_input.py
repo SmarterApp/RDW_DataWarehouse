@@ -23,4 +23,4 @@ SMALL_SET_SCHOOL_TYPE_GRADES = {'Elementary School': (3, 3),
 
 # Notes:
 # 1. length of SMALL_SET_STUDENT_NUM_IN_SCHOOL, SMALL_SET_STUDENT_TEACHER_RATIO_IN_SCHOOL and SMALL_SET_SCHOOL_TYPE_IN_STATE equals to sum(SMALL_SET_SCHOOL_NUM_IN_DIST)
-# 2. In SMALL_SET_SHOOL_TYPE_GRADES, for each tuple in values(), first value should be less than the second value. Both two values should in range(0, 13)
+# 2. In SMALL_SET_SCHOOL_TYPE_GRADES, for each tuple in values(), first value should be less than the second value. Both two values should in range(0, 13)

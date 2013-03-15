@@ -787,7 +787,7 @@ def validate_small_set_data():
                 for school_type in small_set_data_input.SMALL_SET_SCHOOL_TYPE_IN_STATE:
                     if school_type not in constants.SCHOOL_ORDER_MAP.keys():
                         return False
-                for key, value in small_set_data_input.SMALL_SET_SHOOL_TYPE_GRADES.items():
+                for key, value in small_set_data_input.SMALL_SET_SCHOOL_TYPE_GRADES.items():
                     if key not in constants.SCHOOL_ORDER_MAP.keys():
                         return False
                     if len(value) != 2 or value[0] not in range(0, 13) or value[0] > value[1] or value[1] not in range(0, 13):

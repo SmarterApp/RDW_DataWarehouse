@@ -120,13 +120,7 @@ def generate_data(name_lists, db_states_stat, is_small_data_mode):
         created_state = State(state['state_code'], state['state_name'], state['total_district'])
         total_count['state_count'] += 1
 
-        if is_small_data_mode:
-            school_num_in_dist_made = small_set_data_input.SMALL_SET_SCHOOL_NUM_IN_DIST
-            stu_num_in_school_made = small_set_data_input.SMALL_SET_STUDENT_NUM_IN_SCHOOL
-            stutea_ratio_in_school_made = small_set_data_input.SMALL_SET_STUDENT_TEACHER_RATIO_IN_SCHOOL
-            school_type_in_state = small_set_data_input.SMALL_SET_SCHOOL_TYPE_IN_STATE
-        else:
-            school_num_in_dist_made, stu_num_in_school_made, stutea_ratio_in_school_made, school_type_in_state = generate_distribution_lists(state)
+        school_num_in_dist_made, stu_num_in_school_made, stutea_ratio_in_school_made, school_type_in_state = generate_distribution_lists(state, is_small_data_mode)
 
         # print out result for a state
         print("************** State ", created_state.state_name, " **************")
@@ -136,31 +130,31 @@ def generate_data(name_lists, db_states_stat, is_small_data_mode):
         print("Number of students  ", state['total_student'], "    ", sum(stu_num_in_school_made))
 
         # create districts for each state
-        created_dist_list = create_districts(created_state.state_code, created_state.state_name, school_num_in_dist_made, c, name_lists)
-        total_count['district_count'] += len(created_dist_list)
+        created_district_list = create_districts(created_state.state_code, created_state.state_name, school_num_in_dist_made, c, name_lists)
+        total_count['district_count'] += len(created_district_list)
 
         # generate non-teaching state_staff
         # assuming here between 2 and 4 staff per district at the state level
-        num_of_state_staff = len(created_dist_list) * random.choice(range(2, 4))
+        num_of_state_staff = len(created_district_list) * random.choice(range(2, 4))
         state_staff_list = [generate_staff(constants.HIER_USER_TYPE[1], created_state.state_code)for _i in range(num_of_state_staff)]
         create_csv(state_staff_list, ENTITY_TO_PATH_DICT[Staff])
 
         # TODO: should be more explicit. What is shift?
         shift = 0
         dist_count = 0
-        for district in created_dist_list:
+        for district in created_district_list:
             dist_count += 1
             # TODO: Misleading. Isn't district already created?
-            print("creating district %d of %d for state %s" % ((dist_count), len(created_dist_list), state['state_name']))
+            print("creating district %d of %d for state %s" % ((dist_count), len(created_district_list), state['state_name']))
 
-            # create school for each district
+            # create school / institution_hier for each district
             school_list, wheretaken_list = create_institution_hierarchies(stu_num_in_school_made[shift: shift + district.number_of_schools],
                                                                           stutea_ratio_in_school_made[shift: shift + district.number_of_schools],
                                                                           district, school_type_in_state, name_lists, is_small_data_mode)
             create_csv(school_list, ENTITY_TO_PATH_DICT[InstitutionHierarchy])
 
             # TODO: wheretaken still necessary?
-            # associate wheretaken_list to current district
+            # associate wheretaken_list to current district, used in fao
             district.wheretaken_list = wheretaken_list
 
             # create district staff
@@ -190,38 +184,50 @@ def generate_data(name_lists, db_states_stat, is_small_data_mode):
     return total_count
 
 
-def generate_distribution_lists(state):
-    # generate school distribution in districts
-    min_dis = max(1, math.floor(state['total_district'] * constants.DIST_LOW_VALUE))
-    max_dis = math.ceil(state['total_district'] * constants.DIST_HIGH_VALUE)
-    num_of_dist = min_dis
-    if(min_dis < max_dis):
-        num_of_dist = random.choice(range(min_dis, max_dis))
-    school_num_in_dist_made = makeup_list(state['avg_school_per_district'], state['std_school_per_district'],
+def generate_distribution_lists(state, is_small_data_mode):
+    number_of_school_in_district = []
+    number_of_student_in_school = []
+    student_teacher_ratio_in_school = []
+    school_type_in_state = []
+
+    if is_small_data_mode:
+            number_of_school_in_district = small_set_data_input.SMALL_SET_SCHOOL_NUM_IN_DIST
+            number_of_student_in_school = small_set_data_input.SMALL_SET_STUDENT_NUM_IN_SCHOOL
+            student_teacher_ratio_in_school = small_set_data_input.SMALL_SET_STUDENT_TEACHER_RATIO_IN_SCHOOL
+            school_type_in_state = small_set_data_input.SMALL_SET_SCHOOL_TYPE_IN_STATE
+    else:
+        # first, calculate number of district
+        number_of_district = calculate_number_of_district(state['total_district'])
+
+        # generate school distribution in districts
+        number_of_school_in_district = makeup_list(state['avg_school_per_district'], state['std_school_per_district'],
                                           state['min_school_per_district'], state['max_school_per_district'],
-                                          num_of_dist, state['total_school'])
-    # for test
-    # print("real four numbers      ", state['avg_school_per_district'], state['std_school_per_district'], state['min_school_per_district'], state['max_school_per_district'])
-    # print("generated four numbers ", py1.avg(school_num_in_dist_made), py1.std(school_num_in_dist_made), min(school_num_in_dist_made), max(school_num_in_dist_made))
-
-    # generate student distribution in schools
-    stu_num_in_school_made = makeup_list(state['avg_student_per_school'], state['std_student_per_school'],
+                                          number_of_district, state['total_school'])
+        # generate student distribution in schools
+        number_of_student_in_school = makeup_list(state['avg_student_per_school'], state['std_student_per_school'],
                                          state['min_student_per_school'], state['max_student_per_school'],
-                                         sum(school_num_in_dist_made), state['total_student'])
-    # for test
-    # print("real four numbers      ", state['avg_student_per_school'], state['std_student_per_school'], state['min_student_per_school'], state['max_student_per_school'])
-    # print("generated four numbers ", py1.avg(stu_num_in_school_made), py1.std(stu_num_in_school_made), min(stu_num_in_school_made), max(stu_num_in_school_made))
+                                         sum(number_of_school_in_district), state['total_student'])
 
-    # generate student teacher ratio distribution in schools
-    stutea_ratio_in_school_made = py1.makeup_core(state['avg_stutea_ratio_per_school'], state['std_stutea_ratio_per_school'],
+        # generate student teacher ratio distribution in schools
+        student_teacher_ratio_in_school = py1.makeup_core(state['avg_stutea_ratio_per_school'], state['std_stutea_ratio_per_school'],
                                                   state['min_stutea_ratio_per_school'], state['max_stutea_ratio_per_school'],
-                                                  sum(school_num_in_dist_made))
+                                                  sum(number_of_school_in_district))
 
-    # generate school type distribution in state
-    school_type_in_state = make_school_types([state['primary_perc'], state['middle_perc'],
-                                              state['high_perc'], state['other_perc']], sum(school_num_in_dist_made))
+        # generate school type distribution in state
+        school_type_in_state = make_school_types([state['primary_perc'], state['middle_perc'],
+                                              state['high_perc'], state['other_perc']], sum(number_of_school_in_district))
 
-    return school_num_in_dist_made, stu_num_in_school_made, stutea_ratio_in_school_made, school_type_in_state
+    return number_of_school_in_district, number_of_student_in_school, student_teacher_ratio_in_school, school_type_in_state
+
+
+def calculate_number_of_district(actual_number_of_district):
+    min_number_of_district = max(1, math.floor(actual_number_of_district * constants.DIST_LOW_VALUE))
+    max_number_of_district = math.ceil(actual_number_of_district * constants.DIST_HIGH_VALUE)
+    if(min_number_of_district < max_number_of_district):
+        number_of_district = random.choice(range(min_number_of_district, max_number_of_district))
+    else:
+        number_of_district = min_number_of_district
+    return number_of_district
 
 
 def make_school_types(perc, total):
@@ -592,10 +598,6 @@ def create_classes_for_grade(students_in_grade, teachers_in_grade, school, grade
         create_csv(assessment_outcome_list, ENTITY_TO_PATH_DICT[AssessmentOutcome])
 
 
-def generate_single_claim_score():
-    pass
-
-
 def create_students_for_subject(subject_name, number_of_classes, students, teachers, school, grade, asmt_list):
     '''
     Function to create students for a grade of a subject
@@ -843,6 +845,3 @@ if __name__ == '__main__':
 
         print("data_generation starts ", t1)
         print("data_generation ends   ", t2)
-
-
-

@@ -1,10 +1,6 @@
 import random
 from entities import Person
 from idgen import IdGen
-from entities import Person
-from idgen import IdGen
-from entities import InstitutionHierarchy
-from datetime import date
 
 
 class State:
@@ -52,6 +48,7 @@ class District:
         '''
         return ("District:[district_id: %s, district_name: %s]" % (self.district_id, self.district_name))
 
+
 class Claim:
     '''
     claim information to be used by the assessment object. Simply defines basic parameters about claim.
@@ -87,7 +84,6 @@ class AssessmentScore:
         self.interval_max = interval_max
         self.claim_scores = claim_scores
         self.asmt_create_date = asmt_create_date
-
 
     def __str__(self):
         '''

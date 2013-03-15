@@ -9,8 +9,32 @@ class TestGenerateData(unittest.TestCase):
     def test_get_filtered_assessments(self):
         pass
 
-    def test_create_date_taken(self):
-        pass
+    def test_create_date_taken_BOY(self):
+        year = 2012
+        period = 'BOY'
+        actual_date = gen_assessment_outcome.create_date_taken(year, period)
+        self.assertEqual(actual_date.year, year)
+        self.assertTrue(actual_date.month in [9, 10])
+        self.assertTrue(actual_date.month in range(1, 29))
+
+    def test_create_date_taken_MOY(self):
+        year = 2012
+        period = 'MOY'
+        actual_date = gen_assessment_outcome.create_date_taken(year, period)
+        self.assertTrue(actual_date.month in [11, 12, 1, 2, 3])
+        if actual_date.month in [11, 12]:
+            self.assertEqual(actual_date.year, year)
+        else:
+            self.assertEqual(actual_date.year, year + 1)
+        self.assertTrue(actual_date.month in range(1, 29))
+
+    def test_create_date_taken_EOY(self):
+        year = 2012
+        period = 'EOY'
+        actual_date = gen_assessment_outcome.create_date_taken(year, period)
+        self.assertEqual(actual_date.year, year + 1)
+        self.assertTrue(actual_date.month in [4, 5, 6])
+        self.assertTrue(actual_date.month in range(1, 29))
 
     def test_generate_single_assessment_outcome(self):
         pass
@@ -18,12 +42,21 @@ class TestGenerateData(unittest.TestCase):
     def test_generate_assessment_score(self):
         pass
 
-    def test_calculate_performance_level(self):
+    def test_calculate_performance_level_boundry_value(self):
         score = 2100
         asmt_cut_point_3 = 2100
         asmt_cut_point_2 = 1800
         asmt_cut_point_1 = 120
         expected_performance_level = 4
+        actual_performance_level = gen_assessment_outcome.calculate_performance_level(score, asmt_cut_point_3, asmt_cut_point_2, asmt_cut_point_1)
+        self.assertEqual(expected_performance_level, actual_performance_level)
+
+    def test_calculate_performance_level_between_two_levels(self):
+        score = 1723
+        asmt_cut_point_3 = 2100
+        asmt_cut_point_2 = 1800
+        asmt_cut_point_1 = 120
+        expected_performance_level = 2
         actual_performance_level = gen_assessment_outcome.calculate_performance_level(score, asmt_cut_point_3, asmt_cut_point_2, asmt_cut_point_1)
         self.assertEqual(expected_performance_level, actual_performance_level)
 

@@ -8,20 +8,24 @@ from datetime import datetime
 
 DBDRIVER = "postgresql+pypostgresql"
 
+
 def generate_fao_from_enrollment(assessment_list, grade, subject, inst_hier_rec_id, where_taken, schema_name,
-                                metadata, db_connection):
+                                 metadata, db_connection):
     # Main function, will delegate calls to appropriate functions
     rows = get_student_list_from_db(schema_name, metadata, db_connection)
     students = cast_rows_to_students(rows)
     generate_assessment_outcomes(assessment_list, students, grade, subject, inst_hier_rec_id, where_taken)
 
+
 def get_student_list_from_db(schema_name, metadata, db_connection):
     # Will return a student list from the database.
     students = get_students_for_assessment(schema_name, metadata, db_connection)
 
+
 def cast_rows_to_students(rows):
     # Turn a dim_student row into a Student object
     pass
+
 
 def get_input_args():
     '''
@@ -47,6 +51,7 @@ def get_input_args():
 
     return vars(args)
 
+
 def main():
     '''
     Entry point main method
@@ -71,7 +76,7 @@ def main():
         # Get list of students in database
         print("Starting get list of students")
         start_time = datetime.now()
-        #student_list = get_students_for_assessment(schema, metadata, db_connection, input_args)
+        # student_list = get_students_for_assessment(schema, metadata, db_connection, input_args)
         assessment_list = generate_dim_assessment()
         generate_fao_from_enrollment(assessment_list, grade, subject, inst_hier_rec_id, where_taken, schema_name,
                                      metadata, db_connection)

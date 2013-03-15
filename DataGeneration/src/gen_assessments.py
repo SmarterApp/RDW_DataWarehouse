@@ -4,9 +4,6 @@ Created on Jan 29, 2013
 @author: abrien, swimberly
 '''
 
-from uuid import uuid4
-from helper_entities import ClaimScore
-
 from idgen import IdGen
 from entities import Assessment
 from helper_entities import Claim
@@ -86,9 +83,9 @@ def generate_single_asmt(student_grade, asmt_type, period, subject, year, most_r
         'asmt_perf_lvl_name_3': PERFORMANCE_LEVELS[2],
         'asmt_perf_lvl_name_4': PERFORMANCE_LEVELS[3],
         # TODO: not hard code cut points
-        'asmt_cut_point_1': 1200,
-        'asmt_cut_point_2': 1400,
-        'asmt_cut_point_3': 1800,
+        'asmt_cut_point_1': 1400,
+        'asmt_cut_point_2': 1800,
+        'asmt_cut_point_3': 2100,
 
         'from_date': '20120901',
         'most_recent': most_recent

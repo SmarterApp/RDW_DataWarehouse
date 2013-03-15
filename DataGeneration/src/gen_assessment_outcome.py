@@ -92,7 +92,7 @@ def generate_assessment_outcomes_from_query(assessment_list, rows):
     assessment_outcomes = []
     for row in rows:
         for subject in SUBJECTS:
-            filtered_assessments = get_filtered_assessments(subject, row.enrl_grade, assessment_list)
+            filtered_assessments = get_filtered_assessments(subject, row['enrl_grade'], assessment_list)
             for assessment in filtered_assessments:
                 assessment_outcome = generate_single_assessment_outcome_from_row(assessment, row)
                 assessment_outcomes.append(assessment_outcome)
@@ -100,7 +100,7 @@ def generate_assessment_outcomes_from_query(assessment_list, rows):
 
 def generate_single_assessment_outcome_from_row(assessment, row):
     id_generator = IdGen()
-    todays_date = date.today.strftime('%Y%m%d')
+    todays_date = date.today()
     asmt_score = generate_assessment_score(assessment)
 
     if len(asmt_score.claim_scores) == 4:
@@ -116,19 +116,19 @@ def generate_single_assessment_outcome_from_row(assessment, row):
         'asmnt_outcome_id': uuid.uuid4(),
         'asmnt_outcome_external_id': id_generator.get_id(),
         'asmt_rec_id': assessment.asmt_rec_id,
-        'student_id': row.student_id,
-        'teacher_id': row.teacher_id,
-        'state_code': row.state_code,
-        'district_id': row.district_id,
-        'school_id': row.school_id,
-        'section_id': row.section_id,
-        'inst_hier_rec_id': row.inst_hier_rec_id,
-        'section_rec_id': row.section_rec_id,
+        'student_id': row['student_id'],
+        'teacher_id': row['teacher_id'],
+        'state_code': row['state_code'],
+        'district_id': row['district_id'],
+        'school_id': row['school_id'],
+        'section_id': row['section_id'],
+        'inst_hier_rec_id': row['inst_hier_rec_id'],
+        'section_rec_id': row['section_rec_id'],
         'where_taken_id': uuid.uuid4(),
-        'where_taken_name': row.school_name,
-        'asmt_grade': row.enrl_grade,
-        'enrl_grade': row.enrl_grade,
-        'date_taken': todays_date,
+        'where_taken_name': row['school_name'],
+        'asmt_grade': row['enrl_grade'],
+        'enrl_grade': row['enrl_grade'],
+        'date_taken': todays_date.strftime('%Y%m%d'),
         'date_taken_day': todays_date.day,
         'date_taken_month': todays_date.month,
         'date_taken_year': todays_date.year,
@@ -169,8 +169,8 @@ def generate_single_assessment_outcome_from_row(assessment, row):
 def get_filtered_assessments(subject, grade, assessment_list):
     filtered_assessments = []
     for assessment in assessment_list:
-        if assessment.asmt_subject.lower() == subject.lower() and assessment.asmt_grade == grade:
-            filtered_assessments.append(assessment)
+        if assessment.asmt_subject.lower() == subject.lower() and int(assessment.asmt_grade) == int(grade):
+                filtered_assessments.append(assessment)
     return filtered_assessments
 
 

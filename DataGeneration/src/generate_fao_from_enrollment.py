@@ -13,6 +13,7 @@ DBDRIVER = "postgresql+pypostgresql"
 def generate_fao_from_enrollment(assessment_list, schema_name, metadata, db_connection):
     # Main function, will delegate calls to appropriate functions
     rows = get_student_list_from_db(schema_name, metadata, db_connection)
+    print(str(len(rows)))
     assessment_outcomes = generate_assessment_outcomes_from_query(assessment_list, rows)
     create_csv(assessment_outcomes, DATAFILE_PATH + "/datafiles/fao_csv/fact_assessment_outcome.csv")
 
@@ -20,6 +21,7 @@ def generate_fao_from_enrollment(assessment_list, schema_name, metadata, db_conn
 def get_student_list_from_db(schema_name, metadata, db_connection):
     # Will return a student list from the database.
     students = get_students_for_assessment(schema_name, metadata, db_connection)
+    return students
 
 def cast_rows_to_students(rows):
     # Turn a dim_student row into a Student object
@@ -75,7 +77,7 @@ def main():
         start_time = datetime.now()
         #student_list = get_students_for_assessment(schema, metadata, db_connection, input_args)
         assessment_list = generate_dim_assessment()
-        generate_fao_from_enrollment(assessment_list, schema_name, metadata, db_connection)
+        generate_fao_from_enrollment(assessment_list, schema, metadata, db_connection)
         finish_time = datetime.now()    
         print("Start  at -- ", start_time)
         print("Finish at -- ", finish_time)

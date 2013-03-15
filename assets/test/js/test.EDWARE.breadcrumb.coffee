@@ -33,10 +33,12 @@ require ["jquery", "cs!edwareBreadcrumbs"], ($, edwareBreadcrumbs) ->
           
     deepEqual $("#breadcrumbs")[0].innerHTML.length, 0, "breadcrumbs should be empty before test is running"
     edwareBreadcrumbs.create("#breadcrumbs", test_data)
-    deepEqual $("#breadcrumbs a").length, 3, "3 links should have been created"
-    deepEqual $("#breadcrumbs a")[0].text, "Washington", "wrong text shown"
-    start()
-
+    setTimeout (->
+      deepEqual $("#breadcrumbs a").length, 3, "3 links should have been created"
+      deepEqual $("#breadcrumbs a")[0].text, "Washington", "wrong text shown"
+      start()
+    ), 150
+    
   test "Test breadcrumb with no links", ->
     stop()
     test_data = items: [
@@ -44,8 +46,9 @@ require ["jquery", "cs!edwareBreadcrumbs"], ($, edwareBreadcrumbs) ->
       name: "Washington"
       id: "WA"
     ]
-          
-    edwareBreadcrumbs.create("#breadcrumbs", test_data)
     
-    deepEqual $("#breadcrumbs a").length, 0, "0 links should have been created"
-    start()
+    edwareBreadcrumbs.create("#breadcrumbs", test_data)
+    setTimeout (->      
+      deepEqual $("#breadcrumbs a").length, 0, "0 links should have been created"
+      start()
+    ), 150

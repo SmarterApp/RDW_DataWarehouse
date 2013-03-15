@@ -31,19 +31,29 @@ define [
     names = options.colModel.name.split "."
     subject = rowObject[names[0]][names[1]]
     
-    "<div>P" + subject.asmt_perf_lvl + " [" + subject.asmt_score_range_min + "] " + value + " [" + subject.asmt_score_range_max + "]</div>"
+    if subject
+      "<div>P" + subject.asmt_perf_lvl + " [" + subject.asmt_score_range_min + "] " + value + " [" + subject.asmt_score_range_max + "]</div>"
+    else
+      " "
   
   showClaimsMinMax = (value, options, rowObject) ->
     names = options.colModel.name.split "."
     subject = rowObject[names[0]][names[1]]
    
-    "<div>[" + subject[names[2]+ "_range_min"] + "] " + value  + " [" + subject[names[2]+ "_range_max"] + "]</div>"
+    if subject
+      "<div>[" + subject[names[2]+ "_range_min"] + "] " + value  + " [" + subject[names[2]+ "_range_max"] + "]</div>"
+    else
+      " "
     
   performanceBar = (value, options, rowObject) ->
     asmt_type = options.colModel.formatoptions.asmt_type
     subject = rowObject.results[asmt_type]
     results = edwarePopulationBar.create subject
-    "<div class = 'populationBar'>" + results + "</div>"
+    
+    if subject
+      "<div class = 'populationBar'>" + results + "</div>"
+    else
+      " "
  
   showlink: showlink
   showOverallConfidence: showOverallConfidence

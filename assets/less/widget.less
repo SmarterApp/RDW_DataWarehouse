@@ -35,7 +35,7 @@ table td .progress {
   text-overflow: ellipsis;
   white-space: nowrap !important;
 }
-
+.ui-widget-content { color: @color-B2; }
 .ui-widget-content a { color: @color-A2; text-decoration: none; }
 .ui-widget-content a:hover { color: @color-A3; text-decoration: underline;}
 
@@ -87,6 +87,11 @@ th.ui-th-column div {
 .ui-jqgrid-sdiv {
   .box-shadow(0 1px 4px, 25%);
   z-index: 100;
+  background: @color-B6;
+  
+  .ui-widget-content {
+    background: @color-B6;
+  }
 }
 
 .ui-jqgrid tr.footrow td { border-bottom: solid 1px @color-B5; }

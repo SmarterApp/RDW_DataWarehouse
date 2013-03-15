@@ -45,10 +45,10 @@ define [
             
             # Set the Report title depending on the report that we're looking at
             reportTitle = getReportTitle(breadcrumbsData, reportType)
-            $('#content h2').html 'Comparing ' + reportTitle + ' on Math & ELA'
+            $('#content h2').html 'Comparing ' + reportTitle + '\' on Math & ELA'
             
             # Format the summary data for summary row purposes
-            summaryRowName = 'Overall ' + reportTitle + ' Summary'
+            summaryRowName = 'Overall ' + reportTitle + '\' Summary'
             summaryData = formatSummaryData(summaryData, summaryRowName)
             
           # Create compare population grid for State/District/School view
@@ -56,17 +56,19 @@ define [
         
           
           # Show tooltip for population bar on mouseover
-          $(".progress").hover ->
-            e = $(this)
-            e.popover
-              html: true
-              placement: "top"
-              content: ->
-                e.find(".progressBar_tooltip").html()
-            .popover("show")
-          , ->
-            e = $(this)
-            e.popover("hide")
+          $(document).on
+            mouseenter: ->
+              e = $(this)
+              e.popover
+                html: true
+                placement: "top"
+                content: ->
+                  e.find(".progressBar_tooltip").html()
+              .popover("show")
+            mouseleave: ->
+              e = $(this)
+              e.popover("hide")
+          , ".progress"
                   
   # Get population data from server       
   getPopulationData = (sourceURL, params, callback) ->

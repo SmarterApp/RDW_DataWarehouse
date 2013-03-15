@@ -11,6 +11,7 @@ require ["jquery", "cs!edwareConfidenceLevelBar"], ($, edwareConfidenceLevelBar)
       $(".confidenceLevel").remove()
 
   test "Test create method", ->
+    stop()
     ok edwareConfidenceLevelBar.create isnt "undefined", "EDWARE.confidenceLevelBar create method should be defined"
     ok typeof edwareConfidenceLevelBar.create is "function", "EDWARE.confidenceLevelBar create method should be function"
     
@@ -53,8 +54,12 @@ require ["jquery", "cs!edwareConfidenceLevelBar"], ($, edwareConfidenceLevelBar)
       asmt_score_max: 500
 
     edwareConfidenceLevelBar.create "#bar1", data
-    deepEqual $("#bar1").length, 1, "Create method should create confidence level bar"
+    setTimeout (->
+      deepEqual $("#bar1").length, 1, "Create method should create confidence level bar"
+      start()
+    ), 100
     
+    stop()
     data2 =
       asmt_perf_lvl: 4
       asmt_score: 1200
@@ -94,9 +99,12 @@ require ["jquery", "cs!edwareConfidenceLevelBar"], ($, edwareConfidenceLevelBar)
       asmt_score_max: 1200
     
     edwareConfidenceLevelBar.create "#bar2", data2
-    deepEqual $("#bar2").length, 1, "Create method should create confidence level bar"
+    setTimeout (->
+      deepEqual $("#bar2").length, 1, "Create method should create confidence level bar"
+      start()
+    ), 100
     
-    
+    stop()    
     data3 =
       asmt_perf_lvl: 3
       asmt_score: 1600
@@ -136,9 +144,12 @@ require ["jquery", "cs!edwareConfidenceLevelBar"], ($, edwareConfidenceLevelBar)
       asmt_score_max: 2400
     
     edwareConfidenceLevelBar.create "#bar3", data3
-    deepEqual $("#bar3").length, 1, "Create method should create confidence level bar"
+    setTimeout (->
+      deepEqual $("#bar3").length, 1, "Create method should create confidence level bar"
+      start()
+    ), 100
     
-    
+    stop()
     data4 =
       asmt_perf_lvl: 3
       asmt_score: 1200
@@ -178,4 +189,7 @@ require ["jquery", "cs!edwareConfidenceLevelBar"], ($, edwareConfidenceLevelBar)
       asmt_score_max: 2400
     
     edwareConfidenceLevelBar.create "#bar4", data4
-    deepEqual $("#bar4").length, 1, "Create method should create confidence level bar"
+    setTimeout (->
+      deepEqual $("#bar4").length, 1, "Create method should create confidence level bar"
+      start()
+    ), 100

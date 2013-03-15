@@ -4,9 +4,9 @@ require ["cs!test.EDWARE.dataProxy",
 "cs!test.EDWARE.grid.tablegrid", 
 "cs!test.EDWARE.studentList", 
 "cs!test.EDWARE.individualStudent",
+"cs!test.EDWARE.confidenceLevelBar",
 "cs!test.EDWARE.populationBar",
-#"cs!test.EDWARE.confidenceLevelBar",
-"cs!test.EDWARE.breadcrumb",
-"cs!test.EDWARE.comparingPopulation"
+"cs!test.EDWARE.comparingPopulation",
+"cs!test.EDWARE.breadcrumb"
 ]
 

@@ -548,29 +548,27 @@ class TestGenerateData(unittest.TestCase):
         self.assertFalse(result)
         os.rename(rename_file, bird_file)
 
-    def test_generate_nonedbstat(self):
-        generate_count = generate_data.prepare_generation_parameters(generate_data.get_name_lists, mock_f_get_state_stats_fail, False)
-        self.assertEqual(generate_count, None)
+    def test_prepare_generation_parameters_nonedbstat(self):
+        self.assertRaises(Exception, generate_data.prepare_generation_parameters, generate_data.get_name_lists, mock_f_get_state_stats_emptydb, False)
 
-    def test_generate_emptystatdata(self):
-        generate_count = generate_data.prepare_generation_parameters(generate_data.get_name_lists, mock_f_get_state_stats_emptydb, False)
-        self.assertEqual(generate_count, None)
+    def test_prepare_generation_parameters_emptystatdata(self):
+        self.assertRaises(Exception, generate_data.prepare_generation_parameters, generate_data.get_name_lists, mock_f_get_state_stats_emptydb, False)
 
-    def test_generate_onestate(self):
+    def test_prepare_generation_parameters_onestate(self):
         generate_count = generate_data.prepare_generation_parameters(generate_data.get_name_lists, mock_f_get_state_stats_onestate, False)
         self.assertEqual(generate_count['state_count'], 1)
         for value in generate_count.values():
             self.assertTrue(value > 0)
 
-    def test_generate_twostates(self):
+    def test_prepare_generation_parameters_twostates(self):
         generate_count = generate_data.prepare_generation_parameters(generate_data.get_name_lists, mock_f_get_state_stats_twostates, False)
         # self.assertEqual(generate_count[0], 2)
         for value in generate_count.values():
             self.assertTrue(value > 0)
 
-    def test_generate_notEnoughNameLists1(self):
+    def test_prepare_generation_parameters_notEnoughNameLists1(self):
         generate_count = generate_data.prepare_generation_parameters(mock_f_get_name_lists_shortlists1, mock_f_get_state_stats_onestate, False)
-        self.assertEqual(generate_count, {'state_count': 1, 'district_count': 0, 'school_count': 0, 'student_count': 0, 'student_section_count': 0})
+        self.assertEqual(generate_count, {'state_count': 1, 'district_count': 0, 'school_count': 0, 'student_count': 0})
 
 
 def mock_f_get_name_lists_shortlists1():

@@ -189,7 +189,8 @@ def generate_fixture_data(name_lists, db_states_stat, is_small_data_mode):
     print("generated number of schools   ", total_count['school_count'])
     print("generated number of students  ", total_count['student_count'])
 
-    return total_count  
+    return total_count
+
 
 # TODO: add comments to this function
 def generate_distribution_lists(state, is_small_data_mode):

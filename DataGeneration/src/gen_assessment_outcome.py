@@ -7,11 +7,16 @@ from helper_entities import AssessmentScore, ClaimScore
 import py1
 
 
-def generate_assessment_outcomes_from_student_list(assessment_list, students, grade, subject_name, inst_hier_rec_id, where_taken):
-    # make all parameters to a dictionary, so that it can call generate_assessment_outcomes_from_query()
-    rows = []
-    for student in students:
-        row = {
+def generate_assessment_outcomes_from_student_object_list(assessment_list, student_list, subject_name, inst_hier_rec_id, where_taken):
+    # At this point, the student object has already been created. To create the corresponding FAO rows for this,
+    # student, we only need a subset of the student data from the student object.
+    # we put this info into a dictionary called fao student info and pass it on
+    # to the function 'generate_assessment_outcomes_from_student_info'
+    # Using this intermediate format allows us to use the same function for generating fao rows
+    # from a list of student objects and from the rows returned from get_list_of_students.py
+    fao_student_info_list = []
+    for student in student_list:
+        fao_student_info = {
                   'student_id': student.student_id,
                   'teacher_id': student.teacher_id,
                   'state_code': student.state_code,
@@ -25,103 +30,22 @@ def generate_assessment_outcomes_from_student_list(assessment_list, students, gr
                   'enrl_grade': student.grade,
                   'subject_name': subject_name,
               }
-        rows.append(row)
+        fao_student_info_list.append(fao_student_info)
 
-    return generate_assessment_outcomes_from_query(assessment_list, rows)
-
-#    assessment_outcomes = []
-#    filtered_assessments = get_filtered_assessments(subject, grade, assessment_list)
-#    for student in students:
-#        for assessment in filtered_assessments:
-#            date_taken = create_date_taken(assessment.asmt_period_year, assessment.asmt_period)
-#            assessment_outcome = generate_single_assessment_outcome_from_student(assessment, student, inst_hier_rec_id, where_taken, date_taken)
-#            assessment_outcomes.append(assessment_outcome)
-#    return assessment_outcomes
+    return generate_assessment_outcomes_from_student_info(assessment_list, fao_student_info_list)
 
 
-"""
-def generate_single_assessment_outcome_from_student(assessment, student, inst_hier_rec_id, where_taken, date_taken):
-
-    asmt_score = generate_assessment_score(assessment)
-    id_generator = IdGen()
-
-    # Some assessment_scores will have 4 claims, some will have 3
-    # If only 3 claims, make claim_4 fields 'None'
-    if len(asmt_score.claim_scores) == 4:
-        asmt_claim_4_score = asmt_score.claim_scores[3].claim_score
-        asmt_claim_4_score_range_min = asmt_score.claim_scores[3].claim_score_interval_minimum
-        asmt_claim_4_score_range_max = asmt_score.claim_scores[3].claim_score_interval_maximum
-    else:
-        asmt_claim_4_score = None
-        asmt_claim_4_score_range_min = None
-        asmt_claim_4_score_range_max = None
-
-    params = {
-        'asmnt_outcome_id': uuid.uuid4(),
-        'asmnt_outcome_external_id': id_generator.get_id(),
-        'asmt_rec_id': assessment.asmt_rec_id,
-        'student_id': student.student_id,
-        'teacher_id': student.teacher_id,
-        'state_code': student.state_code,
-        'district_id': student.district_id,
-        'school_id': student.school_id,
-        'section_id': student.section_id,
-        'inst_hier_rec_id': inst_hier_rec_id,
-        'section_rec_id': student.section_rec_id,
-        'where_taken_id': where_taken.where_taken_id,
-        'where_taken_name': where_taken.where_taken_name,
-        'asmt_grade': assessment.asmt_grade,
-        'enrl_grade': student.grade,
-        'date_taken': date_taken.strftime('%Y%m%d'),
-        'date_taken_day': date_taken.day,
-        'date_taken_month': date_taken.month,
-        'date_taken_year': date_taken.year,
-
-        # Overall Assessment Data
-        'asmt_score': asmt_score.overall_score,
-        'asmt_score_range_min': asmt_score.interval_min,
-        'asmt_score_range_max': asmt_score.interval_max,
-        'asmt_perf_lvl': asmt_score.perf_lvl,
-
-        # Assessment Claim Data
-        'asmt_claim_1_score': asmt_score.claim_scores[0].claim_score,
-        'asmt_claim_1_score_range_min': asmt_score.claim_scores[0].claim_score_interval_minimum,
-        'asmt_claim_1_score_range_max': asmt_score.claim_scores[0].claim_score_interval_maximum,
-
-        'asmt_claim_2_score': asmt_score.claim_scores[1].claim_score,
-        'asmt_claim_2_score_range_min': asmt_score.claim_scores[1].claim_score_interval_minimum,
-        'asmt_claim_2_score_range_max': asmt_score.claim_scores[1].claim_score_interval_maximum,
-
-        'asmt_claim_3_score': asmt_score.claim_scores[2].claim_score,
-        'asmt_claim_3_score_range_min': asmt_score.claim_scores[2].claim_score_interval_minimum,
-        'asmt_claim_3_score_range_max': asmt_score.claim_scores[2].claim_score_interval_maximum,
-
-        # These fields may or may not be null (Some have a 4th claim, others don't)
-        'asmt_claim_4_score': asmt_claim_4_score,
-        'asmt_claim_4_score_range_min': asmt_claim_4_score_range_min,
-        'asmt_claim_4_score_range_max': asmt_claim_4_score_range_max,
-
-        'asmt_create_date': asmt_score.asmt_create_date,
-        'status': 'IR',
-        'most_recent': True
-    }
-
-    assessment_outcome = AssessmentOutcome(**params)
-    return assessment_outcome
-"""
-
-
-def generate_assessment_outcomes_from_query(assessment_list, rows):
+def generate_assessment_outcomes_from_student_info(assessment_list, student_info_list):
     assessment_outcomes = []
-    for row in rows:
-        filtered_assessments = get_filtered_assessments(row['subject_name'], row['enrl_grade'], assessment_list)
+    for fao_student_info in student_info_list:
+        filtered_assessments = get_filtered_assessments(fao_student_info['subject_name'], fao_student_info['enrl_grade'], assessment_list)
         for assessment in filtered_assessments:
-            assessment_outcome = generate_single_assessment_outcome_from_row(assessment, row)
+            assessment_outcome = generate_single_assessment_outcome_from_student_info(assessment, fao_student_info)
             assessment_outcomes.append(assessment_outcome)
     return assessment_outcomes
 
 
-def generate_single_assessment_outcome_from_row(assessment, row):
+def generate_single_assessment_outcome_from_student_info(assessment, student_info):
     id_generator = IdGen()
     date_taken = create_date_taken(assessment.asmt_period_year, assessment.asmt_period)
     asmt_score = generate_assessment_score(assessment)
@@ -139,18 +63,18 @@ def generate_single_assessment_outcome_from_row(assessment, row):
         'asmnt_outcome_id': uuid.uuid4(),
         'asmnt_outcome_external_id': id_generator.get_id(),
         'asmt_rec_id': assessment.asmt_rec_id,
-        'student_id': row['student_id'],
-        'teacher_id': row['teacher_id'],
-        'state_code': row['state_code'],
-        'district_id': row['district_id'],
-        'school_id': row['school_id'],
-        'section_id': row['section_id'],
-        'inst_hier_rec_id': row['inst_hier_rec_id'],
-        'section_rec_id': row['section_rec_id'],
-        'where_taken_id': row['where_taken_id'] if 'where_taken_id' in row.keys() else uuid.uuid4(),
-        'where_taken_name': row['where_taken_name'] if 'where_taken_name' in row.keys() else row['school_name'],
+        'student_id': student_info['student_id'],
+        'teacher_id': student_info['teacher_id'],
+        'state_code': student_info['state_code'],
+        'district_id': student_info['district_id'],
+        'school_id': student_info['school_id'],
+        'section_id': student_info['section_id'],
+        'inst_hier_rec_id': student_info['inst_hier_rec_id'],
+        'section_rec_id': student_info['section_rec_id'],
+        'where_taken_id': student_info['where_taken_id'] if 'where_taken_id' in student_info.keys() else uuid.uuid4(),
+        'where_taken_name': student_info['where_taken_name'] if 'where_taken_name' in student_info.keys() else student_info['school_name'],
         'asmt_grade': assessment.asmt_grade,
-        'enrl_grade': row['enrl_grade'],
+        'enrl_grade': student_info['enrl_grade'],
         'date_taken': date_taken.strftime('%Y%m%d'),
         'date_taken_day': date_taken.day,
         'date_taken_month': date_taken.month,

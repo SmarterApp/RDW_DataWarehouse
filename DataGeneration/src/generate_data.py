@@ -24,7 +24,7 @@ import constants
 import py1
 import argparse
 import small_set_data_input
-from gen_assessment_outcome import generate_assessment_outcomes_from_student_list
+from gen_assessment_outcome import generate_assessment_outcomes_from_student_object_list
 
 
 ENTITY_TO_PATH_DICT = {InstitutionHierarchy: constants.DATAFILE_PATH + '/datafiles/csv/dim_inst_hier.csv',
@@ -564,7 +564,7 @@ def create_classes_for_grade(students_in_grade, teachers_in_grade, school, grade
         total_count['student_count'] += len(students)
 
         # generate assessment_outcome
-        assessment_outcome_list = generate_assessment_outcomes_from_student_list(assessment_list, students, grade, subject, school.inst_hier_rec_id, where_taken)
+        assessment_outcome_list = generate_assessment_outcomes_from_student_object_list(assessment_list, students, subject, school.inst_hier_rec_id, where_taken)
         create_csv(assessment_outcome_list, ENTITY_TO_PATH_DICT[AssessmentOutcome])
 
 
@@ -616,6 +616,9 @@ def create_students_for_subject(subject_name, number_of_classes, students, teach
 
     # student_in_sections_list contains each student_section object
     return student_in_sections_list
+
+
+#################################################################################################################################
 
 
 def create_sections_in_one_class(subject_name, class_index, students_in_current_class, teachers_in_current_class, school, grade):

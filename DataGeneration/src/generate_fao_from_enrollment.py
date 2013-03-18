@@ -1,4 +1,4 @@
-from gen_assessment_outcome import generate_assessment_outcomes_from_student_list, generate_assessment_outcomes_from_query
+from gen_assessment_outcome import generate_assessment_outcomes_from_student_object_list, generate_assessment_outcomes_from_student_info
 from get_list_of_students import get_students_for_assessment
 from gen_assessments import generate_dim_assessment
 import argparse
@@ -15,7 +15,7 @@ def generate_fao_from_enrollment(assessment_list, schema_name, metadata, db_conn
     # Main function, will delegate calls to appropriate functions
     clear_file(FAO_PATH)
     rows = get_student_list_from_db(schema_name, metadata, db_connection)
-    assessment_outcomes = generate_assessment_outcomes_from_query(assessment_list, rows)
+    assessment_outcomes = generate_assessment_outcomes_from_student_info(assessment_list, rows)
     create_csv(assessment_outcomes, FAO_PATH)
 
 

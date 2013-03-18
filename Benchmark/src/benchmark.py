@@ -29,13 +29,12 @@ def run_benchmarks(metadata, connection, schema, is_verbose, district_num=1, sta
     '''
     runs the three benchmark methods which print out their results
     also runs queries to get the id's of districts and states to run
-    INPUT:
-    metadata -- A SQLAlchemy metadata object that reflects the database
-    connection -- A connection to the db
-    schema -- the name of the schema to run queries on
-    district_num -- the number of districts to run benchmarks on
-    state_num -- the number of states to run benchmarks on
-    school_num -- the number of schools to run benchmarks on
+    @param metadata: A SQLAlchemy metadata object that reflects the database
+    @param connection: A connection to the db
+    @param schema: the name of the schema to run queries on
+    @param district_num: the number of districts to run benchmarks on
+    @param state_num: the number of states to run benchmarks on
+    @param school_num: the number of schools to run benchmarks on
     '''
 
     # check for is_verbose.
@@ -71,14 +70,14 @@ def run_benchmarks(metadata, connection, schema, is_verbose, district_num=1, sta
 def run_statistics(metadata, connection, schema, statistics_method, count_num, object_list, is_verbose):
     '''
     Helper method to call the statistic methods for each of the different types of queries
-    INPUT:
-    metadata -- A SQLAlchemy metadata object that reflects the database
-    connection -- A connection to the db
-    schema -- the name of the schema to run queries on
-    statistics_method -- the statistics method that will do the benchmarks to call for the given data
-    count_num -- the number of times to run the benchmark
-    object_list -- a list of tuples that include the id of the object to query, where an objece is a state, school or district
-    RETURNS: res_list -- a list of the results received during the queries.
+    @param metadata: A SQLAlchemy metadata object that reflects the database
+    @param connection: A connection to the db
+    @param schema: the name of the schema to run queries on
+    @param statistics_method: the statistics method that will do the benchmarks to call for the given data
+    @param count_num: the number of times to run the benchmark
+    @param object_list: a list of tuples that include the id of the object to query, where an objece is a state, school or district
+    @param is_verbose: whether or not to printverboseor succinct
+    @return: res_list a list of the results received during the queries.
     '''
 
     res_list = []
@@ -105,12 +104,13 @@ def get_district_id_list_by_size(metadata, connection, schema, state_code=None):
     '''
     Queries for a list of districts sorted ascending by size
     size calculated by number of schools
-    INPUT:
-    metadata -- SQLAlchemy metadata object
-    connection -- SQLAlchemy connection object. A connection to the db
-    schema -- the name of the schema
-    state_code -- optional parameter to limit the query to districts within a state
-    RETURNS: district_list -- a list of districts sorted by size
+    @param metadata: SQLAlchemy metadata object
+    @param connection: SQLAlchemy connection object. A connection to the db
+    @param schema: the name of the schema
+    @type schema: str
+    @keyword state_code: optional parameter to limit the query to districts within a state
+    @return: district_list a list of districts sorted by size
+    @raise AttributeError: metadata table list missing a desired table
     '''
 
     dim_inst_hier = metadata.tables.get('%s.dim_inst_hier' % schema)
@@ -135,11 +135,11 @@ def get_state_code_list_by_size(metadata, connection, schema):
     '''
     queries for a list of states sorted by size
     size calculated by number of districts
-    INPUT:
-    metadata -- SQLAlchemy metadata object
-    connection -- SQLAlchemy connection object. A connection to the db
-    schema -- the name of the schema
-    RETURNS: state_list -- a list of states sorted by the size
+    @param metadata: SQLAlchemy metadata object
+    @param connection: SQLAlchemy connection object. A connection to the db
+    @param schema: the name of the schema
+    @return: state_list -- a list of states sorted by the size
+    @raise AttributeError: metadata table list missing a desired table
     '''
 
     dim_inst_hier = metadata.tables.get('%s.dim_inst_hier' % schema)
@@ -159,13 +159,13 @@ def get_school_list_by_size(metadata, connection, schema, district_id=None, stat
     '''
     Queries for a list of school ids sorted by size.
     size is based on students
-    INPUT
-    metadata -- SQLAlchemy metadata object
-    connection -- SQLAlchemy connection object. A connection to the db
-    schema -- the name of the schema
-    state_code -- the id of the state to pull the schools from if district_id provided this will be ignored
-    district_id -- the id of the district to pull the schools from
-    RETURNS: school_list -- a list of schools sorted by size
+    @param metadata: SQLAlchemy metadata object
+    @param connection: SQLAlchemy connection object. A connection to the db
+    @param schema: the name of the schema
+    @keyword district_id: the id of the district to pull the schools from
+    @keyword state_code: the id of the state to pull the schools from if district_id provided this will be ignored
+    @return: school_list a list of schools sorted by size
+    @raise AttributeError: metadata table list missing a desired table
     '''
 
     dim_inst_hier = metadata.tables.get('%s.dim_inst_hier' % schema)
@@ -192,12 +192,11 @@ def get_database_statistics(metadata, connection, schema):
     '''
     Get statistics for the database, including:
     number of states, number of schools, number of students, number of districts
-    INPUT:
-    metadata -- SQLAlchemy metadata object
-    connection -- SQLAlchemy connection object. A connection to the db
-    schema -- the name of the schema to use in the queries
-    RETURNS:
-    result -- a dict of counts
+    @param metadata: SQLAlchemy metadata object
+    @param connection: SQLAlchemy connection object. A connection to the db
+    @param schema: the name of the schema to use in the queries
+    @return: result a dict of counts
+    @raise AttributeError: metadata table list missing a desired table
     '''
 
     dim_student = metadata.tables.get('%s.dim_student' % schema)
@@ -229,8 +228,7 @@ def get_database_statistics(metadata, connection, schema):
 def print_db_stats(db_stats):
     '''
     format and print results gather in the get_database_statistics method
-    INPUT:
-    db_stats -- dictionary returned by get_database_statistics
+    @param db_stats: dictionary returned by get_database_statistics
     '''
     print('******** Database Stats ********')
     print('State Count:    ', locale.format('%d', db_stats['state_count'], grouping=True))
@@ -244,15 +242,14 @@ def print_short_result(total_time, schema, db_stats, state_res_dict, district_re
     '''
     Formats and prints a one line summary of the benchmark that can be easily stored
     in a database or table. Includes a header. Will print either formatted as csv or as tab separated
-    INPUT:
-    total_time -- float, the amount of time it took to run all queries
-    schema -- the name of the schema
-    db_stats -- dictionary of database stats returned by get_database_statistics
-    state_res_dict -- the result dictionary for a state
-    district_res_dict -- the result dictionary for a district
-    school_res_dict -- the result dictionary for a district
-    as_csv -- boolean, format as a csv with commas or not.
-    RETURNS:
+    @param total_time: float, the amount of time it took to run all queries
+    @param schema: the name of the schema
+    @param db_stats: dictionary of database stats returned by get_database_statistics
+    @param state_res_dict: the result dictionary for a state
+    @param district_res_dict: the result dictionary for a district
+    @param school_res_dict: the result dictionary for a district
+    @param as_csv: boolean, format as a csv with commas or not.
+    @return: None
     '''
 
     state_bench = state_res_dict['benchmarks']
@@ -306,10 +303,8 @@ def print_short_result(total_time, schema, db_stats, state_res_dict, district_re
 def print_results(result_dict):
     '''
     prints the result dictionary returned by one of the statistic methods
-    INPUT:
-    result_dict -- dict with two items
-    is_verbose -- boolean flag for whether to print query results
-    RETURNS: None
+    @param result_dict: dict with two items
+    @return: None
     '''
 
     num_offset = 10
@@ -347,7 +342,7 @@ def print_results(result_dict):
 def get_input_args():
     '''
     Creates parser for command line args
-    RETURNS vars(args) -- A dict of the command line args
+    @return: vars(args) A dict of the command line args
     '''
 
     parser = argparse.ArgumentParser(description='Script to run benchmarks on predefined queries')

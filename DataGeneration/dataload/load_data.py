@@ -25,17 +25,15 @@ __all__ = ['load_csvs_to_database']
 def load_csvs_to_database(schema, passwd, csvdir=None, database='edware', host='127.0.0.1', user='edware', port=5432, truncate=False):
     '''
     Entry point for this being used as a module
-    INPUT:
-        schema -- the name of the schema to use
-        passwd -- the password to use to connect to the db
-        csvdir -- the directory that contains the csv files. If no directory provided assumes the current working directory
-        database -- the name of the database to use
-        host -- the host address or name
-        user -- the username to be used
-        port -- the port to use when connecting to the db
-        truncate -- truncate the tables before doing data load
-    RETURN:
-        None
+    @param schema: the name of the schema to use
+    @param passwd: the password to use to connect to the db
+    @param csvdir: the directory that contains the csv files. If no directory provided assumes the current working directory
+    @param database: the name of the database to use
+    @param host: the host address or name
+    @param user: the username to be used
+    @param port: the port to use when connecting to the db
+    @param truncate: truncate the tables before doing data load
+    @return: None
     '''
     input_args = {
         'schema': schema,
@@ -65,8 +63,7 @@ def system(*args, **kwargs):
 def get_input_args():
     '''
     Creates parser for command line args
-    RETURNS:
-        vars(args) -- A dict of the command line args
+    @return: vars(args) -- A dict of the command line args
     '''
     parser = argparse.ArgumentParser(description='Script to load csv files to a db schema')
     parser.add_argument("schema", help="set schema name.  required")
@@ -86,15 +83,13 @@ def setup_pg_passwd_file(host, database, user, passwd, directory, port=5432):
     '''
     Create the '~/.pgpass' file and set necessary attributes to allow
     connection to the postgres db
-    INPUT:
-        host -- should be or format host (ie "127.0.0.1")
-        database -- database to use
-        user -- username
-        passwd -- password to set
-        directory -- the directory to store the pgpass file
-        port -- the port to use for postgres
-    RETURNS:
-        env -- the dict containing the environment vars to use when running psql command
+    @param host: should be or format host (ie "127.0.0.1")
+    @param database: database to use
+    @param user: username
+    @param passwd: password to set
+    @param directory: the directory to store the pgpass file
+    @param port: the port to use for postgres
+    @return: env -- the dict containing the environment vars to use when running psql command
     '''
 
     string = '{host}:{port}:{db}:{user}:{passwd}'.format(host=host, port=port, db=database, user=user, passwd=passwd)
@@ -114,10 +109,8 @@ def setup_pg_passwd_file(host, database, user, passwd, directory, port=5432):
 def remove_pg_passwd_file(filename):
     '''
     Cleanup: remove the file used to store the pg password
-    INPUT:
-        filename -- the name (path) of the pgpass file to remove
-    RETURN:
-        None
+    @param filename: the name (path) of the pgpass file to remove
+    @return: None
     '''
     try:
         os.remove(filename)
@@ -129,10 +122,13 @@ def remove_pg_passwd_file(filename):
 def get_table_order(host, database, user, passwd, schema, port=5432):
     '''
     Connect to the db and get the tables for the given schema
-    INPUT:
-        schema, user, host, database, passwd, port -- values which identify a specific database instance
-    RETURN:
-        table_names -- a list of table names ordered by foreign key dependency
+    @param schema: value which identify a specific database instance
+    @param user: value which identify a specific database instance
+    @param host: value which identify a specific database instance
+    @param database: value which identify a specific database instance
+    @param passwd: value which identify a specific database instance
+    @param port: value which identify a specific database instance
+    @return: table_names -- a list of table names ordered by foreign key dependency
     '''
 
     db_string = 'postgresql+psycopg2://{user}:{passwd}@{host}:{port}/{database}'.format(user=user, passwd=passwd, host=host, port=port, database=database)
@@ -147,11 +143,9 @@ def get_table_order(host, database, user, passwd, schema, port=5432):
 def get_csv_list(csvpath):
     '''
     Gets the list of csv files in the specified directory
-    INPUT:
-        csvpath -- path to search for *.csv files : if not specified assumed to be current directory
-    RETURN:
-        csvpath -- see above
-        files -- list of file names found in csvpath which end with '.csv' : NOTE '.csv' is trimmed off
+    @param csvpath: path to search for *.csv files : if not specified assumed to be current directory
+    @return: csvpath, files -- csvpath: see above, files: list of file names found in csvpath which end with '.csv' : NOTE '.csv' is trimmed off
+    @raise AttributeError: There are no CSV files in this Directory
     '''
 
     if not csvpath:
@@ -174,11 +168,12 @@ def truncate_db_tables(tables, schema, user, host, database, env):
     '''
     truncate all the tables in the list of tables
     Within the identified database instance, all tables named in the supplied list ('tables') are truncated
-    INPUT:
-        tables -- list of table names
-        schema, user, host, database -- values which identify a specific database instance
-    RETURN:
-        None
+    @param tables: list of table names
+    @param schema: value which identify a specific database instance
+    @param user: value which identify a specific database instance
+    @param host: value which identify a specific database instance
+    @param database: value which identify a specific database instance
+    @return: None
     '''
 
     for table in tables:
@@ -190,11 +185,12 @@ def copy_db_tables(tables, csvpath, schema, user, host, database, env):
     '''
     run psql copy command for each of the tables in the list
     Data is copied to the database instance for each table supplied in the ('tables') list
-    INPUT:
-        tables -- list of table names
-        schema, user, host, database -- values which identify a specific database instance
-    RETURN:
-        None
+    @param tables: list of table names
+    @param schema: values which identify a specific database instance
+    @param user: values which identify a specific database instance
+    @param host: values which identify a specific database instance
+    @param database: values which identify a specific database instance
+    @return: None
     '''
 
     for table in tables:
@@ -214,10 +210,9 @@ def copy_db_tables(tables, csvpath, schema, user, host, database, env):
 def load_data_main(input_args):
     '''
     Main method for all the work that is to be done.
-    INPUT:
-        input_args -- a dictionary of all of the parameters received by the arg parser
-    RETURN:
-        None
+    @param input_args: a dictionary of all of the parameters received by the arg parser
+    @return: None
+    @raise AttributeError: The following table(s) are not present in one of the locations
     '''
 
     # get csv file names and the path to csvs

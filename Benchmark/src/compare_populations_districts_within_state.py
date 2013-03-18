@@ -24,18 +24,17 @@ import time
 def state_statistics(state_code, connection, schema_name):
     '''
     Runs queries that print out the statistics and benchmarks for a state
-    INPUT:
-    state_code -- an id for a state from the database
-    connection -- the db connection created by a sqlAlchemy connect() statement
-    schema_name -- the name of the schema to use in the queries
-    RETURNS:
-    result_dict -- A dictionary of results. The dictionary will have two items: 'stats' and 'benchmarks'
-        'stats' is a dictionary of two items a float and a list of dicts 'query_time' and 'data' respectively.
-            'data' is a list of query results in a dict with keys: name and value
-        'descriptor' is the string 'State' to help identify the result
-        'id' is the id that was used for the query
-        'benchmarks' is a dictionary of 'total_time', 'total_rows' and 'data'. 'data' is a list of dictionaries.
-            Each dictionary in 'data' has keys: 'type', 'query_time' and 'result'
+    @param state_code: an id for a state from the database
+    @param connection: the db connection created by a sqlAlchemy connect() statement
+    @param schema_name: the name of the schema to use in the queries
+    @return: result_dict -- A dictionary of results. The dictionary will have two items: 'stats' and 'benchmarks'
+    'stats' is a dictionary of two items a float and a list of dicts 'query_time' and 'data' respectively.
+    'data' is a list of query results in a dict with keys: name and value
+    'descriptor' is the string 'State' to help identify the result
+    'id' is the id that was used for the query
+    'benchmarks' is a dictionary of 'total_time', 'total_rows' and 'data'. 'data' is a list of dictionaries.
+    Each dictionary in 'data' has keys: 'type', 'query_time' and 'result'
+    @raise ValueError: Bad Params for state_code or connection
     '''
 
     result_dict = {}
@@ -114,13 +113,12 @@ def state_statistics(state_code, connection, schema_name):
 def districts_in_a_state(state_code, asmt_type, asmt_subject, connection, schema_name):
     '''
     Run a query for assessment performance for districts within a state.
-    INPUT:
-    state_code -- the id of the state that you want to use in the query (ie. 'DE' for deleware)
-    asmt_type -- the type of assessment to use in the query ('SUMMATIVE' or 'INTERIM')
-    asmt_subject -- the subject of assessment to use in the query ('ELA' or 'Math')
-    connection -- the db connection created by a sqlAlchemy connect() statement
-    schema_name -- the name of the schema to use in the queries
-    RETURNS: result -- a list of tuples (district, count, performance level)
+    @param state_code: the id of the state that you want to use in the query (ie. 'DE' for deleware)
+    @param asmt_type: the type of assessment to use in the query ('SUMMATIVE' or 'INTERIM')
+    @param asmt_subject: the subject of assessment to use in the query ('ELA' or 'Math')
+    @param connection: the db connection created by a sqlAlchemy connect() statement
+    @param schema_name: the name of the schema to use in the queries
+    @return: result -- a list of tuples (district, count, performance level)
     '''
 
     query = """

@@ -24,18 +24,17 @@ import time
 def district_statistics(district_id, connection, schema_name):
     '''
     Runs queries that print out the statistics and benchmarks for a district
-    INPUT:
-    state_code -- an id for a state from the database
-    connection -- the db connection created by a sqlAlchemy connection() statement
-    schema_name -- the name of the schema to use in the queries
-    RETURNS:
+    @param district_id: an id for a district from the database
+    @param connection: the db connection created by a sqlAlchemy connection() statement
+    @param schema_name: the name of the schema to use in the queries
+    @return:
     result_dict -- A dictionary of results. The dictionary will have four items: 'stats',descriptor', 'id' and 'benchmarks'
-        'stats' is a dictionary of two items a float and a list of dicts 'query_time' and 'data' respectively.
-            'data' is a list of query results in a dict with keys: name and value
-        'descriptor' is the string 'District' to help identify the result
-        'id' is the id that was used for the query
-        'benchmarks' is a dictionary of 'total_time', 'total_rows' and 'data'. 'data' is a list of dictionaries.
-            Each dictionary in 'data' has keys: 'type', 'query_time' and 'result'
+    'stats' is a dictionary of two items a float and a list of dicts 'query_time' and 'data' respectively.
+    'data' is a list of query results in a dict with keys: name and value
+    'descriptor' is the string 'District' to help identify the result
+    'id' is the id that was used for the query
+    'benchmarks' is a dictionary of 'total_time', 'total_rows' and 'data'. 'data' is a list of dictionaries.
+    Each dictionary in 'data' has keys: 'type', 'query_time' and 'result'
     '''
 
     result_dict = {}
@@ -101,13 +100,12 @@ def district_statistics(district_id, connection, schema_name):
 def schools_in_a_district(district_id, asmt_type, asmt_subject, connection, schema_name):
     '''
     Run a query for assessment performance for grades within a school.
-    INPUT:
-    state_code -- the id of the state that you want to use in the query (ie. 'DE' for deleware)
-    asmt_type -- the type of assessment to use in the query ('SUMMATIVE' or 'INTERIM')
-    asmt_subject -- the subject of assessment to use in the query ('ELA' or 'Math')
-    connection -- the db connection created by a sqlAlchemy connection() statement
-    schema_name -- the name of the schema to use in the queries
-    RETURNS: results -- a list of tuples (school, count, performance level)
+    @param district_id: the id of the district that you want to use in the query (ie. 'DE' for deleware)
+    @param asmt_type: the type of assessment to use in the query ('SUMMATIVE' or 'INTERIM')
+    @param asmt_subject: the subject of assessment to use in the query ('ELA' or 'Math')
+    @param connection: the db connection created by a sqlAlchemy connection() statement
+    @param schema_name: the name of the schema to use in the queries
+    @return: results -- a list of tuples (school, count, performance level)
     '''
 
     query = """

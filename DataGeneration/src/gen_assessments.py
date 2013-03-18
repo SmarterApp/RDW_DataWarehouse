@@ -87,7 +87,7 @@ def generate_single_asmt(student_grade, asmt_type, period, subject, year, most_r
         'asmt_cut_point_2': 1800,
         'asmt_cut_point_3': 2100,
 
-        'from_date': '20120901',
+        'from_date': str(year) + '0901',
         'most_recent': most_recent
     }
 

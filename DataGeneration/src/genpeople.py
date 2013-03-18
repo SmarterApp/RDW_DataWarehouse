@@ -21,7 +21,7 @@ TEACHER = 1
 PARENT = 2
 
 
-def generate_teacher(state, district):
+def generate_teacher(state_code, district_id):
 
     teacher_gender = random.choice(['male', 'female'])
     teacher_has_middle_name = random.randint(0, 1)
@@ -33,8 +33,8 @@ def generate_teacher(state, district):
         'first_name': gennames.generate_first_or_middle_name(teacher_gender),
         'middle_name': gennames.generate_first_or_middle_name(teacher_gender) if teacher_has_middle_name else None,
         'last_name': gennames.generate_last_name(),
-        'district_id': district.district_id,
-        'state_code': state.state_code
+        'district_id': district_id,
+        'state_code': state_code
     }
 
     teacher = Teacher(**teacher_params)
@@ -42,7 +42,7 @@ def generate_teacher(state, district):
     return teacher
 
 
-def generate_student_bio_info(state, district, school, grade, street_list, gender=None, has_middle_name=False):
+def generate_student_bio_info(state_code, district_id, zip_code, city, school_id, school_name, grade, street_list, gender=None, has_middle_name=False):
 
     id_generator = IdGen()
 
@@ -59,13 +59,7 @@ def generate_student_bio_info(state, district, school, grade, street_list, gende
         middle_name = None
 
     last_name = gennames.generate_last_name()
-    domain = school.school_name
-
-    # zip code and city name
-    city_zip_map = district.city_zip_map
-    city = random.choice(list(city_zip_map.keys()))
-    zip_range = city_zip_map[city]
-    zip_code = random.randint(zip_range[0], zip_range[1])
+    domain = school_name
 
     student_params = {
         'student_rec_id': id_generator.get_id(),
@@ -75,11 +69,11 @@ def generate_student_bio_info(state, district, school, grade, street_list, gende
         'last_name': last_name,
         'address_1': util.generate_address(street_list),
         'dob': util.generate_dob(grade),
-        'state_code': state.state_code,
+        'state_code': state_code,
         'gender': student_gender,
         'email': util.generate_email_address(first_name, last_name, domain),
-        'district_id': district.district_id,
-        'school_id': school.school_id,
+        'district_id': district_id,
+        'school_id': school_id,
         'zip_code': zip_code,
         'city': city
     }
@@ -124,7 +118,7 @@ def generate_staff(hier_user_type, state_code='None', district_id='None', school
         'state_code': state_code,
         'district_id': district_id,
         'school_id': school_id,
-        'from_date': '29991201',
+        'from_date': '20121201',
         'to_date': '29991201',
         'most_recent': True
     }

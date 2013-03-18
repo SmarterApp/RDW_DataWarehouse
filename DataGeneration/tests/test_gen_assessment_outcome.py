@@ -1,22 +1,22 @@
 import unittest
 import gen_assessment_outcome
-from datetime import date
 from gen_assessments import generate_dim_assessment
-from constants import ASSMT_SCORE_YEARS
+from constants import ASSMT_SCORE_YEARS, MINIMUM_ASSESSMENT_SCORE, MAXIMUM_ASSESSMENT_SCORE
 from src.helper_entities import WhereTaken
-from helper_entities import StudentBioInfo, Claim
+from helper_entities import StudentBioInfo, Claim, AssessmentScore
 from entities import Student, AssessmentOutcome, Assessment
 
 
 class TestGenerateData(unittest.TestCase):
-    def test_generate_assessment_outcomes_three_claims(self):
+
+    def test_generate_assessment_outcomes_from_student_list_three_claims(self):
         assessment_list = generate_dim_assessment()
-        students = make_students_for_test(5)
+        students = make_students_list(5)
         grade = 5
         subject = 'Math'
         inst_hier_rec_id = 12345
         where_taken = WhereTaken(91845, 'where_taken_test_name')
-        actual_assessment_outcomes = gen_assessment_outcome.generate_assessment_outcomes(assessment_list, students, grade, subject, inst_hier_rec_id, where_taken)
+        actual_assessment_outcomes = gen_assessment_outcome.generate_assessment_outcomes_from_student_list(assessment_list, students, grade, subject, inst_hier_rec_id, where_taken)
         self.assertEqual(len(actual_assessment_outcomes), len(students) * len(ASSMT_SCORE_YEARS) * 4)
         for outcome in actual_assessment_outcomes:
             self.assertEqual(outcome.where_taken_id, where_taken.where_taken_id)
@@ -37,14 +37,14 @@ class TestGenerateData(unittest.TestCase):
             self.assertIsNone(outcome.asmt_claim_4_score_range_min)
             self.assertIsNone(outcome.asmt_claim_4_score_range_max)
 
-    def test_generate_assessment_outcomes_four_claims(self):
+    def test_generate_assessment_outcomes_from_student_list_four_claims(self):
         assessment_list = generate_dim_assessment()
-        students = make_students_for_test(5)
+        students = make_students_list(5)
         grade = 5
         subject = 'ELA'
         inst_hier_rec_id = 12345
         where_taken = WhereTaken(91845, 'where_taken_test_name')
-        actual_assessment_outcomes = gen_assessment_outcome.generate_assessment_outcomes(assessment_list, students, grade, subject, inst_hier_rec_id, where_taken)
+        actual_assessment_outcomes = gen_assessment_outcome.generate_assessment_outcomes_from_student_list(assessment_list, students, grade, subject, inst_hier_rec_id, where_taken)
         self.assertEqual(len(actual_assessment_outcomes), len(students) * len(ASSMT_SCORE_YEARS) * 4)
         for outcome in actual_assessment_outcomes:
             self.assertEqual(outcome.where_taken_id, where_taken.where_taken_id)
@@ -110,17 +110,49 @@ class TestGenerateData(unittest.TestCase):
         self.assertTrue(actual_date.month in [4, 5, 6])
         self.assertTrue(actual_date.month in range(1, 29))
 
-    def test_generate_single_assessment_outcome(self):
+    def test_generate_single_assessment_outcome_from_row(self):
         assessment = make_an_assessment('ELA')
-        student = make_students_for_test(1)[0]
+        students = make_students_list(1)
+        student = students[0]
         inst_hier_rec_id = 81723
         where_taken = WhereTaken(91845, 'where_taken_test_name')
-        date_taken = date(2012, 3, 13)
-        actual_assessment_outcome = gen_assessment_outcome.generate_single_assessment_outcome(assessment, student, inst_hier_rec_id, where_taken, date_taken)
+        subject_name = 'Math'
+        row = {
+                'student_id': student.student_id,
+                'teacher_id': student.teacher_id,
+                'state_code': student.state_code,
+                'district_id': student.district_id,
+                'school_id': student.school_id,
+                'section_id': student.section_id,
+                'inst_hier_rec_id': inst_hier_rec_id,
+                'section_rec_id': student.section_rec_id,
+                'where_taken_id': where_taken.where_taken_id,
+                'where_taken_name': where_taken.where_taken_name,
+                'enrl_grade': student.grade,
+                'subject_name': subject_name,
+        }
+        actual_assessment_outcome = gen_assessment_outcome.generate_single_assessment_outcome_from_row(assessment, row)
         self.assertIsInstance(actual_assessment_outcome, AssessmentOutcome)
 
-    def test_generate_assessment_score(self):
-        pass
+    def test_generate_assessment_score_four_claims(self):
+        assessment = make_an_assessment('ELA')
+        assessment_score = gen_assessment_outcome.generate_assessment_score(assessment)
+        self.assertIsInstance(assessment_score, AssessmentScore)
+        self.assertTrue(MINIMUM_ASSESSMENT_SCORE <= assessment_score.overall_score <= MAXIMUM_ASSESSMENT_SCORE)
+        self.assertTrue(1 <= assessment_score.perf_lvl <= 4)
+        self.assertTrue(assessment_score.interval_min > assessment.asmt_score_min)
+        self.assertTrue(assessment_score.interval_max < assessment.asmt_score_max)
+        self.assertEqual(len(assessment_score.claim_scores), 4)
+
+    def test_generate_assessment_score_three_claims(self):
+        assessment = make_an_assessment('Math')
+        assessment_score = gen_assessment_outcome.generate_assessment_score(assessment)
+        self.assertIsInstance(assessment_score, AssessmentScore)
+        self.assertTrue(MINIMUM_ASSESSMENT_SCORE <= assessment_score.overall_score <= MAXIMUM_ASSESSMENT_SCORE)
+        self.assertTrue(1 <= assessment_score.perf_lvl <= 4)
+        self.assertTrue(assessment_score.interval_min > assessment.asmt_score_min)
+        self.assertTrue(assessment_score.interval_max < assessment.asmt_score_max)
+        self.assertEqual(len(assessment_score.claim_scores), 3)
 
     def test_calculate_performance_level_boundry_value(self):
         score = 2100
@@ -246,7 +278,7 @@ def make_claim_list(number_of_claims):
     return claims
 
 
-def make_students_for_test(number_of_students):
+def make_students_list(number_of_students):
     # make student_bio_info objects
     student_bio_info = []
     for index in range(number_of_students):

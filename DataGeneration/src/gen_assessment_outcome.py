@@ -4,20 +4,42 @@ import random
 import uuid
 from entities import AssessmentOutcome
 from helper_entities import AssessmentScore, ClaimScore
-from constants import SUBJECTS
 import py1
 
 
-def generate_assessment_outcomes_from_student_list(assessment_list, students, grade, subject, inst_hier_rec_id, where_taken):
-    assessment_outcomes = []
-    filtered_assessments = get_filtered_assessments(subject, grade, assessment_list)
+def generate_assessment_outcomes_from_student_list(assessment_list, students, grade, subject_name, inst_hier_rec_id, where_taken):
+    # make all parameters to a dictionary, so that it can call generate_assessment_outcomes_from_query()
+    rows = []
     for student in students:
-        for assessment in filtered_assessments:
-            date_taken = create_date_taken(assessment.asmt_period_year, assessment.asmt_period)
-            assessment_outcome = generate_single_assessment_outcome_from_student(assessment, student, inst_hier_rec_id, where_taken, date_taken)
-            assessment_outcomes.append(assessment_outcome)
-    return assessment_outcomes
+        row = {
+                  'student_id': student.student_id,
+                  'teacher_id': student.teacher_id,
+                  'state_code': student.state_code,
+                  'district_id': student.district_id,
+                  'school_id': student.school_id,
+                  'section_id': student.section_id,
+                  'inst_hier_rec_id': inst_hier_rec_id,
+                  'section_rec_id': student.section_rec_id,
+                  'where_taken_id': where_taken.where_taken_id,
+                  'where_taken_name': where_taken.where_taken_name,
+                  'enrl_grade': student.grade,
+                  'subject_name': subject_name,
+              }
+        rows.append(row)
 
+    return generate_assessment_outcomes_from_query(assessment_list, rows)
+
+#    assessment_outcomes = []
+#    filtered_assessments = get_filtered_assessments(subject, grade, assessment_list)
+#    for student in students:
+#        for assessment in filtered_assessments:
+#            date_taken = create_date_taken(assessment.asmt_period_year, assessment.asmt_period)
+#            assessment_outcome = generate_single_assessment_outcome_from_student(assessment, student, inst_hier_rec_id, where_taken, date_taken)
+#            assessment_outcomes.append(assessment_outcome)
+#    return assessment_outcomes
+
+
+"""
 def generate_single_assessment_outcome_from_student(assessment, student, inst_hier_rec_id, where_taken, date_taken):
 
     asmt_score = generate_assessment_score(assessment)
@@ -26,14 +48,13 @@ def generate_single_assessment_outcome_from_student(assessment, student, inst_hi
     # Some assessment_scores will have 4 claims, some will have 3
     # If only 3 claims, make claim_4 fields 'None'
     if len(asmt_score.claim_scores) == 4:
-        asmt_claim_4_score =  asmt_score.claim_scores[3].claim_score
+        asmt_claim_4_score = asmt_score.claim_scores[3].claim_score
         asmt_claim_4_score_range_min = asmt_score.claim_scores[3].claim_score_interval_minimum
-        asmt_claim_4_score_range_max= asmt_score.claim_scores[3].claim_score_interval_maximum
+        asmt_claim_4_score_range_max = asmt_score.claim_scores[3].claim_score_interval_maximum
     else:
-        asmt_claim_4_score =  None
+        asmt_claim_4_score = None
         asmt_claim_4_score_range_min = None
-        asmt_claim_4_score_range_max= None
-
+        asmt_claim_4_score_range_max = None
 
     params = {
         'asmnt_outcome_id': uuid.uuid4(),
@@ -49,7 +70,7 @@ def generate_single_assessment_outcome_from_student(assessment, student, inst_hi
         'section_rec_id': student.section_rec_id,
         'where_taken_id': where_taken.where_taken_id,
         'where_taken_name': where_taken.where_taken_name,
-        'asmt_grade': student.grade,
+        'asmt_grade': assessment.asmt_grade,
         'enrl_grade': student.grade,
         'date_taken': date_taken.strftime('%Y%m%d'),
         'date_taken_day': date_taken.day,
@@ -59,7 +80,7 @@ def generate_single_assessment_outcome_from_student(assessment, student, inst_hi
         # Overall Assessment Data
         'asmt_score': asmt_score.overall_score,
         'asmt_score_range_min': asmt_score.interval_min,
-        'asmt_score_range_max':asmt_score.interval_max,
+        'asmt_score_range_max': asmt_score.interval_max,
         'asmt_perf_lvl': asmt_score.perf_lvl,
 
         # Assessment Claim Data
@@ -87,6 +108,8 @@ def generate_single_assessment_outcome_from_student(assessment, student, inst_hi
 
     assessment_outcome = AssessmentOutcome(**params)
     return assessment_outcome
+"""
+
 
 def generate_assessment_outcomes_from_query(assessment_list, rows):
     assessment_outcomes = []
@@ -97,9 +120,10 @@ def generate_assessment_outcomes_from_query(assessment_list, rows):
             assessment_outcomes.append(assessment_outcome)
     return assessment_outcomes
 
+
 def generate_single_assessment_outcome_from_row(assessment, row):
     id_generator = IdGen()
-    todays_date = date.today()
+    date_taken = create_date_taken(assessment.asmt_period_year, assessment.asmt_period)
     asmt_score = generate_assessment_score(assessment)
 
     if len(asmt_score.claim_scores) == 4:
@@ -123,19 +147,19 @@ def generate_single_assessment_outcome_from_row(assessment, row):
         'section_id': row['section_id'],
         'inst_hier_rec_id': row['inst_hier_rec_id'],
         'section_rec_id': row['section_rec_id'],
-        'where_taken_id': uuid.uuid4(),
-        'where_taken_name': row['school_name'],
-        'asmt_grade': row['enrl_grade'],
+        'where_taken_id': row['where_taken_id'] if 'where_taken_id' in row.keys() else uuid.uuid4(),
+        'where_taken_name': row['where_taken_name'] if 'where_taken_name' in row.keys() else row['school_name'],
+        'asmt_grade': assessment.asmt_grade,
         'enrl_grade': row['enrl_grade'],
-        'date_taken': todays_date.strftime('%Y%m%d'),
-        'date_taken_day': todays_date.day,
-        'date_taken_month': todays_date.month,
-        'date_taken_year': todays_date.year,
+        'date_taken': date_taken.strftime('%Y%m%d'),
+        'date_taken_day': date_taken.day,
+        'date_taken_month': date_taken.month,
+        'date_taken_year': date_taken.year,
 
         # Overall Assessment Data
         'asmt_score': asmt_score.overall_score,
         'asmt_score_range_min': asmt_score.interval_min,
-        'asmt_score_range_max':asmt_score.interval_max,
+        'asmt_score_range_max': asmt_score.interval_max,
         'asmt_perf_lvl': asmt_score.perf_lvl,
 
         # Assessment Claim Data
@@ -158,6 +182,7 @@ def generate_single_assessment_outcome_from_row(assessment, row):
 
         'asmt_create_date': asmt_score.asmt_create_date,
         'status': 'IR',
+        # TODO: how to update most recent
         'most_recent': True
     }
     assessment_outcome = AssessmentOutcome(**params)
@@ -222,7 +247,9 @@ def generate_assessment_score(assessment):
         'interval_min': interval_minimum,
         'interval_max': interval_maximum,
         'claim_scores': claim_scores,
-        'asmt_create_date': date(2012, 3, 13).strftime('%Y%m%d')
+        #TODO: how to decide asmt_create_date? can we use assessment.from_date?
+        # 'asmt_create_date': date(2012, 3, 13).strftime('%Y%m%d')
+        'asmt_create_date': assessment.from_date
     }
 
     assessment_score = AssessmentScore(**params)
@@ -327,7 +354,7 @@ def rescale_value(old_value, old_scale, new_scale):
 
 
 def calculate_claim_average_score(minimum, maximum):
-    # TODO: Is it easier to calculate as: (minimum +  maximum) / 2
+    # TODO: Is it easier to calculate as: (minimum +  maximum) / 2 ?
     # assuming the average is in the middle of the range of scores
     difference = maximum - minimum
     half_difference = difference / 2

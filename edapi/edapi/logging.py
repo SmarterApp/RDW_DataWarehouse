@@ -37,7 +37,7 @@ def audit_event(logger_name="audit"):
             if not 'user' in allargs.keys():
                 user = authenticated_userid(get_current_request())
                 if user is not None:
-                    allargs['user'] = user.get_name()
+                    allargs['user'] = user.__dict__
             if not 'principals' in allargs.keys():
                 allargs['principals'] = effective_principals(get_current_request())
             log.info(allargs)

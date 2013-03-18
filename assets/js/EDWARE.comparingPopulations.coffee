@@ -26,7 +26,7 @@ define [
           
           # append user_info (e.g. first and last name)
           if user_info
-            $('#header .topLinks .user').html user_info.name.firstName + ' ' + user_info.name.lastName
+            $('#header .topLinks .user').html user_info._User__info.name.firstName + ' ' + user_info._User__info.name.lastName
             
           # Append colors to records and summary section
           # Do not format data, or get breadcrumbs if the result is empty

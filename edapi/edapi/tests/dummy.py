@@ -58,5 +58,8 @@ class DummyGetParams:
 
 
 class DummyUser:
+    def __init__(self):
+        self._name = "dummy"
+
     def get_name(self):
-        return "dummy"
+        return self._name

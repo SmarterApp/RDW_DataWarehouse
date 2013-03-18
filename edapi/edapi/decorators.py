@@ -30,6 +30,7 @@ class report_config(object):
 def user_info(orig_func):
     '''
     Append user_info to the returning result
+    This returns User name and roles
     '''
     @wraps(orig_func)
     def wrap(*args, **kwds):
@@ -37,6 +38,6 @@ def user_info(orig_func):
         user = authenticated_userid(pyramid.threadlocal.get_current_request())
         # Only append user info if we get an User object returned
         if user:
-            results['user_info'] = user.get_name()
+            results['user_info'] = user.__dict__
         return results
     return wrap

@@ -58,7 +58,7 @@ define [
       
       # append user_info (e.g. first and last name)
       if data.user_info
-        $('#header .topLinks .user').html data.user_info.name.firstName + ' ' + data.user_info.name.lastName
+        $('#header .topLinks .user').html data.user_info._User__info.name.firstName + ' ' + data.user_info._User__info.name.lastName
       i = 0
       while i < data.items.length
         items = data.items[i]

@@ -247,7 +247,7 @@ class AssessmentOutcome(object):
                 self.inst_hier_rec_id, self.section_rec_id,
                 self.where_taken_id, self.where_taken_name, self.asmt_grade, self.enrl_grade,
                 self.date_taken, self.date_taken_day, self.date_taken_month, self.date_taken_year,
-                self.asmt_score, self.asmt_score_range_min, self.asmt_score_range_min,
+                self.asmt_score, self.asmt_score_range_min, self.asmt_score_range_max,
                 self.asmt_perf_lvl,
                 self.asmt_claim_1_score, self.asmt_claim_1_score_range_min, self.asmt_claim_1_score_range_max,
                 self.asmt_claim_2_score, self.asmt_claim_2_score_range_min, self.asmt_claim_2_score_range_max,

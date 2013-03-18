@@ -113,7 +113,7 @@ def generate_fixture_data(name_lists, db_states_stat, is_small_data_mode):
     total_count = {'state_count': 0, 'district_count': 0, 'school_count': 0, 'student_count': 0}
 
     # add headers to all csv files
-    add_headers_to_csvs()
+    # add_headers_to_csvs()
 
     # generate all assessments
     asmt_list = generate_dim_assessment()

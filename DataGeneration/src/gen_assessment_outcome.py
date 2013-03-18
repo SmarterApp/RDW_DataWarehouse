@@ -248,8 +248,8 @@ def generate_claim_scores(assessment_score, assessment):
         claim_average_score = calculate_claim_average_score(claim_minimum_score, claim_maximum_score)
         claim_standard_deviation = calculate_claim_standard_deviation(claim_average_score, claim_minimum_score)
         claim_plus_minus = generate_plus_minus(scaled_claim_score, claim_average_score, claim_standard_deviation, claim_minimum_score, claim_maximum_score)
-        claim_interval_min = int(scaled_claim_score - claim_plus_minus)
-        claim_interval_max = int(scaled_claim_score + claim_plus_minus)
+        claim_interval_min = scaled_claim_score - int(claim_plus_minus)
+        claim_interval_max = scaled_claim_score + int(claim_plus_minus)
 
         claim_score = ClaimScore(scaled_claim_score, claim_interval_min, claim_interval_max)
 

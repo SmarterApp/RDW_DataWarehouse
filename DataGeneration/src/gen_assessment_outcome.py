@@ -18,20 +18,19 @@ def generate_assessment_outcomes_from_student_object_list(assessment_list, stude
     # from a list of student objects and from the rows returned from get_list_of_students.py
     fao_student_info_list = []
     for student in student_list:
-        fao_student_info = {
-                  'student_id': student.student_id,
-                  'teacher_id': student.teacher_id,
-                  'state_code': student.state_code,
-                  'district_id': student.district_id,
-                  'school_id': student.school_id,
-                  'section_id': student.section_id,
-                  'inst_hier_rec_id': inst_hier_rec_id,
-                  'section_rec_id': student.section_rec_id,
-                  'where_taken_id': where_taken.where_taken_id,
-                  'where_taken_name': where_taken.where_taken_name,
-                  'enrl_grade': student.grade,
-                  'subject_name': subject_name,
-              }
+        fao_student_info = {'student_id': student.student_id,
+                            'teacher_id': student.teacher_id,
+                            'state_code': student.state_code,
+                            'district_id': student.district_id,
+                            'school_id': student.school_id,
+                            'section_id': student.section_id,
+                            'inst_hier_rec_id': inst_hier_rec_id,
+                            'section_rec_id': student.section_rec_id,
+                            'where_taken_id': where_taken.where_taken_id,
+                            'where_taken_name': where_taken.where_taken_name,
+                            'enrl_grade': student.grade,
+                            'subject_name': subject_name,
+                            }
         fao_student_info_list.append(fao_student_info)
 
     return generate_assessment_outcomes_from_student_info(assessment_list, fao_student_info_list)
@@ -229,6 +228,7 @@ def generate_plus_minus(score, average_score, standard_deviation, minimum, maxim
     else:
         # TODO: clamp the values at the scale extremes if over reaches boundaries
         raise Exception('Acceptable range:%d - %d, interval boundaries are %d - %d' % (minimum, maximum, score + plus_minus, score - plus_minus))
+
 
 # TODO: change assessment to assessment_metadata
 def generate_claim_scores(assessment_score, assessment):

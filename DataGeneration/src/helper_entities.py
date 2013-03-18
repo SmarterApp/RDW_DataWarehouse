@@ -90,6 +90,7 @@ class AssessmentScore:
         '''
         return ("Score:[overall: %s, claims: %s]" % (self.overall_score, self.claim_scores))
 
+
 # TODO: get rid of where_taken
 class WhereTaken:
     '''

@@ -240,7 +240,6 @@ class AssessmentOutcome(object):
         self.status = status
         self.most_recent = most_recent
 
-
     def getRow(self):
         return [self.asmnt_outcome_id, self.asmnt_outcome_external_id, self.asmt_rec_id,
                 self.student_id, self.teacher_id, self.state_code,

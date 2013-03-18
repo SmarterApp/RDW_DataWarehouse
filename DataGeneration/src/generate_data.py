@@ -157,8 +157,8 @@ def generate_fixture_data(name_lists, db_states_stat, is_small_data_mode):
             # create institution_hierarchies for each district
             # TODO: Break this down into 2 functions if possible.
             inst_hier_list, wheretaken_list = create_institution_hierarchies(number_of_students_in_schools[shift: shift + district.number_of_schools],
-                                                                          student_teacher_ratio_in_schools[shift: shift + district.number_of_schools],
-                                                                          district, school_type_in_state, name_lists, is_small_data_mode)
+                                                                             student_teacher_ratio_in_schools[shift: shift + district.number_of_schools],
+                                                                             district, school_type_in_state, name_lists, is_small_data_mode)
             create_csv(inst_hier_list, ENTITY_TO_PATH_DICT[InstitutionHierarchy])
 
             # TODO: wheretaken still necessary?
@@ -210,21 +210,21 @@ def generate_distribution_lists(state, is_small_data_mode):
 
         # generate school distribution in districts
         number_of_schools_in_district = makeup_list(state['avg_school_per_district'], state['std_school_per_district'],
-                                          state['min_school_per_district'], state['max_school_per_district'],
-                                          number_of_district, state['total_school'])
+                                                    state['min_school_per_district'], state['max_school_per_district'],
+                                                    number_of_district, state['total_school'])
         # generate student distribution in schools
         number_of_students_in_school = makeup_list(state['avg_student_per_school'], state['std_student_per_school'],
-                                         state['min_student_per_school'], state['max_student_per_school'],
-                                         sum(number_of_schools_in_district), state['total_student'])
+                                                   state['min_student_per_school'], state['max_student_per_school'],
+                                                   sum(number_of_schools_in_district), state['total_student'])
 
         # generate student teacher ratio distribution in schools
         student_teacher_ratio_in_school = py1.makeup_core(state['avg_stutea_ratio_per_school'], state['std_stutea_ratio_per_school'],
-                                                  state['min_stutea_ratio_per_school'], state['max_stutea_ratio_per_school'],
-                                                  sum(number_of_schools_in_district))
+                                                          state['min_stutea_ratio_per_school'], state['max_stutea_ratio_per_school'],
+                                                          sum(number_of_schools_in_district))
 
         # generate school type distribution in state
         school_type_in_state = make_school_types([state['primary_perc'], state['middle_perc'],
-                                              state['high_perc'], state['other_perc']], sum(number_of_schools_in_district))
+                                                  state['high_perc'], state['other_perc']], sum(number_of_schools_in_district))
 
     return number_of_schools_in_district, number_of_students_in_school, student_teacher_ratio_in_school, school_type_in_state
 
@@ -243,7 +243,6 @@ def make_school_types(perc, total):
 
     '''
     Given percentage of different types of school, and total number of schools
-    Returns absolute number for each type of school
     '''
 
     # TODO: we should comment this more heavily. Difficult to follow.
@@ -483,9 +482,9 @@ def create_classes_for_school(district, school, state_code, name_list, total_cou
 
 def generate_teachers(number_of_students, student_teacher_ratio, state_code, district_id, school_id, is_small_data_mode):
     '''
-    Function to generate teachers in school
-    First, it create list of 'Teacher' objects
-    Second, it create list of non-teaching-staff for a school, and write to csv
+    Function to generate teachers in a school
+    First, it create a list of 'Teacher' objects
+    Second, it create a list of non-teaching-staff for a school, and write into dim_staff.csv
     @return: list of 'Teacher' objects
     '''
     # generate school teaching-staff
@@ -524,7 +523,7 @@ def generate_school_non_teaching_staff(is_small_data_mode, number_of_teachers, s
 def calculate_number_of_students_teachers_per_grade(high_grade, low_grade, number_of_students, number_of_teachers):
     '''
     Function to calculate number of students, and number of teachers per grade
-    @return two lists.
+    @return: two lists.
     First list has value of number of students from low_grade to high_grade
     Second list has value of number of teachers from low_grade to high_grade
     '''
@@ -552,9 +551,9 @@ def calculate_number_of_students_teachers_per_grade(high_grade, low_grade, numbe
 
 def generate_student_bio_info(num_students, state_code, city_zip_map, district_id, school_id, school_name, grade, fish_names):
     '''
-    Function to generate list of student_bio_info objects
-    Corresponding external user objects is also generated, and is written into csv file
-    @return: generated list of student_bio_info objects
+    Function to generate a list of 'StudentBioInfo' objects
+    The corresponding list external user objects is also generated, and is written into external_user_student_rel.csv
+    @return: list of 'StudentBioInfo' objects
     '''
     student_bio_info_list = []
     external_users_list = []
@@ -577,7 +576,7 @@ def generate_student_bio_info(num_students, state_code, city_zip_map, district_i
 
 def create_classes_for_grade(students_in_grade, teachers_in_grade, school, grade, assessment_list, where_taken, total_count, is_small_data_mode):
     '''
-    Function to generate classes for a grade, assign students in sections in each class, and associate student with assessment scores
+    Function to generate classes for a grade, assign students in sections in each class, and generate assessment scores for students
     '''
     number_of_students_in_grade = len(students_in_grade)
     number_of_classes = calculate_number_of_classes(number_of_students_in_grade)
@@ -685,10 +684,10 @@ def create_section_subjects(students_in_current_class, student_teacher_ratio, cl
 
 def create_students_and_staff_in_sections(students_in_current_class, teachers_in_current_class, section_subject_list, state_code, district_id, school_id, grade):
     '''
-    Function to create list of student objects, and list of teaching staff objects
+    Function to create list of 'Student' objects, and list of teaching 'Staff' objects
     Generated student objects are written into dim_student.csv
     Generated staff objects are written into dim_staff.csv
-    @return: generated list of student objects
+    @return: generated list of Student objects
     '''
     number_of_sections = len(section_subject_list)
     # distribute student in each section
@@ -732,7 +731,7 @@ def calculate_number_of_sections(number_of_students_in_class, student_teacher_ra
 
 def create_single_section_subject(section_name, class_name, subject_name, state_code, district_id, school_id, grade):
     '''
-    Function to create a single SectionSubject object
+    Function to create a single 'SectionSubject' object
     '''
 
     section_id = IdGen().get_id()
@@ -753,7 +752,7 @@ def create_single_section_subject(section_name, class_name, subject_name, state_
         'from_date': '20120901',
         'most_recent': True,
         'to_date': '29990901'
-        }
+    }
     section_subject = SectionSubject(**section_subject_params)
     return section_subject
 

@@ -10,10 +10,10 @@ class User(object):
     Represents User information
     '''
     def __init__(self):
-        self.__info = {}
         self.__initialize_default_values()
 
     def __initialize_default_values(self):
+        self.__info = {}
         self.__info['name'] = {'fullName': None, 'firstName': None, 'lastName': None}
         self.__info['uid'] = None
         self.__info['roles'] = []

@@ -23,6 +23,7 @@ class EdAuthAuthenticationPolicy(AuthTktAuthenticationPolicy):
         if session_id is not None:
             session = get_user_session(session_id)
             return session.get_user()
+        return None
 
     def effective_principals(self, request):
         '''
@@ -38,9 +39,9 @@ class EdAuthAuthenticationPolicy(AuthTktAuthenticationPolicy):
             groups = []
         else:
             groups = self.callback(session_id, request)
-        # if callback returns none, return empty list
-        if groups is None:
-            return effective_principals
+            # if callback returns none, return empty list
+            if groups is None:
+                return effective_principals
 
         effective_principals.extend(groups)
 

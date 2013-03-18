@@ -42,7 +42,7 @@ def generate_teacher(state_code, district_id):
     return teacher
 
 
-def generate_student_bio_info(state_code, district_id, zip_code, city, school_id, school_name, grade, street_list, gender=None, has_middle_name=False):
+def generate_single_student_bio_info(state_code, district_id, zip_code, city, school_id, school_name, grade, street_list, gender=None, has_middle_name=False):
 
     id_generator = IdGen()
 

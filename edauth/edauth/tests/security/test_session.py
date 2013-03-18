@@ -13,7 +13,7 @@ class Test(unittest.TestCase):
         session = Session()
         self.assertIsNone(session.get_idp_session_index())
         self.assertIsNone(session.get_last_access())
-        self.assertIsNone(session.get_name()['fullName'])
+        self.assertIsNone(session.get_name()['name']['fullName'])
         self.assertEqual(0, len(session.get_roles()))
         self.assertIsNone(session.get_session_id())
         self.assertIsNone(session.get_uid())
@@ -21,7 +21,7 @@ class Test(unittest.TestCase):
     def test_fullName(self):
         session = Session()
         session.set_fullName('Joe Doe')
-        self.assertEqual('Joe Doe', session.get_name()['fullName'])
+        self.assertEqual('Joe Doe', session.get_name()['name']['fullName'])
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']

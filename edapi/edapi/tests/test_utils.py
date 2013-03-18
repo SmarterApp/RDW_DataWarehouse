@@ -8,6 +8,10 @@ from edapi.utils import get_report_dict_value, generate_report, generate_report_
     expand_field, prepare_params, add_configuration_header
 from edapi.exceptions import ReportNotFoundError, InvalidParameterError
 from edapi.tests.dummy import DummyValidator, Dummy
+from edapi.tests.test_logger import TestLogger, test_function, test_display_name
+import os
+import logging
+from edapi.logging import JsonDictLoggingFormatter
 
 
 def dummy_method(params):
@@ -18,13 +22,39 @@ def dummy_method_with_data(params):
     return {"report": "123"}
 
 
+class InMemHandler(logging.Handler):
+    '''
+    test handler that maintains log array
+    '''
+    def __init__(self):
+        self.log_entries = ''
+        logging.Handler.__init__(self)
+        self.setFormatter(JsonDictLoggingFormatter(fmt='%(asctime)s %(message)s', datefmt='%y%m%d %H:%M:%S'))
+
+    def emit(self, record):
+        try:
+            msg = self.format(record)
+            self.log_entries += os.linesep + msg
+        except (KeyboardInterrupt, SystemExit):
+            raise
+        except:
+            self.handleError(record)
+
+    def delete(self):
+        self.log_entries = ''
+
+    def get(self):
+        return self.log_entries
+
+
 class TestUtils(unittest.TestCase):
+    log_handler = InMemHandler()
 
     def setUp(self):
-        pass
+        logging.basicConfig(handlers=[self.log_handler], level='INFO')
 
     def tearDown(self):
-        pass
+        self.log_handler.delete()
 
     def test_get_dict_value_with_key_not_found(self):
         dictionary = {}
@@ -141,6 +171,23 @@ class TestUtils(unittest.TestCase):
         result = add_configuration_header(params)
         self.assertEqual(result['properties'], params)
 
-if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()
+    def test_method_log(self):
+        test_logger = TestLogger()
+        test_logger.test_method("param1value", "param2value")
+        f = self.log_handler.get()
+        self.assertIn("param1value", f, "missing param")
+        self.assertIn("param2value", f, "missing param")
+        self.assertIn("test_method", f, "method name is missing")
+        self.assertIn("TestLogger", f, "class name is missing")
+
+    def test_function_log(self):
+        test_function('param1value', 'param2value')
+        f = self.log_handler.get()
+        self.assertIn('param1value', f, 'missing param')
+        self.assertIn('param2value', f, 'missing param')
+        self.assertIn('test_function', f, 'method name is missing')
+
+    def test_display_text_log(self):
+        test_display_name()
+        f = self.log_handler.get()
+        self.assertIn("test_display", f, "missing param")

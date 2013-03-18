@@ -1,1 +1,13 @@
-row_id,section_id,section_name,grade,class_name,subject_name,state_code,district_id,school_id,from_date,to_date,most_recent08134d22-9155-44e4-9670-5dad5f898f77,sec1,Section Name 111,1,Class Name 112,Subject Name 113,NY,d1,sc1,20120112,20120112,1950c71be-a348-400a-8575-e3bd2b848d48,sec2,Section Name 114,4,Class Name 115,Subject Name 116,NY,d2,sc2,20120112,20120112,193cce318-8efa-4232-86ed-4b4524663bd5,sec2,Section Name 117,4,Class Name 118,Subject Name 119,NY,d2,sc2,20120112,20120112,106848123-e002-4215-8d48-1e572881c89f,sec1,Section Name 120,1,Class Name 121,Subject Name 122,NY,d1,sc1,20120112,20120112,1a546e489-b105-40c4-814e-dfd2f6af9f7b,sec1,Section Name 123,1,Class Name 124,Subject Name 125,NY,d1,sc1,20120112,20120112,1
+section_rec_id,section_id,section_name,grade,class_name,subject_name,state_code,district_id,school_id,from_date,to_date,most_recent
+346,345,section 1,3,Math 112,Math,NY,228,242,20120101,99991231,TRUE
+533,345,section 1,3,ELA 102,ELA,NY,228,242,20120101,99991231,TRUE
+733,732,section 1,7,Math 112,Math,NY,228,245,20120101,99991231,TRUE
+761,732,section 1,7,ELA 102,ELA,NY,228,245,20120101,99991231,TRUE
+815,814,section 1,11,Math 112,Math,NY,228,248,20120101,99991231,TRUE
+885,814,section 1,11,ELA 102,ELA,NY,228,248,20120101,99991231,TRUE
+975,974,section 1,3,Math 112,Math,NY,229,936,20120101,99991231,TRUE
+998,974,section 1,3,ELA 102,ELA,NY,229,936,20120101,99991231,TRUE
+1066,1065,section 1,7,Math 112,Math,NY,229,939,20120101,99991231,TRUE
+1175,1065,section 1,7,ELA 102,ELA,NY,229,939,20120101,99991231,TRUE
+1300,1299,section 1,11,Math 112,Math,NY,229,942,20120101,99991231,TRUE
+1333,1299,section 1,11,ELA 102,ELA,NY,229,942,20120101,99991231,TRUE

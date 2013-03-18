@@ -4,15 +4,18 @@ Created on Jan 24, 2013
 @author: tosako
 '''
 
-from edapi.utils import report_config
-from sqlalchemy.sql.expression import func
-from database.connector import DBConnection
+from edapi.decorators import report_config, user_info
+from smarter.reports.helpers.name_formatter import format_full_name_rev
 from sqlalchemy.sql import select
 from sqlalchemy.sql import and_
+from smarter.database.connector import SmarterDBConnection
+from edapi.logging import audit_event
+from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
 
 
 __districtId = 'districtId'
 __schoolId = 'schoolId'
+__stateId = 'stateId'
 __asmtGrade = 'asmtGrade'
 __asmtSubject = 'asmtSubject'
 
@@ -33,6 +36,11 @@ __asmtSubject = 'asmtSubject'
 @report_config(
     name="list_of_students",
     params={
+        __stateId: {
+            "type": "string",
+            "required": True,
+            "pattern": "^[a-zA-Z0-9\-]{0,50}$",
+        },
         __districtId: {
             "type": "string",
             "required": True,
@@ -60,18 +68,18 @@ __asmtSubject = 'asmtSubject'
             },
         }
     })
+@audit_event()
+@user_info
 def get_list_of_students_report(params):
-
-    district_id = str(params[__districtId])
-    school_id = str(params[__schoolId])
-    asmt_grade = str(params[__asmtGrade])
-
+    stateId = str(params[__stateId])
+    districtId = str(params[__districtId])
+    schoolId = str(params[__schoolId])
+    asmtGrade = str(params[__asmtGrade])
     # asmt_subject is optional.
-    asmt_subject = None
+    asmtSubject = None
     if __asmtSubject in params:
-        asmt_subject = params[__asmtSubject]
-
-    with DBConnection() as connector:
+        asmtSubject = params[__asmtSubject]
+    with SmarterDBConnection() as connector:
         # get handle to tables
         dim_student = connector.get_table('dim_student')
         dim_staff = connector.get_table('dim_staff')
@@ -82,11 +90,11 @@ def get_list_of_students_report(params):
 
         query = select([dim_student.c.student_id.label('student_id'),
                         dim_student.c.first_name.label('student_first_name'),
-                        func.substr(dim_student.c.middle_name, 1, 1).label('student_middle_name'),
+                        dim_student.c.middle_name.label('student_middle_name'),
                         dim_student.c.last_name.label('student_last_name'),
                         fact_asmt_outcome.c.enrl_grade.label('enrollment_grade'),
                         dim_staff.c.first_name.label('teacher_first_name'),
-                        func.substr(dim_staff.c.middle_name, 1, 1).label('teacher_middle_name'),
+                        dim_staff.c.middle_name.label('teacher_middle_name'),
                         dim_staff.c.last_name.label('teacher_last_name'),
                         fact_asmt_outcome.c.asmt_grade.label('asmt_grade'),
                         dim_asmt.c.asmt_subject.label('asmt_subject'),
@@ -110,16 +118,22 @@ def get_list_of_students_report(params):
                         fact_asmt_outcome.c.asmt_claim_2_score_range_max.label('asmt_claim_2_score_range_max'),
                         fact_asmt_outcome.c.asmt_claim_3_score_range_max.label('asmt_claim_3_score_range_max'),
                         fact_asmt_outcome.c.asmt_claim_4_score_range_max.label('asmt_claim_4_score_range_max')],
-                       from_obj=[dim_student
-                                 .join(fact_asmt_outcome, dim_student.c.student_id == fact_asmt_outcome.c.student_id)
-                                 .join(dim_asmt, dim_asmt.c.asmt_id == fact_asmt_outcome.c.asmt_id)
-                                 .join(dim_staff, dim_staff.c.staff_id == fact_asmt_outcome.c.teacher_id)])
-        query = query.where(fact_asmt_outcome.c.school_id == school_id)
-        query = query.where(and_(fact_asmt_outcome.c.asmt_grade == asmt_grade))
-        query = query.where(and_(fact_asmt_outcome.c.district_id == district_id))
+                       from_obj=[fact_asmt_outcome
+                                 .join(dim_student, and_(dim_student.c.student_id == fact_asmt_outcome.c.student_id,
+                                                         dim_student.c.most_recent,
+                                                         dim_student.c.section_id == fact_asmt_outcome.c.section_id))
+                                 .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id, dim_asmt.c.asmt_type == 'SUMMATIVE'))
+                                 .join(dim_staff, and_(dim_staff.c.staff_id == fact_asmt_outcome.c.teacher_id,
+                                       dim_staff.c.most_recent, dim_staff.c.section_id == fact_asmt_outcome.c.section_id))])
+        query = query.where(fact_asmt_outcome.c.state_code == stateId)
+        query = query.where(fact_asmt_outcome.c.school_id == schoolId)
+        query = query.where(and_(fact_asmt_outcome.c.asmt_grade == asmtGrade))
+        query = query.where(and_(fact_asmt_outcome.c.district_id == districtId))
+        query = query.where(and_(fact_asmt_outcome.c.most_recent))
+        query = query.where(and_(fact_asmt_outcome.c.status == 'C'))
 
-        if asmt_subject is not None:
-            query = query.where(dim_asmt.c.asmt_subject.in_(asmt_subject))
+        if asmtSubject is not None:
+            query = query.where(dim_asmt.c.asmt_subject.in_(asmtSubject))
 
         query = query.order_by(dim_student.c.last_name).order_by(dim_student.c.first_name)
 
@@ -138,17 +152,15 @@ def get_list_of_students_report(params):
                 student['student_first_name'] = result['student_first_name']
                 student['student_middle_name'] = result['student_middle_name']
                 student['student_last_name'] = result['student_last_name']
-                student['student_full_name'] = result['student_last_name'] + ', ' + result['student_first_name']
-                if (result['student_middle_name'] is not None) and (len(result['student_middle_name']) > 0):
-                    student['student_full_name'] = student['student_full_name'] + ' ' + result['student_middle_name'] + '.'
+                student['student_full_name'] = format_full_name_rev(result['student_first_name'], result['student_middle_name'], result['student_last_name'])
                 student['enrollment_grade'] = result['enrollment_grade']
+                # This is for links in drill down
+                student['params'] = {"studentId": result['student_id']}
 
             assessment = {}
             assessment['teacher_first_name'] = result['teacher_first_name']
             assessment['teacher_last_name'] = result['teacher_last_name']
-            assessment['teacher_full_name'] = result['teacher_last_name'] + ', ' + result['teacher_first_name']
-            if (result['teacher_middle_name'] is not None) and (len(result['teacher_middle_name']) > 0):
-                assessment['teacher_full_name'] = assessment['teacher_full_name'] + ' ' + result['teacher_middle_name'] + '.'
+            assessment['teacher_full_name'] = format_full_name_rev(result['teacher_first_name'], result['teacher_middle_name'], result['teacher_last_name'])
             assessment['asmt_grade'] = result['asmt_grade']
             assessment['asmt_score'] = result['asmt_score']
             assessment['asmt_score_range_min'] = result['asmt_score_range_min']
@@ -188,17 +200,14 @@ def get_list_of_students_report(params):
                 student_id_track[result['student_id']] = True
 
         los_results['assessments'] = assessments
-        los_results['cutpoints'] = __get_cut_points(connector, asmt_grade, asmt_subject)
-        los_results['context'] = __get_context(connector, asmt_grade, school_id, district_id)
+        los_results['cutpoints'] = __get_cut_points(connector, asmtSubject)
+        los_results['context'] = get_breadcrumbs_context(district_id=districtId, school_id=schoolId, asmt_grade=asmtGrade)
 
-        #TODO - restructure this method
-        #       make sure connection always closed even on error
-        connector.close_connection()
         return los_results
 
 
 # returning cutpoints in JSON.
-def __get_cut_points(connector, asmtGrade, asmtSubject):
+def __get_cut_points(connector, asmtSubject):
     cutpoints = {}
     dim_asmt = connector.get_table('dim_asmt')
 
@@ -214,7 +223,6 @@ def __get_cut_points(connector, asmtGrade, asmtSubject):
                     dim_asmt.c.asmt_cut_point_3.label("asmt_cut_point_3"),
                     dim_asmt.c.asmt_cut_point_4.label("asmt_cut_point_4")],
                    from_obj=[dim_asmt])
-    query = query.where(dim_asmt.c.asmt_grade == asmtGrade)
     if asmtSubject is not None:
         query = query.where(dim_asmt.c.asmt_subject.in_(asmtSubject))
 
@@ -234,26 +242,3 @@ def __get_cut_points(connector, asmtGrade, asmtSubject):
         cutpoints[result["asmt_subject"]] = cutpoint
 
     return cutpoints
-
-
-def __get_context(connector, grade, school_id, district_id):
-    dim_district = connector.get_table('dim_inst_hier')
-
-    query = select([dim_district.c.district_name.label('district_name'),
-                    dim_district.c.school_name.label('school_name'),
-                    dim_district.c.state_name.label('state_name')],
-                   from_obj=[dim_district])
-
-    query = query.where(and_(dim_district.c.school_id == school_id))
-    query = query.where(and_(dim_district.c.district_id == district_id))
-    query = query.where(and_(dim_district.c.most_recent == 1))
-
-    # run it and format the results
-    results = connector.get_result(query)
-    if (not results):
-        return results
-    result = results[0]
-
-    result['grade'] = grade
-
-    return result

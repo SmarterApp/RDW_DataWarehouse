@@ -5,14 +5,16 @@ Created on Jan 13, 2013
 '''
 
 
-from edapi.utils import report_config
+from edapi.decorators import report_config, user_info
+from smarter.reports.helpers.name_formatter import format_full_name
 from sqlalchemy.sql import select
-from database.connector import DBConnection
 import json
 from sqlalchemy.sql.expression import and_
-from sqlalchemy.sql.expression import func
 from edapi.exceptions import NotFoundException
 from string import capwords
+from smarter.database.connector import SmarterDBConnection
+from edapi.logging import audit_event
+from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
 
 
 def __prepare_query(connector, student_id, assessment_id):
@@ -77,15 +79,20 @@ def __prepare_query(connector, student_id, assessment_id):
                     fact_asmt_outcome.c.asmt_claim_3_score_range_max.label('asmt_claim_3_score_range_max'),
                     fact_asmt_outcome.c.asmt_claim_4_score_range_max.label('asmt_claim_4_score_range_max'),
                     dim_staff.c.first_name.label('teacher_first_name'),
-                    func.substr(dim_staff.c.middle_name, 1, 1).label('teacher_middle_name'),
+                    dim_staff.c.middle_name.label('teacher_middle_name'),
                     dim_staff.c.last_name.label('teacher_last_name')],
                    from_obj=[fact_asmt_outcome
-                             .join(dim_student, and_(fact_asmt_outcome.c.student_id == dim_student.c.student_id, fact_asmt_outcome.c.section_id == dim_student.c.section_id))
-                             .join(dim_staff, and_(fact_asmt_outcome.c.teacher_id == dim_staff.c.staff_id, fact_asmt_outcome.c.section_id == dim_staff.c.section_id))
-                             .join(dim_asmt, dim_asmt.c.asmt_id == fact_asmt_outcome.c.asmt_id)])
-    query = query.where(and_(fact_asmt_outcome.c.student_id == student_id, dim_asmt.c.most_recent, dim_staff.c.most_recent, fact_asmt_outcome.c.most_recent, dim_asmt.c.asmt_type == 'SUMMATIVE'))
+                             .join(dim_student, and_(fact_asmt_outcome.c.student_id == dim_student.c.student_id,
+                                                     fact_asmt_outcome.c.section_id == dim_student.c.section_id))
+                             .join(dim_staff, and_(fact_asmt_outcome.c.teacher_id == dim_staff.c.staff_id,
+                                                   fact_asmt_outcome.c.section_id == dim_staff.c.section_id,
+                                                   dim_staff.c.most_recent))
+                             .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id,
+                                                  dim_asmt.c.most_recent,
+                                                  dim_asmt.c.asmt_type == 'SUMMATIVE'))])
+    query = query.where(and_(fact_asmt_outcome.c.most_recent, fact_asmt_outcome.c.status == 'C', fact_asmt_outcome.c.student_id == student_id))
     if assessment_id is not None:
-        query = query.where(fact_asmt_outcome.c.asmt_id == assessment_id)
+        query = query.where(dim_asmt.c.asmt_id == assessment_id)
     query = query.order_by(dim_asmt.c.asmt_subject.desc())
     return query
 
@@ -96,12 +103,11 @@ def __arrange_results(results):
     '''
     for result in results:
         custom_metadata = result['asmt_custom_metadata']
-        if not custom_metadata:
-            custom = None
-        else:
-            custom = json.loads(custom_metadata)
+        custom = None if not custom_metadata else json.loads(custom_metadata)
         # once we use the data, we clean it from the result
         del(result['asmt_custom_metadata'])
+
+        result['teacher_full_name'] = format_full_name(result['teacher_first_name'], result['teacher_middle_name'], result['teacher_last_name'])
 
         # asmt_type is an enum, so we would to capitalize it to make it presentable
         result['asmt_type'] = capwords(result['asmt_type'], ' ')
@@ -144,6 +150,10 @@ def __arrange_results(results):
                                 'min_score': str(result['asmt_claim_{0}_score_min'.format(i)]),
                                 'confidence': str(claim_score - result['asmt_claim_{0}_score_range_min'.format(i)]),
                                 }
+                del(result['asmt_claim_{0}_score_range_min'.format(i)])
+                del(result['asmt_claim_{0}_score_range_max'.format(i)])
+                del(result['asmt_claim_{0}_score_min'.format(i)])
+                del(result['asmt_claim_{0}_score_max'.format(i)])
                 result['claims'].append(claim_object)
 
     # rearranging the json so we could use it more easily with mustache
@@ -164,11 +174,12 @@ def __arrange_results(results):
                         "pattern": "^[a-zA-Z0-9\-]{0,50}$",
                     },
                })
+@audit_event()
+@user_info
 def get_student_report(params):
     '''
     report for student and student_assessment
     '''
-
     # get studentId
     student_id = str(params['studentId'])
 
@@ -177,17 +188,14 @@ def get_student_report(params):
     if 'assessmentId' in params:
         assessment_id = str(params['assessmentId'])
 
-    with DBConnection() as connection:
+    with SmarterDBConnection() as connection:
         query = __prepare_query(connection, student_id, assessment_id)
 
         result = connection.get_result(query)
         if result:
             first_student = result[0]
-            # handling null middle name by making it empty string
-            middle_name = first_student['student_middle_name'] if first_student['student_middle_name'] else ''
-            # handling empty string middle name
-            student_name = '{0} {1} {2}'.format(first_student['student_first_name'], middle_name, first_student['student_last_name']).replace('  ', ' ')
-            context = __get_context(connection, first_student['school_id'], first_student['district_id'], first_student['grade'], student_name)
+            student_name = format_full_name(first_student['student_first_name'], first_student['student_middle_name'], first_student['student_last_name'])
+            context = get_breadcrumbs_context(district_id=first_student['district_id'], school_id=first_student['school_id'], asmt_grade=first_student['grade'], student_name=student_name)
         else:
             raise NotFoundException("Could not find student with id {0}".format(student_id))
 
@@ -212,7 +220,7 @@ def get_student_assessment(params):
     # get studentId
     student_id = params['studentId']
 
-    with DBConnection() as connection:
+    with SmarterDBConnection() as connection:
         # get table metadatas
         dim_asmt = connection.get_table('dim_asmt')
         fact_asmt_outcome = connection.get_table('fact_asmt_outcome')
@@ -222,36 +230,9 @@ def get_student_assessment(params):
                         dim_asmt.c.asmt_type,
                         dim_asmt.c.asmt_period,
                         dim_asmt.c.asmt_version,
-                        dim_asmt.c.asmt_grade],
-                       from_obj=[fact_asmt_outcome
-                                 .join(dim_asmt)])
+                        fact_asmt_outcome.c.asmt_grade],
+                       from_obj=[fact_asmt_outcome.join(dim_asmt, fact_asmt_outcome.c.asmt_rec_id == dim_asmt.c.asmt_rec_id)])
         query = query.where(fact_asmt_outcome.c.student_id == student_id)
         query = query.order_by(dim_asmt.c.asmt_subject)
         result = connection.get_result(query)
         return result
-
-
-def __get_context(connector, school_id, district_id, grade, student_name):
-    dim_district = connector.get_table('dim_inst_hier')
-
-    query = select([dim_district.c.district_name.label('district_name'),
-                    dim_district.c.school_name.label('school_name'),
-                    dim_district.c.state_name.label('state_name')],
-                   from_obj=[dim_district])
-
-    query = query.where(and_(dim_district.c.school_id == school_id))
-    query = query.where(and_(dim_district.c.district_id == district_id))
-    query = query.where(and_(dim_district.c.most_recent == 1))
-
-    # run it and format the results
-    results = connector.get_result(query)
-    if (not results):
-        return results
-    result = results[0]
-
-    result['grade'] = grade
-    result['student_name'] = student_name
-    result['district_id'] = district_id
-    result['school_id'] = school_id
-
-    return result

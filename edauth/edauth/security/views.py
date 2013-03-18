@@ -4,7 +4,7 @@ Created on Feb 13, 2013
 @author: dip
 '''
 from pyramid.security import NO_PERMISSION_REQUIRED, forget, remember, \
-    authenticated_userid, effective_principals
+    effective_principals, unauthenticated_userid
 from pyramid.httpexceptions import HTTPFound, HTTPForbidden
 from pyramid.view import view_config, forbidden_view_config
 import base64
@@ -29,8 +29,9 @@ def login(request):
     '''
     url = request.registry.settings['auth.saml.idp_server_login_url']
 
-    # Both of these calls will trigger our callback
-    session_id = authenticated_userid(request)
+    # Get session id from cookie
+    session_id = unauthenticated_userid(request)
+    # Get roles
     principals = effective_principals(request)
 
     # Requests will be forwarded here when users aren't authorized to those pages, how to prevent it?
@@ -46,9 +47,10 @@ def login(request):
     referrer = request.url
     if referrer == request.route_url('login'):
         # Never redirect back to login page
-        # TODO redirect to some landing home page
+        # TODO make it a const
+        # TODO: landing page
         referrer = request.route_url('list_of_reports')
-    params = {'RelayState': deflate_base64_encode((request.params.get('came_from', referrer)).encode())}
+    params = {'RelayState': deflate_base64_encode(referrer.encode())}
 
     saml_request = SamlAuthnRequest(request.registry.settings['auth.saml.issuer_name'])
 
@@ -89,7 +91,7 @@ def login_callback(request):
 @view_config(route_name='logout', permission='logout')
 def logout(request):
     # Get the current session
-    session_id = authenticated_userid(request)
+    session_id = unauthenticated_userid(request)
 
     # Redirect to login if no session exist
     url = request.route_url('login')
@@ -130,17 +132,17 @@ def saml2_post_consumer(request):
 
     # Validate the response id against session
     __SAMLResponse = base64.b64decode(request.POST['SAMLResponse'])
-    __SAMLResposne_manager = SAMLResponseManager(__SAMLResponse.decode('utf-8'))
+    __SAMLResponse_manager = SAMLResponseManager(__SAMLResponse.decode('utf-8'))
     __SAMLResponse_IDP_Metadata_manager = IDP_metadata_manager(request.registry.settings['auth.idp.metadata'])
 
     __skip_verification = request.registry.settings.get('auth.skip.verify', False)
     # TODO: enable auth_request_id
-    # if __SAMLResposne_manager.is_auth_request_id_ok(auth_request_id)
-    if __SAMLResposne_manager.is_condition_ok() and __SAMLResposne_manager.is_status_ok() and (__skip_verification or __SAMLResposne_manager.is_signature_ok(__SAMLResponse_IDP_Metadata_manager.get_trusted_pem_filename())):
+    # if __SAMLResponse_manager.is_auth_request_id_ok(auth_request_id)
+    if __SAMLResponse_manager.is_condition_ok() and __SAMLResponse_manager.is_status_ok() and (__skip_verification or __SAMLResponse_manager.is_signature_ok(__SAMLResponse_IDP_Metadata_manager.get_trusted_pem_filename())):
 
         # create a session
         session_timeout = convert_to_int(request.registry.settings['auth.session.timeout'])
-        session_id = create_new_user_session(__SAMLResposne_manager.get_SAMLResponse(), session_timeout).get_session_id()
+        session_id = create_new_user_session(__SAMLResponse_manager.get_SAMLResponse(), session_timeout).get_session_id()
 
         # Save session id to cookie
         headers = remember(request, session_id)
@@ -159,6 +161,21 @@ def saml2_post_consumer(request):
 
 @view_config(route_name='logout_redirect', permission=NO_PERMISSION_REQUIRED)
 def logout_redirect(request):
-    # TODO validate response
-    redirect_url = request.GET.get('RelayState', request.route_url('list_of_reports'))
-    return HTTPFound(location=redirect_url)
+    '''
+    OpenAM redirects back to this endpoint after logout
+    This will refresh the whole page from the iframe
+    '''
+    html = '''
+    <html><header>
+    <title>Logging out</title>
+    <script type="text/javascript">
+    function refresh() {
+        window.top.location.reload();
+        }
+    </script>
+    </header>
+    <body onload="refresh()">
+    </body>
+    </html>
+    '''
+    return Response(body=html, content_type='text/html')

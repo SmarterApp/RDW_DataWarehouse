@@ -8,12 +8,13 @@ Created on Jan 14, 2013
 from pyramid.view import view_config
 from edapi import EDAPI_REPORTS_PLACEHOLDER
 from edapi.utils import generate_report_config,\
-    generate_report, report_config
+    generate_report
 from edapi.exceptions import ReportNotFoundError, InvalidParameterError
 from edapi.httpexceptions import EdApiHTTPNotFound, EdApiHTTPPreconditionFailed,\
     EdApiHTTPRequestURITooLong
 from pyramid.response import Response
 import json
+from edapi.decorators import user_info
 
 MAX_REQUEST_URL_LENGTH = 2000
 

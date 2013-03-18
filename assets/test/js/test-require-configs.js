@@ -9,6 +9,7 @@ var baseConfigs = {
 	    text: '../../js/3p/text',
 		mustache: '../../js/3p/mustache',
 		templates: '../../js/templates',
+		bootstrap: '../../js/3p/bootstrap.min',
 		
 	    EDWARE: '../../js/EDWARE',
 	    edwareUtil: '../../js/EDWARE.util',
@@ -19,9 +20,12 @@ var baseConfigs = {
 	    edwareIndividualStudent: '../../js/EDWARE.individualStudent',
 	    edwareBreadcrumbs: '../../js/widgets/breadcrumb/EDWARE.breadcrumbs',
 		edwareConfidenceLevelBar: '../../js/widgets/confidenceLevelBar/EDWARE.confidenceBar',
+		edwarePopulationBar: '../../js/widgets/populationBar/EDWARE.populationBar',
+		edwareComparingPopulations: '../../js/EDWARE.comparingPopulations',
 	    
 	    edwareBreadcrumbsTemplate: '../../js/widgets/breadcrumb/template.html',
-		edwareConfidenceLevelBarTemplate: '../../js/widgets/confidenceLevelBar/template.html'
+		edwareConfidenceLevelBarTemplate: '../../js/widgets/confidenceLevelBar/template.html',
+		edwarePopulationBarTemplate: '../../js/widgets/populationBar/template.html'
 	},
 	shim: {
         'jqGrid': {

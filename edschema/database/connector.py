@@ -10,6 +10,7 @@ from zope.interface.declarations import implementer
 from sqlalchemy import Table
 import logging
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -39,8 +40,12 @@ class DBConnection(ConnectionBase):
     Inheritate this class if you are making a report class and need to access to database
     BaseReport is just managing session for your database connection and convert result to dictionary
     '''
-    def __init__(self):
-        dbUtil = component.queryUtility(IDbUtil)
+    def __init__(self, name=''):
+        '''
+        name is an empty string by default
+        '''
+        self.__name = name
+        dbUtil = component.queryUtility(IDbUtil, name=name)
         engine = dbUtil.get_engine()
         self.__connection = engine.connect()
 
@@ -73,7 +78,7 @@ class DBConnection(ConnectionBase):
         return Table(table_name, self.get_metadata())
 
     def get_metadata(self):
-        dbUtil = component.queryUtility(IDbUtil)
+        dbUtil = component.queryUtility(IDbUtil, name=self.__name)
         return dbUtil.get_metadata()
 
     def execute(self, statement, *multiparams, **params):

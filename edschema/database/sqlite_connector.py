@@ -13,7 +13,7 @@ from sqlalchemy import event
 
 
 # create sqlite from static metadata
-def create_sqlite(force_foreign_keys=True, use_metadata_from_db=False, echo=False, metadata=None):
+def create_sqlite(force_foreign_keys=True, use_metadata_from_db=False, echo=False, metadata=None, datasource_name=''):
     __engine = create_engine('sqlite:///:memory:', connect_args={'detect_types': sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES}, native_datetime=True, echo=echo)
 
     if force_foreign_keys:
@@ -31,19 +31,19 @@ def create_sqlite(force_foreign_keys=True, use_metadata_from_db=False, echo=Fals
         __metadata.reflect(bind=__engine)
 
     dbUtil = DbUtil(engine=__engine, metadata=__metadata)
-    component.provideUtility(dbUtil, IDbUtil)
+    component.provideUtility(dbUtil, IDbUtil, name=datasource_name)
 
 
 def __fk_on(connection, rec):
     connection.execute('pragma foreign_keys=ON')
 
 
-def destroy_sqlite():
+def destroy_sqlite(datasource_name=''):
     '''
     drop tables from memory
     and destory sqlite
     '''
-    dbUtil = component.queryUtility(IDbUtil)
+    dbUtil = component.queryUtility(IDbUtil, name=datasource_name)
     __engine = dbUtil.get_engine()
     __metadata = dbUtil.get_metadata()
     __metadata.drop_all(bind=__engine, checkfirst=False)

@@ -2,31 +2,29 @@
 <html>
 <head>
     <title>Ed-Ware List of Students Report</title>
-     <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/themes/redmond/jquery-ui.css" />
-     <link rel="stylesheet" type="text/css" href="../css/3p/bootstrap.min.css" />
-     <link rel="stylesheet" type="text/css" href="../css/3p/ui.jqgrid.css" />
-     <link rel="stylesheet" type="text/css" href="../css/style.css" />
+    <link rel="stylesheet" type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery.ui.all.css" />
+    <link rel="stylesheet" type="text/css" href="../css/3p/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="../css/3p/ui.jqgrid.css" />
+    <link rel="stylesheet" type="text/css" href="../css/style.css" />
     <script data-main="../js/EDWARE.studentListReport" src="../js/3p/require.js"></script>
 </head>
 <body>
 	<div id="header">
 		<div id="logo">LOGO</div>
 		<div class="topLinks">
-			<span class="user">User</span> | <span><a href="/logout">Log out</a></span>
+			<span class="user"></span> | <span><a href="/logout" target="iframe_logout">Log out</a></span>
 		</div>
    	</div>
-   	<div id="breadcrumb">
-   		 
-   	</div>
+   	<div id="breadcrumb"></div>
    	<div id="content">
    		<div id="errorMessage"></div>
-	    	<table id="gridTable"></table>
-	    	<div id="pager"></div>
-      
+	    <table id="gridTable"></table>
     </div>
     <div id="footer">
-	    	<div id="legend" class="pull-right">Legend / Informational</div>
-	    	<div id="purpose" class="pull-right">Purposes / Uses / Limitations</div>
+    	<div id="legend" class="pull-right">Legend / Informational</div>
+    	<div id="purpose" class="pull-right">Purposes / Uses / Limitations</div>
     </div>
+    <!--This iframe is used for logout redirect.  Do not remove it.-->
+    <iframe frameborder="0" height="0px" width="0px" name="iframe_logout"></iframe>
 </body>
 </html>

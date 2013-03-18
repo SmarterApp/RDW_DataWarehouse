@@ -1,6 +1,30 @@
 @import "color";
 
-@the-border: 1px;
+a {
+  color: @color-A4;
+  text-decoration: none;
+  
+  &:hover {
+    color: @color-A1;
+    text-decoration: underline;
+  }
+}
+
+.labelText {
+  color: @color-black;
+}
+
+.outerBox {
+  background: @color-B5;
+}
+
+.innerBox {
+  background: @color-white;
+  border: solid 1px @color-B4;
+  .rounded-corners(5px);
+  float: left;
+  margin: 20px 20px 0;
+}
 
 .pad0 {
   padding: 0
@@ -8,6 +32,14 @@
 
 .margin0 {
   margin: 0
+}
+
+.marginRight5 {
+  margin-right: 5px;
+}
+
+.marginLeft20 {
+  margin-left: 20px;
 }
 .left {
   float: left;
@@ -48,23 +80,12 @@
   *zoom: 1;
 }
 
-h4 {
-  color: #494949;
-}
-
 ul.inline li {
   display: inline-block;
 }
 
 .small {
   font-size: 11px;
-}
-.rounded-corners (@radius: 5px) {
-  -webkit-border-radius: @radius;
-  -moz-border-radius: @radius;
-  -ms-border-radius: @radius;
-  -o-border-radius: @radius;
-  border-radius: @radius;
 }
 
 .form-horizontal .help-inline { 
@@ -77,15 +98,26 @@ ul.inline li {
 }
 
 hr {
-  height:1px;
-  background-color:#cecece;
-  border:0px;
+  height: 1px;
+  background-color: @color-B5;
+  border: 0px;
 }
 
-.darkGrayBox {
-  background: @darkGray;
+// Mixins
+.rounded-corners (@radius: 5px) {
+  -webkit-border-radius: @radius;
+  -moz-border-radius: @radius;
+  -ms-border-radius: @radius;
+  -o-border-radius: @radius;
+  border-radius: @radius;
 }
 
-.lightGrayBox {
-  background: @lightGray;
+.box-shadow(@style, @c) when (iscolor(@c)) {
+  box-shadow:         @style @c;
+  -webkit-box-shadow: @style @c;
+  -moz-box-shadow:    @style @c;
+}
+
+.box-shadow(@style, @alpha: 50%) when (isnumber(@alpha)) {
+  .box-shadow(@style, rgba(0, 0, 0, @alpha));
 }

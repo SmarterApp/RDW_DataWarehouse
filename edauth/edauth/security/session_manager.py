@@ -3,7 +3,6 @@ Created on Feb 14, 2013
 
 @author: tosako
 '''
-from database.connector import DBConnection
 from sqlalchemy.sql.expression import select
 from datetime import datetime, timedelta
 import uuid
@@ -11,6 +10,7 @@ import re
 import json
 from edauth.security.session import Session
 from edauth.security.roles import Roles
+from edauth.database.connector import EdauthDBConnection
 
 # TODO: remove datetime.now() and use func.now()
 
@@ -22,7 +22,7 @@ def get_user_session(user_session_id):
     '''
     session = None
     if user_session_id is not None:
-        with DBConnection() as connection:
+        with EdauthDBConnection() as connection:
             user_session = connection.get_table('user_session')
             query = select([user_session.c.session_context.label('session_context'),
                             user_session.c.last_access.label('last_access'),
@@ -49,7 +49,7 @@ def create_new_user_session(saml_response, session_expire_after_in_secs=30):
     expiration_datetime = current_datetime + timedelta(seconds=session_expire_after_in_secs)
     # create session SAML Response
     session = __create_from_SAMLResponse(saml_response, current_datetime, expiration_datetime)
-    with DBConnection() as connection:
+    with EdauthDBConnection() as connection:
         user_session = connection.get_table('user_session')
         # store the session into DB
         connection.execute(user_session.insert(), session_id=session.get_session_id(), session_context=session.get_session_json_context(), last_access=current_datetime, expiration=expiration_datetime)
@@ -61,7 +61,7 @@ def update_session_access(session):
     update user_session.last_access
     '''
     __session_id = session.get_session_id()
-    with DBConnection() as connection:
+    with EdauthDBConnection() as connection:
         user_session = connection.get_table('user_session')
         # update last_access field
         connection.execute(user_session.update().
@@ -75,7 +75,7 @@ def delete_session(session_id):
     '''
     # Do not delete long lived sessions (prefix with 'L-')
     if session_id.startswith('L-') is False:
-        with DBConnection() as connection:
+        with EdauthDBConnection() as connection:
             user_session = connection.get_table('user_session')
             connection.execute(user_session.delete(user_session.c.session_id == session_id))
 
@@ -94,9 +94,20 @@ def __create_from_SAMLResponse(saml_response, last_access, expiration):
     session = Session()
     session.set_session_id(__session_id)
     # get fullName
-    if 'fullName' in __attributes:
-        if __attributes['fullName']:
-            session.set_fullName(__attributes['fullName'][0])
+    fullName = __attributes.get('fullName')
+    if fullName is not None:
+        session.set_fullName(fullName[0])
+
+    # get firstName
+    firstName = __attributes.get('firstName')
+    if firstName is not None:
+        session.set_firstName(firstName[0])
+
+    # get lastName
+    lastName = __attributes.get('lastName')
+    if lastName is not None:
+        session.set_lastName(lastName[0])
+
     # get uid
     if 'uid' in __attributes:
         if __attributes['uid']:

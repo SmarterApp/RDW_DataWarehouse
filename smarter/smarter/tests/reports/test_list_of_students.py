@@ -5,16 +5,17 @@ Created on Feb 4, 2013
 '''
 import unittest
 from smarter.reports.list_of_students_report import get_list_of_students_report
-from database.tests.utils.unittest_with_sqlite import Unittest_with_sqlite
+from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite
 
 
-class Test(Unittest_with_sqlite):
+class TestLOS(Unittest_with_smarter_sqlite):
 
     def test_assessments(self):
         testParam = {}
-        testParam['districtId'] = 'd1'
-        testParam['schoolId'] = 'sc1'
-        testParam['asmtGrade'] = 1
+        testParam['districtId'] = '228'
+        testParam['schoolId'] = '242'
+        testParam['asmtGrade'] = 3
+        testParam['stateId'] = 'NY'
         testParam['asmtSubject'] = ['ELA', 'Math']
         results = get_list_of_students_report(testParam)
 
@@ -27,16 +28,17 @@ class Test(Unittest_with_sqlite):
         self.assertTrue('Math' in cutpoints, 'Math')
 
         assessments = results['assessments']
-        self.assertEqual(3, len(assessments), "3 assessments")
-        self.assertEqual("Verda", assessments[0]['student_first_name'], "student_first_name")
-        self.assertEqual("Lettie", assessments[1]['student_first_name'], "student_first_name")
-        self.assertEqual("Mi-Ha", assessments[2]['student_first_name'], "student_first_name")
+        self.assertEqual(35, len(assessments), "35 assessments")
+        self.assertEqual("Verda", assessments[9]['student_first_name'], "student_first_name")
+        self.assertEqual("Lettie", assessments[10]['student_first_name'], "student_first_name")
+        self.assertEqual("Mi-Ha", assessments[29]['student_first_name'], "student_first_name")
 
     def test_breadcrumbs(self):
         testParam = {}
-        testParam['districtId'] = 'd1'
-        testParam['schoolId'] = 'sc1'
-        testParam['asmtGrade'] = 1
+        testParam['stateId'] = 'NY'
+        testParam['districtId'] = '228'
+        testParam['schoolId'] = '242'
+        testParam['asmtGrade'] = 3
         testParam['asmtSubject'] = ['ELA', 'Math']
         results = get_list_of_students_report(testParam)
 

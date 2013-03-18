@@ -245,15 +245,31 @@ h6 {
   .ui-jqgrid tr.footrow {
     td {
       height: 100px;
+      
+      &:nth-child(even) {
+       border-right: none !important;
+      }
     }
   }
   
   .ui-jqgrid tr.jqgrow td {
     white-space: normal;
+    
+    &:nth-child(even) {
+      border-right: none !important;
+    }
   }
   
   .ui-jqgrid .ui-jqgrid-view {
     font-size: 13px;
+  }
+  
+  .ui-jqgrid .ui-jqgrid-htable th.ui-th-column:first-child div {
+    margin-left: 20px;
+  }
+  
+  .ui-jqgrid .ui-jqgrid-htable th.ui-th-column:nth-child(3), .ui-jqgrid .ui-jqgrid-htable th.ui-th-column:nth-child(5) {
+    font-size: 10px !important;
   }
 }
 

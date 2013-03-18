@@ -101,9 +101,6 @@ def generate_ed_metadata(schema_name=None, bind=None):
                      )
 
     Index('dim_student_idx', students.c.student_id, students.c.most_recent, unique=False)
-    Index('dim_student_dim_inst_hier_idx',
-          students.c.state_code, students.c.district_id, students.c.school_id, students.c.section_id, students.c.grade,
-          students.c.from_date, students.c.to_date, unique=False)
 
     external_user_student = Table('external_user_student_rel', metadata,
                                   Column('external_user_student_id', String(50), primary_key=True),
@@ -178,7 +175,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                        )
 
     Index('dim_asmt_rec_idx', assessment.c.asmt_rec_id, unique=True)
-    Index('dim_asmt_idx', assessment.c.asmt_id, unique=False)
+    Index('dim_asmt_id_typex', assessment.c.asmt_rec_id, assessment.c.asmt_type, assessment.c.most_recent, unique=False)
 
     assessment_outcome = Table('fact_asmt_outcome', metadata,
                                Column('asmnt_outcome_id', String(50), primary_key=True),
@@ -222,6 +219,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                )
 
     Index('fact_asmt_outcome_idx', assessment_outcome.c.asmnt_outcome_id, unique=True)
+    Index('fact_asmt_outcome_hier_keyx', assessment_outcome.c.state_code, assessment_outcome.c.most_recent, assessment_outcome.c.district_id, assessment_outcome.c.school_id, unique=False)
 
     return metadata
 

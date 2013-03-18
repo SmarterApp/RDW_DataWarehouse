@@ -31,7 +31,7 @@ class Test(unittest.TestCase):
     student_bio_info_1 = StudentBioInfo(3000, uuid4(), 'John', 'Doe', '55 Washington St', date(2013, 2, 14), district_1.district_id, state.state_code, 'male', 'johndoe@school.edu', school_1.school_id, 94108, 'city_1')
 
     def test_generate_teacher(self):
-        teacher = generate_teacher(self.state, self.district_1)
+        teacher = generate_teacher(self.state.state_code, self.district_1.district_id)
         self.assertIsNotNone(teacher)
         self.assertIsInstance(teacher, Teacher)
         self.assertIsInstance(teacher.teacher_id, int)

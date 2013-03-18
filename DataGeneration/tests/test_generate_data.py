@@ -423,9 +423,9 @@ class TestGenerateData(unittest.TestCase):
         students_list = make_students(student_num, state, None, school)
         teachers_list = make_teachers(teacher_num, state)
 
-        total_count = {'state_count': 0, 'district_count': 0, 'school_count': 0, 'student_count': 0, 'student_section_count': 0}
+        total_count = {'state_count': 0, 'district_count': 0, 'school_count': 0, 'student_count': 0}
         generate_data.create_classes_for_grade(students_list, teachers_list, school, grade, asmt_list, where_taken, total_count, False)
-        self.assertEqual(school.number_of_students * 2, total_count['student_section_count'])
+        self.assertEqual(school.number_of_students * 2, total_count['student_count'])
 
     # test create_sections_in_one_class()
     def test_create_sections_in_one_class_severalsections(self):
@@ -527,12 +527,10 @@ class TestGenerateData(unittest.TestCase):
         where_taken_list.append(where_taken)
         distObj.wheretaken_list = where_taken_list
 
-        generate_data.create_classes_for_school(distObj, school, state, name_lists[2], total_count, asmt_list, False)
-
+        generate_data.create_classes_for_school(distObj, school, state_code, name_lists[2], total_count, asmt_list, False)
         expected_student_number = student_num
 
-        self.assertEqual(total_count['student_count'], expected_student_number)
-        self.assertEqual(total_count['student_section_count'], expected_student_number * 2)
+        self.assertEqual(total_count['student_count'], expected_student_number * 2)
 
     # test read files
     def test_read_names(self):
@@ -572,7 +570,7 @@ class TestGenerateData(unittest.TestCase):
 
     def test_generate_notEnoughNameLists1(self):
         generate_count = generate_data.generate(mock_f_get_name_lists_shortlists1, mock_f_get_state_stats_onestate, False)
-        self.assertEqual(generate_count, {'state_count': 1, 'district_count': 0, 'school_count': 0, 'student_count': 0, 'student_section_count': 0})
+        self.assertEqual(generate_count, {'state_count': 1, 'district_count': 0, 'school_count': 0, 'student_count': 0})
 
 
 def mock_f_get_name_lists_shortlists1():

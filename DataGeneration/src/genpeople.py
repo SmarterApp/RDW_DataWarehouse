@@ -6,9 +6,9 @@ Created on Jan 8, 2013
 
 from uuid import uuid4
 import random
-from helper_entities import Teacher, Student
+from helper_entities import Teacher, StudentBioInfo
 
-from entities import Staff, StudentSection, ExternalUserStudent
+from entities import Staff, Student, ExternalUserStudent
 from idgen import IdGen
 import gennames
 import util
@@ -20,8 +20,8 @@ STUDENT = 0
 TEACHER = 1
 PARENT = 2
 
-
-def generate_teacher(state, district):
+# TODO: Do we need teachers? Can we get away with just using staff?
+def generate_teacher(state_code, district_id):
 
     teacher_gender = random.choice(['male', 'female'])
     teacher_has_middle_name = random.randint(0, 1)
@@ -33,8 +33,8 @@ def generate_teacher(state, district):
         'first_name': gennames.generate_first_or_middle_name(teacher_gender),
         'middle_name': gennames.generate_first_or_middle_name(teacher_gender) if teacher_has_middle_name else None,
         'last_name': gennames.generate_last_name(),
-        'district_id': district.district_id,
-        'state_code': state.state_code
+        'district_id': district_id,
+        'state_code': state_code
     }
 
     teacher = Teacher(**teacher_params)
@@ -42,7 +42,7 @@ def generate_teacher(state, district):
     return teacher
 
 
-def generate_student(state, district, school, grade, street_list, gender=None, has_middle_name=False):
+def generate_single_student_bio_info(state_code, district_id, zip_code, city, school_id, school_name, grade, street_list, gender=None, has_middle_name=False):
 
     id_generator = IdGen()
 
@@ -59,7 +59,7 @@ def generate_student(state, district, school, grade, street_list, gender=None, h
         middle_name = None
 
     last_name = gennames.generate_last_name()
-    domain = school.school_name
+    domain = school_name
 
     student_params = {
         'student_rec_id': id_generator.get_id(),
@@ -69,14 +69,16 @@ def generate_student(state, district, school, grade, street_list, gender=None, h
         'last_name': last_name,
         'address_1': util.generate_address(street_list),
         'dob': util.generate_dob(grade),
-        'state': state,
+        'state_code': state_code,
         'gender': student_gender,
         'email': util.generate_email_address(first_name, last_name, domain),
-        'district': district,
-        'school': school
+        'district_id': district_id,
+        'school_id': school_id,
+        'zip_code': zip_code,
+        'city': city
     }
 
-    student = Student(**student_params)
+    student = StudentBioInfo(**student_params)
 
     ext_user_params = {
         'external_user_student_id': id_generator.get_id(),
@@ -116,7 +118,7 @@ def generate_staff(hier_user_type, state_code='None', district_id='None', school
         'state_code': state_code,
         'district_id': district_id,
         'school_id': school_id,
-        'from_date': '29991201',
+        'from_date': '20121201',
         'to_date': '29991201',
         'most_recent': True
     }
@@ -124,9 +126,9 @@ def generate_staff(hier_user_type, state_code='None', district_id='None', school
     return staff
 
 
-def generate_student_section(school, student, section_rec_id, section_id, grade, teacher_id):
-        student_section_params = {
-            'student': student,
+def generate_student(student_bio_info, section_rec_id, section_id, grade, teacher_id):
+        student_params = {
+            'student_bio_info': student_bio_info,
             'section_id': section_id,
             'grade': grade,
             'from_date': '20120901',
@@ -135,5 +137,5 @@ def generate_student_section(school, student, section_rec_id, section_id, grade,
             'teacher_id': teacher_id,
             'section_rec_id': section_rec_id
         }
-        student_section = StudentSection(**student_section_params)
-        return student_section
+        student_student = Student(**student_params)
+        return student_student

@@ -1,8 +1,8 @@
 import unittest
 import generate_data
 import random
-from entities import InstitutionHierarchy, StudentSection
-from helper_entities import District, State, Teacher, WhereTaken, Student
+from entities import InstitutionHierarchy, Student
+from helper_entities import District, State, Teacher, WhereTaken, StudentBioInfo
 from constants import ZIPCODE_START, ZIPCODE_RANG_INSTATE, SCHOOL_LEVELS_INFO, \
     BIRDS_FILE
 from gen_assessments import generate_dim_assessment
@@ -96,7 +96,7 @@ class TestGenerateData(unittest.TestCase):
         pos = 2
         n = 12
 
-        expected_zipinit, expected_zipdist = generate_data.cal_zipvalues(pos, n)
+        expected_zipinit, expected_zipdist = generate_data.calculate_zip_values(pos, n)
 
         self.assertEqual(3 * ZIPCODE_START, expected_zipinit)
         self.assertEqual(expected_zipdist, (ZIPCODE_RANG_INSTATE // n))
@@ -105,7 +105,7 @@ class TestGenerateData(unittest.TestCase):
         pos = 2
         n = 10000
 
-        expected_zipinit, expected_zipdist = generate_data.cal_zipvalues(pos, n)
+        expected_zipinit, expected_zipdist = generate_data.calculate_zip_values(pos, n)
 
         self.assertEqual(3 * ZIPCODE_START, expected_zipinit)
         self.assertEqual(expected_zipdist, 1)
@@ -384,15 +384,14 @@ class TestGenerateData(unittest.TestCase):
             for item in little:
                 self.assertTrue(item in list2)
 
-    # test create_student_sections_for_subject()
-    def test_create_student_sections_for_subject(self):
+    # test create_students_for_subject()
+    def test_create_students_for_subject(self):
         sub_name = "Math"
         class_count = 2
         student_num = 90
         teacher_num = 5
         ratio = student_num / teacher_num
         grade = 9
-        asmt_list = generate_dim_assessment()
         school = InstitutionHierarchy(student_num, ratio, 7, 9, 'Delaware', 'DE', 'district_id', 'district_name', 'school_id', 'school_name', 'school_category', '2012-09-19', True)
 
         state = State('DE', 'Delaware', 10)
@@ -402,11 +401,11 @@ class TestGenerateData(unittest.TestCase):
 
         expected_students_inclass = student_num / class_count
         expected_section_num = round(expected_students_inclass / school.student_teacher_ratio)
-        expected_student_sections_for_subject = generate_data.create_student_sections_for_subject(sub_name, class_count, students_list, teachers_list, school, grade, asmt_list)
+        expected_student_sections_for_subject = generate_data.create_students_for_subject(sub_name, class_count, students_list, teachers_list, school, grade)
         expected_section_list = []
         self.assertEqual(len(expected_student_sections_for_subject), student_num)
         for student_section in expected_student_sections_for_subject:
-            self.assertIsInstance(student_section, StudentSection)
+            self.assertIsInstance(student_section, Student)
             expected_section_list.append(student_section.section_id)
         self.assertTrue(len(set(expected_section_list)) == expected_section_num * class_count)
 
@@ -424,9 +423,9 @@ class TestGenerateData(unittest.TestCase):
         students_list = make_students(student_num, state, None, school)
         teachers_list = make_teachers(teacher_num, state)
 
-        total_count = {'state_count': 0, 'district_count': 0, 'school_count': 0, 'student_count': 0, 'student_section_count': 0}
+        total_count = {'state_count': 0, 'district_count': 0, 'school_count': 0, 'student_count': 0}
         generate_data.create_classes_for_grade(students_list, teachers_list, school, grade, asmt_list, where_taken, total_count, False)
-        self.assertEqual(school.number_of_students * 2, total_count['student_section_count'])
+        self.assertEqual(school.number_of_students * 2, total_count['student_count'])
 
     # test create_sections_in_one_class()
     def test_create_sections_in_one_class_severalsections(self):
@@ -449,7 +448,7 @@ class TestGenerateData(unittest.TestCase):
 
         expected_section_list = []
         for student_section in expected_create_sections:
-            self.assertIsInstance(student_section, StudentSection)
+            self.assertIsInstance(student_section, Student)
             expected_section_list.append(student_section.section_id)
         self.assertTrue(len(set(expected_section_list)) == expected_section_num)
 
@@ -474,7 +473,7 @@ class TestGenerateData(unittest.TestCase):
 
         expected_section_list = []
         for student_section in expected_create_sections:
-            self.assertIsInstance(student_section, StudentSection)
+            self.assertIsInstance(student_section, Student)
             expected_section_list.append(student_section.section_id)
         self.assertTrue(len(set(expected_section_list)) == expected_section_num)
 
@@ -528,12 +527,10 @@ class TestGenerateData(unittest.TestCase):
         where_taken_list.append(where_taken)
         distObj.wheretaken_list = where_taken_list
 
-        generate_data.create_classes_for_school(distObj, school, state, name_lists[2], total_count, asmt_list, False)
-
+        generate_data.create_classes_for_school(distObj, school, state_code, name_lists[2], total_count, asmt_list, False)
         expected_student_number = student_num
 
-        self.assertEqual(total_count['student_count'], expected_student_number)
-        self.assertEqual(total_count['student_section_count'], expected_student_number * 2)
+        self.assertEqual(total_count['student_count'], expected_student_number * 2)
 
     # test read files
     def test_read_names(self):
@@ -551,29 +548,27 @@ class TestGenerateData(unittest.TestCase):
         self.assertFalse(result)
         os.rename(rename_file, bird_file)
 
-    def test_generate_nonedbstat(self):
-        generate_count = generate_data.generate(generate_data.get_name_lists, mock_f_get_state_stats_fail, False)
-        self.assertEqual(generate_count, None)
+    def test_prepare_generation_parameters_nonedbstat(self):
+        self.assertRaises(Exception, generate_data.prepare_generation_parameters, generate_data.get_name_lists, mock_f_get_state_stats_emptydb, False)
 
-    def test_generate_emptystatdata(self):
-        generate_count = generate_data.generate(generate_data.get_name_lists, mock_f_get_state_stats_emptydb, False)
-        self.assertEqual(generate_count, None)
+    def test_prepare_generation_parameters_emptystatdata(self):
+        self.assertRaises(Exception, generate_data.prepare_generation_parameters, generate_data.get_name_lists, mock_f_get_state_stats_emptydb, False)
 
-    def test_generate_onestate(self):
-        generate_count = generate_data.generate(generate_data.get_name_lists, mock_f_get_state_stats_onestate, False)
+    def test_prepare_generation_parameters_onestate(self):
+        generate_count = generate_data.prepare_generation_parameters(generate_data.get_name_lists, mock_f_get_state_stats_onestate, False)
         self.assertEqual(generate_count['state_count'], 1)
         for value in generate_count.values():
             self.assertTrue(value > 0)
 
-    def test_generate_twostates(self):
-        generate_count = generate_data.generate(generate_data.get_name_lists, mock_f_get_state_stats_twostates, False)
+    def test_prepare_generation_parameters_twostates(self):
+        generate_count = generate_data.prepare_generation_parameters(generate_data.get_name_lists, mock_f_get_state_stats_twostates, False)
         # self.assertEqual(generate_count[0], 2)
         for value in generate_count.values():
             self.assertTrue(value > 0)
 
-    def test_generate_notEnoughNameLists1(self):
-        generate_count = generate_data.generate(mock_f_get_name_lists_shortlists1, mock_f_get_state_stats_onestate, False)
-        self.assertEqual(generate_count, {'state_count': 1, 'district_count': 0, 'school_count': 0, 'student_count': 0, 'student_section_count': 0})
+    def test_prepare_generation_parameters_notEnoughNameLists1(self):
+        generate_count = generate_data.prepare_generation_parameters(mock_f_get_name_lists_shortlists1, mock_f_get_state_stats_onestate, False)
+        self.assertEqual(generate_count, {'state_count': 1, 'district_count': 0, 'school_count': 0, 'student_count': 0})
 
 
 def mock_f_get_name_lists_shortlists1():
@@ -681,7 +676,7 @@ def make_students(count, state, district, school):
         district = make_district(state)
     student_list = []
     while(count > 0):
-        student = Student(count, 2 * count, ('first_name' + str(count)), ('last_name' + str(count)), ('address1' + str(count)), '08/02/2000', district, state, 'male', 'email', school)
+        student = StudentBioInfo(count, 2 * count, ('first_name' + str(count)), ('last_name' + str(count)), ('address1' + str(count)), '08/02/2000', district.district_id, state.state_code, 'male', 'email', school.school_id, 94108, 'city_1')
         count -= 1
         student_list.append(student)
     return student_list

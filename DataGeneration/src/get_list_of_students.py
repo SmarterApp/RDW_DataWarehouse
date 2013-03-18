@@ -49,12 +49,13 @@ def prepare_query(schema_name, metadata, parameters=None):
                         dim_student.c.section_id.label('section_id'),
                         dim_inst_hier.c.inst_hier_rec_id.label('inst_hier_rec_id'),
                         dim_section_subject.c.section_rec_id.label('section_rec_id'),
-                        dim_student.c.grade.label('enrl_grade')],
+                        dim_student.c.grade.label('enrl_grade'),
+                        dim_inst_hier.c.school_name.label('school_name'),
+                        dim_section_subject.c.subject_name.label('subject_name')],
                        from_obj=[dim_student
                                  .join(dim_section_subject, dim_student.c.section_id == dim_section_subject.c.section_id and dim_student.c.school_id == dim_section_subject.c.school_id)
                                  .join(dim_staff, dim_student.c.section_id == dim_staff.c.section_id and dim_student.c.school_id == dim_staff.c.school_id)
                                  .join(dim_inst_hier, dim_student.c.school_id == dim_inst_hier.c.school_id)])
-
         # add where clause
         if parameters is not None:
             if parameters['state_code']:
@@ -115,26 +116,24 @@ def main():
     else:
         schema = input_args['schema']
 
-    # Have SQLAlchemy connect to and reflect the database, get the input schema
-    db_string = DBDRIVER + '://{user}:{password}@{host}/{database}'.format(**input_args)
-    engine = create_engine(db_string)
-    db_connection = engine.connect()
-    metadata = MetaData(schema=schema)
-    metadata.reflect(engine)
+        # Have SQLAlchemy connect to and reflect the database, get the input schema
+        db_string = DBDRIVER + '://{user}:{password}@{host}/{database}'.format(**input_args)
+        engine = create_engine(db_string)
+        db_connection = engine.connect()
+        metadata = MetaData(schema=schema)
+        metadata.reflect(engine)
 
-    # Get list of students in database
-    print("Starting get list of students")
-    start_time = datetime.now()
-    student_list = get_students_for_assessment(schema, metadata, db_connection, input_args)
-    for student in student_list:
-        print(student)
-    finish_time = datetime.now()
-    print("Length of student list is ", len(student_list))
-    print("Start  at -- ", start_time)
-    print("Finish at -- ", finish_time)
+        # Get list of students in database
+        print("Starting get list of students")
+        start_time = datetime.now()
+        student_list = get_students_for_assessment(schema, metadata, db_connection, input_args)
+        finish_time = datetime.now()
+        print("Length of student list is ", len(student_list))
+        print("Start  at -- ", start_time)
+        print("Finish at -- ", finish_time)
 
-    # Close database connection
-    db_connection.close()
+        # Close database connection
+        db_connection.close()
 
 if __name__ == '__main__':
     main()

@@ -24,3 +24,8 @@ def clear_files(entity_to_path_dict):
         cur_file = open(path, "w")
         cur_file.truncate()
         cur_file.close()
+
+def clear_file(path):
+    cur_file = open(path, "w")
+    cur_file.truncate()
+    cur_file.close()

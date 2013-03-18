@@ -34,6 +34,18 @@ def makeup_core(avgin, stdin, minin, maxin, countin):
     return out1
 
 
+def extract_value_from_normal_distribution(avgin, stdin, minin, maxin):
+
+    rnd1 = random.gauss(avgin, stdin)
+
+    if (rnd1 < minin):
+        rnd1 = minin * (1 + random.uniform(0, 0.1))
+    if (rnd1 > maxin):
+        rnd1 = maxin * (1 - random.uniform(0, 0.1))
+
+    return rnd1
+
+
 def avg(seqin):
     '''
     @return: the average number of the given sequence

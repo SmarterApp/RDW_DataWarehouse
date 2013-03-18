@@ -4,29 +4,27 @@ generate_data.py
 Entry point for generating all data.
 '''
 
-from datetime import date
 from xmlrpc.client import MAXINT
 import datetime
 import math
 import random
-import uuid
 import queries
 import csv
 
-from assessment import generate_assmt_scores_for_subject
 from dbconnection import get_db_conn
 from entities import (
     InstitutionHierarchy,
-    AssessmentOutcome, SectionSubject, Assessment, Staff, StudentSection, ExternalUserStudent)
+    AssessmentOutcome, SectionSubject, Assessment, Staff, Student, ExternalUserStudent)
 from helper_entities import State, District, WhereTaken
 from gen_assessments import generate_dim_assessment
-from genpeople import generate_teacher, generate_student, generate_staff, generate_student_section
+from genpeople import generate_teacher, generate_single_student_bio_info, generate_staff, generate_student
 from idgen import IdGen
 from write_to_csv import clear_files, create_csv
 import constants
 import py1
 import argparse
 import small_set_data_input
+from gen_assessment_outcome import generate_assessment_outcomes_from_student_object_list
 
 
 ENTITY_TO_PATH_DICT = {InstitutionHierarchy: constants.DATAFILE_PATH + '/datafiles/csv/dim_inst_hier.csv',
@@ -35,7 +33,7 @@ ENTITY_TO_PATH_DICT = {InstitutionHierarchy: constants.DATAFILE_PATH + '/datafil
                        AssessmentOutcome: constants.DATAFILE_PATH + '/datafiles/csv/fact_asmt_outcome.csv',
                        Staff: constants.DATAFILE_PATH + '/datafiles/csv/dim_staff.csv',
                        ExternalUserStudent: constants.DATAFILE_PATH + '/datafiles/csv/external_user_student_rel.csv',
-                       StudentSection: constants.DATAFILE_PATH + '/datafiles/csv/dim_student.csv'}
+                       Student: constants.DATAFILE_PATH + '/datafiles/csv/dim_student.csv'}
 
 
 def get_name_lists():
@@ -83,7 +81,7 @@ def add_headers_to_csvs():
             entity_writer.writerow(entity.getHeader())
 
 
-def generate(f_get_name_lists, f_get_state_stats, is_small_data_mode):
+def prepare_generation_parameters(get_name_list_function, get_state_stats_function, is_small_data_mode):
     '''
     Generate data.
     First step: read files into lists for making names, addresses
@@ -92,96 +90,98 @@ def generate(f_get_name_lists, f_get_state_stats, is_small_data_mode):
     (including generate: state, district, school, class, section, student,
     and teacher)
     '''
-    name_lists = f_get_name_lists()
-    state_stats = f_get_state_stats()
+    name_lists = get_name_list_function()
+    state_stats = get_state_stats_function()
 
-    if(name_lists is None or state_stats is None or len(name_lists) == 0 or len(state_stats) == 0):
-        print("Initializing....Error")
-        return None
+    if(name_lists is None):
+        raise Exception('name_lists is None. Cannot continue.')
+    elif state_stats is None:
+        raise Exception('state_stats is None. Cannot continue.')
+    elif len(name_lists) == 0:
+        raise Exception('name_lists is Empty. Cannot continue.')
+    elif len(state_stats) == 0:
+        raise Exception('state_stats is Empty. Cannot continue.')
 
-    return generate_data(name_lists, state_stats, is_small_data_mode)
+    return generate_fixture_data(name_lists, state_stats, is_small_data_mode)
 
 
-def generate_data(name_lists, db_states_stat, is_small_data_mode):
+def generate_fixture_data(name_lists, db_states_stat, is_small_data_mode):
     '''
     Main function to generate actual data with input statistical data
     '''
     # total count for state, districts, schools, students, student_sections
-    total_count = {'state_count': 0, 'district_count': 0, 'school_count': 0, 'student_count': 0, 'student_section_count': 0}
+    total_count = {'state_count': 0, 'district_count': 0, 'school_count': 0, 'student_count': 0}
 
     # add headers to all csv files
     add_headers_to_csvs()
 
-    # generate all assessment types
+    # generate all assessments
     asmt_list = generate_dim_assessment()
     create_csv(asmt_list, ENTITY_TO_PATH_DICT[Assessment])
 
-    c = 0
+    state_index = 0
     for state in db_states_stat:
         # create a state
         created_state = State(state['state_code'], state['state_name'], state['total_district'])
+        # increment relevant counter
         total_count['state_count'] += 1
 
-        if is_small_data_mode:
-            school_num_in_dist_made = small_set_data_input.SMALL_SET_SCHOOL_NUM_IN_DIST
-            stu_num_in_school_made = small_set_data_input.SMALL_SET_STUDENT_NUM_IN_SCHOOL
-            stutea_ratio_in_school_made = small_set_data_input.SMALL_SET_STUDENT_TEACHER_RATIO_IN_SCHOOL
-            school_type_in_state = small_set_data_input.SMALL_SET_SCHOOL_TYPE_IN_STATE
-        else:
-            school_num_in_dist_made, stu_num_in_school_made, stutea_ratio_in_school_made, school_type_in_state = generate_distribution_lists(state)
+        # TODO: add comments about generate_distribution_lists
+        number_of_schools_in_districts, number_of_students_in_schools, student_teacher_ratio_in_schools, school_type_in_state = generate_distribution_lists(state, is_small_data_mode)
 
         # print out result for a state
         print("************** State ", created_state.state_name, " **************")
         print("                     Real     To Be Generated")
-        print("Number of districts ", state['total_district'], "    ", len(school_num_in_dist_made))
-        print("Number of schools   ", state['total_school'], "    ", sum(school_num_in_dist_made))
-        print("Number of students  ", state['total_student'], "    ", sum(stu_num_in_school_made))
+        print("Number of districts ", state['total_district'], "    ", len(number_of_schools_in_districts))
+        print("Number of schools   ", state['total_school'], "    ", sum(number_of_schools_in_districts))
+        print("Number of students  ", state['total_student'], "    ", sum(number_of_students_in_schools))
 
         # create districts for each state
-        created_dist_list = create_districts(created_state.state_code, created_state.state_name, school_num_in_dist_made, c, name_lists)
-        total_count['district_count'] += len(created_dist_list)
+        created_district_list = create_districts(created_state.state_code, created_state.state_name, number_of_schools_in_districts, state_index, name_lists)
+        total_count['district_count'] += len(created_district_list)
 
         # generate non-teaching state_staff
         # assuming here between 2 and 4 staff per district at the state level
-        num_of_state_staff = len(created_dist_list) * random.choice(range(2, 4))
-        state_staff_list = [generate_staff(constants.HIER_USER_TYPE[1], created_state.state_code)for _i in range(num_of_state_staff)]
+        num_of_state_staff = len(created_district_list) * random.choice(range(2, 4))
+        state_staff_list = [generate_staff(constants.HIER_USER_TYPE[1], created_state.state_code) for _i in range(num_of_state_staff)]
         create_csv(state_staff_list, ENTITY_TO_PATH_DICT[Staff])
 
         # TODO: should be more explicit. What is shift?
         shift = 0
         dist_count = 0
-        for district in created_dist_list:
+        for district in created_district_list:
             dist_count += 1
             # TODO: Misleading. Isn't district already created?
-            print("creating district %d of %d for state %s" % ((dist_count), len(created_dist_list), state['state_name']))
+            print("creating district %d of %d for state %s" % ((dist_count), len(created_district_list), state['state_name']))
 
-            # create school for each district
-            school_list, wheretaken_list = create_institution_hierarchies(stu_num_in_school_made[shift: shift + district.number_of_schools],
-                                                                          stutea_ratio_in_school_made[shift: shift + district.number_of_schools],
+            # create institution_hierarchies for each district
+            # TODO: Break this down into 2 functions if possible.
+            inst_hier_list, wheretaken_list = create_institution_hierarchies(number_of_students_in_schools[shift: shift + district.number_of_schools],
+                                                                          student_teacher_ratio_in_schools[shift: shift + district.number_of_schools],
                                                                           district, school_type_in_state, name_lists, is_small_data_mode)
-            create_csv(school_list, ENTITY_TO_PATH_DICT[InstitutionHierarchy])
+            create_csv(inst_hier_list, ENTITY_TO_PATH_DICT[InstitutionHierarchy])
 
             # TODO: wheretaken still necessary?
-            # associate wheretaken_list to current district
+            # associate wheretaken_list to current district, used in fao
             district.wheretaken_list = wheretaken_list
 
             # create district staff
-            num_of_district_staff = len(school_list) * random.choice(range(2, 4))
+            num_of_district_staff = len(inst_hier_list) * random.choice(range(2, 4))
             district_staff_list = [generate_staff(constants.HIER_USER_TYPE[1], created_state.state_code, district.district_id)for _i in range(num_of_district_staff)]
             create_csv(district_staff_list, ENTITY_TO_PATH_DICT[Staff])
 
-            total_count['school_count'] += len(school_list)
+            total_count['school_count'] += len(inst_hier_list)
             shift += district.number_of_schools
 
             # create sections, teachers, students and assessment scores for each school
             # TODO: use of 'institution_hierarchy' and 'school' is confusing
-            for school in school_list:
-                create_classes_for_school(district, school, created_state, name_lists[2], total_count, asmt_list, is_small_data_mode)
+            for inst_hier in inst_hier_list:
+                create_classes_for_school(district, inst_hier, created_state.state_code, name_lists[2], total_count, asmt_list, is_small_data_mode)
 
-        # if just need one state data
-        if c == 0:
+        # if we need just need one state's worth of data, set condition to state_index== 0
+        if state_index == 0:
             break
-        c += 1
+        state_index += 1
 
     print("**************Results***********************")
     print("generated number of states    ", total_count['state_count'])
@@ -192,38 +192,51 @@ def generate_data(name_lists, db_states_stat, is_small_data_mode):
     return total_count
 
 
-def generate_distribution_lists(state):
-    # generate school distribution in districts
-    min_dis = max(1, math.floor(state['total_district'] * constants.DIST_LOW_VALUE))
-    max_dis = math.ceil(state['total_district'] * constants.DIST_HIGH_VALUE)
-    num_of_dist = min_dis
-    if(min_dis < max_dis):
-        num_of_dist = random.choice(range(min_dis, max_dis))
-    school_num_in_dist_made = makeup_list(state['avg_school_per_district'], state['std_school_per_district'],
+# TODO: add comments to this function
+def generate_distribution_lists(state, is_small_data_mode):
+    number_of_schools_in_district = []
+    number_of_students_in_school = []
+    student_teacher_ratio_in_school = []
+    school_type_in_state = []
+
+    if is_small_data_mode:
+            number_of_schools_in_district = small_set_data_input.SMALL_SET_SCHOOL_NUM_IN_DIST
+            number_of_students_in_school = small_set_data_input.SMALL_SET_STUDENT_NUM_IN_SCHOOL
+            student_teacher_ratio_in_school = small_set_data_input.SMALL_SET_STUDENT_TEACHER_RATIO_IN_SCHOOL
+            school_type_in_state = small_set_data_input.SMALL_SET_SCHOOL_TYPE_IN_STATE
+    else:
+        # first, calculate number of district
+        number_of_district = calculate_number_of_district(state['total_district'])
+
+        # generate school distribution in districts
+        number_of_schools_in_district = makeup_list(state['avg_school_per_district'], state['std_school_per_district'],
                                           state['min_school_per_district'], state['max_school_per_district'],
-                                          num_of_dist, state['total_school'])
-    # for test
-    # print("real four numbers      ", state['avg_school_per_district'], state['std_school_per_district'], state['min_school_per_district'], state['max_school_per_district'])
-    # print("generated four numbers ", py1.avg(school_num_in_dist_made), py1.std(school_num_in_dist_made), min(school_num_in_dist_made), max(school_num_in_dist_made))
-
-    # generate student distribution in schools
-    stu_num_in_school_made = makeup_list(state['avg_student_per_school'], state['std_student_per_school'],
+                                          number_of_district, state['total_school'])
+        # generate student distribution in schools
+        number_of_students_in_school = makeup_list(state['avg_student_per_school'], state['std_student_per_school'],
                                          state['min_student_per_school'], state['max_student_per_school'],
-                                         sum(school_num_in_dist_made), state['total_student'])
-    # for test
-    # print("real four numbers      ", state['avg_student_per_school'], state['std_student_per_school'], state['min_student_per_school'], state['max_student_per_school'])
-    # print("generated four numbers ", py1.avg(stu_num_in_school_made), py1.std(stu_num_in_school_made), min(stu_num_in_school_made), max(stu_num_in_school_made))
+                                         sum(number_of_schools_in_district), state['total_student'])
 
-    # generate student teacher ratio distribution in schools
-    stutea_ratio_in_school_made = py1.makeup_core(state['avg_stutea_ratio_per_school'], state['std_stutea_ratio_per_school'],
+        # generate student teacher ratio distribution in schools
+        student_teacher_ratio_in_school = py1.makeup_core(state['avg_stutea_ratio_per_school'], state['std_stutea_ratio_per_school'],
                                                   state['min_stutea_ratio_per_school'], state['max_stutea_ratio_per_school'],
-                                                  sum(school_num_in_dist_made))
+                                                  sum(number_of_schools_in_district))
 
-    # generate school type distribution in state
-    school_type_in_state = make_school_types([state['primary_perc'], state['middle_perc'],
-                                              state['high_perc'], state['other_perc']], sum(school_num_in_dist_made))
+        # generate school type distribution in state
+        school_type_in_state = make_school_types([state['primary_perc'], state['middle_perc'],
+                                              state['high_perc'], state['other_perc']], sum(number_of_schools_in_district))
 
-    return school_num_in_dist_made, stu_num_in_school_made, stutea_ratio_in_school_made, school_type_in_state
+    return number_of_schools_in_district, number_of_students_in_school, student_teacher_ratio_in_school, school_type_in_state
+
+
+def calculate_number_of_district(actual_number_of_district):
+    min_number_of_district = max(1, math.floor(actual_number_of_district * constants.DIST_LOW_VALUE))
+    max_number_of_district = math.ceil(actual_number_of_district * constants.DIST_HIGH_VALUE)
+    if(min_number_of_district < max_number_of_district):
+        number_of_district = random.choice(range(min_number_of_district, max_number_of_district))
+    else:
+        number_of_district = min_number_of_district
+    return number_of_district
 
 
 def make_school_types(perc, total):
@@ -273,7 +286,7 @@ def create_districts(state_code, state_name, school_num_in_dist_made, pos, name_
             return []
 
         # generate random district zip range
-        zip_init, zip_dist = cal_zipvalues(pos, number_of_districts)
+        zip_init, zip_dist = calculate_zip_values(pos, number_of_districts)
 
         # generate each district
         for i in range(number_of_districts):
@@ -308,8 +321,7 @@ def create_districts(state_code, state_name, school_num_in_dist_made, pos, name_
 
 def create_institution_hierarchies(student_counts, student_teacher_ratios, district, school_type_in_state, name_lists, is_small_data_mode):
     '''
-    Main function to generate list of schools for a district
-    Database table is institution_hierarchies
+    Main function to generate institution_hierarchies for a district
     '''
     count = district.number_of_schools
     # generate random school names
@@ -333,8 +345,8 @@ def create_institution_hierarchies(student_counts, student_teacher_ratios, distr
         grade_range = random.choice(constants.SCHOOL_LEVELS_INFO[constants.SCHOOL_ORDER_MAP.get(school_categories_type)][2])
 
         if is_small_data_mode:
-            low_grade = small_set_data_input.SMALL_SET_SHOOL_TYPE_GRADES[school_categories_type][0]
-            high_grade = small_set_data_input.SMALL_SET_SHOOL_TYPE_GRADES[school_categories_type][1]
+            low_grade = small_set_data_input.SMALL_SET_SCHOOL_TYPE_GRADES[school_categories_type][0]
+            high_grade = small_set_data_input.SMALL_SET_SCHOOL_TYPE_GRADES[school_categories_type][1]
         else:
             low_grade = grade_range[0]
             high_grade = grade_range[1]
@@ -433,7 +445,7 @@ def generate_names_from_lists(count, list1, list2, name_length=None):
     return new_list
 
 
-def cal_zipvalues(pos, n):
+def calculate_zip_values(pos, n):
     '''
     Input: pos: greater than 0
            n: total number of zip. It is greater than 0
@@ -446,230 +458,179 @@ def cal_zipvalues(pos, n):
     return zip_init, zip_dist
 
 
-def create_classes_for_school(district, school, state, name_list, total_count, asmt_list, is_small_data_mode):
+def create_classes_for_school(district, school, state_code, name_list, total_count, asmt_list, is_small_data_mode):
     '''
     Main function to generate classes, grades, sections, students and teachers for a school
     '''
+    # generate teachers in a school
+    teachers_in_school = generate_teachers(school.number_of_students, school.student_teacher_ratio, state_code, district.district_id, school.school_id, is_small_data_mode)
+    # TODO: break this function into 2 separate functions if possible
+    number_of_students_in_grades, number_of_teachers_in_grades = calculate_number_of_students_teachers_per_grade(school.high_grade, school.low_grade, school.number_of_students, len(teachers_in_school))
 
-    # generate teachers for a school
-    maximum_num_of_teachers = round(school.number_of_students / max(1, school.student_teacher_ratio))
-    # we want one or more teachers
-    number_of_teachers = max(1, maximum_num_of_teachers)
-    teachers_in_school = generate_teachers(number_of_teachers, state, district)
-
-    # generate school non-teaching staff
-    if is_small_data_mode:
-        num_of_school_staff = small_set_data_input.SMALL_SET_SCHOOL_STAFF_NUM_IN_SCHOOL
-    else:
-        staff_percentage = random.uniform(.1, .3)
-        num_of_school_staff = int(math.floor(staff_percentage * number_of_teachers))
-    school_staff_list = [generate_staff(constants.HIER_USER_TYPE[1], district.state_code, district.district_id, school.school_id)for _i in range(num_of_school_staff)]
-    create_csv(school_staff_list, ENTITY_TO_PATH_DICT[Staff])
-
-    number_of_grades = school.high_grade - school.low_grade + 1
-    number_of_students = school.number_of_students
-
-    # calculate number of students and teachers in each grade
-    number_of_students_per_grade = max(1, math.floor(number_of_students / number_of_grades))
-    number_of_teachers_per_grade = max(1, math.floor(number_of_teachers / number_of_grades))
-
-    generated_student_count = 0
     # iterate through all the grades in the school
+    index = 0
     for grade in range(school.low_grade, school.high_grade + 1):
-
         # generate student list for a grade
-        students_in_grade, external_users = generate_students(number_of_students_per_grade, state, district, school, grade, name_list)
-        create_csv(external_users, ENTITY_TO_PATH_DICT[ExternalUserStudent])
-
-        # TODO: get rid of this code? Necessary?
-        # Each parent of the student will have a row in external_user_student
-        # So, create 1 or 2 external_user_student rows per student
-        '''
-        external_user_students = []
-        for student in students_in_grade:
-            parent_logins = generate_external_user_student(student.student_id)
-            external_user_students = external_user_students + parent_logins
-        create_csv(external_user_stus, constants.EXTERNAL_USER_STUDENT)
-        '''
-
-        generated_student_count += len(students_in_grade)
-        total_count['student_count'] += len(students_in_grade)
-
-        # TODO: We should explain this condition more clearly
-        if grade == (school.high_grade - 1):
-            number_of_students_per_grade = school.number_of_students - generated_student_count
-
-        # assign teachers in the school to current grade
-        # if there are enough teachers in the school, assign a subset
-        # of them to the current grade
-        # otherwise, assign all of them to the current grade
-        if number_of_teachers_per_grade < len(teachers_in_school):
-            teachers_in_grade = random.sample(teachers_in_school, number_of_teachers_per_grade)
-        else:
-            teachers_in_grade = teachers_in_school
+        students_in_grade = generate_student_bio_info(number_of_students_in_grades[index], state_code, district.city_zip_map, district.district_id, school.school_id, school.school_name, grade, name_list)
+        teachers_in_grade = random.sample(teachers_in_school, number_of_teachers_in_grades[index])
 
         # randomly pick one where_taken in current district for this grade
         where_taken = random.choice(district.wheretaken_list)
         # create classes for the current grade
         create_classes_for_grade(students_in_grade, teachers_in_grade, school, grade, asmt_list, where_taken, total_count, is_small_data_mode)
+        index += 1
 
 
-def associate_students_and_scores(student_sections_list, scores, inst_hier_rec_id, subject, asmt_list, where_taken):
+def generate_teachers(number_of_students, student_teacher_ratio, state_code, district_id, school_id, is_small_data_mode):
     '''
-    creates association between students and scores
-    student_temporal_list -- a list of student_temporal objects
-    scores -- a list of scores that will be mapped to students
-    school -- the school that the students belong to
-    wheretaken_id -- id of where taken
-    returns a list of AssessmentOutcome Objects
+    Function to generate teachers in school
+    First, it create list of 'Teacher' objects
+    Second, it create list of non-teaching-staff for a school, and write to csv
+    @return: list of 'Teacher' objects
     '''
+    # generate school teaching-staff
+    maximum_num_of_teachers = round(number_of_students / max(1, student_teacher_ratio))
+    # we want one or more teachers
+    number_of_teachers = max(1, maximum_num_of_teachers)
 
-    assessment_outcome_list = []
+    # generate teaching-staff for a school
+    school_teacher_list = []
+    for _loop_variable_not_used in range(number_of_teachers):
+        teacher = generate_teacher(state_code, district_id)
+        school_teacher_list.append(teacher)
 
-    for student_section in student_sections_list:
-        for score in scores.items():
-            asmt_rec_id = int(score[0].split('_')[1])
-            # year is the assessment period year
-            year = score[0].split('_')[0]
-            dates_taken_map = generate_dates_taken(int(year))
+    # generate school non-teaching staff
+    generate_school_non_teaching_staff(is_small_data_mode, number_of_teachers, state_code, district_id, school_id)
 
-            asmt = [x for x in asmt_list if x.asmt_rec_id == asmt_rec_id and str(x.asmt_period_year) == str(year)][0]
-
-            if asmt.asmt_subject.lower() == subject.lower():  # check that subjects match as there is a std_tmprl object for each subject
-                new_id = IdGen().get_id()
-                date_taken = dates_taken_map[asmt.asmt_period]
-                params = {
-                    'asmnt_outcome_id': new_id,
-                    'asmnt_outcome_external_id': uuid.uuid4(),
-                    'assessment': asmt,
-                    # TODO: student and student_section now equivalent?
-                    'student': student_section,
-                    'inst_hier_rec_id': inst_hier_rec_id,
-                    'section_rec_id': student_section.section_rec_id,
-                    'where_taken': where_taken,
-                    'date_taken': date_taken,
-                    'asmt_score': score[1].pop(),
-                    'asmt_create_date': date.today().replace(year=date.today().year - 5).strftime('%Y%m%d'),
-                    'most_recent': True
-                }
-                outcome = AssessmentOutcome(**params)
-                assessment_outcome_list.append(outcome)
-
-    return assessment_outcome_list
+    # return a list of teachers
+    return school_teacher_list
 
 
-def map_asmt_date_to_period(period, dates_taken, year, asmt_type):
+def generate_school_non_teaching_staff(is_small_data_mode, number_of_teachers, state_code, district_id, school_id):
     '''
-    returns a date given the attributes
-    period -- the period that the asmt was taken
-    dates_taken -- a dict of dates whose keys are periods
-    year -- the year the asmt was taken
+    Method to generate non teaching staff in a school
     '''
-    # year_int = int(year)
-    if period == 'BOY':
-        date_taken = dates_taken['BOY']
-    elif period == 'MOY':
-        date_taken = dates_taken['MOY']
-    elif period == 'EOY':
-        date_taken = dates_taken['EOY']
-    # if asmt_type.upper() == 'SUMMATIVE':
-    #    year_int += 1
-    return date_taken
-    # return date_taken.replace(year=year_int)
+    if is_small_data_mode:
+        num_of_school_staff = small_set_data_input.SMALL_SET_SCHOOL_STAFF_NUM_IN_SCHOOL
+    else:
+        # take a random percentage between 0.1 to 0.3
+        staff_percentage = random.uniform(.1, .3)
+        # calculate number of non teaching staff as: percentage * number of teachers(teachers) in school
+        num_of_school_staff = int(math.floor(staff_percentage * number_of_teachers))
+    school_staff_list = [generate_staff(constants.HIER_USER_TYPE[1], state_code, district_id, school_id)for _i in range(num_of_school_staff)]
+    create_csv(school_staff_list, ENTITY_TO_PATH_DICT[Staff])
 
 
-def generate_teachers(num_teachers, state, district):
-    teachers = []
+def calculate_number_of_students_teachers_per_grade(high_grade, low_grade, number_of_students, number_of_teachers):
+    '''
+    Function to calculate number of students, and number of teachers per grade
+    @return two lists.
+    First list has value of number of students from low_grade to high_grade
+    Second list has value of number of teachers from low_grade to high_grade
+    '''
+    number_of_grades = high_grade - low_grade + 1
 
-    for _loop_variable_not_used in range(num_teachers):
-        teacher = generate_teacher(state, district)
-        teachers.append(teacher)
+    # calculate basic number of students and teachers in each grade
+    number_of_students_per_grade = max(1, math.floor(number_of_students / number_of_grades))
+    number_of_teachers_per_grade = max(1, math.floor(number_of_teachers / number_of_grades))
 
-    return teachers
+    # number of teachers per grade should be less than number_of_teachers
+    number_of_teachers_per_grade = min(number_of_teachers_per_grade, number_of_teachers)
+
+    # create a list to store number of students for each grade
+    # from low_grade to (high_grade - 1), number of students in these grades are the same, which is: number_of_students_per_grade
+    # in high_grade, number of students is number_of_students - (number of students from low_grade to high_grade - 1)
+    number_of_students_in_grades = [number_of_students_per_grade] * (number_of_grades - 1)
+    number_of_students_in_last_grade = number_of_students - sum(number_of_students_in_grades)
+    number_of_students_in_grades.append(number_of_students_in_last_grade)
+
+    # create a list to store number of teachers for each grade, use the number_of_teachers_per_grade for all grades
+    number_of_teachers_in_grades = [number_of_teachers_per_grade] * number_of_grades
+
+    return number_of_students_in_grades, number_of_teachers_in_grades
 
 
-def generate_students(num_students, state, district, school, grade, fish_names):
-    students = []
-    external_users = []
+def generate_student_bio_info(num_students, state_code, city_zip_map, district_id, school_id, school_name, grade, fish_names):
+    '''
+    Function to generate list of student_bio_info objects
+    Corresponding external user objects is also generated, and is written into csv file
+    @return: generated list of student_bio_info objects
+    '''
+    student_bio_info_list = []
+    external_users_list = []
 
     for _loop_variable_not_used in range(num_students):
-        stu, ext_user = generate_student(state, district, school, grade, fish_names)
-        students.append(stu)
-        external_users.append(ext_user)
+        city_zip_map = city_zip_map
+        city = random.choice(list(city_zip_map.keys()))
+        zip_range = city_zip_map[city]
+        zip_code = random.randint(zip_range[0], zip_range[1])
 
-    return students, external_users
+        student_bio_info, external_user = generate_single_student_bio_info(state_code, district_id, zip_code, city, school_id, school_name, grade, fish_names)
+        student_bio_info_list.append(student_bio_info)
+        external_users_list.append(external_user)
 
+    # write external_users_list into external_user_student_rel.csv
+    create_csv(external_users_list, ENTITY_TO_PATH_DICT[ExternalUserStudent])
 
-def generate_dates_taken(year):
-    '''
-    generates a list of dates for a given year when tests are taken
-    three dates correspond to BOY, MOY, EOY
-    returns a dict containing three dates with keys: 'BOY', 'MOY', 'EOY'
-    '''
-    boy_pool = [9, 10]
-    moy_pool = [11, 12, 1, 2, 3]
-    eoy_pool = [4, 5, 6]
-
-    boy_date = date(year, random.choice(boy_pool), random.randint(1, 28))
-
-    moy_month = random.choice(moy_pool)
-    moy_year = year
-    if moy_month <= 3:
-        moy_year += 1
-    moy_date = date(moy_year, moy_month, random.randint(1, 28))
-    eoy_date = date(year + 1, random.choice(eoy_pool), random.randint(1, 28))
-
-    return {'BOY': boy_date, 'MOY': moy_date, 'EOY': eoy_date}
+    return student_bio_info_list
 
 
-def create_classes_for_grade(students_in_grade, teachers_in_grade, school, grade, asmt_list, where_taken, total_count, is_small_data_mode):
+def create_classes_for_grade(students_in_grade, teachers_in_grade, school, grade, assessment_list, where_taken, total_count, is_small_data_mode):
     '''
     Function to generate classes for a grade, assign students in sections in each class, and associate student with assessment scores
     '''
+    number_of_students_in_grade = len(students_in_grade)
+    number_of_classes = calculate_number_of_classes(number_of_students_in_grade)
 
+    # for each subject of a grade
+    for subject in constants.SUBJECTS:
+
+        subject_teachers = generate_subject_teachers(teachers_in_grade)
+
+        students = create_students_for_subject(subject, number_of_classes, students_in_grade, subject_teachers, school, grade)
+        total_count['student_count'] += len(students)
+
+        # generate assessment_outcome
+        assessment_outcome_list = generate_assessment_outcomes_from_student_object_list(assessment_list, students, subject, school.inst_hier_rec_id, where_taken)
+        create_csv(assessment_outcome_list, ENTITY_TO_PATH_DICT[AssessmentOutcome])
+
+
+def calculate_number_of_classes(number_of_students_in_grade):
+    '''
+    Function to calculate number of classes by the given number of students in grade
+    '''
     # calculate max number of classes per subject (based on the number of students)
     # we want one or more classes as our max
-    max_number_of_classes = max(1, round(len(students_in_grade) / constants.MIN_CLASS_SIZE))
+    max_number_of_classes = max(1, round(number_of_students_in_grade / constants.MIN_CLASS_SIZE))
 
     # calculate minimum number of classes per subject
     # roughly 1/3 of the maximum
     min_number_of_classes = max(1, int(round(max_number_of_classes / 3)))
 
-    # for each subject of a grade
-    for subject in constants.SUBJECTS:
-
-        # select a number of classes for each subject
-        # it should be in between our minimum and our maximum
-        if max_number_of_classes >= 2:
-            number_of_classes = random.choice(range(min_number_of_classes, max_number_of_classes))
-        else:
-            number_of_classes = max_number_of_classes
-
-        # Whatever is larger: 1 or (teachers divided by subjects)
-        max_number_of_teachers = max(1, round(len(teachers_in_grade) / len(constants.SUBJECTS)))
-        # calculate number of teachers for a subject
-        number_of_teachers = min(len(teachers_in_grade), max_number_of_teachers)
-        subject_teachers = random.sample(teachers_in_grade, number_of_teachers)
-
-        # generate scores for this subject of given students
-        if is_small_data_mode:
-            # use 'Delaware' as the state name to get statistical data for scores
-            scores_for_subject = generate_assmt_scores_for_subject(len(students_in_grade), grade, 'Delaware', asmt_list, subject)
-        else:
-            scores_for_subject = generate_assmt_scores_for_subject(len(students_in_grade), grade, school.state_name, asmt_list, subject)
-        # generate all student_section in this subject
-        student_sections = create_student_sections_for_subject(subject, number_of_classes, students_in_grade, subject_teachers, school, grade, asmt_list)
-        total_count['student_section_count'] += len(student_sections)
-
-        # associate students with scores of this subject
-        # TODO: Refactor associate_students_and_scores() so it takes a bunch of student_sections and generates scores.
-        assessment_outcome_list = associate_students_and_scores(student_sections, scores_for_subject, school.inst_hier_rec_id, subject, asmt_list, where_taken)
-        create_csv(assessment_outcome_list, ENTITY_TO_PATH_DICT[AssessmentOutcome])
+    # select a number of classes for each subject
+    # it should be in between our minimum and our maximum
+    if max_number_of_classes >= 2:
+        number_of_classes = random.choice(range(min_number_of_classes, max_number_of_classes))
+    else:
+        number_of_classes = max_number_of_classes
+    return number_of_classes
 
 
-def create_student_sections_for_subject(subject_name, number_of_classes, students, teachers, school, grade, asmt_list):
+def generate_subject_teachers(teachers_in_grade):
     '''
-    Function to create student_sections for a grade of a subject
+    Function to generate list of teachers for a grade
+    '''
+    # Whatever is larger: 1 or (teachers divided by subjects)
+    max_number_of_teachers = max(1, round(len(teachers_in_grade) / len(constants.SUBJECTS)))
+    # calculate number of teachers for a subject
+    number_of_teachers = min(len(teachers_in_grade), max_number_of_teachers)
+    subject_teachers = random.sample(teachers_in_grade, number_of_teachers)
+    return subject_teachers
+
+
+def create_students_for_subject(subject_name, number_of_classes, students, teachers, school, grade):
+    '''
+    Function to create students for a grade of a subject
     '''
     # distribute students in each class
     # students_assigned_to_classes is a list of lists
@@ -689,72 +650,112 @@ def create_student_sections_for_subject(subject_name, number_of_classes, student
     return student_in_sections_list
 
 
-def create_sections_in_one_class(subject_name, class_count, distribute_stu_inaclass, tea_list, school, grade):
+def create_sections_in_one_class(subject_name, class_index, students_in_current_class, teachers_in_current_class, school, grade):
     '''
     Main function to create one class in a grade of a subject.
     '''
+    # create subject section
+    section_subject_list = create_section_subjects(students_in_current_class, school.student_teacher_ratio, class_index, subject_name, school.state_code, school.district_id, school.school_id, grade)
+
+    # create students, and teachers to place in section_subject
+    student_section_list = create_students_and_staff_in_sections(students_in_current_class, teachers_in_current_class, section_subject_list, school.state_code, school.district_id, school.school_id, grade)
+
+    return student_section_list
+
+
+def create_section_subjects(students_in_current_class, student_teacher_ratio, class_index, subject_name, state_code, district_id, school_id, grade):
+    '''
+    Function to create list of SectionSubject object
+    '''
     # calculate number of sections
-    num_of_stu_in_class = len(distribute_stu_inaclass)
-    section_num = round(num_of_stu_in_class / max(1, school.student_teacher_ratio))
-    if(num_of_stu_in_class < constants.MIN_SECTION_SIZE or section_num < 2):
-        section_num = 1
+    number_of_students_in_class = len(students_in_current_class)
+    number_of_sections = calculate_number_of_sections(number_of_students_in_class, student_teacher_ratio)
 
-    # distribute student in each section
-    distribute_stu_insection = split_list(distribute_stu_inaclass, section_num)
-    class_name = subject_name + " " + str(class_count)
-
-    section_stu_map = {}
-    section_tea_map = {}
-
-    # class_id = IdGen().get_id()
     section_subject_list = []
-    # teacher_section_list = []
-    student_section_list = []
+    class_name = subject_name + " " + str(class_index)
+    for i in range(number_of_sections):
+        section_name = 'section ' + str(i + 1)
+        # create a section_subject
+        section_subject = create_single_section_subject(section_name, class_name, subject_name, state_code, district_id, school_id, grade)
+        section_subject_list.append(section_subject)
+    create_csv(section_subject_list, ENTITY_TO_PATH_DICT[SectionSubject])
+
+    return section_subject_list
+
+
+def create_students_and_staff_in_sections(students_in_current_class, teachers_in_current_class, section_subject_list, state_code, district_id, school_id, grade):
+    '''
+    Function to create list of student objects, and list of teaching staff objects
+    Generated student objects are written into dim_student.csv
+    Generated staff objects are written into dim_staff.csv
+    @return: generated list of student objects
+    '''
+    number_of_sections = len(section_subject_list)
+    # distribute student in each section
+    students_in_each_section = split_list(students_in_current_class, number_of_sections)
+
+    students = []
     staff_list = []
 
+    index = 0
     # for each section, add students and teachers
-    for i in range(len(distribute_stu_insection)):
-        section_id = IdGen().get_id()
-        section_rec_id = IdGen().get_id()
-        section_stu_map[str(section_id)] = distribute_stu_insection[i]
-        teacher_for_section = tea_list[i % len(tea_list)]
-        section_tea_map[str(i)] = [teacher_for_section]
-
-        # create section_subject object
-        section_name = 'section ' + str(i + 1)
-        section_subject_params = {
-            'section_rec_id': section_rec_id,
-            'section_id': section_id,
-            'section_name': section_name,
-            'grade': grade,
-            'class_name': class_name,
-            'subject_name': subject_name,
-            'state_code': school.state_code,
-            'district_id': school.district_id,
-            'school_id': school.school_id,
-            'from_date': '20120901',
-            'most_recent': True,
-            'to_date': '20120901'
-        }
-        section_subject = SectionSubject(**section_subject_params)
-        section_subject_list.append(section_subject)
-
+    for section_subject in section_subject_list:
         # create a teaching-staff object
-        staff = generate_staff(constants.HIER_USER_TYPE[0], school.state_code, school.district_id, school.school_id, section_id,
-                               teacher_for_section.first_name, teacher_for_section.middle_name, teacher_for_section.last_name, teacher_for_section.teacher_id)
+        teacher_in_current_section = teachers_in_current_class[index % len(teachers_in_current_class)]
+        staff = generate_staff(constants.HIER_USER_TYPE[0], state_code, district_id, school_id, section_subject.section_id,
+                               teacher_in_current_section.first_name, teacher_in_current_section.middle_name, teacher_in_current_section.last_name, teacher_in_current_section.teacher_id)
         staff_list.append(staff)
 
         # create students
-        for student in section_stu_map[str(section_id)]:
-            student_section = generate_student_section(school, student, section_rec_id, section_id, grade, teacher_for_section.teacher_id)
-            student_section_list.append(student_section)
+        students_in_current_section = students_in_each_section[index]
+        for student_in_section in students_in_current_section:
+            student = generate_student(student_in_section, section_subject.section_rec_id, section_subject.section_id, grade, teacher_in_current_section.teacher_id)
+            students.append(student)
+        index += 1
 
-    # write subjects into csv
-    create_csv(section_subject_list, ENTITY_TO_PATH_DICT[SectionSubject])
     create_csv(staff_list, ENTITY_TO_PATH_DICT[Staff])
-    create_csv(student_section_list, ENTITY_TO_PATH_DICT[StudentSection])
+    create_csv(students, ENTITY_TO_PATH_DICT[Student])
 
-    return student_section_list
+    return students
+
+
+def calculate_number_of_sections(number_of_students_in_class, student_teacher_ratio):
+    '''
+    Function to calculate number of sections in a class
+    '''
+
+    number_of_sections = round(number_of_students_in_class / max(1, student_teacher_ratio))
+    if(number_of_students_in_class < constants.MIN_SECTION_SIZE or number_of_sections < 2):
+        number_of_sections = 1
+    return number_of_sections
+
+
+def create_single_section_subject(section_name, class_name, subject_name, state_code, district_id, school_id, grade):
+    '''
+    Function to create a single SectionSubject object
+    '''
+
+    section_id = IdGen().get_id()
+    section_rec_id = IdGen().get_id()
+
+    # create a section_subject object
+    section_subject_params = {
+        'section_rec_id': section_rec_id,
+        'section_id': section_id,
+        'section_name': section_name,
+        'grade': grade,
+        'class_name': class_name,
+        'subject_name': subject_name,
+        'state_code': state_code,
+        'district_id': district_id,
+        'school_id': school_id,
+        # TODO: better set from_date, most_recent
+        'from_date': '20120901',
+        'most_recent': True,
+        'to_date': '29990901'
+        }
+    section_subject = SectionSubject(**section_subject_params)
+    return section_subject
 
 
 def split_list(list_to_split, n):
@@ -808,30 +809,6 @@ def read_names(file_name):
     return names
 
 
-def get_test_state_stats():
-    db = get_db_conn()
-    db_states = []
-    q = 'select * from ' + queries.SCHEMA + '.school_generate_stat where state_code = \'TS\''
-    dist_count = db.prepare(q)
-    for row in dist_count:
-        db_states.append(dict(zip(constants.STAT_COLUMNS, row)))
-    db.close()
-
-    return db_states
-
-
-def get_sds_stats():
-    db = get_db_conn()
-    db_states = []
-    q = 'select * from ' + queries.SCHEMA + '.school_generate_stat where state_code = \'TS\''
-    dist_count = db.prepare(q)
-    for row in dist_count:
-        db_states.append(dict(zip(constants.STAT_COLUMNS, row)))
-    db.close()
-
-    return db_states
-
-
 def get_sds_state_stats():
     db = get_db_conn()
     db_states = []
@@ -872,32 +849,40 @@ def validate_small_set_data():
         return False
 
 if __name__ == '__main__':
+
+    # Argument parsing
+    # TODO: do we need both test state and small data set? Maybe just use small data set?
     parser = argparse.ArgumentParser(description='Generate fixture data.')
-    parser.add_argument('--validate', dest='do_validation', action='store_true', default=False,
-                        help='Only generate data for "Test State." This creates a small set of data meant for the validation tool',
-                        required=False)
     parser.add_argument('--sds', dest='small_data_set', action='store_true', default=False,
                         help='Create a small data set.', required=False)
+    parser.add_argument('--update', dest='update', action='store_true', default=False,
+                        help='Use existing enrollment data to create new FAO rows.', required=False)
     # TODO: Add flag to turn headers off
     args = parser.parse_args()
 
-    # Determine which function to use to get state statistical data
-    is_small_data_mode = False
-    if args.do_validation:
-        state_statistic_function = get_test_state_stats
-    elif args.small_data_set:
-        if validate_small_set_data():
-            state_statistic_function = get_sds_state_stats
-            is_small_data_mode = True
-        else:
-            print("Please provide valid data in small_set_data_input.py to generate small set of data")
-            exit(-1)
+    # Determine whether we're generating a whole data set or using existing enrollment data from the db.
+    # TODO: Add code here
+    if args.update:
+        pass
+    # Generate whole data set.
     else:
-        state_statistic_function = get_state_stats
+        # Determine which function to use to get state statistical data
+        is_small_data_mode = False
+        # Generate small data set (QA purposes)
+        if args.small_data_set:
+            # Make sure small data set defined in 'small_set_data_input.py' is valid
+            if validate_small_set_data():
+                state_statistic_function = get_sds_state_stats
+                is_small_data_mode = True
+            else:
+                print("Please provide valid data in small_set_data_input.py to generate small set of data")
+                exit(-1)
+        else:
+            state_statistic_function = get_state_stats
 
-    t1 = datetime.datetime.now()
-    generate(get_name_lists, state_statistic_function, is_small_data_mode)
-    t2 = datetime.datetime.now()
+        t1 = datetime.datetime.now()
+        prepare_generation_parameters(get_name_lists, state_statistic_function, is_small_data_mode)
+        t2 = datetime.datetime.now()
 
-    print("data_generation starts ", t1)
-    print("data_generation ends   ", t2)
+        print("data_generation starts ", t1)
+        print("data_generation ends   ", t2)

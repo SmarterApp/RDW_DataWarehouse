@@ -9,7 +9,7 @@ Test for gen_assessments.py
 import unittest
 
 import gen_assessments as genasmt
-from constants import MIN_ASSMT_SCORE, MAX_ASSMT_SCORE, ASSMT_SCORE_YEARS
+from constants import MINIMUM_ASSESSMENT_SCORE, MAXIMUM_ASSESSMENT_SCORE, ASSMT_SCORE_YEARS
 
 
 class Test(unittest.TestCase):
@@ -33,12 +33,12 @@ class Test(unittest.TestCase):
         self.assertEqual(asmt.asmt_period_year, 2012)
         self.assertIsNotNone(asmt.asmt_period_year)
         self.assertIsNotNone(asmt.asmt_version)
-        self.assertLess(asmt.asmt_cut_point_1, MAX_ASSMT_SCORE)
-        self.assertGreater(asmt.asmt_cut_point_1, MIN_ASSMT_SCORE)
-        self.assertLess(asmt.asmt_cut_point_2, MAX_ASSMT_SCORE)
-        self.assertGreater(asmt.asmt_cut_point_2, MIN_ASSMT_SCORE)
-        self.assertLess(asmt.asmt_cut_point_3, MAX_ASSMT_SCORE)
-        self.assertGreater(asmt.asmt_cut_point_3, MIN_ASSMT_SCORE)
+        self.assertLess(asmt.asmt_cut_point_1, MAXIMUM_ASSESSMENT_SCORE)
+        self.assertGreater(asmt.asmt_cut_point_1, MINIMUM_ASSESSMENT_SCORE)
+        self.assertLess(asmt.asmt_cut_point_2, MAXIMUM_ASSESSMENT_SCORE)
+        self.assertGreater(asmt.asmt_cut_point_2, MINIMUM_ASSESSMENT_SCORE)
+        self.assertLess(asmt.asmt_cut_point_3, MAXIMUM_ASSESSMENT_SCORE)
+        self.assertGreater(asmt.asmt_cut_point_3, MINIMUM_ASSESSMENT_SCORE)
 
     def test_generate_id(self):
         res = genasmt.generate_id()
@@ -50,17 +50,6 @@ class Test(unittest.TestCase):
         res = genasmt.generate_version()
 
         self.assertIsNotNone(res)
-
-    def test_calc_claim_min_max(self):
-        res = genasmt.calc_claim_min_max(100, 500, 10)
-
-        self.assertEqual(res[0], 10)
-        self.assertEqual(res[1], 50)
-
-        res = genasmt.calc_claim_min_max(100, 500, 40)
-
-        self.assertEqual(res[0], int(100 * .4))
-        self.assertEqual(res[1], int(500 * .4))
 
 
 if __name__ == "__main__":

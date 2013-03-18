@@ -4,12 +4,12 @@ Created on Jan 29, 2013
 @author: abrien, swimberly
 '''
 
-from uuid import uuid4
-from helper_entities import Claim
-
 from idgen import IdGen
 from entities import Assessment
-from constants import ASSMT_TYPES, MIN_ASSMT_SCORE, MAX_ASSMT_SCORE, ASSMT_SCORE_YEARS
+from helper_entities import Claim
+from constants import CLAIM_DEFINITIONS, MINIMUM_ASSESSMENT_SCORE, MAXIMUM_ASSESSMENT_SCORE, ASSMT_SCORE_YEARS, CLAIM_SCORE_MASTER_MAX, CLAIM_SCORE_MASTER_MIN
+from random import randint
+
 
 GRADES = [i for i in range(13)]
 TYPES = ['SUMMATIVE', 'INTERIM']
@@ -27,7 +27,6 @@ def generate_dim_assessment():
     '''
     assessments = []
     assmt_years = sorted(ASSMT_SCORE_YEARS)
-    periods = []
     for grade in GRADES:
         for atype in TYPES:
             # INTERIM assessment has 3 periods, SUMMATIVE assessment has 1 'EOY' period
@@ -53,16 +52,19 @@ def generate_single_asmt(student_grade, asmt_type, period, subject, year, most_r
     asmt_id = generate_id()
     asmt_rec_id = generate_id()
     version = generate_version()
-    asmt_grade = '4' if student_grade < 8 else '8'
-    asmt_info = ASSMT_TYPES[subject][asmt_grade]
 
-    claim1_min_max = calc_claim_min_max(MIN_ASSMT_SCORE, MAX_ASSMT_SCORE, asmt_info['claim_percs'][0])
-    claim2_min_max = calc_claim_min_max(MIN_ASSMT_SCORE, MAX_ASSMT_SCORE, asmt_info['claim_percs'][1])
-    claim3_min_max = calc_claim_min_max(MIN_ASSMT_SCORE, MAX_ASSMT_SCORE, asmt_info['claim_percs'][2])
-
-    claim1 = Claim(asmt_info['claim_names'][0], claim1_min_max[0], claim1_min_max[1], asmt_info['claim_percs'][0])
-    claim2 = Claim(asmt_info['claim_names'][1], claim2_min_max[0], claim2_min_max[1], asmt_info['claim_percs'][1])
-    claim3 = Claim(asmt_info['claim_names'][2], claim3_min_max[0], claim3_min_max[1], asmt_info['claim_percs'][2])
+    # Generating claim objects for assessment constructor. Claims are defined by CLAIM_DEFINITIONS in constants.py
+    # CLAIM_DEFINITIONS contains claim names, weights
+    assessment_claim_info = CLAIM_DEFINITIONS[subject]
+    claims = []
+    for claim_info in assessment_claim_info:
+        claim_name = claim_info['claim_name']
+        min_max = generate_claim_score_min_max(CLAIM_SCORE_MASTER_MIN, CLAIM_SCORE_MASTER_MAX)
+        claim_score_min = min_max[0]
+        claim_score_max = min_max[1]
+        claim_score_weight = claim_info['claim_weight']
+        claim = Claim(claim_name, claim_score_min, claim_score_max, claim_score_weight)
+        claims.append(claim)
 
     params = {
         'asmt_id': asmt_id,
@@ -73,40 +75,36 @@ def generate_single_asmt(student_grade, asmt_type, period, subject, year, most_r
         'asmt_version': version,
         'asmt_grade': student_grade,
         'asmt_subject': subject,
-        'claim_1': claim1,
-        'claim_2': claim2,
-        'claim_3': claim3,
-        'asmt_score_min': MIN_ASSMT_SCORE,
-        'asmt_score_max': MAX_ASSMT_SCORE,
+        'claim_list': claims,
+        'asmt_score_min': MINIMUM_ASSESSMENT_SCORE,
+        'asmt_score_max': MAXIMUM_ASSESSMENT_SCORE,
         'asmt_perf_lvl_name_1': PERFORMANCE_LEVELS[0],
         'asmt_perf_lvl_name_2': PERFORMANCE_LEVELS[1],
         'asmt_perf_lvl_name_3': PERFORMANCE_LEVELS[2],
         'asmt_perf_lvl_name_4': PERFORMANCE_LEVELS[3],
-        'asmt_cut_point_1': int((MAX_ASSMT_SCORE + MIN_ASSMT_SCORE) * .25),
-        'asmt_cut_point_2': int((MAX_ASSMT_SCORE + MIN_ASSMT_SCORE) * .50),
-        'asmt_cut_point_3': int((MAX_ASSMT_SCORE + MIN_ASSMT_SCORE) * .65),
+        # TODO: not hard code cut points
+        'asmt_cut_point_1': 1400,
+        'asmt_cut_point_2': 1800,
+        'asmt_cut_point_3': 2100,
 
-        'from_date': '20120901',
+        'from_date': str(year) + '0901',
         'most_recent': most_recent
     }
-
-    if len(asmt_info['claim_names']) >= 4 and len(asmt_info['claim_percs']) >= 4:
-        claim4_min_max = calc_claim_min_max(MIN_ASSMT_SCORE, MAX_ASSMT_SCORE, asmt_info['claim_percs'][3])
-        claim4 = Claim(asmt_info['claim_names'][3], claim4_min_max[0], claim4_min_max[1], asmt_info['claim_percs'][3])
-        params['claim_4'] = claim4
 
     return Assessment(**params)
 
 
-def calc_claim_min_max(asmt_min, asmt_max, claim_perc):
-    '''
-    returns a minimum and maximum score for a claim given the minimum for the asmt and percentage
-    that the claim makes up in the total score
-    '''
-    claim_min = asmt_min * (claim_perc * .01)
-    claim_max = asmt_max * (claim_perc * .01)
+def generate_claim_score_min_max(lower_bound, upper_bound):
+    if upper_bound - lower_bound < 10:
+        raise Exception('lower bound and upper bound are too close')
+    # We want at least 10 points between our min and our max
 
-    return int(claim_min), int(claim_max)
+    # Don't want to pick a lower bound greater than (upper bound - 10)
+    # If we do, we won't be able to have 10 points separating min and max
+    minimum = randint(lower_bound, upper_bound - 10)
+    maximum = randint(minimum + 10, upper_bound)
+
+    return (minimum, maximum)
 
 
 def generate_id():
@@ -125,11 +123,3 @@ def generate_version():
     '''
 
     return 'V1'
-
-'''
-if __name__ == '__main__':
-    assessments = generate_dim_assessment()
-
-    for asmt in assessments:
-        print(str(asmt))
-'''

@@ -1,10 +1,5 @@
-import random
 from entities import Person
 from idgen import IdGen
-from entities import Person
-from idgen import IdGen
-from entities import InstitutionHierarchy
-from datetime import date
 
 
 class State:
@@ -52,76 +47,50 @@ class District:
         '''
         return ("District:[district_id: %s, district_name: %s]" % (self.district_id, self.district_name))
 
-"""
-class School:
+
+class Claim:
     '''
-    School object
+    claim information to be used by the assessment object. Simply defines basic parameters about claim.
     '''
-    def __init__(self, school_id, school_name, school_category, district_name, district_id, state_code, state_name, number_of_students, student_teacher_ratio, low_grade, high_grade):
-        '''
-        Constructor
-        '''
-        self.school_id = school_id
-        self.school_name = school_name
-        self.school_category = school_category
-        self.district_id = district_id
-        self.district_name = district_name
-        self.state_code = state_code
-        self.state_name = state_name
-        self.number_of_students = number_of_students
-        self.student_teacher_ratio = student_teacher_ratio
-        self.low_grade = low_grade
-        self.high_grade = high_grade
-
-    def covert_to_institution_hierarchy(self):
-
-        institution_hierarchy_params = {
-            'state_name': self.district_name,
-            'state_code': self.state_code,
-            'district_id': self.district_id,
-            'district_name': self.district_name,
-            'school_id': self.school_id,
-            'school_name': self.school_name,
-            'school_category': self.school_category,
-            'from_date': date(2012, 9, 1),
-            'to_date': date(2999, 12, 31),
-            'most_recent': True
-        }
-
-        return InstitutionHierarchy(**institution_hierarchy_params)
-"""
-
-
-class Claim(object):
-    '''
-    claim information to be used by the assessment object
-    '''
-    def __init__(self, claim_name, claim_score_min=None, claim_score_max=None, claim_score_weight=None):
+    def __init__(self, claim_name, claim_score_min, claim_score_max, claim_score_weight):
         self.claim_name = claim_name
         self.claim_score_min = claim_score_min
         self.claim_score_max = claim_score_max
         self.claim_score_weight = claim_score_weight
 
 
-class Score:
+class ClaimScore():
     '''
-    Score object
+    This is a claim object with scores. Used to create assessment_outcome row.
     '''
-    def __init__(self, overall, claims):
+    def __init__(self, claim_score, claim_score_interval_minimum, claim_score_interval_maximum):
+        self.claim_score = claim_score
+        self.claim_score_interval_minimum = claim_score_interval_minimum
+        self.claim_score_interval_maximum = claim_score_interval_maximum
+
+
+class AssessmentScore:
+    '''
+    Assessment Score object
+    '''
+    def __init__(self, overall_score, perf_lvl, interval_min, interval_max, claim_scores, asmt_create_date):
         '''
         Constructor
         '''
-        self.overall = overall
-        self.claims = claims
-        # self.level = level
+        self.overall_score = overall_score
+        self.perf_lvl = perf_lvl
+        self.interval_min = interval_min
+        self.interval_max = interval_max
+        self.claim_scores = claim_scores
+        self.asmt_create_date = asmt_create_date
 
     def __str__(self):
         '''
         String method
         '''
-        return ("Score:[overall: %s, claims: %s]" % (self.overall, self.claims))
+        return ("Score:[overall: %s, claims: %s]" % (self.overall_score, self.claim_scores))
 
-
+# TODO: get rid of where_taken
 class WhereTaken:
     '''
     Where-taken object
@@ -178,12 +147,13 @@ class Teacher(Person):
 
 
 # TODO: Need to clarify the distinction between student and student_section
-class Student(Person):
+class StudentBioInfo(Person):
     '''
-    Student Object
+    Student Biographical Information Object
+    Used to hold student information until it can be passed to Student Object
     '''
 
-    def __init__(self, student_rec_id, student_id, first_name, last_name, address_1, dob, district, state, gender, email, school, middle_name=None, address_2=None):
+    def __init__(self, student_rec_id, student_id, first_name, last_name, address_1, dob, district_id, state_code, gender, email, school_id, zip_code, city, middle_name=None, address_2=None):
 
         super().__init__(first_name, last_name, middle_name=middle_name)
 
@@ -199,22 +169,16 @@ class Student(Person):
         else:
             self.student_rec_id = student_rec_id
 
-        # TODO: We probably want to select cities/zips in a more intelligent way
-        city_zip_map = district.city_zip_map
-        city = random.choice(list(city_zip_map.keys()))
-        zip_range = city_zip_map[city]
-        zip_code = random.randint(zip_range[0], zip_range[1])
-
         self.address_1 = address_1
         self.address_2 = address_2
         self.dob = dob
-        self.district_id = district.district_id
+        self.district_id = district_id
         self.city = city
-        self.state_code = state.state_code
+        self.state_code = state_code
         self.zip_code = zip_code
         self.gender = gender
         self.email = email
-        self.school_id = school.school_id
+        self.school_id = school_id
 
     def __str__(self):
         return ("%s %s %s" % (self.first_name, self.middle_name, self.last_name))

@@ -23,29 +23,25 @@ SUBJECTS = ["Math", "ELA"]
 
 MIN_CLASS_SIZE = 20
 MIN_SECTION_SIZE = 10
-GENDER_RARIO = [0.5, 0.45, 0.55]
 
-MIN_ASSMT_SCORE = 50
-MAX_ASSMT_SCORE = 500
+MINIMUM_ASSESSMENT_SCORE = 1200
+MAXIMUM_ASSESSMENT_SCORE = 2400
+AVERAGE_ASSESSMENT_SCORE = (MINIMUM_ASSESSMENT_SCORE + MAXIMUM_ASSESSMENT_SCORE) / 2
+ASSESSMENT_SCORE_STANDARD_DEVIATION = (AVERAGE_ASSESSMENT_SCORE - MINIMUM_ASSESSMENT_SCORE) / 4
 
-ASSMT_TYPES = {'Math':
-               {'4':
-                {'claim_names': ['Concepts & Procedures', 'Problem Solving and Modeling & Data Analysis', 'Communicating Reasoning'],
-                 'claim_percs': [40, 45, 15]},
-                '8':
-                {'claim_names': ['Concepts & Procedures', 'Problem Solving and Modeling & Data Analysis', 'Communicating Reasoning'],
-                 'claim_percs': [20, 50, 30]}
-                },
-               'ELA':
-               {'4':
-                {'claim_names': ['Reading', 'Writing', 'Speaking & Listening', 'Research & Inquiry'],
-                 'claim_percs': [25, 25, 25, 25]},
-                '8':
-                {'claim_names': ['Reading', 'Writing', 'Speaking & Listening', 'Research & Inquiry'],
-                 'claim_percs': [20, 25, 25, 30]}
-                }
-               }
-
+# Different assessments have different numbers of claims.  The claims are defined with this dictionary
+# It is used during the creation of 'assessment' objects.
+CLAIM_DEFINITIONS = {'Math': [{'claim_name': 'Concepts & Procedures', 'claim_weight': .4},
+                              {'claim_name': 'Problem Solving and Modeling & Data Analysis', 'claim_weight': .45},
+                              {'claim_name': 'Communicating Reasoning', 'claim_weight': .15}
+                              ],
+                     'ELA': [{'claim_name': 'Reading', 'claim_weight': .20},
+                             {'claim_name': 'Writing', 'claim_weight': .25},
+                             {'claim_name': 'Speaking & Listening', 'claim_weight': .25},
+                             {'claim_name': 'Research & Inquiry', 'claim_weight': .30}]
+                     }
+CLAIM_SCORE_MASTER_MIN = 10
+CLAIM_SCORE_MASTER_MAX = 99
 
 ZIPCODE_START = 10000
 ZIPCODE_RANG_INSTATE = 5000
@@ -66,17 +62,8 @@ DIST_SCHOOL_NAME_LENGTH = 256
 CITY_NAME_LENGTH = 100
 ADDRESS_LENGTH = 256
 
-DATE_YEAR_DIS = 10
-
-MONTH_LIST_31DAYS = [1, 3, 5, 7, 8, 10, 12]
-MONTH_LIST_30DAYS = [4, 6, 9, 11]
-YEAR_SHIFT = 15
-MONTH_TOTAL = 12
-MONTH_DAY_MAX = [31, 30, 28]
-
 HIER_USER_TYPE = ['Teacher', 'Staff']
 
 SCORE_MIN_MAX_RANGE = 20
 
-ASSMT_SCORE_YEARS_IN_DB = [2011]
 ASSMT_SCORE_YEARS = [2012]

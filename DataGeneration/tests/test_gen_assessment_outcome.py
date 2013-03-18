@@ -115,20 +115,19 @@ class TestGenerateData(unittest.TestCase):
         inst_hier_rec_id = 81723
         where_taken = WhereTaken(91845, 'where_taken_test_name')
         subject_name = 'Math'
-        row = {
-                'student_id': student.student_id,
-                'teacher_id': student.teacher_id,
-                'state_code': student.state_code,
-                'district_id': student.district_id,
-                'school_id': student.school_id,
-                'section_id': student.section_id,
-                'inst_hier_rec_id': inst_hier_rec_id,
-                'section_rec_id': student.section_rec_id,
-                'where_taken_id': where_taken.where_taken_id,
-                'where_taken_name': where_taken.where_taken_name,
-                'enrl_grade': student.grade,
-                'subject_name': subject_name,
-        }
+        row = {'student_id': student.student_id,
+               'teacher_id': student.teacher_id,
+               'state_code': student.state_code,
+               'district_id': student.district_id,
+               'school_id': student.school_id,
+               'section_id': student.section_id,
+               'inst_hier_rec_id': inst_hier_rec_id,
+               'section_rec_id': student.section_rec_id,
+               'where_taken_id': where_taken.where_taken_id,
+               'where_taken_name': where_taken.where_taken_name,
+               'enrl_grade': student.grade,
+               'subject_name': subject_name,
+               }
         actual_assessment_outcome = gen_assessment_outcome.generate_single_assessment_outcome_from_student_info(assessment, row)
         self.assertIsInstance(actual_assessment_outcome, AssessmentOutcome)
 
@@ -237,8 +236,7 @@ class TestGenerateData(unittest.TestCase):
 
 def make_an_assessment(subject):
     number_of_claims = 4 if subject.lower == 'ELA'.lower else 3
-    params = {
-              'asmt_rec_id': 1234,
+    params = {'asmt_rec_id': 1234,
               'asmt_id': 273491,
               'asmt_type': 'SUMMATIVE',
               'asmt_period': 'EOY',

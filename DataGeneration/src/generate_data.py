@@ -81,7 +81,7 @@ def add_headers_to_csvs():
             entity_writer.writerow(entity.getHeader())
 
 
-def generate(f_get_name_lists, f_get_state_stats, is_small_data_mode):
+def prepare_generation_parameters(get_name_list_function, get_state_stats_function, is_small_data_mode):
     '''
     Generate data.
     First step: read files into lists for making names, addresses
@@ -90,17 +90,22 @@ def generate(f_get_name_lists, f_get_state_stats, is_small_data_mode):
     (including generate: state, district, school, class, section, student,
     and teacher)
     '''
-    name_lists = f_get_name_lists()
-    state_stats = f_get_state_stats()
+    name_lists = get_name_list_function()
+    state_stats = get_state_stats_function()
 
-    if(name_lists is None or state_stats is None or len(name_lists) == 0 or len(state_stats) == 0):
-        print("Initializing....Error")
-        return None
+    if(name_lists is None):
+        raise Exception('name_lists is None. Cannot continue.')
+    elif state_stats is None:
+        raise Exception('state_stats is None. Cannot continue.')
+    elif len(name_lists) == 0:
+        raise Exception('name_lists is Empty. Cannot continue.')
+    elif len(state_stats) == 0:
+        raise Exception('state_stats is Empty. Cannot continue.')
 
-    return generate_data(name_lists, state_stats, is_small_data_mode)
+    return generate_fixture_data(name_lists, state_stats, is_small_data_mode)
 
 
-def generate_data(name_lists, db_states_stat, is_small_data_mode):
+def generate_fixture_data(name_lists, db_states_stat, is_small_data_mode):
     '''
     Main function to generate actual data with input statistical data
     '''
@@ -110,33 +115,35 @@ def generate_data(name_lists, db_states_stat, is_small_data_mode):
     # add headers to all csv files
     add_headers_to_csvs()
 
-    # generate all assessment types
+    # generate all assessments
     asmt_list = generate_dim_assessment()
     create_csv(asmt_list, ENTITY_TO_PATH_DICT[Assessment])
 
-    c = 0
+    state_index = 0
     for state in db_states_stat:
         # create a state
         created_state = State(state['state_code'], state['state_name'], state['total_district'])
+        # increment relevant counter
         total_count['state_count'] += 1
 
-        school_num_in_dist_made, stu_num_in_school_made, stutea_ratio_in_school_made, school_type_in_state = generate_distribution_lists(state, is_small_data_mode)
+        # TODO: add comments about generate_distribution_lists
+        number_of_schools_in_districts, number_of_students_in_schools, student_teacher_ratio_in_schools, school_type_in_state = generate_distribution_lists(state, is_small_data_mode)
 
         # print out result for a state
         print("************** State ", created_state.state_name, " **************")
         print("                     Real     To Be Generated")
-        print("Number of districts ", state['total_district'], "    ", len(school_num_in_dist_made))
-        print("Number of schools   ", state['total_school'], "    ", sum(school_num_in_dist_made))
-        print("Number of students  ", state['total_student'], "    ", sum(stu_num_in_school_made))
+        print("Number of districts ", state['total_district'], "    ", len(number_of_schools_in_districts))
+        print("Number of schools   ", state['total_school'], "    ", sum(number_of_schools_in_districts))
+        print("Number of students  ", state['total_student'], "    ", sum(number_of_students_in_schools))
 
         # create districts for each state
-        created_district_list = create_districts(created_state.state_code, created_state.state_name, school_num_in_dist_made, c, name_lists)
+        created_district_list = create_districts(created_state.state_code, created_state.state_name, number_of_schools_in_districts, state_index, name_lists)
         total_count['district_count'] += len(created_district_list)
 
         # generate non-teaching state_staff
         # assuming here between 2 and 4 staff per district at the state level
         num_of_state_staff = len(created_district_list) * random.choice(range(2, 4))
-        state_staff_list = [generate_staff(constants.HIER_USER_TYPE[1], created_state.state_code)for _i in range(num_of_state_staff)]
+        state_staff_list = [generate_staff(constants.HIER_USER_TYPE[1], created_state.state_code) for _i in range(num_of_state_staff)]
         create_csv(state_staff_list, ENTITY_TO_PATH_DICT[Staff])
 
         # TODO: should be more explicit. What is shift?
@@ -148,8 +155,9 @@ def generate_data(name_lists, db_states_stat, is_small_data_mode):
             print("creating district %d of %d for state %s" % ((dist_count), len(created_district_list), state['state_name']))
 
             # create school / institution_hier for each district
-            school_list, wheretaken_list = create_institution_hierarchies(stu_num_in_school_made[shift: shift + district.number_of_schools],
-                                                                          stutea_ratio_in_school_made[shift: shift + district.number_of_schools],
+            # TODO: Break this down into 2 functions if possible.
+            school_list, wheretaken_list = create_institution_hierarchies(number_of_students_in_schools[shift: shift + district.number_of_schools],
+                                                                          student_teacher_ratio_in_schools[shift: shift + district.number_of_schools],
                                                                           district, school_type_in_state, name_lists, is_small_data_mode)
             create_csv(school_list, ENTITY_TO_PATH_DICT[InstitutionHierarchy])
 
@@ -171,9 +179,9 @@ def generate_data(name_lists, db_states_stat, is_small_data_mode):
                 create_classes_for_school(district, school, created_state, name_lists[2], total_count, asmt_list, is_small_data_mode)
 
         # if just need one state data
-        if c == 0:
+        if state_index == 0:
             break
-        c += 1
+        state_index += 1
 
     print("**************Results***********************")
     print("generated number of states    ", total_count['state_count'])
@@ -181,18 +189,18 @@ def generate_data(name_lists, db_states_stat, is_small_data_mode):
     print("generated number of schools   ", total_count['school_count'])
     print("generated number of students  ", total_count['student_count'])
 
-    return total_count
+    return total_count  
 
-
+# TODO: add comments to this function
 def generate_distribution_lists(state, is_small_data_mode):
-    number_of_school_in_district = []
-    number_of_student_in_school = []
+    number_of_schools_in_district = []
+    number_of_students_in_school = []
     student_teacher_ratio_in_school = []
     school_type_in_state = []
 
     if is_small_data_mode:
-            number_of_school_in_district = small_set_data_input.SMALL_SET_SCHOOL_NUM_IN_DIST
-            number_of_student_in_school = small_set_data_input.SMALL_SET_STUDENT_NUM_IN_SCHOOL
+            number_of_schools_in_district = small_set_data_input.SMALL_SET_SCHOOL_NUM_IN_DIST
+            number_of_students_in_school = small_set_data_input.SMALL_SET_STUDENT_NUM_IN_SCHOOL
             student_teacher_ratio_in_school = small_set_data_input.SMALL_SET_STUDENT_TEACHER_RATIO_IN_SCHOOL
             school_type_in_state = small_set_data_input.SMALL_SET_SCHOOL_TYPE_IN_STATE
     else:
@@ -200,24 +208,24 @@ def generate_distribution_lists(state, is_small_data_mode):
         number_of_district = calculate_number_of_district(state['total_district'])
 
         # generate school distribution in districts
-        number_of_school_in_district = makeup_list(state['avg_school_per_district'], state['std_school_per_district'],
+        number_of_schools_in_district = makeup_list(state['avg_school_per_district'], state['std_school_per_district'],
                                           state['min_school_per_district'], state['max_school_per_district'],
                                           number_of_district, state['total_school'])
         # generate student distribution in schools
-        number_of_student_in_school = makeup_list(state['avg_student_per_school'], state['std_student_per_school'],
+        number_of_students_in_school = makeup_list(state['avg_student_per_school'], state['std_student_per_school'],
                                          state['min_student_per_school'], state['max_student_per_school'],
-                                         sum(number_of_school_in_district), state['total_student'])
+                                         sum(number_of_schools_in_district), state['total_student'])
 
         # generate student teacher ratio distribution in schools
         student_teacher_ratio_in_school = py1.makeup_core(state['avg_stutea_ratio_per_school'], state['std_stutea_ratio_per_school'],
                                                   state['min_stutea_ratio_per_school'], state['max_stutea_ratio_per_school'],
-                                                  sum(number_of_school_in_district))
+                                                  sum(number_of_schools_in_district))
 
         # generate school type distribution in state
         school_type_in_state = make_school_types([state['primary_perc'], state['middle_perc'],
-                                              state['high_perc'], state['other_perc']], sum(number_of_school_in_district))
+                                              state['high_perc'], state['other_perc']], sum(number_of_schools_in_district))
 
-    return number_of_school_in_district, number_of_student_in_school, student_teacher_ratio_in_school, school_type_in_state
+    return number_of_schools_in_district, number_of_students_in_school, student_teacher_ratio_in_school, school_type_in_state
 
 
 def calculate_number_of_district(actual_number_of_district):
@@ -787,9 +795,6 @@ if __name__ == '__main__':
     # Argument parsing
     # TODO: do we need both test state and small data set? Maybe just use small data set?
     parser = argparse.ArgumentParser(description='Generate fixture data.')
-    parser.add_argument('--validate', dest='do_validation', action='store_true', default=False,
-                        help='Only generate data for "Test State." This creates a small set of data meant for the validation tool',
-                        required=False)
     parser.add_argument('--sds', dest='small_data_set', action='store_true', default=False,
                         help='Create a small data set.', required=False)
     parser.add_argument('--update', dest='update', action='store_true', default=False,
@@ -804,11 +809,8 @@ if __name__ == '__main__':
     else:
         # Determine which function to use to get state statistical data
         is_small_data_mode = False
-        # Generate validation dataset
-        if args.do_validation:
-            state_statistic_function = get_test_state_stats
         # Generate small data set (QA purposes)
-        elif args.small_data_set:
+        if args.small_data_set:
             # Make sure small data set defined in 'small_set_data_input.py' is valid
             if validate_small_set_data():
                 state_statistic_function = get_sds_state_stats
@@ -820,7 +822,7 @@ if __name__ == '__main__':
             state_statistic_function = get_state_stats
 
         t1 = datetime.datetime.now()
-        generate(get_name_lists, state_statistic_function, is_small_data_mode)
+        prepare_generation_parameters(get_name_lists, state_statistic_function, is_small_data_mode)
         t2 = datetime.datetime.now()
 
         print("data_generation starts ", t1)

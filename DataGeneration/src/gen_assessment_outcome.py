@@ -8,6 +8,8 @@ import py1
 
 
 def generate_assessment_outcomes_from_student_object_list(assessment_list, student_list, subject_name, inst_hier_rec_id, where_taken):
+    # TODO: do we really need where_taken_list?
+
     # At this point, the student object has already been created. To create the corresponding FAO rows for this,
     # student, we only need a subset of the student data from the student object.
     # we put this info into a dictionary called fao student info and pass it on
@@ -171,8 +173,7 @@ def generate_assessment_score(assessment):
         'interval_min': interval_minimum,
         'interval_max': interval_maximum,
         'claim_scores': claim_scores,
-        #TODO: how to decide asmt_create_date? can we use assessment.from_date?
-        # 'asmt_create_date': date(2012, 3, 13).strftime('%Y%m%d')
+        # TODO: how to decide asmt_create_date? can we use assessment.from_date?
         'asmt_create_date': assessment.from_date
     }
 
@@ -226,9 +227,10 @@ def generate_plus_minus(score, average_score, standard_deviation, minimum, maxim
     if (score + plus_minus <= maximum) and (score - plus_minus >= minimum):
         return plus_minus
     else:
+        # TODO: clamp the values at the scale extremes if over reaches boundaries
         raise Exception('Acceptable range:%d - %d, interval boundaries are %d - %d' % (minimum, maximum, score + plus_minus, score - plus_minus))
 
-
+# TODO: change assessment to assessment_metadata
 def generate_claim_scores(assessment_score, assessment):
     claim_scores = []
     for claim in assessment.get_claim_list():

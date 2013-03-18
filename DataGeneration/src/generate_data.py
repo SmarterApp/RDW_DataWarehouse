@@ -154,31 +154,31 @@ def generate_fixture_data(name_lists, db_states_stat, is_small_data_mode):
             # TODO: Misleading. Isn't district already created?
             print("creating district %d of %d for state %s" % ((dist_count), len(created_district_list), state['state_name']))
 
-            # create school / institution_hier for each district
+            # create institution_hierarchies for each district
             # TODO: Break this down into 2 functions if possible.
-            school_list, wheretaken_list = create_institution_hierarchies(number_of_students_in_schools[shift: shift + district.number_of_schools],
+            inst_hier_list, wheretaken_list = create_institution_hierarchies(number_of_students_in_schools[shift: shift + district.number_of_schools],
                                                                           student_teacher_ratio_in_schools[shift: shift + district.number_of_schools],
                                                                           district, school_type_in_state, name_lists, is_small_data_mode)
-            create_csv(school_list, ENTITY_TO_PATH_DICT[InstitutionHierarchy])
+            create_csv(inst_hier_list, ENTITY_TO_PATH_DICT[InstitutionHierarchy])
 
             # TODO: wheretaken still necessary?
             # associate wheretaken_list to current district, used in fao
             district.wheretaken_list = wheretaken_list
 
             # create district staff
-            num_of_district_staff = len(school_list) * random.choice(range(2, 4))
+            num_of_district_staff = len(inst_hier_list) * random.choice(range(2, 4))
             district_staff_list = [generate_staff(constants.HIER_USER_TYPE[1], created_state.state_code, district.district_id)for _i in range(num_of_district_staff)]
             create_csv(district_staff_list, ENTITY_TO_PATH_DICT[Staff])
 
-            total_count['school_count'] += len(school_list)
+            total_count['school_count'] += len(inst_hier_list)
             shift += district.number_of_schools
 
             # create sections, teachers, students and assessment scores for each school
             # TODO: use of 'institution_hierarchy' and 'school' is confusing
-            for school in school_list:
-                create_classes_for_school(district, school, created_state.state_code, name_lists[2], total_count, asmt_list, is_small_data_mode)
+            for inst_hier in inst_hier_list:
+                create_classes_for_school(district, inst_hier, created_state.state_code, name_lists[2], total_count, asmt_list, is_small_data_mode)
 
-        # if just need one state data
+        # if we need just need one state's worth of data, set condition to state_index== 0
         if state_index == 0:
             break
         state_index += 1
@@ -285,7 +285,7 @@ def create_districts(state_code, state_name, school_num_in_dist_made, pos, name_
             return []
 
         # generate random district zip range
-        zip_init, zip_dist = cal_zipvalues(pos, number_of_districts)
+        zip_init, zip_dist = calculate_zip_values(pos, number_of_districts)
 
         # generate each district
         for i in range(number_of_districts):
@@ -320,8 +320,7 @@ def create_districts(state_code, state_name, school_num_in_dist_made, pos, name_
 
 def create_institution_hierarchies(student_counts, student_teacher_ratios, district, school_type_in_state, name_lists, is_small_data_mode):
     '''
-    Main function to generate list of schools for a district
-    Database table is institution_hierarchies
+    Main function to generate institution_hierarchies for a district
     '''
     count = district.number_of_schools
     # generate random school names
@@ -445,7 +444,7 @@ def generate_names_from_lists(count, list1, list2, name_length=None):
     return new_list
 
 
-def cal_zipvalues(pos, n):
+def calculate_zip_values(pos, n):
     '''
     Input: pos: greater than 0
            n: total number of zip. It is greater than 0
@@ -464,6 +463,7 @@ def create_classes_for_school(district, school, state_code, name_list, total_cou
     '''
     # generate teachers in a school
     teachers_in_school = generate_teachers(school.number_of_students, school.student_teacher_ratio, state_code, district.district_id, school.school_id, is_small_data_mode)
+    # TODO: break this function into 2 separate functions if possible
     number_of_students_in_grades, number_of_teachers_in_grades = calculate_number_of_students_teachers_per_grade(school.high_grade, school.low_grade, school.number_of_students, len(teachers_in_school))
 
     # iterate through all the grades in the school
@@ -618,9 +618,6 @@ def create_students_for_subject(subject_name, number_of_classes, students, teach
     return student_in_sections_list
 
 
-#################################################################################################################################
-
-
 def create_sections_in_one_class(subject_name, class_index, students_in_current_class, teachers_in_current_class, school, grade):
     '''
     Main function to create one class in a grade of a subject.
@@ -628,7 +625,7 @@ def create_sections_in_one_class(subject_name, class_index, students_in_current_
     # create subject section
     section_subject_list = create_section_subjects(students_in_current_class, school.student_teacher_ratio, class_index, subject_name, school.state_code, school.district_id, school.school_id, grade)
 
-    # create students, and teachers
+    # create students, and teachers to place in section_subject
     student_section_list = create_students_and_staff_in_sections(students_in_current_class, teachers_in_current_class, section_subject_list, school.state_code, school.district_id, school.school_id, grade)
 
     return student_section_list
@@ -763,30 +760,6 @@ def read_names(file_name):
         names.append(line.strip())
     mfile.close()
     return names
-
-
-def get_test_state_stats():
-    db = get_db_conn()
-    db_states = []
-    q = 'select * from ' + queries.SCHEMA + '.school_generate_stat where state_code = \'TS\''
-    dist_count = db.prepare(q)
-    for row in dist_count:
-        db_states.append(dict(zip(constants.STAT_COLUMNS, row)))
-    db.close()
-
-    return db_states
-
-
-def get_sds_stats():
-    db = get_db_conn()
-    db_states = []
-    q = 'select * from ' + queries.SCHEMA + '.school_generate_stat where state_code = \'TS\''
-    dist_count = db.prepare(q)
-    for row in dist_count:
-        db_states.append(dict(zip(constants.STAT_COLUMNS, row)))
-    db.close()
-
-    return db_states
 
 
 def get_sds_state_stats():

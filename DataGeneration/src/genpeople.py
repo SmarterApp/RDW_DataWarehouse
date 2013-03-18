@@ -20,7 +20,7 @@ STUDENT = 0
 TEACHER = 1
 PARENT = 2
 
-
+# TODO: Do we need teachers? Can we get away with just using staff?
 def generate_teacher(state_code, district_id):
 
     teacher_gender = random.choice(['male', 'female'])

@@ -24,9 +24,6 @@ def get_student_list_from_db(schema_name, metadata, db_connection):
     students = get_students_for_assessment(schema_name, metadata, db_connection)
     return students
 
-def cast_rows_to_students(rows):
-    # Turn a dim_student row into a Student object
-    pass
 
 def get_input_args():
     '''

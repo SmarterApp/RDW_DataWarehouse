@@ -123,11 +123,3 @@ def generate_version():
     '''
 
     return 'V1'
-
-'''
-if __name__ == '__main__':
-    assessments = generate_dim_assessment()
-
-    for asmt in assessments:
-        print(str(asmt))
-'''

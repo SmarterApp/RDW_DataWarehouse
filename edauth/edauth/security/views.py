@@ -48,8 +48,9 @@ def login(request):
     if referrer == request.route_url('login'):
         # Never redirect back to login page
         # TODO make it a const
-        referrer = request.application_url + '/assets/html/stateStudentList.html'
-    params = {'RelayState': deflate_base64_encode((request.params.get('came_from', referrer)).encode())}
+        # TODO: landing page
+        referrer = request.route_url('list_of_reports')
+    params = {'RelayState': deflate_base64_encode(referrer.encode())}
 
     saml_request = SamlAuthnRequest(request.registry.settings['auth.saml.issuer_name'])
 
@@ -149,7 +150,7 @@ def saml2_post_consumer(request):
         # Get the url saved in RelayState from SAML request, redirect it back to it
         # If it's not found, redirect to list of reports
         # TODO: Need a landing other page
-        redirect_url = request.POST.get('RelayState', deflate_base64_encode((request.application_url + '/assets/html/stateStudentList.html').encode()))
+        redirect_url = request.POST.get('RelayState', deflate_base64_encode(request.route_url('list_of_reports').encode()))
         params = urllib.parse.urlencode({'request': redirect_url})
         new_location = request.route_url('login_callback') + '?' + params
     else:
@@ -160,6 +161,21 @@ def saml2_post_consumer(request):
 
 @view_config(route_name='logout_redirect', permission=NO_PERMISSION_REQUIRED)
 def logout_redirect(request):
-    # TODO validate response
-    redirect_url = request.GET.get('RelayState', request.application_url + '/assets/html/stateStudentList.html')
-    return HTTPFound(location=redirect_url)
+    '''
+    OpenAM redirects back to this endpoint after logout
+    This will refresh the whole page from the iframe
+    '''
+    html = '''
+    <html><header>
+    <title>Logging out</title>
+    <script type="text/javascript">
+    function refresh() {
+        window.top.location.reload();
+        }
+    </script>
+    </header>
+    <body onload="refresh()">
+    </body>
+    </html>
+    '''
+    return Response(body=html, content_type='text/html')

@@ -10,7 +10,7 @@
 	<div id="header">
 		<div id="logo">LOGO</div>
 		<div class="topLinks">
-			<span class="user"></span> | <span><a href="/logout">Log out</a></span>
+			<span class="user"></span> | <span><a href="/logout" target="iframe_logout">Log out</a></span>
 		</div>
    	</div>
    	<div id="breadcrumb"></div>
@@ -21,5 +21,7 @@
     	<div id="legend" class="pull-right">Legend / Informational</div>
     	<div id="purpose" class="pull-right">Purposes / Uses / Limitations</div>
     </div>
+    <!--This iframe is used for logout redirect.  Do not remove it.-->
+    <iframe frameborder="0" height="0px" width="0px" name="iframe_logout"></iframe>
 </body>
 </html>

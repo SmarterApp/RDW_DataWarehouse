@@ -75,7 +75,7 @@ class TestViews(unittest.TestCase):
         queries = urllib.parse.parse_qs(actual_url.query)
         self.assertTrue(len(queries) == 2)
         self.assertIsNotNone(queries['SAMLRequest'])
-        self.assertTrue(inflate_base64_decode(queries['RelayState'][0]).decode('utf-8').endswith('/assets/html/stateStudentList.html'))
+        self.assertTrue(inflate_base64_decode(queries['RelayState'][0]).decode('utf-8').endswith('/dummy/report'))
 
     def test_login_referred_by_logout_url(self):
         self.__request.url = 'http://example.com/dummy/logout'
@@ -192,17 +192,8 @@ class TestViews(unittest.TestCase):
     def test_logout_redirect(self):
         self.__request.GET = {}
         self.__request.GET['SAMLResponse'] = 'junk'
-        self.__request.GET['RelayState'] = 'http://redirect.me'
         http = logout_redirect(self.__request)
-        self.assertIsInstance(http, HTTPFound)
-        self.assertEquals(http.location, self.__request.GET['RelayState'])
-
-    def test_logout_redirect_with_no_relay_state(self):
-        self.__request.GET = {}
-        self.__request.GET['SAMLResponse'] = 'junk'
-        http = logout_redirect(self.__request)
-        self.assertIsInstance(http, HTTPFound)
-        self.assertTrue(http.location.endswith('/assets/html/stateStudentList.html'))
+        self.assertIsInstance(http, Response)
 
 
 if __name__ == "__main__":

@@ -9,19 +9,18 @@ from entities import Student, AssessmentOutcome, Assessment
 
 class TestGenerateData(unittest.TestCase):
 
-    def test_generate_assessment_outcomes_from_student_list_three_claims(self):
+    def test_generate_assessment_outcomes_from_student_object_list_three_claims(self):
         assessment_list = generate_dim_assessment()
         students = make_students_list(5)
-        grade = 5
         subject = 'Math'
         inst_hier_rec_id = 12345
         where_taken = WhereTaken(91845, 'where_taken_test_name')
-        actual_assessment_outcomes = gen_assessment_outcome.generate_assessment_outcomes_from_student_object_list(assessment_list, students, grade, subject, inst_hier_rec_id, where_taken)
+        actual_assessment_outcomes = gen_assessment_outcome.generate_assessment_outcomes_from_student_object_list(assessment_list, students, subject, inst_hier_rec_id, where_taken)
         self.assertEqual(len(actual_assessment_outcomes), len(students) * len(ASSMT_SCORE_YEARS) * 4)
         for outcome in actual_assessment_outcomes:
             self.assertEqual(outcome.where_taken_id, where_taken.where_taken_id)
             self.assertEqual(outcome.where_taken_name, where_taken.where_taken_name)
-            self.assertEqual(outcome.enrl_grade, grade)
+            self.assertEqual(outcome.enrl_grade, students[0].grade)
             # score related
             self.assertTrue(outcome.asmt_score in range(1200, 2401))
             self.assertTrue(outcome.asmt_perf_lvl in [1, 2, 3, 4])
@@ -37,19 +36,18 @@ class TestGenerateData(unittest.TestCase):
             self.assertIsNone(outcome.asmt_claim_4_score_range_min)
             self.assertIsNone(outcome.asmt_claim_4_score_range_max)
 
-    def test_generate_assessment_outcomes_from_student_list_four_claims(self):
+    def test_generate_assessment_outcomes_from_student_object_list_four_claims(self):
         assessment_list = generate_dim_assessment()
         students = make_students_list(5)
-        grade = 5
         subject = 'ELA'
         inst_hier_rec_id = 12345
         where_taken = WhereTaken(91845, 'where_taken_test_name')
-        actual_assessment_outcomes = gen_assessment_outcome.generate_assessment_outcomes_from_student_object_list(assessment_list, students, grade, subject, inst_hier_rec_id, where_taken)
+        actual_assessment_outcomes = gen_assessment_outcome.generate_assessment_outcomes_from_student_object_list(assessment_list, students, subject, inst_hier_rec_id, where_taken)
         self.assertEqual(len(actual_assessment_outcomes), len(students) * len(ASSMT_SCORE_YEARS) * 4)
         for outcome in actual_assessment_outcomes:
             self.assertEqual(outcome.where_taken_id, where_taken.where_taken_id)
             self.assertEqual(outcome.where_taken_name, where_taken.where_taken_name)
-            self.assertEqual(outcome.enrl_grade, grade)
+            self.assertEqual(outcome.enrl_grade, students[0].grade)
             # score related
             self.assertTrue(outcome.asmt_score in range(1200, 2401))
             self.assertTrue(outcome.asmt_perf_lvl in [1, 2, 3, 4])
@@ -110,7 +108,7 @@ class TestGenerateData(unittest.TestCase):
         self.assertTrue(actual_date.month in [4, 5, 6])
         self.assertTrue(actual_date.month in range(1, 29))
 
-    def test_generate_single_assessment_outcome_from_row(self):
+    def test_generate_single_assessment_outcome_from_student_info(self):
         assessment = make_an_assessment('ELA')
         students = make_students_list(1)
         student = students[0]

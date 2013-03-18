@@ -11,18 +11,13 @@ from constants import DATAFILE_PATH
 DBDRIVER = "postgresql+pypostgresql"
 FAO_PATH = DATAFILE_PATH + "/datafiles/fao_csv/fact_assessment_outcome.csv"
 
+
 def generate_fao_from_enrollment(assessment_list, schema_name, metadata, db_connection):
     # Main function, will delegate calls to appropriate functions
     clear_file(FAO_PATH)
-    rows = get_student_list_from_db(schema_name, metadata, db_connection)
+    rows = get_students_for_assessment(schema_name, metadata, db_connection)
     assessment_outcomes = generate_assessment_outcomes_from_student_info(assessment_list, rows)
     create_csv(assessment_outcomes, FAO_PATH)
-
-
-def get_student_list_from_db(schema_name, metadata, db_connection):
-    # Will return a student list from the database.
-    students = get_students_for_assessment(schema_name, metadata, db_connection)
-    return students
 
 
 def get_input_args():
@@ -48,6 +43,7 @@ def get_input_args():
     args = parser.parse_args()
 
     return vars(args)
+
 
 def main():
     '''
@@ -76,7 +72,7 @@ def main():
         #student_list = get_students_for_assessment(schema, metadata, db_connection, input_args)
         assessment_list = generate_dim_assessment()
         generate_fao_from_enrollment(assessment_list, schema, metadata, db_connection)
-        finish_time = datetime.now()    
+        finish_time = datetime.now()
         print("Start  at -- ", start_time)
         print("Finish at -- ", finish_time)
 

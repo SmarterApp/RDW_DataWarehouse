@@ -17,7 +17,7 @@ from entities import (
     AssessmentOutcome, SectionSubject, Assessment, Staff, Student, ExternalUserStudent)
 from helper_entities import State, District, WhereTaken
 from gen_assessments import generate_dim_assessment
-from genpeople import generate_teacher, generate_student_bio_info, generate_staff, generate_student
+from genpeople import generate_teacher, generate_single_student_bio_info, generate_staff, generate_student
 from idgen import IdGen
 from write_to_csv import clear_files, create_csv
 import constants
@@ -113,7 +113,7 @@ def generate_fixture_data(name_lists, db_states_stat, is_small_data_mode):
     total_count = {'state_count': 0, 'district_count': 0, 'school_count': 0, 'student_count': 0}
 
     # add headers to all csv files
-    # add_headers_to_csvs()
+    add_headers_to_csvs()
 
     # generate all assessments
     asmt_list = generate_dim_assessment()
@@ -189,7 +189,8 @@ def generate_fixture_data(name_lists, db_states_stat, is_small_data_mode):
     print("generated number of schools   ", total_count['school_count'])
     print("generated number of students  ", total_count['student_count'])
 
-    return total_count  
+    return total_count
+
 
 # TODO: add comments to this function
 def generate_distribution_lists(state, is_small_data_mode):
@@ -470,7 +471,7 @@ def create_classes_for_school(district, school, state_code, name_list, total_cou
     index = 0
     for grade in range(school.low_grade, school.high_grade + 1):
         # generate student list for a grade
-        students_in_grade = generate_students(number_of_students_in_grades[index], state_code, district, school, grade, name_list)
+        students_in_grade = generate_student_bio_info(number_of_students_in_grades[index], state_code, district.city_zip_map, district.district_id, school.school_id, school.school_name, grade, name_list)
         teachers_in_grade = random.sample(teachers_in_school, number_of_teachers_in_grades[index])
 
         # randomly pick one where_taken in current district for this grade
@@ -481,6 +482,12 @@ def create_classes_for_school(district, school, state_code, name_list, total_cou
 
 
 def generate_teachers(number_of_students, student_teacher_ratio, state_code, district_id, school_id, is_small_data_mode):
+    '''
+    Function to generate teachers in school
+    First, it create list of 'Teacher' objects
+    Second, it create list of non-teaching-staff for a school, and write to csv
+    @return: list of 'Teacher' objects
+    '''
     # generate school teaching-staff
     maximum_num_of_teachers = round(number_of_students / max(1, student_teacher_ratio))
     # we want one or more teachers
@@ -495,23 +502,33 @@ def generate_teachers(number_of_students, student_teacher_ratio, state_code, dis
     # generate school non-teaching staff
     generate_school_non_teaching_staff(is_small_data_mode, number_of_teachers, state_code, district_id, school_id)
 
-    # return teaching-staff
+    # return a list of teachers
     return school_teacher_list
 
 
 def generate_school_non_teaching_staff(is_small_data_mode, number_of_teachers, state_code, district_id, school_id):
+    '''
+    Method to generate non teaching staff in a school
+    '''
     if is_small_data_mode:
         num_of_school_staff = small_set_data_input.SMALL_SET_SCHOOL_STAFF_NUM_IN_SCHOOL
     else:
+        # take a random percentage between 0.1 to 0.3
         staff_percentage = random.uniform(.1, .3)
+        # calculate number of non teaching staff as: percentage * number of teachers(teachers) in school
         num_of_school_staff = int(math.floor(staff_percentage * number_of_teachers))
     school_staff_list = [generate_staff(constants.HIER_USER_TYPE[1], state_code, district_id, school_id)for _i in range(num_of_school_staff)]
     create_csv(school_staff_list, ENTITY_TO_PATH_DICT[Staff])
 
 
 def calculate_number_of_students_teachers_per_grade(high_grade, low_grade, number_of_students, number_of_teachers):
+    '''
+    Function to calculate number of students, and number of teachers per grade
+    @return two lists.
+    First list has value of number of students from low_grade to high_grade
+    Second list has value of number of teachers from low_grade to high_grade
+    '''
     number_of_grades = high_grade - low_grade + 1
-    number_of_students = number_of_students
 
     # calculate basic number of students and teachers in each grade
     number_of_students_per_grade = max(1, math.floor(number_of_students / number_of_grades))
@@ -520,32 +537,42 @@ def calculate_number_of_students_teachers_per_grade(high_grade, low_grade, numbe
     # number of teachers per grade should be less than number_of_teachers
     number_of_teachers_per_grade = min(number_of_teachers_per_grade, number_of_teachers)
 
+    # create a list to store number of students for each grade
+    # from low_grade to (high_grade - 1), number of students in these grades are the same, which is: number_of_students_per_grade
+    # in high_grade, number of students is number_of_students - (number of students from low_grade to high_grade - 1)
     number_of_students_in_grades = [number_of_students_per_grade] * (number_of_grades - 1)
     number_of_students_in_last_grade = number_of_students - sum(number_of_students_in_grades)
     number_of_students_in_grades.append(number_of_students_in_last_grade)
 
+    # create a list to store number of teachers for each grade, use the number_of_teachers_per_grade for all grades
     number_of_teachers_in_grades = [number_of_teachers_per_grade] * number_of_grades
 
     return number_of_students_in_grades, number_of_teachers_in_grades
 
 
-def generate_students(num_students, state_code, district, school, grade, fish_names):
-    students = []
-    external_users = []
+def generate_student_bio_info(num_students, state_code, city_zip_map, district_id, school_id, school_name, grade, fish_names):
+    '''
+    Function to generate list of student_bio_info objects
+    Corresponding external user objects is also generated, and is written into csv file
+    @return: generated list of student_bio_info objects
+    '''
+    student_bio_info_list = []
+    external_users_list = []
 
     for _loop_variable_not_used in range(num_students):
-        city_zip_map = district.city_zip_map
+        city_zip_map = city_zip_map
         city = random.choice(list(city_zip_map.keys()))
         zip_range = city_zip_map[city]
         zip_code = random.randint(zip_range[0], zip_range[1])
 
-        stu, ext_user = generate_student_bio_info(state_code, district.district_id, zip_code, city, school.school_id, school.school_name, grade, fish_names)
-        students.append(stu)
-        external_users.append(ext_user)
+        student_bio_info, external_user = generate_single_student_bio_info(state_code, district_id, zip_code, city, school_id, school_name, grade, fish_names)
+        student_bio_info_list.append(student_bio_info)
+        external_users_list.append(external_user)
 
-    create_csv(external_users, ENTITY_TO_PATH_DICT[ExternalUserStudent])
+    # write external_users_list into external_user_student_rel.csv
+    create_csv(external_users_list, ENTITY_TO_PATH_DICT[ExternalUserStudent])
 
-    return students
+    return student_bio_info_list
 
 
 def create_classes_for_grade(students_in_grade, teachers_in_grade, school, grade, assessment_list, where_taken, total_count, is_small_data_mode):
@@ -569,7 +596,9 @@ def create_classes_for_grade(students_in_grade, teachers_in_grade, school, grade
 
 
 def calculate_number_of_classes(number_of_students_in_grade):
-
+    '''
+    Function to calculate number of classes by the given number of students in grade
+    '''
     # calculate max number of classes per subject (based on the number of students)
     # we want one or more classes as our max
     max_number_of_classes = max(1, round(number_of_students_in_grade / constants.MIN_CLASS_SIZE))
@@ -588,6 +617,9 @@ def calculate_number_of_classes(number_of_students_in_grade):
 
 
 def generate_subject_teachers(teachers_in_grade):
+    '''
+    Function to generate list of teachers for a grade
+    '''
     # Whatever is larger: 1 or (teachers divided by subjects)
     max_number_of_teachers = max(1, round(len(teachers_in_grade) / len(constants.SUBJECTS)))
     # calculate number of teachers for a subject
@@ -632,6 +664,9 @@ def create_sections_in_one_class(subject_name, class_index, students_in_current_
 
 
 def create_section_subjects(students_in_current_class, student_teacher_ratio, class_index, subject_name, state_code, district_id, school_id, grade):
+    '''
+    Function to create list of SectionSubject object
+    '''
     # calculate number of sections
     number_of_students_in_class = len(students_in_current_class)
     number_of_sections = calculate_number_of_sections(number_of_students_in_class, student_teacher_ratio)
@@ -640,7 +675,7 @@ def create_section_subjects(students_in_current_class, student_teacher_ratio, cl
     class_name = subject_name + " " + str(class_index)
     for i in range(number_of_sections):
         section_name = 'section ' + str(i + 1)
-        # create a subject
+        # create a section_subject
         section_subject = create_single_section_subject(section_name, class_name, subject_name, state_code, district_id, school_id, grade)
         section_subject_list.append(section_subject)
     create_csv(section_subject_list, ENTITY_TO_PATH_DICT[SectionSubject])
@@ -649,6 +684,12 @@ def create_section_subjects(students_in_current_class, student_teacher_ratio, cl
 
 
 def create_students_and_staff_in_sections(students_in_current_class, teachers_in_current_class, section_subject_list, state_code, district_id, school_id, grade):
+    '''
+    Function to create list of student objects, and list of teaching staff objects
+    Generated student objects are written into dim_student.csv
+    Generated staff objects are written into dim_staff.csv
+    @return: generated list of student objects
+    '''
     number_of_sections = len(section_subject_list)
     # distribute student in each section
     students_in_each_section = split_list(students_in_current_class, number_of_sections)
@@ -679,6 +720,9 @@ def create_students_and_staff_in_sections(students_in_current_class, teachers_in
 
 
 def calculate_number_of_sections(number_of_students_in_class, student_teacher_ratio):
+    '''
+    Function to calculate number of sections in a class
+    '''
 
     number_of_sections = round(number_of_students_in_class / max(1, student_teacher_ratio))
     if(number_of_students_in_class < constants.MIN_SECTION_SIZE or number_of_sections < 2):
@@ -687,6 +731,9 @@ def calculate_number_of_sections(number_of_students_in_class, student_teacher_ra
 
 
 def create_single_section_subject(section_name, class_name, subject_name, state_code, district_id, school_id, grade):
+    '''
+    Function to create a single SectionSubject object
+    '''
 
     section_id = IdGen().get_id()
     section_rec_id = IdGen().get_id()
@@ -814,6 +861,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     # Determine whether we're generating a whole data set or using existing enrollment data from the db.
+    # TODO: Add code here
     if args.update:
         pass
     # Generate whole data set.

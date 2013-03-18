@@ -16,7 +16,7 @@ class TestGenerateData(unittest.TestCase):
         subject = 'Math'
         inst_hier_rec_id = 12345
         where_taken = WhereTaken(91845, 'where_taken_test_name')
-        actual_assessment_outcomes = gen_assessment_outcome.generate_assessment_outcomes_from_student_list(assessment_list, students, grade, subject, inst_hier_rec_id, where_taken)
+        actual_assessment_outcomes = gen_assessment_outcome.generate_assessment_outcomes_from_student_object_list(assessment_list, students, grade, subject, inst_hier_rec_id, where_taken)
         self.assertEqual(len(actual_assessment_outcomes), len(students) * len(ASSMT_SCORE_YEARS) * 4)
         for outcome in actual_assessment_outcomes:
             self.assertEqual(outcome.where_taken_id, where_taken.where_taken_id)
@@ -44,7 +44,7 @@ class TestGenerateData(unittest.TestCase):
         subject = 'ELA'
         inst_hier_rec_id = 12345
         where_taken = WhereTaken(91845, 'where_taken_test_name')
-        actual_assessment_outcomes = gen_assessment_outcome.generate_assessment_outcomes_from_student_list(assessment_list, students, grade, subject, inst_hier_rec_id, where_taken)
+        actual_assessment_outcomes = gen_assessment_outcome.generate_assessment_outcomes_from_student_object_list(assessment_list, students, grade, subject, inst_hier_rec_id, where_taken)
         self.assertEqual(len(actual_assessment_outcomes), len(students) * len(ASSMT_SCORE_YEARS) * 4)
         for outcome in actual_assessment_outcomes:
             self.assertEqual(outcome.where_taken_id, where_taken.where_taken_id)
@@ -131,7 +131,7 @@ class TestGenerateData(unittest.TestCase):
                 'enrl_grade': student.grade,
                 'subject_name': subject_name,
         }
-        actual_assessment_outcome = gen_assessment_outcome.generate_single_assessment_outcome_from_row(assessment, row)
+        actual_assessment_outcome = gen_assessment_outcome.generate_single_assessment_outcome_from_student_info(assessment, row)
         self.assertIsInstance(actual_assessment_outcome, AssessmentOutcome)
 
     def test_generate_assessment_score_four_claims(self):

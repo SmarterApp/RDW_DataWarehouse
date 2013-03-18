@@ -96,7 +96,7 @@ class TestGenerateData(unittest.TestCase):
         pos = 2
         n = 12
 
-        expected_zipinit, expected_zipdist = generate_data.cal_zipvalues(pos, n)
+        expected_zipinit, expected_zipdist = generate_data.calculate_zip_values(pos, n)
 
         self.assertEqual(3 * ZIPCODE_START, expected_zipinit)
         self.assertEqual(expected_zipdist, (ZIPCODE_RANG_INSTATE // n))
@@ -105,7 +105,7 @@ class TestGenerateData(unittest.TestCase):
         pos = 2
         n = 10000
 
-        expected_zipinit, expected_zipdist = generate_data.cal_zipvalues(pos, n)
+        expected_zipinit, expected_zipdist = generate_data.calculate_zip_values(pos, n)
 
         self.assertEqual(3 * ZIPCODE_START, expected_zipinit)
         self.assertEqual(expected_zipdist, 1)

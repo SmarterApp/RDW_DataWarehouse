@@ -1,10 +1,11 @@
 #global define
 define [
   "jquery"
+  "mustache"
   "cs!edwareDataProxy"
   "cs!edwareGrid"
   "cs!edwareBreadcrumbs"
-], ($, edwareDataProxy, edwareGrid, edwareBreadcrumbs) ->
+], ($, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs) ->
   
   assessmentsData = []
   assessmentsCutPoints = []
@@ -19,6 +20,11 @@ define [
     getStudentData "/data/list_of_students", params, (assessmentsData, contextData) ->
       
       getStudentsConfig "../data/student.json", (studentsConfig) ->
+        
+        if assessmentsData.length > 0
+          output = Mustache.render( JSON.stringify(studentsConfig), assessmentsData[0].assessments)
+          studentsConfig = JSON.parse(output)
+        
         $('#breadcrumb').breadcrumbs(contextData)
         
         edwareGrid.create "gridTable", studentsConfig, assessmentsData
@@ -58,7 +64,7 @@ define [
         method: "GET"
       
       edwareDataProxy.getDatafromSource configURL, options, (data) ->
-        studentColumnCfgs = data.students
+        studentColumnCfgs = data.MATH_ELA
          
         if callback
           callback studentColumnCfgs

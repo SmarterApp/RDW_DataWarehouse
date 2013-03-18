@@ -5,19 +5,12 @@
 			{"name":"Math","items":[
 				{"name":"Teacher","index":"Teacher","field":"assessments.Math.teacher_full_name","width":100,"style":"ui-ellipsis","resizable":false},
 				{"name":"Grade","index":"Grade","field":"assessments.Math.asmt_grade","width":50,"sorttype":"int","align":"center","resizable":false},
-				{"name":"Overall","index":"Overall","field":"assessments.Math.asmt_score","width":130,"formatter":"showOverallConfidence","sorttype":"int","align":"center"},
-				{"name":"{{Math.asmt_claim_1_name}}","index":"Concepts and Procedures","field":"assessments.Math.asmt_claim_1_score","width":90,"formatter":"showClaimsMinMax","sorttype":"int","align":"center"},
-				{"name":"{{Math.asmt_claim_2_name}}","index":"Problem Solving & Modeling and Data Analysis","field":"assessments.Math.asmt_claim_2_score","width":90,"formatter":"showClaimsMinMax","sorttype":"int","align":"center"},
-				{"name":"{{Math.asmt_claim_3_name}}","index":"Communicating Reasoning","field":"assessments.Math.asmt_claim_3_score","width":110,"formatter":"showClaimsMinMax","sorttype":"int","align":"center"}]
+				{"name":"Overall","index":"Overall","field":"assessments.Math.asmt_score","width":130,"formatter":"showOverallConfidence","sorttype":"int","align":"center"}]
 			},
 			{"name":"ELA","items":[
 				{"name":"Teacher","index":"Teacher","field":"assessments.ELA.teacher_full_name","width":100,"style":"ui-ellipsis","resizable":false},
 				{"name":"Grade","index":"Grade","field":"assessments.ELA.asmt_grade","width":50,"sorttype":"int","align":"center","resizable":false},
-				{"name":"Overall","index":"Overall","field":"assessments.ELA.asmt_score","width":130,"formatter":"showOverallConfidence","sorttype":"int","align":"center"},
-				{"name":"{{ELA.asmt_claim_1_name}}","index":"Reading","field":"assessments.ELA.asmt_claim_1_score","width":90,"formatter":"showClaimsMinMax","sorttype":"int","align":"center"},
-				{"name":"{{ELA.asmt_claim_2_name}}","index":"Writing","field":"assessments.ELA.asmt_claim_2_score","width":90,"formatter":"showClaimsMinMax","sorttype":"int","align":"center"},
-				{"name":"{{ELA.asmt_claim_3_name}}","index":"Speaking & Listening","field":"assessments.ELA.asmt_claim_3_score","width":110,"formatter":"showClaimsMinMax","sorttype":"int","align":"center"},
-				{"name":"{{ELA.asmt_claim_4_name}}","index":"Research & Inquiry","field":"assessments.ELA.asmt_claim_4_score","width":110,"formatter":"showClaimsMinMax","sorttype":"int","align":"center"}]
+				{"name":"Overall","index":"Overall","field":"assessments.ELA.asmt_score","width":130,"formatter":"showOverallConfidence","sorttype":"int","align":"center"}]
 			}
 		],
 		"MATH": [
@@ -26,7 +19,10 @@
 			{"name":"Math","items":[
 				{"name":"Teacher","index":"Teacher","field":"assessments.Math.teacher_full_name","width":100,"style":"ui-ellipsis","resizable":false},
 				{"name":"Grade","index":"Grade","field":"assessments.Math.asmt_grade","width":50,"sorttype":"int","align":"center","resizable":false},
-				{"name":"Overall","index":"Overall","field":"assessments.Math.asmt_score","width":130,"formatter":"showOverallConfidence","sorttype":"int","align":"center"}]
+				{"name":"Overall","index":"Overall","field":"assessments.Math.asmt_score","width":130,"formatter":"showOverallConfidence","sorttype":"int","align":"center"},
+				{"name":"{{Math.asmt_claim_1_name}}","index":"Concepts and Procedures","field":"assessments.Math.asmt_claim_1_score","width":90,"formatter":"showClaimsMinMax","sorttype":"int","align":"center"},
+				{"name":"{{Math.asmt_claim_2_name}}","index":"Problem Solving & Modeling and Data Analysis","field":"assessments.Math.asmt_claim_2_score","width":90,"formatter":"showClaimsMinMax","sorttype":"int","align":"center"},
+				{"name":"{{Math.asmt_claim_3_name}}","index":"Communicating Reasoning","field":"assessments.Math.asmt_claim_3_score","width":110,"formatter":"showClaimsMinMax","sorttype":"int","align":"center"}]
 			}
 		],
 		"ELA": [
@@ -35,7 +31,11 @@
 			{"name":"ELA","items":[
 				{"name":"Teacher","index":"Teacher","field":"assessments.ELA.teacher_full_name","width":100,"style":"ui-ellipsis","resizable":false},
 				{"name":"Grade","index":"Grade","field":"assessments.ELA.asmt_grade","width":50,"sorttype":"int","align":"center","resizable":false},
-				{"name":"Overall","index":"Overall","field":"assessments.ELA.asmt_score","width":130,"formatter":"showOverallConfidence","sorttype":"int","align":"center"}]
+				{"name":"Overall","index":"Overall","field":"assessments.ELA.asmt_score","width":130,"formatter":"showOverallConfidence","sorttype":"int","align":"center"},
+				{"name":"{{ELA.asmt_claim_1_name}}","index":"Reading","field":"assessments.ELA.asmt_claim_1_score","width":90,"formatter":"showClaimsMinMax","sorttype":"int","align":"center"},
+				{"name":"{{ELA.asmt_claim_2_name}}","index":"Writing","field":"assessments.ELA.asmt_claim_2_score","width":90,"formatter":"showClaimsMinMax","sorttype":"int","align":"center"},
+				{"name":"{{ELA.asmt_claim_3_name}}","index":"Speaking & Listening","field":"assessments.ELA.asmt_claim_3_score","width":110,"formatter":"showClaimsMinMax","sorttype":"int","align":"center"},
+				{"name":"{{ELA.asmt_claim_4_name}}","index":"Research & Inquiry","field":"assessments.ELA.asmt_claim_4_score","width":110,"formatter":"showClaimsMinMax","sorttype":"int","align":"center"}]
 			}
 		],
 	"customViews": {"MATH_ELA": "Math & ELA Summative",

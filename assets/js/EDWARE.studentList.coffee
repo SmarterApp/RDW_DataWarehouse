@@ -10,6 +10,7 @@ define [
   assessmentsData = []
   assessmentsCutPoints = []
   assessmentCutpoints = {}
+  studentsConfig = {}
    
 
   #
@@ -19,16 +20,24 @@ define [
     
     getStudentData "/data/list_of_students", params, (assessmentsData, contextData) ->
       
-      getStudentsConfig "../data/student.json", (studentsConfig) ->
-        
-        if assessmentsData.length > 0
-          output = Mustache.render( JSON.stringify(studentsConfig), assessmentsData[0].assessments)
-          studentsConfig = JSON.parse(output)
+      getStudentsConfig "../data/student.json", (callback_studentsConfig) ->
+        studentsConfig = callback_studentsConfig
+        createStudentsConfigViewSelect studentsConfig.customViews
         
         $('#breadcrumb').breadcrumbs(contextData)
         
-        edwareGrid.create "gridTable", studentsConfig, assessmentsData
+        renderStudentGrid()
         
+
+
+  renderStudentGrid = ->
+    $("#gbox_gridTable").remove()
+    $("#content").append("<table id='gridTable'></table>")
+    view = $("#select_measure").val()
+    if assessmentsData.length > 0
+          output = Mustache.render( JSON.stringify(studentsConfig[view]), assessmentsData[0].assessments)
+          updatedStudentsConfig = JSON.parse(output)
+    edwareGrid.create "gridTable", updatedStudentsConfig, assessmentsData
         
   getStudentData = (sourceURL, params, callback) ->
     
@@ -64,12 +73,18 @@ define [
         method: "GET"
       
       edwareDataProxy.getDatafromSource configURL, options, (data) ->
-        studentColumnCfgs = data.MATH_ELA
-         
+      
         if callback
-          callback studentColumnCfgs
+          callback data
         else
-          studentColumnCfgs
+          data
+
+
+  createStudentsConfigViewSelect = (customViewsData)->
+    $("#select_measure").change renderStudentGrid
+      
+    $.each customViewsData, (key, value) ->
+      $("#select_measure").append($("<option></option>").attr("value", key).text(value))
 
 
   createStudentGrid: createStudentGrid

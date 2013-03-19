@@ -210,16 +210,21 @@ def get_list_of_students_report(params):
                 student_id_track[result['student_id']] = True
 
         los_results['assessments'] = assessments
-        los_results['cutpoints'] = __get_cut_points(connector, asmtSubject, subjects_map)
-        los_results['context'] = get_breadcrumbs_context(district_id=districtId, school_id=schoolId, asmt_grade=asmtGrade)
+
+        # query dim_asmt to get cutpoints and color metadata
+        asmt_data = __get_asmt_data(connector, asmtSubject)
+        los_results['cutpoints'] = __get_cut_points(asmt_data, subjects_map)
+        los_results['colors'] = __get_colors(asmt_data, subjects_map)
+        los_results['context'] = get_breadcrumbs_context(state_id=stateId, district_id=districtId, school_id=schoolId, asmt_grade=asmtGrade)
         los_results['subjects'] = __reverse_map(subjects_map)
 
         return los_results
 
 
-# returning cutpoints in JSON.
-def __get_cut_points(connector, asmtSubject, subjects_map):
-    cutpoints = {}
+def __get_asmt_data(connector, asmtSubject):
+    '''
+    Queries dim_asmt for cutpoint and custom metadata
+    '''
     dim_asmt = connector.get_table('dim_asmt')
 
     # construct the query
@@ -232,13 +237,21 @@ def __get_cut_points(connector, asmtSubject, subjects_map):
                     dim_asmt.c.asmt_cut_point_1.label("asmt_cut_point_1"),
                     dim_asmt.c.asmt_cut_point_2.label("asmt_cut_point_2"),
                     dim_asmt.c.asmt_cut_point_3.label("asmt_cut_point_3"),
-                    dim_asmt.c.asmt_cut_point_4.label("asmt_cut_point_4")],
+                    dim_asmt.c.asmt_cut_point_4.label("asmt_cut_point_4"),
+                    dim_asmt.c.asmt_custom_metadata.label("asmt_custom_metadata")],
                    from_obj=[dim_asmt])
     if asmtSubject is not None:
         query = query.where(dim_asmt.c.asmt_subject.in_(asmtSubject))
 
-    # run it and format the results
-    results = connector.get_result(query)
+    # run it
+    return connector.get_result(query)
+
+
+def __get_cut_points(results, subjects_map):
+    '''
+    Returns formatted cutpoints in JSON
+    '''
+    cutpoints = {}
     for result in results:
         cutpoint = {}
         cutpoint["asmt_cut_point_name_1"] = result["asmt_cut_point_name_1"]
@@ -253,6 +266,16 @@ def __get_cut_points(connector, asmtSubject, subjects_map):
         cutpoints[subjects_map[result["asmt_subject"]]] = cutpoint
 
     return cutpoints
+
+
+def __get_colors(results, subjects_map):
+    '''
+    Returns formatted colors
+    '''
+    colors = {}
+    for result in results:
+        colors[subjects_map[result["asmt_subject"]]] = result["asmt_custom_metadata"]
+    return colors
 
 
 def __reverse_map(subjects_map):

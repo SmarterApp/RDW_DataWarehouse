@@ -24,8 +24,8 @@ class TestLOS(Unittest_with_smarter_sqlite):
 
         cutpoints = results['cutpoints']
         self.assertEqual(2, len(cutpoints), "cutpoints are ELA and MATH")
-        self.assertTrue('ELA' in cutpoints, 'ELA')
-        self.assertTrue('Math' in cutpoints, 'Math')
+        self.assertTrue('subject2' in cutpoints, 'subject2')
+        self.assertTrue('subject1' in cutpoints, 'subject1')
 
         assessments = results['assessments']
         self.assertEqual(35, len(assessments), "35 assessments")

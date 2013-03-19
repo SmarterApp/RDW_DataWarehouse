@@ -11,6 +11,7 @@ from sqlalchemy.sql import and_
 from smarter.database.connector import SmarterDBConnection
 from edapi.logging import audit_event
 from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
+from smarter.reports.helpers.constants import Constants
 
 
 __districtId = 'districtId'
@@ -139,6 +140,15 @@ def get_list_of_students_report(params):
 
         results = connector.get_result(query)
 
+        subjects_map = {}
+        # This assumes that we take asmtSubject as optional param
+        if asmtSubject is None or (Constants.MATH in asmtSubject and Constants.ELA in asmtSubject):
+            subjects_map = {Constants.MATH: Constants.SUBJECT1, Constants.ELA: Constants.SUBJECT2}
+        elif Constants.MATH in asmtSubject:
+                subjects_map = {Constants.MATH: Constants.SUBJECT1}
+        elif Constants.ELA in asmtSubject:
+                subjects_map = {Constants.ELA: Constants.SUBJECT1}
+
         # Formatting data for Front End
         for result in results:
             student_id = result['student_id']
@@ -183,7 +193,7 @@ def get_list_of_students_report(params):
             assessment['asmt_claim_3_score_range_max'] = result['asmt_claim_3_score_range_max']
             assessment['asmt_claim_4_score_range_max'] = result['asmt_claim_4_score_range_max']
 
-            assessments[result['asmt_subject']] = assessment
+            assessments[subjects_map[result['asmt_subject']]] = assessment
             student['assessments'] = assessments
 
             students[student_id] = student
@@ -200,14 +210,15 @@ def get_list_of_students_report(params):
                 student_id_track[result['student_id']] = True
 
         los_results['assessments'] = assessments
-        los_results['cutpoints'] = __get_cut_points(connector, asmtSubject)
+        los_results['cutpoints'] = __get_cut_points(connector, asmtSubject, subjects_map)
         los_results['context'] = get_breadcrumbs_context(district_id=districtId, school_id=schoolId, asmt_grade=asmtGrade)
+        los_results['subjects'] = __reverse_map(subjects_map)
 
         return los_results
 
 
 # returning cutpoints in JSON.
-def __get_cut_points(connector, asmtSubject):
+def __get_cut_points(connector, asmtSubject, subjects_map):
     cutpoints = {}
     dim_asmt = connector.get_table('dim_asmt')
 
@@ -239,6 +250,13 @@ def __get_cut_points(connector, asmtSubject):
         cutpoint["asmt_cut_point_2"] = result["asmt_cut_point_2"]
         cutpoint["asmt_cut_point_3"] = result["asmt_cut_point_3"]
         cutpoint["asmt_cut_point_4"] = result["asmt_cut_point_4"]
-        cutpoints[result["asmt_subject"]] = cutpoint
+        cutpoints[subjects_map[result["asmt_subject"]]] = cutpoint
 
     return cutpoints
+
+
+def __reverse_map(subjects_map):
+    '''
+    reverse subjects map for FE
+    '''
+    return {v: k for k, v in subjects_map.items()}

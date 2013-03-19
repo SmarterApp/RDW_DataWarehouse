@@ -11,6 +11,7 @@ define [
   assessmentsCutPoints = []
   assessmentCutpoints = {}
   studentsConfig = {}
+  subjectsData = {}
    
 
   #
@@ -18,10 +19,16 @@ define [
   #    
   createStudentGrid = (params) ->
     
-    getStudentData "/data/list_of_students", params, (assessmentsData, contextData) ->
+    getStudentData "/data/list_of_students", params, (assessmentsData, contextData, subjectsData) ->
       
       getStudentsConfig "../data/student.json", (callback_studentsConfig) ->
         studentsConfig = callback_studentsConfig
+        # Use mustache template to replace text in json config
+        if assessmentsData.length > 0
+          # Add assessments data there so we can get column names
+          subjectsData.assessments =  assessmentsData[0].assessments
+          output = Mustache.render(JSON.stringify(studentsConfig), subjectsData)
+          studentsConfig = JSON.parse(output)
         createStudentsConfigViewSelect studentsConfig.customViews
         
         $('#breadcrumb').breadcrumbs(contextData)
@@ -34,10 +41,7 @@ define [
     $("#gbox_gridTable").remove()
     $("#content").append("<table id='gridTable'></table>")
     view = $("#select_measure").val()
-    if assessmentsData.length > 0
-          output = Mustache.render( JSON.stringify(studentsConfig[view]), assessmentsData[0].assessments)
-          updatedStudentsConfig = JSON.parse(output)
-    edwareGrid.create "gridTable", updatedStudentsConfig, assessmentsData
+    edwareGrid.create "gridTable", studentsConfig[view], assessmentsData
         
   getStudentData = (sourceURL, params, callback) ->
     
@@ -56,11 +60,12 @@ define [
         $('#header .topLinks .user').html data.user_info._User__info.name.firstName + ' ' + data.user_info._User__info.name.lastName
       assessmentsData = data.assessments
       contextData = data.context
+      subjectsData = data.subjects
       
       if callback
-        callback assessmentsData, contextData
+        callback assessmentsData, contextData, subjectsData
       else
-        assessmentArray assessmentsData, contextData
+        assessmentArray assessmentsData, contextData, subjectsData
       
       
   getStudentsConfig = (configURL, callback) ->

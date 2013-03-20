@@ -62,6 +62,7 @@ define [
               e.popover
                 html: true
                 placement: "top"
+                template: '<div class="popover"><div class="arrow"></div><div class="popover-inner"><div class="popover-content"><p></p></div></div></div>'
                 content: ->
                   e.find(".progressBar_tooltip").html()
               .popover("show")

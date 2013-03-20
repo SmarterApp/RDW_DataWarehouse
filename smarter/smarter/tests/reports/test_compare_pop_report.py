@@ -165,7 +165,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         summ_results = results[Constants.SUMMARY][0][Constants.RESULTS]
         self.assertEqual(2, len(summ_results))
         subject1 = summ_results[Constants.SUBJECT1]
-        self.assertEqual(81, subject1[Constants.TOTAL])
+        self.assertEqual(79, subject1[Constants.TOTAL])
         self.assertEqual(Constants.MATH, subject1[Constants.ASMT_SUBJECT])
         intervals = subject1[Constants.INTERVALS]
         self.assertEqual(4, len(intervals))

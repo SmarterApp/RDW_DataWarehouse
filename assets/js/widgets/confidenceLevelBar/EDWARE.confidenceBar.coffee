@@ -8,11 +8,13 @@ define [
   #
   #    * Confidence level bar widget
   #    * Generate confidence level bar and calculate cutpoint pixel width, score position, score interval position
+  #    * @param items - data for the confidence level bar
+  #    * @param barWidth - Width of the bar in pixel
   #    
-  $.fn.confidenceLevelBar = (items) ->
+  $.fn.confidenceLevelBar = (items, barWidth) ->
       
       #Total bar width
-      bar_width = 640
+      bar_width = barWidth
       
       #score indicator image width
       score_indicator_width = 13
@@ -57,10 +59,8 @@ define [
       score_text_pos = (items.asmt_score_pos - score_width) + (score_indicator_width / 2)
       score_text_element.css "margin-left", score_text_pos + "px"
       
-      console.log items
-      
-  create = (containerId, data) ->
+  create = (containerId, data, barWidth) ->
     
-     $(containerId).confidenceLevelBar data
+     $(containerId).confidenceLevelBar data, barWidth
 
   create: create

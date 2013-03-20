@@ -2,9 +2,9 @@
     "grid": [
             {"name":"School Name","index":"name","field":"name","width":210,"style":"ui-ellipsis bold","formatter":"showlink","options":{"linkUrl":"studentList.html", "style":"marginLeft20"},"hidden":true,"sortorder":"asc"},
             {"name":"Math","index":"results.subject1.total","field":"results.subject1.total","width":285,"formatter":"performanceBar","options":{"asmt_type":"subject1"},"title":false,"sorttype":"int","align":"center"},
-            {"name":"Total Students","index":"results.subject1.total","field":"results.subject1.total","formatter":"number","options":{"thousandsSeparator": ","},"width":80,"sorttype":"int","align":"center"},
+            {"name":"Total Students","index":"results.subject1.total","field":"results.subject1.total","formatter":"number","options":{"thousandsSeparator": ","},"width":80,"sorttype":"int","align":"left"},
             {"name":"ELA","index":"results.subject2.total","field":"results.subject2.total","width":285,"formatter":"performanceBar", "options":{"asmt_type":"subject2"}, "title":false, "sorttype":"int","align":"center"},
-            {"name":"Total Students","index":"results.subject2.total","field":"results.subject2.total","formatter":"number","options":{"thousandsSeparator": ","},"width":80,"sorttype":"int","align":"center"}
+            {"name":"Total Students","index":"results.subject2.total","field":"results.subject2.total","formatter":"number","options":{"thousandsSeparator": ","},"width":80,"sorttype":"int","align":"left"}
         ],
     "customViews" : {"school": {"name": "Grade", "link": "studentList.html", "id_name": "asmtGrade"}, 
                      "district": {"name": "School Name", "link": "comparingPopulations.html", "id_name": "schoolId"}, 

@@ -82,6 +82,10 @@ h6 {
   h2 {
      color: @color-A1;
   }
+  
+  .surveyMonkeyPopup {
+    display: none;
+  }
 }
   
   
@@ -245,15 +249,31 @@ h6 {
   .ui-jqgrid tr.footrow {
     td {
       height: 100px;
+      
+      &:nth-child(even) {
+       border-right: none !important;
+      }
     }
   }
   
   .ui-jqgrid tr.jqgrow td {
     white-space: normal;
+    
+    &:nth-child(even) {
+      border-right: none !important;
+    }
   }
   
   .ui-jqgrid .ui-jqgrid-view {
     font-size: 13px;
+  }
+  
+  .ui-jqgrid .ui-jqgrid-htable th.ui-th-column:first-child div {
+    margin-left: 20px;
+  }
+  
+  .ui-jqgrid .ui-jqgrid-htable th.ui-th-column:nth-child(3), .ui-jqgrid .ui-jqgrid-htable th.ui-th-column:nth-child(5) {
+    font-size: 10px !important;
   }
 }
 
@@ -264,18 +284,28 @@ h6 {
   .bar {
     font-size: 11px;
     font-weight: normal;
+    cursor: pointer;
   }
 }
-/* Popover/Tooltip styles*/
-
-.popover {
-  width: auto;
-  h3 { display: none; }
   
-  ul li { 
-    margin: 0 10px;
-    font-size: 13px; }
-}
+/* Popover/Tooltip styles*/
+.popover {
+    width: auto;
+    margin-top: -10px; 
+    
+    ul li { 
+      margin: 0 10px;
+      font-size: 13px; }
+      
+    .large {
+      width: 620px;
+      height: 360px;
+      
+      .lead {
+        margin-bottom: 0; 
+      }
+    }
+  }
 
 /* Footer styles */
 #footer {
@@ -296,12 +326,12 @@ h6 {
   padding-left: 20px;
 }
 
-#purpose {
+#purpose, #feedback, #legend {
   padding: 10px;
+  cursor: pointer;
 }
 
 #legend {
-  padding: 10px;
   padding-right: 20px;
 }
 

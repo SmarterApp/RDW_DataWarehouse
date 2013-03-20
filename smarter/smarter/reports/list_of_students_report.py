@@ -17,12 +17,6 @@ from smarter.reports.helpers.assessments import get_overall_asmt_interval,\
 from edapi.exceptions import NotFoundException
 
 
-__districtId = 'districtId'
-__schoolId = 'schoolId'
-__stateId = 'stateId'
-__asmtGrade = 'asmtGrade'
-__asmtSubject = 'asmtSubject'
-
 # Report for List of Students.
 # This function will be refactor when schema is updated to the latest.
 # Output:
@@ -40,28 +34,28 @@ __asmtSubject = 'asmtSubject'
 @report_config(
     name="list_of_students",
     params={
-        __stateId: {
+        Constants.STATEID: {
             "type": "string",
             "required": True,
             "pattern": "^[a-zA-Z0-9\-]{0,50}$",
         },
-        __districtId: {
+        Constants.DISTRICTID: {
             "type": "string",
             "required": True,
             "pattern": "^[a-zA-Z0-9\-]{0,50}$",
         },
-        __schoolId: {
+        Constants.SCHOOLID: {
             "type": "string",
             "required": True,
             "pattern": "^[a-zA-Z0-9\-]{0,50}$",
         },
-        __asmtGrade: {
+        Constants.ASMTGRADE: {
             "type": "string",
             "maxLength": 2,
             "required": True,
             "pattern": "^[K0-9]+$",
         },
-        __asmtSubject: {
+        Constants.ASMTSUBJECT: {
             "type": "array",
             "required": False,
             "minLength": 1,
@@ -75,14 +69,14 @@ __asmtSubject = 'asmtSubject'
 @audit_event()
 @user_info
 def get_list_of_students_report(params):
-    stateId = str(params[__stateId])
-    districtId = str(params[__districtId])
-    schoolId = str(params[__schoolId])
-    asmtGrade = str(params[__asmtGrade])
+    stateId = str(params[Constants.STATEID])
+    districtId = str(params[Constants.DISTRICTID])
+    schoolId = str(params[Constants.SCHOOLID])
+    asmtGrade = str(params[Constants.ASMTGRADE])
     # asmt_subject is optional.
     asmtSubject = None
-    if __asmtSubject in params:
-        asmtSubject = params[__asmtSubject]
+    if Constants.ASMTSUBJECT in params:
+        asmtSubject = params[Constants.ASMTSUBJECT]
     with SmarterDBConnection() as connector:
         # get handle to tables
         dim_student = connector.get_table('dim_student')

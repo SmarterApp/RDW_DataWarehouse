@@ -12,6 +12,7 @@ class Constants():
     STATEID = 'stateId'
     DISTRICTID = 'districtId'
     SCHOOLID = 'schoolId'
+    ASMTSUBJECT = 'asmtSubject'
     SUMMATIVE = 'SUMMATIVE'
     ASMT_SUBJECT = 'asmt_subject'
     ASMT_GRADE = 'asmt_grade'

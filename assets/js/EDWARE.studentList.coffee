@@ -8,8 +8,6 @@ define [
 ], ($, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs) ->
   
   assessmentsData = []
-  assessmentsCutPoints = []
-  assessmentCutpoints = {}
   studentsConfig = {}
   subjectsData = {}
    
@@ -26,8 +24,9 @@ define [
         # Use mustache template to replace text in json config
         if assessmentsData.length > 0
           # Add assessments data there so we can get column names
-          subjectsData.assessments =  assessmentsData[0].assessments
-          output = Mustache.render(JSON.stringify(studentsConfig), subjectsData)
+          combinedData = subjectsData
+          combinedData.assessments =  assessmentsData[0].assessments
+          output = Mustache.render(JSON.stringify(studentsConfig), combinedData)
           studentsConfig = JSON.parse(output)
         createStudentsConfigViewSelect studentsConfig.customViews
         
@@ -62,6 +61,9 @@ define [
       contextData = data.context
       subjectsData = data.subjects
       
+      #  append cutpoints into each individual assessment data
+      appendCutpointsIntoAssessments data.cutpoints
+      
       if callback
         callback assessmentsData, contextData, subjectsData
       else
@@ -91,6 +93,15 @@ define [
     $.each customViewsData, (key, value) ->
       $("#select_measure").append($("<option></option>").attr("value", key).text(value))
 
+  # Appends cutpoints & colors into each assessment
+  appendCutpointsIntoAssessments = (assessmentCutpoints) ->
+    for student in assessmentsData
+      assessment = student['assessments']
+      for subject of subjectsData
+        # check that we have such assessment first, since a student may not have taken it
+        if subject of assessment
+          cutpoint = assessmentCutpoints[subject]
+          assessment[subject].cut_point_intervals = cutpoint
 
   createStudentGrid: createStudentGrid
   

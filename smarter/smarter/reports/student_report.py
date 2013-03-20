@@ -14,7 +14,8 @@ from string import capwords
 from smarter.database.connector import SmarterDBConnection
 from edapi.logging import audit_event
 from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
-from smarter.reports.helpers.assessments import rearrange_cut_points
+from smarter.reports.helpers.assessments import rearrange_cut_points,\
+    get_overall_asmt_interval
 
 
 def __prepare_query(connector, student_id, assessment_id):
@@ -108,7 +109,7 @@ def __arrange_results(results):
         # asmt_type is an enum, so we would to capitalize it to make it presentable
         result['asmt_type'] = capwords(result['asmt_type'], ' ')
 
-        result['asmt_score_interval'] = result['asmt_score'] - result['asmt_score_range_min']
+        result['asmt_score_interval'] = get_overall_asmt_interval(result)
 
         # format and rearrange cutpoints
         result = rearrange_cut_points(result)

@@ -95,8 +95,8 @@ define [
 
   # Appends cutpoints & colors into each assessment
   appendCutpointsIntoAssessments = (assessmentCutpoints) ->
-    for student in assessmentsData
-      assessment = student['assessments']
+    for row in assessmentsData
+      assessment = row['assessments']
       for subject of subjectsData
         # check that we have such assessment first, since a student may not have taken it
         if subject of assessment

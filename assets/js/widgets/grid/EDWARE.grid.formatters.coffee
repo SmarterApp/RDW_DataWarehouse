@@ -36,12 +36,12 @@ define [
     else
       " "
   
-  showClaimsMinMax = (value, options, rowObject) ->
+  showClaimsScoreInterval = (value, options, rowObject) ->
     names = options.colModel.name.split "."
     subject = rowObject[names[0]][names[1]]
    
     if subject
-      "<div>[" + subject[names[2]+ "_range_min"] + "] " + value  + " [" + subject[names[2]+ "_range_max"] + "]</div>"
+      "<div>" + value + " (&#177;" + subject.asmt_score_interval + ")</div>"
     else
       " "
     
@@ -57,5 +57,5 @@ define [
  
   showlink: showlink
   showOverallConfidence: showOverallConfidence
-  showClaimsMinMax: showClaimsMinMax
+  showClaimsScoreInterval: showClaimsScoreInterval
   performanceBar: performanceBar

@@ -33,9 +33,6 @@ class TestLOS(Unittest_with_smarter_sqlite):
         self.assertEqual("Lettie", assessments[10]['student_first_name'], "student_first_name")
         self.assertEqual("Mi-Ha", assessments[29]['student_first_name'], "student_first_name")
 
-        colors = results['colors']
-        self.assertEqual(2, len(colors))
-
     def test_breadcrumbs(self):
         testParam = {}
         testParam['stateId'] = 'NY'
@@ -58,14 +55,10 @@ class TestLOS(Unittest_with_smarter_sqlite):
 
         self.assertTrue('cutpoints' in results, "returning JSON must have cutpoints")
         self.assertTrue('assessments' in results, "returning JSON must have assessments")
-        self.assertTrue('colors' in results)
 
         cutpoints = results['cutpoints']
         self.assertEqual(1, len(cutpoints), "cutpoints are ELA and MATH")
         self.assertTrue('subject1' in cutpoints, 'subject1')
-
-        colors = results['colors']
-        self.assertEqual(1, len(colors))
 
     def test_Math_only(self):
         testParam = {}
@@ -79,7 +72,7 @@ class TestLOS(Unittest_with_smarter_sqlite):
         self.assertTrue('cutpoints' in results, "returning JSON must have cutpoints")
 
         cutpoints = results['cutpoints']
-        self.assertEqual(1, len(cutpoints), "cutpoints are ELA and MATH")
+        self.assertEqual(1, len(cutpoints))
         self.assertTrue('subject1' in cutpoints, 'subject1')
 
     def test_invalid_asmt_subject(self):
@@ -94,12 +87,9 @@ class TestLOS(Unittest_with_smarter_sqlite):
         self.assertTrue('cutpoints' in results, "returning JSON must have cutpoints")
 
         cutpoints = results['cutpoints']
-        self.assertEqual(0, len(cutpoints), "cutpoints are ELA and MATH")
+        self.assertEqual(0, len(cutpoints))
 
         self.assertTrue('assessments' in results, "returning JSON must have assessments")
-
-        colors = results['colors']
-        self.assertEqual(0, len(colors))
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testReport']

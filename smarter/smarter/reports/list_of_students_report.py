@@ -12,6 +12,8 @@ from smarter.database.connector import SmarterDBConnection
 from edapi.logging import audit_event
 from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
 from smarter.reports.helpers.constants import Constants
+from smarter.reports.helpers.assessments import get_overall_asmt_interval,\
+    rearrange_cut_points
 
 
 __districtId = 'districtId'
@@ -175,6 +177,7 @@ def get_list_of_students_report(params):
             assessment['asmt_score'] = result['asmt_score']
             assessment['asmt_score_range_min'] = result['asmt_score_range_min']
             assessment['asmt_score_range_max'] = result['asmt_score_range_max']
+            assessment['asmt_score_interval'] = get_overall_asmt_interval(result)
             assessment['asmt_perf_lvl'] = result['asmt_perf_lvl']
             assessment['asmt_claim_1_name'] = result['asmt_claim_1_name']
             assessment['asmt_claim_2_name'] = result['asmt_claim_2_name']
@@ -213,8 +216,7 @@ def get_list_of_students_report(params):
 
         # query dim_asmt to get cutpoints and color metadata
         asmt_data = __get_asmt_data(connector, asmtSubject)
-        los_results['cutpoints'] = __get_cut_points(asmt_data, subjects_map)
-        los_results['colors'] = __get_colors(asmt_data, subjects_map)
+        los_results['cutpoints'] = __format_cut_points(asmt_data, subjects_map)
         los_results['context'] = get_breadcrumbs_context(state_id=stateId, district_id=districtId, school_id=schoolId, asmt_grade=asmtGrade)
         los_results['subjects'] = __reverse_map(subjects_map)
 
@@ -238,6 +240,7 @@ def __get_asmt_data(connector, asmtSubject):
                     dim_asmt.c.asmt_cut_point_2.label("asmt_cut_point_2"),
                     dim_asmt.c.asmt_cut_point_3.label("asmt_cut_point_3"),
                     dim_asmt.c.asmt_cut_point_4.label("asmt_cut_point_4"),
+                    dim_asmt.c.asmt_score_max.label('asmt_score_max'),
                     dim_asmt.c.asmt_custom_metadata.label("asmt_custom_metadata")],
                    from_obj=[dim_asmt])
     if asmtSubject is not None:
@@ -247,39 +250,22 @@ def __get_asmt_data(connector, asmtSubject):
     return connector.get_result(query)
 
 
-def __get_cut_points(results, subjects_map):
+def __format_cut_points(results, subjects_map):
     '''
     Returns formatted cutpoints in JSON
     '''
     cutpoints = {}
     for result in results:
-        cutpoint = {}
-        cutpoint["asmt_cut_point_name_1"] = result["asmt_cut_point_name_1"]
-        cutpoint["asmt_cut_point_name_2"] = result["asmt_cut_point_name_2"]
-        cutpoint["asmt_cut_point_name_3"] = result["asmt_cut_point_name_3"]
-        cutpoint["asmt_cut_point_name_4"] = result["asmt_cut_point_name_4"]
-        cutpoint["asmt_cut_point_name_5"] = result["asmt_cut_point_name_5"]
-        cutpoint["asmt_cut_point_1"] = result["asmt_cut_point_1"]
-        cutpoint["asmt_cut_point_2"] = result["asmt_cut_point_2"]
-        cutpoint["asmt_cut_point_3"] = result["asmt_cut_point_3"]
-        cutpoint["asmt_cut_point_4"] = result["asmt_cut_point_4"]
+        cutpoint = rearrange_cut_points(result)
         cutpoints[subjects_map[result["asmt_subject"]]] = cutpoint
-
+        # Remove unnecessary data
+        del(cutpoint['asmt_subject'])
+        del(cutpoint['asmt_score_max'])
     return cutpoints
 
 
-def __get_colors(results, subjects_map):
+def __reverse_map(map_object):
     '''
-    Returns formatted colors
+    reverse map for FE
     '''
-    colors = {}
-    for result in results:
-        colors[subjects_map[result["asmt_subject"]]] = result["asmt_custom_metadata"]
-    return colors
-
-
-def __reverse_map(subjects_map):
-    '''
-    reverse subjects map for FE
-    '''
-    return {v: k for k, v in subjects_map.items()}
+    return {v: k for k, v in map_object.items()}

@@ -6,7 +6,8 @@ define [
   "cs!edwareDataProxy"
   "cs!edwareGrid"
   "cs!edwareBreadcrumbs"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs) ->
+  "text!edwareAssessmentDropdownViewSelectionTemplate"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, template) ->
   
   assessmentsData = []
   studentsConfig = {}
@@ -19,6 +20,8 @@ define [
   createStudentGrid = (params) ->
     
     getStudentData "/data/list_of_students", params, (assessmentsData, contextData, subjectsData) ->
+      # set school name
+      setSchoolName contextData.items[1].name
       
       getStudentsConfig "../data/student.json", (callback_studentsConfig) ->
         studentsConfig = callback_studentsConfig
@@ -29,17 +32,19 @@ define [
           combinedData.assessments =  assessmentsData[0].assessments
           output = Mustache.render(JSON.stringify(studentsConfig), combinedData)
           studentsConfig = JSON.parse(output)
-        createStudentsConfigViewSelect studentsConfig.customViews
+        
+        # populate select view
+        defaultView = createStudentsConfigViewSelect studentsConfig.customViews
         
         $('#breadcrumb').breadcrumbs(contextData)
         
-        renderStudentGrid()
+        renderStudentGrid(defaultView)
         
-  renderStudentGrid = ->
+  renderStudentGrid = (viewName)->
     $("#gbox_gridTable").remove()
     $("#content").append("<table id='gridTable'></table>")
-    view = $("#select_measure").val()
-    edwareGrid.create "gridTable", studentsConfig[view], assessmentsData
+    $("#content #select_measure .btn-group .btn.dropdown-toggle #select_measure_current_view").html $('#' + viewName).text()
+    edwareGrid.create "gridTable", studentsConfig[viewName], assessmentsData
     # Survey monkey popup
     $("#feedback").popover
       html: true
@@ -95,12 +100,28 @@ define [
         else
           data
 
+  setSchoolName = (schoolName)->
+    $("#school_name").html schoolName
 
   createStudentsConfigViewSelect = (customViewsData)->
-    $("#select_measure").change renderStudentGrid
-      
-    $.each customViewsData, (key, value) ->
-      $("#select_measure").append($("<option></option>").attr("value", key).text(value))
+    items = []
+    for key of customViewsData
+      value = customViewsData[key]
+      items.push({'key': key, 'value': value})
+
+    output = Mustache.to_html template, {'items': items}
+
+    $("#content #select_measure").append output
+    
+    # add event
+    $(document).on
+     click: (e) ->
+        e.preventDefault()
+        renderStudentGrid $(this).attr "id"
+    , ".viewOptions"
+    
+    # return the first element name as default view
+    items[0].key
 
   # Appends cutpoints & colors into each assessment
   appendCutpointsIntoAssessments = (assessmentCutpoints) ->

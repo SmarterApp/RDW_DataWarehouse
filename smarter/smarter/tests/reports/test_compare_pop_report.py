@@ -7,6 +7,7 @@ import unittest
 from smarter.reports.compare_pop_report import get_comparing_populations_report
 from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite
 from smarter.reports.helpers.constants import Constants
+from edapi.exceptions import NotFoundException
 
 
 class TestComparingPopulations(Unittest_with_smarter_sqlite):
@@ -186,6 +187,9 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         self.assertTrue('text_color' in results[Constants.COLORS][Constants.SUBJECT1])
         self.assertTrue('bg_color' in results[Constants.COLORS][Constants.SUBJECT1])
 
+    def test_invalid_params(self):
+        params = {Constants.STATEID: 'AA'}
+        self.assertRaises(NotFoundException, get_comparing_populations_report, params)
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testReport']

@@ -14,6 +14,7 @@ from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
 from smarter.reports.helpers.constants import Constants
 from smarter.reports.helpers.assessments import get_overall_asmt_interval,\
     rearrange_cut_points
+from edapi.exceptions import NotFoundException
 
 
 __districtId = 'districtId'
@@ -141,6 +142,9 @@ def get_list_of_students_report(params):
         query = query.order_by(dim_student.c.last_name).order_by(dim_student.c.first_name)
 
         results = connector.get_result(query)
+
+        if not results:
+            raise NotFoundException("There are no results")
 
         subjects_map = {}
         # This assumes that we take asmtSubject as optional param

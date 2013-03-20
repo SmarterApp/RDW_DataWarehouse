@@ -6,6 +6,7 @@ Created on Feb 4, 2013
 import unittest
 from smarter.reports.list_of_students_report import get_list_of_students_report
 from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite
+from edapi.exceptions import NotFoundException
 
 
 class TestLOS(Unittest_with_smarter_sqlite):
@@ -82,14 +83,7 @@ class TestLOS(Unittest_with_smarter_sqlite):
         testParam['asmtGrade'] = 3
         testParam['stateId'] = 'NY'
         testParam['asmtSubject'] = ['Dummy']
-        results = get_list_of_students_report(testParam)
-
-        self.assertTrue('cutpoints' in results, "returning JSON must have cutpoints")
-
-        cutpoints = results['cutpoints']
-        self.assertEqual(0, len(cutpoints))
-
-        self.assertTrue('assessments' in results, "returning JSON must have assessments")
+        self.assertRaises(NotFoundException, get_list_of_students_report, testParam)
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testReport']

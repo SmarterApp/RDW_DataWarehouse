@@ -16,6 +16,7 @@ from smarter.reports.exceptions.parameter_exception import InvalidParamterExcept
 from smarter.reports.helpers.constants import Constants
 from edapi.logging import audit_event
 import collections
+from edapi.exceptions import NotFoundException
 
 # Report service for Comparing Populations
 # Output:
@@ -59,6 +60,8 @@ def get_comparing_populations_report(params):
 
     # run query
     results = run_query(**params)
+    if not results:
+        raise NotFoundException("There are no results")
 
     # arrange results
     results = arrange_results(results, **params)

@@ -7,6 +7,7 @@ Created on Jan 17, 2013
 import unittest
 from smarter.reports.student_report import get_student_report, get_student_assessment
 from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite
+from edapi.exceptions import NotFoundException
 
 
 class TestStudentReport(Unittest_with_smarter_sqlite):
@@ -94,5 +95,10 @@ class TestStudentReport(Unittest_with_smarter_sqlite):
         self.assertEqual('Writing', result['asmt_claim_2_name'])
         self.assertEqual('Speaking & Listening', result['asmt_claim_3_name'])
         self.assertEqual('Research & Inquiry', result['asmt_claim_4_name'])
+
+    def test_invalid_student_id(self):
+        params = {'studentId': 'invalid'}
+        self.assertRaises(NotFoundException, get_student_report, params)
+
 if __name__ == '__main__':
     unittest.main()

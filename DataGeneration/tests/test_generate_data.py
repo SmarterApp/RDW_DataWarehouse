@@ -687,7 +687,7 @@ def make_teachers(count, state, district=None):
         district = make_district(state)
     teacher_list = []
     while(count > 0):
-        teacher = Teacher('tfirst_name' + str(count), 'tlast_name' + str(count), district.district_id, state.state_code, teacher_id=count)
+        teacher = Teacher('tfirst_name' + str(count), 'tlast_name' + str(count), district.district_id, state.state_code, teacher_guid=count)
         count -= 1
         teacher_list.append(teacher)
     return teacher_list

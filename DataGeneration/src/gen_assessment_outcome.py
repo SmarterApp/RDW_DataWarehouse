@@ -18,12 +18,12 @@ def generate_assessment_outcomes_from_student_object_list(assessment_list, stude
     # from a list of student objects and from the rows returned from get_list_of_students.py
     fao_student_info_list = []
     for student in student_list:
-        fao_student_info = {'student_id': student.student_id,
-                            'teacher_id': student.teacher_id,
+        fao_student_info = {'student_guid': student.student_guid,
+                            'teacher_guid': student.teacher_guid,
                             'state_code': student.state_code,
-                            'district_id': student.district_id,
-                            'school_id': student.school_id,
-                            'section_id': student.section_id,
+                            'district_guid': student.district_guid,
+                            'school_guid': student.school_guid,
+                            'section_guid': student.section_guid,
                             'inst_hier_rec_id': inst_hier_rec_id,
                             'section_rec_id': student.section_rec_id,
                             'where_taken_id': where_taken.where_taken_id,
@@ -47,7 +47,6 @@ def generate_assessment_outcomes_from_student_info(assessment_list, student_info
 
 
 def generate_single_assessment_outcome_from_student_info(assessment, student_info):
-    id_generator = IdGen()
     date_taken = create_date_taken(assessment.asmt_period_year, assessment.asmt_period)
     asmt_score = generate_assessment_score(assessment)
 
@@ -61,15 +60,14 @@ def generate_single_assessment_outcome_from_student_info(assessment, student_inf
         asmt_claim_4_score_range_max = None
 
     params = {
-        'asmnt_outcome_id': uuid.uuid4(),
-        'asmnt_outcome_external_id': id_generator.get_id(),
+        'asmnt_outcome_rec_id': uuid.uuid4(),
         'asmt_rec_id': assessment.asmt_rec_id,
-        'student_id': student_info['student_id'],
-        'teacher_id': student_info['teacher_id'],
+        'student_guid': student_info['student_guid'],
+        'teacher_guid': student_info['teacher_guid'],
         'state_code': student_info['state_code'],
-        'district_id': student_info['district_id'],
-        'school_id': student_info['school_id'],
-        'section_id': student_info['section_id'],
+        'district_guid': student_info['district_guid'],
+        'school_guid': student_info['school_guid'],
+        'section_guid': student_info['section_guid'],
         'inst_hier_rec_id': student_info['inst_hier_rec_id'],
         'section_rec_id': student_info['section_rec_id'],
         'where_taken_id': student_info['where_taken_id'] if 'where_taken_id' in student_info.keys() else uuid.uuid4(),

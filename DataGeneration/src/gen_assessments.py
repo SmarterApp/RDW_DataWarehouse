@@ -49,7 +49,7 @@ def generate_single_asmt(student_grade, asmt_type, period, subject, year, most_r
     subject -- the subject of the assessment. 'Math' or 'ELA'
     '''
 
-    asmt_id = generate_id()
+    asmt_guid = generate_id()
     asmt_rec_id = generate_id()
     version = generate_version()
 
@@ -67,7 +67,7 @@ def generate_single_asmt(student_grade, asmt_type, period, subject, year, most_r
         claims.append(claim)
 
     params = {
-        'asmt_id': asmt_id,
+        'asmt_guid': asmt_guid,
         'asmt_rec_id': asmt_rec_id,
         'asmt_type': asmt_type,
         'asmt_period': period,

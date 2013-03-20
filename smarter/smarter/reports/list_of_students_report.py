@@ -106,6 +106,8 @@ def get_list_of_students_report(params):
                         fact_asmt_outcome.c.asmt_score_range_min.label('asmt_score_range_min'),
                         fact_asmt_outcome.c.asmt_score_range_max.label('asmt_score_range_max'),
                         fact_asmt_outcome.c.asmt_perf_lvl.label('asmt_perf_lvl'),
+                        dim_asmt.c.asmt_score_min.label('asmt_score_min'),
+                        dim_asmt.c.asmt_score_max.label('asmt_score_max'),
                         dim_asmt.c.asmt_claim_1_name.label('asmt_claim_1_name'),
                         dim_asmt.c.asmt_claim_2_name.label('asmt_claim_2_name'),
                         dim_asmt.c.asmt_claim_3_name.label('asmt_claim_3_name'),
@@ -179,6 +181,8 @@ def get_list_of_students_report(params):
             assessment['teacher_full_name'] = format_full_name_rev(result['teacher_first_name'], result['teacher_middle_name'], result['teacher_last_name'])
             assessment['asmt_grade'] = result['asmt_grade']
             assessment['asmt_score'] = result['asmt_score']
+            assessment['asmt_score_min'] = result['asmt_score_min']
+            assessment['asmt_score_max'] = result['asmt_score_max']
             assessment['asmt_score_range_min'] = result['asmt_score_range_min']
             assessment['asmt_score_range_max'] = result['asmt_score_range_max']
             assessment['asmt_score_interval'] = get_overall_asmt_interval(result)

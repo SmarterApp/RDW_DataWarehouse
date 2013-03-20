@@ -7,7 +7,7 @@ from helper_entities import StudentBioInfo, Claim, AssessmentScore
 from entities import Student, AssessmentOutcome, Assessment
 
 
-class TestGenerateData(unittest.TestCase):
+class TestGenAssessmentOutcome(unittest.TestCase):
 
     def test_generate_assessment_outcomes_from_student_object_list_three_claims(self):
         assessment_list = generate_dim_assessment()

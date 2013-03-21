@@ -22,7 +22,7 @@ define [
     
     getStudentData "/data/list_of_students", params, (assessmentsData, contextData, subjectsData) ->
       # set school name
-      setSchoolName contextData.items[1].name
+      setSchoolName contextData.items[2].name
       
       getStudentsConfig "../data/student.json", (callback_studentsConfig) ->
         studentsConfig = callback_studentsConfig

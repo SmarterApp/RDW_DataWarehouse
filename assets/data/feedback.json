@@ -1,0 +1,12 @@
+{
+  "teacher": {
+    "list_of_students": "https://www.surveymonkey.com/jsEmbed.aspx?sm=6JlFNpc_2fA9NB8dAfsEe3hg_3d_3d",
+    "comparing_populations": "http://www.abc.com",
+    "individual_student_report": "http://www.bing.com"
+  },
+  "student": {
+    "list_of_students": "http://www.yahoo.com",
+    "comparing_populations": "http://www.apple.com",
+    "individual_student_report": "http://www.nbc.com"
+  }
+}

@@ -7,7 +7,8 @@ define [
   "cs!edwareGrid"
   "cs!edwareBreadcrumbs"
   "text!edwareAssessmentDropdownViewSelectionTemplate"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareAssessmentDropdownViewSelectionTemplate) ->
+  "cs!edwareFeedback"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareAssessmentDropdownViewSelectionTemplate, edwareFeedback) ->
   
   assessmentsData = []
   studentsConfig = {}
@@ -39,6 +40,7 @@ define [
         $('#breadcrumb').breadcrumbs(contextData)
         
         renderStudentGrid(defaultView)
+        $('#content .surveyMonkeyPopup').renderFeedback("teacher", "list_of_students")
         
         # Survey monkey popup
         $("#feedback").popover

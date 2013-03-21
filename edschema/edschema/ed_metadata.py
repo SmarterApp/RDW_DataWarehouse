@@ -44,9 +44,9 @@ def generate_ed_metadata(schema_name=None, bind=None):
                         Column('inst_hier_rec_id', String(50), primary_key=True),
                         Column('state_name', String(32), nullable=False),
                         Column('state_code', String(2), nullable=False),
-                        Column('district_id', String(50), nullable=False),
+                        Column('district_guid', String(50), nullable=False),
                         Column('district_name', String(256), nullable=False),
-                        Column('school_id', String(50), nullable=False),
+                        Column('school_guid', String(50), nullable=False),
                         Column('school_name', String(256), nullable=False),
                         Column('school_category', String(20), nullable=False),
                         Column('from_date', String(8), nullable=False),
@@ -55,31 +55,31 @@ def generate_ed_metadata(schema_name=None, bind=None):
                         )
 
     Index('dim_inst_hier_idx', instit_hier.c.inst_hier_rec_id, unique=True)
-    Index('dim_inst_hier_codex', instit_hier.c.state_code, instit_hier.c.district_id, instit_hier.c.school_id, unique=False)
+    Index('dim_inst_hier_codex', instit_hier.c.state_code, instit_hier.c.district_guid, instit_hier.c.school_guid, unique=False)
 
-    sections = Table('dim_section_subject', metadata,
+    sections = Table('dim_section', metadata,
                      Column('section_rec_id', String(50), primary_key=True),
-                     Column('section_id', String(50), nullable=False),
+                     Column('section_guid', String(50), nullable=False),
                      Column('section_name', String(256), nullable=False),
                      Column('grade', String(10), nullable=False),
                      Column('class_name', String(256), nullable=False),
                      Column('subject_name', String(256), nullable=False),
                      Column('state_code', String(2), nullable=False),
-                     Column('district_id', String(50), nullable=False),
-                     Column('school_id', String(50), nullable=False),
+                     Column('district_guid', String(50), nullable=False),
+                     Column('school_guid', String(50), nullable=False),
                      Column('from_date', String(8), nullable=False),
                      Column('to_date', String(8), nullable=True),
                      Column('most_recent', Boolean),
                      )
 
     Index('dim_section_idx', sections.c.section_rec_id, unique=True)
-    Index('dim_section_current_idx', sections.c.section_id, sections.c.subject_name, sections.c.grade, sections.c.most_recent, unique=False)
-    Index('dim_section_dim_inst_hier_idx', sections.c.state_code, sections.c.district_id, sections.c.school_id, sections.c.from_date, sections.c.to_date, unique=False)
+    Index('dim_section_current_idx', sections.c.section_guid, sections.c.subject_name, sections.c.grade, sections.c.most_recent, unique=False)
+    Index('dim_section_dim_inst_hier_idx', sections.c.state_code, sections.c.district_guid, sections.c.school_guid, sections.c.from_date, sections.c.to_date, unique=False)
 
     # NB! Figure out uniques in dim_student
     students = Table('dim_student', metadata,
                      Column('student_rec_id', String(50), primary_key=True),
-                     Column('student_id', String(50), nullable=False),
+                     Column('student_guid', String(50), nullable=False),
                      Column('first_name', String(256), nullable=False),
                      Column('middle_name', String(256), nullable=True),
                      Column('last_name', String(256), nullable=False),
@@ -90,52 +90,52 @@ def generate_ed_metadata(schema_name=None, bind=None):
                      Column('gender', String(10), nullable=False),
                      Column('email', String(256), nullable=False),
                      Column('dob', String(8), nullable=False),
-                     Column('section_id', String(50), nullable=False),
+                     Column('section_guid', String(50), nullable=False),
                      Column('grade', String(10), nullable=False),
                      Column('state_code', String(2), nullable=False),
-                     Column('district_id', String(50), nullable=False),
-                     Column('school_id', String(50), nullable=False),
+                     Column('district_guid', String(50), nullable=False),
+                     Column('school_guid', String(50), nullable=False),
                      Column('from_date', String(8), nullable=False),
                      Column('to_date', String(8), nullable=True),
                      Column('most_recent', Boolean),
                      )
 
-    Index('dim_student_idx', students.c.student_id, students.c.most_recent, unique=False)
+    Index('dim_student_idx', students.c.student_guid, students.c.most_recent, unique=False)
 
     external_user_student = Table('external_user_student_rel', metadata,
-                                  Column('external_user_student_id', String(50), primary_key=True),
-                                  Column('external_user_id', String(256), nullable=False),
-                                  Column('student_id', String(50), nullable=False),  # NB! Figure out uniques in dim_student
+                                  Column('external_user_student_guid', String(50), primary_key=True),
+                                  Column('external_user_guid', String(256), nullable=False),
+                                  Column('student_guid', String(50), nullable=False),  # NB! Figure out uniques in dim_student
                                   Column('from_date', String(8), nullable=False),
                                   Column('to_date', String(8), nullable=True),
                                   )
 
-    Index('dim_external_user_student_idx', external_user_student.c.external_user_student_id, unique=True)
-    Index('dim_external_user_student_student_x', external_user_student.c.external_user_id, external_user_student.c.student_id, unique=True)
+    Index('dim_external_user_student_idx', external_user_student.c.external_user_student_guid, unique=True)
+    Index('dim_external_user_student_student_x', external_user_student.c.external_user_guid, external_user_student.c.student_guid, unique=True)
 
     staff = Table('dim_staff', metadata,
                   Column('staff_rec_id', String(50), primary_key=True),
-                  Column('staff_id', String(50), nullable=False),
+                  Column('staff_guid', String(50), nullable=False),
                   Column('first_name', String(256), nullable=False),
                   Column('middle_name', String(256), nullable=True),
                   Column('last_name', String(256), nullable=False),
-                  Column('section_id', String(50), nullable=False),
+                  Column('section_guid', String(50), nullable=False),
                   Column('hier_user_type', String(10), nullable=False),
                   Column('state_code', String(2), nullable=False),
-                  Column('district_id', String(50), nullable=False),
-                  Column('school_id', String(50), nullable=False),
+                  Column('district_guid', String(50), nullable=False),
+                  Column('school_guid', String(50), nullable=False),
                   Column('from_date', String(8), nullable=False),
                   Column('to_date', String(8), nullable=True),
                   Column('most_recent', Boolean),
                   )
 
     Index('dim_staff_idx', staff.c.staff_rec_id, unique=True)
-    Index('dim_staff_id_currentx', staff.c.staff_id, staff.c.most_recent, unique=False)
-    Index('dim_staff_dim_inst_hier_idx', staff.c.state_code, staff.c.district_id, staff.c.school_id, staff.c.from_date, staff.c.to_date, unique=False)
+    Index('dim_staff_id_currentx', staff.c.staff_guid, staff.c.most_recent, unique=False)
+    Index('dim_staff_dim_inst_hier_idx', staff.c.state_code, staff.c.district_guid, staff.c.school_guid, staff.c.from_date, staff.c.to_date, unique=False)
 
     assessment = Table('dim_asmt', metadata,
                        Column('asmt_rec_id', String(50), primary_key=True),
-                       Column('asmt_id', String(50), nullable=False),
+                       Column('asmt_guid', String(50), nullable=False),
                        Column('asmt_type', String(16), nullable=False),
                        Column('asmt_period', String(32), nullable=False),
                        Column('asmt_period_year', SmallInteger, nullable=False),
@@ -178,15 +178,14 @@ def generate_ed_metadata(schema_name=None, bind=None):
     Index('dim_asmt_id_typex', assessment.c.asmt_rec_id, assessment.c.asmt_type, assessment.c.most_recent, unique=False)
 
     assessment_outcome = Table('fact_asmt_outcome', metadata,
-                               Column('asmnt_outcome_id', String(50), primary_key=True),
-                               Column('asmnt_outcome_external_id', String(256), nullable=False),
+                               Column('asmnt_outcome_rec_id', String(50), primary_key=True),
                                Column('asmt_rec_id', String(50), ForeignKey(assessment.c.asmt_rec_id), nullable=False),
-                               Column('student_id', String(50), nullable=False),
-                               Column('teacher_id', String(50), nullable=False),
+                               Column('student_guid', String(50), nullable=False),
+                               Column('teacher_guid', String(50), nullable=False),
                                Column('state_code', String(2), nullable=False),
-                               Column('district_id', String(50), nullable=False),
-                               Column('school_id', String(50), nullable=False),
-                               Column('section_id', String(50), nullable=False),
+                               Column('district_guid', String(50), nullable=False),
+                               Column('school_guid', String(50), nullable=False),
+                               Column('section_guid', String(50), nullable=False),
                                Column('inst_hier_rec_id', String(50), ForeignKey(instit_hier.c.inst_hier_rec_id), nullable=False),
                                Column('section_rec_id', String(50), ForeignKey(sections.c.section_rec_id), nullable=False),
                                Column('where_taken_id', String(50), nullable=True),  # external id if provided
@@ -218,8 +217,8 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                Column('most_recent', Boolean),
                                )
 
-    Index('fact_asmt_outcome_idx', assessment_outcome.c.asmnt_outcome_id, unique=True)
-    Index('fact_asmt_outcome_hier_keyx', assessment_outcome.c.state_code, assessment_outcome.c.most_recent, assessment_outcome.c.district_id, assessment_outcome.c.school_id, unique=False)
+    Index('fact_asmt_outcome_idx', assessment_outcome.c.asmnt_outcome_rec_id, unique=True)
+    Index('fact_asmt_outcome_hier_keyx', assessment_outcome.c.state_code, assessment_outcome.c.most_recent, assessment_outcome.c.district_guid, assessment_outcome.c.school_guid, unique=False)
 
     return metadata
 

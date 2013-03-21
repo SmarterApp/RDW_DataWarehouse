@@ -1,11 +1,9 @@
 define [
   'jquery'
-  'mustache'
   "cs!edwareDataProxy"
-  "text!templates/feedback/feedback.html"
-], ($, Mustache, edwareDataProxy, template) ->
+], ($, edwareDataProxy) ->
     
-  $.fn.renderFeedback = (role, reportName)->
+  renderFeedback = (role, reportName)->
     self = this
     feedbackMapping = {}
     options =
@@ -16,12 +14,23 @@ define [
       feedbackdata = {}
       if role of feedbackMapping
         if reportName of feedbackMapping[role]
-          feedbackdata.url = feedbackMapping[role][reportName]
-      output = Mustache.to_html template, feedbackdata
-      document.getElementById("survey").innerHTML = output
-      #$('#content .surveyMonkeyPopup').load('https://www.surveymonkey.com/jsEmbed.aspx?sm=6JlFNpc_2fA9NB8dAfsEe3hg_3d_3d')
-      $.getScript "https://www.surveymonkey.com/jsEmbed.aspx?sm=6JlFNpc_2fA9NB8dAfsEe3hg_3d_3d", (data, textStatus, jqxhr) ->
-        console.log data #data returned
-        console.log textStatus #success
-        console.log jqxhr.status #200
-        console.log "Load was performed."
+          feedbackdata = feedbackMapping[role][reportName]
+          
+          iframeURL =  $("#surveyMonkeyInfo").find("iframe").attr("src")       
+          iframeURL = iframeURL.split("?")[0]
+          iframeURL = iframeURL + "?sm=" + feedbackdata         
+          $("#surveyMonkeyInfo").find("iframe").attr("src", iframeURL)
+          console.log $("#surveyMonkeyInfo").find("iframe").attr("src") 
+          
+          # Survey monkey popup
+          $("#feedback").popover
+            html: true
+            placement: "top"
+            container: "footer"
+            title: ->
+                '<div class="pull-right"><button class="btn" id="close" type="button" onclick="$(&quot;#feedback&quot;).popover(&quot;hide&quot;);">Hide</button></div><div class="lead">Survery Monkey</div>'
+            template: '<div class="popover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
+            content: ->
+              $(".surveyMonkeyPopup").html()
+
+  renderFeedback: renderFeedback

@@ -18,25 +18,14 @@ define [
   #    
   createStudentGrid = (params) ->
     
+    edwareFeedback.renderFeedback("teacher", "list_of_students") 
+    
     getStudentData "/data/list_of_students", params, (assessmentsData, contextData) ->
       
       getStudentsConfig "../data/student.json", (studentsConfig) ->
         $('#breadcrumb').breadcrumbs(contextData)
         
-        $('#content .surveyMonkeyPopup').renderFeedback("teacher", "list_of_students")
-        
         edwareGrid.create "gridTable", studentsConfig, assessmentsData
-        
-        # Survey monkey popup
-        $("#feedback").popover
-          html: true
-          placement: "top"
-          container: "footer"
-          title: ->
-              '<div class="pull-right"><button class="btn" id="close" type="button" onclick="$(&quot;#feedback&quot;).popover(&quot;hide&quot;);">Hide</button></div><div class="lead">Survery Monkey</div>'
-          template: '<div class="popover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
-          content: ->
-            $(".surveyMonkeyPopup").html()
         
   getStudentData = (sourceURL, params, callback) ->
     

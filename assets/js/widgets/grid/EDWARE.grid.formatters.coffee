@@ -36,12 +36,12 @@ define [
     else
       " "
   
-  showClaimsScoreInterval = (value, options, rowObject) ->
+  showConfidence = (value, options, rowObject) ->
     names = options.colModel.name.split "."
     subject = rowObject[names[0]][names[1]]
-   
+    confidence = subject[names[2]][names[3]]['confidence']
     if subject
-      "<div>" + value + " (&#177;" + subject.asmt_score_interval + ")</div>"
+      "<div>" + value + " (&#177;" + confidence + ")</div>"
     else
       " "
     
@@ -57,5 +57,5 @@ define [
  
   showlink: showlink
   showOverallConfidence: showOverallConfidence
-  showClaimsScoreInterval: showClaimsScoreInterval
+  showConfidence: showConfidence
   performanceBar: performanceBar

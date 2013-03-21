@@ -20,9 +20,9 @@
 				{"name":"Teacher","index":"Teacher","field":"assessments.subject1.teacher_full_name","width":100,"style":"ui-ellipsis","resizable":false},
 				{"name":"Grade","index":"Grade","field":"assessments.subject1.asmt_grade","width":50,"sorttype":"int","align":"center","resizable":false},
 				{"name":"Overall","index":"Overall","field":"assessments.subject1.asmt_score","width":170,"formatter":"showOverallConfidence","sorttype":"int","align":"center"},
-				{"name":"{{assessments.subject1.asmt_claim_1_name}}","index":"{{assessments.subject1.asmt_claim_1_name}}","field":"assessments.subject1.asmt_claim_1_score","width":140,"formatter":"showClaimsScoreInterval","sorttype":"int","align":"center"},
-				{"name":"{{assessments.subject1.asmt_claim_2_name}}","index":"{{assessments.subject1.asmt_claim_2_name}}","field":"assessments.subject1.asmt_claim_2_score","width":140,"formatter":"showClaimsScoreInterval","sorttype":"int","align":"center"},
-				{"name":"{{assessments.subject1.asmt_claim_3_name}}","index":"{{assessments.subject1.asmt_claim_3_name}}","field":"assessments.subject1.asmt_claim_3_score","width":140,"formatter":"showClaimsScoreInterval","sorttype":"int","align":"center"}]
+				{"name":"{{assessments.subject1.claims.0.name}}","index":"{{assessments.subject1.claims.0.name}}","field":"assessments.subject1.claims.0.score","width":140,"formatter":"showConfidence","sorttype":"int","align":"center"},
+				{"name":"{{assessments.subject1.claims.1.name}}","index":"{{assessments.subject1.claims.1.name}}","field":"assessments.subject1.claims.1.score","width":140,"formatter":"showConfidence","sorttype":"int","align":"center"},
+				{"name":"{{assessments.subject1.claims.2.name}}","index":"{{assessments.subject1.claims.2.name}}","field":"assessments.subject1.claims.2.score","width":140,"formatter":"showConfidence","sorttype":"int","align":"center"}]
 			}
 		],
 		"{{subject2}}": [
@@ -32,10 +32,10 @@
 				{"name":"Teacher","index":"Teacher","field":"assessments.subject2.teacher_full_name","width":100,"style":"ui-ellipsis","resizable":false},
 				{"name":"Grade","index":"Grade","field":"assessments.subject2.asmt_grade","width":50,"sorttype":"int","align":"center","resizable":false},
 				{"name":"Overall","index":"Overall","field":"assessments.subject2.asmt_score","width":185,"formatter":"showOverallConfidence","sorttype":"int","align":"center"},
-				{"name":"{{assessments.subject2.asmt_claim_1_name}}","index":"{{assessments.subject2.asmt_claim_1_name}}","field":"assessments.subject2.asmt_claim_1_score","width":90,"formatter":"showClaimsScoreInterval","sorttype":"int","align":"center"},
-				{"name":"{{assessments.subject2.asmt_claim_2_name}}","index":"{{assessments.subject2.asmt_claim_2_name}}","field":"assessments.subject2.asmt_claim_2_score","width":90,"formatter":"showClaimsScoreInterval","sorttype":"int","align":"center"},
-				{"name":"{{assessments.subject2.asmt_claim_3_name}}","index":"{{assessments.subject2.asmt_claim_3_name}}","field":"assessments.subject2.asmt_claim_3_score","width":110,"formatter":"showClaimsScoreInterval","sorttype":"int","align":"center"},
-				{"name":"{{assessments.subject2.asmt_claim_4_name}}","index":"{{assessments.subject2.asmt_claim_4_name}}","field":"assessments.subject2.asmt_claim_4_score","width":110,"formatter":"showClaimsScoreInterval","sorttype":"int","align":"center"}]
+				{"name":"{{assessments.subject2.claims.0.name}}","index":"{{assessments.subject2.claims.0.name}}","field":"assessments.subject2.claims.0.score","width":90,"formatter":"showConfidence","sorttype":"int","align":"center"},
+				{"name":"{{assessments.subject2.claims.1.name}}","index":"{{assessments.subject2.claims.1.name}}","field":"assessments.subject2.claims.1.score","width":90,"formatter":"showConfidence","sorttype":"int","align":"center"},
+				{"name":"{{assessments.subject2.claims.2.name}}","index":"{{assessments.subject2.claims.2.name}}","field":"assessments.subject2.claims.2.score","width":110,"formatter":"showConfidence","sorttype":"int","align":"center"},
+				{"name":"{{assessments.subject2.claims.3.name}}","index":"{{assessments.subject2.claims.3.name}}","field":"assessments.subject2.claims.3.score","width":110,"formatter":"showConfidence","sorttype":"int","align":"center"}]
 			}
 		],
 	"customViews": {"{{subject1}}_{{subject2}}": "{{subject1}} & {{subject2}} Summative",

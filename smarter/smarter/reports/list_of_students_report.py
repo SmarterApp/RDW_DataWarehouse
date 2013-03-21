@@ -13,7 +13,7 @@ from edapi.logging import audit_event
 from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
 from smarter.reports.helpers.constants import Constants
 from smarter.reports.helpers.assessments import get_overall_asmt_interval,\
-    rearrange_cut_points
+    rearrange_cut_points, get_claims
 from edapi.exceptions import NotFoundException
 
 
@@ -181,22 +181,7 @@ def get_list_of_students_report(params):
             assessment['asmt_score_range_max'] = result['asmt_score_range_max']
             assessment['asmt_score_interval'] = get_overall_asmt_interval(result)
             assessment['asmt_perf_lvl'] = result['asmt_perf_lvl']
-            assessment['asmt_claim_1_name'] = result['asmt_claim_1_name']
-            assessment['asmt_claim_2_name'] = result['asmt_claim_2_name']
-            assessment['asmt_claim_3_name'] = result['asmt_claim_3_name']
-            assessment['asmt_claim_4_name'] = result['asmt_claim_4_name']
-            assessment['asmt_claim_1_score'] = result['asmt_claim_1_score']
-            assessment['asmt_claim_2_score'] = result['asmt_claim_2_score']
-            assessment['asmt_claim_3_score'] = result['asmt_claim_3_score']
-            assessment['asmt_claim_4_score'] = result['asmt_claim_4_score']
-            assessment['asmt_claim_1_score_range_min'] = result['asmt_claim_1_score_range_min']
-            assessment['asmt_claim_2_score_range_min'] = result['asmt_claim_2_score_range_min']
-            assessment['asmt_claim_3_score_range_min'] = result['asmt_claim_3_score_range_min']
-            assessment['asmt_claim_4_score_range_min'] = result['asmt_claim_4_score_range_min']
-            assessment['asmt_claim_1_score_range_max'] = result['asmt_claim_1_score_range_max']
-            assessment['asmt_claim_2_score_range_max'] = result['asmt_claim_2_score_range_max']
-            assessment['asmt_claim_3_score_range_max'] = result['asmt_claim_3_score_range_max']
-            assessment['asmt_claim_4_score_range_max'] = result['asmt_claim_4_score_range_max']
+            assessment['claims'] = get_claims(number_of_claims=4, result=result)
 
             assessments[subjects_map[result['asmt_subject']]] = assessment
             student['assessments'] = assessments

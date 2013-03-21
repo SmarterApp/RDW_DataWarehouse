@@ -51,3 +51,34 @@ def rearrange_cut_points(result):
     if 'asmt_cut_point_name_5' in result:
         del(result['asmt_cut_point_name_5'])
     return result
+
+def get_claims(number_of_claims=0, result=None):
+    claims = []
+    for index in range(1, number_of_claims + 1):
+            claim_name = result.get('asmt_claim_{0}_name'.format(index))
+            if claim_name is not None and len(claim_name) > 0:
+                claim_score = result.get('asmt_claim_{0}_score'.format(index))
+                claim_object = {'name': claim_name,
+                                'score': str(claim_score),
+                                'indexer': str(index),
+                                'range_min_score': str(result.get('asmt_claim_{0}_score_range_min'.format(index))),
+                                'range_max_score': str(result.get('asmt_claim_{0}_score_range_max'.format(index))),
+                                'max_score': str(result.get('asmt_claim_{0}_score_max'.format(index))),
+                                'min_score': str(result.get('asmt_claim_{0}_score_min'.format(index))),
+                                'confidence': str(claim_score - result.get('asmt_claim_{0}_score_range_min'.format(index))),
+                                }
+                # deleting duplicated record
+                if 'asmt_claim_{0}_name'.format(index) in result:
+                    del(result['asmt_claim_{0}_name'.format(index)])
+                if 'asmt_claim_{0}_score'.format(index) in result:
+                    del(result['asmt_claim_{0}_score'.format(index)])
+                if 'asmt_claim_{0}_score_range_min'.format(index) in result:
+                    del(result['asmt_claim_{0}_score_range_min'.format(index)])
+                if 'asmt_claim_{0}_score_range_max'.format(index) in result:
+                    del(result['asmt_claim_{0}_score_range_max'.format(index)])
+                if 'asmt_claim_{0}_score_min'.format(index) in result:
+                    del(result['asmt_claim_{0}_score_min'.format(index)])
+                if 'asmt_claim_{0}_score_max'.format(index) in result:
+                    del(result['asmt_claim_{0}_score_max'.format(index)])
+                claims.append(claim_object)
+    return claims

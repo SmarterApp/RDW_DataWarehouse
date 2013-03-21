@@ -15,7 +15,7 @@ from smarter.database.connector import SmarterDBConnection
 from edapi.logging import audit_event
 from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
 from smarter.reports.helpers.assessments import rearrange_cut_points,\
-    get_overall_asmt_interval
+    get_overall_asmt_interval, get_claims
 
 
 def __prepare_query(connector, student_id, assessment_id):
@@ -114,25 +114,7 @@ def __arrange_results(results):
         # format and rearrange cutpoints
         result = rearrange_cut_points(result)
 
-        result['claims'] = []
-
-        for i in range(1, 5):
-            claim_score = result['asmt_claim_{0}_score'.format(i)]
-            if claim_score is not None and claim_score > 0:
-                claim_object = {'name': str(result['asmt_claim_{0}_name'.format(i)]),
-                                'score': str(claim_score),
-                                'indexer': str(i),
-                                'range_min_score': str(result['asmt_claim_{0}_score_range_min'.format(i)]),
-                                'range_max_score': str(result['asmt_claim_{0}_score_range_max'.format(i)]),
-                                'max_score': str(result['asmt_claim_{0}_score_max'.format(i)]),
-                                'min_score': str(result['asmt_claim_{0}_score_min'.format(i)]),
-                                'confidence': str(claim_score - result['asmt_claim_{0}_score_range_min'.format(i)]),
-                                }
-                del(result['asmt_claim_{0}_score_range_min'.format(i)])
-                del(result['asmt_claim_{0}_score_range_max'.format(i)])
-                del(result['asmt_claim_{0}_score_min'.format(i)])
-                del(result['asmt_claim_{0}_score_max'.format(i)])
-                result['claims'].append(claim_object)
+        result['claims'] = get_claims(number_of_claims=5, result=result)
 
     # rearranging the json so we could use it more easily with mustache
     results = {"items": results}

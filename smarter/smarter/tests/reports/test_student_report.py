@@ -17,8 +17,8 @@ class TestStudentReport(Unittest_with_smarter_sqlite):
         result = get_student_report(params)['items']
         self.assertEqual(1, len(result), "studentId should have 1 report")
         self.assertEqual('ELA', result[0]['asmt_subject'], 'asmt_subject')
-        self.assertEqual(89, result[0]['asmt_claim_1_score'], 'asmt_claim_1_score 88')
-        self.assertEqual('Research & Inquiry', result[0]['asmt_claim_4_name'], 'asmt_claim_4_name Spelling')
+        self.assertEqual('89', result[0]['claims'][0]['score'], 'asmt_claim_1_score 88')
+        self.assertEqual('Research & Inquiry', result[0]['claims'][3]['name'], 'asmt_claim_4_name Spelling')
 
     def test_student_assessment_id(self):
         params = {"studentId": 'dae1acf4-afb0-4013-90ba-9dcde4b25621'}
@@ -86,15 +86,16 @@ class TestStudentReport(Unittest_with_smarter_sqlite):
         params = {"studentId": 'dae1acf4-afb0-4013-90ba-9dcde4b25621'}
         items = get_student_report(params)['items']
         result = items[0]
-        self.assertEqual('Concepts & Procedures', result['asmt_claim_1_name'])
-        self.assertEqual('Problem Solving and Modeling & Data Analysis', result['asmt_claim_2_name'])
-        self.assertEqual('Communicating Reasoning', result['asmt_claim_3_name'])
-        self.assertEqual(None, result['asmt_claim_4_name'])
+        self.assertEqual(3,len(result['claims']))
+        self.assertEqual('Concepts & Procedures', result['claims'][0]['name'])
+        self.assertEqual('Problem Solving and Modeling & Data Analysis', result['claims'][1]['name'])
+        self.assertEqual('Communicating Reasoning', result['claims'][2]['name'])
         result = items[1]
-        self.assertEqual('Reading', result['asmt_claim_1_name'])
-        self.assertEqual('Writing', result['asmt_claim_2_name'])
-        self.assertEqual('Speaking & Listening', result['asmt_claim_3_name'])
-        self.assertEqual('Research & Inquiry', result['asmt_claim_4_name'])
+        self.assertEqual(4,len(result['claims']))
+        self.assertEqual('Reading', result['claims'][0]['name'])
+        self.assertEqual('Writing', result['claims'][1]['name'])
+        self.assertEqual('Speaking & Listening', result['claims'][2]['name'])
+        self.assertEqual('Research & Inquiry', result['claims'][3]['name'])
 
     def test_invalid_student_id(self):
         params = {'studentId': 'invalid'}

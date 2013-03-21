@@ -7,7 +7,7 @@ define [
   "cs!edwareGrid"
   "cs!edwareBreadcrumbs"
   "text!edwareAssessmentDropdownViewSelectionTemplate"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, template) ->
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareAssessmentDropdownViewSelectionTemplate) ->
   
   assessmentsData = []
   studentsConfig = {}
@@ -40,21 +40,23 @@ define [
         
         renderStudentGrid(defaultView)
         
+        # Survey monkey popup
+        $("#feedback").popover
+          html: true
+          placement: "top"
+          container: "footer"
+          title: ->
+              '<div class="pull-right"><button class="btn" id="close" type="button" onclick="$(&quot;#feedback&quot;).popover(&quot;hide&quot;);">Hide</button></div><div class="lead">Survery Monkey</div>'
+          template: '<div class="popover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
+          content: ->
+            $(".surveyMonkeyPopup").html()
+        
   renderStudentGrid = (viewName)->
     $("#gbox_gridTable").remove()
     $("#content").append("<table id='gridTable'></table>")
     $("#content #select_measure .btn-group .btn.dropdown-toggle #select_measure_current_view").html $('#' + viewName).text()
     edwareGrid.create "gridTable", studentsConfig[viewName], assessmentsData
-    # Survey monkey popup
-    $("#feedback").popover
-      html: true
-      placement: "top"
-      container: "footer"
-      title: ->
-          '<div class="pull-right"><button class="btn" id="close" type="button" onclick="$(&quot;#feedback&quot;).popover(&quot;hide&quot;);">Hide</button></div><div class="lead">Survery Monkey</div>'
-      template: '<div class="popover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
-      content: ->
-        $(".surveyMonkeyPopup").html()
+
         
   getStudentData = (sourceURL, params, callback) ->
     
@@ -109,7 +111,7 @@ define [
       value = customViewsData[key]
       items.push({'key': key, 'value': value})
 
-    output = Mustache.to_html template, {'items': items}
+    output = Mustache.to_html edwareAssessmentDropdownViewSelectionTemplate, {'items': items}
 
     $("#content #select_measure").append output
     

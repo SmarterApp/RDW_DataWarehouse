@@ -5,7 +5,8 @@ define [
   "cs!edwareDataProxy"
   "cs!edwareGrid"
   "cs!edwareBreadcrumbs"
-], ($, bootstrap, edwareDataProxy, edwareGrid, edwareBreadcrumbs) ->
+  "cs!edwareFeedback"
+], ($, bootstrap, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareFeedback) ->
   
   assessmentsData = []
   assessmentsCutPoints = []
@@ -21,6 +22,8 @@ define [
       
       getStudentsConfig "../data/student.json", (studentsConfig) ->
         $('#breadcrumb').breadcrumbs(contextData)
+        
+        $('#content .surveyMonkeyPopup').renderFeedback("teacher", "list_of_students")
         
         edwareGrid.create "gridTable", studentsConfig, assessmentsData
         

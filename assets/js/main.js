@@ -18,6 +18,7 @@ require({
 		edwareBreadcrumbs: 'widgets/breadcrumb/EDWARE.breadcrumbs',
 		edwareConfidenceLevelBar: 'widgets/confidenceLevelBar/EDWARE.confidenceBar',
 		edwarePopulationBar: 'widgets/populationBar/EDWARE.populationBar',
+		edwareFeedback: 'EDWARE.feedback',
 		
 		// Templates
 		edwareBreadcrumbsTemplate: 'widgets/breadcrumb/template.html',

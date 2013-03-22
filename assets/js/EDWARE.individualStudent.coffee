@@ -125,7 +125,7 @@ define [
       while i < data.items.length
         item = data.items[i]       
         barContainer = "#assessmentSection" + i + " .confidenceLevel"
-        edwareConfidenceLevelBar.create barContainer, item, 640        
+        edwareConfidenceLevelBar.create item, 640, barContainer        
         i++
 
   #

@@ -87,8 +87,60 @@ h6 {
     display: none;
   }
 }
-  
-  
+
+table {  
+  .asmtScore {
+    float: left;
+    font-weight: bold;
+    font-size: 14px;
+    margin-right: 10px;
+  }
+  .confidenceLevel {
+    height: 30px;
+    margin-top: 5px;
+    
+    .progress {
+      height: 14px;
+      margin-top: 0;
+      margin-left: 44px;
+    }
+    .overall_score, .cutPointsBar {
+      display: none;
+    }
+    
+    .scoreWrapper {
+      margin-left: 44px;
+    }
+    .transWrapper {
+      margin-top: auto;
+      margin-left: 44px;
+    }
+    
+    .indicator {
+      margin-top: -6px;
+      height: 14px;
+    }
+    .transImage1 {
+      height: 14px;
+      background-image: url("../images/overlay_left88x14.png");
+    }
+    
+    .transImage2 {
+      height: 14px;
+      background-image: url("../images/overlay_right88x14.png");
+    }
+    
+    .transImage1.confLevelRight {
+      background-image: url("../images/overlay_left88x14.png");
+    }
+    
+    .transImage2.confLevelRight {
+      background-image: url("../images/overlay_right88x14.png");
+    }
+  }
+}
+
+
 /* Indivial Student Report styles */
 .placeholder {
   background: @color-B5;
@@ -291,7 +343,8 @@ h6 {
 /* Popover/Tooltip styles*/
 .popover {
     width: auto;
-    margin-top: -10px; 
+    margin-top: -10px;
+    z-index: 5000; 
     
     ul li { 
       margin: 0 10px;

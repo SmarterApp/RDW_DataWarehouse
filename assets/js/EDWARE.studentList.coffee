@@ -58,6 +58,8 @@ define [
     $("#gbox_gridTable").remove()
     $("#content").append("<table id='gridTable'></table>")
     $("#content #select_measure .btn-group .btn.dropdown-toggle #select_measure_current_view").html $('#' + viewName).text()
+    for assessment in assessmentsData
+      
     edwareGrid.create "gridTable", studentsConfig[viewName], assessmentsData
 
         

@@ -105,11 +105,6 @@ define [
           claim = items.claims[j]
           claim.assessmentUC = items.asmt_subject.toUpperCase()
           
-          # Temporary fix for displaying claim number
-          claim.number = "Claim " + claim.indexer
-          claim.number = "Claim 2 & 4" if claim.indexer is "2" and claim.assessmentUC is "MATH"
-          
-          
           claim.claim_score_weight = claimScoreWeightArray[claim.assessmentUC][j]
           j++
         

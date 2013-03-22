@@ -59,6 +59,7 @@ def get_claims(number_of_claims=0, result=None):
             if claim_name is not None and len(claim_name) > 0:
                 claim_score = result.get('asmt_claim_{0}_score'.format(index))
                 claim_object = {'name': claim_name,
+                                'name2': 'Claim ' + str(index),
                                 'score': str(claim_score),
                                 'indexer': str(index),
                                 'range_min_score': str(result.get('asmt_claim_{0}_score_range_min'.format(index))),
@@ -67,6 +68,10 @@ def get_claims(number_of_claims=0, result=None):
                                 'min_score': str(result.get('asmt_claim_{0}_score_min'.format(index))),
                                 'confidence': str(claim_score - result.get('asmt_claim_{0}_score_range_min'.format(index))),
                                 }
+                # TODO: refactor, process by subject
+                if result['asmt_subject'] == 'Math' and index == 2:
+                    claim_object['name2'] = 'Claim 2 & 4'
+                    
                 # deleting duplicated record
                 if 'asmt_claim_{0}_name'.format(index) in result:
                     del(result['asmt_claim_{0}_name'.format(index)])

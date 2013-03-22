@@ -11,10 +11,9 @@ define [
   "cs!edwareUtil"
 ], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareAssessmentDropdownViewSelectionTemplate, edwareFeedback, edwareUtil) ->
 
-  assessmentsData = []
+  assessmentsData = {}
   studentsConfig = {}
   subjectsData = {}
-   
 
   #
   #    * Create Student data grid
@@ -28,10 +27,11 @@ define [
       getStudentsConfig "../data/student.json", (callback_studentsConfig) ->
         studentsConfig = callback_studentsConfig
         # Use mustache template to replace text in json config
-        if assessmentsData.length > 0
+        if assessmentsData['default'].length > 0
           # Add assessments data there so we can get column names
           combinedData = subjectsData
-          combinedData.assessments =  assessmentsData[0].assessments
+          # TODO: BUG find a student that has taken both assessments
+          combinedData.assessments =  assessmentsData['default'][0].assessments
           output = Mustache.render(JSON.stringify(studentsConfig), combinedData)
           studentsConfig = JSON.parse(output)
         
@@ -58,7 +58,11 @@ define [
     $("#gbox_gridTable").remove()
     $("#content").append("<table id='gridTable'></table>")
     $("#content #select_measure .btn-group .btn.dropdown-toggle #select_measure_current_view").html $('#' + viewName).text()
-    edwareGrid.create "gridTable", studentsConfig[viewName], assessmentsData
+    dataName = viewName
+    # If the view name is not one of the subjects, default it to the default assessments data
+    if not (viewName of assessmentsData)
+      dataName = 'default'
+    edwareGrid.create "gridTable", studentsConfig[viewName], assessmentsData[dataName]
 
         
   getStudentData = (sourceURL, params, callback) ->
@@ -83,7 +87,7 @@ define [
       subjectsData = data.subjects
       
       #  append cutpoints into each individual assessment data
-      appendCutpointsIntoAssessments data.cutpoints
+      formatAssessmentsData data.cutpoints
       
       if callback
         callback assessmentsData, contextData, subjectsData
@@ -130,15 +134,24 @@ define [
     # return the first element name as default view
     items[0].key
 
-  # Appends cutpoints & colors into each assessment
-  appendCutpointsIntoAssessments = (assessmentCutpoints) ->
-    for row in assessmentsData
+  # For each subject, filter out its data
+  # Also append cutpoints & colors into each assessment
+  formatAssessmentsData = (assessmentCutpoints) ->
+    # We keep a set of data for each assessment
+    allAssessments = {'default': assessmentsData}
+    for key, value of subjectsData
+      allAssessments[value] = []
+    
+    for row in allAssessments["default"]
       assessment = row['assessments']
-      for subject of subjectsData
+      for key, value of subjectsData
         # check that we have such assessment first, since a student may not have taken it
-        if subject of assessment
-          cutpoint = assessmentCutpoints[subject]
-          $.extend assessment[subject], cutpoint
-          assessment[subject].score_color = assessment[subject].cut_point_intervals[assessment[subject].asmt_perf_lvl-1].bg_color
-
+        if key of assessment
+          cutpoint = assessmentCutpoints[key]
+          $.extend assessment[key], cutpoint
+          assessment[key].score_color = assessment[key].cut_point_intervals[assessment[key].asmt_perf_lvl-1].bg_color
+          # for the particular asmt subject, save the assessment to it
+          allAssessments[value].push row
+    assessmentsData = allAssessments
+          
   createStudentGrid: createStudentGrid

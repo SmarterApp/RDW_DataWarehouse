@@ -37,7 +37,7 @@ import collections
 @report_config(
     name="comparing_populations",
     params={
-        'stateGuid': {
+        'stateCode': {
             "type": "string",
             "required": True,
             "pattern": "^[a-zA-Z]{2}$",
@@ -111,8 +111,8 @@ class RecordManager():
     '''
     record manager class
     '''
-    def __init__(self, subjects_map, stateGuid=None, districtGuid=None, schoolGuid=None):
-        self._stateGuid = stateGuid
+    def __init__(self, subjects_map, stateCode=None, districtGuid=None, schoolGuid=None):
+        self._stateCode = stateCode
         self._districtGuid = districtGuid
         self._schoolGuid = schoolGuid
         self._subjects_map = subjects_map
@@ -233,7 +233,7 @@ class RecordManager():
             __record[Constants.NAME] = record.name
             __record[Constants.RESULTS] = record.subjects
             __record[Constants.PARAMS] = {}
-            __record[Constants.PARAMS][Constants.STATEGUID] = self._stateGuid
+            __record[Constants.PARAMS][Constants.STATEGUID] = self._stateCode
             __record[Constants.PARAMS][Constants.ID] = record.id
             if self._districtGuid is not None:
                 __record[Constants.PARAMS][Constants.DISTRICTGUID] = self._districtGuid
@@ -316,16 +316,16 @@ class QueryHelper():
     '''
     VIEWS = enum(STATE_VIEW=1, DISTRICT_VIEW=2, SCHOOL_VIEW=3)
 
-    def __init__(self, connector, stateGuid=None, districtGuid=None, schoolGuid=None):
-        self._state_guid = stateGuid
+    def __init__(self, connector, stateCode=None, districtGuid=None, schoolGuid=None):
+        self._state_code = stateCode
         self._district_guid = districtGuid
         self._school_guid = schoolGuid
         self._view = self.VIEWS.STATE_VIEW
-        if self._state_guid is not None and self._district_guid is None and self._school_guid is None:
+        if self._state_code is not None and self._district_guid is None and self._school_guid is None:
             self._view = self.VIEWS.STATE_VIEW
-        elif self._state_guid is not None and self._district_guid is not None and self._school_guid is None:
+        elif self._state_code is not None and self._district_guid is not None and self._school_guid is None:
             self._view = self.VIEWS.DISTRICT_VIEW
-        elif self._state_guid is not None and self._district_guid is not None and self._school_guid is not None:
+        elif self._state_code is not None and self._district_guid is not None and self._school_guid is not None:
             self._view = self.VIEWS.SCHOOL_VIEW
         else:
             raise InvalidParamterException()
@@ -387,7 +387,7 @@ class QueryHelper():
                                        )])
         query = query.group_by(self._dim_inst_hier.c.district_name, self._dim_inst_hier.c.district_guid, self._dim_asmt.c.asmt_subject, self._dim_asmt.c.asmt_custom_metadata)
         query = query.order_by(self._dim_inst_hier.c.district_name, self._dim_asmt.c.asmt_subject.desc())
-        query = query.where(self._fact_asmt_outcome.c.state_code == self._state_guid)
+        query = query.where(self._fact_asmt_outcome.c.state_code == self._state_code)
         return query
 
     def get_query_for_district_view(self):
@@ -401,7 +401,7 @@ class QueryHelper():
                                        )])
         query = query.group_by(self._dim_inst_hier.c.school_name, self._dim_inst_hier.c.school_guid, self._dim_asmt.c.asmt_subject, self._dim_asmt.c.asmt_custom_metadata)
         query = query.order_by(self._dim_inst_hier.c.school_name, self._dim_asmt.c.asmt_subject.desc())
-        query = query.where(and_(self._fact_asmt_outcome.c.state_code == self._state_guid, self._fact_asmt_outcome.c.district_guid == self._district_guid))
+        query = query.where(and_(self._fact_asmt_outcome.c.state_code == self._state_code, self._fact_asmt_outcome.c.district_guid == self._district_guid))
         return query
 
     def get_query_for_school_view(self):
@@ -412,5 +412,5 @@ class QueryHelper():
                                        )])
         query = query.group_by(self._fact_asmt_outcome.c.asmt_grade, self._dim_asmt.c.asmt_subject, self._dim_asmt.c.asmt_custom_metadata)
         query = query.order_by(self._fact_asmt_outcome.c.asmt_grade, self._dim_asmt.c.asmt_subject.desc())
-        query = query.where(and_(self._fact_asmt_outcome.c.state_code == self._state_guid, self._fact_asmt_outcome.c.district_guid == self._district_guid, self._fact_asmt_outcome.c.school_guid == self._school_guid))
+        query = query.where(and_(self._fact_asmt_outcome.c.state_code == self._state_code, self._fact_asmt_outcome.c.district_guid == self._district_guid, self._fact_asmt_outcome.c.school_guid == self._school_guid))
         return query

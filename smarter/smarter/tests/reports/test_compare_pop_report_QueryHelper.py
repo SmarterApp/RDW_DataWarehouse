@@ -94,20 +94,20 @@ class Test(Unittest_with_smarter_sqlite_no_data_load):
         self.assertEqual(column.key, alias_name)
 
     def test_invalid_parameters(self):
-        param = {'stateGuid': 'DE', 'schoolGuid': 'BAC'}
+        param = {'stateCode': 'DE', 'schoolGuid': 'BAC'}
         self.assertRaises(InvalidParamterException, QueryHelper, None, **param)
 
 
 def get_param_school_view():
-    return {Constants.STATEGUID: 'AB', Constants.DISTRICTGUID: 'CD', Constants.SCHOOLGUID: 'EF'}
+    return {Constants.STATECODE: 'AB', Constants.DISTRICTGUID: 'CD', Constants.SCHOOLGUID: 'EF'}
 
 
 def get_param_district_view():
-    return {Constants.STATEGUID: 'AB', Constants.DISTRICTGUID: 'CD'}
+    return {Constants.STATECODE: 'AB', Constants.DISTRICTGUID: 'CD'}
 
 
 def get_param_state_view():
-    return {Constants.STATEGUID: 'AB'}
+    return {Constants.STATECODE: 'AB'}
 
 
 if __name__ == "__main__":

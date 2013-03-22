@@ -13,7 +13,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
 
     def test_school_view(self):
         testParam = {}
-        testParam[Constants.STATEGUID] = 'NY'
+        testParam[Constants.STATECODE] = 'NY'
         testParam[Constants.DISTRICTGUID] = '228'
         testParam[Constants.SCHOOLGUID] = '242'
         results = get_comparing_populations_report(testParam)
@@ -70,7 +70,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
 
     def test_district_view(self):
         testParam = {}
-        testParam[Constants.STATEGUID] = 'NY'
+        testParam[Constants.STATECODE] = 'NY'
         testParam[Constants.DISTRICTGUID] = '228'
         results = get_comparing_populations_report(testParam)
 
@@ -130,7 +130,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
 
     def test_state_view(self):
         testParam = {}
-        testParam[Constants.STATEGUID] = 'NY'
+        testParam[Constants.STATECODE] = 'NY'
         results = get_comparing_populations_report(testParam)
 
         # check top-level attributes

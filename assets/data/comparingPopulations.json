@@ -7,7 +7,7 @@
             {"name":"Total Students","index":"results.subject2.total","field":"results.subject2.total","formatter":"number","options":{"thousandsSeparator": ","},"width":80,"sorttype":"int","align":"left"}
         ],
     "customViews" : {"school": {"name": "Grade", "link": "studentList.html", "id_name": "asmtGrade"}, 
-                           "district": {"name": "School Name", "link": "comparingPopulations.html", "id_name": "schoolId"}, 
-                           "state": {"name": "District Name", "link": "comparingPopulations.html", "id_name": "districtId"}
+                           "district": {"name": "School Name", "link": "comparingPopulations.html", "id_name": "schoolGuid"}, 
+                           "state": {"name": "District Name", "link": "comparingPopulations.html", "id_name": "districtGuid"}
                            }
 }

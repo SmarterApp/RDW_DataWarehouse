@@ -9,7 +9,7 @@ class Constants():
     '''
     constants for reports
     '''
-    STATEGUID = 'stateGuid'
+    STATECODE = 'stateCode'
     DISTRICTGUID = 'districtGuid'
     SCHOOLGUID = 'schoolGuid'
     SUMMATIVE = 'SUMMATIVE'

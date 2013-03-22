@@ -18,7 +18,7 @@ class TestContext(Unittest_with_smarter_sqlite):
         self.assertEqual(results['items'][0]['type'], 'state')
 
     def testExplicitStateContext(self):
-        results = get_breadcrumbs_context(state_guid='NY')
+        results = get_breadcrumbs_context(state_code='NY')
         self.assertEqual(len(results['items']), 1)
         self.assertEqual(results['items'][0]['name'], 'New York')
         self.assertEqual(results['items'][0]['id'], 'NY')

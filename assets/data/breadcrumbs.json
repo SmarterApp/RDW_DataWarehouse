@@ -2,17 +2,17 @@
     "items" : [
     	{
     		"type" : "state",
-    		"queryParam" : "stateId",
+    		"queryParam" : "stateCode",
     		"link" : "/assets/html/comparingPopulations.html" 
     	},
     	{
     		"type" : "district",
-    		"queryParam" : "districtId",
+    		"queryParam" : "districtGuid",
     		"link" : "/assets/html/comparingPopulations.html" 
     	},
     	{
     		"type" : "school",
-    		"queryParam" : "schoolId",
+    		"queryParam" : "schoolGuid",
     		"link" : "/assets/html/comparingPopulations.html" 
     	},
     	{

@@ -131,7 +131,7 @@ define [
     colorsData = JSON.parse(colorsData)
     while (i < len)
       element = intervals[i]
-      if colorsData[i]
+      if colorsData and colorsData[i]
         element.color = colorsData[i]
       else
         element.color = defaultColors[i]
@@ -170,11 +170,11 @@ define [
       
   # Based on query parameters, return the type of report that the user is requesting for
   getReportType = (params) ->
-    if params['schoolId']
+    if params['schoolGuid']
       reportType = 'school'
-    else if params['districtId']
+    else if params['districtGuid']
       reportType = 'district'
-    else if params['stateId']
+    else if params['stateCode']
       reportType = 'state'
     reportType
             

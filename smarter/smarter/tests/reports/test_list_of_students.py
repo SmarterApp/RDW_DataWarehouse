@@ -15,7 +15,7 @@ class TestLOS(Unittest_with_smarter_sqlite):
         testParam['districtGuid'] = '228'
         testParam['schoolGuid'] = '242'
         testParam['asmtGrade'] = 3
-        testParam['stateGuid'] = 'NY'
+        testParam['stateCode'] = 'NY'
         testParam['asmtSubject'] = ['ELA', 'Math']
         results = get_list_of_students_report(testParam)
 
@@ -35,7 +35,7 @@ class TestLOS(Unittest_with_smarter_sqlite):
 
     def test_breadcrumbs(self):
         testParam = {}
-        testParam['stateGuid'] = 'NY'
+        testParam['stateCode'] = 'NY'
         testParam['districtGuid'] = '228'
         testParam['schoolGuid'] = '242'
         testParam['asmtGrade'] = 3

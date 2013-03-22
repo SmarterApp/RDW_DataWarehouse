@@ -102,7 +102,7 @@ def arrange_results(results, **param):
     arranged_results[Constants.SUBJECTS] = record_manager.get_subjects()
 
     # get breadcrumb context
-    arranged_results[Constants.CONTEXT] = get_breadcrumbs_context(state_guid=param.get(Constants.STATEGUID), district_guid=param.get(Constants.DISTRICTGUID), school_guid=param.get(Constants.SCHOOLGUID))
+    arranged_results[Constants.CONTEXT] = get_breadcrumbs_context(state_code=param.get(Constants.STATECODE), district_guid=param.get(Constants.DISTRICTGUID), school_guid=param.get(Constants.SCHOOLGUID))
 
     return arranged_results
 
@@ -233,7 +233,7 @@ class RecordManager():
             __record[Constants.NAME] = record.name
             __record[Constants.RESULTS] = record.subjects
             __record[Constants.PARAMS] = {}
-            __record[Constants.PARAMS][Constants.STATEGUID] = self._stateCode
+            __record[Constants.PARAMS][Constants.STATECODE] = self._stateCode
             __record[Constants.PARAMS][Constants.ID] = record.id
             if self._districtGuid is not None:
                 __record[Constants.PARAMS][Constants.DISTRICTGUID] = self._districtGuid

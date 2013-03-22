@@ -15,7 +15,7 @@ from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
 
 __districtGuid = 'districtGuid'
 __schoolGuid = 'schoolGuid'
-__stateGuid = 'stateGuid'
+__stateCode = 'stateCode'
 __asmtGrade = 'asmtGrade'
 __asmtSubject = 'asmtSubject'
 
@@ -36,7 +36,7 @@ __asmtSubject = 'asmtSubject'
 @report_config(
     name="list_of_students",
     params={
-        __stateGuid: {
+        __stateCode: {
             "type": "string",
             "required": True,
             "pattern": "^[a-zA-Z0-9\-]{0,50}$",
@@ -71,7 +71,7 @@ __asmtSubject = 'asmtSubject'
 @audit_event()
 @user_info
 def get_list_of_students_report(params):
-    stateGuid = str(params[__stateGuid])
+    stateCode = str(params[__stateCode])
     districtGuid = str(params[__districtGuid])
     schoolGuid = str(params[__schoolGuid])
     asmtGrade = str(params[__asmtGrade])
@@ -125,7 +125,7 @@ def get_list_of_students_report(params):
                                  .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id, dim_asmt.c.asmt_type == 'SUMMATIVE'))
                                  .join(dim_staff, and_(dim_staff.c.staff_guid == fact_asmt_outcome.c.teacher_guid,
                                        dim_staff.c.most_recent, dim_staff.c.section_guid == fact_asmt_outcome.c.section_guid))])
-        query = query.where(fact_asmt_outcome.c.state_code == stateGuid)
+        query = query.where(fact_asmt_outcome.c.state_code == stateCode)
         query = query.where(fact_asmt_outcome.c.school_guid == schoolGuid)
         query = query.where(and_(fact_asmt_outcome.c.asmt_grade == asmtGrade))
         query = query.where(and_(fact_asmt_outcome.c.district_guid == districtGuid))

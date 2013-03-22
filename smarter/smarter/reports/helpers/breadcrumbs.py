@@ -9,7 +9,7 @@ from sqlalchemy.sql.expression import true
 from smarter.reports.helpers.constants import Constants
 
 
-def get_breadcrumbs_context(state_guid=None, district_guid=None, school_guid=None, asmt_grade=None, student_name=None):
+def get_breadcrumbs_context(state_code=None, district_guid=None, school_guid=None, asmt_grade=None, student_name=None):
     '''
     Given certain known information, returns breadcrumbs context
     '''
@@ -28,8 +28,8 @@ def get_breadcrumbs_context(state_guid=None, district_guid=None, school_guid=Non
 
         query = query.where(and_(dim_inst_hier.c.most_recent == true()))
         # Currently, we only have state_id from comparing population report
-        if state_guid is not None:
-            query = query.where(and_(dim_inst_hier.c.state_code == state_guid))
+        if state_code is not None:
+            query = query.where(and_(dim_inst_hier.c.state_code == state_code))
         if district_guid is not None:
             query = query.where(and_(dim_inst_hier.c.district_guid == district_guid))
             if school_guid is not None:

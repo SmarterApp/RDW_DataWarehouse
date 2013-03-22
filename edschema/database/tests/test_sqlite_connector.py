@@ -39,12 +39,15 @@ class Test(unittest.TestCase):
         sorted_tables = metadata.sorted_tables
         self.assertIsNotNone(sorted_tables)
 
+        for table in sorted_tables:
+            print('SORTED TABLES: ' + str(table))
+
         # fact_asmt_outcome has Foreign keys from dim_asmt, dim_inst_hier, and dim_section_subject
         self.assertTrue(check_order_of_fact_asmt_outcome(sorted_tables))
 
 
 def check_order_of_fact_asmt_outcome(sorted_tables):
-    foreign_keys_tables = ['dim_asmt', 'dim_inst_hier', 'dim_section_subject']
+    foreign_keys_tables = ['dim_asmt', 'dim_inst_hier', 'dim_section']
     for table in sorted_tables:
         if table.key == 'fact_asmt_outcome':
             # check foreign_keys_tables.

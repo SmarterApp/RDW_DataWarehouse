@@ -1,4 +1,4 @@
-staff_rec_id,staff_id,first_name,middle_name,last_name,section_id,hier_user_type,state_code,district_id,school_id,from_date,to_date,most_recent
+staff_rec_id,staff_guid,first_name,middle_name,last_name,section_guid,hier_user_type,state_code,district_guid,school_guid,from_date,to_date,most_recent
 952,951,Alleen,Jeanne,Fagan,None,Staff,NY,229,None,20100101,99991231,TRUE
 999,963,Almar,Gerald,Smith,974,Teacher,NY,229,936,20100101,99991231,TRUE
 546,270,Annies,Pamela,Lage,345,Teacher,NY,228,242,20100101,99991231,TRUE

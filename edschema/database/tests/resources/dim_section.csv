@@ -1,4 +1,4 @@
-section_rec_id,section_id,section_name,grade,class_name,subject_name,state_code,district_id,school_id,from_date,to_date,most_recent
+section_rec_id,section_guid,section_name,grade,class_name,subject_name,state_code,district_guid,school_guid,from_date,to_date,most_recent
 346,345,section 1,3,Math 112,Math,NY,228,242,20120101,99991231,TRUE
 533,345,section 1,3,ELA 102,ELA,NY,228,242,20120101,99991231,TRUE
 733,732,section 1,7,Math 112,Math,NY,228,245,20120101,99991231,TRUE

@@ -17,19 +17,19 @@ from edapi.logging import audit_event
 from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
 
 
-def __prepare_query(connector, student_id, assessment_id):
+def __prepare_query(connector, student_guid, assessment_guid):
     # get table metadatas
     fact_asmt_outcome = connector.get_table('fact_asmt_outcome')
     dim_student = connector.get_table('dim_student')
     dim_asmt = connector.get_table('dim_asmt')
     dim_staff = connector.get_table('dim_staff')
-    query = select([fact_asmt_outcome.c.student_id,
+    query = select([fact_asmt_outcome.c.student_guid,
                     dim_student.c.first_name.label('student_first_name'),
                     dim_student.c.middle_name.label('student_middle_name'),
                     dim_student.c.last_name.label('student_last_name'),
                     dim_student.c.grade.label('grade'),
-                    dim_student.c.district_id.label('district_id'),
-                    dim_student.c.school_id.label('school_id'),
+                    dim_student.c.district_guid.label('district_guid'),
+                    dim_student.c.school_guid.label('school_guid'),
                     dim_student.c.state_code.label('state_code'),
                     dim_asmt.c.asmt_subject.label('asmt_subject'),
                     dim_asmt.c.asmt_period.label('asmt_period'),
@@ -82,17 +82,17 @@ def __prepare_query(connector, student_id, assessment_id):
                     dim_staff.c.middle_name.label('teacher_middle_name'),
                     dim_staff.c.last_name.label('teacher_last_name')],
                    from_obj=[fact_asmt_outcome
-                             .join(dim_student, and_(fact_asmt_outcome.c.student_id == dim_student.c.student_id,
-                                                     fact_asmt_outcome.c.section_id == dim_student.c.section_id))
-                             .join(dim_staff, and_(fact_asmt_outcome.c.teacher_id == dim_staff.c.staff_id,
-                                                   fact_asmt_outcome.c.section_id == dim_staff.c.section_id,
+                             .join(dim_student, and_(fact_asmt_outcome.c.student_guid == dim_student.c.student_guid,
+                                                     fact_asmt_outcome.c.section_guid == dim_student.c.section_guid))
+                             .join(dim_staff, and_(fact_asmt_outcome.c.teacher_guid == dim_staff.c.staff_guid,
+                                                   fact_asmt_outcome.c.section_guid == dim_staff.c.section_guid,
                                                    dim_staff.c.most_recent))
                              .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id,
                                                   dim_asmt.c.most_recent,
                                                   dim_asmt.c.asmt_type == 'SUMMATIVE'))])
-    query = query.where(and_(fact_asmt_outcome.c.most_recent, fact_asmt_outcome.c.status == 'C', fact_asmt_outcome.c.student_id == student_id))
-    if assessment_id is not None:
-        query = query.where(dim_asmt.c.asmt_id == assessment_id)
+    query = query.where(and_(fact_asmt_outcome.c.most_recent, fact_asmt_outcome.c.status == 'C', fact_asmt_outcome.c.student_guid == student_guid))
+    if assessment_guid is not None:
+        query = query.where(dim_asmt.c.asmt_guid == assessment_guid)
     query = query.order_by(dim_asmt.c.asmt_subject.desc())
     return query
 
@@ -163,11 +163,11 @@ def __arrange_results(results):
 
 @report_config(name='individual_student_report',
                params={
-                    "studentId": {
+                    "studentGuid": {
                         "type": "string",
                         "required": True,
                         "pattern": "^[a-zA-Z0-9\-]{0,50}$"},
-                    "assessmentId": {
+                    "assessmentGuid": {
                         "name": "student_assessments_report",
                         "type": "string",
                         "required": False,
@@ -181,23 +181,23 @@ def get_student_report(params):
     report for student and student_assessment
     '''
     # get studentId
-    student_id = str(params['studentId'])
+    student_guid = str(params['studentGuid'])
 
     # if assessmentId is available, read the value.
-    assessment_id = None
-    if 'assessmentId' in params:
-        assessment_id = str(params['assessmentId'])
+    assessment_guid = None
+    if 'assessmentGuid' in params:
+        assessment_guid = str(params['assessmentGuid'])
 
     with SmarterDBConnection() as connection:
-        query = __prepare_query(connection, student_id, assessment_id)
+        query = __prepare_query(connection, student_guid, assessment_guid)
 
         result = connection.get_result(query)
         if result:
             first_student = result[0]
             student_name = format_full_name(first_student['student_first_name'], first_student['student_middle_name'], first_student['student_last_name'])
-            context = get_breadcrumbs_context(district_id=first_student['district_id'], school_id=first_student['school_id'], asmt_grade=first_student['grade'], student_name=student_name)
+            context = get_breadcrumbs_context(district_guid=first_student['district_guid'], school_guid=first_student['school_guid'], asmt_grade=first_student['grade'], student_name=student_name)
         else:
-            raise NotFoundException("Could not find student with id {0}".format(student_id))
+            raise NotFoundException("Could not find student with id {0}".format(student_guid))
 
         # prepare the result for the client
         result = __arrange_results(result)
@@ -218,21 +218,21 @@ def get_student_report(params):
 def get_student_assessment(params):
 
     # get studentId
-    student_id = params['studentId']
+    student_guid = params['studentGuid']
 
     with SmarterDBConnection() as connection:
         # get table metadatas
         dim_asmt = connection.get_table('dim_asmt')
         fact_asmt_outcome = connection.get_table('fact_asmt_outcome')
 
-        query = select([dim_asmt.c.asmt_id,
+        query = select([dim_asmt.c.asmt_guid,
                         dim_asmt.c.asmt_subject,
                         dim_asmt.c.asmt_type,
                         dim_asmt.c.asmt_period,
                         dim_asmt.c.asmt_version,
                         fact_asmt_outcome.c.asmt_grade],
                        from_obj=[fact_asmt_outcome.join(dim_asmt, fact_asmt_outcome.c.asmt_rec_id == dim_asmt.c.asmt_rec_id)])
-        query = query.where(fact_asmt_outcome.c.student_id == student_id)
+        query = query.where(fact_asmt_outcome.c.student_guid == student_guid)
         query = query.order_by(dim_asmt.c.asmt_subject)
         result = connection.get_result(query)
         return result

@@ -9,7 +9,7 @@ from sqlalchemy.sql.expression import true
 from smarter.reports.helpers.constants import Constants
 
 
-def get_breadcrumbs_context(state_id=None, district_id=None, school_id=None, asmt_grade=None, student_name=None):
+def get_breadcrumbs_context(state_guid=None, district_guid=None, school_guid=None, asmt_grade=None, student_name=None):
     '''
     Given certain known information, returns breadcrumbs context
     '''
@@ -28,12 +28,12 @@ def get_breadcrumbs_context(state_id=None, district_id=None, school_id=None, asm
 
         query = query.where(and_(dim_inst_hier.c.most_recent == true()))
         # Currently, we only have state_id from comparing population report
-        if state_id is not None:
-            query = query.where(and_(dim_inst_hier.c.state_code == state_id))
-        if district_id is not None:
-            query = query.where(and_(dim_inst_hier.c.district_id == district_id))
-            if school_id is not None:
-                query = query.where(and_(dim_inst_hier.c.school_id == school_id))
+        if state_guid is not None:
+            query = query.where(and_(dim_inst_hier.c.state_code == state_guid))
+        if district_guid is not None:
+            query = query.where(and_(dim_inst_hier.c.district_guid == district_guid))
+            if school_guid is not None:
+                query = query.where(and_(dim_inst_hier.c.school_guid == school_guid))
 
         # run it and format the results
         results = connector.get_result(query)
@@ -42,10 +42,10 @@ def get_breadcrumbs_context(state_id=None, district_id=None, school_id=None, asm
 
             # return an hierarchical ordered list
             formatted_results.append({'type': 'state', 'name': result[Constants.STATE_NAME], 'id': result[Constants.STATE_CODE]})
-            if district_id is not None:
-                formatted_results.append({'type': 'district', 'name': result[Constants.DISTRICT_NAME], 'id': district_id})
-                if school_id is not None:
-                    formatted_results.append({'type': 'school', 'name': result[Constants.SCHOOL_NAME], 'id': school_id})
+            if district_guid is not None:
+                formatted_results.append({'type': 'district', 'name': result[Constants.DISTRICT_NAME], 'id': district_guid})
+                if school_guid is not None:
+                    formatted_results.append({'type': 'school', 'name': result[Constants.SCHOOL_NAME], 'id': school_guid})
                     if asmt_grade is not None:
                         formatted_results.append({'type': 'grade', 'name': asmt_grade, 'id': asmt_grade})
                         if student_name is not None:

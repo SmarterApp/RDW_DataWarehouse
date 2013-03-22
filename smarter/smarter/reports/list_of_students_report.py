@@ -13,9 +13,9 @@ from edapi.logging import audit_event
 from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
 
 
-__districtId = 'districtId'
-__schoolId = 'schoolId'
-__stateId = 'stateId'
+__districtGuid = 'districtGuid'
+__schoolGuid = 'schoolGuid'
+__stateGuid = 'stateGuid'
 __asmtGrade = 'asmtGrade'
 __asmtSubject = 'asmtSubject'
 
@@ -36,17 +36,17 @@ __asmtSubject = 'asmtSubject'
 @report_config(
     name="list_of_students",
     params={
-        __stateId: {
+        __stateGuid: {
             "type": "string",
             "required": True,
             "pattern": "^[a-zA-Z0-9\-]{0,50}$",
         },
-        __districtId: {
+        __districtGuid: {
             "type": "string",
             "required": True,
             "pattern": "^[a-zA-Z0-9\-]{0,50}$",
         },
-        __schoolId: {
+        __schoolGuid: {
             "type": "string",
             "required": True,
             "pattern": "^[a-zA-Z0-9\-]{0,50}$",
@@ -71,9 +71,9 @@ __asmtSubject = 'asmtSubject'
 @audit_event()
 @user_info
 def get_list_of_students_report(params):
-    stateId = str(params[__stateId])
-    districtId = str(params[__districtId])
-    schoolId = str(params[__schoolId])
+    stateGuid = str(params[__stateGuid])
+    districtGuid = str(params[__districtGuid])
+    schoolGuid = str(params[__schoolGuid])
     asmtGrade = str(params[__asmtGrade])
     # asmt_subject is optional.
     asmtSubject = None
@@ -88,7 +88,7 @@ def get_list_of_students_report(params):
 
         students = {}
 
-        query = select([dim_student.c.student_id.label('student_id'),
+        query = select([dim_student.c.student_guid.label('student_guid'),
                         dim_student.c.first_name.label('student_first_name'),
                         dim_student.c.middle_name.label('student_middle_name'),
                         dim_student.c.last_name.label('student_last_name'),
@@ -119,16 +119,16 @@ def get_list_of_students_report(params):
                         fact_asmt_outcome.c.asmt_claim_3_score_range_max.label('asmt_claim_3_score_range_max'),
                         fact_asmt_outcome.c.asmt_claim_4_score_range_max.label('asmt_claim_4_score_range_max')],
                        from_obj=[fact_asmt_outcome
-                                 .join(dim_student, and_(dim_student.c.student_id == fact_asmt_outcome.c.student_id,
+                                 .join(dim_student, and_(dim_student.c.student_guid == fact_asmt_outcome.c.student_guid,
                                                          dim_student.c.most_recent,
-                                                         dim_student.c.section_id == fact_asmt_outcome.c.section_id))
+                                                         dim_student.c.section_guid == fact_asmt_outcome.c.section_guid))
                                  .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id, dim_asmt.c.asmt_type == 'SUMMATIVE'))
-                                 .join(dim_staff, and_(dim_staff.c.staff_id == fact_asmt_outcome.c.teacher_id,
-                                       dim_staff.c.most_recent, dim_staff.c.section_id == fact_asmt_outcome.c.section_id))])
-        query = query.where(fact_asmt_outcome.c.state_code == stateId)
-        query = query.where(fact_asmt_outcome.c.school_id == schoolId)
+                                 .join(dim_staff, and_(dim_staff.c.staff_guid == fact_asmt_outcome.c.teacher_guid,
+                                       dim_staff.c.most_recent, dim_staff.c.section_guid == fact_asmt_outcome.c.section_guid))])
+        query = query.where(fact_asmt_outcome.c.state_code == stateGuid)
+        query = query.where(fact_asmt_outcome.c.school_guid == schoolGuid)
         query = query.where(and_(fact_asmt_outcome.c.asmt_grade == asmtGrade))
-        query = query.where(and_(fact_asmt_outcome.c.district_id == districtId))
+        query = query.where(and_(fact_asmt_outcome.c.district_guid == districtGuid))
         query = query.where(and_(fact_asmt_outcome.c.most_recent))
         query = query.where(and_(fact_asmt_outcome.c.status == 'C'))
 
@@ -141,21 +141,21 @@ def get_list_of_students_report(params):
 
         # Formatting data for Front End
         for result in results:
-            student_id = result['student_id']
+            student_guid = result['student_guid']
             student = {}
             assessments = {}
-            if student_id in students:
-                student = students[student_id]
+            if student_guid in students:
+                student = students[student_guid]
                 assessments = student['assessments']
             else:
-                student['student_id'] = result['student_id']
+                student['student_guid'] = result['student_guid']
                 student['student_first_name'] = result['student_first_name']
                 student['student_middle_name'] = result['student_middle_name']
                 student['student_last_name'] = result['student_last_name']
                 student['student_full_name'] = format_full_name_rev(result['student_first_name'], result['student_middle_name'], result['student_last_name'])
                 student['enrollment_grade'] = result['enrollment_grade']
                 # This is for links in drill down
-                student['params'] = {"studentId": result['student_id']}
+                student['params'] = {"studentGuid": result['student_guid']}
 
             assessment = {}
             assessment['teacher_first_name'] = result['teacher_first_name']
@@ -186,22 +186,22 @@ def get_list_of_students_report(params):
             assessments[result['asmt_subject']] = assessment
             student['assessments'] = assessments
 
-            students[student_id] = student
+            students[student_guid] = student
 
         # including assessments and cutpoints to returning JSON
         los_results = {}
         assessments = []
 
         # keep them in orders from result set
-        student_id_track = {}
+        student_guid_track = {}
         for result in results:
-            if result['student_id'] not in student_id_track:
-                assessments.append(students[result['student_id']])
-                student_id_track[result['student_id']] = True
+            if result['student_guid'] not in student_guid_track:
+                assessments.append(students[result['student_guid']])
+                student_guid_track[result['student_guid']] = True
 
         los_results['assessments'] = assessments
         los_results['cutpoints'] = __get_cut_points(connector, asmtSubject)
-        los_results['context'] = get_breadcrumbs_context(district_id=districtId, school_id=schoolId, asmt_grade=asmtGrade)
+        los_results['context'] = get_breadcrumbs_context(district_guid=districtGuid, school_guid=schoolGuid, asmt_grade=asmtGrade)
 
         return los_results
 

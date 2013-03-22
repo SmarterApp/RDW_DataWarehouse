@@ -135,7 +135,8 @@ define [
         # check that we have such assessment first, since a student may not have taken it
         if subject of assessment
           cutpoint = assessmentCutpoints[subject]
-          assessment[subject].cut_point_intervals = cutpoint
+          $.extend assessment[subject], cutpoint
+          assessment[subject].score_color = assessment[subject].cut_point_intervals[assessment[subject].asmt_perf_lvl-1].bg_color
 
   createStudentGrid: createStudentGrid
   

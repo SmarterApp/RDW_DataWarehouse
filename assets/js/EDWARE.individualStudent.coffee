@@ -1,13 +1,16 @@
 #global define
 define [
   "jquery"
+  "bootstrap"
   "mustache"
   "cs!edwareDataProxy"
   "cs!edwareConfidenceLevelBar"
   "text!templates/individualStudent_report/individual_student_template.html"
   "text!templates/individualStudent_report/claimsInfo.html"
   "cs!edwareBreadcrumbs"
-], ($, Mustache, edwareDataProxy, edwareConfidenceLevelBar, indivStudentReportTemplate, claimsInfoTemplate, edwareBreadcrumbs) ->
+  "cs!edwareUtil"
+  "cs!edwareFeedback"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareConfidenceLevelBar, indivStudentReportTemplate, claimsInfoTemplate, edwareBreadcrumbs, edwareUtil, edwareFeedback) ->
   
   default_cutPointColors = [
     text_color: "#ffffff"
@@ -58,7 +61,10 @@ define [
       
       # append user_info (e.g. first and last name)
       if data.user_info
-        $('#header .topLinks .user').html data.user_info._User__info.name.firstName + ' ' + data.user_info._User__info.name.lastName
+        $('#header .topLinks .user').html edwareUtil.getUserName data.user_info
+        role = edwareUtil.getRole data.user_info
+        edwareFeedback.renderFeedback(role, "individual_student_report")
+      
       i = 0
       while i < data.items.length
         items = data.items[i]
@@ -111,7 +117,7 @@ define [
         
       contextData = data.context
       $('#breadcrumb').breadcrumbs(contextData)
-
+      
       partials = 
         claimsInfo: claimsInfoTemplate
       

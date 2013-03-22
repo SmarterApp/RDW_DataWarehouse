@@ -8,8 +8,9 @@ define [
   "cs!edwareBreadcrumbs"
   "text!edwareAssessmentDropdownViewSelectionTemplate"
   "cs!edwareFeedback"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareAssessmentDropdownViewSelectionTemplate, edwareFeedback) ->
-  
+  "cs!edwareUtil"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareAssessmentDropdownViewSelectionTemplate, edwareFeedback, edwareUtil) ->
+
   assessmentsData = []
   studentsConfig = {}
   subjectsData = {}
@@ -74,7 +75,9 @@ define [
     edwareDataProxy.getDatafromSource sourceURL, options, (data) ->
       # append user_info (e.g. first and last name)
       if data.user_info
-        $('#header .topLinks .user').html data.user_info._User__info.name.firstName + ' ' + data.user_info._User__info.name.lastName
+        $('#header .topLinks .user').html edwareUtil.getUserName data.user_info
+        role = edwareUtil.getRole data.user_info
+        edwareFeedback.renderFeedback(role, "list_of_students")
       assessmentsData = data.assessments
       contextData = data.context
       subjectsData = data.subjects

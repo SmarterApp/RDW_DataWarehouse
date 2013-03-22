@@ -5,7 +5,9 @@ define [
   "cs!edwareDataProxy"
   "cs!edwareGrid"
   "cs!edwareBreadcrumbs"
-], ($, bootstrap, edwareDataProxy, edwareGrid, edwareBreadcrumbs) ->
+  "cs!edwareUtil"
+  "cs!edwareFeedback"
+], ($, bootstrap, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFeedback) ->
   #
   #    * Create Student data grid
   #    
@@ -24,9 +26,14 @@ define [
 
         getColumnConfig "../data/comparingPopulations.json", (gridConfig, customViews) ->
           
+          # Determine if the report is state, district or school view
+          reportType = getReportType(params)
+          
           # append user_info (e.g. first and last name)
           if user_info
-            $('#header .topLinks .user').html user_info._User__info.name.firstName + ' ' + user_info._User__info.name.lastName
+            $('#header .topLinks .user').html edwareUtil.getUserName user_info
+            role = edwareUtil.getRole user_info
+            edwareFeedback.renderFeedback(role, "comparing_populations_" + reportType)
             
           # Append colors to records and summary section
           # Do not format data, or get breadcrumbs if the result is empty
@@ -35,7 +42,6 @@ define [
             summaryData = appendColorToData summaryData, asmtSubjectsData, colorsData, defaultColors
   
             # Change the column name and link url based on the type of report the user is querying for
-            reportType = getReportType(params)
             gridConfig[0].name = customViews[reportType].name
             gridConfig[0].options.linkUrl = customViews[reportType].link
             gridConfig[0].options.id_name = customViews[reportType].id_name

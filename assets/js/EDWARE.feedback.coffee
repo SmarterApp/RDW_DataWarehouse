@@ -5,7 +5,7 @@ define [
   "text!templates/feedback/feedback.html"
 ], ($, Mustache, edwareDataProxy, template) ->
     
-  renderFeedback = (role, reportName)->
+  renderFeedback = (role, uid, reportName) ->
     self = this
     feedbackMapping = {}
     options =
@@ -17,6 +17,7 @@ define [
       if role of feedbackMapping
         if reportName of feedbackMapping[role]
           feedbackdata.param = feedbackMapping[role][reportName]
+          feedbackdata.uid = uid
           
           output = Mustache.to_html template, feedbackdata
           $("#surveyMonkeyInfo").html output

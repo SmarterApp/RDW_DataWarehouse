@@ -42,7 +42,8 @@ define [
       if data.user_info
         $('#header .topLinks .user').html edwareUtil.getUserName data.user_info
         role = edwareUtil.getRole data.user_info
-        edwareFeedback.renderFeedback(role, "list_of_students")
+        uid = edwareUtil.getUid data.user_info
+        edwareFeedback.renderFeedback(role, uid, "list_of_students")
       assessmentsData = data.assessments
       contextData = data.context
       

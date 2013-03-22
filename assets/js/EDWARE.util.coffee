@@ -26,8 +26,13 @@ define [
   # Given an user_info object, return the first and last name of the user
   getUserName = (userInfo) ->
     userInfo._User__info.name.firstName + ' ' + userInfo._User__info.name.lastName
-
+    
+  # Given an user_info object, return the uid
+  getUid = (userInfo) ->
+    userInfo._User__info.uid
+  
   displayErrorMessage: displayErrorMessage
   getUrlParams: getUrlParams 
   getRole: getRole
   getUserName: getUserName
+  getUid: getUid

@@ -1,7 +1,9 @@
 define [
   'jquery'
+  'mustache'
   "cs!edwareDataProxy"
-], ($, edwareDataProxy) ->
+  "text!templates/feedback/feedback.html"
+], ($, Mustache, edwareDataProxy, template) ->
     
   renderFeedback = (role, reportName)->
     self = this
@@ -14,13 +16,10 @@ define [
       feedbackdata = {}
       if role of feedbackMapping
         if reportName of feedbackMapping[role]
-          feedbackdata = feedbackMapping[role][reportName]
+          feedbackdata.param = feedbackMapping[role][reportName]
           
-          iframeURL =  $("#surveyMonkeyInfo").find("iframe").attr("src")       
-          iframeURL = iframeURL.split("?")[0]
-          iframeURL = iframeURL + "?sm=" + feedbackdata         
-          $("#surveyMonkeyInfo").find("iframe").attr("src", iframeURL)
-          console.log $("#surveyMonkeyInfo").find("iframe").attr("src") 
+          output = Mustache.to_html template, feedbackdata
+          $("#surveyMonkeyInfo").html output
           
           # Survey monkey popup
           $("#feedback").popover

@@ -6,7 +6,8 @@ define [
   "cs!edwareGrid"
   "cs!edwareBreadcrumbs"
   "cs!edwareFeedback"
-], ($, bootstrap, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareFeedback) ->
+  "cs!edwareUtil"
+], ($, bootstrap, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareFeedback, edwareUtil) ->
   
   assessmentsData = []
   assessmentsCutPoints = []
@@ -17,8 +18,6 @@ define [
   #    * Create Student data grid
   #    
   createStudentGrid = (params) ->
-    
-    edwareFeedback.renderFeedback("teacher", "list_of_students") 
     
     getStudentData "/data/list_of_students", params, (assessmentsData, contextData) ->
       
@@ -41,7 +40,9 @@ define [
     edwareDataProxy.getDatafromSource sourceURL, options, (data) ->
       # append user_info (e.g. first and last name)
       if data.user_info
-        $('#header .topLinks .user').html data.user_info._User__info.name.firstName + ' ' + data.user_info._User__info.name.lastName
+        $('#header .topLinks .user').html edwareUtil.getUserName data.user_info
+        role = edwareUtil.getRole data.user_info
+        edwareFeedback.renderFeedback(role, "list_of_students")
       assessmentsData = data.assessments
       contextData = data.context
       

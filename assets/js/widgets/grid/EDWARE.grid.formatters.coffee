@@ -39,8 +39,8 @@ define [
   showConfidence = (value, options, rowObject) ->
     names = options.colModel.name.split "."
     subject = rowObject[names[0]][names[1]]
-    confidence = subject[names[2]][names[3]]['confidence']
     if subject
+      confidence = subject[names[2]][names[3]]['confidence']
       "<div>" + value + " (&#177;" + confidence + ")</div>"
     else
       " "

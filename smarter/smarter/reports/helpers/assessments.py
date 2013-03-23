@@ -14,11 +14,10 @@ def get_overall_asmt_interval(result):
     return result['asmt_score'] - result['asmt_score_range_min']
 
 
-def rearrange_cut_points(result):
+def get_cut_points(result):
     '''
     Given a dictionary, return a formatted results for assessment cutpoints and colors
     '''
-
     result['cut_point_intervals'] = []
 
     custom_metadata = result['asmt_custom_metadata']
@@ -52,38 +51,45 @@ def rearrange_cut_points(result):
         del(result['asmt_cut_point_name_5'])
     return result
 
-def get_claims(number_of_claims=0, result=None):
+
+def get_claims(number_of_claims=0, result=None, get_names_only=False):
+    '''
+    Returns a list of claims information
+    if get_name_only is True, it returns only the name of the claim and its equivalence claim number name
+    '''
     claims = []
     for index in range(1, number_of_claims + 1):
-            claim_name = result.get('asmt_claim_{0}_name'.format(index))
-            if claim_name is not None and len(claim_name) > 0:
-                claim_score = result.get('asmt_claim_{0}_score'.format(index))
-                claim_object = {'name': claim_name,
-                                'name2': 'Claim ' + str(index),
-                                'score': str(claim_score),
-                                'indexer': str(index),
-                                'range_min_score': str(result.get('asmt_claim_{0}_score_range_min'.format(index))),
-                                'range_max_score': str(result.get('asmt_claim_{0}_score_range_max'.format(index))),
-                                'max_score': str(result.get('asmt_claim_{0}_score_max'.format(index))),
-                                'min_score': str(result.get('asmt_claim_{0}_score_min'.format(index))),
-                                'confidence': str(claim_score - result.get('asmt_claim_{0}_score_range_min'.format(index))),
-                                }
-                # TODO: refactor, process by subject
-                if result['asmt_subject'] == 'Math' and index == 2:
-                    claim_object['name2'] = 'Claim 2 & 4'
-                    
-                # deleting duplicated record
-                if 'asmt_claim_{0}_name'.format(index) in result:
-                    del(result['asmt_claim_{0}_name'.format(index)])
-                if 'asmt_claim_{0}_score'.format(index) in result:
-                    del(result['asmt_claim_{0}_score'.format(index)])
-                if 'asmt_claim_{0}_score_range_min'.format(index) in result:
-                    del(result['asmt_claim_{0}_score_range_min'.format(index)])
-                if 'asmt_claim_{0}_score_range_max'.format(index) in result:
-                    del(result['asmt_claim_{0}_score_range_max'.format(index)])
-                if 'asmt_claim_{0}_score_min'.format(index) in result:
-                    del(result['asmt_claim_{0}_score_min'.format(index)])
-                if 'asmt_claim_{0}_score_max'.format(index) in result:
-                    del(result['asmt_claim_{0}_score_max'.format(index)])
-                claims.append(claim_object)
+        claim_name = result.get('asmt_claim_{0}_name'.format(index))
+        if claim_name is not None and len(claim_name) > 0:
+            claim_score = result.get('asmt_claim_{0}_score'.format(index))
+            claim_object = {'name': claim_name,
+                            'name2': 'Claim ' + str(index)}
+            if not get_names_only:
+                claim_object['score'] = str(claim_score)
+                claim_object['indexer'] = str(index),
+                claim_object['range_min_score'] = str(result.get('asmt_claim_{0}_score_range_min'.format(index)))
+                claim_object['range_max_score'] = str(result.get('asmt_claim_{0}_score_range_max'.format(index)))
+                claim_object['max_score'] = str(result.get('asmt_claim_{0}_score_max'.format(index)))
+                claim_object['min_score'] = str(result.get('asmt_claim_{0}_score_min'.format(index)))
+                claim_object['confidence'] = str(claim_score - result.get('asmt_claim_{0}_score_range_min'.format(index)))
+
+            # TODO: refactor, process by subject
+            if result['asmt_subject'] == 'Math' and index == 2:
+                claim_object['name2'] = 'Claim 2 & 4'
+
+            claims.append(claim_object)
+
+        # deleting duplicated record
+        if 'asmt_claim_{0}_name'.format(index) in result:
+            del(result['asmt_claim_{0}_name'.format(index)])
+        if 'asmt_claim_{0}_score'.format(index) in result:
+            del(result['asmt_claim_{0}_score'.format(index)])
+        if 'asmt_claim_{0}_score_range_min'.format(index) in result:
+            del(result['asmt_claim_{0}_score_range_min'.format(index)])
+        if 'asmt_claim_{0}_score_range_max'.format(index) in result:
+            del(result['asmt_claim_{0}_score_range_max'.format(index)])
+        if 'asmt_claim_{0}_score_min'.format(index) in result:
+            del(result['asmt_claim_{0}_score_min'.format(index)])
+        if 'asmt_claim_{0}_score_max'.format(index) in result:
+            del(result['asmt_claim_{0}_score_max'.format(index)])
     return claims

@@ -20,7 +20,7 @@ define [
   #    
   createStudentGrid = (params) ->
     
-    getStudentData "/data/list_of_students", params, (assessmentsData, contextData, subjectsData) ->
+    getStudentData "/data/list_of_students", params, (assessmentsData, contextData, subjectsData, claimsData) ->
       # set school name
       setSchoolName contextData.items[2].name
       
@@ -30,8 +30,7 @@ define [
         if assessmentsData['default'].length > 0
           # Add assessments data there so we can get column names
           combinedData = subjectsData
-          # TODO: BUG find a student that has taken both assessments
-          combinedData.assessments =  assessmentsData['default'][0].assessments
+          combinedData.claims =  claimsData
           output = Mustache.render(JSON.stringify(studentsConfig), combinedData)
           studentsConfig = JSON.parse(output)
         
@@ -85,14 +84,15 @@ define [
       assessmentsData = data.assessments
       contextData = data.context
       subjectsData = data.subjects
+      claimsData = data.metadata.claims
       
       #  append cutpoints into each individual assessment data
-      formatAssessmentsData data.cutpoints
+      formatAssessmentsData data.metadata.cutpoints
       
       if callback
-        callback assessmentsData, contextData, subjectsData
+        callback assessmentsData, contextData, subjectsData, claimsData
       else
-        assessmentArray assessmentsData, contextData, subjectsData
+        assessmentArray assessmentsData, contextData, subjectsData, claimsData
       
       
   getStudentsConfig = (configURL, callback) ->
@@ -137,7 +137,7 @@ define [
   # For each subject, filter out its data
   # Also append cutpoints & colors into each assessment
   formatAssessmentsData = (assessmentCutpoints) ->
-    # We keep a set of data for each assessment
+    # We keep a set of data for each assessment subject
     allAssessments = {'default': assessmentsData}
     for key, value of subjectsData
       allAssessments[value] = []
@@ -150,7 +150,7 @@ define [
           cutpoint = assessmentCutpoints[key]
           $.extend assessment[key], cutpoint
           assessment[key].score_color = assessment[key].cut_point_intervals[assessment[key].asmt_perf_lvl-1].bg_color
-          # for the particular asmt subject, save the assessment to it
+          # save the assessment to the particular subject
           allAssessments[value].push row
     assessmentsData = allAssessments
           

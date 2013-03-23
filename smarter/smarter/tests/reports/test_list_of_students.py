@@ -20,13 +20,18 @@ class TestLOS(Unittest_with_smarter_sqlite):
         testParam['asmtSubject'] = ['ELA', 'Math']
         results = get_list_of_students_report(testParam)
 
-        self.assertTrue('cutpoints' in results, "returning JSON must have cutpoints")
+        self.assertTrue('cutpoints' in results['metadata'], "returning JSON must have metadata")
         self.assertTrue('assessments' in results, "returning JSON must have assessments")
 
-        cutpoints = results['cutpoints']
+        cutpoints = results['metadata']['cutpoints']
         self.assertEqual(2, len(cutpoints), "cutpoints are ELA and MATH")
         self.assertTrue('subject2' in cutpoints, 'subject2')
         self.assertTrue('subject1' in cutpoints, 'subject1')
+
+        claims = results['metadata']['claims']
+        self.assertEqual(2, len(claims), "cutpoints are ELA and MATH")
+        self.assertTrue('subject2' in claims)
+        self.assertTrue('subject1' in claims)
 
         assessments = results['assessments']
         self.assertEqual(35, len(assessments), "35 assessments")
@@ -54,12 +59,16 @@ class TestLOS(Unittest_with_smarter_sqlite):
         testParam['asmtSubject'] = ['ELA']
         results = get_list_of_students_report(testParam)
 
-        self.assertTrue('cutpoints' in results, "returning JSON must have cutpoints")
+        self.assertTrue('metadata' in results, "returning JSON must have metadata")
         self.assertTrue('assessments' in results, "returning JSON must have assessments")
 
-        cutpoints = results['cutpoints']
+        cutpoints = results['metadata']['cutpoints']
         self.assertEqual(1, len(cutpoints), "cutpoints are ELA and MATH")
         self.assertTrue('subject1' in cutpoints, 'subject1')
+
+        claims = results['metadata']['claims']
+        self.assertEqual(1, len(claims), "claims are ELA")
+        self.assertTrue('subject1' in claims, 'subject1')
 
     def test_Math_only(self):
         testParam = {}
@@ -70,11 +79,15 @@ class TestLOS(Unittest_with_smarter_sqlite):
         testParam['asmtSubject'] = ['Math']
         results = get_list_of_students_report(testParam)
 
-        self.assertTrue('cutpoints' in results, "returning JSON must have cutpoints")
+        self.assertTrue('metadata' in results, "returning JSON must have cutpoints")
 
-        cutpoints = results['cutpoints']
+        cutpoints = results['metadata']['cutpoints']
         self.assertEqual(1, len(cutpoints))
         self.assertTrue('subject1' in cutpoints, 'subject1')
+
+        claims = results['metadata']['claims']
+        self.assertEqual(1, len(claims), "claims are ELA")
+        self.assertTrue('subject1' in claims, 'subject1')
 
     def test_invalid_asmt_subject(self):
         testParam = {}

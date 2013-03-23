@@ -14,7 +14,7 @@ from string import capwords
 from smarter.database.connector import SmarterDBConnection
 from edapi.logging import audit_event
 from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
-from smarter.reports.helpers.assessments import rearrange_cut_points,\
+from smarter.reports.helpers.assessments import get_cut_points,\
     get_overall_asmt_interval, get_claims
 
 
@@ -112,7 +112,7 @@ def __arrange_results(results):
         result['asmt_score_interval'] = get_overall_asmt_interval(result)
 
         # format and rearrange cutpoints
-        result = rearrange_cut_points(result)
+        result = get_cut_points(result)
 
         result['claims'] = get_claims(number_of_claims=5, result=result)
 

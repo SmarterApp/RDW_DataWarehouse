@@ -86,12 +86,12 @@ class TestStudentReport(Unittest_with_smarter_sqlite):
         params = {"studentId": 'dae1acf4-afb0-4013-90ba-9dcde4b25621'}
         items = get_student_report(params)['items']
         result = items[0]
-        self.assertEqual(3,len(result['claims']))
+        self.assertEqual(3, len(result['claims']))
         self.assertEqual('Concepts & Procedures', result['claims'][0]['name'])
         self.assertEqual('Problem Solving and Modeling & Data Analysis', result['claims'][1]['name'])
         self.assertEqual('Communicating Reasoning', result['claims'][2]['name'])
         result = items[1]
-        self.assertEqual(4,len(result['claims']))
+        self.assertEqual(4, len(result['claims']))
         self.assertEqual('Reading', result['claims'][0]['name'])
         self.assertEqual('Writing', result['claims'][1]['name'])
         self.assertEqual('Speaking & Listening', result['claims'][2]['name'])

@@ -33,7 +33,8 @@ define [
           if user_info
             $('#header .topLinks .user').html edwareUtil.getUserName user_info
             role = edwareUtil.getRole user_info
-            edwareFeedback.renderFeedback(role, "comparing_populations_" + reportType)
+            uid = edwareUtil.getUid user_info
+            edwareFeedback.renderFeedback(role, uid, "comparing_populations_" + reportType)
             
           # Append colors to records and summary section
           # Do not format data, or get breadcrumbs if the result is empty

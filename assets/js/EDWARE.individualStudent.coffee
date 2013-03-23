@@ -63,7 +63,8 @@ define [
       if data.user_info
         $('#header .topLinks .user').html edwareUtil.getUserName data.user_info
         role = edwareUtil.getRole data.user_info
-        edwareFeedback.renderFeedback(role, "individual_student_report")
+        uid = edwareUtil.getUid data.user_info
+        edwareFeedback.renderFeedback(role, uid, "individual_student_report")
       
       i = 0
       while i < data.items.length

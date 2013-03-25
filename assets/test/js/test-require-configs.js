@@ -26,7 +26,8 @@ var baseConfigs = {
 	    
 	    edwareBreadcrumbsTemplate: '../../js/widgets/breadcrumb/template.html',
 		edwareConfidenceLevelBarTemplate: '../../js/widgets/confidenceLevelBar/template.html',
-		edwarePopulationBarTemplate: '../../js/widgets/populationBar/template.html'
+		edwarePopulationBarTemplate: '../../js/widgets/populationBar/template.html',
+		edwareAssessmentDropdownViewSelectionTemplate: '../../js/templates/assessment_dropdown_view_selection.html'
 	},
 	shim: {
         'jqGrid': {

@@ -57,6 +57,8 @@ define [
     $("#gbox_gridTable").remove()
     $("#content").append("<table id='gridTable'></table>")
     $("#content #select_measure .btn-group .btn.dropdown-toggle #select_measure_current_view").html $('#' + viewName).text()
+    # Reset the error message, in case previous view shows an error
+    edwareUtil.displayErrorMessage ""
     dataName = viewName
     # If the view name is not one of the subjects, default it to the default assessments data
     if not (viewName of assessmentsData)

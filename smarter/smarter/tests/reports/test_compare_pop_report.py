@@ -66,8 +66,8 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         self.assertEqual('Sunset - Eastern Elementary', context_items[2][Constants.NAME])
 
         # check colors
-        self.assertTrue('text_color' in results[Constants.COLORS][Constants.SUBJECT1])
-        self.assertTrue('bg_color' in results[Constants.COLORS][Constants.SUBJECT1])
+        self.assertTrue('text_color' in results[Constants.COLORS][Constants.SUBJECT1][0])
+        self.assertTrue('bg_color' in results[Constants.COLORS][Constants.SUBJECT1][0])
 
     def test_district_view(self):
         testParam = {}
@@ -126,8 +126,8 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         self.assertEqual('Sunset School District', context_items[1][Constants.NAME])
 
         # check colors
-        self.assertTrue('text_color' in results[Constants.COLORS][Constants.SUBJECT1])
-        self.assertTrue('bg_color' in results[Constants.COLORS][Constants.SUBJECT1])
+        self.assertTrue('text_color' in results[Constants.COLORS][Constants.SUBJECT1][0])
+        self.assertTrue('bg_color' in results[Constants.COLORS][Constants.SUBJECT1][0])
 
     def test_state_view(self):
         testParam = {}
@@ -184,8 +184,9 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         self.assertEqual('New York', context_items[0][Constants.NAME])
 
         # check colors
-        self.assertTrue('text_color' in results[Constants.COLORS][Constants.SUBJECT1])
-        self.assertTrue('bg_color' in results[Constants.COLORS][Constants.SUBJECT1])
+        self.assertEqual(len(results[Constants.COLORS][Constants.SUBJECT1]), 4)
+        self.assertTrue('text_color' in results[Constants.COLORS][Constants.SUBJECT1][0])
+        self.assertTrue('bg_color' in results[Constants.COLORS][Constants.SUBJECT1][0])
 
     def test_invalid_params(self):
         params = {Constants.STATEID: 'AA'}

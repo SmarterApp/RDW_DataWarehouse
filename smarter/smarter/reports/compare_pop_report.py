@@ -17,6 +17,7 @@ from smarter.reports.helpers.constants import Constants
 from edapi.logging import audit_event
 import collections
 from edapi.exceptions import NotFoundException
+import json
 
 # Report service for Comparing Populations
 # Output:
@@ -166,7 +167,10 @@ class RecordManager():
         record.subjects = __subjects
 
         if subject_alias_name not in self._asmt_custom_metadata_results:
-            self._asmt_custom_metadata_results[subject_alias_name] = result[Constants.ASMT_CUSTOM_METADATA]
+            custom_metadata = result.get(Constants.ASMT_CUSTOM_METADATA)
+            if custom_metadata:
+                custom_metadata = json.loads(custom_metadata)
+            self._asmt_custom_metadata_results[subject_alias_name] = custom_metadata
 
     def get_asmt_custom_metadata(self):
         '''

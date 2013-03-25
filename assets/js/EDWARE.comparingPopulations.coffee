@@ -136,10 +136,9 @@ define [
   appendColor = (intervals, colorsData, defaultColors) ->
     i = 0
     len = intervals.length
-    colorsData = JSON.parse(colorsData)
     while (i < len)
       element = intervals[i]
-      if colorsData[i]
+      if colorsData and colorsData[i]
         element.color = colorsData[i]
       else
         element.color = defaultColors[i]

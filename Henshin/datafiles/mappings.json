@@ -1,0 +1,27 @@
+{
+    "content": "assessment",
+    "identification": {
+        "id": "asmt_id",
+        "type": "asmt_type",
+        "year": "asmt_period_year",
+        "period": "asmt_period_year",
+        "version": "asmt_version",
+        "subject": "asmt_subject"
+    },
+    "overall": {
+        "min_score": "asmt_score_min",
+        "max_score": "asmt_score_max"
+    },
+    "performance_levels": {
+        "level": [1, 2, 3, 4, 5],
+        "name": "asmt_perf_lvl_name_{0}",
+        "cut_point": "asmt_cut_point_{0}"
+    },
+    "claims": {
+        "claim": [1, 2, 3, 4],
+        "name": "asmt_claim_{0}_name",
+        "min_score": "asmt_claim_{0}_score_min",
+        "max_score": "asmt_claim_{0}_score_max",
+        "weight": "asmt_claim_{0}_score_weight"
+    }
+}

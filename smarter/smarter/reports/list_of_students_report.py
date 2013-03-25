@@ -11,13 +11,11 @@ from sqlalchemy.sql import and_
 from smarter.database.connector import SmarterDBConnection
 from edapi.logging import audit_event
 from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
+from smarter.reports.helpers.constants import Constants
+from smarter.reports.helpers.assessments import get_overall_asmt_interval, \
+    get_cut_points, get_claims
+from edapi.exceptions import NotFoundException
 
-
-__districtId = 'districtId'
-__schoolId = 'schoolId'
-__stateId = 'stateId'
-__asmtGrade = 'asmtGrade'
-__asmtSubject = 'asmtSubject'
 
 # Report for List of Students.
 # This function will be refactor when schema is updated to the latest.
@@ -36,28 +34,28 @@ __asmtSubject = 'asmtSubject'
 @report_config(
     name="list_of_students",
     params={
-        __stateId: {
+        Constants.STATEID: {
             "type": "string",
             "required": True,
             "pattern": "^[a-zA-Z0-9\-]{0,50}$",
         },
-        __districtId: {
+        Constants.DISTRICTID: {
             "type": "string",
             "required": True,
             "pattern": "^[a-zA-Z0-9\-]{0,50}$",
         },
-        __schoolId: {
+        Constants.SCHOOLID: {
             "type": "string",
             "required": True,
             "pattern": "^[a-zA-Z0-9\-]{0,50}$",
         },
-        __asmtGrade: {
+        Constants.ASMTGRADE: {
             "type": "string",
             "maxLength": 2,
             "required": True,
             "pattern": "^[K0-9]+$",
         },
-        __asmtSubject: {
+        Constants.ASMTSUBJECT: {
             "type": "array",
             "required": False,
             "minLength": 1,
@@ -71,14 +69,14 @@ __asmtSubject = 'asmtSubject'
 @audit_event()
 @user_info
 def get_list_of_students_report(params):
-    stateId = str(params[__stateId])
-    districtId = str(params[__districtId])
-    schoolId = str(params[__schoolId])
-    asmtGrade = str(params[__asmtGrade])
+    stateId = str(params[Constants.STATEID])
+    districtId = str(params[Constants.DISTRICTID])
+    schoolId = str(params[Constants.SCHOOLID])
+    asmtGrade = str(params[Constants.ASMTGRADE])
     # asmt_subject is optional.
     asmtSubject = None
-    if __asmtSubject in params:
-        asmtSubject = params[__asmtSubject]
+    if Constants.ASMTSUBJECT in params:
+        asmtSubject = params[Constants.ASMTSUBJECT]
     with SmarterDBConnection() as connector:
         # get handle to tables
         dim_student = connector.get_table('dim_student')
@@ -102,6 +100,8 @@ def get_list_of_students_report(params):
                         fact_asmt_outcome.c.asmt_score_range_min.label('asmt_score_range_min'),
                         fact_asmt_outcome.c.asmt_score_range_max.label('asmt_score_range_max'),
                         fact_asmt_outcome.c.asmt_perf_lvl.label('asmt_perf_lvl'),
+                        dim_asmt.c.asmt_score_min.label('asmt_score_min'),
+                        dim_asmt.c.asmt_score_max.label('asmt_score_max'),
                         dim_asmt.c.asmt_claim_1_name.label('asmt_claim_1_name'),
                         dim_asmt.c.asmt_claim_2_name.label('asmt_claim_2_name'),
                         dim_asmt.c.asmt_claim_3_name.label('asmt_claim_3_name'),
@@ -139,6 +139,18 @@ def get_list_of_students_report(params):
 
         results = connector.get_result(query)
 
+        if not results:
+            raise NotFoundException("There are no results")
+
+        subjects_map = {}
+        # This assumes that we take asmtSubject as optional param
+        if asmtSubject is None or (Constants.MATH in asmtSubject and Constants.ELA in asmtSubject):
+            subjects_map = {Constants.MATH: Constants.SUBJECT1, Constants.ELA: Constants.SUBJECT2}
+        elif Constants.MATH in asmtSubject:
+                subjects_map = {Constants.MATH: Constants.SUBJECT1}
+        elif Constants.ELA in asmtSubject:
+                subjects_map = {Constants.ELA: Constants.SUBJECT1}
+
         # Formatting data for Front End
         for result in results:
             student_id = result['student_id']
@@ -163,27 +175,15 @@ def get_list_of_students_report(params):
             assessment['teacher_full_name'] = format_full_name_rev(result['teacher_first_name'], result['teacher_middle_name'], result['teacher_last_name'])
             assessment['asmt_grade'] = result['asmt_grade']
             assessment['asmt_score'] = result['asmt_score']
+            assessment['asmt_score_min'] = result['asmt_score_min']
+            assessment['asmt_score_max'] = result['asmt_score_max']
             assessment['asmt_score_range_min'] = result['asmt_score_range_min']
             assessment['asmt_score_range_max'] = result['asmt_score_range_max']
+            assessment['asmt_score_interval'] = get_overall_asmt_interval(result)
             assessment['asmt_perf_lvl'] = result['asmt_perf_lvl']
-            assessment['asmt_claim_1_name'] = result['asmt_claim_1_name']
-            assessment['asmt_claim_2_name'] = result['asmt_claim_2_name']
-            assessment['asmt_claim_3_name'] = result['asmt_claim_3_name']
-            assessment['asmt_claim_4_name'] = result['asmt_claim_4_name']
-            assessment['asmt_claim_1_score'] = result['asmt_claim_1_score']
-            assessment['asmt_claim_2_score'] = result['asmt_claim_2_score']
-            assessment['asmt_claim_3_score'] = result['asmt_claim_3_score']
-            assessment['asmt_claim_4_score'] = result['asmt_claim_4_score']
-            assessment['asmt_claim_1_score_range_min'] = result['asmt_claim_1_score_range_min']
-            assessment['asmt_claim_2_score_range_min'] = result['asmt_claim_2_score_range_min']
-            assessment['asmt_claim_3_score_range_min'] = result['asmt_claim_3_score_range_min']
-            assessment['asmt_claim_4_score_range_min'] = result['asmt_claim_4_score_range_min']
-            assessment['asmt_claim_1_score_range_max'] = result['asmt_claim_1_score_range_max']
-            assessment['asmt_claim_2_score_range_max'] = result['asmt_claim_2_score_range_max']
-            assessment['asmt_claim_3_score_range_max'] = result['asmt_claim_3_score_range_max']
-            assessment['asmt_claim_4_score_range_max'] = result['asmt_claim_4_score_range_max']
+            assessment['claims'] = get_claims(number_of_claims=4, result=result)
 
-            assessments[result['asmt_subject']] = assessment
+            assessments[subjects_map[result['asmt_subject']]] = assessment
             student['assessments'] = assessments
 
             students[student_id] = student
@@ -200,15 +200,20 @@ def get_list_of_students_report(params):
                 student_id_track[result['student_id']] = True
 
         los_results['assessments'] = assessments
-        los_results['cutpoints'] = __get_cut_points(connector, asmtSubject)
-        los_results['context'] = get_breadcrumbs_context(district_id=districtId, school_id=schoolId, asmt_grade=asmtGrade)
+
+        # query dim_asmt to get cutpoints and color metadata
+        asmt_data = __get_asmt_data(connector, asmtSubject)
+        los_results['metadata'] = __format_cut_points(asmt_data, subjects_map)
+        los_results['context'] = get_breadcrumbs_context(state_id=stateId, district_id=districtId, school_id=schoolId, asmt_grade=asmtGrade)
+        los_results['subjects'] = __reverse_map(subjects_map)
 
         return los_results
 
 
-# returning cutpoints in JSON.
-def __get_cut_points(connector, asmtSubject):
-    cutpoints = {}
+def __get_asmt_data(connector, asmtSubject):
+    '''
+    Queries dim_asmt for cutpoint and custom metadata
+    '''
     dim_asmt = connector.get_table('dim_asmt')
 
     # construct the query
@@ -221,24 +226,42 @@ def __get_cut_points(connector, asmtSubject):
                     dim_asmt.c.asmt_cut_point_1.label("asmt_cut_point_1"),
                     dim_asmt.c.asmt_cut_point_2.label("asmt_cut_point_2"),
                     dim_asmt.c.asmt_cut_point_3.label("asmt_cut_point_3"),
-                    dim_asmt.c.asmt_cut_point_4.label("asmt_cut_point_4")],
+                    dim_asmt.c.asmt_cut_point_4.label("asmt_cut_point_4"),
+                    dim_asmt.c.asmt_score_max.label('asmt_score_max'),
+                    dim_asmt.c.asmt_custom_metadata.label("asmt_custom_metadata"),
+                    dim_asmt.c.asmt_claim_1_name.label('asmt_claim_1_name'),
+                    dim_asmt.c.asmt_claim_2_name.label('asmt_claim_2_name'),
+                    dim_asmt.c.asmt_claim_3_name.label('asmt_claim_3_name'),
+                    dim_asmt.c.asmt_claim_4_name.label('asmt_claim_4_name')],
                    from_obj=[dim_asmt])
     if asmtSubject is not None:
         query = query.where(dim_asmt.c.asmt_subject.in_(asmtSubject))
 
-    # run it and format the results
-    results = connector.get_result(query)
-    for result in results:
-        cutpoint = {}
-        cutpoint["asmt_cut_point_name_1"] = result["asmt_cut_point_name_1"]
-        cutpoint["asmt_cut_point_name_2"] = result["asmt_cut_point_name_2"]
-        cutpoint["asmt_cut_point_name_3"] = result["asmt_cut_point_name_3"]
-        cutpoint["asmt_cut_point_name_4"] = result["asmt_cut_point_name_4"]
-        cutpoint["asmt_cut_point_name_5"] = result["asmt_cut_point_name_5"]
-        cutpoint["asmt_cut_point_1"] = result["asmt_cut_point_1"]
-        cutpoint["asmt_cut_point_2"] = result["asmt_cut_point_2"]
-        cutpoint["asmt_cut_point_3"] = result["asmt_cut_point_3"]
-        cutpoint["asmt_cut_point_4"] = result["asmt_cut_point_4"]
-        cutpoints[result["asmt_subject"]] = cutpoint
+    # run it
+    return connector.get_result(query)
 
-    return cutpoints
+
+def __format_cut_points(results, subjects_map):
+    '''
+    Returns formatted cutpoints in JSON
+    '''
+    cutpoints = {}
+    claims = {}
+    for result in results:
+        subject_name = subjects_map[result["asmt_subject"]]
+        # Get formatted cutpoints data
+        cutpoint = get_cut_points(result)
+        cutpoints[subject_name] = cutpoint
+        # Get formatted claims data
+        claims[subject_name] = get_claims(number_of_claims=4, result=result, get_names_only=True)
+        # Remove unnecessary data
+        del(cutpoint['asmt_subject'])
+        del(cutpoint['asmt_score_max'])
+    return {'cutpoints': cutpoints, 'claims': claims}
+
+
+def __reverse_map(map_object):
+    '''
+    reverse map for FE
+    '''
+    return {v: k for k, v in map_object.items()}

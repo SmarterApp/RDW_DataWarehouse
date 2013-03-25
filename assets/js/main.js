@@ -18,11 +18,13 @@ require({
 		edwareBreadcrumbs: 'widgets/breadcrumb/EDWARE.breadcrumbs',
 		edwareConfidenceLevelBar: 'widgets/confidenceLevelBar/EDWARE.confidenceBar',
 		edwarePopulationBar: 'widgets/populationBar/EDWARE.populationBar',
+		edwareFeedback: 'EDWARE.feedback',
 		
 		// Templates
 		edwareBreadcrumbsTemplate: 'widgets/breadcrumb/template.html',
 		edwareConfidenceLevelBarTemplate: 'widgets/confidenceLevelBar/template.html',
-		edwarePopulationBarTemplate: 'widgets/populationBar/template.html'
+		edwarePopulationBarTemplate: 'widgets/populationBar/template.html',
+		edwareAssessmentDropdownViewSelectionTemplate: 'templates/assessment_dropdown_view_selection.html'
 	},
 	shim: {
         'jqGrid': {

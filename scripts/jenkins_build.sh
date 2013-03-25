@@ -165,7 +165,7 @@ function setup_functional_test_dependencies {
 function setup_python33_functional_test_dependencies {
     echo "Setup python 33functional test dependencies"
     
-    cd "$WORKSPACE/backend_tests"
+    cd "$WORKSPACE/test/backend_tests"
     python setup.py develop
 
     echo "Finish python33 functional test dependencies setup"
@@ -174,7 +174,7 @@ function setup_python33_functional_test_dependencies {
 function run_python33_functional_tests {
     echo "Run python33 functional tests"
 
-    cd "$WORKSPACE/backend_tests"
+    cd "$WORKSPACE/test/backend_tests"
 
     nosetests -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
 
@@ -203,7 +203,7 @@ function create_sym_link_for_apache {
     mkdir -p ${APACHE_DIR}
     /bin/ln -sf ${VIRTUALENV_DIR}/lib/python3.3/site-packages ${APACHE_DIR}/pythonpath
     /bin/ln -sf ${WORKSPACE}/smarter/test.ini ${APACHE_DIR}/development_ini
-    /bin/ln -sf ${WORKSPACE}/test_utils/pyramid.wsgi ${APACHE_DIR}/pyramid_conf
+    /bin/ln -sf ${WORKSPACE}/smarter/pyramid.wsgi ${APACHE_DIR}/pyramid_conf
     /bin/ln -sf ${VIRTUALENV_DIR} ${APACHE_DIR}/venv
 
     cd "$WORKSPACE/scripts"

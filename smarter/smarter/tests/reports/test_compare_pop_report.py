@@ -7,6 +7,7 @@ import unittest
 from smarter.reports.compare_pop_report import get_comparing_populations_report
 from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite
 from smarter.reports.helpers.constants import Constants
+from edapi.exceptions import NotFoundException
 
 
 class TestComparingPopulations(Unittest_with_smarter_sqlite):
@@ -65,8 +66,8 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         self.assertEqual('Sunset - Eastern Elementary', context_items[2][Constants.NAME])
 
         # check colors
-        self.assertTrue('text_color' in results[Constants.COLORS][Constants.SUBJECT1])
-        self.assertTrue('bg_color' in results[Constants.COLORS][Constants.SUBJECT1])
+        self.assertTrue('text_color' in results[Constants.COLORS][Constants.SUBJECT1][0])
+        self.assertTrue('bg_color' in results[Constants.COLORS][Constants.SUBJECT1][0])
 
     def test_district_view(self):
         testParam = {}
@@ -125,8 +126,8 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         self.assertEqual('Sunset School District', context_items[1][Constants.NAME])
 
         # check colors
-        self.assertTrue('text_color' in results[Constants.COLORS][Constants.SUBJECT1])
-        self.assertTrue('bg_color' in results[Constants.COLORS][Constants.SUBJECT1])
+        self.assertTrue('text_color' in results[Constants.COLORS][Constants.SUBJECT1][0])
+        self.assertTrue('bg_color' in results[Constants.COLORS][Constants.SUBJECT1][0])
 
     def test_state_view(self):
         testParam = {}
@@ -165,7 +166,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         summ_results = results[Constants.SUMMARY][0][Constants.RESULTS]
         self.assertEqual(2, len(summ_results))
         subject1 = summ_results[Constants.SUBJECT1]
-        self.assertEqual(81, subject1[Constants.TOTAL])
+        self.assertEqual(79, subject1[Constants.TOTAL])
         self.assertEqual(Constants.MATH, subject1[Constants.ASMT_SUBJECT])
         intervals = subject1[Constants.INTERVALS]
         self.assertEqual(4, len(intervals))
@@ -183,9 +184,13 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         self.assertEqual('New York', context_items[0][Constants.NAME])
 
         # check colors
-        self.assertTrue('text_color' in results[Constants.COLORS][Constants.SUBJECT1])
-        self.assertTrue('bg_color' in results[Constants.COLORS][Constants.SUBJECT1])
+        self.assertEqual(len(results[Constants.COLORS][Constants.SUBJECT1]), 4)
+        self.assertTrue('text_color' in results[Constants.COLORS][Constants.SUBJECT1][0])
+        self.assertTrue('bg_color' in results[Constants.COLORS][Constants.SUBJECT1][0])
 
+    def test_invalid_params(self):
+        params = {Constants.STATEID: 'AA'}
+        self.assertRaises(NotFoundException, get_comparing_populations_report, params)
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testReport']

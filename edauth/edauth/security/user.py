@@ -12,6 +12,12 @@ class User(object):
     def __init__(self):
         self.__initialize_default_values()
 
+    def __str__(self):
+        '''
+        Returns uid of the user
+        '''
+        return self.__info['uid']
+
     def __initialize_default_values(self):
         self.__info = {}
         self.__info['name'] = {'fullName': None, 'firstName': None, 'lastName': None}

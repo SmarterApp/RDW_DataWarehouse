@@ -14,7 +14,6 @@ from edapi.httpexceptions import EdApiHTTPNotFound, EdApiHTTPPreconditionFailed,
     EdApiHTTPRequestURITooLong
 from pyramid.response import Response
 import json
-from edapi.decorators import user_info
 
 MAX_REQUEST_URL_LENGTH = 2000
 

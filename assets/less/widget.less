@@ -47,6 +47,9 @@ table td .progress {
     color: @color-B2;
     font-weight: normal;
 }
+.ui-jqgrid .ui-jqgrid-htable th div {
+  text-align: center;
+}
 th.ui-th-column div {
     height: auto !important;
     padding: 4px 5px;
@@ -56,6 +59,7 @@ th.ui-th-column div {
 
 .ui-jqgrid tr.jqgrow td { 
   padding: 4px 5px;
+  white-space: normal;
 }
 
 .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
@@ -122,7 +126,6 @@ th.ui-th-column div {
       .scoreWrapper {
         margin-left: 3%;
         position: absolute;
-        width: 640px;
         z-index: 3000;
         height: 20px;
       }
@@ -136,7 +139,6 @@ th.ui-th-column div {
       .transWrapper {
         margin-left: 3%;
         position: absolute;
-        width: 640px;
         overflow: hidden;
         z-index: 99;
         margin-top: 11px;
@@ -181,7 +183,6 @@ th.ui-th-column div {
         margin-left: 3%;
         position: absolute;
         margin-top: 30px;
-        width: 640px;
         z-index:1;
         
         .bar {
@@ -194,7 +195,6 @@ th.ui-th-column div {
         margin-left: 3%;
         margin-top: 60px;
         position: absolute;
-        width: 640px;
         background: url("../images/score_line.png") no-repeat scroll right top;
         
         .cutPoints {

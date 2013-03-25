@@ -4,7 +4,8 @@ define [
   'cs!EDWARE'
   'cs!edwareUtil'
   'cs!edwarePopulationBar'
-], ($, jqGrid, EDWARE, edwareUtil, edwarePopulationBar) ->
+  'cs!edwareConfidenceLevelBar'
+], ($, jqGrid, EDWARE, edwareUtil, edwarePopulationBar, edwareConfidenceLevelBar) ->
   #
   # * EDWARE grid formatters
   # * Handles all the methods for displaying cutpoints, link in the grid
@@ -36,26 +37,37 @@ define [
     else
       " "
   
-  showClaimsMinMax = (value, options, rowObject) ->
+  showConfidence = (value, options, rowObject) ->
     names = options.colModel.name.split "."
     subject = rowObject[names[0]][names[1]]
-   
     if subject
-      "<div>[" + subject[names[2]+ "_range_min"] + "] " + value  + " [" + subject[names[2]+ "_range_max"] + "]</div>"
+      confidence = subject[names[2]][names[3]]['confidence']
+      "<div>" + value + " (&#177;" + confidence + ")</div>"
     else
       " "
     
   performanceBar = (value, options, rowObject) ->
     asmt_type = options.colModel.formatoptions.asmt_type
-    subject = rowObject.results[asmt_type]
-    results = edwarePopulationBar.create subject
+    subject = rowObject.assessments[asmt_type]
     
     if subject
+      results =  edwareConfidenceLevelBar.create subject, 88
+      "<div class='asmtScore' style='color:"+ subject.score_color+"'>" + subject.asmt_score + "</div><div class = 'confidenceLevel'>" + results + "</div>"      
+    else
+      " "
+      
+  populationBar = (value, options, rowObject) ->
+    asmt_type = options.colModel.formatoptions.asmt_type
+    subject = rowObject.results[asmt_type]
+    
+    if subject
+      results = edwarePopulationBar.create subject
       "<div class = 'populationBar'>" + results + "</div>"
     else
       " "
  
   showlink: showlink
   showOverallConfidence: showOverallConfidence
-  showClaimsMinMax: showClaimsMinMax
+  showConfidence: showConfidence
   performanceBar: performanceBar
+  populationBar: populationBar

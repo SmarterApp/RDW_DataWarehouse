@@ -82,9 +82,65 @@ h6 {
   h2 {
      color: @color-A1;
   }
+  
+  .surveyMonkeyPopup {
+    display: none;
+  }
 }
-  
-  
+
+table {  
+  .asmtScore {
+    float: left;
+    font-weight: bold;
+    font-size: 14px;
+    margin-right: 10px;
+  }
+  .confidenceLevel {
+    height: 30px;
+    margin-top: 5px;
+    
+    .progress {
+      height: 14px;
+      margin-top: 0;
+      margin-left: 44px;
+    }
+    .overall_score, .cutPointsBar {
+      display: none;
+    }
+    
+    .scoreWrapper {
+      margin-left: 44px;
+    }
+    .transWrapper {
+      margin-top: auto;
+      margin-left: 44px;
+    }
+    
+    .indicator {
+      margin-top: -6px;
+      height: 14px;
+    }
+    .transImage1 {
+      height: 14px;
+      background-image: url("../images/overlay_left88x14.png");
+    }
+    
+    .transImage2 {
+      height: 14px;
+      background-image: url("../images/overlay_right88x14.png");
+    }
+    
+    .transImage1.confLevelRight {
+      background-image: url("../images/overlay_left88x14.png");
+    }
+    
+    .transImage2.confLevelRight {
+      background-image: url("../images/overlay_right88x14.png");
+    }
+  }
+}
+
+
 /* Indivial Student Report styles */
 .placeholder {
   background: @color-B5;
@@ -245,15 +301,31 @@ h6 {
   .ui-jqgrid tr.footrow {
     td {
       height: 100px;
+      
+      &:nth-child(even) {
+       border-right: none !important;
+      }
     }
   }
   
   .ui-jqgrid tr.jqgrow td {
     white-space: normal;
+    
+    &:nth-child(even) {
+      border-right: none !important;
+    }
   }
   
   .ui-jqgrid .ui-jqgrid-view {
     font-size: 13px;
+  }
+  
+  .ui-jqgrid .ui-jqgrid-htable th.ui-th-column:first-child div {
+    margin-left: 20px;
+  }
+  
+  .ui-jqgrid .ui-jqgrid-htable th.ui-th-column:nth-child(3), .ui-jqgrid .ui-jqgrid-htable th.ui-th-column:nth-child(5) {
+    font-size: 10px !important;
   }
 }
 
@@ -264,17 +336,35 @@ h6 {
   .bar {
     font-size: 11px;
     font-weight: normal;
+    cursor: pointer;
   }
 }
-/* Popover/Tooltip styles*/
-
-.popover {
-  width: auto;
-  h3 { display: none; }
   
-  ul li { 
-    margin: 0 10px;
-    font-size: 13px; }
+/* Popover/Tooltip styles*/
+.popover {
+    width: auto;
+    z-index: 4999;
+    margin-top: -8px;
+    
+    ul li { 
+      margin: 0 10px;
+      font-size: 13px; }
+      
+    .large {
+      width: 620px;
+      height: 360px;
+      
+      .lead {
+        margin-bottom: 0; 
+      }
+    }
+  }
+  
+.surveyPopup {
+    bottom: 40px !important;
+    position: fixed;
+    top: auto !important;
+    margin-top: 0;
 }
 
 /* Footer styles */
@@ -296,12 +386,35 @@ h6 {
   padding-left: 20px;
 }
 
-#purpose {
+#purpose, #feedback, #legend {
   padding: 10px;
+  cursor: pointer;
 }
 
 #legend {
-  padding: 10px;
   padding-right: 20px;
 }
 
+#select_measure {
+  float: right;
+  
+  .btn-group {
+    float: right;
+    z-index: 4999;
+  }
+}
+
+#select_measure_title {
+  float: left;
+  margin-right: 5px;
+  margin-top: 6px;
+}
+
+.claim_name {
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 14px;
+  margin: 0;
+  text-align: center;
+  padding: 2px 0;
+}

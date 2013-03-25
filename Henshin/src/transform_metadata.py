@@ -13,24 +13,31 @@ import copy
 
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+__all__ = ['transform_to_metadata']
 
 
 def transform_to_metadata(dim_asmt_filename=None, output_path=None):
     '''
     Open the CSV file and generate a json file for each row in the csv.
-    @keyword dim_asm_filename: the path to the dim_asmt.csv file to use
+    @keyword dim_asm_filename: the path to the dim_asmt.csv file to use.
     If not present will look in the working directory
     @keyword output_path: Where to put the file. If None, file will be placed in current directory
     @return: a list of asmt_guids
+    @raise FileNotFoundError: if the specified file cannot be found
     '''
     asmt_file = dim_asmt_filename
     out_path = output_path
 
+    # set path to asmt_file to be in the working dir if it does not exist
     if asmt_file is None:
         asmt_file = os.path.join(__location__, 'dim_asmt.csv')
 
+    # check for an output path, if it is not set it to be the working dir
+    # if it does not exist, create it
     if out_path is None:
         out_path = __location__
+    elif not os.path.isdir(output_path):
+        os.makedirs(output_path)
 
     asmt_id_list = []
     row_mappings = read_mapping_json()
@@ -77,8 +84,6 @@ def generate_json(data_dict, mappings, output_path):
         # setup identification and overall sections
         if section == 'identification' or section == 'overall':
             for key, col_name in mappings[section].items():
-                print(section)
-                print(type(asmt_ord_dict[section][key]))
                 asmt_ord_dict[section][key] = data_dict[col_name]
 
         elif section == 'performance_levels' or section == 'claims':
@@ -158,6 +163,10 @@ def read_mapping_json():
 
 
 if __name__ == '__main__':
+    import time
     asmt_csv = '/Users/swimberly/projects/edware/fixture_data_generation/DataGeneration/datafiles/csv/dim_asmt.csv'
-    asmt_json = '/Users/swimberly/projects/edware/fixture_data_generation/Henshin/datafiles/'
-    transform_to_metadata(asmt_csv, asmt_json)
+    asmt_json = '/Users/swimberly/projects/edware/fixture_data_generation/Henshin/datafiles/metadata'
+    start = time.time()
+    id_list = transform_to_metadata(asmt_csv, asmt_json)
+    tot_time = time.time() - start
+    print("Generated %d metadata files in %.2fs" % (len(id_list), tot_time))

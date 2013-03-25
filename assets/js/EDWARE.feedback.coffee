@@ -4,9 +4,9 @@ define [
   "cs!edwareDataProxy"
   "text!templates/feedback/feedback.html"
 ], ($, Mustache, edwareDataProxy, template) ->
-    
+   
+  # Create Survey Monkey iframe based on the role, report.  Uses uid to append to the URL to identify the user that submits the survey
   renderFeedback = (role, uid, reportName) ->
-    self = this
     feedbackMapping = {}
     options =
       async: false

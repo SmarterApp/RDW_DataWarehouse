@@ -27,7 +27,7 @@ define [
       getStudentsConfig "../data/student.json", (callback_studentsConfig) ->
         studentsConfig = callback_studentsConfig
         # Use mustache template to replace text in json config
-        if assessmentsData['default'].length > 0
+        if assessmentsData['ALL'].length > 0
           # Add assessments data there so we can get column names
           combinedData = subjectsData
           combinedData.claims =  claimsData
@@ -59,10 +59,10 @@ define [
     $("#content #select_measure .btn-group .btn.dropdown-toggle #select_measure_current_view").html $('#' + viewName).text()
     # Reset the error message, in case previous view shows an error
     edwareUtil.displayErrorMessage ""
-    dataName = viewName
+    dataName = viewName.toUpperCase()
     # If the view name is not one of the subjects, default it to the default assessments data
-    if not (viewName of assessmentsData)
-      dataName = 'default'
+    if not (dataName of assessmentsData)
+      dataName = 'ALL'
     edwareGrid.create "gridTable", studentsConfig[viewName], assessmentsData[dataName]
 
   getStudentData = (sourceURL, params, callback) ->
@@ -140,11 +140,11 @@ define [
   # Also append cutpoints & colors into each assessment
   formatAssessmentsData = (assessmentCutpoints) ->
     # We keep a set of data for each assessment subject
-    allAssessments = {'default': assessmentsData}
+    allAssessments = {'ALL': assessmentsData}
     for key, value of subjectsData
-      allAssessments[value] = []
+      allAssessments[value.toUpperCase()] = []
     
-    for row in allAssessments["default"]
+    for row in allAssessments["ALL"]
       assessment = row['assessments']
       for key, value of subjectsData
         # check that we have such assessment first, since a student may not have taken it
@@ -153,7 +153,7 @@ define [
           $.extend assessment[key], cutpoint
           assessment[key].score_color = assessment[key].cut_point_intervals[assessment[key].asmt_perf_lvl-1].bg_color
           # save the assessment to the particular subject
-          allAssessments[value].push row
+          allAssessments[value.toUpperCase()].push row
     assessmentsData = allAssessments
           
   createStudentGrid: createStudentGrid

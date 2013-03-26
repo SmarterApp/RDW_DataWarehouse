@@ -7,11 +7,11 @@ import csv
 from column_headers import COLUMN_HEADER_INFO
 
 DATAFILE_PATH = str(os.path.split(os.path.abspath(os.path.dirname(__file__)))[0])
-DEFAULT_LANDING_ZONE_OUTCOME_FILE = DATAFILE_PATH + '\\datafiles\\fact_asmt_outcome_landing_zone'
+DEFAULT_LANDING_ZONE_OUTCOME_FILE = DATAFILE_PATH + '\\datafiles\\fact_asmt_outcome_landing_zone_{0}.csv'
 DEFAULT_FACT_ASMT_OUTCOME_FILE = DATAFILE_PATH + '\\datafiles\\fact_asmt_outcome.csv'
 
 
-def transform_asmt_outcome_to_landing_zone_format(source_file, asmt_id_list, output_file_prefix=DEFAULT_LANDING_ZONE_OUTCOME_FILE):
+def transform_asmt_outcome_to_landing_zone_format(source_file, asmt_id_list, fact_asmt_outcome_file_pattern):
     '''
     Function to transform data from fact_asmt_outcome.csv into landing zone format
     @param source_file: file name/path of input fact_asmt_outcome.csv file
@@ -28,7 +28,7 @@ def transform_asmt_outcome_to_landing_zone_format(source_file, asmt_id_list, out
         target_headers, source_headers = get_source_and_target_headers(source_file)
         if len(target_headers) > 0 and len(target_headers) == len(source_headers):
             # start transformation process
-            transform_file_process(source_file, asmt_id_list, target_headers, source_headers, output_file_prefix)
+            transform_file_process(source_file, asmt_id_list, target_headers, source_headers, fact_asmt_outcome_file_pattern)
 
 
 def validate_file(file_name):
@@ -68,7 +68,7 @@ def get_source_and_target_headers(source_file):
     return target_headers, source_headers
 
 
-def transform_file_process(source_file, asmt_id_list, target_headers, source_headers, output_file_prefix):
+def transform_file_process(source_file, asmt_id_list, target_headers, source_headers, fact_asmt_outcome_file_pattern):
     '''
     Transformation process
     '''
@@ -80,7 +80,8 @@ def transform_file_process(source_file, asmt_id_list, target_headers, source_hea
     # create target files
     for asmt_id, rows in transformed_rows_dict.items():
         # output file name format
-        output_file = output_file_prefix + "_" + str(asmt_id) + ".csv"
+        output_file = fact_asmt_outcome_file_pattern.format(str(asmt_id))
+        print("********", output_file)
         with open(output_file, 'w', newline='') as csvfile:
             output_writer = csv.writer(csvfile, delimiter=',', quoting=csv.QUOTE_MINIMAL)
             # write headers
@@ -113,6 +114,7 @@ def filter_by_asmt_id(source_file, asmt_id_list, source_headers):
 
 
 if __name__ == '__main__':
+    print(os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__))))
     source_file = DEFAULT_FACT_ASMT_OUTCOME_FILE
     target_file_path = DEFAULT_LANDING_ZONE_OUTCOME_FILE
     asmt_id_list = [i for i in range(20, 35)]

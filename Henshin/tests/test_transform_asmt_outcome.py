@@ -4,21 +4,23 @@ import os
 import csv
 from column_headers import COLUMN_HEADER_INFO
 
-DATAFILE_PATH = os.path.abspath(os.path.dirname(__file__)) + "\\files_for_tests\\"
+# DATAFILE_PATH = os.path.abspath(os.path.dirname(__file__)) + "\\files_for_tests\\"
+DATAFILE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "files_for_tests"))
 
 
 class TestTransformAsmtOutcome(unittest.TestCase):
 
     def test_transform_asmt_outcome_to_landing_zone_format(self):
-        source_file = DATAFILE_PATH + 'valid_fact_asmt_outcome.csv'
+        source_file = os.path.join(DATAFILE_PATH, 'valid_fact_asmt_outcome.csv')
         asmt_id_list = [101]
-        output_file_prefix = DATAFILE_PATH + '\\fact_asmt_outcome_landing_zone'
-        transform_asmt_outcome.transform_asmt_outcome_to_landing_zone_format(source_file, asmt_id_list, output_file_prefix)
+        output_file_pattern = 'REALDATA_ASMT_ID_{0}.csv'
+        transform_asmt_outcome.transform_asmt_outcome_to_landing_zone_format(source_file, asmt_id_list, output_file_pattern)
         target_headers = [source_and_target_column_mapping[0] for source_and_target_column_mapping in COLUMN_HEADER_INFO]
 
         # verify generated csv file
         expected_one_row = ['DE', '228', '515', '609', '5', '12339', '8368f1df-b5c2-44ce-a68a-e787e5409bd6', '101', '20130402', '529', '1707', '1671', '1743', '31', '31', '31', '67', '66', '68', '67', '66', '68', '42', '42', '42']
-        expected_file = output_file_prefix + "_" + str(101) + ".csv"
+        expected_file = "REALDATA_ASMT_ID_101.csv"
+        print("expected ", expected_file)
         self.assertTrue(os.path.exists(expected_file) and os.path.isfile(expected_file))
         with open(expected_file, newline='') as file:
             reader = csv.reader(file, delimiter=',', quoting=csv.QUOTE_NONE)
@@ -35,18 +37,18 @@ class TestTransformAsmtOutcome(unittest.TestCase):
         os.remove(expected_file)
 
     def test_transform_asmt_outcome_to_landing_zone_format_invalid_file(self):
-        source_file = DATAFILE_PATH + 'not_a_file'
+        source_file = os.path.join(DATAFILE_PATH, 'not_a_file')
         asmt_id_list = [101]
-        output_file_prefix = DATAFILE_PATH + '\\fact_asmt_outcome_landing_zone'
+        output_file_prefix = os.path.join(DATAFILE_PATH, 'fact_asmt_outcome_landing_zone')
         transform_asmt_outcome.transform_asmt_outcome_to_landing_zone_format(source_file, asmt_id_list, output_file_prefix)
 
     def test_validate_file_valid_file(self):
-        file_name = DATAFILE_PATH + 'valid_fact_asmt_outcome.csv'
+        file_name = os.path.join(DATAFILE_PATH, 'valid_fact_asmt_outcome.csv')
         actual_result = transform_asmt_outcome.validate_file(file_name)
         self.assertTrue(actual_result)
 
     def test_validate_file_not_a_file(self):
-        file_name = DATAFILE_PATH + 'not_a_file'
+        file_name = os.path.join(DATAFILE_PATH, 'not_a_file')
         actual_result = transform_asmt_outcome.validate_file(file_name)
         self.assertFalse(actual_result)
 
@@ -56,7 +58,7 @@ class TestTransformAsmtOutcome(unittest.TestCase):
         self.assertFalse(actual_result)
 
     def test_get_source_and_target_headers_valid_file(self):
-        file_name = DATAFILE_PATH + 'valid_fact_asmt_outcome.csv'
+        file_name = os.path.join(DATAFILE_PATH, 'valid_fact_asmt_outcome.csv')
         actual_target_headers, actual_source_headers = transform_asmt_outcome.get_source_and_target_headers(file_name)
         expected_target_headers = [source_and_target_column_mapping[0] for source_and_target_column_mapping in COLUMN_HEADER_INFO]
         expected_source_headers = [source_and_target_column_mapping[1] for source_and_target_column_mapping in COLUMN_HEADER_INFO]
@@ -68,16 +70,16 @@ class TestTransformAsmtOutcome(unittest.TestCase):
         self.assertRaises(Exception, transform_asmt_outcome.get_source_and_target_headers, file_name)
 
     def test_transform_file_process_one_asmt(self):
-        source_file = DATAFILE_PATH + 'valid_fact_asmt_outcome.csv'
+        source_file = os.path.join(DATAFILE_PATH, 'valid_fact_asmt_outcome.csv')
         asmt_id_list = [35]
         target_headers = [source_and_target_column_mapping[0] for source_and_target_column_mapping in COLUMN_HEADER_INFO]
         source_headers = [source_and_target_column_mapping[1] for source_and_target_column_mapping in COLUMN_HEADER_INFO]
-        output_file_prefix = DATAFILE_PATH + '\\fact_asmt_outcome_landing_zone'
+        output_file_prefix = 'REALDATA_ASMT_ID_{0}.csv'
         transform_asmt_outcome.transform_file_process(source_file, asmt_id_list, target_headers, source_headers, output_file_prefix)
 
         # verify generated csv file
         expected_one_row = ['DE', '228', '515', '620', '0', '1013', 'd63b555d-bed2-41f1-b345-50095407f3bc', '35', '20130515', '535', '1928', '1892', '1964', '87', '86', '88', '91', '90', '92', '43', '43', '43', '', '', '']
-        expected_file = output_file_prefix + "_" + str(35) + ".csv"
+        expected_file = "REALDATA_ASMT_ID_35.csv"
         self.assertTrue(os.path.exists(expected_file) and os.path.isfile(expected_file))
         with open(expected_file, newline='') as file:
             reader = csv.reader(file, delimiter=',', quoting=csv.QUOTE_NONE)
@@ -93,15 +95,15 @@ class TestTransformAsmtOutcome(unittest.TestCase):
         os.remove(expected_file)
 
     def test_transform_file_process_one_asmt_no_value(self):
-        source_file = DATAFILE_PATH + 'valid_fact_asmt_outcome.csv'
+        source_file = os.path.join(DATAFILE_PATH, 'valid_fact_asmt_outcome.csv')
         asmt_id_list = [100]
         target_headers = [source_and_target_column_mapping[0] for source_and_target_column_mapping in COLUMN_HEADER_INFO]
         source_headers = [source_and_target_column_mapping[1] for source_and_target_column_mapping in COLUMN_HEADER_INFO]
-        output_file_prefix = DATAFILE_PATH + '\\fact_asmt_outcome_landing_zone'
+        output_file_prefix = 'REALDATA_ASMT_ID_{0}.csv'
         transform_asmt_outcome.transform_file_process(source_file, asmt_id_list, target_headers, source_headers, output_file_prefix)
 
         # verify generated csv file
-        expected_file = output_file_prefix + "_" + str(100) + ".csv"
+        expected_file = "REALDATA_ASMT_ID_100.csv"
         self.assertTrue(os.path.exists(expected_file) and os.path.isfile(expected_file))
         with open(expected_file, newline='') as file:
             reader = csv.reader(file, delimiter=',', quoting=csv.QUOTE_NONE)

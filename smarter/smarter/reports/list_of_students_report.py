@@ -34,17 +34,17 @@ from edapi.exceptions import NotFoundException
 @report_config(
     name="list_of_students",
     params={
-        Constants.STATEID: {
+        Constants.STATECODE: {
             "type": "string",
             "required": True,
             "pattern": "^[a-zA-Z0-9\-]{0,50}$",
         },
-        Constants.DISTRICTID: {
+        Constants.DISTRICTGUID: {
             "type": "string",
             "required": True,
             "pattern": "^[a-zA-Z0-9\-]{0,50}$",
         },
-        Constants.SCHOOLID: {
+        Constants.SCHOOLGUID: {
             "type": "string",
             "required": True,
             "pattern": "^[a-zA-Z0-9\-]{0,50}$",
@@ -69,8 +69,8 @@ from edapi.exceptions import NotFoundException
 @audit_event()
 @user_info
 def get_list_of_students_report(params):
-    stateId = str(params[Constants.STATEID])
-    districtId = str(params[Constants.DISTRICTID])
+    stateId = str(params[Constants.STATECODE])
+    districtId = str(params[Constants.DISTRICTGUID])
     schoolId = str(params[Constants.SCHOOLID])
     asmtGrade = str(params[Constants.ASMTGRADE])
     # asmt_subject is optional.

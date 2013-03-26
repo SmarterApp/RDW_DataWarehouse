@@ -21,8 +21,8 @@ define [
   createStudentGrid = (params) ->
     
     getStudentData "/data/list_of_students", params, (assessmentsData, contextData, subjectsData, claimsData) ->
-      # set school name
-      setSchoolName contextData.items[2].name
+      # set school name as the page title from breadcrumb
+      $("#school_name").html contextData.items[2].name
       
       getStudentsConfig "../data/student.json", (callback_studentsConfig) ->
         studentsConfig = callback_studentsConfig
@@ -35,7 +35,7 @@ define [
           studentsConfig = JSON.parse(output)
         
         # populate select view
-        defaultView = createStudentsConfigViewSelect studentsConfig.customViews
+        defaultView = createAssessmentViewSelectDropDown studentsConfig.customViews
         
         $('#breadcrumb').breadcrumbs(contextData)
         
@@ -56,7 +56,6 @@ define [
   renderStudentGrid = (viewName)->
     $("#gbox_gridTable").remove()
     $("#content").append("<table id='gridTable'></table>")
-    $("#content #select_measure .btn-group .btn.dropdown-toggle #select_measure_current_view").html $('#' + viewName).text()
     # Reset the error message, in case previous view shows an error
     edwareUtil.displayErrorMessage ""
     dataName = viewName.toUpperCase()
@@ -113,10 +112,8 @@ define [
         else
           data
 
-  setSchoolName = (schoolName)->
-    $("#school_name").html schoolName
-
-  createStudentsConfigViewSelect = (customViewsData)->
+  # creating the assessment view drop down
+  createAssessmentViewSelectDropDown = (customViewsData)->
     items = []
     for key of customViewsData
       value = customViewsData[key]
@@ -126,11 +123,13 @@ define [
 
     $("#content #select_measure").append output
     
-    # add event
+    # add event to change view for aseessment
     $(document).on
      click: (e) ->
         e.preventDefault()
-        renderStudentGrid $(this).attr "id"
+        viewName = $(this).attr "id"
+        $("#content #select_measure .btn-group .btn.dropdown-toggle #select_measure_current_view").html $('#' + viewName).text()
+        renderStudentGrid viewName
     , ".viewOptions"
     
     # return the first element name as default view

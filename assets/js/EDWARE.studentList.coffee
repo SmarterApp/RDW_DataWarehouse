@@ -128,12 +128,15 @@ define [
      click: (e) ->
         e.preventDefault()
         viewName = $(this).attr "id"
-        $("#content #select_measure .btn-group .btn.dropdown-toggle #select_measure_current_view").html $('#' + viewName).text()
+        $("#select_measure_current_view").html $('#' + viewName).text()
         renderStudentGrid viewName
     , ".viewOptions"
     
     # return the first element name as default view
-    items[0].key
+    defaultView = items[0].key
+    $("#select_measure_current_view").html $('#' + defaultView).text()
+    defaultView
+    
 
   # For each subject, filter out its data
   # Also append cutpoints & colors into each assessment

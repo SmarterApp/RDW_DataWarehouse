@@ -72,7 +72,7 @@ def transform_file_process(source_file, asmt_id_list, target_headers, source_hea
     '''
     Transformation process
     '''
-    print("Start to transform ", source_file, " into landing zone format...")
+    print("Start to transform ", source_file, "into landing zone format...")
     # filter all rows which asmt_id in asmt_id_list
     # transformed_rows_dict is a dictionary. Key is the asmt_id in asmt_id_list, and values are list of rows in source file
     transformed_rows_dict = filter_by_asmt_id(source_file, asmt_id_list, source_headers)
@@ -87,7 +87,7 @@ def transform_file_process(source_file, asmt_id_list, target_headers, source_hea
             output_writer.writerow(target_headers)
             # write rows
             output_writer.writerows(rows)
-    print("Done")
+    print("Done!")
 
 
 def filter_by_asmt_id(source_file, asmt_id_list, source_headers):
@@ -112,9 +112,8 @@ def filter_by_asmt_id(source_file, asmt_id_list, source_headers):
     return asmt_dict
 
 
-'''
 if __name__ == '__main__':
     source_file = DEFAULT_FACT_ASMT_OUTCOME_FILE
+    target_file_path = DEFAULT_LANDING_ZONE_OUTCOME_FILE
     asmt_id_list = [i for i in range(20, 35)]
-    transform_asmt_outcome_to_landing_zone_format(source_file, asmt_id_list)
-'''
+    transform_asmt_outcome_to_landing_zone_format(source_file, asmt_id_list, target_file_path)

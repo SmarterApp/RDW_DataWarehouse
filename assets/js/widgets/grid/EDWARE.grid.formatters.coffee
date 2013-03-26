@@ -35,7 +35,7 @@ define [
     if subject
       "<div>P" + subject.asmt_perf_lvl + " [" + subject.asmt_score_range_min + "] " + value + " [" + subject.asmt_score_range_max + "]</div>"
     else
-      " "
+      ""
   
   showConfidence = (value, options, rowObject) ->
     names = options.colModel.name.split "."
@@ -44,7 +44,7 @@ define [
       confidence = subject[names[2]][names[3]]['confidence']
       "<div>" + value + " (&#177;" + confidence + ")</div>"
     else
-      " "
+      ""
     
   performanceBar = (value, options, rowObject) ->
     asmt_type = options.colModel.formatoptions.asmt_type
@@ -54,7 +54,7 @@ define [
       results =  edwareConfidenceLevelBar.create subject, 88
       "<div class='asmtScore' style='color:"+ subject.score_color+"'>" + subject.asmt_score + "</div><div class = 'confidenceLevel'>" + results + "</div>"      
     else
-      " "
+      ""
       
   populationBar = (value, options, rowObject) ->
     asmt_type = options.colModel.formatoptions.asmt_type
@@ -64,7 +64,7 @@ define [
       results = edwarePopulationBar.create subject
       "<div class = 'populationBar'>" + results + "</div>"
     else
-      " "
+      ""
  
   showlink: showlink
   showOverallConfidence: showOverallConfidence

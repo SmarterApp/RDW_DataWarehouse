@@ -34,6 +34,12 @@ class TestTransformAsmtOutcome(unittest.TestCase):
         # delete
         os.remove(expected_file)
 
+    def test_transform_asmt_outcome_to_landing_zone_format_invalid_file(self):
+        source_file = DATAFILE_PATH + 'not_a_file'
+        asmt_id_list = [101]
+        output_file_prefix = DATAFILE_PATH + '\\fact_asmt_outcome_landing_zone'
+        transform_asmt_outcome.transform_asmt_outcome_to_landing_zone_format(source_file, asmt_id_list, output_file_prefix)
+
     def test_validate_file_valid_file(self):
         file_name = DATAFILE_PATH + 'valid_fact_asmt_outcome.csv'
         actual_result = transform_asmt_outcome.validate_file(file_name)

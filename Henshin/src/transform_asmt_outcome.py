@@ -29,15 +29,16 @@ def transform_asmt_outcome_to_landing_zone_format(source_file, asmt_id_list, out
         if len(target_headers) > 0 and len(target_headers) == len(source_headers):
             # start transformation process
             transform_file_process(source_file, asmt_id_list, target_headers, source_headers, output_file_prefix)
-    else:
-        print("invalid file ", source_file)
 
 
 def validate_file(file_name):
     '''
     Validate the input file
     '''
-    return os.path.exists(file_name) and os.path.isfile(file_name)
+    isValid = os.path.exists(file_name) and os.path.isfile(file_name)
+    if isValid is False:
+        print("invalid file ", file_name)
+    return isValid
 
 
 def get_source_and_target_headers(source_file):
@@ -111,7 +112,9 @@ def filter_by_asmt_id(source_file, asmt_id_list, source_headers):
     return asmt_dict
 
 
+'''
 if __name__ == '__main__':
     source_file = DEFAULT_FACT_ASMT_OUTCOME_FILE
     asmt_id_list = [i for i in range(20, 35)]
     transform_asmt_outcome_to_landing_zone_format(source_file, asmt_id_list)
+'''

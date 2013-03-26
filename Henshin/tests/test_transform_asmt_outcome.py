@@ -10,11 +10,11 @@ DATAFILE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "files_f
 
 class TestTransformAsmtOutcome(unittest.TestCase):
 
-    def test_transform_asmt_outcome_to_landing_zone_format(self):
+    def test_transform_to_realdata(self):
         source_file = os.path.join(DATAFILE_PATH, 'valid_fact_asmt_outcome.csv')
         asmt_id_list = [101]
         output_file_pattern = 'REALDATA_ASMT_ID_{0}.csv'
-        transform_asmt_outcome.transform_asmt_outcome_to_landing_zone_format(source_file, asmt_id_list, output_file_pattern)
+        transform_asmt_outcome.transform_to_realdata(source_file, asmt_id_list, output_file_pattern)
         target_headers = [source_and_target_column_mapping[0] for source_and_target_column_mapping in COLUMN_HEADER_INFO]
 
         # verify generated csv file
@@ -36,11 +36,11 @@ class TestTransformAsmtOutcome(unittest.TestCase):
         # delete
         os.remove(expected_file)
 
-    def test_transform_asmt_outcome_to_landing_zone_format_invalid_file(self):
+    def test_transform_to_realdata_invalid_file(self):
         source_file = os.path.join(DATAFILE_PATH, 'not_a_file')
         asmt_id_list = [101]
         output_file_prefix = os.path.join(DATAFILE_PATH, 'fact_asmt_outcome_landing_zone')
-        transform_asmt_outcome.transform_asmt_outcome_to_landing_zone_format(source_file, asmt_id_list, output_file_prefix)
+        transform_asmt_outcome.transform_to_realdata(source_file, asmt_id_list, output_file_prefix)
 
     def test_validate_file_valid_file(self):
         file_name = os.path.join(DATAFILE_PATH, 'valid_fact_asmt_outcome.csv')

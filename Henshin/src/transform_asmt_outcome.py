@@ -11,7 +11,7 @@ DEFAULT_FACT_ASMT_OUTCOME_FILE = os.path.join(DATAFILE_PATH, 'datafiles', 'fact_
 DEFAULT_LANDING_ZONE_OUTCOME_FILE = os.path.join(DATAFILE_PATH, 'datafiles', 'METADATA_ASMT_ID_{0}.csv')
 
 
-def transform_asmt_outcome_to_landing_zone_format(source_file, asmt_id_list, fact_asmt_outcome_file_pattern):
+def transform_to_realdata(source_file, asmt_id_list, fact_asmt_outcome_file_pattern):
     '''
     Function to transform data from fact_asmt_outcome.csv into landing zone format
     @param source_file: file name/path of input fact_asmt_outcome.csv file
@@ -117,4 +117,4 @@ if __name__ == '__main__':
     source_file = DEFAULT_FACT_ASMT_OUTCOME_FILE
     target_file_path = DEFAULT_LANDING_ZONE_OUTCOME_FILE
     asmt_id_list = [i for i in range(20, 35)]
-    transform_asmt_outcome_to_landing_zone_format(source_file, asmt_id_list, target_file_path)
+    transform_to_realdata(source_file, asmt_id_list, target_file_path)

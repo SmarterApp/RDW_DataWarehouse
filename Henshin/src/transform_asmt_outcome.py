@@ -16,7 +16,7 @@ def transform_asmt_outcome_to_landing_zone_format(source_file, asmt_id_list, out
     Function to transform data from fact_asmt_outcome.csv into landing zone format
     @param source_file: file name/path of input fact_asmt_outcome.csv file
     @param asmt_id_list: all asmt_ids. Each asmt_id maps to one csv file to be generated
-    @param output_file_prefix: output file prefix
+    @param output_file_prefix: output file path prefix
     '''
     # check if file exists or not, file type, etc
     is_valid_file = validate_file(source_file)
@@ -29,6 +29,8 @@ def transform_asmt_outcome_to_landing_zone_format(source_file, asmt_id_list, out
         if len(target_headers) > 0 and len(target_headers) == len(source_headers):
             # start transformation process
             transform_file_process(source_file, asmt_id_list, target_headers, source_headers, output_file_prefix)
+    else:
+        print("invalid file ", source_file)
 
 
 def validate_file(file_name):
@@ -69,6 +71,7 @@ def transform_file_process(source_file, asmt_id_list, target_headers, source_hea
     '''
     Transformation process
     '''
+    print("Start to transform ", source_file, " into landing zone format...")
     # filter all rows which asmt_id in asmt_id_list
     # transformed_rows_dict is a dictionary. Key is the asmt_id in asmt_id_list, and values are list of rows in source file
     transformed_rows_dict = filter_by_asmt_id(source_file, asmt_id_list, source_headers)
@@ -83,6 +86,7 @@ def transform_file_process(source_file, asmt_id_list, target_headers, source_hea
             output_writer.writerow(target_headers)
             # write rows
             output_writer.writerows(rows)
+    print("Done")
 
 
 def filter_by_asmt_id(source_file, asmt_id_list, source_headers):
@@ -106,8 +110,8 @@ def filter_by_asmt_id(source_file, asmt_id_list, source_headers):
                 asmt_dict[str(asmt_guid)].append(new_row)
     return asmt_dict
 
-'''
+
 if __name__ == '__main__':
     source_file = DEFAULT_FACT_ASMT_OUTCOME_FILE
-    transform_asmt_outcome_to_landing_zone_format(source_file, [i for i in range(20, 35)])
-'''
+    asmt_id_list = [i for i in range(20, 35)]
+    transform_asmt_outcome_to_landing_zone_format(source_file, asmt_id_list)

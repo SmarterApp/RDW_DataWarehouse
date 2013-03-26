@@ -9,9 +9,9 @@ class Constants():
     '''
     constants for reports
     '''
-    STATEID = 'stateId'
-    DISTRICTID = 'districtId'
-    SCHOOLID = 'schoolId'
+    STATECODE = 'stateCode'
+    DISTRICTGUID = 'districtGuid'
+    SCHOOLGUID = 'schoolId'
     ASMTSUBJECT = 'asmtSubject'
     SUMMATIVE = 'SUMMATIVE'
     ASMT_SUBJECT = 'asmt_subject'

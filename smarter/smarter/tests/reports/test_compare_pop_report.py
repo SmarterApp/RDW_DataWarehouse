@@ -189,7 +189,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         self.assertTrue('bg_color' in results[Constants.COLORS][Constants.SUBJECT1][0])
 
     def test_invalid_params(self):
-        params = {Constants.STATEID: 'AA'}
+        params = {Constants.STATECODE: 'AA'}
         self.assertRaises(NotFoundException, get_comparing_populations_report, params)
 
 if __name__ == "__main__":

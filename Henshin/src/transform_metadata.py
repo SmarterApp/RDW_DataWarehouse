@@ -16,44 +16,34 @@ __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file
 __all__ = ['transform_to_metadata']
 
 
-def transform_to_metadata(dim_asmt_filename=None, output_path=None):
+def transform_to_metadata(asmt_filename, output_path, output_file_pattern):
     '''
     Open the CSV file and generate a json file for each row in the csv.
-    @keyword dim_asm_filename: the path to the dim_asmt.csv file to use.
-    If not present will look in the working directory
-    @keyword output_path: Where to put the file. If None, file will be placed in current directory
+    @param asmt_filename: the path to the dim_asmt.csv file to use.
+    @param output_path: Where to put the file. If None, file will be placed in current directory
+    @param output_file_pattern: the pattern for the json files that will be written
     @return: a list of asmt_guids
     @raise FileNotFoundError: if the specified file cannot be found
     '''
-    asmt_file = dim_asmt_filename
-    out_path = output_path
-
-    # set path to asmt_file to be in the working dir if it does not exist
-    if asmt_file is None:
-        asmt_file = os.path.join(__location__, 'dim_asmt.csv')
-
-    # check for an output path, if it is not set it to be the working dir
-    # if it does not exist, create it
-    if out_path is None:
-        out_path = __location__
-    elif not os.path.isdir(output_path):
-        os.makedirs(output_path)
 
     asmt_id_list = []
     row_mappings = read_mapping_json()
 
-    # open csv file and get header
-    with open(asmt_file, 'r') as csvfile:
-        asmt_reader = csv.reader(csvfile)
-        header = next(asmt_reader)
+    try:
+        # open csv file and get header
+        with open(asmt_filename, 'r') as csvfile:
+            asmt_reader = csv.reader(csvfile)
+            header = next(asmt_reader)
 
-        # loop through rows and write a json file for each row
-        for row in asmt_reader:
-            data_dict = create_data_dict(header, row)
-            asmt_id = generate_json(data_dict, row_mappings, output_path)
-            asmt_id_list.append(asmt_id)
+            # loop through rows and write a json file for each row
+            for row in asmt_reader:
+                data_dict = create_data_dict(header, row)
+                asmt_id = generate_json(data_dict, row_mappings, output_path, output_file_pattern)
+                asmt_id_list.append(asmt_id)
 
-    return asmt_id_list
+        return asmt_id_list
+    except FileNotFoundError:
+        print('unable to find file %f' % asmt_filename)
 
 
 def create_data_dict(header, row):
@@ -70,11 +60,12 @@ def create_data_dict(header, row):
     return data_dict
 
 
-def generate_json(data_dict, mappings, output_path):
+def generate_json(data_dict, mappings, output_path, file_pattern):
     '''
     @param data_dict: A dictionary containing the content for the output json file
     @param mappings: A dictionary that contains what the json keys should map to
     @param output_path: the path to where the files should be written
+    @param file_pattern: The pattern to be used that can be formatted with the asmt_id
     @return: the asmt_id for the json file that was written
     '''
     # duplicate the mappings dict
@@ -92,7 +83,7 @@ def generate_json(data_dict, mappings, output_path):
 
     # write json file
     # TODO: create better filename
-    filename = os.path.join(__location__, output_path, 'METADATA_asmt_id_' + asmt_ord_dict['identification']['id'] + '.json')
+    filename = os.path.join(output_path, file_pattern.format(asmt_ord_dict['identification']['id']))
     write_json_file(asmt_ord_dict, filename)
 
     return asmt_ord_dict['identification']['id']
@@ -167,6 +158,6 @@ if __name__ == '__main__':
     asmt_csv = '/Users/swimberly/projects/edware/fixture_data_generation/DataGeneration/datafiles/csv/dim_asmt.csv'
     asmt_json = '/Users/swimberly/projects/edware/fixture_data_generation/Henshin/datafiles/metadata'
     start = time.time()
-    id_list = transform_to_metadata(asmt_csv, asmt_json)
+    id_list = transform_to_metadata(asmt_csv, asmt_json, 'METADATA_ASMT_ID_{0}.json')
     tot_time = time.time() - start
     print("Generated %d metadata files in %.2fs" % (len(id_list), tot_time))

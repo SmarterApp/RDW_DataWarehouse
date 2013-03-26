@@ -1,23 +1,59 @@
 {
-	"students": [
-			{"name":"Students","index":"Students","field":"student_full_name","width":150,"style":"ui-ellipsis bold", "formatter":"showlink", "options":{"linkUrl":"indivStudentReport.html"}, "hidden":true, "sortorder":"asc"},
-			{"name":"Grade","index":"Grade","field":"enrollment_grade","width":50,"sorttype":"int","align":"center","resizable":false},
-			{"name":"Math","items":[
-				{"name":"Teacher","index":"Teacher","field":"assessments.Math.teacher_full_name","width":100,"style":"ui-ellipsis","resizable":false},
-				{"name":"Grade","index":"Grade","field":"assessments.Math.asmt_grade","width":50,"sorttype":"int","align":"center","resizable":false},
-				{"name":"Overall","index":"Overall","field":"assessments.Math.asmt_score","width":130,"formatter":"showOverallConfidence","sorttype":"int","align":"center"},
-				{"name":"Concepts and Procedures","index":"Concepts and Procedures","field":"assessments.Math.asmt_claim_1_score","width":90,"formatter":"showClaimsMinMax","sorttype":"int","align":"center"},
-				{"name":"Problem Solving & Modeling and Data Analysis","index":"Problem Solving & Modeling and Data Analysis","field":"assessments.Math.asmt_claim_2_score","width":90,"formatter":"showClaimsMinMax","sorttype":"int","align":"center"},
-				{"name":"Communicating Reasoning","index":"Communicating Reasoning","field":"assessments.Math.asmt_claim_3_score","width":110,"formatter":"showClaimsMinMax","sorttype":"int","align":"center"}]
+	"{{subject1}}_{{subject2}}": [
+			{"name":"Students","index":"Students","field":"student_full_name","width":160,"style":"ui-ellipsis bold", "formatter":"showlink", "options":{"linkUrl":"indivStudentReport.html"}, "hidden":true, "sortorder":"asc"},
+			{"name":"Grade","index":"Grade","field":"enrollment_grade","width":60,"sorttype":"int","align":"center","resizable":false},
+			{"name":"{{subject1}}","items":[
+				{"name":"Teacher","index":"Teacher","field":"assessments.subject1.teacher_full_name","width":150,"style":"ui-ellipsis","resizable":false},
+				{"name":"Grade","index":"Grade","field":"assessments.subject1.asmt_grade","width":60,"sorttype":"int","align":"center","resizable":false},
+				{"name":"Overall","index":"Overall","field":"assessments.subject1.asmt_score","width":150,"formatter":"performanceBar","options":{"asmt_type":"subject1"},"sorttype":"int","align":"center","title":false}]
 			},
-			{"name":"ELA","items":[
-				{"name":"Teacher","index":"Teacher","field":"assessments.ELA.teacher_full_name","width":100,"style":"ui-ellipsis","resizable":false},
-				{"name":"Grade","index":"Grade","field":"assessments.ELA.asmt_grade","width":50,"sorttype":"int","align":"center","resizable":false},
-				{"name":"Overall","index":"Overall","field":"assessments.ELA.asmt_score","width":130,"formatter":"showOverallConfidence","sorttype":"int","align":"center"},
-				{"name":"Reading","index":"Reading","field":"assessments.ELA.asmt_claim_1_score","width":90,"formatter":"showClaimsMinMax","sorttype":"int","align":"center"},
-				{"name":"Writing","index":"Writing","field":"assessments.ELA.asmt_claim_2_score","width":90,"formatter":"showClaimsMinMax","sorttype":"int","align":"center"},
-				{"name":"Speaking & Listening","index":"Speaking & Listening","field":"assessments.ELA.asmt_claim_3_score","width":110,"formatter":"showClaimsMinMax","sorttype":"int","align":"center"},
-				{"name":"Research & Inquiry","index":"Research & Inquiry","field":"assessments.ELA.asmt_claim_4_score","width":110,"formatter":"showClaimsMinMax","sorttype":"int","align":"center"}]
+			{"name":"{{subject2}}","items":[
+				{"name":"Teacher","index":"Teacher","field":"assessments.subject2.teacher_full_name","width":150,"style":"ui-ellipsis","resizable":false},
+				{"name":"Grade","index":"Grade","field":"assessments.subject2.asmt_grade","width":60,"sorttype":"int","align":"center","resizable":false},
+				{"name":"Overall","index":"Overall","field":"assessments.subject2.asmt_score","width":150,"formatter":"performanceBar","options":{"asmt_type":"subject2"},"sorttype":"int","align":"center","title":false}]
 			}
-		]
+		],
+		"{{subject1}}": [
+			{"name":"Students","index":"Students","field":"student_full_name","width":160,"style":"ui-ellipsis bold", "formatter":"showlink", "options":{"linkUrl":"indivStudentReport.html"}, "hidden":true, "sortorder":"asc"},
+			{"name":"Grade","index":"Grade","field":"enrollment_grade","width":60,"sorttype":"int","align":"center","resizable":false},
+			{"name":"{{subject1}}","items":[
+				{"name":"Teacher","index":"Teacher","field":"assessments.subject1.teacher_full_name","width":100,"style":"ui-ellipsis","resizable":false},
+				{"name":"Grade","index":"Grade","field":"assessments.subject1.asmt_grade","width":60,"sorttype":"int","align":"center","resizable":false},
+				{"name":"Overall","index":"Overall","field":"assessments.subject1.asmt_score","width":140,"formatter":"performanceBar","options":{"asmt_type":"subject1"},"sorttype":"int","align":"center","title":false}]
+			},
+			{"name": "<p class='claim_name'>{{claims.subject1.0.name}}</p>", "items": [
+				{"name":"{{claims.subject1.0.name2}}","index":"{{claims.subject1.0.name2}}","field":"assessments.subject1.claims.0.score","width":140,"formatter":"showConfidence","sorttype":"int","align":"center"}]
+			},
+			{"name": "<p class='claim_name'>{{claims.subject1.1.name}}</p>", "items": [
+				{"name":"{{claims.subject1.1.name2}}","index":"{{claims.subject1.1.name2}}","field":"assessments.subject1.claims.1.score","width":140,"formatter":"showConfidence","sorttype":"int","align":"center"}]
+			},
+			{"name": "<p class='claim_name'>{{claims.subject1.2.name}}</p>", "items": [
+				{"name":"{{claims.subject1.2.name2}}","index":"{{claims.subject1.2.name2}}","field":"assessments.subject1.claims.2.score","width":140,"formatter":"showConfidence","sorttype":"int","align":"center"}]
+			}
+		],
+		"{{subject2}}": [
+			{"name":"Students","index":"Students","field":"student_full_name","width":160,"style":"ui-ellipsis bold", "formatter":"showlink", "options":{"linkUrl":"indivStudentReport.html"}, "hidden":true, "sortorder":"asc"},
+			{"name":"Grade","index":"Grade","field":"enrollment_grade","width":60,"sorttype":"int","align":"center","resizable":false},
+			{"name":"{{subject2}}","items":[
+				{"name":"Teacher","index":"Teacher","field":"assessments.subject2.teacher_full_name","width":100,"style":"ui-ellipsis","resizable":false},
+				{"name":"Grade","index":"Grade","field":"assessments.subject2.asmt_grade","width":60,"sorttype":"int","align":"center","resizable":false},
+				{"name":"Overall","index":"Overall","field":"assessments.subject2.asmt_score","width":140,"formatter":"performanceBar","options":{"asmt_type":"subject2"},"sorttype":"int","align":"center","title":false}]
+			},
+			{"name": "<p class='claim_name'>{{claims.subject2.0.name}}</p>", "items": [
+				{"name":"{{claims.subject2.0.name2}}","index":"{{claims.subject2.claims.0.name2}}","field":"assessments.subject2.claims.0.score","width":103,"formatter":"showConfidence","sorttype":"int","align":"center"}]
+			},
+			{"name": "<p class='claim_name'>{{claims.subject2.1.name}}</p>", "items": [
+				{"name":"{{claims.subject2.1.name2}}","index":"{{claims.subject2.1.name2}}","field":"assessments.subject2.claims.1.score","width":104,"formatter":"showConfidence","sorttype":"int","align":"center"}]
+			},
+			{"name": "<p class='claim_name'>{{claims.subject2.2.name}}</p>", "items": [
+				{"name":"{{claims.subject2.2.name2}}","index":"{{claims.subject2.2.name2}}","field":"assessments.subject2.claims.2.score","width":104,"formatter":"showConfidence","sorttype":"int","align":"center"}]
+			},
+			{"name": "<p class='claim_name'>{{claims.subject2.3.name}}</p>", "items": [
+				{"name":"{{claims.subject2.3.name2}}","index":"{{claims.subject2.3.name2}}","field":"assessments.subject2.claims.3.score","width":104,"formatter":"showConfidence","sorttype":"int","align":"center"}]
+			}
+		],
+	"customViews": {"{{subject1}}_{{subject2}}": "{{subject1}} & {{subject2}} Summative",
+					"{{subject1}}": "{{subject1}} Summative",
+					"{{subject2}}": "{{subject2}} Summative"
+					}
 }

@@ -53,7 +53,7 @@ require ["jquery", "cs!edwareConfidenceLevelBar"], ($, edwareConfidenceLevelBar)
       asmt_score_range_min: 50
       asmt_score_max: 500
 
-    edwareConfidenceLevelBar.create "#bar1", data
+    edwareConfidenceLevelBar.create data, 640, "#bar1"
     setTimeout (->
       deepEqual $("#bar1").length, 1, "Create method should create confidence level bar"
       start()
@@ -98,7 +98,7 @@ require ["jquery", "cs!edwareConfidenceLevelBar"], ($, edwareConfidenceLevelBar)
       asmt_score_range_min: 200
       asmt_score_max: 1200
     
-    edwareConfidenceLevelBar.create "#bar2", data2
+    edwareConfidenceLevelBar.create data2, 640, "#bar2"
     setTimeout (->
       deepEqual $("#bar2").length, 1, "Create method should create confidence level bar"
       start()
@@ -143,7 +143,7 @@ require ["jquery", "cs!edwareConfidenceLevelBar"], ($, edwareConfidenceLevelBar)
       asmt_score_range_min: 1200
       asmt_score_max: 2400
     
-    edwareConfidenceLevelBar.create "#bar3", data3
+    edwareConfidenceLevelBar.create data3, 640, "#bar3"
     setTimeout (->
       deepEqual $("#bar3").length, 1, "Create method should create confidence level bar"
       start()
@@ -188,7 +188,7 @@ require ["jquery", "cs!edwareConfidenceLevelBar"], ($, edwareConfidenceLevelBar)
       asmt_score_range_min: 1200
       asmt_score_max: 2400
     
-    edwareConfidenceLevelBar.create "#bar4", data4
+    edwareConfidenceLevelBar.create data4, 640, "#bar4"
     setTimeout (->
       deepEqual $("#bar4").length, 1, "Create method should create confidence level bar"
       start()

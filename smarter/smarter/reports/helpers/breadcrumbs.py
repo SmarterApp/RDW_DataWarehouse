@@ -18,7 +18,7 @@ def get_breadcrumbs_context(state_code=None, district_guid=None, school_guid=Non
         dim_inst_hier = connector.get_table('dim_inst_hier')
 
         # Limit result count to one
-        # We limit the results to zero since we'll get multiple rows with the same values
+        # We limit the results to one since we'll get multiple rows with the same values
         # Think of the case of querying for state name and id, we'll get all the schools in that state
         query = select([dim_inst_hier.c.state_name.label(Constants.STATE_NAME),
                         dim_inst_hier.c.state_code.label(Constants.STATE_CODE),

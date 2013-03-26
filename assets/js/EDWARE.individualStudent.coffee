@@ -1,13 +1,16 @@
 #global define
 define [
   "jquery"
+  "bootstrap"
   "mustache"
   "cs!edwareDataProxy"
   "cs!edwareConfidenceLevelBar"
   "text!templates/individualStudent_report/individual_student_template.html"
   "text!templates/individualStudent_report/claimsInfo.html"
   "cs!edwareBreadcrumbs"
-], ($, Mustache, edwareDataProxy, edwareConfidenceLevelBar, indivStudentReportTemplate, claimsInfoTemplate, edwareBreadcrumbs) ->
+  "cs!edwareUtil"
+  "cs!edwareFeedback"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareConfidenceLevelBar, indivStudentReportTemplate, claimsInfoTemplate, edwareBreadcrumbs, edwareUtil, edwareFeedback) ->
   
   default_cutPointColors = [
     text_color: "#ffffff"
@@ -58,7 +61,11 @@ define [
       
       # append user_info (e.g. first and last name)
       if data.user_info
-        $('#header .topLinks .user').html data.user_info._User__info.name.firstName + ' ' + data.user_info._User__info.name.lastName
+        $('#header .topLinks .user').html edwareUtil.getUserName data.user_info
+        role = edwareUtil.getRole data.user_info
+        uid = edwareUtil.getUid data.user_info
+        edwareFeedback.renderFeedback(role, uid, "individual_student_report")
+      
       i = 0
       while i < data.items.length
         items = data.items[i]
@@ -99,11 +106,6 @@ define [
           claim = items.claims[j]
           claim.assessmentUC = items.asmt_subject.toUpperCase()
           
-          # Temporary fix for displaying claim number
-          claim.number = "Claim " + claim.indexer
-          claim.number = "Claim 2 & 4" if claim.indexer is "2" and claim.assessmentUC is "MATH"
-          
-          
           claim.claim_score_weight = claimScoreWeightArray[claim.assessmentUC][j]
           j++
         
@@ -111,7 +113,7 @@ define [
         
       contextData = data.context
       $('#breadcrumb').breadcrumbs(contextData)
-
+      
       partials = 
         claimsInfo: claimsInfoTemplate
       
@@ -124,7 +126,7 @@ define [
       while i < data.items.length
         item = data.items[i]       
         barContainer = "#assessmentSection" + i + " .confidenceLevel"
-        edwareConfidenceLevelBar.create barContainer, item        
+        edwareConfidenceLevelBar.create item, 640, barContainer        
         i++
 
   #

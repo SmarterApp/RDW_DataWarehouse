@@ -22,10 +22,12 @@ var baseConfigs = {
 		edwareConfidenceLevelBar: '../../js/widgets/confidenceLevelBar/EDWARE.confidenceBar',
 		edwarePopulationBar: '../../js/widgets/populationBar/EDWARE.populationBar',
 		edwareComparingPopulations: '../../js/EDWARE.comparingPopulations',
+		edwareFeedback: '../../js/EDWARE.feedback',
 	    
 	    edwareBreadcrumbsTemplate: '../../js/widgets/breadcrumb/template.html',
 		edwareConfidenceLevelBarTemplate: '../../js/widgets/confidenceLevelBar/template.html',
-		edwarePopulationBarTemplate: '../../js/widgets/populationBar/template.html'
+		edwarePopulationBarTemplate: '../../js/widgets/populationBar/template.html',
+		edwareAssessmentDropdownViewSelectionTemplate: '../../js/templates/assessment_dropdown_view_selection.html'
 	},
 	shim: {
         'jqGrid': {

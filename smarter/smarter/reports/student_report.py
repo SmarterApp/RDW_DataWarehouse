@@ -8,13 +8,14 @@ Created on Jan 13, 2013
 from edapi.decorators import report_config, user_info
 from smarter.reports.helpers.name_formatter import format_full_name
 from sqlalchemy.sql import select
-import json
 from sqlalchemy.sql.expression import and_
 from edapi.exceptions import NotFoundException
 from string import capwords
 from smarter.database.connector import SmarterDBConnection
 from edapi.logging import audit_event
 from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
+from smarter.reports.helpers.assessments import get_cut_points,\
+    get_overall_asmt_interval, get_claims
 
 
 def __prepare_query(connector, student_guid, assessment_guid):
@@ -102,59 +103,18 @@ def __arrange_results(results):
     This method arranges the data retreievd from the db to make it easier to consume by the client
     '''
     for result in results:
-        custom_metadata = result['asmt_custom_metadata']
-        custom = None if not custom_metadata else json.loads(custom_metadata)
-        # once we use the data, we clean it from the result
-        del(result['asmt_custom_metadata'])
 
         result['teacher_full_name'] = format_full_name(result['teacher_first_name'], result['teacher_middle_name'], result['teacher_last_name'])
 
         # asmt_type is an enum, so we would to capitalize it to make it presentable
         result['asmt_type'] = capwords(result['asmt_type'], ' ')
 
-        result['asmt_score_interval'] = result['asmt_score'] - result['asmt_score_range_min']
-        result['cut_point_intervals'] = []
+        result['asmt_score_interval'] = get_overall_asmt_interval(result)
 
-        # go over the 4 cut points
-        for i in range(1, 5):
-            # we only take cutpoints with values > 0
-            cut_point_interval = result['asmt_cut_point_{0}'.format(i)]
-            # if it's the forth interval, we would have a value anyway.
-            if i == 4 or (cut_point_interval and cut_point_interval > 0):
-                cut_point_interval_object = {'name': str(result['asmt_cut_point_name_{0}'.format(i)]),
-                                             'interval': str(cut_point_interval)}
+        # format and rearrange cutpoints
+        result = get_cut_points(result)
 
-                # the value of the 4th interval is the assessment max score
-                if (i == 4):
-                    cut_point_interval_object['interval'] = str(result['asmt_score_max'])
-                # once we use the data, we clean it from the result
-                del(result['asmt_cut_point_name_{0}'.format(i)])
-                del(result['asmt_cut_point_{0}'.format(i)])
-                # connect the custom metadata content to the cut_point_interval object
-                if custom is not None:
-                    result['cut_point_intervals'].append(dict(list(cut_point_interval_object.items()) + list(custom[i - 1].items())))
-                else:
-                    result['cut_point_intervals'].append(cut_point_interval_object)
-
-        result['claims'] = []
-
-        for i in range(1, 5):
-            claim_score = result['asmt_claim_{0}_score'.format(i)]
-            if claim_score is not None and claim_score > 0:
-                claim_object = {'name': str(result['asmt_claim_{0}_name'.format(i)]),
-                                'score': str(claim_score),
-                                'indexer': str(i),
-                                'range_min_score': str(result['asmt_claim_{0}_score_range_min'.format(i)]),
-                                'range_max_score': str(result['asmt_claim_{0}_score_range_max'.format(i)]),
-                                'max_score': str(result['asmt_claim_{0}_score_max'.format(i)]),
-                                'min_score': str(result['asmt_claim_{0}_score_min'.format(i)]),
-                                'confidence': str(claim_score - result['asmt_claim_{0}_score_range_min'.format(i)]),
-                                }
-                del(result['asmt_claim_{0}_score_range_min'.format(i)])
-                del(result['asmt_claim_{0}_score_range_max'.format(i)])
-                del(result['asmt_claim_{0}_score_min'.format(i)])
-                del(result['asmt_claim_{0}_score_max'.format(i)])
-                result['claims'].append(claim_object)
+        result['claims'] = get_claims(number_of_claims=5, result=result)
 
     # rearranging the json so we could use it more easily with mustache
     results = {"items": results}
@@ -197,7 +157,7 @@ def get_student_report(params):
             student_name = format_full_name(first_student['student_first_name'], first_student['student_middle_name'], first_student['student_last_name'])
             context = get_breadcrumbs_context(district_guid=first_student['district_guid'], school_guid=first_student['school_guid'], asmt_grade=first_student['grade'], student_name=student_name)
         else:
-            raise NotFoundException("Could not find student with id {0}".format(student_guid))
+            raise NotFoundException("There are no results for student id {0}".format(student_id))
 
         # prepare the result for the client
         result = __arrange_results(result)

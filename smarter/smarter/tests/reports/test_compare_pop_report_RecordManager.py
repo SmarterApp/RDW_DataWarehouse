@@ -143,6 +143,7 @@ class Test(unittest.TestCase):
             manager.update_record(result)
         self.assertEqual(2, len(manager.get_asmt_custom_metadata()))
         self.assertEqual(6, len(manager._tracking_record))
+        self.assertEqual(2, len(manager.get_asmt_custom_metadata()))
 
 
 def get_results(file_name):

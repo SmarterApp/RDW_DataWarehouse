@@ -18,7 +18,7 @@ __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file
 class Test(unittest.TestCase):
 
     def setUp(self):
-        self.dim_asmt_file = os.path.join(__location__, 'dim_asmt_for_test.csv')
+        self.dim_asmt_file = os.path.join(__location__, 'files_for_tests', 'dim_asmt_for_test.csv')
         self.json_output_dir = 'test_json'
         self.header = []
         self.row = []

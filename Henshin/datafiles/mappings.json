@@ -1,7 +1,7 @@
 {
     "content": "assessment",
     "identification": {
-        "id": "asmt_id",
+        "id": "asmt_rec_id",
         "type": "asmt_type",
         "year": "asmt_period_year",
         "period": "asmt_period_year",

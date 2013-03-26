@@ -33,4 +33,5 @@ if __name__ == '__main__':
         os.makedirs(out_path)
 
     asmt_id_list = transform_to_metadata(dim_asmt_file, out_path, metadata_file_pattern)
-    transform_asmt_outcome_to_landing_zone_format(fact_asmt_outcome_file, asmt_id_list, os.path.join(out_path, fact_asmt_outcome_file_pattern))
+    if asmt_id_list:
+        transform_asmt_outcome_to_landing_zone_format(fact_asmt_outcome_file, asmt_id_list, os.path.join(out_path, fact_asmt_outcome_file_pattern))

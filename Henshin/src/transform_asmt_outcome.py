@@ -105,7 +105,7 @@ def filter_by_asmt_id(source_file, asmt_id_list, source_headers):
     with open(source_file, newline='') as file:
         reader = csv.DictReader(file, delimiter=',', quoting=csv.QUOTE_NONE)
         for row in reader:
-            asmt_guid = row['asmt_guid']
+            asmt_guid = row['asmt_rec_id']
             if asmt_guid in asmt_dict.keys():
                 # pick values only in source_headers
                 new_row = [row[source_column] for source_column in source_headers]

@@ -76,9 +76,9 @@ class Test(unittest.TestCase):
         id_list = trans.transform_to_metadata(self.dim_asmt_file, self.json_output_dir, self.file_pattern)
         self.assertIsInstance(id_list, list)
         self.assertEqual(len(id_list), 3)
-        self.assertIn('0', id_list)
-        self.assertIn('1', id_list)
-        self.assertIn('2', id_list)
+        self.assertIn('111', id_list)
+        self.assertIn('222', id_list)
+        self.assertIn('333', id_list)
 
     def write_json_mock(self, ordered_data, filename):
         self.assertIn('overall', ordered_data)

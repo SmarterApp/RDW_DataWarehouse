@@ -157,7 +157,7 @@ def get_student_report(params):
             student_name = format_full_name(first_student['student_first_name'], first_student['student_middle_name'], first_student['student_last_name'])
             context = get_breadcrumbs_context(district_guid=first_student['district_guid'], school_guid=first_student['school_guid'], asmt_grade=first_student['grade'], student_name=student_name)
         else:
-            raise NotFoundException("There are no results for student id {0}".format(student_id))
+            raise NotFoundException("There are no results for student id {0}".format(student_guid))
 
         # prepare the result for the client
         result = __arrange_results(result)

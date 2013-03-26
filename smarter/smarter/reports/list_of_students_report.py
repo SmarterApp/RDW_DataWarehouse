@@ -69,9 +69,9 @@ from edapi.exceptions import NotFoundException
 @audit_event()
 @user_info
 def get_list_of_students_report(params):
-    stateId = str(params[Constants.STATECODE])
-    districtId = str(params[Constants.DISTRICTGUID])
-    schoolId = str(params[Constants.SCHOOLID])
+    stateCode = str(params[Constants.STATECODE])
+    districtGuid = str(params[Constants.DISTRICTGUID])
+    schoolGuid = str(params[Constants.SCHOOLGUID])
     asmtGrade = str(params[Constants.ASMTGRADE])
     # asmt_subject is optional.
     asmtSubject = None
@@ -204,7 +204,7 @@ def get_list_of_students_report(params):
         # query dim_asmt to get cutpoints and color metadata
         asmt_data = __get_asmt_data(connector, asmtSubject)
         los_results['metadata'] = __format_cut_points(asmt_data, subjects_map)
-        los_results['context'] = get_breadcrumbs_context(state_id=stateId, district_id=districtId, school_id=schoolId, asmt_grade=asmtGrade)
+        los_results['context'] = get_breadcrumbs_context(state_code=stateCode, district_guid=districtGuid, school_guid=schoolGuid, asmt_grade=asmtGrade)
         los_results['subjects'] = __reverse_map(subjects_map)
 
         return los_results

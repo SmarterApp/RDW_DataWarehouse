@@ -98,7 +98,7 @@ class TestStudentReport(Unittest_with_smarter_sqlite):
         self.assertEqual('Research & Inquiry', result['claims'][3]['name'])
 
     def test_invalid_student_id(self):
-        params = {'studentId': 'invalid'}
+        params = {'studentGuid': 'invalid'}
         self.assertRaises(NotFoundException, get_student_report, params)
 
 if __name__ == '__main__':

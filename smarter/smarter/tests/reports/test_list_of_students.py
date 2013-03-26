@@ -52,10 +52,10 @@ class TestLOS(Unittest_with_smarter_sqlite):
 
     def test_ELA_only(self):
         testParam = {}
-        testParam['districtId'] = '228'
-        testParam['schoolId'] = '242'
+        testParam['districtGuid'] = '228'
+        testParam['schoolGuid'] = '242'
         testParam['asmtGrade'] = 3
-        testParam['stateId'] = 'NY'
+        testParam['stateCode'] = 'NY'
         testParam['asmtSubject'] = ['ELA']
         results = get_list_of_students_report(testParam)
 
@@ -72,10 +72,10 @@ class TestLOS(Unittest_with_smarter_sqlite):
 
     def test_Math_only(self):
         testParam = {}
-        testParam['districtId'] = '228'
-        testParam['schoolId'] = '242'
+        testParam['districtGuid'] = '228'
+        testParam['schoolGuid'] = '242'
         testParam['asmtGrade'] = 3
-        testParam['stateId'] = 'NY'
+        testParam['stateCode'] = 'NY'
         testParam['asmtSubject'] = ['Math']
         results = get_list_of_students_report(testParam)
 
@@ -91,10 +91,10 @@ class TestLOS(Unittest_with_smarter_sqlite):
 
     def test_invalid_asmt_subject(self):
         testParam = {}
-        testParam['districtId'] = '228'
-        testParam['schoolId'] = '242'
+        testParam['districtGuid'] = '228'
+        testParam['schoolGuid'] = '242'
         testParam['asmtGrade'] = 3
-        testParam['stateId'] = 'NY'
+        testParam['stateCode'] = 'NY'
         testParam['asmtSubject'] = ['Dummy']
         self.assertRaises(NotFoundException, get_list_of_students_report, testParam)
 

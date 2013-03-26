@@ -7,8 +7,8 @@ import csv
 from column_headers import COLUMN_HEADER_INFO
 
 DATAFILE_PATH = str(os.path.split(os.path.abspath(os.path.dirname(__file__)))[0])
-DEFAULT_LANDING_ZONE_OUTCOME_FILE = DATAFILE_PATH + '\\data_files\\fact_asmt_outcome_landing_zone'
-DEFAULT_FACT_ASMT_OUTCOME_FILE = DATAFILE_PATH + '\\data_files\\fact_asmt_outcome.csv'
+DEFAULT_LANDING_ZONE_OUTCOME_FILE = DATAFILE_PATH + '\\datafiles\\fact_asmt_outcome_landing_zone'
+DEFAULT_FACT_ASMT_OUTCOME_FILE = DATAFILE_PATH + '\\datafiles\\fact_asmt_outcome.csv'
 
 
 def transform_asmt_outcome_to_landing_zone_format(source_file, asmt_id_list, output_file_prefix=DEFAULT_LANDING_ZONE_OUTCOME_FILE):

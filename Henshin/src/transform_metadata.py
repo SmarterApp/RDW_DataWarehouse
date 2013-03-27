@@ -15,13 +15,21 @@ import copy
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 __all__ = ['transform_to_metadata']
 
+# CONSTANTS
+JSONFILE = os.path.join(__location__, '..', 'datafiles', 'mappings.json')
+IDENTIFICATION = 'identification'
+ID = 'id'
+OVERALL = 'overall'
+CLAIMS = 'claims'
+PERFORMANCE = 'performance_levels'
 
-def transform_to_metadata(asmt_filename, output_path, output_file_pattern):
+
+def transform_to_metadata(asmt_filename, output_path, output_filename_pattern):
     '''
     Open the CSV file and generate a json file for each row in the csv.
     @param asmt_filename: the path to the dim_asmt.csv file to use.
     @param output_path: Where to put the file. If None, file will be placed in current directory
-    @param output_file_pattern: the pattern for the json files that will be written
+    @param output_filename_pattern: the pattern for the json files that will be written
     @return: a list of asmt_guids
     @raise FileNotFoundError: if the specified file cannot be found
     '''
@@ -29,18 +37,21 @@ def transform_to_metadata(asmt_filename, output_path, output_file_pattern):
     asmt_id_list = []
     row_mappings = read_mapping_json()
 
-    # open csv file and get header
-    with open(asmt_filename, 'r') as csvfile:
-        asmt_reader = csv.reader(csvfile)
-        header = next(asmt_reader)
+    try:
+        # open csv file and get header
+        with open(asmt_filename, 'r') as csvfile:
+            asmt_reader = csv.reader(csvfile)
+            header = next(asmt_reader)
 
-        # loop through rows and write a json file for each row
-        for row in asmt_reader:
-            data_dict = create_data_dict(header, row)
-            asmt_id = generate_json(data_dict, row_mappings, output_path, output_file_pattern)
-            asmt_id_list.append(asmt_id)
+            # loop through rows and write a json file for each row
+            for row in asmt_reader:
+                data_dict = create_data_dict(header, row)
+                asmt_id = generate_json(data_dict, row_mappings, output_path, output_filename_pattern)
+                asmt_id_list.append(asmt_id)
 
-    return asmt_id_list
+        return asmt_id_list
+    except FileNotFoundError:
+        print('Unable to find the specified file: %s' % asmt_filename)
 
 
 def create_data_dict(header, row):
@@ -57,33 +68,34 @@ def create_data_dict(header, row):
     return data_dict
 
 
-def generate_json(data_dict, mappings, output_path, file_pattern):
+def generate_json(data_dict, mappings, output_path, filename_pattern):
     '''
     @param data_dict: A dictionary containing the content for the output json file
     @param mappings: A dictionary that contains what the json keys should map to
     @param output_path: the path to where the files should be written
-    @param file_pattern: The pattern to be used that can be formatted with the asmt_id
+    @param filename_pattern: The pattern to be used that can be formatted with the asmt_id
     @return: the asmt_id for the json file that was written
     '''
     # duplicate the mappings dict
     asmt_ord_dict = copy.deepcopy(mappings)
 
-    for section in mappings:
+    for json_section in mappings:
         # setup identification and overall sections
-        if section == 'identification' or section == 'overall':
-            for key, col_name in mappings[section].items():
-                asmt_ord_dict[section][key] = data_dict[col_name]
+        # TODO: THE REST
+        if json_section == IDENTIFICATION or json_section == OVERALL:
+            for key, col_name in mappings[json_section].items():
+                asmt_ord_dict[json_section][key] = data_dict[col_name]
 
-        elif section == 'performance_levels' or section == 'claims':
+        elif json_section == PERFORMANCE or json_section == CLAIMS:
             # loop through list and add vals
-            asmt_ord_dict[section] = create_list_for_section(mappings[section], data_dict)
+            asmt_ord_dict[json_section] = create_list_for_section(mappings[json_section], data_dict)
 
     # write json file
     # TODO: create better filename
-    filename = os.path.join(output_path, file_pattern.format(asmt_ord_dict['identification']['id']))
+    filename = os.path.join(output_path, filename_pattern.format(asmt_ord_dict[IDENTIFICATION][ID]))
     write_json_file(asmt_ord_dict, filename)
 
-    return asmt_ord_dict['identification']['id']
+    return asmt_ord_dict[IDENTIFICATION][ID]
 
 
 def write_json_file(ordered_data, filename):
@@ -148,9 +160,8 @@ def read_mapping_json():
     Open the mapping json file. Read and parse it into an OrderedDict
     @return: an OrderedDict of the json
     '''
-    jsonfile = os.path.join(__location__, '..', 'datafiles', 'mappings.json')
 
-    with open(jsonfile, 'r') as f:
+    with open(JSONFILE, 'r') as f:
         mappings = json.loads(f.read(), object_pairs_hook=OrderedDict)
         return mappings
 

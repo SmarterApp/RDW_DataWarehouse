@@ -83,8 +83,8 @@ class Test(unittest.TestCase):
         for name in file_names:
             self.assertTrue(os.path.exists(name))
 
-        with self.assertRaises(FileNotFoundError):
-            trans.transform_to_metadata('asmt_filename', self.json_output_dir, self.file_pattern)
+        res = trans.transform_to_metadata('asmt_filename', self.json_output_dir, self.file_pattern)
+        self.assertIsNone(res)
 
     def write_json_mock(self, ordered_data, filename):
         self.assertIn('overall', ordered_data)

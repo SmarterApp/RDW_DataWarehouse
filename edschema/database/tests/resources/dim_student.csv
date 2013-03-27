@@ -1,4 +1,4 @@
-student_rec_id,student_id,first_name,middle_name,last_name,address_1,address_2,city,zip_code,gender,email,dob,section_id,grade,state_code,district_id,school_id,from_date,to_date,most_recent
+student_rec_id,student_guid,first_name,middle_name,last_name,address_1,address_2,city,zip_code,gender,email,dob,section_guid,grade,state_code,district_guid,school_guid,from_date,to_date,most_recent
 387,c504b0bd-082b-456a-9d59-4d8685a1635b,Alejandro,Marko,Wilson,782 Murray Cod Road,,Common tern Gurnard,11536,male,alejandro.wilson@gangessharkbrownhyaenaprimary.edu,20041218,345,3,NY,228,242,20110114,99991231,TRUE
 1304,8cc21cc2-567d-42df-9d77-bcb5634ddf07,Alice,,Posner,775 Sixgill Ray North Ave,,Silver-beaked tanager Smalltooth sawfish,12763,female,alice.posner@deepseaanglerfishsheephighsch.edu,19961127,1299,11,NY,229,942,20110306,99991231,TRUE
 883,224c1a91-a244-46a6-bf73-0a3162a632a3,Angelica,,Richardson,783 Sockeye Salmon Way,,Common tern Gurnard,12415,female,angelica.richardson@neontetrabrownhyaenahighsch.edu,19960818,814,11,NY,228,248,20110215,99991231,TRUE

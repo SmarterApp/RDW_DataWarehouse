@@ -14,9 +14,9 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
 
     def test_school_view(self):
         testParam = {}
-        testParam[Constants.STATEID] = 'NY'
-        testParam[Constants.DISTRICTID] = '228'
-        testParam[Constants.SCHOOLID] = '242'
+        testParam[Constants.STATECODE] = 'NY'
+        testParam[Constants.DISTRICTGUID] = '228'
+        testParam[Constants.SCHOOLGUID] = '242'
         results = get_comparing_populations_report(testParam)
 
         # check top-level attributes
@@ -71,8 +71,8 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
 
     def test_district_view(self):
         testParam = {}
-        testParam[Constants.STATEID] = 'NY'
-        testParam[Constants.DISTRICTID] = '228'
+        testParam[Constants.STATECODE] = 'NY'
+        testParam[Constants.DISTRICTGUID] = '228'
         results = get_comparing_populations_report(testParam)
 
         # check top-level attributes
@@ -131,7 +131,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
 
     def test_state_view(self):
         testParam = {}
-        testParam[Constants.STATEID] = 'NY'
+        testParam[Constants.STATECODE] = 'NY'
         results = get_comparing_populations_report(testParam)
 
         # check top-level attributes
@@ -189,7 +189,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         self.assertTrue('bg_color' in results[Constants.COLORS][Constants.SUBJECT1][0])
 
     def test_invalid_params(self):
-        params = {Constants.STATEID: 'AA'}
+        params = {Constants.STATECODE: 'AA'}
         self.assertRaises(NotFoundException, get_comparing_populations_report, params)
 
 if __name__ == "__main__":

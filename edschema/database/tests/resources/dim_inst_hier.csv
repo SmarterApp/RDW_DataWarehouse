@@ -1,4 +1,4 @@
-inst_hier_rec_id,state_name,state_code,district_id,district_name,school_id,school_name,school_category,from_date,to_date,most_recent
+inst_hier_rec_id,state_name,state_code,district_guid,district_name,school_guid,school_name,school_category,from_date,to_date,most_recent
 243,New York,NY,228,Sunset School District,242,Sunset - Eastern Elementary,Elementary School,20000101,99991231,TRUE
 246,New York,NY,228,Sunset School District,245,Sunset - Western Middle,Middle School,20000101,99991231,TRUE
 249,New York,NY,228,Sunset School District,248,Sunset Central High,High School,20000101,99991231,TRUE

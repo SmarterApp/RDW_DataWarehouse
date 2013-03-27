@@ -1,0 +1,48 @@
+body
+{
+    background-image:none;   /* background gradient image - must be 100px * 1500px, .png is best */
+    background-color:#fff;              /* this colour must be set to the finishing colour (at the very bottom) of the gradient */
+    color:#838383; /* default font colour */
+    font-family: helvetica, arial, sans-serif;
+    margin: 0 auto;
+    width: 980px;
+}
+
+#header {
+	color: #838383;
+	height: 60px;
+	background: #F8F8F8;
+}
+
+#logo {
+	width: 100px;
+	height: 20px;
+	padding: 5px;
+	background: #E2E2E2;
+	color: #fff;
+	float: left;
+	text-align: center;
+	margin-top: 20px;
+	margin-left: 20px;
+}
+
+#content { 
+	margin-top: 20px; 
+	min-height: 200px;
+}
+
+.box-content fieldset {
+	margin: 0;
+}
+
+#footer {
+  color: #fff;
+  background-color: #B1B1B1;
+  float: left;
+  width: 980px;
+  font-size: 12px;
+  position: fixed;
+  bottom: 0px;
+  height: 40px;
+  z-index: 5000;
+}

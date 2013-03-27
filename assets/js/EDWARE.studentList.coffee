@@ -20,38 +20,32 @@ define [
   #    
   createStudentGrid = (params) ->
     
-    getStudentData "/data/list_of_students", params, (assessmentsData, contextData, subjectsData, claimsData) ->
-      # set school name as the page title from breadcrumb
-      $("#school_name").html contextData.items[2].name
+    options =
+      async: false
+      method: "GET"
+
+    edwareDataProxy.getDatafromSource "../data/color.json", options, (defaultColors) ->
       
-      getStudentsConfig "../data/student.json", (callback_studentsConfig) ->
-        studentsConfig = callback_studentsConfig
-        # Use mustache template to replace text in json config
-        if assessmentsData['ALL'].length > 0
-          # Add assessments data there so we can get column names
-          combinedData = subjectsData
-          combinedData.claims =  claimsData
-          output = Mustache.render(JSON.stringify(studentsConfig), combinedData)
-          studentsConfig = JSON.parse(output)
+      getStudentData "/data/list_of_students", params, defaultColors, (assessmentsData, contextData, subjectsData, claimsData) ->
+        # set school name as the page title from breadcrumb
+        $("#school_name").html contextData.items[2].name
         
-        # populate select view
-        defaultView = createAssessmentViewSelectDropDown studentsConfig.customViews
-        
-        $('#breadcrumb').breadcrumbs(contextData)
-        
-        renderStudentGrid(defaultView)
-        $('#content .surveyMonkeyPopup').renderFeedback("teacher", "list_of_students")
-        
-        # Survey monkey popup
-        $("#feedback").popover
-          html: true
-          placement: "top"
-          container: "footer"
-          title: ->
-              '<div class="pull-right"><button class="btn" id="close" type="button" onclick="$(&quot;#feedback&quot;).popover(&quot;hide&quot;);">Hide</button></div><div class="lead">Survery Monkey</div>'
-          template: '<div class="popover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
-          content: ->
-            $(".surveyMonkeyPopup").html()
+        getStudentsConfig "../data/student.json", (callback_studentsConfig) ->
+          studentsConfig = callback_studentsConfig
+          # Use mustache template to replace text in json config
+          if assessmentsData['ALL'].length > 0
+            # Add assessments data there so we can get column names
+            combinedData = subjectsData
+            combinedData.claims =  claimsData
+            output = Mustache.render(JSON.stringify(studentsConfig), combinedData)
+            studentsConfig = JSON.parse(output)
+          
+          # populate select view
+          defaultView = createAssessmentViewSelectDropDown studentsConfig.customViews
+          
+          $('#breadcrumb').breadcrumbs(contextData)
+          
+          renderStudentGrid(defaultView)
         
   renderStudentGrid = (viewName)->
     $("#gbox_gridTable").remove()
@@ -64,8 +58,7 @@ define [
       dataName = 'ALL'
     edwareGrid.create "gridTable", studentsConfig[viewName], assessmentsData[dataName]
 
-  getStudentData = (sourceURL, params, callback) ->
-    
+  getStudentData = (sourceURL, params, defaultColors, callback) ->    
     assessmentArray = []
     
     return false if sourceURL is "undefined" or typeof sourceURL is "number" or typeof sourceURL is "function" or typeof sourceURL is "object"
@@ -86,9 +79,20 @@ define [
       contextData = data.context
       subjectsData = data.subjects
       claimsData = data.metadata.claims
+      cutPointsData = data.metadata.cutpoints
+      
+      # if cut points don't have background colors, then it will use default background colors
+      for key of cutPointsData
+        items = cutPointsData[key]
+        
+        j = 0
+        while j < items.cut_point_intervals.length
+          if !items.cut_point_intervals[j].bg_color
+            $.extend(items.cut_point_intervals[j], defaultColors[j])
+          j++
       
       #  append cutpoints into each individual assessment data
-      formatAssessmentsData data.metadata.cutpoints
+      formatAssessmentsData cutPointsData
       
       if callback
         callback assessmentsData, contextData, subjectsData, claimsData

@@ -9,7 +9,7 @@ CL = 'Claim'
 # each tuple in list: (landing_zone_column_name, schema_column_name)
 COLUMN_HEADER_INFO = [('SI-state-code', 'state_code'),
                       ('SI-district-id', 'district_guid'),
-                      ('SI-school', 'school_guid'),
+                      ('SI-school-id', 'school_guid'),
                       ('SI-teacher-id', 'teacher_guid'),
                       ('SI-student-grade', 'enrl_grade'),
                       ('SI-section-id', 'section_guid'),

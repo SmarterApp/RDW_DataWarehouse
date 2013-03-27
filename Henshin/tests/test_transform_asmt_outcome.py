@@ -20,7 +20,6 @@ class TestTransformAsmtOutcome(unittest.TestCase):
         # verify generated csv file
         expected_one_row = ['DE', '228', '515', '609', '5', '12339', '8368f1df-b5c2-44ce-a68a-e787e5409bd6', '101', '20130402', '529', '1707', '1671', '1743', '31', '31', '31', '67', '66', '68', '67', '66', '68', '42', '42', '42']
         expected_file = "REALDATA_ASMT_ID_101.csv"
-        print("expected ", expected_file)
         self.assertTrue(os.path.exists(expected_file) and os.path.isfile(expected_file))
         with open(expected_file, newline='') as file:
             reader = csv.reader(file, delimiter=',', quoting=csv.QUOTE_NONE)

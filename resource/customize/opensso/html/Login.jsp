@@ -54,8 +54,8 @@
             <link href="<%= ServiceURI%>/css/new_style.css" rel="stylesheet" type="text/css" />
             <!--[if IE 9]> <link href="<%= ServiceURI%>/css/ie9.css" rel="stylesheet" type="text/css"> <![endif]-->
             <!--[if lte IE 7]> <link href="<%= ServiceURI%>/css/ie7.css" rel="stylesheet" type="text/css"> <![endif]-->
-            <link rel="stylesheet" type="text/css" href="<%= ServiceURI%>/css/bootstrap.min.css" />
-            <link href="<%= ServiceURI%>/css/edware.css" rel="stylesheet" type="text/css" />
+            <link rel="stylesheet" type="text/css" href="<%= ServiceURI%>/config/auth/opensso/css/bootstrap.min.css" />
+            <link href="<%= ServiceURI%>/config/auth/opensso/css/edware.css" rel="stylesheet" type="text/css" />
             <script language="JavaScript" src="<%= ServiceURI%>/js/auth.js" type="text/javascript"></script>
             <jato:content name="validContent">
                 <script language="JavaScript" type="text/javascript">
@@ -204,7 +204,7 @@
                                                 <div class="row control-group">
                                                      <div class="controls">
                                                         <label>
-                                                            <a href="#">Forgot Password?</a>
+                                                            <a href="<%= ServiceURI%>/config/auth/opensso/html/forgot_password.html">Forgot Password?</a>
                                                         </label>
                                                         <input name="Login.Submit" type="submit" onclick="LoginSubmit('<jato:text name="lblSubmit" />'); return false;" class="btn btn-primary" value="<jato:text name="lblSubmit" />" />
                                                     </div>

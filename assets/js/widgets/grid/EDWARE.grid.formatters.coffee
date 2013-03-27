@@ -42,7 +42,7 @@ define [
     subject = rowObject[names[0]][names[1]]
     if subject
       confidence = subject[names[2]][names[3]]['confidence']
-      "<div>" + value + " (&#177;" + confidence + ")</div>"
+      "<div><strong>" + value + "</strong> (&#177;" + confidence + ")</div>"
     else
       ""
     

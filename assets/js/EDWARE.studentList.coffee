@@ -57,6 +57,9 @@ define [
     if not (dataName of assessmentsData)
       dataName = 'ALL'
     edwareGrid.create "gridTable", studentsConfig[viewName], assessmentsData[dataName]
+    
+    # Add dark border color between Math and ELA section to emphasize the division
+    $('.jqg-second-row-header th:nth-child(2), .ui-jqgrid .ui-jqgrid-htable th.ui-th-column:nth-child(5), .ui-jqgrid tr.jqgrow td:nth-child(5)').css("border-right", "solid 1px #B1B1B1");
 
   getStudentData = (sourceURL, params, defaultColors, callback) ->    
     assessmentArray = []
@@ -134,6 +137,11 @@ define [
         viewName = $(this).attr "id"
         $("#select_measure_current_view").html $('#' + viewName).text()
         renderStudentGrid viewName
+        if viewName is "Math_ELA"
+          $('.jqg-second-row-header th:nth-child(2), .ui-jqgrid .ui-jqgrid-htable th.ui-th-column:nth-child(5), .ui-jqgrid tr.jqgrow td:nth-child(5)').css("border-right", "solid 1px #b1b1b1");
+        else
+          $('.jqg-second-row-header th:nth-child(2), .ui-jqgrid .ui-jqgrid-htable th.ui-th-column:nth-child(5), .ui-jqgrid tr.jqgrow td:nth-child(5)').css("border-right", "solid 1px #d0d0d0");
+          $('.ui-jqgrid tr.jqgrow td:nth-child(5)').css("border-right", "solid 1px #E2E2E2");
     , ".viewOptions"
     
     # return the first element name as default view

@@ -64,7 +64,7 @@ th.ui-th-column div {
 
 .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
   background: @color-B6;
-  border: solid 1px @color-B5;
+  border: solid 1px @color-B7;
   color: #333;
 }
 
@@ -73,14 +73,14 @@ th.ui-th-column div {
   padding-left: 10px !important;
 }
 
-.ui-widget-content { border: none; border-top: solid 1px @color-B5; }
+.ui-widget-content { border: none; border-top: solid 1px @color-B7; }
 .ui-corner-all, .ui-corner-bottom, .ui-corner-left, .ui-corner-bl { border-bottom-left-radius: 0; }
 
 .ui-corner-all, .ui-corner-top, .ui-corner-left, .ui-corner-tl { border-top-left-radius: 0 }
 
 .ui-jqgrid tr.ui-row-ltr td, .ui-jqgrid tr.footrow td { border-right: solid 1px @color-B5; }
 
-.ui-jqgrid tr.jqgrow td { border-bottom: solid 1px @color-B5; }
+.ui-jqgrid tr.jqgrow td { border-bottom: solid 1px @color-B7; }
 
 .ui-jqgrid .ui-jqgrid-htable .jqg-second-row-header th {  background: @color-B5; color: @color-B1; font-size: 16px; }
 
@@ -98,7 +98,11 @@ th.ui-th-column div {
   }
 }
 
-.ui-jqgrid tr.footrow td { border-bottom: solid 1px @color-B5; }
+.ui-jqgrid tr.footrow td { 
+  border-top: none;
+ }
+ 
+.ui-jqgrid tr.jqgrow td:last-child, .ui-jqgrid .ui-jqgrid-htable th:last-child, .ui-jqgrid tr.footrow td:last-child { border-right: solid 1px transparent; }
 
 .marginLeft20 {
   margin-left: 20px;

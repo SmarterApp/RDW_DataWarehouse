@@ -8,7 +8,6 @@ import os
 import shutil
 import unittest
 from collections import OrderedDict
-from mock import MagicMock
 import transform_metadata as trans
 
 
@@ -69,11 +68,6 @@ class Test(unittest.TestCase):
             self.assertIn('min_score', od)
             self.assertIn('max_score', od)
             self.assertIn('weight', od)
-
-#    def test_generate_json(self):
-#        trans.write_json_file = MagicMock(side_effect=self.write_json_mock)
-#        trans.create_list_for_section = MagicMock(return_value='mock')
-#        trans.generate_json(self.data_dict, self.mappings, 'output_path/', self.file_pattern)
 
     def test_transform_to_metadata(self):
         id_list = trans.transform_to_metadata(self.dim_asmt_file, self.json_output_dir, self.file_pattern)

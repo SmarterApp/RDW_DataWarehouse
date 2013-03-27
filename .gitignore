@@ -19,5 +19,7 @@ edapi/build
 edapi/dist
 smarter/smarter/assets
 assets/css/*.css
+assets/node_modules
+node_modules
 .coverage
 edschema/database/tests/resources/tmpl

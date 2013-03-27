@@ -52,10 +52,10 @@ define [
             
             # Set the Report title depending on the report that we're looking at
             reportTitle = getReportTitle(breadcrumbsData, reportType)
-            $('#content h2').html 'Comparing ' + reportTitle + '\' on Math & ELA'
+            $('#content h2').html reportTitle
             
             # Format the summary data for summary row purposes
-            summaryRowName = 'Overall ' + reportTitle + '\' Summary'
+            summaryRowName = getOverallSummaryName(breadcrumbsData, reportType)
             summaryData = formatSummaryData(summaryData, summaryRowName)
             
           # Create compare population grid for State/District/School view
@@ -165,16 +165,34 @@ define [
     data['name'] = summaryRowName
     data
  
-  # Returns the overall summary row name based on the type of report
+  # Returns report title based on the type of report
   getReportTitle = (breadcrumbsData, reportType) ->
     if reportType is 'state'
-      data = breadcrumbsData.items[0].name + ' Districts'
+      data = addApostropheS(breadcrumbsData.items[0].name) + ' Districts'
     else if reportType is 'district'
-      data = breadcrumbsData.items[1].name + ' Schools'
+      data = addApostropheS(breadcrumbsData.items[1].name) + ' Schools'
     else if reportType is 'school'
-      data = breadcrumbsData.items[2].name + ' Grades'
-    data
+      data = addApostropheS(breadcrumbsData.items[2].name) + ' Grades'
+    'Comparing '+ data + ' on Math & ELA'
       
+  # Returns the overall summary row name based on the type of report
+  getOverallSummaryName = (breadcrumbsData, reportType) ->
+    if reportType is 'state'
+      data = breadcrumbsData.items[0].name + ' District'
+    else if reportType is 'district'
+      data = breadcrumbsData.items[1].name + ' School'
+    else if reportType is 'school'
+      data = breadcrumbsData.items[2].name + ' Grade'
+    'Overall ' + data + ' Summary'
+    
+  # Add an 's to a word
+  addApostropheS = (word) ->
+    if word.substr(word.length - 1) is "s"
+      word = word + "'"
+    else
+      word = word + "'s"
+    word
+    
   # Based on query parameters, return the type of report that the user is requesting for
   getReportType = (params) ->
     if params['schoolGuid']

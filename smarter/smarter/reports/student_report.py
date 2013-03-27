@@ -169,7 +169,7 @@ def get_student_report(params):
 
 @report_config(name='student_assessments_report',
                params={
-                   "studentId": {
+                   "studentGuid": {
                    "type": "string",
                    "required": True
                    }

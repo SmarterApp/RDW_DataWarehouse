@@ -34,14 +34,12 @@ def main(config_file):
             if run_npm == 'true':
                 # Run npm update
                 command_opts = ['npm', 'update']
-                rtn_code = subprocess.call(command_opts, shell=shell)
+                rtn_code = subprocess.call(command_opts)
                 if rtn_code != 0:
                     logger.warning('npm install command failed')
             # Run cake
             command_opts = ['cake', 'build']
-            p = subprocess.Popen(command_opts, shell=shell)
-            if p.poll() != 0 :
-                logger.warning('cake command failed')
+            p = subprocess.call(command_opts)
         finally:
             # Change the directory back to original
             os.chdir(current_dir)

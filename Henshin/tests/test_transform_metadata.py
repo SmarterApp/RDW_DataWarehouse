@@ -19,10 +19,13 @@ class Test(unittest.TestCase):
 
     def setUp(self):
         self.dim_asmt_file = os.path.join(__location__, 'files_for_tests', 'dim_asmt_for_test.csv')
-        self.json_output_dir = 'test_json'
+        self.json_output_dir = os.path.join(__location__, 'files_for_tests', 'test_json')
         self.file_pattern = 'METADATA_ASMT_ID_{0}.json'
         self.header = []
         self.row = []
+
+        if not os.path.isdir(self.json_output_dir):
+            os.makedirs(self.json_output_dir)
 
         # header is a list of letters a to z
         # row is a list numbers 0 to 25
@@ -67,10 +70,10 @@ class Test(unittest.TestCase):
             self.assertIn('max_score', od)
             self.assertIn('weight', od)
 
-    def test_generate_json(self):
-        trans.write_json_file = MagicMock(side_effect=self.write_json_mock)
-        trans.create_list_for_section = MagicMock(return_value='mock')
-        trans.generate_json(self.data_dict, self.mappings, 'output_path/', self.file_pattern)
+#    def test_generate_json(self):
+#        trans.write_json_file = MagicMock(side_effect=self.write_json_mock)
+#        trans.create_list_for_section = MagicMock(return_value='mock')
+#        trans.generate_json(self.data_dict, self.mappings, 'output_path/', self.file_pattern)
 
     def test_transform_to_metadata(self):
         id_list = trans.transform_to_metadata(self.dim_asmt_file, self.json_output_dir, self.file_pattern)
@@ -79,6 +82,15 @@ class Test(unittest.TestCase):
         self.assertIn('111', id_list)
         self.assertIn('222', id_list)
         self.assertIn('333', id_list)
+        file_names = [os.path.join(self.json_output_dir, self.file_pattern.format('111')),
+                      os.path.join(self.json_output_dir, self.file_pattern.format('222')),
+                      os.path.join(self.json_output_dir, self.file_pattern.format('333'))]
+
+        for name in file_names:
+            self.assertTrue(os.path.exists(name))
+
+        with self.assertRaises(FileNotFoundError):
+            trans.transform_to_metadata('asmt_filename', self.json_output_dir, self.file_pattern)
 
     def write_json_mock(self, ordered_data, filename):
         self.assertIn('overall', ordered_data)

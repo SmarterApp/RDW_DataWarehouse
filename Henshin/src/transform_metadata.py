@@ -29,21 +29,18 @@ def transform_to_metadata(asmt_filename, output_path, output_file_pattern):
     asmt_id_list = []
     row_mappings = read_mapping_json()
 
-    try:
-        # open csv file and get header
-        with open(asmt_filename, 'r') as csvfile:
-            asmt_reader = csv.reader(csvfile)
-            header = next(asmt_reader)
+    # open csv file and get header
+    with open(asmt_filename, 'r') as csvfile:
+        asmt_reader = csv.reader(csvfile)
+        header = next(asmt_reader)
 
-            # loop through rows and write a json file for each row
-            for row in asmt_reader:
-                data_dict = create_data_dict(header, row)
-                asmt_id = generate_json(data_dict, row_mappings, output_path, output_file_pattern)
-                asmt_id_list.append(asmt_id)
+        # loop through rows and write a json file for each row
+        for row in asmt_reader:
+            data_dict = create_data_dict(header, row)
+            asmt_id = generate_json(data_dict, row_mappings, output_path, output_file_pattern)
+            asmt_id_list.append(asmt_id)
 
-        return asmt_id_list
-    except FileNotFoundError:
-        print('unable to find file %f' % asmt_filename)
+    return asmt_id_list
 
 
 def create_data_dict(header, row):
@@ -126,7 +123,12 @@ def create_list_for_section(section_dict, data_dict):
         # loop through keys in perf_lvl or claims
         for key, col_name in section_dict.items():
             # first item should be a number, either 'claim' or 'level'
-            d[key] = (num if count == 0 else data_dict[col_name.format(num)])
+            if col_name == 'asmt_cut_point_{0}' and num == 1:
+                d[key] = data_dict['asmt_score_min']
+            elif col_name == 'asmt_cut_point_{0}':
+                d[key] = data_dict[col_name.format(num - 1)]
+            else:
+                d[key] = (num if count == 0 else data_dict[col_name.format(num)])
 
             # some values may be blank, if so the perf_level or claim does not exist
             if d[key] == '':
@@ -154,10 +156,4 @@ def read_mapping_json():
 
 
 if __name__ == '__main__':
-    import time
-    asmt_csv = '/Users/swimberly/projects/edware/fixture_data_generation/DataGeneration/datafiles/csv/dim_asmt.csv'
-    asmt_json = '/Users/swimberly/projects/edware/fixture_data_generation/Henshin/datafiles/metadata'
-    start = time.time()
-    id_list = transform_to_metadata(asmt_csv, asmt_json, 'METADATA_ASMT_ID_{0}.json')
-    tot_time = time.time() - start
-    print("Generated %d metadata files in %.2fs" % (len(id_list), tot_time))
+    print("No Main: usage: $ python henshin.py -h")

@@ -31,7 +31,9 @@ if __name__ == '__main__':
         os.makedirs(out_path)
 
     # generate METADATA files
-    asmt_id_list = transform_to_metadata(dim_asmt_file, out_path, metadata_file_pattern)
-    if asmt_id_list:
+    try:
+        asmt_id_list = transform_to_metadata(dim_asmt_file, out_path, metadata_file_pattern)
         # generate REALDATA files
         transform_to_realdata(fact_asmt_outcome_file, asmt_id_list, os.path.join(out_path, fact_asmt_outcome_file_pattern))
+    except FileNotFoundError:
+        print('Unable to find the specified file: %s' % dim_asmt_file)

@@ -2,11 +2,11 @@
 define [
   "jquery"
   "bootstrap"
-  "cs!edwareDataProxy"
-  "cs!edwareGrid"
-  "cs!edwareBreadcrumbs"
-  "cs!edwareUtil"
-  "cs!edwareFeedback"
+  "edwareDataProxy"
+  "edwareGrid"
+  "edwareBreadcrumbs"
+  "edwareUtil"
+  "edwareFeedback"
 ], ($, bootstrap, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFeedback) ->
   #
   #    * Create Student data grid

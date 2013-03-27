@@ -1,5 +1,5 @@
 #globals ok $ EDWARE test require module equals deepEqual
-require ["jquery", "cs!edwareBreadcrumbs"], ($, edwareBreadcrumbs) ->
+require ["jquery", "edwareBreadcrumbs"], ($, edwareBreadcrumbs) ->
   module "EDWARE.breadcrumbs.create",
     setup: ->
       $("body").append "<div id='breadcrumbs'></div>"

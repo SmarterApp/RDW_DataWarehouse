@@ -1,9 +1,9 @@
 define [
   'jquery'
   'jqGrid'
-  'cs!EDWARE'
-  'cs!edwareUtil'
-  'cs!edwareGridFormatters'
+  'EDWARE'
+  'edwareUtil'
+  'edwareGridFormatters'
 ], ($, jqGrid, EDWARE, edwareUtil, edwareGridFormatters) ->
   #
   # * EDWARE grid

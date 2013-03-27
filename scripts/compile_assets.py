@@ -10,6 +10,7 @@ def main(config_file):
     config.read(config_file)
     assets_dir = config.get('default', 'assets.directory')
     smarter_dir = config.get('default', 'smarter.directory')
+    run_npm = config.get('default', 'run.npm.update').lower()
 
     css_dir = os.path.join(assets_dir, "css")
     less_dir = os.path.join(assets_dir, "less")
@@ -25,12 +26,25 @@ def main(config_file):
         if os.access(target_file, os.W_OK):
             os.unlink(target_file)
 
-    # Run lessc to compile less files
+    # Run cake watch - builds and watches
     if os.access(less_dir, os.W_OK):
-        command_opts = ['lessc', '-x', less_file, css_file]
-        rtn_code = subprocess.call(command_opts)
-        if rtn_code != 0:
-            print('Error happened in lessc call')
+        try:
+            current_dir = os.getcwd()
+            os.chdir(assets_dir)
+            if run_npm == 'true':
+                # Run npm update
+                command_opts = ['npm', 'update']
+                rtn_code = subprocess.call(command_opts, shell=shell)
+                if rtn_code != 0:
+                    logger.warning('npm install command failed')
+            # Run cake
+            command_opts = ['cake', 'build']
+            p = subprocess.Popen(command_opts, shell=shell)
+            if p.poll() != 0 :
+                logger.warning('cake command failed')
+        finally:
+            # Change the directory back to original
+            os.chdir(current_dir)
 
     # Copy the entire assets into smarter, delete the dir first if it already exists
     target_dir = os.path.join(smarter_dir, 'assets')

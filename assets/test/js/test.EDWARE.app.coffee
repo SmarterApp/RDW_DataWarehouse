@@ -1,5 +1,5 @@
 #globals ok $ EDWARE test require module equals deepEqual
-require ["jquery", "cs!sourceJS/app"], ($, app) ->
+require ["jquery", "sourceJS/app"], ($, app) ->
   
   module "app.initialize",
   setup: ->

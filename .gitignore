@@ -19,6 +19,8 @@ edapi/build
 edapi/dist
 smarter/smarter/assets
 assets/css/*.css
+assets/js/src/modules/*
+assets/js/src/widgets/*
 assets/node_modules
 node_modules
 .coverage

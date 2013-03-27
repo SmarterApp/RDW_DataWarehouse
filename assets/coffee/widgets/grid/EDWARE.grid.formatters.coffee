@@ -1,10 +1,10 @@
 define [
   'jquery'
   'jqGrid'
-  'cs!EDWARE'
-  'cs!edwareUtil'
-  'cs!edwarePopulationBar'
-  'cs!edwareConfidenceLevelBar'
+  'EDWARE'
+  'edwareUtil'
+  'edwarePopulationBar'
+  'edwareConfidenceLevelBar'
 ], ($, jqGrid, EDWARE, edwareUtil, edwarePopulationBar, edwareConfidenceLevelBar) ->
   #
   # * EDWARE grid formatters

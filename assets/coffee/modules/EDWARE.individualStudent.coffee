@@ -3,13 +3,13 @@ define [
   "jquery"
   "bootstrap"
   "mustache"
-  "cs!edwareDataProxy"
-  "cs!edwareConfidenceLevelBar"
+  "edwareDataProxy"
+  "edwareConfidenceLevelBar"
   "text!templates/individualStudent_report/individual_student_template.html"
   "text!templates/individualStudent_report/claimsInfo.html"
-  "cs!edwareBreadcrumbs"
-  "cs!edwareUtil"
-  "cs!edwareFeedback"
+  "edwareBreadcrumbs"
+  "edwareUtil"
+  "edwareFeedback"
 ], ($, bootstrap, Mustache, edwareDataProxy, edwareConfidenceLevelBar, indivStudentReportTemplate, claimsInfoTemplate, edwareBreadcrumbs, edwareUtil, edwareFeedback) ->
       
   # claim score weight in percentage

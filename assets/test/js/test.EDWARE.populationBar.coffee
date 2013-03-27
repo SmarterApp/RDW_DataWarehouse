@@ -1,5 +1,5 @@
 #globals ok $ EDWARE test require module equals deepEqual
-require ["jquery", "cs!edwarePopulationBar"], ($, edwarePopulationBar) ->
+require ["jquery", "edwarePopulationBar"], ($, edwarePopulationBar) ->
   module "EDWARE.populationBar.create",
     setup: ->
       $("body").append "<div id='populationBar'></div>"

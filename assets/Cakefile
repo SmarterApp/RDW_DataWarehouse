@@ -1,4 +1,5 @@
 fs = require 'fs'
+nodefs = require 'node-fs'
 walk = require 'walk'
 require 'flour'
 path = require 'path'
@@ -6,9 +7,9 @@ util = require 'util'
 require 'colors'
 
 coffeepath = 'coffee'
-jspath = 'js'
+jspath = 'js/src'
 
-buildCoffe = (source) ->
+buildCoffee = (source) ->
     destDir = path.dirname source.replace(coffeepath, jspath)
     mkdir destDir
     basename = path.basename source, '.coffee'
@@ -18,14 +19,9 @@ buildCoffe = (source) ->
         fs.createReadStream(source).pipe(fs.createWriteStream path.join(destDir, basename))
 
 mkdir = (destDir) ->
-    if not fs.existsSync destDir   
-        fs.mkdirSync destDir, '0755'
-    walker = walk.walkSync destDir
-    walker.on 'directory', (root, dirStat, next) ->
-        dir = path.join root, dirStat.name
-        if not fs.existsSync dir   
-            fs.mkdirSync dir, '0755'
-        next
+    if not fs.existsSync destDir
+        # recursively create the directory
+        nodefs.mkdirSync destDir, '0755', true
         
 walkDir = (srcDir, fn) ->
     walker = walk.walkSync srcDir
@@ -34,7 +30,7 @@ walkDir = (srcDir, fn) ->
         next
 
 task 'build:coffee', ->
-    walkDir coffeepath, (source) -> buildCoffe source
+    walkDir coffeepath, (source) -> buildCoffee source
 
 task 'build:less', ->
     compile 'less/style.less', 'css/style.css'
@@ -45,7 +41,7 @@ task 'build', ->
 
 task 'watch', ->
     invoke 'build'
-    walkDir coffeepath, (source) -> watch source, ->  buildCoffe source
+    walkDir coffeepath, (source) -> watch source, ->  buildCoffee source
 
     watch 'less/*.less', ->  invoke 'build:less'
 

@@ -1,7 +1,7 @@
 define [
   'jquery'
   'mustache'
-  "cs!edwareDataProxy"
+  "edwareDataProxy"
   "text!templates/feedback/feedback.html"
 ], ($, Mustache, edwareDataProxy, template) ->
    

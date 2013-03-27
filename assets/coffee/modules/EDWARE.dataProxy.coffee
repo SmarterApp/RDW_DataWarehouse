@@ -1,7 +1,7 @@
 #global define
 define [
   "jquery"
-  "cs!edwareUtil"
+  "edwareUtil"
 ], ($, edwareUtil) ->
   
   #

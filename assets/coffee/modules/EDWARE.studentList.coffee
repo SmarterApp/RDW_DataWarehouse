@@ -3,12 +3,12 @@ define [
   "jquery"
   "bootstrap"
   "mustache"
-  "cs!edwareDataProxy"
-  "cs!edwareGrid"
-  "cs!edwareBreadcrumbs"
+  "edwareDataProxy"
+  "edwareGrid"
+  "edwareBreadcrumbs"
   "text!edwareAssessmentDropdownViewSelectionTemplate"
-  "cs!edwareFeedback"
-  "cs!edwareUtil"
+  "edwareFeedback"
+  "edwareUtil"
 ], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareAssessmentDropdownViewSelectionTemplate, edwareFeedback, edwareUtil) ->
 
   assessmentsData = {}

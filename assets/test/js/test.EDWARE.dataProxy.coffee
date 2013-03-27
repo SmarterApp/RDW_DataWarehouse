@@ -1,5 +1,5 @@
 #globals ok $ EDWARE test require module equals deepEqual
-require ["jquery", "cs!edwareDataProxy"], ($, dataProxy) ->
+require ["jquery", "edwareDataProxy"], ($, dataProxy) ->
   
   module "EDWARE.dataProxy.getDatafromSource",
   setup: ->

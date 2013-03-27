@@ -7,7 +7,7 @@ CL = 'Claim'
 # Column Headers and types:
 # list index keeps the order of columns
 # each tuple in list: (landing_zone_column_name, schema_column_name)
-COLUMN_HEADER_INFO = [('SI-state-code', 'state_code'),
+COLUMN_MAP_INFO = [('SI-state-code', 'state_code'),
                       ('SI-district-id', 'district_guid'),
                       ('SI-school-id', 'school_guid'),
                       ('SI-teacher-id', 'teacher_guid'),

@@ -2,7 +2,7 @@ import unittest
 import transform_asmt_outcome
 import os
 import csv
-from column_headers import COLUMN_HEADER_INFO
+from column_headers import COLUMN_MAP_INFO
 
 # DATAFILE_PATH = os.path.abspath(os.path.dirname(__file__)) + "\\files_for_tests\\"
 DATAFILE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "files_for_tests"))
@@ -15,7 +15,7 @@ class TestTransformAsmtOutcome(unittest.TestCase):
         asmt_id_list = [101]
         output_file_pattern = 'REALDATA_ASMT_ID_{0}.csv'
         transform_asmt_outcome.transform_to_realdata(source_file, asmt_id_list, output_file_pattern)
-        target_headers = [source_and_target_column_mapping[0] for source_and_target_column_mapping in COLUMN_HEADER_INFO]
+        target_headers = [source_and_target_column_mapping[0] for source_and_target_column_mapping in COLUMN_MAP_INFO]
 
         # verify generated csv file
         expected_one_row = ['DE', '228', '515', '609', '5', '12339', '8368f1df-b5c2-44ce-a68a-e787e5409bd6', '101', '20130402', '529', '1707', '1671', '1743', '31', '31', '31', '67', '66', '68', '67', '66', '68', '42', '42', '42']
@@ -52,27 +52,27 @@ class TestTransformAsmtOutcome(unittest.TestCase):
         self.assertFalse(actual_result)
 
     def test_validate_file_non_existing_file(self):
-        file_name = DATAFILE_PATH + 'non_existing_file.csv'
+        file_name = os.path.join(DATAFILE_PATH, 'non_existing_file.csv')
         actual_result = transform_asmt_outcome.validate_file(file_name)
         self.assertFalse(actual_result)
 
     def test_get_source_and_target_headers_valid_file(self):
         file_name = os.path.join(DATAFILE_PATH, 'valid_fact_asmt_outcome.csv')
-        actual_target_headers, actual_source_headers = transform_asmt_outcome.get_source_and_target_headers(file_name)
-        expected_target_headers = [source_and_target_column_mapping[0] for source_and_target_column_mapping in COLUMN_HEADER_INFO]
-        expected_source_headers = [source_and_target_column_mapping[1] for source_and_target_column_mapping in COLUMN_HEADER_INFO]
+        actual_target_headers, actual_source_headers = transform_asmt_outcome.get_source_and_target_columns(file_name)
+        expected_target_headers = [source_and_target_column_mapping[0] for source_and_target_column_mapping in COLUMN_MAP_INFO]
+        expected_source_headers = [source_and_target_column_mapping[1] for source_and_target_column_mapping in COLUMN_MAP_INFO]
         self.assertEqual(actual_source_headers, expected_source_headers)
         self.assertEqual(actual_target_headers, expected_target_headers)
 
     def test_get_source_and_target_headers_missing_column(self):
-        file_name = DATAFILE_PATH + 'missing_column.csv'
-        self.assertRaises(Exception, transform_asmt_outcome.get_source_and_target_headers, file_name)
+        file_name = os.path.join(DATAFILE_PATH, 'missing_column.csv')
+        self.assertRaises(Exception, transform_asmt_outcome.get_source_and_target_columns, file_name)
 
     def test_transform_file_process_one_asmt(self):
         source_file = os.path.join(DATAFILE_PATH, 'valid_fact_asmt_outcome.csv')
         asmt_id_list = [35]
-        target_headers = [source_and_target_column_mapping[0] for source_and_target_column_mapping in COLUMN_HEADER_INFO]
-        source_headers = [source_and_target_column_mapping[1] for source_and_target_column_mapping in COLUMN_HEADER_INFO]
+        target_headers = [source_and_target_column_mapping[0] for source_and_target_column_mapping in COLUMN_MAP_INFO]
+        source_headers = [source_and_target_column_mapping[1] for source_and_target_column_mapping in COLUMN_MAP_INFO]
         output_file_prefix = 'REALDATA_ASMT_ID_{0}.csv'
         transform_asmt_outcome.transform_file_process(source_file, asmt_id_list, target_headers, source_headers, output_file_prefix)
 
@@ -96,8 +96,8 @@ class TestTransformAsmtOutcome(unittest.TestCase):
     def test_transform_file_process_one_asmt_no_value(self):
         source_file = os.path.join(DATAFILE_PATH, 'valid_fact_asmt_outcome.csv')
         asmt_id_list = [100]
-        target_headers = [source_and_target_column_mapping[0] for source_and_target_column_mapping in COLUMN_HEADER_INFO]
-        source_headers = [source_and_target_column_mapping[1] for source_and_target_column_mapping in COLUMN_HEADER_INFO]
+        target_headers = [source_and_target_column_mapping[0] for source_and_target_column_mapping in COLUMN_MAP_INFO]
+        source_headers = [source_and_target_column_mapping[1] for source_and_target_column_mapping in COLUMN_MAP_INFO]
         output_file_prefix = 'REALDATA_ASMT_ID_{0}.csv'
         transform_asmt_outcome.transform_file_process(source_file, asmt_id_list, target_headers, source_headers, output_file_prefix)
 

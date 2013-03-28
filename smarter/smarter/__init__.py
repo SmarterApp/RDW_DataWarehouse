@@ -65,49 +65,34 @@ def prepare_env(settings):
     mode = settings.get('mode', 'prod').upper()
     if mode == 'DEV':
         here = os.path.abspath(os.path.dirname(__file__))
-        assets_dir = os.path.abspath(os.path.join(os.path.join(here, '..'), 'assets'))
-        parent_assets_dir = os.path.abspath(os.path.join(os.path.join(os.path.join(here, '..'), '..'), 'assets'))
-        css_dir = os.path.join(parent_assets_dir, "css")
-        less_dir = os.path.join(parent_assets_dir, "less")
-
-        # delete all css file before lessc generates css files from less files
-        css_filelist = [f for f in os.listdir(css_dir) if f.endswith('.css')]
-        for f in css_filelist:
-            target_file = os.path.join(css_dir, f)
-            if os.access(target_file, os.W_OK):
-                os.unlink(target_file)
+        smarter_dir = os.path.abspath(os.path.join(here, '..'))
+        assets_dir = os.path.abspath(os.path.join(os.path.join(os.path.join(here, '..'), '..'), 'assets'))
 
         shell = False
-
         # For windows env, set shell to true
         if platform.system() == 'Windows':
             shell = True
 
-        # Create a symlink if it doesn't exist
-        if not os.path.lexists(assets_dir):
-            os.symlink(parent_assets_dir, assets_dir, target_is_directory=True)
-
-        # Run cake watch - builds and watches
-        if os.access(less_dir, os.W_OK):
-            try:
-                current_dir = os.getcwd()
-                os.chdir(assets_dir)
-                if settings.get('run.npm.update', 'false').lower() == 'true':
-                    # Run npm update
-                    command_opts = ['npm', 'update']
-                    rtn_code = subprocess.call(command_opts, shell=shell)
-                    if rtn_code != 0:
-                        logger.warning('npm install command failed')
-                # Run cake
-                command_opts = ['cake', 'watch']
-                CAKE_PROC = subprocess.Popen(command_opts, shell=shell)
-            except:
-                logger.warning('cake command failed')
-            finally:
-                # Change the directory back to original
-                os.chdir(current_dir)
+        # Run cake setup and watch
+        try:
+            current_dir = os.getcwd()
+            os.chdir(assets_dir)
+            if settings.get('run.npm.update', 'false').lower() == 'true':
+                # Run npm update
+                command_opts = ['npm', 'update']
+                rtn_code = subprocess.call(command_opts, shell=shell)
+                if rtn_code != 0:
+                    logger.warning('npm install command failed')
+            # Run cake
+            command_opts = ['node_modules/coffee-script/bin/cake', '-m', 'DEV', '-a', assets_dir, '-s', smarter_dir, 'setup']
+            CAKE_PROC = subprocess.Popen(command_opts, shell=shell)
+        except:
+            logger.warning('cake command failed')
+        finally:
+            # Change the directory back to original
+            os.chdir(current_dir)
         # catch the kill signal
-        signal.signal(signal.SIGTERM, handler)
+        signal.signal(signal.SIGTERM, sig_term_handler)
 
     auth_idp_metadata = settings.get('auth.idp.metadata', None)
     if auth_idp_metadata is not None:
@@ -127,7 +112,7 @@ def shutdown():
         CAKE_PROC.kill()
 
 
-def handler():
+def sig_term_handler():
     '''
     Handles SIGTERM
     '''

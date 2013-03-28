@@ -69,9 +69,6 @@ define [
           # set role-based content
           items.content = content.content
           
-          # set level-based overall ald content
-          items.overall_ald = content.overall_ald[items.asmt_subject][items.asmt_perf_lvl]
-          
   
           # Select cutpoint color and background color properties for the overall score info section
           performance_level = items.cut_point_intervals[items.asmt_perf_lvl-1]
@@ -81,6 +78,13 @@ define [
           items.score_text_color = performance_level.text_color
           items.score_bg_color = performance_level.bg_color
           items.score_name = performance_level.name
+          
+          # set level-based overall ald content
+          items.overall_ald = content.overall_ald[items.asmt_subject][items.asmt_perf_lvl]
+          
+          # set psychometric_implications content
+          output = Mustache.render(content.psychometric_implications[items.asmt_subject], items)
+          items.psychometric_implications = output
           
           # Claim section
           # For less than 4 claims, width of the claim box would be 28%

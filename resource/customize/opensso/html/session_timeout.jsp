@@ -40,6 +40,31 @@
             <title><jato:text name="htmlTitle_SessionTimeOut" /></title>
             <%
                 String ServiceURI = (String) viewBean.getDisplayFieldValue(viewBean.SERVICE_URI);
+                try {
+                    String LoginURL = (String)viewBean.getDisplayFieldValue("LoginURL");
+                    if(LoginURL!=null) {
+                        StringTokenizer st = new StringTokenizer(LoginURL,"&");
+                        while(st.hasMoreTokens()) {
+                            String[] token=st.nextToken().split("=");
+                            if(token!=null&&token.length==2&&"RelayState".equals(token[0])) {
+                            String RelayState = URLDecoder.decode(token[1], "UTF-8");
+                                Base64 base64=new Base64();
+                                byte[] decoded = base64.decode(RelayState.getBytes());
+                                ByteArrayOutputStream baos = new ByteArrayOutputStream(decoded.length);
+                                Inflater inflater=new Inflater(true);
+                                inflater.setInput(decoded);
+                                byte[] buffer = new byte[1024];
+                                while(!inflater.finished()) {
+                                    int count = inflater.inflate(buffer);
+                                    baos.write(buffer, 0, count);
+                                }
+                                baos.close();
+                                String output = new String(baos.toByteArray());
+                                viewBean.setDisplayFieldValue("LoginURL", output);
+                            }
+                        }
+                    }
+               } catch(Exception e) {}
             %>
             <link href="<%= ServiceURI%>/css/new_style.css" rel="stylesheet" type="text/css" />
             <!--[if IE 9]> <link href="<%= ServiceURI %>/css/ie9.css" rel="stylesheet" type="text/css"> <![endif]-->

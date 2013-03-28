@@ -2,10 +2,16 @@
 
 OPENAM_DIR=~/test-smarter/opt/apache-tomcat-7.0.35/webapps/openam
 DISTINGUISHED_NAME="opensso"
-OFFSET=43
+OFFSET=49
 
 read -p "Enter OpenAM deployment directory [${OPENAM_DIR}]: " input
 OPENAM_DIR=${input:-${OPENAM_DIR}}
+
+if [ ! -d ${OPENAM_DIR} ]; then
+    echo "OpenAM deployment directory [${OPENAM_DIR}] does not exist"
+    echo "Please check directory"
+    exit 1
+fi
 
 read -p "Enter distinguished name [${DISTINGUISHED_NAME}]: " input
 DISTINGUISHED_NAME=${input:-${DISTINGUISHED_NAME}}

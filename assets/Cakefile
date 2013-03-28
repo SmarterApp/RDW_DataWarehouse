@@ -68,15 +68,16 @@ task 'setup', 'Compile assets into smarter', (options) ->
     assetsDir = options.assets or currentDir
     smarterDir = options.smarter or path.join(currentDir, '../smarter')
     mode = options.mode or 'DEV'
-    watch = options.watch
+    watch = options.watch or 'FALSE'
     mode = mode.toUpperCase()
+    watch = watch.toUpperCase()
     assetsDest = path.join(smarterDir, 'assets')    
     
     # Delete old css
     deleteExistingCss assetsDir
     
     if mode == 'DEV'
-      if watch
+      if watch == 'TRUE'
         invoke 'watch'
       else
         invoke 'build'

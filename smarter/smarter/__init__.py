@@ -25,6 +25,10 @@ def main(global_config, **settings):
     prepare_env(settings)
     config = Configurator(settings=settings, root_factory=RootFactory)
 
+    #set_cache_regions_from_settings(settings)
+    # include beaker for caching
+    config.include('pyramid_beaker')
+
     # setup database connection
     metadata = generate_ed_metadata(settings['edware.schema_name'])
     setup_db_connection_from_ini(settings, 'edware', metadata, datasource_name='smarter')

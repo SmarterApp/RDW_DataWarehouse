@@ -20,7 +20,7 @@ def transform_to_realdata(source_file, asmt_id_list, fact_asmt_outcome_file_patt
     '''
     # check if file exists or not, file type, etc
     is_valid_file = validate_file(source_file)
-    # TODO: if is_valid_file is False, need to delete all METADATA???
+    # TODO: if is_valid_file is False, need to delete all METADATA files?
 
     # valid file
     if is_valid_file:
@@ -56,25 +56,32 @@ def get_source_and_target_columns(source_file):
     # flatten the required columns
     target_columns_list = []
     source_columns_list = []
+
+    missing_columns_list = []
     # read headers from source_file
     with open(source_file, newline='') as file:
         reader = csv.reader(file, delimiter=',', quoting=csv.QUOTE_NONE)
         column_names_in_source_file = next(reader)
 
-    # TODO: detect all missing columns
     # loop column_header_info, create target_columns_list, column_names_in_source_file
     for source_and_target_column_mapping in COLUMN_MAP_INFO:
         target_column_name = source_and_target_column_mapping[0]
         source_column_name = source_and_target_column_mapping[1]
 
-        if source_column_name in column_names_in_source_file:
-            target_columns_list.append(target_column_name)
-            source_columns_list.append(source_column_name)
-        else:
-            print("This column is missing -- ", source_column_name, "in file ", source_file)
-            raise ValueError
+        if source_column_name not in column_names_in_source_file:
+            # add one missing column
+            missing_columns_list.append(source_column_name)
 
-    return target_columns_list, source_columns_list
+        target_columns_list.append(target_column_name)
+        source_columns_list.append(source_column_name)
+
+    # no missing columns
+    if len(missing_columns_list) == 0:
+        return target_columns_list, source_columns_list
+
+    else:
+        print("This column is missing -- ", missing_columns_list, "in file ", source_file)
+        raise ValueError
 
 
 def transform_file_process(source_file, asmt_id_list, target_columns, source_columns, fact_asmt_outcome_file_pattern):

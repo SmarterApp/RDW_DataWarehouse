@@ -64,8 +64,12 @@ class TestTransformAsmtOutcome(unittest.TestCase):
         self.assertEqual(actual_source_headers, expected_source_headers)
         self.assertEqual(actual_target_headers, expected_target_headers)
 
-    def test_get_source_and_target_headers_missing_column(self):
-        file_name = os.path.join(DATAFILE_PATH, 'missing_column.csv')
+    def test_get_source_and_target_headers_missing_one_column(self):
+        file_name = os.path.join(DATAFILE_PATH, 'missing_one_column.csv')
+        self.assertRaises(ValueError, transform_asmt_outcome.get_source_and_target_columns, file_name)
+        
+    def test_get_source_and_target_headers_missing_two_columns(self):
+        file_name = os.path.join(DATAFILE_PATH, 'missing_two_columns.csv')
         self.assertRaises(ValueError, transform_asmt_outcome.get_source_and_target_columns, file_name)
 
     def test_transform_file_process_one_asmt(self):

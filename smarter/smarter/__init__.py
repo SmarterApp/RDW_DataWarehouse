@@ -84,7 +84,7 @@ def prepare_env(settings):
                 if rtn_code != 0:
                     logger.warning('npm install command failed')
             # Run cake
-            command_opts = ['node_modules/coffee-script/bin/cake', '-m', 'DEV', '-a', assets_dir, '-s', smarter_dir, 'setup']
+            command_opts = ['node_modules/coffee-script/bin/cake', '-m', 'DEV', '-w', 'TRUE', '-a', assets_dir, '-s', smarter_dir, 'setup']
             CAKE_PROC = subprocess.Popen(command_opts, shell=shell)
         except:
             logger.warning('cake command failed')

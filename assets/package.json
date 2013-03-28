@@ -11,6 +11,6 @@
     "jshint":"",
     "walk":"",
     "colors": ">=0.6.0-1",
-    "node-fs":""
+    "wrench":""
   }
 }

@@ -1,10 +1,10 @@
 fs = require 'fs'
-nodefs = require 'node-fs'
 walk = require 'walk'
 require 'flour'
 path = require 'path'
 util = require 'util'
 require 'colors'
+wrench = require 'wrench'
 
 coffeepath = 'coffee'
 jspath = 'js/src'
@@ -21,13 +21,24 @@ buildCoffee = (source) ->
 mkdir = (destDir) ->
     if not fs.existsSync destDir
         # recursively create the directory
-        nodefs.mkdirSync destDir, '0755', true
+        wrench.mkdirSyncRecursive destDir, '0755'
         
 walkDir = (srcDir, fn) ->
     walker = walk.walkSync srcDir
     walker.on 'file', (root, fileStat, next) ->
         fn path.join(root, fileStat.name)
         next
+
+deleteExistingCss = (assetsDir) ->
+  # Delete all css files from css directory
+    cssDir = path.join(assetsDir, 'css')
+    if fs.existsSync cssDir
+        fs.readdir cssDir, (err, files) ->
+            throw err if err
+            files.forEach (file) ->
+              if path.extname(file) == '.css'
+                  console.log file
+                  fs.unlinkSync path.join cssDir, file
 
 task 'build:coffee', ->
     walkDir coffeepath, (source) -> buildCoffee source
@@ -47,3 +58,34 @@ task 'watch', ->
 
 task 'lint', 'Check javascript syntax', ->
     lint 'js/*.js'
+
+option '-a', '--assets [ASSETS_DIR]', 'set the directory for assets'
+option '-s', '--smarter [SMARTER_DIR]', 'set the directory for smarter'
+option '-m', '--mode [MODE]', 'set the mode to DEV or PROD. Defaults to DEV'
+option '-w', '--watch [TRUE]', 'set to TRUE if user wants to watch the files, DEV mode only'
+task 'setup', 'Compile assets into smarter', (options) ->
+    currentDir = process.cwd()
+    assetsDir = options.assets or currentDir
+    smarterDir = options.smarter or path.join(currentDir, '../smarter')
+    mode = options.mode or 'DEV'
+    watch = options.watch
+    mode = mode.toUpperCase()
+    assetsDest = path.join(smarterDir, 'assets')    
+    
+    # Delete old css
+    deleteExistingCss assetsDir
+    
+    if mode == 'DEV'
+      if watch
+        invoke 'watch'
+      else
+        invoke 'build'
+      # Create symlink if it doesn't exists for DEV mode
+      if not fs.existsSync assetsDest
+          fs.symlinkSync(assetsDir, assetsDest, 'dir')
+    else if mode == 'PROD'
+      invoke 'build'
+      # Copy assets into smarter/assets
+      if fs.existsSync assetsDest
+          wrench.rmdirSyncRecursive assetsDest, true
+      wrench.copyDirSyncRecursive assetsDir, assetsDest

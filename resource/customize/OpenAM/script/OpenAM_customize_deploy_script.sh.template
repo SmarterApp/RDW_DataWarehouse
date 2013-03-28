@@ -1,6 +1,6 @@
 #!/bin/bash
 
-OPENAM_DIR=~/test-smarter/opt/apache-tomcat-7.0.35/webapps/openam
+OPENAM_DIR=/usr/share/tomcat6/webapps/openam
 DISTINGUISHED_NAME="opensso"
 OFFSET=49
 
@@ -45,4 +45,4 @@ if [ ${RETVAL} != 0 ]; then
     exit 1
 fi
 echo "Please restart tomcat"
-
+##### END OF SCRIPT ######

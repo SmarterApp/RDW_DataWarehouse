@@ -9,6 +9,7 @@ smarter.egg-info?
 *.egg
 *.swp
 selenium-2.29.0-wgen
+OpenAM_customize_deploy_script.sh
 
 # IDE generated files #
 #######################

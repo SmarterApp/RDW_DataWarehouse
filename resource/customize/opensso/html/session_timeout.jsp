@@ -31,6 +31,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml">
+    <%@ page import="com.sun.xml.internal.messaging.saaj.util.Base64" %>
+    <%@ page import="java.io.ByteArrayOutputStream" %>
+    <%@ page import="java.io.IOException" %>
+    <%@ page import="java.net.URLDecoder" %>
+    <%@ page import="java.util.StringTokenizer" %>
+    <%@ page import="java.util.zip.DataFormatException" %>
+    <%@ page import="java.util.zip.Inflater" %>
     <%@page info="Session Timed Out" language="java"%>
     <%@taglib uri="/WEB-INF/jato.tld" prefix="jato"%>
     <%@taglib uri="/WEB-INF/auth.tld" prefix="auth"%>

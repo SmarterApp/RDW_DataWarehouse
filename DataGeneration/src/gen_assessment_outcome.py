@@ -104,7 +104,7 @@ def generate_single_assessment_outcome_from_student_info(assessment, student_inf
         'asmt_claim_4_score_range_max': asmt_claim_4_score_range_max,
 
         'asmt_create_date': asmt_score.asmt_create_date,
-        'status': 'IR',
+        'status': 'C',
         # TODO: how to update most recent
         'most_recent': True
     }

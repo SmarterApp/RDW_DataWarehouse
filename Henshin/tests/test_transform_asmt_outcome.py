@@ -66,7 +66,7 @@ class TestTransformAsmtOutcome(unittest.TestCase):
 
     def test_get_source_and_target_headers_missing_column(self):
         file_name = os.path.join(DATAFILE_PATH, 'missing_column.csv')
-        self.assertRaises(Exception, transform_asmt_outcome.get_source_and_target_columns, file_name)
+        self.assertRaises(ValueError, transform_asmt_outcome.get_source_and_target_columns, file_name)
 
     def test_transform_file_process_one_asmt(self):
         source_file = os.path.join(DATAFILE_PATH, 'valid_fact_asmt_outcome.csv')

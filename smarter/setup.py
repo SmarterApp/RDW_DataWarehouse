@@ -12,14 +12,13 @@ requires = [
     'transaction',
     'pyramid_tm',
     'pyramid_debugtoolbar',
+    'zope.sqlalchemy',
     'waitress',
     'edauth',
     'edapi',
     'edschema',
     'py-postgresql',
-    'pyramid_exclog',
-    'beaker',
-    'pyramid_beaker']
+    'pyramid_exclog']
 
 
 setup(name='smarter',

@@ -37,7 +37,6 @@ deleteExistingCss = (assetsDir) ->
             throw err if err
             files.forEach (file) ->
               if path.extname(file) == '.css'
-                  console.log file
                   fs.unlinkSync path.join cssDir, file
 
 task 'build:coffee', ->
@@ -71,8 +70,12 @@ task 'setup', 'Compile assets into smarter', (options) ->
     watch = options.watch or 'FALSE'
     mode = mode.toUpperCase()
     watch = watch.toUpperCase()
-    assetsDest = path.join(smarterDir, 'assets')    
     
+    # resolves handles both abs and relative path
+    assetsDir = path.resolve currentDir, assetsDir
+    smarterDir = path.resolve currentDir, smarterDir
+    
+    assetsDest = path.join(smarterDir, 'assets')    
     # Delete old css
     deleteExistingCss assetsDir
     

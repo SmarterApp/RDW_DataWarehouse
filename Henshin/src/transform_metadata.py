@@ -81,7 +81,6 @@ def generate_json(data_dict, mappings, output_path, filename_pattern):
 
     for json_section in mappings:
         # setup identification and overall sections
-        # TODO: THE REST
         if json_section == IDENTIFICATION or json_section == OVERALL:
             for key, col_name in mappings[json_section].items():
                 asmt_ord_dict[json_section][key] = data_dict[col_name]
@@ -91,7 +90,6 @@ def generate_json(data_dict, mappings, output_path, filename_pattern):
             asmt_ord_dict[json_section] = create_list_for_section(mappings[json_section], data_dict)
 
     # write json file
-    # TODO: create better filename
     filename = os.path.join(output_path, filename_pattern.format(asmt_ord_dict[IDENTIFICATION][ID]))
     write_json_file(asmt_ord_dict, filename)
 

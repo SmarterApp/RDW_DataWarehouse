@@ -7,6 +7,7 @@ Created on Mar 21, 2013
 import os
 import shutil
 import unittest
+import json
 from collections import OrderedDict
 import transform_metadata as trans
 
@@ -82,19 +83,24 @@ class Test(unittest.TestCase):
 
         for name in file_names:
             self.assertTrue(os.path.exists(name))
+            self.verify_json_file(name)
 
         res = trans.transform_to_metadata('asmt_filename', self.json_output_dir, self.file_pattern)
         self.assertIsNone(res)
 
-    def write_json_mock(self, ordered_data, filename):
-        self.assertIn('overall', ordered_data)
-        self.assertIn('identification', ordered_data)
-        self.assertIn('claims', ordered_data)
-        self.assertIn('performance_levels', ordered_data)
-        self.assertIn('content', ordered_data)
-
-        for key in ordered_data:
-            self.assertIsNotNone(ordered_data[key])
+    def verify_json_file(self, filename):
+        with open(filename, 'r') as f:
+            data = json.loads(f.read(), object_pairs_hook=OrderedDict)
+            expected_keys = create_mappings()
+            for key in expected_keys:
+                self.assertIsNotNone(data.get(key))
+            for _k, val in data.items():
+                self.assertIsNotNone(val)
+                if isinstance(val, OrderedDict):
+                    for _k, val1 in val.items():
+                        self.assertIsNotNone(val1)
+                else:
+                    self.assertIsNotNone(val)
 
 
 def create_mappings():

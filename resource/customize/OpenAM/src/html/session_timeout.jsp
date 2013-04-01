@@ -45,18 +45,33 @@
         <%@page contentType="text/html" %>
         <head>
             <title><jato:text name="htmlTitle_SessionTimeOut" /></title>
+            <%--
+            1. user access to smarter resorce page
+            2. pyramid will redirect to OpenAM because this is the first time to access to the page
+            3. after 2 mins ( or 30 mins for expiring cache), OpenAM will redirect to session timeout page
+            4. this session_timeout.jsp will look up "LoginURL" property
+            5. read the value of RelayState (it contains redirect URL after a user is authorized)
+            6. decode url
+            7. decode Base64
+            8. inflate compressed string
+            9. set new LoginURL value
+            --%>
             <%
                 String ServiceURI = (String) viewBean.getDisplayFieldValue(viewBean.SERVICE_URI);
                 try {
                     String LoginURL = (String)viewBean.getDisplayFieldValue("LoginURL");
                     if(LoginURL!=null) {
+                        // read URL parameters for RelayState
                         StringTokenizer st = new StringTokenizer(LoginURL,"&");
                         while(st.hasMoreTokens()) {
                             String[] token=st.nextToken().split("=");
                             if(token!=null&&token.length==2&&"RelayState".equals(token[0])) {
+                            // decode URL
                             String RelayState = URLDecoder.decode(token[1], "UTF-8");
+                                // decode Base64
                                 Base64 base64=new Base64();
                                 byte[] decoded = base64.decode(RelayState.getBytes());
+                                // inflate compressed string
                                 ByteArrayOutputStream baos = new ByteArrayOutputStream(decoded.length);
                                 Inflater inflater=new Inflater(true);
                                 inflater.setInput(decoded);
@@ -66,12 +81,13 @@
                                     baos.write(buffer, 0, count);
                                 }
                                 baos.close();
+                                // replate new LoginURL
                                 String output = new String(baos.toByteArray());
                                 viewBean.setDisplayFieldValue("LoginURL", output);
                             }
                         }
                     }
-               } catch(Exception e) {}
+               } catch(Exception e) {} // if there is any exception, we just use the original LoginURL value.
             %>
             <link href="<%= ServiceURI%>/css/new_style.css" rel="stylesheet" type="text/css" />
             <!--[if IE 9]> <link href="<%= ServiceURI %>/css/ie9.css" rel="stylesheet" type="text/css"> <![endif]-->

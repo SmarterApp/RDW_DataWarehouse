@@ -56,7 +56,7 @@
                     <div>
                         <div class="clear-float">
                             <div>
-                                <h3><auth:resBundle bundleName="amAuthUI" resourceKey="auth.failed" /></h3>
+                                <h3>Invalid username/password combination. Please re-enter your credentials.</h3>
                                 <p>
                                     <jato:content name="ContentStaticWarning">
                                         <jato:getDisplayFieldValue name='StaticTextWarning' defaultValue='' fireDisplayEvents='true' escape='false'/>

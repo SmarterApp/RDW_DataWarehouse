@@ -44,22 +44,19 @@
             <link href="<%= ServiceURI %>/css/new_style.css" rel="stylesheet" type="text/css" />
             <!--[if IE 9]> <link href="<%= ServiceURI %>/css/ie9.css" rel="stylesheet" type="text/css"> <![endif]-->
             <!--[if lte IE 7]> <link href="<%= ServiceURI %>/css/ie7.css" rel="stylesheet" type="text/css"> <![endif]-->
+            <link rel="stylesheet" type="text/css" href="<%= ServiceURI%>/config/auth/opensso/css/bootstrap.min.css" />
+            <link href="<%= ServiceURI%>/config/auth/opensso/css/edware.css" rel="stylesheet" type="text/css" />
         </head>
         <body>
             <div class="container_12">
-                <div class="grid_4 suffix_8">
-                    <a class="logo" href="<%= ServiceURI%>"></a>
+                <div id="header">
+                    <div id="logo">LOGO</div>
                 </div>
-                <div class="box box-spaced clear-float">
-                    <div class="grid_3">
-                        <div class="product-logo"></div>
-                    </div>
-                    <div class="grid_9">
+                <div class="clear-float">
+                    <div class="grid_12">
                         <div class="box-content clear-float">
-                            <div class="message">
-                                <span class="icon error"></span>
-                                <h3><auth:resBundle bundleName="amAuthUI" resourceKey="internal.auth.error" /></h3>
-                                <p><auth:resBundle bundleName="amAuthUI" resourceKey="contactadmin" /></p>
+                            <div>
+                                <h3>Invalid username/password combination. Please re-enter your credentials.</h3>
                                 <jato:content name="ContentHref">
                                     <p><auth:href name="DefaultLoginURL" fireDisplayEvents='true'><jato:text name="txtGotoLoginAfterFail" /></auth:href></p>
                                 </jato:content>
@@ -67,11 +64,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="footer alt-color">
-                    <div class="grid_6 suffix_3">
-                        <p><auth:resBundle bundleName="amAuthUI" resourceKey="copyright.notice" /></p>
-                    </div>
-                </div>
+                <div id="footer"></div>
             </div>
         </body>
     </jato:useViewBean>

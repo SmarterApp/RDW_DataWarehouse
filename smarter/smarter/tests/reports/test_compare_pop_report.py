@@ -4,13 +4,12 @@ Created on Mar 11, 2013
 @author: dwu
 '''
 import unittest
-from smarter.reports.compare_pop_report import get_comparing_populations_report, \
-    get_state_view_report
+from smarter.reports.compare_pop_report import get_comparing_populations_report
 from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite
 from smarter.reports.helpers.constants import Constants
 from edapi.exceptions import NotFoundException
-from beaker.cache import region_invalidate, CacheManager
 from beaker.util import parse_cache_config_options
+from beaker.cache import CacheManager
 
 
 class TestComparingPopulations(Unittest_with_smarter_sqlite):
@@ -20,8 +19,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
                       'cache.type': 'memory',
                       'cache.regions': 'report'
                       }
-        cache = CacheManager(**parse_cache_config_options(cache_opts))
-        region_invalidate(get_state_view_report, 'report')
+        CacheManager(**parse_cache_config_options(cache_opts))
 
     def test_school_view(self):
         testParam = {}

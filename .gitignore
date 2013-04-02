@@ -26,3 +26,4 @@ assets/node_modules
 node_modules
 .coverage
 edschema/database/tests/resources/tmpl
+*/build/

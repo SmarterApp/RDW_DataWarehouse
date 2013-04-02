@@ -14,6 +14,7 @@ for root, subFolders, files in os.walk(os.path.join(os.path.dirname(__file__), "
 
 requires = [
     'pyramid',
+    'pyramid_beaker',
     'SQLAlchemy',
     'transaction',
     'pyramid_tm',

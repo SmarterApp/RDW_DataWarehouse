@@ -11,6 +11,7 @@ from database.generic_connector import setup_db_connection_from_ini
 from edschema.ed_metadata import generate_ed_metadata
 import atexit
 import signal
+from pyramid_beaker import set_cache_regions_from_settings
 
 logger = logging.getLogger(__name__)
 CAKE_PROC = None
@@ -23,6 +24,9 @@ def main(global_config, **settings):
     if 'smarter.PATH' in settings:
         os.environ['PATH'] += os.pathsep + settings['smarter.PATH']
     prepare_env(settings)
+    
+    # set beaker cache region
+    set_cache_regions_from_settings(settings)
     config = Configurator(settings=settings, root_factory=RootFactory)
 
     # setup database connection

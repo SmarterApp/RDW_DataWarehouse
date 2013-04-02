@@ -18,6 +18,7 @@ from edapi.logging import audit_event
 import collections
 from edapi.exceptions import NotFoundException
 import json
+from beaker.cache import cache_region
 
 # Report service for Comparing Populations
 # Output:
@@ -39,17 +40,17 @@ import json
 @report_config(
     name="comparing_populations",
     params={
-        'stateCode': {
+        Constants.STATECODE: {
             "type": "string",
             "required": True,
             "pattern": "^[a-zA-Z]{2}$",
         },
-        'districtGuid': {
+        Constants.DISTRICTGUID: {
             "type": "string",
             "required": False,
             "pattern": "^[a-zA-Z0-9\-]{0,50}$",
         },
-        'schoolGuid': {
+        Constants.SCHOOLGUID: {
             "type": "string",
             "required": False,
             "pattern": "^[a-zA-Z0-9\-]{0,50}$",
@@ -58,7 +59,41 @@ import json
 @audit_event()
 @user_info
 def get_comparing_populations_report(params):
+    results = None
+    if Constants.SCHOOLGUID in params and Constants.DISTRICTGUID in params and Constants.STATECODE in params:
+        results = get_school_view_report(params)
+    elif params and Constants.DISTRICTGUID in params and Constants.STATECODE in params:
+        results = get_district_view_report(params)
+    elif Constants.STATECODE in params:
+        results = get_state_view_report(params)
+    return results
 
+'''
+to manage cache efficiently, we needed to separate three reports
+'''
+@cache_region('report')
+def get_state_view_report(params):
+    '''
+    state view report
+    '''
+    return get_report(params)
+
+def get_district_view_report(params):
+    '''
+    district view report
+    '''
+    return get_report(params)
+
+def get_school_view_report(params):
+    '''
+    school view report
+    '''
+    return get_report(params)
+
+def get_report(params):
+    '''
+    actual report call
+    '''
     # run query
     results = run_query(**params)
     if not results:
@@ -68,7 +103,6 @@ def get_comparing_populations_report(params):
     results = arrange_results(results, **params)
 
     return results
-
 
 def run_query(**params):
     '''

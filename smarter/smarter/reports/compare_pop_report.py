@@ -68,9 +68,12 @@ def get_comparing_populations_report(params):
         results = get_state_view_report(params)
     return results
 
+
 '''
 to manage cache efficiently, we needed to separate three reports
 '''
+
+
 @cache_region('report')
 def get_state_view_report(params):
     '''
@@ -78,17 +81,20 @@ def get_state_view_report(params):
     '''
     return get_report(params)
 
+
 def get_district_view_report(params):
     '''
     district view report
     '''
     return get_report(params)
 
+
 def get_school_view_report(params):
     '''
     school view report
     '''
     return get_report(params)
+
 
 def get_report(params):
     '''
@@ -103,6 +109,7 @@ def get_report(params):
     results = arrange_results(results, **params)
 
     return results
+
 
 def run_query(**params):
     '''

@@ -24,7 +24,7 @@ def main(global_config, **settings):
     if 'smarter.PATH' in settings:
         os.environ['PATH'] += os.pathsep + settings['smarter.PATH']
     prepare_env(settings)
-    
+
     # set beaker cache region
     set_cache_regions_from_settings(settings)
     config = Configurator(settings=settings, root_factory=RootFactory)

@@ -16,9 +16,9 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
 
     def setUp(self):
         cache_opts = {
-                      'cache.type': 'memory',
-                      'cache.regions': 'report'
-                      }
+            'cache.type': 'memory',
+            'cache.regions': 'report'
+        }
         CacheManager(**parse_cache_config_options(cache_opts))
 
     def test_school_view(self):

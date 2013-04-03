@@ -19,8 +19,10 @@ define [
           feedbackdata.param = feedbackMapping[role][reportName]
           feedbackdata.uid = uid
           
-          output = Mustache.to_html template, feedbackdata
-          $("#surveyMonkeyInfo").html output
+          # Render iframe with all other assets are loaded
+          $(document).ready ->
+            output = Mustache.to_html template, feedbackdata
+            $("#surveyMonkeyInfo").html output
           
           # Survey monkey popup
           $("#feedback").popover

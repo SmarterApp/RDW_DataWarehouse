@@ -37,13 +37,6 @@ define [
       
     edwareDataProxy.getDatafromSource "/data/individual_student_report", options, (data) ->
       
-      # append user_info (e.g. first and last name)
-      if data.user_info
-        $('#header .topLinks .user').html edwareUtil.getUserName data.user_info
-        role = edwareUtil.getRole data.user_info
-        uid = edwareUtil.getUid data.user_info
-        edwareFeedback.renderFeedback(role, uid, "individual_student_report")
-        
       defaultColors = {}
       options =
         async: false
@@ -121,6 +114,13 @@ define [
           barContainer = "#assessmentSection" + i + " .confidenceLevel"
           edwareConfidenceLevelBar.create item, 640, barContainer        
           i++
+        
+        # append user_info (e.g. first and last name)
+        if data.user_info
+          $('#header .topLinks .user').html edwareUtil.getUserName data.user_info
+          role = edwareUtil.getRole data.user_info
+          uid = edwareUtil.getUid data.user_info
+          edwareFeedback.renderFeedback(role, uid, "individual_student_report")
 
   #
   # get role-based content

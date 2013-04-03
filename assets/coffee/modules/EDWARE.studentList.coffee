@@ -26,7 +26,7 @@ define [
 
     edwareDataProxy.getDatafromSource "../data/color.json", options, (defaultColors) ->
       
-      getStudentData "/data/list_of_students", params, defaultColors, (assessmentsData, contextData, subjectsData, claimsData) ->
+      getStudentData "/data/list_of_students", params, defaultColors, (assessmentsData, contextData, subjectsData, claimsData, userData) ->
         # set school name as the page title from breadcrumb
         $("#school_name").html contextData.items[2].name
         
@@ -46,6 +46,13 @@ define [
           $('#breadcrumb').breadcrumbs(contextData)
           
           renderStudentGrid(defaultView)
+          
+          # append user_info (e.g. first and last name)
+          if userData
+            $('#header .topLinks .user').html edwareUtil.getUserName userData
+            role = edwareUtil.getRole userData
+            uid = edwareUtil.getUid userData
+            edwareFeedback.renderFeedback(role, uid, "list_of_students")
         
   renderStudentGrid = (viewName)->
     $("#gbox_gridTable").remove()
@@ -72,17 +79,18 @@ define [
       params: params
   
     edwareDataProxy.getDatafromSource sourceURL, options, (data) ->
-      # append user_info (e.g. first and last name)
-      if data.user_info
-        $('#header .topLinks .user').html edwareUtil.getUserName data.user_info
-        role = edwareUtil.getRole data.user_info
-        uid = edwareUtil.getUid data.user_info
-        edwareFeedback.renderFeedback(role, uid, "list_of_students")
+      # # append user_info (e.g. first and last name)
+      # if data.user_info
+        # $('#header .topLinks .user').html edwareUtil.getUserName data.user_info
+        # role = edwareUtil.getRole data.user_info
+        # uid = edwareUtil.getUid data.user_info
+        # edwareFeedback.renderFeedback(role, uid, "list_of_students")
       assessmentsData = data.assessments
       contextData = data.context
       subjectsData = data.subjects
       claimsData = data.metadata.claims
       cutPointsData = data.metadata.cutpoints
+      userData = data.user_info
       
       # if cut points don't have background colors, then it will use default background colors
       for key of cutPointsData
@@ -98,9 +106,9 @@ define [
       formatAssessmentsData cutPointsData
       
       if callback
-        callback assessmentsData, contextData, subjectsData, claimsData
+        callback assessmentsData, contextData, subjectsData, claimsData, userData
       else
-        assessmentArray assessmentsData, contextData, subjectsData, claimsData
+        assessmentArray assessmentsData, contextData, subjectsData, claimsData, userData
       
       
   getStudentsConfig = (configURL, callback) ->

@@ -29,13 +29,6 @@ define [
           # Determine if the report is state, district or school view
           reportType = getReportType(params)
           
-          # append user_info (e.g. first and last name)
-          if user_info
-            $('#header .topLinks .user').html edwareUtil.getUserName user_info
-            role = edwareUtil.getRole user_info
-            uid = edwareUtil.getUid user_info
-            edwareFeedback.renderFeedback(role, uid, "comparing_populations_" + reportType)
-            
           # Append colors to records and summary section
           # Do not format data, or get breadcrumbs if the result is empty
           if populationData.length > 0
@@ -60,8 +53,14 @@ define [
             
           # Create compare population grid for State/District/School view
           edwareGrid.create "gridTable", gridConfig, populationData, summaryData
-        
           
+          # # append user_info (e.g. first and last name)
+          if user_info
+            $('#header .topLinks .user').html edwareUtil.getUserName user_info
+            role = edwareUtil.getRole user_info
+            uid = edwareUtil.getUid user_info
+            edwareFeedback.renderFeedback(role, uid, "comparing_populations_" + reportType)
+        
           # Show tooltip for population bar on mouseover
           $(document).on
             mouseenter: ->

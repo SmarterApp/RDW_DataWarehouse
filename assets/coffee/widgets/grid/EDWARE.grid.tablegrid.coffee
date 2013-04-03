@@ -49,6 +49,7 @@ define [
               colModelItem.formatter = (if (edwareGridFormatters[item1.formatter]) then edwareGridFormatters[item1.formatter] else item1.formatter)  if item1.formatter
               colModelItem.formatoptions = item1.options  if item1.options
               colModelItem.sorttype = item1.sorttype  if item1.sorttype
+              colModelItem.sortable = item1.sortable
               colModelItem.align = item1.align  if item1.align
               
               if item1.title isnt undefined

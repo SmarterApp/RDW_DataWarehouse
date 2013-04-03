@@ -36,7 +36,27 @@ define [
       params: params
       
     edwareDataProxy.getDatafromSource "/data/individual_student_report", options, (data) ->
-      
+        
+      $("#legend").popover
+            html: true
+            placement: "top"
+            container: "div"
+            title: ->
+                '<div class="pull-right"><button class="btn" id="close" type="button" onclick="$(&quot;#legend&quot;).popover(&quot;hide&quot;);">Hide</button></div><div class="lead">Legends</div>'
+            template: '<div class="popover footerPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
+            content: ->
+              $(".legendPopup").html()
+              
+       $("#aboutReport").popover
+            html: true
+            placement: "top"
+            container: "div"
+            title: ->
+                '<div class="pull-right"><button class="btn" id="close" type="button" onclick="$(&quot;#aboutReport&quot;).popover(&quot;hide&quot;);">Hide</button></div><div class="lead">About Report</div>'
+            template: '<div class="popover footerPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
+            content: ->
+              $(".aboutReportPopup").html()
+        
       defaultColors = {}
       options =
         async: false
@@ -79,6 +99,14 @@ define [
           output = Mustache.render(content.psychometric_implications[items.asmt_subject], items)
           items.psychometric_implications = output
           
+          # set policy content
+          grade = content.policy_content[items.grade]
+          if items.grade is "11"
+            items.policy_content = grade[items.asmt_subject]
+          else if items.grade is "3"
+            grade_asmt = grade[items.asmt_subject]
+            items.policy_content = grade_asmt[items.asmt_perf_lvl]
+          
           # Claim section
           # For less than 4 claims, width of the claim box would be 28%
           # For 4 claims, the width of the claim box would be 20%
@@ -93,6 +121,8 @@ define [
             claim.assessmentUC = items.asmt_subject.toUpperCase()
             
             claim.claim_score_weight = claimScoreWeightArray[claim.assessmentUC][j]
+            
+            claim.desc = content.claims[items.asmt_subject][claim.indexer]
             j++
           
           i++

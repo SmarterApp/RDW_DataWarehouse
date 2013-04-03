@@ -25,8 +25,43 @@
 	},
 	
 	"psychometric_implications": {
-		"Math": "Your overall score indicates at what level you have demonstrated progress toward college and career readiness in mathematics (Math).  On your official score report, this area will describe what the {{score_name}} achievement level means, in terms of the knowledge, skills, and processes that you have demonstrated you can do, for the Grade {{asmt_grade}} Math assessment.  This content will be intended to provide guidance to stakeholders on how to interpret student performance on the test. The actual text is scheduled to be written after the standard setting process in Summer 2014, and is expected to be tailored for the assessment grade and user role. (Content provided by your state and/or district will follow if it exists)",
-		"ELA": "Your overall score indicates at what level you have demonstrated progress toward college and career readiness in English language arts and literacy (ELA). On your official score report, this area will describe what the “{{score_name}}“ achievement level means, in terms of the knowledge, skills, and processes that you have demonstrated you can do, for the Grade {{asmt_grade}} ELA assessment.  This content will be intended to provide guidance to stakeholders on how to interpret student performance on the test. The actual text is scheduled to be written after the standard setting process in Summer 2014, and is expected to be tailored for the assessment grade and user role. (Content provided by your state and/or district will follow if it exists)"
+		"Math": "<strong>Psychometric Implications:</strong><br/>Your overall score indicates at what level you have demonstrated progress toward college and career readiness in mathematics (Math). On your official score report, this area will describe what the {{score_name}}...",
+		"ELA": "<strong>Psychometric Implications:</strong><br/>Your overall score indicates at what level you have demonstrated progress toward college and career readiness in English language arts and literacy (ELA). On your official score report, this area will describe what the “{{score_name}}“ achievement level means..."
+	},
+	
+	"policy_content": {
+		"11": {
+			"Math": "<strong>College Content-Readiness and Admission</strong>. The College Content-Readiness Policy operates within the context of existing institutional admission policies; open-admission institutions ....",
+			"ELA": "<strong>College Content-Readiness and Admission</strong>. The College Content-Readiness Policy operates within the context of existing institutional admission policies; open-admission ...."
+		},
+		"3" : {
+			"Math": {
+				"1" : "College Content Readiness: Student <strong>needs substantial support</strong> to meet college content-readiness standard. <br/>Implications: States/districts/colleges may offer supplemental programs for these students. States also may choose to retest these students....",
+				"2" : "College Content Readiness: Student <strong>needs support</strong> to meet college content- readiness standard.<br/>Implications: States/districts/colleges may implement Grade 12 transition courses or other programs for these students. States also may choose to retest these .... ",
+				"3" : "College Content Readiness: Student is <strong>exempt</strong> from developmental course work, <strong>contingent</strong> on evidence of continued learning in Grade 12. <br/>Implications: Within each state, higher education and K–12 officials determine appropriate ....",
+				"4" : "College Content Readiness: Student is <strong>exempt</strong> from developmental course work<br/>Implications: States/districts/colleges may offer advanced courses (such as AP, IB, or dual enrollment) for these students. Colleges may evaluate additional data .... "
+			},
+			"ELA": {
+				"1" : "College Content Readiness: Student <strong>needs substantial support</strong> to meet college content-readiness standard.<br/>Implications: States/districts/colleges may offer supplemental programs for these students ....",
+				"2" : "College Content Readiness: Student <strong>needs support</strong> to meet college content- readiness standard.<br/>Implications: States/districts/colleges may implement Grade 12 transition courses or other programs for these students....",
+				"3" : "College Content Readiness: Student is <strong>exempt</strong> from developmental course work, <strong>contingent</strong> on evidence of continued learning in Grade 12.<br/>Implications: Within each state, higher education and K–12 officials .... ",
+				"4" : "College Content Readiness: Student is <strong>exempt</strong> from developmental course work<br/>Implications: States/districts/colleges may offer advanced courses (such as AP, IB, or dual enrollment) for these students."
+			}
+		}
+	},
+	
+	"claims": {
+		"Math": {
+			"1": "Students can explain and apply mathematical concepts and carry out mathematical procedures with precision and fluency....",
+			"2": "Students can solve a range of complex, well-posed problems in pure and applied mathematics, making productive....",
+			"3": "Students can clearly and precisely construct viable arguments to support their own reasoning and to critique the reasoning of others...."
+		},
+		"ELA": {
+			"1": "Students can read closely and analytically to comprehend a range of increasingly complex literary....",
+			"2": "Students can produce effective and well-grounded writing for a range of purposes and audiences....",
+			"3": "Students can employ effective speaking and listening skills for a range of purposes and audiences....",
+			"4": "Students can engage in research and inquiry to investigate topics and to analyze, integrate, and present information...."
+		}
 	}
 	
 }

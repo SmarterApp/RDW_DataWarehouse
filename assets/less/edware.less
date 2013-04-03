@@ -83,7 +83,7 @@ h6 {
      color: @color-A1;
   }
   
-  .surveyMonkeyPopup {
+  .surveyMonkeyPopup, .legendPopup, .aboutReportPopup {
     display: none;
   }
 }
@@ -156,7 +156,7 @@ table {
     width: 100%;
 }
 .sidebar {
-  height: 520px;
+  height: 570px;
   padding: 15px;
   width: 170px;
   border-top-left-radius: 5px;
@@ -351,21 +351,27 @@ table {
       margin: 0 10px;
       font-size: 13px; }
       
-    .large {
-      width: 620px;
-      height: 360px;
-      
+    .large {      
       .lead {
         margin-bottom: 0; 
       }
     }
   }
   
-.surveyPopup {
-    bottom: 40px !important;
+.footerPopover {
+    bottom: 29px !important;
     position: fixed;
     top: auto !important;
     margin-top: 0;
+    
+    .arrow {
+      display: none;
+    }
+    
+    .popover-content {
+      overflow-y: scroll;
+      height: 304px;
+    }
 }
 
 /* Footer styles */
@@ -387,7 +393,7 @@ table {
   padding-left: 20px;
 }
 
-#purpose, #feedback, #legend {
+#aboutReport, #feedback, #legend {
   padding: 10px;
   cursor: pointer;
 }

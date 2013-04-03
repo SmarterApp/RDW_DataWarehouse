@@ -1,5 +1,6 @@
 define [
   'jquery'
+  'bootstrap'
 ], ($) ->
   #
   # * EDWARE util
@@ -30,6 +31,7 @@ define [
   # Given an user_info object, return the uid
   getUid = (userInfo) ->
     userInfo._User__info.uid
+
   
   displayErrorMessage: displayErrorMessage
   getUrlParams: getUrlParams 

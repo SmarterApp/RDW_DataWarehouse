@@ -5,8 +5,10 @@ path = require 'path'
 util = require 'util'
 require 'colors'
 wrench = require 'wrench'
+chokidar = require 'chokidar'
 
 coffeepath = 'coffee'
+lesspath = 'less'
 jspath = 'js/src'
 
 buildCoffee = (source) ->
@@ -51,9 +53,20 @@ task 'build', ->
 
 task 'watch', ->
     invoke 'build'
-    walkDir coffeepath, (source) -> watch source, ->  buildCoffee source
-
-    watch 'less/*.less', ->  invoke 'build:less'
+    
+    lessWatcher = chokidar.watch(lesspath, {persistent: true, ignoreInitial: true})
+    # Ignore .html file extensions
+    coffeeWatcher = chokidar.watch(coffeepath, {ignored: /^.*\.html$/, persistent: true, ignoreInitial: true})
+    
+    coffeeWatcher.on 'add', (path, stats) ->
+        buildCoffee path
+    coffeeWatcher.on 'change', (path, stats) ->
+        buildCoffee path
+    
+    lessWatcher.on 'add', (path, stats) ->
+        invoke 'build:less'
+    lessWatcher.on 'change', (path, stats) ->
+        invoke 'build:less'
 
 task 'lint', 'Check javascript syntax', ->
     lint 'js/*.js'

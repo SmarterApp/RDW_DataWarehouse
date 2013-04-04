@@ -53,7 +53,7 @@ define [
     
     if subject
       results =  edwareLOSConfidenceLevelBar.create subject, 105
-      "<div class='asmtScore' style='color:"+ subject.score_color+"'>" + subject.asmt_score + "</div><div class = 'confidenceLevel'>" + results + "</div>"      
+      "<div class='asmtScore' style='background-color:"+ subject.score_color + "; color: white;'>" + subject.asmt_score + "</div><div class = 'confidenceLevel'>" + results + "</div>"      
     else
       ""   
 

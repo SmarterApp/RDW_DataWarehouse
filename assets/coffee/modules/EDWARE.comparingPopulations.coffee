@@ -5,9 +5,10 @@ define [
   "edwareDataProxy"
   "edwareGrid"
   "edwareBreadcrumbs"
+  "edwareHeader"
   "edwareUtil"
   "edwareFeedback"
-], ($, bootstrap, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFeedback) ->
+], ($, bootstrap, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareHeader, edwareUtil, edwareFeedback) ->
   #
   #    * Create Student data grid
   #    
@@ -39,6 +40,9 @@ define [
             gridConfig[0].name = customViews[reportType].name
             gridConfig[0].options.linkUrl = customViews[reportType].link
             gridConfig[0].options.id_name = customViews[reportType].id_name
+            
+            # Render the header on the page
+            $('#header').header()
             
             # Render breadcrumbs on the page
             $('#breadcrumb').breadcrumbs(breadcrumbsData)

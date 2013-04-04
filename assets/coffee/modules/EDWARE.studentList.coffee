@@ -6,10 +6,11 @@ define [
   "edwareDataProxy"
   "edwareGrid"
   "edwareBreadcrumbs"
+  "edwareHeader"
   "text!edwareAssessmentDropdownViewSelectionTemplate"
   "edwareFeedback"
   "edwareUtil"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareAssessmentDropdownViewSelectionTemplate, edwareFeedback, edwareUtil) ->
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareHeader, edwareAssessmentDropdownViewSelectionTemplate, edwareFeedback, edwareUtil) ->
 
   assessmentsData = {}
   studentsConfig = {}
@@ -43,6 +44,7 @@ define [
           # populate select view
           defaultView = createAssessmentViewSelectDropDown studentsConfig.customViews
           
+          $('#header').header()
           $('#breadcrumb').breadcrumbs(contextData)
           
           renderStudentGrid(defaultView)

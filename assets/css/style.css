@@ -57,10 +57,10 @@ h6{font-size:9px;font-weight:normal;}
 .subTitle2{font-weight:normal;font-size:11px;}
 #header{color:#838383;height:52px;background:url("../images/Header_gradient.png");}#header #logo{width:100px;height:20px;padding:5px;background:url("../images/smarterHeader_logo.png");color:#ffffff;float:left;text-align:center;margin-top:10px;margin-left:20px;}
 #header .topLinks{float:right;color:#4b4b4b;margin-top:20px;margin-right:20px;}#header .topLinks a{color:#838383;}
-#headerTitle{font: Helvetica; font-size: 18px; color:#E2E2E2; padding-top: 10x; float:left; padding-left: 230px; padding-top: 20px;}
-#headerUser{font: Helvetica; font-size: 13px; color:#FFFFFF;}
-#headerLogout{font: Helvetica; font-size: 13px; color:#B1B1B1;}
-#headerLogoutSeparator{color:#B1B1B1;}
+#headerTitle{font:Helvetica;font-size:18px;color:#E2E2E2;padding-top:10x;float:left;padding-left:230px;padding-top:20px;}
+#headerUser{font:Helvetica;font-size:13px;color:#FFFFFF;}
+#headerLogout{font:Helvetica;font-size:13px;color:#E2E2E2;}
+#headerLogoutSeparator{color:#E2E2E2;font:Helvetica;}
 #content{margin-top:20px;min-height:200px;}#content h2{color:#04496d;}
 #content .surveyMonkeyPopup,#content .legendPopup,#content .aboutReportPopup{display:none;}
 table .asmtScore{float:left;font-weight:bold;font-size:14px;margin-right:10px;}

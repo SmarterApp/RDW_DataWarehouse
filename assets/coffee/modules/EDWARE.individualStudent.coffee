@@ -8,9 +8,10 @@ define [
   "text!templates/individualStudent_report/individual_student_template.html"
   "text!templates/individualStudent_report/claimsInfo.html"
   "edwareBreadcrumbs"
+  "edwareHeader"
   "edwareUtil"
   "edwareFeedback"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareConfidenceLevelBar, indivStudentReportTemplate, claimsInfoTemplate, edwareBreadcrumbs, edwareUtil, edwareFeedback) ->
+], ($, bootstrap, Mustache, edwareDataProxy, edwareConfidenceLevelBar, indivStudentReportTemplate, claimsInfoTemplate, edwareBreadcrumbs, edwareHeader, edwareUtil, edwareFeedback) ->
       
   # claim score weight in percentage
   claimScoreWeightArray = {
@@ -128,6 +129,7 @@ define [
           i++
           
         contextData = data.context
+        $('#header').header()
         $('#breadcrumb').breadcrumbs(contextData)
         
         partials = 

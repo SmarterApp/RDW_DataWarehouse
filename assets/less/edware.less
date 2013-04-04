@@ -132,6 +132,10 @@ table {
       height: 38px;
       margin-top: -4px;
       margin-left: 44px;
+      
+      .bar {
+        border-right: 1px dotted @color-B7;
+      }
     }
     .overall_score, .cutPointsBar {
       display: none;
@@ -148,9 +152,9 @@ table {
     .indicator {
       margin-top: -1px;
       height: 33px; 
-      border-left: 1px solid #777777;
-      border-right: 1px solid #777777;
-      background-color: #cccccc;
+      border-left: 1px solid @color-B1;
+      border-right: 1px solid @color-B1;
+      background-color: @color-B4;
       opacity: .5;
     }
     .transImage1 {

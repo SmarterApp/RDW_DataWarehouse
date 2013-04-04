@@ -32,29 +32,3 @@ define [
         $(containerId).header
                 
       create: create
-
-
-(function() {
-  define(['jquery', "text!edwareHeaderHtml"], function($, header_html) {
-
-    $.fn.header = function() {
-      var options, self;
-
-      self = this;
-      options = {
-        async: true,
-        method: "GET"
-      };
-      return self.html(header_html);
-    };
-    
-    create = function(containerId) {
-      return $(containerId).header();
-    };
-    
-    return {
-      create: create
-    };
-  });
-
-}).call(this);

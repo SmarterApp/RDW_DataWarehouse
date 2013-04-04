@@ -14,8 +14,7 @@ define [
     #    
 
     ($, header_html) ->
-      $.fn.breadcrumbs = () ->
-        breadcrumbsData = {}
+      $.fn.header = () ->
         self = this
         options =
           async: true

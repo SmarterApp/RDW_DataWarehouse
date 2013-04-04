@@ -9,9 +9,9 @@ import random
 import os
 import datetime
 
-DATAFILE_PATH = str(os.path.split(os.path.abspath(os.path.dirname(__file__)))[0]) + "/word_lists/"
-WORD_LIST = DATAFILE_PATH + "linuxwords.txt"
-DEFAULT_OUTPUT_FILE = DATAFILE_PATH + "passwords.txt"
+__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+WORD_LIST = os.path.join(__location__, '..', 'word_lists', 'linuxwords.txt')
+DEFAULT_OUTPUT_FILE = os.path.join(__location__, '..', 'passwords.txt')
 SPECIAL_CHARS = '^!\$%&/()=?{[]}+~#-_.:,;<>\\'
 
 
@@ -102,22 +102,16 @@ def generate_sigle_password(first_word, second_word):
     digit = generate_one_digit()
     # generate one special character
     special_char = generate_one_special_character()
-    # empty character
-    empty_char = ''
 
-    '''
-    # generate another character, it can be either digit, or special_char, or empty char
-    other_char = generate_one_char()
-    # add three characters as a list
-    three_chars = [digit, special_char, other_char]
-    '''
-    three_chars = [digit, special_char, empty_char]
+    four_parts = [digit, special_char, first_word, second_word]
     # shuffle the three characters
-    random.shuffle(three_chars)
+    random.shuffle(four_parts)
     # password pattern is:
     # one character, one word, one character, one word, one character
-    # three characters are in three_chars which are shuffled already
-    password = three_chars[0] + first_word + three_chars[1] + second_word + three_chars[2]
+    # three characters are in four_parts which are shuffled already
+    password = ''
+    for component in four_parts:
+        password += component
     assert(len(password) >= 8)
     return password
 
@@ -134,19 +128,6 @@ def generate_one_special_character():
     Randomly return a special character defined in SPECIAL_CHARS
     '''
     return SPECIAL_CHARS[random.choice(range(0, len(SPECIAL_CHARS)))]
-
-
-"""
-def generate_one_char():
-    '''
-    Generate one character. It can be one digit,
-    or one special character, or empty character
-    '''
-    digit_candidate = generate_one_digit()
-    spechal_char_candidate = generate_one_special_character()
-    empty_char = ''
-    return random.choice([digit_candidate, spechal_char_candidate, empty_char])
-"""
 
 
 def write_into_file(generated_password, output_file):

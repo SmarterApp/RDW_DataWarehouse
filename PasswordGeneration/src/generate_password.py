@@ -66,13 +66,12 @@ def generate_sigle_password(words_list):
     digit = generate_one_digit()
     # generate one special character
     special_char = generate_one_special_character()
-
+    # group as a list
     four_parts = [digit, special_char, first_word, second_word]
-    # shuffle the three characters
+    # shuffle the four parts
     random.shuffle(four_parts)
     # password pattern is:
-    # one character, one word, one character, one word, one character
-    # three characters are in four_parts which are shuffled already
+    # any order of one word, one word, one digit and one special character
     password = ''
     for component in four_parts:
         password += component

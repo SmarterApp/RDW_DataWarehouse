@@ -105,6 +105,7 @@ def __arrange_results(results):
     for result in results:
 
         result['teacher_full_name'] = format_full_name(result['teacher_first_name'], result['teacher_middle_name'], result['teacher_last_name'])
+        result['student_full_name'] = format_full_name(result['student_first_name'], result['student_middle_name'], result['student_last_name'])
 
         # asmt_type is an enum, so we would to capitalize it to make it presentable
         result['asmt_type'] = capwords(result['asmt_type'], ' ')

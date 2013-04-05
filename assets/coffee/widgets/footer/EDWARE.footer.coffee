@@ -39,7 +39,7 @@ define [
       placement: "top"
       container: "div"
       title: ->
-        '<div class="pull-right"><ul class="nav"><li><a class="pull-right" href="#" id="close" onclick="$(&quot;#aboutReport&quot;).popover(&quot;hide&quot;);">Hide <img src="../images/hide_x.png"></img></i></a></li></ul></div><div class="lead">Report Info</div>'
+        '<div class="pull-right"><ul class="nav"><li><a class="pull-right" href="#" id="close" onclick="$(&quot;#aboutReport&quot;).popover(&quot;hide&quot;);">Hide <img src="../images/hide_x.png"></img></i></a></li></ul></div><div class="lead">About this report</div>'
       template: '<div class="popover footerPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
       content: ->
         $(".aboutReportPopup").html()

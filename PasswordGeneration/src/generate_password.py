@@ -12,8 +12,9 @@ import datetime
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 WORD_LIST = os.path.join(__location__, '..', 'word_lists', 'linuxwords.txt')
 DEFAULT_OUTPUT_FILE = os.path.join(__location__, '..', 'passwords.txt')
-SPECIAL_CHARS = '^!\$%&/()=?{[]}+~#-_.:,;<>\\'
+SPECIAL_CHARS = '^!\$%&/=?+~#-_:;<>\\'
 MIN_LENGTH = 8
+MAX_NUMBER_OF_PASSWORD = 1000000
 
 
 def generate_password(number, output_file):
@@ -25,6 +26,9 @@ def generate_password(number, output_file):
     # do check number
     if count <= 0:
         print("The number should be greater than 0")
+        raise ValueError
+    elif count > MAX_NUMBER_OF_PASSWORD:
+        print("The number should be less than", MAX_NUMBER_OF_PASSWORD)
         raise ValueError
 
     # get list of word (linux words, need to limit to 3 <= length <= 7)
@@ -83,6 +87,7 @@ def generate_sigle_password(words_list):
 def generate_one_digit():
     '''
     Generate one digit between 1 and 10 (1<= x <10)
+    Return the string format of the digit
     '''
     return str(random.choice(range(1, 10)))
 
@@ -101,11 +106,12 @@ def write_into_file(generated_password, output_file):
     '''
     file = open(output_file, 'w')
     file.write("\n".join(generated_password))
+    file.close()
 
 
 if __name__ == '__main__':
     print("Password Generation Starts", datetime.datetime.now())
-    # specify number of password to be generated, and output file
+    # input arguments: number of password to be generated, and output file
     parser = argparse.ArgumentParser(description='Generate user passwords.')
     parser.add_argument("-n", "--number", default="500", help="number of password to be generated")
     parser.add_argument("-o", "--output", default=DEFAULT_OUTPUT_FILE, help="output file")
@@ -114,3 +120,4 @@ if __name__ == '__main__':
     output_file = args.output
     generate_password(number, output_file)
     print("Password Generation Done ", datetime.datetime.now())
+    # TODO: TIME PERIOD

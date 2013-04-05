@@ -13,6 +13,7 @@ __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file
 WORD_LIST = os.path.join(__location__, '..', 'word_lists', 'linuxwords.txt')
 DEFAULT_OUTPUT_FILE = os.path.join(__location__, '..', 'passwords.txt')
 SPECIAL_CHARS = '^!\$%&/()=?{[]}+~#-_.:,;<>\\'
+MIN_LENGTH = 8
 
 
 def generate_password(number, output_file):
@@ -43,13 +44,13 @@ def read_words():
     Read all words in WORD_LIST, return as a list
     '''
     word_list = []
-    file_name = WORD_LIST
+    source_file_name = WORD_LIST
     try:
-        target_file = open(file_name, 'r')
-        lines = target_file.readlines()
+        source_file = open(source_file_name, 'r')
+        lines = source_file.readlines()
         for line in lines:
             word_list.append(line.strip())
-        target_file.close()
+        source_file.close()
     except FileNotFoundError as err:
         print("No file", err)
     return word_list
@@ -60,6 +61,7 @@ def generate_sigle_password(words_list):
     Generate one single password as the pattern defined
     '''
     # randomly pick two words in words_list
+    # words start with an upper case character and the remaining characters are lower case
     first_word = random.choice(words_list).title()
     second_word = random.choice(words_list).title()
     # generate one digit
@@ -75,7 +77,7 @@ def generate_sigle_password(words_list):
     password = ''
     for component in four_parts:
         password += component
-    assert(len(password) >= 8)
+    assert(len(password) >= MIN_LENGTH)
     return password
 
 

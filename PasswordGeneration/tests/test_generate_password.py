@@ -9,7 +9,7 @@ FILES_FOR_TEST_PATH = os.path.join(__location__, 'files_for_test')
 class TestGeneratePassword(unittest.TestCase):
 
     def test_generate_password_invalid_number(self):
-        self.assertRaises(ValueError, generate_password.generate_password, -1, '/output')
+        self.assertRaises(ValueError, generate_password.generate_password, -10, '/output')
 
     def test_generate_password_invalid_words_list_file(self):
         generate_password.WORD_LIST = os.path.join(FILES_FOR_TEST_PATH, 'non_existing_file.txt')
@@ -19,17 +19,17 @@ class TestGeneratePassword(unittest.TestCase):
         generate_password.WORD_LIST = os.path.join(FILES_FOR_TEST_PATH, 'empty_word_list.txt')
         self.assertRaises(ValueError, generate_password.generate_password, 200, '/output')
 
-    def test_generate_password_three(self):
+    def test_generate_password_three_passwords(self):
         generate_password.WORD_LIST = os.path.join(FILES_FOR_TEST_PATH, 'word_list_10.txt')
         number = '3'
-        output_file = os.path.join(FILES_FOR_TEST_PATH, 'output_1.txt')
+        output_file = os.path.join(FILES_FOR_TEST_PATH, 'output_3.txt')
         generate_password.generate_password(number, output_file)
-        # check
+        # verify
         expected_file = open(output_file, 'r')
         lines = expected_file.readlines()
         self.assertEqual(len(lines), int(number))
         for line in lines:
-            self.assertTrue(len(line) >= 8)
+            self.assertTrue(len(line) >= generate_password.MIN_LENGTH)
         expected_file.close()
         os.remove(output_file)
 

@@ -137,6 +137,8 @@ define [
         output = Mustache.to_html indivStudentReportTemplate, data, partials     
         $("#individualStudentContent").html output
         
+        renderClaimScoreRelativeDifference data
+        
         # Generate Confidence Level bar for each assessment      
         i = 0
         while i < data.items.length
@@ -152,6 +154,46 @@ define [
           uid = edwareUtil.getUid data.user_info
           edwareFeedback.renderFeedback(role, uid, "individual_student_report")
 
+  #
+  # render Claim Score Relative Difference (arrows)
+  #
+  renderClaimScoreRelativeDifference = (data) ->
+    i = 0
+    while i < data.items.length
+      items = data.items[i]
+      # find grand parent element ID
+      assessmentSectionId = '#assessmentSection' + i
+      claims = items.claims
+      j = 0
+      while j < claims.length
+        claim = claims[j]
+        # find parent element ID
+        claimId = '#claim' + claim.indexer
+        # if relative difference is positive, then render uppder div
+        if claim.claim_score_relative_difference > 0
+          # find target element ID
+          contentId = '#content' + claim.indexer + '_upper'
+          img = '../images/Claim_arrowhead_up.png'
+          # style for vertical bar
+          y_position = Math.abs(100 - claim.claim_score_relative_difference)
+          bar_style = "margin:0;padding:0;height:" + y_position * 0.9 + "%; width:11px; background-color: #565656;position:absolute;bottom: 0;left:47%"
+        else
+          # find target element ID
+          contentId = '#content' + claim.indexer + '_lower'
+          img = '../images/Claim_arrowhead_down.png'
+          y_position = Math.abs(claim.claim_score_relative_difference)
+          # style for vertical bar
+          bar_style = "margin:0;padding:0;height:" + y_position * 0.9 + "%; width:11px; background-color: #565656;position:absolute;left:47%"
+        # specifying actual target element name
+        targetId = assessmentSectionId + " " + claimId + " " + contentId
+        # set Triangle image in target div
+        $(targetId).attr("style","background-image: url(" + img + ");background-repeat:no-repeat;background-position:50% " + y_position + "%;position: relative;")
+        # create inner div and attache to the div(targetId)
+        div_bar = $('<div/>')
+        div_bar.attr("style", bar_style)
+        $(targetId).append div_bar
+        j++
+      i++
   #
   # get role-based content
   #

@@ -163,7 +163,7 @@ table {
     width: 100%;
 }
 .sidebar {
-  height: 570px;
+  height: 630px;
   padding: 15px;
   width: 170px;
   border-top-left-radius: 5px;
@@ -252,7 +252,7 @@ table {
     }
     
     ul li {
-      height: 250px;
+      height: 300px;
       float: left;
       margin: 10px 10px 0 0;
       padding: 10px;
@@ -262,13 +262,17 @@ table {
       background: @color-B6;
       
       .scoreBox {
-        font-size: 18px;
-        margin-top: 10px;
-        
-        .interval {
-          font-size: 15px;
-          line-height: 30px;
-        }
+        border-left: solid 1px @color-B5;
+        border-right: solid 1px @color-B5;
+        height: 40px;
+        background: @color-white;
+      }
+      .scoreBoxUpper {
+        border-top: solid 1px @color-B5;
+        border-bottom: dashed 1px #C2C2C2
+      }
+      .scoreBoxLower{
+        border-bottom: solid 1px @color-B5;
       }
       
       .icon {

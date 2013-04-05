@@ -14,7 +14,7 @@ from string import capwords
 from smarter.database.connector import SmarterDBConnection
 from edapi.logging import audit_event
 from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
-from smarter.reports.helpers.assessments import get_cut_points,\
+from smarter.reports.helpers.assessments import get_cut_points, \
     get_overall_asmt_interval, get_claims
 
 
@@ -98,6 +98,26 @@ def __prepare_query(connector, student_guid, assessment_guid):
     return query
 
 
+def __calculateClaimScoreRelativeDifference(items):
+    '''
+    calcluate relative difference for each claims
+    1. find absluate max claim score
+    2. calculate relative difference
+    '''
+    for item in items:
+        asmt_score = item['asmt_score']
+        claims = item['claims']
+        maxAbsDiffScore = 0
+        for claim in claims:
+            score = int(claim['score'])
+            # keep track max score difference
+            if maxAbsDiffScore < abs(asmt_score - score):
+                maxAbsDiffScore = abs(asmt_score - score)
+        for claim in claims:
+            score = int(claim['score'])
+            claim['claim_score_relative_difference'] = int((score - asmt_score) / maxAbsDiffScore * 100)
+
+
 def __arrange_results(results):
     '''
     This method arranges the data retreievd from the db to make it easier to consume by the client
@@ -118,6 +138,7 @@ def __arrange_results(results):
         result['claims'] = get_claims(number_of_claims=5, result=result)
 
     # rearranging the json so we could use it more easily with mustache
+    __calculateClaimScoreRelativeDifference(results)
     results = {"items": results}
     return results
 

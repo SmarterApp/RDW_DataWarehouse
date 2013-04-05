@@ -194,7 +194,7 @@ table {
     width: 100%;
 }
 .sidebar {
-  height: 630px;
+  height: 610px;
   padding: 15px;
   width: 170px;
   border-top-left-radius: 5px;
@@ -297,6 +297,8 @@ table {
         border-right: solid 1px @color-B5;
         height: 40px;
         background: @color-white;
+        background-repeat:no-repeat;
+        position: relative;
       }
       .scoreBoxUpper {
         border-top: solid 1px @color-B5;
@@ -524,4 +526,21 @@ table {
   margin: 0;
   text-align: center;
   padding: 2px 0;
+}
+.claim_score_down_arrow_bar {
+  background-image: -moz-linear-gradient(center top , #d3d3d3, #565656);
+  background-image: -webkit-linear-gradient(top ,#d3d3d3, #565656); 
+  background-image: -ms-linear-gradient(top , #d3d3d3, #565656); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#d3d3d3, endColorstr=#565656, GradientType=0);
+}
+.claim_score_up_arrow_bar {
+  background-image: -moz-linear-gradient(center top , #565656, #d3d3d3);
+  background-image: -webkit-linear-gradient(top ,#565656, #d3d3d3); 
+  background-image: -ms-linear-gradient(top , #565656, #d3d3d3); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#565656, endColorstr=#d3d3d3, GradientType=0);
+  bottom: 0;
+}
+.claim_score_arrow_bar {
+  width:11px;
+  position:absolute;
+  margin:0;
+  padding:0;
 }

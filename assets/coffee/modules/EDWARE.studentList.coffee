@@ -10,7 +10,8 @@ define [
   "text!edwareAssessmentDropdownViewSelectionTemplate"
   "edwareFeedback"
   "edwareUtil"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareHeader, edwareAssessmentDropdownViewSelectionTemplate, edwareFeedback, edwareUtil) ->
+  "edwareFooter"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareHeader, edwareAssessmentDropdownViewSelectionTemplate, edwareFeedback, edwareUtil, edwareFooter) ->
 
   assessmentsData = {}
   studentsConfig = {}
@@ -49,13 +50,16 @@ define [
           
           renderStudentGrid(defaultView)
           
+          # Generate footer links
+          $('#footer').generateFooter('list_of_students')
+          
           # append user_info (e.g. first and last name)
           if userData
             $('#header .topLinks .user').html edwareUtil.getUserName userData
             role = edwareUtil.getRole userData
             uid = edwareUtil.getUid userData
             edwareFeedback.renderFeedback(role, uid, "list_of_students")
-        
+          
   renderStudentGrid = (viewName)->
     $("#gbox_gridTable").remove()
     $("#content").append("<table id='gridTable'></table>")

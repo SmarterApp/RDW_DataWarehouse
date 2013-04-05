@@ -97,7 +97,7 @@ def generate_one_special_character():
 
 def write_into_file(generated_password, output_file):
     '''
-    Write the given generated_password, which is a list into output_file
+    Write given generated_password into the output_file
     Each item in generated_password is written as one line in output_file
     '''
     file = open(output_file, 'w')
@@ -107,7 +107,7 @@ def write_into_file(generated_password, output_file):
 if __name__ == '__main__':
     print("Password Generation Starts", datetime.datetime.now())
     # specify number of password to be generated, and output file
-    parser = argparse.ArgumentParser(description='Generate user password.')
+    parser = argparse.ArgumentParser(description='Generate user passwords.')
     parser.add_argument("-n", "--number", default="500", help="number of password to be generated")
     parser.add_argument("-o", "--output", default=DEFAULT_OUTPUT_FILE, help="output file")
     args = parser.parse_args()

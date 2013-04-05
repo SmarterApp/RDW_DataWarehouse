@@ -389,14 +389,15 @@ table {
     }
     
     .popover-title {
-        background-image: -moz-linear-gradient(center top , #313131, #464646);
-        background-image: -webkit-linear-gradient(top ,#313131, #464646); 
-        background-image: -ms-linear-gradient(top , #313131, #464646); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#313131, endColorstr=#464646, GradientType=0);
+      background-image: -moz-linear-gradient(center top , #464646, #313131);
+      background-image: -webkit-linear-gradient(top ,#464646, #313131); 
+      background-image: -ms-linear-gradient(top , #464646, #313131); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#464646, endColorstr=#313131, GradientType=0);
         
       a {
         color: @color-B4;
         font-size: 18px;
         margin-top: 4px;
+        
         &:hover{
           background-color: transparent;
         }
@@ -411,6 +412,7 @@ table {
     position: fixed;
     top: auto !important;
     margin-top: 0;
+    left: 30% !important;
     
     .arrow {
       display: none;
@@ -427,9 +429,9 @@ table {
   color: @color-B4;
   border-top: 1px solid #1f1f1f;
   box-shadow: inset 0px 1px #434343;
-  background-image: -moz-linear-gradient(center top , #313131, #464646);
-  background-image: -webkit-linear-gradient(top ,#313131, #464646); 
-  background-image: -ms-linear-gradient(top , #313131, #464646); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#313131, endColorstr=#464646, GradientType=0);
+  background-image: -moz-linear-gradient(center top , #464646, #313131);
+  background-image: -webkit-linear-gradient(top ,#464646, #313131); 
+  background-image: -ms-linear-gradient(top , #464646, #313131); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#464646, endColorstr=#313131, GradientType=0);
   
   float: left;
   width: 980px;
@@ -442,10 +444,11 @@ table {
   a {
     font-size: 13px;
     color: @color-B5;
+    width: 84px;
+    text-align: center;
     
     &:hover{
       color: @color-A4;
-      //background-color: black;
       background-image: -moz-linear-gradient(center top , #000000, #292929);
       background-image: -webkit-linear-gradient(top ,#000000, #292929); 
       background-image: -ms-linear-gradient(top , #000000, #292929); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#000000, endColorstr=#292929, GradientType=0);

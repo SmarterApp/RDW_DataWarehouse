@@ -189,7 +189,8 @@ define [
         # find actual bar height
         targetId_height = $(targetId).height()
         # image height is 5
-        adjusted_bar_height = bar_height - 5/targetId_height*100
+        image_height = 5
+        adjusted_bar_height = (image_y_position*targetId_height/100-image_height/2)/targetId_height*100
         div_bar.css("height", adjusted_bar_height + "%")        
         # set Triangle image in target div
         $(targetId).css("background-image", "url(" + img + ")")

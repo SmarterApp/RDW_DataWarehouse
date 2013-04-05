@@ -51,7 +51,7 @@ def check_password(password):
         assert not white_space
 
         for word in words:
-            assert len(word) >= 4 and len(word) <= 8
+            assert len(word) >= 4 and len(word) <= 7
             empty_str = empty_str.replace(word, '', 1)
 
         assert re.match(regex, password)

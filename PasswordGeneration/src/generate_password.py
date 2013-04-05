@@ -77,7 +77,6 @@ def generate_sigle_password(words_list):
     password = ''
     for component in four_parts:
         password += component
-    assert(len(password) >= MIN_LENGTH)
     return password
 
 

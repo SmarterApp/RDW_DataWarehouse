@@ -110,7 +110,7 @@ def write_into_file(generated_password, output_file):
 
 
 if __name__ == '__main__':
-    print("Password Generation Starts", datetime.datetime.now())
+    start_time = datetime.datetime.now()
     # input arguments: number of password to be generated, and output file
     parser = argparse.ArgumentParser(description='Generate user passwords.')
     parser.add_argument("-n", "--number", default="500", help="number of password to be generated")
@@ -119,5 +119,6 @@ if __name__ == '__main__':
     number = args.number
     output_file = args.output
     generate_password(number, output_file)
-    print("Password Generation Done ", datetime.datetime.now())
-    # TODO: TIME PERIOD
+    finish_time = datetime.datetime.now()
+    spend_time = finish_time - start_time
+    print(number, "password(s) are generated in", spend_time)

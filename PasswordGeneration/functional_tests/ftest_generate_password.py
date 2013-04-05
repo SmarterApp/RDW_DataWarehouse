@@ -27,7 +27,7 @@ def check_password(password):
     '''
     check a single password against rules defined by the story
     @param password: the password string to check
-    @raise AssertionError: Newline count too large... this would be very strange
+    @raise AssertionError: Newline count too large (this would be very strange)
     '''
 
     # Remove newline chars from password

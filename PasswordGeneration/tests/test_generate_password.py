@@ -36,7 +36,21 @@ class TestGeneratePassword(unittest.TestCase):
     def test_generate_sigle_password_long_list(self):
         words_list = ['oneword', 'zfgadfs', 'qdfafggt', 'lqpzxc', 'addfl', 'polqsf']
         actual_password = generate_password.generate_sigle_password(words_list)
-        # TODO: ASSERT, can do it in regular expression
+
+        # verify that the actual password contains only one digit, one special character
+        actual_digit_index = -1
+        actual_special_char_index = -1
+        for i in range(len(actual_password)):
+            if actual_password[i].isdigit() and actual_digit_index == -1:
+                actual_digit_index = i
+            elif actual_password[i] in generate_password.SPECIAL_CHARS and actual_special_char_index == -1:
+                actual_special_char_index = i
+        self.assertTrue(-1 < actual_digit_index < len(actual_password))
+        self.assertTrue(-1 < actual_special_char_index < len(actual_password))
+        # verify that two words are selected from words_list(not necessary to be different)
+        actual_password_copy = actual_password
+        rest_password = actual_password_copy.replace(str(actual_password[actual_digit_index]), '').replace(str(actual_password[actual_special_char_index]), '')
+        self.assertTrue(rest_password in [word.title() + wor.title() for word in words_list for wor in words_list])
 
     def test_generate_sigle_password_one_word_list(self):
         words_list = ['oneword']

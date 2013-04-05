@@ -8,8 +8,11 @@ FILES_FOR_TEST_PATH = os.path.join(__location__, 'files_for_test')
 
 class TestGeneratePassword(unittest.TestCase):
 
-    def test_generate_password_invalid_number(self):
+    def test_generate_password_negtive_number(self):
         self.assertRaises(ValueError, generate_password.generate_password, -10, '/output')
+
+    def test_generate_password_greater_than_max_number(self):
+        self.assertRaises(ValueError, generate_password.generate_password, generate_password.MAX_NUMBER_OF_PASSWORD + 10, '/output')
 
     def test_generate_password_invalid_words_list_file(self):
         generate_password.WORD_LIST = os.path.join(FILES_FOR_TEST_PATH, 'non_existing_file.txt')

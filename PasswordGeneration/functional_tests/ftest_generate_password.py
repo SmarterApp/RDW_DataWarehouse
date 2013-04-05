@@ -36,8 +36,8 @@ def check_password(password):
     passwd = passwd[0]
     empty_str = passwd
 
-    regex = r'\d{1}|\W{1}|([A-Z]{1}[a-z]*)'
-    special_chars = re.findall(r'\W{1}', passwd)
+    regex = r'\d{1}|\W{1}|[_]{1}|([A-Z]{1}[a-z]*)'
+    special_chars = re.findall(r'\W{1}|[_]{1}', passwd)
     digit_chars = re.findall(r'\d{1}', passwd)
     words = re.findall(r'[A-Z]{1}[a-z]*', passwd)
     white_space = re.findall(r'\s', passwd)

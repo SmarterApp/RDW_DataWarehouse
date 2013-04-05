@@ -14,15 +14,19 @@ require({
 		edwareIndividualStudent: 'EDWARE.individualStudent',
 		edwareComparingPopulations: 'EDWARE.comparingPopulations',
 		edwareBreadcrumbs: '../widgets/breadcrumb/EDWARE.breadcrumbs',
+		edwareHeader: '../widgets/header/EDWARE.header',
 		edwareConfidenceLevelBar: '../widgets/confidenceLevelBar/EDWARE.confidenceBar',
 		edwarePopulationBar: '../widgets/populationBar/EDWARE.populationBar',
 		edwareFeedback: 'EDWARE.feedback',
+		edwareFooter: '../widgets/footer/EDWARE.footer',
 		
 		// Templates
 		edwareBreadcrumbsTemplate: '../widgets/breadcrumb/template.html',
 		edwareConfidenceLevelBarTemplate: '../widgets/confidenceLevelBar/template.html',
 		edwarePopulationBarTemplate: '../widgets/populationBar/template.html',
-		edwareAssessmentDropdownViewSelectionTemplate: '../../templates/assessment_dropdown_view_selection.html'
+		edwareAssessmentDropdownViewSelectionTemplate: '../../templates/assessment_dropdown_view_selection.html',
+		edwareHeaderHtml: '../widgets/header/header.html',
+		edwareFooterHtml: '../widgets/footer/template.html'
 	},
 	shim: {
         'jqGrid': {

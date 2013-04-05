@@ -8,9 +8,11 @@ define [
   "text!templates/individualStudent_report/individual_student_template.html"
   "text!templates/individualStudent_report/claimsInfo.html"
   "edwareBreadcrumbs"
+  "edwareHeader"
   "edwareUtil"
   "edwareFeedback"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareConfidenceLevelBar, indivStudentReportTemplate, claimsInfoTemplate, edwareBreadcrumbs, edwareUtil, edwareFeedback) ->
+  "edwareFooter"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareConfidenceLevelBar, indivStudentReportTemplate, claimsInfoTemplate, edwareBreadcrumbs, edwareHeader, edwareUtil, edwareFeedback, edwareFooter) ->
       
   # claim score weight in percentage
   claimScoreWeightArray = {
@@ -36,27 +38,7 @@ define [
       params: params
       
     edwareDataProxy.getDatafromSource "/data/individual_student_report", options, (data) ->
-        
-      $("#legend").popover
-            html: true
-            placement: "top"
-            container: "div"
-            title: ->
-                '<div class="pull-right"><button class="btn" id="close" type="button" onclick="$(&quot;#legend&quot;).popover(&quot;hide&quot;);">Hide</button></div><div class="lead">Legends</div>'
-            template: '<div class="popover footerPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
-            content: ->
-              $(".legendPopup").html()
-              
-       $("#aboutReport").popover
-            html: true
-            placement: "top"
-            container: "div"
-            title: ->
-                '<div class="pull-right"><button class="btn" id="close" type="button" onclick="$(&quot;#aboutReport&quot;).popover(&quot;hide&quot;);">Hide</button></div><div class="lead">About Report</div>'
-            template: '<div class="popover footerPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
-            content: ->
-              $(".aboutReportPopup").html()
-        
+   
       defaultColors = {}
       options =
         async: false
@@ -128,6 +110,7 @@ define [
           i++
           
         contextData = data.context
+        $('#header').header()
         $('#breadcrumb').breadcrumbs(contextData)
         
         partials = 
@@ -146,6 +129,9 @@ define [
           barContainer = "#assessmentSection" + i + " .confidenceLevel"
           edwareConfidenceLevelBar.create item, 640, barContainer        
           i++
+        
+        # Generate footer links
+        $('#footer').generateFooter('individual_student_report')
         
         # append user_info (e.g. first and last name)
         if data.user_info

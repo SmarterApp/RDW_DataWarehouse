@@ -46,33 +46,64 @@ h6 {
   font-weight: normal;
   font-size: 11px;
 }
+
 #header {
   color: @color-B2;
-  height: 60px;
-  background: @color-B6;
-  
+  height: 52px;
+  background: url("../images/Header_gradient.png");
+  border-top: 1px solid #1f1f1f;
+  box-shadow: inset 0px 1px #434343;
+ 
   #logo {
     width: 100px;
     height: 20px;
-    padding: 5px;
-    background: @color-B5;
+    padding-bottom: 18px;
+    padding-right: 12px;
+    background: url("../images/smarterHeader_logo.png");
     color: @color-white;
     float: left;
     text-align: center;
-    margin-top: 20px;
+    margin-top: 7px;
     margin-left: 20px;
   }
   
   .topLinks {
     float: right;
     color: @color-B1;
-    margin-top: 30px;
+    margin-top: 20px;
     margin-right: 20px;
     
     a {
       color: @color-B2;
     }
   }
+}
+  
+#headerTitle {
+  font-family: helvetica; 
+  font-size: 18px; 
+  color:@color-B5; 
+  padding-top: 10x; 
+  float:left; 
+  padding-left: 230px; 
+  padding-top: 20px;
+}
+
+#headerUser{
+  font-family: helvetica; 
+  font-size: 13px; 
+  color:@color-white;
+}
+
+#headerLogout{
+  font-family: helvetica; 
+  font-size: 13px; 
+  color:@color-B5;
+}
+
+#headerLogoutSeparator{
+  color:@color-B3; 
+  font-family: helvetica;
 }
 
 #content { 
@@ -379,13 +410,32 @@ table {
         margin-bottom: 0; 
       }
     }
-  }
-  
+    
+    .popover-title {
+      background-image: -moz-linear-gradient(center top , #464646, #313131);
+      background-image: -webkit-linear-gradient(top ,#464646, #313131); 
+      background-image: -ms-linear-gradient(top , #464646, #313131); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#464646, endColorstr=#313131, GradientType=0);
+        
+      a {
+        color: @color-B4;
+        font-size: 18px;
+        margin-top: 4px;
+        
+        &:hover{
+          background-color: transparent;
+        }
+        img {
+          vertical-align: middle;
+        }
+      }
+    }
+ }
 .footerPopover {
-    bottom: 29px !important;
+    bottom: 42px !important;
     position: fixed;
     top: auto !important;
     margin-top: 0;
+    left: 30% !important;
     
     .arrow {
       display: none;
@@ -399,25 +449,52 @@ table {
 
 /* Footer styles */
 #footer {
-  color: @color-white;
-  background-color: @color-B4;
+  color: @color-B4;
+  border-top: 1px solid #1f1f1f;
+  box-shadow: inset 0px 1px #434343;
+  background-image: -moz-linear-gradient(center top , #464646, #313131);
+  background-image: -webkit-linear-gradient(top ,#464646, #313131); 
+  background-image: -ms-linear-gradient(top , #464646, #313131); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#464646, endColorstr=#313131, GradientType=0);
+  
   float: left;
   width: 980px;
-  font-size: 12px;
+  font-size: 11px;
   position: fixed;
   bottom: 0px;
-  height: 40px;
+  height: 50px;
   z-index: 5000;
+  
+  a {
+    font-size: 13px;
+    color: @color-B5;
+    width: 123px;
+    text-align: center;
+    
+    &:hover{
+      color: @color-A4;
+      background-image: -moz-linear-gradient(center top , #000000, #292929);
+      background-image: -webkit-linear-gradient(top ,#000000, #292929); 
+      background-image: -ms-linear-gradient(top , #000000, #292929); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#000000, endColorstr=#292929, GradientType=0);
+    }
+  }
+  
+  i {
+    vertical-align: text-bottom;
+  }
+  
+  img {
+    padding-top: 3.5px;
+  }
+  
+  #copyright {
+    float: left;
+    padding: 15px;
+    padding-left: 20px;
+  }
 }
 
-#copyright {
-  float: left;
-  padding: 10px;
-  padding-left: 20px;
-}
-
-#aboutReport, #feedback, #legend {
-  padding: 10px;
+#aboutReport, #feedback, #legend, #help {
+  padding: 15px;
   cursor: pointer;
 }
 

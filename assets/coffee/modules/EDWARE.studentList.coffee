@@ -6,10 +6,12 @@ define [
   "edwareDataProxy"
   "edwareGrid"
   "edwareBreadcrumbs"
+  "edwareHeader"
   "text!edwareAssessmentDropdownViewSelectionTemplate"
   "edwareFeedback"
   "edwareUtil"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareAssessmentDropdownViewSelectionTemplate, edwareFeedback, edwareUtil) ->
+  "edwareFooter"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareHeader, edwareAssessmentDropdownViewSelectionTemplate, edwareFeedback, edwareUtil, edwareFooter) ->
 
   assessmentsData = {}
   studentsConfig = {}
@@ -43,9 +45,13 @@ define [
           # populate select view
           defaultView = createAssessmentViewSelectDropDown studentsConfig.customViews
           
+          $('#header').header()
           $('#breadcrumb').breadcrumbs(contextData)
           
           renderStudentGrid(defaultView)
+          
+          # Generate footer links
+          $('#footer').generateFooter('list_of_students')
           
           # append user_info (e.g. first and last name)
           if userData
@@ -53,7 +59,7 @@ define [
             role = edwareUtil.getRole userData
             uid = edwareUtil.getUid userData
             edwareFeedback.renderFeedback(role, uid, "list_of_students")
-        
+          
   renderStudentGrid = (viewName)->
     $("#gbox_gridTable").remove()
     $("#content").append("<table id='gridTable'></table>")

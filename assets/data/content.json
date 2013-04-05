@@ -11,10 +11,10 @@
         
 	"overall_ald": {
 		"Math": {
-			"1": "The Level 1 student demonstrates <strong>minimal understanding</strong> of and ability to apply the mathematics knowledge and skills needed for success in college and careers, as specified in the Common Core State Standards. (Content provided by your state and/or district will follow if it exists)",
-			"2": "The Level 2 student demonstrates <strong>partial understanding</strong> of and ability to apply the mathematics knowledge and skills needed for success in college and careers, as specified in the Common Core State Standards. (Content provided by your state and/or district will follow if it exists)",
-			"3": "The Level 3 student demonstrates <strong>adequate understanding</strong> of and ability to apply the mathematics knowledge and skills needed for success in college and careers, as specified in the Common Core State Standards. (Content provided by your state and/or district will follow if it exists)",
-			"4": "The Level 4 student demonstrates <strong>thorough understanding</strong> of and ability to apply the mathematics knowledge and skills needed for success in college and careers, as specified in the Common Core State Standards. (Content provided by your state and/or district will follow if it exists)"
+			"1": "The Level 1 student demonstrates <strong>minimal understanding</strong> of and ability to apply the mathematics knowledge and skills needed for success in college and careers, as specified in the Common Core State Standards.",
+			"2": "The Level 2 student demonstrates <strong>partial understanding</strong> of and ability to apply the mathematics knowledge and skills needed for success in college and careers, as specified in the Common Core State Standards.",
+			"3": "The Level 3 student demonstrates <strong>adequate understanding</strong> of and ability to apply the mathematics knowledge and skills needed for success in college and careers, as specified in the Common Core State Standards.",
+			"4": "The Level 4 student demonstrates <strong>thorough understanding</strong> of and ability to apply the mathematics knowledge and skills needed for success in college and careers, as specified in the Common Core State Standards."
 		},
 		"ELA": {
 			"1": "The Level 1 student demonstrates <strong>minimal understanding</strong> of and ability to apply the English language arts and literacy knowledge and skills needed for success in college and careers, as specified in the Common Core State Standards.",

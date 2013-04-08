@@ -19,6 +19,7 @@ function set_vars {
     VIRTUALENV_DIR="$WORKSPACE/edwaretest_venv"
     FUNC_VIRTUALENV_DIR="$WORKSPACE/functest_venv"
     FUNC_DIR="edware_test/edware_test/functional_tests"
+    SMARTER_INI="/opt/edware/smarter/smarter.ini"
 
     # delete existing xml files
     if [ -f $WORKSPACE/coverage.xml ]; then
@@ -206,7 +207,7 @@ function create_sym_link_for_apache {
     fi
     mkdir -p ${APACHE_DIR}
     /bin/ln -sf ${VIRTUALENV_DIR}/lib/python3.3/site-packages ${APACHE_DIR}/pythonpath
-    /bin/ln -sf ${WORKSPACE}/smarter/test.ini /opt/edware/smarter/smarter.ini
+    /bin/ln -sf ${WORKSPACE}/smarter/test.ini ${SMARTER_INI}
     /bin/ln -sf ${WORKSPACE}/smarter/smarter.wsgi ${APACHE_DIR}/pyramid_conf
     /bin/ln -sf ${VIRTUALENV_DIR} ${APACHE_DIR}/venv
 

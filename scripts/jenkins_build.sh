@@ -256,7 +256,7 @@ function build_rpm {
     rm -rf $WORKSPACE/rpmtools
     mkdir  $WORKSPACE/rpmtools
     cd $WORKSPACE/rpmtools
-    git clone git@github.wgenhq.net:Ed-Ware-SBAC/edware_test.git
+    git clone git://mcgit.mc.wgenhq.net/wgen/rpmtools
 
     cd rpmtools
 

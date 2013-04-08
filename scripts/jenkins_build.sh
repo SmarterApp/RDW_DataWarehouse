@@ -91,8 +91,8 @@ function run_unit_tests {
 }
 
 function get_opts {
-    if ( ! getopts ":m:d:ufh" opt); then
-	echo "Usage: `basename $0` options (-n) (-u) (-f) (-m main_package) (-d dependencies) -h for help";
+    if ( ! getopts ":m:d:ufhb" opt); then
+	echo "Usage: `basename $0` options (-n) (-u) (-f) (-b) (-m main_package) (-d dependencies) -h for help";
 	exit $E_OPTERROR;
     fi
  
@@ -112,6 +112,10 @@ function get_opts {
                ;;
             h)
                show_help
+               ;;
+            b)
+               echo "Build RPM mode"
+               MODE='RPM'
                ;;
             n)
                RUN_UNIT_TEST=false
@@ -231,6 +235,34 @@ function import_data_from_csv {
     python import_data.py --config ${WORKSPACE}/smarter/test.ini --resource ${WORKSPACE}/edschema/database/tests/resources
 }
 
+function build_rpm {
+    # prerequisite there is a venv inside workspace (ie. run setup_virtualenv)
+
+    RPM_VERSION="0"
+    RPM_REPO=""
+    RPM_SPEC=""
+    
+
+    echo "Build RPM"
+    echo "Build Number:"
+    echo $BUILD_NUMBER
+
+    GIT_HASH="$(git rev-parse HEAD)"
+
+    echo "clone git://mcgit.mc.wgenhq.net/wgen/rpmtools"
+    rm -rf $WORKSPACE/rpmtools
+    mkdir  $WORKSPACE/rpmtools
+    cd $WORKSPACE/rpmtools
+    git clone git@github.wgenhq.net:Ed-Ware-SBAC/edware_test.git
+
+    cd rpmtools
+
+    # Need to run on python 2.7
+    #/opt/python2.7/bin/python2.7 wg_rpmbuild.py --dont-clean-staging --ignore-existing-staging -r "$WORKSPACE" -D_topdir="$WORKSPACE" -Dbuild_number="$BUILD_NUMBER" -Dcheckoutroot="$WORKSPACE" -Dversion="$RPM_VERSION" -o "$RPM_REPO" "$RPM_SPEC"
+
+    echo "Finished building RPM"
+}
+
 function main {
     get_opts $@
     check_vars
@@ -251,6 +283,8 @@ function main {
         setup_functional_test_dependencies
         run_functional_tests
         check_pep8 "$FUNC_DIR"
+    elif [ ${MODE:=""} == "RPM" ]; then
+        build_rpm
     fi
 }
 

@@ -238,6 +238,9 @@ function import_data_from_csv {
 function build_rpm {
     # prerequisite there is a venv inside workspace (ie. run setup_virtualenv)
 
+    # deactivate python 3.3 venv
+    deactivate
+
     RPM_VERSION="0"
     RPM_REPO=""
     RPM_SPEC=""

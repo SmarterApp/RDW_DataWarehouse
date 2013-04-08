@@ -6,7 +6,8 @@ Created on Apr 4, 2013
 import dg_types
 import dg_mayuat
 
-def show():
+
+def calculate_number_of_students():
     mayuat = dg_mayuat.getStates()
 
     # get the district and school configuration dictionaries
@@ -59,7 +60,7 @@ def show():
 
             # Adding up all the ratio values
             ratioSum = sum(schoolTypesAndRatios.values())
-            ratioUnit = max( (avg_num_schools // ratioSum), 1)
+            ratioUnit = max((avg_num_schools // ratioSum), 1)
 
             totalStudentsInEachDistrict = 0
             # Here we iterate through all the school types within the district type
@@ -83,11 +84,38 @@ def show():
         print('%d total Students in %s' % (totalStudentsInState, stateName))
 
 
+def calculate_asmt_information():
+    '''
+    '''
+    perf_dist = dg_types.get_performance_level_distributions()
+
+    for asmt_type in perf_dist.keys():
+        percent_sums = [0, 0, 0, 0]
+        percent_count = 0
+        gamma_sums = {'avg': 0, 'std': 0}
+        gamma_count = 0
+
+        for grade in perf_dist[asmt_type].keys():
+            grade_info = perf_dist[asmt_type][grade]
+            perc_dist = grade_info.get(dg_types.PERCENTAGES)
+            gamma_dist = grade.info.get(dg_types.GAMMA)
+            if perc_dist:
+                percent_sums[0] += perc_dist[0]
+                percent_sums[1] += perc_dist[1]
+                percent_sums[2] += perc_dist[2]
+                percent_sums[3] += perc_dist[3]
+                percent_count += 1
+                out_string = '{0} Grade {1} -- % at PL1: {2}, % at PL2: {3}, % at PL3: {4}, % at PL4: {5}'
+                out_string = out_string.format(asmt_type, grade, perc_dist[0], perc_dist[1], perc_dist[2], perc_dist[3])
+                print(out_string)
+            elif gamma_dist:
+                gamma_sums['avg'] += gamma_dist['avg']
+                gamma_sums['std'] += gamma_dist['std']
+                gamma_count += 1
+                out_string = '{0} Grade {1} -- Avg: {2}, std: {3}'.format(gamma_dist['avg'], gamma_dist['std'])
+                print(out_string)
+        # TODO: Calculate and print avgs
 
 
-
-
-    
-    
 if __name__ == "__main__":
-    show()
+    calculate_number_of_students()

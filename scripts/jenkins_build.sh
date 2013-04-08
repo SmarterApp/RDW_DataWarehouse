@@ -245,6 +245,8 @@ function build_rpm {
     echo "Build RPM"
     echo "Build Number:"
     echo $BUILD_NUMBER
+    echo "RPM_VERSION:"
+    echo $RPM_VERSION
 
     GIT_HASH="$(git rev-parse HEAD)"
 

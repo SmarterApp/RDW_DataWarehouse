@@ -38,7 +38,7 @@ def generate_password(number, output_file):
 
     # the input number should be less than half length of the words_list
     half_number_of_words = math.ceil(len(words_list) / 2)
-    if count > half_number_of_words:
+    if count >= half_number_of_words:
         print("The input number", number, "is too big, it should be less than half number of words in", WORD_LIST)
         raise ValueError
 

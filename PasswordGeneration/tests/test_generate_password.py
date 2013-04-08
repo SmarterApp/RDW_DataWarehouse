@@ -27,7 +27,7 @@ class TestGeneratePassword(unittest.TestCase):
     def test_generate_password_one_word_in_words_list(self):
         generate_password.WORD_LIST = os.path.join(FILES_FOR_TEST_PATH, 'one_word_list.txt')
         self.assertRaises(ValueError, generate_password.generate_password, 200, '/output')
-
+        
     def test_generate_password_three_passwords(self):
         generate_password.WORD_LIST = os.path.join(FILES_FOR_TEST_PATH, 'word_list_10.txt')
         number = '3'

@@ -154,50 +154,63 @@ define [
       while j < claims.length
         claim = claims[j]
         # find parent element ID
-        claimId = '#claim' + claim.indexer
-        # create inner div and attache to the div(targetId)
-        div_bar = $('<div/>')
-        # if relative difference is positive, then render uppder div
-        if claim.claim_score_relative_difference > 0
-          # find target element ID
-          contentId = '#content' + claim.indexer + '_upper'
-          img = '../images/Claim_arrowhead_up.png'
-          # style for vertical bar
-          bar_height = Math.abs(claim.claim_score_relative_difference)
-          image_y_position = 100 - Math.abs(claim.claim_score_relative_difference)
-          # style for vertical bar
-          div_bar.addClass("claim_score_arrow_bar claim_score_up_arrow_bar")
+        target_parent_id = assessmentSectionId + ' #claim' + claim.indexer + ' #content' + claim.indexer
+        # if relative difference is 0, draw diamon on the dashed line, positive, then render uppder div
+        if claim.claim_score_relative_difference == 0
+          drawUpArrow(target_parent_id, 0)
+          drawDownArrow(target_parent_id, 0)
+        else if claim.claim_score_relative_difference > 0
+          drawUpArrow(target_parent_id, claim.claim_score_relative_difference)
         else
-          # find target element ID
-          contentId = '#content' + claim.indexer + '_lower'
-          img = '../images/Claim_arrowhead_down.png'
-          bar_height = Math.abs(claim.claim_score_relative_difference)
-          image_y_position = Math.abs(claim.claim_score_relative_difference)
-          # style for vertical bar
-          div_bar.addClass("claim_score_arrow_bar claim_score_down_arrow_bar")
-          
-          
-        # specifying actual target element name
-        targetId = assessmentSectionId + " " + claimId + " " + contentId
-        # find center of "div" bar
-        targetId_width = $(targetId).width()
-        #bar width is 11
-        div_bar_width = 11
-        div_bar_center = (targetId_width/2.0-div_bar_width/2.0)/targetId_width*100.0
-        div_bar.css("left", div_bar_center + "%")
-
-        # find actual bar height
-        targetId_height = $(targetId).height()
-        # image height is 5
-        image_height = 5
-        adjusted_bar_height = (image_y_position*targetId_height/100-image_height/2)/targetId_height*100
-        div_bar.css("height", adjusted_bar_height + "%")        
-        # set Triangle image in target div
-        $(targetId).css("background-image", "url(" + img + ")")
-        $(targetId).css("background-position", "50% " + image_y_position + "%")
-        $(targetId).append div_bar
+          drawDownArrow(target_parent_id, claim.claim_score_relative_difference)
         j++
       i++
+  #
+  # draw down triangle and arrow on target <div/>
+  #  
+  drawUpArrow = (target_parent_id, claim_score_relative_difference) ->
+    # find target element ID
+    targetId = target_parent_id + '_upper'
+    # style for vertical bar
+    bar_height = Math.abs(claim_score_relative_difference)
+    image_y_position = 100 - Math.abs(claim_score_relative_difference)
+    
+    img = '../images/Claim_arrowhead_up.png'
+    # style for vertical bar
+    bar_class = "claim_score_arrow_bar claim_score_up_arrow_bar"
+    drawArrow(targetId, img, image_y_position, bar_class, bar_height)
+      
+  #
+  # draw down triangle and arrow on target <div/>
+  #
+  drawDownArrow = (target_parent_id, claim_score_relative_difference) ->
+    # find target element ID
+    targetId = target_parent_id + '_lower'
+    img = '../images/Claim_arrowhead_down.png'
+    bar_height = Math.abs(claim_score_relative_difference)
+    image_y_position = Math.abs(claim_score_relative_difference)
+    # style for vertical bar
+    bar_class = "claim_score_arrow_bar claim_score_down_arrow_bar"
+    drawArrow(targetId, img, image_y_position, bar_class, bar_height)
+  #
+  # draw triangle and arrow on target <div/>
+  #
+  drawArrow = (targetId, triangle_img, triangle_y_position, bar_class, bar_height) ->
+    targetId_width = $(targetId).width()
+    targetId_height = $(targetId).height()
+    image_height = 5
+    div_bar_width = 11
+    div_bar_center = (targetId_width/2.0-div_bar_width/2.0)/targetId_width*100.0
+    
+    div_bar = $('<div/>')
+    div_bar.addClass bar_class
+    div_bar.css("left", div_bar_center + "%")
+    adjusted_bar_height = (bar_height*targetId_height/100-image_height/2)/targetId_height*100
+    div_bar.css("height", adjusted_bar_height + "%")        
+    # set Triangle image in target div
+    $(targetId).css("background-image", "url(" + triangle_img + ")")
+    $(targetId).css("background-position", "50% " + triangle_y_position + "%")
+    $(targetId).append div_bar
   #
   # get role-based content
   #

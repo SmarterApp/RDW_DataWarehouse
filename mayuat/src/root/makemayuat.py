@@ -88,7 +88,7 @@ def calculate_asmt_information():
     '''
     '''
     perf_dist = dg_types.get_performance_level_distributions()
-
+    print(perf_dist.keys())
     for asmt_type in perf_dist.keys():
         percent_sums = [0, 0, 0, 0]
         percent_count = 0
@@ -98,7 +98,7 @@ def calculate_asmt_information():
         for grade in perf_dist[asmt_type].keys():
             grade_info = perf_dist[asmt_type][grade]
             perc_dist = grade_info.get(dg_types.PERCENTAGES)
-            gamma_dist = grade.info.get(dg_types.GAMMA)
+            gamma_dist = grade_info.get(dg_types.GAMMA)
             if perc_dist:
                 percent_sums[0] += perc_dist[0]
                 percent_sums[1] += perc_dist[1]
@@ -112,10 +112,11 @@ def calculate_asmt_information():
                 gamma_sums['avg'] += gamma_dist['avg']
                 gamma_sums['std'] += gamma_dist['std']
                 gamma_count += 1
-                out_string = '{0} Grade {1} -- Avg: {2}, std: {3}'.format(gamma_dist['avg'], gamma_dist['std'])
+                out_string = '{0} Grade {1} -- Avg: {2}, std: {3}'.format(asmt_type, grade, gamma_dist['avg'], gamma_dist['std'])
                 print(out_string)
         # TODO: Calculate and print avgs
 
 
 if __name__ == "__main__":
     calculate_number_of_students()
+    calculate_asmt_information()

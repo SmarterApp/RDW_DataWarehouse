@@ -12316,7 +12316,7 @@ hypnosis
 hypnotic
 Iberia
 Iberian
-Ibero-
+Ibero
 ibex
 ibid
 ibis
@@ -14632,7 +14632,7 @@ Lutz
 luxuries
 luxury
 Luzon
-L'vov
+Lvov
 Lydia
 lying
 Lykes
@@ -15664,8 +15664,8 @@ modifier
 modifies
 modify
 Modula
-Modula-2
-Modula-3
+Modula2
+Modula3
 modular
 modulate
 module
@@ -16618,7 +16618,7 @@ oblique
 oblivion
 oblong
 oboe
-O'Brien
+OBrien
 obscene
 obscure
 obscured
@@ -16657,7 +16657,7 @@ ocean
 Oceania
 oceanic
 oceans
-O'Connor
+Connor
 octagon
 octal
 octane
@@ -16676,7 +16676,7 @@ oddity
 oddly
 oddness
 odds
-O'Dell
+ODell
 Oderberg
 odes
 Odessa
@@ -16687,7 +16687,7 @@ odium
 odor
 odorous
 odors
-O'Dwyer
+ODwyer
 Odysseus
 Odyssey
 Oedipal
@@ -16719,7 +16719,7 @@ offsets
 offshore
 often
 Ogden
-O'Hare
+OHare
 Ohio
 ohmmeter
 oilcloth
@@ -16746,7 +16746,7 @@ oldness
 Olduvai
 oldy
 oleander
-O'Leary
+OLeary
 Oleg
 Olga
 Olin
@@ -16783,7 +16783,7 @@ onanism
 once
 oncology
 Oneida
-O'Neill
+ONeill
 oneness
 onerous
 ones
@@ -16953,7 +16953,7 @@ Osborn
 Osborne
 Oscar
 Osgood
-O'Shea
+OShea
 Oshkosh
 Osiris
 Oslo
@@ -21401,7 +21401,7 @@ Serafin
 Serbia
 Serbian
 Serbians
-Serbo-
+Serbo
 serene
 serenely
 serenity
@@ -22003,7 +22003,7 @@ sinned
 sinner
 sinners
 sinning
-Sino-
+Sino
 sins
 sinuous
 sinus

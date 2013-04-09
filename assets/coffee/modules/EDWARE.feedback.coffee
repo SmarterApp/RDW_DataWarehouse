@@ -23,16 +23,5 @@ define [
           $(document).ready ->
             output = Mustache.to_html template, feedbackdata
             $("#surveyMonkeyInfo").html output
-          
-          # Survey monkey popup
-          $("#feedback").popover
-            html: true
-            placement: "top"
-            container: "footer"
-            title: ->
-                '<div class="pull-right"><ul class="nav"><li><a class="pull-right" href="#" id="close" onclick="$(&quot;#feedback&quot;).popover(&quot;hide&quot;);">Hide <img src="../images/hide_x.png"></img></i></a></li></ul></div><div class="lead">Feedback</div>'
-            template: '<div class="popover footerPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
-            content: ->
-              $(".surveyMonkeyPopup").html()
 
   renderFeedback: renderFeedback

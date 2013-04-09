@@ -19,6 +19,10 @@ function set_vars {
     VIRTUALENV_DIR="$WORKSPACE/edwaretest_venv"
     FUNC_VIRTUALENV_DIR="$WORKSPACE/functest_venv"
     FUNC_DIR="edware_test/edware_test/functional_tests"
+    SMARTER_INI="/opt/edware/smarter/smarter.ini"
+    EGG_REPO="/opt/edware/pynest"
+    PYNEST_SERVER="repo0.qa.dum.edwdc.net"
+    PYNEST_DIR="/opt/wgen/pyrepos/pynest"
 
     # delete existing xml files
     if [ -f $WORKSPACE/coverage.xml ]; then
@@ -91,8 +95,8 @@ function run_unit_tests {
 }
 
 function get_opts {
-    if ( ! getopts ":m:d:ufh" opt); then
-	echo "Usage: `basename $0` options (-n) (-u) (-f) (-m main_package) (-d dependencies) -h for help";
+    if ( ! getopts ":m:d:ufhb" opt); then
+	echo "Usage: `basename $0` options (-n) (-u) (-f) (-b) (-m main_package) (-d dependencies) -h for help";
 	exit $E_OPTERROR;
     fi
  
@@ -100,7 +104,7 @@ function get_opts {
     MODE='UNIT'
     RUN_UNIT_TEST=true
 
-    while getopts ":m:d:ufhn" opt; do
+    while getopts ":m:d:ufbhn" opt; do
         case $opt in 
             u)
                echo "Unit test mode"
@@ -112,6 +116,10 @@ function get_opts {
                ;;
             h)
                show_help
+               ;;
+            b)
+               echo "Build RPM mode"
+               MODE='RPM'
                ;;
             n)
                RUN_UNIT_TEST=false
@@ -202,8 +210,8 @@ function create_sym_link_for_apache {
     fi
     mkdir -p ${APACHE_DIR}
     /bin/ln -sf ${VIRTUALENV_DIR}/lib/python3.3/site-packages ${APACHE_DIR}/pythonpath
-    /bin/ln -sf ${WORKSPACE}/smarter/test.ini ${APACHE_DIR}/development_ini
-    /bin/ln -sf ${WORKSPACE}/smarter/pyramid.wsgi ${APACHE_DIR}/pyramid_conf
+    /bin/ln -sf ${WORKSPACE}/smarter/test.ini ${SMARTER_INI}
+    /bin/ln -sf ${WORKSPACE}/smarter/smarter.wsgi ${APACHE_DIR}/pyramid_conf
     /bin/ln -sf ${VIRTUALENV_DIR} ${APACHE_DIR}/venv
 
     cd "$WORKSPACE/scripts"
@@ -231,6 +239,49 @@ function import_data_from_csv {
     python import_data.py --config ${WORKSPACE}/smarter/test.ini --resource ${WORKSPACE}/edschema/database/tests/resources
 }
 
+function build_rpm {
+    # prerequisite there is a venv inside workspace (ie. run setup_virtualenv)
+
+    # deactivate python 3.3 venv
+    deactivate
+    
+
+    echo "Build RPM"
+    echo "Build Number:"
+    echo $BUILD_NUMBER
+    echo "RPM_VERSION:"
+    echo $RPM_VERSION
+
+    GIT_HASH="$(git rev-parse HEAD)"
+
+    #echo "clone git://mcgit.mc.wgenhq.net/wgen/rpmtools"
+    #rm -rf $WORKSPACE/rpmtools
+    #mkdir  $WORKSPACE/rpmtools
+    #cd $WORKSPACE/rpmtools
+    #git clone git://mcgit.mc.wgenhq.net/wgen/rpmtools
+
+    #cd rpmtools
+
+    # Need to run on python 2.7
+    /opt/python2.7/bin/python2.7 /var/lib/jenkins/wg_rpmbuild.py --dont-clean-staging --ignore-existing-staging -r "$WORKSPACE" -D_topdir="$WORKSPACE" -Dbuild_number="$BUILD_NUMBER" -Dcheckoutroot="$WORKSPACE" -Dversion="$RPM_VERSION" -o "$RPM_REPO" "$RPM_SPEC"
+
+    echo "Finished building RPM"
+}
+
+function build_egg {
+    # prerequisite we're inside a python3.3 venv
+
+    echo "Build an egg"
+    cd "$WORKSPACE/$1"
+    python setup.py sdist -d ${EGG_REPO}/$1
+    cd "${EGG_REPO}/$1"
+    if [ ${PUBLISH_EGG:=""} == "TRUE" ]; then
+        echo "Publishing egg to pynest"
+        scp *.tar.gz pynest@${PYNEST_SERVER}:${PYNEST_DIR}
+    fi
+    
+}
+
 function main {
     get_opts $@
     check_vars
@@ -242,6 +293,7 @@ function main {
             run_unit_tests $MAIN_PKG
         fi
         check_pep8 $MAIN_PKG
+        build_egg $MAIN_PKG
     elif [ ${MODE:=""} == "FUNC" ]; then
         create_sym_link_for_apache
         restart_apache
@@ -251,6 +303,8 @@ function main {
         setup_functional_test_dependencies
         run_functional_tests
         check_pep8 "$FUNC_DIR"
+    elif [ ${MODE:=""} == "RPM" ]; then
+        build_rpm
     fi
 }
 

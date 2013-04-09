@@ -42,9 +42,6 @@ define [
             gridConfig[0].options.linkUrl = customViews[reportType].link
             gridConfig[0].options.id_name = customViews[reportType].id_name
             
-            # Render the header on the page
-            $('#header').header()
-            
             # Render breadcrumbs on the page
             $('#breadcrumb').breadcrumbs(breadcrumbsData)
             

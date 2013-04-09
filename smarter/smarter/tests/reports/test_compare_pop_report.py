@@ -116,12 +116,12 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         summ_results = results[Constants.SUMMARY][0][Constants.RESULTS]
         self.assertEqual(2, len(summ_results))
         subject1 = summ_results[Constants.SUBJECT1]
-        self.assertEqual(51, subject1[Constants.TOTAL])
+        self.assertEqual(56, subject1[Constants.TOTAL])
         self.assertEqual(Constants.MATH, subject1[Constants.ASMT_SUBJECT])
         intervals = subject1[Constants.INTERVALS]
         self.assertEqual(4, len(intervals))
         self.assertEqual(1, intervals[0][Constants.LEVEL])
-        self.assertEqual(16, intervals[0][Constants.PERCENTAGE])
+        self.assertEqual(14, intervals[0][Constants.PERCENTAGE])
         self.assertEqual(8, intervals[0][Constants.COUNT])
 
         # check subjects
@@ -161,12 +161,12 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
                 asmt_results = record[Constants.RESULTS]
                 self.assertEqual(2, len(asmt_results))
                 subject1 = asmt_results[Constants.SUBJECT1]
-                self.assertEqual(51, subject1[Constants.TOTAL])
+                self.assertEqual(56, subject1[Constants.TOTAL])
                 self.assertEqual(Constants.MATH, subject1[Constants.ASMT_SUBJECT])
                 intervals = subject1[Constants.INTERVALS]
                 self.assertEqual(4, len(intervals))
                 self.assertEqual(1, intervals[0][Constants.LEVEL])
-                self.assertEqual(16, intervals[0][Constants.PERCENTAGE])
+                self.assertEqual(14, intervals[0][Constants.PERCENTAGE])
                 self.assertEqual(8, intervals[0][Constants.COUNT])
                 break
         self.assertTrue(found_district, 'Did not find district in list')
@@ -175,13 +175,13 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         summ_results = results[Constants.SUMMARY][0][Constants.RESULTS]
         self.assertEqual(2, len(summ_results))
         subject1 = summ_results[Constants.SUBJECT1]
-        self.assertEqual(79, subject1[Constants.TOTAL])
+        self.assertEqual(89, subject1[Constants.TOTAL])
         self.assertEqual(Constants.MATH, subject1[Constants.ASMT_SUBJECT])
         intervals = subject1[Constants.INTERVALS]
         self.assertEqual(4, len(intervals))
         self.assertEqual(1, intervals[0][Constants.LEVEL])
-        self.assertEqual(15, intervals[0][Constants.PERCENTAGE])
-        self.assertEqual(12, intervals[0][Constants.COUNT])
+        self.assertEqual(18, intervals[0][Constants.PERCENTAGE])
+        self.assertEqual(16, intervals[0][Constants.COUNT])
 
         # check subjects
         self.assertEqual(Constants.MATH, results[Constants.SUBJECTS][Constants.SUBJECT1])

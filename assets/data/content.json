@@ -26,7 +26,7 @@
 	
 	"psychometric_implications": {
 		"Math": "<strong>Psychometric Implications:</strong><br/>Your overall score indicates at what level you have demonstrated progress toward college and career readiness in mathematics (Math). On your official score report, this area will describe what the {{score_name}}...",
-		"ELA": "<strong>Psychometric Implications:</strong><br/>Your overall score indicates at what level you have demonstrated progress toward college and career readiness in English language arts and literacy (ELA). On your official score report, this area will describe what the “{{score_name}}“ achievement level means..."
+		"ELA": "<strong>Psychometric Implications:</strong><br/>Your overall score indicates at what level you have demonstrated progress toward college and career readiness in English language arts and literacy (ELA). On your official score report, this area will describe what the “{{score_name}}“ achievement..."
 	},
 	
 	"policy_content": {

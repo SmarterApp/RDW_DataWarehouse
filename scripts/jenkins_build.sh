@@ -20,7 +20,7 @@ function set_vars {
     FUNC_VIRTUALENV_DIR="$WORKSPACE/functest_venv"
     FUNC_DIR="edware_test/edware_test/functional_tests"
     SMARTER_INI="/opt/edware/smarter/smarter.ini"
-    EGG_REPO="/opt/edware/egg"
+    EGG_REPO="/opt/edware/pynest"
 
     # delete existing xml files
     if [ -f $WORKSPACE/coverage.xml ]; then

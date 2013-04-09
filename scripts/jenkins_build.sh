@@ -263,7 +263,7 @@ function build_rpm {
     #cd rpmtools
 
     # Need to run on python 2.7
-    /opt/python2.7/bin/python2.7 /var/lib/jenkins/wg_rpmbuild.py --dont-clean-staging --ignore-existing-staging -r "$WORKSPACE" -D_topdir="$WORKSPACE" -Dbuild_number="$BUILD_NUMBER" -Dcheckoutroot="$WORKSPACE" -Dversion="$RPM_VERSION" -o "$RPM_REPO" "$RPM_SPEC"
+    /opt/python2.7/bin/python2.7 "$WORKSPACE"/wg_rpmbuild.py --dont-clean-staging --ignore-existing-staging -r "$WORKSPACE" -D_topdir="$WORKSPACE" -Dbuild_number="$BUILD_NUMBER" -Dcheckoutroot="$WORKSPACE" -Dversion="$RPM_VERSION" -o "$RPM_REPO" "$RPM_SPEC"
 
     echo "Finished building RPM"
 }

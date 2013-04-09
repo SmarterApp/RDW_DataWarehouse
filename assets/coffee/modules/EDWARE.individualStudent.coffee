@@ -85,7 +85,7 @@ define [
           grade = content.policy_content[items.grade]
           if items.grade is "11"
             items.policy_content = grade[items.asmt_subject]
-          else if items.grade is "3"
+          else if items.grade is "8"
             grade_asmt = grade[items.asmt_subject]
             items.policy_content = grade_asmt[items.asmt_perf_lvl]
           

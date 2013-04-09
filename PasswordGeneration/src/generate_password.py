@@ -14,7 +14,7 @@ __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file
 WORD_LIST = os.path.join(__location__, '..', 'word_lists', 'linuxwords.txt')
 DEFAULT_OUTPUT_FILE = os.path.join(__location__, '..', 'passwords.txt')
 SPECIAL_CHARS = '^!\$%&/=?+~#-\\_:;<>'
-MIN_LENGTH = 8
+MIN_LENGTH = 10
 
 
 def generate_password(number, output_file):
@@ -115,6 +115,7 @@ def write_into_file(generated_password, output_file):
     '''
     file = open(output_file, 'w')
     file.write("\n".join(generated_password))
+    file.close()
 
 
 if __name__ == '__main__':

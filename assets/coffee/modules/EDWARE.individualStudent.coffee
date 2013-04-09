@@ -129,7 +129,6 @@ define [
           i++
           
         contextData = data.context
-        $('#header').header()
         $('#breadcrumb').breadcrumbs(contextData)
         
         partials = 

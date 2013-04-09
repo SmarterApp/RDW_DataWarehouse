@@ -275,7 +275,9 @@ function build_egg {
     cd "$WORKSPACE/$1"
     python setup.py sdist -d ${EGG_REPO}/$1
     cd "${EGG_REPO}/$1"
-    scp *.tar.gz pynest@${PYNEST_SERVER}:${PYNEST_DIR}
+    if [ ${PUBLISH_EGG:=""} == "TRUE"]; then
+        scp *.tar.gz pynest@${PYNEST_SERVER}:${PYNEST_DIR}
+    fi
     
 }
 

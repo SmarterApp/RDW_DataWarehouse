@@ -21,6 +21,8 @@ function set_vars {
     FUNC_DIR="edware_test/edware_test/functional_tests"
     SMARTER_INI="/opt/edware/smarter/smarter.ini"
     EGG_REPO="/opt/edware/pynest"
+    PYNEST_SERVER="repo0.qa.dum.edwdc.net"
+    PYNEST_DIR="/opt/wgen/pyrepos/pynest"
 
     # delete existing xml files
     if [ -f $WORKSPACE/coverage.xml ]; then
@@ -271,7 +273,9 @@ function build_egg {
 
     echo "Build an egg"
     cd "$WORKSPACE/$1"
-    python setup.py sdist -d ${EGG_REPO}
+    python setup.py sdist -d ${EGG_REPO}/$1
+    cd "${EGG_REPO}/$1"
+    scp *.tar.gz pynest@${PYNEST_SERVER}:${PYNEST_DIR}
     
 }
 

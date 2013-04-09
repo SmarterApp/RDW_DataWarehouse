@@ -45,7 +45,6 @@ define [
           # populate select view
           defaultView = createAssessmentViewSelectDropDown studentsConfig.customViews
           
-          $('#header').header()
           $('#breadcrumb').breadcrumbs(contextData)
           
           renderStudentGrid(defaultView)

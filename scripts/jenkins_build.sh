@@ -275,6 +275,8 @@ function build_egg {
     cd "$WORKSPACE/$1"
     python setup.py sdist -d ${EGG_REPO}/$1
     cd "${EGG_REPO}/$1"
+    # We need this because we have two jenkins server and one of them cannot access pynest
+    # In the jenkins job, we need to set PUBLISH_EGG env variable to TRUE if we want to publish the egg to pynest
     if [ ${PUBLISH_EGG:=""} == "TRUE" ]; then
         echo "Publishing egg to pynest"
         scp *.tar.gz pynest@${PYNEST_SERVER}:${PYNEST_DIR}

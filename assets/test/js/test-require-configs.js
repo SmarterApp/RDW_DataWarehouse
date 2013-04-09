@@ -19,12 +19,16 @@ var baseConfigs = {
 	    edwareStudentList: '../../js/src/modules/EDWARE.studentList',
 	    edwareIndividualStudent: '../../js/src/modules/EDWARE.individualStudent',
 	    edwareBreadcrumbs: '../../js/src/widgets/breadcrumb/EDWARE.breadcrumbs',
+	    edwareHeader: '../../js/src/widgets/header/EDWARE.header',
 		edwareConfidenceLevelBar: '../../js/src/widgets/confidenceLevelBar/EDWARE.confidenceBar',
 		edwarePopulationBar: '../../js/src/widgets/populationBar/EDWARE.populationBar',
 		edwareComparingPopulations: '../../js/src/modules/EDWARE.comparingPopulations',
 		edwareFeedback: '../../js/src/modules/EDWARE.feedback',
+		edwareFooter: '../../js/src/widgets/footer/EDWARE.footer',
 	    
 	    edwareBreadcrumbsTemplate: '../../js/src/widgets/breadcrumb/template.html',
+	    edwareHeaderHtml: '../../js/src/widgets/header/header.html',
+	    edwareFooterHtml: '../../js/src/widgets/footer/template.html',
 		edwareConfidenceLevelBarTemplate: '../../js/src/widgets/confidenceLevelBar/template.html',
 		edwarePopulationBarTemplate: '../../js/src/widgets/populationBar/template.html',
 		edwareAssessmentDropdownViewSelectionTemplate: '../../js/templates/assessment_dropdown_view_selection.html'

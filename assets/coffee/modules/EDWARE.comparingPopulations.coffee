@@ -8,7 +8,8 @@ define [
   "edwareHeader"
   "edwareUtil"
   "edwareFeedback"
-], ($, bootstrap, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareHeader, edwareUtil, edwareFeedback) ->
+  "edwareFooter"
+], ($, bootstrap, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareHeader, edwareUtil, edwareFeedback, edwareFooter) ->
   #
   #    * Create Student data grid
   #    
@@ -54,6 +55,9 @@ define [
             
           # Create compare population grid for State/District/School view
           edwareGrid.create "gridTable", gridConfig, populationData, summaryData
+          
+          # Generate footer
+          $('#footer').generateFooter('comparing_populations')
           
           # # append user_info (e.g. first and last name)
           if user_info

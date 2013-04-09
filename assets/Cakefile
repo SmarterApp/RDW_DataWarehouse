@@ -55,8 +55,7 @@ task 'watch', ->
     invoke 'build'
     
     lessWatcher = chokidar.watch(lesspath, {persistent: true, ignoreInitial: true})
-    # Ignore .html file extensions
-    coffeeWatcher = chokidar.watch(coffeepath, {ignored: /^.*\.html$/, persistent: true, ignoreInitial: true})
+    coffeeWatcher = chokidar.watch(coffeepath, {persistent: true, ignoreInitial: true})
     
     coffeeWatcher.on 'add', (path, stats) ->
         buildCoffee path

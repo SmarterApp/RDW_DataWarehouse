@@ -6,11 +6,11 @@
 			<div class="icon"><img src="../images/icons/{{assessmentUC}}_{{indexer}}_icon.png"/></div>
 			<div class="clear"></div>
 			<h4 class="grayTitle">{{name}}</h4>
-			<hr class="margin0" />
+			
 		</div>
 		<div class="content">
-			<div class="scoreBox"><strong>{{score}}</strong>/{{max_score}} <span class="interval">(&#177; {{confidence}})</span>
-			</div>
+			<div id="content{{indexer}}_upper" class="scoreBox scoreBoxUpper"/>
+			<div id="content{{indexer}}_lower" class="scoreBox scoreBoxLower"/>
 			<div class="description">{{desc}}</div>
 			<div class="link pull-right"><a href="#">Find out more >></a></div>
 		</div>

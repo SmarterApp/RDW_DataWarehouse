@@ -8,7 +8,7 @@ requires = [
 tests_require = requires
 
 setup(name='edschema',
-      version='0.0',
+      version='0.1',
       description='Schema for EdWare',
       classifiers=[
           "Programming Language :: Python",

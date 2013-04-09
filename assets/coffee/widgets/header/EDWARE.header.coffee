@@ -10,4 +10,3 @@ define [
 
     ($, header_html) ->
       $("#header").html(header_html)
-                

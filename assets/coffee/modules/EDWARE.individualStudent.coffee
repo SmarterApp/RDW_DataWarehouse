@@ -11,7 +11,8 @@ define [
   "edwareHeader"
   "edwareUtil"
   "edwareFeedback"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareConfidenceLevelBar, indivStudentReportTemplate, claimsInfoTemplate, edwareBreadcrumbs, edwareHeader, edwareUtil, edwareFeedback) ->
+  "edwareFooter"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareConfidenceLevelBar, indivStudentReportTemplate, claimsInfoTemplate, edwareBreadcrumbs, edwareHeader, edwareUtil, edwareFeedback, edwareFooter) ->
       
   # claim score weight in percentage
   claimScoreWeightArray = {
@@ -37,27 +38,7 @@ define [
       params: params
       
     edwareDataProxy.getDatafromSource "/data/individual_student_report", options, (data) ->
-        
-      $("#legend").popover
-            html: true
-            placement: "top"
-            container: "div"
-            title: ->
-                '<div class="pull-right"><button class="btn" id="close" type="button" onclick="$(&quot;#legend&quot;).popover(&quot;hide&quot;);">Hide</button></div><div class="lead">Legends</div>'
-            template: '<div class="popover footerPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
-            content: ->
-              $(".legendPopup").html()
-              
-       $("#aboutReport").popover
-            html: true
-            placement: "top"
-            container: "div"
-            title: ->
-                '<div class="pull-right"><button class="btn" id="close" type="button" onclick="$(&quot;#aboutReport&quot;).popover(&quot;hide&quot;);">Hide</button></div><div class="lead">About Report</div>'
-            template: '<div class="popover footerPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
-            content: ->
-              $(".aboutReportPopup").html()
-        
+   
       defaultColors = {}
       options =
         async: false
@@ -104,7 +85,7 @@ define [
           grade = content.policy_content[items.grade]
           if items.grade is "11"
             items.policy_content = grade[items.asmt_subject]
-          else if items.grade is "3"
+          else if items.grade is "8"
             grade_asmt = grade[items.asmt_subject]
             items.policy_content = grade_asmt[items.asmt_perf_lvl]
           
@@ -138,6 +119,8 @@ define [
         output = Mustache.to_html indivStudentReportTemplate, data, partials     
         $("#individualStudentContent").html output
         
+        renderClaimScoreRelativeDifference data
+        
         # Generate Confidence Level bar for each assessment      
         i = 0
         while i < data.items.length
@@ -146,6 +129,9 @@ define [
           edwareConfidenceLevelBar.create item, 640, barContainer        
           i++
         
+        # Generate footer links
+        $('#footer').generateFooter('individual_student_report')
+        
         # append user_info (e.g. first and last name)
         if data.user_info
           $('#header .topLinks .user').html edwareUtil.getUserName data.user_info
@@ -153,6 +139,78 @@ define [
           uid = edwareUtil.getUid data.user_info
           edwareFeedback.renderFeedback(role, uid, "individual_student_report")
 
+  #
+  # render Claim Score Relative Difference (arrows)
+  #
+  renderClaimScoreRelativeDifference = (data) ->
+    i = 0
+    while i < data.items.length
+      items = data.items[i]
+      # find grand parent element ID
+      assessmentSectionId = '#assessmentSection' + i
+      claims = items.claims
+      j = 0
+      while j < claims.length
+        claim = claims[j]
+        # if relative difference is 0, draw diamond on the dashed line, positive, then render uppder div
+        if claim.claim_score_relative_difference == 0
+          drawUpArrow(assessmentSectionId, claim.indexer, 0)
+          drawDownArrow(assessmentSectionId, claim.indexer, 0)
+        else if claim.claim_score_relative_difference > 0
+          drawUpArrow(assessmentSectionId, claim.indexer, claim.claim_score_relative_difference)
+        else
+          drawDownArrow(assessmentSectionId, claim.indexer, claim.claim_score_relative_difference)
+        j++
+      i++
+  #
+  # draw down triangle and arrow on target <div/>
+  #  
+  drawUpArrow = (assessmentSectionId, indexer, claim_score_relative_difference) ->
+    # find arraw drawing box ID
+    claimArrowBox = assessmentSectionId + ' #claim' + indexer + ' #content' + indexer + '_upper'
+    # style for vertical bar
+    bar_height = claim_score_relative_difference
+    image_y_position = 100 - claim_score_relative_difference
+    
+    img = '../images/Claim_arrowhead_up.png'
+    # style for vertical bar
+    arrow_bar_class = "claim_score_arrow_bar claim_score_up_arrow_bar"
+    drawArrow(claimArrowBox, img, image_y_position, arrow_bar_class, bar_height)
+      
+  #
+  # draw down triangle and arrow on target <div/>
+  #
+  drawDownArrow = (assessmentSectionId, indexer, claim_score_relative_difference) ->
+    # find arraw drawing box ID
+    claimArrowBox = assessmentSectionId + ' #claim' + indexer + ' #content' + indexer + '_lower'
+    img = '../images/Claim_arrowhead_down.png'
+    bar_height = Math.abs(claim_score_relative_difference)
+    image_y_position = Math.abs(claim_score_relative_difference)
+    # style for vertical bar
+    arrow_bar_class = "claim_score_arrow_bar claim_score_down_arrow_bar"
+    drawArrow(claimArrowBox, img, image_y_position, arrow_bar_class, bar_height)
+  #
+  # draw triangle and arrow on target <div/>
+  #
+  drawArrow = (claimArrowBox, triangle_img, triangle_y_position, arrow_bar_class, bar_height) ->
+    claimArrowBox_width = $(claimArrowBox).width()
+    claimArrowBox_height = $(claimArrowBox).height()
+    image_height = 5
+    arrow_bar_width = 11
+    arrow_bar = $('<div/>')
+    arrow_bar.addClass arrow_bar_class
+    arrow_bar_center = (claimArrowBox_width/2-arrow_bar_width/2)/claimArrowBox_width*100
+    
+    
+    
+    arrow_bar.css("left", arrow_bar_center + "%")
+    #"-2" to adjust height of bar perfectly.
+    adjusted_bar_height = (bar_height*(claimArrowBox_height-image_height*2-2)/100)/(claimArrowBox_height-image_height*2)*100
+    arrow_bar.css("height", adjusted_bar_height + "%")        
+    # set Triangle image in target div
+    $(claimArrowBox).css("background-image", "url(" + triangle_img + ")")
+    $(claimArrowBox).css("background-position", "50% " + triangle_y_position + "%")
+    $(claimArrowBox).append arrow_bar
   #
   # get role-based content
   #

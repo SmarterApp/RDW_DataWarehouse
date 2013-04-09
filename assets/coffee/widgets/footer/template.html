@@ -1,0 +1,72 @@
+<ul class="nav">
+	<li>
+		<a id="help" rel="popover" class="pull-right" onclick='$("#aboutReport").popover("hide");$("#legend").popover("hide");$("#feedback").popover("hide");'><i class="icon-question-sign icon-white"></i> Help</a>
+	</li>
+	<li>
+		<a id="legend" rel="popover" class="pull-right" onclick='$("#aboutReport").popover("hide");$("#help").popover("hide");$("#feedback").popover("hide");'><i class="icon-book icon-white"></i> Legend</a>
+	</li>
+	<li>
+		<a id="aboutReport" rel="popover" class="pull-right" onclick='$("#help").popover("hide");$("#legend").popover("hide");$("#feedback").popover("hide");'><i class="icon-info-sign icon-white"></i> Report Info</a>
+	</li>
+	<li>
+		<a id="feedback" rel="popover" class="pull-right" onclick='$("#aboutReport").popover("hide");$("#legend").popover("hide");$("#help").popover("hide");'><i class="icon-comment icon-white"></i> Feedback</a>
+	</li>
+	<li>
+		<div id="copyright">
+			Smarter Balanced &#169; Copyright 2013
+		</div>
+	</li>
+	<div class="surveyMonkeyPopup" id="survey">
+		<div id="surveyMonkeyInfo"></div>
+	</div>
+	<div class="legendPopup">
+		<div>
+			<img src="../images/{{imageFileName}}" width="559" height="353" />
+		</div>
+	</div>
+	<div class="aboutReportPopup">
+		<div>
+			<h4>Purpose:</h4>
+			<p>This report is intended to provide top-level insight into the results of a single student’s summative
+			<br>assessment.   There is more detailed information available on the various parts that come together 
+			<br>to make this summary possible.
+			</p>
+			<br>
+			<h4>Uses:</h4>
+			<p> Use this report to understand where this student is, in terms of their assessed grade, on the path
+			<br> towards career and college content-readiness.  If the descriptions provided within do not match
+			<br> your understanding of where the student should be, use the more detailed information to ascertain
+			<br> where the discrepancy may be.   Use this report to support the Teacher-Student-Parent partnership,
+			<br> whether it provides context for a parent-teacher conference or helps to identify areas to concentrate
+			<br> on in the coming year(s).
+			</p>
+			<br>
+			<h4>Qualifications:</h4>
+			<p>There may be ways in which the contents of this report might be misconstrued.  The following list
+			<br></p>contains examples of conclusions that are not supported by this report:</p>
+			<ul>
+				<li>
+					No score is prescriptive of the abilities of the student, it is simply what they were able to 
+					<br>demonstrate during a given assessment administration.  There are always resources available 
+					<br>to support a student’s progress.
+				</li>
+				<li>
+					This is a criterion-reference test, which provides a characterization of the student’s mastery 
+					<br>of a domain of subject matter.  This result in no way indicates whether the test-taker did “better” 
+					<br>or “worse” than other people who took the test. Further, the Computer-Adaptive nature of the test
+					<br>makes it very unlikely that two students will ever take exactly the same test.
+				</li>
+			</ul>
+		</div>
+	</div>
+	<div class="helpPopup">
+		<p>
+			Send your inquiries to our <a href="mailto:SmarterBalancedReporting@wgen.net?subject=Smarter Balanced Reporting: Help Inquiries">System Administrator</a>, and be sure to include your userid in the body of the email.
+		</p>
+		<br/>
+		<p>
+			You should receive a response within 2 business days.
+		</p>
+	</div>
+	<div class="helpPopup"></div>
+</ul>

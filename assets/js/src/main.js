@@ -19,6 +19,7 @@ require({
 		edwareLOSConfidenceLevelBar: '../widgets/losConfidenceLevelBar/EDWARE.losConfidenceBar',
 		edwarePopulationBar: '../widgets/populationBar/EDWARE.populationBar',
 		edwareFeedback: 'EDWARE.feedback',
+		edwareFooter: '../widgets/footer/EDWARE.footer',
 		
 		// Templates
 		edwareBreadcrumbsTemplate: '../widgets/breadcrumb/template.html',
@@ -26,7 +27,8 @@ require({
 		edwareLOSConfidenceLevelBarTemplate: '../widgets/losConfidenceLevelBar/template.html',
 		edwarePopulationBarTemplate: '../widgets/populationBar/template.html',
 		edwareAssessmentDropdownViewSelectionTemplate: '../../templates/assessment_dropdown_view_selection.html',
-		edwareHeaderHtml: '../widgets/header/header.html'
+		edwareHeaderHtml: '../widgets/header/header.html',
+		edwareFooterHtml: '../widgets/footer/template.html'
 	},
 	shim: {
         'jqGrid': {

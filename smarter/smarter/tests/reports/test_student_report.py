@@ -17,7 +17,7 @@ class TestStudentReport(Unittest_with_smarter_sqlite):
         result = get_student_report(params)['items']
         self.assertEqual(1, len(result), "studentGuid should have 1 report")
         self.assertEqual('ELA', result[0]['asmt_subject'], 'asmt_subject')
-        self.assertEqual('89', result[0]['claims'][0]['score'], 'asmt_claim_1_score 88')
+        self.assertEqual('2200', result[0]['claims'][0]['score'], 'asmt_claim_1_score 88')
         self.assertEqual('Research & Inquiry', result[0]['claims'][3]['name'], 'asmt_claim_4_name Spelling')
 
     def test_student_assessment_id(self):
@@ -51,7 +51,7 @@ class TestStudentReport(Unittest_with_smarter_sqlite):
         cut_points_list = student_report['cut_point_intervals']
         self.assertEqual(4, len(cut_points_list), "we should have 4 cut point intervals")
 
-        expected_cut_point_names = set(['Minimal Command', 'Partial Command', 'Sufficient Command', 'Deep Command'])
+        expected_cut_point_names = set(['Minimal Understanding', 'Partial Understanding', 'Adequate Understanding', 'Thorough Understanding'])
         for cut_point in cut_points_list:
             self.assertIsInstance(cut_point, dict, "each cut point should be a dictionary")
 

@@ -20,6 +20,7 @@ function set_vars {
     FUNC_VIRTUALENV_DIR="$WORKSPACE/functest_venv"
     FUNC_DIR="edware_test/edware_test/functional_tests"
     SMARTER_INI="/opt/edware/smarter/smarter.ini"
+    EGG_REPO="/opt/edware/egg"
 
     # delete existing xml files
     if [ -f $WORKSPACE/coverage.xml ]; then
@@ -265,6 +266,15 @@ function build_rpm {
     echo "Finished building RPM"
 }
 
+function build_egg {
+    # prerequisite we're inside a python3.3 venv
+
+    echo "Build an egg"
+    cd "$WORKSPACE/$1"
+    python setup.py sdist -d ${EGG_REPO}
+    
+}
+
 function main {
     get_opts $@
     check_vars
@@ -276,6 +286,7 @@ function main {
             run_unit_tests $MAIN_PKG
         fi
         check_pep8 $MAIN_PKG
+        build_egg $MAIN_PKG
     elif [ ${MODE:=""} == "FUNC" ]; then
         create_sym_link_for_apache
         restart_apache

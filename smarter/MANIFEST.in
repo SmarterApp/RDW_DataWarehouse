@@ -1,4 +1,4 @@
-include *.txt *.ini *.cfg *.rst
+include *.txt *.ini *.cfg *.rst *.wsgi
 recursive-include smarter *.ico *.png *.css *.gif *.jpg *.pt *.txt *.mak *.mako *.js *.html *.xml
 recursive-include assets *
 prune assets/coffee

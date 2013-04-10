@@ -204,13 +204,18 @@ function run_functional_tests {
 }	
 
 function create_sym_link_for_apache {
+    echo "Creating symbolic links"
+
+    # Link /opt/edware/smarter/smarter.ini to the real config
+    /bin/ln -sf ${WORKSPACE}/smarter/${INI_FILE_FOR_ENV} /opt/edware/smarter/smarter.ini
+
     APACHE_DIR="/var/lib/jenkins/apache_dir"
     if [ -d ${APACHE_DIR} ]; then
         rm -rf ${APACHE_DIR}
     fi
     mkdir -p ${APACHE_DIR}
     /bin/ln -sf ${VIRTUALENV_DIR}/lib/python3.3/site-packages ${APACHE_DIR}/pythonpath
-    /bin/ln -sf ${WORKSPACE}/smarter/test.ini ${SMARTER_INI}
+    /bin/ln -sf ${WORKSPACE}/smarter/${INI_FILE_FOR_ENV} ${SMARTER_INI}
     /bin/ln -sf ${WORKSPACE}/smarter/smarter.wsgi ${APACHE_DIR}/pyramid_conf
     /bin/ln -sf ${VIRTUALENV_DIR} ${APACHE_DIR}/venv
 
@@ -236,7 +241,7 @@ function import_data_from_csv {
     
     # This needs to run in python3.3 
     cd "$WORKSPACE/test_utils"
-    python import_data.py --config ${WORKSPACE}/smarter/test.ini --resource ${WORKSPACE}/edschema/database/tests/resources
+    python import_data.py --config ${WORKSPACE}/smarter/${INI_FILE_FOR_ENV} --resource ${WORKSPACE}/edschema/database/tests/resources
 }
 
 function build_rpm {
@@ -273,15 +278,15 @@ function build_egg {
 
     echo "Build an egg"
     cd "$WORKSPACE/$1"
+    rm -f *.tar.gz
     python setup.py sdist -d ${EGG_REPO}/$1
     cd "${EGG_REPO}/$1"
     # We need this because we have two jenkins server and one of them cannot access pynest
     # In the jenkins job, we need to set PUBLISH_EGG env variable to TRUE if we want to publish the egg to pynest
     if [ ${PUBLISH_EGG:=""} == "TRUE" ]; then
         echo "Publishing egg to pynest"
-        scp *.tar.gz pynest@${PYNEST_SERVER}:${PYNEST_DIR}
+        scp *.tar.gz pynest@${PYNEST_SERVER}:"$PYNEST_DIR/$1"
     fi
-    
 }
 
 function main {

@@ -1,0 +1,23 @@
+common:
+  auth:
+    cookie:
+      secret: edware_secret
+dev:
+  '[app:main]': 
+    edware:
+      schema_name: edware_sds_0_1
+      db:
+        main:
+          url: postgresql+pypostgresql://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
+          pool_size: 40
+          max_overflow: 10
+          echo: False
+    edauth:
+      schema_name: edware_session
+      db:
+        main:
+          url: postgresql+pypostgresql://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
+          pool_size: 20
+          max_overflow: 10
+          echo: False
+    

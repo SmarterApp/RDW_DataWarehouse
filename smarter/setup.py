@@ -25,7 +25,8 @@ requires = [
     'edapi',
     'edschema',
     'py-postgresql',
-    'pyramid_exclog']
+    'pyramid_exclog',
+    'pyyaml']
 
 
 setup(name='smarter',

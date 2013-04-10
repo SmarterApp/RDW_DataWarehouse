@@ -3,8 +3,11 @@ import os
 from setuptools import setup, find_packages
 import shutil
 from distutils.core import run_setup
+from generate_ini import generate_ini
 
 here = os.path.abspath(os.path.dirname(__file__))
+
+print(generate_ini())
 
 dependencies = [
     'edapi',

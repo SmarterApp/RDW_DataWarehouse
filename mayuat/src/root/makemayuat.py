@@ -4,11 +4,10 @@ Created on Apr 4, 2013
 @author: kallen
 '''
 import dg_types
-import dg_mayuat
 
 
 def calculate_number_of_students():
-    mayuat = dg_mayuat.get_states()
+    mayuat = dg_types.get_states()
 
     # get the district and school configuration dictionaries
     district_types = dg_types.get_district_types()
@@ -141,7 +140,7 @@ def show_score_informatoin():
 def show_error_band_info():
     eb = dg_types.get_error_band()
     eb_string = 'Min Percentage: {0}, Max Percentage {1}, Low Random Adjustment Point: {2}, High Random Adjustment Point: {3}'
-    eb_string = eb_string.format(eb[dg_types.MIN_PERC], eb[dg_types.MAX_PERC], eb[dg_types.RAND_ADJ_PNT_LO], eb[dg_types.RAND_ADJ_PNT_HI],)
+    eb_string = eb_string.format(eb[dg_types.MIN_PERC], eb[dg_types.MAX_PERC], eb[dg_types.RAND_ADJ_PNT_LO], eb[dg_types.RAND_ADJ_PNT_HI])
     print('Error Band Info')
     print(eb_string)
 

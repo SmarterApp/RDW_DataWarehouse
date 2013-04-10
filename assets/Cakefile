@@ -135,3 +135,4 @@ task 'setup', 'Compile assets into smarter', (options) ->
     else if mode == 'PROD'
       invoke 'build'
       copyAssets assetsDest, assetsDir
+      copyResource()

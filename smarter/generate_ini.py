@@ -21,7 +21,7 @@ VERBOSE = False
 
 
 def flatten_yaml(aDict, result, path=""):
-    for  k in aDict:
+    for k in aDict:
         if type(aDict[k]) != dict:
             result = result + path + k + " = " + str(aDict[k]) + "\n"
         else:
@@ -61,3 +61,4 @@ if __name__ == "__main__":
 #        print("Please specifiy --env option")
 #        exit(-1)
     generate_ini(__env)
+

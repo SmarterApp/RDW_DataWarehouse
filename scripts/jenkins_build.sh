@@ -219,7 +219,7 @@ function create_sym_link_for_apache {
     compile_assets
 }
 
-function compile_assets{
+function compile_assets {
 
     cd "$WORKSPACE/scripts"
     WORKSPACE_PATH=${WORKSPACE//\//\\\/}

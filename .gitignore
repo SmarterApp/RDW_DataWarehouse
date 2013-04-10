@@ -10,7 +10,7 @@ smarter.egg-info?
 *.swp
 selenium-2.29.0-wgen
 OpenAM_customize_deploy_script.sh
-
+npm-debug.log
 # IDE generated files #
 #######################
 __pycache__

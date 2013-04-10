@@ -47,21 +47,6 @@ copyAssets = (assetsDest, assetsDir) ->
       wrench.rmdirSyncRecursive assetsDest, true
     wrench.copyDirSyncRecursive assetsDir, assetsDest
 
-copyResource = () ->
-  # Copy resource/idp_metadata.xml 
-  currentDir = process.cwd()
-  smarterDir = path.join(currentDir, '../smarter')
-  resourceDir = path.join(currentDir, '../resource')
-  
-  destDir = path.join(smarterDir, 'resource')
-  mkdir destDir
-  
-  fileName = 'idp_metadata.xml'
-  source = path.join(resourceDir, fileName)
-  console.log source
-  console.log destDir
-  fs.createReadStream(source).pipe(fs.createWriteStream path.join(destDir, fileName))
-
 task 'build:coffee', ->
     walkDir coffeepath, (source) -> buildCoffee source
 
@@ -100,8 +85,6 @@ task 'copy', 'Copy assets into smarter', (options) ->
   assetsDest = path.join(smarterDir, 'assets') 
   
   copyAssets  assetsDest, assetsDir
-  copyResource()
-  
 
 option '-a', '--assets [ASSETS_DIR]', 'set the directory for assets'
 option '-s', '--smarter [SMARTER_DIR]', 'set the directory for smarter'

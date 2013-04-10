@@ -3,7 +3,6 @@ import os
 from setuptools import setup, find_packages
 import shutil
 from distutils.core import run_setup
-from generate_ini import generate_ini
 
 here = os.path.abspath(os.path.dirname(__file__))
 
@@ -20,4 +19,5 @@ for dependency in dependencies:
     os.chdir(here)
 run_setup("setup.py")
 
+from generate_ini import generate_ini
 print(generate_ini())

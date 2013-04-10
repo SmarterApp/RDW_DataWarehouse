@@ -279,7 +279,7 @@ function build_egg {
     # prerequisite we're inside a python3.3 venv
 
     echo "Build an egg"
-    if [ ${1:=""} == "smarter" ]
+    if [ ${1:=""} == "smarter" ]; then
         compile_assets
     fi
 

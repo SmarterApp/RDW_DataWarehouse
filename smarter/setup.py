@@ -53,6 +53,6 @@ setup(name='smarter',
       [console_scripts]
       initialize_smarter_db = smarter.scripts.initializedb:main
       """,
-      data_files=[('smarter/assets', assets),
+      data_files=[('assets', assets),
                   ('resource', [idp_metadata])]
       )

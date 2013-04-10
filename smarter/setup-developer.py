@@ -7,8 +7,6 @@ from generate_ini import generate_ini
 
 here = os.path.abspath(os.path.dirname(__file__))
 
-print(generate_ini())
-
 dependencies = [
     'edapi',
     'edschema',
@@ -21,3 +19,5 @@ for dependency in dependencies:
     run_setup("setup.py")
     os.chdir(here)
 run_setup("setup.py")
+
+print(generate_ini())

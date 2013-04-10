@@ -274,6 +274,9 @@ function build_egg {
     # prerequisite we're inside a python3.3 venv
 
     echo "Build an egg"
+    cd "$WORKSPACE/assets"
+    cake copy    
+
     cd "$WORKSPACE/$1"
     rm -f *.tar.gz
     python setup.py sdist -d ${EGG_REPO}/$1

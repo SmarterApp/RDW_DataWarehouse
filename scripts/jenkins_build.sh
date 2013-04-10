@@ -275,7 +275,6 @@ function build_egg {
 
     echo "Build an egg"
     cd "$WORKSPACE/assets"
-    cake copy    
 
     cd "$WORKSPACE/$1"
     rm -f *.tar.gz

@@ -78,16 +78,26 @@ define [
           items.overall_ald = content.overall_ald[items.asmt_subject][items.asmt_perf_lvl]
           
           # set psychometric_implications content
-          output = Mustache.render(content.psychometric_implications[items.asmt_subject], items)
-          items.psychometric_implications = output
+          psychometricContent = Mustache.render(content.psychometric_implications[items.asmt_subject], items)
+          
+          # if the content is more than 250 characters then add ellipsis (...) after 250 characters.
+          psychometricContent = truncateContent(psychometricContent, 250)
+          items.psychometric_implications = psychometricContent
           
           # set policy content
           grade = content.policy_content[items.grade]
-          if items.grade is "11"
-            items.policy_content = grade[items.asmt_subject]
-          else if items.grade is "8"
-            grade_asmt = grade[items.asmt_subject]
-            items.policy_content = grade_asmt[items.asmt_perf_lvl]
+          if grade 
+            if items.grade is "11"
+              policyContent = grade[items.asmt_subject]
+              # if the content is more than 250 characters then add ellipsis (...) after 250 characters.
+              policyContent = truncateContent(policyContent, 250)          
+              items.policy_content = policyContent
+            else if items.grade is "8"
+              grade_asmt = grade[items.asmt_subject]
+              policyContent = grade_asmt[items.asmt_perf_lvl]            
+              # if the content is more than 250 characters then add ellipsis (...) after 250 characters.
+              policyContent = truncateContent(policyContent, 250)             
+              items.policy_content = policyContent
           
           # Claim section
           # For less than 4 claims, width of the claim box would be 28%
@@ -104,7 +114,9 @@ define [
             
             claim.claim_score_weight = claimScoreWeightArray[claim.assessmentUC][j]
             
-            claim.desc = content.claims[items.asmt_subject][claim.indexer]
+            claimContent = content.claims[items.asmt_subject][claim.indexer]
+            claimContent = truncateContent(claimContent, 140)
+            claim.desc = claimContent
             j++
           
           i++
@@ -196,7 +208,7 @@ define [
     claimArrowBox_width = $(claimArrowBox).width()
     claimArrowBox_height = $(claimArrowBox).height()
     image_height = 5
-    arrow_bar_width = 11
+    arrow_bar_width = 12
     arrow_bar = $('<div/>')
     arrow_bar.addClass arrow_bar_class
     arrow_bar_center = (claimArrowBox_width/2-arrow_bar_width/2)/claimArrowBox_width*100
@@ -230,5 +242,15 @@ define [
             callback content
           else
             content
+            
+  # truncate the content and add ellipsis "..." if content is more than character limits
+  truncateContent = (content, characterLimits)->
+      if content.length > characterLimits
+        content = content.substr(0, characterLimits)
+        
+        # ignore characters after the last word
+        content = content.substring(0, content.lastIndexOf(' ') + 1) + "..."
+        
+      content
 
   generateIndividualStudentReport: generateIndividualStudentReport

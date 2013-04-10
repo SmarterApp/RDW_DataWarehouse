@@ -52,5 +52,6 @@ setup(name='smarter',
       [console_scripts]
       initialize_smarter_db = smarter.scripts.initializedb:main
       """,
-      data_files=[('assets', assets)]
+      data_files=[('assets', assets),
+                  ('', ['smarter.wsgi']]
       )

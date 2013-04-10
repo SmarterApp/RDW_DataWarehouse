@@ -14,7 +14,6 @@ class State:
         self.state_code = state_code
         self.state_name = state_name
         self.num_of_dist = num_of_dist
-        self.state_code = state_code
 
     def __str__(self):
         '''

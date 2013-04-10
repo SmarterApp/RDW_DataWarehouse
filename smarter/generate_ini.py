@@ -61,4 +61,3 @@ if __name__ == "__main__":
 #        print("Please specifiy --env option")
 #        exit(-1)
     generate_ini(__env)
-

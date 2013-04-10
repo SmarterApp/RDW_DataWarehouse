@@ -206,9 +206,6 @@ function run_functional_tests {
 function create_sym_link_for_apache {
     echo "Creating symbolic links"
 
-    # Link /opt/edware/smarter/smarter.ini to the real config
-    /bin/ln -sf ${WORKSPACE}/smarter/${INI_FILE_FOR_ENV} /opt/edware/smarter/smarter.ini
-
     APACHE_DIR="/var/lib/jenkins/apache_dir"
     if [ -d ${APACHE_DIR} ]; then
         rm -rf ${APACHE_DIR}

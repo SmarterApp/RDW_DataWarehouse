@@ -3,9 +3,10 @@ import datetime
 import os
 import csv
 import util_2
+import constants_2 as constants
 from write_to_csv import create_csv
 from importlib import import_module
-from generate_entities import generate_institution_hierarchy
+from generate_entities import generate_institution_hierarchy, generate_sections, generate_students
 from generate_helper_entities import generate_state, generate_district, generate_school
 from datetime import date
 from entities_2 import InstitutionHierarchy, Section, Assessment, AssessmentOutcome, \
@@ -96,9 +97,26 @@ def generate_data_from_config_file(config_module):
                 for school_type_name in schools_by_type.keys():
                     schools = schools_by_type[school_type_name]
                     school_type = school_types[school_type_name]
+                    student_counts = school_type[config_module.STUDENTS]
+                    student_min = student_counts[config_module.MIN]
+                    student_max = student_counts[config_module.MAX]
+                    student_avg = student_counts[config_module.AVG]
                     schools_in_district = []
                     for school in schools:
                         # students = generate_students_for_school(school_type)
+                        for grade in school_type[config_module.GRADES]:
+                            number_of_students_in_grade = calculate_number_of_students(student_min, student_max, student_avg)
+                            for subject_name in constants.SUBJECTS:
+                                # TODO: Figure out how to calculate number_of_sections
+                                number_of_sections = 1
+                                sections = generate_sections(number_of_sections, subject_name, grade, state.state_code, district.district_guid, school.school_guid)
+                                for section in sections:
+                                    # TODO: More accurate math for num_of_students
+                                    number_of_students = number_of_students_in_grade / number_of_sections
+                                    students = generate_students(number_of_students, section.section_guid, grade, state.state_code, district.district_guid, school.school_guid,
+                                                                 school.school_name, name_list_dictionary[MALE_FIRST_NAMES], name_list_dictionary[FEMALE_FIRST_NAMES],
+                                                                 name_list_dictionary[LAST_NAMES], name_list_dictionary[BIRDS])
+                                # TODO: START here 4/11/13
                         schools_in_district.append(school)
                     district.add_schools(schools_in_district)
 
@@ -185,17 +203,13 @@ def transform_states_into_institution_hierarchies(states_in_consortium):
 
 
 def calculate_number_of_schools(num_schools_min, num_schools_avg, num_schools_max):
+    # TODO: implement me
     return 10
 
 
-def generate_students_for_school(school_type):
-    '''
-    '''
-    grades = school_type[config_module.GRADES]
-    student_min = school_type[config_module.STUDENTS][config_module.MIN]
-    student_max = school_type[config_module.STUDENTS][config_module.MAX]
-    student_avg = school_type[config_module.STUDENTS][config_module.AVG]
-    print(grades, student_min, student_max, student_avg)
+def calculate_number_of_students(student_min, student_max, student_avg):
+    # TODO: implement me
+    return 15
 
 
 if __name__ == '__main__':

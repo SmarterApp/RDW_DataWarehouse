@@ -33,37 +33,6 @@ def generate_name_from_lists(list_1, list_2, max_name_length=None):
         result = result[:max_name_length]
     return result
 
-def generate_names_from_lists(count, list1, list2, name_length=None):
-    '''
-    Generate total 'count' number of random combination of names from input lists
-    '''
-
-    # TODO: Add comments to this function. Difficult to follow.
-    names = []
-    if(count > 0):
-        base = math.ceil(math.sqrt(count))
-        if(base < len(list1) and base < len(list2)):
-            names1 = random.sample(list1, base)
-            names2 = random.sample(list2, base)
-        elif(base < len(list1) * len(list2)):
-            if(len(list1) < len(list2)):
-                names1 = list1
-                names2 = random.sample(list2, math.ceil(count / len(list1)))
-            else:
-                names2 = list2
-                names1 = random.sample(list1, math.ceil(count / len(list2)))
-        else:
-            print("not enough...", base, " ", len(list1), " ", len(list2))
-            raise ValueError
-
-        if(name_length is not None):
-            names = [(str(name1) + " " + str(name2))[0: name_length] for name1 in names1 for name2 in names2]
-        else:
-            names = [str(name1) + " " + str(name2) for name1 in names1 for name2 in names2]
-
-    new_list = []
-    new_list.extend(names[0:count])
-    return new_list
 
 def create_list_from_file(file_path):
     with open(file_path, 'r') as name_file:
@@ -72,3 +41,30 @@ def create_list_from_file(file_path):
         for line in lines:
             names.append(line.strip())
     return names
+
+
+def generate_address(word_list):
+    address = str(random.randint(1, 1000))
+    street = random.choice(word_list)
+    full_address = (address + " " + street + " " + random.choice(constants.ADD_SUFFIX)).title()
+    return full_address
+
+
+def generate_email_address(first_name, last_name, domain):
+    domain = '@' + domain.replace(' ', '') + '.edu'
+    address = first_name + '.' + last_name
+    return (address + domain).lower()
+
+
+def generate_dob(grade):
+
+    aprox_age = grade + 6
+    current_year = int(datetime.datetime.now().year)
+
+    birth_year = current_year - aprox_age
+    birth_month = random.randint(1, 12)
+    birth_day = random.randint(1, 28)
+
+    dob = datetime.date(birth_year, birth_month, birth_day).strftime("%Y%m%d")
+
+    return dob

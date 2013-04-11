@@ -34,7 +34,7 @@ def flatten_yaml(aDict, result, path=""):
     return result
 
 
-def generate_ini(env='dev'):
+def generate_ini(env, output_file):
     with open('settings.yaml', 'r') as f:
         settings = f.read()
 
@@ -46,18 +46,22 @@ def generate_ini(env='dev'):
     result = flatten_yaml(env_settings, "", "")
     result = flatten_yaml(common_settings, result, "")
 
-    with open('file.ini', 'w') as f:
-        f.write(result)
+    try:
+        with open(output_file, 'w') as f:
+            f.write(result)
+        print(result)
+    except:
+        print(str.format('could not open file {0} for write', output_file))
+
     return result
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Create New Schema for EdWare')
-    parser.add_argument("-e", "--env", help="set environment name.  required")
+    parser.add_argument("-e", "--env", default='dev', help="set environment name.")
+    parser.add_argument("-o", "--output", default="development.ini", help="set output file name default[development.ini]")
     args = parser.parse_args()
-
-    __env = args.env
 
 #    if __env is None:
 #        print("Please specifiy --env option")
 #        exit(-1)
-    generate_ini(__env)
+    generate_ini(args.env, args.output)

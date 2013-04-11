@@ -1,9 +1,23 @@
+###
+# app configuration
+# http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/environment.html
+###
+
 common:
-  auth:
-    cookie:
-      secret: edware_secret
+  test: test
 dev:
   '[app:main]': 
+    use: egg:smarter
+    smarter.PATH: /usr/local/bin
+    pyramid:
+      reload_templates: true
+      debug_all: false
+      debug_authorization: false
+      debug_notfound: false
+      debug_routematch: false
+      default_locale_name: en
+      includes: pyramid_tm pyramid_exclog pyramid_beaker
+
     edware:
       schema_name: edware_sds_0_1
       db:
@@ -20,4 +34,116 @@ dev:
           pool_size: 20
           max_overflow: 10
           echo: False
+    # pyramid_beaker configuration
+    cache:
+      regions: report
+      type: memory
+      expire: 3600
+
+    ###
+    # wsgi server configuration
+    ###
+
+    ###############
+    #Authentication
+    ###############
+    auth:
+      cookie:
+        secret: edware_secret
+        name: edware
+        hashalg: sha512
+        # Represents the lifetime of the cookie itself, if it's not set, it's session based
+        #max_age: 2400
+        # Maximum number of seconds which a newly issued ticket will be considered valid
+        timeout: 1200
+        # Session expiration time 
+      session:
+        timeout: 1200
+      saml:
+        idp_server_login_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp
+        idp_server_logout_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp
+        issuer_name: http://localhost:6543/sp.xml
+        name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
+      idp.metadata: ../../resource/idp_metadata.xml
+      skip.verify: True
+
+    # Static cache max age
+    smarter.resources.static.max_age: 0
+    # Mode that we're running in.  Currently we support 'dev' and 'prod'
+    mode: dev
+    # Run npm update (dev mode only)
+    run.npm.update: true
+
+  '[server:main]':
+    use: 'egg:waitress#main'
+    host: 0.0.0.0
+    port: 6543
     
+  ###
+  # logging configuration
+  # http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/logging.html
+  ###
+
+  '[loggers]':
+    keys: root, smarter, sqlalchemy, exc_logger, audit
+
+  '[handlers]':
+    keys: console, filelog, audit
+
+  '[formatters]':
+    keys: generic, json
+
+  '[logger_root]':
+    level: INFO 
+    handlers: console
+
+  '[logger_smarter]':
+    level: DEBUG
+    handlers: filelog
+    qualname: smarter
+
+  '[logger_sqlalchemy]':
+    level: INFO
+    handlers:
+    qualname: sqlalchemy.engine
+    # "level = INFO" logs SQL queries.
+    # "level = DEBUG" logs SQL queries and results.
+    # "level = WARN" logs neither.  (Recommended for production systems.)
+
+  '[logger_exc_logger]':
+    level: ERROR
+    handlers: filelog
+    qualname: exc_logger
+
+  '[logger_audit]':
+    level: INFO
+    handlers: audit
+    qualname: audit
+
+  '[handler_console]':
+    class: StreamHandler
+    args: (sys.stderr,)
+    level: NOTSET
+    formatter: generic
+
+  '[handler_filelog]':
+    class: logging.handlers.TimedRotatingFileHandler
+    args: ("/tmp/smarter.log","midnight")  # (path, when) 
+    level: INFO
+    formatter: generic
+
+  '[handler_audit]':
+    class: logging.handlers.TimedRotatingFileHandler
+    args: '(''/tmp/audit.log'',''midnight'')'  # (path, when) 
+    level: INFO
+    formatter: json
+
+  '[formatter_generic]':
+    format: '%(asctime)s %(levelname)-5.5s [%(name)s][%(threadName)s] %(message)s'
+
+  '[formatter_json]':
+    class: edapi.logging.JsonDictLoggingFormatter
+    format: '%(asctime)s %(message)s'
+
+# End logging configuration
+

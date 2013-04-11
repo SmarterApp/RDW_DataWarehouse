@@ -44,7 +44,7 @@ common:
       saml:
         idp_server_login_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp
         idp_server_logout_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp
-        issuer_name: http://localhost:6543/sp.xml
+        issuer_name: http://edwappsrv1.poc.dum.edwdc.net/
         name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
       idp.metadata: ../../resource/idp_metadata.xml
       skip.verify: True
@@ -303,7 +303,7 @@ edwappsrv1:
       schema_name: edware_sds_0_1
       db:
         main:
-          url: postgresql+pypostgresql://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
+          url: postgresql+pypostgresql://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
           pool_size: 20
           max_overflow: 10
           echo: False
@@ -311,7 +311,7 @@ edwappsrv1:
       schema_name: edware_session
       db:
         main:
-          url: postgresql+pypostgresql://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
+          url: postgresql+pypostgresql://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
           pool_size: 20
           max_overflow: 10
           echo: False

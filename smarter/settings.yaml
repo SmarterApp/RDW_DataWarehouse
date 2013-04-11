@@ -3,9 +3,159 @@
 # http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/environment.html
 ###
 
+pyweb0:
+    '[app:main]':
+    edware:
+      schema_name: edware_sds_0_1
+      db:
+        main:
+          url: postgresql+pypostgresql://postgres:edware.qa.2013@dwpool0.qa.dum.edwdc.net:6432/edware
+          pool_size: 20
+          max_overflow: 10
+          echo: False
+    edauth:
+      schema_name: edware_session_test
+      db:
+        main:
+          url: postgresql+pypostgresql://postgres:edware.qa.2013@dbpool0.qa.dum.edwdc.net:6432/edware
+          pool_size: 20
+          max_overflow: 10
+          echo: False
+
+pyweb1:
+    '[app:main]':
+    edware:
+      schema_name: edware_sds_0_1
+      db:
+        main:
+          url: postgresql+pypostgresql://postgres:edware.qa.2013@dwpool0.qa.dum.edwdc.net:6432/edware
+          pool_size: 20
+          max_overflow: 10
+          echo: False
+    edauth:
+      schema_name: edware_session_test
+      db:
+        main:
+          url: postgresql+pypostgresql://postgres:edware.qa.2013@dbpool0.qa.dum.edwdc.net:6432/edware
+          pool_size: 20
+          max_overflow: 10
+          echo: False
+
+pyweb2:
+    '[app:main]':
+    edware:
+      schema_name: edware_sds_0_1
+      db:
+        main:
+          url: postgresql+pypostgresql://postgres:edware.qa.2013@dwpool0.qa.dum.edwdc.net:6432/edware
+          pool_size: 20
+          max_overflow: 10
+          echo: False
+    edauth:
+      schema_name: edware_session_test
+      db:
+        main:
+          url: postgresql+pypostgresql://postgres:edware.qa.2013@dbpool0.qa.dum.edwdc.net:6432/edware
+          pool_size: 20
+          max_overflow: 10
+          echo: False
+
+pyweb3:
+    '[app:main]':
+    edware:
+      schema_name: edware_sds_0_1
+      db:
+        main:
+          url: postgresql+pypostgresql://postgres:edware.qa.2013@dwpool0.qa.dum.edwdc.net:6432/edware
+          pool_size: 20
+          max_overflow: 10
+          echo: False
+    edauth:
+      schema_name: edware_session_test
+      db:
+        main:
+          url: postgresql+pypostgresql://postgres:edware.qa.2013@dbpool0.qa.dum.edwdc.net:6432/edware
+          pool_size: 20
+          max_overflow: 10
+          echo: False
+
+production:
+    '[app:main]':
+    edware:
+      schema_name: edware_sds_0_1
+      db:
+        main:
+          url: postgresql+pypostgresql://postgres:edware.qa.2013@dwpool0.qa.dum.edwdc.net:6432/edware
+          pool_size: 20
+          max_overflow: 10
+          echo: False
+    edauth:
+      schema_name: edware_session_test
+      db:
+        main:
+          url: postgresql+pypostgresql://postgres:edware.qa.2013@dbpool0.qa.dum.edwdc.net:6432/edware
+          pool_size: 20
+          max_overflow: 10
+          echo: False
+
+development:
+  '[app:main]':
+    edware:
+      schema_name: edware_sds_0_1
+      db:
+        main:
+          url: postgresql+pypostgresql://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
+          pool_size: 20
+          max_overflow: 10
+          echo: False
+    edauth:
+      schema_name: edware_session
+      db:
+        main:
+          url: postgresql+pypostgresql://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
+          pool_size: 20
+          max_overflow: 10
+          echo: False
+          
+test:
+  '[app:main]':
+    edware:
+      schema_name: edware_sds_0_1
+      db:
+        main:
+          url: postgresql+pypostgresql://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
+          pool_size: 20
+          max_overflow: 10
+          echo: False
+    edauth:
+      schema_name: edware_session
+      db:
+        main:
+          url: postgresql+pypostgresql://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
+          pool_size: 20
+          max_overflow: 10
+          echo: False
+          
+edwappsrv1:
+  '[app:main]':
+    edware:
+      schema_name: edware_sds_0_1
+      db:
+        main:
+          url: postgresql+pypostgresql://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
+          pool_size: 20
+          max_overflow: 10
+          echo: False
+    edauth:
+      schema_name: edware_session
+      db:
+        main:
+          url: postgresql+pypostgresql://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
+          pool_size: 20
+          max_overflow: 10
+          echo: False
+          
 common:
-  test: test
-dev:
   '[app:main]': 
     use: egg:smarter
     smarter.PATH: /usr/local/bin
@@ -18,22 +168,6 @@ dev:
       default_locale_name: en
       includes: pyramid_tm pyramid_exclog pyramid_beaker
 
-    edware:
-      schema_name: edware_sds_0_1
-      db:
-        main:
-          url: postgresql+pypostgresql://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
-          pool_size: 40
-          max_overflow: 10
-          echo: False
-    edauth:
-      schema_name: edware_session
-      db:
-        main:
-          url: postgresql+pypostgresql://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
-          pool_size: 20
-          max_overflow: 10
-          echo: False
     # pyramid_beaker configuration
     cache:
       regions: report

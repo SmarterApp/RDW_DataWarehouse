@@ -9,6 +9,7 @@ Reads a yaml file and generate an ini file according to an environment parameter
 '''
 import argparse
 import yaml
+from smarter.reports.exceptions.parameter_exception import InvalidParameterException
 
 __all__ = []
 __version__ = 0.1
@@ -31,22 +32,34 @@ def flatten_yaml(aDict, result, path=""):
                 result = flatten_yaml(aDict[k], result, path)
             else:
                 result = flatten_yaml(aDict[k], result, path + k + ".")
-
     return result
 
 
-def generate_ini(env, output_file):
-    with open('settings.yaml', 'r') as f:
-        settings = f.read()
+def combine_groups(groups):
+    return ''.join([group + "\n" + groups[group] for group in groups])
+
+
+def generate_ini(env, input_file='settings.yaml'):
+    try:
+        with open(input_file, 'r') as f:
+            settings = f.read()
+    except:
+        raise InvalidParameterException(str.format("could not find or open file {0} for read", input_file))
 
     settings = yaml.load(settings)
 
     env_settings = settings[env]
     common_settings = settings['common']
 
-    result = flatten_yaml(env_settings, "", "")
-    result = flatten_yaml(common_settings, result, "")
+    groups = {}
+    for group in env_settings:
+        groups[group] = groups.get(group, "") + flatten_yaml(env_settings[group], "", "")
+    for group in common_settings:
+        groups[group] = groups.get(group, "") + flatten_yaml(common_settings[group], "", "")
 
+    result = combine_groups(groups)
+
+    output_file = env + ".ini"
     try:
         with open(output_file, 'w') as f:
             f.write(result)
@@ -59,10 +72,10 @@ def generate_ini(env, output_file):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Create New Schema for EdWare')
     parser.add_argument("-e", "--env", default='dev', help="set environment name.")
-    parser.add_argument("-o", "--output", default="development.ini", help="set output file name default[development.ini]")
+    parser.add_argument("-i", "--input", default="settings.yaml", help="set input yaml file name default[settings.yaml]")
     args = parser.parse_args()
 
 #    if __env is None:
 #        print("Please specifiy --env option")
 #        exit(-1)
-    generate_ini(args.env, args.output)
+    generate_ini(args.env, args.input)

@@ -12,7 +12,7 @@ from smarter.database.connector import SmarterDBConnection
 from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
 from sqlalchemy.sql.expression import case, func, true, null, cast
 from sqlalchemy.types import INTEGER
-from smarter.reports.exceptions.parameter_exception import InvalidParamterException
+from smarter.reports.exceptions.parameter_exception import InvalidParameterException
 from smarter.reports.helpers.constants import Constants
 from edapi.logging import audit_event
 import collections
@@ -376,7 +376,7 @@ class QueryHelper():
         elif self._state_code is not None and self._district_guid is not None and self._school_guid is not None:
             self._view = self.VIEWS.SCHOOL_VIEW
         else:
-            raise InvalidParamterException()
+            raise InvalidParameterException()
         # get dim_inst_hier, dim_asmt, and fact_asmt_outcome tables
         self._dim_inst_hier = connector.get_table(Constants.DIM_INST_HIER)
         self._dim_asmt = connector.get_table(Constants.DIM_ASMT)

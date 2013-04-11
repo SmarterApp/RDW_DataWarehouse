@@ -12,7 +12,7 @@ class ParameterException(Exception):
     pass
 
 
-class InvalidParamterException(ParameterException):
+class InvalidParameterException(ParameterException):
     '''
     Invalid Parameter Exception
     '''

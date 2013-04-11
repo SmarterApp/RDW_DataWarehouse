@@ -20,4 +20,4 @@ for dependency in dependencies:
 run_setup("setup.py")
 
 from generate_ini import generate_ini
-print(generate_ini('dev', 'development.ini'))
+generate_ini('development')

@@ -5,11 +5,6 @@ from setuptools import setup, find_packages
 here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.txt')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
-assets = []
-
-for root, subFolders, files in os.walk(os.path.join(os.path.dirname(__file__), "assets")):
-    for file in files:
-        assets.append(os.path.join(root, file))
 
 requires = [
     'pyramid',
@@ -51,7 +46,5 @@ setup(name='smarter',
       main = smarter:main
       [console_scripts]
       initialize_smarter_db = smarter.scripts.initializedb:main
-      """,
-      data_files=[('assets', assets),
-                  ('smarter', ['smarter.wsgi'])]
+      """
       )

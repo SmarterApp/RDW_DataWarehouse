@@ -38,7 +38,6 @@ common:
         #max_age: 2400
         # Maximum number of seconds which a newly issued ticket will be considered valid
         timeout: 1200
-        secure: false
         # Session expiration time 
       session:
         timeout: 1200

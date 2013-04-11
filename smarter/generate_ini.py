@@ -35,10 +35,6 @@ def flatten_yaml(aDict, result, path=""):
     return result
 
 
-def combine_groups(groups):
-    return ''.join([group + "\n" + groups[group] for group in groups])
-
-
 def generate_ini(env, input_file='settings.yaml'):
     try:
         with open(input_file, 'r') as f:
@@ -56,8 +52,7 @@ def generate_ini(env, input_file='settings.yaml'):
         groups[group] = groups.get(group, "") + flatten_yaml(env_settings[group], "", "")
     for group in common_settings:
         groups[group] = groups.get(group, "") + flatten_yaml(common_settings[group], "", "")
-
-    result = combine_groups(groups)
+    result = ''.join([group + "\n" + groups[group] for group in groups])
 
     output_file = env + ".ini"
     try:
@@ -75,7 +70,7 @@ if __name__ == "__main__":
     parser.add_argument("-i", "--input", default="settings.yaml", help="set input yaml file name default[settings.yaml]")
     args = parser.parse_args()
 
-#    if __env is None:
-#        print("Please specifiy --env option")
-#        exit(-1)
+    if args.env is None:
+        print("Please specifiy --env option")
+        exit(-1)
     generate_ini(args.env, args.input)

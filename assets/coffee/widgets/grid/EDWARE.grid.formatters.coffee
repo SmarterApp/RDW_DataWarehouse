@@ -5,7 +5,8 @@ define [
   'edwareUtil'
   'edwarePopulationBar'
   'edwareConfidenceLevelBar'
-], ($, jqGrid, EDWARE, edwareUtil, edwarePopulationBar, edwareConfidenceLevelBar) ->
+  'edwareLOSConfidenceLevelBar'  
+], ($, jqGrid, EDWARE, edwareUtil, edwarePopulationBar, edwareConfidenceLevelBar, edwareLOSConfidenceLevelBar) ->
   #
   # * EDWARE grid formatters
   # * Handles all the methods for displaying cutpoints, link in the grid
@@ -51,11 +52,11 @@ define [
     subject = rowObject.assessments[asmt_type]
     
     if subject
-      results =  edwareConfidenceLevelBar.create subject, 88
-      "<div class='asmtScore' style='color:"+ subject.score_color+"'>" + subject.asmt_score + "</div><div class = 'confidenceLevel'>" + results + "</div>"      
+      results =  edwareLOSConfidenceLevelBar.create subject, 160
+      "<div class='asmtScore' style='background-color:"+ subject.score_color + "; color: white;'>" + subject.asmt_score + "</div><div class = 'confidenceLevel'>" + results + "</div>"      
     else
-      ""
-      
+      ""   
+
   populationBar = (value, options, rowObject) ->
     asmt_type = options.colModel.formatoptions.asmt_type
     subject = rowObject.results[asmt_type]

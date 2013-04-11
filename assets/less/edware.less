@@ -127,40 +127,51 @@ table {
     float: left;
     font-weight: bold;
     font-size: 14px;
-    margin-right: 10px;
+    padding: 0px 4px 0px 4px;
+    border-radius: 3px;
+    margin: 4px 10px 0 0px;
   }
   .confidenceLevel {
     height: 30px;
-    margin-top: 5px;
+    margin-top: 0px;
     
     .progress {
-      height: 14px;
-      margin-top: 0;
-      margin-left: 44px;
+      height: 38px;
+      margin-top: -4px;
+      margin-left: 50px;
+      
+      .bar {
+        border-right: 1px dashed @color-black;
+      }
     }
     .overall_score, .cutPointsBar {
       display: none;
     }
     
     .scoreWrapper {
-      margin-left: 44px;
+      margin-left: 50px;
     }
     .transWrapper {
       margin-top: auto;
-      margin-left: 44px;
+      margin-left: 50px;
     }
     
     .indicator {
-      margin-top: -6px;
-      height: 14px;
+      margin-top: -1px;
+      height: 33px; 
+      border-left: 1px solid @color-B3;
+      border-right: 1px solid @color-B3;
+      background-color: @color-B7;
+      background: @color-B7 url("../images/scorebar_dotindicator.png") no-repeat top center;
+      opacity: .8;
     }
     .transImage1 {
-      height: 14px;
+      height: 30px;
       background-image: url("../images/overlay_left88x14.png");
     }
     
     .transImage2 {
-      height: 14px;
+      height: 30px;
       background-image: url("../images/overlay_right88x14.png");
     }
     

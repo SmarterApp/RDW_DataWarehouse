@@ -321,7 +321,7 @@ edwappsrv1:
           max_overflow: 10
           echo: False
     auth:
-      policy.secure: True
+      policy.secure: False
       skip.verify: False
     # Mode that we're running in.  Currently we support 'dev' and 'prod'
     mode: prod

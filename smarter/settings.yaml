@@ -147,9 +147,9 @@ pyweb0:
       skip.verify: False
       saml:
         issuer_name: http://edwappsrv1.poc.dum.edwdc.net/
-        idp_server_login_url = http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp
-        idp_server_logout_url = http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp
-        name_qualifier = http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
+        idp_server_login_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp
+        idp_server_logout_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp
+        name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
 pyweb1:
   '[app:main]':
     edware:
@@ -175,9 +175,9 @@ pyweb1:
       skip.verify: False
       saml:
         issuer_name: http://edwappsrv1.poc.dum.edwdc.net/
-        idp_server_login_url = http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp
-        idp_server_logout_url = http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp
-        name_qualifier = http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
+        idp_server_login_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp
+        idp_server_logout_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp
+        name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
 pyweb2:
   '[app:main]':
     edware:
@@ -203,9 +203,9 @@ pyweb2:
       skip.verify: False
       saml:
         issuer_name: http://edwappsrv1.poc.dum.edwdc.net/
-        idp_server_login_url = http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp
-        idp_server_logout_url = http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp
-        name_qualifier = http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
+        idp_server_login_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp
+        idp_server_logout_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp
+        name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
 pyweb3:
   '[app:main]':
     edware:
@@ -230,9 +230,9 @@ pyweb3:
         secure: true
       saml:
         issuer_name: http://edwappsrv1.poc.dum.edwdc.net/
-        idp_server_login_url = http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp
-        idp_server_logout_url = http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp
-        name_qualifier = http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
+        idp_server_login_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp
+        idp_server_logout_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp
+        name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
 jenkins0:
   '[app:main]':
     edware:
@@ -277,9 +277,9 @@ production:
       skip.verify: False
       saml:
         issuer_name: http://edwappsrv1.poc.dum.edwdc.net/
-        idp_server_login_url = http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp
-        idp_server_logout_url = http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp
-        name_qualifier = http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
+        idp_server_login_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp
+        idp_server_logout_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp
+        name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
 
 development:
   '[app:main]':
@@ -302,10 +302,10 @@ development:
     auth:
       skip.verify: False
       saml:
-        idp_server_login_url = http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp
-        idp_server_logout_url = http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp
-        issuer_name = http://localhost:6543/sp.xml
-        name_qualifier = http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
+        idp_server_login_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp
+        idp_server_logout_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp
+        issuer_name: http://localhost:6543/sp.xml
+        name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
     # Mode that we're running in.  Currently we support 'dev' and 'prod'
     mode: dev
 test:
@@ -351,9 +351,9 @@ edwappsrv1:
       skip.verify: False
       saml:
         issuer_name: 'http://edwappsrv1.poc.dum.edwdc.net/'
-        idp_server_login_url = 'http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp'
-        idp_server_logout_url = 'http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp'
-        name_qualifier = http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
+        idp_server_login_url: 'http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp'
+        idp_server_logout_url: 'http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp'
+        name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
     # Mode that we're running in.  Currently we support 'dev' and 'prod'
     mode: prod
           

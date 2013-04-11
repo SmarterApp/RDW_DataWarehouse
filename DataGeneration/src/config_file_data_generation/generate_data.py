@@ -188,6 +188,16 @@ def calculate_number_of_schools(num_schools_min, num_schools_avg, num_schools_ma
     return 10
 
 
+def generate_students_for_school(school_type):
+    '''
+    '''
+    grades = school_type[config_module.GRADES]
+    student_min = school_type[config_module.STUDENTS][config_module.MIN]
+    student_max = school_type[config_module.STUDENTS][config_module.MAX]
+    student_avg = school_type[config_module.STUDENTS][config_module.AVG]
+    print(grades, student_min, student_max, student_avg)
+
+
 if __name__ == '__main__':
     # Argument parsing
     parser = argparse.ArgumentParser(description='Generate fixture data from a configuration file.')

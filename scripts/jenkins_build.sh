@@ -19,7 +19,7 @@ function set_vars {
     VIRTUALENV_DIR="$WORKSPACE/edwaretest_venv"
     FUNC_VIRTUALENV_DIR="$WORKSPACE/functest_venv"
     FUNC_DIR="edware_test/edware_test/functional_tests"
-    SMARTER_INI="/opt/edware/smarter/smarter.ini"
+    SMARTER_INI="/opt/edware/conf/smarter.ini"
     EGG_REPO="/opt/edware/pynest"
     PYNEST_SERVER="repo0.qa.dum.edwdc.net"
     PYNEST_DIR="/opt/wgen/pyrepos/pynest"
@@ -250,8 +250,6 @@ function build_rpm {
     # prerequisite there is a venv inside workspace (ie. run setup_virtualenv)
 
     # deactivate python 3.3 venv
-    deactivate
-    
 
     echo "Build RPM"
     echo "Build Number:"
@@ -261,16 +259,7 @@ function build_rpm {
 
     GIT_HASH="$(git rev-parse HEAD)"
 
-    #echo "clone git://mcgit.mc.wgenhq.net/wgen/rpmtools"
-    #rm -rf $WORKSPACE/rpmtools
-    #mkdir  $WORKSPACE/rpmtools
-    #cd $WORKSPACE/rpmtools
-    #git clone git://mcgit.mc.wgenhq.net/wgen/rpmtools
-
-    #cd rpmtools
-
-    # Need to run on python 2.7
-    /opt/python2.7/bin/python2.7 "$WORKSPACE"/wg_rpmbuild.py --dont-clean-staging --ignore-existing-staging -r "$WORKSPACE" -D_topdir="$WORKSPACE" -Dbuild_number="$BUILD_NUMBER" -Dcheckoutroot="$WORKSPACE" -Dversion="$RPM_VERSION" -o "$RPM_REPO" "$RPM_SPEC"
+    rpmbuild -bb smarter.spec
 
     echo "Finished building RPM"
 }

@@ -41,11 +41,6 @@ common:
         # Session expiration time 
       session:
         timeout: 1200
-      saml:
-        idp_server_login_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp
-        idp_server_logout_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp
-        issuer_name: http://edwappsrv1.poc.dum.edwdc.net/
-        name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
       idp.metadata: ../../resource/idp_metadata.xml
 
     # Static cache max age
@@ -355,9 +350,9 @@ edwappsrv1:
       policy.secure: False
       skip.verify: False
       saml:
-        issuer_name: http://edwappsrv1.poc.dum.edwdc.net/
-        idp_server_login_url = http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp
-        idp_server_logout_url = http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp
+        issuer_name: 'http://edwappsrv1.poc.dum.edwdc.net/'
+        idp_server_login_url = 'http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp'
+        idp_server_logout_url = 'http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp'
         name_qualifier = http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
     # Mode that we're running in.  Currently we support 'dev' and 'prod'
     mode: prod

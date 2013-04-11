@@ -85,7 +85,7 @@ def __create_from_SAMLResponse(saml_response, last_access, expiration):
     populate session from SAMLResponse
     '''
     # make a UUID based on the host ID and current time
-    __session_id = str(uuid.uuid1())
+    __session_id = str(uuid.uuid4())
 
     # get Attributes
     __assertion = saml_response.get_assertion()

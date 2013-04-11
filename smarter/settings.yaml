@@ -21,7 +21,10 @@ pyweb0:
           pool_size: 20
           max_overflow: 10
           echo: False
-
+          
+    auth:
+      policy:
+        secure: true
 pyweb1:
     '[app:main]':
     edware:
@@ -40,7 +43,10 @@ pyweb1:
           pool_size: 20
           max_overflow: 10
           echo: False
-
+          
+    auth:
+      policy:
+        secure: true
 pyweb2:
     '[app:main]':
     edware:
@@ -59,7 +65,10 @@ pyweb2:
           pool_size: 20
           max_overflow: 10
           echo: False
-
+          
+    auth:
+      policy:
+        secure: true
 pyweb3:
     '[app:main]':
     edware:
@@ -78,7 +87,10 @@ pyweb3:
           pool_size: 20
           max_overflow: 10
           echo: False
-
+          
+    auth:
+      policy:
+        secure: true
 jenkins0:
     '[app:main]':
     edware:
@@ -116,6 +128,10 @@ production:
           pool_size: 20
           max_overflow: 10
           echo: False
+             
+    auth:
+      policy:
+        secure: true
 
 development:
   '[app:main]':
@@ -154,7 +170,6 @@ test:
           pool_size: 20
           max_overflow: 10
           echo: False
-          
 edwappsrv1:
   '[app:main]':
     edware:
@@ -173,6 +188,9 @@ edwappsrv1:
           pool_size: 20
           max_overflow: 10
           echo: False
+    auth:
+      policy:
+        secure: true
           
 common:
   '[app:main]': 
@@ -201,14 +219,15 @@ common:
     #Authentication
     ###############
     auth:
-      cookie:
+      policy:
         secret: edware_secret
-        name: edware
+        cookie_name: edware
         hashalg: sha512
         # Represents the lifetime of the cookie itself, if it's not set, it's session based
         #max_age: 2400
         # Maximum number of seconds which a newly issued ticket will be considered valid
         timeout: 1200
+        secure: false
         # Session expiration time 
       session:
         timeout: 1200

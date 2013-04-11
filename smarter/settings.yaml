@@ -79,6 +79,25 @@ pyweb3:
           max_overflow: 10
           echo: False
 
+jenkins0:
+    '[app:main]':
+    edware:
+      schema_name: edware_sds_0_1
+      db:
+        main:
+          url: postgresql+pypostgresql://postgres:edware.qa.2013@dwpool0.qa.dum.edwdc.net:6432/edware
+          pool_size: 20
+          max_overflow: 10
+          echo: False
+    edauth:
+      schema_name: edware_session_test
+      db:
+        main:
+          url: postgresql+pypostgresql://postgres:edware.qa.2013@dbpool0.qa.dum.edwdc.net:6432/edware
+          pool_size: 20
+          max_overflow: 10
+          echo: False
+
 production:
     '[app:main]':
     edware:

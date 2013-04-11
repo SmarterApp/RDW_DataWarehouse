@@ -35,7 +35,8 @@ def includeme(config):
         ('wild_domain', to_bool),
         ('max_age', int),
         ('http_only', to_bool),
-        ('debug', to_bool)):
+        ('debug', to_bool),
+    ):
         if item in options.keys():
             options[item] = type_(options[item].lower())
 

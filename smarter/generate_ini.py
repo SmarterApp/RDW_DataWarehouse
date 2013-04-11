@@ -22,6 +22,9 @@ VERBOSE = False
 
 
 def flatten_yaml(aDict, result, path=""):
+    '''
+    This method runs recursively and traversing the dictionary to flatten in an ini format
+    '''
     for k in aDict:
         if type(aDict[k]) != dict:
             value = "" if aDict[k] is None else str(aDict[k])
@@ -44,6 +47,8 @@ def generate_ini(env, input_file='settings.yaml'):
 
     settings = yaml.load(settings)
 
+    if env not in settings:
+        raise InvalidParameterException(str.format("could not find settings for {0} in the yaml file", env))
     env_settings = settings[env]
     common_settings = settings['common']
 
@@ -60,7 +65,7 @@ def generate_ini(env, input_file='settings.yaml'):
             f.write(result)
         print(result)
     except:
-        print(str.format('could not open file {0} for write', output_file))
+        raise IOError(str.format('could not open file {0} for write', output_file))
 
     return result
 
@@ -73,4 +78,7 @@ if __name__ == "__main__":
     if args.env is None:
         print("Please specifiy --env option")
         exit(-1)
-    generate_ini(args.env, args.input)
+    try:
+        generate_ini(args.env, args.input)
+    except Exception as ipe:
+        print(ipe)

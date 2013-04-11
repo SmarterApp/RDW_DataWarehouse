@@ -295,7 +295,13 @@ function build_egg {
     fi
 }
 
+function generate_ini {
+	cd "$WORKSPACE/smarter"
+	python generate_ini.py -e jenkins0 -i settings.yaml
+}
+
 function main {
+	
     get_opts $@
     check_vars
     set_vars
@@ -308,6 +314,7 @@ function main {
         check_pep8 $MAIN_PKG
         build_egg $MAIN_PKG
     elif [ ${MODE:=""} == "FUNC" ]; then
+   		generate_ini
         create_sym_link_for_apache
         restart_apache
         import_data_from_csv

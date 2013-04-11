@@ -13,7 +13,7 @@ define [
   "edwareFeedback"
   "edwareFooter"
 ], ($, bootstrap, Mustache, edwareDataProxy, edwareConfidenceLevelBar, indivStudentReportTemplate, claimsInfoTemplate, edwareBreadcrumbs, edwareHeader, edwareUtil, edwareFeedback, edwareFooter) ->
-      
+  
   # claim score weight in percentage
   claimScoreWeightArray = {
     "MATH": ["40", "40", "20", "10"],
@@ -80,8 +80,8 @@ define [
           # set psychometric_implications content
           psychometricContent = Mustache.render(content.psychometric_implications[items.asmt_subject], items)
           
-          # if the content is more than 250 characters then add ellipsis (...) after 250 characters.
-          psychometricContent = truncateContent(psychometricContent, 250)
+          # if the content is more than character limits then truncate the string and add ellipsis (...)
+          psychometricContent = edwareUtil.truncateContent(psychometricContent, edwareUtil.getConstants("psychometric_characterLimits"))
           items.psychometric_implications = psychometricContent
           
           # set policy content
@@ -89,14 +89,14 @@ define [
           if grade 
             if items.grade is "11"
               policyContent = grade[items.asmt_subject]
-              # if the content is more than 250 characters then add ellipsis (...) after 250 characters.
-              policyContent = truncateContent(policyContent, 250)          
+              # if the content is more than character limits then truncate the string and add ellipsis (...)
+              policyContent = edwareUtil.truncateContent(policyContent, edwareUtil.getConstants("policyContent_characterLimits"))          
               items.policy_content = policyContent
             else if items.grade is "8"
               grade_asmt = grade[items.asmt_subject]
               policyContent = grade_asmt[items.asmt_perf_lvl]            
-              # if the content is more than 250 characters then add ellipsis (...) after 250 characters.
-              policyContent = truncateContent(policyContent, 250)             
+              # if the content is more than character limits then truncate the string and add ellipsis (...)
+              policyContent = edwareUtil.truncateContent(policyContent, edwareUtil.getConstants("policyContent_characterLimits"))             
               items.policy_content = policyContent
           
           # Claim section
@@ -115,7 +115,8 @@ define [
             claim.claim_score_weight = claimScoreWeightArray[claim.assessmentUC][j]
             
             claimContent = content.claims[items.asmt_subject][claim.indexer]
-            claimContent = truncateContent(claimContent, 140)
+            # if the content is more than character limits then truncate the string and add ellipsis (...)
+            claimContent = edwareUtil.truncateContent(claimContent, edwareUtil.getConstants("claims_characterLimits"))
             claim.desc = claimContent
             j++
           
@@ -242,15 +243,5 @@ define [
             callback content
           else
             content
-            
-  # truncate the content and add ellipsis "..." if content is more than character limits
-  truncateContent = (content, characterLimits)->
-      if content.length > characterLimits
-        content = content.substr(0, characterLimits)
-        
-        # ignore characters after the last word
-        content = content.substring(0, content.lastIndexOf(' ') + 1) + "..."
-        
-      content
 
   generateIndividualStudentReport: generateIndividualStudentReport

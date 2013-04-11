@@ -104,7 +104,7 @@ dev:
 
   '[logger_sqlalchemy]':
     level: INFO
-    handlers:
+    handlers: 
     qualname: sqlalchemy.engine
     # "level = INFO" logs SQL queries.
     # "level = DEBUG" logs SQL queries and results.
@@ -128,13 +128,13 @@ dev:
 
   '[handler_filelog]':
     class: logging.handlers.TimedRotatingFileHandler
-    args: ("/tmp/smarter.log","midnight")  # (path, when) 
+    args: '(''/tmp/smarter.log'',''midnight'')'  # (path, when) 
     level: INFO
     formatter: generic
 
   '[handler_audit]':
     class: logging.handlers.TimedRotatingFileHandler
-    args: '(''/tmp/audit.log'',''midnight'')'  # (path, when) 
+    args: '(''/tmp/audit.log'',''midnight'')'   # (path, when) 
     level: INFO
     formatter: json
 

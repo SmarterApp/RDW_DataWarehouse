@@ -23,7 +23,8 @@ VERBOSE = False
 def flatten_yaml(aDict, result, path=""):
     for k in aDict:
         if type(aDict[k]) != dict:
-            result = result + path + k + " = " + str(aDict[k]) + "\n"
+            value = "" if aDict[k] is None else str(aDict[k])
+            result = result + path + k + " = " + value + "\n"
         else:
             if k.startswith('[') and k.endswith(']'):
                 result = result + k + "\n"

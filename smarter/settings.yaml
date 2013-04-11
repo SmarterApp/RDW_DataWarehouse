@@ -50,8 +50,6 @@ common:
 
     # Static cache max age
     smarter.resources.static.max_age: 0
-    # Mode that we're running in.  Currently we support 'dev' and 'prod'
-    mode: dev
     # Run npm update (dev mode only)
     run.npm.update: true
 
@@ -282,6 +280,8 @@ development:
           max_overflow: 10
           echo: False
     auth.skip.verify: False
+    # Mode that we're running in.  Currently we support 'dev' and 'prod'
+    mode: dev
 test:
   '[app:main]':
     edware:
@@ -300,6 +300,8 @@ test:
           pool_size: 20
           max_overflow: 10
           echo: False
+    # Mode that we're running in.  Currently we support 'dev' and 'prod'
+    mode: prod
 edwappsrv1:
   '[app:main]':
     edware:
@@ -319,7 +321,8 @@ edwappsrv1:
           max_overflow: 10
           echo: False
     auth:
-      policy:
-        secure: true
+      policy.secure: True
       skip.verify: False
+    # Mode that we're running in.  Currently we support 'dev' and 'prod'
+    mode: prod
           

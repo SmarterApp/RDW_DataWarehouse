@@ -259,6 +259,7 @@ function build_rpm {
 
     GIT_HASH="$(git rev-parse HEAD)"
 
+    cd "$WORKSPACE/rpm/SPEC"
     rpmbuild -bb smarter.spec
 
     echo "Finished building RPM"

@@ -1,11 +1,37 @@
 import math
 import random
+import constants_2 as constants
 
 def extract_value_from_normal_distribution(avg, min, max):
     pass
 
+def generate_district_name(list_1, list_2, max_name_length=None):
+    suffix = random.choice(constants.DISTRICT_SUFFIX)
+    # adding the plus 1 to account for the space between the name and the suffix
+    suffix_length = len(suffix) + 1
+    if max_name_length:
+        max_name_length = max_name_length - suffix_length
+    district_name = generate_name_from_lists(list_1, list_2, max_name_length)
+    return district_name + ' ' + suffix
+
+def generate_school_name(school_type, list_1, list_2, max_name_length=None):
+    suffix_list = constants.SCHOOL_TYPE_TO_SUFFIXES[school_type]
+    suffix = random.choice(suffix_list)
+    # adding the plus 1 to account for the space between the name and the suffix
+    suffix_length = len(suffix) + 1
+    if max_name_length:
+        # Need to account for the length of the suffix
+        max_name_length = max_name_length - suffix_length
+    school_name = generate_name_from_lists(list_1, list_2, max_name_length)
+    return school_name + ' ' + suffix
+
 def generate_name_from_lists(list_1, list_2, max_name_length=None):
-    return None
+    name_1 = str(random.choice(list_1))
+    name_2 = str(random.choice(list_2))
+    result = name_1 + ' ' + name_2
+    if max_name_length and len(result) > max_name_length:
+        result = result[:max_name_length]
+    return result
 
 def generate_names_from_lists(count, list1, list2, name_length=None):
     '''
@@ -38,3 +64,11 @@ def generate_names_from_lists(count, list1, list2, name_length=None):
     new_list = []
     new_list.extend(names[0:count])
     return new_list
+
+def create_list_from_file(file_path):
+    with open(file_path, 'r') as name_file:
+        lines = name_file.readlines()
+        names = []
+        for line in lines:
+            names.append(line.strip())
+    return names

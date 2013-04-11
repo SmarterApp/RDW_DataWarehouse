@@ -47,7 +47,6 @@ common:
         issuer_name: http://edwappsrv1.poc.dum.edwdc.net/
         name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
       idp.metadata: ../../resource/idp_metadata.xml
-      skip.verify: True
 
     # Static cache max age
     smarter.resources.static.max_age: 0
@@ -152,6 +151,7 @@ pyweb0:
     auth:
       policy:
         secure: true
+      skip.verify: False
 pyweb1:
   '[app:main]':
     edware:
@@ -174,6 +174,7 @@ pyweb1:
     auth:
       policy:
         secure: true
+      skip.verify: False
 pyweb2:
   '[app:main]':
     edware:
@@ -196,6 +197,7 @@ pyweb2:
     auth:
       policy:
         secure: true
+      skip.verify: False
 pyweb3:
   '[app:main]':
     edware:
@@ -259,6 +261,7 @@ production:
     auth:
       policy:
         secure: true
+      skip.verify: False
 
 development:
   '[app:main]':
@@ -278,7 +281,7 @@ development:
           pool_size: 20
           max_overflow: 10
           echo: False
-          
+    auth.skip.verify: False
 test:
   '[app:main]':
     edware:
@@ -318,4 +321,5 @@ edwappsrv1:
     auth:
       policy:
         secure: true
+      skip.verify: False
           

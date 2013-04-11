@@ -46,6 +46,8 @@ common:
     # Static cache max age
     smarter.resources.static.max_age: 0
     # Run npm update (dev mode only)
+    # TODO:  BUG - this should default the mode.  right now, it outputs both 'mode' if it appears for an env
+    # mode: dev
     run.npm.update: true
 
   '[server:main]':
@@ -124,6 +126,7 @@ common:
 
 pyweb0:
   '[app:main]':
+    mode: prod
     edware:
       schema_name: edware_sds_0_1
       db:
@@ -133,7 +136,7 @@ pyweb0:
           max_overflow: 10
           echo: False
     edauth:
-      schema_name: edware_session_test
+      schema_name: edware_session
       db:
         main:
           url: postgresql+pypostgresql://postgres:edware.qa.2013@dbpool0.qa.dum.edwdc.net:6432/edware
@@ -146,12 +149,13 @@ pyweb0:
         secure: true
       skip.verify: False
       saml:
-        issuer_name: http://edwappsrv1.poc.dum.edwdc.net/
-        idp_server_login_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp
-        idp_server_logout_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp
-        name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
+        issuer_name: https://ha-int-pyweb1.qa.dum.edwdc.net
+        idp_server_login_url: https://auth0.qa.dum.edwdc.net/openam/SSORedirect/metaAlias/idp
+        idp_server_logout_url: https://auth0.qa.dum.edwdc.net/openam/IDPSloRedirect/metaAlias/idp
+        name_qualifier: https://auth0.qa.dum.edwdc.net/openam
 pyweb1:
   '[app:main]':
+    mode: prod
     edware:
       schema_name: edware_sds_0_1
       db:
@@ -161,7 +165,7 @@ pyweb1:
           max_overflow: 10
           echo: False
     edauth:
-      schema_name: edware_session_test
+      schema_name: edware_session
       db:
         main:
           url: postgresql+pypostgresql://postgres:edware.qa.2013@dbpool0.qa.dum.edwdc.net:6432/edware
@@ -174,12 +178,13 @@ pyweb1:
         secure: true
       skip.verify: False
       saml:
-        issuer_name: http://edwappsrv1.poc.dum.edwdc.net/
-        idp_server_login_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp
-        idp_server_logout_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp
-        name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
+        issuer_name: https://ha-int-pyweb1.qa.dum.edwdc.net
+        idp_server_login_url: https://auth0.qa.dum.edwdc.net/openam/SSORedirect/metaAlias/idp
+        idp_server_logout_url: https://auth0.qa.dum.edwdc.net/openam/IDPSloRedirect/metaAlias/idp
+        name_qualifier: https://auth0.qa.dum.edwdc.net/openam
 pyweb2:
   '[app:main]':
+    mode: prod
     edware:
       schema_name: edware_sds_0_1
       db:
@@ -189,7 +194,7 @@ pyweb2:
           max_overflow: 10
           echo: False
     edauth:
-      schema_name: edware_session_test
+      schema_name: edware_session
       db:
         main:
           url: postgresql+pypostgresql://postgres:edware.qa.2013@dbpool0.qa.dum.edwdc.net:6432/edware
@@ -202,12 +207,13 @@ pyweb2:
         secure: true
       skip.verify: False
       saml:
-        issuer_name: http://edwappsrv1.poc.dum.edwdc.net/
-        idp_server_login_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp
-        idp_server_logout_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp
-        name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
+        issuer_name: https://ha-int-pyweb2.qa.dum.edwdc.net
+        idp_server_login_url: https://auth0.qa.dum.edwdc.net/openam/SSORedirect/metaAlias/idp
+        idp_server_logout_url: https://auth0.qa.dum.edwdc.net/openam/IDPSloRedirect/metaAlias/idp
+        name_qualifier: https://auth0.qa.dum.edwdc.net/openam
 pyweb3:
   '[app:main]':
+    mode: prod
     edware:
       schema_name: edware_sds_0_1
       db:
@@ -217,7 +223,7 @@ pyweb3:
           max_overflow: 10
           echo: False
     edauth:
-      schema_name: edware_session_test
+      schema_name: edware_session
       db:
         main:
           url: postgresql+pypostgresql://postgres:edware.qa.2013@dbpool0.qa.dum.edwdc.net:6432/edware
@@ -229,12 +235,13 @@ pyweb3:
       policy:
         secure: true
       saml:
-        issuer_name: http://edwappsrv1.poc.dum.edwdc.net/
-        idp_server_login_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp
-        idp_server_logout_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp
-        name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
+        issuer_name: https://ha-int-pyweb2.qa.dum.edwdc.net
+        idp_server_login_url: https://auth0.qa.dum.edwdc.net/openam/SSORedirect/metaAlias/idp
+        idp_server_logout_url: https://auth0.qa.dum.edwdc.net/openam/IDPSloRedirect/metaAlias/idp
+        name_qualifier: hhttps://auth0.qa.dum.edwdc.net/openam
 jenkins0:
   '[app:main]':
+    mode: prod
     edware:
       schema_name: edware_sds_0_1
       db:

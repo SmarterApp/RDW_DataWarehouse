@@ -4,11 +4,19 @@ define [
 ], ($) ->
   #
   # * EDWARE util
-  # * Handles reusable or common methods required by other EDWARE javascript files
+  # * Handles constants, reusable or common methods required by other EDWARE javascript files
   # 
   
   #global $ window 
-    
+  
+  constants = 
+      psychometric_characterLimits: 250
+      policyContent_characterLimits: 250
+      claims_characterLimits: 140
+      
+  getConstants = (value) ->
+    constants[value]
+      
   displayErrorMessage = (error) ->
     $("#errorMessage").html(error);
     
@@ -31,10 +39,22 @@ define [
   # Given an user_info object, return the uid
   getUid = (userInfo) ->
     userInfo._User__info.uid
+    
+  # truncate the content and add ellipsis "..." if content is more than character limits
+  truncateContent = (content, characterLimits)->
+    if content.length > characterLimits
+      content = content.substr(0, characterLimits)
+      
+      # ignore characters after the last word
+      content = content.substr(0, content.lastIndexOf(' ') + 1) + "..."
+      
+    content
 
   
+  getConstants: getConstants
   displayErrorMessage: displayErrorMessage
   getUrlParams: getUrlParams 
   getRole: getRole
   getUserName: getUserName
   getUid: getUid
+  truncateContent: truncateContent

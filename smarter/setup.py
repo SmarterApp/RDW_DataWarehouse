@@ -6,9 +6,8 @@ here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.txt')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 assets = []
-idp_metadata = os.path.join(os.path.join(os.path.join(here, ".."), "resource"), "idp_metadata.xml")
 
-for root, subFolders, files in os.walk(os.path.join(os.path.dirname(__file__), "..", "assets")):
+for root, subFolders, files in os.walk(os.path.join(os.path.dirname(__file__), "assets")):
     for file in files:
         assets.append(os.path.join(root, file))
 
@@ -53,6 +52,6 @@ setup(name='smarter',
       [console_scripts]
       initialize_smarter_db = smarter.scripts.initializedb:main
       """,
-      data_files=[('smarter/assets', assets),
-                  ('resource', [idp_metadata])]
+      data_files=[('assets', assets),
+                  ('smarter', ['smarter.wsgi'])]
       )

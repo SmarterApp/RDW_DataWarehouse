@@ -216,6 +216,11 @@ function create_sym_link_for_apache {
     /bin/ln -sf ${WORKSPACE}/smarter/smarter.wsgi ${APACHE_DIR}/pyramid_conf
     /bin/ln -sf ${VIRTUALENV_DIR} ${APACHE_DIR}/venv
 
+    compile_assets
+}
+
+function compile_assets {
+
     cd "$WORKSPACE/scripts"
     WORKSPACE_PATH=${WORKSPACE//\//\\\/}
 
@@ -274,6 +279,10 @@ function build_egg {
     # prerequisite we're inside a python3.3 venv
 
     echo "Build an egg"
+    if [ ${1:=""} == "smarter" ]; then
+        compile_assets
+    fi
+
     cd "$WORKSPACE/$1"
     rm -f *.tar.gz
     python setup.py sdist -d ${EGG_REPO}/$1

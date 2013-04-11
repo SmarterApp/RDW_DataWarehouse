@@ -40,6 +40,12 @@ deleteExistingCss = (assetsDir) ->
             files.forEach (file) ->
               if path.extname(file) == '.css'
                   fs.unlinkSync path.join cssDir, file
+              
+copyAssets = (assetsDest, assetsDir) ->
+    # Copy assets into smarter/assets
+    if fs.existsSync assetsDest
+      wrench.rmdirSyncRecursive assetsDest, true
+    wrench.copyDirSyncRecursive assetsDir, assetsDest
 
 task 'build:coffee', ->
     walkDir coffeepath, (source) -> buildCoffee source
@@ -69,6 +75,16 @@ task 'watch', ->
 
 task 'lint', 'Check javascript syntax', ->
     lint 'js/*.js'
+
+task 'copy', 'Copy assets into smarter', (options) ->
+  currentDir = process.cwd()
+  assetsDir = options.assets or currentDir
+  smarterDir = options.smarter or path.join(currentDir, '../smarter')
+  # resolves handles both abs and relative path
+  assetsDir = path.resolve currentDir, assetsDir
+  assetsDest = path.join(smarterDir, 'assets') 
+  
+  copyAssets  assetsDest, assetsDir
 
 option '-a', '--assets [ASSETS_DIR]', 'set the directory for assets'
 option '-s', '--smarter [SMARTER_DIR]', 'set the directory for smarter'
@@ -101,7 +117,4 @@ task 'setup', 'Compile assets into smarter', (options) ->
           fs.symlinkSync(assetsDir, assetsDest, 'dir')
     else if mode == 'PROD'
       invoke 'build'
-      # Copy assets into smarter/assets
-      if fs.existsSync assetsDest
-          wrench.rmdirSyncRecursive assetsDest, true
-      wrench.copyDirSyncRecursive assetsDir, assetsDest
+      copyAssets assetsDest, assetsDir

@@ -21,6 +21,7 @@ var baseConfigs = {
 	    edwareBreadcrumbs: '../../js/src/widgets/breadcrumb/EDWARE.breadcrumbs',
 	    edwareHeader: '../../js/src/widgets/header/EDWARE.header',
 		edwareConfidenceLevelBar: '../../js/src/widgets/confidenceLevelBar/EDWARE.confidenceBar',
+		edwareLOSConfidenceLevelBar: '../../js/src/widgets/losConfidenceLevelBar/EDWARE.losConfidenceBar',
 		edwarePopulationBar: '../../js/src/widgets/populationBar/EDWARE.populationBar',
 		edwareComparingPopulations: '../../js/src/modules/EDWARE.comparingPopulations',
 		edwareFeedback: '../../js/src/modules/EDWARE.feedback',
@@ -30,8 +31,10 @@ var baseConfigs = {
 	    edwareHeaderHtml: '../../js/src/widgets/header/header.html',
 	    edwareFooterHtml: '../../js/src/widgets/footer/template.html',
 		edwareConfidenceLevelBarTemplate: '../../js/src/widgets/confidenceLevelBar/template.html',
+		edwareLOSConfidenceLevelBarTemplate: '../../js/src/widgets/losConfidenceLevelBar/template.html',
 		edwarePopulationBarTemplate: '../../js/src/widgets/populationBar/template.html',
-		edwareAssessmentDropdownViewSelectionTemplate: '../../js/templates/assessment_dropdown_view_selection.html'
+		edwareAssessmentDropdownViewSelectionTemplate: '../../js/templates/assessment_dropdown_view_selection.html',
+		
 	},
 	shim: {
         'jqGrid': {

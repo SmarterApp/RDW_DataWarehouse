@@ -18,6 +18,3 @@ for dependency in dependencies:
     run_setup("setup.py")
     os.chdir(here)
 run_setup("setup.py")
-
-from generate_ini import generate_ini
-generate_ini('development')

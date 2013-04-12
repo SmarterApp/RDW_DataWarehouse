@@ -68,7 +68,6 @@ cp -r %{buildroot}/opt/edware/assets %{buildroot}/opt/edware/smarter
 
 
 %clean
-rm -rf %{buildroot}
 
 
 %files

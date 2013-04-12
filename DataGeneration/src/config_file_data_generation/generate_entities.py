@@ -1,9 +1,9 @@
 __author__ = 'abrien'
 
-from entities_2 import InstitutionHierarchy, Student, Section
+from entities_2 import InstitutionHierarchy, Student, Section, Assessment, Staff, AssessmentOutcome
 from idgen import IdGen
-from constants_2 import GENDERS
 from generate_names import generate_first_or_middle_name, generate_last_name
+import constants_2 as constants
 import util_2 as util
 import random
 import datetime
@@ -27,7 +27,7 @@ def generate_student(section_guid, grade, state_code, district_guid, school_guid
     student_rec_id = id_generator.get_id()
     # TODO: maybe change to UUID
     student_guid = id_generator.get_id()
-    gender = random.choice(GENDERS)
+    gender = random.choice(constants.GENDERS)
     first_name = generate_first_or_middle_name(gender)
     last_name = generate_last_name()
     address_1 = util.generate_address(street_names)
@@ -78,3 +78,97 @@ def generate_sections(number_of_sections, subject_name, grade, state_code, distr
         section = generate_section(subject_name, grade, state_code, district_guid, school_guid, i, i)
         sections.append(section)
     return sections
+
+
+def generate_assessment(asmt_type, asmt_period, asmt_period_year, asmt_version, asmt_subject, asmt_grade, claim_list,
+                        performance_levels, cut_points, asmt_score_min, asmt_score_max, asmt_claim_1_name, asmt_claim_2_name, asmt_claim_3_name, asmt_claim_4_name,
+                        asmt_perf_lvl_name_1, asmt_perf_lvl_name_2, asmt_perf_lvl_name_3, asmt_perf_lvl_name_4, asmt_perf_lvl_name_5,
+                        asmt_score_min, asmt_score_max, asmt_claim_1_score_min, asmt_claim_1_score_max, asmt_claim_1_score_weight,
+                        asmt_claim_2_score_min, asmt_claim_2_score_max, asmt_claim_2_score_weight,
+                        asmt_claim_3_score_min, asmt_claim_3_score_max, asmt_claim_3_score_weight,
+                        asmt_claim_4_score_min, asmt_claim_4_score_max, asmt_claim_4_score_weight,
+                        asmt_custom_metadata, asmt_cut_point_1, asmt_cut_point_2, asmt_cut_point_3, asmt_cut_point_4):
+
+    id_generator = IdGen()
+
+    asmt_rec_id = id_generator.get_id()
+    asmt_guid = id_generator.get_id()
+
+    from_date = datetime.date.today()
+    to_date = datetime.date.today()
+    most_recent = True
+
+    asmt = Assessment(asmt_rec_id, asmt_guid, asmt_type, asmt_period, asmt_period_year, asmt_version, asmt_subject,
+                      asmt_grade, from_date, asmt_claim_1_name, asmt_claim_2_name, asmt_claim_3_name, asmt_claim_4_name,
+                      asmt_perf_lvl_name_1, asmt_perf_lvl_name_2, asmt_perf_lvl_name_3, asmt_perf_lvl_name_4, asmt_perf_lvl_name_5,
+                      asmt_score_min, asmt_score_max, asmt_claim_1_score_min, asmt_claim_1_score_max, asmt_claim_1_score_weight,
+                      asmt_claim_2_score_min, asmt_claim_2_score_max, asmt_claim_2_score_weight,
+                      asmt_claim_3_score_min, asmt_claim_3_score_max, asmt_claim_3_score_weight,
+                      asmt_claim_4_score_min, asmt_claim_4_score_max, asmt_claim_4_score_weight,
+                      asmt_custom_metadata, asmt_cut_point_1, asmt_cut_point_2, asmt_cut_point_3, asmt_cut_point_4,
+                      to_date, most_recent)
+
+    return asmt
+
+
+def generate_assessments(grades):
+        pass
+
+
+def generate_staff(male_first_names, female_first_names, last_names, gender, section_guid, hier_user_type, state_code, district_guid, school_guid):
+
+    id_generator = IdGen()
+    staff_rec_id = id_generator.get_id()
+    staff_guid = id_generator.get_id()
+    #TODO: Change to name getting algorithm
+    first_name = random.choice(male_first_names if gender == 'Male' else female_first_names)
+    last_name = random.choice(last_names)
+    # TODO: Set date and most recent more intelligently
+    from_date = datetime.date.today()
+    most_recent = True
+    to_date = datetime.date.today()
+
+    staff = Staff(staff_rec_id, staff_guid, first_name, last_name, section_guid, hier_user_type, state_code,
+                  district_guid, school_guid, from_date, most_recent, to_date)
+
+    return staff
+
+
+def generate_fact_assessment_outcome(asmt_rec_id, student_guid, teacher_guid, state_code, district_guid, school_guid, section_guid,
+                                     inst_hier_rec_id, section_rec_id, where_taken_id, where_taken_name, asmt_grade, enrl_grade,
+                                     date_taken, asmt_score, asmt_score_range_min, asmt_score_range_max, asmt_perf_lvl,
+                                     asmt_claim_1_score, asmt_claim_1_score_range_min, asmt_claim_1_score_range_max,
+                                     asmt_claim_2_score, asmt_claim_2_score_range_min, asmt_claim_2_score_range_max,
+                                     asmt_claim_3_score, asmt_claim_3_score_range_min, asmt_claim_3_score_range_max,
+                                     asmt_claim_4_score, asmt_claim_4_score_range_min, asmt_claim_4_score_range_max):
+    id_generator = IdGen()
+    asmnt_outcome_rec_id = id_generator.get_id()
+
+    date_taken_day = date_taken.day
+    date_taken_month = date_taken.month
+    date_taken_year = date_taken.year
+    asmt_create_date = datetime.date.today()
+    status = 'C'
+    most_recent = True
+
+    asmt_outcome = AssessmentOutcome(asmnt_outcome_rec_id, asmt_rec_id, student_guid,
+                                     teacher_guid, state_code, district_guid, school_guid, section_guid, inst_hier_rec_id, section_rec_id,
+                                     where_taken_id, where_taken_name, asmt_grade, enrl_grade, date_taken, date_taken_day,
+                                     date_taken_month, date_taken_year, asmt_score, asmt_score_range_min, asmt_score_range_max, asmt_perf_lvl,
+                                     asmt_claim_1_score, asmt_claim_1_score_range_min, asmt_claim_1_score_range_max,
+                                     asmt_claim_2_score, asmt_claim_2_score_range_min, asmt_claim_2_score_range_max,
+                                     asmt_claim_3_score, asmt_claim_3_score_range_min, asmt_claim_3_score_range_max,
+                                     asmt_claim_4_score, asmt_claim_4_score_range_min, asmt_claim_4_score_range_max,
+                                     asmt_create_date, status, most_recent)
+
+    return asmt_outcome
+
+
+def generate_fact_assessment_outcomes():
+    pass
+
+
+
+
+
+

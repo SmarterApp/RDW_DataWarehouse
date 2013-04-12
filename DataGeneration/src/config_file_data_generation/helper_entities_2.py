@@ -49,6 +49,7 @@ class District:
     def get_schools(self):
         return self.schools
 
+
 class School:
     '''
     School Object
@@ -66,3 +67,12 @@ class School:
         return self.sections
 
 
+class Claim:
+    '''
+    claim information to be used by the assessment object. Simply defines basic parameters about claim.
+    '''
+    def __init__(self, claim_name, claim_score_min, claim_score_max, claim_score_weight):
+        self.claim_name = claim_name
+        self.claim_score_min = claim_score_min
+        self.claim_score_max = claim_score_max
+        self.claim_score_weight = claim_score_weight

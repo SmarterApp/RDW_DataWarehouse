@@ -11,6 +11,7 @@ from generate_helper_entities import generate_state, generate_district, generate
 from datetime import date
 from entities_2 import InstitutionHierarchy, Section, Assessment, AssessmentOutcome, \
     Staff, ExternalUserStudent, Student
+from read_naming_lists import read_name_files
 
 
 DATAFILE_PATH = os.path.dirname(os.path.realpath(__file__))
@@ -44,7 +45,7 @@ def generate_data_from_config_file(config_module):
     # First thing: prep the csv files by deleting their contents and adding appropriate headers
     prepare_csv_files(ENTITY_TO_PATH_DICT)
     # Next, prepare lists that are used to name various entities
-    name_list_dictionary = generate_name_list_dictionary(NAMES_TO_PATH_DICT)
+
     # We're going to use the birds and fish list to name our districts
     district_names_1 = name_list_dictionary[BIRDS]
     district_names_2 = name_list_dictionary[FISH]

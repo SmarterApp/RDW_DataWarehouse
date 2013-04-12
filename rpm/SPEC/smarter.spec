@@ -16,7 +16,8 @@ AutoReqProv: no
 %define _unpackaged_files_terminate_build 0
 
 %description
-building EdWare smarter rpm
+EdWare smarter 
+commit: ${GIT_COMMIT:="UNKNOWN"}
 
 
 %prep

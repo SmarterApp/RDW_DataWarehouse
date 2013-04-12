@@ -52,8 +52,8 @@ define [
     subject = rowObject.assessments[asmt_type]
     
     if subject
-      results =  edwareLOSConfidenceLevelBar.create subject, 160
-      "<div class='asmtScore' style='background-color:"+ subject.score_color + "; color: white;'>" + subject.asmt_score + "</div><div class = 'confidenceLevel'>" + results + "</div>"      
+      results =  edwareLOSConfidenceLevelBar.create subject, 120
+      "<div class='asmtScore' style='background-color:"+ subject.score_bg_color + "; color: "+ subject.score_text_color + ";'>" + subject.asmt_score + "</div><div class = 'confidenceLevel'>" + results + "</div>"      
     else
       ""   
 

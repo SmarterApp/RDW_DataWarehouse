@@ -118,18 +118,47 @@ h6 {
   
   h2 {
      color: @color-A1;
+     margin-left: 20px;
   }
+}
+
+#jqgh_gridTable_assessments.subject1.asmt_score {
+  overflow: visible;
+}
+
+#jqgh_gridTable_assessments.subject2.asmt_score {
+  overflow: visible;
 }
 
 /* Style for performance bar displaying in the table*/
 table {  
+  th div.header_perfBar {
+    margin-left: 48px; 
+    padding: 0px; 
+    position: absolute !important; 
+    margin-bottom: 0px;  
+    bottom: 0px;
+    
+    .progress {
+      border-radius: 0;
+      box-shadow: none;
+      padding: 0;
+      background: none;
+      margin-bottom: 0;
+      
+      .bar {
+        border-right: solid 1px @color-B4;
+        padding: 3px;
+      }
+    }
+  }
   .asmtScore {
     float: left;
     font-weight: bold;
     font-size: 14px;
     padding: 0px 4px 0px 4px;
     border-radius: 3px;
-    margin: 4px 10px 0 0px;
+    margin: 4px 10px 0 3px;
   }
   .confidenceLevel {
     height: 30px;
@@ -149,11 +178,11 @@ table {
     }
     
     .scoreWrapper {
-      margin-left: 50px;
+      margin-left: 48px;
     }
     .transWrapper {
       margin-top: auto;
-      margin-left: 50px;
+      margin-left: 48px;
     }
     
     .indicator {
@@ -410,6 +439,7 @@ table {
   
 #select_measure {
   float: right;
+  margin-right: 20px;
   
   .btn-group {
     float: right;

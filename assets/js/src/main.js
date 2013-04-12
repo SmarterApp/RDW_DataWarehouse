@@ -25,6 +25,7 @@ require({
 		edwareBreadcrumbsTemplate: '../widgets/breadcrumb/template.html',
 		edwareConfidenceLevelBarTemplate: '../widgets/confidenceLevelBar/template.html',
 		edwareLOSConfidenceLevelBarTemplate: '../widgets/losConfidenceLevelBar/template.html',
+		edwareLOSHeaderConfidenceLevelBarTemplate: '../../templates/LOS_header_perf_bar.html',
 		edwarePopulationBarTemplate: '../widgets/populationBar/template.html',
 		edwareAssessmentDropdownViewSelectionTemplate: '../../templates/assessment_dropdown_view_selection.html',
 		edwareHeaderHtml: '../widgets/header/header.html',

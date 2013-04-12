@@ -138,9 +138,9 @@ define [
            $("div.ui-jqgrid-sdiv").insertBefore $("div.ui-jqgrid-bdiv")
            
            if window.innerHeight > 800
-            $("#gview_gridTable > .ui-jqgrid-bdiv").css('height', window.innerHeight * .7);
+            $("#gview_gridTable > .ui-jqgrid-bdiv").css('height', window.innerHeight * .9);
            else
-            $("#gview_gridTable > .ui-jqgrid-bdiv").css('height', window.innerHeight * .4);
+            $("#gview_gridTable > .ui-jqgrid-bdiv").css('height', window.innerHeight * .6);
 
       if footerData
         gridOptions.footerrow = true

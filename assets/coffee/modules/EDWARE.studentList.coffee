@@ -11,7 +11,8 @@ define [
   "edwareFeedback"
   "edwareUtil"
   "edwareFooter"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareHeader, edwareAssessmentDropdownViewSelectionTemplate, edwareFeedback, edwareUtil, edwareFooter) ->
+  "text!edwareLOSHeaderConfidenceLevelBarTemplate"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareHeader, edwareAssessmentDropdownViewSelectionTemplate, edwareFeedback, edwareUtil, edwareFooter, edwareLOSHeaderConfidenceLevelBarTemplate) ->
 
   assessmentsData = {}
   studentsConfig = {}
@@ -28,7 +29,7 @@ define [
 
     edwareDataProxy.getDatafromSource "../data/color.json", options, (defaultColors) ->
       
-      getStudentData "/data/list_of_students", params, defaultColors, (assessmentsData, contextData, subjectsData, claimsData, userData) ->
+      getStudentData "/data/list_of_students", params, defaultColors, (assessmentsData, contextData, subjectsData, claimsData, userData, cutPointsData) ->
         # set school name as the page title from breadcrumb
         $("#school_name").html contextData.items[2].name
         
@@ -43,11 +44,12 @@ define [
             studentsConfig = JSON.parse(output)
           
           # populate select view
-          defaultView = createAssessmentViewSelectDropDown studentsConfig.customViews
+          defaultView = createAssessmentViewSelectDropDown studentsConfig.customViews, cutPointsData
           
           $('#breadcrumb').breadcrumbs(contextData)
           
           renderStudentGrid(defaultView)
+          renderHeaderPerfBar(cutPointsData)
           
           # Generate footer links
           $('#footer').generateFooter('list_of_students')
@@ -59,6 +61,35 @@ define [
             uid = edwareUtil.getUid userData
             edwareFeedback.renderFeedback(role, uid, "list_of_students")
           
+  renderHeaderPerfBar = (cutPointsData) ->
+    for key of cutPointsData
+        items = cutPointsData[key]
+        items.bar_width = 120
+        
+        items.asmt_score_min = assessmentsData["ALL"][0].assessments[key].asmt_score_min
+        items.asmt_score_max = assessmentsData["ALL"][0].assessments[key].asmt_score_max
+        
+        # Last cut point of the assessment
+        items.last_interval = items.cut_point_intervals[items.cut_point_intervals.length-1]
+      
+        items.score_min_max_difference =  items.asmt_score_max - items.asmt_score_min
+        
+        # Calculate width for first cutpoint
+        items.cut_point_intervals[0].asmt_cut_point =  Math.round(((items.cut_point_intervals[0].interval - items.asmt_score_min) / items.score_min_max_difference) * items.bar_width)
+        
+        # Calculate width for last cutpoint
+        items.last_interval.asmt_cut_point =  Math.round(((items.last_interval.interval - items.cut_point_intervals[items.cut_point_intervals.length-2].interval) / items.score_min_max_difference) * items.bar_width)
+        
+        # Calculate width for cutpoints other than first and last cutpoints
+        j = 1     
+        while j < items.cut_point_intervals.length - 1
+          items.cut_point_intervals[j].asmt_cut_point =  Math.round(((items.cut_point_intervals[j].interval - items.cut_point_intervals[j-1].interval) / items.score_min_max_difference) * items.bar_width)
+          j++
+        # use mustache template to display the json data  
+        output = Mustache.to_html edwareLOSHeaderConfidenceLevelBarTemplate, items
+        $("#"+key+"_perfBar").html(output) 
+        
+    
   renderStudentGrid = (viewName)->
     $("#gbox_gridTable").remove()
     $("#content").append("<table id='gridTable'></table>")
@@ -111,9 +142,9 @@ define [
       formatAssessmentsData cutPointsData
       
       if callback
-        callback assessmentsData, contextData, subjectsData, claimsData, userData
+        callback assessmentsData, contextData, subjectsData, claimsData, userData, cutPointsData
       else
-        assessmentArray assessmentsData, contextData, subjectsData, claimsData, userData
+        assessmentArray assessmentsData, contextData, subjectsData, claimsData, userData, cutPointsData
       
       
   getStudentsConfig = (configURL, callback) ->
@@ -133,7 +164,7 @@ define [
           data
 
   # creating the assessment view drop down
-  createAssessmentViewSelectDropDown = (customViewsData)->
+  createAssessmentViewSelectDropDown = (customViewsData, cutPointsData)->
     items = []
     for key of customViewsData
       value = customViewsData[key]
@@ -150,6 +181,7 @@ define [
         viewName = $(this).attr "id"
         $("#select_measure_current_view").html $('#' + viewName).text()
         renderStudentGrid viewName
+        renderHeaderPerfBar cutPointsData
         
         # Add dark border color between Math and ELA section to emphasize the division
         if viewName is "Math_ELA"
@@ -168,6 +200,11 @@ define [
   # For each subject, filter out its data
   # Also append cutpoints & colors into each assessment
   formatAssessmentsData = (assessmentCutpoints) ->
+    
+    # use mustache template to display the json data  
+    output = Mustache.to_html edwareLOSHeaderConfidenceLevelBarTemplate, assessmentCutpoints 
+      
+      
     # We keep a set of data for each assessment subject
     allAssessments = {'ALL': assessmentsData}
     for key, value of subjectsData
@@ -180,7 +217,8 @@ define [
         if key of assessment
           cutpoint = assessmentCutpoints[key]
           $.extend assessment[key], cutpoint
-          assessment[key].score_color = assessment[key].cut_point_intervals[assessment[key].asmt_perf_lvl-1].bg_color
+          assessment[key].score_bg_color = assessment[key].cut_point_intervals[assessment[key].asmt_perf_lvl-1].bg_color
+          assessment[key].score_text_color = assessment[key].cut_point_intervals[assessment[key].asmt_perf_lvl-1].text_color
           # save the assessment to the particular subject
           allAssessments[value.toUpperCase()].push row
     assessmentsData = allAssessments

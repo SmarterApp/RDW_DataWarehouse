@@ -256,7 +256,8 @@ function build_rpm {
     echo "RPM_VERSION:"
     echo $RPM_VERSION
 
-    GIT_HASH="$(git rev-parse HEAD)"
+    GIT_COMMIT="$(git rev-parse HEAD)"
+    export GIT_COMMIT
 
     cd "$WORKSPACE/rpm/SPEC"
     rpmbuild -bb smarter.spec

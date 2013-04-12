@@ -256,13 +256,13 @@ function build_rpm {
     echo "RPM_VERSION:"
     echo $RPM_VERSION
 
-    GIT_COMMIT="$(git rev-parse HEAD)"
-    export GIT_COMMIT
+    export GIT_COMMIT="$(git rev-parse HEAD)"
 
     cd "$WORKSPACE/rpm/SPEC"
     rpmbuild -bb smarter.spec
     
-    scp /home/jenkins/rpmbuild/RPMS/x86_64/*.rpm pynest@${PYNEST_SERVER}:/opt/wgen/rpm
+    scp /home/jenkins/rpmbuild/RPMS/x86_64/smarter-${RPM_VERSION}-${BUILD_NUMBER}.el6.x86_64.rpm pynest@${PYNEST_SERVER}:/opt/wgen/rpms
+    ssh pynest@${PYNEST_SERVER} "ln -sf /opt/wgen/rpms/smarter-${RPM_VERSION}-${BUILD_NUMBER}.el6.x86_64.rpm /opt/wgen/rpms/smarter-latest.rpm"
 
     echo "Finished building RPM"
 }

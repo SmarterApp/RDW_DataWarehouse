@@ -24,3 +24,4 @@ smarter.egg-info
 # added gitignore file  # 
 # to the csv directory  #
 #########################
+.project

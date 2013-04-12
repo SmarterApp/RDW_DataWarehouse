@@ -25,19 +25,19 @@ def flatten_yaml(a_dict, result, path=""):
     '''
     This method runs recursively and traversing the dictionary to flatten it and load the result into the result object.
     '''
-    for k in a_dict:
-        if type(a_dict[k]) != dict:
-            value = "" if a_dict[k] is None else str(a_dict[k])
-            result[path + k] = value
+    for key in a_dict:
+        if type(a_dict[key]) != dict:
+            value = "" if a_dict[key] is None else str(a_dict[key])
+            result[path + key] = value
         else:
             # if it's a root, find (or add) a root dict and flatten its sub-tree under it
-            group_dict = result.get(k, {})
-            if k.startswith('[') and k.endswith(']'):
+            group_dict = result.get(key, {})
+            if key.startswith('[') and key.endswith(']'):
                 # run recursively, but don't add this level to the path, as it is the root (group) level.
-                result[k] = flatten_yaml(a_dict[k], group_dict, path)
+                result[key] = flatten_yaml(a_dict[key], group_dict, path)
             else:
                 # run recursively adding the current level to the path.
-                result = flatten_yaml(a_dict[k], result, path + k + ".")
+                result = flatten_yaml(a_dict[key], result, path + key + ".")
     return result
 
 
@@ -57,6 +57,12 @@ def generate_ini(env, input_file='settings.yaml'):
     # if the environment is in the yaml file, we use it. otherwise, we just use the common part.
     if env in settings:
         env_settings = settings[env]
+    else:
+        print(str.format("could not find environment {0} in the yaml file", env))
+
+    if 'common' not in settings:
+        raise InvalidParameterException("could not find the common section in the yaml file")
+
     common_settings = settings['common']
 
     # first we load the common section into the yaml_object

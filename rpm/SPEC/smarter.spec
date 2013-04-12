@@ -27,6 +27,7 @@ mkdir -p %{buildroot}/opt/edware
 cp -r ${WORKSPACE}/smarter %{buildroot}/opt/edware
 cp -r ${WORKSPACE}/scripts %{buildroot}/opt/edware
 cp -r ${WORKSPACE}/assets %{buildroot}/opt/edware/assets
+touch %{buildroot}/opt/edware/assets/__init__.py
 
 
 
@@ -35,26 +36,30 @@ cp -r ${WORKSPACE}/assets %{buildroot}/opt/edware/assets
 export LANG=en_US.UTF-8
 /opt/python3/bin/virtualenv-3.3 --distribute virtualenv
 source virtualenv/bin/activate
-cd ${WORKSPACE}/edschema
-python setup.py develop
-cd -
-cd ${WORKSPACE}/edauth
-python setup.py develop
-cd -
-cd ${WORKSPACE}/edapi
-python setup.py develop
-cd -
-cd %{buildroot}/opt/edware/smarter
-python setup.py develop
-cd -
 
 cd %{buildroot}/opt/edware/scripts
 BUILDROOT=%{buildroot}
 WORKSPACE_PATH=${BUILDROOT//\//\\\/}
 sed -i.bak "s/assets.directory = \/path\/assets/assets.directory = ${WORKSPACE_PATH}\/opt\/edware\/assets/g" compile_assets.ini
 sed -i.bak "s/smarter.directory = \/path\/smarter/smarter.directory = ${WORKSPACE_PATH}\/opt\/edware\/smarter/g" compile_assets.ini
+
 python compile_assets.py
 cd -
+
+cd ${WORKSPACE}/edschema
+python setup.py install
+cd -
+cd ${WORKSPACE}/edauth
+python setup.py install
+cd -
+cd ${WORKSPACE}/edapi
+python setup.py install
+cd -
+cd %{buildroot}/opt/edware/smarter
+mv ../assets .
+python setup.py install
+cd -
+
 deactivate
 #/opt/python3/bin/virtualenv-3.3 --relocatable virtualenv
 echo -e "/opt/edware/smarter\n." > virtualenv/lib/python3.3/site-packages/smarter.egg-link
@@ -66,8 +71,8 @@ sed -i 's/\/home\/jenkins\/rpmbuild\/BUILD/\/opt/g' virtualenv/bin/pcreate
 
 %install
 cp -r virtualenv %{buildroot}/opt
-rm -rf %{buildroot}/opt/edware/smarter/assets
-cp -r %{buildroot}/opt/edware/assets %{buildroot}/opt/edware/smarter
+#rm -rf %{buildroot}/opt/edware/smarter/assets
+#cp -r %{buildroot}/opt/edware/assets %{buildroot}/opt/edware/smarter
 
 
 %clean
@@ -75,7 +80,7 @@ cp -r %{buildroot}/opt/edware/assets %{buildroot}/opt/edware/smarter
 
 %files
 %defattr(644,root,root,-)
-/opt/edware/smarter/*
+#/opt/edware/smarter/*
 /opt/virtualenv/include/*
 /opt/virtualenv/lib/*
 /opt/virtualenv/lib64

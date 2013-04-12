@@ -23,7 +23,7 @@ VERBOSE = False
 
 def flatten_yaml(aDict, result, path=""):
     '''
-    This method runs recursively and traversing the dictionary to flatten in an ini format
+    This method runs recursively and traversing the dictionary to flatten it and load the result into the result object.
     '''
     for k in aDict:
         if type(aDict[k]) != dict:
@@ -33,39 +33,53 @@ def flatten_yaml(aDict, result, path=""):
             # if it's a root, find (or add) a root dict and flatten its sub-tree under it
             group_dict = result.get(k, {})
             if k.startswith('[') and k.endswith(']'):
+                # run recursively, but don't add this level to the path, as it is the root (group) level.
                 result[k] = flatten_yaml(aDict[k], group_dict, path)
             else:
+                # run recursively adding the current level to the path.
                 result = flatten_yaml(aDict[k], result, path + k + ".")
     return result
 
 
 def generate_ini(env, input_file='settings.yaml'):
+    '''
+    This tool is a standalone tool that convert a yaml file into its equivalent ini file.
+    '''
     try:
         with open(input_file, 'r') as f:
             settings = f.read()
     except:
         raise InvalidParameterException(str.format("could not find or open file {0} for read", input_file))
 
+    # use PyYaml to load the file's content
     settings = yaml.load(settings)
 
-    if env not in settings:
-        raise InvalidParameterException(str.format("could not find settings for {0} in the yaml file", env))
-    env_settings = settings[env]
+    # if the environment is in the yaml file, we use it. otherwise, we just use the common part.
+    if env in settings:
+        env_settings = settings[env]
     common_settings = settings['common']
 
+    # first we load the common section into the yamlObject
     yamlObject = flatten_yaml(common_settings, {}, "")
-    yamlObject = flatten_yaml(env_settings, yamlObject, "")
+    # if we have environment specific data, we use it to add/override to the common section
+    if env_settings:
+        yamlObject = flatten_yaml(env_settings, yamlObject, "")
 
     result = ""
+    # we read each group and write it to the result string with its content.
     for group in yamlObject:
         result = result + group + "\n"
         group_settings = yamlObject[group]
+        # we add all settings with their values.
         result = result + ''.join([setting + " = " + group_settings[setting] + "\n" for setting in group_settings])
 
+    # we presume that the result file has the environment name.
     output_file = env + ".ini"
     try:
+        # we overwrite the entire file's content
         with open(output_file, 'w') as f:
             f.write(result)
+        # we pring the result (consider removing this one)
         print(result)
     except:
         raise IOError(str.format('could not open file {0} for write', output_file))

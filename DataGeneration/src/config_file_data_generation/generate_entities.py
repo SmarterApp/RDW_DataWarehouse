@@ -81,56 +81,32 @@ def generate_sections(number_of_sections, subject_name, grade, state_code, distr
 
 
 def generate_assessment(asmt_type, asmt_period, asmt_period_year, asmt_version, asmt_subject, asmt_grade, claim_list,
-                        performance_levels, cut_points, asmt_score_min, asmt_score_max, asmt_custom_metadata):
+                        performance_levels, cut_points, asmt_score_min, asmt_score_max, asmt_claim_1_name, asmt_claim_2_name, asmt_claim_3_name, asmt_claim_4_name,
+                        asmt_perf_lvl_name_1, asmt_perf_lvl_name_2, asmt_perf_lvl_name_3, asmt_perf_lvl_name_4, asmt_perf_lvl_name_5,
+                        asmt_score_min, asmt_score_max, asmt_claim_1_score_min, asmt_claim_1_score_max, asmt_claim_1_score_weight,
+                        asmt_claim_2_score_min, asmt_claim_2_score_max, asmt_claim_2_score_weight,
+                        asmt_claim_3_score_min, asmt_claim_3_score_max, asmt_claim_3_score_weight,
+                        asmt_claim_4_score_min, asmt_claim_4_score_max, asmt_claim_4_score_weight,
+                        asmt_custom_metadata, asmt_cut_point_1, asmt_cut_point_2, asmt_cut_point_3, asmt_cut_point_4):
+
     id_generator = IdGen()
 
     asmt_rec_id = id_generator.get_id()
     asmt_guid = id_generator.get_id()
-
-    asmt_claim_1_name = claim_list[0].claim_name
-    asmt_claim_1_score_min = claim_list[0].claim_score_min
-    asmt_claim_1_score_max = claim_list[0].claim_score_max
-    asmt_claim_1_score_weight = claim_list[0].claim_score_weight
-
-    asmt_claim_2_name = claim_list[1].claim_name
-    asmt_claim_2_score_min = claim_list[1].claim_score_min
-    asmt_claim_2_score_max = claim_list[1].claim_score_max
-    asmt_claim_2_score_weight = claim_list[1].claim_score_weight
-
-    asmt_claim_3_name = claim_list[2].claim_name
-    asmt_claim_3_score_min = claim_list[2].claim_score_min
-    asmt_claim_3_score_max = claim_list[2].claim_score_max
-    asmt_claim_3_score_weight = claim_list[2].claim_score_weight
-
-    asmt_claim_4_name = claim_list[3].claim_name if len(claim_list) > 3 else None
-    asmt_claim_4_score_min = claim_list[3].claim_score_min if len(claim_list) > 3 else None
-    asmt_claim_4_score_max = claim_list[3].claim_score_max if len(claim_list) > 3 else None
-    asmt_claim_4_score_weight = claim_list[3].claim_score_weight if len(claim_list) > 3 else None
-
-    asmt_perf_lvl_name_1 = performance_levels[0]
-    asmt_perf_lvl_name_2 = performance_levels[1]
-    asmt_perf_lvl_name_3 = performance_levels[2]
-    asmt_perf_lvl_name_4 = performance_levels[3]
-    asmt_perf_lvl_name_5 = performance_levels[4] if len(performance_levels) > 4 else None
-
-    asmt_cut_point_1 = cut_points[0]
-    asmt_cut_point_2 = cut_points[1]
-    asmt_cut_point_3 = cut_points[2]
-    asmt_cut_point_4 = cut_points[3]
 
     from_date = datetime.date.today()
     to_date = datetime.date.today()
     most_recent = True
 
     asmt = Assessment(asmt_rec_id, asmt_guid, asmt_type, asmt_period, asmt_period_year, asmt_version, asmt_subject,
-                 asmt_grade, from_date, asmt_claim_1_name, asmt_claim_2_name, asmt_claim_3_name, asmt_claim_4_name,
-                 asmt_perf_lvl_name_1, asmt_perf_lvl_name_2, asmt_perf_lvl_name_3, asmt_perf_lvl_name_4, asmt_perf_lvl_name_5,
-                 asmt_score_min, asmt_score_max, asmt_claim_1_score_min, asmt_claim_1_score_max, asmt_claim_1_score_weight,
-                 asmt_claim_2_score_min, asmt_claim_2_score_max, asmt_claim_2_score_weight,
-                 asmt_claim_3_score_min, asmt_claim_3_score_max, asmt_claim_3_score_weight,
-                 asmt_claim_4_score_min, asmt_claim_4_score_max, asmt_claim_4_score_weight,
-                 asmt_custom_metadata, asmt_cut_point_1, asmt_cut_point_2, asmt_cut_point_3, asmt_cut_point_4,
-                 to_date, most_recent)
+                      asmt_grade, from_date, asmt_claim_1_name, asmt_claim_2_name, asmt_claim_3_name, asmt_claim_4_name,
+                      asmt_perf_lvl_name_1, asmt_perf_lvl_name_2, asmt_perf_lvl_name_3, asmt_perf_lvl_name_4, asmt_perf_lvl_name_5,
+                      asmt_score_min, asmt_score_max, asmt_claim_1_score_min, asmt_claim_1_score_max, asmt_claim_1_score_weight,
+                      asmt_claim_2_score_min, asmt_claim_2_score_max, asmt_claim_2_score_weight,
+                      asmt_claim_3_score_min, asmt_claim_3_score_max, asmt_claim_3_score_weight,
+                      asmt_claim_4_score_min, asmt_claim_4_score_max, asmt_claim_4_score_weight,
+                      asmt_custom_metadata, asmt_cut_point_1, asmt_cut_point_2, asmt_cut_point_3, asmt_cut_point_4,
+                      to_date, most_recent)
 
     return asmt
 
@@ -166,6 +142,25 @@ def generate_multiple_staff(number_of_staff, hier_user_type, state_code=None, di
 
 def generate_fact_assessment_outcome(assessment, student, ):
     pass
+
+    date_taken_day = date_taken.day
+    date_taken_month = date_taken.month
+    date_taken_year = date_taken.year
+    asmt_create_date = datetime.date.today()
+    status = 'C'
+    most_recent = True
+
+    asmt_outcome = AssessmentOutcome(asmnt_outcome_rec_id, asmt_rec_id, student_guid,
+                                     teacher_guid, state_code, district_guid, school_guid, section_guid, inst_hier_rec_id, section_rec_id,
+                                     where_taken_id, where_taken_name, asmt_grade, enrl_grade, date_taken, date_taken_day,
+                                     date_taken_month, date_taken_year, asmt_score, asmt_score_range_min, asmt_score_range_max, asmt_perf_lvl,
+                                     asmt_claim_1_score, asmt_claim_1_score_range_min, asmt_claim_1_score_range_max,
+                                     asmt_claim_2_score, asmt_claim_2_score_range_min, asmt_claim_2_score_range_max,
+                                     asmt_claim_3_score, asmt_claim_3_score_range_min, asmt_claim_3_score_range_max,
+                                     asmt_claim_4_score, asmt_claim_4_score_range_min, asmt_claim_4_score_range_max,
+                                     asmt_create_date, status, most_recent)
+
+    return asmt_outcome
 
 
 def generate_fact_assessment_outcomes():

@@ -137,7 +137,7 @@ def generate_data_from_config_file(config_module):
                                     # TODO: More accurate math for num_of_students
                                     # TODO: Do we need to account for the percentages of kids that take ELA or MATH here?
                                     number_of_students = number_of_students_in_grade // number_of_sections
-                                    students_in_section =  generate_students_from_institution_hierarchy(number_of_students, institution_hierarchy, grade, section.section_guid, name_list_dictionary[BIRDS])
+                                    students_in_section = generate_students_from_institution_hierarchy(number_of_students, institution_hierarchy, grade, section.section_guid, name_list_dictionary[BIRDS])
                                     students_in_school += students_in_section
                                     # TODO: should we add some randomness here? What are acceptable numbers? 1-2? 1-3?
                                     number_of_staff_in_section = 1

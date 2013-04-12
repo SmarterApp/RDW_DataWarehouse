@@ -4,8 +4,8 @@ Created on Feb 16, 2013
 @author: dip
 '''
 import unittest
-from edauth.security.views import login, saml2_post_consumer, login_callback, \
-    logout_redirect, _get_cipher
+from edauth.security.views import login, saml2_post_consumer, logout_redirect, _get_cipher,\
+    _get_landing_page
 from pyramid import testing
 from pyramid.testing import DummyRequest
 from pyramid.httpexceptions import HTTPFound, HTTPForbidden
@@ -182,11 +182,11 @@ class TestViews(unittest.TestCase):
         http = saml2_post_consumer(self.__request)
         self.assertEquals(http.location, 'http://example.com/dummy/login')
 
-    def test_login_callback(self):
+    def test_landing_page(self):
         self.__request.GET = {}
-        self.__request.GET['request'] = "http://mydirecturl.com"
+        url = "http://mydirecturl.com"
         expected = '<a href="http://mydirecturl.com" id=url>'
-        resp = login_callback(self.__request)
+        resp = _get_landing_page(self.__request, url, {})
         self.assertIsInstance(resp, Response)
         self.assertIn(expected, str(resp.body))
 

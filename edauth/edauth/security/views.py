@@ -14,8 +14,7 @@ from edauth.security.session_manager import create_new_user_session, \
     delete_session, get_user_session
 from edauth.utils import convert_to_int
 from pyramid.response import Response
-from edauth.security.utils import deflate_base64_encode, inflate_base64_decode,\
-    ICipher
+from edauth.security.utils import ICipher
 from edauth.security.roles import Roles
 from edauth.saml2.saml_response_manager import SAMLResponseManager
 from edauth.saml2.saml_idp_metadata_manager import IDP_metadata_manager
@@ -68,15 +67,12 @@ def login(request):
     return HTTPFound(location=url + "?%s" % params)
 
 
-@view_config(route_name='login_callback')
-def login_callback(request):
+def _get_landing_page(request, redirect_url_decoded, headers):
     '''
     Login callback for redirect
     This is a blank page with redireect to the requested resource page.
     To prevent from a user from clicking back botton to OpenAM login page
     '''
-    redirect_url_decoded = request.GET.get('request')
-    # redirect_url_decoded = inflate_base64_decode(redirect_url)
     html = '''
     <html><header>
     <title>Processing %s</title>
@@ -91,7 +87,7 @@ def login_callback(request):
     </script>
     </header><body onload="redirect()"><a href="%s" id=url></a></body></html>
     ''' % (redirect_url_decoded, request.path_qs, redirect_url_decoded)
-    return Response(body=html, content_type='text/html')
+    return Response(body=html, content_type='text/html', headers=headers)
 
 
 @view_config(route_name='logout', permission='logout')
@@ -161,13 +157,12 @@ def saml2_post_consumer(request):
             redirect_url = _get_cipher().decrypt(redirect_url)
         else:
             redirect_url = request.route_url('list_of_reports')
-        params = urllib.parse.urlencode({'request': redirect_url})
-        new_location = request.route_url('login_callback') + '?' + params
+
     else:
-        new_location = request.route_url('login')
+        redirect_url = request.route_url('login')
         headers = None
 
-    return HTTPFound(location=new_location, headers=headers)
+    return _get_landing_page(request, redirect_url, headers=headers)
 
 
 @view_config(route_name='logout_redirect', permission=NO_PERMISSION_REQUIRED)

@@ -74,7 +74,9 @@ rm -rf %{buildroot}
 %files
 %defattr(644,root,root,-)
 /opt/edware/smarter/*
-/opt/virtualenv/*
+/opt/virtualenv/include/*
+/opt/virtualenv/lib/*
+/opt/virtualenv/lib64
 %attr(755,root,root) /opt/virtualenv/bin/bfg2pyramid
 %attr(755,root,root) /opt/virtualenv/bin/easy_install
 %attr(755,root,root) /opt/virtualenv/bin/easy_install-3.3

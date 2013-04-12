@@ -295,8 +295,8 @@ function main {
     get_opts $@
     check_vars
     set_vars
-    setup_virtualenv $@
     if [ ${MODE:=""} == "UNIT" ]; then
+        setup_virtualenv $@
         setup_unit_test_dependencies
         if $RUN_UNIT_TEST ; then
             run_unit_tests $MAIN_PKG
@@ -304,7 +304,8 @@ function main {
         check_pep8 $MAIN_PKG
         build_egg $MAIN_PKG
     elif [ ${MODE:=""} == "FUNC" ]; then
-   		generate_ini
+        setup_virtualenv $@
+        generate_ini
         create_sym_link_for_apache
         restart_apache
         import_data_from_csv

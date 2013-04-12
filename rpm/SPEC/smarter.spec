@@ -1,6 +1,6 @@
 Name:		smarter
-Version:	0
-Release:	1%{?dist}
+Version:	%(echo ${RPM_VERSION:="X.X"})
+Release:	%(echo ${BUILD_NUMBER:="X"})%{?dist}
 Summary:	SMARTER EdWare Reporting Web Application
 
 Group:		WSGI Web Application
@@ -16,7 +16,7 @@ AutoReqProv: no
 %define _unpackaged_files_terminate_build 0
 
 %description
-building smarter rpm
+building EdWare smarter rpm
 
 
 %prep

@@ -43,7 +43,8 @@ common:
         # Session expiration time 
       session:
         timeout: 1200
-      idp.metadata: ../../resource/idp_metadata.xml
+      idp:
+        metadata: ../../resource/idp_metadata.xml
 
     # Static cache max age
     smarter.resources.static.max_age: 0
@@ -145,6 +146,8 @@ qa1:
           echo: False
           
     auth:
+      idp:
+        metadata: /opt/edware/conf/metadata.xml
       policy:
         secure: true
       skip.verify: False
@@ -175,6 +178,8 @@ qa2:
           echo: False
           
     auth:
+      idp:
+        metadata: /opt/edware/conf/metadata.xml
       policy:
         secure: true
       skip.verify: False

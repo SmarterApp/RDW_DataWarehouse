@@ -58,7 +58,10 @@ cd -
 deactivate
 #/opt/python3/bin/virtualenv-3.3 --relocatable virtualenv
 echo -e "/opt/edware/smarter\n." > virtualenv/lib/python3.3/site-packages/smarter.egg-link
-sed -i 's/^VIRTUAL_ENV=.*/VIRTUAL_ENV="\/opt\/virtualenv"/g' virtualenv/bin/activate
+sed -i 's/\/home\/jenkins\/rpmbuild\/BUILD/\/opt/g' virtualenv/bin/activate
+sed -i 's/\/home\/jenkins\/rpmbuild\/BUILD/\/opt/g' virtualenv/bin/pip
+sed -i 's/\/home\/jenkins\/rpmbuild\/BUILD/\/opt/g' virtualenv/bin/pserve
+sed -i 's/\/home\/jenkins\/rpmbuild\/BUILD/\/opt/g' virtualenv/bin/pcreate
 
 
 %install

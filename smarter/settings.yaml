@@ -124,7 +124,7 @@ common:
 # End logging configuration
 
 
-pyweb0:
+qa0:
   '[app:main]':
     mode: prod
     edware:
@@ -153,7 +153,7 @@ pyweb0:
         idp_server_login_url: https://auth0.qa.dum.edwdc.net/openam/SSORedirect/metaAlias/idp
         idp_server_logout_url: https://auth0.qa.dum.edwdc.net/openam/IDPSloRedirect/metaAlias/idp
         name_qualifier: https://auth0.qa.dum.edwdc.net/openam
-pyweb1:
+qa1:
   '[app:main]':
     mode: prod
     edware:
@@ -182,7 +182,7 @@ pyweb1:
         idp_server_login_url: https://auth0.qa.dum.edwdc.net/openam/SSORedirect/metaAlias/idp
         idp_server_logout_url: https://auth0.qa.dum.edwdc.net/openam/IDPSloRedirect/metaAlias/idp
         name_qualifier: https://auth0.qa.dum.edwdc.net/openam
-pyweb2:
+qa2:
   '[app:main]':
     mode: prod
     edware:
@@ -211,7 +211,7 @@ pyweb2:
         idp_server_login_url: https://auth0.qa.dum.edwdc.net/openam/SSORedirect/metaAlias/idp
         idp_server_logout_url: https://auth0.qa.dum.edwdc.net/openam/IDPSloRedirect/metaAlias/idp
         name_qualifier: https://auth0.qa.dum.edwdc.net/openam
-pyweb3:
+qa3:
   '[app:main]':
     mode: prod
     edware:
@@ -239,7 +239,7 @@ pyweb3:
         idp_server_login_url: https://auth0.qa.dum.edwdc.net/openam/SSORedirect/metaAlias/idp
         idp_server_logout_url: https://auth0.qa.dum.edwdc.net/openam/IDPSloRedirect/metaAlias/idp
         name_qualifier: hhttps://auth0.qa.dum.edwdc.net/openam
-jenkins0:
+jenkins_qa:
   '[app:main]':
     mode: prod
     edware:
@@ -335,7 +335,7 @@ test:
           echo: False
     # Mode that we're running in.  Currently we support 'dev' and 'prod'
     mode: prod
-edwappsrv1:
+jenkins_dev:
   '[app:main]':
     edware:
       schema_name: edware_sds_0_1

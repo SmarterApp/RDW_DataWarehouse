@@ -290,7 +290,7 @@ function build_egg {
 
 function generate_ini {
 	cd "$WORKSPACE/smarter"
-	python generate_ini.py -e edwappsrv1 -i settings.yaml
+	python generate_ini.py -e jenkins_dev -i settings.yaml
 }
 
 function main {

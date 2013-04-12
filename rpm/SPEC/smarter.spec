@@ -31,6 +31,7 @@ cp -r ${WORKSPACE}/assets %{buildroot}/opt/edware/assets
 
 
 %build
+umask 0002
 export LANG=en_US.UTF-8
 /opt/python3/bin/virtualenv-3.3 --distribute virtualenv
 source virtualenv/bin/activate

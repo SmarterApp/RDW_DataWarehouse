@@ -75,19 +75,15 @@ def _get_landing_page(request, redirect_url_decoded, headers):
     '''
     html = '''
     <html><header>
-    <title>Processing %s</title>
+    <title>Processing</title>
     <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
     <META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">
     <META HTTP-EQUIV="Expires" CONTENT="-1">
     <meta http-equiv="refresh" content="0;url=%s">
-    <script type="text/javascript">
-    function redirect() {
-        document.getElementById('url').click()
-        }
-    </script>
-    </header><body onload="redirect()"><a href="%s" id=url></a></body></html>
-    ''' % (redirect_url_decoded, request.path_qs, redirect_url_decoded)
-    return Response(body=html, content_type='text/html', headers=headers)
+    </html>
+    ''' % (redirect_url_decoded)
+    headers.append(('Content-Type', 'text/html'))
+    return Response(body=html, headers=headers, content_type='text/html')
 
 
 @view_config(route_name='logout', permission='logout')

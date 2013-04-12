@@ -185,9 +185,10 @@ class TestViews(unittest.TestCase):
     def test_landing_page(self):
         self.__request.GET = {}
         url = "http://mydirecturl.com"
-        expected = '<a href="http://mydirecturl.com" id=url>'
-        resp = _get_landing_page(self.__request, url, {})
+        expected = 'http://mydirecturl.com'
+        resp = _get_landing_page(self.__request, url, [])
         self.assertIsInstance(resp, Response)
+        self.assertEquals(resp.content_type, 'text/html')
         self.assertIn(expected, str(resp.body))
 
     def test_logout_redirect(self):

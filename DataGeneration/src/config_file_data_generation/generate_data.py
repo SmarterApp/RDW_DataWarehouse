@@ -105,13 +105,15 @@ def generate_data_from_config_file(config_module):
                     schools_in_district = []
                     for school in schools:
                         students_in_school = []
+                        sections_in_school = []
                         for grade in school_type[config_module.GRADES]:
                             number_of_students_in_grade = calculate_number_of_students(student_min, student_max, student_avg)
                             for subject_name in constants.SUBJECTS:
                                 # TODO: Figure out how to calculate number_of_sections
                                 number_of_sections = calculate_number_of_sections(number_of_students_in_grade)
-                                sections = generate_sections(number_of_sections, subject_name, grade, current_state.state_code, district.district_guid, school.school_guid)
-                                for section in sections:
+                                sections_in_grade = generate_sections(number_of_sections, subject_name, grade, current_state.state_code, district.district_guid, school.school_guid)
+                                sections_in_school += sections_in_grade
+                                for section in sections_in_grade:
                                     # TODO: More accurate math for num_of_students
                                     number_of_students = number_of_students_in_grade // number_of_sections
                                     students_in_section = generate_students(number_of_students, section.section_guid, grade, current_state.state_code, district.district_guid, school.school_guid,
@@ -119,6 +121,7 @@ def generate_data_from_config_file(config_module):
                                     students_in_school += students_in_section
                         schools_in_district.append(school)
                         create_csv(students_in_school, ENTITY_TO_PATH_DICT[Student])
+                        create_csv(sections_in_school, ENTITY_TO_PATH_DICT[Section])
                     district.add_schools(schools_in_district)
 
             districts_in_state += districts

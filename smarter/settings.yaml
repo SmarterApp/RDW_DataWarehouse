@@ -202,34 +202,35 @@ jenkins_qa:
           max_overflow: 10
           echo: False
 
-production:
+uat:
   '[app:main]':
+    mode: prod
     edware:
-      schema_name: edware_sds_0_1
+      schema_name: edware
       db:
         main:
-          url: postgresql+pypostgresql://postgres:edware.qa.2013@dwpool0.qa.dum.edwdc.net:6432/edware
+          url: postgresql+pypostgresql://postgres:edware.dmo.2013@dwpool0.qa.dum.edwdc.net:6432/edware
           pool_size: 20
           max_overflow: 10
           echo: False
     edauth:
-      schema_name: edware_session_test
+      schema_name: edware_session
       db:
         main:
-          url: postgresql+pypostgresql://postgres:edware.qa.2013@dbpool0.qa.dum.edwdc.net:6432/edware
+          url: postgresql+pypostgresql://postgres:edware.dmo.2013@dbpool0.qa.dum.edwdc.net:6432/edware
           pool_size: 20
           max_overflow: 10
           echo: False
-             
+          
     auth:
       policy:
         secure: true
       skip.verify: False
       saml:
-        issuer_name: http://edwappsrv1.poc.dum.edwdc.net/
-        idp_server_login_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp
-        idp_server_logout_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp
-        name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
+        issuer_name: https://ha-int-pyweb1.dmo.dum.edwdc.net
+        idp_server_login_url: https://auth0.dmo.dum.edwdc.net/openam/SSORedirect/metaAlias/idp
+        idp_server_logout_url: https://auth0.dmo.dum.edwdc.net/openam/IDPSloRedirect/metaAlias/idp
+        name_qualifier: https://auth0.dmo.dum.edwdc.net/openam
 
 development:
   '[app:main]':

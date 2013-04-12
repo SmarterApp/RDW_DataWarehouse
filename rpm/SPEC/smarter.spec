@@ -97,6 +97,8 @@ rm -rf %{buildroot}
 %attr(755,root,root) /opt/virtualenv/bin/pviews
 %attr(755,root,root) /opt/virtualenv/bin/pygmentize
 %attr(755,root,root) /opt/virtualenv/bin/python3.3
+/opt/virtualenv/bin/python
+/opt/virtualenv/bin/python3
 
 
 %pre

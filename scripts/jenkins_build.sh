@@ -248,8 +248,7 @@ function import_data_from_csv {
 
 function build_rpm {
     # prerequisite there is a venv inside workspace (ie. run setup_virtualenv)
-
-    # deactivate python 3.3 venv
+    rm -rf /home/jenkins/rpmbuild
 
     echo "Build RPM"
     echo "Build Number:"
@@ -261,6 +260,9 @@ function build_rpm {
 
     cd "$WORKSPACE/rpm/SPEC"
     rpmbuild -bb smarter.spec
+    
+    cp /home/jenkins/rpmbuild/RPMS/x86_64/*.rpm /opt/edware/rpm
+    rm -f /home/jenkins/rpmbuild/RPMS/x86_64/*rpm
 
     echo "Finished building RPM"
 }

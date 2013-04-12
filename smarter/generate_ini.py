@@ -28,11 +28,12 @@ def flatten_yaml(aDict, result, path=""):
     for k in aDict:
         if type(aDict[k]) != dict:
             value = "" if aDict[k] is None else str(aDict[k])
-            result = result + path + k + " = " + value + "\n"
+            result[path + k] = value
         else:
+            # if it's a root, find (or add) a root dict and flatten its sub-tree under it
+            group_dict = result.get(k, {})
             if k.startswith('[') and k.endswith(']'):
-                result = result + k + "\n"
-                result = flatten_yaml(aDict[k], result, path)
+                result[k] = flatten_yaml(aDict[k], group_dict, path)
             else:
                 result = flatten_yaml(aDict[k], result, path + k + ".")
     return result
@@ -52,12 +53,14 @@ def generate_ini(env, input_file='settings.yaml'):
     env_settings = settings[env]
     common_settings = settings['common']
 
-    groups = {}
-    for group in env_settings:
-        groups[group] = groups.get(group, "") + flatten_yaml(env_settings[group], "", "")
-    for group in common_settings:
-        groups[group] = groups.get(group, "") + flatten_yaml(common_settings[group], "", "")
-    result = ''.join([group + "\n" + groups[group] for group in groups])
+    yamlObject = flatten_yaml(common_settings, {}, "")
+    yamlObject = flatten_yaml(env_settings, yamlObject, "")
+
+    result = ""
+    for group in yamlObject:
+        result = result + group + "\n"
+        group_settings = yamlObject[group]
+        result = result + ''.join([setting + " = " + group_settings[setting] + "\n" for setting in group_settings])
 
     output_file = env + ".ini"
     try:
@@ -71,7 +74,7 @@ def generate_ini(env, input_file='settings.yaml'):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Create New Schema for EdWare')
-    parser.add_argument("-e", "--env", default='dev', help="set environment name.")
+    parser.add_argument("-e", "--env", default='development', help="set environment name.")
     parser.add_argument("-i", "--input", default="settings.yaml", help="set input yaml file name default[settings.yaml]")
     args = parser.parse_args()
 

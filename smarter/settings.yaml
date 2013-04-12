@@ -137,7 +137,7 @@ qa1:
       schema_name: edware_session
       db:
         main:
-          url: postgresql+pypostgresql://postgres:edware.qa.2013@dbpool0.qa.dum.edwdc.net:6432/edware
+          url: postgresql+pypostgresql://postgres:edware.qa.2013@dwpool0.qa.dum.edwdc.net:6432/edware
           pool_size: 20
           max_overflow: 10
           echo: False
@@ -167,7 +167,7 @@ qa2:
       schema_name: edware_session
       db:
         main:
-          url: postgresql+pypostgresql://postgres:edware.qa.2013@dbpool0.qa.dum.edwdc.net:6432/edware
+          url: postgresql+pypostgresql://postgres:edware.qa.2013@dwpool0.qa.dum.edwdc.net:6432/edware
           pool_size: 20
           max_overflow: 10
           echo: False
@@ -197,7 +197,7 @@ jenkins_qa:
       schema_name: edware_session_test
       db:
         main:
-          url: postgresql+pypostgresql://postgres:edware.qa.2013@dbpool0.qa.dum.edwdc.net:6432/edware
+          url: postgresql+pypostgresql://postgres:edware.qa.2013@dwpool0.qa.dum.edwdc.net:6432/edware
           pool_size: 20
           max_overflow: 10
           echo: False
@@ -217,7 +217,7 @@ uat:
       schema_name: edware_session
       db:
         main:
-          url: postgresql+pypostgresql://postgres:edware.dmo.2013@dbpool0.qa.dum.edwdc.net:6432/edware
+          url: postgresql+pypostgresql://postgres:edware.dmo.2013@dwpool0.qa.dum.edwdc.net:6432/edware
           pool_size: 20
           max_overflow: 10
           echo: False

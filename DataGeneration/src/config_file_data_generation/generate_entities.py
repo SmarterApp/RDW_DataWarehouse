@@ -3,6 +3,7 @@ __author__ = 'abrien'
 from entities_2 import InstitutionHierarchy, Student, Section
 from idgen import IdGen
 from constants_2 import GENDERS
+from generate_names import generate_first_or_middle_name, generate_last_name
 import util_2 as util
 import random
 import datetime
@@ -21,16 +22,14 @@ def generate_institution_hierarchy(state_name, state_code,
                                 from_date, most_recent, to_date)
 
 
-def generate_student(section_guid, grade, state_code, district_guid, school_guid, school_name,
-                     male_first_names, female_first_names, last_names, street_names):
+def generate_student(section_guid, grade, state_code, district_guid, school_guid, school_name, street_names):
     id_generator = IdGen()
     student_rec_id = id_generator.get_id()
     # TODO: maybe change to UUID
     student_guid = id_generator.get_id()
     gender = random.choice(GENDERS)
-    #TODO: Change to name getting algorithm
-    first_name = random.choice(male_first_names if gender == 'Male' else female_first_names)
-    last_name = random.choice(last_names)
+    first_name = generate_first_or_middle_name(gender)
+    last_name = generate_last_name()
     address_1 = util.generate_address(street_names)
     # TODO: change city name
     city_name_1 = random.choice(street_names)
@@ -49,12 +48,10 @@ def generate_student(section_guid, grade, state_code, district_guid, school_guid
     return student
 
 
-def generate_students(number_of_students, section_guid, grade, state_code, district_guid, school_guid, school_name,
-                      male_first_names, female_first_names, last_names, street_names):
+def generate_students(number_of_students, section_guid, grade, state_code, district_guid, school_guid, school_name, street_names):
     students = []
     for _i in range(number_of_students):
-        student = generate_student(section_guid, grade, state_code, district_guid, school_guid, school_name,
-                     male_first_names, female_first_names, last_names, street_names)
+        student = generate_student(section_guid, grade, state_code, district_guid, school_guid, school_name, street_names)
         students.append(student)
     return students
 

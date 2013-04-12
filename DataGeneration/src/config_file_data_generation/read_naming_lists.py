@@ -6,18 +6,27 @@ Created on Jan 5, 2013
 
 from name_info import NameInfo
 import random
+import os
 
 # Constants
 FREQUENCY_OFFSET = 0.01
 
-
-def read_name_files(male_first_name_path, female_first_name_path, last_name_path):
+# TODO: eliminate the hardcoded paths, pass in through parameters
+def read_name_files():
     '''
     Read a file of name statistics of the form:
     "NAME    FREQUENCY CUM_FREQ    RANK"
     Return three 1,000,000 length arrays of male, female and last names
     generated based on the statistics associated with each name.
     '''
+
+    DATAFILE_PATH = os.path.dirname(os.path.realpath(__file__))
+    components = DATAFILE_PATH.split(os.sep)
+    DATAFILE_PATH = str.join(os.sep, components[:components.index('DataGeneration') + 1])
+
+    male_first_name_path = DATAFILE_PATH + '/datafiles/name_lists/dist.male.first'
+    female_first_name_path = DATAFILE_PATH + '/datafiles/name_lists/dist.female.first'
+    last_name_path = DATAFILE_PATH + '/datafiles/name_lists/dist.all.last'
 
     try:
         male_first_name_file = open(male_first_name_path, 'r')

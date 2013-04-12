@@ -119,7 +119,7 @@ def generate_data_from_config_file(config_module):
                                     # TODO: More accurate math for num_of_students
                                     # TODO: Do we need to account for the percentages of kids that take ELA or MATH here?
                                     number_of_students = number_of_students_in_grade // number_of_sections
-                                    students_in_section =  generate_students_from_institution_hierarchy(number_of_students, institution_hierarchy, grade, section.section_guid, name_list_dictionary[BIRDS])
+                                    students_in_section = generate_students_from_institution_hierarchy(number_of_students, institution_hierarchy, grade, section.section_guid, name_list_dictionary[BIRDS])
                                     students_in_school += students_in_section
                         create_csv(students_in_school, ENTITY_TO_PATH_DICT[Student])
                         create_csv(sections_in_school, ENTITY_TO_PATH_DICT[Section])
@@ -205,6 +205,10 @@ def generate_students_from_institution_hierarchy(number_of_students, institution
     students = generate_students(number_of_students, section_guid, grade, state_code, district_guid, school_guid, school_name, street_names)
     return students
 
+
+def generate_assessment_outcomes_from_helper_entities_and_lists(students, section, institution_hierarchy, assessments):
+    # TODO: Start here seth this weekend
+    pass
 
 
 def calculate_number_of_schools(num_schools_min, num_schools_avg, num_schools_max):

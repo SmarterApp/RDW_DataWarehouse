@@ -103,21 +103,22 @@ def generate_data_from_config_file(config_module):
                     student_avg = student_counts[config_module.AVG]
                     schools_in_district = []
                     for school in schools:
-                        # students = generate_students_for_school(school_type)
+                        students_in_school = []
                         for grade in school_type[config_module.GRADES]:
                             number_of_students_in_grade = calculate_number_of_students(student_min, student_max, student_avg)
                             for subject_name in constants.SUBJECTS:
                                 # TODO: Figure out how to calculate number_of_sections
-                                number_of_sections = 1
-                                sections = generate_sections(number_of_sections, subject_name, grade, state.state_code, district.district_guid, school.school_guid)
+                                number_of_sections = calculate_number_of_sections(number_of_students_in_grade)
+                                sections = generate_sections(number_of_sections, subject_name, grade, current_state.state_code, district.district_guid, school.school_guid)
                                 for section in sections:
                                     # TODO: More accurate math for num_of_students
-                                    number_of_students = number_of_students_in_grade / number_of_sections
-                                    students = generate_students(number_of_students, section.section_guid, grade, state.state_code, district.district_guid, school.school_guid,
+                                    number_of_students = number_of_students_in_grade // number_of_sections
+                                    students_in_section = generate_students(number_of_students, section.section_guid, grade, current_state.state_code, district.district_guid, school.school_guid,
                                                                  school.school_name, name_list_dictionary[MALE_FIRST_NAMES], name_list_dictionary[FEMALE_FIRST_NAMES],
                                                                  name_list_dictionary[LAST_NAMES], name_list_dictionary[BIRDS])
-                                # TODO: START here 4/11/13
+                                    students_in_school += students_in_section
                         schools_in_district.append(school)
+                        create_csv(students_in_school, ENTITY_TO_PATH_DICT[Student])
                     district.add_schools(schools_in_district)
 
             districts_in_state += districts
@@ -210,6 +211,10 @@ def calculate_number_of_schools(num_schools_min, num_schools_avg, num_schools_ma
 def calculate_number_of_students(student_min, student_max, student_avg):
     # TODO: implement me
     return 15
+
+def calculate_number_of_sections(number_of_students):
+    # TODO: implement me
+    return 1
 
 
 if __name__ == '__main__':

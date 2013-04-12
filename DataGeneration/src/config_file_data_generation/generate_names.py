@@ -5,7 +5,7 @@ Created on Jan 3, 2013
 '''
 
 import random
-from readnaminglists import PeopleNames
+from read_naming_lists import PeopleNames
 
 
 # Constants

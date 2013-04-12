@@ -56,7 +56,6 @@ def generate_students(number_of_students, section_guid, grade, state_code, distr
         student = generate_student(section_guid, grade, state_code, district_guid, school_guid, school_name,
                      male_first_names, female_first_names, last_names, street_names)
         students.append(student)
-
     return students
 
 
@@ -64,8 +63,8 @@ def generate_section(subject_name, grade, state_code, district_guid, school_guid
     id_generator = IdGen()
     section_rec_id = id_generator.get_id()
     section_guid = id_generator.get_id()
-    section_name = 'Section ' + section_number
-    class_name = subject_name + '_' + class_number
+    section_name = 'Section ' + str(section_number)
+    class_name = subject_name + '_' + str(class_number)
     # TODO: Set date and most recent more intelligently
     from_date = datetime.date.today()
     most_recent = True

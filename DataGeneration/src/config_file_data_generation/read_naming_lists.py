@@ -5,12 +5,10 @@ Created on Jan 5, 2013
 '''
 
 import os.path
-
-from nameinfo import NameInfo
-import gennames
+from name_info import NameInfo
 
 
-def read_name_files():
+def read_name_files(male_first_name_path, female_first_name_path, last_name_path):
     '''
     Read a file of name statistics of the form:
     "NAME    FREQUENCY CUM_FREQ    RANK"
@@ -19,26 +17,21 @@ def read_name_files():
     '''
 
     try:
-        basepath = os.path.dirname(__file__)
-        malefilename = os.path.abspath(os.path.join(basepath, '..', 'datafiles', 'name_lists', 'dist.male.first'))
-        femalefilename = os.path.abspath(os.path.join(basepath, '..', 'datafiles', 'name_lists', 'dist.female.first'))
-        lastfilename = os.path.abspath(os.path.join(basepath, '..', 'datafiles', 'name_lists', 'dist.all.last'))
+        male_first_name_file = open(male_first_name_path, 'r')
+        male_names = _load_names(male_first_name_file)
+        male_first_name_file.close()
 
-        mfile = open(malefilename, 'r')
-        male_names = _load_names(mfile)
-        mfile.close()
+        female_first_name_file = open(female_first_name_path, 'r')
+        female_names = _load_names(female_first_name_file)
+        female_first_name_file.close()
 
-        ffile = open(femalefilename, 'r')
-        female_names = _load_names(ffile)
-        ffile.close()
+        last_name_file = open(last_name_path, 'r')
+        last_names = _load_names(last_name_file)
+        last_name_file.close()
 
-        lfile = open(lastfilename, 'r')
-        last_names = _load_names(lfile)
-        lfile.close()
+        male_first_name_frequency_dict, female_first_name_frequency_dict, last_name_frequency_dict = gennames.generate_all_names(male_names, female_names, last_names)
 
-        mdict, fdict, ldict = gennames.generate_all_names(male_names, female_names, last_names)
-
-        return gennames.name_dict_to_list(mdict), gennames.name_dict_to_list(fdict), gennames.name_dict_to_list(ldict)
+        return gennames.name_dict_to_list(male_first_name_frequency_dict), gennames.name_dict_to_list(female_first_name_frequency_dict), gennames.name_dict_to_list(last_name_frequency_dict)
 
     except:
         print("Error while reading file")

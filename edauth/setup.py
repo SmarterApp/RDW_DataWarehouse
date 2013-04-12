@@ -7,7 +7,8 @@ README = open(os.path.join(here, 'README.txt')).read()
 
 install_requires = [
     'pyramid >= 1.3.1',
-    'SQLAlchemy']
+    'SQLAlchemy',
+    'PyCrypto>=2.6']
 
 tests_require = [
     'WebTest >= 1.3.1',  # py3 compat

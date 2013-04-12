@@ -9,6 +9,8 @@ from edauth.security.roles import Roles
 from database.generic_connector import setup_db_connection_from_ini
 from edauth.persistence.persistence import generate_persistence
 from edauth.security.policy import EdAuthAuthenticationPolicy
+from edauth.security.utils import AESCipher, ICipher
+from zope import component
 
 
 # boolean True/False converter
@@ -46,6 +48,8 @@ def includeme(config):
 
     config.set_authentication_policy(authentication_policy)
     config.set_authorization_policy(authorization_policy)
+
+    component.provideUtility(AESCipher(settings['auth.state.secret']), ICipher)
 
     # TODO: possible to put this inside SAML2 incase one day we don't want to use it
     # TODO: clean up and derive from ini?

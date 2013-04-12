@@ -14,10 +14,16 @@ from edauth.security.session_manager import create_new_user_session, \
     delete_session, get_user_session
 from edauth.utils import convert_to_int
 from pyramid.response import Response
-from edauth.security.utils import deflate_base64_encode, inflate_base64_decode
+from edauth.security.utils import deflate_base64_encode, inflate_base64_decode,\
+    ICipher
 from edauth.security.roles import Roles
 from edauth.saml2.saml_response_manager import SAMLResponseManager
 from edauth.saml2.saml_idp_metadata_manager import IDP_metadata_manager
+from zope import component
+
+
+def _get_cipher():
+    return component.getUtility(ICipher)
 
 
 @view_config(route_name='login', permission=NO_PERMISSION_REQUIRED)
@@ -50,7 +56,7 @@ def login(request):
         # TODO make it a const
         # TODO: landing page
         referrer = request.route_url('list_of_reports')
-    params = {'RelayState': deflate_base64_encode(referrer.encode())}
+    params = {'RelayState': _get_cipher().encrypt(referrer)}
 
     saml_request = SamlAuthnRequest(request.registry.settings['auth.saml.issuer_name'])
 
@@ -69,8 +75,8 @@ def login_callback(request):
     This is a blank page with redireect to the requested resource page.
     To prevent from a user from clicking back botton to OpenAM login page
     '''
-    redirect_url = request.GET.get('request')
-    redirect_url_decoded = inflate_base64_decode(redirect_url).decode()
+    redirect_url_decoded = request.GET.get('request')
+    # redirect_url_decoded = inflate_base64_decode(redirect_url)
     html = '''
     <html><header>
     <title>Processing %s</title>
@@ -150,12 +156,17 @@ def saml2_post_consumer(request):
         # Get the url saved in RelayState from SAML request, redirect it back to it
         # If it's not found, redirect to list of reports
         # TODO: Need a landing other page
-        redirect_url = request.POST.get('RelayState', deflate_base64_encode(request.route_url('list_of_reports').encode()))
+        redirect_url = request.POST.get('RelayState')
+        if redirect_url:
+            redirect_url = _get_cipher().decrypt(redirect_url)
+        else:
+            redirect_url = request.route_url('list_of_reports')
         params = urllib.parse.urlencode({'request': redirect_url})
         new_location = request.route_url('login_callback') + '?' + params
     else:
         new_location = request.route_url('login')
         headers = None
+
     return HTTPFound(location=new_location, headers=headers)
 
 

@@ -5,7 +5,7 @@ Created on Feb 16, 2013
 '''
 import unittest
 from edauth.security.views import login, saml2_post_consumer, login_callback, \
-    logout_redirect
+    logout_redirect, _get_cipher
 from pyramid import testing
 from pyramid.testing import DummyRequest
 from pyramid.httpexceptions import HTTPFound, HTTPForbidden
@@ -16,10 +16,11 @@ import os
 import uuid
 from datetime import timedelta, datetime
 from pyramid.response import Response
-from edauth.security.utils import deflate_base64_encode, inflate_base64_decode
+from edauth.security.utils import ICipher, AESCipher
 from database.sqlite_connector import create_sqlite, destroy_sqlite
 from edauth.persistence.persistence import generate_persistence
 from edauth.database.connector import EdauthDBConnection
+from zope import component
 
 
 def get_saml_from_resource_file(file_mame):
@@ -48,7 +49,7 @@ class TestViews(unittest.TestCase):
         self.__request.registry.settings['auth.saml.idp_server_logout_url'] = 'http://logout.com'
         self.__request.registry.settings['auth.saml.name_qualifier'] = 'http://myName'
         self.__request.registry.settings['auth.saml.issuer_name'] = 'dummyIssuer'
-
+        component.provideUtility(AESCipher('dummdummdummdumm'), ICipher)
         # delete all user_session before test
         with EdauthDBConnection() as connection:
             user_session = connection.get_table('user_session')
@@ -75,7 +76,7 @@ class TestViews(unittest.TestCase):
         queries = urllib.parse.parse_qs(actual_url.query)
         self.assertTrue(len(queries) == 2)
         self.assertIsNotNone(queries['SAMLRequest'])
-        self.assertTrue(inflate_base64_decode(queries['RelayState'][0]).decode('utf-8').endswith('/dummy/report'))
+        self.assertTrue(_get_cipher().decrypt(queries['RelayState'][0]).endswith('/dummy/report'))
 
     def test_login_referred_by_logout_url(self):
         self.__request.url = 'http://example.com/dummy/logout'
@@ -83,7 +84,7 @@ class TestViews(unittest.TestCase):
 
         actual_url = urlparse(http.location)
         queries = urllib.parse.parse_qs(actual_url.query)
-        self.assertTrue(inflate_base64_decode(queries['RelayState'][0]).decode('utf-8').endswith('/dummy/logout'))
+        self.assertTrue(_get_cipher().decrypt(queries['RelayState'][0]).endswith('/dummy/logout'))
 
     def test_login_referred_by_protected_page(self):
         self.__request.url = 'http://example.com/dummy/data'
@@ -91,7 +92,7 @@ class TestViews(unittest.TestCase):
 
         actual_url = urlparse(http.location)
         queries = urllib.parse.parse_qs(actual_url.query)
-        self.assertTrue(inflate_base64_decode(queries['RelayState'][0]).decode('utf-8').endswith(self.__request.url))
+        self.assertTrue(_get_cipher().decrypt(queries['RelayState'][0]).endswith(self.__request.url))
 
     def test_login_redirected_due_to_no_role(self):
         self.__config.testing_securitypolicy("sessionId123", ['NONE'])
@@ -114,7 +115,7 @@ class TestViews(unittest.TestCase):
         http = login(self.__request)
         url = urlparse(http.location)
         queries = urllib.parse.parse_qs(url.query)
-        self.assertTrue(inflate_base64_decode(queries['RelayState'][0]).decode('utf-8').endswith(self.__request.url))
+        self.assertTrue(_get_cipher().decrypt(queries['RelayState'][0]).endswith(self.__request.url))
 
     def test_login_with_no_existing_session(self):
         session_id = str(uuid.uuid1())
@@ -127,7 +128,7 @@ class TestViews(unittest.TestCase):
         http = login(self.__request)
         url = urlparse(http.location)
         queries = urllib.parse.parse_qs(url.query)
-        self.assertTrue(inflate_base64_decode(queries['RelayState'][0]).decode('utf-8').endswith(self.__request.url))
+        self.assertTrue(_get_cipher().decrypt(queries['RelayState'][0]).endswith(self.__request.url))
 
     def test_logout_with_no_existing_session(self):
         http = logout(self.__request)
@@ -183,7 +184,7 @@ class TestViews(unittest.TestCase):
 
     def test_login_callback(self):
         self.__request.GET = {}
-        self.__request.GET['request'] = deflate_base64_encode("http://mydirecturl.com".encode())
+        self.__request.GET['request'] = "http://mydirecturl.com"
         expected = '<a href="http://mydirecturl.com" id=url>'
         resp = login_callback(self.__request)
         self.assertIsInstance(resp, Response)
@@ -194,6 +195,12 @@ class TestViews(unittest.TestCase):
         self.__request.GET['SAMLResponse'] = 'junk'
         http = logout_redirect(self.__request)
         self.assertIsInstance(http, Response)
+
+    def test_cipher(self):
+        cipher = component.getUtility(ICipher)
+        self.assertIsNotNone(cipher, 'must be able to create the cipher')
+        url = 'http://hhh:yyy.com?z=c'
+        self.assertEqual(url, cipher.decrypt(cipher.encrypt(url)), 'must encrypt/decrypt right')
 
 
 if __name__ == "__main__":

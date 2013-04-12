@@ -30,6 +30,8 @@ common:
     #Authentication
     ###############
     auth:
+      state:
+        secret: long_secret_for_redirects1111234
       policy:
         secret: edware_secret
         cookie_name: edware

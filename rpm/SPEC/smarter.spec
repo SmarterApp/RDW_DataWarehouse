@@ -75,6 +75,23 @@ rm -rf %{buildroot}
 %defattr(644,root,root,-)
 /opt/edware/smarter/*
 /opt/virtualenv/*
+%attr(755,root,root,-) /opt/virtualenv/bin/bfg2pyramid
+%attr(755,root,root,-) /opt/virtualenv/bin/easy_install
+%attr(755,root,root,-) /opt/virtualenv/bin/easy_install-3.3
+%attr(755,root,root,-) /opt/virtualenv/bin/initialize_smarter_db
+%attr(755,root,root,-) /opt/virtualenv/bin/mako-render
+%attr(755,root,root,-) /opt/virtualenv/bin/pcreate
+%attr(755,root,root,-) /opt/virtualenv/bin/pip
+%attr(755,root,root,-) /opt/virtualenv/bin/pip-3.3
+%attr(755,root,root,-) /opt/virtualenv/bin/prequest
+%attr(755,root,root,-) /opt/virtualenv/bin/proutes
+%attr(755,root,root,-) /opt/virtualenv/bin/pserve
+%attr(755,root,root,-) /opt/virtualenv/bin/pshell
+%attr(755,root,root,-) /opt/virtualenv/bin/ptweens
+%attr(755,root,root,-) /opt/virtualenv/bin/pviews
+%attr(755,root,root,-) /opt/virtualenv/bin/pygmentize
+%attr(755,root,root,-) /opt/virtualenv/bin/python3.3
+
 
 %pre
 /etc/init.d/httpd stop

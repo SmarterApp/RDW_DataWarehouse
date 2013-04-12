@@ -36,13 +36,13 @@ export LANG=en_US.UTF-8
 /opt/python3/bin/virtualenv-3.3 --distribute virtualenv
 source virtualenv/bin/activate
 cd ${WORKSPACE}/edschema
-python setup.py install
+python setup.py develop
 cd -
 cd ${WORKSPACE}/edauth
-python setup.py install
+python setup.py develop
 cd -
 cd ${WORKSPACE}/edapi
-python setup.py install
+python setup.py develop
 cd -
 cd %{buildroot}/opt/edware/smarter
 python setup.py develop

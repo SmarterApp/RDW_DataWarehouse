@@ -220,6 +220,10 @@ def generate_institution_hierarchy_from_helper_entities(state, district, school)
                                                            from_date, most_recent)
     return institution_hierarchy
 
+def generate_assessment_outcomes_from_helper_entities_and_lists(students, section, institution_hierarchy, assessments):
+    # TODO: Start here seth this weekend
+    pass
+
 
 def generate_students_from_institution_hierarchy(number_of_students, institution_hierarchy, grade, section_guid, street_names):
     state_code = institution_hierarchy.state_code

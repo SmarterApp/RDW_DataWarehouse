@@ -11,7 +11,6 @@ from generate_helper_entities import generate_state, generate_district, generate
 from datetime import date
 from entities_2 import InstitutionHierarchy, Section, Assessment, AssessmentOutcome, \
     Staff, ExternalUserStudent, Student
-from read_naming_lists import read_name_files
 
 
 DATAFILE_PATH = os.path.dirname(os.path.realpath(__file__))
@@ -34,9 +33,6 @@ FISH = 'fish'
 MAMMALS = 'mammals'
 
 NAMES_TO_PATH_DICT = {BIRDS: DATAFILE_PATH + '/datafiles/name_lists/birds.txt',
-                      LAST_NAMES: DATAFILE_PATH + '/datafiles/name_lists/dist.all.last',
-                      FEMALE_FIRST_NAMES: DATAFILE_PATH + '/datafiles/name_lists/dist.female.first',
-                      MALE_FIRST_NAMES: DATAFILE_PATH + '/datafiles/name_lists/dist.male.first',
                       FISH: DATAFILE_PATH + '/datafiles/name_lists/fish.txt',
                       MAMMALS: DATAFILE_PATH + '/datafiles/name_lists/mammals.txt'
                      }
@@ -44,22 +40,28 @@ NAMES_TO_PATH_DICT = {BIRDS: DATAFILE_PATH + '/datafiles/name_lists/birds.txt',
 def generate_data_from_config_file(config_module):
     # First thing: prep the csv files by deleting their contents and adding appropriate headers
     prepare_csv_files(ENTITY_TO_PATH_DICT)
+
     # Next, prepare lists that are used to name various entities
     name_list_dictionary = generate_name_list_dictionary(NAMES_TO_PATH_DICT)
+
     # We're going to use the birds and fish list to name our districts
     district_names_1 = name_list_dictionary[BIRDS]
     district_names_2 = name_list_dictionary[FISH]
+
     # We're going to use mammals and birds to names our schools
     school_names_1 = name_list_dictionary[MAMMALS]
     school_names_2 = name_list_dictionary[BIRDS]
+
     # Get information from the config module
     school_types = config_module.get_school_types()
     district_types = config_module.get_district_types()
     state_types = config_module.get_state_types()
     states = config_module.get_states()
 
-    # Iterate over all the states we're supposed to create and add them to 'states_in_consortium'
-    states_in_consortium = []
+    # Iterate over all the states we're supposed to create
+    # When we get down to the school level, we'll be able to generate an InstitutionHierarchy object
+    # And then we'll add it to institution_hierarchies
+    institution_hierarchies = []
     for state in states:
         # Pull out basic state information
         state_name = state[config_module.NAME]
@@ -80,7 +82,6 @@ def generate_data_from_config_file(config_module):
         # key: <string> The type of district
         # value: <list> A list of district objects
         districts_by_type = generate_district_dictionary(district_types_and_counts, district_names_1, district_names_2)
-        districts_in_state = []
 
         for district_type_name in districts_by_type.keys():
             districts = districts_by_type[district_type_name]
@@ -102,8 +103,9 @@ def generate_data_from_config_file(config_module):
                     student_min = student_counts[config_module.MIN]
                     student_max = student_counts[config_module.MAX]
                     student_avg = student_counts[config_module.AVG]
-                    schools_in_district = []
                     for school in schools:
+                        institution_hierarchy = generate_institution_hierarchy_from_helper_entities(current_state, district, school)
+                        institution_hierarchies.append(institution_hierarchy)
                         students_in_school = []
                         sections_in_school = []
                         for grade in school_type[config_module.GRADES]:
@@ -115,20 +117,12 @@ def generate_data_from_config_file(config_module):
                                 sections_in_school += sections_in_grade
                                 for section in sections_in_grade:
                                     # TODO: More accurate math for num_of_students
+                                    # TODO: Do we need to account for the percentages of kids that take ELA or MATH here?
                                     number_of_students = number_of_students_in_grade // number_of_sections
-                                    students_in_section = generate_students(number_of_students, section.section_guid, grade, current_state.state_code, district.district_guid, school.school_guid,
-                                                                 school.school_name, name_list_dictionary[BIRDS])
+                                    students_in_section =  generate_students_from_institution_hierarchy(number_of_students, institution_hierarchy, grade, section.section_guid, name_list_dictionary[BIRDS])
                                     students_in_school += students_in_section
-                        schools_in_district.append(school)
                         create_csv(students_in_school, ENTITY_TO_PATH_DICT[Student])
                         create_csv(sections_in_school, ENTITY_TO_PATH_DICT[Section])
-                    district.add_schools(schools_in_district)
-
-            districts_in_state += districts
-
-        current_state.add_districts(districts_in_state)
-        states_in_consortium.append(current_state)
-    institution_hierarchies = transform_states_into_institution_hierarchies(states_in_consortium)
     create_csv(institution_hierarchies, ENTITY_TO_PATH_DICT[InstitutionHierarchy])
 
 # TODO: Can we think of a more appropriate file for this function?
@@ -182,28 +176,35 @@ def create_school_dictionary(school_counts, school_types_and_ratios, school_name
         school_dictionary[school_type_name] = school_list
     return school_dictionary
 
-def transform_states_into_institution_hierarchies(states_in_consortium):
-    institution_hierarchies = []
-    for state in states_in_consortium:
-        state_name = state.state_name
-        state_code = state.state_code
-        districts = state.get_districts()
-        for district in districts:
-            district_name = district.district_name
-            district_guid = district.district_guid
-            schools = district.get_schools()
-            for school in schools:
-                school_name = school.school_name
-                school_category = school.school_category
-                school_guid = school.school_guid
-                from_date = date.today()
-                most_recent = True
-                institution_hierarchy = generate_institution_hierarchy(state_name, state_code,
-                                                                       district_guid, district_name,
-                                                                       school_guid, school_name,
-                                                                       school_category, from_date, most_recent)
-                institution_hierarchies.append(institution_hierarchy)
-    return institution_hierarchies
+
+def generate_institution_hierarchy_from_helper_entities(state, district, school):
+    state_name = state.state_name
+    state_code = state.state_code
+    district_guid = district.district_guid
+    district_name = district.district_name
+    school_guid = school.school_guid
+    school_name = school.school_name
+    school_category = school.school_category
+    # TODO: generate from_date more intelligently
+    from_date = datetime.date.today()
+    # TODO: generate most_recent more intelligently
+    most_recent = True
+
+    institution_hierarchy = generate_institution_hierarchy(state_name, state_code,
+                                                           district_guid, district_name,
+                                                           school_guid, school_name, school_category,
+                                                           from_date, most_recent)
+    return institution_hierarchy
+
+
+def generate_students_from_institution_hierarchy(number_of_students, institution_hierarchy, grade, section_guid, street_names):
+    state_code = institution_hierarchy.state_code
+    district_guid = institution_hierarchy.district_guid
+    school_guid = institution_hierarchy.school_guid
+    school_name = institution_hierarchy.school_name
+    students = generate_students(number_of_students, section_guid, grade, state_code, district_guid, school_guid, school_name, street_names)
+    return students
+
 
 
 def calculate_number_of_schools(num_schools_min, num_schools_avg, num_schools_max):

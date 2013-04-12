@@ -4,8 +4,8 @@ from uuid import uuid4
 import gennames
 import util_2 as util
 
-def generate_state(state_name, state_code, districts=None):
-    return State(state_name, state_code, districts)
+def generate_state(state_name, state_code):
+    return State(state_name, state_code)
 
 def generate_district(name_list_1, name_list_2):
     id_generator = IdGen()

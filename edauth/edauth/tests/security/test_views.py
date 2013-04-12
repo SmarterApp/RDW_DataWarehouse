@@ -169,8 +169,8 @@ class TestViews(unittest.TestCase):
         self.__request.registry.settings = {}
         self.__request.registry.settings['auth.idp.metadata'] = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'resource', 'idp_metadata.xml'))
         http = saml2_post_consumer(self.__request)
-        self.assertIsInstance(http, HTTPFound)
-        self.assertEquals(http.location, 'http://example.com/dummy/login')
+        self.assertIsInstance(http, Response)
+        self.assertRegex(str(http.body), 'http://example.com/dummy/login', 'Must match')
 
     def test_saml2_post_consumer_valid_response(self):
         self.__request.POST = {}
@@ -180,7 +180,7 @@ class TestViews(unittest.TestCase):
         self.__request.registry.settings['auth.idp.metadata'] = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'resource', 'idp_metadata.xml'))
         self.__request.registry.settings['auth.skip.verify'] = True
         http = saml2_post_consumer(self.__request)
-        self.assertEquals(http.location, 'http://example.com/dummy/login')
+        self.assertRegex(str(http.body), 'http://example.com/dummy/login', 'Must match')
 
     def test_landing_page(self):
         self.__request.GET = {}

@@ -160,7 +160,7 @@ def saml2_post_consumer(request):
 
     else:
         redirect_url = request.route_url('login')
-        headers = None
+        headers = []
 
     return _get_landing_page(request, redirect_url, headers=headers)
 

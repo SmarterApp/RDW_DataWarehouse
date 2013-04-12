@@ -85,6 +85,11 @@ rm -rf %{buildroot}
 %postun
 /etc/init.d/httpd start
 
+%pre
+if [ ! -d /opt/edware/conf ]; then
+    mkdir -p /opt/edware/conf
+fi
+
 
 
 %changelog

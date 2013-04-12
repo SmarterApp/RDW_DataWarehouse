@@ -77,6 +77,10 @@ rm -rf %{buildroot}
 /opt/virtualenv/include/*
 /opt/virtualenv/lib/*
 /opt/virtualenv/lib64
+/opt/virtualenv/bin/activate
+/opt/virtualenv/bin/activate.csh
+/opt/virtualenv/bin/activate.fish
+/opt/virtualenv/bin/activate_this.py
 %attr(755,root,root) /opt/virtualenv/bin/bfg2pyramid
 %attr(755,root,root) /opt/virtualenv/bin/easy_install
 %attr(755,root,root) /opt/virtualenv/bin/easy_install-3.3

@@ -262,8 +262,7 @@ function build_rpm {
     cd "$WORKSPACE/rpm/SPEC"
     rpmbuild -bb smarter.spec
     
-    cp /home/jenkins/rpmbuild/RPMS/x86_64/*.rpm /opt/edware/rpm
-    rm -f /home/jenkins/rpmbuild/RPMS/x86_64/*rpm
+    scp /home/jenkins/rpmbuild/RPMS/x86_64/*.rpm pynest@${PYNEST_SERVER}:/opt/wgen/rpm
 
     echo "Finished building RPM"
 }

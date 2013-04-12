@@ -21,23 +21,23 @@ DEBUG = 0
 VERBOSE = False
 
 
-def flatten_yaml(aDict, result, path=""):
+def flatten_yaml(a_dict, result, path=""):
     '''
     This method runs recursively and traversing the dictionary to flatten it and load the result into the result object.
     '''
-    for k in aDict:
-        if type(aDict[k]) != dict:
-            value = "" if aDict[k] is None else str(aDict[k])
+    for k in a_dict:
+        if type(a_dict[k]) != dict:
+            value = "" if a_dict[k] is None else str(a_dict[k])
             result[path + k] = value
         else:
             # if it's a root, find (or add) a root dict and flatten its sub-tree under it
             group_dict = result.get(k, {})
             if k.startswith('[') and k.endswith(']'):
                 # run recursively, but don't add this level to the path, as it is the root (group) level.
-                result[k] = flatten_yaml(aDict[k], group_dict, path)
+                result[k] = flatten_yaml(a_dict[k], group_dict, path)
             else:
                 # run recursively adding the current level to the path.
-                result = flatten_yaml(aDict[k], result, path + k + ".")
+                result = flatten_yaml(a_dict[k], result, path + k + ".")
     return result
 
 
@@ -59,17 +59,17 @@ def generate_ini(env, input_file='settings.yaml'):
         env_settings = settings[env]
     common_settings = settings['common']
 
-    # first we load the common section into the yamlObject
-    yamlObject = flatten_yaml(common_settings, {}, "")
+    # first we load the common section into the yaml_object
+    yaml_object = flatten_yaml(common_settings, {}, "")
     # if we have environment specific data, we use it to add/override to the common section
     if env_settings:
-        yamlObject = flatten_yaml(env_settings, yamlObject, "")
+        yaml_object = flatten_yaml(env_settings, yaml_object, "")
 
     result = ""
     # we read each group and write it to the result string with its content.
-    for group in yamlObject:
+    for group in yaml_object:
         result = result + group + "\n"
-        group_settings = yamlObject[group]
+        group_settings = yaml_object[group]
         # we add all settings with their values.
         result = result + ''.join([setting + " = " + group_settings[setting] + "\n" for setting in group_settings])
 
@@ -87,7 +87,7 @@ def generate_ini(env, input_file='settings.yaml'):
     return result
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Create New Schema for EdWare')
+    parser = argparse.ArgumentParser(description='Convert a YAML file into an INI file.')
     parser.add_argument("-e", "--env", default='development', help="set environment name.")
     parser.add_argument("-i", "--input", default="settings.yaml", help="set input yaml file name default[settings.yaml]")
     args = parser.parse_args()

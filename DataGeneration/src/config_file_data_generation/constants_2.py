@@ -22,7 +22,7 @@ ADD_SUFFIX = ["ROAD", "AVE", "STREET", "SOUTH AVE", "NORTH AVE", "WAY"]
 
 SUBJECTS = ["Math", "ELA"]
 
-GENDERS = ['Male', 'Female']
+GENDERS = ['male', 'female']
 
 MIN_CLASS_SIZE = 20
 MIN_SECTION_SIZE = 10

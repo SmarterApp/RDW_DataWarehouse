@@ -45,7 +45,7 @@ def generate_data_from_config_file(config_module):
     # First thing: prep the csv files by deleting their contents and adding appropriate headers
     prepare_csv_files(ENTITY_TO_PATH_DICT)
     # Next, prepare lists that are used to name various entities
-
+    name_list_dictionary = generate_name_list_dictionary(NAMES_TO_PATH_DICT)
     # We're going to use the birds and fish list to name our districts
     district_names_1 = name_list_dictionary[BIRDS]
     district_names_2 = name_list_dictionary[FISH]
@@ -115,8 +115,7 @@ def generate_data_from_config_file(config_module):
                                     # TODO: More accurate math for num_of_students
                                     number_of_students = number_of_students_in_grade // number_of_sections
                                     students_in_section = generate_students(number_of_students, section.section_guid, grade, current_state.state_code, district.district_guid, school.school_guid,
-                                                                 school.school_name, name_list_dictionary[MALE_FIRST_NAMES], name_list_dictionary[FEMALE_FIRST_NAMES],
-                                                                 name_list_dictionary[LAST_NAMES], name_list_dictionary[BIRDS])
+                                                                 school.school_name, name_list_dictionary[BIRDS])
                                     students_in_school += students_in_section
                         schools_in_district.append(school)
                         create_csv(students_in_school, ENTITY_TO_PATH_DICT[Student])

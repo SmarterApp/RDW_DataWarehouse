@@ -139,23 +139,29 @@ def generate_assessments(grades):
         pass
 
 
-def generate_staff(male_first_names, female_first_names, last_names, gender, section_guid, hier_user_type, state_code, district_guid, school_guid):
+def generate_staff(hier_user_type, state_code=None, district_guid=None, school_guid=None, section_guid=None):
 
     id_generator = IdGen()
     staff_rec_id = id_generator.get_id()
     staff_guid = id_generator.get_id()
-    #TODO: Change to name getting algorithm
-    first_name = random.choice(male_first_names if gender == 'Male' else female_first_names)
-    last_name = random.choice(last_names)
+    gender = random.choice(constants.GENDERS)
+    first_name = generate_first_or_middle_name(gender)
+    last_name = generate_last_name()
     # TODO: Set date and most recent more intelligently
     from_date = datetime.date.today()
     most_recent = True
-    to_date = datetime.date.today()
-
     staff = Staff(staff_rec_id, staff_guid, first_name, last_name, section_guid, hier_user_type, state_code,
-                  district_guid, school_guid, from_date, most_recent, to_date)
+                  district_guid, school_guid, from_date, most_recent)
 
     return staff
+
+
+def generate_multiple_staff(number_of_staff, hier_user_type, state_code=None, district_guid=None, school_guid=None, section_guid=None):
+    staff_list = []
+    for i in range(number_of_staff):
+        staff_member = generate_staff(hier_user_type, state_code, district_guid, school_guid, section_guid)
+        staff_list.append(staff_member)
+    return staff_list
 
 
 def generate_fact_assessment_outcome(assessment, student, ):

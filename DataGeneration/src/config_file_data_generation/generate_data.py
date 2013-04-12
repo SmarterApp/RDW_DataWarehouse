@@ -6,9 +6,8 @@ import util_2
 import constants_2 as constants
 from write_to_csv import create_csv
 from importlib import import_module
-from generate_entities import generate_institution_hierarchy, generate_sections, generate_students
+from generate_entities import generate_institution_hierarchy, generate_sections, generate_students, generate_multiple_staff
 from generate_helper_entities import generate_state, generate_district, generate_school
-from datetime import date
 from entities_2 import InstitutionHierarchy, Section, Assessment, AssessmentOutcome, \
     Staff, ExternalUserStudent, Student
 
@@ -39,6 +38,10 @@ NAMES_TO_PATH_DICT = {BIRDS: DATAFILE_PATH + '/datafiles/name_lists/birds.txt',
 
 def generate_data_from_config_file(config_module):
     # First thing: prep the csv files by deleting their contents and adding appropriate headers
+    """
+
+    :param config_module:
+    """
     prepare_csv_files(ENTITY_TO_PATH_DICT)
 
     # Next, prepare lists that are used to name various entities
@@ -70,6 +73,11 @@ def generate_data_from_config_file(config_module):
         # Create state object from gathered info
         current_state = generate_state(state_name, state_code)
 
+        # TODO: should we add some randomness here? What are acceptable numbers? 5-10? 10-20?
+        number_of_state_level_staff = 10
+        # Add the state-level staff
+        state_level_staff = generate_non_teaching_staff(number_of_state_level_staff, state_code=current_state.state_code)
+
         # Pull out information on districts within this state
         state_type_name = state[config_module.STATE_TYPE]
         state_type = state_types[state_type_name]
@@ -95,6 +103,10 @@ def generate_data_from_config_file(config_module):
             school_counts = district_type[config_module.SCHOOL_COUNTS]
 
             for district in districts:
+                # TODO: should we add some randomness here? What are acceptable numbers? 5-10? 10-20?
+                number_of_district_level_staff = 10
+                district_level_staff = generate_non_teaching_staff(number_of_district_level_staff, state_code=current_state.state_code,
+                                                                   district_guid=district.district_guid)
                 schools_by_type = create_school_dictionary(school_counts, school_types_and_ratios, school_names_1, school_names_2)
                 for school_type_name in schools_by_type.keys():
                     schools = schools_by_type[school_type_name]
@@ -108,6 +120,12 @@ def generate_data_from_config_file(config_module):
                         institution_hierarchies.append(institution_hierarchy)
                         students_in_school = []
                         sections_in_school = []
+                        staff_in_school = []
+                        # TODO: should we add some randomness here? What are acceptable numbers? 5-10? 10-20?
+                        number_of_school_level_staff = 5
+                        school_level_staff = generate_non_teaching_staff(number_of_school_level_staff, state_code=current_state.state_code,
+                                                                         district_guid=district.district_guid, school_guid=school.school_guid)
+                        staff_in_school += school_level_staff
                         for grade in school_type[config_module.GRADES]:
                             number_of_students_in_grade = calculate_number_of_students(student_min, student_max, student_avg)
                             for subject_name in constants.SUBJECTS:
@@ -121,9 +139,15 @@ def generate_data_from_config_file(config_module):
                                     number_of_students = number_of_students_in_grade // number_of_sections
                                     students_in_section =  generate_students_from_institution_hierarchy(number_of_students, institution_hierarchy, grade, section.section_guid, name_list_dictionary[BIRDS])
                                     students_in_school += students_in_section
+                                    # TODO: should we add some randomness here? What are acceptable numbers? 1-2? 1-3?
+                                    number_of_staff_in_section = 1
+                                    teachers_in_section = generate_teaching_staff_from_institution_hierarchy(number_of_staff_in_section, institution_hierarchy, section.section_guid)
+                                    staff_in_school += teachers_in_section
                         create_csv(students_in_school, ENTITY_TO_PATH_DICT[Student])
                         create_csv(sections_in_school, ENTITY_TO_PATH_DICT[Section])
+                        create_csv(staff_in_school, ENTITY_TO_PATH_DICT[Staff])
     create_csv(institution_hierarchies, ENTITY_TO_PATH_DICT[InstitutionHierarchy])
+
 
 # TODO: Can we think of a more appropriate file for this function?
 def prepare_csv_files(entity_to_path_dict):
@@ -204,6 +228,20 @@ def generate_students_from_institution_hierarchy(number_of_students, institution
     school_name = institution_hierarchy.school_name
     students = generate_students(number_of_students, section_guid, grade, state_code, district_guid, school_guid, school_name, street_names)
     return students
+
+
+def generate_teaching_staff_from_institution_hierarchy(number_of_staff, institution_hierarchy, section_guid):
+    state_code = institution_hierarchy.state_code
+    district_guid = institution_hierarchy.district_guid
+    school_guid = institution_hierarchy.school_guid
+    hier_user_type = 'Teacher'
+    staff_list = generate_multiple_staff(number_of_staff, section_guid, hier_user_type, state_code, district_guid, school_guid)
+    return staff_list
+
+def generate_non_teaching_staff(number_of_staff, state_code=None, district_guid=None, school_guid=None):
+    hier_user_type = 'Staff'
+    staff_list = generate_multiple_staff(number_of_staff, hier_user_type, state_code, district_guid, school_guid)
+    return staff_list
 
 
 

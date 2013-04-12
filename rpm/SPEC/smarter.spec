@@ -56,6 +56,7 @@ cd ${WORKSPACE}/edapi
 python setup.py install
 cd -
 cd %{buildroot}/opt/edware/smarter
+rm -rf assets
 mv ../assets .
 python setup.py install
 cd -

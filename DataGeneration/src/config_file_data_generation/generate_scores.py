@@ -62,12 +62,6 @@ def calculate_avg_std(generated_random_numbers):
     '''
     Given a list of numbers, calculate average, and standard deviation of it
     '''
-#     total_random_numers_array = array(generated_random_numbers)
-#     actual_avg = total_random_numers_array.mean()
-#     actual_std = total_random_numers_array.std()
-    '''
-    @return: the standard deviation value of the given sequence
-    '''
     if(len(generated_random_numbers) < 1):
         return None, None
     else:
@@ -80,7 +74,9 @@ def calculate_avg_std(generated_random_numbers):
 
 
 def gauss_list(avg, std, num):
-    """ return list of random number with gauss distribution"""
+    """ 
+    return list of random number with gauss distribution
+    """
     result = [0] * num
     for i in range(num):
         result[i] = int(random.gauss(avg, std))

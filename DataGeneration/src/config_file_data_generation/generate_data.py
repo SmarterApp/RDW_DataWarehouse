@@ -38,6 +38,7 @@ NAMES_TO_PATH_DICT = {BIRDS: DATAFILE_PATH + '/datafiles/name_lists/birds.txt',
                       MAMMALS: DATAFILE_PATH + '/datafiles/name_lists/mammals.txt'
                      }
 
+
 def generate_data_from_config_file(config_module):
     # First thing: prep the csv files by deleting their contents and adding appropriate headers
     """
@@ -145,6 +146,7 @@ def generate_data_from_config_file(config_module):
                                     number_of_staff_in_section = 1
                                     teachers_in_section = generate_teaching_staff_from_institution_hierarchy(number_of_staff_in_section, institution_hierarchy, section.section_guid)
                                     staff_in_school += teachers_in_section
+                                    # asmt_outcomes = generate_assessment_outcomes_from_helper_entities_and_lists(students_in_section, section, institution_hierarchy, assessment, score_details, perf_lvl_dist)
                         create_csv(students_in_school, ENTITY_TO_PATH_DICT[Student])
                         create_csv(sections_in_school, ENTITY_TO_PATH_DICT[Section])
                         create_csv(staff_in_school, ENTITY_TO_PATH_DICT[Staff])

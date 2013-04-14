@@ -80,8 +80,8 @@ def generate_sections(number_of_sections, subject_name, grade, state_code, distr
     return sections
 
 
-def generate_assessment(asmt_type, asmt_period, asmt_period_year, asmt_version, asmt_subject, asmt_grade, claim_list,
-                        performance_levels, cut_points, asmt_score_min, asmt_score_max, asmt_claim_1_name, asmt_claim_2_name, asmt_claim_3_name, asmt_claim_4_name,
+def generate_assessment(asmt_type, asmt_period, asmt_period_year, asmt_version, asmt_subject, asmt_grade,
+                        asmt_claim_1_name, asmt_claim_2_name, asmt_claim_3_name, asmt_claim_4_name,
                         asmt_perf_lvl_name_1, asmt_perf_lvl_name_2, asmt_perf_lvl_name_3, asmt_perf_lvl_name_4, asmt_perf_lvl_name_5,
                         asmt_score_min, asmt_score_max, asmt_claim_1_score_min, asmt_claim_1_score_max, asmt_claim_1_score_weight,
                         asmt_claim_2_score_min, asmt_claim_2_score_max, asmt_claim_2_score_weight,

@@ -6,10 +6,12 @@ import util_2
 import constants_2 as constants
 from write_to_csv import create_csv
 from importlib import import_module
-from generate_entities import generate_institution_hierarchy, generate_sections, generate_students, generate_multiple_staff
-from generate_helper_entities import generate_state, generate_district, generate_school
+from generate_entities import (generate_institution_hierarchy, generate_sections, generate_students, generate_multiple_staff,
+                               generate_fact_assessment_outcomes)
+from generate_helper_entities import generate_state, generate_district, generate_school, generate_assessment_score
 from entities_2 import InstitutionHierarchy, Section, Assessment, AssessmentOutcome, \
     Staff, ExternalUserStudent, Student
+from generate_scores import generate_overall_scores
 
 
 DATAFILE_PATH = os.path.dirname(os.path.realpath(__file__))
@@ -220,9 +222,69 @@ def generate_institution_hierarchy_from_helper_entities(state, district, school)
                                                            from_date, most_recent)
     return institution_hierarchy
 
-def generate_assessment_outcomes_from_helper_entities_and_lists(students, section, institution_hierarchy, assessments):
+
+def generate_assessment_outcomes_from_helper_entities_and_lists(students, section, institution_hierarchy, assessment, score_details, perf_lvl_dist):
     # TODO: Start here seth this weekend
-    pass
+    total = len(students)
+    min_score = assessment.asmt_score_min
+    max_score = assessment.asmt_score_max
+    percentage = perf_lvl_dist[section.subject_name][str(section.grade)][config_module.PERCENTAGES]
+    # The cut_points in score details do not include min and max score. The score generator needs the min and max to be included
+    cut_points = score_details[config_module.CUT_POINTS]
+    inclusive_cut_points = [min_score]
+    inclusive_cut_points.extend(cut_points)
+    inclusive_cut_points.append(max_score)
+
+    scores = generate_overall_scores(percentage, inclusive_cut_points, min_score, max_score, total)
+    asmt_scores = translate_scores_to_assessment_score(scores, cut_points, assessment)
+    asmt_rec_id = assessment.asmt_rec_id
+    teacher_guid = section.teacher_guid
+    state_code = institution_hierarchy.state_code
+    district_guid = institution_hierarchy.district_guid
+    school_guid = institution_hierarchy.school_guid
+    section_guid = section.section_guid
+    inst_hier_rec_id = institution_hierarchy.inst_hier_rec_id
+    section_rec_id = section.section_rec_id
+    where_taken_id = school_guid
+    where_taken_name = institution_hierarchy.school_name
+    asmt_grade = section.grade
+    enrl_grade = section.grade
+    date_taken = datetime.date.today()
+
+    asmt_outcomes = generate_fact_assessment_outcomes(students, asmt_scores, asmt_rec_id, teacher_guid, state_code,
+                                                      district_guid, school_guid, section_guid, inst_hier_rec_id,
+                                                      section_rec_id, where_taken_id, where_taken_name, asmt_grade,
+                                                      enrl_grade, date_taken)
+
+    return asmt_outcomes
+
+
+def translate_scores_to_assessment_score(scores, cut_points, assessment):
+    score_list = []
+
+    score_min = assessment.asmt_score_min
+    score_max = assessment.asmt_score_max
+    # TODO: get values from somewhere else
+    ebmin = 37.5
+    ebmax = 150
+    rndlo = -10
+    rndhi = 25
+
+    for score in scores:
+        perf_lvl = None
+        for i in range(len(cut_points)):
+            if score < cut_points[i]:
+                perf_lvl = i + 1  # perf lvls are >= 1
+                break
+
+        interval_max = calculate_interval(score, score_min, score_max, ebmin, ebmax, rndlo, rndhi)
+        interval_min = -interval_max
+        claim_scores = calcuate_claim_scores(score, assessment)
+        asmt_create_date = datetime.date.today()
+        asmt_score = generate_assessment_score(score, perf_lvl, interval_min, interval_max, claim_scores, asmt_create_date)
+
+        score_list.append(asmt_score)
+    return score_list
 
 
 def generate_students_from_institution_hierarchy(number_of_students, institution_hierarchy, grade, section_guid, street_names):

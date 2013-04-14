@@ -76,3 +76,35 @@ class Claim:
         self.claim_score_min = claim_score_min
         self.claim_score_max = claim_score_max
         self.claim_score_weight = claim_score_weight
+
+
+class ClaimScore():
+    '''
+    This is a claim object with scores. Used to create assessment_outcome row.
+    '''
+    def __init__(self, claim_score, claim_score_interval_minimum, claim_score_interval_maximum):
+        self.claim_score = claim_score
+        self.claim_score_interval_minimum = claim_score_interval_minimum
+        self.claim_score_interval_maximum = claim_score_interval_maximum
+
+
+class AssessmentScore:
+    '''
+    Assessment Score object
+    '''
+    def __init__(self, overall_score, perf_lvl, interval_min, interval_max, claim_scores, asmt_create_date):
+        '''
+        Constructor
+        '''
+        self.overall_score = overall_score
+        self.perf_lvl = perf_lvl
+        self.interval_min = interval_min
+        self.interval_max = interval_max
+        self.claim_scores = claim_scores
+        self.asmt_create_date = asmt_create_date
+
+    def __str__(self):
+        '''
+        String method
+        '''
+        return ("Score:[overall: %s, claims: %s]" % (self.overall_score, self.claim_scores))

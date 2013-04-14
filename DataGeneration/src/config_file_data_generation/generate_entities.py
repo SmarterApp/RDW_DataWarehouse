@@ -139,6 +139,7 @@ def generate_multiple_staff(number_of_staff, hier_user_type, state_code=None, di
         staff_list.append(staff_member)
     return staff_list
 
+
 def generate_fact_assessment_outcome(asmt_rec_id, student_guid, teacher_guid, state_code, district_guid, school_guid, section_guid,
                                      inst_hier_rec_id, section_rec_id, where_taken_id, where_taken_name, asmt_grade, enrl_grade,
                                      date_taken, asmt_score, asmt_score_range_min, asmt_score_range_max, asmt_perf_lvl,
@@ -148,9 +149,6 @@ def generate_fact_assessment_outcome(asmt_rec_id, student_guid, teacher_guid, st
                                      asmt_claim_4_score, asmt_claim_4_score_range_min, asmt_claim_4_score_range_max):
     id_generator = IdGen()
     asmnt_outcome_rec_id = id_generator.get_id()
-
-def generate_fact_assessment_outcome(assessment, student, ):
-    pass
 
     date_taken_day = date_taken.day
     date_taken_month = date_taken.month
@@ -172,7 +170,9 @@ def generate_fact_assessment_outcome(assessment, student, ):
     return asmt_outcome
 
 
-def generate_fact_assessment_outcomes():
+def generate_fact_assessment_outcomes(students, scores, asmt_rec_id, teacher_guid, state_code, district_guid, school_guid, section_guid,
+                                     inst_hier_rec_id, section_rec_id, where_taken_id, where_taken_name, asmt_grade, enrl_grade,
+                                     date_taken):
     pass
 
 

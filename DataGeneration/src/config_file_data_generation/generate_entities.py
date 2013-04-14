@@ -173,10 +173,38 @@ def generate_fact_assessment_outcome(asmt_rec_id, student_guid, teacher_guid, st
 def generate_fact_assessment_outcomes(students, scores, asmt_rec_id, teacher_guid, state_code, district_guid, school_guid, section_guid,
                                      inst_hier_rec_id, section_rec_id, where_taken_id, where_taken_name, asmt_grade, enrl_grade,
                                      date_taken):
-    pass
 
+    outcomes = []
 
+    for student in students:
+        score = scores.pop()
+        claim_scores = score.claim_scores
 
+        student_guid = student.student_guid
+        asmt_score = score.overall_score
+        asmt_score_range_min = score.interval_min
+        asmt_score_range_max = score.interval_max
+        asmt_perf_lvl = score.perf_lvl
+        asmt_claim_1_score = claim_scores[0].claim_score
+        asmt_claim_2_score = claim_scores[1].claim_score
+        asmt_claim_3_score = claim_scores[2].claim_score
+        asmt_claim_4_score = claim_scores[3].claim_score if len(claim_scores) > 3 else None
+        asmt_claim_1_score_range_min = claim_scores[0].claim_score_interval_minimum
+        asmt_claim_2_score_range_min = claim_scores[1].claim_score_interval_minimum
+        asmt_claim_3_score_range_min = claim_scores[2].claim_score_interval_minimum
+        asmt_claim_4_score_range_min = claim_scores[3].claim_score_interval_minimum if len(claim_scores) > 3 else None
+        asmt_claim_1_score_range_max = claim_scores[0].claim_score_interval_maximum
+        asmt_claim_2_score_range_max = claim_scores[1].claim_score_interval_maximum
+        asmt_claim_3_score_range_max = claim_scores[2].claim_score_interval_maximum
+        asmt_claim_4_score_range_max = claim_scores[3].claim_score_interval_maximum if len(claim_scores) > 3 else None
 
+        asmt_outcome = generate_fact_assessment_outcome(asmt_rec_id, student_guid, teacher_guid, state_code, district_guid, school_guid, section_guid,
+                                     inst_hier_rec_id, section_rec_id, where_taken_id, where_taken_name, asmt_grade, enrl_grade,
+                                     date_taken, asmt_score, asmt_score_range_min, asmt_score_range_max, asmt_perf_lvl,
+                                     asmt_claim_1_score, asmt_claim_1_score_range_min, asmt_claim_1_score_range_max,
+                                     asmt_claim_2_score, asmt_claim_2_score_range_min, asmt_claim_2_score_range_max,
+                                     asmt_claim_3_score, asmt_claim_3_score_range_min, asmt_claim_3_score_range_max,
+                                     asmt_claim_4_score, asmt_claim_4_score_range_min, asmt_claim_4_score_range_max)
+        outcomes.append(asmt_outcome)
 
-
+    return outcomes

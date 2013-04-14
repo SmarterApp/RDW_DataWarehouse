@@ -8,7 +8,7 @@ from write_to_csv import create_csv
 from importlib import import_module
 from generate_entities import (generate_institution_hierarchy, generate_sections, generate_students, generate_multiple_staff,
                                generate_fact_assessment_outcomes)
-from generate_helper_entities import generate_state, generate_district, generate_school, generate_assessment_score
+from generate_helper_entities import generate_state, generate_district, generate_school, generate_assessment_score, generate_claim_score
 from entities_2 import InstitutionHierarchy, Section, Assessment, AssessmentOutcome, \
     Staff, ExternalUserStudent, Student
 from generate_scores import generate_overall_scores
@@ -277,9 +277,9 @@ def translate_scores_to_assessment_score(scores, cut_points, assessment):
                 perf_lvl = i + 1  # perf lvls are >= 1
                 break
 
-        interval_max = calculate_interval(score, score_min, score_max, ebmin, ebmax, rndlo, rndhi)
+        interval_max = get_error_band(score, score_min, score_max, ebmin, ebmax, rndlo, rndhi)
         interval_min = -interval_max
-        claim_scores = calcuate_claim_scores(score, assessment)
+        claim_scores = calcuate_claim_scores(score, assessment, interval_max)
         asmt_create_date = datetime.date.today()
         asmt_score = generate_assessment_score(score, perf_lvl, interval_min, interval_max, claim_scores, asmt_create_date)
 
@@ -324,6 +324,37 @@ def calculate_number_of_students(student_min, student_max, student_avg):
 def calculate_number_of_sections(number_of_students):
     # TODO: implement me
     return 1
+
+
+def calcuate_claim_scores(score, assessment, interval):
+    # TODO: implement me
+    claim_score_interval_maximum = interval
+    claim_score_interval_minimum = -interval
+    claim1 = generate_claim_score(score, claim_score_interval_minimum, claim_score_interval_maximum)
+    claim2 = generate_claim_score(score, claim_score_interval_minimum, claim_score_interval_maximum)
+    claim3 = generate_claim_score(score, claim_score_interval_minimum, claim_score_interval_maximum)
+    claim4 = None
+
+    claims = [claim1, claim2, claim3]
+    if assessment.asmt_claim_4_score_min:
+        claim4 = generate_claim_score(score, claim_score_interval_minimum, claim_score_interval_maximum)
+        claims.append(claim4)
+
+    return claims
+
+
+def get_error_band(score, smin, smax, ebmin, ebmax, rndlo, rndhi, clip=True):
+    assert(smin > 0 and smax > smin)
+    assert(score >= smin and score <= smax)
+    assert(ebmin > 0 and ebmax > ebmin)
+    srange = smax - smin        # score range (from MIN to MAX)
+    scenter = smin + srange / 2   # center of score range
+    ebsteps = srange / 2        # number of EB steps (= range/2)
+    ebrange = ebmax - ebmin     # range of error band sizes
+    eb_size_per_step = ebrange / ebsteps    # EB size per step
+    dist_from_center = abs(score - scenter)
+    ebhalf = ebmin + (eb_size_per_step * dist_from_center)
+    return ebhalf
 
 
 if __name__ == '__main__':

@@ -304,6 +304,7 @@ def generate_teaching_staff_from_institution_hierarchy(number_of_staff, institut
     staff_list = generate_multiple_staff(number_of_staff, section_guid, hier_user_type, state_code, district_guid, school_guid)
     return staff_list
 
+
 def generate_non_teaching_staff(number_of_staff, state_code=None, district_guid=None, school_guid=None):
     hier_user_type = 'Staff'
     staff_list = generate_multiple_staff(number_of_staff, hier_user_type, state_code, district_guid, school_guid)

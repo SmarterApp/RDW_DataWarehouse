@@ -128,5 +128,5 @@ def get_performance_level_distributions():
                     '7': {'percentages': [22, 39, 30, 9]},
                     '8': {'percentages': [24, 38, 29, 9]},
                     '11': {'percentages': [26, 37, 28, 9]}}
-           }
+                    }
     return pld

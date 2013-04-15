@@ -6,10 +6,12 @@ import util_2
 import constants_2 as constants
 from write_to_csv import create_csv
 from importlib import import_module
-from generate_entities import generate_institution_hierarchy, generate_sections, generate_students, generate_multiple_staff
-from generate_helper_entities import generate_state, generate_district, generate_school
+from generate_entities import (generate_institution_hierarchy, generate_sections, generate_students, generate_multiple_staff,
+                               generate_fact_assessment_outcomes)
+from generate_helper_entities import generate_state, generate_district, generate_school, generate_assessment_score, generate_claim_score
 from entities_2 import InstitutionHierarchy, Section, Assessment, AssessmentOutcome, \
     Staff, ExternalUserStudent, Student
+from generate_scores import generate_overall_scores
 
 
 DATAFILE_PATH = os.path.dirname(os.path.realpath(__file__))
@@ -35,6 +37,7 @@ NAMES_TO_PATH_DICT = {BIRDS: DATAFILE_PATH + '/datafiles/name_lists/birds.txt',
                       FISH: DATAFILE_PATH + '/datafiles/name_lists/fish.txt',
                       MAMMALS: DATAFILE_PATH + '/datafiles/name_lists/mammals.txt'
                      }
+
 
 def generate_data_from_config_file(config_module):
     # First thing: prep the csv files by deleting their contents and adding appropriate headers
@@ -143,6 +146,7 @@ def generate_data_from_config_file(config_module):
                                     number_of_staff_in_section = 1
                                     teachers_in_section = generate_teaching_staff_from_institution_hierarchy(number_of_staff_in_section, institution_hierarchy, section.section_guid)
                                     staff_in_school += teachers_in_section
+                                    # asmt_outcomes = generate_assessment_outcomes_from_helper_entities_and_lists(students_in_section, section, institution_hierarchy, assessment, score_details, perf_lvl_dist)
                         create_csv(students_in_school, ENTITY_TO_PATH_DICT[Student])
                         create_csv(sections_in_school, ENTITY_TO_PATH_DICT[Section])
                         create_csv(staff_in_school, ENTITY_TO_PATH_DICT[Staff])
@@ -222,9 +226,69 @@ def generate_institution_hierarchy_from_helper_entities(state, district, school)
                                                            from_date, most_recent)
     return institution_hierarchy
 
-def generate_assessment_outcomes_from_helper_entities_and_lists(students, section, institution_hierarchy, assessments):
+
+def generate_assessment_outcomes_from_helper_entities_and_lists(students, section, institution_hierarchy, assessment, score_details, perf_lvl_dist):
     # TODO: Start here seth this weekend
-    pass
+    total = len(students)
+    min_score = assessment.asmt_score_min
+    max_score = assessment.asmt_score_max
+    percentage = perf_lvl_dist[section.subject_name][str(section.grade)][config_module.PERCENTAGES]
+    # The cut_points in score details do not include min and max score. The score generator needs the min and max to be included
+    cut_points = score_details[config_module.CUT_POINTS]
+    inclusive_cut_points = [min_score]
+    inclusive_cut_points.extend(cut_points)
+    inclusive_cut_points.append(max_score)
+
+    scores = generate_overall_scores(percentage, inclusive_cut_points, min_score, max_score, total)
+    asmt_scores = translate_scores_to_assessment_score(scores, cut_points, assessment)
+    asmt_rec_id = assessment.asmt_rec_id
+    teacher_guid = section.teacher_guid
+    state_code = institution_hierarchy.state_code
+    district_guid = institution_hierarchy.district_guid
+    school_guid = institution_hierarchy.school_guid
+    section_guid = section.section_guid
+    inst_hier_rec_id = institution_hierarchy.inst_hier_rec_id
+    section_rec_id = section.section_rec_id
+    where_taken_id = school_guid
+    where_taken_name = institution_hierarchy.school_name
+    asmt_grade = section.grade
+    enrl_grade = section.grade
+    date_taken = datetime.date.today()
+
+    asmt_outcomes = generate_fact_assessment_outcomes(students, asmt_scores, asmt_rec_id, teacher_guid, state_code,
+                                                      district_guid, school_guid, section_guid, inst_hier_rec_id,
+                                                      section_rec_id, where_taken_id, where_taken_name, asmt_grade,
+                                                      enrl_grade, date_taken)
+
+    return asmt_outcomes
+
+
+def translate_scores_to_assessment_score(scores, cut_points, assessment):
+    score_list = []
+
+    score_min = assessment.asmt_score_min
+    score_max = assessment.asmt_score_max
+    # TODO: get values from somewhere else
+    ebmin = 37.5
+    ebmax = 150
+    rndlo = -10
+    rndhi = 25
+
+    for score in scores:
+        perf_lvl = None
+        for i in range(len(cut_points)):
+            if score < cut_points[i]:
+                perf_lvl = i + 1  # perf lvls are >= 1
+                break
+
+        interval_max = get_error_band(score, score_min, score_max, ebmin, ebmax, rndlo, rndhi)
+        interval_min = -interval_max
+        claim_scores = calcuate_claim_scores(score, assessment, interval_max)
+        asmt_create_date = datetime.date.today()
+        asmt_score = generate_assessment_score(score, perf_lvl, interval_min, interval_max, claim_scores, asmt_create_date)
+
+        score_list.append(asmt_score)
+    return score_list
 
 
 def generate_students_from_institution_hierarchy(number_of_students, institution_hierarchy, grade, section_guid, street_names):
@@ -243,6 +307,7 @@ def generate_teaching_staff_from_institution_hierarchy(number_of_staff, institut
     hier_user_type = 'Teacher'
     staff_list = generate_multiple_staff(number_of_staff, section_guid, hier_user_type, state_code, district_guid, school_guid)
     return staff_list
+
 
 def generate_non_teaching_staff(number_of_staff, state_code=None, district_guid=None, school_guid=None):
     hier_user_type = 'Staff'
@@ -263,6 +328,37 @@ def calculate_number_of_students(student_min, student_max, student_avg):
 def calculate_number_of_sections(number_of_students):
     # TODO: implement me
     return 1
+
+
+def calcuate_claim_scores(score, assessment, interval):
+    # TODO: implement me
+    claim_score_interval_maximum = interval
+    claim_score_interval_minimum = -interval
+    claim1 = generate_claim_score(score, claim_score_interval_minimum, claim_score_interval_maximum)
+    claim2 = generate_claim_score(score, claim_score_interval_minimum, claim_score_interval_maximum)
+    claim3 = generate_claim_score(score, claim_score_interval_minimum, claim_score_interval_maximum)
+    claim4 = None
+
+    claims = [claim1, claim2, claim3]
+    if assessment.asmt_claim_4_score_min:
+        claim4 = generate_claim_score(score, claim_score_interval_minimum, claim_score_interval_maximum)
+        claims.append(claim4)
+
+    return claims
+
+
+def get_error_band(score, smin, smax, ebmin, ebmax, rndlo, rndhi, clip=True):
+    assert(smin > 0 and smax > smin)
+    assert(score >= smin and score <= smax)
+    assert(ebmin > 0 and ebmax > ebmin)
+    srange = smax - smin        # score range (from MIN to MAX)
+    scenter = smin + srange / 2   # center of score range
+    ebsteps = srange / 2        # number of EB steps (= range/2)
+    ebrange = ebmax - ebmin     # range of error band sizes
+    eb_size_per_step = ebrange / ebsteps    # EB size per step
+    dist_from_center = abs(score - scenter)
+    ebhalf = ebmin + (eb_size_per_step * dist_from_center)
+    return ebhalf
 
 
 if __name__ == '__main__':

@@ -41,8 +41,7 @@ class Section:
     '''
     Section Object
     '''
-    def __init__(self,section_rec_id, section_guid, section_name, grade, class_name, subject_name, state_code, district_guid, school_guid, from_date, most_recent, to_date=None):
-
+    def __init__(self, section_rec_id, section_guid, section_name, grade, class_name, subject_name, state_code, district_guid, school_guid, from_date, most_recent, to_date=None):
 
         self.section_rec_id = section_rec_id
 

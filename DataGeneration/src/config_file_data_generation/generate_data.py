@@ -216,7 +216,7 @@ def generate_institution_hierarchy_from_helper_entities(state, district, school)
     school_name = school.school_name
     school_category = school.school_category
     # TODO: generate from_date more intelligently
-    from_date = datetime.date.today()
+    from_date = datetime.date.today().strftime('%Y%m%d')
     # TODO: generate most_recent more intelligently
     most_recent = True
 
@@ -284,7 +284,7 @@ def translate_scores_to_assessment_score(scores, cut_points, assessment):
         interval_max = get_error_band(score, score_min, score_max, ebmin, ebmax, rndlo, rndhi)
         interval_min = -interval_max
         claim_scores = calcuate_claim_scores(score, assessment, interval_max)
-        asmt_create_date = datetime.date.today()
+        asmt_create_date = datetime.date.today().strftime('%Y%m%d')
         asmt_score = generate_assessment_score(score, perf_lvl, interval_min, interval_max, claim_scores, asmt_create_date)
 
         score_list.append(asmt_score)
@@ -305,7 +305,7 @@ def generate_teaching_staff_from_institution_hierarchy(number_of_staff, institut
     district_guid = institution_hierarchy.district_guid
     school_guid = institution_hierarchy.school_guid
     hier_user_type = 'Teacher'
-    staff_list = generate_multiple_staff(number_of_staff, section_guid, hier_user_type, state_code, district_guid, school_guid)
+    staff_list = generate_multiple_staff(number_of_staff, hier_user_type, state_code, district_guid, school_guid, section_guid)
     return staff_list
 
 

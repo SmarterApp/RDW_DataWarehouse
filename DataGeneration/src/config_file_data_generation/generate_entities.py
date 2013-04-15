@@ -40,7 +40,7 @@ def generate_student(section_guid, grade, state_code, district_guid, school_guid
     email = util.generate_email_address(first_name, last_name, school_name)
     dob = util.generate_dob(grade)
     # TODO: Set date and most recent more intelligently
-    from_date = datetime.date.today()
+    from_date = datetime.date.today().strftime('%Y%m%d')
     most_recent = True
 
     student = Student(student_rec_id, student_guid, first_name, last_name, address_1, city, zip_code,
@@ -63,7 +63,7 @@ def generate_section(subject_name, grade, state_code, district_guid, school_guid
     section_name = 'Section ' + str(section_number)
     class_name = subject_name + '_' + str(class_number)
     # TODO: Set date and most recent more intelligently
-    from_date = datetime.date.today()
+    from_date = datetime.date.today().strftime('%Y%m%d')
     most_recent = True
 
     section = Section(section_rec_id, section_guid, section_name, grade, class_name, subject_name, state_code,
@@ -94,8 +94,8 @@ def generate_assessment(asmt_type, asmt_period, asmt_period_year, asmt_version, 
     asmt_rec_id = id_generator.get_id()
     asmt_guid = id_generator.get_id()
 
-    from_date = datetime.date.today()
-    to_date = datetime.date.today()
+    from_date = datetime.date.today().strftime('%Y%m%d')
+    to_date = datetime.date.today().strftime('%Y%m%d')
     most_recent = True
 
     asmt = Assessment(asmt_rec_id, asmt_guid, asmt_type, asmt_period, asmt_period_year, asmt_version, asmt_subject,
@@ -124,7 +124,7 @@ def generate_staff(hier_user_type, state_code=None, district_guid=None, school_g
     first_name = generate_first_or_middle_name(gender)
     last_name = generate_last_name()
     # TODO: Set date and most recent more intelligently
-    from_date = datetime.date.today()
+    from_date = datetime.date.today().strftime('%Y%m%d')
     most_recent = True
     staff = Staff(staff_rec_id, staff_guid, first_name, last_name, section_guid, hier_user_type, state_code,
                   district_guid, school_guid, from_date, most_recent)

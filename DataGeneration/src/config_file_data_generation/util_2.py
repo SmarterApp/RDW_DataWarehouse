@@ -2,8 +2,6 @@ import random
 import constants_2 as constants
 import datetime
 
-def extract_value_from_normal_distribution(avg, min, max):
-    pass
 
 def generate_district_name(list_1, list_2, max_name_length=None):
     suffix = random.choice(constants.DISTRICT_SUFFIX)
@@ -13,6 +11,7 @@ def generate_district_name(list_1, list_2, max_name_length=None):
         max_name_length = max_name_length - suffix_length
     district_name = generate_name_from_lists(list_1, list_2, max_name_length)
     return district_name + ' ' + suffix
+
 
 def generate_school_name(school_type, list_1, list_2, max_name_length=None):
     suffix_list = constants.SCHOOL_TYPE_TO_SUFFIXES[school_type]
@@ -24,6 +23,7 @@ def generate_school_name(school_type, list_1, list_2, max_name_length=None):
         max_name_length = max_name_length - suffix_length
     school_name = generate_name_from_lists(list_1, list_2, max_name_length)
     return school_name + ' ' + suffix
+
 
 def generate_name_from_lists(list_1, list_2, max_name_length=None):
     name_1 = str(random.choice(list_1))

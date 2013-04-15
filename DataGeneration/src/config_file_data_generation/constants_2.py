@@ -18,7 +18,7 @@ SCHOOL_ORDER_MAP = {ELEMENTARY_SCHOOL: 0, MIDDLE_SCHOOL: 1, HIGH_SCHOOL: 2, OTHE
 SCHOOL_TYPES = ['Alternative', 'Regular', 'Special Education', 'Vocational', 'JJAEP', 'DAEP']
 
 DISTRICT_SUFFIX = ['District', 'School District', 'Schools', 'County Schools', 'Public Schools', 'SD']
-ADD_SUFFIX = ["ROAD", "AVE", "STREET", "SOUTH AVE", "NORTH AVE", "WAY"]
+ADD_SUFFIX = ["ROAD", "AVE", "STREET", "PARKWAY", "BLVD", "WAY"]
 
 SUBJECTS = ["Math", "ELA"]
 

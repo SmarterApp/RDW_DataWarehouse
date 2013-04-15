@@ -146,6 +146,8 @@ def generate_data_from_config_file(config_module):
                         create_csv(students_in_school, ENTITY_TO_PATH_DICT[Student])
                         create_csv(sections_in_school, ENTITY_TO_PATH_DICT[Section])
                         create_csv(staff_in_school, ENTITY_TO_PATH_DICT[Staff])
+                create_csv(district_level_staff, ENTITY_TO_PATH_DICT[Staff])
+        create_csv(state_level_staff, ENTITY_TO_PATH_DICT[Staff])
     create_csv(institution_hierarchies, ENTITY_TO_PATH_DICT[InstitutionHierarchy])
 
 

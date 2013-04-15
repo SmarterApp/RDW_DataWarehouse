@@ -42,9 +42,9 @@ class ICipher(interface.Interface):
 @implementer(ICipher)
 class AESCipher:
     '''
-    AES 256 implementation
+    AES implementation
     '''
-    block_size = 16
+    block_size = AES.block_size
     padding = b'\x00'
 
     def __init__(self, key):

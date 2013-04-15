@@ -16,7 +16,8 @@ buildCoffee = (source) ->
     mkdir destDir
     basename = path.basename source, '.coffee'
     if path.extname(source) == '.coffee'
-        compile source, path.join(destDir, basename + '.js')
+      compile source, path.join(destDir, basename + '.js'), (stuff) ->
+        console.log "Dest: " + path.join(destDir, basename + '.js')
     else
         fs.createReadStream(source).pipe(fs.createWriteStream path.join(destDir, basename))
 
@@ -117,4 +118,3 @@ task 'setup', 'Compile assets into smarter', (options) ->
           fs.symlinkSync(assetsDir, assetsDest, 'dir')
     else if mode == 'PROD'
       invoke 'build'
-      copyAssets assetsDest, assetsDir

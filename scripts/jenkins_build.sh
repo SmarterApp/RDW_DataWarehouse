@@ -35,6 +35,7 @@ function set_vars {
 
 function setup_virtualenv {
     echo "Setting up virtualenv using python3.3"
+    echo $PATH
     if [ ! -d "$VIRTUALENV_DIR" ]; then
         echo $PATH
         virtualenv-3.3 --distribute ${VIRTUALENV_DIR}

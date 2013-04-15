@@ -52,6 +52,7 @@ body
   float: left;
   width: 980px;
   font-size: 11px;
+  font-family: helvetica; 
   position: fixed;
   bottom: 0px;
   height: 45px;

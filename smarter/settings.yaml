@@ -21,14 +21,23 @@ common:
       regions: report
       type: memory
       expire: 3600
+    
+    # Database
+    edware:
+      db:
+        main:
+          pool_size: 20
+          max_overflow: 10
+          echo: False
+    edauth:
+      schema_name: edware_session
+      db:
+        main:
+          pool_size: 20
+          max_overflow: 10
+          echo: False
 
-    ###
-    # wsgi server configuration
-    ###
-
-    ###############
-    #Authentication
-    ###############
+    # Authentication
     auth:
       state:
         secret: long_secret_for_redirects1111234
@@ -36,7 +45,7 @@ common:
         secret: edware_secret
         cookie_name: edware
         hashalg: sha512
-        # Represents the lifetime of the cookie itself, if it's not set, it's session based
+        # Represents the lifetime of the cookie itself, if it's not set, it's session based cookie
         #max_age: 2400
         # Maximum number of seconds which a newly issued ticket will be considered valid
         timeout: 1200
@@ -47,9 +56,10 @@ common:
         metadata: ../../resource/idp_metadata.xml
 
     # Static cache max age
-    smarter.resources.static.max_age: 0
-    # Run npm update (dev mode only)
+    smarter.resources.static.max_age: 3600
+    # We support dev, and prod mode
     mode: dev
+    # Run npm update (dev mode only)
     run.npm.update: true
 
   '[server:main]':
@@ -133,18 +143,10 @@ qa1:
       db:
         main:
           url: postgresql+pypostgresql://postgres:edware.qa.2013@dwpool0.qa.dum.edwdc.net:6432/edware
-          pool_size: 20
-          max_overflow: 10
-          echo: False
     edauth:
-      schema_name: edware_session
       db:
         main:
           url: postgresql+pypostgresql://postgres:edware.qa.2013@dwpool0.qa.dum.edwdc.net:6432/edware
-          pool_size: 20
-          max_overflow: 10
-          echo: False
-          
     auth:
       idp:
         metadata: /opt/edware/conf/metadata.xml
@@ -165,18 +167,10 @@ qa2:
       db:
         main:
           url: postgresql+pypostgresql://postgres:edware.qa.2013@dwpool0.qa.dum.edwdc.net:6432/edware
-          pool_size: 20
-          max_overflow: 10
-          echo: False
     edauth:
-      schema_name: edware_session
       db:
         main:
           url: postgresql+pypostgresql://postgres:edware.qa.2013@dwpool0.qa.dum.edwdc.net:6432/edware
-          pool_size: 20
-          max_overflow: 10
-          echo: False
-          
     auth:
       idp:
         metadata: /opt/edware/conf/metadata.xml
@@ -197,17 +191,10 @@ jenkins_qa:
       db:
         main:
           url: postgresql+pypostgresql://postgres:edware.qa.2013@dwpool0.qa.dum.edwdc.net:6432/edware
-          pool_size: 20
-          max_overflow: 10
-          echo: False
     edauth:
-      schema_name: edware_session_test
       db:
         main:
           url: postgresql+pypostgresql://postgres:edware.qa.2013@dwpool0.qa.dum.edwdc.net:6432/edware
-          pool_size: 20
-          max_overflow: 10
-          echo: False
 
 uat:
   '[app:main]':
@@ -217,18 +204,10 @@ uat:
       db:
         main:
           url: postgresql+pypostgresql://postgres:edware.dmo.2013@dwpool0.qa.dum.edwdc.net:6432/edware
-          pool_size: 20
-          max_overflow: 10
-          echo: False
     edauth:
-      schema_name: edware_session
       db:
         main:
           url: postgresql+pypostgresql://postgres:edware.dmo.2013@dwpool0.qa.dum.edwdc.net:6432/edware
-          pool_size: 20
-          max_overflow: 10
-          echo: False
-          
     auth:
       policy:
         secure: true
@@ -274,17 +253,10 @@ development:
       db:
         main:
           url: postgresql+pypostgresql://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
-          pool_size: 20
-          max_overflow: 10
-          echo: False
     edauth:
-      schema_name: edware_session
       db:
         main:
           url: postgresql+pypostgresql://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
-          pool_size: 20
-          max_overflow: 10
-          echo: False
     auth:
       skip.verify: False
       saml:
@@ -292,8 +264,10 @@ development:
         idp_server_logout_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp
         issuer_name: http://localhost:6543/sp.xml
         name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
-    # Mode that we're running in.  Currently we support 'dev' and 'prod'
-    mode: dev
+    
+    # Don't cache any static contents
+    smarter.resources.static.max_age: 0
+
 test:
   '[app:main]':
     edware:
@@ -301,19 +275,19 @@ test:
       db:
         main:
           url: postgresql+pypostgresql://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
-          pool_size: 20
-          max_overflow: 10
-          echo: False
     edauth:
-      schema_name: edware_session
       db:
         main:
           url: postgresql+pypostgresql://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
-          pool_size: 20
-          max_overflow: 10
-          echo: False
-    # Mode that we're running in.  Currently we support 'dev' and 'prod'
+    auth:
+      skip.verify: False
+      saml:
+        idp_server_login_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp
+        idp_server_logout_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp
+        issuer_name: http://localhost:6543/sp.xml
+        name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
     mode: prod
+
 jenkins_dev:
   '[app:main]':
     edware:
@@ -321,17 +295,10 @@ jenkins_dev:
       db:
         main:
           url: postgresql+pypostgresql://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
-          pool_size: 20
-          max_overflow: 10
-          echo: False
     edauth:
-      schema_name: edware_session
       db:
         main:
           url: postgresql+pypostgresql://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
-          pool_size: 20
-          max_overflow: 10
-          echo: False
     auth:
       policy.secure: False
       skip.verify: False
@@ -342,4 +309,3 @@ jenkins_dev:
         name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
     # Mode that we're running in.  Currently we support 'dev' and 'prod'
     mode: prod
-          

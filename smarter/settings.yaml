@@ -56,7 +56,7 @@ common:
         metadata: ../../resource/idp_metadata.xml
 
     # Static cache max age
-    smarter.resources.static.max_age: 0
+    smarter.resources.static.max_age: 3600
     # We support dev, and prod mode
     mode: dev
     # Run npm update (dev mode only)
@@ -236,6 +236,9 @@ development:
         idp_server_logout_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp
         issuer_name: http://localhost:6543/sp.xml
         name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
+    
+    # Don't cache any static contents
+    smarter.resources.static.max_age: 0
 
 test:
   '[app:main]':

@@ -6,8 +6,8 @@ define [
 ], ($, Mustache, losConfidenceLevelBarTemplate) ->
    
   #
-  #    * Confidence level bar widget for student list report
-  #    * Generate confidence level bar and calculate cutpoint pixel width, score position, score interval position
+  #    * Performance bar widget for student list report
+  #    * Generate error band bar and calculate cutpoint pixel width, score position, score interval position
   #    * @param items - data for the confidence level bar
   #    * @param barWidth - Width of the bar in pixel
   #    
@@ -15,9 +15,8 @@ define [
       
       #Total bar width
       items.bar_width = barWidth
-      
       #score indicator image width
-      score_indicator_width = 13
+      score_indicator_width = 5
       
       # Last cut point of the assessment
       items.last_interval = items.cut_point_intervals[items.cut_point_intervals.length-1]
@@ -36,20 +35,22 @@ define [
         items.cut_point_intervals[j].asmt_cut_point =  Math.round(((items.cut_point_intervals[j].interval - items.cut_point_intervals[j-1].interval) / items.score_min_max_difference) * items.bar_width)
         j++
       
-      # Calculate position for indicator
+      # Calculate position for dot indicator
       items.asmt_score_pos = Math.round(((items.asmt_score - items.asmt_score_min) / items.score_min_max_difference) * items.bar_width) - (score_indicator_width / 2)
       
-      # Set position for left bracket
-      items.asmt_score_min_range = Math.round((((items.asmt_score - items.asmt_score_min - items.asmt_score_interval) / items.score_min_max_difference) * items.bar_width))
+      # calculate error band mininum range
+      items.asmt_errorband_min_range = Math.round((((items.asmt_score - items.asmt_score_min - items.asmt_score_interval) / items.score_min_max_difference) * items.bar_width)) - 2
       
-      # Set position for right bracket
-      items.asmt_score_max_range = Math.round((((items.asmt_score - items.asmt_score_min) + items.asmt_score_interval) / items.score_min_max_difference) * items.bar_width) 
+      # calculate error band maximum range
+      items.asmt_errorband_max_range = Math.round((((items.asmt_score - items.asmt_score_min) + items.asmt_score_interval) / items.score_min_max_difference) * items.bar_width) 
       
-      # Set pixel width of confidence range
-      items.asmt_score_range_width = items.asmt_score_max_range - items.asmt_score_min_range
+      # Set pixel width of error band
+      items.asmt_errorband_width = items.asmt_errorband_max_range - items.asmt_errorband_min_range
       
-      # Set "confidence interval" text on right hand side if maximum score range position is more than 80%
-      items.leftBracketConfidenceLevel = items.asmt_score_max_range <= 580
+      # Adjust score dot marker and error band if score is at the edege of the bar.
+      items.asmt_errorband_width = 5 if items.asmt_errorband_width <= 5            
+      items.asmt_errorband_min_range = 115 if items.asmt_errorband_min_range >= 115        
+      items.asmt_score_pos = 117 if items.asmt_score_pos >= 117
       
       # use mustache template to display the json data  
       output = Mustache.to_html losConfidenceLevelBarTemplate, items 
@@ -58,13 +59,6 @@ define [
         this.html output
       else
         return output
-        
-      # Align the score text to the center of indicator
-      score_text_element = $(this).find(".overall_score")
-      score_width = (score_text_element.width() / 2)
-      #score_text_pos = Math.round(((items.asmt_score - items.asmt_score_min - score_width) / items.score_min_max_difference) * 100)
-      score_text_pos = (items.asmt_score_pos - score_width) + (score_indicator_width / 2)
-      score_text_element.css "margin-left", score_text_pos + "px"
       
       
   create = (data, barWidth, containerId) ->

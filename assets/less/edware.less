@@ -177,22 +177,34 @@ table {
     }
     
     .scoreWrapper {
-      margin-left: 48px;
+      margin-left: 50px;
+      overflow: hidden;
+      height: 36px;
     }
     .transWrapper {
       margin-top: auto;
       margin-left: 48px;
     }
     
-    .indicator {
+    .interval {
       margin-top: -1px;
       height: 33px; 
       border-left: 1px solid @color-B3;
       border-right: 1px solid @color-B3;
-      background-color: @color-B7;
-      background: @color-B7 url("../images/scorebar_dotindicator.png") no-repeat top center;
+      background: @color-B7;
       opacity: .8;
+      position: absolute;
     }
+    
+    .indicator {
+      margin-top: -1px;
+      height: 33px; 
+      background: url("../images/scorebar_dotindicator.png") no-repeat top center;
+      position: absolute;
+      z-index: 3000;
+      width: 5px;     
+    }
+    
     .transImage1 {
       height: 30px;
       background-image: url("../images/overlay_left88x14.png");

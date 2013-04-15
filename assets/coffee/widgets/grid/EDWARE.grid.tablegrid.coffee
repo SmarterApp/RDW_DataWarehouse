@@ -138,7 +138,7 @@ define [
            $("div.ui-jqgrid-sdiv").insertBefore $("div.ui-jqgrid-bdiv")
            
            if window.innerHeight > 800
-            $("#gview_gridTable > .ui-jqgrid-bdiv").css('height', window.innerHeight * .9);
+            $("#gview_gridTable > .ui-jqgrid-bdiv").css('height', window.innerHeight * .75);
            else
             $("#gview_gridTable > .ui-jqgrid-bdiv").css('height', window.innerHeight * .6);
 

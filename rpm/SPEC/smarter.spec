@@ -34,7 +34,7 @@ touch %{buildroot}/opt/edware/assets/__init__.py
 
 %build
 export LANG=en_US.UTF-8
-/opt/python3/bin/virtualenv-3.3 --distribute virtualenv
+virtualenv-3.3 --distribute virtualenv
 source virtualenv/bin/activate
 
 cd %{buildroot}/opt/edware/scripts

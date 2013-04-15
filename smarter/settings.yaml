@@ -239,6 +239,34 @@ uat:
         idp_server_logout_url: https://auth0.dmo.dum.edwdc.net/openam/IDPSloRedirect/metaAlias/idp
         name_qualifier: https://auth0.dmo.dum.edwdc.net/openam
 
+local:
+  '[app:main]':
+    edware:
+      schema_name: edware_sds_0_1
+      db:
+        main:
+          url: postgresql+pypostgresql://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
+          pool_size: 20
+          max_overflow: 10
+          echo: False
+    edauth:
+      schema_name: edware_session
+      db:
+        main:
+          url: postgresql+pypostgresql://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
+          pool_size: 20
+          max_overflow: 10
+          echo: False
+    auth:
+      skip.verify: False
+      saml:
+        idp_server_login_url: http://local.slidev.org:8080/openam/SSORedirect/metaAlias/idp
+        idp_server_logout_url: http://local.slidev.org:8080/openam/IDPSloRedirect/metaAlias/idp
+        issuer_name: http://local.slidev.org:6543/sp.xml
+        name_qualifier: http://local.slidev.org:8080/openam
+    # Mode that we're running in.  Currently we support 'dev' and 'prod'
+    mode: dev
+
 development:
   '[app:main]':
     edware:

@@ -87,7 +87,8 @@
         <body>
             <div class="container_12">
                 <div id="header">
-                    <div id="logo">LOGO</div>
+                    <div id="logo"></div>
+					<div id="headerTitle">RFP15 Reporting - Beta UAT</div>
                 </div>
                 <div class="clear-float">
                     <div class="grid_12">
@@ -101,7 +102,11 @@
                         </div>
                     </div>
                 </div>
-                <div id="footer"></div>
+                <div id="footer">
+                	<div id="copyright">
+						Smarter Balanced &#169; Copyright 2013
+					</div>
+                </div>
             </div>
         </body>
     </jato:useViewBean>

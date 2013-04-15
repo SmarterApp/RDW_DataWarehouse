@@ -155,7 +155,7 @@ qa1:
           url: postgresql+pypostgresql://postgres:edware.qa.2013@dwpool0.qa.dum.edwdc.net:6432/edware
     auth:
       idp:
-        metadata: /opt/edware/conf/metadata.xml
+        metadata: /opt/edware/conf/idp_metadata.xml
       policy:
         secure: true
       skip.verify: False
@@ -179,7 +179,7 @@ qa2:
           url: postgresql+pypostgresql://postgres:edware.qa.2013@dwpool0.qa.dum.edwdc.net:6432/edware
     auth:
       idp:
-        metadata: /opt/edware/conf/metadata.xml
+        metadata: /opt/edware/conf/idp_metadata.xml
       policy:
         secure: true
       skip.verify: False

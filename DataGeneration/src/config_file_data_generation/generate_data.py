@@ -139,8 +139,8 @@ def generate_data_from_config_file(config_module):
                                 for section in sections_in_grade:
                                     # TODO: More accurate math for num_of_students
                                     # TODO: Do we need to account for the percentages of kids that take ELA or MATH here?
-                                    number_of_students = number_of_students_in_grade // number_of_sections
-                                    students_in_section = generate_students_from_institution_hierarchy(number_of_students, institution_hierarchy, grade, section.section_guid, name_list_dictionary[BIRDS])
+                                    number_of_students_in_section = number_of_students_in_grade // number_of_sections
+                                    students_in_section = generate_students_from_institution_hierarchy(number_of_students_in_section, institution_hierarchy, grade, section.section_guid, name_list_dictionary[BIRDS])
                                     students_in_school += students_in_section
                                     # TODO: should we add some randomness here? What are acceptable numbers? 1-2? 1-3?
                                     number_of_staff_in_section = 1
@@ -155,7 +155,6 @@ def generate_data_from_config_file(config_module):
     create_csv(institution_hierarchies, ENTITY_TO_PATH_DICT[InstitutionHierarchy])
 
 
-# TODO: Can we think of a more appropriate file for this function?
 def prepare_csv_files(entity_to_path_dict):
     for entity in entity_to_path_dict:
         path = entity_to_path_dict[entity]
@@ -228,7 +227,6 @@ def generate_institution_hierarchy_from_helper_entities(state, district, school)
 
 
 def generate_assessment_outcomes_from_helper_entities_and_lists(students, section, institution_hierarchy, assessment, score_details, perf_lvl_dist):
-    # TODO: Start here seth this weekend
     total = len(students)
     min_score = assessment.asmt_score_min
     max_score = assessment.asmt_score_max
@@ -331,7 +329,6 @@ def calculate_number_of_sections(number_of_students):
 
 
 def calcuate_claim_scores(score, assessment, interval):
-    # TODO: implement me
     claim_score_interval_maximum = interval
     claim_score_interval_minimum = -interval
     claim1 = generate_claim_score(score, claim_score_interval_minimum, claim_score_interval_maximum)

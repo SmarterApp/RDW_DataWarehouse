@@ -80,14 +80,8 @@ def generate_sections(number_of_sections, subject_name, grade, state_code, distr
     return sections
 
 
-def generate_assessment(asmt_type, asmt_period, asmt_period_year, asmt_version, asmt_subject, asmt_grade,
-                        asmt_claim_1_name, asmt_claim_2_name, asmt_claim_3_name, asmt_claim_4_name,
-                        asmt_perf_lvl_name_1, asmt_perf_lvl_name_2, asmt_perf_lvl_name_3, asmt_perf_lvl_name_4, asmt_perf_lvl_name_5,
-                        asmt_score_min, asmt_score_max, asmt_claim_1_score_min, asmt_claim_1_score_max, asmt_claim_1_score_weight,
-                        asmt_claim_2_score_min, asmt_claim_2_score_max, asmt_claim_2_score_weight,
-                        asmt_claim_3_score_min, asmt_claim_3_score_max, asmt_claim_3_score_weight,
-                        asmt_claim_4_score_min, asmt_claim_4_score_max, asmt_claim_4_score_weight,
-                        asmt_custom_metadata, asmt_cut_point_1, asmt_cut_point_2, asmt_cut_point_3, asmt_cut_point_4):
+def generate_assessment(asmt_type, asmt_period, asmt_period_year, asmt_subject, asmt_grade,
+                        asmt_cut_point_1, asmt_cut_point_2, asmt_cut_point_3, asmt_cut_point_4, most_recent):
 
     id_generator = IdGen()
 
@@ -97,6 +91,50 @@ def generate_assessment(asmt_type, asmt_period, asmt_period_year, asmt_version, 
     from_date = datetime.date.today().strftime('%Y%m%d')
     to_date = datetime.date.today().strftime('%Y%m%d')
     most_recent = True
+
+    asmt_version = 'V1'
+    asmt_custom_metadata = None
+
+    performance_levels = constants.PERFORMANCE_LEVELS
+
+    claim_defs = constants.CLAIM_DEFINITIONS[asmt_subject]
+    score_min = constants.MINIMUM_ASSESSMENT_SCORE
+    score_max = constants.MAXIMUM_ASSESSMENT_SCORE
+
+    asmt_score_min = score_min
+    asmt_score_max = score_max
+
+    asmt_claim_1_name = claim_defs[0]['claim_name']
+    asmt_claim_2_name = claim_defs[1]['claim_name']
+    asmt_claim_3_name = claim_defs[2]['claim_name']
+    asmt_claim_4_name = None
+
+    asmt_claim_1_score_min = asmt_score_min
+    asmt_claim_2_score_min = asmt_score_min
+    asmt_claim_3_score_min = asmt_score_min
+    asmt_claim_4_score_min = None
+
+    asmt_claim_1_score_max = asmt_score_max
+    asmt_claim_2_score_max = asmt_score_max
+    asmt_claim_3_score_max = asmt_score_max
+    asmt_claim_4_score_max = None
+
+    asmt_claim_1_score_weight = claim_defs[0]['claim_weight']
+    asmt_claim_2_score_weight = claim_defs[1]['claim_weight']
+    asmt_claim_3_score_weight = claim_defs[2]['claim_weight']
+    asmt_claim_4_score_weight = None
+
+    if len(claim_defs) > 3:
+        asmt_claim_4_name = claim_defs[3]
+        asmt_claim_4_score_min = asmt_score_min
+        asmt_claim_4_score_max = asmt_score_max
+        asmt_claim_4_score_weight = claim_defs[3]['claim_weight']
+
+    asmt_perf_lvl_name_1 = performance_levels[0]
+    asmt_perf_lvl_name_2 = performance_levels[1]
+    asmt_perf_lvl_name_3 = performance_levels[2]
+    asmt_perf_lvl_name_4 = performance_levels[3]
+    asmt_perf_lvl_name_5 = performance_levels[4] if len(performance_levels) > 4 else None
 
     asmt = Assessment(asmt_rec_id, asmt_guid, asmt_type, asmt_period, asmt_period_year, asmt_version, asmt_subject,
                       asmt_grade, from_date, asmt_claim_1_name, asmt_claim_2_name, asmt_claim_3_name, asmt_claim_4_name,
@@ -111,8 +149,27 @@ def generate_assessment(asmt_type, asmt_period, asmt_period_year, asmt_version, 
     return asmt
 
 
-def generate_assessments(grades):
-        pass
+def generate_assessments(grades, cut_points):
+    assessments = []
+    asmt_cut_point_1 = cut_points[0]
+    asmt_cut_point_2 = cut_points[1]
+    asmt_cut_point_3 = cut_points[2]
+    asmt_cut_point_4 = cut_points[3] if len(cut_points) > 3 else None
+
+    assmt_years = sorted(constants.ASSMT_SCORE_YEARS)
+
+    for asmt_grade in grades:
+        for asmt_type in constants.ASSMT_TYPES:
+            # INTERIM assessment has 3 periods, SUMMATIVE assessment has 1 'EOY' period
+            periods = constants.ASSMT_PERIODS if asmt_type == 'INTERIM' else ['EOY']
+            for asmt_period in periods:
+                for asmt_subject in constants.SUBJECTS:
+                    for index_of_year in range(len(assmt_years)):
+                        most_recent = (index_of_year == len(assmt_years) - 1)
+                        assessment = generate_assessment(asmt_type, asmt_period, assmt_years[index_of_year], asmt_subject, asmt_grade,
+                                                          asmt_cut_point_1, asmt_cut_point_2, asmt_cut_point_3, asmt_cut_point_4, most_recent)
+                        assessments.append(assessment)
+    return assessments
 
 
 def generate_staff(hier_user_type, state_code=None, district_guid=None, school_guid=None, section_guid=None):

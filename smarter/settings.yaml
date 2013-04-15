@@ -76,7 +76,7 @@ common:
     keys: root, smarter, sqlalchemy, exc_logger, audit
 
   '[handlers]':
-    keys: console, filelog, audit
+    keys: console, filelog, audit, syslog
 
   '[formatters]':
     keys: generic, json
@@ -112,6 +112,12 @@ common:
     class: StreamHandler
     args: (sys.stderr,)
     level: NOTSET
+    formatter: generic
+    
+  '[handler_syslog]':
+    class: logging.handlers.SysLogHandler
+    args: '((''localhost'', 514), handlers.SysLogHandler.LOG_LOCAL1)'
+    level: DEBUG
     formatter: generic
 
   '[handler_filelog]':
@@ -217,6 +223,11 @@ uat:
         idp_server_login_url: https://auth0.dmo.dum.edwdc.net/openam/SSORedirect/metaAlias/idp
         idp_server_logout_url: https://auth0.dmo.dum.edwdc.net/openam/IDPSloRedirect/metaAlias/idp
         name_qualifier: https://auth0.dmo.dum.edwdc.net/openam
+    
+  '[logger_smarter]':
+    level: DEBUG
+    handlers: syslog
+    qualname: smarter
 
 local:
   '[app:main]':

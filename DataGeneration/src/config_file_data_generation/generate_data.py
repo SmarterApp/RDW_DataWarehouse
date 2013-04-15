@@ -67,16 +67,17 @@ def generate_data_from_config_file(config_module):
     scores_details = config_module.get_scores()
     performance_level_dist = config_module.get_performance_level_distributions()
 
-    # Generate Assessments
-    flat_grades_list = get_flat_grades_list(school_types)
-    assessments = generate_assessments(flat_grades_list, scores_details[config_module.CUT_POINTS])
-
     # Get Error Band Information
     eb_dict = config_module.get_error_band()
     eb_min_perc = eb_dict[config_module.MIN_PERC]
     eb_max_perc = eb_dict[config_module.MAX_PERC]
     eb_rand_adj_lo = eb_dict[config_module.RAND_ADJ_PNT_LO]
     eb_rand_adj_hi = eb_dict[config_module.RAND_ADJ_PNT_HI]
+
+    # Generate Assessments
+    flat_grades_list = get_flat_grades_list(school_types)
+    assessments = generate_assessments(flat_grades_list, scores_details[config_module.CUT_POINTS])
+    create_csv(assessments, ENTITY_TO_PATH_DICT[Assessment])
 
     # Iterate over all the states we're supposed to create
     # When we get down to the school level, we'll be able to generate an InstitutionHierarchy object
@@ -144,12 +145,15 @@ def generate_data_from_config_file(config_module):
                                                                          district_guid=district.district_guid, school_guid=school.school_guid)
                         staff_in_school += school_level_staff
                         for grade in school_type[config_module.GRADES]:
+                            asmt_outcomes_for_grade = []
                             number_of_students_in_grade = calculate_number_of_students(student_min, student_max, student_avg)
                             for subject_name in constants.SUBJECTS:
                                 # TODO: Figure out how to calculate number_of_sections
                                 number_of_sections = calculate_number_of_sections(number_of_students_in_grade)
                                 sections_in_grade = generate_sections(number_of_sections, subject_name, grade, current_state.state_code, district.district_guid, school.school_guid)
                                 sections_in_school += sections_in_grade
+                                score_list = generate_list_of_scores(number_of_students_in_grade, scores_details, performance_level_dist, subject_name, grade)
+
                                 print('Generating District: %s, School: %s, subject: %s, section_number: %s' % (district.district_name, school.school_name, subject_name, len(sections_in_grade)))
                                 for section in sections_in_grade:
                                     # TODO: More accurate math for num_of_students
@@ -162,10 +166,11 @@ def generate_data_from_config_file(config_module):
                                     teachers_in_section = generate_teaching_staff_from_institution_hierarchy(number_of_staff_in_section, institution_hierarchy, section.section_guid)
                                     staff_in_school += teachers_in_section
                                     assessment = select_assessment_from_list(assessments, grade, subject_name)
-                                    perf_lvl_dist = performance_level_dist
                                     teacher_guid = teachers_in_section[0].staff_guid
-                                    asmt_outcomes = generate_assessment_outcomes_from_helper_entities_and_lists(students_in_section, teacher_guid, section, institution_hierarchy, assessment,
-                                                                                                                perf_lvl_dist, eb_min_perc, eb_max_perc, eb_rand_adj_lo, eb_rand_adj_hi)
+                                    asmt_outcomes_in_section = generate_assessment_outcomes_from_helper_entities_and_lists(students_in_section, score_list, teacher_guid, section, institution_hierarchy, assessment,
+                                                                                                                eb_min_perc, eb_max_perc, eb_rand_adj_lo, eb_rand_adj_hi)
+                                    asmt_outcomes_for_grade.extend(asmt_outcomes_in_section)
+                                create_csv(asmt_outcomes_for_grade, ENTITY_TO_PATH_DICT[AssessmentOutcome])
                         create_csv(students_in_school, ENTITY_TO_PATH_DICT[Student])
                         create_csv(sections_in_school, ENTITY_TO_PATH_DICT[Section])
                         create_csv(staff_in_school, ENTITY_TO_PATH_DICT[Staff])
@@ -183,6 +188,7 @@ def prepare_csv_files(entity_to_path_dict):
             # Here we write the header the the given entity
             csv_writer.writerow(entity.getHeader())
 
+
 def generate_name_list_dictionary(list_name_to_path_dictionary):
     name_list_dictionary = {}
     for list_name in list_name_to_path_dictionary:
@@ -190,6 +196,7 @@ def generate_name_list_dictionary(list_name_to_path_dictionary):
         name_list = util_2.create_list_from_file(path)
         name_list_dictionary[list_name] = name_list
     return name_list_dictionary
+
 
 def generate_district_dictionary(district_types_and_counts, district_names_1, district_names_2):
     district_dictionary = {}
@@ -201,6 +208,7 @@ def generate_district_dictionary(district_types_and_counts, district_names_1, di
             district_list.append(district)
         district_dictionary[district_type] = district_list
     return district_dictionary
+
 
 def create_school_dictionary(school_counts, school_types_and_ratios, school_names_1, school_names_2):
     num_schools_min = school_counts[config_module.MIN]
@@ -245,21 +253,29 @@ def generate_institution_hierarchy_from_helper_entities(state, district, school)
     return institution_hierarchy
 
 
-def generate_assessment_outcomes_from_helper_entities_and_lists(students, teacher_guid, section, institution_hierarchy, assessment, perf_lvl_dist, ebmin, ebmax, rndlo, rndhi):
+def generate_list_of_scores(total, score_details, perf_lvl_dist, subject_name, grade):
 
-    total = len(students)
-    min_score = assessment.asmt_score_min
-    max_score = assessment.asmt_score_max
-    percentage = perf_lvl_dist[section.subject_name][str(section.grade)][config_module.PERCENTAGES]
+    print('generating %s scores' % total)
+    min_score = score_details[config_module.MIN]
+    max_score = score_details[config_module.MAX]
+    percentage = perf_lvl_dist[subject_name][str(grade)][config_module.PERCENTAGES]
     # The cut_points in score details do not include min and max score. The score generator needs the min and max to be included
-    cut_points = [assessment.asmt_cut_point_1, assessment.asmt_cut_point_2, assessment.asmt_cut_point_3]
-    if assessment.asmt_cut_point_4:
-        cut_points.append(assessment.asmt_cut_point_4)
+    cut_points = score_details[config_module.CUT_POINTS]
     inclusive_cut_points = [min_score]
     inclusive_cut_points.extend(cut_points)
     inclusive_cut_points.append(max_score)
 
     scores = generate_overall_scores(percentage, inclusive_cut_points, min_score, max_score, total)
+    return scores
+
+
+def generate_assessment_outcomes_from_helper_entities_and_lists(students, scores, teacher_guid, section, institution_hierarchy, assessment, ebmin, ebmax, rndlo, rndhi):
+
+    # The cut_points in score details do not include min and max score. The score generator needs the min and max to be included
+    cut_points = [assessment.asmt_cut_point_1, assessment.asmt_cut_point_2, assessment.asmt_cut_point_3]
+    if assessment.asmt_cut_point_4:
+        cut_points.append(assessment.asmt_cut_point_4)
+
     asmt_scores = translate_scores_to_assessment_score(scores, cut_points, assessment, ebmin, ebmax, rndlo, rndhi)
     asmt_rec_id = assessment.asmt_rec_id
     state_code = institution_hierarchy.state_code
@@ -274,13 +290,11 @@ def generate_assessment_outcomes_from_helper_entities_and_lists(students, teache
     enrl_grade = section.grade
     date_taken = datetime.date.today()
 
-    print('generate_assessment_outcomes_from_helper_entities_and_lists', len(students))
     asmt_outcomes = generate_fact_assessment_outcomes(students, asmt_scores, asmt_rec_id, teacher_guid, state_code,
                                                       district_guid, school_guid, section_guid, inst_hier_rec_id,
                                                       section_rec_id, where_taken_id, where_taken_name, asmt_grade,
                                                       enrl_grade, date_taken)
 
-    print('done', len(asmt_outcomes))
     return asmt_outcomes
 
 
@@ -406,5 +420,3 @@ if __name__ == '__main__':
 
     print("data_generation starts ", t1)
     print("data_generation ends   ", t2)
-
-

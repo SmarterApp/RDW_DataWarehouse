@@ -51,7 +51,7 @@ def main(global_config, **settings):
     config.add_static_view('assets/images', os.path.join(assets_dir, 'images'), cache_max_age=static_max_age)
     config.add_static_view('assets/js', os.path.join(assets_dir, 'js'), cache_max_age=static_max_age)
     config.add_static_view('assets/test', os.path.join(assets_dir, 'test'), cache_max_age=static_max_age)
-    
+
     # For now, never cache htmls
     config.add_static_view('assets/html', os.path.join(assets_dir, 'html'), cache_max_age=0, permission='view')
 

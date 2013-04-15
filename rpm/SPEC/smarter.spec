@@ -78,7 +78,7 @@ cp -r virtualenv %{buildroot}/opt
 
 %files
 %defattr(644,root,root,-)
-#/opt/edware/smarter/*
+/opt/edware/smarter/smarter.wsgi
 /opt/virtualenv/include/*
 /opt/virtualenv/lib/*
 /opt/virtualenv/lib64

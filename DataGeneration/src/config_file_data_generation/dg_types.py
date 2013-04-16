@@ -23,6 +23,9 @@ MIN_PERC = 'min_%'
 MAX_PERC = 'max_%'
 RAND_ADJ_PNT_LO = 'random_adjustment_points_lo'
 RAND_ADJ_PNT_HI = 'random_adjustment_points_hi'
+FROM_DATE = 'from_date'
+TO_DATE = 'to_date'
+MOST_RECENT = 'most_recent'
 
 
 def get_school_types():
@@ -130,3 +133,7 @@ def get_performance_level_distributions():
                     '11': {'percentages': [26, 37, 28, 9]}}
                     }
     return pld
+
+def get_temporal_information():
+    temporal_information = {'from_date':'', 'to_date':'', 'most_recent':''}
+    return temporal_information

@@ -63,9 +63,16 @@ def generate_data_from_config_file(config_module):
     states = config_module.get_states()
     scores_details = config_module.get_scores()
 
+    # Get temporal information
+    temporal_information = config_module.get_temporal_information()
+    from_date = temporal_information[config_module.FROM_DATE]
+    most_recent = temporal_information[config_module.MOST_RECENT]
+    to_date = temporal_information[config_module.TO_DATE]
+
     # Generate Assessment CSV File
     flat_grades_list = get_flat_grades_list(school_types)
-    assessments = generate_assessments(flat_grades_list, scores_details[config_module.CUT_POINTS])
+    assessments = generate_assessments(flat_grades_list, scores_details[config_module.CUT_POINTS],
+                                       from_date, most_recent, to_date=to_date)
     create_csv(assessments, ENTITY_TO_PATH_DICT[Assessment])
 
     # Iterate over all the states we're supposed to create
@@ -169,8 +176,14 @@ def populate_school(institution_hierarchy, school_type, assessments):
         number_of_students_in_grade = calculate_number_of_students(student_min, student_max, student_avg)
         for subject_name in constants.SUBJECTS:
             number_of_sections = calculate_number_of_sections(number_of_students_in_grade)
+            #TODO: figure out a way around this hack.
+            temporal_information = config_module.get_temporal_information()
+            from_date = temporal_information[config_module.FROM_DATE]
+            most_recent = temporal_information[config_module.MOST_RECENT]
+            to_date = temporal_information[config_module.TO_DATE]
             sections_in_grade = generate_sections(number_of_sections, subject_name, grade, institution_hierarchy.state_code,
-                                                  institution_hierarchy.district_guid, institution_hierarchy.school_guid)
+                                                  institution_hierarchy.district_guid, institution_hierarchy.school_guid,
+                                                  from_date, most_recent, to_date=to_date)
             sections_in_school += sections_in_grade
             score_list = generate_list_of_scores(number_of_students_in_grade, scores_details, performance_level_dist, subject_name, grade)
             for section in sections_in_grade:
@@ -258,15 +271,15 @@ def generate_institution_hierarchy_from_helper_entities(state, district, school)
     school_guid = school.school_guid
     school_name = school.school_name
     school_category = school.school_category
-    # TODO: generate from_date more intelligently
-    from_date = datetime.date.today().strftime('%Y%m%d')
-    # TODO: generate most_recent more intelligently
-    most_recent = True
+    temporal_information = config_module.get_temporal_information()
+    from_date = temporal_information[config_module.FROM_DATE]
+    most_recent = temporal_information[config_module.MOST_RECENT]
+    to_date = temporal_information[config_module.TO_DATE]
 
     institution_hierarchy = generate_institution_hierarchy(state_name, state_code,
                                                            district_guid, district_name,
                                                            school_guid, school_name, school_category,
-                                                           from_date, most_recent)
+                                                           from_date, most_recent, to_date)
     return institution_hierarchy
 
 
@@ -343,7 +356,13 @@ def generate_students_from_institution_hierarchy(number_of_students, institution
     district_guid = institution_hierarchy.district_guid
     school_guid = institution_hierarchy.school_guid
     school_name = institution_hierarchy.school_name
-    students = generate_students(number_of_students, section_guid, grade, state_code, district_guid, school_guid, school_name, street_names)
+
+    temporal_information = config_module.get_temporal_information()
+    from_date = temporal_information[config_module.FROM_DATE]
+    most_recent = temporal_information[config_module.MOST_RECENT]
+    to_date = temporal_information[config_module.TO_DATE]
+
+    students = generate_students(number_of_students, section_guid, grade, state_code, district_guid, school_guid, school_name, street_names, from_date, most_recent, to_date=to_date)
     return students
 
 
@@ -352,13 +371,23 @@ def generate_teaching_staff_from_institution_hierarchy(number_of_staff, institut
     district_guid = institution_hierarchy.district_guid
     school_guid = institution_hierarchy.school_guid
     hier_user_type = 'Teacher'
-    staff_list = generate_multiple_staff(number_of_staff, hier_user_type, state_code, district_guid, school_guid, section_guid)
+    temporal_information = config_module.get_temporal_information()
+    from_date = temporal_information[config_module.FROM_DATE]
+    most_recent = temporal_information[config_module.MOST_RECENT]
+    to_date = temporal_information[config_module.TO_DATE]
+    staff_list = generate_multiple_staff(number_of_staff, hier_user_type, from_date, most_recent, state_code=state_code, district_guid=district_guid,
+                                         school_guid=school_guid, section_guid=section_guid, to_date=to_date)
     return staff_list
 
 
 def generate_non_teaching_staff(number_of_staff, state_code='NA', district_guid='NA', school_guid='NA'):
     hier_user_type = 'Staff'
-    staff_list = generate_multiple_staff(number_of_staff, hier_user_type, state_code, district_guid, school_guid)
+    temporal_information = config_module.get_temporal_information()
+    from_date = temporal_information[config_module.FROM_DATE]
+    most_recent = temporal_information[config_module.MOST_RECENT]
+    to_date = temporal_information[config_module.TO_DATE]
+    staff_list = generate_multiple_staff(number_of_staff, hier_user_type, from_date, most_recent, state_code=state_code,
+                                         district_guid=district_guid, school_guid=school_guid, to_date=to_date)
     return staff_list
 
 

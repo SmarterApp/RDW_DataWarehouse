@@ -13,6 +13,7 @@ from entities_2 import InstitutionHierarchy, Section, Assessment, AssessmentOutc
     Staff, ExternalUserStudent, Student
 from generate_scores import generate_overall_scores
 from gaussian_distributions import gauss_one
+from errorband import calc_eb_params, calc_eb
 
 
 DATAFILE_PATH = os.path.dirname(os.path.realpath(__file__))
@@ -340,12 +341,15 @@ def translate_scores_to_assessment_score(scores, cut_points, assessment, ebmin, 
             if score < cut_points[i]:
                 perf_lvl = i + 1  # perf lvls are >= 1
                 break
+        if perf_lvl is None and score > cut_points[-1]:
+            perf_lvl = len(cut_points) + 1
 
-        interval_max = calculate_error_band(score, score_min, score_max, ebmin, ebmax, rndlo, rndhi)
-        interval_min = -interval_max
-        claim_scores = calcuate_claim_scores(score, assessment, interval_max)
+        scenter, ebmin, ebstep = calc_eb_params(score_min, score_max, ebmin, ebmax)
+        ebleft, ebright, _ebhalf = calc_eb(score, score_min, score_max, scenter, ebmin, ebstep, rndlo, rndhi)
+#        interval_max = calculate_error_band(score, score_min, score_max, ebmin, ebmax, rndlo, rndhi)
+        claim_scores = calcuate_claim_scores(score, assessment, ebmin, ebmax, rndlo, rndhi)
         asmt_create_date = datetime.date.today().strftime('%Y%m%d')
-        asmt_score = generate_assessment_score(score, perf_lvl, interval_min, interval_max, claim_scores, asmt_create_date)
+        asmt_score = generate_assessment_score(score, perf_lvl, int(ebleft), int(ebright), claim_scores, asmt_create_date)
 
         score_list.append(asmt_score)
     return score_list
@@ -406,20 +410,53 @@ def calculate_number_of_sections(number_of_students):
     return 1
 
 
-def calcuate_claim_scores(score, assessment, interval):
-    claim_score_interval_maximum = interval
-    claim_score_interval_minimum = -interval
-    claim1 = generate_claim_score(score, claim_score_interval_minimum, claim_score_interval_maximum)
-    claim2 = generate_claim_score(score, claim_score_interval_minimum, claim_score_interval_maximum)
-    claim3 = generate_claim_score(score, claim_score_interval_minimum, claim_score_interval_maximum)
-    claim4 = None
+def calcuate_claim_scores(asmt_score, assessment, ebmin, ebmax, rndlo, rndhi):
+    claim_scores = []
+    claim_list = [(assessment.asmt_claim_1_name, assessment.asmt_claim_1_score_min, assessment.asmt_claim_1_score_max, assessment.asmt_claim_1_score_weight),
+                  (assessment.asmt_claim_2_name, assessment.asmt_claim_2_score_min, assessment.asmt_claim_2_score_max, assessment.asmt_claim_2_score_weight),
+                  (assessment.asmt_claim_3_name, assessment.asmt_claim_3_score_min, assessment.asmt_claim_3_score_max, assessment.asmt_claim_3_score_weight)]
+    if assessment.asmt_claim_4_name:
+        claim_list.append((assessment.asmt_claim_4_name, assessment.asmt_claim_4_score_min, assessment.asmt_claim_4_score_max, assessment.asmt_claim_4_score_weight))
 
-    claims = [claim1, claim2, claim3]
-    if assessment.asmt_claim_4_score_min:
-        claim4 = generate_claim_score(score, claim_score_interval_minimum, claim_score_interval_maximum)
-        claims.append(claim4)
+    for claim_tuple in claim_list:
+        # Get basic claim information from claim tuple
+        claim_minimum_score = claim_tuple[1]
+        claim_maximum_score = claim_tuple[2]
+        claim_score_scale = (claim_minimum_score, claim_maximum_score)
+        claim_weight = claim_tuple[3]
 
-    return claims
+        # calculate the claim score
+        weighted_assessment_scale = (assessment.asmt_score_min * claim_weight, assessment.asmt_score_max * claim_weight)
+        unscaled_claim_score = asmt_score * claim_weight
+        scaled_claim_score = int(rescale_value(unscaled_claim_score, weighted_assessment_scale, claim_score_scale))
+        scenter, ebmin, ebstep = calc_eb_params(claim_minimum_score, claim_maximum_score, ebmin, ebmax)
+        ebleft, ebright, _ebhalf = calc_eb(scaled_claim_score, claim_minimum_score, claim_maximum_score, scenter, ebmin, ebstep, rndlo, rndhi)
+        claim_score = generate_claim_score(scaled_claim_score, int(ebleft), int(ebright))
+        claim_scores.append(claim_score)
+
+    return claim_scores
+
+
+# see http://stackoverflow.com/questions/5294955/how-to-scale-down-a-range-of-numbers-with-a-known-min-and-max-value
+# for a complete explanation of this logic
+def rescale_value(old_value, old_scale, new_scale):
+    '''
+        old_scale and new_scale are tuples
+        the first value represents the minimum score
+        the second value represents the maximu score
+    '''
+
+    old_min = old_scale[0]
+    old_max = old_scale[1]
+
+    new_min = new_scale[0]
+    new_max = new_scale[1]
+
+    numerator = (new_max - new_min) * (old_value - old_min)
+    denominator = old_max - old_min
+
+    result = (numerator / denominator) + new_min
+    return result
 
 
 def get_flat_grades_list(school_config):

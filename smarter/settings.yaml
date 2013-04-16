@@ -116,7 +116,7 @@ common:
     
   '[handler_syslog]':
     class: logging.handlers.SysLogHandler
-    args: '((''localhost'', 514), handlers.SysLogHandler.LOG_LOCAL1)'
+    args: '(''/dev/log'', handlers.SysLogHandler.LOG_LOCAL1)'
     level: DEBUG
     formatter: generic
 

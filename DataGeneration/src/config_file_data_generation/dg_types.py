@@ -135,5 +135,5 @@ def get_performance_level_distributions():
     return pld
 
 def get_temporal_information():
-    temporal_information = {'from_date':'', 'to_date':'', 'most_recent':''}
+    temporal_information = {'from_date':'20120901', 'to_date': None, 'most_recent': True}
     return temporal_information

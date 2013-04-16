@@ -130,7 +130,7 @@ def gauss_list(avg, std, num):
 
 
 def sub_sample_list(score_list, cut_points, percentages, total):
-    """ return a sub-sample of the 'score_list' so that there are only 'total' scores, but sample by perforamce levels 
+    """ return a sub-sample of the 'score_list' so that there are only 'total' scores, but sample by perforamce levels
     """
     pl_counts = split_total_by_precentages(percentages, total)
     outlist = []

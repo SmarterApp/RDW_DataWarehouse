@@ -3,6 +3,7 @@ __author__ = 'abrien'
 from entities_2 import InstitutionHierarchy, Student, Section, Assessment, Staff, AssessmentOutcome
 from idgen import IdGen
 from generate_names import generate_first_or_middle_name, generate_last_name
+from uuid import uuid4
 import constants_2 as constants
 import util_2 as util
 import random
@@ -26,7 +27,7 @@ def generate_student(section_guid, grade, state_code, district_guid, school_guid
     id_generator = IdGen()
     student_rec_id = id_generator.get_id()
     # TODO: maybe change to UUID
-    student_guid = id_generator.get_id()
+    student_guid = uuid4()
     gender = random.choice(constants.GENDERS)
     first_name = generate_first_or_middle_name(gender)
     last_name = generate_last_name()
@@ -59,7 +60,7 @@ def generate_students(number_of_students, section_guid, grade, state_code, distr
 def generate_section(subject_name, grade, state_code, district_guid, school_guid, section_number, class_number):
     id_generator = IdGen()
     section_rec_id = id_generator.get_id()
-    section_guid = id_generator.get_id()
+    section_guid = uuid4()
     section_name = 'Section ' + str(section_number)
     class_name = subject_name + '_' + str(class_number)
     # TODO: Set date and most recent more intelligently
@@ -86,7 +87,7 @@ def generate_assessment(asmt_type, asmt_period, asmt_period_year, asmt_subject, 
     id_generator = IdGen()
 
     asmt_rec_id = id_generator.get_id()
-    asmt_guid = id_generator.get_id()
+    asmt_guid = uuid4()
 
     from_date = datetime.date.today().strftime('%Y%m%d')
     to_date = datetime.date.today().strftime('%Y%m%d')
@@ -172,11 +173,11 @@ def generate_assessments(grades, cut_points):
     return assessments
 
 
-def generate_staff(hier_user_type, state_code=None, district_guid=None, school_guid=None, section_guid=None):
+def generate_staff(hier_user_type, state_code='NA', district_guid='NA', school_guid='NA', section_guid='NA'):
 
     id_generator = IdGen()
     staff_rec_id = id_generator.get_id()
-    staff_guid = id_generator.get_id()
+    staff_guid = uuid4()
     gender = random.choice(constants.GENDERS)
     first_name = generate_first_or_middle_name(gender)
     last_name = generate_last_name()
@@ -189,7 +190,7 @@ def generate_staff(hier_user_type, state_code=None, district_guid=None, school_g
     return staff
 
 
-def generate_multiple_staff(number_of_staff, hier_user_type, state_code=None, district_guid=None, school_guid=None, section_guid=None):
+def generate_multiple_staff(number_of_staff, hier_user_type, state_code='NA', district_guid='NA', school_guid='NA', section_guid='NA'):
     staff_list = []
     for i in range(number_of_staff):
         staff_member = generate_staff(hier_user_type, state_code, district_guid, school_guid, section_guid)

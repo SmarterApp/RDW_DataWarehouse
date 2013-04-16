@@ -172,7 +172,7 @@ def populate_school(institution_hierarchy, school_type, assessments):
             sections_in_grade = generate_sections(number_of_sections, subject_name, grade, institution_hierarchy.state_code,
                                                   institution_hierarchy.district_guid, institution_hierarchy.school_guid)
             sections_in_school += sections_in_grade
-            #score_list = generate_list_of_scores(number_of_students_in_grade, scores_details, performance_level_dist, subject_name, grade)
+            score_list = generate_list_of_scores(number_of_students_in_grade, scores_details, performance_level_dist, subject_name, grade)
             for section in sections_in_grade:
                 # TODO: More accurate math for num_of_students
                 # TODO: Do we need to account for the percentages of kids that take ELA or MATH here?
@@ -187,9 +187,9 @@ def populate_school(institution_hierarchy, school_type, assessments):
                 staff_in_school += teachers_in_section
                 assessment = select_assessment_from_list(assessments, grade, subject_name)
                 teacher_guid = teachers_in_section[0].staff_guid
-                #asmt_outcomes_in_section = generate_assessment_outcomes_from_helper_entities_and_lists(students_in_section, score_list, teacher_guid, section, institution_hierarchy, assessment,
-                #                                                                                      eb_min_perc, eb_max_perc, eb_rand_adj_lo, eb_rand_adj_hi)
-                #asmt_outcomes_for_grade.extend(asmt_outcomes_in_section)
+                asmt_outcomes_in_section = generate_assessment_outcomes_from_helper_entities_and_lists(students_in_section, score_list, teacher_guid, section, institution_hierarchy, assessment,
+                                                                                                      eb_min_perc, eb_max_perc, eb_rand_adj_lo, eb_rand_adj_hi)
+                asmt_outcomes_for_grade.extend(asmt_outcomes_in_section)
         create_csv(asmt_outcomes_for_grade, ENTITY_TO_PATH_DICT[AssessmentOutcome])
     create_csv(students_in_school, ENTITY_TO_PATH_DICT[Student])
     create_csv(sections_in_school, ENTITY_TO_PATH_DICT[Section])
@@ -356,7 +356,7 @@ def generate_teaching_staff_from_institution_hierarchy(number_of_staff, institut
     return staff_list
 
 
-def generate_non_teaching_staff(number_of_staff, state_code=None, district_guid=None, school_guid=None):
+def generate_non_teaching_staff(number_of_staff, state_code='NA', district_guid='NA', school_guid='NA'):
     hier_user_type = 'Staff'
     staff_list = generate_multiple_staff(number_of_staff, hier_user_type, state_code, district_guid, school_guid)
     return staff_list

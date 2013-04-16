@@ -99,7 +99,7 @@
             <div class="container_12">
                 <div id="header">
                     <div id="logo">
-                    	<img src="../images/smarterHeader_logo.png" alt="Edware logo" height="36" width="112">
+                    	<img src="<%= ServiceURI%>/config/auth/opensso/images/smarterHeader_logo.png" alt="Edware logo" height="36" width="112">
                     </div>
 					<div id="headerTitle">RFP15 Reporting - Beta UAT</div>
                 </div>

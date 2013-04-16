@@ -50,10 +50,7 @@
                     encoded = "true";
                 }
             %>
-            <%--
-                meta refresh to fix session timeout issue on login screen
-            --%>
-            <meta http-equiv="refresh" content="60">
+
             <link href="<%= ServiceURI%>/css/new_style.css" rel="stylesheet" type="text/css" />
             <!--[if IE 9]> <link href="<%= ServiceURI%>/css/ie9.css" rel="stylesheet" type="text/css"> <![endif]-->
             <!--[if lte IE 7]> <link href="<%= ServiceURI%>/css/ie7.css" rel="stylesheet" type="text/css"> <![endif]-->
@@ -94,7 +91,7 @@
             <div class="container_12">
                 <div id="header">
 					<div id="logo">
-						<img src="../images/smarterHeader_logo.png" alt="Edware logo" height="36" width="112">
+						<img src="<%= ServiceURI%>/config/auth/opensso/images/smarterHeader_logo.png" alt="Edware logo" height="36" width="112">
 					</div>
 					<div id="headerTitle">RFP15 Reporting - Beta UAT</div>
                 </div>

@@ -2,7 +2,7 @@ __author__ = 'abrien'
 
 from entities_2 import InstitutionHierarchy, Student, Section, Assessment, Staff, AssessmentOutcome
 from idgen import IdGen
-from generate_names import generate_first_or_middle_name, generate_last_name
+from generate_names import generate_first_or_middle_name, generate_last_name, possibly_generate_middle_name
 from uuid import uuid4
 import constants_2 as constants
 import util_2 as util
@@ -30,6 +30,7 @@ def generate_student(section_guid, grade, state_code, district_guid, school_guid
     student_guid = uuid4()
     gender = random.choice(constants.GENDERS)
     first_name = generate_first_or_middle_name(gender)
+    middle_name = possibly_generate_middle_name(gender)
     last_name = generate_last_name()
     address_1 = util.generate_address(street_names)
     # TODO: change city name
@@ -43,7 +44,7 @@ def generate_student(section_guid, grade, state_code, district_guid, school_guid
 
     student = Student(student_rec_id, student_guid, first_name, last_name, address_1, city, zip_code,
                       gender, email, dob, section_guid, grade, state_code, district_guid, school_guid,
-                      from_date, most_recent, to_date=to_date)
+                      from_date, most_recent, middle_name=middle_name, to_date=to_date)
     return student
 
 
@@ -179,9 +180,10 @@ def generate_staff(hier_user_type, from_date, most_recent, state_code='NA', dist
     staff_guid = uuid4()
     gender = random.choice(constants.GENDERS)
     first_name = generate_first_or_middle_name(gender)
+    middle_name = possibly_generate_middle_name(gender)
     last_name = generate_last_name()
     staff = Staff(staff_rec_id, staff_guid, first_name, last_name, section_guid, hier_user_type, state_code,
-                  district_guid, school_guid, from_date, most_recent, to_date=to_date)
+                  district_guid, school_guid, from_date, most_recent, middle_name=middle_name, to_date=to_date)
 
     return staff
 

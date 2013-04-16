@@ -254,7 +254,7 @@ def create_school_dictionary(school_counts, school_types_and_ratios, school_name
     for school_type_name in school_types_and_ratios:
         # Get the ratio so we can calculate the number of school types to create for each district
         school_type_ratio = school_types_and_ratios[school_type_name]
-        number_of_schools_for_type = school_type_ratio * ratio_unit
+        number_of_schools_for_type = int(school_type_ratio * ratio_unit)
         school_list = []
         for i in range(number_of_schools_for_type):
             school = generate_school(school_type_name, school_names_1, school_names_2)
@@ -391,13 +391,12 @@ def generate_non_teaching_staff(number_of_staff, state_code='NA', district_guid=
     return staff_list
 
 
-def calculate_number_of_schools(num_schools_min, num_schools_avg, num_schools_max):
-    # TODO: implement me
-    return 10
+def calculate_number_of_schools(school_min, school_avg, school_max):
+    number_of_schools = gauss_one(school_min, school_max, school_avg)
+    return number_of_schools
 
 
 def calculate_number_of_students(student_min, student_max, student_avg):
-    # TODO: implement me
     number_of_students = gauss_one(student_min, student_max, student_avg)
     return int(number_of_students)
 

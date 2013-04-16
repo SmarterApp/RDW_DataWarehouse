@@ -25,3 +25,8 @@ def generate_last_name():
     names = people_names._instance.last_names
     rand_index = random.randint(0, len(names) - 1)
     return names[rand_index]
+
+def possibly_generate_middle_name(gender):
+    if random.choice([True, False]):
+        return generate_first_or_middle_name(gender)
+    return None

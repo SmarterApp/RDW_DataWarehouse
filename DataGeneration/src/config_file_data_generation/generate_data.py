@@ -41,11 +41,8 @@ NAMES_TO_PATH_DICT = {BIRDS: DATAFILE_PATH + '/datafiles/name_lists/birds.txt',
 
 
 def generate_data_from_config_file(config_module):
-    # First thing: prep the csv files by deleting their contents and adding appropriate headers
-    """
 
-    :param config_module:
-    """
+    # First thing: prep the csv files by deleting their contents and adding appropriate headers
     prepare_csv_files(ENTITY_TO_PATH_DICT)
 
     # Next, prepare lists that are used to name various entities
@@ -65,24 +62,14 @@ def generate_data_from_config_file(config_module):
     state_types = config_module.get_state_types()
     states = config_module.get_states()
     scores_details = config_module.get_scores()
-    performance_level_dist = config_module.get_performance_level_distributions()
 
-    # Get Error Band Information
-    eb_dict = config_module.get_error_band()
-    eb_min_perc = eb_dict[config_module.MIN_PERC]
-    eb_max_perc = eb_dict[config_module.MAX_PERC]
-    eb_rand_adj_lo = eb_dict[config_module.RAND_ADJ_PNT_LO]
-    eb_rand_adj_hi = eb_dict[config_module.RAND_ADJ_PNT_HI]
-
-    # Generate Assessments
+    # Generate Assessment CSV File
     flat_grades_list = get_flat_grades_list(school_types)
     assessments = generate_assessments(flat_grades_list, scores_details[config_module.CUT_POINTS])
     create_csv(assessments, ENTITY_TO_PATH_DICT[Assessment])
 
     # Iterate over all the states we're supposed to create
     # When we get down to the school level, we'll be able to generate an InstitutionHierarchy object
-    # And then we'll add it to institution_hierarchies
-    institution_hierarchies = []
     for state in states:
         # Pull out basic state information
         state_name = state[config_module.NAME]
@@ -91,15 +78,15 @@ def generate_data_from_config_file(config_module):
         # Create state object from gathered info
         current_state = generate_state(state_name, state_code)
 
-        # TODO: should we add some randomness here? What are acceptable numbers? 5-10? 10-20?
-        number_of_state_level_staff = 10
-        # Add the state-level staff
-        state_level_staff = generate_non_teaching_staff(number_of_state_level_staff, state_code=current_state.state_code)
-
         # Pull out information on districts within this state
         state_type_name = state[config_module.STATE_TYPE]
         state_type = state_types[state_type_name]
         district_types_and_counts = state_type[config_module.DISTRICT_TYPES_AND_COUNTS]
+
+        # TODO: should we add some randomness here? What are acceptable numbers? 5-10? 10-20?
+        number_of_state_level_staff = 10
+        # Create the state-level staff
+        state_level_staff = generate_non_teaching_staff(number_of_state_level_staff, state_code=current_state.state_code)
 
         # Create all the districts for the given state.
         # We don't have a state, district, or school table, but we have an institution_hierarchy table.
@@ -108,7 +95,8 @@ def generate_data_from_config_file(config_module):
         # key: <string> The type of district
         # value: <list> A list of district objects
         districts_by_type = generate_district_dictionary(district_types_and_counts, district_names_1, district_names_2)
-
+        # All the InstitutionHierarchy objects for this state will be put in the following list
+        state_institution_hierarchies = []
         for district_type_name in districts_by_type.keys():
             districts = districts_by_type[district_type_name]
             district_type = district_types[district_type_name]
@@ -125,58 +113,87 @@ def generate_data_from_config_file(config_module):
                 number_of_district_level_staff = 10
                 district_level_staff = generate_non_teaching_staff(number_of_district_level_staff, state_code=current_state.state_code,
                                                                    district_guid=district.district_guid)
-                schools_by_type = create_school_dictionary(school_counts, school_types_and_ratios, school_names_1, school_names_2)
+
+                schools_by_type = create_school_dictionary(school_counts, school_types_and_ratios,
+                                                           school_names_1, school_names_2)
                 for school_type_name in schools_by_type.keys():
                     schools = schools_by_type[school_type_name]
                     school_type = school_types[school_type_name]
-                    student_counts = school_type[config_module.STUDENTS]
-                    student_min = student_counts[config_module.MIN]
-                    student_max = student_counts[config_module.MAX]
-                    student_avg = student_counts[config_module.AVG]
-                    for school in schools:
-                        institution_hierarchy = generate_institution_hierarchy_from_helper_entities(current_state, district, school)
-                        institution_hierarchies.append(institution_hierarchy)
-                        students_in_school = []
-                        sections_in_school = []
-                        staff_in_school = []
-                        # TODO: should we add some randomness here? What are acceptable numbers? 5-10? 10-20?
-                        number_of_school_level_staff = 5
-                        school_level_staff = generate_non_teaching_staff(number_of_school_level_staff, state_code=current_state.state_code,
-                                                                         district_guid=district.district_guid, school_guid=school.school_guid)
-                        staff_in_school += school_level_staff
-                        for grade in school_type[config_module.GRADES]:
-                            asmt_outcomes_for_grade = []
-                            number_of_students_in_grade = calculate_number_of_students(student_min, student_max, student_avg)
-                            for subject_name in constants.SUBJECTS:
-                                # TODO: Figure out how to calculate number_of_sections
-                                number_of_sections = calculate_number_of_sections(number_of_students_in_grade)
-                                sections_in_grade = generate_sections(number_of_sections, subject_name, grade, current_state.state_code, district.district_guid, school.school_guid)
-                                sections_in_school += sections_in_grade
-                                score_list = generate_list_of_scores(number_of_students_in_grade, scores_details, performance_level_dist, subject_name, grade)
-
-                                print('Generating District: %s, School: %s, subject: %s, section_number: %s' % (district.district_name, school.school_name, subject_name, len(sections_in_grade)))
-                                for section in sections_in_grade:
-                                    # TODO: More accurate math for num_of_students
-                                    # TODO: Do we need to account for the percentages of kids that take ELA or MATH here?
-                                    number_of_students_in_section = number_of_students_in_grade // number_of_sections
-                                    students_in_section = generate_students_from_institution_hierarchy(number_of_students_in_section, institution_hierarchy, grade, section.section_guid, name_list_dictionary[BIRDS])
-                                    students_in_school += students_in_section
-                                    # TODO: should we add some randomness here? What are acceptable numbers? 1-2? 1-3?
-                                    number_of_staff_in_section = 1
-                                    teachers_in_section = generate_teaching_staff_from_institution_hierarchy(number_of_staff_in_section, institution_hierarchy, section.section_guid)
-                                    staff_in_school += teachers_in_section
-                                    assessment = select_assessment_from_list(assessments, grade, subject_name)
-                                    teacher_guid = teachers_in_section[0].staff_guid
-                                    asmt_outcomes_in_section = generate_assessment_outcomes_from_helper_entities_and_lists(students_in_section, score_list, teacher_guid, section, institution_hierarchy, assessment,
-                                                                                                                eb_min_perc, eb_max_perc, eb_rand_adj_lo, eb_rand_adj_hi)
-                                    asmt_outcomes_for_grade.extend(asmt_outcomes_in_section)
-                                create_csv(asmt_outcomes_for_grade, ENTITY_TO_PATH_DICT[AssessmentOutcome])
-                        create_csv(students_in_school, ENTITY_TO_PATH_DICT[Student])
-                        create_csv(sections_in_school, ENTITY_TO_PATH_DICT[Section])
-                        create_csv(staff_in_school, ENTITY_TO_PATH_DICT[Staff])
+                    school_type_institution_hierarchies = generate_and_populate_institution_hierarchies(schools, school_type,
+                                                                                                        current_state, district, assessments)
+                    state_institution_hierarchies += school_type_institution_hierarchies
                 create_csv(district_level_staff, ENTITY_TO_PATH_DICT[Staff])
         create_csv(state_level_staff, ENTITY_TO_PATH_DICT[Staff])
-    create_csv(institution_hierarchies, ENTITY_TO_PATH_DICT[InstitutionHierarchy])
+        create_csv(state_institution_hierarchies, ENTITY_TO_PATH_DICT[InstitutionHierarchy])
+
+
+def generate_and_populate_institution_hierarchies(schools, school_type, state, district, assessments):
+    institution_hierarchies = []
+    for school in schools:
+        institution_hierarchy = generate_institution_hierarchy_from_helper_entities(state, district, school)
+        institution_hierarchies.append(institution_hierarchy)
+        populate_school(institution_hierarchy, school_type, assessments)
+    return institution_hierarchies
+
+def populate_school(institution_hierarchy, school_type, assessments):
+
+    # Get student count information from config module
+    student_counts = school_type[config_module.STUDENTS]
+    student_min = student_counts[config_module.MIN]
+    student_max = student_counts[config_module.MAX]
+    student_avg = student_counts[config_module.AVG]
+
+    # Get Error Band Information from config_module
+    eb_dict = config_module.get_error_band()
+    eb_min_perc = eb_dict[config_module.MIN_PERC]
+    eb_max_perc = eb_dict[config_module.MAX_PERC]
+    eb_rand_adj_lo = eb_dict[config_module.RAND_ADJ_PNT_LO]
+    eb_rand_adj_hi = eb_dict[config_module.RAND_ADJ_PNT_HI]
+
+    # Get scoring information from config module
+    performance_level_dist = config_module.get_performance_level_distributions()
+    scores_details = config_module.get_scores()
+
+    grades = school_type[config_module.GRADES]
+
+    students_in_school = []
+    sections_in_school = []
+    staff_in_school = []
+    # TODO: should we add some randomness here? What are acceptable numbers? 5-10? 10-20?
+    number_of_school_level_staff = 5
+    school_level_staff = generate_non_teaching_staff(number_of_school_level_staff, state_code=institution_hierarchy.state_code,
+                                                     district_guid=institution_hierarchy.district_guid, school_guid=institution_hierarchy.school_guid)
+    staff_in_school += school_level_staff
+    for grade in grades:
+        asmt_outcomes_for_grade = []
+        number_of_students_in_grade = calculate_number_of_students(student_min, student_max, student_avg)
+        for subject_name in constants.SUBJECTS:
+            number_of_sections = calculate_number_of_sections(number_of_students_in_grade)
+            sections_in_grade = generate_sections(number_of_sections, subject_name, grade, institution_hierarchy.state_code,
+                                                  institution_hierarchy.district_guid, institution_hierarchy.school_guid)
+            sections_in_school += sections_in_grade
+            #score_list = generate_list_of_scores(number_of_students_in_grade, scores_details, performance_level_dist, subject_name, grade)
+            for section in sections_in_grade:
+                # TODO: More accurate math for num_of_students
+                # TODO: Do we need to account for the percentages of kids that take ELA or MATH here?
+                number_of_students_in_section = number_of_students_in_grade // number_of_sections
+                # TODO: Set up district naming like PeopleNames to remove the following line (which is also called in generate_data)
+                name_list_dictionary = generate_name_list_dictionary(NAMES_TO_PATH_DICT)
+                students_in_section = generate_students_from_institution_hierarchy(number_of_students_in_section, institution_hierarchy, grade, section.section_guid, name_list_dictionary[BIRDS])
+                students_in_school += students_in_section
+                # TODO: should we add some randomness here? What are acceptable numbers? 1-2? 1-3?
+                number_of_staff_in_section = 1
+                teachers_in_section = generate_teaching_staff_from_institution_hierarchy(number_of_staff_in_section, institution_hierarchy, section.section_guid)
+                staff_in_school += teachers_in_section
+                assessment = select_assessment_from_list(assessments, grade, subject_name)
+                teacher_guid = teachers_in_section[0].staff_guid
+                #asmt_outcomes_in_section = generate_assessment_outcomes_from_helper_entities_and_lists(students_in_section, score_list, teacher_guid, section, institution_hierarchy, assessment,
+                #                                                                                      eb_min_perc, eb_max_perc, eb_rand_adj_lo, eb_rand_adj_hi)
+                #asmt_outcomes_for_grade.extend(asmt_outcomes_in_section)
+        create_csv(asmt_outcomes_for_grade, ENTITY_TO_PATH_DICT[AssessmentOutcome])
+    create_csv(students_in_school, ENTITY_TO_PATH_DICT[Student])
+    create_csv(sections_in_school, ENTITY_TO_PATH_DICT[Section])
+    create_csv(staff_in_school, ENTITY_TO_PATH_DICT[Staff])
 
 
 def prepare_csv_files(entity_to_path_dict):
@@ -357,7 +374,7 @@ def calculate_number_of_students(student_min, student_max, student_avg):
 
 
 def calculate_number_of_sections(number_of_students):
-    # TODO: implement me
+    # TODO: Figure out how to calculate number_of_sections
     return 1
 
 

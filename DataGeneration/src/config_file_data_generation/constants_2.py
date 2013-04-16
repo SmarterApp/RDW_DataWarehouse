@@ -72,4 +72,4 @@ SCORE_MIN_MAX_RANGE = 20
 ASSMT_SCORE_YEARS = [2012]
 ASSMT_TYPES = ['SUMMATIVE', 'INTERIM']
 ASSMT_PERIODS = ['BOY', 'MOY', 'EOY']
-PERFORMANCE_LEVELS = ['Minimal Command', 'Partial Command', 'Sufficient Command', 'Deep Command']
+PERFORMANCE_LEVELS = ['Minimal Understanding', 'Partial Understanding', 'Adequate Understanding', 'Thorough Understanding']

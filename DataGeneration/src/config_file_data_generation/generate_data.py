@@ -2,9 +2,10 @@ import argparse
 import datetime
 import os
 import csv
+import random
 import util_2
 import constants_2 as constants
-from write_to_csv import create_csv
+from write_to_csv_2 import create_csv
 from importlib import import_module
 from generate_entities import (generate_institution_hierarchy, generate_sections, generate_students, generate_multiple_staff,
                                generate_fact_assessment_outcomes, generate_assessments)
@@ -201,7 +202,9 @@ def populate_school(institution_hierarchy, school_type, assessments):
                 staff_in_school += teachers_in_section
                 assessment = select_assessment_from_list(assessments, grade, subject_name)
                 teacher_guid = teachers_in_section[0].staff_guid
-                asmt_outcomes_in_section = generate_assessment_outcomes_from_helper_entities_and_lists(students_in_section, score_list, teacher_guid, section, institution_hierarchy, assessment,
+                count_at_90_percent = int(len(students_in_section) * .9)  # TODO: change to config_val
+                students_to_take_assessment = random.sample(students_in_section, count_at_90_percent)
+                asmt_outcomes_in_section = generate_assessment_outcomes_from_helper_entities_and_lists(students_to_take_assessment, score_list, teacher_guid, section, institution_hierarchy, assessment,
                                                                                                       eb_min_perc, eb_max_perc, eb_rand_adj_lo, eb_rand_adj_hi)
                 asmt_outcomes_for_grade.extend(asmt_outcomes_in_section)
         create_csv(asmt_outcomes_for_grade, ENTITY_TO_PATH_DICT[AssessmentOutcome])
@@ -346,10 +349,9 @@ def translate_scores_to_assessment_score(scores, cut_points, assessment, ebmin, 
 
         scenter, ebmin, ebstep = calc_eb_params(score_min, score_max, ebmin, ebmax)
         ebleft, ebright, _ebhalf = calc_eb(score, score_min, score_max, scenter, ebmin, ebstep, rndlo, rndhi)
-#        interval_max = calculate_error_band(score, score_min, score_max, ebmin, ebmax, rndlo, rndhi)
         claim_scores = calcuate_claim_scores(score, assessment, ebmin, ebmax, rndlo, rndhi)
         asmt_create_date = datetime.date.today().strftime('%Y%m%d')
-        asmt_score = generate_assessment_score(score, perf_lvl, int(ebleft), int(ebright), claim_scores, asmt_create_date)
+        asmt_score = generate_assessment_score(score, perf_lvl, round(ebleft), round(ebright), claim_scores, asmt_create_date)
 
         score_list.append(asmt_score)
     return score_list
@@ -431,7 +433,7 @@ def calcuate_claim_scores(asmt_score, assessment, ebmin, ebmax, rndlo, rndhi):
         scaled_claim_score = int(rescale_value(unscaled_claim_score, weighted_assessment_scale, claim_score_scale))
         scenter, ebmin, ebstep = calc_eb_params(claim_minimum_score, claim_maximum_score, ebmin, ebmax)
         ebleft, ebright, _ebhalf = calc_eb(scaled_claim_score, claim_minimum_score, claim_maximum_score, scenter, ebmin, ebstep, rndlo, rndhi)
-        claim_score = generate_claim_score(scaled_claim_score, int(ebleft), int(ebright))
+        claim_score = generate_claim_score(scaled_claim_score, round(ebleft), round(ebright))
         claim_scores.append(claim_score)
 
     return claim_scores

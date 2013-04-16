@@ -320,7 +320,4 @@ jenkins_dev:
         name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
     # Mode that we're running in.  Currently we support 'dev' and 'prod'
     mode: prod
-  '[logger_smarter]':
-    level: DEBUG
-    handlers: syslog
-    qualname: smarter
+

@@ -122,7 +122,7 @@ def generate_assessment(asmt_type, asmt_period, asmt_period_year, asmt_subject, 
     asmt_claim_4_score_weight = None
 
     if len(claim_defs) > 3:
-        asmt_claim_4_name = claim_defs[3]
+        asmt_claim_4_name = claim_defs[3]['claim_name']
         asmt_claim_4_score_min = asmt_score_min
         asmt_claim_4_score_max = asmt_score_max
         asmt_claim_4_score_weight = claim_defs[3]['claim_weight']

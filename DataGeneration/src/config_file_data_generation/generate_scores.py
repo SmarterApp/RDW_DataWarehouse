@@ -77,18 +77,24 @@ def split_total_by_precentages(percentages, total):
     '''
     Return a list of integer which add up to 'total' and are distributed in the list by 'percentages'
 
-    For example, percentage = [14, 42, 34, 10], total = 2371
-    First three numbers are calculated as int(percentage[i] * total / 100)
-    The last number is calculated as total - sum(first three numbers)
+    If the sum of the resulting split is not equal to the required total (caused by rounding errors)
+        calculate the difference, find the largest value and adjust it as necessary
     '''
-    count_for_level = []
 
-    for i in range(len(percentages) - 1):
-        count_for_level.append(int(percentages[i] * total / 100))
+    need = len(percentages)
+    out_list = [0] * need
 
-    count_for_level.append(total - sum(count_for_level))
+    for i in range(need):
+        val = (percentages[i] * total) / 100        # calculate according to the percentage
+        val = int(val)                              # round the result DOWN to the nearest integer
+        out_list[i] = val
 
-    return count_for_level
+    diff = total - sum(out_list)
+    if diff:
+        index_of_max = out_list.index(max(out_list))
+        out_list[index_of_max] += diff
+
+    return out_list
 
 
 def generate_random_numbers(min_number, max_number, count):
@@ -166,6 +172,10 @@ def adjust_list(total_list, percentages, cut_points, total):
     required_numbers = split_total_by_precentages(percentages, total)
 
     for i in range(pl_count):
+        required = required_numbers[i]
+        if not required:
+            continue
+
         lo = cut_points[i]
         hi = cut_points[i + 1]
         if i != last_pl:        # do not include the higher cut point in the PL range
@@ -173,12 +183,10 @@ def adjust_list(total_list, percentages, cut_points, total):
 
         split_list = [x for x in total_list if lo <= x <= hi]
 
-        required = required_numbers[i]
         if (len(split_list) > 0):
-        #    print("Trace  : in adjust_list() : normal split_list     : PL-lo=%d, PL-hi=%d, PL-count=%d" % (lo, hi, required))
             split_adjust = add_or_delete(split_list, required)
         else:
-            print("WARNING: in adjust_list() : nothing in split_list : PL-lo=%d, PL-hi=%d, PL-count=%d" % (lo, hi, required))
+            print("WARNING: in adjust_list() : nothing in split_list : PL-lo=%d, PL-hi=%d, required=%d, percentage=%d" % (lo, hi, required, percentages[i]))
             split_adjust = generate_random_numbers(lo, hi, required)
 
         adjusted_list.extend(split_adjust)
@@ -207,7 +215,6 @@ def add_or_delete(score_list, required_number):
         else:
             score_list = []
 
-    # print('finish add and delete, required', required_number, 'adjust to', len(score_list))
     return score_list
 
 

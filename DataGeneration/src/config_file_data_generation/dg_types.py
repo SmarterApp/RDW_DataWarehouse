@@ -77,7 +77,7 @@ def get_states():
     'state_code' is the code for that state (eg. NY)
     'state_type' is the type of the state. This should match something that has been defined in get_state_types()
     """
-    states = [{'name' : 'New York', 'state_code' : 'NY', 'state_type' : 'typical_1'}]
+    states = [{'name' : 'Example State', 'state_code' : 'ES', 'state_type' : 'typical_1'}]
     return states
 
 

@@ -38,6 +38,7 @@ class DataGenerationValidation(unittest.TestCase):
 
 
 # Method to read DictReader
+    @classmethod
     def dict_reader (file_path, file_format):
         with open (file_path) as csvFile:
             fileValue = csv.DictReader(csvFile, delimiter =',' )
@@ -45,13 +46,15 @@ class DataGenerationValidation(unittest.TestCase):
             return fileValue
 
 # Method for comparing headers
+    @classmethod
     def getting_header(path, format_name):
         with open(path, format_name) as csvfile:
             col_reader = csv.reader(csvfile, delimiter=',')
             header_list = (list(col_reader))
             first_row = header_list[0]
-            return first_row            
-            
+            return first_row
+                    
+    @classmethod        
     def score_fact_asmt(score_column_name, range_min_column_name, range_max_column_name):
             real_score = []
             min_score = []
@@ -84,11 +87,11 @@ class DataGenerationValidation(unittest.TestCase):
 
     #class_names = ENTITY_TO_PATH_DICT
    
-    def test_headers():
+    def test_headers(self):
         csv_path = ENTITY_TO_PATH_DICT.values()
         for each_csv in csv_path:
         # do validate
-            actual_headers = getting_header(each_csv, 'r')
+            actual_headers = DataGenerationValidation.getting_header(each_csv, 'r')
             expected_headers = header_dict.get(os.path.basename(each_csv)[:-4])
         
         
@@ -101,7 +104,7 @@ class DataGenerationValidation(unittest.TestCase):
             
     # TC2: Validate min/Max assessment score, cut score and assessment performance level names
     
-    def test_asmt_cut_lavel_score():
+    def test_asmt_cut_lavel_score(self):
     
         with open('.\\DataGeneration\\datafiles\\csv\\dim_asmt.csv', 'r') as csvfile:
             col_val = csv.DictReader(csvfile, delimiter=',')
@@ -139,7 +142,7 @@ class DataGenerationValidation(unittest.TestCase):
     # TC3: Validate School Categoty
 
     # dim_inst_hier--> school category/ school_guid
-    def test_grade():
+    def test_grade(self):
         expected_school_category = ['High School', 'Middle School', 'Elementary School']
                 
         with open('.\DataGeneration\datafiles\csv\dim_inst_hier.csv', 'r') as csvfile:
@@ -246,7 +249,7 @@ class DataGenerationValidation(unittest.TestCase):
             print('TC3: Passed') 
 
     # TC4: Check Ids are not empty in all CSVs
-    def test_primary_key():
+    def test_primary_key(self):
     #        class_names = ENTITY_TO_PATH_DICT
             all_files = ENTITY_TO_PATH_DICT.values()
         
@@ -261,20 +264,20 @@ class DataGenerationValidation(unittest.TestCase):
     
     # TC5: Validate scores in fact_asmt_outcome file
     
-    def test_fact_score():
+    def test_fact_score(self):
             all_score_outcome = [['asmt_score', 'asmt_score_range_min', 'asmt_score_range_max'], 
                                  ['asmt_claim_1_score', 'asmt_claim_1_score_range_min', 'asmt_claim_1_score_range_max'],
                                  ['asmt_claim_2_score', 'asmt_claim_2_score_range_min', 'asmt_claim_2_score_range_max'],
                                  ['asmt_claim_3_score', 'asmt_claim_3_score_range_min', 'asmt_claim_3_score_range_max']]
         
             for score_part in all_score_outcome:
-                score_fact_asmt(score_part[0],score_part[1],score_part[2])
+                DataGenerationValidation.score_fact_asmt(score_part[0],score_part[1],score_part[2])
 
 
             
     # TC6: check assessment performance level from fact_asmt_outcome table
     
-    def test_performence_level():
+    def test_performence_level(self):
     
             perf_lvl = []
             asmt_score_list = []

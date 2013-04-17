@@ -19,10 +19,13 @@ GAMMA = 'gamma'
 STD = 'std'
 STATE_CODE = 'state_code'
 CUT_POINTS = 'cut_points'
-MIN_PERC = 'min_%'
-MAX_PERC = 'max_%'
+MIN_PERC = 'min_divisor'
+MAX_PERC = 'max_divisor'
 RAND_ADJ_PNT_LO = 'random_adjustment_points_lo'
 RAND_ADJ_PNT_HI = 'random_adjustment_points_hi'
+FROM_DATE = 'from_date'
+TO_DATE = 'to_date'
+MOST_RECENT = 'most_recent'
 
 
 def get_school_types():
@@ -74,7 +77,7 @@ def get_states():
     'state_code' is the code for that state (eg. NY)
     'state_type' is the type of the state. This should match something that has been defined in get_state_types()
     """
-    states = [{'name' : 'New York', 'state_code' : 'NY', 'state_type' : 'typical_1'}]
+    states = [{'name' : 'Example State', 'state_code' : 'ES', 'state_type' : 'typical_1'}]
     return states
 
 
@@ -94,12 +97,12 @@ def get_error_band():
     """
     Error Band information
     Structure of dictionary: {'min_%': val, 'max_%': val, 'random_adjustment_points_lo': val, 'random_adjustment_points_hi': val}
-    where 'min_%' is the minimum percentage of the error band. At the center of the score range, the error band should be at this value
-    'max_%' is the max percentage of the error band. At each extreme of the score range, the error band should be at this value
+    where 'min_divisor' is the divisor of the minimum fraction of the error band. At the center of the score range, the error band should be at this value (ie 1/32)
+    'max_divisor' is the divisor of the maximum fraction of the error band. At each extreme of the score range, the error band should be at this value (ie 1/8)
     'random_adjustment_points_lo' is the lower bound for getting the random adjustment
     'random_adjustment_points_hi' is the upper bound for getting the random adjustment
     """
-    eb = {'min_%': 3.125, 'max_%': 12.5, 'random_adjustment_points_lo': -10, 'random_adjustment_points_hi': 25}
+    eb = {'min_divisor': 32, 'max_divisor': 8, 'random_adjustment_points_lo': -10, 'random_adjustment_points_hi': 25}
     return eb
 
 
@@ -130,3 +133,7 @@ def get_performance_level_distributions():
                     '11': {'percentages': [26, 37, 28, 9]}}
                     }
     return pld
+
+def get_temporal_information():
+    temporal_information = {'from_date':'20120901', 'to_date': None, 'most_recent': True, 'date_taken_year':'2012', 'date_taken_month': ''}
+    return temporal_information

@@ -11,6 +11,7 @@ import os
 # Constants
 FREQUENCY_OFFSET = 0.01
 
+
 # TODO: eliminate the hardcoded paths, pass in through parameters
 def read_name_files():
     '''
@@ -48,6 +49,7 @@ def read_name_files():
     except:
         print("Error while reading file")
         return False, False, False
+
 
 def generate_all_names(male_list, female_list, last_name_list, pool_size=1000000):
     '''

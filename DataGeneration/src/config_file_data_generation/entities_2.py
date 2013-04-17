@@ -70,7 +70,7 @@ class Assessment:
     Assessment Object
     '''
     def __init__(self, asmt_rec_id, asmt_guid, asmt_type, asmt_period, asmt_period_year, asmt_version, asmt_subject,
-                 asmt_grade, from_date,
+                 asmt_grade, from_date, most_recent,
                  asmt_claim_1_name=None, asmt_claim_2_name=None, asmt_claim_3_name=None, asmt_claim_4_name=None,
                  asmt_perf_lvl_name_1=None, asmt_perf_lvl_name_2=None, asmt_perf_lvl_name_3=None, asmt_perf_lvl_name_4=None, asmt_perf_lvl_name_5=None,
                  asmt_score_min=None, asmt_score_max=None,
@@ -80,7 +80,7 @@ class Assessment:
                  asmt_claim_4_score_min=None, asmt_claim_4_score_max=None, asmt_claim_4_score_weight=None,
                  asmt_custom_metadata=None,
                  asmt_cut_point_1=None, asmt_cut_point_2=None, asmt_cut_point_3=None, asmt_cut_point_4=None,
-                 to_date=None, most_recent=None):
+                 to_date=None):
         '''
         Constructor
         '''
@@ -275,7 +275,8 @@ class Person(object):
 
 class Staff(Person):
 
-    def __init__(self, staff_rec_id, staff_guid, first_name, last_name, section_guid, hier_user_type, state_code, district_guid, school_guid, from_date, most_recent, to_date=None, middle_name=None):
+    def __init__(self, staff_rec_id, staff_guid, first_name, last_name, section_guid, hier_user_type, state_code,
+                 district_guid, school_guid, from_date, most_recent, to_date=None, middle_name=None):
         super().__init__(first_name, last_name, middle_name=middle_name)
         self.staff_rec_id = staff_rec_id
         self.staff_guid = staff_guid

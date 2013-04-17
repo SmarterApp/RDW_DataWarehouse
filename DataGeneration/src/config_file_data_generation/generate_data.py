@@ -322,12 +322,16 @@ def generate_assessment_outcomes_from_helper_entities_and_lists(students, scores
     where_taken_name = institution_hierarchy.school_name
     asmt_grade = section.grade
     enrl_grade = section.grade
-    date_taken = datetime.date.today()
+    date_taken = util_2.generate_date_given_assessment(assessment)
+    date_taken_day = date_taken.day
+    date_taken_month = date_taken.month
+    date_taken_year = date_taken.year
+    date_taken = date_taken.strftime('%Y%m%d')
 
     asmt_outcomes = generate_fact_assessment_outcomes(students, asmt_scores, asmt_rec_id, teacher_guid, state_code,
                                                       district_guid, school_guid, section_guid, inst_hier_rec_id,
                                                       section_rec_id, where_taken_id, where_taken_name, asmt_grade,
-                                                      enrl_grade, date_taken)
+                                                      enrl_grade, date_taken, date_taken_day, date_taken_month, date_taken_year)
 
     return asmt_outcomes
 

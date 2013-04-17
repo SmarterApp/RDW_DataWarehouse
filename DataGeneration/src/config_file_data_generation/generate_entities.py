@@ -160,7 +160,7 @@ def generate_assessments(grades, cut_points, from_date, most_recent, to_date=Non
     for asmt_grade in grades:
         for asmt_type in constants.ASSMT_TYPES:
             # INTERIM assessment has 3 periods, SUMMATIVE assessment has 1 'EOY' period
-            periods = constants.ASSMT_PERIODS if asmt_type == 'INTERIM' else ['EOY']
+            periods = constants.ASSMT_PERIODS if asmt_type == 'INTERIM' else ['Spring']
             for asmt_period in periods:
                 for asmt_subject in constants.SUBJECTS:
                     for index_of_year in range(len(asmt_years)):
@@ -201,7 +201,8 @@ def generate_multiple_staff(number_of_staff, hier_user_type, from_date, most_rec
 
 def generate_fact_assessment_outcome(asmt_rec_id, student_guid, teacher_guid, state_code, district_guid, school_guid, section_guid,
                                      inst_hier_rec_id, section_rec_id, where_taken_id, where_taken_name, asmt_grade, enrl_grade,
-                                     date_taken, asmt_score, asmt_score_range_min, asmt_score_range_max, asmt_perf_lvl,
+                                     date_taken, date_taken_day, date_taken_month, date_taken_year, asmt_score, asmt_score_range_min,
+                                     asmt_score_range_max, asmt_perf_lvl,
                                      asmt_claim_1_score, asmt_claim_1_score_range_min, asmt_claim_1_score_range_max,
                                      asmt_claim_2_score, asmt_claim_2_score_range_min, asmt_claim_2_score_range_max,
                                      asmt_claim_3_score, asmt_claim_3_score_range_min, asmt_claim_3_score_range_max,
@@ -209,12 +210,14 @@ def generate_fact_assessment_outcome(asmt_rec_id, student_guid, teacher_guid, st
     id_generator = IdGen()
     asmnt_outcome_rec_id = id_generator.get_id()
 
-    date_taken_day = date_taken.day
-    date_taken_month = date_taken.month
-    date_taken_year = date_taken.year
-    asmt_create_date = datetime.date.today()
+    asmt_create_date = datetime.date.today().strftime('%Y%m%d')
+
+
     status = 'C'
     most_recent = True
+
+    # TODO: Fix this hack
+    #asmt_perf_lvl = 1
 
     asmt_outcome = AssessmentOutcome(asmnt_outcome_rec_id, asmt_rec_id, student_guid,
                                      teacher_guid, state_code, district_guid, school_guid, section_guid, inst_hier_rec_id, section_rec_id,
@@ -231,7 +234,7 @@ def generate_fact_assessment_outcome(asmt_rec_id, student_guid, teacher_guid, st
 
 def generate_fact_assessment_outcomes(students, scores, asmt_rec_id, teacher_guid, state_code, district_guid, school_guid, section_guid,
                                      inst_hier_rec_id, section_rec_id, where_taken_id, where_taken_name, asmt_grade, enrl_grade,
-                                     date_taken):
+                                     date_taken, date_taken_day, date_taken_month, date_taken_year):
 
     outcomes = []
 
@@ -259,7 +262,7 @@ def generate_fact_assessment_outcomes(students, scores, asmt_rec_id, teacher_gui
 
         asmt_outcome = generate_fact_assessment_outcome(asmt_rec_id, student_guid, teacher_guid, state_code, district_guid, school_guid, section_guid,
                                      inst_hier_rec_id, section_rec_id, where_taken_id, where_taken_name, asmt_grade, enrl_grade,
-                                     date_taken, asmt_score, asmt_score_range_min, asmt_score_range_max, asmt_perf_lvl,
+                                     date_taken, date_taken_day, date_taken_month, date_taken_year, asmt_score, asmt_score_range_min, asmt_score_range_max, asmt_perf_lvl,
                                      asmt_claim_1_score, asmt_claim_1_score_range_min, asmt_claim_1_score_range_max,
                                      asmt_claim_2_score, asmt_claim_2_score_range_min, asmt_claim_2_score_range_max,
                                      asmt_claim_3_score, asmt_claim_3_score_range_min, asmt_claim_3_score_range_max,

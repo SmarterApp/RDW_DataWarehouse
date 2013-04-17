@@ -71,5 +71,6 @@ SCORE_MIN_MAX_RANGE = 20
 
 ASSMT_SCORE_YEARS = [2012]
 ASSMT_TYPES = ['SUMMATIVE', 'INTERIM']
-ASSMT_PERIODS = ['BOY', 'MOY', 'EOY']
+ASSMT_PERIODS = ['Fall', 'Spring']
+ASSMT_PERIOD_TO_MONTHS_DICT = {'Fall': [9,10,11,12], 'Spring': [1,2,3,4,5]}
 PERFORMANCE_LEVELS = ['Minimal Understanding', 'Partial Understanding', 'Adequate Understanding', 'Thorough Understanding']

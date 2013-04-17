@@ -68,3 +68,24 @@ def generate_dob(grade):
     dob = datetime.date(birth_year, birth_month, birth_day).strftime("%Y%m%d")
 
     return dob
+
+def generate_date_given_assessment(assessment):
+    year = assessment.asmt_period_year
+    period = chop_year_off_asmt_period(assessment.asmt_period)
+    month = random.choice(constants.ASSMT_PERIOD_TO_MONTHS_DICT[period])
+    max_date = get_max_date_from_month(month)
+    day = random.choice(range(1, max_date + 1))
+    return datetime.date(year, month, day)
+
+def get_max_date_from_month(month):
+    # Ensure month is valid
+    assert month in range(1,13)
+    if month == 2:
+        return 28
+    elif month in [9,4,5,11]:
+        return 30
+    return 31
+
+def chop_year_off_asmt_period(asmt_period):
+    component_strings = asmt_period.split()
+    return component_strings[0]

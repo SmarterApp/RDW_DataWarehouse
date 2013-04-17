@@ -17,13 +17,13 @@ DISTRICT_TYPES_AND_COUNTS = 'districtTypesAndCounts'
 class DataGenerationValidation(unittest.TestCase):
 
 # Get header values from Configuration file
-    dim_inst_hier = entities.InstitutionHierarchy.getHeader()
-    dim_staff = entities.Staff.getHeader()
-    dim_student = entities.Student.getHeader()
-    dim_section = entities.Section.getHeader()
-    dim_asmt = entities.Assessment.getHeader()
-    fact_asmt_outcome = entities.AssessmentOutcome.getHeader()
-    external_user_student_rel = entities.ExternalUserStudent.getHeader()
+    dim_inst_hier = src.entities.InstitutionHierarchy.getHeader()
+    dim_staff = src.entities.Staff.getHeader()
+    dim_student = src.entities.Student.getHeader()
+    dim_section = src.entities.Section.getHeader()
+    dim_asmt = src.entities.Assessment.getHeader()
+    fact_asmt_outcome = src.entities.AssessmentOutcome.getHeader()
+    external_user_student_rel = src.entities.ExternalUserStudent.getHeader()
     
     # Create dictionary to store Headers 
     header_dict = {}

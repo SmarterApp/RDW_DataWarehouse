@@ -142,11 +142,11 @@ qa1:
       schema_name: edware_sds_0_1
       db:
         main:
-          url: postgresql+pypostgresql://postgres:edware.qa.2013@dwpool0.qa.dum.edwdc.net:6432/edware
+          url: postgresql+pypostgresql://edware:edware2013@dwpool0.qa.dum.edwdc.net:6432/edware
     edauth:
       db:
         main:
-          url: postgresql+pypostgresql://postgres:edware.qa.2013@dwpool0.qa.dum.edwdc.net:6432/edware
+          url: postgresql+pypostgresql://edware:edware2013@dwpool0.qa.dum.edwdc.net:6432/edware
     auth:
       idp:
         metadata: /opt/edware/conf/idp_metadata.xml
@@ -163,14 +163,14 @@ qa2:
   '[app:main]':
     mode: prod
     edware:
-      schema_name: edware_sds_0_1
+      schema_name: edware_delaware_0_1
       db:
         main:
-          url: postgresql+pypostgresql://postgres:edware.qa.2013@dwpool0.qa.dum.edwdc.net:6432/edware
+          url: postgresql+pypostgresql://edware:edware2013@dwpool0.qa.dum.edwdc.net:6434/edware
     edauth:
       db:
         main:
-          url: postgresql+pypostgresql://postgres:edware.qa.2013@dwpool0.qa.dum.edwdc.net:6432/edware
+          url: postgresql+pypostgresql://edware:edware2013@dwpool0.qa.dum.edwdc.net:6434/edware
     auth:
       idp:
         metadata: /opt/edware/conf/idp_metadata.xml

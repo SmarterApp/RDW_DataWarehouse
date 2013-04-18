@@ -365,7 +365,7 @@ def translate_scores_to_assessment_score(scores, cut_points, assessment, ebmin, 
 
         scenter, ebmin, ebstep = calc_eb_params(score_min, score_max, ebmin, ebmax)
         ebleft, ebright, _ebhalf = calc_eb(score, score_min, score_max, scenter, ebmin, ebstep, rndlo, rndhi)
-        claim_scores = calcuate_claim_scores(score, assessment, ebmin, ebmax, rndlo, rndhi)
+        claim_scores = calculate_claim_scores(score, assessment, ebmin, ebmax, rndlo, rndhi)
         asmt_create_date = datetime.date.today().strftime('%Y%m%d')
         asmt_score = generate_assessment_score(score, perf_lvl, round(ebleft), round(ebright), claim_scores, asmt_create_date)
 
@@ -452,7 +452,7 @@ def calculate_number_of_sections(number_of_students):
     return 1
 
 
-def calcuate_claim_scores(asmt_score, assessment, ebmin, ebmax, rndlo, rndhi):
+def calculate_claim_scores(asmt_score, assessment, ebmin, ebmax, rndlo, rndhi):
     claim_scores = []
     claim_list = [(assessment.asmt_claim_1_name, assessment.asmt_claim_1_score_min, assessment.asmt_claim_1_score_max, assessment.asmt_claim_1_score_weight),
                   (assessment.asmt_claim_2_name, assessment.asmt_claim_2_score_min, assessment.asmt_claim_2_score_max, assessment.asmt_claim_2_score_weight),
@@ -538,7 +538,7 @@ def get_subset_of_students(students, percentage):
     @param percentage: the percentage of those students to return (as a decimal)
     '''
     student_len = len(students)
-    selection_size = student_len * percentage
+    selection_size = int(student_len * percentage)
     selection = random.sample(students, selection_size)
     return selection
 

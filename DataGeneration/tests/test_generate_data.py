@@ -20,13 +20,15 @@ class Test(unittest.TestCase):
     def test_translate_scores_to_assessment_score(self):
         assmt = create_assessment()
         scores = [2180, 1200, 2400, 1590, 1890]
+        expected_pl = [4, 1, 4, 2, 3]
         res = generate_data.translate_scores_to_assessment_score(scores, [1575, 1875, 2175], assmt, 32, 8, -10, 25)
-        for sc in res:
-            print(sc.perf_lvl)
-            self.assertIn(sc.perf_lvl, [1, 2, 3, 4])
+        for i in range(len(res)):
+            self.assertEqual(res[i].perf_lvl, expected_pl[i])
+            self.assertIn(res[i].perf_lvl, [1, 2, 3, 4])
 
     def test_get_subset_of_students(self):
         students = [object()] * 100
+        print(len(students))
         res = generate_data.get_subset_of_students(students, .9)
         self.assertEqual(len(res), 90)
 

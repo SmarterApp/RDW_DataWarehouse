@@ -212,8 +212,7 @@ def populate_school(institution_hierarchy, school_type, assessments):
                 assessment = select_assessment_from_list(assessments, grade, subject_name)
                 teacher_guid = teachers_in_section[0].staff_guid
 
-                count_at_90_percent = int(len(students_in_section) * .9)  # TODO: change to config_val
-                students_to_take_assessment = random.sample(students_in_section, count_at_90_percent)
+                students_to_take_assessment = get_subset_of_students(students_in_section, .9)
 
                 create_csv(students_to_take_assessment, ENTITY_TO_PATH_DICT[Student])
                 asmt_outcomes_in_section = generate_assessment_outcomes_from_helper_entities_and_lists(students_to_take_assessment, score_list, teacher_guid, section, institution_hierarchy, assessment,

@@ -79,11 +79,9 @@ class DataGenerationValidation(unittest.TestCase):
                     assert 1200 <= actual_score and min_value and max_value <= 2400, ('Incorrect score: Actual score: '+ str(actual_score) + ' Min_Score: ' + str(min_value) + ' Max_Score: ' + str(max_value))
                     if min_value != 1200 and max_value != 2400:
                         assert (actual_score - min_value) == (max_value - actual_score) , ('Min/Max scores are not in range in fact_asmt_outcome file. Actual score: '+ str(actual_score) + ' Min_Score: ' + str(min_value) + ' Max_Score: ' + str(max_value))
-            
-            print('Tc5: Passed')
+                
     
-    
-    # TC1: Check Headers in from all the CSV files.
+    # TC1: Check Headers in all the CSV files.
 
     #class_names = ENTITY_TO_PATH_DICT
    
@@ -99,7 +97,7 @@ class DataGenerationValidation(unittest.TestCase):
             assert len(actual_headers) == len(expected_headers),('Number of header does not match: %s' % each_csv)
             for header in expected_headers:
                 assert header in actual_headers,('Header Name: %s is missing in %s file' %(header, os.path.basename(each_csv)[:-4]))
-        print('TC1: PAssed')
+        print('TC1: Passed: Check Headers in all the CSV files')
             
             
     # TC2: Validate min/Max assessment score, cut score and assessment performance level names
@@ -137,7 +135,7 @@ class DataGenerationValidation(unittest.TestCase):
                     csv_asmt_value = value[0]
                     config_asmt_value = value[1]
                     assert csv_asmt_value == config_asmt_value, (key + ' value is incorrect. Expected ', config_asmt_value , ' but found ', csv_asmt_value)
-            print('TC2: Passed')
+        print('TC2: Passed: Validate min/Max assessment score, cut score and assessment performance level names')
 
     # TC3: Validate School Categoty
 
@@ -229,8 +227,6 @@ class DataGenerationValidation(unittest.TestCase):
             
             
             assert uniq_ml_list == overall_middleschool_int,'SchoolIDs or Grades are incorrect in ' + os.path.basename(each_file)[:-4]
-        #        if uniq_ml_list != overall_middleschool_int:
-        #          print('Grades are incorrect for Middle school') 
                
                 
             # Elementary School
@@ -246,7 +242,7 @@ class DataGenerationValidation(unittest.TestCase):
             overall_elementaryschool_int = list(map(int, overall_elementaryschool))
             
             assert uniq_el_list == overall_elementaryschool_int,'SchoolIDs or Grades are incorrect in ' + os.path.basename(each_file)[:-4]
-            print('TC3: Passed') 
+        print('TC3: Passed: Validate School Categoty and grades respect to School Category') 
 
     # TC4: Check Ids are not empty in all CSVs
     def test_primary_key(self):
@@ -260,7 +256,7 @@ class DataGenerationValidation(unittest.TestCase):
                     #print('header: ', header)
                     for row in col_val:
                         assert row[0] != '', ('Primary id is empty in: ', os.path.basename(csv_file)[:-4])
-            print('TC4: Passed')
+            print('TC4: Passed: Validate Primary Keys are not empty in all CSVs')
     
     # TC5: Validate scores in fact_asmt_outcome file
     
@@ -273,9 +269,10 @@ class DataGenerationValidation(unittest.TestCase):
             for score_part in all_score_outcome:
                 DataGenerationValidation.score_fact_asmt(score_part[0],score_part[1],score_part[2])
 
+            print('Tc5: Passed: Validate scores in fact_asmt_outcome file')
 
-            
-    # TC6: check assessment performance level from fact_asmt_outcome table
+
+    # TC6: check assessment performance level in fact_asmt_outcome
     
     def test_performence_level(self):
     
@@ -299,4 +296,5 @@ class DataGenerationValidation(unittest.TestCase):
                             elif 2175<=(int(asmt_score_list[i]))<=2400 and (int(perf_lvl[i])) == 4:
                                 pass
                             else:
-                               raise AssertionError('Fail: fact_asmt_outcome file. Asseessment score:' + asmt_score_list[i] +  ' and Performance_level:' + perf_lvl[i]) 
+                               raise AssertionError('Fail: fact_asmt_outcome file. Asseessment score:' + asmt_score_list[i] +  ' and Performance_level:' + perf_lvl[i])
+            print('TC6: Passed: Validate Performance level in fact_asmt_outcome file')

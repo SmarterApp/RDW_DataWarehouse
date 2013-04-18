@@ -119,7 +119,10 @@ def __calculateClaimScoreRelativeDifference(items):
                 maxAbsDiffScore = abs(asmt_score - score)
         for claim in claims:
             score = int(claim['score'])
-            claim['claim_score_relative_difference'] = int((score - asmt_score) / maxAbsDiffScore * 100)
+            if maxAbsDiffScore == 0:
+                claim['claim_score_relative_difference'] = 0
+            else:
+                claim['claim_score_relative_difference'] = int((score - asmt_score) / maxAbsDiffScore * 100)
 
 
 def __arrange_results(results):

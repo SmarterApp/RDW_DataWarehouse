@@ -69,8 +69,8 @@ define [
         items = cutPointsData[key]
         items.bar_width = 120
         
-        items.asmt_score_min = assessmentsData["ALL"][0].assessments[key].asmt_score_min
-        items.asmt_score_max = assessmentsData["ALL"][0].assessments[key].asmt_score_max
+        items.asmt_score_min = items.asmt_score_min
+        items.asmt_score_max = items.asmt_score_max
         
         # Last cut point of the assessment
         items.last_interval = items.cut_point_intervals[items.cut_point_intervals.length-1]

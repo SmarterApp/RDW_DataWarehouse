@@ -149,16 +149,16 @@ def __arrange_results(results):
 
 @report_config(name=REPORT_NAME,
                params={
-                    "studentGuid": {
-                        "type": "string",
-                        "required": True,
-                        "pattern": "^[a-zA-Z0-9\-]{0,50}$"},
-                    "assessmentGuid": {
-                        "name": "student_assessments_report",
-                        "type": "string",
-                        "required": False,
-                        "pattern": "^[a-zA-Z0-9\-]{0,50}$",
-                    },
+                   "studentGuid": {
+                   "type": "string",
+                   "required": True,
+                   "pattern": "^[a-zA-Z0-9\-]{0,50}$"},
+                   "assessmentGuid": {
+                       "name": "student_assessments_report",
+                       "type": "string",
+                       "required": False,
+                       "pattern": "^[a-zA-Z0-9\-]{0,50}$",
+                   },
                })
 @audit_event()
 @user_info

@@ -234,6 +234,7 @@ def __get_asmt_data(connector, asmtSubject):
                     dim_asmt.c.asmt_cut_point_2.label("asmt_cut_point_2"),
                     dim_asmt.c.asmt_cut_point_3.label("asmt_cut_point_3"),
                     dim_asmt.c.asmt_cut_point_4.label("asmt_cut_point_4"),
+                    dim_asmt.c.asmt_score_min.label('asmt_score_min'),
                     dim_asmt.c.asmt_score_max.label('asmt_score_max'),
                     dim_asmt.c.asmt_custom_metadata.label("asmt_custom_metadata"),
                     dim_asmt.c.asmt_claim_1_name.label('asmt_claim_1_name'),

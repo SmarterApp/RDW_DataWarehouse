@@ -1,8 +1,16 @@
 --create_edware_role.sql
 CREATE DATABASE edware;
+
 \c edware;
-CREATE ROLE edware WITH PASSWORD 'edware2013';
+
+CREATE ROLE edware WITH PASSWORD 'edware.dmo.may.2013';
+
 ALTER ROLE edware WITH LOGIN CREATEROLE CREATEDB;
-CREATE SCHEMA edware_20130129 AUTHORIZATION edware;
-CREATE SCHEMA edware_lz_20130129 AUTHORIZATION edware;
-ALTER ROLE edware SET SEARCH_PATH = 'edware_20130129 edware_lz_20130129';
+
+CREATE SCHEMA edware AUTHORIZATION edware;
+
+CREATE SCHEMA edware_lz AUTHORIZATION edware;
+
+ALTER ROLE edware SET SEARCH_PATH = edware, edware_lz, public;
+
+GRANT ALL PRIVILEGES ON DATABASE edware TO edware;

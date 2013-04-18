@@ -203,20 +203,22 @@ uat:
       schema_name: edware
       db:
         main:
-          url: postgresql+pypostgresql://postgres:edware.dmo.2013@dwpool0.qa.dum.edwdc.net:6432/edware
+          url: postgresql+pypostgresql://postgres:edware.dmo.2013@dwpool0.dmo.som.edwdc.net:6432/edware
     edauth:
       db:
         main:
-          url: postgresql+pypostgresql://postgres:edware.dmo.2013@dwpool0.qa.dum.edwdc.net:6432/edware
+          url: postgresql+pypostgresql://postgres:edware.dmo.2013@dwpool0.dmo.som.edwdc.net:6432/edware
     auth:
+      idp:
+        metadata: /opt/edware/conf/idp_metadata.xml
       policy:
         secure: true
       skip.verify: False
       saml:
-        issuer_name: https://ha-int-pyweb1.dmo.dum.edwdc.net
-        idp_server_login_url: https://auth0.dmo.dum.edwdc.net/openam/SSORedirect/metaAlias/idp
-        idp_server_logout_url: https://auth0.dmo.dum.edwdc.net/openam/IDPSloRedirect/metaAlias/idp
-        name_qualifier: https://auth0.dmo.dum.edwdc.net/openam
+        issuer_name: https://pyweb.dmo.dum.edwdc.net
+        idp_server_login_url: https://auth0.dmo.som.edwdc.net/openam/SSORedirect/metaAlias/idp
+        idp_server_logout_url: https://auth0.dmo.som.edwdc.net/openam/IDPSloRedirect/metaAlias/idp
+        name_qualifier: https://auth0.dmo.som.edwdc.net/openam
   '[handlers]':
     keys: console, filelog, audit, syslog
   '[handler_syslog]':

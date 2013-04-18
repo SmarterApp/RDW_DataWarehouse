@@ -1,7 +1,6 @@
 from helper_entities_2 import State, District, School, Claim, ClaimScore, AssessmentScore
 from idgen import IdGen
 from uuid import uuid4
-import gennames
 import util_2 as util
 
 

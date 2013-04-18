@@ -110,17 +110,17 @@ def generate_assessment(asmt_type, asmt_period, asmt_period_year, asmt_subject, 
     asmt_claim_1_score_min = asmt_score_min
     asmt_claim_2_score_min = asmt_score_min
     asmt_claim_3_score_min = asmt_score_min
-    asmt_claim_4_score_min = None
+    asmt_claim_4_score_min = 0
 
     asmt_claim_1_score_max = asmt_score_max
     asmt_claim_2_score_max = asmt_score_max
     asmt_claim_3_score_max = asmt_score_max
-    asmt_claim_4_score_max = None
+    asmt_claim_4_score_max = 0
 
     asmt_claim_1_score_weight = claim_defs[0]['claim_weight']
     asmt_claim_2_score_weight = claim_defs[1]['claim_weight']
     asmt_claim_3_score_weight = claim_defs[2]['claim_weight']
-    asmt_claim_4_score_weight = None
+    asmt_claim_4_score_weight = 0
 
     if len(claim_defs) > 3:
         asmt_claim_4_name = claim_defs[3]['claim_name']
@@ -153,7 +153,7 @@ def generate_assessments(grades, cut_points, from_date, most_recent, to_date=Non
     asmt_cut_point_1 = cut_points[0]
     asmt_cut_point_2 = cut_points[1]
     asmt_cut_point_3 = cut_points[2]
-    asmt_cut_point_4 = cut_points[3] if len(cut_points) > 3 else None
+    asmt_cut_point_4 = cut_points[3] if len(cut_points) > 3 else 0
 
     asmt_years = sorted(constants.ASSMT_SCORE_YEARS)
 
@@ -211,7 +211,6 @@ def generate_fact_assessment_outcome(asmt_rec_id, student_guid, teacher_guid, st
     asmnt_outcome_rec_id = id_generator.get_id()
 
     asmt_create_date = datetime.date.today().strftime('%Y%m%d')
-
 
     status = 'C'
     most_recent = True

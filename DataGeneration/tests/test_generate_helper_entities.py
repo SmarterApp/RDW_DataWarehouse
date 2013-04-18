@@ -3,6 +3,7 @@ __author__ = 'abrien'
 import unittest
 from generate_helper_entities import generate_state, generate_school, generate_claim, generate_district
 
+
 class TestGenerateHelperEntities(unittest.TestCase):
 
     def test_generate_state(self):

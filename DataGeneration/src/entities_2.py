@@ -3,7 +3,8 @@ __author__ = 'abrien'
 from uuid import uuid4
 
 from idgen import IdGen
-from constants import MAXIMUM_ASSESSMENT_SCORE, MINIMUM_ASSESSMENT_SCORE, AVERAGE_ASSESSMENT_SCORE, ASSESSMENT_SCORE_STANDARD_DEVIATION
+from constants_2 import MAXIMUM_ASSESSMENT_SCORE, MINIMUM_ASSESSMENT_SCORE, AVERAGE_ASSESSMENT_SCORE, ASSESSMENT_SCORE_STANDARD_DEVIATION
+
 
 # TODO: get rid of camel-cased function names
 class InstitutionHierarchy:
@@ -347,7 +348,6 @@ class Student():
         self.from_date = from_date
         self.to_date = to_date
         self.most_recent = most_recent
-
 
     def getRow(self):
         return [self.student_rec_id, self.student_guid, self.first_name, self.middle_name, self.last_name, self.address_1, self.address_2,

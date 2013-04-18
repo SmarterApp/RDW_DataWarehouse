@@ -24,15 +24,15 @@ define [
       items.score_min_max_difference =  items.asmt_score_max - items.asmt_score_min
       
       # Calculate width for first cutpoint
-      items.cut_point_intervals[0].asmt_cut_point =  Math.round(((items.cut_point_intervals[0].interval - items.asmt_score_min) / items.score_min_max_difference) * items.bar_width)
+      items.cut_point_intervals[0].asmt_cut_point =  ((items.cut_point_intervals[0].interval - items.asmt_score_min) / items.score_min_max_difference) * items.bar_width
       
       # Calculate width for last cutpoint
-      items.last_interval.asmt_cut_point =  Math.round(((items.last_interval.interval - items.cut_point_intervals[items.cut_point_intervals.length-2].interval) / items.score_min_max_difference) * items.bar_width)
+      items.last_interval.asmt_cut_point =  ((items.last_interval.interval - items.cut_point_intervals[items.cut_point_intervals.length-2].interval) / items.score_min_max_difference) * items.bar_width
       
       # Calculate width for cutpoints other than first and last cutpoints
       j = 1     
       while j < items.cut_point_intervals.length - 1
-        items.cut_point_intervals[j].asmt_cut_point =  Math.round(((items.cut_point_intervals[j].interval - items.cut_point_intervals[j-1].interval) / items.score_min_max_difference) * items.bar_width)
+        items.cut_point_intervals[j].asmt_cut_point =  ((items.cut_point_intervals[j].interval - items.cut_point_intervals[j-1].interval) / items.score_min_max_difference) * items.bar_width
         j++
       
       # Calculate position for dot indicator

@@ -19,6 +19,8 @@ import collections
 from edapi.exceptions import NotFoundException
 import json
 from beaker.cache import cache_region
+from edapi import logging
+import time
 
 # Report service for Comparing Populations
 # Output:
@@ -37,8 +39,11 @@ from beaker.cache import cache_region
 #      TOTAL number of students
 
 
+REPORT_NAME = "comparing_populations"
+
+
 @report_config(
-    name="comparing_populations",
+    name=REPORT_NAME,
     params={
         Constants.STATECODE: {
             "type": "string",
@@ -59,6 +64,9 @@ from beaker.cache import cache_region
 @audit_event()
 @user_info
 def get_comparing_populations_report(params):
+    logging.log_enter_report(REPORT_NAME)
+
+    report_start_time = time.localtime()
     results = None
     if Constants.SCHOOLGUID in params and Constants.DISTRICTGUID in params and Constants.STATECODE in params:
         results = get_school_view_report(params)
@@ -66,6 +74,9 @@ def get_comparing_populations_report(params):
         results = get_district_view_report(params)
     elif Constants.STATECODE in params:
         results = get_state_view_report(params)
+
+    logging.log_exit_report(REPORT_NAME, report_start_time)
+
     return results
 
 

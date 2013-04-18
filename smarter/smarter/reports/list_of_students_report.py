@@ -15,7 +15,10 @@ from smarter.reports.helpers.constants import Constants
 from smarter.reports.helpers.assessments import get_overall_asmt_interval, \
     get_cut_points, get_claims
 from edapi.exceptions import NotFoundException
+from edapi import logging
+import time
 
+REPORT_NAME = "list_of_students"
 
 # Report for List of Students.
 # This function will be refactor when schema is updated to the latest.
@@ -32,7 +35,7 @@ from edapi.exceptions import NotFoundException
 
 
 @report_config(
-    name="list_of_students",
+    name=REPORT_NAME,
     params={
         Constants.STATECODE: {
             "type": "string",
@@ -69,6 +72,9 @@ from edapi.exceptions import NotFoundException
 @audit_event()
 @user_info
 def get_list_of_students_report(params):
+    logging.log_enter_report(REPORT_NAME)
+    report_start_time = time.localtime()
+
     stateCode = str(params[Constants.STATECODE])
     districtGuid = str(params[Constants.DISTRICTGUID])
     schoolGuid = str(params[Constants.SCHOOLGUID])
@@ -207,7 +213,8 @@ def get_list_of_students_report(params):
         los_results['context'] = get_breadcrumbs_context(state_code=stateCode, district_guid=districtGuid, school_guid=schoolGuid, asmt_grade=asmtGrade)
         los_results['subjects'] = __reverse_map(subjects_map)
 
-        return los_results
+    logging.log_exit_report(REPORT_NAME, report_start_time)
+    return los_results
 
 
 def __get_asmt_data(connector, asmtSubject):

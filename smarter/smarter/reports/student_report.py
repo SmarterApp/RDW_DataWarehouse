@@ -16,6 +16,10 @@ from edapi.logging import audit_event
 from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
 from smarter.reports.helpers.assessments import get_cut_points, \
     get_overall_asmt_interval, get_claims
+from edapi import logging
+import time
+
+REPORT_NAME = 'individual_student_report'
 
 
 def __prepare_query(connector, student_guid, assessment_guid):
@@ -143,7 +147,7 @@ def __arrange_results(results):
     return results
 
 
-@report_config(name='individual_student_report',
+@report_config(name=REPORT_NAME,
                params={
                     "studentGuid": {
                         "type": "string",
@@ -159,6 +163,9 @@ def __arrange_results(results):
 @audit_event()
 @user_info
 def get_student_report(params):
+    logging.log_enter_report(REPORT_NAME)
+    report_start_time = time.localtime()
+
     '''
     report for student and student_assessment
     '''
@@ -186,7 +193,8 @@ def get_student_report(params):
 
         result['context'] = context
 
-        return result
+    logging.log_exit_report(REPORT_NAME, report_start_time)
+    return result
 
 
 @report_config(name='student_assessments_report',

@@ -8,7 +8,7 @@ from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smart
 from smarter.reports.compare_pop_report import QueryHelper
 from smarter.database.connector import SmarterDBConnection
 from smarter.reports.helpers.constants import Constants
-from smarter.reports.exceptions.parameter_exception import InvalidParamterException
+from smarter.reports.exceptions.parameter_exception import InvalidParameterException
 
 
 class Test(Unittest_with_smarter_sqlite_no_data_load):
@@ -28,7 +28,7 @@ class Test(Unittest_with_smarter_sqlite_no_data_load):
         self.assertEqual(columns[0].element.name, dim_inst_hier.c.district_name.name)
         self.assertEqual(columns[1].name, Constants.ID, 'test for alias name')
         self.assertEqual(columns[1].element.table.name, dim_inst_hier.name)
-        self.assertEqual(columns[1].element.name, dim_inst_hier.c.district_id.name)
+        self.assertEqual(columns[1].element.name, dim_inst_hier.c.district_guid.name)
         self.assertEqual(columns[2].name, Constants.ASMT_SUBJECT, 'test for alias name')
         self.assertEqual(columns[2].element.table.name, dim_asmt.name)
         self.assertEqual(columns[2].element.name, dim_asmt.c.asmt_subject.name)
@@ -50,7 +50,7 @@ class Test(Unittest_with_smarter_sqlite_no_data_load):
         self.assertEqual(columns[0].element.name, dim_inst_hier.c.school_name.name)
         self.assertEqual(columns[1].name, Constants.ID, 'test for alias name')
         self.assertEqual(columns[1].element.table.name, dim_inst_hier.name)
-        self.assertEqual(columns[1].element.name, dim_inst_hier.c.school_id.name)
+        self.assertEqual(columns[1].element.name, dim_inst_hier.c.school_guid.name)
         self.assertEqual(columns[2].name, Constants.ASMT_SUBJECT, 'test for alias name')
         self.assertEqual(columns[2].element.table.name, dim_asmt.name)
         self.assertEqual(columns[2].element.name, dim_asmt.c.asmt_subject.name)
@@ -94,20 +94,20 @@ class Test(Unittest_with_smarter_sqlite_no_data_load):
         self.assertEqual(column.key, alias_name)
 
     def test_invalid_parameters(self):
-        param = {'stateId': 'DE', 'schoolId': 'BAC'}
-        self.assertRaises(InvalidParamterException, QueryHelper, None, **param)
+        param = {'stateCode': 'DE', 'schoolGuid': 'BAC'}
+        self.assertRaises(InvalidParameterException, QueryHelper, None, **param)
 
 
 def get_param_school_view():
-    return {Constants.STATEID: 'AB', Constants.DISTRICTID: 'CD', Constants.SCHOOLID: 'EF'}
+    return {Constants.STATECODE: 'AB', Constants.DISTRICTGUID: 'CD', Constants.SCHOOLGUID: 'EF'}
 
 
 def get_param_district_view():
-    return {Constants.STATEID: 'AB', Constants.DISTRICTID: 'CD'}
+    return {Constants.STATECODE: 'AB', Constants.DISTRICTGUID: 'CD'}
 
 
 def get_param_state_view():
-    return {Constants.STATEID: 'AB'}
+    return {Constants.STATECODE: 'AB'}
 
 
 if __name__ == "__main__":

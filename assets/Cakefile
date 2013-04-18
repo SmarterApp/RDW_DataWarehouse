@@ -1,0 +1,120 @@
+fs = require 'fs'
+walk = require 'walk'
+require 'flour'
+path = require 'path'
+util = require 'util'
+require 'colors'
+wrench = require 'wrench'
+chokidar = require 'chokidar'
+
+coffeepath = 'coffee'
+lesspath = 'less'
+jspath = 'js/src'
+
+buildCoffee = (source) ->
+    destDir = path.dirname source.replace(coffeepath, jspath)
+    mkdir destDir
+    basename = path.basename source, '.coffee'
+    if path.extname(source) == '.coffee'
+      compile source, path.join(destDir, basename + '.js'), (stuff) ->
+        console.log "Dest: " + path.join(destDir, basename + '.js')
+    else
+        fs.createReadStream(source).pipe(fs.createWriteStream path.join(destDir, basename))
+
+mkdir = (destDir) ->
+    if not fs.existsSync destDir
+        # recursively create the directory
+        wrench.mkdirSyncRecursive destDir, '0755'
+        
+walkDir = (srcDir, fn) ->
+    walker = walk.walkSync srcDir
+    walker.on 'file', (root, fileStat, next) ->
+        fn path.join(root, fileStat.name)
+        next
+
+deleteExistingCss = (assetsDir) ->
+  # Delete all css files from css directory
+    cssDir = path.join(assetsDir, 'css')
+    if fs.existsSync cssDir
+        fs.readdir cssDir, (err, files) ->
+            throw err if err
+            files.forEach (file) ->
+              if path.extname(file) == '.css'
+                  fs.unlinkSync path.join cssDir, file
+              
+copyAssets = (assetsDest, assetsDir) ->
+    # Copy assets into smarter/assets
+    if fs.existsSync assetsDest
+      wrench.rmdirSyncRecursive assetsDest, true
+    wrench.copyDirSyncRecursive assetsDir, assetsDest
+
+task 'build:coffee', ->
+    walkDir coffeepath, (source) -> buildCoffee source
+
+task 'build:less', ->
+    compile 'less/style.less', 'css/style.css'
+
+task 'build', ->
+    invoke 'build:coffee'
+    invoke 'build:less'
+
+task 'watch', ->
+    invoke 'build'
+    
+    lessWatcher = chokidar.watch(lesspath, {persistent: true, ignoreInitial: true})
+    coffeeWatcher = chokidar.watch(coffeepath, {persistent: true, ignoreInitial: true})
+    
+    coffeeWatcher.on 'add', (path, stats) ->
+        buildCoffee path
+    coffeeWatcher.on 'change', (path, stats) ->
+        buildCoffee path
+    
+    lessWatcher.on 'add', (path, stats) ->
+        invoke 'build:less'
+    lessWatcher.on 'change', (path, stats) ->
+        invoke 'build:less'
+
+task 'lint', 'Check javascript syntax', ->
+    lint 'js/*.js'
+
+task 'copy', 'Copy assets into smarter', (options) ->
+  currentDir = process.cwd()
+  assetsDir = options.assets or currentDir
+  smarterDir = options.smarter or path.join(currentDir, '../smarter')
+  # resolves handles both abs and relative path
+  assetsDir = path.resolve currentDir, assetsDir
+  assetsDest = path.join(smarterDir, 'assets') 
+  
+  copyAssets  assetsDest, assetsDir
+
+option '-a', '--assets [ASSETS_DIR]', 'set the directory for assets'
+option '-s', '--smarter [SMARTER_DIR]', 'set the directory for smarter'
+option '-m', '--mode [MODE]', 'set the mode to DEV or PROD. Defaults to DEV'
+option '-w', '--watch [TRUE]', 'set to TRUE if user wants to watch the files, DEV mode only'
+task 'setup', 'Compile assets into smarter', (options) ->
+    currentDir = process.cwd()
+    assetsDir = options.assets or currentDir
+    smarterDir = options.smarter or path.join(currentDir, '../smarter')
+    mode = options.mode or 'DEV'
+    watch = options.watch or 'FALSE'
+    mode = mode.toUpperCase()
+    watch = watch.toUpperCase()
+    
+    # resolves handles both abs and relative path
+    assetsDir = path.resolve currentDir, assetsDir
+    smarterDir = path.resolve currentDir, smarterDir
+    
+    assetsDest = path.join(smarterDir, 'assets')    
+    # Delete old css
+    deleteExistingCss assetsDir
+    
+    if mode == 'DEV'
+      if watch == 'TRUE'
+        invoke 'watch'
+      else
+        invoke 'build'
+      # Create symlink if it doesn't exists for DEV mode
+      if not fs.existsSync assetsDest
+          fs.symlinkSync(assetsDir, assetsDest, 'dir')
+    else if mode == 'PROD'
+      invoke 'build'

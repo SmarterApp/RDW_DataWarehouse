@@ -19,6 +19,10 @@ function set_vars {
     VIRTUALENV_DIR="$WORKSPACE/edwaretest_venv"
     FUNC_VIRTUALENV_DIR="$WORKSPACE/functest_venv"
     FUNC_DIR="edware_test/edware_test/functional_tests"
+    SMARTER_INI="/opt/edware/conf/smarter.ini"
+    EGG_REPO="/opt/edware/pynest"
+    PYNEST_SERVER="repo0.qa.dum.edwdc.net"
+    PYNEST_DIR="/opt/wgen/pyrepos/pynest"
 
     # delete existing xml files
     if [ -f $WORKSPACE/coverage.xml ]; then
@@ -32,7 +36,7 @@ function set_vars {
 function setup_virtualenv {
     echo "Setting up virtualenv using python3.3"
     if [ ! -d "$VIRTUALENV_DIR" ]; then
-        /opt/python3/bin/virtualenv-3.3 --distribute ${VIRTUALENV_DIR}
+        virtualenv-3.3 --distribute ${VIRTUALENV_DIR}
     fi
 
 # This will change your $PATH to point to the virtualenv bin/ directory,
@@ -91,8 +95,8 @@ function run_unit_tests {
 }
 
 function get_opts {
-    if ( ! getopts ":m:d:ufh" opt); then
-	echo "Usage: `basename $0` options (-n) (-u) (-f) (-m main_package) (-d dependencies) -h for help";
+    if ( ! getopts ":m:d:ufhb" opt); then
+	echo "Usage: `basename $0` options (-n) (-u) (-f) (-b) (-m main_package) (-d dependencies) -h for help";
 	exit $E_OPTERROR;
     fi
  
@@ -100,7 +104,7 @@ function get_opts {
     MODE='UNIT'
     RUN_UNIT_TEST=true
 
-    while getopts ":m:d:ufhn" opt; do
+    while getopts ":m:d:ufbhn" opt; do
         case $opt in 
             u)
                echo "Unit test mode"
@@ -112,6 +116,10 @@ function get_opts {
                ;;
             h)
                show_help
+               ;;
+            b)
+               echo "Build RPM mode"
+               MODE='RPM'
                ;;
             n)
                RUN_UNIT_TEST=false
@@ -196,15 +204,22 @@ function run_functional_tests {
 }	
 
 function create_sym_link_for_apache {
+    echo "Creating symbolic links"
+
     APACHE_DIR="/var/lib/jenkins/apache_dir"
     if [ -d ${APACHE_DIR} ]; then
         rm -rf ${APACHE_DIR}
     fi
     mkdir -p ${APACHE_DIR}
     /bin/ln -sf ${VIRTUALENV_DIR}/lib/python3.3/site-packages ${APACHE_DIR}/pythonpath
-    /bin/ln -sf ${WORKSPACE}/smarter/test.ini ${APACHE_DIR}/development_ini
-    /bin/ln -sf ${WORKSPACE}/smarter/pyramid.wsgi ${APACHE_DIR}/pyramid_conf
+    /bin/ln -sf ${WORKSPACE}/smarter/${INI_FILE_FOR_ENV} ${SMARTER_INI}
+    /bin/ln -sf ${WORKSPACE}/smarter/smarter.wsgi ${APACHE_DIR}/pyramid_conf
     /bin/ln -sf ${VIRTUALENV_DIR} ${APACHE_DIR}/venv
+
+    compile_assets
+}
+
+function compile_assets {
 
     cd "$WORKSPACE/scripts"
     WORKSPACE_PATH=${WORKSPACE//\//\\\/}
@@ -228,21 +243,73 @@ function import_data_from_csv {
     
     # This needs to run in python3.3 
     cd "$WORKSPACE/test_utils"
-    python import_data.py --config ${WORKSPACE}/smarter/test.ini --resource ${WORKSPACE}/edschema/database/tests/resources
+    python import_data.py --config ${WORKSPACE}/smarter/${INI_FILE_FOR_ENV} --resource ${WORKSPACE}/edschema/database/tests/resources
+}
+
+function build_rpm {
+    # prerequisite there is a venv inside workspace (ie. run setup_virtualenv)
+    rm -rf /home/jenkins/rpmbuild
+
+    echo "Build RPM"
+    echo "Build Number:"
+    echo $BUILD_NUMBER
+    echo "RPM_VERSION:"
+    echo $RPM_VERSION
+
+    export GIT_COMMIT="$(git rev-parse HEAD)"
+
+    cd "$WORKSPACE/rpm/SPEC"
+    rpmbuild -bb smarter.spec
+    
+    scp /home/jenkins/rpmbuild/RPMS/x86_64/smarter-${RPM_VERSION}-${BUILD_NUMBER}.el6.x86_64.rpm pynest@${PYNEST_SERVER}:/opt/wgen/rpms
+    ssh pynest@${PYNEST_SERVER} "ln -sf /opt/wgen/rpms/smarter-${RPM_VERSION}-${BUILD_NUMBER}.el6.x86_64.rpm /opt/wgen/rpms/smarter-latest.rpm"
+  
+    pulp-admin content upload --dir /home/jenkins/rpmbuild/RPMS/x86_64 --repoid edware-el6-x86_64-upstream --nosig -v
+
+    echo "Finished building RPM"
+}
+
+function build_egg {
+    # prerequisite we're inside a python3.3 venv
+
+    echo "Build an egg"
+    if [ ${1:=""} == "smarter" ]; then
+        compile_assets
+    fi
+
+    cd "$WORKSPACE/$1"
+    rm -f *.tar.gz
+    python setup.py sdist -d ${EGG_REPO}/$1
+    cd "${EGG_REPO}/$1"
+    # We need this because we have two jenkins server and one of them cannot access pynest
+    # In the jenkins job, we need to set PUBLISH_EGG env variable to TRUE if we want to publish the egg to pynest
+    if [ ${PUBLISH_EGG:=""} == "TRUE" ]; then
+        echo "Publishing egg to pynest"
+        scp *.tar.gz pynest@${PYNEST_SERVER}:"$PYNEST_DIR/$1"
+    fi
+}
+
+function generate_ini {
+	cd "$WORKSPACE/smarter"
+	python generate_ini.py -e jenkins_dev -i settings.yaml
 }
 
 function main {
+	
     get_opts $@
     check_vars
     set_vars
-    setup_virtualenv $@
     if [ ${MODE:=""} == "UNIT" ]; then
+        setup_virtualenv $@
         setup_unit_test_dependencies
         if $RUN_UNIT_TEST ; then
             run_unit_tests $MAIN_PKG
         fi
         check_pep8 $MAIN_PKG
+        build_egg $MAIN_PKG
     elif [ ${MODE:=""} == "FUNC" ]; then
+        setup_virtualenv $@
+        generate_ini
         create_sym_link_for_apache
         restart_apache
         import_data_from_csv
@@ -251,6 +318,8 @@ function main {
         setup_functional_test_dependencies
         run_functional_tests
         check_pep8 "$FUNC_DIR"
+    elif [ ${MODE:=""} == "RPM" ]; then
+        build_rpm
     fi
 }
 

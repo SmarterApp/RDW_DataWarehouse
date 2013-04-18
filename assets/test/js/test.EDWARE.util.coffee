@@ -1,5 +1,5 @@
 #globals ok $ EDWARE test require module equals deepEqual
-require ["jquery", "cs!sourceJS/EDWARE.util"], ($, edwareUtil) ->
+require ["jquery", "edwareUtil"], ($, edwareUtil) ->
   module "EDWARE.util.displayErrorMessage",
     setup: ->
       $("body").append "<div id=errorMessage></div>"

@@ -1,3 +1,4 @@
+<h2>{{items.0.student_full_name}} | Grade {{items.0.grade}}</h2>
 {{#items}}
 <div id="assessmentSection{{count}}" class="innerBox">
 	<div class="sidebar left">
@@ -6,24 +7,23 @@
 		<div class="teacher"><span class="labelText">Teacher:</span> <span>{{teacher_full_name}}</span></div>
 		<div class="date"><span class="labelText">Date:</span> <span>{{date_taken_month}}/{{date_taken_day}}/{{date_taken_year}}</span></div>
 		<hr>
-		<div class="psychometric">{{content.psychometric_implications}}</div>
+		<div class="psychometric">{{{psychometric_implications}}}</div>
 		<hr>
-		<div class="policy">{{content.policy_content}}</div>
-		<hr>
-		<div class="adminDetails">{{content.admin_details}}</div>
+		<div class="policy">{{{policy_content}}}</div>
 	</div>
 	
 	<div class="contentWrapper">
 		<div class="overallScoreSection">
-			<div class="indicator" style="background-color: {{score_bg_color}}; color: {{score_text_color}};"><strong>{{asmt_score}}</strong></div>
-			<div class="info">
-				<dl>
-					<dt class="overallText">Overall</dt>
-					<dd class="overallDesc" style="color: {{score_color}}"><strong>{{score_name}}</strong></dd>
-				</dl>
+
+			<div class='info'>
+				<div class="overallText"><strong>Overall Score</strong></div>
+				<div class="indicator" style="background-color: {{score_bg_color}}; color: {{score_text_color}};"><strong class="asmtScore">{{asmt_score}}</strong></div>
+				<div class="overallDesc" style="color: {{score_color}}"><strong class="scoreName">{{score_name}}</strong></div>
 			</div>
+
 			<div class="info2">
-				{{content.overall_ald}} <a href="#">Find out more >></a>
+				<p>{{{overall_ald}}}</p>
+				<div class="text-right"><a href="#">Find out more >></a></div>
 			</div>
 		</div>
 		<div class="confidenceLevel">

@@ -1,5 +1,5 @@
 #globals ok $ EDWARE test require module equals deepEqual
-require ["jquery", "cs!edwareConfidenceLevelBar"], ($, edwareConfidenceLevelBar) ->
+require ["jquery", "edwareConfidenceLevelBar"], ($, edwareConfidenceLevelBar) ->
   module "EDWARE.confidenceLevelBar.create",
     setup: ->
       $("body").append "<div id='bar1' class='confidenceLevel'></div>"

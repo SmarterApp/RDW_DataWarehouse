@@ -8,6 +8,7 @@ CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 
 requires = [
     'pyramid',
+    'pyramid_beaker',
     'SQLAlchemy',
     'transaction',
     'pyramid_tm',
@@ -18,11 +19,12 @@ requires = [
     'edapi',
     'edschema',
     'py-postgresql',
-    'pyramid_exclog']
+    'pyramid_exclog',
+    'pyyaml']
 
 
 setup(name='smarter',
-      version='0.0',
+      version='0.1',
       description='smarter',
       long_description=README + '\n\n' + CHANGES,
       classifiers=[
@@ -44,5 +46,5 @@ setup(name='smarter',
       main = smarter:main
       [console_scripts]
       initialize_smarter_db = smarter.scripts.initializedb:main
-      """,
+      """
       )

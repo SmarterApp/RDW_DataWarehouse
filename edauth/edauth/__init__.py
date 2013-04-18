@@ -9,6 +9,13 @@ from edauth.security.roles import Roles
 from database.generic_connector import setup_db_connection_from_ini
 from edauth.persistence.persistence import generate_persistence
 from edauth.security.policy import EdAuthAuthenticationPolicy
+from edauth.security.utils import AESCipher, ICipher
+from zope import component
+
+
+# boolean True/False converter
+def to_bool(val):
+    return val and val.lower() in ('true', 'True')
 
 
 # this is automatically called by consumer of edauth when it calls config.include(edauth)
@@ -19,21 +26,30 @@ def includeme(config):
     metadata = generate_persistence(schema_name=settings['edauth.schema_name'])
     setup_db_connection_from_ini(settings, 'edauth', metadata, datasource_name='edauth', allow_create=True)
 
-    cookie_max_age = convert_to_int(settings.get('auth.cookie.max_age'))
-    session_timeout = convert_to_int(settings.get('auth.cookie.timeout'))
-    authentication_policy = EdAuthAuthenticationPolicy(settings['auth.cookie.secret'],
-                                                       callback=session_check,
-                                                       cookie_name=settings['auth.cookie.name'],
-                                                       hashalg=settings['auth.cookie.hashalg'],
-                                                       max_age=cookie_max_age,
-                                                       timeout=session_timeout,
-                                                       wild_domain=False,
-                                                       http_only=True)
+    setting_prefix = 'auth.policy.'
+    options = dict((key[len(setting_prefix):], settings[key]) for key in settings if key.startswith(setting_prefix))
+
+    for item, type_ in (
+        ('timeout', int),
+        ('secure', to_bool),
+        ('include_ip', to_bool),
+        ('reissue_time', int),
+        ('wild_domain', to_bool),
+        ('max_age', int),
+        ('http_only', to_bool),
+        ('debug', to_bool),
+    ):
+        if item in options.keys():
+            options[item] = type_(options[item].lower())
+
+    authentication_policy = EdAuthAuthenticationPolicy(callback=session_check, **options)
 
     authorization_policy = ACLAuthorizationPolicy()
 
     config.set_authentication_policy(authentication_policy)
     config.set_authorization_policy(authorization_policy)
+
+    component.provideUtility(AESCipher(settings['auth.state.secret']), ICipher)
 
     # TODO: possible to put this inside SAML2 incase one day we don't want to use it
     # TODO: clean up and derive from ini?

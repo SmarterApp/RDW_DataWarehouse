@@ -12,12 +12,15 @@ from smarter.database.connector import SmarterDBConnection
 from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
 from sqlalchemy.sql.expression import case, func, true, null, cast
 from sqlalchemy.types import INTEGER
-from smarter.reports.exceptions.parameter_exception import InvalidParamterException
+from smarter.reports.exceptions.parameter_exception import InvalidParameterException
 from smarter.reports.helpers.constants import Constants
 from edapi.logging import audit_event
 import collections
 from edapi.exceptions import NotFoundException
 import json
+from beaker.cache import cache_region
+from edapi import logging
+import time
 
 # Report service for Comparing Populations
 # Output:
@@ -36,20 +39,23 @@ import json
 #      TOTAL number of students
 
 
+REPORT_NAME = "comparing_populations"
+
+
 @report_config(
-    name="comparing_populations",
+    name=REPORT_NAME,
     params={
-        'stateId': {
+        Constants.STATECODE: {
             "type": "string",
             "required": True,
             "pattern": "^[a-zA-Z]{2}$",
         },
-        'districtId': {
+        Constants.DISTRICTGUID: {
             "type": "string",
             "required": False,
             "pattern": "^[a-zA-Z0-9\-]{0,50}$",
         },
-        'schoolId': {
+        Constants.SCHOOLGUID: {
             "type": "string",
             "required": False,
             "pattern": "^[a-zA-Z0-9\-]{0,50}$",
@@ -58,7 +64,53 @@ import json
 @audit_event()
 @user_info
 def get_comparing_populations_report(params):
+    logging.log_enter_report(REPORT_NAME)
 
+    report_start_time = time.localtime()
+    results = None
+    if Constants.SCHOOLGUID in params and Constants.DISTRICTGUID in params and Constants.STATECODE in params:
+        results = get_school_view_report(params)
+    elif params and Constants.DISTRICTGUID in params and Constants.STATECODE in params:
+        results = get_district_view_report(params)
+    elif Constants.STATECODE in params:
+        results = get_state_view_report(params)
+
+    logging.log_exit_report(REPORT_NAME, report_start_time)
+
+    return results
+
+
+'''
+to manage cache efficiently, we needed to separate three reports
+'''
+
+
+@cache_region('report')
+def get_state_view_report(params):
+    '''
+    state view report
+    '''
+    return get_report(params)
+
+
+def get_district_view_report(params):
+    '''
+    district view report
+    '''
+    return get_report(params)
+
+
+def get_school_view_report(params):
+    '''
+    school view report
+    '''
+    return get_report(params)
+
+
+def get_report(params):
+    '''
+    actual report call
+    '''
     # run query
     results = run_query(**params)
     if not results:
@@ -106,7 +158,7 @@ def arrange_results(results, **param):
     arranged_results[Constants.SUBJECTS] = record_manager.get_subjects()
 
     # get breadcrumb context
-    arranged_results[Constants.CONTEXT] = get_breadcrumbs_context(state_id=param.get(Constants.STATEID), district_id=param.get(Constants.DISTRICTID), school_id=param.get(Constants.SCHOOLID))
+    arranged_results[Constants.CONTEXT] = get_breadcrumbs_context(state_code=param.get(Constants.STATECODE), district_guid=param.get(Constants.DISTRICTGUID), school_guid=param.get(Constants.SCHOOLGUID))
 
     return arranged_results
 
@@ -115,10 +167,10 @@ class RecordManager():
     '''
     record manager class
     '''
-    def __init__(self, subjects_map, stateId=None, districtId=None, schoolId=None):
-        self._stateId = stateId
-        self._districtId = districtId
-        self._schoolId = schoolId
+    def __init__(self, subjects_map, stateCode=None, districtGuid=None, schoolGuid=None):
+        self._stateCode = stateCode
+        self._districtGuid = districtGuid
+        self._schoolGuid = schoolGuid
         self._subjects_map = subjects_map
         self._tracking_record = collections.OrderedDict()
         self._asmt_custom_metadata_results = {}
@@ -240,12 +292,12 @@ class RecordManager():
             __record[Constants.NAME] = record.name
             __record[Constants.RESULTS] = record.subjects
             __record[Constants.PARAMS] = {}
-            __record[Constants.PARAMS][Constants.STATEID] = self._stateId
+            __record[Constants.PARAMS][Constants.STATECODE] = self._stateCode
             __record[Constants.PARAMS][Constants.ID] = record.id
-            if self._districtId is not None:
-                __record[Constants.PARAMS][Constants.DISTRICTID] = self._districtId
-            if self._schoolId is not None:
-                __record[Constants.PARAMS][Constants.SCHOOLID] = self._schoolId
+            if self._districtGuid is not None:
+                __record[Constants.PARAMS][Constants.DISTRICTGUID] = self._districtGuid
+            if self._schoolGuid is not None:
+                __record[Constants.PARAMS][Constants.SCHOOLGUID] = self._schoolGuid
             records.append(__record)
         return records
 
@@ -323,19 +375,19 @@ class QueryHelper():
     '''
     VIEWS = enum(STATE_VIEW=1, DISTRICT_VIEW=2, SCHOOL_VIEW=3)
 
-    def __init__(self, connector, stateId=None, districtId=None, schoolId=None):
-        self._state_id = stateId
-        self._district_id = districtId
-        self._school_id = schoolId
+    def __init__(self, connector, stateCode=None, districtGuid=None, schoolGuid=None):
+        self._state_code = stateCode
+        self._district_guid = districtGuid
+        self._school_guid = schoolGuid
         self._view = self.VIEWS.STATE_VIEW
-        if self._state_id is not None and self._district_id is None and self._school_id is None:
+        if self._state_code is not None and self._district_guid is None and self._school_guid is None:
             self._view = self.VIEWS.STATE_VIEW
-        elif self._state_id is not None and self._district_id is not None and self._school_id is None:
+        elif self._state_code is not None and self._district_guid is not None and self._school_guid is None:
             self._view = self.VIEWS.DISTRICT_VIEW
-        elif self._state_id is not None and self._district_id is not None and self._school_id is not None:
+        elif self._state_code is not None and self._district_guid is not None and self._school_guid is not None:
             self._view = self.VIEWS.SCHOOL_VIEW
         else:
-            raise InvalidParamterException()
+            raise InvalidParameterException()
         # get dim_inst_hier, dim_asmt, and fact_asmt_outcome tables
         self._dim_inst_hier = connector.get_table(Constants.DIM_INST_HIER)
         self._dim_asmt = connector.get_table(Constants.DIM_ASMT)
@@ -348,9 +400,9 @@ class QueryHelper():
 
         # building columns based on request
         if self._view == self.VIEWS.STATE_VIEW:
-            columns = [self._dim_inst_hier.c.district_name.label(Constants.NAME), self._dim_inst_hier.c.district_id.label(Constants.ID), self._dim_asmt.c.asmt_subject.label(Constants.ASMT_SUBJECT)]
+            columns = [self._dim_inst_hier.c.district_name.label(Constants.NAME), self._dim_inst_hier.c.district_guid.label(Constants.ID), self._dim_asmt.c.asmt_subject.label(Constants.ASMT_SUBJECT)]
         elif self._view == self.VIEWS.DISTRICT_VIEW:
-            columns = [self._dim_inst_hier.c.school_name.label(Constants.NAME), self._dim_inst_hier.c.school_id.label(Constants.ID), self._dim_asmt.c.asmt_subject.label(Constants.ASMT_SUBJECT)]
+            columns = [self._dim_inst_hier.c.school_name.label(Constants.NAME), self._dim_inst_hier.c.school_guid.label(Constants.ID), self._dim_asmt.c.asmt_subject.label(Constants.ASMT_SUBJECT)]
         elif self._view == self.VIEWS.SCHOOL_VIEW:
             columns = [(Constants.GRADE + ' ' + self._fact_asmt_outcome.c.asmt_grade).label(Constants.NAME), self._fact_asmt_outcome.c.asmt_grade.label(Constants.ID), self._dim_asmt.c.asmt_subject.label(Constants.ASMT_SUBJECT)]
 
@@ -359,12 +411,12 @@ class QueryHelper():
         bar_widget_color_info = [self._dim_asmt.c.asmt_custom_metadata.label(Constants.ASMT_CUSTOM_METADATA), ]
 
         # use pivot table for summarize from level1 to level5
-        columns_for_perf_level = [func.count(case([(self._fact_asmt_outcome.c.asmt_perf_lvl == 1, self._fact_asmt_outcome.c.student_id)])).label(Constants.LEVEL1),
-                                  func.count(case([(self._fact_asmt_outcome.c.asmt_perf_lvl == 2, self._fact_asmt_outcome.c.student_id)])).label(Constants.LEVEL2),
-                                  func.count(case([(self._fact_asmt_outcome.c.asmt_perf_lvl == 3, self._fact_asmt_outcome.c.student_id)])).label(Constants.LEVEL3),
-                                  func.count(case([(self._fact_asmt_outcome.c.asmt_perf_lvl == 4, self._fact_asmt_outcome.c.student_id)])).label(Constants.LEVEL4),
-                                  func.count(case([(self._fact_asmt_outcome.c.asmt_perf_lvl == 5, self._fact_asmt_outcome.c.student_id)])).label(Constants.LEVEL5),
-                                  func.count(self._fact_asmt_outcome.c.student_id).label(Constants.TOTAL),
+        columns_for_perf_level = [func.count(case([(self._fact_asmt_outcome.c.asmt_perf_lvl == 1, self._fact_asmt_outcome.c.student_guid)])).label(Constants.LEVEL1),
+                                  func.count(case([(self._fact_asmt_outcome.c.asmt_perf_lvl == 2, self._fact_asmt_outcome.c.student_guid)])).label(Constants.LEVEL2),
+                                  func.count(case([(self._fact_asmt_outcome.c.asmt_perf_lvl == 3, self._fact_asmt_outcome.c.student_guid)])).label(Constants.LEVEL3),
+                                  func.count(case([(self._fact_asmt_outcome.c.asmt_perf_lvl == 4, self._fact_asmt_outcome.c.student_guid)])).label(Constants.LEVEL4),
+                                  func.count(case([(self._fact_asmt_outcome.c.asmt_perf_lvl == 5, self._fact_asmt_outcome.c.student_guid)])).label(Constants.LEVEL5),
+                                  func.count(self._fact_asmt_outcome.c.student_guid).label(Constants.TOTAL),
                                   # if asmt_perf_lvl_name_# is null, it means data should not be displayed.
                                   # Find display level
                                   func.max(cast(case([(self._dim_asmt.c.asmt_perf_lvl_name_5 != null(), '5'),
@@ -392,9 +444,10 @@ class QueryHelper():
                                  .join(self._dim_inst_hier,
                                        and_(self._dim_inst_hier.c.inst_hier_rec_id == self._fact_asmt_outcome.c.inst_hier_rec_id, self._dim_inst_hier.c.most_recent == true())
                                        )])
-        query = query.group_by(self._dim_inst_hier.c.district_name, self._dim_inst_hier.c.district_id, self._dim_asmt.c.asmt_subject, self._dim_asmt.c.asmt_custom_metadata)
+        query = query.group_by(self._dim_inst_hier.c.district_name, self._dim_inst_hier.c.district_guid, self._dim_asmt.c.asmt_subject, self._dim_asmt.c.asmt_custom_metadata)
         query = query.order_by(self._dim_inst_hier.c.district_name, self._dim_asmt.c.asmt_subject.desc())
-        query = query.where(self._fact_asmt_outcome.c.state_code == self._state_id)
+        query = query.where(self._fact_asmt_outcome.c.state_code == self._state_code)
+        query = query.where(self._fact_asmt_outcome.c.status == 'C')
         return query
 
     def get_query_for_district_view(self):
@@ -406,9 +459,10 @@ class QueryHelper():
                                  .join(self._dim_inst_hier,
                                        and_(self._dim_inst_hier.c.inst_hier_rec_id == self._fact_asmt_outcome.c.inst_hier_rec_id, self._dim_inst_hier.c.most_recent == true())
                                        )])
-        query = query.group_by(self._dim_inst_hier.c.school_name, self._dim_inst_hier.c.school_id, self._dim_asmt.c.asmt_subject, self._dim_asmt.c.asmt_custom_metadata)
+        query = query.group_by(self._dim_inst_hier.c.school_name, self._dim_inst_hier.c.school_guid, self._dim_asmt.c.asmt_subject, self._dim_asmt.c.asmt_custom_metadata)
         query = query.order_by(self._dim_inst_hier.c.school_name, self._dim_asmt.c.asmt_subject.desc())
-        query = query.where(and_(self._fact_asmt_outcome.c.state_code == self._state_id, self._fact_asmt_outcome.c.district_id == self._district_id))
+        query = query.where(and_(self._fact_asmt_outcome.c.state_code == self._state_code, self._fact_asmt_outcome.c.district_guid == self._district_guid))
+        query = query.where(self._fact_asmt_outcome.c.status == 'C')
         return query
 
     def get_query_for_school_view(self):
@@ -419,5 +473,6 @@ class QueryHelper():
                                        )])
         query = query.group_by(self._fact_asmt_outcome.c.asmt_grade, self._dim_asmt.c.asmt_subject, self._dim_asmt.c.asmt_custom_metadata)
         query = query.order_by(self._fact_asmt_outcome.c.asmt_grade, self._dim_asmt.c.asmt_subject.desc())
-        query = query.where(and_(self._fact_asmt_outcome.c.state_code == self._state_id, self._fact_asmt_outcome.c.district_id == self._district_id, self._fact_asmt_outcome.c.school_id == self._school_id))
+        query = query.where(and_(self._fact_asmt_outcome.c.state_code == self._state_code, self._fact_asmt_outcome.c.district_guid == self._district_guid, self._fact_asmt_outcome.c.school_guid == self._school_guid))
+        query = query.where(self._fact_asmt_outcome.c.status == 'C')
         return query

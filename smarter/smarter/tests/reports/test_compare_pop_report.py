@@ -8,15 +8,24 @@ from smarter.reports.compare_pop_report import get_comparing_populations_report
 from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite
 from smarter.reports.helpers.constants import Constants
 from edapi.exceptions import NotFoundException
+from beaker.util import parse_cache_config_options
+from beaker.cache import CacheManager
 
 
 class TestComparingPopulations(Unittest_with_smarter_sqlite):
 
+    def setUp(self):
+        cache_opts = {
+            'cache.type': 'memory',
+            'cache.regions': 'report'
+        }
+        CacheManager(**parse_cache_config_options(cache_opts))
+
     def test_school_view(self):
         testParam = {}
-        testParam[Constants.STATEID] = 'NY'
-        testParam[Constants.DISTRICTID] = '228'
-        testParam[Constants.SCHOOLID] = '242'
+        testParam[Constants.STATECODE] = 'NY'
+        testParam[Constants.DISTRICTGUID] = '228'
+        testParam[Constants.SCHOOLGUID] = '242'
         results = get_comparing_populations_report(testParam)
 
         # check top-level attributes
@@ -71,8 +80,8 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
 
     def test_district_view(self):
         testParam = {}
-        testParam[Constants.STATEID] = 'NY'
-        testParam[Constants.DISTRICTID] = '228'
+        testParam[Constants.STATECODE] = 'NY'
+        testParam[Constants.DISTRICTGUID] = '228'
         results = get_comparing_populations_report(testParam)
 
         # check top-level attributes
@@ -107,12 +116,12 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         summ_results = results[Constants.SUMMARY][0][Constants.RESULTS]
         self.assertEqual(2, len(summ_results))
         subject1 = summ_results[Constants.SUBJECT1]
-        self.assertEqual(51, subject1[Constants.TOTAL])
+        self.assertEqual(56, subject1[Constants.TOTAL])
         self.assertEqual(Constants.MATH, subject1[Constants.ASMT_SUBJECT])
         intervals = subject1[Constants.INTERVALS]
         self.assertEqual(4, len(intervals))
         self.assertEqual(1, intervals[0][Constants.LEVEL])
-        self.assertEqual(16, intervals[0][Constants.PERCENTAGE])
+        self.assertEqual(14, intervals[0][Constants.PERCENTAGE])
         self.assertEqual(8, intervals[0][Constants.COUNT])
 
         # check subjects
@@ -131,7 +140,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
 
     def test_state_view(self):
         testParam = {}
-        testParam[Constants.STATEID] = 'NY'
+        testParam[Constants.STATECODE] = 'NY'
         results = get_comparing_populations_report(testParam)
 
         # check top-level attributes
@@ -152,12 +161,12 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
                 asmt_results = record[Constants.RESULTS]
                 self.assertEqual(2, len(asmt_results))
                 subject1 = asmt_results[Constants.SUBJECT1]
-                self.assertEqual(51, subject1[Constants.TOTAL])
+                self.assertEqual(56, subject1[Constants.TOTAL])
                 self.assertEqual(Constants.MATH, subject1[Constants.ASMT_SUBJECT])
                 intervals = subject1[Constants.INTERVALS]
                 self.assertEqual(4, len(intervals))
                 self.assertEqual(1, intervals[0][Constants.LEVEL])
-                self.assertEqual(16, intervals[0][Constants.PERCENTAGE])
+                self.assertEqual(14, intervals[0][Constants.PERCENTAGE])
                 self.assertEqual(8, intervals[0][Constants.COUNT])
                 break
         self.assertTrue(found_district, 'Did not find district in list')
@@ -166,13 +175,13 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         summ_results = results[Constants.SUMMARY][0][Constants.RESULTS]
         self.assertEqual(2, len(summ_results))
         subject1 = summ_results[Constants.SUBJECT1]
-        self.assertEqual(79, subject1[Constants.TOTAL])
+        self.assertEqual(89, subject1[Constants.TOTAL])
         self.assertEqual(Constants.MATH, subject1[Constants.ASMT_SUBJECT])
         intervals = subject1[Constants.INTERVALS]
         self.assertEqual(4, len(intervals))
         self.assertEqual(1, intervals[0][Constants.LEVEL])
-        self.assertEqual(15, intervals[0][Constants.PERCENTAGE])
-        self.assertEqual(12, intervals[0][Constants.COUNT])
+        self.assertEqual(18, intervals[0][Constants.PERCENTAGE])
+        self.assertEqual(16, intervals[0][Constants.COUNT])
 
         # check subjects
         self.assertEqual(Constants.MATH, results[Constants.SUBJECTS][Constants.SUBJECT1])
@@ -189,7 +198,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         self.assertTrue('bg_color' in results[Constants.COLORS][Constants.SUBJECT1][0])
 
     def test_invalid_params(self):
-        params = {Constants.STATEID: 'AA'}
+        params = {Constants.STATECODE: 'AA'}
         self.assertRaises(NotFoundException, get_comparing_populations_report, params)
 
 if __name__ == "__main__":

@@ -1,0 +1,323 @@
+###
+# app configuration
+# http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/environment.html
+###
+
+common:
+  '[app:main]': 
+    use: egg:smarter
+    smarter.PATH: /usr/local/bin
+    pyramid:
+      reload_templates: true
+      debug_all: false
+      debug_authorization: false
+      debug_notfound: false
+      debug_routematch: false
+      default_locale_name: en
+      includes: pyramid_tm pyramid_exclog pyramid_beaker
+
+    # pyramid_beaker configuration
+    cache:
+      regions: report
+      type: memory
+      expire: 3600
+    
+    # Database
+    edware:
+      db:
+        main:
+          pool_size: 20
+          max_overflow: 10
+          echo: False
+    edauth:
+      schema_name: edware_session
+      db:
+        main:
+          pool_size: 20
+          max_overflow: 10
+          echo: False
+
+    # Authentication
+    auth:
+      state:
+        secret: long_secret_for_redirects1111234
+      policy:
+        secret: edware_secret
+        cookie_name: edware
+        hashalg: sha512
+        # Represents the lifetime of the cookie itself, if it's not set, it's session based cookie
+        #max_age: 2400
+        # Maximum number of seconds which a newly issued ticket will be considered valid
+        timeout: 1200
+        # Session expiration time 
+      session:
+        timeout: 1200
+      idp:
+        metadata: ../../resource/idp_metadata.xml
+
+    # Static cache max age
+    smarter.resources.static.max_age: 3600
+    # We support dev, and prod mode
+    mode: dev
+    # Run npm update (dev mode only)
+    run.npm.update: true
+
+  '[server:main]':
+    use: 'egg:waitress#main'
+    host: 0.0.0.0
+    port: 6543
+    
+  ###
+  # logging configuration
+  # http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/logging.html
+  ###
+
+  '[loggers]':
+    keys: root, smarter, sqlalchemy, exc_logger, audit
+
+  '[handlers]':
+    keys: console, filelog, audit
+
+  '[formatters]':
+    keys: generic, json
+
+  '[logger_root]':
+    level: INFO 
+    handlers: console
+
+  '[logger_smarter]':
+    level: DEBUG
+    handlers: filelog
+    qualname: smarter
+
+  '[logger_sqlalchemy]':
+    level: INFO
+    handlers: 
+    qualname: sqlalchemy.engine
+    # "level = INFO" logs SQL queries.
+    # "level = DEBUG" logs SQL queries and results.
+    # "level = WARN" logs neither.  (Recommended for production systems.)
+
+  '[logger_exc_logger]':
+    level: ERROR
+    handlers: filelog
+    qualname: exc_logger
+
+  '[logger_audit]':
+    level: INFO
+    handlers: audit
+    qualname: audit
+
+  '[handler_console]':
+    class: StreamHandler
+    args: (sys.stderr,)
+    level: NOTSET
+    formatter: generic
+    
+  '[handler_filelog]':
+    class: logging.handlers.TimedRotatingFileHandler
+    args: '(''/tmp/smarter.log'',''midnight'')'  # (path, when) 
+    level: INFO
+    formatter: generic
+
+  '[handler_audit]':
+    class: logging.handlers.TimedRotatingFileHandler
+    args: '(''/tmp/audit.log'',''midnight'')'   # (path, when) 
+    level: INFO
+    formatter: json
+
+  '[formatter_generic]':
+    format: '%(asctime)s %(levelname)-5.5s [%(name)s][%(threadName)s] %(message)s'
+
+  '[formatter_json]':
+    class: edapi.logging.JsonDictLoggingFormatter
+    format: '%(asctime)s %(message)s'
+
+# End logging configuration
+
+qa1:
+  '[app:main]':
+    mode: prod
+    edware:
+      schema_name: edware_sds_0_1
+      db:
+        main:
+          url: postgresql+pypostgresql://edware:edware2013@dwpool0.qa.dum.edwdc.net:6432/edware
+    edauth:
+      db:
+        main:
+          url: postgresql+pypostgresql://edware:edware2013@dwpool0.qa.dum.edwdc.net:6432/edware
+    auth:
+      idp:
+        metadata: /opt/edware/conf/idp_metadata.xml
+      policy:
+        secure: true
+      skip.verify: False
+      saml:
+        issuer_name: https://ha-int-pyweb1.qa.dum.edwdc.net
+        idp_server_login_url: https://auth0.qa.dum.edwdc.net/openam/SSORedirect/metaAlias/idp
+        idp_server_logout_url: https://auth0.qa.dum.edwdc.net/openam/IDPSloRedirect/metaAlias/idp
+        name_qualifier: https://auth0.qa.dum.edwdc.net/openam
+
+qa2:
+  '[app:main]':
+    mode: prod
+    edware:
+      schema_name: edware_delaware_0_1
+      db:
+        main:
+          url: postgresql+pypostgresql://edware:edware2013@dwpool0.qa.dum.edwdc.net:6434/edware
+    edauth:
+      db:
+        main:
+          url: postgresql+pypostgresql://edware:edware2013@dwpool0.qa.dum.edwdc.net:6434/edware
+    auth:
+      idp:
+        metadata: /opt/edware/conf/idp_metadata.xml
+      policy:
+        secure: true
+      skip.verify: False
+      saml:
+        issuer_name: https://ha-int-pyweb2.qa.dum.edwdc.net
+        idp_server_login_url: https://auth0.qa.dum.edwdc.net/openam/SSORedirect/metaAlias/idp
+        idp_server_logout_url: https://auth0.qa.dum.edwdc.net/openam/IDPSloRedirect/metaAlias/idp
+        name_qualifier: https://auth0.qa.dum.edwdc.net/openam
+
+jenkins_qa:
+  '[app:main]':
+    mode: prod
+    edware:
+      schema_name: edware_sds_0_1
+      db:
+        main:
+          url: postgresql+pypostgresql://postgres:edware.qa.2013@dwpool0.qa.dum.edwdc.net:6432/edware
+    edauth:
+      db:
+        main:
+          url: postgresql+pypostgresql://postgres:edware.qa.2013@dwpool0.qa.dum.edwdc.net:6432/edware
+
+uat:
+  '[app:main]':
+    mode: prod
+    edware:
+      schema_name: edware
+      db:
+        main:
+          url: postgresql+pypostgresql://postgres:edware.dmo.2013@dwpool0.qa.dum.edwdc.net:6432/edware
+    edauth:
+      db:
+        main:
+          url: postgresql+pypostgresql://postgres:edware.dmo.2013@dwpool0.qa.dum.edwdc.net:6432/edware
+    auth:
+      policy:
+        secure: true
+      skip.verify: False
+      saml:
+        issuer_name: https://ha-int-pyweb1.dmo.dum.edwdc.net
+        idp_server_login_url: https://auth0.dmo.dum.edwdc.net/openam/SSORedirect/metaAlias/idp
+        idp_server_logout_url: https://auth0.dmo.dum.edwdc.net/openam/IDPSloRedirect/metaAlias/idp
+        name_qualifier: https://auth0.dmo.dum.edwdc.net/openam
+  '[handlers]':
+    keys: console, filelog, audit, syslog
+  '[handler_syslog]':
+    class: logging.handlers.SysLogHandler
+    args: '(''/dev/log'', handlers.SysLogHandler.LOG_LOCAL1)'
+    level: DEBUG
+    formatter: generic
+  '[logger_smarter]':
+    level: DEBUG
+    handlers: syslog
+    qualname: smarter
+
+local:
+  '[app:main]':
+    edware:
+      schema_name: edware_sds_0_1
+      db:
+        main:
+          url: postgresql+pypostgresql://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
+          pool_size: 20
+          max_overflow: 10
+          echo: False
+    edauth:
+      schema_name: edware_session
+      db:
+        main:
+          url: postgresql+pypostgresql://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
+          pool_size: 20
+          max_overflow: 10
+          echo: False
+    auth:
+      skip.verify: False
+      saml:
+        idp_server_login_url: http://local.slidev.org:8080/openam/SSORedirect/metaAlias/idp
+        idp_server_logout_url: http://local.slidev.org:8080/openam/IDPSloRedirect/metaAlias/idp
+        issuer_name: http://local.slidev.org:6543/sp.xml
+        name_qualifier: http://local.slidev.org:8080/openam
+    # Mode that we're running in.  Currently we support 'dev' and 'prod'
+    mode: dev
+
+development:
+  '[app:main]':
+    edware:
+      schema_name: edware_sds_0_1
+      db:
+        main:
+          url: postgresql+pypostgresql://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
+    edauth:
+      db:
+        main:
+          url: postgresql+pypostgresql://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
+    auth:
+      skip.verify: False
+      saml:
+        idp_server_login_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp
+        idp_server_logout_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp
+        issuer_name: http://localhost:6543/sp.xml
+        name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
+    
+    # Don't cache any static contents
+    smarter.resources.static.max_age: 0
+
+test:
+  '[app:main]':
+    edware:
+      schema_name: edware_sds_0_1
+      db:
+        main:
+          url: postgresql+pypostgresql://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
+    edauth:
+      db:
+        main:
+          url: postgresql+pypostgresql://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
+    auth:
+      skip.verify: False
+      saml:
+        idp_server_login_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp
+        idp_server_logout_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp
+        issuer_name: http://localhost:6543/sp.xml
+        name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
+    mode: prod
+
+jenkins_dev:
+  '[app:main]':
+    edware:
+      schema_name: edware_sds_0_1
+      db:
+        main:
+          url: postgresql+pypostgresql://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
+    edauth:
+      db:
+        main:
+          url: postgresql+pypostgresql://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
+    auth:
+      policy.secure: False
+      skip.verify: False
+      saml:
+        issuer_name: 'http://edwappsrv1.poc.dum.edwdc.net/'
+        idp_server_login_url: 'http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp'
+        idp_server_logout_url: 'http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp'
+        name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
+    # Mode that we're running in.  Currently we support 'dev' and 'prod'
+    mode: prod
+

@@ -46,33 +46,69 @@ h6 {
   font-weight: normal;
   font-size: 11px;
 }
+
 #header {
   color: @color-B2;
-  height: 60px;
-  background: @color-B6;
-  
+  height: 52px;
+  background: url("../images/Header_gradient.png") repeat-x;
+  border-top: 1px solid #1f1f1f;
+  box-shadow: inset 0px 1px #434343;
+ 
   #logo {
-    width: 100px;
-    height: 20px;
-    padding: 5px;
-    background: @color-B5;
+    width: 112px;
+    height: 36px;
     color: @color-white;
     float: left;
     text-align: center;
-    margin-top: 20px;
+    margin-top: 7px;
     margin-left: 20px;
   }
   
   .topLinks {
     float: right;
     color: @color-B1;
-    margin-top: 30px;
+    margin-top: 20px;
     margin-right: 20px;
     
     a {
       color: @color-B2;
+      &:hover{
+        color: @color-white;
+      }
+    }
+    
+    .seperator {
+      margin: 0 7px;
+      color: #A0A0A0;
     }
   }
+}
+  
+#headerTitle {
+  font-family: helvetica; 
+  font-size: 18px; 
+  color:@color-B5; 
+  padding-top: 10x; 
+  float:left; 
+  padding-left: 230px; 
+  padding-top: 20px;
+}
+
+#headerUser{
+  font-family: helvetica; 
+  font-size: 13px; 
+  color:@color-white;
+}
+
+#headerLogout{
+  font-family: helvetica; 
+  font-size: 13px; 
+  color:@color-B5;
+}
+
+#headerLogoutSeparator{
+  color:@color-B3; 
+  font-family: helvetica;
 }
 
 #content { 
@@ -81,52 +117,101 @@ h6 {
   
   h2 {
      color: @color-A1;
-  }
-  
-  .surveyMonkeyPopup {
-    display: none;
+     margin-left: 20px;
   }
 }
 
+#jqgh_gridTable_assessments.subject1.asmt_score {
+  overflow: visible;
+}
+
+#jqgh_gridTable_assessments.subject2.asmt_score {
+  overflow: visible;
+}
+
+/* Style for performance bar displaying in the table*/
 table {  
+  th div.header_perfBar {
+    margin-left: 48px; 
+    padding: 0px; 
+    position: absolute !important; 
+    margin-bottom: 0px;  
+    bottom: 0px;
+    
+    .progress {
+      border-radius: 0;
+      box-shadow: none;
+      padding: 0;
+      background: none;
+      margin-bottom: 0;
+      
+      .bar {
+        border-right: solid 1px @color-B4;
+        padding: 3px;
+      }
+    }
+  }
   .asmtScore {
     float: left;
     font-weight: bold;
     font-size: 14px;
-    margin-right: 10px;
+    padding: 0px 4px 0px 4px;
+    border-radius: 3px;
+    margin: 4px 10px 0 3px;
   }
   .confidenceLevel {
     height: 30px;
-    margin-top: 5px;
+    margin-top: 0px;
     
     .progress {
-      height: 14px;
-      margin-top: 0;
-      margin-left: 44px;
+      height: 38px;
+      margin-top: -4px;
+      margin-left: 50px;
+      
+      .bar {
+        border-right: 1px dashed @color-black;
+      }
     }
     .overall_score, .cutPointsBar {
       display: none;
     }
     
     .scoreWrapper {
-      margin-left: 44px;
+      margin-left: 50px;
+      overflow: hidden;
+      height: 36px;
     }
     .transWrapper {
       margin-top: auto;
-      margin-left: 44px;
+      margin-left: 48px;
+    }
+    
+    .interval {
+      margin-top: -1px;
+      height: 33px; 
+      border-left: 1px solid @color-B3;
+      border-right: 1px solid @color-B3;
+      background: @color-B7;
+      opacity: .8;
+      position: absolute;
     }
     
     .indicator {
-      margin-top: -6px;
-      height: 14px;
+      margin-top: -1px;
+      height: 33px; 
+      background: url("../images/scorebar_dotindicator.png") no-repeat top center;
+      position: absolute;
+      z-index: 3000;
+      width: 5px;     
     }
+    
     .transImage1 {
-      height: 14px;
+      height: 30px;
       background-image: url("../images/overlay_left88x14.png");
     }
     
     .transImage2 {
-      height: 14px;
+      height: 30px;
       background-image: url("../images/overlay_right88x14.png");
     }
     
@@ -151,11 +236,16 @@ table {
 
 #individualStudentContent {
     float: left;
-    padding-bottom: 20px;
+    padding-bottom: 40px;
     width: 100%;
+    h2 {
+      color: @color-A1;
+      margin: 5px 0 5px 34px;
+      font-size: 18px;
+    }
 }
 .sidebar {
-  height: 520px;
+  height: 620px;
   padding: 15px;
   width: 170px;
   border-top-left-radius: 5px;
@@ -184,39 +274,51 @@ table {
     min-height: 70px;
     margin: 20px 0 0 20px;
     
-    .indicator {
-      background-image: url("../images/ScoreCircle.png");
-      background-position: no-repeat;
-      float: left;
-      width: 65px;
-      height: 40px;
-      padding-top: 25px;
-      font-size: 18px;
-      text-align: center;
-    }
     
     .info {
       float: left;
       margin: 0px 10px;
-      
-      dl, dd {
-        margin: 0;
+
+      .indicator {
+        background-position: no-repeat;
+        border-radius: 5px 5px 5px 5px;
+        float: left;
+        width: 65px;
+        height: 35px;
+        font-size: 18px;
+        text-align: center;
+        display: table;
+
+        .asmtScore {
+          vertical-align:middle;
+          display: table-cell;
+        }
       }
       
       .overallText {
         font-size: 16px;
-        color: @color-B1;
+        color: @color-B2;
         line-height: 32px;
+        margin-left: 7px;
       }
       
       .overallDesc {
         font-size: 22px;
+        float: right;
+        display: table;
+        height: 35px;
+        margin-left: 10px;
+
+        .scoreName{
+          vertical-align:middle;
+          display: table-cell;
+        }
       }
     }
     
     .info2 {
-      background: url("../images/dottedline.png") no-repeat top left;
-      margin-left: 300px;
+      background: url("../images/dottedline.png") repeat-y top left;
+      margin-left: 360px;
       margin-right: 20px;
       padding-left: 20px;
       font-size: 14px;
@@ -232,7 +334,7 @@ table {
     }
     
     ul li {
-      height: 250px;
+      height: 300px;
       float: left;
       margin: 10px 10px 0 0;
       padding: 10px;
@@ -242,13 +344,19 @@ table {
       background: @color-B6;
       
       .scoreBox {
-        font-size: 18px;
-        margin-top: 10px;
-        
-        .interval {
-          font-size: 15px;
-          line-height: 30px;
-        }
+        border-left: solid 1px @color-B5;
+        border-right: solid 1px @color-B5;
+        height: 40px;
+        background: @color-white;
+        background-repeat:no-repeat;
+        position: relative;
+      }
+      .scoreBoxUpper {
+        border-top: solid 1px @color-B5;
+        border-bottom: dashed 1px #C2C2C2
+      }
+      .scoreBoxLower{
+        border-bottom: solid 1px @color-B5;
       }
       
       .icon {
@@ -276,9 +384,10 @@ table {
       
       .link {
         position: absolute;
-        bottom: 30px;
+        bottom: 10px;
         right: 10px;
       }
+      
       .footer {
         font-size: 9px;
         color: @color-B2;
@@ -340,63 +449,9 @@ table {
   }
 }
   
-/* Popover/Tooltip styles*/
-.popover {
-    width: auto;
-    z-index: 4999;
-    margin-top: -8px;
-    
-    ul li { 
-      margin: 0 10px;
-      font-size: 13px; }
-      
-    .large {
-      width: 620px;
-      height: 360px;
-      
-      .lead {
-        margin-bottom: 0; 
-      }
-    }
-  }
-  
-.surveyPopup {
-    bottom: 40px !important;
-    position: fixed;
-    top: auto !important;
-    margin-top: 0;
-}
-
-/* Footer styles */
-#footer {
-  color: @color-white;
-  background-color: @color-B4;
-  float: left;
-  width: 980px;
-  font-size: 12px;
-  position: fixed;
-  bottom: 0px;
-  height: 40px;
-  z-index: 5000;
-}
-
-#copyright {
-  float: left;
-  padding: 10px;
-  padding-left: 20px;
-}
-
-#purpose, #feedback, #legend {
-  padding: 10px;
-  cursor: pointer;
-}
-
-#legend {
-  padding-right: 20px;
-}
-
 #select_measure {
   float: right;
+  margin-right: 20px;
   
   .btn-group {
     float: right;
@@ -412,9 +467,26 @@ table {
 
 .claim_name {
   font-weight: normal;
-  font-size: 12px;
+  font-size: 11px;
   line-height: 14px;
   margin: 0;
   text-align: center;
   padding: 2px 0;
+}
+.claim_score_down_arrow_bar {
+  background-image: -moz-linear-gradient(center top , #d3d3d3, #565656);
+  background-image: -webkit-linear-gradient(top ,#d3d3d3, #565656); 
+  background-image: -ms-linear-gradient(top , #d3d3d3, #565656); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#d3d3d3, endColorstr=#565656, GradientType=0);
+}
+.claim_score_up_arrow_bar {
+  background-image: -moz-linear-gradient(center top , #565656, #d3d3d3);
+  background-image: -webkit-linear-gradient(top ,#565656, #d3d3d3); 
+  background-image: -ms-linear-gradient(top , #565656, #d3d3d3); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#565656, endColorstr=#d3d3d3, GradientType=0);
+  bottom: 0;
+}
+.claim_score_arrow_bar {
+  width:12px;
+  position:absolute;
+  margin:0;
+  padding:0;
 }

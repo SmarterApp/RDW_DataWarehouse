@@ -9,7 +9,8 @@ smarter.egg-info?
 *.egg
 *.swp
 selenium-2.29.0-wgen
-
+OpenAM_customize_deploy_script.sh
+npm-debug.log
 # IDE generated files #
 #######################
 __pycache__
@@ -19,5 +20,10 @@ edapi/build
 edapi/dist
 smarter/smarter/assets
 assets/css/*.css
+assets/js/src/modules/*
+assets/js/src/widgets/*
+assets/node_modules
+node_modules
 .coverage
 edschema/database/tests/resources/tmpl
+*/build/

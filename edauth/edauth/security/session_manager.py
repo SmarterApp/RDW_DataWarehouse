@@ -74,10 +74,10 @@ def delete_session(session_id):
     delete session by session_id
     '''
     # Do not delete long lived sessions (prefix with 'L-')
-    if session_id.startswith('L-') is False:
-        with EdauthDBConnection() as connection:
-            user_session = connection.get_table('user_session')
-            connection.execute(user_session.delete(user_session.c.session_id == session_id))
+    #if session_id.startswith('L-') is False:
+    with EdauthDBConnection() as connection:
+        user_session = connection.get_table('user_session')
+        connection.execute(user_session.delete(user_session.c.session_id == session_id))
 
 
 def __create_from_SAMLResponse(saml_response, last_access, expiration):
@@ -85,7 +85,7 @@ def __create_from_SAMLResponse(saml_response, last_access, expiration):
     populate session from SAMLResponse
     '''
     # make a UUID based on the host ID and current time
-    __session_id = str(uuid.uuid1())
+    __session_id = str(uuid.uuid4())
 
     # get Attributes
     __assertion = saml_response.get_assertion()

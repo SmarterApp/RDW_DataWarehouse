@@ -8,9 +8,11 @@ import simplejson as json
 import re
 import logging
 from edapi.utils import adopt_to_method_and_func
-from pyramid.security import authenticated_userid, effective_principals
+from pyramid.security import authenticated_userid, effective_principals,\
+    unauthenticated_userid
 from pyramid.threadlocal import get_current_request
 from collections import OrderedDict
+import time
 
 
 def audit_event(logger_name="audit"):
@@ -45,6 +47,20 @@ def audit_event(logger_name="audit"):
         return __wrapped
 
     return audit_event_wrapper
+
+
+def log_enter_report(report_name, logger_name='smarter'):
+    log = logging.getLogger(logger_name)
+    session_id = unauthenticated_userid(get_current_request())
+
+    log.info(str.format('Entered {0} report, session_id = {1}', report_name, session_id))
+
+
+def log_exit_report(report_name, report_start_time, logger_name='smarter'):
+    log = logging.getLogger(logger_name)
+
+    report_duration_in_seconds = round((time.mktime(time.localtime()) - time.mktime(report_start_time)))
+    log.info(str.format('Exited {0} report, generating the report took {1} seconds', report_name, report_duration_in_seconds))
 
 
 class JsonDictLoggingFormatter(logging.Formatter):

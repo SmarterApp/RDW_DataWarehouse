@@ -1,5 +1,5 @@
 #globals ok $ EDWARE test require module equals deepEqual
-require ["jquery", "jqGrid", "cs!edwareGrid"], ($, jqGrid, edwareGrid) ->
+require ["jquery", "jqGrid", "edwareGrid"], ($, jqGrid, edwareGrid) ->
   module "EDWARE.grid.tablegrid.create",
     setup: ->
       $("body").append "<table id='gridTable'></table>"

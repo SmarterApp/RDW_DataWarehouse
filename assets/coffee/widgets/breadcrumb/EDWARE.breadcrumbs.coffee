@@ -45,7 +45,7 @@ define [
                   element.name = "Grade " + element.name
                 else if element.type is "student"
                   # Special case for names that end with an 's'
-                  if element.name.substr(element.name.length - 1) is "s"
+                  if element.name.substr(element.name.length - 1).toLowerCase() is "s"
                     element.name = element.name + "'"
                   else
                     element.name = element.name + "'s"

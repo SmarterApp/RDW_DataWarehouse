@@ -38,7 +38,7 @@ class DataGenerationValidation(unittest.TestCase):
 
 
 # Method to read DictReader
-    @classmethod
+    @staticmethod
     def dict_reader (file_path, file_format):
         with open (file_path) as csvFile:
             fileValue = csv.DictReader(csvFile, delimiter =',' )
@@ -46,7 +46,7 @@ class DataGenerationValidation(unittest.TestCase):
             return fileValue
 
 # Method for comparing headers
-    @classmethod
+    @staticmethod
     def getting_header(path, format_name):
         with open(path, format_name) as csvfile:
             col_reader = csv.reader(csvfile, delimiter=',')
@@ -54,13 +54,13 @@ class DataGenerationValidation(unittest.TestCase):
             first_row = header_list[0]
             return first_row
                     
-    @classmethod        
+    @staticmethod
     def score_fact_asmt(score_column_name, range_min_column_name, range_max_column_name):
             real_score = []
             min_score = []
             max_score = []
             asmt_score_dict = {}
-            with open ('.\DataGeneration\datafiles\csv\\fact_asmt_outcome.csv', 'r') as csvfile:
+            with open ('./datafiles/csv/fact_asmt_outcome.csv', 'r') as csvfile:
                 col_val = csv.DictReader(csvfile, delimiter=',') 
                 for values in col_val:
                     score = values[score_column_name]
@@ -92,7 +92,7 @@ class DataGenerationValidation(unittest.TestCase):
         for each_csv in csv_path:
         # do validate
             actual_headers = DataGenerationValidation.getting_header(each_csv, 'r')
-            expected_headers = header_dict.get(os.path.basename(each_csv)[:-4])
+            expected_headers = DataGenerationValidation.header_dict.get(os.path.basename(each_csv)[:-4])
         
         
             assert expected_headers is not None,('No header info for %s' % each_csv)
@@ -106,7 +106,7 @@ class DataGenerationValidation(unittest.TestCase):
     
     def test_asmt_cut_lavel_score(self):
     
-        with open('.\\DataGeneration\\datafiles\\csv\\dim_asmt.csv', 'r') as csvfile:
+        with open('./datafiles/csv/dim_asmt.csv', 'r') as csvfile:
             col_val = csv.DictReader(csvfile, delimiter=',')
            
             for values in col_val:
@@ -145,7 +145,7 @@ class DataGenerationValidation(unittest.TestCase):
     def test_grade(self):
         expected_school_category = ['High School', 'Middle School', 'Elementary School']
                 
-        with open('.\DataGeneration\datafiles\csv\dim_inst_hier.csv', 'r') as csvfile:
+        with open('./datafiles/csv/dim_inst_hier.csv', 'r') as csvfile:
             col_val = csv.DictReader(csvfile, delimiter=',')
             dict = {}
             actual_school_category = []
@@ -169,7 +169,7 @@ class DataGenerationValidation(unittest.TestCase):
             assert sorted(expected_school_category) == sorted(actual_school_category), 'School Category does not match'
                
         # get school_guid from dim_section and check the grades
-        csv_files = ['.\DataGeneration\datafiles\csv\\fact_asmt_outcome.csv','.\DataGeneration\datafiles\csv\\dim_section.csv', '.\DataGeneration\datafiles\csv\\dim_student.csv']
+        csv_files = ['./datafiles/csv/fact_asmt_outcome.csv','./datafiles/csv/dim_section.csv', './datafiles/csv/dim_student.csv']
         for each_file in csv_files:
             with open(each_file, 'r') as csvfile:
                 
@@ -281,7 +281,7 @@ class DataGenerationValidation(unittest.TestCase):
     
             perf_lvl = []
             asmt_score_list = []
-            with open ('.\DataGeneration\datafiles\csv\\fact_asmt_outcome.csv', 'r') as csvfile:
+            with open ('./datafiles/csv/fact_asmt_outcome.csv', 'r') as csvfile:
                         col_val = csv.DictReader(csvfile, delimiter=',') 
                         for values in col_val:
                             asmt_perf_lvl = values['asmt_perf_lvl']

@@ -30,6 +30,10 @@ define [
     edwareDataProxy.getDatafromSource "../data/color.json", options, (defaultColors) ->
       
       getStudentData "/data/list_of_students", params, defaultColors, (assessmentsData, contextData, subjectsData, claimsData, userData, cutPointsData) ->
+        # append user_info (e.g. first and last name)
+        if userData
+          $('#header .topLinks .user').html edwareUtil.getUserName userData
+            
         # set school name as the page title from breadcrumb
         $("#school_name").html contextData.items[2].name
         
@@ -56,7 +60,6 @@ define [
           
           # append user_info (e.g. first and last name)
           if userData
-            $('#header .topLinks .user').html edwareUtil.getUserName userData
             role = edwareUtil.getRole userData
             uid = edwareUtil.getUid userData
             edwareFeedback.renderFeedback(role, uid, "list_of_students")

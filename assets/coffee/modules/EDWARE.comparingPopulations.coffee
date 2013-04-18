@@ -28,6 +28,10 @@ define [
 
         getColumnConfig "../data/comparingPopulations.json", (gridConfig, customViews) ->
           
+          # # append user_info (e.g. first and last name)
+          if user_info
+            $('#header .topLinks .user').html edwareUtil.getUserName user_info
+            
           # Determine if the report is state, district or school view
           reportType = getReportType(params)
           
@@ -61,7 +65,6 @@ define [
           
           # # append user_info (e.g. first and last name)
           if user_info
-            $('#header .topLinks .user').html edwareUtil.getUserName user_info
             role = edwareUtil.getRole user_info
             uid = edwareUtil.getUid user_info
             edwareFeedback.renderFeedback(role, uid, "comparing_populations_" + reportType)

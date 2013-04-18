@@ -290,13 +290,13 @@ class DataGenerationValidation(unittest.TestCase):
                             asmt_score_list.append(asmt_score)
                         
                         for i in range(len(asmt_score_list)):
-                            if 1200<=(int(asmt_score_list[i]))<=1399 and (int(perf_lvl[i])) == 1:
+                            if 1200<=(int(asmt_score_list[i]))<=1574 and (int(perf_lvl[i])) == 1:
                                 pass
-                            elif 1400<=(int(asmt_score_list[i]))<=1799 and (int(perf_lvl[i])) == 2:
+                            elif 1575<=(int(asmt_score_list[i]))<=1874 and (int(perf_lvl[i])) == 2:
                                 pass
-                            elif 1800<=(int(asmt_score_list[i]))<=2099 and (int(perf_lvl[i])) == 3:
+                            elif 1875<=(int(asmt_score_list[i]))<=2174 and (int(perf_lvl[i])) == 3:
                                 pass
-                            elif 2100<=(int(asmt_score_list[i]))<=2400 and (int(perf_lvl[i])) == 4:
+                            elif 2175<=(int(asmt_score_list[i]))<=2400 and (int(perf_lvl[i])) == 4:
                                 pass
                             else:
                                raise AssertionError('Fail: fact_asmt_outcome file. Asseessment score:' + asmt_score_list[i] +  ' and Performance_level:' + perf_lvl[i]) 

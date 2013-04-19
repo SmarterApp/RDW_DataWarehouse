@@ -15,8 +15,6 @@ from smarter.reports.helpers.constants import Constants
 from smarter.reports.helpers.assessments import get_overall_asmt_interval, \
     get_cut_points, get_claims
 from edapi.exceptions import NotFoundException
-from edapi import logging
-import time
 
 REPORT_NAME = "list_of_students"
 

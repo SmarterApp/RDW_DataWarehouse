@@ -16,8 +16,6 @@ from edapi.logging import audit_event
 from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
 from smarter.reports.helpers.assessments import get_cut_points, \
     get_overall_asmt_interval, get_claims
-from edapi import logging
-import time
 
 REPORT_NAME = 'individual_student_report'
 

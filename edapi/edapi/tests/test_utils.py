@@ -192,5 +192,7 @@ class TestUtils(unittest.TestCase):
 
     def test_display_text_log(self):
         test_display_name()
-        f = self.log_handler.get()
+        logger = logging.getLogger("test")
+        handler = logger.handlers[0]
+        f = handler.get()
         self.assertIn("test_display", f, "missing param")

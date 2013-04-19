@@ -51,7 +51,8 @@ class TestUtils(unittest.TestCase):
     log_handler = InMemHandler()
 
     def setUp(self):
-        logging.basicConfig(handlers=[self.log_handler], level='INFO')
+        logger = logging.getLogger("test")
+        logger.addHandler(self.log_handler)
 
     def tearDown(self):
         self.log_handler.delete()

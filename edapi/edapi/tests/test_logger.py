@@ -6,12 +6,12 @@ Created on Mar 6, 2013
 from edapi.logging import audit_event
 
 
-@audit_event(logger_name="test")
+@audit_event("test", logger_name="test")
 def test_function(param1, param2):
     pass
 
 
-@audit_event(logger_name="test")
+@audit_event("test", logger_name="test")
 def test_display_name():
     pass
 

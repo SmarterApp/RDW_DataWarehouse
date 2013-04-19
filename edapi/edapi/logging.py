@@ -36,15 +36,14 @@ def audit_event(report_name, logger_name="audit"):
             params['args'] = args
             params.update(kwds)
             allargs['params'] = params
-            if not 'user' in allargs.keys():
-                user = authenticated_userid(get_current_request())
-                if user is not None:
-                    allargs['user'] = str(user)
+            session_id = unauthenticated_userid(get_current_request())
+            if not 'user_session' in allargs.keys():
+                if session_id is not None:
+                    allargs['session_id'] = session_id
             if not 'principals' in allargs.keys():
                 allargs['principals'] = effective_principals(get_current_request())
             log.info(allargs)
             smarter_log = logging.getLogger('smarter')
-            session_id = unauthenticated_userid(get_current_request())
 
             smarter_log.info(str.format('Entered {0} report, session_id = {1}', report_name, session_id))
 

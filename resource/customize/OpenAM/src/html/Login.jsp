@@ -50,7 +50,10 @@
                     encoded = "true";
                 }
             %>
-
+            <%--
+		meta refresh to fix session timeout issue on login screen
+ 	    --%>
+	    <meta http-equiv="refresh" content="60">
             <link href="<%= ServiceURI%>/css/new_style.css" rel="stylesheet" type="text/css" />
             <!--[if IE 9]> <link href="<%= ServiceURI%>/css/ie9.css" rel="stylesheet" type="text/css"> <![endif]-->
             <!--[if lte IE 7]> <link href="<%= ServiceURI%>/css/ie7.css" rel="stylesheet" type="text/css"> <![endif]-->

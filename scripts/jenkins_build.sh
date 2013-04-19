@@ -84,8 +84,13 @@ function check_pep8 {
 
 function run_unit_tests {
     echo "Running unit tests"
-
+   
     cd "$WORKSPACE/$1"
+    # Tech debt in edapi logging test - it must go inside one more dir
+    if [ ${1:=""} == "edapi" ]; then
+       cd "$1"
+    fi
+     
     nosetests --with-xunit --xunit-file=$WORKSPACE/nosetests.xml --cov-report xml
 
     if [ -f coverage.xml ]; then

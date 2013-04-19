@@ -18,6 +18,6 @@ def test_display_name():
 
 class TestLogger(object):
 
-    @audit_event(logger_name="test")
+    @audit_event("test", logger_name="test")
     def test_method(self, param1, param2):
         pass

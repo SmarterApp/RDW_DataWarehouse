@@ -77,13 +77,8 @@
         
                         if (hiddenFrm != null) {
                             hiddenFrm.elements['IDButton'].value = value;
-                            if (this.submitted) {
-                                alert("The request is currently being processed");
-                            }
-                            else {
-                                this.submitted = true;
-                                hiddenFrm.submit();
-                            }
+                            this.submitted = true;
+                            hiddenFrm.submit();
                         }
                     }
                     -->

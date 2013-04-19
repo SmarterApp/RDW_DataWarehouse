@@ -109,7 +109,7 @@
                             <div>
                                 <h3><auth:resBundle bundleName="amAuthUI" resourceKey="session.timeout" /></h3>
                                 <jato:content name="ContentHref">
-                                    <p><auth:href name="LoginURL" fireDisplayEvents='true'><jato:text name="txtGotoLoginAfterFail" /></auth:href></p>
+                                    <p><a href="javascript:history.go(-1)">Return to login page</a></p>
                                 </jato:content>
                             </div>
                         </div>

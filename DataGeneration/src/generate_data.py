@@ -235,6 +235,12 @@ def prepare_csv_files(entity_to_path_dict):
 
 
 def generate_name_list_dictionary(list_name_to_path_dictionary):
+    '''
+    Create a dictionary that contains naming lists as keys and a list of file
+    lines as values
+    @param list_name_to_path: a dictionary mapping names to file paths
+    @return:  a dictionary mapping name to file paths
+    '''
     name_list_dictionary = {}
     for list_name in list_name_to_path_dictionary:
         path = list_name_to_path_dictionary[list_name]
@@ -244,6 +250,13 @@ def generate_name_list_dictionary(list_name_to_path_dictionary):
 
 
 def generate_district_dictionary(district_types_and_counts, district_names_1, district_names_2):
+    '''
+    generate a dict of districts from the given info
+    @param district_types_and_counts: A dictionary conating the data about district sizes from the config file
+    @param district_names_1: A list of names to use when naming the districts
+    @param district_names_2: Second list to use in naming
+    @return: a dictionary of created districts
+    '''
     district_dictionary = {}
     for district_type in district_types_and_counts:
         district_count = district_types_and_counts[district_type]
@@ -256,6 +269,12 @@ def generate_district_dictionary(district_types_and_counts, district_names_1, di
 
 
 def create_school_dictionary(school_counts, school_types_and_ratios, school_names_1, school_names_2):
+    '''
+    @param school_counts:
+    @param school_types_and_ratios:
+    @param school_names_1:
+    @param school_names_2:
+    '''
     num_schools_min = school_counts[config_module.MIN]
     num_schools_avg = school_counts[config_module.AVG]
     num_schools_max = school_counts[config_module.MAX]
@@ -279,6 +298,11 @@ def create_school_dictionary(school_counts, school_types_and_ratios, school_name
 
 
 def generate_institution_hierarchy_from_helper_entities(state, district, school):
+    '''
+    @param state:
+    @param district:
+    @param school:
+    '''
     state_name = state.state_name
     state_code = state.state_code
     district_guid = district.district_guid
@@ -299,8 +323,15 @@ def generate_institution_hierarchy_from_helper_entities(state, district, school)
 
 
 def generate_list_of_scores(total, score_details, perf_lvl_dist, subject_name, grade):
-
-    print('generating %s scores' % total)
+    '''
+    Generate a list of overall scores to use in the creation of assessment outcomes
+    @param total: the number of assessment scores to generate
+    @param score_details: score information taken from the configuration file
+    @param perf_lvl_dist: The dictionary of performance level information taken from the config module
+    @param subject_name: the name of the subject that scores are being generated for
+    @param grade: the grade that the scores are being generated for
+    @return: A list of scores as ints
+    '''
     min_score = score_details[config_module.MIN]
     max_score = score_details[config_module.MAX]
     percentage = perf_lvl_dist[subject_name][str(grade)][config_module.PERCENTAGES]
@@ -315,7 +346,20 @@ def generate_list_of_scores(total, score_details, perf_lvl_dist, subject_name, g
 
 
 def generate_assessment_outcomes_from_helper_entities_and_lists(students, scores, teacher_guid, section, institution_hierarchy, assessment, ebmin, ebmax, rndlo, rndhi):
-
+    '''
+    Generate assessment outcomes for a list of students
+    @param students: List of the students to generate outcomes for
+    @param scores: List of scores to use in assignment
+    @param teacher_guid: The guid of the teacher
+    @param section: The section object that the student is in
+    @param institution_hierarchy: the institution_hierarchy object that the student is in
+    @param assessment: The assessment object that the outcome will be for
+    @param ebmin: The divisor of the minimum error band, taken from the config file
+    @param ebmax: The divisor of the maximum error band, taken from the config file
+    @param rndlo: The lower bound for getting the random adjustment of the error band
+    @param rndhi: The higher bound for getting the random adjustment of the error band
+    @return: A list of assessment_outcome objects
+    '''
     # The cut_points in score details do not include min and max score. The score generator needs the min and max to be included
     cut_points = [assessment.asmt_cut_point_1, assessment.asmt_cut_point_2, assessment.asmt_cut_point_3]
     if assessment.asmt_cut_point_4:
@@ -348,6 +392,17 @@ def generate_assessment_outcomes_from_helper_entities_and_lists(students, scores
 
 
 def translate_scores_to_assessment_score(scores, cut_points, assessment, ebmin, ebmax, rndlo, rndhi):
+    '''
+    Translate a list of assessment scores to AssessmentScore objects
+    @param scores: list containing score integers
+    @param cut_points: list of cutpoint scores as integers
+    @param assessment: The assessment object that the outcome will be for
+    @param ebmin: The divisor of the minimum error band, taken from the config file
+    @param ebmax: The divisor of the maximum error band, taken from the config file
+    @param rndlo: The lower bound for getting the random adjustment of the error band
+    @param rndhi: The higher bound for getting the random adjustment of the error band
+    @return: list of AssessmentScore objects
+    '''
     score_list = []
 
     score_min = assessment.asmt_score_min
@@ -373,6 +428,8 @@ def translate_scores_to_assessment_score(scores, cut_points, assessment, ebmin, 
 
 
 def generate_students_from_institution_hierarchy(number_of_students, institution_hierarchy, grade, section_guid, street_names):
+    '''
+    '''
     state_code = institution_hierarchy.state_code
     district_guid = institution_hierarchy.district_guid
     school_guid = institution_hierarchy.school_guid
@@ -387,31 +444,23 @@ def generate_students_from_institution_hierarchy(number_of_students, institution
     return students
 
 
-#def copy_students_into_new_section(students, section_guid):
-#    '''
-#    Given a list of students, generate a new set of students with new record_ids and no Section_guid
-#    '''
-#    id_gen = IdGen()
-#    new_students = []
-#    for student in students:
-#        new_stu = deepcopy(student)
-#        new_stu.student_rec_id = id_gen.get_id()
-#        new_stu.section_guid = section_guid
-#        new_students.append(new_stu)
-#    return new_students
-
-
 def set_students_rec_id_and_section_id(students, section_guid):
     '''
-    Take a list of students and set their section_id
+    Take a list of students and set their section_id and assign new rec_id
+    @param students: A list of students to use
+    @param section_guid: the section number to use
+    @return: The list os students passed in (they are not copied, so the original objects are altered)
     '''
     id_gen = IdGen()
     for student in students:
         student.student_rec_id = id_gen.get_id()
         student.section_guid = section_guid
+    return students
 
 
 def generate_teaching_staff_from_institution_hierarchy(number_of_staff, institution_hierarchy, section_guid):
+    '''
+    '''
     state_code = institution_hierarchy.state_code
     district_guid = institution_hierarchy.district_guid
     school_guid = institution_hierarchy.school_guid
@@ -426,6 +475,8 @@ def generate_teaching_staff_from_institution_hierarchy(number_of_staff, institut
 
 
 def generate_non_teaching_staff(number_of_staff, state_code='NA', district_guid='NA', school_guid='NA'):
+    '''
+    '''
     hier_user_type = 'Staff'
     temporal_information = config_module.get_temporal_information()
     from_date = temporal_information[config_module.FROM_DATE]
@@ -437,21 +488,29 @@ def generate_non_teaching_staff(number_of_staff, state_code='NA', district_guid=
 
 
 def calculate_number_of_schools(school_min, school_avg, school_max):
+    '''
+    '''
     number_of_schools = gauss_one(school_min, school_max, school_avg)
     return number_of_schools
 
 
 def calculate_number_of_students(student_min, student_max, student_avg):
+    '''
+    '''
     number_of_students = gauss_one(student_min, student_max, student_avg)
     return int(number_of_students)
 
 
 def calculate_number_of_sections(number_of_students):
+    '''
+    '''
     # TODO: Figure out how to calculate number_of_sections
     return 1
 
 
 def calculate_claim_scores(asmt_score, assessment, ebmin, ebmax, rndlo, rndhi):
+    '''
+    '''
     claim_scores = []
     claim_list = [(assessment.asmt_claim_1_name, assessment.asmt_claim_1_score_min, assessment.asmt_claim_1_score_max, assessment.asmt_claim_1_score_weight),
                   (assessment.asmt_claim_2_name, assessment.asmt_claim_2_score_min, assessment.asmt_claim_2_score_max, assessment.asmt_claim_2_score_weight),
@@ -501,6 +560,11 @@ def rescale_value(old_value, old_scale, new_scale):
 
 
 def get_flat_grades_list(school_config):
+    '''
+    pull out grades from score_config and place in flat list
+    @param school_config:
+    @return: list of grades
+    '''
     grades = []
 
     for school_type in school_config:
@@ -510,12 +574,29 @@ def get_flat_grades_list(school_config):
 
 
 def select_assessment_from_list(asmt_list, grade, subject):
+    '''
+    select the proper assessment from a list
+    @param asmt_list:
+    @param grade:
+    @param subject:
+    '''
     for asmt in asmt_list:
         if asmt.asmt_grade == grade and asmt.asmt_subject == subject:
             return asmt
 
 
 def calculate_error_band(score, smin, smax, ebmin, ebmax, rndlo, rndhi, clip=True):
+    '''
+    @param score:
+    @param smin:
+    @param smax:
+    @param ebmin:
+    @param ebmax:
+    @param rndlo:
+    @param rndhi:
+    @param clip:
+    @return:
+    '''
     assert(smin > 0 and smax > smin)
     assert(score >= smin and score <= smax)
     assert(ebmin > 0 and ebmax > ebmin)

@@ -50,9 +50,9 @@ def get_district_types():
     'school_types_and_ratios' is dictionary containing the ratios of High to Middle to Elementary schools
     (ie. 1:2:5 -- {'High': 1, 'Middle': 2, 'Elementary': 5})
     """
-    district_types = {'Big'      : { 'school_counts' : {'min' : 50, 'max' : 80, 'avg' : 65}, 'school_types_and_ratios' : {'High School' : 1, 'Middle School' : 2, 'Elementary School' : 5} },
-                     'Medium'   : { 'school_counts' : {'min' : 20, 'max' : 24, 'avg' : 22}, 'school_types_and_ratios' : {'High School' : 1, 'Middle School' : 2, 'Elementary School' : 5} },
-                     'Small'    : { 'school_counts' : {'min' :  2, 'max' :  8, 'avg' :  5}, 'school_types_and_ratios' : {'High School' : 1, 'Middle School' : 2, 'Elementary School' : 5} }
+    district_types = {'Big': {'school_counts': {'min': 50, 'max': 80, 'avg': 65}, 'school_types_and_ratios': {'High School': 1, 'Middle School': 2, 'Elementary School': 5}},
+                     'Medium': {'school_counts': {'min': 20, 'max': 24, 'avg': 22}, 'school_types_and_ratios': {'High School': 1, 'Middle School': 2, 'Elementary School': 5}},
+                     'Small': {'school_counts': {'min': 2, 'max': 8, 'avg': 5}, 'school_types_and_ratios': {'High School': 1, 'Middle School': 2, 'Elementary School': 5}}
                      }
     return district_types
 
@@ -64,7 +64,7 @@ def get_state_types():
     'district_types_and_counts' is a dictionary that describes how many Big, Medium and Small districts to have in the state
     'subjects_and_percentages' is a dictionary that describes what percentage of students should have scores for a Math assessment and an ELA assessment
     """
-    state_types = {'typical_1' : {'district_types_and_counts' : {'Big' : 2, 'Medium' : 6, 'Small' : 40}, 'subjects_and_percentages' : {'Math' : .9, 'ELA' : .9}}
+    state_types = {'typical_1': {'district_types_and_counts': {'Big': 2, 'Medium': 6, 'Small': 40}, 'subjects_and_percentages': {'Math': .9, 'ELA': .9}}
                   }
     return state_types
 
@@ -77,7 +77,7 @@ def get_states():
     'state_code' is the code for that state (eg. NY)
     'state_type' is the type of the state. This should match something that has been defined in get_state_types()
     """
-    states = [{'name' : 'Example State', 'state_code' : 'ES', 'state_type' : 'typical_1'}]
+    states = [{'name': 'Example State', 'state_code': 'ES', 'state_type': 'typical_1'}]
     return states
 
 
@@ -89,7 +89,7 @@ def get_scores():
     PL3 = cp2 - cp3 (exclusive)
     PL4 = cp3 - max (inclusive)
     """
-    scores = {'min': 1200, 'max': 2400, 'cut_points': [1575, 1875, 2175]}
+    scores = {'min': 1200, 'max': 2400, 'cut_points': [1400, 1800, 2100]}
     return scores
 
 
@@ -134,6 +134,7 @@ def get_performance_level_distributions():
                     }
     return pld
 
+
 def get_temporal_information():
-    temporal_information = {'from_date':'20120901', 'to_date': None, 'most_recent': True, 'date_taken_year':'2012', 'date_taken_month': ''}
+    temporal_information = {'from_date': '20120901', 'to_date': None, 'most_recent': True, 'date_taken_year': '2012', 'date_taken_month': ''}
     return temporal_information

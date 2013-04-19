@@ -18,7 +18,7 @@ import time
 def audit_event(report_name, logger_name="audit"):
     log = logging.getLogger(logger_name)
 
-    if (len(log.handlers == 0)):
+    if (len(log.handlers) == 0):
         print(str.format("logger {0} is empty", logger_name))
 
     '''

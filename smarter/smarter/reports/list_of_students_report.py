@@ -69,12 +69,9 @@ REPORT_NAME = "list_of_students"
             },
         }
     })
-@audit_event()
+@audit_event(REPORT_NAME)
 @user_info
 def get_list_of_students_report(params):
-    logging.log_enter_report(REPORT_NAME)
-    report_start_time = time.localtime()
-
     stateCode = str(params[Constants.STATECODE])
     districtGuid = str(params[Constants.DISTRICTGUID])
     schoolGuid = str(params[Constants.SCHOOLGUID])
@@ -213,7 +210,6 @@ def get_list_of_students_report(params):
         los_results['context'] = get_breadcrumbs_context(state_code=stateCode, district_guid=districtGuid, school_guid=schoolGuid, asmt_grade=asmtGrade)
         los_results['subjects'] = __reverse_map(subjects_map)
 
-    logging.log_exit_report(REPORT_NAME, report_start_time)
     return los_results
 
 

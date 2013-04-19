@@ -163,12 +163,9 @@ def __arrange_results(results):
                        "pattern": "^[a-zA-Z0-9\-]{0,50}$",
                    },
                })
-@audit_event()
+@audit_event(REPORT_NAME)
 @user_info
 def get_student_report(params):
-    logging.log_enter_report(REPORT_NAME)
-    report_start_time = time.localtime()
-
     '''
     report for student and student_assessment
     '''
@@ -195,8 +192,6 @@ def get_student_report(params):
         result = __arrange_results(result)
 
         result['context'] = context
-
-    logging.log_exit_report(REPORT_NAME, report_start_time)
     return result
 
 

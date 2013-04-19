@@ -44,6 +44,8 @@ class InMemHandler(logging.Handler):
         self.log_entries = ''
 
     def get(self):
+        if len(self.log_entries) == 0:
+            print("log is empty")
         return self.log_entries
 
 

@@ -235,6 +235,10 @@ uat:
     level: DEBUG
     handlers: syslog
     qualname: smarter
+  '[logger_edauth]':
+    level: INFO
+    handlers: syslog
+    qualname: edauth
 
 local:
   '[app:main]':

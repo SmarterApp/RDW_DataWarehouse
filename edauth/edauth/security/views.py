@@ -19,6 +19,7 @@ from edauth.security.roles import Roles
 from edauth.saml2.saml_response_manager import SAMLResponseManager
 from edauth.saml2.saml_idp_metadata_manager import IDP_metadata_manager
 from zope import component
+from edauth import logger
 
 
 def _get_cipher():
@@ -43,6 +44,7 @@ def login(request):
     # Here, we return 403 for users that has a role of None
     # This can be an user that has no role from IDP or has a role that we don't know of
     if Roles.get_invalid_role() in principals:
+        logger.warn("Forbidden view accessed by session_id %s" % session_id)
         return HTTPForbidden()
 
     # clear out the session if we found one in the cookie
@@ -114,6 +116,7 @@ def logout(request):
             params = urllib.parse.urlencode(params)
             url = request.registry.settings['auth.saml.idp_server_logout_url'] + "?%s" % params
 
+            logger.info("Logout requested for session_id %s" % session_id)
             # delete our session
             delete_session(session_id)
 
@@ -136,7 +139,11 @@ def saml2_post_consumer(request):
     __skip_verification = request.registry.settings.get('auth.skip.verify', False)
     # TODO: enable auth_request_id
     # if __SAMLResponse_manager.is_auth_request_id_ok(auth_request_id)
-    if __SAMLResponse_manager.is_condition_ok() and __SAMLResponse_manager.is_status_ok() and (__skip_verification or __SAMLResponse_manager.is_signature_ok(__SAMLResponse_IDP_Metadata_manager.get_trusted_pem_filename())):
+    condition = __SAMLResponse_manager.is_condition_ok()
+    status = __SAMLResponse_manager.is_status_ok()
+    signature = __SAMLResponse_manager.is_signature_ok(__SAMLResponse_IDP_Metadata_manager.get_trusted_pem_filename())
+
+    if condition and status and (__skip_verification or signature):
 
         # create a session
         session_timeout = convert_to_int(request.registry.settings['auth.session.timeout'])
@@ -144,6 +151,8 @@ def saml2_post_consumer(request):
 
         # Save session id to cookie
         headers = remember(request, session_id)
+
+        logger.info("SAML response processed successfully for session_id %s" % session_id)
 
         # Get the url saved in RelayState from SAML request, redirect it back to it
         # If it's not found, redirect to list of reports
@@ -155,6 +164,7 @@ def saml2_post_consumer(request):
             redirect_url = request.route_url('list_of_reports')
 
     else:
+        logger.info("SAML response failed with Condition: {0}, Status: {1}, Signature: {2}".format(str(condition), str(status), str(signature)))
         redirect_url = request.route_url('login')
         headers = []
 

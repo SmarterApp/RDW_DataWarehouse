@@ -73,7 +73,7 @@ common:
   ###
 
   '[loggers]':
-    keys: root, smarter, sqlalchemy, exc_logger, audit
+    keys: root, smarter, sqlalchemy, exc_logger, audit, edauth
 
   '[handlers]':
     keys: console, filelog, audit
@@ -89,6 +89,11 @@ common:
     level: DEBUG
     handlers: filelog
     qualname: smarter
+    
+  '[logger_edauth]':
+    level: DEBUG
+    handlers: filelog
+    qualname: edauth
 
   '[logger_sqlalchemy]':
     level: INFO

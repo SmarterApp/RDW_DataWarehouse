@@ -11,6 +11,10 @@ from edauth.persistence.persistence import generate_persistence
 from edauth.security.policy import EdAuthAuthenticationPolicy
 from edauth.security.utils import AESCipher, ICipher
 from zope import component
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 
 # boolean True/False converter

@@ -14,8 +14,11 @@ from pyramid.threadlocal import get_current_request
 from collections import OrderedDict
 import time
 
+# arguments added here will not get logged
+blacklist_args_global = []
 
-def audit_event(report_name, logger_name="audit"):
+
+def audit_event(logger_name="audit", blacklist_args=[]):
     log = logging.getLogger(logger_name)
 
     if (len(log.handlers) == 0):
@@ -46,16 +49,27 @@ def audit_event(report_name, logger_name="audit"):
                     allargs['session_id'] = session_id
             if not 'principals' in allargs.keys():
                 allargs['principals'] = effective_principals(get_current_request())
+
+            all_args = params['args'][0]
+            keys = set(all_args) - set(blacklist_args)
+            keys = keys - set(blacklist_args_global)
+
+            new_params = {}
+            for key in all_args:
+                if key in keys:
+                    new_params[key] = all_args[key]
+
+            params['args'] = new_params
             log.info(allargs)
             smarter_log = logging.getLogger('smarter')
 
-            smarter_log.info(str.format('Entered {0} report, session_id = {1}', report_name, session_id))
+            smarter_log.info(str.format('Entered {0} report, session_id = {1}', class_name, session_id))
 
             report_start_time = time.localtime()
             result = original_func(*args, **kwds)
             report_duration_in_seconds = round((time.mktime(time.localtime()) - time.mktime(report_start_time)))
 
-            smarter_log.info(str.format('Exited {0} report, generating the report took {1} seconds', report_name, report_duration_in_seconds))
+            smarter_log.info(str.format('Exited {0} report, generating the report took {1} seconds', class_name, report_duration_in_seconds))
 
             return result
         return __wrapped

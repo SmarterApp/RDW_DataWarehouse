@@ -67,7 +67,7 @@ REPORT_NAME = "list_of_students"
             },
         }
     })
-@audit_event(REPORT_NAME)
+@audit_event()
 @user_info
 def get_list_of_students_report(params):
     stateCode = str(params[Constants.STATECODE])

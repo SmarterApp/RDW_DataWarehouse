@@ -59,7 +59,7 @@ REPORT_NAME = "comparing_populations"
             "pattern": "^[a-zA-Z0-9\-]{0,50}$",
         }
     })
-@audit_event(REPORT_NAME)
+@audit_event()
 @user_info
 def get_comparing_populations_report(params):
     results = None

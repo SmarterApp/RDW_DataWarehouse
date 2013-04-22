@@ -6,6 +6,7 @@
 common:
   '[app:main]': 
     use: egg:smarter
+    disable_stack_trace: false
     smarter.PATH: /usr/local/bin
     pyramid:
       reload_templates: true
@@ -204,6 +205,7 @@ jenkins_qa:
 uat:
   '[app:main]':
     mode: prod
+    disable_stack_trace: true
     edware:
       schema_name: edware
       db:

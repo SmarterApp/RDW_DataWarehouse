@@ -12,6 +12,7 @@ from edschema.ed_metadata import generate_ed_metadata
 import atexit
 import signal
 from pyramid_beaker import set_cache_regions_from_settings
+import sys
 
 logger = logging.getLogger(__name__)
 CAKE_PROC = None
@@ -55,6 +56,11 @@ def main(global_config, **settings):
     mode = settings.get('mode', 'prod').upper()
     if mode != 'PROD':
         config.add_static_view('assets/test', os.path.join(assets_dir, 'test'), cache_max_age=static_max_age)
+
+    disable_stack_trace = settings.get('disable_stack_trace', 'False').upper()
+    if disable_stack_trace == 'TRUE':
+        # we would like to disable the stack trace when we are in production mode
+        sys.tracebacklimit = 0
 
     # For now, never cache htmls
     config.add_static_view('assets/html', os.path.join(assets_dir, 'html'), cache_max_age=0, permission='view')

@@ -1,7 +1,9 @@
 import unittest
 import constants_2 as constants
 from datetime import date
-from generate_entities import generate_institution_hierarchy, generate_student, generate_section, generate_staff
+from uuid import UUID
+from generate_entities import generate_institution_hierarchy, generate_student, generate_section, generate_staff, \
+    generate_assessment
 
 class TestGenerateEntities(unittest.TestCase):
 
@@ -37,11 +39,13 @@ class TestGenerateEntities(unittest.TestCase):
             'district_guid': 2,
             'school_guid': 3,
             'school_name': 'school_2',
-            'street_names': ['Suffolk', 'President', 'Allen']
+            'street_names': ['Suffolk', 'President', 'Allen'],
+            'from_date': date(2013, 4, 15),
+            'most_recent': True
         }
         student = generate_student(**params)
         self.assertIsInstance(student.student_rec_id, int)
-        self.assertIsInstance(student.student_guid, int)
+        self.assertIsInstance(student.student_guid, UUID)
         self.assertIsInstance(student.first_name, str)
         self.assertIsInstance(student.last_name, str)
         address_component_words = student.address_1.split()
@@ -77,11 +81,13 @@ class TestGenerateEntities(unittest.TestCase):
             'district_guid': 1,
             'school_guid': 2,
             'section_number': 1,
-            'class_number': 2
+            'class_number': 2,
+            'from_date': date(2013, 4, 15),
+            'most_recent': True
         }
         section = generate_section(**params)
         self.assertIsInstance(section.section_rec_id, int)
-        self.assertIsInstance(section.section_guid, int)
+        self.assertIsInstance(section.section_guid, UUID)
         section_component_words = section.section_name.split()
         section_name = section_component_words[0]
         section_number = section_component_words[1]
@@ -98,18 +104,41 @@ class TestGenerateEntities(unittest.TestCase):
         self.class_name, self.subject_name, self.state_code, self.district_guid, self.school_guid, self.from_date, self.to_date, self.most_recent
         '''
 
+    def test_generate_assessment(self):
+        params = {
+            'asmt_type': 'Summative',
+            'asmt_period': 'Spring',
+            'asmt_period_year': 2012,
+            'asmt_subject': 'Math',
+            'asmt_grade': 9,
+            'asmt_cut_point_1': 1400,
+            'asmt_cut_point_2': 1800,
+            'asmt_cut_point_3': 2100,
+            'asmt_cut_point_4': 2200,
+            'from_date': date(2013, 4, 15),
+            'most_recent': True,
+        }
+
+        a = generate_assessment(**params)
+        self.assertIsInstance(a.asmt_rec_id, int)
+        self.assertIsInstance(a.asmt_guid, UUID)
+        self.assertEquals(a.asmt_type, params['asmt_type'])
+
+
     def test_generate_staff(self):
         params = {
             'hier_user_type': 'Staff',
             'state_code': 'NY',
             'district_guid': 1,
             'school_guid': 2,
-            'section_guid': 3
+            'section_guid': 3,
+            'from_date': date(2013, 4, 15),
+            'most_recent': True
         }
 
         staff = generate_staff(**params)
         self.assertIsInstance(staff.staff_rec_id, int)
-        self.assertIsInstance(staff.staff_guid, int)
+        self.assertIsInstance(staff.staff_guid, UUID)
         self.assertIsInstance(staff.first_name, str)
         self.assertIsInstance(staff.last_name, str)
         self.assertEquals(staff.section_guid, params['section_guid'])

@@ -153,7 +153,7 @@ def generate_assessments(grades, cut_points, from_date, most_recent, to_date=Non
     asmt_cut_point_1 = cut_points[0]
     asmt_cut_point_2 = cut_points[1]
     asmt_cut_point_3 = cut_points[2]
-    asmt_cut_point_4 = cut_points[3] if len(cut_points) > 3 else 0
+    asmt_cut_point_4 = cut_points[3] if len(cut_points) > 3 else None
 
     asmt_years = sorted(constants.ASSMT_SCORE_YEARS)
 

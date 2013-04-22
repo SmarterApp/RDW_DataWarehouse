@@ -40,6 +40,9 @@ def get_user_session(user_session_id):
 
 
 def write_security_event(message_content, message_type):
+    '''
+    Write a security event details to a table in DB
+    '''
     with EdauthDBConnection() as connection:
         security_events = connection.get_table('security_event')
         # store the security event into DB

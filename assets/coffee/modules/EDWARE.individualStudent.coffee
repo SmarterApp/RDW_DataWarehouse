@@ -80,7 +80,9 @@ define [
           items.score_name = performance_level.name
           
           # set level-based overall ald content
-          items.overall_ald = content.overall_ald[items.asmt_subject][items.asmt_perf_lvl]
+          overallALD = Mustache.render(content.overall_ald[items.asmt_subject], items)
+          overallALD = edwareUtil.truncateContent(overallALD, edwareUtil.getConstants("overall_ald"))
+          items.overall_ald = overallALD
           
           # set psychometric_implications content
           psychometricContent = Mustache.render(content.psychometric_implications[items.asmt_subject], items)

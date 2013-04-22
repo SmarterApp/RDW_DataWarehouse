@@ -10,6 +10,7 @@ define [
   #global $ window 
   
   constants = 
+      overall_ald: 250
       psychometric_characterLimits: 250
       policyContent_characterLimits: 250
       claims_characterLimits: 140

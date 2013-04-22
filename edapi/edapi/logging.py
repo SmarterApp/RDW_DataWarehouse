@@ -50,16 +50,16 @@ def audit_event(logger_name="audit", blacklist_args=[]):
             if not 'principals' in allargs.keys():
                 allargs['principals'] = effective_principals(get_current_request())
 
-            all_args = params['args'][0]
-            keys = set(all_args) - set(blacklist_args)
-            keys = keys - set(blacklist_args_global)
+#            all_args = params['args']
+#            keys = set(all_args) - set(blacklist_args)
+#            keys = keys - set(blacklist_args_global)
+#
+#            new_params = {}
+#            for key in all_args:
+#                if key in keys:
+#                    new_params[key] = all_args[key]
 
-            new_params = {}
-            for key in all_args:
-                if key in keys:
-                    new_params[key] = all_args[key]
-
-            params['args'] = new_params
+#            params['args'] = new_params
             log.info(allargs)
             smarter_log = logging.getLogger('smarter')
 

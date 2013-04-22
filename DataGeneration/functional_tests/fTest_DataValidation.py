@@ -1,11 +1,11 @@
 import unittest
 import csv
 import os
-import src.entities
+import entities_2 as entities
 import itertools
 from generate_data import ENTITY_TO_PATH_DICT
 from zope.component.tests.examples import comp
-from config_file_data_generation import dg_types
+import dg_types
 
 
 GRADES = 'grades'
@@ -17,13 +17,13 @@ DISTRICT_TYPES_AND_COUNTS = 'districtTypesAndCounts'
 class DataGenerationValidation(unittest.TestCase):
 
 # Get header values from Configuration file
-    dim_inst_hier = src.entities.InstitutionHierarchy.getHeader()
-    dim_staff = src.entities.Staff.getHeader()
-    dim_student = src.entities.Student.getHeader()
-    dim_section = src.entities.Section.getHeader()
-    dim_asmt = src.entities.Assessment.getHeader()
-    fact_asmt_outcome = src.entities.AssessmentOutcome.getHeader()
-    external_user_student_rel = src.entities.ExternalUserStudent.getHeader()
+    dim_inst_hier = entities.InstitutionHierarchy.getHeader()
+    dim_staff = entities.Staff.getHeader()
+    dim_student = entities.Student.getHeader()
+    dim_section = entities.Section.getHeader()
+    dim_asmt = entities.Assessment.getHeader()
+    fact_asmt_outcome = entities.AssessmentOutcome.getHeader()
+    external_user_student_rel = entities.ExternalUserStudent.getHeader()
     
     # Create dictionary to store Headers 
     header_dict = {}
@@ -122,9 +122,9 @@ class DataGenerationValidation(unittest.TestCase):
     
             asmt_dict = {'asmt_score_min': [int(asmt_score_min), 1200],
                          'asmt_score_max': [int(asmt_score_max), 2400],
-                         'asmt_cut_point_1': [int(asmt_cut_point_1), 1575],
-                         'asmt_cut_point_2': [int(asmt_cut_point_2), 1875],
-                         'asmt_cut_point_3': [int(asmt_cut_point_3), 2175],
+                         'asmt_cut_point_1': [int(asmt_cut_point_1), 1400],
+                         'asmt_cut_point_2': [int(asmt_cut_point_2), 1800],
+                         'asmt_cut_point_3': [int(asmt_cut_point_3), 2100],
                          'asmt_cut_point_4': [(asmt_cut_point_4), ''],
                          'asmt_perf_lvl_name_1': [(asmt_perf_lvl_name_1), 'Minimal Understanding'],
                          'asmt_perf_lvl_name_2': [(asmt_perf_lvl_name_2), 'Partial Understanding'],

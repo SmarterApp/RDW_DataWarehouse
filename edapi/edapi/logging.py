@@ -13,9 +13,13 @@ from pyramid.security import authenticated_userid, effective_principals,\
 from pyramid.threadlocal import get_current_request
 from collections import OrderedDict
 import time
+import inspect
+
+# arguments added here will not get logged
+blacklist_args_global = ['first_name', 'last_name']
 
 
-def audit_event(report_name, logger_name="audit"):
+def audit_event(logger_name="audit", blacklist_args=[]):
     log = logging.getLogger(logger_name)
 
     if (len(log.handlers) == 0):
@@ -26,6 +30,10 @@ def audit_event(report_name, logger_name="audit"):
     '''
     @adopt_to_method_and_func
     def audit_event_wrapper(original_func):
+        # get the function param names
+        arg_names = inspect.getargspec(original_func)[0]
+
+        print(arg_names)
         func_name = original_func.__name__
         class_name = None
         if hasattr(original_func, '__self__'):
@@ -38,6 +46,9 @@ def audit_event(report_name, logger_name="audit"):
                 allargs['class'] = class_name
             params = {}
             params['args'] = args
+
+            # zip the param names with their values
+            args_dict = dict(zip(arg_names, list(args)))
             params.update(kwds)
             allargs['params'] = params
             session_id = unauthenticated_userid(get_current_request())
@@ -46,16 +57,27 @@ def audit_event(report_name, logger_name="audit"):
                     allargs['session_id'] = session_id
             if not 'principals' in allargs.keys():
                 allargs['principals'] = effective_principals(get_current_request())
+
+            keys = set(args_dict.keys()) - set(blacklist_args)
+            keys = keys - set(blacklist_args_global)
+
+            logged_params = {}
+            # if the params are not blacklisted, we will log them
+            for key in args_dict:
+                if key in keys:
+                    logged_params[key] = args_dict[key]
+
+            params['args'] = logged_params
             log.info(allargs)
             smarter_log = logging.getLogger('smarter')
 
-            smarter_log.info(str.format('Entered {0} report, session_id = {1}', report_name, session_id))
+            smarter_log.info(str.format('Entered {0} report, session_id = {1}', class_name, session_id))
 
             report_start_time = time.localtime()
             result = original_func(*args, **kwds)
             report_duration_in_seconds = round((time.mktime(time.localtime()) - time.mktime(report_start_time)))
 
-            smarter_log.info(str.format('Exited {0} report, generating the report took {1} seconds', report_name, report_duration_in_seconds))
+            smarter_log.info(str.format('Exited {0} report, generating the report took {1} seconds', class_name, report_duration_in_seconds))
 
             return result
         return __wrapped

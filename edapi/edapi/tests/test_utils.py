@@ -8,7 +8,9 @@ from edapi.utils import get_report_dict_value, generate_report, generate_report_
     expand_field, prepare_params, add_configuration_header
 from edapi.exceptions import ReportNotFoundError, InvalidParameterError
 from edapi.tests.dummy import DummyValidator, Dummy
-from edapi.tests.test_logger import TestLogger, test_function, test_display_name
+from edapi.tests.test_logger import TestLogger, test_function, test_display_name,\
+    test_blacklist_param, test_blacklist_non_existing_param,\
+    test_blacklist_global_param
 import os
 import logging
 from edapi.logging import JsonDictLoggingFormatter
@@ -196,3 +198,30 @@ class TestUtils(unittest.TestCase):
         handler = logger.handlers[0]
         f = handler.get()
         self.assertIn("test_display", f, "missing param")
+
+    def test_blacklist_log(self):
+        test_blacklist_param("parama", "paramb")
+        logger = logging.getLogger("test")
+        handler = logger.handlers[0]
+        f = handler.get()
+        self.assertIn("param2", f, "missing param")
+        self.assertNotIn("param1", f, "redundant param")
+
+    def test_blacklist_non_existing_param_log(self):
+        test_blacklist_non_existing_param("parama", "paramb")
+        logger = logging.getLogger("test")
+        handler = logger.handlers[0]
+        f = handler.get()
+        self.assertIn("param2", f, "missing param")
+        self.assertIn("param1", f, "missing param")
+        self.assertNotIn("param3", f, "redundant param")
+
+    def test_blacklist_global_param_log(self):
+        test_blacklist_global_param("first", "last", "parama", "paramb")
+        logger = logging.getLogger("test")
+        handler = logger.handlers[0]
+        f = handler.get()
+        self.assertIn("param2", f, "missing param")
+        self.assertIn("param1", f, "missing param")
+        self.assertNotIn("first_name", f, "redundant param")
+        self.assertNotIn("last_name", f, "redundant param")

@@ -13,9 +13,10 @@ from pyramid.security import authenticated_userid, effective_principals,\
 from pyramid.threadlocal import get_current_request
 from collections import OrderedDict
 import time
+import inspect
 
 # arguments added here will not get logged
-blacklist_args_global = []
+blacklist_args_global = ['first_name', 'last_name']
 
 
 def audit_event(logger_name="audit", blacklist_args=[]):
@@ -29,6 +30,10 @@ def audit_event(logger_name="audit", blacklist_args=[]):
     '''
     @adopt_to_method_and_func
     def audit_event_wrapper(original_func):
+        # get the function param names
+        arg_names = inspect.getargspec(original_func)[0]
+
+        print(arg_names)
         func_name = original_func.__name__
         class_name = None
         if hasattr(original_func, '__self__'):
@@ -41,6 +46,9 @@ def audit_event(logger_name="audit", blacklist_args=[]):
                 allargs['class'] = class_name
             params = {}
             params['args'] = args
+
+            # zip the param names with their values
+            args_dict = dict(zip(arg_names, list(args)))
             params.update(kwds)
             allargs['params'] = params
             session_id = unauthenticated_userid(get_current_request())
@@ -50,16 +58,16 @@ def audit_event(logger_name="audit", blacklist_args=[]):
             if not 'principals' in allargs.keys():
                 allargs['principals'] = effective_principals(get_current_request())
 
-#            all_args = params['args']
-#            keys = set(all_args) - set(blacklist_args)
-#            keys = keys - set(blacklist_args_global)
-#
-#            new_params = {}
-#            for key in all_args:
-#                if key in keys:
-#                    new_params[key] = all_args[key]
+            keys = set(args_dict.keys()) - set(blacklist_args)
+            keys = keys - set(blacklist_args_global)
 
-#            params['args'] = new_params
+            logged_params = {}
+            # if the params are not blacklisted, we will log them
+            for key in args_dict:
+                if key in keys:
+                    logged_params[key] = args_dict[key]
+
+            params['args'] = logged_params
             log.info(allargs)
             smarter_log = logging.getLogger('smarter')
 

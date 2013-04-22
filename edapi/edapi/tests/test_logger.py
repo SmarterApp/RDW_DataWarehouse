@@ -11,6 +11,21 @@ def test_function(param1, param2):
     pass
 
 
+@audit_event(logger_name="test", blacklist_args=["param1"])
+def test_blacklist_param(param1, param2):
+    pass
+
+
+@audit_event(logger_name="test", blacklist_args=["param3"])
+def test_blacklist_non_existing_param(param1, param2):
+    pass
+
+
+@audit_event(logger_name="test")
+def test_blacklist_global_param(first_name, last_name, param1, param2):
+    pass
+
+
 @audit_event(logger_name="test")
 def test_display_name():
     pass

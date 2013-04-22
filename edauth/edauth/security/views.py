@@ -11,7 +11,7 @@ import base64
 from edauth.saml2.saml_request import SamlAuthnRequest, SamlLogoutRequest
 import urllib
 from edauth.security.session_manager import create_new_user_session, \
-    delete_session, get_user_session
+    delete_session, get_user_session, write_security_event
 from edauth.utils import convert_to_int
 from pyramid.response import Response
 from edauth.security.utils import ICipher
@@ -22,8 +22,14 @@ from zope import component
 from edauth import logger
 
 
+def enum(**enums):
+    return type('Enum', (), enums)
+
+
 def _get_cipher():
     return component.getUtility(ICipher)
+
+SECURITY_EVENT_TYPE = enum(INFO=0, WARN=1)
 
 
 @view_config(route_name='login', permission=NO_PERMISSION_REQUIRED)
@@ -44,7 +50,9 @@ def login(request):
     # Here, we return 403 for users that has a role of None
     # This can be an user that has no role from IDP or has a role that we don't know of
     if Roles.get_invalid_role() in principals:
-        logger.warn("Forbidden view accessed by session_id %s" % session_id)
+        message = "Forbidden view accessed by session_id %s" % session_id
+        logger.warn(message)
+        write_security_event(message, SECURITY_EVENT_TYPE.WARN)
         return HTTPForbidden()
 
     # clear out the session if we found one in the cookie
@@ -116,7 +124,9 @@ def logout(request):
             params = urllib.parse.urlencode(params)
             url = request.registry.settings['auth.saml.idp_server_logout_url'] + "?%s" % params
 
-            logger.info("Logout requested for session_id %s" % session_id)
+            message = "Logout requested for session_id %s" % session_id
+            logger.info(message)
+            write_security_event(message, SECURITY_EVENT_TYPE.INFO)
             # delete our session
             delete_session(session_id)
 
@@ -152,7 +162,9 @@ def saml2_post_consumer(request):
         # Save session id to cookie
         headers = remember(request, session_id)
 
-        logger.info("SAML response processed successfully for session_id %s" % session_id)
+        message = "SAML response processed successfully for session_id %s" % session_id
+        logger.info(message)
+        write_security_event(message, SECURITY_EVENT_TYPE.INFO)
 
         # Get the url saved in RelayState from SAML request, redirect it back to it
         # If it's not found, redirect to list of reports
@@ -164,7 +176,9 @@ def saml2_post_consumer(request):
             redirect_url = request.route_url('list_of_reports')
 
     else:
-        logger.info("SAML response failed with Condition: {0}, Status: {1}, Signature: {2}".format(str(condition), str(status), str(signature)))
+        message = "SAML response failed with Condition: {0}, Status: {1}, Signature: {2}".format(str(condition), str(status), str(signature))
+        logger.info(message)
+        write_security_event(message, SECURITY_EVENT_TYPE.INFO)
         redirect_url = request.route_url('login')
         headers = []
 

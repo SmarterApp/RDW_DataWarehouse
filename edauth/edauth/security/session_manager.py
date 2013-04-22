@@ -39,6 +39,13 @@ def get_user_session(user_session_id):
     return session
 
 
+def write_security_event(message_content, message_type):
+    with EdauthDBConnection() as connection:
+        security_events = connection.get_table('security_event')
+        # store the security event into DB
+        connection.execute(security_events.insert(), message=message_content, type=message_type)
+
+
 def create_new_user_session(saml_response, session_expire_after_in_secs=30):
     '''
     Create new user session from SAMLResponse

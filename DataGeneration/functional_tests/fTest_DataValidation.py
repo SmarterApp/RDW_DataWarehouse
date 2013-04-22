@@ -60,7 +60,7 @@ class DataGenerationValidation(unittest.TestCase):
             min_score = []
             max_score = []
             asmt_score_dict = {}
-            with open ('./datafiles/csv/fact_asmt_outcome.csv', 'r') as csvfile:
+            with open ('../datafiles/csv/fact_asmt_outcome.csv', 'r') as csvfile:
                 col_val = csv.DictReader(csvfile, delimiter=',') 
                 for values in col_val:
                     score = values[score_column_name]

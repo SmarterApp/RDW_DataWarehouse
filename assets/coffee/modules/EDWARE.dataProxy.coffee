@@ -27,10 +27,8 @@ define [
             callback data
           else
             data
-        error: (xhr, ajaxOptions, thrownError) ->
-          responseText = JSON.parse(xhr.responseText)
-          edwareUtil.displayErrorMessage xhr.status + ": " + thrownError + " - " + responseText['error']
-        #check401Error xhr.status
+        error: (xhr, ajaxOptions, thrownError) ->                 
+          location.href = "/assets/public/error.html"
       )          
          
   

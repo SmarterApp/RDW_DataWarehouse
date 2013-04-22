@@ -58,6 +58,7 @@ def main(global_config, **settings):
 
     # For now, never cache htmls
     config.add_static_view('assets/html', os.path.join(assets_dir, 'html'), cache_max_age=0, permission='view')
+    config.add_static_view('assets/public', os.path.join(assets_dir, 'public'), cache_max_age=0, permission='view')
 
     # Add heartbeat
     config.add_route('heartbeat', '/heartbeat')

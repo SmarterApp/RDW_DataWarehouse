@@ -104,7 +104,7 @@ class DataGenerationValidation(unittest.TestCase):
     
     def test_asmt_cut_lavel_score(self):
     
-        with open('./datafiles/csv/dim_asmt.csv', 'r') as csvfile:
+        with open('../datafiles/csv/dim_asmt.csv', 'r') as csvfile:
             col_val = csv.DictReader(csvfile, delimiter=',')
            
             for values in col_val:
@@ -134,7 +134,7 @@ class DataGenerationValidation(unittest.TestCase):
             for key, value in asmt_dict.items():
                     csv_asmt_value = value[0]
                     config_asmt_value = value[1]
-                    assert csv_asmt_value == config_asmt_value, (key + ' value is incorrect. Expected ', config_asmt_value , ' but found ', csv_asmt_value)
+                    assert csv_asmt_value == config_asmt_value, (key + ' value is incorrect. Expected ' + str(config_asmt_value) + ' but found ' + str(csv_asmt_value))
         print('TC2: Passed: Validate min/Max assessment score, cut score and assessment performance level names')
 
     # TC3: Validate School Categoty
@@ -143,7 +143,7 @@ class DataGenerationValidation(unittest.TestCase):
     def test_grade(self):
         expected_school_category = ['High School', 'Middle School', 'Elementary School']
                 
-        with open('./datafiles/csv/dim_inst_hier.csv', 'r') as csvfile:
+        with open('../datafiles/csv/dim_inst_hier.csv', 'r') as csvfile:
             col_val = csv.DictReader(csvfile, delimiter=',')
             dict = {}
             actual_school_category = []
@@ -167,7 +167,7 @@ class DataGenerationValidation(unittest.TestCase):
             assert sorted(expected_school_category) == sorted(actual_school_category), 'School Category does not match'
                
         # get school_guid from dim_section and check the grades
-        csv_files = ['./datafiles/csv/fact_asmt_outcome.csv','./datafiles/csv/dim_section.csv', './datafiles/csv/dim_student.csv']
+        csv_files = ['../datafiles/csv/fact_asmt_outcome.csv','../datafiles/csv/dim_section.csv', '../datafiles/csv/dim_student.csv']
         for each_file in csv_files:
             with open(each_file, 'r') as csvfile:
                 
@@ -278,7 +278,7 @@ class DataGenerationValidation(unittest.TestCase):
     
             perf_lvl = []
             asmt_score_list = []
-            with open ('./datafiles/csv/fact_asmt_outcome.csv', 'r') as csvfile:
+            with open ('../datafiles/csv/fact_asmt_outcome.csv', 'r') as csvfile:
                         col_val = csv.DictReader(csvfile, delimiter=',') 
                         for values in col_val:
                             asmt_perf_lvl = values['asmt_perf_lvl']

@@ -4,9 +4,9 @@ import os
 import csv
 import random
 import util_2
-from copy import deepcopy
-from idgen import IdGen
+import stats2 as stats
 import constants_2 as constants
+from idgen import IdGen
 from write_to_csv_2 import create_csv
 from importlib import import_module
 from generate_entities import (generate_institution_hierarchy, generate_sections, generate_students, generate_multiple_staff,
@@ -120,6 +120,7 @@ def generate_data_from_config_file(config_module):
             school_counts = district_type[config_module.SCHOOL_COUNTS]
 
             for district in districts:
+                print('populating district: %s' % district.district_name)
                 # TODO: should we add some randomness here? What are acceptable numbers? 5-10? 10-20?
                 number_of_district_level_staff = 10
                 district_level_staff = generate_non_teaching_staff(number_of_district_level_staff, state_code=current_state.state_code,
@@ -512,23 +513,26 @@ def calculate_claim_scores(asmt_score, assessment, ebmin, ebmax, rndlo, rndhi):
     '''
     '''
     claim_scores = []
-    claim_list = [(assessment.asmt_claim_1_name, assessment.asmt_claim_1_score_min, assessment.asmt_claim_1_score_max, assessment.asmt_claim_1_score_weight),
-                  (assessment.asmt_claim_2_name, assessment.asmt_claim_2_score_min, assessment.asmt_claim_2_score_max, assessment.asmt_claim_2_score_weight),
-                  (assessment.asmt_claim_3_name, assessment.asmt_claim_3_score_min, assessment.asmt_claim_3_score_max, assessment.asmt_claim_3_score_weight)]
+    claim_list = [(assessment.asmt_claim_1_score_min, assessment.asmt_claim_1_score_max, assessment.asmt_claim_1_score_weight),
+                  (assessment.asmt_claim_2_score_min, assessment.asmt_claim_2_score_max, assessment.asmt_claim_2_score_weight),
+                  (assessment.asmt_claim_3_score_min, assessment.asmt_claim_3_score_max, assessment.asmt_claim_3_score_weight)]
+    percentages = [assessment.asmt_claim_1_score_weight, assessment.asmt_claim_2_score_weight, assessment.asmt_claim_3_score_weight]
     if assessment.asmt_claim_4_name:
-        claim_list.append((assessment.asmt_claim_4_name, assessment.asmt_claim_4_score_min, assessment.asmt_claim_4_score_max, assessment.asmt_claim_4_score_weight))
+        claim_list.append((assessment.asmt_claim_4_score_min, assessment.asmt_claim_4_score_max, assessment.asmt_claim_4_score_weight))
+        percentages.append(assessment.asmt_claim_4_score_weight)
 
-    for claim_tuple in claim_list:
+    range_min = assessment.asmt_claim_1_score_min
+    range_max = assessment.asmt_claim_1_score_max
+    weighted_claim_scores = stats.distribute_by_percentages(asmt_score, range_min, range_max, percentages)
+
+    for i in range(len(claim_list)):
         # Get basic claim information from claim tuple
-        claim_minimum_score = claim_tuple[1]
-        claim_maximum_score = claim_tuple[2]
-        claim_score_scale = (claim_minimum_score, claim_maximum_score)
-        claim_weight = claim_tuple[3]
+        claim_minimum_score = claim_list[i][0]
+        claim_maximum_score = claim_list[i][1]
+        scaled_claim_score = weighted_claim_scores[i]
 
         # calculate the claim score
-        weighted_assessment_scale = (assessment.asmt_score_min * claim_weight, assessment.asmt_score_max * claim_weight)
-        unscaled_claim_score = asmt_score * claim_weight
-        scaled_claim_score = int(rescale_value(unscaled_claim_score, weighted_assessment_scale, claim_score_scale))
+
         scenter, ebmin, ebstep = calc_eb_params(claim_minimum_score, claim_maximum_score, ebmin, ebmax)
         ebleft, ebright, _ebhalf = calc_eb(scaled_claim_score, claim_minimum_score, claim_maximum_score, scenter, ebmin, ebstep, rndlo, rndhi)
         claim_score = generate_claim_score(scaled_claim_score, round(ebleft), round(ebright))

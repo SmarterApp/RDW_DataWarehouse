@@ -5,8 +5,7 @@ Created on Apr 19, 2013
 '''
 
 from pyramid.view import notfound_view_config
-from pyramid.response import Response
-from pyramid.httpexceptions import HTTPMovedPermanently
+from pyramid.httpexceptions import HTTPMovedPermanently, HTTPNotFound
 
 
 @notfound_view_config()
@@ -14,6 +13,9 @@ def notfound_view_get(request):
     '''
     All Not found gets redirected here
     '''
-    # TODO: we can separate  GET and POST request errors
+    # If it's an ajax call or content type is application/json
+    if request.is_xhr or 'application/json' in request.accept:
+        return HTTPNotFound()
+
     url = request.application_url + '/assets/public/error.html'
     return HTTPMovedPermanently(location=url)

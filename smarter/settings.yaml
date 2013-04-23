@@ -27,15 +27,11 @@ common:
     edware:
       db:
         main:
-          pool_size: 20
-          max_overflow: 10
           echo: False
     edauth:
       schema_name: edware_session
       db:
         main:
-          pool_size: 20
-          max_overflow: 10
           echo: False
 
     # Authentication
@@ -81,25 +77,25 @@ common:
 
   '[formatters]':
     keys: generic, json
-
-  '[logger_root]':
-    level: INFO 
-    handlers: console
-
-  '[logger_smarter]':
-    level: DEBUG
-    handlers: filelog
-    qualname: smarter
     
   '[logger_edauth]':
     level: DEBUG
     handlers: filelog
     qualname: edauth
 
+  '[logger_root]':
+    level: INFO
+    handlers: filelog, console
+
+  '[logger_smarter]':
+    level: INFO
+    handlers: filelog
+    qualname: smarter
+
   '[logger_sqlalchemy]':
     level: INFO
-    handlers: 
-    qualname: sqlalchemy.engine
+    handlers: filelog
+    qualname: sqlalchemy
     # "level = INFO" logs SQL queries.
     # "level = DEBUG" logs SQL queries and results.
     # "level = WARN" logs neither.  (Recommended for production systems.)
@@ -164,6 +160,21 @@ qa1:
         idp_server_login_url: https://auth0.qa.dum.edwdc.net/openam/SSORedirect/metaAlias/idp
         idp_server_logout_url: https://auth0.qa.dum.edwdc.net/openam/IDPSloRedirect/metaAlias/idp
         name_qualifier: https://auth0.qa.dum.edwdc.net/openam
+  '[handlers]':
+    keys: console, filelog, audit, syslog
+  '[handler_syslog]':
+    class: logging.handlers.SysLogHandler
+    args: '(''/dev/log'', handlers.SysLogHandler.LOG_LOCAL1)'
+    level: DEBUG
+    formatter: generic
+  '[logger_smarter]':
+    level: DEBUG
+    handlers: syslog
+    qualname: smarter
+  '[logger_edauth]':
+    level: INFO
+    handlers: syslog
+    qualname: edauth
 
 qa2:
   '[app:main]':
@@ -188,6 +199,21 @@ qa2:
         idp_server_login_url: https://auth0.qa.dum.edwdc.net/openam/SSORedirect/metaAlias/idp
         idp_server_logout_url: https://auth0.qa.dum.edwdc.net/openam/IDPSloRedirect/metaAlias/idp
         name_qualifier: https://auth0.qa.dum.edwdc.net/openam
+  '[handlers]':
+    keys: console, filelog, audit, syslog
+  '[handler_syslog]':
+    class: logging.handlers.SysLogHandler
+    args: '(''/dev/log'', handlers.SysLogHandler.LOG_LOCAL1)'
+    level: DEBUG
+    formatter: generic
+  '[logger_smarter]':
+    level: DEBUG
+    handlers: syslog
+    qualname: smarter
+  '[logger_edauth]':
+    level: INFO
+    handlers: syslog
+    qualname: edauth
 
 jenkins_qa:
   '[app:main]':
@@ -242,23 +268,19 @@ uat:
     handlers: syslog
     qualname: edauth
 
-local:
+localOpenAM:
   '[app:main]':
     edware:
       schema_name: edware_sds_0_1
       db:
         main:
           url: postgresql+pypostgresql://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
-          pool_size: 20
-          max_overflow: 10
           echo: False
     edauth:
       schema_name: edware_session
       db:
         main:
           url: postgresql+pypostgresql://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
-          pool_size: 20
-          max_overflow: 10
           echo: False
     auth:
       skip.verify: False
@@ -276,10 +298,14 @@ development:
       db:
         main:
           url: postgresql+pypostgresql://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
+          pool_size: 20
+          max_overflow: 10
     edauth:
       db:
         main:
           url: postgresql+pypostgresql://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
+          pool_size: 20
+          max_overflow: 10
     auth:
       skip.verify: False
       saml:

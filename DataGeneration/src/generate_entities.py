@@ -14,6 +14,32 @@ def generate_institution_hierarchy(state_name, state_code,
                                    district_guid, district_name,
                                    school_guid, school_name, school_category,
                                    from_date, most_recent, to_date=None):
+    '''
+    Generate an InstitutionHierarchy entity
+
+    @type state_name: L{str}
+    @param state_name: The name of the state of the InstitutionHierarchy
+    @type state_code: L{str}
+    @param state_code: The 2 letter abbreviation of the state
+    @type district_guid: L{UUID}
+    @param district_guid: Globally Unique Identifier for the InstitutionHierarchy's district
+    @type district_name: L{str}
+    @param district_name: The name of the InstitutionHierarchy's district
+    @type school_guid: L{UUID}
+    @param school_guid: Globally Unique Identifier for the InstitutionHierarchy's school
+    @type school_name: L{str}
+    @param school_name: The name of the InstituionHierarchy's school
+    @type school_category: L{str}
+    @param school_category: The type of school (Elementary School, Middle School, High School)
+    @type from_date: L{datetime.date}
+    @param from_date: The starting date of the InstitutionHierarchy row.
+    @type most_recent: L{bool}
+    @param most_recent: Whether or not this is the most recent row for this particular InstitutionHierarchy
+    @type to_date: L{datetime.date}
+    @param to_date: The concluding date of this InstitutionHierarchy row, if applicable.
+    @return: An InstitutionHierarchy object
+    '''
+
     id_generator = IdGen()
     inst_hier_rec_id = id_generator.get_id()
 
@@ -156,7 +182,7 @@ def generate_assessments(grades, cut_points, from_date, most_recent, to_date=Non
     asmt_cut_point_4 = cut_points[3] if len(cut_points) > 3 else None
 
     asmt_years = sorted(constants.ASSMT_SCORE_YEARS)
-
+    # TODO: de-couple constants from this method.  Pass the constant values in via parameters.
     for asmt_grade in grades:
         for asmt_type in constants.ASSMT_TYPES:
             # INTERIM assessment has 3 periods, SUMMATIVE assessment has 1 'EOY' period
@@ -230,7 +256,7 @@ def generate_fact_assessment_outcome(asmt_rec_id, student_guid, teacher_guid, st
 
     return asmt_outcome
 
-
+# TODO: Move this function somewhere else (generate_data?) since it uses helper_entities (students, scores)
 def generate_fact_assessment_outcomes(students, scores, asmt_rec_id, teacher_guid, state_code, district_guid, school_guid, section_guid,
                                      inst_hier_rec_id, section_rec_id, where_taken_id, where_taken_name, asmt_grade, enrl_grade,
                                      date_taken, date_taken_day, date_taken_month, date_taken_year):
@@ -239,6 +265,7 @@ def generate_fact_assessment_outcomes(students, scores, asmt_rec_id, teacher_gui
 
     for student in students:
         score = scores.pop()
+        # TODO: Create a function that unpacks score information, or break this function down into some other functions.
         claim_scores = score.claim_scores
 
         student_guid = student.student_guid

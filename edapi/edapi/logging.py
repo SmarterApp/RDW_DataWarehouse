@@ -8,12 +8,12 @@ import simplejson as json
 import re
 import logging
 from edapi.utils import adopt_to_method_and_func
-from pyramid.security import authenticated_userid, effective_principals,\
+from pyramid.security import effective_principals,\
     unauthenticated_userid
 from pyramid.threadlocal import get_current_request
 from collections import OrderedDict
-import time
 import inspect
+import datetime
 
 # arguments added here will not get logged
 blacklist_args_global = ['first_name', 'last_name']
@@ -73,9 +73,10 @@ def audit_event(logger_name="audit", blacklist_args=[]):
 
             smarter_log.info(str.format('Entered {0} report, session_id = {1}', class_name, session_id))
 
-            report_start_time = time.localtime()
+            report_start_time = datetime.datetime.now().strftime('%s.%f')
             result = original_func(*args, **kwds)
-            report_duration_in_seconds = round((time.mktime(time.localtime()) - time.mktime(report_start_time)))
+            finish_time = datetime.datetime.now().strftime('%s.%f')
+            report_duration_in_seconds = round(float(finish_time) - float(report_start_time), 3)
 
             smarter_log.info(str.format('Exited {0} report, generating the report took {1} seconds', class_name, report_duration_in_seconds))
 

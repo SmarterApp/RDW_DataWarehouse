@@ -280,7 +280,7 @@ def create_school_dictionary(school_counts, school_types_and_ratios, school_name
     num_schools_avg = school_counts[config_module.AVG]
     num_schools_max = school_counts[config_module.MAX]
     # TODO: Can we assume number of schools is a normal distribution?
-    number_of_schools_in_district = calculate_number_of_schools(num_schools_min, num_schools_avg, num_schools_max)
+    number_of_schools_in_district = calculate_number_of_schools(num_schools_min, num_schools_max, num_schools_avg)
 
     ratio_sum = sum(school_types_and_ratios.values())
     ratio_unit = max((number_of_schools_in_district // ratio_sum), 1)
@@ -430,6 +430,13 @@ def translate_scores_to_assessment_score(scores, cut_points, assessment, ebmin, 
 
 def generate_students_from_institution_hierarchy(number_of_students, institution_hierarchy, grade, section_guid, street_names):
     '''
+    Generates a list of students
+    @param number_of_students: The number of students to generate
+    @param institution_hierarchy: An InstitutionHierarchy object for the students to be apart of
+    @param grade: The grade of the students
+    @param section_guid: The section unique identifier
+    @param street_names: A list of names to use when assigning streets to students
+    @return: A list of Student objects
     '''
     state_code = institution_hierarchy.state_code
     district_guid = institution_hierarchy.district_guid
@@ -461,6 +468,11 @@ def set_students_rec_id_and_section_id(students, section_guid):
 
 def generate_teaching_staff_from_institution_hierarchy(number_of_staff, institution_hierarchy, section_guid):
     '''
+    Generate teachers based on the institution hierarchy object that is provided
+    @param number_of_staff: The number of teachers to generate
+    @param institution_hierarchy: An InstitutionHierarchy object
+    @param section_guid: The Guid corresponding to the section to place the staff member in
+    @return: a list of teachers as Staff objects
     '''
     state_code = institution_hierarchy.state_code
     district_guid = institution_hierarchy.district_guid
@@ -477,6 +489,12 @@ def generate_teaching_staff_from_institution_hierarchy(number_of_staff, institut
 
 def generate_non_teaching_staff(number_of_staff, state_code='NA', district_guid='NA', school_guid='NA'):
     '''
+    Generate staff that are not teachers
+    @param number_of_staff: The number of staff memebers to generate
+    @keyword state_code: The state code to use for the staff memeber. If applicable.
+    @keyword district_guid: The guid to the district the staff member is in. If applicable.
+    @keyword school_guid: The guid to the school the staff member is in. If applicable.
+    @return: a list of Staff objects
     '''
     hier_user_type = 'Staff'
     temporal_information = config_module.get_temporal_information()
@@ -488,15 +506,25 @@ def generate_non_teaching_staff(number_of_staff, state_code='NA', district_guid=
     return staff_list
 
 
-def calculate_number_of_schools(school_min, school_avg, school_max):
+def calculate_number_of_schools(school_min, school_max, school_avg):
     '''
+    calculate the number of schools using the gaussian function
+    @param school_min: The min number of schools the school can contain
+    @param school_avg: The average number of schools
+    @param school_max: The Maximum number of schools the school can contain
+    @return: An int representing the number of schools
     '''
     number_of_schools = gauss_one(school_min, school_max, school_avg)
-    return number_of_schools
+    return int(number_of_schools)
 
 
 def calculate_number_of_students(student_min, student_max, student_avg):
     '''
+    Calculate the number of students to place in a school
+    @param student_min: The min number of students the school can contain
+    @param student_max: The Maximum number of students the school can contain
+    @param student_avg: The average number of students
+    @return: An int representing the number of students to use, based on a gaussian distribution
     '''
     number_of_students = gauss_one(student_min, student_max, student_avg)
     return int(number_of_students)
@@ -504,6 +532,9 @@ def calculate_number_of_students(student_min, student_max, student_avg):
 
 def calculate_number_of_sections(number_of_students):
     '''
+    Calculate the number of sections a grade should have based on the number of students
+    @param number_of_students: The number of students in the grade for a single subject
+    @return: The number of students to put in each section as an int
     '''
     # TODO: Figure out how to calculate number_of_sections
     return 1
@@ -550,32 +581,10 @@ def calculate_claim_scores(asmt_score, assessment, ebmin, ebmax, rndlo, rndhi):
     return claim_scores
 
 
-# see http://stackoverflow.com/questions/5294955/how-to-scale-down-a-range-of-numbers-with-a-known-min-and-max-value
-# for a complete explanation of this logic
-def rescale_value(old_value, old_scale, new_scale):
-    '''
-        old_scale and new_scale are tuples
-        the first value represents the minimum score
-        the second value represents the maximu score
-    '''
-
-    old_min = old_scale[0]
-    old_max = old_scale[1]
-
-    new_min = new_scale[0]
-    new_max = new_scale[1]
-
-    numerator = (new_max - new_min) * (old_value - old_min)
-    denominator = old_max - old_min
-
-    result = (numerator / denominator) + new_min
-    return result
-
-
 def get_flat_grades_list(school_config):
     '''
     pull out grades from score_config and place in flat list
-    @param school_config:
+    @param school_config: A dictionary of school info
     @return: list of grades
     '''
     grades = []
@@ -583,44 +592,23 @@ def get_flat_grades_list(school_config):
     for school_type in school_config:
         grades.extend(school_config[school_type][config_module.GRADES])
 
+    # remove duplicates
+    grades = list(set(grades))
+
     return grades
 
 
 def select_assessment_from_list(asmt_list, grade, subject):
     '''
     select the proper assessment from a list
-    @param asmt_list:
-    @param grade:
-    @param subject:
+    @param asmt_list: A list of Assessment objects
+    @param grade: The grade to search for in the assessment list
+    @param subject: The subject to search for in the assessment list
+    @return: A single assessment object that has the grade and subject specified. None if no match found
     '''
     for asmt in asmt_list:
         if asmt.asmt_grade == grade and asmt.asmt_subject == subject:
             return asmt
-
-
-def calculate_error_band(score, smin, smax, ebmin, ebmax, rndlo, rndhi, clip=True):
-    '''
-    @param score:
-    @param smin:
-    @param smax:
-    @param ebmin:
-    @param ebmax:
-    @param rndlo:
-    @param rndhi:
-    @param clip:
-    @return:
-    '''
-    assert(smin > 0 and smax > smin)
-    assert(score >= smin and score <= smax)
-    assert(ebmin > 0 and ebmax > ebmin)
-    srange = smax - smin        # score range (from MIN to MAX)
-    scenter = smin + srange / 2   # center of score range
-    ebsteps = srange / 2        # number of EB steps (= range/2)
-    ebrange = ebmax - ebmin     # range of error band sizes
-    eb_size_per_step = ebrange / ebsteps    # EB size per step
-    dist_from_center = abs(score - scenter)
-    ebhalf = ebmin + (eb_size_per_step * dist_from_center)
-    return ebhalf
 
 
 def get_subset_of_students(students, percentage):

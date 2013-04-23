@@ -15,9 +15,10 @@ def setup_db_connection_from_ini(settings, prefix, metadata, datasource_name='',
     '''
     Setup a generic db connection
     '''
+    extra = {}
     if prefix + '.db.main.pool_size' not in settings.keys():
-        settings[prefix + '.db.main.poolclass'] = NullPool
-    engine = engine_from_config(settings, prefix + '.db.main.')
+        extra['poolclass'] = NullPool
+    engine = engine_from_config(settings, prefix + '.db.main.', **extra)
 
     # Create schema and its tables
     if allow_create is True:

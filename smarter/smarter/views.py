@@ -14,7 +14,7 @@ def notfound_view_get(request):
     All Not found gets redirected here
     '''
     # If it's an ajax call or content type is application/json
-    if request.is_xhr or 'application/json' in request.accept:
+    if request.is_xhr or 'application/json' in list(request.accept):
         return HTTPNotFound()
 
     url = request.application_url + '/assets/public/error.html'

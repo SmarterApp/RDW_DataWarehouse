@@ -5,7 +5,7 @@ Created on Feb 15, 2013
 '''
 import unittest
 from edauth.security.session_manager import get_user_session, \
-    create_new_user_session, update_session_access, delete_session, \
+    create_new_user_session, update_session_access, expire_session, \
     is_session_expired
 from edauth.security.roles import Roles
 import uuid
@@ -67,12 +67,13 @@ class TestSessionManager(unittest.TestCase):
         latest_last_access = latest_session.get_last_access()
         self.assertTrue(last_access < latest_last_access, "last_access should be updated")
 
-    def test_delete_session(self):
+    def test_expire_session(self):
         session = create_new_user_session(create_SAMLResponse('SAMLResponse.xml'))
         session_id = session.get_session_id()
-        delete_session(session_id)
+        expire_session(session_id)
         latest_session = get_user_session(session_id)
-        self.assertIsNone(latest_session, "session should be deleted")
+        self.assertIsNotNone(latest_session, "session should be deleted")
+        self.assertTrue(latest_session.get_expiration() < datetime.now())
 
     def test_session_expiration(self):
         session = create_new_user_session(create_SAMLResponse('SAMLResponse.xml'), session_expire_after_in_secs=1)

@@ -11,7 +11,7 @@ import base64
 from edauth.saml2.saml_request import SamlAuthnRequest, SamlLogoutRequest
 import urllib
 from edauth.security.session_manager import create_new_user_session, \
-    delete_session, get_user_session, write_security_event
+    get_user_session, write_security_event, expire_session
 from edauth.utils import convert_to_int
 from pyramid.response import Response
 from edauth.security.utils import ICipher
@@ -57,7 +57,7 @@ def login(request):
 
     # clear out the session if we found one in the cookie
     if session_id is not None:
-        delete_session(session_id)
+        expire_session(session_id)
 
     referrer = request.url
     if referrer == request.route_url('login'):
@@ -127,8 +127,8 @@ def logout(request):
             message = "Logout requested for session_id %s" % session_id
             logger.info(message)
             write_security_event(message, SECURITY_EVENT_TYPE.INFO)
-            # delete our session
-            delete_session(session_id)
+            # expire our session
+            expire_session(session_id)
 
     return HTTPFound(location=url, headers=headers)
 

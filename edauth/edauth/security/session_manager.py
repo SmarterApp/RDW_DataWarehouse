@@ -79,15 +79,16 @@ def update_session_access(session):
                            values(last_access=datetime.now()))
 
 
-def delete_session(session_id):
+def expire_session(session_id):
     '''
-    delete session by session_id
+    expire session by session_id
     '''
-    # Do not delete long lived sessions (prefix with 'L-')
-    #if session_id.startswith('L-') is False:
+    current_datetime = datetime.now()
     with EdauthDBConnection() as connection:
         user_session = connection.get_table('user_session')
-        connection.execute(user_session.delete(user_session.c.session_id == session_id))
+        connection.execute(user_session.update().
+                           where(user_session.c.session_id == session_id).
+                           values(expiration=current_datetime))
 
 
 def __create_from_SAMLResponse(saml_response, last_access, expiration):

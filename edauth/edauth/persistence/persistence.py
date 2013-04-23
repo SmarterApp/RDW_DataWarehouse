@@ -24,7 +24,8 @@ def generate_persistence(schema_name=None, bind=None):
           Column('security_event_id', Integer, Sequence('sec_event_id_seq', schema="edware_session"), primary_key=True, nullable=True),
           Column('created', DateTime, default=func.now()),
           Column('message', String(1024)),
-          Column('type', SMALLINT)
+          Column('type', SMALLINT),
+          Column('host', String(50))
           )
 
     return metadata

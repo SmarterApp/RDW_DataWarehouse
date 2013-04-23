@@ -511,6 +511,15 @@ def calculate_number_of_sections(number_of_students):
 
 def calculate_claim_scores(asmt_score, assessment, ebmin, ebmax, rndlo, rndhi):
     '''
+    Calculate a students claim scores from their overall score. Calculate the associated
+    claim error bands as well and store in ClaimScore Objects.
+    @param asmt_score: The integer value representing the students score on the assessment
+    @param assessment: the assessment object corresponding to the student's score
+    @param ebmin: The divisor of the minimum error band, taken from the config file
+    @param ebmax: The divisor of the maximum error band, taken from the config file
+    @param rndlo: The lower bound for getting the random adjustment of the error band
+    @param rndhi: The higher bound for getting the random adjustment of the error band
+    @return: a list of ClaimScore objects for the given score and assessment
     '''
     claim_scores = []
     claim_list = [(assessment.asmt_claim_1_score_min, assessment.asmt_claim_1_score_max, assessment.asmt_claim_1_score_weight),

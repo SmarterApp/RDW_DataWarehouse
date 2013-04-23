@@ -144,11 +144,11 @@ qa1:
       schema_name: edware_sds_0_1
       db:
         main:
-          url: postgresql+pypostgresql://edware:edware2013@dwpool0.qa.dum.edwdc.net:6432/edware
+          url: postgresql+psycopg2://edware:edware2013@dwpool0.qa.dum.edwdc.net:6432/edware
     edauth:
       db:
         main:
-          url: postgresql+pypostgresql://edware:edware2013@dwpool0.qa.dum.edwdc.net:6432/edware
+          url: postgresql+psycopg2://edware:edware2013@dwpool0.qa.dum.edwdc.net:6432/edware
     auth:
       idp:
         metadata: /opt/edware/conf/idp_metadata.xml
@@ -183,11 +183,11 @@ qa2:
       schema_name: edware_delaware_0_1
       db:
         main:
-          url: postgresql+pypostgresql://edware:edware2013@dwpool0.qa.dum.edwdc.net:6434/edware
+          url: postgresql+psycopg2://edware:edware2013@dwpool0.qa.dum.edwdc.net:6434/edware
     edauth:
       db:
         main:
-          url: postgresql+pypostgresql://edware:edware2013@dwpool0.qa.dum.edwdc.net:6434/edware
+          url: postgresql+psycopg2://edware:edware2013@dwpool0.qa.dum.edwdc.net:6434/edware
     auth:
       idp:
         metadata: /opt/edware/conf/idp_metadata.xml
@@ -222,11 +222,11 @@ jenkins_qa:
       schema_name: edware_sds_0_1
       db:
         main:
-          url: postgresql+pypostgresql://postgres:edware.qa.2013@dwpool0.qa.dum.edwdc.net:6432/edware
+          url: postgresql+psycopg2://postgres:edware.qa.2013@dwpool0.qa.dum.edwdc.net:6432/edware
     edauth:
       db:
         main:
-          url: postgresql+pypostgresql://postgres:edware.qa.2013@dwpool0.qa.dum.edwdc.net:6432/edware
+          url: postgresql+psycopg2://postgres:edware.qa.2013@dwpool0.qa.dum.edwdc.net:6432/edware
 
 uat:
   '[app:main]':
@@ -236,11 +236,11 @@ uat:
       schema_name: edware
       db:
         main:
-          url: postgresql+pypostgresql://postgres:edware.dmo.2013@dwpool0.dmo.som.edwdc.net:6432/edware
+          url: postgresql+psycopg2://postgres:edware.dmo.2013@dwpool0.dmo.som.edwdc.net:6432/edware
     edauth:
       db:
         main:
-          url: postgresql+pypostgresql://postgres:edware.dmo.2013@dwpool0.dmo.som.edwdc.net:6432/edware
+          url: postgresql+psycopg2://postgres:edware.dmo.2013@dwpool0.dmo.som.edwdc.net:6432/edware
     auth:
       idp:
         metadata: /opt/edware/conf/idp_metadata.xml
@@ -274,13 +274,13 @@ localOpenAM:
       schema_name: edware_sds_0_1
       db:
         main:
-          url: postgresql+pypostgresql://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
+          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
           echo: False
     edauth:
       schema_name: edware_session
       db:
         main:
-          url: postgresql+pypostgresql://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
+          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
           echo: False
     auth:
       skip.verify: False
@@ -297,13 +297,13 @@ development:
       schema_name: edware_sds_0_1
       db:
         main:
-          url: postgresql+pypostgresql://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
+          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
           pool_size: 20
           max_overflow: 10
     edauth:
       db:
         main:
-          url: postgresql+pypostgresql://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
+          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
           pool_size: 20
           max_overflow: 10
     auth:
@@ -323,11 +323,11 @@ test:
       schema_name: edware_sds_0_1
       db:
         main:
-          url: postgresql+pypostgresql://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
+          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
     edauth:
       db:
         main:
-          url: postgresql+pypostgresql://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
+          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
     auth:
       skip.verify: False
       saml:
@@ -343,11 +343,11 @@ jenkins_dev:
       schema_name: edware_sds_0_1
       db:
         main:
-          url: postgresql+pypostgresql://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
+          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
     edauth:
       db:
         main:
-          url: postgresql+pypostgresql://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
+          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
     auth:
       policy.secure: False
       skip.verify: False

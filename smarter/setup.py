@@ -19,6 +19,7 @@ requires = [
     'edapi',
     'edschema',
     'py-postgresql',
+    'psycopg2',
     'pyramid_exclog',
     'pyyaml']
 

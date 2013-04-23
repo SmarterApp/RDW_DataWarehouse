@@ -27,16 +27,14 @@ common:
     edware:
       db:
         main:
-          pool_size: 20
-          max_overflow: 10
           echo: False
+          logger_name: smarter
     edauth:
       schema_name: edware_session
       db:
         main:
-          pool_size: 20
-          max_overflow: 10
           echo: False
+          logger_name: smarter
 
     # Authentication
     auth:
@@ -81,25 +79,21 @@ common:
 
   '[formatters]':
     keys: generic, json
-
-  '[logger_root]':
-    level: INFO 
-    handlers: console
-
-  '[logger_smarter]':
-    level: DEBUG
-    handlers: filelog
-    qualname: smarter
     
   '[logger_edauth]':
     level: DEBUG
     handlers: filelog
     qualname: edauth
+    
+   '[logger_smarter]':
+    level: INFO
+    handlers: filelog
+    qualname: smarter
 
   '[logger_sqlalchemy]':
     level: INFO
-    handlers: 
-    qualname: sqlalchemy.engine
+    handlers: filelog
+    qualname: sqlalchemy
     # "level = INFO" logs SQL queries.
     # "level = DEBUG" logs SQL queries and results.
     # "level = WARN" logs neither.  (Recommended for production systems.)
@@ -242,23 +236,19 @@ uat:
     handlers: syslog
     qualname: edauth
 
-local:
+localOpenAM:
   '[app:main]':
     edware:
       schema_name: edware_sds_0_1
       db:
         main:
           url: postgresql+pypostgresql://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
-          pool_size: 20
-          max_overflow: 10
           echo: False
     edauth:
       schema_name: edware_session
       db:
         main:
           url: postgresql+pypostgresql://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
-          pool_size: 20
-          max_overflow: 10
           echo: False
     auth:
       skip.verify: False
@@ -276,10 +266,14 @@ development:
       db:
         main:
           url: postgresql+pypostgresql://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
+          pool_size: 20
+          max_overflow: 10
     edauth:
       db:
         main:
           url: postgresql+pypostgresql://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
+          pool_size: 20
+          max_overflow: 10
     auth:
       skip.verify: False
       saml:

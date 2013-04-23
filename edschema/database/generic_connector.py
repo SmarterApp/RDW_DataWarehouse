@@ -8,12 +8,15 @@ from database.connector import DbUtil, IDbUtil
 from zope import component
 from sqlalchemy.schema import CreateSchema
 from sqlalchemy.exc import DBAPIError
+from sqlalchemy.pool import NullPool
 
 
 def setup_db_connection_from_ini(settings, prefix, metadata, datasource_name='', allow_create=False):
     '''
     Setup a generic db connection
     '''
+    if prefix + '.db.main.pool_size' not in settings.keys():
+        settings[prefix + '.db.main.poolclass'] = NullPool
     engine = engine_from_config(settings, prefix + '.db.main.')
 
     # Create schema and its tables

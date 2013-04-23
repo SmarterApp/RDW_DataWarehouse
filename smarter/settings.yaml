@@ -28,13 +28,11 @@ common:
       db:
         main:
           echo: False
-          logger_name: smarter
     edauth:
       schema_name: edware_session
       db:
         main:
           echo: False
-          logger_name: smarter
 
     # Authentication
     auth:
@@ -84,8 +82,12 @@ common:
     level: DEBUG
     handlers: filelog
     qualname: edauth
-    
-   '[logger_smarter]':
+
+  '[logger_root]':
+    level: INFO
+    handlers: filelog, console
+
+  '[logger_smarter]':
     level: INFO
     handlers: filelog
     qualname: smarter

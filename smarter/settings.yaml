@@ -36,6 +36,11 @@ common:
           pool_size: 20
           max_overflow: 10
           echo: False
+    cleanup:
+      schedule:
+        cron:
+          # everyday
+          day: '*/1'
 
     # Authentication
     auth:

@@ -162,3 +162,9 @@ def __get_roles(attributes):
     if not roles or Roles.has_undefined_roles(roles):
         roles.append(Roles.get_invalid_role())
     return roles
+
+
+def cleanup_sessions():
+    with EdauthDBConnection() as connection:
+        user_session = connection.get_table('user_session')
+        connection.execute(user_session.delete())

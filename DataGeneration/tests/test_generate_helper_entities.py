@@ -1,7 +1,11 @@
 __author__ = 'abrien'
 
 import unittest
-from generate_helper_entities import generate_state, generate_school, generate_claim, generate_district
+from generate_helper_entities import generate_state, generate_school, generate_claim, generate_district, \
+    generate_assessment_score, generate_claim_score
+from helper_entities_2 import ClaimScore, AssessmentScore
+from uuid import UUID
+from datetime import date
 
 
 class TestGenerateHelperEntities(unittest.TestCase):
@@ -22,7 +26,7 @@ class TestGenerateHelperEntities(unittest.TestCase):
         second_word = component_words[1]
         self.assertIn(first_word, name_list_1)
         self.assertIn(second_word, name_list_2)
-        self.assertIsInstance(food_district.district_guid, int)
+        self.assertIsInstance(food_district.district_guid, UUID)
 
     def test_generate_school(self):
         school_type = 'High School'
@@ -34,7 +38,7 @@ class TestGenerateHelperEntities(unittest.TestCase):
         second_word = component_words[1]
         self.assertIn(first_word, name_list_1)
         self.assertIn(second_word, name_list_2)
-        self.assertIsInstance(car_school.school_guid, int)
+        self.assertIsInstance(car_school.school_guid, UUID)
 
     def test_generate_claim(self):
         claim_name = 'claim_1'
@@ -46,3 +50,44 @@ class TestGenerateHelperEntities(unittest.TestCase):
         self.assertEquals(test_claim.claim_score_min, claim_score_min)
         self.assertEquals(test_claim.claim_score_max, claim_score_max)
         self.assertEquals(test_claim.claim_score_weight, claim_score_weight)
+
+    def test_generate_assessment_score(self):
+        overall_score = 1800
+        perf_lvl = 2
+        interval_min = 1700
+        interval_max = 1900
+        asmt_create_date = date(2013, 4, 24)
+
+        claim_score_val_1 = 1800
+        claim_score_1_interval_minimum = 1700
+        claim_score_1_interval_maximum = 1900
+        claim_score_1 = ClaimScore(claim_score_val_1, claim_score_1_interval_minimum, claim_score_1_interval_maximum)
+
+        claim_score_val_2 = 1900
+        claim_score_2_interval_minimum = 1800
+        claim_score_2_interval_maximum = 2000
+        claim_score_2 = ClaimScore(claim_score_val_2, claim_score_2_interval_minimum, claim_score_2_interval_maximum)
+
+        claim_score_val_3 = 1900
+        claim_score_3_interval_minimum = 1800
+        claim_score_3_interval_maximum = 2000
+        claim_score_3 = ClaimScore(claim_score_val_3, claim_score_3_interval_minimum, claim_score_3_interval_maximum)
+
+        claim_scores = [claim_score_1, claim_score_2, claim_score_3]
+        assessment_score = generate_assessment_score(overall_score, perf_lvl, interval_min, interval_max,
+                                                     claim_scores, asmt_create_date)
+
+        self.assertIsInstance(assessment_score, AssessmentScore)
+        self.assertEquals(assessment_score.overall_score, overall_score)
+        self.assertEquals(assessment_score.perf_lvl, perf_lvl)
+        self.assertEquals(assessment_score.interval_min, interval_min)
+        self.assertEquals(assessment_score.interval_max, interval_max)
+        self.assertEquals(assessment_score.claim_scores, claim_scores)
+        self.assertEquals(assessment_score.asmt_create_date, asmt_create_date)
+
+    def test_generate_claim_score(self):
+        claim_score_value = 1950
+        claim_score_interval_minimum = 1850
+        claim_score_interval_maximum = 2050
+        claim_score = generate_claim_score(claim_score_value, claim_score_interval_minimum, claim_score_interval_maximum)
+

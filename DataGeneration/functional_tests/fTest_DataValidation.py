@@ -1,11 +1,12 @@
 import unittest
 import csv
 import os
-import entities_2 as entities
+import entities
 import itertools
 from generate_data import ENTITY_TO_PATH_DICT
 from zope.component.tests.examples import comp
-import dg_types
+from config_file_data_generation.dg_types import *
+
 
 
 GRADES = 'grades'
@@ -122,17 +123,10 @@ class DataGenerationValidation(unittest.TestCase):
     
             asmt_dict = {'asmt_score_min': [int(asmt_score_min), 1200],
                          'asmt_score_max': [int(asmt_score_max), 2400],
-<<<<<<< HEAD
                          'asmt_cut_point_1': [int(asmt_cut_point_1), 1400],
                          'asmt_cut_point_2': [int(asmt_cut_point_2), 1800],
                          'asmt_cut_point_3': [int(asmt_cut_point_3), 2100],
-                         'asmt_cut_point_4': [(asmt_cut_point_4), ''],
-=======
-                         'asmt_cut_point_1': [int(asmt_cut_point_1), 1575],
-                         'asmt_cut_point_2': [int(asmt_cut_point_2), 1875],
-                         'asmt_cut_point_3': [int(asmt_cut_point_3), 2175],
                          'asmt_cut_point_4': [(asmt_cut_point_4), '0'],
->>>>>>> Updated TC2: asmt_cut_point_4: To be '0' instead of empty string
                          'asmt_perf_lvl_name_1': [(asmt_perf_lvl_name_1), 'Minimal Understanding'],
                          'asmt_perf_lvl_name_2': [(asmt_perf_lvl_name_2), 'Partial Understanding'],
                          'asmt_perf_lvl_name_3': [(asmt_perf_lvl_name_3), 'Adequate Understanding'],
@@ -161,7 +155,7 @@ class DataGenerationValidation(unittest.TestCase):
                     pass
                 else:
                     actual_school_category.append(all_school)     
-                
+
                 school_id = school['school_guid']
     
                 # Get all the IDs for each school_categoty (High, Middle & Elementery) - without repeating school category

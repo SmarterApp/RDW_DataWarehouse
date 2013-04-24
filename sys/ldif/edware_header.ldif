@@ -1,0 +1,13 @@
+version: 1
+
+dn: ou=environment,dc=edwdc,dc=net
+objectClass: organizationalUnit
+ou: environment
+
+dn: ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: organizationalUnit
+ou: people
+
+dn: ou=groups,ou=environment,dc=edwdc,dc=net
+objectClass: organizationalUnit
+ou: groups

@@ -13,10 +13,18 @@ class report_config(object):
     '''
     used for processing decorator '@report_config' in pyramid scans
     '''
+
     def __init__(self, **kwargs):
+        '''
+        @param kwargs: function to accept an arbitrary number of keyword arguments.
+        '''
         self.__dict__.update(kwargs)
 
     def __call__(self, original_func):
+        '''
+        @param original_func: a reference to the wrapped function
+        @type original_func: reference
+        '''
         settings = self.__dict__.copy()
 
         def callback(scanner, name, obj):
@@ -34,6 +42,10 @@ def user_info(orig_func):
     '''
     @wraps(orig_func)
     def wrap(*args, **kwds):
+        '''
+        @param args: function to accept an arbitrary number of arguments.
+        @param kwds: function to accept an arbitrary number of keyword arguments.
+        '''
         results = orig_func(*args, **kwds)
         user = authenticated_userid(pyramid.threadlocal.get_current_request())
         # Only append user info if we get an User object returned

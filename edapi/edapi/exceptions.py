@@ -12,6 +12,10 @@ class EdApiError(Exception):
     a general EdApi error.
     '''
     def __init__(self, msg):
+        '''
+        @param msg: the error message.
+        @type msg: string
+        '''
         self.msg = msg
 
 
@@ -20,6 +24,10 @@ class ReportNotFoundError(EdApiError):
     a custom exception raised when a report cannot be found.
     '''
     def __init__(self, name):
+        '''
+        @param name: the report's name
+        @type name: string
+        '''
         self.msg = "Report %s is not found" % name
 
 
@@ -28,6 +36,10 @@ class InvalidParameterError(EdApiError):
     a custom exception raised when a report parameter is not found.
     '''
     def __init__(self, msg=None):
+        '''
+        @param msg: the error message.
+        @type msg: string
+        '''
         if msg is None:
             self.msg = "Invalid Parameters"
         else:
@@ -43,4 +55,8 @@ class NotFoundException(HTTPNotFound):
     #explanation = ('The resource could not be found.')
 
     def __init__(self, msg):
+        '''
+        @param msg: the error message.
+        @type msg: string
+        '''
         super().__init__(**generate_exception_response(msg))

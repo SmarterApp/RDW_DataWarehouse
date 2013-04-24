@@ -9,8 +9,12 @@ from pyramid.authorization import ACLAuthorizationPolicy
 EDAPI_REPORTS_PLACEHOLDER = 'edapi_reports'
 
 
-# directive used to save report_config decorators to Pyramid Configurator's registry
 def add_report_config(self, delegate, **kwargs):
+    '''
+    directive used to save report_config decorators to Pyramid Configurator's registry
+
+    @param delegate: a delegate to the wrapped function
+    '''
     settings = kwargs.copy()
     settings['reference'] = delegate
     if self.registry.get(EDAPI_REPORTS_PLACEHOLDER) is None:
@@ -21,8 +25,10 @@ def add_report_config(self, delegate, **kwargs):
         self.registry[EDAPI_REPORTS_PLACEHOLDER][settings['name']] = settings
 
 
-# custom predicate for routing by content-type
 class ContentTypePredicate(object):
+    '''
+    custom predicate for routing by content-type
+    '''
     def __init__(self, content_type, config):
         self.content_type = content_type.lower()
 
@@ -42,8 +48,10 @@ class ContentTypePredicate(object):
         return content_type.lower() == self.content_type
 
 
-# this is automatically called by consumer of edapi when it calls config.include(edapi)
 def includeme(config):
+    '''
+    this is automatically called by consumer of edapi when it calls config.include(edapi)
+    '''
 
     # routing for retrieving list of report names with GET
     config.add_route('list_of_reports', '/data')

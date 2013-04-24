@@ -20,14 +20,17 @@ blacklist_args_global = ['first_name', 'last_name']
 
 
 def audit_event(logger_name="audit", blacklist_args=[]):
+    '''
+    @param logger_name: the logger we will insert to log messages to.
+    @type logger_name: string
+    @param blacklist_args: a list of arguments that we purposely will not log
+    @type blacklist_args: list
+    '''
     log = logging.getLogger(logger_name)
 
     if (len(log.handlers) == 0):
         print(str.format("logger {0} is empty", logger_name))
 
-    '''
-    the function to be decorated is not passed to the constructor!.
-    '''
     @adopt_to_method_and_func
     def audit_event_wrapper(original_func):
         # get the function param names
@@ -87,14 +90,25 @@ def audit_event(logger_name="audit", blacklist_args=[]):
 
 
 class JsonDictLoggingFormatter(logging.Formatter):
-    '''Json logging formatter'''
+    '''
+    Json logging formatter
+    '''
 
     def __init__(self, fmt=None, datefmt='%yyyymmdd %H:%M:%S'):
+        '''
+        @param fmt: the log format string
+        @type fmt: string
+        @param datefmt: specialized date formatting
+        @type datefmt: string
+        '''
         logging.Formatter.__init__(self, fmt, datefmt)
         self.fmt_tkn = re.compile(r'\((.*?)\)', re.IGNORECASE).findall(self._fmt)
 
     def format(self, record):
-        '''Formats a log record and serializes to json'''
+        '''
+        Formats a log record and serializes to json
+        @param record: the formatted record.
+        '''
         loggable = OrderedDict()
         keys = record.__dict__
         for formatter in self.fmt_tkn:

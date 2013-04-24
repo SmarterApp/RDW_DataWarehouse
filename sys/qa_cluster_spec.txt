@@ -11,8 +11,9 @@ DB	            3   	8	64
 Total(Cores/RAM)		48	256
 
 
-Instance C-Names
-================
+Edware QA Instance Names
+========================
+
 Database Servers
 ----------------
 dbpgdw0.qa.dum.edwdc.net
@@ -32,6 +33,22 @@ dwrouter0.qa.dum.edwdc.net
 Utility Server(s)
 -----------------
 monitor0.qa.dum.edwdc.net
+metrics0.qa.dum.edwdc.net
+repo0.qa.dum.edwdc.net
 cfg0.qa.dum.edwdc.net
 logging0.qa.dum.edwdc.net
 
+Load Balancers
+--------------
+lb0.qa.dum.edwdc.net
+lb1.qa.dum.edwdc.net
+lb2.qa.dum.edwdc.net
+
+edwappsrv1.poc.dum.edwdc.net
+edwappsrv2.poc.dum.edwdc.net
+edwappsrv3.poc.dum.edwdc.net
+edwappsrv4.poc.dum.edwdc.net
+edwappsrv5.poc.dum.edwdc.net
+edwappsrv6.poc.dum.edwdc.net
+edwdbsrv1.poc.dum.edwdc.net
+edwdbsrv2.poc.dum.edwdc.net

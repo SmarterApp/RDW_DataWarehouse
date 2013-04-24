@@ -33,6 +33,11 @@ common:
       db:
         main:
           echo: False
+    cleanup:
+      schedule:
+        cron:
+          # everyday
+          day: '*/1'
 
     # Authentication
     auth:

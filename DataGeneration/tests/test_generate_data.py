@@ -68,7 +68,7 @@ class Test(unittest.TestCase):
             self.assertIsNotNone(item.district_guid)
 
     def test_create_school_dictionary(self):
-        school_counts = {'min': 100, 'max': 500, 'avg': 300}
+        school_counts = {'min': 100, 'max': 310, 'avg': 500}
         ratios = {'High School': 1, 'Middle School': 2, 'Elementary School': 5}
         name_list1 = ['name_%d' % i for i in range(20)]
         name_list2 = ['name2_%d' % i for i in range(20)]
@@ -77,6 +77,9 @@ class Test(unittest.TestCase):
         elm_sch_len = len(res['Elementary School'])
         mid_sch_len = len(res['Middle School'])
         hig_sch_len = len(res['High School'])
+        school_sum = elm_sch_len + mid_sch_len + hig_sch_len
+        self.assertGreaterEqual(school_sum, 100)
+        self.assertLessEqual(school_sum, 200)
         self.assertAlmostEqual(hig_sch_len * 5, elm_sch_len)
         self.assertAlmostEqual(hig_sch_len * 2, mid_sch_len)
 

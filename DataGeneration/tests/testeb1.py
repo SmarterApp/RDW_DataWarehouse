@@ -15,11 +15,11 @@ class Test(unittest.TestCase):
         self.assertEqual(scenter, 1800)
         self.assertEqual(ebmin, 37.5)
         self.assertEqual(ebstep, 0.1875)
-        
+
     def test_calc_eb_no_random_no_clip(self):
         smin, smax, ebmin_divisor, ebmax_divisor = 1200, 2400, 32, 8
         scenter, ebmin, ebstep = calc_eb_params(smin, smax, ebmin_divisor, ebmax_divisor)
-        
+
         score = 1800
         ebleft, ebright, ebhalf = calc_eb(score, smin, smax, scenter, ebmin, ebstep)
         self.assertEqual(ebhalf, ebmin)
@@ -28,5 +28,5 @@ class Test(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

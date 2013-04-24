@@ -90,4 +90,3 @@ class TestGenerateHelperEntities(unittest.TestCase):
         claim_score_interval_minimum = 1850
         claim_score_interval_maximum = 2050
         claim_score = generate_claim_score(claim_score_value, claim_score_interval_minimum, claim_score_interval_maximum)
-

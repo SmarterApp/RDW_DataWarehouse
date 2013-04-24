@@ -8,6 +8,7 @@ from generate_entities import generate_institution_hierarchy, generate_student, 
 from entities import Student, Section, Assessment, Staff, AssessmentOutcome
 from helper_entities import AssessmentScore, ClaimScore
 
+
 class TestGenerateEntities(unittest.TestCase):
 
     def test_generate_institution_hierarchy(self):
@@ -19,8 +20,8 @@ class TestGenerateEntities(unittest.TestCase):
             'school_guid': 2,
             'school_name': 'school_2',
             'school_category': 'High School',
-            'from_date':  date(2013, 4, 15),
-            'most_recent':  True
+            'from_date': date(2013, 4, 15),
+            'most_recent': True
         }
         institution_hierarchy = generate_institution_hierarchy(**params)
         self.assertEquals(institution_hierarchy.state_name, params['state_name'])
@@ -52,7 +53,7 @@ class TestGenerateEntities(unittest.TestCase):
         self.assertIsInstance(student.first_name, str)
         self.assertIsInstance(student.last_name, str)
         address_component_words = student.address_1.split()
-        address= int(address_component_words[0])
+        address = int(address_component_words[0])
         street_name = address_component_words[1]
         suffix = address_component_words[2].upper()
         self.assertIsInstance(address, int)
@@ -93,7 +94,6 @@ class TestGenerateEntities(unittest.TestCase):
         for student in students:
             self.assertIsInstance(student, Student)
 
-
     def test_generate_section(self):
         params = {
             'subject_name': 'ELA',
@@ -121,7 +121,6 @@ class TestGenerateEntities(unittest.TestCase):
         self.assertEquals(class_name, params['subject_name'])
         self.assertEquals(class_number, params['class_number'])
 
-
     def test_generate_sections(self):
         params = {
             'number_of_sections': 9,
@@ -137,7 +136,6 @@ class TestGenerateEntities(unittest.TestCase):
         self.assertEquals(len(sections), params['number_of_sections'])
         for section in sections:
             self.assertIsInstance(section, Section)
-
 
     def test_generate_assessment(self):
         params = {
@@ -158,12 +156,11 @@ class TestGenerateEntities(unittest.TestCase):
         self.assertIsInstance(a.asmt_guid, UUID)
         self.assertEquals(a.asmt_type, params['asmt_type'])
 
-
     def test_generate_assessments(self):
         params = {
-            'grades': [9,10,11],
-            'cut_points' : [1400, 1800, 2100],
-            'from_date': date(2013,4,23),
+            'grades': [9, 10, 11],
+            'cut_points': [1400, 1800, 2100],
+            'from_date': date(2013, 4, 23),
             'most_recent': True
         }
         assessments = generate_assessments(**params)
@@ -210,7 +207,6 @@ class TestGenerateEntities(unittest.TestCase):
         for staff_member in staff:
             self.assertIsInstance(staff_member, Staff)
 
-
     def test_generate_fact_assessment_outcome(self):
         params = {
             'asmt_rec_id': 10,
@@ -226,7 +222,7 @@ class TestGenerateEntities(unittest.TestCase):
             'where_taken_name': 'P.S. 118',
             'asmt_grade': 7,
             'enrl_grade': 7,
-            'date_taken': date(2013,4,23),
+            'date_taken': date(2013, 4, 23),
             'date_taken_day': 23,
             'date_taken_month': 4,
             'date_taken_year': 2013,
@@ -252,7 +248,6 @@ class TestGenerateEntities(unittest.TestCase):
         for key, value in params.items():
             self.assertEquals(getattr(assessment_outcome, key), value)
 
-
     def test_generate_fact_assessment_outcomes(self):
         section_guid = uuid4()
         grade = 10
@@ -273,13 +268,13 @@ class TestGenerateEntities(unittest.TestCase):
         claim_score_1_b = ClaimScore(1900, 1800, 2000)
         claim_score_1_c = ClaimScore(2000, 1900, 2100)
         claim_scores_1 = [claim_score_1_a, claim_score_1_b, claim_score_1_c]
-        score_1 = AssessmentScore(1900, 3, 1800, 1900, claim_scores_1, date(2013,4,23))
+        score_1 = AssessmentScore(1900, 3, 1800, 1900, claim_scores_1, date(2013, 4, 23))
 
         claim_score_2_a = ClaimScore(1900, 1800, 2000)
         claim_score_2_b = ClaimScore(2100, 2000, 2200)
         claim_score_2_c = ClaimScore(2000, 1900, 2100)
         claim_scores_2 = [claim_score_2_a, claim_score_2_b, claim_score_2_c]
-        score_2 = AssessmentScore(2000, 3, 1900, 2100, claim_scores_2, date(2013,4,23))
+        score_2 = AssessmentScore(2000, 3, 1900, 2100, claim_scores_2, date(2013, 4, 23))
 
         scores = [score_1, score_2]
         teacher_guid = uuid4()

@@ -278,8 +278,8 @@ class Test(unittest.TestCase):
 
     def test_select_assessment_from_list(self):
         asmt_list = [self.create_assessment(1, 'Math'), self.create_assessment(2, 'Math'), self.create_assessment(3, 'Math'),
-                       self.create_assessment(1, 'ELA'), self.create_assessment(2, 'ELA'), self.create_assessment(3, 'ELA'),
-                       self.create_assessment(6, 'Math'), self.create_assessment(8, 'ELA'), self.create_assessment(12, 'Math')]
+                     self.create_assessment(1, 'ELA'), self.create_assessment(2, 'ELA'), self.create_assessment(3, 'ELA'),
+                     self.create_assessment(6, 'Math'), self.create_assessment(8, 'ELA'), self.create_assessment(12, 'Math')]
         assessment = generate_data.select_assessment_from_list(asmt_list, 1, 'Math')
         self.assertEqual(assessment.asmt_grade, 1)
         self.assertEqual(assessment.asmt_subject, 'Math')

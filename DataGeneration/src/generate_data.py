@@ -46,6 +46,13 @@ NAMES_TO_PATH_DICT = {BIRDS: DATAFILE_PATH + '/datafiles/name_lists/birds.txt',
 
 def generate_data_from_config_file(config_module):
 
+    '''
+    Main function that drives the data generation process
+
+    @param config_module: module that contains all configuration information for the data creation process
+    @return nothing
+    '''
+
     # First thing: prep the csv files by deleting their contents and adding appropriate headers
     prepare_csv_files(ENTITY_TO_PATH_DICT)
 
@@ -140,15 +147,45 @@ def generate_data_from_config_file(config_module):
 
 
 def generate_and_populate_institution_hierarchies(schools, school_type, state, district, assessments):
+    '''
+    Given institution information (info about state, district, school), we create InstitutionHierarchy objects.
+    We create one InstitutionHierarchy object for each school given in the school list.
+
+    In addition to this, we populate each institution hierarchy (which is functionally equivalent to a school) with
+    students, teachers, staff, sections
+
+    @type schools: list
+    @param schools: list of schools that will be used to create InstitutionHierarchy objects
+    @type school_type: dict
+    @param school_type: dictionary that contains the grades and the number of students per grade for this school type
+    @type state: State
+    @param state: state object that contains state code, state name
+    @type district: District
+    @param district: district object that contains district information
+    @type assessments: list
+    @param assessments: A list of Assessment objects for generating assessment outcome objects
+    '''
     institution_hierarchies = []
     for school in schools:
         institution_hierarchy = generate_institution_hierarchy_from_helper_entities(state, district, school)
         institution_hierarchies.append(institution_hierarchy)
+        # TODO: Don't populate the schools here. When this function returns, loop over the list and populate each school
         populate_school(institution_hierarchy, school_type, assessments)
     return institution_hierarchies
 
 
 def populate_school(institution_hierarchy, school_type, assessments):
+
+    '''
+    Populate the provided the institution with staff, students, teachers, sections
+
+    @type institution_hierarchy: InstitutionHierarchy
+    @param institution_hierarchy: InstitutionHierarchy object that contains basic information about school, district, state
+    @type school_type: dict
+    @param school_type: dictionary containing the grades and number of students per grade
+    @type assessments: list of Assessments
+    @param assessments: a list of assessment objects for creation of AssessmentOutcomes
+    '''
 
     # Get student count information from config module
     student_counts = school_type[config_module.STUDENTS]
@@ -226,6 +263,12 @@ def populate_school(institution_hierarchy, school_type, assessments):
 
 
 def prepare_csv_files(entity_to_path_dict):
+    '''
+    Erase each csv file and then add appropriate header
+
+    @type entity_to_path_dict: dict
+    @param entity_to_path_dict: Each key is an entity's class, and each value is the path to its csv file
+    '''
     for entity in entity_to_path_dict:
         path = entity_to_path_dict[entity]
         # By opening the file for writing, we implicitly delete the file contents

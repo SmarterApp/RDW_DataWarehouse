@@ -4,6 +4,16 @@ import datetime
 
 
 def generate_district_name(list_1, list_2, max_name_length=None):
+    '''
+    Generate a name for a district by combining a word from each provided list, taking length into consideration
+
+    @type list_1: list
+    @param list_1: a list of strings to use as a component of a district name
+    @type list_2: list
+    @param list_2: a list of strings to use as a component of a district name
+    @type max_name_length: int
+    @param max_name_length: The length of the longest acceptable name
+    '''
     # TODO: Decouple constants from this function
     suffix = random.choice(constants.DISTRICT_SUFFIX)
     # adding the plus 1 to account for the space between the name and the suffix
@@ -17,6 +27,18 @@ def generate_district_name(list_1, list_2, max_name_length=None):
 
 
 def generate_school_name(school_type, list_1, list_2, max_name_length=None):
+    '''
+    Generate a name for a school by combining a word from each provided list, taking length into consideration
+
+    @type school_type: str
+    @param school_type: (High School, Middle School, Elementary School) used to determine appropriate suffix for name.
+    @type list_1: list
+    @param list_1: a list of strings to use as a component of a school name
+    @type list_2: list
+    @param list_2: a list of strings to use as a component of a school name
+    @type max_name_length: int
+    @param max_name_length: The length of the longest acceptable name
+    '''
     # TODO: Decouple constants from this function
     suffix_list = constants.SCHOOL_TYPE_TO_SUFFIXES[school_type]
     suffix = random.choice(suffix_list)
@@ -32,6 +54,16 @@ def generate_school_name(school_type, list_1, list_2, max_name_length=None):
 
 
 def generate_name_from_lists(list_1, list_2, max_name_length=None):
+    '''
+    Generate a name by combining a word from each provided list, taking length into consideration
+
+    @type list_1: list
+    @param list_1: a list of strings to use as a component of a name
+    @type list_2: list
+    @param list_2: a list of strings to use as a component of a name
+    @type max_name_length: int
+    @param max_name_length: The length of the longest acceptable name
+    '''
     name_1 = str(random.choice(list_1))
     name_2 = str(random.choice(list_2))
     result = name_1 + ' ' + name_2

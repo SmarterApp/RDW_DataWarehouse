@@ -41,7 +41,7 @@ MAMMALS = 'mammals'
 NAMES_TO_PATH_DICT = {BIRDS: DATAFILE_PATH + '/datafiles/name_lists/birds.txt',
                       FISH: DATAFILE_PATH + '/datafiles/name_lists/fish.txt',
                       MAMMALS: DATAFILE_PATH + '/datafiles/name_lists/mammals.txt'
-                     }
+                      }
 
 
 def generate_data_from_config_file(config_module):
@@ -217,7 +217,7 @@ def populate_school(institution_hierarchy, school_type, assessments):
 
                 create_csv(students_to_take_assessment, ENTITY_TO_PATH_DICT[Student])
                 asmt_outcomes_in_section = generate_assessment_outcomes_from_helper_entities_and_lists(students_to_take_assessment, score_list, teacher_guid, section, institution_hierarchy, assessment,
-                                                                                                      eb_min_perc, eb_max_perc, eb_rand_adj_lo, eb_rand_adj_hi)
+                                                                                                       eb_min_perc, eb_max_perc, eb_rand_adj_lo, eb_rand_adj_hi)
                 asmt_outcomes_for_grade.extend(asmt_outcomes_in_section)
         create_csv(asmt_outcomes_for_grade, ENTITY_TO_PATH_DICT[AssessmentOutcome])
     #create_csv(students_in_school, ENTITY_TO_PATH_DICT[Student])

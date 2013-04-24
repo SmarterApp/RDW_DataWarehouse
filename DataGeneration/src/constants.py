@@ -7,7 +7,7 @@ SCHOOL_LEVELS_INFO = [[ELEMENTARY_SCHOOL, ['El Sch', 'Elem', 'Ctr', 'Elementary 
                       [MIDDLE_SCHOOL, ['Middle School', 'Community Middle', 'Middle', 'Junior High', 'Intermediate School', 'Jr Middle', 'MS'], [[6, 8], [5, 8], [7, 9]]],
                       [HIGH_SCHOOL, ['High Sch', 'High School', 'High', 'HS', 'Senior High'], [[9, 12], [10, 12]]],
                       [OTHER, ['Sch', 'School'], [[6, 12], [9, 12]]]
-]
+                      ]
 
 SCHOOL_TYPE_TO_SUFFIXES = {ELEMENTARY_SCHOOL: ['El Sch', 'Elem', 'Ctr', 'Elementary School', 'Primary', 'Elementary', 'Elem', 'Sch'],
                            MIDDLE_SCHOOL: ['Middle School', 'Community Middle', 'Middle', 'Junior High', 'Intermediate School', 'Jr Middle', 'MS'],
@@ -37,12 +37,12 @@ ASSESSMENT_SCORE_STANDARD_DEVIATION = (AVERAGE_ASSESSMENT_SCORE - MINIMUM_ASSESS
 CLAIM_DEFINITIONS = {'Math': [{'claim_name': 'Concepts & Procedures', 'claim_weight': .4},
                               {'claim_name': 'Problem Solving and Modeling & Data Analysis', 'claim_weight': .45},
                               {'claim_name': 'Communicating Reasoning', 'claim_weight': .15}
-],
+                              ],
                      'ELA': [{'claim_name': 'Reading', 'claim_weight': .20},
                              {'claim_name': 'Writing', 'claim_weight': .25},
                              {'claim_name': 'Speaking & Listening', 'claim_weight': .25},
                              {'claim_name': 'Research & Inquiry', 'claim_weight': .30}]
-}
+                     }
 CLAIM_SCORE_MASTER_MIN = 10
 CLAIM_SCORE_MASTER_MAX = 99
 

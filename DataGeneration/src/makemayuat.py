@@ -59,7 +59,7 @@ def calculate_number_of_students():
 
             # Adding up all the ratio values
             ratioSum = sum(schoolTypesAndRatios.values())
-            ratioUnit = max( (avg_num_schools // ratioSum), 1)
+            ratioUnit = max((avg_num_schools // ratioSum), 1)
 
             totalStudentsInEachDistrict = 0
             # Here we iterate through all the school types within the district type

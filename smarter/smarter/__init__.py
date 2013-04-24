@@ -128,7 +128,7 @@ def shutdown():
     '''
     Called when pyramid shuts down
     '''
-    logger.info("Smarter is shuting down.")
+    logger.info("Smarter is shutting down.")
     # CAKE_PROC is only assigned in dev mode, we kill the process that started 'cake watch'
     if CAKE_PROC:
         logger.info("Killing cake process - pid " + str(CAKE_PROC.pid))

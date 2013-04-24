@@ -262,14 +262,14 @@ uat:
   '[handler_syslog]':
     class: logging.handlers.SysLogHandler
     args: '(''/dev/log'', handlers.SysLogHandler.LOG_LOCAL1)'
-    level: DEBUG
+    level: WARN
     formatter: generic
   '[logger_smarter]':
-    level: DEBUG
+    level: WARN
     handlers: syslog
     qualname: smarter
   '[logger_edauth]':
-    level: INFO
+    level: WARN
     handlers: syslog
     qualname: edauth
 

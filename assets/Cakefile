@@ -1,6 +1,7 @@
 fs = require 'fs'
 walk = require 'walk'
-require 'flour'
+flour = require 'flour'
+require 'uglify-js'
 path = require 'path'
 util = require 'util'
 require 'colors'
@@ -18,6 +19,7 @@ buildCoffee = (source) ->
     if path.extname(source) == '.coffee'
       compile source, path.join(destDir, basename + '.js'), (stuff) ->
         console.log "Dest: " + path.join(destDir, basename + '.js')
+        minify path.join(destDir, basename + '.js'), path.join(destDir, basename + '.js')
     else
         fs.createReadStream(source).pipe(fs.createWriteStream path.join(destDir, basename))
 
@@ -57,8 +59,10 @@ task 'build:less', ->
 task 'build', ->
     invoke 'build:coffee'
     invoke 'build:less'
-
+ 
 task 'watch', ->
+    flour.minifiers.disable 'js'
+    
     invoke 'build'
     
     lessWatcher = chokidar.watch(lesspath, {persistent: true, ignoreInitial: true})

@@ -7,7 +7,7 @@ Created on Jan 5, 2013
 import os.path
 
 from nameinfo import NameInfo
-import gennames
+from StatisticalDataGeneration.src import gennames
 
 
 def read_name_files():

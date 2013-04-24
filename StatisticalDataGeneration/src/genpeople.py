@@ -9,8 +9,8 @@ import random
 from helper_entities import Teacher, StudentBioInfo
 
 from entities import Staff, Student, ExternalUserStudent
+from StatisticalDataGeneration.src import gennames
 from idgen import IdGen
-import gennames
 import util
 import uuid
 

@@ -6,10 +6,10 @@ Created on Jan 14, 2013
 
 import unittest
 import operator
-import gennames
 from nameinfo import NameInfo
 from readnaminglists import PeopleNames
-from gennames import generate_first_or_middle_name
+from StatisticalDataGeneration.src.gennames import generate_first_or_middle_name
+from DataGeneration.old_data_generation.src import gennames
 
 
 class TestGenNames(unittest.TestCase):

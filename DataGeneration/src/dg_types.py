@@ -50,15 +50,10 @@ def get_district_types():
     'school_types_and_ratios' is dictionary containing the ratios of High to Middle to Elementary schools
     (ie. 1:2:5 -- {'High': 1, 'Middle': 2, 'Elementary': 5})
     """
-<<<<<<< Updated upstream:DataGeneration/src/dg_types.py
     district_types = {'Big': {'school_counts': {'min': 50, 'max': 80, 'avg': 65}, 'school_types_and_ratios': {'High School': 1, 'Middle School': 2, 'Elementary School': 5}},
                      'Medium': {'school_counts': {'min': 20, 'max': 24, 'avg': 22}, 'school_types_and_ratios': {'High School': 1, 'Middle School': 2, 'Elementary School': 5}},
                      'Small': {'school_counts': {'min': 2, 'max': 8, 'avg': 5}, 'school_types_and_ratios': {'High School': 1, 'Middle School': 2, 'Elementary School': 5}}
-=======
-    district_types = {'Big'      : { 'school_counts' : {'min' : 50, 'max' : 80, 'avg' : 65}, 'school_types_and_ratios' : {'High School' : 1, 'Middle School' : 2, 'Elementary School' : 5} },
-                     'Medium'   : { 'school_counts' : {'min' : 20, 'max' : 50, 'avg' : 22}, 'school_types_and_ratios' : {'High School' : 1, 'Middle School' : 2, 'Elementary School' : 5} },
-                     'Small'    : { 'school_counts' : {'min' :  2, 'max' :  8, 'avg' :  5}, 'school_types_and_ratios' : {'High School' : 1, 'Middle School' : 2, 'Elementary School' : 5} }
->>>>>>> Stashed changes:DataGeneration/src/config_file_data_generation/dg_types.py
+
                      }
     return district_types
 

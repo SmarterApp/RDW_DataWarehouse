@@ -4,10 +4,7 @@ from uuid import uuid4
 
 from idgen import IdGen
 from constants_2 import MAXIMUM_ASSESSMENT_SCORE, MINIMUM_ASSESSMENT_SCORE, AVERAGE_ASSESSMENT_SCORE, ASSESSMENT_SCORE_STANDARD_DEVIATION
-<<<<<<< Updated upstream:DataGeneration/src/entities_2.py
 
-=======
->>>>>>> Stashed changes:DataGeneration/src/config_file_data_generation/entities_2.py
 
 # TODO: get rid of camel-cased function names
 class InstitutionHierarchy:

@@ -24,8 +24,9 @@ def main():
     try:    
         sql1 = "CREATE TABLE IF NOT EXISTS public.buffer_csv (GUID varchar(100),name varchar(100),email varchar(100), " + \
                       "userid varchar(100),password varchar(100),sys_role varchar(100),district varchar(100)," + \
-                      "state varchar(100),row varchar(100),_column varchar(100),NOTES varchar(100))"
+                      "state varchar(100),row varchar(100),_column varchar(100),NOTES varchar(100));"
         cur1.execute(sql1)
+        cur1.execute("DELETE FROM public.buffer_csv;")
         conn.commit()
     except conn.DatabaseError, e:
         print ("Unable to create buffer table.")
@@ -77,14 +78,14 @@ def main():
                 
             if(sys_role <> "" and sys_role <> row[4]):
                 dump_roles(sys_role, users_in_role, f_dest)
-                clear_user_role(users_in_role)
+                users_in_role = [ ]
                 sys_role = row[4]
-                add_user_role(row[0], users_in_role)
             else:
                 sys_role = row[4]
-                add_user_role(row[0], users_in_role)
-                dump_user(row[0], row[2], row[3], f_dest)
-         
+            
+            add_user_role(row[0], users_in_role)
+            dump_user(row[0], row[2], row[3], f_dest)
+     
         dump_roles(sys_role, users_in_role, f_dest)
                  
         print ("Edware CSV2LDIF Conversion Complete!")                
@@ -95,9 +96,6 @@ def main():
 # library functions
 def add_user_role(_user, _users_in_role):
     _users_in_role.append(_user) 
-
-def clear_user_role(_user_roles):
-    _user_roles = [] 
 
 def close_handles():
     f_header.close()            # closing header file

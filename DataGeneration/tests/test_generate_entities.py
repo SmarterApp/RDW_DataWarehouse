@@ -1,12 +1,12 @@
 import unittest
-import constants_2 as constants
+import constants as constants
 from datetime import date
 from uuid import UUID, uuid4
 from generate_entities import generate_institution_hierarchy, generate_student, generate_section, generate_staff, \
     generate_assessment, generate_students, generate_sections, generate_assessments, generate_multiple_staff, \
     generate_fact_assessment_outcome, generate_fact_assessment_outcomes
-from entities_2 import Student, Section, Assessment, Staff, AssessmentOutcome
-from helper_entities_2 import AssessmentScore, ClaimScore
+from entities import Student, Section, Assessment, Staff, AssessmentOutcome
+from helper_entities import AssessmentScore, ClaimScore
 
 class TestGenerateEntities(unittest.TestCase):
 

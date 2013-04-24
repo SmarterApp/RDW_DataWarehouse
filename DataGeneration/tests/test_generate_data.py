@@ -8,8 +8,8 @@ import os
 from datetime import date
 import generate_data
 import generate_entities
-from helper_entities_2 import District
-from entities_2 import Staff, AssessmentOutcome, InstitutionHierarchy
+from helper_entities import District
+from entities import Staff, AssessmentOutcome, InstitutionHierarchy
 
 
 class Test(unittest.TestCase):

@@ -3,16 +3,16 @@ import datetime
 import os
 import csv
 import random
-import util_2
-import stats2 as stats
-import constants_2 as constants
+import util
+import stats as stats
+import constants as constants
 from idgen import IdGen
-from write_to_csv_2 import create_csv
+from write_to_csv import create_csv
 from importlib import import_module
 from generate_entities import (generate_institution_hierarchy, generate_sections, generate_students, generate_multiple_staff,
                                generate_fact_assessment_outcomes, generate_assessments)
 from generate_helper_entities import generate_state, generate_district, generate_school, generate_assessment_score, generate_claim_score
-from entities_2 import InstitutionHierarchy, Section, Assessment, AssessmentOutcome, \
+from entities import InstitutionHierarchy, Section, Assessment, AssessmentOutcome, \
     Staff, ExternalUserStudent, Student
 from generate_scores import generate_overall_scores
 from gaussian_distributions import gauss_one, guess_std
@@ -245,7 +245,7 @@ def generate_name_list_dictionary(list_name_to_path_dictionary):
     name_list_dictionary = {}
     for list_name in list_name_to_path_dictionary:
         path = list_name_to_path_dictionary[list_name]
-        name_list = util_2.create_list_from_file(path)
+        name_list = util.create_list_from_file(path)
         name_list_dictionary[list_name] = name_list
     return name_list_dictionary
 
@@ -381,7 +381,7 @@ def generate_assessment_outcomes_from_helper_entities_and_lists(students, scores
     where_taken_name = institution_hierarchy.school_name
     asmt_grade = section.grade
     enrl_grade = section.grade
-    date_taken = util_2.generate_date_given_assessment(assessment)
+    date_taken = util.generate_date_given_assessment(assessment)
     date_taken_day = date_taken.day
     date_taken_month = date_taken.month
     date_taken_year = date_taken.year

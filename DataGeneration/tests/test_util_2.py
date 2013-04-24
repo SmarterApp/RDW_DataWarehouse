@@ -1,8 +1,8 @@
 import unittest
-import util_2 as util
+import util as util
 import re
 import datetime
-from constants_2 import ASSMT_PERIOD_TO_MONTHS_DICT
+from constants import ASSMT_PERIOD_TO_MONTHS_DICT
 
 class TestUtil2(unittest.TestCase):
 

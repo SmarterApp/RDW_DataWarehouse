@@ -1,6 +1,6 @@
-from helper_entities_2 import State, District, School, Claim, ClaimScore, AssessmentScore
+from helper_entities import State, District, School, Claim, ClaimScore, AssessmentScore
 from uuid import uuid4
-import util_2 as util
+import util as util
 
 
 def generate_state(state_name, state_code):

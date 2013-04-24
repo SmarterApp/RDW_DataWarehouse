@@ -1,5 +1,5 @@
 import random
-import constants_2 as constants
+import constants as constants
 import datetime
 
 

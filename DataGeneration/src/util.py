@@ -112,6 +112,7 @@ def generate_date_given_assessment(assessment):
     day = random.choice(range(1, max_date + 1))
     return datetime.date(year, month, day)
 
+
 # TODO: replace this function with a dictionary in constants.py
 def get_max_date_from_month(month):
     # Ensure month is valid

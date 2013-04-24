@@ -35,6 +35,7 @@ def generate_last_name():
     rand_index = random.randint(0, len(names) - 1)
     return names[rand_index]
 
+
 def possibly_generate_middle_name(gender):
     '''
     50% chance of returning a middle name, otherwise returning None.

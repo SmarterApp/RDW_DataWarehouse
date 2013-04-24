@@ -6,6 +6,7 @@ Created on Apr 15, 2013
 import unittest
 from errorband import calc_eb_params, calc_eb, _calc_ebmax
 
+
 class Test(unittest.TestCase):
 
     def setUp(self):
@@ -15,7 +16,6 @@ class Test(unittest.TestCase):
         # the following is only needed to help unut-tests to run
         self.ebmax = _calc_ebmax(self.smin, self.smax, self.ebmax_divisor)
 
-
     def tearDown(self):
         pass
 
@@ -23,59 +23,51 @@ class Test(unittest.TestCase):
         self.assertEqual(self.scenter, 1800)
         self.assertEqual(self.ebmin, 37.5)
         self.assertEqual(self.ebstep, 0.1875)
-   
-        
-    def test_calc_ebmax(self):       
-        self.assertEqual(self.ebmax, 150)      
-        
 
-    def test_calc_eb_scenter_no_random(self):      
+    def test_calc_ebmax(self):
+        self.assertEqual(self.ebmax, 150)
+
+    def test_calc_eb_scenter_no_random(self):
         score = self.scenter
         ebleft, ebright, ebhalf = calc_eb(score, self.smin, self.smax, self.scenter, self.ebmin, self.ebstep)
         self.assertEqual(ebhalf, self.ebmin)
         self.assertEqual(ebleft, (score - ebhalf))
         self.assertEqual(ebright, (score + ebhalf))
- 
- 
-    def test_calc_eb_smin_no_random(self):            
+
+    def test_calc_eb_smin_no_random(self):
         score = self.smin
         ebleft, ebright, ebhalf = calc_eb(score, self.smin, self.smax, self.scenter, self.ebmin, self.ebstep)
         self.assertEqual(ebhalf, self.ebmax)
         self.assertEqual(ebleft, self.smin)
         self.assertEqual(ebright, (score + ebhalf))
-        
-    
-    def test_calc_eb_smax_no_random(self):            
+
+    def test_calc_eb_smax_no_random(self):
         score = self.smax
         ebleft, ebright, ebhalf = calc_eb(score, self.smin, self.smax, self.scenter, self.ebmin, self.ebstep)
         self.assertEqual(ebhalf, self.ebmax)
         self.assertEqual(ebleft, (score - ebhalf))
         self.assertEqual(ebright, self.smax)
- 
-        
-    def test_calc_eb_near_smin_no_random(self):            
+
+    def test_calc_eb_near_smin_no_random(self):
         score = self.smin + 25
         ebleft, ebright, ebhalf = calc_eb(score, self.smin, self.smax, self.scenter, self.ebmin, self.ebstep)
         self.assertEqual(ebhalf, 145.3125)
         self.assertEqual(ebleft, self.smin)
         self.assertEqual(ebright, (score + ebhalf))
-    
-        
-    def test_calc_eb_near_smax_no_random(self):            
+
+    def test_calc_eb_near_smax_no_random(self):
         score = self.smax - 25
         ebleft, ebright, ebhalf = calc_eb(score, self.smin, self.smax, self.scenter, self.ebmin, self.ebstep)
         self.assertEqual(ebhalf, 145.3125)
         self.assertEqual(ebleft, (score - ebhalf))
         self.assertEqual(ebright, self.smax)
 
-
-#    def test_calc_eb_scenter_with_random(self):      
+#    def test_calc_eb_scenter_with_random(self):
 #        score = self.scenter
 #        _ebleft, _ebright, ebhalf = calc_eb(score, self.smin, self.smax, self.scenter, self.ebmin, self.ebstep, self.rndlo, self.rndhi)
 #        self.assertEqual(ebhalf, self.ebmin)
 
 
-
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

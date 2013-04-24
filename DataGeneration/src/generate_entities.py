@@ -193,8 +193,8 @@ def generate_assessments(grades, cut_points, from_date, most_recent, to_date=Non
                         most_recent = (index_of_year == len(asmt_years) - 1)
                         asmt_period_year = asmt_years[index_of_year]
                         assessment = generate_assessment(asmt_type, asmt_period + ' ' + str(asmt_period_year), asmt_period_year, asmt_subject, asmt_grade,
-                                                          asmt_cut_point_1, asmt_cut_point_2, asmt_cut_point_3, asmt_cut_point_4,
-                                                          from_date, most_recent, to_date=to_date)
+                                                         asmt_cut_point_1, asmt_cut_point_2, asmt_cut_point_3, asmt_cut_point_4,
+                                                         from_date, most_recent, to_date=to_date)
                         assessments.append(assessment)
     return assessments
 
@@ -256,10 +256,11 @@ def generate_fact_assessment_outcome(asmt_rec_id, student_guid, teacher_guid, st
 
     return asmt_outcome
 
+
 # TODO: Move this function somewhere else (generate_data?) since it uses helper_entities (students, scores)
 def generate_fact_assessment_outcomes(students, scores, asmt_rec_id, teacher_guid, state_code, district_guid, school_guid, section_guid,
-                                     inst_hier_rec_id, section_rec_id, where_taken_id, where_taken_name, asmt_grade, enrl_grade,
-                                     date_taken, date_taken_day, date_taken_month, date_taken_year):
+                                      inst_hier_rec_id, section_rec_id, where_taken_id, where_taken_name, asmt_grade, enrl_grade,
+                                      date_taken, date_taken_day, date_taken_month, date_taken_year):
 
     outcomes = []
 
@@ -287,12 +288,12 @@ def generate_fact_assessment_outcomes(students, scores, asmt_rec_id, teacher_gui
         asmt_claim_4_score_range_max = claim_scores[3].claim_score_interval_maximum if len(claim_scores) > 3 else None
 
         asmt_outcome = generate_fact_assessment_outcome(asmt_rec_id, student_guid, teacher_guid, state_code, district_guid, school_guid, section_guid,
-                                     inst_hier_rec_id, section_rec_id, where_taken_id, where_taken_name, asmt_grade, enrl_grade,
-                                     date_taken, date_taken_day, date_taken_month, date_taken_year, asmt_score, asmt_score_range_min, asmt_score_range_max, asmt_perf_lvl,
-                                     asmt_claim_1_score, asmt_claim_1_score_range_min, asmt_claim_1_score_range_max,
-                                     asmt_claim_2_score, asmt_claim_2_score_range_min, asmt_claim_2_score_range_max,
-                                     asmt_claim_3_score, asmt_claim_3_score_range_min, asmt_claim_3_score_range_max,
-                                     asmt_claim_4_score, asmt_claim_4_score_range_min, asmt_claim_4_score_range_max)
+                                                        inst_hier_rec_id, section_rec_id, where_taken_id, where_taken_name, asmt_grade, enrl_grade,
+                                                        date_taken, date_taken_day, date_taken_month, date_taken_year, asmt_score, asmt_score_range_min, asmt_score_range_max, asmt_perf_lvl,
+                                                        asmt_claim_1_score, asmt_claim_1_score_range_min, asmt_claim_1_score_range_max,
+                                                        asmt_claim_2_score, asmt_claim_2_score_range_min, asmt_claim_2_score_range_max,
+                                                        asmt_claim_3_score, asmt_claim_3_score_range_min, asmt_claim_3_score_range_max,
+                                                        asmt_claim_4_score, asmt_claim_4_score_range_min, asmt_claim_4_score_range_max)
         outcomes.append(asmt_outcome)
 
     return outcomes

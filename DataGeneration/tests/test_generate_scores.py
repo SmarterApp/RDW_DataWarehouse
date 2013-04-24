@@ -79,7 +79,6 @@ class TestGenerateScores(unittest.TestCase):
             actual_socres_in_level = [x for x in actual_scores if x in range(cut_points[i], high_bound)]
             self.assertEqual(len(actual_socres_in_level), expected_number)
 
-
     def is_close(self, a, b, diff):
         if a == b:
             return True
@@ -87,7 +86,6 @@ class TestGenerateScores(unittest.TestCase):
             return a >= b - diff
         # a > b
         return a <= b + diff
-        
 
     def test_generate_overall_scores(self):
         percentage = [20, 40, 30, 10]
@@ -97,37 +95,37 @@ class TestGenerateScores(unittest.TestCase):
         total = 12933
         actual_scores = generate_scores.generate_overall_scores(percentage, cut_points, min_score, max_score, total)
         self.assertEqual(len(actual_scores), total)
-        
+
         total_count_by_percentages = generate_scores.split_total_by_precentages(percentage, total)
         new_total = sum(total_count_by_percentages)
         self.assertEqual(total, new_total)
-        
+
         cp1min, cp1max = cut_points[0], cut_points[1]
         cp2min, cp2max = cut_points[1], cut_points[2]
         cp3min, cp3max = cut_points[2], cut_points[3]
         cp4min, cp4max = cut_points[3], cut_points[4] + 1
-        
+
         count1 = len(actual_scores)
 
         pl1 = [x for x in actual_scores if x in range(cp1min, cp1max)]
         pl2 = [x for x in actual_scores if x in range(cp2min, cp2max)]
         pl3 = [x for x in actual_scores if x in range(cp3min, cp3max)]
         pl4 = [x for x in actual_scores if x in range(cp4min, cp4max)]
-        
+
         pllist = [len(pl1), len(pl2), len(pl3), len(pl4)]
-        count2 = sum(pllist) 
-        
-        self.assertEqual(count1, count2)      
-        
+        count2 = sum(pllist)
+
+        self.assertEqual(count1, count2)
+
         pl1pc = int((len(pl1) / count1) * 100)
         pl2pc = int((len(pl2) / count1) * 100)
         pl3pc = int((len(pl3) / count1) * 100)
         pl4pc = int((len(pl4) / count1) * 100)
-        
+
         pclist = [pl1pc, pl2pc, pl3pc, pl4pc]
-        
+
         for i in range(len(pclist)):
             pc = pclist[i]
             self.assertTrue(self.is_close(pc, percentage[i], 1))
-        
+
         # can add graph display here

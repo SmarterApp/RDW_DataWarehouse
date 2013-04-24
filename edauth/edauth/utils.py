@@ -13,6 +13,11 @@ def convert_to_int(value):
     return converted_value
 
 
+# boolean True/False converter
+def to_bool(val):
+    return val and val.lower() in ('true', 'True')
+
+
 # enum
 def enum(*sequential, **named):
     enums = dict(zip(sequential, range(len(sequential))), **named)

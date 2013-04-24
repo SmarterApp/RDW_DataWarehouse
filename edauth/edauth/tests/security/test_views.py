@@ -9,7 +9,7 @@ from edauth.security.views import login, saml2_post_consumer, logout_redirect, _
 from pyramid import testing
 from pyramid.testing import DummyRequest
 from pyramid.httpexceptions import HTTPFound, HTTPForbidden
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urlsplit
 import urllib
 from edauth.security.views import logout
 import os
@@ -76,7 +76,8 @@ class TestViews(unittest.TestCase):
         queries = urllib.parse.parse_qs(actual_url.query)
         self.assertTrue(len(queries) == 2)
         self.assertIsNotNone(queries['SAMLRequest'])
-        self.assertTrue(_get_cipher().decrypt(queries['RelayState'][0]).endswith('/dummy/report'))
+        relay_state = urlsplit(_get_cipher().decrypt(queries['RelayState'][0]))
+        self.assertEqual(relay_state.path, "/dummy/report")
 
     def test_login_referred_by_logout_url(self):
         self.__request.url = 'http://example.com/dummy/logout'
@@ -84,7 +85,8 @@ class TestViews(unittest.TestCase):
 
         actual_url = urlparse(http.location)
         queries = urllib.parse.parse_qs(actual_url.query)
-        self.assertTrue(_get_cipher().decrypt(queries['RelayState'][0]).endswith('/dummy/logout'))
+        relay_state = urlsplit(_get_cipher().decrypt(queries['RelayState'][0]))
+        self.assertEqual(relay_state.path, "/dummy/logout")
 
     def test_login_referred_by_protected_page(self):
         self.__request.url = 'http://example.com/dummy/data'
@@ -92,7 +94,8 @@ class TestViews(unittest.TestCase):
 
         actual_url = urlparse(http.location)
         queries = urllib.parse.parse_qs(actual_url.query)
-        self.assertTrue(_get_cipher().decrypt(queries['RelayState'][0]).endswith(self.__request.url))
+        relay_state = urlsplit(_get_cipher().decrypt(queries['RelayState'][0]))
+        self.assertEqual(relay_state.path, "/dummy/data")
 
     def test_login_redirected_due_to_no_role(self):
         self.__config.testing_securitypolicy("sessionId123", ['NONE'])
@@ -115,7 +118,8 @@ class TestViews(unittest.TestCase):
         http = login(self.__request)
         url = urlparse(http.location)
         queries = urllib.parse.parse_qs(url.query)
-        self.assertTrue(_get_cipher().decrypt(queries['RelayState'][0]).endswith(self.__request.url))
+        relay_state = urlsplit(_get_cipher().decrypt(queries['RelayState'][0]))
+        self.assertEqual(relay_state.path, "/dummy/page")
 
     def test_login_with_no_existing_session(self):
         session_id = str(uuid.uuid1())
@@ -128,7 +132,8 @@ class TestViews(unittest.TestCase):
         http = login(self.__request)
         url = urlparse(http.location)
         queries = urllib.parse.parse_qs(url.query)
-        self.assertTrue(_get_cipher().decrypt(queries['RelayState'][0]).endswith(self.__request.url))
+        relay_state = urlsplit(_get_cipher().decrypt(queries['RelayState'][0]))
+        self.assertEqual(relay_state.path, "/dummy/page")
 
     def test_logout_with_no_existing_session(self):
         http = logout(self.__request)

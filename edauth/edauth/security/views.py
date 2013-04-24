@@ -5,7 +5,7 @@ Created on Feb 13, 2013
 '''
 from pyramid.security import NO_PERMISSION_REQUIRED, forget, remember, \
     effective_principals, unauthenticated_userid
-from pyramid.httpexceptions import HTTPFound, HTTPForbidden
+from pyramid.httpexceptions import HTTPFound, HTTPForbidden, HTTPMovedPermanently
 from pyramid.view import view_config, forbidden_view_config
 import base64
 from edauth.saml2.saml_request import SamlAuthnRequest, SamlLogoutRequest
@@ -14,22 +14,12 @@ from edauth.security.session_manager import create_new_user_session, \
     get_user_session, write_security_event, expire_session
 from edauth.utils import convert_to_int
 from pyramid.response import Response
-from edauth.security.utils import ICipher
 from edauth.security.roles import Roles
 from edauth.saml2.saml_response_manager import SAMLResponseManager
 from edauth.saml2.saml_idp_metadata_manager import IDP_metadata_manager
-from zope import component
 from edauth import logger
-
-
-def enum(**enums):
-    return type('Enum', (), enums)
-
-
-def _get_cipher():
-    return component.getUtility(ICipher)
-
-SECURITY_EVENT_TYPE = enum(INFO=0, WARN=1)
+from urllib.parse import parse_qs, urlsplit, urlunsplit
+from edauth.security.utils import SECURITY_EVENT_TYPE, _get_cipher
 
 
 @view_config(route_name='login', permission=NO_PERMISSION_REQUIRED)
@@ -65,6 +55,27 @@ def login(request):
         # TODO make it a const
         # TODO: landing page
         referrer = request.route_url('list_of_reports')
+
+    # Split the url to read query params for saml_login
+    split_url = urlsplit(referrer)
+    query_params = parse_qs(split_url.query, keep_blank_values=True)
+    saml_tries = query_params.get('sl')
+    tries = 0
+    if saml_tries and len(saml_tries) > 0:
+        for saml_try in saml_tries:
+            tries += convert_to_int(saml_try)
+        # Protect ourselves from infinite loop
+        if tries > 2:
+            # we cannot rely on notfound_view_config
+            return HTTPMovedPermanently(location=request.application_url + '/error')
+    tries += 1
+
+    query_params['sl'] = tries
+    # rebuild url
+    url_query_params = urllib.parse.urlencode(query_params, doseq=True)
+    new_url = (split_url[0], split_url[1], split_url[2], url_query_params, split_url[4])
+    referrer = urlunsplit(new_url)
+
     params = {'RelayState': _get_cipher().encrypt(referrer)}
 
     saml_request = SamlAuthnRequest(request.registry.settings['auth.saml.issuer_name'])

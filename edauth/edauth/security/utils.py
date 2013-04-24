@@ -7,8 +7,12 @@ import zlib
 import base64
 from Crypto.Cipher import AES
 from Crypto import Random
-from zope import interface
+from zope import interface, component
 from zope.interface.declarations import implementer
+from edauth.utils import enum
+
+
+SECURITY_EVENT_TYPE = enum(INFO=0, WARN=1)
 
 
 def deflate_base64_encode(data_byte_string):
@@ -26,6 +30,10 @@ def inflate_base64_decode(data_byte_string):
     '''
     base_decoded = base64.b64decode(data_byte_string)
     return zlib.decompress(base_decoded, -15)
+
+
+def _get_cipher():
+    return component.getUtility(ICipher)
 
 
 class ICipher(interface.Interface):

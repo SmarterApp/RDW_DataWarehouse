@@ -4,7 +4,7 @@ Entry point for edauth
 '''
 from pyramid.authorization import ACLAuthorizationPolicy
 from edauth.security.callback import session_check
-from edauth.utils import convert_to_int
+from edauth.utils import convert_to_int, to_bool
 from edauth.security.roles import Roles
 from database.generic_connector import setup_db_connection_from_ini
 from edauth.persistence.persistence import generate_persistence
@@ -17,11 +17,6 @@ from edauth.security.session_manager import cleanup_sessions
 
 
 logger = logging.getLogger(__name__)
-
-
-# boolean True/False converter
-def to_bool(val):
-    return val and val.lower() in ('true', 'True')
 
 
 # this is automatically called by consumer of edauth when it calls config.include(edauth)

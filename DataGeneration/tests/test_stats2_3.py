@@ -5,7 +5,7 @@ Created on Apr 19, 2013
 '''
 import unittest
 
-import genmath.stats2 as stats
+import stats2 as stats
 
 
 class Test(unittest.TestCase):

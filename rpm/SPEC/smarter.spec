@@ -29,8 +29,8 @@ cp -r ${WORKSPACE}/scripts %{buildroot}/opt/edware
 cp -r ${WORKSPACE}/assets %{buildroot}/opt/edware/assets
 touch %{buildroot}/opt/edware/assets/__init__.py
 mkdir -p %{buildroot}/opt/edware/conf
-cp ${WORKSPACE/smarter/generate_ini.py %{buildroot}/opt/edware/conf/
-cp ${WORKSPACE/smarter/settings.yaml %{buildroot}/opt/edware/conf/
+cp ${WORKSPACE}/smarter/generate_ini.py %{buildroot}/opt/edware/conf/
+cp ${WORKSPACE}/smarter/settings.yaml %{buildroot}/opt/edware/conf/
 
 
 

@@ -28,6 +28,9 @@ cp -r ${WORKSPACE}/smarter %{buildroot}/opt/edware
 cp -r ${WORKSPACE}/scripts %{buildroot}/opt/edware
 cp -r ${WORKSPACE}/assets %{buildroot}/opt/edware/assets
 touch %{buildroot}/opt/edware/assets/__init__.py
+mkdir -p %{buildroot}/opt/edware/conf
+cp ${WORKSPACE/smarter/generate_ini.py %{buildroot}/opt/edware/conf/
+cp ${WORKSPACE/smarter/settings.yaml %{buildroot}/opt/edware/conf/
 
 
 
@@ -79,6 +82,8 @@ cp -r virtualenv %{buildroot}/opt
 %files
 %defattr(644,root,root,-)
 /opt/edware/smarter/smarter.wsgi
+/opt/edware/conf/generate_ini.py
+/opt/edware/conf/settings.yaml
 /opt/virtualenv/include/*
 /opt/virtualenv/lib/*
 /opt/virtualenv/lib64

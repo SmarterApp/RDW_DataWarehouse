@@ -253,7 +253,7 @@ def generate_name_list_dictionary(list_name_to_path_dictionary):
 def generate_district_dictionary(district_types_and_counts, district_names_1, district_names_2):
     '''
     generate a dict of districts from the given info
-    @param district_types_and_counts: A dictionary conating the data about district sizes from the config file
+    @param district_types_and_counts: A dictionary containing the data about district sizes from the config file
     @param district_names_1: A list of names to use when naming the districts
     @param district_names_2: Second list to use in naming
     @return: a dictionary of created districts
@@ -271,10 +271,12 @@ def generate_district_dictionary(district_types_and_counts, district_names_1, di
 
 def create_school_dictionary(school_counts, school_types_and_ratios, school_names_1, school_names_2):
     '''
-    @param school_counts:
-    @param school_types_and_ratios:
-    @param school_names_1:
-    @param school_names_2:
+    Creates a dictionary of schools that matches the school counts and ratios
+    @param school_counts: A dictionary containing school population information
+    @param school_types_and_ratios: A dictionary containing ratios for schools in each school-size type
+    @param school_names_1: A list of names to use in naming schools
+    @param school_names_2: A 2nd list of names to use in naming schools
+    @return: A dictionary with school types as keys and a list of schools as values
     '''
     num_schools_min = school_counts[config_module.MIN]
     num_schools_avg = school_counts[config_module.AVG]
@@ -300,9 +302,10 @@ def create_school_dictionary(school_counts, school_types_and_ratios, school_name
 
 def generate_institution_hierarchy_from_helper_entities(state, district, school):
     '''
-    @param state:
-    @param district:
-    @param school:
+    Create an InstitutionHierarchy object from the helper entities provided
+    @param state: a State object
+    @param district: A District object
+    @param school: A School object
     '''
     state_name = state.state_name
     state_code = state.state_code

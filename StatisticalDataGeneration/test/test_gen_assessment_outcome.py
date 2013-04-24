@@ -2,7 +2,7 @@ import unittest
 import gen_assessment_outcome
 from gen_assessments import generate_dim_assessment
 from constants import ASSMT_SCORE_YEARS, MINIMUM_ASSESSMENT_SCORE, MAXIMUM_ASSESSMENT_SCORE
-from src.helper_entities import WhereTaken
+from helper_entities import WhereTaken
 from helper_entities import StudentBioInfo, Claim, AssessmentScore
 from entities import Student, AssessmentOutcome, Assessment
 

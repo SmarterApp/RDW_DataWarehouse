@@ -4,7 +4,7 @@ Created on Apr 15, 2013
 @author: kallen
 '''
 import unittest
-from eb.errorband import calc_eb_params, calc_eb  
+from errorband import calc_eb_params, calc_eb
 
 
 class Test(unittest.TestCase):

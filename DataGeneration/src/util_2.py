@@ -4,6 +4,7 @@ import datetime
 
 
 def generate_district_name(list_1, list_2, max_name_length=None):
+    # TODO: Decouple constants from this function
     suffix = random.choice(constants.DISTRICT_SUFFIX)
     # adding the plus 1 to account for the space between the name and the suffix
     suffix_length = len(suffix) + 1
@@ -16,6 +17,7 @@ def generate_district_name(list_1, list_2, max_name_length=None):
 
 
 def generate_school_name(school_type, list_1, list_2, max_name_length=None):
+    # TODO: Decouple constants from this function
     suffix_list = constants.SCHOOL_TYPE_TO_SUFFIXES[school_type]
     suffix = random.choice(suffix_list)
     # adding the plus 1 to account for the space between the name and the suffix

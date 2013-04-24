@@ -9,7 +9,7 @@ from datetime import date
 import generate_data
 import generate_entities
 from helper_entities_2 import District
-from entities_2 import Staff
+from entities_2 import Staff, AssessmentOutcome, InstitutionHierarchy
 
 
 class Test(unittest.TestCase):
@@ -23,6 +23,7 @@ class Test(unittest.TestCase):
         self.config_module.PERCENTAGES = 'percentages'
         self.config_module.MIN = 'min'
         self.config_module.MAX = 'max'
+        self.config_module.AVG = 'avg'
         self.config_module.CUT_POINTS = 'cut_points'
         self.config_module.FROM_DATE = 'from_date'
         self.config_module.MOST_RECENT = 'most_recent'
@@ -66,6 +67,40 @@ class Test(unittest.TestCase):
             self.assertIsNotNone(item.district_name)
             self.assertIsNotNone(item.district_guid)
 
+    def test_create_school_dictionary(self):
+        school_counts = {'min': 100, 'max': 500, 'avg': 300}
+        ratios = {'High School': 1, 'Middle School': 2, 'Elementary School': 5}
+        name_list1 = ['name_%d' % i for i in range(20)]
+        name_list2 = ['name2_%d' % i for i in range(20)]
+        res = generate_data.create_school_dictionary(school_counts, ratios, name_list1, name_list2)
+        self.assertEqual(len(res), 3)
+        elm_sch_len = len(res['Elementary School'])
+        mid_sch_len = len(res['Middle School'])
+        hig_sch_len = len(res['High School'])
+        self.assertAlmostEqual(hig_sch_len * 5, elm_sch_len)
+        self.assertAlmostEqual(hig_sch_len * 2, mid_sch_len)
+
+    def test_generate_institution_hierarchy_from_helper_entities(self):
+        state = DummyClass()
+        state.state_name = 'Georgia'
+        state.state_code = 'GA'
+        district = DummyClass()
+        district.district_guid = 'dguid1'
+        district.district_name = 'District1'
+        school = DummyClass()
+        school.school_name = 'School1'
+        school.school_guid = 'sguid1'
+        school.school_category = 'Middle'
+
+        res = generate_data.generate_institution_hierarchy_from_helper_entities(state, district, school)
+
+        self.assertIsInstance(res, InstitutionHierarchy)
+        self.assertEqual(res.state_name, 'Georgia')
+        self.assertEqual(res.state_code, 'GA')
+        self.assertEqual(res.district_name, 'District1')
+        self.assertEqual(res.school_name, 'School1')
+        self.assertEqual(res.school_category, 'Middle')
+
     def test_generate_list_of_scores(self):
         total = 100
         res = generate_data.generate_list_of_scores(total, self.score_details, self.perf_lvl_dist, 'Math', 3)
@@ -73,6 +108,42 @@ class Test(unittest.TestCase):
         for score in res:
             self.assertGreaterEqual(score, self.score_details['min'])
             self.assertLessEqual(score, self.score_details['max'])
+
+    def test_generate_assessment_outcomes_from_helper_entities_and_lists(self):
+        grade = 5
+        district_guid = 'dist123'
+        school_guid = 'scho2343'
+        school_name = 'school1'
+        state_code = 'GA'
+        section_guid = 'sect123'
+        subject = 'Math'
+        students = self.create_students(10, grade, subject, section_guid, school_guid, state_code, district_guid)
+        scores = [1300, 1400, 1500, 1700, 1800, 1900, 2000, 2100, 2200, 2300]
+        teacher_guid = 'teach234'
+        section = DummyClass()
+        section.grade = grade
+        section.section_guid = section_guid
+        section.section_rec_id = 12343
+        institution_hierarchy = DummyClass()
+        institution_hierarchy.inst_hier_rec_id = 23
+        institution_hierarchy.state_code = state_code
+        institution_hierarchy.district_guid = district_guid
+        institution_hierarchy.school_guid = school_guid
+        institution_hierarchy.school_name = school_name
+        assessment = self.create_assessment(grade, subject)
+        ebmin = 32
+        ebmax = 8
+        rndlo = -10
+        rndhi = 25
+        res = generate_data.generate_assessment_outcomes_from_helper_entities_and_lists(students, scores, teacher_guid, section, institution_hierarchy,
+                                                                                        assessment, ebmin, ebmax, rndlo, rndhi)
+
+        expected_scores = scores[:]
+        self.assertEqual(len(res), 10)
+        for i in range(len(res)):
+            self.assertIsInstance(res[i], AssessmentOutcome)
+            self.assertIn(res[i].asmt_score, expected_scores)
+            expected_scores.remove(res[i].asmt_score)
 
     def test_translate_scores_to_assessment_score(self):
         assmt = self.create_assessment(5, 'Math')
@@ -121,7 +192,7 @@ class Test(unittest.TestCase):
             self.assertEqual(stu.section_guid, 'new_id')
 
     def test_generate_teaching_staff_from_institution_hierarchy(self):
-        num_of_staff = 50
+        num_of_staff = 20
         institution_hierarchy = DummyClass()
         institution_hierarchy.state_code = 'GA'
         institution_hierarchy.district_guid = 'dict1234'
@@ -145,7 +216,7 @@ class Test(unittest.TestCase):
 
     def test_generate_non_teaching_staff(self):
         state_code = 'GA'
-        num_of_staff = 50
+        num_of_staff = 20
         temp_data = self.get_temporal_information_mock()
         district_guid = 'distguid'
         school_guid = 'schoolguid'
@@ -222,7 +293,6 @@ class Test(unittest.TestCase):
 
     def test_get_subset_of_students(self):
         students = [object()] * 100
-        print(len(students))
         res = generate_data.get_subset_of_students(students, .9)
         self.assertEqual(len(res), 90)
 
@@ -231,6 +301,7 @@ class Test(unittest.TestCase):
     # ----------------------
     def create_assessment(self, grade, subject):
         assmt = DummyClass()
+        assmt.asmt_rec_id = 'asmt_rec_id'
         assmt.asmt_subject = subject
         assmt.asmt_grade = grade
         assmt.asmt_claim_1_name = 'claim1'
@@ -252,9 +323,38 @@ class Test(unittest.TestCase):
         assmt.asmt_score_min = self.score_details['min']
         assmt.asmt_score_max = self.score_details['max']
         assmt.asmt_subject = 'Math'
+        assmt.asmt_cut_point_1 = self.cut_points[0]
+        assmt.asmt_cut_point_2 = self.cut_points[1]
+        assmt.asmt_cut_point_3 = self.cut_points[2]
+        assmt.asmt_cut_point_4 = None
+        assmt.asmt_period_year = 2012
+        assmt.asmt_period = 'Fall'
 
         #asmts = generate_entities.generate_assessments([5], self.cut_points, date.today(), True, date.today())
         return assmt  # asmts[0]
+
+    def create_students(self, num, grade, section_guid, school_guid, state_code, subject, district_guid):
+        students = []
+        for i in range(num):
+            student = DummyClass()
+            student.student_guid = section_guid
+            student.student_rec_id = 'rec_%d' % i
+            student.first_name = 'first_%d' % i
+            student.last_name = 'last_%d' % i
+            student.address_1 = '%d Main St.' % i
+            student.city = 'New York'
+            student.zip_code = 12345
+            student.gender = 'Male'
+            student.email = 'email_%d' % i
+            student.dob = date.today()
+            student.grade = grade
+            student.state_code = state_code
+            student.from_date = date.today()
+            student.most_recent = True
+            student.district_guid = district_guid
+            student.school_guid = school_guid
+            students.append(student)
+        return students
 
     def create_test_name_files(self, file_count, name_count):
         list_name = 'unit_test_file_for_testing{num}'

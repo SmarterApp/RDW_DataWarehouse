@@ -67,19 +67,18 @@ class Test(unittest.TestCase):
             self.assertIsNotNone(item.district_name)
             self.assertIsNotNone(item.district_guid)
 
-#     def test_create_school_dictionary(self):
-#         school_counts = {'min': 100, 'max': 500, 'avg': 300}
-#         ratios = {'High School': 1, 'Middle School': 2, 'Elementary School': 5}
-#         name_list1 = ['name_%d' % i for i in range(20)]
-#         name_list2 = ['name2_%d' % i for i in range(20)]
-#         res = generate_data.create_school_dictionary(school_counts, ratios, name_list1, name_list2)
-#         self.assertEqual(len(res), 3)
-#         elm_sch_len = len(res['Elementary School'])
-#         mid_sch_len = len(res['Middle School'])
-#         hig_sch_len = len(res['High School'])
-#         self.assertGreaterEqual(elm_sch_len, school_counts['min'])
-#         self.assertLessEqual(elm_sch_len, school_counts['max'])
-#         self.assertAlmostEqual(hig_sch_len * 5, elm_sch_len)
+    def test_create_school_dictionary(self):
+        school_counts = {'min': 100, 'max': 500, 'avg': 300}
+        ratios = {'High School': 1, 'Middle School': 2, 'Elementary School': 5}
+        name_list1 = ['name_%d' % i for i in range(20)]
+        name_list2 = ['name2_%d' % i for i in range(20)]
+        res = generate_data.create_school_dictionary(school_counts, ratios, name_list1, name_list2)
+        self.assertEqual(len(res), 3)
+        elm_sch_len = len(res['Elementary School'])
+        mid_sch_len = len(res['Middle School'])
+        hig_sch_len = len(res['High School'])
+        self.assertAlmostEqual(hig_sch_len * 5, elm_sch_len)
+        self.assertAlmostEqual(hig_sch_len * 2, mid_sch_len)
 
     def test_generate_institution_hierarchy_from_helper_entities(self):
         state = DummyClass()

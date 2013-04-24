@@ -15,7 +15,7 @@ from generate_helper_entities import generate_state, generate_district, generate
 from entities_2 import InstitutionHierarchy, Section, Assessment, AssessmentOutcome, \
     Staff, ExternalUserStudent, Student
 from generate_scores import generate_overall_scores
-from gaussian_distributions import gauss_one
+from gaussian_distributions import gauss_one, guess_std
 from errorband import calc_eb_params, calc_eb
 
 
@@ -517,7 +517,8 @@ def calculate_number_of_schools(school_min, school_max, school_avg):
     @param school_max: The Maximum number of schools the school can contain
     @return: An int representing the number of schools
     '''
-    number_of_schools = gauss_one(school_min, school_max, school_avg)
+    standard_dev, _r_avg = guess_std(school_min, school_max, school_avg)
+    number_of_schools = gauss_one(school_min, school_max, school_avg, standard_dev)
     return int(number_of_schools)
 
 
@@ -529,7 +530,8 @@ def calculate_number_of_students(student_min, student_max, student_avg):
     @param student_avg: The average number of students
     @return: An int representing the number of students to use, based on a gaussian distribution
     '''
-    number_of_students = gauss_one(student_min, student_max, student_avg)
+    standard_dev, _r_avg = guess_std(student_min, student_max, student_avg)
+    number_of_students = gauss_one(student_min, student_max, student_avg, standard_dev)
     return int(number_of_students)
 
 

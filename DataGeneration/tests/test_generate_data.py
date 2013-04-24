@@ -36,7 +36,7 @@ class Test(unittest.TestCase):
         list_name_to_path_dictionary = {}
         file_count = 10
         name_count = 50
-        file_names = self.create_test_name_files(file_count, name_count)
+        file_names = self.create_mock_name_files(file_count, name_count)
         for name in file_names:
             list_name_to_path_dictionary[name] = name
         res = generate_data.generate_name_list_dictionary(list_name_to_path_dictionary)
@@ -45,7 +45,7 @@ class Test(unittest.TestCase):
         for name in res:
             number_of_lines = len(res[name])
             self.assertEqual(number_of_lines, name_count)
-        self.remove_test_files(file_names)
+        self.remove_files(file_names)
 
     def test_generate_district_dictionary(self):
         district_types = {'Big': 2, 'Medium': 6, 'Small': 40}
@@ -359,7 +359,7 @@ class Test(unittest.TestCase):
             students.append(student)
         return students
 
-    def create_test_name_files(self, file_count, name_count):
+    def create_mock_name_files(self, file_count, name_count):
         list_name = 'unit_test_file_for_testing{num}'
         file_list = []
         for i in range(file_count):
@@ -370,7 +370,7 @@ class Test(unittest.TestCase):
             file_list.append(file_name)
         return file_list
 
-    def remove_test_files(self, file_list):
+    def remove_files(self, file_list):
         for name in file_list:
             os.remove(name)
 

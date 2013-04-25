@@ -238,14 +238,14 @@ uat:
     mode: prod
     disable_stack_trace: true
     edware:
-      schema_name: edware
+      schema_name: edware_uat_0_1
       db:
         main:
-          url: postgresql+psycopg2://postgres:edware.dmo.2013@dwpool0.dmo.som.edwdc.net:6432/edware
+          url: postgresql+psycopg2://edware:edware.dmo.may.2013@dwpool0.dmo.som.edwdc.net:6434/edware
     edauth:
       db:
         main:
-          url: postgresql+psycopg2://postgres:edware.dmo.2013@dwpool0.dmo.som.edwdc.net:6432/edware
+          url: postgresql+psycopg2://edware:edware.dmo.may.2013@dwpool0.dmo.som.edwdc.net:6434/edware
     auth:
       idp:
         metadata: /opt/edware/conf/idp_metadata.xml
@@ -254,9 +254,9 @@ uat:
       skip.verify: False
       saml:
         issuer_name: https://pyweb.dmo.dum.edwdc.net
-        idp_server_login_url: https://betauth.smarterbalancedreporting.org/openam/SSORedirect/metaAlias/idp
-        idp_server_logout_url: https://betauth.smarterbalancedreporting.org/openam/IDPSloRedirect/metaAlias/idp
-        name_qualifier: https://betauth.smarterbalancedreporting.org/openam
+        idp_server_login_url: https://betaauth.smarterbalancedreporting.org/openam/SSORedirect/metaAlias/idp
+        idp_server_logout_url: https://betaauth.smarterbalancedreporting.org/openam/IDPSloRedirect/metaAlias/idp
+        name_qualifier: https://betaauth.smarterbalancedreporting.org/openam
   '[handlers]':
     keys: console, filelog, audit, syslog
   '[handler_syslog]':

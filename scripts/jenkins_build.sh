@@ -3,7 +3,7 @@
 set -e # Exit on errors
 
 function check_vars {
-	if [-z "$WORKSPACE"]; then
+	if [ -z "$WORKSPACE"]; then
 		echo "\$WORKSPACE is not defined"
 		exit 2
 	fi
@@ -187,9 +187,9 @@ function show_help {
 function main {
 	get_opts $@
     check_vars
-    setup_virtualenv $@
     if [ ${MODE:=""} == "UNIT" ]; then
         set_vars
+        setup_virtualenv $@
         setup_unit_test_dependencies
         if $RUN_UNIT_TEST ; then
             run_unit_tests $MAIN_PKG

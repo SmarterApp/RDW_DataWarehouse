@@ -38,7 +38,6 @@ cut_point3 = get_scores()[CUT_POINTS][2]
 
 
 class DataGenerationValidation(unittest.TestCase):
-
 # Get header values from Configuration file
     dim_inst_hier = entities.InstitutionHierarchy.getHeader()
     dim_staff = entities.Staff.getHeader()
@@ -48,7 +47,7 @@ class DataGenerationValidation(unittest.TestCase):
     fact_asmt_outcome = entities.AssessmentOutcome.getHeader()
     external_user_student_rel = entities.ExternalUserStudent.getHeader()
 
-    # Create dictionary to store Headers 
+    # Create dictionary to store Headers
     header_dict = {}
     # print(table)
     header_dict['dim_inst_hier'] = dim_inst_hier
@@ -61,9 +60,9 @@ class DataGenerationValidation(unittest.TestCase):
 
 # Method to read DictReader
     @staticmethod
-    def dict_reader (file_path, file_format):
-        with open (file_path) as csvFile:
-            fileValue = csv.DictReader(csvFile, delimiter =',' )
+    def dict_reader(file_path, file_format):
+        with open(file_path) as csvFile:
+            fileValue = csv.DictReader(csvFile, delimiter=',')
             print('OPEN')
             return fileValue
 
@@ -71,7 +70,7 @@ class DataGenerationValidation(unittest.TestCase):
     @staticmethod
     def getting_header(path, format_name):
         with open(path, format_name) as csvfile:
-            col_reader = csv.reader(csvfile, delimiter = ',')
+            col_reader = csv.reader(csvfile, delimiter=',')
             header_list = (list(col_reader))
             first_row = header_list[0]
             return first_row
@@ -83,34 +82,34 @@ class DataGenerationValidation(unittest.TestCase):
             max_score = []
             asmt_score_dict = {}
             csv_path = os.path.join(__location__, '..', 'datafiles', 'csv', 'fact_asmt_outcome.csv')
-            with open (csv_path, 'r') as csvfile:
-                col_val = csv.DictReader(csvfile, delimiter = ',')
+            with open(csv_path, 'r') as csvfile:
+                col_val = csv.DictReader(csvfile, delimiter=',')
                 for values in col_val:
                     score = values[score_column_name]
                     real_score.append(score)
                     min_score_range = values[range_min_column_name]
                     min_score.append(min_score_range)
-                    max_score_range = values[range_max_column_name]    
+                    max_score_range = values[range_max_column_name]
                     max_score.append(max_score_range)
                 for i in range(len(real_score)):
                     min_value = int(min_score[i])
                     max_value = int(max_score[i])
                     actual_score = int(real_score[i])
-                    assert min_asmt_score <= actual_score and min_value and max_value <= max_asmt_score, ('Incorrect score: Actual score: '+ str(actual_score) + ' Min_Score: ' + str(min_value) + ' Max_Score: ' + str(max_value))
+                    assert min_asmt_score <= actual_score and min_value and max_value <= max_asmt_score, ('Incorrect score: Actual score: ' + str(actual_score) + ' Min_Score: ' + str(min_value) + ' Max_Score: ' + str(max_value))
                     if min_value != min_asmt_score and max_value != max_asmt_score:
-                        assert (actual_score - min_value) == (max_value - actual_score) , ('Min/Max scores are not in range in fact_asmt_outcome file. Actual score: '+ str(actual_score) + ' Min_Score: ' + str(min_value) + ' Max_Score: ' + str(max_value))
+                        assert (actual_score - min_value) == (max_value - actual_score), ('Min/Max scores are not in range in fact_asmt_outcome file. Actual score: ' + str(actual_score) + ' Min_Score: ' + str(min_value) + ' Max_Score: ' + str(max_value))
 
-    # TC1: Check Headers in all the CSV files.   
+    # TC1: Check Headers in all the CSV files
     def test_headers(self):
         csv_path = ENTITY_TO_PATH_DICT.values()
         for each_csv in csv_path:
         # do validate
             actual_headers = DataGenerationValidation.getting_header(each_csv, 'r')
             expected_headers = DataGenerationValidation.header_dict.get(os.path.basename(each_csv)[:-4])
-            assert expected_headers is not None,('No header info for %s' % each_csv)
-            assert len(actual_headers) == len(expected_headers),('Number of header does not match: %s' % each_csv)
+            assert expected_headers is not None, ('No header info for %s' % each_csv)
+            assert len(actual_headers) == len(expected_headers), ('Number of header does not match: %s' % each_csv)
             for header in expected_headers:
-                assert header in actual_headers,('Header Name: %s is missing in %s file' %(header, os.path.basename(each_csv)[:-4]))
+                assert header in actual_headers, ('Header Name: %s is missing in %s file' % (header, os.path.basename(each_csv)[:-4]))
         print('TC1: Passed: Check Headers in all the CSV files')
 
     # TC2: Validate min/Max assessment score, cut score and assessment performance level name
@@ -155,7 +154,7 @@ class DataGenerationValidation(unittest.TestCase):
             dict = {}
             actual_school_category = []
             for school in col_val:
-                all_school = school ['school_category']
+                all_school = school['school_category']
                 # check the value is available in the List ot not if not add value in the list so we can compare with expected_school_categoty
                 if all_school in actual_school_category:
                     pass
@@ -171,13 +170,13 @@ class DataGenerationValidation(unittest.TestCase):
             assert sorted(expected_school_category) == sorted(actual_school_category), 'School Category does not match'
         # get school_guid from dim_section and check the grades
         csv_files = [os.path.join(__location__, '..', 'datafiles', 'csv', 'fact_asmt_outcome.csv'),
-                    os.path.join(__location__, '..', 'datafiles', 'csv', 'dim_section.csv'),
-                    os.path.join(__location__, '..', 'datafiles', 'csv', 'dim_student.csv')]
+                     os.path.join(__location__, '..', 'datafiles', 'csv', 'dim_section.csv'),
+                     os.path.join(__location__, '..', 'datafiles', 'csv', 'dim_student.csv')]
         for each_file in csv_files:
             with open(each_file, 'r') as csvfile:
                 grade_dict = {}
                 sec_dic = {}
-                expexted_grade = ['3','4','5','6','7','8','11']
+                expexted_grade = ['3', '4', '5', '6', '7', '8', '11']
                 actual_grade = []
                 col_val = csv.DictReader(csvfile, delimiter=',')
                 for values in col_val:
@@ -194,7 +193,7 @@ class DataGenerationValidation(unittest.TestCase):
                         grade_dict[section_grade] = [school_guid]
                     if section_grade not in actual_grade:
                         actual_grade.append(section_grade)
-                assert sorted(expexted_grade) == sorted(actual_grade), ('Expected Grades:',  sorted(expexted_grade), 'but found:', sorted(actual_grade), 'in', os.path.basename(each_file)[:-4]) 
+                assert sorted(expexted_grade) == sorted(actual_grade), ('Expected Grades:', sorted(expexted_grade), 'but found:', sorted(actual_grade), 'in', os.path.basename(each_file)[:-4])
 
             # High school - Grades from dim_section
                 uniq_hi_list = []
@@ -205,7 +204,7 @@ class DataGenerationValidation(unittest.TestCase):
                 # High school - School category from dim_inst_hier
                 overall_highschool = dict['High School']
                 # Validate Grades according to the school category
-                assert uniq_hi_list == overall_highschool,'SchoolIDs or Grades are incorrect in ' + os.path.basename(each_file)[:-4]            
+                assert uniq_hi_list == overall_highschool, 'SchoolIDs or Grades are incorrect in ' + os.path.basename(each_file)[:-4]
             # Middle School
             uniq_ml_list = []
             overall_middleschool_list = grade_dict['6'] + grade_dict['7'] + grade_dict['8']
@@ -214,7 +213,7 @@ class DataGenerationValidation(unittest.TestCase):
                     uniq_ml_list.append(values)
 
             overall_middleschool = dict['Middle School']
-            assert uniq_ml_list == overall_middleschool,'SchoolIDs or Grades are incorrect in ' + os.path.basename(each_file)[:-4]
+            assert uniq_ml_list == overall_middleschool, 'SchoolIDs or Grades are incorrect in ' + os.path.basename(each_file)[:-4]
 
             # Elementary School
             uniq_el_list = []
@@ -223,8 +222,8 @@ class DataGenerationValidation(unittest.TestCase):
                 if values not in uniq_el_list:
                     uniq_el_list.append(values)
             overall_elementaryschool = dict['Elementary School']
-            assert uniq_el_list == overall_elementaryschool,'SchoolIDs or Grades are incorrect in ' + os.path.basename(each_file)[:-4]
-        print('TC3: Passed: Validate School Categoty and grades respect to School Category') 
+            assert uniq_el_list == overall_elementaryschool, 'SchoolIDs or Grades are incorrect in ' + os.path.basename(each_file)[:-4]
+        print('TC3: Passed: Validate School Categoty and grades respect to School Category')
 
     # TC4: Check Ids are not empty in all CSVs
     def test_primary_key(self):
@@ -238,15 +237,15 @@ class DataGenerationValidation(unittest.TestCase):
                 for row in col_val:
                     assert row[0] != '', ('Primary id is empty in: ', os.path.basename(csv_file)[:-4])
         print('TC4: Passed: Validate Primary Keys are not empty in all CSVs')
-    
+
     # TC5: Validate scores in fact_asmt_outcome file
     def test_fact_score(self):
-            all_score_outcome = [['asmt_score', 'asmt_score_range_min', 'asmt_score_range_max'], 
+            all_score_outcome = [['asmt_score', 'asmt_score_range_min', 'asmt_score_range_max'],
                                  ['asmt_claim_1_score', 'asmt_claim_1_score_range_min', 'asmt_claim_1_score_range_max'],
                                  ['asmt_claim_2_score', 'asmt_claim_2_score_range_min', 'asmt_claim_2_score_range_max'],
                                  ['asmt_claim_3_score', 'asmt_claim_3_score_range_min', 'asmt_claim_3_score_range_max']]
             for score_part in all_score_outcome:
-                DataGenerationValidation.score_fact_asmt(score_part[0],score_part[1],score_part[2])
+                DataGenerationValidation.score_fact_asmt(score_part[0], score_part[1], score_part[2])
             print('TC5: Passed: Validate scores in fact_asmt_outcome file')
 
     # TC6: check assessment performance level in fact_asmt_outcome
@@ -254,125 +253,115 @@ class DataGenerationValidation(unittest.TestCase):
         perf_lvl = []
         asmt_score_list = []
         csv_path = os.path.join(__location__, '..', 'datafiles', 'csv', 'fact_asmt_outcome.csv')
-        with open (csv_path, 'r') as csvfile:
-                    col_val = csv.DictReader(csvfile, delimiter=',') 
+        with open(csv_path, 'r') as csvfile:
+                    col_val = csv.DictReader(csvfile, delimiter=',')
                     for values in col_val:
                         asmt_perf_lvl = values['asmt_perf_lvl']
                         perf_lvl.append(asmt_perf_lvl)
                         asmt_score = values['asmt_score']
                         asmt_score_list.append(asmt_score)
-                    
                     for i in range(len(asmt_score_list)):
-                        if min_asmt_score <= (int(asmt_score_list[i])) <= (cut_point1-1) and (int(perf_lvl[i])) == 1:
+                        if min_asmt_score <= (int(asmt_score_list[i])) <= (cut_point1 - 1) and (int(perf_lvl[i])) == 1:
                             pass
-                        elif cut_point1 <= (int(asmt_score_list[i])) <= (cut_point2-1) and (int(perf_lvl[i])) == 2:
+                        elif cut_point1 <= (int(asmt_score_list[i])) <= (cut_point2 - 1) and (int(perf_lvl[i])) == 2:
                             pass
-                        elif cut_point2 <= (int(asmt_score_list[i])) <= (cut_point3-1) and (int(perf_lvl[i])) == 3:
+                        elif cut_point2 <= (int(asmt_score_list[i])) <= (cut_point3 - 1) and (int(perf_lvl[i])) == 3:
                             pass
-                        elif cut_point3 <= (int(asmt_score_list[i]))<= max_asmt_score and (int(perf_lvl[i])) == 4:
+                        elif cut_point3 <= (int(asmt_score_list[i])) <= max_asmt_score and (int(perf_lvl[i])) == 4:
                             pass
                         else:
-                           raise AssertionError('Fail: fact_asmt_outcome file. Asseessment score:' + asmt_score_list[i] +  ' and Performance_level:' + perf_lvl[i])
+                            raise AssertionError('Fail: fact_asmt_outcome file. Asseessment score:' + asmt_score_list[i] + ' and Performance_level:' + perf_lvl[i])
         print('TC6: Passed: Validate Performance level in fact_asmt_outcome file')
 
-# TC7: Count number of discticts from CSVs and compare with Config file
-    
+    # TC7: Count number of discticts from CSVs and compare with Config file
     def test_number_of_districts(self):
-        
         csv_files = [os.path.join(__location__, '..', 'datafiles', 'csv', 'dim_inst_hier.csv'),
                      os.path.join(__location__, '..', 'datafiles', 'csv', 'fact_asmt_outcome.csv'),
-                    os.path.join(__location__, '..', 'datafiles', 'csv', 'dim_section.csv'),
-                    os.path.join(__location__, '..', 'datafiles', 'csv', 'dim_staff.csv'),
-                    os.path.join(__location__, '..', 'datafiles', 'csv', 'dim_student.csv')]
-
+                     os.path.join(__location__, '..', 'datafiles', 'csv', 'dim_section.csv'),
+                     os.path.join(__location__, '..', 'datafiles', 'csv', 'dim_staff.csv'),
+                     os.path.join(__location__, '..', 'datafiles', 'csv', 'dim_student.csv')]
         for each_csv in csv_files:
-           district_list = []
-           with open(each_csv, 'r') as csvfile:
-               col_val = csv.DictReader(csvfile, delimiter=',')
-               for values in col_val:
-                   district_guid = values['district_guid']
-                   if district_guid != 'NA':
-                       district_list.append(district_guid)
-        
-           district_list = list(set(district_list))
-           assert DISTRICT_COUNT == len(district_list), 'District count in config file is ' + str(DISTRICT_COUNT) + ' but District count in ' + os.path.basename(each_csv)[:-4] + ' is ' + str(len(district_list)) 
+            district_list = []
+            with open(each_csv, 'r') as csvfile:
+                col_val = csv.DictReader(csvfile, delimiter=',')
+                for values in col_val:
+                    district_guid = values['district_guid']
+                    if district_guid != 'NA':
+                        district_list.append(district_guid)
+
+            district_list = list(set(district_list))
+            assert DISTRICT_COUNT == len(district_list), 'District count in config file is ' + str(DISTRICT_COUNT) + ' but District count in ' + os.path.basename(each_csv)[:-4] + ' is ' + str(len(district_list))
         print('TC7: Passed: Count overall number of discticts from CSVs and compare with Config file')
 
-# TC8: Count number of schools from CSVs and compare with Config file
-    def test_number_of_schools(self):       
+    # TC8: Count number of schools from CSVs and compare with Config file
+    def test_number_of_schools(self):
         # Minimum schools in Big, Medium and Small districts
         min_schools = big_min + medium_min + small_min
         # Maximum schools in Big, Medium and Small districts
-        max_schools = big_max + medium_max + small_max   
+        max_schools = big_max + medium_max + small_max
         csv_files = [os.path.join(__location__, '..', 'datafiles', 'csv', 'dim_inst_hier.csv'),
                      os.path.join(__location__, '..', 'datafiles', 'csv', 'fact_asmt_outcome.csv'),
-                    os.path.join(__location__, '..', 'datafiles', 'csv', 'dim_section.csv'),
-                    os.path.join(__location__, '..', 'datafiles', 'csv', 'dim_staff.csv'),
-                    os.path.join(__location__, '..', 'datafiles', 'csv', 'dim_student.csv')]
+                     os.path.join(__location__, '..', 'datafiles', 'csv', 'dim_section.csv'),
+                     os.path.join(__location__, '..', 'datafiles', 'csv', 'dim_staff.csv'),
+                     os.path.join(__location__, '..', 'datafiles', 'csv', 'dim_student.csv')]
         for each_csv in csv_files:
-           school_list = []
-           with open(each_csv, 'r') as csvfile:
-               col_val = csv.DictReader(csvfile, delimiter=',')
-           #    print(list(col_val))
-               for values in col_val:
-                   school_guid = values['school_guid']
-                   if school_guid != 'NA':
-                       school_list.append(school_guid)
-           school_list = list(set(school_list))
-           assert min_schools <= len(school_list) <= max_schools, 'Min School count in config file is ' + str(min_schools) + ' Max School count in config file is ' + str(max_schools) + ' but School count in ' + os.path.basename(each_csv)[:-4] + ' is ' + str(len(school_list)) 
-           #print(min_schools, max_schools, len(school_list))
+            school_list = []
+            with open(each_csv, 'r') as csvfile:
+                col_val = csv.DictReader(csvfile, delimiter=',')
+                for values in col_val:
+                    school_guid = values['school_guid']
+                    if school_guid != 'NA':
+                        school_list.append(school_guid)
+            school_list = list(set(school_list))
+            assert min_schools <= len(school_list) <= max_schools, 'Min School count in config file is ' + str(min_schools) + ' Max School count in config file is ' + str(max_schools) + ' but School count in ' + os.path.basename(each_csv)[:-4] + ' is ' + str(len(school_list))
         print('Passed: TC8: Count overall number of schools from CSVs and compare with Config file ')
-        
-# TC9: Count number of students from CSVs and compare with Config file 
+
+    # TC9: Count number of students from CSVs and compare with Config file
     def test_number_of_students(self):
-        #typical1 = get_states()[0]['state_type']
         size_types = get_state_types()[typical1][DISTRICT_TYPES_AND_COUNTS].keys()
         for each_type in size_types:
-           min_type = get_district_types()[each_type][SCHOOL_COUNTS][MIN]
-           max_type = get_district_types()[each_type][SCHOOL_COUNTS][MAX]
-           school_types = get_school_types().keys()
-           min_list = []
-           max_list = []
-           for each_school_types in school_types:
-               garde_len = len(get_school_types()[each_school_types][GRADES])
-               student_min = get_school_types()[each_school_types][STUDENTS][MIN]
-               student_max = get_school_types()[each_school_types][STUDENTS][MAX]
-               assert (0 <= student_min <= student_max)
-               min_list.append(student_min * garde_len)
-               max_list.append(student_max * garde_len)
+            min_type = get_district_types()[each_type][SCHOOL_COUNTS][MIN]
+            max_type = get_district_types()[each_type][SCHOOL_COUNTS][MAX]
+            school_types = get_school_types().keys()
+            min_list = []
+            max_list = []
+            for each_school_types in school_types:
+                garde_len = len(get_school_types()[each_school_types][GRADES])
+                student_min = get_school_types()[each_school_types][STUDENTS][MIN]
+                student_max = get_school_types()[each_school_types][STUDENTS][MAX]
+                assert (0 <= student_min <= student_max)
+                min_list.append(student_min * garde_len)
+                max_list.append(student_max * garde_len)
         # Get overall Min & Max Students
-        min_overall_students = ((big_min) + (medium_min) + (small_min)) * (min(min_list)) # big_min/medium_min/small_min -- accessing from TC7
-        max_overall_students = ((big_max) + (medium_max) + (small_max)) * (max(max_list)) # big_max/medium_max/small_max -- accessing from TC7
+        min_overall_students = ((big_min) + (medium_min) + (small_min)) * (min(min_list))  # big_min/medium_min/small_min
+        max_overall_students = ((big_max) + (medium_max) + (small_max)) * (max(max_list))  # big_max/medium_max/small_max
         csv_files = [os.path.join(__location__, '..', 'datafiles', 'csv', 'fact_asmt_outcome.csv'),
-                    os.path.join(__location__, '..', 'datafiles', 'csv', 'dim_student.csv')]        
+                     os.path.join(__location__, '..', 'datafiles', 'csv', 'dim_student.csv')]
         for each_csv in csv_files:
-           student_list = []
-           with open(each_csv, 'r') as csvfile:
-               col_val = csv.DictReader(csvfile, delimiter=',')
-           #    print(list(col_val))
-               for values in col_val:
-                   student_guid = values['student_guid']
-                   student_list.append(student_guid)
-           student_list = list(set(student_list))
-           assert min_overall_students <= len(student_list) <= max_overall_students, 'Min Student count in config file is ' + str(min_overall_students) + ' Max Student count in config file is ' + str(max_overall_students) + ' but Student count in ' + os.path.basename(each_csv)[:-4] + ' is ' + str(len(student_list)) 
-           #print(min_overall_students, max_overall_students, len(student_list))
+            student_list = []
+            with open(each_csv, 'r') as csvfile:
+                col_val = csv.DictReader(csvfile, delimiter=',')
+                for values in col_val:
+                    student_guid = values['student_guid']
+                    student_list.append(student_guid)
+            student_list = list(set(student_list))
+            assert min_overall_students <= len(student_list) <= max_overall_students, 'Min Student count in config file is ' + str(min_overall_students) + ' Max Student count in config file is ' + str(max_overall_students) + ' but Student count in ' + os.path.basename(each_csv)[:-4] + ' is ' + str(len(student_list))
         print('Passed: TC9: Count overall number of students from CSVs and compare with Config file ')
 
-# TC10: Count Subjects & percentages 
+    # TC10: Count Subjects & percentages
     def test_subjects_and_percentage(self):
         # Values from config file
         #typical1 = get_states()[0]['state_type']
         math_percentage = get_state_types()[typical1]['subjects_and_percentages']['Math']
         ela_percentage = get_state_types()[typical1]['subjects_and_percentages']['ELA']
-        
-        student_id_dict = {}
         both_count = 0
         math_only_count = 0
         ela_only_count = 0
-        
+        student_id_dict = {}
         math_guid = []
         ela_guid = []
-        with open('./datafiles/csv/dim_section.csv', 'r') as csvfile:
+
+        with open(os.path.join(__location__, '..', 'datafiles', 'csv', 'dim_section.csv', 'r')) as csvfile:
             col_val = csv.DictReader(csvfile, delimiter=',')
             for values in col_val:
                 section_guid = values['section_guid']
@@ -382,13 +371,12 @@ class DataGenerationValidation(unittest.TestCase):
                 elif subject_name == 'ela':
                     ela_guid.append(section_guid)
                 else:
-                    print ('Subject names are incorrrect in dim_section file')
-        with open('./datafiles/csv/fact_asmt_outcome.csv', 'r') as csvfile:
+                    print('Subject names are incorrrect in dim_section file')
+        with open(os.path.join(__location__, '..', 'datafiles', 'csv', 'fact_asmt_outcome.csv', 'r')) as csvfile:
             col_val = csv.DictReader(csvfile, delimiter=',')
             for values in col_val:
                 student_guid = values['student_guid']
                 section_guid = values['section_guid']
-            
                 if student_guid in student_id_dict:
                         student_id_dict[student_guid].append(section_guid)
                 else:
@@ -404,14 +392,14 @@ class DataGenerationValidation(unittest.TestCase):
                     math_only_count += 1
                 elif (value[0] in ela_guid):
                     ela_only_count += 1
-                else: 
+                else:
                     print('Math OR ELA: Section ID in fact_asmt_outcome file do not match with section ID in dim_section file')
             else:
                 print('Error: One student has more then two sections(Math & ELA)')
         total_student_count = len(student_id_dict.keys())
         both_perc = round((1.0 * both_count / total_student_count), 1)
         math_perc = round((1.0 * (both_count + math_only_count) / total_student_count), 1)
-        ela_perc = round((1.0 * (both_count + ela_only_count) / total_student_count), 1)     
+        ela_perc = round((1.0 * (both_count + ela_only_count) / total_student_count), 1)
         assert math_percentage == math_perc, 'Math subject and percentage does not match. Expected ' + str(math_percentage) + ' but found ' + str(math_perc)
         assert ela_percentage == ela_perc, 'ELA subject and percentage does not match. Expected ' + str(ela_percentage) + ' but found ' + str(ela_perc)
         print('Passed: TC10: Count Subjects & percentages ')

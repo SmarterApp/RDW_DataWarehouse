@@ -69,18 +69,6 @@ function setup_python2_virtualenv {
     # This will change your $PATH to point to the virtualenv bin/ directory,
 
     source ${VIRTUALENV_DIR}/bin/activate
-    for var in "${INSTALL_PKGS[@]}" 
-    do
-        cd "$WORKSPACE/$var"
-        pwd
-        if [ -f setup-developer.py ];  then
-           echo "running setup-developer.py"
-           python setup-developer.py develop
-        else 
-           echo "running setup.py"
-           python setup.py develop
-        fi
-    done
  
     echo "Finished setting up virtualenv"
 } 
@@ -185,7 +173,8 @@ function show_help {
 }
 
 function main {
-	get_opts $@
+
+    get_opts $@
     check_vars
     if [ ${MODE:=""} == "UNIT" ]; then
         set_vars
@@ -197,7 +186,7 @@ function main {
         check_pep8 $MAIN_PKG
     elif [ ${MODE:=""} == "EPYD" ]; then
         set_vars_for_epydoc
-        setup_python2_virtualenv $@
+        setup_python2_virtualenv
         setup_epydoc_dependencies
         run_epydoc $MAIN_PKG
     #elif [ ${MODE:=""} == "FUNC"]; then

@@ -128,6 +128,10 @@ def dump_roles(_sys_role, _user_roles, _file_dest):
     
 def format_inetOrgPerson(_user, _uid, _email, _passwd):
     _user = _user.strip()
+    _uid = _uid.strip()
+    _email = _email.strip()
+    _passwd = _passwd.strip()
+    
     user = _user.split(' ')
     if (len(user) == 2):
         fname, lname = _user.split(' ' , 2 )
@@ -141,7 +145,7 @@ def format_inetOrgPerson(_user, _uid, _email, _passwd):
         fname = user[1]
         lname = user[2]
         
-    strInetOrgPerson =  "dn: cn="+_user+",ou=people,ou=environment,dc=edwdc,dc=net\n" + \
+    strInetOrgPerson =  "dn: cn="+ _user +",ou=people,ou=environment,dc=edwdc,dc=net\n" + \
                         "objectClass: inetOrgPerson\n" + \
                         "objectClass: top\n" + \
                         "cn: " + _user + "\n" + \
@@ -154,6 +158,7 @@ def format_inetOrgPerson(_user, _uid, _email, _passwd):
     return strInetOrgPerson + "\n"
 
 def format_groupOfNames(_group, _user_roles):
+    _group = _group.strip()
     strGroupOfNames = "dn: cn="+ _group +",ou=groups,ou=environment,dc=edwdc,dc=net\n" + \
                       "objectClass: groupOfNames\n" + \
                       "objectClass: top\n" + \

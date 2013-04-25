@@ -361,7 +361,7 @@ class DataGenerationValidation(unittest.TestCase):
         math_guid = []
         ela_guid = []
 
-        with open(os.path.join(__location__, '..', 'datafiles', 'csv', 'dim_section.csv', 'r')) as csvfile:
+        with open(os.path.join(__location__, '..', 'datafiles', 'csv', 'dim_section.csv'), 'r') as csvfile:
             col_val = csv.DictReader(csvfile, delimiter=',')
             for values in col_val:
                 section_guid = values['section_guid']
@@ -372,7 +372,7 @@ class DataGenerationValidation(unittest.TestCase):
                     ela_guid.append(section_guid)
                 else:
                     print('Subject names are incorrrect in dim_section file')
-        with open(os.path.join(__location__, '..', 'datafiles', 'csv', 'fact_asmt_outcome.csv', 'r')) as csvfile:
+        with open(os.path.join(__location__, '..', 'datafiles', 'csv', 'fact_asmt_outcome.csv'), 'r') as csvfile:
             col_val = csv.DictReader(csvfile, delimiter=',')
             for values in col_val:
                 student_guid = values['student_guid']

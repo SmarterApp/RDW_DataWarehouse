@@ -1,10 +1,9 @@
 define [
   'jquery'
   'jqGrid'
-  'EDWARE'
   'edwareUtil'
   'edwareGridFormatters'
-], ($, jqGrid, EDWARE, edwareUtil, edwareGridFormatters) ->
+], ($, jqGrid, edwareUtil, edwareGridFormatters) ->
   #
   # * EDWARE grid
   # * The module contains EDWARE grid plugin and grid creation method

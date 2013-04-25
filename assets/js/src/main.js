@@ -29,7 +29,8 @@ require({
 		edwarePopulationBarTemplate: '../widgets/populationBar/template.html',
 		edwareAssessmentDropdownViewSelectionTemplate: '../../templates/assessment_dropdown_view_selection.html',
 		edwareHeaderHtml: '../widgets/header/header.html',
-		edwareFooterHtml: '../widgets/footer/template.html'
+		edwareFooterHtml: '../widgets/footer/template.html',
+		edwareFeedbackHTML: '../../templates/feedback/feedback.html'
 	},
 	shim: {
         'jqGrid': {

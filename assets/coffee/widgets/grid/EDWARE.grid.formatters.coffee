@@ -1,12 +1,11 @@
 define [
   'jquery'
   'jqGrid'
-  'EDWARE'
   'edwareUtil'
   'edwarePopulationBar'
   'edwareConfidenceLevelBar'
   'edwareLOSConfidenceLevelBar'  
-], ($, jqGrid, EDWARE, edwareUtil, edwarePopulationBar, edwareConfidenceLevelBar, edwareLOSConfidenceLevelBar) ->
+], ($, jqGrid, edwareUtil, edwarePopulationBar, edwareConfidenceLevelBar, edwareLOSConfidenceLevelBar) ->
   #
   # * EDWARE grid formatters
   # * Handles all the methods for displaying cutpoints, link in the grid

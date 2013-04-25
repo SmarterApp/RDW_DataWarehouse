@@ -10,9 +10,8 @@ define [
   "edwareBreadcrumbs"
   "edwareHeader"
   "edwareUtil"
-  "edwareFeedback"
   "edwareFooter"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareConfidenceLevelBar, indivStudentReportTemplate, claimsInfoTemplate, edwareBreadcrumbs, edwareHeader, edwareUtil, edwareFeedback, edwareFooter) ->
+], ($, bootstrap, Mustache, edwareDataProxy, edwareConfidenceLevelBar, indivStudentReportTemplate, claimsInfoTemplate, edwareBreadcrumbs, edwareHeader, edwareUtil, edwareFooter) ->
   
   # claim score weight in percentage
   claimScoreWeightArray = {
@@ -49,7 +48,11 @@ define [
         async: false
         method: "GET"
     
-      edwareDataProxy.getDatafromSource "../data/color.json", options, (defaultColors) ->
+      edwareDataProxy.getDatafromSource "../data/common.json", options, (configData) ->
+        
+        defaultColors = configData.colors
+        feedbackData = configData.feedback
+        breadcrumbsConfigs = configData.breadcrumb
       
         i = 0
         while i < data.items.length
@@ -130,7 +133,7 @@ define [
           i++
           
         contextData = data.context
-        $('#breadcrumb').breadcrumbs(contextData)
+        $('#breadcrumb').breadcrumbs(contextData, breadcrumbsConfigs)
         
         partials = 
           claimsInfo: claimsInfoTemplate
@@ -156,7 +159,7 @@ define [
         if data.user_info
           role = edwareUtil.getRole data.user_info
           uid = edwareUtil.getUid data.user_info
-          edwareFeedback.renderFeedback(role, uid, "individual_student_report")
+          edwareUtil.renderFeedback(role, uid, "individual_student_report", feedbackData)
 
   #
   # render Claim Score Relative Difference (arrows)

@@ -8,11 +8,10 @@ define [
   "edwareBreadcrumbs"
   "edwareHeader"
   "text!edwareAssessmentDropdownViewSelectionTemplate"
-  "edwareFeedback"
   "edwareUtil"
   "edwareFooter"
   "text!edwareLOSHeaderConfidenceLevelBarTemplate"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareHeader, edwareAssessmentDropdownViewSelectionTemplate, edwareFeedback, edwareUtil, edwareFooter, edwareLOSHeaderConfidenceLevelBarTemplate) ->
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareHeader, edwareAssessmentDropdownViewSelectionTemplate, edwareUtil, edwareFooter, edwareLOSHeaderConfidenceLevelBarTemplate) ->
 
   assessmentsData = {}
   studentsConfig = {}
@@ -27,8 +26,10 @@ define [
       async: false
       method: "GET"
 
-    edwareDataProxy.getDatafromSource "../data/color.json", options, (defaultColors) ->
-      
+    edwareDataProxy.getDatafromSource "../data/common.json", options, (data) ->
+      defaultColors = data.colors
+      feedbackData = data.feedback
+      breadcrumbsConfigs = data.breadcrumb
       getStudentData "/data/list_of_students", params, defaultColors, (assessmentsData, contextData, subjectsData, claimsData, userData, cutPointsData) ->
         # append user_info (e.g. first and last name)
         if userData
@@ -50,7 +51,7 @@ define [
           # populate select view
           defaultView = createAssessmentViewSelectDropDown studentsConfig.customViews, cutPointsData
           
-          $('#breadcrumb').breadcrumbs(contextData)
+          $('#breadcrumb').breadcrumbs(contextData, breadcrumbsConfigs)
           
           renderStudentGrid(defaultView)
           renderHeaderPerfBar(cutPointsData)
@@ -62,7 +63,7 @@ define [
           if userData
             role = edwareUtil.getRole userData
             uid = edwareUtil.getUid userData
-            edwareFeedback.renderFeedback(role, uid, "list_of_students")
+            edwareUtil.renderFeedback(role, uid, "list_of_students", feedbackData)
           
   renderHeaderPerfBar = (cutPointsData) ->
     for key of cutPointsData

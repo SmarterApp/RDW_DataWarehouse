@@ -1,7 +1,8 @@
 define [
   'jquery'
-  'bootstrap'
-], ($) ->
+  'mustache'
+  "text!edwareFeedbackHTML"
+], ($, Mustache, template) ->
   #
   # * EDWARE util
   # * Handles constants, reusable or common methods required by other EDWARE javascript files
@@ -50,6 +51,19 @@ define [
       content = content.substr(0, content.lastIndexOf(' ') + 1) + "..."
       
     content
+    
+  # Create Survey Monkey iframe based on the role, report.  Uses uid to append to the URL to identify the user that submits the survey
+  renderFeedback = (role, uid, reportName, feedbackMapping) ->
+    feedbackdata = {}
+    if role of feedbackMapping
+      if reportName of feedbackMapping[role]
+        feedbackdata.param = feedbackMapping[role][reportName]
+        feedbackdata.uid = uid
+        
+        # Render iframe with all other assets are loaded
+        $(document).ready ->
+          output = Mustache.to_html template, feedbackdata
+          $("#surveyMonkeyInfo").html output
 
   
   getConstants: getConstants
@@ -59,3 +73,4 @@ define [
   getUserName: getUserName
   getUid: getUid
   truncateContent: truncateContent
+  renderFeedback: renderFeedback

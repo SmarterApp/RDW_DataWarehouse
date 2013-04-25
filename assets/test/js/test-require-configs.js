@@ -34,7 +34,8 @@ var baseConfigs = {
 		edwareLOSConfidenceLevelBarTemplate: '../../js/src/widgets/losConfidenceLevelBar/template.html',
 		edwarePopulationBarTemplate: '../../js/src/widgets/populationBar/template.html',
 		edwareAssessmentDropdownViewSelectionTemplate: '../../js/templates/assessment_dropdown_view_selection.html',
-		edwareLOSHeaderConfidenceLevelBarTemplate: '../../js/templates/LOS_header_perf_bar.html'
+		edwareLOSHeaderConfidenceLevelBarTemplate: '../../js/templates/LOS_header_perf_bar.html',
+		edwareFeedbackHTML: '../../js/templates/feedback/feedback.html'
 		
 	},
 	shim: {

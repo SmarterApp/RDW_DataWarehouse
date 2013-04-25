@@ -7,9 +7,8 @@ define [
   "edwareBreadcrumbs"
   "edwareHeader"
   "edwareUtil"
-  "edwareFeedback"
   "edwareFooter"
-], ($, bootstrap, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareHeader, edwareUtil, edwareFeedback, edwareFooter) ->
+], ($, bootstrap, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareHeader, edwareUtil, edwareFooter) ->
   #
   #    * Create Student data grid
   #    
@@ -24,8 +23,10 @@ define [
         async: false
         method: "GET"
     
-      edwareDataProxy.getDatafromSource "../data/color.json", options, (defaultColors) ->
-
+      edwareDataProxy.getDatafromSource "../data/common.json", options, (data) ->
+        defaultColors = data.colors
+        feedbackData = data.feedback
+        breadcrumbsConfigs = data.breadcrumb
         getColumnConfig "../data/comparingPopulations.json", (gridConfig, customViews) ->
           
           # # append user_info (e.g. first and last name)
@@ -47,7 +48,7 @@ define [
             gridConfig[0].options.id_name = customViews[reportType].id_name
             
             # Render breadcrumbs on the page
-            $('#breadcrumb').breadcrumbs(breadcrumbsData)
+            $('#breadcrumb').breadcrumbs(breadcrumbsData, breadcrumbsConfigs)
             
             # Set the Report title depending on the report that we're looking at
             reportTitle = getReportTitle(breadcrumbsData, reportType)
@@ -67,7 +68,7 @@ define [
           if user_info
             role = edwareUtil.getRole user_info
             uid = edwareUtil.getUid user_info
-            edwareFeedback.renderFeedback(role, uid, "comparing_populations_" + reportType)
+            edwareUtil.renderFeedback(role, uid, "comparing_populations_" + reportType, feedbackData)
         
           # Show tooltip for population bar on mouseover
           $(document).on

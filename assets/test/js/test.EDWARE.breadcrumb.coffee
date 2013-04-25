@@ -13,6 +13,27 @@ require ["jquery", "edwareBreadcrumbs"], ($, edwareBreadcrumbs) ->
     ok edwareBreadcrumbs.create isnt `undefined`, "edwareBreadcrumbs.create method should be defined"
     ok typeof edwareBreadcrumbs.create is "function", "edwareBreadcrumbs.create method should be function"
     
+    breadcrumb = items : [
+      type : "state"
+      queryParam : "stateCode"
+      link : "/assets/html/comparingPopulations.html" 
+     ,
+      type : "district"
+      queryParam : "districtGuid"
+      link : "/assets/html/comparingPopulations.html" 
+     ,
+      type : "school"
+      queryParam : "schoolGuid"
+      link : "/assets/html/comparingPopulations.html" 
+     ,
+      type : "grade"
+      queryParam : "asmtGrade"
+      link : "/assets/html/studentList.html"
+     ,
+      type : "student"
+      queryParam: "student"
+    ]
+    
     test_data = items: [
       type: "state"
       name: "Washington"
@@ -32,7 +53,7 @@ require ["jquery", "edwareBreadcrumbs"], ($, edwareBreadcrumbs) ->
     ]
           
     deepEqual $("#breadcrumbs")[0].innerHTML.length, 0, "breadcrumbs should be empty before test is running"
-    edwareBreadcrumbs.create("#breadcrumbs", test_data)
+    edwareBreadcrumbs.create("#breadcrumbs", test_data, breadcrumb)
     setTimeout (->
       deepEqual $("#breadcrumbs a").length, 3, "3 links should have been created"
       deepEqual $("#breadcrumbs a")[0].text, "Washington", "wrong text shown"
@@ -47,7 +68,28 @@ require ["jquery", "edwareBreadcrumbs"], ($, edwareBreadcrumbs) ->
       id: "WA"
     ]
     
-    edwareBreadcrumbs.create("#breadcrumbs", test_data)
+    breadcrumb = items : [
+      type : "state"
+      queryParam : "stateCode"
+      link : "/assets/html/comparingPopulations.html" 
+       ,
+        type : "district"
+      queryParam : "districtGuid"
+      link : "/assets/html/comparingPopulations.html" 
+      ,
+        type : "school"
+      queryParam : "schoolGuid"
+      link : "/assets/html/comparingPopulations.html" 
+      ,
+        type : "grade"
+      queryParam : "asmtGrade"
+      link : "/assets/html/studentList.html"
+      ,
+        type : "student"
+      queryParam: "student"
+    ]
+    
+    edwareBreadcrumbs.create("#breadcrumbs", test_data, breadcrumb)
     setTimeout (->      
       deepEqual $("#breadcrumbs a").length, 0, "0 links should have been created"
       start()

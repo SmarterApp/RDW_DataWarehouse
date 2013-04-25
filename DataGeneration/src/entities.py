@@ -29,12 +29,18 @@ class InstitutionHierarchy:
         self.most_recent = most_recent
 
     def getRow(self):
+        '''
+        Returns the information stored in this object as csv row
+        '''
         return [self.inst_hier_rec_id, self.state_name, self.state_code, self.district_guid, self.district_name, self.school_guid, self.school_name, self.school_category, self.from_date, self.to_date, self.most_recent]
 
     # TODO: For all these getHeader methods, there must be a better way to return a list of the fields (in a defined order)
     # hard coding probably is not the best approach
     @classmethod
     def getHeader(cls):
+        '''
+        Returns the csv of header of this entity
+        '''
         return ['inst_hier_rec_id', 'state_name', 'state_code', 'district_guid', 'district_name', 'school_guid', 'school_name', 'school_category', 'from_date', 'to_date', 'most_recent']
 
 

@@ -51,6 +51,12 @@ def generate_institution_hierarchy(state_name, state_code,
 
 def generate_student(section_guid, grade, state_code, district_guid, school_guid, school_name, street_names,
                      from_date, most_recent, to_date=None):
+    '''
+    Creates a student using necessary parameters and fills in remaining parameters.
+    Fills in student ids, gender, names, address, city, zipcode, email, dob
+
+    @return: A student object
+    '''
     id_generator = IdGen()
     student_rec_id = id_generator.get_id()
     student_guid = uuid4()
@@ -75,6 +81,11 @@ def generate_student(section_guid, grade, state_code, district_guid, school_guid
 
 
 def generate_students(number_of_students, section_guid, grade, state_code, district_guid, school_guid, school_name, street_names, from_date, most_recent, to_date=None):
+    '''
+    Generates 'number_of_students' amount of students within the same section
+
+    @return: a list of student objects
+    '''
     students = []
     for _i in range(number_of_students):
         student = generate_student(section_guid, grade, state_code, district_guid, school_guid, school_name, street_names,
@@ -85,6 +96,10 @@ def generate_students(number_of_students, section_guid, grade, state_code, distr
 
 def generate_section(subject_name, grade, state_code, district_guid, school_guid, section_number, class_number,
                      from_date, most_recent, to_date=True):
+    '''
+    Creates a Section object from necessary fields passed through parameters and fills in remaining fields
+    Fills in section ids, section_name, class_name
+    '''
     id_generator = IdGen()
     section_rec_id = id_generator.get_id()
     section_guid = uuid4()
@@ -98,6 +113,11 @@ def generate_section(subject_name, grade, state_code, district_guid, school_guid
 
 def generate_sections(number_of_sections, subject_name, grade, state_code, district_guid, school_guid,
                       from_date, most_recent, to_date=None):
+    '''
+    Creates 'number_of_sections' amount of section objects for a given subject-grade combo
+
+    @return: a list of section objects
+    '''
     #TODO: figure out class and section names
     sections = []
     for i in range(number_of_sections):
@@ -110,6 +130,11 @@ def generate_sections(number_of_sections, subject_name, grade, state_code, distr
 def generate_assessment(asmt_type, asmt_period, asmt_period_year, asmt_subject, asmt_grade,
                         asmt_cut_point_1, asmt_cut_point_2, asmt_cut_point_3, asmt_cut_point_4,
                         from_date, most_recent, to_date=None):
+    '''
+    Given Assessment information, create an Assessment object
+
+    @return: An assessment object
+    '''
 
     id_generator = IdGen()
 
@@ -121,6 +146,7 @@ def generate_assessment(asmt_type, asmt_period, asmt_period_year, asmt_subject, 
 
     performance_levels = constants.PERFORMANCE_LEVELS
 
+    # TODO: decouple constants from this function
     claim_defs = constants.CLAIM_DEFINITIONS[asmt_subject]
     score_min = constants.MINIMUM_ASSESSMENT_SCORE
     score_max = constants.MAXIMUM_ASSESSMENT_SCORE
@@ -175,6 +201,11 @@ def generate_assessment(asmt_type, asmt_period, asmt_period_year, asmt_subject, 
 
 
 def generate_assessments(grades, cut_points, from_date, most_recent, to_date=None):
+    '''
+    Generate all possible assessments for the given grades
+
+    @return: A list of assessment objects
+    '''
     assessments = []
     asmt_cut_point_1 = cut_points[0]
     asmt_cut_point_2 = cut_points[1]
@@ -200,6 +231,12 @@ def generate_assessments(grades, cut_points, from_date, most_recent, to_date=Non
 
 
 def generate_staff(hier_user_type, from_date, most_recent, state_code='NA', district_guid='NA', school_guid='NA', section_guid='NA', to_date=None):
+    '''
+    Given necessary staff information, fills in remaining staff fields, and creates a staff object
+    Fills in staff ids, gender, names
+
+    @return a staff object
+    '''
 
     id_generator = IdGen()
     staff_rec_id = id_generator.get_id()
@@ -216,6 +253,12 @@ def generate_staff(hier_user_type, from_date, most_recent, state_code='NA', dist
 
 def generate_multiple_staff(number_of_staff, hier_user_type, from_date, most_recent, state_code='NA', district_guid='NA',
                             school_guid='NA', section_guid='NA', to_date=None):
+    '''
+    Given basic staff information, fills in remaining staff fields and creates 'number_of_staff' amount of staff objects.
+    Staff can exist at any hierarchy level (State, District, School, Section), so hierarchy fields are given the default
+    'NA'. For example, School Level staff will have a valid state_code, district_guid, and school_guid, but section_guid
+    will be 'NA' for not applicable.
+    '''
     staff_list = []
     for i in range(number_of_staff):
         staff_member = generate_staff(hier_user_type, from_date, most_recent, state_code=state_code,
@@ -261,6 +304,11 @@ def generate_fact_assessment_outcome(asmt_rec_id, student_guid, teacher_guid, st
 def generate_fact_assessment_outcomes(students, scores, asmt_rec_id, teacher_guid, state_code, district_guid, school_guid, section_guid,
                                       inst_hier_rec_id, section_rec_id, where_taken_id, where_taken_name, asmt_grade, enrl_grade,
                                       date_taken, date_taken_day, date_taken_month, date_taken_year):
+    '''
+    Generates AssessmentOutcome objects for each student in 'students' using the scores in 'scores'
+
+    @return: A list of AssessmentOutcome objects
+    '''
 
     outcomes = []
 

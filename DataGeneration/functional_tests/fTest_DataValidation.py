@@ -10,10 +10,6 @@ from dg_types import *
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
-GRADES = 'grades'
-STUDENTS = 'students'
-STATE_TYPE = 'stateType'
-#DISTRICT_TYPES_AND_COUNTS = 'districtTypesAndCounts'
 typical1 = get_states()[0]['state_type']
 DISTRICT_COUNT = sum(get_state_types()[typical1][DISTRICT_TYPES_AND_COUNTS].values())
 # Get district count for Big, Medium & Small district (config file)
@@ -38,6 +34,14 @@ cut_point3 = get_scores()[CUT_POINTS][2]
 
 
 class DataGenerationValidation(unittest.TestCase):
+# Path valiables for each csv
+    dim_asmt_csv = os.path.join(__location__, '..', 'datafiles', 'csv', 'dim_asmt.csv')
+    dim_inst_hier_csv = os.path.join(__location__, '..', 'datafiles', 'csv', 'dim_inst_hier.csv')
+    dim_staff_csv = os.path.join(__location__, '..', 'datafiles', 'csv', 'dim_staff.csv')
+    dim_student_csv = os.path.join(__location__, '..', 'datafiles', 'csv', 'dim_student.csv')
+    dim_section_csv = os.path.join(__location__, '..', 'datafiles', 'csv', 'dim_section.csv')
+    fact_asmt_outcome_csv = os.path.join(__location__, '..', 'datafiles', 'csv', 'fact_asmt_outcome.csv')
+
 # Get header values from Configuration file
     dim_inst_hier = entities.InstitutionHierarchy.getHeader()
     dim_staff = entities.Staff.getHeader()
@@ -81,8 +85,7 @@ class DataGenerationValidation(unittest.TestCase):
             min_score = []
             max_score = []
             asmt_score_dict = {}
-            csv_path = os.path.join(__location__, '..', 'datafiles', 'csv', 'fact_asmt_outcome.csv')
-            with open(csv_path, 'r') as csvfile:
+            with open(DataGenerationValidation.fact_asmt_outcome_csv, 'r') as csvfile:
                 col_val = csv.DictReader(csvfile, delimiter=',')
                 for values in col_val:
                     score = values[score_column_name]
@@ -114,8 +117,7 @@ class DataGenerationValidation(unittest.TestCase):
 
     # TC2: Validate min/Max assessment score, cut score and assessment performance level name
     def test_asmt_cut_lavel_score(self):
-        csv_path = os.path.join(__location__, '..', 'datafiles', 'csv', 'dim_asmt.csv')
-        with open(csv_path, 'r') as csvfile:
+        with open(DataGenerationValidation.dim_asmt_csv, 'r') as csvfile:
             col_val = csv.DictReader(csvfile, delimiter=',')
             for values in col_val:
                 asmt_score_min = values['asmt_score_min']
@@ -148,8 +150,7 @@ class DataGenerationValidation(unittest.TestCase):
     # dim_inst_hier--> school category/ school_guid
     def test_grade(self):
         expected_school_category = ['High School', 'Middle School', 'Elementary School']
-        csv_path = os.path.join(__location__, '..', 'datafiles', 'csv', 'dim_inst_hier.csv')
-        with open(csv_path, 'r') as csvfile:
+        with open(DataGenerationValidation.dim_inst_hier_csv, 'r') as csvfile:
             col_val = csv.DictReader(csvfile, delimiter=',')
             dict = {}
             actual_school_category = []
@@ -169,9 +170,7 @@ class DataGenerationValidation(unittest.TestCase):
             # Comparing school category
             assert sorted(expected_school_category) == sorted(actual_school_category), 'School Category does not match'
         # get school_guid from dim_section and check the grades
-        csv_files = [os.path.join(__location__, '..', 'datafiles', 'csv', 'fact_asmt_outcome.csv'),
-                     os.path.join(__location__, '..', 'datafiles', 'csv', 'dim_section.csv'),
-                     os.path.join(__location__, '..', 'datafiles', 'csv', 'dim_student.csv')]
+        csv_files = [DataGenerationValidation.fact_asmt_outcome_csv, DataGenerationValidation.dim_section_csv, DataGenerationValidation.dim_student_csv]
         for each_file in csv_files:
             with open(each_file, 'r') as csvfile:
                 grade_dict = {}
@@ -233,7 +232,6 @@ class DataGenerationValidation(unittest.TestCase):
             with open(csv_file, 'r') as csvfile6:
                 col_val = csv.reader(csvfile6, delimiter=',')
                 header = next(col_val)
-                #print('header: ', header)
                 for row in col_val:
                     assert row[0] != '', ('Primary id is empty in: ', os.path.basename(csv_file)[:-4])
         print('TC4: Passed: Validate Primary Keys are not empty in all CSVs')
@@ -252,8 +250,7 @@ class DataGenerationValidation(unittest.TestCase):
     def test_performence_level(self):
         perf_lvl = []
         asmt_score_list = []
-        csv_path = os.path.join(__location__, '..', 'datafiles', 'csv', 'fact_asmt_outcome.csv')
-        with open(csv_path, 'r') as csvfile:
+        with open(DataGenerationValidation.fact_asmt_outcome_csv, 'r') as csvfile:
                     col_val = csv.DictReader(csvfile, delimiter=',')
                     for values in col_val:
                         asmt_perf_lvl = values['asmt_perf_lvl']
@@ -275,11 +272,8 @@ class DataGenerationValidation(unittest.TestCase):
 
     # TC7: Count number of discticts from CSVs and compare with Config file
     def test_number_of_districts(self):
-        csv_files = [os.path.join(__location__, '..', 'datafiles', 'csv', 'dim_inst_hier.csv'),
-                     os.path.join(__location__, '..', 'datafiles', 'csv', 'fact_asmt_outcome.csv'),
-                     os.path.join(__location__, '..', 'datafiles', 'csv', 'dim_section.csv'),
-                     os.path.join(__location__, '..', 'datafiles', 'csv', 'dim_staff.csv'),
-                     os.path.join(__location__, '..', 'datafiles', 'csv', 'dim_student.csv')]
+        csv_files = [DataGenerationValidation.dim_inst_hier_csv, DataGenerationValidation.fact_asmt_outcome_csv,
+                     DataGenerationValidation.dim_section_csv, DataGenerationValidation.dim_staff_csv, DataGenerationValidation.dim_student_csv]
         for each_csv in csv_files:
             district_list = []
             with open(each_csv, 'r') as csvfile:
@@ -299,11 +293,8 @@ class DataGenerationValidation(unittest.TestCase):
         min_schools = big_min + medium_min + small_min
         # Maximum schools in Big, Medium and Small districts
         max_schools = big_max + medium_max + small_max
-        csv_files = [os.path.join(__location__, '..', 'datafiles', 'csv', 'dim_inst_hier.csv'),
-                     os.path.join(__location__, '..', 'datafiles', 'csv', 'fact_asmt_outcome.csv'),
-                     os.path.join(__location__, '..', 'datafiles', 'csv', 'dim_section.csv'),
-                     os.path.join(__location__, '..', 'datafiles', 'csv', 'dim_staff.csv'),
-                     os.path.join(__location__, '..', 'datafiles', 'csv', 'dim_student.csv')]
+        csv_files = [DataGenerationValidation.dim_inst_hier_csv, DataGenerationValidation.fact_asmt_outcome_csv,
+                     DataGenerationValidation.dim_section_csv, DataGenerationValidation.dim_staff_csv, DataGenerationValidation.dim_student_csv]
         for each_csv in csv_files:
             school_list = []
             with open(each_csv, 'r') as csvfile:
@@ -314,7 +305,7 @@ class DataGenerationValidation(unittest.TestCase):
                         school_list.append(school_guid)
             school_list = list(set(school_list))
             assert min_schools <= len(school_list) <= max_schools, 'Min School count in config file is ' + str(min_schools) + ' Max School count in config file is ' + str(max_schools) + ' but School count in ' + os.path.basename(each_csv)[:-4] + ' is ' + str(len(school_list))
-        print('Passed: TC8: Count overall number of schools from CSVs and compare with Config file ')
+        print('TC8: Passed: Count overall number of schools from CSVs and compare with Config file ')
 
     # TC9: Count number of students from CSVs and compare with Config file
     def test_number_of_students(self):
@@ -335,8 +326,7 @@ class DataGenerationValidation(unittest.TestCase):
         # Get overall Min & Max Students
         min_overall_students = ((big_min) + (medium_min) + (small_min)) * (min(min_list))  # big_min/medium_min/small_min
         max_overall_students = ((big_max) + (medium_max) + (small_max)) * (max(max_list))  # big_max/medium_max/small_max
-        csv_files = [os.path.join(__location__, '..', 'datafiles', 'csv', 'fact_asmt_outcome.csv'),
-                     os.path.join(__location__, '..', 'datafiles', 'csv', 'dim_student.csv')]
+        csv_files = [DataGenerationValidation.fact_asmt_outcome_csv, DataGenerationValidation.dim_student_csv]
         for each_csv in csv_files:
             student_list = []
             with open(each_csv, 'r') as csvfile:
@@ -346,12 +336,11 @@ class DataGenerationValidation(unittest.TestCase):
                     student_list.append(student_guid)
             student_list = list(set(student_list))
             assert min_overall_students <= len(student_list) <= max_overall_students, 'Min Student count in config file is ' + str(min_overall_students) + ' Max Student count in config file is ' + str(max_overall_students) + ' but Student count in ' + os.path.basename(each_csv)[:-4] + ' is ' + str(len(student_list))
-        print('Passed: TC9: Count overall number of students from CSVs and compare with Config file ')
+        print('TC9: Passed: Count overall number of students from CSVs and compare with Config file ')
 
     # TC10: Count Subjects & percentages
     def test_subjects_and_percentage(self):
         # Values from config file
-        #typical1 = get_states()[0]['state_type']
         math_percentage = get_state_types()[typical1]['subjects_and_percentages']['Math']
         ela_percentage = get_state_types()[typical1]['subjects_and_percentages']['ELA']
         both_count = 0
@@ -361,7 +350,7 @@ class DataGenerationValidation(unittest.TestCase):
         math_guid = []
         ela_guid = []
 
-        with open(os.path.join(__location__, '..', 'datafiles', 'csv', 'dim_section.csv'), 'r') as csvfile:
+        with open(DataGenerationValidation.dim_section_csv, 'r') as csvfile:
             col_val = csv.DictReader(csvfile, delimiter=',')
             for values in col_val:
                 section_guid = values['section_guid']
@@ -372,7 +361,7 @@ class DataGenerationValidation(unittest.TestCase):
                     ela_guid.append(section_guid)
                 else:
                     print('Subject names are incorrrect in dim_section file')
-        with open(os.path.join(__location__, '..', 'datafiles', 'csv', 'fact_asmt_outcome.csv'), 'r') as csvfile:
+        with open(DataGenerationValidation.fact_asmt_outcome_csv, 'r') as csvfile:
             col_val = csv.DictReader(csvfile, delimiter=',')
             for values in col_val:
                 student_guid = values['student_guid']
@@ -402,4 +391,17 @@ class DataGenerationValidation(unittest.TestCase):
         ela_perc = round((1.0 * (both_count + ela_only_count) / total_student_count), 1)
         assert math_percentage == math_perc, 'Math subject and percentage does not match. Expected ' + str(math_percentage) + ' but found ' + str(math_perc)
         assert ela_percentage == ela_perc, 'ELA subject and percentage does not match. Expected ' + str(ela_percentage) + ' but found ' + str(ela_perc)
-        print('Passed: TC10: Count Subjects & percentages ')
+        print('TC10: Passed: Count Subjects & percentages ')
+
+    # TC11: Check assessment type
+    def test_assessment_type(self):
+        assessment_type_list = []
+        with open(DataGenerationValidation.dim_asmt_csv, 'r') as csvfile:
+            col_val = csv.DictReader(csvfile, delimiter=',')
+            for values in col_val:
+                assessment_type = values['asmt_type']
+                if assessment_type not in assessment_type_list:
+                    assessment_type_list.append(assessment_type)
+            for i in range(len(assessment_type_list)):
+                assert assessment_type_list[i] == 'SUMMATIVE', 'Assessment type is incorrect in dim_asmt'
+        print('TC11: Passed: Check assessment type')

@@ -29,6 +29,12 @@ medium_max = (get_district_types()['Medium'][SCHOOL_COUNTS][MAX]) * (medium_scho
 small_min = (get_district_types()['Small'][SCHOOL_COUNTS][MIN]) * (small_school)
 small_max = get_district_types()['Small'][SCHOOL_COUNTS][MAX] * (small_school)
 
+# Get scores from config file
+min_asmt_score = get_scores()[MIN]
+max_asmt_score = get_scores()[MAX]
+cut_point1 = get_scores()[CUT_POINTS][0]
+cut_point2 = get_scores()[CUT_POINTS][1]
+cut_point3 = get_scores()[CUT_POINTS][2]
 
 
 class DataGenerationValidation(unittest.TestCase):
@@ -90,8 +96,8 @@ class DataGenerationValidation(unittest.TestCase):
                     min_value = int(min_score[i])
                     max_value = int(max_score[i])
                     actual_score = int(real_score[i])
-                    assert 1200 <= actual_score and min_value and max_value <= 2400, ('Incorrect score: Actual score: '+ str(actual_score) + ' Min_Score: ' + str(min_value) + ' Max_Score: ' + str(max_value))
-                    if min_value != 1200 and max_value != 2400:
+                    assert min_asmt_score <= actual_score and min_value and max_value <= max_asmt_score, ('Incorrect score: Actual score: '+ str(actual_score) + ' Min_Score: ' + str(min_value) + ' Max_Score: ' + str(max_value))
+                    if min_value != min_asmt_score and max_value != max_asmt_score:
                         assert (actual_score - min_value) == (max_value - actual_score) , ('Min/Max scores are not in range in fact_asmt_outcome file. Actual score: '+ str(actual_score) + ' Min_Score: ' + str(min_value) + ' Max_Score: ' + str(max_value))
 
     # TC1: Check Headers in all the CSV files.   
@@ -123,11 +129,11 @@ class DataGenerationValidation(unittest.TestCase):
                 asmt_perf_lvl_name_2 = values['asmt_perf_lvl_name_2']
                 asmt_perf_lvl_name_3 = values['asmt_perf_lvl_name_3']
                 asmt_perf_lvl_name_4 = values['asmt_perf_lvl_name_4']
-            asmt_dict = {'asmt_score_min': [int(asmt_score_min), 1200],
-                         'asmt_score_max': [int(asmt_score_max), 2400],
-                         'asmt_cut_point_1': [int(asmt_cut_point_1), 1400],
-                         'asmt_cut_point_2': [int(asmt_cut_point_2), 1800],
-                         'asmt_cut_point_3': [int(asmt_cut_point_3), 2100],
+            asmt_dict = {'asmt_score_min': [int(asmt_score_min), min_asmt_score],
+                         'asmt_score_max': [int(asmt_score_max), max_asmt_score],
+                         'asmt_cut_point_1': [int(asmt_cut_point_1), cut_point1],
+                         'asmt_cut_point_2': [int(asmt_cut_point_2), cut_point2],
+                         'asmt_cut_point_3': [int(asmt_cut_point_3), cut_point3],
                          'asmt_cut_point_4': [(asmt_cut_point_4), ''],
                          'asmt_perf_lvl_name_1': [(asmt_perf_lvl_name_1), 'Minimal Understanding'],
                          'asmt_perf_lvl_name_2': [(asmt_perf_lvl_name_2), 'Partial Understanding'],
@@ -257,13 +263,13 @@ class DataGenerationValidation(unittest.TestCase):
                         asmt_score_list.append(asmt_score)
                     
                     for i in range(len(asmt_score_list)):
-                        if 1200<=(int(asmt_score_list[i]))<=1399 and (int(perf_lvl[i])) == 1:
+                        if min_asmt_score <= (int(asmt_score_list[i])) <= (cut_point1-1) and (int(perf_lvl[i])) == 1:
                             pass
-                        elif 1400<=(int(asmt_score_list[i]))<=1799 and (int(perf_lvl[i])) == 2:
+                        elif cut_point1 <= (int(asmt_score_list[i])) <= (cut_point2-1) and (int(perf_lvl[i])) == 2:
                             pass
-                        elif 1800<=(int(asmt_score_list[i]))<=2099 and (int(perf_lvl[i])) == 3:
+                        elif cut_point2 <= (int(asmt_score_list[i])) <= (cut_point3-1) and (int(perf_lvl[i])) == 3:
                             pass
-                        elif 2100<=(int(asmt_score_list[i]))<=2400 and (int(perf_lvl[i])) == 4:
+                        elif cut_point3 <= (int(asmt_score_list[i]))<= max_asmt_score and (int(perf_lvl[i])) == 4:
                             pass
                         else:
                            raise AssertionError('Fail: fact_asmt_outcome file. Asseessment score:' + asmt_score_list[i] +  ' and Performance_level:' + perf_lvl[i])
@@ -409,4 +415,3 @@ class DataGenerationValidation(unittest.TestCase):
         assert math_percentage == math_perc, 'Math subject and percentage does not match. Expected ' + str(math_percentage) + ' but found ' + str(math_perc)
         assert ela_percentage == ela_perc, 'ELA subject and percentage does not match. Expected ' + str(ela_percentage) + ' but found ' + str(ela_perc)
         print('Passed: TC10: Count Subjects & percentages ')
-

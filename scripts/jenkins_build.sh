@@ -25,6 +25,15 @@ function set_vars {
     fi
 }
 
+function set_vars_for_epydoc {
+    VIRTUALENV_DIR="$WORKSPACE/datagen_epy"
+
+    # delete existing xml files
+    if [ -f $WORKSPACE/coverage.xml ]; then
+        rm $WORKSPACE/coverage.xml
+    fi
+}
+
 function setup_virtualenv {
     echo "Setting up virtualenv using python3.3"
     if [ ! -d "$VIRTUALENV_DIR" ]; then
@@ -178,19 +187,20 @@ function show_help {
 function main {
 	get_opts $@
     check_vars
-    set_vars
     setup_virtualenv $@
     if [ ${MODE:=""} == "UNIT" ]; then
+        set_vars
         setup_unit_test_dependencies
         if $RUN_UNIT_TEST ; then
             run_unit_tests $MAIN_PKG
         fi
         check_pep8 $MAIN_PKG
     elif [ ${MODE:=""} == "EPYD" ]; then
+        set_vars_for_epydoc
         setup_python2_virtualenv $@
         setup_epydoc_dependencies
         run_epydoc $MAIN_PKG
-    elif [ ${MODE:=""} == "FUNC"]; then
+    #elif [ ${MODE:=""} == "FUNC"]; then
           #statements
     fi
 }

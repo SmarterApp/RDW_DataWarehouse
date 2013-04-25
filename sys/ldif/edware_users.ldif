@@ -10,15 +10,14 @@ ou: people
 
 dn: ou=groups,ou=environment,dc=edwdc,dc=net
 objectClass: organizationalUnit
-ou: groups
-
-dn: cn=Kristine Garofalo,ou=people,ou=environment,dc=edwdc,dc=net
+ou: groupsdn: cn=Kristine Garofalo,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Kristine Garofalo
 sn: Garofalo
 givenName: Kristine
 uid: Kgarofalo
+mail: Kgarofalo@hebron.k12.ct.us
 userPassword: Stutter6Picasso\
 
 dn: cn=Steve Quintus,ou=people,ou=environment,dc=edwdc,dc=net
@@ -28,6 +27,7 @@ cn: Steve Quintus
 sn: Quintus
 givenName: Steve
 uid: steve.quintus
+mail: steve.quintus@sendit.nodak.edu
 userPassword: 9Hinges#Grizzly
 
 dn: cn=Moureen David,ou=people,ou=environment,dc=edwdc,dc=net
@@ -37,6 +37,7 @@ cn: Moureen David
 sn: David
 givenName: Moureen
 uid: mdavid
+mail: mdavid@cloverpark.k12.wa.us
 userPassword: 6Fairly!Smuggle
 
 dn: cn=Darren Guido,ou=people,ou=environment,dc=edwdc,dc=net
@@ -46,6 +47,7 @@ cn: Darren Guido
 sn: Guido
 givenName: Darren
 uid: darren.guido
+mail: darren.guido@capital.k12.de.us 
 userPassword: Hermosa\Winers3
 
 dn: cn=Debra Follman,ou=people,ou=environment,dc=edwdc,dc=net
@@ -55,6 +57,7 @@ cn: Debra Follman
 sn: Follman
 givenName: Debra
 uid: Deb.Follman
+mail: Deb.Follman@sendit.nodak.edu
 userPassword: Sirens%Silks8
 
 dn: cn=Matt Lewis,ou=people,ou=environment,dc=edwdc,dc=net
@@ -64,6 +67,7 @@ cn: Matt Lewis
 sn: Lewis
 givenName: Matt
 uid: mlewis
+mail: mlewis@lewistown.k12.mt.us
 userPassword: !7CanteenSymptom
 
 dn: cn=Paul Furthmyre,ou=people,ou=environment,dc=edwdc,dc=net
@@ -73,6 +77,7 @@ cn: Paul Furthmyre
 sn: Furthmyre
 givenName: Paul
 uid: furthmyrep
+mail: furthmyrep@sd10.org
 userPassword: Drawled_9Changer
 
 dn: cn=Tonya Hunskor,ou=people,ou=environment,dc=edwdc,dc=net
@@ -82,15 +87,17 @@ cn: Tonya Hunskor
 sn: Hunskor
 givenName: Tonya
 uid: tonya.hunskor
+mail: tonya.hunskor@sendit.nodak.edu
 userPassword: 5DenialNormals^
 
 dn: cn=Tyler J. Hanson,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Tyler J. Hanson
-sn: Hanson
+sn: J. Hanson
 givenName: Tyler
 uid: tyler_hanson
+mail: tyler_hanson@bismarckschools.org
 userPassword: >5GnatsNimbus
 
 dn: cn=Denise Byrd,ou=people,ou=environment,dc=edwdc,dc=net
@@ -100,6 +107,7 @@ cn: Denise Byrd
 sn: Byrd
 givenName: Denise
 uid: denisebyrd
+mail: denisebyrd@johnston.k12.nc.us
 userPassword: AerialAdorn?6
 
 dn: cn=Pam Tyson,ou=people,ou=environment,dc=edwdc,dc=net
@@ -109,6 +117,7 @@ cn: Pam Tyson
 sn: Tyson
 givenName: Pam
 uid: ptyson
+mail: ptyson@cccoe.k12.ca.us
 userPassword: 9%StareTinkers
 
 dn: cn=Gary Langenberg,ou=people,ou=environment,dc=edwdc,dc=net
@@ -118,6 +127,7 @@ cn: Gary Langenberg
 sn: Langenberg
 givenName: Gary
 uid: langgary
+mail: langgary@southerndoor.k12.wi.us
 userPassword: #Stiff9Igor
 
 dn: cn=Stephanie Feldner,ou=people,ou=environment,dc=edwdc,dc=net
@@ -127,6 +137,7 @@ cn: Stephanie Feldner
 sn: Feldner
 givenName: Stephanie
 uid: sfeldner
+mail: sfeldner@misd.k12.wi.us
 userPassword: !Swedes2Revile
 
 dn: cn=Michelle Schmidt,ou=people,ou=environment,dc=edwdc,dc=net
@@ -136,6 +147,7 @@ cn: Michelle Schmidt
 sn: Schmidt
 givenName: Michelle
 uid: mschmidt
+mail: mschmidt@hartlake.org
 userPassword: Warping_4Deposes
 
 dn: cn=Kate Tesch,ou=people,ou=environment,dc=edwdc,dc=net
@@ -145,6 +157,7 @@ cn: Kate Tesch
 sn: Tesch
 givenName: Kate
 uid: kate.tesch
+mail: kate.tesch@superior.k12.wi.us
 userPassword: Megaton5Lift&
 
 dn: cn=Sue Sewell,ou=people,ou=environment,dc=edwdc,dc=net
@@ -154,6 +167,7 @@ cn: Sue Sewell
 sn: Sewell
 givenName: Sue
 uid: sue_sewell
+mail: sue_sewell@columbus.k12.wi.us
 userPassword: PeeringNairobi<6
 
 dn: cn=Bill Klein,ou=people,ou=environment,dc=edwdc,dc=net
@@ -163,6 +177,7 @@ cn: Bill Klein
 sn: Klein
 givenName: Bill
 uid: bklein
+mail: bklein@sheboygan.k12.wi.us
 userPassword: Conceal7\Esteem
 
 dn: cn=Teresa Carranza,ou=people,ou=environment,dc=edwdc,dc=net
@@ -172,6 +187,7 @@ cn: Teresa Carranza
 sn: Carranza
 givenName: Teresa
 uid: tmcarranza
+mail: tmcarranza@madison.k12.wi.us
 userPassword: Peanut8?Farm
 
 dn: cn=Brett Brodeen,ou=people,ou=environment,dc=edwdc,dc=net
@@ -181,6 +197,7 @@ cn: Brett Brodeen
 sn: Brodeen
 givenName: Brett
 uid: brett.brodeen
+mail: brett.brodeen@superior.k12.wi.us
 userPassword: 9LogoTracers_
 
 dn: cn=Karen Remy-Anderson,ou=people,ou=environment,dc=edwdc,dc=net
@@ -190,6 +207,7 @@ cn: Karen Remy-Anderson
 sn: Remy-Anderson
 givenName: Karen
 uid: kremy-anderson
+mail: kremy-anderson@nthurston.k12.wa.us
 userPassword: Belie_Remy7
 
 dn: cn=Whitney Meissner,ou=people,ou=environment,dc=edwdc,dc=net
@@ -199,6 +217,7 @@ cn: Whitney Meissner
 sn: Meissner
 givenName: Whitney
 uid: whitney_meissner
+mail: whitney_meissner@csd49.org
 userPassword: %Induce1Hans
 
 dn: cn=Kathy Stamp,ou=people,ou=environment,dc=edwdc,dc=net
@@ -208,6 +227,7 @@ cn: Kathy Stamp
 sn: Stamp
 givenName: Kathy
 uid: kstamp
+mail: kstamp@waterbury.k12.ct.us
 userPassword: _TitherFancier6
 
 dn: cn=Amy Campbell,ou=people,ou=environment,dc=edwdc,dc=net
@@ -217,6 +237,7 @@ cn: Amy Campbell
 sn: Campbell
 givenName: Amy
 uid: Acampbell
+mail: Acampbell@hebron.k12.ct.us
 userPassword: Yentl4Gong=
 
 dn: cn=Stacy Chambers,ou=people,ou=environment,dc=edwdc,dc=net
@@ -226,15 +247,17 @@ cn: Stacy Chambers
 sn: Chambers
 givenName: Stacy
 uid: CHAMS001
+mail: CHAMS001@hartfordschools.org
 userPassword: Sinus\9Forlorn
 
 dn: cn=Mary Kay Rendock,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Mary Kay Rendock
-sn: Rendock
+sn: Kay Rendock
 givenName: Mary
 uid: mrendock
+mail: mrendock@blmfld.org
 userPassword: PilotsSignal5$
 
 dn: cn=Mark Corti,ou=people,ou=environment,dc=edwdc,dc=net
@@ -244,6 +267,7 @@ cn: Mark Corti
 sn: Corti
 givenName: Mark
 uid: mcorti
+mail: mcorti@srvusd.net
 userPassword: ^TyrantsHobbes7
 
 dn: cn=Peter Cummings,ou=people,ou=environment,dc=edwdc,dc=net
@@ -253,6 +277,7 @@ cn: Peter Cummings
 sn: Cummings
 givenName: Peter
 uid: peter_cummings
+mail: peter_cummings@whps.org
 userPassword: \5JoyrideAxed
 
 dn: cn=George Michna,ou=people,ou=environment,dc=edwdc,dc=net
@@ -262,6 +287,7 @@ cn: George Michna
 sn: Michna
 givenName: George
 uid: Michg001
+mail: Michg001@hartfordschools.org
 userPassword: Mama<2Pledged
 
 dn: cn=Peter Schurke,ou=people,ou=environment,dc=edwdc,dc=net
@@ -271,6 +297,7 @@ cn: Peter Schurke
 sn: Schurke
 givenName: Peter
 uid: schurkep
+mail: schurkep@edmonds.wednet.edu
 userPassword: _Devon4Anemone
 
 dn: cn=Joyce Ott,ou=people,ou=environment,dc=edwdc,dc=net
@@ -280,6 +307,7 @@ cn: Joyce Ott
 sn: Ott
 givenName: Joyce
 uid: jott
+mail: jott@nthurston.k12.wa.us
 userPassword: Weirdly-Poise7
 
 dn: cn=Jay Jordan,ou=people,ou=environment,dc=edwdc,dc=net
@@ -289,6 +317,7 @@ cn: Jay Jordan
 sn: Jordan
 givenName: Jay
 uid: Jay.jordan
+mail: Jay.jordan@bellinghamschools.org
 userPassword: 2PelicanPens>
 
 dn: cn=John Mitchell,ou=people,ou=environment,dc=edwdc,dc=net
@@ -298,6 +327,7 @@ cn: John Mitchell
 sn: Mitchell
 givenName: John
 uid: jmitchel
+mail: jmitchel@cloverpark.k12.wa.us
 userPassword: GayestPluses1=
 
 dn: cn=Bob Richards,ou=people,ou=environment,dc=edwdc,dc=net
@@ -307,6 +337,7 @@ cn: Bob Richards
 sn: Richards
 givenName: Bob
 uid: brichards
+mail: brichards@nthurston.k12.wa.us
 userPassword: $DeludesWorsted7
 
 dn: cn=Debra Gilbreath,ou=people,ou=environment,dc=edwdc,dc=net
@@ -316,6 +347,7 @@ cn: Debra Gilbreath
 sn: Gilbreath
 givenName: Debra
 uid: Debra_Gilbreath
+mail: Debra_Gilbreath@csd49.org
 userPassword: 5\DeemsAngelo
 
 dn: cn=Matt Whitten,ou=people,ou=environment,dc=edwdc,dc=net
@@ -325,15 +357,17 @@ cn: Matt Whitten
 sn: Whitten
 givenName: Matt
 uid: matthew.whitten
+mail: matthew.whitten@bellinghamschools.org
 userPassword: 9RisersSludge/
 
 dn: cn=Cory allen Heidelberger,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Cory allen Heidelberger
-sn: Heidelberger
+sn: allen Heidelberger
 givenName: Cory
 uid: cheidelb
+mail: cheidelb@spearfish.k12.sd.us
 userPassword: Cast&Accused2
 
 dn: cn=Don Davis,ou=people,ou=environment,dc=edwdc,dc=net
@@ -343,6 +377,7 @@ cn: Don Davis
 sn: Davis
 givenName: Don
 uid: Don.Davis
+mail: Don.Davis@appo.k12.de.us  
 userPassword: Taos6~Repel
 
 dn: cn=Suan Frampton,ou=people,ou=environment,dc=edwdc,dc=net
@@ -352,6 +387,7 @@ cn: Suan Frampton
 sn: Frampton
 givenName: Suan
 uid: skframpton
+mail: skframpton@lf.k12.de.us
 userPassword: PasserNina9_
 
 dn: cn=Audrey Erschen,ou=people,ou=environment,dc=edwdc,dc=net
@@ -361,6 +397,7 @@ cn: Audrey Erschen
 sn: Erschen
 givenName: Audrey
 uid: aerschen
+mail: aerschen@pca.k12.de.us
 userPassword: Moats9&Girder
 
 dn: cn=Jessilene Corbett,ou=people,ou=environment,dc=edwdc,dc=net
@@ -370,6 +407,7 @@ cn: Jessilene Corbett
 sn: Corbett
 givenName: Jessilene
 uid: jessilene.corbett
+mail: jessilene.corbett@cr.k12.de.us
 userPassword: 2%CoversCondemn
 
 dn: cn=Ann Lewis,ou=people,ou=environment,dc=edwdc,dc=net
@@ -379,6 +417,7 @@ cn: Ann Lewis
 sn: Lewis
 givenName: Ann
 uid: ann.lewis
+mail: ann.lewis@laurel.k12.de.us
 userPassword: Liston5Grabbed+
 
 dn: cn=Thomas Vari,ou=people,ou=environment,dc=edwdc,dc=net
@@ -388,15 +427,17 @@ cn: Thomas Vari
 sn: Vari
 givenName: Thomas
 uid: Thomas.Vari
+mail: Thomas.Vari@appo.k12.de.us  
 userPassword: Infarct4\Lykes
 
-dn: cn=Matthew Donovan ,ou=people,ou=environment,dc=edwdc,dc=net
+dn: cn=Matthew Donovan,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
-cn: Matthew Donovan 
-sn: 
+cn: Matthew Donovan
+sn: Donovan
 givenName: Matthew
 uid: matthew.donovan
+mail: matthew.donovan@appo.k12.de.us 
 userPassword: 6Dollar;Head
 
 dn: cn=Todd Fishburn,ou=people,ou=environment,dc=edwdc,dc=net
@@ -406,6 +447,7 @@ cn: Todd Fishburn
 sn: Fishburn
 givenName: Todd
 uid: tfishburn
+mail: tfishburn@seaford.k12.de.us
 userPassword: Things9Isles/
 
 dn: cn=Brian Donahue,ou=people,ou=environment,dc=edwdc,dc=net
@@ -415,6 +457,7 @@ cn: Brian Donahue
 sn: Donahue
 givenName: Brian
 uid: bdonahue
+mail: bdonahue@cape.k12.de.us
 userPassword: 3&ExcusedPurred
 
 dn: cn=Robert Adams,ou=people,ou=environment,dc=edwdc,dc=net
@@ -424,6 +467,7 @@ cn: Robert Adams
 sn: Adams
 givenName: Robert
 uid: robert.adams
+mail: robert.adams@wsd.k12.de.us 
 userPassword: ClangGranite~5
 
 dn: cn=Sally Crowser,ou=people,ou=environment,dc=edwdc,dc=net
@@ -433,6 +477,7 @@ cn: Sally Crowser
 sn: Crowser
 givenName: Sally
 uid: sally.crowser
+mail: sally.crowser@k12.sd.us
 userPassword: Route!Wisp8
 
 dn: cn=Stacy Huber,ou=people,ou=environment,dc=edwdc,dc=net
@@ -442,6 +487,7 @@ cn: Stacy Huber
 sn: Huber
 givenName: Stacy
 uid: stacy.huber
+mail: stacy.huber@k12.sd.us
 userPassword: \Linkers7Misting
 
 dn: cn=Terri Anderson-schlader,ou=people,ou=environment,dc=edwdc,dc=net
@@ -451,6 +497,7 @@ cn: Terri Anderson-schlader
 sn: Anderson-schlader
 givenName: Terri
 uid: terri.schlader
+mail: terri.schlader@k12.sd.us
 userPassword: Bowen#Sydney5
 
 dn: cn=Mary Fried,ou=people,ou=environment,dc=edwdc,dc=net
@@ -460,6 +507,7 @@ cn: Mary Fried
 sn: Fried
 givenName: Mary
 uid: mary.fried
+mail: mary.fried@k12.sd.us
 userPassword: Pressed~Romance7
 
 dn: cn=Blake Dahlberg,ou=people,ou=environment,dc=edwdc,dc=net
@@ -469,6 +517,7 @@ cn: Blake Dahlberg
 sn: Dahlberg
 givenName: Blake
 uid: blake.dahlberg
+mail: blake.dahlberg@k12.sd.us
 userPassword: !Sparrow8Shin
 
 dn: cn=Kirk Zeeck,ou=people,ou=environment,dc=edwdc,dc=net
@@ -478,6 +527,7 @@ cn: Kirk Zeeck
 sn: Zeeck
 givenName: Kirk
 uid: kirk.zeeck
+mail: kirk.zeeck@k12.sd.us
 userPassword: GarbedHeals_1
 
 dn: cn=Laureen Dunn,ou=people,ou=environment,dc=edwdc,dc=net
@@ -487,6 +537,7 @@ cn: Laureen Dunn
 sn: Dunn
 givenName: Laureen
 uid: laureen_dunn
+mail: laureen_dunn@notes.k12.hi.us
 userPassword: Aliased6Botany!
 
 dn: cn=Lauren O'Leary,ou=people,ou=environment,dc=edwdc,dc=net
@@ -496,6 +547,7 @@ cn: Lauren O'Leary
 sn: O'Leary
 givenName: Lauren
 uid: lauren_oleary
+mail: lauren_oleary@notes.k12.hi.us
 userPassword: Seal>7Chatter
 
 dn: cn=Marsha Nakamura,ou=people,ou=environment,dc=edwdc,dc=net
@@ -505,15 +557,17 @@ cn: Marsha Nakamura
 sn: Nakamura
 givenName: Marsha
 uid: marsha_nakamura
+mail: marsha_nakamura@notes.k12.hi.us
 userPassword: <ArchUncouth9
 
 dn: cn=Alisa Estrella Bender,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Alisa Estrella Bender
-sn: Bender
+sn: Estrella Bender
 givenName: Alisa
 uid: Alisa_Estrella_Bender
+mail: Alisa_Estrella_Bender@notes.k12.hi.us
 userPassword: Trial~Beefs4
 
 dn: cn=Zhoydell Magaoay,ou=people,ou=environment,dc=edwdc,dc=net
@@ -523,6 +577,7 @@ cn: Zhoydell Magaoay
 sn: Magaoay
 givenName: Zhoydell
 uid: zhoydell_magaoay
+mail: zhoydell_magaoay@notes.k12.hi.us
 userPassword: 1#TaprootGetting
 
 dn: cn=Liane Voss,ou=people,ou=environment,dc=edwdc,dc=net
@@ -532,6 +587,7 @@ cn: Liane Voss
 sn: Voss
 givenName: Liane
 uid: liane_voss
+mail: liane_voss@notes.k12.hi.us
 userPassword: Canny2^Swaps
 
 dn: cn=Phonekeo Siharath,ou=people,ou=environment,dc=edwdc,dc=net
@@ -541,6 +597,7 @@ cn: Phonekeo Siharath
 sn: Siharath
 givenName: Phonekeo
 uid: psiharath
+mail: psiharath@madison.k12.wi.us
 userPassword: 9TotalsMerritt\
 
 dn: cn=Kacey Schneidt,ou=people,ou=environment,dc=edwdc,dc=net
@@ -550,6 +607,7 @@ cn: Kacey Schneidt
 sn: Schneidt
 givenName: Kacey
 uid: schneidt.kacey
+mail: schneidt.kacey@meridianschools.org
 userPassword: Sector;Beak3
 
 dn: cn=Laura Lethe,ou=people,ou=environment,dc=edwdc,dc=net
@@ -559,6 +617,7 @@ cn: Laura Lethe
 sn: Lethe
 givenName: Laura
 uid: lethe_laura
+mail: lethe_laura@salkeiz.k12.or.us
 userPassword: BalletsChose>8
 
 dn: cn=Wendy Neyhard,ou=people,ou=environment,dc=edwdc,dc=net
@@ -568,6 +627,7 @@ cn: Wendy Neyhard
 sn: Neyhard
 givenName: Wendy
 uid: wendyneyhard
+mail: wendyneyhard@hasd.org
 userPassword: AbaseTamely?8
 
 dn: cn=Lee Thennes,ou=people,ou=environment,dc=edwdc,dc=net
@@ -577,6 +637,7 @@ cn: Lee Thennes
 sn: Thennes
 givenName: Lee
 uid: lthennes
+mail: lthennes@sheboygan.k12.wi.us
 userPassword: Between!8Coves
 
 dn: cn=Mike Roemer,ou=people,ou=environment,dc=edwdc,dc=net
@@ -586,15 +647,17 @@ cn: Mike Roemer
 sn: Roemer
 givenName: Mike
 uid: roemermx
+mail: roemermx@milwaukee.k12.wi.us
 userPassword: Salt4=Chalk
 
 dn: cn=Renee Fuentes Campa,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Renee Fuentes Campa
-sn: Campa
+sn: Fuentes Campa
 givenName: Renee
 uid: rcampa
+mail: rcampa@lausd.net
 userPassword: 2Took>Boater
 
 dn: cn=Anne Evans,ou=people,ou=environment,dc=edwdc,dc=net
@@ -604,6 +667,7 @@ cn: Anne Evans
 sn: Evans
 givenName: Anne
 uid: evansa
+mail: evansa@nwasco.k12.or.us
 userPassword: Surmise/1Opus
 
 dn: cn=Catherine Carlson,ou=people,ou=environment,dc=edwdc,dc=net
@@ -613,15 +677,17 @@ cn: Catherine Carlson
 sn: Carlson
 givenName: Catherine
 uid: carlson_catherine
+mail: carlson_catherine@salkeiz.k12.or.us
 userPassword: $Rumply3Swab
 
-dn: cn= Iva Lee Colgan ,ou=people,ou=environment,dc=edwdc,dc=net
+dn: cn=Iva Lee Colgan,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
-cn:  Iva Lee Colgan 
-sn: Lee
-givenName: 
+cn: Iva Lee Colgan
+sn: Lee Colgan
+givenName: Iva
 uid: ivcolga
+mail: ivcolga@kckps.org
 userPassword: 3ChadBatted?
 
 dn: cn=Joshua Robinson,ou=people,ou=environment,dc=edwdc,dc=net
@@ -631,6 +697,7 @@ cn: Joshua Robinson
 sn: Robinson
 givenName: Joshua
 uid:  Robinson
+mail:  Robinson@usd290.org
 userPassword: 2Selwyn!Timex
 
 dn: cn=Amy Loder,ou=people,ou=environment,dc=edwdc,dc=net
@@ -640,6 +707,7 @@ cn: Amy Loder
 sn: Loder
 givenName: Amy
 uid: loder.amy
+mail: loder.amy@usd443.org
 userPassword: Wiping\5Siamese
 
 dn: cn=Mary Welsh,ou=people,ou=environment,dc=edwdc,dc=net
@@ -649,6 +717,7 @@ cn: Mary Welsh
 sn: Welsh
 givenName: Mary
 uid: mawelsh
+mail: mawelsh@kckps.org
 userPassword: $Shift2Foggy
 
 dn: cn=Sarah Thomas,ou=people,ou=environment,dc=edwdc,dc=net
@@ -658,15 +727,17 @@ cn: Sarah Thomas
 sn: Thomas
 givenName: Sarah
 uid: sthomas1
+mail: sthomas1@topeka.k12.ks.us
 userPassword: >9MortemSquirt
 
 dn: cn=Alysia Hobbs Odipo,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Alysia Hobbs Odipo
-sn: Odipo
+sn: Hobbs Odipo
 givenName: Alysia
 uid: ahobbs
+mail: ahobbs@walnutvalley.k12.ca.us
 userPassword: SolvedMatted-7
 
 dn: cn=Gerald Williams,ou=people,ou=environment,dc=edwdc,dc=net
@@ -676,6 +747,7 @@ cn: Gerald Williams
 sn: Williams
 givenName: Gerald
 uid: gwilliams
+mail: gwilliams@placercoe.k12.ca.us 
 userPassword: SwedeStencil5:
 
 dn: cn=Scott Lommori,ou=people,ou=environment,dc=edwdc,dc=net
@@ -685,6 +757,7 @@ cn: Scott Lommori
 sn: Lommori
 givenName: Scott
 uid: slommori
+mail: slommori@lyon.k12.nv.us
 userPassword: Voicer7&Mores
 
 dn: cn=Linda Bleile,ou=people,ou=environment,dc=edwdc,dc=net
@@ -694,6 +767,7 @@ cn: Linda Bleile
 sn: Bleile
 givenName: Linda
 uid: lbleile
+mail: lbleile@svrsu.org
 userPassword: JungSkewers2&
 
 dn: cn=Joe Findlay,ou=people,ou=environment,dc=edwdc,dc=net
@@ -703,6 +777,7 @@ cn: Joe Findlay
 sn: Findlay
 givenName: Joe
 uid: joe.findlay
+mail: joe.findlay@msad60.org
 userPassword: TitanRubbers#7
 
 dn: cn=Todd West,ou=people,ou=environment,dc=edwdc,dc=net
@@ -712,6 +787,7 @@ cn: Todd West
 sn: West
 givenName: Todd
 uid: twest
+mail: twest@dis-schools.org
 userPassword: DelilahGrid^4
 
 dn: cn=Christopher Howell,ou=people,ou=environment,dc=edwdc,dc=net
@@ -721,6 +797,7 @@ cn: Christopher Howell
 sn: Howell
 givenName: Christopher
 uid: chowell
+mail: chowell@rsu14.org
 userPassword: 8~NearestSaving
 
 dn: cn=Chad Buckendahl,ou=people,ou=environment,dc=edwdc,dc=net
@@ -730,6 +807,7 @@ cn: Chad Buckendahl
 sn: Buckendahl
 givenName: Chad
 uid: chad.buckendahl
+mail: chad.buckendahl@alpinetesting.com
 userPassword: 9PatentsIonian!
 
 dn: cn=Scott Bailey,ou=people,ou=environment,dc=edwdc,dc=net
@@ -739,6 +817,7 @@ cn: Scott Bailey
 sn: Bailey
 givenName: Scott
 uid: slbailey
+mail: slbailey@washoeschools.net
 userPassword: ~5LullsOneself
 
 dn: cn=Greg Schraw,ou=people,ou=environment,dc=edwdc,dc=net
@@ -748,6 +827,7 @@ cn: Greg Schraw
 sn: Schraw
 givenName: Greg
 uid: gschraw
+mail: gschraw@unlv.nevada.edu
 userPassword: CompelsApple9^
 
 dn: cn=Ruth Gilbert,ou=people,ou=environment,dc=edwdc,dc=net
@@ -757,6 +837,7 @@ cn: Ruth Gilbert
 sn: Gilbert
 givenName: Ruth
 uid: rlgilber
+mail: rlgilber@interact.ccsd.net
 userPassword: MuttPitt&6
 
 dn: cn=Dawn Hagness,ou=people,ou=environment,dc=edwdc,dc=net
@@ -766,15 +847,17 @@ cn: Dawn Hagness
 sn: Hagness
 givenName: Dawn
 uid: dhagness
+mail: dhagness@ecsdnv.net
 userPassword: SlackenChapel&3
 
 dn: cn=Olga De Santa Anna,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Olga De Santa Anna
-sn: Santa
+sn: De Santa Anna
 givenName: Olga
 uid: olga_desantaanna
+mail: olga_desantaanna@pvusd.net
 userPassword: LabeledLazier=8
 
 dn: cn=Andrew Goodwin,ou=people,ou=environment,dc=edwdc,dc=net
@@ -784,6 +867,7 @@ cn: Andrew Goodwin
 sn: Goodwin
 givenName: Andrew
 uid: agoodwin
+mail: agoodwin@lakecoe.org
 userPassword: Sunset5Needy;
 
 dn: cn=Kim Guzzetti,ou=people,ou=environment,dc=edwdc,dc=net
@@ -793,6 +877,7 @@ cn: Kim Guzzetti
 sn: Guzzetti
 givenName: Kim
 uid: kguzzett
+mail: kguzzett@bcoe.org
 userPassword: 2=HushingFiler
 
 dn: cn=Stephanie Wheeler,ou=people,ou=environment,dc=edwdc,dc=net
@@ -802,6 +887,7 @@ cn: Stephanie Wheeler
 sn: Wheeler
 givenName: Stephanie
 uid: swheeler
+mail: swheeler@mansd.org
 userPassword: Smoke7^Doreen
 
 dn: cn=Pam Baim,ou=people,ou=environment,dc=edwdc,dc=net
@@ -811,6 +897,7 @@ cn: Pam Baim
 sn: Baim
 givenName: Pam
 uid: pbaim
+mail: pbaim@waterbury.k12.ct.us
 userPassword: :Recant5Subtask
 
 dn: cn=Dianna Veleke,ou=people,ou=environment,dc=edwdc,dc=net
@@ -820,15 +907,17 @@ cn: Dianna Veleke
 sn: Veleke
 givenName: Dianna
 uid: veleked
+mail: veleked@umatillasd.org
 userPassword: 7\StainsPetting
 
 dn: cn=Harriet R. Maclean,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Harriet R. Maclean
-sn: Maclean
+sn: R. Maclean
 givenName: Harriet
 uid: hmaclean
+mail: hmaclean@srcs.org
 userPassword: ExaltsShirt9?
 
 dn: cn=Fatme Faraj,ou=people,ou=environment,dc=edwdc,dc=net
@@ -838,6 +927,7 @@ cn: Fatme Faraj
 sn: Faraj
 givenName: Fatme
 uid: farajf
+mail: farajf@dearborn.k12.mi.us
 userPassword: _KeithFalter9
 
 dn: cn=Karen Abraham,ou=people,ou=environment,dc=edwdc,dc=net
@@ -847,6 +937,7 @@ cn: Karen Abraham
 sn: Abraham
 givenName: Karen
 uid: abrahamk
+mail: abrahamk@westottawa.net
 userPassword: BungledSeal2\
 
 dn: cn=Ana Aleman-Putman,ou=people,ou=environment,dc=edwdc,dc=net
@@ -856,6 +947,7 @@ cn: Ana Aleman-Putman
 sn: Aleman-Putman
 givenName: Ana
 uid: Aleman-Putmana
+mail: Aleman-Putmana@grps.org
 userPassword: UniqueAliased+2
 
 dn: cn=Bill Ross,ou=people,ou=environment,dc=edwdc,dc=net
@@ -865,6 +957,7 @@ cn: Bill Ross
 sn: Ross
 givenName: Bill
 uid: bross
+mail: bross@hpseagles.net
 userPassword: 7WiselyOutlive<
 
 dn: cn=Joel Olson,ou=people,ou=environment,dc=edwdc,dc=net
@@ -874,6 +967,7 @@ cn: Joel Olson
 sn: Olson
 givenName: Joel
 uid: olsonj
+mail: olsonj@bas-k12.org
 userPassword: 6Baggers<Caching
 
 dn: cn=Belinda Jimenez,ou=people,ou=environment,dc=edwdc,dc=net
@@ -883,6 +977,7 @@ cn: Belinda Jimenez
 sn: Jimenez
 givenName: Belinda
 uid: JimenezB
+mail: JimenezB@grps.org
 userPassword: 7Sculpts~Cymbals
 
 dn: cn=Doug Vanderjagt,ou=people,ou=environment,dc=edwdc,dc=net
@@ -892,6 +987,7 @@ cn: Doug Vanderjagt
 sn: Vanderjagt
 givenName: Doug
 uid: dvanderjagt
+mail: dvanderjagt@rockfordschools.org
 userPassword: SurfaceCounted5-
 
 dn: cn=Todd Tulgestke,ou=people,ou=environment,dc=edwdc,dc=net
@@ -901,6 +997,7 @@ cn: Todd Tulgestke
 sn: Tulgestke
 givenName: Todd
 uid: TULGESTKET
+mail: TULGESTKET@westottawa.net
 userPassword: :2NeckRookie
 
 dn: cn=William Warning,ou=people,ou=environment,dc=edwdc,dc=net
@@ -910,15 +1007,17 @@ cn: William Warning
 sn: Warning
 givenName: William
 uid: bwarning
+mail: bwarning@rapidriver.k12.mi.us
 userPassword: 3\WoodedLaunder
 
 dn: cn=Dirk Van Curan,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Dirk Van Curan
-sn: Curan
+sn: Van Curan
 givenName: Dirk
 uid: dirk_vancuran
+mail: dirk_vancuran@msad51.org
 userPassword: _CrooksCandied3
 
 dn: cn=Matt Gonzales,ou=people,ou=environment,dc=edwdc,dc=net
@@ -928,6 +1027,7 @@ cn: Matt Gonzales
 sn: Gonzales
 givenName: Matt
 uid: gonzalesma
+mail: gonzalesma@grps.org
 userPassword: ^3YellowsSpecify
 
 dn: cn=Aaron Weaver,ou=people,ou=environment,dc=edwdc,dc=net
@@ -937,6 +1037,7 @@ cn: Aaron Weaver
 sn: Weaver
 givenName: Aaron
 uid: aaron.weaver
+mail: aaron.weaver@k12.sd.us
 userPassword: %4AromaRobbins
 
 dn: cn=Devin Vodicka,ou=people,ou=environment,dc=edwdc,dc=net
@@ -946,15 +1047,17 @@ cn: Devin Vodicka
 sn: Vodicka
 givenName: Devin
 uid: devinvodicka
+mail: devinvodicka@vusd.k12.ca.us
 userPassword: Disturb2^Dabbler
 
 dn: cn=J. Antonio Gaitan,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: J. Antonio Gaitan
-sn: Gaitan
+sn: Antonio Gaitan
 givenName: J.
 uid: jgaitan
+mail: jgaitan@spuhsd.org
 userPassword: Quack;5Gawky
 
 cn=Building Administrator,ou=groups,ou=environment,dc=edwdc,dc=net
@@ -1074,6 +1177,7 @@ cn: William Webster
 sn: Webster
 givenName: William
 uid: superintendent
+mail: superintendent@lewistonpublicschools.org
 userPassword: Grower$6Genial
 
 dn: cn=Teri Ushijima,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1083,6 +1187,7 @@ cn: Teri Ushijima
 sn: Ushijima
 givenName: Teri
 uid: teri_ushijima
+mail: teri_ushijima@notes.k12.hi.us
 userPassword: ;8CopingPeopled
 
 dn: cn=Harold Mizuno,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1092,6 +1197,7 @@ cn: Harold Mizuno
 sn: Mizuno
 givenName: Harold
 uid: harold_mizuno
+mail: harold_mizuno@notes.k12.hi.us
 userPassword: Affix3Knower!
 
 dn: cn=Larry Zavada,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1101,6 +1207,7 @@ cn: Larry Zavada
 sn: Zavada
 givenName: Larry
 uid: larry.zavada
+mail: larry.zavada@sendit.nodak.edu
 userPassword: 4Cramp%Demands
 
 dn: cn=Lyle Krueger,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1110,6 +1217,7 @@ cn: Lyle Krueger
 sn: Krueger
 givenName: Lyle
 uid: lyle.p.krueger.2
+mail: lyle.p.krueger.2@sendit.nodak.edu
 userPassword: 9!ShimmerSigmund
 
 dn: cn=Bill Demaree,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1119,6 +1227,7 @@ cn: Bill Demaree
 sn: Demaree
 givenName: Bill
 uid: bill.demaree
+mail: bill.demaree@mrecnd.org
 userPassword: SatanDormant\8
 
 dn: cn=Michael Magone,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1128,6 +1237,7 @@ cn: Michael Magone
 sn: Magone
 givenName: Michael
 uid: mikem
+mail: mikem@lolo.k12.mt.us
 userPassword: Preside:Deeps8
 
 dn: cn=Kelly Maki,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1137,6 +1247,7 @@ cn: Kelly Maki
 sn: Maki
 givenName: Kelly
 uid: kelly_maki
+mail: kelly_maki@gfps.k12.mt.us
 userPassword: 5WillsIranian?
 
 dn: cn=Hannah Youngblood,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1146,6 +1257,7 @@ cn: Hannah Youngblood
 sn: Youngblood
 givenName: Hannah
 uid: hannahyoungblood
+mail: hannahyoungblood@johnston.k12.nc.us
 userPassword: Cool+2Tramped
 
 dn: cn=Lisa Andrew,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1155,6 +1267,7 @@ cn: Lisa Andrew
 sn: Andrew
 givenName: Lisa
 uid: Lisa_andrew
+mail: Lisa_andrew@sccoe.org
 userPassword: 4HotlyHarmful:
 
 dn: cn=Cheryl Ingham,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1164,15 +1277,17 @@ cn: Cheryl Ingham
 sn: Ingham
 givenName: Cheryl
 uid: cingham
+mail: cingham@humboldt.k12.ca.us
 userPassword: 3BluingNeglect:
 
 dn: cn=Mary Ellen Johnson,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Mary Ellen Johnson
-sn: Johnson
+sn: Ellen Johnson
 givenName: Mary
 uid: Maryellen_johnson
+mail: Maryellen_johnson@sbcss.k12.ca.us
 userPassword: Rampant4Fresno+
 
 dn: cn=Kathy Pon,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1182,6 +1297,7 @@ cn: Kathy Pon
 sn: Pon
 givenName: Kathy
 uid: kpon
+mail: kpon@mcoe.org
 userPassword: TinnilyMets9~
 
 dn: cn=Teresa Fabricius,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1191,6 +1307,7 @@ cn: Teresa Fabricius
 sn: Fabricius
 givenName: Teresa
 uid: tfabricius
+mail: tfabricius@fruitlandschools.org
 userPassword: !3BuoyedHaving
 
 dn: cn=Chris Hansen,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1200,6 +1317,7 @@ cn: Chris Hansen
 sn: Hansen
 givenName: Chris
 uid: ChrisHansen
+mail: ChrisHansen@hasd.org
 userPassword: 1VersionCamps$
 
 dn: cn=John Graham,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1209,6 +1327,7 @@ cn: John Graham
 sn: Graham
 givenName: John
 uid: john.graham
+mail: john.graham@filer.k12.id.us
 userPassword: Wayne2!Blunted
 
 dn: cn=Ellen Perconti,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1218,6 +1337,7 @@ cn: Ellen Perconti
 sn: Perconti
 givenName: Ellen
 uid: ellenperconti
+mail: ellenperconti@sd83.org
 userPassword: TrampleIntents%9
 
 dn: cn=Nancy Katims,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1227,6 +1347,7 @@ cn: Nancy Katims
 sn: Katims
 givenName: Nancy
 uid: katimsn
+mail: katimsn@edmonds.wednet.edu
 userPassword: :WhackAlberto6
 
 dn: cn=Feng-Yi Hung,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1236,6 +1357,7 @@ cn: Feng-Yi Hung
 sn: Hung
 givenName: Feng-Yi
 uid: fhung
+mail: fhung@cloverpark.k12.wa.us
 userPassword: NutriaBands1>
 
 dn: cn=Lorna Spear,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1245,6 +1367,7 @@ cn: Lorna Spear
 sn: Spear
 givenName: Lorna
 uid: LornaS
+mail: LornaS@spokaneschools.org
 userPassword: Gaiter-4Booms
 
 dn: cn=Mike Jacobsen,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1254,6 +1377,7 @@ cn: Mike Jacobsen
 sn: Jacobsen
 givenName: Mike
 uid: mjacobse
+mail: mjacobse@whiteriver.wednet.edu
 userPassword: \NagoyaLowly8
 
 dn: cn=LaVonne Grimes,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1263,6 +1387,7 @@ cn: LaVonne Grimes
 sn: Grimes
 givenName: LaVonne
 uid: lavonne_grimes
+mail: lavonne_grimes@csd49.org
 userPassword: 1MildestTiling&
 
 dn: cn=Brian Rick,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1272,6 +1397,7 @@ cn: Brian Rick
 sn: Rick
 givenName: Brian
 uid: brian.rick
+mail: brian.rick@bellinghamschools.org
 userPassword: HirersRusher1^
 
 dn: cn=Al Meunier,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1281,6 +1407,7 @@ cn: Al Meunier
 sn: Meunier
 givenName: Al
 uid: al.meunier
+mail: al.meunier@umatillasd.org
 userPassword: 8BleakerRowe%
 
 dn: cn=William Korach,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1290,6 +1417,7 @@ cn: William Korach
 sn: Korach
 givenName: William
 uid: william.korach
+mail: william.korach@loswego.k12.or.us 
 userPassword: Patched<Surety1
 
 dn: cn=Earl Pettit,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1299,6 +1427,7 @@ cn: Earl Pettit
 sn: Pettit
 givenName: Earl
 uid: pettite
+mail: pettite@grantesd.k12.or.us
 userPassword: 7WondersStrode#
 
 dn: cn=Jon O'Neil,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1308,6 +1437,7 @@ cn: Jon O'Neil
 sn: O'Neil
 givenName: Jon
 uid: joneill
+mail: joneill@fgsd.k12.or.us
 userPassword: 9Barron>Sanctum
 
 dn: cn=Lisa Rivard,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1317,6 +1447,7 @@ cn: Lisa Rivard
 sn: Rivard
 givenName: Lisa
 uid: lrivard
+mail: lrivard@misd.net
 userPassword: Fortify3Diner%
 
 dn: cn=Catherine Mccaslin,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1326,6 +1457,7 @@ cn: Catherine Mccaslin
 sn: Mccaslin
 givenName: Catherine
 uid: catherine.mccaslin
+mail: catherine.mccaslin@new-haven.k12.ct.us
 userPassword: 2;FootingQuebec
 
 dn: cn=Paul Vicinus,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1335,6 +1467,7 @@ cn: Paul Vicinus
 sn: Vicinus
 givenName: Paul
 uid: paul_vicinus
+mail: paul_vicinus@whps.org
 userPassword: ~5PhylaDull
 
 dn: cn=Kevin Schooley,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1344,6 +1477,7 @@ cn: Kevin Schooley
 sn: Schooley
 givenName: Kevin
 uid: KSchooley
+mail: KSchooley@watervliet.k12.mi.us
 userPassword: Recta2Acre;
 
 dn: cn=Brian Frazier,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1353,6 +1487,7 @@ cn: Brian Frazier
 sn: Frazier
 givenName: Brian
 uid: bfrazier
+mail: bfrazier@dcsd.k12.nv.us
 userPassword: 6FairestWaxes#
 
 dn: cn=Tracy Bricchi,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1362,15 +1497,17 @@ cn: Tracy Bricchi
 sn: Bricchi
 givenName: Tracy
 uid: tbricchi
+mail: tbricchi@sau18.org
 userPassword: 8>NeighWatts
 
 dn: cn=Amie Beyersdorf for DA,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Amie Beyersdorf for DA
-sn: for
+sn: Beyersdorf for DA
 givenName: Amie
 uid: abeyersdorf
+mail: abeyersdorf@misd.k12.wi.us
 userPassword: 9;AbbottSatyr
 
 dn: cn=George Mavroulis,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1380,6 +1517,7 @@ cn: George Mavroulis
 sn: Mavroulis
 givenName: George
 uid: gmavroulis
+mail: gmavroulis@mcpasd.k12.wi.us
 userPassword: LearMonster9:
 
 dn: cn=Nicole Heimarck,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1389,6 +1527,7 @@ cn: Nicole Heimarck
 sn: Heimarck
 givenName: Nicole
 uid: nheimarck
+mail: nheimarck@sprise.com
 userPassword: 7CubesPiotr~
 
 dn: cn=Christine Landwehrle,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1398,6 +1537,7 @@ cn: Christine Landwehrle
 sn: Landwehrle
 givenName: Christine
 uid: clandwehrle
+mail: clandwehrle@sprise.com
 userPassword: Outrage#8Bundles
 
 dn: cn=Adam Shaw,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1407,6 +1547,7 @@ cn: Adam Shaw
 sn: Shaw
 givenName: Adam
 uid: adam.shaw
+mail: adam.shaw@k12.sd.us
 userPassword: Belched\7Focal
 
 dn: cn=Joel Price,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1416,6 +1557,7 @@ cn: Joel Price
 sn: Price
 givenName: Joel
 uid: joel.price
+mail: joel.price@k12.sd.us
 userPassword: ?DunePurdue5
 
 dn: cn=Trent Osborne,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1425,33 +1567,37 @@ cn: Trent Osborne
 sn: Osborne
 givenName: Trent
 uid: trent.osborne
+mail: trent.osborne@k12.sd.us
 userPassword: ;RepineDagger8
 
 dn: cn=Mary Jo Fox,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Mary Jo Fox
-sn: Fox
+sn: Jo Fox
 givenName: Mary
 uid:  foxm
+mail:  foxm@olatheschools.com
 userPassword: 9;FactualSing
 
-dn: cn=Jessica Dain ,ou=people,ou=environment,dc=edwdc,dc=net
+dn: cn=Jessica Dain,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
-cn: Jessica Dain 
-sn: 
+cn: Jessica Dain
+sn: Dain
 givenName: Jessica
 uid: JDain
+mail: JDain@usd232.org
 userPassword: 2PardonsIvanhoe_
 
-dn: cn= Suzie Legg,ou=people,ou=environment,dc=edwdc,dc=net
+dn: cn=Suzie Legg,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
-cn:  Suzie Legg
+cn: Suzie Legg
 sn: Legg
-givenName: 
+givenName: Suzie
 uid: sulegg
+mail: sulegg@kckps.org
 userPassword: 4_JastrowTasting
 
 dn: cn=Patti Dobias,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1461,6 +1607,7 @@ cn: Patti Dobias
 sn: Dobias
 givenName: Patti
 uid: pdobias
+mail: pdobias@hollandpublicschools.org
 userPassword: Indus3\Eben
 
 dn: cn=John Carpenter,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1470,6 +1617,7 @@ cn: John Carpenter
 sn: Carpenter
 givenName: John
 uid: jncarpenter
+mail: jncarpenter@interact.ccsd.net
 userPassword: Brushed&Verdi4
 
 dn: cn=Jeff Klein,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1479,6 +1627,7 @@ cn: Jeff Klein
 sn: Klein
 givenName: Jeff
 uid: Jeff.Klein
+mail: Jeff.Klein@appo.k12.de.us
 userPassword: _Strut6Amos
 
 dn: cn=Travis Moorman,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1488,6 +1637,7 @@ cn: Travis Moorman
 sn: Moorman
 givenName: Travis
 uid: Tmoorman
+mail: Tmoorman@msd.k12.de.us 
 userPassword: Pliant!Begging3
 
 dn: cn=Heidi Schmidt,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1497,6 +1647,7 @@ cn: Heidi Schmidt
 sn: Schmidt
 givenName: Heidi
 uid: heidischmidt
+mail: heidischmidt@hasd.org
 userPassword: InningsExplore1$
 
 dn: cn=Nancy Bonesho,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1506,6 +1657,7 @@ cn: Nancy Bonesho
 sn: Bonesho
 givenName: Nancy
 uid: boneshnb
+mail: boneshnb@milwaukee.k12.wi.us
 userPassword: Reacted1Ideals=
 
 dn: cn=Betsy Webb,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1515,6 +1667,7 @@ cn: Betsy Webb
 sn: Webb
 givenName: Betsy
 uid: bangorsupt
+mail: bangorsupt@bangorschools.net
 userPassword: Whips8?Shelby
 
 dn: cn=Roman Marcellais,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1524,6 +1677,7 @@ cn: Roman Marcellais
 sn: Marcellais
 givenName: Roman
 uid: roman.marcellais
+mail: roman.marcellais@sendit.nodak.edu
 userPassword: LordsPolice4\
 
 cn=District Administrator,ou=groups,ou=environment,dc=edwdc,dc=net
@@ -1589,6 +1743,7 @@ cn: Lew Jones
 sn: Jones
 givenName: Lew
 uid: ljones
+mail: ljones@mtbus.net
 userPassword: &5AxonSuspect
 
 dn: cn=Dudley Williams,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1598,6 +1753,7 @@ cn: Dudley Williams
 sn: Williams
 givenName: Dudley
 uid: dudley.williams
+mail: dudley.williams@ge.com
 userPassword: EnactedBaggers>9
 
 dn: cn=Nancy Prescott,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1607,6 +1763,7 @@ cn: Nancy Prescott
 sn: Prescott
 givenName: Nancy
 uid: nprescott
+mail: nprescott@cpacinc.org
 userPassword: Thinly-Diaper3
 
 dn: cn=Theresa Abed,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1616,6 +1773,7 @@ cn: Theresa Abed
 sn: Abed
 givenName: Theresa
 uid: theresaabed
+mail: theresaabed@house.mi.gov
 userPassword: 1TalkersPoaches#
 
 dn: cn=Jennifer Nehl,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1625,6 +1783,7 @@ cn: Jennifer Nehl
 sn: Nehl
 givenName: Jennifer
 uid: jnehl
+mail: jnehl@tie.net
 userPassword: 6BlanklyAmdahl;
 
 dn: cn=Joe Rothschiller,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1634,6 +1793,7 @@ cn: Joe Rothschiller
 sn: Rothschiller
 givenName: Joe
 uid: jrothschiller
+mail: jrothschiller@steffes.com
 userPassword: 8Pushers=Pilers
 
 dn: cn=Darek Grant,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1643,6 +1803,7 @@ cn: Darek Grant
 sn: Grant
 givenName: Darek
 uid: darekgrant
+mail: darekgrant@gmail.com
 userPassword: :9GlanceEmulate
 
 dn: cn=Crystal Priest,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1652,6 +1813,7 @@ cn: Crystal Priest
 sn: Priest
 givenName: Crystal
 uid: cpriest
+mail: cpriest@sad4.com
 userPassword: 4#OptingBreakup
 
 dn: cn=Melanie Barton,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1661,6 +1823,7 @@ cn: Melanie Barton
 sn: Barton
 givenName: Melanie
 uid: mbarton
+mail: mbarton@eoc.sc.gov
 userPassword: BusboysGrapple&6
 
 dn: cn=William Jackson,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1670,6 +1833,7 @@ cn: William Jackson
 sn: Jackson
 givenName: William
 uid: bjackson
+mail: bjackson@torchlake.com
 userPassword: CorkedEvasive!9
 
 dn: cn=Junella Feickert,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1679,6 +1843,7 @@ cn: Junella Feickert
 sn: Feickert
 givenName: Junella
 uid: junella_feickert
+mail: junella_feickert@bismarckschools.org
 userPassword: /1KodiakPulping
 
 dn: cn=Sherry Menor-McNamara,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1688,6 +1853,7 @@ cn: Sherry Menor-McNamara
 sn: Menor-McNamara
 givenName: Sherry
 uid: smenor-mcnamara
+mail: smenor-mcnamara@cochawaii.org
 userPassword: 3CyclopsErode:
 
 dn: cn=Peter Geiger,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1697,15 +1863,17 @@ cn: Peter Geiger
 sn: Geiger
 givenName: Peter
 uid: pgeiger
+mail: pgeiger@geiger.com
 userPassword: 7\MummiesJehovah
 
-dn: cn= Mickey Garrison,ou=people,ou=environment,dc=edwdc,dc=net
+dn: cn=Mickey Garrison,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
-cn:  Mickey Garrison
+cn: Mickey Garrison
 sn: Garrison
-givenName: 
+givenName: Mickey
 uid: mickey.garrison
+mail: mickey.garrison@state.or.us
 userPassword: Adorns4;Nevada
 
 dn: cn=Jim Stenehjem,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1715,6 +1883,7 @@ cn: Jim Stenehjem
 sn: Stenehjem
 givenName: Jim
 uid: jim.stenehjem
+mail: jim.stenehjem@ndlead.org
 userPassword: 2Depart%Drips
 
 dn: cn=Fred Wolff,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1724,15 +1893,17 @@ cn: Fred Wolff
 sn: Wolff
 givenName: Fred
 uid: f.wolff
+mail: f.wolff@comcast.net
 userPassword: RibaldTape4~
 
-dn: cn= Ben Cannon,ou=people,ou=environment,dc=edwdc,dc=net
+dn: cn=Ben Cannon,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
-cn:  Ben Cannon
+cn: Ben Cannon
 sn: Cannon
-givenName: 
+givenName: Ben
 uid: ben.cannon
+mail: ben.cannon@state.or.us
 userPassword: Soybean$5Voicer
 
 dn: cn=Paul Zastrow,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1742,6 +1913,7 @@ cn: Paul Zastrow
 sn: Zastrow
 givenName: Paul
 uid: pzastrow
+mail: pzastrow@gorge.net
 userPassword: 3>TacticsShaded
 
 dn: cn=Laura Thompson,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1751,15 +1923,17 @@ cn: Laura Thompson
 sn: Thompson
 givenName: Laura
 uid: laura.thompson
+mail: laura.thompson@redclay.k12.de.us
 userPassword: Pipette\Concern3
 
-dn: cn= Bruce Schafer ,ou=people,ou=environment,dc=edwdc,dc=net
+dn: cn=Bruce Schafer,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
-cn:  Bruce Schafer 
+cn: Bruce Schafer
 sn: Schafer
-givenName: 
+givenName: Bruce
 uid: Bruce_schafer
+mail: Bruce_schafer@ous.edu
 userPassword: 4Jove\Eagle
 
 dn: cn=Mike Halligan,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1769,6 +1943,7 @@ cn: Mike Halligan
 sn: Halligan
 givenName: Mike
 uid: MHalligan
+mail: MHalligan@washcorp.com
 userPassword: $LevelsUncouth7
 
 dn: cn=Sharon Carroll,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1778,6 +1953,7 @@ cn: Sharon Carroll
 sn: Carroll
 givenName: Sharon
 uid: scarroll
+mail: scarroll@midrivers.com
 userPassword: Schafer3Attach+
 
 dn: cn=Susan Bonilla,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1787,6 +1963,7 @@ cn: Susan Bonilla
 sn: Bonilla
 givenName: Susan
 uid: Robert.Boykin
+mail: Robert.Boykin@asm.ca.gov
 userPassword: Glitch6Archive/
 
 dn: cn=Angela McLean,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1796,6 +1973,7 @@ cn: Angela McLean
 sn: McLean
 givenName: Angela
 uid: amclean
+mail: amclean@montana.edu
 userPassword: >AllahRusts6
 
 dn: cn=David LaGrand,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1805,15 +1983,17 @@ cn: David LaGrand
 sn: LaGrand
 givenName: David
 uid: davidlagrand
+mail: davidlagrand@hotmail.com
 userPassword: Wear4<Lotion
 
 dn: cn=Steven M. Pound,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Steven M. Pound
-sn: Pound
+sn: M. Pound
 givenName: Steven
 uid: SPOUND
+mail: SPOUND@cianbro.com
 userPassword: Traced9Renamed#
 
 dn: cn=David Rattray,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1823,6 +2003,7 @@ cn: David Rattray
 sn: Rattray
 givenName: David
 uid: drattray
+mail: drattray@aol.com
 userPassword: 8%KludgesNone
 
 dn: cn=Laura Rich,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1832,6 +2013,7 @@ cn: Laura Rich
 sn: Rich
 givenName: Laura
 uid: linkmarkr
+mail: linkmarkr@mac.com
 userPassword: Bingo_1Fable
 
 cn=General Public,ou=groups,ou=environment,dc=edwdc,dc=net
@@ -1871,27 +2053,30 @@ dn: cn=Dr. Jennie Rakestraw,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Dr. Jennie Rakestraw
-sn: Rakestraw
+sn: Jennie Rakestraw
 givenName: Dr.
 uid: rakestrawj
+mail: rakestrawj@winthrop.edu
 userPassword: ClamberShaves:7
 
 dn: cn=Dr. Matthew Nelson,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Dr. Matthew Nelson
-sn: Nelson
+sn: Matthew Nelson
 givenName: Dr.
 uid: MNelson
+mail: MNelson@fmarion.edu
 userPassword: Hidden3<Fray
 
 dn: cn=Dr. Calvin Williams,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Dr. Calvin Williams
-sn: Williams
+sn: Calvin Williams
 givenName: Dr.
 uid: calvinw
+mail: calvinw@clemson.edu
 userPassword: CartFreeman!6
 
 dn: cn=Monique Chyba,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1901,15 +2086,17 @@ cn: Monique Chyba
 sn: Chyba
 givenName: Monique
 uid: mchyba
+mail: mchyba@math.hawaii.edu
 userPassword: #MaltonArched7
 
 dn: cn=Virgina Mix Adatto,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Virgina Mix Adatto
-sn: Adatto
+sn: Mix Adatto
 givenName: Virgina
 uid: virgina.mix
+mail: virgina.mix@yahoo.com
 userPassword: >PathPartook6
 
 dn: cn=Carol Vukelick,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1919,6 +2106,7 @@ cn: Carol Vukelick
 sn: Vukelick
 givenName: Carol
 uid: Vukelick
+mail: Vukelick@udel.edu
 userPassword: Melinda7Lawson/
 
 dn: cn=Carolina Cardenas,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1928,6 +2116,7 @@ cn: Carolina Cardenas
 sn: Cardenas
 givenName: Carolina
 uid: ccardenas
+mail: ccardenas@calstate.edu 
 userPassword: Possums<2Reptile
 
 dn: cn=Caroline Naguwa,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1937,6 +2126,7 @@ cn: Caroline Naguwa
 sn: Naguwa
 givenName: Caroline
 uid: cnaguwa
+mail: cnaguwa@hawaii.edu
 userPassword: !5MadmenSleep
 
 dn: cn=Donald Young,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1946,6 +2136,7 @@ cn: Donald Young
 sn: Young
 givenName: Donald
 uid: young
+mail: young@hawaii.edu
 userPassword: 9\TuftsUsage
 
 dn: cn=Karla Hayashi,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1955,6 +2146,7 @@ cn: Karla Hayashi
 sn: Hayashi
 givenName: Karla
 uid: karlah
+mail: karlah@hawaii.edu
 userPassword: -6DamsMips
 
 dn: cn=Eileen Hocking,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1964,6 +2156,7 @@ cn: Eileen Hocking
 sn: Hocking
 givenName: Eileen
 uid: ehocking
+mail: ehocking@usj.edu
 userPassword: 8Leger\Inhales
 
 dn: cn=Marsha Hirano-Nakanishi,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1973,6 +2166,7 @@ cn: Marsha Hirano-Nakanishi
 sn: Hirano-Nakanishi
 givenName: Marsha
 uid: mhirano-nakanishi
+mail: mhirano-nakanishi@calstate.edu 
 userPassword: &SpartaSchwab7
 
 dn: cn=Bruce Clemetsen,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1982,6 +2176,7 @@ cn: Bruce Clemetsen
 sn: Clemetsen
 givenName: Bruce
 uid: clemetb
+mail: clemetb@linnbenton.edu
 userPassword: !FanfoldEisner6
 
 dn: cn=Yuhang Rong,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1991,6 +2186,7 @@ cn: Yuhang Rong
 sn: Rong
 givenName: Yuhang
 uid: yuhang.rong
+mail: yuhang.rong@uconn.edu
 userPassword: 8IcarusCommute?
 
 dn: cn=Katy Heyning,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2000,6 +2196,7 @@ cn: Katy Heyning
 sn: Heyning
 givenName: Katy
 uid: heyning
+mail: heyning@uww.edu
 userPassword: 3Gunny;Used
 
 dn: cn=Karen McLeer,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2009,6 +2206,7 @@ cn: Karen McLeer
 sn: McLeer
 givenName: Karen
 uid: karen.mcleer
+mail: karen.mcleer@uwc.edu
 userPassword: :Inverts5Fact
 
 dn: cn=Nilvio Perez,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2018,6 +2216,7 @@ cn: Nilvio Perez
 sn: Perez
 givenName: Nilvio
 uid: nperez
+mail: nperez@albertus.edu 
 userPassword: 7!CarraraOrigins
 
 dn: cn=Denise Trakas,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2027,15 +2226,17 @@ cn: Denise Trakas
 sn: Trakas
 givenName: Denise
 uid: dtrakas
+mail: dtrakas@washoeschools.net
 userPassword: Dazzle4Vinson%
 
-dn: cn=Dr. Tom Dick ,ou=people,ou=environment,dc=edwdc,dc=net
+dn: cn=Dr. Tom Dick,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
-cn: Dr. Tom Dick 
-sn: Dick
+cn: Dr. Tom Dick
+sn: Tom Dick
 givenName: Dr.
 uid: tpdick
+mail: tpdick@science.oregonstate.edu
 userPassword: 6Bras~Moral
 
 dn: cn=Jill Shafer,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2045,6 +2246,7 @@ cn: Jill Shafer
 sn: Shafer
 givenName: Jill
 uid: Jill.shafer
+mail: Jill.shafer@email.und.edu
 userPassword: $5WilliesFlurry
 
 dn: cn=Kevin McLeod,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2054,6 +2256,7 @@ cn: Kevin McLeod
 sn: McLeod
 givenName: Kevin
 uid: kevinm
+mail: kevinm@uwm.edu
 userPassword: 9NotionPaddle-
 
 dn: cn=Diane Nielsen,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2063,6 +2266,7 @@ cn: Diane Nielsen
 sn: Nielsen
 givenName: Diane
 uid: dnielsen
+mail: dnielsen@ku.edu
 userPassword: AqueousFace_8
 
 dn: cn=Nancy Brynelson,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2072,6 +2276,7 @@ cn: Nancy Brynelson
 sn: Brynelson
 givenName: Nancy
 uid: nbrynelson
+mail: nbrynelson@calstate.edu 
 userPassword: 6>SpeederArgot
 
 dn: cn=Teresa Tande,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2081,6 +2286,7 @@ cn: Teresa Tande
 sn: Tande
 givenName: Teresa
 uid: teresa.tande
+mail: teresa.tande@lrsc.edu
 userPassword: 1Nikko=Mentor
 
 dn: cn=John Pelesko,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2090,6 +2296,7 @@ cn: John Pelesko
 sn: Pelesko
 givenName: John
 uid: Pelesko
+mail: Pelesko@udel.edu 
 userPassword: 9?HoneyRowe
 
 dn: cn=Adam Goldberg,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2099,6 +2306,7 @@ cn: Adam Goldberg
 sn: Goldberg
 givenName: Adam
 uid: Goldberga2
+mail: Goldberga2@southernct.edu
 userPassword: Stage7\Delves
 
 dn: cn=Nicol Reiner,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2108,6 +2316,7 @@ cn: Nicol Reiner
 sn: Reiner
 givenName: Nicol
 uid: nicol.reiner
+mail: nicol.reiner@k12.sd.us
 userPassword: Well$Bergman2
 
 dn: cn=Lisa Reynolds,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2117,6 +2326,7 @@ cn: Lisa Reynolds
 sn: Reynolds
 givenName: Lisa
 uid: Lisa.Reynolds
+mail: Lisa.Reynolds@state.or.us
 userPassword: 2Tiny%Zodiac
 
 dn: cn=Bill Martin,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2126,6 +2336,7 @@ cn: Bill Martin
 sn: Martin
 givenName: Bill
 uid: william.martin
+mail: william.martin@ndsu.edu
 userPassword: Hence1Coped#
 
 dn: cn=Scott Smith,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2135,6 +2346,7 @@ cn: Scott Smith
 sn: Smith
 givenName: Scott
 uid: ssmith2
+mail: ssmith2@eou.edu
 userPassword: $FoolsBlank3
 
 dn: cn=Carol Bell,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2144,6 +2356,7 @@ cn: Carol Bell
 sn: Bell
 givenName: Carol
 uid: cbell
+mail: cbell@nmu.edu
 userPassword: Foggily5Saloon\
 
 dn: cn=Susan Piazza,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2153,6 +2366,7 @@ cn: Susan Piazza
 sn: Piazza
 givenName: Susan
 uid: susan.piazza
+mail: susan.piazza@wmich.edu
 userPassword: 1Volley&Robotic
 
 dn: cn=Tim Boerst,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2162,6 +2376,7 @@ cn: Tim Boerst
 sn: Boerst
 givenName: Tim
 uid: tboerst
+mail: tboerst@umich.edu
 userPassword: 6%DutyDraws
 
 dn: cn=Betsy MacLeod,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2171,15 +2386,17 @@ cn: Betsy MacLeod
 sn: MacLeod
 givenName: Betsy
 uid: vandea
+mail: vandea@cmich.edu
 userPassword: Swift9>Dueling
 
 dn: cn=Dr. Richard Dale,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Dr. Richard Dale
-sn: Dale
+sn: Richard Dale
 givenName: Dr.
 uid: richard.dale1
+mail: richard.dale1@maine.edu
 userPassword: Pupa6Avenges>
 
 dn: cn=David Silvernail,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2189,6 +2406,7 @@ cn: David Silvernail
 sn: Silvernail
 givenName: David
 uid: davids
+mail: davids@usm.maine.edu
 userPassword: ~HanleyWarlike3
 
 dn: cn=Kate Brayko,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2198,6 +2416,7 @@ cn: Kate Brayko
 sn: Brayko
 givenName: Kate
 uid: Kate.Brayko
+mail: Kate.Brayko@mso.umt.edu
 userPassword: Merest2!Fowler
 
 dn: cn=Jack Smith,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2207,6 +2426,7 @@ cn: Jack Smith
 sn: Smith
 givenName: Jack
 uid: jsmith
+mail: jsmith@msu.edu
 userPassword: Blacks6=Alkalis
 
 dn: cn=Karin Jannsen,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2216,15 +2436,17 @@ cn: Karin Jannsen
 sn: Jannsen
 givenName: Karin
 uid: kjanssen
+mail: kjanssen@montana.edu
 userPassword: Nature:Star5
 
 dn: cn=Dr. Lemuel Watson,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Dr. Lemuel Watson
-sn: Watson
+sn: Lemuel Watson
 givenName: Dr.
 uid: WATSONLW
+mail: WATSONLW@mailbox.sc.edu
 userPassword: ~Probed4Defend
 
 cn=Higher Education,ou=groups,ou=environment,dc=edwdc,dc=net
@@ -2279,6 +2501,7 @@ cn: Pete Halliday
 sn: Halliday
 givenName: Pete
 uid: phallida
+mail: phallida@ford.com
 userPassword: <OratoryInroad5
 
 dn: cn=Julie Guaspari,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2288,15 +2511,17 @@ cn: Julie Guaspari
 sn: Guaspari
 givenName: Julie
 uid: julieguaspari
+mail: julieguaspari@comcast.net
 userPassword: StoningTwist\3
 
 dn: cn=Indiana Reyna Rivera,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Indiana Reyna Rivera
-sn: Rivera
+sn: Reyna Rivera
 givenName: Indiana
 uid: indianarrivera
+mail: indianarrivera@gmail.com
 userPassword: Apogee=4Vacate
 
 dn: cn=Debra Adler,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2306,6 +2531,7 @@ cn: Debra Adler
 sn: Adler
 givenName: Debra
 uid: debraadler
+mail: debraadler@comcast.net 
 userPassword: Strip-3Looted
 
 dn: cn=Raymond Radikas,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2315,6 +2541,7 @@ cn: Raymond Radikas
 sn: Radikas
 givenName: Raymond
 uid: Raymond.radikas
+mail: Raymond.radikas@lfg.com
 userPassword: LubbockRecite9;
 
 dn: cn=Dale Steichen,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2324,6 +2551,7 @@ cn: Dale Steichen
 sn: Steichen
 givenName: Dale
 uid: Dale.steichen
+mail: Dale.steichen@akzonobel.com
 userPassword: 9\FluidBangle
 
 dn: cn=Ken Chichester,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2333,6 +2561,7 @@ cn: Ken Chichester
 sn: Chichester
 givenName: Ken
 uid: Kchichester
+mail: Kchichester@nwr7.org
 userPassword: Orbits8Lechery$
 
 dn: cn=Wendy Turner,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2342,6 +2571,7 @@ cn: Wendy Turner
 sn: Turner
 givenName: Wendy
 uid: wendy.turner
+mail: wendy.turner@bsd.k12.de.us
 userPassword: FlintVividly2?
 
 dn: cn=Nancy Brickhouse,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2351,6 +2581,7 @@ cn: Nancy Brickhouse
 sn: Brickhouse
 givenName: Nancy
 uid: nbrick
+mail: nbrick@udel.edu
 userPassword: Pate!9Litters
 
 dn: cn=Lois Yamauchi,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2360,6 +2591,7 @@ cn: Lois Yamauchi
 sn: Yamauchi
 givenName: Lois
 uid: yamauchi
+mail: yamauchi@hawaii.edu
 userPassword: \Hobbes2Morley
 
 dn: cn=Carmen Westover,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2369,6 +2601,7 @@ cn: Carmen Westover
 sn: Westover
 givenName: Carmen
 uid: westoverbr
+mail: westoverbr@yahoo.com
 userPassword: Shopper_3Spells
 
 dn: cn=Stacey Ray,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2378,6 +2611,7 @@ cn: Stacey Ray
 sn: Ray
 givenName: Stacey
 uid: boiserays
+mail: boiserays@hotmail.com
 userPassword: TobySingle9<
 
 dn: cn=Angela Spear,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2387,6 +2621,7 @@ cn: Angela Spear
 sn: Spear
 givenName: Angela
 uid: ryang
+mail: ryang@westelfiber.com
 userPassword: UncannyRefer3$
 
 dn: cn=Leanne Davis,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2396,6 +2631,7 @@ cn: Leanne Davis
 sn: Davis
 givenName: Leanne
 uid: ddavis1057
+mail: ddavis1057@aol.com
 userPassword: MacedInfant\5
 
 dn: cn=Tonya Belgum,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2405,15 +2641,17 @@ cn: Tonya Belgum
 sn: Belgum
 givenName: Tonya
 uid: belgum
+mail: belgum@live.com
 userPassword: 2CeasesFurman_
 
-dn: cn=Tobi Fuller ,ou=people,ou=environment,dc=edwdc,dc=net
+dn: cn=Tobi Fuller,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
-cn: Tobi Fuller 
-sn: 
+cn: Tobi Fuller
+sn: Fuller
 givenName: Tobi
 uid: tfuller
+mail: tfuller@everestkc.net
 userPassword: ?AnimatePackers8
 
 dn: cn=Ginny Mott,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2423,6 +2661,7 @@ cn: Ginny Mott
 sn: Mott
 givenName: Ginny
 uid: vmott
+mail: vmott@almanacmtn.us
 userPassword: Taxiing5Drafts&
 
 dn: cn=Lance Gilman,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2432,6 +2671,7 @@ cn: Lance Gilman
 sn: Gilman
 givenName: Lance
 uid: lance.gilman
+mail: lance.gilman@maine.gov
 userPassword: Grocery6Arisen_
 
 dn: cn=David Connerty-Marin,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2441,6 +2681,7 @@ cn: David Connerty-Marin
 sn: Connerty-Marin
 givenName: David
 uid: david.connerty-marin
+mail: david.connerty-marin@maine.gov
 userPassword: :LesothoCrudely4
 
 dn: cn=Arika Ford,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2450,24 +2691,27 @@ cn: Arika Ford
 sn: Ford
 givenName: Arika
 uid: arikaf333
+mail: arikaf333@aol.com
 userPassword: Latrobe+9Tiers
 
 dn: cn=Kim and Jon Waalkes,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Kim and Jon Waalkes
-sn: Jon
+sn: and Jon Waalkes
 givenName: Kim
 uid: Kim_Waalkes
+mail: Kim_Waalkes@yahoo.com
 userPassword: Recipe1Billing<
 
 dn: cn=Andrea N. Jackson,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Andrea N. Jackson
-sn: Jackson
+sn: N. Jackson
 givenName: Andrea
 uid: andreaviger
+mail: andreaviger@yahoo.com
 userPassword: ;ArmourWeasels2
 
 dn: cn=Sue Laughlin,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2477,6 +2721,7 @@ cn: Sue Laughlin
 sn: Laughlin
 givenName: Sue
 uid: slaughlin
+mail: slaughlin@m-m.net
 userPassword: Primes9_Sloths
 
 dn: cn=Dee Hensley-McLean,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2486,6 +2731,7 @@ cn: Dee Hensley-McLean
 sn: Hensley-McLean
 givenName: Dee
 uid:  macleand
+mail:  macleand@netzero.net
 userPassword: Alton7;Sliced
 
 dn: cn=Mike Graham,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2495,6 +2741,7 @@ cn: Mike Graham
 sn: Graham
 givenName: Mike
 uid: mike_graham
+mail: mike_graham@ncsu.edu
 userPassword: 2Pervert+Frugal
 
 dn: cn=Cathy Haarstad,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2504,6 +2751,7 @@ cn: Cathy Haarstad
 sn: Haarstad
 givenName: Cathy
 uid: ptidirector
+mail: ptidirector@srt.com
 userPassword: PigsUrban3-
 
 dn: cn=Nicole Duncan,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2513,6 +2761,7 @@ cn: Nicole Duncan
 sn: Duncan
 givenName: Nicole
 uid: nduncan
+mail: nduncan@albany.k12.or.us
 userPassword: What5\Jars
 
 dn: cn=Kelli Ngariki,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2522,6 +2771,7 @@ cn: Kelli Ngariki
 sn: Ngariki
 givenName: Kelli
 uid: kelli_strand
+mail: kelli_strand@yahoo.com
 userPassword: WigwamRawly_6
 
 dn: cn=Maureen Daschel,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2531,6 +2781,7 @@ cn: Maureen Daschel
 sn: Daschel
 givenName: Maureen
 uid: maureen.daschel
+mail: maureen.daschel@stmaryspdx.org
 userPassword: %4CrouchSires
 
 dn: cn=megan dowling,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2540,6 +2791,7 @@ cn: megan dowling
 sn: dowling
 givenName: megan
 uid: megan.dowling
+mail: megan.dowling@k12.sd.us
 userPassword: 3MaritalAwait_
 
 dn: cn=Sharla Steever,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2549,6 +2801,7 @@ cn: Sharla Steever
 sn: Steever
 givenName: Sharla
 uid: ssteever
+mail: ssteever@tie.net
 userPassword: $MusksPortent7
 
 dn: cn=Carolee Little,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2558,6 +2811,7 @@ cn: Carolee Little
 sn: Little
 givenName: Carolee
 uid: clittle
+mail: clittle@Sdparent.org
 userPassword: Beeps1Timid/
 
 dn: cn=Diane Rosado,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2567,6 +2821,7 @@ cn: Diane Rosado
 sn: Rosado
 givenName: Diane
 uid: rosadadx
+mail: rosadadx@milwaukee.k12.wi.us
 userPassword: Amend5Title-
 
 cn=Parent,ou=groups,ou=environment,dc=edwdc,dc=net
@@ -2614,6 +2869,7 @@ cn: Kim Eimers
 sn: Eimers
 givenName: Kim
 uid: keimers
+mail: keimers@nsd131.org
 userPassword: 5Soddy/Rowland
 
 dn: cn=Jackie Thomason,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2623,6 +2879,7 @@ cn: Jackie Thomason
 sn: Thomason
 givenName: Jackie
 uid: thomason.jackie
+mail: thomason.jackie@meridianschools.org
 userPassword: Singing%Mathieu1
 
 dn: cn=Kathy Luras,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2632,6 +2889,7 @@ cn: Kathy Luras
 sn: Luras
 givenName: Kathy
 uid: luraska
+mail: luraska@sd25.us
 userPassword: ShapeHelen\9
 
 dn: cn=Carrie Perkis,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2641,6 +2899,7 @@ cn: Carrie Perkis
 sn: Perkis
 givenName: Carrie
 uid: carrie.perkis
+mail: carrie.perkis@dpi.nc.gov
 userPassword: #AbackStirred8
 
 dn: cn=Cynthia Green,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2650,6 +2909,7 @@ cn: Cynthia Green
 sn: Green
 givenName: Cynthia
 uid: cgreen
+mail: cgreen@mt.gov
 userPassword: Rude7Mildly_
 
 dn: cn=Jean Howard,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2659,6 +2919,7 @@ cn: Jean Howard
 sn: Howard
 givenName: Jean
 uid: jhoward
+mail: jhoward@mt.gov
 userPassword: ;9CaredSolver
 
 dn: cn=Dan Auman,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2668,6 +2929,7 @@ cn: Dan Auman
 sn: Auman
 givenName: Dan
 uid: dan.auman
+mail: dan.auman@dpi.nc.gov
 userPassword: ;6AloudHooks
 
 dn: cn=Michael Gallagher,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2677,6 +2939,7 @@ cn: Michael Gallagher
 sn: Gallagher
 givenName: Michael
 uid: michael.gallagher
+mail: michael.gallagher@dpi.nc.gov
 userPassword: 1VictimCloud/
 
 dn: cn=Yvonne Field,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2686,6 +2949,7 @@ cn: Yvonne Field
 sn: Field
 givenName: Yvonne
 uid: yfield
+mail: yfield@mt.gov
 userPassword: #Asocial9Girders
 
 dn: cn=Amy Friez,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2695,6 +2959,7 @@ cn: Amy Friez
 sn: Friez
 givenName: Amy
 uid: afriez
+mail: afriez@mt.gov
 userPassword: 7^PayingMarino
 
 dn: cn=Audrey Lesdondak,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2704,6 +2969,7 @@ cn: Audrey Lesdondak
 sn: Lesdondak
 givenName: Audrey
 uid: audrey.lesondak
+mail: audrey.lesondak@dpi.wi.gov
 userPassword: /4TissueVats
 
 dn: cn=Erin Faasuamalie,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2713,6 +2979,7 @@ cn: Erin Faasuamalie
 sn: Faasuamalie
 givenName: Erin
 uid: erin.faasuamalie
+mail: erin.faasuamalie@dpi.wi.gov
 userPassword: \AtwaterDelhi8
 
 dn: cn=Jim Kroening,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2722,6 +2989,7 @@ cn: Jim Kroening
 sn: Kroening
 givenName: Jim
 uid: jim.kroening
+mail: jim.kroening@dpi.nc.gov
 userPassword: BanallyReuben^8
 
 dn: cn=Dixie Abbott,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2731,6 +2999,7 @@ cn: Dixie Abbott
 sn: Abbott
 givenName: Dixie
 uid: dabbott
+mail: dabbott@cde.ca.gov 
 userPassword: 3&UsuallyWindsor
 
 dn: cn=Gayle DeJong,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2740,6 +3009,7 @@ cn: Gayle DeJong
 sn: DeJong
 givenName: Gayle
 uid: DeJongJ
+mail: DeJongJ@michigan.gov
 userPassword: SidingsRetrain8=
 
 dn: cn=Linda Howley,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2749,6 +3019,7 @@ cn: Linda Howley
 sn: Howley
 givenName: Linda
 uid: HowleyL
+mail: HowleyL@michigan.gov
 userPassword: 4:SitingShimmer
 
 dn: cn=Jennifer Paul,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2758,6 +3029,7 @@ cn: Jennifer Paul
 sn: Paul
 givenName: Jennifer
 uid: PaulJ
+mail: PaulJ@michigan.gov
 userPassword: 5DoorCyanide\
 
 dn: cn=Kerri Whipple,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2767,6 +3039,7 @@ cn: Kerri Whipple
 sn: Whipple
 givenName: Kerri
 uid: kwhipple
+mail: kwhipple@nd.gov
 userPassword: #Suns3Befouls
 
 dn: cn=Pam Aman,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2776,6 +3049,7 @@ cn: Pam Aman
 sn: Aman
 givenName: Pam
 uid: pamela.m.aman
+mail: pamela.m.aman@sendit.nodak.edu
 userPassword: 3\AileronCeiling
 
 dn: cn=Laura Mastel,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2785,6 +3059,7 @@ cn: Laura Mastel
 sn: Mastel
 givenName: Laura
 uid: laura_mastel
+mail: laura_mastel@bismarckschools.org
 userPassword: %5GeckoQuonset
 
 dn: cn=Wendy Gould,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2794,6 +3069,7 @@ cn: Wendy Gould
 sn: Gould
 givenName: Wendy
 uid: gouldw1949
+mail: gouldw1949@gmail.com
 userPassword: Pests2Role/
 
 dn: cn=Kyle Ward,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2803,6 +3079,7 @@ cn: Kyle Ward
 sn: Ward
 givenName: Kyle
 uid: WardK2
+mail: WardK2@michigan.gov
 userPassword: DeafDurward:8
 
 dn: cn=Veena Nambiar,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2812,6 +3089,7 @@ cn: Veena Nambiar
 sn: Nambiar
 givenName: Veena
 uid: vnambiar
+mail: vnambiar@cde.ca.gov
 userPassword: 6Nested$Harvest
 
 dn: cn=Cynthia Gunderson,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2821,6 +3099,7 @@ cn: Cynthia Gunderson
 sn: Gunderson
 givenName: Cynthia
 uid: cgunderson
+mail: cgunderson@cde.ca.gov
 userPassword: :1FarmersBeret
 
 dn: cn=Elena Fajardo,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2830,6 +3109,7 @@ cn: Elena Fajardo
 sn: Fajardo
 givenName: Elena
 uid: efajardo
+mail: efajardo@cde.ca.gov 
 userPassword: MacdrawJesting9;
 
 dn: cn=Kristen Brown,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2839,6 +3119,7 @@ cn: Kristen Brown
 sn: Brown
 givenName: Kristen
 uid: kbrown
+mail: kbrown@cde.ca.gov
 userPassword: Howell/7Victor
 
 dn: cn=Jessica Barr,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2848,6 +3129,7 @@ cn: Jessica Barr
 sn: Barr
 givenName: Jessica
 uid: jbarr
+mail: jbarr@cde.ca.gov 
 userPassword: Fakes8\Filing
 
 dn: cn=Gail Pagano,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2857,6 +3139,7 @@ cn: Gail Pagano
 sn: Pagano
 givenName: Gail
 uid: Gail.pagano
+mail: Gail.pagano@ct.gov
 userPassword: #Spore6Elinor
 
 dn: cn=Deirdre Ducharme,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2866,6 +3149,7 @@ cn: Deirdre Ducharme
 sn: Ducharme
 givenName: Deirdre
 uid: deirdre.ducharme
+mail: deirdre.ducharme@ct.gov
 userPassword: Cochran~7Fairy
 
 dn: cn=Viji Somasundarm,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2875,6 +3159,7 @@ cn: Viji Somasundarm
 sn: Somasundarm
 givenName: Viji
 uid: visalakshi.somasundaram
+mail: visalakshi.somasundaram@dpi.wi.gov
 userPassword: _Faucet2Oddly
 
 dn: cn=Janet Stuck,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2884,6 +3169,7 @@ cn: Janet Stuck
 sn: Stuck
 givenName: Janet
 uid: Janet.stuck
+mail: Janet.stuck@ct.gov
 userPassword: Sainted>Opulent3
 
 dn: cn=Joe Amenta,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2893,6 +3179,7 @@ cn: Joe Amenta
 sn: Amenta
 givenName: Joe
 uid: Joseph.amenta
+mail: Joseph.amenta@ct.gov
 userPassword: HangarDiagram1\
 
 dn: cn=Megan. Alubicki,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2902,6 +3189,7 @@ cn: Megan. Alubicki
 sn: Alubicki
 givenName: Megan.
 uid: Megan.Alubicki
+mail: Megan.Alubicki@ct.gov
 userPassword: Basting\7Aorta
 
 dn: cn=Linda Turner,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2911,6 +3199,7 @@ cn: Linda Turner
 sn: Turner
 givenName: Linda
 uid: linda.turner
+mail: linda.turner@state.sd.us
 userPassword: ?8BlabbedExpose
 
 dn: cn=Shannon Malone,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2920,6 +3209,7 @@ cn: Shannon Malone
 sn: Malone
 givenName: Shannon
 uid: shannon.malone
+mail: shannon.malone@state.sd.us
 userPassword: /RerunBathers2
 
 dn: cn=Marta Stirling,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2929,6 +3219,7 @@ cn: Marta Stirling
 sn: Stirling
 givenName: Marta
 uid: marta.Stirling
+mail: marta.Stirling@state.sd.us
 userPassword: Jabs=Dented9
 
 dn: cn=William Kliche,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2938,6 +3229,7 @@ cn: William Kliche
 sn: Kliche
 givenName: William
 uid: william.kliche
+mail: william.kliche@state.sd.us
 userPassword: SoarsPears=4
 
 dn: cn=Katia Foret,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2947,6 +3239,7 @@ cn: Katia Foret
 sn: Foret
 givenName: Katia
 uid: kforet
+mail: kforet@doe.k12.de.us
 userPassword: 5$RatifyGermane
 
 dn: cn=Terry Richards,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2956,6 +3249,7 @@ cn: Terry Richards
 sn: Richards
 givenName: Terry
 uid: trichard
+mail: trichard@doe.k12.de.us 
 userPassword: \Conakry8Polk
 
 dn: cn=Brian Touchette,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2965,6 +3259,7 @@ cn: Brian Touchette
 sn: Touchette
 givenName: Brian
 uid: btouchette
+mail: btouchette@doe.k12.de.us
 userPassword: 2Inkling\Show
 
 dn: cn=Patricia Reiss,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2974,6 +3269,7 @@ cn: Patricia Reiss
 sn: Reiss
 givenName: Patricia
 uid: patricia_reiss
+mail: patricia_reiss@notes.k12.hi.us
 userPassword: BlissRena5~
 
 dn: cn=Patricia Ishimaru,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2983,6 +3279,7 @@ cn: Patricia Ishimaru
 sn: Ishimaru
 givenName: Patricia
 uid: patricia_ishimaru
+mail: patricia_ishimaru@notes.k12.hi.us
 userPassword: 9BullingAgility_
 
 dn: cn=Carol Anton,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2992,6 +3289,7 @@ cn: Carol Anton
 sn: Anton
 givenName: Carol
 uid: carol_anton
+mail: carol_anton@notes.k12.hi.us
 userPassword: Larry?4Deity
 
 dn: cn=Maxine Nagamine,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3001,6 +3299,7 @@ cn: Maxine Nagamine
 sn: Nagamine
 givenName: Maxine
 uid: maxine_nagamine
+mail: maxine_nagamine@notes.k12.hi.us
 userPassword: 7?TomatoFresnel
 
 dn: cn=Brian Reiter,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3010,6 +3309,7 @@ cn: Brian Reiter
 sn: Reiter
 givenName: Brian
 uid: brian_reiter
+mail: brian_reiter@notes.k12.hi.us
 userPassword: <Nips3Circus
 
 dn: cn=Cindy Johnstone,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3019,6 +3319,7 @@ cn: Cindy Johnstone
 sn: Johnstone
 givenName: Cindy
 uid: cindy.johnstone
+mail: cindy.johnstone@vallivue.org
 userPassword: #Shouter2Bedded
 
 dn: cn=Laura Petschauer,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3028,6 +3329,7 @@ cn: Laura Petschauer
 sn: Petschauer
 givenName: Laura
 uid: laura.petschauer
+mail: laura.petschauer@state.or.us
 userPassword: ProvostPoets4~
 
 dn: cn=Michelle McCoy,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3037,6 +3339,7 @@ cn: Michelle McCoy
 sn: McCoy
 givenName: Michelle
 uid: Michelle.McCoy
+mail: Michelle.McCoy@state.or.us
 userPassword: ~AssailsStevens2
 
 dn: cn=Susan Fossett,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3046,6 +3349,7 @@ cn: Susan Fossett
 sn: Fossett
 givenName: Susan
 uid: susan.fossett
+mail: susan.fossett@maine.gov
 userPassword: ?4GiversEscorts
 
 dn: cn=Janice Breton,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3055,6 +3359,7 @@ cn: Janice Breton
 sn: Breton
 givenName: Janice
 uid: janice.breton
+mail: janice.breton@maine.gov
 userPassword: #Marty1Permian
 
 dn: cn=Nancy Mullins,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3064,6 +3369,7 @@ cn: Nancy Mullins
 sn: Mullins
 givenName: Nancy
 uid: nancy.mullins
+mail: nancy.mullins@maine.gov
 userPassword: Butters8#Joking
 
 dn: cn=Patsy Dunton,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3073,6 +3379,7 @@ cn: Patsy Dunton
 sn: Dunton
 givenName: Patsy
 uid: patsy.dunton
+mail: patsy.dunton@maine.gov
 userPassword: 1TouchesCoached$
 
 dn: cn=Michele Mailhot,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3082,6 +3389,7 @@ cn: Michele Mailhot
 sn: Mailhot
 givenName: Michele
 uid: michele.mailhot
+mail: michele.mailhot@maine.gov
 userPassword: ErsatzAimers_3
 
 dn: cn=Ken Hermens,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3091,6 +3399,7 @@ cn: Ken Hermens
 sn: Hermens
 givenName: Ken
 uid: ken.hermens
+mail: ken.hermens@state.or.us
 userPassword: 5-BasteCount
 
 dn: cn=Rachel Aazzerah,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3100,6 +3409,7 @@ cn: Rachel Aazzerah
 sn: Aazzerah
 givenName: Rachel
 uid: rachel.aazzerah
+mail: rachel.aazzerah@state.or.us
 userPassword: 7!CrewcutForbade
 
 dn: cn=Jodi Mills,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3109,6 +3419,7 @@ cn: Jodi Mills
 sn: Mills
 givenName: Jodi
 uid: jmills
+mail: jmills@caldwellschools.org
 userPassword: 2Haggard#Piece
 
 dn: cn=Dave Brancamp,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3118,6 +3429,7 @@ cn: Dave Brancamp
 sn: Brancamp
 givenName: Dave
 uid: dbrancamp
+mail: dbrancamp@washoeschools.net
 userPassword: +3CaliphMorn
 
 dn: cn=Bruce Cook,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3127,6 +3439,7 @@ cn: Bruce Cook
 sn: Cook
 givenName: Bruce
 uid: cookb
+mail: cookb@msd321.com
 userPassword: 9Kern<Willcox
 
 cn=State Administrator,ou=groups,ou=environment,dc=edwdc,dc=net
@@ -3199,6 +3512,7 @@ cn: Joshua Raynor
 sn: Raynor
 givenName: Joshua
 uid: warren.raynor
+mail: warren.raynor@gmail.com
 userPassword: 7#StrokeCushion
 
 dn: cn=Hannah Harden,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3208,6 +3522,7 @@ cn: Hannah Harden
 sn: Harden
 givenName: Hannah
 uid: hannahharden13
+mail: hannahharden13@yahoo.com
 userPassword: 4~FarrellUntie
 
 dn: cn=Caitlyn Viger,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3217,6 +3532,7 @@ cn: Caitlyn Viger
 sn: Viger
 givenName: Caitlyn
 uid: caitlynviger
+mail: caitlynviger@yahoo.com 
 userPassword: #1GladlyMosses
 
 dn: cn=Jenna Jarolminek,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3226,6 +3542,7 @@ cn: Jenna Jarolminek
 sn: Jarolminek
 givenName: Jenna
 uid: jjrlmk
+mail: jjrlmk@gmail.com
 userPassword: Skewing3^Files
 
 dn: cn=Benjamin Barnes,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3235,6 +3552,7 @@ cn: Benjamin Barnes
 sn: Barnes
 givenName: Benjamin
 uid: bj
+mail: bj@brainsandwich.com
 userPassword: PastorOnion1\
 
 dn: cn=Alise Brickhouse,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3244,6 +3562,7 @@ cn: Alise Brickhouse
 sn: Brickhouse
 givenName: Alise
 uid: nbrick
+mail: nbrick@udel.edu
 userPassword: Pervade3Spice/
 
 dn: cn=Sofie Jenko,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3253,6 +3572,7 @@ cn: Sofie Jenko
 sn: Jenko
 givenName: Sofie
 uid: DDeguire
+mail: DDeguire@columbus.k12.wi.us
 userPassword: Donated5!Case
 
 dn: cn=Aidan McLinden,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3262,6 +3582,7 @@ cn: Aidan McLinden
 sn: McLinden
 givenName: Aidan
 uid: apm-mke
+mail: apm-mke@sbcglobal.net
 userPassword: %TwistsLewd4
 
 dn: cn=Paulina Radikas,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3271,6 +3592,7 @@ cn: Paulina Radikas
 sn: Radikas
 givenName: Paulina
 uid: bigbubkis
+mail: bigbubkis@mac.com
 userPassword: Bosom\7Preview
 
 dn: cn=Patty Long,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3280,6 +3602,7 @@ cn: Patty Long
 sn: Long
 givenName: Patty
 uid: patty.long
+mail: patty.long@casc.net
 userPassword: /DevoidStatues1
 
 cn=Student,ou=groups,ou=environment,dc=edwdc,dc=net
@@ -3304,6 +3627,7 @@ cn: Keith Grebetz
 sn: Grebetz
 givenName: Keith
 uid: kgrebetz
+mail: kgrebetz@charloschools.com
 userPassword: Scrub3/Voyage
 
 dn: cn=Randy Harper,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3313,6 +3637,7 @@ cn: Randy Harper
 sn: Harper
 givenName: Randy
 uid: Randy.Harper
+mail: Randy.Harper@elkton.k12.or.us
 userPassword: 2BeamedRoxbury\
 
 dn: cn=Kim Young,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3322,6 +3647,7 @@ cn: Kim Young
 sn: Young
 givenName: Kim
 uid: kim.young
+mail: kim.young@bend.k12.or.us
 userPassword: 1Wakeup^Rivaled
 
 dn: cn=Molly Hottman,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3331,15 +3657,17 @@ cn: Molly Hottman
 sn: Hottman
 givenName: Molly
 uid: molly.hottman
+mail: molly.hottman@umatillasd.org
 userPassword: MovedWelches2;
 
-dn: cn=Karen Davies ,ou=people,ou=environment,dc=edwdc,dc=net
+dn: cn=Karen Davies,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
-cn: Karen Davies 
-sn: 
+cn: Karen Davies
+sn: Davies
 givenName: Karen
 uid:  krndavies
+mail:  krndavies@sunflower.com
 userPassword: %Dumper3Ching
 
 dn: cn=Deanne Letourneau,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3349,6 +3677,7 @@ cn: Deanne Letourneau
 sn: Letourneau
 givenName: Deanne
 uid: deletou
+mail: deletou@kckps.org
 userPassword: +3EricPile
 
 dn: cn=Shelley Moody,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3358,6 +3687,7 @@ cn: Shelley Moody
 sn: Moody
 givenName: Shelley
 uid: smoody
+mail: smoody@rsu18.org
 userPassword: AlgolPaten%5
 
 dn: cn=Lori Maxim,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3367,6 +3697,7 @@ cn: Lori Maxim
 sn: Maxim
 givenName: Lori
 uid: lmaxim
+mail: lmaxim@rsu18.org
 userPassword: RosyLean3?
 
 dn: cn=Sue Slocum,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3376,6 +3707,7 @@ cn: Sue Slocum
 sn: Slocum
 givenName: Sue
 uid: skslocum
+mail: skslocum@interact.ccsd.net
 userPassword: ~Padlock3Ambled
 
 dn: cn=Chelli Smith,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3385,6 +3717,7 @@ cn: Chelli Smith
 sn: Smith
 givenName: Chelli
 uid: smithmm
+mail: smithmm@interact.ccsd.net
 userPassword: ^Contact6Danube
 
 dn: cn=Ben Zunino,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3394,6 +3727,7 @@ cn: Ben Zunino
 sn: Zunino
 givenName: Ben
 uid: bzunino
+mail: bzunino@eureka.k12.nv.us
 userPassword: BayonneTartly&6
 
 dn: cn=Taylor Nelson,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3403,6 +3737,7 @@ cn: Taylor Nelson
 sn: Nelson
 givenName: Taylor
 uid: Tnelson
+mail: Tnelson@connectionseducation.com
 userPassword: 9AnnularDesire\
 
 dn: cn=Julie Nawrocki,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3412,6 +3747,7 @@ cn: Julie Nawrocki
 sn: Nawrocki
 givenName: Julie
 uid: NawrJuli
+mail: NawrJuli@d91.k12.id.us
 userPassword: ?LienEvokes7
 
 dn: cn=Rachel Bear,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3421,6 +3757,7 @@ cn: Rachel Bear
 sn: Bear
 givenName: Rachel
 uid: rachelebear
+mail: rachelebear@gmail.com
 userPassword: 2Skunks;Gilded
 
 dn: cn=Kurt Eshelman,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3430,6 +3767,7 @@ cn: Kurt Eshelman
 sn: Eshelman
 givenName: Kurt
 uid: Kurt
+mail: Kurt@vcfnampa.com
 userPassword: FadedCaring%5
 
 dn: cn=Cora Larson,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3439,6 +3777,7 @@ cn: Cora Larson
 sn: Larson
 givenName: Cora
 uid: larsonc
+mail: larsonc@hsbschools.org
 userPassword: Savoy6Moments!
 
 dn: cn=April Niemela,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3448,6 +3787,7 @@ cn: April Niemela
 sn: Niemela
 givenName: April
 uid: aniemela
+mail: aniemela@lewistonschools.net
 userPassword: !1DenierBimodal
 
 dn: cn=Rhonda Birney,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3457,6 +3797,7 @@ cn: Rhonda Birney
 sn: Birney
 givenName: Rhonda
 uid: rhonda.birnie
+mail: rhonda.birnie@jeromeschools.org
 userPassword: Polaris7!Facts
 
 dn: cn=Karen Abbott,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3466,6 +3807,7 @@ cn: Karen Abbott
 sn: Abbott
 givenName: Karen
 uid: kabbott1968
+mail: kabbott1968@gmail.com
 userPassword: Gender2^Inning
 
 dn: cn=Robert Ellis,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3475,6 +3817,7 @@ cn: Robert Ellis
 sn: Ellis
 givenName: Robert
 uid: r-ellis
+mail: r-ellis@juno.com
 userPassword: 9Prim$Beaten
 
 dn: cn=Charles Shannon,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3484,6 +3827,7 @@ cn: Charles Shannon
 sn: Shannon
 givenName: Charles
 uid: cshannon65
+mail: cshannon65@gmail.com   
 userPassword: Vito5Proves:
 
 dn: cn=Kathy Harris,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3493,6 +3837,7 @@ cn: Kathy Harris
 sn: Harris
 givenName: Kathy
 uid: kharris40
+mail: kharris40@me.com   
 userPassword: Circa6Antioch$
 
 dn: cn=Janet Hegedus,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3502,6 +3847,7 @@ cn: Janet Hegedus
 sn: Hegedus
 givenName: Janet
 uid: jhegedus
+mail: jhegedus@mcps.k12.mt.us
 userPassword: Diverse4;Cuckoos
 
 dn: cn=David Thiel,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3511,6 +3857,7 @@ cn: David Thiel
 sn: Thiel
 givenName: David
 uid: dthiel
+mail: dthiel@interact.ccsd.net
 userPassword: SoresLumber\8
 
 dn: cn=Lisa Bliss,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3520,6 +3867,7 @@ cn: Lisa Bliss
 sn: Bliss
 givenName: Lisa
 uid: blissl
+mail: blissl@churchill.k12.nv.us
 userPassword: WarsWanted%2
 
 dn: cn=Lynn Trell,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3529,6 +3877,7 @@ cn: Lynn Trell
 sn: Trell
 givenName: Lynn
 uid: trell
+mail: trell@interact.ccsd.net
 userPassword: \Hendrix9Topeka
 
 dn: cn=Rachelle Alvarez,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3538,6 +3887,7 @@ cn: Rachelle Alvarez
 sn: Alvarez
 givenName: Rachelle
 uid: rachelle.alvarez
+mail: rachelle.alvarez@csredhawks.org
 userPassword: ?Coulter9Embark
 
 dn: cn=Sara Luther,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3547,6 +3897,7 @@ cn: Sara Luther
 sn: Luther
 givenName: Sara
 uid: luthers
+mail: luthers@westottawa.net
 userPassword: AxersShaved_9
 
 dn: cn=Tim Sylliaasen,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3556,6 +3907,7 @@ cn: Tim Sylliaasen
 sn: Sylliaasen
 givenName: Tim
 uid: tim.sylliaasen
+mail: tim.sylliaasen@k12.sd.us
 userPassword: Nitric1Aspires/
 
 dn: cn=Nikki Allcock,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3565,6 +3917,7 @@ cn: Nikki Allcock
 sn: Allcock
 givenName: Nikki
 uid: nikki.allcock
+mail: nikki.allcock@k12.sd.us
 userPassword: Texture8Cypress^
 
 dn: cn=Deann Kertzman,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3574,6 +3927,7 @@ cn: Deann Kertzman
 sn: Kertzman
 givenName: Deann
 uid: deann.kertzman
+mail: deann.kertzman@k12.sd.us
 userPassword: &Stung4Labels
 
 dn: cn=Stephanie Hageman,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3583,6 +3937,7 @@ cn: Stephanie Hageman
 sn: Hageman
 givenName: Stephanie
 uid: stephanie.hageman
+mail: stephanie.hageman@k12.sd.us
 userPassword: Foss=Score6
 
 dn: cn=Diane Way,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3592,6 +3947,7 @@ cn: Diane Way
 sn: Way
 givenName: Diane
 uid: diane.way
+mail: diane.way@k12.sd.us
 userPassword: First8Revived_
 
 dn: cn=Helen Schwarting,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3601,6 +3957,7 @@ cn: Helen Schwarting
 sn: Schwarting
 givenName: Helen
 uid: helen.schwarting
+mail: helen.schwarting@k12.sd.us
 userPassword: Gentle9:Thrived
 
 dn: cn=Becky Mohr,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3610,6 +3967,7 @@ cn: Becky Mohr
 sn: Mohr
 givenName: Becky
 uid: becky.mohr
+mail: becky.mohr@k12.sd.us
 userPassword: 6WhistleHelp_
 
 dn: cn=Katie Kopp,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3619,6 +3977,7 @@ cn: Katie Kopp
 sn: Kopp
 givenName: Katie
 uid: katherine.kopp
+mail: katherine.kopp@k12.sd.us
 userPassword: ShavedTaurus1-
 
 dn: cn=Amy smith,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3628,6 +3987,7 @@ cn: Amy smith
 sn: smith
 givenName: Amy
 uid: amy.smith
+mail: amy.smith@k12.sd.us
 userPassword: Claudia_6Excepts
 
 dn: cn=Deb Fredrickson,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3637,6 +3997,7 @@ cn: Deb Fredrickson
 sn: Fredrickson
 givenName: Deb
 uid: deb.fredrickson
+mail: deb.fredrickson@k12.sd.us
 userPassword: \4ConvexDarlene
 
 dn: cn=Cindy Feyereisen,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3646,6 +4007,7 @@ cn: Cindy Feyereisen
 sn: Feyereisen
 givenName: Cindy
 uid: cindy.feyereisen
+mail: cindy.feyereisen@k12.sd.us
 userPassword: Psycho1:Stucco
 
 dn: cn=Jun Wu,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3655,6 +4017,7 @@ cn: Jun Wu
 sn: Wu
 givenName: Jun
 uid: jun_wu
+mail: jun_wu@notes.k12.hi.us
 userPassword: Mapping/9Scowls
 
 dn: cn=Dianne Lagbas,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3664,6 +4027,7 @@ cn: Dianne Lagbas
 sn: Lagbas
 givenName: Dianne
 uid: dianne_lagbas
+mail: dianne_lagbas@notes.k12.hi.us
 userPassword: Glassy=Wife7
 
 dn: cn=Lori Sarrazin,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3673,6 +4037,7 @@ cn: Lori Sarrazin
 sn: Sarrazin
 givenName: Lori
 uid: lori12sarrazin
+mail: lori12sarrazin@hotmail.com
 userPassword: 6=GunnarSimmers
 
 dn: cn=Valerie Kehoe,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3682,6 +4047,7 @@ cn: Valerie Kehoe
 sn: Kehoe
 givenName: Valerie
 uid: vkehoe
+mail: vkehoe@newfound.k12.nh.us
 userPassword: Foresee:Spongy9
 
 dn: cn=Shannon Barker,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3691,6 +4057,7 @@ cn: Shannon Barker
 sn: Barker
 givenName: Shannon
 uid: sbarker
+mail: sbarker@hpsk12.net
 userPassword: :2ScaledWaals
 
 dn: cn=Kate Schrodinger,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3700,6 +4067,7 @@ cn: Kate Schrodinger
 sn: Schrodinger
 givenName: Kate
 uid: katees
+mail: katees@comcast.net
 userPassword: Spica:Divans3
 
 dn: cn=Kevin Swider,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3709,6 +4077,7 @@ cn: Kevin Swider
 sn: Swider
 givenName: Kevin
 uid: Kevin.Swider
+mail: Kevin.Swider@redclay.k12.de.us
 userPassword: LimpBrooms:4
 
 dn: cn=Amy Huebner,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3718,6 +4087,7 @@ cn: Amy Huebner
 sn: Huebner
 givenName: Amy
 uid: Amy.Huebner
+mail: Amy.Huebner@redclay.k12.de.us
 userPassword: 5HoistsLinking_
 
 dn: cn=Cynthia DeNardo,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3727,6 +4097,7 @@ cn: Cynthia DeNardo
 sn: DeNardo
 givenName: Cynthia
 uid: Cynthia.DeNardo
+mail: Cynthia.DeNardo@redclay.k12.de.us
 userPassword: RubenSteer3;
 
 dn: cn=Annette Debastiani,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3736,6 +4107,7 @@ cn: Annette Debastiani
 sn: Debastiani
 givenName: Annette
 uid: Annette.Debastiani
+mail: Annette.Debastiani@redclay.k12.de.us
 userPassword: 1JavaBritons%
 
 dn: cn=Bethany Bernasconi,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3745,6 +4117,7 @@ cn: Bethany Bernasconi
 sn: Bernasconi
 givenName: Bethany
 uid: bbernasconi
+mail: bbernasconi@windhamhighschool.org
 userPassword: Muscles5%Fielded
 
 dn: cn=David Schuchaskie,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3754,15 +4127,17 @@ cn: David Schuchaskie
 sn: Schuchaskie
 givenName: David
 uid: SchuchaskieD
+mail: SchuchaskieD@glcomets.net
 userPassword: 3PappasWidely&
 
 dn: cn=Lisa K. Harden,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Lisa K. Harden
-sn: Harden
+sn: K. Harden
 givenName: Lisa
 uid: Lkharden
+mail: Lkharden@ameritech.net
 userPassword: <Enters8Kernel
 
 dn: cn=Jeanne Sturges,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3772,6 +4147,7 @@ cn: Jeanne Sturges
 sn: Sturges
 givenName: Jeanne
 uid: jsturges
+mail: jsturges@sprise.com
 userPassword: _7ReusingDare
 
 dn: cn=Laurie Wicks,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3781,6 +4157,7 @@ cn: Laurie Wicks
 sn: Wicks
 givenName: Laurie
 uid: Laurie.Wicks
+mail: Laurie.Wicks@appo.k12.de.us  
 userPassword: >Aright7Lord
 
 dn: cn=Jacqueline Chesworth,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3790,6 +4167,7 @@ cn: Jacqueline Chesworth
 sn: Chesworth
 givenName: Jacqueline
 uid: jacqueline.chesworth
+mail: jacqueline.chesworth@bsd.k12.de.us 
 userPassword: 7Visitor$Pager
 
 dn: cn=Ashley Alcala,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3799,6 +4177,7 @@ cn: Ashley Alcala
 sn: Alcala
 givenName: Ashley
 uid: smashwsu
+mail: smashwsu@hotmail.com
 userPassword: \Meekest7Seize
 
 dn: cn=Mary Eldredge-Sandbo,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3808,6 +4187,7 @@ cn: Mary Eldredge-Sandbo
 sn: Eldredge-Sandbo
 givenName: Mary
 uid: meldreae
+mail: meldreae@minot.com
 userPassword: DecodeBugle/9
 
 dn: cn=Don Paulsrud,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3817,6 +4197,7 @@ cn: Don Paulsrud
 sn: Paulsrud
 givenName: Don
 uid: don.paulsrud
+mail: don.paulsrud@sendit.nodak.edu
 userPassword: 2-TightlyHurting
 
 dn: cn=Judy Rogers,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3826,6 +4207,7 @@ cn: Judy Rogers
 sn: Rogers
 givenName: Judy
 uid: rogersj
+mail: rogersj@bsd405.org
 userPassword: Hammond:1Ontario
 
 dn: cn=Heather Alexander,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3835,6 +4217,7 @@ cn: Heather Alexander
 sn: Alexander
 givenName: Heather
 uid: heather.alexander
+mail: heather.alexander@orient.k12.wa.us
 userPassword: Ignored&Suzuki2
 
 dn: cn=Adam Sagar,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3844,6 +4227,7 @@ cn: Adam Sagar
 sn: Sagar
 givenName: Adam
 uid: asager
+mail: asager@mv.k12.wa.us
 userPassword: 1Fainted+Achieve
 
 dn: cn=Marci Cummings-Cohoe,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3853,6 +4237,7 @@ cn: Marci Cummings-Cohoe
 sn: Cummings-Cohoe
 givenName: Marci
 uid: cummingsm
+mail: cummingsm@psd401.net
 userPassword: CanoeBibbing\3
 
 dn: cn=Rhonda Howard,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3862,6 +4247,7 @@ cn: Rhonda Howard
 sn: Howard
 givenName: Rhonda
 uid: rhonda.howard
+mail: rhonda.howard@rsd.edu
 userPassword: AddictsDwelled%4
 
 dn: cn=Mike Janski,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3871,6 +4257,7 @@ cn: Mike Janski
 sn: Janski
 givenName: Mike
 uid: mjanski
+mail: mjanski@cascadesd.org
 userPassword: $WakenedReplied7
 
 dn: cn=Shannon Lowrie,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3880,6 +4267,7 @@ cn: Shannon Lowrie
 sn: Lowrie
 givenName: Shannon
 uid: shannon_lowrie
+mail: shannon_lowrie@csd49.org
 userPassword: PlatensHang;7
 
 dn: cn=Jodi Stevens,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3889,6 +4277,7 @@ cn: Jodi Stevens
 sn: Stevens
 givenName: Jodi
 uid: jstevens
+mail: jstevens@nthurston.k12.wa.us
 userPassword: Jewels8Scanner\
 
 dn: cn=Duane Pitts,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3898,6 +4287,7 @@ cn: Duane Pitts
 sn: Pitts
 givenName: Duane
 uid: pittsd
+mail: pittsd@odessa.wednet.edu
 userPassword: ?Tableau2Mourned
 
 dn: cn=Monte Syrie,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3907,6 +4297,7 @@ cn: Monte Syrie
 sn: Syrie
 givenName: Monte
 uid: msyrie
+mail: msyrie@cheneysd.org
 userPassword: EasiestRotund8\
 
 dn: cn=Jennifer Hargrave,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3916,6 +4307,7 @@ cn: Jennifer Hargrave
 sn: Hargrave
 givenName: Jennifer
 uid: jhargrave
+mail: jhargrave@psd267.wednet.edu
 userPassword: RecentAmbling3:
 
 dn: cn=Jayne Marshall,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3925,6 +4317,7 @@ cn: Jayne Marshall
 sn: Marshall
 givenName: Jayne
 uid: MARSHALLJ
+mail: MARSHALLJ@christina.k12.de.us 
 userPassword: ApogeeSoaring5!
 
 dn: cn=Sherry Seefeld,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3934,6 +4327,7 @@ cn: Sherry Seefeld
 sn: Seefeld
 givenName: Sherry
 uid: warners
+mail: warners@fargo.k12.nd.us
 userPassword: GhentMankind%8
 
 dn: cn=Virginia Day,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3943,6 +4337,7 @@ cn: Virginia Day
 sn: Day
 givenName: Virginia
 uid: vday
+mail: vday@sprise.com
 userPassword: 8RoaredSourest^
 
 dn: cn=Charline Brown,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3952,6 +4347,7 @@ cn: Charline Brown
 sn: Brown
 givenName: Charline
 uid: cbrown
+mail: cbrown@sprise.com
 userPassword: Dickens7<Forges
 
 dn: cn=Jen Eccelston,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3961,6 +4357,7 @@ cn: Jen Eccelston
 sn: Eccelston
 givenName: Jen
 uid: jeccleston
+mail: jeccleston@sprise.com
 userPassword: Offing&Shannon3
 
 dn: cn=Elizabeth Lynn,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3970,6 +4367,7 @@ cn: Elizabeth Lynn
 sn: Lynn
 givenName: Elizabeth
 uid: lynne
+mail: lynne@westottawa.net
 userPassword: 1PokeRoof^
 
 dn: cn=Kristy Walters,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3979,6 +4377,7 @@ cn: Kristy Walters
 sn: Walters
 givenName: Kristy
 uid: kwalters
+mail: kwalters@corunna.k12.mi.us
 userPassword: ChipMacros<2
 
 dn: cn=Keegan Finlayson,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3988,6 +4387,7 @@ cn: Keegan Finlayson
 sn: Finlayson
 givenName: Keegan
 uid: kfinlayson
+mail: kfinlayson@new-fairfield.k12.ct.us
 userPassword: Lubell#Mollusk3
 
 dn: cn=Kris Irvine,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3997,6 +4397,7 @@ cn: Kris Irvine
 sn: Irvine
 givenName: Kris
 uid: kristinirvine
+mail: kristinirvine@ci.bristol.ct.us
 userPassword: PistonsVessel6#
 
 dn: cn=Mark Janick,ou=people,ou=environment,dc=edwdc,dc=net
@@ -4006,6 +4407,7 @@ cn: Mark Janick
 sn: Janick
 givenName: Mark
 uid: Mvjanick
+mail: Mvjanick@yahoo.com
 userPassword: Harm3Reposes+
 
 dn: cn=Roxanna Lopez,ou=people,ou=environment,dc=edwdc,dc=net
@@ -4015,6 +4417,7 @@ cn: Roxanna Lopez
 sn: Lopez
 givenName: Roxanna
 uid: roxannalopez
+mail: roxannalopez@achievementfirst.org
 userPassword: 3\BulliedRowdy
 
 dn: cn=Gina Zuk,ou=people,ou=environment,dc=edwdc,dc=net
@@ -4024,6 +4427,7 @@ cn: Gina Zuk
 sn: Zuk
 givenName: Gina
 uid: zukg
+mail: zukg@trumbullps.org
 userPassword: HarrierDrone3;
 
 dn: cn=Joanne Mumley,ou=people,ou=environment,dc=edwdc,dc=net
@@ -4033,6 +4437,7 @@ cn: Joanne Mumley
 sn: Mumley
 givenName: Joanne
 uid: jmumley
+mail: jmumley@wolcottps.org
 userPassword: ?Yearned1Rasping
 
 dn: cn=Jill Pace,ou=people,ou=environment,dc=edwdc,dc=net
@@ -4042,6 +4447,7 @@ cn: Jill Pace
 sn: Pace
 givenName: Jill
 uid: jpace
+mail: jpace@sharoncenterschool.org 
 userPassword: ArgosPlotted_7
 
 dn: cn=James Bruni,ou=people,ou=environment,dc=edwdc,dc=net
@@ -4051,6 +4457,7 @@ cn: James Bruni
 sn: Bruni
 givenName: James
 uid: jbruni
+mail: jbruni@bethany-ed.org    
 userPassword: Vision1_Foamy
 
 dn: cn=Deanna Arrowood,ou=people,ou=environment,dc=edwdc,dc=net
@@ -4060,6 +4467,7 @@ cn: Deanna Arrowood
 sn: Arrowood
 givenName: Deanna
 uid: darrowood
+mail: darrowood@misd.k12.wi.us
 userPassword: 1PrizersFowl&
 
 dn: cn=Christine Geyer,ou=people,ou=environment,dc=edwdc,dc=net
@@ -4069,6 +4477,7 @@ cn: Christine Geyer
 sn: Geyer
 givenName: Christine
 uid: cgeyer
+mail: cgeyer@kusd.edu
 userPassword: DoubtedDetest=3
 
 dn: cn=Seth Harvatine,ou=people,ou=environment,dc=edwdc,dc=net
@@ -4078,6 +4487,7 @@ cn: Seth Harvatine
 sn: Harvatine
 givenName: Seth
 uid: sharvatine
+mail: sharvatine@sheboygan.k12.wi.us
 userPassword: \OutsetRears4
 
 dn: cn=Toni McGee,ou=people,ou=environment,dc=edwdc,dc=net
@@ -4087,6 +4497,7 @@ cn: Toni McGee
 sn: McGee
 givenName: Toni
 uid: tmcgee
+mail: tmcgee@columbus.k12.wi.us
 userPassword: AxerCopier=9
 
 dn: cn=Leslie Haas,ou=people,ou=environment,dc=edwdc,dc=net
@@ -4096,6 +4507,7 @@ cn: Leslie Haas
 sn: Haas
 givenName: Leslie
 uid: lesliehaas
+mail: lesliehaas@hasd.org
 userPassword: 1PerjurePollard%
 
 dn: cn=Staci Gilpin,ou=people,ou=environment,dc=edwdc,dc=net
@@ -4105,6 +4517,7 @@ cn: Staci Gilpin
 sn: Gilpin
 givenName: Staci
 uid: staci.gilpin
+mail: staci.gilpin@superior.k12.wi.us
 userPassword: LinearDikes9=
 
 dn: cn=Sam Sawitski,ou=people,ou=environment,dc=edwdc,dc=net
@@ -4114,6 +4527,7 @@ cn: Sam Sawitski
 sn: Sawitski
 givenName: Sam
 uid: sawitskisamant
+mail: sawitskisamant@aasd.k12.wi.us
 userPassword: Taverns>2Visas
 
 dn: cn=Jamie Hutt,ou=people,ou=environment,dc=edwdc,dc=net
@@ -4123,15 +4537,17 @@ cn: Jamie Hutt
 sn: Hutt
 givenName: Jamie
 uid: jhutt
+mail: jhutt@columbus.k12.wi.us
 userPassword: ~BatteryTattoo7
 
-dn: cn=Julie Church ,ou=people,ou=environment,dc=edwdc,dc=net
+dn: cn=Julie Church,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
-cn: Julie Church 
-sn: 
+cn: Julie Church
+sn: Church
 givenName: Julie
 uid: jujuoca
+mail: jujuoca@gmail.com
 userPassword: TriflesAmanda7>
 
 dn: cn=Marlene Srock,ou=people,ou=environment,dc=edwdc,dc=net
@@ -4141,6 +4557,7 @@ cn: Marlene Srock
 sn: Srock
 givenName: Marlene
 uid: m.srock
+mail: m.srock@sendit.nodak.edu
 userPassword: Scythe5$Wesson
 
 dn: cn=JoNell Bakke,ou=people,ou=environment,dc=edwdc,dc=net
@@ -4150,6 +4567,7 @@ cn: JoNell Bakke
 sn: Bakke
 givenName: JoNell
 uid: jonell.bakke
+mail: jonell.bakke@gfschools.org
 userPassword: Eduardo5Dons?
 
 dn: cn=Rob Buckley,ou=people,ou=environment,dc=edwdc,dc=net
@@ -4159,6 +4577,7 @@ cn: Rob Buckley
 sn: Buckley
 givenName: Rob
 uid: Race43
+mail: Race43@hotmail.com
 userPassword: :9ApartTuber
 
 dn: cn=Larry Timm,ou=people,ou=environment,dc=edwdc,dc=net
@@ -4168,6 +4587,7 @@ cn: Larry Timm
 sn: Timm
 givenName: Larry
 uid: larrytimm
+mail: larrytimm@larrytimm.com
 userPassword: Shuns_Seafood8
 
 dn: cn=Laurel Soto,ou=people,ou=environment,dc=edwdc,dc=net
@@ -4177,6 +4597,7 @@ cn: Laurel Soto
 sn: Soto
 givenName: Laurel
 uid: sotol
+mail: sotol@westottawa.net
 userPassword: 2!TableBoheme
 
 dn: cn=Lisa Bremer,ou=people,ou=environment,dc=edwdc,dc=net
@@ -4186,6 +4607,7 @@ cn: Lisa Bremer
 sn: Bremer
 givenName: Lisa
 uid: lbrehmer
+mail: lbrehmer@portlandk12.org
 userPassword: \Spoon8Sores
 
 dn: cn=Josie Cheney,ou=people,ou=environment,dc=edwdc,dc=net
@@ -4195,6 +4617,7 @@ cn: Josie Cheney
 sn: Cheney
 givenName: Josie
 uid: cheneyj
+mail: cheneyj@westottawa.net
 userPassword: ~5RankineInvert
 
 dn: cn=Joshua Chancer,ou=people,ou=environment,dc=edwdc,dc=net
@@ -4204,6 +4627,7 @@ cn: Joshua Chancer
 sn: Chancer
 givenName: Joshua
 uid: joshua.chancer
+mail: joshua.chancer@ouhsd.k12.ca.us
 userPassword: Hour1<Lush
 
 dn: cn=Lori Adams,ou=people,ou=environment,dc=edwdc,dc=net
@@ -4213,6 +4637,7 @@ cn: Lori Adams
 sn: Adams
 givenName: Lori
 uid: lori.adams
+mail: lori.adams@sbcglobal.net
 userPassword: FetchesRenewer;6
 
 dn: cn=Brenda Hensley,ou=people,ou=environment,dc=edwdc,dc=net
@@ -4222,6 +4647,7 @@ cn: Brenda Hensley
 sn: Hensley
 givenName: Brenda
 uid: mathgirl70
+mail: mathgirl70@earthlink.net
 userPassword: 8CablingCompose\
 
 dn: cn=Clifford Kusaba,ou=people,ou=environment,dc=edwdc,dc=net
@@ -4231,6 +4657,7 @@ cn: Clifford Kusaba
 sn: Kusaba
 givenName: Clifford
 uid: ckusaba5254
+mail: ckusaba5254@sbcglobal.net   
 userPassword: Blimps3~Sights
 
 dn: cn=Rocio Gonzales-Swaby,ou=people,ou=environment,dc=edwdc,dc=net
@@ -4240,6 +4667,7 @@ cn: Rocio Gonzales-Swaby
 sn: Gonzales-Swaby
 givenName: Rocio
 uid: msgonzalezswaby
+mail: msgonzalezswaby@yahoo.com
 userPassword: Georgia8%Gladly
 
 dn: cn=Kelli Seydewitz,ou=people,ou=environment,dc=edwdc,dc=net
@@ -4249,6 +4677,7 @@ cn: Kelli Seydewitz
 sn: Seydewitz
 givenName: Kelli
 uid: kelliann31
+mail: kelliann31@cox.net
 userPassword: 7Pistols?Roam
 
 dn: cn=Pat Sabo,ou=people,ou=environment,dc=edwdc,dc=net
@@ -4258,6 +4687,7 @@ cn: Pat Sabo
 sn: Sabo
 givenName: Pat
 uid: p.sabo
+mail: p.sabo@att.net   
 userPassword: DefinesMelting9%
 
 dn: cn=Erika Garcia,ou=people,ou=environment,dc=edwdc,dc=net
@@ -4267,6 +4697,7 @@ cn: Erika Garcia
 sn: Garcia
 givenName: Erika
 uid: ergarcia99
+mail: ergarcia99@sbcglobal.net
 userPassword: Queried#7Bombard
 
 dn: cn=Michele Schaub,ou=people,ou=environment,dc=edwdc,dc=net
@@ -4276,6 +4707,7 @@ cn: Michele Schaub
 sn: Schaub
 givenName: Michele
 uid: michele.schaub
+mail: michele.schaub@hardin.k12.mt.us
 userPassword: Genial2\Wrap
 
 dn: cn=Candace Barefoot,ou=people,ou=environment,dc=edwdc,dc=net
@@ -4285,6 +4717,7 @@ cn: Candace Barefoot
 sn: Barefoot
 givenName: Candace
 uid: candacebarefoot
+mail: candacebarefoot@johnston.k12.nc.us
 userPassword: :ArtistJiffy4
 
 dn: cn=Kathy Gaul,ou=people,ou=environment,dc=edwdc,dc=net
@@ -4294,6 +4727,7 @@ cn: Kathy Gaul
 sn: Gaul
 givenName: Kathy
 uid: gaulk
+mail: gaulk@ftsd.org
 userPassword: 6Indulge!Befog
 
 dn: cn=Bruce Reiter,ou=people,ou=environment,dc=edwdc,dc=net
@@ -4303,6 +4737,7 @@ cn: Bruce Reiter
 sn: Reiter
 givenName: Bruce
 uid: breiter
+mail: breiter@pps.net
 userPassword: 1&GapePeggy
 
 dn: cn=Kaycee Ferguson,ou=people,ou=environment,dc=edwdc,dc=net
@@ -4312,6 +4747,7 @@ cn: Kaycee Ferguson
 sn: Ferguson
 givenName: Kaycee
 uid: kaycee.ferguson
+mail: kaycee.ferguson@umatillasd.org
 userPassword: Primes6!Shooter
 
 dn: cn=Lynda Sanders,ou=people,ou=environment,dc=edwdc,dc=net
@@ -4321,6 +4757,7 @@ cn: Lynda Sanders
 sn: Sanders
 givenName: Lynda
 uid: LyndaS
+mail: LyndaS@coos-bay.k12.or.us
 userPassword: DamnsBumping+8
 
 dn: cn=Robert Shuey,ou=people,ou=environment,dc=edwdc,dc=net
@@ -4330,6 +4767,7 @@ cn: Robert Shuey
 sn: Shuey
 givenName: Robert
 uid: rshuey
+mail: rshuey@roseburg.k12.or.us
 userPassword: !UnivacHarsher3
 
 dn: cn=Jordan Ruppert,ou=people,ou=environment,dc=edwdc,dc=net
@@ -4339,6 +4777,7 @@ cn: Jordan Ruppert
 sn: Ruppert
 givenName: Jordan
 uid: Ruppertj
+mail: Ruppertj@wdsd.org
 userPassword: 2Celery\Whole
 
 dn: cn=Scott Stockert,ou=people,ou=environment,dc=edwdc,dc=net
@@ -4348,6 +4787,7 @@ cn: Scott Stockert
 sn: Stockert
 givenName: Scott
 uid: scottst
+mail: scottst@coos-bay.k12.or.us
 userPassword: MeteorsHandful9+
 
 dn: cn=Jeri Powers,ou=people,ou=environment,dc=edwdc,dc=net
@@ -4357,6 +4797,7 @@ cn: Jeri Powers
 sn: Powers
 givenName: Jeri
 uid:  jpowers
+mail:  jpowers@usd232.org
 userPassword: Jewett5_Fact
 
 cn=Teacher,ou=groups,ou=environment,dc=edwdc,dc=net

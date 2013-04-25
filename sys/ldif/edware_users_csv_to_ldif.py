@@ -63,7 +63,7 @@ def main():
         cur1.executemany(sql2, to_db)
         conn.commit()
                     
-        sql3 = "SELECT name, email, userid, password, sys_role " + \
+        sql3 = "SELECT name, userid, email, password, sys_role " + \
                "FROM public.buffer_csv " + \
                "ORDER BY sys_role"
         
@@ -84,7 +84,7 @@ def main():
                 sys_role = row[4]
             
             add_user_role(row[0], users_in_role)
-            dump_user(row[0], row[2], row[3], f_dest)
+            dump_user(row[0], row[1], row[2], row[3], f_dest)
      
         dump_roles(sys_role, users_in_role, f_dest)
                  
@@ -110,9 +110,9 @@ def dump_header(_file_header, _file_dest):
         print("Unable to write header.")
         exit()
 
-def dump_user(_user, _uid, _passwd, _file_dest):
+def dump_user(_user, _uid, _email, _passwd, _file_dest):
     try:
-        user = format_inetOrgPerson(_user, _uid, _passwd)
+        user = format_inetOrgPerson(_user, _uid, _email, _passwd)
         _file_dest.write(user)
     except:
         print("Unable to write user.")
@@ -126,13 +126,20 @@ def dump_roles(_sys_role, _user_roles, _file_dest):
         print("Unable to write roles.")
         exit()
     
-def format_inetOrgPerson(_user, _uid, _passwd):
+def format_inetOrgPerson(_user, _uid, _email, _passwd):
+    _user = _user.strip()
     user = _user.split(' ')
-    if (len(user) > 2):
-        fname = user[0]
-        lname = user[2]
-    else:
+    if (len(user) == 2):
         fname, lname = _user.split(' ' , 2 )
+    elif( len(user) == 3 and _user[0:2] <> 'Dr.' ):
+        fname = user[0]
+        lname = user[1] + " " + user[2]
+    elif( len(user) == 4 and _user[0:2] <> 'Dr.' ):
+        fname = user[0]
+        lname = user[1] + " " + user[2] + " " + user[3]
+    elif(_user[0:2] == 'Dr.'):
+        fname = user[1]
+        lname = user[2]
         
     strInetOrgPerson =  "dn: cn="+_user+",ou=people,ou=environment,dc=edwdc,dc=net\n" + \
                         "objectClass: inetOrgPerson\n" + \
@@ -141,6 +148,7 @@ def format_inetOrgPerson(_user, _uid, _passwd):
                         "sn: " + lname + "\n" + \
                         "givenName: " + fname + "\n" + \
                         "uid: " + _uid + "\n" + \
+                        "mail: " + _email + "\n" + \
                         "userPassword: " + _passwd + "\n"
 
     return strInetOrgPerson + "\n"

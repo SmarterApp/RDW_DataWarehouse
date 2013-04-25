@@ -49,6 +49,31 @@ function setup_virtualenv {
  
     echo "Finished setting up virtualenv"
 
+}
+
+function setup_python2_virtualenv {
+    echo "Setting up virtualenv using python2.7"
+    if [ ! -d "$VIRTUALENV_DIR" ]; then
+        /opt/python2.7/bin/virtualenv --distribute ${VIRTUALENV_DIR}
+    fi
+
+    # This will change your $PATH to point to the virtualenv bin/ directory,
+
+    source ${VIRTUALENV_DIR}/bin/activate
+    for var in "${INSTALL_PKGS[@]}" 
+    do
+        cd "$WORKSPACE/$var"
+        pwd
+        if [ -f setup-developer.py ];  then
+           echo "running setup-developer.py"
+           python setup-developer.py develop
+        else 
+           echo "running setup.py"
+           python setup.py develop
+        fi
+    done
+ 
+    echo "Finished setting up virtualenv"
 } 
 
 function setup_unit_test_dependencies {
@@ -85,6 +110,20 @@ function run_unit_tests {
     fi
 }
 
+function setup_epydoc_dependencies {
+    echo "setting up epydoc dependencies"
+
+    pip install epydoc
+
+    echo "finished setting up epydoc dependencies"
+}
+
+function run_epydoc {
+    echo "Creating epydocs"
+    
+    epydoc --html -o $WORKSPACE/epydoc --name DataGeneration --parse-only --no-sourcecode "$WORKSPACE/$1"
+}
+
 function get_opts {
     if ( ! getopts ":m:d:ufh" opt); then
 	echo "Usage: `basename $0` options (-n) (-u) (-m main_package) (-d dependencies) -h for help";
@@ -100,6 +139,14 @@ function get_opts {
             u)
                echo "Unit test mode"
                MODE='UNIT'
+               ;;
+            f)
+               echo "Functional test mode"
+               MODE='FUNC'
+               ;;
+            e)
+               echo "EPYDOC mode"
+               MODE='EPYD'
                ;;
             h)
                show_help
@@ -139,6 +186,12 @@ function main {
             run_unit_tests $MAIN_PKG
         fi
         check_pep8 $MAIN_PKG
+    elif [ ${MODE:=""} == "EPYD" ]; then
+        setup_python2_virtualenv $@
+        setup_epydoc_dependencies
+        run_epydoc $MAIN_PKG
+    elif [ ${MODE:=""} == "FUNC"]; then
+          #statements
     fi
 }
 

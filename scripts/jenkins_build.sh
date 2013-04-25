@@ -143,7 +143,7 @@ function get_opts {
     MODE='UNIT'
     RUN_UNIT_TEST=true
 
-    while getopts ":m:d:uhn" opt; do
+    while getopts ":m:d:uhnef" opt; do
         case $opt in 
             u)
                echo "Unit test mode"

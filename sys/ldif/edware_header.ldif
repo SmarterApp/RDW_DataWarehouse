@@ -11,3 +11,4 @@ ou: people
 dn: ou=groups,ou=environment,dc=edwdc,dc=net
 objectClass: organizationalUnit
 ou: groups
+

@@ -10,7 +10,9 @@ ou: people
 
 dn: ou=groups,ou=environment,dc=edwdc,dc=net
 objectClass: organizationalUnit
-ou: groupsdn: cn=Kristine Garofalo,ou=people,ou=environment,dc=edwdc,dc=net
+ou: groups
+
+dn: cn=Kristine Garofalo,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Kristine Garofalo
@@ -94,7 +96,7 @@ dn: cn=Tyler J. Hanson,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Tyler J. Hanson
-sn: J. Hanson
+sn: Hanson
 givenName: Tyler
 uid: tyler_hanson
 mail: tyler_hanson@bismarckschools.org
@@ -254,7 +256,7 @@ dn: cn=Mary Kay Rendock,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Mary Kay Rendock
-sn: Kay Rendock
+sn: Rendock
 givenName: Mary
 uid: mrendock
 mail: mrendock@blmfld.org
@@ -364,7 +366,7 @@ dn: cn=Cory allen Heidelberger,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Cory allen Heidelberger
-sn: allen Heidelberger
+sn: Heidelberger
 givenName: Cory
 uid: cheidelb
 mail: cheidelb@spearfish.k12.sd.us
@@ -564,7 +566,7 @@ dn: cn=Alisa Estrella Bender,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Alisa Estrella Bender
-sn: Estrella Bender
+sn: Bender
 givenName: Alisa
 uid: Alisa_Estrella_Bender
 mail: Alisa_Estrella_Bender@notes.k12.hi.us
@@ -654,7 +656,7 @@ dn: cn=Renee Fuentes Campa,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Renee Fuentes Campa
-sn: Fuentes Campa
+sn: Campa
 givenName: Renee
 uid: rcampa
 mail: rcampa@lausd.net
@@ -684,7 +686,7 @@ dn: cn=Iva Lee Colgan,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Iva Lee Colgan
-sn: Lee Colgan
+sn: Colgan
 givenName: Iva
 uid: ivcolga
 mail: ivcolga@kckps.org
@@ -734,7 +736,7 @@ dn: cn=Alysia Hobbs Odipo,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Alysia Hobbs Odipo
-sn: Hobbs Odipo
+sn: Odipo
 givenName: Alysia
 uid: ahobbs
 mail: ahobbs@walnutvalley.k12.ca.us
@@ -854,7 +856,7 @@ dn: cn=Olga De Santa Anna,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Olga De Santa Anna
-sn: De Santa Anna
+sn: Anna
 givenName: Olga
 uid: olga_desantaanna
 mail: olga_desantaanna@pvusd.net
@@ -914,7 +916,7 @@ dn: cn=Harriet R. Maclean,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Harriet R. Maclean
-sn: R. Maclean
+sn: Maclean
 givenName: Harriet
 uid: hmaclean
 mail: hmaclean@srcs.org
@@ -1014,7 +1016,7 @@ dn: cn=Dirk Van Curan,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Dirk Van Curan
-sn: Van Curan
+sn: Curan
 givenName: Dirk
 uid: dirk_vancuran
 mail: dirk_vancuran@msad51.org
@@ -1054,16 +1056,16 @@ dn: cn=J. Antonio Gaitan,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: J. Antonio Gaitan
-sn: Antonio Gaitan
+sn: Gaitan
 givenName: J.
 uid: jgaitan
 mail: jgaitan@spuhsd.org
 userPassword: Quack;5Gawky
 
-cn=Building Administrator,ou=groups,ou=environment,dc=edwdc,dc=net
+dn: cn=Building Administrator,ou=groups,ou=environment,dc=edwdc,dc=net
 objectClass: groupOfNames
 objectClass: top
-cn=Building Administrator
+cn: Building Administrator
 member: cn=Kristine Garofalo,ou=people,ou=environment,dc=edwdc,dc=net
 member: cn=Steve Quintus,ou=people,ou=environment,dc=edwdc,dc=net
 member: cn=Moureen David,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1284,7 +1286,7 @@ dn: cn=Mary Ellen Johnson,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Mary Ellen Johnson
-sn: Ellen Johnson
+sn: Johnson
 givenName: Mary
 uid: Maryellen_johnson
 mail: Maryellen_johnson@sbcss.k12.ca.us
@@ -1504,7 +1506,7 @@ dn: cn=Amie Beyersdorf for DA,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Amie Beyersdorf for DA
-sn: Beyersdorf for DA
+sn: DA
 givenName: Amie
 uid: abeyersdorf
 mail: abeyersdorf@misd.k12.wi.us
@@ -1574,7 +1576,7 @@ dn: cn=Mary Jo Fox,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Mary Jo Fox
-sn: Jo Fox
+sn: Fox
 givenName: Mary
 uid:  foxm
 mail:  foxm@olatheschools.com
@@ -1680,10 +1682,10 @@ uid: roman.marcellais
 mail: roman.marcellais@sendit.nodak.edu
 userPassword: LordsPolice4\
 
-cn=District Administrator,ou=groups,ou=environment,dc=edwdc,dc=net
+dn: cn=District Administrator,ou=groups,ou=environment,dc=edwdc,dc=net
 objectClass: groupOfNames
 objectClass: top
-cn=District Administrator
+cn: District Administrator
 member: cn=William Webster,ou=people,ou=environment,dc=edwdc,dc=net
 member: cn=Teri Ushijima,ou=people,ou=environment,dc=edwdc,dc=net
 member: cn=Harold Mizuno,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1990,7 +1992,7 @@ dn: cn=Steven M. Pound,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Steven M. Pound
-sn: M. Pound
+sn: Pound
 givenName: Steven
 uid: SPOUND
 mail: SPOUND@cianbro.com
@@ -2016,10 +2018,10 @@ uid: linkmarkr
 mail: linkmarkr@mac.com
 userPassword: Bingo_1Fable
 
-cn=General Public,ou=groups,ou=environment,dc=edwdc,dc=net
+dn: cn=General Public,ou=groups,ou=environment,dc=edwdc,dc=net
 objectClass: groupOfNames
 objectClass: top
-cn=General Public
+cn: General Public
 member: cn=Lew Jones,ou=people,ou=environment,dc=edwdc,dc=net
 member: cn=Dudley Williams,ou=people,ou=environment,dc=edwdc,dc=net
 member: cn=Nancy Prescott,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2053,7 +2055,7 @@ dn: cn=Dr. Jennie Rakestraw,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Dr. Jennie Rakestraw
-sn: Jennie Rakestraw
+sn: Rakestraw
 givenName: Dr.
 uid: rakestrawj
 mail: rakestrawj@winthrop.edu
@@ -2063,7 +2065,7 @@ dn: cn=Dr. Matthew Nelson,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Dr. Matthew Nelson
-sn: Matthew Nelson
+sn: Nelson
 givenName: Dr.
 uid: MNelson
 mail: MNelson@fmarion.edu
@@ -2073,7 +2075,7 @@ dn: cn=Dr. Calvin Williams,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Dr. Calvin Williams
-sn: Calvin Williams
+sn: Williams
 givenName: Dr.
 uid: calvinw
 mail: calvinw@clemson.edu
@@ -2093,7 +2095,7 @@ dn: cn=Virgina Mix Adatto,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Virgina Mix Adatto
-sn: Mix Adatto
+sn: Adatto
 givenName: Virgina
 uid: virgina.mix
 mail: virgina.mix@yahoo.com
@@ -2233,7 +2235,7 @@ dn: cn=Dr. Tom Dick,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Dr. Tom Dick
-sn: Tom Dick
+sn: Dick
 givenName: Dr.
 uid: tpdick
 mail: tpdick@science.oregonstate.edu
@@ -2393,7 +2395,7 @@ dn: cn=Dr. Richard Dale,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Dr. Richard Dale
-sn: Richard Dale
+sn: Dale
 givenName: Dr.
 uid: richard.dale1
 mail: richard.dale1@maine.edu
@@ -2443,16 +2445,16 @@ dn: cn=Dr. Lemuel Watson,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Dr. Lemuel Watson
-sn: Lemuel Watson
+sn: Watson
 givenName: Dr.
 uid: WATSONLW
 mail: WATSONLW@mailbox.sc.edu
 userPassword: ~Probed4Defend
 
-cn=Higher Education,ou=groups,ou=environment,dc=edwdc,dc=net
+dn: cn=Higher Education,ou=groups,ou=environment,dc=edwdc,dc=net
 objectClass: groupOfNames
 objectClass: top
-cn=Higher Education
+cn: Higher Education
 member: cn=Dr. Jennie Rakestraw,ou=people,ou=environment,dc=edwdc,dc=net
 member: cn=Dr. Matthew Nelson,ou=people,ou=environment,dc=edwdc,dc=net
 member: cn=Dr. Calvin Williams,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2518,7 +2520,7 @@ dn: cn=Indiana Reyna Rivera,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Indiana Reyna Rivera
-sn: Reyna Rivera
+sn: Rivera
 givenName: Indiana
 uid: indianarrivera
 mail: indianarrivera@gmail.com
@@ -2698,7 +2700,7 @@ dn: cn=Kim and Jon Waalkes,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Kim and Jon Waalkes
-sn: and Jon Waalkes
+sn: Waalkes
 givenName: Kim
 uid: Kim_Waalkes
 mail: Kim_Waalkes@yahoo.com
@@ -2708,7 +2710,7 @@ dn: cn=Andrea N. Jackson,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Andrea N. Jackson
-sn: N. Jackson
+sn: Jackson
 givenName: Andrea
 uid: andreaviger
 mail: andreaviger@yahoo.com
@@ -2824,10 +2826,10 @@ uid: rosadadx
 mail: rosadadx@milwaukee.k12.wi.us
 userPassword: Amend5Title-
 
-cn=Parent,ou=groups,ou=environment,dc=edwdc,dc=net
+dn: cn=Parent,ou=groups,ou=environment,dc=edwdc,dc=net
 objectClass: groupOfNames
 objectClass: top
-cn=Parent
+cn: Parent
 member: cn=Pete Halliday,ou=people,ou=environment,dc=edwdc,dc=net
 member: cn=Julie Guaspari,ou=people,ou=environment,dc=edwdc,dc=net
 member: cn=Indiana Reyna Rivera,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3442,10 +3444,10 @@ uid: cookb
 mail: cookb@msd321.com
 userPassword: 9Kern<Willcox
 
-cn=State Administrator,ou=groups,ou=environment,dc=edwdc,dc=net
+dn: cn=State Administrator,ou=groups,ou=environment,dc=edwdc,dc=net
 objectClass: groupOfNames
 objectClass: top
-cn=State Administrator
+cn: State Administrator
 member: cn=Kim Eimers,ou=people,ou=environment,dc=edwdc,dc=net
 member: cn=Jackie Thomason,ou=people,ou=environment,dc=edwdc,dc=net
 member: cn=Kathy Luras,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3605,10 +3607,10 @@ uid: patty.long
 mail: patty.long@casc.net
 userPassword: /DevoidStatues1
 
-cn=Student,ou=groups,ou=environment,dc=edwdc,dc=net
+dn: cn=Student,ou=groups,ou=environment,dc=edwdc,dc=net
 objectClass: groupOfNames
 objectClass: top
-cn=Student
+cn: Student
 member: cn=Joshua Raynor,ou=people,ou=environment,dc=edwdc,dc=net
 member: cn=Hannah Harden,ou=people,ou=environment,dc=edwdc,dc=net
 member: cn=Caitlyn Viger,ou=people,ou=environment,dc=edwdc,dc=net
@@ -4134,7 +4136,7 @@ dn: cn=Lisa K. Harden,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
 objectClass: top
 cn: Lisa K. Harden
-sn: K. Harden
+sn: Harden
 givenName: Lisa
 uid: Lkharden
 mail: Lkharden@ameritech.net
@@ -4800,10 +4802,10 @@ uid:  jpowers
 mail:  jpowers@usd232.org
 userPassword: Jewett5_Fact
 
-cn=Teacher,ou=groups,ou=environment,dc=edwdc,dc=net
+dn: cn=Teacher,ou=groups,ou=environment,dc=edwdc,dc=net
 objectClass: groupOfNames
 objectClass: top
-cn=Teacher
+cn: Teacher
 member: cn=Keith Grebetz,ou=people,ou=environment,dc=edwdc,dc=net
 member: cn=Randy Harper,ou=people,ou=environment,dc=edwdc,dc=net
 member: cn=Kim Young,ou=people,ou=environment,dc=edwdc,dc=net

@@ -133,10 +133,10 @@ def format_inetOrgPerson(_user, _uid, _email, _passwd):
         fname, lname = _user.split(' ' , 2 )
     elif( len(user) == 3 and _user[0:2] <> 'Dr.' ):
         fname = user[0]
-        lname = user[1] + " " + user[2]
+        lname = user[2]
     elif( len(user) == 4 and _user[0:2] <> 'Dr.' ):
         fname = user[0]
-        lname = user[1] + " " + user[2] + " " + user[3]
+        lname = user[3]
     elif(_user[0:2] == 'Dr.'):
         fname = user[1]
         lname = user[2]
@@ -154,10 +154,10 @@ def format_inetOrgPerson(_user, _uid, _email, _passwd):
     return strInetOrgPerson + "\n"
 
 def format_groupOfNames(_group, _user_roles):
-    strGroupOfNames = "cn="+ _group +",ou=groups,ou=environment,dc=edwdc,dc=net\n" + \
+    strGroupOfNames = "dn: cn="+ _group +",ou=groups,ou=environment,dc=edwdc,dc=net\n" + \
                       "objectClass: groupOfNames\n" + \
                       "objectClass: top\n" + \
-                      "cn="+ _group + "\n"
+                      "cn: "+ _group + "\n"
     
     for user in _user_roles:
         strGroupOfNames += "member: cn=" + user + ",ou=people,ou=environment,dc=edwdc,dc=net\n"

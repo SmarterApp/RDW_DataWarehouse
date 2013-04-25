@@ -3,7 +3,7 @@ __author__ = 'abrien'
 import unittest
 from generate_helper_entities import generate_state, generate_school, generate_claim, generate_district, \
     generate_assessment_score, generate_claim_score
-from helper_entities_2 import ClaimScore, AssessmentScore
+from helper_entities import ClaimScore, AssessmentScore
 from uuid import UUID
 from datetime import date
 
@@ -90,4 +90,3 @@ class TestGenerateHelperEntities(unittest.TestCase):
         claim_score_interval_minimum = 1850
         claim_score_interval_maximum = 2050
         claim_score = generate_claim_score(claim_score_value, claim_score_interval_minimum, claim_score_interval_maximum)
-

@@ -1,6 +1,6 @@
-from helper_entities_2 import State, District, School, Claim, ClaimScore, AssessmentScore
+from helper_entities import State, District, School, Claim, ClaimScore, AssessmentScore
 from uuid import uuid4
-import util_2 as util
+import util as util
 
 
 def generate_state(state_name, state_code):
@@ -23,9 +23,11 @@ def generate_school(school_type, name_list_1, name_list_2):
 def generate_claim(claim_name, claim_score_min, claim_score_max, claim_score_weight):
     return Claim(claim_name, claim_score_min, claim_score_max, claim_score_weight)
 
+
 # TODO: Remove this function and just use constructor directly
 def generate_assessment_score(overall_score, perf_lvl, interval_min, interval_max, claim_scores, asmt_create_date):
     return AssessmentScore(overall_score, perf_lvl, interval_min, interval_max, claim_scores, asmt_create_date)
+
 
 # TODO: Remove this function and just use constructor directly
 def generate_claim_score(claim_score, claim_score_interval_minimum, claim_score_interval_maximum):

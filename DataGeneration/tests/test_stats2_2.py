@@ -5,16 +5,15 @@ Created on Apr 19, 2013
 '''
 import unittest
 
-import stats2 as stats
+import stats as stats
 
 
 class Test(unittest.TestCase):
-    
+
     def diff(self, value, vlist):
-        dlist = ["%02d" % (abs(v-value)*100/value) for v in vlist]
+        dlist = ["%02d" % (abs(v - value) * 100 / value) for v in vlist]
         print("%dif", dlist, "\n")
-        
-      
+
     def test_distribute_by_percentages_01(self):
         value = 1800
         range_min = 1200
@@ -28,7 +27,6 @@ class Test(unittest.TestCase):
             self.assertGreaterEqual(v, range_min)
             self.assertLessEqual(v, range_max)
         self.diff(value, out)
-
 
     def test_distribute_by_percentages_02(self):
         value = 1800
@@ -57,7 +55,7 @@ class Test(unittest.TestCase):
             self.assertGreaterEqual(v, range_min)
             self.assertLessEqual(v, range_max)
         self.diff(value, out)
-            
+
     def test_distribute_by_percentages_04(self):
         value = 1260
         range_min = 1200
@@ -71,7 +69,7 @@ class Test(unittest.TestCase):
             self.assertGreaterEqual(v, range_min)
             self.assertLessEqual(v, range_max)
         self.diff(value, out)
-            
+
     def test_distribute_by_percentages_05(self):
         value = 1250
         range_min = 1200
@@ -85,7 +83,7 @@ class Test(unittest.TestCase):
             self.assertGreaterEqual(v, range_min)
             self.assertLessEqual(v, range_max)
         self.diff(value, out)
-            
+
     def test_distribute_by_percentages_06(self):
         value = 1800
         range_min = 1200
@@ -102,5 +100,5 @@ class Test(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

@@ -5,12 +5,11 @@ Created on Apr 19, 2013
 '''
 import unittest
 
-import stats2 as stats
+import stats as stats
 
 
 class Test(unittest.TestCase):
-    
-        
+
     def doit_01(self, value):
         range_min = 1200
         range_max = 2400
@@ -22,7 +21,7 @@ class Test(unittest.TestCase):
         for v in out:
             self.assertGreaterEqual(v, range_min)
             self.assertLessEqual(v, range_max)
-        
+
     def doit_02(self, value):
         range_min = 1200
         range_max = 2400
@@ -34,18 +33,16 @@ class Test(unittest.TestCase):
         for v in out:
             self.assertGreaterEqual(v, range_min)
             self.assertLessEqual(v, range_max)
-        
-        
+
     def test_distribute_by_percentages_01(self):
         for v in range(1200, 2401, 10):
             self.doit_01(v)
-            
+
     def test_distribute_by_percentages_02(self):
         for v in range(1200, 2401, 10):
             self.doit_02(v)
 
 
-
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

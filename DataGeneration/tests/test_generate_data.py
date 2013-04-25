@@ -8,8 +8,8 @@ import os
 from datetime import date
 import generate_data
 import generate_entities
-from helper_entities_2 import District
-from entities_2 import Staff, AssessmentOutcome, InstitutionHierarchy
+from helper_entities import District
+from entities import Staff, AssessmentOutcome, InstitutionHierarchy
 
 
 class Test(unittest.TestCase):
@@ -36,7 +36,7 @@ class Test(unittest.TestCase):
         list_name_to_path_dictionary = {}
         file_count = 10
         name_count = 50
-        file_names = self.create_test_name_files(file_count, name_count)
+        file_names = self.create_mock_name_files(file_count, name_count)
         for name in file_names:
             list_name_to_path_dictionary[name] = name
         res = generate_data.generate_name_list_dictionary(list_name_to_path_dictionary)
@@ -45,7 +45,7 @@ class Test(unittest.TestCase):
         for name in res:
             number_of_lines = len(res[name])
             self.assertEqual(number_of_lines, name_count)
-        self.remove_test_files(file_names)
+        self.remove_files(file_names)
 
     def test_generate_district_dictionary(self):
         district_types = {'Big': 2, 'Medium': 6, 'Small': 40}
@@ -68,7 +68,7 @@ class Test(unittest.TestCase):
             self.assertIsNotNone(item.district_guid)
 
     def test_create_school_dictionary(self):
-        school_counts = {'min': 100, 'max': 500, 'avg': 300}
+        school_counts = {'min': 100, 'max': 310, 'avg': 500}
         ratios = {'High School': 1, 'Middle School': 2, 'Elementary School': 5}
         name_list1 = ['name_%d' % i for i in range(20)]
         name_list2 = ['name2_%d' % i for i in range(20)]
@@ -77,6 +77,9 @@ class Test(unittest.TestCase):
         elm_sch_len = len(res['Elementary School'])
         mid_sch_len = len(res['Middle School'])
         hig_sch_len = len(res['High School'])
+        school_sum = elm_sch_len + mid_sch_len + hig_sch_len
+        self.assertGreaterEqual(school_sum, school_counts['min'])
+        self.assertLessEqual(school_sum, school_counts['max'])
         self.assertAlmostEqual(hig_sch_len * 5, elm_sch_len)
         self.assertAlmostEqual(hig_sch_len * 2, mid_sch_len)
 
@@ -275,8 +278,8 @@ class Test(unittest.TestCase):
 
     def test_select_assessment_from_list(self):
         asmt_list = [self.create_assessment(1, 'Math'), self.create_assessment(2, 'Math'), self.create_assessment(3, 'Math'),
-                       self.create_assessment(1, 'ELA'), self.create_assessment(2, 'ELA'), self.create_assessment(3, 'ELA'),
-                       self.create_assessment(6, 'Math'), self.create_assessment(8, 'ELA'), self.create_assessment(12, 'Math')]
+                     self.create_assessment(1, 'ELA'), self.create_assessment(2, 'ELA'), self.create_assessment(3, 'ELA'),
+                     self.create_assessment(6, 'Math'), self.create_assessment(8, 'ELA'), self.create_assessment(12, 'Math')]
         assessment = generate_data.select_assessment_from_list(asmt_list, 1, 'Math')
         self.assertEqual(assessment.asmt_grade, 1)
         self.assertEqual(assessment.asmt_subject, 'Math')
@@ -356,7 +359,7 @@ class Test(unittest.TestCase):
             students.append(student)
         return students
 
-    def create_test_name_files(self, file_count, name_count):
+    def create_mock_name_files(self, file_count, name_count):
         list_name = 'unit_test_file_for_testing{num}'
         file_list = []
         for i in range(file_count):
@@ -367,7 +370,7 @@ class Test(unittest.TestCase):
             file_list.append(file_name)
         return file_list
 
-    def remove_test_files(self, file_list):
+    def remove_files(self, file_list):
         for name in file_list:
             os.remove(name)
 

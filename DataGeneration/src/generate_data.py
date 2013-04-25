@@ -3,19 +3,19 @@ import datetime
 import os
 import csv
 import random
-import util_2
-import stats2 as stats
-import constants_2 as constants
+import util
+import stats as stats
+import constants as constants
 from idgen import IdGen
-from write_to_csv_2 import create_csv
+from write_to_csv import create_csv
 from importlib import import_module
 from generate_entities import (generate_institution_hierarchy, generate_sections, generate_students, generate_multiple_staff,
                                generate_fact_assessment_outcomes, generate_assessments)
 from generate_helper_entities import generate_state, generate_district, generate_school, generate_assessment_score, generate_claim_score
-from entities_2 import InstitutionHierarchy, Section, Assessment, AssessmentOutcome, \
+from entities import InstitutionHierarchy, Section, Assessment, AssessmentOutcome, \
     Staff, ExternalUserStudent, Student
 from generate_scores import generate_overall_scores
-from gaussian_distributions import gauss_one
+from gaussian_distributions import gauss_one, guess_std
 from errorband import calc_eb_params, calc_eb
 
 
@@ -41,10 +41,17 @@ MAMMALS = 'mammals'
 NAMES_TO_PATH_DICT = {BIRDS: DATAFILE_PATH + '/datafiles/name_lists/birds.txt',
                       FISH: DATAFILE_PATH + '/datafiles/name_lists/fish.txt',
                       MAMMALS: DATAFILE_PATH + '/datafiles/name_lists/mammals.txt'
-                     }
+                      }
 
 
 def generate_data_from_config_file(config_module):
+
+    '''
+    Main function that drives the data generation process
+
+    @param config_module: module that contains all configuration information for the data creation process
+    @return nothing
+    '''
 
     # First thing: prep the csv files by deleting their contents and adding appropriate headers
     prepare_csv_files(ENTITY_TO_PATH_DICT)
@@ -140,15 +147,45 @@ def generate_data_from_config_file(config_module):
 
 
 def generate_and_populate_institution_hierarchies(schools, school_type, state, district, assessments):
+    '''
+    Given institution information (info about state, district, school), we create InstitutionHierarchy objects.
+    We create one InstitutionHierarchy object for each school given in the school list.
+
+    In addition to this, we populate each institution hierarchy (which is functionally equivalent to a school) with
+    students, teachers, staff, sections
+
+    @type schools: list
+    @param schools: list of schools that will be used to create InstitutionHierarchy objects
+    @type school_type: dict
+    @param school_type: dictionary that contains the grades and the number of students per grade for this school type
+    @type state: State
+    @param state: state object that contains state code, state name
+    @type district: District
+    @param district: district object that contains district information
+    @type assessments: list
+    @param assessments: A list of Assessment objects for generating assessment outcome objects
+    '''
     institution_hierarchies = []
     for school in schools:
         institution_hierarchy = generate_institution_hierarchy_from_helper_entities(state, district, school)
         institution_hierarchies.append(institution_hierarchy)
+        # TODO: Don't populate the schools here. When this function returns, loop over the list and populate each school
         populate_school(institution_hierarchy, school_type, assessments)
     return institution_hierarchies
 
 
 def populate_school(institution_hierarchy, school_type, assessments):
+
+    '''
+    Populate the provided the institution with staff, students, teachers, sections
+
+    @type institution_hierarchy: InstitutionHierarchy
+    @param institution_hierarchy: InstitutionHierarchy object that contains basic information about school, district, state
+    @type school_type: dict
+    @param school_type: dictionary containing the grades and number of students per grade
+    @type assessments: list of Assessments
+    @param assessments: a list of assessment objects for creation of AssessmentOutcomes
+    '''
 
     # Get student count information from config module
     student_counts = school_type[config_module.STUDENTS]
@@ -217,7 +254,7 @@ def populate_school(institution_hierarchy, school_type, assessments):
 
                 create_csv(students_to_take_assessment, ENTITY_TO_PATH_DICT[Student])
                 asmt_outcomes_in_section = generate_assessment_outcomes_from_helper_entities_and_lists(students_to_take_assessment, score_list, teacher_guid, section, institution_hierarchy, assessment,
-                                                                                                      eb_min_perc, eb_max_perc, eb_rand_adj_lo, eb_rand_adj_hi)
+                                                                                                       eb_min_perc, eb_max_perc, eb_rand_adj_lo, eb_rand_adj_hi)
                 asmt_outcomes_for_grade.extend(asmt_outcomes_in_section)
         create_csv(asmt_outcomes_for_grade, ENTITY_TO_PATH_DICT[AssessmentOutcome])
     #create_csv(students_in_school, ENTITY_TO_PATH_DICT[Student])
@@ -226,6 +263,12 @@ def populate_school(institution_hierarchy, school_type, assessments):
 
 
 def prepare_csv_files(entity_to_path_dict):
+    '''
+    Erase each csv file and then add appropriate header
+
+    @type entity_to_path_dict: dict
+    @param entity_to_path_dict: Each key is an entity's class, and each value is the path to its csv file
+    '''
     for entity in entity_to_path_dict:
         path = entity_to_path_dict[entity]
         # By opening the file for writing, we implicitly delete the file contents
@@ -245,7 +288,7 @@ def generate_name_list_dictionary(list_name_to_path_dictionary):
     name_list_dictionary = {}
     for list_name in list_name_to_path_dictionary:
         path = list_name_to_path_dictionary[list_name]
-        name_list = util_2.create_list_from_file(path)
+        name_list = util.create_list_from_file(path)
         name_list_dictionary[list_name] = name_list
     return name_list_dictionary
 
@@ -381,7 +424,7 @@ def generate_assessment_outcomes_from_helper_entities_and_lists(students, scores
     where_taken_name = institution_hierarchy.school_name
     asmt_grade = section.grade
     enrl_grade = section.grade
-    date_taken = util_2.generate_date_given_assessment(assessment)
+    date_taken = util.generate_date_given_assessment(assessment)
     date_taken_day = date_taken.day
     date_taken_month = date_taken.month
     date_taken_year = date_taken.year
@@ -517,7 +560,8 @@ def calculate_number_of_schools(school_min, school_max, school_avg):
     @param school_max: The Maximum number of schools the school can contain
     @return: An int representing the number of schools
     '''
-    number_of_schools = gauss_one(school_min, school_max, school_avg)
+    standard_dev, _r_avg = guess_std(school_min, school_max, school_avg)
+    number_of_schools = gauss_one(school_min, school_max, school_avg, standard_dev)
     return int(number_of_schools)
 
 
@@ -529,7 +573,8 @@ def calculate_number_of_students(student_min, student_max, student_avg):
     @param student_avg: The average number of students
     @return: An int representing the number of students to use, based on a gaussian distribution
     '''
-    number_of_students = gauss_one(student_min, student_max, student_avg)
+    standard_dev, _r_avg = guess_std(student_min, student_max, student_avg)
+    number_of_students = gauss_one(student_min, student_max, student_avg, standard_dev)
     return int(number_of_students)
 
 

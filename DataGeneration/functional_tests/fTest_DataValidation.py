@@ -1,7 +1,7 @@
 import unittest
 import csv
 import os
-import entities_2
+import entities
 import itertools
 from generate_data import ENTITY_TO_PATH_DICT
 from zope.component.tests.examples import comp
@@ -40,13 +40,13 @@ cut_point3 = get_scores()[CUT_POINTS][2]
 class DataGenerationValidation(unittest.TestCase):
 
 # Get header values from Configuration file
-    dim_inst_hier = entities_2.InstitutionHierarchy.getHeader()
-    dim_staff = entities_2.Staff.getHeader()
-    dim_student = entities_2.Student.getHeader()
-    dim_section = entities_2.Section.getHeader()
-    dim_asmt = entities_2.Assessment.getHeader()
-    fact_asmt_outcome = entities_2.AssessmentOutcome.getHeader()
-    external_user_student_rel = entities_2.ExternalUserStudent.getHeader()
+    dim_inst_hier = entities.InstitutionHierarchy.getHeader()
+    dim_staff = entities.Staff.getHeader()
+    dim_student = entities.Student.getHeader()
+    dim_section = entities.Section.getHeader()
+    dim_asmt = entities.Assessment.getHeader()
+    fact_asmt_outcome = entities.AssessmentOutcome.getHeader()
+    external_user_student_rel = entities.ExternalUserStudent.getHeader()
 
     # Create dictionary to store Headers 
     header_dict = {}

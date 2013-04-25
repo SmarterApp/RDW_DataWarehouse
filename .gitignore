@@ -25,3 +25,4 @@ smarter.egg-info
 # to the csv directory  #
 #########################
 .project
+DataGeneration/.settings

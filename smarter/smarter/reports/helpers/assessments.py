@@ -75,7 +75,7 @@ def get_claims(number_of_claims=0, result=None, get_names_only=False):
 
             # TODO: refactor, process by subject
             if result['asmt_subject'] == 'Math' and index == 2:
-                claim_object['name2'] = 'Claim 2 & 4'
+                claim_object['name2'] = 'Claims 2 & 4'
 
             claims.append(claim_object)
 

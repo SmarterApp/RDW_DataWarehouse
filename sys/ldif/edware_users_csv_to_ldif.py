@@ -1,9 +1,10 @@
 #!/usr/bin/python
 # python edware_users_csv_to_ldif.py edware_header.ldif edware_users.csv edware_users.ldif
 # jbecker@wgen.net
-import psycopg2     # import postgres support
-import csv          # imports the csv module
-import sys          # imports the sys module
+import psycopg2                     # import postgres support
+import csv                          # imports the csv module
+import sys                          # imports the sys module
+import base64, hashlib, os          # imports hash library and stuff for sha1 passwords      
 
 # main
 def main():
@@ -151,9 +152,9 @@ def format_inetOrgPerson(_user, _uid, _email, _passwd):
                         "cn: " + _user + "\n" + \
                         "sn: " + lname + "\n" + \
                         "givenName: " + fname + "\n" + \
-                        "uid: " + _uid + "\n" + \
+                        "uid: " + _email + "\n" + \
                         "mail: " + _email + "\n" + \
-                        "userPassword: " + _passwd + "\n"
+                        "userPassword: " + ssha_password(_passwd) + "\n"
 
     return strInetOrgPerson + "\n"
 
@@ -169,5 +170,9 @@ def format_groupOfNames(_group, _user_roles):
         
     return strGroupOfNames + "\n"
 
+def ssha_password(_passwd):
+    salt = os.urandom(8)
+    return '{SSHA}' + base64.b64encode(hashlib.sha1(_passwd + salt).digest() + salt)
+    
 if __name__ == "__main__":
     main()

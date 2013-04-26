@@ -42,6 +42,8 @@ def destroy_sqlite(datasource_name=''):
     '''
     drop tables from memory
     and destory sqlite
+    @param datasource_name: the datasource name
+    @type datasource_name: string
     '''
     dbUtil = component.queryUtility(IDbUtil, name=datasource_name)
     __engine = dbUtil.get_engine()

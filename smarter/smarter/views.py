@@ -4,12 +4,14 @@ Created on Apr 19, 2013
 @author: dip
 '''
 
-from pyramid.view import notfound_view_config
-from pyramid.httpexceptions import HTTPMovedPermanently, HTTPNotFound
+from pyramid.view import notfound_view_config, view_config
+from pyramid.httpexceptions import HTTPMovedPermanently, HTTPNotFound,\
+    HTTPInternalServerError
 
 
+@view_config(context=HTTPInternalServerError)
 @notfound_view_config()
-def notfound_view_get(request):
+def error_handler(request):
     '''
     All Not found gets redirected here
     '''

@@ -16,6 +16,8 @@ from database.data_importer import import_csv_dir
 def read_csv(dir_name):
     '''
     Read csv file from the directory
+    @param dir_name: the directory name
+    @type dir_name: string
     '''
     csv_file_map = {}
     csv_file_list = []
@@ -40,6 +42,10 @@ def check_tables(list_tables, csv_file_map):
     '''
     Check list of tables against list of csv files.
     return missing list of tables and unnecessary csv files
+    @param list_tables: the table list
+    @type list_tables: list
+    @param csv_file_map: the matching csv files
+    @type csv_file_map: dict
     '''
     table_lookup = {}
     for table in list_tables:
@@ -57,6 +63,8 @@ def check_tables(list_tables, csv_file_map):
 def read_fields_name(target_csv_file):
     '''
     return list of field name from csv
+    @param target_csv_file: the target csv file path
+    @type target_csv_file: string
     '''
     field_names = []
     with open(target_csv_file) as file_obj:
@@ -71,6 +79,9 @@ def check_fields(target_table, target_csv_file):
     check whether filds are missing from csv file or not.
     First line always list of fields; otherwise, return None immediately
     return tuplet, if everything is okay, each values in the tuplet is empty.
+    @param target_table: the target table
+    @param target_csv_file: the target csv file path
+    @type target_csv_file: string
     '''
     missing_fields = []
     list_of_fields = read_fields_name(target_csv_file)
@@ -88,6 +99,9 @@ def check_fields_in_order(target_table, target_csv_file):
     '''
     check whether fiedls in csv header are in order.
     return true or false
+    @param target_table: the target table
+    @param target_csv_file: the target csv file path
+    @type target_csv_file: string
     '''
     result = True
     list_of_fields = read_fields_name(target_csv_file)
@@ -102,12 +116,12 @@ def check_fields_in_order(target_table, target_csv_file):
 def run_validation(metadata=None, missing_table_ignore=False, missing_field_ignore=False, dir_name='/please_specify_dir', verbose=False):
     '''
     run validation
-    metadata: specify metadata for validation
-    force_foreign: enforce foreign key
-    missing_table_ignore: ignoring missing table from the list of csv
-    missing_field_ignore: ignoring missing fields from the csv
-    dir_name: the directory has all csv files
-    verbose: verboseing sqlite output
+    @param metadata: specify metadata for validation
+    @param force_foreign: enforce foreign key
+    @param missing_table_ignore: ignoring missing table from the list of csv
+    @param missing_field_ignore: ignoring missing fields from the csv
+    @param dir_name: the directory has all csv files
+    @param verbose: verboseing sqlite output
     '''
     try:
         create_sqlite(use_metadata_from_db=False, echo=verbose, metadata=metadata)

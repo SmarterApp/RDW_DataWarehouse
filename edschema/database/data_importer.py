@@ -36,6 +36,8 @@ class DataImporterCastException(Exception):
 def __cast_data_type(column, value):
     '''
     cast value dynamically
+    @param column: the column object
+    @param value: the value to get casted
     '''
     # if value is not None and length is not 0 AND not nullable
     # get python_type property, then cast
@@ -58,6 +60,10 @@ def __cast_data_type(column, value):
 
 
 def __check_data_length(column, value):
+    '''
+    @param column: the column object
+    @param value: the value to be inserted into the column
+    '''
     if value is None:
         return
 
@@ -68,6 +74,12 @@ def __check_data_length(column, value):
 
 
 def __import_csv_file(csv_file, connection, table):
+    '''
+    @param csv_file: the csv file path
+    @type csv_file: string
+    @param connection: the connection object
+    @param table: the table object we are importing into
+    '''
     with open(csv_file) as file_obj:
         # first row of the csv file is the header names
         reader = csv.DictReader(file_obj, delimiter=',')
@@ -95,6 +107,11 @@ def import_csv_dir(resources_dir, datasource_name=''):
     return
         True: load data successfully
         False: no data loaded or failed to load data
+
+    @param resources_dir: the resource directory
+    @type resources_dir: string
+    @param datasource_name: the data source name
+    @type datasource_name: string
     '''
     __success = False
     with DBConnection(name=datasource_name) as connection:

@@ -146,7 +146,7 @@ def format_inetOrgPerson(_user, _uid, _email, _passwd):
         fname = user[1]
         lname = user[2]
     
-    passwd = fname[0:1] + lname + "1234"
+    passwd = fname[0:1].lower() + lname.lower() + "1234"
     
     strInetOrgPerson =  "dn: cn="+ _user +",ou=people,ou=environment,dc=edwdc,dc=net\n" + \
                         "objectClass: inetOrgPerson\n" + \

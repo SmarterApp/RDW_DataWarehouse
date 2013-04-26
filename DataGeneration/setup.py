@@ -8,7 +8,9 @@ CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 requires = ['psycopg2',
             'SQLAlchemy',
             'py-postgresql',
-            'mock']
+            'mock',
+            'zope.component >= 4.0.2',
+            'zope.interface >= 4.0.3']
 
 tests_require = requires + [
     'nose >= 1.2.1',

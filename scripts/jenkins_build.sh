@@ -121,8 +121,13 @@ function run_epydoc {
     epydoc --html -o $WORKSPACE/epydoc --name DataGeneration --parse-only --no-sourcecode "$WORKSPACE/$1"
 
     cd "$WORKSPACE"
+    if [ -d "epydoc_gh_pages" ]; then
+        rm -rf epydoc_gh_pages    
+    fi
+    
     mkdir epydoc_gh_pages
     cd epydoc_gh_pages
+
     git clone -b gh-pages git@github.wgenhq.net:Ed-Ware-SBAC/fixture_data_generation.git
     cd fixture_data_generation
     rm *

@@ -132,6 +132,10 @@ function run_epydoc {
     cd fixture_data_generation
     rm *
     cp -r "$WORKSPACE/epydoc/" .
+    if [ -d "epydoc" ]; then
+        mv epydoc/\* .
+        rm -r epydoc
+    fi
     git add -A
     git commit -m "Adding New epydocs"
     git push

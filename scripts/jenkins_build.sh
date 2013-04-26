@@ -111,6 +111,8 @@ function run_func_tests {
     echo "Running Functional Tests"
 
     cd "$WORKSPACE/$1"
+
+    python src/generate_data.py
     nosetests functional_tests/fTest_DataValidation.py
 }
 

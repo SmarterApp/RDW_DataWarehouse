@@ -26,6 +26,7 @@ RAND_ADJ_PNT_HI = 'random_adjustment_points_hi'
 FROM_DATE = 'from_date'
 TO_DATE = 'to_date'
 MOST_RECENT = 'most_recent'
+SUBJECT_AND_PERCENTAGES = 'subjects_and_percentages'
 
 
 def get_school_types():
@@ -64,7 +65,7 @@ def get_state_types():
     'district_types_and_counts' is a dictionary that describes how many Big, Medium and Small districts to have in the state
     'subjects_and_percentages' is a dictionary that describes what percentage of students should have scores for a Math assessment and an ELA assessment
     """
-    state_types = {'typical_1': {'district_types_and_counts': {'Big': 2, 'Medium': 6, 'Small': 40}, 'subjects_and_percentages': {'Math': .9, 'ELA': .9}}
+    state_types = {'typical_1': {'district_types_and_counts': {'Big': 2, 'Medium': 6, 'Small': 40}, 'subjects_and_percentages': {'Math': .99, 'ELA': .99}}
                    }
     return state_types
 

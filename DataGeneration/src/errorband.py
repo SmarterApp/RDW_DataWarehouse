@@ -59,23 +59,25 @@ def _clip_eb(ebleft, ebright, smin, smax, clip_eb):
     return ebleft, ebright
 
 
-def calc_eb(score, smin, smax, scenter, ebmin, ebstep, rndlo=0, rndhi=0, clip_eb=True):
+def calc_eb(score, smin, smax, scenter, ebmin, ebstep, rndlo=0, rndhi=0, clip_eb=True, ensure_symmetry=True):
     """ calculate and return the error band (ebleft, ebright)
 
         INPUT:
-        score = actual score achived by student
-        smin = minimum score
-        smax = maximum score
-        scenter = center of score range (1800)
-        ebmin = minimum error band size (37.5)
-        ebstep = size of error band per score point (step size)
-        rndlo = low value of random number to be added to calculate error band
-        rndhi = high value of random number to be added to calculate error band
-        clip_eb = if True then 'clip' the calculate error band so that it does not exceed smin or smax
+        @param score: actual score achived by student
+        @param smin: minimum score
+        @param smax: maximum score
+        @param scenter: center of score range (1800)
+        @param ebmin: minimum error band size (37.5)
+        @param ebstep: size of error band per score point (step size)
+        @param rndlo: low value of random number to be added to calculate error band
+        @param rndhi: high value of random number to be added to calculate error band
+        @param clip_eb: if True then 'clip' the calculate error band so that it does not exceed smin or smax
+        @param ensure_symmetry: if True then ensure both error bands are equal distance away from the score
 
         Note: scenter, ebmin, ebstep can be first calculted using the function calc_eb_parms()
 
         OUTPUT:
+        @return:
         ebleft = error band score to the left of the actual score (possibly clipped at smin)
         ebright = error band score to the right of the actual score (possibly clipped at smax)
         ebhalf = unclipped width of half the error band
@@ -84,4 +86,12 @@ def calc_eb(score, smin, smax, scenter, ebmin, ebstep, rndlo=0, rndhi=0, clip_eb
     ebhalf = _add_random(ebhalf, rndlo, rndhi)              # make some random adjustment if required
     ebleft, ebright = _calc_band(score, ebhalf)             # calculate actual error band scores
     ebleft, ebright = _clip_eb(ebleft, ebright, smin, smax, clip_eb)    # clip error band scores at min/max if flag set
+    if ensure_symmetry:
+        size_to_right = abs(round(ebright) - score)
+        size_to_left = abs(round(ebleft) - score)
+        if size_to_right != size_to_left:
+            min_size = min(size_to_right, size_to_left)
+            ebleft, ebright = (score - min_size, score + min_size)
+            assert ebleft >= smin and ebright <= smax
+
     return ebleft, ebright, ebhalf

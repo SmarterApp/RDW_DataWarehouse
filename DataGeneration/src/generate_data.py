@@ -100,6 +100,7 @@ def generate_data_from_config_file(config_module):
         state_type_name = state[config_module.STATE_TYPE]
         state_type = state_types[state_type_name]
         district_types_and_counts = state_type[config_module.DISTRICT_TYPES_AND_COUNTS]
+        subject_percentages = state_type[config_module.SUBJECT_AND_PERCENTAGES]
 
         # TODO: should we add some randomness here? What are acceptable numbers? 5-10? 10-20?
         number_of_state_level_staff = 10
@@ -138,15 +139,15 @@ def generate_data_from_config_file(config_module):
                 for school_type_name in schools_by_type.keys():
                     schools = schools_by_type[school_type_name]
                     school_type = school_types[school_type_name]
-                    school_type_institution_hierarchies = generate_and_populate_institution_hierarchies(schools, school_type,
-                                                                                                        current_state, district, assessments)
+                    school_type_institution_hierarchies = generate_and_populate_institution_hierarchies(schools, school_type, current_state,
+                                                                                                        district, assessments, subject_percentages)
                     state_institution_hierarchies += school_type_institution_hierarchies
                 create_csv(district_level_staff, ENTITY_TO_PATH_DICT[Staff])
         create_csv(state_level_staff, ENTITY_TO_PATH_DICT[Staff])
         create_csv(state_institution_hierarchies, ENTITY_TO_PATH_DICT[InstitutionHierarchy])
 
 
-def generate_and_populate_institution_hierarchies(schools, school_type, state, district, assessments):
+def generate_and_populate_institution_hierarchies(schools, school_type, state, district, assessments, subject_percentages):
     '''
     Given institution information (info about state, district, school), we create InstitutionHierarchy objects.
     We create one InstitutionHierarchy object for each school given in the school list.
@@ -170,11 +171,11 @@ def generate_and_populate_institution_hierarchies(schools, school_type, state, d
         institution_hierarchy = generate_institution_hierarchy_from_helper_entities(state, district, school)
         institution_hierarchies.append(institution_hierarchy)
         # TODO: Don't populate the schools here. When this function returns, loop over the list and populate each school
-        populate_school(institution_hierarchy, school_type, assessments)
+        populate_school(institution_hierarchy, school_type, assessments, subject_percentages)
     return institution_hierarchies
 
 
-def populate_school(institution_hierarchy, school_type, assessments):
+def populate_school(institution_hierarchy, school_type, assessments, subject_percentages):
 
     '''
     Populate the provided the institution with staff, students, teachers, sections
@@ -250,7 +251,8 @@ def populate_school(institution_hierarchy, school_type, assessments):
                 assessment = select_assessment_from_list(assessments, grade, subject_name)
                 teacher_guid = teachers_in_section[0].staff_guid
 
-                students_to_take_assessment = get_subset_of_students(students_in_section, .9)
+                percent_to_take_assessment = subject_percentages[subject_name]
+                students_to_take_assessment = get_subset_of_students(students_in_section, percent_to_take_assessment)
 
                 create_csv(students_to_take_assessment, ENTITY_TO_PATH_DICT[Student])
                 asmt_outcomes_in_section = generate_assessment_outcomes_from_helper_entities_and_lists(students_to_take_assessment, score_list, teacher_guid, section, institution_hierarchy, assessment,

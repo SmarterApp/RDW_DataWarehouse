@@ -215,7 +215,7 @@ function main {
         setup_python2_virtualenv
         setup_epydoc_dependencies
         run_epydoc $MAIN_PKG
-    elif [ ${MODE:=""} == "FUNC"]; then
+    elif [ ${MODE:=""} == "FUNC" ]; then
           echo "func mode"
           set_vars
           setup_virtualenv $@

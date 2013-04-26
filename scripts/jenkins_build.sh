@@ -126,11 +126,11 @@ function run_epydoc {
     git clone -b gh-pages git@github.wgenhq.net:Ed-Ware-SBAC/fixture_data_generation.git
     cd fixture_data_generation
     rm *
-    cp "$WORKSPACE/$1/*" .
+    cp "$WORKSPACE/epydoc/*" .
     git add -A
     git committ -m "Adding New epydocs"
     git push
-    
+
     echo "New Epydoc Pushed"
 }
 

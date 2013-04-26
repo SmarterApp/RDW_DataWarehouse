@@ -9,7 +9,10 @@ Created on Feb 25, 2013
 def convert_to_int(value):
     converted_value = None
     if value is not None:
-        converted_value = int(value)
+        try:
+            converted_value = int(value)
+        except ValueError:
+            return None
     return converted_value
 
 

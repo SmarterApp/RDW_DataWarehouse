@@ -20,6 +20,7 @@ from edauth.saml2.saml_idp_metadata_manager import IDP_metadata_manager
 from edauth import logger
 from urllib.parse import parse_qs, urlsplit, urlunsplit
 from edauth.security.utils import SECURITY_EVENT_TYPE, _get_cipher
+from datetime import datetime
 
 
 @view_config(route_name='login', permission=NO_PERMISSION_REQUIRED)
@@ -59,18 +60,22 @@ def login(request):
     # Split the url to read query params for saml_login
     split_url = urlsplit(referrer)
     query_params = parse_qs(split_url.query, keep_blank_values=True)
-    saml_tries = query_params.get('sl')
-    tries = 0
-    if saml_tries and len(saml_tries) > 0:
-        for saml_try in saml_tries:
-            tries += convert_to_int(saml_try)
+    last_saml_time = query_params.get('sl')
+    current_time = datetime.now().strftime('%s')
+
+    if last_saml_time and len(last_saml_time) > 0:
+        last_access = 0
+        for saml_try in last_saml_time:
+            saml_try = convert_to_int(saml_try)
+            if saml_try and saml_try > last_access:
+                last_access = saml_try
         # Protect ourselves from infinite loop
-        if tries > 2:
+        duration = int(current_time) - last_access
+        if duration < 3:
             # we cannot rely on notfound_view_config
             return HTTPMovedPermanently(location=request.application_url + '/error')
-    tries += 1
 
-    query_params['sl'] = tries
+    query_params['sl'] = current_time
     # rebuild url
     url_query_params = urllib.parse.urlencode(query_params, doseq=True)
     new_url = (split_url[0], split_url[1], split_url[2], url_query_params, split_url[4])

@@ -1,0 +1,5197 @@
+version: 1
+
+dn: ou=environment,dc=edwdc,dc=net
+objectClass: organizationalUnit
+ou: environment
+
+dn: ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: organizationalUnit
+ou: people
+
+dn: ou=groups,ou=environment,dc=edwdc,dc=net
+objectClass: organizationalUnit
+ou: groups
+
+dn: cn=Matthew Donovan,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Matthew Donovan
+sn: Donovan
+givenName: Matthew
+uid: matthew.donovan@appo.k12.de.us
+mail: matthew.donovan@appo.k12.de.us
+userPassword: {SSHA}jSH1yvEzq3mtGq0UxbkxeMODVhziVF9G4mc4/Q==
+
+dn: cn=Brian Donahue,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Brian Donahue
+sn: Donahue
+givenName: Brian
+uid: bdonahue@cape.k12.de.us
+mail: bdonahue@cape.k12.de.us
+userPassword: {SSHA}PMzpGREqumAUsK5ay6ahY0cJrKEpkTpAIuQyBA==
+
+dn: cn=Robert Adams,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Robert Adams
+sn: Adams
+givenName: Robert
+uid: robert.adams@wsd.k12.de.us
+mail: robert.adams@wsd.k12.de.us
+userPassword: {SSHA}ypoBxYZQ2uM8bfeqszE6eQgbVqJwAkwxZd8aqw==
+
+dn: cn=Audrey Erschen,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Audrey Erschen
+sn: Erschen
+givenName: Audrey
+uid: aerschen@pca.k12.de.us
+mail: aerschen@pca.k12.de.us
+userPassword: {SSHA}9xbZfSgdyj0T3TUA4N/ZFoqOZXGxftxcH4yiTw==
+
+dn: cn=Jessilene Corbett,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Jessilene Corbett
+sn: Corbett
+givenName: Jessilene
+uid: jessilene.corbett@cr.k12.de.us
+mail: jessilene.corbett@cr.k12.de.us
+userPassword: {SSHA}z7+eI6aJdugHoY5VhUIP5zNivTlo+YjRSMpm/A==
+
+dn: cn=Ann Lewis,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Ann Lewis
+sn: Lewis
+givenName: Ann
+uid: ann.lewis@laurel.k12.de.us
+mail: ann.lewis@laurel.k12.de.us
+userPassword: {SSHA}A0B0vYlZVYh5FGPdtkvCEy89wcA8UsJb4TbDJQ==
+
+dn: cn=Thomas Vari,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Thomas Vari
+sn: Vari
+givenName: Thomas
+uid: Thomas.Vari@appo.k12.de.us
+mail: Thomas.Vari@appo.k12.de.us
+userPassword: {SSHA}SWGM5k7eqVgylw2R88QWAtm/bdXFCeL7Casfiw==
+
+dn: cn=Todd Fishburn,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Todd Fishburn
+sn: Fishburn
+givenName: Todd
+uid: tfishburn@seaford.k12.de.us
+mail: tfishburn@seaford.k12.de.us
+userPassword: {SSHA}/S6JE5mqPk90EUCjNaiEMeadsz6FMnohjbmm1w==
+
+dn: cn=Gary Langenberg,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Gary Langenberg
+sn: Langenberg
+givenName: Gary
+uid: langgary@southerndoor.k12.wi.us
+mail: langgary@southerndoor.k12.wi.us
+userPassword: {SSHA}2JluhGQmP2YaTLgeW4se1s9J5oVCqeaBMZFQCQ==
+
+dn: cn=Alisa Estrella Bender,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Alisa Estrella Bender
+sn: Bender
+givenName: Alisa
+uid: Alisa_Estrella_Bender@notes.k12.hi.us
+mail: Alisa_Estrella_Bender@notes.k12.hi.us
+userPassword: {SSHA}PS1UGQxHqDiiVS0XX5gIjTtoYlRPz+9HiF+sGQ==
+
+dn: cn=Marsha Nakamura,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Marsha Nakamura
+sn: Nakamura
+givenName: Marsha
+uid: marsha_nakamura@notes.k12.hi.us
+mail: marsha_nakamura@notes.k12.hi.us
+userPassword: {SSHA}DCA5cY7BbVv4omYCein1eZaEKWV/GGaiasLcNQ==
+
+dn: cn=Lauren O'Leary,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Lauren O'Leary
+sn: O'Leary
+givenName: Lauren
+uid: lauren_oleary@notes.k12.hi.us
+mail: lauren_oleary@notes.k12.hi.us
+userPassword: {SSHA}nZuAnjcde/42ZeweJ8vTf6EjgtybN0c9OVi9ig==
+
+dn: cn=Laureen Dunn,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Laureen Dunn
+sn: Dunn
+givenName: Laureen
+uid: laureen_dunn@notes.k12.hi.us
+mail: laureen_dunn@notes.k12.hi.us
+userPassword: {SSHA}lJTT8tmUcU/kVEj2Td/ybdoUAlZF6DCNtShOiA==
+
+dn: cn=Stephanie Feldner,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Stephanie Feldner
+sn: Feldner
+givenName: Stephanie
+uid: sfeldner@misd.k12.wi.us
+mail: sfeldner@misd.k12.wi.us
+userPassword: {SSHA}reGgURVFv1scJhJie7MB3iFGqoTAoDP7i9zncg==
+
+dn: cn=Michelle Schmidt,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Michelle Schmidt
+sn: Schmidt
+givenName: Michelle
+uid: mschmidt@hartlake.org
+mail: mschmidt@hartlake.org
+userPassword: {SSHA}3u2e+PQMYTQOwbrWF/WtjzqHUPo4kkxmWwZBIg==
+
+dn: cn=Kate Tesch,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Kate Tesch
+sn: Tesch
+givenName: Kate
+uid: kate.tesch@superior.k12.wi.us
+mail: kate.tesch@superior.k12.wi.us
+userPassword: {SSHA}5msg46uD1DWqC+qC53Wf3ThtMNfDopwrmCDtBg==
+
+dn: cn=Sue Sewell,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Sue Sewell
+sn: Sewell
+givenName: Sue
+uid: sue_sewell@columbus.k12.wi.us
+mail: sue_sewell@columbus.k12.wi.us
+userPassword: {SSHA}2BcpkbeNHwZs+JsMIg4Sv9ytqaJ1+G8PjKv85Q==
+
+dn: cn=Bill Klein,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Bill Klein
+sn: Klein
+givenName: Bill
+uid: bklein@sheboygan.k12.wi.us
+mail: bklein@sheboygan.k12.wi.us
+userPassword: {SSHA}R3DtHIIr/a62ncC9/uLhuTwtueYfkUJL/KX2pg==
+
+dn: cn=Teresa Carranza,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Teresa Carranza
+sn: Carranza
+givenName: Teresa
+uid: tmcarranza@madison.k12.wi.us
+mail: tmcarranza@madison.k12.wi.us
+userPassword: {SSHA}50VpSAydXGj0GIBt48njQ5ouf7TFSn3d66lPpA==
+
+dn: cn=Brett Brodeen,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Brett Brodeen
+sn: Brodeen
+givenName: Brett
+uid: brett.brodeen@superior.k12.wi.us
+mail: brett.brodeen@superior.k12.wi.us
+userPassword: {SSHA}W23NQCej5vuKdAsUOHHiD1tBAMh4RazqN7obww==
+
+dn: cn=Karen Remy-Anderson,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Karen Remy-Anderson
+sn: Remy-Anderson
+givenName: Karen
+uid: kremy-anderson@nthurston.k12.wa.us
+mail: kremy-anderson@nthurston.k12.wa.us
+userPassword: {SSHA}ITVIbdRj00XkiL2rtQGTGdQaZtbE8nlc6D++ug==
+
+dn: cn=Whitney Meissner,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Whitney Meissner
+sn: Meissner
+givenName: Whitney
+uid: whitney_meissner@csd49.org
+mail: whitney_meissner@csd49.org
+userPassword: {SSHA}1kiqbW0S2gXHFkJVjrjZOdxD6wmmiIbysArScA==
+
+dn: cn=Peter Schurke,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Peter Schurke
+sn: Schurke
+givenName: Peter
+uid: schurkep@edmonds.wednet.edu
+mail: schurkep@edmonds.wednet.edu
+userPassword: {SSHA}1Ki7eKu0S2xDlPJt6zyeQB5IDga+SGYG0jzJrA==
+
+dn: cn=Joyce Ott,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Joyce Ott
+sn: Ott
+givenName: Joyce
+uid: jott@nthurston.k12.wa.us
+mail: jott@nthurston.k12.wa.us
+userPassword: {SSHA}s6KBH82byBMy7TjakA3yr4/1BFg6vgmWq+yaRQ==
+
+dn: cn=Jay Jordan,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Jay Jordan
+sn: Jordan
+givenName: Jay
+uid: Jay.jordan@bellinghamschools.org
+mail: Jay.jordan@bellinghamschools.org
+userPassword: {SSHA}Du9S/OBA4zQ0RSg7CHUp4gJTdHJHgsdlT4qd+Q==
+
+dn: cn=John Mitchell,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: John Mitchell
+sn: Mitchell
+givenName: John
+uid: jmitchel@cloverpark.k12.wa.us
+mail: jmitchel@cloverpark.k12.wa.us
+userPassword: {SSHA}x9OAlI7/jhpvzbA/t2SPh+kF+X8S7cWdolfd1g==
+
+dn: cn=Bob Richards,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Bob Richards
+sn: Richards
+givenName: Bob
+uid: brichards@nthurston.k12.wa.us
+mail: brichards@nthurston.k12.wa.us
+userPassword: {SSHA}3YEVOyOjK2J4pNDpLfAJ1NIsljsy49HX1uzmuA==
+
+dn: cn=Debra Gilbreath,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Debra Gilbreath
+sn: Gilbreath
+givenName: Debra
+uid: Debra_Gilbreath@csd49.org
+mail: Debra_Gilbreath@csd49.org
+userPassword: {SSHA}49+crEVfaMFSBAdexCh2qtkQMFDf8k6rOY/Z8A==
+
+dn: cn=Matt Whitten,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Matt Whitten
+sn: Whitten
+givenName: Matt
+uid: matthew.whitten@bellinghamschools.org
+mail: matthew.whitten@bellinghamschools.org
+userPassword: {SSHA}K1hvl16+XfCaHTUq09A1m1iPI5YL8Zo/hGIk2g==
+
+dn: cn=Cory allen Heidelberger,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Cory allen Heidelberger
+sn: Heidelberger
+givenName: Cory
+uid: cheidelb@spearfish.k12.sd.us
+mail: cheidelb@spearfish.k12.sd.us
+userPassword: {SSHA}lEm52SGgxiSzDG1AhhS/owRTidUsNTaBu9jt3Q==
+
+dn: cn=Sally Crowser,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Sally Crowser
+sn: Crowser
+givenName: Sally
+uid: sally.crowser@k12.sd.us
+mail: sally.crowser@k12.sd.us
+userPassword: {SSHA}qYswXLwoLjCIcMvGYbGF0XP26IMJF6h20chM9A==
+
+dn: cn=Stacy Huber,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Stacy Huber
+sn: Huber
+givenName: Stacy
+uid: stacy.huber@k12.sd.us
+mail: stacy.huber@k12.sd.us
+userPassword: {SSHA}xKfbi/kK6MDx9icb5ygTj+F51yTHx5RTXtbNZQ==
+
+dn: cn=Terri Anderson-schlader,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Terri Anderson-schlader
+sn: Anderson-schlader
+givenName: Terri
+uid: terri.schlader@k12.sd.us
+mail: terri.schlader@k12.sd.us
+userPassword: {SSHA}PTPVpYRLU5CALxghyk8T6pIsY+vt4RA7J/tREA==
+
+dn: cn=Mary Fried,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Mary Fried
+sn: Fried
+givenName: Mary
+uid: mary.fried@k12.sd.us
+mail: mary.fried@k12.sd.us
+userPassword: {SSHA}mEYhvvKMcYKnYYgAMXeAhRXr52hmPbLi/cizrg==
+
+dn: cn=Blake Dahlberg,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Blake Dahlberg
+sn: Dahlberg
+givenName: Blake
+uid: blake.dahlberg@k12.sd.us
+mail: blake.dahlberg@k12.sd.us
+userPassword: {SSHA}Pgba3M/Ae8nAXoeXtOFPedwuKiwIDDB3mkErLA==
+
+dn: cn=Renee Fuentes Campa,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Renee Fuentes Campa
+sn: Campa
+givenName: Renee
+uid: rcampa@lausd.net
+mail: rcampa@lausd.net
+userPassword: {SSHA}9M5ZP5QCVxur/cCzMkt1TwKD+IAYSlYYY18FEQ==
+
+dn: cn=Alysia Hobbs Odipo,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Alysia Hobbs Odipo
+sn: Odipo
+givenName: Alysia
+uid: ahobbs@walnutvalley.k12.ca.us
+mail: ahobbs@walnutvalley.k12.ca.us
+userPassword: {SSHA}GYlSdfPMW8g8MM1mtcTjoRNGYePZHbQvNr8dmw==
+
+dn: cn=Gerald Williams,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Gerald Williams
+sn: Williams
+givenName: Gerald
+uid: gwilliams@placercoe.k12.ca.us
+mail: gwilliams@placercoe.k12.ca.us
+userPassword: {SSHA}jrAbVOk9nQqfXGZs53HKwWVHSfnpA7QTsjf/6w==
+
+dn: cn=Olga De Santa Anna,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Olga De Santa Anna
+sn: Anna
+givenName: Olga
+uid: olga_desantaanna@pvusd.net
+mail: olga_desantaanna@pvusd.net
+userPassword: {SSHA}pcIkM2olBQYJJk5hRZ4nc7geAfxK9CODlTyf7g==
+
+dn: cn=Andrew Goodwin,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Andrew Goodwin
+sn: Goodwin
+givenName: Andrew
+uid: agoodwin@lakecoe.org
+mail: agoodwin@lakecoe.org
+userPassword: {SSHA}xUei4vl7uEoRQXUim2Jylb+bs/NdaAtEBUm0Wg==
+
+dn: cn=Kim Guzzetti,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Kim Guzzetti
+sn: Guzzetti
+givenName: Kim
+uid: kguzzett@bcoe.org
+mail: kguzzett@bcoe.org
+userPassword: {SSHA}hYu8/05Qp2dOM04Uy24sN+i1hABcTry3tdGp0A==
+
+dn: cn=Devin Vodicka,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Devin Vodicka
+sn: Vodicka
+givenName: Devin
+uid: devinvodicka@vusd.k12.ca.us
+mail: devinvodicka@vusd.k12.ca.us
+userPassword: {SSHA}PBGq5wBZ6u5uXviIli6BMHd3hSDx3nA4+K14FQ==
+
+dn: cn=J. Antonio Gaitan,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: J. Antonio Gaitan
+sn: Gaitan
+givenName: J.
+uid: jgaitan@spuhsd.org
+mail: jgaitan@spuhsd.org
+userPassword: {SSHA}2fANJ0H8xM/dyPZOdgaEbO0XsvmNceskFZeEPQ==
+
+dn: cn=Mark Corti,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Mark Corti
+sn: Corti
+givenName: Mark
+uid: mcorti@srvusd.net
+mail: mcorti@srvusd.net
+userPassword: {SSHA}JL8tclDgflmx0wKCJmoZnbzqB6o3t+yPfscRHQ==
+
+dn: cn=Pam Tyson,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Pam Tyson
+sn: Tyson
+givenName: Pam
+uid: ptyson@cccoe.k12.ca.us
+mail: ptyson@cccoe.k12.ca.us
+userPassword: {SSHA}Yd04BoObmx2pyW0quU3xcgCDkVeEPD6ZVSwEEA==
+
+dn: cn=Phonekeo Siharath,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Phonekeo Siharath
+sn: Siharath
+givenName: Phonekeo
+uid: psiharath@madison.k12.wi.us
+mail: psiharath@madison.k12.wi.us
+userPassword: {SSHA}UAp5TD9wTp3hnoduM/5Q5hL3zpbvusOzyY+STw==
+
+dn: cn=Wendy Neyhard,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Wendy Neyhard
+sn: Neyhard
+givenName: Wendy
+uid: wendyneyhard@hasd.org
+mail: wendyneyhard@hasd.org
+userPassword: {SSHA}FGijgHn4g/41/fn4aSTuBsavButZM1LhVUTrtQ==
+
+dn: cn=Kirk Zeeck,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Kirk Zeeck
+sn: Zeeck
+givenName: Kirk
+uid: kirk.zeeck@k12.sd.us
+mail: kirk.zeeck@k12.sd.us
+userPassword: {SSHA}KgSa6dOBcp7o1lyqBQFe8Ud5RoY5wTvKnJJUcg==
+
+dn: cn=Laura Lethe,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Laura Lethe
+sn: Lethe
+givenName: Laura
+uid: lethe_laura@salkeiz.k12.or.us
+mail: lethe_laura@salkeiz.k12.or.us
+userPassword: {SSHA}l+dpmaGzBF2ZC5s2jfGV7YWXSeMKmELLcrOHVg==
+
+dn: cn=Anne Evans,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Anne Evans
+sn: Evans
+givenName: Anne
+uid: evansa@nwasco.k12.or.us
+mail: evansa@nwasco.k12.or.us
+userPassword: {SSHA}zhCaa1naxinFSAuA+rm+Jf5WWv5aaFvzyauAFw==
+
+dn: cn=Catherine Carlson,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Catherine Carlson
+sn: Carlson
+givenName: Catherine
+uid: carlson_catherine@salkeiz.k12.or.us
+mail: carlson_catherine@salkeiz.k12.or.us
+userPassword: {SSHA}fD8HeeB/fAc3WUIgNJgklfbyI0WBaQ+q15/DvA==
+
+dn: cn=Scott Lommori,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Scott Lommori
+sn: Lommori
+givenName: Scott
+uid: slommori@lyon.k12.nv.us
+mail: slommori@lyon.k12.nv.us
+userPassword: {SSHA}kiClAOlfVQ7m5NujHu8WLychF3kcrfOfPXcirA==
+
+dn: cn=Chad Buckendahl,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Chad Buckendahl
+sn: Buckendahl
+givenName: Chad
+uid: chad.buckendahl@alpinetesting.com
+mail: chad.buckendahl@alpinetesting.com
+userPassword: {SSHA}M+UU7bnxZC1vVtdVnUAgOK3pqs5nPD/xz17jog==
+
+dn: cn=Scott Bailey,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Scott Bailey
+sn: Bailey
+givenName: Scott
+uid: slbailey@washoeschools.net
+mail: slbailey@washoeschools.net
+userPassword: {SSHA}UZwtG6IZhDzby04wMI29eSuPoS+mdEFZ8p64ZQ==
+
+dn: cn=Greg Schraw,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Greg Schraw
+sn: Schraw
+givenName: Greg
+uid: gschraw@unlv.nevada.edu
+mail: gschraw@unlv.nevada.edu
+userPassword: {SSHA}jhsMemRYiXFeJwvOmnglnBBctSrWc1aJpmRE8Q==
+
+dn: cn=Ruth Gilbert,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Ruth Gilbert
+sn: Gilbert
+givenName: Ruth
+uid: rlgilber@interact.ccsd.net
+mail: rlgilber@interact.ccsd.net
+userPassword: {SSHA}qEFUktxOFomBvNI1l6+Jk4VG3qbPW47hd/94MA==
+
+dn: cn=Dawn Hagness,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Dawn Hagness
+sn: Hagness
+givenName: Dawn
+uid: dhagness@ecsdnv.net
+mail: dhagness@ecsdnv.net
+userPassword: {SSHA}0OKfhJy0IiM8mtdmVp5/ZoBxRAdzmI5vB0YdJg==
+
+dn: cn=Stephanie Wheeler,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Stephanie Wheeler
+sn: Wheeler
+givenName: Stephanie
+uid: swheeler@mansd.org
+mail: swheeler@mansd.org
+userPassword: {SSHA}NUVXjkAD24MPQf8rk9QPH1KtFu4o23qu/KsyZw==
+
+dn: cn=Pam Baim,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Pam Baim
+sn: Baim
+givenName: Pam
+uid: pbaim@waterbury.k12.ct.us
+mail: pbaim@waterbury.k12.ct.us
+userPassword: {SSHA}tpL8FOVG3wBN0P3hmGXejdB4RsukK3eO8/0QiQ==
+
+dn: cn=Dianna Veleke,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Dianna Veleke
+sn: Veleke
+givenName: Dianna
+uid: veleked@umatillasd.org
+mail: veleked@umatillasd.org
+userPassword: {SSHA}5FstWrCVLJnYBDMkw4IaBTME1jYv5OSsAun4gQ==
+
+dn: cn=Harriet R. Maclean,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Harriet R. Maclean
+sn: Maclean
+givenName: Harriet
+uid: hmaclean@srcs.org
+mail: hmaclean@srcs.org
+userPassword: {SSHA}VOjMFgskZn6naTnM4DHejjbmOSw9Uq/42Kg5iw==
+
+dn: cn=Dirk Van Curan,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Dirk Van Curan
+sn: Curan
+givenName: Dirk
+uid: dirk_vancuran@msad51.org
+mail: dirk_vancuran@msad51.org
+userPassword: {SSHA}bUKF8rikYamG2fnfEBtttejXE1vh8w8bqRNRkw==
+
+dn: cn=Matt Gonzales,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Matt Gonzales
+sn: Gonzales
+givenName: Matt
+uid: gonzalesma@grps.org
+mail: gonzalesma@grps.org
+userPassword: {SSHA}viNTNSwaJVtXg7Ru8+sKoEy31PVYI5VJSBVuJg==
+
+dn: cn=Aaron Weaver,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Aaron Weaver
+sn: Weaver
+givenName: Aaron
+uid: aaron.weaver@k12.sd.us
+mail: aaron.weaver@k12.sd.us
+userPassword: {SSHA}zfje1XR5sTjSfV+IqTgVuEaLvWYCK1nHZoVcVQ==
+
+dn: cn=Steve Quintus,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Steve Quintus
+sn: Quintus
+givenName: Steve
+uid: steve.quintus@sendit.nodak.edu
+mail: steve.quintus@sendit.nodak.edu
+userPassword: {SSHA}BI/hwZO7tWyPZcJ/SZzI4EdOi1XT2/zITQ52lg==
+
+dn: cn=Moureen David,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Moureen David
+sn: David
+givenName: Moureen
+uid: mdavid@cloverpark.k12.wa.us
+mail: mdavid@cloverpark.k12.wa.us
+userPassword: {SSHA}EH5fwnZxWDit+7eZNsidt1oD7rAUbDk4zw3bHw==
+
+dn: cn=Darren Guido,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Darren Guido
+sn: Guido
+givenName: Darren
+uid: darren.guido@capital.k12.de.us
+mail: darren.guido@capital.k12.de.us
+userPassword: {SSHA}dDV0jceFuLmvjucU9VdU34O+Qqxo2prrKf22BA==
+
+dn: cn=Debra Follman,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Debra Follman
+sn: Follman
+givenName: Debra
+uid: Deb.Follman@sendit.nodak.edu
+mail: Deb.Follman@sendit.nodak.edu
+userPassword: {SSHA}SpXgfWn76lwLNDAPJzm4oQ7w8afjXPaj38horg==
+
+dn: cn=Tonya Hunskor,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Tonya Hunskor
+sn: Hunskor
+givenName: Tonya
+uid: tonya.hunskor@sendit.nodak.edu
+mail: tonya.hunskor@sendit.nodak.edu
+userPassword: {SSHA}QXgP0pOBQrvk+Gv93NOOA1ZibMd9fi9f31PlZw==
+
+dn: cn=Tyler J. Hanson,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Tyler J. Hanson
+sn: Hanson
+givenName: Tyler
+uid: tyler_hanson@bismarckschools.org
+mail: tyler_hanson@bismarckschools.org
+userPassword: {SSHA}otD+P46OM+BGjzyjScfCH+tCt19DSgKn+t1sIw==
+
+dn: cn=Denise Byrd,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Denise Byrd
+sn: Byrd
+givenName: Denise
+uid: denisebyrd@johnston.k12.nc.us
+mail: denisebyrd@johnston.k12.nc.us
+userPassword: {SSHA}BpKxllWKf2qr6dTNHZokh8ft3YzQV1VlUGe2yA==
+
+dn: cn=Paul Furthmyre,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Paul Furthmyre
+sn: Furthmyre
+givenName: Paul
+uid: furthmyrep@sd10.org
+mail: furthmyrep@sd10.org
+userPassword: {SSHA}UHSnjcrp7WjuhxdY+5HQ8HGuu3GJE+/fJzyzGg==
+
+dn: cn=Kathy Stamp,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Kathy Stamp
+sn: Stamp
+givenName: Kathy
+uid: kstamp@waterbury.k12.ct.us
+mail: kstamp@waterbury.k12.ct.us
+userPassword: {SSHA}jPOmH5lVJK/BNXso6bJIslEQUaYlp+Mv/bothg==
+
+dn: cn=Amy Campbell,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Amy Campbell
+sn: Campbell
+givenName: Amy
+uid: Acampbell@hebron.k12.ct.us
+mail: Acampbell@hebron.k12.ct.us
+userPassword: {SSHA}Q5t8eSPmSw7OMjWtlz2V4/oZ4QT0Qn5WmKVAXA==
+
+dn: cn=Stacy Chambers,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Stacy Chambers
+sn: Chambers
+givenName: Stacy
+uid: CHAMS001@hartfordschools.org
+mail: CHAMS001@hartfordschools.org
+userPassword: {SSHA}hk2EmluElDnracaDOXDpiG34ZvlP7ixibndWZQ==
+
+dn: cn=Mary Kay Rendock,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Mary Kay Rendock
+sn: Rendock
+givenName: Mary
+uid: mrendock@blmfld.org
+mail: mrendock@blmfld.org
+userPassword: {SSHA}T7QvE5DNIfUW1L4I6oxXHv62gM/rYKf4ojq4Ew==
+
+dn: cn=Kristine Garofalo,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Kristine Garofalo
+sn: Garofalo
+givenName: Kristine
+uid: Kgarofalo@hebron.k12.ct.us
+mail: Kgarofalo@hebron.k12.ct.us
+userPassword: {SSHA}evMc/mBMp8bbYlheGnCLGzsYYFFA47CmWIXKdQ==
+
+dn: cn=Peter Cummings,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Peter Cummings
+sn: Cummings
+givenName: Peter
+uid: peter_cummings@whps.org
+mail: peter_cummings@whps.org
+userPassword: {SSHA}rMgv+LRVVl6tyGxLEYZ19iPdFXPYOWnXGj4niQ==
+
+dn: cn=George Michna,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: George Michna
+sn: Michna
+givenName: George
+uid: Michg001@hartfordschools.org
+mail: Michg001@hartfordschools.org
+userPassword: {SSHA}BBwgRHXb5w/6fvy/9HdHpdtxD/i2SmJ/taLLyw==
+
+dn: cn=Lee Thennes,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Lee Thennes
+sn: Thennes
+givenName: Lee
+uid: lthennes@sheboygan.k12.wi.us
+mail: lthennes@sheboygan.k12.wi.us
+userPassword: {SSHA}mXt71TEZU//pdP4xRKhy467T+23obau8YL0+hw==
+
+dn: cn=Mike Roemer,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Mike Roemer
+sn: Roemer
+givenName: Mike
+uid: roemermx@milwaukee.k12.wi.us
+mail: roemermx@milwaukee.k12.wi.us
+userPassword: {SSHA}Vy2JUkmOg4tnI3CmL02Zic1xEsfOlypVFTmTFg==
+
+dn: cn=Matt Lewis,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Matt Lewis
+sn: Lewis
+givenName: Matt
+uid: mlewis@lewistown.k12.mt.us
+mail: mlewis@lewistown.k12.mt.us
+userPassword: {SSHA}ZuycVhSte5rhUC3Gqij5yYkk/U+D6dqnTeZ1wA==
+
+dn: cn=William Warning,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: William Warning
+sn: Warning
+givenName: William
+uid: bwarning@rapidriver.k12.mi.us
+mail: bwarning@rapidriver.k12.mi.us
+userPassword: {SSHA}I+ISkKBj8sIX2CrmloTWyFzwEVjSrLMSBXNtdg==
+
+dn: cn=Todd Tulgestke,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Todd Tulgestke
+sn: Tulgestke
+givenName: Todd
+uid: TULGESTKET@westottawa.net
+mail: TULGESTKET@westottawa.net
+userPassword: {SSHA}y2bnR75/ZcDU60JeNX7pl3Mk/EOZNjN3r9Vhjw==
+
+dn: cn=Doug Vanderjagt,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Doug Vanderjagt
+sn: Vanderjagt
+givenName: Doug
+uid: dvanderjagt@rockfordschools.org
+mail: dvanderjagt@rockfordschools.org
+userPassword: {SSHA}JkyFVS44XaM2/O1bf7GyAGcH31NtNrbH0th/Rw==
+
+dn: cn=Belinda Jimenez,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Belinda Jimenez
+sn: Jimenez
+givenName: Belinda
+uid: JimenezB@grps.org
+mail: JimenezB@grps.org
+userPassword: {SSHA}+EiHlM9TTO3ZjQ3cvNT1kteHX0O5LRMsY5Z8cA==
+
+dn: cn=Joel Olson,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Joel Olson
+sn: Olson
+givenName: Joel
+uid: olsonj@bas-k12.org
+mail: olsonj@bas-k12.org
+userPassword: {SSHA}KSu7OcOcGWu2f3KgE4hqG19kRjz2C7VWGrsX9Q==
+
+dn: cn=Bill Ross,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Bill Ross
+sn: Ross
+givenName: Bill
+uid: bross@hpseagles.net
+mail: bross@hpseagles.net
+userPassword: {SSHA}gWQdWdPqkUj3Ho52T04ci08ZNr1gaPFX6/ww5A==
+
+dn: cn=Ana Aleman-Putman,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Ana Aleman-Putman
+sn: Aleman-Putman
+givenName: Ana
+uid: Aleman-Putmana@grps.org
+mail: Aleman-Putmana@grps.org
+userPassword: {SSHA}eBx2d2SOjInveNnkiiZlVhtET55utpbvS/MU6Q==
+
+dn: cn=Karen Abraham,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Karen Abraham
+sn: Abraham
+givenName: Karen
+uid: abrahamk@westottawa.net
+mail: abrahamk@westottawa.net
+userPassword: {SSHA}PYhGoGByKB2rwwVN0Ia9Ah9Sc/JUpjlCo/fpjw==
+
+dn: cn=Fatme Faraj,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Fatme Faraj
+sn: Faraj
+givenName: Fatme
+uid: farajf@dearborn.k12.mi.us
+mail: farajf@dearborn.k12.mi.us
+userPassword: {SSHA}2vrRMTXpjzdtySBHso5IZDTL0VEaWAcYn7qiOQ==
+
+dn: cn=Christopher Howell,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Christopher Howell
+sn: Howell
+givenName: Christopher
+uid: chowell@rsu14.org
+mail: chowell@rsu14.org
+userPassword: {SSHA}jchPbMeYo7hYzKiFILrWrtWb8FV2MwZsVEuNIA==
+
+dn: cn=Todd West,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Todd West
+sn: West
+givenName: Todd
+uid: twest@dis-schools.org
+mail: twest@dis-schools.org
+userPassword: {SSHA}+Y2xqUfQW3C/GxZ8n0vih9eKZ2Nik78BgV4/SQ==
+
+dn: cn=Joe Findlay,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Joe Findlay
+sn: Findlay
+givenName: Joe
+uid: joe.findlay@msad60.org
+mail: joe.findlay@msad60.org
+userPassword: {SSHA}TLw9wZKt2+/v4gyuqYwXL6oT1H7v5rT8/YcsBQ==
+
+dn: cn=Linda Bleile,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Linda Bleile
+sn: Bleile
+givenName: Linda
+uid: lbleile@svrsu.org
+mail: lbleile@svrsu.org
+userPassword: {SSHA}eIJm17VDwDv1riwTaG6OuVPM0GrqmkZR26vEzQ==
+
+dn: cn=Sarah Thomas,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Sarah Thomas
+sn: Thomas
+givenName: Sarah
+uid: sthomas1@topeka.k12.ks.us
+mail: sthomas1@topeka.k12.ks.us
+userPassword: {SSHA}97deg/lbGHaMOAXX3TohzB+IC1txNQAXhsOzQA==
+
+dn: cn=Mary Welsh,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Mary Welsh
+sn: Welsh
+givenName: Mary
+uid: mawelsh@kckps.org
+mail: mawelsh@kckps.org
+userPassword: {SSHA}BzqXJR06SFf4FcVkwwmd7Dqst5hAAH+Ex6T/jg==
+
+dn: cn=Amy Loder,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Amy Loder
+sn: Loder
+givenName: Amy
+uid: loder.amy@usd443.org
+mail: loder.amy@usd443.org
+userPassword: {SSHA}PrLmBRSbJt3lrbUAEtSRpKc7DY76jjTrLvNL5g==
+
+dn: cn=Joshua Robinson,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Joshua Robinson
+sn: Robinson
+givenName: Joshua
+uid: Robinson@usd290.org
+mail: Robinson@usd290.org
+userPassword: {SSHA}CHApXXVfd5gGwrhlnci24Y2Av3TQDcIrkdryLQ==
+
+dn: cn=Iva Lee Colgan,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Iva Lee Colgan
+sn: Colgan
+givenName: Iva
+uid: ivcolga@kckps.org
+mail: ivcolga@kckps.org
+userPassword: {SSHA}6UyS5ozD9OIdpaz59hqO0PfDtJs7GbNny3Epqg==
+
+dn: cn=Kacey Schneidt,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Kacey Schneidt
+sn: Schneidt
+givenName: Kacey
+uid: schneidt.kacey@meridianschools.org
+mail: schneidt.kacey@meridianschools.org
+userPassword: {SSHA}mfuVXeFXvT/WIWENcw+k5SrZAnDJ5BWdqJbPPw==
+
+dn: cn=Liane Voss,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Liane Voss
+sn: Voss
+givenName: Liane
+uid: liane_voss@notes.k12.hi.us
+mail: liane_voss@notes.k12.hi.us
+userPassword: {SSHA}fNJGmiVwqsfDL8nVSIck8SzoydhN6VedG8/oOg==
+
+dn: cn=Zhoydell Magaoay,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Zhoydell Magaoay
+sn: Magaoay
+givenName: Zhoydell
+uid: zhoydell_magaoay@notes.k12.hi.us
+mail: zhoydell_magaoay@notes.k12.hi.us
+userPassword: {SSHA}KZlUTM+4yKkeKy2POh6evn1eHpneBATeQ6JsSQ==
+
+dn: cn=Don Davis,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Don Davis
+sn: Davis
+givenName: Don
+uid: Don.Davis@appo.k12.de.us
+mail: Don.Davis@appo.k12.de.us
+userPassword: {SSHA}d5a7zHeqnujNvh5L6hlnqUU+0/cUxPZqMrOx1Q==
+
+dn: cn=Suan Frampton,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Suan Frampton
+sn: Frampton
+givenName: Suan
+uid: skframpton@lf.k12.de.us
+mail: skframpton@lf.k12.de.us
+userPassword: {SSHA}sB2JJNfmc6ikWh3PHAltaIO2vTYb0xEgZ1vODg==
+
+dn: cn=Building Administrator,ou=groups,ou=environment,dc=edwdc,dc=net
+objectClass: groupOfNames
+objectClass: top
+cn: Building Administrator
+member: cn=Matthew Donovan ,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Brian Donahue,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Robert Adams,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Audrey Erschen,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Jessilene Corbett,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Ann Lewis,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Thomas Vari,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Todd Fishburn,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Gary Langenberg,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Alisa Estrella Bender,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Marsha Nakamura,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Lauren O'Leary,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Laureen Dunn,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Stephanie Feldner,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Michelle Schmidt,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Kate Tesch,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Sue Sewell,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Bill Klein,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Teresa Carranza,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Brett Brodeen,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Karen Remy-Anderson,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Whitney Meissner,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Peter Schurke,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Joyce Ott,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Jay Jordan,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=John Mitchell,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Bob Richards,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Debra Gilbreath,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Matt Whitten,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Cory allen Heidelberger,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Sally Crowser,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Stacy Huber,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Terri Anderson-schlader,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Mary Fried,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Blake Dahlberg,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Renee Fuentes Campa,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Alysia Hobbs Odipo,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Gerald Williams,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Olga De Santa Anna,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Andrew Goodwin,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Kim Guzzetti,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Devin Vodicka,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=J. Antonio Gaitan,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Mark Corti,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Pam Tyson,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Phonekeo Siharath,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Wendy Neyhard,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Kirk Zeeck,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Laura Lethe,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Anne Evans,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Catherine Carlson,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Scott Lommori,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Chad Buckendahl,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Scott Bailey,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Greg Schraw,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Ruth Gilbert,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Dawn Hagness,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Stephanie Wheeler,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Pam Baim,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Dianna Veleke,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Harriet R. Maclean,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Dirk Van Curan,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Matt Gonzales,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Aaron Weaver,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Steve Quintus,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Moureen David,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Darren Guido,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Debra Follman,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Tonya Hunskor,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Tyler J. Hanson,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Denise Byrd,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Paul Furthmyre,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Kathy Stamp,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Amy Campbell,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Stacy Chambers,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Mary Kay Rendock,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Kristine Garofalo,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Peter Cummings,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=George Michna,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Lee Thennes,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Mike Roemer,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Matt Lewis,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=William Warning,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Todd Tulgestke,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Doug Vanderjagt,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Belinda Jimenez,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Joel Olson,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Bill Ross,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Ana Aleman-Putman,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Karen Abraham,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Fatme Faraj,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Christopher Howell,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Todd West,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Joe Findlay,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Linda Bleile,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Sarah Thomas,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Mary Welsh,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Amy Loder,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Joshua Robinson,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn= Iva Lee Colgan ,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Kacey Schneidt,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Liane Voss,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Zhoydell Magaoay,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Don Davis,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Suan Frampton,ou=people,ou=environment,dc=edwdc,dc=net
+
+dn: cn=Clinton Degraw,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Clinton Degraw
+sn: Degraw
+givenName: Clinton
+uid: cdegraw
+mail: cdegraw
+userPassword: {SSHA}PnP0rjwvQdQxWXEylcGURjFCQ3Wqeb1GA2L/bQ==
+
+dn: cn=Elnora Seinfeld,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Elnora Seinfeld
+sn: Seinfeld
+givenName: Elnora
+uid: eseinfeld
+mail: eseinfeld
+userPassword: {SSHA}tYNhAclPxd7Daom7MV7fyJqMQndmfuCwo8TC4g==
+
+dn: cn=Consortium Education Administrator,ou=groups,ou=environment,dc=edwdc,dc=net
+objectClass: groupOfNames
+objectClass: top
+cn: Consortium Education Administrator
+member: cn=Clinton Degraw,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Elnora Seinfeld,ou=people,ou=environment,dc=edwdc,dc=net
+
+dn: cn=Hugh Goree,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Hugh Goree
+sn: Goree
+givenName: Hugh
+uid: hgoree
+mail: hgoree
+userPassword: {SSHA}cDsGK34ruABnXHZlNBypsE724BuWZs3sKqNrqA==
+
+dn: cn=Data Corrector,ou=groups,ou=environment,dc=edwdc,dc=net
+objectClass: groupOfNames
+objectClass: top
+cn: Data Corrector
+member: cn=Hugh Goree,ou=people,ou=environment,dc=edwdc,dc=net
+
+dn: cn=James Stevenson,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: James Stevenson
+sn: Stevenson
+givenName: James
+uid: jstevenson
+mail: jstevenson
+userPassword: {SSHA}IZ6OjQ3KyzAHKkD84vW0Phyz3YCk1ItYPHJerA==
+
+dn: cn=Jamie Hine,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Jamie Hine
+sn: Hine
+givenName: Jamie
+uid: jhine
+mail: jhine
+userPassword: {SSHA}HLpxQUypK1WFuYXSdz4JcK+jjZ+7wCJx/hczbw==
+
+dn: cn=Deployment Administrator,ou=groups,ou=environment,dc=edwdc,dc=net
+objectClass: groupOfNames
+objectClass: top
+cn: Deployment Administrator
+member: cn=James Stevenson,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Jamie Hine,ou=people,ou=environment,dc=edwdc,dc=net
+
+dn: cn=Earl Pettit,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Earl Pettit
+sn: Pettit
+givenName: Earl
+uid: pettite@grantesd.k12.or.us
+mail: pettite@grantesd.k12.or.us
+userPassword: {SSHA}tjIIgoXA6Vqd4gTdReNoll/Ix+7WSYzwK6wfIQ==
+
+dn: cn=Lisa Andrew,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Lisa Andrew
+sn: Andrew
+givenName: Lisa
+uid: Lisa_andrew@sccoe.org
+mail: Lisa_andrew@sccoe.org
+userPassword: {SSHA}4S7dYVs+vt4m5UbXMsHxO4mgB+2XAyQxAI50SQ==
+
+dn: cn=Cheryl Ingham,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Cheryl Ingham
+sn: Ingham
+givenName: Cheryl
+uid: cingham@humboldt.k12.ca.us
+mail: cingham@humboldt.k12.ca.us
+userPassword: {SSHA}H8fsXMGUSKSyoewgYlhVp8a3YD1wBcqTCnUIAQ==
+
+dn: cn=Mary Ellen Johnson,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Mary Ellen Johnson
+sn: Johnson
+givenName: Mary
+uid: Maryellen_johnson@sbcss.k12.ca.us
+mail: Maryellen_johnson@sbcss.k12.ca.us
+userPassword: {SSHA}yubOaK02sdusga6H+qEAw1FW7zr5FrUUukbxqg==
+
+dn: cn=Kathy Pon,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Kathy Pon
+sn: Pon
+givenName: Kathy
+uid: kpon@mcoe.org
+mail: kpon@mcoe.org
+userPassword: {SSHA}RVqLrWRSw3WuYllMi5M8rLOdtPd9XYj2ahEcDA==
+
+dn: cn=Catherine Mccaslin,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Catherine Mccaslin
+sn: Mccaslin
+givenName: Catherine
+uid: catherine.mccaslin@new-haven.k12.ct.us
+mail: catherine.mccaslin@new-haven.k12.ct.us
+userPassword: {SSHA}iJS4md5GQ57RuUJnlnpCJ5kj0HVJeVZiLD9mog==
+
+dn: cn=Paul Vicinus,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Paul Vicinus
+sn: Vicinus
+givenName: Paul
+uid: paul_vicinus@whps.org
+mail: paul_vicinus@whps.org
+userPassword: {SSHA}paQdkVdYN4V0V9zt+K8QDcHflkOPv/lwv5hkKQ==
+
+dn: cn=Jeff Klein,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Jeff Klein
+sn: Klein
+givenName: Jeff
+uid: Jeff.Klein@appo.k12.de.us
+mail: Jeff.Klein@appo.k12.de.us
+userPassword: {SSHA}y1o2Dhil4Tx18IIydcj7NO5b8BgMxV/JaCGtsQ==
+
+dn: cn=Travis Moorman,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Travis Moorman
+sn: Moorman
+givenName: Travis
+uid: Tmoorman@msd.k12.de.us
+mail: Tmoorman@msd.k12.de.us
+userPassword: {SSHA}EHTjQ4rPoWrUPjsfM9l6sKCk2HKjHYL+KeLVAw==
+
+dn: cn=Teri Ushijima,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Teri Ushijima
+sn: Ushijima
+givenName: Teri
+uid: teri_ushijima@notes.k12.hi.us
+mail: teri_ushijima@notes.k12.hi.us
+userPassword: {SSHA}l3LiZ3eGVTfJYQJ9qQXVj/jXJ+e+s1AWpWzcXw==
+
+dn: cn=Harold Mizuno,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Harold Mizuno
+sn: Mizuno
+givenName: Harold
+uid: harold_mizuno@notes.k12.hi.us
+mail: harold_mizuno@notes.k12.hi.us
+userPassword: {SSHA}MCPITL2Yxc8ltOb0YONb9l6LYKoSzbxWBmqivg==
+
+dn: cn=Teresa Fabricius,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Teresa Fabricius
+sn: Fabricius
+givenName: Teresa
+uid: tfabricius@fruitlandschools.org
+mail: tfabricius@fruitlandschools.org
+userPassword: {SSHA}yEpUIVAb0lrZa0fBDQPEnHiVOm4tStCpHPlTSA==
+
+dn: cn=John Graham,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: John Graham
+sn: Graham
+givenName: John
+uid: john.graham@filer.k12.id.us
+mail: john.graham@filer.k12.id.us
+userPassword: {SSHA}cHAW9ccDpl/p9obwu1/P6UAyYB4mW8oCfFq4Mw==
+
+dn: cn=Ellen Perconti,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Ellen Perconti
+sn: Perconti
+givenName: Ellen
+uid: ellenperconti@sd83.org
+mail: ellenperconti@sd83.org
+userPassword: {SSHA}CtVGUYrX1VBpEgbKHem5YC6zDiJgyhaOqywLhQ==
+
+dn: cn=Mary Jo Fox,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Mary Jo Fox
+sn: Fox
+givenName: Mary
+uid: foxm@olatheschools.com
+mail: foxm@olatheschools.com
+userPassword: {SSHA}3ACg5rRNYba2df+16WOXU2kRJ7/3PjipBBTUKg==
+
+dn: cn=Jessica Dain,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Jessica Dain
+sn: Dain
+givenName: Jessica
+uid: JDain@usd232.org
+mail: JDain@usd232.org
+userPassword: {SSHA}O+z51T1kRezALOVxMS17Pi2rA7iGC4WQcu00gA==
+
+dn: cn=Suzie Legg,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Suzie Legg
+sn: Legg
+givenName: Suzie
+uid: sulegg@kckps.org
+mail: sulegg@kckps.org
+userPassword: {SSHA}LXN45CwbFenEfx7AWBF3a5XEfsu6kuvlQCjo1A==
+
+dn: cn=Betsy Webb,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Betsy Webb
+sn: Webb
+givenName: Betsy
+uid: bangorsupt@bangorschools.net
+mail: bangorsupt@bangorschools.net
+userPassword: {SSHA}hVp2Lg/tcVo5gX6CrZmlsrlKUwlHrcwLpxqrUQ==
+
+dn: cn=William Webster,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: William Webster
+sn: Webster
+givenName: William
+uid: superintendent@lewistonpublicschools.org
+mail: superintendent@lewistonpublicschools.org
+userPassword: {SSHA}5Cr0LDI2CzGKoFO/6vhOm2VkCBvzwkmS5DxcCg==
+
+dn: cn=Lisa Rivard,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Lisa Rivard
+sn: Rivard
+givenName: Lisa
+uid: lrivard@misd.net
+mail: lrivard@misd.net
+userPassword: {SSHA}wCu3gjqTs7i9stTHofJz4ksj5d8QD/ba1qNgCw==
+
+dn: cn=Kevin Schooley,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Kevin Schooley
+sn: Schooley
+givenName: Kevin
+uid: KSchooley@watervliet.k12.mi.us
+mail: KSchooley@watervliet.k12.mi.us
+userPassword: {SSHA}VyS4OP7H3mBqJ4e5Yt8DXkT17Y2AGlyXjTdAYw==
+
+dn: cn=Patti Dobias,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Patti Dobias
+sn: Dobias
+givenName: Patti
+uid: pdobias@hollandpublicschools.org
+mail: pdobias@hollandpublicschools.org
+userPassword: {SSHA}THQCqvIgXNOwXpVvTSMSTmhX/vx+qlLsJOt2eQ==
+
+dn: cn=Michael Magone,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Michael Magone
+sn: Magone
+givenName: Michael
+uid: mikem@lolo.k12.mt.us
+mail: mikem@lolo.k12.mt.us
+userPassword: {SSHA}8n+xaaQVa4wnlLUAe21LeAG5J0hlj9V/NGGuiw==
+
+dn: cn=Kelly Maki,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Kelly Maki
+sn: Maki
+givenName: Kelly
+uid: kelly_maki@gfps.k12.mt.us
+mail: kelly_maki@gfps.k12.mt.us
+userPassword: {SSHA}VB8uStEYey9dt87Cnr3WwGeJz2aylf/mblLI3A==
+
+dn: cn=Hannah Youngblood,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Hannah Youngblood
+sn: Youngblood
+givenName: Hannah
+uid: hannahyoungblood@johnston.k12.nc.us
+mail: hannahyoungblood@johnston.k12.nc.us
+userPassword: {SSHA}rXTLkSTqFQtZ4fPdbcp6c3Z+dlt9QC8vTV3rlg==
+
+dn: cn=Bill Demaree,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Bill Demaree
+sn: Demaree
+givenName: Bill
+uid: bill.demaree@mrecnd.org
+mail: bill.demaree@mrecnd.org
+userPassword: {SSHA}gMNDnfJIHjwGF05LGSW2AwnkIqYh7E7r5MF1vw==
+
+dn: cn=Lyle Krueger,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Lyle Krueger
+sn: Krueger
+givenName: Lyle
+uid: lyle.p.krueger.2@sendit.nodak.edu
+mail: lyle.p.krueger.2@sendit.nodak.edu
+userPassword: {SSHA}/uhSpKdbK/XvWdEUIhjQ4aRwe/HlNnJRDQAPuw==
+
+dn: cn=Larry Zavada,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Larry Zavada
+sn: Zavada
+givenName: Larry
+uid: larry.zavada@sendit.nodak.edu
+mail: larry.zavada@sendit.nodak.edu
+userPassword: {SSHA}oYtsi7//mEJkvwdYhOCx1DodSfFwsv8/rwTdCA==
+
+dn: cn=Roman Marcellais,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Roman Marcellais
+sn: Marcellais
+givenName: Roman
+uid: roman.marcellais@sendit.nodak.edu
+mail: roman.marcellais@sendit.nodak.edu
+userPassword: {SSHA}qkZAE1hn7jyaEItYgx78/8SvSTVkbr/w5SRI6A==
+
+dn: cn=Christine Landwehrle,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Christine Landwehrle
+sn: Landwehrle
+givenName: Christine
+uid: clandwehrle@sprise.com
+mail: clandwehrle@sprise.com
+userPassword: {SSHA}hSiIWas7l04dUJu6a7R5292144TaZxM8KU+NYg==
+
+dn: cn=Nicole Heimarck,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Nicole Heimarck
+sn: Heimarck
+givenName: Nicole
+uid: nheimarck@sprise.com
+mail: nheimarck@sprise.com
+userPassword: {SSHA}ehacdJwS+IVmLRLxxMwnY1aNKzKvAB0ayFwjyQ==
+
+dn: cn=Tracy Bricchi,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Tracy Bricchi
+sn: Bricchi
+givenName: Tracy
+uid: tbricchi@sau18.org
+mail: tbricchi@sau18.org
+userPassword: {SSHA}FBuO7E52MYQIbZmHjrcfPDntRLty5VAzxuF25w==
+
+dn: cn=John Carpenter,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: John Carpenter
+sn: Carpenter
+givenName: John
+uid: jncarpenter@interact.ccsd.net
+mail: jncarpenter@interact.ccsd.net
+userPassword: {SSHA}UjA1lyAV26Mqe0Fb8XFVOz/Kgtks60HYxHNhRg==
+
+dn: cn=Brian Frazier,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Brian Frazier
+sn: Frazier
+givenName: Brian
+uid: bfrazier@dcsd.k12.nv.us
+mail: bfrazier@dcsd.k12.nv.us
+userPassword: {SSHA}UJyZ6gF92du9v4dosnHjQfVcDFHd0OAhz1tSug==
+
+dn: cn=Jon O'Neil,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Jon O'Neil
+sn: O'Neil
+givenName: Jon
+uid: joneill@fgsd.k12.or.us
+mail: joneill@fgsd.k12.or.us
+userPassword: {SSHA}tPudYlU7mmgrxHsuLlRsIOyFS9qD7KIjKZ3H3w==
+
+dn: cn=William Korach,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: William Korach
+sn: Korach
+givenName: William
+uid: william.korach@loswego.k12.or.us
+mail: william.korach@loswego.k12.or.us
+userPassword: {SSHA}p9Ib1+XCR3kE+bW2njO1miB9XDpdyl7wYy1Low==
+
+dn: cn=Al Meunier,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Al Meunier
+sn: Meunier
+givenName: Al
+uid: al.meunier@umatillasd.org
+mail: al.meunier@umatillasd.org
+userPassword: {SSHA}OJxcxG2b7OuhXX233McAJ+3D1df6+61z4U3hhw==
+
+dn: cn=Trent Osborne,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Trent Osborne
+sn: Osborne
+givenName: Trent
+uid: trent.osborne@k12.sd.us
+mail: trent.osborne@k12.sd.us
+userPassword: {SSHA}YLbydW2kfsFOuyLFN9H/bS0uObVxg6bdDQJ8Hw==
+
+dn: cn=Joel Price,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Joel Price
+sn: Price
+givenName: Joel
+uid: joel.price@k12.sd.us
+mail: joel.price@k12.sd.us
+userPassword: {SSHA}eZRjCKNxsY+eLJvN7yv2UQN2G44sqpMKj2ngDg==
+
+dn: cn=Adam Shaw,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Adam Shaw
+sn: Shaw
+givenName: Adam
+uid: adam.shaw@k12.sd.us
+mail: adam.shaw@k12.sd.us
+userPassword: {SSHA}LjioumX5SDlXK7EUGIwztwCwizPnckxIkoZ7KA==
+
+dn: cn=Brian Rick,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Brian Rick
+sn: Rick
+givenName: Brian
+uid: brian.rick@bellinghamschools.org
+mail: brian.rick@bellinghamschools.org
+userPassword: {SSHA}sHGp+8fPl//u9Ge4w6UD7y3yoIVrMMxK7vlHVQ==
+
+dn: cn=LaVonne Grimes,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: LaVonne Grimes
+sn: Grimes
+givenName: LaVonne
+uid: lavonne_grimes@csd49.org
+mail: lavonne_grimes@csd49.org
+userPassword: {SSHA}+NJh0R/GZfKgQ6rqPix+mC2o6Au1T4sZjKAIOA==
+
+dn: cn=Mike Jacobsen,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Mike Jacobsen
+sn: Jacobsen
+givenName: Mike
+uid: mjacobse@whiteriver.wednet.edu
+mail: mjacobse@whiteriver.wednet.edu
+userPassword: {SSHA}tTA0jKnGONJ79VnYGUVP89ZmLmiYzuUBU2JheA==
+
+dn: cn=Lorna Spear,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Lorna Spear
+sn: Spear
+givenName: Lorna
+uid: LornaS@spokaneschools.org
+mail: LornaS@spokaneschools.org
+userPassword: {SSHA}+DK6Wr53DFQxTl2uBxZHCTk9et2viRmVuk53uA==
+
+dn: cn=Feng-Yi Hung,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Feng-Yi Hung
+sn: Hung
+givenName: Feng-Yi
+uid: fhung@cloverpark.k12.wa.us
+mail: fhung@cloverpark.k12.wa.us
+userPassword: {SSHA}pjrSGOkB1yr9UMtbjia+R4UBaQLTB1h/w+9Nww==
+
+dn: cn=Nancy Katims,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Nancy Katims
+sn: Katims
+givenName: Nancy
+uid: katimsn@edmonds.wednet.edu
+mail: katimsn@edmonds.wednet.edu
+userPassword: {SSHA}Hah1EQ9MPXY1+NW9Wgkx9XLp2bjbRuPsd0+uSQ==
+
+dn: cn=Nancy Bonesho,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Nancy Bonesho
+sn: Bonesho
+givenName: Nancy
+uid: boneshnb@milwaukee.k12.wi.us
+mail: boneshnb@milwaukee.k12.wi.us
+userPassword: {SSHA}zeF3ovAwlzMaj8FyWV1+bt4WuWoDoNtb9msn5w==
+
+dn: cn=Heidi Schmidt,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Heidi Schmidt
+sn: Schmidt
+givenName: Heidi
+uid: heidischmidt@hasd.org
+mail: heidischmidt@hasd.org
+userPassword: {SSHA}zWK7Q5S3utysvTdX/7Cm0QWmw9Py8RjaScVZqg==
+
+dn: cn=George Mavroulis,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: George Mavroulis
+sn: Mavroulis
+givenName: George
+uid: gmavroulis@mcpasd.k12.wi.us
+mail: gmavroulis@mcpasd.k12.wi.us
+userPassword: {SSHA}4icgKoZVdrv+QmlwxAcDUSq4OQsilh+BsKGPFg==
+
+dn: cn=Amie Beyersdorf for DA,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Amie Beyersdorf for DA
+sn: DA
+givenName: Amie
+uid: abeyersdorf@misd.k12.wi.us
+mail: abeyersdorf@misd.k12.wi.us
+userPassword: {SSHA}JFOFMhC6fH6HwcZn/HtkMVo6z0ej2dC1iWp8QQ==
+
+dn: cn=Chris Hansen,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Chris Hansen
+sn: Hansen
+givenName: Chris
+uid: ChrisHansen@hasd.org
+mail: ChrisHansen@hasd.org
+userPassword: {SSHA}36brTdB2RC8Mk5Eim1ruWvaALtGGR4OM+bbf7g==
+
+dn: cn=District Administrator,ou=groups,ou=environment,dc=edwdc,dc=net
+objectClass: groupOfNames
+objectClass: top
+cn: District Administrator
+member: cn=Earl Pettit,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Lisa Andrew,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Cheryl Ingham,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Mary Ellen Johnson,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Kathy Pon,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Catherine Mccaslin,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Paul Vicinus,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Jeff Klein,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Travis Moorman,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Teri Ushijima,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Harold Mizuno,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Teresa Fabricius,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=John Graham,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Ellen Perconti,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Mary Jo Fox,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Jessica Dain ,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn= Suzie Legg,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Betsy Webb,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=William Webster,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Lisa Rivard,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Kevin Schooley,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Patti Dobias,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Michael Magone,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Kelly Maki,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Hannah Youngblood,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Bill Demaree,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Lyle Krueger,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Larry Zavada,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Roman Marcellais,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Christine Landwehrle,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Nicole Heimarck,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Tracy Bricchi,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=John Carpenter,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Brian Frazier,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Jon O'Neil,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=William Korach,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Al Meunier,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Trent Osborne,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Joel Price,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Adam Shaw,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Brian Rick,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=LaVonne Grimes,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Mike Jacobsen,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Lorna Spear,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Feng-Yi Hung,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Nancy Katims,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Nancy Bonesho,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Heidi Schmidt,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=George Mavroulis,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Amie Beyersdorf for DA,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Chris Hansen,ou=people,ou=environment,dc=edwdc,dc=net
+
+dn: cn=Selena Magnusson,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Selena Magnusson
+sn: Magnusson
+givenName: Selena
+uid: smagnusson
+mail: smagnusson
+userPassword: {SSHA}UQI87QBSJ+J0lRFq79te7akWbzv2m+4kkwaAEg==
+
+dn: cn=Guy Man,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Guy Man
+sn: Man
+givenName: Guy
+uid: gman
+mail: gman
+userPassword: {SSHA}d+0uY3Cd+iIdMpJCqyUg57702JBN3KhKWFRiGQ==
+
+dn: cn=District Education Administrator,ou=groups,ou=environment,dc=edwdc,dc=net
+objectClass: groupOfNames
+objectClass: top
+cn: District Education Administrator
+member: cn=Selena Magnusson,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Guy Man,ou=people,ou=environment,dc=edwdc,dc=net
+
+dn: cn=Mike Halligan,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Mike Halligan
+sn: Halligan
+givenName: Mike
+uid: MHalligan@washcorp.com
+mail: MHalligan@washcorp.com
+userPassword: {SSHA}/KkUkqTIGxpSISf7UTX/m1ZggVhhOYIFKVQLuA==
+
+dn: cn=Jennifer Nehl,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Jennifer Nehl
+sn: Nehl
+givenName: Jennifer
+uid: jnehl@tie.net
+mail: jnehl@tie.net
+userPassword: {SSHA}oFaC2xwRXIxaP98vSbFaYvyjkocL84EjkNyIQQ==
+
+dn: cn=William Jackson,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: William Jackson
+sn: Jackson
+givenName: William
+uid: bjackson@torchlake.com
+mail: bjackson@torchlake.com
+userPassword: {SSHA}WlTMNhK97CA9VzqBMP1/k5b1yvUXzYq28DzoWg==
+
+dn: cn=Nancy Prescott,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Nancy Prescott
+sn: Prescott
+givenName: Nancy
+uid: nprescott@cpacinc.org
+mail: nprescott@cpacinc.org
+userPassword: {SSHA}9ut8TlBRxVWjllBPs7WJIvTtLDKkqM6+e6VwbQ==
+
+dn: cn=David LaGrand,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: David LaGrand
+sn: LaGrand
+givenName: David
+uid: davidlagrand@hotmail.com
+mail: davidlagrand@hotmail.com
+userPassword: {SSHA}eirtc2rm5O1TW894GHfmmcBZdLalmEFHMGLiXg==
+
+dn: cn=Theresa Abed,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Theresa Abed
+sn: Abed
+givenName: Theresa
+uid: theresaabed@house.mi.gov
+mail: theresaabed@house.mi.gov
+userPassword: {SSHA}sHGoeEDNOaGffeMDVKyS+6jpTQVaaxilcgBxAA==
+
+dn: cn=Sherry Menor-McNamara,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Sherry Menor-McNamara
+sn: Menor-McNamara
+givenName: Sherry
+uid: smenor-mcnamara@cochawaii.org
+mail: smenor-mcnamara@cochawaii.org
+userPassword: {SSHA}ytrvW526YbHepQ0lK6dHxssID70/rFOcl6JkAg==
+
+dn: cn=Mickey Garrison,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Mickey Garrison
+sn: Garrison
+givenName: Mickey
+uid: mickey.garrison@state.or.us
+mail: mickey.garrison@state.or.us
+userPassword: {SSHA}C9RAn70sWu0Nvkg0ouO+Th1Ehta0v3O0AdP9/Q==
+
+dn: cn=Ben Cannon,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Ben Cannon
+sn: Cannon
+givenName: Ben
+uid: ben.cannon@state.or.us
+mail: ben.cannon@state.or.us
+userPassword: {SSHA}pvzwNqpE7FUTBrXmiNTfDfEBtunKk1UbZ2wFMg==
+
+dn: cn=Paul Zastrow,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Paul Zastrow
+sn: Zastrow
+givenName: Paul
+uid: pzastrow@gorge.net
+mail: pzastrow@gorge.net
+userPassword: {SSHA}IN+CZ8q5q/n5LHinA39Gc6fjdQluH2g3HgLBKw==
+
+dn: cn=David Rattray,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: David Rattray
+sn: Rattray
+givenName: David
+uid: drattray@aol.com
+mail: drattray@aol.com
+userPassword: {SSHA}u+3AQQI95O+p0E1md8cSP8LbIzxgL+yu5QWOgQ==
+
+dn: cn=Laura Rich,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Laura Rich
+sn: Rich
+givenName: Laura
+uid: linkmarkr@mac.com
+mail: linkmarkr@mac.com
+userPassword: {SSHA}xJ4IN2DbEd1VzX9UoTMAv+mxlKdX6E4t41KqOg==
+
+dn: cn=Fred Wolff,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Fred Wolff
+sn: Wolff
+givenName: Fred
+uid: f.wolff@comcast.net
+mail: f.wolff@comcast.net
+userPassword: {SSHA}LuR1a1aDAQP8bYcKzzn9JVngeMxQ9Z8iqNetVQ==
+
+dn: cn=Sharon Carroll,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Sharon Carroll
+sn: Carroll
+givenName: Sharon
+uid: scarroll@midrivers.com
+mail: scarroll@midrivers.com
+userPassword: {SSHA}OAMzhFWg2TY6hgkRNisjnHQa7swBFEdEakz2Jg==
+
+dn: cn=Bruce Schafer,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Bruce Schafer
+sn: Schafer
+givenName: Bruce
+uid: Bruce_schafer@ous.edu
+mail: Bruce_schafer@ous.edu
+userPassword: {SSHA}406FTJjrLJXqOE8qa0fKL5KztNLFbodqEJiWLw==
+
+dn: cn=Lew Jones,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Lew Jones
+sn: Jones
+givenName: Lew
+uid: ljones@mtbus.net
+mail: ljones@mtbus.net
+userPassword: {SSHA}g4w+LNJZXossdkOITmocdgWoZ862TP8pgK60eg==
+
+dn: cn=Melanie Barton,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Melanie Barton
+sn: Barton
+givenName: Melanie
+uid: mbarton@eoc.sc.gov
+mail: mbarton@eoc.sc.gov
+userPassword: {SSHA}b17+YWouoyKkm8DeI+jM7mANGppYWWdnMzS0Lw==
+
+dn: cn=Peter Geiger,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Peter Geiger
+sn: Geiger
+givenName: Peter
+uid: pgeiger@geiger.com
+mail: pgeiger@geiger.com
+userPassword: {SSHA}RD9J2/rzCsgv/YECKD87ViXdyYLL6tCse7x/jQ==
+
+dn: cn=Susan Bonilla,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Susan Bonilla
+sn: Bonilla
+givenName: Susan
+uid: Robert.Boykin@asm.ca.gov
+mail: Robert.Boykin@asm.ca.gov
+userPassword: {SSHA}Yh30r9KPukJmDus57c4JMxBcFmKCQgVFRhWB9w==
+
+dn: cn=Angela McLean,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Angela McLean
+sn: McLean
+givenName: Angela
+uid: amclean@montana.edu
+mail: amclean@montana.edu
+userPassword: {SSHA}51RkaV9TmqMMChsLVWExZEU7UGu0EwmaUoon+g==
+
+dn: cn=Junella Feickert,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Junella Feickert
+sn: Feickert
+givenName: Junella
+uid: junella_feickert@bismarckschools.org
+mail: junella_feickert@bismarckschools.org
+userPassword: {SSHA}93iUO+4rd4P0M1NeI53zAczlYprN1UO5g6zQqQ==
+
+dn: cn=Jim Stenehjem,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Jim Stenehjem
+sn: Stenehjem
+givenName: Jim
+uid: jim.stenehjem@ndlead.org
+mail: jim.stenehjem@ndlead.org
+userPassword: {SSHA}0aDnv8OldJ59SeMv4De3f9pYklHZpMxs1COUFQ==
+
+dn: cn=Joe Rothschiller,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Joe Rothschiller
+sn: Rothschiller
+givenName: Joe
+uid: jrothschiller@steffes.com
+mail: jrothschiller@steffes.com
+userPassword: {SSHA}Ij9WLRoK9OGNXnsSzhxEAFtEF3UzS1pif8zt8A==
+
+dn: cn=Steven M. Pound,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Steven M. Pound
+sn: Pound
+givenName: Steven
+uid: SPOUND@cianbro.com
+mail: SPOUND@cianbro.com
+userPassword: {SSHA}ef6EnlOij00oqXPUI6Hi5sswmf1IOx9RJUe7Zw==
+
+dn: cn=Darek Grant,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Darek Grant
+sn: Grant
+givenName: Darek
+uid: darekgrant@gmail.com
+mail: darekgrant@gmail.com
+userPassword: {SSHA}qVR8v0FGsjQ+YKZBLVyisfl7jievLljk9b5fkQ==
+
+dn: cn=Crystal Priest,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Crystal Priest
+sn: Priest
+givenName: Crystal
+uid: cpriest@sad4.com
+mail: cpriest@sad4.com
+userPassword: {SSHA}sdz0xB/FjW4OnpgbmeOglEpoBVsC9vYf5CNEzQ==
+
+dn: cn=Dudley Williams,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Dudley Williams
+sn: Williams
+givenName: Dudley
+uid: dudley.williams@ge.com
+mail: dudley.williams@ge.com
+userPassword: {SSHA}8Pi4pEo4wLNwTX9vg3PlUVHxVq1tIloGkxnAzw==
+
+dn: cn=Laura Thompson,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Laura Thompson
+sn: Thompson
+givenName: Laura
+uid: laura.thompson@redclay.k12.de.us
+mail: laura.thompson@redclay.k12.de.us
+userPassword: {SSHA}Z5rBhFP8amIHMmrmD0MYsrM8h5EFQRgBByPnUQ==
+
+dn: cn=General Public,ou=groups,ou=environment,dc=edwdc,dc=net
+objectClass: groupOfNames
+objectClass: top
+cn: General Public
+member: cn=Mike Halligan,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Jennifer Nehl,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=William Jackson,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Nancy Prescott,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=David LaGrand,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Theresa Abed,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Sherry Menor-McNamara,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn= Mickey Garrison,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn= Ben Cannon,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Paul Zastrow,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=David Rattray,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Laura Rich,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Fred Wolff,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Sharon Carroll,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn= Bruce Schafer ,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Lew Jones,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Melanie Barton,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Peter Geiger,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Susan Bonilla,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Angela McLean,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Junella Feickert,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Jim Stenehjem,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Joe Rothschiller,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Steven M. Pound,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Darek Grant,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Crystal Priest,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Dudley Williams,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Laura Thompson,ou=people,ou=environment,dc=edwdc,dc=net
+
+dn: cn=Marsha Hirano-Nakanishi,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Marsha Hirano-Nakanishi
+sn: Hirano-Nakanishi
+givenName: Marsha
+uid: mhirano-nakanishi@calstate.edu
+mail: mhirano-nakanishi@calstate.edu
+userPassword: {SSHA}V2uKNxZwoI+C/mL9zaO2ycShqdqkEhniRtnFrA==
+
+dn: cn=Nancy Brynelson,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Nancy Brynelson
+sn: Brynelson
+givenName: Nancy
+uid: nbrynelson@calstate.edu
+mail: nbrynelson@calstate.edu
+userPassword: {SSHA}aFbbeitC4BMUfChXdsxhwSdqVtFH1jDz/ut2ZA==
+
+dn: cn=Carolina Cardenas,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Carolina Cardenas
+sn: Cardenas
+givenName: Carolina
+uid: ccardenas@calstate.edu
+mail: ccardenas@calstate.edu
+userPassword: {SSHA}+gwegfbyHqdsFuz7mhzsDM3TGJMFSIIBhu+HfQ==
+
+dn: cn=Nilvio Perez,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Nilvio Perez
+sn: Perez
+givenName: Nilvio
+uid: nperez@albertus.edu
+mail: nperez@albertus.edu
+userPassword: {SSHA}TQ9c+aY4+viDLOrXe9no/a6Yf63Srt2eF85Hyw==
+
+dn: cn=Yuhang Rong,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Yuhang Rong
+sn: Rong
+givenName: Yuhang
+uid: yuhang.rong@uconn.edu
+mail: yuhang.rong@uconn.edu
+userPassword: {SSHA}z/wTIGFQNQsvceQqKVuX5JXMyRYvFN+lEjjGkg==
+
+dn: cn=Eileen Hocking,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Eileen Hocking
+sn: Hocking
+givenName: Eileen
+uid: ehocking@usj.edu
+mail: ehocking@usj.edu
+userPassword: {SSHA}oyz3PHpQvsocPahsx0jOHQXJBGfFKto/plxQGw==
+
+dn: cn=Adam Goldberg,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Adam Goldberg
+sn: Goldberg
+givenName: Adam
+uid: Goldberga2@southernct.edu
+mail: Goldberga2@southernct.edu
+userPassword: {SSHA}ODRb+4CNdwUyeW8VgmwDEG9y1aveDHuATa2PBQ==
+
+dn: cn=Jill Shafer,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Jill Shafer
+sn: Shafer
+givenName: Jill
+uid: Jill.shafer@email.und.edu
+mail: Jill.shafer@email.und.edu
+userPassword: {SSHA}o3f31NS4lTN5sXnVYUzr03R3Tpt49i3HafPRtw==
+
+dn: cn=Teresa Tande,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Teresa Tande
+sn: Tande
+givenName: Teresa
+uid: teresa.tande@lrsc.edu
+mail: teresa.tande@lrsc.edu
+userPassword: {SSHA}S9dIPwHOyE4VWSqyqTd/Ynn5lyYNpuBfDVxKWA==
+
+dn: cn=Bill Martin,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Bill Martin
+sn: Martin
+givenName: Bill
+uid: william.martin@ndsu.edu
+mail: william.martin@ndsu.edu
+userPassword: {SSHA}5NdUoUfpi4u3MvH0ICuquDaXT3KRV3ns+8SRLw==
+
+dn: cn=Scott Smith,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Scott Smith
+sn: Smith
+givenName: Scott
+uid: ssmith2@eou.edu
+mail: ssmith2@eou.edu
+userPassword: {SSHA}w1u7eQANipBQoZpM53NqEMBTZnwD8WItDURJjg==
+
+dn: cn=Susan Piazza,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Susan Piazza
+sn: Piazza
+givenName: Susan
+uid: susan.piazza@wmich.edu
+mail: susan.piazza@wmich.edu
+userPassword: {SSHA}uMJVNnrK+aRGI2QuI9IxR0ZYq+7CWzYH82pRfA==
+
+dn: cn=Tim Boerst,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Tim Boerst
+sn: Boerst
+givenName: Tim
+uid: tboerst@umich.edu
+mail: tboerst@umich.edu
+userPassword: {SSHA}k7+EK8pd3UEVYB/6HF7mh4djPD593pTdEhNqww==
+
+dn: cn=Betsy MacLeod,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Betsy MacLeod
+sn: MacLeod
+givenName: Betsy
+uid: vandea@cmich.edu
+mail: vandea@cmich.edu
+userPassword: {SSHA}pYutniFwhuOTrLQRQwdVDxbjsqRXtUUH5X+KAg==
+
+dn: cn=Jack Smith,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Jack Smith
+sn: Smith
+givenName: Jack
+uid: jsmith@msu.edu
+mail: jsmith@msu.edu
+userPassword: {SSHA}E9l6trVi+waMQUadGLQR3zYM6ZTxpTd6qNNzKw==
+
+dn: cn=Nicol Reiner,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Nicol Reiner
+sn: Reiner
+givenName: Nicol
+uid: nicol.reiner@k12.sd.us
+mail: nicol.reiner@k12.sd.us
+userPassword: {SSHA}JO0teTR+3eDm0PT0pndl35wgjlRKGQ44fZLa/A==
+
+dn: cn=Katy Heyning,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Katy Heyning
+sn: Heyning
+givenName: Katy
+uid: heyning@uww.edu
+mail: heyning@uww.edu
+userPassword: {SSHA}u/s/vdp229MXIPl/xeXRv86ZozjXt15JpYuExg==
+
+dn: cn=Kevin McLeod,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Kevin McLeod
+sn: McLeod
+givenName: Kevin
+uid: kevinm@uwm.edu
+mail: kevinm@uwm.edu
+userPassword: {SSHA}FL43XSv3FFxbBMPz2enttfWPOLa1LmMUz61vDQ==
+
+dn: cn=Karin Jannsen,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Karin Jannsen
+sn: Jannsen
+givenName: Karin
+uid: kjanssen@montana.edu
+mail: kjanssen@montana.edu
+userPassword: {SSHA}f2nxJIhJX9yPziAIFFVQ9RFntGHYU2I5kJ02pQ==
+
+dn: cn=Kate Brayko,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Kate Brayko
+sn: Brayko
+givenName: Kate
+uid: Kate.Brayko@mso.umt.edu
+mail: Kate.Brayko@mso.umt.edu
+userPassword: {SSHA}1/5Qi7C4HuHelLHC1V9952d4wC5IbxkLkD1Ulg==
+
+dn: cn=Karen McLeer,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Karen McLeer
+sn: McLeer
+givenName: Karen
+uid: karen.mcleer@uwc.edu
+mail: karen.mcleer@uwc.edu
+userPassword: {SSHA}wXlWWbmM3g0XJtZ5mfst87jecTb+85OKyt106Q==
+
+dn: cn=Diane Nielsen,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Diane Nielsen
+sn: Nielsen
+givenName: Diane
+uid: dnielsen@ku.edu
+mail: dnielsen@ku.edu
+userPassword: {SSHA}HY8xP2Z1ZYyqHWUMVSuepSGwyo7FaVsnUigYMA==
+
+dn: cn=Karla Hayashi,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Karla Hayashi
+sn: Hayashi
+givenName: Karla
+uid: karlah@hawaii.edu
+mail: karlah@hawaii.edu
+userPassword: {SSHA}OM6tOEgfthTJslyK6/pzw0M+A/KgULtzIFgs0A==
+
+dn: cn=Dr. Lemuel Watson,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Dr. Lemuel Watson
+sn: Watson
+givenName: Dr.
+uid: WATSONLW@mailbox.sc.edu
+mail: WATSONLW@mailbox.sc.edu
+userPassword: {SSHA}E4Jm9ZNklvp/Seiuryb2oRsHEwYmoAk+Qkup9g==
+
+dn: cn=Donald Young,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Donald Young
+sn: Young
+givenName: Donald
+uid: young@hawaii.edu
+mail: young@hawaii.edu
+userPassword: {SSHA}d4PlkeElAgKiD/QLt6eEzAUI1pPg6POHJSh76w==
+
+dn: cn=Caroline Naguwa,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Caroline Naguwa
+sn: Naguwa
+givenName: Caroline
+uid: cnaguwa@hawaii.edu
+mail: cnaguwa@hawaii.edu
+userPassword: {SSHA}FXpBqtrfvfEF/Qhlpl5QVtfMKPI2s4kFb6eDjg==
+
+dn: cn=Monique Chyba,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Monique Chyba
+sn: Chyba
+givenName: Monique
+uid: mchyba@math.hawaii.edu
+mail: mchyba@math.hawaii.edu
+userPassword: {SSHA}btckLKkhhFn8g6L9jswsKQSTKl3Eb6+yJ3OjBg==
+
+dn: cn=Dr. Jennie Rakestraw,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Dr. Jennie Rakestraw
+sn: Rakestraw
+givenName: Dr.
+uid: rakestrawj@winthrop.edu
+mail: rakestrawj@winthrop.edu
+userPassword: {SSHA}e5B6c1UoRrrDqUPDjxy+mf8kDzlJsu8trBR3og==
+
+dn: cn=Dr. Matthew Nelson,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Dr. Matthew Nelson
+sn: Nelson
+givenName: Dr.
+uid: MNelson@fmarion.edu
+mail: MNelson@fmarion.edu
+userPassword: {SSHA}z/jaxmPdwjAGvuaQS2iXcILrN+pqQm4Ax5Y6aw==
+
+dn: cn=Dr. Calvin Williams,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Dr. Calvin Williams
+sn: Williams
+givenName: Dr.
+uid: calvinw@clemson.edu
+mail: calvinw@clemson.edu
+userPassword: {SSHA}SNSs/mh6jBeFvCVUPmeNMV6p3JQqYZ3ZU8pvKA==
+
+dn: cn=Dr. Richard Dale,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Dr. Richard Dale
+sn: Dale
+givenName: Dr.
+uid: richard.dale1@maine.edu
+mail: richard.dale1@maine.edu
+userPassword: {SSHA}bqCC9VQqYTRR8l9rnqfTeAYSi/137BFQUz1g5A==
+
+dn: cn=David Silvernail,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: David Silvernail
+sn: Silvernail
+givenName: David
+uid: davids@usm.maine.edu
+mail: davids@usm.maine.edu
+userPassword: {SSHA}p0bkHzGYBPpcoXA3PsYYzXsbCy0cW4ab2bwSyw==
+
+dn: cn=John Pelesko,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: John Pelesko
+sn: Pelesko
+givenName: John
+uid: Pelesko@udel.edu
+mail: Pelesko@udel.edu
+userPassword: {SSHA}rOCU69P8b6MeNCCuBbkdwDnVbolpx0/KyrasbA==
+
+dn: cn=Carol Vukelick,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Carol Vukelick
+sn: Vukelick
+givenName: Carol
+uid: Vukelick@udel.edu
+mail: Vukelick@udel.edu
+userPassword: {SSHA}8a8lXpFg6AQY0J1CqQOo4YN2y6AxzPmn0ksiAw==
+
+dn: cn=Bruce Clemetsen,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Bruce Clemetsen
+sn: Clemetsen
+givenName: Bruce
+uid: clemetb@linnbenton.edu
+mail: clemetb@linnbenton.edu
+userPassword: {SSHA}2DrhixdVulYSzJ8Gm22iZSVAp3jOmUGHGOaUqw==
+
+dn: cn=Lisa Reynolds,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Lisa Reynolds
+sn: Reynolds
+givenName: Lisa
+uid: Lisa.Reynolds@state.or.us
+mail: Lisa.Reynolds@state.or.us
+userPassword: {SSHA}fQnsaK5i0zU0xlMTVQZ77EQ9EPDfVpU1pUOWzw==
+
+dn: cn=Carol Bell,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Carol Bell
+sn: Bell
+givenName: Carol
+uid: cbell@nmu.edu
+mail: cbell@nmu.edu
+userPassword: {SSHA}Oo2IpGqLHv9OkcEje845a1Fr+5NIGBFnc+vLrQ==
+
+dn: cn=Virgina Mix Adatto,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Virgina Mix Adatto
+sn: Adatto
+givenName: Virgina
+uid: virgina.mix@yahoo.com
+mail: virgina.mix@yahoo.com
+userPassword: {SSHA}RKIIdbN46Zu5/q1Oy2+DzivKofZQqUHw5XjRLA==
+
+dn: cn=Dr. Tom Dick,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Dr. Tom Dick
+sn: Dick
+givenName: Dr.
+uid: tpdick@science.oregonstate.edu
+mail: tpdick@science.oregonstate.edu
+userPassword: {SSHA}G20atJtoQBpk+EyHOuFi14PrHguP5fE360PJ3Q==
+
+dn: cn=Denise Trakas,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Denise Trakas
+sn: Trakas
+givenName: Denise
+uid: dtrakas@washoeschools.net
+mail: dtrakas@washoeschools.net
+userPassword: {SSHA}pE/GeWh2KAVnCCmjtLwyrumZyVZn+l3sphsgiw==
+
+dn: cn=Higher Education,ou=groups,ou=environment,dc=edwdc,dc=net
+objectClass: groupOfNames
+objectClass: top
+cn: Higher Education
+member: cn=Marsha Hirano-Nakanishi,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Nancy Brynelson,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Carolina Cardenas,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Nilvio Perez,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Yuhang Rong,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Eileen Hocking,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Adam Goldberg,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Jill Shafer,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Teresa Tande,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Bill Martin,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Scott Smith,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Susan Piazza,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Tim Boerst,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Betsy MacLeod,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Jack Smith,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Nicol Reiner,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Katy Heyning,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Kevin McLeod,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Karin Jannsen,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Kate Brayko,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Karen McLeer,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Diane Nielsen,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Karla Hayashi,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Dr. Lemuel Watson,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Donald Young,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Caroline Naguwa,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Monique Chyba,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Dr. Jennie Rakestraw,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Dr. Matthew Nelson,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Dr. Calvin Williams,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Dr. Richard Dale,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=David Silvernail,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=John Pelesko,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Carol Vukelick,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Bruce Clemetsen,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Lisa Reynolds,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Carol Bell,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Virgina Mix Adatto,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Dr. Tom Dick ,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Denise Trakas,ou=people,ou=environment,dc=edwdc,dc=net
+
+dn: cn=Matt Sollars,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Matt Sollars
+sn: Sollars
+givenName: Matt
+uid: msollars
+mail: msollars
+userPassword: {SSHA}tlq58ElKlBTXFhaXVDk1KQN42a8PjWhocIr3cg==
+
+dn: cn=Erik Croker,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Erik Croker
+sn: Croker
+givenName: Erik
+uid: ecroker
+mail: ecroker
+userPassword: {SSHA}BQFluC4jEtvJ77dUjslPPfmdLSA2cE5AZZM72w==
+
+dn: cn=Higher Education Admissions Officer,ou=groups,ou=environment,dc=edwdc,dc=net
+objectClass: groupOfNames
+objectClass: top
+cn: Higher Education Admissions Officer
+member: cn=Matt Sollars,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Erik Croker,ou=people,ou=environment,dc=edwdc,dc=net
+
+dn: cn=Mike Graham,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Mike Graham
+sn: Graham
+givenName: Mike
+uid: mike_graham@ncsu.edu
+mail: mike_graham@ncsu.edu
+userPassword: {SSHA}Va5lyKNBgko1VFGFZOOjSepx2GEV93ySfZ2N0g==
+
+dn: cn=Carmen Westover,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Carmen Westover
+sn: Westover
+givenName: Carmen
+uid: westoverbr@yahoo.com
+mail: westoverbr@yahoo.com
+userPassword: {SSHA}qFb2iCHxKDZrbqMUQ/LxcwCSx4uh8Rx2eaAiHQ==
+
+dn: cn=Stacey Ray,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Stacey Ray
+sn: Ray
+givenName: Stacey
+uid: boiserays@hotmail.com
+mail: boiserays@hotmail.com
+userPassword: {SSHA}ZOBIPlnyuA7SKnFiD3UW/L2QGx/bP+pSgrqoyQ==
+
+dn: cn=Angela Spear,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Angela Spear
+sn: Spear
+givenName: Angela
+uid: ryang@westelfiber.com
+mail: ryang@westelfiber.com
+userPassword: {SSHA}fd9JJo5OsTLv4EvV/0gnhUUEKIQePhEeBHGPkg==
+
+dn: cn=Leanne Davis,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Leanne Davis
+sn: Davis
+givenName: Leanne
+uid: ddavis1057@aol.com
+mail: ddavis1057@aol.com
+userPassword: {SSHA}jW37hFPlF0GvG9vcTEaw80isiAWAvob/6L8uzA==
+
+dn: cn=Tonya Belgum,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Tonya Belgum
+sn: Belgum
+givenName: Tonya
+uid: belgum@live.com
+mail: belgum@live.com
+userPassword: {SSHA}YQgfPjVjLe8B8+hGSHxgoWCudlEWBcBVIj0h3g==
+
+dn: cn=Tobi Fuller,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Tobi Fuller
+sn: Fuller
+givenName: Tobi
+uid: tfuller@everestkc.net
+mail: tfuller@everestkc.net
+userPassword: {SSHA}LUDIwCtr+V9b90inNXoTQV3HQ8On68IsaH3/eQ==
+
+dn: cn=Ken Chichester,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Ken Chichester
+sn: Chichester
+givenName: Ken
+uid: Kchichester@nwr7.org
+mail: Kchichester@nwr7.org
+userPassword: {SSHA}dDyPBVvBXLAiR6UPfT0+pcVKtS9mUu4DtzeEdA==
+
+dn: cn=Dale Steichen,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Dale Steichen
+sn: Steichen
+givenName: Dale
+uid: Dale.steichen@akzonobel.com
+mail: Dale.steichen@akzonobel.com
+userPassword: {SSHA}lUOF3hY0s7nK4YKiXrjYVk5RjIhY3NwRvjZi8w==
+
+dn: cn=Raymond Radikas,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Raymond Radikas
+sn: Radikas
+givenName: Raymond
+uid: Raymond.radikas@lfg.com
+mail: Raymond.radikas@lfg.com
+userPassword: {SSHA}zYLD8nrAEqq/XsrKIrx0pGFg9sceVBIZ652bAQ==
+
+dn: cn=Ginny Mott,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Ginny Mott
+sn: Mott
+givenName: Ginny
+uid: vmott@almanacmtn.us
+mail: vmott@almanacmtn.us
+userPassword: {SSHA}ysEGVLJr31iVS2mMijk/D3BA30qBo0yxZTaLjg==
+
+dn: cn=Lance Gilman,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Lance Gilman
+sn: Gilman
+givenName: Lance
+uid: lance.gilman@maine.gov
+mail: lance.gilman@maine.gov
+userPassword: {SSHA}T+HFOG03O74GowJ7EZ/rcM3xa3nTxPnP1c2axQ==
+
+dn: cn=David Connerty-Marin,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: David Connerty-Marin
+sn: Connerty-Marin
+givenName: David
+uid: david.connerty-marin@maine.gov
+mail: david.connerty-marin@maine.gov
+userPassword: {SSHA}6AYlMgiHMK5dZRQEl/dl3tipB/ubEfeDz0mLZA==
+
+dn: cn=Pete Halliday,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Pete Halliday
+sn: Halliday
+givenName: Pete
+uid: phallida@ford.com
+mail: phallida@ford.com
+userPassword: {SSHA}LMkpe7mcoK6w/QeVbcvlIwGuxXgX3C1JAioQsA==
+
+dn: cn=Arika Ford,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Arika Ford
+sn: Ford
+givenName: Arika
+uid: arikaf333@aol.com
+mail: arikaf333@aol.com
+userPassword: {SSHA}S7+pxmpqZqfzZ4DmlWM/a3B4LsQDO/j/WbNFzA==
+
+dn: cn=Kim and Jon Waalkes,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Kim and Jon Waalkes
+sn: Waalkes
+givenName: Kim
+uid: Kim_Waalkes@yahoo.com
+mail: Kim_Waalkes@yahoo.com
+userPassword: {SSHA}e5WCJNpyS+sFmYxh83Nc5twUzyB6cKXk8pm6pQ==
+
+dn: cn=Andrea N. Jackson,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Andrea N. Jackson
+sn: Jackson
+givenName: Andrea
+uid: andreaviger@yahoo.com
+mail: andreaviger@yahoo.com
+userPassword: {SSHA}H5C3FxsXRGybXPApjvxVeGL1JgQ+EihaRDibmA==
+
+dn: cn=Sue Laughlin,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Sue Laughlin
+sn: Laughlin
+givenName: Sue
+uid: slaughlin@m-m.net
+mail: slaughlin@m-m.net
+userPassword: {SSHA}b+RAmZWreM2pxIZcsMXq2jJPH1MHBbOm+d659Q==
+
+dn: cn=Dee Hensley-McLean,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Dee Hensley-McLean
+sn: Hensley-McLean
+givenName: Dee
+uid: macleand@netzero.net
+mail: macleand@netzero.net
+userPassword: {SSHA}Ng3TPYTpsuCLdY1GoYLN+RvHLjWwcab0IRkcxQ==
+
+dn: cn=Debra Adler,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Debra Adler
+sn: Adler
+givenName: Debra
+uid: debraadler@comcast.net
+mail: debraadler@comcast.net
+userPassword: {SSHA}YbKt73NiO7Z05+wuoN6257AkGMJfOJQbuhqnqw==
+
+dn: cn=Indiana Reyna Rivera,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Indiana Reyna Rivera
+sn: Rivera
+givenName: Indiana
+uid: indianarrivera@gmail.com
+mail: indianarrivera@gmail.com
+userPassword: {SSHA}QBLAR71glRsQzoXF5lCleEua6YoRA5qBo89H0A==
+
+dn: cn=Julie Guaspari,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Julie Guaspari
+sn: Guaspari
+givenName: Julie
+uid: julieguaspari@comcast.net
+mail: julieguaspari@comcast.net
+userPassword: {SSHA}t6+xjNL2hVByVr/GhIR8FbHJcbNudRANM43UTA==
+
+dn: cn=Cathy Haarstad,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Cathy Haarstad
+sn: Haarstad
+givenName: Cathy
+uid: ptidirector@srt.com
+mail: ptidirector@srt.com
+userPassword: {SSHA}SWHi/HQZ/0mSoTFGHiH40Jb42r0kQ1wo2Z0VOw==
+
+dn: cn=Nicole Duncan,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Nicole Duncan
+sn: Duncan
+givenName: Nicole
+uid: nduncan@albany.k12.or.us
+mail: nduncan@albany.k12.or.us
+userPassword: {SSHA}/leELCkkdBM3wl5t6pxETjDwSIBRJCbt8rlYzA==
+
+dn: cn=Kelli Ngariki,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Kelli Ngariki
+sn: Ngariki
+givenName: Kelli
+uid: kelli_strand@yahoo.com
+mail: kelli_strand@yahoo.com
+userPassword: {SSHA}TicmHGujTMb9zqwJZljU7A2xKmILZPoODqlq9Q==
+
+dn: cn=Maureen Daschel,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Maureen Daschel
+sn: Daschel
+givenName: Maureen
+uid: maureen.daschel@stmaryspdx.org
+mail: maureen.daschel@stmaryspdx.org
+userPassword: {SSHA}79e3gG0p0Sd2AxEbq8on9ZHBvxsApGd0cMgm9Q==
+
+dn: cn=Diane Rosado,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Diane Rosado
+sn: Rosado
+givenName: Diane
+uid: rosadadx@milwaukee.k12.wi.us
+mail: rosadadx@milwaukee.k12.wi.us
+userPassword: {SSHA}iYnseDq4klsY065o98NufNSAQ1X0coJbieuALQ==
+
+dn: cn=megan dowling,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: megan dowling
+sn: dowling
+givenName: megan
+uid: megan.dowling@k12.sd.us
+mail: megan.dowling@k12.sd.us
+userPassword: {SSHA}HBpjNUs7tH5TKd3jyepzk17Ej5JA02TtvtW5qA==
+
+dn: cn=Sharla Steever,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Sharla Steever
+sn: Steever
+givenName: Sharla
+uid: ssteever@tie.net
+mail: ssteever@tie.net
+userPassword: {SSHA}QI/yKzuhD2ZNOQ33mKS12PRj6oTK211xAe6csA==
+
+dn: cn=Carolee Little,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Carolee Little
+sn: Little
+givenName: Carolee
+uid: clittle@Sdparent.org
+mail: clittle@Sdparent.org
+userPassword: {SSHA}UaVAn2v4fdfkIw7K/sZ7DWc9CMsz6XS9OkD/mw==
+
+dn: cn=Wendy Turner,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Wendy Turner
+sn: Turner
+givenName: Wendy
+uid: wendy.turner@bsd.k12.de.us
+mail: wendy.turner@bsd.k12.de.us
+userPassword: {SSHA}1p1TAZDl9/uw6mo3wUNpEdXviGXGYH/JDLbtcg==
+
+dn: cn=Nancy Brickhouse,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Nancy Brickhouse
+sn: Brickhouse
+givenName: Nancy
+uid: nbrick@udel.edu
+mail: nbrick@udel.edu
+userPassword: {SSHA}wfwjo7IxlMN8xedlWdPx00kvZ6p5lal5uGVVtw==
+
+dn: cn=Lois Yamauchi,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Lois Yamauchi
+sn: Yamauchi
+givenName: Lois
+uid: yamauchi@hawaii.edu
+mail: yamauchi@hawaii.edu
+userPassword: {SSHA}HO8lp1FgRa8ai4GxyV6vTOykHyRoEplFZA02Ig==
+
+dn: cn=Parent,ou=groups,ou=environment,dc=edwdc,dc=net
+objectClass: groupOfNames
+objectClass: top
+cn: Parent
+member: cn=Mike Graham,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Carmen Westover,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Stacey Ray,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Angela Spear,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Leanne Davis,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Tonya Belgum,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Tobi Fuller ,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Ken Chichester,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Dale Steichen,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Raymond Radikas,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Ginny Mott,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Lance Gilman,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=David Connerty-Marin,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Pete Halliday,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Arika Ford,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Kim and Jon Waalkes,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Andrea N. Jackson,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Sue Laughlin,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Dee Hensley-McLean,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Debra Adler,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Indiana Reyna Rivera,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Julie Guaspari,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Cathy Haarstad,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Nicole Duncan,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Kelli Ngariki,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Maureen Daschel,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Diane Rosado,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=megan dowling,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Sharla Steever,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Carolee Little,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Wendy Turner,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Nancy Brickhouse,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Lois Yamauchi,ou=people,ou=environment,dc=edwdc,dc=net
+
+dn: cn=Clare Seabaugh,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Clare Seabaugh
+sn: Seabaugh
+givenName: Clare
+uid: cseabaugh
+mail: cseabaugh
+userPassword: {SSHA}Lq7Q5JIBXeVuxK4SYR1YBp4ssuAQkctcUoX77w==
+
+dn: cn=Psychometrician,ou=groups,ou=environment,dc=edwdc,dc=net
+objectClass: groupOfNames
+objectClass: top
+cn: Psychometrician
+member: cn=Clare Seabaugh,ou=people,ou=environment,dc=edwdc,dc=net
+
+dn: cn=Amie Stroop,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Amie Stroop
+sn: Stroop
+givenName: Amie
+uid: astroop
+mail: astroop
+userPassword: {SSHA}SAnGwFA8GlpnRdqm4vdQyNo5/40rpVwJ7Zarow==
+
+dn: cn=Ted Lazaro,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Ted Lazaro
+sn: Lazaro
+givenName: Ted
+uid: tlazaro
+mail: tlazaro
+userPassword: {SSHA}/XGYSx32k0bKeb/0H4Ljy3cwYRsiaCMIbnWG7Q==
+
+dn: cn=School Education Administrator,ou=groups,ou=environment,dc=edwdc,dc=net
+objectClass: groupOfNames
+objectClass: top
+cn: School Education Administrator
+member: cn=Amie Stroop,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Ted Lazaro,ou=people,ou=environment,dc=edwdc,dc=net
+
+dn: cn=Jim Kroening,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Jim Kroening
+sn: Kroening
+givenName: Jim
+uid: jim.kroening@dpi.nc.gov
+mail: jim.kroening@dpi.nc.gov
+userPassword: {SSHA}32exnQsIhSqoGLgkoOQVBDZmIz8czyTCfCeVOQ==
+
+dn: cn=Viji Somasundarm,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Viji Somasundarm
+sn: Somasundarm
+givenName: Viji
+uid: visalakshi.somasundaram@dpi.wi.gov
+mail: visalakshi.somasundaram@dpi.wi.gov
+userPassword: {SSHA}X0353VEvfGwqf9DZgUQh/1OsD7C8A1ArSQ5v5Q==
+
+dn: cn=William Kliche,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: William Kliche
+sn: Kliche
+givenName: William
+uid: william.kliche@state.sd.us
+mail: william.kliche@state.sd.us
+userPassword: {SSHA}wUcTdvkDo6e/DybGBjKE+1JEZ8Jur/4dkRqQIw==
+
+dn: cn=Marta Stirling,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Marta Stirling
+sn: Stirling
+givenName: Marta
+uid: marta.Stirling@state.sd.us
+mail: marta.Stirling@state.sd.us
+userPassword: {SSHA}mjHu8TWwwSjJ1VCgT+9dTUvQvAnF2zCPBvs6Nw==
+
+dn: cn=Shannon Malone,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Shannon Malone
+sn: Malone
+givenName: Shannon
+uid: shannon.malone@state.sd.us
+mail: shannon.malone@state.sd.us
+userPassword: {SSHA}zaVShnejdybJwApO6/9z+iJplmngYtG+X9NEeA==
+
+dn: cn=Linda Turner,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Linda Turner
+sn: Turner
+givenName: Linda
+uid: linda.turner@state.sd.us
+mail: linda.turner@state.sd.us
+userPassword: {SSHA}8pcIu3aIL1Dlr4R+tSy1JFXG97+1aAjerOGVoA==
+
+dn: cn=Rachel Aazzerah,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Rachel Aazzerah
+sn: Aazzerah
+givenName: Rachel
+uid: rachel.aazzerah@state.or.us
+mail: rachel.aazzerah@state.or.us
+userPassword: {SSHA}BlTQZFiFJ63o7ZELLYGE5ISnX6ltaAavUvcFjg==
+
+dn: cn=Audrey Lesdondak,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Audrey Lesdondak
+sn: Lesdondak
+givenName: Audrey
+uid: audrey.lesondak@dpi.wi.gov
+mail: audrey.lesondak@dpi.wi.gov
+userPassword: {SSHA}+nfgESROS6ZdwTN6vlF2Tk47hXO3CKiuSNN3rA==
+
+dn: cn=Erin Faasuamalie,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Erin Faasuamalie
+sn: Faasuamalie
+givenName: Erin
+uid: erin.faasuamalie@dpi.wi.gov
+mail: erin.faasuamalie@dpi.wi.gov
+userPassword: {SSHA}AL6J5R8jtHycRdqxbl0J0BfBufKcbvgZrV/aGw==
+
+dn: cn=Cindy Johnstone,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Cindy Johnstone
+sn: Johnstone
+givenName: Cindy
+uid: cindy.johnstone@vallivue.org
+mail: cindy.johnstone@vallivue.org
+userPassword: {SSHA}5iwqXB/M4k3vCAnzd9NxKVMvmnT1A4WtJR62fw==
+
+dn: cn=Ken Hermens,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Ken Hermens
+sn: Hermens
+givenName: Ken
+uid: ken.hermens@state.or.us
+mail: ken.hermens@state.or.us
+userPassword: {SSHA}DO7QyH3A35gzDoNM1TfBgUUhCgtkb1DRvw3R7g==
+
+dn: cn=Michelle McCoy,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Michelle McCoy
+sn: McCoy
+givenName: Michelle
+uid: Michelle.McCoy@state.or.us
+mail: Michelle.McCoy@state.or.us
+userPassword: {SSHA}Bc4XQnfCvmkrUb2YLsdcKRN0+9xubF8JC6Vyyg==
+
+dn: cn=Laura Petschauer,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Laura Petschauer
+sn: Petschauer
+givenName: Laura
+uid: laura.petschauer@state.or.us
+mail: laura.petschauer@state.or.us
+userPassword: {SSHA}VVs7tIwXhxdBdmMq4OHWy8XyhVnqGy7zGWCJqw==
+
+dn: cn=Kyle Ward,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Kyle Ward
+sn: Ward
+givenName: Kyle
+uid: WardK2@michigan.gov
+mail: WardK2@michigan.gov
+userPassword: {SSHA}5YFWK24Mihnq4tb8xXgdHe9PaKK23eGuZEc16A==
+
+dn: cn=Carrie Perkis,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Carrie Perkis
+sn: Perkis
+givenName: Carrie
+uid: carrie.perkis@dpi.nc.gov
+mail: carrie.perkis@dpi.nc.gov
+userPassword: {SSHA}VufxlZ9p797lb1IWwmX7hvErJaZuSrRDP0sePA==
+
+dn: cn=Kathy Luras,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Kathy Luras
+sn: Luras
+givenName: Kathy
+uid: luraska@sd25.us
+mail: luraska@sd25.us
+userPassword: {SSHA}5GMGTfJuNwUdOtO1ypBVNjqWcwtXdVmH3Ji4PQ==
+
+dn: cn=Kim Eimers,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Kim Eimers
+sn: Eimers
+givenName: Kim
+uid: keimers@nsd131.org
+mail: keimers@nsd131.org
+userPassword: {SSHA}w3Mva/XVXYxUuN8IsDV92fzY9gVaWW7eW0g/rQ==
+
+dn: cn=Laura Mastel,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Laura Mastel
+sn: Mastel
+givenName: Laura
+uid: laura_mastel@bismarckschools.org
+mail: laura_mastel@bismarckschools.org
+userPassword: {SSHA}iei7vjf1rNKMjIc9+Tw0e9+uT/hD7AYuu6EVcw==
+
+dn: cn=Gail Pagano,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Gail Pagano
+sn: Pagano
+givenName: Gail
+uid: Gail.pagano@ct.gov
+mail: Gail.pagano@ct.gov
+userPassword: {SSHA}/cqn3chpTwMyQNcK8RNe7Gi4D8q7wbYiHfSieQ==
+
+dn: cn=Megan. Alubicki,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Megan. Alubicki
+sn: Alubicki
+givenName: Megan.
+uid: Megan.Alubicki@ct.gov
+mail: Megan.Alubicki@ct.gov
+userPassword: {SSHA}TF1668R2b+JBzBypmZVmgEimOBwCWiMnUvbqsw==
+
+dn: cn=Wendy Gould,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Wendy Gould
+sn: Gould
+givenName: Wendy
+uid: gouldw1949@gmail.com
+mail: gouldw1949@gmail.com
+userPassword: {SSHA}dAWBiFdddX4QScR28UquTosIDHMt+2zD/WeoKg==
+
+dn: cn=Kristen Brown,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Kristen Brown
+sn: Brown
+givenName: Kristen
+uid: kbrown@cde.ca.gov
+mail: kbrown@cde.ca.gov
+userPassword: {SSHA}uTHMOAiJzhARMxE+pSIbmU5SvalQEbF+OeGFAg==
+
+dn: cn=Jean Howard,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Jean Howard
+sn: Howard
+givenName: Jean
+uid: jhoward@mt.gov
+mail: jhoward@mt.gov
+userPassword: {SSHA}iZzHPhBHdaO/kwEEiwGYBpMuzGANMdkAOJG4DQ==
+
+dn: cn=Cynthia Green,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Cynthia Green
+sn: Green
+givenName: Cynthia
+uid: cgreen@mt.gov
+mail: cgreen@mt.gov
+userPassword: {SSHA}R/ws9jZYCfIicRU2vke5lO87laJ2J6O8YzaQig==
+
+dn: cn=Yvonne Field,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Yvonne Field
+sn: Field
+givenName: Yvonne
+uid: yfield@mt.gov
+mail: yfield@mt.gov
+userPassword: {SSHA}Gq70R8/zRfG81p9caaaPfW2/VeNlIUoiubApvA==
+
+dn: cn=Amy Friez,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Amy Friez
+sn: Friez
+givenName: Amy
+uid: afriez@mt.gov
+mail: afriez@mt.gov
+userPassword: {SSHA}cWXqmYZCIrKt6a9J+NPWjJUySmJKLmPt+haYdQ==
+
+dn: cn=Veena Nambiar,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Veena Nambiar
+sn: Nambiar
+givenName: Veena
+uid: vnambiar@cde.ca.gov
+mail: vnambiar@cde.ca.gov
+userPassword: {SSHA}T6KEbsBUmeH9iONNz/1GdSW1iWDT9EG9l5uFag==
+
+dn: cn=Elena Fajardo,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Elena Fajardo
+sn: Fajardo
+givenName: Elena
+uid: efajardo@cde.ca.gov
+mail: efajardo@cde.ca.gov
+userPassword: {SSHA}LXgzEV9MRmMgC0WVKxHnaxkGmWX3eQWsNSKGgA==
+
+dn: cn=Cynthia Gunderson,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Cynthia Gunderson
+sn: Gunderson
+givenName: Cynthia
+uid: cgunderson@cde.ca.gov
+mail: cgunderson@cde.ca.gov
+userPassword: {SSHA}ZrKJzYwpT6ZiNoMHCc/8wTrFJCH1ReIzHV5bew==
+
+dn: cn=Gayle DeJong,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Gayle DeJong
+sn: DeJong
+givenName: Gayle
+uid: DeJongJ@michigan.gov
+mail: DeJongJ@michigan.gov
+userPassword: {SSHA}lC0u+OEGY0dRg4mp9Cx5Fy7sG/rlhR4ti315EA==
+
+dn: cn=Jackie Thomason,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Jackie Thomason
+sn: Thomason
+givenName: Jackie
+uid: thomason.jackie@meridianschools.org
+mail: thomason.jackie@meridianschools.org
+userPassword: {SSHA}XdtVSWS4qiw+16l749q94iS8+5OaSWmM+yUwnA==
+
+dn: cn=Michael Gallagher,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Michael Gallagher
+sn: Gallagher
+givenName: Michael
+uid: michael.gallagher@dpi.nc.gov
+mail: michael.gallagher@dpi.nc.gov
+userPassword: {SSHA}LqK+EH/vtCd8pgcDG5kew+pi9QPG/nOvuRkeig==
+
+dn: cn=Linda Howley,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Linda Howley
+sn: Howley
+givenName: Linda
+uid: HowleyL@michigan.gov
+mail: HowleyL@michigan.gov
+userPassword: {SSHA}uYhBCeLt1F7A4KhV+kLoWcUFJTLDbXFkfX8hww==
+
+dn: cn=Jennifer Paul,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Jennifer Paul
+sn: Paul
+givenName: Jennifer
+uid: PaulJ@michigan.gov
+mail: PaulJ@michigan.gov
+userPassword: {SSHA}PkFagLGfSDQlffrXev9prudXONP6kJfZtc+q9Q==
+
+dn: cn=Deirdre Ducharme,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Deirdre Ducharme
+sn: Ducharme
+givenName: Deirdre
+uid: deirdre.ducharme@ct.gov
+mail: deirdre.ducharme@ct.gov
+userPassword: {SSHA}WY55YXPry+jFIwU6ehw8l8u3xPk0HteuMtL0aw==
+
+dn: cn=Susan Fossett,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Susan Fossett
+sn: Fossett
+givenName: Susan
+uid: susan.fossett@maine.gov
+mail: susan.fossett@maine.gov
+userPassword: {SSHA}+i9ATmk00i0cKrTMVyOIeaB51W1gCCpCjV6Utg==
+
+dn: cn=Janice Breton,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Janice Breton
+sn: Breton
+givenName: Janice
+uid: janice.breton@maine.gov
+mail: janice.breton@maine.gov
+userPassword: {SSHA}m6hYcL1M7eKqNa2YorW0i8RbkFepksUqHNf6oA==
+
+dn: cn=Nancy Mullins,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Nancy Mullins
+sn: Mullins
+givenName: Nancy
+uid: nancy.mullins@maine.gov
+mail: nancy.mullins@maine.gov
+userPassword: {SSHA}6q/gkwGduA/lwd25lpOmOtOIdvpGpLU6e5uOXw==
+
+dn: cn=Patsy Dunton,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Patsy Dunton
+sn: Dunton
+givenName: Patsy
+uid: patsy.dunton@maine.gov
+mail: patsy.dunton@maine.gov
+userPassword: {SSHA}+TwHu1IzxsoNwj9QjpEHCPu3dJiTlA0LkO5MzA==
+
+dn: cn=Dan Auman,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Dan Auman
+sn: Auman
+givenName: Dan
+uid: dan.auman@dpi.nc.gov
+mail: dan.auman@dpi.nc.gov
+userPassword: {SSHA}Ijat+kC8vWtpapyzvpSuqfBW8+s1SXS2cACrqg==
+
+dn: cn=Michele Mailhot,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Michele Mailhot
+sn: Mailhot
+givenName: Michele
+uid: michele.mailhot@maine.gov
+mail: michele.mailhot@maine.gov
+userPassword: {SSHA}VirBoQCE3KRm4bVoyk7OwH2+OjK9rFVe+BbwHQ==
+
+dn: cn=Dixie Abbott,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Dixie Abbott
+sn: Abbott
+givenName: Dixie
+uid: dabbott@cde.ca.gov
+mail: dabbott@cde.ca.gov
+userPassword: {SSHA}J89czoKKYGotfPrGLyg5kwNhLfujcVnZDGC9kQ==
+
+dn: cn=Jessica Barr,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Jessica Barr
+sn: Barr
+givenName: Jessica
+uid: jbarr@cde.ca.gov
+mail: jbarr@cde.ca.gov
+userPassword: {SSHA}sIvmdlkaN8wu0n4yQjwS6wmIDbZLoBjMrquQZw==
+
+dn: cn=Jodi Mills,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Jodi Mills
+sn: Mills
+givenName: Jodi
+uid: jmills@caldwellschools.org
+mail: jmills@caldwellschools.org
+userPassword: {SSHA}nHWdcdc2qiglmUicvsi1jrpE/AZ7FhB4bQfFMg==
+
+dn: cn=Bruce Cook,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Bruce Cook
+sn: Cook
+givenName: Bruce
+uid: cookb@msd321.com
+mail: cookb@msd321.com
+userPassword: {SSHA}U1gzUgqL/DCOHY5Uwt8TH81CI+KXxcIi4pChxA==
+
+dn: cn=Dave Brancamp,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Dave Brancamp
+sn: Brancamp
+givenName: Dave
+uid: dbrancamp@washoeschools.net
+mail: dbrancamp@washoeschools.net
+userPassword: {SSHA}7kBmyNYEO7WuOKXDvHUgLEVEl/ol2LT9BRILdg==
+
+dn: cn=Brian Touchette,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Brian Touchette
+sn: Touchette
+givenName: Brian
+uid: btouchette@doe.k12.de.us
+mail: btouchette@doe.k12.de.us
+userPassword: {SSHA}YnC+prR24XiupvAhMWJHnuJJcCXULjco00kv4g==
+
+dn: cn=Terry Richards,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Terry Richards
+sn: Richards
+givenName: Terry
+uid: trichard@doe.k12.de.us
+mail: trichard@doe.k12.de.us
+userPassword: {SSHA}/Z5a0fOXRfTluqZtBN/nKiBWs2h5lKvw4qenBQ==
+
+dn: cn=Katia Foret,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Katia Foret
+sn: Foret
+givenName: Katia
+uid: kforet@doe.k12.de.us
+mail: kforet@doe.k12.de.us
+userPassword: {SSHA}AMT+DuEQyWOZIphjPTAdupHCXe7qfU9fpFni2Q==
+
+dn: cn=Janet Stuck,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Janet Stuck
+sn: Stuck
+givenName: Janet
+uid: Janet.stuck@ct.gov
+mail: Janet.stuck@ct.gov
+userPassword: {SSHA}M3ySrk/hA4eUjn5+eeyasj4wekLKOaUGuynWBg==
+
+dn: cn=Patricia Reiss,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Patricia Reiss
+sn: Reiss
+givenName: Patricia
+uid: patricia_reiss@notes.k12.hi.us
+mail: patricia_reiss@notes.k12.hi.us
+userPassword: {SSHA}QbiVJdHOdgMVHLZG4G5jIsJyIM2SqlzS7FIMxw==
+
+dn: cn=Patricia Ishimaru,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Patricia Ishimaru
+sn: Ishimaru
+givenName: Patricia
+uid: patricia_ishimaru@notes.k12.hi.us
+mail: patricia_ishimaru@notes.k12.hi.us
+userPassword: {SSHA}IYILoj0TPzjg+/sjnJyB4Id4T9h/PVcTCaqm/Q==
+
+dn: cn=Carol Anton,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Carol Anton
+sn: Anton
+givenName: Carol
+uid: carol_anton@notes.k12.hi.us
+mail: carol_anton@notes.k12.hi.us
+userPassword: {SSHA}FkPYSY1XRrvPAxoFZvT5tHKhR+8da+WJhzBTIw==
+
+dn: cn=Maxine Nagamine,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Maxine Nagamine
+sn: Nagamine
+givenName: Maxine
+uid: maxine_nagamine@notes.k12.hi.us
+mail: maxine_nagamine@notes.k12.hi.us
+userPassword: {SSHA}nf9NW6mJMnVjBTGFc5lHUKxUBZjn+iqrVYKO8w==
+
+dn: cn=Brian Reiter,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Brian Reiter
+sn: Reiter
+givenName: Brian
+uid: brian_reiter@notes.k12.hi.us
+mail: brian_reiter@notes.k12.hi.us
+userPassword: {SSHA}cRpwqWiy63XmGTU+5h629CRma8oFUmjUChOnNA==
+
+dn: cn=Joe Amenta,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Joe Amenta
+sn: Amenta
+givenName: Joe
+uid: Joseph.amenta@ct.gov
+mail: Joseph.amenta@ct.gov
+userPassword: {SSHA}NfePYE3YgwhPBQe6fwAFVMFAbUFjnA0DCtAilA==
+
+dn: cn=Kerri Whipple,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Kerri Whipple
+sn: Whipple
+givenName: Kerri
+uid: kwhipple@nd.gov
+mail: kwhipple@nd.gov
+userPassword: {SSHA}r9Ajm1IvqzS3u44kdHllrJfAQ/+U4yYX4JlDxw==
+
+dn: cn=Pam Aman,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Pam Aman
+sn: Aman
+givenName: Pam
+uid: pamela.m.aman@sendit.nodak.edu
+mail: pamela.m.aman@sendit.nodak.edu
+userPassword: {SSHA}PGo9is08wDuSTUMEU+JWkbNwc/qpdOzHLDwXkw==
+
+dn: cn=State Administrator,ou=groups,ou=environment,dc=edwdc,dc=net
+objectClass: groupOfNames
+objectClass: top
+cn: State Administrator
+member: cn=Jim Kroening,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Viji Somasundarm,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=William Kliche,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Marta Stirling,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Shannon Malone,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Linda Turner,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Rachel Aazzerah,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Audrey Lesdondak,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Erin Faasuamalie,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Cindy Johnstone,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Ken Hermens,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Michelle McCoy,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Laura Petschauer,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Kyle Ward,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Carrie Perkis,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Kathy Luras,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Kim Eimers,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Laura Mastel,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Gail Pagano,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Megan. Alubicki,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Wendy Gould,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Kristen Brown,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Jean Howard,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Cynthia Green,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Yvonne Field,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Amy Friez,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Veena Nambiar,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Elena Fajardo,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Cynthia Gunderson,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Gayle DeJong,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Jackie Thomason,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Michael Gallagher,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Linda Howley,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Jennifer Paul,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Deirdre Ducharme,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Susan Fossett,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Janice Breton,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Nancy Mullins,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Patsy Dunton,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Dan Auman,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Michele Mailhot,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Dixie Abbott,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Jessica Barr,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Jodi Mills,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Bruce Cook,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Dave Brancamp,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Brian Touchette,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Terry Richards,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Katia Foret,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Janet Stuck,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Patricia Reiss,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Patricia Ishimaru,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Carol Anton,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Maxine Nagamine,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Brian Reiter,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Joe Amenta,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Kerri Whipple,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Pam Aman,ou=people,ou=environment,dc=edwdc,dc=net
+
+dn: cn=Katy Bester,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Katy Bester
+sn: Bester
+givenName: Katy
+uid: kbester
+mail: kbester
+userPassword: {SSHA}CA5Bggs7fhGiEwFzrB8rr1jduek2WUqWftJPdg==
+
+dn: cn=State Data Extractor,ou=groups,ou=environment,dc=edwdc,dc=net
+objectClass: groupOfNames
+objectClass: top
+cn: State Data Extractor
+member: cn=Katy Bester,ou=people,ou=environment,dc=edwdc,dc=net
+
+dn: cn=Liza Bopp,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Liza Bopp
+sn: Bopp
+givenName: Liza
+uid: lbopp
+mail: lbopp
+userPassword: {SSHA}8rT5JuxNmiaKSK7tgEKnJlxWGkrxt5XTKM8BVw==
+
+dn: cn=Jessie Mollic,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Jessie Mollic
+sn: Mollic
+givenName: Jessie
+uid: jmollica
+mail: jmollica
+userPassword: {SSHA}22pX8tfwbr4JNq66h/J3hLS3XKSbD/bC+iYanA==
+
+dn: cn=State Education Administrator,ou=groups,ou=environment,dc=edwdc,dc=net
+objectClass: groupOfNames
+objectClass: top
+cn: State Education Administrator
+member: cn=Liza Bopp,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Jessie Mollic,ou=people,ou=environment,dc=edwdc,dc=net
+
+dn: cn=Aidan McLinden,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Aidan McLinden
+sn: McLinden
+givenName: Aidan
+uid: apm-mke@sbcglobal.net
+mail: apm-mke@sbcglobal.net
+userPassword: {SSHA}ftRAk0ujh59eq2aao0hlSwXcnIgMGHs/079uyw==
+
+dn: cn=Alise Brickhouse,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Alise Brickhouse
+sn: Brickhouse
+givenName: Alise
+uid: nbrick@udel.edu
+mail: nbrick@udel.edu
+userPassword: {SSHA}eibL43hpQCl5qR0sjVqiuCORPH4cDXmBORKMSA==
+
+dn: cn=Caitlyn Viger,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Caitlyn Viger
+sn: Viger
+givenName: Caitlyn
+uid: caitlynviger@yahoo.com
+mail: caitlynviger@yahoo.com
+userPassword: {SSHA}oBohjz/VDGLEMV76MPp0jaOlWkTU+QOClC+mRA==
+
+dn: cn=Patty Long,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Patty Long
+sn: Long
+givenName: Patty
+uid: patty.long@casc.net
+mail: patty.long@casc.net
+userPassword: {SSHA}vELrm0swxOpgVHAHS4jHdfAVN4RRl9UvCObhXA==
+
+dn: cn=Paulina Radikas,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Paulina Radikas
+sn: Radikas
+givenName: Paulina
+uid: bigbubkis@mac.com
+mail: bigbubkis@mac.com
+userPassword: {SSHA}onLPosw8DOUQrdmzpNTeGcqesQo+16dfdDCj9g==
+
+dn: cn=Sofie Jenko,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Sofie Jenko
+sn: Jenko
+givenName: Sofie
+uid: DDeguire@columbus.k12.wi.us
+mail: DDeguire@columbus.k12.wi.us
+userPassword: {SSHA}D5sSc98d1ROSLPLN9ziOAI2f/u8mHEIU9YwJ0A==
+
+dn: cn=Benjamin Barnes,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Benjamin Barnes
+sn: Barnes
+givenName: Benjamin
+uid: bj@brainsandwich.com
+mail: bj@brainsandwich.com
+userPassword: {SSHA}lTwbTo5gRlbZ8JdRJ4n0Gh32Q9zQUXOQI7BT0w==
+
+dn: cn=Jenna Jarolminek,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Jenna Jarolminek
+sn: Jarolminek
+givenName: Jenna
+uid: jjrlmk@gmail.com
+mail: jjrlmk@gmail.com
+userPassword: {SSHA}EugH6rBRDrHhNmsMvt96JRSElTHluWu5a7YM+w==
+
+dn: cn=Hannah Harden,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Hannah Harden
+sn: Harden
+givenName: Hannah
+uid: hannahharden13@yahoo.com
+mail: hannahharden13@yahoo.com
+userPassword: {SSHA}fLaX9xBdsA9w/EkbxqiaELoHk/AHhEJlauSjHg==
+
+dn: cn=Joshua Raynor,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Joshua Raynor
+sn: Raynor
+givenName: Joshua
+uid: warren.raynor@gmail.com
+mail: warren.raynor@gmail.com
+userPassword: {SSHA}PyIXwk9Na+0OkOzpojW8VW7Mb8Ih9lZ/U4L43Q==
+
+dn: cn=Student,ou=groups,ou=environment,dc=edwdc,dc=net
+objectClass: groupOfNames
+objectClass: top
+cn: Student
+member: cn=Aidan McLinden,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Alise Brickhouse,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Caitlyn Viger,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Patty Long,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Paulina Radikas,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Sofie Jenko,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Benjamin Barnes,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Jenna Jarolminek,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Hannah Harden,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Joshua Raynor,ou=people,ou=environment,dc=edwdc,dc=net
+
+dn: cn=Louisa Mui,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Louisa Mui
+sn: Mui
+givenName: Louisa
+uid: lmui
+mail: lmui
+userPassword: {SSHA}oA6OvH0el1Fj3+Z+yAcNW7fOrRDrP8YLSSLsdQ==
+
+dn: cn=Kelly Tidd,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Kelly Tidd
+sn: Tidd
+givenName: Kelly
+uid: ktidd
+mail: ktidd
+userPassword: {SSHA}aWlFXVN+t48V0zaB9MdekaVUQzzT+8d1VfNn9Q==
+
+dn: cn=System Administrator,ou=groups,ou=environment,dc=edwdc,dc=net
+objectClass: groupOfNames
+objectClass: top
+cn: System Administrator
+member: cn=Louisa Mui,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Kelly Tidd,ou=people,ou=environment,dc=edwdc,dc=net
+
+dn: cn=Amy smith,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Amy smith
+sn: smith
+givenName: Amy
+uid: amy.smith@k12.sd.us
+mail: amy.smith@k12.sd.us
+userPassword: {SSHA}VE0bys+cflYtCRBn0uyyQFYXAUaPvxfl71mzEw==
+
+dn: cn=Deb Fredrickson,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Deb Fredrickson
+sn: Fredrickson
+givenName: Deb
+uid: deb.fredrickson@k12.sd.us
+mail: deb.fredrickson@k12.sd.us
+userPassword: {SSHA}YsoHQLo1c17cJp8VLwx7BtNaFb60nR1gpfA5Fw==
+
+dn: cn=Cindy Feyereisen,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Cindy Feyereisen
+sn: Feyereisen
+givenName: Cindy
+uid: cindy.feyereisen@k12.sd.us
+mail: cindy.feyereisen@k12.sd.us
+userPassword: {SSHA}C2DKBi/bBSJZOSsnlgkFH3A/MBCGDpEzK5UGVg==
+
+dn: cn=Joshua Chancer,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Joshua Chancer
+sn: Chancer
+givenName: Joshua
+uid: joshua.chancer@ouhsd.k12.ca.us
+mail: joshua.chancer@ouhsd.k12.ca.us
+userPassword: {SSHA}bpUcFReym7kq5xkV5SNsVCQqHRD+e1s0viDPrg==
+
+dn: cn=Lori Adams,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Lori Adams
+sn: Adams
+givenName: Lori
+uid: lori.adams@sbcglobal.net
+mail: lori.adams@sbcglobal.net
+userPassword: {SSHA}7tdduBBTupFRYACSFChej4zxRsN8t6KJLH/cWA==
+
+dn: cn=Brenda Hensley,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Brenda Hensley
+sn: Hensley
+givenName: Brenda
+uid: mathgirl70@earthlink.net
+mail: mathgirl70@earthlink.net
+userPassword: {SSHA}KcYWornBq+Ju8H071bdG8jyl+ExbzuYscDzeyA==
+
+dn: cn=Karen Abbott,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Karen Abbott
+sn: Abbott
+givenName: Karen
+uid: kabbott1968@gmail.com
+mail: kabbott1968@gmail.com
+userPassword: {SSHA}Cvkc5r0zPWHclq2YhV73XQQy9RDMyUJsPsDujQ==
+
+dn: cn=Rocio Gonzales-Swaby,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Rocio Gonzales-Swaby
+sn: Gonzales-Swaby
+givenName: Rocio
+uid: msgonzalezswaby@yahoo.com
+mail: msgonzalezswaby@yahoo.com
+userPassword: {SSHA}EpasqUtNr0ZgoCATbiggdOHIrRRJuu9TAdtE4Q==
+
+dn: cn=Kelli Seydewitz,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Kelli Seydewitz
+sn: Seydewitz
+givenName: Kelli
+uid: kelliann31@cox.net
+mail: kelliann31@cox.net
+userPassword: {SSHA}1xHgGLLB4bYRIZir5BAfufBNI0UxDNfeUegAsA==
+
+dn: cn=Jayne Marshall,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Jayne Marshall
+sn: Marshall
+givenName: Jayne
+uid: MARSHALLJ@christina.k12.de.us
+mail: MARSHALLJ@christina.k12.de.us
+userPassword: {SSHA}GDk2E1yJyDJkVZl0pwFzQtY7NklenodqZgir6Q==
+
+dn: cn=Judy Rogers,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Judy Rogers
+sn: Rogers
+givenName: Judy
+uid: rogersj@bsd405.org
+mail: rogersj@bsd405.org
+userPassword: {SSHA}+nXvQIpAzsD0IfQuzTy2jjSe4S+DUKHluvBH+Q==
+
+dn: cn=Heather Alexander,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Heather Alexander
+sn: Alexander
+givenName: Heather
+uid: heather.alexander@orient.k12.wa.us
+mail: heather.alexander@orient.k12.wa.us
+userPassword: {SSHA}HuBu/7MMmu+NcutnL0btwmTR30y5JTo06qr5sg==
+
+dn: cn=Adam Sagar,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Adam Sagar
+sn: Sagar
+givenName: Adam
+uid: asager@mv.k12.wa.us
+mail: asager@mv.k12.wa.us
+userPassword: {SSHA}is5msDJQPRFL/Ta4wDaJa/hFhQJ+6pM3UJIexg==
+
+dn: cn=Marci Cummings-Cohoe,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Marci Cummings-Cohoe
+sn: Cummings-Cohoe
+givenName: Marci
+uid: cummingsm@psd401.net
+mail: cummingsm@psd401.net
+userPassword: {SSHA}JWJXrn0IOYosXZ8uTtuZiVzFZ/zLbbiKu8/AfA==
+
+dn: cn=Rhonda Howard,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Rhonda Howard
+sn: Howard
+givenName: Rhonda
+uid: rhonda.howard@rsd.edu
+mail: rhonda.howard@rsd.edu
+userPassword: {SSHA}bR2yC0mZlqFDk6pf8pgUFvtoOuAaMwoIr6d/cA==
+
+dn: cn=Mike Janski,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Mike Janski
+sn: Janski
+givenName: Mike
+uid: mjanski@cascadesd.org
+mail: mjanski@cascadesd.org
+userPassword: {SSHA}tlsTZ0jS6EbaYwiOhE2PwE4Zm/aV04kYhE7uow==
+
+dn: cn=Shannon Lowrie,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Shannon Lowrie
+sn: Lowrie
+givenName: Shannon
+uid: shannon_lowrie@csd49.org
+mail: shannon_lowrie@csd49.org
+userPassword: {SSHA}Z7pEvbJqLNt+GDbRgsIffWaiOeY8f5I36UUObg==
+
+dn: cn=Jodi Stevens,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Jodi Stevens
+sn: Stevens
+givenName: Jodi
+uid: jstevens@nthurston.k12.wa.us
+mail: jstevens@nthurston.k12.wa.us
+userPassword: {SSHA}4r4mh18PaV3EdboF/lXNezRL9VnBh3nY5NlIDQ==
+
+dn: cn=Duane Pitts,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Duane Pitts
+sn: Pitts
+givenName: Duane
+uid: pittsd@odessa.wednet.edu
+mail: pittsd@odessa.wednet.edu
+userPassword: {SSHA}o6hqdSUdhsuKkGjYbNFf5F5LyAtUkO7zxeUPoA==
+
+dn: cn=Monte Syrie,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Monte Syrie
+sn: Syrie
+givenName: Monte
+uid: msyrie@cheneysd.org
+mail: msyrie@cheneysd.org
+userPassword: {SSHA}uBZ6fQ4IewG64MMA6VDJzuJZ84p0t3yKeVr9Rw==
+
+dn: cn=Jennifer Hargrave,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Jennifer Hargrave
+sn: Hargrave
+givenName: Jennifer
+uid: jhargrave@psd267.wednet.edu
+mail: jhargrave@psd267.wednet.edu
+userPassword: {SSHA}sbBSXri31EqhW+TnA0UECdMX0xhQQD3DDfJKbA==
+
+dn: cn=Pat Sabo,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Pat Sabo
+sn: Sabo
+givenName: Pat
+uid: p.sabo@att.net
+mail: p.sabo@att.net
+userPassword: {SSHA}VMNF9MgOZe+nLej2KRHByWu2oc4ep0BwiJg6Yg==
+
+dn: cn=Erika Garcia,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Erika Garcia
+sn: Garcia
+givenName: Erika
+uid: ergarcia99@sbcglobal.net
+mail: ergarcia99@sbcglobal.net
+userPassword: {SSHA}BXmmvburNRxX0rKECcF/12TREJy9wOZkDPQ84Q==
+
+dn: cn=Robert Ellis,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Robert Ellis
+sn: Ellis
+givenName: Robert
+uid: r-ellis@juno.com
+mail: r-ellis@juno.com
+userPassword: {SSHA}n0kZfRfiFSBcCZ8y+WpETludrXj5WIJ9mpROkA==
+
+dn: cn=Charles Shannon,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Charles Shannon
+sn: Shannon
+givenName: Charles
+uid: cshannon65@gmail.com
+mail: cshannon65@gmail.com
+userPassword: {SSHA}ii2l9t+0awHT+AcHY/TDzCAhiwTTeZdcVbzvTQ==
+
+dn: cn=Kathy Harris,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Kathy Harris
+sn: Harris
+givenName: Kathy
+uid: kharris40@me.com
+mail: kharris40@me.com
+userPassword: {SSHA}vx9pxdvpGRQb+rlkY96ISlf4ef+6FhdVAJPubA==
+
+dn: cn=Ashley Alcala,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Ashley Alcala
+sn: Alcala
+givenName: Ashley
+uid: smashwsu@hotmail.com
+mail: smashwsu@hotmail.com
+userPassword: {SSHA}p3vvb0heYRn0zTFoOWQq/DzHFV7doSqVVhj/2w==
+
+dn: cn=Jacqueline Chesworth,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Jacqueline Chesworth
+sn: Chesworth
+givenName: Jacqueline
+uid: jacqueline.chesworth@bsd.k12.de.us
+mail: jacqueline.chesworth@bsd.k12.de.us
+userPassword: {SSHA}GDCew0nOhrFJRq1zt8NByj87RVkAPqO47euBOQ==
+
+dn: cn=Laurie Wicks,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Laurie Wicks
+sn: Wicks
+givenName: Laurie
+uid: Laurie.Wicks@appo.k12.de.us
+mail: Laurie.Wicks@appo.k12.de.us
+userPassword: {SSHA}8bY6Tl0ImZo3HYlQFHCH29Xu+lIn1ZBUtzetnA==
+
+dn: cn=Dianne Lagbas,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Dianne Lagbas
+sn: Lagbas
+givenName: Dianne
+uid: dianne_lagbas@notes.k12.hi.us
+mail: dianne_lagbas@notes.k12.hi.us
+userPassword: {SSHA}15oQ7SjkRo+2z5UoxUzKbGp9bMa8QmyMMJDodQ==
+
+dn: cn=Jun Wu,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Jun Wu
+sn: Wu
+givenName: Jun
+uid: jun_wu@notes.k12.hi.us
+mail: jun_wu@notes.k12.hi.us
+userPassword: {SSHA}F24eO5wgWTJddrqzAQsPg/VOScg+FAu6Vqv9Ug==
+
+dn: cn=Annette Debastiani,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Annette Debastiani
+sn: Debastiani
+givenName: Annette
+uid: Annette.Debastiani@redclay.k12.de.us
+mail: Annette.Debastiani@redclay.k12.de.us
+userPassword: {SSHA}13Uol++WOvOm/2yVAftf5qMXUJS3E3vnPUukwQ==
+
+dn: cn=Kevin Swider,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Kevin Swider
+sn: Swider
+givenName: Kevin
+uid: Kevin.Swider@redclay.k12.de.us
+mail: Kevin.Swider@redclay.k12.de.us
+userPassword: {SSHA}Iqm96bhYfLt8vpDjs3yUIZsfGtgg6j11kkJuZQ==
+
+dn: cn=Amy Huebner,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Amy Huebner
+sn: Huebner
+givenName: Amy
+uid: Amy.Huebner@redclay.k12.de.us
+mail: Amy.Huebner@redclay.k12.de.us
+userPassword: {SSHA}3IWJ9+6/iZOID8f09XQeWQ6QTxKnnRVWoI3wrw==
+
+dn: cn=Deanne Letourneau,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Deanne Letourneau
+sn: Letourneau
+givenName: Deanne
+uid: deletou@kckps.org
+mail: deletou@kckps.org
+userPassword: {SSHA}arW1akUevCDi+1V0iVeRAPnOnrkxkLZUQz6VsA==
+
+dn: cn=Karen Davies,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Karen Davies
+sn: Davies
+givenName: Karen
+uid: krndavies@sunflower.com
+mail: krndavies@sunflower.com
+userPassword: {SSHA}1/PT/aZHT4JPBU1jxlsmv5G0MZ2rGqLWFWWFYw==
+
+dn: cn=Jeri Powers,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Jeri Powers
+sn: Powers
+givenName: Jeri
+uid: jpowers@usd232.org
+mail: jpowers@usd232.org
+userPassword: {SSHA}ikHcCd6zd/BsL9q7nG8euEEiS7kBGD7jB1kRNQ==
+
+dn: cn=Janet Hegedus,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Janet Hegedus
+sn: Hegedus
+givenName: Janet
+uid: jhegedus@mcps.k12.mt.us
+mail: jhegedus@mcps.k12.mt.us
+userPassword: {SSHA}6giSFDgoMgQ9PoN9HmDRilNczh5qUNUCA+GEtw==
+
+dn: cn=Lori Sarrazin,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Lori Sarrazin
+sn: Sarrazin
+givenName: Lori
+uid: lori12sarrazin@hotmail.com
+mail: lori12sarrazin@hotmail.com
+userPassword: {SSHA}GMKBZxncHaMXvCpnTmoNQ6va3tN4YVjlk9v6Dg==
+
+dn: cn=Keegan Finlayson,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Keegan Finlayson
+sn: Finlayson
+givenName: Keegan
+uid: kfinlayson@new-fairfield.k12.ct.us
+mail: kfinlayson@new-fairfield.k12.ct.us
+userPassword: {SSHA}SO7aRkW7UZEAm8i/QAC2ndiFgPTlsqa5QLypyw==
+
+dn: cn=Staci Gilpin,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Staci Gilpin
+sn: Gilpin
+givenName: Staci
+uid: staci.gilpin@superior.k12.wi.us
+mail: staci.gilpin@superior.k12.wi.us
+userPassword: {SSHA}LeJ3po34iyrHNL8+6jeEwBL7FaPynKGq7EDUtg==
+
+dn: cn=Sam Sawitski,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Sam Sawitski
+sn: Sawitski
+givenName: Sam
+uid: sawitskisamant@aasd.k12.wi.us
+mail: sawitskisamant@aasd.k12.wi.us
+userPassword: {SSHA}Vb+6Q7ue6I5OqLMcjHOiyd52aVK6Fh/6BUtv5Q==
+
+dn: cn=Keith Grebetz,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Keith Grebetz
+sn: Grebetz
+givenName: Keith
+uid: kgrebetz@charloschools.com
+mail: kgrebetz@charloschools.com
+userPassword: {SSHA}9uiCF7tB58WES9bQ8qmZj7ktMWwjJDvhUqDf6w==
+
+dn: cn=Kathy Gaul,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Kathy Gaul
+sn: Gaul
+givenName: Kathy
+uid: gaulk@ftsd.org
+mail: gaulk@ftsd.org
+userPassword: {SSHA}aam6SqI4rmsSie83+cE+6rMLwrDuPz7NrLULlA==
+
+dn: cn=Michele Schaub,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Michele Schaub
+sn: Schaub
+givenName: Michele
+uid: michele.schaub@hardin.k12.mt.us
+mail: michele.schaub@hardin.k12.mt.us
+userPassword: {SSHA}BbEya+gL6zOptCGqx+PsOJ2E7dy1B5yrFjL6zQ==
+
+dn: cn=Clifford Kusaba,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Clifford Kusaba
+sn: Kusaba
+givenName: Clifford
+uid: ckusaba5254@sbcglobal.net
+mail: ckusaba5254@sbcglobal.net
+userPassword: {SSHA}/+tvx94i+iDTkB09TNQRrBBSNdzSsdE237sMHA==
+
+dn: cn=Rhonda Birney,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Rhonda Birney
+sn: Birney
+givenName: Rhonda
+uid: rhonda.birnie@jeromeschools.org
+mail: rhonda.birnie@jeromeschools.org
+userPassword: {SSHA}c4SusA7sYfJXXLbC1PqZXzA81GZGcoBO8lNJmQ==
+
+dn: cn=Candace Barefoot,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Candace Barefoot
+sn: Barefoot
+givenName: Candace
+uid: candacebarefoot@johnston.k12.nc.us
+mail: candacebarefoot@johnston.k12.nc.us
+userPassword: {SSHA}r7fVfe671RRPX3fZW4Pfo6/uFVh+L03pr3a2VQ==
+
+dn: cn=Kris Irvine,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Kris Irvine
+sn: Irvine
+givenName: Kris
+uid: kristinirvine@ci.bristol.ct.us
+mail: kristinirvine@ci.bristol.ct.us
+userPassword: {SSHA}3FeFfR4aJGaRgHWKGDVtMs9F9YRjJHdT0KYDxg==
+
+dn: cn=Jamie Hutt,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Jamie Hutt
+sn: Hutt
+givenName: Jamie
+uid: jhutt@columbus.k12.wi.us
+mail: jhutt@columbus.k12.wi.us
+userPassword: {SSHA}pkJqnSQ6gUbBG8xGMAnXmfUl6zwTHVu8KBH9Ng==
+
+dn: cn=Marlene Srock,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Marlene Srock
+sn: Srock
+givenName: Marlene
+uid: m.srock@sendit.nodak.edu
+mail: m.srock@sendit.nodak.edu
+userPassword: {SSHA}jf8bUP6NvmQ7N+Llz8yBOXn7wdNZZM4jvuaOnw==
+
+dn: cn=JoNell Bakke,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: JoNell Bakke
+sn: Bakke
+givenName: JoNell
+uid: jonell.bakke@gfschools.org
+mail: jonell.bakke@gfschools.org
+userPassword: {SSHA}vTFE7Hxz5XMXlt1l+0Gywe9VM9Zpxe+CdJkDnw==
+
+dn: cn=Sherry Seefeld,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Sherry Seefeld
+sn: Seefeld
+givenName: Sherry
+uid: warners@fargo.k12.nd.us
+mail: warners@fargo.k12.nd.us
+userPassword: {SSHA}GVWFiekOWcEdDex+08X1ecbAok0aSHTAmQwsWQ==
+
+dn: cn=Don Paulsrud,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Don Paulsrud
+sn: Paulsrud
+givenName: Don
+uid: don.paulsrud@sendit.nodak.edu
+mail: don.paulsrud@sendit.nodak.edu
+userPassword: {SSHA}OYUOJszZvCP9sfMKWBflyXztxzKkRVoINXHtMQ==
+
+dn: cn=Mary Eldredge-Sandbo,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Mary Eldredge-Sandbo
+sn: Eldredge-Sandbo
+givenName: Mary
+uid: meldreae@minot.com
+mail: meldreae@minot.com
+userPassword: {SSHA}9vMMmiSzYiFevmBkEDswlhrJUmr3vQkH02NlnA==
+
+dn: cn=Mark Janick,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Mark Janick
+sn: Janick
+givenName: Mark
+uid: Mvjanick@yahoo.com
+mail: Mvjanick@yahoo.com
+userPassword: {SSHA}Ld+Yi7jFvyna7aUXh8/x5ItDcL56cr6BGJ4EMA==
+
+dn: cn=Roxanna Lopez,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Roxanna Lopez
+sn: Lopez
+givenName: Roxanna
+uid: roxannalopez@achievementfirst.org
+mail: roxannalopez@achievementfirst.org
+userPassword: {SSHA}zFLbi8GB3lJGP4FEGedURt6S39YaZrKy+r1XUQ==
+
+dn: cn=Gina Zuk,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Gina Zuk
+sn: Zuk
+givenName: Gina
+uid: zukg@trumbullps.org
+mail: zukg@trumbullps.org
+userPassword: {SSHA}znGt+Q4YFk3YXTE6ddRqVZe3D43nNCxUHpJopQ==
+
+dn: cn=Joanne Mumley,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Joanne Mumley
+sn: Mumley
+givenName: Joanne
+uid: jmumley@wolcottps.org
+mail: jmumley@wolcottps.org
+userPassword: {SSHA}is94UQTXJBy+1W5x7mbiIzU8zRU4guMx/Owavw==
+
+dn: cn=Jill Pace,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Jill Pace
+sn: Pace
+givenName: Jill
+uid: jpace@sharoncenterschool.org
+mail: jpace@sharoncenterschool.org
+userPassword: {SSHA}hfVNMkwBrCsz51XOA+IYcc+L9vgNmqwdsohKZw==
+
+dn: cn=James Bruni,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: James Bruni
+sn: Bruni
+givenName: James
+uid: jbruni@bethany-ed.org
+mail: jbruni@bethany-ed.org
+userPassword: {SSHA}JLN5+sr0w9XxW1oST6yXagr/O7dB1YwI7h30qQ==
+
+dn: cn=Julie Church,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Julie Church
+sn: Church
+givenName: Julie
+uid: jujuoca@gmail.com
+mail: jujuoca@gmail.com
+userPassword: {SSHA}2LnFomAJpEcCLcFi80moLHT7lTAELlZYAXeZZQ==
+
+dn: cn=Leslie Haas,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Leslie Haas
+sn: Haas
+givenName: Leslie
+uid: lesliehaas@hasd.org
+mail: lesliehaas@hasd.org
+userPassword: {SSHA}3SEhdE/Holvxjr+zBCLDmlsBLyrgtGYDjBZJpw==
+
+dn: cn=April Niemela,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: April Niemela
+sn: Niemela
+givenName: April
+uid: aniemela@lewistonschools.net
+mail: aniemela@lewistonschools.net
+userPassword: {SSHA}/OmCZAh2WVvXlpHEJwj3Vm4rGSwhuN+4cyK64w==
+
+dn: cn=Toni McGee,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Toni McGee
+sn: McGee
+givenName: Toni
+uid: tmcgee@columbus.k12.wi.us
+mail: tmcgee@columbus.k12.wi.us
+userPassword: {SSHA}dEi6fpeq3ItD0BLarRw81lpgvwZGKnwcxGQOJw==
+
+dn: cn=Cora Larson,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Cora Larson
+sn: Larson
+givenName: Cora
+uid: larsonc@hsbschools.org
+mail: larsonc@hsbschools.org
+userPassword: {SSHA}q8YHuGTHyPYWX7M8c4tIBuxLwOR85+c+74SMRg==
+
+dn: cn=Kurt Eshelman,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Kurt Eshelman
+sn: Eshelman
+givenName: Kurt
+uid: Kurt@vcfnampa.com
+mail: Kurt@vcfnampa.com
+userPassword: {SSHA}hUJPEAAI7HZzpiXQBn55NrZIwJwwUac5B6XTEg==
+
+dn: cn=Seth Harvatine,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Seth Harvatine
+sn: Harvatine
+givenName: Seth
+uid: sharvatine@sheboygan.k12.wi.us
+mail: sharvatine@sheboygan.k12.wi.us
+userPassword: {SSHA}cwVbAMuGT2ILYnaAWXQ8WeIPe1nd209Jm4DBCg==
+
+dn: cn=Rachel Bear,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Rachel Bear
+sn: Bear
+givenName: Rachel
+uid: rachelebear@gmail.com
+mail: rachelebear@gmail.com
+userPassword: {SSHA}TlbiT/dccF4daq5BTbQ7/b2RlWG9EtzUJps57A==
+
+dn: cn=Jen Eccelston,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Jen Eccelston
+sn: Eccelston
+givenName: Jen
+uid: jeccleston@sprise.com
+mail: jeccleston@sprise.com
+userPassword: {SSHA}mn+BYYciVIjr43Spnl9iR39S5vhPgh+JgF/dig==
+
+dn: cn=Charline Brown,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Charline Brown
+sn: Brown
+givenName: Charline
+uid: cbrown@sprise.com
+mail: cbrown@sprise.com
+userPassword: {SSHA}djPgoiz5rPSc0VjfbA4eWiOD6JZUIC/Z1I//Mg==
+
+dn: cn=Virginia Day,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Virginia Day
+sn: Day
+givenName: Virginia
+uid: vday@sprise.com
+mail: vday@sprise.com
+userPassword: {SSHA}dHI4y3D3t37Imjydysa1KF9Mls6I4LQCix1VNw==
+
+dn: cn=Jeanne Sturges,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Jeanne Sturges
+sn: Sturges
+givenName: Jeanne
+uid: jsturges@sprise.com
+mail: jsturges@sprise.com
+userPassword: {SSHA}zBvlL57JxM4bv2rjP5DRoDwpUuZz65UeVlgw4A==
+
+dn: cn=Bethany Bernasconi,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Bethany Bernasconi
+sn: Bernasconi
+givenName: Bethany
+uid: bbernasconi@windhamhighschool.org
+mail: bbernasconi@windhamhighschool.org
+userPassword: {SSHA}sM/E9Og+vBb9fy0I9a5Hs+4ilkvH/YDho4ZM8A==
+
+dn: cn=Kate Schrodinger,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Kate Schrodinger
+sn: Schrodinger
+givenName: Kate
+uid: katees@comcast.net
+mail: katees@comcast.net
+userPassword: {SSHA}FDf1WjoAyr3eHbt1KtPgoLEtn6cHrJwpe9RtpA==
+
+dn: cn=Valerie Kehoe,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Valerie Kehoe
+sn: Kehoe
+givenName: Valerie
+uid: vkehoe@newfound.k12.nh.us
+mail: vkehoe@newfound.k12.nh.us
+userPassword: {SSHA}rus4WGb6scr0AeXKfmr5ua+loy0eLlI19to7aw==
+
+dn: cn=Josie Cheney,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Josie Cheney
+sn: Cheney
+givenName: Josie
+uid: cheneyj@westottawa.net
+mail: cheneyj@westottawa.net
+userPassword: {SSHA}tiK0I2sxpgNZ1Kj0+BxqyjtiAF++lHacJvVNjQ==
+
+dn: cn=Lynn Trell,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Lynn Trell
+sn: Trell
+givenName: Lynn
+uid: trell@interact.ccsd.net
+mail: trell@interact.ccsd.net
+userPassword: {SSHA}fr1UNeN9VobADIbMDzOjN11UukcwiFgKuGqQkw==
+
+dn: cn=Lisa Bliss,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Lisa Bliss
+sn: Bliss
+givenName: Lisa
+uid: blissl@churchill.k12.nv.us
+mail: blissl@churchill.k12.nv.us
+userPassword: {SSHA}Sgka+a5rJ6pTb+dVqJ63V4aTYekgZU2WUVjNMQ==
+
+dn: cn=David Thiel,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: David Thiel
+sn: Thiel
+givenName: David
+uid: dthiel@interact.ccsd.net
+mail: dthiel@interact.ccsd.net
+userPassword: {SSHA}MchjVJLsqXQS3GnZe3wJqVztaRw9yPQde/0TZg==
+
+dn: cn=Ben Zunino,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Ben Zunino
+sn: Zunino
+givenName: Ben
+uid: bzunino@eureka.k12.nv.us
+mail: bzunino@eureka.k12.nv.us
+userPassword: {SSHA}gB7O9pnmgSzw6DRaz4lYm6OecqStSJWBnxb31A==
+
+dn: cn=Chelli Smith,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Chelli Smith
+sn: Smith
+givenName: Chelli
+uid: smithmm@interact.ccsd.net
+mail: smithmm@interact.ccsd.net
+userPassword: {SSHA}rAElATDCjnYd5RBsC9oEkq5UKkRFIdO7WgnRNQ==
+
+dn: cn=Sue Slocum,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Sue Slocum
+sn: Slocum
+givenName: Sue
+uid: skslocum@interact.ccsd.net
+mail: skslocum@interact.ccsd.net
+userPassword: {SSHA}xW+rCrs/MHv2wXr5/vpU3Y1Uy2X543vKiR5pHQ==
+
+dn: cn=Lisa Bremer,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Lisa Bremer
+sn: Bremer
+givenName: Lisa
+uid: lbrehmer@portlandk12.org
+mail: lbrehmer@portlandk12.org
+userPassword: {SSHA}SWk6HhZ4n3mEv6GrzYUfTNX3pd3ZzKUidfB9VQ==
+
+dn: cn=Laurel Soto,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Laurel Soto
+sn: Soto
+givenName: Laurel
+uid: sotol@westottawa.net
+mail: sotol@westottawa.net
+userPassword: {SSHA}t5Sp4hv5dnWOQvVNxz9iw9GOcIVYsbL/8LcKvQ==
+
+dn: cn=Larry Timm,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Larry Timm
+sn: Timm
+givenName: Larry
+uid: larrytimm@larrytimm.com
+mail: larrytimm@larrytimm.com
+userPassword: {SSHA}x1N5tMIxYTudetQNbwVcBP7N3puz8BBKcX8vaQ==
+
+dn: cn=Rob Buckley,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Rob Buckley
+sn: Buckley
+givenName: Rob
+uid: Race43@hotmail.com
+mail: Race43@hotmail.com
+userPassword: {SSHA}BJRAAIGhVH2q2SFuHzzG5nQ5vPGwpBI3iM1abg==
+
+dn: cn=Kristy Walters,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Kristy Walters
+sn: Walters
+givenName: Kristy
+uid: kwalters@corunna.k12.mi.us
+mail: kwalters@corunna.k12.mi.us
+userPassword: {SSHA}qLklVH5k7LG8nToLU53GuwQS1sW5iD6b1Kg95A==
+
+dn: cn=Elizabeth Lynn,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Elizabeth Lynn
+sn: Lynn
+givenName: Elizabeth
+uid: lynne@westottawa.net
+mail: lynne@westottawa.net
+userPassword: {SSHA}XmfQ6dLkriWyzKGAhqFfEy6KzY78cI9Nd59ehw==
+
+dn: cn=Molly Hottman,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Molly Hottman
+sn: Hottman
+givenName: Molly
+uid: molly.hottman@umatillasd.org
+mail: molly.hottman@umatillasd.org
+userPassword: {SSHA}Y3Pl21qzxoj6dcCzy4KfMVJj1wMwFb7gOmT2Dw==
+
+dn: cn=Kim Young,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Kim Young
+sn: Young
+givenName: Kim
+uid: kim.young@bend.k12.or.us
+mail: kim.young@bend.k12.or.us
+userPassword: {SSHA}Y0coHQt3fixKpZG4QnUHM8HIIHLYh+Ve6yE6kQ==
+
+dn: cn=Randy Harper,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Randy Harper
+sn: Harper
+givenName: Randy
+uid: Randy.Harper@elkton.k12.or.us
+mail: Randy.Harper@elkton.k12.or.us
+userPassword: {SSHA}R5Pfm+RwDqTeTluzfSYLgEu/pQ0fs+UGcpxdtA==
+
+dn: cn=Bruce Reiter,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Bruce Reiter
+sn: Reiter
+givenName: Bruce
+uid: breiter@pps.net
+mail: breiter@pps.net
+userPassword: {SSHA}bM8Wc508iF2SU8ZQNgxNf2eqJ3+y4Z0DeGrwCw==
+
+dn: cn=Kaycee Ferguson,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Kaycee Ferguson
+sn: Ferguson
+givenName: Kaycee
+uid: kaycee.ferguson@umatillasd.org
+mail: kaycee.ferguson@umatillasd.org
+userPassword: {SSHA}VSoVi4iVOO4Xz3lILVz3hRqvBuVm5s1TWjviQQ==
+
+dn: cn=Lynda Sanders,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Lynda Sanders
+sn: Sanders
+givenName: Lynda
+uid: LyndaS@coos-bay.k12.or.us
+mail: LyndaS@coos-bay.k12.or.us
+userPassword: {SSHA}YS2mfAIA2gnZMrlKiSB7KTcHe8IPvKmtsSCdcQ==
+
+dn: cn=Robert Shuey,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Robert Shuey
+sn: Shuey
+givenName: Robert
+uid: rshuey@roseburg.k12.or.us
+mail: rshuey@roseburg.k12.or.us
+userPassword: {SSHA}yGrT8X0q3Qtay/R/xNrj+btYhRrWNYWXl4xARA==
+
+dn: cn=Jordan Ruppert,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Jordan Ruppert
+sn: Ruppert
+givenName: Jordan
+uid: Ruppertj@wdsd.org
+mail: Ruppertj@wdsd.org
+userPassword: {SSHA}sLCsnEUdhluwN1DTsmZOd7tJ7fOhCywVNyf08w==
+
+dn: cn=Scott Stockert,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Scott Stockert
+sn: Stockert
+givenName: Scott
+uid: scottst@coos-bay.k12.or.us
+mail: scottst@coos-bay.k12.or.us
+userPassword: {SSHA}LR1rTosr+ng5JN/4n1NyHcmNoUpkYj+1LgYjyQ==
+
+dn: cn=Linda Kim,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Linda Kim
+sn: Kim
+givenName: Linda
+uid: linda.kim
+mail: linda.kim
+userPassword: {SSHA}8M9QtUDdGwTofat9jd9fFN32AjbPPe3PJt8KEg==
+
+dn: cn=Rebecca Braverman,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Rebecca Braverman
+sn: Braverman
+givenName: Rebecca
+uid: rbraverman
+mail: rbraverman
+userPassword: {SSHA}MwEAWPRal6cczu1MajpCXw/JxNEpFOptL2K2/g==
+
+dn: cn=Charles Gray,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Charles Gray
+sn: Gray
+givenName: Charles
+uid: cgray
+mail: cgray
+userPassword: {SSHA}D1HaqUH9qOFrx6woqvBNb7Pf9hy+xYy0GP2syg==
+
+dn: cn=Lisa K. Harden,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Lisa K. Harden
+sn: Harden
+givenName: Lisa
+uid: Lkharden@ameritech.net
+mail: Lkharden@ameritech.net
+userPassword: {SSHA}sxJdDB9w9bdQTLuLocBWx2BjvFS0K1Ec3/uodA==
+
+dn: cn=David Schuchaskie,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: David Schuchaskie
+sn: Schuchaskie
+givenName: David
+uid: SchuchaskieD@glcomets.net
+mail: SchuchaskieD@glcomets.net
+userPassword: {SSHA}gGqLxLwzHiWPwxDNknAgRZ3hf3FjDWgd3AK4QQ==
+
+dn: cn=Shannon Barker,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Shannon Barker
+sn: Barker
+givenName: Shannon
+uid: sbarker@hpsk12.net
+mail: sbarker@hpsk12.net
+userPassword: {SSHA}X38wlScS5Ig8tRJ01qegaRXc5k1bunPRlgoFOg==
+
+dn: cn=Sara Luther,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Sara Luther
+sn: Luther
+givenName: Sara
+uid: luthers@westottawa.net
+mail: luthers@westottawa.net
+userPassword: {SSHA}SpeygXly10T6RwW6UwlKwsEEahKZbPOIr9PJyA==
+
+dn: cn=Rachelle Alvarez,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Rachelle Alvarez
+sn: Alvarez
+givenName: Rachelle
+uid: rachelle.alvarez@csredhawks.org
+mail: rachelle.alvarez@csredhawks.org
+userPassword: {SSHA}rpH5w9QqOCgGFE0s/W8VcFm9+ZS82jQs87C48Q==
+
+dn: cn=Julie Nawrocki,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Julie Nawrocki
+sn: Nawrocki
+givenName: Julie
+uid: NawrJuli@d91.k12.id.us
+mail: NawrJuli@d91.k12.id.us
+userPassword: {SSHA}938SuDylz6YKG2akfJTooPYWQ7CKu5Wccp3QAg==
+
+dn: cn=Taylor Nelson,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Taylor Nelson
+sn: Nelson
+givenName: Taylor
+uid: Tnelson@connectionseducation.com
+mail: Tnelson@connectionseducation.com
+userPassword: {SSHA}SEcNZDCY9QlTNUEhXqx2Oaezrgn6aTwF31mLsg==
+
+dn: cn=Cynthia DeNardo,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Cynthia DeNardo
+sn: DeNardo
+givenName: Cynthia
+uid: Cynthia.DeNardo@redclay.k12.de.us
+mail: Cynthia.DeNardo@redclay.k12.de.us
+userPassword: {SSHA}Cu6lLB0oXCnDZj2fgZgSZgnQRzoBX3JM15ZWeA==
+
+dn: cn=Christine Geyer,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Christine Geyer
+sn: Geyer
+givenName: Christine
+uid: cgeyer@kusd.edu
+mail: cgeyer@kusd.edu
+userPassword: {SSHA}hX++6mz3vxFBZH1QlNRSWKsFqHarOdEazRYQ2g==
+
+dn: cn=Deanna Arrowood,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Deanna Arrowood
+sn: Arrowood
+givenName: Deanna
+uid: darrowood@misd.k12.wi.us
+mail: darrowood@misd.k12.wi.us
+userPassword: {SSHA}/I8o6uERQJ2oNfLs9W1o7RhhA+hHrnKVonosRw==
+
+dn: cn=Lori Maxim,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Lori Maxim
+sn: Maxim
+givenName: Lori
+uid: lmaxim@rsu18.org
+mail: lmaxim@rsu18.org
+userPassword: {SSHA}BIGYCvmeQJcNaziqOMmcFtzBHAO0n4KuJgEFAw==
+
+dn: cn=Shelley Moody,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Shelley Moody
+sn: Moody
+givenName: Shelley
+uid: smoody@rsu18.org
+mail: smoody@rsu18.org
+userPassword: {SSHA}Xp3a4dpr4M6UJRTiLSz/eqPnUnuDmceTEasSmA==
+
+dn: cn=Tim Sylliaasen,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Tim Sylliaasen
+sn: Sylliaasen
+givenName: Tim
+uid: tim.sylliaasen@k12.sd.us
+mail: tim.sylliaasen@k12.sd.us
+userPassword: {SSHA}8BQOp/hxFMnkmVnKDtyHlVCW17Ag+tgGKe8t5g==
+
+dn: cn=Nikki Allcock,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Nikki Allcock
+sn: Allcock
+givenName: Nikki
+uid: nikki.allcock@k12.sd.us
+mail: nikki.allcock@k12.sd.us
+userPassword: {SSHA}TBjuYvuWTY8F+zINhiZKUSv0lRh2TxyF6U5vhA==
+
+dn: cn=Deann Kertzman,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Deann Kertzman
+sn: Kertzman
+givenName: Deann
+uid: deann.kertzman@k12.sd.us
+mail: deann.kertzman@k12.sd.us
+userPassword: {SSHA}HYFuoAKE2/611r+vbNiE3dCnhWu5yx1MKgW0TQ==
+
+dn: cn=Stephanie Hageman,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Stephanie Hageman
+sn: Hageman
+givenName: Stephanie
+uid: stephanie.hageman@k12.sd.us
+mail: stephanie.hageman@k12.sd.us
+userPassword: {SSHA}slgEsOlU7Kjp+GDTwfL+PWeNeQGInsgXUXPFlg==
+
+dn: cn=Diane Way,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Diane Way
+sn: Way
+givenName: Diane
+uid: diane.way@k12.sd.us
+mail: diane.way@k12.sd.us
+userPassword: {SSHA}2EqW/FhNc+XdMbT3jmcxDNT2dyUH1Doz4+Xb2Q==
+
+dn: cn=Helen Schwarting,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Helen Schwarting
+sn: Schwarting
+givenName: Helen
+uid: helen.schwarting@k12.sd.us
+mail: helen.schwarting@k12.sd.us
+userPassword: {SSHA}o4sWI1RHDaRyr5dBSjXZ3R9gXojxFqqPoVVRJw==
+
+dn: cn=Becky Mohr,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Becky Mohr
+sn: Mohr
+givenName: Becky
+uid: becky.mohr@k12.sd.us
+mail: becky.mohr@k12.sd.us
+userPassword: {SSHA}nmCWsDR6Gc/cACmcVPmrUi3k7cdZwfIdS165vA==
+
+dn: cn=Katie Kopp,ou=people,ou=environment,dc=edwdc,dc=net
+objectClass: inetOrgPerson
+objectClass: top
+cn: Katie Kopp
+sn: Kopp
+givenName: Katie
+uid: katherine.kopp@k12.sd.us
+mail: katherine.kopp@k12.sd.us
+userPassword: {SSHA}B6O+U4SBtpjYV2klS4qoaBUepE5PFYCH1WHWRw==
+
+dn: cn=Teacher,ou=groups,ou=environment,dc=edwdc,dc=net
+objectClass: groupOfNames
+objectClass: top
+cn: Teacher
+member: cn=Amy smith,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Deb Fredrickson,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Cindy Feyereisen,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Joshua Chancer,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Lori Adams,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Brenda Hensley,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Karen Abbott,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Rocio Gonzales-Swaby,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Kelli Seydewitz,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Jayne Marshall,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Judy Rogers,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Heather Alexander,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Adam Sagar,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Marci Cummings-Cohoe,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Rhonda Howard,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Mike Janski,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Shannon Lowrie,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Jodi Stevens,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Duane Pitts,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Monte Syrie,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Jennifer Hargrave,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Pat Sabo,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Erika Garcia,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Robert Ellis,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Charles Shannon,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Kathy Harris,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Ashley Alcala,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Jacqueline Chesworth,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Laurie Wicks,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Dianne Lagbas,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Jun Wu,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Annette Debastiani,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Kevin Swider,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Amy Huebner,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Deanne Letourneau,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Karen Davies ,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Jeri Powers,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Janet Hegedus,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Lori Sarrazin,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Keegan Finlayson,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Staci Gilpin,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Sam Sawitski,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Keith Grebetz,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Kathy Gaul,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Michele Schaub,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Clifford Kusaba,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Rhonda Birney,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Candace Barefoot,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Kris Irvine,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Jamie Hutt,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Marlene Srock,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=JoNell Bakke,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Sherry Seefeld,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Don Paulsrud,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Mary Eldredge-Sandbo,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Mark Janick,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Roxanna Lopez,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Gina Zuk,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Joanne Mumley,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Jill Pace,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=James Bruni,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Julie Church ,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Leslie Haas,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=April Niemela,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Toni McGee,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Cora Larson,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Kurt Eshelman,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Seth Harvatine,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Rachel Bear,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Jen Eccelston,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Charline Brown,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Virginia Day,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Jeanne Sturges,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Bethany Bernasconi,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Kate Schrodinger,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Valerie Kehoe,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Josie Cheney,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Lynn Trell,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Lisa Bliss,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=David Thiel,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Ben Zunino,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Chelli Smith,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Sue Slocum,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Lisa Bremer,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Laurel Soto,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Larry Timm,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Rob Buckley,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Kristy Walters,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Elizabeth Lynn,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Molly Hottman,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Kim Young,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Randy Harper,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Bruce Reiter,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Kaycee Ferguson,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Lynda Sanders,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Robert Shuey,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Jordan Ruppert,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Scott Stockert,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Linda Kim,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Rebecca Braverman,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Charles Gray,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Lisa K. Harden,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=David Schuchaskie,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Shannon Barker,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Sara Luther,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Rachelle Alvarez,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Julie Nawrocki,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Taylor Nelson,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Cynthia DeNardo,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Christine Geyer,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Deanna Arrowood,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Lori Maxim,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Shelley Moody,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Tim Sylliaasen,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Nikki Allcock,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Deann Kertzman,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Stephanie Hageman,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Diane Way,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Helen Schwarting,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Becky Mohr,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Katie Kopp,ou=people,ou=environment,dc=edwdc,dc=net
+

@@ -145,7 +145,9 @@ def format_inetOrgPerson(_user, _uid, _email, _passwd):
     elif(_user[0:2] == 'Dr.'):
         fname = user[1]
         lname = user[2]
-        
+    
+    passwd = fname[0:1] + lname + "1234"
+    
     strInetOrgPerson =  "dn: cn="+ _user +",ou=people,ou=environment,dc=edwdc,dc=net\n" + \
                         "objectClass: inetOrgPerson\n" + \
                         "objectClass: top\n" + \
@@ -154,7 +156,7 @@ def format_inetOrgPerson(_user, _uid, _email, _passwd):
                         "givenName: " + fname + "\n" + \
                         "uid: " + _email + "\n" + \
                         "mail: " + _email + "\n" + \
-                        "userPassword: " + ssha_password(_passwd) + "\n"
+                        "userPassword: " + ssha_password(passwd) + "\n"
 
     return strInetOrgPerson + "\n"
 

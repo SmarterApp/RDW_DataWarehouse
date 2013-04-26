@@ -30,9 +30,6 @@ Black-collared hawk
 Black-collared swallow
 Black-crested antshrike
 Black-eared fairy
-Black-faced dacnis
-Black-faced hawk
-Black-faced tanager
 Black-headed antbird
 Black-headed gull
 Black-headed parrot
@@ -93,7 +90,7 @@ Cocoa thrush
 Collared plover
 Collared puffbird
 Collared trogon
-Common gallinule, Moorhen
+Common gallinule Moorhen
 Common ground-dove
 Common potoo
 Common snipe
@@ -264,7 +261,6 @@ Red-crested finch
 Red-crowned woodpecker
 Red-eyed vireo
 Red-legged honeycreeper
-Red-necked woodpecker
 Red-rumped cacique
 Red-shouldered macaw
 Red-shouldered tanager
@@ -272,7 +268,7 @@ Red-throated caracara
 Ringed kingfisher
 Ringed woodpecker
 Roadside Hawk
-Rock pigeon, feral
+Rock pigeon feral
 Roseate spoonbill
 Royal tern
 Ruby-topaz hummingbird
@@ -404,7 +400,6 @@ Wilson's plover
 Wood stork
 Yellow oriole
 Yellow warbler
-Yellow-bellied elaenia
 Yellow-billed cuckoo
 Yellow-billed jacamar
 Yellow-crowned parrot

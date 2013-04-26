@@ -1,6 +1,5 @@
 Africano glass catfish
 African lungfish
-Aholehole
 Airbreathing catfish
 Airsac catfish
 Alaska blackfish
@@ -105,7 +104,6 @@ Black scalyfin
 Black sea bass
 Black scabbardfish
 Blacksmelt
-Black swallower
 Black tetra
 Black triggerfish
 Bleak
@@ -441,7 +439,6 @@ Hawkfish
 Herring
 Herring smelt
 Hillstream loach
-Hog sucker
 Hoki
 Horn shark
 Horsefish
@@ -462,7 +459,6 @@ Jawfish
 Jellynose fish
 Jewelfish
 Jewel tetra
-Jewfish
 John Dory
 jella
 Kafue pike
@@ -521,12 +517,10 @@ Longfin escolar
 Longfin smelt
 Long-finned char
 Long-finned pike
-Longjaw mudsucker
 Longneck eel
 Longnose chimaera
 Longnose dace
 Longnose lancetfish
-Longnose sucker
 Long-whiskered catfish
 Lookdown catfish
 Loosejaw

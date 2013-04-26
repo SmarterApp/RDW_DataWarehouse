@@ -23,7 +23,6 @@ African Lion white
 African Lion Male
 African Savannah Elephant 
 African Warthog
-African Wild Ass
 African Wild Dog 
 African Wildcat
 Agouti
@@ -72,7 +71,6 @@ Asian Small-clawed Otter
 Asiatic Cheetah 
 Asiatic Elephant 
 Asiatic Lion
-Ass
 Assateague Pony 
 Atlantic Grey Seal
 Aurochs
@@ -116,7 +114,6 @@ Big-eared Woolly Bat
 Big-horn Sheep
 Bighorn Sheep 
 Bison 
-Bison cow And Calf
 Bisonte Americano
 Black Backed Jackal
 Black Bear 
@@ -134,7 +131,6 @@ Black Wallaby
 Black Wildebeest
 Black-backed Jackal 
 Black-backed Jackel
-Black-faced Impala
 Black-footed Ferret
 Black-tail Prairie Dog
 Black-tailed Deer
@@ -376,7 +372,6 @@ Eastern Quoll
 Eastern Red Bat
 Eastern Red Squirrel
 Echidna
-Echidna - Dead On Road
 Eland
 Elefante-marino Norteno 
 Elephant 
@@ -482,8 +477,6 @@ Harp Seal
 Hartebeest
 Hawaiian Monk Seal
 Heermann Kangaroo Rat
-Heermann's Kangaroo Rat
-Hippopatamus
 Hippopotamus 
 Hoary Bat
 Hoary Bats
@@ -499,12 +492,9 @@ Hooker's Sealion
 Hopi Chipmunk
 Horse
 Horse feral 
-Horses
 Hourglass Dolphin
 House Cat
 Howler Monkey
-Human
-Human Being
 Hump-backed Whale
 Humpback Whale 
 Hyena
@@ -534,13 +524,11 @@ Kangaroo Rat
 Kangaroo Rats
 Kerguelen Fur Seal 
 Killer Whale 
-Killer Whale Skull
 King Cheetah
 Kinkajou
 Kit Fox
 Klipspringer 
 Koala 
-Koala and Baby
 Kongoni
 Kowari
 Kudu
@@ -584,11 +572,8 @@ Malayan Civet
 Malayan Fruit Bat
 Malayan Sun Bear
 Malayan Tapir
-Male
-Man
 Manatee 
 Manatee Calf
-Manatee Cow And Calf
 Manati Del Caribe 
 Mandrill
 Maned Wolf 
@@ -619,11 +604,9 @@ Mexican Wolf
 Mhorr Gazelle
 Mico-estrela
 Mink
-Mink Track
 Mishmi Takin
 Moholi-galago
 Mole Rat
-Mole-rat
 Mono Nocturno
 mono-carvoeiro
 Moose 
@@ -633,8 +616,6 @@ Mountain Chamois
 Mountain Cottontail Rabbit
 Mountain Goat 
 Mountain Gorilla
-Mountain Lion 
-Mountain Lion Track
 Mountain Pocket Gopher
 mountain sheep
 Mountain Tapir
@@ -645,11 +626,8 @@ Mule Deer
 Muriqui
 muriqui-do-sul
 Musk Ox
-musk-ox
-Muskox
 Muskrat 
 Naked Mole Rat
-Naked Mole-rat
 Natal Red Duiker
 Native Cat
 Nectar Bat
@@ -657,7 +635,6 @@ New Forest Pony
 New Guinea Singing Dog
 New World Porcupine
 New Zealand Fur Seal
-New Zealand Fur-seal
 Nile Crocodile
 Nile Lechwe
 Nilgai
@@ -671,9 +648,6 @@ North American River Otter
 Northern Birch Mouse
 Northern Common Cuscus
 Northern Elelphant Seal
-Northern Elephant Seal 
-Northern Elephant Seal Pup
-Northern Elephant Seals 
 Northern Flying Squirrel
 Northern Fur Seal
 Northern Grasshopper Mouse
@@ -700,12 +674,9 @@ Olive Baboon
 Olympic Marmot
 Oomingmak
 Opossum
-Orang-utan
 Orange Nectar Bat
 Orangutan 
-Orangutans
 Orca
-Orca Skeleton
 Ord's Kargaroo Rat
 Oso Hormiguero
 Oso Negro
@@ -716,19 +687,16 @@ Pacific Jumping Mouse
 Pacific Shrew
 Pack - Zorro
 Pack Rat
-Packrats
 Pademelon
 Pale Kangaroo Mouse
 Pale-headed Saki
 Pallid Bat
-Pallid Bats
 Pampas Cat
 Panamint Chipmunk
 Panamint Kangaroo Rat
 Panther
 Pastore Abruzzese
 Patagonian Cavy 
-Patagonian Cavy Or Hare
 Patagonian Mara
 Patas Monkey
 Peninsular Bighorn Sheep
@@ -746,7 +714,6 @@ Pig
 Pig feral
 Pig-tailed Macaque
 Pika 
-Pika Or Cony
 Pilot Whale
 Pilot Whales
 Pine Marten
@@ -777,11 +744,8 @@ Pygmy Raccoon
 Pygmy Shrew
 Quokka
 Quoll
-Quolls
 Rabbit
-Raccoon 
-Rat Noir
-Rat Surmulot
+Raccoon  
 Raton Laveur
 Red Colobus
 Red Fox 
@@ -802,8 +766,6 @@ Red Vole
 Red Wolf
 Red-bellied Pademelon
 Red-fronted brown lemur
-Red-necked Pademelon
-Red-necked Wallaby
 Red-ruffed Lemur
 Red-tailed Squirrel
 Reedbuck
@@ -814,8 +776,6 @@ Rhinoceros
 Ring-tailed Mongoose
 Ring-tailed Possum
 Ringtail
-Ringtail Track
-Ringtail Tracks
 Risso's Dolphin
 Rock Cavy
 Rock Hyrax 
@@ -841,7 +801,6 @@ Scrub Hare
 Sea Cow 
 Sea Lion
 Sea Otter 
-Sea Otter Pups
 Seal
 Seba's Short-tailed Bat
 Sengi
@@ -855,7 +814,6 @@ Short-eared Gerbil
 Short-nosed Bandicoot
 Short-nosed Echidna
 Shrew Mole
-Shrew-mole
 Siamang
 Siberian Ibex
 Siberian Lynx
@@ -864,7 +822,6 @@ Sika Deer
 Sika Elk
 Silky
 Silver Backed Jackal
-Silver-backed Jackal
 Sitatunga
 Six-banded Armadillo
 Slender Mongoose
@@ -900,7 +857,6 @@ Southern Right Whale
 Southern Roan
 Southern Sea Elephant 
 Southern Sea Otter 
-Southern White Rhino
 Southern White Rhinoceros 
 Spectacled Bear
 Spectacled Flying Fox
@@ -910,7 +866,6 @@ Spiny Mouse
 Spix's Disk-wing Bat
 Spotted Deer
 Spotted Hyaena
-Spotted Hyena 
 Springbok
 Springbuck
 Squirrel
@@ -918,7 +873,6 @@ Squirrel Monkey
 Steenbok 
 Stellar Sea Lion
 Steller's Sea Cow
-Steller's Sea-lion
 Straw-coloured Fruit Bat
 Striped Grass Mouse
 Striped Hyaena
@@ -955,11 +909,9 @@ Townsends Pocket Gopher
 Transcaspian Urial
 Tree Hyrax
 Tree Kangaroo
-Tree Kangaroos
 Tree Otter
 Tree Squirrel
 Tree Squirrels
-Tree-Kangaroo
 Tricolored Disk Bat
 Tsessebe 
 Tule Elk
@@ -980,8 +932,7 @@ Vervet Monkey
 Vicugna
 Vicuna
 Vinta Ground Squirrel
-Virginia Opossom
-Virginia Opossum 
+Virginia Opossom 
 Vixen
 Vizcacha
 Volcano Rabbit
@@ -992,9 +943,7 @@ Wandering Shrew
 Wapiti 
 Wart Hog
 Warthog 
-Warthogs
 Water Buffalo
-Water Buffalo domestic
 Water Shrew
 Water Vole
 Waterbuck 
@@ -1005,7 +954,6 @@ West Indian Manatee
 Westerm Yellow Bat
 Western Baboon
 Western Big Eared Bat
-Western Big-eared Bats
 Western Gray Squirrel 
 Western Grey Kangaroo
 Western Harvest Mouse
@@ -1028,27 +976,22 @@ white sifaka
 White Tailed Deer
 White-bearded Wildebeast
 White-faced Capuchin
-White-footed Mice
 White-footed Mouse
 White-footed sportive lemur
 White-handed Gibbon
 White-lipped Peccary
-White-noased Coati
 White-nosed Coati 
 White-tailed Deer 
-White-tailed Deer buck
 White-tailed Deer piebald
 White-tailed Jackrabbit
 White-tailed Prairie Dog
 White-throated Woodrat
-Wild Ass
 Wild Boar
 Wild Burro
 Wild Burros
 Wild Cat
 Wild Dog 
 Wildebeest
-Wildebeeste
 Wolf
 Wolverine
 Wombat
@@ -1063,7 +1006,6 @@ Yellow Baboon
 Yellow Belly Marmot
 Yellow Mongoose
 Yellow Pine Chipmunk
-Yellow-bellied Marmot 
 Yellow-pine Chipmunk
 Yuma Antelope Squirrel
 Zebra

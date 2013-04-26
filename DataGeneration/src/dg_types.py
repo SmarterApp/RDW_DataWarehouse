@@ -36,9 +36,9 @@ def get_school_types():
     grades is a list of grades for that type
     students is a dictionary containing the min, max and avg number of students
     """
-    school_types = {'High School': {'grades': [11], 'students': {'min': 100, 'max': 500, 'avg': 300}},
-                    'Middle School': {'grades': [6, 7, 8], 'students': {'min': 50, 'max': 200, 'avg': 150}},
-                    'Elementary School': {'grades': [3, 4, 5], 'students': {'min': 20, 'max': 70, 'avg': 60}}
+    school_types = {'High School': {'grades': [11], 'students': {'min': 50, 'max': 250, 'avg': 100}},
+                    'Middle School': {'grades': [6, 7, 8], 'students': {'min': 25, 'max': 100, 'avg': 50}},
+                    'Elementary School': {'grades': [3, 4, 5], 'students': {'min': 10, 'max': 35, 'avg': 30}}
                     }
     return school_types
 
@@ -137,5 +137,5 @@ def get_performance_level_distributions():
 
 
 def get_temporal_information():
-    temporal_information = {'from_date': '20120901', 'to_date': None, 'most_recent': True, 'date_taken_year': '2012', 'date_taken_month': ''}
+    temporal_information = {'from_date': '20120901', 'to_date': None, 'most_recent': True, 'date_taken_year': '2015', 'date_taken_month': ''}
     return temporal_information

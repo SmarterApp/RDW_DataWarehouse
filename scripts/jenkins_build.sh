@@ -107,6 +107,13 @@ function run_unit_tests {
     fi
 }
 
+function run_func_tests {
+    echo "Running Functional Tests"
+
+    cd "$WORKSPACE/$1"
+    nosetests functional_tests/fTest_DataValidation.py
+}
+
 function setup_epydoc_dependencies {
     echo "setting up epydoc dependencies"
 
@@ -132,9 +139,7 @@ function run_epydoc {
     cd fixture_data_generation
     rm *
     cp -r "$WORKSPACE/epydoc/"* .
-    #if [ -d "epydoc" ]; then
-     #   rm -r epydoc
-    #fi
+
     git add -A
     git commit -m "Adding New epydocs"
     git push
@@ -210,8 +215,10 @@ function main {
         setup_python2_virtualenv
         setup_epydoc_dependencies
         run_epydoc $MAIN_PKG
-    #elif [ ${MODE:=""} == "FUNC"]; then
-          #statements
+    elif [ ${MODE:=""} == "FUNC"]; then
+          set_vars
+          setup_virtualenv $@
+          setup_unit_test_dependencies
     fi
 }
 

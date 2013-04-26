@@ -386,9 +386,9 @@ class DataGenerationValidation(unittest.TestCase):
             else:
                 print('Error: One student has more then two sections(Math & ELA)')
         total_student_count = len(student_id_dict.keys())
-        both_perc = round((1.0 * both_count / total_student_count), 1)
-        math_perc = round((1.0 * (both_count + math_only_count) / total_student_count), 1)
-        ela_perc = round((1.0 * (both_count + ela_only_count) / total_student_count), 1)
+        both_perc = round((1.0 * both_count / total_student_count), 2)
+        math_perc = round((1.0 * (both_count + math_only_count) / total_student_count), 2)
+        ela_perc = round((1.0 * (both_count + ela_only_count) / total_student_count), 2)
         assert math_percentage == math_perc, 'Math subject and percentage does not match. Expected ' + str(math_percentage) + ' but found ' + str(math_perc)
         assert ela_percentage == ela_perc, 'ELA subject and percentage does not match. Expected ' + str(ela_percentage) + ' but found ' + str(ela_perc)
         print('TC10: Passed: Count Subjects & percentages ')

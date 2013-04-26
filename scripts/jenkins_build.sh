@@ -219,6 +219,7 @@ function main {
           set_vars
           setup_virtualenv $@
           setup_unit_test_dependencies
+          run_func_tests $MAIN_PKG
     fi
 }
 

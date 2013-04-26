@@ -5,58 +5,58 @@ Abyssinian Colobus
 Achuni
 Acouchi
 Addax
-African Buffalo 
+African Buffalo
 African Bush Elephant
 African Bush Squirrel
-African Cape Buffalo 
+African Cape Buffalo
 African Civet
 African Elephant
 African Elephants
 African Giant Rat
 African Ground Squirrel
 African Hare
-African Hunting Dog 
+African Hunting Dog
 African Hunting Dogs
 African Leopard
-African Lion 
-African Lion white
+African Lion
+African Lion White
 African Lion Male
-African Savannah Elephant 
+African Savannah Elephant
 African Warthog
-African Wild Dog 
+African Wild Dog
 African Wildcat
 Agouti
 Akomba
-Alaska grey wolf
-Alaska timber wolf
-Alaskan Brown Bear 
+Alaska Grey Wolf
+Alaska Timber Wolf
+Alaskan Brown Bear
 Alaskan Fur Seal
 Allied Rock Wallaby
 Alpaca
 Alpine Ibex
 Alpine Marmot
 American Badger
-American Beaver 
-American Bison 
-American Bison baby
-American Bison male
-American Black Bear 
+American Beaver
+American Bison
+American Bison Baby
+American Bison Male
+American Black Bear
 American Brown Bear
 American Lion
 American Marten
-American Mink 
+American Mink
 American Pika
-American Pine Marten 
-American Porcupine 
+American Pine Marten
+American Porcupine
 Amur Hedgehog
 Angus
-Antarctic Fur Seal 
-Antarctic Fur Seals 
+Antarctic Fur Seal
+Antarctic Fur Seals
 Antelope
 Antelope Squirrels
-Antillean Manatee 
+Antillean Manatee
 Arabian Oryx
-Arctic Fox 
+Arctic Fox
 Arctic Ground Squirrel
 Arctic Hare
 Ardilla Gris
@@ -65,32 +65,32 @@ Arizona Cottontail
 Arizona Gray Squirrel
 Arizona Grey Squirrel
 Armadillo Nueve Bandas
-Asian Elephant 
+Asian Elephant
 Asian Lion
-Asian Small-clawed Otter
-Asiatic Cheetah 
-Asiatic Elephant 
+Asian Small-Clawed Otter
+Asiatic Cheetah
+Asiatic Elephant
 Asiatic Lion
-Assateague Pony 
+Assateague Pony
 Atlantic Grey Seal
 Aurochs
 Australian Hopping Mouse
 Australian Sea Lion
-Australian Sea-lion
+Australian Sea-Lion
 Axis Deer
-Aya-aye
+Aya-Aye
 Babakoto
 Baboon
 Bactrian Camel
-Badger 
-Badger captive
+Badger
+Badger Captive
 Bailey's Pocket Mouse
 Baird's Tapir
 Ballena Azul
 Ballena Gris
-Banded Mongoose 
+Banded Mongoose
 Bandicoot
-Bank Vole 
+Bank Vole
 Banteng
 Barbary Macaque
 Bat
@@ -98,7 +98,7 @@ Bat Eared Fox
 Bats
 Bearded Pig
 Bearded Seal
-Beaver 
+Beaver
 Beisa Gemsbok
 Beisa Oryx
 Belding Ground Squirrel
@@ -108,51 +108,51 @@ Bengal Tiger
 Berrendo
 Big Brown Bat
 Big Brown Bats
-Big hairy armadillo
-Big Horn Sheep 
-Big-eared Woolly Bat
-Big-horn Sheep
-Bighorn Sheep 
-Bison 
+Big Hairy Armadillo
+Big Horn Sheep
+Big-Eared Woolly Bat
+Big-Horn Sheep
+Bighorn Sheep
+Bison
 Bisonte Americano
 Black Backed Jackal
-Black Bear 
+Black Bear
 Black Bear Track
 Black Bear Tracks
 Black Lemur
 Black Pademelon
 Black Rat
 Black Rhino
-Black Rhinoceros 
+Black Rhinoceros
 Black Rhinocerus
 Black Squirrel
 Black Tail Prairie Dog
 Black Wallaby
 Black Wildebeest
-Black-backed Jackal 
-Black-backed Jackel
-Black-footed Ferret
-Black-tail Prairie Dog
-Black-tailed Deer
-Black-tailed Hare
-Black-tailed Jackrabbit 
-Black-tailed Prairie Dog 
+Black-Backed Jackal
+Black-Backed Jackel
+Black-Footed Ferret
+Black-Tail Prairie Dog
+Black-Tailed Deer
+Black-Tailed Hare
+Black-Tailed Jackrabbit
+Black-Tailed Prairie Dog
 Blackfish
 Blacktail Deer
 Blacktail Jackrabbit
 Blacktail Prairie Dog
-Blacktailed Deer 
+Blacktailed Deer
 Blacktailed Deer Fawn
 Blacktailed Jackrabbit
 Blue Whale
-Blue Wildebeest 
-Bobcat 
+Blue Wildebeest
+Bobcat
 Bobcat Track
 Bobcat Tracks
 Bohor Reedbuck
 Bongo
 Bonnet Macaque
-Bonobo 
+Bonobo
 Bontebok
 Bornean Bearded Pig
 Brahma Bull
@@ -165,51 +165,51 @@ Brazilian Tapir
 Brindled Gnu
 British White
 Brocket Deer
-Brown Bear 
+Brown Bear
 Brown Fur Seal
 Brown Grizzly
 Brown Hyaena
 Brown Lemur
 Brown Rat
-Brush Rabbit 
+Brush Rabbit
 Brush Tailed Bettong
 Buck
 Buffalo
 Bugio
-bugio
+Bugio
 Bull
-Burchell's Zebra 
-Burro 
-Burro feral
+Burchell's Zebra
+Burro
+Burro Feral
 Bush Baby
 Bush Hyrax
 Bush Squirrel
-Bushbuck 
+Bushbuck
 Bushdog
 Bushpig
-Bushy-tailed Woodrat
+Bushy-Tailed Woodrat
 Cachicamo
-cachorro-do-mato
+Cachorro-Do-mato
 Cactus Mouse
 California Gray Whale
 California Harbor Seal
 California Mule Deer
 California Myotis
-California Sea Lion 
+California Sea Lion
 California Sea Lions
-California Sealion 
+California Sealion
 California Vole
 Caliornia Sea Lion
 Camel
 Canada Lynx
 Canadian Lynx
-Cape Buffalo 
+Cape Buffalo
 Cape Bushbuck
-Cape Eland 
+Cape Eland
 Cape Fur Seal
 Cape Golden Mole
 Cape Hare
-Cape Hunting Dogs dens
+Cape Hunting Dogs Dens
 Cape Hyrax
 Cape Mountain Zebra
 Cape Serotine
@@ -218,24 +218,24 @@ Capuchin Monkey
 Capybara
 Caracal
 Caracal Lynx
-Caribbean Manatee 
-Caribou 
+Caribbean Manatee
+Caribou
 Castor
 Castor Americano
 Cat
 Cave Myotis
 Celebes Monkey
 Central American Agouti
-Cerf de Virginie
-Chacma Baboon 
-Chapman's Zebra 
-Chauve-souris Cendree
+Cerf De Virginie
+Chacma Baboon
+Chapman's Zebra
+Chauve-Souris Cendree
 Cheetah
-Cheetah and Cub
+Cheetah And Cub
 Cheetah Cubs
 Chillingham Wild Cattle
 Chimpanzee
-Chincoteague Ponies 
+Chincoteague Ponies
 Chinkara
 Chipmonk
 Chipmunk
@@ -244,29 +244,29 @@ Chital Deer
 Chucha Lanuda
 Cliff Chipmunk
 Clouded Leopard
-Coarse-haired Wombat
+Coarse-Haired Wombat
 Coastal Sheathtail Bat
 Coati
 Coatimundi
 Coke's Hartebeest
 Coke's Hartebeeste
 Colilargo
-Collared Peccary 
+Collared Peccary
 Colobus Monkey
-Common brown lemur
-Common Eland 
+Common Brown Lemur
+Common Eland
 Common Genet
 Common Gray Fox
 Common Grey Duiker
-Common Long-tongued Bat
+Common Long-Tongued Bat
 Common Opossum
-Common Raccoon 
-Common Reedbuck 
+Common Raccoon
+Common Reedbuck
 Common Ringtail Possum
 Common Spotted Cuscus
 Common Squirrel Monkey
 Common Warthog
-Common Waterbuck 
+Common Waterbuck
 Common Wildebeest
 Common Wombat
 Common Zebra
@@ -276,72 +276,72 @@ Cookson's Wildebeest
 Cotia
 Cotton Tail Rabbit
 Cotton Top Marmoset
-Cotton-tail Rabbit
-Cotton-top Tamarin
+Cotton-Tail Rabbit
+Cotton-Top Tamarin
 Cottontail
 Cottontail Rabbit
 Cottontails
-Cougar 
+Cougar
 Cow
-Coyote 
+Coyote
 Coyote Pup
 Coyote Pups
 Coyote Track
 Coypu
 Cozumel
-Crab-eating Fox
-Crabeater Seal 
+Crab-Eating Fox
+Crabeater Seal
 Crawshay's Zebra
 Crested
 Crested Black Macaque
 Cuban Hutia
 Cuis Chico
-Culpeo Fox english
+Culpeo Fox English
 Cuscus
 Cuscuses
 Cusimanse
 Cusumbo
 Cyprus Bull
 Dahomey Dwarf Cattle
-Dall porpoise
-Dall Sheep 
+Dall Porpoise
+Dall Sheep
 Dall's Porpoise
 Dall's Sheep
 Dama Gazelle
 Dama Wallaby
-Damara Dik-dik
+Damara Dik-Dik
 Damara Zebra
-Damaraland Mole-rat
+Damaraland Mole-Rat
 Dassie
 Deer
 Deer Mice
-Deer Mouse 
-Defassa Waterbuck 
+Deer Mouse
+Defassa Waterbuck
 Degu
 Delicate Mouse
-Desert Bighorn Sheep 
+Desert Bighorn Sheep
 Desert Cavy
 Desert Cottontail
 Desert Cottontail Rabbit
 Desert Coyote
-Desert Kangaroo Rat 
+Desert Kangaroo Rat
 Desert Kit Fox
 Desert Pocket Mouse
 Desert Woodrat
-Desert Woodrat nest
+Desert Woodrat Nest
 Dexter Cattle
-Dik-dik
+Dik-Dik
 Dingo
 Diskwing Bat
 Dolphin
 Domestic
 Domestic Cat
 Domestic Cattle
-Domestic Cattle feral
-Domestic Cattle ferral
-Domestic cow
+Domestic Cattle Feral
+Domestic Cattle Ferral
+Domestic Cow
 Domestic Dog
-Domestic Dog feral
+Domestic Dog Feral
 Domestic Goat
 Domestic Sheep
 Domesticated Cattle
@@ -352,18 +352,18 @@ Douglas Squirrel
 Douglas' Squirrel
 Dromedary
 Dromedary Camel
-Duck-billed Platypus
+Duck-Billed Platypus
 Dusky Shrew
 Dwarf Cavy
 Dwarf Cuye
 Dwarf Forest Buffalo
-Dwarf Mongoose 
+Dwarf Mongoose
 Dwarf Wild Guinea Pig
 East African Oryx
 Eastern Barred Bandicoot
 Eastern Chimpanzee
 Eastern Chipmunk
-Eastern Cottontail 
+Eastern Cottontail
 Eastern Fox Squirrel
 Eastern Giant Eland
 Eastern Gray Squirrel
@@ -373,17 +373,17 @@ Eastern Red Bat
 Eastern Red Squirrel
 Echidna
 Eland
-Elefante-marino Norteno 
-Elephant 
+Elefante-Marino Norteno
+Elephant
 Elephant Seal
 Elephant Shrew
-Elk 
+Elk
 Epaulard
 Epauletted Bat
-Ermine 
+Ermine
 Eurasian Badger
 Eurasian Red Squirrel
-Eurasian Reindeer 
+Eurasian Reindeer
 European Bison
 European Hare
 European Rabbit
@@ -396,88 +396,88 @@ Feral Cats
 Feral Pig
 Fieldmouse
 Fish Eating Bat
-Fish-eating Bat
+Fish-Eating Bat
 Fisher
 Fisherman Bat
 Fishing Cat
-Florida Manatee 
+Florida Manatee
 Flying Squirrel
 Fox
-Fox Squirrel 
+Fox Squirrel
 Fresno Kangaroo Rat
 Fur Seal
 Galapagos Fur Seal
 Galapagos Sea Lion
 Gato Huina
 Gaur
-Gemsbok 
-Gerenuk 
-Giant Ant-eater
-Giant Anteater 
-Giant Elephant Shrew 
+Gemsbok
+Gerenuk
+Giant Ant-Eater
+Giant Anteater
+Giant Elephant Shrew
 Giant Forest Hog
 Giant Otter
-Giant Panda 
+Giant Panda
 Gidro
-Giraffe 
+Giraffe
 Golden Bamboo Lemur
-Golden Leaf-nosed Bat
+Golden Leaf-Nosed Bat
 Golden Lion Tamarin
 Golden Takin
-Golden-mantled Squirrel
-Gorilla 
+Golden-Mantled Squirrel
+Gorilla
 Grampus
 Grande Musaraigne
 Grant's Caribou
-Grant's Gazelle 
+Grant's Gazelle
 Grant's Zebra
 Grants Gazelle
 Graxaim Do Mato
-Gray Fox 
+Gray Fox
 Gray Fox Scat
 Gray Foxes
 Gray Meercat
 Gray Sided Vole
 Gray Squirrel
 Gray Whale
-Gray Wolf 
+Gray Wolf
 Great Northern Sea Cow
 Greater Bamboo Lemur
 Greater Bulldog Bat
 Greater Galago
-Greater Kudu 
+Greater Kudu
 Green Guenon
 Green Monkey
 Green Vervet Monkey
-greenland caribou
-Grevy's Zebra 
+Greenland Caribou
+Grevy's Zebra
 Grey Duiker
 Grey Fox
 Grey Kangaroo
-Grey Long-eared Bat
+Grey Long-Eared Bat
 Grey Squirrel
 Grey Whale
 Grey Wolf
 Grizzly
-Grizzly Bear 
-Ground Squirrel 
+Grizzly Bear
+Ground Squirrel
 Groundhog
 Guadalupe Fur Seal
-Guanaco 
+Guanaco
 Gudauri Vole
-Guenther's Dik-dik 
+Guenther's Dik-Dik
 Guereza
-Hairy-footed Gerbil
+Hairy-Footed Gerbil
 Hamadryas Baboon
 Hanuman Langur
-Harbor Seal 
+Harbor Seal
 Harbor Seals
 Hares
 Harp Seal
 Hartebeest
 Hawaiian Monk Seal
 Heermann Kangaroo Rat
-Hippopotamus 
+Hippopotamus
 Hoary Bat
 Hoary Bats
 Hoary Marmot
@@ -491,20 +491,20 @@ Hooker's Sea Lion
 Hooker's Sealion
 Hopi Chipmunk
 Horse
-Horse feral 
+Horse Feral
 Hourglass Dolphin
 House Cat
 Howler Monkey
-Hump-backed Whale
-Humpback Whale 
+Hump-Backed Whale
+Humpback Whale
 Hyena
 Icelandic Horse
 Icelandic Sheep
-Impala 
+Impala
 Indian Cow
 Indian Gray Mongoose
 Indian Rhinoceros
-Indo-chinese Tiger
+Indo-Chinese Tiger
 Indri
 Indris
 Jabali
@@ -520,66 +520,66 @@ Javelina
 Jebeer Gazelle
 Kafue Lechwe
 Kangaroo Island Kangaroo
-Kangaroo Rat 
+Kangaroo Rat
 Kangaroo Rats
-Kerguelen Fur Seal 
-Killer Whale 
+Kerguelen Fur Seal
+Killer Whale
 King Cheetah
 Kinkajou
 Kit Fox
-Klipspringer 
-Koala 
+Klipspringer
+Koala
 Kongoni
 Kowari
 Kudu
 Labrador Puppies
 Lagartija
-Least Chipmunk 
+Least Chipmunk
 Least Pygmy Squirrel
 Lemurien Noir
-Leopard 
-Leopard Seal 
+Leopard
+Leopard Seal
 Lesser Bush Baby
 Lesser Kudu
 Lesser Tree Shrew
 Liebre Cola Negra
 Limpopo Bushbuck
 Lion
-Lion-tailed Macaque
+Lion-Tailed Macaque
 Little Pocket Mouse
-Llama 
+Llama
 Llamas
-Lobo del Mar
+Lobo Del Mar
 Lobo Gris
 Lodgepole Chipmunk
-Long-legged Myotis
-Long-nosed Armadillo
-Long-nosed Bandicoot
-Long-nosed Bat
-Long-nosed Cusimanse
-Long-nosed Potoroo
-Long-tailed Macaque
-Long-tailed Weasel
+Long-Legged Myotis
+Long-Nosed Armadillo
+Long-Nosed Bandicoot
+Long-Nosed Bat
+Long-Nosed Cusimanse
+Long-Nosed Potoroo
+Long-Tailed Macaque
+Long-Tailed Weasel
 Longnosed Bats
 Loup
 Lowland Anoa
 Lowland Gorilla
-Lowland streaked tenrec
+Lowland Streaked Tenrec
 Lynx
-macaco-prego 
+Macaco-Prego
 Maki
 Malayan Civet
 Malayan Fruit Bat
 Malayan Sun Bear
 Malayan Tapir
-Manatee 
+Manatee
 Manatee Calf
-Manati Del Caribe 
+Manati Del Caribe
 Mandrill
-Maned Wolf 
+Maned Wolf
 Mantled Howler Monkey
 Mapuro
-Mara 
+Mara
 Maral Red Deer
 Marmoset
 Marmot
@@ -587,46 +587,46 @@ Marmotte Commune
 Marsh Rabbit
 Marteja
 Marten
-Masai Giraffe 
+Masai Giraffe
 Mating
 Mauritian Flying Fox
 Mauritian Tomb Bat
 Maxwell's Duiker
 Meadow Vole
 Mearns Coyote
-Meerkat 
+Meerkat
 Merriam's Chipmunk
 Merriam's Kangaroo Rat
-Mexican Free-tailed Bat
+Mexican Free-Tailed Bat
 Mexican Gray Wolf
-Mexican Long-tongued Bat
-Mexican Wolf 
+Mexican Long-Tongued Bat
+Mexican Wolf
 Mhorr Gazelle
-Mico-estrela
+Mico-Estrela
 Mink
 Mishmi Takin
-Moholi-galago
+Moholi-Galago
 Mole Rat
 Mono Nocturno
-mono-carvoeiro
-Moose 
+Mono-Carvoeiro
+Moose
 Mouflon
 Mountain Beaver
 Mountain Chamois
 Mountain Cottontail Rabbit
-Mountain Goat 
+Mountain Goat
 Mountain Gorilla
 Mountain Pocket Gopher
-mountain sheep
+Mountain Sheep
 Mountain Tapir
 Mountaon Goat
 Moutain Lion
 Moutain Reedbuck
-Mule Deer 
+Mule Deer
 Muriqui
-muriqui-do-sul
+Muriqui-Do-sul
 Musk Ox
-Muskrat 
+Muskrat
 Naked Mole Rat
 Natal Red Duiker
 Native Cat
@@ -638,7 +638,7 @@ New Zealand Fur Seal
 Nile Crocodile
 Nile Lechwe
 Nilgai
-Nine-banded Armadillo
+Nine-Banded Armadillo
 Noctule
 North American Beaver
 North American Black Bear
@@ -656,26 +656,26 @@ Northern Pocket Gopher
 Northern Raccoon
 Northern Red Backed Vole
 Northern River Otter
-Northern Sea Elephant 
+Northern Sea Elephant
 Northern Sea Lion
-Northern Sea Otter 
-Northern Short-tailed Shrew
+Northern Sea Otter
+Northern Short-Tailed Shrew
 Northern Tamandua
 Northern Tree Shrew
 Norway Rat
 Nubian Giraffe
 Nutria
 Nutria Marina
-Nyala 
+Nyala
 Ocellated Turkey
 Okapi
 Olingo
-Olive Baboon 
+Olive Baboon
 Olympic Marmot
 Oomingmak
 Opossum
 Orange Nectar Bat
-Orangutan 
+Orangutan
 Orca
 Ord's Kargaroo Rat
 Oso Hormiguero
@@ -689,53 +689,53 @@ Pack - Zorro
 Pack Rat
 Pademelon
 Pale Kangaroo Mouse
-Pale-headed Saki
+Pale-Headed Saki
 Pallid Bat
 Pampas Cat
 Panamint Chipmunk
 Panamint Kangaroo Rat
 Panther
 Pastore Abruzzese
-Patagonian Cavy 
+Patagonian Cavy
 Patagonian Mara
 Patas Monkey
 Peninsular Bighorn Sheep
-Perro-llanero Cola Negra
+Perro-Llanero Cola Negra
 Persian Bezoar Ibex
 Persian Fallow Deer
 Persian Gazelle
 Persian Goitered Gazelle
 Persian Onager
 Persian Wolf
-Philippine Tarsier 
+Philippine Tarsier
 Pichi
 Pichiciego
 Pig
-Pig feral
-Pig-tailed Macaque
-Pika 
+Pig Feral
+Pig-Tailed Macaque
+Pika
 Pilot Whale
 Pilot Whales
 Pine Marten
 Pipistrelles
 Plains Rat
-Plains Zebra 
+Plains Zebra
 Platypus
 Pocket Gopher
-Polar Bear 
-Polled Hereford 
+Polar Bear
+Polled Hereford
 Porcupine Caribou
-Pot-bellied Pig
+Pot-Bellied Pig
 Potoroo
 Prairie Dog
-Prehensile-tailed Porcupine
+Prehensile-Tailed Porcupine
 Prevost's Squirrel
 Proboscis Monkey
-Pronghorn 
-Pronghorn Antelope 
+Pronghorn
+Pronghorn Antelope
 Przewalski's Horse
 Puku
-Puma 
+Puma
 Pygmy Anteater
 Pygmy Chimpanzee
 Pygmy Hippopotamus
@@ -745,50 +745,50 @@ Pygmy Shrew
 Quokka
 Quoll
 Rabbit
-Raccoon  
+Raccoon
 Raton Laveur
 Red Colobus
-Red Fox 
+Red Fox
 Red Fronted Brown Lemur
 Red Guenon
 Red Gueon
-Red hartebeest 
+Red Hartebeest
 Red Howler Monkey
 Red Kangaroo
 Red Lechwe
 Red Necked Wallaby
-Red Panda 
+Red Panda
 Red River Hog
 Red Ruffed Lemur
 Red Spider Monkey
-Red Squirrel 
+Red Squirrel
 Red Vole
 Red Wolf
-Red-bellied Pademelon
-Red-fronted brown lemur
-Red-ruffed Lemur
-Red-tailed Squirrel
+Red-Bellied Pademelon
+Red-Fronted Brown Lemur
+Red-Ruffed Lemur
+Red-Tailed Squirrel
 Reedbuck
 Reindeer
 Renard Gris
-Reticulated Giraffe 
+Reticulated Giraffe
 Rhinoceros
-Ring-tailed Mongoose
-Ring-tailed Possum
+Ring-Tailed Mongoose
+Ring-Tailed Possum
 Ringtail
 Risso's Dolphin
 Rock Cavy
-Rock Hyrax 
+Rock Hyrax
 Rock Squirrel
 Rocky Mountain Goat
 Rocky Mountain Sheep
 Roosevelt Elk
 Rorqual Bleu
-Rothschild's Giraffe 
+Rothschild's Giraffe
 Rousettus Bat
 Rufous Bettong
 Sabertoothed Cat
-Sable Antelope 
+Sable Antelope
 Sacred Cow
 Saiga
 Samango Monkey
@@ -796,39 +796,39 @@ Sambar Deer
 San Nicolas Island Fox
 Savanna Baboons
 Savannah Elephant
-Scimitar-horned Oryx
+Scimitar-Horned Oryx
 Scrub Hare
-Sea Cow 
+Sea Cow
 Sea Lion
-Sea Otter 
+Sea Otter
 Seal
-Seba's Short-tailed Bat
+Seba's Short-Tailed Bat
 Sengi
-Serval 
-Sharp-nosed Bat
+Serval
+Sharp-Nosed Bat
 Sharpe's Grysbok
 Sheep
-Sheep feral
-Short-beaked Echidna
-Short-eared Gerbil
-Short-nosed Bandicoot
-Short-nosed Echidna
+Sheep Feral
+Short-Beaked Echidna
+Short-Eared Gerbil
+Short-Nosed Bandicoot
+Short-Nosed Echidna
 Shrew Mole
 Siamang
 Siberian Ibex
 Siberian Lynx
-Siberian Tiger 
-Sika Deer 
+Siberian Tiger
+Sika Deer
 Sika Elk
 Silky
 Silver Backed Jackal
 Sitatunga
-Six-banded Armadillo
+Six-Banded Armadillo
 Slender Mongoose
-Slender-horned Gazelle
+Slender-Horned Gazelle
 Sloth Bear
 Small Indian Mongoose
-Small-clawed Otter
+Small-Clawed Otter
 Snow Leopard
 Snowshoe Hare
 Snowshoe Rabbit
@@ -842,68 +842,68 @@ South American Fur Seal
 South American Tapir
 Southamerican See Lion
 Southen Imnpala
-Southern African porcupine
+Southern African Porcupine
 Southern Brown Bandicoot
-Southern Elephant Seal 
+Southern Elephant Seal
 Southern Flying Squirrel
 Southern Fur Seal
-Southern Giraffe 
-Southern Greater Kudu 
-Southern Impala 
+Southern Giraffe
+Southern Greater Kudu
+Southern Impala
 Southern Mountain Cavy
-Southern Mountain Reedbuck 
+Southern Mountain Reedbuck
 Southern Oryx Gemsbok
 Southern Right Whale
 Southern Roan
-Southern Sea Elephant 
-Southern Sea Otter 
-Southern White Rhinoceros 
+Southern Sea Elephant
+Southern Sea Otter
+Southern White Rhinoceros
 Spectacled Bear
 Spectacled Flying Fox
 Spectral Tarsier
 Spider Monkey
 Spiny Mouse
-Spix's Disk-wing Bat
+Spix's Disk-Wing Bat
 Spotted Deer
 Spotted Hyaena
 Springbok
 Springbuck
 Squirrel
 Squirrel Monkey
-Steenbok 
+Steenbok
 Stellar Sea Lion
 Steller's Sea Cow
-Straw-coloured Fruit Bat
+Straw-Coloured Fruit Bat
 Striped Grass Mouse
 Striped Hyaena
 Striped Hyena
-Striped Skunk 
+Striped Skunk
 Sugar Glider
 Sulawesi Macaque
 Sumatra Tiger
 Sumatran Orangutan
-Sumatran Tiger 
+Sumatran Tiger
 Sun Bear
 Suricate
 Svalbard Reindeer
 Swamp Wallaby
-Sykes Monkey 
+Sykes Monkey
 Tamar Wallaby
 Tammar Wallaby
-Tapir young
+Tapir Young
 Tapiti
 Tasmanian Devil
 Tasmanian Pademelon
 Tayra
 The Bearded Seal
 Thomson Gazelle
-Thomson's Gazelle 
+Thomson's Gazelle
 Thornicroft's Giraffe
-Three-toed Sloth 
-Three-toed Tree Sloth
+Three-Toed Sloth
+Three-Toed Tree Sloth
 Tiger
 Tiger Cat
-Topi 
+Topi
 Townsend Chipmunk
 Townsends Pocket Gopher
 Transcaspian Urial
@@ -913,7 +913,7 @@ Tree Otter
 Tree Squirrel
 Tree Squirrels
 Tricolored Disk Bat
-Tsessebe 
+Tsessebe
 Tule Elk
 Tundra Wolf
 Uganda Kob
@@ -925,72 +925,72 @@ Vagrant Shrew
 Valley Pocket Gopher
 Variegated Squirrel
 Velvet Monkey
-Venado Bura 
+Venado Bura
 Venado Cola Blanca
 Verraux's Sifaka
-Vervet Monkey 
+Vervet Monkey
 Vicugna
 Vicuna
 Vinta Ground Squirrel
-Virginia Opossom 
+Virginia Opossom
 Vixen
 Vizcacha
 Volcano Rabbit
 Vontsira
 Wallaroo
-Walrus 
+Walrus
 Wandering Shrew
-Wapiti 
+Wapiti
 Wart Hog
-Warthog 
+Warthog
 Water Buffalo
 Water Shrew
 Water Vole
-Waterbuck 
+Waterbuck
 Watusi Cattle
 Weddell Seal
 West European Hedgehog
-West Indian Manatee 
+West Indian Manatee
 Westerm Yellow Bat
 Western Baboon
 Western Big Eared Bat
-Western Gray Squirrel 
+Western Gray Squirrel
 Western Grey Kangaroo
 Western Harvest Mouse
-Western Lowland Gorilla 
+Western Lowland Gorilla
 Western Pipistrelle
 Western Pocket Gopher
-Western Red-backed Vole
+Western Red-Backed Vole
 Western Sitatunga
 Western Spotted Skunk
 Western Tarsier
 Whale
 White Bearded Gnu
 White Faced Capuchin
-White Fruit-bat
+White Fruit-Bat
 White Handed Gibbon
 White Headed Capuchin
-White Leaf-nosed Bat
-White Rhinoceros 
-white sifaka
+White Leaf-Nosed Bat
+White Rhinoceros
+White Sifaka
 White Tailed Deer
-White-bearded Wildebeast
-White-faced Capuchin
-White-footed Mouse
-White-footed sportive lemur
-White-handed Gibbon
-White-lipped Peccary
-White-nosed Coati 
-White-tailed Deer 
-White-tailed Deer piebald
-White-tailed Jackrabbit
-White-tailed Prairie Dog
-White-throated Woodrat
+White-Bearded Wildebeast
+White-Faced Capuchin
+White-Footed Mouse
+White-Footed Sportive Lemur
+White-Handed Gibbon
+White-Lipped Peccary
+White-Nosed Coati
+White-Tailed Deer
+White-Tailed Deer Piebald
+White-Tailed Jackrabbit
+White-Tailed Prairie Dog
+White-Throated Woodrat
 Wild Boar
 Wild Burro
 Wild Burros
 Wild Cat
-Wild Dog 
+Wild Dog
 Wildebeest
 Wolf
 Wolverine
@@ -999,14 +999,14 @@ Wood Mouse
 Woodchuck
 Woodrats
 Woolly False Vampire Bat
-Woolly Spider-monkey
+Woolly Spider-Monkey
 Yagouaroundi
 Yak
-Yellow Baboon 
+Yellow Baboon
 Yellow Belly Marmot
 Yellow Mongoose
 Yellow Pine Chipmunk
-Yellow-pine Chipmunk
+Yellow-Pine Chipmunk
 Yuma Antelope Squirrel
 Zebra
 Zimbabwe Blue Duiker

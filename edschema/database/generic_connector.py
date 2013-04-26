@@ -14,6 +14,11 @@ from sqlalchemy.pool import NullPool
 def setup_db_connection_from_ini(settings, prefix, metadata, datasource_name='', allow_create=False):
     '''
     Setup a generic db connection
+    @param settings: the settings file path
+    @param prefix: the prefix
+    @param metadata: the metadata object
+    @param datasource_name: the datasource name
+    @param allow_create: determines if a schema can be created
     '''
     extra = {}
     if prefix + '.db.main.pool_size' not in settings.keys():

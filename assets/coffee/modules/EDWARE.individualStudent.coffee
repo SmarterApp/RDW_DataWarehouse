@@ -53,6 +53,7 @@ define [
         defaultColors = configData.colors
         feedbackData = configData.feedback
         breadcrumbsConfigs = configData.breadcrumb
+        reportInfo = configData.reportInfo
       
         i = 0
         while i < data.items.length
@@ -153,7 +154,7 @@ define [
           i++
         
         # Generate footer links
-        $('#footer').generateFooter('individual_student_report')
+        $('#footer').generateFooter('individual_student_report', reportInfo)
         
         # append user_info (e.g. first and last name)
         if data.user_info

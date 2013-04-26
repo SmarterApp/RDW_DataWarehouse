@@ -27,6 +27,7 @@ define [
         defaultColors = data.colors
         feedbackData = data.feedback
         breadcrumbsConfigs = data.breadcrumb
+        reportInfo = data.reportInfo
         getColumnConfig "../data/comparingPopulations.json", (gridConfig, customViews) ->
           
           # # append user_info (e.g. first and last name)
@@ -62,7 +63,7 @@ define [
           edwareGrid.create "gridTable", gridConfig, populationData, summaryData
           
           # Generate footer
-          $('#footer').generateFooter('comparing_populations')
+          $('#footer').generateFooter('comparing_populations', reportInfo)
           
           # # append user_info (e.g. first and last name)
           if user_info

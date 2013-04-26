@@ -4,17 +4,19 @@ define [
   "bootstrap"
   "text!edwareFooterHtml"
 ], ($, Mustache, bootstrap, footerTemplate) ->
-  $.fn.generateFooter = (reportName) ->
+  $.fn.generateFooter = (reportName, content) ->
     self = this
-    imageData = {}
+    data = {}
     if reportName is 'individual_student_report'
-      imageData['imageFileName'] = 'legend_IndivStudent.png'
+      data['imageFileName'] = 'legend_IndivStudent.png'
     else if reportName is 'list_of_students'
-      imageData['imageFileName'] = 'legend_ListofStudents.png'
+      data['imageFileName'] = 'legend_ListofStudents.png'
     else if reportName is 'comparing_populations'
-      imageData['imageFileName'] = 'legend_comparepop.png'
+      data['imageFileName'] = 'legend_comparepop.png'
+    
+    data['report_info'] = content[reportName]
    
-    output = Mustache.to_html footerTemplate, imageData
+    output = Mustache.to_html footerTemplate, data
       
     self.html output
     createPopover()

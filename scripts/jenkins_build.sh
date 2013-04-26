@@ -133,7 +133,7 @@ function run_epydoc {
     rm *
     cp -r "$WORKSPACE/epydoc/" .
     git add -A
-    git committ -m "Adding New epydocs"
+    git commit -m "Adding New epydocs"
     git push
 
     echo "New Epydoc Pushed"

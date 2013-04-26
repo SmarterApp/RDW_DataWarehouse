@@ -17,7 +17,7 @@ AutoReqProv: no
 
 %description
 EdWare smarter 
-commit: ${GIT_COMMIT:="UNKNOWN"}
+commit: %(echo ${GIT_COMMIT:="UNKNOWN"})
 
 
 %prep
@@ -113,8 +113,8 @@ cp -r virtualenv %{buildroot}/opt
 
 %pre
 /etc/init.d/httpd stop
-if [ ! -d /opt/edware/conf ]; then
-    mkdir -p /opt/edware/conf
+if [ ! -d /opt/edware/log ]; then
+    mkdir -p /opt/edware/log
 fi
 
 %post

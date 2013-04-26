@@ -119,6 +119,19 @@ function run_epydoc {
     echo "Creating epydocs"
     
     epydoc --html -o $WORKSPACE/epydoc --name DataGeneration --parse-only --no-sourcecode "$WORKSPACE/$1"
+
+    cd "$WORKSPACE"
+    mkdir epydoc_gh_pages
+    cd epydoc_gh_pages
+    git clone -b gh-pages git@github.wgenhq.net:Ed-Ware-SBAC/fixture_data_generation.git
+    cd fixture_data_generation
+    rm *
+    cp "$WORKSPACE/$1/*" .
+    git add -A
+    git committ -m "Adding New epydocs"
+    git push
+    
+    echo "New Epydoc Pushed"
 }
 
 function get_opts {

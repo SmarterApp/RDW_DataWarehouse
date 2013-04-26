@@ -94,7 +94,7 @@ class TestAssessments(unittest.TestCase):
         claims = get_claims(number_of_claims=2, result=result, get_names_only=False)
         self.assertEqual(len(result), 4)
         self.assertTrue(len(claims), 2)
-        self.assertEqual(claims[1]['name2'], 'Claim 2 & 4')
+        self.assertEqual(claims[1]['name2'], 'Claims 2 & 4')
 
     def test_get_claims_for_names_only(self):
         result = {'asmt_cut_point_name_1': 'one',

@@ -57,6 +57,7 @@ def login(request):
         # TODO: landing page
         referrer = request.route_url('list_of_reports')
 
+    # TODO:  This doesn't handle POST requests
     # Split the url to read query params for saml_login
     split_url = urlsplit(referrer)
     query_params = parse_qs(split_url.query, keep_blank_values=True)

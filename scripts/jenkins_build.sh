@@ -216,6 +216,7 @@ function main {
         setup_epydoc_dependencies
         run_epydoc $MAIN_PKG
     elif [ ${MODE:=""} == "FUNC"]; then
+          echo "func mode"
           set_vars
           setup_virtualenv $@
           setup_unit_test_dependencies

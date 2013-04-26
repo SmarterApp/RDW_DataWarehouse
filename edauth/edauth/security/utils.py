@@ -18,6 +18,8 @@ SECURITY_EVENT_TYPE = enum(INFO=0, WARN=1)
 def deflate_base64_encode(data_byte_string):
     '''
     deflate and encode string to base64
+    @param data_byte_string: the input byte string
+    @type data_byte_string: string
     '''
     compressed = zlib.compress(data_byte_string)
     # Strip away the first 2 bytes (header) and 4 bytes (checksum)
@@ -27,6 +29,8 @@ def deflate_base64_encode(data_byte_string):
 def inflate_base64_decode(data_byte_string):
     '''
     inflate and decode base64 to string
+    @param data_byte_string: the input byte string
+    @type data_byte_string: string
     '''
     base_decoded = base64.b64decode(data_byte_string)
     return zlib.decompress(base_decoded, -15)

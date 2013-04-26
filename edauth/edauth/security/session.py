@@ -57,27 +57,51 @@ class Session:
         return self.__user
 
     def set_session_id(self, session_id):
+        '''
+        @param session_id: the session id
+        '''
         self.__session_id = session_id
 
     def set_uid(self, uid):
+        '''
+        @param uid: the uid
+        '''
         self.__user.set_uid(uid)
 
     def set_roles(self, roles):
+        '''
+        @param roles: the roles
+        '''
         self.__user.set_roles(roles)
 
     def set_fullName(self, fullName):
+        '''
+        @param fullName: the full name
+        '''
         self.__user.set_full_name(fullName)
 
     def set_lastName(self, lastName):
+        '''
+        @param lastName: the last name
+        '''
         self.__user.set_last_name(lastName)
 
     def set_firstName(self, firstName):
+        '''
+        @param firstName: the first name
+        '''
         self.__user.set_first_name(firstName)
 
     def set_idp_session_index(self, index):
+        '''
+        @param index: the idp session index
+        '''
         self.__session['idpSessionIndex'] = index
 
     def set_name_id(self, name_id):
+        '''
+        @param name_id: the name id
+        '''
         self.__session['nameId'] = name_id
 
     def set_session(self, session):

@@ -264,6 +264,11 @@ uat:
     args: '(''/dev/log'', handlers.SysLogHandler.LOG_LOCAL1)'
     level: WARN
     formatter: generic
+  '[handler_audit]':
+    class: logging.handlers.SysLogHandler
+    args: '(''/dev/log'', handlers.SysLogHandler.LOG_LOCAL0)'
+    level: WARN
+    formatter: generic
   '[logger_smarter]':
     level: WARN
     handlers: syslog

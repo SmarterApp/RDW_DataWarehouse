@@ -17,6 +17,7 @@ from entities import InstitutionHierarchy, Section, Assessment, AssessmentOutcom
 from generate_scores import generate_overall_scores
 from gaussian_distributions import gauss_one, guess_std
 from errorband import calc_eb_params, calc_eb
+from adjust import adjust_pld
 
 
 DATAFILE_PATH = os.path.dirname(os.path.realpath(__file__))
@@ -37,10 +38,12 @@ MALE_FIRST_NAMES = 'male_first_names'
 BIRDS = 'birds'
 FISH = 'fish'
 MAMMALS = 'mammals'
+ANIMALS = 'animals'
 
 NAMES_TO_PATH_DICT = {BIRDS: DATAFILE_PATH + '/datafiles/name_lists/birds.txt',
                       FISH: DATAFILE_PATH + '/datafiles/name_lists/fish.txt',
-                      MAMMALS: DATAFILE_PATH + '/datafiles/name_lists/mammals.txt'
+                      MAMMALS: DATAFILE_PATH + '/datafiles/name_lists/mammals.txt',
+                      ANIMALS: os.path.join(DATAFILE_PATH, 'datafiles', 'name_lists', 'one-word-animal-names.txt')
                       }
 
 
@@ -60,12 +63,12 @@ def generate_data_from_config_file(config_module):
     name_list_dictionary = generate_name_list_dictionary(NAMES_TO_PATH_DICT)
 
     # We're going to use the birds and fish list to name our districts
-    district_names_1 = name_list_dictionary[BIRDS]
-    district_names_2 = name_list_dictionary[FISH]
+    district_names_1 = name_list_dictionary[ANIMALS]
+    district_names_2 = name_list_dictionary[ANIMALS]
 
     # We're going to use mammals and birds to names our schools
-    school_names_1 = name_list_dictionary[MAMMALS]
-    school_names_2 = name_list_dictionary[BIRDS]
+    school_names_1 = name_list_dictionary[ANIMALS]
+    school_names_2 = name_list_dictionary[ANIMALS]
 
     # Get information from the config module
     school_types = config_module.get_school_types()
@@ -134,7 +137,7 @@ def generate_data_from_config_file(config_module):
                 district_level_staff = generate_non_teaching_staff(number_of_district_level_staff, state_code=current_state.state_code,
                                                                    district_guid=district.district_guid)
 
-                schools_by_type = create_school_dictionary(school_counts, school_types_and_ratios,
+                schools_by_type = create_school_dictionary(school_counts, school_types_and_ratios, school_types,
                                                            school_names_1, school_names_2)
                 for school_type_name in schools_by_type.keys():
                     schools = schools_by_type[school_type_name]
@@ -204,6 +207,7 @@ def populate_school(institution_hierarchy, school_type, assessments, subject_per
     # Get scoring information from config module
     performance_level_dist = config_module.get_performance_level_distributions()
     scores_details = config_module.get_scores()
+    pld_adjustment = school_type.get(config_module.ADJUST_PLD, None)
 
     grades = school_type[config_module.GRADES]
 
@@ -231,7 +235,7 @@ def populate_school(institution_hierarchy, school_type, assessments, subject_per
                                                   institution_hierarchy.district_guid, institution_hierarchy.school_guid,
                                                   from_date, most_recent, to_date=to_date)
             sections_in_school += sections_in_grade
-            score_list = generate_list_of_scores(number_of_students_in_grade, scores_details, performance_level_dist, subject_name, grade)
+            score_list = generate_list_of_scores(number_of_students_in_grade, scores_details, performance_level_dist, subject_name, grade, pld_adjustment)
             students_in_subject = students_in_grade[:]
             for section in sections_in_grade:
                 # TODO: More accurate math for num_of_students
@@ -314,11 +318,12 @@ def generate_district_dictionary(district_types_and_counts, district_names_1, di
     return district_dictionary
 
 
-def create_school_dictionary(school_counts, school_types_and_ratios, school_names_1, school_names_2):
+def create_school_dictionary(school_counts, school_types_and_ratios, school_types_dict, school_names_1, school_names_2):
     '''
     Creates a dictionary of schools that matches the school counts and ratios
     @param school_counts: A dictionary containing school population information
     @param school_types_and_ratios: A dictionary containing ratios for schools in each school-size type
+    @param school_types_dict: A dictionary taken from the config file that contains type info about school categories
     @param school_names_1: A list of names to use in naming schools
     @param school_names_2: A 2nd list of names to use in naming schools
     @return: A dictionary with school types as keys and a list of schools as values
@@ -333,15 +338,16 @@ def create_school_dictionary(school_counts, school_types_and_ratios, school_name
     ratio_unit = max((number_of_schools_in_district // ratio_sum), 1)
 
     school_dictionary = {}
-    for school_type_name in school_types_and_ratios:
+    for school_type in school_types_and_ratios:
         # Get the ratio so we can calculate the number of school types to create for each district
-        school_type_ratio = school_types_and_ratios[school_type_name]
+        school_type_ratio = school_types_and_ratios[school_type]
         number_of_schools_for_type = int(school_type_ratio * ratio_unit)
         school_list = []
+        school_type_name = school_types_dict[school_type][config_module.TYPE]
         for i in range(number_of_schools_for_type):
             school = generate_school(school_type_name, school_names_1, school_names_2)
             school_list.append(school)
-        school_dictionary[school_type_name] = school_list
+        school_dictionary[school_type] = school_list
     return school_dictionary
 
 
@@ -371,19 +377,31 @@ def generate_institution_hierarchy_from_helper_entities(state, district, school)
     return institution_hierarchy
 
 
-def generate_list_of_scores(total, score_details, perf_lvl_dist, subject_name, grade):
+def generate_list_of_scores(total, score_details, perf_lvl_dist, subject_name, grade, pld_adjustment=None):
     '''
     Generate a list of overall scores to use in the creation of assessment outcomes
+    @type total: int
     @param total: the number of assessment scores to generate
+    @type score_details: dict
     @param score_details: score information taken from the configuration file
+    @type perf_lvl_dist: dict
     @param perf_lvl_dist: The dictionary of performance level information taken from the config module
+    @type subject_name: str
     @param subject_name: the name of the subject that scores are being generated for
+    @type grade: int
     @param grade: the grade that the scores are being generated for
+    @type pld_adjustment: float
+    @param pld_adjustment: The amount to adjust the performance level distribution. Taken from config file
     @return: A list of scores as ints
     '''
     min_score = score_details[config_module.MIN]
     max_score = score_details[config_module.MAX]
     percentage = perf_lvl_dist[subject_name][str(grade)][config_module.PERCENTAGES]
+    if pld_adjustment:
+        print('pld_adjustment', pld_adjustment)
+        print('old_prc', percentage)
+        percentage = adjust_pld(percentage, pld_adjustment)
+        print('new_prc', percentage)
     # The cut_points in score details do not include min and max score. The score generator needs the min and max to be included
     cut_points = score_details[config_module.CUT_POINTS]
     inclusive_cut_points = [min_score]

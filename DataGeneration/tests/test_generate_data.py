@@ -29,6 +29,7 @@ class Test(unittest.TestCase):
         self.config_module.MOST_RECENT = 'most_recent'
         self.config_module.TO_DATE = 'to_date'
         self.config_module.GRADES = 'grades'
+        self.config_module.TYPE = 'type'
         self.config_module.get_temporal_information = self.get_temporal_information_mock
         generate_data.config_module = self.config_module
 
@@ -70,9 +71,12 @@ class Test(unittest.TestCase):
     def test_create_school_dictionary(self):
         school_counts = {'min': 100, 'max': 310, 'avg': 500}
         ratios = {'High School': 1, 'Middle School': 2, 'Elementary School': 5}
+        school_types_dict = {'High School': {'type': 'High School', 'grades': [11], 'students': {'min': 50, 'max': 250, 'avg': 100}},
+                             'Middle School': {'type': 'Middle School', 'grades': [6, 7, 8], 'students': {'min': 25, 'max': 100, 'avg': 50}},
+                             'Elementary School': {'type': 'Elementary School', 'grades': [3, 4, 5], 'students': {'min': 10, 'max': 35, 'avg': 30}}}
         name_list1 = ['name_%d' % i for i in range(20)]
         name_list2 = ['name2_%d' % i for i in range(20)]
-        res = generate_data.create_school_dictionary(school_counts, ratios, name_list1, name_list2)
+        res = generate_data.create_school_dictionary(school_counts, ratios, school_types_dict, name_list1, name_list2)
         self.assertEqual(len(res), 3)
         elm_sch_len = len(res['Elementary School'])
         mid_sch_len = len(res['Middle School'])

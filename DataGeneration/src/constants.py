@@ -1,3 +1,9 @@
+'''
+constants.py
+
+Contains many necessary constants for generating data
+'''
+
 ELEMENTARY_SCHOOL = 'Elementary School'
 MIDDLE_SCHOOL = 'Middle School'
 HIGH_SCHOOL = 'High School'

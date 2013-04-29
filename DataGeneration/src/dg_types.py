@@ -27,6 +27,8 @@ FROM_DATE = 'from_date'
 TO_DATE = 'to_date'
 MOST_RECENT = 'most_recent'
 SUBJECT_AND_PERCENTAGES = 'subjects_and_percentages'
+TYPE = 'type'
+ADJUST_PLD = 'adjust_pld'
 
 
 def get_school_types():
@@ -36,10 +38,24 @@ def get_school_types():
     grades is a list of grades for that type
     students is a dictionary containing the min, max and avg number of students
     """
-    school_types = {'High School': {'grades': [11], 'students': {'min': 50, 'max': 250, 'avg': 100}},
-                    'Middle School': {'grades': [6, 7, 8], 'students': {'min': 25, 'max': 100, 'avg': 50}},
-                    'Elementary School': {'grades': [3, 4, 5], 'students': {'min': 10, 'max': 35, 'avg': 30}}
-                    }
+#     school_types = {'High School': {'grades': [11], 'students': {'min': 50, 'max': 250, 'avg': 100}},
+#                     'Middle School': {'grades': [6, 7, 8], 'students': {'min': 25, 'max': 100, 'avg': 50}},
+#                     'Elementary School': {'grades': [3, 4, 5], 'students': {'min': 10, 'max': 35, 'avg': 30}},
+#                     }
+    school_types = {
+        'High School': {'type': 'High School', 'grades': [11], 'students': {'min': 50, 'max': 250, 'avg': 100}},
+        'Middle School': {'type': 'Middle School', 'grades': [6, 7, 8], 'students': {'min': 25, 'max': 100, 'avg': 50}},
+        'Elementary School': {'type': 'Elementary School', 'grades': [3, 4, 5], 'students': {'min': 10, 'max': 35, 'avg': 30}},
+
+        'Poor High School': {'type': 'High School', 'grades': [11], 'students': {'min': 50, 'max': 250, 'avg': 100}, 'adjust_pld': -0.7},
+        'Poor Middle School': {'type': 'Middle School', 'grades': [6, 7, 8], 'students': {'min': 25, 'max': 100, 'avg': 50}, 'adjust_pld': -0.7},
+        'Poor Elementary School': {'type': 'Elementary School', 'grades': [3, 4, 5], 'students': {'min': 10, 'max': 35, 'avg': 30}, 'adjust_pld': -0.7},
+
+        'Good High School': {'type': 'High School', 'grades': [11], 'students': {'min': 50, 'max': 250, 'avg': 100}, 'adjust_pld': 0.5},
+        'Good Middle School': {'type': 'Middle School', 'grades': [6, 7, 8], 'students': {'min': 25, 'max': 100, 'avg': 50}, 'adjust_pld': 0.5},
+        'Good Elementary School': {'type': 'Elementary School', 'grades': [3, 4, 5], 'students': {'min': 10, 'max': 35, 'avg': 30}, 'adjust_pld': 0.5},
+    }
+
     return school_types
 
 
@@ -51,7 +67,20 @@ def get_district_types():
     'school_types_and_ratios' is dictionary containing the ratios of High to Middle to Elementary schools
     (ie. 1:2:5 -- {'High': 1, 'Middle': 2, 'Elementary': 5})
     """
-    district_types = {'Big': {'school_counts': {'min': 50, 'max': 80, 'avg': 65}, 'school_types_and_ratios': {'High School': 1, 'Middle School': 2, 'Elementary School': 5}},
+    district_types = {'Big Average': {'school_counts': {'min': 50, 'max': 80, 'avg': 65},
+                                      'school_types_and_ratios': {
+                                          'High School': 1, 'Middle School': 2, 'Elementary School': 5}},
+
+                      'Big Good': {'school_counts': {'min': 50, 'max': 80, 'avg': 65},
+                                   'school_types_and_ratios': {
+                                       'High School': 10, 'Middle School': 20, 'Elementary School': 50,
+                                       'Good High School': 1, 'Good Middle School': 2, 'Good Elementary School': 5}},
+
+                      'Big Poor': {'school_counts': {'min': 50, 'max': 80, 'avg': 65},
+                                   'school_types_and_ratios': {
+                                       'High School': 10, 'Middle School': 20, 'Elementary School': 50,
+                                       'Poor High School': 1, 'Poor Middle School': 2, 'Good Elementary School': 5}},
+
                       'Medium': {'school_counts': {'min': 20, 'max': 24, 'avg': 22}, 'school_types_and_ratios': {'High School': 1, 'Middle School': 2, 'Elementary School': 5}},
                       'Small': {'school_counts': {'min': 2, 'max': 8, 'avg': 5}, 'school_types_and_ratios': {'High School': 1, 'Middle School': 2, 'Elementary School': 5}}
                       }
@@ -65,7 +94,8 @@ def get_state_types():
     'district_types_and_counts' is a dictionary that describes how many Big, Medium and Small districts to have in the state
     'subjects_and_percentages' is a dictionary that describes what percentage of students should have scores for a Math assessment and an ELA assessment
     """
-    state_types = {'typical_1': {'district_types_and_counts': {'Big': 2, 'Medium': 6, 'Small': 40}, 'subjects_and_percentages': {'Math': .99, 'ELA': .99}}
+    state_types = {'typical_1': {'district_types_and_counts': {'Big Average': 1, 'Big Poor': 1, 'Big Good': 1,
+                                                               'Medium': 6, 'Small': 40}, 'subjects_and_percentages': {'Math': .99, 'ELA': .99}}
                    }
     return state_types
 
@@ -84,7 +114,7 @@ def get_states():
 
 def get_scores():
     """
-    min + max + 3 cut points define 4 pereformance levels
+    min + max + 3 cut points define 4 performance levels
     PL1 = min - cp1 (exclusive)
     PL2 = cp1 - cp2 (exclusive)
     PL3 = cp2 - cp3 (exclusive)

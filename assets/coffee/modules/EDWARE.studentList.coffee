@@ -30,6 +30,7 @@ define [
       defaultColors = data.colors
       feedbackData = data.feedback
       breadcrumbsConfigs = data.breadcrumb
+      reportInfo = data.reportInfo
       getStudentData "/data/list_of_students", params, defaultColors, (assessmentsData, contextData, subjectsData, claimsData, userData, cutPointsData) ->
         # append user_info (e.g. first and last name)
         if userData
@@ -57,7 +58,7 @@ define [
           renderHeaderPerfBar(cutPointsData)
           
           # Generate footer links
-          $('#footer').generateFooter('list_of_students')
+          $('#footer').generateFooter('list_of_students', reportInfo)
           
           # append user_info (e.g. first and last name)
           if userData

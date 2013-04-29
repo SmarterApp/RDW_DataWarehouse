@@ -46,7 +46,7 @@ define [
       items.asmt_score_max_range = Math.round((((items.asmt_score - items.asmt_score_min) + items.asmt_score_interval) / items.score_min_max_difference) * items.bar_width) 
       
       # Set "confidence interval" text on right hand side if maximum score range position is more than 80%
-      items.leftBracketConfidenceLevel = items.asmt_score_max_range <= 580
+      items.leftBracketConfidenceLevel = items.asmt_score_max_range <= 520
       
       # use mustache template to display the json data  
       output = Mustache.to_html confidenceLevelBarTemplate, items 

@@ -9,7 +9,13 @@ from sqlalchemy.sql.expression import func
 
 
 def generate_persistence(schema_name=None, bind=None):
-
+    '''
+    @param schema_name: the schema name
+    @type schema_name: string
+    @param bind: An Engine or Connection to bind to.  May also be a string or URL
+          instance, these are passed to create_engine() and this MetaData will
+          be bound to the resulting engine.
+    '''
     metadata = MetaData(schema=schema_name, bind=bind)
 
     user_session = Table('user_session', metadata,

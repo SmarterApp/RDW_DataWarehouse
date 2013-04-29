@@ -232,10 +232,9 @@ cn: Guy Man
 sn: Man
 givenName: Guy
 uid: gman
-userPassword:: Z21hbjEyMzQ=
+userPassword: Z21hbjEyMzQ=
 
-dn: cn=District_Education_Administrator_1,ou=groups,ou=environment,dc=edwdc,
- dc=net
+dn: cn=District_Education_Administrator_1,ou=groups,ou=environment,dc=edwdc,dc=net
 objectClass: groupOfNames
 objectClass: top
 cn: District_Education_Administrator_1
@@ -266,8 +265,7 @@ givenName: Jessie
 uid: jmollica
 userPassword:: am1vbGxpY2ExMjM0
 
-dn: cn=State_Education_Administrator_1,ou=groups,ou=environment,dc=edwdc,dc=
- net
+dn: cn=State_Education_Administrator_1,ou=groups,ou=environment,dc=edwdc,dc=net
 objectClass: groupOfNames
 objectClass: top
 cn: State_Education_Administrator_1
@@ -280,10 +278,9 @@ cn: Liza Bopp
 sn: Bopp
 givenName: Liza
 uid: lbopp
-userPassword:: bGJvcHAxMjM0
+userPassword: bGJvcHAxMjM0
 
-dn: cn=State_Education_Administrator_2,ou=groups,ou=environment,dc=edwdc,dc=
- net
+dn: cn=State_Education_Administrator_2,ou=groups,ou=environment,dc=edwdc,dc=net
 objectClass: groupOfNames
 objectClass: top
 cn: State_Education_Administrator_2
@@ -296,10 +293,9 @@ cn: Clinton Degraw
 sn: Degraw
 givenName: Clinton
 uid: cdegraw
-userPassword:: Y2RlZ3JhdzEyMzQ=
+userPassword: Y2RlZ3JhdzEyMzQ=
 
-dn: cn=Consortium_Education_Administrator_1,ou=groups,ou=environment,dc=edwd
- c,dc=net
+dn: cn=Consortium_Education_Administrator_1,ou=groups,ou=environment,dc=edwdc,dc=net
 objectClass: groupOfNames
 objectClass: top
 cn: Consortium_Education_Administrator_1
@@ -312,10 +308,9 @@ cn: Elnora Seinfeld
 givenName: Elnora
 sn: Seinfeld
 uid: eseinfeld
-userPassword:: ZXNlaW5mZWxkMTIzNA==
+userPassword: ZXNlaW5mZWxkMTIzNA==
 
-dn: cn=Consortium_Education_Administrator_2,ou=groups,ou=environment,dc=edwd
- c,dc=net
+dn: cn=Consortium_Education_Administrator_2,ou=groups,ou=environment,dc=edwdc,dc=net
 objectClass: groupOfNames
 objectClass: top
 cn: Consortium_Education_Administrator_2

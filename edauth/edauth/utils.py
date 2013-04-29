@@ -5,8 +5,11 @@ Created on Feb 25, 2013
 '''
 
 
-# converts a string value to int, returns None if value is None
 def convert_to_int(value):
+    '''
+    converts a string value to int, returns None if value is None
+    @param value: the converted value
+    '''
     converted_value = None
     if value is not None:
         try:
@@ -16,13 +19,18 @@ def convert_to_int(value):
     return converted_value
 
 
-# boolean True/False converter
 def to_bool(val):
+    '''
+    boolean True/False converter
+    @param val: the converted value
+    '''
     return val and val.lower() in ('true', 'True')
 
 
-# enum
 def enum(*sequential, **named):
+    '''
+    enum
+    '''
     enums = dict(zip(sequential, range(len(sequential))), **named)
     reverse = dict((value, key) for key, value in enums.items())
     enums['reverse_mapping'] = reverse

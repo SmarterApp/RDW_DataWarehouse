@@ -111,7 +111,7 @@
                                         <jato:content name="textBox">
                                             <div class="row">
                                                 <label for="IDToken<jato:text name="txtIndex" />" class="control-label">
-                                                    <jato:text name="txtPrompt" defaultValue="User name:" escape="false" />
+                                                    Username:
                                                     <jato:content name="isRequired">
                                                         <img src="<%= ServiceURI %>/images/required.gif" alt="Required Field"
                                                              title="Required Field" width="7" height="14" />
@@ -123,7 +123,7 @@
                                         <jato:content name="password">
                                             <div class="row">
                                                 <label for="IDToken<jato:text name="txtIndex" />" class="control-label">
-                                                    <jato:text name="txtPrompt" defaultValue="Password:" escape="false" />
+                                                    Password:
                                                     <jato:content name="isRequired">
                                                         <img src="<%= ServiceURI %>/images/required.gif" alt="Required Field"
                                                              title="Required Field" width="7" height="14" />

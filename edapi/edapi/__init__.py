@@ -34,7 +34,7 @@ class ContentTypePredicate(object):
 
     @staticmethod
     def default_content_type():
-        return "application/json"
+        return 'text/html'
 
     def text(self):
         return 'content_type = %s' % (self.content_type,)

@@ -31,6 +31,7 @@ class InMemHandler(logging.Handler):
     def __init__(self):
         self.log_entries = ''
         logging.Handler.__init__(self)
+        self.setLevel('INFO')
         self.setFormatter(JsonDictLoggingFormatter(fmt='%(asctime)s %(message)s', datefmt='%y%m%d %H:%M:%S'))
 
     def emit(self, record):

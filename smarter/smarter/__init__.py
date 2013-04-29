@@ -51,7 +51,7 @@ def main(global_config, **settings):
     config.add_static_view('assets/data', os.path.join(assets_dir, 'data'), cache_max_age=static_max_age)
     config.add_static_view('assets/images', os.path.join(assets_dir, 'images'), cache_max_age=static_max_age)
     config.add_static_view('assets/js', os.path.join(assets_dir, 'js'), cache_max_age=static_max_age)
-    config.add_static_view('assets/public', os.path.join(assets_dir, 'public'), cache_max_age=static_max_age)
+    config.add_static_view('assets/public', os.path.join(assets_dir, 'public'), cache_max_age=static_max_age, permission=pyramid.security.NO_PERMISSION_REQUIRED)
 
     # Only expose test in non-production modes
     mode = settings.get('mode', 'prod').upper()

@@ -418,10 +418,14 @@ table {
   }
   
   .ui-jqgrid tr.jqgrow td {
-    white-space: normal;
+    white-space: normal !important;
     
     &:nth-child(even) {
       border-right: none !important;
+    }
+    
+    a {
+      float: left;
     }
   }
   
@@ -505,8 +509,14 @@ table {
 
 .ui-icon-triangle-1-n {
     background-position: 0 -16px;
+    margin-left: 1px;
 }
 
 .ui-state-disabled, .ui-widget-content .ui-state-disabled, .ui-widget-header .ui-state-disabled {
     opacity: 0.35;
+}
+
+
+.reportInfoWrapper {
+  width: 580px;
 }

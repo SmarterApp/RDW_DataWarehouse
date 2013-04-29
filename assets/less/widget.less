@@ -96,7 +96,7 @@ th.ui-th-column div {
 
 .ui-corner-all, .ui-corner-top, .ui-corner-left, .ui-corner-tl { border-top-left-radius: 0 }
 
-.ui-jqgrid tr.ui-row-ltr td, .ui-jqgrid tr.footrow td { border-right: solid 1px @color-B5; }
+.ui-jqgrid tr.ui-row-ltr td{ border-right: solid 1px @color-B5; }
 
 .ui-jqgrid tr.jqgrow td { border-bottom: solid 1px @color-B7; }
 
@@ -112,12 +112,13 @@ th.ui-th-column div {
   background: @color-B6;
   
   .ui-widget-content {
-    background: @color-B6;
+    background: @color-B8;
   }
 }
 
 .ui-jqgrid tr.footrow td { 
   border-top: none;
+  border-right: solid 1px @color-B7;
  }
  
 .ui-jqgrid tr.jqgrow td:last-child, .ui-jqgrid .ui-jqgrid-htable th:last-child, .ui-jqgrid tr.footrow td:last-child { border-right: solid 1px transparent; }

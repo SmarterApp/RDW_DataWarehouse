@@ -11,9 +11,9 @@ define [
   #global $ window 
   
   constants = 
-      overall_ald: 250
-      psychometric_characterLimits: 250
-      policyContent_characterLimits: 250
+      overall_ald: 275
+      psychometric_characterLimits: 256
+      policyContent_characterLimits: 256
       claims_characterLimits: 140
       
   getConstants = (value) ->

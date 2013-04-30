@@ -258,7 +258,10 @@ uat:
         idp_server_logout_url: https://betaauth.smarterbalancedreporting.org/openam/IDPSloRedirect/metaAlias/idp
         name_qualifier: https://betaauth.smarterbalancedreporting.org/openam
   '[handlers]':
-    keys: console, filelog, audit, syslog
+    keys: audit, syslog
+  '[logger_root]':
+    level: INFO
+    handlers: syslog
   '[handler_syslog]':
     class: logging.handlers.SysLogHandler
     args: '(''/dev/log'', handlers.SysLogHandler.LOG_LOCAL1)'
@@ -277,6 +280,14 @@ uat:
     level: WARN
     handlers: syslog
     qualname: edauth
+  '[logger_sqlalchemy]':
+    level: INFO
+    handlers: syslog
+    qualname: sqlalchemy
+  '[logger_exc_logger]':
+    level: ERROR
+    handlers: syslog
+    qualname: exc_logger
 
 localOpenAM:
   '[app:main]':

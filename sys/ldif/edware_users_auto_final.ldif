@@ -3718,8 +3718,8 @@ objectClass: top
 cn: Alise Brickhouse
 sn: Brickhouse
 givenName: Alise
-uid: nbrick@udel.edu
-mail: nbrick@udel.edu
+uid: abrick@udel.edu
+mail: abrick@udel.edu
 userPassword: {SSHA}Qj1Mdsel4npWyXvNrBzfrVcvA4o1LvG6zfj4VQ==
 
 dn: cn=Caitlyn Viger,ou=people,ou=environment,dc=edwdc,dc=net

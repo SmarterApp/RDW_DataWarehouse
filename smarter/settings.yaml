@@ -253,7 +253,7 @@ uat:
         secure: true
       skip.verify: False
       saml:
-        issuer_name: https://pyweb.dmo.dum.edwdc.net
+        issuer_name: https://pyweb.dmo.som.edwdc.net
         idp_server_login_url: https://betaauth.smarterbalancedreporting.org/openam/SSORedirect/metaAlias/idp
         idp_server_logout_url: https://betaauth.smarterbalancedreporting.org/openam/IDPSloRedirect/metaAlias/idp
         name_qualifier: https://betaauth.smarterbalancedreporting.org/openam

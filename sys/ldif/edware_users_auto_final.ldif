@@ -1062,10 +1062,12 @@ uid: skframpton@lf.k12.de.us
 mail: skframpton@lf.k12.de.us
 userPassword: {SSHA}geA0gcvGg5QtfzMdFkPILTYIj6kEmOAV8nstwQ==
 
-dn: cn=Building Administrator,ou=groups,ou=environment,dc=edwdc,dc=net
+dn: cn=SCHOOL_EDUCATION_ADMINISTRATOR_1,ou=groups,ou=environment,dc=edwdc,dc=net
 objectClass: groupOfNames
 objectClass: top
-cn: Building Administrator
+cn: SCHOOL_EDUCATION_ADMINISTRATOR_1
+member: cn=Amie Stroop,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Ted Lazaro,ou=people,ou=environment,dc=edwdc,dc=net
 member: cn=Matthew Donovan ,ou=people,ou=environment,dc=edwdc,dc=net
 member: cn=Brian Donahue,ou=people,ou=environment,dc=edwdc,dc=net
 member: cn=Robert Adams,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1192,10 +1194,10 @@ uid: eseinfeld
 mail: eseinfeld
 userPassword: {SSHA}GS9JOAvcQa0DJhRjcwOap4zVEH/P8YLD2udcYw==
 
-dn: cn=Consortium Education Administrator,ou=groups,ou=environment,dc=edwdc,dc=net
+dn: cn=CONSORTIUM_EDUCATION_ADMINISTRATOR_1,ou=groups,ou=environment,dc=edwdc,dc=net
 objectClass: groupOfNames
 objectClass: top
-cn: Consortium Education Administrator
+cn: CONSORTIUM_EDUCATION_ADMINISTRATOR_1
 member: cn=Clinton Degraw,ou=people,ou=environment,dc=edwdc,dc=net
 member: cn=Elnora Seinfeld,ou=people,ou=environment,dc=edwdc,dc=net
 
@@ -1209,10 +1211,10 @@ uid: hgoree
 mail: hgoree
 userPassword: {SSHA}qmxOyMBtfaDvNLU3yFjD7ABRJAaUzQwD2MZ3Hg==
 
-dn: cn=Data Corrector,ou=groups,ou=environment,dc=edwdc,dc=net
+dn: cn=DATA_CORRECTOR,ou=groups,ou=environment,dc=edwdc,dc=net
 objectClass: groupOfNames
 objectClass: top
-cn: Data Corrector
+cn: DATA_CORRECTOR
 member: cn=Hugh Goree,ou=people,ou=environment,dc=edwdc,dc=net
 
 dn: cn=James Stevenson,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1235,10 +1237,10 @@ uid: jhine
 mail: jhine
 userPassword: {SSHA}2/0IyAeXmu5wR++VIfUHUdPEgtzMa4qf8iDgpg==
 
-dn: cn=Deployment Administrator,ou=groups,ou=environment,dc=edwdc,dc=net
+dn: cn=DEPLOYMENT_ADMINISTRATOR,ou=groups,ou=environment,dc=edwdc,dc=net
 objectClass: groupOfNames
 objectClass: top
-cn: Deployment Administrator
+cn: DEPLOYMENT_ADMINISTRATOR
 member: cn=James Stevenson,ou=people,ou=environment,dc=edwdc,dc=net
 member: cn=Jamie Hine,ou=people,ou=environment,dc=edwdc,dc=net
 
@@ -1752,10 +1754,12 @@ uid: ChrisHansen@hasd.org
 mail: ChrisHansen@hasd.org
 userPassword: {SSHA}ROpHk8FaBXWYc1hVrRC+eYx2NNOyV0YKueagsg==
 
-dn: cn=District Administrator,ou=groups,ou=environment,dc=edwdc,dc=net
+dn: cn=DISTRICT_EDUCATION_ADMINISTRATOR_1,ou=groups,ou=environment,dc=edwdc,dc=net
 objectClass: groupOfNames
 objectClass: top
-cn: District Administrator
+cn: DISTRICT_EDUCATION_ADMINISTRATOR_1
+member: cn=Selena Magnusson,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Guy Man,ou=people,ou=environment,dc=edwdc,dc=net
 member: cn=Earl Pettit,ou=people,ou=environment,dc=edwdc,dc=net
 member: cn=Lisa Andrew,ou=people,ou=environment,dc=edwdc,dc=net
 member: cn=Cheryl Ingham,ou=people,ou=environment,dc=edwdc,dc=net
@@ -1827,13 +1831,6 @@ givenName: Guy
 uid: gman
 mail: gman
 userPassword: {SSHA}tb3zY6W4C3G3fBoBIDNYewTmWZA9SIC7IKFL0A==
-
-dn: cn=District Education Administrator,ou=groups,ou=environment,dc=edwdc,dc=net
-objectClass: groupOfNames
-objectClass: top
-cn: District Education Administrator
-member: cn=Selena Magnusson,ou=people,ou=environment,dc=edwdc,dc=net
-member: cn=Guy Man,ou=people,ou=environment,dc=edwdc,dc=net
 
 dn: cn=Mike Halligan,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
@@ -2115,10 +2112,10 @@ uid: laura.thompson@redclay.k12.de.us
 mail: laura.thompson@redclay.k12.de.us
 userPassword: {SSHA}y03cfnRz1B0gJZMJ9CuTLQfzpKzdBOaYfqlBcA==
 
-dn: cn=General Public,ou=groups,ou=environment,dc=edwdc,dc=net
+dn: cn=NO_ROLE,ou=groups,ou=environment,dc=edwdc,dc=net
 objectClass: groupOfNames
 objectClass: top
-cn: General Public
+cn: NO_ROLE
 member: cn=Mike Halligan,ou=people,ou=environment,dc=edwdc,dc=net
 member: cn=Jennifer Nehl,ou=people,ou=environment,dc=edwdc,dc=net
 member: cn=William Jackson,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2548,10 +2545,10 @@ uid: dtrakas@washoeschools.net
 mail: dtrakas@washoeschools.net
 userPassword: {SSHA}e9GypoXGubkzy2Y2bHEDuJPFZmiwDeVtLPkxMA==
 
-dn: cn=Higher Education,ou=groups,ou=environment,dc=edwdc,dc=net
+dn: cn=HIGHER_EDUCATION_ADMISSIONS_OFFICER,ou=groups,ou=environment,dc=edwdc,dc=net
 objectClass: groupOfNames
 objectClass: top
-cn: Higher Education
+cn: HIGHER_EDUCATION_ADMISSIONS_OFFICER
 member: cn=Marsha Hirano-Nakanishi,ou=people,ou=environment,dc=edwdc,dc=net
 member: cn=Nancy Brynelson,ou=people,ou=environment,dc=edwdc,dc=net
 member: cn=Carolina Cardenas,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2592,6 +2589,8 @@ member: cn=Carol Bell,ou=people,ou=environment,dc=edwdc,dc=net
 member: cn=Virgina Mix Adatto,ou=people,ou=environment,dc=edwdc,dc=net
 member: cn=Dr. Tom Dick ,ou=people,ou=environment,dc=edwdc,dc=net
 member: cn=Denise Trakas,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Matt Sollars,ou=people,ou=environment,dc=edwdc,dc=net
+member: cn=Erik Croker,ou=people,ou=environment,dc=edwdc,dc=net
 
 dn: cn=Matt Sollars,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
@@ -2612,13 +2611,6 @@ givenName: Erik
 uid: ecroker
 mail: ecroker
 userPassword: {SSHA}WUtUcGcIMmOFoMOniwoHW7l5V3wXXiQ4te9kDA==
-
-dn: cn=Higher Education Admissions Officer,ou=groups,ou=environment,dc=edwdc,dc=net
-objectClass: groupOfNames
-objectClass: top
-cn: Higher Education Admissions Officer
-member: cn=Matt Sollars,ou=people,ou=environment,dc=edwdc,dc=net
-member: cn=Erik Croker,ou=people,ou=environment,dc=edwdc,dc=net
 
 dn: cn=Mike Graham,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
@@ -2950,10 +2942,10 @@ uid: yamauchi@hawaii.edu
 mail: yamauchi@hawaii.edu
 userPassword: {SSHA}I3a+aukS9ezMS/MTmKlgRIEN9gKZR51VxEpE1Q==
 
-dn: cn=Parent,ou=groups,ou=environment,dc=edwdc,dc=net
+dn: cn=PARENT,ou=groups,ou=environment,dc=edwdc,dc=net
 objectClass: groupOfNames
 objectClass: top
-cn: Parent
+cn: PARENT
 member: cn=Mike Graham,ou=people,ou=environment,dc=edwdc,dc=net
 member: cn=Carmen Westover,ou=people,ou=environment,dc=edwdc,dc=net
 member: cn=Stacey Ray,ou=people,ou=environment,dc=edwdc,dc=net
@@ -2998,10 +2990,10 @@ uid: cseabaugh
 mail: cseabaugh
 userPassword: {SSHA}iDhBMQEntI7m2baGGjZNYrtuU9/qFmuIlbNjSw==
 
-dn: cn=Psychometrician,ou=groups,ou=environment,dc=edwdc,dc=net
+dn: cn=PSYCHOMETRICIAN,ou=groups,ou=environment,dc=edwdc,dc=net
 objectClass: groupOfNames
 objectClass: top
-cn: Psychometrician
+cn: PSYCHOMETRICIAN
 member: cn=Clare Seabaugh,ou=people,ou=environment,dc=edwdc,dc=net
 
 dn: cn=Amie Stroop,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3023,13 +3015,6 @@ givenName: Ted
 uid: tlazaro
 mail: tlazaro
 userPassword: {SSHA}93wgQAHzciufOXicKlQln7VkXzC2J56XEL6u+A==
-
-dn: cn=School Education Administrator,ou=groups,ou=environment,dc=edwdc,dc=net
-objectClass: groupOfNames
-objectClass: top
-cn: School Education Administrator
-member: cn=Amie Stroop,ou=people,ou=environment,dc=edwdc,dc=net
-member: cn=Ted Lazaro,ou=people,ou=environment,dc=edwdc,dc=net
 
 dn: cn=Jim Kroening,ou=people,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
@@ -3611,10 +3596,10 @@ uid: pamela.m.aman@sendit.nodak.edu
 mail: pamela.m.aman@sendit.nodak.edu
 userPassword: {SSHA}cRXidaw1/nxbkK3+XtiGTpZwrw0s7+tLYdADNg==
 
-dn: cn=State Administrator,ou=groups,ou=environment,dc=edwdc,dc=net
+dn: cn=STATE_EDUCATION_ADMINISTRATOR_1,ou=groups,ou=environment,dc=edwdc,dc=net
 objectClass: groupOfNames
 objectClass: top
-cn: State Administrator
+cn: STATE_EDUCATION_ADMINISTRATOR_1
 member: cn=Jim Kroening,ou=people,ou=environment,dc=edwdc,dc=net
 member: cn=Viji Somasundarm,ou=people,ou=environment,dc=edwdc,dc=net
 member: cn=William Kliche,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3684,10 +3669,10 @@ uid: kbester
 mail: kbester
 userPassword: {SSHA}65ivhiqn7LX3G62klIsLdFCffBrfhGKeR2Q/mA==
 
-dn: cn=State Data Extractor,ou=groups,ou=environment,dc=edwdc,dc=net
+dn: cn=STATE_DATA_EXTRACTOR,ou=groups,ou=environment,dc=edwdc,dc=net
 objectClass: groupOfNames
 objectClass: top
-cn: State Data Extractor
+cn: STATE_DATA_EXTRACTOR
 member: cn=Katy Bester,ou=people,ou=environment,dc=edwdc,dc=net
 
 dn: cn=Liza Bopp,ou=people,ou=environment,dc=edwdc,dc=net
@@ -3710,10 +3695,10 @@ uid: jmollica
 mail: jmollica
 userPassword: {SSHA}xCf2rOuYDsENYjmI264b7VZLs8KoiFSEo1QDLA==
 
-dn: cn=State Education Administrator,ou=groups,ou=environment,dc=edwdc,dc=net
+dn: cn=STATE_EDUCATION_ADMINISTRATOR_2,ou=groups,ou=environment,dc=edwdc,dc=net
 objectClass: groupOfNames
 objectClass: top
-cn: State Education Administrator
+cn: STATE_EDUCATION_ADMINISTRATOR_2
 member: cn=Liza Bopp,ou=people,ou=environment,dc=edwdc,dc=net
 member: cn=Jessie Mollic,ou=people,ou=environment,dc=edwdc,dc=net
 
@@ -3817,7 +3802,7 @@ uid: warren.raynor@gmail.com
 mail: warren.raynor@gmail.com
 userPassword: {SSHA}B75teJAjpIAxf+CmauVsBFtO8ZSIMWUkl37KeQ==
 
-dn: cn=Student,ou=groups,ou=environment,dc=edwdc,dc=net
+dn: cn=STUDENT,ou=groups,ou=environment,dc=edwdc,dc=net
 objectClass: groupOfNames
 objectClass: top
 cn: Student
@@ -3852,10 +3837,10 @@ uid: ktidd
 mail: ktidd
 userPassword: {SSHA}JKFAHuJQGFMoFmKAJH2HEFUmTpGAfChD3GMhGg==
 
-dn: cn=System Administrator,ou=groups,ou=environment,dc=edwdc,dc=net
+dn: cn=SYSTEM_ADMINISTRATOR,ou=groups,ou=environment,dc=edwdc,dc=net
 objectClass: groupOfNames
 objectClass: top
-cn: System Administrator
+cn: SYSTEM_ADMINISTRATOR
 member: cn=Louisa Mui,ou=people,ou=environment,dc=edwdc,dc=net
 member: cn=Kelly Tidd,ou=people,ou=environment,dc=edwdc,dc=net
 
@@ -5069,7 +5054,7 @@ uid: katherine.kopp@k12.sd.us
 mail: katherine.kopp@k12.sd.us
 userPassword: {SSHA}O6rNCdiYvuNWiy5/KpEy7eUICjATF9UpJqnojQ==
 
-dn: cn=Teacher,ou=groups,ou=environment,dc=edwdc,dc=net
+dn: cn=TEACHER,ou=groups,ou=environment,dc=edwdc,dc=net
 objectClass: groupOfNames
 objectClass: top
 cn: Teacher

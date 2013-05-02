@@ -3,7 +3,9 @@ import os
 from setuptools import setup, find_packages
 
 install_requires = [
-    "celery"
+    "celery",
+    "anyjson",
+    "amqp"
 ]
 
 tests_require = [

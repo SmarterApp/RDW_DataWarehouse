@@ -1,6 +1,6 @@
 from celery import Celery
 
-celery = Celery('udl_workers', broker='amqp://guest@localhost//')
+celery = Celery('udl_workers', backend='amqp://guest@localhost//', broker='amqp://guest@localhost//')
 
 @celery.task
 def W_file_splitter(msg):

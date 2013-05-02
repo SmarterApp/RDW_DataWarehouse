@@ -4,7 +4,7 @@ import time
 import random
 
 
-@celery.task(name="W_final_cleanup.task")
+@celery.task(name="udl2.W_final_cleanup.task")
 def task(msg):
     # randomize delay seconds
     time.sleep(random.random() * 100)

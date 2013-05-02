@@ -4,7 +4,7 @@ import time
 import random
 
 
-@celery.task(name="W_file_splitter.task")
+@celery.task(name="udl2.W_file_splitter.task")
 def task(msg):
     # randomize delay seconds
     time.sleep(random.random() * 100)

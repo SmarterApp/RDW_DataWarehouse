@@ -2,11 +2,9 @@ import os
 
 from setuptools import setup, find_packages
 
-here = os.path.abspath(os.path.dirname(__file__))
-README = open(os.path.join(here, 'README.txt')).read()
-
 install_requires = [
-    ]
+    "celery"
+]
 
 tests_require = [
     'WebTest >= 1.3.1',  # py3 compat

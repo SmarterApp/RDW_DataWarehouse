@@ -10,7 +10,7 @@ def start_rabbitmq(RABBITMQ_SERVER):
 
 def start_celery():
     try:
-        subprocess.call(["celery -A udl_workers worker"], shell=True)    
+        subprocess.call(["celery worker --app=udl2 -l debug"], shell=True)    
     except Exception as e:
         print(e)
 

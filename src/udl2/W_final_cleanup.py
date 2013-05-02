@@ -3,6 +3,7 @@ from udl2.celery import celery
 import time
 import random
 
+
 @celery.task
 def task(msg):
     # randomize delay seconds

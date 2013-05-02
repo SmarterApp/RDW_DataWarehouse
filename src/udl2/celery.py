@@ -12,6 +12,7 @@ celery = Celery('udl2.celery', # where the celery system is. the name is due to 
 celery.conf.update(
     CELERY_TASK_RESULT_EXPIRES=3600, # TTL for results
     CELERYD_CONCURRENCY=10, # number of avaialbe workers processes
+    CELERY_SEND_EVENTS=True, # send events for monitor
 )
 
 if __name__ == '__main__':

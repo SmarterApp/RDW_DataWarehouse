@@ -9,8 +9,9 @@ def start_rabbitmq(RABBITMQ_SERVER):
         print(e)
 
 def start_celery():
+    # we start celery by showing debug messages, and send event notifications
     try:
-        subprocess.call(["celery worker -E --app=udl2 -l debug"], shell=True)    
+        subprocess.call(["celery worker --app=udl2 -l debug"], shell=True)    
     except Exception as e:
         print(e)
 

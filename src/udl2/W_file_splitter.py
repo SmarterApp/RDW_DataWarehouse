@@ -12,11 +12,13 @@ logger = get_task_logger(__name__)
 @udl2.celery.celery.task(name="udl2.W_file_splitter.task")
 def task(msg):
     # randomize delay seconds
+    number_of_files = 1 + int(random.random() * 10)
     time.sleep(random.random() * 10)
     logger.info(task.name)
-    udl2.W_file_loader.task.apply_async([msg + ' passed after ' + task.name],
-                                           queue='Q_files_to_be_loaded',
-                                           routing_key='udl2')
+    for i in range(0, number_of_files):    
+        udl2.W_file_loader.task.apply_async([msg + 'part ' + i + ' of ' + number_of_files + ' file passed after ' + task.name],
+                                               queue='Q_files_to_be_loaded',
+                                               routing_key='udl2')
     return msg
 
 @udl2.celery.celery.task

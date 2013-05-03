@@ -18,7 +18,7 @@ q_final_cleanup_exchange =  Exchange('Q_final_cleanup', type='direct')
 # Optional configuration, see the application user guide.
 celery.conf.update(
     CELERY_TASK_RESULT_EXPIRES=10, # TTL for results
-    CELERYD_CONCURRENCY=10, # number of avaialbe workers processes
+    CELERYD_CONCURRENCY=10, # number of available workers processes
     CELERY_SEND_EVENTS=True, # send events for monitor
     CELERY_DEFAULT_QUEUE = 'celery',
     CELERY_DEFAULT_EXCHANGE = 'direct',

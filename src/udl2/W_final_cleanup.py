@@ -1,11 +1,26 @@
 from __future__ import absolute_import
-from udl2.celery import celery
+import udl2.celery
+from celery.result import AsyncResult
+from celery.utils.log import get_task_logger
 import time
 import random
+import datetime
 
 
-@celery.task(name="udl2.W_final_cleanup.task")
+logger = get_task_logger(__name__)
+
+@udl2.celery.celery.task(name="udl2.W_final_cleanup.task")
 def task(msg):
     # randomize delay seconds
-    time.sleep(random.random() * 100)
+    time.sleep(random.random() * 10)
+    logger.info(task.name)
+    with open("test.log", 'a+') as f:
+        f.write(str(datetime.datetime.now()) + ': done with' + msg + ' after ' + task.name + "\n")
     return msg
+
+@udl2.celery.celery.task
+def error_handler(uuid):
+    result = AsyncResult(uuid)
+    exc = result.get(propagate=False)
+    print('Task %r raised exception: %r\n%r' % (
+          exc, result.traceback))

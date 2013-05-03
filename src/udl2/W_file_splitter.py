@@ -3,7 +3,7 @@ import udl2.celery
 import udl2.W_file_loader
 from celery.result import AsyncResult
 from celery.utils.log import get_task_logger
-from filesplitter import file_splitter
+import filesplitter.file_splitter as file_splitter
 import time
 import random
 

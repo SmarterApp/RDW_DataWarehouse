@@ -3,8 +3,9 @@ Created on May 2, 2013
 
 @author: tosako
 '''
-import celery
-
+from celery import Celery
+celery = Celery('pdfmaker', backend='amqp', broker='amqp://guest@localhost//', include=['tasks'])
+# print("celery: " + celery)
 
 @celery.task
 def add(x, y):

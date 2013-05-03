@@ -9,6 +9,7 @@ import random
 
 logger = get_task_logger(__name__)
 
+
 @udl2.celery.celery.task(name="udl2.W_file_loader.task")
 def task(msg):
     # randomize delay second
@@ -18,6 +19,7 @@ def task(msg):
                                            queue='Q_final_cleanup',
                                            routing_key='udl2')
     return msg
+
 
 @udl2.celery.celery.task
 def error_handler(uuid):

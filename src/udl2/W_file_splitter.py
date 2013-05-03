@@ -16,7 +16,7 @@ def task(msg):
     time.sleep(random.random() * 10)
     logger.info(task.name)
     for i in range(0, number_of_files):    
-        udl2.W_file_loader.task.apply_async([(msg + ' part %i of %i file passed after ' + task.name) % (i, number_of_files)],
+        udl2.W_file_loader.task.apply_async([(msg + ' part %i of %i file passed after ' + task.name) % (i + 1, number_of_files)],
                                                queue='Q_files_to_be_loaded',
                                                routing_key='udl2')
     return msg

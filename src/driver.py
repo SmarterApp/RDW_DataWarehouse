@@ -35,6 +35,6 @@ if __name__ == '__main__':
     args = argument_parser.parse_args()
     file_path = args.file
     if not file_path:
-        default_file_path = os.path.join(ROOT_DIRECTORY, 'datafiles', 'dim_staff.csv')
+        default_file_path = os.path.join(ROOT_DIRECTORY, 'datafiles', 'dim_asmt.csv')
         file_path = default_file_path
     main(file_path)

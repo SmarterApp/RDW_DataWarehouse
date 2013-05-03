@@ -38,22 +38,18 @@ def get_school_types():
     grades is a list of grades for that type
     students is a dictionary containing the min, max and avg number of students
     """
-#     school_types = {'High School': {'grades': [11], 'students': {'min': 50, 'max': 250, 'avg': 100}},
-#                     'Middle School': {'grades': [6, 7, 8], 'students': {'min': 25, 'max': 100, 'avg': 50}},
-#                     'Elementary School': {'grades': [3, 4, 5], 'students': {'min': 10, 'max': 35, 'avg': 30}},
-#                     }
     school_types = {
         'High School': {'type': 'High School', 'grades': [11], 'students': {'min': 50, 'max': 250, 'avg': 100}},
         'Middle School': {'type': 'Middle School', 'grades': [6, 7, 8], 'students': {'min': 25, 'max': 100, 'avg': 50}},
         'Elementary School': {'type': 'Elementary School', 'grades': [3, 4, 5], 'students': {'min': 10, 'max': 35, 'avg': 30}},
 
-        'Poor High School': {'type': 'High School', 'grades': [11], 'students': {'min': 50, 'max': 250, 'avg': 100}, 'adjust_pld': -0.7},
-        'Poor Middle School': {'type': 'Middle School', 'grades': [6, 7, 8], 'students': {'min': 25, 'max': 100, 'avg': 50}, 'adjust_pld': -0.7},
-        'Poor Elementary School': {'type': 'Elementary School', 'grades': [3, 4, 5], 'students': {'min': 10, 'max': 35, 'avg': 30}, 'adjust_pld': -0.7},
+        'Poor High School': {'type': 'High School', 'grades': [11], 'students': {'min': 50, 'max': 250, 'avg': 100}, 'adjust_pld': -0.8},
+        'Poor Middle School': {'type': 'Middle School', 'grades': [6, 7, 8], 'students': {'min': 25, 'max': 100, 'avg': 50}, 'adjust_pld': -0.8},
+        'Poor Elementary School': {'type': 'Elementary School', 'grades': [3, 4, 5], 'students': {'min': 10, 'max': 35, 'avg': 30}, 'adjust_pld': -0.8},
 
-        'Good High School': {'type': 'High School', 'grades': [11], 'students': {'min': 50, 'max': 250, 'avg': 100}, 'adjust_pld': 0.5},
-        'Good Middle School': {'type': 'Middle School', 'grades': [6, 7, 8], 'students': {'min': 25, 'max': 100, 'avg': 50}, 'adjust_pld': 0.5},
-        'Good Elementary School': {'type': 'Elementary School', 'grades': [3, 4, 5], 'students': {'min': 10, 'max': 35, 'avg': 30}, 'adjust_pld': 0.5},
+        'Good High School': {'type': 'High School', 'grades': [11], 'students': {'min': 50, 'max': 250, 'avg': 100}, 'adjust_pld': 0.8},
+        'Good Middle School': {'type': 'Middle School', 'grades': [6, 7, 8], 'students': {'min': 25, 'max': 100, 'avg': 50}, 'adjust_pld': 0.8},
+        'Good Elementary School': {'type': 'Elementary School', 'grades': [3, 4, 5], 'students': {'min': 10, 'max': 35, 'avg': 30}, 'adjust_pld': 0.8},
     }
 
     return school_types
@@ -74,12 +70,16 @@ def get_district_types():
                       'Big Good': {'school_counts': {'min': 50, 'max': 80, 'avg': 65},
                                    'school_types_and_ratios': {
                                        'High School': 10, 'Middle School': 20, 'Elementary School': 50,
-                                       'Good High School': 1, 'Good Middle School': 2, 'Good Elementary School': 5}},
+                                       'Good High School': 2, 'Good Middle School': 4, 'Good Elementary School': 10,
+                                       'Poor High School': 1, 'Poor Middle School': 2, 'Poor Elementary School': 5
+                                       }},
 
                       'Big Poor': {'school_counts': {'min': 50, 'max': 80, 'avg': 65},
                                    'school_types_and_ratios': {
                                        'High School': 10, 'Middle School': 20, 'Elementary School': 50,
-                                       'Poor High School': 1, 'Poor Middle School': 2, 'Good Elementary School': 5}},
+                                       'Poor High School': 4, 'Poor Middle School': 8, 'Poor Elementary School': 20,
+                                       'Good High School': 1, 'Good Middle School': 2, 'Good Elementary School': 5
+                                       }},
 
                       'Medium': {'school_counts': {'min': 20, 'max': 24, 'avg': 22}, 'school_types_and_ratios': {'High School': 1, 'Middle School': 2, 'Elementary School': 5}},
                       'Small': {'school_counts': {'min': 2, 'max': 8, 'avg': 5}, 'school_types_and_ratios': {'High School': 1, 'Middle School': 2, 'Elementary School': 5}}

@@ -71,15 +71,15 @@ def get_district_types():
                                    'school_types_and_ratios': {
                                        'High School': 10, 'Middle School': 20, 'Elementary School': 50,
                                        'Good High School': 2, 'Good Middle School': 4, 'Good Elementary School': 10,
-                                       'Poor High School': 1, 'Poor Middle School': 2, 'Poor Elementary School': 5
-                                       }},
+                                       'Poor High School': 1, 'Poor Middle School': 2, 'Poor Elementary School': 5}
+                                   },
 
                       'Big Poor': {'school_counts': {'min': 50, 'max': 80, 'avg': 65},
                                    'school_types_and_ratios': {
                                        'High School': 10, 'Middle School': 20, 'Elementary School': 50,
                                        'Poor High School': 4, 'Poor Middle School': 8, 'Poor Elementary School': 20,
-                                       'Good High School': 1, 'Good Middle School': 2, 'Good Elementary School': 5
-                                       }},
+                                       'Good High School': 1, 'Good Middle School': 2, 'Good Elementary School': 5}
+                                   },
 
                       'Medium': {'school_counts': {'min': 20, 'max': 24, 'avg': 22}, 'school_types_and_ratios': {'High School': 1, 'Middle School': 2, 'Elementary School': 5}},
                       'Small': {'school_counts': {'min': 2, 'max': 8, 'avg': 5}, 'school_types_and_ratios': {'High School': 1, 'Middle School': 2, 'Elementary School': 5}}

@@ -18,12 +18,7 @@ def main(file_path):
     landing_zone_file_name = create_unique_file_name(file_path)
     landing_zone_file_path = os.path.join(LANDING_ZONE, landing_zone_file_name)
     shutil.copy(file_path, landing_zone_file_path)
-    udl2.W_file_splitter.task.delay(landing_zone_file_path)
-
-
-
-    #file_name = str(int(random.random() * 1000000)) + '.csv'
-    #udl2.W_file_splitter.task.apply_async(['process file ' + file_name], queue='Q_files_to_be_split')
+    udl2.W_file_splitter.task.apply_async([landing_zone_file_path], queue='Q_files_to_be_split')
     
     
 def create_unique_file_name(file_path):

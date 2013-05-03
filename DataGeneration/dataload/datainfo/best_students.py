@@ -138,7 +138,7 @@ def get_institution_info(school_guid, schema, connection):
     SELECT {district_name}, {school_name}, {state_name}
     FROM {schema}.dim_inst_hier
     WHERE school_guid = '{sch_guid}'
-    '''.format(schema=schema, sch_guid=school_guid, district_name=DIST_NAME, state_name=STATE_NAME)
+    '''.format(schema=schema, sch_guid=school_guid, district_name=DIST_NAME, state_name=STATE_NAME, school_name=SCH_NAME)
 
     result = connection.execute(query)
     names = result.fetchall()[0]
@@ -273,6 +273,7 @@ def print_records(result_list, headers):
             if i + 1 != len(headers):
                 string += ', '
         print(string)
+    print('\n')
 
 
 def output_records(headers, *result_lists, to_stdout=True, filename=None, file_suffix=None):

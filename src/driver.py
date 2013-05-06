@@ -42,8 +42,7 @@ if __name__ == '__main__':
     conf = {'row_multiplier': args.row_multiplier,
             'column_multiplier': args.column_multiplier,
             'source_csv': args.source_csv,
-            'output_data_csv': args.output_data_csv,
-            'output_metadata_csv': args.output_metadata_csv}
+            'output_data_csv': args.output_data_csv}
 
     csv_file_path = generate_stretched_csv_file(conf)
     start_pipeline(csv_file_path)

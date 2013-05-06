@@ -10,22 +10,20 @@ def parse():
     parser.add_argument('-c', dest='column_multiplier', type=int, default=1, help="times of columns to be multiplied")
     parser.add_argument('-s', dest='source_csv', required=True, help="path and file name to the csv file for input")
     parser.add_argument('-o', dest='output_data_csv', required=True, help="path and file name to the csv file of output data")
-    parser.add_argument('-m', dest='output_metadata_csv', default=2, help="path and file name to csv file of metadata for output")
 
     args = parser.parse_args()
     # print(args)
     conf = {'row_multiplier': args.row_multiplier,
             'column_multiplier': args.column_multiplier,
             'source_csv': args.source_csv,
-            'output_data_csv': args.output_data_csv,
-            'output_metadata_csv': args.output_metadata_csv}
+            'output_data_csv': args.output_data_csv}
 
     return conf
 
 
 def check_argument_constraints(conf):
-    if check_input_output_conflict(conf['source_csv'], conf['output_data_csv'], conf['output_metadata_csv']):
-        print("input csv file, output data csv file and output metadata csv file must be all different")
+    if check_input_output_conflict(conf['source_csv'], conf['output_data_csv']):
+        print("input csv file, output data csv file must be different")
         exit()
     if not check_multiplier_greater_than_zero(conf['row_multiplier']):
         print("row multiplier must be greater than zero")
@@ -49,7 +47,7 @@ def read_source_csv(csv_file, header_row_count):
         elif header_row_count == 2:
             (csv_obj['header'], csv_obj['metadata'], csv_obj['rows']) = (rows[1], ['text'] * len(rows[1]), rows[2:])
         else:
-            raise csv.Error("data file's header count is not in documented range. Please corret csv input file or update ElasticCsv.py to handle it")
+            raise csv.Error("data file's header count is not in documented range. Please correct csv input file or update ElasticCsv.py to handle it")
     except Exception as e:
         print(e)
     return csv_obj
@@ -58,11 +56,6 @@ def read_source_csv(csv_file, header_row_count):
 def multiply_header_by_column(header, multiplier=1):
     result_header = [i + (' ' + str(j + 1) if j > 0 else '') for j in range(0, multiplier) for i in header]
     return result_header
-
-
-def multiply_metadata_by_column(metadata, multiplier=1):
-    result_metadata = [i for j in range(0, multiplier) for i in metadata]
-    return result_metadata
 
 
 def multiply_rows_by_column(rows, multiplier=1):
@@ -78,11 +71,9 @@ def multiply_rows_by_row(rows, multiplier=1):
 def stretch_csv(source_csv_obj, row_multiplier=1, column_multiplier=1):
     # print('Strech csv by %s times rows and %s times columns' % (row_multiplier, column_multiplier))
     # print(input_csv_obj)
-    output_csv_obj = {'header': [], 'metadata': [], 'rows': []}
+    output_csv_obj = {'header': [], 'rows': []}
     # Multiply headers
     output_csv_obj['header'] = multiply_header_by_column(source_csv_obj['header'], column_multiplier)
-    # Multiply metadata
-    output_csv_obj['metadata'] = multiply_metadata_by_column(source_csv_obj['metadata'], column_multiplier)
     # Multiply rows
     output_csv_obj['rows'] = multiply_rows_by_row(multiply_rows_by_column(source_csv_obj['rows'], column_multiplier), row_multiplier)
     return output_csv_obj
@@ -98,19 +89,9 @@ def write_stretched_data_csv(csv_obj, output_data_csv):
     return output_data_csv
 
 
-def write_stretched_metadata_csv(csv_obj, output_metadata_csv):
-    # print('Wriring Streched metadata CSV to %s', output_metadata_csv)
-    columns = [i for i in zip(csv_obj['header'], csv_obj['metadata'])]
-    with open(output_metadata_csv, 'w') as csv_file:
-        csv_writer = csv.writer(csv_file)
-        csv_writer.writerow(['column Name', 'column Type'])
-        for i in columns:
-            csv_writer.writerow([i[0], i[1]])
-
-
-def check_input_output_conflict(source_csv, output_data_csv, output_metadata_csv):
-    # need more sophisticated checks due to path travesals can break this, or symlink
-    return (source_csv == output_data_csv) or (source_csv == output_metadata_csv) or (output_data_csv == output_metadata_csv)
+def check_input_output_conflict(source_csv, output_data_csv):
+    # need more sophisticated checks due to path traversals can break this, or symlink
+    return (source_csv == output_data_csv)
 
 
 def check_multiplier_greater_than_zero(multiplier):
@@ -120,7 +101,6 @@ def check_multiplier_greater_than_zero(multiplier):
 def get_header_row_count(source_csv):
     # this check is very fragile. It assumes Header Row Count exists and use Header-Row-Count to skip headers.
     # and it assumes row 3 is metadata
-    # print('check header row count and decide metadata existence')
     header_row_count = None
     with open(source_csv, 'r') as csv_file_obj:
         csv_reader = csv.reader(csv_file_obj)
@@ -142,7 +122,6 @@ def generate_stretched_csv_file(conf):
     input_csv_obj = read_source_csv(conf['source_csv'], header_row_count)
     output_csv_obj = stretch_csv(input_csv_obj, conf['row_multiplier'], conf['column_multiplier'])
     csv_file_path = write_stretched_data_csv(output_csv_obj, conf['output_data_csv'])
-    write_stretched_metadata_csv(output_csv_obj, conf['output_metadata_csv'])
     return csv_file_path
 
 

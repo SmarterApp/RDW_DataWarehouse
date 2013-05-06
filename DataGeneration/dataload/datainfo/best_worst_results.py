@@ -5,6 +5,7 @@ Created on Apr 30, 2013
 '''
 
 import csv
+import time
 import argparse
 from sqlalchemy import create_engine
 
@@ -28,7 +29,7 @@ GUID = 'guid'
 NAME = 'name'
 
 
-def get_edge_asmt_outcomes(connection, subject, schema, limit=20, get_best=True):
+def get_edge_asmt_outcomes(connection, subject, schema, limit=20, get_best=True, print_times=True):
     '''
     Get the best or worst student assessment outcomes
     @param connection: sqlalchemy connection
@@ -36,6 +37,7 @@ def get_edge_asmt_outcomes(connection, subject, schema, limit=20, get_best=True)
     @param schema: the schema to query
     @keyword limit: the number of results to return
     @keyword get_best: Get the best results: True or the worst results: False. Default True.
+    @keyword print_times: Print the time it takes to execute the queries
     @return: list of dictionaries that hold the result
     @rtype: list
     '''
@@ -56,7 +58,10 @@ def get_edge_asmt_outcomes(connection, subject, schema, limit=20, get_best=True)
     '''.format(schema=schema, subject=subject, limit=limit, order=order, asmt_out_rec_id=ASMT_OUT_REC_ID, asmt_rec_id=ASMT_REC_ID, asmt_score=ASMT_SCORE,
                stud_guid=STUD_GUID, dist_guid=DIST_GUID, sch_guid=SCH_GUID, asmt_grade=ASMT_GRADE, asmt_sub=ASMT_SUB)
 
+    start_time = time.time()
     resultset = connection.execute(query)
+    tot_time = time.time() - start_time
+
     res_list = []
     for res in resultset:
         row_dict = {}
@@ -70,36 +75,55 @@ def get_edge_asmt_outcomes(connection, subject, schema, limit=20, get_best=True)
         row_dict[ASMT_GRADE] = res[7]
         res_list.append(row_dict)
 
+    # print time information
+    if print_times:
+        print('Took %.2fs to get %d records from fact_asmt_outcome and dim_asmt for %s' % (tot_time, limit, subject))
+
     return res_list
 
 
-def get_additional_info(top_asmt_outcome_res, schema, connection):
+def get_additional_info(top_asmt_outcome_res, schema, connection, print_times=True):
     '''
     Get additional information for a list of student result dicts
     @param top_asmt_outcome_res: list of dictionary results from sql query
     @param schema: schema name
     @param connection: sqlalchemy connection
+    @keyword print_times: Print the time it takes to execute the queries
     '''
 
     # dict to hold institution info, to prevent consecutive duplicate queries
     inst_info = {}
+
+    # floats to hold benchmark times
+    student_time = 0.0
+    inst_time = 0.0
 
     # loop outcomes to get additional info
     for outcome in top_asmt_outcome_res:
         student_guid = outcome[STUD_GUID]
         school_guid = outcome[SCH_GUID]
         # get student info
+        stud_start_time = time.time()
         student_name = get_student_name(student_guid, schema, connection)
+        student_time += (time.time() - stud_start_time)
+
         outcome[F_NAME] = student_name[0]
         outcome[L_NAME] = student_name[1]
         # Check if inst_info already has the info before running query to get information
         inst_names = inst_info.get(school_guid)
         if not inst_names:
+            inst_start = time.time()
             inst_names = get_institution_info(school_guid, schema, connection)
+            inst_time += (time.time() - inst_start)
+
             inst_info[school_guid] = inst_names
         outcome[DIST_NAME] = inst_names[0]
         outcome[SCH_NAME] = inst_names[1]
         outcome[STATE_NAME] = inst_names[2]
+
+    # print time information
+    if print_times:
+        print('Took %.2fs to get student information for %d students and %.2fs to get related institution information' % (student_time, len(top_asmt_outcome_res), inst_time))
 
 
 def get_student_name(student_guid, schema, connection):
@@ -145,7 +169,7 @@ def get_institution_info(school_guid, schema, connection):
     return (names[0], names[1], names[2])
 
 
-def get_edge_institution(subject, schema, connection, limit=5, get_best=True, get_district=True):
+def get_edge_institution(subject, schema, connection, limit=5, get_best=True, get_district=True, print_times=True):
     '''
     Get the top performing or worst performing schools or districts
     @param subject: The subject for the scores to get
@@ -153,6 +177,7 @@ def get_edge_institution(subject, schema, connection, limit=5, get_best=True, ge
     @param connection: The sqlalchemy connection
     @keyword limit: The number or results to return. Default: 5
     @keyword get_best: Whether to get the top performers: True, or the worst: False. Default: True
+    @keyword print_times: Print the time it takes to execute the queries
     @return: a list the size of 'limit' that contains dicts of results
     @rtype: list
     '''
@@ -172,13 +197,17 @@ def get_edge_institution(subject, schema, connection, limit=5, get_best=True, ge
     inst_score_avgs = []
     inst_info_res = None
 
+    start_time = time.time()
     # run the query based on 'get_district'
     if get_district:
         inst_info_res = connection.execute(dist_inf_query)
     else:
         inst_info_res = connection.execute(sch_info_query)
+    tot_time = time.time() - start_time
 
+    count = 0
     # loop results and construct dicts
+    inst_info_start = time.time()
     for inst in inst_info_res:
         avg_score = get_inst_avg_score(inst[0], subject, schema, connection, get_district)
         res_dict = {SUBJECT: subject, AVG_SCORE: avg_score, STATE_NAME: inst[2]}
@@ -187,6 +216,13 @@ def get_edge_institution(subject, schema, connection, limit=5, get_best=True, ge
         res_dict[DIST_GUID] = inst[0] if get_district else inst[3]
         res_dict[DIST_NAME] = inst[1] if get_district else inst[4]
         inst_score_avgs.append(res_dict)
+        count += 1
+    inst_tot_time = time.time() - inst_info_start
+
+    # print time information
+    if print_times:
+        print('Took %.2fs to get all distinct %s GUIDs from dim_inst_hier for %s' % (tot_time, '"District"' if get_district else '"School"', subject))
+        print('Took %.2fs to get %d records from dim_inst_hier and calculate avg score' % (inst_tot_time, count))
 
     # sort results based on the average score and return sliced list
     sorted_institutions = sorted(inst_score_avgs, key=lambda k: k[AVG_SCORE])
@@ -206,6 +242,7 @@ def get_inst_avg_score(inst_guid, subject, schema, connection, get_district=True
     @rtype: float
     @return: The avg score
     '''
+
     inst_guid_str = DIST_GUID if get_district else SCH_GUID
     inst_score_query = '''
     SELECT {asmt_score}
@@ -227,7 +264,7 @@ def get_inst_avg_score(inst_guid, subject, schema, connection, get_district=True
 
     # get average
     avg = score_sum / count
-    return avg
+    return round(avg)
 
 
 def write_records_csv(result_list, headers, filename):
@@ -297,6 +334,26 @@ def output_records(headers, *result_lists, to_stdout=True, filename=None, file_s
         write_records_csv(all_results, headers, fname)
 
 
+def print_table_sizes(tables, connection, schema):
+    '''
+    print the table sizes for a list of tables
+    @param tables: the tables to print sizes for
+    @type tables: list
+    @param connection: sqlalchemy connection
+    @param schema: the name of the schema
+    '''
+    query = '''
+    SELECT count(*)
+    FROM {schema}.{table}
+    '''
+
+    for table in tables:
+        tab_query = query.format(schema=schema, table=table)
+        res = connection.execute(tab_query)
+        count = res.fetchall()[0][0]
+        print('Size of table %s: %d' % (table, count))
+
+
 def get_input_args():
     '''
     Creates parser for command line args
@@ -305,7 +362,7 @@ def get_input_args():
 
     parser = argparse.ArgumentParser(description='Script to get best or worst Students, Districts and Schools')
     parser.add_argument('--password', help='password for the user. default: edware2013', default='edware2013')
-    parser.add_argument('--schema', help='schema to use. default: mayuat_3', default='mayuat_3')
+    parser.add_argument('--schema', help='schema to use. default: mayuat_4', default='mayuat_4')
     parser.add_argument('-s', '--server', help='server path default: edwdbsrv1.poc.dum.edwdc.net', default='edwdbsrv1.poc.dum.edwdc.net')
     parser.add_argument('-d', '--database', help='name of the database. default: edware', default='edware')
     parser.add_argument('-u', '--username', help='username for the db. default: edware', default='edware')
@@ -336,6 +393,7 @@ if __name__ == '__main__':
     district_limit = args.districts
     student_results = []
     institution_results = []
+    print_table_sizes(['dim_student', 'fact_asmt_outcome', 'dim_inst_hier'], connection, schema)
 
     if not args.worst or args.bestworst:
         # Get top performers for students, districts and schools

@@ -398,10 +398,8 @@ def generate_list_of_scores(total, score_details, perf_lvl_dist, subject_name, g
     max_score = score_details[config_module.MAX]
     percentage = perf_lvl_dist[subject_name][str(grade)][config_module.PERCENTAGES]
     if pld_adjustment:
-        print('pld_adjustment', pld_adjustment)
-        print('old_prc', percentage)
         percentage = adjust_pld(percentage, pld_adjustment)
-        print('new_prc', percentage)
+
     # The cut_points in score details do not include min and max score. The score generator needs the min and max to be included
     cut_points = score_details[config_module.CUT_POINTS]
     inclusive_cut_points = [min_score]

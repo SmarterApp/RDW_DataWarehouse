@@ -11,7 +11,6 @@ def parse():
     parser.add_argument('-s', dest='source_csv', required=True, help="path and file name to the csv file for input")
     parser.add_argument('-o', dest='output_data_csv', required=True, help="path and file name to the csv file of output data")
     parser.add_argument('-m', dest='output_metadata_csv', default=2, help="path and file name to csv file of metadata for output")
-    parser.add_argument('-t', dest='apply_transformation_rules', default='True', help="apply transformation rules or not")
 
     args = parser.parse_args()
     # print(args)
@@ -19,10 +18,21 @@ def parse():
             'column_multiplier': args.column_multiplier,
             'source_csv': args.source_csv,
             'output_data_csv': args.output_data_csv,
-            'output_metadata_csv': args.output_metadata_csv,
-            'apply_transformation_rules': args.apply_transformation_rules}
+            'output_metadata_csv': args.output_metadata_csv}
 
     return conf
+
+
+def check_argument_constraints(conf):
+    if check_input_output_conflict(conf['source_csv'], conf['output_data_csv'], conf['output_metadata_csv']):
+        print("input csv file, output data csv file and output metadata csv file must be all different")
+        exit()
+    if not check_multiplier_greater_than_zero(conf['row_multiplier']):
+        print("row multiplier must be greater than zero")
+        exit()
+    if not check_multiplier_greater_than_zero(conf['column_multiplier']):
+        print("column multiplier must be greater than zero")
+        exit()
 
 
 def read_source_csv(csv_file, header_row_count):
@@ -78,16 +88,17 @@ def stretch_csv(source_csv_obj, row_multiplier=1, column_multiplier=1):
     return output_csv_obj
 
 
-def write_streched_data_csv(csv_obj, output_data_csv):
+def write_stretched_data_csv(csv_obj, output_data_csv):
     # print('Writing Streched data CSV to %s' % output_data_csv)
     with open(output_data_csv, 'w') as csv_file:
         csv_writer = csv.writer(csv_file)
         csv_writer.writerow(csv_obj['header'])
         for i in csv_obj['rows']:
             csv_writer.writerow(i)
+    return output_data_csv
 
 
-def write_streched_metadata_csv(csv_obj, output_metadata_csv):
+def write_stretched_metadata_csv(csv_obj, output_metadata_csv):
     # print('Wriring Streched metadata CSV to %s', output_metadata_csv)
     columns = [i for i in zip(csv_obj['header'], csv_obj['metadata'])]
     with open(output_metadata_csv, 'w') as csv_file:
@@ -97,7 +108,7 @@ def write_streched_metadata_csv(csv_obj, output_metadata_csv):
             csv_writer.writerow([i[0], i[1]])
 
 
-def check_input_output_conflic(source_csv, output_data_csv, output_metadata_csv):
+def check_input_output_conflict(source_csv, output_data_csv, output_metadata_csv):
     # need more sophisticated checks due to path travesals can break this, or symlink
     return (source_csv == output_data_csv) or (source_csv == output_metadata_csv) or (output_data_csv == output_metadata_csv)
 
@@ -124,21 +135,18 @@ def get_header_row_count(source_csv):
     return header_row_count
 
 
-if __name__ == '__main__':
-    conf = parse()
-    if check_input_output_conflic(conf['source_csv'], conf['output_data_csv'], conf['output_metadata_csv']):
-        print("input csv file, output data csv file and output metadata csv file must be all different")
-        exit()
-    if not check_multiplier_greater_than_zero(conf['row_multiplier']):
-        print("row multiplier must be greater than zero")
-        exit()
-    if not check_multiplier_greater_than_zero(conf['column_multiplier']):
-        print("column multiplier must be greater than zero")
-        exit()
+def generate_stretched_csv_file(conf):
+    check_argument_constraints(conf)
 
     header_row_count = get_header_row_count(conf['source_csv'])
     input_csv_obj = read_source_csv(conf['source_csv'], header_row_count)
-
     output_csv_obj = stretch_csv(input_csv_obj, conf['row_multiplier'], conf['column_multiplier'])
-    write_streched_data_csv(output_csv_obj, conf['output_data_csv'])
-    write_streched_metadata_csv(output_csv_obj, conf['output_metadata_csv'])
+    csv_file_path = write_stretched_data_csv(output_csv_obj, conf['output_data_csv'])
+    write_stretched_metadata_csv(output_csv_obj, conf['output_metadata_csv'])
+    return csv_file_path
+
+
+if __name__ == '__main__':
+    conf = parse()
+    generate_stretched_csv_file(conf)
+

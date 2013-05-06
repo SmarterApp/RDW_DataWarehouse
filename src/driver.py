@@ -18,22 +18,49 @@ DATAFILES = os.path.join(ROOT_DIRECTORY, 'datafiles')
 
 
 def start_pipeline(file_path):
+    '''
+    Begins the UDL Pipeline process by copying the file found at 'file_path' to the landing zone and
+    adding a task to the file_splitter queue
+
+    @param file_path: The file that gets uploaded to the "Landing Zone," beginning the UDL process
+    @type file_path: str
+    '''
+
+    # Create a unique name for the file when it is placed in the "Landing Zone"
     landing_zone_file_name = create_unique_file_name(file_path)
     landing_zone_file_path = os.path.join(LANDING_ZONE, landing_zone_file_name)
+    # Copy the file over, using the new (unique) filename
     shutil.copy(file_path, landing_zone_file_path)
+    # Now, add a task to the file splitter queue, passing in the path to the landing zone file
+    # and the directory to use when writing the split files
     udl2.W_file_splitter.task.apply_async([{'input_file':landing_zone_file_path, 'output_path': WORK_ZONE}], queue='Q_files_to_be_split')
     
     
 def create_unique_file_name(file_path):
+    '''
+    Given the path to a file, this function takes the file name, x, and appends a timestamp, t, to it, creating the name
+    x_t.  This is used to prevent overwriting existing files in the "Landing Zone."
+
+    @param file_path: The file whose name will be used as a template to create a new file name.
+    @type file_path: str
+    '''
+
+    # This will return the name of the file and the extension in a tuple
     file_name_and_ext = os.path.splitext(os.path.basename(file_path))
-    current_datetime = datetime.datetime.now()
-    time_stamp = int(time.mktime(current_datetime.timetuple()))
+    # Get the current time in seconds since the epoch
+    time_stamp = int(time.time())
     new_file_name = '%s_%d%s' % (file_name_and_ext[0], time_stamp, file_name_and_ext[1])
     return new_file_name
 
 
 if __name__ == '__main__':
+    '''
+    Main function that reads parameters and kicks off the UDL Process
+    '''
+
     parser = argparse.ArgumentParser()
+    # These parameters are used only when using the default file (seed.csv) and elastic_csv to dynamically create a csv file
+    # They are passed as parameters to generate_stretched_csv_file(...) and a newly created file (output.csv) is created within /datafiles/
     parser.add_argument('-r', dest='row_multiplier', required=False, type=int, default=1, help="number of times to muliply the rows in the seed file.")
     parser.add_argument('-c', dest='column_multiplier', required=False, type=int, default=1, help="number of times to multiply the columns in the seed file.")
     parser.add_argument('-s', dest='source_csv', required=False, default=os.path.join(DATAFILES, 'seed.csv'), help="path to the source file, default is seed.csv")

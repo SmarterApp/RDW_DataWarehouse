@@ -17,7 +17,7 @@ define [
       items.bar_width = barWidth
       
       #score indicator image width
-      score_indicator_width = 13
+      score_indicator_width = 15
       
       items.score_min_max_difference =  items.max_score - items.min_score
       
@@ -30,8 +30,8 @@ define [
       # Set position for right bracket
       items.asmt_score_max_range = Math.round((((items.score - items.min_score) + parseInt(items.confidence)) / items.score_min_max_difference) * items.bar_width) 
       
-      items.asmt_score_min_range = 294 if items.asmt_score_min_range >= 294 and items.asmt_score_min_range <= 300
-      items.asmt_score_max_range = 294 if items.asmt_score_max_range >= 294 and items.asmt_score_max_range <= 300
+      items.asmt_score_min_range = (barWidth - 6) if items.asmt_score_min_range >= (barWidth - 6) and items.asmt_score_min_range <= barWidth
+      items.asmt_score_max_range = (barWidth - 6) if items.asmt_score_max_range >= (barWidth - 6) and items.asmt_score_max_range <= barWidth
       
       # use mustache template to display the json data  
       output = Mustache.to_html edwareClaimsBarTemplate, items 

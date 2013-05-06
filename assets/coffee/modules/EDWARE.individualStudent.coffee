@@ -170,53 +170,7 @@ define [
                 html: true
                 container: "div"
                 placement: (tip, element) ->
-                  isWithinBounds = (elementPosition) ->
-                    boundTop < elementPosition.top and boundLeft < elementPosition.left and boundRight > (elementPosition.left + actualWidth) and boundBottom > (elementPosition.top + actualHeight)
-                
-                  $element = $(element)
-                  pos = $.extend({}, $element.offset(),
-                    width: element.offsetWidth
-                    height: element.offsetHeight
-                  )
-                  actualWidth = 400
-                  actualHeight = 117
-                  boundTop = $(document).scrollTop()
-                  boundLeft = $(document).scrollLeft()
-                  boundRight = boundLeft + $(window).width()
-                  boundBottom = boundTop + $(window).height()
-                  elementAbove =
-                    top: pos.top - actualHeight
-                    left: pos.left + pos.width / 2 - actualWidth / 2
-                
-                  elementBelow =
-                    top: pos.top + pos.height
-                    left: pos.left + pos.width / 2 - actualWidth / 2
-                
-                  elementLeft =
-                    top: pos.top + pos.height / 2 - actualHeight / 2
-                    left: pos.left - actualWidth
-                
-                  elementRight =
-                    top: pos.top + pos.height / 2 - actualHeight / 2
-                    left: pos.left + pos.width
-                
-                  above = isWithinBounds(elementAbove)
-                  below = isWithinBounds(elementBelow)
-                  left = isWithinBounds(elementLeft)
-                  right = isWithinBounds(elementRight)
-                  if above
-                    "top"
-                  else
-                    if below
-                      "bottom"
-                    else
-                      if left
-                        "left"
-                      else
-                        if right
-                          "right"
-                        else
-                          "left"
+                  edwareUtil.popupPlacement(element, 400, 276)
                 title: ->
                   e.parent().parent().find(".header").find("h4").html()
                 template: '<div class="popover claimsPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
@@ -236,7 +190,7 @@ define [
           role = edwareUtil.getRole data.user_info
           uid = edwareUtil.getUid data.user_info
           edwareUtil.renderFeedback(role, uid, "individual_student_report", feedbackData)
-
+  
   #
   # render Claim Score Relative Difference (arrows)
   #

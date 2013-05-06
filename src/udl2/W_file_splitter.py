@@ -16,8 +16,10 @@ def task(msg):
     # place holder for file_splitter
     # split_files = file_splitter_impl()
     # the input parameter for method split_file TBD
-    print('message is ', msg)
-    split_files = file_splitter.split_file(msg['input_file'])
+
+    # parse the message
+    parm = parse_message(msg)
+    split_files = file_splitter.split_file(msg['input_file'], row_limit=parm['row_limit'], parts=parm['parts'], output_path=parm['output_path'], keep_headers=parm['keep_headers'])
     number_of_files = len(split_files)
     time.sleep(random.random() * 10)
     logger.info(task.name)
@@ -42,3 +44,20 @@ def file_splitter_impl():
     time.sleep(3)
     print("Four sub files are generated...")
     return ['file1', 'file2', 'file3', 'file4']
+
+
+def parse_message(msg):
+    '''
+    Read input msg. If it contains any key defines in FILE_SPLITTER_CONF, use the value in msg.
+    Otherwise, use value defined in FILE_SPLITTER_CONF
+    '''
+    parm = udl2.celery.FILE_SPLITTER_CONF
+    if 'row_limit' in msg.keys():
+        parm['row_limit'] = msg['row_limit']
+    if 'parts' in msg.keys():
+        parm['parts'] = msg['parts']
+    if 'output_path' in msg.keys():
+        parm['output_path'] = msg['output_path']
+    if 'keep_headers' in msg.keys():
+        parm['keep_headers'] = msg['keep_headers']
+    return parm

@@ -1,6 +1,7 @@
 from udl2.W_file_splitter import task
 import argparse
 import os
+from udl2.celery import FILE_SPLITTER_CONF
 
 
 def main():
@@ -12,7 +13,7 @@ def main():
         if int(parm['parts']) < 0:
             print("The value for parts should be a positive integer")
             exit()
-        if int(parm['number_of_rows']) < 0:
+        if int(parm['row_limit']) < 0:
             print("The value for number of rows should be a positive integer")
             exit()
         if not is_valid_file(parm['input_file']):
@@ -30,16 +31,18 @@ def main():
 
 def get_parameters():
     parser = argparse.ArgumentParser(description='File Splitter Worker')
-    parser.add_argument("-p", "--parts", type=int, default=0, help="number of parts to be splitted")
-    parser.add_argument("-n", "--number_of_rows", type=int, default=100, help="number of rows in each sub file")
+    parser.add_argument("-p", "--parts", type=int, default=FILE_SPLITTER_CONF['parts'], help="number of parts to be splitted")
+    parser.add_argument("-r", "--row_limit", type=int, default=FILE_SPLITTER_CONF['row_limit'], help="number of rows in each sub file")
     parser.add_argument("-i", "--input_file", required=True, help="input file")
-    parser.add_argument("-o", "--output_path", required=True, help="output directory")
+    parser.add_argument("-o", "--output_path", default=FILE_SPLITTER_CONF['output_path'], help="output directory")
+    parser.add_argument("-k", "--keep_headers", default=FILE_SPLITTER_CONF['keep_headers'], help="keep headers in split files or not")
     args = parser.parse_args()
     conf = {
             'parts': args.parts,
-            'number_of_rows': args.number_of_rows,
+            'row_limit': args.row_limit,
             'input_file': args.input_file,
-            'output_path': args.output_path
+            'output_path': args.output_path,
+            'keep_headers': args.keep_headers
             }
     print(conf)
     return conf

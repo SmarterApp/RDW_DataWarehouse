@@ -17,7 +17,7 @@ define [
       items.bar_width = barWidth
       
       #score indicator image width
-      score_indicator_width = 15
+      score_indicator_width = 13
       
       items.score_min_max_difference =  items.max_score - items.min_score
       

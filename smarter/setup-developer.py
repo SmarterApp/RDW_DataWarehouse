@@ -9,7 +9,8 @@ here = os.path.abspath(os.path.dirname(__file__))
 dependencies = [
     'edapi',
     'edschema',
-    'edauth']
+    'edauth',
+    'pdfmaker']
 
 
 for dependency in dependencies:

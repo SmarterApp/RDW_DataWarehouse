@@ -63,6 +63,8 @@ common:
     mode: dev
     # Run npm update (dev mode only)
     run.npm.update: true
+    # Start celery server for pdf
+    pdfmaker.start.celery: true
 
   '[server:main]':
     use: 'egg:waitress#main'

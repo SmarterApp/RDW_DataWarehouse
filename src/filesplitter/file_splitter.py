@@ -43,8 +43,9 @@ def split_file(file_name, delimiter=',', row_limit=10000, parts=0, output_path='
             current_limit = row_limit * current_piece
             current_out_path = os.path.join(output_dir, output_name_template  % current_piece)
             current_out_writer = csv.writer(open(current_out_path, 'w'), delimiter=delimiter)
-            if current_piece == 1: headers = next(reader)
-            if keep_headers:
+            if current_piece == 1 and keep_headers == 1: 
+            	headers = row
+            elif keep_headers:
                 current_out_writer.writerow(headers)
         current_out_writer.writerow(row)
     

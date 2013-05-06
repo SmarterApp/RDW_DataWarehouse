@@ -27,6 +27,7 @@ AVG_SCORE = 'avg_score'
 INST_TYPE = 'inst_type'
 GUID = 'guid'
 NAME = 'name'
+BESTWORST = 'best_worst'
 
 
 def get_edge_asmt_outcomes(connection, subject, schema, limit=20, get_best=True, print_times=True):
@@ -73,6 +74,7 @@ def get_edge_asmt_outcomes(connection, subject, schema, limit=20, get_best=True,
         row_dict[DIST_GUID] = res[5]
         row_dict[SCH_GUID] = res[6]
         row_dict[ASMT_GRADE] = res[7]
+        row_dict[BESTWORST] = 'best' if get_best else 'worst'
         res_list.append(row_dict)
 
     # print time information
@@ -215,6 +217,7 @@ def get_edge_institution(subject, schema, connection, limit=5, get_best=True, ge
         res_dict[SCH_NAME] = None if get_district else inst[1]
         res_dict[DIST_GUID] = inst[0] if get_district else inst[3]
         res_dict[DIST_NAME] = inst[1] if get_district else inst[4]
+        res_dict[BESTWORST] = 'best' if get_best else 'worst'
         inst_score_avgs.append(res_dict)
         count += 1
     inst_tot_time = time.time() - inst_info_start
@@ -438,9 +441,9 @@ if __name__ == '__main__':
     to_csv = not args.csv
 
     # output records for students
-    student_rec_headers = [ASMT_SUB, ASMT_SCORE, F_NAME, L_NAME, STATE_NAME, DIST_NAME, SCH_NAME, ASMT_GRADE]
+    student_rec_headers = [ASMT_SUB, ASMT_SCORE, F_NAME, L_NAME, STATE_NAME, DIST_NAME, SCH_NAME, ASMT_GRADE, BESTWORST]
     output_records(student_rec_headers, student_results, to_stdout=to_csv, filename=args.filename, file_suffix='_students')
 
     # output records for institutions
-    inst_rec_headers = [SUBJECT, STATE_NAME, DIST_NAME, SCH_NAME, AVG_SCORE]
+    inst_rec_headers = [SUBJECT, STATE_NAME, DIST_NAME, SCH_NAME, AVG_SCORE, BESTWORST]
     output_records(inst_rec_headers, institution_results, to_stdout=to_csv, filename=args.filename, file_suffix='_institutions')

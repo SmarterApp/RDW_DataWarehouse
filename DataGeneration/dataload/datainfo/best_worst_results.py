@@ -149,26 +149,37 @@ def get_student_name(student_guid, schema, connection):
     return (name[0], name[1])
 
 
-def get_institution_info(school_guid, schema, connection):
+def get_institution_info(inst_guid, schema, connection, is_school=True):
     '''
     Get additional information about an institution for a given student
-    @param school_guid: The guid to the school to get more information about
+    @param inst_guid: The guid to the school to get more information about
     @param schema: schema name
     @param connection: sqlalchemy connection
     @return: the district_name, school_name, and state_name as a tuple
     @rtype: tuple
     '''
 
-    # TODO: Change to use constants
-    query = '''
+    sch_query = '''
     SELECT {district_name}, {school_name}, {state_name}
     FROM {schema}.dim_inst_hier
     WHERE school_guid = '{sch_guid}'
-    '''.format(schema=schema, sch_guid=school_guid, district_name=DIST_NAME, state_name=STATE_NAME, school_name=SCH_NAME)
+    '''.format(schema=schema, sch_guid=inst_guid, district_name=DIST_NAME, state_name=STATE_NAME, school_name=SCH_NAME)
 
-    result = connection.execute(query)
-    names = result.fetchall()[0]
-    return (names[0], names[1], names[2])
+    dist_query = '''
+    SELECT {district_name}, {state_name}
+    FROM {schema}.dim_inst_hier
+    WHERE {dist_guid_str} = '{dist_guid}'
+    '''.format(schema=schema, dist_guid=inst_guid, district_name=DIST_NAME, state_name=STATE_NAME, school_name=SCH_NAME, dist_guid_str=DIST_GUID)
+
+    result = None
+    if is_school:
+        result = connection.execute(sch_query)
+        names = result.fetchall()[0]
+        return (names[0], names[1], names[2])
+    else:
+        result = connection.execute(dist_query)
+        names = result.fetchall()[0]
+        return (names[0], None, names[1])
 
 
 def get_edge_institution(subject, schema, connection, limit=5, get_best=True, get_district=True, print_times=True):
@@ -184,17 +195,32 @@ def get_edge_institution(subject, schema, connection, limit=5, get_best=True, ge
     @rtype: list
     '''
 
-    # query to get all schools
-    sch_info_query = '''
-    SELECT DISTINCT {inst_guid_str}, {inst_name_str}, {state_name}, {dist_guid}, {dist_name}
-    FROM {schema}.dim_inst_hier
-    '''.format(inst_name_str=SCH_NAME, inst_guid_str=SCH_GUID, dist_name=DIST_NAME, dist_guid=DIST_GUID, schema=schema, state_name=STATE_NAME)
+    # Set order to get bests
+    order = 'DESC'
+    if not get_best:
+        # Set order to get worsts
+        order = 'ASC'
 
-    # query to get all districts
-    dist_inf_query = '''
-    SELECT DISTINCT {inst_guid_str}, {inst_name_str}, {state_name}
-    FROM {schema}.dim_inst_hier
-    '''.format(inst_guid_str=DIST_GUID, inst_name_str=DIST_NAME, schema=schema, state_name=STATE_NAME)
+    # avg query
+    avg_query_school = '''
+    SELECT AVG({asmt_score}) as av, {school_guid}, {dist_guid}
+    FROM {schema}.fact_asmt_outcome fact, {schema}.dim_asmt asmt
+    WHERE fact.asmt_rec_id = asmt.asmt_rec_id
+        and asmt.asmt_subject = '{subject}'
+    GROUP BY {school_guid}, {dist_guid}
+    ORDER BY av {order}
+    LIMIT {limit}
+    '''.format(asmt_score=ASMT_SCORE, school_guid=SCH_GUID, dist_guid=DIST_GUID, schema=schema, subject=subject, order=order, limit=limit, state_name=STATE_NAME)
+
+    avg_query_dist = '''
+    SELECT AVG({asmt_score}) as av, {dist_guid}
+    FROM {schema}.fact_asmt_outcome fact, {schema}.dim_asmt asmt
+    WHERE fact.asmt_rec_id = asmt.asmt_rec_id
+        and asmt.asmt_subject = '{subject}'
+    GROUP BY {dist_guid}
+    ORDER BY av {order}
+    LIMIT {limit}
+    '''.format(asmt_score=ASMT_SCORE, dist_guid=DIST_GUID, schema=schema, subject=subject, order=order, limit=limit, state_name=STATE_NAME)
 
     inst_score_avgs = []
     inst_info_res = None
@@ -202,37 +228,29 @@ def get_edge_institution(subject, schema, connection, limit=5, get_best=True, ge
     start_time = time.time()
     # run the query based on 'get_district'
     if get_district:
-        inst_info_res = connection.execute(dist_inf_query)
+        inst_info_res = connection.execute(avg_query_dist)
     else:
-        inst_info_res = connection.execute(sch_info_query)
+        inst_info_res = connection.execute(avg_query_school)
     tot_time = time.time() - start_time
 
-    count = 0
-    # loop results and construct dicts
-    inst_info_start = time.time()
+    # loop to get additional info
     for inst in inst_info_res:
-        avg_score = get_inst_avg_score(inst[0], subject, schema, connection, get_district)
-        res_dict = {SUBJECT: subject, AVG_SCORE: avg_score, STATE_NAME: inst[2]}
-        res_dict[SCH_GUID] = None if get_district else inst[0]
-        res_dict[SCH_NAME] = None if get_district else inst[1]
-        res_dict[DIST_GUID] = inst[0] if get_district else inst[3]
-        res_dict[DIST_NAME] = inst[1] if get_district else inst[4]
+        res_dict = {SUBJECT: subject, AVG_SCORE: round(inst[0])}
+        is_school = not get_district
+        inst_names = get_institution_info(inst[1], schema, connection, is_school=is_school)
+        res_dict[STATE_NAME] = inst_names[2]
+        res_dict[SCH_NAME] = None if get_district else inst_names[1]
+        res_dict[SCH_GUID] = None if get_district else inst[1]
+        res_dict[DIST_GUID] = inst[1] if get_district else inst[2]
+        res_dict[DIST_NAME] = inst_names[0]
         res_dict[BESTWORST] = 'best' if get_best else 'worst'
         inst_score_avgs.append(res_dict)
-        count += 1
-    inst_tot_time = time.time() - inst_info_start
 
     # print time information
     if print_times:
         print('Took %.2fs to get all distinct %s GUIDs from dim_inst_hier for %s' % (tot_time, '"District"' if get_district else '"School"', subject))
-        print('Took %.2fs to get %d records from dim_inst_hier and calculate avg score' % (inst_tot_time, count))
 
-    # sort results based on the average score and return sliced list
-    sorted_institutions = sorted(inst_score_avgs, key=lambda k: k[AVG_SCORE])
-    if get_best:
-        sorted_institutions.reverse()
-        return sorted_institutions[:limit]
-    return sorted_institutions[:limit]
+    return inst_score_avgs
 
 
 def get_inst_avg_score(inst_guid, subject, schema, connection, get_district=True):

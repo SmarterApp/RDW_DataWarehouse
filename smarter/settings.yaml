@@ -271,7 +271,7 @@ uat:
     class: logging.handlers.SysLogHandler
     args: '(''/dev/log'', handlers.SysLogHandler.LOG_LOCAL0)'
     level: WARN
-    formatter: generic
+    formatter: json
   '[logger_smarter]':
     level: WARN
     handlers: syslog

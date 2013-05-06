@@ -6,6 +6,7 @@ from celery.utils.log import get_task_logger
 import filesplitter.file_splitter as file_splitter
 import time
 import random
+import datetime
 
 
 logger = get_task_logger(__name__)
@@ -13,16 +14,24 @@ logger = get_task_logger(__name__)
 
 @udl2.celery.celery.task(name="udl2.W_file_splitter.task")
 def task(msg):
-    # place holder for file_splitter
-    # split_files = file_splitter_impl()
-    # the input parameter for method split_file TBD
-
+    '''
+    This is the celery task for splitting file
+    '''
     # parse the message
     parm = parse_message(msg)
+
+    # do actual work of splitting file
+    start_time = datetime.datetime.now()
     split_files = file_splitter.split_file(msg['input_file'], row_limit=parm['row_limit'], parts=parm['parts'], output_path=parm['output_path'], keep_headers=parm['keep_headers'])
+    finish_time = datetime.datetime.now()
+    spend_time = finish_time - start_time
+    print("Done in -- %s, number of sub files %i" % (str(spend_time), len(split_files)))
+
     number_of_files = len(split_files)
     time.sleep(random.random() * 10)
     logger.info(task.name)
+
+    # for each of sub file, call do loading task
     for i in range(0, number_of_files):
         udl2.W_file_loader.task.apply_async([('part %i of %i file %s passed after ' + task.name) % (i + 1, number_of_files, split_files[i])],
                                                queue='Q_files_to_be_loaded',
@@ -48,7 +57,7 @@ def file_splitter_impl():
 
 def parse_message(msg):
     '''
-    Read input msg. If it contains any key defines in FILE_SPLITTER_CONF, use the value in msg.
+    Read input msg. If it contains any key defined in FILE_SPLITTER_CONF, use the value in msg.
     Otherwise, use value defined in FILE_SPLITTER_CONF
     '''
     parm = udl2.celery.FILE_SPLITTER_CONF

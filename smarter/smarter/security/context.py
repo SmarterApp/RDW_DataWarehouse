@@ -10,10 +10,12 @@ from smarter.database.connector import SmarterDBConnection
 
 
 def select_with_context(columns=None, whereclause=None, from_obj=[], **kwargs):
+    # Maps to function that returns where cause for query
     context_mapping = {'TEACHER': append_teacher_context,
                        'STUDENT': append_student_context,
                        'PARENT': append_parent_context}
 
+    # Maps to function that queries database for context
     cacheable_context_mapping = {'TEACHER': get_teacher_cacheable_context,
                                  'STUDENT': get_student_cacheable_context,
                                  'PARENT': get_parent_cacheable_context}
@@ -94,5 +96,6 @@ def append_student_context(connector, query, context):
 
 
 def append_parent_context(connector, query, context):
+    # TODO
     fact_asmt_outcome = connector.get_table('fact_asmt_outcome')
     return query.where(fact_asmt_outcome.c.student_guid.in_(context))

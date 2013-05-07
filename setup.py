@@ -27,5 +27,6 @@ setup(name='udl2',
       url='https://github.wgenhq.net/Ed-Ware-SBAC/edware-udl-2.0/',
       scripts=scripts,
       requires=requires,
-      
+      data_files=[('/opt/wgen/edware-udl/logs', ['logs/*']),
+                  ('/opt/wgen/edware-udl/etc', ['conf'])]
 ) 

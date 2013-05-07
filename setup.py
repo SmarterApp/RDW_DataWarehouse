@@ -17,13 +17,15 @@ setup(name='udl2',
       description="Edware's Universal Data Loader",
       author="Amplify Insight Edware Team",
       author_email="edwaredev@wgen.net",
-      package_dir={'udl2':'src/udl2',
+      packages=['udl2', 'elastic_csv', 'fileloader', 'filesplitter', 'foreign_data_wrapper'],
+      package_dir={'udl2':'src/udl2', 
                    'elastic_csv':'src/elastic_csv',
                    'fileloader':'src/fileloader',
                    'filesplitter':'src/filesplitter',
                    'foreign_data_wrapper':'src/foreign_data_wrapper'},
-      packages=['udl2', 'elastic_csv', 'fileloader', 'filesplitter', 'foreign_data_wrapper'],
+      package_data={'udl2': ['datafiles/*.csv']},
       url='https://github.wgenhq.net/Ed-Ware-SBAC/edware-udl-2.0/',
       scripts=scripts,
-      requires=requires
+      requires=requires,
+      
 ) 

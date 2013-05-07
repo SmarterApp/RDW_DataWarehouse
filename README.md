@@ -10,6 +10,8 @@ Python >= 3.3
 
 Postgresql >= 9.2
 
+RabbitMQ >= 3.0.4
+
 celery >= 3.0.19
 
 anyjson >= 0.3.3

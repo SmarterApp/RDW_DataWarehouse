@@ -24,7 +24,6 @@ def connect_db(conf_args):
     '''
     # TODO:define conf_args content
     db_string = DBDRIVER + '://{db_user}:{db_password}@{db_host}/{db_name}'.format(**conf_args)
-    print('*********', db_string)
     engine = create_engine(db_string)
     db_connection = engine.connect()
     return db_connection, engine
@@ -33,6 +32,7 @@ def connect_db(conf_args):
 def check_setup(staging_table, engine, conn):
     # check if staging table is defined or not
     if not engine.dialect.has_table(conn, staging_table):
+        print("There is no staging table -- ", staging_table)
         return False
     # TODO:check if fdw is defined or not
     return True
@@ -68,10 +68,9 @@ def extract_csv_header(csv_file):
         reader = csv.reader(csv_obj)
         header_names = next(reader)
         header_types = ['text'] * len(header_names)
-    # same role as fields mapping?
     formatted_header_names = [canonicalize_header_field(name) for name in header_names]
-    print("formatter header names -- ", formatted_header_names)
-    print("header types           -- ", header_types)
+    # print("formatter header names -- ", formatted_header_names)
+    # print("header types           -- ", header_types)
     return formatted_header_names, header_types
 
 
@@ -119,6 +118,7 @@ def import_via_fdw(conn, apply_rules, header_names, header_types, staging_schema
 
 
 def load_data_process(conn, conf):
+    # TODO: need to change if the header is not in the csv_file
     header_names, header_types = extract_csv_header(conf['csv_file'])
 
     # create FDW table
@@ -166,6 +166,7 @@ if __name__ == '__main__':
             'csv_file': '/Users/lichen/Documents/Edware/sandboxes/ejen/US14726/UDL-test-data-Block-of-100-records-WITHOUT-datatype-errors-v3-realdata.csv',
             'metadata_file': '/Users/lichen/Documents/Edware/sandboxes/ejen/US14726/UDL-test-data-Block-of-100-records-WITHOUT-datatype-errors-v3-metadata.csv',
             'csv_table': 'UDL_test_data_block_of_100_records_with_datatype_errors_v3',
+
             'db_host': 'localhost',
             'db_port': '5432',
             'db_user': 'postgres',

@@ -18,7 +18,7 @@ def create_ddl_csv_query(header_names, header_types, csv_file, csv_schema, csv_t
 
 
 def drop_ddl_csv_query(csv_schema, csv_table):
-    ddl = "DROP FOREIGN TABLE IF EXISTS {csv_schema}.{csv_table} ".format(csv_schema, csv_table)
+    ddl = "DROP FOREIGN TABLE IF EXISTS {csv_schema}.{csv_table} ".format(csv_schema=csv_schema, csv_table=csv_table)
     return ddl
 
 

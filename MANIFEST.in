@@ -1,3 +1,6 @@
-recursive-include udl2 *.py
+recursive-include udl2 *.py *.csv
 recursive-include scripts *.py *.sh
 include *.txt
+recursive-include logs *.log
+recursive-include conf *.py *.cfg *.ini
+recursive-include zones *.csv

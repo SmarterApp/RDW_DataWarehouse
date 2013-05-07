@@ -30,6 +30,7 @@ define [
       # Set position for right bracket
       items.asmt_score_max_range = Math.round((((items.score - items.min_score) + parseInt(items.confidence)) / items.score_min_max_difference) * items.bar_width) 
       
+      # To ensure we are not displaying half bracket
       items.asmt_score_min_range = (barWidth - 6) if items.asmt_score_min_range >= (barWidth - 6) and items.asmt_score_min_range <= barWidth
       items.asmt_score_max_range = (barWidth - 6) if items.asmt_score_max_range >= (barWidth - 6) and items.asmt_score_max_range <= barWidth
       

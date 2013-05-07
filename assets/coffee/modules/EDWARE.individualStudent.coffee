@@ -126,10 +126,13 @@ define [
             
             claim.claim_score_weight = claimScoreWeightArray[claim.assessmentUC][j]
             
-            claimContent = content.claims[items.asmt_subject][claim.indexer]
+            claimContent = content.claims[items.asmt_subject]["description"][claim.indexer]
             # if the content is more than character limits then truncate the string and add ellipsis (...)
             claimContent = edwareUtil.truncateContent(claimContent, edwareUtil.getConstants("claims_characterLimits"))
             claim.desc = claimContent
+            
+            claim.score_desc = content.claims[items.asmt_subject]["scoreTooltip"][claim.indexer]
+            
             j++
           
           i++
@@ -179,7 +182,7 @@ define [
               .popover("show")
             mouseleave: ->
               e = $(this)
-              e.popover("hide")
+              #e.popover("hide")
           , ".claims .arrowBox"
         
         # Generate footer links

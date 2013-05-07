@@ -1,5 +1,6 @@
-from ElasticCsv import parse, check_input_output_conflic, check_multiplier_greater_than_zero, read_source_csv, stretch_csv, get_header_row_count, write_streched_data_csv, write_streched_metadata_csv
-from FdwCsvLoader import test_import
+from elastic_csv.elastic_csv import parse, check_input_output_conflict, check_multiplier_greater_than_zero, read_source_csv, \
+    stretch_csv, get_header_row_count
+from foreign_data_wrapper.FdwCsvLoader import test_import
 import datetime
 import os
 
@@ -9,7 +10,7 @@ NUM_OF_ROW_BASE = 100
 def get_one_scaled_csv(row_multiplier):
     conf = parse()
     conf['row_multiplier'] = int(row_multiplier)
-    if check_input_output_conflic(conf['source_csv'], conf['output_data_csv'], conf['output_metadata_csv']):
+    if check_input_output_conflict(conf['source_csv'], conf['output_data_csv'], conf['output_metadata_csv']):
         print("input csv file, output data csv file and output metadata csv file must be all different")
         exit()
     if not check_multiplier_greater_than_zero(conf['row_multiplier']):

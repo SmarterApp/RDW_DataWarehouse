@@ -4,7 +4,6 @@ import udl2.W_file_splitter
 import shutil
 import os
 import argparse
-import datetime
 import time
 
 
@@ -30,6 +29,8 @@ def start_pipeline(file_path):
     landing_zone_file_name = create_unique_file_name(file_path)
     landing_zone_file_path = os.path.join(LANDING_ZONE, landing_zone_file_name)
     # Copy the file over, using the new (unique) filename
+    print('filepath: ' + file_path)
+    print('landing_zone_file_path: ' + landing_zone_file_path)
     shutil.copy(file_path, landing_zone_file_path)
     # Now, add a task to the file splitter queue, passing in the path to the landing zone file
     # and the directory to use when writing the split files
@@ -64,15 +65,19 @@ if __name__ == '__main__':
     parser.add_argument('-r', dest='row_multiplier', required=False, type=int, default=1, help="number of times to muliply the rows in the seed file.")
     parser.add_argument('-c', dest='column_multiplier', required=False, type=int, default=1, help="number of times to multiply the columns in the seed file.")
     parser.add_argument('-s', dest='source_csv', required=False, default=os.path.join(DATAFILES, 'seed.csv'), help="path to the source file, default is seed.csv")
-    parser.add_argument('-o', dest='output_data_csv', required=False, default=os.path.join(DATAFILES, 'output.csv'), help="path to the file that will contain the newly generated csv data.")
+    parser.add_argument('-o', dest='output_data_csv', required=False, default=os.path.join(DATAFILES, 'test_file.csv'), help="path to the file that will contain the newly generated csv data.")
+    parser.add_argument('-m', dest='output_metadata_csv', default=os.path.join(DATAFILES, 'test_file_metadata.csv'), help="path and file name to csv file of metadata for output")
+    parser.add_argument('-t', dest='apply_transformation_rules', default='True', help="apply transformation rules or not")
     args = parser.parse_args()
 
     if args.source_csv == str(os.path.join(DATAFILES, 'seed.csv')):
         conf = {'row_multiplier': args.row_multiplier,
                 'column_multiplier': args.column_multiplier,
                 'source_csv': args.source_csv,
-                'output_data_csv': args.output_data_csv}
-        csv_file_path = generate_stretched_csv_file(conf)
+                'output_data_csv': args.output_data_csv,
+                'output_metadata_csv': args.output_metadata_csv,
+                'apply_transformation_rules': args.apply_transformation_rules}
+        csv_file_path = generate_stretched_csv_file(conf)[0]
     else:
         csv_file_path = args.source_csv
 

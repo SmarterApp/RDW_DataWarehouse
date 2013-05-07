@@ -182,7 +182,7 @@ define [
               .popover("show")
             mouseleave: ->
               e = $(this)
-              #e.popover("hide")
+              e.popover("hide")
           , ".claims .arrowBox"
         
         # Generate footer links

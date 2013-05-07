@@ -133,6 +133,11 @@ def generate_ed_metadata(schema_name=None, bind=None):
     Index('dim_staff_id_currentx', staff.c.staff_guid, staff.c.most_recent, unique=False)
     Index('dim_staff_dim_inst_hier_idx', staff.c.state_code, staff.c.district_guid, staff.c.school_guid, staff.c.from_date, staff.c.to_date, unique=False)
 
+    user_mapping = Table('user_mapping', metadata,
+                         Column('user_id', String(50), primary_key=True),
+                         Column('staff_guid', String(50), nullable=False),
+                         )
+
     assessment = Table('dim_asmt', metadata,
                        Column('asmt_rec_id', String(50), primary_key=True),
                        Column('asmt_guid', String(50), nullable=False),

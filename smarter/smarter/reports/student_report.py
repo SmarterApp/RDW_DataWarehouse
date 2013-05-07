@@ -16,8 +16,45 @@ from edapi.logging import audit_event
 from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
 from smarter.reports.helpers.assessments import get_cut_points, \
     get_overall_asmt_interval, get_claims
+from pyramid.security import authenticated_userid
+import pyramid
 
 REPORT_NAME = 'individual_student_report'
+
+
+def __prepare_query_with_context(connector, student_guid, assessment_guid):
+    fact_asmt_outcome = connector.get_table('fact_asmt_outcome')
+
+    # get role and context
+    user = authenticated_userid(pyramid.threadlocal.get_current_request())
+    roles = user.__dict__['_User__info']['roles']
+    user_id = user.__dict__['_User__info']['uid']
+
+    # get staff guid with user id
+    user_mapping = connector.get_table('user_mapping')
+    guid_query = select([user_mapping.c.staff_guid],
+                        from_obj=[user_mapping])
+    guid_query = guid_query.where(user_mapping.c.user_id == user_id)
+    result = connector.get_result(guid_query)
+    guid = result[0]['staff_guid']
+
+    # get context
+    dim_staff = connector.get_table('dim_staff')
+    context_query = select([dim_staff.c.section_guid],
+                           from_obj=[dim_staff])
+    context_query = context_query.where(dim_staff.c.staff_guid == guid)
+    result = connector.get_result(context_query)
+    context = []
+    context.append(result[0]['section_guid'])
+
+    # get query without security context
+    query = __prepare_query(connector, student_guid, assessment_guid)
+
+    # based on role, add security context to query
+    if ('TEACHER' in roles):
+        query = query.where(fact_asmt_outcome.c.section_guid.in_(context))
+
+    return query
 
 
 def __prepare_query(connector, student_guid, assessment_guid):
@@ -176,7 +213,7 @@ def get_student_report(params):
         assessment_guid = str(params['assessmentGuid'])
 
     with SmarterDBConnection() as connection:
-        query = __prepare_query(connection, student_guid, assessment_guid)
+        query = __prepare_query_with_context(connection, student_guid, assessment_guid)
 
         result = connection.get_result(query)
         if result:

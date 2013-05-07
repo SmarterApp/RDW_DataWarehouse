@@ -157,8 +157,16 @@ define [
         element.showPercentage = true
       else
         element.showPercentage = false
+      
+      # format nubmers
+      element.count = formatNumber element.count
       i++
     intervals
+    
+  # Add comma as thousand separator to numbers
+  # Return 0 if parameter is undefined
+  formatNumber = (num) ->
+    if num then num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") else 0
   
   # Format the summary data for summary row rendering purposes
   formatSummaryData = (summaryData, summaryRowName) ->

@@ -15,20 +15,6 @@ def get_db_conf():
     Get database conf parameters in configuration file
     '''
     # TODO: need to get conf options from conf file
-    conf = {
-            'csv_file': '/Users/lichen/Documents/Edware/sandboxes/ejen/US14726/UDL-test-data-Block-of-100-records-WITHOUT-datatype-errors-v3-realdata.csv',
-            'metadata_file': '/Users/lichen/Documents/Edware/sandboxes/ejen/US14726/UDL-test-data-Block-of-100-records-WITHOUT-datatype-errors-v3-metadata.csv',
-            'csv_table': 'UDL_test_data_block_of_100_records_with_datatype_errors_v1',
-            'db_host': 'localhost',
-            'db_port': '5432',
-            'db_user': 'postgres',
-            'db_name': 'fdw_test',
-            'db_password': '3423346',
-            'csv_schema': 'public',
-            'fdw_server': 'udl_import',
-            'staging_schema': 'public',
-            'staging_table': 'tmp'
-    }
     return conf
 
 
@@ -104,26 +90,32 @@ def create_fdw_tables(conn, header_names, header_types, csv_file, csv_schema, cs
     try:
         conn.execute(drop_csv_ddl)
         conn.execute(create_csv_ddl)
-    except:
-        print()
+    except Exception as e:
+        print('Exception in creating fdw tables --', e)
+        # add rollback here
 
 
-def get_staging_tables(conn):
+def get_staging_tables(conn, header_names, header_types, csv_file, staging_schema, staging_table):
     # can be replaced by get staging definition from other place
-    create_staging_table = queries.create_staging_tables_query()
-    drop_staging_table = queries.drop_staging_tables_query()
+    create_staging_table = queries.create_staging_tables_query(header_types, header_names, csv_file, staging_schema, staging_table)
+    drop_staging_table = queries.drop_staging_tables_query(staging_schema, staging_table)
     # execute queries
-    conn.execute(drop_staging_table)
-    conn.execute(create_staging_table)
+    try:
+        conn.execute(drop_staging_table)
+        conn.execute(create_staging_table)
+    except Exception as e:
+        print('Exception in getting staging table--', e)
+        # add rollback here
 
 
-def import_via_fdw(conn, apply_rules, header_types, formatted_header_names, pre_staging_schema, pre_staging_table, csv_file_with_type_errors, csv_schema, csv_table_with_type_errors):
-    insert_into_staging_table = queries.create_inserting_into_staging_query()
+def import_via_fdw(conn, apply_rules, header_names, header_types, staging_schema, staging_table, csv_schema, csv_table):
+    insert_into_staging_table = queries.create_inserting_into_staging_query(apply_rules, header_names, header_types, staging_schema, staging_table, csv_schema, csv_table)
+    print(insert_into_staging_table)
     try:
         conn.execute(insert_into_staging_table)
     except Exception as e:
         print('Exception -- ', e)
-        conn.rollback()
+        # conn.rollback()
 
 
 def load_data_process(conn, conf):
@@ -132,14 +124,15 @@ def load_data_process(conn, conf):
     # create FDW table
     # prepare queries
     create_fdw_tables(conn, header_names, header_types, conf['csv_file'], conf['csv_schema'], conf['csv_table'], conf['fdw_server'])
-    return
+
     # get staging tables
-    # TODO:need to define the approach to get the staging table definition
-    staging_table = get_staging_tables()
+    # TODO: need to define the approach to get the staging table definition.
+    # temporary: hard code to create one if not here
+    get_staging_tables(conn, header_names, header_types, conf['csv_file'], conf['staging_schema'], conf['staging_table'])
 
     # do transform and import
     start_time = datetime.datetime.now()
-    import_via_fdw(staging_table)
+    import_via_fdw(conn, conf['apply_rules'], header_names, header_types, conf['staging_schema'], conf['staging_table'], conf['csv_schema'], conf['csv_table'])
     finish_time = datetime.datetime.now()
     spend_time = finish_time - start_time
     print("\nSpend time for loading file --", spend_time)
@@ -160,6 +153,7 @@ def load_file(conf):
     if valid_setup:
         # start loading file process
         time_for_load = load_data_process(conn, conf)
+        print("Time for load file", time_for_load)
     else:
         # error handle
         print('error in setup')
@@ -167,15 +161,11 @@ def load_file(conf):
     # close db connection
     conn.close()
 
-    # records the time
-    return time_for_load
-
-
 if __name__ == '__main__':
     conf = {
             'csv_file': '/Users/lichen/Documents/Edware/sandboxes/ejen/US14726/UDL-test-data-Block-of-100-records-WITHOUT-datatype-errors-v3-realdata.csv',
             'metadata_file': '/Users/lichen/Documents/Edware/sandboxes/ejen/US14726/UDL-test-data-Block-of-100-records-WITHOUT-datatype-errors-v3-metadata.csv',
-            'csv_table': 'UDL_test_data_block_of_100_records_with_datatype_errors_v1',
+            'csv_table': 'UDL_test_data_block_of_100_records_with_datatype_errors_v3',
             'db_host': 'localhost',
             'db_port': '5432',
             'db_user': 'postgres',
@@ -184,7 +174,8 @@ if __name__ == '__main__':
             'csv_schema': 'public',
             'fdw_server': 'udl_import',
             'staging_schema': 'public',
-            'staging_table': 'tmp'
+            'staging_table': 'tmp',
+            'apply_rules': False
     }
     start_time = datetime.datetime.now()
     load_file(conf)

@@ -1,0 +1,3 @@
+recursive-include udl2 *.py
+recursive-include scripts *.py *.sh
+include *.txt

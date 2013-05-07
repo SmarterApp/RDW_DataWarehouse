@@ -18,7 +18,7 @@ def get_db_conf():
     return conf
 
 
-def connect_db(conf_args=get_db_conf()):
+def connect_db(conf_args):
     '''
     Connect to database via sqlalchemy
     '''
@@ -145,7 +145,7 @@ def load_file(conf):
     '''
 
     # connect to database
-    conn, engine = connect_db()
+    conn, engine = connect_db(conf)
 
     # check staging tables
     valid_setup = check_setup(conf['staging_table'], engine, conn)

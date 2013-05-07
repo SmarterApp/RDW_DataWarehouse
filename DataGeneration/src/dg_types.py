@@ -66,60 +66,51 @@ def get_district_types():
     <ken 2013-05-07> Added good/poor/average districts of medium and small size
     """
 
-    district_types = {
-                        'Big Average': {'school_counts': {'min': 50, 'max': 80, 'avg': 65},
-                                        'school_types_and_ratios': {
+    district_types = {'Big Average': {'school_counts': {'min': 50, 'max': 80, 'avg': 65},
+                                      'school_types_and_ratios': {
                                           'High School': 1, 'Middle School': 2, 'Elementary School': 5}},
-
-                        'Big Good': {'school_counts': {'min': 50, 'max': 80, 'avg': 65},
+                      'Big Good': {'school_counts': {'min': 50, 'max': 80, 'avg': 65},
+                                   'school_types_and_ratios': {
+                                       'High School': 5, 'Middle School': 10, 'Elementary School': 25,
+                                       'Good High School': 3, 'Good Middle School': 5, 'Good Elementary School': 10,
+                                       'Poor High School': 1, 'Poor Middle School': 2, 'Poor Elementary School': 3}
+                                   },
+                      'Big Poor': {'school_counts': {'min': 50, 'max': 80, 'avg': 65},
+                                   'school_types_and_ratios': {
+                                       'High School': 5, 'Middle School': 10, 'Elementary School': 25,
+                                       'Poor High School': 4, 'Poor Middle School': 8, 'Poor Elementary School': 20,
+                                       'Good High School': 1, 'Good Middle School': 1, 'Good Elementary School': 1}
+                                   },
+                      'Medium Average': {'school_counts': {'min': 20, 'max': 24, 'avg': 22},
+                                         'school_types_and_ratios': {
+                                             'High School': 1, 'Middle School': 2, 'Elementary School': 5}},
+                      'Medium Good': {'school_counts': {'min': 20, 'max': 24, 'avg': 22},
+                                      'school_types_and_ratios': {
+                                          'High School': 5, 'Middle School': 10, 'Elementary School': 25,
+                                          'Good High School': 3, 'Good Middle School': 5, 'Good Elementary School': 10,
+                                          'Poor High School': 1, 'Poor Middle School': 2, 'Poor Elementary School': 3}
+                                      },
+                      'Medium Poor': {'school_counts': {'min': 20, 'max': 24, 'avg': 22},
+                                      'school_types_and_ratios': {
+                                          'High School': 5, 'Middle School': 10, 'Elementary School': 25,
+                                          'Poor High School': 4, 'Poor Middle School': 8, 'Poor Elementary School': 20,
+                                          'Good High School': 1, 'Good Middle School': 1, 'Good Elementary School': 1}
+                                      },
+                      'Small Average': {'school_counts': {'min': 2, 'max': 8, 'avg': 5},
+                                        'school_types_and_ratios': {
+                                            'High School': 1, 'Middle School': 2, 'Elementary School': 5}},
+                      'Small Good': {'school_counts': {'min': 2, 'max': 8, 'avg': 5},
                                      'school_types_and_ratios': {
                                          'High School': 5, 'Middle School': 10, 'Elementary School': 25,
                                          'Good High School': 3, 'Good Middle School': 5, 'Good Elementary School': 10,
                                          'Poor High School': 1, 'Poor Middle School': 2, 'Poor Elementary School': 3}
-                                   },
-
-                        'Big Poor': {'school_counts': {'min': 50, 'max': 80, 'avg': 65},
+                                     },
+                      'Small Poor': {'school_counts': {'min': 2, 'max': 8, 'avg': 5},
                                      'school_types_and_ratios': {
                                          'High School': 5, 'Middle School': 10, 'Elementary School': 25,
                                          'Poor High School': 4, 'Poor Middle School': 8, 'Poor Elementary School': 20,
                                          'Good High School': 1, 'Good Middle School': 1, 'Good Elementary School': 1}
-                                   },
-
-                        'Medium Average': {'school_counts': {'min': 20, 'max': 24, 'avg': 22},
-                                           'school_types_and_ratios': {
-                                               'High School': 1, 'Middle School': 2, 'Elementary School': 5}},
-
-                        'Medium Good': {'school_counts': {'min': 20, 'max': 24, 'avg': 22},
-                                        'school_types_and_ratios': {
-                                            'High School': 5, 'Middle School': 10, 'Elementary School': 25,
-                                            'Good High School': 3, 'Good Middle School': 5, 'Good Elementary School': 10,
-                                            'Poor High School': 1, 'Poor Middle School': 2, 'Poor Elementary School': 3}
-                                        },
-
-                        'Medium Poor': {'school_counts': {'min': 20, 'max': 24, 'avg': 22},
-                                            'school_types_and_ratios': {
-                                            'High School': 5, 'Middle School': 10, 'Elementary School': 25,
-                                            'Poor High School': 4, 'Poor Middle School': 8, 'Poor Elementary School': 20,
-                                            'Good High School': 1, 'Good Middle School': 1, 'Good Elementary School': 1}
-                                        },
-
-                        'Small Average': {'school_counts': {'min': 2, 'max': 8, 'avg': 5},
-                                          'school_types_and_ratios': {
-                                              'High School': 1, 'Middle School': 2, 'Elementary School': 5}},
-
-                        'Small Good': {'school_counts': {'min': 2, 'max': 8, 'avg': 5},
-                                       'school_types_and_ratios': {
-                                            'High School': 5, 'Middle School': 10, 'Elementary School': 25,
-                                            'Good High School': 3, 'Good Middle School': 5, 'Good Elementary School': 10,
-                                            'Poor High School': 1, 'Poor Middle School': 2, 'Poor Elementary School': 3}
-                                        },
-
-                        'Small Poor': {'school_counts': {'min': 2, 'max': 8, 'avg': 5},
-                                       'school_types_and_ratios': {
-                                           'High School': 5, 'Middle School': 10, 'Elementary School': 25,
-                                           'Poor High School': 4, 'Poor Middle School': 8, 'Poor Elementary School': 20,
-                                           'Good High School': 1, 'Good Middle School': 1, 'Good Elementary School': 1}
-                                        }
+                                     }
                       }
 
     return district_types

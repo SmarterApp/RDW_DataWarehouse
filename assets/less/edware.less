@@ -158,6 +158,7 @@ table {
     padding: 0px 4px 0px 4px;
     border-radius: 3px;
     margin: 4px 10px 0 3px;
+    cursor: pointer;
   }
   .confidenceLevel {
     height: 30px;
@@ -181,10 +182,6 @@ table {
       overflow: hidden;
       height: 36px;
     }
-    .transWrapper {
-      margin-top: auto;
-      margin-left: 48px;
-    }
     
     .interval {
       margin-top: -1px;
@@ -203,24 +200,6 @@ table {
       position: absolute;
       z-index: 3000;
       width: 5px;     
-    }
-    
-    .transImage1 {
-      height: 30px;
-      background-image: url("../images/overlay_left88x14.png");
-    }
-    
-    .transImage2 {
-      height: 30px;
-      background-image: url("../images/overlay_right88x14.png");
-    }
-    
-    .transImage1.confLevelRight {
-      background-image: url("../images/overlay_left88x14.png");
-    }
-    
-    .transImage2.confLevelRight {
-      background-image: url("../images/overlay_right88x14.png");
     }
   }
 }
@@ -325,84 +304,136 @@ table {
       min-height: 70px;
     }
   }
+}
+
+.arrowBox {
+  cursor: pointer;
+}
+.claimsSection {
+  margin-left: 20px;
   
-  .claimsSection {
-    margin-left: 20px;
+  h3 {
+    color: @color-B1;
+  }  
+}
+
+.claims {
+  height: 300px;
+  float: left;
+  margin: 10px 10px 0 0;
+  padding: 10px;
+  border: solid 1px @color-B5;
+  .rounded-corners(5px);
+  position: relative;
+  background: @color-B6;
+  
+  .scoreBox {
+    border-left: solid 1px @color-B5;
+    border-right: solid 1px @color-B5;
+    height: 40px;
+    background: @color-white;
+    background-repeat:no-repeat;
+    position: relative;
+  }
+  .scoreBoxUpper {
+    border-top: solid 1px @color-B5;
+    border-bottom: dashed 1px #C2C2C2
+  }
+  .scoreBoxLower{
+    border-bottom: solid 1px @color-B5;
+  }
+  
+  .icon {
     
-    h3 {
-      color: @color-B1;
+    position: absolute;
+    right: 10px;
+    
+    img {
+      width: 26px;
+      height: 26px;
     }
-    
-    ul li {
-      height: 300px;
-      float: left;
-      margin: 10px 10px 0 0;
-      padding: 10px;
-      border: solid 1px @color-B5;
-      .rounded-corners(5px);
-      position: relative;
-      background: @color-B6;
-      
-      .scoreBox {
-        border-left: solid 1px @color-B5;
-        border-right: solid 1px @color-B5;
-        height: 40px;
-        background: @color-white;
-        background-repeat:no-repeat;
-        position: relative;
-      }
-      .scoreBoxUpper {
-        border-top: solid 1px @color-B5;
-        border-bottom: dashed 1px #C2C2C2
-      }
-      .scoreBoxLower{
-        border-bottom: solid 1px @color-B5;
-      }
-      
-      .icon {
-        
-        position: absolute;
-        right: 10px;
-        
-        img {
-          width: 26px;
-          height: 26px;
-        }
-      }
-      
-      h4  {
-        padding-bottom: 5px;
-        display: table-cell;
-        vertical-align: bottom;
-        height: 50px;
-      }
-      .description {
-        height: 70px;
-        font-size: 13px;
-        color: @color-B3;
-      }
-      
-      .link {
-        position: absolute;
-        bottom: 10px;
-        right: 10px;
-      }
-      
-      .footer {
-        font-size: 9px;
-        color: @color-B2;
-        position: absolute;
-        bottom: 5px;
-      }
-      
-      .graph {
-        margin-right: 10px;
-      }
-    }
-    
+  }
+  
+  h4  {
+    padding-bottom: 5px;
+    display: table-cell;
+    vertical-align: bottom;
+    height: 50px;
+  }
+  .description {
+    height: 70px;
+    font-size: 13px;
+    color: @color-B3;
+  }
+  
+  .link {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+  }
+  
+  .footer {
+    font-size: 9px;
+    color: @color-B2;
+    position: absolute;
+    bottom: 5px;
+  }
+  
+  .graph {
+    margin-right: 10px;
   }
 }
 
+.claimToolTipSection {
+  width: 315px;
+  color: @color-B1;
+  
+  .left {
+    width: 60px;
+  }
+  
+  .title {
+    font-size: 13px;
+    line-height: 13px;
+    margin-bottom: 5px;
+  } 
+  
+  .score {
+    border-radius: 5px 5px 5px 5px;
+    display: table;
+    float: left;
+    font-size: 16px;
+    height: 28px;
+    text-align: center;
+    width: 50px;
+    background: @color-B9;
+    color: @color-white;
+    
+    span {
+      vertical-align: middle;
+      display: table-cell;
+    }
+  }
+  
+  .description {
+    margin-left: 65px;
+    font-size: 12px;
+    line-height: 17px;
+    min-height: 90px;
+  }
+  
+  hr {
+    margin: 10px 0;
+  }
+  
+  .errorBand {
+    font-size: 13px;
+  }
+}
+
+.claimsPopover {
+  padding: 0;
+}
 .gridHeight100 {
   tr.jqgrow td {
     height: 100px;
@@ -520,3 +551,175 @@ table {
 .reportInfoWrapper {
   width: 580px;
 }
+
+//
+// Confidence Level Bar
+//
+
+.losPerfBar {
+  height: 80px;
+}
+
+.losPopover {
+  height: 220px;
+  margin-top: 20px;
+  width: 360px !important;
+  padding: 0;
+  
+  .summary {
+    height: 40px;
+    margin-top: 10px;
+    
+    div {
+      margin-right: 10px;
+    }
+  }
+  
+  .title {
+    font-size: 13px;
+    line-height: 13px;
+    margin-bottom: 5px;
+    width: 40px;
+  } 
+  
+  .score {
+    border-radius: 5px 5px 5px 5px;
+    display: table;
+    font-size: 16px;
+    height: 28px;
+    text-align: center;
+    width: 50px;
+    background: @color-B9;
+    color: @color-white;
+    
+    span {
+      vertical-align: middle;
+      display: table-cell;
+    }
+  }
+  
+  .description {
+    font-size: 18px;
+    padding-top: 5px;
+  }
+  
+  hr {
+    margin: 10px 0;
+  }
+  
+  .errorBand {
+    font-size: 13px;
+  }
+  
+  .scoreWrapper {
+    margin-left: 3%;
+    position: absolute;
+    z-index: 3000;
+    height: 20px;
+  }
+  .overall_score {
+    position: absolute;
+    z-index: 3000;
+    font-size: 13px;
+    width: 60px;
+    text-align: center;
+    margin-top: 5px;
+  }
+  .transWrapper {
+    margin-left: 3%;
+    position: absolute;
+    overflow: hidden;
+    z-index: 99;
+    margin-top: 22px;
+  }
+  .transImage1 {
+    height: 36px;
+    background-image: url("../images/claim_errorband_left.png");
+    background-repeat: no-repeat;
+    width: 300px;
+  }
+  
+  .indicator {     
+    height: 40px;
+    background-repeat: no-repeat;
+    position: absolute;
+    margin-top: 23px;
+    width: 13px;
+  }
+  
+  .transImage2 {
+    height: 36px;
+    background-image: url("../images/claim_errorband_right.png");
+    background-repeat: no-repeat;
+    width: 300px;
+    position: absolute;
+  }
+  
+  .progress {
+    background-color: transparent;
+    background-image: none;
+    border-radius: 0;
+    height: 20px;
+    box-shadow: none;
+    margin-left: 3%;
+    position: absolute;
+    margin-top: 30px;
+    z-index:1;
+    
+    .bar {
+      padding-top: 7px;
+      font-size: 10px;
+    }
+  }
+  
+  .cutPointsBar {
+    margin-left: 3%;
+    margin-top: 50px;
+    position: absolute;
+    background: url("../images/score_line.png") no-repeat scroll right top;
+    
+    .cutPoints {
+      float: left;
+      text-align: right;
+      font-size: 11px;
+      color: @color-B3;
+      background: url("../images/score_line.png") no-repeat scroll left top;
+        padding-top: 6px;
+      }
+      
+      .startPoint {
+        position: absolute;
+      }
+    }
+}
+
+@media print {
+   .contentWrapper .claimsSection ul li {
+        border: none;
+      }
+      
+      #breadcrumb {
+        background-image: transparent;
+        background: #ECECE6;
+      }
+      #footer {
+        display: none;
+        /*background-image: transparent;
+        background: #464646;*/
+      }
+      
+      .ui-jqgrid-bdiv {
+        min-height: 700px;
+        display: block !important;
+        overflow: hidden !important;
+      }
+      .ui-jqgrid-bdiv table {
+        display: block !important;
+      }
+      #lui_gridTable, #load_gridTable {
+        display: none !important;
+      }
+}
+
+
+

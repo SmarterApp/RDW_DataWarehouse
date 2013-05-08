@@ -5,13 +5,14 @@ define [
   "mustache"
   "edwareDataProxy"
   "edwareConfidenceLevelBar"
+  "edwareClaimsBar"
   "text!templates/individualStudent_report/individual_student_template.html"
   "text!templates/individualStudent_report/claimsInfo.html"
   "edwareBreadcrumbs"
   "edwareHeader"
   "edwareUtil"
   "edwareFooter"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareConfidenceLevelBar, indivStudentReportTemplate, claimsInfoTemplate, edwareBreadcrumbs, edwareHeader, edwareUtil, edwareFooter) ->
+], ($, bootstrap, Mustache, edwareDataProxy, edwareConfidenceLevelBar, edwareClaimsBar, indivStudentReportTemplate, claimsInfoTemplate, edwareBreadcrumbs, edwareHeader, edwareUtil, edwareFooter) ->
   
   # claim score weight in percentage
   claimScoreWeightArray = {
@@ -125,10 +126,13 @@ define [
             
             claim.claim_score_weight = claimScoreWeightArray[claim.assessmentUC][j]
             
-            claimContent = content.claims[items.asmt_subject][claim.indexer]
+            claimContent = content.claims[items.asmt_subject]["description"][claim.indexer]
             # if the content is more than character limits then truncate the string and add ellipsis (...)
             claimContent = edwareUtil.truncateContent(claimContent, edwareUtil.getConstants("claims_characterLimits"))
             claim.desc = claimContent
+            
+            claim.score_desc = content.claims[items.asmt_subject]["scoreTooltip"][claim.indexer]
+            
             j++
           
           i++
@@ -150,8 +154,36 @@ define [
         while i < data.items.length
           item = data.items[i]       
           barContainer = "#assessmentSection" + i + " .confidenceLevel"
-          edwareConfidenceLevelBar.create item, 640, barContainer        
+          edwareConfidenceLevelBar.create item, 640, barContainer 
+          
+          j = 0
+          while j < item.claims.length
+            claim = item.claims[j]
+            barContainer = "#assessmentSection" + i + " #claim" + [claim.indexer] + " .claimsBar"
+            edwareClaimsBar.create claim, 300, barContainer 
+            j++       
           i++
+          
+          
+        # Show tooltip for claims on mouseover
+          $(document).on
+            mouseenter: ->
+              e = $(this)
+              e.popover
+                html: true
+                container: "div"
+                placement: (tip, element) ->
+                  edwareUtil.popupPlacement(element, 400, 276)
+                title: ->
+                  e.parent().parent().find(".header").find("h4").html()
+                template: '<div class="popover claimsPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
+                content: ->
+                  e.find(".claims_tooltip").html() # template location: templates/individualStudent_report/claimsInfo.html
+              .popover("show")
+            mouseleave: ->
+              e = $(this)
+              e.popover("hide")
+          , ".claims .arrowBox"
         
         # Generate footer links
         $('#footer').generateFooter('individual_student_report', reportInfo)
@@ -161,7 +193,7 @@ define [
           role = edwareUtil.getRole data.user_info
           uid = edwareUtil.getUid data.user_info
           edwareUtil.renderFeedback(role, uid, "individual_student_report", feedbackData)
-
+  
   #
   # render Claim Score Relative Difference (arrows)
   #

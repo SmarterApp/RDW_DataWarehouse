@@ -23,7 +23,7 @@ def task(msg):
 
     # do actual work of splitting file
     start_time = datetime.datetime.now()
-    split_files = file_splitter.split_file(msg['input_file'], row_limit=parm['row_limit'], parts=parm['parts'], output_path=parm['output_path'], keep_headers=parm['keep_headers'])
+    split_files = file_splitter.split_file(msg['input_file'], row_limit=parm['row_limit'], parts=parm['parts'], output_path=parm['output_path'])
     finish_time = datetime.datetime.now()
     spend_time = finish_time - start_time
 
@@ -39,7 +39,7 @@ def task(msg):
     # for each of sub file, call do loading task
     for split_file in split_files:
         udl2.W_file_loader.task.apply_async([{'input_file': split_file}], queue='Q_files_to_be_loaded', routing_key='udl2')
-x
+
     return msg
 
 

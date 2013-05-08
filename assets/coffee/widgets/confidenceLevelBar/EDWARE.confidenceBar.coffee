@@ -45,8 +45,17 @@ define [
       # Set position for right bracket
       items.asmt_score_max_range = Math.round((((items.asmt_score - items.asmt_score_min) + items.asmt_score_interval) / items.score_min_max_difference) * items.bar_width) 
       
+      # To ensure we are not displaying half bracket
+      items.asmt_score_min_range = (barWidth - 6) if items.asmt_score_min_range >= (barWidth - 6) and items.asmt_score_min_range <= barWidth
+      items.asmt_score_max_range = (barWidth - 6) if items.asmt_score_max_range >= (barWidth - 6) and items.asmt_score_max_range <= barWidth
+      
       # Set "confidence interval" text on right hand side if maximum score range position is more than 80%
       items.leftBracketConfidenceLevel = items.asmt_score_max_range <= 520
+      
+      # Align the score text to the center of indicator
+      score_text_element_width = 60
+      score_width = (score_text_element_width / 2)
+      items.score_text_pos = (items.asmt_score_pos - score_width) + (score_indicator_width / 2)
       
       # use mustache template to display the json data  
       output = Mustache.to_html confidenceLevelBarTemplate, items 
@@ -55,13 +64,6 @@ define [
         this.html output
       else
         return output
-        
-      # Align the score text to the center of indicator
-      score_text_element = $(this).find(".overall_score")
-      score_width = (score_text_element.width() / 2)
-      #score_text_pos = Math.round(((items.asmt_score - items.asmt_score_min - score_width) / items.score_min_max_difference) * 100)
-      score_text_pos = (items.asmt_score_pos - score_width) + (score_indicator_width / 2)
-      score_text_element.css "margin-left", score_text_pos + "px"
       
       
   create = (data, barWidth, containerId) ->

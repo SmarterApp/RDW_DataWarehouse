@@ -2,6 +2,7 @@ import datetime
 import os
 import csv
 import prepare_queries as queries
+from sqlalchemy.exc import NoSuchTableError
 from sqlalchemy.engine import create_engine
 from sqlalchemy import Table, Column, Index
 from sqlalchemy.schema import MetaData
@@ -33,9 +34,8 @@ def check_setup(staging_table, engine, conn):
     # check if staging table is defined or not
     if not engine.dialect.has_table(conn, staging_table):
         print("There is no staging table -- ", staging_table)
-        return False
+        raise NoSuchTableError
     # TODO:check if fdw is defined or not
-    return True
 
 
 def set_fdw(conn, conf):
@@ -148,15 +148,15 @@ def load_file(conf):
     conn, engine = connect_db(conf)
 
     # check staging tables
-    valid_setup = check_setup(conf['staging_table'], engine, conn)
+    # Note: currently, we do not have staging table defined.
+    # If we want to run this script without staging table defined at first,
+    # please comment out the following line.
+    # in method load_data_process(), then in get_staging_tables(), it will create staging table as a temporary solution
+    check_setup(conf['staging_table'], engine, conn)
 
-    if valid_setup:
-        # start loading file process
-        time_for_load = load_data_process(conn, conf)
-        print("Time for load file", time_for_load)
-    else:
-        # error handle
-        print('error in setup')
+    # start loading file process
+    time_for_load = load_data_process(conn, conf)
+    print("Time for load file", time_for_load)
 
     # close db connection
     conn.close()

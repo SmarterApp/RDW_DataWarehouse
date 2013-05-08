@@ -158,6 +158,7 @@ table {
     padding: 0px 4px 0px 4px;
     border-radius: 3px;
     margin: 4px 10px 0 3px;
+    cursor: pointer;
   }
   .confidenceLevel {
     height: 30px;
@@ -550,3 +551,175 @@ table {
 .reportInfoWrapper {
   width: 580px;
 }
+
+//
+// Confidence Level Bar
+//
+
+.losPerfBar {
+  height: 80px;
+}
+
+.losPopover {
+  height: 220px;
+  margin-top: 20px;
+  width: 360px !important;
+  padding: 0;
+  
+  .summary {
+    height: 40px;
+    margin-top: 10px;
+    
+    div {
+      margin-right: 10px;
+    }
+  }
+  
+  .title {
+    font-size: 13px;
+    line-height: 13px;
+    margin-bottom: 5px;
+    width: 40px;
+  } 
+  
+  .score {
+    border-radius: 5px 5px 5px 5px;
+    display: table;
+    font-size: 16px;
+    height: 28px;
+    text-align: center;
+    width: 50px;
+    background: @color-B9;
+    color: @color-white;
+    
+    span {
+      vertical-align: middle;
+      display: table-cell;
+    }
+  }
+  
+  .description {
+    font-size: 18px;
+    padding-top: 5px;
+  }
+  
+  hr {
+    margin: 10px 0;
+  }
+  
+  .errorBand {
+    font-size: 13px;
+  }
+  
+  .scoreWrapper {
+    margin-left: 3%;
+    position: absolute;
+    z-index: 3000;
+    height: 20px;
+  }
+  .overall_score {
+    position: absolute;
+    z-index: 3000;
+    font-size: 13px;
+    width: 60px;
+    text-align: center;
+    margin-top: 5px;
+  }
+  .transWrapper {
+    margin-left: 3%;
+    position: absolute;
+    overflow: hidden;
+    z-index: 99;
+    margin-top: 22px;
+  }
+  .transImage1 {
+    height: 36px;
+    background-image: url("../images/claim_errorband_left.png");
+    background-repeat: no-repeat;
+    width: 300px;
+  }
+  
+  .indicator {     
+    height: 40px;
+    background-repeat: no-repeat;
+    position: absolute;
+    margin-top: 23px;
+    width: 13px;
+  }
+  
+  .transImage2 {
+    height: 36px;
+    background-image: url("../images/claim_errorband_right.png");
+    background-repeat: no-repeat;
+    width: 300px;
+    position: absolute;
+  }
+  
+  .progress {
+    background-color: transparent;
+    background-image: none;
+    border-radius: 0;
+    height: 20px;
+    box-shadow: none;
+    margin-left: 3%;
+    position: absolute;
+    margin-top: 30px;
+    z-index:1;
+    
+    .bar {
+      padding-top: 7px;
+      font-size: 10px;
+    }
+  }
+  
+  .cutPointsBar {
+    margin-left: 3%;
+    margin-top: 50px;
+    position: absolute;
+    background: url("../images/score_line.png") no-repeat scroll right top;
+    
+    .cutPoints {
+      float: left;
+      text-align: right;
+      font-size: 11px;
+      color: @color-B3;
+      background: url("../images/score_line.png") no-repeat scroll left top;
+        padding-top: 6px;
+      }
+      
+      .startPoint {
+        position: absolute;
+      }
+    }
+}
+
+@media print {
+   .contentWrapper .claimsSection ul li {
+        border: none;
+      }
+      
+      #breadcrumb {
+        background-image: transparent;
+        background: #ECECE6;
+      }
+      #footer {
+        display: none;
+        /*background-image: transparent;
+        background: #464646;*/
+      }
+      
+      .ui-jqgrid-bdiv {
+        min-height: 700px;
+        display: block !important;
+        overflow: hidden !important;
+      }
+      .ui-jqgrid-bdiv table {
+        display: block !important;
+      }
+      #lui_gridTable, #load_gridTable {
+        display: none !important;
+      }
+}
+
+
+

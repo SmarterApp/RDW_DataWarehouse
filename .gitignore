@@ -1,4 +1,5 @@
-# Ignore build directory
+# Ignore build directory, dist, MANIFEST and *.pyc
 build/
 dist/
 MANIFEST
+*.pyc

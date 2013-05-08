@@ -4,13 +4,13 @@ Created on May 3, 2013
 @author: dip
 '''
 from celery import Celery
-from pdfmaker import celeryconfig
 import os
-
+from pdfmaker import celeryconfig
 
 celery = Celery('pdf')
-celery.config_from_object(celeryconfig)
-
+# configuration
+config = celeryconfig.CeleryConfig()
+celery.config_from_object(config)
 
 def start():
     '''
@@ -34,4 +34,4 @@ def stop():
 
 
 if __name__ == '__main__':
-    celery.start()
+    start()

@@ -1,0 +1,5 @@
+# Ignore all files in landing zone
+landing/*
+
+#Ignore all files in work zone
+work/*

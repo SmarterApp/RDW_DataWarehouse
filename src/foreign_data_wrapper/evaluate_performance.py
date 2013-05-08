@@ -1,5 +1,5 @@
 from elastic_csv.elastic_csv import parse, check_input_output_conflict, check_multiplier_greater_than_zero, read_source_csv, \
-    stretch_csv, get_header_row_count
+    stretch_csv, get_header_row_count, write_stretched_data_csv, write_stretched_metadata_csv
 from foreign_data_wrapper.FdwCsvLoader import test_import
 import datetime
 import os
@@ -31,8 +31,8 @@ def get_one_scaled_csv(row_multiplier):
     header_row_count = get_header_row_count(conf['source_csv'])
     input_csv_obj = read_source_csv(conf['source_csv'], header_row_count)
     output_csv_obj = stretch_csv(input_csv_obj, conf['row_multiplier'], conf['column_multiplier'])
-    write_streched_data_csv(output_csv_obj, conf['output_data_csv'])
-    write_streched_metadata_csv(output_csv_obj, conf['output_metadata_csv'])
+    write_stretched_data_csv(output_csv_obj, conf['output_data_csv'])
+    write_stretched_metadata_csv(output_csv_obj, conf['output_metadata_csv'])
 
     finish_time = datetime.datetime.now()
     spend_time = finish_time - start_time

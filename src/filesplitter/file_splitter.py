@@ -5,7 +5,7 @@ import math
 import argparse
 import time
 
-def create_output_destination(file_name):
+def create_output_destination(file_name,output_path):
 	#create output template from supplied input file path
     base =  os.path.splitext(os.path.basename(file_name))[0]
     output_name_template = base+'_part_'
@@ -17,7 +17,7 @@ def create_output_destination(file_name):
     
     return output_name_template,output_dir
     
-def run_command(cmd_string)
+def run_command(cmd_string):
     p = subprocess.Popen(cmd_string, stdout=subprocess.PIPE,shell=True)
     (output,err) = p.communicate()
     return output,err
@@ -38,7 +38,7 @@ def split_file(file_name, delimiter=',', row_limit=10000, parts=0, output_path='
     filehandler = open(file_name,'r')
     
     #store header
-    reader_obj = csv.reader(open('GeneratedFile_281606rows.csv'))
+    reader_obj = csv.reader(open(file_name))
     header = next(reader_obj)
     
     #create copy of csv without the header
@@ -48,13 +48,13 @@ def split_file(file_name, delimiter=',', row_limit=10000, parts=0, output_path='
     #if going by parts, get total rows and define row limit
     if parts > 0:
         word_count_cmd = "wc noheaders.csv"
-        run_command(word_count_cmd)
+        output,err = run_command(word_count_cmd)
 
         totalrows = int(output.split()[0])
         row_limit = math.ceil(totalrows / parts) # round up for row limit
     
     #set up output location
-    output_name_template,output_dir = create_output_destination(file_name)
+    output_name_template,output_dir = create_output_destination(file_name,output_path)
     
     #call unix split command
     split_command = 'split -a1 -l %d noheaders.csv %s' % (row_limit, os.path.join(output_dir,output_name_template))

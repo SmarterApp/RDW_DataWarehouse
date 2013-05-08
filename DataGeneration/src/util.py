@@ -66,6 +66,10 @@ def generate_name_from_lists(list_1, list_2, max_name_length=None):
     '''
     name_1 = str(random.choice(list_1))
     name_2 = str(random.choice(list_2))
+
+    if 'fish' in name_1.lower() and 'fish' in name_2.lower():
+        name_2 = str(random.choice(list_2))
+
     result = name_1 + ' ' + name_2
     if max_name_length and (len(result) > max_name_length):
         result = result[:max_name_length]

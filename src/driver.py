@@ -29,8 +29,6 @@ def start_pipeline(file_path):
     landing_zone_file_name = create_unique_file_name(file_path)
     landing_zone_file_path = os.path.join(LANDING_ZONE, landing_zone_file_name)
     # Copy the file over, using the new (unique) filename
-    print('filepath: ' + file_path)
-    print('landing_zone_file_path: ' + landing_zone_file_path)
     shutil.copy(file_path, landing_zone_file_path)
     # Now, add a task to the file splitter queue, passing in the path to the landing zone file
     # and the directory to use when writing the split files

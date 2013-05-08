@@ -12,13 +12,19 @@ logger = get_task_logger(__name__)
 
 @udl2.celery.celery.task(name="udl2.W_file_loader.task")
 def task(msg):
-    # randomize delay second
-    time.sleep(random.random() * 10)
+    file_name = msg['input file']
     logger.info(task.name)
+    logger.info('Loading file %s...' % file_name)
+    load_file(msg['input_file'])
     udl2.W_final_cleanup.task.apply_async([msg + ' passed after ' + task.name],
                                            queue='Q_final_cleanup',
                                            routing_key='udl2')
     return msg
+
+
+def load_file(file_path):
+    # randomize delay second
+    time.sleep(random.random() * 10)
 
 
 @udl2.celery.celery.task

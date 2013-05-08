@@ -7,6 +7,7 @@ import filesplitter.file_splitter as file_splitter
 import time
 import random
 import datetime
+import os
 
 
 logger = get_task_logger(__name__)
@@ -25,17 +26,20 @@ def task(msg):
     split_files = file_splitter.split_file(msg['input_file'], row_limit=parm['row_limit'], parts=parm['parts'], output_path=parm['output_path'], keep_headers=parm['keep_headers'])
     finish_time = datetime.datetime.now()
     spend_time = finish_time - start_time
-    print("Done in -- %s, number of sub files %i" % (str(spend_time), len(split_files)))
+
+    file_path = msg['input_file']
+    file_name = os.path.basename(file_path)
+
+    logger.info(task.name)
+    logger.info("Split %s in %s, number of sub-files: %i" % (file_name, str(spend_time), len(split_files)))
 
     number_of_files = len(split_files)
     time.sleep(random.random() * 10)
-    logger.info(task.name)
 
     # for each of sub file, call do loading task
-    for i in range(0, number_of_files):
-        udl2.W_file_loader.task.apply_async([('part %i of %i file %s passed after ' + task.name) % (i + 1, number_of_files, split_files[i])],
-                                               queue='Q_files_to_be_loaded',
-                                               routing_key='udl2')
+    for split_file in split_files:
+        udl2.W_file_loader.task.apply_async([{'input_file': split_file}], queue='Q_files_to_be_loaded', routing_key='udl2')
+x
     return msg
 
 

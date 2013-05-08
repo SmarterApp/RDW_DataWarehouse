@@ -15,6 +15,7 @@ from smarter.reports.helpers.constants import Constants
 from smarter.reports.helpers.assessments import get_overall_asmt_interval, \
     get_cut_points, get_claims
 from edapi.exceptions import NotFoundException
+from smarter.security.context import select_with_context
 
 REPORT_NAME = "list_of_students"
 
@@ -87,45 +88,45 @@ def get_list_of_students_report(params):
 
         students = {}
 
-        query = select([dim_student.c.student_guid.label('student_guid'),
-                        dim_student.c.first_name.label('student_first_name'),
-                        dim_student.c.middle_name.label('student_middle_name'),
-                        dim_student.c.last_name.label('student_last_name'),
-                        fact_asmt_outcome.c.enrl_grade.label('enrollment_grade'),
-                        dim_staff.c.first_name.label('teacher_first_name'),
-                        dim_staff.c.middle_name.label('teacher_middle_name'),
-                        dim_staff.c.last_name.label('teacher_last_name'),
-                        fact_asmt_outcome.c.asmt_grade.label('asmt_grade'),
-                        dim_asmt.c.asmt_subject.label('asmt_subject'),
-                        fact_asmt_outcome.c.asmt_score.label('asmt_score'),
-                        fact_asmt_outcome.c.asmt_score_range_min.label('asmt_score_range_min'),
-                        fact_asmt_outcome.c.asmt_score_range_max.label('asmt_score_range_max'),
-                        fact_asmt_outcome.c.asmt_perf_lvl.label('asmt_perf_lvl'),
-                        dim_asmt.c.asmt_score_min.label('asmt_score_min'),
-                        dim_asmt.c.asmt_score_max.label('asmt_score_max'),
-                        dim_asmt.c.asmt_claim_1_name.label('asmt_claim_1_name'),
-                        dim_asmt.c.asmt_claim_2_name.label('asmt_claim_2_name'),
-                        dim_asmt.c.asmt_claim_3_name.label('asmt_claim_3_name'),
-                        dim_asmt.c.asmt_claim_4_name.label('asmt_claim_4_name'),
-                        fact_asmt_outcome.c.asmt_claim_1_score.label('asmt_claim_1_score'),
-                        fact_asmt_outcome.c.asmt_claim_2_score.label('asmt_claim_2_score'),
-                        fact_asmt_outcome.c.asmt_claim_3_score.label('asmt_claim_3_score'),
-                        fact_asmt_outcome.c.asmt_claim_4_score.label('asmt_claim_4_score'),
-                        fact_asmt_outcome.c.asmt_claim_1_score_range_min.label('asmt_claim_1_score_range_min'),
-                        fact_asmt_outcome.c.asmt_claim_2_score_range_min.label('asmt_claim_2_score_range_min'),
-                        fact_asmt_outcome.c.asmt_claim_3_score_range_min.label('asmt_claim_3_score_range_min'),
-                        fact_asmt_outcome.c.asmt_claim_4_score_range_min.label('asmt_claim_4_score_range_min'),
-                        fact_asmt_outcome.c.asmt_claim_1_score_range_max.label('asmt_claim_1_score_range_max'),
-                        fact_asmt_outcome.c.asmt_claim_2_score_range_max.label('asmt_claim_2_score_range_max'),
-                        fact_asmt_outcome.c.asmt_claim_3_score_range_max.label('asmt_claim_3_score_range_max'),
-                        fact_asmt_outcome.c.asmt_claim_4_score_range_max.label('asmt_claim_4_score_range_max')],
-                       from_obj=[fact_asmt_outcome
-                                 .join(dim_student, and_(dim_student.c.student_guid == fact_asmt_outcome.c.student_guid,
-                                                         dim_student.c.most_recent,
-                                                         dim_student.c.section_guid == fact_asmt_outcome.c.section_guid))
-                                 .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id, dim_asmt.c.asmt_type == 'SUMMATIVE'))
-                                 .join(dim_staff, and_(dim_staff.c.staff_guid == fact_asmt_outcome.c.teacher_guid,
-                                       dim_staff.c.most_recent, dim_staff.c.section_guid == fact_asmt_outcome.c.section_guid))])
+        query = select_with_context([dim_student.c.student_guid.label('student_guid'),
+                                    dim_student.c.first_name.label('student_first_name'),
+                                    dim_student.c.middle_name.label('student_middle_name'),
+                                    dim_student.c.last_name.label('student_last_name'),
+                                    fact_asmt_outcome.c.enrl_grade.label('enrollment_grade'),
+                                    dim_staff.c.first_name.label('teacher_first_name'),
+                                    dim_staff.c.middle_name.label('teacher_middle_name'),
+                                    dim_staff.c.last_name.label('teacher_last_name'),
+                                    fact_asmt_outcome.c.asmt_grade.label('asmt_grade'),
+                                    dim_asmt.c.asmt_subject.label('asmt_subject'),
+                                    fact_asmt_outcome.c.asmt_score.label('asmt_score'),
+                                    fact_asmt_outcome.c.asmt_score_range_min.label('asmt_score_range_min'),
+                                    fact_asmt_outcome.c.asmt_score_range_max.label('asmt_score_range_max'),
+                                    fact_asmt_outcome.c.asmt_perf_lvl.label('asmt_perf_lvl'),
+                                    dim_asmt.c.asmt_score_min.label('asmt_score_min'),
+                                    dim_asmt.c.asmt_score_max.label('asmt_score_max'),
+                                    dim_asmt.c.asmt_claim_1_name.label('asmt_claim_1_name'),
+                                    dim_asmt.c.asmt_claim_2_name.label('asmt_claim_2_name'),
+                                    dim_asmt.c.asmt_claim_3_name.label('asmt_claim_3_name'),
+                                    dim_asmt.c.asmt_claim_4_name.label('asmt_claim_4_name'),
+                                    fact_asmt_outcome.c.asmt_claim_1_score.label('asmt_claim_1_score'),
+                                    fact_asmt_outcome.c.asmt_claim_2_score.label('asmt_claim_2_score'),
+                                    fact_asmt_outcome.c.asmt_claim_3_score.label('asmt_claim_3_score'),
+                                    fact_asmt_outcome.c.asmt_claim_4_score.label('asmt_claim_4_score'),
+                                    fact_asmt_outcome.c.asmt_claim_1_score_range_min.label('asmt_claim_1_score_range_min'),
+                                    fact_asmt_outcome.c.asmt_claim_2_score_range_min.label('asmt_claim_2_score_range_min'),
+                                    fact_asmt_outcome.c.asmt_claim_3_score_range_min.label('asmt_claim_3_score_range_min'),
+                                    fact_asmt_outcome.c.asmt_claim_4_score_range_min.label('asmt_claim_4_score_range_min'),
+                                    fact_asmt_outcome.c.asmt_claim_1_score_range_max.label('asmt_claim_1_score_range_max'),
+                                    fact_asmt_outcome.c.asmt_claim_2_score_range_max.label('asmt_claim_2_score_range_max'),
+                                    fact_asmt_outcome.c.asmt_claim_3_score_range_max.label('asmt_claim_3_score_range_max'),
+                                    fact_asmt_outcome.c.asmt_claim_4_score_range_max.label('asmt_claim_4_score_range_max')],
+                                    from_obj=[fact_asmt_outcome
+                                              .join(dim_student, and_(dim_student.c.student_guid == fact_asmt_outcome.c.student_guid,
+                                                                      dim_student.c.most_recent,
+                                                                      dim_student.c.section_guid == fact_asmt_outcome.c.section_guid))
+                                              .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id, dim_asmt.c.asmt_type == 'SUMMATIVE'))
+                                              .join(dim_staff, and_(dim_staff.c.staff_guid == fact_asmt_outcome.c.teacher_guid,
+                                                    dim_staff.c.most_recent, dim_staff.c.section_guid == fact_asmt_outcome.c.section_guid))])
         query = query.where(fact_asmt_outcome.c.state_code == stateCode)
         query = query.where(fact_asmt_outcome.c.school_guid == schoolGuid)
         query = query.where(and_(fact_asmt_outcome.c.asmt_grade == asmtGrade))

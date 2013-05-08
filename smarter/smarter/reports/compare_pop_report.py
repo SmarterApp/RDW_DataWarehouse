@@ -19,6 +19,7 @@ import collections
 from edapi.exceptions import NotFoundException
 import json
 from beaker.cache import cache_region
+from smarter.security.context import select_with_context
 
 # Report service for Comparing Populations
 # Output:
@@ -459,11 +460,11 @@ class QueryHelper():
         return query
 
     def get_query_for_school_view(self):
-        query = select(self.build_columns(),
-                       from_obj=[self._fact_asmt_outcome
-                                 .join(self._dim_asmt,
-                                       and_(self._dim_asmt.c.asmt_rec_id == self._fact_asmt_outcome.c.asmt_rec_id, self._dim_asmt.c.asmt_type == Constants.SUMMATIVE, self._dim_asmt.c.most_recent == true(), self._fact_asmt_outcome.c.most_recent == true())
-                                       )])
+        query = select_with_context(self.build_columns(),
+                                    from_obj=[self._fact_asmt_outcome
+                                              .join(self._dim_asmt,
+                                                    and_(self._dim_asmt.c.asmt_rec_id == self._fact_asmt_outcome.c.asmt_rec_id, self._dim_asmt.c.asmt_type == Constants.SUMMATIVE, self._dim_asmt.c.most_recent == true(), self._fact_asmt_outcome.c.most_recent == true())
+                                                    )])
         query = query.group_by(self._fact_asmt_outcome.c.asmt_grade, self._dim_asmt.c.asmt_subject, self._dim_asmt.c.asmt_custom_metadata)
         query = query.order_by(self._fact_asmt_outcome.c.asmt_grade, self._dim_asmt.c.asmt_subject.desc())
         query = query.where(and_(self._fact_asmt_outcome.c.state_code == self._state_code, self._fact_asmt_outcome.c.district_guid == self._district_guid, self._fact_asmt_outcome.c.school_guid == self._school_guid))

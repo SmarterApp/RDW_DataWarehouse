@@ -7,9 +7,36 @@ import unittest
 from smarter.reports.list_of_students_report import get_list_of_students_report
 from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite
 from edapi.exceptions import NotFoundException
+from pyramid.testing import DummyRequest
+from pyramid import testing
+from smarter.database.connector import SmarterDBConnection
+from edauth.security.user import User
 
 
 class TestLOS(Unittest_with_smarter_sqlite):
+
+    def setUp(self):
+        # Set up user context
+        self.__request = DummyRequest()
+        # Must set hook_zca to false to work with unittest_with_sqlite
+        self.__config = testing.setUp(request=self.__request, hook_zca=False)
+        with SmarterDBConnection() as connection:
+            # Insert into user_mapping table
+            user_mapping = connection.get_table('user_mapping')
+            connection.execute(user_mapping.insert(), user_id='272', staff_guid='272')
+        dummy_user = User()
+        dummy_user.set_roles(['TEACHER'])
+        dummy_user.set_uid('272')
+        self.__config.testing_securitypolicy(dummy_user)
+
+    def tearDown(self):
+        # reset the registry
+        testing.tearDown()
+
+        # delete user_mapping entries
+        with SmarterDBConnection() as connection:
+            user_mapping = connection.get_table('user_mapping')
+            connection.execute(user_mapping.delete())
 
     def test_assessments(self):
         testParam = {}

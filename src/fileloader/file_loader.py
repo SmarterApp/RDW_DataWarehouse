@@ -1,11 +1,8 @@
 import datetime
-import os
 import csv
-import prepare_queries as queries
+import fileloader.prepare_queries as queries
 from sqlalchemy.exc import NoSuchTableError
 from sqlalchemy.engine import create_engine
-from sqlalchemy import Table, Column, Index
-from sqlalchemy.schema import MetaData
 
 
 DBDRIVER = "postgresql+pypostgresql"

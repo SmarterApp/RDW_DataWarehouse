@@ -294,7 +294,7 @@ uat:
 localOpenAM:
   '[app:main]':
     edware:
-      schema_name: edware_sds_0_1
+      schema_name: edware_sds_0_2
       db:
         main:
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
@@ -317,7 +317,7 @@ localOpenAM:
 development:
   '[app:main]':
     edware:
-      schema_name: edware_sds_0_1
+      schema_name: edware_sds_0_2
       db:
         main:
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
@@ -343,7 +343,7 @@ development:
 test:
   '[app:main]':
     edware:
-      schema_name: edware_sds_0_1
+      schema_name: edware_sds_0_2
       db:
         main:
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
@@ -363,7 +363,7 @@ test:
 jenkins_dev:
   '[app:main]':
     edware:
-      schema_name: edware_sds_0_1
+      schema_name: edware_sds_0_2
       db:
         main:
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests

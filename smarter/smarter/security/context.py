@@ -45,14 +45,14 @@ def select_with_context(columns=None, whereclause=None, from_obj=[], **kwargs):
         role = roles[0]
 
         user_mapping = connector.get_table('user_mapping')
-        guid_query = select([user_mapping.c.staff_guid],
+        guid_query = select([user_mapping.c.guid],
                             from_obj=[user_mapping], limit=1)
         guid_query = guid_query.where(user_mapping.c.user_id == user_id)
         result = connector.get_result(guid_query)
 
         guid = None
         if result:
-            guid = result[0]['staff_guid']
+            guid = result[0]['guid']
 
         query = Select(columns, whereclause=whereclause, from_obj=from_obj, **kwargs)
 

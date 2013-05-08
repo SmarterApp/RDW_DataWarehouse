@@ -135,8 +135,9 @@ def generate_ed_metadata(schema_name=None, bind=None):
 
     user_mapping = Table('user_mapping', metadata,
                          Column('user_id', String(50), primary_key=True),
-                         Column('staff_guid', String(50), nullable=False),
+                         Column('guid', String(50), nullable=False),
                          )
+    Index('user_mapping_idx', user_mapping.c.user_id, unique=True)
 
     assessment = Table('dim_asmt', metadata,
                        Column('asmt_rec_id', String(50), primary_key=True),

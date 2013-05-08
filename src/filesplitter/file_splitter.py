@@ -68,7 +68,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     print("Input file is: "+args.inputfile)
     if args.output: print("Output file path is: "+args.output)
-    if args.rows and arg.parts == 0: print("Rows per output file: "+str(args.rows))
+    if args.rows and args.parts == 0: print("Rows per output file: "+str(args.rows))
     if args.parts: print("Number of output files: "+str(args.parts))
     
     split_file(args.inputfile,row_limit=args.rows,parts=args.parts,output_path=args.output)

@@ -2,8 +2,9 @@
 
 # I set up my virtualenv for python3.3 under ~/ejen/py33/bin
 
+start_rabbitmq.sh
+sleep 10
 source ~/py33/bin/activate
-cd ../src
-python start_udl.py
+start_udl.py
 
 

@@ -7,7 +7,7 @@ import subprocess
 from pdfmaker.pdf import celery
 
 pdf_procs = ['wkhtmltopdf']
-pdf_defaults = ['--enable-javascript', '--page-size', 'Letter', '--javascript-delay', '3000']
+pdf_defaults = ['--enable-javascript', '--page-size', 'Letter', '--javascript-delay', '5000']
 
 
 @celery.task(name='tasks.generate_pdf')

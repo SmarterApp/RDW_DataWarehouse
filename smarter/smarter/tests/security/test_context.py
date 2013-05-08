@@ -51,7 +51,7 @@ class TestContext(Unittest_with_smarter_sqlite):
         with SmarterDBConnection() as connection:
             # Insert into user_mapping table
             user_mapping = connection.get_table('user_mapping')
-            connection.execute(user_mapping.insert(), user_id='272', staff_guid='272')
+            connection.execute(user_mapping.insert(), user_id='272', guid='272')
 
             fact_asmt_outcome = connection.get_table('fact_asmt_outcome')
             query = select_with_context([fact_asmt_outcome.c.section_guid],
@@ -69,7 +69,7 @@ class TestContext(Unittest_with_smarter_sqlite):
         with SmarterDBConnection() as connection:
             # Insert into user_mapping table
             user_mapping = connection.get_table('user_mapping')
-            connection.execute(user_mapping.insert(), user_id=uid, staff_guid=uid)
+            connection.execute(user_mapping.insert(), user_id=uid, guid=uid)
 
             fact_asmt_outcome = connection.get_table('fact_asmt_outcome')
             query = select_with_context([fact_asmt_outcome.c.student_guid],

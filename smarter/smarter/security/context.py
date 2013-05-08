@@ -144,7 +144,7 @@ def append_student_context(connector, query, guid):
 
 
 def append_parent_context(connector, query, guid):
-    pass
+    return query
 
 
 def append_school_admin_context(connector, query, guid):
@@ -157,39 +157,39 @@ def append_school_admin_context(connector, query, guid):
 
 
 def append_deploy_admin_context(connector, query, guid):
-    pass
+    return query
 
 
 def append_sys_admin_context(connector, query, guid):
-    pass
+    return query
 
 
 def append_data_loader_context(connector, query, guid):
-    pass
+    return query
 
 
 def append_data_corrector_context(connector, query, guid):
-    pass
+    return query
 
 
 def append_psychometrician_context(connector, query, guid):
-    pass
+    return query
 
 
 def append_state_data_extractor_context(connector, query, guid):
-    pass
+    return query
 
 
 def append_higher_ed_context(connector, query, guid):
-    pass
+    return query
 
 
 def append_district_admin_context(connector, query, guid):
-    pass
+    return query
 
 
 def append_state_admin_context(connector, query, guid):
-    pass
+    return query
 
 
 def append_consortium_admin_context(connector, query, guid):

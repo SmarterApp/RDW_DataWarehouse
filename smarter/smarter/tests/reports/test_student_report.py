@@ -23,7 +23,7 @@ class TestStudentReport(Unittest_with_smarter_sqlite):
         with SmarterDBConnection() as connection:
             # Insert into user_mapping table
             user_mapping = connection.get_table('user_mapping')
-            connection.execute(user_mapping.insert(), user_id='272', staff_guid='272')
+            connection.execute(user_mapping.insert(), user_id='272', guid='272')
         dummy_user = User()
         dummy_user.set_roles(['TEACHER'])
         dummy_user.set_uid('272')

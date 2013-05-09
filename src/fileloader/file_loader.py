@@ -137,7 +137,7 @@ def import_via_fdw(conn, apply_rules, header_names, header_types, staging_schema
 
 def load_data_process(conn, conf):
     # TODO: need to change if the header is not in the csv_file
-    header_names, header_types = extract_csv_header(conf['csv_file'])
+    header_names, header_types = extract_csv_header(conf['header_file'])
 
     # create FDW table
     # prepare queries

@@ -75,6 +75,10 @@ udl2_conf = {
         'work':'/opt/wgen/edware-udl/zones/work/',
         'history':'/opt/wgen/edware-udl/zones/history/',
     },
+    'logging': {
+        'audit':'/var/log/wgen/edware-udl/logs/udl2.audit.log',
+        'error':'/var/log/wgen/edware-udl/logs/udl2.error.log',
+    },
     'postgresql' : { # PostgresQL for UDL2 processing. This is not the target database.
         'db_host':'',
         'db_port':'',

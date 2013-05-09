@@ -7,10 +7,11 @@ requires=['celery(>=3.0.19)']
 
 scripts=['scripts/initialize_udl_database.sh',
          'scripts/start_rabbitmq.sh',
+         'scripts/start_celery.sh',
          'scripts/start_udl.sh',
          'scripts/initialize_udl_database.py',
          'scripts/start_rabbitmq.py',
-         'scripts/start_udl.py']
+         'scripts/start_celery.py']
 
 setup(name='udl2', 
       version='0.1',

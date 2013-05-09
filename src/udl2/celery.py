@@ -41,22 +41,14 @@ def setup_udl2_stages(conf, udl2_queues):
         stages[k]['queue'] =  udl2_queues[k]
     return stages
 
+
 def _get_celery_routes_from_udl2_stages(udl2_stages):
-    routes = {
-            'udl2.W_file_splitter.task' : {
-                'queue' : 'Q_files_to_be_split',
-                'routing_key': 'udl2',
-            },
-            'udl2.W_file_loader.task' : {
-                'queue' : 'Q_files_to_be_loaded',
-                'routing_key' : 'udl2',
-            },
-            'udl2.W_final_cleanup' : {
-                'queue' : 'Q_final_cleanup',
-                'routing_key' : 'udl2',
-            }
-        }
+    routes = {}
+    for k, v in udl2_stages.items():
+        routes[v['task_name']] = {'queue':v['queue_name'],
+                                  'routing_key':v['routing_key']}
     return routes
+
 
 def setup_celery_conf(udl2_conf, celery, udl_queues, udl_stages):
     routes = _get_celery_routes_from_udl2_stages(udl2_stages)

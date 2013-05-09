@@ -36,7 +36,7 @@ def select_with_context(columns=None, whereclause=None, from_obj=[], **kwargs):
             guid = result[0][Constants.GUID]
 
         query = Select(columns, whereclause=whereclause, from_obj=from_obj, **kwargs)
-        
+
         # Look up role for its context security method
         context_method = ContextFactory.get_context(role)
         # apply context security

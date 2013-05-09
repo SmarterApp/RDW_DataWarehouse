@@ -3,8 +3,7 @@ from udl2.celery import celery, udl2_queues, udl2_stages
 import udl2.W_final_cleanup
 from celery.result import AsyncResult
 from celery.utils.log import get_task_logger
-import time
-import random
+from fileloader.file_loader import load_file
 
 
 logger = get_task_logger(__name__)
@@ -29,9 +28,23 @@ def task(msg):
     return msg
 
 
-def load_file(file_path):
-    # randomize delay second
-    time.sleep(random.random() * 10)
+def generate_conf_for_loading(csv_file_path, header_file_path):
+    conf = {
+            'csv_file': csv_file_path,
+            'header_file': header_file_path,
+            'csv_table': 'UDL_test_data_block_of_100_records_with_datatype_errors_v3',
+            'db_host': 'localhost',
+            'db_port': '5432',
+            'db_user': 'postgres',
+            'db_name': 'fdw_test',
+            'db_password': '3423346',
+            'csv_schema': 'public',
+            'fdw_server': 'udl_import',
+            'staging_schema': 'public',
+            'staging_table': 'tmp',
+            'apply_rules': False
+    }
+    return conf
 
 
 @celery.task(name="udl2.W_file_loader.error_handler")

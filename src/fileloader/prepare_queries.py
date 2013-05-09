@@ -13,8 +13,9 @@ def create_ddl_csv_query(header_names, header_types, csv_file, csv_schema, csv_t
     ddl_parts = ["CREATE FOREIGN TABLE IF NOT EXISTS %s.%s ( " % (csv_schema, csv_table),
                  ','.join([header_names[i] + ' ' + header_types[i] + ' ' for i in range(len(header_names))]),
                  ") SERVER %s " % fdw_server,
-                 "OPTIONS (filename '%s', format '%s', header '%s')" % (csv_file, 'csv', 'true')]
+                 "OPTIONS (filename '%s', format '%s', header '%s')" % (csv_file, 'csv', 'false')]
     ddl_parts = "".join(ddl_parts)
+    print(ddl_parts)
     return ddl_parts
 
 
@@ -36,11 +37,11 @@ def drop_staging_tables_query(csv_schema, csv_table):
     return ddl
 
 
-def create_inserting_into_staging_query(apply_rules, header_names, header_types, staging_schema, staging_table, csv_schema, csv_table):
+def create_inserting_into_staging_query(apply_rules, header_names, header_types, staging_schema, staging_table, csv_schema, csv_table, start_seq):
     trim_column_names = apply_transformation_rules(apply_rules, header_types, header_names)
     insert_sql = ["insert into %s.%s (select " % (staging_schema, staging_table),
-                  "".join([i for i in trim_column_names]),
-                  " from %s.%s)" % (csv_schema, csv_table),
+                  ",".join(trim_column_names),
+                  ", row_number() OVER() + %i from %s.%s)" % (start_seq - 1, csv_schema, csv_table),
                   ]
     insert_sql = "".join(insert_sql)
     return insert_sql
@@ -68,8 +69,5 @@ def apply_transformation_rules(apply_rules, header_types, header_names):
                 header_name = 'map_yn(' + header_name + ')'
             elif header_type.lower() == 'text':
                 header_name = "trim(replace(upper(" + header_name + "), CHR(13), ''))"
-
-        if i < len(header_names) - 1:
-            header_name += ', '
         header_with_rules.append(header_name)
     return header_with_rules

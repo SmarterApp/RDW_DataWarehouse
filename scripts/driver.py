@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 from elastic_csv.elastic_csv import generate_stretched_csv_file
 import udl2.W_file_splitter
+from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 import shutil
 import os
 import argparse

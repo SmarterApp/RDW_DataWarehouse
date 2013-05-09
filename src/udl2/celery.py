@@ -70,6 +70,9 @@ DEFAULT_CONFIG_PATH='/opt/wgen/edware-udl/etc/'
 sys.path.append(DEFAULT_CONFIG_PATH)
 from udl2_conf import udl2_conf
 
+# the celery instance has to be named as celery due to celery driver looks for this object in celery.py
+# this is the default protocol between celery system and our implementation of tasks.
+
 celery = Celery(udl2_conf['celery']['root'],  
                 broker=udl2_conf['celery']['broker'], 
                 backend=udl2_conf['celery']['backend'], 

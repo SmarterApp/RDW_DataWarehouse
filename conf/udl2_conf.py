@@ -6,7 +6,8 @@ udl2_conf = {
               'backend':'amqp://guest@localhost//',  # this is the url to task results for each request. Currently it is located on localhost for rabbitmq
               'include':['udl2.W_file_splitter',  # python files that define tasks in worker pools.
                          'udl2.W_file_loader',
-                         'udl2.W_final_cleanup'],
+                         'udl2.W_final_cleanup',
+                         'udl2.W_dummy_task'],
     },
     'file_splitter':{
         'row_limit': 10000,
@@ -23,13 +24,23 @@ udl2_conf = {
         'CELERY_SEND_EVENTS':True,  # send events for monitor
     },
     'udl2_queues':{
+#        'stage_0': {'name':'Q_files_received',
+#                     'exchange': {'name':'Q_files_received', 'type':'direct'},
+#                    'routing_key':'udl2'
+#                    },
         'stage_1': {'name':'Q_files_to_be_split',
                     'exchange': {'name': 'Q_files_to_be_split', 'type': 'direct'},
                     'routing_key':'udl2'},
         'stage_2': {'name':'Q_files_to_be_loaded',
                     'exchange': {'name': 'Q_files_to_be_loaded', 'type': 'direct'},
                     'routing_key':'udl2'},
-        'stage_3': {'name':'Q_final_cleanup',
+#        'stage_3': {'name':'Q_copy_to_integration',
+#                    'exchange': {'name': 'Q_copy_to_integration', 'type': 'direct'},
+#                    'routing_key':'udl2'},
+#        'stage_4': {'name':'Q_copy_to_target',
+#                    'exchange': {'name': 'Q_copy_to_target', 'type': 'direct'},
+#                    'routing_key':'udl2'},
+        'stage_n': {'name':'Q_final_cleanup',
                     'exchange': {'name': 'Q_final_cleanup', 'type': 'direct'},
                     'routing_key':'udl2'},    
     },
@@ -45,10 +56,10 @@ udl2_conf = {
                    'description':'',
                    'queue_name':'Q_files_to_be_loaded',
                    'routing_key':'udl2',
-                   'next':'stage_3',
+                   'next':'stage_n',
                    'prev':'stage_1',
         },
-        'stage_3':{'task_name':'udl2.W_final_cleanup.task',
+        'stage_n':{'task_name':'udl2.W_final_cleanup.task',
                    'description':'',
                    'queue_name':'Q_files_to_be_loaded',
                    'routing_key':'udl2',

@@ -11,10 +11,13 @@ logger = get_task_logger(__name__)
 
 @celery.task(name="udl2.W_file_loader.task")
 def task(msg):
-    file_name = msg['input_file']
+    csv_file_path = msg['input_file']
+    header_file_path = msg['header_file']
+    start_seq = msg['row_start']
     logger.info(task.name)
-    logger.info('Loading file %s...' % file_name)
-    load_file(file_name)
+    logger.info('Loading file %s...' % csv_file_path)
+    conf = generate_conf_for_loading(csv_file_path, header_file_path, start_seq)
+    load_file(conf)
    
 #    if udl2_stages[task.name]['next'] is not None:
 #        next_msg = [file_name + ' passed after ' + task.name]
@@ -22,15 +25,16 @@ def task(msg):
 #        task_instance.apply_async(next_msg,
 #                                  udl2_queues[task.name]['queue'],
 #                                  udl2_stages[task.name]['routing_key'])
-    udl2.W_final_cleanup.task.apply_async([file_name + ' passed after ' + task.name],
+    udl2.W_final_cleanup.task.apply_async([csv_file_path + ' passed after ' + task.name],
                                            queue='Q_final_cleanup',
                                            routing_key='udl2')
     return msg
 
 
-def generate_conf_for_loading(csv_file_path, header_file_path):
+def generate_conf_for_loading(csv_file_path, header_file_path, start_seq):
     conf = {
             'csv_file': csv_file_path,
+            'start_seq': start_seq,
             'header_file': header_file_path,
             'csv_table': 'UDL_test_data_block_of_100_records_with_datatype_errors_v3',
             'db_host': 'localhost',

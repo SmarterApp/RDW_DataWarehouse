@@ -22,7 +22,7 @@ def task(msg):
 
     # do actual work of splitting file
     start_time = datetime.datetime.now()
-    split_files = file_splitter.split_file(msg['input_file'], row_limit=parm['row_limit'], parts=parm['parts'], output_path=parm['output_path'])
+    split_file_list, header_file_path = file_splitter.split_file(msg['input_file'], row_limit=parm['row_limit'], parts=parm['parts'], output_path=parm['output_path'])
     finish_time = datetime.datetime.now()
     spend_time = finish_time - start_time
 
@@ -30,15 +30,29 @@ def task(msg):
     file_name = os.path.basename(file_path)
 
     logger.info(task.name)
-    logger.info("Split %s in %s, number of sub-files: %i" % (file_name, str(spend_time), len(split_files)))
+    logger.info("Split %s in %s, number of sub-files: %i" % (file_name, str(spend_time), len(split_file_list)))
 
-    number_of_files = len(split_files)
+    number_of_files = len(split_file_list)
 
     # for each of sub file, call do loading task
-    for split_file in split_files:
-        udl2.W_file_loader.task.apply_async([{'input_file': split_file}], queue='Q_files_to_be_loaded', routing_key='udl2')
+    for split_file in split_file_list:
+        conf = generate_conf_for_loading(split_file, header_file_path)
+        udl2.W_file_loader.task.apply_async([conf], queue='Q_files_to_be_loaded', routing_key='udl2')
 
     return msg
+
+
+def generate_conf_for_loading(split_file_list, header_file_path):
+    file_path = split_file_list[0]
+    line_count = split_file_list[1]
+    row_start = split_file_list[2]
+    conf = {
+        'input_file': file_path,
+        'line_count': line_count,
+        'row_start': row_start,
+        'header_file': header_file_path
+    }
+    return conf
 
 
 @celery.task(name="udl2.W_file_splitter.error_handler")

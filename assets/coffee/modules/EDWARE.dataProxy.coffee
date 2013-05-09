@@ -2,7 +2,8 @@
 define [
   "jquery"
   "edwareUtil"
-], ($, edwareUtil) ->
+  "edwareLoadingMask"
+], ($, edwareUtil, edwareLoadingMask) ->
   
   #
   #    * Get data from the server via ajax call
@@ -13,6 +14,8 @@ define [
   getDatafromSource = (sourceURL, options, callback) ->
       
       return false  if sourceURL is "undefined" or typeof sourceURL is "number" or typeof sourceURL is "function" or typeof sourceURL is "object"
+      dataLoader = edwareLoadingMask.create(context: "<div></div>")
+      dataLoader.show()
       
       $.ajax(
         type: options.method
@@ -23,11 +26,13 @@ define [
         dataType: "json"
         contentType: "application/json"
         success: (data) ->
+          dataLoader.remove()
           if callback
             callback data
           else
             data
-        error: (xhr, ajaxOptions, thrownError) ->                 
+        error: (xhr, ajaxOptions, thrownError) -> 
+          dataLoader.remove()                
           location.href = "/assets/public/error.html"
       )          
          

@@ -45,7 +45,7 @@ def generate_conf_for_loading(csv_file_path, header_file_path, start_seq):
             'db_port': '5432',
             'db_user': 'postgres',
             'db_name': 'fdw_test',
-                'db_password': '3423346',
+            'db_password': '3423346',
             'csv_schema': 'public',
             'fdw_server': 'udl_import',
             'staging_schema': 'public',

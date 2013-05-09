@@ -16,7 +16,6 @@ def get_config_file(args):
     
     
 def setup_udl2_queues(conf):
-    print(conf)
     queues = {}
     # set up default queues, which is always celery
     queues['default'] = Queue('celery',
@@ -24,7 +23,6 @@ def setup_udl2_queues(conf):
                                        conf['celery_defaults']['CELERY_DEFAULT_EXCHANGE']),
                              routing_key=conf['celery_defaults']['CELERY_DEFAULT_ROUTING_KEY'])
     # set up all celery queues for UDL2
-    print(conf['udl2_queues'])
     for k, v in conf['udl2_queues'].items():
         queues[k] = Queue(v['name'],
                           Exchange(v['exchange']['name'],
@@ -43,16 +41,8 @@ def setup_udl2_stages(conf, udl2_queues):
         stages[k]['queue'] =  udl2_queues[k]
     return stages
 
-
-def setup_celery_conf(udl2_conf, celery, udl_queues, udl_stages):
-    celery.conf.update(CELERY_TASK_RESULT_EXPIRES=10,  # TTL for results
-        CELERYD_CONCURRENCY=10,  # number of available workers processes
-        CELERY_SEND_EVENTS=True,  # send events for monitor
-        CELERY_DEFAULT_QUEUE='celery',
-        CELERY_DEFAULT_EXCHANGE='direct',
-        CELERY_DEFAULT_ROUTING_KEY='celery',
-        CELERY_QUEUES=tuple(udl_queues.values()),  # Add our own queues for each task
-        CELERY_ROUTES={
+def _get_celery_routes_from_udl2_stages(udl2_stages):
+    routes = {
             'udl2.W_file_splitter.task' : {
                 'queue' : 'Q_files_to_be_split',
                 'routing_key': 'udl2',
@@ -65,12 +55,25 @@ def setup_celery_conf(udl2_conf, celery, udl_queues, udl_stages):
                 'queue' : 'Q_final_cleanup',
                 'routing_key' : 'udl2',
             }
-        })
+        }
+    return routes
+
+def setup_celery_conf(udl2_conf, celery, udl_queues, udl_stages):
+    routes = _get_celery_routes_from_udl2_stages(udl2_stages)
+    celery.conf.update(CELERY_TASK_RESULT_EXPIRES=10,  # TTL for results
+        CELERYD_CONCURRENCY=10,  # number of available workers processes
+        CELERY_SEND_EVENTS=True,  # send events for monitor
+        CELERY_DEFAULT_QUEUE='celery',
+        CELERY_DEFAULT_EXCHANGE='direct',
+        CELERY_DEFAULT_ROUTING_KEY='celery',
+        CELERY_QUEUES=tuple(udl_queues.values()),  # Add our own queues for each task
+        CELERY_ROUTES=routes)
     return celery
 
 DEFAULT_CONFIG_PATH='/opt/wgen/edware-udl/etc/'
 
-
+# import configuration after getting path from command line
+# or use default when without it
 
 sys.path.append(DEFAULT_CONFIG_PATH)
 from udl2_conf import udl2_conf
@@ -84,12 +87,8 @@ celery = Celery(udl2_conf['celery']['root'],
 
 udl2_queues = setup_udl2_queues(udl2_conf)
 
-#print(udl2_queues)
-
 # Create all stage entities to be use by task functions
 udl2_stages = setup_udl2_stages(udl2_conf, udl2_queues)
-#print(udl2_stages)
-
 
 celery = setup_celery_conf(udl2_conf, celery, udl2_queues, udl2_stages)
 

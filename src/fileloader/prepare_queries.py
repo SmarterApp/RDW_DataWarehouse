@@ -13,7 +13,7 @@ def create_ddl_csv_query(header_names, header_types, csv_file, csv_schema, csv_t
     ddl_parts = ["CREATE FOREIGN TABLE IF NOT EXISTS %s.%s ( " % (csv_schema, csv_table),
                  ','.join([header_names[i] + ' ' + header_types[i] + ' ' for i in range(len(header_names))]),
                  ") SERVER %s " % fdw_server,
-                 "OPTIONS (filename '%s', format '%s', header '%s')" % (csv_file, 'csv', 'true')]
+                 "OPTIONS (filename '%s', format '%s', header '%s')" % (csv_file, 'csv', 'false')]
     ddl_parts = "".join(ddl_parts)
     # print(ddl_parts)
     return ddl_parts

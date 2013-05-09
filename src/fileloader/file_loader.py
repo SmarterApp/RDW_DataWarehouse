@@ -125,14 +125,16 @@ def import_via_fdw(conn, apply_rules, header_names, header_types, staging_schema
     insert_into_staging_table = queries.create_inserting_into_staging_query(apply_rules, header_names, header_types, staging_schema, staging_table, csv_schema, csv_table, start_seq, seq_name)
     drop_sequence = queries.drop_sequence_query(staging_schema, seq_name)
     # print('@@@@@@@', insert_into_staging_table)
+    trans = conn.begin()
 
     try:
         conn.execute(create_sequence)
         conn.execute(insert_into_staging_table)
         conn.execute(drop_sequence)
+        trans.commit()
     except Exception as e:
         print('Exception loading data -- ', e)
-        # add rollback here
+        trans.rollback()
 
 
 def load_data_process(conn, conf):

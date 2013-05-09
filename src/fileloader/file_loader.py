@@ -1,6 +1,7 @@
 import datetime
 import csv
 import fileloader.prepare_queries as queries
+import random
 from sqlalchemy.exc import NoSuchTableError
 from sqlalchemy.engine import create_engine
 
@@ -118,13 +119,20 @@ def get_staging_tables(conn, header_names, header_types, csv_file, staging_schem
 
 
 def import_via_fdw(conn, apply_rules, header_names, header_types, staging_schema, staging_table, csv_schema, csv_table, start_seq):
-    insert_into_staging_table = queries.create_inserting_into_staging_query(apply_rules, header_names, header_types, staging_schema, staging_table, csv_schema, csv_table, start_seq)
-    print('@@@@@@@', insert_into_staging_table)
+    # create sequence name, use table_name and a random number combination
+    seq_name = csv_table + '_' + str(random.choice(range(1, 10)))
+    create_sequence = queries.create_sequence_query(staging_schema, seq_name, start_seq)
+    insert_into_staging_table = queries.create_inserting_into_staging_query(apply_rules, header_names, header_types, staging_schema, staging_table, csv_schema, csv_table, start_seq, seq_name)
+    drop_sequence = queries.drop_sequence_query(staging_schema, seq_name)
+    # print('@@@@@@@', insert_into_staging_table)
+
     try:
+        conn.execute(create_sequence)
         conn.execute(insert_into_staging_table)
+        conn.execute(drop_sequence)
     except Exception as e:
-        print('Exception -- ', e)
-        # conn.rollback()
+        print('Exception loading data -- ', e)
+        # add rollback here
 
 
 def load_data_process(conn, conf):
@@ -187,7 +195,7 @@ if __name__ == '__main__':
             'staging_schema': 'public',
             'staging_table': 'tmp',
             'apply_rules': False,
-            'start_seq': 20
+            'start_seq': 10
     }
     start_time = datetime.datetime.now()
     load_file(conf)

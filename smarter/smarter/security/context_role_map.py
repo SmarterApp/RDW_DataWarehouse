@@ -5,7 +5,7 @@ Created on May 9, 2013
 '''
 
 
-class ContextFactory():
+class ContextRoleMap():
     '''
     Stores Context for each role used for lookup to get context security
     '''
@@ -23,11 +23,12 @@ class ContextFactory():
         return context
 
     @classmethod
-    def register(cls, entity):
+    def register(cls, names):
         '''
         Decorator used to register an user context method
         '''
-        def decorator(method):
-            cls.__context[entity.lower()] = method
-            return method
+        def decorator(obj):
+            for name in names:
+                cls.__context[name.lower()] = obj
+            return obj
         return decorator

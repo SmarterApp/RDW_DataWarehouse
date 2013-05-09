@@ -8,7 +8,7 @@ from pyramid.security import authenticated_userid
 import pyramid
 from smarter.database.connector import SmarterDBConnection
 from smarter.reports.helpers.constants import Constants
-from smarter.security.context_factory import ContextFactory
+from smarter.security.context_role_map import ContextRoleMap
 
 
 def select_with_context(columns=None, whereclause=None, from_obj=[], **kwargs):
@@ -38,8 +38,9 @@ def select_with_context(columns=None, whereclause=None, from_obj=[], **kwargs):
         query = Select(columns, whereclause=whereclause, from_obj=from_obj, **kwargs)
 
         # Look up role for its context security method
-        context_method = ContextFactory.get_context(role)
+        context = ContextRoleMap.get_context(role)
         # apply context security
-        query = context_method(connector, query, guid)
+        context_obj = context(connector)
+        query = context_obj.append_context(query, guid)
 
     return query

@@ -7,8 +7,8 @@ import unittest
 from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite
 from smarter.database.connector import SmarterDBConnection
 from sqlalchemy.sql.expression import select
-from smarter.security.roles.default import append_context
 from smarter.reports.helpers.constants import Constants
+from smarter.security.roles.default import DefaultRole
 
 
 class TestDefaultContextSecurity(Unittest_with_smarter_sqlite):
@@ -20,7 +20,8 @@ class TestDefaultContextSecurity(Unittest_with_smarter_sqlite):
                            from_obj=([fact_asmt_outcome]))
             results = connection.get_result(query)
 
-            context_query = append_context(connection, query, '123')
+            default_context = DefaultRole(connection)
+            context_query = default_context.append_context(query, '123')
             context_results = connection.get_result(context_query)
 
             self.assertEqual(len(results), len(context_results))

@@ -4,6 +4,7 @@ import udl2.W_final_cleanup
 from celery.result import AsyncResult
 from celery.utils.log import get_task_logger
 from fileloader.file_loader import load_file
+import os
 
 
 logger = get_task_logger(__name__)
@@ -32,16 +33,19 @@ def task(msg):
 
 
 def generate_conf_for_loading(csv_file_path, header_file_path, start_seq):
+    csv_file_name_and_ext = os.path.splitext(os.path.basename(csv_file_path))
+    csv_file_name = csv_file_name_and_ext[0]
+    csv_table = csv_file_name
     conf = {
             'csv_file': csv_file_path,
             'start_seq': start_seq,
             'header_file': header_file_path,
-            'csv_table': 'UDL_test_data_block_of_100_records_with_datatype_errors_v3',
+            'csv_table': csv_table,
             'db_host': 'localhost',
             'db_port': '5432',
             'db_user': 'postgres',
             'db_name': 'fdw_test',
-            'db_password': '3423346',
+                'db_password': '3423346',
             'csv_schema': 'public',
             'fdw_server': 'udl_import',
             'staging_schema': 'public',

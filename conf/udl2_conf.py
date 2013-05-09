@@ -56,6 +56,14 @@ udl2_conf = {
                    'prev':'stage_2',
         }
     },
+    'rabbitmq': {
+        'RABBITMQ_SERVER':'/opt/local/sbin/rabbitmq-server',
+    },
+    'postgresql' : {
+        'db_host':'',
+        'db_port':'',
+        'db_db':'',
+    }
 }
 
 

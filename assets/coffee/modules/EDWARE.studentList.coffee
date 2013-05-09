@@ -57,6 +57,28 @@ define [
           renderStudentGrid(defaultView)
           renderHeaderPerfBar(cutPointsData)
           
+          # Show tooltip for overall score on mouseover
+          $(document).on
+            mouseenter: ->
+              elem = $(this)
+              elem.popover
+                html: true
+                trigger: "manual"
+                placement: (tip, element) ->
+                  edwareUtil.popupPlacement(element, 400, 220)
+                title: ->
+                  elem.parent().find(".losTooltip .js-popupTitle").html() 
+                template: '<div class="popover losPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
+                content: ->
+                  elem.parent().find(".losTooltip").html() # html is located in widgets/EDWARE.grid.formatter performanceBar method
+              .popover("show")
+            click: (e) ->
+              e.preventDefault()
+            mouseleave: ->
+              elem = $(this)
+              elem.popover("hide")
+          , ".asmtScore"
+          
           # Generate footer links
           $('#footer').generateFooter('list_of_students', reportInfo)
           
@@ -65,7 +87,8 @@ define [
             role = edwareUtil.getRole userData
             uid = edwareUtil.getUid userData
             edwareUtil.renderFeedback(role, uid, "list_of_students", feedbackData)
-          
+        
+        
   renderHeaderPerfBar = (cutPointsData) ->
     for key of cutPointsData
         items = cutPointsData[key]
@@ -222,6 +245,7 @@ define [
         if key of assessment
           cutpoint = assessmentCutpoints[key]
           $.extend assessment[key], cutpoint
+          assessment[key].asmt_type = value # display asssessment type in the tooltip title
           assessment[key].score_bg_color = assessment[key].cut_point_intervals[assessment[key].asmt_perf_lvl-1].bg_color
           assessment[key].score_text_color = assessment[key].cut_point_intervals[assessment[key].asmt_perf_lvl-1].text_color
           # save the assessment to the particular subject

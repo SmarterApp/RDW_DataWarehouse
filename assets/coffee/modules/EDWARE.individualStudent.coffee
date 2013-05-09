@@ -166,24 +166,19 @@ define [
           
           
         # Show tooltip for claims on mouseover
-          $(document).on
-            mouseenter: ->
-              e = $(this)
-              e.popover
-                html: true
-                container: "div"
-                placement: (tip, element) ->
-                  edwareUtil.popupPlacement(element, 400, 276)
-                title: ->
-                  e.parent().parent().find(".header").find("h4").html()
-                template: '<div class="popover claimsPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
-                content: ->
-                  e.find(".claims_tooltip").html() # template location: templates/individualStudent_report/claimsInfo.html
-              .popover("show")
-            mouseleave: ->
-              e = $(this)
-              e.popover("hide")
-          , ".claims .arrowBox"
+        $(".arrowBox").popover
+          html: true
+          container: "div"
+          trigger: "hover"
+          placement: (tip, element) ->
+            edwareUtil.popupPlacement(element, 400, 276)
+          title: ->
+            e = $(this)
+            e.parent().parent().find(".header").find("h4").html()
+          template: '<div class="popover claimsPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
+          content: ->
+            e = $(this)
+            e.find(".claims_tooltip").html() # template location: templates/individualStudent_report/claimsInfo.html
         
         # Generate footer links
         $('#footer').generateFooter('individual_student_report', reportInfo)

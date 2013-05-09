@@ -87,5 +87,4 @@ FILE_SPLITTER_CONF = udl2_conf['file_splitter']
 
 
 if __name__ == '__main__':
-    print('here')
-    #celery.start()
+    celery.start()

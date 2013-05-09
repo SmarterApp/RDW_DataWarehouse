@@ -8,10 +8,7 @@ from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smart
 from pyramid import testing
 from pyramid.testing import DummyRequest
 from smarter.database.connector import SmarterDBConnection
-from smarter.security.context import get_teacher_context,\
-    get_student_context, append_teacher_context,\
-    append_student_context, select_with_context, get_school_admin_context
-from sqlalchemy.sql.expression import select
+from smarter.security.context import select_with_context
 from edauth.security.user import User
 
 
@@ -77,60 +74,6 @@ class TestContext(Unittest_with_smarter_sqlite):
             results = connection.get_result(query)
             for result in results:
                 self.assertEquals(result['student_guid'], uid)
-
-    def test_get_teacher_context(self):
-        guid = "272"
-        with SmarterDBConnection() as connection:
-            context = get_teacher_context(connection, guid)
-            self.assertListEqual(context, ['345'])
-
-    def test_get_student_context(self):
-        guid = "a016a4c1-5aca-4146-a85b-ed1172a01a4d"
-        with SmarterDBConnection() as connection:
-            context = get_student_context(connection, guid)
-            self.assertListEqual(context, [guid])
-
-    def test_get_school_admin_context(self):
-        guid = "1023"
-        with SmarterDBConnection() as connection:
-            context = get_school_admin_context(connection, guid)
-            self.assertListEqual(context, ['939'])
-
-    def test_append_teacher_context(self):
-        with SmarterDBConnection() as connection:
-            guid = '963'
-            fact_asmt_outcome = connection.get_table('fact_asmt_outcome')
-            query = select([fact_asmt_outcome.c.section_guid],
-                           from_obj=([fact_asmt_outcome]))
-            query = append_teacher_context(connection, query, guid)
-
-            results = connection.get_result(query)
-            for result in results:
-                self.assertEqual(result['section_guid'], '974')
-
-    def test_append_student_context(self):
-        with SmarterDBConnection() as connection:
-            guid = '61ec47de-e8b5-4e78-9beb-677c44dd9b50'
-            fact_asmt_outcome = connection.get_table('fact_asmt_outcome')
-            query = select([fact_asmt_outcome.c.student_guid],
-                           from_obj=([fact_asmt_outcome]))
-            query = append_student_context(connection, query, guid)
-
-            results = connection.get_result(query)
-            for result in results:
-                self.assertEqual(result['student_guid'], '61ec47de-e8b5-4e78-9beb-677c44dd9b50')
-
-    def test_append_school_admin_context(self):
-        with SmarterDBConnection() as connection:
-            guid = '1023'
-            fact_asmt_outcome = connection.get_table('fact_asmt_outcome')
-            query = select([fact_asmt_outcome.c.school_guid],
-                           from_obj=([fact_asmt_outcome]))
-            query = append_student_context(connection, query, guid)
-
-            results = connection.get_result(query)
-            for result in results:
-                self.assertEqual(result['school_guid'], '939')
 
 
 if __name__ == "__main__":

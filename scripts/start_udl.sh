@@ -1,7 +1,7 @@
 #! /bin/sh
 # The script acceptes --config_file path_and_name_of config file, so it counts as 2 arguments
 
-if [ $# == 2]; then
+if [ $# == 2 ]; then
     start_rabbitmq.sh $1 $2
     sleep 10
     start_celery.sh $1 $2;

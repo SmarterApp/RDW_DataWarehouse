@@ -13,7 +13,7 @@ def create_ddl_csv_query(header_names, header_types, csv_file, csv_schema, csv_t
     ddl_parts = ["CREATE FOREIGN TABLE IF NOT EXISTS %s.%s ( " % (csv_schema, csv_table),
                  ','.join([header_names[i] + ' ' + header_types[i] + ' ' for i in range(len(header_names))]),
                  ") SERVER %s " % fdw_server,
-                 "OPTIONS (filename '%s', format '%s', header '%s')" % (csv_file, 'csv', 'false')]
+                 "OPTIONS (filename '%s', format '%s', header '%s')" % (csv_file, 'csv', 'true')]
     ddl_parts = "".join(ddl_parts)
     # print(ddl_parts)
     return ddl_parts
@@ -24,9 +24,9 @@ def drop_ddl_csv_query(csv_schema, csv_table):
     return ddl
 
 
-def create_staging_tables_query(header_types, header_names, csv_file, csv_schema, csv_table):
+def create_staging_tables_query(header_types, header_names, csv_file, staging_schema, staging_table):
     # TODO: need to be replaced by importing from staging table definition
-    ddl_parts = ["CREATE TABLE IF NOT EXISTS %s.%s ( " % (csv_schema, csv_table),
+    ddl_parts = ["CREATE TABLE IF NOT EXISTS %s.%s ( " % (staging_schema, staging_table),
                  ','.join([header_names[i] + ' ' + header_types[i] + ' ' for i in range(len(header_names))]),
                  ") "]
     return "".join(ddl_parts)

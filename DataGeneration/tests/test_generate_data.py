@@ -84,8 +84,6 @@ class Test(unittest.TestCase):
         school_sum = elm_sch_len + mid_sch_len + hig_sch_len
         self.assertGreaterEqual(school_sum, school_counts['min'])
         self.assertLessEqual(school_sum, school_counts['max'])
-        self.assertAlmostEqual(hig_sch_len * 5, elm_sch_len)
-        self.assertAlmostEqual(hig_sch_len * 2, mid_sch_len)
 
     def test_generate_institution_hierarchy_from_helper_entities(self):
         state = DummyClass()

@@ -4,7 +4,10 @@
 
 source ~/py33/bin/activate
 if [ $1 ]; then
-    start_rabbitmq.py;
+    start_celery.py;
 else
-    start_rabbitmq.py $1;
+    start_celery.py $1;
 fi
+    
+
+

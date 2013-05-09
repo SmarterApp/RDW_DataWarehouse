@@ -46,6 +46,10 @@ def create_inserting_into_staging_query(apply_rules, header_names, header_types,
     return insert_sql
 
 
+def set_sequence_query(staging_table, start_seq):
+    return "SELECT pg_catalog.setval(pg_get_serial_sequence('{staging_table}', 'src_row_number'), {start_seq}, false)".format(staging_table=staging_table, start_seq=start_seq)
+
+
 def apply_transformation_rules(apply_rules, header_types, header_names):
     '''
     The function apply the some transformation rules

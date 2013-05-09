@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-import udl2.celery
+from udl2.celery import celery, udl2_queues, udl2_stages
 import udl2.W_final_cleanup
 from celery.result import AsyncResult
 from celery.utils.log import get_task_logger
@@ -9,15 +9,20 @@ from fileloader.file_loader import load_file
 logger = get_task_logger(__name__)
 
 
-@udl2.celery.celery.task(name="udl2.W_file_loader.task")
+@celery.task(name="udl2.W_file_loader.task")
 def task(msg):
-    csv_file_path = msg['input_file']
-    header_file_path = msg['header_file']
+    file_name = msg['input_file']
     logger.info(task.name)
-    logger.info('Loading file %s...' % csv_file_path)
-    conf = generate_conf_for_loading(csv_file_path, header_file_path)
-    load_file(conf)
-    udl2.W_final_cleanup.task.apply_async([csv_file_path + ' passed after ' + task.name],
+    logger.info('Loading file %s...' % file_name)
+    load_file(file_name)
+   
+#    if udl2_stages[task.name]['next'] is not None:
+#        next_msg = [file_name + ' passed after ' + task.name]
+#        exec("task_instance = " + udl2_stages[task.name]['next']['task'])
+#        task_instance.apply_async(next_msg,
+#                                  udl2_queues[task.name]['queue'],
+#                                  udl2_stages[task.name]['routing_key'])
+    udl2.W_final_cleanup.task.apply_async([file_name + ' passed after ' + task.name],
                                            queue='Q_final_cleanup',
                                            routing_key='udl2')
     return msg
@@ -42,7 +47,7 @@ def generate_conf_for_loading(csv_file_path, header_file_path):
     return conf
 
 
-@udl2.celery.celery.task
+@celery.task(name="udl2.W_file_loader.error_handler")
 def error_handler(uuid):
     result = AsyncResult(uuid)
     exc = result.get(propagate=False)

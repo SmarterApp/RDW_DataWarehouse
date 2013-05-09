@@ -24,9 +24,27 @@ def run_command(cmd_string):
     
 def get_list_split_files(output_name_template,output_dir):
     output_list=[]
-    abs_path = os.path.abspath(output_dir)
-    for files in os.listdir(output_dir):
-    	if output_name_template in files: output_list.append(os.path.join(abs_path,files))
+    #get line count of all files in output directory that match template
+    get_files_command = 'wc %s*' % os.path.join(output_dir,output_name_template)
+    output,err = run_command(get_files_command)
+    
+    list_of_result_rows = output.splitlines()
+    
+    #record filename, line count as well as the calculated row start position
+    for each in range(len(list_of_result_rows)):
+        line_count,word_count,char_count,filename = list_of_result_rows[each].split()
+        if each == 0:
+        	row_start = 1
+        else:
+        	row_start = output_list[each-1][1] * each + 1
+        #if statement excludes 'total' row from command response	
+        if output_name_template in filename.decode('utf-8'): 
+        	output_list.append([filename.decode('utf-8'),int(line_count),row_start])
+        
+    
+    #abs_path = os.path.abspath(output_dir)
+    #for files in os.listdir(output_dir):
+    #	if output_name_template in files: output_list.append(os.path.join(abs_path,files))
     return output_list
 
 def split_file(file_name, delimiter=',', row_limit=10000, parts=0, output_path='.'):
@@ -68,7 +86,7 @@ def split_file(file_name, delimiter=',', row_limit=10000, parts=0, output_path='
     current_out_writer = csv.writer(open(current_out_path, 'w'), delimiter=delimiter)
     current_out_writer.writerow(header)
     
-    return get_list_split_files(output_name_template,output_dir)
+    #return get_list_split_files(output_name_template,output_dir)
 
         
 if __name__ == "__main__":

@@ -296,7 +296,7 @@ function build_egg {
 }
 
 function generate_ini {
-	cd "$WORKSPACE/smarter"
+	cd "$WORKSPACE/config"
 	python generate_ini.py -e jenkins_dev -i settings.yaml
 }
 

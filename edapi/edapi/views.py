@@ -9,9 +9,10 @@ from pyramid.view import view_config
 from edapi import EDAPI_REPORTS_PLACEHOLDER
 from edapi.utils import generate_report_config,\
     generate_report
-from edapi.exceptions import ReportNotFoundError, InvalidParameterError
+from edapi.exceptions import ReportNotFoundError, InvalidParameterError,\
+    ForbiddenError
 from edapi.httpexceptions import EdApiHTTPNotFound, EdApiHTTPPreconditionFailed,\
-    EdApiHTTPRequestURITooLong
+    EdApiHTTPRequestURITooLong, EdApiHTTPForbiddenAccess
 from pyramid.response import Response
 import json
 
@@ -101,6 +102,8 @@ def generate_report_get(request, validator=None):
         return EdApiHTTPNotFound(e.msg)
     except InvalidParameterError as e:
         return EdApiHTTPPreconditionFailed(e.msg)
+    except ForbiddenError as e:
+        return EdApiHTTPForbiddenAccess(e.msg)
     return report
 
 
@@ -124,4 +127,6 @@ def generate_report_post(request, validator=None):
         return EdApiHTTPNotFound(e.msg)
     except InvalidParameterError as e:
         return EdApiHTTPPreconditionFailed(e.msg)
+    except ForbiddenError as e:
+        return EdApiHTTPForbiddenAccess(e.msg)
     return report

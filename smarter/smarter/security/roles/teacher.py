@@ -8,6 +8,7 @@ from sqlalchemy.sql.expression import and_, select
 from smarter.security.constants import RolesConstants
 from smarter.security.roles.default import BaseRole
 from smarter.security.context_role_map import ContextRoleMap
+from smarter.security.roles.base import verify_context
 
 
 @ContextRoleMap.register([RolesConstants.TEACHER])
@@ -24,6 +25,7 @@ class Teacher(BaseRole):
         context = self.get_context(guid)
         return query.where(fact_asmt_outcome.c.section_guid.in_(context))
 
+    @verify_context
     def get_context(self, guid):
         '''
         Returns all the sections that the teacher is associated to

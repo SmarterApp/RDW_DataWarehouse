@@ -6,7 +6,7 @@ Created on May 9, 2013
 from smarter.reports.helpers.constants import Constants
 from sqlalchemy.sql.expression import select, and_
 from smarter.security.constants import RolesConstants
-from smarter.security.roles.base import BaseRole
+from smarter.security.roles.base import BaseRole, verify_context
 from smarter.security.context_role_map import ContextRoleMap
 
 
@@ -24,6 +24,7 @@ class SchoolAdmin(BaseRole):
         context = self.get_context(guid)
         return query.where(fact_asmt_outcome.c.school_guid.in_(context))
 
+    @verify_context
     def get_context(self, guid):
         '''
         Returns all school_guid that admin is associated to

@@ -9,6 +9,7 @@ from smarter.database.connector import SmarterDBConnection
 from sqlalchemy.sql.expression import select
 from smarter.reports.helpers.constants import Constants
 from smarter.security.roles.student import Student
+from edapi.exceptions import ForbiddenError
 
 
 class TestStudentContextSecurity(Unittest_with_smarter_sqlite):
@@ -24,8 +25,7 @@ class TestStudentContextSecurity(Unittest_with_smarter_sqlite):
         guid = "invalid-guid"
         with SmarterDBConnection() as connection:
             student_context = Student(connection)
-            context = student_context.get_context(guid)
-            self.assertListEqual(context, [])
+            self.assertRaises(ForbiddenError, student_context.get_context, guid)
 
     def test_append_student_context(self):
         with SmarterDBConnection() as connection:

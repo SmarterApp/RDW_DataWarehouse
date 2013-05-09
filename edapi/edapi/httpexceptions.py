@@ -3,7 +3,8 @@ Created on Jan 18, 2013
 
 @author: dip
 '''
-from pyramid.httpexceptions import HTTPNotFound, HTTPPreconditionFailed, HTTPRequestURITooLong
+from pyramid.httpexceptions import HTTPNotFound, HTTPPreconditionFailed, HTTPRequestURITooLong,\
+    HTTPForbidden
 import json
 
 
@@ -60,4 +61,17 @@ class EdApiHTTPRequestURITooLong(HTTPRequestURITooLong):
         @type max_length: number
         '''
         msg = "Request URI too long - maximum size supported is %s characters" % max_length
+        super().__init__(**generate_exception_response(msg))
+
+
+class EdApiHTTPForbiddenAccess(HTTPForbidden):
+    '''
+    a custom http exception for forbidden access
+    '''
+
+    def __init__(self, msg):
+        '''
+        @param msg: error message
+        @type msg: string
+        '''
         super().__init__(**generate_exception_response(msg))

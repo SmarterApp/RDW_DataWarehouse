@@ -10,6 +10,7 @@ from pyramid.testing import DummyRequest
 from smarter.database.connector import SmarterDBConnection
 from smarter.security.context import select_with_context
 from edauth.security.user import User
+from edapi.exceptions import ForbiddenError
 
 
 class TestContext(Unittest_with_smarter_sqlite):
@@ -35,10 +36,7 @@ class TestContext(Unittest_with_smarter_sqlite):
         self.__config.testing_securitypolicy(dummy_user)
         with SmarterDBConnection() as connection:
             fact_asmt_outcome = connection.get_table('fact_asmt_outcome')
-            query = select_with_context([fact_asmt_outcome.c.section_guid],
-                                        from_obj=([fact_asmt_outcome]))
-            results = connection.get_result(query)
-            self.assertListEqual([], results)
+            self.assertRaises(ForbiddenError, select_with_context, [fact_asmt_outcome.c.section_guid], from_obj=([fact_asmt_outcome]))
 
     def test_select_with_context_as_teacher(self):
         dummy_user = User()

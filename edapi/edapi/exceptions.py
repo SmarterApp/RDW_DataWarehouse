@@ -46,6 +46,21 @@ class InvalidParameterError(EdApiError):
             self.msg = msg
 
 
+class ForbiddenError(EdApiError):
+    '''
+    a custom exception raised when access is denied to a report
+    '''
+    def __init__(self, msg=None):
+        '''
+        @param msg: the error message.
+        @type msg: string
+        '''
+        if msg is None:
+            self.msg = "Forbidden Access"
+        else:
+            self.msg = msg
+
+
 class NotFoundException(HTTPNotFound):
     '''
     a custom http exception return when resource not found

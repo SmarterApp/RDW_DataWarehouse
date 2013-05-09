@@ -1,19 +1,10 @@
 from __future__ import absolute_import
+from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from celery import Celery
 from kombu import Exchange, Queue
 import sys
-
-def parse_args():
-    args = {}
-    return args
-
-
-def get_config_file(args):
-    if args['config'] is None:
-        return DEFAULT_CONFIG_PATH
-    else:
-        return args['config']
-    
+import os
+import imp
     
 def setup_udl2_queues(conf):
     queues = {}
@@ -62,12 +53,16 @@ def setup_celery_conf(udl2_conf, celery, udl_queues, udl_stages):
         CELERY_ROUTES=routes)
     return celery
 
-DEFAULT_CONFIG_PATH='/opt/wgen/edware-udl/etc/'
 
-# import configuration after getting path from command line
-# or use default when without it
+# import configuration after getting path from environment variable due to celery command don't take extra options
+# if UDL2_CONF is not set, use default configurations
 
-sys.path.append(DEFAULT_CONFIG_PATH)
+try:
+    config_path_file = os.environ['UDL2_CONF']
+except Exception:
+    config_path_file =  UDL2_DEFAULT_CONFIG_PATH_FILE
+
+udl2_conf = imp.load_source('udl2_conf', config_path_file)
 from udl2_conf import udl2_conf
 
 # the celery instance has to be named as celery due to celery driver looks for this object in celery.py
@@ -92,4 +87,5 @@ FILE_SPLITTER_CONF = udl2_conf['file_splitter']
 
 
 if __name__ == '__main__':
-    celery.start()
+    print('here')
+    #celery.start()

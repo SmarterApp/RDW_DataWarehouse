@@ -25,7 +25,7 @@ class ContextFactory():
     @classmethod
     def register(cls, entity):
         '''
-        Decorator used to register an user context
+        Decorator used to register an user context method
         '''
         def decorator(method):
             cls.__context[entity.lower()] = method

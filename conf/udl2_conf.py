@@ -70,6 +70,11 @@ udl2_conf = {
     'rabbitmq': {  # rabbitmq server for local testing if we requires to bring up a rabbitmq server for UDL2 celery tasks on this machine. It will be ignore by celery if there are global rabbitmq-server
         'RABBITMQ_SERVER_PATH':'/opt/local/sbin/rabbitmq-server', # where the rabbitmq-server is located
     },
+    'zones': { # zones for where the files are uploaded and processed. it may change to other mechanisms, but we uses local file system for the moment.
+        'landing':'/opt/wgen/edware-udl/zones/landing/',
+        'work':'/opt/wgen/edware-udl/zones/work/',
+        'history':'/opt/wgen/edware-udl/zones/history/',
+    },
     'postgresql' : { # PostgresQL for UDL2 processing. This is not the target database.
         'db_host':'',
         'db_port':'',

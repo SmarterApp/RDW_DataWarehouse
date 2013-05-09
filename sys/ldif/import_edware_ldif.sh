@@ -1,0 +1,2 @@
+# edit filenames and paths to taste.
+sudo /opt/OpenDJ-2.4.6/bin/import-ldif --ldifFile ~/workspace/repos/edware/sys/ldif/edware_users_20130508.ldif --includeBranch ou=environment,dc=edwdc,dc=net --rejectFile ~/workspace/repos/edware/sys/ldif/edware_users_rejected_20130508.out

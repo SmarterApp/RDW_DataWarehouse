@@ -1,11 +1,10 @@
 from __future__ import absolute_import
-import udl2.celery
+from udl2.celery import celery, udl2_queues, udl2_stages
 import udl2.W_file_loader
 from celery.result import AsyncResult
 from celery.utils.log import get_task_logger
 import filesplitter.file_splitter as file_splitter
 import time
-import random
 import datetime
 import os
 
@@ -13,7 +12,7 @@ import os
 logger = get_task_logger(__name__)
 
 
-@udl2.celery.celery.task(name="udl2.W_file_splitter.task")
+@celery.task(name="udl2.W_file_splitter.task")
 def task(msg):
     '''
     This is the celery task for splitting file
@@ -34,7 +33,6 @@ def task(msg):
     logger.info("Split %s in %s, number of sub-files: %i" % (file_name, str(spend_time), len(split_files)))
 
     number_of_files = len(split_files)
-    time.sleep(random.random() * 10)
 
     # for each of sub file, call do loading task
     for split_file in split_files:
@@ -43,7 +41,7 @@ def task(msg):
     return msg
 
 
-@udl2.celery.celery.task
+@celery.task(name="udl2.W_file_splitter.error_handler")
 def error_handler(uuid):
     result = AsyncResult(uuid)
     exc = result.get(propagate=False)

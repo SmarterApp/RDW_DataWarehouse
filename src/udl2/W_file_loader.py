@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-import udl2.celery
+from udl2.celery import celery, udl2_queues, udl2_stages
 import udl2.W_final_cleanup
 from celery.result import AsyncResult
 from celery.utils.log import get_task_logger
@@ -10,7 +10,7 @@ import random
 logger = get_task_logger(__name__)
 
 
-@udl2.celery.celery.task(name="udl2.W_file_loader.task")
+@celery.task(name="udl2.W_file_loader.task")
 def task(msg):
     file_name = msg['input_file']
     logger.info(task.name)
@@ -27,7 +27,7 @@ def load_file(file_path):
     time.sleep(random.random() * 10)
 
 
-@udl2.celery.celery.task
+@celery.task(name="udl2.W_file_loader.error_handler")
 def error_handler(uuid):
     result = AsyncResult(uuid)
     exc = result.get(propagate=False)

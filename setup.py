@@ -27,5 +27,5 @@ setup(name='udl2',
       scripts=scripts,
       requires=requires,
       data_files=[('/opt/wgen/edware-udl/logs', ['logs/udl2.audit.log', 'logs/udl2.error.log']),
-                  ('/opt/wgen/edware-udl/etc', ['conf/udl2.ini', 'conf/udl2.cfg', 'conf/udl2.py']),],
+                  ('/opt/wgen/edware-udl/etc', ['conf/udl2_conf.ini', 'conf/udl2_conf.cfg', 'conf/udl2_conf.py']),],
 ) 

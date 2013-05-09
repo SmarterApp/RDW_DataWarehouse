@@ -6,6 +6,7 @@ import random
 import util
 import stats as stats
 import constants as constants
+from collections import Counter
 from idgen import IdGen
 from write_to_csv import create_csv
 from importlib import import_module
@@ -118,10 +119,17 @@ def generate_data_from_config_file(config_module):
         # value: <list> A list of district objects
         districts_by_type = generate_district_dictionary(district_types_and_counts, district_names_1, district_names_2)
         # All the InstitutionHierarchy objects for this state will be put in the following list
+
+        # Debugging
+        dist_counts = Counter()
+
         state_institution_hierarchies = []
         for district_type_name in districts_by_type.keys():
             districts = districts_by_type[district_type_name]
             district_type = district_types[district_type_name]
+
+            # Debugging
+            dist_counts[district_type_name] += len(districts)
 
             # Pull out school information for this type of district
             # Here we get info on the types of schools to create
@@ -131,7 +139,7 @@ def generate_data_from_config_file(config_module):
             school_counts = district_type[config_module.SCHOOL_COUNTS]
 
             for district in districts:
-                print('populating district: %s' % district.district_name)
+                print('populating district: %s: %s' % (district.district_name, district_type_name))
                 # TODO: should we add some randomness here? What are acceptable numbers? 5-10? 10-20?
                 number_of_district_level_staff = 10
                 district_level_staff = generate_non_teaching_staff(number_of_district_level_staff, state_code=current_state.state_code,
@@ -139,12 +147,20 @@ def generate_data_from_config_file(config_module):
 
                 schools_by_type = create_school_dictionary(school_counts, school_types_and_ratios, school_types,
                                                            school_names_1, school_names_2)
+
+                # Debugging
+                school_counts = Counter()
+
                 for school_type_name in schools_by_type.keys():
                     schools = schools_by_type[school_type_name]
                     school_type = school_types[school_type_name]
                     school_type_institution_hierarchies = generate_and_populate_institution_hierarchies(schools, school_type, current_state,
                                                                                                         district, assessments, subject_percentages)
+                    # Debugging
+                    school_counts[school_type_name] += len(school_type_institution_hierarchies)
+
                     state_institution_hierarchies += school_type_institution_hierarchies
+
                 create_csv(district_level_staff, ENTITY_TO_PATH_DICT[Staff])
         create_csv(state_level_staff, ENTITY_TO_PATH_DICT[Staff])
         create_csv(state_institution_hierarchies, ENTITY_TO_PATH_DICT[InstitutionHierarchy])
@@ -335,16 +351,17 @@ def create_school_dictionary(school_counts, school_types_and_ratios, school_type
     number_of_schools_in_district = calculate_number_of_schools(num_schools_min, num_schools_max, num_schools_avg)
 
     ratio_sum = sum(school_types_and_ratios.values())
-    ratio_unit = max((number_of_schools_in_district // ratio_sum), 1)
+    ratio_unit = (number_of_schools_in_district / ratio_sum)  # max((number_of_schools_in_district // ratio_sum), 1)
 
     school_dictionary = {}
     for school_type in school_types_and_ratios:
         # Get the ratio so we can calculate the number of school types to create for each district
         school_type_ratio = school_types_and_ratios[school_type]
-        number_of_schools_for_type = int(school_type_ratio * ratio_unit)
+        number_of_schools_for_type = max(round(school_type_ratio * ratio_unit), 1)  # int(school_type_ratio * ratio_unit)
+
         school_list = []
         school_type_name = school_types_dict[school_type][config_module.TYPE]
-        for i in range(number_of_schools_for_type):
+        for _i in range(number_of_schools_for_type):
             school = generate_school(school_type_name, school_names_1, school_names_2)
             school_list.append(school)
         school_dictionary[school_type] = school_list

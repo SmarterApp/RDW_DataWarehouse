@@ -11,12 +11,12 @@ from smarter.security.constants import RolesConstants
 
 @ContextFactory.register(RolesConstants.TEACHER)
 def append_teacher_context(connector, query, guid):
-        '''
-        Appends to WHERE cause of the query with teacher context
-        '''
-        fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
-        context = get_teacher_context(connector, guid)
-        return query.where(fact_asmt_outcome.c.section_guid.in_(context))
+    '''
+    Appends to WHERE cause of the query with teacher context
+    '''
+    fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
+    context = get_teacher_context(connector, guid)
+    return query.where(fact_asmt_outcome.c.section_guid.in_(context))
 
 
 def get_teacher_context(connector, guid):

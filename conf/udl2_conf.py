@@ -71,13 +71,13 @@ udl2_conf = {
         'RABBITMQ_SERVER_PATH':'/opt/local/sbin/rabbitmq-server', # where the rabbitmq-server is located
     },
     'zones': { # zones for where the files are uploaded and processed. it may change to other mechanisms, but we uses local file system for the moment.
-        'landing':'/opt/wgen/edware-udl/zones/landing/',
-        'work':'/opt/wgen/edware-udl/zones/work/',
-        'history':'/opt/wgen/edware-udl/zones/history/',
+        'landing':'/opt/wgen/edware-udl/zones/landing/', # this is for where the uploaded files are located, it may be an url in the long run to get data
+        'work':'/opt/wgen/edware-udl/zones/work/', # this is the where the file are use for work. this should always be local for speed
+        'history':'/opt/wgen/edware-udl/zones/history/', # this is where we store historical info. it may be an url for large file storages such as s3.
     },
-    'logging': {
-        'audit':'/var/log/wgen/edware-udl/logs/udl2.audit.log',
-        'error':'/var/log/wgen/edware-udl/logs/udl2.error.log',
+    'logging': { # log location. this should be in the long run as file locations or more sophisticated logging system
+        'audit':'/var/log/wgen/edware-udl/logs/udl2.audit.log',  # for status log for everything
+        'error':'/var/log/wgen/edware-udl/logs/udl2.error.log',  # for error message and exceptions, 
     },
     'postgresql' : { # PostgresQL for UDL2 processing. This is not the target database.
         'db_host':'',

@@ -7,9 +7,9 @@ logger = get_task_logger(__name__)
 
 @celery.task(name="udl2.W_dummy_task.task")
 def task(msg):
-    if udl_stages[task.name]['next'] is not None:
-        exec("task_instance = " + udl_stages[task.name]['next']['task'])
+    if udl2_stages[task.name]['next'] is not None:
+        exec("task_instance = " + udl2_stages[task.name]['next']['task'])
         task_instance.apply_async([msg],
-                                  udl_queues[task.name]['queue'],
-                                  udl_stages[task.name]['routing_key'])
+                                  udl2_queues[task.name]['queue'],
+                                  udl2_stages[task.name]['routing_key'])
     return msg

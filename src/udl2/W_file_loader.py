@@ -16,6 +16,13 @@ def task(msg):
     logger.info(task.name)
     logger.info('Loading file %s...' % file_name)
     load_file(file_name)
+   
+#    if udl2_stages[task.name]['next'] is not None:
+#        next_msg = [file_name + ' passed after ' + task.name]
+#        exec("task_instance = " + udl2_stages[task.name]['next']['task'])
+#        task_instance.apply_async(next_msg,
+#                                  udl2_queues[task.name]['queue'],
+#                                  udl2_stages[task.name]['routing_key'])
     udl2.W_final_cleanup.task.apply_async([file_name + ' passed after ' + task.name],
                                            queue='Q_final_cleanup',
                                            routing_key='udl2')

@@ -20,6 +20,7 @@ def connect_db(conf_args):
     '''
     Connect to database via sqlalchemy
     '''
+
     # TODO:define conf_args content
     db_string = DBDRIVER + '://{db_user}:{db_password}@{db_host}/{db_name}'.format(**conf_args)
     engine = create_engine(db_string)
@@ -149,7 +150,7 @@ def load_file(conf):
     # If we want to run this script without staging table defined at first,
     # please comment out the following line.
     # in method load_data_process(), then in get_staging_tables(), it will create staging table as a temporary solution
-    check_setup(conf['staging_table'], engine, conn)
+    #check_setup(conf['staging_table'], engine, conn)
 
     # start loading file process
     time_for_load = load_data_process(conn, conf)
@@ -166,9 +167,9 @@ if __name__ == '__main__':
 
             'db_host': 'localhost',
             'db_port': '5432',
-            'db_user': 'postgres',
+            'db_user': 'abrien',
             'db_name': 'fdw_test',
-            'db_password': '3423346',
+            'db_password': '',
             'csv_schema': 'public',
             'fdw_server': 'udl_import',
             'staging_schema': 'public',

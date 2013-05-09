@@ -9,7 +9,6 @@ Reads a yaml file and generate an ini file according to an environment parameter
 '''
 import argparse
 import yaml
-from smarter.reports.exceptions.parameter_exception import InvalidParameterException
 
 __all__ = []
 __version__ = 0.1
@@ -49,7 +48,7 @@ def generate_ini(env, input_file='settings.yaml'):
         with open(input_file, 'r') as f:
             settings = f.read()
     except:
-        raise InvalidParameterException(str.format("could not find or open file {0} for read", input_file))
+        raise IOError(str.format("could not find or open file {0} for read", input_file))
 
     # use PyYaml to load the file's content
     settings = yaml.load(settings)
@@ -61,7 +60,7 @@ def generate_ini(env, input_file='settings.yaml'):
         print(str.format("could not find environment {0} in the yaml file", env))
 
     if 'common' not in settings:
-        raise InvalidParameterException("could not find the common section in the yaml file")
+        raise ValueError("could not find the common section in the yaml file")
 
     common_settings = settings['common']
 
@@ -73,11 +72,12 @@ def generate_ini(env, input_file='settings.yaml'):
 
     result = ""
     # we read each group and write it to the result string with its content.
-    for group in yaml_object:
+    # output in alphabetic order
+    for group in sorted(yaml_object.keys()):
         result = result + group + "\n"
         group_settings = yaml_object[group]
         # we add all settings with their values.
-        result = result + ''.join([setting + " = " + group_settings[setting] + "\n" for setting in group_settings])
+        result = result + ''.join([setting + " = " + group_settings[setting] + "\n" for setting in sorted(group_settings.keys())])
 
     # we presume that the result file has the environment name.
     output_file = env + ".ini"

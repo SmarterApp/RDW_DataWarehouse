@@ -141,6 +141,13 @@ common:
   '[formatter_json]':
     class: edapi.logging.JsonDictLoggingFormatter
     format: '%(asctime)s %(message)s'
+    
+    
+  '[celery_config]':
+    broker_url: amqp://guest@localhost//
+    celery_include: tasks
+    celery_result_backend: amqp
+    celeryd_concurrency: 8
 
 # End logging configuration
 

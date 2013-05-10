@@ -8,11 +8,11 @@ from celery.app.base import Celery
 celery = Celery()
 
 
-def setup_celery(settings):
+def start_celery(settings):
+    celery_config = {}
     # get config values
-    broker_url = settings.get('celery.broker_url')
-    always_eager = settings.get('celery.celery_always_eager')
-    # set up config as a dict
-    celery_config = {'BROKER_URL': broker_url,
-                     'CELERY_ALWAYS_EAGER': always_eager}
+    for key in settings:
+        if key.startswith('celery'):
+            celery_key = key[len('celery.'):].upper()
+            celery_config[celery_key] = settings[key]
     celery.config_from_object(celery_config)

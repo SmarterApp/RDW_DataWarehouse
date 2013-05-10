@@ -67,7 +67,6 @@ common:
     pdfmaker.start.celery: true
     # Celery config
     celery:
-      broker_url: amqp://guest@localhost//
       celery_always_eager: true
 
   '[server:main]':

@@ -8,7 +8,7 @@ from celery.app.base import Celery
 celery = Celery()
 
 
-def start_celery(settings):
+def setup_celery(settings):
     # get config values
     broker_url = settings.get('celery.broker_url')
     always_eager = settings.get('celery.celery_always_eager')

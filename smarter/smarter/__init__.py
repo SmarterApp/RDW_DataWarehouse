@@ -118,7 +118,7 @@ def prepare_env(settings):
         # catch the kill signal
         signal.signal(signal.SIGTERM, sig_term_handler)
         # start celery
-        celeryconfig.start_celery(settings)
+        celeryconfig.setup_celery(settings)
 
     auth_idp_metadata = settings.get('auth.idp.metadata', None)
     if auth_idp_metadata is not None:

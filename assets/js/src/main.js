@@ -21,6 +21,7 @@ require({
 		edwarePopulationBar: '../widgets/populationBar/EDWARE.populationBar',
 		edwareFeedback: 'EDWARE.feedback',
 		edwareFooter: '../widgets/footer/EDWARE.footer',
+		edwareLoadingMask: '../widgets/loadingMask/EDWARE.loadingMask',
 		
 		// Templates
 		edwareBreadcrumbsTemplate: '../widgets/breadcrumb/template.html',

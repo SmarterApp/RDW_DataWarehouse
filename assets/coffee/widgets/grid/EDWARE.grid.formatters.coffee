@@ -53,8 +53,15 @@ define [
       score_ALD = subject.cut_point_intervals[subject.asmt_perf_lvl-1]["name"]
       results =  edwareLOSConfidenceLevelBar.create subject, 120
       results2 =  edwareConfidenceLevelBar.create subject, 300
-
-      "<div class='asmtScore' style='background-color:"+ subject.score_bg_color + "; color: "+ subject.score_text_color + ";'>" + subject.asmt_score + "</div><div class = 'confidenceLevel'>" +results+ "</div><div class='losTooltip hide'><div class='js-popupTitle hide'>"+rowObject.student_full_name+" | " + subject.asmt_type + " overall score</div><div class='summary'><div class='title left'>Overall Score</div><div class='score left' style='background:"+subject.score_bg_color+";color:"+subject.score_text_color+"'><span>"+subject.asmt_score+"</span></div><div class='description' style='color:"+subject.score_bg_color+"'>"+score_ALD+"</div></div><hr/><div class='losPerfBar'>"+results2+"</div><div class='errorBand'>Error Band: <strong>"+subject.asmt_score_range_min+"-"+subject.asmt_score_range_max+"</strong></div></div>"      
+      
+      student_name = rowObject.student_first_name if rowObject.student_first_name
+      student_name = student_name + " " + rowObject.student_middle_name[0] + "." if rowObject.student_middle_name
+      student_name = student_name + " " + rowObject.student_last_name if rowObject.student_last_name
+      perfBar = "<div class='asmtScore' style='background-color:"+ subject.score_bg_color + "; color: "+ subject.score_text_color + ";'>" + subject.asmt_score + "</div><div class = 'confidenceLevel'>" +results+ "</div>"
+      toolTip = "<div class='losTooltip hide'><div class='js-popupTitle hide'>"+student_name+ " | " + subject.asmt_type + " overall score</div>"
+      toolTip = toolTip + "<div class='summary'><div class='title left'>Overall Score</div><div class='score left' style='background:"+subject.score_bg_color+";color:"+subject.score_text_color+"'><span>"+subject.asmt_score+"</span></div><div class='description' style='color:"+subject.score_bg_color+"'>"+score_ALD+"</div></div><hr/><div class='losPerfBar'>"+results2+"</div><div class='errorBand'>Error Band: <strong>"+subject.asmt_score_range_min+"-"+subject.asmt_score_range_max+"</strong></div></div>"
+        
+      output = perfBar + toolTip     
     else
       ""   
 

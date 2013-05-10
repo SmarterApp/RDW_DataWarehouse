@@ -27,6 +27,7 @@ var baseConfigs = {
 		edwareComparingPopulations: '../../js/src/modules/EDWARE.comparingPopulations',
 		edwareFeedback: '../../js/src/modules/EDWARE.feedback',
 		edwareFooter: '../../js/src/widgets/footer/EDWARE.footer',
+		edwareLoadingMask: '../../js/src/widgets/loadingMask/EDWARE.loadingMask',
 	    
 	    edwareBreadcrumbsTemplate: '../../js/src/widgets/breadcrumb/template.html',
 	    edwareHeaderHtml: '../../js/src/widgets/header/header.html',

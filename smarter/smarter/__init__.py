@@ -13,6 +13,7 @@ import atexit
 import signal
 from pyramid_beaker import set_cache_regions_from_settings
 import sys
+from services import celeryconfig
 
 logger = logging.getLogger(__name__)
 CAKE_PROC = None
@@ -116,6 +117,8 @@ def prepare_env(settings):
             os.chdir(current_dir)
         # catch the kill signal
         signal.signal(signal.SIGTERM, sig_term_handler)
+        # start celery
+        celeryconfig.start_celery(settings)
 
     auth_idp_metadata = settings.get('auth.idp.metadata', None)
     if auth_idp_metadata is not None:

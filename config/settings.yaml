@@ -65,6 +65,10 @@ common:
     run.npm.update: true
     # Start celery server for pdf
     pdfmaker.start.celery: true
+    # Celery config
+    celery:
+      broker_url: amqp://guest@localhost//
+      celery_always_eager: true
 
   '[server:main]':
     use: 'egg:waitress#main'
@@ -141,13 +145,7 @@ common:
   '[formatter_json]':
     class: edapi.logging.JsonDictLoggingFormatter
     format: '%(asctime)s %(message)s'
-    
-    
-  '[celery_config]':
-    broker_url: amqp://guest@localhost//
-    celery_include: tasks
-    celery_result_backend: amqp
-    celeryd_concurrency: 8
+
 
 # End logging configuration
 

@@ -1,21 +1,24 @@
-from sqlalchemy.schema import MetaData, CreateSchema
+from sqlalchemy.schema import MetaData, CreateSchema, CreateTable
 from sqlalchemy import Table, Column, Index
 from sqlalchemy import SmallInteger, String, Date, Boolean
 from sqlalchemy import ForeignKey
-from sqlalchemy.types import Enum, UnicodeText, DateTime, Text
+from sqlalchemy.types import *
 from sqlalchemy.engine import create_engine
-from sqlalchemy.sql.expression import func
-from sqlalchecmy.dialects.postgresql import *
-
+from sqlalchemy.sql.expression import func, text
+from sqlalchemy.dialects.postgresql import *
+import imp
+import argparse
+from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 
 #
 # We use a list of columns for table.
 # for each column ('column name', 'is a primary key', 'type', 'default value', 'Nullalbe', 'Comments')
+
 UDL_TABLE_METADATA = { 
     'UDL_BATCH': {'columns':
         [
         ('batch_sid', True, 'bigserial', '', False, ""),
-        ('batch_user_status', False, 'varhchar(50)', '', True, ""),
+        ('batch_user_status', False, 'varchar(50)', '', True, ""),
         ('job_status', False, 'varchar(50)', '', True, ""),
         ('task_id', False, 'varchar(255)', '', True, ""),
         ('task_status_url', False, 'varchar(255)', '', True, ""),
@@ -25,9 +28,9 @@ UDL_TABLE_METADATA = {
         ('source_folder', False, 'varchar(120)', '', True, ""),
         ('parent_file_type', False, 'varchar(80)', '', True, ""),
         ('src_file_type', False, 'varchar(80)', '', True, ""),
-        ('process_instruction', False, 'jsom', '', True, ""),
+        ('process_instruction', False, 'json', '', True, ""),
         ('etl_stg_target', False, 'varchar(127)', '', True, ""),
-        ('etl_int_src', 'varchar(127)', '', True, ""),
+        ('etl_int_src', False, 'varchar(127)', '', True, ""),
         ('etl_int_target', False, 'varchar(127)', '', True, ""),
         ('etl_hist_src', False, 'varchar(127)', '', True, ""),
         ('etl_hist_target', False, 'varchar(127)', '', True, ""),
@@ -55,7 +58,7 @@ UDL_TABLE_METADATA = {
         ('score_claim_1_min', False, 'varchar(256)', '', True, "Claim 1 Score - Minimum"),
         ('score_claim_1_max', False, 'varchar(256)', '', True, "Claim 1 Score - Maximum"),
         ('score_claim_1_weight', False, 'varchar(256)', '', True, "Claim 1 Weight"),
-        ('name_claim_2', False, 'varchar(256)', '', True, "Claim 2")
+        ('name_claim_2', False, 'varchar(256)', '', True, "Claim 2"),
         ('score_claim_2_min', False, 'varchar(256)', '', True, "Claim 2 Score - Minimum"),
         ('score_claim_2_max', False, 'varchar(256)', '', True, "Claim 2 Score - Maximum"),
         ('score_claim_2_weight', False, 'varchar(256)', '', True, "Claim 2 Weight"),
@@ -111,12 +114,12 @@ UDL_TABLE_METADATA = {
         ('date_assessed', False, 'varchar(256)', '', True, "Date on which student was assessed"),
         ('score_asmt', False, 'varchar(256)', '', True, "Assessment Score"),
         ('score_asmt_min', False, 'varchar(256)', '', True, "Assessment Score - Minimum"),
-        ('score_asmt_max', False, 'varchar(256)', '', True, "Assessment Score - Maximum")
-        ('score_perf_level', False, 'varchar(256)', '', True, "Performance Level")
+        ('score_asmt_max', False, 'varchar(256)', '', True, "Assessment Score - Maximum"),
+        ('score_perf_level', False, 'varchar(256)', '', True, "Performance Level"),
         ('score_claim_1', False, 'varchar(256)', '', True, "Claim 1 Score"),
         ('score_claim_1_min', False, 'varchar(256)', '', True, "Claim 1 Score - Minimum"),
         ('score_claim_1_max', False, 'varchar(256)', '', True, "Claim 1 Score - Maximum"),
-        ('score_claim_2', False, 'varchar(256)', '', True, "Claim 2 Score")
+        ('score_claim_2', False, 'varchar(256)', '', True, "Claim 2 Score"),
         ('score_claim_2_min', False, 'varchar(256)', '', True, "Claim 2 Score - Minimum"),
         ('score_claim_2_max', False, 'varchar(256)', '', True, "Claim 2 Score - Maximum"),
         ('score_claim_3', False, 'varchar(256)', '', True, "Claim 3 Score"),
@@ -141,7 +144,7 @@ UDL_TABLE_METADATA = {
         ('batch_id', False, 'bigint', '', False, "Batch ID which caused the record insert"),
         ('err_code', False, 'bigint', '', True, "Error Code"),
         ('err_source', False, 'bigint', '', True, "Pipeline Stage that inserted this error."),
-        ('create_date', False, 'bigint', '', False, "Date on which record is inserted"),
+        ('create_date', False, 'timestamp', 'now()', False, "Date on which record is inserted"),
         ],
         'indexes':[],
         'keys':[],
@@ -152,43 +155,88 @@ UDL_TABLE_METADATA = {
 def map_sql_type_to_sqlalchemy_type(sql_type):
     mapped_type = None
     sql_type_mapped_type = {
-        'timestamp': sqlalchemy.types.TIMESTAMP,
-        'bigint' : sqlalchemy.types.BIGINT,
-        'bigserail': sqlalchemy.types.BIGINT,
-        'varchar': sqlalchemy.types.VARCHAR
+        'timestamp': TIMESTAMP,
+        'bigint' : BIGINT,
+        'bigserial': BIGINT,
+        'varchar': VARCHAR,
+        'json': TEXT
     }
     try:
         mapped_type = sql_type_mapped_type[sql_type]
     except Exception as e:
         if sql_type[0:7] == 'varchar':
             length = int(sql_type[7:].replace('(', '').replace(')', ''))
-            mapped_type = sqlalchemy.types.VARCHAR(length)
-    
+            mapped_type = VARCHAR(length)
     return mapped_type
 
 
 def map_tuple_to_sqlalchemy_column(ddl_tuple):
     column = Column(ddl_tuple[0],
         map_sql_type_to_sqlalchemy_type(ddl_tuple[2]),
-        primary_key=ddl_tuple[1],
+        primary_key = ddl_tuple[1],
         nullable = ddl_tuple[4],
-        server_default = text(ddl_tuple[3]),
+        server_default = ( text(ddl_tuple[3]) if (ddl_tuple[3] != '') else None ),
         doc = ddl_tuple[5],
     )
+   # print(column)
     return column
 
 
-def create_table(engine, table_name):
+def create_table(metadata, schema, table_name):
     column_ddl = UDL_TABLE_METADATA[table_name]['columns']
-    metadata = MetaData()
     arguments = [table_name, metadata]
     
     for c_ddl in column_ddl:
+        #print(c_ddl)
         column = map_tuple_to_sqlalchemy_column(c_ddl)
         arguments.append(column)
-    table = Table(*tuple(arguments))
-    metadata.create_all(engine)
+    table = Table(*tuple(arguments), **{'schema':schema})
+    return table
+
+
+def _parse_args():
+    parser = argparse.ArgumentParser('database')
+    parser.add_argument('--config_file', dest='config_file')
+    args = parser.parse_args()
+    return args
+
+
+def _get_db_url(udl2_conf):
+    return "postgresql://%s:%s@%s/%s" % (udl2_conf['postgresql']['db_user'],
+                                         udl2_conf['postgresql']['db_pass'],
+                                         udl2_conf['postgresql']['db_host'],
+                                         udl2_conf['postgresql']['db_database'])
+
+
+def _create_engine(db_url):
+    return create_engine(db_url)
+
+
+def create_schema(udl2_conf, schema):
+    pass
+
+
+def create_foreign_data_wrapper_extension(udl2_conf):
+    pass
+
+def create_foreign_data_wrapper_server(udl2_conf):
+    pass
 
 
 if __name__ == '__main__':
-    create_table('ERR_LIST')
+    args = _parse_args()
+    if args.config_file is None:
+        config_path_file = UDL2_DEFAULT_CONFIG_PATH_FILE
+    else:
+        config_path_file = args.config_file
+    udl2_conf = imp.load_source('udl2_conf', config_path_file)
+    from udl2_conf import udl2_conf
+        
+    engine = _create_engine(_get_db_url(udl2_conf))
+    udl2_metadata = MetaData()
+    
+    for table, definitions in UDL_TABLE_METADATA.items():
+        print(table)
+        tbl_err_list = create_table(udl2_metadata, udl2_conf['udl2_db']['staging_schema'], table)
+        print(tbl_err_list)
+        print(CreateTable(tbl_err_list))

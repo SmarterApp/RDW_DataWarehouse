@@ -6,7 +6,7 @@ import argparse
 import time
 
 def create_output_destination(file_name,output_path):
-	#create output template from supplied input file path
+    #create output template from supplied input file path
     base =  os.path.splitext(os.path.basename(file_name))[0]
     output_name_template = base+'_part_'
     

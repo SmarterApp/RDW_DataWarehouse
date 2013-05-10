@@ -5,13 +5,15 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.types import Enum, UnicodeText, DateTime, Text
 from sqlalchemy.engine import create_engine
 from sqlalchemy.sql.expression import func
+from sqlalchecmy.dialects.postgresql import *
 
 
 #
 # We use a list of columns for table.
 # for each column ('column name', 'is a primary key', 'type', 'default value', 'Nullalbe', 'Comments')
 UDL_TABLE_METADATA = { 
-    'UDL_BATCH': [
+    'UDL_BATCH': {'columns':
+        [
         ('batch_sid', True, 'bigserial', '', False, ""),
         ('batch_user_status', False, 'varhchar(50)', '', True, ""),
         ('job_status', False, 'varchar(50)', '', True, ""),
@@ -34,8 +36,11 @@ UDL_TABLE_METADATA = {
         ('archive_name', False, 'varchar(120)', '', True, ""),
         ('create_date', False, 'timestamp', 'now()', True, ""),
         ('mod_date', False, 'timestamp', 'now()', True, ""),
-    ],
-    'STG_SBAC_ASMT': [
+        ],
+        'keys' : [],
+        'indexes':[],    
+    },
+    'STG_SBAC_ASMT': {'columns' : [
         ('record_sid', True, 'bigserial', '', False, "Sequential Auto-increment"),
         ('batch_id', False, 'bigint', '', False, "Batch ID which caused the record insert"),
         ('guid_asmt', False, 'varchar(256)', '', True, "Assessment GUID"),
@@ -72,8 +77,11 @@ UDL_TABLE_METADATA = {
         ('score_cut_point_3', False, 'varchar(256)', '', True, "Cutpoint 3"),
         ('score_cut_point_4', False, 'varchar(256)', '', True, "Cutpoint 4"),
         ('create_date', False, 'timestamp', 'now()', False, "Date on which record is inserted"),
-    ],
-    'STG_SBAC_ASMT_OUTCOME': [
+        ],
+        'indexes':[],
+        'keys':[],
+    },
+    'STG_SBAC_ASMT_OUTCOME': {'columns' : [
         ('record_sid', True, 'bigserial', '', False, "Sequential Auto-increment"),
         ('batch_id', False, 'bigint', '', False, "Batch ID which caused the record insert"),
         ('src_file_rec_num', False, 'bigint', '', True, "Batch ID which caused the record insert"),
@@ -123,15 +131,64 @@ UDL_TABLE_METADATA = {
         ('name_staff_last', False, 'varchar(256)', '', True, "Staff Last Name"),
         ('type_staff', False, 'varchar(256)', '', True, "User Type - Staff, Teacher"),
         ('create_date', False, 'timestamp', 'now()', False, "Date on which record is inserted"),   
-    ],
-    'ERR_LIST': [
+        ],
+        'indexes': [],
+        'keys': []
+    },
+    'ERR_LIST': {'columns' :
+        [
         ('record_sid', True, 'bigserial', '', False, "Sequential Auto-increment"),
         ('batch_id', False, 'bigint', '', False, "Batch ID which caused the record insert"),
         ('err_code', False, 'bigint', '', True, "Error Code"),
         ('err_source', False, 'bigint', '', True, "Pipeline Stage that inserted this error."),
         ('create_date', False, 'bigint', '', False, "Date on which record is inserted"),
-    ]
+        ],
+        'indexes':[],
+        'keys':[],
+    }
 }
 
-def create_table(table_name):
-    pass
+
+def map_sql_type_to_sqlalchemy_type(sql_type):
+    mapped_type = None
+    sql_type_mapped_type = {
+        'timestamp': sqlalchemy.types.TIMESTAMP,
+        'bigint' : sqlalchemy.types.BIGINT,
+        'bigserail': sqlalchemy.types.BIGINT,
+        'varchar': sqlalchemy.types.VARCHAR
+    }
+    try:
+        mapped_type = sql_type_mapped_type[sql_type]
+    except Exception as e:
+        if sql_type[0:7] == 'varchar':
+            length = int(sql_type[7:].replace('(', '').replace(')', ''))
+            mapped_type = sqlalchemy.types.VARCHAR(length)
+    
+    return mapped_type
+
+
+def map_tuple_to_sqlalchemy_column(ddl_tuple):
+    column = Column(ddl_tuple[0],
+        map_sql_type_to_sqlalchemy_type(ddl_tuple[2]),
+        primary_key=ddl_tuple[1],
+        nullable = ddl_tuple[4],
+        server_default = text(ddl_tuple[3]),
+        doc = ddl_tuple[5],
+    )
+    return column
+
+
+def create_table(engine, table_name):
+    column_ddl = UDL_TABLE_METADATA[table_name]['columns']
+    metadata = MetaData()
+    arguments = [table_name, metadata]
+    
+    for c_ddl in column_ddl:
+        column = map_tuple_to_sqlalchemy_column(c_ddl)
+        arguments.append(column)
+    table = Table(*tuple(arguments))
+    metadata.create_all(engine)
+
+
+if __name__ == '__main__':
+    create_table('ERR_LIST')

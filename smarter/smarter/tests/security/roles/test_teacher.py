@@ -14,13 +14,6 @@ from edapi.exceptions import ForbiddenError
 
 class TestTeacherContextSecurity(Unittest_with_smarter_sqlite):
 
-    def test_get_teacher_context(self):
-        guid = "272"
-        with SmarterDBConnection() as connection:
-            teacher = Teacher(connection)
-            context = teacher.get_context(guid)
-            self.assertListEqual(context, ['345'])
-
     def test_get_teacher_context_invalid_guid(self):
         guid = "invalid-guid"
         with SmarterDBConnection() as connection:
@@ -34,9 +27,9 @@ class TestTeacherContextSecurity(Unittest_with_smarter_sqlite):
             fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
             query = select([fact_asmt_outcome.c.section_guid],
                            from_obj=([fact_asmt_outcome]))
-            query = teacher.append_context(query, guid)
+            clause = teacher.get_context(guid)
 
-            results = connection.get_result(query)
+            results = connection.get_result(query.where(clause))
             self.assertTrue(len(results) > 0)
             for result in results:
                 self.assertEqual(result[Constants.SECTION_GUID], '974')

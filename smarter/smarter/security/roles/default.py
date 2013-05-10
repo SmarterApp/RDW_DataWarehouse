@@ -13,8 +13,8 @@ class DefaultRole(BaseRole):
     def __init__(self, connector):
         super().__init__(connector)
 
-    def append_context(self, query, guid):
+    def get_context(self, guid):
         '''
-        Default user context.  Returns the query without applying any context
+        no-op
         '''
-        return query
+        pass

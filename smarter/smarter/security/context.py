@@ -3,7 +3,7 @@ Created on May 7, 2013
 
 @author: dip
 '''
-from sqlalchemy.sql.expression import Select, select
+from sqlalchemy.sql.expression import Select, select, or_
 from pyramid.security import authenticated_userid
 import pyramid
 from smarter.database.connector import SmarterDBConnection
@@ -22,9 +22,6 @@ def select_with_context(columns=None, whereclause=None, from_obj=[], **kwargs):
         roles = user.get_roles()
         user_id = user.get_uid()
 
-        # assume there is only one role for now
-        role = roles[0]
-
         user_mapping = connector.get_table(Constants.USER_MAPPING)
         guid_query = select([user_mapping.c.guid],
                             from_obj=[user_mapping], limit=1)
@@ -37,10 +34,18 @@ def select_with_context(columns=None, whereclause=None, from_obj=[], **kwargs):
 
         query = Select(columns, whereclause=whereclause, from_obj=from_obj, **kwargs)
 
-        # Look up role for its context security method
-        context = ContextRoleMap.get_context(role)
-        # apply context security
-        context_obj = context(connector)
-        query = context_obj.append_context(query, guid)
+        # Look up each role for its context security method
+        clauses = []
+        for role in roles:
+            context = ContextRoleMap.get_context(role)
+            # apply context security
+            context_obj = context(connector)
+            clause = context_obj.get_context(guid)
+            if clause is not None:
+                clauses.append(clause)
+
+        # Set the where clauses with OR
+        if clauses:
+            query = query.where(or_(*clauses))
 
     return query

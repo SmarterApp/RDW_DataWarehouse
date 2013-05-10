@@ -4,28 +4,15 @@ Created on May 9, 2013
 @author: dip
 '''
 import unittest
-from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite
-from smarter.database.connector import SmarterDBConnection
-from sqlalchemy.sql.expression import select
-from smarter.reports.helpers.constants import Constants
 from smarter.security.roles.default import DefaultRole
 
 
-class TestDefaultContextSecurity(Unittest_with_smarter_sqlite):
+class TestDefaultContextSecurity(unittest.TestCase):
 
-    def test_append_context(self):
-        with SmarterDBConnection() as connection:
-            fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
-            query = select([fact_asmt_outcome.c.student_guid],
-                           from_obj=([fact_asmt_outcome]))
-            results = connection.get_result(query)
-
-            default_context = DefaultRole(connection)
-            context_query = default_context.append_context(query, '123')
-            context_results = connection.get_result(context_query)
-
-            self.assertEqual(len(results), len(context_results))
-            self.assertEqual(query, context_query)
+    def test_get_context(self):
+        default_context = DefaultRole("connection")
+        clause = default_context.get_context('123')
+        self.assertIsNone(clause)
 
 
 if __name__ == "__main__":

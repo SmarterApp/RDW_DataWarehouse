@@ -16,21 +16,16 @@ class SchoolAdmin(BaseRole):
     def __init__(self, connector):
         super().__init__(connector)
 
-    def append_context(self, query, guid):
-        '''
-        Appends to WHERE cause of the query with school admin context
-        '''
-        fact_asmt_outcome = self.connector.get_table(Constants.FACT_ASMT_OUTCOME)
-        context = self.get_context(guid)
-        return query.where(fact_asmt_outcome.c.school_guid.in_(context))
-
     @verify_context
     def get_context(self, guid):
         '''
-        Returns all school_guid that admin is associated to
+        Returns a sqlalchemy binary expression representing school_guid that user has context to
+        If Context is an empty list, return none, which will return Forbidden Error
         '''
+        fact_asmt_outcome = self.connector.get_table(Constants.FACT_ASMT_OUTCOME)
         context = []
-        if guid is not None:
+        expr = None
+        if guid:
             dim_staff = self.connector.get_table(Constants.DIM_STAFF)
             context_query = select([dim_staff.c.school_guid],
                                    from_obj=[dim_staff])
@@ -38,4 +33,6 @@ class SchoolAdmin(BaseRole):
             results = self.connector.get_result(context_query)
             for result in results:
                 context.append(result[Constants.SCHOOL_GUID])
-        return context
+        if context:
+            expr = fact_asmt_outcome.c.school_guid.in_(context)
+        return expr

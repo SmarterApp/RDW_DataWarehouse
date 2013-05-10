@@ -13,8 +13,8 @@ class BaseRole(object):
     def __init__(self, connector):
         self.connector = connector
 
-    def append_context(self, query, guid):
-        return []
+    def get_context(self, guid):
+        pass
 
 
 def verify_context(fn):
@@ -23,7 +23,7 @@ def verify_context(fn):
     '''
     def wrapped(*args, **kwargs):
         context = fn(*args, **kwargs)
-        if len(context) is 0:
+        if context is None:
             raise ForbiddenError
         return context
     return wrapped

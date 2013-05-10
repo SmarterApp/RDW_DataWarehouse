@@ -41,10 +41,6 @@ def get_list_split_files(output_name_template,output_dir):
         if output_name_template in filename.decode('utf-8'): 
         	output_list.append([filename.decode('utf-8'),int(line_count),row_start])
         
-    
-    #abs_path = os.path.abspath(output_dir)
-    #for files in os.listdir(output_dir):
-    #	if output_name_template in files: output_list.append(os.path.join(abs_path,files))
     return output_list
 
 def split_file(file_name, delimiter=',', row_limit=10000, parts=0, output_path='.'):
@@ -86,7 +82,7 @@ def split_file(file_name, delimiter=',', row_limit=10000, parts=0, output_path='
     current_out_writer = csv.writer(open(current_out_path, 'w'), delimiter=delimiter)
     current_out_writer.writerow(header)
     
-    #return get_list_split_files(output_name_template,output_dir)
+    return get_list_split_files(output_name_template,output_dir)
 
         
 if __name__ == "__main__":

@@ -5,12 +5,15 @@ subprocess.call('cd ./scripts/; ./install_udl_requirements.sh', shell=True)
 
 requires=['celery(>=3.0.19)']
 
-scripts=['scripts/initialize_udl_database.sh',
+scripts=['scripts/initialize_udl2_database.sh',
+         'scripts/initialize_udl2_directories.sh',
          'scripts/start_rabbitmq.sh',
+         'scripts/start_celery.sh',
          'scripts/start_udl.sh',
-         'scripts/initialize_udl_database.py',
+         'scripts/initialize_udl2_database.py',
          'scripts/start_rabbitmq.py',
-         'scripts/start_udl.py']
+         'scripts/start_celery.py',
+         'scripts/driver.py']
 
 setup(name='udl2', 
       version='0.1',
@@ -26,6 +29,6 @@ setup(name='udl2',
       url='https://github.wgenhq.net/Ed-Ware-SBAC/edware-udl-2.0/',
       scripts=scripts,
       requires=requires,
-      data_files=[('/opt/wgen/edware-udl/logs', ['logs/udl2.audit.log', 'logs/udl2.error.log']),
-                  ('/opt/wgen/edware-udl/etc', ['conf/udl2.ini', 'conf/udl2.cfg', 'conf/udl2.py']),],
+      data_files=[('/var/log/wgen/edware-udl/logs', ['logs/udl2.audit.log', 'logs/udl2.error.log']),
+                  ('/opt/wgen/edware-udl/etc', ['conf/udl2_conf.ini', 'conf/udl2_conf.cfg', 'conf/udl2_conf.py']),],
 ) 

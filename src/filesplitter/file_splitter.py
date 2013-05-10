@@ -6,7 +6,7 @@ import argparse
 import time
 
 def create_output_destination(file_name,output_path):
-	#create output template from supplied input file path
+    #create output template from supplied input file path
     base =  os.path.splitext(os.path.basename(file_name))[0]
     output_name_template = base+'_part_'
     
@@ -22,7 +22,7 @@ def run_command(cmd_string):
     (output,err) = p.communicate()
     return output,err
     
-def get_list_split_files(output_name_template,output_dir):
+def get_list_split_files(output_name_template, output_dir):
     output_list=[]
     #get line count of all files in output directory that match template
     get_files_command = 'wc %s*' % os.path.join(output_dir,output_name_template)
@@ -41,6 +41,10 @@ def get_list_split_files(output_name_template,output_dir):
         if output_name_template in filename.decode('utf-8'): 
         	output_list.append([filename.decode('utf-8'),int(line_count),row_start])
         
+    
+    #abs_path = os.path.abspath(output_dir)
+    #for files in os.listdir(output_dir):
+    #	if output_name_template in files: output_list.append(os.path.join(abs_path,files))
     return output_list
 
 def split_file(file_name, delimiter=',', row_limit=10000, parts=0, output_path='.'):
@@ -78,11 +82,13 @@ def split_file(file_name, delimiter=',', row_limit=10000, parts=0, output_path='
     os.remove('noheaders.csv')
     
     #save headers to output dir
-    current_out_path = os.path.join(output_dir, 'headers.csv')
-    current_out_writer = csv.writer(open(current_out_path, 'w'), delimiter=delimiter)
-    current_out_writer.writerow(header)
+    header_path = os.path.join(output_dir, 'headers.csv')
+    header_writer = csv.writer(open(header_path, 'w'), delimiter=delimiter)
+    header_writer.writerow(header)
     
-    return get_list_split_files(output_name_template,output_dir)
+    split_file_list = get_list_split_files(output_name_template, output_dir)
+
+    return split_file_list, header_path
 
         
 if __name__ == "__main__":

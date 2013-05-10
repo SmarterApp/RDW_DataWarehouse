@@ -26,8 +26,8 @@ def drop_ddl_csv_query(csv_schema, csv_table):
 
 def create_staging_tables_query(header_types, header_names, csv_file, staging_schema, staging_table):
     # TODO: need to be replaced by importing from staging table definition
-    ddl_parts = ["CREATE TABLE IF NOT EXISTS %s.%s ( " % (staging_schema, staging_table),
-                 ','.join([header_names[i] + ' ' + header_types[i] + ' ' for i in range(len(header_names))]),
+    ddl_parts = ["CREATE TABLE IF NOT EXISTS %s.%s (" % (staging_schema, staging_table),
+                 ','.join([header_names[i] + ' ' + header_types[i] for i in range(len(header_names))]),
                  ") "]
     return "".join(ddl_parts)
 

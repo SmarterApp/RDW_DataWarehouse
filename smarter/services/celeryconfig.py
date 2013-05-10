@@ -8,7 +8,7 @@ from celery.app.base import Celery
 celery = Celery()
 
 
-def start_celery(settings):
+def setup_celery(settings):
     celery_config = {}
     # get config values
     for key in settings:
@@ -16,3 +16,6 @@ def start_celery(settings):
             celery_key = key[len('celery.'):].upper()
             celery_config[celery_key] = settings[key]
     celery.config_from_object(celery_config)
+
+def get_config(setting, prefix="celery"):
+    pass

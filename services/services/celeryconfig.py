@@ -35,6 +35,7 @@ def load_celeryconfig(settings, prefix):
 
 def load_config(settings, prefix="celery"):
     # load pdf generation timeout
+    global TIMEOUT
     TIMEOUT = settings.get('pdf.generate.timeout', TIMEOUT)
     # load celery config
     celery_config = load_celeryconfig(settings, prefix)

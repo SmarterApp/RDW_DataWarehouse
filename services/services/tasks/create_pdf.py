@@ -15,14 +15,14 @@ pdf_defaults = ['--enable-javascript', '--page-size', 'Letter', '--javascript-de
 
 
 @celery.task
-def generate_pdf(cookie, url, outputfile, options=pdf_defaults):
+def generate_pdf(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT):
     '''
     Generates pdf from given url. Returns exist status code from shell command.
     We set up timeout in order to terminate pdf generating process, for wkhtmltopdf 0.10.0 doesn't exit
     properly upon successfully completion (see wkhtmltopdf ISSUE 141). TIMEOUT can be removed if that bug is fixed in future.
     '''
     try:
-        return subprocess.call(pdf_procs + options + ['--cookie', 'edware', cookie, url, outputfile], timeout=TIMEOUT)
+        return subprocess.call(pdf_procs + options + ['--cookie', 'edware', cookie, url, outputfile], timeout=timeout)
     except subprocess.TimeoutExpired:
         (SUCCESS, FAILURE) = (0, 1)
         # check output file, return 0 if file is created successfully

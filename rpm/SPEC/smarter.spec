@@ -1,4 +1,4 @@
-Name:		smarter
+Name:		smarter%(echo ${SMARTER_ENV_NAME:="-dev"})
 Version:	%(echo ${RPM_VERSION:="X.X"})
 Release:	%(echo ${BUILD_NUMBER:="X"})%{?dist}
 Summary:	SMARTER EdWare Reporting Web Application

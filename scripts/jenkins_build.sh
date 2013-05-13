@@ -282,8 +282,8 @@ function build_rpm {
     cd "$WORKSPACE/rpm/SPEC"
     rpmbuild -bb smarter.spec
     
-    scp /home/jenkins/rpmbuild/RPMS/x86_64/smarter-${RPM_VERSION}-${BUILD_NUMBER}.el6.x86_64.rpm pynest@${PYNEST_SERVER}:/opt/wgen/rpms
-    ssh pynest@${PYNEST_SERVER} "ln -sf /opt/wgen/rpms/smarter-${RPM_VERSION}-${BUILD_NUMBER}.el6.x86_64.rpm /opt/wgen/rpms/smarter-latest.rpm"
+    scp /home/jenkins/rpmbuild/RPMS/x86_64/smarter${SMARTER_ENV_NAME}-${RPM_VERSION}-${BUILD_NUMBER}.el6.x86_64.rpm pynest@${PYNEST_SERVER}:/opt/wgen/rpms
+    ssh pynest@${PYNEST_SERVER} "ln -sf /opt/wgen/rpms/smarter${SMARTER_ENV_NAME}-${RPM_VERSION}-${BUILD_NUMBER}.el6.x86_64.rpm /opt/wgen/rpms/smarter-latest.rpm"
     
     echo "Upload to pulp" 
     pulp-admin content upload --dir /home/jenkins/rpmbuild/RPMS/x86_64 --repoid edware-el6-x86_64-upstream --nosig -v

@@ -227,11 +227,6 @@ function create_sym_link_for_apache {
     echo "Creating sym links for celery purposes"
    
     EDWARE_VENV_DIR="/opt/virtualenv"
-    if [ -d ${EDWARE_VENV_DIR} ]; then
-        rm -rf ${EDWARE_VENV_DIR}
-    fi
-    
-    mkdir -p ${EDWARE_VENV_DIR}
     /bin/ln -sf ${VIRTUALENV_DIR} ${EDWARE_VENV_DIR}
     /bin/ln -sf ${WORKSPACE}/services/config/linux/etc/rc.d/init.d/celeryd.conf ${CELERY_CONF}
 }

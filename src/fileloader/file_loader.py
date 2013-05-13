@@ -3,7 +3,6 @@ import csv
 import fileloader.prepare_queries as queries
 import random
 from udl2.database import UDL_TABLE_METADATA
-from udl2.field_mapper import field_mapper_dict
 from sqlalchemy.exc import NoSuchTableError
 from sqlalchemy.engine import create_engine
 
@@ -13,14 +12,6 @@ DBDRIVER = "postgresql+pypostgresql"
 # temporary assumption: extra columns in staging tables, but not in csv file
 extra_header_names = ['src_row_number', 'row_rec_id']
 extra_header_types = ['bigint', 'serial primary key']
-
-
-def get_db_conf():
-    '''
-    Get database conf parameters in configuration file
-    '''
-    # TODO: need to get conf options from conf file
-    return conf
 
 
 def connect_db(conf_args):

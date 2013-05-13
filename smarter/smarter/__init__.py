@@ -13,11 +13,10 @@ import atexit
 import signal
 from pyramid_beaker import set_cache_regions_from_settings
 import sys
-from pdfmaker import pdf
+from services import celeryconfig
 
 logger = logging.getLogger(__name__)
 CAKE_PROC = None
-CELERY_STARTED = False
 
 
 def main(global_config, **settings):
@@ -87,14 +86,8 @@ def prepare_env(settings):
     Prepare environment for assets, less, compile coffeescripts
     '''
     global CAKE_PROC
-    global CELERY_STARTED
     mode = settings.get('mode', 'prod').upper()
     if mode == 'DEV':
-        # Start celery server
-        if settings.get('pdfmaker.start.celery', 'false').lower() == 'true':
-            pdf.start()
-            CELERY_STARTED = True
-
         here = os.path.abspath(os.path.dirname(__file__))
         smarter_dir = os.path.abspath(os.path.join(here, '..'))
         assets_dir = os.path.abspath(os.path.join(os.path.join(os.path.join(here, '..'), '..'), 'assets'))
@@ -124,6 +117,9 @@ def prepare_env(settings):
             os.chdir(current_dir)
         # catch the kill signal
         signal.signal(signal.SIGTERM, sig_term_handler)
+        # start celery
+        celery_config = celeryconfig.load_config(settings=settings, prefix="celery")
+        celeryconfig.setup_celery(celery_config)
 
     auth_idp_metadata = settings.get('auth.idp.metadata', None)
     if auth_idp_metadata is not None:
@@ -137,10 +133,6 @@ def shutdown():
     Called when pyramid shuts down
     '''
     logger.info("Smarter is shutting down.")
-    # Only stop pdf celery server if it has started
-    if CELERY_STARTED:
-        logger.info("Killing celery server for pdf")
-        pdf.stop()
     # CAKE_PROC is only assigned in dev mode, we kill the process that started 'cake watch'
     if CAKE_PROC:
         logger.info("Killing cake process - pid " + str(CAKE_PROC.pid))

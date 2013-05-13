@@ -21,7 +21,8 @@ requires = [
     'py-postgresql',
     'psycopg2',
     'pyramid_exclog',
-    'pyyaml']
+    'pyyaml',
+    'services']
 
 
 setup(name='smarter',

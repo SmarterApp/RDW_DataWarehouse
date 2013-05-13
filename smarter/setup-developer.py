@@ -10,7 +10,7 @@ dependencies = [
     'edapi',
     'edschema',
     'edauth',
-    'pdfmaker']
+    'services']
 
 
 for dependency in dependencies:

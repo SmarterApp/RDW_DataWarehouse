@@ -255,7 +255,7 @@ function restart_apache {
     fi
 }
 
-function restart_celeryd{
+function restart_celeryd {
    /usr/bin/sudo /etc/init.d/celeryd restart
    RES=$?
    if [ $RES ! 0 ]; then

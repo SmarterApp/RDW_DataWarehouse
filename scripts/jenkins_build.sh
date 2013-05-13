@@ -253,7 +253,7 @@ function restart_apache {
 function restart_celeryd {
    /usr/bin/sudo /etc/init.d/celeryd restart
    RES=$?
-   if [ $RES ! 0 ]; then
+   if [ $RES != 0 ]; then
       echo "celeryd failed to restart"
       exit 1
    fi

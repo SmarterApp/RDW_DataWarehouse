@@ -74,15 +74,24 @@ udl2_conf = {
         'landing':'/opt/wgen/edware-udl/zones/landing/', # this is for where the uploaded files are located, it may be an url in the long run to get data
         'work':'/opt/wgen/edware-udl/zones/work/', # this is the where the file are use for work. this should always be local for speed
         'history':'/opt/wgen/edware-udl/zones/history/', # this is where we store historical info. it may be an url for large file storages such as s3.
+        'datafiles':'/opt/wgen/edwared-udl/zones/datafiles/', # this is for storing test sample data files
     },
     'logging': { # log location. this should be in the long run as file locations or more sophisticated logging system
         'audit':'/var/log/wgen/edware-udl/logs/udl2.audit.log',  # for status log for everything
         'error':'/var/log/wgen/edware-udl/logs/udl2.error.log',  # for error message and exceptions, 
     },
     'postgresql' : { # PostgresQL for UDL2 processing. This is not the target database.
-        'db_host':'',
-        'db_port':'',
-        'db_db':'',
+        'db_host':'localhost',
+        'db_port':'5432',
+        'db_database':'udl2',
+        'db_schema':'udl2',
+        'db_user':'udl2',
+        'db_pass':'udl2abc1234',
+    },
+    'udl2_db': {
+        'csv_schema':'udl2',
+        'fdw_server':'',
+        'staging_schema':'udl2',
     }
 }
 

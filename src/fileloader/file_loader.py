@@ -10,7 +10,7 @@ DBDRIVER = "postgresql+pypostgresql"
 
 # temporary assumption: extra columns in staging tables, but not in csv file
 extra_header_names = ['src_row_number', 'row_rec_id']
-extra_header_types = ['text', 'serial primary key']
+extra_header_types = ['bigint', 'serial primary key']
 
 
 def get_db_conf():
@@ -152,7 +152,7 @@ def load_data_process(conn, conf):
     finish_time = datetime.datetime.now()
     spend_time = finish_time - start_time
     time_as_seconds = float(spend_time.seconds + spend_time.microseconds / 1000000.0)
-    print("\nSpend time for loading file(seconds) --", time_as_seconds)
+    print("\nSpend time for loading file(seconds) -- %f" % time_as_seconds)
 
     # drop fdw table
     drop_fdw_tables(conn, conf['csv_schema'], conf['csv_table'])

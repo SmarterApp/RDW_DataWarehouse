@@ -20,14 +20,18 @@ def task(msg):
     # parse the message
     parm = parse_message(msg)
 
+    landing_zone_file_path = msg['landing_zone_file']
+    work_zone = msg['work_zone']
+    history = msg['history']
+
     # do actual work of splitting file
     start_time = datetime.datetime.now()
-    split_file_list, header_file_path = file_splitter.split_file(msg['input_file'], row_limit=parm['row_limit'], parts=parm['parts'], output_path=parm['output_path'])
+    split_file_list, header_file_path = file_splitter.split_file(landing_zone_file_path, row_limit=parm['row_limit'],
+                                                                 parts=parm['parts'], output_path=work_zone)
     finish_time = datetime.datetime.now()
     spend_time = finish_time - start_time
 
-    file_path = msg['input_file']
-    file_name = os.path.basename(file_path)
+    file_name = os.path.basename(landing_zone_file_path)
 
     logger.info(task.name)
     logger.info("Split %s in %s, number of sub-files: %i" % (file_name, str(spend_time), len(split_file_list)))
@@ -36,21 +40,24 @@ def task(msg):
 
     # for each of sub file, call do loading task
     for split_file in split_file_list:
-        conf = generate_conf_for_loading(split_file, header_file_path)
+        conf = generate_conf_for_loading(split_file, header_file_path, landing_zone_file_path, work_zone, history)
         udl2.W_file_loader.task.apply_async([conf], queue='Q_files_to_be_loaded', routing_key='udl2')
 
     return msg
 
 
-def generate_conf_for_loading(split_file_list, header_file_path):
+def generate_conf_for_loading(split_file_list, header_file_path, landing_zone_file_path, work_zone, history):
     file_path = split_file_list[0]
     line_count = split_file_list[1]
     row_start = split_file_list[2]
     conf = {
-        'input_file': file_path,
+        'file_to_load': file_path,
         'line_count': line_count,
         'row_start': row_start,
-        'header_file': header_file_path
+        'header_file': header_file_path,
+        'landing_zone_file': landing_zone_file_path,
+        'work_zone': work_zone,
+        'history': history
     }
     return conf
 

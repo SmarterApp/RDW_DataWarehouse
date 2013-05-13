@@ -63,11 +63,11 @@ common:
     mode: dev
     # Run npm update (dev mode only)
     run.npm.update: true
-    # Start celery server for pdf
-    pdfmaker.start.celery: true
     # Celery config
     celery:
       celery_always_eager: true
+    # Timeout for pdf generation process
+    pdf.generate.timeout: 10
 
   '[server:main]':
     use: 'egg:waitress#main'

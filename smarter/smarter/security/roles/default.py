@@ -9,6 +9,9 @@ from smarter.security.context_role_map import ContextRoleMap
 
 @ContextRoleMap.register(["default"])
 class DefaultRole(BaseRole):
+    '''
+    Default role is used when a role doesn't have custom context security rule
+    '''
 
     def __init__(self, connector):
         super().__init__(connector)

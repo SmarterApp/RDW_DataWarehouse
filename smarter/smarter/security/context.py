@@ -22,6 +22,7 @@ def select_with_context(columns=None, whereclause=None, from_obj=[], **kwargs):
         roles = user.get_roles()
         user_id = user.get_uid()
 
+        # read from user_mapping table to map uid to guid
         user_mapping = connector.get_table(Constants.USER_MAPPING)
         guid_query = select([user_mapping.c.guid],
                             from_obj=[user_mapping], limit=1)
@@ -32,6 +33,7 @@ def select_with_context(columns=None, whereclause=None, from_obj=[], **kwargs):
         if result:
             guid = result[0][Constants.GUID]
 
+        # Build query
         query = Select(columns, whereclause=whereclause, from_obj=from_obj, **kwargs)
 
         # Look up each role for its context security method

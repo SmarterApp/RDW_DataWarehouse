@@ -63,8 +63,6 @@ common:
     mode: dev
     # Run npm update (dev mode only)
     run.npm.update: true
-    # Start celery server for pdf
-    pdfmaker.start.celery: false
     # Celery config
     celery:
       celery_always_eager: true

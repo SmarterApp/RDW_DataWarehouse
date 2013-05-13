@@ -15,10 +15,6 @@ __version__ = 0.1
 __date__ = '2013-02-02'
 __updated__ = '2013-02-02'
 
-DBDRIVER = "postgresql+pypostgresql"
-DEBUG = 0
-VERBOSE = False
-
 
 def flatten_yaml(a_dict, result, path=""):
     '''
@@ -85,7 +81,7 @@ def generate_ini(env, input_file='settings.yaml'):
         # we overwrite the entire file's content
         with open(output_file, 'w') as f:
             f.write(result)
-        # we pring the result (consider removing this one)
+        # we print the result (consider removing this one)
         print(result)
     except:
         raise IOError(str.format('could not open file {0} for write', output_file))

@@ -6,6 +6,7 @@ from sqlalchemy.types import *
 from sqlalchemy.engine import create_engine
 from sqlalchemy.sql.expression import func, text
 from sqlalchemy.dialects.postgresql import *
+from sqlalchemy.sql import text
 import imp
 import argparse
 from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
@@ -212,9 +213,38 @@ def _create_engine(db_url):
     return create_engine(db_url)
 
 
-def create_schema(udl2_conf, schema):
-    pass
+def create_udl2_schema(udl2_conf):
+    engine = _create_engine(_get_db_url(udl2_conf))
+    conn = engine.connect()
+    sql = text("CREATE SCHEMA " + udl2_conf['udl2_db']['staging_schema'])
+    try:
+        conn.execute(sql)
+    except Exception as e:
+        print(e)
+        pass
+    
 
+def create_udl2_tables(udl2_conf):
+    engine = _create_engine(_get_db_url(udl2_conf))
+    udl2_metadata = MetaData()
+    udl2_tables = []
+    
+    for table, definitions in UDL_TABLE_METADATA.items():
+        udl2_tables.append(create_table(udl2_metadata, udl2_conf['udl2_db']['staging_schema'], table))
+    
+    for table in udl2_tables:
+        print(CreateTable(table))
+        
+    print("create tables")
+
+    for table in udl2_tables:
+        try:
+            table.create(engine)
+        except Exception as e:
+            print(e)
+            pass
+      
+    
 
 def create_foreign_data_wrapper_extension(udl2_conf):
     pass
@@ -232,11 +262,5 @@ if __name__ == '__main__':
     udl2_conf = imp.load_source('udl2_conf', config_path_file)
     from udl2_conf import udl2_conf
         
-    engine = _create_engine(_get_db_url(udl2_conf))
-    udl2_metadata = MetaData()
-    
-    for table, definitions in UDL_TABLE_METADATA.items():
-        print(table)
-        tbl_err_list = create_table(udl2_metadata, udl2_conf['udl2_db']['staging_schema'], table)
-        print(tbl_err_list)
-        print(CreateTable(tbl_err_list))
+    create_udl2_schema(udl2_conf)
+    create_udl2_tables(udl2_conf)

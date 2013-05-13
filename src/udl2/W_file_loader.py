@@ -43,17 +43,16 @@ def generate_conf_for_loading(csv_file_path, header_file_path, start_seq):
             'csv_table': csv_table,
             'db_host': 'localhost',
             'db_port': '5432',
-            'db_user': 'udl2',
-            'db_name': 'udl2',
-            'db_password': 'udl2abc1234',
-            'csv_schema': 'udl2',
+            'db_user': 'postgres',
+            'db_name': 'fdw_test',
+            'db_password': '3423346',
+            'csv_schema': 'public',
             'fdw_server': 'udl_import',
             'staging_schema': 'udl2',
             'staging_table': 'STG_SBAC_ASMT_OUTCOME',
             'apply_rules': False,
             # need to replace by passing from file splitter
             'batch_id': 200
-
     }
     return conf
 

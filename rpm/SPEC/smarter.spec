@@ -29,6 +29,7 @@ cp -r ${WORKSPACE}/scripts %{buildroot}/opt/edware
 cp -r ${WORKSPACE}/assets %{buildroot}/opt/edware/assets
 touch %{buildroot}/opt/edware/assets/__init__.py
 mkdir -p %{buildroot}/opt/edware/conf
+mkdir -p %{buildroot}/etc/rc.d/init.d
 cp ${WORKSPACE}/config/generate_ini.py %{buildroot}/opt/edware/conf/
 cp ${WORKSPACE}/config/settings.yaml %{buildroot}/opt/edware/conf/
 cp ${WORKSPACE}/services/config/linux/opt/edware/conf/celeryd.conf %{buildroot}/opt/edware/conf/

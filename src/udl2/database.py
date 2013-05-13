@@ -152,6 +152,26 @@ UDL_TABLE_METADATA = {
     }
 }
 
+def _parse_args():
+    parser = argparse.ArgumentParser('database')
+    parser.add_argument('--config_file', dest='config_file')
+    parser.add_argument('--action', dest='action', required=False,
+                        help="'setup' for setting up udl2 database. " + \
+                             "'teardown' for tear down udl2 database")
+    args = parser.parse_args()
+    return args
+
+
+def _get_db_url(udl2_conf):
+    return "postgresql://%s:%s@%s/%s" % (udl2_conf['postgresql']['db_user'],
+                                         udl2_conf['postgresql']['db_pass'],
+                                         udl2_conf['postgresql']['db_host'],
+                                         udl2_conf['postgresql']['db_database'])
+
+
+def _create_engine(db_url):
+    return create_engine(db_url)
+
 
 def map_sql_type_to_sqlalchemy_type(sql_type):
     mapped_type = None
@@ -195,28 +215,33 @@ def create_table(metadata, schema, table_name):
     return table
 
 
-def _parse_args():
-    parser = argparse.ArgumentParser('database')
-    parser.add_argument('--config_file', dest='config_file')
-    args = parser.parse_args()
-    return args
-
-
-def _get_db_url(udl2_conf):
-    return "postgresql://%s:%s@%s/%s" % (udl2_conf['postgresql']['db_user'],
-                                         udl2_conf['postgresql']['db_pass'],
-                                         udl2_conf['postgresql']['db_host'],
-                                         udl2_conf['postgresql']['db_database'])
-
-
-def _create_engine(db_url):
-    return create_engine(db_url)
+def drop_table(udl2_conf, schema, table_name):
+    engine = _create_engine(_get_db_url(udl2_conf))
+    conn = engine.connect()
+    sql = text("DROP TABLE \"%s\".\"%s\" CASCADE" % (schema, table_name))
+    try:
+        conn.execute(sql)
+    except Exception as e:
+        print(e)
+        pass
 
 
 def create_udl2_schema(udl2_conf):
     engine = _create_engine(_get_db_url(udl2_conf))
     conn = engine.connect()
-    sql = text("CREATE SCHEMA " + udl2_conf['udl2_db']['staging_schema'])
+    sql = text("CREATE SCHEMA \"%s\"" % udl2_conf['udl2_db']['staging_schema'])
+    try:
+        conn.execute(sql)
+    except Exception as e:
+        print(e)
+        pass
+    
+    
+
+def drop_udl2_schema(udl2_conf):
+    engine = _create_engine(_get_db_url(udl2_conf))
+    conn = engine.connect()
+    sql = "DROP SCHEMA udl2 CASCADE"
     try:
         conn.execute(sql)
     except Exception as e:
@@ -229,7 +254,7 @@ def create_udl2_tables(udl2_conf):
     udl2_metadata = MetaData()
     udl2_tables = []
     
-    for table, definitions in UDL_TABLE_METADATA.items():
+    for table, definition in UDL_TABLE_METADATA.items():
         udl2_tables.append(create_table(udl2_metadata, udl2_conf['udl2_db']['staging_schema'], table))
     
     for table in udl2_tables:
@@ -245,12 +270,29 @@ def create_udl2_tables(udl2_conf):
             pass
       
     
+    
+def drop_udl2_tables(udl2_conf):
+    engine = _create_engine(_get_db_url(udl2_conf))
+    for table, definition in UDL_TABLE_METADATA.items():
+        drop_table(udl2_conf, udl2_conf['udl2_db']['staging_schema'], table)
+    
 
 def create_foreign_data_wrapper_extension(udl2_conf):
     pass
 
 def create_foreign_data_wrapper_server(udl2_conf):
     pass
+
+
+
+def setup_udl2_schema(udl2_conf):
+    create_udl2_schema(udl2_conf)
+    create_udl2_tables(udl2_conf)
+
+
+def teardown_udl2_schema(udl2_conf):
+    drop_udl2_tables(udl2_conf)
+    drop_udl2_schema(udl2_conf)
 
 
 if __name__ == '__main__':
@@ -262,5 +304,7 @@ if __name__ == '__main__':
     udl2_conf = imp.load_source('udl2_conf', config_path_file)
     from udl2_conf import udl2_conf
         
-    create_udl2_schema(udl2_conf)
-    create_udl2_tables(udl2_conf)
+    if args.action == 'init':
+        setup_udl2_schema(udl2_conf)
+    elif args.action == 'teardown':
+        teardown_udl2_schema(udl2_conf)

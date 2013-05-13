@@ -36,13 +36,15 @@ def select_with_context(columns=None, whereclause=None, from_obj=[], **kwargs):
         # Build query
         query = Select(columns, whereclause=whereclause, from_obj=from_obj, **kwargs)
 
-        # Look up each role for its context security method
+        # Look up each role for its context security object
         clauses = []
         for role in roles:
-            context = ContextRoleMap.get_context(role)
-            # apply context security
-            context_obj = context(connector)
-            clause = context_obj.get_context(guid)
+            # Get the context object
+            context_obj = ContextRoleMap.get_context(role)
+            # Instantiate it
+            context = context_obj(connector)
+            # Get context security expression to attach to where clause
+            clause = context.get_context(guid)
             if clause is not None:
                 clauses.append(clause)
 

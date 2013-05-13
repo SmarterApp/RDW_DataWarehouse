@@ -14,8 +14,8 @@ class ContextRoleMap():
     @classmethod
     def get_context(cls, role_name):
         '''
-        Given a role name, returns context method for that role
-        If role is not found, return default context method
+        Given a role name, returns context object for that role
+        If role is not found, return default context object
         '''
         context = cls.__context.get(role_name.lower())
         if context is None:

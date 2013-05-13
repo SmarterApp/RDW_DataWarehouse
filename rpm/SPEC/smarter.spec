@@ -31,7 +31,8 @@ touch %{buildroot}/opt/edware/assets/__init__.py
 mkdir -p %{buildroot}/opt/edware/conf
 cp ${WORKSPACE}/config/generate_ini.py %{buildroot}/opt/edware/conf/
 cp ${WORKSPACE}/config/settings.yaml %{buildroot}/opt/edware/conf/
-
+cp ${WORKSPACE}/services/config/linux/opt/edware/conf/celeryd.conf %{buildroot}/opt/edware/conf/
+cp ${WORKSPACE}/services/config/linux/etc/rc.d/init.d/celeryd %{buildroot}/etc/rc.d/init.d/
 
 
 
@@ -56,6 +57,9 @@ cd ${WORKSPACE}/edauth
 python setup.py install
 cd -
 cd ${WORKSPACE}/edapi
+python setup.py install
+cd -
+cd ${WORKSPACE}/services
 python setup.py install
 cd -
 cd %{buildroot}/opt/edware/smarter
@@ -84,6 +88,7 @@ cp -r virtualenv %{buildroot}/opt
 /opt/edware/smarter/smarter.wsgi
 /opt/edware/conf/generate_ini.py
 /opt/edware/conf/settings.yaml
+/opt/edware/conf/celeryd.conf
 /opt/virtualenv/include/*
 /opt/virtualenv/lib/*
 /opt/virtualenv/lib64
@@ -109,24 +114,31 @@ cp -r virtualenv %{buildroot}/opt
 %attr(755,root,root) /opt/virtualenv/bin/python3.3
 /opt/virtualenv/bin/python
 /opt/virtualenv/bin/python3
-
+%attr(755,root,root) /etc/rc.d/init.d/celeryd
 
 %pre
+id celery > /dev/null 2>&1
+if [ $? != 0 ]; then
+   useradd celery
+fi
 /etc/init.d/httpd stop
 if [ ! -d /opt/edware/log ]; then
     mkdir -p /opt/edware/log
 fi
 
 %post
+chkconfig --add celeryd
 /etc/init.d/httpd start
+/etc/init.d/celeryd start
 
 %preun
+chkconfig --del celeryd
 /etc/init.d/httpd stop
+/etc/init.d/celeryd stop
 
 %postun
 /etc/init.d/httpd start
-
-
+userdel -rf celery > /dev/null 2>&1
 
 %changelog
 

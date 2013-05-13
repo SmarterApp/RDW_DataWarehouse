@@ -228,7 +228,7 @@ function create_sym_link_for_apache {
    
     EDWARE_VENV_DIR="/opt/virtualenv"
     /bin/ln -sf ${VIRTUALENV_DIR} ${EDWARE_VENV_DIR}
-    /bin/ln -sf ${WORKSPACE}/services/config/linux/etc/rc.d/init.d/celeryd.conf ${CELERY_CONF}
+    /bin/ln -sf ${WORKSPACE}/services/config/linux/opt/edware/conf/celeryd.conf ${CELERY_CONF}
 }
 
 function compile_assets {

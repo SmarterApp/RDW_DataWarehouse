@@ -10,7 +10,7 @@ def create_fdw_server_query(fdw_server):
 
 def create_ddl_csv_query(header_names, header_types, csv_file, csv_schema, csv_table, fdw_server):
     # TODO: if the csv_file does not have header row, need to set header = false in the OPTINOS
-    ddl_parts = ["CREATE FOREIGN TABLE IF NOT EXISTS %s.%s ( " % (csv_schema, csv_table),
+    ddl_parts = ["CREATE FOREIGN TABLE IF NOT EXISTS \"%s\".\"%s\" ( " % (csv_schema, csv_table),
                  ','.join([header_names[i] + ' ' + header_types[i] + ' ' for i in range(len(header_names))]),
                  ") SERVER %s " % fdw_server,
                  "OPTIONS (filename '%s', format '%s', header '%s')" % (csv_file, 'csv', 'false')]
@@ -37,13 +37,16 @@ def drop_staging_tables_query(csv_schema, csv_table):
     return ddl
 
 
-def create_inserting_into_staging_query(apply_rules, header_names, header_types, staging_schema, staging_table, csv_schema, csv_table, start_seq, seq_name):
+def create_inserting_into_staging_query(stg_asmt_outcome_columns, batch_id, apply_rules, header_names, header_types, staging_schema, staging_table, csv_schema, csv_table, start_seq, seq_name):
     trim_column_names = apply_transformation_rules(apply_rules, header_types, header_names)
-    insert_sql = ["INSERT INTO %s.%s (SELECT " % (staging_schema, staging_table),
-                  ",".join(trim_column_names),
-                  ", nextval('%s') FROM %s.%s)" % (seq_name, csv_schema, csv_table),
-                  ]
-    insert_sql = "".join(insert_sql)
+    insert_sql = ["INSERT INTO \"{staging_schema}\".\"{staging_table}\"(",
+                   ",".join(stg_asmt_outcome_columns),
+                   ") SELECT ",
+                   ",".join(trim_column_names),
+                   " FROM \"{csv_schema}\".\"{csv_table}\"",
+                   ]
+    insert_sql = "".join(insert_sql).format(seq_name=seq_name, staging_schema=staging_schema, staging_table=staging_table, csv_schema=csv_schema, csv_table=csv_table)
+    # print(insert_sql)
     return insert_sql
 
 

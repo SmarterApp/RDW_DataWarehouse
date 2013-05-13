@@ -2,6 +2,7 @@ import datetime
 import csv
 import fileloader.prepare_queries as queries
 import random
+from udl2.database import UDL_TABLE_METADATA
 from sqlalchemy.exc import NoSuchTableError
 from sqlalchemy.engine import create_engine
 
@@ -13,14 +14,6 @@ extra_header_names = ['src_row_number', 'row_rec_id']
 extra_header_types = ['bigint', 'serial primary key']
 
 
-def get_db_conf():
-    '''
-    Get database conf parameters in configuration file
-    '''
-    # TODO: need to get conf options from conf file
-    return conf
-
-
 def connect_db(conf_args):
     '''
     Connect to database via sqlalchemy
@@ -28,7 +21,7 @@ def connect_db(conf_args):
 
     # TODO:define conf_args content
     db_string = DBDRIVER + '://{db_user}:{db_password}@{db_host}/{db_name}'.format(**conf_args)
-    print(db_string)
+    # print(db_string)
     engine = create_engine(db_string)
     db_connection = engine.connect()
     return db_connection, engine
@@ -39,7 +32,7 @@ def check_setup(staging_table, engine, conn):
     if not engine.dialect.has_table(conn, staging_table):
         print("There is no staging table -- ", staging_table)
         raise NoSuchTableError
-    # TODO:check if fdw is defined or not
+    # TODO:might add checking if fdw is defined or not
 
 
 def set_fdw(conn, conf):
@@ -75,6 +68,7 @@ def extract_csv_header(csv_file):
     formatted_header_names = [canonicalize_header_field(name) for name in header_names]
     # print("formatter header names -- ", formatted_header_names)
     # print("header types           -- ", header_types)
+
     return formatted_header_names, header_types
 
 
@@ -89,7 +83,7 @@ def canonicalize_header_field(field_name):
 def create_fdw_tables(conn, header_names, header_types, csv_file, csv_schema, csv_table, fdw_server):
     create_csv_ddl = queries.create_ddl_csv_query(header_names, header_types, csv_file, csv_schema, csv_table, fdw_server)
     drop_csv_ddl = queries.drop_ddl_csv_query(csv_schema, csv_table)
-    print(create_csv_ddl)
+#     print(create_csv_ddl)
     execute_queries(conn, [drop_csv_ddl, create_csv_ddl], 'Exception in creating fdw tables --')
 
 
@@ -105,8 +99,9 @@ def execute_queries(conn, list_of_queries, except_msg):
         trans.rollback()
 
 
-def get_staging_tables(conn, header_names, header_types, csv_file, staging_schema, staging_table):
-    # can be replaced by get staging definition from other place
+def get_fields_map(conn, header_names, header_types, batch_id, csv_file, staging_schema, staging_table):
+    """
+    # This is to create one fake staging table
     # add extra columns in header
     header_names_copy = header_names[:]
     header_types_copy = header_types[:]
@@ -115,17 +110,29 @@ def get_staging_tables(conn, header_names, header_types, csv_file, staging_schem
 
     create_staging_table = queries.create_staging_tables_query(header_types_copy, header_names_copy, csv_file, staging_schema, staging_table)
     # drop_staging_table = queries.drop_staging_tables_query(staging_schema, staging_table)
-    print(create_staging_table)
+    # print(create_staging_table)
     execute_queries(conn, [create_staging_table], 'Exception in getting staging table -- ')
+    """
+
+    """
+    Getting field mapper, which maps the column in staging table, and columns in csv table
+    """
+    # pick the columns from the 2nd to the last 2nd
+    stg_asmt_outcome_columns = [column_info[0] for column_info in UDL_TABLE_METADATA['STG_SBAC_ASMT_OUTCOME']['columns'][1:-1]]
+    # map first column in staging table to batch_id, map second column in staging table to the expression of using sequence
+    csv_table_columns = header_names[:]
+    csv_table_columns.insert(0, str(batch_id))
+    csv_table_columns.insert(1, 'nextval(\'{seq_name}\')')
+    return stg_asmt_outcome_columns, csv_table_columns
 
 
-def import_via_fdw(conn, apply_rules, header_names, header_types, staging_schema, staging_table, csv_schema, csv_table, start_seq):
+def import_via_fdw(conn, stg_asmt_outcome_columns, batch_id, apply_rules, csv_table_columns, header_types, staging_schema, staging_table, csv_schema, csv_table, start_seq):
     # create sequence name, use table_name and a random number combination
     seq_name = csv_table + '_' + str(random.choice(range(1, 10)))
     create_sequence = queries.create_sequence_query(staging_schema, seq_name, start_seq)
-    insert_into_staging_table = queries.create_inserting_into_staging_query(apply_rules, header_names, header_types, staging_schema, staging_table, csv_schema, csv_table, start_seq, seq_name)
+    insert_into_staging_table = queries.create_inserting_into_staging_query(stg_asmt_outcome_columns, batch_id, apply_rules, csv_table_columns, header_types, staging_schema, staging_table, csv_schema, csv_table, start_seq, seq_name)
     drop_sequence = queries.drop_sequence_query(staging_schema, seq_name)
-    print('@@@@@@@', insert_into_staging_table)
+    # print('@@@@@@@', create_sequence)
     execute_queries(conn, [create_sequence, insert_into_staging_table, drop_sequence], 'Exception in loading data -- ')
 
 
@@ -135,26 +142,25 @@ def drop_fdw_tables(conn, csv_schema, csv_table):
 
 
 def load_data_process(conn, conf):
-    # TODO: need to change if the header is not in the csv_file
+    # read headers from header_file
     header_names, header_types = extract_csv_header(conf['header_file'])
 
     # create FDW table
     create_fdw_tables(conn, header_names, header_types, conf['csv_file'], conf['csv_schema'], conf['csv_table'], conf['fdw_server'])
 
-    # get staging tables
-    # TODO: need to define the approach to get the staging table definition.
-    # temporary: hard code to create one if not here
-    get_staging_tables(conn, header_names, header_types, conf['csv_file'], conf['staging_schema'], conf['staging_table'])
+    # get field map
+    stg_asmt_outcome_columns, csv_table_columns = get_fields_map(conn, header_names, header_types, conf['batch_id'], conf['csv_file'], conf['staging_schema'], conf['staging_table'])
 
-    # do transform and import
+    # load the data from FDW table to staging table
     start_time = datetime.datetime.now()
-    import_via_fdw(conn, conf['apply_rules'], header_names, header_types, conf['staging_schema'], conf['staging_table'], conf['csv_schema'], conf['csv_table'], conf['start_seq'])
+    # hard-code for test:
+    import_via_fdw(conn, stg_asmt_outcome_columns, conf['batch_id'], conf['apply_rules'], csv_table_columns, header_types, conf['staging_schema'], conf['staging_table'], conf['csv_schema'], conf['csv_table'], conf['start_seq'])
     finish_time = datetime.datetime.now()
     spend_time = finish_time - start_time
     time_as_seconds = float(spend_time.seconds + spend_time.microseconds / 1000000.0)
-    print("\nSpend time for loading file(seconds) -- %f" % time_as_seconds)
+    print("\nSpend time for loading file %s (seconds) -- %f" % (conf['csv_file'], time_as_seconds))
 
-    # drop fdw table
+    # drop FDW table
     drop_fdw_tables(conn, conf['csv_schema'], conf['csv_table'])
 
     return spend_time
@@ -169,18 +175,15 @@ def load_file(conf):
     conn, engine = connect_db(conf)
 
     # check staging tables
-    # Note: currently, we do not have staging table defined.
-    # If we want to run this script without staging table defined at first,
-    # please comment out the following line.
-    # in method load_data_process(), then in get_staging_tables(), it will create staging table as a temporary solution
-    # check_setup(conf['staging_table'], engine, conn)
+    check_setup(conf['staging_table'], engine, conn)
+
     # start loading file process
     time_for_load = load_data_process(conn, conf)
-    print("Time for load file", time_for_load)
 
     # close db connection
     conn.close()
 
+"""
 if __name__ == '__main__':
     conf = {
             'csv_file': '/Users/lichen/Documents/Edware/sandboxes/ejen/US14726/UDL-test-data-Block-of-100-records-WITHOUT-datatype-errors-v3-realdata.csv',
@@ -197,10 +200,12 @@ if __name__ == '__main__':
             'staging_schema': 'public',
             'staging_table': 'tmp',
             'apply_rules': False,
-            'start_seq': 10
+            'start_seq': 10,
+            'batch_id': 100
     }
     start_time = datetime.datetime.now()
     load_file(conf)
     finish_time = datetime.datetime.now()
     spend_time = finish_time - start_time
     print("\nSpend time --", spend_time)
+"""

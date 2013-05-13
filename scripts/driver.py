@@ -14,6 +14,7 @@ ROOT_DIRECTORY = os.path.dirname(SRC_DIRECTORY)
 ZONES = os.path.join(ROOT_DIRECTORY, 'zones')
 LANDING_ZONE = os.path.join(ZONES, 'landing')
 WORK_ZONE = os.path.join(ZONES, 'work')
+HISTORY = os.path.join(ZONES, 'history')
 DATAFILES = os.path.join(ROOT_DIRECTORY, 'datafiles')
 
 
@@ -33,7 +34,8 @@ def start_pipeline(file_path):
     shutil.copy(file_path, landing_zone_file_path)
     # Now, add a task to the file splitter queue, passing in the path to the landing zone file
     # and the directory to use when writing the split files
-    udl2.W_file_splitter.task.apply_async([{'input_file':landing_zone_file_path, 'output_path': WORK_ZONE}], queue='Q_files_to_be_split')
+    udl2.W_file_splitter.task.apply_async([{'landing_zone_file':landing_zone_file_path, 'work_zone': WORK_ZONE,
+                                            'history': HISTORY}], queue='Q_files_to_be_split')
     
     
 def create_unique_file_name(file_path):

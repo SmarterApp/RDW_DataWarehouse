@@ -15,14 +15,6 @@ def setup_celery(celery_config):
     celery.config_from_object(celery_config)
 
 
-def load_timeout(setting):
-    '''
-    Loads timeout for pdf generating process
-    '''
-    key = 'pdf.generate.timeout'
-    return setting[key] if key in setting else TIMEOUT
-
-
 def load_celeryconfig(settings, prefix):
     '''
     Loads celery configuration from setting dict.
@@ -43,7 +35,7 @@ def load_celeryconfig(settings, prefix):
 
 def load_config(settings, prefix="celery"):
     # load pdf generation timeout
-    TIMEOUT = load_timeout(settings)
+    TIMEOUT = settings.get('pdf.generate.timeout', TIMEOUT)
     # load celery config
     celery_config = load_celeryconfig(settings, prefix)
     return celery_config

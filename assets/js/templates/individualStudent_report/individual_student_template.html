@@ -31,7 +31,46 @@
 		</div>
 		<div class="claimsSection">
 			<h3>Claims</h3>
-			{{> claimsInfo}}
+			<ul class="inline unstyled">
+				{{#claims}}
+				<li id="claim{{indexer}}" class="claims" style="width: {{claim_box_width}}">
+					<div class="header">
+						<div class="name small left"><strong>{{name2}}</strong></div>
+						<div class="icon {{assessmentUC}}_{{indexer}}_icon"></div>
+						<div class="clear"></div>
+						<h4 class="grayTitle">{{name}}</h4>
+						
+					</div>
+					<div class="content">
+						<div class="arrowBox">
+							<div id="content{{indexer}}_upper" class="scoreBox scoreBoxUpper"/>
+							<div id="content{{indexer}}_lower" class="scoreBox scoreBoxLower"/>
+							<div class="claims_tooltip hide">
+								<div class="claimToolTipSection">
+									<div class="summary">
+										<div class="left">
+									  		<div class="title">{{name2}}</div>
+									  		<div class="score">
+									  			<span>{{score}}</span>
+									  		</div>
+								  		</div>
+								  		<div class="description">{{score_desc}}</div>
+							  		</div>
+							  		<hr/>
+							  		<div class="claimsBar">
+							  			
+							  		</div>
+							  		<div class="errorBand">Error Band: <strong>{{range_min_score}}-{{range_max_score}}</strong></div>
+						  		</div>
+							</div>
+						</div>
+						<div class="description">{{desc}}</div>
+						<div class="link pull-right"><a href="#">Find out more >></a></div>
+					</div>
+				</li>
+				{{/claims}}
+			</ul>
+
 		</div>
 	</div>
 </div>

@@ -6,16 +6,18 @@ define [
   "edwareDataProxy"
   "edwareGrid"
   "edwareBreadcrumbs"
-  "edwareHeader"
   "text!edwareAssessmentDropdownViewSelectionTemplate"
   "edwareUtil"
   "edwareFooter"
   "text!edwareLOSHeaderConfidenceLevelBarTemplate"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareHeader, edwareAssessmentDropdownViewSelectionTemplate, edwareUtil, edwareFooter, edwareLOSHeaderConfidenceLevelBarTemplate) ->
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareAssessmentDropdownViewSelectionTemplate, edwareUtil, edwareFooter, edwareLOSHeaderConfidenceLevelBarTemplate) ->
 
   assessmentsData = {}
   studentsConfig = {}
   subjectsData = {}
+  
+  # Add header to the page
+  edwareUtil.getHeader()
   
   #
   #    * Create Student data grid

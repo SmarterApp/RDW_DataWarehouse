@@ -7,12 +7,10 @@ define [
   "edwareConfidenceLevelBar"
   "edwareClaimsBar"
   "text!templates/individualStudent_report/individual_student_template.html"
-  "text!templates/individualStudent_report/claimsInfo.html"
   "edwareBreadcrumbs"
-  "edwareHeader"
   "edwareUtil"
   "edwareFooter"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareConfidenceLevelBar, edwareClaimsBar, indivStudentReportTemplate, claimsInfoTemplate, edwareBreadcrumbs, edwareHeader, edwareUtil, edwareFooter) ->
+], ($, bootstrap, Mustache, edwareDataProxy, edwareConfidenceLevelBar, edwareClaimsBar, indivStudentReportTemplate, edwareBreadcrumbs, edwareUtil, edwareFooter) ->
   
   # claim score weight in percentage
   claimScoreWeightArray = {
@@ -26,6 +24,9 @@ define [
   generateIndividualStudentReport = (params) ->
     
     content = {}
+    
+    # Add header to the page
+    edwareUtil.getHeader()
       
     # Get temporary CMS data from data/content.json file
     getContent "../data/content.json", (tempContent) ->
@@ -140,11 +141,8 @@ define [
         contextData = data.context
         $('#breadcrumb').breadcrumbs(contextData, breadcrumbsConfigs)
         
-        partials = 
-          claimsInfo: claimsInfoTemplate
-        
         # use mustache template to display the json data       
-        output = Mustache.to_html indivStudentReportTemplate, data, partials     
+        output = Mustache.to_html indivStudentReportTemplate, data     
         $("#individualStudentContent").html output
         
         renderClaimScoreRelativeDifference data
@@ -222,7 +220,7 @@ define [
     bar_height = claim_score_relative_difference
     image_y_position = 100 - claim_score_relative_difference
     
-    img = '../images/Claim_arrowhead_up.png'
+    img = 'Claim_arrowhead_up'
     # style for vertical bar
     arrow_bar_class = "claim_score_arrow_bar claim_score_up_arrow_bar"
     drawArrow(claimArrowBox, img, image_y_position, arrow_bar_class, bar_height)
@@ -233,7 +231,7 @@ define [
   drawDownArrow = (assessmentSectionId, indexer, claim_score_relative_difference) ->
     # find arraw drawing box ID
     claimArrowBox = assessmentSectionId + ' #claim' + indexer + ' #content' + indexer + '_lower'
-    img = '../images/Claim_arrowhead_down.png'
+    img = 'Claim_arrowhead_down'
     bar_height = Math.abs(claim_score_relative_difference)
     image_y_position = Math.abs(claim_score_relative_difference)
     # style for vertical bar
@@ -258,7 +256,7 @@ define [
     adjusted_bar_height = (bar_height*(claimArrowBox_height-image_height*2-2)/100)/(claimArrowBox_height-image_height*2)*100
     arrow_bar.css("height", adjusted_bar_height + "%")        
     # set Triangle image in target div
-    $(claimArrowBox).css("background-image", "url(" + triangle_img + ")")
+    $(claimArrowBox).addClass(triangle_img)
     $(claimArrowBox).css("background-position", "50% " + triangle_y_position + "%")
     $(claimArrowBox).append arrow_bar
   #

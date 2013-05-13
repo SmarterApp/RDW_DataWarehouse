@@ -2,7 +2,6 @@ define [
   'jquery'
   "mustache"
   "edwareDataProxy"
-  "text!edwareBreadcrumbsTemplate"
 ], 
   #
   # * EDWARE breadcrumbs
@@ -16,7 +15,7 @@ define [
     #    *  Example: $("#table1").breadcrumbs(data, configs)
     #    
 
-    ($, Mustache, edwareDataProxy, template) ->
+    ($, Mustache, edwareDataProxy) ->
       $.fn.breadcrumbs = (contextData, configs) ->
         breadcrumbsConfigs = {}
         self = this
@@ -49,6 +48,11 @@ define [
             i++
           # Remove the last breadcrumb's link
           delete data[length-1].link
+          template = "{{#items}}" +
+                       "{{#link}}<a href='{{link}}'>{{name}}</a>" +
+                       "<div class='arrowSeperator'></div>{{/link}}" +
+                       "{{^link}}{{name}}{{/link}}" +
+                     "{{/items}}"
           output = Mustache.to_html template, contextData
           self.html output
 

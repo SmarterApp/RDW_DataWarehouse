@@ -1,8 +1,7 @@
 define [
   'jquery'
   'mustache'
-  "text!edwareFeedbackHTML"
-], ($, Mustache, template) ->
+], ($, Mustache) ->
   #
   # * EDWARE util
   # * Handles constants, reusable or common methods required by other EDWARE javascript files
@@ -62,6 +61,7 @@ define [
         
         # Render iframe with all other assets are loaded
         $(document).ready ->
+          template = "<iframe id='sm_e_s' width='600' height='300' frameborder='0' allowtransparency='true' style='border:0px;padding-bottom:4px;' src='https://www.surveymonkey.com/s.aspx?sm={{param}}&c={{uid}}'></iframe>"
           output = Mustache.to_html template, feedbackdata
           $("#surveyMonkeyInfo").html output
           
@@ -115,6 +115,19 @@ define [
             "right"
           else
             "left"
+            
+            
+  getHeader = ->
+    header_html = "<div id='logo'>" +
+                  "<img src='../images/smarterHeader_logo.png' alt='logo' height='36' width='112'>" +
+                  "</div>" +
+                  "<div id='headerTitle'>RFP15 Reporting - Beta UAT</div>" + 
+                  "<div class='topLinks'>" +
+                  "<span id='headerUser' class='user'></span><span class='seperator'>|</span><span id='headerLogout'><a href='/logout' target='iframe_logout'>Log Out</a></span>" +
+                  "</div>" +
+                  "<!--This iframe is used for logout redirect.  Do not remove it.-->" +
+                  "<iframe frameborder='0' height='0px' width='0px' name='iframe_logout'></iframe>"
+    $("#header").html(header_html)
 
   
   getConstants: getConstants
@@ -126,3 +139,4 @@ define [
   truncateContent: truncateContent
   renderFeedback: renderFeedback
   popupPlacement: popupPlacement
+  getHeader: getHeader

@@ -5,10 +5,12 @@ define [
   "edwareDataProxy"
   "edwareGrid"
   "edwareBreadcrumbs"
-  "edwareHeader"
   "edwareUtil"
   "edwareFooter"
-], ($, bootstrap, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareHeader, edwareUtil, edwareFooter) ->
+], ($, bootstrap, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter) ->
+  
+  # Add header to the page
+  edwareUtil.getHeader()
   #
   #    * Create Student data grid
   #    

@@ -2,6 +2,7 @@ import datetime
 import csv
 import fileloader.prepare_queries as queries
 import random
+import argparse
 from udl2.database import UDL_TABLE_METADATA
 from sqlalchemy.exc import NoSuchTableError
 from sqlalchemy.engine import create_engine
@@ -142,17 +143,22 @@ def load_file(conf):
     # close db connection
     conn.close()
 
-"""
-if __name__ == '__main__':
-    conf = {
-            'csv_file': '/Users/lichen/Documents/Edware/sandboxes/ejen/US14726/UDL-test-data-Block-of-100-records-WITHOUT-datatype-errors-v3-realdata.csv',
-            'metadata_file': '/Users/lichen/Documents/Edware/sandboxes/ejen/US14726/UDL-test-data-Block-of-100-records-WITHOUT-datatype-errors-v3-metadata.csv',
-            'csv_table': 'UDL_test_data_block_of_100_records_with_datatype_errors_v3',
 
+if __name__ == '__main__':
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-s', dest='source_csv', required=True, help="path to the source file")
+    parser.add_argument('-m', dest='header_csv', required=True, help="path to the header file")
+    args = parser.parse_args()
+
+    conf = {
+            'csv_file': args.source_csv,
+            'header_file': args.header_csv,
+            'csv_table': 'csv_table_for_file_loader',
             'db_host': 'localhost',
             'db_port': '5432',
             'db_user': 'udl2',
-            'db_name': 'fdw_test',
+            'db_name': 'udl2',
             'db_password': 'udl2abc1234',
             'csv_schema': 'udl2',
             'fdw_server': 'udl_import',
@@ -167,4 +173,3 @@ if __name__ == '__main__':
     finish_time = datetime.datetime.now()
     spend_time = finish_time - start_time
     print("\nSpend time --", spend_time)
-"""

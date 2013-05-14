@@ -4,6 +4,7 @@ import csv
 import math
 import argparse
 import time
+import datetime
 
 def create_output_destination(file_name,output_path):
     #create output template from supplied input file path
@@ -56,6 +57,11 @@ def get_list_split_files(output_name_template, output_dir):
     return output_list
 
 def split_file(file_name, delimiter=',', row_limit=10000, parts=0, output_path='.'):
+    start_time = datetime.datetime.now()
+    if parts:
+        print('The file splitter is starting at: '+str(start_time)+' and splitting into '+str(parts)+' parts')
+    else:
+        print('The file splitter is starting at: '+str(start_time)+' and splitting into '+str(row_limit)+' rows per file')
     isValid = os.path.exists(file_name) and os.path.isfile(file_name)
     if isValid is False:
         raise Exception('File not found!')
@@ -97,6 +103,9 @@ def split_file(file_name, delimiter=',', row_limit=10000, parts=0, output_path='
     
     split_file_list = get_list_split_files(output_name_template, output_dir)
 
+    end_time = datetime.datetime.now()
+    execution_time = end_time - start_time
+    print('The file splitter completed at %s with an execution time of %s for %s rows into %s files' % (str(end_time),execution_time,totalrows,len(split_file_list)))
     return split_file_list, header_path
 
         

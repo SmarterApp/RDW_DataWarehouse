@@ -21,16 +21,19 @@ def create_directory_structure_for_file_history(history_directory_path, landing_
     @param landing_zone_file_path: Path to the original file in the landing_zone
     @type landing_zone_file_path: str
     '''
-    root_history_directory_for_file = create_root_history_directory_for_file(history_directory_path, landing_zone_file_path)
-    original_file_directory = create_original_file_directory(root_history_directory_for_file)
-    if os.path.exists(landing_zone_file_path):
-        print("I am the cleanup worker, I am about to clean up the zones directory.")
-        start = time.time()
-        file_util.move_file_and_confirm(landing_zone_file_path, original_file_directory)
-        end = time.time()
-        elapsed = end - start
-        print('I am the cleanup worker.  Cleaning the zones directory took %.3f seconds to complete.' % elapsed)
-    split_files_directory = create_split_files_directory(root_history_directory_for_file)
+	try:
+    	root_history_directory_for_file = create_root_history_directory_for_file(history_directory_path, landing_zone_file_path)
+	    original_file_directory = create_original_file_directory(root_history_directory_for_file)
+	    if os.path.exists(landing_zone_file_path):
+	        print("I am the cleanup worker, I am about to clean up the zones directory.")
+	        start = time.time()
+	        file_util.move_file_and_confirm(landing_zone_file_path, original_file_directory)
+	        end = time.time()
+	        elapsed = end - start
+	        print('I am the cleanup worker.  Cleaning the zones directory took %.3f seconds to complete.' % elapsed)
+	    split_files_directory = create_split_files_directory(root_history_directory_for_file)
+	except:
+		pass
     # move_split_files_from_work_zone(split_files_directory)
 
 
@@ -51,7 +54,7 @@ def create_root_history_directory_for_file(history, csv_file):
     file_name = file_util.extract_file_name(csv_file)
     file_history_dir = os.path.join(history, file_name)
     if not os.path.exists(file_history_dir):
-        os.makedirs(file_history_dir)
+		os.makedirs(file_history_dir)
     return file_history_dir
 
 
@@ -68,7 +71,7 @@ def create_original_file_directory(file_history):
     '''
     original_file_dir = os.path.join(file_history, ORIGINAL_FILE)
     if not os.path.exists(original_file_dir):
-        os.makedirs(original_file_dir)
+		os.makedirs(original_file_dir)
     return original_file_dir
 
 

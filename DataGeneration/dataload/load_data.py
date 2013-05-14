@@ -207,7 +207,7 @@ def copy_db_tables(tables, csvpath, schema, user, host, database, env):
         print()
 
 
-def load_data_main(input_args):
+def load_data_main(csvdir, host, database, user, passwd, schema, port=5432, truncate=False):
     '''
     Main method for all the work that is to be done.
     @param input_args: a dictionary of all of the parameters received by the arg parser
@@ -216,13 +216,16 @@ def load_data_main(input_args):
     '''
 
     # get csv file names and the path to csvs
-    csv_file_names, csvpath = get_csv_list(input_args.get('csvdir'))
+    try:
+        csv_file_names, csvpath = get_csv_list(csvdir)
+    except AttributeError:
+        exit('Unable to locate any csv files')
 
     # get a copy of the environment that includes 'PGPASSFILE' that points to the new password file
-    env = setup_pg_passwd_file(input_args['host'], input_args['database'], input_args['user'], input_args['passwd'], csvpath, input_args['port'])
+    env = setup_pg_passwd_file(host, database, user, passwd, csvpath, port)
 
     # get an ordered list of tables
-    ordered_tables = get_table_order(input_args['host'], input_args['database'], input_args['user'], input_args['passwd'], input_args['schema'], input_args['port'])
+    ordered_tables = get_table_order(host, database, user, passwd, input_args['schema'], port)
 
     # convert the list of files to a set
     fileset = set(csv_file_names)
@@ -247,4 +250,4 @@ def load_data_main(input_args):
 
 if __name__ == '__main__':
     input_args = get_input_args()
-    load_data_main(input_args)
+    load_data_main(input_args['csvdir'], input_args['host'], input_args['database'], input_args['user'], input_args['passwd'], input_args['schema'], input_args['port'], input_args['truncate'])

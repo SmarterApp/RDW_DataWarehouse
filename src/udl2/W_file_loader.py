@@ -43,7 +43,7 @@ BATCH_ID = 'batch_id'
 def task(msg):
     logger.info(task.name)
     logger.info('Loading file %s...' % msg[FILE_TO_LOAD])
-    conf = generate_conf_for_loading(msg[FILE_TO_LOAD], msg[ROW_START], msg[HEADER_FILE])
+    conf = generate_conf_for_loading(msg[FILE_TO_LOAD], msg[ROW_START], msg[HEADER_FILE], msg[BATCH_ID])
     load_file(conf)
 
 #    if udl2_stages[task.name]['next'] is not None:
@@ -58,7 +58,7 @@ def task(msg):
     return msg
 
 
-def generate_conf_for_loading(file_to_load, start_seq, header_file_path):
+def generate_conf_for_loading(file_to_load, start_seq, header_file_path, batch_id):
     csv_table = extract_file_name(file_to_load)
     # TODO: load basic conf from config file (like W_file_splitter)
     conf = {
@@ -76,8 +76,7 @@ def generate_conf_for_loading(file_to_load, start_seq, header_file_path):
             STAGING_SCHEMA: 'udl2',
             STAGING_TABLE: 'STG_SBAC_ASMT_OUTCOME',
             APPLY_RULES: False,
-            # TODO: need to replace by passing from file splitter
-            BATCH_ID: 200
+            BATCH_ID: batch_id
     }
     return conf
 

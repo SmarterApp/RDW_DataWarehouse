@@ -6,6 +6,7 @@ import shutil
 import os
 import argparse
 import time
+import datetime
 
 # Paths to our various directories
 THIS_MODULE_PATH = os.path.abspath(__file__)
@@ -42,10 +43,13 @@ def generate_message_for_file_splitter(landing_zone_file_path):
     msg = {
         'landing_zone_file': landing_zone_file_path,
         'work_zone': WORK_ZONE,
-        'history_zone': HISTORY_ZONE
+        'history_zone': HISTORY_ZONE,
+        # generate batch_id here
+        'batch_id': int(datetime.datetime.now().timestamp())
     }
     return msg
-    
+
+
 def create_unique_file_name(file_path):
     '''
     Given the path to a file, this function takes the file name, x, and appends a timestamp, t, to it, creating the name

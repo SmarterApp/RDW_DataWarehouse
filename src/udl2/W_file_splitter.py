@@ -19,6 +19,7 @@ LANDING_ZONE = 'landing_zone'
 WORK_ZONE = 'work_zone'
 HISTORY_ZONE = 'history_zone'
 KEEP_HEADERS = 'keep_headers'
+BATCH_ID = 'batch_id'
 
 # Additional keys for outgoing message to file_loader
 FILE_TO_LOAD = 'file_to_load'
@@ -103,4 +104,6 @@ def parse_initial_message(msg):
         params[KEEP_HEADERS] = msg[KEEP_HEADERS]
     if LANDING_ZONE in msg.keys():
         params[LANDING_ZONE] = msg[LANDING_ZONE]
+    if BATCH_ID in msg.keys():
+        params[BATCH_ID] = msg[BATCH_ID]
     return params

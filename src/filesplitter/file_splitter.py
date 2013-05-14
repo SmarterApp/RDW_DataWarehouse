@@ -89,19 +89,25 @@ def split_file(file_name, delimiter=',', row_limit=10000, parts=0, output_path='
     #set up output location
     output_name_template,output_dir = create_output_destination(file_name,output_path)
     
-    #call unix split command
-    split_command = 'split -a1 -l %d noheaders.csv %s' % (row_limit, os.path.join(output_dir,output_name_template))
-    run_command(split_command)
+    if row_limit < totalrows or parts > 1:
+        #call unix split command
+        split_command = 'split -a1 -l %d noheaders.csv %s' % (row_limit, os.path.join(output_dir,output_name_template))
+        run_command(split_command)
+        split_file_list = get_list_split_files(output_name_template, output_dir)
+        #clean up
+        os.remove('noheaders.csv')
+    else:
+        #only splitting into one file, just move noheaders.csv instead
+        move_command = 'mv noheaders.csv %s' % os.path.join(output_dir,output_name_template+'a')
+        split_file_list = [[os.path.join(output_dir,output_name_template+'a'),totalrows,1]]
     
-    #clean up
-    os.remove('noheaders.csv')
     
     #save headers to output dir
     header_path = os.path.join(output_dir, 'headers.csv')
     header_writer = csv.writer(open(header_path, 'w'), delimiter=delimiter)
     header_writer.writerow(header)
     
-    split_file_list = get_list_split_files(output_name_template, output_dir)
+    
 
     end_time = datetime.datetime.now()
     execution_time = end_time - start_time

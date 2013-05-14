@@ -67,6 +67,7 @@ class FileSplitterFTest(unittest.TestCase):
                         self.assertEqual(value_in_csv, value_in_table)
                     # verify the src_column_name
                     self.assertEqual(row_in_table['src_file_rec_num'], row_number + self.conf['start_seq'])
+                    self.assertEqual(row_in_table['batch_id'], self.conf['batch_id'])
                 row_number += 1
 
     def tearDown(self):

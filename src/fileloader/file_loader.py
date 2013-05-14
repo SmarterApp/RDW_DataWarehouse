@@ -146,7 +146,7 @@ def load_file(conf):
     conn.close()
 
     # log for end the file loader
-    print("I am the file loader, loaded file %s in %f seconds" % (extract_file_name(conf['csv_file']), time_for_load_as_seconds))
+    print("I am the file loader, loaded file %s in %.3f seconds" % (extract_file_name(conf['csv_file']), time_for_load_as_seconds))
 
 if __name__ == '__main__':
 

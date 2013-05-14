@@ -1,7 +1,8 @@
 __author__ = 'abrien'
 
 import os
-import util.file_util as file_util
+import udl2_util.file_util as file_util
+import time
 
 ORIGINAL_FILE = 'original_file'
 SPLIT_FILES = 'split_files'
@@ -23,7 +24,12 @@ def create_directory_structure_for_file_history(history_directory_path, landing_
     root_history_directory_for_file = create_root_history_directory_for_file(history_directory_path, landing_zone_file_path)
     original_file_directory = create_original_file_directory(root_history_directory_for_file)
     if os.path.exists(landing_zone_file_path):
+        print("I am the cleanup worker, I am about to clean up the zones directory.")
+        start = time.time()
         file_util.move_file_and_confirm(landing_zone_file_path, original_file_directory)
+        end = time.time()
+        elapsed = end - start
+        print('I am the cleanup worker.  Cleaning the zones directory took %.3f seconds to complete.' % elapsed)
     split_files_directory = create_split_files_directory(root_history_directory_for_file)
     # move_split_files_from_work_zone(split_files_directory)
 

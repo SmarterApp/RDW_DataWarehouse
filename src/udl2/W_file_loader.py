@@ -45,7 +45,7 @@ def task(msg):
     logger.info('Loading file %s...' % msg[FILE_TO_LOAD])
     conf = generate_conf_for_loading(msg[FILE_TO_LOAD], msg[ROW_START], msg[HEADER_FILE])
     load_file(conf)
-   
+
 #    if udl2_stages[task.name]['next'] is not None:
 #        next_msg = [file_name + ' passed after ' + task.name]
 #        exec("task_instance = " + udl2_stages[task.name]['next']['task'])

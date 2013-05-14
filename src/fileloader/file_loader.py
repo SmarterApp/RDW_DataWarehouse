@@ -2,16 +2,13 @@ import datetime
 import csv
 import fileloader.prepare_queries as queries
 import random
+import argparse
 from udl2.database import UDL_TABLE_METADATA
 from sqlalchemy.exc import NoSuchTableError
 from sqlalchemy.engine import create_engine
 
 
 DBDRIVER = "postgresql+pypostgresql"
-
-# temporary assumption: extra columns in staging tables, but not in csv file
-extra_header_names = ['src_row_number', 'row_rec_id']
-extra_header_types = ['bigint', 'serial primary key']
 
 
 def connect_db(conf_args):
@@ -32,29 +29,6 @@ def check_setup(staging_table, engine, conn):
     if not engine.dialect.has_table(conn, staging_table):
         print("There is no staging table -- ", staging_table)
         raise NoSuchTableError
-    # TODO: might add checking if fdw is defined or not
-
-
-def set_fdw(conn, conf):
-    '''
-    Function to set fdw, including extension, server and functions
-    '''
-    # reference: http://www.postgresql.org/docs/9.2/static/file-fdw.html
-    try:
-        # set fdw extension
-        conn.execute(queries.create_fdw_extension_query(conf['csv_schema']))
-
-        # set fdw server
-        conn.execute(queries.create_fdw_server_query(conf['fdw_server']))
-
-        # run functions. read from .sql file
-        statement = open("transformation_rules.sql").read()
-        # print(statement.strip())
-        conn.execute(statement)
-
-    except Exception as e:
-        print('Exception -- ', e)
-        # conn.rollback()
 
 
 def extract_csv_header(csv_file):
@@ -100,19 +74,6 @@ def execute_queries(conn, list_of_queries, except_msg):
 
 
 def get_fields_map(conn, header_names, header_types, batch_id, csv_file, staging_schema, staging_table):
-    """
-    # This is to create one fake staging table
-    # add extra columns in header
-    header_names_copy = header_names[:]
-    header_types_copy = header_types[:]
-    header_names_copy.extend(extra_header_names)
-    header_types_copy.extend(extra_header_types)
-
-    create_staging_table = queries.create_staging_tables_query(header_types_copy, header_names_copy, csv_file, staging_schema, staging_table)
-    # drop_staging_table = queries.drop_staging_tables_query(staging_schema, staging_table)
-    # print(create_staging_table)
-    execute_queries(conn, [create_staging_table], 'Exception in getting staging table -- ')
-    """
 
     """
     Getting field mapper, which maps the column in staging table, and columns in csv table
@@ -153,23 +114,23 @@ def load_data_process(conn, conf):
 
     # load the data from FDW table to staging table
     start_time = datetime.datetime.now()
-    # hard-code for test:
     import_via_fdw(conn, stg_asmt_outcome_columns, conf['batch_id'], conf['apply_rules'], csv_table_columns, header_types, conf['staging_schema'], conf['staging_table'], conf['csv_schema'], conf['csv_table'], conf['start_seq'])
     finish_time = datetime.datetime.now()
     spend_time = finish_time - start_time
     time_as_seconds = float(spend_time.seconds + spend_time.microseconds / 1000000.0)
-    print("\nSpend time for loading file %s (seconds) -- %f" % (conf['csv_file'], time_as_seconds))
 
     # drop FDW table
     drop_fdw_tables(conn, conf['csv_schema'], conf['csv_table'])
 
-    return spend_time
+    return time_as_seconds
 
 
 def load_file(conf):
     '''
     Main function to initiate file loader
     '''
+    # log for start the file loader
+    print("I am the file splitter, about to load file %s" % conf['csv_file'])
 
     # connect to database
     conn, engine = connect_db(conf)
@@ -178,27 +139,34 @@ def load_file(conf):
     check_setup(conf['staging_table'], engine, conn)
 
     # start loading file process
-    time_for_load = load_data_process(conn, conf)
+    time_for_load_as_seconds = load_data_process(conn, conf)
 
     # close db connection
     conn.close()
 
-"""
-if __name__ == '__main__':
-    conf = {
-            'csv_file': '/Users/lichen/Documents/Edware/sandboxes/ejen/US14726/UDL-test-data-Block-of-100-records-WITHOUT-datatype-errors-v3-realdata.csv',
-            'metadata_file': '/Users/lichen/Documents/Edware/sandboxes/ejen/US14726/UDL-test-data-Block-of-100-records-WITHOUT-datatype-errors-v3-metadata.csv',
-            'csv_table': 'UDL_test_data_block_of_100_records_with_datatype_errors_v3',
+    # log for end the file loader
+    print("I am the file splitter, loaded file %s in %f seconds" % (conf['csv_file'], time_for_load_as_seconds))
 
+if __name__ == '__main__':
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-s', dest='source_csv', required=True, help="path to the source file")
+    parser.add_argument('-m', dest='header_csv', required=True, help="path to the header file")
+    args = parser.parse_args()
+
+    conf = {
+            'csv_file': args.source_csv,
+            'header_file': args.header_csv,
+            'csv_table': 'csv_table_for_file_loader',
             'db_host': 'localhost',
             'db_port': '5432',
-            'db_user': 'abrien',
-            'db_name': 'fdw_test',
-            'db_password': '',
-            'csv_schema': 'public',
+            'db_user': 'udl2',
+            'db_name': 'udl2',
+            'db_password': 'udl2abc1234',
+            'csv_schema': 'udl2',
             'fdw_server': 'udl_import',
-            'staging_schema': 'public',
-            'staging_table': 'tmp',
+            'staging_schema': 'udl2',
+            'staging_table': 'STG_SBAC_ASMT_OUTCOME',
             'apply_rules': False,
             'start_seq': 10,
             'batch_id': 100
@@ -208,4 +176,3 @@ if __name__ == '__main__':
     finish_time = datetime.datetime.now()
     spend_time = finish_time - start_time
     print("\nSpend time --", spend_time)
-"""

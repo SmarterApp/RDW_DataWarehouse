@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import subprocess
 from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
-import argparse
+import sys
 
 
 if __name__ == '__main__':

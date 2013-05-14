@@ -59,9 +59,9 @@ def get_list_split_files(output_name_template, output_dir):
 def split_file(file_name, delimiter=',', row_limit=10000, parts=0, output_path='.'):
     start_time = datetime.datetime.now()
     if parts:
-        print('The file splitter is starting at: '+str(start_time)+' and splitting into '+str(parts)+' parts')
+        print('The file splitter starting at: '+str(start_time)[:-3]+' and splitting into '+str(parts)+' parts')
     else:
-        print('The file splitter is starting at: '+str(start_time)+' and splitting into '+str(row_limit)+' rows per file')
+        print('The file splitter starting at: '+str(start_time)[:-3]+' and splitting into '+str(row_limit)+' rows per file')
     isValid = os.path.exists(file_name) and os.path.isfile(file_name)
     if isValid is False:
         raise Exception('File not found!')
@@ -105,7 +105,7 @@ def split_file(file_name, delimiter=',', row_limit=10000, parts=0, output_path='
 
     end_time = datetime.datetime.now()
     execution_time = end_time - start_time
-    print('The file splitter completed at %s with an execution time of %s for %s rows into %s files' % (str(end_time),execution_time,totalrows,len(split_file_list)))
+    print('The file splitter completed at %s with an execution time of %s for %s rows into %s files' % (str(end_time)[:-3],str(execution_time)[:-3],totalrows,len(split_file_list)))
     return split_file_list, header_path
 
         

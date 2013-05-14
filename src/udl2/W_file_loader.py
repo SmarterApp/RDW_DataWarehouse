@@ -4,7 +4,7 @@ import udl2.W_final_cleanup
 from celery.result import AsyncResult
 from celery.utils.log import get_task_logger
 from fileloader.file_loader import load_file
-from util.file_util import extract_file_name
+from udl2_util.file_util import extract_file_name
 
 
 logger = get_task_logger(__name__)

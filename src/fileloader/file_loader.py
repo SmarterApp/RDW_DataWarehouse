@@ -130,7 +130,7 @@ def load_file(conf):
     Main function to initiate file loader
     '''
     # log for start the file loader
-    print("I am the file splitter, about to load file %s" % conf['csv_file'])
+    print("I am the file loader, about to load file %s" % conf['csv_file'])
 
     # connect to database
     conn, engine = connect_db(conf)
@@ -145,7 +145,7 @@ def load_file(conf):
     conn.close()
 
     # log for end the file loader
-    print("I am the file splitter, loaded file %s in %f seconds" % (conf['csv_file'], time_for_load_as_seconds))
+    print("I am the file loader, loaded file %s in %f seconds" % (conf['csv_file'], time_for_load_as_seconds))
 
 if __name__ == '__main__':
 

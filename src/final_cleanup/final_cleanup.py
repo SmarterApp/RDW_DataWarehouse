@@ -1,7 +1,7 @@
 __author__ = 'abrien'
 
 import os
-import util.file_util as file_util
+import udl2_util.file_util as file_util
 
 ORIGINAL_FILE = 'original_file'
 SPLIT_FILES = 'split_files'

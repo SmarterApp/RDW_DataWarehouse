@@ -1,7 +1,7 @@
 __author__ = 'abrien'
 
 import os
-import shutil
+import util.file_util as file_util
 
 ORIGINAL_FILE = 'original_file'
 SPLIT_FILES = 'split_files'
@@ -23,7 +23,7 @@ def create_directory_structure_for_file_history(history_directory_path, landing_
     root_history_directory_for_file = create_root_history_directory_for_file(history_directory_path, landing_zone_file_path)
     original_file_directory = create_original_file_directory(root_history_directory_for_file)
     if os.path.exists(landing_zone_file_path):
-        move_file_from_landing_zone(landing_zone_file_path, original_file_directory)
+        file_util.move_file_and_confirm(landing_zone_file_path, original_file_directory)
     split_files_directory = create_split_files_directory(root_history_directory_for_file)
     # move_split_files_from_work_zone(split_files_directory)
 
@@ -42,26 +42,11 @@ def create_root_history_directory_for_file(history, csv_file):
     @return: The path to the newly created subdirectory
     @rtype: str
     '''
-    file_name = extract_file_name(csv_file)
+    file_name = file_util.extract_file_name(csv_file)
     file_history_dir = os.path.join(history, file_name)
     if not os.path.exists(file_history_dir):
         os.makedirs(file_history_dir)
     return file_history_dir
-
-
-def extract_file_name(file_path):
-    '''
-    Given a path to a file, this function removes the path and the extension, simply returning the filename.
-
-    @param file_path: Path to the file whose name will be extracted
-    @type file_path: str
-
-    @return: the file's name
-    @rtype: str
-    '''
-    file_name_and_ext = os.path.basename(file_path)
-    file_name = os.path.splitext(file_name_and_ext)[0]
-    return file_name
 
 
 def create_original_file_directory(file_history):
@@ -79,61 +64,6 @@ def create_original_file_directory(file_history):
     if not os.path.exists(original_file_dir):
         os.makedirs(original_file_dir)
     return original_file_dir
-
-
-def move_file_from_landing_zone(landing_zone_file, original_file_directory):
-    '''
-    This function moves a landing zone file to it's 'original_file' directory in the history zone.
-    If successful in doing this, it then removes the file from the landing zone completely.
-
-    @param landing_zone_file: The path to the landing zone file that will be moved to the history zone.
-    @type landing_zone_file: str
-
-    @param original_file_directory: The path to the file's original_file directory.  This is where the file will be moved.
-    @type original_file_directory: str
-    '''
-    copied_successfully = copy_file(landing_zone_file, original_file_directory)
-    if copied_successfully:
-        remove_file(landing_zone_file)
-
-
-def copy_file(source_file, target_directory):
-    '''
-    This function moves the source file to the target directory by wrapping shutil.copy2(...)
-    If an error occurs during the copy process, some custom error printing will take place.
-    It will return True if the move completed successfully and False otherwise.
-
-    @param source_file: The path to the file that will be copied over to the target directory.
-    @type source_file: str
-
-    @param target_directory: The path to the directory that will hold the source_file
-    @type target_directory: str
-
-    @return: True if copy completed successfully, False if anything went wrong
-    @rtype: bool
-    '''
-    try:
-        shutil.copy2(source_file, target_directory)
-        return True
-    except IOError as e:
-        print('ERROR while copying file (%s) to directory (%s)' % (source_file, target_directory))
-        print(e)
-        return False
-
-
-def remove_file(target_file):
-    '''
-    This function removes target_file by wrapping os.remove()
-
-    @param target_file: The file to remove
-    @type target_file: str
-    '''
-    try:
-        os.remove(target_file)
-    except OSError as e:
-        print('ERROR removing file (%s)' % (target_file,))
-        print('Aforementioned file still exists in original directory.')
-        print(e)
 
 
 def create_split_files_directory(root_file_history_dir):

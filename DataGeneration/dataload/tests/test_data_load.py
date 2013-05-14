@@ -33,18 +33,18 @@ class TestDataLoad(unittest.TestCase):
     def test_load_data(self):
         ''' Test load_data '''
 
-        load_data.load_data_main(self.input_args)
+        load_data.load_data_main(self.input_args['csvdir'], self.input_args['host'], self.input_args['database'], self.input_args['user'], self.input_args['passwd'], self.input_args['schema'], self.input_args['port'], self.input_args['truncate'])
 
         self.input_args['truncate'] = True
-        load_data.load_data_main(self.input_args)
+        load_data.load_data_main(self.input_args['csvdir'], self.input_args['host'], self.input_args['database'], self.input_args['user'], self.input_args['passwd'], self.input_args['schema'], self.input_args['port'], self.input_args['truncate'])
 
         load_data.system = MagicMock(side_effect=self.system_mock2)
 
         with self.assertRaises(AttributeError):
-            load_data.load_data_main(self.input_args)
+            load_data.load_data_main(self.input_args['csvdir'], self.input_args['host'], self.input_args['database'], self.input_args['user'], self.input_args['passwd'], self.input_args['schema'], self.input_args['port'], self.input_args['truncate'])
 
         load_data.get_table_order = MagicMock(side_effect=self.get_table_order_mock2)
-        load_data.load_data_main(self.input_args)
+        load_data.load_data_main(self.input_args['csvdir'], self.input_args['host'], self.input_args['database'], self.input_args['user'], self.input_args['passwd'], self.input_args['schema'], self.input_args['port'], self.input_args['truncate'])
 
     def get_table_order_mock(self, *args, **kwargs):
         ''' Mock of get_table_order'''

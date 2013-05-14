@@ -225,7 +225,7 @@ def load_data_main(csvdir, host, database, user, passwd, schema, port=5432, trun
     env = setup_pg_passwd_file(host, database, user, passwd, csvpath, port)
 
     # get an ordered list of tables
-    ordered_tables = get_table_order(host, database, user, passwd, input_args['schema'], port)
+    ordered_tables = get_table_order(host, database, user, passwd, schema, port)
 
     # convert the list of files to a set
     fileset = set(csv_file_names)
@@ -236,11 +236,11 @@ def load_data_main(csvdir, host, database, user, passwd, schema, port=5432, trun
         raise AttributeError('The following table(s) are not present in one of the locations %s' % missing_tables)
 
     # truncate tables
-    if input_args['truncate']:
-        truncate_db_tables(ordered_tables, input_args['schema'], input_args['user'], input_args['host'], input_args['database'], env)
+    if truncate:
+        truncate_db_tables(ordered_tables, schema, user, host, database, env)
 
     # copy csvs to tables
-    copy_db_tables(ordered_tables, csvpath, input_args['schema'], input_args['user'], input_args['host'], input_args['database'], env)
+    copy_db_tables(ordered_tables, csvpath, schema, user, host, database, env)
 
     # clean up
     remove_pg_passwd_file(env['PGPASSFILE'])

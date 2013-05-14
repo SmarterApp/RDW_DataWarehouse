@@ -32,7 +32,7 @@ def check_setup(staging_table, engine, conn):
     if not engine.dialect.has_table(conn, staging_table):
         print("There is no staging table -- ", staging_table)
         raise NoSuchTableError
-    # TODO:might add checking if fdw is defined or not
+    # TODO: might add checking if fdw is defined or not
 
 
 def set_fdw(conn, conf):

@@ -13,7 +13,8 @@ def create_output_destination(file_name,output_path):
     #create output directory
     timestamp = int(time.time())
     output_dir = os.path.join(output_path,base,str(timestamp))
-    if not os.path.exists(output_dir): os.makedirs(output_dir)
+    if not os.path.exists(output_dir): 
+    	os.makedirs(output_dir)
     
     return output_name_template,output_dir
     
@@ -21,6 +22,17 @@ def run_command(cmd_string):
     p = subprocess.Popen(cmd_string, stdout=subprocess.PIPE,shell=True)
     (output,err) = p.communicate()
     return output,err
+    
+def check_row_count(file_name):
+    #get line count of original file
+    word_count_cmd = "wc %s" % file_name
+    output,err = run_command(word_count_cmd)
+    totalrows = int(output.split()[0])
+    #windows encoded csvs should have exactly one row
+    if totalrows <= 1:
+    	raise Exception('Unable to split, file has %s rows' % str(totalrows))
+    	
+    return None
     
 def get_list_split_files(output_name_template, output_dir):
     output_list=[]
@@ -40,18 +52,15 @@ def get_list_split_files(output_name_template, output_dir):
         #if statement excludes 'total' row from command response	
         if output_name_template in filename.decode('utf-8'): 
         	output_list.append([filename.decode('utf-8'),int(line_count),row_start])
-        
     
-    #abs_path = os.path.abspath(output_dir)
-    #for files in os.listdir(output_dir):
-    #	if output_name_template in files: output_list.append(os.path.join(abs_path,files))
     return output_list
 
 def split_file(file_name, delimiter=',', row_limit=10000, parts=0, output_path='.'):
     isValid = os.path.exists(file_name) and os.path.isfile(file_name)
     if isValid is False:
-        print("invalid file ", file_name)
+        raise Exception('File not found!')
     
+    check_row_count(file_name)
     #open file
     filehandler = open(file_name,'r')
     
@@ -103,8 +112,11 @@ if __name__ == "__main__":
     
     args = parser.parse_args()
     print("Input file is: "+args.inputfile)
-    if args.output: print("Output file path is: "+args.output)
-    if args.rows and args.parts == 0: print("Rows per output file: "+str(args.rows))
-    if args.parts: print("Number of output files: "+str(args.parts))
+    if args.output: 
+    	print("Output file path is: "+args.output)
+    if args.rows and args.parts == 0: 
+    	print("Rows per output file: "+str(args.rows))
+    if args.parts: 
+    	print("Number of output files: "+str(args.parts))
     
     split_file(args.inputfile,row_limit=args.rows,parts=args.parts,output_path=args.output)

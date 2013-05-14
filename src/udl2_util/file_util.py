@@ -38,7 +38,7 @@ def copy_file(source_file, target_directory):
         return True
     except IOError as e:
         #print('ERROR while copying file (%s) to directory (%s)' % (source_file, target_directory))
-        print(e)
+        #print(e)
         return False
 
 

@@ -99,6 +99,7 @@ def split_file(file_name, delimiter=',', row_limit=10000, parts=0, output_path='
     else:
         #only splitting into one file, just move noheaders.csv instead
         move_command = 'mv noheaders.csv %s' % os.path.join(output_dir,output_name_template+'a')
+        run_command(move_command)
         split_file_list = [[os.path.join(output_dir,output_name_template+'a'),totalrows,1]]
     
     

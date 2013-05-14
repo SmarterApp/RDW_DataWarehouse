@@ -7,13 +7,14 @@ import os
 import argparse
 import time
 
-
+# Paths to our various directories
 THIS_MODULE_PATH = os.path.abspath(__file__)
 SRC_DIRECTORY = os.path.dirname(THIS_MODULE_PATH)
 ROOT_DIRECTORY = os.path.dirname(SRC_DIRECTORY)
 ZONES = os.path.join(ROOT_DIRECTORY, 'zones')
 LANDING_ZONE = os.path.join(ZONES, 'landing')
 WORK_ZONE = os.path.join(ZONES, 'work')
+HISTORY_ZONE = os.path.join(ZONES, 'history_zone')
 DATAFILES = os.path.join(ROOT_DIRECTORY, 'datafiles')
 
 
@@ -33,8 +34,17 @@ def start_pipeline(file_path):
     shutil.copy(file_path, landing_zone_file_path)
     # Now, add a task to the file splitter queue, passing in the path to the landing zone file
     # and the directory to use when writing the split files
-    udl2.W_file_splitter.task.apply_async([{'input_file':landing_zone_file_path, 'output_path': WORK_ZONE}], queue='Q_files_to_be_split')
-    
+    msg = generate_message_for_file_splitter(landing_zone_file_path)
+    udl2.W_file_splitter.task.apply_async([msg], queue='Q_files_to_be_split')
+
+
+def generate_message_for_file_splitter(landing_zone_file_path):
+    msg = {
+        'landing_zone_file': landing_zone_file_path,
+        'work_zone': WORK_ZONE,
+        'history_zone': HISTORY_ZONE
+    }
+    return msg
     
 def create_unique_file_name(file_path):
     '''

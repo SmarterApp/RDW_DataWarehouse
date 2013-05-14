@@ -118,18 +118,19 @@ def load_data_process(conn, conf):
     finish_time = datetime.datetime.now()
     spend_time = finish_time - start_time
     time_as_seconds = float(spend_time.seconds + spend_time.microseconds / 1000000.0)
-    print("\nSpend time for loading file %s (seconds) -- %f" % (conf['csv_file'], time_as_seconds))
 
     # drop FDW table
     drop_fdw_tables(conn, conf['csv_schema'], conf['csv_table'])
 
-    return spend_time
+    return time_as_seconds
 
 
 def load_file(conf):
     '''
     Main function to initiate file loader
     '''
+    # log for start the file loader
+    print("I am the file splitter, about to load file %s" % conf['csv_file'])
 
     # connect to database
     conn, engine = connect_db(conf)
@@ -138,11 +139,13 @@ def load_file(conf):
     check_setup(conf['staging_table'], engine, conn)
 
     # start loading file process
-    time_for_load = load_data_process(conn, conf)
+    time_for_load_as_seconds = load_data_process(conn, conf)
 
     # close db connection
     conn.close()
 
+    # log for end the file loader
+    print("I am the file splitter, loaded file %s in %f seconds" % (conf['csv_file'], time_for_load_as_seconds))
 
 if __name__ == '__main__':
 

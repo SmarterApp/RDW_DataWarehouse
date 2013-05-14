@@ -12,27 +12,28 @@ logger = get_task_logger(__name__)
 
 @celery.task(name="udl2.W_file_loader.task")
 def task(msg):
-    csv_file_path = msg['input_file']
+    csv_file_path = msg['file_to_load']
     header_file_path = msg['header_file']
     start_seq = msg['row_start']
+    landing_zone_file = msg['landing_zone_file']
+    work_zone = msg['work_zone']
+    history = msg['history']
     logger.info(task.name)
     logger.info('Loading file %s...' % csv_file_path)
-    conf = generate_conf_for_loading(csv_file_path, header_file_path, start_seq)
+    conf = generate_conf_for_loading(csv_file_path, header_file_path, start_seq, landing_zone_file, work_zone, history)
     load_file(conf)
-   
+
 #    if udl2_stages[task.name]['next'] is not None:
 #        next_msg = [file_name + ' passed after ' + task.name]
 #        exec("task_instance = " + udl2_stages[task.name]['next']['task'])
 #        task_instance.apply_async(next_msg,
 #                                  udl2_queues[task.name]['queue'],
 #                                  udl2_stages[task.name]['routing_key'])
-    udl2.W_final_cleanup.task.apply_async([csv_file_path + ' passed after ' + task.name],
-                                           queue='Q_final_cleanup',
-                                           routing_key='udl2')
+    udl2.W_final_cleanup.task.apply_async([conf], queue='Q_final_cleanup', routing_key='udl2')
     return msg
 
 
-def generate_conf_for_loading(csv_file_path, header_file_path, start_seq):
+def generate_conf_for_loading(csv_file_path, header_file_path, start_seq, landing_zone_file, work_zone, history):
     csv_file_name_and_ext = os.path.splitext(os.path.basename(csv_file_path))
     csv_file_name = csv_file_name_and_ext[0]
     csv_table = csv_file_name
@@ -43,15 +44,18 @@ def generate_conf_for_loading(csv_file_path, header_file_path, start_seq):
             'csv_table': csv_table,
             'db_host': 'localhost',
             'db_port': '5432',
-            'db_user': 'postgres',
-            'db_name': 'fdw_test',
-            'db_password': '3423346',
-            'csv_schema': 'public',
+            'db_user': 'udl2',
+            'db_name': 'udl2',
+            'db_password': 'udl2abc1234',
+            'csv_schema': 'udl2',
             'fdw_server': 'udl_import',
             'staging_schema': 'udl2',
             'staging_table': 'STG_SBAC_ASMT_OUTCOME',
             'apply_rules': False,
-            # need to replace by passing from file splitter
+            'landing_zone_file': landing_zone_file,
+            'work_zone': work_zone,
+            'history': history,
+            # TODO:  will be changed to pass from splitter
             'batch_id': 200
     }
     return conf

@@ -4,6 +4,19 @@ from celery.result import AsyncResult
 from celery.utils.log import get_task_logger
 from final_cleanup.final_cleanup import create_directory_structure_for_file_history
 
+# Keys for the incoming message
+ROW_LIMIT = 'row_limit'
+PARTS = 'parts'
+LANDING_ZONE_FILE = 'landing_zone_file'
+LANDING_ZONE = 'landing_zone'
+WORK_ZONE = 'work_zone'
+HISTORY_ZONE = 'history_zone'
+KEEP_HEADERS = 'keep_headers'
+FILE_TO_LOAD = 'file_to_load'
+LINE_COUNT = 'line_count'
+ROW_START = 'row_start'
+HEADER_FILE = 'header_file'
+
 logger = get_task_logger(__name__)
 
 @celery.task(name="udl2.W_final_cleanup.task")
@@ -20,12 +33,10 @@ def task(msg):
     @type msg: dict
     '''
     logger.info(task.name)
-    landing_zone_file = msg['landing_zone_file']
-    history = msg['history']
-    history_directory = create_directory_structure_for_file_history(history, landing_zone_file)
-    with open("test.log", 'a+') as f:
-        #f.write(str(datetime.datetime.now()) + ': done with' + msg['csv_file_path'] + ' after ' + task.name + "\n")
-        pass
+    landing_zone_file = msg[LANDING_ZONE_FILE]
+    history_zone = msg[HISTORY_ZONE]
+    history_directory = create_directory_structure_for_file_history(history_zone, landing_zone_file)
+
     return msg
 
 

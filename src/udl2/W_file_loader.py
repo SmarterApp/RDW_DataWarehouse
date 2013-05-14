@@ -4,20 +4,46 @@ import udl2.W_final_cleanup
 from celery.result import AsyncResult
 from celery.utils.log import get_task_logger
 from fileloader.file_loader import load_file
-import os
+from util.file_util import extract_file_name
 
 
 logger = get_task_logger(__name__)
 
+# Keys for the incoming message
+ROW_LIMIT = 'row_limit'
+PARTS = 'parts'
+LANDING_ZONE_FILE = 'landing_zone_file'
+LANDING_ZONE = 'landing_zone'
+WORK_ZONE = 'work_zone'
+HISTORY_ZONE = 'history_zone'
+KEEP_HEADERS = 'keep_headers'
+FILE_TO_LOAD = 'file_to_load'
+LINE_COUNT = 'line_count'
+ROW_START = 'row_start'
+HEADER_FILE = 'header_file'
+
+# Keys for file_loader.load_file() map
+CSV_FILE = 'csv_file'
+START_SEQ = 'start_seq'
+HEADER_FILE = 'header_file'
+CSV_TABLE = 'csv_table'
+DB_HOST = 'db_host'
+DB_PORT = 'db_port'
+DB_USER = 'db_user'
+DB_NAME = 'db_name'
+DB_PASSWORD = 'db_password'
+CSV_SCHEMA = 'csv_schema'
+FDW_SERVER = 'fdw_server'
+STAGING_SCHEMA = 'staging_schema'
+STAGING_TABLE = 'staging_table'
+APPLY_RULES = 'apply_rules'
+BATCH_ID = 'batch_id'
 
 @celery.task(name="udl2.W_file_loader.task")
 def task(msg):
-    csv_file_path = msg['input_file']
-    header_file_path = msg['header_file']
-    start_seq = msg['row_start']
     logger.info(task.name)
-    logger.info('Loading file %s...' % csv_file_path)
-    conf = generate_conf_for_loading(csv_file_path, header_file_path, start_seq)
+    logger.info('Loading file %s...' % msg[FILE_TO_LOAD])
+    conf = generate_conf_for_loading(msg[FILE_TO_LOAD], msg[ROW_START], msg[HEADER_FILE])
     load_file(conf)
    
 #    if udl2_stages[task.name]['next'] is not None:
@@ -26,33 +52,32 @@ def task(msg):
 #        task_instance.apply_async(next_msg,
 #                                  udl2_queues[task.name]['queue'],
 #                                  udl2_stages[task.name]['routing_key'])
-    udl2.W_final_cleanup.task.apply_async([csv_file_path + ' passed after ' + task.name],
+    udl2.W_final_cleanup.task.apply_async([msg],
                                            queue='Q_final_cleanup',
                                            routing_key='udl2')
     return msg
 
 
-def generate_conf_for_loading(csv_file_path, header_file_path, start_seq):
-    csv_file_name_and_ext = os.path.splitext(os.path.basename(csv_file_path))
-    csv_file_name = csv_file_name_and_ext[0]
-    csv_table = csv_file_name
+def generate_conf_for_loading(file_to_load, start_seq, header_file_path):
+    csv_table = extract_file_name(file_to_load)
+    # TODO: load basic conf from config file (like W_file_splitter)
     conf = {
-            'csv_file': csv_file_path,
-            'start_seq': start_seq,
-            'header_file': header_file_path,
-            'csv_table': csv_table,
-            'db_host': 'localhost',
-            'db_port': '5432',
-            'db_user': 'postgres',
-            'db_name': 'fdw_test',
-            'db_password': '3423346',
-            'csv_schema': 'public',
-            'fdw_server': 'udl_import',
-            'staging_schema': 'udl2',
-            'staging_table': 'STG_SBAC_ASMT_OUTCOME',
-            'apply_rules': False,
-            # need to replace by passing from file splitter
-            'batch_id': 200
+            CSV_FILE: file_to_load,
+            START_SEQ: start_seq,
+            HEADER_FILE: header_file_path,
+            CSV_TABLE: csv_table,
+            DB_HOST: 'localhost',
+            DB_PORT: '5432',
+            DB_USER: 'postgres',
+            DB_NAME: 'fdw_test',
+            DB_PASSWORD: '3423346',
+            CSV_SCHEMA: 'public',
+            FDW_SERVER: 'udl_import',
+            STAGING_SCHEMA: 'udl2',
+            STAGING_TABLE: 'STG_SBAC_ASMT_OUTCOME',
+            APPLY_RULES: False,
+            # TODO: need to replace by passing from file splitter
+            BATCH_ID: 200
     }
     return conf
 

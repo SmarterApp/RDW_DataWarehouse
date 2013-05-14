@@ -13,6 +13,3 @@ if __name__ == '__main__':
     print("now create udl2 db for udl2 system")
     print("now run createdb -e -E utf-8 -O udl2 -h %s -U %s -W udl2" % (db_host, db_superuser))
     subprocess.call("createdb -e -E utf-8 -O udl2 -h %s -U %s -W udl2" % (db_host, db_superuser) , shell=True)
-    print("now run udl2 specific database initialization")
-    cleaned_argv = [ arg for arg in sys.argv[1:] if arg != '']
-    subprocess.call("python -m udl2.database %s " % " ".join(cleaned_argv), shell=True)

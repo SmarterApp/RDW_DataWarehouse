@@ -308,7 +308,7 @@ def teardown_udl2_schema(udl2_conf):
     drop_udl2_schema(udl2_conf)
     
 
-if __name__ == '__main__':
+def main():
     (parser, args) = _parse_args()
     if args.config_file is None:
         config_path_file = UDL2_DEFAULT_CONFIG_PATH_FILE
@@ -323,3 +323,6 @@ if __name__ == '__main__':
         setup_udl2_schema(udl2_conf)
     elif args.action == 'teardown':
         teardown_udl2_schema(udl2_conf)
+
+if __name__ == '__main__':
+   main()

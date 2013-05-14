@@ -8,7 +8,7 @@ import csv
 from sqlalchemy import create_engine
 
 
-def transform_realdata(file_pattern, username, password, server, database, schema, asmt_guid_list=None, port=5432):
+def transform_to_realdata(file_pattern, username, password, server, database, schema, asmt_guid_list=None, port=5432):
     '''
     Transform database data about asmt_outcomes to the realdata file format.
     '''
@@ -145,4 +145,4 @@ if __name__ == "__main__":
     database = 'edware'
     schema = 'mayuat_6'
     #transform_realdata(file_pattern, username, password, server, database, schema, asmt_guid_list, port)
-    transform_realdata(file_pattern, username, password, server, database, schema)
+    transform_to_realdata(file_pattern, username, password, server, database, schema)

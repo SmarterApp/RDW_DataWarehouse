@@ -4,3 +4,5 @@ include *.txt
 recursive-include logs *.log
 recursive-include conf *.py *.cfg *.ini
 recursive-include zones *.csv
+recursive-include tests *.py *.csv *.sh
+recursive-include datafiles *.csv

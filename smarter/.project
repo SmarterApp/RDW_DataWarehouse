@@ -6,6 +6,7 @@
 		<project>edapi</project>
 		<project>edauth</project>
 		<project>eddatabase</project>
+		<project>services</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

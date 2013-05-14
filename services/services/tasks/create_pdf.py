@@ -7,9 +7,9 @@ import os
 import sys
 import logging
 import subprocess
-from services.celeryconfig import celery
 from services.celeryconfig import TIMEOUT
 import platform
+from services.celery import celery
 
 pdf_procs = ['wkhtmltopdf']
 pdf_defaults = ['--enable-javascript', '--page-size', 'Letter', '--javascript-delay', '5000']
@@ -18,7 +18,7 @@ OK = 0
 FAIL = 1
 
 
-@celery.task
+@celery.task(name='tasks.create_pdf')
 def generate_pdf(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT, cookie_name='edware'):
     '''
     Generates pdf from given url. Returns exist status code from shell command.

@@ -3,15 +3,14 @@ Created on May 9, 2013
 
 @author: tosako
 '''
-from celery.app.base import Celery
+from services.celery import celery
 
-celery = Celery()
-
-# default timeout 10 seconds
-TIMEOUT = 10
+# default timeout 20 seconds
+TIMEOUT = 20
 
 
-def setup_celery(celery_config):
+def setup_celery(settings, prefix='celery'):
+    celery_config = load_config(settings, prefix)
     celery.config_from_object(celery_config)
 
 
@@ -33,7 +32,7 @@ def load_celeryconfig(settings, prefix):
     return celery_config
 
 
-def load_config(settings, prefix="celery"):
+def load_config(settings, prefix='celery'):
     # load pdf generation timeout
     global TIMEOUT
     TIMEOUT = settings.get('pdf.generate.timeout', TIMEOUT)

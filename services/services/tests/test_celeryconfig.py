@@ -20,11 +20,11 @@ class TestCeleryConfig(unittest.TestCase):
         self.assertEqual(config['CELERY_IMPORTS'], settings['celery.CElerY_IMPORTS'])
 
     def test_setup_celery(self):
-        celery_config = {'BROKER_URL': 'amqp://guest:guest@localhost:1234//',
-                         'CELERY_ALWAYS_EAGER': 'True'}
-        celeryconfig.setup_celery(celery_config)
-        self.assertEqual(celeryconfig.celery.conf['BROKER_URL'], celery_config['BROKER_URL'])
-        self.assertEqual(celeryconfig.celery.conf['CELERY_ALWAYS_EAGER'], celery_config['CELERY_ALWAYS_EAGER'])
+        celery_config = {'celery.BROKER_URL': 'amqp://guest:guest@localhost:1234//',
+                         'celery.CELERY_ALWAYS_EAGER': 'True'}
+        celeryconfig.setup_celery(celery_config, 'celery')
+        self.assertEqual(celeryconfig.celery.conf['BROKER_URL'], celery_config['celery.BROKER_URL'])
+        self.assertEqual(celeryconfig.celery.conf['CELERY_ALWAYS_EAGER'], celery_config['celery.CELERY_ALWAYS_EAGER'])
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']

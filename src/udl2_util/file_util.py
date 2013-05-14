@@ -37,7 +37,7 @@ def copy_file(source_file, target_directory):
         shutil.copy2(source_file, target_directory)
         return True
     except IOError as e:
-        print('ERROR while copying file (%s) to directory (%s)' % (source_file, target_directory))
+        #print('ERROR while copying file (%s) to directory (%s)' % (source_file, target_directory))
         print(e)
         return False
 
@@ -52,8 +52,8 @@ def remove_file(target_file):
     try:
         os.remove(target_file)
     except OSError as e:
-        print('ERROR removing file (%s)' % (target_file,))
-        print('Aforementioned file still exists in original directory.')
+        # print('ERROR removing file (%s)' % (target_file,))
+        # print('Aforementioned file still exists in original directory.')
         print(e)
 
 

@@ -9,10 +9,6 @@ from sqlalchemy.engine import create_engine
 
 DBDRIVER = "postgresql+pypostgresql"
 
-# temporary assumption: extra columns in staging tables, but not in csv file
-extra_header_names = ['src_row_number', 'row_rec_id']
-extra_header_types = ['bigint', 'serial primary key']
-
 
 def connect_db(conf_args):
     '''
@@ -32,29 +28,6 @@ def check_setup(staging_table, engine, conn):
     if not engine.dialect.has_table(conn, staging_table):
         print("There is no staging table -- ", staging_table)
         raise NoSuchTableError
-    # TODO:might add checking if fdw is defined or not
-
-
-def set_fdw(conn, conf):
-    '''
-    Function to set fdw, including extension, server and functions
-    '''
-    # reference: http://www.postgresql.org/docs/9.2/static/file-fdw.html
-    try:
-        # set fdw extension
-        conn.execute(queries.create_fdw_extension_query(conf['csv_schema']))
-
-        # set fdw server
-        conn.execute(queries.create_fdw_server_query(conf['fdw_server']))
-
-        # run functions. read from .sql file
-        statement = open("transformation_rules.sql").read()
-        # print(statement.strip())
-        conn.execute(statement)
-
-    except Exception as e:
-        print('Exception -- ', e)
-        # conn.rollback()
 
 
 def extract_csv_header(csv_file):
@@ -100,19 +73,6 @@ def execute_queries(conn, list_of_queries, except_msg):
 
 
 def get_fields_map(conn, header_names, header_types, batch_id, csv_file, staging_schema, staging_table):
-    """
-    # This is to create one fake staging table
-    # add extra columns in header
-    header_names_copy = header_names[:]
-    header_types_copy = header_types[:]
-    header_names_copy.extend(extra_header_names)
-    header_types_copy.extend(extra_header_types)
-
-    create_staging_table = queries.create_staging_tables_query(header_types_copy, header_names_copy, csv_file, staging_schema, staging_table)
-    # drop_staging_table = queries.drop_staging_tables_query(staging_schema, staging_table)
-    # print(create_staging_table)
-    execute_queries(conn, [create_staging_table], 'Exception in getting staging table -- ')
-    """
 
     """
     Getting field mapper, which maps the column in staging table, and columns in csv table
@@ -153,7 +113,6 @@ def load_data_process(conn, conf):
 
     # load the data from FDW table to staging table
     start_time = datetime.datetime.now()
-    # hard-code for test:
     import_via_fdw(conn, stg_asmt_outcome_columns, conf['batch_id'], conf['apply_rules'], csv_table_columns, header_types, conf['staging_schema'], conf['staging_table'], conf['csv_schema'], conf['csv_table'], conf['start_seq'])
     finish_time = datetime.datetime.now()
     spend_time = finish_time - start_time
@@ -192,13 +151,13 @@ if __name__ == '__main__':
 
             'db_host': 'localhost',
             'db_port': '5432',
-            'db_user': 'abrien',
+            'db_user': 'udl2',
             'db_name': 'fdw_test',
-            'db_password': '',
-            'csv_schema': 'public',
+            'db_password': 'udl2abc1234',
+            'csv_schema': 'udl2',
             'fdw_server': 'udl_import',
-            'staging_schema': 'public',
-            'staging_table': 'tmp',
+            'staging_schema': 'udl2',
+            'staging_table': 'STG_SBAC_ASMT_OUTCOME',
             'apply_rules': False,
             'start_seq': 10,
             'batch_id': 100

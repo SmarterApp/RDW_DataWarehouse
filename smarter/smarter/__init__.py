@@ -30,7 +30,7 @@ def main(global_config, **settings):
     # set beaker cache region
     set_cache_regions_from_settings(settings)
     config = Configurator(settings=settings, root_factory=RootFactory)
-    
+
     # setup celery
     setup_celery(settings=settings, prefix="celery")
 

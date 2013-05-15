@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from __future__ import absolute_import
 from elastic_csv.elastic_csv import generate_stretched_csv_file
 import udl2.W_file_splitter

@@ -277,6 +277,7 @@ class DataGenerationValidation(unittest.TestCase):
 
     # TC8: Count number of schools from CSVs and compare with Config file
     def test_number_of_schools(self):
+        typical1 = get_states()[0]['state_type']
         district_type = get_state_types()[typical1][DISTRICT_TYPES_AND_COUNTS].keys()
         school_type = get_district_types().keys()
 
@@ -311,6 +312,7 @@ class DataGenerationValidation(unittest.TestCase):
         ratio_list = {}
         district_type_list = (list(get_district_types().keys()))
         district_type = sorted(district_type_list, reverse=True)
+
         for values in district_type:
             school_types_and_ratios_values = list(get_district_types()[values][SCHOOL_TYPES_AND_RATIOS].values())
             school_types_and_ratios_keys = list(get_district_types()[values][SCHOOL_TYPES_AND_RATIOS].keys())
@@ -319,20 +321,22 @@ class DataGenerationValidation(unittest.TestCase):
             for index in range(len(school_types_and_ratios_values)):
                 values1 = school_types_and_ratios_values[index]
                 keys1 = school_types_and_ratios_keys[index]
-                min_school_count = max((min_number_of_schools_in_district // school_types_and_ratios_sum), 1) * values1
+                min_school_count = ((min_number_of_schools_in_district // school_types_and_ratios_sum)) * values1
+
                 grade_len = len(get_school_types()[keys1][GRADES])
                 min_student = get_school_types()[keys1][STUDENTS][MIN] * grade_len
                 min_total = min_school_count * min_student
                 min_total_num += min_total
             overall_min_total_num = min_total_num * get_state_types()[typical1][DISTRICT_TYPES_AND_COUNTS][values]
             final_min_total_num += overall_min_total_num
-        student_set = set()
+        student_list = []
         with open(DataGenerationValidation.dim_student_csv, 'r') as csvfile:
             col_val = csv.DictReader(csvfile, delimiter=',')
             for values in col_val:
                 student_guid = values['student_guid']
-                student_set.add(student_guid)
-        assert final_min_total_num <= len(student_set), 'Min Student count in config file is ' + str(final_min_total_num) + 'but Student count in is ' + str(len(student_set))
+                student_list.append(student_guid)
+        student_list = list(set(student_list))
+        assert final_min_total_num <= len(student_list), 'Min Student count in config file is ' + str(final_min_total_num) + ' but Student count in is ' + str(len(student_list))
         print('TC9: Passed: Count overall number of students from CSVs and compare with Config file ')
 
     # TC10: Count Subjects & percentages

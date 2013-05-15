@@ -3,18 +3,11 @@ Created on May 9, 2013
 
 @author: tosako
 '''
-from services.celery import celery
-
 # default timeout 20 seconds
 TIMEOUT = 20
 
 
-def setup_celery(settings, prefix='celery'):
-    celery_config = load_config(settings, prefix)
-    celery.config_from_object(celery_config)
-
-
-def load_celeryconfig(settings, prefix):
+def __load_celeryconfig(settings, prefix):
     '''
     Loads celery configuration from setting dict.
     Any value whose corresponding key starts with prefix and followed by a period
@@ -33,9 +26,11 @@ def load_celeryconfig(settings, prefix):
 
 
 def load_config(settings, prefix='celery'):
-    # load pdf generation timeout
+    '''
+    Sets timeout for subprocess call in task and return celery config
+    '''
     global TIMEOUT
     TIMEOUT = settings.get('pdf.generate.timeout', TIMEOUT)
     # load celery config
-    celery_config = load_celeryconfig(settings, prefix)
+    celery_config = __load_celeryconfig(settings, prefix)
     return celery_config

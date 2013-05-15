@@ -63,9 +63,6 @@ common:
     mode: dev
     # Run npm update (dev mode only)
     run.npm.update: true
-    # Celery config
-    celery:
-      celery_always_eager: true
     # Timeout for pdf generation process
     pdf.generate.timeout: 10
 
@@ -320,6 +317,9 @@ localOpenAM:
 
 development:
   '[app:main]':
+    # Celery config
+    celery:
+      celery_always_eager: true
     edware:
       schema_name: edware_sds_0_2
       db:
@@ -366,6 +366,11 @@ test:
 
 jenkins_dev:
   '[app:main]':
+    celery:
+      BROKER_URL: amqp://guest@localhost//
+      CELERY_IMPORTS: ('services.tasks.create_pdf')
+      CELERY_RESULT_BACKEND: amqp
+      CELERYD_CONCURRENCY: 8
     edware:
       schema_name: edware_sds_0_2
       db:

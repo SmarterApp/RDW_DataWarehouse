@@ -5,6 +5,8 @@ Created on May 14, 2013
 '''
 import os
 from celery import Celery
+import configparser
+from services.celeryconfig import load_config
 
 
 celery = Celery('pdf_service')
@@ -13,14 +15,27 @@ celery = Celery('pdf_service')
 prod_config = os.environ.get("CELERY_PROD_CONFIG")
 
 if prod_config:
+    # This is the entry point for celeryd daemon
     print("Config for production mode")
 
     if os.path.exists(prod_config):
         # Read from ini then pass the object here
-        conf = {'BROKER_URL': 'amqp://guest@localhost//',
-                'CELERY_IMPORTS': ("services.tasks.create_pdf"),
-                'CELERY_RESULT_BACKEND': 'amqp',
-                'CELERYD_CONCURRENCY': 8}
+        config = configparser.RawConfigParser()
+        config.read(prod_config)
+        conf = {}
+        section_name = 'app:main'
+        options = config.options(section_name)
+        for option in options:
+            conf[option] = config.get(section_name, option)
 
-        # Set celery config
-        celery.config_from_object(conf)
+        celery_config = {}
+        celery_config = load_config(conf, prefix='celery')
+        celery.config_from_object(celery_config)
+
+
+def setup_celery(settings, prefix='celery'):
+    '''
+    Setup celery based on parameters defined in setting (ini file)
+    '''
+    celery_config = load_config(settings, prefix)
+    celery.config_from_object(celery_config)

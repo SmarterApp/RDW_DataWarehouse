@@ -5,6 +5,7 @@ Created on May 10, 2013
 '''
 import unittest
 from services import celeryconfig
+import services
 
 
 class TestCeleryConfig(unittest.TestCase):
@@ -19,12 +20,20 @@ class TestCeleryConfig(unittest.TestCase):
         # test capitalization
         self.assertEqual(config['CELERY_IMPORTS'], settings['celery.CElerY_IMPORTS'])
 
-    def test_setup_celery(self):
-        celery_config = {'celery.BROKER_URL': 'amqp://guest:guest@localhost:1234//',
-                         'celery.CELERY_ALWAYS_EAGER': 'True'}
-        celeryconfig.setup_celery(celery_config, 'celery')
-        self.assertEqual(celeryconfig.celery.conf['BROKER_URL'], celery_config['celery.BROKER_URL'])
-        self.assertEqual(celeryconfig.celery.conf['CELERY_ALWAYS_EAGER'], celery_config['celery.CELERY_ALWAYS_EAGER'])
+    def test_load_config_empty_celery_config(self):
+        settings = {'dummy': 'data'}
+        config = celeryconfig.load_config(settings=settings, prefix="celery")
+        self.assertEqual(len(config), 0)
+
+    def test_load_config_test_timeout(self):
+        settings = {'pdf.generate.timeout': 50}
+        celeryconfig.load_config(settings=settings, prefix="celery")
+        self.assertEqual(services.celeryconfig.TIMEOUT, 50)
+
+    def test_load_config_test_default_timeout(self):
+        settings = {}
+        celeryconfig.load_config(settings=settings, prefix="celery")
+        self.assertEqual(services.celeryconfig.TIMEOUT, 20)
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']

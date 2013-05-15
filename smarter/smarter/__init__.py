@@ -13,7 +13,7 @@ import atexit
 import signal
 from pyramid_beaker import set_cache_regions_from_settings
 import sys
-from services import celeryconfig
+from services.celery import setup_celery
 
 logger = logging.getLogger(__name__)
 CAKE_PROC = None
@@ -30,6 +30,9 @@ def main(global_config, **settings):
     # set beaker cache region
     set_cache_regions_from_settings(settings)
     config = Configurator(settings=settings, root_factory=RootFactory)
+    
+    # setup celery
+    setup_celery(settings=settings, prefix="celery")
 
     # setup database connection
     metadata = generate_ed_metadata(settings['edware.schema_name'])
@@ -117,8 +120,6 @@ def prepare_env(settings):
             os.chdir(current_dir)
         # catch the kill signal
         signal.signal(signal.SIGTERM, sig_term_handler)
-        # setup celery
-        celeryconfig.setup_celery(settings=settings, prefix="celery")
 
     auth_idp_metadata = settings.get('auth.idp.metadata', None)
     if auth_idp_metadata is not None:

@@ -1,7 +1,7 @@
 __author__ = 'abrien'
 
-import os
 import udl2_util.file_util as file_util
+import os
 import time
 
 ORIGINAL_FILE = 'original_file'
@@ -22,19 +22,22 @@ def create_directory_structure_for_file_history(history_directory_path, landing_
     @type landing_zone_file_path: str
     '''
     try:
+        # Create a subdirectory of the history zone for the landing zone file
         root_history_directory_for_file = create_root_history_directory_for_file(history_directory_path, landing_zone_file_path)
+        # Create a subdirectory of the file's history directory to hold the original file
         original_file_directory = create_original_file_directory(root_history_directory_for_file)
         if os.path.exists(landing_zone_file_path):
             print("I am the cleanup worker, I am about to clean up the zones directory.")
             start = time.time()
+            # Move the file from the landing zone to its original-file directory
             file_util.move_file_and_confirm(landing_zone_file_path, original_file_directory)
             end = time.time()
             elapsed = end - start
             print('I am the cleanup worker.  Cleaning the zones directory took %.3f seconds to complete.' % elapsed)
+            # Create the directory to hold the split files
             split_files_directory = create_split_files_directory(root_history_directory_for_file)
     except:
         pass
-    # move_split_files_from_work_zone(split_files_directory)
 
 
 def create_root_history_directory_for_file(history, csv_file):

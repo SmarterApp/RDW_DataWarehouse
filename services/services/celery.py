@@ -17,14 +17,14 @@ def setup_celery(settings, prefix='celery'):
     celery.config_from_object(celery_config)
 
 
-celery = Celery('pdf_service')
+celery = Celery('services.celery')
 
 # Read environment variable that is set in prod mode that stores path of smarter.ini
 prod_config = os.environ.get("CELERY_PROD_CONFIG")
 
 if prod_config:
     # This is the entry point for celeryd daemon
-    print("Config for production mode")
+    print("Reading config for production mode")
 
     if os.path.exists(prod_config):
         # Read from ini then pass the object here

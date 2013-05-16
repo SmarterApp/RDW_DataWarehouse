@@ -6,14 +6,14 @@ Created on May 14, 2013
 import os
 from celery import Celery
 import configparser
-from services.celeryconfig import load_config
+from services.celeryconfig import get_config
 
 
 def setup_celery(settings, prefix='celery'):
     '''
     Setup celery based on parameters defined in setting (ini file)
     '''
-    celery_config = load_config(settings, prefix)
+    celery_config = get_config(settings, prefix)
     celery.config_from_object(celery_config)
 
 

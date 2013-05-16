@@ -12,9 +12,9 @@ from celery.utils import strtobool
 TIMEOUT = 20
 
 
-def load_celeryconfig(settings, prefix='celery'):
+def get_celeryconfig(settings, prefix='celery'):
     '''
-    Loads celery configuration from setting dict.
+    Returns celery configuration from setting dict.
     Any value whose corresponding key starts with prefix and followed by a period
     is considered as celery configuration.
     Configuration key will be stored in uppercase as celery's convention.
@@ -30,14 +30,14 @@ def load_celeryconfig(settings, prefix='celery'):
     return convert_to_celery_options(celery_config)
 
 
-def load_config(settings, prefix='celery'):
+def get_config(settings, prefix='celery'):
     '''
     Sets timeout for subprocess call in task and return Celery config
     '''
     global TIMEOUT
     TIMEOUT = settings.get('pdf.generate.timeout', TIMEOUT)
     # load celery config
-    celery_config = load_celeryconfig(settings, prefix)
+    celery_config = get_celeryconfig(settings, prefix)
     return celery_config
 
 

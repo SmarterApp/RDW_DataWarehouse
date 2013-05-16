@@ -227,7 +227,7 @@ function create_sym_link_for_apache {
     echo "Creating sym links for celery purposes"
    
     EDWARE_VENV_DIR="/opt/virtualenv"
-    if [ -d ${EDWARE_VENV_DIR ]; then
+    if [ -d ${EDWARE_VENV_DIR} ]; then
         rm -rf ${EDWARE_VENV_DIR}
     fi
     /bin/ln -sf ${VIRTUALENV_DIR} ${EDWARE_VENV_DIR}

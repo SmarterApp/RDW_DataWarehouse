@@ -5,9 +5,9 @@ if [ $# -lt 2 ]; then
     exit 192
 fi
 
-declare username=$1
-declare password=$2
-declare vhost="/"
+username=$1
+password=$2
+vhost="/"
 
 if [ $# -eq 3 ]; then
     vhost=$3
@@ -17,26 +17,32 @@ fi
 
 
 #make sure server running
-server_pid=$(ps -f | grep 'rabbitmq-server' | grep -v 'grep' | awk '{print $2}')
-if [ -z "$server_pid" ]; then
+rabbitmqctl status > /dev/null 2>&1
+if [ $? -ne 0 ]; then
     echo "RabbitMQ is not running.., please start it first" >&2
     exit 192
 fi
 
 # check if user exists
-user_exist=$(rabbitmqctl list_users | grep -w "$username")
+user_exist=$(rabbitmqctl list_users | cut -f1 | grep -w "${username}")
 
-if [ -n "$user_exist" ];
-then
-    echo "User $username already exists!" >&2
+if [ -n ${user_exist:-""} ]; then
+    echo "User ${username} already exists!" >&2
     exit 192
 fi
 
 #add new user
-rabbitmqctl add_user "$username" "$password"
+rabbitmqctl add_user "${username}" "${password}"
 
 #set permission for new user
-rabbitmqctl set_permissions -p "$vhost" "$username" ".*" ".*" ".*"
+rabbitmqctl set_permissions -p "${vhost}" "${username}" ".*" ".*" ".*"
 
-echo "Successfully create RabbitMQ user $username"
-exit 0
+ret=$?
+
+if [ ${ret} -eq 0 ]; then
+    echo "Successfully create RabbitMQ user ${username}"
+else
+    echo "Fail to set user ${username} permissions"
+fi
+
+exit ${ret}

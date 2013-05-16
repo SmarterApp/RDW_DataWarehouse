@@ -9,6 +9,14 @@ import configparser
 from services.celeryconfig import load_config
 
 
+def setup_celery(settings, prefix='celery'):
+    '''
+    Setup celery based on parameters defined in setting (ini file)
+    '''
+    celery_config = load_config(settings, prefix)
+    celery.config_from_object(celery_config)
+
+
 celery = Celery('pdf_service')
 
 # Read environment variable that is set in prod mode that stores path of smarter.ini
@@ -28,14 +36,4 @@ if prod_config:
         for option in options:
             conf[option] = config.get(section_name, option)
 
-        celery_config = {}
-        celery_config = load_config(conf, prefix='celery')
-        celery.config_from_object(celery_config)
-
-
-def setup_celery(settings, prefix='celery'):
-    '''
-    Setup celery based on parameters defined in setting (ini file)
-    '''
-    celery_config = load_config(settings, prefix)
-    celery.config_from_object(celery_config)
+        setup_celery(conf)

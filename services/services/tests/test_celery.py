@@ -14,7 +14,7 @@ class TestCelery(unittest.TestCase):
                          'celery.CELERY_ALWAYS_EAGER': 'True'}
         setup_celery(celery_config, 'celery')
         self.assertEqual(celery.conf['BROKER_URL'], celery_config['celery.BROKER_URL'])
-        self.assertEqual(celery.conf['CELERY_ALWAYS_EAGER'], celery_config['celery.CELERY_ALWAYS_EAGER'])
+        self.assertEqual(celery.conf['CELERY_ALWAYS_EAGER'], True)
 
 
 if __name__ == "__main__":

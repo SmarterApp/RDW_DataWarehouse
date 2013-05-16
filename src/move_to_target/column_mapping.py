@@ -55,5 +55,9 @@ def get_column_mapping():
                                                      'most_recent': ''
                                                      },
                                         # TODO: tbw, other tables
+                                        'dim_inst_hier': {},
+                                        'dim_student': {},
+                                        'dim_staff': {},
+                                        'fact_asmt_outcome': {}
                                         }
     return column_map_integration_to_target

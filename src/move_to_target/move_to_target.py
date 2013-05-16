@@ -1,5 +1,5 @@
-import src.move_to_target.column_mapping as col_map
-import src.fileloader.file_loader.connect_db as connect_db
+import move_to_target.column_mapping as col_map
+from fileloader.file_loader import connect_db
 import datetime
 
 DBDRIVER = "postgresql+pypostgresql"
@@ -12,21 +12,21 @@ def explode_data_to_target(conf):
     # copy data from integration table to dim tables
     column_map = col_map.get_column_mapping()
     for target_table in col_map.get_target_tables_parallel():
-        explode_table_to_one_table(conn, conf['source_table'], target_table, column_map[target_table])
+        explode_data_to_one_table(conn, conf['source_table'], target_table, column_map[target_table])
 
     # copy data from integration table to fact table
     target_table = col_map.get_target_table_callback()
-    explode_table_to_one_table(conn, conf['source_table'], target_table, column_map[target_table])
+    explode_data_to_one_table(conn, conf['source_table'], target_table, column_map[target_table])
 
     # close db connection
     conn.close()
 
 
-def explode_table_to_one_table(conn, source_table, target_table, column_mapping):
+def explode_data_to_one_table(conf, target_table, column_mapping):
     '''
     Will use parameters passed in to create query with sqlalchemy
     '''
-    pass
+    print("In explode_data_to_one_table, %s, %s" % (str(conf), str(target_table)))
 
 
 if __name__ == "__main__":

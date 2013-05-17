@@ -128,14 +128,14 @@ def get_list_of_students_report(params):
                                               .join(dim_staff, and_(dim_staff.c.staff_guid == fact_asmt_outcome.c.teacher_guid,
                                                     dim_staff.c.most_recent, dim_staff.c.section_guid == fact_asmt_outcome.c.section_guid))])
         query = query.where(fact_asmt_outcome.c.state_code == stateCode)
-        query = query.where(fact_asmt_outcome.c.school_guid == schoolGuid)
+        query = query.where(and_(fact_asmt_outcome.c.school_guid == schoolGuid))
         query = query.where(and_(fact_asmt_outcome.c.asmt_grade == asmtGrade))
         query = query.where(and_(fact_asmt_outcome.c.district_guid == districtGuid))
         query = query.where(and_(fact_asmt_outcome.c.most_recent))
         query = query.where(and_(fact_asmt_outcome.c.status == 'C'))
 
         if asmtSubject is not None:
-            query = query.where(dim_asmt.c.asmt_subject.in_(asmtSubject))
+            query = query.where(and_(dim_asmt.c.asmt_subject.in_(asmtSubject)))
 
         query = query.order_by(dim_student.c.last_name).order_by(dim_student.c.first_name)
 

@@ -17,7 +17,7 @@ fi
 
 
 #make sure server running
-rabbitmqctl status > /dev/null 2>&1
+rabbitmqctl -q status > /dev/null 2>&1
 if [ $? -ne 0 ]; then
     echo "RabbitMQ is not running.., please start it first" >&2
     exit 192

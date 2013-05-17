@@ -1,5 +1,5 @@
 import move_to_target.column_mapping as col_map
-from fileloader.file_loader import connect_db
+from fileloader.file_loader import connect_db, execute_queries
 import datetime
 
 DBDRIVER = "postgresql+pypostgresql"
@@ -31,18 +31,18 @@ def explode_data_to_one_table(conf, target_table, column_mapping):
     '''
     Will use parameters passed in to create query with sqlalchemy
     '''
-    print("In explode_data_to_one_table****, %s, %s" % (str(conf), str(target_table)))
     # create db connection
+    conn = connect_db(conf)
 
     # create insertion query
     query = create_insert_query(conf['batch_id'], conf['source_schema'], conf['source_table'], conf['target_schema'], target_table, column_mapping)
+    print(query)
 
     # execute the query
-    print(query)
+    execute_queries(conn, [query], 'Exception -- exploding data from integration to target')
 
 
 def create_insert_query(batch_id, source_schema, source_table, target_schema, target_table, column_mapping):
-    print("Is here ***************")
     insert_sql = ["INSERT INTO \"{target_schema}\".\"{target_table}\"(",
              ",".join(column_mapping.keys()),
              ") SELECT ",

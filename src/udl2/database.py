@@ -181,7 +181,7 @@ def _execute_sql(udl2_conf, sql):
         conn.execute(sql)
     except Exception as e:
         print(e)
-        pass
+        pass        
 
 
 def map_sql_type_to_sqlalchemy_type(sql_type):

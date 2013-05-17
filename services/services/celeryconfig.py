@@ -35,7 +35,7 @@ def get_config(settings, prefix='celery'):
     Sets timeout for subprocess call in task and return Celery config
     '''
     global TIMEOUT
-    TIMEOUT = settings.get('pdf.generate.timeout', TIMEOUT)
+    TIMEOUT = int(settings.get('pdf.generate.timeout', TIMEOUT))
     # load celery config
     celery_config = get_celeryconfig(settings, prefix)
     return celery_config

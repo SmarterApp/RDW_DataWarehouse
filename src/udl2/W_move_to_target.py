@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-from udl2.celery import celery
+from udl2.celery import celery, udl2_conf
 from celery.result import AsyncResult
 from celery.utils.log import get_task_logger
 import move_to_target.column_mapping as col_map
@@ -43,6 +43,7 @@ def task(msg):
 
 @celery.task(name="udl2.W_move_to_target.task1")
 def explode_data_to_dim_table(conf, dim_table, column_mapping):
+    print(column_mapping)
     explode_data_to_one_table(conf, dim_table, column_mapping)
 
 
@@ -64,16 +65,19 @@ def error_handler(uuid):
 # will be replaced by conf file
 def generate_conf(msg):
     conf = {
-            # TBD
+            # These three values can be replaced by reading from configuration file or msg
             'source_table': 'STG_SBAC_ASMT_OUTCOME',
             'source_schema': 'udl2',
             'target_schema': 'edware',
 
+            # add info from msg
             'batch_id': msg['batch_id'],
-            'db_host': 'localhost',
-            'db_port': '5432',
-            'db_user': 'udl2',
-            'db_name': 'udl2',
-            'db_password': 'udl2abc1234',
+
+            # database setting
+            'db_host': udl2_conf['postgresql']['db_host'],
+            'db_port': udl2_conf['postgresql']['db_port'],
+            'db_user': udl2_conf['postgresql']['db_user'],
+            'db_name': udl2_conf['postgresql']['db_database'],
+            'db_password': udl2_conf['postgresql']['db_pass'],
     }
     return conf

@@ -39,14 +39,14 @@ def explode_data_to_one_table(conf, target_table, column_mapping):
     print(query)
 
     # execute the query
-    execute_queries(conn, [query], 'Exception -- exploding data from integration to target')
+    # execute_queries(conn, [query], 'Exception -- exploding data from integration to target')
 
 
 def create_insert_query(batch_id, source_schema, source_table, target_schema, target_table, column_mapping):
     insert_sql = ["INSERT INTO \"{target_schema}\".\"{target_table}\"(",
-             ",".join(column_mapping.keys()),
+             ",".join(list(column_mapping.keys())),
              ") SELECT ",
-             ",".join(column_mapping.values()),
+             ",".join(list(column_mapping.values())),
              " FROM \"{source_schema}\".\"{source_table}\" WHERE batch_id={batch_id}",
             ]
     insert_sql = "".join(insert_sql).format(target_schema=target_schema, target_table=target_table, source_schema=source_schema, source_table=source_table, batch_id=batch_id)

@@ -1,6 +1,7 @@
 from __future__ import absolute_import
-from udl2.celery import celery, udl2_queues, udl2_stages
+from udl2.celery import celery, udl2_queues, udl2_stages, udl2_conf
 import udl2.W_final_cleanup
+import udl2.W_move_to_target
 from celery.result import AsyncResult
 from celery.utils.log import get_task_logger
 from fileloader.file_loader import load_file
@@ -52,8 +53,9 @@ def task(msg):
 #        task_instance.apply_async(next_msg,
 #                                  udl2_queues[task.name]['queue'],
 #                                  udl2_stages[task.name]['routing_key'])
-    udl2.W_final_cleanup.task.apply_async([msg],
-                                           queue='Q_final_cleanup',
+
+    udl2.W_move_to_target.task.apply_async([msg],
+                                           queue='Q_copy_to_target',
                                            routing_key='udl2')
     return msg
 
@@ -66,11 +68,11 @@ def generate_conf_for_loading(file_to_load, start_seq, header_file_path, batch_i
             START_SEQ: start_seq,
             HEADER_FILE: header_file_path,
             CSV_TABLE: csv_table,
-            DB_HOST: 'localhost',
-            DB_PORT: '5432',
-            DB_USER: 'udl2',
-            DB_NAME: 'udl2',
-            DB_PASSWORD: 'udl2abc1234',
+            DB_HOST: udl2_conf['postgresql']['db_host'],
+            DB_PORT: udl2_conf['postgresql']['db_port'],
+            DB_USER: udl2_conf['postgresql']['db_user'],
+            DB_NAME: udl2_conf['postgresql']['db_database'],
+            DB_PASSWORD: udl2_conf['postgresql']['db_pass'],
             CSV_SCHEMA: 'udl2',
             FDW_SERVER: 'udl_fdw_server',
             STAGING_SCHEMA: 'udl2',

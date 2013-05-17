@@ -18,7 +18,7 @@ def task(msg):
     # logger.info('Moving data from %s into target' % msg['source_table'])
     print('I am the exploder, about to copy data from staging table into target star schema %s' % str(msg))
 
-    # temporary
+    # generate conf info, including db settings and batch_id, source_table, source_schema, target_schema
     conf = generate_conf(msg)
 
     # get column mapping

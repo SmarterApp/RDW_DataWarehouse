@@ -73,9 +73,9 @@ def generate_conf_for_loading(file_to_load, start_seq, header_file_path, batch_i
             DB_USER: udl2_conf['postgresql']['db_user'],
             DB_NAME: udl2_conf['postgresql']['db_database'],
             DB_PASSWORD: udl2_conf['postgresql']['db_pass'],
-            CSV_SCHEMA: 'udl2',
-            FDW_SERVER: 'udl_fdw_server',
-            STAGING_SCHEMA: 'udl2',
+            CSV_SCHEMA: udl2_conf['udl2_db']['csv_schema'],
+            FDW_SERVER: udl2_conf['udl2_db']['fdw_server'],
+            STAGING_SCHEMA: udl2_conf['udl2_db']['staging_schema'],
             STAGING_TABLE: 'STG_SBAC_ASMT_OUTCOME',
             APPLY_RULES: False,
             BATCH_ID: batch_id

@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 from udl2.celery import celery, udl2_queues, udl2_stages
 import udl2.W_final_cleanup
+import udl2.W_move_to_target
 from celery.result import AsyncResult
 from celery.utils.log import get_task_logger
 from fileloader.file_loader import load_file
@@ -52,8 +53,9 @@ def task(msg):
 #        task_instance.apply_async(next_msg,
 #                                  udl2_queues[task.name]['queue'],
 #                                  udl2_stages[task.name]['routing_key'])
-    udl2.W_final_cleanup.task.apply_async([msg],
-                                           queue='Q_final_cleanup',
+
+    udl2.W_move_to_target.task.apply_async([msg],
+                                           queue='Q_copy_to_target',
                                            routing_key='udl2')
     return msg
 

@@ -9,7 +9,7 @@ from sqlalchemy.engine import create_engine
 from udl2_util.file_util import extract_file_name
 
 
-DBDRIVER = "postgresql+pypostgresql"
+DBDRIVER = "postgresql"
 
 
 def connect_db(conf_args):

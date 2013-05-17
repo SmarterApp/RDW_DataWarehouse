@@ -119,7 +119,7 @@ if __name__ == '__main__':
             'csv_schema': 'udl2',
             'fdw_server': 'udl_import',
             'integration_schema': 'udl2',
-            'integration_table': 'STG_SBAC_ASMT_OUTCOME',
+            'integration_table': 'INT_SBAC_ASMT',
             'start_seq': 10,
             'batch_id': 100
     }

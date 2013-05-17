@@ -16,10 +16,10 @@ logger = get_task_logger(__name__)
 def task(msg):
     logger.info(task.name)
     # logger.info('Moving data from %s into target' % msg['source_table'])
-    print('I am the exploder, about to copy data from staging table into target star schema')
+    print('I am the exploder, about to copy data from staging table into target star schema %s' % str(msg))
 
     # temporary
-    conf = generate_conf()
+    conf = generate_conf(msg)
 
     # get column mapping
     column_map = col_map.get_column_mapping()
@@ -62,13 +62,14 @@ def error_handler(uuid):
 
 
 # will be replaced by conf file
-def generate_conf():
+def generate_conf(msg):
     conf = {
             # TBD
             'source_table': 'STG_SBAC_ASMT_OUTCOME',
             'source_schema': 'udl2',
             'target_schema': 'edware',
 
+            'batch_id': msg['batch_id'],
             'db_host': 'localhost',
             'db_port': '5432',
             'db_user': 'udl2',

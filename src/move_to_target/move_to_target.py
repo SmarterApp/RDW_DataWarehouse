@@ -31,7 +31,6 @@ def explode_data_to_one_table(conf, target_table, column_mapping):
     '''
     Will use parameters passed in to create query with sqlalchemy
     '''
-    print("In explode_data_to_one_table****, %s, %s" % (str(conf), str(target_table)))
     # create db connection
     conn = connect_db(conf)
 
@@ -44,7 +43,6 @@ def explode_data_to_one_table(conf, target_table, column_mapping):
 
 
 def create_insert_query(batch_id, source_schema, source_table, target_schema, target_table, column_mapping):
-    print("Is here ***************")
     insert_sql = ["INSERT INTO \"{target_schema}\".\"{target_table}\"(",
              ",".join(column_mapping.keys()),
              ") SELECT ",

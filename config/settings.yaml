@@ -367,7 +367,7 @@ test:
 jenkins_dev:
   '[app:main]':
     celery:
-      BROKER_URL: amqp://edware:1234@localhost//
+      BROKER_URL: amqp://edware:edware1234@localhost//
       CELERY_IMPORTS: ('services.tasks.create_pdf',)
       CELERY_RESULT_BACKEND: amqp
       CELERYD_CONCURRENCY: 8

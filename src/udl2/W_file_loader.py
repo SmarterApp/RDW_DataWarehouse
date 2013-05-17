@@ -72,7 +72,7 @@ def generate_conf_for_loading(file_to_load, start_seq, header_file_path, batch_i
             DB_NAME: 'udl2',
             DB_PASSWORD: 'udl2abc1234',
             CSV_SCHEMA: 'udl2',
-            FDW_SERVER: 'udl_import',
+            FDW_SERVER: 'udl_fdw_server',
             STAGING_SCHEMA: 'udl2',
             STAGING_TABLE: 'STG_SBAC_ASMT_OUTCOME',
             APPLY_RULES: False,

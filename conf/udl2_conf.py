@@ -87,10 +87,11 @@ udl2_conf = {
         'db_schema':'udl2',
         'db_user':'udl2',
         'db_pass':'udl2abc1234',
+        'db_driver':'postgres',
     },
     'udl2_db': {
         'csv_schema':'udl2', # this is the same as postgresql schema
-        'fdw_server':'udl_fdw_server',
+        'fdw_server':'udl2_fdw_server',
         'staging_schema':'udl2',
     }
 }

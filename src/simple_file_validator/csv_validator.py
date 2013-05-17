@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 """
 Stores the basic validations that can be performed on CSV source files.
 

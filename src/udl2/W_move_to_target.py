@@ -16,21 +16,23 @@ logger = get_task_logger(__name__)
 def task(msg):
     logger.info(task.name)
     # logger.info('Moving data from %s into target' % msg['source_table'])
-    print('I am the exploder, about to copy data from staging table into target star schema %s' % str(msg))
+    print('*****I am the exploder, about to copy data from staging table into target star schema %s' % str(msg))
 
     # generate conf info, including db settings and batch_id, source_table, source_schema, target_schema
-    conf = generate_conf(msg)
+    conf = generate_conf(msg, col_map.get_target_table_callback()[1])
 
     # get column mapping
     column_map = col_map.get_column_mapping()
-    fact_table = col_map.get_target_table_callback()
+    fact_table = col_map.get_target_table_callback()[0]
 
     # reference: http://docs.celeryproject.org/en/master/userguide/canvas.html#chords
     # define callback
     callback = explode_data_to_fact_table.s(conf=conf, fact_table=fact_table, column_map=column_map[fact_table])
     # define tasks which can be done in parallel
     header = []
-    for dim_table in col_map.get_target_tables_parallel():
+    for dim_table, source_table  in col_map.get_target_tables_parallel().items():
+        print(dim_table, source_table)
+        conf['source_table'] = source_table
         header.append(explode_data_to_dim_table.subtask((conf, dim_table, column_map[dim_table])))
     chord(header)(callback)
 
@@ -63,10 +65,10 @@ def error_handler(uuid):
 
 
 # will be replaced by conf file
-def generate_conf(msg):
+def generate_conf(msg, source_table):
     conf = {
             # These three values can be replaced by reading from configuration file or msg
-            'source_table': 'STG_SBAC_ASMT_OUTCOME',
+            'source_table': source_table,
             'source_schema': 'udl2',
             'target_schema': 'edware',
 

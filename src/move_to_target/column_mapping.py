@@ -1,13 +1,18 @@
 from collections import OrderedDict
 
+
 # define the tables can be loaded in parallel
 def get_target_tables_parallel():
-    return ['dim_inst_hier', 'dim_student', 'dim_staff', 'dim_asmt']
+    return dict([('dim_inst_hier', 'STG_SBAC_ASMT_OUTCOME'),
+            ('dim_student', 'STG_SBAC_ASMT_OUTCOME'),
+            ('dim_staff', 'STG_SBAC_ASMT_OUTCOME'),
+            ('dim_asmt', 'STG_SBAC_ASMT')
+            ])
 
 
 # define the table should be load as the callback
 def get_target_table_callback():
-    return 'fact_asmt_outcome'
+    return ('fact_asmt_outcome', 'STG_SBAC_ASMT_OUTCOME')
 
 
 # column mapping between source/integration table and target/star schema table
@@ -57,7 +62,7 @@ def get_column_mapping():
                 ('from_date', ''),
                 ('to_date', ''),
                 ('most_recent', ''),
-            ]),                            
+            ]),
         'dim_inst_hier':
             OrderedDict([
                 ('state_name', ''),
@@ -95,7 +100,7 @@ def get_column_mapping():
             ]),
         'dim_staff':
             OrderedDict([
-                ('staff_guid',''),
+                ('staff_guid', ''),
                 ('first_name', ''),
                 ('middle_name', ''),
                 ('last_name', ''),
@@ -110,7 +115,7 @@ def get_column_mapping():
             ]),
         'dim_section':
             OrderedDict([
-                ('section_guid',''),
+                ('section_guid', ''),
                 ('section_name', ''),
                 ('grade', ''),
                 ('class_name', ''),
@@ -133,7 +138,7 @@ def get_column_mapping():
                 ('section_guid', ''),
                 ('inst_hier_rec_id', ''),
                 ('section_rec_id', ''),
-                ('where_taken_id', ''),  ''
+                ('where_taken_id', ''),
                 ('where_taken_name', ''),
                 ('asmt_grade', ''),
                 ('enrl_grade', ''),
@@ -158,7 +163,7 @@ def get_column_mapping():
                 ('asmt_claim_4_score_range_max', ''),
                 ('asmt_create_date', ''),
                 ('status', ''),
-                ('most_recent', ''),    
+                ('most_recent', ''),
             ])
     }
     return column_map_integration_to_target

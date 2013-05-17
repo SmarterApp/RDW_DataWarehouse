@@ -32,6 +32,7 @@ def flattent_json_dict(json_dict, mappings):
 
 
 def load_to_table(data_dict):
+    pass
 
 mapping = {'asmt_guid': ['identification', 'asmt_guid'],
            'asmt_type': ['identification', 'type'],

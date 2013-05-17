@@ -71,3 +71,16 @@ def move_file_and_confirm(file_to_move, target_directory):
     copied_successfully = copy_file(file_to_move, target_directory)
     if copied_successfully:
         remove_file(file_to_move)
+
+
+def abs_path_join(*args):
+    """Performs os.path.join on all args, then returns the absolute path
+
+    :param args: any amount of args
+    :type args: strings
+    """
+    if args:
+        full_path = ''
+        for arg in args:
+            full_path = os.path.join(full_path, arg)
+        return os.path.abspath(full_path)

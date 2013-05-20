@@ -19,21 +19,20 @@ def task(msg):
     print('*****I am the exploder, about to copy data from staging table into target star schema %s' % str(msg))
 
     # generate conf info, including db settings and batch_id, source_table, source_schema, target_schema
-    conf = generate_conf(msg, col_map.get_target_table_callback()[1])
+    conf = generate_conf(msg)
 
     # get column mapping
     column_map = col_map.get_column_mapping()
     fact_table = col_map.get_target_table_callback()[0]
+    source_table_for_fact_table = col_map.get_target_table_callback()[1]
 
     # reference: http://docs.celeryproject.org/en/master/userguide/canvas.html#chords
     # define callback
-    callback = explode_data_to_fact_table.s(conf=conf, fact_table=fact_table, column_map=column_map[fact_table])
+    callback = explode_data_to_fact_table.s(conf=conf, source_table=source_table_for_fact_table, fact_table=fact_table, column_map=column_map[fact_table])
     # define tasks which can be done in parallel
     header = []
     for dim_table, source_table in col_map.get_target_tables_parallel().items():
-        print(dim_table, source_table)
-        conf['source_table'] = source_table
-        header.append(explode_data_to_dim_table.subtask((conf, dim_table, column_map[dim_table])))
+        header.append(explode_data_to_dim_table.subtask((conf, source_table, dim_table, column_map[dim_table])))
     chord(header)(callback)
 
     """
@@ -45,15 +44,14 @@ def task(msg):
 
 
 @celery.task(name="udl2.W_move_to_target.task1")
-def explode_data_to_dim_table(conf, dim_table, column_mapping):
-    print(column_mapping)
-    explode_data_to_one_table(conf, dim_table, column_mapping)
+def explode_data_to_dim_table(conf, source_table, dim_table, column_mapping):
+    explode_data_to_one_table(conf, source_table, dim_table, column_mapping)
 
 
 @celery.task(name="udl2.W_move_to_target.task2")
-def explode_data_to_fact_table(result_from_parallel, conf, fact_table, column_map):
+def explode_data_to_fact_table(result_from_parallel, conf, source_table, fact_table, column_map):
     print('I am the exploder, about to copy fact table')
-    explode_data_to_one_table(conf, fact_table, column_map)
+    explode_data_to_one_table(conf, source_table, fact_table, column_map)
     print('I am the exploder, copied data from staging table into target star schema at %s' % str(datetime.datetime.now()))
 
 
@@ -66,11 +64,10 @@ def error_handler(uuid):
 
 
 # will be replaced by conf file
-def generate_conf(msg, source_table):
+def generate_conf(msg):
     conf = {
             # These three values can be replaced by reading from configuration file or msg
             # source_table is integration table
-            'source_table': source_table,
             'source_schema': 'udl2',
             'target_schema': 'edware',
 

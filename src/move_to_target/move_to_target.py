@@ -27,7 +27,7 @@ def explode_data_to_target(conf):
     conn.close()
 
 
-def explode_data_to_one_table(conf, target_table, column_mapping):
+def explode_data_to_one_table(conf, source_table, target_table, column_mapping):
     '''
     Will use parameters passed in to create query with sqlalchemy
     '''
@@ -35,7 +35,7 @@ def explode_data_to_one_table(conf, target_table, column_mapping):
     conn = connect_db(conf)
 
     # create insertion query
-    query = create_insert_query(conf['batch_id'], conf['source_schema'], conf['source_table'], conf['target_schema'], target_table, column_mapping)
+    query = create_insert_query(conf['batch_id'], conf['source_schema'], source_table, conf['target_schema'], target_table, column_mapping)
     print(query)
 
     # execute the query

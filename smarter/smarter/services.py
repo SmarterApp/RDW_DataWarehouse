@@ -18,10 +18,11 @@ import urllib.parse
 import pyramid.threadlocal
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed,\
     EdApiHTTPForbiddenAccess, EdApiHTTPInternalServerError
+from smarter.reports.helpers.ISR_pdf_name_formatter import ISR_pdf_name
 
 
 @view_config(route_name='pdf', request_method='POST', content_type='application/json')
-def post_pdf_serivce_post(request):
+def post_pdf_service(request):
     '''
     Handles POST request to /service/pdf
     '''
@@ -34,7 +35,7 @@ def post_pdf_serivce_post(request):
 
 
 @view_config(route_name='pdf', request_method='GET')
-def get_pdf_serivce(request):
+def get_pdf_service(request):
     '''
     Handles GET request to /service/pdf
     '''
@@ -77,19 +78,11 @@ def get_pdf_content(params):
     url = url + "?%s" % encoded_params
 
     # check if pdf_stream is in file system
-    # file_name = get_file_name_for_pdf(report_name, student_guid)
-    file_name = '/tmp/' + student_guid + '.pdf'
+    file_name = '/tmp/test.pdf'
 
     # read pdf file
-    pdf_stream = get_pdf_file(file_name)
-    if pdf_stream is None:
-        (cookie_name, cookie_value) = get_session_cookie()
-
-        generate_task = generate_pdf(cookie_value, url, file_name, cookie_name=cookie_name)
-        if generate_task is OK:
-            pdf_stream = get_pdf_file(file_name)
-        else:
-            raise PdfGenerationError()
+    (cookie_name, cookie_value) = get_session_cookie()
+    pdf_stream = get_pdf_file(cookie_value, url, file_name, cookie_name=cookie_name)
 
     return Response(body=pdf_stream, content_type='application/pdf')
 

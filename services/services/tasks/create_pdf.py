@@ -43,12 +43,16 @@ def generate_pdf(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT,
 
 
 @celery.task(name='tasks.get_pdf_file')
-def get_pdf_file(path):
+def get_pdf_file(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT, cookie_name='edware'):
     '''
     Returns byte stream from the path specified
     '''
-    stream = None
-    if os.path.exists(path):
-        with open(path, 'rb') as file:
-            stream = file.read()
+    if not os.path.exists(outputfile):
+        generate_task = generate_pdf(cookie, url, outputfile, options=pdf_defaults, timeout=timeout, cookie_name=cookie_name)
+        if generate_task is FAIL:
+            # TODO Raise error
+            pass
+
+    with open(outputfile, 'rb') as file:
+        stream = file.read()
     return stream

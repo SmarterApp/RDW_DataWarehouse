@@ -44,9 +44,9 @@ class ISR_pdf_name:
         dirname = os.path.join(self.__pdf_report_base_dir, state_code, asmt_period_year, district_guid, school_guid, asmt_grade, self.__asmt_type)
         return dirname
 
-    def generate_abslute_file_path(self):
+    def generate_absolute_file_path(self):
         '''
-        return abslute file path
+        return absolute file path
         '''
         return os.path.join(self.generate_dirname(), self.generate_filename())
 

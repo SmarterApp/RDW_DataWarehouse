@@ -35,10 +35,15 @@ class TestCreatePdf(unittest.TestCase):
         task = generate_pdf('cookie', 'url', 'outputfile')
         self.assertEqual(task, FAIL)
 
-    def test_get_pdf_file(self):
+    def test_get_pdf_invalid_file(self):
         file_name = '/tmp/i_dont_exist'
         task = get_pdf_file(file_name)
         self.assertIsNone(task)
+
+    def test_get_pdf_valid_file(self):
+        here = os.path.abspath(__file__)
+        task = get_pdf_file(here)
+        self.assertIsNotNone(task)
 
     def __get_cmd(self):
         '''

@@ -157,7 +157,7 @@ UDL_TABLE_METADATA = {
         ('batch_id', False, 'bigint', '', False, "Batch ID which caused the record insert"),
         ('guid_asmt', False, 'varchar(50)', '', False, "Assessment GUID"),
         ('type', False, 'varchar(16)', '', False, "Assessment Type - SUMMATIVE or INTERIM"),
-        ('period', False, 'varhcar(32)', '', False, "Assessment Period - SPRING 2015, FALL 9999"),
+        ('period', False, 'varchar(32)', '', False, "Assessment Period - SPRING 2015, FALL 9999"),
         ('year', False, 'smallint', '', False, "Assessment year"),
         ('version', False, 'varchar(16)', '', False, "Assessment Version"),
         ('subject', False, 'varchar(100)', '', True, "Assessment Subject - MATH, ELA"),
@@ -292,7 +292,7 @@ def map_sql_type_to_sqlalchemy_type(sql_type):
         'smallint': SMALLINT,
         'bigserial': BIGINT,
         'varchar': VARCHAR,
-        'double': DOUBLE_PRECISION,
+        'double': FLOAT,
         'json': TEXT
     }
     try:
@@ -359,6 +359,7 @@ def create_udl2_tables(udl2_conf):
     for table in udl2_tables:
         try:
             print('create table %s' % table)
+            #print(CreateTable(table))
             table.create(engine)
         except Exception as e:
             print(e)

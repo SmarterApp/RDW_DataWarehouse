@@ -67,9 +67,8 @@ def error_handler(uuid):
 def generate_conf(msg):
     conf = {
             # These three values can be replaced by reading from configuration file or msg
-            # source_table is integration table
-            'source_schema': 'udl2',
-            'target_schema': 'edware',
+            'source_schema': udl2_conf['udl2_db']['integration_schema'],
+            'target_schema': udl2_conf['target_db']['db_schema'],
 
             # add info from msg
             'batch_id': msg['batch_id'],

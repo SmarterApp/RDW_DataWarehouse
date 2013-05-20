@@ -98,10 +98,22 @@ udl2_conf = {
         'db_driver':'postgres',
     },
     'udl2_db': {
-        'csv_schema':'udl2', # this is the same as postgresql schema
+        'csv_schema':'udl2',  # this is the same as postgresql schema
         'fdw_server':'udl2_fdw_server',
         'staging_schema':'udl2',
+        'integration_schema': 'udl2'
+    },
+    'target_db': {
+        'db_schema': 'edware',
+        # TBD, make sure it is the production setting
+        'db_host':'localhost',
+        'db_port':'5432',
+        'db_database':'edware',
+        'db_user':'edware',
+        'db_pass':'password',
+        'db_driver':'postgres'
     }
+
 }
 
 

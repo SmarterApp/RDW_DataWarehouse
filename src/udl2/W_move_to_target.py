@@ -37,6 +37,7 @@ def task(msg):
     chord(header)(callback)
 
     """
+    # the next stage is 'clean_up', it will be defined in Chain after current task
     udl2.W_final_cleanup.task.apply_async([msg],
                                             queue='Q_final_cleanup',
                                             routing_key='udl2')
@@ -68,6 +69,7 @@ def error_handler(uuid):
 def generate_conf(msg, source_table):
     conf = {
             # These three values can be replaced by reading from configuration file or msg
+            # source_table is integration table
             'source_table': source_table,
             'source_schema': 'udl2',
             'target_schema': 'edware',

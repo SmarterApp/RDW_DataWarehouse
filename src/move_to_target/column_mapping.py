@@ -10,7 +10,7 @@ def get_target_tables_parallel():
             ])
 
 
-# define the table should be load as the callback
+# define the table should be loaded as the callback
 def get_target_table_callback():
     return ('fact_asmt_outcome', 'STG_SBAC_ASMT_OUTCOME')
 

@@ -30,7 +30,7 @@ def task(msg):
     callback = explode_data_to_fact_table.s(conf=conf, fact_table=fact_table, column_map=column_map[fact_table])
     # define tasks which can be done in parallel
     header = []
-    for dim_table, source_table  in col_map.get_target_tables_parallel().items():
+    for dim_table, source_table in col_map.get_target_tables_parallel().items():
         print(dim_table, source_table)
         conf['source_table'] = source_table
         header.append(explode_data_to_dim_table.subtask((conf, dim_table, column_map[dim_table])))

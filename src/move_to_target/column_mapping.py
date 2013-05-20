@@ -2,6 +2,8 @@ from collections import OrderedDict
 
 
 # define the tables can be loaded in parallel
+# (target_table_name, source_table_name)
+# e.g. (target_table_in_star_schema, table_name_in_integration_tables)
 def get_target_tables_parallel():
     return dict([('dim_inst_hier', 'STG_SBAC_ASMT_OUTCOME'),
             ('dim_student', 'STG_SBAC_ASMT_OUTCOME'),
@@ -11,6 +13,8 @@ def get_target_tables_parallel():
 
 
 # define the table should be loaded as the callback
+# (target_table_name, source_table_name)
+# e.g. (target_table_in_star_schema, table_name_in_integration_tables)
 def get_target_table_callback():
     return ('fact_asmt_outcome', 'STG_SBAC_ASMT_OUTCOME')
 

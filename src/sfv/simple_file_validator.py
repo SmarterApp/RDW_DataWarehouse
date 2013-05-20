@@ -13,6 +13,7 @@ import os
 
 from sfv import error_codes
 from sfv import csv_validator
+from sfv import json_validator
 
 
 class SimpleFileValidator():
@@ -21,7 +22,7 @@ class SimpleFileValidator():
     def __init__(self):
         """Constructor"""
         self.validators = {'.csv': csv_validator.CsvValidator(),
-                           #'.json': json_validator.JsonValidator,
+                           '.json': json_validator.JsonValidator(),
                            }
 
     def execute(self, dir_path, file_name, batch_id):

@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+
 """
 Simple File Validator job performs the basic validations on the incoming
 Assessment file.

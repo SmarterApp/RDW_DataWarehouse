@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+
 """
 This module contains error code constants that will be returned to the caller when
 an error has been encountered. Error codes can be used by the caller to display

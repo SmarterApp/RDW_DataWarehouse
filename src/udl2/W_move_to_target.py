@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-from udl2.celery import celery
+from udl2.celery import celery, udl2_conf
 from celery.result import AsyncResult
 from celery.utils.log import get_task_logger
 import move_to_target.column_mapping as col_map
@@ -16,25 +16,27 @@ logger = get_task_logger(__name__)
 def task(msg):
     logger.info(task.name)
     # logger.info('Moving data from %s into target' % msg['source_table'])
-    print('I am the exploder, about to copy data from staging table into target star schema %s' % str(msg))
+    print('*****I am the exploder, about to copy data from staging table into target star schema %s' % str(msg))
 
-    # temporary
+    # generate conf info, including db settings and batch_id, source_table, source_schema, target_schema
     conf = generate_conf(msg)
 
     # get column mapping
     column_map = col_map.get_column_mapping()
-    fact_table = col_map.get_target_table_callback()
+    fact_table = col_map.get_target_table_callback()[0]
+    source_table_for_fact_table = col_map.get_target_table_callback()[1]
 
     # reference: http://docs.celeryproject.org/en/master/userguide/canvas.html#chords
     # define callback
-    callback = explode_data_to_fact_table.s(conf=conf, fact_table=fact_table, column_map=column_map[fact_table])
+    callback = explode_data_to_fact_table.s(conf=conf, source_table=source_table_for_fact_table, fact_table=fact_table, column_map=column_map[fact_table])
     # define tasks which can be done in parallel
     header = []
-    for dim_table in col_map.get_target_tables_parallel():
-        header.append(explode_data_to_dim_table.subtask((conf, dim_table, column_map[dim_table])))
+    for dim_table, source_table in col_map.get_target_tables_parallel().items():
+        header.append(explode_data_to_dim_table.subtask((conf, source_table, dim_table, column_map[dim_table])))
     chord(header)(callback)
 
     """
+    # the next stage is 'clean_up', it will be defined in Chain after current task
     udl2.W_final_cleanup.task.apply_async([msg],
                                             queue='Q_final_cleanup',
                                             routing_key='udl2')
@@ -42,14 +44,14 @@ def task(msg):
 
 
 @celery.task(name="udl2.W_move_to_target.task1")
-def explode_data_to_dim_table(conf, dim_table, column_mapping):
-    explode_data_to_one_table(conf, dim_table, column_mapping)
+def explode_data_to_dim_table(conf, source_table, dim_table, column_mapping):
+    explode_data_to_one_table(conf, source_table, dim_table, column_mapping)
 
 
 @celery.task(name="udl2.W_move_to_target.task2")
-def explode_data_to_fact_table(result_from_parallel, conf, fact_table, column_map):
+def explode_data_to_fact_table(result_from_parallel, conf, source_table, fact_table, column_map):
     print('I am the exploder, about to copy fact table')
-    explode_data_to_one_table(conf, fact_table, column_map)
+    explode_data_to_one_table(conf, source_table, fact_table, column_map)
     print('I am the exploder, copied data from staging table into target star schema at %s' % str(datetime.datetime.now()))
 
 
@@ -64,16 +66,18 @@ def error_handler(uuid):
 # will be replaced by conf file
 def generate_conf(msg):
     conf = {
-            # TBD
-            'source_table': 'STG_SBAC_ASMT_OUTCOME',
-            'source_schema': 'udl2',
-            'target_schema': 'edware',
+            # These three values can be replaced by reading from configuration file or msg
+            'source_schema': udl2_conf['udl2_db']['integration_schema'],
+            'target_schema': udl2_conf['target_db']['db_schema'],
 
+            # add info from msg
             'batch_id': msg['batch_id'],
-            'db_host': 'localhost',
-            'db_port': '5432',
-            'db_user': 'udl2',
-            'db_name': 'udl2',
-            'db_password': 'udl2abc1234',
+
+            # database setting
+            'db_host': udl2_conf['postgresql']['db_host'],
+            'db_port': udl2_conf['postgresql']['db_port'],
+            'db_user': udl2_conf['postgresql']['db_user'],
+            'db_name': udl2_conf['postgresql']['db_database'],
+            'db_password': udl2_conf['postgresql']['db_pass'],
     }
     return conf

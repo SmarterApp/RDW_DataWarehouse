@@ -9,7 +9,7 @@ from sqlalchemy.engine import create_engine
 from udl2_util.file_util import extract_file_name
 
 
-DBDRIVER = "postgresql+pypostgresql"
+DBDRIVER = "postgresql"
 
 
 def connect_db(conf_args):
@@ -165,7 +165,7 @@ if __name__ == '__main__':
             'db_name': 'udl2',
             'db_password': 'udl2abc1234',
             'csv_schema': 'udl2',
-            'fdw_server': 'udl_import',
+            'fdw_server': 'udl2_fdw_server',
             'staging_schema': 'udl2',
             'staging_table': 'STG_SBAC_ASMT_OUTCOME',
             'apply_rules': False,

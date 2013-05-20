@@ -50,6 +50,10 @@ def create_inserting_into_staging_query(stg_asmt_outcome_columns, batch_id, appl
     return insert_sql
 
 
+def create_insert_assessment_into_integration_query(data_dict, batch_id, int_schema, int_table):
+    pass
+
+
 def set_sequence_query(staging_table, start_seq):
     return "SELECT pg_catalog.setval(pg_get_serial_sequence('{staging_table}', 'src_row_number'), {start_seq}, false)".format(staging_table=staging_table, start_seq=start_seq)
 

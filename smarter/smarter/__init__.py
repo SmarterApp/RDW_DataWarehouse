@@ -74,7 +74,7 @@ def main(global_config, **settings):
     config.add_route('heartbeat', '/heartbeat')
 
     # Add pdf
-    config.add_route('get_pdf', '/get_pdf')
+    config.add_route('pdf', '/services/pdf/{report}')
 
     # scans smarter
     config.scan()

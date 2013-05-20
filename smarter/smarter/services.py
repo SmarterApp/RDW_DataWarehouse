@@ -5,76 +5,68 @@ Created on May 17, 2013
 '''
 from pyramid.view import view_config
 from services.tasks.create_pdf import generate_pdf, get_pdf_file, OK
-from urllib.parse import urljoin, urlsplit, parse_qs
+from urllib.parse import urljoin
 from pyramid.response import Response
 from smarter.security.context import select_with_context
 from smarter.database.connector import SmarterDBConnection
 from smarter.reports.helpers.constants import Constants
 from sqlalchemy.sql.expression import and_
-from edapi.httpexceptions import EdApiHTTPPreconditionFailed,\
-    EdApiHTTPForbiddenAccess, EdApiHTTPInternalServerError
 from edapi.exceptions import InvalidParameterError, ForbiddenError
 from smarter.exceptions import PdfGenerationError
+from edauth.security.utils import get_session_cookie
+import urllib.parse
+import pyramid.threadlocal
 
 
-@view_config(route_name='get_pdf')
-def get_pdf(request):
+@view_config(route_name='pdf', request_method='POST')
+def post_pdf_serivce_post(request):
+    '''
+    Handles POST request to /service/pdf
+    '''
     try:
-        params = None
+        params = request.json_body
+    except ValueError:
+        raise InvalidParameterError('Payload cannot be parsed')
 
-        # Get the query parameter or payload depending on verb
-        if request.method == "GET":
-            params = request.GET
-        elif request.method == "POST":
-            try:
-                params = request.json_body
-            except ValueError:
-                raise InvalidParameterError('Payload cannot be parsed')
+    return get_pdf_content(params)
 
-        # the url received is partial url
-        partial_url = params.get('url')
-        if partial_url:
-            url = urljoin(request.application_url, partial_url)
+
+@view_config(route_name='pdf', request_method='GET')
+def get_pdf_serivce(request):
+    '''
+    Handles GET request to /service/pdf
+    '''
+    return get_pdf_content(request.GET)
+
+
+def get_pdf_content(params):
+    student_guid = params.get('studentGuid')
+
+    if not has_context_for_pdf_request(student_guid):
+        raise ForbiddenError('Access Denied')
+
+    report = pyramid.threadlocal.get_current_request().matchdict['report'].lower()
+
+    if report == 'individual_student_report':
+        url = urljoin(pyramid.threadlocal.get_current_request().application_url, '/assets/html/indivStudentReport.html')
+
+    encoded_params = urllib.parse.urlencode(params)
+    url = url + "?%s" % encoded_params
+
+    # check if pdf_stream is in file system
+    # file_name = get_file_name_for_pdf(report_name, student_guid)
+    file_name = '/tmp/' + student_guid + '.pdf'
+
+    # read pdf file
+    pdf_stream = get_pdf_file(file_name)
+    if pdf_stream is None:
+        (cookie_name, cookie_value) = get_session_cookie()
+
+        generate_task = generate_pdf(cookie_value, url, file_name, cookie_name=cookie_name)
+        if generate_task is OK:
+            pdf_stream = get_pdf_file(file_name)
         else:
-            raise InvalidParameterError('url is not found in query parameter')
-
-        # Get query param
-        split_url = urlsplit(url)
-        query_params = parse_qs(split_url.query, keep_blank_values=True)
-        student_guid = query_params.get('studentGuid')
-        if student_guid:
-            student_guid = student_guid[0]
-        else:
-            raise InvalidParameterError('studentGuid is not found in query parameter')
-
-        if not has_context_for_pdf_request(student_guid):
-            raise ForbiddenError('Access Denied')
-
-        # check if pdf_stream is in file system
-        # file_name = get_file_name_for_pdf(report_name, student_guid)
-        file_name = '/tmp/' + student_guid + '.pdf'
-
-        # read pdf file
-        pdf_stream = get_pdf_file(file_name)
-        if pdf_stream is None:
-            # get registry to read settings
-            cookie_name = request.registry.get('auth.policy.cookie_name', 'edware')
-
-            # get the user cookie
-            cookie = request.cookies[cookie_name]
-
-            generate_task = generate_pdf(cookie, url, file_name, cookie_name=cookie_name)
-            #result.wait
-            if generate_task.result is OK:
-                pdf_stream = get_pdf_file(file_name)
-            else:
-                raise PdfGenerationError()
-    except InvalidParameterError as e:
-        return EdApiHTTPPreconditionFailed(e.msg)
-    except ForbiddenError as e:
-        return EdApiHTTPForbiddenAccess(e.msg)
-    except PdfGenerationError as e:
-        return EdApiHTTPInternalServerError(e.msg)
+            raise PdfGenerationError()
 
     return Response(body=pdf_stream, content_type='application/pdf')
 

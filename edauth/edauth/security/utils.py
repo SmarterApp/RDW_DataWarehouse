@@ -10,6 +10,7 @@ from Crypto import Random
 from zope import interface, component
 from zope.interface.declarations import implementer
 from edauth.utils import enum
+import pyramid
 
 
 SECURITY_EVENT_TYPE = enum(INFO=0, WARN=1)
@@ -34,6 +35,18 @@ def inflate_base64_decode(data_byte_string):
     '''
     base_decoded = base64.b64decode(data_byte_string)
     return zlib.decompress(base_decoded, -15)
+
+
+def get_session_cookie():
+    '''
+    return the cookie value of current request
+    '''
+    # get registry to read settings
+    cookie_name = pyramid.threadlocal.get_current_registry().get('auth.policy.cookie_name', 'edware')
+
+    # get the user cookie
+    cookie_value = pyramid.threadlocal.get_current_request().cookies[cookie_name]
+    return (cookie_name, cookie_value)
 
 
 def _get_cipher():

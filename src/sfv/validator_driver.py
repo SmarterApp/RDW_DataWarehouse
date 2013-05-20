@@ -6,6 +6,7 @@ import os
 __author__ = 'abrien'
 
 from sfv.csv_validator import CsvValidator
+from sfv.json_validator import JsonValidator
 
 
 def main():
@@ -16,9 +17,15 @@ def main():
     full_file_path = args.file_path
     dir_path = os.path.dirname(full_file_path)
     file_name = os.path.basename(full_file_path)
+    file_ext = os.path.splitext(file_name)[1]
     batch_sid = 1
 
-    validator = CsvValidator()
+    if file_ext == '.csv':
+        validator = CsvValidator()
+    elif file_ext == '.json':
+        validator = JsonValidator()
+    else:
+        raise Exception('File must be either csv or json.')
     error_codes = validator.execute(dir_path, file_name, batch_sid)
 
     for error_code in error_codes:

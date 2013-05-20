@@ -65,6 +65,7 @@ common:
     run.npm.update: true
     # Timeout for pdf generation process
     pdf.generate.timeout: 10
+    pdf.report_base_dir: /opt/edware/reports
 
   '[server:main]':
     use: 'egg:waitress#main'

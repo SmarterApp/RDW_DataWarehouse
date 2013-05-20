@@ -16,7 +16,7 @@ class ISR_pdf_name:
         self.__asmt_type = asmt_type
         self.__result = None
         self.__queried = False
-        self.__pdf_report_base_dir = pyramid.threadlocal.get_current_registry().get('pdf_report_base_dir',"/")
+        self.__pdf_report_base_dir = pyramid.threadlocal.get_current_registry().get('pdf.report_base_dir',"/")
 
     def generate_filename(self):
         '''

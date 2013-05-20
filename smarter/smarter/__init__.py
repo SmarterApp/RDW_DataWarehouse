@@ -72,7 +72,7 @@ def main(global_config, **settings):
 
     # Add heartbeat
     config.add_route('heartbeat', '/heartbeat')
-    
+
     # Add pdf
     config.add_route('get_pdf', '/get_pdf')
 

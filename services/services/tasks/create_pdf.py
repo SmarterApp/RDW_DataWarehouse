@@ -18,7 +18,7 @@ OK = 0
 FAIL = 1
 
 
-@celery.task(name='tasks.create_pdf')
+@celery.task(name='tasks.generate_pdf')
 def generate_pdf(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT, cookie_name='edware'):
     '''
     Generates pdf from given url. Returns exist status code from shell command.
@@ -40,3 +40,13 @@ def generate_pdf(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT,
         log = logging.getLogger(__name__)
         log.error("Generate PDF error: %s", sys.exc_info())
         return FAIL
+
+
+@celery.task(name='tasks.get_pdf_file')
+def get_pdf_file(path):
+    stream = None
+    if os.path.exists(path):
+        with open(path, 'rb') as file:
+            stream = file.read()
+    return stream
+        

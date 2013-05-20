@@ -5,7 +5,7 @@ Created on May 14, 2013
 '''
 import unittest
 import services
-from services.tasks.create_pdf import generate_pdf, OK, FAIL
+from services.tasks.create_pdf import generate_pdf, OK, FAIL, get_pdf_file
 import platform
 import os
 
@@ -34,6 +34,11 @@ class TestCreatePdf(unittest.TestCase):
         services.tasks.create_pdf.pdf_procs = ['dummycmd']
         task = generate_pdf('cookie', 'url', 'outputfile')
         self.assertEqual(task, FAIL)
+
+    def test_get_pdf_file(self):
+        file_name = '/tmp/i_dont_exist'
+        task = get_pdf_file(file_name)
+        self.assertIsNone(task)
 
     def __get_cmd(self):
         '''

@@ -4,7 +4,7 @@ Created on Jan 18, 2013
 @author: dip
 '''
 from pyramid.httpexceptions import HTTPNotFound, HTTPPreconditionFailed, HTTPRequestURITooLong,\
-    HTTPForbidden
+    HTTPForbidden, HTTPInternalServerError
 import json
 
 
@@ -69,6 +69,18 @@ class EdApiHTTPForbiddenAccess(HTTPForbidden):
     a custom http exception for forbidden access
     '''
 
+    def __init__(self, msg):
+        '''
+        @param msg: error message
+        @type msg: string
+        '''
+        super().__init__(**generate_exception_response(msg))
+
+
+class EdApiHTTPInternalServerError(HTTPInternalServerError):
+    '''
+    a custom http internal server exception
+    '''
     def __init__(self, msg):
         '''
         @param msg: error message

@@ -10,6 +10,7 @@ import subprocess
 from services.celeryconfig import TIMEOUT
 import platform
 from services.celery import celery
+from services.exceptions import PdfGenerationError
 
 pdf_procs = ['wkhtmltopdf']
 pdf_defaults = ['--enable-javascript', '--page-size', 'Letter', '--print-media-type', '-l', '--javascript-delay', '6000']
@@ -50,8 +51,7 @@ def get_pdf_file(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT,
     if not os.path.exists(outputfile):
         generate_task = generate_pdf(cookie, url, outputfile, options=pdf_defaults, timeout=timeout, cookie_name=cookie_name)
         if generate_task is FAIL:
-            # TODO Raise error
-            pass
+            raise PdfGenerationError
 
     with open(outputfile, 'rb') as file:
         stream = file.read()

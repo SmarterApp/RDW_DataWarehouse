@@ -32,15 +32,15 @@ class Test(Unittest_with_smarter_sqlite):
             pdf_filename_formatter = ISR_pdf_name(studentGuid='ff1c2b1a-c15d-11e2-ae11-3c07546832b4')
             pdf_filename_formatter.generate_dirname()
 
-    def test_ISR_pdf_abslute_file_path(self):
+    def test_ISR_pdf_absolute_file_path(self):
         pdf_filename_formatter = ISR_pdf_name(studentGuid='61ec47de-e8b5-4e78-9beb-677c44dd9b50')
-        abs_file_path = pdf_filename_formatter.generate_abslute_file_path()
+        abs_file_path = pdf_filename_formatter.generate_absolute_file_path()
         self.assertEqual(abs_file_path, os.path.join('/', 'NY', '2012', '228', '242', '3', 'SUMMATIVE', "61ec47de-e8b5-4e78-9beb-677c44dd9b50"))
 
-    def test_ISR_pdf_abslute_file_path_studentguid_not_exist(self):
+    def test_ISR_pdf_absolute_file_path_studentguid_not_exist(self):
         with self.assertRaises(NotFoundException):
             pdf_filename_formatter = ISR_pdf_name(studentGuid='ff1c2b1a-c15d-11e2-ae11-3c07546832b4')
-            pdf_filename_formatter.generate_abslute_file_path()
+            pdf_filename_formatter.generate_absolute_file_path()
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']

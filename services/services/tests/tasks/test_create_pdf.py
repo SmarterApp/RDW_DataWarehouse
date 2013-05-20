@@ -36,13 +36,15 @@ class TestCreatePdf(unittest.TestCase):
         self.assertEqual(task, FAIL)
 
     def test_get_pdf_invalid_file(self):
+        services.tasks.create_pdf.pdf_procs = ['echo', 'dummy']
         file_name = '/tmp/i_dont_exist'
-        task = get_pdf_file(file_name)
-        self.assertIsNone(task)
+        # We can't test this method properly
+        self.assertRaises(FileNotFoundError, get_pdf_file, 'cookie', 'url', file_name)
 
     def test_get_pdf_valid_file(self):
+        services.tasks.create_pdf.pdf_procs = ['echo', 'dummy']
         here = os.path.abspath(__file__)
-        task = get_pdf_file(here)
+        task = get_pdf_file('cookie', 'url', here)
         self.assertIsNotNone(task)
 
     def __get_cmd(self):

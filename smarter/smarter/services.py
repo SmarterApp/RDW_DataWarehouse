@@ -4,7 +4,7 @@ Created on May 17, 2013
 @author: dip
 '''
 from pyramid.view import view_config
-from services.tasks.create_pdf import generate_pdf, get_pdf_file, OK
+from services.tasks.create_pdf import get_pdf_file
 from urllib.parse import urljoin
 from pyramid.response import Response
 from smarter.security.context import select_with_context
@@ -12,13 +12,12 @@ from smarter.database.connector import SmarterDBConnection
 from smarter.reports.helpers.constants import Constants
 from sqlalchemy.sql.expression import and_
 from edapi.exceptions import InvalidParameterError, ForbiddenError
-from smarter.exceptions import PdfGenerationError
 from edauth.security.utils import get_session_cookie
 import urllib.parse
 import pyramid.threadlocal
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed,\
     EdApiHTTPForbiddenAccess, EdApiHTTPInternalServerError
-from smarter.reports.helpers.ISR_pdf_name_formatter import ISR_pdf_name
+from services.exceptions import PdfGenerationError
 
 
 @view_config(route_name='pdf', request_method='POST', content_type='application/json')

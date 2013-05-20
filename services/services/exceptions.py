@@ -5,7 +5,7 @@ Created on May 20, 2013
 '''
 
 
-class SmarterError(Exception):
+class ServicesError(Exception):
     '''
     a general EdApi error.
     '''
@@ -17,7 +17,7 @@ class SmarterError(Exception):
         self.msg = msg
 
 
-class PdfGenerationError(SmarterError):
+class PdfGenerationError(ServicesError):
     '''
     a custom exception raised when a pdf generation failed
     '''

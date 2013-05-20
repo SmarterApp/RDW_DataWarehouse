@@ -23,8 +23,8 @@ class CsvValidator():
 
     def  __init__(self):
         """Constructor
-        :param arg_udl_db: database connections
-        :type arg_udl_db: udl.lib.UdlDb
+        @param arg_udl_db: database connections
+        @type arg_udl_db: udl.lib.UdlDb
         """
 
         self.csv_validations = [IsSourceFolderAccessible(),
@@ -39,16 +39,17 @@ class CsvValidator():
 
 
     def execute(self, dir_path, file_name, batch_sid):
-        """Run all validation tests and return error code on first failure, or
+        """
+        Run all validation tests and return a list of error codes for all failures, or
         errorcodes.STATUS_OK if all tests pass
 
-        :param dir_path: path of the file
-        :type dir_path: string
-        :param file_name: name of the file
-        :type file_name: string
-        :param batch_sid: batch id of the file
-        :type batch_sid: integer
-        :return: tuple of the form: (status_code, dir_path, file_name, batch_sid)
+        @param dir_path: path of the file
+        @type dir_path: string
+        @param file_name: name of the file
+        @type file_name: string
+        @param batch_sid: batch id of the file
+        @type batch_sid: integer
+        @return: tuple of the form: (status_code, dir_path, file_name, batch_sid)
         """
 
         error_list = []
@@ -66,13 +67,13 @@ class IsSourceFolderAccessible(object):
     def execute(self, dir_path, file_name, batch_sid):
         """Check if the path exists, is a directory, and we can read from it
 
-        :param dir_path: path of the file
-        :type dir_path: string
-        :param file_name: name of the file
-        :type file_name: string
-        :param batch_sid: batch id of the file
-        :type batch_sid: integer
-        :return: tuple of the form: (status_code, dir_path, file_name, batch_sid)
+        @param dir_path: path of the file
+        @type dir_path: string
+        @param file_name: name of the file
+        @type file_name: string
+        @param batch_sid: batch id of the file
+        @type batch_sid: integer
+        @return: tuple of the form: (status_code, dir_path, file_name, batch_sid)
         """
 
         if os.path.exists(dir_path) and os.path.isdir(dir_path) and os.access(dir_path, os.R_OK):
@@ -86,13 +87,13 @@ class IsSourceFileAccessible(object):
     def execute(self, dir_path, file_name, batch_sid):
         """Check if file exists, is readable and is not a directory
 
-        :param dir_path: path of the file
-        :type dir_path: string
-        :param file_name: name of the file
-        :type file_name: string
-        :param batch_sid: batch id of the file
-        :type batch_sid: integer
-        :return: tuple of the form: (status_code, dir_path, file_name, batch_sid)
+        @param dir_path: path of the file
+        @type dir_path: string
+        @param file_name: name of the file
+        @type file_name: string
+        @param batch_sid: batch id of the file
+        @type batch_sid: integer
+        @return: tuple of the form: (status_code, dir_path, file_name, batch_sid)
         """
         full_path = abs_path_join(dir_path, file_name)
 
@@ -108,13 +109,13 @@ class IsFileBlank(object):
     def execute(self, dir_path, file_name, batch_sid):
         """Check if the file is blank
 
-        :param dir_path: path of the file
-        :type dir_path: string
-        :param file_name: name of the file
-        :type file_name: string
-        :param batch_sid: batch id of the file
-        :type batch_sid: integer
-        :return: tuple of the form: (status_code, dir_path, file_name, batch_sid)
+        @param dir_path: path of the file
+        @type dir_path: string
+        @param file_name: name of the file
+        @type file_name: string
+        @param batch_sid: batch id of the file
+        @type batch_sid: integer
+        @return: tuple of the form: (status_code, dir_path, file_name, batch_sid)
         """
         full_path = abs_path_join(dir_path, file_name)
 
@@ -130,13 +131,13 @@ class IsSourceFileCommaDelimited(object):
     def execute(self, dir_path, file_name, batch_sid):
         """Execute that the file is indeed comma delimited
 
-        :param dir_path: path of the file
-        :type dir_path: string
-        :param file_name: name of the file
-        :type file_name: string
-        :param batch_sid: batch id of the file
-        :type batch_sid: integer
-        :return: tuple of the form: (status_code, dir_path, file_name, batch_sid)
+        @param dir_path: path of the file
+        @type dir_path: string
+        @param file_name: name of the file
+        @type file_name: string
+        @param batch_sid: batch id of the file
+        @type batch_sid: integer
+        @return: tuple of the form: (status_code, dir_path, file_name, batch_sid)
         """
 
         # get full path and open file
@@ -190,13 +191,13 @@ class DoesSourceFileContainDuplicateHeaders(object):
         """
         Check to make sure the file does not contain duplicate headers
 
-        :param dir_path: path of the file
-        :type dir_path: string
-        :param file_name: name of the file
-        :type file_name: string
-        :param batch_sid: batch id of the file
-        :type batch_sid: integer
-        :return: tuple of the form: (status_code, dir_path, file_name, batch_sid)
+        @param dir_path: path of the file
+        @type dir_path: string
+        @param file_name: name of the file
+        @type file_name: string
+        @param batch_sid: batch id of the file
+        @type batch_sid: integer
+        @return: tuple of the form: (status_code, dir_path, file_name, batch_sid)
         """
         full_path = abs_path_join(dir_path, file_name)
 
@@ -223,13 +224,13 @@ class DoesSourceFileContainHeaders(object):
     def execute(self, dir_path, file_name, batch_sid):
         """Check to make sure the file contains non-empty headers
 
-        :param dir_path: path of the file
-        :type dir_path: string
-        :param file_name: name of the file
-        :type file_name: string
-        :param batch_sid: batch id of the file
-        :type batch_sid: integer
-        :return: tuple of the form: (status_code, dir_path, file_name, batch_sid)
+        @param dir_path: path of the file
+        @type dir_path: string
+        @param file_name: name of the file
+        @type file_name: string
+        @param batch_sid: batch id of the file
+        @type batch_sid: integer
+        @return: tuple of the form: (status_code, dir_path, file_name, batch_sid)
         """
         # get full path and read 1st 4 lines from file.
         full_path = abs_path_join(dir_path, file_name)
@@ -278,13 +279,13 @@ class IsCsvWellFormed(object):
         """Execute to make sure that the number of headers is the same as the
         number of data-points on the first _lines_to_validate lines.
 
-        :param dir_path: path of the file
-        :type dir_path: string
-        :param file_name: name of the file
-        :type file_name: string
-        :param batch_sid: batch id of the file
-        :type batch_sid: integer
-        :return: tuple of the form: (status_code, dir_path, file_name, batch_sid)
+        @param dir_path: path of the file
+        @type dir_path: string
+        @param file_name: name of the file
+        @type file_name: string
+        @param batch_sid: batch id of the file
+        @type batch_sid: integer
+        @return: tuple of the form: (status_code, dir_path, file_name, batch_sid)
         """
         # get full path, open file and create reader
         full_path = abs_path_join(dir_path, file_name)
@@ -332,13 +333,13 @@ class DoesSourceFileHaveData(object):
         """Check if file has at least one data row, and make sure the data row
         and headers contain the same number of fields
 
-        :param dir_path: path of the file
-        :type dir_path: string
-        :param file_name: name of the file
-        :type file_name: string
-        :param batch_sid: batch id of the file
-        :type batch_sid: integer
-        :return: tuple of the form: (status_code, dir_path, file_name, batch_sid)
+        @param dir_path: path of the file
+        @type dir_path: string
+        @param file_name: name of the file
+        @type file_name: string
+        @param batch_sid: batch id of the file
+        @type batch_sid: integer
+        @return: tuple of the form: (status_code, dir_path, file_name, batch_sid)
         """
         full_path = abs_path_join(dir_path, file_name)
 

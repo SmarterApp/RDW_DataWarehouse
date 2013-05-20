@@ -268,7 +268,7 @@ class IsCsvWellFormed(object):
     def __init__(self):
         # Initially, lines_to_validate was defined within a configuration file, here we hard code it for now
         # TODO: define lines_to_validate in a configuration file
-        self._lines_to_validate = 10 #int(CONFIG.get_config("validation_lines"))
+        self._lines_to_validate = 1 #int(CONFIG.get_config("validation_lines"))
 
     def set_lines_to_validate(self, lines_to_validate):
         """mutator for lines_to_validate"""

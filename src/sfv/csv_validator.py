@@ -10,7 +10,7 @@ import os
 import csv
 import re
 
-from simple_file_validator import error_codes
+from sfv import error_codes
 from udl2_util.file_util import abs_path_join
 
 
@@ -33,7 +33,8 @@ class CsvValidator():
                                 DoesSourceFileContainDuplicateHeaders(),
                                 IsSourceFileCommaDelimited(),
                                 DoesSourceFileHaveData(),
-                                IsCsvWellFormed()]
+                                IsCsvWellFormed()
+                                ]
 
 
     def execute(self, dir_path, file_name, batch_sid):
@@ -204,9 +205,8 @@ class DoesSourceFileContainDuplicateHeaders(object):
         with open(full_path, 'rU') as file_to_validate:
             # headers = file_to_validate.readline()
             reader = csv.reader(file_to_validate)
-
             while headers is None or len(headers) == 0:
-                headers = reader.next()
+                headers = next(reader)
 
         for header in headers:
             if header.lower() in processed_headers:
@@ -291,13 +291,13 @@ class IsCsvWellFormed(object):
             file_reader = csv.reader(file_to_validate)
 
             # get the headers
-            headers = file_reader.next()
+            headers = next(file_reader)
             num_headers = len(headers)
 
             # check the number of data points
             while (file_reader.line_num - 1) < self._lines_to_validate:
                 try:
-                    line = file_reader.next()
+                    line = next(file_reader)
                 # execute to make sure we haven't hit the end of the file
                 except StopIteration:
                     return (error_codes.SRC_FILE_HAS_NO_DATA, dir_path, file_name, batch_sid)
@@ -347,8 +347,8 @@ class DoesSourceFileHaveData(object):
             # and we can return
             file_to_validate = open(full_path, 'rU')
             file_reader = csv.reader(file_to_validate)
-            file_reader.next()
-            file_reader.next()
+            next(file_reader)
+            next(file_reader)
         except StopIteration:
             return (error_codes.SRC_FILE_HAS_NO_DATA, dir_path, file_name, batch_sid)
 

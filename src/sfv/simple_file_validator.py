@@ -9,8 +9,8 @@ b) Checking the file has data and the application has permissions to access it
 
 import os
 
-from simple_file_validator import error_codes
-from simple_file_validator import csv_validator, json_validator
+from sfv import error_codes
+from sfv import csv_validator
 
 
 class SimpleFileValidator():

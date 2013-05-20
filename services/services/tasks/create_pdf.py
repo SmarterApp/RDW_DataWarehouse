@@ -44,6 +44,9 @@ def generate_pdf(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT,
 
 @celery.task(name='tasks.get_pdf_file')
 def get_pdf_file(path):
+    '''
+    Returns byte stream from the path specified
+    '''
     stream = None
     if os.path.exists(path):
         with open(path, 'rb') as file:

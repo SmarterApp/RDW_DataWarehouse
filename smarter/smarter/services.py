@@ -20,7 +20,7 @@ from edapi.httpexceptions import EdApiHTTPPreconditionFailed,\
     EdApiHTTPForbiddenAccess, EdApiHTTPInternalServerError
 
 
-@view_config(route_name='pdf', request_method='POST', context_type='application/json')
+@view_config(route_name='pdf', request_method='POST', content_type='application/json')
 def post_pdf_serivce_post(request):
     '''
     Handles POST request to /service/pdf

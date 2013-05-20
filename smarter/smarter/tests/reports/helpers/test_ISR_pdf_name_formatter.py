@@ -25,7 +25,7 @@ class Test(Unittest_with_smarter_sqlite):
     def test_ISR_pdf_directory_name(self):
         pdf_filename_formatter = ISR_pdf_name(studentGuid='61ec47de-e8b5-4e78-9beb-677c44dd9b50')
         dir_name = pdf_filename_formatter.generate_dirname()
-        self.assertEqual(dir_name, os.path.join('NY', '2012', '228', '242', '3', 'SUMMATIVE'))
+        self.assertEqual(dir_name, os.path.join('/', 'NY', '2012', '228', '242', '3', 'SUMMATIVE'))
 
     def test_ISR_pdf_directory_name_studentguid_not_exist(self):
         with self.assertRaises(NotFoundException):

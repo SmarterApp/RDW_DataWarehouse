@@ -7,6 +7,7 @@ from smarter.database.connector import SmarterDBConnection
 from sqlalchemy.sql.expression import and_, Select
 from edapi.exceptions import NotFoundException
 import os
+import pyramid
 
 
 class ISR_pdf_name:
@@ -15,6 +16,7 @@ class ISR_pdf_name:
         self.__asmt_type = asmt_type
         self.__result = None
         self.__queried = False
+        self.__pdf_report_base_dir = pyramid.threadlocal.get_current_registry().get('pdf_report_base_dir',"/")
 
     def generate_filename(self):
         '''
@@ -39,7 +41,7 @@ class ISR_pdf_name:
             asmt_grade = first_record['asmt_grade']
         else:
             raise NotFoundException("There are no results for student id {0}".format(self.__studentGuid))
-        dirname = os.path.join(state_code, asmt_period_year, district_guid, school_guid, asmt_grade, self.__asmt_type)
+        dirname = os.path.join(self.__pdf_report_base_dir, state_code, asmt_period_year, district_guid, school_guid, asmt_grade, self.__asmt_type)
         return dirname
 
     def __get_query_result(self):

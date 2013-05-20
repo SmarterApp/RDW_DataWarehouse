@@ -49,4 +49,3 @@ def get_pdf_file(path):
         with open(path, 'rb') as file:
             stream = file.read()
     return stream
-        

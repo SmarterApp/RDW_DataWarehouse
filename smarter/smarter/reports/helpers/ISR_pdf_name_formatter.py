@@ -16,7 +16,7 @@ class ISR_pdf_name:
         self.__asmt_type = asmt_type
         self.__result = None
         self.__queried = False
-        self.__pdf_report_base_dir = pyramid.threadlocal.get_current_registry().get('pdf.report_base_dir',"/")
+        self.__pdf_report_base_dir = pyramid.threadlocal.get_current_registry().get('pdf.report_base_dir', "/")
 
     def generate_filename(self):
         '''
@@ -43,6 +43,12 @@ class ISR_pdf_name:
             raise NotFoundException("There are no results for student id {0}".format(self.__studentGuid))
         dirname = os.path.join(self.__pdf_report_base_dir, state_code, asmt_period_year, district_guid, school_guid, asmt_grade, self.__asmt_type)
         return dirname
+
+    def generate_abslute_file_path(self):
+        '''
+        return abslute file path
+        '''
+        return os.path.join(self.generate_dirname(), self.generate_filename())
 
     def __get_query_result(self):
         if self.__queried is False:

@@ -16,6 +16,9 @@ class BaseRole(object):
     def get_context(self, guid):
         pass
 
+    def check_context(self, guid, student_guids):
+        pass
+
 
 def verify_context(fn):
     '''

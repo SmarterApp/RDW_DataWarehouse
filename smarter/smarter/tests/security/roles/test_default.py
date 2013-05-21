@@ -14,6 +14,10 @@ class TestDefaultContextSecurity(unittest.TestCase):
         clause = default_context.get_context('123')
         self.assertIsNone(clause)
 
+    def test_check_context(self):
+        default_context = DefaultRole("connection")
+        context = default_context.check_context('123', [])
+        self.assertTrue(context)
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

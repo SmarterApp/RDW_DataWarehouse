@@ -34,6 +34,41 @@ class TestTeacherContextSecurity(Unittest_with_smarter_sqlite):
             for result in results:
                 self.assertEqual(result[Constants.SECTION_GUID], '974')
 
+    def test_check_context_with_context(self):
+        with SmarterDBConnection() as connection:
+            guid = '963'
+            teacher = Teacher(connection)
+            student_guids = ['3efe8485-9c16-4381-ab78-692353104cce']
+
+            context = teacher.check_context(guid, student_guids)
+            self.assertTrue(context)
+
+    def test_check_context_with_no_context(self):
+        with SmarterDBConnection() as connection:
+            guid = '963'
+            teacher = Teacher(connection)
+            student_guids = ['dd']
+
+            context = teacher.check_context(guid, student_guids)
+            self.assertFalse(context)
+
+    def test_check_context_with_no_context_to_all_guids(self):
+        with SmarterDBConnection() as connection:
+            guid = '963'
+            teacher = Teacher(connection)
+            student_guids = ['dd', '3efe8485-9c16-4381-ab78-692353104cce']
+
+            context = teacher.check_context(guid, student_guids)
+            self.assertFalse(context)
+
+    def test_check_context_with_empty_context(self):
+        with SmarterDBConnection() as connection:
+            guid = '963'
+            teacher = Teacher(connection)
+            student_guids = []
+
+            context = teacher.check_context(guid, student_guids)
+            self.assertTrue(context)
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

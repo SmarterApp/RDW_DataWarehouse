@@ -21,3 +21,9 @@ class DefaultRole(BaseRole):
         no-op
         '''
         pass
+
+    def check_context(self, guid, student_guids):
+        '''
+        Has Context to resource
+        '''
+        return True

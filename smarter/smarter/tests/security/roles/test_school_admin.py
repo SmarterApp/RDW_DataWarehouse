@@ -34,6 +34,28 @@ class TestSchoolAdminContextSecurity(Unittest_with_smarter_sqlite):
             for result in results:
                 self.assertEqual(result[Constants.SCHOOL_GUID], '939')
 
+    def test_has_school_admin_context_with_context(self):
+        with SmarterDBConnection() as connection:
+            guid = '1023'
+            school_admin = SchoolAdmin(connection)
+            context = school_admin.check_context(guid, ['115f7b10-9e18-11e2-9e96-0800200c9a66'])
+            self.assertTrue(context)
+
+    def test_has_school_admin_context_with_no_context(self):
+        with SmarterDBConnection() as connection:
+            guid = '1023'
+            school_admin = SchoolAdmin(connection)
+            context = school_admin.check_context(guid, ['notyourstudent'])
+            self.assertFalse(context)
+
+    def test_has_school_school_context_with_some_invalid_guids(self):
+        with SmarterDBConnection() as connection:
+            guid = '1023'
+            school_admin = SchoolAdmin(connection)
+            context = school_admin.check_context(guid, ['115f7b10-9e18-11e2-9e96-0800200c9a66', 'notyourstudent'])
+            self.assertFalse(context)
+
+
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

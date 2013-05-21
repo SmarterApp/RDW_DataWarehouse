@@ -7,9 +7,7 @@ from pyramid.view import view_config
 from services.tasks.create_pdf import get_pdf
 from urllib.parse import urljoin
 from pyramid.response import Response
-from smarter.security.context import select_with_context
-from smarter.database.connector import SmarterDBConnection
-from smarter.reports.helpers.constants import Constants
+from smarter.security.context import check_context
 from edapi.exceptions import InvalidParameterError, ForbiddenError
 from edauth.security.utils import get_session_cookie
 import urllib.parse
@@ -17,7 +15,6 @@ import pyramid.threadlocal
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed, \
     EdApiHTTPForbiddenAccess, EdApiHTTPInternalServerError
 from services.exceptions import PdfGenerationError
-from sqlalchemy.sql.expression import and_
 from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_report_path_by_student_guid
 
 
@@ -84,7 +81,7 @@ def get_pdf_content(params):
     # get current session cookie and request for pdf
     (cookie_name, cookie_value) = get_session_cookie()
     celery_timeout = pyramid.threadlocal.get_current_registry().get('pdf.celery_timeout', 30)
-    celery_response = get_pdf.delay(cookie_value, url, file_name, cookie_name=cookie_name)
+    celery_response = get_pdf.delay(cookie_value, url, file_name, cookie_name=cookie_name)  # @UndefinedVariable
     pdf_stream = celery_response.get(timeout=celery_timeout)
 
     return Response(body=pdf_stream, content_type='application/pdf')
@@ -92,15 +89,8 @@ def get_pdf_content(params):
 
 def has_context_for_pdf_request(student_guid):
     '''
-    Validates that user has context to pdf (Individual student report)
+    Validates that user has context to student_guid
     '''
-    has_context = False
-    with SmarterDBConnection() as connection:
-        fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
-        query = select_with_context([fact_asmt_outcome.c.student_guid],
-                                    from_obj=[fact_asmt_outcome])
-        query = query.where(and_(fact_asmt_outcome.c.most_recent, fact_asmt_outcome.c.status == 'C', fact_asmt_outcome.c.student_guid == student_guid))
-        results = connection.get_result(query)
-    if results:
-        has_context = True
-    return has_context
+    if not type(student_guid) is list:
+        student_guid = [student_guid]
+    return check_context(student_guid)

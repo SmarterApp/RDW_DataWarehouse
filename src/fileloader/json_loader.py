@@ -20,6 +20,7 @@ DBDRIVER = "postgresql"
 def load_json(conf):
     '''
     Main method for loading json into the integration table
+    @param conf: The configuration dictionary
     '''
 
     json_dict = read_json_file(conf['json_file'])
@@ -75,6 +76,15 @@ def get_nested_data(location_list, json_dict):
 def load_to_table(data_dict, batch_id, db_host, db_name, db_user, db_port, db_password, int_table, int_schema):
     '''
     Load the table into the proper table
+    @param data_dict: the dictionary containing the data to be loaded
+    @param batch_id: the id for the batch
+    @param db_host: the database host
+    @param db_name: the name of the database
+    @param db_user: the username for the database
+    @param db_port: the port to connect to
+    @param db_password: the password to use
+    @param int_table: the name of the integration table
+    @param int_schema: the name of the integration schema
     '''
 
     conn, _engine = connect_db(db_user, db_password, db_host, db_name)

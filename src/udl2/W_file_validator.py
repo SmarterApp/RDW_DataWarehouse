@@ -22,5 +22,6 @@ def task(msg):
 
     sfv = SimpleFileValidator()
     error_list = sfv.execute(landing_zone_file_path, landing_zone_file_name, batch_sid)
+    # TODO: Add logic that checks error list and writes to a log/db/etc
 
     return msg

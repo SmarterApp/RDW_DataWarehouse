@@ -50,8 +50,16 @@ def create_inserting_into_staging_query(stg_asmt_outcome_columns, batch_id, appl
     return insert_sql
 
 
-def create_insert_assessment_into_integration_query(data_dict, batch_id, int_schema, int_table):
-    pass
+def create_insert_assessment_into_integration_query(header, data, batch_id, int_schema, int_table):
+    insert_sql = ['INSERT INTO "{int_schema}"."{int_table}"(',
+                  ','.join(header),
+                  ')',
+                  'VALUES (',
+                  ','.join(data),
+                  ')']
+    insert_sql = ''.join(insert_sql).format(int_schema=int_schema, int_table=int_table)
+    print(insert_sql)
+    return insert_sql
 
 
 def set_sequence_query(staging_table, start_seq):

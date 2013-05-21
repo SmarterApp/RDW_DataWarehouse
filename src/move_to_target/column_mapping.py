@@ -156,7 +156,7 @@ def get_column_mapping():
                 ('date_taken_year', 'EXTRACT(YEAR FROM date_taken)'),
                 ('asmt_score', 'score_asmt'),
                 ('asmt_score_range_min', 'score_asmt_min'),
-                ('asmt_score_range_max', 'score_asmt_max')
+                ('asmt_score_range_max', 'score_asmt_max'),
                 ('asmt_perf_lvl', 'score_perf_level'),
                 ('asmt_claim_1_score', 'score_claim_1'),
                 ('asmt_claim_1_score_range_min', 'score_claim_1_min'),

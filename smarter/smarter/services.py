@@ -51,6 +51,9 @@ def send_pdf_request(params):
         raise EdApiHTTPForbiddenAccess(e.msg)
     except PdfGenerationError as e:
         raise EdApiHTTPInternalServerError(e.msg)
+    except TimeoutError as e:
+        # if celery get task got timed out...
+        raise EdApiHTTPInternalServerError(e.msg)
 
     return response
 

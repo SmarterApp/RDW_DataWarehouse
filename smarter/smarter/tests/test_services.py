@@ -21,6 +21,7 @@ from services.celery import setup_celery
 import tempfile
 from pyramid.registry import Registry
 from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_report_path_by_student_guid
+from services.tasks.create_pdf import prepare_file_path
 
 
 class TestServices(Unittest_with_smarter_sqlite):
@@ -100,6 +101,7 @@ class TestServices(Unittest_with_smarter_sqlite):
         self.__request.cookies = {'edware': '123'}
         # prepare empty file
         pdf_file = generate_isr_report_path_by_student_guid(pdf_report_base_dir=self.__temp_dir, student_guid=studentGuid, asmt_type='SUMMATIVE')
+        prepare_file_path(pdf_file)
         with open(pdf_file, 'w') as file:
             file.write('%PDF-1.4')
         # Override the wkhtmltopdf command

@@ -30,15 +30,15 @@ def explode_data_to_target(conf):
 
 
 def explode_data_to_fact_table(conf, db_user_target, db_password_target, db_host_target, db_name_target, source_table, target_table, column_mapping, column_types):
+    pass
     # create db connection
-    conn = connect_db(db_user_target, db_password_target, db_host_target, db_name_target)
+    conn, _engine = connect_db(db_user_target, db_password_target, db_host_target, db_name_target)
 
     # get section_rec_id
     # get asmt_rec_id
     # get inst_hier_rec_id
 
     conn.close()
-    pass
 
 
 def explode_data_to_dim_table(conf, db_user, db_password, db_host, db_name, source_table, target_table, column_mapping, column_types):
@@ -46,7 +46,7 @@ def explode_data_to_dim_table(conf, db_user, db_password, db_host, db_name, sour
     Will use parameters passed in to create query with sqlalchemy
     '''
     # create db connection
-    conn = connect_db(db_user, db_password, db_host, db_name)
+    conn, _engine = connect_db(db_user, db_password, db_host, db_name)
 
     # create insertion query
     query = create_insert_query(conf, source_table, target_table, column_mapping, column_types)

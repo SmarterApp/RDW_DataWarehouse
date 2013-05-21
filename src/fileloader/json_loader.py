@@ -6,17 +6,25 @@ Created on May 16, 2013
 
 import argparse
 import json
+
 from sqlalchemy.engine import create_engine
+
+import fileloader.prepare_queries as queries
+from fileloader.file_loader import execute_queries
+
 
 DBDRIVER = "postgresql+pypostgresql"
 
 
 def load_json(conf):
-    ''' Main method for loading json into the integration table '''
+    '''
+    Main method for loading json into the integration table
+    '''
 
     json_dict = read_json_file(conf['json_file'])
     flattened_json = flatten_json_dict(json_dict, conf['mappings'])
-    load_to_table(flattened_json, conf['db_host'], conf['db_name'], conf['db_user'], conf['db_port'], conf['db_password'])
+    load_to_table(flattened_json, conf['batch_id'], conf['db_host'], conf['db_name'], conf['db_user'],
+                  conf['db_port'], conf['db_password'], conf['integration_table'], conf['integration_schema'], conf['start_seq'])
 
 
 def read_json_file(json_file):
@@ -63,10 +71,22 @@ def get_nested_data(location_list, json_dict):
     return value
 
 
-def load_to_table(data_dict, db_host, db_name, db_user, db_port, db_password):
-    ''' Load the table into the proper table '''
-    #print(data_dict)
-    print(json.dumps(data_dict, indent=4))
+def load_to_table(data_dict, batch_id, db_host, db_name, db_user, db_port, db_password, int_table, int_schema, start_seq):
+    '''
+    Load the table into the proper table
+    '''
+
+    conn, _engine = connect_db(db_user, db_password, db_host, db_name)
+    # create sequence name, use table_name and a random number combination
+
+    headers = list(data_dict.keys())
+    data = list(data_dict.values())
+    headers.insert(0, 'batch_id')
+    data.insert(0, str(conf['batch_id']))
+    insert_into_int_table = queries.create_insert_assessment_into_integration_query(headers, data, batch_id, int_schema, int_table)  # apply_rules, csv_table_columns, header_types, staging_schema, staging_table, csv_schema, csv_table, start_seq, seq_name)
+
+    # TODO: ececute the query
+#     execute_queries(conn, [insert_into_int_table], 'Exception in loading assessment data -- ')
 
 
 def connect_db(user, passwd, host, db_name):
@@ -74,9 +94,7 @@ def connect_db(user, passwd, host, db_name):
     Connect to database via sqlalchemy
     '''
 
-    # TODO:define conf_args content
     db_string = DBDRIVER + '://{db_user}:{db_password}@{db_host}/{db_name}'.format(db_user=user, db_password=passwd, db_host=host, db_name=db_name)
-    # print(db_string)
     engine = create_engine(db_string)
     db_connection = engine.connect()
     return db_connection, engine
@@ -127,14 +145,11 @@ if __name__ == '__main__':
     conf = {
             'json_file': args.source_json,
             'mappings': mapping,
-            'csv_table': 'csv_table_for_file_loader',
             'db_host': 'localhost',
             'db_port': '5432',
             'db_user': 'udl2',
             'db_name': 'udl2',
             'db_password': 'udl2abc1234',
-            'csv_schema': 'udl2',
-            'fdw_server': 'udl_import',
             'integration_schema': 'udl2',
             'integration_table': 'INT_SBAC_ASMT',
             'start_seq': 10,

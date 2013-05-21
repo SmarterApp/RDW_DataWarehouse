@@ -11,9 +11,10 @@ from sqlalchemy.engine import create_engine
 
 import fileloader.prepare_queries as queries
 from fileloader.file_loader import execute_queries
+from udl2_util.udl_mappings import get_json_to_asmt_tbl_mappings
 
 
-DBDRIVER = "postgresql+pypostgresql"
+DBDRIVER = "postgresql"
 
 
 def load_json(conf):
@@ -24,7 +25,7 @@ def load_json(conf):
     json_dict = read_json_file(conf['json_file'])
     flattened_json = flatten_json_dict(json_dict, conf['mappings'])
     load_to_table(flattened_json, conf['batch_id'], conf['db_host'], conf['db_name'], conf['db_user'],
-                  conf['db_port'], conf['db_password'], conf['integration_table'], conf['integration_schema'], conf['start_seq'])
+                  conf['db_port'], conf['db_password'], conf['integration_table'], conf['integration_schema'])
 
 
 def read_json_file(json_file):
@@ -71,7 +72,7 @@ def get_nested_data(location_list, json_dict):
     return value
 
 
-def load_to_table(data_dict, batch_id, db_host, db_name, db_user, db_port, db_password, int_table, int_schema, start_seq):
+def load_to_table(data_dict, batch_id, db_host, db_name, db_user, db_port, db_password, int_table, int_schema):
     '''
     Load the table into the proper table
     '''
@@ -106,40 +107,7 @@ if __name__ == '__main__':
     parser.add_argument('-s', dest='source_json', required=True, help="path to the source file")
     args = parser.parse_args()
 
-    mapping = {'asmt_guid': ['identification', 'guid'],
-               'asmt_type': ['identification', 'type'],
-               'asmt_period': ['identification', 'period'],
-               'asmt_period_year': ['identification', 'year'],
-               'asmt_version': ['identification', 'version'],
-               'asmt_subject': ['identification', 'subject'],
-               'asmt_claim_1_name': ['claims', 'claim_1', 'name'],
-               'asmt_claim_2_name': ['claims', 'claim_2', 'name'],
-               'asmt_claim_3_name': ['claims', 'claim_3', 'name'],
-               'asmt_claim_4_name': ['claims', 'claim_4', 'name'],
-               'asmt_perf_lvl_name_1': ['performance_levels', 'level_1', 'name'],
-               'asmt_perf_lvl_name_2': ['performance_levels', 'level_2', 'name'],
-               'asmt_perf_lvl_name_3': ['performance_levels', 'level_3', 'name'],
-               'asmt_perf_lvl_name_4': ['performance_levels', 'level_4', 'name'],
-               'asmt_perf_lvl_name_5': ['performance_levels', 'level_5', 'name'],
-               'asmt_score_min': ['overall', 'min_score'],
-               'asmt_score_max': ['overall', 'max_score'],
-               'asmt_claim_1_score_min': ['claims', 'claim_1', 'min_score'],
-               'asmt_claim_1_score_max': ['claims', 'claim_1', 'max_score'],
-               'asmt_claim_1_score_weight': ['claims', 'claim_1', 'weight'],
-               'asmt_claim_2_score_min': ['claims', 'claim_2', 'min_score'],
-               'asmt_claim_2_score_max': ['claims', 'claim_2', 'max_score'],
-               'asmt_claim_2_score_weight': ['claims', 'claim_2', 'weight'],
-               'asmt_claim_3_score_min': ['claims', 'claim_3', 'min_score'],
-               'asmt_claim_3_score_max': ['claims', 'claim_3', 'max_score'],
-               'asmt_claim_3_score_weight': ['claims', 'claim_3', 'weight'],
-               'asmt_claim_4_score_min': ['claims', 'claim_4', 'min_score'],
-               'asmt_claim_4_score_max': ['claims', 'claim_4', 'max_score'],
-               'asmt_claim_4_score_weight': ['claims', 'claim_4', 'weight'],
-               'asmt_cut_point_1': ['performance_levels', 'level_2', 'cut_point'],
-               'asmt_cut_point_2': ['performance_levels', 'level_3', 'cut_point'],
-               'asmt_cut_point_3': ['performance_levels', 'level_4', 'cut_point'],
-               'asmt_cut_point_4': ['performance_levels', 'level_5', 'cut_point']
-           }
+    mapping = get_json_to_asmt_tbl_mappings()
 
     # conf from file_loader
     conf = {
@@ -152,7 +120,6 @@ if __name__ == '__main__':
             'db_password': 'udl2abc1234',
             'integration_schema': 'udl2',
             'integration_table': 'INT_SBAC_ASMT',
-            'start_seq': 10,
             'batch_id': 100
     }
     load_json(conf)

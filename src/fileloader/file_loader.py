@@ -12,13 +12,16 @@ from udl2_util.file_util import extract_file_name
 DBDRIVER = "postgresql"
 
 
-def connect_db(conf_args):
+def connect_db(db_user, db_password, db_host, db_name):
     '''
     Connect to database via sqlalchemy
     '''
 
     # TODO:define conf_args content
-    db_string = DBDRIVER + '://{db_user}:{db_password}@{db_host}/{db_name}'.format(**conf_args)
+    db_string = DBDRIVER + '://{db_user}:{db_password}@{db_host}/{db_name}'.format(db_user=db_user,
+                                                                                   db_password=db_password,
+                                                                                   db_host=db_host,
+                                                                                   db_name=db_name)
     # print(db_string)
     engine = create_engine(db_string)
     db_connection = engine.connect()
@@ -134,7 +137,7 @@ def load_file(conf):
     print("I am the file loader, about to load file %s" % extract_file_name(conf['csv_file']))
 
     # connect to database
-    conn, engine = connect_db(conf)
+    conn, engine = connect_db(conf['db_user'], conf['db_password'], conf['db_host'], conf['db_name'])
 
     # check staging tables
     check_setup(conf['staging_table'], engine, conn)

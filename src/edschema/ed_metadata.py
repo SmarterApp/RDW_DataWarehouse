@@ -77,6 +77,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                      Column('from_date', String(8), nullable=False),
                      Column('to_date', String(8), nullable=True),
                      Column('most_recent', Boolean),
+                     Column('is_fake', Boolean, default=False, nullable=True),
                      )
 
     Index('dim_section_idx', sections.c.section_rec_id, unique=True)

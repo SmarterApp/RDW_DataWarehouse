@@ -19,6 +19,7 @@ __all__ = ['transform_to_metadata']
 JSONFILE = os.path.join(__location__, '..', 'datafiles', 'mappings.json')
 IDENTIFICATION = 'identification'
 ID = 'id'
+GUID = 'guid'
 OVERALL = 'overall'
 CLAIMS = 'claims'
 PERFORMANCE = 'performance_levels'
@@ -90,10 +91,10 @@ def generate_json(data_dict, mappings, output_path, filename_pattern):
             asmt_ord_dict[json_section] = create_list_for_section(mappings[json_section], data_dict)
 
     # write json file
-    filename = os.path.join(output_path, filename_pattern.format(asmt_ord_dict[IDENTIFICATION][ID]))
+    filename = os.path.join(output_path, filename_pattern.format(asmt_ord_dict[IDENTIFICATION][GUID]))
     write_json_file(asmt_ord_dict, filename)
 
-    return asmt_ord_dict[IDENTIFICATION][ID]
+    return asmt_ord_dict[IDENTIFICATION][GUID]
 
 
 def write_json_file(ordered_data, filename):
@@ -119,38 +120,17 @@ def create_list_for_section(section_dict, data_dict):
     @return: a list of OrderedDict elements that contain the proper data
     '''
 
-    res_list = []
+    res_dict = OrderedDict()
 
-    # first item will have a value that is a list of possible levels or claim numbers
-    key1 = list(section_dict.keys())[0]
-    num_list = section_dict[key1]
-
-    # loop through list and add vals
-    for num in num_list:
+    for num_key in section_dict:
         d = OrderedDict()
-        count = 0
 
-        # loop through keys in perf_lvl or claims
-        for key, col_name in section_dict.items():
-            # first item should be a number, either 'claim' or 'level'
-            if col_name == 'asmt_cut_point_{0}' and num == 1:
-                d[key] = data_dict['asmt_score_min']
-            elif col_name == 'asmt_cut_point_{0}':
-                d[key] = data_dict[col_name.format(num - 1)]
-            else:
-                d[key] = (num if count == 0 else data_dict[col_name.format(num)])
+        for key, col_name in section_dict[num_key].items():
+            d[key] = data_dict[col_name]
 
-            # some values may be blank, if so the perf_level or claim does not exist
-            if d[key] == '':
-                d = None
-                break
-            count += 1
+        res_dict[num_key] = d
 
-        # add dict to list if it is not empty
-        if d:
-            res_list.append(d)
-
-    return res_list
+    return res_dict
 
 
 def read_mapping_json():

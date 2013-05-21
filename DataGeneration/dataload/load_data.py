@@ -195,6 +195,15 @@ def copy_db_tables(tables, csvpath, schema, user, host, database, env):
 
     for table in tables:
         filename = os.path.join(csvpath, table + '.csv')
+
+        # Check that the csv exists
+        try:
+            with open(filename, 'r'):
+                pass
+        except IOError:
+            print("Skipping file load to '%s'. No CSV file found" % table)
+            continue
+
         copy_string = "\copy {schema}.{name} from {filename} USING DELIMITERS ',' CSV HEADER".format(schema=schema, name=table, filename=filename)
 
         start = time.time()
@@ -228,12 +237,12 @@ def load_data_main(csvdir, host, database, user, passwd, schema, port=5432, trun
     ordered_tables = get_table_order(host, database, user, passwd, schema, port)
 
     # convert the list of files to a set
-    fileset = set(csv_file_names)
+#     fileset = set(csv_file_names)
 
     # determine if any csv files are missing from the list of tables
-    missing_tables = set(ordered_tables) - fileset
-    if missing_tables:
-        raise AttributeError('The following table(s) are not present in one of the locations %s' % missing_tables)
+#     missing_tables = set(ordered_tables) - fileset
+#     if missing_tables:
+#         raise AttributeError('The following table(s) are not present in one of the locations %s' % missing_tables)
 
     # truncate tables
     if truncate:

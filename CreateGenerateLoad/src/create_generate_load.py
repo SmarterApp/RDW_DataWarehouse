@@ -12,10 +12,12 @@ import sys
 import inspect
 import subprocess
 
-DATA_INFO_MODULE = 'DataGeneration.dataload.datainfo'
-LOAD_DATA_MODULE = 'DataGeneration.dataload'
-DATA_GENERATION_MODULE = 'DataGeneration.src'
-HENSHIN_MODULE = 'Henshin.src'
+CMD_FOLDER = os.path.realpath(os.path.abspath(os.path.split(inspect.getfile(inspect.currentframe()))[0]))
+HENSHIN_FOLDER = CMD_FOLDER.replace(os.path.join('CreateGenerateLoad', 'src'), os.path.join('Henshin', 'src'))
+DATA_LOAD_FOLDER = CMD_FOLDER.replace(os.path.join('CreateGenerateLoad', 'src'), os.path.join('DataGeneration', 'dataload'))
+DATA_INFO_MODULE = 'datainfo.best_worst_results'
+LOAD_DATA_MODULE = 'load_data'
+HENSHIN_MODULE = 'henshin'
 
 
 def main(schema, database, host, user, passwd, port=5432, create=True, landing_zone=True, best_worst=True, config_file=None):
@@ -28,17 +30,18 @@ def main(schema, database, host, user, passwd, port=5432, create=True, landing_z
         create_schema(schema, database, host, user, passwd)
 
     print('Generating New Data')
-    generate_data(config_file)
+    csv_dir = generate_data(config_file)
 
     print('Loading New Data')
-    csv_dir = 'tbd'
     load_data(csv_dir, schema, database, host, user, passwd, port)
 
-    print('Transforming to landing zone')
-    transform_to_landing_zone(csv_dir, schema, database, host, user, passwd, port)
+    if landing_zone:
+        print('Transforming to landing zone')
+        transform_to_landing_zone(csv_dir, schema, database, host, user, passwd, port)
 
-    print('Getting Best and worst assessment performances')
-    get_data_info(schema, database, host, user, passwd, port)
+    if best_worst:
+        print('Getting Best and worst assessment performances')
+        get_data_info(schema, database, host, user, passwd, port)
 
     tot_time = time.time() - start_time
     print('All steps completed in %.2fs' % tot_time)
@@ -47,24 +50,60 @@ def main(schema, database, host, user, passwd, port=5432, create=True, landing_z
 def create_schema(schema_name, database, host, user, passwd):
     print('cloning edware repo to run the ed_schema code')
     folder = get_ed_schema_code()
-    ed_schema_file = os.path.join(folder, 'edware', 'edschema', 'edschema', 'ed_metadata.py')
-    system('python', ed_schema_file, '-s', schema_name, '-d', database, '--host', host, '-u', user, '-p', passwd)
+    ed_schema_file = os.path.join(folder, 'edschema', 'edschema', 'ed_metadata.py')
+    output = system('python', ed_schema_file, '-s', schema_name, '-d', database, '--host', host, '-u', user, '-p', passwd)
+    print(output.decode('UTF-8'))
 
 
 def generate_data(config_file=None):
-    pass
+    print('Generating Data')
+
+    gen_data_loc = os.path.join(CMD_FOLDER, '..', '..', 'DataGeneration', 'src', 'generate_data.py')
+    gen_data_output = os.path.join(CMD_FOLDER, '..', '..', 'DataGeneration', 'datafiles', 'csv')
+
+    if config_file:
+        output = system('python', gen_data_loc, '--config', config_file)
+    else:
+        output = system('python', gen_data_loc)
+
+    print(output.decode('UTF-8'))
+    print('Data Generation Complete')
+    return gen_data_output
 
 
 def load_data(csv_dir, schema, database, host, user, passwd, port):
-    pass
+    '''
+    Load data into schema
+    '''
+
+    load_data_loc = os.path.join(CMD_FOLDER, '..', '..', 'DataGeneration', 'dataload', 'load_data.py')
+
+    output = system('python', load_data_loc, '-c', csv_dir, '-d', database, '--host', host, '-u', user, '-t', schema, passwd)
+    print(output.decode('UTF-8'))
 
 
 def get_data_info(schema, database, host, user, passwd, port):
-    pass
+    '''
+    run the data info script
+    '''
+
+    data_info_path = os.path.join(CMD_FOLDER, '..', '..', 'DataGeneration', 'dataload', 'datainfo', 'best_worst_results.py')
+
+    output = system('python', data_info_path, '--password', passwd, '--schema', schema, '-s', host, '-d', database, '-u', user, '--csv', '--bestworst')
+    print(output.decode('UTF-8'))
 
 
 def transform_to_landing_zone(csv_dir, schema, database, host, user, passwd, port):
-    pass
+    '''
+    Call the Henshin script. Return the path to the output.
+    '''
+    henshin_path = os.path.join(CMD_FOLDER, '..', '..', 'Henshin', 'src', 'henshin.py')
+    output_path = os.path.join(CMD_FOLDER, 'henshin_out')
+    dim_asmt_path = os.path.join(csv_dir, 'dim_asmt.csv')
+
+    output = system('python', henshin_path, '-d', dim_asmt_path, '-o', output_path, '--password', passwd, '--schema', schema, '--host', host, '--database', database, '-u', user)
+    print(output.decode('UTF-8'))
+    return output_path
 
 
 def get_input_args():
@@ -77,7 +116,7 @@ def get_input_args():
     parser.add_argument('-c', '--create', action='store_true', help='create a new schema')
     parser.add_argument('-l', '--landing-zone', action='store_true', help='flag generate landing zone file format')
     parser.add_argument('-b', '--best-worst', action='store_true', help='flag to create csv files that show the best and worst performers in the data')
-    parser.add_argument('-s', '--schema', help='the name of the schema to use')
+    parser.add_argument('-s', '--schema', required=True, help='the name of the schema to use')
     parser.add_argument('-d', '--database', default='edware', help='the name of the database to connect to. Default: "edware"')
     parser.add_argument('-u', '--username', default='edware', help='the username for the database')
     parser.add_argument('-p', '--passwd', default='edware', help='the password to use for the database')
@@ -112,15 +151,4 @@ def system(*args, **kwargs):
 
 if __name__ == '__main__':
     input_args = get_input_args()
-    #main(input_args.schema, input_args.database, input_args.host, input_args.user, input_args.passwd, input_args.port, input_args.create, input_args.landing_zone, input_args.best_worst, input_args.data_gen_config_file)
-    cmd_folder = os.path.realpath(os.path.abspath(os.path.split(inspect.getfile(inspect.currentframe()))[0]))
-    cmd_folder = cmd_folder.replace('CreateGenerateLoad/src', '')
-    if cmd_folder not in sys.path:
-        sys.path.insert(0, cmd_folder)
-        load_data_module = import_module(LOAD_DATA_MODULE)
-        data_info_module = import_module(DATA_INFO_MODULE)
-        data_gen_module = import_module(DATA_GENERATION_MODULE, 'src.generate_data')
-        henshin_module = import_module(HENSHIN_MODULE)
-        data_gen_module.generate_data.generate_data_from_config_file('dg_types')
-        print(load_data_module, data_info_module, data_gen_module, henshin_module, sep='\n')
-    print(cmd_folder)
+    main(input_args.schema, input_args.database, input_args.host, input_args.username, input_args.passwd, input_args.port, input_args.create, input_args.landing_zone, input_args.best_worst, input_args.data_gen_config_file)

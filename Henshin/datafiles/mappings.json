@@ -1,7 +1,7 @@
 {
     "content": "assessment",
     "identification": {
-        "id": "asmt_rec_id",
+        "guid": "asmt_guid",
         "type": "asmt_type",
         "year": "asmt_period_year",
         "period": "asmt_period_year",
@@ -13,15 +13,52 @@
         "max_score": "asmt_score_max"
     },
     "performance_levels": {
-        "level": [1, 2, 3, 4, 5],
-        "name": "asmt_perf_lvl_name_{0}",
-        "cut_point": "asmt_cut_point_{0}"
+    	"level_1": {
+    		"name": "asmt_perf_lvl_name_1",
+    		"cut_point": "asmt_score_min"
+    	},
+    	"level_2": {
+    		"name": "asmt_perf_lvl_name_2",
+    		"cut_point": "asmt_cut_point_1"
+    	},
+    	"level_3": {
+    		"name": "asmt_perf_lvl_name_3",
+    		"cut_point": "asmt_cut_point_2"
+    	},
+    	"level_4": {
+    		"name": "asmt_perf_lvl_name_4",
+    		"cut_point": "asmt_cut_point_3"
+    	},
+    	"level_5": {
+    		"name": "asmt_perf_lvl_name_5",
+    		"cut_point": "asmt_cut_point_4"
+    	}
     },
     "claims": {
-        "claim": [1, 2, 3, 4],
-        "name": "asmt_claim_{0}_name",
-        "min_score": "asmt_claim_{0}_score_min",
-        "max_score": "asmt_claim_{0}_score_max",
-        "weight": "asmt_claim_{0}_score_weight"
+    	"claim_1": {
+    		"name": "asmt_claim_1_name",
+        	"min_score": "asmt_claim_1_score_min",
+        	"max_score": "asmt_claim_1_score_max",
+        	"weight": "asmt_claim_1_score_weight"
+    	},
+    	"claim_2": {
+    		"name": "asmt_claim_2_name",
+        	"min_score": "asmt_claim_2_score_min",
+        	"max_score": "asmt_claim_2_score_max",
+        	"weight": "asmt_claim_2_score_weight"
+    	},
+    	"claim_3": {
+    		"name": "asmt_claim_3_name",
+        	"min_score": "asmt_claim_3_score_min",
+        	"max_score": "asmt_claim_3_score_max",
+        	"weight": "asmt_claim_3_score_weight"
+    	},
+    	"claim_4": {
+    		"name": "asmt_claim_4_name",
+        	"min_score": "asmt_claim_4_score_min",
+        	"max_score": "asmt_claim_4_score_max",
+        	"weight": "asmt_claim_4_score_weight"
+    	}
     }
+    
 }

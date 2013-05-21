@@ -16,7 +16,7 @@ class DataValidationErrorCode(unittest.TestCase):
     def test_sourcefolder_errorcode(self):
         CSV_FOLDER = "csv_file11"
         JSON_FOLDER = "json_file"
-    # Test # 1 -- > Check folder does exists or not (True / False), if not return Error 3001.
+        # Test # 1 -- > Check folder does exists or not (True / False), if not return Error 3001.
         csv_folder = os.path.join(__location__, CSV_FOLDER)
         json_folder = os.path.isdir(os.path.join(__location__, JSON_FOLDER))
         validate_instance = csv_validator.CsvValidator().csv_validations[0]
@@ -81,8 +81,18 @@ class DataValidationErrorCode(unittest.TestCase):
         print("Passed: TC9: Validation Code for JSON file structure")
 
     def test_jsonFormate_errorcode(self):
-        ##Test#10 --> file formate
+        #Test#10 --> file formate
         validate_instance = json_validator.JsonValidator().validators[1]
         expected_error_code = validate_instance.execute(__location__, "METADATA_ASMT_3013.json", 123)
         assert expected_error_code[0] == "3013", "Validation Code for JSON file formate is incorrect"
         print("Passed: TC10: Validation Code for JSON file formate")
+
+    def test_multiple_errorcode(self):
+        #test#11 --> test multiple errors in one csv file (Error: 3008 & 3011)
+        multierror_list = ["3011", "3008"]
+        errorcode_list = []
+        expected_error_code = csv_validator.CsvValidator().execute(__location__, "realdata_3008_3011.csv", 123)
+        for i in range(len(expected_error_code)):
+            errorcode_list.append(expected_error_code[i][0])
+        assert multierror_list == errorcode_list, "Error codes are incorrect for duplicate headers and for data mismatch"
+        print("Passed: TC11: Multiple Validation code in single csv file")

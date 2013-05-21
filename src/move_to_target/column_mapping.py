@@ -5,6 +5,7 @@ from collections import OrderedDict
 # (target_table_name, source_table_name)
 # e.g. (target_table_in_star_schema, table_name_in_integration_tables)
 def get_target_tables_parallel():
+    # TODO: will replace STG to INT
     return dict([('dim_inst_hier', 'STG_SBAC_ASMT_OUTCOME'),
             ('dim_student', 'STG_SBAC_ASMT_OUTCOME'),
             ('dim_staff', 'STG_SBAC_ASMT_OUTCOME'),
@@ -16,6 +17,7 @@ def get_target_tables_parallel():
 # (target_table_name, source_table_name)
 # e.g. (target_table_in_star_schema, table_name_in_integration_tables)
 def get_target_table_callback():
+    # TODO: will replace STG to INT
     return ('fact_asmt_outcome', 'STG_SBAC_ASMT_OUTCOME')
 
 
@@ -96,6 +98,7 @@ def get_column_mapping():
                 ('gender', 'gender_student'),
                 ('email', 'email_student'),
                 ('dob', 'dob_student'),
+                # TODO: the fake value for 'section_guid' will be replaced by reading from conf
                 ('section_guid', '\' \''),
                 ('grade', 'grade_enrolled'),
                 ('state_code', 'code_state'),
@@ -112,6 +115,7 @@ def get_column_mapping():
                 ('first_name', 'name_staff_first'),
                 ('middle_name', 'name_staff_middle'),
                 ('last_name', 'name_staff_last'),
+                # TODO: the fake value for 'section_guid' will be replaced by reading from conf
                 ('section_guid', '\' \''),
                 ('hier_user_type', 'type_staff'),
                 ('state_code', 'code_state'),

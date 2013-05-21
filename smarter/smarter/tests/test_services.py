@@ -6,7 +6,7 @@ Created on May 17, 2013
 import unittest
 from pyramid.testing import DummyRequest
 from pyramid import testing
-from edapi.httpexceptions import EdApiHTTPPreconditionFailed,\
+from edapi.httpexceptions import EdApiHTTPPreconditionFailed, \
     EdApiHTTPForbiddenAccess
 from edapi.tests.test_views import DummyValueError
 from smarter.database.connector import SmarterDBConnection
@@ -14,9 +14,13 @@ from edauth.security.user import User
 from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite
 import services
 from pyramid.response import Response
-from smarter.services import post_pdf_service, get_pdf_service, send_pdf_request,\
+from smarter.services import post_pdf_service, get_pdf_service, send_pdf_request, \
     get_pdf_content, has_context_for_pdf_request
 from edapi.exceptions import InvalidParameterError, ForbiddenError
+from services.celery import setup_celery
+import tempfile
+from pyramid.registry import Registry
+from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_report_path_by_student_guid
 
 
 class TestServices(Unittest_with_smarter_sqlite):
@@ -24,7 +28,10 @@ class TestServices(Unittest_with_smarter_sqlite):
     def setUp(self):
         self.__request = DummyRequest()
         # Must set hook_zca to false to work with uniittest_with_sqlite
-        self.__config = testing.setUp(request=self.__request, hook_zca=False)
+        reg = Registry()
+        self.__temp_dir = tempfile.gettempdir()
+        reg['pdf.report_base_dir'] = self.__temp_dir
+        self.__config = testing.setUp(registry=reg, request=self.__request, hook_zca=False)
         with SmarterDBConnection() as connection:
             # Insert into user_mapping table
             user_mapping = connection.get_table('user_mapping')
@@ -34,6 +41,9 @@ class TestServices(Unittest_with_smarter_sqlite):
         dummy_user.set_roles(['TEACHER'])
         dummy_user.set_uid('272')
         self.__config.testing_securitypolicy(dummy_user)
+        # celery settings for UT
+        settings = {'celery.CELERY_ALWAYS_EAGER': True}
+        setup_celery(settings)
 
     def tearDown(self):
         self.__request = None
@@ -84,9 +94,14 @@ class TestServices(Unittest_with_smarter_sqlite):
         self.assertRaises(EdApiHTTPForbiddenAccess, get_pdf_service, self.__request)
 
     def test_get_pdf_valid_params(self):
-        self.__request.GET['studentGuid'] = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
+        studentGuid = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
+        self.__request.GET['studentGuid'] = studentGuid
         self.__request.matchdict['report'] = 'indivStudentReport.html'
         self.__request.cookies = {'edware': '123'}
+        # prepare empty file
+        pdf_file = generate_isr_report_path_by_student_guid(pdf_report_base_dir=self.__temp_dir, student_guid=studentGuid, asmt_type='SUMMATIVE')
+        with open(pdf_file, 'w') as file:
+            file.write('%PDF-1.4')
         # Override the wkhtmltopdf command
         services.tasks.create_pdf.pdf_procs = ['echo', 'dummy']
         response = get_pdf_service(self.__request)

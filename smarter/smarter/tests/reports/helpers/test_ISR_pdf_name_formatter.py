@@ -7,40 +7,25 @@ import unittest
 from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite
 from edapi.exceptions import NotFoundException
 import os
-from smarter.reports.helpers.ISR_pdf_name_formatter import ISR_pdf_name
+from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_report_path_by_student_guid, \
+    generate_isr_absolute_file_path_name
 
 
 class Test(Unittest_with_smarter_sqlite):
 
-    def test_ISR_pdf_filename(self):
-        pdf_filename_formatter = ISR_pdf_name(studentGuid='61ec47de-e8b5-4e78-9beb-677c44dd9b50')
-        file_name = pdf_filename_formatter.generate_filename()
-        self.assertEqual(file_name, "61ec47de-e8b5-4e78-9beb-677c44dd9b50")
+    def test_generate_isr_report_path_by_student_guid(self):
+        file_name = generate_isr_report_path_by_student_guid(pdf_report_base_dir='/', student_guid='61ec47de-e8b5-4e78-9beb-677c44dd9b50')
+        self.assertEqual(file_name, os.path.join('/', 'NY', '2012', '228', '242', '3', 'isr', 'SUMMATIVE', '61ec47de-e8b5-4e78-9beb-677c44dd9b50.pdf'))
 
-    def test_ISR_pdf_filename_studentguid_not_exist(self):
+    def test_generate_isr_report_path_by_student_guid_studentguid_not_exist(self):
         with self.assertRaises(NotFoundException):
-            pdf_filename_formatter = ISR_pdf_name(studentGuid='ff1c2b1a-c15d-11e2-ae11-3c07546832b4')
+            pdf_filename_formatter = generate_isr_report_path_by_student_guid(pdf_report_base_dir='/', student_guid='ff1c2b1a-c15d-11e2-ae11-3c07546832b4')
             pdf_filename_formatter.generate_filename()
 
-    def test_ISR_pdf_directory_name(self):
-        pdf_filename_formatter = ISR_pdf_name(studentGuid='61ec47de-e8b5-4e78-9beb-677c44dd9b50')
-        dir_name = pdf_filename_formatter.generate_dirname()
-        self.assertEqual(dir_name, os.path.join('/', 'NY', '2012', '228', '242', '3', 'SUMMATIVE'))
+    def test_generate_isr_absolute_file_path_name(self):
+        file_name = generate_isr_absolute_file_path_name(pdf_report_base_dir='/', state_code='FL', asmt_period_year='2013', district_guid='123', school_guid='456', asmt_grade='1', student_guid='1bc-def-ad', asmt_type='SUMMATIVE')
+        self.assertEqual(file_name, os.path.join('/', 'FL', '2013', '123', '456', '1', 'isr', 'SUMMATIVE', '1bc-def-ad.pdf'))
 
-    def test_ISR_pdf_directory_name_studentguid_not_exist(self):
-        with self.assertRaises(NotFoundException):
-            pdf_filename_formatter = ISR_pdf_name(studentGuid='ff1c2b1a-c15d-11e2-ae11-3c07546832b4')
-            pdf_filename_formatter.generate_dirname()
-
-    def test_ISR_pdf_absolute_file_path(self):
-        pdf_filename_formatter = ISR_pdf_name(studentGuid='61ec47de-e8b5-4e78-9beb-677c44dd9b50')
-        abs_file_path = pdf_filename_formatter.generate_absolute_file_path()
-        self.assertEqual(abs_file_path, os.path.join('/', 'NY', '2012', '228', '242', '3', 'SUMMATIVE', "61ec47de-e8b5-4e78-9beb-677c44dd9b50"))
-
-    def test_ISR_pdf_absolute_file_path_studentguid_not_exist(self):
-        with self.assertRaises(NotFoundException):
-            pdf_filename_formatter = ISR_pdf_name(studentGuid='ff1c2b1a-c15d-11e2-ae11-3c07546832b4')
-            pdf_filename_formatter.generate_absolute_file_path()
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']

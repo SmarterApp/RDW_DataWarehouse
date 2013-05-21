@@ -5,9 +5,12 @@ Created on May 14, 2013
 '''
 import unittest
 import services
-from services.tasks.create_pdf import generate_pdf, OK, FAIL, get_pdf
+from services.tasks.create_pdf import generate_pdf, OK, FAIL, \
+    prepare_file_path, get_pdf
 import platform
 import os
+import tempfile
+import shutil
 
 
 class TestCreatePdf(unittest.TestCase):
@@ -37,7 +40,7 @@ class TestCreatePdf(unittest.TestCase):
 
     def test_get_pdf_invalid_file(self):
         services.tasks.create_pdf.pdf_procs = ['echo', 'dummy']
-        file_name = '/tmp/i_dont_exist'
+        file_name = os.path.join(tempfile.gettempdir(), 'i_dont_exist')
         # We can't test this method properly
         self.assertRaises(FileNotFoundError, get_pdf, 'cookie', 'url', file_name)
 
@@ -46,6 +49,19 @@ class TestCreatePdf(unittest.TestCase):
         here = os.path.abspath(__file__)
         task = get_pdf('cookie', 'url', here)
         self.assertIsNotNone(task)
+
+    def test_create_directory(self):
+        file_name = os.path.join(tempfile.gettempdir(), 'a', 'b', 'c', 'd.pdf')
+        # make sure directory does not exist first.
+        shutil.rmtree(os.path.dirname(file_name), ignore_errors=True)
+        prepare_file_path(file_name)
+        self.assertTrue(os.access(os.path.dirname(file_name), os.R_OK))
+
+    def test_no_exception_when_dir_exist(self):
+        file_name = os.path.join(tempfile.gettempdir(), 'a', 'b', 'c', 'd.pdf')
+        prepare_file_path(file_name)
+        prepare_file_path(file_name)
+        self.assertTrue(True)
 
     def __get_cmd(self):
         '''
@@ -61,5 +77,5 @@ class TestCreatePdf(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

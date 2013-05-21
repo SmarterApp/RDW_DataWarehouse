@@ -31,7 +31,7 @@ def generate_pdf(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT,
         shell = False
         if platform.system() == 'Windows':
             shell = True
-
+        prepare_file_path(outputfile)
         return subprocess.call(pdf_procs + options + ['--cookie', cookie_name, cookie, url, outputfile], timeout=timeout, shell=shell)
     except subprocess.TimeoutExpired:
         # check output file, return 0 if file is created successfully
@@ -48,6 +48,7 @@ def get_pdf(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT, cook
     '''
     Reads pdf file if it exists, else it'll request to generate pdf.  Returns byte stream from generated pdf file
     '''
+    
     if not os.path.exists(outputfile):
         generate_task = generate_pdf(cookie, url, outputfile, options=pdf_defaults, timeout=timeout, cookie_name=cookie_name)
         if generate_task is FAIL:
@@ -56,3 +57,10 @@ def get_pdf(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT, cook
     with open(outputfile, 'rb') as file:
         stream = file.read()
     return stream
+
+
+
+def prepare_file_path(file_path):
+    if os.path.exists(os.path.dirname(file_path)) is not True:
+        os.makedirs(os.path.dirname(file_path), 0o700)
+    return file_path

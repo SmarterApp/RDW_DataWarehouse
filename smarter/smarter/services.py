@@ -10,14 +10,15 @@ from pyramid.response import Response
 from smarter.security.context import select_with_context
 from smarter.database.connector import SmarterDBConnection
 from smarter.reports.helpers.constants import Constants
-from sqlalchemy.sql.expression import and_
 from edapi.exceptions import InvalidParameterError, ForbiddenError
 from edauth.security.utils import get_session_cookie
 import urllib.parse
 import pyramid.threadlocal
-from edapi.httpexceptions import EdApiHTTPPreconditionFailed,\
+from edapi.httpexceptions import EdApiHTTPPreconditionFailed, \
     EdApiHTTPForbiddenAccess, EdApiHTTPInternalServerError
 from services.exceptions import PdfGenerationError
+from sqlalchemy.sql.expression import and_
+from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_report_path_by_student_guid
 
 
 @view_config(route_name='pdf', request_method='POST', content_type='application/json')
@@ -76,11 +77,15 @@ def get_pdf_content(params):
     encoded_params = urllib.parse.urlencode(params)
     url = url + "?%s" % encoded_params
 
-    file_name = '/tmp/test.pdf'
+    # get isr file path name
+    pdf_base_dir = pyramid.threadlocal.get_current_registry().get('pdf.report_base_dir', "/")
+    file_name = generate_isr_report_path_by_student_guid(pdf_report_base_dir=pdf_base_dir, student_guid=student_guid, asmt_type='SUMMATIVE')
 
     # get current session cookie and request for pdf
     (cookie_name, cookie_value) = get_session_cookie()
-    pdf_stream = get_pdf(cookie_value, url, file_name, cookie_name=cookie_name)
+    celery_timeout = pyramid.threadlocal.get_current_registry().get('pdf.celery_timeout', 30)
+    celery_response = get_pdf.delay(cookie_value, url, file_name, cookie_name=cookie_name)
+    pdf_stream = celery_response.get(timeout=celery_timeout)
 
     return Response(body=pdf_stream, content_type='application/pdf')
 

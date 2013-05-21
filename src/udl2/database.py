@@ -1,5 +1,5 @@
-from sqlalchemy.schema import MetaData, CreateSchema, CreateTable
-from sqlalchemy import Table, Column, Index
+from sqlalchemy.schema import MetaData, CreateSchema, CreateTable, CreateSequence
+from sqlalchemy import Table, Column, Index, Sequence
 from sqlalchemy import SmallInteger, String, Date, Boolean
 from sqlalchemy import ForeignKey
 from sqlalchemy.types import *
@@ -13,10 +13,14 @@ from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 
 
 #
-# We use a list of columns for table.
-# for each column ('column name', 'is a primary key', 'type', 'default value', 'Nullalbe', 'Comments')
+# UDL_METADATA stores all udl2 related database objects, which includes staging tables and table-independent sequeuces
+#
 
 UDL_METADATA = {
+    #
+    # We use a list of columns for table.
+    # for each column ('column name', 'is a primary key', 'type', 'default value', 'Nullalbe', 'Comments')
+    #
     'TABLES' : { 
         'UDL_BATCH': {'columns':
             [
@@ -143,7 +147,7 @@ UDL_METADATA = {
         },
         'ERR_LIST': {'columns' :
             [
-            ('record_sid', True, 'bigserial', '', False, "Sequential Auto-increment"),
+            ('record_sid', False, 'bigint', '', False, "Foreign Key references to staging tables"),
             ('batch_id', False, 'bigint', '', False, "Batch ID which caused the record insert"),
             ('err_code', False, 'bigint', '', True, "Error Code"),
             ('err_source', False, 'bigint', '', True, "Pipeline Stage that inserted this error."),
@@ -253,7 +257,9 @@ UDL_METADATA = {
         }
     },
     'SEQUENCES': {
-        'GLOBAL_REC_ID' : ('bigserial')
+        # This are for sequences that is not associated with any specific tables for our usage
+        # (sequance_name, start, increment, option, quote)
+        'GLOBAL_REC_SEQ' : ('GLOBAL_REC_SEQ', 1, 1, True, 'Global record id sequences. form 1 to 2^63 -1 on postgresql')
     }
 }
 
@@ -338,6 +344,25 @@ def drop_table(udl2_conf, schema, table_name):
     _execute_sql(udl2_conf, sql)
    
 
+
+def create_sequence(metadata, schema, seq_name):
+    sequence_ddl = UDL_METADATA['SEQUENCES'][seq_name]
+    sequence = Sequence(name = sequence_ddl[0],
+        start= sequence_ddl[1],
+        increment = sequence_ddl[2],
+        schema = schema,
+        optional = sequence_ddl[3],
+        quote = sequence_ddl[4],
+        metadata = metadata
+    )
+    return sequence
+
+
+def drop_sequence(udl2_conf, schema, seq_name):
+    sql = text("DROP SEQUENCE \"%s\".\"%s\" CASCADE" % (schema, seq_name))
+    _execute_sql(udl2_conf, sql)
+
+
 def create_udl2_schema(udl2_conf):
     sql = text("CREATE SCHEMA \"%s\"" % udl2_conf['udl2_db']['staging_schema'])
     _execute_sql(udl2_conf, sql)
@@ -371,12 +396,37 @@ def create_udl2_tables(udl2_conf):
             pass
       
     
+def create_udl2_sequence(udl2_conf):
+    engine = _create_engine(_get_db_url(udl2_conf))
+    udl2_metadata = MetaData()
+    udl2_sequences = []
+    
+    for sequence, definition in UDL_METADATA['SEQUENCES'].items():
+        udl2_sequences.append(create_sequence(udl2_metadata, udl2_conf['udl2_db']['staging_schema'], sequence))
+            
+    print("create sequences")
+
+    for seq in udl2_sequences:
+        try:
+            print('create sequence %s' % sequence)
+            _execute_sql(udl2_conf, CreateSequence(seq))
+        except Exception as e:
+            print(e)
+            pass
+    
     
 def drop_udl2_tables(udl2_conf):
     engine = _create_engine(_get_db_url(udl2_conf))
     for table, definition in UDL_METADATA['TABLES'].items():
         drop_table(udl2_conf, udl2_conf['udl2_db']['staging_schema'], table)
     
+    
+def drop_udl2_sequences(udl2_conf):
+    engine = _create_engine(_get_db_url(udl2_conf))
+    for seq, definition in UDL_METADATA['SEQUENCES'].items():
+        drop_sequence(udl2_conf, udl2_conf['udl2_db']['staging_schema'], seq)
+        
+        
 
 def create_foreign_data_wrapper_extension(udl2_conf):
     sql = "CREATE EXTENSION IF NOT EXISTS file_fdw WITH SCHEMA %s" % (udl2_conf['udl2_db']['csv_schema'])
@@ -407,9 +457,12 @@ def setup_udl2_schema(udl2_conf):
     create_foreign_data_wrapper_server(udl2_conf)
     print('create udl2 tables')
     create_udl2_tables(udl2_conf)
+    print('create udl2 sequences')
+    create_udl2_sequence(udl2_conf)
 
 
 def teardown_udl2_schema(udl2_conf):
+    drop_udl2_sequences(udl2_conf)
     drop_udl2_tables(udl2_conf)
     drop_foreign_data_wrapper_server(udl2_conf)
     drop_foreign_data_wrapper_extension(udl2_conf)

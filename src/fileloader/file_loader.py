@@ -3,7 +3,7 @@ import csv
 import fileloader.prepare_queries as queries
 import random
 import argparse
-from udl2.database import UDL_TABLE_METADATA
+from udl2.database import UDL_METADATA
 from sqlalchemy.exc import NoSuchTableError
 from sqlalchemy.engine import create_engine
 from udl2_util.file_util import extract_file_name
@@ -12,13 +12,16 @@ from udl2_util.file_util import extract_file_name
 DBDRIVER = "postgresql"
 
 
-def connect_db(conf_args):
+def connect_db(db_user, db_password, db_host, db_name):
     '''
     Connect to database via sqlalchemy
     '''
 
     # TODO:define conf_args content
-    db_string = DBDRIVER + '://{db_user}:{db_password}@{db_host}/{db_name}'.format(**conf_args)
+    db_string = DBDRIVER + '://{db_user}:{db_password}@{db_host}/{db_name}'.format(db_user=db_user,
+                                                                                   db_password=db_password,
+                                                                                   db_host=db_host,
+                                                                                   db_name=db_name)
     # print(db_string)
     engine = create_engine(db_string)
     db_connection = engine.connect()
@@ -80,7 +83,7 @@ def get_fields_map(conn, header_names, header_types, batch_id, csv_file, staging
     Getting field mapper, which maps the column in staging table, and columns in csv table
     """
     # pick the columns from the 2nd to the last 2nd
-    stg_asmt_outcome_columns = [column_info[0] for column_info in UDL_TABLE_METADATA['STG_SBAC_ASMT_OUTCOME']['columns'][1:-1]]
+    stg_asmt_outcome_columns = [column_info[0] for column_info in UDL_METADATA['TABLES']['STG_SBAC_ASMT_OUTCOME']['columns'][1:-1]]
     # map first column in staging table to batch_id, map second column in staging table to the expression of using sequence
     csv_table_columns = header_names[:]
     csv_table_columns.insert(0, str(batch_id))
@@ -134,7 +137,7 @@ def load_file(conf):
     print("I am the file loader, about to load file %s" % extract_file_name(conf['csv_file']))
 
     # connect to database
-    conn, engine = connect_db(conf)
+    conn, engine = connect_db(conf['db_user'], conf['db_password'], conf['db_host'], conf['db_name'])
 
     # check staging tables
     check_setup(conf['staging_table'], engine, conn)

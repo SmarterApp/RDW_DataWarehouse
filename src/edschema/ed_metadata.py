@@ -1,13 +1,8 @@
 """
-This is the star schema defined here: https://github.wgenhq.net/Ed-Ware-SBAC/edware/blob/master/edschema/edschema/ed_metadata.py
+This is the star schema defined here:
+    https://github.wgenhq.net/Ed-Ware-SBAC/edware/blob/master/edschema/edschema/ed_metadata.py
 We use this directly as a temporary solution.
 We will import it instead of copying it from the above url.
-Several updates are made:
-1. In table: dim_inst_hier, add column 'inst_hier_guid'
-2. In table: fact_asmt_outcome, replace column 'asmt_rec_id' to 'asmt_guid',
-                                replace column 'section_rec_id' to 'section_guid',
-                                replace column 'inst_hier_rec_id' to 'inst_hier_guid'
-
 """
 
 '''
@@ -31,7 +26,7 @@ Command line options are available form --help, but as a quick start:
 '''
 from sqlalchemy.schema import MetaData, CreateSchema
 from sqlalchemy import Table, Column, Index
-from sqlalchemy import SmallInteger, String, Boolean, Float
+from sqlalchemy import SmallInteger, String, Boolean, Float, BigInteger
 from sqlalchemy import ForeignKey
 import argparse
 from sqlalchemy.engine import create_engine
@@ -42,7 +37,7 @@ __version__ = 0.1
 __date__ = '2013-02-02'
 __updated__ = '2013-02-02'
 
-DBDRIVER = "postgresql"
+DBDRIVER = "postgresql+pypostgresql"
 DEBUG = 0
 VERBOSE = False
 
@@ -53,9 +48,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
 
     # Two-letter state - some countries have 3 or more, but two will do for US
     instit_hier = Table('dim_inst_hier', metadata,
-                        Column('inst_hier_rec_id', String(50), primary_key=True),
-                        # add 'inst_hier_guid'
-                        Column('inst_hier_guid', String(50), nullable=False),
+                        Column('inst_hier_rec_id', BigInteger, primary_key=True),
                         Column('state_name', String(32), nullable=False),
                         Column('state_code', String(2), nullable=False),
                         Column('district_guid', String(50), nullable=False),
@@ -72,7 +65,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
     Index('dim_inst_hier_codex', instit_hier.c.state_code, instit_hier.c.district_guid, instit_hier.c.school_guid, unique=False)
 
     sections = Table('dim_section', metadata,
-                     Column('section_rec_id', String(50), primary_key=True),
+                     Column('section_rec_id', BigInteger, primary_key=True),
                      Column('section_guid', String(50), nullable=False),
                      Column('section_name', String(256), nullable=False),
                      Column('grade', String(10), nullable=False),
@@ -84,6 +77,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                      Column('from_date', String(8), nullable=False),
                      Column('to_date', String(8), nullable=True),
                      Column('most_recent', Boolean),
+                     Column('is_fake', Boolean, default=False, nullable=True),
                      )
 
     Index('dim_section_idx', sections.c.section_rec_id, unique=True)
@@ -92,7 +86,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
 
     # NB! Figure out uniques in dim_student
     students = Table('dim_student', metadata,
-                     Column('student_rec_id', String(50), primary_key=True),
+                     Column('student_rec_id', BigInteger, primary_key=True),
                      Column('student_guid', String(50), nullable=False),
                      Column('first_name', String(256), nullable=False),
                      Column('middle_name', String(256), nullable=True),
@@ -128,7 +122,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
     Index('dim_external_user_student_student_x', external_user_student.c.external_user_guid, external_user_student.c.student_guid, unique=True)
 
     staff = Table('dim_staff', metadata,
-                  Column('staff_rec_id', String(50), primary_key=True),
+                  Column('staff_rec_id', BigInteger, primary_key=True),
                   Column('staff_guid', String(50), nullable=False),
                   Column('first_name', String(256), nullable=False),
                   Column('middle_name', String(256), nullable=True),
@@ -154,7 +148,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
     Index('user_mapping_idx', user_mapping.c.user_id, unique=True)
 
     assessment = Table('dim_asmt', metadata,
-                       Column('asmt_rec_id', String(50), primary_key=True),
+                       Column('asmt_rec_id', BigInteger, primary_key=True),
                        Column('asmt_guid', String(50), nullable=False),
                        Column('asmt_type', String(16), nullable=False),
                        Column('asmt_period', String(32), nullable=False),
@@ -198,21 +192,16 @@ def generate_ed_metadata(schema_name=None, bind=None):
     Index('dim_asmt_id_typex', assessment.c.asmt_rec_id, assessment.c.asmt_type, assessment.c.most_recent, unique=False)
 
     assessment_outcome = Table('fact_asmt_outcome', metadata,
-                               Column('asmnt_outcome_rec_id', String(50), primary_key=True),
-                               # Column('asmt_rec_id', String(50), ForeignKey(assessment.c.asmt_rec_id), nullable=False),
-                               # add 'asmt_guid'
-                               Column('asmt_guid', String(50), nullable=False),
+                               Column('asmnt_outcome_rec_id', BigInteger, primary_key=True),
+                               Column('asmt_rec_id', BigInteger, ForeignKey(assessment.c.asmt_rec_id), nullable=False),
                                Column('student_guid', String(50), nullable=False),
                                Column('teacher_guid', String(50), nullable=False),
                                Column('state_code', String(2), nullable=False),
                                Column('district_guid', String(50), nullable=False),
                                Column('school_guid', String(50), nullable=False),
                                Column('section_guid', String(50), nullable=False),
-                               # Column('inst_hier_rec_id', String(50), ForeignKey(instit_hier.c.inst_hier_rec_id), nullable=False),
-                               Column('inst_hier_guid', String(50), nullable=False),
-                               # Column('section_rec_id', String(50), ForeignKey(sections.c.section_rec_id), nullable=False),
-                               # add 'section_guid'
-                               Column('section_guid', String(50), nullable=False),
+                               Column('inst_hier_rec_id', BigInteger, ForeignKey(instit_hier.c.inst_hier_rec_id), nullable=False),
+                               Column('section_rec_id', BigInteger, ForeignKey(sections.c.section_rec_id), nullable=False),
                                Column('where_taken_id', String(50), nullable=True),  # external id if provided
                                Column('where_taken_name', String(256), primary_key=True),
                                Column('asmt_grade', String(10), nullable=False),

@@ -23,11 +23,11 @@ def task(msg):
 
     # get column mapping
     column_map = col_map.get_column_mapping()
-    fact_table = col_map.get_target_table_callback()[0]
-    source_table_for_fact_table = col_map.get_target_table_callback()[1]
+    fact_table, source_table_for_fact_table = col_map.get_target_table_callback()
+
     # get column types
     column_types = get_table_column_types(conf, fact_table, list(column_map[fact_table].keys()))
-    print("############", column_types)
+
     # reference: http://docs.celeryproject.org/en/master/userguide/canvas.html#chords
     # define callback
     callback = explode_data_to_fact_table_task.s(conf=conf, source_table=source_table_for_fact_table, fact_table=fact_table, column_map=column_map[fact_table], column_types=column_types)

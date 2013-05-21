@@ -29,11 +29,15 @@ def explode_data_to_target(conf):
     conn.close()
 
 
-def explode_data_to_fact_table(conf, db_user, db_password, db_host, db_name, source_table, target_table, column_mapping, column_types):
+def explode_data_to_fact_table(conf, db_user_target, db_password_target, db_host_target, db_name_target, source_table, target_table, column_mapping, column_types):
     # create db connection
+    conn = connect_db(db_user_target, db_password_target, db_host_target, db_name_target)
+
     # get section_rec_id
     # get asmt_rec_id
     # get inst_hier_rec_id
+
+    conn.close()
     pass
 
 
@@ -57,7 +61,7 @@ def create_insert_query(conf, source_table, target_table, column_mapping, column
     insert_sql = ["SELECT dblink_exec(\'dbname={db_name_target} user={db_user_target} password={db_password_target}\',"
              "\'INSERT INTO \"{target_schema}\".\"{target_table}\"(",
              ",".join(list(column_mapping.keys())),
-             ")  SELECT * FROM dblink(\''dbname={db_name} user={db_user} password={db_password}\'', \''SELECT ",
+             ")  SELECT * FROM dblink(\''dbname={db_name} user={db_user} password={db_password}\'', \''SELECT DISTINCT ",
              ",".join(value.replace("'", "''''") for value in list(column_mapping.values())),
              " FROM \"{source_schema}\".\"{source_table}\" WHERE batch_id={batch_id}\'') AS t(",
              ",".join(list(column_types.values())),

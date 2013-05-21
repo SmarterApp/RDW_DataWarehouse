@@ -7,7 +7,7 @@ import unittest
 from pyramid.testing import DummyRequest
 from pyramid import testing
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed,\
-    EdApiHTTPForbiddenAccess, EdApiHTTPInternalServerError
+    EdApiHTTPForbiddenAccess
 from edapi.tests.test_views import DummyValueError
 from smarter.database.connector import SmarterDBConnection
 from edauth.security.user import User
@@ -67,7 +67,6 @@ class TestServices(Unittest_with_smarter_sqlite):
         services.tasks.create_pdf.pdf_procs = ['echo', 'dummy']
         response = post_pdf_service(self.__request)
         self.assertIsInstance(response, Response)
-        # TODO need more validation
         self.assertIsNotNone(response.body)
         self.assertEqual(response.content_type, 'application/pdf')
 
@@ -101,7 +100,6 @@ class TestServices(Unittest_with_smarter_sqlite):
         params['dummy'] = 'dummy'
         self.__request.matchdict['report'] = 'indivStudentReport.html'
         self.__request.cookies = {'edware': '123'}
-        # Override the wkhtmltopdf command with a command that fails
         services.tasks.create_pdf.pdf_procs = ['echo', 'dummy']
         response = send_pdf_request(params)
         self.assertIsInstance(response, Response)

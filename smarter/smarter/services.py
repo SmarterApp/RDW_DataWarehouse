@@ -23,7 +23,7 @@ from services.exceptions import PdfGenerationError
 @view_config(route_name='pdf', request_method='POST', content_type='application/json')
 def post_pdf_service(request):
     '''
-    Handles POST request to /service/pdf
+    Handles POST request to /services/pdf
     '''
     try:
         params = request.json_body
@@ -36,7 +36,7 @@ def post_pdf_service(request):
 @view_config(route_name='pdf', request_method='GET')
 def get_pdf_service(request):
     '''
-    Handles GET request to /service/pdf
+    Handles GET request to /services/pdf
     '''
     return send_pdf_request(request.GET)
 
@@ -76,10 +76,9 @@ def get_pdf_content(params):
     encoded_params = urllib.parse.urlencode(params)
     url = url + "?%s" % encoded_params
 
-    # check if pdf_stream is in file system
     file_name = '/tmp/test.pdf'
 
-    # read pdf file
+    # get current session cookie and request for pdf
     (cookie_name, cookie_value) = get_session_cookie()
     pdf_stream = get_pdf(cookie_value, url, file_name, cookie_name=cookie_name)
 

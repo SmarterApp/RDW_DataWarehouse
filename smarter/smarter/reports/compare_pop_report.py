@@ -79,7 +79,7 @@ to manage cache efficiently, we needed to separate three reports
 '''
 
 
-@cache_region('report')
+@cache_region('public.data')
 def get_state_view_report(params):
     '''
     state view report

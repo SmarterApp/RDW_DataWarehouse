@@ -22,7 +22,8 @@ requires = [
     'psycopg2',
     'pyramid_exclog',
     'pyyaml',
-    'services']
+    'services',
+    'python3-memcached']
 
 
 setup(name='smarter',

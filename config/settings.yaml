@@ -19,9 +19,10 @@ common:
 
     # pyramid_beaker configuration
     cache:
-      regions: report
-      type: memory
+      regions: public.data
+      type: ext:memcached
       expire: 3600
+      lock_dir: /tmp/memcache
     
     # Database
     edware:
@@ -318,6 +319,10 @@ localOpenAM:
 
 development:
   '[app:main]':
+    cache:
+      regions: public.data
+      type: memory
+      expire: 3600
     # Celery config
     celery:
       celery_always_eager: true
@@ -390,4 +395,5 @@ jenkins_dev:
         idp_server_logout_url: 'http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp'
         name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
     mode: test
+    cache.url: edwappsrv1.poc.dum.edwdc.net:11211;edwappsrv2.poc.dum.edwdc.net:11211
 

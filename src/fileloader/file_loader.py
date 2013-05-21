@@ -3,7 +3,7 @@ import csv
 import fileloader.prepare_queries as queries
 import random
 import argparse
-from udl2.database import UDL_TABLE_METADATA
+from udl2.database import UDL_METADATA
 from sqlalchemy.exc import NoSuchTableError
 from sqlalchemy.engine import create_engine
 from udl2_util.file_util import extract_file_name
@@ -80,7 +80,7 @@ def get_fields_map(conn, header_names, header_types, batch_id, csv_file, staging
     Getting field mapper, which maps the column in staging table, and columns in csv table
     """
     # pick the columns from the 2nd to the last 2nd
-    stg_asmt_outcome_columns = [column_info[0] for column_info in UDL_TABLE_METADATA['STG_SBAC_ASMT_OUTCOME']['columns'][1:-1]]
+    stg_asmt_outcome_columns = [column_info[0] for column_info in UDL_METADATA['TABLES']['STG_SBAC_ASMT_OUTCOME']['columns'][1:-1]]
     # map first column in staging table to batch_id, map second column in staging table to the expression of using sequence
     csv_table_columns = header_names[:]
     csv_table_columns.insert(0, str(batch_id))

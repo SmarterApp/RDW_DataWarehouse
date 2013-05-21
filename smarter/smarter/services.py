@@ -13,9 +13,13 @@ from edauth.security.utils import get_session_cookie
 import urllib.parse
 import pyramid.threadlocal
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed, \
-    EdApiHTTPForbiddenAccess, EdApiHTTPInternalServerError
+    EdApiHTTPForbiddenAccess, EdApiHTTPInternalServerError, EdApiHTTPNotFound
 from services.exceptions import PdfGenerationError
 from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_report_path_by_student_guid
+from smarter.reports.helpers.constants import Constants
+
+
+KNOWN_REPORTS = ['indivstudentreport.html']
 
 
 @view_config(route_name='pdf', request_method='POST', content_type='application/json')
@@ -43,6 +47,10 @@ def send_pdf_request(params):
     '''
     Requests for pdf content, throws http exceptions when error occurs
     '''
+    report = pyramid.threadlocal.get_current_request().matchdict['report'].lower()
+    if report not in KNOWN_REPORTS:
+        raise EdApiHTTPNotFound("Not Found")
+
     try:
         response = get_pdf_content(params)
     except InvalidParameterError as e:
@@ -79,7 +87,7 @@ def get_pdf_content(params):
 
     # get isr file path name
     pdf_base_dir = pyramid.threadlocal.get_current_registry().get('pdf.report_base_dir', "/tmp")
-    file_name = generate_isr_report_path_by_student_guid(pdf_report_base_dir=pdf_base_dir, student_guid=student_guid, asmt_type='SUMMATIVE')
+    file_name = generate_isr_report_path_by_student_guid(pdf_report_base_dir=pdf_base_dir, student_guid=student_guid, asmt_type=Constants.SUMMATIVE)
 
     # get current session cookie and request for pdf
     (cookie_name, cookie_value) = get_session_cookie()
@@ -94,6 +102,6 @@ def has_context_for_pdf_request(student_guid):
     '''
     Validates that user has context to student_guid
     '''
-    if not type(student_guid) is list:
+    if type(student_guid) is not list:
         student_guid = [student_guid]
     return check_context(student_guid)

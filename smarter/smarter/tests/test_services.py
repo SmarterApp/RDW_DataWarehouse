@@ -7,7 +7,7 @@ import unittest
 from pyramid.testing import DummyRequest
 from pyramid import testing
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed, \
-    EdApiHTTPForbiddenAccess
+    EdApiHTTPForbiddenAccess, EdApiHTTPNotFound
 from edapi.tests.test_views import DummyValueError
 from smarter.database.connector import SmarterDBConnection
 from edauth.security.user import User
@@ -44,6 +44,7 @@ class TestServices(Unittest_with_smarter_sqlite):
         self.__config.testing_securitypolicy(dummy_user)
         # celery settings for UT
         settings = {'celery.CELERY_ALWAYS_EAGER': True}
+        self.__request.matchdict['report'] = 'indivStudentReport.html'
         setup_celery(settings)
 
     def tearDown(self):
@@ -72,7 +73,6 @@ class TestServices(Unittest_with_smarter_sqlite):
 
     def test_post_pdf_service_post_valid_payload(self):
         self.__request.json_body = {'studentGuid': 'a5ddfe12-740d-4487-9179-de70f6ac33be'}
-        self.__request.matchdict['report'] = 'indivStudentReport.html'
         self.__request.cookies = {'edware': '123'}
         # Override the wkhtmltopdf command
         services.tasks.create_pdf.pdf_procs = ['echo', 'dummy']
@@ -85,12 +85,18 @@ class TestServices(Unittest_with_smarter_sqlite):
         self.__request.GET = {}
         self.assertRaises(EdApiHTTPPreconditionFailed, get_pdf_service, self.__request)
 
+    def test_get_pdf_service_invalid_report_name(self):
+        self.__request.GET = {}
+        self.__request.matchdict['report'] = 'newReport'
+        self.assertRaises(EdApiHTTPNotFound, get_pdf_service, self.__request)
+
     def test_get_pdf_service_no_context(self):
         self.__request.GET = {'studentGuid': 'a016a4c1-5aca-4146-a85b-ed1172a01a4d'}
         dummy_user = User()
         dummy_user.set_roles(['TEACHER'])
         dummy_user.set_uid('1020')
         self.__config.testing_securitypolicy(dummy_user)
+        self.__request.matchdict['report'] = 'indivStudentReport.html'
 
         self.assertRaises(EdApiHTTPForbiddenAccess, get_pdf_service, self.__request)
 

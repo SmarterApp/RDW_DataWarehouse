@@ -5,7 +5,7 @@ Created on May 14, 2013
 '''
 import unittest
 import services
-from services.tasks.create_pdf import generate_pdf, OK, FAIL, get_pdf_file
+from services.tasks.create_pdf import generate_pdf, OK, FAIL, get_pdf
 import platform
 import os
 
@@ -39,12 +39,12 @@ class TestCreatePdf(unittest.TestCase):
         services.tasks.create_pdf.pdf_procs = ['echo', 'dummy']
         file_name = '/tmp/i_dont_exist'
         # We can't test this method properly
-        self.assertRaises(FileNotFoundError, get_pdf_file, 'cookie', 'url', file_name)
+        self.assertRaises(FileNotFoundError, get_pdf, 'cookie', 'url', file_name)
 
     def test_get_pdf_valid_file(self):
         services.tasks.create_pdf.pdf_procs = ['echo', 'dummy']
         here = os.path.abspath(__file__)
-        task = get_pdf_file('cookie', 'url', here)
+        task = get_pdf('cookie', 'url', here)
         self.assertIsNotNone(task)
 
     def __get_cmd(self):

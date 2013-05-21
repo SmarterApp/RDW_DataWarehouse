@@ -4,7 +4,7 @@ Created on May 17, 2013
 @author: dip
 '''
 from pyramid.view import view_config
-from services.tasks.create_pdf import get_pdf_file
+from services.tasks.create_pdf import get_pdf
 from urllib.parse import urljoin
 from pyramid.response import Response
 from smarter.security.context import select_with_context
@@ -68,7 +68,7 @@ def get_pdf_content(params):
     if not has_context_for_pdf_request(student_guid):
         raise ForbiddenError('Access Denied')
 
-    report = pyramid.threadlocal.get_current_request().matchdict['report'].lower()
+    report = pyramid.threadlocal.get_current_request().matchdict['report']
 
     url = urljoin(pyramid.threadlocal.get_current_request().application_url, '/assets/html/' + report)
 
@@ -81,7 +81,7 @@ def get_pdf_content(params):
 
     # read pdf file
     (cookie_name, cookie_value) = get_session_cookie()
-    pdf_stream = get_pdf_file(cookie_value, url, file_name, cookie_name=cookie_name)
+    pdf_stream = get_pdf(cookie_value, url, file_name, cookie_name=cookie_name)
 
     return Response(body=pdf_stream, content_type='application/pdf')
 
@@ -93,10 +93,8 @@ def has_context_for_pdf_request(student_guid):
     has_context = False
     with SmarterDBConnection() as connection:
         fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
-        dim_student = connection.get_table(Constants.DIM_STUDENT)
-        query = select_with_context([dim_student.c.student_guid],
-                                    from_obj=[fact_asmt_outcome
-                                              .join(dim_student, (fact_asmt_outcome.c.student_guid == dim_student.c.student_guid))])
+        query = select_with_context([fact_asmt_outcome.c.student_guid],
+                                    from_obj=[fact_asmt_outcome])
         query = query.where(and_(fact_asmt_outcome.c.most_recent, fact_asmt_outcome.c.status == 'C', fact_asmt_outcome.c.student_guid == student_guid))
         results = connection.get_result(query)
     if results:

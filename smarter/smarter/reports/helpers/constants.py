@@ -59,3 +59,4 @@ class Constants():
     PARAMS = 'params'
     GRADE = 'Grade'
     DISPLAY_LEVEL = 'display_level'
+    ASMT_PERIOD_YEAR = 'asmt_period_year'

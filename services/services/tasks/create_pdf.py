@@ -63,4 +63,3 @@ def get_pdf(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT, cook
 def prepare_file_path(file_path):
     if os.path.exists(os.path.dirname(file_path)) is not True:
         os.makedirs(os.path.dirname(file_path), 0o700)
-    return file_path

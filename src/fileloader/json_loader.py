@@ -25,7 +25,7 @@ def load_json(conf):
     json_dict = read_json_file(conf['json_file'])
     flattened_json = flatten_json_dict(json_dict, conf['mappings'])
     load_to_table(flattened_json, conf['batch_id'], conf['db_host'], conf['db_name'], conf['db_user'], conf['db_port'],
-                  conf['db_password'], conf['integration_table'], conf['integration_schema'], conf['seq_name'])
+                  conf['db_password'], conf['integration_table'], conf['integration_schema'])
 
 
 def read_json_file(json_file):
@@ -72,7 +72,7 @@ def get_nested_data(location_list, json_dict):
     return value
 
 
-def load_to_table(data_dict, batch_id, db_host, db_name, db_user, db_port, db_password, int_table, int_schema, seq_name):
+def load_to_table(data_dict, batch_id, db_host, db_name, db_user, db_port, db_password, int_table, int_schema):
     '''
     Load the table into the proper table
     @param data_dict: the dictionary containing the data to be loaded
@@ -84,7 +84,6 @@ def load_to_table(data_dict, batch_id, db_host, db_name, db_user, db_port, db_pa
     @param db_password: the password to use
     @param int_table: the name of the integration table
     @param int_schema: the name of the integration schema
-    @param seq_name: The name of the sequence to use when inserting rows
     '''
 
     # Create sqlalchemy connection and get table information from sqlalchemy
@@ -143,7 +142,6 @@ if __name__ == '__main__':
             'db_password': 'udl2abc1234',
             'integration_schema': 'udl2',
             'integration_table': 'INT_SBAC_ASMT',
-            'seq_name': 'GLOBAL_REC_SEQ',
             'batch_id': 100
     }
     start_time = time.time()

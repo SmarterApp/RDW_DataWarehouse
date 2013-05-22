@@ -15,9 +15,15 @@ import shutil
 
 class TestCreatePdf(unittest.TestCase):
 
+    def setUp(self):
+        self.__temp_dir = tempfile.mkdtemp()
+
+    def tearDown(self):
+        shutil.rmtree(self.__temp_dir, ignore_errors=True)
+
     def test_generate_pdf_success_cmd(self):
         services.tasks.create_pdf.pdf_procs = ['echo', 'dummy']
-        file_name = os.path.join(tempfile.gettempdir(), 'b', 'd.pdf')
+        file_name = os.path.join(self.__temp_dir, 'b', 'd.pdf')
         task = generate_pdf('cookie', 'url', file_name)
         self.assertEqual(task, OK)
 
@@ -41,7 +47,7 @@ class TestCreatePdf(unittest.TestCase):
 
     def test_get_pdf_invalid_file(self):
         services.tasks.create_pdf.pdf_procs = ['echo', 'dummy']
-        file_name = os.path.join(tempfile.gettempdir(), 'i_dont_exist')
+        file_name = os.path.join(self.__temp_dir, 'i_dont_exist')
         # We can't test this method properly
         self.assertRaises(FileNotFoundError, get_pdf, 'cookie', 'url', file_name)
 
@@ -52,14 +58,14 @@ class TestCreatePdf(unittest.TestCase):
         self.assertIsNotNone(task)
 
     def test_create_directory(self):
-        file_name = os.path.join(tempfile.gettempdir(), 'a', 'b', 'c', 'd.pdf')
+        file_name = os.path.join(self.__temp_dir, 'a', 'b', 'c', 'd.pdf')
         # make sure directory does not exist first.
         shutil.rmtree(os.path.dirname(file_name), ignore_errors=True)
         prepare_file_path(file_name)
         self.assertTrue(os.access(os.path.dirname(file_name), os.R_OK))
 
     def test_no_exception_when_dir_exist(self):
-        file_name = os.path.join(tempfile.gettempdir(), 'a', 'b', 'c', 'd.pdf')
+        file_name = os.path.join(self.__temp_dir, 'a', 'b', 'c', 'd.pdf')
         prepare_file_path(file_name)
         prepare_file_path(file_name)
         self.assertTrue(True)

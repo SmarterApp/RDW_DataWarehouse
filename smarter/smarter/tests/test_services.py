@@ -32,7 +32,7 @@ class TestServices(Unittest_with_smarter_sqlite):
         self.__request = DummyRequest()
         # Must set hook_zca to false to work with uniittest_with_sqlite
         reg = Registry()
-        self.__temp_dir = tempfile.gettempdir()
+        self.__temp_dir = tempfile.mkdtemp()
         reg['pdf.report_base_dir'] = self.__temp_dir
         self.__config = testing.setUp(registry=reg, request=self.__request, hook_zca=False)
         with SmarterDBConnection() as connection:
@@ -50,6 +50,7 @@ class TestServices(Unittest_with_smarter_sqlite):
         setup_celery(settings)
 
     def tearDown(self):
+        shutil.rmtree(self.__temp_dir, ignore_errors=True)
         self.__request = None
         testing.tearDown()
         # delete user_mapping entries
@@ -74,10 +75,16 @@ class TestServices(Unittest_with_smarter_sqlite):
         self.assertRaises(EdApiHTTPForbiddenAccess, post_pdf_service, self.__request)
 
     def test_post_pdf_service_post_valid_payload(self):
-        self.__request.json_body = {'studentGuid': 'a5ddfe12-740d-4487-9179-de70f6ac33be'}
+        studentGuid='a5ddfe12-740d-4487-9179-de70f6ac33be'
+        self.__request.json_body = {'studentGuid': studentGuid}
         self.__request.cookies = {'edware': '123'}
         # Override the wkhtmltopdf command
         services.tasks.create_pdf.pdf_procs = ['echo', 'dummy']
+        # prepare empty file
+        pdf_file = generate_isr_report_path_by_student_guid(pdf_report_base_dir=self.__temp_dir, student_guid=studentGuid, asmt_type='SUMMATIVE')
+        prepare_file_path(pdf_file)
+        with open(pdf_file, 'w') as file:
+            file.write('%PDF-1.4')
         response = post_pdf_service(self.__request)
         self.assertIsInstance(response, Response)
         self.assertIsNotNone(response.body)
@@ -120,12 +127,18 @@ class TestServices(Unittest_with_smarter_sqlite):
         self.assertEqual(response.content_type, 'application/pdf')
 
     def test_send_pdf_request(self):
+        studentGuid='a5ddfe12-740d-4487-9179-de70f6ac33be'
         params = {}
-        params['studentGuid'] = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
+        params['studentGuid'] = studentGuid
         params['dummy'] = 'dummy'
         self.__request.matchdict['report'] = 'indivStudentReport.html'
         self.__request.cookies = {'edware': '123'}
         services.tasks.create_pdf.pdf_procs = ['echo', 'dummy']
+        # prepare empty file
+        pdf_file = generate_isr_report_path_by_student_guid(pdf_report_base_dir=self.__temp_dir, student_guid=studentGuid, asmt_type='SUMMATIVE')
+        prepare_file_path(pdf_file)
+        with open(pdf_file, 'w') as file:
+            file.write('%PDF-1.4')
         response = send_pdf_request(params)
         self.assertIsInstance(response, Response)
         self.assertEqual(response.content_type, 'application/pdf')

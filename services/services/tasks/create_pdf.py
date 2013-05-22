@@ -48,7 +48,7 @@ def get_pdf(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT, cook
     '''
     Reads pdf file if it exists, else it'll request to generate pdf.  Returns byte stream from generated pdf file
     '''
-    
+
     if not os.path.exists(outputfile):
         generate_task = generate_pdf(cookie, url, outputfile, options=pdf_defaults, timeout=timeout, cookie_name=cookie_name)
         if generate_task is FAIL:
@@ -57,7 +57,6 @@ def get_pdf(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT, cook
     with open(outputfile, 'rb') as file:
         stream = file.read()
     return stream
-
 
 
 def prepare_file_path(file_path):

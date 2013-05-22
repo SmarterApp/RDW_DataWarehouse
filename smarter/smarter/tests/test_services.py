@@ -76,7 +76,7 @@ class TestServices(Unittest_with_smarter_sqlite):
         self.assertRaises(EdApiHTTPForbiddenAccess, post_pdf_service, self.__request)
 
     def test_post_pdf_service_post_valid_payload(self):
-        studentGuid='a5ddfe12-740d-4487-9179-de70f6ac33be'
+        studentGuid = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
         self.__request.json_body = {'studentGuid': studentGuid}
         self.__request.cookies = {'edware': '123'}
         # Override the wkhtmltopdf command
@@ -128,7 +128,7 @@ class TestServices(Unittest_with_smarter_sqlite):
         self.assertEqual(response.content_type, 'application/pdf')
 
     def test_send_pdf_request(self):
-        studentGuid='a5ddfe12-740d-4487-9179-de70f6ac33be'
+        studentGuid = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
         params = {}
         params['studentGuid'] = studentGuid
         params['dummy'] = 'dummy'

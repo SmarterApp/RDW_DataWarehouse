@@ -9,7 +9,6 @@ import json
 
 from sqlalchemy import create_engine, MetaData
 
-import fileloader.prepare_queries as queries
 from fileloader.file_loader import execute_queries
 from udl2_util.udl_mappings import get_json_to_asmt_tbl_mappings
 
@@ -100,6 +99,7 @@ def load_to_table(data_dict, batch_id, db_host, db_name, db_user, db_port, db_pa
     # add the batch_id to the data
     data_dict['batch_id'] = batch_id
 
+    # create insert statement and execute
     insert_into_int_table = s_int_table.insert().values(**data_dict)
     execute_queries(conn, [insert_into_int_table], 'Exception in loading assessment data -- ')
 
@@ -107,27 +107,13 @@ def load_to_table(data_dict, batch_id, db_host, db_name, db_user, db_port, db_pa
 def fix_empty_strings(data_dict):
     ''' Replace values which are empty string with a reference to None '''
     for k, v in data_dict.items():
-        if not v:
+        if v == '':
             data_dict[k] = None
     return data_dict
 
 
-def add_quotes_to_data(data_list):
-    ''' take a list of values and place single quotes around each value '''
-    #ret_list = ["'{0}'".format(x) for x in data_list]
-    ret_list = []
-    for val in data_list:
-        new_val = val
-        if val:
-            new_val = "'{0}'".format(val)
-        ret_list.append(new_val)
-    return ret_list
-
-
 def connect_db(user, passwd, host, db_name):
-    '''
-    Connect to database via sqlalchemy
-    '''
+    ''' Connect to database via sqlalchemy '''
 
     db_string = DBDRIVER + '://{db_user}:{db_password}@{db_host}/{db_name}'.format(db_user=user, db_password=passwd, db_host=host, db_name=db_name)
     engine = create_engine(db_string)
@@ -144,7 +130,6 @@ if __name__ == '__main__':
     json_file = args.source_json
     mapping = get_json_to_asmt_tbl_mappings()
 
-    # conf from file_loader
     conf = {
             'json_file': json_file,
             'mappings': mapping,

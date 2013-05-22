@@ -53,6 +53,20 @@ class TestJsonLoader(unittest.TestCase):
         self.assertEqual(result, self.json_dict)
         os.remove('test_read_json_file.json')
 
+    def test_fix_empty_strings_1(self):
+        ''' check method with no empty strings in dict '''
+        data_dict = {'a': '1', 'b': '2', 'c': '3'}
+        res_dict = jload.fix_empty_strings(data_dict)
+        self.assertEqual(data_dict, res_dict, 'no changes should have been made to the dict')
+
+    def test_fix_empty_string_2(self):
+        ''' check with some empty strings '''
+        data_dict = {'a': '', 'b': '2', 'c': "", 'd': 0, 'e': '0'}
+        expected = {'a': None, 'b': '2', 'c': None, 'd': 0, 'e': '0'}
+        res = jload.fix_empty_strings(data_dict)
+        self.assertEqual(res, expected, 'Check with a few empty strings')
+
+
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

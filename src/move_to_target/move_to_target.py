@@ -50,20 +50,25 @@ def explode_data_to_dim_table(conf, db_user, db_password, db_host, db_name, sour
 
     # create insertion query
     query = create_insert_query(conf, source_table, target_table, column_mapping, column_types)
-    print(query)
+    # print(query)
 
     # execute the query
-    # execute_queries(conn, [query], 'Exception -- exploding data from integration to target')
+    # temp:
+    if target_table in ['dim_staff', 'dim_inst_hier', 'dim_student']:
+        print("Executing moving query... %s, %s " % (target_table, query))
+        execute_queries(conn, [query], 'Exception -- exploding data from integration to target')
+    print("finish executing... %s " % target_table)
     conn.close()
 
 
 def create_insert_query(conf, source_table, target_table, column_mapping, column_types):
+    seq_expression = list(column_mapping.values())[0].replace("'", "''''")
     insert_sql = ["SELECT dblink_exec(\'dbname={db_name_target} user={db_user_target} password={db_password_target}\',"
              "\'INSERT INTO \"{target_schema}\".\"{target_table}\"(",
              ",".join(list(column_mapping.keys())),
-             ")  SELECT * FROM dblink(\''dbname={db_name} user={db_user} password={db_password}\'', \''SELECT DISTINCT ",
-             ",".join(value.replace("'", "''''") for value in list(column_mapping.values())),
-             " FROM \"{source_schema}\".\"{source_table}\" WHERE batch_id={batch_id}\'') AS t(",
+             ")  SELECT * FROM dblink(\''dbname={db_name} user={db_user} password={db_password}\'', \''SELECT {seq_expression}, * FROM (SELECT DISTINCT ",
+             ",".join(value.replace("'", "''''") for value in list(column_mapping.values())[1:]),
+             " FROM \"{source_schema}\".\"{source_table}\" WHERE batch_id={batch_id}) as y\'') AS t(",
              ",".join(list(column_types.values())),
              ") ;\');"
             ]
@@ -75,9 +80,11 @@ def create_insert_query(conf, source_table, target_table, column_mapping, column
                                             db_name=conf['db_name'],
                                             db_user=conf['db_user'],
                                             db_password=conf['db_password'],
+                                            seq_expression=seq_expression,
                                             source_schema=conf['source_schema'],
                                             source_table=source_table,
                                             batch_id=conf['batch_id'])
+
     return insert_sql
 
 

@@ -4,7 +4,7 @@ from celery.result import AsyncResult
 from celery.utils.log import get_task_logger
 import move_to_target.column_mapping as col_map
 from move_to_target.move_to_target import explode_data_to_dim_table, explode_data_to_fact_table, get_table_column_types
-from celery import chord
+from celery import chord, group
 import datetime
 import udl2.W_final_cleanup
 
@@ -16,7 +16,7 @@ logger = get_task_logger(__name__)
 def task(msg):
     logger.info(task.name)
     # logger.info('Moving data from %s into target' % msg['source_table'])
-    print('*****I am the exploder, about to copy data from staging table into target star schema %s' % str(msg))
+    print('I am the exploder, about to copy data from staging table into target star schema')
 
     # generate conf info, including db settings and batch_id, source_table, source_schema, target_schema
     conf = generate_conf(msg)
@@ -50,6 +50,7 @@ def task(msg):
 def explode_data_to_dim_table_task(conf, source_table, dim_table, column_mapping, column_types):
     explode_data_to_dim_table(conf, conf['db_user'], conf['db_password'], conf['db_host'], conf['db_name'],
                               source_table, dim_table, column_mapping, column_types)
+    return True
 
 
 @celery.task(name="udl2.W_move_to_target.task2")

@@ -26,9 +26,7 @@ class Student(BaseRole):
 
     def check_context(self, guid, student_guids):
         '''
-        Given a list of student guids, return true if user guid is in the list
+        Given a list of student guids, return true if every guid equals to user guid
         '''
-        for student_guid in student_guids:
-            if not guid == student_guid:
-                return False
-        return True
+        unique_list = list(set(student_guids))
+        return len(unique_list) == 1 and unique_list[0] == guid

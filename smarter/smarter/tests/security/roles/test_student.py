@@ -56,6 +56,13 @@ class TestStudentContextSecurity(Unittest_with_smarter_sqlite):
         context = student.check_context(guid, [guid, 'a', 'b'])
         self.assertFalse(context)
 
+    def test_check_context_with_dup_guid(self):
+        guid = '61ec47de-e8b5-4e78-9beb-677c44dd9b50'
+        student = Student('conn')
+
+        context = student.check_context(guid, [guid, guid, guid, guid])
+        self.assertTrue(context)
+
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

@@ -7,6 +7,7 @@ util = require 'util'
 require 'colors'
 wrench = require 'wrench'
 chokidar = require 'chokidar'
+shell = require 'shelljs'
 
 coffeepath = 'coffee'
 lesspath = 'less'
@@ -50,15 +51,32 @@ copyAssets = (assetsDest, assetsDir) ->
       wrench.rmdirSyncRecursive assetsDest, true
     wrench.copyDirSyncRecursive assetsDir, assetsDest
 
+copyScripts = () ->
+    buildDir = path.join(jspath,"build/")
+    moduleDir = path.join(buildDir, "modules/")
+    destDir = path.join(jspath, "modules/")
+    if fs.existsSync destDir
+      # copy over optimized scripts
+      copyAssets destDir, moduleDir
+      # delete build directory
+      wrench.rmdirSyncRecursive buildDir
+
 task 'build:coffee', ->
     walkDir coffeepath, (source) -> buildCoffee source
 
 task 'build:less', ->
     compile 'less/style.less', 'css/style.css'
+    
+task 'build:optimize', ->
+    optimizer = 'js/3p/r.js'
+    buildScript = path.join(jspath, "app.build.js")
+    shell.exec('node ' + optimizer + ' -o ' + buildScript + ' mainConfigFile=main.js')
+    copyScripts()
 
 task 'build', ->
     invoke 'build:coffee'
     invoke 'build:less'
+    invoke 'build:optimize'
  
 task 'watch', ->
     flour.minifiers.disable 'js'

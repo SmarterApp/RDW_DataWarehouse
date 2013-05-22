@@ -7,7 +7,7 @@ Created on May 16, 2013
 import argparse
 import json
 
-from sqlalchemy.engine import create_engine
+from sqlalchemy import create_engine, MetaData
 
 import fileloader.prepare_queries as queries
 from fileloader.file_loader import execute_queries
@@ -25,8 +25,8 @@ def load_json(conf):
 
     json_dict = read_json_file(conf['json_file'])
     flattened_json = flatten_json_dict(json_dict, conf['mappings'])
-    load_to_table(flattened_json, conf['batch_id'], conf['db_host'], conf['db_name'], conf['db_user'],
-                  conf['db_port'], conf['db_password'], conf['integration_table'], conf['integration_schema'])
+    load_to_table(flattened_json, conf['batch_id'], conf['db_host'], conf['db_name'], conf['db_user'], conf['db_port'],
+                  conf['db_password'], conf['integration_table'], conf['integration_schema'], conf['seq_name'])
 
 
 def read_json_file(json_file):
@@ -73,7 +73,7 @@ def get_nested_data(location_list, json_dict):
     return value
 
 
-def load_to_table(data_dict, batch_id, db_host, db_name, db_user, db_port, db_password, int_table, int_schema):
+def load_to_table(data_dict, batch_id, db_host, db_name, db_user, db_port, db_password, int_table, int_schema, seq_name):
     '''
     Load the table into the proper table
     @param data_dict: the dictionary containing the data to be loaded
@@ -85,19 +85,43 @@ def load_to_table(data_dict, batch_id, db_host, db_name, db_user, db_port, db_pa
     @param db_password: the password to use
     @param int_table: the name of the integration table
     @param int_schema: the name of the integration schema
+    @param seq_name: The name of the sequence to use when inserting rows
     '''
 
-    conn, _engine = connect_db(db_user, db_password, db_host, db_name)
-    # create sequence name, use table_name and a random number combination
+    # Create sqlalchemy connection and get table information from sqlalchemy
+    conn, engine = connect_db(db_user, db_password, db_host, db_name)
+    metadata = MetaData()
+    metadata.reflect(engine, int_schema)
+    s_int_table = metadata.tables[int_schema + '.' + int_table]
 
-    headers = list(data_dict.keys())
-    data = list(data_dict.values())
-    headers.insert(0, 'batch_id')
-    data.insert(0, str(conf['batch_id']))
-    insert_into_int_table = queries.create_insert_assessment_into_integration_query(headers, data, batch_id, int_schema, int_table)  # apply_rules, csv_table_columns, header_types, staging_schema, staging_table, csv_schema, csv_table, start_seq, seq_name)
+    # remove empty strings and replace with None
+    data_dict = fix_empty_strings(data_dict)
 
-    # TODO: ececute the query
-#     execute_queries(conn, [insert_into_int_table], 'Exception in loading assessment data -- ')
+    # add the batch_id to the data
+    data_dict['batch_id'] = batch_id
+
+    insert_into_int_table = s_int_table.insert().values(**data_dict)
+    execute_queries(conn, [insert_into_int_table], 'Exception in loading assessment data -- ')
+
+
+def fix_empty_strings(data_dict):
+    ''' Replace values which are empty string with a reference to None '''
+    for k, v in data_dict.items():
+        if not v:
+            data_dict[k] = None
+    return data_dict
+
+
+def add_quotes_to_data(data_list):
+    ''' take a list of values and place single quotes around each value '''
+    #ret_list = ["'{0}'".format(x) for x in data_list]
+    ret_list = []
+    for val in data_list:
+        new_val = val
+        if val:
+            new_val = "'{0}'".format(val)
+        ret_list.append(new_val)
+    return ret_list
 
 
 def connect_db(user, passwd, host, db_name):
@@ -113,15 +137,16 @@ def connect_db(user, passwd, host, db_name):
 
 if __name__ == '__main__':
 
+    import time
     parser = argparse.ArgumentParser()
     parser.add_argument('-s', dest='source_json', required=True, help="path to the source file")
     args = parser.parse_args()
-
+    json_file = args.source_json
     mapping = get_json_to_asmt_tbl_mappings()
 
     # conf from file_loader
     conf = {
-            'json_file': args.source_json,
+            'json_file': json_file,
             'mappings': mapping,
             'db_host': 'localhost',
             'db_port': '5432',
@@ -130,6 +155,9 @@ if __name__ == '__main__':
             'db_password': 'udl2abc1234',
             'integration_schema': 'udl2',
             'integration_table': 'INT_SBAC_ASMT',
+            'seq_name': 'GLOBAL_REC_SEQ',
             'batch_id': 100
     }
+    start_time = time.time()
     load_json(conf)
+    print('json loaded into %s in %.2fs' % (conf['integration_schema'], time.time() - start_time))

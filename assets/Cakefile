@@ -76,7 +76,7 @@ task 'build:optimize', ->
 task 'build', ->
     invoke 'build:coffee'
     invoke 'build:less'
-    invoke 'build:optimize'
+    #invoke 'build:optimize'
  
 task 'watch', ->
     flour.minifiers.disable 'js'

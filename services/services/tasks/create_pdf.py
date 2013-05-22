@@ -13,7 +13,7 @@ from services.celery import celery
 from services.exceptions import PdfGenerationError
 
 pdf_procs = ['wkhtmltopdf']
-pdf_defaults = ['--enable-javascript', '--page-size', 'Letter', '--print-media-type', '-l', '--javascript-delay', '6000']
+pdf_defaults = ['--enable-javascript', '--page-size', 'Letter', '--print-media-type', '-l', '--javascript-delay', '6000', '--footer-center', 'Page [page] of [toPage]', '--footer-font-size', '9']
 
 OK = 0
 FAIL = 1

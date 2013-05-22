@@ -187,7 +187,7 @@ define [
           uid = edwareUtil.getUid data.user_info
           edwareUtil.renderFeedback(role, uid, "individual_student_report", feedbackData)
         
-        $("#print_FooterContent").append($("#footerLinks").html())
+        $("#print_reportInfoContent").append($("#footerLinks").html())
   #
   # render Claim Score Relative Difference (arrows)
   #

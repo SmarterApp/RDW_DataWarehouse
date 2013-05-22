@@ -229,6 +229,7 @@ qa2:
 
 jenkins_qa:
   '[app:main]':
+    pdf.report_base_dir: /opt/edware/pdf
     mode: test
     edware:
       schema_name: edware_sds_0_1

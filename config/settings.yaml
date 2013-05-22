@@ -104,7 +104,7 @@ common:
     qualname: smarter
 
   '[logger_sqlalchemy]':
-    level: INFO
+    level: WARN
     handlers: filelog
     qualname: sqlalchemy
     # "level = INFO" logs SQL queries.
@@ -291,7 +291,7 @@ uat:
     handlers: syslog
     qualname: edauth
   '[logger_sqlalchemy]':
-    level: INFO
+    level: WARN
     handlers: syslog
     qualname: sqlalchemy
   '[logger_exc_logger]':

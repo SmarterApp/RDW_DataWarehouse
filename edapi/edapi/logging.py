@@ -36,7 +36,6 @@ def audit_event(logger_name="audit", blacklist_args=[]):
         # get the function param names
         arg_names = inspect.getargspec(original_func)[0]
 
-        print(arg_names)
         func_name = original_func.__name__
         class_name = None
         if hasattr(original_func, '__self__'):

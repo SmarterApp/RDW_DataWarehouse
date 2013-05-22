@@ -87,6 +87,7 @@ def get_state_view_report(params):
     return get_report(params)
 
 
+@cache_region('public.data')
 def get_district_view_report(params):
     '''
     district view report

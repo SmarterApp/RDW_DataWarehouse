@@ -1,3 +1,8 @@
+'''
+Created on May 10, 2013
+
+@author: ejen
+'''
 from sqlalchemy.schema import MetaData, CreateSchema, CreateTable, CreateSequence
 from sqlalchemy import Table, Column, Index, Sequence
 from sqlalchemy import SmallInteger, String, Date, Boolean
@@ -10,7 +15,7 @@ from sqlalchemy.sql import text
 import imp
 import argparse
 from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
-
+from udl2_util.database_util import connect_db, execute_queries
 
 #
 # UDL_METADATA stores all udl2 related database objects, which includes staging tables and table-independent sequeuces
@@ -273,25 +278,14 @@ def _parse_args():
     args = parser.parse_args()
     return (parser, args)
 
-
-def _get_db_url(udl2_conf):
-    return "postgresql://%s:%s@%s/%s" % (udl2_conf['postgresql']['db_user'],
-                                         udl2_conf['postgresql']['db_pass'],
-                                         udl2_conf['postgresql']['db_host'],
-                                         udl2_conf['postgresql']['db_database'])
-
-
-def _create_engine(db_url):
-    return create_engine(db_url)
-
-def _execute_sql(udl2_conf, sql):
-    engine = _create_engine(_get_db_url(udl2_conf))
-    conn = engine.connect()
-    try:
-        conn.execute(sql)
-    except Exception as e:
-        print(e)
-        pass        
+def _create_conn_engine(udl2_conf):
+    (conn, engine) = connect_db(udl2_conf['udl2_db']['db_driver'],
+                                udl2_conf['udl2_db']['db_user'],
+                                udl2_conf['udl2_db']['db_pass'],
+                                udl2_conf['udl2_db']['db_host'],
+                                udl2_conf['udl2_db']['db_port'],
+                                udl2_conf['udl2_db']['db_name'])
+    return (conn, engine)
 
 
 def map_sql_type_to_sqlalchemy_type(sql_type):
@@ -327,7 +321,8 @@ def map_tuple_to_sqlalchemy_column(ddl_tuple):
     return column
 
 
-def create_table(metadata, schema, table_name):
+def create_table(udl2_conf, metadata, schema, table_name):
+    print('create table %s.%s' % (schema, table_name))
     column_ddl = UDL_METADATA['TABLES'][table_name]['columns']
     arguments = [table_name, metadata]
     
@@ -336,16 +331,26 @@ def create_table(metadata, schema, table_name):
         column = map_tuple_to_sqlalchemy_column(c_ddl)
         arguments.append(column)
     table = Table(*tuple(arguments), **{'schema':schema})
+    (conn, engine) = _create_conn_engine(udl2_conf)
+    except_msg = "fail to create table %s.%s" % (schema, table_name)
+    try:
+        table.create(engine)
+    except Exception:
+        print(except_msg)
+   
     return table
 
 
 def drop_table(udl2_conf, schema, table_name):
+    print('drop table %s.%s' % (schema, table_name))
     sql = text("DROP TABLE \"%s\".\"%s\" CASCADE" % (schema, table_name))
-    _execute_sql(udl2_conf, sql)
+    (conn, engine) = _create_conn_engine(udl2_conf)
+    except_msg = "fail to drop table %s.%s" % (schema, table_name)
+    execute_queries(conn, [sql], except_msg)
    
 
-
-def create_sequence(metadata, schema, seq_name):
+def create_sequence(udl2_conf, metadata, schema, seq_name):
+    print('create global sequence')
     sequence_ddl = UDL_METADATA['SEQUENCES'][seq_name]
     sequence = Sequence(name = sequence_ddl[0],
         start= sequence_ddl[1],
@@ -355,109 +360,120 @@ def create_sequence(metadata, schema, seq_name):
         quote = sequence_ddl[4],
         metadata = metadata
     )
+    sql = CreateSequence(sequence)
+    (conn, engine) = _create_conn_engine(udl2_conf)
+    except_msg = "fail to create sequence %s.%s" % (schema, seq_name)
+    execute_queries(conn, [sql], except_msg)
     return sequence
 
 
 def drop_sequence(udl2_conf, schema, seq_name):
+    print('drop global sequences')
     sql = text("DROP SEQUENCE \"%s\".\"%s\" CASCADE" % (schema, seq_name))
-    _execute_sql(udl2_conf, sql)
+    (conn, engine) = _create_conn_engine(udl2_conf)
+    except_msg = "fail to drop sequence %s.%s" % (schema, seq_name)
+    execute_queries(conn, [sql], except_msg)
 
 
 def create_udl2_schema(udl2_conf):
+    print('create udl2 staging schema')
     sql = text("CREATE SCHEMA \"%s\"" % udl2_conf['udl2_db']['staging_schema'])
-    _execute_sql(udl2_conf, sql)
+    (conn, engine) = _create_conn_engine(udl2_conf)
+    except_msg = "fail to create schema %s" % udl2_conf['udl2_db']['staging_schema']
+    execute_queries(conn, [sql], except_msg)
     
 
 def drop_udl2_schema(udl2_conf):
-    sql = "DROP SCHEMA udl2 CASCADE"
-    _execute_sql(udl2_conf, sql)
+    print('drop udl2 staging schema')
+    sql = text("DROP SCHEMA \"%s\" CASCADE" % udl2_conf['udl2_db']['staging_schema'])
+    (conn, engine) = _create_conn_engine(udl2_conf)
+    except_msg = "fail to drop udl2 schema %s" % udl2_conf['udl2_db']['staging_schema']
+    execute_queries(conn, [sql], except_msg)
     
 
 def create_udl2_tables(udl2_conf):
-    engine = _create_engine(_get_db_url(udl2_conf))
+    #engine = (_get_db_url(udl2_conf))
     udl2_metadata = MetaData()
-    udl2_tables = []
-    
-    for table, definition in UDL_METADATA['TABLES'].items():
-        udl2_tables.append(create_table(udl2_metadata, udl2_conf['udl2_db']['staging_schema'], table))
-    
-    #for table in udl2_tables:
-        #print(CreateTable(table))
-        
     print("create tables")
-
-    for table in udl2_tables:
-        try:
-            print('create table %s' % table)
-            #print(CreateTable(table))
-            table.create(engine)
-        except Exception as e:
-            print(e)
-            pass
-      
-    
-def create_udl2_sequence(udl2_conf):
-    engine = _create_engine(_get_db_url(udl2_conf))
-    udl2_metadata = MetaData()
-    udl2_sequences = []
-    
-    for sequence, definition in UDL_METADATA['SEQUENCES'].items():
-        udl2_sequences.append(create_sequence(udl2_metadata, udl2_conf['udl2_db']['staging_schema'], sequence))
-            
-    print("create sequences")
-
-    for seq in udl2_sequences:
-        try:
-            print('create sequence %s' % sequence)
-            _execute_sql(udl2_conf, CreateSequence(seq))
-        except Exception as e:
-            print(e)
-            pass
+    for table, definition in UDL_METADATA['TABLES'].items():
+        create_table(udl2_conf, udl2_metadata, udl2_conf['udl2_db']['staging_schema'], table)
     
     
 def drop_udl2_tables(udl2_conf):
-    engine = _create_engine(_get_db_url(udl2_conf))
+    print("drop tables")
     for table, definition in UDL_METADATA['TABLES'].items():
         drop_table(udl2_conf, udl2_conf['udl2_db']['staging_schema'], table)
+        
+        
+def create_udl2_sequence(udl2_conf):
+    #(conn, engine) = _create_conn_engine(udl2_conf)
+    udl2_metadata = MetaData()  
+    print("create sequences")
+    for sequence, definition in UDL_METADATA['SEQUENCES'].items():
+        create_sequence(udl2_conf, udl2_metadata, udl2_conf['udl2_db']['staging_schema'], sequence)
     
-    
-def drop_udl2_sequences(udl2_conf):
-    engine = _create_engine(_get_db_url(udl2_conf))
+
+def drop_udl2_sequences(udl2_conf):   
+    print("drop sequences")
     for seq, definition in UDL_METADATA['SEQUENCES'].items():
         drop_sequence(udl2_conf, udl2_conf['udl2_db']['staging_schema'], seq)
         
         
-
 def create_foreign_data_wrapper_extension(udl2_conf):
+    print('create foreign data wrapper extension')
     sql = "CREATE EXTENSION IF NOT EXISTS file_fdw WITH SCHEMA %s" % (udl2_conf['udl2_db']['csv_schema'])
-    _execute_sql(udl2_conf, sql)
+    (conn, engine) = _create_conn_engine(udl2_conf)
+    except_msg = "fail to create foreign data wrapper extension"
+    execute_queries(conn, [sql], except_msg)
 
     
 def drop_foreign_data_wrapper_extension(udl2_conf):
+    print('drop foreign data wrapper extension')
     sql = "DROP EXTENSION IF EXISTS file_fdw CASCADE"
-    _execute_sql(udl2_conf, sql)
+    (conn, engine) = _create_conn_engine(udl2_conf)
+    except_msg = "fail to drop foreign data wrapper extension"
+    execute_queries(conn, [sql], except_msg)
  
  
+def create_dblink_extension(udl2_conf):
+    print('create dblink extension')
+    sql = "CREATE EXTENSION IF NOT EXISTS dblink WITH SCHEMA %s" % (udl2_conf['udl2_db']['csv_schema'])
+    (conn, engine) = _create_conn_engine(udl2_conf)
+    except_msg = "fail to create dblink extension"
+    execute_queries(conn, [sql], except_msg)
+    
+    
+def drop_dblink_extension(udl2_conf):
+    print('drop dblink extension')
+    sql = "DROP EXTENSION IF EXISTS dblink CASCADE"
+    (conn, engine) = _create_conn_engine(udl2_conf)
+    except_msg = "fail to drop dblink extension"
+    execute_queries(conn, [sql], except_msg)
+    
+    
 def create_foreign_data_wrapper_server(udl2_conf):
+    print('create foreign data wrapper server')
     sql = "CREATE SERVER %s FOREIGN DATA WRAPPER file_fdw" % (udl2_conf['udl2_db']['fdw_server'])
-    _execute_sql(udl2_conf, sql)
+    (conn, engine) = _create_conn_engine(udl2_conf)
+    except_msg = "fail to create foreign data wrapper server"
+    execute_queries(conn, [sql], except_msg)
    
    
 def drop_foreign_data_wrapper_server(udl2_conf):
+    print('drop foreign data wrapper server')
     sql = "DROP SERVER IF EXISTS %s CASCADE" % (udl2_conf['udl2_db']['fdw_server'])
-    _execute_sql(udl2_conf, sql)
+    (conn, engine) = _create_conn_engine(udl2_conf)
+    except_msg = "fail to drop foreign data wrapper server"
+    execute_queries(conn, [sql], except_msg)
+
 
 
 def setup_udl2_schema(udl2_conf):
-    print('create udl2 schema')
     create_udl2_schema(udl2_conf)
-    print('create foreign data wrapper extenstion')
+    create_dblink_extension(udl2_conf)
     create_foreign_data_wrapper_extension(udl2_conf)
-    print('create foreign data wrapper server')
     create_foreign_data_wrapper_server(udl2_conf)
-    print('create udl2 tables')
     create_udl2_tables(udl2_conf)
-    print('create udl2 sequences')
     create_udl2_sequence(udl2_conf)
 
 
@@ -466,6 +482,7 @@ def teardown_udl2_schema(udl2_conf):
     drop_udl2_tables(udl2_conf)
     drop_foreign_data_wrapper_server(udl2_conf)
     drop_foreign_data_wrapper_extension(udl2_conf)
+    drop_dblink_extension(udl2_conf)
     drop_udl2_schema(udl2_conf)
     
 

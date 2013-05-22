@@ -101,7 +101,14 @@ udl2_conf = {
         'csv_schema':'udl2',  # this is the same as postgresql schema
         'fdw_server':'udl2_fdw_server',
         'staging_schema':'udl2',
-        'integration_schema': 'udl2'
+        'integration_schema': 'udl2',
+        'db_host':'localhost',
+        'db_port':'5432',
+        'db_name':'udl2',
+        'db_schema':'udl2',
+        'db_user':'udl2',
+        'db_pass':'udl2abc1234',
+        'db_driver':'postgres',
     },
     'target_db': {
         'db_schema': 'edware',

@@ -1,6 +1,6 @@
 <h2>{{items.0.student_full_name}} | Grade {{items.0.grade}}</h2>
 {{#items}}
-<div id="assessmentSection{{count}}" class="innerBox">
+<div id="assessmentSection{{count}}" class="innerBox clearfix">
 	<div class="sidebar left">
 		<h1>{{asmt_subject}}</h1>
 		<h3 class="type"><strong>{{asmt_type}} {{asmt_period}} </strong></h3>
@@ -11,7 +11,14 @@
 		<hr>
 		<div class="policy">{{{policy_content}}}</div>
 	</div>
-	
+	<div class="sectionHeader">
+		<div class="logo"><img src="../images/smarter_printlogo.png" width="150" height="47" /></div>
+		<div class="summary">
+			<span class="title">{{items.0.student_full_name}} &nbsp;&nbsp; Grade {{items.0.grade}}</span><br/>
+			<span class="label">State:</span> {{context.items.0.name}} &nbsp;<span class="label">District:</span> {{context.items.1.name}}<br/>
+			<span class="label">School:</span> {{context.items.2.name}}
+		</div>
+	</div>
 	<div class="contentWrapper">
 		<div class="overallScoreSection">
 
@@ -29,7 +36,7 @@
 		<div class="confidenceLevel">
 			
 		</div>
-		<div class="claimsSection">
+		<div class="claimsSection clearfix">
 			<h3>Claims</h3>
 			<ul class="inline unstyled">
 				{{#claims}}
@@ -74,4 +81,15 @@
 		</div>
 	</div>
 </div>
+<div class="pageBreak"></div>
 {{/items}}
+<div id="print_FooterContent" class="clearfix">
+	<div class="sectionHeader">
+		<div class="logo"><img src="../images/smarter_printlogo.png" width="150" height="47" /></div>
+		<div class="summary">
+			<span class="title">{{items.0.student_full_name}} &nbsp;&nbsp; Grade {{items.0.grade}}</span><br/>
+			<span class="label">State:</span> {{context.items.0.name}} &nbsp;<span class="label">District:</span> {{context.items.1.name}}<br/>
+			<span class="label">School:</span> {{context.items.2.name}}
+		</div>
+	</div>
+</div>

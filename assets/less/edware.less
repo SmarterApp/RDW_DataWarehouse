@@ -720,35 +720,7 @@ table {
     }
 }
 
-@media print {
-   .contentWrapper .claimsSection ul li {
-        border: none;
-      }
-      
-      #breadcrumb {
-        background-image: transparent;
-        background: #ECECE6;
-      }
-      #footer {
-        display: none;
-        /*background-image: transparent;
-        background: #464646;*/
-      }
-      
-      .ui-jqgrid-bdiv {
-        min-height: 700px;
-        display: block !important;
-        overflow: hidden !important;
-      }
-      .ui-jqgrid-bdiv table {
-        display: block !important;
-      }
-      #lui_gridTable, #load_gridTable {
-        display: none !important;
-      }
-}
-
-
+/* Loading image style */
 .loader {
   position:absolute; 
   z-index: 99; 
@@ -774,6 +746,7 @@ table {
   }
 }
 
+/* breadcrumb arrow styles */
 .arrowSeperator {
     background: url("../images/css_images.png") no-repeat;
     background-position: -379px 0;
@@ -783,3 +756,88 @@ table {
     width: 8px;
 }
 
+
+.sectionHeader, #print_FooterContent { display: none; }
+/* Print css */
+@media print {
+      
+      #breadcrumb {
+        background-image: transparent;
+        background: #ECECE6;
+      }
+      #footer {
+        display: none;
+        /*background-image: transparent;
+        background: #464646;*/
+      }
+      
+      .ui-jqgrid-bdiv {
+        min-height: 700px;
+        display: block !important;
+        overflow: hidden !important;
+      }
+      .ui-jqgrid-bdiv table {
+        display: block !important;
+      }
+      #lui_gridTable, #load_gridTable {
+        display: none !important;
+      }
+      
+      #header, #breadcrumb{ display: none; }
+      #individualStudentContent  { background: none; float: none;}
+      .outerBox h2 { display: none;}
+      .innerBox { border: none; position: relative; float: none;}
+      .sectionHeader { 
+        margin-top: 40px;
+        clear: both; 
+        margin-bottom: 20px; 
+        border-bottom: solid 2px @color-black; 
+        width: 100%;  
+        min-height: 56px;
+        
+        .logo { 
+          position: relative;
+          float: left;
+        }
+        .summary { 
+          text-align: right; 
+          float: right; 
+          font-size: 13px; 
+          line-height: 17px;
+          color: @color-B1;
+          
+          .label {
+            color: @color-B1;
+            background: none;
+            font-weight: normal;
+          }
+          
+          .title { color: @color-B1; font-size: 18px; font-weight: bold; }
+        }
+      }
+      .pageBreak { page-break-after:always;}
+      .sidebar { display: none; }
+      .contentWrapper { margin-left: 0; width: 100%; }
+      .confidenceLevel { margin: 20px auto 0; width: 640px;}
+      .info2 a { display: none; }
+      .claims { background: none; }
+      .claims .link { display: none; }
+      .claimsSection ul { float: left; border: 1px solid #E2E2E2; border-radius: 5px; padding: 10px;}
+      .claimsSection ul li { border: none; border-right: solid 1px #e2e2e2; }
+      .claimsSection ul li:last-child { border-right: none; }
+      .surveyMonkeyPopup { display: none;}
+      .legendPopup, .aboutReportPopup { float: left; width: 100%;}
+      #footer { display: none;}
+      
+      .sectionHeader { display: block; }
+      #print_FooterContent { display: block; width: 100%;}
+      #print_FooterContent .helpPopup { display: none;}
+      .reportInfoWrapper { width: 100%; }
+      #content { min-height: 0; }
+      
+}
+
+
+
+    
+    

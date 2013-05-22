@@ -13,23 +13,12 @@ import unittest
 class TestJsonLoader(unittest.TestCase):
 
     def setUp(self):
-        self.json_dict = {'pls': [{'cp': '1200', 'name': 'Minimal', 'level': 1},
-                                 {'cp': '1400', 'name': 'Partial', 'level': 2},
-                                 {'cp': '1800', 'name': 'Adequate', 'level': 3}],
-                          'id': {'year': '2015',
-                                'id': '28',
-                                'subject': 'Math',
-                                'period': '2015',
-                                'type': 'SUMMATIVE',
-                                'version': 'V1'}}
-        self.mappings = {'val1': ['pls', 0, 'name'],
-                        'val2': ['pls', 1, 'name'],
-                        'val3': ['pls', 2, 'name'],
-                        'val4': ['pls', 1, 'level'],
-                        'val5': ['id', 'year'],
-                        'val6': ['id', 'type'],
-                        'val7': ['pls', 2, 'cp'],
-                        'val8': ['pls', 0, 'level']
+        self.json_dict = {'pls': {'pl1': {'cp': '1200', 'name': 'Minimal', 'level': 1}, 'pl2': {'cp': '1400', 'name': 'Partial', 'level': 2},
+                                  'pl3': {'cp': '1800', 'name': 'Adequate', 'level': 3}},
+                          'id': {'year': '2015', 'id': '28', 'subject': 'Math', 'period': '2015', 'type': 'SUMMATIVE', 'version': 'V1'}
+                          }
+        self.mappings = {'val1': ['pls', 'pl1', 'name'], 'val2': ['pls', 'pl2', 'name'], 'val3': ['pls', 'pl3', 'name'], 'val4': ['pls', 'pl2', 'level'],
+                        'val5': ['id', 'year'], 'val6': ['id', 'type'], 'val7': ['pls', 'pl3', 'cp'], 'val8': ['pls', 'pl1', 'level']
                         }
 
     def test_flatten_json_dict(self):

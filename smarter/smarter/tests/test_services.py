@@ -133,12 +133,9 @@ class TestServices(Unittest_with_smarter_sqlite):
         self.assertIsInstance(response.body, bytes)
 
     def test_send_pdf_request_with_pdf_generation_fail(self):
-        shutil.rmtree(self.__temp_dir)
-        self.__temp_dir = tempfile.gettempdir()
-        reg = Registry()
-        reg['pdf.report_base_dir'] = self.__temp_dir
         params = {}
-        params['studentGuid'] = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
+        # Important, this pdf must not exist in directory
+        params['studentGuid'] = '3181376a-f3a8-40d3-bbde-e65fdd9f4494'
         params['dummy'] = 'dummy'
         self.__request.matchdict['report'] = 'indivStudentReport.html'
         self.__request.cookies = {'edware': '123'}

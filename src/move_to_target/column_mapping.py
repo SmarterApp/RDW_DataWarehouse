@@ -147,7 +147,7 @@ def get_column_mapping():
                 ('state_code', 'code_state'),
                 ('district_guid', 'guid_district'),
                 ('school_guid', 'guid_school'),
-                ('section_guid', None),
+                ('section_guid', '\' \''),
                 ('inst_hier_rec_id', None),
                 ('section_rec_id', None),
                 ('where_taken_id', 'guid_asmt_location'),
@@ -175,8 +175,17 @@ def get_column_mapping():
                 ('asmt_claim_4_score_range_min', 'score_claim_4_min'),
                 ('asmt_claim_4_score_range_max', 'score_claim_4_max'),
                 ('asmt_create_date', "to_char(CURRENT_TIMESTAMP, 'yyyymmdd')"),
-                ('status', None),
+                ('status', '\' \''),
                 ('most_recent', 'True'),
             ])
     }
     return column_map_integration_to_target
+
+
+def get_foreign_keys_in_fact_table():
+    # key: column name in fact_asmt_outcome which is a foreign key
+    # value: corresponding (table_name, column_name)
+    return dict([('asmt_rec_id', ('dim_asmt', 'asmt_rec_id')),
+            ('inst_hier_rec_id', ('dim_inst_hier', 'inst_hier_rec_id')),
+            ('section_rec_id', ('dim_section', 'section_rec_id'))
+            ])

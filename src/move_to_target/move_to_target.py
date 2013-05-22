@@ -6,15 +6,46 @@ DBDRIVER = "postgresql"
 
 
 def explode_data_to_fact_table(conf, db_user_target, db_password_target, db_host_target, db_name_target, source_table, target_table, column_mapping, column_types):
-    pass
+    return
+    # in progress
     # create db connection
     conn, _engine = connect_db(db_user_target, db_password_target, db_host_target, db_name_target)
 
-    # get section_rec_id
     # get asmt_rec_id
+    asmt_rec_id = get_rec_id(conn, conf['target_schema'], 'dim_asmt', 'asmt_rec_id', conf['batch_id'])
+
+    # get section_rec_id
+    section_rec_id = get_rec_id(conn, conf['target_schema'], 'dim_section', 'section_rec_id', conf['batch_id'])
+
     # get inst_hier_rec_id
+    inst_hier_rec_id_map = get_rec_id_map(conn, conf['target_schema'], 'dim_inst_hier', 'inst_hier_rec_id', conf['batch_id'])
 
     conn.close()
+
+    print(section_rec_id, asmt_rec_id, inst_hier_rec_id_map)
+
+
+def get_rec_id(conn, schema_name, table_name, column_name, batch_id):
+    query = "SELECT DISTINCT {column_name} FROM {schema_name}.{table_name} WHERE batch_id={batch_id}".format(column_name=column_name,
+                                                                                                             schema_name=schema_name,
+                                                                                                             table_name=table_name,
+                                                                                                             batch_id=batch_id)
+    rec_id = []
+    try:
+        result = conn.execute(query)
+        for row in result:
+            rec_id.append(row)
+    except Exception as e:
+        print()
+    if len(rec_id) != 1:
+        # raise Exception('Rec id of %s has more/less than 1 record for batch %s' % (column_name, batch_id))
+        print('Rec id of %s has more/less than 1 record for batch %s' % (column_name, batch_id))
+        rec_id = [-1]
+    return rec_id[0]
+
+
+def get_rec_id_map():
+    pass
 
 
 def explode_data_to_dim_table(conf, db_user, db_password, db_host, db_name, source_table, target_table, column_mapping, column_types):
@@ -30,8 +61,8 @@ def explode_data_to_dim_table(conf, db_user, db_password, db_host, db_name, sour
 
     # execute the query
     # temp:
+    print("Executing query... %s, %s " % (target_table, query))
     if target_table in ['dim_staff', 'dim_inst_hier', 'dim_student']:
-        print("Executing query... %s, %s " % (target_table, query))
         execute_queries(conn, [query], 'Exception -- exploding data from integration to target')
     conn.close()
 

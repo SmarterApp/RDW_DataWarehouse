@@ -16,7 +16,7 @@ logger = get_task_logger(__name__)
 def task(msg):
     logger.info(task.name)
     # logger.info('Moving data from %s into target' % msg['source_table'])
-    print('I am the exploder, about to copy data from staging table into target star schema')
+    print('I am the exploder, about to copy data from staging table into target star schema in chord')
 
     # generate conf info, including db settings and batch_id, source_table, source_schema, target_schema
     conf = generate_conf(msg)

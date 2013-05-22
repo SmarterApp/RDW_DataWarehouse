@@ -24,6 +24,7 @@ from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_report_p
 from services.tasks.create_pdf import prepare_file_path
 from services.tests.tasks.test_create_pdf import get_cmd
 from services.celeryconfig import get_config
+import shutil
 
 
 class TestServices(Unittest_with_smarter_sqlite):

@@ -23,7 +23,6 @@ from pyramid.registry import Registry
 from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_report_path_by_student_guid
 from services.tasks.create_pdf import prepare_file_path
 from services.tests.tasks.test_create_pdf import get_cmd
-import shutil
 from services.celeryconfig import get_config
 
 

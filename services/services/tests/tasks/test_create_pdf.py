@@ -17,19 +17,20 @@ class TestCreatePdf(unittest.TestCase):
 
     def test_generate_pdf_success_cmd(self):
         services.tasks.create_pdf.pdf_procs = ['echo', 'dummy']
-        task = generate_pdf('cookie', 'url', 'outputfile')
+        file_name = os.path.join(tempfile.gettempdir(), 'b', 'd.pdf')
+        task = generate_pdf('cookie', 'url', file_name)
         self.assertEqual(task, OK)
 
     def test_generate_pdf_timeout_with_output_file_generated(self):
         here = os.path.abspath(__file__)
-        services.tasks.create_pdf.pdf_procs = self.__get_cmd()
+        services.tasks.create_pdf.pdf_procs = get_cmd()
         task = generate_pdf('cookie', 'url', here, options=[], timeout=1)
         self.assertEqual(task, OK)
 
     def test_generate_pdf_timeout_without_output_file_generated(self):
         cur_dir = os.path.dirname(__file__)
         output_file = os.path.abspath(os.path.join(cur_dir, 'doesnotexist.out'))
-        services.tasks.create_pdf.pdf_procs = self.__get_cmd()
+        services.tasks.create_pdf.pdf_procs = get_cmd()
         task = generate_pdf('cookie', 'url', output_file, options=[], timeout=1)
         self.assertEqual(task, FAIL)
 
@@ -63,17 +64,18 @@ class TestCreatePdf(unittest.TestCase):
         prepare_file_path(file_name)
         self.assertTrue(True)
 
-    def __get_cmd(self):
-        '''
-        Based on os type, return the command to execute test script
-        '''
-        cur_dir = os.path.dirname(__file__)
-        test_file = os.path.abspath(os.path.join(cur_dir, '..', 'resources', 'sleep.sh'))
-        cmd = ['sh', test_file]
-        if platform.system() == 'Windows':
-            test_file = os.path.abspath(os.path.join(cur_dir, '..', 'resources', 'sleep.cmd'))
-            cmd = [test_file]
-        return cmd
+
+def get_cmd():
+    '''
+    Based on os type, return the command to execute test script
+    '''
+    cur_dir = os.path.dirname(__file__)
+    test_file = os.path.abspath(os.path.join(cur_dir, '..', 'resources', 'sleep.sh'))
+    cmd = ['sh', test_file]
+    if platform.system() == 'Windows':
+        test_file = os.path.abspath(os.path.join(cur_dir, '..', 'resources', 'sleep.cmd'))
+        cmd = [test_file]
+    return cmd
 
 
 if __name__ == "__main__":

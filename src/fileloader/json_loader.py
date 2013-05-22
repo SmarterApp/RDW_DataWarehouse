@@ -103,6 +103,9 @@ def load_to_table(data_dict, batch_id, db_host, db_name, db_user, db_port, db_pa
     insert_into_int_table = s_int_table.insert().values(**data_dict)
     execute_queries(conn, [insert_into_int_table], 'Exception in loading assessment data -- ')
 
+    # Close connection
+    conn.close()
+
 
 def fix_empty_strings(data_dict):
     ''' Replace values which are empty string with a reference to None '''

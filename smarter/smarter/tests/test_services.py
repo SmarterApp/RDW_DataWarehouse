@@ -7,7 +7,7 @@ import unittest
 from pyramid.testing import DummyRequest
 from pyramid import testing
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed, \
-    EdApiHTTPForbiddenAccess, EdApiHTTPNotFound
+    EdApiHTTPForbiddenAccess, EdApiHTTPNotFound, EdApiHTTPInternalServerError
 from edapi.tests.test_views import DummyValueError
 from smarter.database.connector import SmarterDBConnection
 from edauth.security.user import User
@@ -22,6 +22,9 @@ import tempfile
 from pyramid.registry import Registry
 from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_report_path_by_student_guid
 from services.tasks.create_pdf import prepare_file_path
+from services.tests.tasks.test_create_pdf import get_cmd
+import shutil
+from services.celeryconfig import get_config
 
 
 class TestServices(Unittest_with_smarter_sqlite):
@@ -128,6 +131,21 @@ class TestServices(Unittest_with_smarter_sqlite):
         self.assertIsInstance(response, Response)
         self.assertEqual(response.content_type, 'application/pdf')
         self.assertIsInstance(response.body, bytes)
+
+    def test_send_pdf_request_with_pdf_generation_fail(self):
+        shutil.rmtree(self.__temp_dir)
+        self.__temp_dir = tempfile.gettempdir()
+        reg = Registry()
+        reg['pdf.report_base_dir'] = self.__temp_dir
+        params = {}
+        params['studentGuid'] = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
+        params['dummy'] = 'dummy'
+        self.__request.matchdict['report'] = 'indivStudentReport.html'
+        self.__request.cookies = {'edware': '123'}
+        services.tasks.create_pdf.pdf_procs = get_cmd()
+        settings = {'celery.CELERY_ALWAYS_EAGER': True, 'pdf.generate.timeout': 1}
+        get_config(settings)
+        self.assertRaises(EdApiHTTPInternalServerError, send_pdf_request, params)
 
     def test_get_pdf_content_with_missing_student_guid(self):
         params = {}

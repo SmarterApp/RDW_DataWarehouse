@@ -120,6 +120,8 @@ common:
     level: INFO
     handlers: audit
     qualname: audit
+    # Important: this means it doesn't propagate to root logger
+    propagate: 0
 
   '[handler_console]':
     class: StreamHandler

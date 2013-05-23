@@ -11,15 +11,9 @@ import os
 
 logger = get_task_logger(__name__)
 
-# Keys for the initial incoming message
-ROW_LIMIT = 'row_limit'
-PARTS = 'parts'
-LANDING_ZONE_FILE = 'landing_zone_file'
-LANDING_ZONE = 'landing_zone'
-WORK_ZONE = 'work_zone'
-HISTORY_ZONE = 'history_zone'
-KEEP_HEADERS = 'keep_headers'
-BATCH_ID = 'batch_id'
+# Keys for incoming splitter message
+FILE_TO_SPLIT_NAME = 'file_to_split_name'
+FILE_TO_SPLIT_DIR = 'file_to_split_dir'
 
 # Additional keys for outgoing message to file_loader
 FILE_TO_LOAD = 'file_to_load'
@@ -39,17 +33,24 @@ def task(incoming_msg):
 
     start_time = datetime.datetime.now()
 
+    # Get necessary params for file_splitter
+    file_to_split_dir = incoming_msg[FILE_TO_SPLIT_DIR]
+    file_to_split_name = incoming_msg[FILE_TO_SPLIT_NAME]
+    full_path_to_file = os.path.join(file_to_split_dir, file_to_split_name)
+    # row_limit =
+    # parts =
+    # work_zone =
+
+
     # do actual work of splitting file
-    split_file_tuple_list, header_file_path = file_splitter.split_file(expanded_msg[LANDING_ZONE_FILE], row_limit=expanded_msg[ROW_LIMIT],
-                                                                 parts=expanded_msg[PARTS], output_path=expanded_msg[WORK_ZONE])
+    split_file_tuple_list, header_file_path = file_splitter.split_file(full_path_to_file, row_limit=row_limit,
+                                                                 parts=parts, output_path=work_zone)
 
     finish_time = datetime.datetime.now()
     spend_time = finish_time - start_time
 
-    file_name = os.path.basename(expanded_msg[LANDING_ZONE_FILE])
-
     logger.info(task.name)
-    logger.info("Split %s in %s, number of sub-files: %i" % (file_name, str(spend_time), len(split_file_tuple_list)))
+    logger.info("Split %s in %s, number of sub-files: %i" % (file_to_split_name, str(spend_time), len(split_file_tuple_list)))
 
     # for each of sub file, call do loading task
     for split_file_tuple in split_file_tuple_list:

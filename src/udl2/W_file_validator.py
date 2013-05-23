@@ -8,20 +8,33 @@ import udl2.W_file_splitter
 
 logger = get_task_logger(__name__)
 
-# Keys for the initial incoming message
-LANDING_ZONE_FILE = 'landing_zone_file'
+# Keys for incoming validator message
+FILE_TO_VALIDATE_NAME = 'file_to_validate_name'
+FILE_TO_VALIDATE_DIR = 'file_to_validate_dir'
 BATCH_ID = 'batch_id'
+
+# Keys for outgoing splitter message
+FILE_TO_SPLIT_NAME = 'file_to_split_name'
+FILE_TO_SPLIT_DIR = 'file_to_split_dir'
 
 @celery.task(name="udl2.W_file_validator.task")
 def task(msg):
-    # TODO: Break apart landing zone file and path in incoming message
-    landing_zone_file = msg[LANDING_ZONE_FILE]
-    landing_zone_file_name = os.path.basename(landing_zone_file)
-    landing_zone_file_path = os.path.dirname(landing_zone_file)
+    file_to_split_name = msg[FILE_TO_VALIDATE_NAME]
+    file_to_split_dir = msg[FILE_TO_VALIDATE_DIR]
     batch_sid = msg[BATCH_ID]
 
     sfv = SimpleFileValidator()
-    error_list = sfv.execute(landing_zone_file_path, landing_zone_file_name, batch_sid)
+    error_list = sfv.execute(file_to_split_dir, file_to_split_name, batch_sid)
     # TODO: Add logic that checks error list and writes to a log/db/etc
 
-    return msg
+    splitter_msg = generate_splitter_msg(file_to_split_dir, file_to_split_name)
+    return splitter_msg
+
+
+def generate_splitter_msg(file_to_split_dir, file_to_split_name):
+    splitter_msg = {
+        FILE_TO_SPLIT_DIR: file_to_split_dir,
+        FILE_TO_SPLIT_NAME: file_to_split_name
+    }
+    return splitter_msg
+

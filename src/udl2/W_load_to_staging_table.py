@@ -40,7 +40,7 @@ STAGING_TABLE = 'staging_table'
 APPLY_RULES = 'apply_rules'
 BATCH_ID = 'batch_id'
 
-@celery.task(name="udl2.W_file_loader.task")
+@celery.task(name="udl2.W_load_to_staging_table.task")
 def task(msg):
     logger.info(task.name)
     logger.info('Loading file %s...' % msg[FILE_TO_LOAD])
@@ -54,9 +54,8 @@ def task(msg):
 #                                  udl2_queues[task.name]['queue'],
 #                                  udl2_stages[task.name]['routing_key'])
 
-    udl2.W_move_to_target.task.apply_async([msg],
-                                           queue='Q_copy_to_target',
-                                           routing_key='udl2')
+#    udl2.W_move_to_target.task.apply_async([msg],
+#                                          routing_key='udl2')
     return msg
 
 

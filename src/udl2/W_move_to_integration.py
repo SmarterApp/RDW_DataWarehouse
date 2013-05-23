@@ -17,8 +17,10 @@ logger = get_task_logger(__name__)
 
 #*************implemented via chord*************
 @celery.task(name="udl2.W_move_to_integration.task")
-def task(msg):
-    pass
+def move_to_integration(batch):
+    conf = generate_conf(batch)
+    return batch
+
 
 def generate_conf(msg):
     conf = {
@@ -26,21 +28,21 @@ def generate_conf(msg):
             'batch_id': msg['batch_id'],
 
             # source schema
-            'source_schema': udl2_conf['udl2_db']['integration_schema'],
+            'source_schema': udl2_conf['udl2_db']['staging_schema'],
             # source database setting
-            'db_host': udl2_conf['postgresql']['db_host'],
-            'db_port': udl2_conf['postgresql']['db_port'],
-            'db_user': udl2_conf['postgresql']['db_user'],
-            'db_name': udl2_conf['postgresql']['db_database'],
-            'db_password': udl2_conf['postgresql']['db_pass'],
+            'db_host': udl2_conf['udl2_db']['db_host'],
+            'db_port': udl2_conf['udl2_db']['db_port'],
+            'db_user': udl2_conf['udl2_db']['db_user'],
+            'db_name': udl2_conf['udl2_db']['db_database'],
+            'db_password': udl2_conf['udl2_db']['db_pass'],
 
             # target schema
-            'target_schema': udl2_conf['target_db']['db_schema'],
+            'target_schema': udl2_conf['udl2_db']['integration_schema'],
             # target database setting
-            'db_host_target': udl2_conf['target_db']['db_host'],
-            'db_port_target': udl2_conf['target_db']['db_port'],
-            'db_user_target': udl2_conf['target_db']['db_user'],
-            'db_name_target': udl2_conf['target_db']['db_database'],
-            'db_password_target': udl2_conf['target_db']['db_pass'],
+            'db_host_target': udl2_conf['udl2_db']['db_host'],
+            'db_port_target': udl2_conf['udl2_db']['db_port'],
+            'db_user_target': udl2_conf['udl2_db']['db_user'],
+            'db_name_target': udl2_conf['udl2_db']['db_database'],
+            'db_password_target': udl2_conf['udl2_db']['db_pass'],
     }
     return conf

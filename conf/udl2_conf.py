@@ -37,9 +37,9 @@ udl2_conf = {
         'stage_2': {'name':'Q_files_to_be_loaded',  # queue for the task that loads table from foreign data wrapper into staging table
                     'exchange': {'name': 'Q_files_to_be_loaded', 'type': 'direct'},
                     'routing_key':'udl2'},
-#        'stage_3': {'name':'Q_copy_to_integration', 
-#                    'exchange': {'name': 'Q_copy_to_integration', 'type': 'direct'},
-#                    'routing_key':'udl2'},
+        'stage_3': {'name':'Q_copy_to_integration', 
+                    'exchange': {'name': 'Q_copy_to_integration', 'type': 'direct'},
+                    'routing_key':'udl2'},
         'stage_4': {'name':'Q_copy_to_target',
                     'exchange': {'name': 'Q_copy_to_target', 'type': 'direct'},
                     'routing_key':'udl2'},
@@ -59,23 +59,30 @@ udl2_conf = {
                    'description':'',  # programmers have to specify what is the celery task that will be execute in this stage
                    'queue_name':'Q_files_to_be_loaded',  # And the where the messages come from 
                    'routing_key':'udl2',  # And routing key, currently for all udl2 pipeline will be udl2 to differentiate it from celery's task
-                   'next':'stage_4',  # We use next to specify what is the next stage id to be send to, None for termination. 
+                   'next':'stage_3',  # We use next to specify what is the next stage id to be send to, None for termination. 
                    'prev':'stage_1',  # We use prev to specify what is the previous stage. this also helps possibly configurable message parser.
         },
-        'stage_n':{'task_name':'udl2.W_final_cleanup.task',  # second task in current piple line. 
+        'stage_3':{'task_name':'udl2.W_move_to_integration.task',  # thrid task in current piple line. 
+                   'description':'',  # programmers have to specify what is the celery task that will be execute in this stage
+                   'queue_name':'Q_copy_to_integration',  # And the where the messages come from 
+                   'routing_key':'udl2',  # And routing key, currently for all udl2 pipeline will be udl2 to differentiate it from celery's task
+                   'next':'stage_4',  # We use next to specify what is the next stage id to be send to, None for termination.
+                   'prev':'stage_2',  # We use prev to specify what is the previous stage. this also helps possibly configurable message parser.
+        },
+        'stage_4':{'task_name':'udl2.W_move_to_target.task',  # fourth task in current piple line. 
+                   'description':'',  # programmers have to specify what is the celery task that will be execute in this stage
+                   'queue_name':'Q_copy_to_target',  # And the where the messages come from 
+                   'routing_key':'udl2',  # And routing key, currently for all udl2 pipeline will be udl2 to differentiate it from celery's task
+                   'next':'stage_n',  # We use next to specify what is the next stage id to be send to, None for termination.
+                   'prev':'stage_3',  # We use prev to specify what is the previous stage. this also helps possibly configurable message parser.
+        },
+        'stage_n':{'task_name':'udl2.W_final_cleanup.task',  # final task in current piple line. 
                    'description':'',  # programmers have to specify what is the celery task that will be execute in this stage
                    'queue_name':'Q_files_to_be_loaded',  # And the where the messages come from 
                    'routing_key':'udl2',  # And routing key, currently for all udl2 pipeline will be udl2 to differentiate it from celery's task
                    'next':None,  # We use next to specify what is the next stage id to be send to, None for termination.
                    'prev':'stage_4',  # We use prev to specify what is the previous stage. this also helps possibly configurable message parser.
         },
-        'stage_4':{'task_name':'udl2.W_move_to_target.task',  # second task in current piple line. 
-                   'description':'',  # programmers have to specify what is the celery task that will be execute in this stage
-                   'queue_name':'Q_copy_to_target',  # And the where the messages come from 
-                   'routing_key':'udl2',  # And routing key, currently for all udl2 pipeline will be udl2 to differentiate it from celery's task
-                   'next':'stage_n',  # We use next to specify what is the next stage id to be send to, None for termination.
-                   'prev':'stage_2',  # We use prev to specify what is the previous stage. this also helps possibly configurable message parser.
-        }
     },
     'rabbitmq': {  # rabbitmq server for local testing if we requires to bring up a rabbitmq server for UDL2 celery tasks on this machine. It will be ignore by celery if there are global rabbitmq-server
         'RABBITMQ_SERVER_PATH':'/opt/local/sbin/rabbitmq-server',  # where the rabbitmq-server is located
@@ -107,6 +114,7 @@ udl2_conf = {
         'db_host':'localhost',
         'db_port':'5432',
         'db_name':'udl2',
+        'db_database':'udl2',
         'db_schema':'udl2',
         'db_user':'udl2',
         'db_pass':'udl2abc1234',

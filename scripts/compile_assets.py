@@ -28,12 +28,6 @@ def main(config_file):
         rtn_code = subprocess.call(command_opts)
         if rtn_code != 0:
             print('cake command failed in compiling')
-        # Optimize javascript
-        print('Optimize javascript')
-        command_opts = ['node_modules/coffee-script/bin/cake', '-m', 'PROD', '-a', assets_dir, '-s', smarter_dir, 'optimize']
-        rtn_code = subprocess.call(command_opts)
-        if rtn_code != 0:
-            print('cake command failed in optimizing javascript')
         # Copy Assets
         print('Copying Assets')
         command_opts = ['node_modules/coffee-script/bin/cake', '-m', 'PROD', '-a', assets_dir, '-s', smarter_dir, 'copy']

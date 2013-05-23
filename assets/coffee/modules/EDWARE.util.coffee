@@ -40,6 +40,13 @@ define [
   # Given an user_info object, return the uid
   getUid = (userInfo) ->
     userInfo._User__info.uid
+
+  format_full_name_reverse = (first_name, middle_name, last_name) ->
+    if (middle_name && middle_name.length > 0)
+        middle_init = middle_name[0] + '.'
+    else
+        middle_init = ''
+    return "#{last_name}, #{first_name} #{middle_init}".replace '  ', ' '
     
   # truncate the content and add ellipsis "..." if content is more than character limits
   truncateContent = (content, characterLimits)->
@@ -140,3 +147,4 @@ define [
   renderFeedback: renderFeedback
   popupPlacement: popupPlacement
   getHeader: getHeader
+  format_full_name_reverse: format_full_name_reverse

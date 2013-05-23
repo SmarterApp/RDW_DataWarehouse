@@ -166,24 +166,17 @@ def get_list_of_students_report(params):
                 student['student_first_name'] = result['student_first_name']
                 student['student_middle_name'] = result['student_middle_name']
                 student['student_last_name'] = result['student_last_name']
-                student['student_full_name'] = format_full_name_rev(result['student_first_name'], result['student_middle_name'], result['student_last_name'])
                 student['enrollment_grade'] = result['enrollment_grade']
-                # This is for links in drill down
-                student['params'] = {"studentGuid": result['student_guid']}
 
             assessment = {}
-            assessment['teacher_first_name'] = result['teacher_first_name']
-            assessment['teacher_last_name'] = result['teacher_last_name']
             assessment['teacher_full_name'] = format_full_name_rev(result['teacher_first_name'], result['teacher_middle_name'], result['teacher_last_name'])
             assessment['asmt_grade'] = result['asmt_grade']
             assessment['asmt_score'] = result['asmt_score']
-            assessment['asmt_score_min'] = result['asmt_score_min']
-            assessment['asmt_score_max'] = result['asmt_score_max']
             assessment['asmt_score_range_min'] = result['asmt_score_range_min']
             assessment['asmt_score_range_max'] = result['asmt_score_range_max']
             assessment['asmt_score_interval'] = get_overall_asmt_interval(result)
             assessment['asmt_perf_lvl'] = result['asmt_perf_lvl']
-            assessment['claims'] = get_claims(number_of_claims=4, result=result)
+            assessment['claims'] = get_claims(number_of_claims=4, result=result, include_scores=True)
 
             assessments[subjects_map[result['asmt_subject']]] = assessment
             student['assessments'] = assessments
@@ -256,7 +249,7 @@ def __format_cut_points(results, subjects_map):
         cutpoint = get_cut_points(result)
         cutpoints[subject_name] = cutpoint
         # Get formatted claims data
-        claims[subject_name] = get_claims(number_of_claims=4, result=result, get_names_only=True)
+        claims[subject_name] = get_claims(number_of_claims=4, result=result, include_names=True)
         # Remove unnecessary data
         del(cutpoint['asmt_subject'])
     return {'cutpoints': cutpoints, 'claims': claims}

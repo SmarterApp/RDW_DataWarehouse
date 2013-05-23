@@ -52,7 +52,7 @@ def get_cut_points(result):
     return result
 
 
-def get_claims(number_of_claims=0, result=None, get_names_only=False):
+def get_claims(number_of_claims=0, result=None, include_names=False, include_scores=False, include_indexer=False, include_min_max_scores=False):
     '''
     Returns a list of claims information
     if get_name_only is True, it returns only the name of the claim and its equivalence claim number name
@@ -61,21 +61,25 @@ def get_claims(number_of_claims=0, result=None, get_names_only=False):
     for index in range(1, number_of_claims + 1):
         claim_name = result.get('asmt_claim_{0}_name'.format(index))
         if claim_name is not None and len(claim_name) > 0:
-            claim_score = result.get('asmt_claim_{0}_score'.format(index))
-            claim_object = {'name': claim_name,
-                            'name2': 'Claim ' + str(index)}
-            if not get_names_only:
+            claim_object = {}
+            if include_scores:
+                claim_score = result.get('asmt_claim_{0}_score'.format(index))
                 claim_object['score'] = str(claim_score)
-                claim_object['indexer'] = str(index),
                 claim_object['range_min_score'] = str(result.get('asmt_claim_{0}_score_range_min'.format(index)))
                 claim_object['range_max_score'] = str(result.get('asmt_claim_{0}_score_range_max'.format(index)))
+                claim_object['confidence'] = str(claim_score - result.get('asmt_claim_{0}_score_range_min'.format(index)))
+            if include_indexer:
+                # This is used by ISR
+                claim_object['indexer'] = str(index)
+            if include_min_max_scores:
                 claim_object['max_score'] = str(result.get('asmt_claim_{0}_score_max'.format(index)))
                 claim_object['min_score'] = str(result.get('asmt_claim_{0}_score_min'.format(index)))
-                claim_object['confidence'] = str(claim_score - result.get('asmt_claim_{0}_score_range_min'.format(index)))
-
-            # TODO: refactor, process by subject
-            if result['asmt_subject'] == 'Math' and index == 2:
-                claim_object['name2'] = 'Claims 2 & 4'
+            if include_names:
+                #TODO: refactor, process by subject
+                claim_object['name'] = claim_name
+                claim_object['name2'] = 'Claim ' + str(index)
+                if result['asmt_subject'] == 'Math' and index == 2:
+                    claim_object['name2'] = 'Claims 2 & 4'
 
             claims.append(claim_object)
 

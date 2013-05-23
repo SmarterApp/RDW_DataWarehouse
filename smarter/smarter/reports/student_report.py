@@ -141,7 +141,7 @@ def __arrange_results(results):
         # format and rearrange cutpoints
         result = get_cut_points(result)
 
-        result['claims'] = get_claims(number_of_claims=5, result=result)
+        result['claims'] = get_claims(number_of_claims=5, result=result, include_names=True, include_scores=True, include_min_max_scores=True, include_indexer=True)
 
     # rearranging the json so we could use it more easily with mustache
     __calculateClaimScoreRelativeDifference(results)

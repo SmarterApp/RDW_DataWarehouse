@@ -55,7 +55,7 @@ class TestAssessments(unittest.TestCase):
         self.assertEqual(len(formatted_results['cut_point_intervals'][0].keys()), 2)
 
     def test_get_claims_with_no_claims(self):
-        claims = get_claims(number_of_claims=0, result=None, get_names_only=False)
+        claims = get_claims(number_of_claims=0, result=None, include_scores=True)
         self.assertEqual(len(claims), 0)
 
     def test_get_claims_with_one_claim(self):
@@ -68,7 +68,7 @@ class TestAssessments(unittest.TestCase):
                   'asmt_claim_1_score': 2,
                   'asmt_claim_1_name': 'name',
                   'asmt_subject': 'ELA'}
-        claims = get_claims(number_of_claims=1, result=result, get_names_only=False)
+        claims = get_claims(number_of_claims=1, result=result, include_scores=True, include_names=True)
         self.assertEqual(len(result), 3)
         self.assertTrue(len(claims), 1)
         self.assertEqual(claims[0]['name2'], 'Claim 1')
@@ -91,7 +91,7 @@ class TestAssessments(unittest.TestCase):
                   'asmt_score_max': 500,
                   'asmt_claim_2_score': 2,
                   'asmt_claim_2_name': 'Two'}
-        claims = get_claims(number_of_claims=2, result=result, get_names_only=False)
+        claims = get_claims(number_of_claims=2, result=result, include_names=True, include_scores=True)
         self.assertEqual(len(result), 4)
         self.assertTrue(len(claims), 2)
         self.assertEqual(claims[1]['name2'], 'Claims 2 & 4')
@@ -114,12 +114,83 @@ class TestAssessments(unittest.TestCase):
                   'asmt_score_max': 500,
                   'asmt_claim_2_score': 2,
                   'asmt_claim_2_name': 'Two'}
-        claims = get_claims(number_of_claims=2, result=result, get_names_only=True)
+        claims = get_claims(number_of_claims=2, result=result, include_names=True)
         self.assertEqual(len(result), 4)
         self.assertTrue(len(claims), 2)
         self.assertEqual(claims[1]['name2'], 'Claim 2')
         self.assertEqual(len(claims[0]), 2)
         self.assertEqual(len(claims[1]), 2)
+
+    def test_get_claims_for_scores_only(self):
+        result = {'asmt_cut_point_name_1': 'one',
+                  'asmt_claim_1_score_range_min': 1,
+                  'asmt_claim_1_score_range_max': 4,
+                  'asmt_claim_1_score_min': 2,
+                  'asmt_claim_1_score_max': 5,
+                  'asmt_score_max': 500,
+                  'asmt_claim_1_score': 2,
+                  'asmt_claim_1_name': 'name',
+                  'asmt_subject': 'ELA',
+                  'asmt_cut_point_name_2': 'two',
+                  'asmt_claim_2_score_range_min': 1,
+                  'asmt_claim_2_score_range_max': 4,
+                  'asmt_claim_2_score_min': 2,
+                  'asmt_claim_2_score_max': 5,
+                  'asmt_score_max': 500,
+                  'asmt_claim_2_score': 2,
+                  'asmt_claim_2_name': 'Two'}
+        claims = get_claims(number_of_claims=2, result=result, include_scores=True)
+        self.assertEqual(len(claims), 2)
+        self.assertEqual(len(claims[0]), 4)
+        self.assertEqual(claims[0]['score'], '2')
+
+    def test_get_claims_for_indexer_only(self):
+        result = {'asmt_cut_point_name_1': 'one',
+                  'asmt_claim_1_score_range_min': 1,
+                  'asmt_claim_1_score_range_max': 4,
+                  'asmt_claim_1_score_min': 2,
+                  'asmt_claim_1_score_max': 5,
+                  'asmt_score_max': 500,
+                  'asmt_claim_1_score': 2,
+                  'asmt_claim_1_name': 'name',
+                  'asmt_subject': 'ELA',
+                  'asmt_cut_point_name_2': 'two',
+                  'asmt_claim_2_score_range_min': 1,
+                  'asmt_claim_2_score_range_max': 4,
+                  'asmt_claim_2_score_min': 2,
+                  'asmt_claim_2_score_max': 5,
+                  'asmt_score_max': 500,
+                  'asmt_claim_2_score': 2,
+                  'asmt_claim_2_name': 'Two'}
+        claims = get_claims(number_of_claims=2, result=result, include_indexer=True)
+        self.assertEqual(len(claims), 2)
+        self.assertEqual(len(claims[0]), 1)
+        self.assertEqual(claims[0]['indexer'], '1')
+        self.assertEqual(claims[1]['indexer'], '2')
+
+    def test_get_claims_for_min_max_only(self):
+        result = {'asmt_cut_point_name_1': 'one',
+                  'asmt_claim_1_score_range_min': 1,
+                  'asmt_claim_1_score_range_max': 4,
+                  'asmt_claim_1_score_min': 2,
+                  'asmt_claim_1_score_max': 5,
+                  'asmt_score_max': 500,
+                  'asmt_claim_1_score': 2,
+                  'asmt_claim_1_name': 'name',
+                  'asmt_subject': 'ELA',
+                  'asmt_cut_point_name_2': 'two',
+                  'asmt_claim_2_score_range_min': 1,
+                  'asmt_claim_2_score_range_max': 4,
+                  'asmt_claim_2_score_min': 2,
+                  'asmt_claim_2_score_max': 5,
+                  'asmt_score_max': 500,
+                  'asmt_claim_2_score': 2,
+                  'asmt_claim_2_name': 'Two'}
+        claims = get_claims(number_of_claims=2, result=result, include_min_max_scores=True)
+        self.assertEqual(len(claims), 2)
+        self.assertEqual(len(claims[0]), 2)
+        self.assertEqual(claims[0]['min_score'], '2')
+        self.assertEqual(claims[1]['max_score'], '5')
 
 
 if __name__ == "__main__":

@@ -241,6 +241,10 @@ define [
       allAssessments[value.toUpperCase()] = []
     
     for row in allAssessments["ALL"]
+      # Format student name
+      row['student_full_name'] = edwareUtil.format_full_name_reverse row['student_first_name'], row['student_middle_name'], row['student_last_name']
+      # This is for links in drill down
+      row['params'] = {"studentGuid": row['student_guid']}
       assessment = row['assessments']
       for key, value of subjectsData
         # check that we have such assessment first, since a student may not have taken it

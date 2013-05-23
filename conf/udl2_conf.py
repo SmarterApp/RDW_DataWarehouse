@@ -8,7 +8,8 @@ udl2_conf = {
                          'udl2.W_file_loader',
                          'udl2.W_final_cleanup',
                          'udl2.W_dummy_task',
-                         'udl2.W_move_to_target'],
+                         'udl2.W_move_to_target',
+                         'udl2.W_load_json_to_integration'],
     },
     'file_splitter':{  # Options for file_splitter
         'row_limit': 10000,  # default row number for split files

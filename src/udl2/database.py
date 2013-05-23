@@ -250,6 +250,7 @@ UDL_METADATA = {
             ('score_claim_3_max', False, 'smallint', '', True, "Claim 3 Score - Maximum"),
             ('score_claim_4', False, 'smallint','',  True, "Claim 4 Score"),
             ('score_claim_4_min', False, 'smallint', '', True, "Claim 4 Score - Minimum"),
+            ('score_claim_4_max', False, 'smallint', '', True, "Claim 4 Score - Maximum"),
             ('guid_staff', False, 'varchar(50)', '', True, "Staff GUID"),
             ('name_staff_first', False, 'varchar(256)', '', True, "Staff First Name"),
             ('name_staff_middle', False, 'varchar(256)', '', True, "Staff Middle Name"),

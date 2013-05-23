@@ -211,7 +211,7 @@ UDL_METADATA = {
             ('guid_asmt_location', False, 'varchar(50)', '', True, "GUID for location where assessment was taken"),
             ('name_asmt_location', False, 'varchar(256)', '', True, "Name for location where assessment was taken"),
             ('grade_asmt', False,	'varchar(10)', '', False, "Assessment Grade"),
-            ('inst_hier_guid', False, 'varchar50', '', False, "DO WE EVEN NEED THIS HERE, since all the inst_hier data is already here"),
+            ('inst_hier_guid', False, 'varchar(50)', '', False, "DO WE EVEN NEED THIS HERE, since all the inst_hier data is already here"),
             ('name_state', False, 'varchar(32)', '', False, "Name of the State"),
             ('code_state', False,	'varchar(2)', '', False, "State Code"),
             ('guid_district', False, 'varchar(50)', '', False, "District GUID"),

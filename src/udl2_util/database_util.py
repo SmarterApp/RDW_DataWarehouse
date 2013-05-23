@@ -4,8 +4,12 @@ Created on May 22, 2013
 @author: ejen
 '''
 
+from collections import OrderedDict
+
 from sqlalchemy.engine import create_engine
 from sqlalchemy.sql.expression import func, text
+from sqlalchemy import MetaData
+
 
 def connect_db(db_driver, db_user, db_password, db_host, db_port, db_name):
     '''
@@ -18,7 +22,7 @@ def connect_db(db_driver, db_user, db_password, db_host, db_port, db_name):
                                                                                             db_password=db_password,
                                                                                             db_host=db_host,
                                                                                             db_port=db_port,
-                                                                                            db_name=db_name) 
+                                                                                            db_name=db_name)
     # print(db_string)
     engine = create_engine(db_string)
     db_connection = engine.connect()
@@ -35,22 +39,21 @@ def execute_queries(conn, list_of_queries, except_msg):
     except Exception as e:
         print(except_msg, e)
         trans.rollback()
-        
-        
+
+
 def get_table_columns_info(conn, table_name, is_conn_a_dblink=False):
     if is_conn_a_dblink:
         sql_query = text("")
-    else: # table is in the local database server
+    else:  # table is in the local database server
         sql_query = text("SELECT column_name, data_type, character_maximum_length " +
                          "FROM information_schema.columns "
-                         "WHERE table_name = \'%s\' " 
+                         "WHERE table_name = \'%s\' "
                         % (table_name))
     result = conn.execute(sql_query)
     columns = []
     for row in result:
         columns.append((row[0], row[1], row[2]))
     return columns
-    
 
 
 def get_table_column_types(conf, target_table, column_names):
@@ -87,3 +90,37 @@ def create_information_query(conf, target_table):
                                                 db_password_target=conf['db_password_target'],
                                                 target_table=target_table)
     return select_query
+
+
+def get_schema_metadata(db_engine, schema_name):
+    '''
+    Get the SQLAlchemy MetaData object
+    @param db_engine: a SQLAlchemy engine object returned connect_db method
+    @type db_engine: sqlalchemy.engine
+    @param schema_name: the name of the schema to use in getting the MetaData
+    @type schema_name: str
+    @return: A MetaData object corresponding to the given schema and engine
+    @rtype: sqlalchemy.schema.MetaData
+    '''
+
+    metadata = MetaData()
+    metadata.reflect(db_engine, schema_name)
+    return metadata
+
+
+def get_sqlalch_table_object(db_engine, schema_name, table_name):
+    '''
+    Get a SQLAlchemy table object for the given table and schema name
+    @param db_engine: a SQLAlchemy engine object returned connect_db method
+    @type db_engine: sqlalchemy.engine
+    @param schema_name: the name of the schema to use in getting the MetaData
+    @type schema_name: str
+    @param table_name: the name of the table to get
+    @type table_name: str
+    @return: A table object from SQLAlchemy
+    @rtype: sqlalchemy.schema.Table
+    '''
+
+    metadata = get_schema_metadata(db_engine, schema_name)
+    table = metadata.tables[schema_name + '.' + table_name]
+    return table

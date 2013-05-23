@@ -1,3 +1,16 @@
+'''
+Worker to load assessment json data from a json file
+to the integration table.
+
+Main Celery Task:
+method: task()
+name: "udl2.W_load_json_to_integration.task"
+
+Error Handler:
+method: error_handler()
+name: "udl2.W_load_json_to_integration.error_handler"
+'''
+
 from __future__ import absolute_import
 
 from celery.result import AsyncResult

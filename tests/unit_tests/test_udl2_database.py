@@ -46,15 +46,32 @@ class TestUdl2Database(unittest.TestCase):
     def _compare_column_names(self,  ddl_in_code, ddl_in_db):
         ddl_code_column_names = [c[0] for c in ddl_in_code]
         ddl_db_column_names = [c[0] for c in ddl_in_db]
-        if set(ddl_code_column_names) != set(ddl_db_column_names):
-            return False
-        else:
-            return True
+        return ddl_code_column_names == ddl_db_column_names
         
         
     def _compare_column_types(self, ddl_in_code, ddl_in_db):
-        return True
-    
+        ddl_code_column_types = []
+        for c in ddl_in_code:
+            column_type = re.sub('\(.+\)', '', c[2])
+            if column_type == 'bigserial':
+                column_type = 'bigint'
+            if column_type == 'json':
+                column_type = 'text' # sql alchmey generated it as text
+            ddl_code_column_types.append(column_type)
+        ddl_db_column_types = []
+        for c in ddl_in_db:
+            column_type = c[1]
+            if c[1] == 'bigserial':
+                column_type = 'bigint'
+            elif c[1] == 'character varying':
+                column_type = 'varchar'
+            elif c[1] == 'timestamp without time zone':
+                column_type = 'timestamp'
+            elif c[1] == 'double precision':
+                column_type = 'double'
+            ddl_db_column_types.append(column_type)
+        
+        return ddl_code_column_types == ddl_db_column_types
     
     def _compare_column_sizes(self, ddl_in_code, ddl_in_db):
         ddl_code_column_sizes = []

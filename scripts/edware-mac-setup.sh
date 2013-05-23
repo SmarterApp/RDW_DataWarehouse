@@ -1,7 +1,9 @@
 #!/bin/bash
 
 # list of dependencies
-DEPS=(libxmlsec1 wkhtmltopdf rabbitmq)
+BREW_DEPS=(libxmlsec1 wkhtmltopdf rabbitmq)
+PIP_DEPS=(nose coverage nose-cov)
+
 
 # check if a user is using python virtualenv
 if [ -z ${VIRTUAL_ENV:=""} ]; then
@@ -22,9 +24,14 @@ SMARTER=$(cd "${FILE_PATH}/../smarter";pwd)
 cd ${SMARTER}
 python setup-developer.py develop
 
-for DEP in ${DEPS[@]}
+for DEP in ${BREW_DEPS[@]}
 do
     brew install ${DEP} >/dev/null 2>&1
+done
+
+for DEP in ${PIP_DEPS[@]}
+do
+    pip install ${DEP} >/dev/null 2>&1
 done
 
 

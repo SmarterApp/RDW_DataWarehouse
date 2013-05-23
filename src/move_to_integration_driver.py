@@ -1,4 +1,4 @@
-from udl2.W_move_to_integration import move_to_integration
+from udl2.W_load_from_staging_to_integration import move_to_integration
 from celery import chain
 import argparse
 

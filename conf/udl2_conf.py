@@ -9,6 +9,7 @@ udl2_conf = {
                          'udl2.W_final_cleanup',
                          'udl2.W_dummy_task',
                          'udl2.W_move_to_target',
+                         'udl2.W_move_to_integration',
                          'udl2.W_load_json_to_integration'],
     },
     'file_splitter':{  # Options for file_splitter

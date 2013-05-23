@@ -8,7 +8,7 @@ from udl2.celery import celery, udl2_conf
 from celery.result import AsyncResult
 from celery.utils.log import get_task_logger
 import move_to_target.column_mapping as col_map
-from move_to_integration import move_data_from_staging_to_integration
+from move_to_integration.move_to_integration import move_data_from_staging_to_integration
 import datetime
 
 

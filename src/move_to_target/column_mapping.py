@@ -31,7 +31,7 @@ def get_column_mapping():
     column_map_integration_to_target = {
         'dim_asmt':
             OrderedDict([
-                ('asmt_rec_id', "nextval('GLOBAL_REC_SEQ')"),
+                ('asmt_rec_id', 'nextval(\'"GLOBAL_REC_SEQ"\')'),
                 ('asmt_guid', 'guid_asmt'),
                 ('asmt_type', 'type'),
                 ('asmt_period', 'period'),
@@ -72,7 +72,7 @@ def get_column_mapping():
             ]),
         'dim_inst_hier':
             OrderedDict([
-                ('inst_hier_rec_id', "nextval('GLOBAL_REC_SEQ')"),
+                ('inst_hier_rec_id', 'nextval(\'"GLOBAL_REC_SEQ"\')'),
                 ('state_name', 'name_state'),
                 ('state_code', 'code_state'),
                 ('district_guid', 'guid_district'),
@@ -86,7 +86,7 @@ def get_column_mapping():
             ]),
         'dim_student':
             OrderedDict([
-                ('student_rec_id', "nextval('GLOBAL_REC_SEQ')"),
+                ('student_rec_id', 'nextval(\'"GLOBAL_REC_SEQ"\')'),
                 ('student_guid', 'guid_student'),
                 ('first_name', 'name_student_first'),
                 ('middle_name', 'name_student_middle'),
@@ -110,7 +110,7 @@ def get_column_mapping():
             ]),
         'dim_staff':
             OrderedDict([
-                ('staff_rec_id', "nextval('GLOBAL_REC_SEQ')"),
+                ('staff_rec_id', 'nextval(\'"GLOBAL_REC_SEQ"\')'),
                 ('staff_guid', 'guid_staff'),
                 ('first_name', 'name_staff_first'),
                 ('middle_name', 'name_staff_middle'),
@@ -141,7 +141,7 @@ def get_column_mapping():
        #     ]),
         'fact_asmt_outcome':
             OrderedDict([
-                ('asmnt_outcome_rec_id', "nextval('GLOBAL_REC_SEQ')"),
+                ('asmnt_outcome_rec_id', 'nextval(\'"GLOBAL_REC_SEQ"\')'),
                 ('asmt_rec_id', None),
                 ('student_guid', 'guid_student'),
                 ('teacher_guid', 'guid_staff'),

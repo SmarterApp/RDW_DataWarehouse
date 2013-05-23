@@ -5,7 +5,7 @@ import argparse
 
 def main():
     parser = argparse.ArgumentParser(description='Move to Target Worker')
-    parser.add_argument("-b", "--batch_id", type=int, default=1369190550, help="Batch id")
+    parser.add_argument("-b", "--batch_id", type=int, default=1369321935, help="Batch id")
     args = parser.parse_args()
 
     batch = {'batch_id': args.batch_id}

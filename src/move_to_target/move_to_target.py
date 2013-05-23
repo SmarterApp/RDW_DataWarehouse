@@ -128,8 +128,8 @@ def explode_data_to_dim_table(conf, db_user, db_password, db_host, db_name, sour
 
     # execute the query
     # print("Executing query... %s, %s " % (target_table, query))
-    if target_table in ['dim_asmt']:
-        execute_queries(conn, [query], 'Exception -- exploding data from integration to target')
+    # if target_table in ['dim_asmt']:
+    execute_queries(conn, [query], 'Exception -- exploding data from integration to target')
     conn.close()
 
 

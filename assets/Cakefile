@@ -67,7 +67,7 @@ task 'build:coffee', ->
 task 'build:less', ->
     compile 'less/style.less', 'css/style.css'
     
-task 'build:optimize', ->
+task 'optimize', 'Optimize javascript', ->
     optimizer = 'js/3p/r.js'
     buildScript = path.join(jspath, "app.build.js")
     shell.exec('node ' + optimizer + ' -o ' + buildScript + ' mainConfigFile=main.js')
@@ -76,7 +76,6 @@ task 'build:optimize', ->
 task 'build', ->
     invoke 'build:coffee'
     invoke 'build:less'
-    #invoke 'build:optimize'
  
 task 'watch', ->
     flour.minifiers.disable 'js'

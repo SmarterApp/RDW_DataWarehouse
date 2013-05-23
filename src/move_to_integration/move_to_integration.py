@@ -1,9 +1,12 @@
 import datetime
 from udl2_util.database_util import connect_db, execute_queries
+from move_to_integration.column_mapping import get_column_mapping
 
-def move_data_from_staging_to_integration(conf, src_database, src_schema, src_table, err_table,
-                                          int_database, int_schema, int_table):
+def move_data_from_staging_to_integration(conf):
     (conn, engine) = connect_db()
+    map_type = 'sbac_staging_to_integration'
+    column_mapping = get_column_mapping(map_type)
+    move_data_from_staging_to_integration(conf)
     sql_query = ""
     except_msg = "problem when load data from staging table to integration table"
     execute_queries(conn, [sql_query], except_msg)

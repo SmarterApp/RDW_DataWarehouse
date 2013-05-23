@@ -1,4 +1,4 @@
-from udl2.W_move_to_integration import move_to_integration
+from udl2.W_load_to_integration_table import task
 from celery import chain
 import argparse
 
@@ -17,7 +17,7 @@ def main():
     print("****Finished moving to target %s by Celery Group****" % str(result))
     """
 
-    result_uuid = chain(move_to_integration.s(batch),)()
+    result_uuid = chain(task.s(batch),)()
     result_value = result_uuid.get()
     print(result_value)
 

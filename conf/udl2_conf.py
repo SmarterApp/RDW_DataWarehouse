@@ -9,7 +9,7 @@ udl2_conf = {
                          'udl2.W_final_cleanup',
                          'udl2.W_dummy_task',
                          'udl2.W_move_to_target',
-                         'udl2.W_move_to_integration',
+                         'udl2.W_load_to_integration_table',
                          'udl2.W_load_json_to_integration'],
     },
     'file_splitter':{  # Options for file_splitter
@@ -62,7 +62,7 @@ udl2_conf = {
                    'next':'stage_3',  # We use next to specify what is the next stage id to be send to, None for termination. 
                    'prev':'stage_1',  # We use prev to specify what is the previous stage. this also helps possibly configurable message parser.
         },
-        'stage_3':{'task_name':'udl2.W_move_to_integration.task',  # thrid task in current piple line. 
+        'stage_3':{'task_name':'udl2.W_load_to_integration_table.task',  # thrid task in current piple line. 
                    'description':'',  # programmers have to specify what is the celery task that will be execute in this stage
                    'queue_name':'Q_copy_to_integration',  # And the where the messages come from 
                    'routing_key':'udl2',  # And routing key, currently for all udl2 pipeline will be udl2 to differentiate it from celery's task
@@ -130,7 +130,6 @@ udl2_conf = {
         'db_pass':'password',
         'db_driver':'postgres'
     }
-
 }
 
 

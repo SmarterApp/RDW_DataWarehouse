@@ -19,6 +19,7 @@ logger = get_task_logger(__name__)
 @celery.task(name="udl2.W_move_to_integration.task")
 def move_to_integration(batch):
     conf = generate_conf(batch)
+    move_data_from_staging_to_integration(conf)
     return batch
 
 

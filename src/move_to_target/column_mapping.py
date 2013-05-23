@@ -51,7 +51,7 @@ def get_column_mapping():
                 ('asmt_score_max', 'score_overall_max'),
                 ('asmt_claim_1_score_min', 'score_claim_1_min'),
                 ('asmt_claim_1_score_max', 'score_claim_1_max'),
-                ('asmt_claim_1_score_weight', 'score_claim_weight'),
+                ('asmt_claim_1_score_weight', 'score_claim_1_weight'),
                 ('asmt_claim_2_score_min', 'score_claim_2_min'),
                 ('asmt_claim_2_score_max', 'score_claim_2_max'),
                 ('asmt_claim_2_score_weight', 'score_claim_2_weight'),
@@ -141,6 +141,7 @@ def get_column_mapping():
        #     ]),
         'fact_asmt_outcome':
             OrderedDict([
+                ('asmnt_outcome_rec_id', "nextval('GLOBAL_REC_SEQ')"),
                 ('asmt_rec_id', None),
                 ('student_guid', 'guid_student'),
                 ('teacher_guid', 'guid_staff'),
@@ -155,9 +156,9 @@ def get_column_mapping():
                 ('asmt_grade', 'grade_asmt'),
                 ('enrl_grade', 'grade_enrolled'),
                 ('date_taken', 'date_assessed'),
-                ('date_taken_day', 'EXTRACT(DAY FROM date_taken)'),
-                ('date_taken_month', 'EXTRACT(MONTH FROM date_taken)'),
-                ('date_taken_year', 'EXTRACT(YEAR FROM date_taken)'),
+                ('date_taken_day', 'EXTRACT(DAY FROM date_assessed)'),
+                ('date_taken_month', 'EXTRACT(MONTH FROM date_assessed)'),
+                ('date_taken_year', 'EXTRACT(YEAR FROM date_assessed)'),
                 ('asmt_score', 'score_asmt'),
                 ('asmt_score_range_min', 'score_asmt_min'),
                 ('asmt_score_range_max', 'score_asmt_max'),
@@ -182,10 +183,31 @@ def get_column_mapping():
     return column_map_integration_to_target
 
 
-def get_foreign_keys_in_fact_table():
-    # key: column name in fact_asmt_outcome which is a foreign key
-    # value: corresponding (table_name, column_name)
-    return dict([('asmt_rec_id', ('dim_asmt', 'asmt_rec_id')),
-            ('inst_hier_rec_id', ('dim_inst_hier', 'inst_hier_rec_id')),
-            ('section_rec_id', ('dim_section', 'section_rec_id'))
-            ])
+def get_asmt_rec_id_info():
+    basic_map = {'rec_id': 'asmt_rec_id',
+                 'target_table': 'dim_asmt',
+                 'guid_column_name': 'asmt_guid'
+                 }
+    column_map = get_column_mapping()[basic_map['target_table']]
+    guid_column_in_source = column_map[basic_map['guid_column_name']]
+    basic_map['guid_column_in_source'] = guid_column_in_source
+    basic_map['source_table'] = get_target_tables_parallel()[basic_map['target_table']]
+    return basic_map
+
+
+"""
+def get_section_rec_id_info():
+    # need to be revised
+    basic_map = {'rec_id': 'section_rec_id',
+                 'target_table': 'dim_section',
+                 'guid_column_name': 'section_guid'
+                }
+    guid_column_in_source = 'guid_section'
+    basic_map['guid_column_in_source'] = guid_column_in_source
+    basic_map['source_table'] = get_target_tables_parallel()['dim_staff']
+    return basic_map
+"""
+
+
+def get_column_for_inst_hier_map():
+    return (['state_code', 'district_guid', 'school_guid'], 'inst_hier_rec_id')

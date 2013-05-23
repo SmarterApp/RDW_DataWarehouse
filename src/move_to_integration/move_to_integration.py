@@ -1,8 +1,12 @@
 import datetime
+from udl2_util.database_util import connect_db, execute_queries
 
-def move_data_from_staging_to_integration(src_database, src_schema, src_table, err_table, int_database, int_schema, int_table):
+def move_data_from_staging_to_integration(conf, src_database, src_schema, src_table, err_table,
+                                          int_database, int_schema, int_table):
+    (conn, engine) = connect_db()
     sql_query = ""
-    
+    except_msg = "problem when load data from staging table to integration table"
+    execute_queries(conn, [sql_query], except_msg)
 
 
 

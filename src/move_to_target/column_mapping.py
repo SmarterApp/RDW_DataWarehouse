@@ -155,9 +155,9 @@ def get_column_mapping():
                 ('asmt_grade', 'grade_asmt'),
                 ('enrl_grade', 'grade_enrolled'),
                 ('date_taken', 'date_assessed'),
-                ('date_taken_day', 'EXTRACT(DAY FROM date_taken)'),
-                ('date_taken_month', 'EXTRACT(MONTH FROM date_taken)'),
-                ('date_taken_year', 'EXTRACT(YEAR FROM date_taken)'),
+                ('date_taken_day', "EXTRACT(DAY FROM TO_DATE(date_assessed, 'YYYYMMDD'))"), # date_assessed
+                ('date_taken_month', "EXTRACT(MONTH FROM TO_DATE(date_assessed, 'YYYYMMDD'))"),
+                ('date_taken_year', "EXTRACT(YEAR FROM TO_DATE(date_assessed, 'YYYYMMDD'))"),
                 ('asmt_score', 'score_asmt'),
                 ('asmt_score_range_min', 'score_asmt_min'),
                 ('asmt_score_range_max', 'score_asmt_max'),

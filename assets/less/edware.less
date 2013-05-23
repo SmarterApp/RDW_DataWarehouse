@@ -757,7 +757,7 @@ table {
 }
 
 
-.sectionHeader, #print_reportInfoContent { display: none; }
+.printContent { display: none; }
 /* Print css */
 @media print {
       
@@ -783,6 +783,7 @@ table {
         display: none !important;
       }
       
+      .printContent { display: block; }
       #header, #breadcrumb{ display: none; }
       #individualStudentContent  { background: none; float: none;}
       .outerBox h2 { display: none;}
@@ -793,26 +794,35 @@ table {
         margin-bottom: 20px; 
         border-bottom: solid 2px @color-black; 
         width: 100%;  
-        min-height: 56px;
+        min-height: 65px;
         
         .logo { 
           position: relative;
           float: left;
+          margin-left: 15px;
         }
         .summary { 
           text-align: right; 
           float: right; 
-          font-size: 13px; 
-          line-height: 17px;
+          font-size: 15px; 
+          line-height: 15px;
           color: @color-B1;
+          margin-right: 15px;
           
           .label {
-            color: @color-B1;
+            color: @color-black;
             background: none;
             font-weight: normal;
+            font-size: 15px;
+            padding: 0;
           }
           
-          .title { color: @color-B1; font-size: 18px; font-weight: bold; }
+          .title { 
+            color: @color-black; 
+            font-size: 17px; 
+            font-weight: bold; 
+            margin-bottom: 5px;
+          }
         }
       }
       .pageBreak { page-break-after:always;}
@@ -828,16 +838,39 @@ table {
       .surveyMonkeyPopup { display: none;}
       .legendPopup, .aboutReportPopup { float: left; width: 100%;}
       #footer { display: none;}
-      
-      .sectionHeader { display: block; }
-      #print_reportInfoContent { display: block; width: 100%;}
+      #print_reportInfoContent { width: 100%;}
       #print_reportInfoContent .helpPopup { display: none;}
       .reportInfoWrapper { width: 100%; }
       #content { min-height: 0; }
       
+      .overallScoreSection {
+        .summary {
+          margin: 40px 15px 15px 0;
+          
+          h1 {
+            color: @color-A1;
+            margin-top: -10px;
+          }
+          
+          h3 {
+            line-height: 20px;
+          }
+          
+          .teacher, .date {     
+            font-size: 15px; 
+          }
+          
+        }
+      }
+      .contentWrapper .overallScoreSection .info { margin-left: 20px; }
+      .contentWrapper .overallScoreSection .info .overallDesc { color: @color-black !important; }   
+      .contentWrapper .overallScoreSection .info .indicator { margin-left: 7px;} 
+      .contentWrapper .overallScoreSection .info2 { margin-left: 450px; }
+      
 }
 
 
+      
 
     
     

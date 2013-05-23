@@ -10,7 +10,7 @@ from edapi.exceptions import NotFoundException
 from smarter.reports.helpers.constants import Constants
 
 
-def generate_isr_report_path_by_student_guid(pdf_report_base_dir='/', student_guid=None, asmt_type=Constants.SUMMATIVE):
+def generate_isr_report_path_by_student_guid(pdf_report_base_dir='/', student_guid=None, asmt_type=Constants.SUMMATIVE, grayScale=False):
     '''
     get report absolute path by student_guid.
     if the directroy path does not exist, then create it.
@@ -41,13 +41,13 @@ def generate_isr_report_path_by_student_guid(pdf_report_base_dir='/', student_gu
         else:
             raise NotFoundException("There are no results for student id {0}".format(student_guid))
     # get absolute file path name
-    file_path = generate_isr_absolute_file_path_name(pdf_report_base_dir=pdf_report_base_dir, state_code=state_code, asmt_period_year=asmt_period_year, district_guid=district_guid, school_guid=school_guid, asmt_grade=asmt_grade, student_guid=student_guid, asmt_type=asmt_type)
+    file_path = generate_isr_absolute_file_path_name(pdf_report_base_dir=pdf_report_base_dir, state_code=state_code, asmt_period_year=asmt_period_year, district_guid=district_guid, school_guid=school_guid, asmt_grade=asmt_grade, student_guid=student_guid, asmt_type=asmt_type, grayScale=grayScale)
     return file_path
 
 
-def generate_isr_absolute_file_path_name(pdf_report_base_dir='/', state_code=None, asmt_period_year=None, district_guid=None, school_guid=None, asmt_grade=None, student_guid=None, asmt_type=Constants.SUMMATIVE):
+def generate_isr_absolute_file_path_name(pdf_report_base_dir='/', state_code=None, asmt_period_year=None, district_guid=None, school_guid=None, asmt_grade=None, student_guid=None, asmt_type=Constants.SUMMATIVE, grayScale=False):
     '''
     generate isr absolute file path name
     '''
-    dirname = os.path.join(pdf_report_base_dir, state_code, asmt_period_year, district_guid, school_guid, asmt_grade, 'isr', asmt_type, student_guid + '.pdf')
-    return dirname
+    dirname = os.path.join(pdf_report_base_dir, state_code, asmt_period_year, district_guid, school_guid, asmt_grade, 'isr', asmt_type, student_guid)
+    return dirname + (".g.pdf" if grayScale else ".pdf")

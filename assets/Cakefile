@@ -20,7 +20,7 @@ buildCoffee = (source) ->
     if path.extname(source) == '.coffee'
       compile source, path.join(destDir, basename + '.js'), (stuff) ->
         console.log "Dest: " + path.join(destDir, basename + '.js')
-        minify path.join(destDir, basename + '.js'), path.join(destDir, basename + '.js')
+        # minify path.join(destDir, basename + '.js'), path.join(destDir, basename + '.js')
     else
         fs.createReadStream(source).pipe(fs.createWriteStream path.join(destDir, basename))
 

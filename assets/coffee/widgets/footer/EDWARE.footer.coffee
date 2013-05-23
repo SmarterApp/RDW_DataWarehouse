@@ -73,9 +73,9 @@ define [
   # Make the footer button active when associate popup opens up
   $(document).on
     click: ->
-      $("#footer .nav li a").not($(this)).removeClass("active")
+      $("#footer .nav li a.toggle").not($(this)).removeClass("active")
       $(this).toggleClass("active")
-    , "#footer .nav li a"
+    , "#footer .nav li a.toggle"
     
   
   # Popup will close if user clicks popup hide button
@@ -84,6 +84,12 @@ define [
       $("#"+$(this).data("id")).popover("hide")
       $("#footer .nav li a").removeClass("active")
      , ".hideButton a"
+
+  $(document).on
+    click: ->
+      url=document.URL.replace("/assets/html/","/services/pdf/")
+      window.open(url, "_blank",'toolbar=0,location=0,menubar=0,status=0,resizable=yes')
+    , "#print"
 
 
   create: create

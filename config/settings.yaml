@@ -67,7 +67,7 @@ common:
     run.npm.update: true
     # Timeout for pdf generation process
     pdf.generate.timeout: 10
-    pdf.report_base_dir: /tmp
+    pdf.report_base_dir: /tmp/pdf
     pdf.celery_timeout: 30
 
   '[server:main]':
@@ -231,7 +231,6 @@ qa2:
 
 jenkins_qa:
   '[app:main]':
-    pdf.report_base_dir: /opt/edware/pdf
     mode: test
     edware:
       schema_name: edware_sds_0_1
@@ -246,6 +245,7 @@ jenkins_qa:
 uat:
   '[app:main]':
     mode: prod
+    pdf.report_base_dir: /opt/edware/pdf
     disable_stack_trace: true
     edware:
       schema_name: edware_uat_0_1

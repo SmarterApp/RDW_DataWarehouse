@@ -153,7 +153,10 @@ function show_help {
 
 function setup_functional_test_dependencies {
     echo "Setup functional test dependencies"
-    
+    if [ -d /tmp/pdf ]; then
+        rm -rf /tmp/pdf
+    fi
+    mkdir /tmp/pdf
     rm -rf $WORKSPACE/edware_test
     mkdir  $WORKSPACE/edware_test
     cd $WORKSPACE/edware_test

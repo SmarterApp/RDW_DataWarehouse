@@ -1,8 +1,4 @@
-#!/usr/bin/env python
 from __future__ import absolute_import
-from elastic_csv.elastic_csv import generate_stretched_csv_file
-import udl2.W_file_splitter
-from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 import shutil
 import os
 import argparse
@@ -19,34 +15,39 @@ WORK_ZONE = os.path.join(ZONES, 'work')
 HISTORY_ZONE = os.path.join(ZONES, 'history_zone')
 DATAFILES = os.path.join(ROOT_DIRECTORY, 'datafiles')
 
+# Keys for validator message
+FILE_TO_VALIDATE_NAME = 'file_to_validate_name'
+FILE_TO_VALIDATE_DIR = 'file_to_validate_dir'
+BATCH_ID = 'batch_id'
 
-def start_pipeline(file_path):
+def start_pipeline(csv_file_path, json_file_path):
     '''
     Begins the UDL Pipeline process by copying the file found at 'file_path' to the landing zone and
-    adding a task to the file_splitter queue
+    initiating our main pipeline chain.
 
-    @param file_path: The file that gets uploaded to the "Landing Zone," beginning the UDL process
-    @type file_path: str
+    @param csv_file_path: The file that gets uploaded to the "Landing Zone," beginning the UDL process
+    @type csv_file_path: str
     '''
 
     # Create a unique name for the file when it is placed in the "Landing Zone"
-    landing_zone_file_name = create_unique_file_name(file_path)
-    landing_zone_file_path = os.path.join(LANDING_ZONE, landing_zone_file_name)
+    landing_zone_file_dir = LANDING_ZONE
+    landing_zone_file_name = create_unique_file_name(csv_file_path)
+    full_path_to_landing_zone_file = os.path.join(landing_zone_file_dir, landing_zone_file_name)
     # Copy the file over, using the new (unique) filename
-    shutil.copy(file_path, landing_zone_file_path)
+    shutil.copy(csv_file_path, full_path_to_landing_zone_file)
     # Now, add a task to the file splitter queue, passing in the path to the landing zone file
     # and the directory to use when writing the split files
-    msg = generate_message_for_file_splitter(landing_zone_file_path)
-    udl2.W_file_splitter.task.apply_async([msg], queue='Q_files_to_be_split')
+    validator_msg = generate_message_for_file_validator(landing_zone_file_dir, landing_zone_file_name)
+
+    # TODO: Kick off the pipeline using the validator message as a starting point
+    #udl2.W_file_splitter.task.apply_async([validator_msg], queue='Q_files_received')
 
 
-def generate_message_for_file_splitter(landing_zone_file_path):
+def generate_message_for_file_validator(landing_zone_file_dir, landing_zone_file_name):
     msg = {
-        'landing_zone_file': landing_zone_file_path,
-        'work_zone': WORK_ZONE,
-        'history_zone': HISTORY_ZONE,
-        # generate batch_id here
-        'batch_id': int(datetime.datetime.now().timestamp())
+        FILE_TO_VALIDATE_DIR:landing_zone_file_dir,
+        FILE_TO_VALIDATE_NAME: landing_zone_file_name,
+        BATCH_ID: int(datetime.datetime.now().timestamp())
     }
     return msg
 
@@ -74,25 +75,9 @@ if __name__ == '__main__':
     '''
 
     parser = argparse.ArgumentParser()
-    # These parameters are used only when using the default file (seed.csv) and elastic_csv to dynamically create a csv file
-    # They are passed as parameters to generate_stretched_csv_file(...) and a newly created file (output.csv) is created within /datafiles/
-    parser.add_argument('-r', dest='row_multiplier', required=False, type=int, default=1, help="number of times to muliply the rows in the seed file.")
-    parser.add_argument('-c', dest='column_multiplier', required=False, type=int, default=1, help="number of times to multiply the columns in the seed file.")
-    parser.add_argument('-s', dest='source_csv', required=False, default=os.path.join(DATAFILES, 'seed.csv'), help="path to the source file, default is seed.csv")
-    parser.add_argument('-o', dest='output_data_csv', required=False, default=os.path.join(DATAFILES, 'test_file.csv'), help="path to the file that will contain the newly generated csv data.")
-    parser.add_argument('-m', dest='output_metadata_csv', default=os.path.join(DATAFILES, 'test_file_metadata.csv'), help="path and file name to csv file of metadata for output")
+    parser.add_argument('-c', dest='source_csv', required=True, help="path to the source csv file.")
+    parser.add_argument('-j', dest='source_json', required=True, help="path to the source json file.")
     parser.add_argument('-t', dest='apply_transformation_rules', default='True', help="apply transformation rules or not")
     args = parser.parse_args()
 
-    if args.source_csv == str(os.path.join(DATAFILES, 'seed.csv')):
-        conf = {'row_multiplier': args.row_multiplier,
-                'column_multiplier': args.column_multiplier,
-                'source_csv': args.source_csv,
-                'output_data_csv': args.output_data_csv,
-                'output_metadata_csv': args.output_metadata_csv,
-                'apply_transformation_rules': args.apply_transformation_rules}
-        csv_file_path = generate_stretched_csv_file(conf)[0]
-    else:
-        csv_file_path = args.source_csv
-
-    start_pipeline(csv_file_path)
+    start_pipeline(args.source_csv, args.source_json)

@@ -27,15 +27,17 @@ def generate_conf(msg):
     conf = {
              # add batch_id from msg
             'batch_id': msg['batch_id'],
-
+            # error schema
+            'error_schema': udl2_conf['udl2_db']['staging_schema'],
             # source schema
             'source_schema': udl2_conf['udl2_db']['staging_schema'],
             # source database setting
-            'db_host': udl2_conf['udl2_db']['db_host'],
-            'db_port': udl2_conf['udl2_db']['db_port'],
-            'db_user': udl2_conf['udl2_db']['db_user'],
-            'db_name': udl2_conf['udl2_db']['db_database'],
-            'db_password': udl2_conf['udl2_db']['db_pass'],
+            'db_host_source': udl2_conf['udl2_db']['db_host'],
+            'db_port_source': udl2_conf['udl2_db']['db_port'],
+            'db_user_source': udl2_conf['udl2_db']['db_user'],
+            'db_name_source': udl2_conf['udl2_db']['db_database'],
+            'db_password_source': udl2_conf['udl2_db']['db_pass'],
+            'db_driver_source': udl2_conf['udl2_db']['db_driver'],
 
             # target schema
             'target_schema': udl2_conf['udl2_db']['integration_schema'],

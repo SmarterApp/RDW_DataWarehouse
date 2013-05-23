@@ -4,6 +4,7 @@ Created on Apr 4, 2013
 @author: kallen
 '''
 
+# TODO: move to separate constants file
 GRADES = 'grades'
 STUDENTS = 'students'
 STATE_TYPE = 'state_type'

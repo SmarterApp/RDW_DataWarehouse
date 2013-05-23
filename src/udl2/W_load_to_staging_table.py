@@ -54,8 +54,6 @@ def task(msg):
 #                                  udl2_queues[task.name]['queue'],
 #                                  udl2_stages[task.name]['routing_key'])
 
-#    udl2.W_move_to_target.task.apply_async([msg],
-#                                          routing_key='udl2')
     return msg
 
 

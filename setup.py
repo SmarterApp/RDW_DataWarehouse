@@ -1,3 +1,8 @@
+'''
+Created on May 2, 2013
+
+@author: ejen
+'''
 from distutils.core import setup
 import subprocess
 

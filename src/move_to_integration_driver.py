@@ -1,10 +1,10 @@
-from udl2.W_move_to_target import explode_to_dims, explode_to_fact
+from udl2.W_move_to_integration import move_to_integration
 from celery import chain
 import argparse
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Move to Target Worker')
+    parser = argparse.ArgumentParser(description='Move to Integration Driver')
     parser.add_argument("-b", "--batch_id", type=int, default=1369321935, help="Batch id")
     args = parser.parse_args()
 
@@ -17,7 +17,7 @@ def main():
     print("****Finished moving to target %s by Celery Group****" % str(result))
     """
 
-    result_uuid = chain(explode_to_dims.s(batch), explode_to_fact.s())()
+    result_uuid = chain(move_to_integration.s(batch),)()
     result_value = result_uuid.get()
     print(result_value)
 

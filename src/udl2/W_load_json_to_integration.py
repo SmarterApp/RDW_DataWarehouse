@@ -3,8 +3,10 @@ Worker to load assessment json data from a json file
 to the integration table.
 
 Main Celery Task:
-method: task()
+method: task(msg)
 name: "udl2.W_load_json_to_integration.task"
+msg parameter requires the following:
+'file_to_load', 'batch_id'
 
 Error Handler:
 method: error_handler()

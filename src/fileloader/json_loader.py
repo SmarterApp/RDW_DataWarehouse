@@ -21,6 +21,16 @@ import udl2_util.database_util as db_util
 
 
 DBDRIVER = "postgresql"
+JSON_FILE = 'json_file'
+DB_NAME = 'db_name'
+MAPPINGS = 'mappings'
+DB_PORT = 'db_port'
+DB_PASS = 'db_password'
+DB_USER = 'db_user'
+DB_HOST = 'db_host'
+INT_TABLE = 'integration_table'
+INT_SCHEMA = 'integration_schema'
+BATCH_ID = 'batch_id'
 
 
 def load_json(conf):
@@ -29,10 +39,10 @@ def load_json(conf):
     @param conf: The configuration dictionary
     '''
 
-    json_dict = read_json_file(conf['json_file'])
-    flattened_json = flatten_json_dict(json_dict, conf['mappings'])
-    load_to_table(flattened_json, conf['batch_id'], conf['db_host'], conf['db_name'], conf['db_user'], conf['db_port'],
-                  conf['db_password'], conf['integration_table'], conf['integration_schema'])
+    json_dict = read_json_file(conf[JSON_FILE])
+    flattened_json = flatten_json_dict(json_dict, conf[MAPPINGS])
+    load_to_table(flattened_json, conf[BATCH_ID], conf[DB_HOST], conf[DB_NAME], conf[DB_USER], conf[DB_PORT],
+                  conf[DB_PASS], conf[INT_TABLE], conf[INT_SCHEMA])
 
 
 def read_json_file(json_file):
@@ -101,7 +111,7 @@ def load_to_table(data_dict, batch_id, db_host, db_name, db_user, db_port, db_pa
     data_dict = fix_empty_strings(data_dict)
 
     # add the batch_id to the data
-    data_dict['batch_id'] = batch_id
+    data_dict[BATCH_ID] = batch_id
 
     # create insert statement and execute
     insert_into_int_table = s_int_table.insert().values(**data_dict)
@@ -131,18 +141,18 @@ if __name__ == '__main__':
     mapping = get_json_to_asmt_tbl_mappings()
 
     conf = {
-            'json_file': json_file,
-            'mappings': mapping,
-            'db_host': 'localhost',
-            'db_port': '5432',
-            'db_user': 'udl2',
-            'db_name': 'udl2',
-            'db_password': 'udl2abc1234',
-            'integration_schema': 'udl2',
-            'integration_table': 'INT_SBAC_ASMT',
-            'batch_id': 100
+            JSON_FILE: json_file,
+            MAPPINGS: mapping,
+            DB_HOST: 'localhost',
+            DB_PORT: '5432',
+            DB_USER: 'udl2',
+            DB_NAME: 'udl2',
+            DB_PASS: 'udl2abc1234',
+            INT_SCHEMA: 'udl2',
+            INT_TABLE: 'INT_SBAC_ASMT',
+            BATCH_ID: 100
     }
 
     start_time = time.time()
     load_json(conf)
-    print('json loaded into %s in %.2fs' % (conf['integration_schema'], time.time() - start_time))
+    print('json loaded into %s in %.2fs' % (conf[INT_SCHEMA], time.time() - start_time))

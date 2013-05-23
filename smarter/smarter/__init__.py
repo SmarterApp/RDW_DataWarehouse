@@ -14,6 +14,7 @@ import signal
 from pyramid_beaker import set_cache_regions_from_settings
 import sys
 from services.celery import setup_celery
+from smarter import services
 
 logger = logging.getLogger(__name__)
 CAKE_PROC = None
@@ -128,6 +129,7 @@ def prepare_env(settings):
     if auth_idp_metadata is not None:
         if auth_idp_metadata.startswith('../'):
             settings['auth.idp.metadata'] = os.path.abspath(os.path.join(os.path.dirname(__file__), auth_idp_metadata))
+    services.PDF_BASE_DIR = settings.get('pdf.report_base_dir', "/tmp")
 
 
 @atexit.register

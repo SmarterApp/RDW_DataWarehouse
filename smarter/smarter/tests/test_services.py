@@ -19,7 +19,6 @@ from smarter.services import post_pdf_service, get_pdf_service, send_pdf_request
 from edapi.exceptions import InvalidParameterError, ForbiddenError
 from services.celery import setup_celery
 import tempfile
-from pyramid.registry import Registry
 from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_report_path_by_student_guid
 from services.tasks.create_pdf import prepare_file_path
 from services.tests.tasks.test_create_pdf import get_cmd
@@ -32,10 +31,8 @@ class TestServices(Unittest_with_smarter_sqlite):
     def setUp(self):
         self.__request = DummyRequest()
         # Must set hook_zca to false to work with uniittest_with_sqlite
-        reg = Registry()
         self.__temp_dir = tempfile.mkdtemp()
-        reg['pdf.report_base_dir'] = self.__temp_dir
-        self.__config = testing.setUp(registry=reg, request=self.__request, hook_zca=False)
+        services.PDF_BASE_DIR = self.__temp_dir
         with SmarterDBConnection() as connection:
             # Insert into user_mapping table
             user_mapping = connection.get_table('user_mapping')

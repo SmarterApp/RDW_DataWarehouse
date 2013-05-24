@@ -338,7 +338,12 @@ function run_qunit_tests {
 
 function optimize_javascript {
     echo "Optimize javascript"
+    #enable python3.3
+    source ${VIRTUALENV_DIR}/bin/activate
+    #optimize javascript
     compile_assets true
+    #exit python3.3
+    deactivate
     echo "Finish optimization"
 }
 
@@ -362,11 +367,11 @@ function main {
         restart_apache
         restart_celeryd
         import_data_from_csv
-        run_qunit_tests
-#optimize_javascript
         setup_python33_functional_test_dependencies
         run_python33_functional_tests
         setup_functional_test_dependencies
+        run_qunit_tests
+        optimize_javascript
         run_functional_tests
         check_pep8 "$FUNC_DIR"
     elif [ ${MODE:=""} == "RPM" ]; then

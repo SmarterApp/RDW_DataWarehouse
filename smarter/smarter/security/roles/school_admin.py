@@ -4,7 +4,7 @@ Created on May 9, 2013
 @author: dip
 '''
 from smarter.reports.helpers.constants import Constants
-from sqlalchemy.sql.expression import select, and_, distinct
+from sqlalchemy.sql.expression import select, and_
 from smarter.security.constants import RolesConstants
 from smarter.security.roles.base import BaseRole, verify_context
 from smarter.security.context_role_map import ContextRoleMap
@@ -41,10 +41,7 @@ class SchoolAdmin(BaseRole):
         '''
         Returns true if school_admin has context to the list of student guids
         '''
-        fact_asmt_outcome = self.connector.get_table(Constants.FACT_ASMT_OUTCOME)
-        query = select([distinct(fact_asmt_outcome.c.student_guid)],
-                       from_obj=[fact_asmt_outcome])
-        query = query.where(and_(fact_asmt_outcome.c.most_recent, fact_asmt_outcome.c.status == 'C', fact_asmt_outcome.c.student_guid.in_(student_guids)))
+        query = super().get_students(student_guids)
         query = query.where(self.get_context(guid))
 
         results = self.connector.get_result(query)

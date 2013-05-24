@@ -25,10 +25,8 @@ def select_with_context(columns=None, whereclause=None, from_obj=[], **kwargs):
         # Look up each role for its context security object
         clauses = []
         for role in roles:
-            # Get the context object
-            context_obj = ContextRoleMap.get_context(role)
-            # Instantiate it
-            context = context_obj(connector)
+            context = __get_context_instance(role, connector)
+
             # Get context security expression to attach to where clause
             clause = context.get_context(guid)
             if clause is not None:
@@ -56,10 +54,7 @@ def check_context(student_guids):
 
         # Look up each role for its context security object
         for role in roles:
-            # Get the context object
-            context_obj = ContextRoleMap.get_context(role)
-            # Instantiate it
-            context = context_obj(connector)
+            context = __get_context_instance(role, connector)
 
             has_context = context.check_context(guid, student_guids)
             if has_context:
@@ -92,3 +87,13 @@ def __get_user_info(connector):
         guid = result[0][Constants.GUID]
 
     return (guid, roles)
+
+
+def __get_context_instance(role, connector):
+    '''
+    Given a role in string, return the context instance for it
+    '''
+    # Get the context object
+    context_obj = ContextRoleMap.get_context(role)
+    # Instantiate it
+    return context_obj(connector)

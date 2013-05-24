@@ -4,7 +4,7 @@ Created on May 9, 2013
 @author: dip
 '''
 from smarter.reports.helpers.constants import Constants
-from sqlalchemy.sql.expression import and_, select, distinct
+from sqlalchemy.sql.expression import and_, select
 from smarter.security.constants import RolesConstants
 from smarter.security.roles.default import BaseRole
 from smarter.security.context_role_map import ContextRoleMap
@@ -42,10 +42,7 @@ class Teacher(BaseRole):
         '''
         Given a list of student guids, return true if user guid has access to those students
         '''
-        fact_asmt_outcome = self.connector.get_table(Constants.FACT_ASMT_OUTCOME)
-        query = select([distinct(fact_asmt_outcome.c.student_guid)],
-                       from_obj=[fact_asmt_outcome])
-        query = query.where(and_(fact_asmt_outcome.c.most_recent, fact_asmt_outcome.c.status == 'C', fact_asmt_outcome.c.student_guid.in_(student_guids)))
+        query = super().get_students(student_guids)
         query = query.where(self.get_context(guid))
 
         results = self.connector.get_result(query)

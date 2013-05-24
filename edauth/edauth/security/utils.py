@@ -42,7 +42,7 @@ def get_session_cookie():
     return the cookie value of current request
     '''
     # get registry to read settings
-    cookie_name = pyramid.threadlocal.get_current_registry().get('auth.policy.cookie_name', 'edware')
+    cookie_name = pyramid.threadlocal.get_current_registry().settings.get('auth.policy.cookie_name', 'edware')
 
     # get the user cookie
     cookie_value = pyramid.threadlocal.get_current_request().cookies[cookie_name]

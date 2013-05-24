@@ -235,7 +235,7 @@ function create_sym_link_for_apache {
         rm -rf ${EDWARE_VENV_DIR}
     fi
     /bin/ln -sf ${VIRTUALENV_DIR} ${EDWARE_VENV_DIR}
-    cat ${WORKSPACE}/services/config/linux/opt/edware/conf/celeryd.conf | sed "s/\"celery\"/\"jenkins\"/" > ${CELERY_CONF}
+    sed -i.bak "s/\"celery\"/\"jenkins\"/" ${WORKSPACE}/services/config/linux/opt/edware/conf/celeryd.conf
 }
 
 function compile_assets {

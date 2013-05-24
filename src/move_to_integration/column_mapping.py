@@ -3,62 +3,86 @@ from collections import OrderedDict
 # column mapping between source/integration table and target/star schema table
 def get_column_mapping(map_type):
     '''
-    Key: {target table name}, e.g. dim_asmt
-    Value: ordered dictionary: (column_in_target_table, column_in_source_table), e.g. 'asmt_guid': 'guid_asmt'
+    Key: {map_type}, e.g. 'unit_test', 'staging_to_integration_sbac_asmt_outcome',  'staging_to_integration_sbac_asmt'
+    Value: {'source': 'table_name' , eg string for source table name
+            'target': 'table_name', eg string for target table name
+            'error': 'table_name', eg string for error table name that contain list we want to exclude
+            'mapping': ordered dictionary: (column_in_target_table, (type_convertion_code, column_in_source_table)),
+                e.g. ('asmt_guid': ('substr({src_field}, 0, 50)', guid_asmt'))
     '''
     column_mappings = {
-        'sbac_staging_to_integration': {
+        'unit_test' : {
+          'source': 'STG_MOCK_LOAD',
+          'target': 'INT_MOCK_LOAD',
+          'error': 'ERR_LIST',
+          'mapping': OrderedDict([
+            ('batch_id', ("{src_field}", "batch_id")),
+            ('substr_test', ("SUBSTR({src_field}, 0, 10)", "substr_test")),
+            ('number_test', ("TO_NUMBER({src_field}, '99999')", "number_test")),
+            ])
+        },
+        'stagint_to_integration_sbac_asmt': {
+            'source': 'STG_SBAC_ASMT',
+            'target': 'INT_SBAC_ASMT',
+            'error': 'ERR_LIST',
+            'mapping': OrderedDict([
+              ('batch_id', ("{src_field}", "batch_id")),
+              ('substr_test', ("SUBSTR({src_field}, 0, 10)", "substr_test")),
+              ('number_test', ("TO_NUMBER({src_field}, '99999')", "number_test")),
+            ])
+        },
+        'staging_to_integration_sbac_asmt_outcome': {
             'source': 'STG_SBAC_ASMT_OUTCOME',
             'target': 'INT_SBAC_ASMT_OUTCOME',
+            'error': 'ERR_LIST',
             'mapping': OrderedDict([
-                ('batch_id', "A.batch_id",), # temporary hack to make it work. 
-                ('guid_asmt', "substr(guid_asmt, 0, 50)", ),
-                ('guid_asmt_location', "substr(guid_asmt_location, 0, 50)",),
-                ('name_asmt_location', "substr(name_asmt_location, 0, 256)",),
-                ('grade_asmt', "substr(grade_asmt, 0, 10)", ),
-              #  ('inst_hier_guid', "substr(inst_hier_guid, 0, 50)",),
-                ('name_state', "substr(name_state, 0, 32)", ),
-                ('code_state', "substr(code_state, 0, 2)", ),
-                ('guid_district', "substr(guid_district, 0, 50)", ),
-                ('name_district', "substr(name_district, 0, 256)", ),
-                ('guid_school', "substr(guid_school, 0, 50)", ),
-                ('name_school', "substr(name_school, 0, 256)", ),
-                ('type_school', "substr(type_school, 0, 20)", ),
-                ('guid_student', "substr(guid_student, 0, 50)", ),
-                ('name_student_first', "substr(name_student_first, 0, 256)", ),
-                ('name_student_middle', "substr(name_student_middle, 0, 256)",  ),
-                ('name_student_last', "substr(name_student_last, 0, 256)", ),
-                ('address_student_line1', "substr(address_student_line1, 0, 256)", ),
-                ('address_student_line2', "substr(address_student_line2, 0, 256)", ),
-                ('address_student_city', "substr(address_student_city, 0, 100)", ),
-                ('address_student_zip', "substr(address_student_zip, 0, 5)", ),
-                ('gender_student', "substr(gender_student, 0, 10)", ),
-                ('email_student', "substr(email_student, 0, 256)",),
-                ('dob_student', "substr(dob_student, 0, 8)", ),
-                ('grade_enrolled', "substr(grade_enrolled, 0, 10)", ),
-                ('date_assessed', "substr(date_assessed, 0, 8)", ),
-                ('score_asmt', "to_number(score_asmt, '99999')", ),
-                ('score_asmt_min', "to_number(score_asmt_min, '99999')", ),
-                ('score_asmt_max', "to_number(score_asmt_max, '99999')", ),
-                ('score_perf_level', "to_number(score_perf_level, '99999')", ),
-                ('score_claim_1', "to_number(score_claim_1, '99999')", ),
-                ('score_claim_1_min', "to_number(score_claim_1_min, '99999')", ),
-                ('score_claim_1_max', "to_number(score_claim_1_max, '99999')", ),
-                ('score_claim_2', "to_number(score_claim_2, '99999')", ),
-                ('score_claim_2_min', "to_number(score_claim_2_min, '99999')", ),
-                ('score_claim_2_max', "to_number(score_claim_2_max, '99999')", ),
-                ('score_claim_3', "to_number(score_claim_3, '99999')", ),
-                ('score_claim_3_min', "to_number(score_claim_3_min, '99999')", ),
-                ('score_claim_3_max', "to_number(score_claim_3_max, '99999')", ),
-                ('score_claim_4', "to_number(score_claim_4, '99999')", ),
-                ('score_claim_4_min', "to_number(score_claim_4_min, '99999')", ),
-                ('score_claim_4_max', "to_number(score_claim_4_max, '99999')", ),
-                ('guid_staff', "substr(guid_staff, 0, 50)",),
-                ('name_staff_first', "substr(name_staff_first, 0, 256)",),
-                ('name_staff_middle', "substr(name_staff_middle, 0, 256)", ),
-                ('name_staff_last', "substr(name_staff_last, 0, 256)", ),
-                ('type_staff', "substr(type_staff, 0, 10)",),
-                ('created_date', 'A.created_date', ), # temporary hack to make it work.
+                ('batch_id', ("{src_field}", "batch_id",), ), # temporary hack to make it work. 
+                ('guid_asmt', ("substr({src_field}, 0, 50)", "guid_asmt"), ),
+                ('guid_asmt_location', ("substr({src_field}, 0, 50)", "guid_asmt_location"), ),
+                ('name_asmt_location', ("substr({src_field}, 0, 256)", "name_asmt_location"), ),
+                ('grade_asmt', ("substr({src_field}, 0, 10)", "grade_asmt"), ),
+                ('name_state', ("substr({src_field}, 0, 32)", "name_state"), ),
+                ('code_state', ("substr({src_field}, 0, 2)", "code_state"), ),
+                ('guid_district', ("substr({src_field}, 0, 50)", "guid_district"), ),
+                ('name_district', ("substr({src_field}, 0, 256)", "name_district"), ),
+                ('guid_school', ("substr({src_field}, 0, 50)", "guid_school"), ),
+                ('name_school', ("substr({src_field}, 0, 256)", "name_school"), ),
+                ('type_school', ("substr({src_field}, 0, 20)", "type_school"), ),
+                ('guid_student', ("substr({src_field}, 0, 50)", "guid_student"), ),
+                ('name_student_first', ("substr({src_field}, 0, 256)", "name_student_first"), ),
+                ('name_student_middle', ("substr({src_field}, 0, 256)", "name_student_middle"), ),
+                ('name_student_last', ("substr({src_field}, 0, 256)", "name_student_last"), ),
+                ('address_student_line1', ("substr({src_field}, 0, 256)", "address_student_line1"), ),
+                ('address_student_line2', ("substr({src_field}, 0, 256)", "address_student_line2"), ),
+                ('address_student_city', ("substr({src_field}, 0, 100)", "address_student_city"), ),
+                ('address_student_zip', ("substr({src_field}, 0, 5)", "address_student_zip"), ),
+                ('gender_student', ("substr({src_field}, 0, 10)", "gender_student"), ),
+                ('email_student', ("substr({src_field}, 0, 256)", "email_student"), ),
+                ('dob_student', ("substr({src_field}, 0, 8)", "dob_student"), ),
+                ('grade_enrolled', ("substr({src_field}, 0, 10)", "grade_enrolled"), ),
+                ('date_assessed', ("substr({src_field}, 0, 8)", "date_assessed"), ),
+                ('score_asmt', ("to_number({src_field}, '99999')", "score_asmt" ), ), 
+                ('score_asmt_min', ("to_number({src_field}, '99999')", "score_asmt_min"), ),
+                ('score_asmt_max', ("to_number({src_field}, '99999')", "score_asmt_max"), ),
+                ('score_perf_level', ("to_number({src_field}, '99999')", "score_perf_level"), ),
+                ('score_claim_1', ("to_number(score_claim_1, '99999')", "score_claim_1"), ),
+                ('score_claim_1_min', ("to_number({src_field}, '99999')", "score_claim_1_min"), ),
+                ('score_claim_1_max', ("to_number({src_field}, '99999')", "score_claim_1_max"), ),
+                ('score_claim_2', ("to_number({src_field}, '99999')", "score_claim_2"), ),
+                ('score_claim_2_min', ("to_number({src_field}, '99999')", "score_claim_2_min"), ),
+                ('score_claim_2_max', ("to_number({src_field}, '99999')", "score_claim_2_max"), ),
+                ('score_claim_3', ("to_number({src_field}, '99999')", "score_claim_3"), ),
+                ('score_claim_3_min', ("to_number({src_field}, '99999')", "score_claim_3_min"), ),
+                ('score_claim_3_max', ("to_number({src_field}, '99999')", "score_claim_3_max"), ),
+                ('score_claim_4', ("to_number({src_field}, '99999')", "score_claim_4"), ),
+                ('score_claim_4_min', ("to_number({src_field}, '99999')", "score_claim_4_min"), ),
+                ('score_claim_4_max', ("to_number({src_field}, '99999')", "score_claim_4_max"), ),
+                ('guid_staff', ("substr({src_field}, 0, 50)", "guid_staff"), ), 
+                ('name_staff_first', ("substr({src_field}, 0, 256)", "name_staff_first"), ),
+                ('name_staff_middle', ("substr({src_field}, 0, 256)", "name_staff_middle"), ),
+                ('name_staff_last', ("substr({src_field}, 0, 256)", "name_staff_last"), ),
+                ('type_staff', ("substr({src_field}, 0, 10)", "type_staff"), ),
+                ('created_date', ("{src_field}", "created_date"), ), # temporary hack to make it work.
         ])},
     }
     return column_mappings[map_type]

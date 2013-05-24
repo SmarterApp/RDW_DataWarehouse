@@ -27,6 +27,26 @@ UDL_METADATA = {
     # for each column ('column name', 'is a primary key', 'type', 'default value', 'Nullalbe', 'Comments')
     #
     'TABLES': {
+        'STG_MOCK_LOAD': {
+            'columns': [
+                ('record_sid', True, 'bigserial', '', False, "Sequential Auto-increment"),
+                ('batch_id', False, 'bigint', '', False, "Batch ID which caused the record insert"),
+                ('substr_test', False, 'varchar(256)', '', False, "mock data for test type conversion during staging to integration"),
+                ('number_test', False, 'varchar(256)', '', False, "mock data for test type conversion during staging to integration"),
+            ],
+            'indexes': [],
+            'keys': [],
+        },
+        'INT_MOCK_LOAD': {
+            'columns': [
+                ('record_sid', True, 'bigserial', '', False, "Sequential Auto-increment"),
+                ('batch_id', False, 'bigint', '', False, "Batch ID which caused the record insert"),
+                ('substr_test', False, 'varchar(256)', '', False, "mock data for test type conversion during staging to integration"),
+                ('number_test', False, 'varchar(256)', '', False, "mock data for test type conversion during staging to integration"),
+            ],
+            'indexes': [],
+            'keys': [],
+        },
         'UDL_BATCH': {
             'columns': [
                 ('batch_sid', True, 'bigserial', '', False, ""),
@@ -213,7 +233,6 @@ UDL_METADATA = {
                 ('guid_asmt_location', False, 'varchar(50)', '', True, "GUID for location where assessment was taken"),
                 ('name_asmt_location', False, 'varchar(256)', '', True, "Name for location where assessment was taken"),
                 ('grade_asmt', False, 'varchar(10)', '', False, "Assessment Grade"),
-                ('inst_hier_guid', False, 'varchar(50)', '', False, "DO WE EVEN NEED THIS HERE, since all the inst_hier data is already here"),
                 ('name_state', False, 'varchar(32)', '', False, "Name of the State"),
                 ('code_state', False, 'varchar(2)', '', False, "State Code"),
                 ('guid_district', False, 'varchar(50)', '', False, "District GUID"),

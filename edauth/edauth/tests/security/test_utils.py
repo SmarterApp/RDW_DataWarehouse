@@ -1,3 +1,4 @@
+
 '''
 Created on May 20, 2013
 
@@ -20,7 +21,8 @@ class TestUtils(unittest.TestCase):
         testing.tearDown()
 
     def test_get_session_cookie(self):
-        self.__request.registry['auth.policy.cookie_name'] = 'dummy'
+        self.__request.registry.settings = {}
+        self.__request.registry.settings['auth.policy.cookie_name'] = 'dummy'
         self.__request.cookies = {'dummy': 'abc'}
         (cookie_name, cookie_value) = get_session_cookie()
         self.assertEqual(cookie_name, 'dummy')

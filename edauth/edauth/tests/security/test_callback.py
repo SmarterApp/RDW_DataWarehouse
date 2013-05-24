@@ -10,15 +10,25 @@ from datetime import timedelta, datetime
 from database.sqlite_connector import create_sqlite, destroy_sqlite
 from edauth.persistence.persistence import generate_persistence
 from edauth.database.connector import EdauthDBConnection
+from pyramid.testing import DummyRequest
+from pyramid.registry import Registry
+from pyramid import testing
 
 
 class TestCallback(unittest.TestCase):
 
     def setUp(self):
         create_sqlite(use_metadata_from_db=False, echo=False, metadata=generate_persistence(), datasource_name='edauth')
+        self.__request = DummyRequest()
+        # Must set hook_zca to false to work with uniittest_with_sqlite
+        reg = Registry()
+        reg.settings = {}
+        reg.settings['enable.session.caching'] = 'false'
+        self.__config = testing.setUp(registry=reg, request=self.__request, hook_zca=False)
 
     def tearDown(self):
         destroy_sqlite(datasource_name='edauth')
+        testing.tearDown()
 
     def test_no_session_found_in_db(self):
         session_id = "1"

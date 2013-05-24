@@ -17,10 +17,10 @@ def session_check(session_id, request):
     roles = []
     session = get_user_session(session_id)
 
+    # Session can still be none if retrieved from db, so check again
     if session is not None:
-        if is_session_expired(session):
-            pass
-        else:
+        if not is_session_expired(session):
             roles = session.get_roles()
             update_session_access(session)
+
     return roles

@@ -16,6 +16,9 @@ from database.sqlite_connector import create_sqlite, destroy_sqlite
 from edauth.persistence.persistence import generate_persistence
 from edauth.database.connector import EdauthDBConnection
 from sqlalchemy import select, func
+from pyramid import testing
+from pyramid.registry import Registry
+from pyramid.testing import DummyRequest
 
 
 class TestSessionManager(unittest.TestCase):
@@ -28,9 +31,16 @@ class TestSessionManager(unittest.TestCase):
                     ('Allow', 'DATA_LOADER', ('view', 'logout')),
                     ('Allow', 'NONE', ('logout'))}
         Roles.set_roles(mappings)
+        self.__request = DummyRequest()
+        reg = Registry()
+        reg.settings = {}
+        reg.settings['enable.session.caching'] = 'false'
+        # Must set hook_zca to false to work with uniittest_with_sqlite
+        self.__config = testing.setUp(registry=reg, request=self.__request, hook_zca=False)
 
     def tearDown(self):
         destroy_sqlite(datasource_name='edauth')
+        testing.tearDown()
 
     def test_create_session_from_SAMLResponse(self):
         session = create_new_user_session(create_SAMLResponse('SAMLResponse.xml'))

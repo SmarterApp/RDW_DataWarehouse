@@ -24,6 +24,14 @@ common:
       expire: 31556940 # year
       public.data.expire: 31556940 # year
       lock_dir: /tmp/memcache
+      
+    enable.session.caching: true
+    # pyramid_beaker session configuration
+    session:
+      type: ext:memcached
+      key: edware_session
+      secret: 123thisisasecretForSession456
+      timeout: 600 # 10 minutes
     
     # Database
     edware:
@@ -66,9 +74,10 @@ common:
     # Run npm update (dev mode only)
     run.npm.update: true
     # Timeout for pdf generation process
-    pdf.generate.timeout: 10
-    pdf.report_base_dir: /tmp/pdf
-    pdf.celery_timeout: 30
+    pdf:
+      generate.timeout: 10
+      report_base_dir: /tmp/pdf
+      celery_timeout: 30
 
   '[server:main]':
     use: 'egg:waitress#main'
@@ -328,6 +337,8 @@ development:
       regions: public.data
       type: memory
       public.data.expire: 10
+    session:
+      type: memory
     # Celery config
     celery:
       celery_always_eager: true
@@ -405,4 +416,5 @@ jenkins_dev:
         name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
     mode: test
     cache.url: edwappsrv1.poc.dum.edwdc.net:11211;edwappsrv2.poc.dum.edwdc.net:11211
+    session.url: edwappsrv1.poc.dum.edwdc.net:11211;edwappsrv2.poc.dum.edwdc.net:11211
 

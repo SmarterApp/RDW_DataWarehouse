@@ -12,8 +12,13 @@ from edauth.security.session import Session
 from edauth.security.roles import Roles
 from edauth.database.connector import EdauthDBConnection
 import socket
+from edauth.security.persisent_session import get_session_from_persistence,\
+    persist_session, delete_persistent_session
+import logging
 
 # TODO: remove datetime.now() and use func.now()
+
+logger = logging.getLogger('edauth')
 
 
 def get_user_session(user_session_id):
@@ -21,9 +26,11 @@ def get_user_session(user_session_id):
     get user session from DB
     if user session does not exist, then return None
     '''
-    session = None
-    if user_session_id is not None:
+    session = get_session_from_persistence()
+
+    if session is None and user_session_id is not None:
         with EdauthDBConnection() as connection:
+            logger.info('Reading user session from database')
             user_session = connection.get_table('user_session')
             query = select([user_session.c.session_context.label('session_context'),
                             user_session.c.last_access.label('last_access'),
@@ -36,7 +43,6 @@ def get_user_session(user_session_id):
                     expiration = result[0]['expiration']
                     last_access = result[0]['last_access']
                     session = __create_from_session_json_context(user_session_id, session_context, last_access, expiration)
-
     return session
 
 
@@ -64,6 +70,8 @@ def create_new_user_session(saml_response, session_expire_after_in_secs=30):
         user_session = connection.get_table('user_session')
         # store the session into DB
         connection.execute(user_session.insert(), session_id=session.get_session_id(), session_context=session.get_session_json_context(), last_access=current_datetime, expiration=expiration_datetime)
+
+    persist_session(session)
     return session
 
 
@@ -71,13 +79,18 @@ def update_session_access(session):
     '''
     update user_session.last_access
     '''
-    __session_id = session.get_session_id()
-    with EdauthDBConnection() as connection:
-        user_session = connection.get_table('user_session')
-        # update last_access field
-        connection.execute(user_session.update().
-                           where(user_session.c.session_id == __session_id).
-                           values(last_access=datetime.now()))
+    current_time = datetime.now()
+    session.set_last_access(current_time)
+    if get_session_from_persistence() is None:
+        __session_id = session.get_session_id()
+        with EdauthDBConnection() as connection:
+            user_session = connection.get_table('user_session')
+            # update last_access field
+            connection.execute(user_session.update().
+                               where(user_session.c.session_id == __session_id).
+                               values(last_access=current_time))
+
+    persist_session(session)
 
 
 def expire_session(session_id):
@@ -90,6 +103,8 @@ def expire_session(session_id):
         connection.execute(user_session.update().
                            where(user_session.c.session_id == session_id).
                            values(expiration=current_datetime))
+
+    delete_persistent_session()
 
 
 def __create_from_SAMLResponse(saml_response, last_access, expiration):

@@ -164,20 +164,23 @@ function setup_functional_test_dependencies {
     git clone git@github.wgenhq.net:Ed-Ware-SBAC/edware_test.git
 
     # we should be inside the python 3.3 venv, so deactivate that first
-    deactivate 
-     
-    if [ ! -d "$FUNC_VIRTUALENV_DIR" ]; then
-         /opt/python2.7/bin/virtualenv --distribute $FUNC_VIRTUALENV_DIR
-    fi
-   
-    source ${FUNC_VIRTUALENV_DIR}/bin/activate
-
+    deactivate
+    enable_python27
     cd "$WORKSPACE/$FUNC_DIR"
     python setup.py develop
-    
-    pip install pep8
 
+    pip install pep8
     echo "Finish functional test dependencies setup"
+}
+
+function enable_python27 {
+    echo "Enable python2.7 environment"
+    if [ ! -d "$FUNC_VIRTUALENV_DIR" ]; then
+        /opt/python2.7/bin/virtualenv --distribute $FUNC_VIRTUALENV_DIR
+    fi
+
+    source ${FUNC_VIRTUALENV_DIR}/bin/activate
+    echo "Now in python2.7"
 }
 
 function setup_python33_functional_test_dependencies {
@@ -201,6 +204,8 @@ function run_python33_functional_tests {
 
 function run_functional_tests {
     echo "Run functional tests"
+    #enable python environment
+    enable_python27
 
     cd "$WORKSPACE/$FUNC_DIR"
 
@@ -339,11 +344,11 @@ function run_qunit_tests {
 function optimize_javascript {
     echo "Optimize javascript"
     #enable python3.3
-#source ${VIRTUALENV_DIR}/bin/activate
+    source ${VIRTUALENV_DIR}/bin/activate
     #optimize javascript
     compile_assets true
     #exit python3.3
-#deactivate
+    deactivate
     echo "Finish optimization"
 }
 
@@ -369,9 +374,9 @@ function main {
         import_data_from_csv
         setup_python33_functional_test_dependencies
         run_python33_functional_tests
+        setup_functional_test_dependencies
         run_qunit_tests
         optimize_javascript
-        setup_functional_test_dependencies
         run_functional_tests
         check_pep8 "$FUNC_DIR"
     elif [ ${MODE:=""} == "RPM" ]; then

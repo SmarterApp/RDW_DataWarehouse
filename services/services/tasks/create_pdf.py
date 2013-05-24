@@ -21,7 +21,7 @@ FAIL = 1
 
 
 @celery.task(name='tasks.generate_pdf')
-def generate_pdf(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT, cookie_name='edware', grayScale=False, mkdir_mode=0o700):
+def generate_pdf(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT, cookie_name='edware', grayScale=False):
     '''
     Generates pdf from given url. Returns exist status code from shell command.
     We set up timeout in order to terminate pdf generating process, for wkhtmltopdf 0.10.0 doesn't exit
@@ -32,7 +32,7 @@ def generate_pdf(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT,
         shell = False
         if platform.system() == 'Windows':
             shell = True
-        prepare_file_path(file_path=outputfile,mkdir_mode=mkdir_mode)
+        prepare_file_path(outputfile)
         wkhtmltopdf_option = copy.deepcopy(options)
         if grayScale:
             wkhtmltopdf_option += ['-g']
@@ -49,13 +49,13 @@ def generate_pdf(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT,
 
 
 @celery.task(name='tasks.get_pdf')
-def get_pdf(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT, cookie_name='edware', grayScale=False, mkdir_mode=0o700):
+def get_pdf(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT, cookie_name='edware', grayScale=False):
     '''
     Reads pdf file if it exists, else it'll request to generate pdf.  Returns byte stream from generated pdf file
     '''
 
     if not os.path.exists(outputfile):
-        generate_task = generate_pdf(cookie, url, outputfile, options=pdf_defaults, timeout=timeout, cookie_name=cookie_name, grayScale=grayScale, mkdir_mode=mkdir_mode)
+        generate_task = generate_pdf(cookie, url, outputfile, options=pdf_defaults, timeout=timeout, cookie_name=cookie_name, grayScale=grayScale)
         if generate_task is FAIL:
             raise PdfGenerationError()
 
@@ -64,6 +64,6 @@ def get_pdf(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT, cook
     return stream
 
 
-def prepare_file_path(file_path, mkdir_mode=0o700):
+def prepare_file_path(file_path):
     if os.path.exists(os.path.dirname(file_path)) is not True:
-        os.makedirs(os.path.dirname(file_path), mkdir_mode)
+        os.makedirs(os.path.dirname(file_path), 0o700)

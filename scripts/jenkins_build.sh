@@ -327,6 +327,11 @@ function generate_ini {
 
 function run_qunit_tests {
     echo "Run qunit tests"
+    cd "$WORKSPACE/$FUNC_DIR"
+
+    sed -i.bak 's/port = 6543/port = 80/g' test.ini
+    sed -i.bak "s/host=localhost/host=$HOSTNAME/g" test.ini
+    export DISPLAY=:6.0
     nosetests ${QUNIT_DIR}
     echo "Finish qunit tests"
 }

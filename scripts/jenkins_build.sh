@@ -24,7 +24,7 @@ function set_vars {
     EGG_REPO="/opt/edware/pynest"
     PYNEST_SERVER="repo0.qa.dum.edwdc.net"
     PYNEST_DIR="/opt/wgen/pyrepos/pynest"
-    QUNIT_DIR="$WORKSPACE/$FUNC_DIR/frontend_tests/qunit"
+    QUNIT_DIR="$WORKSPACE/$FUNC_DIR/frontend_tests/qunit/test_qunit.py"
 
     # delete existing xml files
     if [ -f $WORKSPACE/coverage.xml ]; then
@@ -208,7 +208,7 @@ function run_functional_tests {
     sed -i.bak "s/host=localhost/host=$HOSTNAME/g" test.ini
     export DISPLAY=:6.0
 
-    nosetests -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
+    nosetests -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml --ignore-files=${QUNIT_DIR}
 
     echo "Finish running functional tests"
 }

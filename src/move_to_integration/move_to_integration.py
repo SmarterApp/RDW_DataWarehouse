@@ -10,7 +10,7 @@ def move_data_from_staging_to_integration(conf):
                                 conf['db_host_source'],
                                 conf['db_port_source'],
                                 conf['db_name_source'])
-    map_type = 'staging_to_integration_sbac_asmt_outcome'
+    map_type = conf['map_type']
     column_mapping = get_column_mapping(map_type)
     sql_query = create_migration_query(conf['source_schema'], column_mapping['source'], conf['target_schema'],
                                        column_mapping['target'], conf['error_schema'], 'ERR_LIST', column_mapping['mapping'],

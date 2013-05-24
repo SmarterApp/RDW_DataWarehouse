@@ -8,7 +8,7 @@ def main():
     parser.add_argument("-b", "--batch_id", type=int, default=1369321935, help="Batch id")
     args = parser.parse_args()
 
-    batch = {'batch_id': args.batch_id}
+    batch = {'batch_id': args.batch_id, 'load_to_integration_table_type':'staging_to_integration_sbac_asmt_outcome'}
 
     """
     # execute by group for explode_to_dims only

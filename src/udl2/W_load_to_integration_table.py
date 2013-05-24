@@ -47,5 +47,6 @@ def generate_conf(msg):
             'db_user_target': udl2_conf['udl2_db']['db_user'],
             'db_name_target': udl2_conf['udl2_db']['db_database'],
             'db_password_target': udl2_conf['udl2_db']['db_pass'],
+            'map_type': msg['load_to_integration_table_type'],
     }
     return conf

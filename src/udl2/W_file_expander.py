@@ -9,6 +9,7 @@ and unpacks into landing_zone/work/BATCH_ID/expanded
 from __future__ import absolute_import
 from udl2.celery import celery
 from celery.utils.log import get_task_logger
+from udl2_util import file_util
 import udl2.message_keys as mk
 import os
 
@@ -22,13 +23,12 @@ def task(incoming_msg):
     job_control = incoming_msg[mk.JOB_CONTROL]
     batch_id = job_control[1]
 
-    # TODO: Create new directory {landing_zone/work/BATCH_ID/expanded
     expanded_dir = get_expanded_dir(lzw, batch_id)
-    expanded_json_file = get_expanded_json_file(file_to_expand, expanded_dir)
-    expanded_csv_file = get_expanded_csv_file(file_to_expand, expanded_dir)
-    # TODO: Unpack the file to the new directory
+    file_util.create_directory(expanded_dir)
+    unpacked_json_file = unpack_json_file(file_to_expand, expanded_dir, incoming_msg[mk.JSON_FILENAME])
+    unpacked_csv_file = unpack_csv_file(file_to_expand, expanded_dir, incoming_msg[mk.CSV_FILENAME])
 
-    outgoing_msg = generate_file_validator_msg(lzw, expanded_json_file, expanded_csv_file, job_control)
+    outgoing_msg = generate_file_validator_msg(lzw, unpacked_json_file, unpacked_csv_file, job_control)
     return outgoing_msg
 
 
@@ -39,12 +39,16 @@ def get_expanded_dir(lzw, batch_id):
     return expanded_dir
 
 
-def get_expanded_json_file(file_to_expand, expanded_dir):
-    return 'test.json'
+def unpack_json_file(file_to_expand, expanded_dir, json_filename):
+    # TODO: Remove 3rd param and actually implement this method
+    file_util.copy_file(json_filename, expanded_dir)
+    return json_filename
 
 
-def get_expanded_csv_file(file_to_expand, expanded_dir):
-    return 'test.csv'
+def unpack_csv_file(file_to_expand, expanded_dir, csv_filename):
+    # TODO: Remove 3rd param and actually implement this method
+    file_util.copy_file(csv_filename, expanded_dir)
+    return csv_filename
 
 
 def generate_file_validator_msg(landing_zone_work_dir, json_filename, csv_filename, job_control):

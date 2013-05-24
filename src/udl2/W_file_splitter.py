@@ -12,17 +12,6 @@ import os
 
 logger = get_task_logger(__name__)
 
-# Keys for incoming splitter message
-FILE_TO_SPLIT_NAME = 'file_to_split_name'
-FILE_TO_SPLIT_DIR = 'file_to_split_dir'
-
-# Additional keys for outgoing message to file_loader
-FILE_TO_LOAD = 'file_to_load'
-LINE_COUNT = 'line_count'
-ROW_START = 'row_start'
-HEADER_FILE = 'header_file'
-
-
 
 @celery.task(name="udl2.W_file_splitter.task")
 def task(incoming_msg):
@@ -86,10 +75,10 @@ def generate_msg_for_file_loader(old_msg, split_file_tuple, header_file_path):
 
     # Simply expanding the old message with additional params
     file_loader_msg = old_msg
-    file_loader_msg[FILE_TO_LOAD] = split_file_path
-    file_loader_msg[LINE_COUNT] = split_file_line_count
-    file_loader_msg[ROW_START] = split_file_row_start
-    file_loader_msg[HEADER_FILE] = header_file_path
+    file_loader_msg[mk.FILE_TO_LOAD] = split_file_path
+    file_loader_msg[mk.LINE_COUNT] = split_file_line_count
+    file_loader_msg[mk.ROW_START] = split_file_row_start
+    file_loader_msg[mk.HEADER_FILE] = header_file_path
 
     return file_loader_msg
 
@@ -102,11 +91,10 @@ def error_handler(uuid):
           exc, result.traceback))
 
 
+'''
 def parse_initial_message(msg):
-    '''
-    Read input msg. If it contains any key defined in FILE_SPLITTER_CONF, use the value in msg.
-    Otherwise, use value defined in FILE_SPLITTER_CONF
-    '''
+    # Read input msg. If it contains any key defined in FILE_SPLITTER_CONF, use the value in msg.
+    # Otherwise, use value defined in FILE_SPLITTER_CONF
     params = udl2.celery.FILE_SPLITTER_CONF
 
     if ROW_LIMIT in msg.keys():
@@ -126,3 +114,4 @@ def parse_initial_message(msg):
     if BATCH_ID in msg.keys():
         params[BATCH_ID] = msg[BATCH_ID]
     return params
+'''

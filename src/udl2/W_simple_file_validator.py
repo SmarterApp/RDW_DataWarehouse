@@ -26,13 +26,11 @@ def task(msg):
     # TODO: Add logic that checks error list and writes to a log/db/etc
     if len(json_error_list) > 0 and len(csv_error_list) > 0:
         # TODO: Jump to ERROR_TASK
-        pass
+        print('ERRORS IN THE CSV/JSON FILE(S)')
 
-    # TODO: Actually implement get_number_of_parts()
     parts = get_number_of_parts()
 
-    splitter_msg = generate_splitter_msg(lzw, jc, json_filename, csv_filename,
-                                         parts)
+    splitter_msg = generate_splitter_msg(lzw, jc, json_filename, csv_filename, parts)
     return splitter_msg
 
 
@@ -45,6 +43,7 @@ def get_expanded_dir(lzw, batch_id):
     return expanded_dir
 
 
+# TODO: Actually implement get_number_of_parts()
 def get_number_of_parts():
     return 4
 

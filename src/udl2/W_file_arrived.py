@@ -16,17 +16,6 @@ from celery.utils.log import get_task_logger
 from uuid import uuid4
 from udl2 import message_keys as mk
 
-# Keys for the incoming msg
-INPUT_FILE_PATH = 'input_file_path'
-JOB_CONTROL_TABLE_CONF = 'job_control_table_conf'
-
-# Keys for both incoming and outgoing message
-LANDING_ZONE_WORK_DIR = 'landing_zone_work_dir'
-
-#Keys for outgoing message
-FILE_TO_EXPAND = 'file_to_expand'
-JOB_CONTROL = 'job_control'
-
 logger = get_task_logger(__name__)
 
 @celery.task(name="udl2.W_file_arrived.task")
@@ -43,14 +32,20 @@ def task(incoming_msg):
     # TODO: Move uploaded_file to new directory
 
     outgoing_msg = generate_file_expander_msg(lzw, uploaded_file, jc_table_conf, batch_id)
+    outgoing_msg = extend_file_expander_msg_temp(outgoing_msg, incoming_msg[mk.JSON_FILENAME], incoming_msg[mk.JSON_FILENAME])
     return outgoing_msg
 
 
 def generate_file_expander_msg(landing_zone_work_dir, file_to_expand, jc_table_conf, batch_id):
     msg = {
-        LANDING_ZONE_WORK_DIR: landing_zone_work_dir,
-        FILE_TO_EXPAND: file_to_expand,
+        mk.LANDING_ZONE_WORK_DIR: landing_zone_work_dir,
+        mk.FILE_TO_EXPAND: file_to_expand,
         # Tuple containing config info for job control table and the batch_id for the file upload
-        JOB_CONTROL: (jc_table_conf, batch_id)
+        mk.JOB_CONTROL: (jc_table_conf, batch_id)
     }
+    return msg
+
+def extend_file_expander_msg_temp(msg, json_filename, csv_filename):
+    msg = msg.update({mk.JSON_FILENAME: json_filename})
+    msg = msg.update({mk.CSV_FILENAME: csv_filename})
     return msg

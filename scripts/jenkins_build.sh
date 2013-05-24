@@ -327,8 +327,7 @@ function generate_ini {
 
 function run_qunit_tests {
     echo "Run qunit tests"
-    cd $QUNIT_DIR
-    nosetests
+    nosetests ${QUNIT_DIR}
     echo "Finish qunit tests"
 }
 
@@ -361,7 +360,7 @@ function main {
         setup_python33_functional_test_dependencies
         run_python33_functional_tests
         setup_functional_test_dependencies
-        #run_qunit_tests
+        run_qunit_tests
 #optimize_javascript
         run_functional_tests
         check_pep8 "$FUNC_DIR"

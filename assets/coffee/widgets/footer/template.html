@@ -1,18 +1,18 @@
 <ul class="nav">
 	<li>
-		<a id="help" rel="popover" class="toggle pull-right" onclick='$("#aboutReport").popover("hide");$("#legend").popover("hide");$("#feedback").popover("hide");'><i class="icon-question-sign icon-white"></i> Help</a>
+		<a id="help" rel="popover" class="pull-right" onclick='$("#aboutReport").popover("hide");$("#legend").popover("hide");$("#feedback").popover("hide");$("#print").popover("hide");'><i class="icon-question-sign icon-white"></i> Help</a>
 	</li>
 	<li>
-		<a id="print" rel="popover" class="pull-right" ><i class="icon-print icon-white"></i> Print</a>
+		<a id="print" rel="popover" class="pull-right" onclick='$("#aboutReport").popover("hide");$("#help").popover("hide");$("#legend").popover("hide");$("#feedback").popover("hide");'><i class="icon-print icon-white"></i> Print</a>
 	</li>
 	<li>
-		<a id="legend" rel="popover" class="toggle pull-right" onclick='$("#aboutReport").popover("hide");$("#help").popover("hide");$("#feedback").popover("hide");'><i class="icon-book icon-white"></i> Legend</a>
+		<a id="legend" rel="popover" class="pull-right" onclick='$("#aboutReport").popover("hide");$("#help").popover("hide");$("#feedback").popover("hide");$("#print").popover("hide");'><i class="icon-book icon-white"></i> Legend</a>
 	</li>
 	<li>
-		<a id="aboutReport" rel="popover" class="toggle pull-right" onclick='$("#help").popover("hide");$("#legend").popover("hide");$("#feedback").popover("hide");'><i class="icon-info-sign icon-white"></i> Report Info</a>
+		<a id="aboutReport" rel="popover" class="pull-right" onclick='$("#help").popover("hide");$("#legend").popover("hide");$("#feedback").popover("hide");$("#print").popover("hide");'><i class="icon-info-sign icon-white"></i> Report Info</a>
 	</li>
 	<li>
-		<a id="feedback" rel="popover" class="toggle pull-right" onclick='$("#aboutReport").popover("hide");$("#legend").popover("hide");$("#help").popover("hide");'><i class="icon-comment icon-white"></i> Feedback</a>
+		<a id="feedback" rel="popover" class="pull-right" onclick='$("#aboutReport").popover("hide");$("#legend").popover("hide");$("#help").popover("hide");$("#print").popover("hide");'><i class="icon-comment icon-white"></i> Feedback</a>
 	</li>
 	<li>
 		<div id="copyright">
@@ -38,5 +38,14 @@
 		<p>
 			If you require assistance, or have questions, comments, or concerns, please send an email to <br/><a href="mailto:SmarterBalancedReporting@wgen.net?subject=HELPDESK: Help request">System Administrator</a>.
 		</p>
+	</div>
+	<div class="printPopup">
+		<p>
+			<input type="radio" name="print_options" value="color" checked> Color<br/>
+			<input type="radio" name="print_options" value="gray"> Grayscale (use for black &amp; white printing)
+		</p>
+		<div style="text-align: center;margin-top: 8px;">
+			<button id="printButton" type="button" class="btn btn-info">Print</button>
+		</div>
 	</div>
 </div>

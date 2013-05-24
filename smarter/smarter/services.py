@@ -96,7 +96,7 @@ def get_pdf_content(params):
     # get current session cookie and request for pdf
     (cookie_name, cookie_value) = get_session_cookie()
     celery_timeout = int(pyramid.threadlocal.get_current_registry().settings.get('pdf.celery_timeout', '30'))
-    celery_response = get_pdf.delay(cookie_value, url, file_name, cookie_name=cookie_name, timeout=services.celeryconfig.TIMEOUT)  # @UndefinedVariable
+    celery_response = get_pdf.delay(cookie_value, url, file_name, cookie_name=cookie_name, timeout=services.celeryconfig.TIMEOUT, grayScale=is_grayscale)  # @UndefinedVariable
     pdf_stream = celery_response.get(timeout=celery_timeout)
 
     return Response(body=pdf_stream, content_type='application/pdf')

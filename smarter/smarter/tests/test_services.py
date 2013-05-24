@@ -24,7 +24,6 @@ from services.tasks.create_pdf import prepare_file_path
 from services.tests.tasks.test_create_pdf import get_cmd
 from services.celeryconfig import get_config
 import shutil
-import smarter
 
 
 class TestServices(Unittest_with_smarter_sqlite):
@@ -33,7 +32,7 @@ class TestServices(Unittest_with_smarter_sqlite):
         self.__request = DummyRequest()
         # Must set hook_zca to false to work with uniittest_with_sqlite
         self.__temp_dir = tempfile.mkdtemp()
-        smarter.services.PDF_BASE_DIR = self.__temp_dir
+        services.PDF_BASE_DIR = self.__temp_dir
         with SmarterDBConnection() as connection:
             # Insert into user_mapping table
             user_mapping = connection.get_table('user_mapping')

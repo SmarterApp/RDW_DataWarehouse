@@ -32,7 +32,7 @@ def generate_pdf(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT,
         shell = False
         if platform.system() == 'Windows':
             shell = True
-        prepare_file_path(file_path=outputfile,mkdir_mode=mkdir_mode)
+        prepare_file_path(file_path=outputfile, mkdir_mode=mkdir_mode)
         wkhtmltopdf_option = copy.deepcopy(options)
         if grayScale:
             wkhtmltopdf_option += ['-g']

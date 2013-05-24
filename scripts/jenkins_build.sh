@@ -361,7 +361,7 @@ function main {
         setup_python33_functional_test_dependencies
         run_python33_functional_tests
         setup_functional_test_dependencies
-        run_qunit_tests
+        #run_qunit_tests
         optimize_javascript
         run_functional_tests
         check_pep8 "$FUNC_DIR"

@@ -79,7 +79,7 @@ define [
       container: "div"
       title: ->
         '<div class="pull-right hideButton"><a class="pull-right" href="#" id="close" data-id="print">Hide <img src="../images/hide_x.png"></img></i></a></div><div class="lead">Print Options</div>'
-      template: '<div class="popover printFooterPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
+      template: '<div class="popover footerPopover printFooterPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
       content: ->
         $(".printPopup").html()
      

@@ -11,6 +11,7 @@ from services.celeryconfig import TIMEOUT
 import platform
 from services.celery import celery
 from services.exceptions import PdfGenerationError
+import copy
 
 pdf_procs = ['wkhtmltopdf']
 pdf_defaults = ['--enable-javascript', '--page-size', 'Letter', '--print-media-type', '-l', '--javascript-delay', '6000', '--footer-center', 'Page [page] of [toPage]', '--footer-font-size', '9']
@@ -32,9 +33,11 @@ def generate_pdf(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT,
         if platform.system() == 'Windows':
             shell = True
         prepare_file_path(outputfile)
+        wkhtmltopdf_option = copy.deepcopy(options)
         if grayScale:
-            options.append('-g')
-        return subprocess.call(pdf_procs + options + ['--cookie', cookie_name, cookie, url, outputfile], timeout=timeout, shell=shell)
+            wkhtmltopdf_option += ['-g']
+        wkhtmltopdf_option += ['--cookie', cookie_name, cookie, url, outputfile]
+        return subprocess.call(pdf_procs + wkhtmltopdf_option , timeout=timeout, shell=shell)
     except subprocess.TimeoutExpired:
         # check output file, return 0 if file is created successfully
         isSucceed = os.path.exists(outputfile) and os.path.getsize(outputfile)

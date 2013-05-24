@@ -149,14 +149,14 @@ def get_column_mapping():
                 ('district_guid', 'guid_district'),
                 ('school_guid', 'guid_school'),
                 ('section_guid', '\' \''),
-                ('inst_hier_rec_id', None),
+                ('inst_hier_rec_id', '-1'),
                 ('section_rec_id', None),
                 ('where_taken_id', 'guid_asmt_location'),
                 ('where_taken_name', 'name_asmt_location'),
                 ('asmt_grade', 'grade_asmt'),
                 ('enrl_grade', 'grade_enrolled'),
                 ('date_taken', 'date_assessed'),
-                ('date_taken_day', "EXTRACT(DAY FROM TO_DATE(date_assessed, 'YYYYMMDD'))"), # date_assessed is a varchar(8) 
+                ('date_taken_day', "EXTRACT(DAY FROM TO_DATE(date_assessed, 'YYYYMMDD'))"),  # date_assessed is a varchar(8) 
                 ('date_taken_month', "EXTRACT(MONTH FROM TO_DATE(date_assessed, 'YYYYMMDD'))"),  # date_assessed is a varchar(8) 
                 ('date_taken_year', "EXTRACT(YEAR FROM TO_DATE(date_assessed, 'YYYYMMDD'))"),  # date_assessed is a varchar(8) 
                 ('asmt_score', 'score_asmt'),
@@ -195,6 +195,15 @@ def get_asmt_rec_id_info():
     return basic_map
 
 
+def get_inst_hier_rec_id_info():
+    basic_map = {'rec_id_map': ('inst_hier_rec_id', 'inst_hier_rec_id'),
+                 'table_map': ('dim_inst_hier', 'fact_asmt_outcome'),
+                 'guid_column_map': {'state_code': 'state_code',
+                                     'district_guid': 'district_guid',
+                                     'school_guid': 'school_guid'}
+                 }
+    return basic_map
+
 """
 def get_section_rec_id_info():
     # need to be revised
@@ -207,7 +216,3 @@ def get_section_rec_id_info():
     basic_map['source_table'] = get_target_tables_parallel()['dim_staff']
     return basic_map
 """
-
-
-def get_column_for_inst_hier_map():
-    return (['state_code', 'district_guid', 'school_guid'], 'inst_hier_rec_id')

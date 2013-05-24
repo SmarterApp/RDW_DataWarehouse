@@ -1,42 +1,47 @@
 from fileloader.file_loader import connect_db, execute_queries
 from collections import OrderedDict
 import move_to_target.column_mapping as col_map
+import datetime
 
 
 DBDRIVER = "postgresql"
 
 
-def explode_data_to_fact_table(conf, db_user_target, db_password_target, db_host_target, db_name_target, source_table, target_table, column_mapping, column_types):
+def explode_data_to_fact_table(conf, source_table, target_table, column_mapping, column_types):
     asmt_rec_id_info = col_map.get_asmt_rec_id_info()
 
-    # get asmt_rec_id
-    asmt_rec_id = get_asmt_rec_id(conf,
-                             asmt_rec_id_info['guid_column_name'],
-                             asmt_rec_id_info['guid_column_in_source'],
-                             asmt_rec_id_info['guid_column_name'],
-                             asmt_rec_id_info['target_table'],
-                             asmt_rec_id_info['source_table'])
+    # get asmt_rec_id, which is one foreign key in fact table
+    asmt_rec_id = get_asmt_rec_id(conf, asmt_rec_id_info['guid_column_name'], asmt_rec_id_info['guid_column_in_source'],
+                                  asmt_rec_id_info['rec_id'], asmt_rec_id_info['target_table'], asmt_rec_id_info['source_table'])
 
-    # get section_rec_id
+    # get section_rec_id, which is one foreign key in fact table. We set to a fake value
     section_rec_id, section_rec_id_column_name = get_section_rec_id()
 
-    # get inst_hier_rec_id
-    inst_hier_rec_id_map = get_rec_id_map(conf, conf['target_schema'], 'dim_inst_hier', 'inst_hier_rec_id', conf['batch_id'])
-    print("asmt_rec_id, section_rec_id, length of inst_hier_rec_id_map are: %s, %s, %d"
-          % (asmt_rec_id, section_rec_id, len(inst_hier_rec_id_map)))
-
-    # create the query to insert into fact table via dblink
-    # create db connection
-    conn, _engine = connect_db(conf['db_user'], conf['db_password'], conf['db_host'], conf['db_name'])
+    # update above 2 foreign keys in column mapping
     column_mapping = col_map.get_column_mapping()[target_table]
-    column_mapping[asmt_rec_id_info['rec_id']] = "'" + asmt_rec_id + "'"
+    column_mapping[asmt_rec_id_info['rec_id']] = '\'' + str(asmt_rec_id) + '\''
     column_mapping[section_rec_id_column_name] = section_rec_id
-    column_mapping[col_map.get_column_for_inst_hier_map()[1]] = 'TO_BE_DESIGNED'
 
-    column_types = get_table_column_types(conf, target_table, list(column_mapping.keys()))
-    # create insertion query
-    query = create_insert_query(conf, source_table, target_table, column_mapping, column_types)
-    print("*******%s" % query)
+    # get list of queries to be executed
+    queries = create_queries_for_move_to_fact_table(conf, source_table, target_table, column_mapping, column_types)
+
+    # create database connection (connect to target)
+    conn, _engine = connect_db(conf['db_user_target'], conf['db_password_target'], conf['db_host_target'], conf['db_name_target'])
+
+    # execute above four queries in order, 2 parts
+    print("I am the exploder, about to copy data into fact table with fake inst_hier_rec_id")
+    start_time_p1 = datetime.datetime.now()
+    execute_queries(conn, queries[0:2], 'Exception -- exploding data from integration to fact table part 1')
+    finish_time_p1 = datetime.datetime.now()
+    spend_time_p1 = calculate_spend_time_as_second(start_time_p1, finish_time_p1)
+    print("I am the exploder, copied data into fact table with fake inst_hier_rec_id in %.3f seconds" % spend_time_p1)
+
+    print("I am the exploder, about to update inst_hier_rec_id as value in dim_inst_hier")
+    execute_queries(conn, queries[2:4], 'Exception -- exploding data from integration to fact table part 2')
+    finish_time_p2 = datetime.datetime.now()
+    spend_time_p2 = calculate_spend_time_as_second(finish_time_p1, finish_time_p2)
+    print("I am the exploder, updated inst_hier_rec_id as value in dim_inst_hier in %.3f seconds" % spend_time_p2)
+
     conn.close()
 
 
@@ -49,7 +54,7 @@ def get_asmt_rec_id(conf, guid_column_name_in_target, guid_column_name_in_source
                                                                                                                                   source_table=source_table_name,
                                                                                                                                   batch_id=conf['batch_id']
                                                                                                                                   )
-    print(query_to_get_guid)
+    # print(query_to_get_guid)
     guid_column_value = execute_query_get_one_value(conn_to_source_db, query_to_get_guid, guid_column_name_in_source)
     conn_to_source_db.close()
 
@@ -62,7 +67,7 @@ def get_asmt_rec_id(conf, guid_column_name_in_target, guid_column_name_in_source
                                                                                                                       guid_column_name_in_target=guid_column_name_in_target,
                                                                                                                       guid_column_value_got=guid_column_value
                                                                                                                       )
-    print(query_to_get_rec_id)
+    # print(query_to_get_rec_id)
     asmt_rec_id = execute_query_get_one_value(conn_to_target_db, query_to_get_rec_id, rec_id_column_name)
     conn_to_target_db.close()
     return asmt_rec_id
@@ -88,61 +93,65 @@ def get_section_rec_id():
     return '1', 'section_rec_id'
 
 
-def get_rec_id_map(conf, target_schema, table_dim_inst_hier, column_inst_hier_rec_id, batch_id):
-    # connect to integration table, to get guid_column_value
-    conn_to_source_db, _engine = connect_db(conf['db_user_target'], conf['db_password_target'], conf['db_host_target'], conf['db_name_target'])
-    rec_id_map = {}
-    guids_in_hier, inst_hier_rec_id = col_map.get_column_for_inst_hier_map()
-    # column_map = col_map.get_column_mapping()[table_dim_inst_hier]
-    # guids_in_integration = [column_map[column_name] for column_name in guids_in_hier]
-    # create a map which defines the mapping of {(state_code, district_guid, section_guid): inst_hier_rec_id}
-    query_to_get_map = ["SELECT DISTINCT ",
-                        ",".join(guids_in_hier), ",", inst_hier_rec_id,
-                        " FROM \"",
-                        target_schema, "\".\"", table_dim_inst_hier, "\""
-                        ]
-    query_to_get_map = "".join(query_to_get_map)
-    print(query_to_get_map)
-    try:
-        result = conn_to_source_db.execute(query_to_get_map)
-        for row in result:
-            key = row[0: len(guids_in_hier)]
-            value = row[len(guids_in_hier)]
-            rec_id_map[tuple(key)] = value
-    except Exception as e:
-        print(e)
-    conn_to_source_db.close()
-    return rec_id_map
+def create_queries_for_move_to_fact_table(conf, source_table, target_table, column_mapping, column_types):
+    # disable foreign key in fact table
+    disable_trigger_query = enable_trigger_query(conf['target_schema'], target_table, False)
+    # print(disable_trigger_query)
+
+    # create insertion insert_into_fact_table_query
+    insert_into_fact_table_query = create_insert_query(conf, source_table, target_table, column_mapping, column_types, False)
+    # print(insert_into_fact_table_query)
+
+    # update inst_hier_query back
+    update_inst_hier_rec_id_fk_query = update_inst_hier_rec_id_query(conf['target_schema'])
+    # print(update_inst_hier_rec_id_fk_query)
+
+    # enable foreign key in fact table
+    enable_back_trigger_query = enable_trigger_query(conf['target_schema'], target_table, True)
+    # print(enable_back_trigger_query)
+
+    return [disable_trigger_query, insert_into_fact_table_query, update_inst_hier_rec_id_fk_query, enable_back_trigger_query]
 
 
-def explode_data_to_dim_table(conf, db_user, db_password, db_host, db_name, source_table, target_table, column_mapping, column_types):
+def explode_data_to_dim_table(conf, source_table, target_table, column_mapping, column_types):
     '''
     Will use parameters passed in to create query with sqlalchemy
     '''
     # create db connection
-    conn, _engine = connect_db(db_user, db_password, db_host, db_name)
+    conn, _engine = connect_db(conf['db_user_target'], conf['db_password_target'], conf['db_host_target'], conf['db_name_target'])
 
     # create insertion query
-    query = create_insert_query(conf, source_table, target_table, column_mapping, column_types)
+    query = create_insert_query(conf, source_table, target_table, column_mapping, column_types, True)
     # print(query)
 
     # execute the query
-    # print("Executing query... %s, %s " % (target_table, query))
-    # if target_table in ['dim_asmt']:
-    execute_queries(conn, [query], 'Exception -- exploding data from integration to target')
+    execute_queries(conn, [query], 'Exception -- exploding data from integration to target {target_table}'.format(target_table=target_table))
     conn.close()
 
 
-def create_insert_query(conf, source_table, target_table, column_mapping, column_types):
-    seq_expression = list(column_mapping.values())[0].replace("'", "''''")
-    insert_sql = ["SELECT dblink_exec(\'dbname={db_name_target} user={db_user_target} password={db_password_target}\',"
-             "\'INSERT INTO \"{target_schema}\".\"{target_table}\"(",
+def enable_trigger_query(schema_name, table_name, is_enable):
+    action = 'ENABLE'
+    if not is_enable:
+        action = 'DISABLE'
+    query = 'ALTER TABLE "{schema_name}"."{table_name}" {action} TRIGGER ALL'.format(schema_name=schema_name,
+                                                                                     table_name=table_name,
+                                                                                     action=action)
+    return query
+
+
+def create_insert_query(conf, source_table, target_table, column_mapping, column_types, need_distinct):
+    distinct_expression = 'DISTINCT '
+    if not need_distinct:
+        distinct_expression = ''
+    seq_expression = list(column_mapping.values())[0].replace("'", "''")
+    insert_sql = [
+             "INSERT INTO \"{target_schema}\".\"{target_table}\"(",
              ",".join(list(column_mapping.keys())),
-             ")  SELECT * FROM dblink(\''dbname={db_name} user={db_user} password={db_password}\'', \''SELECT {seq_expression}, * FROM (SELECT DISTINCT ",
-             ",".join(value.replace("'", "''''") for value in list(column_mapping.values())[1:]),
-             " FROM \"{source_schema}\".\"{source_table}\" WHERE batch_id={batch_id}) as y\'') AS t(",
+             ")  SELECT * FROM dblink(\'dbname={db_name} user={db_user} password={db_password}\', \'SELECT {seq_expression}, * FROM (SELECT {distinct_expression}",
+             ",".join(value.replace("'", "''") for value in list(column_mapping.values())[1:]),
+             " FROM \"{source_schema}\".\"{source_table}\" WHERE batch_id={batch_id}) as y\') AS t(",
              ",".join(list(column_types.values())),
-             ") ;\');"
+             ");"
             ]
     insert_sql = "".join(insert_sql).format(db_name_target=conf['db_name_target'],
                                             db_user_target=conf['db_user_target'],
@@ -153,11 +162,30 @@ def create_insert_query(conf, source_table, target_table, column_mapping, column
                                             db_user=conf['db_user'],
                                             db_password=conf['db_password'],
                                             seq_expression=seq_expression,
+                                            distinct_expression=distinct_expression,
                                             source_schema=conf['source_schema'],
                                             source_table=source_table,
                                             batch_id=conf['batch_id'])
 
     return insert_sql
+
+
+def update_inst_hier_rec_id_query(schema):
+    info_map = col_map.get_inst_hier_rec_id_info()
+    update_query = ["UPDATE \"{schema}\".\"{fact_table}\" ",
+             "SET {inst_hier_in_fact}=dim.dim_{inst_hier_in_dim} FROM (SELECT ",
+             "{inst_hier_in_dim} AS dim_{inst_hier_in_dim}, ",
+             ",".join(guid_in_dim + ' AS dim_' + guid_in_dim for guid_in_dim in list(info_map['guid_column_map'].keys())),
+             " FROM \"{schema}\".\"{dim_table}\")dim",
+             " WHERE {inst_hier_in_fact}=-1 AND ",
+             " AND ".join(guid_in_fact + '= dim_' + guid_in_dim for guid_in_dim, guid_in_fact in info_map['guid_column_map'].items())
+             ]
+    update_query = "".join(update_query).format(schema=schema,
+                                                dim_table=info_map['table_map'][0],
+                                                fact_table=info_map['table_map'][1],
+                                                inst_hier_in_dim=info_map['rec_id_map'][0],
+                                                inst_hier_in_fact=info_map['rec_id_map'][1])
+    return update_query
 
 
 def get_table_column_types(conf, target_table, column_names):
@@ -194,3 +222,10 @@ def create_information_query(conf, target_table):
                                                 db_password_target=conf['db_password_target'],
                                                 target_table=target_table)
     return select_query
+
+
+def calculate_spend_time_as_second(start_time, finish_time):
+    spend_time = finish_time - start_time
+    time_as_seconds = float(spend_time.seconds + spend_time.microseconds / 1000000.0)
+    return time_as_seconds
+

@@ -4,6 +4,9 @@ import os
 import argparse
 import time
 import datetime
+from celery import chain
+from udl2 import W_file_arrived, W_file_expander, W_simple_file_validator, W_file_splitter
+from udl2 import message_keys as mk
 
 # Paths to our various directories
 THIS_MODULE_PATH = os.path.abspath(__file__)
@@ -11,8 +14,9 @@ SRC_DIRECTORY = os.path.dirname(THIS_MODULE_PATH)
 ROOT_DIRECTORY = os.path.dirname(SRC_DIRECTORY)
 ZONES = os.path.join(ROOT_DIRECTORY, 'zones')
 LANDING_ZONE = os.path.join(ZONES, 'landing')
-WORK_ZONE = os.path.join(ZONES, 'work')
-HISTORY_ZONE = os.path.join(ZONES, 'history_zone')
+ARRIVALS = os.path.join(ZONES, 'arrivals')
+WORK_ZONE = os.path.join(LANDING_ZONE, 'work')
+HISTORY_ZONE = os.path.join(LANDING_ZONE, 'history')
 DATAFILES = os.path.join(ROOT_DIRECTORY, 'datafiles')
 
 # Keys for validator message
@@ -22,33 +26,46 @@ BATCH_ID = 'batch_id'
 
 def start_pipeline(csv_file_path, json_file_path):
     '''
-    Begins the UDL Pipeline process by copying the file found at 'file_path' to the landing zone and
+    Begins the UDL Pipeline process by copying the file found at 'csv_file_path' to the landing zone arrivals dir and
     initiating our main pipeline chain.
 
-    @param csv_file_path: The file that gets uploaded to the "Landing Zone," beginning the UDL process
+    @param csv_file_path: The file that gets uploaded to the "Landing Zone" Arrival dir beginning the UDL process
     @type csv_file_path: str
     '''
 
     # Create a unique name for the file when it is placed in the "Landing Zone"
-    landing_zone_file_dir = LANDING_ZONE
-    landing_zone_file_name = create_unique_file_name(csv_file_path)
-    full_path_to_landing_zone_file = os.path.join(landing_zone_file_dir, landing_zone_file_name)
+    # arrivals_dir = ARRIVALS
+    # unique_filename = create_unique_file_name(csv_file_path)
+    # full_path_to_arrival_dir_file = os.path.join(arrivals_dir, unique_filename)
     # Copy the file over, using the new (unique) filename
-    shutil.copy(csv_file_path, full_path_to_landing_zone_file)
+    # shutil.copy(csv_file_path, full_path_to_arrival_dir_file)
     # Now, add a task to the file splitter queue, passing in the path to the landing zone file
     # and the directory to use when writing the split files
-    validator_msg = generate_message_for_file_validator(landing_zone_file_dir, landing_zone_file_name)
 
-    # TODO: Kick off the pipeline using the validator message as a starting point
-    #udl2.W_file_splitter.task.apply_async([validator_msg], queue='Q_files_received')
+    archived_file = os.path.join('fake', 'path', 'to', 'fake_archived_file.zip')
+    jc_table_conf = {}
+    lzw = WORK_ZONE
+
+    # TODO: After implementing expander, change generate_message_for_file_arrived() so it includes the actual zipped file.
+    arrival_msg = generate_message_for_file_arrived(archived_file, lzw, jc_table_conf)
+    arrival_msg = extend_arrival_msg_temp(arrival_msg, csv_file_path, json_file_path)
+
+    pipeline_chain = chain(W_file_arrived.task.s(arrival_msg), W_file_expander.task.s(), W_simple_file_validator.task.s(),
+                           W_file_splitter.task.s())
+    result = pipeline_chain.delay()
 
 
-def generate_message_for_file_validator(landing_zone_file_dir, landing_zone_file_name):
+def generate_message_for_file_arrived(archived_file_path, lzw, jc_table_conf):
     msg = {
-        FILE_TO_VALIDATE_DIR:landing_zone_file_dir,
-        FILE_TO_VALIDATE_NAME: landing_zone_file_name,
-        BATCH_ID: int(datetime.datetime.now().timestamp())
+        mk.INPUT_FILE_PATH: archived_file_path,
+        mk.LANDING_ZONE_WORK_DIR: lzw,
+        mk.JOB_CONTROL_TABLE_CONF: jc_table_conf
     }
+
+
+def extend_arrival_msg_temp(msg, csv_file_path, json_file_path):
+    msg.update({mk.CSV_FILENAME: csv_file_path})
+    msg.update({mk.JSON_FILENAME: json_file_path})
     return msg
 
 

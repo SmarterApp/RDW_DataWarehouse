@@ -21,7 +21,6 @@ import services.celeryconfig
 
 
 KNOWN_REPORTS = ['indivstudentreport.html']
-PDF_BASE_DIR = '/tmp'
 
 
 @view_config(route_name='pdf', request_method='POST', content_type='application/json')
@@ -91,7 +90,8 @@ def get_pdf_content(params):
     is_grayscale = bool(params.get('grayscale', 'false').lower() == 'true')
 
     # get isr file path name
-    file_name = generate_isr_report_path_by_student_guid(pdf_report_base_dir=PDF_BASE_DIR, student_guid=student_guid, asmt_type=Constants.SUMMATIVE, grayScale=is_grayscale)
+    pdf_base_dir = pyramid.threadlocal.get_current_registry().get('pdf.report_base_dir', "/tmp")
+    file_name = generate_isr_report_path_by_student_guid(pdf_report_base_dir=pdf_base_dir, student_guid=student_guid, asmt_type=Constants.SUMMATIVE, grayScale=is_grayscale)
 
     # get current session cookie and request for pdf
     (cookie_name, cookie_value) = get_session_cookie()

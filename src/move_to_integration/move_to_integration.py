@@ -29,8 +29,7 @@ def create_migration_query(source_schema, source_table, target_schema, target_ta
          ({target_columns})
     SELECT {source_columns} 
         FROM "{source_schema}"."{source_table}" AS A LEFT JOIN 
-        "{error_schema}"."{error_table}" AS B ON (A.batch_id = B.batch_id AND
-                                             A.record_sid = B.record_sid ) 
+        "{error_schema}"."{error_table}" AS B ON (A.record_sid = B.record_sid ) 
         WHERE B.record_sid IS NULL 
     """
     sql = sql_template.format(target_schema=target_schema,

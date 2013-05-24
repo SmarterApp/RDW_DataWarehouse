@@ -24,7 +24,7 @@ function set_vars {
     EGG_REPO="/opt/edware/pynest"
     PYNEST_SERVER="repo0.qa.dum.edwdc.net"
     PYNEST_DIR="/opt/wgen/pyrepos/pynest"
-    QUNIT_DIR='$WORKSPACE/$FUNC_DIR/frontend_tests/qunit'
+    QUNIT_DIR="$WORKSPACE/$FUNC_DIR/frontend_tests/qunit"
 
     # delete existing xml files
     if [ -f $WORKSPACE/coverage.xml ]; then

@@ -37,8 +37,8 @@ def copy_file(source_file, target_directory):
         shutil.copy2(source_file, target_directory)
         return True
     except IOError as e:
-        #print('ERROR while copying file (%s) to directory (%s)' % (source_file, target_directory))
-        #print(e)
+        print('ERROR while copying file (%s) to directory (%s)' % (source_file, target_directory))
+        print(e)
         return False
 
 
@@ -84,3 +84,8 @@ def abs_path_join(*args):
         for arg in args:
             full_path = os.path.join(full_path, arg)
         return os.path.abspath(full_path)
+
+def create_directory(path):
+    if not os.path.exists(path):
+        os.makedirs(path)
+    return path

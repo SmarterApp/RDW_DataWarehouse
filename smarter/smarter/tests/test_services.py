@@ -41,7 +41,6 @@ class TestServices(Unittest_with_smarter_sqlite):
         dummy_user = User()
         dummy_user.set_roles(['TEACHER'])
         dummy_user.set_uid('272')
-        self.__config = testing.setUp(request=self.__request, hook_zca=False)
         self.__config.testing_securitypolicy(dummy_user)
         # celery settings for UT
         settings = {'celery.CELERY_ALWAYS_EAGER': True}

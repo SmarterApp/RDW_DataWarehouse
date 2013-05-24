@@ -34,7 +34,7 @@ class TestServices(Unittest_with_smarter_sqlite):
         # Must set hook_zca to false to work with uniittest_with_sqlite
         reg = Registry()
         self.__temp_dir = tempfile.mkdtemp()
-        reg.settings={}
+        reg.settings = {}
         reg.settings['pdf.report_base_dir'] = self.__temp_dir
         self.__config = testing.setUp(registry=reg, request=self.__request, hook_zca=False)
         with SmarterDBConnection() as connection:

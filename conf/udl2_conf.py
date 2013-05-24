@@ -15,7 +15,7 @@ udl2_conf = {
     'file_splitter':{  # Options for file_splitter
         'row_limit': 10000,  # default row number for split files
         'parts': 1,  # default parts of files
-        'output_path' : '.',  # where the newly generated splited file located
+        'output_path' : '.',  # where the newly generated split file located
         'keep_headers' : True,  # preserve csv header for importing
     },
     'celery_defaults': {
@@ -129,7 +129,8 @@ udl2_conf = {
         'db_user':'edware',
         'db_pass':'password',
         'db_driver':'postgres'
-    }
+    },
+
 
 }
 

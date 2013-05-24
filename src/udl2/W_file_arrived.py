@@ -14,6 +14,7 @@ from __future__ import absolute_import
 from udl2.celery import celery
 from celery.utils.log import get_task_logger
 from uuid import uuid4
+from udl2 import message_keys as mk
 
 # Keys for the incoming msg
 INPUT_FILE_PATH = 'input_file_path'
@@ -31,9 +32,9 @@ logger = get_task_logger(__name__)
 @celery.task(name="udl2.W_file_arrived.task")
 def task(incoming_msg):
     # Retrieve parameters from the incoming message
-    uploaded_file = incoming_msg[INPUT_FILE_PATH]
-    lzw = incoming_msg[LANDING_ZONE_WORK_DIR]
-    jc_table_conf = incoming_msg[JOB_CONTROL_TABLE_CONF]
+    uploaded_file = incoming_msg[mk.INPUT_FILE_PATH]
+    lzw = incoming_msg[mk.LANDING_ZONE_WORK_DIR]
+    jc_table_conf = incoming_msg[mk.JOB_CONTROL_TABLE_CONF]
 
     # Create the batch_id
     batch_id = str(uuid4())

@@ -69,6 +69,7 @@ common:
     pdf.generate.timeout: 10
     pdf.report_base_dir: /tmp/pdf
     pdf.celery_timeout: 30
+    pdf.mkdir_mode: 0755
 
   '[server:main]':
     use: 'egg:waitress#main'
@@ -246,6 +247,7 @@ uat:
   '[app:main]':
     mode: prod
     pdf.report_base_dir: /opt/edware/pdf
+    pdf.mkdir_mode: 0700
     disable_stack_trace: true
     edware:
       schema_name: edware_uat_0_1

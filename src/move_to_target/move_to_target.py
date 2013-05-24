@@ -19,7 +19,7 @@ def explode_data_to_fact_table(conf, source_table, target_table, column_mapping,
 
     # update above 2 foreign keys in column mapping
     column_mapping = col_map.get_column_mapping()[target_table]
-    column_mapping[asmt_rec_id_info['rec_id']] = '\'' + str(asmt_rec_id) + '\''
+    column_mapping[asmt_rec_id_info['rec_id']] = str(asmt_rec_id)
     column_mapping[section_rec_id_column_name] = section_rec_id
 
     # get list of queries to be executed

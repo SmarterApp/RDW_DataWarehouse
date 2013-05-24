@@ -10,13 +10,6 @@ def main():
 
     batch = {'batch_id': args.batch_id}
 
-    """
-    # execute by group for explode_to_dims only
-    print("****Start explode_to_dims by Celery Group****")
-    result = explode_to_dims.apply_async([batch], queue='Q_copy_to_target', routing_key='udl2')
-    print("****Finished moving to target %s by Celery Group****" % str(result))
-    """
-
     result_uuid = chain(explode_to_dims.s(batch), explode_to_fact.s())()
     result_value = result_uuid.get()
     print(result_value)

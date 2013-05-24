@@ -208,7 +208,7 @@ function run_functional_tests {
     sed -i.bak "s/host=localhost/host=$HOSTNAME/g" test.ini
     export DISPLAY=:6.0
 
-    nosetests -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml --exclude-dir=${QUNIT_DIR}
+    nosetests -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
 
     echo "Finish running functional tests"
 }

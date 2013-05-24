@@ -48,8 +48,7 @@ def task(msg):
     conf = generate_conf_for_loading(msg[FILE_TO_LOAD], batch_id)
     load_json(conf)
 
-    outgoing_msg = generate_stg_to_int_msg(conf[INT_TABLE], job_control)
-    return outgoing_msg
+    return msg
 
 
 def generate_conf_for_loading(file_to_load, batch_id):

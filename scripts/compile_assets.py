@@ -4,13 +4,33 @@ import configparser
 import shutil
 import argparse
 
+assets_dir = ''
+smarter_dir = ''
+
+def run_cake_task(task, message):
+    print(message)
+    command_opts = ['node_modules/coffee-script/bin/cake', '-m', 'PROD', '-a', assets_dir, '-s', smarter_dir, task]
+    rtn_code = subprocess.call(command_opts)
+    if rtn_code != 0:
+        print('Cake command fail in %s' % message)   
+
+def optimize_javascript():
+    run_cake_task('optimize', 'Optimizing Javascript')
+    
+def compile():
+    run_cake_task('setup', 'Compiling coffeescripts')
+    
+def copy_assets():
+    run_cake_task('copy','Copying Assets')
 
 def main(config_file):
     config = configparser.ConfigParser()
     config.read(config_file)
+    global assets_dir, smarter_dir
     assets_dir = config.get('default', 'assets.directory')
     smarter_dir = config.get('default', 'smarter.directory')
     run_npm = config.get('default', 'run.npm.update').lower()
+    optimize_js = config.get('default', 'optimize.javascript').lower()
 
     # Run cake watch - builds and watches
     try:
@@ -23,17 +43,12 @@ def main(config_file):
             if rtn_code != 0:
                 print('npm install command failed')
         # Run cake to Compile
-        print('Compiling coffeescripts')
-        command_opts = ['node_modules/coffee-script/bin/cake', '-m', 'PROD', '-a', assets_dir, '-s', smarter_dir, 'setup']
-        rtn_code = subprocess.call(command_opts)
-        if rtn_code != 0:
-            print('cake command failed in compiling')
+        compile()
+        # Optimize javascript
+        if optimize_js == 'true':
+            optimize_javascript()
         # Copy Assets
-        print('Copying Assets')
-        command_opts = ['node_modules/coffee-script/bin/cake', '-m', 'PROD', '-a', assets_dir, '-s', smarter_dir, 'copy']
-        rtn_code = subprocess.call(command_opts)
-        if rtn_code != 0:
-            print('cake command failed in copying')
+        copy_assets()
     except Exception as ex:
         print("Exception occurred " + str(ex))
     finally:

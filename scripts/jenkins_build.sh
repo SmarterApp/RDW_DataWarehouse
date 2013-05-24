@@ -24,6 +24,7 @@ function set_vars {
     EGG_REPO="/opt/edware/pynest"
     PYNEST_SERVER="repo0.qa.dum.edwdc.net"
     PYNEST_DIR="/opt/wgen/pyrepos/pynest"
+    QUNIT_DIR='$WORKSPACE/$FUNC_DIR/frontend_tests/qunit'
 
     # delete existing xml files
     if [ -f $WORKSPACE/coverage.xml ]; then
@@ -207,10 +208,10 @@ function run_functional_tests {
     sed -i.bak "s/host=localhost/host=$HOSTNAME/g" test.ini
     export DISPLAY=:6.0
 
-    nosetests -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
+    nosetests -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml --exclude-dir=${QUNIT_DIR}
 
     echo "Finish running functional tests"
-}	
+}
 
 function create_sym_link_for_apache {
     echo "Creating symbolic links"
@@ -238,12 +239,14 @@ function create_sym_link_for_apache {
 }
 
 function compile_assets {
-
+    OPTIMIZE_JS=${1:-"false"}
     cd "$WORKSPACE/scripts"
     WORKSPACE_PATH=${WORKSPACE//\//\\\/}
 
     sed -i.bak "s/assets.directory = \/path\/assets/assets.directory = ${WORKSPACE_PATH}\/assets/g" compile_assets.ini
     sed -i.bak "s/smarter.directory = \/path\/smarter/smarter.directory = ${WORKSPACE_PATH}\/smarter/g" compile_assets.ini
+    sed -i.bak "s/\(optimize.javascript = \)\(true\|false\)/\1${OPTIMIZE_JS}/g" compile_assets.ini
+
     python compile_assets.py
 }
 
@@ -322,6 +325,19 @@ function generate_ini {
 	python generate_ini.py -e jenkins_dev -i settings.yaml
 }
 
+function run_qunit_tests {
+    echo "Run qunit tests"
+    cd $QUNIT_DIR
+    nosetests
+    echo "Finish qunit tests"
+}
+
+function optimize_javascript {
+    echo "Optimize javascript"
+    compile_assets true
+    echo "Finish optimization"
+}
+
 function main {
 	
     get_opts $@
@@ -345,6 +361,8 @@ function main {
         setup_python33_functional_test_dependencies
         run_python33_functional_tests
         setup_functional_test_dependencies
+        run_qunit_tests
+        optimize_javascript
         run_functional_tests
         check_pep8 "$FUNC_DIR"
     elif [ ${MODE:=""} == "RPM" ]; then

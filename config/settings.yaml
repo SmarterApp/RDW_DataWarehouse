@@ -357,6 +357,10 @@ development:
 
 test:
   '[app:main]':
+    cache:
+      regions: public.data
+      type: memory
+      public.data.expire: 10
     edware:
       schema_name: edware_sds_0_2
       db:

@@ -37,7 +37,7 @@ def generate_pdf(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT,
         if grayScale:
             wkhtmltopdf_option += ['-g']
         wkhtmltopdf_option += ['--cookie', cookie_name, cookie, url, outputfile]
-        return subprocess.call(pdf_procs + wkhtmltopdf_option , timeout=timeout, shell=shell)
+        return subprocess.call(pdf_procs + wkhtmltopdf_option, timeout=timeout, shell=shell)
     except subprocess.TimeoutExpired:
         # check output file, return 0 if file is created successfully
         isSucceed = os.path.exists(outputfile) and os.path.getsize(outputfile)

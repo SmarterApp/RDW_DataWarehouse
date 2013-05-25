@@ -32,6 +32,7 @@ common:
       key: edware_session
       secret: 123thisisasecretForSession456
       timeout: 600 # 10 minutes
+      lock_dir: /tmp/memcache
     
     # Database
     edware:

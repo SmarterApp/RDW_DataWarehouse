@@ -24,7 +24,6 @@ function set_vars {
     EGG_REPO="/opt/edware/pynest"
     PYNEST_SERVER="repo0.qa.dum.edwdc.net"
     PYNEST_DIR="/opt/wgen/pyrepos/pynest"
-    QUNIT_DIR="$WORKSPACE/$FUNC_DIR/frontend_tests/qunit/test_qunit.py"
 
     # delete existing xml files
     if [ -f $WORKSPACE/coverage.xml ]; then
@@ -213,7 +212,7 @@ function run_functional_tests {
     sed -i.bak "s/host=localhost/host=$HOSTNAME/g" test.ini
     export DISPLAY=:6.0
 
-    nosetests -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml --ignore-files=${QUNIT_DIR}
+    nosetests -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
 
     echo "Finish running functional tests"
 }
@@ -231,7 +230,7 @@ function create_sym_link_for_apache {
     /bin/ln -sf ${WORKSPACE}/smarter/smarter.wsgi ${APACHE_DIR}/pyramid_conf
     /bin/ln -sf ${VIRTUALENV_DIR} ${APACHE_DIR}/venv
 
-    compile_assets
+    compile_assets true
 
     echo "Creating sym links for celery purposes"
    
@@ -330,28 +329,6 @@ function generate_ini {
 	python generate_ini.py -e jenkins_dev -i settings.yaml
 }
 
-function run_qunit_tests {
-    echo "Run qunit tests"
-    cd "$WORKSPACE/$FUNC_DIR"
-
-    sed -i.bak 's/port = 6543/port = 80/g' test.ini
-    sed -i.bak "s/host=localhost/host=$HOSTNAME/g" test.ini
-    export DISPLAY=:6.0
-    nosetests ${QUNIT_DIR}
-    echo "Finish qunit tests"
-}
-
-function optimize_javascript {
-    echo "Optimize javascript"
-    #enable python3.3
-    source ${VIRTUALENV_DIR}/bin/activate
-    #optimize javascript
-    compile_assets true
-    #exit python3.3
-    deactivate
-    echo "Finish optimization"
-}
-
 function main {
 	
     get_opts $@
@@ -375,8 +352,6 @@ function main {
         setup_python33_functional_test_dependencies
         run_python33_functional_tests
         setup_functional_test_dependencies
-        run_qunit_tests
-	optimize_javascript
         run_functional_tests
         check_pep8 "$FUNC_DIR"
     elif [ ${MODE:=""} == "RPM" ]; then

@@ -120,34 +120,36 @@ define [
     #    * @param footerData - Grid footer row 
     #    * @param options
     #    
-    create = (tableId, columnItems, columnData, footerData, options) ->
-      
-      columnData = columnData[columnItems.root]  if columnItems.root and columnData isnt null and columnData isnt `undefined`
-      
-      gridOptions =
-        data: columnData
-        datatype: "local"
-        height: "auto"
-        viewrecords: true
-        autoencode: true
-        rowNum: 10000
-        shrinkToFit: false
-        loadComplete: ->
-           # Move footer row to the top of the table
-           $("div.ui-jqgrid-sdiv").insertBefore $("div.ui-jqgrid-bdiv")
-           
-           if window.innerHeight > 800
-            $("#gview_gridTable > .ui-jqgrid-bdiv").css('height', window.innerHeight * .75);
-           else
-            $("#gview_gridTable > .ui-jqgrid-bdiv").css('height', window.innerHeight * .6);
-
-      if footerData
-        gridOptions.footerrow = true
-        
-      if columnData is null or columnData is `undefined` or columnData.length < 1
-        edwareUtil.displayErrorMessage "There is no data available for your request. Please contact your IT administrator."
-      else
-        gridOptions = $.extend(gridOptions, options)  if options
-        $("#" + tableId).edwareGrid columnItems, gridOptions, footerData
+    create = (($) -> 
+      return (tableId, columnItems, columnData, footerData, options) ->
+          
+          columnData = columnData[columnItems.root]  if columnItems.root and columnData isnt null and columnData isnt `undefined`
+          
+          gridOptions =
+            data: columnData
+            datatype: "local"
+            height: "auto"
+            viewrecords: true
+            autoencode: true
+            rowNum: 10000
+            shrinkToFit: false
+            loadComplete: ->
+               # Move footer row to the top of the table
+               $("div.ui-jqgrid-sdiv").insertBefore $("div.ui-jqgrid-bdiv")
+               
+               if window.innerHeight > 800
+                $("#gview_gridTable > .ui-jqgrid-bdiv").css('height', window.innerHeight * .75);
+               else
+                $("#gview_gridTable > .ui-jqgrid-bdiv").css('height', window.innerHeight * .6);
+    
+          if footerData
+            gridOptions.footerrow = true
+            
+          if columnData is null or columnData is `undefined` or columnData.length < 1
+            edwareUtil.displayErrorMessage "There is no data available for your request. Please contact your IT administrator."
+          else
+            gridOptions = $.extend(gridOptions, options)  if options
+            $("#" + tableId).edwareGrid columnItems, gridOptions, footerData
+      ) jQuery
         
     create: create

@@ -1,5 +1,5 @@
 #globals ok $ EDWARE test require module equals deepEqual
-require ["jquery", "edwareIndividualStudent"], ($, edwareIndividualStudent) ->
+require ["jquery", "EDWARE.individualStudent"], ($, edwareIndividualStudent) ->
   
   module "EDWARE.edwareIndividualStudent.generateIndividualStudentReport",
   setup: ->

@@ -53,13 +53,14 @@ class TestLoadToIntegrationTable(unittest.TestCase):
         SELECT A.batch_id, SUBSTR(A.substr_test, 0, 10), TO_NUMBER(A.number_test, '99999')
             FROM "udl2"."STG_MOCK_LOAD" AS A LEFT JOIN
             "udl2"."ERR_LIST" AS B ON (A.record_sid = B.record_sid )
-             WHERE B.record_sid IS NULL AND A.batch_id = 1
+             WHERE B.record_sid IS NULL AND A.batch_id = '00000000-0000-0000-0000-000000000000'
         """
         unit_test_column_mapping = get_column_mapping('unit_test')
         query = create_migration_query('udl2', unit_test_column_mapping['source'],
                                        'udl2', unit_test_column_mapping['target'],
                                        'udl2', unit_test_column_mapping['error'],
-                                       unit_test_column_mapping['mapping'], 1)
+                                       unit_test_column_mapping['mapping'],
+                                       '00000000-0000-0000-0000-000000000000')
         # remove new lines, tab and multiple space. then the query should always be the same
         # because it should be the same query
         # whenever template changes, we should change the tests to make it correct.
@@ -71,7 +72,7 @@ class TestLoadToIntegrationTable(unittest.TestCase):
     def test_move_data_from_staging_to_integration(self, ):
         conf = {
              # add batch_id from msg
-            'batch_id': 1,
+            'batch_id': '00000000-0000-0000-0000-000000000000',
             # error schema
             'error_schema': self.conf['udl2_db']['staging_schema'],
             # source schema

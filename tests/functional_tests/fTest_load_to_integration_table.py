@@ -32,7 +32,7 @@ class FuncTestLoadToIntegrationTable(unittest.TestCase):
     def test_load_sbac_csv(self, ):
         conf = {
              # add batch_id from msg
-            'batch_id': 1,
+            'batch_id': '00000000-0000-0000-0000-000000000000',
             # error schema
             'error_schema': self.conf['udl2_db']['staging_schema'],
             # source schema

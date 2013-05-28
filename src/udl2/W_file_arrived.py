@@ -46,6 +46,6 @@ def generate_file_expander_msg(landing_zone_work_dir, file_to_expand, jc_table_c
     return msg
 
 def extend_file_expander_msg_temp(msg, json_filename, csv_filename):
-    msg = msg.update({mk.JSON_FILENAME: json_filename})
-    msg = msg.update({mk.CSV_FILENAME: csv_filename})
+    msg[mk.JSON_FILENAME] = json_filename
+    msg[mk.CSV_FILENAME] = csv_filename
     return msg

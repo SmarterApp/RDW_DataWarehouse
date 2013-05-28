@@ -6,14 +6,17 @@
 	optimize: 'none',
 	modules: [
 	{
-		name : "EDWARE.comparingPopulations"
+		//exclude jquery to avoid duplication
+		name : "EDWARE.comparingPopulations",
+		exclude : ['jquery']
 	},
 	
 	{
 		name : "EDWARE.comparingPopulationsReport"
 	},
 	{
-		name : "EDWARE.individualStudent"
+		name : "EDWARE.individualStudent",
+		exclude : ['jquery']
 	},
 	{
 		name : "EDWARE.individualStudentReport"

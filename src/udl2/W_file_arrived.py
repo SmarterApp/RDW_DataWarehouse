@@ -23,29 +23,10 @@ def task(incoming_msg):
     # Retrieve parameters from the incoming message
     uploaded_file = incoming_msg[mk.INPUT_FILE_PATH]
     lzw = incoming_msg[mk.LANDING_ZONE_WORK_DIR]
-    jc_table_conf = incoming_msg[mk.JOB_CONTROL_TABLE_CONF]
+    jc_table_conf = incoming_msg[mk.JOB_CONTROL]
+    batch_id = jc_table_conf[1]
 
-    # Create the batch_id
-    batch_id = str(uuid4())
+    logger.info('W_FILE_ARRIVED: received file <%s> with batch_id = <%s>' % (uploaded_file, batch_id))
 
     # TODO: Create the new directory
     # TODO: Move uploaded_file to new directory
-
-    outgoing_msg = generate_file_expander_msg(lzw, uploaded_file, jc_table_conf, batch_id)
-    outgoing_msg = extend_file_expander_msg_temp(outgoing_msg, incoming_msg[mk.JSON_FILENAME], incoming_msg[mk.JSON_FILENAME])
-    return outgoing_msg
-
-
-def generate_file_expander_msg(landing_zone_work_dir, file_to_expand, jc_table_conf, batch_id):
-    msg = {
-        mk.LANDING_ZONE_WORK_DIR: landing_zone_work_dir,
-        mk.FILE_TO_EXPAND: file_to_expand,
-        # Tuple containing config info for job control table and the batch_id for the file upload
-        mk.JOB_CONTROL: (jc_table_conf, batch_id)
-    }
-    return msg
-
-def extend_file_expander_msg_temp(msg, json_filename, csv_filename):
-    msg[mk.JSON_FILENAME] = json_filename
-    msg[mk.CSV_FILENAME] = csv_filename
-    return msg

@@ -3,9 +3,10 @@ from udl2.celery import celery
 from celery.result import AsyncResult
 from celery.utils.log import get_task_logger
 from udl2_util import file_util
+from udl2_util import file_util
 import filesplitter.file_splitter as file_splitter
 import udl2.message_keys as mk
-import datetime
+import time
 import os
 
 
@@ -20,44 +21,41 @@ def task(incoming_msg):
     # parse the message
     # expanded_msg = parse_initial_message(incoming_msg)
 
-    start_time = datetime.datetime.now()
+    start_time = time.time()
 
     # Get necessary params for file_splitter
     lzw = incoming_msg[mk.LANDING_ZONE_WORK_DIR]
     jc = incoming_msg[mk.JOB_CONTROL]
     batch_id = jc[1]
-    csv_filename = incoming_msg[mk.CSV_FILENAME]
     parts = incoming_msg[mk.PARTS]
-    json_filename = incoming_msg[mk.JSON_FILENAME]
 
-    expanded_dir = get_expanded_dir(lzw, batch_id)
-    full_path_to_file = os.path.join(expanded_dir, csv_filename)
+    expanded_dir = file_util.get_expanded_dir(lzw, batch_id)
+    # TODO: Refactor this, its messy.
+    csv_file = None
+    for file_name in os.listdir(expanded_dir):
+        if file_util.extract_file_ext(file_name) == '.csv':
+            csv_file = os.path.join(expanded_dir, file_name)
+            break
+
     subfiles_dir = get_subfiles_dir(lzw, batch_id)
     file_util.create_directory(subfiles_dir)
 
     # do actual work of splitting file
-    split_file_tuple_list, header_file_path = file_splitter.split_file(full_path_to_file, parts=parts,
+    split_file_tuple_list, header_file_path = file_splitter.split_file(csv_file, parts=parts,
                                                                        output_path=subfiles_dir)
 
-    finish_time = datetime.datetime.now()
-    spend_time = finish_time - start_time
+    finish_time = time.time()
+    spend_time = int(finish_time - start_time)
 
     logger.info(task.name)
-    logger.info("Split %s in %s, number of sub-files: %i" % (csv_filename, str(spend_time), len(split_file_tuple_list)))
+    logger.info("FILE_SPLITTER: Split <%s> into %i sub-files in %i" % (csv_file, parts, spend_time))
 
     # for each of sub file, call loading task
-    '''
     for split_file_tuple in split_file_tuple_list:
         message_for_file_loader = generate_msg_for_file_loader(expanded_msg, split_file_tuple, header_file_path)
         udl2.W_file_loader.task.apply_async([message_for_file_loader], queue='Q_files_to_be_loaded', routing_key='udl2')
-    '''
 
     return split_file_tuple_list
-
-
-def get_expanded_dir(lzw, batch_id):
-    expanded_dir = os.path.join(lzw, batch_id, 'EXPANDED')
-    return expanded_dir
 
 
 # TODO: Create a generic function that creates any of the (EXPANDED,ARRIVED,SUBFILES) etc. dirs in separate util file.
@@ -66,14 +64,13 @@ def get_subfiles_dir(lzw, batch_id):
     return subfiles_dir
 
 
-def generate_msg_for_file_loader(old_msg, split_file_tuple, header_file_path):
+def generate_msg_for_file_loader(split_file_tuple, header_file_path, lzw, jc, fdw_conf, staging_conf):
     # TODO: It would be better to have a dict over a list, we can access with key instead of index - more clear.
     split_file_path = split_file_tuple[0]
     split_file_line_count = split_file_tuple[1]
     split_file_row_start = split_file_tuple[2]
 
-    # Simply expanding the old message with additional params
-    file_loader_msg = old_msg
+    file_loader_msg = {}
     file_loader_msg[mk.FILE_TO_LOAD] = split_file_path
     file_loader_msg[mk.LINE_COUNT] = split_file_line_count
     file_loader_msg[mk.ROW_START] = split_file_row_start

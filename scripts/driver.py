@@ -7,6 +7,7 @@ from udl2 import W_file_arrived, W_file_expander, W_simple_file_validator, W_fil
 from udl2 import message_keys as mk
 from udl2_util.udl_mappings import get_json_to_asmt_tbl_mappings
 from conf import udl2_conf
+from move_to_integration.column_mapping import get_column_mapping
 
 # Paths to our various directories
 THIS_MODULE_PATH = os.path.abspath(__file__)
@@ -98,7 +99,22 @@ def generate_msg_report_error(email):
 def generate_msg_content_validation(job_control):
     msg = {
         mk.JOB_CONTROL: job_control,
-        mk.STG_TABLE: 'STG_SBAC_ASMT_OUTCOME',  # TODO: acquire this information
+        mk.STG_TABLE: 'STG_SBAC_ASMT_OUTCOME'  # TODO: acquire this information
+    }
+    return msg
+
+
+def generate_move_to_target(job_control):
+    msg = {
+        mk.BATCH_ID: job_control[1]
+    }
+    return msg
+
+
+def generate_load_to_integration(job_control):
+    msg = {
+        mk.BATCH_ID: job_control[1],
+        mk.INT_TABLE_TYPE: get_column_mapping('staging_to_integration_sbac_asmt_outcome')
     }
     return msg
 

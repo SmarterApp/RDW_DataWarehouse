@@ -33,3 +33,9 @@ DB_PASSWORD = 'db_password'
 
 # report errors
 EMAIL = 'email_address'
+
+# move_to_target
+BATCH_ID = 'batch_id'
+
+# load_to_integration
+INT_TABLE_TYPE = 'load_to_integration_table_type'

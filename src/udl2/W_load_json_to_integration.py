@@ -18,21 +18,14 @@ from __future__ import absolute_import
 from celery.result import AsyncResult
 from celery.utils.log import get_task_logger
 
-from udl2.celery import celery, udl2_conf
+from udl2.celery import celery
 from fileloader.json_loader import load_json
-from udl2_util.udl_mappings import get_json_to_asmt_tbl_mappings
-from udl2.message_keys import JOB_CONTROL, FILE_TO_LOAD
+from udl2.message_keys import (
+    JOB_CONTROL, FILE_TO_LOAD, INT_TABLE, INT_SCHEMA, MAPPINGS,
+    JSON_FILE, DB_HOST, DB_PORT, DB_USER, DB_NAME, DB_PASSWORD
+)
 
 
-INT_TABLE = 'integration_table'
-INT_SCHEMA = 'integration_schema'
-MAPPINGS = 'mappings'
-JSON_FILE = 'json_file'
-DB_HOST = 'db_host'
-DB_PORT = 'db_port'
-DB_USER = 'db_user'
-DB_NAME = 'db_name'
-DB_PASSWORD = 'db_password'
 BATCH_ID = 'batch_id'
 
 logger = get_task_logger(__name__)
@@ -42,27 +35,28 @@ logger = get_task_logger(__name__)
 def task(msg):
     logger.info(task.name)
     logger.info('Loading json file %s...' % msg[JSON_FILE])
-    job_control = msg[JOB_CONTROL]
-    batch_id = job_control[1]
-    conf = generate_conf_for_loading(msg[FILE_TO_LOAD], batch_id)
+    conf = generate_conf_for_loading(msg)
     load_json(conf)
 
-    msg[INT_TABLE] = conf[INT_TABLE]
     return msg
 
 
-def generate_conf_for_loading(file_to_load, batch_id):
+def generate_conf_for_loading(msg):
+    '''
+    takes the msg and pulls out the relevant parameters to pass
+    the method that loads the json
+    '''
     conf = {
-        JSON_FILE: file_to_load,
-        MAPPINGS: get_json_to_asmt_tbl_mappings(),
-        DB_HOST: udl2_conf['postgresql']['db_host'],
-        DB_PORT: udl2_conf['postgresql']['db_port'],
-        DB_USER: udl2_conf['postgresql']['db_user'],
-        DB_NAME: udl2_conf['postgresql']['db_database'],
-        DB_PASSWORD: udl2_conf['postgresql']['db_pass'],
-        INT_SCHEMA: udl2_conf['udl2_db']['staging_schema'],
-        INT_TABLE: 'INT_SBAC_ASMT',
-        BATCH_ID: batch_id
+        JSON_FILE: msg[FILE_TO_LOAD],
+        MAPPINGS: msg[MAPPINGS],  # get_json_to_asmt_tbl_mappings(),
+        DB_HOST: msg[DB_HOST],  # udl2_conf['postgresql']['db_host'],
+        DB_PORT: msg[DB_PORT],  # udl2_conf['postgresql']['db_port'],
+        DB_USER: msg[DB_USER],  # udl2_conf['postgresql']['db_user'],
+        DB_NAME: msg[DB_NAME],  # udl2_conf['postgresql']['db_database'],
+        DB_PASSWORD: msg[DB_PASSWORD],  # udl2_conf['postgresql']['db_pass'],
+        INT_SCHEMA: msg[INT_SCHEMA],  # udl2_conf['udl2_db']['staging_schema'],
+        INT_TABLE: msg[INT_TABLE],  # 'INT_SBAC_ASMT',
+        BATCH_ID: msg[JOB_CONTROL][1]
     }
     return conf
 

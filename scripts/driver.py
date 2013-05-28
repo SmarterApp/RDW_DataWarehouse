@@ -5,7 +5,9 @@ import time
 from celery import chain
 from udl2 import W_file_arrived, W_file_expander, W_simple_file_validator, W_file_splitter
 from udl2 import message_keys as mk
-from uuid import uuid4
+from udl2_util.udl_mappings import get_json_to_asmt_tbl_mappings
+from conf import udl2_conf
+from move_to_integration.column_mapping import get_column_mapping
 
 # Paths to our various directories
 THIS_MODULE_PATH = os.path.abspath(__file__)
@@ -80,28 +82,50 @@ def generate_file_expander_msg(landing_zone_work_dir, file_to_expand, jc):
     return msg
 
 
-def extend_file_expander_msg_temp(msg, json_filename, csv_filename):
-    msg[mk.JSON_FILENAME] = json_filename
-    msg[mk.CSV_FILENAME] = csv_filename
-    return msg
-
-
-def generate_file_validator_msg(landing_zone_work_dir, job_control):
+def generate_message_json_to_int(job_control, json_file):
     msg = {
-        mk.LANDING_ZONE_WORK_DIR: landing_zone_work_dir,
+        mk.FILE_TO_LOAD: json_file,
+        mk.MAPPINGS: get_json_to_asmt_tbl_mappings(),
+        mk.DB_HOST: udl2_conf['postgresql']['db_host'],
+        mk.DB_PORT: udl2_conf['postgresql']['db_port'],
+        mk.DB_USER: udl2_conf['postgresql']['db_user'],
+        mk.DB_NAME: udl2_conf['postgresql']['db_database'],
+        mk.DB_PASSWORD: udl2_conf['postgresql']['db_pass'],
+        mk.INT_SCHEMA: udl2_conf['udl2_db']['integration_schema'],
+        mk.INT_TABLE: 'INT_SBAC_ASMT',  # TODO: acquire this information
         mk.JOB_CONTROL: job_control
     }
     return msg
 
 
-def generate_splitter_msg(lzw, jc):
-    splitter_msg = {
-        mk.LANDING_ZONE_WORK_DIR: lzw,
-        mk.JOB_CONTROL: jc,
-        # TODO: remove hard-coded 4
-        mk.PARTS: 4
+def generate_msg_report_error(email):
+    msg = {
+        mk.EMAIL: email
     }
-    return splitter_msg
+    return msg
+
+
+def generate_msg_content_validation(job_control):
+    msg = {
+        mk.JOB_CONTROL: job_control,
+        mk.STG_TABLE: 'STG_SBAC_ASMT_OUTCOME'  # TODO: acquire this information
+    }
+    return msg
+
+
+def generate_move_to_target(job_control):
+    msg = {
+        mk.BATCH_ID: job_control[1]
+    }
+    return msg
+
+
+def generate_load_to_integration(job_control):
+    msg = {
+        mk.BATCH_ID: job_control[1],
+        mk.INT_TABLE_TYPE: get_column_mapping('staging_to_integration_sbac_asmt_outcome')
+    }
+    return msg
 
 
 def create_unique_file_name(file_path):

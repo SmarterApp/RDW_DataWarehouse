@@ -10,14 +10,8 @@ Created on May 24, 2013
 from __future__ import absolute_import
 from udl2.celery import celery
 from celery.utils.log import get_task_logger
+from udl2.message_keys import STG_TABLE, JOB_CONTROL
 
-# Keys for the incoming msg
-STG_TABLE = 'staging_table'
-JOB_CONTROL = 'job_control'
-
-#Keys for outgoing message
-JSON_FILE = 'json_file'
-LANDING_ZONE_WORK_DIR = 'landing_zone_work_dir'
 
 logger = get_task_logger(__name__)
 
@@ -25,6 +19,7 @@ logger = get_task_logger(__name__)
 @celery.task(name='udl2.W_file_content_validator.task')
 def task(msg):
     logger.info(task.name)
+    logger.info('Parallel Validation Dummy occurring now')
 
     assert msg[JOB_CONTROL]
     assert msg[STG_TABLE]

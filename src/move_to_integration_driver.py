@@ -1,14 +1,14 @@
-from udl2.W_load_from_staging_to_integration import move_to_integration
+from udl2.W_load_to_integration_table import task
 from celery import chain
 import argparse
 
 
 def main():
     parser = argparse.ArgumentParser(description='Move to Integration Driver')
-    parser.add_argument("-b", "--batch_id", type=int, default=1369321935, help="Batch id")
+    parser.add_argument("-b", "--batch_id", type=str, default='00000000-0000-0000-0000-000000000000', help="Batch id")
     args = parser.parse_args()
 
-    batch = {'batch_id': args.batch_id}
+    batch = {'batch_id': args.batch_id, 'load_to_integration_table_type':'staging_to_integration_sbac_asmt_outcome'}
 
     """
     # execute by group for explode_to_dims only
@@ -17,7 +17,7 @@ def main():
     print("****Finished moving to target %s by Celery Group****" % str(result))
     """
 
-    result_uuid = chain(move_to_integration.s(batch),)()
+    result_uuid = chain(task.s(batch),)()
     result_value = result_uuid.get()
     print(result_value)
 

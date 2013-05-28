@@ -51,7 +51,7 @@ udl2_conf = {
         'db_schema':'udl2',
         'db_user':'udl2',
         'db_pass':'udl2abc1234',
-        'db_driver':'postgres',
+        'db_driver':'postgresql',
     },
     'udl2_db': {
         'csv_schema':'udl2',  # this is the same as postgresql schema
@@ -65,7 +65,7 @@ udl2_conf = {
         'db_schema':'udl2',
         'db_user':'udl2',
         'db_pass':'udl2abc1234',
-        'db_driver':'postgres',
+        'db_driver':'postgresql',
     },
     'target_db': {
         'db_schema': 'edware',
@@ -75,8 +75,8 @@ udl2_conf = {
         'db_database':'edware',
         'db_user':'edware',
         'db_pass':'password',
-        'db_driver':'postgres'
-    },
+        'db_driver':'postgresql'
+    }
 }
 
 

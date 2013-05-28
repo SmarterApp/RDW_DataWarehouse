@@ -11,24 +11,22 @@ define [
   # * Handles all the methods for displaying cutpoints, link in the grid
   # 
     
-  showlink = (($) ->
-    return (value, options, rowObject) ->
-      link = options.colModel.formatoptions.linkUrl
-      cssClass = options.colModel.formatoptions.style
-      unless rowObject.header
-        params = ""
-        i = 0 
-        for k, v of rowObject.params
-          if (i != 0)
-            params = params + "&"
-          if k == "id"
-            k = options.colModel.formatoptions.id_name
-          params = params + k + "=" + v
-          i++
-        "<a class="+cssClass+" href=\"" + link + "?" + params + "\">" + $.jgrid.htmlEncode(value) + "</a>"
-      else
-        "<div class="+cssClass+"><span class=summarySubtitle>" + rowObject.subtitle + ":</span><br/><span class='summaryTitle'>"+value+"</span></div>"
-  ) jQuery
+  showlink = (value, options, rowObject) ->
+    link = options.colModel.formatoptions.linkUrl
+    cssClass = options.colModel.formatoptions.style
+    unless rowObject.header
+      params = ""
+      i = 0 
+      for k, v of rowObject.params
+        if (i != 0)
+          params = params + "&"
+        if k == "id"
+          k = options.colModel.formatoptions.id_name
+        params = params + k + "=" + v
+        i++
+      "<a class="+cssClass+" href=\"" + link + "?" + params + "\">" + $.jgrid.htmlEncode(value) + "</a>"
+    else
+      "<div class="+cssClass+"><span class=summarySubtitle>" + rowObject.subtitle + ":</span><br/><span class='summaryTitle'>"+value+"</span></div>"
   
   showOverallConfidence = (value, options, rowObject) ->
     names = options.colModel.name.split "."

@@ -64,7 +64,7 @@ def create_migration_query(source_schema, source_table, target_schema, target_ta
     SELECT {source_columns} 
         FROM "{source_schema}"."{source_table}" AS A LEFT JOIN 
         "{error_schema}"."{error_table}" AS B ON (A.record_sid = B.record_sid ) 
-        WHERE B.record_sid IS NULL AND A.batch_id = {batch_id} 
+        WHERE B.record_sid IS NULL AND A.batch_id = \'{batch_id}\' 
     """
     # mapping is (target_column_name, (conversion_sql_code, source_column_name))
     target_columns = (", ".join(["{target_column}".format(target_column=k) for k in mapping.keys()]))

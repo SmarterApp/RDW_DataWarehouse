@@ -5,7 +5,7 @@ import argparse
 
 def main():
     parser = argparse.ArgumentParser(description='Move to Integration Driver')
-    parser.add_argument("-b", "--batch_id", type=int, default=1369321935, help="Batch id")
+    parser.add_argument("-b", "--batch_id", type=str, default='00000000-0000-0000-0000-000000000000', help="Batch id")
     args = parser.parse_args()
 
     batch = {'batch_id': args.batch_id, 'load_to_integration_table_type':'staging_to_integration_sbac_asmt_outcome'}

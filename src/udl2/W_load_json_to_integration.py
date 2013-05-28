@@ -48,6 +48,7 @@ def task(msg):
     conf = generate_conf_for_loading(msg[FILE_TO_LOAD], batch_id)
     load_json(conf)
 
+    msg[INT_TABLE] = conf[INT_TABLE]
     return msg
 
 
@@ -65,14 +66,6 @@ def generate_conf_for_loading(file_to_load, batch_id):
         BATCH_ID: batch_id
     }
     return conf
-
-
-def generate_stg_to_int_msg(int_table, job_control):
-    msg = {
-        INT_TABLE: int_table,
-        JOB_CONTROL: job_control
-    }
-    return msg
 
 
 @celery.task(name="udl2.W_load_json_to_integration.error_handler")

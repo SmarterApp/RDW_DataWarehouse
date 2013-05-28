@@ -29,12 +29,3 @@ def task(msg):
     # TODO Validate file
 
     return msg
-
-
-def generate_load_json_msg(landing_zone_work_dir, json_file, job_control):
-    msg = {
-        LANDING_ZONE_WORK_DIR: landing_zone_work_dir,
-        JSON_FILE: json_file,
-        JOB_CONTROL: job_control
-    }
-    return msg

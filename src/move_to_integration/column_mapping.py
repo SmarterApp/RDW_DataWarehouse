@@ -9,6 +9,7 @@ def get_column_mapping(map_type):
             'error': 'table_name', eg string for error table name that contain list we want to exclude
             'mapping': ordered dictionary: (column_in_target_table, (type_convertion_code, column_in_source_table)),
                 e.g. ('asmt_guid': ('substr({src_field}, 0, 50)', guid_asmt'))
+    @param map_type: type of mapping for task, this may be in long run be a databse object.
     '''
     column_mappings = {
         'unit_test' : {
@@ -21,7 +22,7 @@ def get_column_mapping(map_type):
             ('number_test', ("TO_NUMBER({src_field}, '99999')", "number_test")),
             ])
         },
-        'stagint_to_integration_sbac_asmt': {
+        'staging_to_integration_sbac_asmt': {
             'source': 'STG_SBAC_ASMT',
             'target': 'INT_SBAC_ASMT',
             'error': 'ERR_LIST',

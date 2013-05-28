@@ -95,7 +95,7 @@ def import_via_fdw(conn, stg_asmt_outcome_columns, batch_id, apply_rules, csv_ta
     # create sequence name, use table_name and a random number combination
     seq_name = csv_table + '_' + str(random.choice(range(1, 10)))
     create_sequence = queries.create_sequence_query(staging_schema, seq_name, start_seq)
-    insert_into_staging_table = queries.create_inserting_into_staging_query(stg_asmt_outcome_columns, batch_id, apply_rules, csv_table_columns, header_types, staging_schema, staging_table, csv_schema, csv_table, start_seq, seq_name)
+    insert_into_staging_table = queries.create_inserting_into_staging_query(stg_asmt_outcome_columns, apply_rules, csv_table_columns, header_types, staging_schema, staging_table, csv_schema, csv_table, start_seq, seq_name)
     drop_sequence = queries.drop_sequence_query(staging_schema, seq_name)
     # print('@@@@@@@', create_sequence)
     execute_queries(conn, [create_sequence, insert_into_staging_table, drop_sequence], 'Exception in loading data -- ')

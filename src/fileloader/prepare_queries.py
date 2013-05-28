@@ -37,7 +37,7 @@ def drop_staging_tables_query(csv_schema, csv_table):
     return ddl
 
 
-def create_inserting_into_staging_query(stg_asmt_outcome_columns, batch_id, apply_rules, header_names, header_types, staging_schema, staging_table, csv_schema, csv_table, start_seq, seq_name):
+def create_inserting_into_staging_query(stg_asmt_outcome_columns, apply_rules, header_names, header_types, staging_schema, staging_table, csv_schema, csv_table, start_seq, seq_name):
     trim_column_names = apply_transformation_rules(apply_rules, header_types, header_names)
     insert_sql = ["INSERT INTO \"{staging_schema}\".\"{staging_table}\"(",
                    ",".join(stg_asmt_outcome_columns),

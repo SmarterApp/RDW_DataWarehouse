@@ -21,7 +21,7 @@ import udl2_util.database_util as db_util
 
 
 DBDRIVER = "postgresql"
-JSON_FILE = 'json_file'
+JSON_FILE = 'json_filename'
 DB_NAME = 'db_name'
 MAPPINGS = 'mappings'
 DB_PORT = 'db_port'

@@ -1,7 +1,6 @@
 require({
 	paths: {
-		'jquery.min' : '../../3p/jquery-1.7.2.min',
-		jquery: '../../3p/jquery-loader',
+		jquery: '../../3p/jquery-1.7.2.min',
 		jqGrid: '../../3p/jquery.jqGrid.min',
 		bootstrap: '../../3p/bootstrap.min',
 		text: '../../3p/text',
@@ -46,6 +45,9 @@ require({
         'bootstrap': {
         	deps: ['jquery'],
             exports: 'bootstrap'
+        },
+        'EDWARE.studentList': {
+        	deps: ['jquery']
         }
    }
 });

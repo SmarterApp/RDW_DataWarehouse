@@ -3,6 +3,7 @@
 	baseUrl: "modules",
 	dir : "build",
 	preserveLicenseComments: false,
+	optimize: 'none',
 	modules: [
 	{
 		name : "EDWARE.comparingPopulations"
@@ -18,7 +19,8 @@
 		name : "EDWARE.individualStudentReport"
 	},
 	{
-		name : "EDWARE.studentList"
+		name : "EDWARE.studentList",
+		exclude : ['jquery']
 	},
 	{
 		name : "EDWARE.studentListReport"

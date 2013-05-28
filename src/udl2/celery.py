@@ -2,7 +2,6 @@ from __future__ import absolute_import
 from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from celery import Celery
 from kombu import Exchange, Queue
-import sys
 import os
 import imp
     
@@ -13,13 +12,6 @@ def setup_udl2_queues(conf):
                               Exchange(conf['celery_defaults']['CELERY_DEFAULT_EXCHANGE'],
                                        conf['celery_defaults']['CELERY_DEFAULT_EXCHANGE']),
                              routing_key=conf['celery_defaults']['CELERY_DEFAULT_ROUTING_KEY'])
-    # set up all celery queues for UDL2
-    for k, v in conf['udl2_queues'].items():
-        queues[k] = Queue(v['name'],
-                          Exchange(v['exchange']['name'],
-                                   v['exchange']['type']),
-                          routing_key=v['routing_key'])
-    
     return queues
 
 
@@ -40,7 +32,7 @@ def setup_celery_conf(udl2_conf, celery, udl_queues):
 try:
     config_path_file = os.environ['UDL2_CONF']
 except Exception:
-    config_path_file =  UDL2_DEFAULT_CONFIG_PATH_FILE
+    config_path_file = UDL2_DEFAULT_CONFIG_PATH_FILE
 
 udl2_conf = imp.load_source('udl2_conf', config_path_file)
 from udl2_conf import udl2_conf

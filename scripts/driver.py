@@ -48,9 +48,11 @@ def start_pipeline(csv_file_path, json_file_path):
     arrival_msg = generate_message_for_file_arrived(archived_file, lzw, jc_table_conf)
     arrival_msg = extend_arrival_msg_temp(arrival_msg, csv_file_path, json_file_path)
 
-    pipeline_chain = chain(W_file_arrived.task.s(arrival_msg), W_file_expander.task.s(), W_simple_file_validator.task.s(),
-                           W_file_splitter.task.s())
+    pipeline_chain = chain(W_file_arrived.task.s(arrival_msg))
+                           #W_file_expander.task.s(), W_simple _file_validator.task.s(), W_file_splitter.task.s())
+
     result = pipeline_chain.delay()
+    #print('RESULT >>>>>>>>>>> ' + str(result.get()))
 
 
 def generate_message_for_file_arrived(archived_file_path, lzw, jc_table_conf):

@@ -14,6 +14,7 @@ def task(msg):
     'email_address'
     '''
     logger.info(task.name)
+    logger.info('Report Error or Success Dummy')
     assert msg[EMAIL]
 
     #TODO: report

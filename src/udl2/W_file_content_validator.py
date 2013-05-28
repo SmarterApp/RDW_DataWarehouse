@@ -19,6 +19,7 @@ logger = get_task_logger(__name__)
 @celery.task(name='udl2.W_file_content_validator.task')
 def task(msg):
     logger.info(task.name)
+    logger.info('Parallel Validation Dummy occurring now')
 
     assert msg[JOB_CONTROL]
     assert msg[STG_TABLE]

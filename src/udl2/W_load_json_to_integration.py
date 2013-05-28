@@ -35,9 +35,7 @@ logger = get_task_logger(__name__)
 def task(msg):
     logger.info(task.name)
     logger.info('Loading json file %s...' % msg[JSON_FILE])
-    job_control = msg[JOB_CONTROL]
-    batch_id = job_control[1]
-    conf = generate_conf_for_loading(msg[FILE_TO_LOAD], batch_id)
+    conf = generate_conf_for_loading(msg)
     load_json(conf)
 
     return msg

@@ -73,9 +73,9 @@ def extend_arrival_msg_temp(msg, csv_file_path, json_file_path):
     return msg
 
 
-def generate_message_json_to_int(job_control):
+def generate_message_json_to_int(job_control, json_file):
     msg = {
-        mk.FILE_TO_LOAD: None,
+        mk.FILE_TO_LOAD: json_file,
         mk.MAPPINGS: get_json_to_asmt_tbl_mappings(),
         mk.DB_HOST: udl2_conf['postgresql']['db_host'],
         mk.DB_PORT: udl2_conf['postgresql']['db_port'],

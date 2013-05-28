@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 from udl2.celery import celery
 import udl2.W_final_cleanup
-import udl2.W_move_to_target
+import udl2.W_load_from_integration_to_star
 from celery.utils.log import get_task_logger
 from fileloader.file_loader import load_file
 
@@ -44,7 +44,7 @@ def task(msg):
     conf = generate_conf_for_loading(msg[FILE_TO_LOAD], msg[ROW_START], msg[HEADER_FILE], msg[BATCH_ID])
     load_file(conf)
 
-    udl2.W_move_to_target.task.apply_async([msg],
+    udl2.W_load_from_integration_to_star.task.apply_async([msg],
                                            queue='Q_copy_to_target',
                                            routing_key='udl2')
     return msg

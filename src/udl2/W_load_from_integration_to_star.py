@@ -12,7 +12,7 @@ logger = get_task_logger(__name__)
 
 
 #*************implemented via group*************
-@celery.task(name='udl2.W_move_to_target.explode_to_dims')
+@celery.task(name='udl2.W_load_from_integration_to_star.explode_to_dims')
 def explode_to_dims(batch):
     # return batch
     column_map = col_map.get_column_mapping()
@@ -25,7 +25,7 @@ def explode_to_dims(batch):
     return batch
 
 
-@celery.task(name="udl2.W_move_to_target.explode_to_signle_dim")
+@celery.task(name="udl2.W_load_from_integration_to_star.explode_to_signle_dim")
 def explode_data_to_dim_table_task(conf, source_table, dim_table, column_mapping, column_types):
     print('I am the exploder, about to copy data from %s into dim table %s ' % (source_table, dim_table))
     start_time = datetime.datetime.now()
@@ -37,7 +37,7 @@ def explode_data_to_dim_table_task(conf, source_table, dim_table, column_mapping
     print('I am the exploder, moved data from %s into dim table %s in %.3f seconds' % (source_table, dim_table, time_as_seconds))
 
 
-@celery.task(name='udl2.W_move_to_target.explode_to_fact')
+@celery.task(name='udl2.W_load_from_integration_to_star.explode_to_fact')
 def explode_to_fact(batch):
     print('I am the exploder, about to copy fact table')
     start_time = datetime.datetime.now()
@@ -60,7 +60,7 @@ def explode_to_fact(batch):
     return batch
 
 
-@celery.task(name="udl2.W_move_to_target.error_handler")
+@celery.task(name="udl2.W_load_from_integration_to_star.error_handler")
 def error_handler(uuid):
     result = AsyncResult(uuid)
     exc = result.get(propagate=False)

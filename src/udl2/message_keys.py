@@ -18,6 +18,11 @@ PARTS = 'parts'
 
 # file_splitter to csv_to_staging
 FILE_TO_LOAD = 'file_to_load'
+HEADERS = 'headers'
+APPLY_RULES = 'apply_rules'
+CSV_CONF = 'csv_conf'
+STAGING_CONF = 'staging_conf'
+
 INT_TABLE = 'integration_table'
 INT_SCHEMA = 'integration_schema'
 MAPPINGS = 'mappings'

@@ -9,7 +9,8 @@ install_requires = [
     'pyramid >= 1.3.1',
     'SQLAlchemy',
     'PyCrypto>=2.6',
-    'apscheduler']
+    'apscheduler',
+    'Beaker']
 
 tests_require = [
     'WebTest >= 1.3.1',  # py3 compat

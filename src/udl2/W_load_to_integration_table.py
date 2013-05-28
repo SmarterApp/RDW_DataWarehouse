@@ -18,8 +18,11 @@ logger = get_task_logger(__name__)
 #*************implemented via chord*************
 @celery.task(name="udl2.W_load_to_integration_table.task")
 def task(batch):
+    print("I am going to move data from staging tables to integration tables")
     conf = generate_conf(batch)
     move_data_from_staging_to_integration(conf)
+    print("Moved data from staging tables to integration tables")
+
     return batch
 
 

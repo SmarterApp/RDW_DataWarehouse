@@ -26,6 +26,9 @@ logger = get_task_logger(__name__)
 def task(msg):
     logger.info(task.name)
 
+    assert msg[JOB_CONTROL]
+    assert msg[STG_TABLE]
+
     # TODO Validate file
 
     return msg

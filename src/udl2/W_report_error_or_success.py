@@ -1,8 +1,8 @@
 from __future__ import absolute_import
 from udl2.celery import celery
 from celery.utils.log import get_task_logger
+from udl2.message_keys import EMAIL
 
-EMAIL = 'email_address'
 
 logger = get_task_logger(__name__)
 
@@ -14,7 +14,7 @@ def task(msg):
     'email_address'
     '''
     logger.info(task.name)
-    email = msg[EMAIL]
+    assert msg[EMAIL]
 
     #TODO: report
 

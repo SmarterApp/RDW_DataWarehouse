@@ -5,6 +5,7 @@ import time
 from celery import chain
 from udl2 import W_file_arrived, W_file_expander, W_simple_file_validator, W_file_splitter
 from udl2 import message_keys as mk
+from uuid import uuid4
 
 # Paths to our various directories
 THIS_MODULE_PATH = os.path.abspath(__file__)
@@ -17,10 +18,6 @@ WORK_ZONE = os.path.join(LANDING_ZONE, 'work')
 HISTORY_ZONE = os.path.join(LANDING_ZONE, 'history')
 DATAFILES = os.path.join(ROOT_DIRECTORY, 'datafiles')
 
-# Keys for validator message
-FILE_TO_VALIDATE_NAME = 'file_to_validate_name'
-FILE_TO_VALIDATE_DIR = 'file_to_validate_dir'
-BATCH_ID = 'batch_id'
 
 def start_pipeline(csv_file_path, json_file_path):
     '''
@@ -40,34 +37,71 @@ def start_pipeline(csv_file_path, json_file_path):
     # Now, add a task to the file splitter queue, passing in the path to the landing zone file
     # and the directory to use when writing the split files
 
-    archived_file = os.path.join('fake', 'path', 'to', 'fake_archived_file.zip')
-    jc_table_conf = {}
+    archived_file = os.path.join('/', 'fake', 'path', 'to', 'fake_archived_file.zip')
+    batch_id = str(uuid4())
+
     lzw = WORK_ZONE
+    jc_table = {}
+    jc = (jc_table, batch_id)
 
     # TODO: After implementing expander, change generate_message_for_file_arrived() so it includes the actual zipped file.
-    arrival_msg = generate_message_for_file_arrived(archived_file, lzw, jc_table_conf)
-    arrival_msg = extend_arrival_msg_temp(arrival_msg, csv_file_path, json_file_path)
+    arrival_msg = generate_message_for_file_arrived(archived_file, lzw, jc)
 
-    pipeline_chain = chain(W_file_arrived.task.s(arrival_msg))
-                           #W_file_expander.task.s(), W_simple _file_validator.task.s(), W_file_splitter.task.s())
+    expander_msg = generate_file_expander_msg(lzw, archived_file, jc)
+    expander_msg = extend_file_expander_msg_temp(expander_msg, json_file_path, csv_file_path)
+
+    validator_msg = generate_file_validator_msg(lzw, jc)
+
+    splitter_msg = generate_splitter_msg(lzw, jc)
+
+    pipeline_chain = chain(W_file_arrived.task.si(arrival_msg), W_file_expander.task.si(expander_msg),
+                           W_simple_file_validator.task.si(validator_msg), W_file_splitter.task.si(splitter_msg))
 
     result = pipeline_chain.delay()
-    #print('RESULT >>>>>>>>>>> ' + str(result.get()))
+    # print('RESULT >>>>>>>>>>> ' + str(result.get()))
 
 
-def generate_message_for_file_arrived(archived_file_path, lzw, jc_table_conf):
+def generate_message_for_file_arrived(archived_file_path, lzw, jc):
     msg = {
         mk.INPUT_FILE_PATH: archived_file_path,
         mk.LANDING_ZONE_WORK_DIR: lzw,
-        mk.JOB_CONTROL_TABLE_CONF: jc_table_conf
+        mk.JOB_CONTROL: jc
     }
     return msg
 
 
-def extend_arrival_msg_temp(msg, csv_file_path, json_file_path):
-    msg.update({mk.CSV_FILENAME: csv_file_path})
-    msg.update({mk.JSON_FILENAME: json_file_path})
+def generate_file_expander_msg(landing_zone_work_dir, file_to_expand, jc):
+    msg = {
+        mk.LANDING_ZONE_WORK_DIR: landing_zone_work_dir,
+        mk.FILE_TO_EXPAND: file_to_expand,
+        # Tuple containing config info for job control table and the batch_id for the file upload
+        mk.JOB_CONTROL: jc
+    }
     return msg
+
+
+def extend_file_expander_msg_temp(msg, json_filename, csv_filename):
+    msg[mk.JSON_FILENAME] = json_filename
+    msg[mk.CSV_FILENAME] = csv_filename
+    return msg
+
+
+def generate_file_validator_msg(landing_zone_work_dir, job_control):
+    msg = {
+        mk.LANDING_ZONE_WORK_DIR: landing_zone_work_dir,
+        mk.JOB_CONTROL: job_control
+    }
+    return msg
+
+
+def generate_splitter_msg(lzw, jc):
+    splitter_msg = {
+        mk.LANDING_ZONE_WORK_DIR: lzw,
+        mk.JOB_CONTROL: jc,
+        # TODO: remove hard-coded 4
+        mk.PARTS: 4
+    }
+    return splitter_msg
 
 
 def create_unique_file_name(file_path):

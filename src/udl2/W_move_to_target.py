@@ -14,10 +14,12 @@ logger = get_task_logger(__name__)
 #*************implemented via group*************
 @celery.task(name='udl2.W_move_to_target.explode_to_dims')
 def explode_to_dims(batch):
-    # temp: will return, just do the following fact table
-#     return batch
-    column_map = col_map.get_column_mapping()
+    '''
+    This is the celery task to move data from integration tables to dim tables.
+    In the input batch object, batch_id is provided.
+    '''
     conf = generate_conf(batch)
+    column_map = col_map.get_column_mapping()
     grouped_tasks = create_group_tuple(explode_data_to_dim_table_task,
                                        [(conf, source_table, dim_table, column_map[dim_table], get_table_column_types(conf, dim_table, list(column_map[dim_table].keys())))
                                         for dim_table, source_table in col_map.get_target_tables_parallel().items()])
@@ -28,6 +30,9 @@ def explode_to_dims(batch):
 
 @celery.task(name="udl2.W_move_to_target.explode_to_signle_dim")
 def explode_data_to_dim_table_task(conf, source_table, dim_table, column_mapping, column_types):
+    '''
+    This is the celery task to move data from one integration table to one dim table.
+    '''
     print('I am the exploder, about to copy data from %s into dim table %s ' % (source_table, dim_table))
     start_time = datetime.datetime.now()
     explode_data_to_dim_table(conf, source_table, dim_table, column_mapping, column_types)
@@ -38,6 +43,10 @@ def explode_data_to_dim_table_task(conf, source_table, dim_table, column_mapping
 
 @celery.task(name='udl2.W_move_to_target.explode_to_fact')
 def explode_to_fact(batch):
+    '''
+    This is the celery task to move data from integration table to fact table.
+    In batch, batch_id is provided.
+    '''
     print('I am the exploder, about to copy fact table')
     start_time = datetime.datetime.now()
 
@@ -58,6 +67,9 @@ def explode_to_fact(batch):
 
 @celery.task(name="udl2.W_move_to_target.error_handler")
 def error_handler(uuid):
+    '''
+    This is the error handler task
+    '''
     result = AsyncResult(uuid)
     exc = result.get(propagate=False)
     print('Task %r raised exception: %r\n%r' % (
@@ -65,11 +77,19 @@ def error_handler(uuid):
 
 
 def create_group_tuple(task_name, arg_list):
+    '''
+    Create task call as a tuple
+    Example: task_name = add, arg_list = [(2,2), (2,4)]
+             returns: (add.s(2,4), add.s(2,4))
+    '''
     grouped_tasks = [task_name.s(*arg) for arg in arg_list]
     return tuple(grouped_tasks)
 
 
 def generate_conf(msg):
+    '''
+    Return all needed configuration information
+    '''
     conf = {
              # add batch_id from msg
             'batch_id': msg['batch_id'],

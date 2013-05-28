@@ -41,8 +41,8 @@ UDL_METADATA = {
     'TABLES': {
         'STG_MOCK_LOAD': {
             'columns': [
-                ('record_sid', True, 'bigserial', '', False, "Sequential Auto-increment"),
-                ('batch_id', False, 'bigint', '', False, "Batch ID which caused the record insert"),
+                ('record_sid', True, 'bigserial', '', False, "Non Sequential UUID"),
+                ('batch_id', False, 'uuid', '', False, "Batch ID which caused the record insert"),
                 ('substr_test', False, 'varchar(256)', '', False, "mock data for test type conversion during staging to integration"),
                 ('number_test', False, 'varchar(256)', '', False, "mock data for test type conversion during staging to integration"),
             ],
@@ -51,8 +51,8 @@ UDL_METADATA = {
         },
         'INT_MOCK_LOAD': {
             'columns': [
-                ('record_sid', True, 'bigserial', '', False, "Sequential Auto-increment"),
-                ('batch_id', False, 'bigint', '', False, "Batch ID which caused the record insert"),
+                ('record_sid', True, 'bigserial', '', False, "Non Sequential UUID"),
+                ('batch_id', False, 'uuid', '', False, "Batch ID which caused the record insert"),
                 ('substr_test', False, 'varchar(256)', '', False, "mock data for test type conversion during staging to integration"),
                 ('number_test', False, 'varchar(256)', '', False, "mock data for test type conversion during staging to integration"),
             ],
@@ -61,7 +61,7 @@ UDL_METADATA = {
         },
         'UDL_BATCH': {
             'columns': [
-                ('batch_sid', True, 'bigserial', '', False, ""),
+                ('batch_sid', True, 'uuid', '', False, ""),
                 ('batch_user_status', False, 'varchar(50)', '', True, ""),
                 ('job_status', False, 'varchar(50)', '', True, ""),
                 ('task_id', False, 'varchar(255)', '', True, ""),
@@ -90,7 +90,7 @@ UDL_METADATA = {
         'STG_SBAC_ASMT': {
             'columns': [
                 ('record_sid', True, 'bigserial', '', False, "Sequential Auto-increment"),
-                ('batch_id', False, 'bigint', '', False, "Batch ID which caused the record insert"),
+                ('batch_id', False, 'uuid', '', False, "Batch ID which caused the record insert"),
                 ('guid_asmt', False, 'varchar(256)', '', True, "Assessment GUID"),
                 ('type', False, 'varchar(256)', '', True, "Assessment Type - SUMMATIVE or INTERIM"),
                 ('period', False, 'varchar(256)', '', True, "Assessment Period - SPRING 2015, FALL 9999"),
@@ -132,7 +132,7 @@ UDL_METADATA = {
         'STG_SBAC_ASMT_OUTCOME': {
             'columns': [
                 ('record_sid', True, 'bigserial', '', False, "Sequential Auto-increment"),
-                ('batch_id', False, 'bigint', '', False, "Batch ID which caused the record insert"),
+                ('batch_id', False, 'uuid', '', False, "Batch ID which caused the record insert"),
                 ('src_file_rec_num', False, 'bigint', '', True, "Batch ID which caused the record insert"),
                 ('guid_asmt', False, 'varchar(256)', '', True, "Assessment GUID"),
                 ('guid_asmt_location', False, 'varchar(256)', '', True, "GUID for location where assessment was taken"),
@@ -187,7 +187,7 @@ UDL_METADATA = {
         'ERR_LIST': {
             'columns': [
                 ('record_sid', False, 'bigint', '', False, "Foreign Key references to staging tables"),
-                ('batch_id', False, 'bigint', '', False, "Batch ID which caused the record insert"),
+                ('batch_id', False, 'uuid', '', False, "Batch ID which caused the record insert"),
                 ('err_code', False, 'bigint', '', True, "Error Code"),
                 ('err_source', False, 'bigint', '', True, "Pipeline Stage that inserted this error."),
                 ('created_date', False, 'timestamp', 'now()', False, "Date on which record is inserted"),
@@ -198,7 +198,7 @@ UDL_METADATA = {
         'INT_SBAC_ASMT': {
             'columns': [
                 ('record_sid', True, 'bigserial', '', False, "Sequential Auto-increment"),
-                ('batch_id', False, 'bigint', '', False, "Batch ID which caused the record insert"),
+                ('batch_id', False, 'uuid', '', False, "Batch ID which caused the record insert"),
                 ('guid_asmt', False, 'varchar(50)', '', False, "Assessment GUID"),
                 ('type', False, 'varchar(16)', '', False, "Assessment Type - SUMMATIVE or INTERIM"),
                 ('period', False, 'varchar(32)', '', False, "Assessment Period - SPRING 2015, FALL 9999"),
@@ -240,7 +240,7 @@ UDL_METADATA = {
         'INT_SBAC_ASMT_OUTCOME': {
             'columns': [
                 ('record_sid', True, 'bigserial', '', False, "Sequential Auto-increment"),
-                ('batch_id', False, 'bigint', '', False, "Batch ID which caused the record insert"),
+                ('batch_id', False, 'uuid', '', False, "Batch ID which caused the record insert"),
                 ('guid_asmt', False, 'varchar(50)', '', True, "Assessment GUID"),
                 ('guid_asmt_location', False, 'varchar(50)', '', True, "GUID for location where assessment was taken"),
                 ('name_asmt_location', False, 'varchar(256)', '', True, "Name for location where assessment was taken"),
@@ -346,7 +346,8 @@ def map_sql_type_to_sqlalchemy_type(sql_type):
         'bigserial': BIGINT,
         'varchar': VARCHAR,
         'double': FLOAT,
-        'json': TEXT
+        'json': TEXT,
+        'uuid': UUID,
     }
     try:
         mapped_type = sql_type_mapped_type[sql_type]

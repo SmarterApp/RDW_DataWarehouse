@@ -86,7 +86,7 @@ def get_fields_map(conn, header_names, header_types, batch_id, csv_file, staging
     stg_asmt_outcome_columns = [column_info[0] for column_info in UDL_METADATA['TABLES']['STG_SBAC_ASMT_OUTCOME']['columns'][1:-1]]
     # map first column in staging table to batch_id, map second column in staging table to the expression of using sequence
     csv_table_columns = header_names[:]
-    csv_table_columns.insert(0, str(batch_id))
+    csv_table_columns.insert(0, '\'' + str(batch_id) + '\'')
     csv_table_columns.insert(1, 'nextval(\'{seq_name}\')')
     return stg_asmt_outcome_columns, csv_table_columns
 

@@ -3,17 +3,14 @@ Created on Feb 14, 2013
 
 @author: tosako
 '''
-from sqlalchemy.sql.expression import select
 from datetime import datetime, timedelta
 import uuid
 import re
-import json
 from edauth.security.session import Session
 from edauth.security.roles import Roles
 from edauth.database.connector import EdauthDBConnection
 import socket
-from edauth.security.persisent_session import get_session_from_persistence,\
-    persist_session, delete_persistent_session
+from edauth.security.persisent_session import get_session_backend
 import logging
 
 # TODO: remove datetime.now() and use func.now()
@@ -21,29 +18,12 @@ import logging
 logger = logging.getLogger('edauth')
 
 
-def get_user_session(user_session_id):
+def get_user_session(session_id):
     '''
     get user session from DB
     if user session does not exist, then return None
     '''
-    session = get_session_from_persistence()
-
-    if session is None and user_session_id is not None:
-        with EdauthDBConnection() as connection:
-            logger.info('Reading user session from database')
-            user_session = connection.get_table('user_session')
-            query = select([user_session.c.session_context.label('session_context'),
-                            user_session.c.last_access.label('last_access'),
-                            user_session.c.expiration.label('expiration')]).where(user_session.c.session_id == user_session_id)
-            result = connection.get_result(query)
-            session_context = None
-            if result:
-                if 'session_context' in result[0]:
-                    session_context = result[0]['session_context']
-                    expiration = result[0]['expiration']
-                    last_access = result[0]['last_access']
-                    session = __create_from_session_json_context(user_session_id, session_context, last_access, expiration)
-    return session
+    return get_session_backend().get_session(session_id)
 
 
 def write_security_event(message_content, message_type):
@@ -66,12 +46,11 @@ def create_new_user_session(saml_response, session_expire_after_in_secs=30):
     expiration_datetime = current_datetime + timedelta(seconds=session_expire_after_in_secs)
     # create session SAML Response
     session = __create_from_SAMLResponse(saml_response, current_datetime, expiration_datetime)
-    with EdauthDBConnection() as connection:
-        user_session = connection.get_table('user_session')
-        # store the session into DB
-        connection.execute(user_session.insert(), session_id=session.get_session_id(), session_context=session.get_session_json_context(), last_access=current_datetime, expiration=expiration_datetime)
+    session.set_expiration(expiration_datetime)
+    session.set_last_access(current_datetime)
 
-    persist_session(session)
+    get_session_backend().create_new_session(session)
+
     return session
 
 
@@ -81,30 +60,15 @@ def update_session_access(session):
     '''
     current_time = datetime.now()
     session.set_last_access(current_time)
-    if get_session_from_persistence() is None:
-        __session_id = session.get_session_id()
-        with EdauthDBConnection() as connection:
-            user_session = connection.get_table('user_session')
-            # update last_access field
-            connection.execute(user_session.update().
-                               where(user_session.c.session_id == __session_id).
-                               values(last_access=current_time))
 
-    persist_session(session)
+    get_session_backend().update_session(session)
 
 
 def expire_session(session_id):
     '''
     expire session by session_id
     '''
-    current_datetime = datetime.now()
-    with EdauthDBConnection() as connection:
-        user_session = connection.get_table('user_session')
-        connection.execute(user_session.update().
-                           where(user_session.c.session_id == session_id).
-                           values(expiration=current_datetime))
-
-    delete_persistent_session()
+    get_session_backend().delete_session(session_id)
 
 
 def __create_from_SAMLResponse(saml_response, last_access, expiration):
@@ -150,18 +114,6 @@ def __create_from_SAMLResponse(saml_response, last_access, expiration):
     # get auth response session index that identifies the session with identity provider
     session.set_idp_session_index(__assertion.get_session_index())
 
-    return session
-
-
-def __create_from_session_json_context(session_id, session_json_context, last_access, expiration):
-    '''
-    deserialize from text
-    '''
-    session = Session()
-    session.set_session_id(session_id)
-    session.set_session(json.loads(session_json_context))
-    session.set_expiration(expiration)
-    session.set_last_access(last_access)
     return session
 
 

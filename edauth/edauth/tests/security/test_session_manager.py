@@ -19,6 +19,8 @@ from sqlalchemy import select, func
 from pyramid import testing
 from pyramid.registry import Registry
 from pyramid.testing import DummyRequest
+from zope import component
+from edauth.security.persisent_session import ISessionBackend, SessionBackend
 
 
 class TestSessionManager(unittest.TestCase):
@@ -35,6 +37,7 @@ class TestSessionManager(unittest.TestCase):
         reg = Registry()
         reg.settings = {}
         reg.settings['enable.session.caching'] = 'false'
+        component.provideUtility(SessionBackend(reg.settings), ISessionBackend)
         # Must set hook_zca to false to work with uniittest_with_sqlite
         self.__config = testing.setUp(registry=reg, request=self.__request, hook_zca=False)
 

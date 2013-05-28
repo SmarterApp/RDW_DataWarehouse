@@ -23,16 +23,10 @@ common:
       type: ext:memcached
       expire: 31556940 # year
       public.data.expire: 31556940 # year
+      session.expire: 600 # 10 minutes
       lock_dir: /tmp/memcache
       
     enable.session.caching: true
-    # pyramid_beaker session configuration
-    session:
-      type: ext:memcached
-      key: edware_session
-      secret: 123thisisasecretForSession456
-      timeout: 600 # 10 minutes
-      lock_dir: /tmp/memcache
     
     # Database
     edware:
@@ -417,5 +411,3 @@ jenkins_dev:
         name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
     mode: test
     cache.url: edwappsrv1.poc.dum.edwdc.net:11211;edwappsrv2.poc.dum.edwdc.net:11211
-    session.url: edwappsrv1.poc.dum.edwdc.net:11211;edwappsrv2.poc.dum.edwdc.net:11211
-

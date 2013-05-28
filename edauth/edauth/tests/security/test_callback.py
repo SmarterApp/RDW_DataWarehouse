@@ -13,6 +13,8 @@ from edauth.database.connector import EdauthDBConnection
 from pyramid.testing import DummyRequest
 from pyramid.registry import Registry
 from pyramid import testing
+from zope import component
+from edauth.security.persisent_session import ISessionBackend, SessionBackend
 
 
 class TestCallback(unittest.TestCase):
@@ -24,6 +26,7 @@ class TestCallback(unittest.TestCase):
         reg = Registry()
         reg.settings = {}
         reg.settings['enable.session.caching'] = 'false'
+        component.provideUtility(SessionBackend(reg.settings), ISessionBackend)
         self.__config = testing.setUp(registry=reg, request=self.__request, hook_zca=False)
 
     def tearDown(self):

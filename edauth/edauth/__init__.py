@@ -14,6 +14,8 @@ from zope import component
 import logging
 from apscheduler.scheduler import Scheduler
 from edauth.security.session_manager import cleanup_sessions
+from edauth.security.persisent_session import ISessionBackend,\
+    SessionBackend
 
 
 logger = logging.getLogger(__name__)
@@ -51,6 +53,8 @@ def includeme(config):
     config.set_authorization_policy(authorization_policy)
 
     component.provideUtility(AESCipher(settings['auth.state.secret']), ICipher)
+
+    component.provideUtility(SessionBackend(settings), ISessionBackend)
 
     # Task Schedule
     run_cron_cleanup(settings)

@@ -21,6 +21,7 @@ from database.sqlite_connector import create_sqlite, destroy_sqlite
 from edauth.persistence.persistence import generate_persistence
 from edauth.database.connector import EdauthDBConnection
 from zope import component
+from edauth.security.persisent_session import ISessionBackend, SessionBackend
 
 
 def get_saml_from_resource_file(file_mame):
@@ -50,6 +51,7 @@ class TestViews(unittest.TestCase):
         self.__request.registry.settings['auth.saml.name_qualifier'] = 'http://myName'
         self.__request.registry.settings['auth.saml.issuer_name'] = 'dummyIssuer'
         component.provideUtility(AESCipher('dummdummdummdumm'), ICipher)
+        component.provideUtility(SessionBackend({'enable.session.caching': 'false'}), ISessionBackend)
         # delete all user_session before test
         with EdauthDBConnection() as connection:
             user_session = connection.get_table('user_session')

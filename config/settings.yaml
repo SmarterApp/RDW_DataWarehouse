@@ -19,7 +19,7 @@ common:
 
     # pyramid_beaker configuration
     cache:
-      regions: public.data
+      regions: public.data, session
       type: ext:memcached
       expire: 31556940 # year
       public.data.expire: 31556940 # year

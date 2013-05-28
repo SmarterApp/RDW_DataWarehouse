@@ -1,6 +1,7 @@
 require({
 	paths: {
-		jquery: '../../3p/jquery-1.7.2.min',
+		'jquery.min' : '../../3p/jquery-1.7.2.min',
+		jquery: '../../3p/jquery-loader',
 		jqGrid: '../../3p/jquery.jqGrid.min',
 		bootstrap: '../../3p/bootstrap.min',
 		text: '../../3p/text',

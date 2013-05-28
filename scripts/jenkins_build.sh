@@ -230,7 +230,7 @@ function create_sym_link_for_apache {
     /bin/ln -sf ${WORKSPACE}/smarter/smarter.wsgi ${APACHE_DIR}/pyramid_conf
     /bin/ln -sf ${VIRTUALENV_DIR} ${APACHE_DIR}/venv
 
-    compile_assets false
+    compile_assets true
 
     echo "Creating sym links for celery purposes"
    

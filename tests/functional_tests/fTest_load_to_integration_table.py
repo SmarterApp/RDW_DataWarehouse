@@ -38,13 +38,18 @@ class FuncTestLoadToIntegrationTable(unittest.TestCase):
             DELETE FROM "{staging_schema}"."{staging_table}"
             WHERE batch_id = '{batch_id}'
             """
-        sql = sql_template.format(staging_schema=self.conf['udl2_db']['staging_schema'],
+        sql_stg = sql_template.format(staging_schema=self.conf['udl2_db']['staging_schema'],
                                   staging_table='STG_SBAC_ASMT_OUTCOME',
                                   batch_id=self.conf['batch_id'])
+        sql_int = sql_template.format(staging_schema=self.conf['udl2_db']['staging_schema'],
+                                  staging_table='INT_SBAC_ASMT_OUTCOME',
+                                  batch_id=self.conf['batch_id'])
         except_msg = "Can't not clean up test data from staging table inside functional test FuncTestLoadToIntegrationTable("
-        execute_queries(conn, [sql], except_msg )
+        execute_queries(conn, [sql_stg, sql_int], except_msg )
+    
     
     def load_file_to_stage(self, ):
+        # file contain 30 rows
         conf = {
             'csv_file':os.getcwd() + '/' + '../data/test_file_realdata.csv',
             'header_file': os.getcwd() + '/' + '../data/test_file_headers.csv',
@@ -65,6 +70,48 @@ class FuncTestLoadToIntegrationTable(unittest.TestCase):
         load_file(conf)
     
 
+    def preloading_count(self, ):
+        (conn, engine) = connect_db(self.conf['udl2_db']['db_driver'],
+                                    self.conf['udl2_db']['db_user'],
+                                    self.conf['udl2_db']['db_pass'],
+                                    self.conf['udl2_db']['db_host'],
+                                    self.conf['udl2_db']['db_port'],
+                                    self.conf['udl2_db']['db_name'])
+        sql_template = """
+            SELECT COUNT(*) FROM "{staging_schema}"."{staging_table}"
+            WHERE batch_id = '{batch_id}'
+        """
+        sql = sql_template.format(staging_schema=self.conf['udl2_db']['staging_schema'],
+                                  staging_table='STG_SBAC_ASMT_OUTCOME',
+                                  batch_id=self.conf['batch_id'])
+        result = conn.execute(sql)
+        count = 0
+        for row in result:
+            count = row[0]
+        return count
+    
+    
+    def postloading_count(self, ):
+        (conn, engine) = connect_db(self.conf['udl2_db']['db_driver'],
+                                    self.conf['udl2_db']['db_user'],
+                                    self.conf['udl2_db']['db_pass'],
+                                    self.conf['udl2_db']['db_host'],
+                                    self.conf['udl2_db']['db_port'],
+                                    self.conf['udl2_db']['db_name'])
+        sql_template = """
+            SELECT COUNT(*) FROM "{staging_schema}"."{staging_table}"
+            WHERE batch_id = '{batch_id}'
+        """
+        sql = sql_template.format(staging_schema=self.conf['udl2_db']['staging_schema'],
+                                  staging_table='INT_SBAC_ASMT_OUTCOME',
+                                  batch_id=self.conf['batch_id'])
+        result = conn.execute(sql)
+        count = 0
+        for row in result:
+            count = row[0]
+        return count
+    
+    
     def test_load_sbac_csv(self, ):
         conf = {
              # add batch_id from msg
@@ -93,8 +140,12 @@ class FuncTestLoadToIntegrationTable(unittest.TestCase):
         }
         self.conf['batch_id'] = '00000000-0000-0000-0000-000000000000'
         self.load_file_to_stage()
+        preloading_total = self.postloading_count()
+        print(preloading_total)
         move_data_from_staging_to_integration(conf)
-
+        postloading_total = self.postloading_count()
+        print(postloading_total)
+        self.assertEqual(preloading_total + 30, postloading_total)
 
 if __name__ == '__main__':
     unittest.main()

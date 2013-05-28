@@ -21,9 +21,8 @@ from celery.utils.log import get_task_logger
 from udl2.celery import celery, udl2_conf
 from fileloader.json_loader import load_json
 from udl2_util.udl_mappings import get_json_to_asmt_tbl_mappings
+from udl2.message_keys import JOB_CONTROL, FILE_TO_LOAD
 
-FILE_TO_LOAD = 'file_to_load'
-JOB_CONTROL = 'job_control'
 
 INT_TABLE = 'integration_table'
 INT_SCHEMA = 'integration_schema'

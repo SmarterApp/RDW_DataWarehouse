@@ -15,3 +15,9 @@ CSV_FILENAME = 'csv_filename'
 
 # file_validator to file_splitter
 PARTS = 'parts'
+
+# json_to_integration
+FILE_TO_LOAD = 'file_to_load'
+
+# report errors
+EMAIL = 'email_address'

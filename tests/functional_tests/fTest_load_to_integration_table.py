@@ -82,7 +82,7 @@ class FuncTestLoadToIntegrationTable(unittest.TestCase):
             WHERE batch_id = '{batch_id}'
         """
         sql = sql_template.format(staging_schema=self.conf['udl2_db']['staging_schema'],
-                                  staging_table='STG_SBAC_ASMT_OUTCOME',
+                                  staging_table='INT_SBAC_ASMT_OUTCOME',
                                   batch_id=self.conf['batch_id'])
         result = conn.execute(sql)
         count = 0
@@ -113,6 +113,12 @@ class FuncTestLoadToIntegrationTable(unittest.TestCase):
     
     
     def test_load_sbac_csv(self, ):
+        '''
+        functional tests for testing load from staging to integration as an independent unit tests.
+        Use a fixed UUID for the moment. may be dynamic later.
+        
+        it loads 30 records from test csv file to stagint table then move it to integration. 
+        '''
         conf = {
              # add batch_id from msg
             'batch_id': '00000000-0000-0000-0000-000000000000',

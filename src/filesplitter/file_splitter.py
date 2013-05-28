@@ -3,21 +3,18 @@ import subprocess
 import csv
 import math
 import argparse
-import time
 import datetime
 
-def create_output_destination(file_name,output_path):
+def create_output_destination(file_name, output_path):
     #create output template from supplied input file path
     base =  os.path.splitext(os.path.basename(file_name))[0]
     output_name_template = base+'_part_'
     
     #create output directory
-    timestamp = int(time.time())
-    output_dir = os.path.join(output_path,base,str(timestamp))
-    if not os.path.exists(output_dir): 
-    	os.makedirs(output_dir)
-    
-    return output_name_template,output_dir
+    output_dir = output_path
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    return output_name_template, output_dir
     
 def run_command(cmd_string):
     p = subprocess.Popen(cmd_string, stdout=subprocess.PIPE,shell=True)
@@ -87,7 +84,7 @@ def split_file(file_name, delimiter=',', row_limit=10000, parts=0, output_path='
         row_limit = math.ceil(totalrows / parts) # round up for row limit
     
     #set up output location
-    output_name_template,output_dir = create_output_destination(file_name,output_path)
+    output_name_template, output_dir = create_output_destination(file_name, output_path)
     
     if row_limit < totalrows or parts > 1:
         #call unix split command

@@ -3,7 +3,7 @@
 	baseUrl: "modules",
 	dir : "build",
 	preserveLicenseComments: false,
-	optimize: 'none',
+	optimize: 'uglify',
 	modules: [
 	{
 		//exclude jquery to avoid duplication

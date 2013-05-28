@@ -11,6 +11,7 @@ from udl2.database import UDL_METADATA
 from udl2_util.database_util import connect_db, execute_queries, get_table_columns_info
 from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from move_to_integration.move_to_integration import move_data_from_staging_to_integration
+from fileloader.file_loader import load_file
 import imp
 import re
 
@@ -27,7 +28,42 @@ class FuncTestLoadToIntegrationTable(unittest.TestCase):
         self.conf = udl2_conf
 
     def tearDown(self, ):
-        pass
+        (conn, engine) = connect_db(self.conf['udl2_db']['db_driver'],
+                                    self.conf['udl2_db']['db_user'],
+                                    self.conf['udl2_db']['db_pass'],
+                                    self.conf['udl2_db']['db_host'],
+                                    self.conf['udl2_db']['db_port'],
+                                    self.conf['udl2_db']['db_name'])
+        sql_template = """
+            DELETE FROM "{staging_schema}"."{staging_table}"
+            WHERE batch_id = '{batch_id}'
+            """
+        sql = sql_template.format(staging_schema=self.conf['udl2_db']['staging_schema'],
+                                  staging_table='STG_SBAC_ASMT_OUTCOME',
+                                  batch_id=self.conf['batch_id'])
+        except_msg = "Can't not clean up test data from staging table inside functional test FuncTestLoadToIntegrationTable("
+        execute_queries(conn, [sql], except_msg )
+    
+    def load_file_to_stage(self, ):
+        conf = {
+            'csv_file':os.getcwd() + '/' + '../data/test_file_realdata.csv',
+            'header_file': os.getcwd() + '/' + '../data/test_file_headers.csv',
+            'csv_table': 'csv_table_for_file_loader',
+            'db_host': self.conf['udl2_db']['db_host'],
+            'db_port': self.conf['udl2_db']['db_port'],
+            'db_user': self.conf['udl2_db']['db_user'],
+            'db_name': self.conf['udl2_db']['db_database'],
+            'db_password': self.conf['udl2_db']['db_pass'],
+            'csv_schema': self.conf['udl2_db']['staging_schema'],
+            'fdw_server': 'udl2_fdw_server',
+            'staging_schema': self.conf['udl2_db']['staging_schema'],
+            'staging_table': 'STG_SBAC_ASMT_OUTCOME',
+            'apply_rules': False,
+            'start_seq': 10,
+            'batch_id': '00000000-0000-0000-0000-000000000000'
+        }
+        load_file(conf)
+    
 
     def test_load_sbac_csv(self, ):
         conf = {
@@ -55,6 +91,8 @@ class FuncTestLoadToIntegrationTable(unittest.TestCase):
             'db_password_target': self.conf['udl2_db']['db_pass'],
             'map_type': 'staging_to_integration_sbac_asmt_outcome',
         }
+        self.conf['batch_id'] = '00000000-0000-0000-0000-000000000000'
+        self.load_file_to_stage()
         move_data_from_staging_to_integration(conf)
 
 

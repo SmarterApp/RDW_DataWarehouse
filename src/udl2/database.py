@@ -1,4 +1,16 @@
 '''
+Authoratative Definitions for UDL's required tables
+
+UDL_METADATA contains all tables, sequences that are used in UDL system
+
+Several methods are provided to create/drop tables/sequences/extensions/foreign data wrapper servers
+in postgres database.
+
+Main Method: setup_udl2_schema(conf)
+Main method: teardown_udl2_schema(conf)
+
+conf is defined in udl2_conf.py, default is under /opt/wgen/edware-udl/etc/udl2_conf.py
+
 Created on May 10, 2013
 
 @author: ejen
@@ -292,6 +304,10 @@ UDL_METADATA = {
 
 
 def _parse_args():
+    '''
+    private method to parse command line options when call from shell. We use it to setup/teardown database
+    automatically by configuration (this helps jenkins/Continous Integration)
+    '''
     parser = argparse.ArgumentParser('database')
     parser.add_argument('--config_file', dest='config_file',
                         help="full path to configuration file for UDL2, default is /opt/wgen/edware-udl/etc/udl2_conf.py")
@@ -303,6 +319,10 @@ def _parse_args():
 
 
 def _create_conn_engine(udl2_conf):
+    '''
+    private method to create database connections via database_util
+    @param udl2_conf: The configuration dictionary for databases
+    '''
     (conn, engine) = connect_db(udl2_conf['udl2_db']['db_driver'],
                                 udl2_conf['udl2_db']['db_user'],
                                 udl2_conf['udl2_db']['db_pass'],
@@ -313,6 +333,10 @@ def _create_conn_engine(udl2_conf):
 
 
 def map_sql_type_to_sqlalchemy_type(sql_type):
+    '''
+    map sql data type in configuration file into what SQLAlchemy type is.
+    @param sql_type: sql data type
+    '''
     mapped_type = None
     sql_type_mapped_type = {
         'timestamp': TIMESTAMP,
@@ -334,6 +358,10 @@ def map_sql_type_to_sqlalchemy_type(sql_type):
 
 
 def map_tuple_to_sqlalchemy_column(ddl_tuple):
+    '''
+    create a SQLAlchemy Column object from UDL_METADATA column
+    @param ddl_tuple: column definition in UDL_METADATA 
+    '''
     column = Column(ddl_tuple[0],
                     map_sql_type_to_sqlalchemy_type(ddl_tuple[2]),
                     primary_key=ddl_tuple[1],
@@ -345,6 +373,13 @@ def map_tuple_to_sqlalchemy_column(ddl_tuple):
 
 
 def create_table(udl2_conf, metadata, schema, table_name):
+    '''
+    create a table from UDL_METADATA definitions
+    @param udl2_conf: The configuration dictionary for udl
+    @param metadata: SQLAlchemy Metadata object
+    @param scheam: Schema name where the table is located in UDL2 schema
+    @param table_name: Table name for the table to be created, it must be defined in UDL_METADATA
+    '''
     print('create table %s.%s' % (schema, table_name))
     column_ddl = UDL_METADATA['TABLES'][table_name]['columns']
     arguments = [table_name, metadata]
@@ -364,6 +399,12 @@ def create_table(udl2_conf, metadata, schema, table_name):
 
 
 def drop_table(udl2_conf, schema, table_name):
+    '''
+    drop a table 
+    @param udl2_conf: The configuration dictionary for 
+    @param scheam: Schema name where the table is located in UDL2 schema
+    @param table_name: Table name for the table to be created, it must be defined in UDL_METADATA
+    '''
     print('drop table %s.%s' % (schema, table_name))
     sql = text("DROP TABLE \"%s\".\"%s\" CASCADE" % (schema, table_name))
     (conn, engine) = _create_conn_engine(udl2_conf)
@@ -372,6 +413,13 @@ def drop_table(udl2_conf, schema, table_name):
 
 
 def create_sequence(udl2_conf, metadata, schema, seq_name):
+    '''
+    create a sequence from UDL_METADATA definitions
+    @param udl2_conf: The configuration dictionary for udl 
+    @param metadata: SQLAlchemy Metadata object
+    @param schema: Schema name where the table is located in UDL2 schema
+    @param seq_name: sequence name for the sequence to be created, it must be defined in UDL_METADATA
+    '''
     print('create global sequence')
     sequence_ddl = UDL_METADATA['SEQUENCES'][seq_name]
     sequence = Sequence(name=sequence_ddl[0],
@@ -389,6 +437,12 @@ def create_sequence(udl2_conf, metadata, schema, seq_name):
 
 
 def drop_sequence(udl2_conf, schema, seq_name):
+    '''
+    drop schemas according to configuration file
+    @param udl2_conf: The configuration dictionary for udl
+    @param schema: Schema name where the table is located in UDL2 schema
+    @param seq_name: sequence name for the sequence to be created, it must be defined in UDL_METADATA
+    '''
     print('drop global sequences')
     sql = text("DROP SEQUENCE \"%s\".\"%s\" CASCADE" % (schema, seq_name))
     (conn, engine) = _create_conn_engine(udl2_conf)
@@ -397,6 +451,10 @@ def drop_sequence(udl2_conf, schema, seq_name):
 
 
 def create_udl2_schema(udl2_conf):
+    '''
+    create schemas according to configuration file
+    @param udl2_conf: The configuration dictionary for 
+    '''
     print('create udl2 staging schema')
     sql = text("CREATE SCHEMA \"%s\"" % udl2_conf['udl2_db']['staging_schema'])
     (conn, engine) = _create_conn_engine(udl2_conf)
@@ -405,6 +463,10 @@ def create_udl2_schema(udl2_conf):
 
 
 def drop_udl2_schema(udl2_conf):
+    '''
+    drop schemas according to configuration file
+    @param udl2_conf: The configuration dictionary for 
+    '''
     print('drop udl2 staging schema')
     sql = text("DROP SCHEMA \"%s\" CASCADE" % udl2_conf['udl2_db']['staging_schema'])
     (conn, engine) = _create_conn_engine(udl2_conf)
@@ -413,6 +475,10 @@ def drop_udl2_schema(udl2_conf):
 
 
 def create_udl2_tables(udl2_conf):
+    '''
+    create tables in schema according to configuration file
+    @param udl2_conf: The configuration dictionary for 
+    '''
     #engine = (_get_db_url(udl2_conf))
     udl2_metadata = MetaData()
     print("create tables")
@@ -421,12 +487,20 @@ def create_udl2_tables(udl2_conf):
 
 
 def drop_udl2_tables(udl2_conf):
+    '''
+    drop tables according to configuration file
+    @param udl2_conf: The configuration dictionary for 
+    '''
     print("drop tables")
     for table, definition in UDL_METADATA['TABLES'].items():
         drop_table(udl2_conf, udl2_conf['udl2_db']['staging_schema'], table)
 
 
 def create_udl2_sequence(udl2_conf):
+    '''
+    create sequences according to configuration file
+    @param udl2_conf: The configuration dictionary for 
+    '''
     #(conn, engine) = _create_conn_engine(udl2_conf)
     udl2_metadata = MetaData()
     print("create sequences")
@@ -435,12 +509,20 @@ def create_udl2_sequence(udl2_conf):
 
 
 def drop_udl2_sequences(udl2_conf):
+    '''
+    drop sequences according to configuration file
+    @param udl2_conf: The configuration dictionary for 
+    '''
     print("drop sequences")
     for seq, definition in UDL_METADATA['SEQUENCES'].items():
         drop_sequence(udl2_conf, udl2_conf['udl2_db']['staging_schema'], seq)
 
 
 def create_foreign_data_wrapper_extension(udl2_conf):
+    '''
+    create foreign data wrapper extension according to configuration file
+    @param udl2_conf: The configuration dictionary for 
+    '''
     print('create foreign data wrapper extension')
     sql = "CREATE EXTENSION IF NOT EXISTS file_fdw WITH SCHEMA %s" % (udl2_conf['udl2_db']['csv_schema'])
     (conn, engine) = _create_conn_engine(udl2_conf)
@@ -449,6 +531,10 @@ def create_foreign_data_wrapper_extension(udl2_conf):
 
 
 def drop_foreign_data_wrapper_extension(udl2_conf):
+    '''
+    drop foreign data wrapper extension according to configuration file
+    @param udl2_conf: The configuration dictionary for 
+    '''
     print('drop foreign data wrapper extension')
     sql = "DROP EXTENSION IF EXISTS file_fdw CASCADE"
     (conn, engine) = _create_conn_engine(udl2_conf)
@@ -457,6 +543,10 @@ def drop_foreign_data_wrapper_extension(udl2_conf):
 
 
 def create_dblink_extension(udl2_conf):
+    '''
+    create dblink extension according to configuration file
+    @param udl2_conf: The configuration dictionary for 
+    '''
     print('create dblink extension')
     sql = "CREATE EXTENSION IF NOT EXISTS dblink WITH SCHEMA %s" % (udl2_conf['udl2_db']['csv_schema'])
     (conn, engine) = _create_conn_engine(udl2_conf)
@@ -465,6 +555,10 @@ def create_dblink_extension(udl2_conf):
 
 
 def drop_dblink_extension(udl2_conf):
+    '''
+    drop dblink extension according to configuration file
+    @param udl2_conf: The configuration dictionary for 
+    '''
     print('drop dblink extension')
     sql = "DROP EXTENSION IF EXISTS dblink CASCADE"
     (conn, engine) = _create_conn_engine(udl2_conf)
@@ -473,6 +567,10 @@ def drop_dblink_extension(udl2_conf):
 
 
 def create_foreign_data_wrapper_server(udl2_conf):
+    '''
+    create server for foreign data wrapper according to configuration file
+    @param udl2_conf: The configuration dictionary for 
+    '''
     print('create foreign data wrapper server')
     sql = "CREATE SERVER %s FOREIGN DATA WRAPPER file_fdw" % (udl2_conf['udl2_db']['fdw_server'])
     (conn, engine) = _create_conn_engine(udl2_conf)
@@ -481,6 +579,10 @@ def create_foreign_data_wrapper_server(udl2_conf):
 
 
 def drop_foreign_data_wrapper_server(udl2_conf):
+    '''
+    drop server for foreign data wrapper according to configuration file
+    @param udl2_conf: The configuration dictionary for 
+    '''
     print('drop foreign data wrapper server')
     sql = "DROP SERVER IF EXISTS %s CASCADE" % (udl2_conf['udl2_db']['fdw_server'])
     (conn, engine) = _create_conn_engine(udl2_conf)
@@ -489,6 +591,10 @@ def drop_foreign_data_wrapper_server(udl2_conf):
 
 
 def setup_udl2_schema(udl2_conf):
+    '''
+    create whole udl2 database schema according to configuration file
+    @param udl2_conf: The configuration dictionary for 
+    '''
     create_udl2_schema(udl2_conf)
     create_dblink_extension(udl2_conf)
     create_foreign_data_wrapper_extension(udl2_conf)
@@ -498,6 +604,10 @@ def setup_udl2_schema(udl2_conf):
 
 
 def teardown_udl2_schema(udl2_conf):
+    '''
+    drop whole udl2 database schema according to configuration file
+    @param udl2_conf: The configuration dictionary for 
+    '''
     drop_udl2_sequences(udl2_conf)
     drop_udl2_tables(udl2_conf)
     drop_foreign_data_wrapper_server(udl2_conf)
@@ -507,6 +617,12 @@ def teardown_udl2_schema(udl2_conf):
 
 
 def main():
+    '''
+    create or drop udl2 database objects according to command line.
+    The purpose for this script is to enable clean up whole database artifacts or create
+    whole database artifacts without problem. Since UDL uses databases to clean data. Database object
+    in UDL can be dropped or recreated at will for changes. So we can verifiy system
+    '''
     (parser, args) = _parse_args()
     if args.config_file is None:
         config_path_file = UDL2_DEFAULT_CONFIG_PATH_FILE

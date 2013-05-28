@@ -1,9 +1,7 @@
 from __future__ import absolute_import
-import shutil
 import os
 import argparse
 import time
-import datetime
 from celery import chain
 from udl2 import W_file_arrived, W_file_expander, W_simple_file_validator, W_file_splitter
 from udl2 import message_keys as mk
@@ -61,6 +59,7 @@ def generate_message_for_file_arrived(archived_file_path, lzw, jc_table_conf):
         mk.LANDING_ZONE_WORK_DIR: lzw,
         mk.JOB_CONTROL_TABLE_CONF: jc_table_conf
     }
+    return msg
 
 
 def extend_arrival_msg_temp(msg, csv_file_path, json_file_path):

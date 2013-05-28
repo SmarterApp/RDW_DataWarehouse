@@ -8,6 +8,7 @@ from udl2 import message_keys as mk
 from udl2_util.udl_mappings import get_json_to_asmt_tbl_mappings
 from conf import udl2_conf
 from move_to_integration.column_mapping import get_column_mapping
+from uuid import uuid4
 
 # Paths to our various directories
 THIS_MODULE_PATH = os.path.abspath(__file__)
@@ -80,6 +81,30 @@ def generate_file_expander_msg(landing_zone_work_dir, file_to_expand, jc):
         mk.JOB_CONTROL: jc
     }
     return msg
+
+
+def extend_file_expander_msg_temp(msg, json_filename, csv_filename):
+    msg[mk.JSON_FILENAME] = json_filename
+    msg[mk.CSV_FILENAME] = csv_filename
+    return msg
+
+
+def generate_file_validator_msg(landing_zone_work_dir, job_control):
+    msg = {
+        mk.LANDING_ZONE_WORK_DIR: landing_zone_work_dir,
+        mk.JOB_CONTROL: job_control
+    }
+    return msg
+
+
+def generate_splitter_msg(lzw, jc):
+    splitter_msg = {
+        mk.LANDING_ZONE_WORK_DIR: lzw,
+        mk.JOB_CONTROL: jc,
+        # TODO: remove hard-coded 4
+        mk.PARTS: 4
+    }
+    return splitter_msg
 
 
 def generate_message_json_to_int(job_control, json_file):

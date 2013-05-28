@@ -43,9 +43,11 @@ def audit_event(logger_name="audit", blacklist_args=[]):
 
         def __wrapped(*args, **kwds):
             allargs = {'callable': func_name}
+            report_name = func_name
             # Log the entry into the function
             if not class_name is None:
                 allargs['class'] = class_name
+                report_name = str.format('{0}.{1}', class_name, func_name)
             params = {}
             params['args'] = args
 
@@ -73,14 +75,14 @@ def audit_event(logger_name="audit", blacklist_args=[]):
             log.info(allargs)
             smarter_log = logging.getLogger('smarter')
 
-            smarter_log.info(str.format('Entered {0} report, session_id = {1}', class_name, session_id))
+            smarter_log.info(str.format('Entered {0} report, session_id = {1}', report_name, session_id))
 
             report_start_time = datetime.datetime.now().strftime('%s.%f')
             result = original_func(*args, **kwds)
             finish_time = datetime.datetime.now().strftime('%s.%f')
             report_duration_in_seconds = round(float(finish_time) - float(report_start_time), 3)
 
-            smarter_log.info(str.format('Exited {0} report, generating the report took {1} seconds', class_name, report_duration_in_seconds))
+            smarter_log.info(str.format('Exited {0} report, generating the report took {1} seconds, session_id = {2}', report_name, report_duration_in_seconds, session_id))
 
             return result
         return __wrapped

@@ -5,6 +5,8 @@ import time
 from celery import chain
 from udl2 import W_file_arrived, W_file_expander, W_simple_file_validator, W_file_splitter
 from udl2 import message_keys as mk
+from udl2_util.udl_mappings import get_json_to_asmt_tbl_mappings
+from conf import udl2_conf
 
 # Paths to our various directories
 THIS_MODULE_PATH = os.path.abspath(__file__)
@@ -67,6 +69,37 @@ def generate_message_for_file_arrived(archived_file_path, lzw, jc_table_conf):
 def extend_arrival_msg_temp(msg, csv_file_path, json_file_path):
     msg.update({mk.CSV_FILENAME: csv_file_path})
     msg.update({mk.JSON_FILENAME: json_file_path})
+    return msg
+
+
+def generate_message_json_to_int(job_control):
+    msg = {
+        mk.FILE_TO_LOAD: None,
+        mk.MAPPINGS: get_json_to_asmt_tbl_mappings(),
+        mk.DB_HOST: udl2_conf['postgresql']['db_host'],
+        mk.DB_PORT: udl2_conf['postgresql']['db_port'],
+        mk.DB_USER: udl2_conf['postgresql']['db_user'],
+        mk.DB_NAME: udl2_conf['postgresql']['db_database'],
+        mk.DB_PASSWORD: udl2_conf['postgresql']['db_pass'],
+        mk.INT_SCHEMA: udl2_conf['udl2_db']['integration_schema'],
+        mk.INT_TABLE: 'INT_SBAC_ASMT',  # TODO: acquire this information
+        mk.JOB_CONTROL: job_control
+    }
+    return msg
+
+
+def generate_msg_report_error(email):
+    msg = {
+        mk.EMAIL: email
+    }
+    return msg
+
+
+def generate_msg_content_validation(job_control):
+    msg = {
+        mk.JOB_CONTROL: job_control,
+        mk.STG_TABLE: 'STG_SBAC_ASMT_OUTCOME',  # TODO: acquire this information
+    }
     return msg
 
 

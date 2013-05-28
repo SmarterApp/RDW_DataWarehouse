@@ -16,8 +16,20 @@ CSV_FILENAME = 'csv_filename'
 # file_validator to file_splitter
 PARTS = 'parts'
 
+# file_content_validator
+STG_TABLE = 'staging_table'
+
 # json_to_integration
 FILE_TO_LOAD = 'file_to_load'
+INT_TABLE = 'integration_table'
+INT_SCHEMA = 'integration_schema'
+MAPPINGS = 'mappings'
+JSON_FILE = 'json_file'
+DB_HOST = 'db_host'
+DB_PORT = 'db_port'
+DB_USER = 'db_user'
+DB_NAME = 'db_name'
+DB_PASSWORD = 'db_password'
 
 # report errors
 EMAIL = 'email_address'

@@ -1,11 +1,9 @@
 from __future__ import absolute_import
-from udl2.celery import celery, udl2_queues, udl2_stages, udl2_conf
+from udl2.celery import celery
 import udl2.W_final_cleanup
 import udl2.W_move_to_target
-from celery.result import AsyncResult
 from celery.utils.log import get_task_logger
 from fileloader.file_loader import load_file
-from udl2_util.file_util import extract_file_name
 
 # Keys for the incoming message
 ROW_LIMIT = 'row_limit'
@@ -45,13 +43,6 @@ def task(msg):
     logger.info('Loading file %s...' % msg[FILE_TO_LOAD])
     conf = generate_conf_for_loading(msg[FILE_TO_LOAD], msg[ROW_START], msg[HEADER_FILE], msg[BATCH_ID])
     load_file(conf)
-
-#    if udl2_stages[task.name]['next'] is not None:
-#        next_msg = [file_name + ' passed after ' + task.name]
-#        exec("task_instance = " + udl2_stages[task.name]['next']['task'])
-#        task_instance.apply_async(next_msg,
-#                                  udl2_queues[task.name]['queue'],
-#                                  udl2_stages[task.name]['routing_key'])
 
     udl2.W_move_to_target.task.apply_async([msg],
                                            queue='Q_copy_to_target',

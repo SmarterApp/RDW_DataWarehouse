@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-from udl2.celery import celery, udl2_queues, udl2_stages
+from udl2.celery import celery
 from celery.result import AsyncResult
 from celery.utils.log import get_task_logger
 from final_cleanup.final_cleanup import create_directory_structure_for_file_history

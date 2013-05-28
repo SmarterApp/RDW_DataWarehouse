@@ -1,6 +1,5 @@
 from __future__ import absolute_import
-from udl2.celery import celery, udl2_queues, udl2_stages
-from celery.result import AsyncResult
+from udl2.celery import celery
 from celery.utils.log import get_task_logger
 from sfv.simple_file_validator import SimpleFileValidator
 import os

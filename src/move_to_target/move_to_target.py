@@ -1,10 +1,12 @@
 from fileloader.file_loader import connect_db, execute_queries
 from collections import OrderedDict
 import move_to_target.column_mapping as col_map
+import move_to_target.create_queries as queries
 import datetime
 
 
 DBDRIVER = "postgresql"
+FAKE_INST_HIER_REC_ID = -1
 
 
 def explode_data_to_fact_table(conf, source_table, target_table, column_mapping, column_types):
@@ -32,6 +34,7 @@ def explode_data_to_fact_table(conf, source_table, target_table, column_mapping,
     column_mapping[section_rec_id_column_name] = section_rec_id
 
     # get list of queries to be executed
+    # TODO: decide which method is better: create_queries_for_move_to_fact_table_2 or create_queries_for_move_to_fact_table
     queries = create_queries_for_move_to_fact_table(conf, source_table, target_table, column_mapping, column_types)
 
     # create database connection (connect to target)
@@ -63,23 +66,14 @@ def get_asmt_rec_id(conf, guid_column_name_in_target, guid_column_name_in_source
     '''
     # connect to integration table, to get guid_column_value
     conn_to_source_db, _engine = connect_db(conf['db_user'], conf['db_password'], conf['db_host'], conf['db_name'])
-    query_to_get_guid = "SELECT DISTINCT {guid_column_name_in_source} FROM {source_schema_and_table} WHERE batch_id={batch_id}".format(
-                                                                                                                                  guid_column_name_in_source=guid_column_name_in_source,
-                                                                                                                                  source_schema_and_table=combine_schema_and_table(conf['source_schema'], source_table_name),
-                                                                                                                                  batch_id=conf['batch_id']
-                                                                                                                                  )
+    query_to_get_guid = queries.select_distinct_asmt_guid_query(conf['source_schema'], source_table_name, guid_column_name_in_source, conf['batch_id'])
     # print(query_to_get_guid)
     guid_column_value = execute_query_get_one_value(conn_to_source_db, query_to_get_guid, guid_column_name_in_source)
     conn_to_source_db.close()
 
     # connect to target table, to get rec_id_column_value
     conn_to_target_db, _engine = connect_db(conf['db_user_target'], conf['db_password_target'], conf['db_host_target'], conf['db_name_target'])
-    query_to_get_rec_id = "SELECT DISTINCT {rec_id_column_name} FROM {source_schema_and_table} WHERE {guid_column_name_in_target}=\'{guid_column_value_got}\'".format(
-                                                                                                                      rec_id_column_name=rec_id_column_name,
-                                                                                                                      source_schema_and_table=combine_schema_and_table(conf['target_schema'], target_table_name),
-                                                                                                                      guid_column_name_in_target=guid_column_name_in_target,
-                                                                                                                      guid_column_value_got=guid_column_value
-                                                                                                                      )
+    query_to_get_rec_id = queries.select_distinct_asmt_rec_id_query(conf['target_schema'], target_table_name, rec_id_column_name, guid_column_name_in_target, guid_column_value)
     # print(query_to_get_rec_id)
     asmt_rec_id = execute_query_get_one_value(conn_to_target_db, query_to_get_rec_id, rec_id_column_name)
     conn_to_target_db.close()
@@ -126,19 +120,19 @@ def create_queries_for_move_to_fact_table(conf, source_table, target_table, colu
     @return: list of four queries
     '''
     # disable foreign key in fact table
-    disable_trigger_query = enable_trigger_query(conf['target_schema'], target_table, False)
+    disable_trigger_query = queries.enable_trigger_query(conf['target_schema'], target_table, False)
     # print(disable_trigger_query)
 
     # create insertion insert_into_fact_table_query
-    insert_into_fact_table_query = create_insert_query(conf, source_table, target_table, column_mapping, column_types, False)
+    insert_into_fact_table_query = queries.create_insert_query(conf, source_table, target_table, column_mapping, column_types, False)
     # print(insert_into_fact_table_query)
 
     # update inst_hier_query back
-    update_inst_hier_rec_id_fk_query = update_inst_hier_rec_id_query(conf['target_schema'])
+    update_inst_hier_rec_id_fk_query = queries.update_inst_hier_rec_id_query(conf['target_schema'], FAKE_INST_HIER_REC_ID)
     # print(update_inst_hier_rec_id_fk_query)
 
     # enable foreign key in fact table
-    enable_back_trigger_query = enable_trigger_query(conf['target_schema'], target_table, True)
+    enable_back_trigger_query = queries.enable_trigger_query(conf['target_schema'], target_table, True)
     # print(enable_back_trigger_query)
 
     return [disable_trigger_query, insert_into_fact_table_query, update_inst_hier_rec_id_fk_query, enable_back_trigger_query]
@@ -159,79 +153,13 @@ def explode_data_to_dim_table(conf, source_table, target_table, column_mapping, 
     conn, _engine = connect_db(conf['db_user_target'], conf['db_password_target'], conf['db_host_target'], conf['db_name_target'])
 
     # create insertion query
-    # TODO: find out if the affected rows, time can be returned
-    query = create_insert_query(conf, source_table, target_table, column_mapping, column_types, True)
+    # TODO: find out if the affected rows, time can be returned, so that the returned info can be put in the log
+    query = queries.create_insert_query(conf, source_table, target_table, column_mapping, column_types, True)
     # print(query)
 
     # execute the query
     execute_queries(conn, [query], 'Exception -- exploding data from integration to target {target_table}'.format(target_table=target_table))
     conn.close()
-
-
-def enable_trigger_query(schema_name, table_name, is_enable):
-    '''
-    Main function to crate a query to disable/enable trigger in table
-    @param is_enable: True: enable trigger, False: disbale trigger
-    '''
-    action = 'ENABLE'
-    if not is_enable:
-        action = 'DISABLE'
-    query = 'ALTER TABLE {schema_name_and_table} {action} TRIGGER ALL'.format(schema_name_and_table=combine_schema_and_table(schema_name, table_name),
-                                                                              action=action)
-    return query
-
-
-def create_insert_query(conf, source_table, target_table, column_mapping, column_types, need_distinct):
-    '''
-    Main function to create query to insert data from source table to target table
-    The query will be executed on the database where target table exists
-    Since the source tables and target tables can be existing on different databases/servers,
-    dblink is used here to get data from source database in the select clause
-    '''
-    distinct_expression = 'DISTINCT ' if need_distinct else ''
-    seq_expression = list(column_mapping.values())[0].replace("'", "''")
-
-    insert_sql = [
-             "INSERT INTO {target_shcema_and_table}(",
-             ",".join(list(column_mapping.keys())),
-             ")  SELECT * FROM dblink(\'dbname={db_name} user={db_user} password={db_password}\', \'SELECT {seq_expression}, * FROM (SELECT {distinct_expression}",
-             ",".join(value.replace("'", "''") for value in list(column_mapping.values())[1:]),
-             " FROM {source_schema_and_table} WHERE batch_id={batch_id}) as y\') AS t(",
-             ",".join(list(column_types.values())),
-             ");"
-            ]
-    insert_sql = "".join(insert_sql).format(target_shcema_and_table=combine_schema_and_table(conf['db_name_target'], target_table),
-                                            db_password_target=conf['db_password_target'],
-                                            target_schema=conf['target_schema'],
-                                            db_name=conf['db_name'],
-                                            db_user=conf['db_user'],
-                                            db_password=conf['db_password'],
-                                            seq_expression=seq_expression,
-                                            distinct_expression=distinct_expression,
-                                            source_schema_and_table=combine_schema_and_table(conf['source_schema'], source_table),
-                                            batch_id=conf['batch_id'])
-
-    return insert_sql
-
-
-def update_inst_hier_rec_id_query(schema):
-    '''
-    Main function to crate query to update foreign key inst_hier_rec_id in table fact_asmt_outcome
-    '''
-    info_map = col_map.get_inst_hier_rec_id_info()
-    update_query = ["UPDATE {schema_and_fact_table} ",
-             "SET {inst_hier_in_fact}=dim.dim_{inst_hier_in_dim} FROM (SELECT ",
-             "{inst_hier_in_dim} AS dim_{inst_hier_in_dim}, ",
-             ",".join(guid_in_dim + ' AS dim_' + guid_in_dim for guid_in_dim in list(info_map['guid_column_map'].keys())),
-             " FROM {schema_and_dim_table})dim",
-             " WHERE {inst_hier_in_fact}=-1 AND ",
-             " AND ".join(guid_in_fact + '= dim_' + guid_in_dim for guid_in_dim, guid_in_fact in info_map['guid_column_map'].items())
-             ]
-    update_query = "".join(update_query).format(schema_and_fact_table=combine_schema_and_table(schema, info_map['table_map'][1]),
-                                                schema_and_dim_table=combine_schema_and_table(schema, info_map['table_map'][0]),
-                                                inst_hier_in_dim=info_map['rec_id_map'][0],
-                                                inst_hier_in_fact=info_map['rec_id_map'][1])
-    return update_query
 
 
 def get_table_column_types(conf, target_table, column_names):
@@ -243,7 +171,7 @@ def get_table_column_types(conf, target_table, column_names):
     '''
     column_types = OrderedDict([(column_name, '') for column_name in column_names])
     conn, _engine = connect_db(conf['db_user_target'], conf['db_password_target'], conf['db_host_target'], conf['db_name_target'])
-    query = create_information_query(conf, target_table)
+    query = queries.create_information_query(conf, target_table)
     # execute query
     try:
         result = conn.execute(query)
@@ -263,14 +191,6 @@ def get_table_column_types(conf, target_table, column_names):
     return column_types
 
 
-def create_information_query(conf, target_table):
-    '''
-    Main function to crate query to get column types in a table. 'information_schema.columns' is used.
-    '''
-    select_query = "SELECT column_name, data_type, character_maximum_length FROM information_schema.columns WHERE table_name=\'{target_table}\'".format(target_table=target_table)
-    return select_query
-
-
 def calculate_spend_time_as_second(start_time, finish_time):
     '''
     Main function to calculate period distance as seconds
@@ -278,10 +198,3 @@ def calculate_spend_time_as_second(start_time, finish_time):
     spend_time = finish_time - start_time
     time_as_seconds = float(spend_time.seconds + spend_time.microseconds / 1000000.0)
     return time_as_seconds
-
-
-def combine_schema_and_table(schema_name, table_name):
-    '''
-    Function to create the expression of "schema_name"."table_name"
-    '''
-    return '\"' + schema_name + '\".\"' + table_name + '\"'

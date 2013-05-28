@@ -211,7 +211,7 @@ def get_asmt_rec_id_info():
 def get_inst_hier_rec_id_info():
     '''
     This function provides information in the progress of moving data from integration table to fact table in target
-    The inst_hier_rec_id is a foreign key, and this function provides information to get the inst_hier_rec_id in table dim_inst_hier
+    The inst_hier_rec_id is a foreign key, and this function provides information to update the inst_hier_rec_id in table fact_asmt_outcome table
     '''
     basic_map = {'rec_id_map': ('inst_hier_rec_id', 'inst_hier_rec_id'),
                  'table_map': ('dim_inst_hier', 'fact_asmt_outcome'),

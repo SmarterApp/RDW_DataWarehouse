@@ -20,7 +20,13 @@ from collections import OrderedDict
 class TestLoadToIntegrationTable(unittest.TestCase):
 
     def setUp(self, ):
-        pass
+        try:
+            config_path = dict(os.environ)['UDL2_CONF']
+        except Exception:
+            config_path = UDL2_DEFAULT_CONFIG_PATH_FILE
+        udl2_conf = imp.load_source('udl2_conf', config_path)
+        from udl2_conf import udl2_conf
+        self.conf = udl2_conf
 
     def tearDown(self, ):
         pass
@@ -63,12 +69,34 @@ class TestLoadToIntegrationTable(unittest.TestCase):
         
         
     def test_move_data_from_staging_to_integration(self, ):
-        pass
+        conf = {
+             # add batch_id from msg
+            'batch_id': 1,
+            # error schema
+            'error_schema': self.conf['udl2_db']['staging_schema'],
+            # source schema
+            'source_schema': self.conf['udl2_db']['staging_schema'],
+            # source database setting
+            'db_host_source': self.conf['udl2_db']['db_host'],
+            'db_port_source': self.conf['udl2_db']['db_port'],
+            'db_user_source': self.conf['udl2_db']['db_user'],
+            'db_name_source': self.conf['udl2_db']['db_database'],
+            'db_password_source': self.conf['udl2_db']['db_pass'],
+            'db_driver_source': self.conf['udl2_db']['db_driver'],
 
+            # target schema
+            'target_schema': self.conf['udl2_db']['integration_schema'],
+            # target database setting
+            'db_host_target': self.conf['udl2_db']['db_host'],
+            'db_port_target': self.conf['udl2_db']['db_port'],
+            'db_user_target': self.conf['udl2_db']['db_user'],
+            'db_name_target': self.conf['udl2_db']['db_database'],
+            'db_password_target': self.conf['udl2_db']['db_pass'],
+            'map_type': 'unit_test',
+        }
+  
+        move_data_from_staging_to_integration(conf)
 
-    
-
-        
     
 
 if __name__ == '__main__':

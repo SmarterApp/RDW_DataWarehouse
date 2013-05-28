@@ -3,7 +3,7 @@ from udl2_util.database_util import connect_db, execute_queries
 from move_to_integration.column_mapping import get_column_mapping
 
 def move_data_from_staging_to_integration(conf):
-    print(conf)
+    #print(conf)
     (conn, engine) = connect_db(conf['db_driver_source'],
                                 conf['db_user_source'],
                                 conf['db_password_source'],
@@ -15,7 +15,7 @@ def move_data_from_staging_to_integration(conf):
     sql_query = create_migration_query(conf['source_schema'], column_mapping['source'], conf['target_schema'],
                                        column_mapping['target'], conf['error_schema'], 'ERR_LIST', column_mapping['mapping'],
                                        conf['batch_id'])
-    print(sql_query)
+    #print(sql_query)
     except_msg = "problem when load data from staging table to integration table"
     execute_queries(conn, [sql_query], except_msg)
     return 

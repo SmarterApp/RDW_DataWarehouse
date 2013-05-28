@@ -75,6 +75,11 @@ def generate_msg_for_file_loader(split_file_tuple, header_file_path, lzw, jc, fd
     file_loader_msg[mk.LINE_COUNT] = split_file_line_count
     file_loader_msg[mk.ROW_START] = split_file_row_start
     file_loader_msg[mk.HEADER_FILE] = header_file_path
+    file_loader_msg[mk.LANDING_ZONE_WORK_DIR] = lzw
+    file_loader_msg[mk.JOB_CONTROL] = jc
+    file_loader_msg[mk.APPLY_RULES] = False
+    file_loader_msg[mk.FDW_CONF] = fdw_conf
+    file_loader_
 
     return file_loader_msg
 

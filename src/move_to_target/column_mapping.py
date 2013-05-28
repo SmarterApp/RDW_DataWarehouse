@@ -10,7 +10,7 @@ def get_target_tables_parallel():
     Key -- target table name in star schema.
     Value -- corresponding integration table.
     '''
-    return dict([('dim_inst_hier', 'INT_SBAC_ASMT_OUTCOME'),
+    return OrderedDict([('dim_inst_hier', 'INT_SBAC_ASMT_OUTCOME'),
             ('dim_student', 'INT_SBAC_ASMT_OUTCOME'),
             ('dim_staff', 'INT_SBAC_ASMT_OUTCOME'),
             ('dim_asmt', 'INT_SBAC_ASMT')
@@ -215,9 +215,9 @@ def get_inst_hier_rec_id_info():
     '''
     basic_map = {'rec_id_map': ('inst_hier_rec_id', 'inst_hier_rec_id'),
                  'table_map': ('dim_inst_hier', 'fact_asmt_outcome'),
-                 'guid_column_map': {'state_code': 'state_code',
-                                     'district_guid': 'district_guid',
-                                     'school_guid': 'school_guid'}
+                 'guid_column_map': OrderedDict([('state_code', 'state_code'),
+                                                 ('district_guid', 'district_guid'),
+                                                 ('school_guid', 'school_guid')])
                  }
     return basic_map
 

@@ -27,6 +27,7 @@ def create_insert_query(conf, source_table, target_table, column_mapping, column
     distinct_expression = 'DISTINCT ' if need_distinct else ''
     seq_expression = list(column_mapping.values())[0].replace("'", "''")
 
+    # TODO:if batch_id is changed to uuid, need to add quotes around it
     insert_sql = [
              "INSERT INTO {target_shcema_and_table}(",
              ",".join(list(column_mapping.keys())),
@@ -74,7 +75,7 @@ def update_inst_hier_rec_id_query(schema, condition_value):
              ",".join(guid_in_dim + ' AS dim_' + guid_in_dim for guid_in_dim in list(info_map['guid_column_map'].keys())),
              " FROM {schema_and_dim_table})dim",
              " WHERE {inst_hier_in_fact}={fake_value} AND ",
-             " AND ".join(guid_in_fact + '= dim_' + guid_in_dim for guid_in_dim, guid_in_fact in info_map['guid_column_map'].items())
+             " AND ".join(guid_in_fact + '=dim_' + guid_in_dim for guid_in_dim, guid_in_fact in info_map['guid_column_map'].items())
              ]
     update_query = "".join(update_query).format(schema_and_fact_table=combine_schema_and_table(schema, info_map['table_map'][1]),
                                                 schema_and_dim_table=combine_schema_and_table(schema, info_map['table_map'][0]),

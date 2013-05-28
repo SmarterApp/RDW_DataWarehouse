@@ -34,7 +34,6 @@ def explode_data_to_fact_table(conf, source_table, target_table, column_mapping,
     column_mapping[section_rec_id_column_name] = section_rec_id
 
     # get list of queries to be executed
-    # TODO: decide which method is better: create_queries_for_move_to_fact_table_2 or create_queries_for_move_to_fact_table
     queries = create_queries_for_move_to_fact_table(conf, source_table, target_table, column_mapping, column_types)
 
     # create database connection (connect to target)

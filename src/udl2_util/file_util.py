@@ -18,6 +18,12 @@ def extract_file_name(file_path):
     return file_name
 
 
+def extract_file_ext(file_path):
+    file_name_and_ext = os.path.basename(file_path)
+    file_ext = os.path.splitext(file_name_and_ext)[1]
+    return file_ext
+
+
 def copy_file(source_file, target_directory):
     '''
     This function moves the source file to the target directory by wrapping shutil.copy2(...)
@@ -89,3 +95,11 @@ def create_directory(path):
     if not os.path.exists(path):
         os.makedirs(path)
     return path
+
+
+def get_expanded_dir(lzw, batch_id):
+    batch_id = str(batch_id)
+    batch_id_dir = os.path.join(lzw, batch_id)
+    # TODO: put 'EXPANDED', 'ARRIVED', 'SUBFILES' into a constants file and import
+    expanded_dir = os.path.join(batch_id_dir, 'EXPANDED')
+    return expanded_dir

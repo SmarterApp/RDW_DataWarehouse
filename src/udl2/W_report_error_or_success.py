@@ -1,5 +1,3 @@
-__author__ = 'abrien'
-
 from __future__ import absolute_import
 from udl2.celery import celery
 from celery.utils.log import get_task_logger

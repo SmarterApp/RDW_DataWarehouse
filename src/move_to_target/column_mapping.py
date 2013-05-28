@@ -5,11 +5,15 @@ from collections import OrderedDict
 # (target_table_name, source_table_name)
 # e.g. (target_table_in_star_schema, table_name_in_integration_tables)
 def get_target_tables_parallel():
-    # TODO: will replace STG to INT
-    return dict([('dim_inst_hier', 'STG_SBAC_ASMT_OUTCOME'),
-            ('dim_student', 'STG_SBAC_ASMT_OUTCOME'),
-            ('dim_staff', 'STG_SBAC_ASMT_OUTCOME'),
-            ('dim_asmt', 'STG_SBAC_ASMT')
+    '''
+    @return: an ordered dictionary, which maps the target dim table and integration table
+    Key -- target table name in star schema.
+    Value -- corresponding integration table.
+    '''
+    return dict([('dim_inst_hier', 'INT_SBAC_ASMT_OUTCOME'),
+            ('dim_student', 'INT_SBAC_ASMT_OUTCOME'),
+            ('dim_staff', 'INT_SBAC_ASMT_OUTCOME'),
+            ('dim_asmt', 'INT_SBAC_ASMT')
             ])
 
 
@@ -17,15 +21,20 @@ def get_target_tables_parallel():
 # (target_table_name, source_table_name)
 # e.g. (target_table_in_star_schema, table_name_in_integration_tables)
 def get_target_table_callback():
-    # TODO: will replace STG to INT
-    return ('fact_asmt_outcome', 'STG_SBAC_ASMT_OUTCOME')
+    '''
+    @return: a dictionary, which maps the target fact table and integration table
+    Key -- target table name in star schema.
+    Value -- corresponding integration table.
+    '''
+    return ('fact_asmt_outcome', 'INT_SBAC_ASMT_OUTCOME')
 
 
 # column mapping between source/integration table and target/star schema table
 def get_column_mapping():
     '''
-    Key: {target table name}, e.g. dim_asmt
-    Value: ordered dictionary: (column_in_target_table, column_in_source_table), e.g. 'asmt_guid': 'guid_asmt'
+    This column mapping is used in moving data from integration tables to target
+    Key -- target table name, e.g. dim_asmt
+    Value -- ordered dictionary: (column_in_target_table, column_in_source_table), e.g. 'asmt_guid': 'guid_asmt'
     '''
 
     column_map_integration_to_target = {
@@ -156,9 +165,9 @@ def get_column_mapping():
                 ('asmt_grade', 'grade_asmt'),
                 ('enrl_grade', 'grade_enrolled'),
                 ('date_taken', 'date_assessed'),
-                ('date_taken_day', "EXTRACT(DAY FROM TO_DATE(date_assessed, 'YYYYMMDD'))"),  # date_assessed is a varchar(8) 
-                ('date_taken_month', "EXTRACT(MONTH FROM TO_DATE(date_assessed, 'YYYYMMDD'))"),  # date_assessed is a varchar(8) 
-                ('date_taken_year', "EXTRACT(YEAR FROM TO_DATE(date_assessed, 'YYYYMMDD'))"),  # date_assessed is a varchar(8) 
+                ('date_taken_day', 'date_taken_day'),  # date_assessed is a varchar(8)
+                ('date_taken_month', 'date_taken_month'),  # date_assessed is a varchar(8)
+                ('date_taken_year', 'date_taken_year'),  # date_assessed is a varchar(8)
                 ('asmt_score', 'score_asmt'),
                 ('asmt_score_range_min', 'score_asmt_min'),
                 ('asmt_score_range_max', 'score_asmt_max'),
@@ -184,6 +193,10 @@ def get_column_mapping():
 
 
 def get_asmt_rec_id_info():
+    '''
+    This function provides information in the progress of moving data from integration table to fact table in target
+    The asmt_rec_id is a foreign key, and this function provides information to get the asmt_rec_id in table dim_asmt
+    '''
     basic_map = {'rec_id': 'asmt_rec_id',
                  'target_table': 'dim_asmt',
                  'guid_column_name': 'asmt_guid'
@@ -196,6 +209,10 @@ def get_asmt_rec_id_info():
 
 
 def get_inst_hier_rec_id_info():
+    '''
+    This function provides information in the progress of moving data from integration table to fact table in target
+    The inst_hier_rec_id is a foreign key, and this function provides information to get the inst_hier_rec_id in table dim_inst_hier
+    '''
     basic_map = {'rec_id_map': ('inst_hier_rec_id', 'inst_hier_rec_id'),
                  'table_map': ('dim_inst_hier', 'fact_asmt_outcome'),
                  'guid_column_map': {'state_code': 'state_code',

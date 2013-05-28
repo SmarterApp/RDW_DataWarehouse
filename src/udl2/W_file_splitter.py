@@ -1,11 +1,10 @@
 from __future__ import absolute_import
-from udl2.celery import celery, udl2_queues, udl2_stages
-import udl2.W_file_loader
+from udl2.celery import celery
 from celery.result import AsyncResult
 from celery.utils.log import get_task_logger
+from udl2_util import file_util
 import filesplitter.file_splitter as file_splitter
 import udl2.message_keys as mk
-import time
 import datetime
 import os
 
@@ -34,7 +33,7 @@ def task(incoming_msg):
     expanded_dir = get_expanded_dir(lzw, batch_id)
     full_path_to_file = os.path.join(expanded_dir, csv_filename)
     subfiles_dir = get_subfiles_dir(lzw, batch_id)
-    # TODO: Create subfiles_dir
+    file_util.create_directory(subfiles_dir)
 
     # do actual work of splitting file
     split_file_tuple_list, header_file_path = file_splitter.split_file(full_path_to_file, parts=parts,
@@ -53,7 +52,7 @@ def task(incoming_msg):
         udl2.W_file_loader.task.apply_async([message_for_file_loader], queue='Q_files_to_be_loaded', routing_key='udl2')
     '''
 
-    return incoming_msg
+    return split_file_tuple_list
 
 
 def get_expanded_dir(lzw, batch_id):

@@ -1,3 +1,9 @@
+from __future__ import absolute_import
+from udl2.celery import celery
+from celery.utils.log import get_task_logger
+from uuid import uuid4
+from udl2 import message_keys as mk
+
 __author__ = 'abrien'
 
 '''
@@ -9,12 +15,6 @@ Then, it moves the file from landing_zone/arrivals to landing_zone/work/BATCH_ID
 
 The output of this worker will serve as the input to the subsequent worker [file_expander].
 '''
-
-from __future__ import absolute_import
-from udl2.celery import celery
-from celery.utils.log import get_task_logger
-from uuid import uuid4
-from udl2 import message_keys as mk
 
 logger = get_task_logger(__name__)
 

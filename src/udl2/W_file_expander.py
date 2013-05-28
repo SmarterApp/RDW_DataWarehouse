@@ -1,17 +1,16 @@
-__author__ = 'abrien'
-
-
-'''
-This task takes a zipped file in landing_zone/work/BATCH_ID/arrived/
-and unpacks into landing_zone/work/BATCH_ID/expanded
-'''
-
 from __future__ import absolute_import
 from udl2.celery import celery
 from celery.utils.log import get_task_logger
 from udl2_util import file_util
 import udl2.message_keys as mk
 import os
+
+__author__ = 'abrien'
+
+'''
+This task takes a zipped file in landing_zone/work/BATCH_ID/arrived/
+and unpacks into landing_zone/work/BATCH_ID/expanded
+'''
 
 logger = get_task_logger(__name__)
 
@@ -24,6 +23,7 @@ def task(incoming_msg):
     batch_id = job_control[1]
 
     expanded_dir = get_expanded_dir(lzw, batch_id)
+    print('EXPANDED_DIR >>>>>>> ' + expanded_dir    )
     file_util.create_directory(expanded_dir)
     unpacked_json_file = unpack_json_file(file_to_expand, expanded_dir, incoming_msg[mk.JSON_FILENAME])
     unpacked_csv_file = unpack_csv_file(file_to_expand, expanded_dir, incoming_msg[mk.CSV_FILENAME])

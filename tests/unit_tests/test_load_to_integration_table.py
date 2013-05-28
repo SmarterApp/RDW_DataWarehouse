@@ -54,6 +54,10 @@ class TestLoadToIntegrationTable(unittest.TestCase):
                                        'udl2', unit_test_column_mapping['target'],
                                        'udl2', unit_test_column_mapping['error'],
                                        unit_test_column_mapping['mapping'], 1)
+        # remove new lines, tab and multiple space. then the query should always be the same
+        # because it should be the same query
+        # whenever template changes, we should change the tests to make it correct.
+        
         self.assertEqual(re.sub('\s+', ' ', query_result.replace('\n', ' ').replace('\t', ' ')),
                          re.sub('\s+', ' ', query.replace('\n', ' ').replace('\t', ' ')))
         

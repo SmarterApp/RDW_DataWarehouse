@@ -34,6 +34,9 @@ class ISessionBackend(interface.Interface):
 
 @implementer(ISessionBackend)
 class SessionBackend():
+    '''
+    Keeps track of instance of backend used to store session
+    '''
     def __init__(self, settings):
         if to_bool(settings.get('enable.session.caching', 'false')):
             cache_mgr = CacheManager(**parse_cache_config_options(settings))
@@ -46,6 +49,9 @@ class SessionBackend():
 
 
 class PersistentSession(object):
+    '''
+    Manipulates session that resides in persistent storage (memory, memcached)
+    '''
 
     def __init__(self, cache_mgr):
         # We'll save both the cachemanager and the cache_region
@@ -82,6 +88,9 @@ class PersistentSession(object):
 
 
 class StorageSession(object):
+    '''
+    Manipulates session that resides in permanent storage (database)
+    '''
 
     def create_new_session(self, session):
         '''

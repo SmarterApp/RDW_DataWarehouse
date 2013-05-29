@@ -4,39 +4,36 @@ Created on May 24, 2013
 @author: dip
 '''
 import unittest
-from pyramid.testing import DummyRequest
-from pyramid import testing
-from pyramid.registry import Registry
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
-from edauth.security.persisent_session import PersistentSession
+from edauth.security.persisent_session import PersistentSession, StorageSession
 from edauth.security.session import Session
+from database.sqlite_connector import create_sqlite, destroy_sqlite
+from edauth.persistence.persistence import generate_persistence
+from datetime import datetime
+from edauth.database.connector import EdauthDBConnection
+from sqlalchemy.sql.expression import select
+import uuid
 
 
 class TestPersistentSession(unittest.TestCase):
 
     def setUp(self):
-        self.__request = DummyRequest()
-        reg = Registry()
-        reg.settings = {}
-        reg.settings['enable.session.caching'] = 'true'
-        reg.settings['cache.expire'] = 10
-        reg.settings['cache.lock_dir'] = '/tmp/memcache_ut'
-        reg.settings['cache.regions'] = 'session'
-        reg.settings['cache.type'] = 'memory'
-        self.cachemgr = CacheManager(**parse_cache_config_options(reg.settings))
+        reg = {}
+        reg['enable.session.caching'] = 'true'
+        reg['cache.expire'] = 10
+        reg['cache.lock_dir'] = '/tmp/memcache_ut'
+        reg['cache.regions'] = 'session'
+        reg['cache.type'] = 'memory'
+        self.cachemgr = CacheManager(**parse_cache_config_options(reg))
         self.persistent_session = PersistentSession(self.cachemgr)
         # Must set hook_zca to false to work with uniittest_with_sqlite
-        self.__config = testing.setUp(registry=reg, request=self.__request, hook_zca=False)
-
-    def tearDown(self):
-        testing.tearDown()
 
     def test_create_new_session(self):
         session = Session()
         session.set_session_id('123')
         self.persistent_session.create_new_session(session)
-        self.assertIsNotNone(self.persistent_session.get_session('123'))
+        self.assertIsNotNone(self.cachemgr.get_cache_region('session', 'session').get('123'))
 
     def test_get_session_from_persistence_with_existing_session(self):
         session = Session()
@@ -45,6 +42,103 @@ class TestPersistentSession(unittest.TestCase):
         self.persistent_session.create_new_session(session)
         lookup = self.persistent_session.get_session('456')
         self.assertEqual(lookup.get_uid(), 'abc')
+
+    def test_get_session_invalid_session(self):
+        lookup = self.persistent_session.get_session('idontexist')
+        self.assertIsNone(lookup)
+
+    def test_delete_session(self):
+        session = Session()
+        session.set_session_id('456')
+        session.set_uid('abc')
+        self.persistent_session.create_new_session(session)
+        self.persistent_session.delete_session('456')
+        self.assertFalse('456' in self.cachemgr.get_cache_region('session', 'session'))
+
+    def test_update_session(self):
+        session = Session()
+        session.set_session_id('456')
+        session.set_uid('abc')
+        self.persistent_session.create_new_session(session)
+        session.set_uid('def')
+        self.persistent_session.update_session(session)
+        lookup = self.cachemgr.get_cache_region('session', 'session').get('456')
+        self.assertEquals(lookup.get_uid(), 'def')
+
+
+class TestStorageSession(unittest.TestCase):
+    def setUp(self):
+        create_sqlite(use_metadata_from_db=False, echo=False, metadata=generate_persistence(), datasource_name='edauth')
+        self.storage_session = StorageSession()
+
+    def tearDown(self):
+        destroy_sqlite(datasource_name='edauth')
+
+    def test_create_new_session(self):
+        session = Session()
+        session.set_session_id('123')
+        session.set_expiration(datetime.now())
+        session.set_last_access(datetime.now())
+        self.storage_session.create_new_session(session)
+        with EdauthDBConnection() as connection:
+            user_session = connection.get_table('user_session')
+            query = select([user_session.c.session_context.label('session_context'),
+                            user_session.c.last_access.label('last_access'),
+                            user_session.c.expiration.label('expiration')])
+            query = query.where(user_session.c.session_id == '123')
+            result = connection.get_result(query)
+            self.assertEquals(len(result), 1)
+
+    def test_get_session(self):
+        session_id = str(uuid.uuid1())
+        session_json = '{"roles": ["TEACHER"], "name": {"fullName": "Linda Kim"}, "uid": "linda.kim"}'
+        current_datetime = datetime.now()
+        expiration_datetime = current_datetime
+        with EdauthDBConnection() as connection:
+            user_session = connection.get_table('user_session')
+            connection.execute(user_session.insert(), session_id=session_id, session_context=session_json, last_access=current_datetime, expiration=expiration_datetime)
+        session = self.storage_session.get_session(session_id)
+        self.assertIsNotNone(session)
+
+    def test_get_invalid_session(self):
+        session = self.storage_session.get_session('idontexistsession')
+        self.assertIsNone(session)
+
+    def test_update_session(self):
+        session = Session()
+        session.set_session_id('132342323')
+        session.set_expiration(datetime.now())
+        session.set_last_access(datetime.now())
+        self.storage_session.create_new_session(session)
+        now = datetime.now()
+        session.set_last_access(now)
+        self.storage_session.update_session(session)
+        with EdauthDBConnection() as connection:
+            user_session = connection.get_table('user_session')
+            query = select([user_session.c.session_context.label('session_context'),
+                            user_session.c.last_access.label('last_access'),
+                            user_session.c.expiration.label('expiration')])
+            query = query.where(user_session.c.session_id == '132342323')
+            result = connection.get_result(query)
+            self.assertEquals(result[0]['last_access'], now)
+
+    def test_delete_session(self):
+        session_id = str(uuid.uuid1())
+        session_json = '{"roles": ["TEACHER"], "name": {"fullName": "Linda Kim"}, "uid": "linda.kim"}'
+        current_datetime = datetime.now()
+        expiration_datetime = current_datetime
+        with EdauthDBConnection() as connection:
+            user_session = connection.get_table('user_session')
+            connection.execute(user_session.insert(), session_id=session_id, session_context=session_json, last_access=current_datetime, expiration=expiration_datetime)
+
+            self.storage_session.delete_session(session_id)
+
+            query = select([user_session.c.session_context.label('session_context'),
+                            user_session.c.expiration.label('expiration')])
+            query = query.where(user_session.c.session_id == session_id)
+            result = connection.get_result(query)
+            self.assertEquals(len(result), 1)
+            self.assertNotEqual(result[0]['expiration'], expiration_datetime)
 
 
 if __name__ == "__main__":

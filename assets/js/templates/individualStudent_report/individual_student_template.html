@@ -85,9 +85,25 @@
 				</li>
 				{{/claims}}
 			</ul>
-
 		</div>
 	</div>
+	<div class="assessmentOtherInfo printContent">
+			<h1>{{asmt_subject}}</h1>
+			<ul class="unstyled">
+				{{#psychometric_implications}}
+				<li class="inline">
+					<h3>Practical Implications</h3>
+					<div class="desc">{{{psychometric_implications}}}</div>
+				</li>
+				{{/psychometric_implications}}
+				{{#policy_content}}
+				<li class="inline">
+					<h3>Policy Information</h3>
+					<div class="desc">{{{policy_content}}}</div>
+				</li>
+				{{/policy_content}}
+			</ul>
+		</div>
 </div>
 <div class="pageBreak"></div>
 {{/items}}

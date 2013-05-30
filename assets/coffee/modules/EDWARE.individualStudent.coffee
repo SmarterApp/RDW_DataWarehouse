@@ -153,6 +153,7 @@ define [
         # Generate Confidence Level bar for each assessment      
         i = 0
         while i < data.items.length
+          
           item = data.items[i]       
           barContainer = "#assessmentSection" + i + " .confidenceLevel"
           edwareConfidenceLevelBar.create item, 640, barContainer 
@@ -162,9 +163,29 @@ define [
             claim = item.claims[j]
             barContainer = "#assessmentSection" + i + " #claim" + [claim.indexer] + " .claimsBar"
             edwareClaimsBar.create claim, 300, barContainer 
-            j++       
-          i++
+            j++              
           
+          
+          # Set the layout for practical implications and policy content section on print version
+          printAssessmentInfoContentLength = 0
+          printAssessmentOtherInfo = "#assessmentSection" + i + " li.inline"
+          printAssessmentOtherInfoLength = $(printAssessmentOtherInfo).length
+          
+          $(printAssessmentOtherInfo).each (index) ->
+            printAssessmentInfoContentLength = printAssessmentInfoContentLength + $(this).html().length
+          
+          charLimits = 200
+          if printAssessmentOtherInfoLength < 2 or printAssessmentInfoContentLength > charLimits
+            $(printAssessmentOtherInfo).removeClass "inline"
+          
+          if printAssessmentInfoContentLength > charLimits
+            assessmentInfo = "#assessmentSection" + i + " .assessmentOtherInfo"
+            $(assessmentInfo).css("page-break-before", "always")
+            $(assessmentInfo + " h1").css("display", "block")
+            $(assessmentInfo + " li:first-child").addClass("bottomLine")
+            
+            
+          i++
           
         # Show tooltip for claims on mouseover
         $(".arrowBox").popover
@@ -190,7 +211,9 @@ define [
           uid = edwareUtil.getUid data.user_info
           edwareUtil.renderFeedback(role, uid, "individual_student_report", feedbackData)
         
+        # Code for PDF version
         $("#print_reportInfoContent").append($("#footerLinks").html())
+        
   #
   # render Claim Score Relative Difference (arrows)
   #

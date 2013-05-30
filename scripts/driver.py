@@ -1,9 +1,12 @@
 from __future__ import absolute_import
-import shutil
 import os
 import argparse
 import time
-import datetime
+from celery import chain
+from udl2 import W_file_arrived, W_file_expander, W_simple_file_validator, W_file_splitter, W_file_content_validator, \
+    W_load_json_to_integration, W_load_to_integration_table, W_load_from_integration_to_star
+from udl2 import message_keys as mk
+from uuid import uuid4
 
 # Paths to our various directories
 THIS_MODULE_PATH = os.path.abspath(__file__)
@@ -11,46 +14,138 @@ SRC_DIRECTORY = os.path.dirname(THIS_MODULE_PATH)
 ROOT_DIRECTORY = os.path.dirname(SRC_DIRECTORY)
 ZONES = os.path.join(ROOT_DIRECTORY, 'zones')
 LANDING_ZONE = os.path.join(ZONES, 'landing')
-WORK_ZONE = os.path.join(ZONES, 'work')
-HISTORY_ZONE = os.path.join(ZONES, 'history_zone')
+ARRIVALS = os.path.join(ZONES, 'arrivals')
+WORK_ZONE = os.path.join(LANDING_ZONE, 'work')
+HISTORY_ZONE = os.path.join(LANDING_ZONE, 'history')
 DATAFILES = os.path.join(ROOT_DIRECTORY, 'datafiles')
 
-# Keys for validator message
-FILE_TO_VALIDATE_NAME = 'file_to_validate_name'
-FILE_TO_VALIDATE_DIR = 'file_to_validate_dir'
-BATCH_ID = 'batch_id'
 
 def start_pipeline(csv_file_path, json_file_path):
     '''
-    Begins the UDL Pipeline process by copying the file found at 'file_path' to the landing zone and
+    Begins the UDL Pipeline process by copying the file found at 'csv_file_path' to the landing zone arrivals dir and
     initiating our main pipeline chain.
 
-    @param csv_file_path: The file that gets uploaded to the "Landing Zone," beginning the UDL process
+    @param csv_file_path: The file that gets uploaded to the "Landing Zone" Arrival dir beginning the UDL process
     @type csv_file_path: str
     '''
 
     # Create a unique name for the file when it is placed in the "Landing Zone"
-    landing_zone_file_dir = LANDING_ZONE
-    landing_zone_file_name = create_unique_file_name(csv_file_path)
-    full_path_to_landing_zone_file = os.path.join(landing_zone_file_dir, landing_zone_file_name)
+    # arrivals_dir = ARRIVALS
+    # unique_filename = create_unique_file_name(csv_file_path)
+    # full_path_to_arrival_dir_file = os.path.join(arrivals_dir, unique_filename)
     # Copy the file over, using the new (unique) filename
-    shutil.copy(csv_file_path, full_path_to_landing_zone_file)
+    # shutil.copy(csv_file_path, full_path_to_arrival_dir_file)
     # Now, add a task to the file splitter queue, passing in the path to the landing zone file
     # and the directory to use when writing the split files
-    validator_msg = generate_message_for_file_validator(landing_zone_file_dir, landing_zone_file_name)
 
-    # TODO: Kick off the pipeline using the validator message as a starting point
-    #udl2.W_file_splitter.task.apply_async([validator_msg], queue='Q_files_received')
+    # Prepare parameters for task msgs
+    archived_file = os.path.join('/', 'fake', 'path', 'to', 'fake_archived_file.zip')
+    batch_id = str(uuid4())
+    lzw = WORK_ZONE
+    jc_table = {}
+    jc = (jc_table, batch_id)
+
+    # TODO: After implementing expander, change generate_message_for_file_arrived() so it includes the actual zipped file.
+    arrival_msg = generate_message_for_file_arrived(archived_file, lzw, jc)
+
+    expander_msg = generate_file_expander_msg(lzw, archived_file, jc)
+    expander_msg = extend_file_expander_msg_temp(expander_msg, json_file_path, csv_file_path)
+
+    simple_file_validator_msg = generate_file_validator_msg(lzw, jc)
+    splitter_msg = generate_splitter_msg(lzw, jc)
+    file_content_validator_msg = generate_file_content_validator_msg()
+    load_json_msg = generate_load_json_msg(lzw, jc)
+    load_to_int_msg = generate_load_to_int_msg(jc)
+    integration_to_star_msg = generate_integration_to_star_msg(batch_id)
+
+    pipeline_chain_1 = chain(W_file_arrived.task.si(arrival_msg), W_file_expander.task.si(expander_msg),
+                           W_simple_file_validator.task.si(simple_file_validator_msg), W_file_splitter.task.si(splitter_msg),
+                           W_file_content_validator.task.si(file_content_validator_msg), W_load_json_to_integration.task.si(load_json_msg),
+                           W_load_to_integration_table.task.si(load_to_int_msg),
+                           W_load_from_integration_to_star.explode_to_dims.si(integration_to_star_msg),
+                           W_load_from_integration_to_star.explode_to_fact.si(integration_to_star_msg))
+
+    result = pipeline_chain_1.delay()
 
 
-def generate_message_for_file_validator(landing_zone_file_dir, landing_zone_file_name):
+def generate_message_for_file_arrived(archived_file_path, lzw, jc):
     msg = {
-        FILE_TO_VALIDATE_DIR:landing_zone_file_dir,
-        FILE_TO_VALIDATE_NAME: landing_zone_file_name,
-        BATCH_ID: int(datetime.datetime.now().timestamp())
+        mk.INPUT_FILE_PATH: archived_file_path,
+        mk.LANDING_ZONE_WORK_DIR: lzw,
+        mk.JOB_CONTROL: jc
     }
     return msg
 
+
+def generate_file_expander_msg(landing_zone_work_dir, file_to_expand, jc):
+    msg = {
+        mk.LANDING_ZONE_WORK_DIR: landing_zone_work_dir,
+        mk.FILE_TO_EXPAND: file_to_expand,
+        # Tuple containing config info for job control table and the batch_id for the file upload
+        mk.JOB_CONTROL: jc
+    }
+    return msg
+
+
+def extend_file_expander_msg_temp(msg, json_filename, csv_filename):
+    msg[mk.JSON_FILENAME] = json_filename
+    msg[mk.CSV_FILENAME] = csv_filename
+    return msg
+
+
+def generate_file_validator_msg(landing_zone_work_dir, job_control):
+    msg = {
+        mk.LANDING_ZONE_WORK_DIR: landing_zone_work_dir,
+        mk.JOB_CONTROL: job_control
+    }
+    return msg
+
+
+def generate_splitter_msg(lzw, jc):
+    splitter_msg = {
+        mk.LANDING_ZONE_WORK_DIR: lzw,
+        mk.JOB_CONTROL: jc,
+        # TODO: remove hard-coded 4
+        mk.PARTS: 4
+    }
+    return splitter_msg
+
+def generate_file_content_validator_msg():
+    # TODO: Implement me please, empty maps are boring.
+    return {}
+
+def generate_load_json_msg(lzw, jc):
+    msg = {
+        mk.LANDING_ZONE_WORK_DIR: lzw,
+        mk.JOB_CONTROL: jc
+    }
+    return msg
+
+def generate_load_to_int_msg(jc):
+    msg = {
+        mk.JOB_CONTROL: jc
+    }
+    return msg
+
+
+def generate_msg_report_error(email):
+    msg = {
+        mk.EMAIL: email
+    }
+    return msg
+
+
+def generate_move_to_target(job_control):
+    msg = {
+        mk.BATCH_ID: job_control[1]
+    }
+    return msg
+
+def generate_integration_to_star_msg(batch_id):
+    msg = {
+        mk.BATCH_ID: batch_id
+    }
+    return msg
 
 def create_unique_file_name(file_path):
     '''

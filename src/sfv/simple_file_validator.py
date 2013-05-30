@@ -45,7 +45,7 @@ class SimpleFileValidator():
             result = validator.execute(dir_path, file_name, batch_id)
             return result
         else:
-            return (error_codes.SRC_FILE_TYPE_NOT_SUPPORTED,
+            return [(error_codes.SRC_FILE_TYPE_NOT_SUPPORTED,
                     dir_path,
                     file_name,
-                    batch_id)
+                    batch_id)]

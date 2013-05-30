@@ -2,6 +2,7 @@ from __future__ import absolute_import
 from udl2.celery import celery, udl2_conf
 from celery.result import AsyncResult
 from celery.utils.log import get_task_logger
+from udl2 import message_keys as mk
 import move_to_target.column_mapping as col_map
 from move_to_target.move_to_target import explode_data_to_dim_table, explode_data_to_fact_table, get_table_column_types, calculate_spend_time_as_second
 from celery import group
@@ -12,45 +13,45 @@ logger = get_task_logger(__name__)
 
 
 #*************implemented via group*************
-@celery.task(name='udl2.W_move_to_target.explode_to_dims')
-def explode_to_dims(batch):
+@celery.task(name='udl2.W_load_from_integration_to_star.explode_to_dims')
+def explode_to_dims(msg):
     '''
     This is the celery task to move data from integration tables to dim tables.
     In the input batch object, batch_id is provided.
     '''
-    conf = generate_conf(batch)
+    conf = generate_conf(msg[mk.BATCH_ID])
     column_map = col_map.get_column_mapping()
     grouped_tasks = create_group_tuple(explode_data_to_dim_table_task,
                                        [(conf, source_table, dim_table, column_map[dim_table], get_table_column_types(conf, dim_table, list(column_map[dim_table].keys())))
                                         for dim_table, source_table in col_map.get_target_tables_parallel().items()])
     result_uuid = group(*grouped_tasks)()
-    batch['dim_tables'] = result_uuid.get()
-    return batch
+    msg['dim_tables'] = result_uuid.get()
+    return msg
 
 
-@celery.task(name="udl2.W_move_to_target.explode_to_signle_dim")
+@celery.task(name="udl2.W_load_from_integration_to_star.explode_data_to_dim_table_task")
 def explode_data_to_dim_table_task(conf, source_table, dim_table, column_mapping, column_types):
     '''
     This is the celery task to move data from one integration table to one dim table.
     '''
-    print('I am the exploder, about to copy data from %s into dim table %s ' % (source_table, dim_table))
+    logger.info('LOAD_FROM_INT_TO_STAR: migrating source table <%s> to <%s>' % (source_table, dim_table))
     start_time = datetime.datetime.now()
     explode_data_to_dim_table(conf, source_table, dim_table, column_mapping, column_types)
     finish_time = datetime.datetime.now()
     time_as_seconds = calculate_spend_time_as_second(start_time, finish_time)
-    print('I am the exploder, moved data from %s into dim table %s in %.3f seconds' % (source_table, dim_table, time_as_seconds))
+    #print('I am the exploder, moved data from %s into dim table %s in %.3f seconds' % (source_table, dim_table, time_as_seconds))
 
 
-@celery.task(name='udl2.W_move_to_target.explode_to_fact')
-def explode_to_fact(batch):
+@celery.task(name='udl2.W_load_from_integration_to_star.explode_to_fact')
+def explode_to_fact(msg):
     '''
     This is the celery task to move data from integration table to fact table.
     In batch, batch_id is provided.
     '''
-    print('I am the exploder, about to copy fact table')
+    logger.info('LOAD_FROM_INT_TO_STAR: Migrating fact_assessment_outcome from Integration to Star.')
     start_time = datetime.datetime.now()
-
-    conf = generate_conf(batch)
+    batch_id = msg[mk.BATCH_ID]
+    conf = generate_conf(batch_id)
     # get column mapping
     column_map = col_map.get_column_mapping()
     fact_table = col_map.get_target_table_callback()[0]
@@ -61,11 +62,11 @@ def explode_to_fact(batch):
 
     finish_time = datetime.datetime.now()
     time_as_seconds = calculate_spend_time_as_second(start_time, finish_time)
-    print('I am the exploder, copied data from staging table into fact table in %.3f seconds' % time_as_seconds)
-    return batch
+    #print('I am the exploder, copied data from staging table into fact table in %.3f seconds' % time_as_seconds)
+    return batch_id
 
 
-@celery.task(name="udl2.W_move_to_target.error_handler")
+@celery.task(name="udl2.W_load_from_integration_to_star.error_handler")
 def error_handler(uuid):
     '''
     This is the error handler task
@@ -86,30 +87,30 @@ def create_group_tuple(task_name, arg_list):
     return tuple(grouped_tasks)
 
 
-def generate_conf(msg):
+def generate_conf(batch_id):
     '''
     Return all needed configuration information
     '''
     conf = {
              # add batch_id from msg
-            'batch_id': msg['batch_id'],
+            mk.BATCH_ID: batch_id,
 
             # source schema
-            'source_schema': udl2_conf['udl2_db']['integration_schema'],
+            mk.SOURCE_DB_SCHEMA: udl2_conf['udl2_db']['integration_schema'],
             # source database setting
-            'db_host': udl2_conf['postgresql']['db_host'],
-            'db_port': udl2_conf['postgresql']['db_port'],
-            'db_user': udl2_conf['postgresql']['db_user'],
-            'db_name': udl2_conf['postgresql']['db_database'],
-            'db_password': udl2_conf['postgresql']['db_pass'],
+            mk.SOURCE_DB_HOST: udl2_conf['postgresql']['db_host'],
+            mk.SOURCE_DB_PORT: udl2_conf['postgresql']['db_port'],
+            mk.SOURCE_DB_USER: udl2_conf['postgresql']['db_user'],
+            mk.SOURCE_DB_NAME: udl2_conf['postgresql']['db_database'],
+            mk.SOURCE_DB_PASSWORD: udl2_conf['postgresql']['db_pass'],
 
             # target schema
-            'target_schema': udl2_conf['target_db']['db_schema'],
+            mk.TARGET_DB_SCHEMA: udl2_conf['target_db']['db_schema'],
             # target database setting
-            'db_host_target': udl2_conf['target_db']['db_host'],
-            'db_port_target': udl2_conf['target_db']['db_port'],
-            'db_user_target': udl2_conf['target_db']['db_user'],
-            'db_name_target': udl2_conf['target_db']['db_database'],
-            'db_password_target': udl2_conf['target_db']['db_pass'],
+            mk.TARGET_DB_HOST: udl2_conf['target_db']['db_host'],
+            mk.TARGET_DB_PORT: udl2_conf['target_db']['db_port'],
+            mk.TARGET_DB_USER: udl2_conf['target_db']['db_user'],
+            mk.TARGET_DB_NAME: udl2_conf['target_db']['db_database'],
+            mk.TARGET_DB_PASSWORD: udl2_conf['target_db']['db_pass'],
     }
     return conf

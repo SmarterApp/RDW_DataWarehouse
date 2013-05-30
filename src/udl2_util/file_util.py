@@ -2,6 +2,7 @@ __author__ = 'abrien'
 
 import os
 import shutil
+import glob
 
 def extract_file_name(file_path):
     '''
@@ -16,6 +17,12 @@ def extract_file_name(file_path):
     file_name_and_ext = os.path.basename(file_path)
     file_name = os.path.splitext(file_name_and_ext)[0]
     return file_name
+
+
+def extract_file_ext(file_path):
+    file_name_and_ext = os.path.basename(file_path)
+    file_ext = os.path.splitext(file_name_and_ext)[1]
+    return file_ext
 
 
 def copy_file(source_file, target_directory):
@@ -37,8 +44,8 @@ def copy_file(source_file, target_directory):
         shutil.copy2(source_file, target_directory)
         return True
     except IOError as e:
-        #print('ERROR while copying file (%s) to directory (%s)' % (source_file, target_directory))
-        #print(e)
+        print('ERROR while copying file (%s) to directory (%s)' % (source_file, target_directory))
+        print(e)
         return False
 
 
@@ -84,3 +91,25 @@ def abs_path_join(*args):
         for arg in args:
             full_path = os.path.join(full_path, arg)
         return os.path.abspath(full_path)
+
+def create_directory(path):
+    if not os.path.exists(path):
+        os.makedirs(path)
+    return path
+
+
+def get_expanded_dir(lzw, batch_id):
+    batch_id = str(batch_id)
+    batch_id_dir = os.path.join(lzw, batch_id)
+    # TODO: put 'EXPANDED', 'ARRIVED', 'SUBFILES' into a constants file and import
+    expanded_dir = os.path.join(batch_id_dir, 'EXPANDED')
+    return expanded_dir
+
+
+def get_file_type_from_dir(extension, directory):
+    wildcard = '*' + extension
+    wild_card_path = os.path.join(directory, wildcard)
+    files = glob.glob(wild_card_path)
+    # TODO: Might want to extend this to handle multiple files
+    # For now, just return the first file found
+    return os.path.join(directory, files[0]) if files else None

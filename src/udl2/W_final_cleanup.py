@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-from udl2.celery import celery, udl2_queues, udl2_stages
+from udl2.celery import celery
 from celery.result import AsyncResult
 from celery.utils.log import get_task_logger
 from final_cleanup.final_cleanup import create_directory_structure_for_file_history
@@ -19,6 +19,7 @@ HEADER_FILE = 'header_file'
 
 logger = get_task_logger(__name__)
 
+
 @celery.task(name="udl2.W_final_cleanup.task")
 def task(msg):
     '''
@@ -33,6 +34,7 @@ def task(msg):
     @type msg: dict
     '''
     logger.info(task.name)
+    logger.info('Final Cleanup')
     landing_zone_file = msg[LANDING_ZONE_FILE]
     history_zone = msg[HISTORY_ZONE]
     history_directory = create_directory_structure_for_file_history(history_zone, landing_zone_file)

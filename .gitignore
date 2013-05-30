@@ -4,3 +4,5 @@ dist/
 MANIFEST
 *.pyc
 .project
+test.log
+src/test.log

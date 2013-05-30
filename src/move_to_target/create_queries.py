@@ -1,4 +1,5 @@
 import move_to_target.column_mapping as col_map
+from udl2 import message_keys as mk
 
 
 def select_distinct_asmt_guid_query(schema_name, table_name, column_name, batch_id):
@@ -37,16 +38,16 @@ def create_insert_query(conf, source_table, target_table, column_mapping, column
              ",".join(list(column_types.values())),
              ");"
             ]
-    insert_sql = "".join(insert_sql).format(target_shcema_and_table=combine_schema_and_table(conf['db_name_target'], target_table),
-                                            db_password_target=conf['db_password_target'],
-                                            target_schema=conf['target_schema'],
-                                            db_name=conf['db_name'],
-                                            db_user=conf['db_user'],
-                                            db_password=conf['db_password'],
+    insert_sql = "".join(insert_sql).format(target_shcema_and_table=combine_schema_and_table(conf[mk.TARGET_DB_NAME], target_table),
+                                            db_password_target=conf[mk.TARGET_DB_PASSWORD],
+                                            target_schema=conf[mk.TARGET_DB_SCHEMA],
+                                            db_name=conf[mk.SOURCE_DB_NAME],
+                                            db_user=conf[mk.SOURCE_DB_USER],
+                                            db_password=conf[mk.SOURCE_DB_PASSWORD],
                                             seq_expression=seq_expression,
                                             distinct_expression=distinct_expression,
-                                            source_schema_and_table=combine_schema_and_table(conf['source_schema'], source_table),
-                                            batch_id=conf['batch_id'])
+                                            source_schema_and_table=combine_schema_and_table(conf[mk.SOURCE_DB_SCHEMA], source_table),
+                                            batch_id=conf[mk.BATCH_ID])
 
     return insert_sql
 
@@ -85,7 +86,7 @@ def update_inst_hier_rec_id_query(schema, condition_value):
     return update_query
 
 
-def create_information_query(conf, target_table):
+def create_information_query(target_table):
     '''
     Main function to crate query to get column types in a table. 'information_schema.columns' is used.
     '''

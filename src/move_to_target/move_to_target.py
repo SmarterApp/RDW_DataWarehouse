@@ -1,5 +1,6 @@
 from fileloader.file_loader import connect_db, execute_queries
 from collections import OrderedDict
+from udl2 import message_keys as mk
 import move_to_target.column_mapping as col_map
 import move_to_target.create_queries as queries
 import datetime
@@ -37,21 +38,21 @@ def explode_data_to_fact_table(conf, source_table, target_table, column_mapping,
     queries = create_queries_for_move_to_fact_table(conf, source_table, target_table, column_mapping, column_types)
 
     # create database connection (connect to target)
-    conn, _engine = connect_db(conf['db_user_target'], conf['db_password_target'], conf['db_host_target'], conf['db_name_target'])
+    conn, _engine = connect_db(conf[mk.TARGET_DB_USER], conf[mk.TARGET_DB_PASSWORD], conf[mk.TARGET_DB_HOST], conf[mk.TARGET_DB_NAME])
 
     # execute above four queries in order, 2 parts
-    print("I am the exploder, about to copy data into fact table with fake inst_hier_rec_id")
+    #print("I am the exploder, about to copy data into fact table with fake inst_hier_rec_id")
     start_time_p1 = datetime.datetime.now()
     execute_queries(conn, queries[0:2], 'Exception -- exploding data from integration to fact table part 1')
     finish_time_p1 = datetime.datetime.now()
     spend_time_p1 = calculate_spend_time_as_second(start_time_p1, finish_time_p1)
-    print("I am the exploder, copied data into fact table with fake inst_hier_rec_id in %.3f seconds" % spend_time_p1)
+    #print("I am the exploder, copied data into fact table with fake inst_hier_rec_id in %.3f seconds" % spend_time_p1)
 
-    print("I am the exploder, about to update inst_hier_rec_id as value in dim_inst_hier")
+    #print("I am the exploder, about to update inst_hier_rec_id as value in dim_inst_hier")
     execute_queries(conn, queries[2:4], 'Exception -- exploding data from integration to fact table part 2')
     finish_time_p2 = datetime.datetime.now()
     spend_time_p2 = calculate_spend_time_as_second(finish_time_p1, finish_time_p2)
-    print("I am the exploder, updated inst_hier_rec_id as value in dim_inst_hier in %.3f seconds" % spend_time_p2)
+    #print("I am the exploder, updated inst_hier_rec_id as value in dim_inst_hier in %.3f seconds" % spend_time_p2)
 
     conn.close()
 
@@ -64,15 +65,15 @@ def get_asmt_rec_id(conf, guid_column_name_in_target, guid_column_name_in_source
     2. Select asmt_rec_id from dim_asmt by the same guid_amst got from 1. It should have 1 value
     '''
     # connect to integration table, to get guid_column_value
-    conn_to_source_db, _engine = connect_db(conf['db_user'], conf['db_password'], conf['db_host'], conf['db_name'])
-    query_to_get_guid = queries.select_distinct_asmt_guid_query(conf['source_schema'], source_table_name, guid_column_name_in_source, conf['batch_id'])
+    conn_to_source_db, _engine = connect_db(conf[mk.SOURCE_DB_USER], conf[mk.SOURCE_DB_PASSWORD], conf[mk.SOURCE_DB_HOST], conf[mk.SOURCE_DB_NAME])
+    query_to_get_guid = queries.select_distinct_asmt_guid_query(conf[mk.SOURCE_DB_SCHEMA], source_table_name, guid_column_name_in_source, conf[mk.BATCH_ID])
     # print(query_to_get_guid)
     guid_column_value = execute_query_get_one_value(conn_to_source_db, query_to_get_guid, guid_column_name_in_source)
     conn_to_source_db.close()
 
     # connect to target table, to get rec_id_column_value
-    conn_to_target_db, _engine = connect_db(conf['db_user_target'], conf['db_password_target'], conf['db_host_target'], conf['db_name_target'])
-    query_to_get_rec_id = queries.select_distinct_asmt_rec_id_query(conf['target_schema'], target_table_name, rec_id_column_name, guid_column_name_in_target, guid_column_value)
+    conn_to_target_db, _engine = connect_db(conf[mk.TARGET_DB_USER], conf[mk.TARGET_DB_PASSWORD], conf[mk.TARGET_DB_HOST], conf[mk.TARGET_DB_NAME])
+    query_to_get_rec_id = queries.select_distinct_asmt_rec_id_query(conf[mk.TARGET_DB_SCHEMA], target_table_name, rec_id_column_name, guid_column_name_in_target, guid_column_value)
     # print(query_to_get_rec_id)
     asmt_rec_id = execute_query_get_one_value(conn_to_target_db, query_to_get_rec_id, rec_id_column_name)
     conn_to_target_db.close()
@@ -119,7 +120,7 @@ def create_queries_for_move_to_fact_table(conf, source_table, target_table, colu
     @return: list of four queries
     '''
     # disable foreign key in fact table
-    disable_trigger_query = queries.enable_trigger_query(conf['target_schema'], target_table, False)
+    disable_trigger_query = queries.enable_trigger_query(conf[mk.TARGET_DB_SCHEMA], target_table, False)
     # print(disable_trigger_query)
 
     # create insertion insert_into_fact_table_query
@@ -127,11 +128,11 @@ def create_queries_for_move_to_fact_table(conf, source_table, target_table, colu
     # print(insert_into_fact_table_query)
 
     # update inst_hier_query back
-    update_inst_hier_rec_id_fk_query = queries.update_inst_hier_rec_id_query(conf['target_schema'], FAKE_INST_HIER_REC_ID)
+    update_inst_hier_rec_id_fk_query = queries.update_inst_hier_rec_id_query(conf[mk.TARGET_DB_SCHEMA], FAKE_INST_HIER_REC_ID)
     # print(update_inst_hier_rec_id_fk_query)
 
     # enable foreign key in fact table
-    enable_back_trigger_query = queries.enable_trigger_query(conf['target_schema'], target_table, True)
+    enable_back_trigger_query = queries.enable_trigger_query(conf[mk.TARGET_DB_SCHEMA], target_table, True)
     # print(enable_back_trigger_query)
 
     return [disable_trigger_query, insert_into_fact_table_query, update_inst_hier_rec_id_fk_query, enable_back_trigger_query]
@@ -149,7 +150,7 @@ def explode_data_to_dim_table(conf, source_table, target_table, column_mapping, 
     @param column_types: data types of all columns in one target table
     '''
     # create database connection to target
-    conn, _engine = connect_db(conf['db_user_target'], conf['db_password_target'], conf['db_host_target'], conf['db_name_target'])
+    conn, _engine = connect_db(conf[mk.TARGET_DB_USER], conf[mk.TARGET_DB_PASSWORD], conf[mk.TARGET_DB_HOST], conf[mk.TARGET_DB_NAME])
 
     # create insertion query
     # TODO: find out if the affected rows, time can be returned, so that the returned info can be put in the log
@@ -169,8 +170,8 @@ def get_table_column_types(conf, target_table, column_names):
     The pattern of the value is: <column_name data_type(length)> or <column_name data_type>
     '''
     column_types = OrderedDict([(column_name, '') for column_name in column_names])
-    conn, _engine = connect_db(conf['db_user_target'], conf['db_password_target'], conf['db_host_target'], conf['db_name_target'])
-    query = queries.create_information_query(conf, target_table)
+    conn, _engine = connect_db(conf[mk.TARGET_DB_USER], conf[mk.TARGET_DB_PASSWORD], conf[mk.TARGET_DB_HOST], conf[mk.TARGET_DB_NAME])
+    query = queries.create_information_query(target_table)
     # execute query
     try:
         result = conn.execute(query)

@@ -7,6 +7,7 @@ from udl2.database import UDL_METADATA
 from sqlalchemy.exc import NoSuchTableError
 from sqlalchemy.engine import create_engine
 from udl2_util.file_util import extract_file_name
+import udl2.message_keys as mk
 
 
 DBDRIVER = "postgresql"
@@ -61,7 +62,6 @@ def canonicalize_header_field(field_name):
 def create_fdw_tables(conn, header_names, header_types, csv_file, csv_schema, csv_table, fdw_server):
     create_csv_ddl = queries.create_ddl_csv_query(header_names, header_types, csv_file, csv_schema, csv_table, fdw_server)
     drop_csv_ddl = queries.drop_ddl_csv_query(csv_schema, csv_table)
-#     print(create_csv_ddl)
     execute_queries(conn, [drop_csv_ddl, create_csv_ddl], 'Exception in creating fdw tables --')
 
 
@@ -108,23 +108,26 @@ def drop_fdw_tables(conn, csv_schema, csv_table):
 
 def load_data_process(conn, conf):
     # read headers from header_file
-    header_names, header_types = extract_csv_header(conf['header_file'])
+    header_names, header_types = extract_csv_header(conf[mk.HEADERS])
 
     # create FDW table
-    create_fdw_tables(conn, header_names, header_types, conf['csv_file'], conf['csv_schema'], conf['csv_table'], conf['fdw_server'])
+    create_fdw_tables(conn, header_names, header_types, conf[mk.FILE_TO_LOAD], conf[mk.CSV_SCHEMA], conf[mk.CSV_TABLE], conf[mk.FDW_SERVER])
 
     # get field map
-    stg_asmt_outcome_columns, csv_table_columns = get_fields_map(conn, header_names, header_types, conf['batch_id'], conf['csv_file'], conf['staging_schema'], conf['staging_table'])
+    stg_asmt_outcome_columns, csv_table_columns = get_fields_map(conn, header_names, header_types, conf[mk.BATCH_ID],
+                                                                 conf[mk.FILE_TO_LOAD], conf[mk.TARGET_DB_SCHEMA],
+                                                                 conf[mk.TARGET_DB_TABLE])
 
     # load the data from FDW table to staging table
     start_time = datetime.datetime.now()
-    import_via_fdw(conn, stg_asmt_outcome_columns, conf['batch_id'], conf['apply_rules'], csv_table_columns, header_types, conf['staging_schema'], conf['staging_table'], conf['csv_schema'], conf['csv_table'], conf['start_seq'])
+    import_via_fdw(conn, stg_asmt_outcome_columns, conf[mk.BATCH_ID], conf[mk.APPLY_RULES], csv_table_columns, header_types,
+                   conf[mk.TARGET_DB_SCHEMA], conf[mk.TARGET_DB_TABLE], conf[mk.CSV_SCHEMA], conf[mk.CSV_TABLE], conf[mk.ROW_START])
     finish_time = datetime.datetime.now()
     spend_time = finish_time - start_time
     time_as_seconds = float(spend_time.seconds + spend_time.microseconds / 1000000.0)
 
     # drop FDW table
-    drop_fdw_tables(conn, conf['csv_schema'], conf['csv_table'])
+    drop_fdw_tables(conn, conf[mk.CSV_SCHEMA], conf[mk.CSV_TABLE])
 
     return time_as_seconds
 
@@ -134,13 +137,13 @@ def load_file(conf):
     Main function to initiate file loader
     '''
     # log for start the file loader
-    print("I am the file loader, about to load file %s" % extract_file_name(conf['csv_file']))
+    #print("I am the file loader, about to load file %s" % extract_file_name(conf[mk.FILE_TO_LOAD]))
 
     # connect to database
-    conn, engine = connect_db(conf['db_user'], conf['db_password'], conf['db_host'], conf['db_name'])
+    conn, engine = connect_db(conf[mk.TARGET_DB_USER], conf[mk.TARGET_DB_PASSWORD], conf[mk.TARGET_DB_HOST], conf[mk.TARGET_DB_NAME])
 
     # check staging tables
-    check_setup(conf['staging_table'], engine, conn)
+    check_setup(conf[mk.TARGET_DB_TABLE], engine, conn)
 
     # start loading file process
     time_for_load_as_seconds = load_data_process(conn, conf)
@@ -149,7 +152,7 @@ def load_file(conf):
     conn.close()
 
     # log for end the file loader
-    print("I am the file loader, loaded file %s in %.3f seconds" % (extract_file_name(conf['csv_file']), time_for_load_as_seconds))
+    #print("I am the file loader, loaded file %s in %.3f seconds" % (extract_file_name(conf[mk.FILE_TO_LOAD]), time_for_load_as_seconds))
 
 if __name__ == '__main__':
 

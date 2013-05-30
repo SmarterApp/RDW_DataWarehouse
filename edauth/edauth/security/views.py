@@ -215,14 +215,14 @@ def logout_redirect(request):
     This will refresh the whole page from the iframe
     '''
     html = '''
-    <html><header>
+    <html><head>
     <title>Logging out</title>
     <script type="text/javascript">
     function refresh() {
         window.top.location.reload();
         }
     </script>
-    </header>
+    </head>
     <body onload="refresh()">
     </body>
     </html>

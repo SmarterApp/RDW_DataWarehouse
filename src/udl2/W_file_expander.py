@@ -23,18 +23,12 @@ def task(incoming_msg):
     job_control = incoming_msg[mk.JOB_CONTROL]
     batch_id = job_control[1]
 
-    expanded_dir = get_expanded_dir(lzw, batch_id)
+    expanded_dir = file_util.get_expanded_dir(lzw, batch_id)
     file_util.create_directory(expanded_dir)
     unpacked_json_file = unpack_json_file(file_to_expand, expanded_dir, incoming_msg[mk.JSON_FILENAME])
     unpacked_csv_file = unpack_csv_file(file_to_expand, expanded_dir, incoming_msg[mk.CSV_FILENAME])
 
     logger.info('W_FILE_EXPANDER: expanded file <%s> with batch_id = <%s> to <%s> and <%s>' % (file_to_expand, batch_id, unpacked_csv_file, unpacked_json_file))
-
-
-def get_expanded_dir(lzw, batch_id):
-    batch_id_dir = os.path.join(lzw, batch_id)
-    expanded_dir = os.path.join(batch_id_dir, 'EXPANDED')
-    return expanded_dir
 
 
 def unpack_json_file(file_to_expand, expanded_dir, json_filepath):

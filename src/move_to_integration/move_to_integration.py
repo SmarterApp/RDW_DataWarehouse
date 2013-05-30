@@ -1,6 +1,7 @@
 import datetime
 from udl2_util.database_util import connect_db, execute_queries
 from move_to_integration.column_mapping import get_column_mapping
+from udl2 import message_keys as mk
 
 def move_data_from_staging_to_integration(conf):
     '''
@@ -26,18 +27,17 @@ def move_data_from_staging_to_integration(conf):
             'map_type': name of map type, # name of map type. see get_column_mapping in move_to_integration/column_mapping.py
         }
     '''
-    (conn, engine) = connect_db(conf['db_driver_source'],
-                                conf['db_user_source'],
-                                conf['db_password_source'],
-                                conf['db_host_source'],
-                                conf['db_port_source'],
-                                conf['db_name_source'])
-    map_type = conf['map_type']
+    (conn, engine) = connect_db(conf[mk.SOURCE_DB_DRIVER],
+                                conf[mk.SOURCE_DB_USER],
+                                conf[mk.SOURCE_DB_PASSWORD],
+                                conf[mk.SOURCE_DB_HOST],
+                                conf[mk.SOURCE_DB_PORT],
+                                conf[mk.SOURCE_DB_NAME])
+    map_type = conf[mk.MAP_TYPE]
     column_mapping = get_column_mapping(map_type)
-    sql_query = create_migration_query(conf['source_schema'], column_mapping['source'], conf['target_schema'],
-                                       column_mapping['target'], conf['error_schema'], 'ERR_LIST', column_mapping['mapping'],
-                                       conf['batch_id'])
-    #print(sql_query)
+    sql_query = create_migration_query(conf[mk.SOURCE_DB_SCHEMA], column_mapping['source'], conf[mk.TARGET_DB_SCHEMA],
+                                       column_mapping['target'], conf[mk.ERROR_DB_SCHEMA], 'ERR_LIST', column_mapping['mapping'],
+                                       conf[mk.BATCH_ID])
     except_msg = "problem when load data from staging table to integration table"
     execute_queries(conn, [sql_query], except_msg)
     return 

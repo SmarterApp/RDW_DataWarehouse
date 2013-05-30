@@ -28,7 +28,7 @@ def check_row_count(file_name):
     totalrows = int(output.split()[0])
     #windows encoded csvs should have exactly one row
     if totalrows <= 1:
-    	raise Exception('Unable to split, file has %s rows' % str(totalrows))
+        raise Exception('Unable to split, file has %s rows' % str(totalrows))
     	
     return None
     
@@ -44,21 +44,17 @@ def get_list_split_files(output_name_template, output_dir):
     for each in range(len(list_of_result_rows)):
         line_count,word_count,char_count,filename = list_of_result_rows[each].split()
         if each == 0:
-        	row_start = 1
+            row_start = 1
         else:
-        	row_start = output_list[each-1][1] * each + 1
+            row_start = output_list[each-1][1] * each + 1
         #if statement excludes 'total' row from command response	
         if output_name_template in filename.decode('utf-8'): 
-        	output_list.append([filename.decode('utf-8'),int(line_count),row_start])
+            output_list.append([filename.decode('utf-8'),int(line_count),row_start])
     
     return output_list
 
 def split_file(file_name, delimiter=',', row_limit=10000, parts=0, output_path='.'):
     start_time = datetime.datetime.now()
-    if parts:
-        print('The file splitter starting at: '+str(start_time)[:-3]+' and splitting into '+str(parts)+' parts')
-    else:
-        print('The file splitter starting at: '+str(start_time)[:-3]+' and splitting into '+str(row_limit)+' rows per file')
     isValid = os.path.exists(file_name) and os.path.isfile(file_name)
     if isValid is False:
         raise Exception('File not found!')
@@ -109,7 +105,7 @@ def split_file(file_name, delimiter=',', row_limit=10000, parts=0, output_path='
 
     end_time = datetime.datetime.now()
     execution_time = end_time - start_time
-    print('The file splitter completed at %s with an execution time of %s for %s rows into %s files' % (str(end_time)[:-3],str(execution_time)[:-3],totalrows,len(split_file_list)))
+    #print('The file splitter completed at %s with an execution time of %s for %s rows into %s files' % (str(end_time)[:-3],str(execution_time)[:-3],totalrows,len(split_file_list)))
     return split_file_list, header_path
 
         
@@ -125,11 +121,11 @@ if __name__ == "__main__":
     
     args = parser.parse_args()
     print("Input file is: "+args.inputfile)
-    if args.output: 
-    	print("Output file path is: "+args.output)
-    if args.rows and args.parts == 0: 
-    	print("Rows per output file: "+str(args.rows))
-    if args.parts: 
-    	print("Number of output files: "+str(args.parts))
+    if args.output:
+        print("Output file path is: "+args.output)
+    if args.rows and args.parts == 0:
+        print("Rows per output file: "+str(args.rows))
+    if args.parts:
+        print("Number of output files: "+str(args.parts))
     
     split_file(args.inputfile,row_limit=args.rows,parts=args.parts,output_path=args.output)

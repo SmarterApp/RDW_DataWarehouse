@@ -3,11 +3,9 @@ import os
 import argparse
 import time
 from celery import chain
-from udl2 import W_file_arrived, W_file_expander, W_simple_file_validator, W_file_splitter
+from udl2 import W_file_arrived, W_file_expander, W_simple_file_validator, W_file_splitter, W_file_content_validator, \
+    W_load_json_to_integration, W_load_to_integration_table, W_load_from_integration_to_star
 from udl2 import message_keys as mk
-from udl2_util.udl_mappings import get_json_to_asmt_tbl_mappings
-from conf import udl2_conf
-from move_to_integration.column_mapping import get_column_mapping
 from uuid import uuid4
 
 # Paths to our various directories
@@ -40,9 +38,9 @@ def start_pipeline(csv_file_path, json_file_path):
     # Now, add a task to the file splitter queue, passing in the path to the landing zone file
     # and the directory to use when writing the split files
 
+    # Prepare parameters for task msgs
     archived_file = os.path.join('/', 'fake', 'path', 'to', 'fake_archived_file.zip')
     batch_id = str(uuid4())
-
     lzw = WORK_ZONE
     jc_table = {}
     jc = (jc_table, batch_id)
@@ -53,15 +51,21 @@ def start_pipeline(csv_file_path, json_file_path):
     expander_msg = generate_file_expander_msg(lzw, archived_file, jc)
     expander_msg = extend_file_expander_msg_temp(expander_msg, json_file_path, csv_file_path)
 
-    validator_msg = generate_file_validator_msg(lzw, jc)
-
+    simple_file_validator_msg = generate_file_validator_msg(lzw, jc)
     splitter_msg = generate_splitter_msg(lzw, jc)
+    file_content_validator_msg = generate_file_content_validator_msg()
+    load_json_msg = generate_load_json_msg(lzw, jc)
+    load_to_int_msg = generate_load_to_int_msg(jc)
+    integration_to_star_msg = generate_integration_to_star_msg(batch_id)
 
-    pipeline_chain = chain(W_file_arrived.task.si(arrival_msg), W_file_expander.task.si(expander_msg),
-                           W_simple_file_validator.task.si(validator_msg), W_file_splitter.task.si(splitter_msg))
+    pipeline_chain_1 = chain(W_file_arrived.task.si(arrival_msg), W_file_expander.task.si(expander_msg),
+                           W_simple_file_validator.task.si(simple_file_validator_msg), W_file_splitter.task.si(splitter_msg),
+                           W_file_content_validator.task.si(file_content_validator_msg), W_load_json_to_integration.task.si(load_json_msg),
+                           W_load_to_integration_table.task.si(load_to_int_msg),
+                           W_load_from_integration_to_star.explode_to_dims.si(integration_to_star_msg),
+                           W_load_from_integration_to_star.explode_to_fact.si(integration_to_star_msg))
 
-    result = pipeline_chain.delay()
-    # print('RESULT >>>>>>>>>>> ' + str(result.get()))
+    result = pipeline_chain_1.delay()
 
 
 def generate_message_for_file_arrived(archived_file_path, lzw, jc):
@@ -106,19 +110,20 @@ def generate_splitter_msg(lzw, jc):
     }
     return splitter_msg
 
+def generate_file_content_validator_msg():
+    # TODO: Implement me please, empty maps are boring.
+    return {}
 
-def generate_message_json_to_int(job_control, json_file):
+def generate_load_json_msg(lzw, jc):
     msg = {
-        mk.FILE_TO_LOAD: json_file,
-        mk.MAPPINGS: get_json_to_asmt_tbl_mappings(),
-        mk.DB_HOST: udl2_conf['postgresql']['db_host'],
-        mk.DB_PORT: udl2_conf['postgresql']['db_port'],
-        mk.DB_USER: udl2_conf['postgresql']['db_user'],
-        mk.DB_NAME: udl2_conf['postgresql']['db_database'],
-        mk.DB_PASSWORD: udl2_conf['postgresql']['db_pass'],
-        mk.INT_SCHEMA: udl2_conf['udl2_db']['integration_schema'],
-        mk.INT_TABLE: 'INT_SBAC_ASMT',  # TODO: acquire this information
-        mk.JOB_CONTROL: job_control
+        mk.LANDING_ZONE_WORK_DIR: lzw,
+        mk.JOB_CONTROL: jc
+    }
+    return msg
+
+def generate_load_to_int_msg(jc):
+    msg = {
+        mk.JOB_CONTROL: jc
     }
     return msg
 
@@ -130,28 +135,17 @@ def generate_msg_report_error(email):
     return msg
 
 
-def generate_msg_content_validation(job_control):
-    msg = {
-        mk.JOB_CONTROL: job_control,
-        mk.STG_TABLE: 'STG_SBAC_ASMT_OUTCOME'  # TODO: acquire this information
-    }
-    return msg
-
-
 def generate_move_to_target(job_control):
     msg = {
         mk.BATCH_ID: job_control[1]
     }
     return msg
 
-
-def generate_load_to_integration(job_control):
+def generate_integration_to_star_msg(batch_id):
     msg = {
-        mk.BATCH_ID: job_control[1],
-        mk.INT_TABLE_TYPE: get_column_mapping('staging_to_integration_sbac_asmt_outcome')
+        mk.BATCH_ID: batch_id
     }
     return msg
-
 
 def create_unique_file_name(file_path):
     '''

@@ -16,21 +16,11 @@ Created on May 16, 2013
 
 import argparse
 import json
-
 import udl2_util.database_util as db_util
+from udl2 import message_keys as mk
 
 
 DBDRIVER = "postgresql"
-JSON_FILE = 'json_filename'
-DB_NAME = 'db_name'
-MAPPINGS = 'mappings'
-DB_PORT = 'db_port'
-DB_PASS = 'db_password'
-DB_USER = 'db_user'
-DB_HOST = 'db_host'
-INT_TABLE = 'integration_table'
-INT_SCHEMA = 'integration_schema'
-BATCH_ID = 'batch_id'
 
 
 def load_json(conf):
@@ -39,10 +29,10 @@ def load_json(conf):
     @param conf: The configuration dictionary
     '''
 
-    json_dict = read_json_file(conf[JSON_FILE])
-    flattened_json = flatten_json_dict(json_dict, conf[MAPPINGS])
-    load_to_table(flattened_json, conf[BATCH_ID], conf[DB_HOST], conf[DB_NAME], conf[DB_USER], conf[DB_PORT],
-                  conf[DB_PASS], conf[INT_TABLE], conf[INT_SCHEMA])
+    json_dict = read_json_file(conf[mk.FILE_TO_LOAD])
+    flattened_json = flatten_json_dict(json_dict, conf[mk.MAPPINGS])
+    load_to_table(flattened_json, conf[mk.BATCH_ID], conf[mk.TARGET_DB_HOST], conf[mk.TARGET_DB_NAME], conf[mk.TARGET_DB_USER], conf[mk.TARGET_DB_PORT],
+                  conf[mk.TARGET_DB_PASSWORD], conf[mk.TARGET_DB_TABLE], conf[mk.TARGET_DB_SCHEMA])
 
 
 def read_json_file(json_file):
@@ -111,7 +101,7 @@ def load_to_table(data_dict, batch_id, db_host, db_name, db_user, db_port, db_pa
     data_dict = fix_empty_strings(data_dict)
 
     # add the batch_id to the data
-    data_dict[BATCH_ID] = batch_id
+    data_dict[mk.BATCH_ID] = batch_id
 
     # create insert statement and execute
     insert_into_int_table = s_int_table.insert().values(**data_dict)
@@ -141,18 +131,18 @@ if __name__ == '__main__':
     mapping = get_json_to_asmt_tbl_mappings()
 
     conf = {
-            JSON_FILE: json_file,
-            MAPPINGS: mapping,
-            DB_HOST: 'localhost',
-            DB_PORT: '5432',
-            DB_USER: 'udl2',
-            DB_NAME: 'udl2',
-            DB_PASS: 'udl2abc1234',
-            INT_SCHEMA: 'udl2',
-            INT_TABLE: 'INT_SBAC_ASMT',
-            BATCH_ID: 100
+            mk.FILE_TO_LOAD: json_file,
+            mk.MAPPINGS: mapping,
+            mk.TARGET_DB_HOST: 'localhost',
+            mk.TARGET_DB_PORT: '5432',
+            mk.TARGET_DB_USER: 'udl2',
+            mk.TARGET_DB_NAME: 'udl2',
+            mk.TARGET_DB_PASSWORD: 'udl2abc1234',
+            mk.TARGET_DB_SCHEMA: 'udl2',
+            mk.TARGET_DB_TABLE: 'INT_SBAC_ASMT',
+            mk.BATCH_ID: 100
     }
 
     start_time = time.time()
     load_json(conf)
-    print('json loaded into %s in %.2fs' % (conf[INT_SCHEMA], time.time() - start_time))
+    print('json loaded into %s in %.2fs' % (conf[mk.TARGET_DB_SCHEMA], time.time() - start_time))

@@ -2,6 +2,7 @@ __author__ = 'abrien'
 
 import os
 import shutil
+import glob
 
 def extract_file_name(file_path):
     '''
@@ -103,3 +104,12 @@ def get_expanded_dir(lzw, batch_id):
     # TODO: put 'EXPANDED', 'ARRIVED', 'SUBFILES' into a constants file and import
     expanded_dir = os.path.join(batch_id_dir, 'EXPANDED')
     return expanded_dir
+
+
+def get_file_type_from_dir(extension, directory):
+    wildcard = '*' + extension
+    wild_card_path = os.path.join(directory, wildcard)
+    files = glob.glob(wild_card_path)
+    # TODO: Might want to extend this to handle multiple files
+    # For now, just return the first file found
+    return os.path.join(directory, files[0]) if files else None

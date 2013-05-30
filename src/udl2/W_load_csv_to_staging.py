@@ -4,45 +4,17 @@ from celery.result import AsyncResult
 from celery.utils.log import get_task_logger
 from fileloader.file_loader import load_file
 from udl2_util.file_util import extract_file_name
+from udl2 import message_keys as mk
 
 
 logger = get_task_logger(__name__)
 
-# Keys for the incoming message
-ROW_LIMIT = 'row_limit'
-PARTS = 'parts'
-LANDING_ZONE_FILE = 'landing_zone_file'
-LANDING_ZONE = 'landing_zone'
-WORK_ZONE = 'work_zone'
-HISTORY_ZONE = 'history_zone'
-KEEP_HEADERS = 'keep_headers'
-FILE_TO_LOAD = 'file_to_load'
-LINE_COUNT = 'line_count'
-ROW_START = 'row_start'
-HEADER_FILE = 'header_file'
-
-# Keys for file_loader.load_file() map
-CSV_FILE = 'csv_file'
-START_SEQ = 'start_seq'
-HEADER_FILE = 'header_file'
-CSV_TABLE = 'csv_table'
-DB_HOST = 'db_host'
-DB_PORT = 'db_port'
-DB_USER = 'db_user'
-DB_NAME = 'db_name'
-DB_PASSWORD = 'db_password'
-CSV_SCHEMA = 'csv_schema'
-FDW_SERVER = 'fdw_server'
-STAGING_SCHEMA = 'staging_schema'
-STAGING_TABLE = 'staging_table'
-APPLY_RULES = 'apply_rules'
-BATCH_ID = 'batch_id'
-
 @celery.task(name="udl2.W_load_to_staging_table.task")
 def task(msg):
     logger.info(task.name)
-    logger.info('Loading file %s...' % msg[FILE_TO_LOAD])
-    conf = generate_conf_for_loading(msg[FILE_TO_LOAD], msg[ROW_START], msg[HEADER_FILE], msg[BATCH_ID])
+    logger.info('LOAD_CSV_TO_STAGING: Loading file <%s> to <%s> ' % (msg[mk.FILE_TO_LOAD], udl2_conf['postgresql']['db_host']))
+    batch_id = msg[mk.JOB_CONTROL][1]
+    conf = generate_conf_for_loading(msg[mk.FILE_TO_LOAD], msg[mk.ROW_START], msg[mk.HEADERS], batch_id)
     load_file(conf)
 
     return msg
@@ -50,23 +22,23 @@ def task(msg):
 
 def generate_conf_for_loading(file_to_load, start_seq, header_file_path, batch_id):
     csv_table = extract_file_name(file_to_load)
-    # TODO: load basic conf from config file (like W_file_splitter)
     conf = {
-            CSV_FILE: file_to_load,
-            START_SEQ: start_seq,
-            HEADER_FILE: header_file_path,
-            CSV_TABLE: csv_table,
-            DB_HOST: udl2_conf['postgresql']['db_host'],
-            DB_PORT: udl2_conf['postgresql']['db_port'],
-            DB_USER: udl2_conf['postgresql']['db_user'],
-            DB_NAME: udl2_conf['postgresql']['db_database'],
-            DB_PASSWORD: udl2_conf['postgresql']['db_pass'],
-            CSV_SCHEMA: udl2_conf['udl2_db']['csv_schema'],
-            FDW_SERVER: udl2_conf['udl2_db']['fdw_server'],
-            STAGING_SCHEMA: udl2_conf['udl2_db']['staging_schema'],
-            STAGING_TABLE: 'STG_SBAC_ASMT_OUTCOME',
-            APPLY_RULES: False,
-            BATCH_ID: batch_id
+            mk.FILE_TO_LOAD: file_to_load,
+            mk.ROW_START: start_seq,
+            mk.HEADERS: header_file_path,
+            mk.TARGET_DB_HOST: udl2_conf['postgresql']['db_host'],
+            mk.TARGET_DB_PORT: udl2_conf['postgresql']['db_port'],
+            mk.TARGET_DB_USER: udl2_conf['postgresql']['db_user'],
+            mk.TARGET_DB_NAME: udl2_conf['postgresql']['db_database'],
+            mk.TARGET_DB_PASSWORD: udl2_conf['postgresql']['db_pass'],
+            mk.CSV_SCHEMA: udl2_conf['udl2_db']['csv_schema'],
+            mk.CSV_TABLE: csv_table,
+            mk.FDW_SERVER: udl2_conf['udl2_db']['fdw_server'],
+            mk.TARGET_DB_SCHEMA: udl2_conf['udl2_db']['staging_schema'],
+            # TODO: Get rid of the next 2 hard-coded values
+            mk.TARGET_DB_TABLE: 'STG_SBAC_ASMT_OUTCOME',
+            mk.APPLY_RULES: False,
+            mk.BATCH_ID: batch_id
     }
     return conf
 

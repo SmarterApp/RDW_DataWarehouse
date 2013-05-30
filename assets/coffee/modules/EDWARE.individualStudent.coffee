@@ -180,11 +180,10 @@ define [
           
           if printAssessmentInfoContentLength > charLimits
             assessmentInfo = "#assessmentSection" + i + " .assessmentOtherInfo"
-            $(assessmentInfo).css("page-break-before", "always")
             $(assessmentInfo + " h1").css("display", "block")
-            $(assessmentInfo + " .sectionHeader").css("display", "block")
-            $(assessmentInfo + " li:first-child").addClass("bottomLine")
-            
+            $(".assessmentOtherInfoHeader").css("display", "block")
+            $(".assessmentOtherInfoHeader").css("page-break-before", "always")
+            $(assessmentInfo + " li:first-child").addClass("bottomLine")          
             
           i++
           

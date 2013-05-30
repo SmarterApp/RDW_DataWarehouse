@@ -87,15 +87,15 @@
 			</ul>
 		</div>
 	</div>
+	<div class="assessmentOtherInfoHeader sectionHeader">
+		<div class="logo"><img src="../images/smarter_printlogo.png" width="150" height="47" /></div>
+		<div class="summary">
+			<div class="title">{{items.0.student_full_name}} &nbsp;&nbsp; Grade {{items.0.grade}}</div>
+			<span class="label">State:</span> {{context.items.0.name}} &nbsp;&nbsp;<span class="label">District:</span> {{context.items.1.name}}<br/>
+			<span class="label">School:</span> {{context.items.2.name}}
+		</div>
+	</div>
 	<div class="assessmentOtherInfo printContent">
-			<div class="sectionHeader">
-				<div class="logo"><img src="../images/smarter_printlogo.png" width="150" height="47" /></div>
-				<div class="summary">
-					<div class="title">{{items.0.student_full_name}} &nbsp;&nbsp; Grade {{items.0.grade}}</div>
-					<span class="label">State:</span> {{context.items.0.name}} &nbsp;&nbsp;<span class="label">District:</span> {{context.items.1.name}}<br/>
-					<span class="label">School:</span> {{context.items.2.name}}
-				</div>
-			</div>
 			<h1>{{asmt_subject}}</h1>
 			<ul class="unstyled">
 				{{#psychometric_implications}}

@@ -14,8 +14,7 @@ from zope import component
 import logging
 from apscheduler.scheduler import Scheduler
 from edauth.security.session_manager import cleanup_sessions
-from edauth.security.persisent_session import ISessionBackend,\
-    SessionBackend
+from edauth.security.session_backend import ISessionBackend, SessionBackend
 
 
 logger = logging.getLogger(__name__)

@@ -6,7 +6,6 @@ Created on May 24, 2013
 import unittest
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
-from edauth.security.persisent_session import BeakerBackend, DbBackend
 from edauth.security.session import Session
 from database.sqlite_connector import create_sqlite, destroy_sqlite
 from edauth.persistence.persistence import generate_persistence
@@ -14,6 +13,7 @@ from datetime import datetime
 from edauth.database.connector import EdauthDBConnection
 from sqlalchemy.sql.expression import select
 import uuid
+from edauth.security.session_backend import BeakerBackend, DbBackend
 
 
 class TestPersistentSession(unittest.TestCase):
@@ -22,6 +22,7 @@ class TestPersistentSession(unittest.TestCase):
         reg = {}
         reg['enable.session.caching'] = 'true'
         reg['cache.expire'] = 10
+        # Change to get temp dir python
         reg['cache.lock_dir'] = '/tmp/memcache_ut'
         reg['cache.regions'] = 'session'
         reg['cache.type'] = 'memory'

@@ -14,7 +14,7 @@ from pyramid.testing import DummyRequest
 from pyramid.registry import Registry
 from pyramid import testing
 from zope import component
-from edauth.security.persisent_session import ISessionBackend, SessionBackend
+from edauth.security.session_backend import ISessionBackend, SessionBackend
 
 
 class TestCallback(unittest.TestCase):

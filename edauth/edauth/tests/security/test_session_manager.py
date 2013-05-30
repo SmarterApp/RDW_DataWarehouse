@@ -20,7 +20,7 @@ from pyramid import testing
 from pyramid.registry import Registry
 from pyramid.testing import DummyRequest
 from zope import component
-from edauth.security.persisent_session import ISessionBackend, SessionBackend
+from edauth.security.session_backend import ISessionBackend, SessionBackend
 
 
 class TestSessionManager(unittest.TestCase):
@@ -137,6 +137,7 @@ class TestSessionManagerWithCache(unittest.TestCase):
         reg.settings = {}
         reg.settings['enable.session.caching'] = 'True'
         reg.settings['cache.expire'] = 10
+        # make temp from python
         reg.settings['cache.lock_dir'] = '/tmp/memcache_ut'
         reg.settings['cache.regions'] = 'session'
         reg.settings['cache.type'] = 'memory'
@@ -146,6 +147,7 @@ class TestSessionManagerWithCache(unittest.TestCase):
 
     def tearDown(self):
         destroy_sqlite(datasource_name='edauth')
+        # Delete tmp dir
         testing.tearDown()
 
     def test_create_session_from_SAMLResponse(self):

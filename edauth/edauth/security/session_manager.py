@@ -10,8 +10,8 @@ from edauth.security.session import Session
 from edauth.security.roles import Roles
 from edauth.database.connector import EdauthDBConnection
 import socket
-from edauth.security.persisent_session import get_session_backend
 import logging
+from edauth.security.session_backend import get_session_backend
 
 # TODO: remove datetime.now() and use func.now()
 

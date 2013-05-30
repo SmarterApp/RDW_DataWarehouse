@@ -21,7 +21,7 @@ from database.sqlite_connector import create_sqlite, destroy_sqlite
 from edauth.persistence.persistence import generate_persistence
 from edauth.database.connector import EdauthDBConnection
 from zope import component
-from edauth.security.persisent_session import ISessionBackend, SessionBackend
+from edauth.security.session_backend import ISessionBackend, SessionBackend
 
 
 def get_saml_from_resource_file(file_mame):

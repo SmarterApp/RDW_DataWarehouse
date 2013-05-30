@@ -14,7 +14,6 @@ from zope.interface.declarations import implementer
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
 from zope import component
-from edauth.utils import to_bool
 
 
 logger = logging.getLogger('edauth')
@@ -41,7 +40,8 @@ class SessionBackend():
     Keeps track of instance of backend used to store sessions
     '''
     def __init__(self, settings):
-        if to_bool(settings.get('enable.session.caching', 'false')):
+        __backend_type = settings.get('session.backend.type', 'db').lower()
+        if __backend_type == 'beaker':
             self.backend = BeakerBackend(settings)
         else:
             self.backend = DbBackend()
@@ -50,15 +50,31 @@ class SessionBackend():
         return self.backend
 
 
-class BeakerBackend(object):
+class Backend(object):
+    '''
+    Interface for backend used to store sessions
+    '''
+    def create_new_session(self, session):
+        pass
+
+    def update_last_access_time(self, session):
+        pass
+
+    def get_session(self, session_id):
+        pass
+
+    def delete_session(self, session_id):
+        pass
+
+
+class BeakerBackend(Backend):
     '''
     Manipulates session that resides in persistent storage (memory, memcached)
     '''
-
     def __init__(self, settings):
         # We'll save both the cachemanager and the cache_region
         self.cache_mgr = CacheManager(**parse_cache_config_options(settings))
-        # Region name is session, edware_session gets appeneded to cache key name
+        # Region name is session, edware_session gets appended to cache key name
         self.cache_region = self.cache_mgr.get_cache_region('edware_session', 'session')
 
     def create_new_session(self, session):
@@ -79,6 +95,7 @@ class BeakerBackend(object):
         Return session from persistent storage
         '''
         if not session_id in self.cache_region:
+            logger.info('Session is not found in cache. It may have expired or connection to memcached is down')
             return None
         return self.cache_region.get(session_id)
 
@@ -90,7 +107,7 @@ class BeakerBackend(object):
             self.cache_region.remove_value(session_id)
 
 
-class DbBackend(object):
+class DbBackend(Backend):
     '''
     Manipulates session that resides in permanent storage (database)
     '''
@@ -128,7 +145,6 @@ class DbBackend(object):
         session = None
         if session_id is not None:
             with EdauthDBConnection() as connection:
-                logger.info('Reading user session from database')
                 user_session = connection.get_table('user_session')
                 query = select([user_session.c.session_context.label('session_context'),
                                 user_session.c.last_access.label('last_access'),

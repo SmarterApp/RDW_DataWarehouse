@@ -51,7 +51,7 @@ class TestViews(unittest.TestCase):
         self.__request.registry.settings['auth.saml.name_qualifier'] = 'http://myName'
         self.__request.registry.settings['auth.saml.issuer_name'] = 'dummyIssuer'
         component.provideUtility(AESCipher('dummdummdummdumm'), ICipher)
-        component.provideUtility(SessionBackend({'enable.session.caching': 'false'}), ISessionBackend)
+        component.provideUtility(SessionBackend({'session.backend.type': 'db'}), ISessionBackend)
         # delete all user_session before test
         with EdauthDBConnection() as connection:
             user_session = connection.get_table('user_session')

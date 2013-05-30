@@ -25,8 +25,9 @@ common:
       public.data.expire: 31556940 # year
       session.expire: 1200 # 20 minutes
       lock_dir: /tmp/memcache
-      
-    enable.session.caching: true
+    
+    # save session in beaker or db
+    session.backend.type: 'beaker'
     
     # Database
     edware:

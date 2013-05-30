@@ -25,7 +25,7 @@ class TestCallback(unittest.TestCase):
         # Must set hook_zca to false to work with uniittest_with_sqlite
         reg = Registry()
         reg.settings = {}
-        reg.settings['enable.session.caching'] = 'false'
+        reg.settings['session.backend.type'] = 'db'
         component.provideUtility(SessionBackend(reg.settings), ISessionBackend)
         self.__config = testing.setUp(registry=reg, request=self.__request, hook_zca=False)
 

@@ -16,11 +16,11 @@ import uuid
 from edauth.security.session_backend import BeakerBackend, DbBackend
 
 
-class TestPersistentSession(unittest.TestCase):
+class TestBeakerBackend(unittest.TestCase):
 
     def setUp(self):
         reg = {}
-        reg['enable.session.caching'] = 'true'
+        reg['session.backend.type'] = 'beaker'
         reg['cache.expire'] = 10
         # Change to get temp dir python
         reg['cache.lock_dir'] = '/tmp/memcache_ut'
@@ -67,7 +67,7 @@ class TestPersistentSession(unittest.TestCase):
         self.assertEquals(lookup.get_uid(), 'def')
 
 
-class TestStorageSession(unittest.TestCase):
+class TestDBSession(unittest.TestCase):
     def setUp(self):
         create_sqlite(use_metadata_from_db=False, echo=False, metadata=generate_persistence(), datasource_name='edauth')
         self.backend = DbBackend()

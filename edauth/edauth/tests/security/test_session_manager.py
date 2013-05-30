@@ -36,7 +36,7 @@ class TestSessionManager(unittest.TestCase):
         self.__request = DummyRequest()
         reg = Registry()
         reg.settings = {}
-        reg.settings['enable.session.caching'] = 'false'
+        reg.settings['session.backend.type'] = 'db'
         component.provideUtility(SessionBackend(reg.settings), ISessionBackend)
         # Must set hook_zca to false to work with uniittest_with_sqlite
         self.__config = testing.setUp(registry=reg, request=self.__request, hook_zca=False)
@@ -135,7 +135,7 @@ class TestSessionManagerWithCache(unittest.TestCase):
         self.__request = DummyRequest()
         reg = Registry()
         reg.settings = {}
-        reg.settings['enable.session.caching'] = 'True'
+        reg.settings['session.backend.type'] = 'beaker'
         reg.settings['cache.expire'] = 10
         # make temp from python
         reg.settings['cache.lock_dir'] = '/tmp/memcache_ut'

@@ -61,7 +61,7 @@ def update_session_access(session):
     current_time = datetime.now()
     session.set_last_access(current_time)
 
-    get_session_backend().update_session(session)
+    get_session_backend().update_last_access_time(session)
 
 
 def expire_session(session_id):

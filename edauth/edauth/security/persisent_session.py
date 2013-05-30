@@ -28,6 +28,9 @@ def get_session_backend():
 
 
 class ISessionBackend(interface.Interface):
+    '''
+    Interface to session backend
+    '''
     def get_backend(self):
         pass
 
@@ -35,36 +38,36 @@ class ISessionBackend(interface.Interface):
 @implementer(ISessionBackend)
 class SessionBackend():
     '''
-    Keeps track of instance of backend used to store session
+    Keeps track of instance of backend used to store sessions
     '''
     def __init__(self, settings):
         if to_bool(settings.get('enable.session.caching', 'false')):
-            cache_mgr = CacheManager(**parse_cache_config_options(settings))
-            self.backend = PersistentSession(cache_mgr)
+            self.backend = BeakerBackend(settings)
         else:
-            self.backend = StorageSession()
+            self.backend = DbBackend()
 
     def get_backend(self):
         return self.backend
 
 
-class PersistentSession(object):
+class BeakerBackend(object):
     '''
     Manipulates session that resides in persistent storage (memory, memcached)
     '''
 
-    def __init__(self, cache_mgr):
+    def __init__(self, settings):
         # We'll save both the cachemanager and the cache_region
-        self.cache_mgr = cache_mgr
-        self.cache_region = cache_mgr.get_cache_region('session', 'session')
+        self.cache_mgr = CacheManager(**parse_cache_config_options(settings))
+        # Region name is session, edware_session gets appeneded to cache key name
+        self.cache_region = self.cache_mgr.get_cache_region('edware_session', 'session')
 
     def create_new_session(self, session):
         '''
         Creates a new session
         '''
-        self.update_session(session)
+        self.update_last_access_time(session)
 
-    def update_session(self, session):
+    def update_last_access_time(self, session):
         '''
         Given a session, persist it
         '''
@@ -87,7 +90,7 @@ class PersistentSession(object):
             self.cache_region.remove_value(session_id)
 
 
-class StorageSession(object):
+class DbBackend(object):
     '''
     Manipulates session that resides in permanent storage (database)
     '''
@@ -104,7 +107,7 @@ class StorageSession(object):
             # store the session into DB
             connection.execute(user_session.insert(), session_id=session.get_session_id(), session_context=session.get_session_json_context(), last_access=current_datetime, expiration=expiration_datetime)
 
-    def update_session(self, session):
+    def update_last_access_time(self, session):
         '''
         Given a session, Update the last access time
         '''

@@ -174,15 +174,14 @@ define [
           $(printAssessmentOtherInfo).each (index) ->
             printAssessmentInfoContentLength = printAssessmentInfoContentLength + $(this).html().length
           
-          charLimits = 200
+          charLimits = 702
           if printAssessmentOtherInfoLength < 2 or printAssessmentInfoContentLength > charLimits
             $(printAssessmentOtherInfo).removeClass "inline"
           
           if printAssessmentInfoContentLength > charLimits
             assessmentInfo = "#assessmentSection" + i + " .assessmentOtherInfo"
             $(assessmentInfo + " h1").css("display", "block")
-            $(".assessmentOtherInfoHeader").css("display", "block")
-            $(".assessmentOtherInfoHeader").css("page-break-before", "always")
+            $(".assessmentOtherInfoHeader").addClass("show").css("page-break-before", "always")
             $(assessmentInfo + " li:first-child").addClass("bottomLine")          
             
           i++

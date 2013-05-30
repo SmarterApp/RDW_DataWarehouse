@@ -136,6 +136,9 @@ define [
                   "<iframe frameborder='0' height='0px' width='0px' name='iframe_logout'></iframe>"
     $("#header").html(header_html)
 
+
+  showGrayScale = ->
+    $('head').append("<link rel='stylesheet' type='text/css' href='../css/grayscale.css' />");
   
   getConstants: getConstants
   displayErrorMessage: displayErrorMessage
@@ -148,3 +151,4 @@ define [
   popupPlacement: popupPlacement
   getHeader: getHeader
   format_full_name_reverse: format_full_name_reverse
+  showGrayScale : showGrayScale

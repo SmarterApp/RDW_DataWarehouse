@@ -22,6 +22,9 @@ define [
   #    * Generate individual student report
   #    
   generateIndividualStudentReport = (params) ->
+    # Show grayscale
+    if params['grayscale'] is 'true'
+      edwareUtil.showGrayScale()
     
     content = {}
     

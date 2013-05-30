@@ -66,6 +66,7 @@ task 'build:coffee', ->
 
 task 'build:less', ->
     compile 'less/style.less', 'css/style.css'
+    compile 'less/grayscale.less', 'css/grayscale.css'
     
 task 'optimize', 'Optimize javascript', ->
     optimizer = 'js/3p/r.js'

@@ -101,20 +101,20 @@ def _get_landing_page(request, redirect_url_decoded, headers):
     To prevent from a user from clicking back botton to OpenAM login page
     '''
     html = '''
-    <html><header>
+    <html><head>
     <title>Processing</title>
     <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
     <META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">
-    <META HTTP-EQUIV="Expires" CONTENT="-1">
+    <META HTTP-EQUIV="Expires" CONTENT="0">
     <meta http-equiv="refresh" content="0;url=%s">
     <script type="text/javascript">
         function redirect() {
         document.getElementById('url').click()
         }
     </script>
-    </header>
-    <body onload="redirect()"><a href="%s" id=url></a></body></html>
-    ''' % (redirect_url_decoded, redirect_url_decoded)
+    </head>
+    <body onload="redirect()"><a href="%s" id=url onclick="javascript:location.replace('%s'); event.returnValue=false;"></a></body></html>
+    ''' % (redirect_url_decoded, redirect_url_decoded, redirect_url_decoded)
     headers.append(('Content-Type', 'text/html'))
     return Response(body=html, headers=headers, content_type='text/html')
 

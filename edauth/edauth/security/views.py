@@ -182,6 +182,13 @@ def saml2_post_consumer(request):
         session_timeout = convert_to_int(request.registry.settings['auth.session.timeout'])
         session_id = create_new_user_session(__SAMLResponse_manager.get_SAMLResponse(), session_timeout).get_session_id()
 
+        # If user doesn't have a Tenant, return 403
+        if get_user_session(session_id).get_tenant() is None:
+            message = 'No Tenant was found.  Rejecting User'
+            logger.warn(message)
+            write_security_event(message, SECURITY_EVENT_TYPE.WARN)
+            return HTTPForbidden()
+
         # Save session id to cookie
         headers = remember(request, session_id)
 

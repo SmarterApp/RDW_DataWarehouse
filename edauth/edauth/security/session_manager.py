@@ -12,6 +12,7 @@ from edauth.database.connector import EdauthDBConnection
 import socket
 import logging
 from edauth.security.session_backend import get_session_backend
+from edauth.security.tenant import get_tenant_name
 
 # TODO: remove datetime.now() and use func.now()
 
@@ -103,10 +104,18 @@ def __create_from_SAMLResponse(saml_response, last_access, expiration):
     if 'uid' in __attributes:
         if __attributes['uid']:
             session.set_uid(__attributes['uid'][0])
+
+    # get guid
+    guid = __attributes.get('guid')
+    if guid is not None:
+        session.set_guid(guid[0])
+
     # get roles
     session.set_roles(__get_roles(__attributes))
     # set nameId
     session.set_name_id(__name_id)
+    # set tenant
+    session.set_tenant(get_tenant_name(__attributes))
 
     session.set_expiration(expiration)
     session.set_last_access(last_access)

@@ -23,7 +23,6 @@ class TestBeakerBackend(unittest.TestCase):
         reg['session.backend.type'] = 'beaker'
         reg['cache.expire'] = 10
         # Change to get temp dir python
-        reg['cache.lock_dir'] = '/tmp/memcache_ut'
         reg['cache.regions'] = 'session'
         reg['cache.type'] = 'memory'
         self.cachemgr = CacheManager(**parse_cache_config_options(reg))

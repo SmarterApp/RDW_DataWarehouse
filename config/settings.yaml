@@ -27,7 +27,7 @@ common:
       lock_dir: /tmp/memcache
     
     # save session in beaker or db
-    session.backend.type: 'beaker'
+    session.backend.type: beaker
     
     # Database
     edware:
@@ -74,6 +74,8 @@ common:
       generate.timeout: 10
       report_base_dir: /tmp/pdf
       celery_timeout: 30
+    # Used for tenancy
+    base.dn: 'ou=environment,dc=edwdc,dc=net'
 
   '[server:main]':
     use: 'egg:waitress#main'

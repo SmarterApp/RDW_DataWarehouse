@@ -14,6 +14,7 @@ import signal
 from pyramid_beaker import set_cache_regions_from_settings
 import sys
 from services.celery import setup_celery
+from smarter import services
 
 logger = logging.getLogger(__name__)
 CAKE_PROC = None
@@ -70,11 +71,8 @@ def main(global_config, **settings):
     # For now, never cache htmls
     config.add_static_view('assets/html', os.path.join(assets_dir, 'html'), cache_max_age=0, permission='view')
 
-    # Add heartbeat
-    config.add_route('heartbeat', '/heartbeat')
-
-    # Add pdf
-    config.add_route('pdf', '/services/pdf/{report}')
+    # include add routes from smarter.services. Calls includeme
+    config.include(services)
 
     # scans smarter
     config.scan()

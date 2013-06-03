@@ -14,7 +14,7 @@ from edauth.security.user import User
 from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite
 import services
 from pyramid.response import Response
-from smarter.services import post_pdf_service, get_pdf_service, send_pdf_request, \
+from smarter.services.pdf import post_pdf_service, get_pdf_service, send_pdf_request, \
     get_pdf_content, has_context_for_pdf_request
 from edapi.exceptions import InvalidParameterError, ForbiddenError
 from services.celery import setup_celery

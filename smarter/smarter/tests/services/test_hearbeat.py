@@ -5,7 +5,7 @@ Created on Apr 18, 2013
 '''
 import unittest
 from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite_no_data_load
-from smarter import heartbeat
+from smarter.services import heartbeat
 from pyramid.testing import DummyRequest
 from pyramid.httpexceptions import HTTPOk
 

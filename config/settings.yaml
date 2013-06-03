@@ -75,7 +75,7 @@ common:
       report_base_dir: /tmp/pdf
       celery_timeout: 30
     # Used for tenancy
-    base.dn: ou=environment,dc=edwdc,dc=net
+    ldap.base.dn: ou=environment,dc=edwdc,dc=net
 
   '[server:main]':
     use: 'egg:waitress#main'

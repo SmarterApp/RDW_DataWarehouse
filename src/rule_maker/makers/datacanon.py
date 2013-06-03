@@ -8,7 +8,7 @@ from rule_maker.makers.dataprep import do_col_prep
 
 # data canonicalization
 
-# https://github.wgenhq.net/Ed-Ware-SBAC/edware-udl-2.0/blob/master/src/fileloader/transformation_rules.sql  
+# https://github.wgenhq.net/Ed-Ware-SBAC/edware-udl-2.0/blob/master/src/fileloader/transformation_rules.sql
 
 __map_func_top = """
 CREATE OR REPLACE FUNCTION {func_name}
@@ -47,19 +47,16 @@ $$
 DECLARE
     v_{col_name}      VARCHAR(255);
     v_return          VARCHAR(255);
-"""
-__lists_func_top2 = """
     v_sub{col_name}   VARCHAR(255);
-"""
-__lists_func_top3 = """
-    -- need to change to the postgres syntax to
+
+    -- need to change to the postgres syntax
     TYPE arr{col_name}_t IS VARRAY(21) OF VARCHAR2(32);
          vals_{col_name} arr{col_name}_t := arr{col_name}_t('{value_list}');
 """
-__lists_func_top4 = """
+__lists_func_top2 = """
          keys_{col_name} arr{col_name}_t := arr{col_name}_t('{key_list}');
 """
-__lists_func_top5 = """
+__lists_func_top3 = """
 BEGINE
 """
 
@@ -105,6 +102,10 @@ def make_substring_list(col, cf):
 
 
 def make_function_for_map(col, dp_list, comes_from):
+    '''
+    Main function to generate transformation rules
+    which has the logic the same as map_gender
+    '''
     func_top = __map_func_top.format(col_name=col, func_name='map_' + col)
     col_prep = do_col_prep(col, dp_list)
     func_mid = col_prep + make_substring_list(col, comes_from)
@@ -115,46 +116,76 @@ def make_function_for_map(col, dp_list, comes_from):
     return func
 
 
-def make_function_for_lists(col, dp_list, key_list, value_list, check_n, compare_length):
-    func_top = create_lists_func_top(True, True)
-    __two_lists_func_top.format(col_name=col, func_name='map_' + col, key_list='\',\''.join(key_list), value_list='\',\''.join(value_list))
+def make_function_for_lists(col, dp_list, value_list, compare_length, check_n=None, key_list=None):
+    '''
+    Main function to generate transformation rules that accepts one or two input lists
+    '''
+    func_top = create_lists_func_top(col, value_list, key_list)
     col_prep = do_col_prep(col, dp_list)
     sub_value = present_sub_value(col, compare_length)
-    func_mid = col_prep + sub_value + make_for_loop_check(col, check_n, compare_length)
+    func_mid = col_prep + sub_value + make_for_loop_check(col, check_n, compare_length, key_list is not None)
     func_end = __lists_func_end.format(col_name=col)
     func = func_top + func_mid + func_end
-    print(func)
+    return func
 
 
-def create_lists_func_top(has_key_and_value, has_subStr):
-    top_statement = __lists_func_top1
-    if has_subStr:
-        top_statement += __lists_func_top2
+def create_lists_func_top(col, value_list, key_list):
+    top_statement = __lists_func_top1.format(col_name=col, value_list="\',\'".join(value_list))
+    if key_list is not None:
+        top_statement += __lists_func_top2.format(col_name=col, key_list="\',\'".join(key_list))
     top_statement += __lists_func_top3
-    if has_key_and_value:
-        top_statement += __lists_func_top4
-    top_statement += __lists_func_top5
     return top_statement
 
 
 def present_sub_value(col, compare_length):
+    '''
+    Make a sub string expression
+    '''
     return '\nv_sub{col_name} :=SUBSTRING(v_{col_name}, 1, {compare_length});\n'.format(col_name=col, compare_length=compare_length)
 
 
-def make_for_loop_check(col, check_n, compare_length):
-    pre1 = assign_return_value('NOT FOUND')
-    if_exp = make_substring_part('', col, list(check_n.values())[0][0], compare_length)
-    then_exp = assign_return_value(list(check_n.keys())[0])
-    else_exp = make_for_loop_exp(col, compare_length)
-    pre2 = make_if_then_else_exp(if_exp, then_exp, else_exp)
-    return pre1 + pre2
+def make_for_loop_check(col, check_n, compare_length, has_key_and_value):
+    '''
+    Make a for loop logic.
+    Reference: https://github.wgenhq.net/Ed-Ware-SBAC/udl/blob/master/sql/udl_stg/pkg/pb_loader.sql#L691
+    '''
+    part1 = assign_return_value('NOT FOUND')
+    if check_n is not None:
+        if_exp = make_or_exp(col, list(check_n.values())[0], compare_length)
+        then_exp = assign_return_value(list(check_n.keys())[0])
+        else_exp = make_for_loop_exp(col, compare_length, has_key_and_value)
+        part2 = make_if_then_else_exp(if_exp, then_exp, else_exp)
+    else:
+        part2 = make_for_loop_exp(col, compare_length, has_key_and_value)
+    return part1 + part2
+
+
+def make_or_exp(col, accepted_value, compare_length):
+    '''
+    Make a serious of 'or' expression
+    '''
+    if len(accepted_value) > 1:
+        ret = ''
+        prefix = ''
+        for value in list(accepted_value):
+            ret += prefix + 'v_{col_name} = \'{value}\''.format(col_name=col, value=value)
+            prefix = '\n\tOR'
+        return ret
+    else:
+        return make_substring_part('', col, accepted_value[0], compare_length)
 
 
 def assign_return_value(expected_value):
+    '''
+    Make a assignment expression to parameter v_return
+    '''
     return 'v_return :=\'{assigned_value}\';\n'.format(assigned_value=expected_value)
 
 
 def make_if_then_else_exp(if_exp, then_exp, else_exp=None):
+    '''
+    Make a if-else-then expression
+    '''
     basic = 'IF {if_exp} THEN \n\t{then_exp}'.format(if_exp=if_exp, then_exp=then_exp)
     if else_exp:
         basic = basic + '\nELSE\n{else_exp}'.format(else_exp=else_exp)
@@ -162,14 +193,15 @@ def make_if_then_else_exp(if_exp, then_exp, else_exp=None):
     return basic
 
 
-def make_for_loop_exp(col, compare_length):
+def make_for_loop_exp(col, compare_length, has_key_and_value):
+    count_value = 'keys_' if has_key_and_value is True else 'vals_'
     template = """
-    FOR cntr IN 1..keys_{col_name}.COUNT
+    FOR cntr IN 1..{count_value}{col_name}.COUNT
     LOOP
-        IF v_sub{col_name} = SUBSTRING(keys_{col_name}(cntr), 1, {length}) THEN
+        IF v_sub{col_name} = SUBSTRING({count_value}{col_name}(cntr), 1, {length}) THEN
             v_return := vals_{col_name}(cntr);
             EXIT;
         END IF;
     END LOOP;
-    """.format(col_name=col, length=compare_length)
+    """.format(col_name=col, length=compare_length, count_value=count_value)
     return template

@@ -11,42 +11,58 @@ from rule_maker.rules import rule_keys as rk
 
 rules_map = {
     # Category 1: map accepted input to canon expression
-    # 'gender': {rk.CANON: {'M': ['M', 'B'], 'F': ['F', 'G'], 'NS': ['NS', 'NOT_SPECIFIED', 'NOT SPECIFIED']}},
-    # 'yn': {rk.CANON: {'Y': ['Y', '1', 'T'], 'N': ['N', '0', 'F']}},
-    # 'alternate': {rk.CANON: {'N': ['N'], 'MOST': ['MOST'], 'PERSIST': ['PER']}},
+    'gender': {rk.CANON: {'M': ['M', 'B'], 'F': ['F', 'G'], 'NS': ['NS', 'NOT_SPECIFIED', 'NOT SPECIFIED']}},
+    'yn': {rk.CANON: {'Y': ['Y', '1', 'T'], 'N': ['N', '0', 'F']}},
+    'alternate': {rk.CANON: {'N': ['N'], 'MOST': ['MOST'], 'PERSIST': ['PER']}},
 
     # Category 2: give a list of allowed prefix value, compare the input, then return to the matching prefix
-    # 'freelunch': {rk.ALLOWED: ['N', 'RED', 'FREE', 'FR-RED']},
-    # 'title1': {rk.ALLOWED: ['N', 'UN', 'READ', 'MATH', 'LANG']},
+    'freeLunch': {rk.ALLOWED: ['N', 'RED', 'FREE', 'FR-RED']},
+    'title1': {rk.ALLOWED: ['N', 'UN', 'READ', 'MATH', 'LANG']},
 
     # Category 3: give a list of returned value
     'homeLang': {rk.ONE_LIST: ['ARAB', 'CANT', 'FRE', 'GER', 'GRE', 'HAI', 'HEB', 'HIN', 'HMO', 'ITAL'],
                  rk.COMPARE_LENGTH: 3},
+    'engProficiency': {rk.ONE_LIST: ['NATIVE', 'FLUENT', 'LEP', 'NON', 'REDES', 'FORMER', 'HOME', 'NS'],
+                       rk.CHECK_N: {'NS': ['NOT_SPECIFIED', 'NOT SPECIFIED', 'NOTSPECIFIED']},
+                       rk.COMPARE_LENGTH: 2},
 
-    # Category 3: give two lists as keys and values
-    'disabSpec': {rk.TWO_LISTS: [['SPEC', 'LANG', 'SPEECH', 'EMOT', 'DISTURBANCE', 'MENT',
-                                  'RETARDATION', 'HEAR', 'ORTH', 'VIS', 'AUT', 'TRAU', 'TBI',
-                                  'DEV', 'DELAY', 'MUL', 'OTH', 'DEAF', 'DEAF-BLINDNESS', 'GIFT', 'NON'],
-                                 ['SPEC', 'LANG', 'LANG', 'EMOT', 'EMOT', 'MENT', 'MENT',
-                                  'HEAR', 'ORTH', 'VIS', 'AUT', 'TRAU', 'TRAU', 'DEV', 'DEV',
-                                  'MUL', 'OTH', 'DEAF', 'DEAF', 'GIFT', 'NON']],
-                  rk.CHECK_N: {'NON': ['N']},
-                  rk.COMPARE_LENGTH: 4},
+
+    # Category 4: give two lists as keys and values
+     'disabSpec': {rk.TWO_LISTS: [['SPEC', 'LANG', 'SPEECH', 'EMOT', 'DISTURBANCE', 'MENT',
+                                   'RETARDATION', 'HEAR', 'ORTH', 'VIS', 'AUT', 'TRAU', 'TBI',
+                                   'DEV', 'DELAY', 'MUL', 'OTH', 'DEAF', 'DEAF-BLINDNESS', 'GIFT', 'NON'],
+                                  ['SPEC', 'LANG', 'LANG', 'EMOT', 'EMOT', 'MENT', 'MENT',
+                                   'HEAR', 'ORTH', 'VIS', 'AUT', 'TRAU', 'TRAU', 'DEV', 'DEV',
+                                   'MUL', 'OTH', 'DEAF', 'DEAF', 'GIFT', 'NON']],
+                   rk.CHECK_N: {'NON': 'N'},
+                   rk.COMPARE_LENGTH: 4},
+     'race': {rk.TWO_LISTS: [['an', 'alaska native', 'alaska', 'ai'],
+                             ['AN', 'AN', 'AN', 'AI']],
+                   rk.CHECK_N: {'NS': ['not_specified']},
+                   rk.COMPARE_LENGTH: 41}
     # 'access_window': {},
-    # 'engProficiency': {}
+    # Category 5: data format
+    # Category 6: value calculation
 }
 
 
 def generate_rules():
+    '''
+    Main function to generate business rules,
+    including transformation rules and validation rules
+    '''
     for ikey in rules_map:
         print("\n====== code for: " + ikey + " ======")
         fun, parm = parts_with_defaults(ikey)
-        print("******", fun, parm)
         out = fun(*parm)
         print(out)
 
 
 def parts_with_defaults(ikey):
+    '''
+    For different kinds of rules, this function returns
+    corresponding function to generate rule and list of parameters
+    '''
     parts = rules_map.get(ikey)
     col = parts.get('col', ikey)
     prepare = parts.get('prepare', __default_prep)
@@ -67,14 +83,16 @@ def parts_with_defaults(ikey):
 
         parm.append(value_list)
         parm.append(compare_length)
-        parm.append(key_list)
         parm.append(check_n)
+        parm.append(key_list)
         fun = make_function_for_lists
     elif rk.ONE_LIST in parts.keys():
         value_list = parts[rk.ONE_LIST]
         compare_length = parts[rk.COMPARE_LENGTH]
         parm.append(value_list)
         parm.append(compare_length)
+        if rk.CHECK_N in parts.keys():
+            parm.append(parts[rk.CHECK_N])
         fun = make_function_for_lists
     return fun, parm
 

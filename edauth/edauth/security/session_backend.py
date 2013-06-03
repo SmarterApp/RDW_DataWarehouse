@@ -66,6 +66,9 @@ class Backend(object):
     def delete_session(self, session_id):
         pass
 
+    def clear(self):
+        pass
+
 
 class BeakerBackend(Backend):
     '''
@@ -111,6 +114,12 @@ class BeakerBackend(Backend):
 
     def __get_cache_region(self, key):
         return self.cache_mgr.get_cache_region('edware_session_' + key, 'session')
+
+    def clear(self):
+        '''
+        clear cache
+        '''
+        self.cache_region.clear()
 
 
 class DbBackend(Backend):
@@ -175,6 +184,14 @@ class DbBackend(Backend):
             connection.execute(user_session.update().
                                where(user_session.c.session_id == session_id).
                                values(expiration=current_datetime))
+
+    def clear(self):
+        '''
+        delete all sessions from table
+        '''
+        with EdauthDBConnection() as connection:
+            user_session = connection.get_table('user_session')
+            connection.execute(user_session.delete())
 
     def __create_from_session_json_context(self, session_id, session_json_context, last_access, expiration):
         '''

@@ -15,7 +15,7 @@ class TestTenant(unittest.TestCase):
     def setUp(self):
         reg = Registry()
         reg.settings = {}
-        reg.settings['base.dn'] = 'ou=dummy,dc=testing,dc=com'
+        reg.settings['ldap.base.dn'] = 'ou=dummy,dc=testing,dc=com'
         self.__config = testing.setUp(registry=reg, request=DummyRequest(), hook_zca=False)
 
     def tearDown(self):
@@ -41,17 +41,12 @@ class TestTenant(unittest.TestCase):
         tenant = get_tenant_name(attributes)
         self.assertIsNone(tenant)
 
-    def test_dn_with_spaces(self):
-        attributes = {'dn': ['ou= dummyOrg ,ou=dummy,  dc=testing,dc=com   ']}
-        tenant = get_tenant_name(attributes)
-        self.assertEqual(tenant, 'dummyorg')
-
     def test_dn_with_one_base_element(self):
         reg = Registry()
         reg.settings = {}
-        reg.settings['base.dn'] = 'ou=dummy'
+        reg.settings['ldap.base.dn'] = 'ou=dummy'
         self.__config = testing.setUp(registry=reg, request=DummyRequest(), hook_zca=False)
-        attributes = {'dn': ['ou= dummyOrg ,ou=dummy']}
+        attributes = {'dn': ['ou=dummyOrg,ou=dummy']}
         tenant = get_tenant_name(attributes)
         self.assertEqual(tenant, 'dummyorg')
 

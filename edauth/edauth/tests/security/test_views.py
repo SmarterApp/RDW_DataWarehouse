@@ -46,7 +46,7 @@ class TestViews(unittest.TestCase):
         self.registry.settings['auth.session.timeout'] = 1
         self.registry.settings['auth.idp.metadata'] = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'resource', 'idp_metadata.xml'))
         self.registry.settings['auth.skip.verify'] = False
-        self.registry.settings['base.dn'] = 'ou=environment,dc=edwdc,dc=net'
+        self.registry.settings['ldap.base.dn'] = 'ou=environment,dc=edwdc,dc=net'
 
         self.__request = DummyRequest()
         # Must set hook_zca to false to work with uniittest_with_sqlite

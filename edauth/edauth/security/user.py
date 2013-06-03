@@ -5,6 +5,17 @@ Created on Mar 14, 2013
 '''
 
 
+class UserConstants():
+    UID = 'uid'
+    NAME = 'name'
+    FULLNAME = 'fullName'
+    FIRSTNAME = 'firstName'
+    LASTNAME = 'lastName'
+    ROLES = 'roles'
+    TENANT = 'tenant'
+    GUID = 'guid'
+
+
 class User(object):
     '''
     Represents User information
@@ -20,11 +31,11 @@ class User(object):
 
     def __initialize_default_values(self):
         self.__info = {}
-        self.__info['name'] = {'fullName': None, 'firstName': None, 'lastName': None}
-        self.__info['uid'] = None
-        self.__info['roles'] = []
-        self.__info['tenant'] = None
-        self.__info['guid'] = None
+        self.__info[UserConstants.NAME] = {UserConstants.FULLNAME: None, UserConstants.FIRSTNAME: None, UserConstants.LASTNAME: None}
+        self.__info[UserConstants.UID] = None
+        self.__info[UserConstants.ROLES] = []
+        self.__info[UserConstants.TENANT] = None
+        self.__info[UserConstants.GUID] = None
 
     def set_user_info(self, info):
         '''
@@ -42,71 +53,71 @@ class User(object):
         @param name: the name to be set
         @type info: string
         '''
-        self.__info['name'] = name
+        self.__info[UserConstants.NAME] = name
 
     def set_uid(self, uid):
         '''
         @param uid: the uid to be set
         @type info: string
         '''
-        self.__info['uid'] = uid
+        self.__info[UserConstants.UID] = uid
 
     def set_full_name(self, full_name):
         '''
         @param full_name: the full name to be set
         @type info: string
         '''
-        self.__info['name']['fullName'] = full_name
+        self.__info[UserConstants.NAME][UserConstants.FULLNAME] = full_name
 
     def set_first_name(self, first_name):
         '''
         @param first_name: the first name to be set
         @type info: string
         '''
-        self.__info['name']['firstName'] = first_name
+        self.__info[UserConstants.NAME][UserConstants.FIRSTNAME] = first_name
 
     def set_last_name(self, last_name):
         '''
         @param last_name: the last name to be set
         @type info: string
         '''
-        self.__info['name']['lastName'] = last_name
+        self.__info[UserConstants.NAME][UserConstants.LASTNAME] = last_name
 
     def set_roles(self, roles):
         '''
         @param roles: the roles to be set
         @type info: string
         '''
-        self.__info['roles'] = roles
+        self.__info[UserConstants.ROLES] = roles
 
     def set_tenant(self, tenant):
         '''
         @param tenant: the tenant to be set
         @type tenant: string
         '''
-        self.__info['tenant'] = tenant
+        self.__info[UserConstants.TENANT] = tenant
 
     def set_guid(self, guid):
         '''
         @param guid: the guid to set
         @type guid: string
         '''
-        self.__info['guid'] = guid
+        self.__info[UserConstants.GUID] = guid
 
     def get_name(self):
-        return {'name': self.__info['name']}
+        return {UserConstants.NAME: self.__info[UserConstants.NAME]}
 
     def get_uid(self):
-        return self.__info['uid']
+        return self.__info[UserConstants.UID]
 
     def get_user_context(self):
         return self.__info
 
     def get_roles(self):
-        return self.__info['roles']
+        return self.__info[UserConstants.ROLES]
 
     def get_tenant(self):
-        return self.__info['tenant']
+        return self.__info[UserConstants.TENANT]
 
     def get_guid(self):
-        return self.__info['guid']
+        return self.__info[UserConstants.GUID]

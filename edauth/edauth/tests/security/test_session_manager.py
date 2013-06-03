@@ -37,7 +37,7 @@ class TestSessionManager(unittest.TestCase):
         reg = Registry()
         reg.settings = {}
         reg.settings['session.backend.type'] = 'db'
-        reg.settings['base.dn'] = 'ou=environment,dc=edwdc,dc=net'
+        reg.settings['ldap.base.dn'] = 'ou=environment,dc=edwdc,dc=net'
         component.provideUtility(SessionBackend(reg.settings), ISessionBackend)
         # Must set hook_zca to false to work with uniittest_with_sqlite
         self.__config = testing.setUp(registry=reg, request=self.__request, hook_zca=False)
@@ -142,7 +142,7 @@ class TestSessionManagerWithCache(unittest.TestCase):
         reg.settings['cache.expire'] = 10
         reg.settings['cache.regions'] = 'session'
         reg.settings['cache.type'] = 'memory'
-        reg.settings['base.dn'] = 'ou=environment,dc=edwdc,dc=net'
+        reg.settings['ldap.base.dn'] = 'ou=environment,dc=edwdc,dc=net'
         component.provideUtility(SessionBackend(reg.settings), ISessionBackend)
         # Must set hook_zca to false to work with uniittest_with_sqlite
         self.__config = testing.setUp(registry=reg, request=self.__request, hook_zca=False)

@@ -5,13 +5,12 @@ Created on May 30, 2013
 '''
 from pyramid.view import view_config
 from beaker.cache import cache_managers
-from pyramid.httpexceptions import HTTPOk, HTTPNotFound
 import logging
 
 logger = logging.getLogger(__name__)
 
 
-@view_config(route_name='cache_management', request_method='DELETE')
+@view_config(route_name='cache_management', request_method='DELETE', renderer='json')
 def cache_flush(request):
     '''
     service call for flush cache
@@ -25,8 +24,8 @@ def cache_flush(request):
     elif cache_name == 'data':
         cache_flush_data()
     else:
-        return HTTPNotFound()
-    return HTTPOk()
+        return {'cache_name': cache_name, 'result': 'not supported'}
+    return {'cache_name': cache_name, 'result': 'OK'}
 
 
 def cache_flush_session():

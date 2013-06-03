@@ -31,25 +31,25 @@ class Test(Unittest_with_smarter_sqlite):
         request = DummyRequest()
         request.matchdict['cache_name'] = 'all'
         rtn = cache_flush(request)
-        self.assertEqual(200, rtn.code)
+        self.assertEqual('OK', rtn['result'])
 
     def test_cache_flush_session(self):
         request = DummyRequest()
         request.matchdict['cache_name'] = 'session'
         rtn = cache_flush(request)
-        self.assertEqual(200, rtn.code)
+        self.assertEqual('OK', rtn['result'])
 
     def test_cache_flush_data(self):
         request = DummyRequest()
         request.matchdict['cache_name'] = 'data'
         rtn = cache_flush(request)
-        self.assertEqual(200, rtn.code)
+        self.assertEqual('OK', rtn['result'])
 
     def test_cache_flush_invalid(self):
         request = DummyRequest()
         request.matchdict['cache_name'] = 'hello'
         rtn = cache_flush(request)
-        self.assertEqual(404, rtn.code)
+        self.assertEqual('not supported', rtn['result'])
 
     def test_flush_session(self):
         session = Session()

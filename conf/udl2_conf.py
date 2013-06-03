@@ -69,6 +69,7 @@ udl2_conf = {
     },
     'target_db': {
         'db_schema': 'edware',
+        'db_name': 'edware',
         # TBD, make sure it is the production setting
         'db_host':'localhost',
         'db_port':'5432',

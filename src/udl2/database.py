@@ -323,12 +323,12 @@ def _create_conn_engine(udl2_conf):
     private method to create database connections via database_util
     @param udl2_conf: The configuration dictionary for databases
     '''
-    (conn, engine) = connect_db(udl2_conf['udl2_db']['db_driver'],
-                                udl2_conf['udl2_db']['db_user'],
-                                udl2_conf['udl2_db']['db_pass'],
-                                udl2_conf['udl2_db']['db_host'],
-                                udl2_conf['udl2_db']['db_port'],
-                                udl2_conf['udl2_db']['db_name'])
+    (conn, engine) = connect_db(udl2_conf['db_driver'],
+                                udl2_conf['db_user'],
+                                udl2_conf['db_pass'],
+                                udl2_conf['db_host'],
+                                udl2_conf['db_port'],
+                                udl2_conf['db_name'])
     return (conn, engine)
 
 
@@ -457,9 +457,9 @@ def create_udl2_schema(udl2_conf):
     @param udl2_conf: The configuration dictionary for 
     '''
     print('create udl2 staging schema')
-    sql = text("CREATE SCHEMA \"%s\"" % udl2_conf['udl2_db']['staging_schema'])
+    sql = text("CREATE SCHEMA \"%s\"" % udl2_conf['staging_schema'])
     (conn, engine) = _create_conn_engine(udl2_conf)
-    except_msg = "fail to create schema %s" % udl2_conf['udl2_db']['staging_schema']
+    except_msg = "fail to create schema %s" % udl2_conf['staging_schema']
     execute_queries(conn, [sql], except_msg)
 
 
@@ -469,9 +469,9 @@ def drop_udl2_schema(udl2_conf):
     @param udl2_conf: The configuration dictionary for 
     '''
     print('drop udl2 staging schema')
-    sql = text("DROP SCHEMA \"%s\" CASCADE" % udl2_conf['udl2_db']['staging_schema'])
+    sql = text("DROP SCHEMA \"%s\" CASCADE" % udl2_conf['staging_schema'])
     (conn, engine) = _create_conn_engine(udl2_conf)
-    except_msg = "fail to drop udl2 schema %s" % udl2_conf['udl2_db']['staging_schema']
+    except_msg = "fail to drop udl2 schema %s" % udl2_conf['staging_schema']
     execute_queries(conn, [sql], except_msg)
 
 
@@ -484,7 +484,7 @@ def create_udl2_tables(udl2_conf):
     udl2_metadata = MetaData()
     print("create tables")
     for table, definition in UDL_METADATA['TABLES'].items():
-        create_table(udl2_conf, udl2_metadata, udl2_conf['udl2_db']['staging_schema'], table)
+        create_table(udl2_conf, udl2_metadata, udl2_conf['staging_schema'], table)
 
 
 def drop_udl2_tables(udl2_conf):
@@ -494,7 +494,7 @@ def drop_udl2_tables(udl2_conf):
     '''
     print("drop tables")
     for table, definition in UDL_METADATA['TABLES'].items():
-        drop_table(udl2_conf, udl2_conf['udl2_db']['staging_schema'], table)
+        drop_table(udl2_conf, udl2_conf['staging_schema'], table)
 
 
 def create_udl2_sequence(udl2_conf):
@@ -502,11 +502,11 @@ def create_udl2_sequence(udl2_conf):
     create sequences according to configuration file
     @param udl2_conf: The configuration dictionary for 
     '''
-    #(conn, engine) = _create_conn_engine(udl2_conf)
+    #(conn, engine) = _create_conn_engine(udl2_conf['udl2_db'])
     udl2_metadata = MetaData()
     print("create sequences")
     for sequence, definition in UDL_METADATA['SEQUENCES'].items():
-        create_sequence(udl2_conf, udl2_metadata, udl2_conf['udl2_db']['staging_schema'], sequence)
+        create_sequence(udl2_conf, udl2_metadata, udl2_conf['staging_schema'], sequence)
 
 
 def drop_udl2_sequences(udl2_conf):
@@ -516,7 +516,7 @@ def drop_udl2_sequences(udl2_conf):
     '''
     print("drop sequences")
     for seq, definition in UDL_METADATA['SEQUENCES'].items():
-        drop_sequence(udl2_conf, udl2_conf['udl2_db']['staging_schema'], seq)
+        drop_sequence(udl2_conf, udl2_conf['staging_schema'], seq)
 
 
 def create_foreign_data_wrapper_extension(udl2_conf):
@@ -525,7 +525,7 @@ def create_foreign_data_wrapper_extension(udl2_conf):
     @param udl2_conf: The configuration dictionary for 
     '''
     print('create foreign data wrapper extension')
-    sql = "CREATE EXTENSION IF NOT EXISTS file_fdw WITH SCHEMA %s" % (udl2_conf['udl2_db']['csv_schema'])
+    sql = "CREATE EXTENSION IF NOT EXISTS file_fdw WITH SCHEMA %s" % (udl2_conf['csv_schema'])
     (conn, engine) = _create_conn_engine(udl2_conf)
     except_msg = "fail to create foreign data wrapper extension"
     execute_queries(conn, [sql], except_msg)
@@ -543,13 +543,14 @@ def drop_foreign_data_wrapper_extension(udl2_conf):
     execute_queries(conn, [sql], except_msg)
 
 
+
 def create_dblink_extension(udl2_conf):
     '''
     create dblink extension according to configuration file
     @param udl2_conf: The configuration dictionary for 
     '''
     print('create dblink extension')
-    sql = "CREATE EXTENSION IF NOT EXISTS dblink WITH SCHEMA %s" % (udl2_conf['udl2_db']['csv_schema'])
+    sql = "CREATE EXTENSION IF NOT EXISTS dblink WITH SCHEMA %s" % (udl2_conf['db_schema'])
     (conn, engine) = _create_conn_engine(udl2_conf)
     except_msg = "fail to create dblink extension"
     execute_queries(conn, [sql], except_msg)
@@ -573,7 +574,7 @@ def create_foreign_data_wrapper_server(udl2_conf):
     @param udl2_conf: The configuration dictionary for 
     '''
     print('create foreign data wrapper server')
-    sql = "CREATE SERVER %s FOREIGN DATA WRAPPER file_fdw" % (udl2_conf['udl2_db']['fdw_server'])
+    sql = "CREATE SERVER %s FOREIGN DATA WRAPPER file_fdw" % (udl2_conf['fdw_server'])
     (conn, engine) = _create_conn_engine(udl2_conf)
     except_msg = "fail to create foreign data wrapper server"
     execute_queries(conn, [sql], except_msg)
@@ -585,7 +586,7 @@ def drop_foreign_data_wrapper_server(udl2_conf):
     @param udl2_conf: The configuration dictionary for 
     '''
     print('drop foreign data wrapper server')
-    sql = "DROP SERVER IF EXISTS %s CASCADE" % (udl2_conf['udl2_db']['fdw_server'])
+    sql = "DROP SERVER IF EXISTS %s CASCADE" % (udl2_conf['fdw_server'])
     (conn, engine) = _create_conn_engine(udl2_conf)
     except_msg = "fail to drop foreign data wrapper server"
     execute_queries(conn, [sql], except_msg)
@@ -596,12 +597,14 @@ def setup_udl2_schema(udl2_conf):
     create whole udl2 database schema according to configuration file
     @param udl2_conf: The configuration dictionary for 
     '''
-    create_udl2_schema(udl2_conf)
-    create_dblink_extension(udl2_conf)
-    create_foreign_data_wrapper_extension(udl2_conf)
-    create_foreign_data_wrapper_server(udl2_conf)
-    create_udl2_tables(udl2_conf)
-    create_udl2_sequence(udl2_conf)
+    create_dblink_extension(udl2_conf['target_db'])
+    create_udl2_schema(udl2_conf['udl2_db'])
+    create_dblink_extension(udl2_conf['udl2_db'])
+    create_foreign_data_wrapper_extension(udl2_conf['udl2_db'])
+    create_foreign_data_wrapper_server(udl2_conf['udl2_db'])
+    create_udl2_tables(udl2_conf['udl2_db'])
+    create_udl2_sequence(udl2_conf['udl2_db'])
+
 
 
 def teardown_udl2_schema(udl2_conf):
@@ -609,12 +612,13 @@ def teardown_udl2_schema(udl2_conf):
     drop whole udl2 database schema according to configuration file
     @param udl2_conf: The configuration dictionary for 
     '''
-    drop_udl2_sequences(udl2_conf)
-    drop_udl2_tables(udl2_conf)
-    drop_foreign_data_wrapper_server(udl2_conf)
-    drop_foreign_data_wrapper_extension(udl2_conf)
-    drop_dblink_extension(udl2_conf)
-    drop_udl2_schema(udl2_conf)
+    drop_udl2_sequences(udl2_conf['udl2_db'])
+    drop_udl2_tables(udl2_conf['udl2_db'])
+    drop_foreign_data_wrapper_server(udl2_conf['udl2_db'])
+    drop_foreign_data_wrapper_extension(udl2_conf['udl2_db'])
+    drop_dblink_extension(udl2_conf['udl2_db'])
+    drop_udl2_schema(udl2_conf['udl2_db'])
+    drop_dblink_extension(udl2_conf['target_db'])
 
 
 def main():

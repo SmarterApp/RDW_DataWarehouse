@@ -592,6 +592,38 @@ def drop_foreign_data_wrapper_server(udl2_conf):
     execute_queries(conn, [sql], except_msg)
 
 
+def load_fake_record_in_star_schema(udl2_conf):
+    '''
+    load two fake records into dim_int_hier and dim_section for integration table to create
+    star schema from integration table
+    @param udl2_conf: The configuration dictionary for 
+    '''    
+    print('load fake record')
+    (conn, engine) = _create_conn_engine(udl2_conf)
+    sqls = [
+        """
+        INSERT INTO "edware"."dim_section"(
+            section_rec_id, section_guid, section_name, grade, class_name, 
+            subject_name, state_code, district_guid, school_guid, from_date, 
+            to_date, most_recent)
+        VALUES (1, 'fake_value', 'fake_value', 'fake_value', 'fake_value', 
+            'fake_value', 'FA', 'fake_value', 'fake_value', '99999999',
+            '00000000', False);
+        """,
+        """
+        INSERT INTO "edware"."dim_inst_hier"(
+            inst_hier_rec_id, state_name, state_code, district_guid, district_name, 
+            school_guid, school_name, school_category, from_date, to_date, 
+            most_recent)
+        VALUES (-1, 'fake_value', 'FA', 'fake_value', 'fake_value', 
+            'fake_value', 'fake_value', 'fake_value', '99999999', '00000000', 
+            False);
+        """,
+    ]
+    except_msg = "fail to drop foreign data wrapper server"
+    execute_queries(conn, sqls, except_msg)
+
+
 def setup_udl2_schema(udl2_conf):
     '''
     create whole udl2 database schema according to configuration file
@@ -604,7 +636,7 @@ def setup_udl2_schema(udl2_conf):
     create_foreign_data_wrapper_server(udl2_conf['udl2_db'])
     create_udl2_tables(udl2_conf['udl2_db'])
     create_udl2_sequence(udl2_conf['udl2_db'])
-
+    load_fake_record_in_star_schema(udl2_conf['target_db'])
 
 
 def teardown_udl2_schema(udl2_conf):
@@ -619,7 +651,7 @@ def teardown_udl2_schema(udl2_conf):
     drop_dblink_extension(udl2_conf['udl2_db'])
     drop_udl2_schema(udl2_conf['udl2_db'])
     drop_dblink_extension(udl2_conf['target_db'])
-
+   
 
 def main():
     '''

@@ -64,6 +64,12 @@
 			<saml:Attribute Name="memberOf">
 				<saml:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">cn=Teacher,ou=groups,ou=environment,dc=edwdc,dc=net</saml:AttributeValue>
 			</saml:Attribute>
+			<saml:Attribute Name="guid">
+				<saml:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">55d56214-ca4b-11e2-8f31-68a86d1e157a</saml:AttributeValue>
+			</saml:Attribute>
+			<saml:Attribute Name="dn">
+				<saml:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">cn=People,ou=groups,ou=dummyOrg,ou=environment,dc=edwdc,dc=net</saml:AttributeValue>
+			</saml:Attribute>
 		</saml:AttributeStatement>
 	</saml:Assertion>
 </samlp:Response>

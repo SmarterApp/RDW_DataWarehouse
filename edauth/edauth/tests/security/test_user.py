@@ -25,6 +25,12 @@ class TestUser(unittest.TestCase):
         roles = user.get_roles()
         self.assertEqual(roles, data['roles'])
 
+        tenant = user.get_tenant()
+        self.assertIsNone(tenant)
+
+        guid = user.get_guid()
+        self.assertIsNone(guid)
+
     def test_non_empty_user(self):
         user = User()
         data = {'name': {'fullName': 'Joe Doe', 'firstName': 'Joe', 'lastName': 'Doe'}, 'uid': 'joe.doe', 'roles': ['TEACHER'], 'tenant': 'dog', 'guid': '123'}
@@ -45,6 +51,12 @@ class TestUser(unittest.TestCase):
 
         roles = user.get_roles()
         self.assertEqual(roles, data['roles'])
+
+        tenant = user.get_tenant()
+        self.assertEqual(tenant, data['tenant'])
+
+        guid = user.get_guid()
+        self.assertEqual(guid, data['guid'])
 
     def test_set_individual_names(self):
         user = User()

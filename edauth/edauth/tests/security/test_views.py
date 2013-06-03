@@ -22,6 +22,7 @@ from edauth.persistence.persistence import generate_persistence
 from edauth.database.connector import EdauthDBConnection
 from zope import component
 from edauth.security.session_backend import ISessionBackend, SessionBackend
+from pyramid.registry import Registry
 
 
 def get_saml_from_resource_file(file_mame):
@@ -36,20 +37,26 @@ class TestViews(unittest.TestCase):
 
     def setUp(self):
         create_sqlite(use_metadata_from_db=False, echo=False, metadata=generate_persistence(), datasource_name='edauth')
+        self.registry = Registry()
+        self.registry.settings = {}
+        self.registry.settings['auth.saml.idp_server_login_url'] = 'http://dummyidp.com'
+        self.registry.settings['auth.saml.idp_server_logout_url'] = 'http://logout.com'
+        self.registry.settings['auth.saml.name_qualifier'] = 'http://myName'
+        self.registry.settings['auth.saml.issuer_name'] = 'dummyIssuer'
+        self.registry.settings['auth.session.timeout'] = 1
+        self.registry.settings['auth.idp.metadata'] = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'resource', 'idp_metadata.xml'))
+        self.registry.settings['auth.skip.verify'] = False
+        self.registry.settings['base.dn'] = 'ou=environment,dc=edwdc,dc=net'
+
         self.__request = DummyRequest()
         # Must set hook_zca to false to work with uniittest_with_sqlite
-        self.__config = testing.setUp(request=self.__request, hook_zca=False)
+        self.__config = testing.setUp(registry=self.registry, request=self.__request, hook_zca=False)
 
         self.__config.add_route('login', '/dummy/login')
         self.__config.add_route('login_callback', '/dummy/callback')
         self.__config.add_route('logout', '/dummy/logout')
         self.__config.add_route('list_of_reports', '/dummy/report')
 
-        self.__request.registry.settings = {}
-        self.__request.registry.settings['auth.saml.idp_server_login_url'] = 'http://dummyidp.com'
-        self.__request.registry.settings['auth.saml.idp_server_logout_url'] = 'http://logout.com'
-        self.__request.registry.settings['auth.saml.name_qualifier'] = 'http://myName'
-        self.__request.registry.settings['auth.saml.issuer_name'] = 'dummyIssuer'
         component.provideUtility(AESCipher('dummdummdummdumm'), ICipher)
         component.provideUtility(SessionBackend({'session.backend.type': 'db'}), ISessionBackend)
         # delete all user_session before test
@@ -127,10 +134,6 @@ class TestViews(unittest.TestCase):
         session_id = str(uuid.uuid1())
         self.__config.testing_securitypolicy(session_id, ['TEACHER'])
         self.__request.url = 'http://example.com/dummy/page'
-        self.__request.registry.settings = {}
-        self.__request.registry.settings['auth.saml.idp_server_login_url'] = 'http://dummyidp.com'
-        self.__request.registry.settings['auth.saml.issuer_name'] = 'dummyIssuer'
-        self.__request.registry.settings['auth.session.timeout'] = 1
         http = login(self.__request)
         url = urlparse(http.location)
         queries = urllib.parse.parse_qs(url.query)
@@ -156,7 +159,7 @@ class TestViews(unittest.TestCase):
         http = logout(self.__request)
 
         actual_url = urlparse(http.location)
-        expected_url = urlparse(self.__request.registry.settings['auth.saml.idp_server_logout_url'])
+        expected_url = urlparse(self.registry.settings['auth.saml.idp_server_logout_url'])
 
         self.assertEquals(actual_url.scheme, expected_url.scheme)
         self.assertEquals(actual_url.netloc, actual_url.netloc)
@@ -173,8 +176,6 @@ class TestViews(unittest.TestCase):
     def test_saml2_post_consumer_Invalid_SAML(self):
         self.__request.POST = {}
         self.__request.POST['SAMLResponse'] = get_saml_from_resource_file("InvalidSAMLResponse.txt")
-        self.__request.registry.settings = {}
-        self.__request.registry.settings['auth.idp.metadata'] = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'resource', 'idp_metadata.xml'))
         http = saml2_post_consumer(self.__request)
         self.assertIsInstance(http, Response)
         self.assertRegex(str(http.body), 'http://example.com/dummy/login', 'Must match')
@@ -182,10 +183,8 @@ class TestViews(unittest.TestCase):
     def test_saml2_post_consumer_valid_response(self):
         self.__request.POST = {}
         self.__request.POST['SAMLResponse'] = get_saml_from_resource_file("ValidSAMLResponse.txt")
-        self.__request.registry.settings = {}
-        self.__request.registry.settings['auth.session.timeout'] = 1
-        self.__request.registry.settings['auth.idp.metadata'] = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'resource', 'idp_metadata.xml'))
-        self.__request.registry.settings['auth.skip.verify'] = True
+        self.registry.settings['auth.skip.verify'] = True
+        self.__config = testing.setUp(registry=self.registry, request=self.__request, hook_zca=False)
         http = saml2_post_consumer(self.__request)
         self.assertRegex(str(http.body), 'http://example.com/dummy/login', 'Must match')
 

@@ -18,6 +18,8 @@ from edauth.security.tenant import get_tenant_name
 
 logger = logging.getLogger('edauth')
 
+security_logger = logging.getLogger('security_event')
+
 
 def get_user_session(session_id):
     '''
@@ -31,10 +33,8 @@ def write_security_event(message_content, message_type):
     '''
     Write a security event details to a table in DB
     '''
-    with EdauthDBConnection() as connection:
-        security_events = connection.get_table('security_event')
-        # store the security event into DB
-        connection.execute(security_events.insert(), message=message_content, type=message_type, host=socket.gethostname())
+    # log the security event
+    security_logger.info({'msg': message_content, 'type': message_type, 'host': socket.gethostname()})
 
 
 def create_new_user_session(saml_response, session_expire_after_in_secs=30):

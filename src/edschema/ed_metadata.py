@@ -24,7 +24,7 @@ Command line options are available form --help, but as a quick start:
 @contact:    edwaredevs@wgen.net
 @deffield    updated: Updated
 '''
-from sqlalchemy.schema import MetaData, CreateSchema
+from sqlalchemy.schema import MetaData, CreateSchema, DropSchema
 from sqlalchemy import Table, Column, Index
 from sqlalchemy import SmallInteger, String, Boolean, Float, BigInteger
 from sqlalchemy import ForeignKey
@@ -247,6 +247,7 @@ if __name__ == "__main__":
     parser.add_argument("--host", default="127.0.0.1:5432", help="postgre host default[127.0.0.1:5432]")
     parser.add_argument("-u", "--user", default="edware", help="postgre username default[edware]")
     parser.add_argument("-p", "--passwd", default="edware", help="postgre password default[edware]")
+    parser.add_argument("-a", "--action", default="setup", help="action, default is setup, use teardown to drop all tables")
     args = parser.parse_args()
 
     __schema = args.schema
@@ -254,7 +255,8 @@ if __name__ == "__main__":
     __host = args.host
     __user = args.user
     __passwd = args.passwd
-
+    __action = args.action
+    
     if __schema is None:
         print("Please specifiy --schema option")
         exit(-1)
@@ -268,6 +270,11 @@ if __name__ == "__main__":
     print("####################")
     engine = create_engine(__URL, echo=True)
     connection = engine.connect()
-    connection.execute(CreateSchema(__schema))
-    metadata = generate_ed_metadata(schema_name=__schema, bind=engine)
-    metadata.create_all(engine)
+    if __action == 'setup':
+        connection.execute(CreateSchema(__schema))
+        metadata = generate_ed_metadata(schema_name=__schema, bind=engine)
+        metadata.create_all(engine)
+    elif __action == 'teardown':
+        metadata = generate_ed_metadata(schema_name=__schema, bind=engine)
+        metadata.drop_all(engine)
+        connection.execute(DropSchema(__schema))

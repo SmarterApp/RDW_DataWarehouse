@@ -107,6 +107,7 @@
         .overallScoreSection {
           .info {
             margin-left: 20px;
+            
             .overallDesc {
               color: @color-black !important;
             }
@@ -156,37 +157,53 @@
    
       .confidenceLevel { 
         height: 150px;
-        .aldDescText { display: block }
         .progress {
           .bar {
             background-image: none !important;
           }
         }      
         .transImage1 {
-          background-image: url("../images/ISRleftBracket_print.png");
+          background-image: url("http://localhost:6543/assets/images/ISRleftBracket_print.png");
           background-repeat: no-repeat;
           background-position: top left;
         }
         .transImage2 {
-          background-image: url("../images/ISRrightBracketwEB_print.png");
+          background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAn0AAABDCAYAAADpnLM5AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoTWFjaW50b3NoKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo0QjYzM0FFN0MwNUMxMUUyODJBNjkxQkM5NEZBRjA5NyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo0QjYzM0FFOEMwNUMxMUUyODJBNjkxQkM5NEZBRjA5NyI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjRCNjMzQUU1QzA1QzExRTI4MkE2OTFCQzk0RkFGMDk3IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjRCNjMzQUU2QzA1QzExRTI4MkE2OTFCQzk0RkFGMDk3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+Txfi0AAABEFJREFUeNrs3D1uE0EYgOE1CvShCwVIILhAaKFKjhD3NAkXWOwjbOQTgAj0cARccAB8AqRINKSgQPRIywz5jFarxHYCBR4/jzQ4eeOfMErxyfZ40LZtBQBA2W7YAgCA8m1t4n96MpnspYvdXn6f1uk/fJjRKvdf1/Wqv/Nhvn26/tSfLQBwVZv6TN9uDGV7nbX9jx+jSet+5/E+/OX9HVwwqAIArGRrg//vs7qu9yeTSbflwex7DIHD+P5Vdf4MXX6G7V0Mcqfx8+3edY57j/E+bncQ95kdxkCYbztNjz+Mdhg/z/d/lH63V/HsXhO/EwDAtW3ye/r20lCVT7HMV9UZuoad709jeHsZl4PO9/3r9H2I+87D4izaQdz/gxgEu8/ePY7B8SD9bvfjMYbRt/25AgCGvqvLQ9h+Z83Nn52bO46hbrfTp71hbX6dvv0YEh93BrxpDHMve9fN79fLz+h97wyf+T1/0+gzf64AwHVt2YI/lj2TNovBbRqX1x3C8su1wxgSPy243u8hMg6dzHpDJwDAlWzyM33zwxXzteyQxFF1/tJsG5dHKzzG/OXdPNwdx/CW3/+XX+4dLRo267rOQ9847iPf3vv6AIBrG/hwZgCA8vlwZgCADTAYjUbP0mVeT9L6kda3/IOmaR5edqOzs7ON3rSdnZ1qwd606ecDf1oAwP8kP9P3Nq2nacjLg0p+v9ld2wIAUN7Q99t4nM8MVC/S+mpbAAAKHfo6ftoWAICyXPo5ffm9abbn0r2xCQBAGUOfwwgAAOXwkS0AAIY+AABKH/pep3Uz1kl1fqpX0zRN0zRNW8fWtu2ttG6ndS+tR6PR6HNe6euvab1O62asE03TNE3TNG0926KhzyZpmqZpmqYV0hYNfTZJ0zRN0zStkLZs6MvrTdzoRNM0TdM0TVvPtuzlXZukaZqmaZpWQFt2kMMmaZqmaZqmFdAWDX02SdM0TdM0rZC27D19NknTNE3TNK2A5iCHpmmapmmagxw2SdM0TdM0zUEOTdM0TdM0zUEOTdM0TdM0zUEOTdM0TdM0zUEOTdM0TdM0zUEOTdM0TdM0zUEOTdM0TdM0zUEOTdM0TdM0Bzkc5NA0TdM0TXOQQ9M0TdM0TXOQQ9M0TdM0TXOQQ9M0TdM0TXOQQ9M0TdM0TXOQQ9M0TdM0TXOQQ9M0TdM0TbvqQY43F9xI0zRN0zRNW8O27CCHTdI0TdM0TSugrXKQw8ZpmqZpmqateVv1IIeN0zRN0zRNW+O2aOirbJKmaZqmaVoZbZAGvKrnc/6naZqHFQAARbhhCwAADH0AABj6AABY16Fvy7YAABQ89DVNky/u2BYAgEKHvjzwjcfj4/TlwLYAAJQ39D1L62Ma+Np0+TytL7YFAKAsg/whzAAAlM3pXQAAQx8AAIY+AAAMfQAAGPoAADD0AQBg6AMAwNAHAIChDwBgo/wSYAB/6zysrWvTYAAAAABJRU5ErkJggg==');
           background-repeat: no-repeat;
-          background-position: top left;
+          background-position: 0 0;
         }  
         
         .transImage1.confLevelRight {
-          background-image: url("../images/ISRleftBracketwEB_print.png");
+          background-image: url("http://localhost:6543/assets/images/ISRleftBracketwEB_print.png");
           background-repeat: no-repeat;
           background-position: top left;
         }
       
         .transImage2.confLevelRight {
-          background-image: url("../images/ISRrightBracket_print.png");
+          background-image: url("http://localhost:6543/assets/images/ISRrightBracket_print.png");
           background-repeat: no-repeat;
           background-position: top left;
         }
+        
+        .aldDescText {
+          margin-left: 3%;
+          margin-top: 60px;
+          position: absolute;
+          font-size: 11px;
+          line-height: 12px;
+          text-align: center;
+  
+          
+          div {       
+            p {
+                visibility: visible;
+              }
+            }
+        }
       } 
       
-
+   
 }
 
 
+ 

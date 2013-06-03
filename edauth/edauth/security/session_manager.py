@@ -12,10 +12,13 @@ from edauth.database.connector import EdauthDBConnection
 import socket
 import logging
 from edauth.security.session_backend import get_session_backend
+from edauth.security.tenant import get_tenant_name
 
 # TODO: remove datetime.now() and use func.now()
 
 logger = logging.getLogger('edauth')
+
+security_logger = logging.getLogger('security_event')
 
 
 def get_user_session(session_id):
@@ -30,10 +33,8 @@ def write_security_event(message_content, message_type):
     '''
     Write a security event details to a table in DB
     '''
-    with EdauthDBConnection() as connection:
-        security_events = connection.get_table('security_event')
-        # store the security event into DB
-        connection.execute(security_events.insert(), message=message_content, type=message_type, host=socket.gethostname())
+    # log the security event
+    security_logger.info({'msg': message_content, 'type': message_type, 'host': socket.gethostname()})
 
 
 def create_new_user_session(saml_response, session_expire_after_in_secs=30):
@@ -68,7 +69,15 @@ def expire_session(session_id):
     '''
     expire session by session_id
     '''
-    get_session_backend().delete_session(session_id)
+    session = get_user_session(session_id)
+    current_time = datetime.now()
+    if session is not None:
+        # Expire the entry
+        session.set_expiration(current_time)
+        __backend = get_session_backend()
+        __backend.update_last_access_time(session)
+        # Delete the session
+        __backend.delete_session(session_id)
 
 
 def __create_from_SAMLResponse(saml_response, last_access, expiration):
@@ -103,10 +112,18 @@ def __create_from_SAMLResponse(saml_response, last_access, expiration):
     if 'uid' in __attributes:
         if __attributes['uid']:
             session.set_uid(__attributes['uid'][0])
+
+    # get guid
+    guid = __attributes.get('guid')
+    if guid is not None:
+        session.set_guid(guid[0])
+
     # get roles
     session.set_roles(__get_roles(__attributes))
     # set nameId
     session.set_name_id(__name_id)
+    # set tenant
+    session.set_tenant(get_tenant_name(__attributes))
 
     session.set_expiration(expiration)
     session.set_last_access(last_access)

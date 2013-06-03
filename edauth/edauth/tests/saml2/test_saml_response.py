@@ -16,7 +16,7 @@ class Test(unittest.TestCase):
 
         attributes = assertions.get_attributes()
         self.assertIsNotNone(attributes, 'assertions have attributes')
-        self.assertEqual(3, len(attributes), 'attributes are array and has 3 items')
+        self.assertEqual(5, len(attributes), 'attributes does not have 5 items')
 
     def test_id(self):
         samlResponse = create_SAMLResponse('SAMLResponse.xml')

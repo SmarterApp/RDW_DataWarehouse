@@ -75,7 +75,7 @@ common:
       report_base_dir: /tmp/pdf
       celery_timeout: 30
     # Used for tenancy
-    base.dn: 'ou=environment,dc=edwdc,dc=net'
+    base.dn: ou=environment,dc=edwdc,dc=net
 
   '[server:main]':
     use: 'egg:waitress#main'
@@ -88,10 +88,10 @@ common:
   ###
 
   '[loggers]':
-    keys: root, smarter, sqlalchemy, exc_logger, audit, edauth
+    keys: root, smarter, sqlalchemy, exc_logger, audit, edauth, security_event
 
   '[handlers]':
-    keys: console, filelog, audit
+    keys: console, filelog, audit, security_event
 
   '[formatters]':
     keys: generic, json
@@ -129,6 +129,13 @@ common:
     qualname: audit
     # Important: this means it doesn't propagate to root logger
     propagate: 0
+    
+  '[logger_security_event]':
+    level: INFO
+    handlers: security_event
+    qualname: security_event
+    # Important: this means it doesn't propagate to root logger
+    propagate: 0
 
   '[handler_console]':
     class: StreamHandler
@@ -145,6 +152,12 @@ common:
   '[handler_audit]':
     class: logging.handlers.TimedRotatingFileHandler
     args: '(''/tmp/audit.log'',''midnight'')'   # (path, when) 
+    level: INFO
+    formatter: json
+    
+  '[handler_security_event]':
+    class: logging.handlers.TimedRotatingFileHandler
+    args: '(''/tmp/security_event.log'',''midnight'')'   # (path, when) 
     level: INFO
     formatter: json
 
@@ -287,6 +300,11 @@ uat:
   '[handler_audit]':
     class: logging.handlers.SysLogHandler
     args: '(''/dev/log'', handlers.SysLogHandler.LOG_LOCAL0)'
+    level: WARN
+    formatter: json
+  '[handler_audit]':
+    class: logging.handlers.SysLogHandler
+    args: '(''/dev/log'', handlers.SysLogHandler.LOG_LOCAL2)'
     level: WARN
     formatter: json
   '[logger_smarter]':

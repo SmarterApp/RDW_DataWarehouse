@@ -23,6 +23,8 @@ class User(object):
         self.__info['name'] = {'fullName': None, 'firstName': None, 'lastName': None}
         self.__info['uid'] = None
         self.__info['roles'] = []
+        self.__info['tenant'] = None
+        self.__info['guid'] = None
 
     def set_user_info(self, info):
         '''
@@ -77,6 +79,20 @@ class User(object):
         '''
         self.__info['roles'] = roles
 
+    def set_tenant(self, tenant):
+        '''
+        @param tenant: the tenant to be set
+        @type tenant: string
+        '''
+        self.__info['tenant'] = tenant
+
+    def set_guid(self, guid):
+        '''
+        @param guid: the guid to set
+        @type guid: string
+        '''
+        self.__info['guid'] = guid
+
     def get_name(self):
         return {'name': self.__info['name']}
 
@@ -88,3 +104,9 @@ class User(object):
 
     def get_roles(self):
         return self.__info['roles']
+
+    def get_tenant(self):
+        return self.__info['tenant']
+
+    def get_guid(self):
+        return self.__info['guid']

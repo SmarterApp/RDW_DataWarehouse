@@ -38,6 +38,12 @@ class Session:
     def get_roles(self):
         return self.__user.get_roles()
 
+    def get_tenant(self):
+        return self.__user.get_tenant()
+
+    def get_guid(self):
+        return self.__user.get_guid()
+
     def get_name(self):
         return self.__user.get_name()
 
@@ -73,6 +79,18 @@ class Session:
         @param roles: the roles
         '''
         self.__user.set_roles(roles)
+
+    def set_tenant(self, tenant):
+        '''
+        @param tenant: the tenant to set
+        '''
+        self.__user.set_tenant(tenant)
+
+    def set_guid(self, guid):
+        '''
+        @param guid: the user guid to set
+        '''
+        self.__user.set_guid(guid)
 
     def set_fullName(self, fullName):
         '''

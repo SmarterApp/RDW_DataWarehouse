@@ -7,7 +7,7 @@ import unittest
 from edauth.security.session import Session
 
 
-class Test(unittest.TestCase):
+class TestSession(unittest.TestCase):
 
     def test_empty_session(self):
         session = Session()
@@ -17,6 +17,8 @@ class Test(unittest.TestCase):
         self.assertEqual(0, len(session.get_roles()))
         self.assertIsNone(session.get_session_id())
         self.assertIsNone(session.get_uid())
+        self.assertIsNone(session.get_tenant())
+        self.assertIsNone(session.get_guid())
 
     def test_fullName(self):
         session = Session()

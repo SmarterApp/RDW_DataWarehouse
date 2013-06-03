@@ -72,10 +72,8 @@ class BeakerBackend(Backend):
     Manipulates session that resides in persistent storage (memory, memcached)
     '''
     def __init__(self, settings):
-        # We'll save both the cachemanager and the cache_region
+        # We'll save both the cachemanager
         self.cache_mgr = CacheManager(**parse_cache_config_options(settings))
-        # Region name is session, edware_session gets appended to cache key name
-        self.cache_region = self.cache_mgr.get_cache_region('edware_session', 'session')
 
     def create_new_session(self, session):
         '''
@@ -88,23 +86,31 @@ class BeakerBackend(Backend):
         Given a session, persist it
         '''
         _id = session.get_session_id()
-        self.cache_region.put(_id, session)
+        region = self.__get_cache_region(_id)
+        region.put(_id, session)
 
     def get_session(self, session_id):
         '''
         Return session from persistent storage
         '''
-        if not session_id in self.cache_region:
+        region = self.__get_cache_region(session_id)
+        if not session_id in region:
             logger.info('Session is not found in cache. It may have expired or connection to memcached is down')
             return None
-        return self.cache_region.get(session_id)
+        return region.get(session_id)
 
     def delete_session(self, session_id):
         '''
         Delete session from persistent storage
         '''
-        if session_id in self.cache_region:
-            self.cache_region.remove_value(session_id)
+        # delete from db doesn't work
+        region = self.__get_cache_region(session_id)
+        if session_id in region:
+            # works for memcached
+            region.remove_value(session_id)
+
+    def __get_cache_region(self, key):
+        return self.cache_mgr.get_cache_region('edware_session_' + key, 'session')
 
 
 class DbBackend(Backend):

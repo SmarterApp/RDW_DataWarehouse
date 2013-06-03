@@ -37,6 +37,7 @@ class TestSessionManager(unittest.TestCase):
         reg = Registry()
         reg.settings = {}
         reg.settings['session.backend.type'] = 'db'
+        reg.settings['base.dn'] = 'ou=environment,dc=edwdc,dc=net'
         component.provideUtility(SessionBackend(reg.settings), ISessionBackend)
         # Must set hook_zca to false to work with uniittest_with_sqlite
         self.__config = testing.setUp(registry=reg, request=self.__request, hook_zca=False)
@@ -52,6 +53,8 @@ class TestSessionManager(unittest.TestCase):
         self.assertEqual(session.get_uid(), "linda.kim", "uid is linda.kim")
         self.assertTrue("TEACHER" in session.get_roles(), "role is teacher")
         self.assertEqual(session.get_name()['name']['fullName'], "Linda Kim", "name is Linda Kim")
+        self.assertEqual(session.get_tenant(), 'dummyorg')
+        self.assertEqual(session.get_guid(), '55d56214-ca4b-11e2-8f31-68a86d1e157a')
 
     def test_create_session_from_json(self):
         # prepare mock session in database
@@ -139,6 +142,7 @@ class TestSessionManagerWithCache(unittest.TestCase):
         reg.settings['cache.expire'] = 10
         reg.settings['cache.regions'] = 'session'
         reg.settings['cache.type'] = 'memory'
+        reg.settings['base.dn'] = 'ou=environment,dc=edwdc,dc=net'
         component.provideUtility(SessionBackend(reg.settings), ISessionBackend)
         # Must set hook_zca to false to work with uniittest_with_sqlite
         self.__config = testing.setUp(registry=reg, request=self.__request, hook_zca=False)
@@ -154,6 +158,8 @@ class TestSessionManagerWithCache(unittest.TestCase):
         self.assertEqual(session.get_uid(), "linda.kim", "uid is linda.kim")
         self.assertTrue("TEACHER" in session.get_roles(), "role is teacher")
         self.assertEqual(session.get_name()['name']['fullName'], "Linda Kim", "name is Linda Kim")
+        self.assertEqual(session.get_tenant(), 'dummyorg')
+        self.assertEqual(session.get_guid(), '55d56214-ca4b-11e2-8f31-68a86d1e157a')
 
     def test_update_last_access_session(self):
         session = create_new_user_session(create_SAMLResponse('SAMLResponse.xml'))

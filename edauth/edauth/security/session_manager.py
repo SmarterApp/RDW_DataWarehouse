@@ -69,7 +69,15 @@ def expire_session(session_id):
     '''
     expire session by session_id
     '''
-    get_session_backend().delete_session(session_id)
+    session = get_user_session(session_id)
+    current_time = datetime.now()
+    if session is not None:
+        # Expire the entry
+        session.set_expiration(current_time)
+        __backend = get_session_backend()
+        __backend.update_last_access_time(session)
+        # Delete the session
+        __backend.delete_session(session_id)
 
 
 def __create_from_SAMLResponse(saml_response, last_access, expiration):

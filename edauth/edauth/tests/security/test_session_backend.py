@@ -22,18 +22,19 @@ class TestBeakerBackend(unittest.TestCase):
         reg = {}
         reg['session.backend.type'] = 'beaker'
         reg['cache.expire'] = 10
-        # Change to get temp dir python
         reg['cache.regions'] = 'session'
         reg['cache.type'] = 'memory'
         self.cachemgr = CacheManager(**parse_cache_config_options(reg))
         self.backend = BeakerBackend(reg)
-        # Must set hook_zca to false to work with uniittest_with_sqlite
+
+    def __get_region(self, key):
+        return self.cachemgr.get_cache_region('edware_session_' + key, 'session')
 
     def test_create_new_session(self):
         session = Session()
         session.set_session_id('123')
         self.backend.create_new_session(session)
-        self.assertIsNotNone(self.cachemgr.get_cache_region('edware_session', 'session').get('123'))
+        self.assertIsNotNone(self.__get_region('123').get('123'))
 
     def test_get_session_from_persistence_with_existing_session(self):
         session = Session()
@@ -53,7 +54,7 @@ class TestBeakerBackend(unittest.TestCase):
         session.set_uid('abc')
         self.backend.create_new_session(session)
         self.backend.delete_session('456')
-        self.assertFalse('456' in self.cachemgr.get_cache_region('edware_session', 'session'))
+        self.assertFalse('456' in self.__get_region('456'))
 
     def test_update_session(self):
         session = Session()
@@ -62,7 +63,7 @@ class TestBeakerBackend(unittest.TestCase):
         self.backend.create_new_session(session)
         session.set_uid('def')
         self.backend.update_last_access_time(session)
-        lookup = self.cachemgr.get_cache_region('edware_session', 'session').get('456')
+        lookup = self.__get_region('456').get('456')
         self.assertEquals(lookup.get_uid(), 'def')
 
 

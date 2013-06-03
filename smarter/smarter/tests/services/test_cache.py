@@ -49,7 +49,7 @@ class Test(Unittest_with_smarter_sqlite):
         request = DummyRequest()
         request.matchdict['cache_name'] = 'hello'
         rtn = cache_flush(request)
-        self.assertEqual('not supported', rtn['result'])
+        self.assertEqual(404, rtn.code)
 
     def test_flush_session(self):
         session = Session()

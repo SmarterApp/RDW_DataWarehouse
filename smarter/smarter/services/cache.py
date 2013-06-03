@@ -6,6 +6,7 @@ Created on May 30, 2013
 from pyramid.view import view_config
 from beaker.cache import cache_managers
 import logging
+from pyramid.httpexceptions import HTTPNotFound
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +25,7 @@ def cache_flush(request):
     elif cache_name == 'data':
         cache_flush_data()
     else:
-        return {'cache_name': cache_name, 'result': 'not supported'}
+        return HTTPNotFound()
     return {'cache_name': cache_name, 'result': 'OK'}
 
 

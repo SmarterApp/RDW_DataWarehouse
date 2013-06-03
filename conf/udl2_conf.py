@@ -74,7 +74,7 @@ udl2_conf = {
         'db_port':'5432',
         'db_database':'edware',
         'db_user':'edware',
-        'db_pass':'password',
+        'db_pass':'edware2013',
         'db_driver':'postgresql'
     }
 }

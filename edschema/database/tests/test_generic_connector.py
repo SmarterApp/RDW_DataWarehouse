@@ -15,9 +15,8 @@ class TestGenericConnector(unittest.TestCase):
         # Make sure we do not have sqlite in memory
         dbUtil = component.queryUtility(IDbUtil)
         self.assertIsNone(dbUtil)
-        self._settings = {'test.schema_name': 'myschema',
-                          'test.db.main.url': 'sqlite:///:memory:'}
-        self._prefix = 'test'
+        self._settings = {'test.db.dummy.url': 'sqlite:///:memory:'}
+        self._prefix = 'test.db.dummy.'
         self._metadata = None
 
     def tearDown(self):

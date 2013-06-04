@@ -45,17 +45,8 @@ udl2_conf = {
         'audit':'/var/log/wgen/edware-udl/logs/udl2.audit.log',  # for status log for everything
         'error':'/var/log/wgen/edware-udl/logs/udl2.error.log',  # for error message and exceptions, 
     },
-    'postgresql' : {  # PostgresQL for UDL2 processing. This is not the target database.
-        'db_host':'localhost',
-        'db_port':'5432',
-        'db_database':'udl2',
-        'db_schema':'udl2',
-        'db_user':'udl2',
-        'db_pass':'udl2abc1234',
-        'db_driver':'postgresql',
-    },
     'udl2_db': {
-        'csv_schema':'udl2',  # this is the same as postgresql schema
+        'csv_schema':'udl2',  # PostgresQL for UDL2 processing. This is not the target database.
         'fdw_server':'udl2_fdw_server',
         'staging_schema':'udl2',
         'integration_schema': 'udl2',

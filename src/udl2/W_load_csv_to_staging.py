@@ -12,7 +12,7 @@ logger = get_task_logger(__name__)
 @celery.task(name="udl2.W_load_to_staging_table.task")
 def task(msg):
     logger.info(task.name)
-    logger.info('LOAD_CSV_TO_STAGING: Loading file <%s> to <%s> ' % (msg[mk.FILE_TO_LOAD], udl2_conf['postgresql']['db_host']))
+    logger.info('LOAD_CSV_TO_STAGING: Loading file <%s> to <%s> ' % (msg[mk.FILE_TO_LOAD], udl2_conf['udl2_db']['db_host']))
     batch_id = msg[mk.JOB_CONTROL][1]
     conf = generate_conf_for_loading(msg[mk.FILE_TO_LOAD], msg[mk.ROW_START], msg[mk.HEADERS], batch_id)
     load_file(conf)

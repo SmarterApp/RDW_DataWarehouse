@@ -76,11 +76,11 @@ def generate_conf(batch_id, udl2_conf):
             # source schema
             'source_schema': 'udl2',
             # source database setting
-            'db_host': udl2_conf['postgresql']['db_host'],
-            'db_port': udl2_conf['postgresql']['db_port'],
-            'db_user': udl2_conf['postgresql']['db_user'],
-            'db_name': udl2_conf['postgresql']['db_database'],
-            'db_password': udl2_conf['postgresql']['db_pass'],
+            'db_host': udl2_conf['udl2_db']['db_host'],
+            'db_port': udl2_conf['udl2_db']['db_port'],
+            'db_user': udl2_conf['udl2_db']['db_user'],
+            'db_name': udl2_conf['udl2_db']['db_database'],
+            'db_password': udl2_conf['udl2_db']['db_pass'],
 
             # target schema
             'target_schema': 'edware',

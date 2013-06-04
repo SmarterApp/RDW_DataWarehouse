@@ -4,32 +4,14 @@ Created on Apr 4, 2013
 @author: kallen
 '''
 
-# TODO: move to separate constants file
-GRADES = 'grades'
-STUDENTS = 'students'
-STATE_TYPE = 'state_type'
-DISTRICT_TYPES_AND_COUNTS = 'district_types_and_counts'
-SCHOOL_COUNTS = 'school_counts'
-MIN = 'min'
-AVG = 'avg'
-MAX = 'max'
-SCHOOL_TYPES_AND_RATIOS = 'school_types_and_ratios'
-NAME = 'name'
-PERCENTAGES = 'percentages'
-GAMMA = 'gamma'
-STD = 'std'
-STATE_CODE = 'state_code'
-CUT_POINTS = 'cut_points'
-MIN_PERC = 'min_divisor'
-MAX_PERC = 'max_divisor'
-RAND_ADJ_PNT_LO = 'random_adjustment_points_lo'
-RAND_ADJ_PNT_HI = 'random_adjustment_points_hi'
-FROM_DATE = 'from_date'
-TO_DATE = 'to_date'
-MOST_RECENT = 'most_recent'
-SUBJECT_AND_PERCENTAGES = 'subjects_and_percentages'
-TYPE = 'type'
-ADJUST_PLD = 'adjust_pld'
+from datageneration.src.constants import (
+    GRADES, STUDENTS, STATE_TYPE, DISTRICT_TYPES_AND_COUNTS,
+    SCHOOL_COUNTS, MIN, AVG, MAX, SCHOOL_TYPES_AND_RATIOS,
+    NAME, PERCENTAGES, GAMMA, STD, STATE_CODE, CUT_POINTS,
+    MIN_PERC, MAX_PERC, RAND_ADJ_PNT_LO, RAND_ADJ_PNT_HI,
+    FROM_DATE, TO_DATE, MOST_RECENT, SUBJECT_AND_PERCENTAGES,
+    TYPE, ADJUST_PLD
+)
 
 
 def get_school_types():
@@ -40,17 +22,17 @@ def get_school_types():
     students is a dictionary containing the min, max and avg number of students
     """
     school_types = {
-        'High School': {'type': 'High School', 'grades': [11], 'students': {'min': 646, 'max': 2000, 'avg': 1405}},
-        'Middle School': {'type': 'Middle School', 'grades': [6, 7, 8], 'students': {'min': 200, 'max': 1000, 'avg': 662}},
-        'Elementary School': {'type': 'Elementary School', 'grades': [3, 4, 5], 'students': {'min': 200, 'max': 1000, 'avg': 381}},
+        'High School': {'type': 'High School', 'grades': [11], 'students': {'min': 50, 'max': 250, 'avg': 100}},
+        'Middle School': {'type': 'Middle School', 'grades': [6, 7, 8], 'students': {'min': 25, 'max': 100, 'avg': 50}},
+        'Elementary School': {'type': 'Elementary School', 'grades': [3, 4, 5], 'students': {'min': 10, 'max': 35, 'avg': 30}},
 
-        'Poor High School': {'type': 'High School', 'grades': [11], 'students': {'min': 646, 'max': 2000, 'avg': 1805}, 'adjust_pld': -0.45},
-        'Poor Middle School': {'type': 'Middle School', 'grades': [6, 7, 8], 'students': {'min': 200, 'max': 1000, 'avg': 862}, 'adjust_pld': -0.5},
-        'Poor Elementary School': {'type': 'Elementary School', 'grades': [3, 4, 5], 'students': {'min': 200, 'max': 1000, 'avg': 581}, 'adjust_pld': -0.6},
+        'Poor High School': {'type': 'High School', 'grades': [11], 'students': {'min': 50, 'max': 250, 'avg': 100}, 'adjust_pld': -0.45},
+        'Poor Middle School': {'type': 'Middle School', 'grades': [6, 7, 8], 'students': {'min': 25, 'max': 100, 'avg': 50}, 'adjust_pld': -0.5},
+        'Poor Elementary School': {'type': 'Elementary School', 'grades': [3, 4, 5], 'students': {'min': 10, 'max': 35, 'avg': 30}, 'adjust_pld': -0.6},
 
-        'Good High School': {'type': 'High School', 'grades': [11], 'students': {'min': 646, 'max': 2000, 'avg': 1805}, 'adjust_pld': 0.35},
-        'Good Middle School': {'type': 'Middle School', 'grades': [6, 7, 8], 'students': {'min': 200, 'max': 1000, 'avg': 862}, 'adjust_pld': 0.4},
-        'Good Elementary School': {'type': 'Elementary School', 'grades': [3, 4, 5], 'students': {'min': 200, 'max': 800, 'avg': 581}, 'adjust_pld': 0.5},
+        'Good High School': {'type': 'High School', 'grades': [11], 'students': {'min': 50, 'max': 250, 'avg': 100}, 'adjust_pld': 0.35},
+        'Good Middle School': {'type': 'Middle School', 'grades': [6, 7, 8], 'students': {'min': 25, 'max': 100, 'avg': 50}, 'adjust_pld': 0.4},
+        'Good Elementary School': {'type': 'Elementary School', 'grades': [3, 4, 5], 'students': {'min': 10, 'max': 35, 'avg': 30}, 'adjust_pld': 0.5},
     }
 
     return school_types
@@ -182,9 +164,9 @@ def get_state_types():
 
     Initial numbers were Big=3, Medium=6, Small=40
     """
-    state_types = {'typical_1': {'district_types_and_counts': {'Big Average': 50, 'Big Poor': 25, 'Big Good': 50,
-                                                               'Medium Average': 50, 'Medium Poor': 25, 'Medium Good': 25, 'Medium Very Poor': 50, 'Medium Very Good': 50,
-                                                               'Small Average': 25, 'Small Poor': 50, 'Small Good': 25, 'Small Very Poor': 50, 'Small Very Good': 50
+    state_types = {'typical_1': {'district_types_and_counts': {'Big Average': 1, 'Big Poor': 1, 'Big Good': 1,
+                                                               'Medium Average': 2, 'Medium Poor': 1, 'Medium Good': 1, 'Medium Very Poor': 1, 'Medium Very Good': 1,
+                                                               'Small Average': 20, 'Small Poor': 5, 'Small Good': 5, 'Small Very Poor': 5, 'Small Very Good': 5
                                                                },
                                  'subjects_and_percentages': {'Math': .99, 'ELA': .99}}
                    }

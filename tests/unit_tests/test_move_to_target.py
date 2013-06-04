@@ -38,7 +38,7 @@ class TestMoveToTarget(unittest.TestCase):
 
         expected_query_1 = 'ALTER TABLE \"edware\".\"{target_table}\" DISABLE TRIGGER ALL'.format(target_table=target_table)
         expected_query_2 = get_expected_insert_query_for_fact_table(target_table, column_mapping['asmt_rec_id'], column_mapping['section_rec_id'], batch_id,
-                                                            conf[mk.TARGET_DB_NAME], conf[mk.TARGET_DB_USER], conf[mk.TATGET_DB_PASSWORD])
+                                                            conf[mk.TARGET_DB_NAME], conf[mk.TARGET_DB_USER], conf[mk.TARGET_DB_PASSWORD])
         expected_query_3 = get_expected_update_inst_hier_rec_id_query(target_table)
         expected_query_4 = 'ALTER TABLE \"edware\".\"{target_table}\" ENABLE TRIGGER ALL'.format(target_table=target_table)
         expected_value = [expected_query_1, expected_query_2, expected_query_3, expected_query_4]

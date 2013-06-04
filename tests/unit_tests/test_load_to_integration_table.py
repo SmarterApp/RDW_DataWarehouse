@@ -15,7 +15,7 @@ from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 import imp
 import re
 from collections import OrderedDict
-
+from udl2 import message_keys as mk
 
 class TestLoadToIntegrationTable(unittest.TestCase):
 
@@ -26,7 +26,7 @@ class TestLoadToIntegrationTable(unittest.TestCase):
             config_path = UDL2_DEFAULT_CONFIG_PATH_FILE
         udl2_conf = imp.load_source('udl2_conf', config_path)
         from udl2_conf import udl2_conf
-        self.conf = udl2_conf
+        self.conf = udl2_conf 
 
     def tearDown(self, ):
         pass
@@ -71,31 +71,30 @@ class TestLoadToIntegrationTable(unittest.TestCase):
         
     def test_move_data_from_staging_to_integration(self, ):
         conf = {
-             # add batch_id from msg
-            'batch_id': '00000000-0000-0000-0000-000000000000',
-            # error schema
-            'error_schema': self.conf['udl2_db']['staging_schema'],
-            # source schema
-            'source_schema': self.conf['udl2_db']['staging_schema'],
-            # source database setting
-            'db_host_source': self.conf['udl2_db']['db_host'],
-            'db_port_source': self.conf['udl2_db']['db_port'],
-            'db_user_source': self.conf['udl2_db']['db_user'],
-            'db_name_source': self.conf['udl2_db']['db_database'],
-            'db_password_source': self.conf['udl2_db']['db_pass'],
-            'db_driver_source': self.conf['udl2_db']['db_driver'],
+            mk.BATCH_ID: '00000000-0000-0000-0000-000000000000',
+            mk.SOURCE_DB_DRIVER: self.conf['udl2_db']['db_driver'],
 
-            # target schema
-            'target_schema': self.conf['udl2_db']['integration_schema'],
+            # source database setting
+            mk.SOURCE_DB_HOST: self.conf['udl2_db']['db_host'],
+            mk.SOURCE_DB_PORT: self.conf['udl2_db']['db_port'],
+            mk.SOURCE_DB_USER: self.conf['udl2_db']['db_user'],
+            mk.SOURCE_DB_NAME: self.conf['udl2_db']['db_database'],
+            mk.SOURCE_DB_PASSWORD: self.conf['udl2_db']['db_pass'],
+            mk.SOURCE_DB_SCHEMA: self.conf['udl2_db']['staging_schema'],
+
             # target database setting
-            'db_host_target': self.conf['udl2_db']['db_host'],
-            'db_port_target': self.conf['udl2_db']['db_port'],
-            'db_user_target': self.conf['udl2_db']['db_user'],
-            'db_name_target': self.conf['udl2_db']['db_database'],
-            'db_password_target': self.conf['udl2_db']['db_pass'],
-            'map_type': 'unit_test',
+            mk.TARGET_DB_HOST: self.conf['udl2_db']['db_host'],
+            mk.TARGET_DB_PORT: self.conf['udl2_db']['db_port'],
+            mk.TARGET_DB_USER: self.conf['udl2_db']['db_user'],
+            mk.TARGET_DB_NAME: self.conf['udl2_db']['db_database'],
+            mk.TARGET_DB_PASSWORD: self.conf['udl2_db']['db_pass'],
+            mk.TARGET_DB_SCHEMA: self.conf['udl2_db']['integration_schema'],
+
+            mk.ERROR_DB_SCHEMA: self.conf['udl2_db']['staging_schema'],
+
+            mk.MAP_TYPE: 'unit_test'
         }
-  
+       
         move_data_from_staging_to_integration(conf)
 
     

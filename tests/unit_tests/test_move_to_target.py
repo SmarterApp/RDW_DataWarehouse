@@ -7,6 +7,7 @@ from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 import imp
 from collections import OrderedDict
 import datetime
+from udl2 import message_keys as mk
 
 
 class TestMoveToTarget(unittest.TestCase):
@@ -19,6 +20,7 @@ class TestMoveToTarget(unittest.TestCase):
         udl2_conf = imp.load_source('udl2_conf', config_path)
         from udl2_conf import udl2_conf
         self.conf = udl2_conf
+
 
     def tearDown(self,):
         pass
@@ -36,7 +38,7 @@ class TestMoveToTarget(unittest.TestCase):
 
         expected_query_1 = 'ALTER TABLE \"edware\".\"{target_table}\" DISABLE TRIGGER ALL'.format(target_table=target_table)
         expected_query_2 = get_expected_insert_query_for_fact_table(target_table, column_mapping['asmt_rec_id'], column_mapping['section_rec_id'], batch_id,
-                                                            conf['db_name'], conf['db_user'], conf['db_password'])
+                                                            conf[mk.TARGET_DB_NAME], conf[mk.TARGET_DB_USER], conf[mk.TATGET_DB_PASSWORD])
         expected_query_3 = get_expected_update_inst_hier_rec_id_query(target_table)
         expected_query_4 = 'ALTER TABLE \"edware\".\"{target_table}\" ENABLE TRIGGER ALL'.format(target_table=target_table)
         expected_value = [expected_query_1, expected_query_2, expected_query_3, expected_query_4]
@@ -54,7 +56,7 @@ class TestMoveToTarget(unittest.TestCase):
         column_mapping = col_mapping.get_column_mapping()[target_table]
         column_types = get_expected_column_types_for_dim_inst_hier(target_table)
         actual_value = queries.create_insert_query(conf, source_table, target_table, column_mapping, column_types, True)
-        expected_value = get_expected_insert_query_for_dim_inst_hier(target_table, batch_id, conf['db_name'], conf['db_user'], conf['db_password'])
+        expected_value = get_expected_insert_query_for_dim_inst_hier(target_table, batch_id, conf[mk.TARGET_DB_NAME], conf[mk.TARGET_DB_USER], conf[mk.TARGET_DB_PASSWORD])
         self.assertEqual(expected_value, actual_value)
 
     def test_calculate_spend_time_as_second(self):
@@ -69,27 +71,49 @@ def generate_conf(batch_id, udl2_conf):
     '''
     Return all needed configuration information
     '''
-    conf = {
-             # add batch_id from msg
-            'batch_id': batch_id,
+    #conf = {
+    #         # add batch_id from msg
+    #        'batch_id': batch_id,
 
             # source schema
-            'source_schema': 'udl2',
-            # source database setting
-            'db_host': udl2_conf['udl2_db']['db_host'],
-            'db_port': udl2_conf['udl2_db']['db_port'],
-            'db_user': udl2_conf['udl2_db']['db_user'],
-            'db_name': udl2_conf['udl2_db']['db_database'],
-            'db_password': udl2_conf['udl2_db']['db_pass'],
+    #        'source_schema': 'udl2',
+    #        # source database setting
+    #        'db_host': udl2_conf['udl2_db']['db_host'],
+    #        'db_port': udl2_conf['udl2_db']['db_port'],
+    #        'db_user': udl2_conf['udl2_db']['db_user'],
+    #        'db_name': udl2_conf['udl2_db']['db_database'],
+    #        'db_password': udl2_conf['udl2_db']['db_pass'],
 
             # target schema
-            'target_schema': 'edware',
+    #        'target_schema': 'edware',
+    #        # target database setting
+    #        'db_host_target': udl2_conf['target_db']['db_host'],
+    #        'db_port_target': udl2_conf['target_db']['db_port'],
+    #        'db_user_target': udl2_conf['target_db']['db_user'],
+    #        'db_name_target': udl2_conf['target_db']['db_database'],
+    #        'db_password_target': udl2_conf['target_db']['db_pass'],
+    #}
+    conf = {
+             # add batch_id from msg
+            mk.BATCH_ID: batch_id,
+
+            # source schema
+            mk.SOURCE_DB_SCHEMA: udl2_conf['udl2_db']['integration_schema'],
+            # source database setting
+            mk.SOURCE_DB_HOST: udl2_conf['udl2_db']['db_host'],
+            mk.SOURCE_DB_PORT: udl2_conf['udl2_db']['db_port'],
+            mk.SOURCE_DB_USER: udl2_conf['udl2_db']['db_user'],
+            mk.SOURCE_DB_NAME: udl2_conf['udl2_db']['db_database'],
+            mk.SOURCE_DB_PASSWORD: udl2_conf['udl2_db']['db_pass'],
+
+            # target schema
+            mk.TARGET_DB_SCHEMA: udl2_conf['target_db']['db_schema'],
             # target database setting
-            'db_host_target': udl2_conf['target_db']['db_host'],
-            'db_port_target': udl2_conf['target_db']['db_port'],
-            'db_user_target': udl2_conf['target_db']['db_user'],
-            'db_name_target': udl2_conf['target_db']['db_database'],
-            'db_password_target': udl2_conf['target_db']['db_pass'],
+            mk.TARGET_DB_HOST: udl2_conf['target_db']['db_host'],
+            mk.TARGET_DB_PORT: udl2_conf['target_db']['db_port'],
+            mk.TARGET_DB_USER: udl2_conf['target_db']['db_user'],
+            mk.TARGET_DB_NAME: udl2_conf['target_db']['db_database'],
+            mk.TARGET_DB_PASSWORD: udl2_conf['target_db']['db_pass'],
     }
     return conf
 

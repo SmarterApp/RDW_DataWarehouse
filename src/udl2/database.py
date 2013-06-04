@@ -414,7 +414,7 @@ def map_sql_type_to_sqlalchemy_type(sql_type):
 def map_tuple_to_sqlalchemy_column(ddl_tuple):
     '''
     create a SQLAlchemy Column object from UDL_METADATA column
-    @param ddl_tuple: column definition in UDL_METADATA 
+    @param ddl_tuple: column definition in UDL_METADATA
     '''
     column = Column(ddl_tuple[0],
                     map_sql_type_to_sqlalchemy_type(ddl_tuple[2]),
@@ -439,7 +439,7 @@ def create_table(udl2_conf, metadata, schema, table_name):
     arguments = [table_name, metadata]
 
     for c_ddl in column_ddl:
-        #print(c_ddl)
+        # print(c_ddl)
         column = map_tuple_to_sqlalchemy_column(c_ddl)
         arguments.append(column)
     table = Table(*tuple(arguments), **{'schema': schema})
@@ -454,8 +454,8 @@ def create_table(udl2_conf, metadata, schema, table_name):
 
 def drop_table(udl2_conf, schema, table_name):
     '''
-    drop a table 
-    @param udl2_conf: The configuration dictionary for 
+    drop a table
+    @param udl2_conf: The configuration dictionary for
     @param scheam: Schema name where the table is located in UDL2 schema
     @param table_name: Table name for the table to be created, it must be defined in UDL_METADATA
     '''
@@ -469,7 +469,7 @@ def drop_table(udl2_conf, schema, table_name):
 def create_sequence(udl2_conf, metadata, schema, seq_name):
     '''
     create a sequence from UDL_METADATA definitions
-    @param udl2_conf: The configuration dictionary for udl 
+    @param udl2_conf: The configuration dictionary for udl
     @param metadata: SQLAlchemy Metadata object
     @param schema: Schema name where the table is located in UDL2 schema
     @param seq_name: sequence name for the sequence to be created, it must be defined in UDL_METADATA
@@ -507,7 +507,7 @@ def drop_sequence(udl2_conf, schema, seq_name):
 def create_udl2_schema(udl2_conf):
     '''
     create schemas according to configuration file
-    @param udl2_conf: The configuration dictionary for 
+    @param udl2_conf: The configuration dictionary for
     '''
     print('create udl2 staging schema')
     sql = text("CREATE SCHEMA \"%s\"" % udl2_conf['staging_schema'])
@@ -519,7 +519,7 @@ def create_udl2_schema(udl2_conf):
 def drop_udl2_schema(udl2_conf):
     '''
     drop schemas according to configuration file
-    @param udl2_conf: The configuration dictionary for 
+    @param udl2_conf: The configuration dictionary for
     '''
     print('drop udl2 staging schema')
     sql = text("DROP SCHEMA \"%s\" CASCADE" % udl2_conf['staging_schema'])
@@ -531,9 +531,9 @@ def drop_udl2_schema(udl2_conf):
 def create_udl2_tables(udl2_conf):
     '''
     create tables in schema according to configuration file
-    @param udl2_conf: The configuration dictionary for 
+    @param udl2_conf: The configuration dictionary for
     '''
-    #engine = (_get_db_url(udl2_conf))
+    # engine = (_get_db_url(udl2_conf))
     udl2_metadata = MetaData()
     print("create tables")
     for table, definition in UDL_METADATA['TABLES'].items():
@@ -543,7 +543,7 @@ def create_udl2_tables(udl2_conf):
 def drop_udl2_tables(udl2_conf):
     '''
     drop tables according to configuration file
-    @param udl2_conf: The configuration dictionary for 
+    @param udl2_conf: The configuration dictionary for
     '''
     print("drop tables")
     for table, definition in UDL_METADATA['TABLES'].items():
@@ -553,9 +553,9 @@ def drop_udl2_tables(udl2_conf):
 def create_udl2_sequence(udl2_conf):
     '''
     create sequences according to configuration file
-    @param udl2_conf: The configuration dictionary for 
+    @param udl2_conf: The configuration dictionary for
     '''
-    #(conn, engine) = _create_conn_engine(udl2_conf['udl2_db'])
+    # (conn, engine) = _create_conn_engine(udl2_conf['udl2_db'])
     udl2_metadata = MetaData()
     print("create sequences")
     for sequence, definition in UDL_METADATA['SEQUENCES'].items():
@@ -565,7 +565,7 @@ def create_udl2_sequence(udl2_conf):
 def drop_udl2_sequences(udl2_conf):
     '''
     drop sequences according to configuration file
-    @param udl2_conf: The configuration dictionary for 
+    @param udl2_conf: The configuration dictionary for
     '''
     print("drop sequences")
     for seq, definition in UDL_METADATA['SEQUENCES'].items():
@@ -575,7 +575,7 @@ def drop_udl2_sequences(udl2_conf):
 def create_foreign_data_wrapper_extension(udl2_conf):
     '''
     create foreign data wrapper extension according to configuration file
-    @param udl2_conf: The configuration dictionary for 
+    @param udl2_conf: The configuration dictionary for
     '''
     print('create foreign data wrapper extension')
     sql = "CREATE EXTENSION IF NOT EXISTS file_fdw WITH SCHEMA %s" % (udl2_conf['csv_schema'])
@@ -587,7 +587,7 @@ def create_foreign_data_wrapper_extension(udl2_conf):
 def drop_foreign_data_wrapper_extension(udl2_conf):
     '''
     drop foreign data wrapper extension according to configuration file
-    @param udl2_conf: The configuration dictionary for 
+    @param udl2_conf: The configuration dictionary for
     '''
     print('drop foreign data wrapper extension')
     sql = "DROP EXTENSION IF EXISTS file_fdw CASCADE"
@@ -600,7 +600,7 @@ def drop_foreign_data_wrapper_extension(udl2_conf):
 def create_dblink_extension(udl2_conf):
     '''
     create dblink extension according to configuration file
-    @param udl2_conf: The configuration dictionary for 
+    @param udl2_conf: The configuration dictionary for
     '''
     print('create dblink extension')
     sql = "CREATE EXTENSION IF NOT EXISTS dblink WITH SCHEMA %s" % (udl2_conf['db_schema'])
@@ -612,7 +612,7 @@ def create_dblink_extension(udl2_conf):
 def drop_dblink_extension(udl2_conf):
     '''
     drop dblink extension according to configuration file
-    @param udl2_conf: The configuration dictionary for 
+    @param udl2_conf: The configuration dictionary for
     '''
     print('drop dblink extension')
     sql = "DROP EXTENSION IF EXISTS dblink CASCADE"
@@ -624,7 +624,7 @@ def drop_dblink_extension(udl2_conf):
 def create_foreign_data_wrapper_server(udl2_conf):
     '''
     create server for foreign data wrapper according to configuration file
-    @param udl2_conf: The configuration dictionary for 
+    @param udl2_conf: The configuration dictionary for
     '''
     print('create foreign data wrapper server')
     sql = "CREATE SERVER %s FOREIGN DATA WRAPPER file_fdw" % (udl2_conf['fdw_server'])
@@ -636,7 +636,7 @@ def create_foreign_data_wrapper_server(udl2_conf):
 def drop_foreign_data_wrapper_server(udl2_conf):
     '''
     drop server for foreign data wrapper according to configuration file
-    @param udl2_conf: The configuration dictionary for 
+    @param udl2_conf: The configuration dictionary for
     '''
     print('drop foreign data wrapper server')
     sql = "DROP SERVER IF EXISTS %s CASCADE" % (udl2_conf['fdw_server'])
@@ -649,27 +649,27 @@ def load_fake_record_in_star_schema(udl2_conf):
     '''
     load two fake records into dim_int_hier and dim_section for integration table to create
     star schema from integration table
-    @param udl2_conf: The configuration dictionary for 
-    '''    
+    @param udl2_conf: The configuration dictionary for
+    '''
     print('load fake record')
     (conn, engine) = _create_conn_engine(udl2_conf)
     sqls = [
         """
         INSERT INTO "edware"."dim_section"(
-            section_rec_id, section_guid, section_name, grade, class_name, 
-            subject_name, state_code, district_guid, school_guid, from_date, 
+            section_rec_id, section_guid, section_name, grade, class_name,
+            subject_name, state_code, district_guid, school_guid, from_date,
             to_date, most_recent)
-        VALUES (1, 'fake_value', 'fake_value', 'fake_value', 'fake_value', 
+        VALUES (1, 'fake_value', 'fake_value', 'fake_value', 'fake_value',
             'fake_value', 'FA', 'fake_value', 'fake_value', '99999999',
             '00000000', False);
         """,
         """
         INSERT INTO "edware"."dim_inst_hier"(
-            inst_hier_rec_id, state_name, state_code, district_guid, district_name, 
-            school_guid, school_name, school_category, from_date, to_date, 
+            inst_hier_rec_id, state_name, state_code, district_guid, district_name,
+            school_guid, school_name, school_category, from_date, to_date,
             most_recent)
-        VALUES (-1, 'fake_value', 'FA', 'fake_value', 'fake_value', 
-            'fake_value', 'fake_value', 'fake_value', '99999999', '00000000', 
+        VALUES (-1, 'fake_value', 'FA', 'fake_value', 'fake_value',
+            'fake_value', 'fake_value', 'fake_value', '99999999', '00000000',
             False);
         """,
     ]
@@ -680,7 +680,7 @@ def load_fake_record_in_star_schema(udl2_conf):
 def setup_udl2_schema(udl2_conf):
     '''
     create whole udl2 database schema according to configuration file
-    @param udl2_conf: The configuration dictionary for 
+    @param udl2_conf: The configuration dictionary for
     '''
     create_dblink_extension(udl2_conf['target_db'])
     create_udl2_schema(udl2_conf['udl2_db'])
@@ -695,7 +695,7 @@ def setup_udl2_schema(udl2_conf):
 def teardown_udl2_schema(udl2_conf):
     '''
     drop whole udl2 database schema according to configuration file
-    @param udl2_conf: The configuration dictionary for 
+    @param udl2_conf: The configuration dictionary for
     '''
     drop_udl2_sequences(udl2_conf['udl2_db'])
     drop_udl2_tables(udl2_conf['udl2_db'])
@@ -704,7 +704,7 @@ def teardown_udl2_schema(udl2_conf):
     drop_dblink_extension(udl2_conf['udl2_db'])
     drop_udl2_schema(udl2_conf['udl2_db'])
     drop_dblink_extension(udl2_conf['target_db'])
-   
+
 
 def main():
     '''

@@ -41,13 +41,10 @@ class TestUdl2Database(unittest.TestCase):
                                 udl2_conf['udl2_db']['db_name'])
         return (conn, engine)
 
-
-
     def _compare_column_names(self, ddl_in_code, ddl_in_db):
         ddl_code_column_names = [c[0] for c in ddl_in_code]
         ddl_db_column_names = [c[0] for c in ddl_in_db]
         return ddl_code_column_names == ddl_db_column_names
-
 
     def _compare_column_types(self, ddl_in_code, ddl_in_db):
         ddl_code_column_types = []
@@ -86,7 +83,6 @@ class TestUdl2Database(unittest.TestCase):
         ddl_db_column_sizes = [str(c[2]) for c in ddl_in_db]
         return ddl_code_column_sizes == ddl_db_column_sizes
 
-
     def _compare_columns(self, ddl_in_code, ddl_in_db):
         if len(ddl_in_code) != len(ddl_in_db):
             return False
@@ -99,7 +95,6 @@ class TestUdl2Database(unittest.TestCase):
         else:
             return True
 
-
     def _compare_table_defition_in_code_and_database(self, table_name):
         (conn, engine) = self._create_conn_engine(self.conf)
         ddl_in_code = UDL_METADATA['TABLES'][table_name]['columns']
@@ -108,31 +103,25 @@ class TestUdl2Database(unittest.TestCase):
         ddl_in_db = sorted(ddl_in_db, key=lambda tup: tup[0])
         return self._compare_columns(ddl_in_code, ddl_in_db)
 
-
     def test_STG_SBAC_ASMT(self):
         table_name = 'STG_SBAC_ASMT'
         self.assertTrue(self._compare_table_defition_in_code_and_database(table_name))
-
 
     def test_STG_SBAC_ASMT_OUTCOME(self):
         table_name = 'STG_SBAC_ASMT_OUTCOME'
         self.assertTrue(self._compare_table_defition_in_code_and_database(table_name))
 
-
     def test_INT_SBAC_ASMT(self):
         table_name = 'INT_SBAC_ASMT'
         self.assertTrue(self._compare_table_defition_in_code_and_database(table_name))
-
 
     def test_INT_SBAC_ASMT_OUTCOME(self):
         table_name = 'INT_SBAC_ASMT_OUTCOME'
         self.assertTrue(self._compare_table_defition_in_code_and_database(table_name))
 
-
     def test_ERR_LIST(self):
         table_name = 'ERR_LIST'
         self.assertTrue(self._compare_table_defition_in_code_and_database(table_name))
-
 
     def test_UDL_BATCH(self):
         table_name = 'UDL_BATCH'

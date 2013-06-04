@@ -293,6 +293,58 @@ UDL_METADATA = {
             ],
             'indexes': [],
             'keys': [],
+        },
+        'REF_TABLE_MAPPINGS': {
+            'columns': [
+                ('product', True, 'varchar(32)', '', False, 'product name (ie. SBAC, mClass)'),
+                ('version', True, 'smallint', '', False, 'version of the mapping for the product'),
+                ('order', False, 'smallint', '', True, 'where the movement occurs in the pipeline'),
+                ('table_map_key', True, 'varchar(32)', '', False, 'Description to use as key (ie. json-to-int_asmt'),
+                ('source_table', False, 'varchar(50)', '', False, 'name of the source table. could also be csv or json'),
+                ('source_schema', False, 'varchar(50)', '', True, 'name of the source schema. Should only be null if table is csv or json'),
+                ('target_table', False, 'varchar(50)', '', False, 'name of the target table'),
+                ('target_schema', False, 'varchar(50)', '', False, 'name of the target schema'),
+                ('mapping_desc', False, 'varchar(256)', '', True, 'description of the mapping')
+            ],
+            'indexes': [],
+            'keys': [],
+        },
+        'REF_COLUMN_MAPPING': {
+            'columns': [
+                ('column_map_key', True, 'bigserial', '', False, 'Primary key for the table'),
+                ('table_map_key', False, 'varchar(32)', '', False, 'Foreign key ref to REF_TABLE_MAPPINGS'),
+                ('source_column', False, 'varchar(50)', '', False, 'name of the source column'),
+                ('target_column', False, 'varchar(50)', '', True, 'Name of the target column'),
+                ('action_table', False, 'varchar(50)', '', True, 'Name of the table to look for transformation or validation actions')
+            ],
+            'indexes': [],
+            'keys': [],
+        },
+        'REF_VALIDATION_1': {
+            'columns': [
+                ('validation_key', True, 'bigserial', '', False, 'sequential primary key'),
+                ('column_map_key', False, 'varchar(50)', '', False, 'foreign key to REF_COLUMN_MAPPING'),
+                ('validation_rule', False, 'varchar(256)', '', False, 'the validation metadata to be applied'),
+                ('is_active', False, 'bool', '', True, 'is the rule active'),
+                ('priority', False, 'smallint', '', True, 'priority of the rule'),
+                ('scope', False, 'varchar(32)', '', True, 'row or column level rule'),
+                ('err_code', False, 'smallint', '', True, 'error code to use on error'),
+                ('description', False, 'varchar(256)', '', True, 'description of the rule')
+            ],
+            'indexes': [],
+            'keys': [],
+        },
+        'REF_TRANSFORMATION_1': {
+            'columns': [
+                ('transformation_key', True, 'bigserial', '', False, 'key'),
+                ('column_map_key', False, 'varchar(50)', '', False, 'foreign key to REF_COLUMN_MAPPING'),
+                ('transformation_rule', False, 'varchar(32)', '', False, 'transformation rule'),
+                ('transformation_meta', False, 'varchar(256)', '', False, 'transformation metadata'),
+                ('is_active', False, 'bool', '', True, 'is the rule active'),
+                ('description', False, 'varchar(256)', '', True, 'description of the rule')
+            ],
+            'indexes': [],
+            'keys': [],
         }
     },
     'SEQUENCES': {
@@ -348,6 +400,7 @@ def map_sql_type_to_sqlalchemy_type(sql_type):
         'double': FLOAT,
         'json': TEXT,
         'uuid': UUID,
+        'bool': BOOLEAN
     }
     try:
         mapped_type = sql_type_mapped_type[sql_type]

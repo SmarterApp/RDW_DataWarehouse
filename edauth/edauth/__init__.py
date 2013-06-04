@@ -25,8 +25,9 @@ def includeme(config):
 
     settings = config.get_settings()
     # Set up db pool
-    metadata = generate_persistence(schema_name=settings['edauth.schema_name'])
-    setup_db_connection_from_ini(settings, 'edauth', metadata, datasource_name='edauth', allow_create=True)
+    metadata = generate_persistence(schema_name=settings['edauth.db.schema_name'])
+    settings.pop('edauth.db.schema_name')
+    setup_db_connection_from_ini(settings, 'edauth.db.', metadata, datasource_name='edauth', allow_create=True)
 
     setting_prefix = 'auth.policy.'
     options = dict((key[len(setting_prefix):], settings[key]) for key in settings if key.startswith(setting_prefix))

@@ -6,12 +6,12 @@ Created on Jan 17, 2013
 
 import unittest
 from smarter.reports.student_report import get_student_report, get_student_assessment
-from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite
+from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite,\
+    UnittestSmarterDBConnection, get_test_tenant_name
 from edapi.exceptions import NotFoundException
 from pyramid.testing import DummyRequest
 from pyramid import testing
-from smarter.database.connector import SmarterDBConnection
-from edauth.security.user import User
+from edauth.security.session import Session
 
 
 class TestStudentReport(Unittest_with_smarter_sqlite):
@@ -20,21 +20,22 @@ class TestStudentReport(Unittest_with_smarter_sqlite):
         self.__request = DummyRequest()
         # Must set hook_zca to false to work with uniittest_with_sqlite
         self.__config = testing.setUp(request=self.__request, hook_zca=False)
-        with SmarterDBConnection() as connection:
+        with UnittestSmarterDBConnection() as connection:
             # Insert into user_mapping table
             user_mapping = connection.get_table('user_mapping')
             connection.execute(user_mapping.insert(), user_id='272', guid='272')
-        dummy_user = User()
-        dummy_user.set_roles(['TEACHER'])
-        dummy_user.set_uid('272')
-        self.__config.testing_securitypolicy(dummy_user)
+        dummy_session = Session()
+        dummy_session.set_roles(['TEACHER'])
+        dummy_session.set_uid('272')
+        dummy_session.set_tenant(get_test_tenant_name())
+        self.__config.testing_securitypolicy(dummy_session)
 
     def tearDown(self):
         # reset the registry
         testing.tearDown()
 
         # delete user_mapping entries
-        with SmarterDBConnection() as connection:
+        with UnittestSmarterDBConnection() as connection:
             user_mapping = connection.get_table('user_mapping')
             connection.execute(user_mapping.delete())
 

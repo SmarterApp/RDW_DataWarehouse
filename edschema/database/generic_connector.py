@@ -21,9 +21,9 @@ def setup_db_connection_from_ini(settings, prefix, metadata, datasource_name='',
     @param allow_create: determines if a schema can be created
     '''
     extra = {}
-    if prefix + '.db.main.pool_size' not in settings.keys():
+    if prefix + 'pool_size' not in settings.keys():
         extra['poolclass'] = NullPool
-    engine = engine_from_config(settings, prefix + '.db.main.', **extra)
+    engine = engine_from_config(settings, prefix, **extra)
 
     # Create schema and its tables
     if allow_create is True:

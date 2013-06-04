@@ -4,9 +4,9 @@ Created on Mar 8, 2013
 @author: tosako
 '''
 import unittest
-from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite_no_data_load
+from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite_no_data_load,\
+    UnittestSmarterDBConnection
 from smarter.reports.compare_pop_report import QueryHelper
-from smarter.database.connector import SmarterDBConnection
 from smarter.reports.helpers.constants import Constants
 from smarter.reports.exceptions.parameter_exception import InvalidParameterException
 
@@ -14,7 +14,7 @@ from smarter.reports.exceptions.parameter_exception import InvalidParameterExcep
 class Test(Unittest_with_smarter_sqlite_no_data_load):
 
     def test_build_columns_state_view(self):
-        with SmarterDBConnection() as connection:
+        with UnittestSmarterDBConnection() as connection:
             helper = QueryHelper(connection, **get_param_state_view())
             columns = helper.build_columns()
             dim_inst_hier = connection.get_table(Constants.DIM_INST_HIER)
@@ -36,7 +36,7 @@ class Test(Unittest_with_smarter_sqlite_no_data_load):
         self.check_performance_level_columns(columns, 4)
 
     def test_build_columns_district_view(self):
-        with SmarterDBConnection() as connection:
+        with UnittestSmarterDBConnection() as connection:
             helper = QueryHelper(connection, **get_param_district_view())
             columns = helper.build_columns()
             dim_inst_hier = connection.get_table(Constants.DIM_INST_HIER)
@@ -58,7 +58,7 @@ class Test(Unittest_with_smarter_sqlite_no_data_load):
         self.check_performance_level_columns(columns, 4)
 
     def test_build_columns_school_view(self):
-        with SmarterDBConnection() as connection:
+        with UnittestSmarterDBConnection() as connection:
             helper = QueryHelper(connection, **get_param_school_view())
             columns = helper.build_columns()
             dim_asmt = connection.get_table(Constants.DIM_ASMT)

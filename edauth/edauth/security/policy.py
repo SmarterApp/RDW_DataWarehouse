@@ -22,7 +22,9 @@ class EdAuthAuthenticationPolicy(AuthTktAuthenticationPolicy):
         session_id = unauthenticated_userid(request)
         if session_id is not None:
             session = get_user_session(session_id)
-            return session.get_user()
+            # TODO: this can be none now
+            if session:
+                return session.get_user()
         return None
 
     def effective_principals(self, request):

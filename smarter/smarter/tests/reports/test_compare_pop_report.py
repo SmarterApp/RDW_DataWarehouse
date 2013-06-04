@@ -5,15 +5,15 @@ Created on Mar 11, 2013
 '''
 import unittest
 from smarter.reports.compare_pop_report import get_comparing_populations_report
-from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite
+from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite,\
+    UnittestSmarterDBConnection, get_test_tenant_name
 from smarter.reports.helpers.constants import Constants
 from edapi.exceptions import NotFoundException
 from beaker.util import parse_cache_config_options
 from beaker.cache import CacheManager
 from pyramid.testing import DummyRequest
 from pyramid import testing
-from smarter.database.connector import SmarterDBConnection
-from edauth.security.user import User
+from edauth.security.session import Session
 
 
 class TestComparingPopulations(Unittest_with_smarter_sqlite):
@@ -28,22 +28,23 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         self.__request = DummyRequest()
         # Must set hook_zca to false to work with unittest_with_sqlite
         self.__config = testing.setUp(request=self.__request, hook_zca=False)
-        self.__config = testing.setUp(request=self.__request, hook_zca=False)
-        with SmarterDBConnection() as connection:
+        with UnittestSmarterDBConnection() as connection:
             # Insert into user_mapping table
             user_mapping = connection.get_table('user_mapping')
             connection.execute(user_mapping.insert(), user_id='272', guid='272')
-        dummy_user = User()
-        dummy_user.set_roles(['TEACHER'])
-        dummy_user.set_uid('272')
-        self.__config.testing_securitypolicy(dummy_user)
+        dummy_session = Session()
+        dummy_session.set_session_id('123')
+        dummy_session.set_roles(['TEACHER'])
+        dummy_session.set_uid('272')
+        dummy_session.set_tenant(get_test_tenant_name())
+        self.__config.testing_securitypolicy(dummy_session)
 
     def tearDown(self):
         # reset the registry
         testing.tearDown()
 
         # delete user_mapping entries
-        with SmarterDBConnection() as connection:
+        with UnittestSmarterDBConnection() as connection:
             user_mapping = connection.get_table('user_mapping')
             connection.execute(user_mapping.delete())
 

@@ -9,9 +9,8 @@ from pyramid import testing
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed, \
     EdApiHTTPForbiddenAccess, EdApiHTTPNotFound, EdApiHTTPInternalServerError
 from edapi.tests.test_views import DummyValueError
-from smarter.database.connector import SmarterDBConnection
-from edauth.security.user import User
-from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite
+from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite,\
+    UnittestSmarterDBConnection, get_test_tenant_name
 import services
 from pyramid.response import Response
 from smarter.services.pdf import post_pdf_service, get_pdf_service, send_pdf_request, \
@@ -25,6 +24,7 @@ from services.tasks.create_pdf import prepare_file_path
 from services.tests.tasks.test_create_pdf import get_cmd
 from services.celeryconfig import get_config
 import shutil
+from edauth.security.session import Session
 
 
 class TestServices(Unittest_with_smarter_sqlite):
@@ -37,15 +37,17 @@ class TestServices(Unittest_with_smarter_sqlite):
         reg.settings = {}
         reg.settings['pdf.report_base_dir'] = self.__temp_dir
         self.__config = testing.setUp(registry=reg, request=self.__request, hook_zca=False)
-        with SmarterDBConnection() as connection:
+        self.__tenant_name = get_test_tenant_name()
+        with UnittestSmarterDBConnection() as connection:
             # Insert into user_mapping table
             user_mapping = connection.get_table('user_mapping')
             connection.execute(user_mapping.insert(), user_id='272', guid='272')
             connection.execute(user_mapping.insert(), user_id='1020', guid='1020')
-        dummy_user = User()
-        dummy_user.set_roles(['TEACHER'])
-        dummy_user.set_uid('272')
-        self.__config.testing_securitypolicy(dummy_user)
+        dummy_session = Session()
+        dummy_session.set_roles(['TEACHER'])
+        dummy_session.set_uid('272')
+        dummy_session.set_tenant(self.__tenant_name)
+        self.__config.testing_securitypolicy(dummy_session)
         # celery settings for UT
         settings = {'celery.CELERY_ALWAYS_EAGER': True}
         self.__request.matchdict['report'] = 'indivStudentReport.html'
@@ -56,7 +58,7 @@ class TestServices(Unittest_with_smarter_sqlite):
         self.__request = None
         testing.tearDown()
         # delete user_mapping entries
-        with SmarterDBConnection() as connection:
+        with UnittestSmarterDBConnection() as connection:
             user_mapping = connection.get_table('user_mapping')
             connection.execute(user_mapping.delete())
 
@@ -69,10 +71,11 @@ class TestServices(Unittest_with_smarter_sqlite):
 
     def test_post_pdf_service_no_context(self):
         self.__request.json_body = {'studentGuid': 'a016a4c1-5aca-4146-a85b-ed1172a01a4d'}
-        dummy_user = User()
-        dummy_user.set_roles(['TEACHER'])
-        dummy_user.set_uid('1020')
-        self.__config.testing_securitypolicy(dummy_user)
+        dummy_session = Session()
+        dummy_session.set_roles(['TEACHER'])
+        dummy_session.set_uid('1020')
+        dummy_session.set_tenant(self.__tenant_name)
+        self.__config.testing_securitypolicy(dummy_session)
 
         self.assertRaises(EdApiHTTPForbiddenAccess, post_pdf_service, self.__request)
 
@@ -103,10 +106,11 @@ class TestServices(Unittest_with_smarter_sqlite):
 
     def test_get_pdf_service_no_context(self):
         self.__request.GET = {'studentGuid': 'a016a4c1-5aca-4146-a85b-ed1172a01a4d'}
-        dummy_user = User()
-        dummy_user.set_roles(['TEACHER'])
-        dummy_user.set_uid('1020')
-        self.__config.testing_securitypolicy(dummy_user)
+        dummy_session = Session()
+        dummy_session.set_roles(['TEACHER'])
+        dummy_session.set_uid('1020')
+        dummy_session.set_tenant(self.__tenant_name)
+        self.__config.testing_securitypolicy(dummy_session)
         self.__request.matchdict['report'] = 'indivStudentReport.html'
 
         self.assertRaises(EdApiHTTPForbiddenAccess, get_pdf_service, self.__request)
@@ -167,10 +171,11 @@ class TestServices(Unittest_with_smarter_sqlite):
         params['studentGuid'] = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
         self.__request.matchdict['report'] = 'indivStudentReport.html'
         self.__request.cookies = {'edware': '123'}
-        dummy_user = User()
-        dummy_user.set_roles(['TEACHER'])
-        dummy_user.set_uid('1020')
-        self.__config.testing_securitypolicy(dummy_user)
+        dummy_session = Session()
+        dummy_session.set_roles(['TEACHER'])
+        dummy_session.set_uid('1020')
+        dummy_session.set_tenant(self.__tenant_name)
+        self.__config.testing_securitypolicy(dummy_session)
 
         self.assertRaises(ForbiddenError, get_pdf_content, params)
 

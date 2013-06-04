@@ -19,6 +19,8 @@ pdf_defaults = ['--enable-javascript', '--page-size', 'Letter', '--print-media-t
 OK = 0
 FAIL = 1
 
+log = logging.getLogger('smarter')
+
 
 @celery.task(name='tasks.generate_pdf')
 def generate_pdf(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT, cookie_name='edware', grayScale=False):
@@ -41,9 +43,9 @@ def generate_pdf(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT,
     except subprocess.TimeoutExpired:
         # check output file, return 0 if file is created successfully
         isSucceed = os.path.exists(outputfile) and os.path.getsize(outputfile)
+        log.error('Pdf subprocess timeout and pdf file exists? %s', isSucceed)
         return OK if isSucceed else FAIL
     except:
-        log = logging.getLogger(__name__)
         log.error("Generate PDF error: %s", sys.exc_info())
         return FAIL
 
@@ -53,7 +55,6 @@ def get_pdf(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT, cook
     '''
     Reads pdf file if it exists, else it'll request to generate pdf.  Returns byte stream from generated pdf file
     '''
-
     if not os.path.exists(outputfile):
         generate_task = generate_pdf(cookie, url, outputfile, options=pdf_defaults, timeout=timeout, cookie_name=cookie_name, grayScale=grayScale)
         if generate_task is FAIL:

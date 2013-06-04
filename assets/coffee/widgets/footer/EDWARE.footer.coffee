@@ -102,6 +102,7 @@ define [
     click: ->
       val=$('input[name=print_options]:checked').val()
       url=document.URL.replace("/assets/html/","/services/pdf/").replace(new RegExp("#.*"),"")
+      url += '&pdf=true'
       if val is "gray"
         url += "&grayscale=true"
       $("#print").popover "hide"

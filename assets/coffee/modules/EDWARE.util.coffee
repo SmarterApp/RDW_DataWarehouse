@@ -139,7 +139,10 @@ define [
 
   showGrayScale = ->
     $('head').append("<link rel='stylesheet' type='text/css' href='../css/grayscale.css' />");
-  
+    
+  showPdfCSS = ->
+    $('head').append("<link rel='stylesheet' type='text/css' href='../css/pdf.css' />");
+    
   getConstants: getConstants
   displayErrorMessage: displayErrorMessage
   getUrlParams: getUrlParams 
@@ -152,3 +155,4 @@ define [
   getHeader: getHeader
   format_full_name_reverse: format_full_name_reverse
   showGrayScale : showGrayScale
+  showPdfCSS : showPdfCSS

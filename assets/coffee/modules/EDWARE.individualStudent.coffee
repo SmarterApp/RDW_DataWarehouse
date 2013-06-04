@@ -25,6 +25,9 @@ define [
     # Show grayscale
     if params['grayscale'] is 'true'
       edwareUtil.showGrayScale()
+    # Load css for pdf generation
+    if params['pdf'] is 'true'
+      edwareUtil.showPdfCSS()
     
     content = {}
     

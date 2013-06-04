@@ -71,28 +71,6 @@ def generate_conf(batch_id, udl2_conf):
     '''
     Return all needed configuration information
     '''
-    #conf = {
-    #         # add batch_id from msg
-    #        'batch_id': batch_id,
-
-            # source schema
-    #        'source_schema': 'udl2',
-    #        # source database setting
-    #        'db_host': udl2_conf['udl2_db']['db_host'],
-    #        'db_port': udl2_conf['udl2_db']['db_port'],
-    #        'db_user': udl2_conf['udl2_db']['db_user'],
-    #        'db_name': udl2_conf['udl2_db']['db_database'],
-    #        'db_password': udl2_conf['udl2_db']['db_pass'],
-
-            # target schema
-    #        'target_schema': 'edware',
-    #        # target database setting
-    #        'db_host_target': udl2_conf['target_db']['db_host'],
-    #        'db_port_target': udl2_conf['target_db']['db_port'],
-    #        'db_user_target': udl2_conf['target_db']['db_user'],
-    #        'db_name_target': udl2_conf['target_db']['db_database'],
-    #        'db_password_target': udl2_conf['target_db']['db_pass'],
-    #}
     conf = {
              # add batch_id from msg
             mk.BATCH_ID: batch_id,

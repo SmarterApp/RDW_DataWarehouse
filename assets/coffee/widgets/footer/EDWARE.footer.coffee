@@ -51,7 +51,7 @@ define [
         '<div class="pull-right hideButton"><a class="pull-right" href="#" id="close" data-id="legend">Hide <img src="../images/hide_x.png"></img></i></a></div><div class="lead">Legend</div>'
       template: '<div class="popover footerPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
       content: ->
-        $(".legendPopup").html()
+        $("#footerLinks .legendPopup").html()
               
     $("#aboutReport").popover
       html: true
@@ -61,7 +61,7 @@ define [
         '<div class="pull-right hideButton"><a class="pull-right" href="#" id="close" data-id="aboutReport">Hide <img src="../images/hide_x.png"></img></i></a></div><div class="lead">Report Info</div>'
       template: '<div class="popover footerPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
       content: ->
-        $(".aboutReportPopup").html()
+        $("#footerLinks .aboutReportPopup").html()
         
     $("#help").popover
       html: true

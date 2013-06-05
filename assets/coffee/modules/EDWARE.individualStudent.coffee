@@ -213,8 +213,11 @@ define [
           uid = edwareUtil.getUid data.user_info
           edwareUtil.renderFeedback(role, uid, "individual_student_report", feedbackData)
         
-        # Code for PDF version
-        $("#print_reportInfoContent").append($("#footerLinks").html())
+        # Report info and legend for print version
+        $($("#footerLinks").html()).clone().appendTo("#print_reportInfoContent")
+        $("#print_reportInfoContent .legendPopup img").attr("src", "../images/legend_IndivStudent_color_print.png")
+        $("#print_reportInfoContent .legendPopup img").attr("width", "850")
+        $("#print_reportInfoContent .legendPopup img").attr("height", "710")
         
   #
   # render Claim Score Relative Difference (arrows)

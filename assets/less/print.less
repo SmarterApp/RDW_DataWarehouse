@@ -78,8 +78,25 @@
       .surveyMonkeyPopup { display: none;}
       .legendPopup, .aboutReportPopup { float: left; width: 100%;}
       #footer { display: none;}
-      #print_reportInfoContent { width: 100%;}
+      #print_reportInfoContent { color: @color-B1; width: 100%;}
       #print_reportInfoContent .helpPopup, #print_reportInfoContent .printPopup { display: none;}
+      #print_reportInfoContent {
+        .aboutReportPopup {
+          border-bottom: solid 1px @color-B4;
+          p {
+            line-height: 14px;
+          }
+          
+          li {
+            line-height: 14px;
+          }
+        }
+        
+        .legendPopup {
+          margin-top: 10px;
+        }
+      }
+      #print_reportInfoContent h3 { color: @color-black; font-size: 20px; }
       .reportInfoWrapper { width: 100%; }
       #content { min-height: 0; }
       
@@ -163,7 +180,7 @@
           }
         }      
         .transImage1 {
-          background-image: url("http://localhost:6543/assets/images/ISRleftBracket_print.png");
+          background-image: url("../images/ISRleftBracket_print.png");
           background-repeat: no-repeat;
           background-position: top left;
         }
@@ -174,13 +191,13 @@
         }  
         
         .transImage1.confLevelRight {
-          background-image: url("http://localhost:6543/assets/images/ISRleftBracketwEB_print.png");
+          background-image: url("../images/ISRleftBracketwEB_print.png");
           background-repeat: no-repeat;
           background-position: top left;
         }
       
         .transImage2.confLevelRight {
-          background-image: url("http://localhost:6543/assets/images/ISRrightBracket_print.png");
+          background-image: url("../images/ISRrightBracket_print.png");
           background-repeat: no-repeat;
           background-position: top left;
         }

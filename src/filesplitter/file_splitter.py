@@ -29,7 +29,6 @@ def check_row_count(file_name):
     #windows encoded csvs should have exactly one row
     if totalrows <= 1:
         raise Exception('Unable to split, file has %s rows' % str(totalrows))
-    	
     return None
     
 def get_list_split_files(output_name_template, output_dir):

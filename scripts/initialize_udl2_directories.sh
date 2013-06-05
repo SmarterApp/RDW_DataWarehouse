@@ -22,6 +22,7 @@ sudo mkdir -p /opt/wgen/edware-udl/zones/arrivals
 sudo mkdir -p /opt/wgen/edware-udl/zones/landing/work
 sudo mkdir -p /opt/wgen/edware-udl/zones/landing/history
 sudo mkdir -p /opt/wgen/edware-udl/zones/datafiles
+sudo mkdir -p /opt/wgen/edware-udl/zones/tests
 # we need to fix permission later not to own by root by udl app user
 sudo chmod 777 /opt/wgen/edware-udl/zones
 sudo chmod 777 /opt/wgen/edware-udl/zones/landing
@@ -29,3 +30,4 @@ sudo chmod 777 /opt/wgen/edware-udl/zones/arrivals
 sudo chmod 777 /opt/wgen/edware-udl/zones/landing/work
 sudo chmod 777 /opt/wgen/edware-udl/zones/landing/history
 sudo chmod 777 /opt/wgen/edware-udl/zones/datafiles
+sudo chmod 777 /opt/wgen/edware-udl/zones/tests

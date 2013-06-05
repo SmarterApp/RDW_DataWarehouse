@@ -39,7 +39,8 @@ udl2_conf = {
         'arriavals':'/opt/wgen/edware-udl/zones/arrivals/', # this is where the file arrives.
         'work':'/opt/wgen/edware-udl/zones/landing/work/',  # this is the where the file are use for work. this should always be local for speed
         'history':'/opt/wgen/edware-udl/zones/landing/history/',  # this is where we store historical info. it may be an url for large file storages such as s3.
-        'datafiles':'/opt/wgen/edwared-udl/zones/datafiles/',  # this is for storing test sample data files
+        'datafiles':'/opt/wgen/edware-udl/zones/datafiles/',  # this is for storing test sample data files
+        'tests':'/opt/wgen/edware-udl/zones/tests/', # this is for running unit tests.
     },
     'logging': {  # log location. this should be in the long run as file locations or more sophisticated logging system
         'audit':'/var/log/wgen/edware-udl/logs/udl2.audit.log',  # for status log for everything

@@ -15,7 +15,8 @@ Created on May 10, 2013
 
 @author: ejen
 '''
-from sqlalchemy.schema import MetaData, CreateSchema, CreateTable, CreateSequence
+from sqlalchemy.schema import (MetaData, CreateSchema, CreateTable,
+    CreateSequence, ForeignKeyConstraint, UniqueConstraint)
 from sqlalchemy import Table, Column, Index, Sequence
 from sqlalchemy import SmallInteger, String, Date, Boolean
 from sqlalchemy import ForeignKey
@@ -47,7 +48,7 @@ UDL_METADATA = {
                 ('number_test', False, 'varchar(256)', '', False, "mock data for test type conversion during staging to integration"),
             ],
             'indexes': [],
-            'keys': [],
+            'keys': {},
         },
         'INT_MOCK_LOAD': {
             'columns': [
@@ -57,7 +58,7 @@ UDL_METADATA = {
                 ('number_test', False, 'varchar(256)', '', False, "mock data for test type conversion during staging to integration"),
             ],
             'indexes': [],
-            'keys': [],
+            'keys': {},
         },
         'UDL_BATCH': {
             'columns': [
@@ -84,7 +85,7 @@ UDL_METADATA = {
                 ('created_date', False, 'timestamp', 'now()', True, ""),
                 ('mod_date', False, 'timestamp', 'now()', True, ""),
             ],
-            'keys': [],
+            'keys': {},
             'indexes': [],
         },
         'STG_SBAC_ASMT': {
@@ -127,7 +128,7 @@ UDL_METADATA = {
                 ('created_date', False, 'timestamp', 'now()', False, "Date on which record is inserted"),
             ],
             'indexes': [],
-            'keys': [],
+            'keys': {},
         },
         'STG_SBAC_ASMT_OUTCOME': {
             'columns': [
@@ -182,7 +183,7 @@ UDL_METADATA = {
                 ('created_date', False, 'timestamp', 'now()', False, "Date on which record is inserted"),
             ],
             'indexes': [],
-            'keys': []
+            'keys': {}
         },
         'ERR_LIST': {
             'columns': [
@@ -193,7 +194,7 @@ UDL_METADATA = {
                 ('created_date', False, 'timestamp', 'now()', False, "Date on which record is inserted"),
             ],
             'indexes': [],
-            'keys': [],
+            'keys': {},
         },
         'INT_SBAC_ASMT': {
             'columns': [
@@ -235,7 +236,7 @@ UDL_METADATA = {
                 ('created_date', False, 'timestamp with time zone', 'now()', False, "Date on which record is inserted"),
             ],
             'indexes': [],
-            'keys': [],
+            'keys': {},
         },
         'INT_SBAC_ASMT_OUTCOME': {
             'columns': [
@@ -292,60 +293,73 @@ UDL_METADATA = {
                 ('created_date', False, 'timestamp with time zone', 'now()', False, "Date on which record is inserted"),
             ],
             'indexes': [],
-            'keys': [],
+            'keys': {},
         },
         'REF_TABLE_MAPPINGS': {
             'columns': [
-                ('product', True, 'varchar(32)', '', False, 'product name (ie. SBAC, mClass)'),
-                ('version', True, 'smallint', '', False, 'version of the mapping for the product'),
-                ('order', False, 'smallint', '', True, 'where the movement occurs in the pipeline'),
-                ('table_map_key', True, 'varchar(32)', '', False, 'Description to use as key (ie. json-to-int_asmt'),
+                ('table_map_key', True, 'bigserial', '', False, 'Description to use as key (ie. json-to-int_asmt'),
+                ('product', False, 'varchar(32)', '', False, 'product name (ie. SBAC, mClass)'),
+                ('version', False, 'smallint', '', False, 'version of the mapping for the product'),
+                ('order', False, 'smallint', '', False, 'where the movement occurs in the pipeline'),
                 ('source_table', False, 'varchar(50)', '', False, 'name of the source table. could also be csv or json'),
                 ('source_schema', False, 'varchar(50)', '', True, 'name of the source schema. Should only be null if table is csv or json'),
                 ('target_table', False, 'varchar(50)', '', False, 'name of the target table'),
-                ('target_schema', False, 'varchar(50)', '', False, 'name of the target schema'),
-                ('mapping_desc', False, 'varchar(256)', '', True, 'description of the mapping')
+                ('target_schema', False, 'varchar(50)', '', True, 'name of the target schema'),
+                ('mapping_desc', False, 'varchar(256)', '', True, 'description of the mapping'),
+                ('created_date', False, 'timestamp with time zone', 'now()', False, 'Date on which record is inserted')
             ],
             'indexes': [],
-            'keys': [],
+            'keys': {
+                'unique': [('product', 'version', 'source_table', 'target_table')],
+            },
         },
         'REF_COLUMN_MAPPING': {
             'columns': [
                 ('column_map_key', True, 'bigserial', '', False, 'Primary key for the table'),
-                ('table_map_key', False, 'varchar(32)', '', False, 'Foreign key ref to REF_TABLE_MAPPINGS'),
+                ('table_map_key', False, 'bigint', '', False, 'Foreign key ref to REF_TABLE_MAPPINGS'),
                 ('source_column', False, 'varchar(50)', '', False, 'name of the source column'),
                 ('target_column', False, 'varchar(50)', '', True, 'Name of the target column'),
-                ('action_table', False, 'varchar(50)', '', True, 'Name of the table to look for transformation or validation actions')
+                ('action_table', False, 'varchar(50)', '', True, 'Name of the table to look for transformation or validation actions'),
+                ('created_date', False, 'timestamp with time zone', 'now()', False, 'Date on which record is inserted')
             ],
             'indexes': [],
-            'keys': [],
-        },
-        'REF_VALIDATION_1': {
-            'columns': [
-                ('validation_key', True, 'bigserial', '', False, 'sequential primary key'),
-                ('column_map_key', False, 'varchar(50)', '', False, 'foreign key to REF_COLUMN_MAPPING'),
-                ('validation_rule', False, 'varchar(256)', '', False, 'the validation metadata to be applied'),
-                ('is_active', False, 'bool', '', True, 'is the rule active'),
-                ('priority', False, 'smallint', '', True, 'priority of the rule'),
-                ('scope', False, 'varchar(32)', '', True, 'row or column level rule'),
-                ('err_code', False, 'smallint', '', True, 'error code to use on error'),
-                ('description', False, 'varchar(256)', '', True, 'description of the rule')
-            ],
-            'indexes': [],
-            'keys': [],
+            'keys': {
+                'foreign': [('table_map_key', 'REF_TABLE_MAPPINGS.table_map_key')]
+            },
         },
         'REF_TRANSFORMATION_1': {
             'columns': [
                 ('transformation_key', True, 'bigserial', '', False, 'key'),
-                ('column_map_key', False, 'varchar(50)', '', False, 'foreign key to REF_COLUMN_MAPPING'),
+                ('column_map_key', False, 'bigint', '', False, 'foreign key to REF_COLUMN_MAPPING'),
                 ('transformation_rule', False, 'varchar(32)', '', False, 'transformation rule'),
-                ('transformation_meta', False, 'varchar(256)', '', False, 'transformation metadata'),
+                ('transformation_proc', False, 'varchar(256)', '', True, 'the associated stored procedure'),
                 ('is_active', False, 'bool', '', True, 'is the rule active'),
-                ('description', False, 'varchar(256)', '', True, 'description of the rule')
+                ('description', False, 'varchar(1000)', '', True, 'description of the rule'),
+                ('created_date', False, 'timestamp with time zone', 'now()', False, 'Date on which record is inserted')
             ],
             'indexes': [],
-            'keys': [],
-        }
+            'keys': {
+                'foreign': [('column_map_key', 'REF_COLUMN_MAPPING.column_map_key')]
+            },
+        },
+        'REF_VALIDATION_1': {
+            'columns': [
+                ('validation_key', True, 'bigserial', '', False, 'sequential primary key'),
+                ('column_map_key', False, 'bigint', '', False, 'foreign key to REF_COLUMN_MAPPING'),
+                ('validation_rule', False, 'varchar(256)', '', False, 'the validation metadata to be applied'),
+                ('validation_proc', False, 'varchar(256)', '', True, 'the associated stored procedure'),
+                ('is_active', False, 'bool', '', True, 'is the rule active'),
+                ('priority', False, 'smallint', '', True, 'priority of the rule'),
+                ('scope', False, 'varchar(32)', '', True, 'row or column level rule'),
+                ('err_code', False, 'smallint', '', True, 'error code to use on error'),
+                ('description', False, 'varchar(256)', '', True, 'description of the rule'),
+                ('created_date', False, 'timestamp with time zone', 'now()', False, 'Date on which record is inserted')
+            ],
+            'indexes': [],
+            'keys': {
+                'foreign': [('column_map_key', 'REF_COLUMN_MAPPING.column_map_key')]
+            },
+        },
     },
     'SEQUENCES': {
         # This are for sequences that is not associated with any specific tables for our usage
@@ -426,6 +440,35 @@ def map_tuple_to_sqlalchemy_column(ddl_tuple):
     return column
 
 
+def create_table_keys(key_ddl_dict, schema):
+    '''
+    Take a dictionary of key lists. Will check for 'foreign' and 'unique' in the list
+    and create sqlalchemy ForeignKeys objects and UniqueKey objects, respectively
+    @param key_ddl_dict: A dictionary containing key information. Each value should be a list of tuples.
+    the unique key tuple will contain any number of columns that constitute the unique combination. ('col1', 'col2', ...)
+    the foreign key tuple will contain the column in the current table and
+    the table and column in the other table. ie: ('col1', 'table2.col2')
+    @type key_ddl_dict: dict
+    @return: A list of foreign and unique keys
+    @rtype: list
+    '''
+    key_list = []
+    unique_keys = key_ddl_dict.get('unique', [])
+    foreign_keys = key_ddl_dict.get('foreign', [])
+
+    for uk_tup in unique_keys:
+        ukc = UniqueConstraint(*uk_tup)
+        key_list.append(ukc)
+
+    for fk_tup in foreign_keys:
+        foreign_column = schema + '.' + fk_tup[1]
+        fk_name = "%s-%s" % (fk_tup[0], foreign_column)
+        fkc = ForeignKeyConstraint([fk_tup[0]], [foreign_column], name=fk_name, use_alter=True)
+        key_list.append(fkc)
+
+    return key_list
+
+
 def create_table(udl2_conf, metadata, schema, table_name):
     '''
     create a table from UDL_METADATA definitions
@@ -436,19 +479,19 @@ def create_table(udl2_conf, metadata, schema, table_name):
     '''
     print('create table %s.%s' % (schema, table_name))
     column_ddl = UDL_METADATA['TABLES'][table_name]['columns']
+    key_ddl = UDL_METADATA['TABLES'][table_name]['keys']
     arguments = [table_name, metadata]
 
     for c_ddl in column_ddl:
         # print(c_ddl)
         column = map_tuple_to_sqlalchemy_column(c_ddl)
         arguments.append(column)
+
+    # create unique and foreign table keys, Add to arguments
+    arguments += create_table_keys(key_ddl, schema)
+
     table = Table(*tuple(arguments), **{'schema': schema})
-    (conn, engine) = _create_conn_engine(udl2_conf)
-    except_msg = "fail to create table %s.%s" % (schema, table_name)
-    try:
-        table.create(engine)
-    except Exception:
-        print(except_msg)
+
     return table
 
 
@@ -536,8 +579,13 @@ def create_udl2_tables(udl2_conf):
     # engine = (_get_db_url(udl2_conf))
     udl2_metadata = MetaData()
     print("create tables")
+
+    (conn, engine) = _create_conn_engine(udl2_conf)
     for table, definition in UDL_METADATA['TABLES'].items():
         create_table(udl2_conf, udl2_metadata, udl2_conf['staging_schema'], table)
+
+    # Use metadata to create tables
+    udl2_metadata.create_all(engine)
 
 
 def drop_udl2_tables(udl2_conf):

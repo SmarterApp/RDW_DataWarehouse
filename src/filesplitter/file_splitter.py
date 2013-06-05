@@ -53,6 +53,9 @@ def get_list_split_files(output_name_template, output_dir):
     return output_list
 
 def split_file(file_name, delimiter=',', row_limit=10000, parts=0, output_path='./'):
+	# make sure output path ending in '/' so concat will work correctly
+	if output_path[-1] != '/':
+		output_path = output_path + '/'
 	start_time = datetime.datetime.now()
 	isValid = os.path.exists(file_name) and os.path.isfile(file_name)
 	if isValid is False:

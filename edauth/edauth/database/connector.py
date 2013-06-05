@@ -10,5 +10,6 @@ class EdauthDBConnection(DBConnection):
     '''
     DBConnector for Smarter Project
     '''
+    # TODO:  Remove this when we know how to flush db
     def __init__(self):
         super().__init__(name='edauth')

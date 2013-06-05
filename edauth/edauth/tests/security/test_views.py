@@ -14,15 +14,13 @@ import urllib
 from edauth.security.views import logout
 import os
 import uuid
-from datetime import timedelta, datetime
 from pyramid.response import Response
 from edauth.security.utils import ICipher, AESCipher
-from database.sqlite_connector import create_sqlite, destroy_sqlite
-from edauth.persistence.persistence import generate_persistence
-from edauth.database.connector import EdauthDBConnection
 from zope import component
 from edauth.security.session_backend import ISessionBackend, SessionBackend
 from pyramid.registry import Registry
+from edauth.tests.test_helper.create_session import create_test_session
+from beaker.cache import cache_managers, cache_regions
 
 
 def get_saml_from_resource_file(file_mame):
@@ -36,7 +34,6 @@ def get_saml_from_resource_file(file_mame):
 class TestViews(unittest.TestCase):
 
     def setUp(self):
-        create_sqlite(use_metadata_from_db=False, echo=False, metadata=generate_persistence(), datasource_name='edauth')
         self.registry = Registry()
         self.registry.settings = {}
         self.registry.settings['auth.saml.idp_server_login_url'] = 'http://dummyidp.com'
@@ -47,6 +44,9 @@ class TestViews(unittest.TestCase):
         self.registry.settings['auth.idp.metadata'] = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'resource', 'idp_metadata.xml'))
         self.registry.settings['auth.skip.verify'] = False
         self.registry.settings['ldap.base.dn'] = 'ou=environment,dc=edwdc,dc=net'
+        self.registry.settings['cache.expire'] = 10
+        self.registry.settings['cache.regions'] = 'session'
+        self.registry.settings['cache.type'] = 'memory'
 
         self.__request = DummyRequest()
         # Must set hook_zca to false to work with uniittest_with_sqlite
@@ -58,16 +58,14 @@ class TestViews(unittest.TestCase):
         self.__config.add_route('list_of_reports', '/dummy/report')
 
         component.provideUtility(AESCipher('dummdummdummdumm'), ICipher)
-        component.provideUtility(SessionBackend({'session.backend.type': 'db'}), ISessionBackend)
-        # delete all user_session before test
-        with EdauthDBConnection() as connection:
-            user_session = connection.get_table('user_session')
-            connection.execute(user_session.delete())
+        component.provideUtility(SessionBackend(self.registry.settings), ISessionBackend)
 
     def tearDown(self):
         # reset the registry
         testing.tearDown()
-        destroy_sqlite(datasource_name='edauth')
+        # clear cache
+        cache_managers.clear()
+        cache_regions.clear()
 
     def test_login_referred_by_login_page(self):
         self.assertTrue(True)
@@ -113,16 +111,10 @@ class TestViews(unittest.TestCase):
         self.assertIsInstance(http, HTTPForbidden)
 
     def test_login_with_existing_session(self):
-        # set up db data
-        session_id = str(uuid.uuid1())
-        session_json = '{"roles": ["TEACHER"], "idpSessionIndex": "123", "name": {"fullName": "Linda Kim"}, "uid": "linda.kim"}'
-        current_datetime = datetime.now()
-        expiration_datetime = current_datetime + timedelta(seconds=30)
-        with EdauthDBConnection() as connection:
-            user_session = connection.get_table('user_session')
-            connection.execute(user_session.insert(), session_id=session_id, session_context=session_json, last_access=current_datetime, expiration=expiration_datetime)
+        # set up session data
+        session = create_test_session(roles=['TEACHER'], uid='linda.kim', full_name='Linda Kim', idpSessionIndex='123')
 
-        self.__config.testing_securitypolicy(session_id, ['TEACHER'])
+        self.__config.testing_securitypolicy(session.get_session_id(), ['TEACHER'])
         self.__request.url = 'http://example.com/dummy/page'
         http = login(self.__request)
         url = urlparse(http.location)
@@ -146,16 +138,10 @@ class TestViews(unittest.TestCase):
         self.assertEquals(url.geturl(), "http://example.com/dummy/login")
 
     def test_logout_with_existing_session(self):
-        # set up db data
-        session_id = str(uuid.uuid1())
-        session_json = '{"roles": ["TEACHER"], "idpSessionIndex": "123", "name": {"fullName": "Linda Kim"}, "uid": "linda.kim", "nameId": "abc"}'
-        current_datetime = datetime.now()
-        expiration_datetime = current_datetime + timedelta(seconds=30)
-        with EdauthDBConnection() as connection:
-            user_session = connection.get_table('user_session')
-            connection.execute(user_session.insert(), session_id=session_id, session_context=session_json, last_access=current_datetime, expiration=expiration_datetime)
+        # set up session data
+        session = create_test_session(roles=['TEACHER'], uid='linda.kim', full_name='Linda Kim', idpSessionIndex='123', name_id='abc')
 
-        self.__config.testing_securitypolicy(session_id, ['TEACHER'])
+        self.__config.testing_securitypolicy(session.get_session_id(), ['TEACHER'])
         http = logout(self.__request)
 
         actual_url = urlparse(http.location)
@@ -169,7 +155,7 @@ class TestViews(unittest.TestCase):
         self.assertIsNotNone(queries['SAMLRequest'])
 
     def test_logout_with_session_in_cookie_but_no_session_in_db(self):
-        self.__config.testing_securitypolicy("123", ['TEACHER'])
+        self.__config.testing_securitypolicy("123nonexist", ['TEACHER'])
         http = logout(self.__request)
         self.assertEquals(http.location, 'http://example.com/dummy/login')
 
@@ -183,8 +169,7 @@ class TestViews(unittest.TestCase):
     def test_saml2_post_consumer_valid_response(self):
         self.__request.POST = {}
         self.__request.POST['SAMLResponse'] = get_saml_from_resource_file("ValidSAMLResponse.txt")
-        self.registry.settings['auth.skip.verify'] = True
-        self.__config = testing.setUp(registry=self.registry, request=self.__request, hook_zca=False)
+        self.__config.registry.settings['auth.skip.verify'] = True
         http = saml2_post_consumer(self.__request)
         self.assertRegex(str(http.body), 'http://example.com/dummy/login', 'Must match')
 

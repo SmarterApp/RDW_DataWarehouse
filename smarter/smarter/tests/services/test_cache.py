@@ -20,7 +20,6 @@ class Test(Unittest_with_smarter_sqlite):
 
     def setUp(self):
         reg = {}
-        reg['session.backend.type'] = 'beaker'
         reg['cache.expire'] = 10
         # Change to get temp dir python
         reg['cache.regions'] = 'session'

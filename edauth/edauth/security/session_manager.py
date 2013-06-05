@@ -57,12 +57,12 @@ def create_new_user_session(saml_response, session_expire_after_in_secs=30):
 
 def update_session_access(session):
     '''
-    update user_session.last_access
+    update_session user_session.last_access
     '''
     current_time = datetime.now()
     session.set_last_access(current_time)
 
-    get_session_backend().update_last_access_time(session)
+    get_session_backend().update_session(session)
 
 
 def expire_session(session_id):
@@ -75,7 +75,7 @@ def expire_session(session_id):
         # Expire the entry
         session.set_expiration(current_time)
         __backend = get_session_backend()
-        __backend.update_last_access_time(session)
+        __backend.update_session(session)
         # Delete the session
         __backend.delete_session(session_id)
 

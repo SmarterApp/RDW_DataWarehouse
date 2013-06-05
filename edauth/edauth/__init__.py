@@ -7,7 +7,6 @@ from edauth.security.callback import session_check
 from edauth.utils import convert_to_int, to_bool
 from edauth.security.roles import Roles
 from database.generic_connector import setup_db_connection_from_ini
-from edauth.persistence.persistence import generate_persistence
 from edauth.security.policy import EdAuthAuthenticationPolicy
 from edauth.security.utils import AESCipher, ICipher
 from zope import component
@@ -24,10 +23,6 @@ logger = logging.getLogger(__name__)
 def includeme(config):
 
     settings = config.get_settings()
-    # Set up db pool
-    metadata = generate_persistence(schema_name=settings['edauth.db.schema_name'])
-    settings.pop('edauth.db.schema_name')
-    setup_db_connection_from_ini(settings, 'edauth.db.', metadata, datasource_name='edauth', allow_create=True)
 
     setting_prefix = 'auth.policy.'
     options = dict((key[len(setting_prefix):], settings[key]) for key in settings if key.startswith(setting_prefix))
@@ -57,7 +52,8 @@ def includeme(config):
     component.provideUtility(SessionBackend(settings), ISessionBackend)
 
     # Task Schedule
-    run_cron_cleanup(settings)
+    # Disable for now as we are using beaker ext:database
+    #run_cron_cleanup(settings)
 
     # TODO: possible to put this inside SAML2 incase one day we don't want to use it
     # TODO: clean up and derive from ini?

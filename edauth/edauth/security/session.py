@@ -26,7 +26,7 @@ class Session:
     def get_session_json_context(self):
         # Get User Info and combined the dictionary
         combined_context = self.__user.get_user_context()
-        combined_context.update(self.__session)
+        combined_context.update_session(self.__session)
         return json.dumps(combined_context)
 
     def get_session_id(self):

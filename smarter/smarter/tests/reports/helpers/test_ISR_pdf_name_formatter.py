@@ -25,7 +25,6 @@ class TestISRPdfNameFormatter(Unittest_with_smarter_sqlite):
         self.__request = DummyRequest()
         reg = Registry()
         reg.settings = {}
-        reg.settings['session.backend.type'] = 'beaker'
         reg.settings['cache.expire'] = 10
         reg.settings['cache.regions'] = 'session'
         reg.settings['cache.type'] = 'memory'

@@ -7,13 +7,12 @@ import unittest
 from pyramid import testing
 from pyramid.testing import DummyRequest
 from edauth.security.policy import EdAuthAuthenticationPolicy
-from database.sqlite_connector import create_sqlite, destroy_sqlite
-from edauth.database.connector import EdauthDBConnection
-import uuid
-from datetime import datetime, timedelta
-from edauth.persistence.persistence import generate_persistence
-import json
 from edauth.security.user import User
+from pyramid.registry import Registry
+from zope import component
+from edauth.security.session_backend import ISessionBackend, SessionBackend
+from beaker.cache import cache_managers, cache_regions
+from edauth.tests.test_helper.create_session import create_test_session
 
 
 def dummy_callback(session_id, request):
@@ -28,31 +27,34 @@ class TestPolicy(unittest.TestCase):
 
     def setUp(self):
         self.__request = DummyRequest()
-        self.__config = testing.setUp(request=self.__request, hook_zca=False)
+        reg = Registry()
+        reg.settings = {}
+        reg.settings['session.backend.type'] = 'beaker'
+        reg.settings['cache.expire'] = 10
+        reg.settings['cache.regions'] = 'session'
+        reg.settings['cache.type'] = 'memory'
+        component.provideUtility(SessionBackend(reg.settings), ISessionBackend)
+
+        self.__config = testing.setUp(registry=reg, request=self.__request, hook_zca=False)
         self.__policy = EdAuthAuthenticationPolicy('secret', callback=None, cookie_name='cookieName')
 
     def tearDown(self):
         # reset the registry
         testing.tearDown()
+        # clear cache
+        cache_managers.clear()
+        cache_regions.clear()
 
     def test_authenticated_userid(self):
-        # set up db data
-        create_sqlite(use_metadata_from_db=False, echo=False, metadata=generate_persistence(), datasource_name='edauth')
-        session_id = str(uuid.uuid1())
-        session_json = {"roles": ["TEACHER"], "idpSessionIndex": "123", "name": {"fullName": "Linda Kim", "firstName": "Linda", "lastName": "Kim"}, "uid": "linda.kim"}
-        current_datetime = datetime.now()
-        expiration_datetime = current_datetime + timedelta(seconds=30)
-        with EdauthDBConnection() as connection:
-            user_session = connection.get_table('user_session')
-            connection.execute(user_session.insert(), session_id=session_id, session_context=json.dumps(session_json), last_access=current_datetime, expiration=expiration_datetime)
+        # set up session
+        session = create_test_session(roles=["TEACHER"], full_name='Linda Kim', uid='linda.kim', idpSessionIndex='123', first_name='Linda', last_name='Kim')
 
-        self.__config.testing_securitypolicy(session_id, ['TEACHER'])
+        self.__config.testing_securitypolicy(session.get_session_id(), ['TEACHER'])
 
         user = self.__policy.authenticated_userid(self.__request)
 
         self.assertIsInstance(user, User)
-        self.assertEqual(user.get_name(), {'name': session_json['name']})
-        destroy_sqlite(datasource_name='edauth')
+        self.assertEqual(user.get_name(), {'name': {'fullName': 'Linda Kim', 'firstName': 'Linda', 'lastName': 'Kim'}})
 
     def test_empty_authenticated_userid(self):
         user = self.__policy.authenticated_userid(self.__request)

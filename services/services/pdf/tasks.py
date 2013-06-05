@@ -22,8 +22,8 @@ FAIL = 1
 log = logging.getLogger('smarter')
 
 
-@celery.task(name='tasks.generate_pdf')
-def generate_pdf(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT, cookie_name='edware', grayScale=False):
+@celery.task(name='tasks.pdf.generate')
+def generate(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT, cookie_name='edware', grayScale=False):
     '''
     Generates pdf from given url. Returns exist status code from shell command.
     We set up timeout in order to terminate pdf generating process, for wkhtmltopdf 0.10.0 doesn't exit
@@ -50,13 +50,13 @@ def generate_pdf(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT,
         return FAIL
 
 
-@celery.task(name='tasks.get_pdf')
-def get_pdf(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT, cookie_name='edware', grayScale=False, always_generate=False):
+@celery.task(name='tasks.pdf.get')
+def get(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT, cookie_name='edware', grayScale=False, always_generate=False):
     '''
     Reads pdf file if it exists, else it'll request to generate pdf.  Returns byte stream from generated pdf file
     '''
     if always_generate or not os.path.exists(outputfile):
-        generate_task = generate_pdf(cookie, url, outputfile, options=pdf_defaults, timeout=timeout, cookie_name=cookie_name, grayScale=grayScale)
+        generate_task = generate(cookie, url, outputfile, options=pdf_defaults, timeout=timeout, cookie_name=cookie_name, grayScale=grayScale)
         if generate_task is FAIL:
             raise PdfGenerationError()
 

@@ -5,8 +5,8 @@ Created on May 14, 2013
 '''
 import unittest
 import services
-from services.tasks.create_pdf import generate_pdf, OK, FAIL, \
-    prepare_file_path, get_pdf
+from services.pdf.tasks import generate, OK, FAIL, \
+    prepare_file_path, get
 import platform
 import os
 import tempfile
@@ -22,48 +22,48 @@ class TestCreatePdf(unittest.TestCase):
         shutil.rmtree(self.__temp_dir, ignore_errors=True)
 
     def test_generate_pdf_success_cmd(self):
-        services.tasks.create_pdf.pdf_procs = ['echo', 'dummy']
+        services.pdf.tasks.pdf_procs = ['echo', 'dummy']
         file_name = os.path.join(self.__temp_dir, 'b', 'd.pdf')
-        task = generate_pdf('cookie', 'url', file_name)
+        task = generate('cookie', 'url', file_name)
         self.assertEqual(task, OK)
 
     def test_generate_pdf_timeout_with_output_file_generated(self):
         here = os.path.abspath(__file__)
-        services.tasks.create_pdf.pdf_procs = get_cmd()
-        task = generate_pdf('cookie', 'url', here, options=[], timeout=1)
+        services.pdf.tasks.pdf_procs = get_cmd()
+        task = generate('cookie', 'url', here, options=[], timeout=1)
         self.assertEqual(task, OK)
 
     def test_generate_pdf_timeout_without_output_file_generated(self):
         cur_dir = os.path.dirname(__file__)
         output_file = os.path.abspath(os.path.join(cur_dir, 'doesnotexist.out'))
-        services.tasks.create_pdf.pdf_procs = get_cmd()
-        task = generate_pdf('cookie', 'url', output_file, options=[], timeout=1)
+        services.pdf.tasks.pdf_procs = get_cmd()
+        task = generate('cookie', 'url', output_file, options=[], timeout=1)
         self.assertEqual(task, FAIL)
 
     def test_generate_pdf_fail_cmd(self):
-        services.tasks.create_pdf.pdf_procs = ['dummycmd']
-        task = generate_pdf('cookie', 'url', 'outputfile')
+        services.pdf.tasks.pdf_procs = ['dummycmd']
+        task = generate('cookie', 'url', 'outputfile')
         self.assertEqual(task, FAIL)
 
     def test_get_pdf_invalid_file(self):
-        services.tasks.create_pdf.pdf_procs = ['echo', 'dummy']
+        services.pdf.tasks.pdf_procs = ['echo', 'dummy']
         file_name = os.path.join(self.__temp_dir, 'i_dont_exist')
         # We can't test this method properly
-        self.assertRaises(FileNotFoundError, get_pdf, 'cookie', 'url', file_name)
+        self.assertRaises(FileNotFoundError, get, 'cookie', 'url', file_name)
 
     def test_get_pdf_valid_file(self):
-        services.tasks.create_pdf.pdf_procs = ['echo', 'dummy']
+        services.pdf.tasks.pdf_procs = ['echo', 'dummy']
         here = os.path.abspath(__file__)
-        task = get_pdf('cookie', 'url', here)
+        task = get('cookie', 'url', here)
         self.assertIsNotNone(task)
 
     def test_get_pdf_with_always_generate_flag(self):
-        services.tasks.create_pdf.pdf_procs = ['echo', 'dummy']
+        services.pdf.tasks.pdf_procs = ['echo', 'dummy']
         file_name = os.path.join(self.__temp_dir, 'i_exist')
         prepare_file_path(file_name)
         with open(file_name, 'w') as file:
             file.write('%PDF-1.4')
-        task = get_pdf('cookie', 'url', file_name, always_generate=True)
+        task = get('cookie', 'url', file_name, always_generate=True)
         self.assertIsNotNone(task)
 
     def test_create_directory(self):

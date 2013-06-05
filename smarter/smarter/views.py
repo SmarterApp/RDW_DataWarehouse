@@ -31,7 +31,7 @@ def error_redirect(request):
     '''
 
     url = request.application_url + '/assets/public/error.html'
-    return HTTPMovedPermanently(location=url)
+    return HTTPMovedPermanently(location=url, cache_control='no-store, no-cache, must-revalidate')
 
 
 @view_config(context=HTTPError, permission=pyramid.security.NO_PERMISSION_REQUIRED, content_type='application/json')

@@ -11,7 +11,7 @@ from pyramid.httpexceptions import HTTPNotFound
 logger = logging.getLogger(__name__)
 
 
-@view_config(route_name='cache_management', request_method='DELETE', renderer='json')
+@view_config(route_name='cache_management', request_method='DELETE', renderer='json', permission='flush_cache')
 def cache_flush(request):
     '''
     service call for flush cache

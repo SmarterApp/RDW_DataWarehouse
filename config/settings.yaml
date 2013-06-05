@@ -67,6 +67,7 @@ common:
       celery_timeout: 30
       # Don't regenerate if pdf is in file system
       always.generate: False
+      superuser.session.timeout: 300000
     # Used for tenancy
     ldap.base.dn: ou=environment,dc=edwdc,dc=net
 

@@ -51,11 +51,11 @@ def generate_pdf(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT,
 
 
 @celery.task(name='tasks.get_pdf')
-def get_pdf(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT, cookie_name='edware', grayScale=False):
+def get_pdf(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT, cookie_name='edware', grayScale=False, always_generate=False):
     '''
     Reads pdf file if it exists, else it'll request to generate pdf.  Returns byte stream from generated pdf file
     '''
-    if not os.path.exists(outputfile):
+    if always_generate or not os.path.exists(outputfile):
         generate_task = generate_pdf(cookie, url, outputfile, options=pdf_defaults, timeout=timeout, cookie_name=cookie_name, grayScale=grayScale)
         if generate_task is FAIL:
             raise PdfGenerationError()

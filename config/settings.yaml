@@ -72,6 +72,8 @@ common:
       generate.timeout: 10
       report_base_dir: /tmp/pdf
       celery_timeout: 30
+      # Don't regenerate if pdf is in file system
+      always.generate: False
     # Used for tenancy
     ldap.base.dn: ou=environment,dc=edwdc,dc=net
 
@@ -370,6 +372,8 @@ development:
     
     # Don't cache any static contents
     smarter.resources.static.max_age: 0
+    # Always generate pdf regardless if it exists in file system
+    pdf.always.generate: True
 
 test:
   '[app:main]':

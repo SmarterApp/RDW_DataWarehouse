@@ -189,6 +189,27 @@ class TestServices(Unittest_with_smarter_sqlite):
         has_context = has_context_for_pdf_request(student_guid)
         self.assertFalse(has_context)
 
+    def test_send_pdf_request_with_always_generate_flag(self):
+        self.__config.registry.settings['pdf.always.generate'] = 'True'
+        studentGuid = '3181376a-f3a8-40d3-bbde-e65fdd9f4494'
+        params = {}
+        params['studentGuid'] = studentGuid
+        params['dummy'] = 'dummy'
+        self.__request.matchdict['report'] = 'indivStudentReport.html'
+        self.__request.cookies = {'edware': '123'}
+        services.tasks.create_pdf.pdf_procs = get_cmd()
+        settings = {'celery.CELERY_ALWAYS_EAGER': True, 'pdf.generate.timeout': 1}
+        get_config(settings)
+        # prepare empty file to mimic a pdf was generated
+        pdf_file = generate_isr_report_path_by_student_guid(pdf_report_base_dir=self.__temp_dir, student_guid=studentGuid, asmt_type='SUMMATIVE')
+        prepare_file_path(pdf_file)
+        with open(pdf_file, 'w') as file:
+            file.write('%PDF-1.4')
+        response = send_pdf_request(params)
+        self.assertIsInstance(response, Response)
+        self.assertEqual(response.content_type, 'application/pdf')
+        self.assertIsInstance(response.body, bytes)
+
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']

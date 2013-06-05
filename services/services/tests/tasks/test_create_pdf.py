@@ -57,6 +57,15 @@ class TestCreatePdf(unittest.TestCase):
         task = get_pdf('cookie', 'url', here)
         self.assertIsNotNone(task)
 
+    def test_get_pdf_with_always_generate_flag(self):
+        services.tasks.create_pdf.pdf_procs = ['echo', 'dummy']
+        file_name = os.path.join(self.__temp_dir, 'i_exist')
+        prepare_file_path(file_name)
+        with open(file_name, 'w') as file:
+            file.write('%PDF-1.4')
+        task = get_pdf('cookie', 'url', file_name, always_generate=True)
+        self.assertIsNotNone(task)
+
     def test_create_directory(self):
         file_name = os.path.join(self.__temp_dir, 'a', 'b', 'c', 'd.pdf')
         # make sure directory does not exist first.

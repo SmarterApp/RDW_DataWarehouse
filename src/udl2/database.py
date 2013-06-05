@@ -422,7 +422,7 @@ def map_tuple_to_sqlalchemy_column(ddl_tuple):
                     nullable=ddl_tuple[4],
                     server_default=(text(ddl_tuple[3]) if (ddl_tuple[3] != '') else None),
                     doc=ddl_tuple[5],)
-   # print(column)
+    # print(column)
     return column
 
 
@@ -594,7 +594,6 @@ def drop_foreign_data_wrapper_extension(udl2_conf):
     (conn, engine) = _create_conn_engine(udl2_conf)
     except_msg = "fail to drop foreign data wrapper extension"
     execute_queries(conn, [sql], except_msg)
-
 
 
 def create_dblink_extension(udl2_conf):

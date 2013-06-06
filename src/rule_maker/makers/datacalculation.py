@@ -33,7 +33,6 @@ THEN
 {formula}
 """
 
-
 __calc_func_end = """
 ELSE
 v_return := v_{unknown_col}
@@ -180,11 +179,11 @@ def find_all_cols(formula):
     var_names = regex.findall(formula)
     return var_names
 
-
+# vclean
 def wrap_variable(var_name, wrapper="(%s::int)"):
     return wrapper % var_name
 
-
+# rclean
 def wrap_formula(formula, wrapper="ceiling(%s)::int;"):
     return wrapper % formula
 

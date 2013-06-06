@@ -39,7 +39,7 @@ def start_pipeline(csv_file_path, json_file_path):
     # and the directory to use when writing the split files
 
     # Prepare parameters for task msgs
-    archived_file = os.path.join('/', 'fake', 'path', 'to', 'fake_archived_file.zip')
+    archived_file = os.path.join('fake', 'path', 'to', 'fake_archived_file.zip')
     batch_id = str(uuid4())
     lzw = WORK_ZONE
     jc_table = {}

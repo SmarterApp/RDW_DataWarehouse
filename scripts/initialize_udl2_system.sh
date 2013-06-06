@@ -9,13 +9,15 @@ echo "create udl2 users to run udl2 celery and own the zone area for work"
 sudo -u root -s "useradd -d /opt/wgen/edware-udl/udl2 -r -s /bin/sh udl2"
 
 # install virtualenv-3.3
-echo "install virtualenv-3.3 for celery"
+echo "install virtualenv-3.3 for celery, due to python3 rpm install path under /opt/python3/bin, we need to specifiy the path"
 cd /opt/wgen/edware-udl/udl2
-sudo -u udl2 -s "virtualenv-3.3 --distribute python3.3"
+echo "/opt/python3/bin/virtualenv-3.3 --distribute python3.3"
+sudo -u udl2 -s "/opt/python3/bin/virtualenv-3.3 --distribute python3.3"
 
 # install virtualenv-2.7
 echo "install virtual-2.7 for flower"
 cd /opt/wgen/edware-udl/udl2
+echo "virtualenv-2.7 --distribute python2.7"
 sudo -u udl2 -s "virtualenv-2.7 --distribute python2.7"
 
 # pull code from git

@@ -76,10 +76,15 @@ class IsSourceFolderAccessible(object):
         @return: tuple of the form: (status_code, dir_path, file_name, batch_sid)
         """
 
-        if os.path.exists(dir_path) and os.path.isdir(dir_path) and os.access(dir_path, os.R_OK):
-            return (error_codes.STATUS_OK, dir_path, file_name, batch_sid)
-        else:
-            return (error_codes.SRC_FOLDER_NOT_ACCESSIBLE_SFV, dir_path, file_name, batch_sid)
+        try:
+            if os.path.exists(dir_path) and os.path.isdir(dir_path) and os.access(dir_path, os.R_OK):
+                return (error_codes.STATUS_OK, dir_path, file_name, batch_sid)
+            else:
+                return (error_codes.SRC_FOLDER_NOT_ACCESSIBLE_SFV, dir_path, file_name, batch_sid)
+        except FileNotFoundError as e:
+            return (error_codes.SRC_FILE_NOT_ACCESSIBLE_SFV, dir_path, file_name, batch_sid)
+        except Exception as e1:
+            return (error_codes.STATUS_UNKNOWN_ERROR, dir_path, file_name, batch_sid)
 
 
 class IsSourceFileAccessible(object):
@@ -96,12 +101,16 @@ class IsSourceFileAccessible(object):
         @return: tuple of the form: (status_code, dir_path, file_name, batch_sid)
         """
         full_path = abs_path_join(dir_path, file_name)
-
-        if os.path.exists(full_path) and os.access(full_path, os.R_OK) and os.path.isfile(full_path):
-
-            return (error_codes.STATUS_OK, dir_path, file_name, batch_sid)
-        else:
+        
+        try:
+            if os.path.exists(full_path) and os.access(full_path, os.R_OK) and os.path.isfile(full_path):
+                return (error_codes.STATUS_OK, dir_path, file_name, batch_sid)
+            else:
+                return (error_codes.SRC_FILE_NOT_ACCESSIBLE_SFV, dir_path, file_name, batch_sid)
+        except FileNotFoundError as e:
             return (error_codes.SRC_FILE_NOT_ACCESSIBLE_SFV, dir_path, file_name, batch_sid)
+        except Exception as e1:
+            return (error_codes.STATUS_UNKNOWN_ERROR, dir_path, file_name, batch_sid)
 
 
 class IsFileBlank(object):
@@ -118,12 +127,17 @@ class IsFileBlank(object):
         @return: tuple of the form: (status_code, dir_path, file_name, batch_sid)
         """
         full_path = abs_path_join(dir_path, file_name)
-
-        if os.stat(full_path).st_size > 0:
-            return (error_codes.STATUS_OK, dir_path, file_name, batch_sid)
-        else:
-            return (error_codes.SRC_FILE_HAS_NO_DATA, dir_path, file_name, batch_sid)
-
+        
+        try:
+            if os.stat(full_path).st_size > 0:
+                return (error_codes.STATUS_OK, dir_path, file_name, batch_sid)
+            else:
+                return (error_codes.SRC_FILE_HAS_NO_DATA, dir_path, file_name, batch_sid)
+        except FileNotFoundError as e:
+            return (error_codes.SRC_FILE_NOT_ACCESSIBLE_SFV, dir_path, file_name, batch_sid)
+        except Exception as e1:
+            return (error_codes.STATUS_UNKNOWN_ERROR, dir_path, file_name, batch_sid)
+        
 
 class IsSourceFileCommaDelimited(object):
     """Job to check for comma delimited source file"""
@@ -142,8 +156,13 @@ class IsSourceFileCommaDelimited(object):
 
         # get full path and open file
         full_path = abs_path_join(dir_path, file_name)
-        file_to_validate = open(full_path, 'rU')
-
+        try:
+            file_to_validate = open(full_path, 'rU')
+        except FileNotFoundError as e:
+            return (error_codes.SRC_FILE_NOT_ACCESSIBLE_SFV, dir_path, file_name, batch_sid)
+        except Exception as e1:
+            return (error_codes.STATUS_UNKNOWN_ERROR, dir_path, file_name, batch_sid)
+        
         attempt_hack = False
         sample_data = None
         # use csv.sniffer to detect the dialect, then close the file
@@ -203,13 +222,18 @@ class DoesSourceFileContainDuplicateHeaders(object):
 
         processed_headers = []
         headers = None
-
-        with open(full_path, 'rU') as file_to_validate:
-            # headers = file_to_validate.readline()
-            reader = csv.reader(file_to_validate)
-            while headers is None or len(headers) == 0:
-                headers = next(reader)
-
+        
+        try:
+            with open(full_path, 'rU') as file_to_validate:
+                # headers = file_to_validate.readline()
+                reader = csv.reader(file_to_validate)
+                while headers is None or len(headers) == 0:
+                    headers = next(reader)
+        except FileNotFoundError as e:
+            return (error_codes.SRC_FILE_NOT_ACCESSIBLE_SFV, dir_path, file_name, batch_sid)
+        except Exception as e1:
+            return (error_codes.STATUS_UNKNOWN_ERROR, dir_path, file_name, batch_sid)
+        
         for header in headers:
             if header.lower() in processed_headers:
                 return (error_codes.SRC_FILE_HAS_DUPLICATE_HEADERS, dir_path, file_name, batch_sid)
@@ -235,13 +259,19 @@ class DoesSourceFileContainHeaders(object):
         # get full path and read 1st 4 lines from file.
         full_path = abs_path_join(dir_path, file_name)
         first_four_lines = []
-        with open(full_path, 'rU') as file_to_validate:
-            for line in file_to_validate:
-                line = line.strip()
-                if line is not None and len(line) > 0:
-                    first_four_lines.append(line)
-                    if len(first_four_lines) >= 4:
-                        break
+        try:
+            with open(full_path, 'rU') as file_to_validate:
+                for line in file_to_validate:
+                    line = line.strip()
+                    if line is not None and len(line) > 0:
+                        first_four_lines.append(line)
+                        if len(first_four_lines) >= 4:
+                            break
+        except FileNotFoundError as e:
+            return (error_codes.SRC_FILE_NOT_ACCESSIBLE_SFV, dir_path, file_name, batch_sid)
+        except Exception as e1:
+            return (error_codes.STATUS_UNKNOWN_ERROR, dir_path, file_name, batch_sid)
+            
 
         if len(first_four_lines) == 0:
             # No rows, so no header.
@@ -289,26 +319,31 @@ class IsCsvWellFormed(object):
         """
         # get full path, open file and create reader
         full_path = abs_path_join(dir_path, file_name)
-        with open(full_path, 'rU') as file_to_validate:
-            file_reader = csv.reader(file_to_validate)
-
-            # get the headers
-            headers = next(file_reader)
-            num_headers = len(headers)
-
-            # check the number of data points
-            while (file_reader.line_num - 1) < self._lines_to_validate:
-                try:
-                    line = next(file_reader)
-                # execute to make sure we haven't hit the end of the file
-                except StopIteration:
-                    return (error_codes.SRC_FILE_HAS_NO_DATA, dir_path, file_name, batch_sid)
-
-                # validate the number of data entries
-                if len(line) != num_headers or self._empty_header_has_data(headers, line):
-                    return (error_codes.SRC_FILE_HEADERS_MISMATCH_DATA,
-                            dir_path, file_name, batch_sid)
-
+        try:
+            with open(full_path, 'rU') as file_to_validate:
+                file_reader = csv.reader(file_to_validate)
+    
+                # get the headers
+                headers = next(file_reader)
+                num_headers = len(headers)
+    
+                # check the number of data points
+                while (file_reader.line_num - 1) < self._lines_to_validate:
+                    try:
+                        line = next(file_reader)
+                    # execute to make sure we haven't hit the end of the file
+                    except StopIteration:
+                        return (error_codes.SRC_FILE_HAS_NO_DATA, dir_path, file_name, batch_sid)
+    
+                    # validate the number of data entries
+                    if len(line) != num_headers or self._empty_header_has_data(headers, line):
+                        return (error_codes.SRC_FILE_HEADERS_MISMATCH_DATA,
+                                dir_path, file_name, batch_sid)
+        except FileNotFoundError as e:
+            return (error_codes.SRC_FILE_NOT_ACCESSIBLE_SFV, dir_path, file_name, batch_sid)
+        except Exception as e1:
+            return (error_codes.STATUS_UNKNOWN_ERROR, dir_path, file_name, batch_sid)
+        
         # we passed all tests
         return (error_codes.STATUS_OK, dir_path, file_name, batch_sid)
 
@@ -353,5 +388,9 @@ class DoesSourceFileHaveData(object):
             next(file_reader)
         except StopIteration:
             return (error_codes.SRC_FILE_HAS_NO_DATA, dir_path, file_name, batch_sid)
+        except FileNotFoundError as e:
+            return (error_codes.SRC_FILE_NOT_ACCESSIBLE_SFV, dir_path, file_name, batch_sid)
+        except Exception as e1:
+            return (error_codes.STATUS_UNKNOWN_ERROR, dir_path, file_name, batch_sid)
 
         return (error_codes.STATUS_OK, dir_path, file_name, batch_sid)

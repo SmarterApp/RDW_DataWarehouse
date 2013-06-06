@@ -63,7 +63,7 @@ def task(incoming_msg):
 # TODO: Create a generic function that creates any of the (EXPANDED,ARRIVED,SUBFILES) etc. dirs in separate util file.
 def get_subfiles_dir(lzw, batch_id):
     subfiles_dir = os.path.join(lzw, batch_id, 'SUBFILES')
-    return subfiles_dir
+    return subfiles_dir + '/'
 
 
 def generate_msg_for_file_loader(split_file_tuple, header_file_path, lzw, jc):

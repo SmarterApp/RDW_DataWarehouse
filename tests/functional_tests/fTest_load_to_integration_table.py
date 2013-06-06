@@ -14,7 +14,7 @@ from move_to_integration.move_to_integration import move_data_from_staging_to_in
 from fileloader.file_loader import load_file
 import imp
 import re
-
+from udl2 import message_keys as mk
 
 class FuncTestLoadToIntegrationTable(unittest.TestCase):
 
@@ -51,21 +51,21 @@ class FuncTestLoadToIntegrationTable(unittest.TestCase):
     def load_file_to_stage(self, ):
         # file contain 30 rows
         conf = {
-            'csv_file':os.getcwd() + '/' + '../data/test_file_realdata.csv',
-            'header_file': os.getcwd() + '/' + '../data/test_file_headers.csv',
-            'csv_table': 'csv_table_for_file_loader',
-            'db_host': self.conf['udl2_db']['db_host'],
-            'db_port': self.conf['udl2_db']['db_port'],
-            'db_user': self.conf['udl2_db']['db_user'],
-            'db_name': self.conf['udl2_db']['db_database'],
-            'db_password': self.conf['udl2_db']['db_pass'],
-            'csv_schema': self.conf['udl2_db']['staging_schema'],
-            'fdw_server': 'udl2_fdw_server',
-            'staging_schema': self.conf['udl2_db']['staging_schema'],
-            'staging_table': 'STG_SBAC_ASMT_OUTCOME',
-            'apply_rules': False,
-            'start_seq': 10,
-            'batch_id': '00000000-0000-0000-0000-000000000000'
+            mk.FILE_TO_LOAD: os.getcwd() + '/' + '../data/test_file_realdata.csv',
+            mk.HEADERS: os.getcwd() + '/' + '../data/test_file_headers.csv',
+            mk.CSV_TABLE: 'csv_table_for_file_loader',
+            mk.TARGET_DB_HOST: self.conf['udl2_db']['db_host'],
+            mk.TARGET_DB_PORT: self.conf['udl2_db']['db_port'],
+            mk.TARGET_DB_USER: self.conf['udl2_db']['db_user'],
+            mk.TARGET_DB_NAME: self.conf['udl2_db']['db_database'],
+            mk.TARGET_DB_PASSWORD: self.conf['udl2_db']['db_pass'],
+            mk.CSV_SCHEMA: self.conf['udl2_db']['staging_schema'],
+            mk.FDW_SERVER: 'udl2_fdw_server',
+            mk.TARGET_DB_SCHEMA: self.conf['udl2_db']['staging_schema'],
+            mk.TARGET_DB_TABLE: 'STG_SBAC_ASMT_OUTCOME',
+            mk.APPLY_RULES: False,
+            mk.ROW_START: 10,
+            mk.BATCH_ID: '00000000-0000-0000-0000-000000000000'
         }
         load_file(conf)
     
@@ -120,29 +120,28 @@ class FuncTestLoadToIntegrationTable(unittest.TestCase):
         it loads 30 records from test csv file to stagint table then move it to integration. 
         '''
         conf = {
-             # add batch_id from msg
-            'batch_id': '00000000-0000-0000-0000-000000000000',
-            # error schema
-            'error_schema': self.conf['udl2_db']['staging_schema'],
-            # source schema
-            'source_schema': self.conf['udl2_db']['staging_schema'],
-            # source database setting
-            'db_host_source': self.conf['udl2_db']['db_host'],
-            'db_port_source': self.conf['udl2_db']['db_port'],
-            'db_user_source': self.conf['udl2_db']['db_user'],
-            'db_name_source': self.conf['udl2_db']['db_database'],
-            'db_password_source': self.conf['udl2_db']['db_pass'],
-            'db_driver_source': self.conf['udl2_db']['db_driver'],
+            mk.BATCH_ID: '00000000-0000-0000-0000-000000000000',
+            mk.SOURCE_DB_DRIVER: self.conf['udl2_db']['db_driver'],
 
-            # target schema
-            'target_schema': self.conf['udl2_db']['integration_schema'],
+            # source database setting
+            mk.SOURCE_DB_HOST: self.conf['udl2_db']['db_host'],
+            mk.SOURCE_DB_PORT: self.conf['udl2_db']['db_port'],
+            mk.SOURCE_DB_USER: self.conf['udl2_db']['db_user'],
+            mk.SOURCE_DB_NAME: self.conf['udl2_db']['db_database'],
+            mk.SOURCE_DB_PASSWORD: self.conf['udl2_db']['db_pass'],
+            mk.SOURCE_DB_SCHEMA: self.conf['udl2_db']['staging_schema'],
+
             # target database setting
-            'db_host_target': self.conf['udl2_db']['db_host'],
-            'db_port_target': self.conf['udl2_db']['db_port'],
-            'db_user_target': self.conf['udl2_db']['db_user'],
-            'db_name_target': self.conf['udl2_db']['db_database'],
-            'db_password_target': self.conf['udl2_db']['db_pass'],
-            'map_type': 'staging_to_integration_sbac_asmt_outcome',
+            mk.TARGET_DB_HOST: self.conf['udl2_db']['db_host'],
+            mk.TARGET_DB_PORT: self.conf['udl2_db']['db_port'],
+            mk.TARGET_DB_USER: self.conf['udl2_db']['db_user'],
+            mk.TARGET_DB_NAME: self.conf['udl2_db']['db_database'],
+            mk.TARGET_DB_PASSWORD: self.conf['udl2_db']['db_pass'],
+            mk.TARGET_DB_SCHEMA: self.conf['udl2_db']['integration_schema'],
+
+            mk.ERROR_DB_SCHEMA: self.conf['udl2_db']['staging_schema'],
+
+            mk.MAP_TYPE: 'staging_to_integration_sbac_asmt_outcome'
         }
         self.conf['batch_id'] = '00000000-0000-0000-0000-000000000000'
         self.load_file_to_stage()

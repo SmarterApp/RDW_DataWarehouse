@@ -98,11 +98,11 @@ def generate_conf(batch_id):
             # source schema
             mk.SOURCE_DB_SCHEMA: udl2_conf['udl2_db']['integration_schema'],
             # source database setting
-            mk.SOURCE_DB_HOST: udl2_conf['postgresql']['db_host'],
-            mk.SOURCE_DB_PORT: udl2_conf['postgresql']['db_port'],
-            mk.SOURCE_DB_USER: udl2_conf['postgresql']['db_user'],
-            mk.SOURCE_DB_NAME: udl2_conf['postgresql']['db_database'],
-            mk.SOURCE_DB_PASSWORD: udl2_conf['postgresql']['db_pass'],
+            mk.SOURCE_DB_HOST: udl2_conf['udl2_db']['db_host'],
+            mk.SOURCE_DB_PORT: udl2_conf['udl2_db']['db_port'],
+            mk.SOURCE_DB_USER: udl2_conf['udl2_db']['db_user'],
+            mk.SOURCE_DB_NAME: udl2_conf['udl2_db']['db_database'],
+            mk.SOURCE_DB_PASSWORD: udl2_conf['udl2_db']['db_pass'],
 
             # target schema
             mk.TARGET_DB_SCHEMA: udl2_conf['target_db']['db_schema'],

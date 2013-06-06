@@ -3,12 +3,21 @@ import csv
 import os
 import shutil
 from filesplitter import file_splitter
+from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
+import imp
 
 class TestFileSplitter(unittest.TestCase):
 
 	def setUp(self):
+		try:
+			config_path = dict(os.environ)['UDL2_CONF']
+		except Exception:
+			config_path = UDL2_DEFAULT_CONFIG_PATH_FILE
+		udl2_conf = imp.load_source('udl2_conf', config_path)
+		from udl2_conf import udl2_conf
+		self.conf = udl2_conf
 		#create test csv
-		self.test_file_name = 'test.csv'
+		self.test_file_name = self.conf['zones']['tests'] + 'test.csv'
 		output_file = open(self.test_file_name, 'w', newline = '')
 		writer = csv.writer(output_file,delimiter=',')
 		self.header_row = ['title1','title2','title3']
@@ -19,7 +28,10 @@ class TestFileSplitter(unittest.TestCase):
 		output_file.close()	
 
 	def test_parts(self):
-		output_list,header_path = file_splitter.split_file(self.test_file_name,parts=5)
+		output_list,header_path = file_splitter.split_file(self.test_file_name,parts=5,output_path=self.conf['zones']['tests'] + 'splitter_test/')
+		print(self.test_file_name)
+		print(output_list)
+		print(header_path)
 		assert len(output_list) == 5
 		for entry in output_list:
 			assert 'test_part_' in entry[0]
@@ -32,7 +44,7 @@ class TestFileSplitter(unittest.TestCase):
 					assert int(row[0].strip('Row')) == i		
 	
 	def test_rowlimit(self):
-		output_list,header_path = file_splitter.split_file(self.test_file_name,row_limit = 5)
+		output_list,header_path = file_splitter.split_file(self.test_file_name,row_limit=5,output_path=self.conf['zones']['tests'] + 'splitter_test/')
 		assert len(output_list) == 2
 		for entry in output_list:
 			assert 'test_part_' in entry[0]
@@ -45,6 +57,7 @@ class TestFileSplitter(unittest.TestCase):
 					assert int(row[0].strip('Row')) == i	
 	
 	def tearDown(self):
-		base =  os.path.splitext(os.path.basename(self.test_file_name))[0]
-		shutil.rmtree(base)
+		print(self.test_file_name)
+		#base =  os.path.splitext(os.path.basename(self.test_file_name))[0]
+		shutil.rmtree(self.conf['zones']['tests'] + 'splitter_test/')
 		os.remove(self.test_file_name)

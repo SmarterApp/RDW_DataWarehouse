@@ -15,7 +15,8 @@ Created on May 10, 2013
 
 @author: ejen
 '''
-from sqlalchemy.schema import MetaData, CreateSchema, CreateTable, CreateSequence
+from sqlalchemy.schema import (MetaData, CreateSchema, CreateTable,
+    CreateSequence, ForeignKeyConstraint, UniqueConstraint)
 from sqlalchemy import Table, Column, Index, Sequence
 from sqlalchemy import SmallInteger, String, Date, Boolean
 from sqlalchemy import ForeignKey
@@ -47,7 +48,7 @@ UDL_METADATA = {
                 ('number_test', False, 'varchar(256)', '', False, "mock data for test type conversion during staging to integration"),
             ],
             'indexes': [],
-            'keys': [],
+            'keys': {},
         },
         'INT_MOCK_LOAD': {
             'columns': [
@@ -57,7 +58,7 @@ UDL_METADATA = {
                 ('number_test', False, 'varchar(256)', '', False, "mock data for test type conversion during staging to integration"),
             ],
             'indexes': [],
-            'keys': [],
+            'keys': {},
         },
         'UDL_BATCH': {
             'columns': [
@@ -84,7 +85,7 @@ UDL_METADATA = {
                 ('created_date', False, 'timestamp', 'now()', True, ""),
                 ('mod_date', False, 'timestamp', 'now()', True, ""),
             ],
-            'keys': [],
+            'keys': {},
             'indexes': [],
         },
         'STG_SBAC_ASMT': {
@@ -127,7 +128,7 @@ UDL_METADATA = {
                 ('created_date', False, 'timestamp', 'now()', False, "Date on which record is inserted"),
             ],
             'indexes': [],
-            'keys': [],
+            'keys': {},
         },
         'STG_SBAC_ASMT_OUTCOME': {
             'columns': [
@@ -182,7 +183,7 @@ UDL_METADATA = {
                 ('created_date', False, 'timestamp', 'now()', False, "Date on which record is inserted"),
             ],
             'indexes': [],
-            'keys': []
+            'keys': {}
         },
         'ERR_LIST': {
             'columns': [
@@ -193,7 +194,7 @@ UDL_METADATA = {
                 ('created_date', False, 'timestamp', 'now()', False, "Date on which record is inserted"),
             ],
             'indexes': [],
-            'keys': [],
+            'keys': {},
         },
         'INT_SBAC_ASMT': {
             'columns': [
@@ -235,7 +236,7 @@ UDL_METADATA = {
                 ('created_date', False, 'timestamp with time zone', 'now()', False, "Date on which record is inserted"),
             ],
             'indexes': [],
-            'keys': [],
+            'keys': {},
         },
         'INT_SBAC_ASMT_OUTCOME': {
             'columns': [
@@ -292,8 +293,73 @@ UDL_METADATA = {
                 ('created_date', False, 'timestamp with time zone', 'now()', False, "Date on which record is inserted"),
             ],
             'indexes': [],
-            'keys': [],
-        }
+            'keys': {},
+        },
+        'REF_TABLE_MAPPINGS': {
+            'columns': [
+                ('table_map_key', True, 'bigserial', '', False, 'Description to use as key (ie. json-to-int_asmt'),
+                ('product', False, 'varchar(32)', '', False, 'product name (ie. SBAC, mClass)'),
+                ('version', False, 'smallint', '', False, 'version of the mapping for the product'),
+                ('order', False, 'smallint', '', False, 'where the movement occurs in the pipeline'),
+                ('source_table', False, 'varchar(50)', '', False, 'name of the source table. could also be csv or json'),
+                ('source_schema', False, 'varchar(50)', '', True, 'name of the source schema. Should only be null if table is csv or json'),
+                ('target_table', False, 'varchar(50)', '', False, 'name of the target table'),
+                ('target_schema', False, 'varchar(50)', '', True, 'name of the target schema'),
+                ('mapping_desc', False, 'varchar(256)', '', True, 'description of the mapping'),
+                ('created_date', False, 'timestamp with time zone', 'now()', False, 'Date on which record is inserted')
+            ],
+            'indexes': [],
+            'keys': {
+                'unique': [('product', 'version', 'source_table', 'target_table')],
+            },
+        },
+        'REF_COLUMN_MAPPING': {
+            'columns': [
+                ('column_map_key', True, 'bigserial', '', False, 'Primary key for the table'),
+                ('table_map_key', False, 'bigint', '', False, 'Foreign key ref to REF_TABLE_MAPPINGS'),
+                ('source_column', False, 'varchar(50)', '', False, 'name of the source column'),
+                ('target_column', False, 'varchar(50)', '', True, 'Name of the target column'),
+                ('action_table', False, 'varchar(50)', '', True, 'Name of the table to look for transformation or validation actions'),
+                ('created_date', False, 'timestamp with time zone', 'now()', False, 'Date on which record is inserted')
+            ],
+            'indexes': [],
+            'keys': {
+                'foreign': [('table_map_key', 'REF_TABLE_MAPPINGS.table_map_key')]
+            },
+        },
+        'REF_TRANSFORMATION_1': {
+            'columns': [
+                ('transformation_key', True, 'bigserial', '', False, 'key'),
+                ('column_map_key', False, 'bigint', '', False, 'foreign key to REF_COLUMN_MAPPING'),
+                ('transformation_rule', False, 'varchar(32)', '', False, 'transformation rule'),
+                ('transformation_proc', False, 'varchar(256)', '', True, 'the associated stored procedure'),
+                ('is_active', False, 'bool', '', True, 'is the rule active'),
+                ('description', False, 'varchar(1000)', '', True, 'description of the rule'),
+                ('created_date', False, 'timestamp with time zone', 'now()', False, 'Date on which record is inserted')
+            ],
+            'indexes': [],
+            'keys': {
+                'foreign': [('column_map_key', 'REF_COLUMN_MAPPING.column_map_key')]
+            },
+        },
+        'REF_VALIDATION_1': {
+            'columns': [
+                ('validation_key', True, 'bigserial', '', False, 'sequential primary key'),
+                ('column_map_key', False, 'bigint', '', False, 'foreign key to REF_COLUMN_MAPPING'),
+                ('validation_rule', False, 'varchar(256)', '', False, 'the validation metadata to be applied'),
+                ('validation_proc', False, 'varchar(256)', '', True, 'the associated stored procedure'),
+                ('is_active', False, 'bool', '', True, 'is the rule active'),
+                ('priority', False, 'smallint', '', True, 'priority of the rule'),
+                ('scope', False, 'varchar(32)', '', True, 'row or column level rule'),
+                ('err_code', False, 'smallint', '', True, 'error code to use on error'),
+                ('description', False, 'varchar(256)', '', True, 'description of the rule'),
+                ('created_date', False, 'timestamp with time zone', 'now()', False, 'Date on which record is inserted')
+            ],
+            'indexes': [],
+            'keys': {
+                'foreign': [('column_map_key', 'REF_COLUMN_MAPPING.column_map_key')]
+            },
+        },
     },
     'SEQUENCES': {
         # This are for sequences that is not associated with any specific tables for our usage
@@ -348,6 +414,7 @@ def map_sql_type_to_sqlalchemy_type(sql_type):
         'double': FLOAT,
         'json': TEXT,
         'uuid': UUID,
+        'bool': BOOLEAN
     }
     try:
         mapped_type = sql_type_mapped_type[sql_type]
@@ -361,7 +428,7 @@ def map_sql_type_to_sqlalchemy_type(sql_type):
 def map_tuple_to_sqlalchemy_column(ddl_tuple):
     '''
     create a SQLAlchemy Column object from UDL_METADATA column
-    @param ddl_tuple: column definition in UDL_METADATA 
+    @param ddl_tuple: column definition in UDL_METADATA
     '''
     column = Column(ddl_tuple[0],
                     map_sql_type_to_sqlalchemy_type(ddl_tuple[2]),
@@ -369,8 +436,37 @@ def map_tuple_to_sqlalchemy_column(ddl_tuple):
                     nullable=ddl_tuple[4],
                     server_default=(text(ddl_tuple[3]) if (ddl_tuple[3] != '') else None),
                     doc=ddl_tuple[5],)
-   # print(column)
+    # print(column)
     return column
+
+
+def create_table_keys(key_ddl_dict, schema):
+    '''
+    Take a dictionary of key lists. Will check for 'foreign' and 'unique' in the list
+    and create sqlalchemy ForeignKeys objects and UniqueKey objects, respectively
+    @param key_ddl_dict: A dictionary containing key information. Each value should be a list of tuples.
+    the unique key tuple will contain any number of columns that constitute the unique combination. ('col1', 'col2', ...)
+    the foreign key tuple will contain the column in the current table and
+    the table and column in the other table. ie: ('col1', 'table2.col2')
+    @type key_ddl_dict: dict
+    @return: A list of foreign and unique keys
+    @rtype: list
+    '''
+    key_list = []
+    unique_keys = key_ddl_dict.get('unique', [])
+    foreign_keys = key_ddl_dict.get('foreign', [])
+
+    for uk_tup in unique_keys:
+        ukc = UniqueConstraint(*uk_tup)
+        key_list.append(ukc)
+
+    for fk_tup in foreign_keys:
+        foreign_column = schema + '.' + fk_tup[1]
+        fk_name = "%s-%s" % (fk_tup[0], foreign_column)
+        fkc = ForeignKeyConstraint([fk_tup[0]], [foreign_column], name=fk_name, use_alter=True)
+        key_list.append(fkc)
+
+    return key_list
 
 
 def create_table(udl2_conf, metadata, schema, table_name):
@@ -383,26 +479,26 @@ def create_table(udl2_conf, metadata, schema, table_name):
     '''
     print('create table %s.%s' % (schema, table_name))
     column_ddl = UDL_METADATA['TABLES'][table_name]['columns']
+    key_ddl = UDL_METADATA['TABLES'][table_name]['keys']
     arguments = [table_name, metadata]
 
     for c_ddl in column_ddl:
-        #print(c_ddl)
+        # print(c_ddl)
         column = map_tuple_to_sqlalchemy_column(c_ddl)
         arguments.append(column)
+
+    # create unique and foreign table keys, Add to arguments
+    arguments += create_table_keys(key_ddl, schema)
+
     table = Table(*tuple(arguments), **{'schema': schema})
-    (conn, engine) = _create_conn_engine(udl2_conf)
-    except_msg = "fail to create table %s.%s" % (schema, table_name)
-    try:
-        table.create(engine)
-    except Exception:
-        print(except_msg)
+
     return table
 
 
 def drop_table(udl2_conf, schema, table_name):
     '''
-    drop a table 
-    @param udl2_conf: The configuration dictionary for 
+    drop a table
+    @param udl2_conf: The configuration dictionary for
     @param scheam: Schema name where the table is located in UDL2 schema
     @param table_name: Table name for the table to be created, it must be defined in UDL_METADATA
     '''
@@ -416,7 +512,7 @@ def drop_table(udl2_conf, schema, table_name):
 def create_sequence(udl2_conf, metadata, schema, seq_name):
     '''
     create a sequence from UDL_METADATA definitions
-    @param udl2_conf: The configuration dictionary for udl 
+    @param udl2_conf: The configuration dictionary for udl
     @param metadata: SQLAlchemy Metadata object
     @param schema: Schema name where the table is located in UDL2 schema
     @param seq_name: sequence name for the sequence to be created, it must be defined in UDL_METADATA
@@ -454,7 +550,7 @@ def drop_sequence(udl2_conf, schema, seq_name):
 def create_udl2_schema(udl2_conf):
     '''
     create schemas according to configuration file
-    @param udl2_conf: The configuration dictionary for 
+    @param udl2_conf: The configuration dictionary for
     '''
     print('create udl2 staging schema')
     sql = text("CREATE SCHEMA \"%s\"" % udl2_conf['staging_schema'])
@@ -466,7 +562,7 @@ def create_udl2_schema(udl2_conf):
 def drop_udl2_schema(udl2_conf):
     '''
     drop schemas according to configuration file
-    @param udl2_conf: The configuration dictionary for 
+    @param udl2_conf: The configuration dictionary for
     '''
     print('drop udl2 staging schema')
     sql = text("DROP SCHEMA \"%s\" CASCADE" % udl2_conf['staging_schema'])
@@ -478,19 +574,24 @@ def drop_udl2_schema(udl2_conf):
 def create_udl2_tables(udl2_conf):
     '''
     create tables in schema according to configuration file
-    @param udl2_conf: The configuration dictionary for 
+    @param udl2_conf: The configuration dictionary for
     '''
-    #engine = (_get_db_url(udl2_conf))
+    # engine = (_get_db_url(udl2_conf))
     udl2_metadata = MetaData()
     print("create tables")
+
+    (conn, engine) = _create_conn_engine(udl2_conf)
     for table, definition in UDL_METADATA['TABLES'].items():
         create_table(udl2_conf, udl2_metadata, udl2_conf['staging_schema'], table)
+
+    # Use metadata to create tables
+    udl2_metadata.create_all(engine)
 
 
 def drop_udl2_tables(udl2_conf):
     '''
     drop tables according to configuration file
-    @param udl2_conf: The configuration dictionary for 
+    @param udl2_conf: The configuration dictionary for
     '''
     print("drop tables")
     for table, definition in UDL_METADATA['TABLES'].items():
@@ -500,9 +601,9 @@ def drop_udl2_tables(udl2_conf):
 def create_udl2_sequence(udl2_conf):
     '''
     create sequences according to configuration file
-    @param udl2_conf: The configuration dictionary for 
+    @param udl2_conf: The configuration dictionary for
     '''
-    #(conn, engine) = _create_conn_engine(udl2_conf['udl2_db'])
+    # (conn, engine) = _create_conn_engine(udl2_conf['udl2_db'])
     udl2_metadata = MetaData()
     print("create sequences")
     for sequence, definition in UDL_METADATA['SEQUENCES'].items():
@@ -512,7 +613,7 @@ def create_udl2_sequence(udl2_conf):
 def drop_udl2_sequences(udl2_conf):
     '''
     drop sequences according to configuration file
-    @param udl2_conf: The configuration dictionary for 
+    @param udl2_conf: The configuration dictionary for
     '''
     print("drop sequences")
     for seq, definition in UDL_METADATA['SEQUENCES'].items():
@@ -522,7 +623,7 @@ def drop_udl2_sequences(udl2_conf):
 def create_foreign_data_wrapper_extension(udl2_conf):
     '''
     create foreign data wrapper extension according to configuration file
-    @param udl2_conf: The configuration dictionary for 
+    @param udl2_conf: The configuration dictionary for
     '''
     print('create foreign data wrapper extension')
     sql = "CREATE EXTENSION IF NOT EXISTS file_fdw WITH SCHEMA %s" % (udl2_conf['csv_schema'])
@@ -534,7 +635,7 @@ def create_foreign_data_wrapper_extension(udl2_conf):
 def drop_foreign_data_wrapper_extension(udl2_conf):
     '''
     drop foreign data wrapper extension according to configuration file
-    @param udl2_conf: The configuration dictionary for 
+    @param udl2_conf: The configuration dictionary for
     '''
     print('drop foreign data wrapper extension')
     sql = "DROP EXTENSION IF EXISTS file_fdw CASCADE"
@@ -543,11 +644,10 @@ def drop_foreign_data_wrapper_extension(udl2_conf):
     execute_queries(conn, [sql], except_msg)
 
 
-
 def create_dblink_extension(udl2_conf):
     '''
     create dblink extension according to configuration file
-    @param udl2_conf: The configuration dictionary for 
+    @param udl2_conf: The configuration dictionary for
     '''
     print('create dblink extension')
     sql = "CREATE EXTENSION IF NOT EXISTS dblink WITH SCHEMA %s" % (udl2_conf['db_schema'])
@@ -559,7 +659,7 @@ def create_dblink_extension(udl2_conf):
 def drop_dblink_extension(udl2_conf):
     '''
     drop dblink extension according to configuration file
-    @param udl2_conf: The configuration dictionary for 
+    @param udl2_conf: The configuration dictionary for
     '''
     print('drop dblink extension')
     sql = "DROP EXTENSION IF EXISTS dblink CASCADE"
@@ -571,7 +671,7 @@ def drop_dblink_extension(udl2_conf):
 def create_foreign_data_wrapper_server(udl2_conf):
     '''
     create server for foreign data wrapper according to configuration file
-    @param udl2_conf: The configuration dictionary for 
+    @param udl2_conf: The configuration dictionary for
     '''
     print('create foreign data wrapper server')
     sql = "CREATE SERVER %s FOREIGN DATA WRAPPER file_fdw" % (udl2_conf['fdw_server'])
@@ -583,7 +683,7 @@ def create_foreign_data_wrapper_server(udl2_conf):
 def drop_foreign_data_wrapper_server(udl2_conf):
     '''
     drop server for foreign data wrapper according to configuration file
-    @param udl2_conf: The configuration dictionary for 
+    @param udl2_conf: The configuration dictionary for
     '''
     print('drop foreign data wrapper server')
     sql = "DROP SERVER IF EXISTS %s CASCADE" % (udl2_conf['fdw_server'])
@@ -596,27 +696,27 @@ def load_fake_record_in_star_schema(udl2_conf):
     '''
     load two fake records into dim_int_hier and dim_section for integration table to create
     star schema from integration table
-    @param udl2_conf: The configuration dictionary for 
-    '''    
+    @param udl2_conf: The configuration dictionary for
+    '''
     print('load fake record')
     (conn, engine) = _create_conn_engine(udl2_conf)
     sqls = [
         """
         INSERT INTO "edware"."dim_section"(
-            section_rec_id, section_guid, section_name, grade, class_name, 
-            subject_name, state_code, district_guid, school_guid, from_date, 
+            section_rec_id, section_guid, section_name, grade, class_name,
+            subject_name, state_code, district_guid, school_guid, from_date,
             to_date, most_recent)
-        VALUES (1, 'fake_value', 'fake_value', 'fake_value', 'fake_value', 
+        VALUES (1, 'fake_value', 'fake_value', 'fake_value', 'fake_value',
             'fake_value', 'FA', 'fake_value', 'fake_value', '99999999',
             '00000000', False);
         """,
         """
         INSERT INTO "edware"."dim_inst_hier"(
-            inst_hier_rec_id, state_name, state_code, district_guid, district_name, 
-            school_guid, school_name, school_category, from_date, to_date, 
+            inst_hier_rec_id, state_name, state_code, district_guid, district_name,
+            school_guid, school_name, school_category, from_date, to_date,
             most_recent)
-        VALUES (-1, 'fake_value', 'FA', 'fake_value', 'fake_value', 
-            'fake_value', 'fake_value', 'fake_value', '99999999', '00000000', 
+        VALUES (-1, 'fake_value', 'FA', 'fake_value', 'fake_value',
+            'fake_value', 'fake_value', 'fake_value', '99999999', '00000000',
             False);
         """,
     ]
@@ -627,7 +727,7 @@ def load_fake_record_in_star_schema(udl2_conf):
 def setup_udl2_schema(udl2_conf):
     '''
     create whole udl2 database schema according to configuration file
-    @param udl2_conf: The configuration dictionary for 
+    @param udl2_conf: The configuration dictionary for
     '''
     create_dblink_extension(udl2_conf['target_db'])
     create_udl2_schema(udl2_conf['udl2_db'])
@@ -642,7 +742,7 @@ def setup_udl2_schema(udl2_conf):
 def teardown_udl2_schema(udl2_conf):
     '''
     drop whole udl2 database schema according to configuration file
-    @param udl2_conf: The configuration dictionary for 
+    @param udl2_conf: The configuration dictionary for
     '''
     drop_udl2_sequences(udl2_conf['udl2_db'])
     drop_udl2_tables(udl2_conf['udl2_db'])
@@ -651,7 +751,7 @@ def teardown_udl2_schema(udl2_conf):
     drop_dblink_extension(udl2_conf['udl2_db'])
     drop_udl2_schema(udl2_conf['udl2_db'])
     drop_dblink_extension(udl2_conf['target_db'])
-   
+
 
 def main():
     '''

@@ -29,7 +29,7 @@ MAPPINGS = 'mappings'
 # keys for conf sent to file_loader.load_file(conf)
 TARGET_DB_HOST = 'target_db_host'
 TARGET_DB_PORT = 'target_db_port'
-TARGET_DB_USER = 'target_db_user_user'
+TARGET_DB_USER = 'target_db_user'
 TARGET_DB_NAME = 'target_db_name'
 TARGET_DB_PASSWORD = 'target_db_password'
 TARGET_DB_SCHEMA = 'staging_schema'

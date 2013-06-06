@@ -7,26 +7,33 @@ from udl2 import W_file_arrived, W_file_expander, W_simple_file_validator, W_fil
     W_load_json_to_integration, W_load_to_integration_table, W_load_from_integration_to_star
 from udl2 import message_keys as mk
 from uuid import uuid4
+from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
+import imp
+
 
 # Paths to our various directories
-THIS_MODULE_PATH = os.path.abspath(__file__)
-SRC_DIRECTORY = os.path.dirname(THIS_MODULE_PATH)
-ROOT_DIRECTORY = os.path.dirname(SRC_DIRECTORY)
-ZONES = os.path.join(ROOT_DIRECTORY, 'zones')
-LANDING_ZONE = os.path.join(ZONES, 'landing')
-ARRIVALS = os.path.join(ZONES, 'arrivals')
-WORK_ZONE = os.path.join(LANDING_ZONE, 'work')
-HISTORY_ZONE = os.path.join(LANDING_ZONE, 'history')
-DATAFILES = os.path.join(ROOT_DIRECTORY, 'datafiles')
+#THIS_MODULE_PATH = os.path.abspath(__file__)
+#SRC_DIRECTORY = os.path.dirname(THIS_MODULE_PATH)
+#ROOT_DIRECTORY = os.path.dirname(SRC_DIRECTORY)
+#ZONES = os.path.join(ROOT_DIRECTORY, 'zones')
+#LANDING_ZONE = os.path.join(ZONES, 'landing')
+#ARRIVALS = os.path.join(ZONES, 'arrivals')
+#WORK_ZONE = os.path.join(LANDING_ZONE, 'work')
+#HISTORY_ZONE = os.path.join(LANDING_ZONE, 'history')
+#DATAFILES = os.path.join(ROOT_DIRECTORY, 'datafiles')
 
 
-def start_pipeline(csv_file_path, json_file_path):
+def start_pipeline(csv_file_path, json_file_path, udl2_conf):
     '''
     Begins the UDL Pipeline process by copying the file found at 'csv_file_path' to the landing zone arrivals dir and
     initiating our main pipeline chain.
 
-    @param csv_file_path: The file that gets uploaded to the "Landing Zone" Arrival dir beginning the UDL process
+    @param csv_file_path: The csv file that gets uploaded to the "Landing Zone" Arrival dir beginning the UDL process
     @type csv_file_path: str
+    @param json_file_path: The json file that gets uploaded to the "Landing Zone" Arrival dir beginning the UDL process
+    @type json_file_path: str
+    @param udl2_conf: udl2 system configuration dictionary
+    @type udl2: dict
     '''
 
     # Create a unique name for the file when it is placed in the "Landing Zone"
@@ -41,7 +48,7 @@ def start_pipeline(csv_file_path, json_file_path):
     # Prepare parameters for task msgs
     archived_file = os.path.join('fake', 'path', 'to', 'fake_archived_file.zip')
     batch_id = str(uuid4())
-    lzw = WORK_ZONE
+    lzw = udl2_conf['zones']['work']
     jc_table = {}
     jc = (jc_table, batch_id)
 
@@ -173,6 +180,13 @@ if __name__ == '__main__':
     parser.add_argument('-c', dest='source_csv', required=True, help="path to the source csv file.")
     parser.add_argument('-j', dest='source_json', required=True, help="path to the source json file.")
     parser.add_argument('-t', dest='apply_transformation_rules', default='True', help="apply transformation rules or not")
+    parser.add_argument('-f', dest='config_file', default=UDL2_DEFAULT_CONFIG_PATH_FILE, help="configuration file for UDL2")
     args = parser.parse_args()
 
-    start_pipeline(args.source_csv, args.source_json)
+    if args.config_file is None:
+        config_path_file = UDL2_DEFAULT_CONFIG_PATH_FILE
+    else:
+        config_path_file = args.config_file
+    udl2_conf = imp.load_source('udl2_conf', config_path_file)
+    from udl2_conf import udl2_conf
+    start_pipeline(args.source_csv, args.source_json, udl2_conf)

@@ -46,10 +46,10 @@ cd /opt/wgen/edware-udl/udl2/edware-udl-2.0
 source /opt/wgen/edware-udl/udl2/python3.3/bin/activate
 sudo -u udl2 -s "python3.3 setup.py install"
 cd /opt/wgen/edware/udl2/edware-udl-2.0
-/opt/wgen/edware/udl2/python3.3/bin/python3.3 ./setup.py install
+/opt/wgen/edware-udl/udl2/python3.3/bin/python3.3 ./setup.py install
 #install all python dependency for flower to monitor celery
 echo "install all python dependency code for flower to minitor celery"
 source /opt/wgen/edware-udl/udl2/python2.7/bin/activate
 sudo -u udl2 -s "pip-2.7 install flower"
 cd /opt/wgen/edware/udl2/edware-udl-2.0
-/opt/wgen/edware/udl2/python2.7/bin/pip-2.7 ./setup.py install
+/opt/wgen/edware-udl/udl2/python2.7/bin/pip-2.7 ./setup.py install

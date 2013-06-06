@@ -68,7 +68,7 @@ def generate_rules():
     for rule_catergory, group_rules in rules_map.items():
         fun = __function_map[rule_catergory]
         for rule, parts in group_rules.items():
-            print("\n====== code for: " + rule + " ======")
+            # print("\n====== code for: " + rule + " ======")
             parm = parameters_with_defaults(rule_catergory, rule, parts)
             out = fun(*parm)
             print(out)

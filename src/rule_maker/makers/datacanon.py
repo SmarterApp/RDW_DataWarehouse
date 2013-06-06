@@ -25,7 +25,7 @@ BEGIN
 
 __map_func_end = """
     ELSE
-        v_return := v_{col_name}
+        v_return := v_{col_name};
     END IF;
 
     RETURN v_return;
@@ -53,7 +53,7 @@ DECLARE
 
 """
 __lists_func_top2 = """
-         keys_{col_name} text[] = ARRAY['{key_list}'];
+    keys_{col_name} text[] = ARRAY['{key_list}'];
 """
 __lists_func_top3 = """
 BEGIN
@@ -77,7 +77,7 @@ $$ LANGUAGE plpgsql;"""
 def make_substring_part(pref, col, val, length=None):
     if not length:
         length = len(val)
-    return "{prefix} SUBSTRING(v_{col_name}, 1, {length}) = '{value}';".format(prefix=pref, col_name=col, length=len(val), value=val)
+    return "{prefix} SUBSTRING(v_{col_name}, 1, {length}) = '{value}'".format(prefix=pref, col_name=col, length=len(val), value=val)
 
 
 def make_substring(prefix, col, val, val_list):
@@ -185,7 +185,7 @@ def make_if_then_else_exp(if_exp, then_exp, else_exp=None):
     '''
     Make a if-else-then expression
     '''
-    basic = 'IF {if_exp} THEN \n\t{then_exp};'.format(if_exp=if_exp, then_exp=then_exp)
+    basic = 'IF {if_exp} THEN \n\t{then_exp}'.format(if_exp=if_exp, then_exp=then_exp)
     if else_exp:
         basic = basic + '\nELSE\n{else_exp}'.format(else_exp=else_exp)
     basic += '\n END IF;'

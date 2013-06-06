@@ -1,3 +1,3 @@
 #!/bin/sh
-sudo /usr/sbin/userdel udl2
-sudo rm -fr /opt/wgen/edware-udl/*
+sudo -u root -s "rm -fr /opt/wgen/edware-udl/*"
+sudo -u root -s "/usr/sbin/userdel udl2"

@@ -1,6 +1,6 @@
 def includeme(config):
     # Add heartbeat
-    config.add_route('heartbeat', '/heartbeat')
+    config.add_route('heartbeat', '/services/heartbeat')
 
     # Add pdf
     config.add_route('pdf', '/services/pdf/{report}')

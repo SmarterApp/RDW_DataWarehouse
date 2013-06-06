@@ -11,7 +11,7 @@ echo "create udl2 users to run udl2 celery and own the zone area for work"
 sudo -u root -s "useradd -d /opt/wgen/edware-udl/udl2 -r -s /bin/sh udl2"
 
 # copy current udl2 installation's code ssh
-echo PWD
+echo `pwd`
 echo "copy udl2 installations' ssh keys"
 sudo -u root -s "cp ../git/id_rsa* /opt/wgen/edware-udl/udl2/.ssh"
 sudo -u root -s "chmod 600 /opt/wgen/edware-udl/udl2/.ssh/id_rsa.pub"

@@ -34,7 +34,7 @@ EXCEPTION
     WHEN OTHERS THEN
         RETURN v_{col_name};
 END;
-$$ LANGUAGE plpgsql
+$$ LANGUAGE plpgsql;
     """
 
 __lists_func_top1 = """
@@ -71,13 +71,13 @@ EXCEPTION
         RETURN v_{col_name};
 
 END;
-$$ LANGUAGE plpgsql"""
+$$ LANGUAGE plpgsql;"""
 
 
 def make_substring_part(pref, col, val, length=None):
     if not length:
         length = len(val)
-    return "{prefix} SUBSTRING(v_{col_name}, 1, {length}) = '{value}'".format(prefix=pref, col_name=col, length=len(val), value=val)
+    return "{prefix} SUBSTRING(v_{col_name}, 1, {length}) = '{value}';".format(prefix=pref, col_name=col, length=len(val), value=val)
 
 
 def make_substring(prefix, col, val, val_list):
@@ -85,7 +85,7 @@ def make_substring(prefix, col, val, val_list):
     ret = make_substring_part(prefix, col, val_list[0])
     for i in range(1, len(val_list)):
         ret += make_substring_part(pref2, col, val_list[i])
-    ret += " THEN\n\t\tv_return := '{value}'".format(value=val)
+    ret += " THEN\n\t\tv_return := '{value}';".format(value=val)
     return ret
 
 
@@ -168,7 +168,7 @@ def make_or_exp(col, accepted_value, compare_length):
         prefix = ''
         for value in list(accepted_value):
             ret += prefix + 'v_{col_name} = \'{value}\''.format(col_name=col, value=value)
-            prefix = '\n\tOR'
+            prefix = '\n\tOR '
         return ret
     else:
         return make_substring_part('', col, accepted_value[0], compare_length)
@@ -185,7 +185,7 @@ def make_if_then_else_exp(if_exp, then_exp, else_exp=None):
     '''
     Make a if-else-then expression
     '''
-    basic = 'IF {if_exp} THEN \n\t{then_exp}'.format(if_exp=if_exp, then_exp=then_exp)
+    basic = 'IF {if_exp} THEN \n\t{then_exp};'.format(if_exp=if_exp, then_exp=then_exp)
     if else_exp:
         basic = basic + '\nELSE\n{else_exp}'.format(else_exp=else_exp)
     basic += '\n END IF;'

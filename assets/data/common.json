@@ -47,6 +47,22 @@
             "text_color": "#FFFFFF"
         }
     ],
+    
+    "grayColors": [
+        {
+            "bg_color": "#000000",
+            "text_color": "#FFFFFF"
+        }, {
+            "bg_color": "#686868",
+            "text_color": "#FFFFFF"
+        }, {
+            "bg_color": "#acacac",
+            "text_color": "#000"
+        }, {
+            "bg_color": "#d2d2d2",
+            "text_color": "#000"
+        }
+    ],
 
     "feedback": {
         "PARENT": {

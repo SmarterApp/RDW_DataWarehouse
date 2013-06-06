@@ -59,6 +59,7 @@ define [
       edwareDataProxy.getDatafromSource "../data/common.json", options, (configData) ->
         
         defaultColors = configData.colors
+        defaultGrayColors = configData.grayColors
         feedbackData = configData.feedback
         breadcrumbsConfigs = configData.breadcrumb
         reportInfo = configData.reportInfo
@@ -73,6 +74,12 @@ define [
             if !items.cut_point_intervals[j].bg_color
               $.extend(items.cut_point_intervals[j], defaultColors[j])
             j++
+            
+          if params['grayscale'] is 'true'
+            j = 0
+            while j < items.cut_point_intervals.length
+              $.extend(items.cut_point_intervals[j], defaultGrayColors[j])
+              j++
           
           # Generate unique id for each assessment section. This is important to generate confidence level bar for each assessment
           # ex. assessmentSection0, assessmentSection1
@@ -213,9 +220,14 @@ define [
           uid = edwareUtil.getUid data.user_info
           edwareUtil.renderFeedback(role, uid, "individual_student_report", feedbackData)
         
-        # Report info and legend for print version
+        # Report info and legend for print version, Grayscale logo for print version
         $($("#footerLinks").html()).clone().appendTo("#print_reportInfoContent")
-        $("#print_reportInfoContent .legendPopup img").attr("src", "../images/legend_IndivStudent_color_print.png")
+        if params['grayscale'] isnt 'true'
+          $("#print_reportInfoContent .legendPopup img").attr("src", "../images/legend_IndivStudent_color_print.png")
+        else
+          $("#print_reportInfoContent .legendPopup img").attr("src", "../images/legend_IndivStudent_gray_print.png")
+          $(".printHeader .logo img").attr("src", "../images/smarter_printlogo_gray.png")
+        
         $("#print_reportInfoContent .legendPopup img").attr("width", "850")
         $("#print_reportInfoContent .legendPopup img").attr("height", "710")
         

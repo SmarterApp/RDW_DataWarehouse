@@ -1,6 +1,13 @@
-* {
-  filter: grayscale(100%);
-  -webkit-filter: grayscale(100%);
-  -moz-filter: grayscale(100%);
-  //-webkit-transform: translateZ(0);//need this line to avoid blurry on Retina
+@import "color";
+
+.confidenceLevel { 
+  .overall_score { 
+    color: @color-black !important; 
+  }
+}
+
+.overallScoreSection {
+    h1 {
+      color: @color-black;
+    }
 }

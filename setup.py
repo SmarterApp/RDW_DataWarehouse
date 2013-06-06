@@ -11,6 +11,7 @@ subprocess.call('cd ./scripts/; ./install_udl_requirements.sh', shell=True)
 requires = ['celery(>=3.0.19)']
 
 scripts = ['scripts/initialize_udl2_database.sh',
+         'scripts/initialize_udl2_system.sh',
          'scripts/initialize_udl2_database_user.sh',
          'scripts/initialize_udl2_directories.sh',
          'scripts/start_rabbitmq.sh',

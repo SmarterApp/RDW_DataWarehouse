@@ -105,7 +105,10 @@ class TestViews(unittest.TestCase):
         self.assertEqual(relay_state.path, "/dummy/data")
 
     def test_login_redirected_due_to_no_role(self):
-        self.__config.testing_securitypolicy("sessionId123", ['NONE'])
+        # set up session data
+        session = create_test_session(roles=['NONE'], uid='linda.kim', full_name='Linda Kim', idpSessionIndex='123')
+        self.__config.testing_securitypolicy(session.get_session_id(), ['NONE'])
+
         self.__request.url = 'http://example.com/dummy/page'
         http = login(self.__request)
         self.assertIsInstance(http, HTTPForbidden)

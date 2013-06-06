@@ -43,7 +43,7 @@ def login(request):
     if Roles.get_invalid_role() in principals:
         message = "Forbidden view accessed by session_id %s" % session_id
         logger.warn(message)
-        write_security_event(message, SECURITY_EVENT_TYPE.WARN)
+        write_security_event(message, SECURITY_EVENT_TYPE.WARN, session_id)
         return HTTPForbidden()
 
     # clear out the session if we found one in the cookie
@@ -149,7 +149,7 @@ def logout(request):
 
             message = "Logout requested for session_id %s" % session_id
             logger.info(message)
-            write_security_event(message, SECURITY_EVENT_TYPE.INFO)
+            write_security_event(message, SECURITY_EVENT_TYPE.INFO, session_id)
             # expire our session
             expire_session(session_id)
 
@@ -186,7 +186,7 @@ def saml2_post_consumer(request):
         if get_user_session(session_id).get_tenant() is None:
             message = 'No Tenant was found.  Rejecting User'
             logger.warn(message)
-            write_security_event(message, SECURITY_EVENT_TYPE.WARN)
+            write_security_event(message, SECURITY_EVENT_TYPE.WARN, session_id)
             return HTTPForbidden()
 
         # Save session id to cookie
@@ -194,7 +194,7 @@ def saml2_post_consumer(request):
 
         message = "SAML response processed successfully for session_id %s" % session_id
         logger.info(message)
-        write_security_event(message, SECURITY_EVENT_TYPE.INFO)
+        write_security_event(message, SECURITY_EVENT_TYPE.INFO, session_id=session_id)
 
         # Get the url saved in RelayState from SAML request, redirect it back to it
         # If it's not found, redirect to list of reports

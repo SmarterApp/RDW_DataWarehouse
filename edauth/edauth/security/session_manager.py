@@ -13,6 +13,8 @@ import socket
 import logging
 from edauth.security.session_backend import get_session_backend
 from edauth.security.tenant import get_tenant_name
+from pyramid.security import authenticated_userid
+from pyramid.threadlocal import get_current_request
 
 # TODO: remove datetime.now() and use func.now()
 
@@ -29,12 +31,20 @@ def get_user_session(session_id):
     return get_session_backend().get_session(session_id)
 
 
-def write_security_event(message_content, message_type):
+def write_security_event(message_content, message_type, session_id=None):
     '''
     Write a security event details to a table in DB
     '''
     # log the security event
-    security_logger.info({'msg': message_content, 'type': message_type, 'host': socket.gethostname()})
+    # Get user's tenant from session
+    user_info = {}
+    if session_id:
+        user = get_user_session(session_id).get_user()
+    else:
+        user = authenticated_userid(get_current_request())
+    if user:
+        user_info = {'guid': user.get_guid(), 'roles': user.get_roles()}
+    security_logger.info({'msg': message_content, 'type': message_type, 'host': socket.gethostname(), 'user': user_info})
 
 
 def create_new_user_session(saml_response, session_expire_after_in_secs=30):

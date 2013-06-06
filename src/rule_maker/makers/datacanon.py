@@ -38,7 +38,7 @@ $$ LANGUAGE plpgsql
     """
 
 __lists_func_top1 = """
-FUNCTION map_{col_name}
+CREATE OR REPLACE FUNCTION map_{col_name}
 (
     p_{col_name}  IN  VARCHAR
 )
@@ -49,15 +49,14 @@ DECLARE
     v_return          VARCHAR(255);
     v_sub{col_name}   VARCHAR(255);
 
-    -- need to change to the postgres syntax
-    TYPE arr{col_name}_t IS VARRAY(21) OF VARCHAR2(32);
-         vals_{col_name} arr{col_name}_t := arr{col_name}_t('{value_list}');
+    vals_{col_name} text[] = ARRAY['{value_list}'];
+
 """
 __lists_func_top2 = """
          keys_{col_name} arr{col_name}_t := arr{col_name}_t('{key_list}');
 """
 __lists_func_top3 = """
-BEGINE
+BEGIN
 """
 
 __lists_func_end = """
@@ -101,7 +100,7 @@ def make_substring_list(col, cf):
     return ret
 
 
-def make_function_for_map(col, dp_list, comes_from):
+def make_function_for_look_up(col, dp_list, comes_from):
     '''
     Main function to generate transformation rules
     which has the logic the same as map_gender
@@ -196,10 +195,10 @@ def make_if_then_else_exp(if_exp, then_exp, else_exp=None):
 def make_for_loop_exp(col, compare_length, has_key_and_value):
     count_value = 'keys_' if has_key_and_value is True else 'vals_'
     template = """
-    FOR cntr IN 1..{count_value}{col_name}.COUNT
+    FOR cntr IN array_lower({count_value}{col_name}, 1)..array_upper({count_value}{col_name}, 1)
     LOOP
-        IF v_sub{col_name} = SUBSTRING({count_value}{col_name}(cntr), 1, {length}) THEN
-            v_return := vals_{col_name}(cntr);
+        IF v_sub{col_name} = SUBSTRING({count_value}{col_name}[cntr], 1, {length}) THEN
+            v_return := vals_{col_name}[cntr];
             EXIT;
         END IF;
     END LOOP;

@@ -3,11 +3,19 @@ echo "make udl2 system user home"
 
 sudo -u root -s "mkdir -p /opt/wgen/edware-udl/udl2/"
 sudo -u root -s "chmod 777 /opt/wgen/edware-udl/udl2"
+sudo -u root -s "mkdir -p /opt/wgen/edware-udl/udl2/.ssh"
 
 # create udl2 system users for
 echo "create udl2 users to run udl2 celery and own the zone area for work"
 sudo -u root -s "useradd -d /opt/wgen/edware-udl/udl2 -r -s /bin/sh udl2"
 
+# copy current udl2 installation's code ssh
+echo "copy udl2 installations' ssh keys"
+
+sudo -u root -s "cp ../git/id_rsa* /opt/wgen/edware-udl/udl2/.ssh"
+sudo -u root -s "chmod 755 /opt/wgen/edware-udl/udl2/.ssh"
+sudo -u root -s "chmod 600 /opt/wgen/edware-udl/udl2/.ssh/id_rsa.pub"
+sudo -u root -s "chmod 600 /opt/wgen/edware-udl/udl2/.ssh/id_rsa"
 # install virtualenv-3.3
 echo "install virtualenv-3.3 for celery, due to python3 rpm install path under /opt/python3/bin, we need to specifiy the path"
 cd /opt/wgen/edware-udl/udl2

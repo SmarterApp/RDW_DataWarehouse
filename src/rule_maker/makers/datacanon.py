@@ -53,7 +53,7 @@ DECLARE
 
 """
 __lists_func_top2 = """
-         keys_{col_name} arr{col_name}_t := arr{col_name}_t('{key_list}');
+         keys_{col_name} text[] = ARRAY['{key_list}'];
 """
 __lists_func_top3 = """
 BEGIN

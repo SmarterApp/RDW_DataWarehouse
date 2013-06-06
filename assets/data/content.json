@@ -9,10 +9,10 @@
         "claim_3_ald" : "Achievement Level Descriptor"
         },
         
-	"overall_ald": {
-		"Math": "Draft score summary: A student at Level {{asmt_perf_lvl}} demonstrates <strong>{{score_name}}</strong> of and ability to apply the mathematics knowledge and skills needed for success in college and careers, as specified in the Common Core State Standards.",
-		"ELA": "Draft score summary: A student at Level {{asmt_perf_lvl}} demonstrates <strong>{{score_name}}</strong> of and ability to apply the English language arts and literacy knowledge and skills needed for success in college and careers, as specified in the Common Core State Standards."
-	},
+    "overall_ald": {
+        "Math": "Draft score summary: A student at Level {{asmt_perf_lvl}} demonstrates <strong>{{score_name}} of and ability to apply</strong> the mathematics knowledge and skills needed for success in college and careers, as specified in the Common Core State Standards.",
+        "ELA": "Draft score summary: A student at Level {{asmt_perf_lvl}} demonstrates <strong>{{score_name}} of and ability to apply</strong> the English language arts and literacy knowledge and skills needed for success in college and careers, as specified in the Common Core State Standards."
+    },
 	
 	"psychometric_implications": {
 		"Math": "The scale, units, and cut-scores are illustrative and are expected to change. Score summaries will be revised in Summer 2014, and tailored by grade and subject in terms of the knowledge, skills, and processes that you have demonstrated you can do.",

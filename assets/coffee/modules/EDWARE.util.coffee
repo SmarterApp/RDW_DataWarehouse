@@ -128,7 +128,7 @@ define [
     header_html = "<div id='logo'>" +
                   "<img src='../images/smarterHeader_logo.png' alt='logo' height='36' width='112'>" +
                   "</div>" +
-                  "<div id='headerTitle'>RFP15 Reporting - Beta UAT</div>" + 
+                  "<div id='headerTitle'>Reporting Beta UAT - DRAFT SYSTEM</div>" + 
                   "<div class='topLinks'>" +
                   "<span id='headerUser' class='user'></span><span class='seperator'>|</span><span id='headerLogout'><a href='/logout' target='iframe_logout'>Log Out</a></span>" +
                   "</div>" +

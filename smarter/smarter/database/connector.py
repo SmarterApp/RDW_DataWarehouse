@@ -12,14 +12,16 @@ from pyramid.threadlocal import get_current_request
 class SmarterDBConnection(DBConnection):
     '''
     DBConnector for Smarter Project
+    a name is required for tenancy database connection lookup
     '''
-    def __init__(self, datasource_name=None):
-        if datasource_name is None:
+    def __init__(self, name=None):
+
+        if name is None:
             # Get user's tenant from session
             __user = authenticated_userid(get_current_request())
             if __user:
-                datasource_name = get_datasource_name(__user.get_tenant())
+                name = get_datasource_name(__user.get_tenant())
             else:
                 # TODO: have to fix this edge case
                 pass
-        super().__init__(name=datasource_name)
+        super().__init__(name=name)

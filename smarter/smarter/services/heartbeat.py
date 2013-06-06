@@ -19,7 +19,7 @@ def heartbeat(request):
     try:
         results = None
         for datasource_name in get_data_source_names():
-            with SmarterDBConnection(datasource_name=datasource_name) as connector:
+            with SmarterDBConnection(name=datasource_name) as connector:
                 query = select([1])
                 results = connector.get_result(query)
     except Exception:

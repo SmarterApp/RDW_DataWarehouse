@@ -329,11 +329,15 @@ development:
       celery_always_eager: true
     edware:
       db:
+        pool_size: 20
+        max_overflow: 10
         cat:
           schema_name: edware_sds_0_2
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
-          pool_size: 20
-          max_overflow: 10
+        dog:
+          schema_name: edware_sds_us15303_0_1
+          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
+          
     auth:
       skip.verify: False
       saml:
@@ -358,6 +362,9 @@ test:
         cat:
           schema_name: edware_sds_0_2
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
+        dog:
+          schema_name: edware_sds_us15303_0_1
+          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
     auth:
       skip.verify: False
       saml:
@@ -376,8 +383,11 @@ jenkins_dev:
       CELERYD_CONCURRENCY: 8
     edware:
       db:
-        schema_name: edware_sds_0_2
         cat:
+          schema_name: edware_sds_0_2
+          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
+        dog:
+          schema_name: edware_sds_us15303_0_1
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
     auth:
       policy.secure: False

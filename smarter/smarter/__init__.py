@@ -13,7 +13,6 @@ from pyramid_beaker import set_cache_regions_from_settings
 import sys
 from services.celery import setup_celery
 from smarter import services
-import ast
 from smarter.database import initialize_db
 
 logger = logging.getLogger(__name__)
@@ -33,6 +32,7 @@ def main(global_config, **settings):
     config = Configurator(settings=settings, root_factory=RootFactory)
 
     initialize_db(settings)
+
     # setup celery
     setup_celery(settings=settings, prefix="celery")
 

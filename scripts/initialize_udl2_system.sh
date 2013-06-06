@@ -13,9 +13,12 @@ sudo -u root -s "passwd udl2"
 sudo -u root -s "chown udl2.udl2 /opt/wgen/edware-udl/udl2"
 sudo -u root -s "chown udl2.udl2 /opt/wgen/edware-udl/udl2/.ssh"
 
+# create directories
+sudo -u root -s "./initialize_udl2_directories.sh"
+
 # copy current udl2 installation's code ssh
 echo `pwd`
-PWD = `pwd`
+export CODE_DIR=`pwd`
 echo "copy udl2 installations' ssh keys"
 sudo -u root -s "cp `pwd`/../git/id_rsa /opt/wgen/edware-udl/udl2/.ssh"
 sudo -u root -s "cp `pwd`/../git/id_rsa.pub /opt/wgen/edware-udl/udl2/.ssh"
@@ -42,16 +45,10 @@ su udl2 -c "/usr/bin/virtualenv-2.7 --distribute python2.7"
 #cd /opt/wgen/edware-udl/udl2
 #su udl2 -c "git clone ssh://git@github.wgenhq.net/Ed-Ware-SBAC/edware-udl-2.0"
 
-cd $PWD
-
-# initialze directory
-echo "initialze directories"
-su udl2 -c "./initialize_udl2_directories.sh"
-
 #install all python dependency for udl2 code to python 3.3
 echo "install all python dependency code for udl2"
-cd  $PWD
-cd ..
+cd  $CODE_DIR
+cd ../
 su udl2 -c "source /opt/wgen/edware-udl/udl2/python3.3/bin/activate; /opt/wgen/edware-udl/udl2/python3.3/bin/python3.3 setup.py install"
 
 #install all python dependency for flower to monitor celery

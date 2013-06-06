@@ -16,21 +16,21 @@ __function_map = {rk.LOOK_UP: make_function_for_look_up,
                   }
 
 rules_map = {
+    # Category 1 -- look up: map accepted input to canon expression
     rk.LOOK_UP: {
-        # Category 1 -- look up: map accepted input to canon expression
         'gender': {rk.CANON: {'M': ['M', 'B'], 'F': ['F', 'G'], 'NS': ['NS', 'NOT_SPECIFIED', 'NOT SPECIFIED']}},
         'yn': {rk.CANON: {'Y': ['Y', '1', 'T'], 'N': ['N', '0', 'F']}},
         'alternate': {rk.CANON: {'N': ['N'], 'MOST': ['MOST'], 'PERSIST': ['PER']}},
     },
 
+    # Category 2 -- inlist: give a list of allowed prefix value, compare the input, then return to the matching prefix
     rk.INLIST: {
-        # Category 2 -- inlist: give a list of allowed prefix value, compare the input, then return to the matching prefix
         'freeLunch': {rk.INLIST: ['N', 'RED', 'FREE', 'FR-RED']},
         'title1': {rk.INLIST: ['N', 'UN', 'READ', 'MATH', 'LANG']},
     },
 
+    # Category 3 -- inlist with compare_length
     rk.INLIST_COMPARE_LENGTH: {
-        # Category 3 -- inlist with compare_length
         'homeLang': {rk.INLIST: ['ARAB', 'CANT', 'FRE', 'GER', 'GRE', 'HAI', 'HEB', 'HIN', 'HMO', 'ITAL'],
                      rk.COMPARE_LENGTH: 3},
         'engProficiency': {rk.INLIST: ['NATIVE', 'FLUENT', 'LEP', 'NON', 'REDES', 'FORMER', 'HOME', 'NS'],
@@ -38,26 +38,26 @@ rules_map = {
                            rk.COMPARE_LENGTH: 2},
     },
 
+    # Category 4 -- inlist with outlist: give two lists as keys and values
     rk.INLIST_WITH_OUTLIST: {
-        # Category 4 -- inlist with outlist: give two lists as keys and values
-         'disabSpec': {rk.INLIST: ['SPEC', 'LANG', 'SPEECH', 'EMOT', 'DISTURBANCE', 'MENT',
-                                   'RETARDATION', 'HEAR', 'ORTH', 'VIS', 'AUT', 'TRAU', 'TBI',
-                                   'DEV', 'DELAY', 'MUL', 'OTH', 'DEAF', 'DEAF-BLINDNESS', 'GIFT', 'NON'],
-                       rk.OUTLIST: ['SPEC', 'LANG', 'LANG', 'EMOT', 'EMOT', 'MENT', 'MENT',
+        'disabSpec': {rk.INLIST: ['SPEC', 'LANG', 'SPEECH', 'EMOT', 'DISTURBANCE', 'MENT',
+                                  'RETARDATION', 'HEAR', 'ORTH', 'VIS', 'AUT', 'TRAU', 'TBI',
+                                  'DEV', 'DELAY', 'MUL', 'OTH', 'DEAF', 'DEAF-BLINDNESS', 'GIFT', 'NON'],
+                      rk.OUTLIST: ['SPEC', 'LANG', 'LANG', 'EMOT', 'EMOT', 'MENT', 'MENT',
                                    'HEAR', 'ORTH', 'VIS', 'AUT', 'TRAU', 'TRAU', 'DEV', 'DEV',
                                    'MUL', 'OTH', 'DEAF', 'DEAF', 'GIFT', 'NON'],
-                   rk.LOOK_UP: {'NON': 'N'},
-                   rk.COMPARE_LENGTH: 4},
-         'race': {rk.INLIST: ['an', 'alaska native', 'alaska', 'ai'],
-                  rk.OUTLIST: ['AN', 'AN', 'AN', 'AI'],
-                  rk.LOOK_UP: {'NS': ['not_specified']},
-                  rk.COMPARE_LENGTH: 41}
+                      rk.LOOK_UP: {'NON': 'N'},
+                      rk.COMPARE_LENGTH: 4},
+        'race': {rk.INLIST: ['an', 'alaska native', 'alaska', 'ai'],
+                 rk.OUTLIST: ['AN', 'AN', 'AN', 'AI'],
+                 rk.LOOK_UP: {'NS': ['not_specified']},
+                 rk.COMPARE_LENGTH: 41}
     },
 
 
     # Category 5: data format
     # Category 6: value calculation
-    }
+}
 
 
 def generate_rules():

@@ -50,6 +50,9 @@ define [
             gridConfig[0].options.linkUrl = customViews[reportType].link
             gridConfig[0].options.id_name = customViews[reportType].id_name
             
+            if customViews[reportType].name is "Grade"
+              gridConfig[0].sorttype = "int"
+            
             # Render breadcrumbs on the page
             $('#breadcrumb').breadcrumbs(breadcrumbsData, breadcrumbsConfigs)
             

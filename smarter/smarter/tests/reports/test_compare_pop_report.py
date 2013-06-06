@@ -66,7 +66,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         records = results[Constants.RECORDS]
         self.assertEqual(1, len(records), "1 grade in the list")
         self.assertEqual('3', records[0][Constants.ID])
-        self.assertEqual('Grade 3', records[0][Constants.NAME])
+        self.assertEqual('3', records[0][Constants.NAME])
         asmt_results = records[0][Constants.RESULTS]
         self.assertEqual(2, len(asmt_results))
         subject1 = asmt_results[Constants.SUBJECT1]

@@ -399,7 +399,7 @@ class QueryHelper():
         elif self._view == self.VIEWS.DISTRICT_VIEW:
             columns = [self._dim_inst_hier.c.school_name.label(Constants.NAME), self._dim_inst_hier.c.school_guid.label(Constants.ID), self._dim_asmt.c.asmt_subject.label(Constants.ASMT_SUBJECT)]
         elif self._view == self.VIEWS.SCHOOL_VIEW:
-            columns = [(Constants.GRADE + ' ' + self._fact_asmt_outcome.c.asmt_grade).label(Constants.NAME), self._fact_asmt_outcome.c.asmt_grade.label(Constants.ID), self._dim_asmt.c.asmt_subject.label(Constants.ASMT_SUBJECT)]
+            columns = [self._fact_asmt_outcome.c.asmt_grade.label(Constants.NAME), self._fact_asmt_outcome.c.asmt_grade.label(Constants.ID), self._dim_asmt.c.asmt_subject.label(Constants.ASMT_SUBJECT)]
 
         # these are static
         # get information about bar colors

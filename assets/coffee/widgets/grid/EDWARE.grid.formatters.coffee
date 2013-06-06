@@ -24,7 +24,10 @@ define [
           k = options.colModel.formatoptions.id_name
         params = params + k + "=" + v
         i++
-      "<a class="+cssClass+" href=\"" + link + "?" + params + "\">" + $.jgrid.htmlEncode(value) + "</a>"
+      if options.colModel.formatoptions.id_name is "asmtGrade"
+         "<a class="+cssClass+" href=\"" + link + "?" + params + "\">" + $.jgrid.htmlEncode("Grade " + value) + "</a>"
+      else
+        "<a class="+cssClass+" href=\"" + link + "?" + params + "\">" + $.jgrid.htmlEncode(value) + "</a>"
     else
       "<div class="+cssClass+"><span class=summarySubtitle>" + rowObject.subtitle + ":</span><br/><span class='summaryTitle'>"+value+"</span></div>"
   

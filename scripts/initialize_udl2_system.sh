@@ -2,7 +2,7 @@
 
 # create udl2 system users for
 echo "create udl2 users to run udl2 celery and own the zone area for work"
-sudo -u root -s "useradd -h /opt/wgen/edware-udl/udl2 -r -s /bin/sh udl2"
+sudo -u root -s "useradd -d /opt/wgen/edware-udl/udl2 -r -s /bin/sh udl2"
 
 # install virtualenv-3.3
 echo "install virtualenv-3.3 for celery"

@@ -51,6 +51,7 @@ su udl2 -c "./initialize_udl2_directories.sh"
 #install all python dependency for udl2 code to python 3.3
 echo "install all python dependency code for udl2"
 cd  $PWD
+cd ..
 su udl2 -c "source /opt/wgen/edware-udl/udl2/python3.3/bin/activate; /opt/wgen/edware-udl/udl2/python3.3/bin/python3.3 setup.py install"
 
 #install all python dependency for flower to monitor celery

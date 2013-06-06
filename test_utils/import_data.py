@@ -10,9 +10,9 @@ import argparse
 import configparser
 from database.connector import DBConnection
 from edschema.ed_metadata import generate_ed_metadata
-from smarter.database.datasource import get_datasource_name,\
-    parse_db_settings, get_db_config_prefix
-
+from smarter.database.datasource import get_datasource_name
+from smarter.database import get_data_source_names
+from smarter.database import initialize_db
 
 def main(config_file, resource_dir):
     '''
@@ -21,18 +21,10 @@ def main(config_file, resource_dir):
     config = configparser.ConfigParser()
     config.read(config_file)
 
-    tenants, db_options = parse_db_settings(config['app:main'])
-    for tenant in tenants:
-        prefix = get_db_config_prefix(tenant)
-        schema_key = prefix + 'schema_name'
-        metadata = generate_ed_metadata(db_options[schema_key])
-        # Pop schema name as sqlalchemy doesn't like db.schema_name being passed
-        db_options.pop(schema_key)
-        datasource_name = get_datasource_name(tenant)
-        setup_db_connection_from_ini(db_options, prefix, metadata, datasource_name=datasource_name)
-
-        delete_data(get_datasource_name(tenant))
-        import_csv_dir(resource_dir, datasource_name )
+    initialize_db(config['app:main'])
+    for tenant in get_data_source_names():
+        delete_data(tenant)
+        import_csv_dir(resource_dir, tenant)
 
 
 def delete_data(name):

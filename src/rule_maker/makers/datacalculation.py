@@ -171,6 +171,7 @@ def format_variable_name(col_name):
 
 def remove_brackets(string_with_brackets):
     string_without_brackets = string_with_brackets.replace('{', '')
+    string_without_brackets = string_without_brackets.replace('}', '')
     return string_without_brackets
 
 
@@ -180,11 +181,11 @@ def find_all_cols(formula):
     return var_names
 
 
-def wrap_variable(var_name, wrapper="TO_NUMBER(%s)"):
+def wrap_variable(var_name, wrapper="(%s::int)"):
     return wrapper % var_name
 
 
-def wrap_formula(formula, wrapper="TO_CHAR(CEIL(%s));"):
+def wrap_formula(formula, wrapper="ceiling(%s)::int;"):
     return wrapper % formula
 
 

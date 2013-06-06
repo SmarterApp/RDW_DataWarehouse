@@ -42,12 +42,12 @@ sudo -u udl2 -s "git clone ssh://git@github.wgenhq.net/Ed-Ware-SBAC/edware-udl-2
 
 #install all python dependency for udl2 code to python 3.3
 echo "install all python dependency code for udl2"
-cd /opt/wgen/edware-udl2/udl2/edware-udl2-2.0
-source /opt/wgen/edware-udl2/udl2/python3.3/bin/activate
+cd /opt/wgen/edware-udl/udl2/edware-udl-2.0
+source /opt/wgen/edware-udl/udl2/python3.3/bin/activate
 sudo -u udl2 -s "python3.3 setup.py install"
 
 #install all python dependency for flower to monitor celery
 echo "install all python dependency code for flower to minitor celery"
-source /opt/wgen/edware-udl2/udl2/python2.7/bin/activate
+source /opt/wgen/edware-udl/udl2/python2.7/bin/activate
 sudo -u udl2 -s "pip-2.7 install flower"
 

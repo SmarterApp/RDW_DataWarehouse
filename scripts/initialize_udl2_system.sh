@@ -2,8 +2,10 @@
 echo "make udl2 system user home"
 
 sudo -u root -s "mkdir -p /opt/wgen/edware-udl/udl2/"
+sudo -u root -s "chown udl2.udl2 /opt/wgen/edware-udl/udl2"
 sudo -u root -s "chmod 777 /opt/wgen/edware-udl/udl2"
 sudo -u root -s "mkdir -p /opt/wgen/edware-udl/udl2/.ssh"
+sudo -u root -s "chown udl2.udl2 /opt/wgen/edware-udl/udl2/.ssh"
 sudo -u root -s "chmod 777 /opt/wgen/edware-udl/udl2/.ssh"
 
 # create udl2 system users for
@@ -13,7 +15,10 @@ sudo -u root -s "useradd -d /opt/wgen/edware-udl/udl2 -r -s /bin/sh udl2"
 # copy current udl2 installation's code ssh
 echo `pwd`
 echo "copy udl2 installations' ssh keys"
-sudo -u root -s "cp ../git/id_rsa* /opt/wgen/edware-udl/udl2/.ssh"
+sudo -u root -s "cp `pwd`/../git/id_rsa /opt/wgen/edware-udl/udl2/.ssh"
+sudo -u root -s "cp `pwd`/../git/id_rsa.pub /opt/wgen/edware-udl/udl2/.ssh"
+sudo -u root -s "chown udl2.udl2 /opt/wgen/edware-udl/udl2/.ssh/id_rsa.pub"
+sudo -u root -s "chown udl2.udl2 /opt/wgen/edware-udl/udl2/.ssh/id_rsa"
 sudo -u root -s "chmod 600 /opt/wgen/edware-udl/udl2/.ssh/id_rsa.pub"
 sudo -u root -s "chmod 600 /opt/wgen/edware-udl/udl2/.ssh/id_rsa"
 sudo -u root -s "chmod 755 /opt/wgen/edware-udl/udl2/.ssh"

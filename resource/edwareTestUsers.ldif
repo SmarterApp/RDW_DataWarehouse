@@ -367,3 +367,9 @@ objectClass: top
 cn: Psychometrician
 member: cn=Clare Seabaugh,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 
+dn: cn=Super_User,ou=groups,ou=cat,ou=environment,dc=edwdc,dc=net
+objectClass: groupOfNames
+objectClass: top
+cn: Super_User
+member: cn=Linda Kim,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
+

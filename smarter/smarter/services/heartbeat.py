@@ -8,8 +8,7 @@ from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPOk, HTTPServerError
 from smarter.database.connector import SmarterDBConnection
 from sqlalchemy.sql.expression import select
-from smarter.database.datasource import get_datasource_name
-import smarter
+from smarter.database import get_data_source_names
 
 
 @view_config(route_name='heartbeat', permission=NO_PERMISSION_REQUIRED, request_method='GET')
@@ -19,8 +18,7 @@ def heartbeat(request):
     '''
     try:
         results = None
-        for tenant in smarter.TENANTS:
-            datasource_name = get_datasource_name(tenant)
+        for datasource_name in get_data_source_names():
             with SmarterDBConnection(datasource_name=datasource_name) as connector:
                 query = select([1])
                 results = connector.get_result(query)

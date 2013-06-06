@@ -4,12 +4,10 @@ Created on Apr 18, 2013
 @author: dip
 '''
 import unittest
-from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite_no_data_load,\
-    get_test_tenant_name
+from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite_no_data_load
 from smarter.services import heartbeat
 from pyramid.testing import DummyRequest
 from pyramid.httpexceptions import HTTPOk
-import smarter
 
 
 class TestHeartbeat(Unittest_with_smarter_sqlite_no_data_load):
@@ -21,8 +19,6 @@ class TestHeartbeat(Unittest_with_smarter_sqlite_no_data_load):
         pass
 
     def testValidHeartbeat(self):
-        global TENANTS
-        smarter.TENANTS = [get_test_tenant_name()]
         results = heartbeat.heartbeat(DummyRequest())
         self.assertIsInstance(results, HTTPOk)
 

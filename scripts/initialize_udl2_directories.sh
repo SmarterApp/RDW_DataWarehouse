@@ -7,11 +7,6 @@ sudo -u root -s "chmod 755 /opt/wgen"
 sudo -u root -s "chmod 755 /opt/wgen/edware-udl"
 sudo -u root -s "chmod 777 /opt/wgen/edware-udl/etc"
 
-echo "make udl2 system user home"
-
-sudo -u root -s "mkdir -p /opt/wgen/edware-udl/udl2/"
-sudo -u root -s "chmod 777 /opt/wgen/edware-udl/udl2"
-
 echo "rebuild log directory"
 sudo -u root -s "rm -fr /var/log/wgen/edware-udl/logs"
 

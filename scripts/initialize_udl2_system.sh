@@ -1,4 +1,8 @@
 #!/bin/sh
+echo "make udl2 system user home"
+
+sudo -u root -s "mkdir -p /opt/wgen/edware-udl/udl2/"
+sudo -u root -s "chmod 777 /opt/wgen/edware-udl/udl2"
 
 # create udl2 system users for
 echo "create udl2 users to run udl2 celery and own the zone area for work"

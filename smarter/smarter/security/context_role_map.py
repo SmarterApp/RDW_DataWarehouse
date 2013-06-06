@@ -3,6 +3,8 @@ Created on May 9, 2013
 
 @author: dip
 '''
+import pyramid.threadlocal
+from edauth.utils import to_bool
 
 
 class ContextRoleMap():
@@ -18,7 +20,8 @@ class ContextRoleMap():
         If role is not found, return default context object
         '''
         context = cls.__context.get(role_name.lower())
-        if context is None:
+        disable_context_security = to_bool(pyramid.threadlocal.get_current_registry().settings.get('disable.context.security', 'False'))
+        if disable_context_security or context is None:
             return cls.__context['default']
         return context
 

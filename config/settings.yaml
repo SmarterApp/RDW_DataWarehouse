@@ -70,7 +70,9 @@ common:
       superuser.session.timeout: 300000
     # Used for tenancy
     ldap.base.dn: ou=environment,dc=edwdc,dc=net
-
+    # Use context security
+    disable.context.security: False
+    
   '[server:main]':
     use: 'egg:waitress#main'
     host: 0.0.0.0

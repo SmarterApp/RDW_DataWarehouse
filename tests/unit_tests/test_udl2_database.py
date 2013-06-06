@@ -99,11 +99,10 @@ class TestUdl2Database(unittest.TestCase):
         foreign_k = table_keys_in_code.get('foreign', [])
         # TODO: Deterimine how to check unique keys
 
-        print('foreign_k', foreign_k)
+        # check that there are the same number of foreign keys
         self.assertEqual(len(table_meta.foreign_keys), len(foreign_k), 'length of foreign keys not equal')
 
         for col in table_meta.c:
-            print('col.key', col.key)
             # Get foreign key definitions
             db_fks = col.foreign_keys
 
@@ -111,14 +110,13 @@ class TestUdl2Database(unittest.TestCase):
             if not db_fks:
                 continue
 
+            # get list of foreign keys from code ddl for the current table
             code_fks = [x for x in foreign_k if x[0] == col.key]
             self.assertEquals(len(db_fks), len(code_fks))
-            print(db_fks, code_fks)
 
+            # place foreign keys in sets and compare them
             db_fks_targets = {x.target_fullname for x in db_fks}
             code_fks_targets = {x[1] for x in code_fks}
-
-            print(code_fks_targets, db_fks_targets, code_fks_targets ^ db_fks_targets)
 
             # if the symmetric_difference of sets is not empty fail
             if code_fks_targets ^ db_fks_targets:

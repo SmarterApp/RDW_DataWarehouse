@@ -327,7 +327,7 @@ UDL_METADATA = {
                 'foreign': [('table_map_key', 'REF_TABLE_MAPPINGS.table_map_key')]
             },
         },
-        'REF_TRANSFORMATION_1': {
+        'REF_TRANSFORMATION_CLEANSING': {
             'columns': [
                 ('transformation_key', True, 'bigserial', '', False, 'key'),
                 ('column_map_key', False, 'bigint', '', False, 'foreign key to REF_COLUMN_MAPPING'),
@@ -342,7 +342,7 @@ UDL_METADATA = {
                 'foreign': [('column_map_key', 'REF_COLUMN_MAPPING.column_map_key')]
             },
         },
-        'REF_VALIDATION_1': {
+        'REF_VALIDATION_DATA': {
             'columns': [
                 ('validation_key', True, 'bigserial', '', False, 'sequential primary key'),
                 ('column_map_key', False, 'bigint', '', False, 'foreign key to REF_COLUMN_MAPPING'),
@@ -352,7 +352,7 @@ UDL_METADATA = {
                 ('priority', False, 'smallint', '', True, 'priority of the rule'),
                 ('scope', False, 'varchar(32)', '', True, 'row or column level rule'),
                 ('err_code', False, 'smallint', '', True, 'error code to use on error'),
-                ('description', False, 'varchar(256)', '', True, 'description of the rule'),
+                ('description', False, 'varchar(1000)', '', True, 'description of the rule'),
                 ('created_date', False, 'timestamp with time zone', 'now()', False, 'Date on which record is inserted')
             ],
             'indexes': [],

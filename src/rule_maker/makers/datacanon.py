@@ -25,7 +25,7 @@ BEGIN
 
 __map_func_end = """
     ELSE
-        v_return := v_{col_name}
+        v_return := v_{col_name};
     END IF;
 
     RETURN v_return;
@@ -34,7 +34,7 @@ EXCEPTION
     WHEN OTHERS THEN
         RETURN v_{col_name};
 END;
-$$ LANGUAGE plpgsql
+$$ LANGUAGE plpgsql;
     """
 
 __lists_func_top1 = """
@@ -53,7 +53,7 @@ DECLARE
 
 """
 __lists_func_top2 = """
-         keys_{col_name} text[] = ARRAY['{key_list}'];
+    keys_{col_name} text[] = ARRAY['{key_list}'];
 """
 __lists_func_top3 = """
 BEGIN
@@ -71,7 +71,7 @@ EXCEPTION
         RETURN v_{col_name};
 
 END;
-$$ LANGUAGE plpgsql"""
+$$ LANGUAGE plpgsql;"""
 
 
 def make_substring_part(pref, col, val, length=None):
@@ -85,7 +85,7 @@ def make_substring(prefix, col, val, val_list):
     ret = make_substring_part(prefix, col, val_list[0])
     for i in range(1, len(val_list)):
         ret += make_substring_part(pref2, col, val_list[i])
-    ret += " THEN\n\t\tv_return := '{value}'".format(value=val)
+    ret += " THEN\n\t\tv_return := '{value}';".format(value=val)
     return ret
 
 
@@ -168,7 +168,7 @@ def make_or_exp(col, accepted_value, compare_length):
         prefix = ''
         for value in list(accepted_value):
             ret += prefix + 'v_{col_name} = \'{value}\''.format(col_name=col, value=value)
-            prefix = '\n\tOR'
+            prefix = '\n\tOR '
         return ret
     else:
         return make_substring_part('', col, accepted_value[0], compare_length)

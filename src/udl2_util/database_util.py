@@ -92,7 +92,7 @@ def create_information_query(conf, target_table):
     return select_query
 
 
-def get_schema_metadata(db_engine, schema_name):
+def get_schema_metadata(db_engine, schema_name=None):
     '''
     Get the SQLAlchemy MetaData object
     @param db_engine: a SQLAlchemy engine object returned connect_db method

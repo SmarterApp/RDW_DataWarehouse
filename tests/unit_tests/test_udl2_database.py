@@ -8,7 +8,7 @@ import os
 import unittest
 import logging
 from udl2.database import UDL_METADATA
-from udl2_util.database_util import connect_db, execute_queries, get_table_columns_info
+from udl2_util.database_util import connect_db, execute_queries, get_table_columns_info, get_schema_metadata
 from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 import imp
 import re
@@ -95,6 +95,35 @@ class TestUdl2Database(unittest.TestCase):
         else:
             return True
 
+    def _compare_table_keys(self, table_keys_in_code, table_meta):
+        foreign_k = table_keys_in_code.get('foreign', [])
+        # TODO: Deterimine how to check unique keys
+
+        # check that there are the same number of foreign keys
+        self.assertEqual(len(table_meta.foreign_keys), len(foreign_k), 'length of foreign keys not equal')
+
+        for col in table_meta.c:
+            # Get foreign key definitions
+            db_fks = col.foreign_keys
+
+            # if no foreign keys in db for column, continue
+            if not db_fks:
+                continue
+
+            # get list of foreign keys from code ddl for the current table
+            code_fks = [x for x in foreign_k if x[0] == col.key]
+            self.assertEquals(len(db_fks), len(code_fks))
+
+            # place foreign keys in sets and compare them
+            db_fks_targets = {x.target_fullname for x in db_fks}
+            code_fks_targets = {x[1] for x in code_fks}
+
+            # if the symmetric_difference of sets is not empty fail
+            if code_fks_targets ^ db_fks_targets:
+                return False
+
+        return True
+
     def _compare_table_defition_in_code_and_database(self, table_name):
         (conn, engine) = self._create_conn_engine(self.conf)
         ddl_in_code = UDL_METADATA['TABLES'][table_name]['columns']
@@ -102,6 +131,14 @@ class TestUdl2Database(unittest.TestCase):
         ddl_in_code = sorted(ddl_in_code, key=lambda tup: tup[0])
         ddl_in_db = sorted(ddl_in_db, key=lambda tup: tup[0])
         return self._compare_columns(ddl_in_code, ddl_in_db)
+
+    def _compare_table_key_definitions_in_code_and_db(self, table_name):
+        (conn, engine) = self._create_conn_engine(self.conf)
+        db_metadata = get_schema_metadata(engine)
+        table_metadata = db_metadata.tables[table_name]
+        table_keys_in_code = UDL_METADATA['TABLES'][table_name]['keys']
+
+        return self._compare_table_keys(table_keys_in_code, table_metadata)
 
     def test_STG_SBAC_ASMT(self):
         table_name = 'STG_SBAC_ASMT'
@@ -130,18 +167,22 @@ class TestUdl2Database(unittest.TestCase):
     def test_REF_TABLE_MAPPINGS(self):
         table_name = 'REF_TABLE_MAPPINGS'
         self.assertTrue(self._compare_table_defition_in_code_and_database(table_name))
+        self.assertTrue(self._compare_table_key_definitions_in_code_and_db(table_name))
 
     def test_REF_COLUMN_MAPPING(self):
         table_name = 'REF_COLUMN_MAPPING'
         self.assertTrue(self._compare_table_defition_in_code_and_database(table_name))
+        self.assertTrue(self._compare_table_key_definitions_in_code_and_db(table_name))
 
     def test_REF_VALIDATION_1(self):
-        table_name = 'REF_VALIDATION_1'
+        table_name = 'REF_VALIDATION_DATA'
         self.assertTrue(self._compare_table_defition_in_code_and_database(table_name))
+        self.assertTrue(self._compare_table_key_definitions_in_code_and_db(table_name))
 
     def test_REF_TRANSFORMATION_1(self):
-        table_name = 'REF_TRANSFORMATION_1'
+        table_name = 'REF_TRANSFORMATION_CLEANSING'
         self.assertTrue(self._compare_table_defition_in_code_and_database(table_name))
+        self.assertTrue(self._compare_table_key_definitions_in_code_and_db(table_name))
 
 
 if __name__ == "__main__":

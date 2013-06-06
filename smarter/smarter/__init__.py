@@ -7,21 +7,16 @@ import logging
 from smarter.security.root_factory import RootFactory
 import platform
 import subprocess
-from database.generic_connector import setup_db_connection_from_ini
-from edschema.ed_metadata import generate_ed_metadata
 import atexit
 import signal
 from pyramid_beaker import set_cache_regions_from_settings
 import sys
 from services.celery import setup_celery
 from smarter import services
-import ast
-from smarter.database.datasource import get_datasource_name,\
-    parse_db_settings, get_db_config_prefix
+from smarter.database import initialize_db
 
 logger = logging.getLogger(__name__)
 CAKE_PROC = None
-TENANTS = []
 
 
 def main(global_config, **settings):
@@ -36,19 +31,10 @@ def main(global_config, **settings):
     set_cache_regions_from_settings(settings)
     config = Configurator(settings=settings, root_factory=RootFactory)
 
+    initialize_db(settings)
+
     # setup celery
     setup_celery(settings=settings, prefix="celery")
-
-    # setup database connection per tenant
-    global TENANTS
-    TENANTS, db_options = parse_db_settings(settings)
-    for tenant in TENANTS:
-        prefix = get_db_config_prefix(tenant)
-        schema_key = prefix + 'schema_name'
-        metadata = generate_ed_metadata(db_options[schema_key])
-        # Pop schema name as sqlalchemy doesn't like db.schema_name being passed
-        db_options.pop(schema_key)
-        setup_db_connection_from_ini(db_options, prefix, metadata, datasource_name=get_datasource_name(tenant))
 
     # include edauth. Calls includeme
     config.include(edauth)

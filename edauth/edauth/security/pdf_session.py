@@ -13,6 +13,7 @@ from pyramid.authentication import AuthTktCookieHelper
 import re
 from pyramid.testing import DummyRequest
 
+
 def create_pdf_user_session(settings, roles):
     '''
     Launch a session for pdf generation.
@@ -29,11 +30,13 @@ def create_pdf_user_session(settings, roles):
     (cookie_name, cookie_value) = __parse_cookie(header)
     return (cookie_name, cookie_value)
 
+
 def __create_cookie_helper(settings):
     cookie_secret = settings['auth.policy.secret']
     cookie_name = settings['auth.policy.cookie_name']
     cookie_hashalg = settings['auth.policy.hashalg']
     return AuthTktCookieHelper(secret=cookie_secret, cookie_name=cookie_name, hashalg=cookie_hashalg)
+
 
 def __parse_cookie(header):
     '''
@@ -43,11 +46,13 @@ def __parse_cookie(header):
     cookie_name = cookie_str.split("=", 1)[0]
     cookie_value = re.search(cookie_name + '=(.*?);', cookie_str).group(1)
     return (cookie_name, cookie_value)
-    
+
+
 def __create_dummy_request():
     request = DummyRequest()
-    request.environ = {'HTTP_HOST':'localhost' }
+    request.environ = {'HTTP_HOST': 'localhost'}
     return request
+
 
 def __create_session(roles, expire_in_secs):
     # current local time

@@ -11,7 +11,7 @@ import base64
 from edauth.saml2.saml_request import SamlAuthnRequest, SamlLogoutRequest
 import urllib
 from edauth.security.session_manager import create_new_user_session, \
-    get_user_session, write_security_event, expire_session
+    get_user_session, expire_session
 from edauth.utils import convert_to_int
 from pyramid.response import Response
 from edauth.security.roles import Roles
@@ -19,7 +19,8 @@ from edauth.saml2.saml_response_manager import SAMLResponseManager
 from edauth.saml2.saml_idp_metadata_manager import IDP_metadata_manager
 from edauth import logger
 from urllib.parse import parse_qs, urlsplit, urlunsplit
-from edauth.security.utils import SECURITY_EVENT_TYPE, _get_cipher
+from edauth.security.utils import SECURITY_EVENT_TYPE, _get_cipher,\
+    write_security_event
 from datetime import datetime
 
 

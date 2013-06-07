@@ -20,7 +20,7 @@ def create_ddl_csv_query(header_names, header_types, csv_file, csv_schema, csv_t
 
 
 def drop_ddl_csv_query(csv_schema, csv_table):
-    ddl = "DROP FOREIGN TABLE IF EXISTS {csv_schema}.{csv_table} ".format(csv_schema=csv_schema, csv_table=csv_table)
+    ddl = 'DROP FOREIGN TABLE IF EXISTS "{csv_schema}"."{csv_table}"'.format(csv_schema=csv_schema, csv_table=csv_table)
     return ddl
 
 
@@ -33,7 +33,7 @@ def create_staging_tables_query(header_types, header_names, csv_file, staging_sc
 
 
 def drop_staging_tables_query(csv_schema, csv_table):
-    ddl = "DROP TABLE IF EXISTS {csv_schema}.{csv_table}".format(csv_schema=csv_schema, csv_table=csv_table)
+    ddl = 'DROP TABLE IF EXISTS "{csv_schema}"."{csv_table}"'.format(csv_schema=csv_schema, csv_table=csv_table)
     return ddl
 
 
@@ -58,7 +58,7 @@ def create_insert_assessment_into_integration_query(header, data, batch_id, int_
                   ','.join(data),
                   ')']
     insert_sql = ''.join(insert_sql).format(int_schema=int_schema, int_table=int_table)
-    print(insert_sql)
+    # print(insert_sql)
     return insert_sql
 
 
@@ -67,11 +67,11 @@ def set_sequence_query(staging_table, start_seq):
 
 
 def create_sequence_query(staging_schema, seq_name, start_seq):
-    return "CREATE SEQUENCE {staging_schema}.{seq_name} START {start_seq}".format(staging_schema=staging_schema, seq_name=seq_name, start_seq=start_seq)
+    return 'CREATE SEQUENCE "{staging_schema}"."{seq_name}" START {start_seq}'.format(staging_schema=staging_schema, seq_name=seq_name, start_seq=start_seq)
 
 
 def drop_sequence_query(staging_schema, seq_name):
-    return "DROP SEQUENCE {staging_schema}.{seq_name}".format(staging_schema=staging_schema, seq_name=seq_name)
+    return 'DROP SEQUENCE "{staging_schema}"."{seq_name}"'.format(staging_schema=staging_schema, seq_name=seq_name)
 
 
 def apply_transformation_rules(apply_rules, header_types, header_names):

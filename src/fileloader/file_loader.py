@@ -93,7 +93,7 @@ def get_fields_map(conn, header_names, header_types, batch_id, csv_file, staging
 
 def import_via_fdw(conn, stg_asmt_outcome_columns, batch_id, apply_rules, csv_table_columns, header_types, staging_schema, staging_table, csv_schema, csv_table, start_seq):
     # create sequence name, use table_name and a random number combination
-    seq_name = csv_table + '_' + str(random.choice(range(1, 10)))
+    seq_name = (csv_table + '_' + str(random.choice(range(1, 10)))).lower()
     create_sequence = queries.create_sequence_query(staging_schema, seq_name, start_seq)
     insert_into_staging_table = queries.create_inserting_into_staging_query(stg_asmt_outcome_columns, apply_rules, csv_table_columns, header_types, staging_schema, staging_table, csv_schema, csv_table, start_seq, seq_name)
     drop_sequence = queries.drop_sequence_query(staging_schema, seq_name)
@@ -137,7 +137,7 @@ def load_file(conf):
     Main function to initiate file loader
     '''
     # log for start the file loader
-    #print("I am the file loader, about to load file %s" % extract_file_name(conf[mk.FILE_TO_LOAD]))
+    # print("I am the file loader, about to load file %s" % extract_file_name(conf[mk.FILE_TO_LOAD]))
 
     # connect to database
     conn, engine = connect_db(conf[mk.TARGET_DB_USER], conf[mk.TARGET_DB_PASSWORD], conf[mk.TARGET_DB_HOST], conf[mk.TARGET_DB_NAME])
@@ -152,7 +152,7 @@ def load_file(conf):
     conn.close()
 
     # log for end the file loader
-    #print("I am the file loader, loaded file %s in %.3f seconds" % (extract_file_name(conf[mk.FILE_TO_LOAD]), time_for_load_as_seconds))
+    # print("I am the file loader, loaded file %s in %.3f seconds" % (extract_file_name(conf[mk.FILE_TO_LOAD]), time_for_load_as_seconds))
 
 if __name__ == '__main__':
 

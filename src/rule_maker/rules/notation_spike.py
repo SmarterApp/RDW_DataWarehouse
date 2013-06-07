@@ -43,6 +43,4 @@ def parse_dict(key):
 
 
 if __name__ == '__main__':
-
-
-
+    pass

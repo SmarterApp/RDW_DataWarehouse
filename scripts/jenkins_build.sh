@@ -330,14 +330,15 @@ function generate_ini {
 }
 
 function generate_docs {
-    # For now, we only have docs for edapi
-    if [ ${1:=""} == "edapi" ]; then
-        cd "$WORKSPACE/edapi"
+    # For now, we only have docs for edapi and edauth
+    if [ ${1:=""} == "edapi" ] || [ ${1:=""} == "edauth" ]; then
+        cd "$WORKSPACE/$1"
 	python setup.py docs
-        cd "$WORKSPACE/edapi/docs"
-        sphinx-build -b html -d _build/doctrees/ . _build/html/
+        cd "$WORKSPACE/$1/docs"
+        make html
+        # sphinx-build -b html -d _build/doctrees/ . _build/html/
     fi
-    echo "Docs created in $WORKSPACE/edapi/docs/_build/html"
+    echo "Docs created in $WORKSPACE/$1/docs/_build/html"
 }
 
 function main {

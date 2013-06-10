@@ -23,8 +23,10 @@ class ITestLoadCsvToSBACStar(unittest.TestCase):
         pass
     
     def test_load_csv_to_sbac_star(self):
-        self.conf['']
+        print("python driver.py -c {datafiles}/REALDATA_ASMT_ValidData.csv -j {datafiles}/METADATA_ASMT_ValidData.json".format(datafiles=self.conf['zones']['datafiles']))
         subprocess.call("python driver.py -c {datafiles}/REALDATA_ASMT_ValidData.csv -j {datafiles}/METADATA_ASMT_ValidData.json".format(datafiles=self.conf['zones']['datafiles']),
                         shell=True)
     
-    
+
+if __name__ == "__main__":
+	unittest.main()    

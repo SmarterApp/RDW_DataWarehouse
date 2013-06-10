@@ -28,3 +28,4 @@ node_modules
 edschema/database/tests/resources/tmpl
 */build/
 config/development.ini
+*/docs/_build

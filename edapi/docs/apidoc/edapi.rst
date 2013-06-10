@@ -1,4 +1,4 @@
-edapi Package
+API Documentation
 =============
 
 :mod:`edapi` Package
@@ -57,10 +57,4 @@ edapi Package
     :undoc-members:
     :show-inheritance:
 
-Subpackages
------------
-
-.. toctree::
-
-    edapi.tests
 

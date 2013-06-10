@@ -329,7 +329,7 @@ function generate_ini {
 	python generate_ini.py -e jenkins_dev -i settings.yaml
 }
 
-function generate_docs{
+function generate_docs {
     # For now, we only have docs for edapi
     if [ ${1:=""} == "edapi" ]; then
         cd "$WORKSPACE/edapi/docs"

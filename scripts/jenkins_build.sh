@@ -332,6 +332,8 @@ function generate_ini {
 function generate_docs {
     # For now, we only have docs for edapi
     if [ ${1:=""} == "edapi" ]; then
+        cd "$WORKSPACE/edapi"
+	python setup.py docs
         cd "$WORKSPACE/edapi/docs"
         sphinx-build -b html -d _build/doctrees/ . _build/html/
     fi

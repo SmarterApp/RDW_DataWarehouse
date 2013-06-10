@@ -329,6 +329,17 @@ function generate_ini {
 	python generate_ini.py -e jenkins_dev -i settings.yaml
 }
 
+function generate_docs {
+    # For now, we only have docs for edapi
+    if [ ${1:=""} == "edapi" ]; then
+        cd "$WORKSPACE/edapi"
+	python setup.py docs
+        cd "$WORKSPACE/edapi/docs"
+        sphinx-build -b html -d _build/doctrees/ . _build/html/
+    fi
+    echo "Docs created in $WORKSPACE/edapi/docs/_build/html"
+}
+
 function main {
 	
     get_opts $@
@@ -341,6 +352,7 @@ function main {
             run_unit_tests $MAIN_PKG
         fi
         check_pep8 $MAIN_PKG
+        generate_docs $MAIN_PKG
         build_egg $MAIN_PKG
     elif [ ${MODE:=""} == "FUNC" ]; then
         setup_virtualenv $@

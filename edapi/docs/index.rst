@@ -7,7 +7,7 @@
 The EdAPI RESTful Development Framework
 =================================================
 
-EdAPI is a application development framework for exposing RESTful endpoints. 
+EdAPI is an application development framework for exposing RESTful endpoints. 
 
 API Documentation
 ==================

@@ -48,6 +48,7 @@ udl2_conf = {
     },
     'udl2_db': {
         'csv_schema':'udl2',  # PostgresQL for UDL2 processing. This is not the target database.
+        'reference_schema': 'udl2',
         'fdw_server':'udl2_fdw_server',
         'staging_schema':'udl2',
         'integration_schema': 'udl2',

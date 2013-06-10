@@ -29,6 +29,8 @@ import imp
 import argparse
 from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from udl2_util.database_util import connect_db, execute_queries
+from udl2.populate_ref_tables import populate_ref_column_map
+from udl2 import ref_table_data
 
 #
 # UDL_METADATA stores all udl2 related database objects, which includes staging tables and table-independent sequeuces
@@ -673,6 +675,16 @@ def load_fake_record_in_star_schema(udl2_conf):
     execute_queries(conn, sqls, except_msg)
 
 
+def load_reference_data(udl2_conf):
+    '''
+    load the reference data into the referenct tables
+    @param udl2_conf: The configuration dictionary for
+    '''
+    (conn, engine) = _create_conn_engine(udl2_conf)
+    ref_table_info = ref_table_data.ref_table_conf
+    populate_ref_column_map(ref_table_info, engine, conn, udl2_conf['reference_schema'], 'REF_COLUMN_MAPPING')
+
+
 def setup_udl2_schema(udl2_conf):
     '''
     create whole udl2 database schema according to configuration file
@@ -686,6 +698,7 @@ def setup_udl2_schema(udl2_conf):
     create_udl2_tables(udl2_conf['udl2_db'])
     create_udl2_sequence(udl2_conf['udl2_db'])
     load_fake_record_in_star_schema(udl2_conf['target_db'])
+    load_reference_data(udl2_conf['udl2_db'])
 
 
 def teardown_udl2_schema(udl2_conf):

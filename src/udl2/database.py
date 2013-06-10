@@ -295,70 +295,19 @@ UDL_METADATA = {
             'indexes': [],
             'keys': {},
         },
-        'REF_TABLE_MAPPINGS': {
-            'columns': [
-                ('table_map_key', True, 'bigserial', '', False, 'Description to use as key (ie. json-to-int_asmt'),
-                ('product', False, 'varchar(32)', '', False, 'product name (ie. SBAC, mClass)'),
-                ('version', False, 'smallint', '', False, 'version of the mapping for the product'),
-                ('order', False, 'smallint', '', False, 'where the movement occurs in the pipeline'),
-                ('source_table', False, 'varchar(50)', '', False, 'name of the source table. could also be csv or json'),
-                ('source_schema', False, 'varchar(50)', '', True, 'name of the source schema. Should only be null if table is csv or json'),
-                ('target_table', False, 'varchar(50)', '', False, 'name of the target table'),
-                ('target_schema', False, 'varchar(50)', '', True, 'name of the target schema'),
-                ('mapping_desc', False, 'varchar(256)', '', True, 'description of the mapping'),
-                ('created_date', False, 'timestamp with time zone', 'now()', False, 'Date on which record is inserted')
-            ],
-            'indexes': [],
-            'keys': {
-                'unique': [('product', 'version', 'source_table', 'target_table')],
-            },
-        },
         'REF_COLUMN_MAPPING': {
             'columns': [
                 ('column_map_key', True, 'bigserial', '', False, 'Primary key for the table'),
-                ('table_map_key', False, 'bigint', '', False, 'Foreign key ref to REF_TABLE_MAPPINGS'),
+                ('phase', False, 'smallint', '', True, 'The phase in the pipeline where this mapping/transformation occurs'),
+                ('source_table', False, 'varchar(50)', '', False, 'name of the source table. could also be csv or json'),
                 ('source_column', False, 'varchar(50)', '', False, 'name of the source column'),
+                ('target_table', False, 'varchar(50)', '', True, 'name of the target table'),
                 ('target_column', False, 'varchar(50)', '', True, 'Name of the target column'),
-                ('action_table', False, 'varchar(50)', '', True, 'Name of the table to look for transformation or validation actions'),
+                ('transformation_rule', False, 'varchar(50)', '', True, 'Name of the table to look for transformation or validation actions'),
                 ('created_date', False, 'timestamp with time zone', 'now()', False, 'Date on which record is inserted')
             ],
             'indexes': [],
-            'keys': {
-                'foreign': [('table_map_key', 'REF_TABLE_MAPPINGS.table_map_key')]
-            },
-        },
-        'REF_TRANSFORMATION_CLEANSING': {
-            'columns': [
-                ('transformation_key', True, 'bigserial', '', False, 'key'),
-                ('column_map_key', False, 'bigint', '', False, 'foreign key to REF_COLUMN_MAPPING'),
-                ('transformation_rule', False, 'varchar(32)', '', False, 'transformation rule'),
-                ('transformation_proc', False, 'varchar(256)', '', True, 'the associated stored procedure'),
-                ('is_active', False, 'bool', '', True, 'is the rule active'),
-                ('description', False, 'varchar(1000)', '', True, 'description of the rule'),
-                ('created_date', False, 'timestamp with time zone', 'now()', False, 'Date on which record is inserted')
-            ],
-            'indexes': [],
-            'keys': {
-                'foreign': [('column_map_key', 'REF_COLUMN_MAPPING.column_map_key')]
-            },
-        },
-        'REF_VALIDATION_DATA': {
-            'columns': [
-                ('validation_key', True, 'bigserial', '', False, 'sequential primary key'),
-                ('column_map_key', False, 'bigint', '', False, 'foreign key to REF_COLUMN_MAPPING'),
-                ('validation_rule', False, 'varchar(256)', '', False, 'the validation metadata to be applied'),
-                ('validation_proc', False, 'varchar(256)', '', True, 'the associated stored procedure'),
-                ('is_active', False, 'bool', '', True, 'is the rule active'),
-                ('priority', False, 'smallint', '', True, 'priority of the rule'),
-                ('scope', False, 'varchar(32)', '', True, 'row or column level rule'),
-                ('err_code', False, 'smallint', '', True, 'error code to use on error'),
-                ('description', False, 'varchar(1000)', '', True, 'description of the rule'),
-                ('created_date', False, 'timestamp with time zone', 'now()', False, 'Date on which record is inserted')
-            ],
-            'indexes': [],
-            'keys': {
-                'foreign': [('column_map_key', 'REF_COLUMN_MAPPING.column_map_key')]
-            },
+            'keys': {},
         },
     },
     'SEQUENCES': {

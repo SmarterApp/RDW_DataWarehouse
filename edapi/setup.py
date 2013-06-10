@@ -21,7 +21,8 @@ tests_require = [
 docs_extras = [
     'Sphinx',
     'docutils',
-    'repoze.sphinx.autointerface']
+    'repoze.sphinx.autointerface'
+    ]
 
 setup(name='edapi',
       version='0.1',

@@ -300,7 +300,7 @@ class DataGenerationValidation(unittest.TestCase):
                     school_guid = values['school_guid']
                     if school_guid != 'NA':
                         school_set.add(school_guid)
-            assert min_schools <= len(school_set) <= min_schools, 'Min School count in config file is ' + str(min_schools) + ' Max School count in config file is ' + str(max_schools) + ' but School count in ' + os.path.basename(each_csv)[:-4] + ' is ' + str(len(school_set))
+            assert min_schools <= len(school_set) <= max_schools, 'Min School count in config file is ' + str(min_schools) + ' Max School count in config file is ' + str(max_schools) + ' but School count in ' + os.path.basename(each_csv)[:-4] + ' is ' + str(len(school_set))
         print('TC8: Passed: Count overall number of schools from CSVs and compare with Config file ')
 
     # TC9: Count number of students from CSVs and compare with Config file

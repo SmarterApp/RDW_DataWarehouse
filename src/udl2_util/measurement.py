@@ -88,7 +88,8 @@ def show_amount_of_data_affected(fn, quiet=udl2_conf['quiet_mode']):
     '''
     a decorator to print normalized message for amount of data to be moved
     @param fn: function that are to be executed
-    @type fn: a funtion in python that return amount of data be moved
+    @type fn: a funtion in python that return amount of data be moved, it returns a dictionary with following fields {amount: number of data,
+            unit: measure unit, module: where the code module is, function: what function is used}
     '''
     def _wrapped(*args, **kwargs):
         if quite:

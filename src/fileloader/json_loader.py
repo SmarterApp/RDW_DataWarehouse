@@ -18,11 +18,12 @@ import argparse
 import json
 import udl2_util.database_util as db_util
 from udl2 import message_keys as mk
-
+from udl2_util.measurement import measure_cpu_plus_elasped_time
 
 DBDRIVER = "postgresql"
 
 
+@measure_cpu_plus_elasped_time
 def load_json(conf):
     '''
     Main method for loading json into the integration table
@@ -35,6 +36,7 @@ def load_json(conf):
                   conf[mk.TARGET_DB_PASSWORD], conf[mk.TARGET_DB_TABLE], conf[mk.TARGET_DB_SCHEMA])
 
 
+@measure_cpu_plus_elasped_time
 def read_json_file(json_file):
     '''
     Read a json file into a dictionary
@@ -47,6 +49,7 @@ def read_json_file(json_file):
         return json.load(jf)
 
 
+@measure_cpu_plus_elasped_time
 def flatten_json_dict(json_dict, mappings):
     '''
     convert a dictionary into a corresponding flat csv format
@@ -64,6 +67,7 @@ def flatten_json_dict(json_dict, mappings):
     return flat_data
 
 
+@measure_cpu_plus_elasped_time
 def get_nested_data(location_list, json_dict):
     '''
     Take the location list and the json data and return the value at the end of the search path
@@ -79,6 +83,7 @@ def get_nested_data(location_list, json_dict):
     return value
 
 
+@measure_cpu_plus_elasped_time
 def load_to_table(data_dict, batch_id, db_host, db_name, db_user, db_port, db_password, int_table, int_schema):
     '''
     Load the table into the proper table
@@ -111,6 +116,7 @@ def load_to_table(data_dict, batch_id, db_host, db_name, db_user, db_port, db_pa
     conn.close()
 
 
+@measure_cpu_plus_elasped_time
 def fix_empty_strings(data_dict):
     ''' Replace values which are empty string with a reference to None '''
     for k, v in data_dict.items():

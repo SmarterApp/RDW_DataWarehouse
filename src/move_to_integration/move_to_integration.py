@@ -2,7 +2,9 @@ import datetime
 from udl2_util.database_util import connect_db, execute_queries
 from move_to_integration.column_mapping import get_column_mapping
 from udl2 import message_keys as mk
+from udl2_util.measurement import measure_cpu_plus_elasped_time
 
+@measure_cpu_plus_elasped_time
 def move_data_from_staging_to_integration(conf):
     '''
     map sql data type in configuration file into what SQLAlchemy type is.
@@ -43,6 +45,7 @@ def move_data_from_staging_to_integration(conf):
     return 
 
 
+@measure_cpu_plus_elasped_time
 def create_migration_query(source_schema, source_table, target_schema, target_table,
                            error_schema, error_table, mapping, batch_id):
     '''

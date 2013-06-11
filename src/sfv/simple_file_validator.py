@@ -14,17 +14,20 @@ import os
 from sfv import error_codes
 from sfv import csv_validator
 from sfv import json_validator
+from udl2_util.measurement import measure_cpu_plus_elasped_time
 
 
 class SimpleFileValidator():
     """Determines the file extension and invokes a suite of validations"""
 
+    @measure_cpu_plus_elasped_time
     def __init__(self):
         """Constructor"""
         self.validators = {'.csv': csv_validator.CsvValidator(),
                            '.json': json_validator.JsonValidator(),
                            }
 
+    @measure_cpu_plus_elasped_time
     def execute(self, dir_path, file_name, batch_id):
         """Check the file extension and invokes the appropriate Validator
         :param dir_path: path of the file

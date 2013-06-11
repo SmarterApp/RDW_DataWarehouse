@@ -41,7 +41,7 @@ def move_data_from_staging_to_integration(conf):
                                        column_mapping['target'], conf[mk.ERROR_DB_SCHEMA], 'ERR_LIST', column_mapping['mapping'],
                                        conf[mk.BATCH_ID])
     except_msg = "problem when load data from staging table to integration table"
-    execute_queries(conn, [sql_query], except_msg)
+    execute_queries(conn, [sql_query], except_msg, 'move_to_integration', 'move_data_from_staging_to_integration')
     return 
 
 

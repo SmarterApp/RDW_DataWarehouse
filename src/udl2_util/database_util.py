@@ -8,7 +8,15 @@ from collections import OrderedDict
 from sqlalchemy.engine import create_engine
 from sqlalchemy.sql.expression import func, text
 from sqlalchemy import MetaData
-from udl2_util.measurement import measure_cpu_plus_elasped_time
+from udl2_util.measurement import measure_cpu_plus_elasped_time, show_amount_of_data_affected
+
+
+@show_amount_of_data_affected
+def print_get_affected_rows(result, module, function):
+    '''
+    get affected rows of a query execution and return the info
+    '''
+    return {'amount':result.rowcount, 'unit':'rows','module':module,'function':function}
 
 
 @measure_cpu_plus_elasped_time
@@ -31,12 +39,13 @@ def connect_db(db_driver, db_user, db_password, db_host, db_port, db_name):
 
 
 @measure_cpu_plus_elasped_time
-def execute_queries(conn, list_of_queries, except_msg):
+def execute_queries(conn, list_of_queries, except_msg, caller_module=None, caller_func=None):
     trans = conn.begin()
     # execute queries
     try:
         for query in list_of_queries:
-            conn.execute(query)
+            result = conn.execute(query)
+            print_get_affected_rows(result, caller_module, caller_func)
         trans.commit()
     except Exception as e:
         print(except_msg, e)

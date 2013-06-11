@@ -164,23 +164,8 @@ class TestUdl2Database(unittest.TestCase):
         table_name = 'UDL_BATCH'
         self.assertTrue(self._compare_table_defition_in_code_and_database(table_name))
 
-    def test_REF_TABLE_MAPPINGS(self):
-        table_name = 'REF_TABLE_MAPPINGS'
-        self.assertTrue(self._compare_table_defition_in_code_and_database(table_name))
-        self.assertTrue(self._compare_table_key_definitions_in_code_and_db(table_name))
-
     def test_REF_COLUMN_MAPPING(self):
         table_name = 'REF_COLUMN_MAPPING'
-        self.assertTrue(self._compare_table_defition_in_code_and_database(table_name))
-        self.assertTrue(self._compare_table_key_definitions_in_code_and_db(table_name))
-
-    def test_REF_VALIDATION_1(self):
-        table_name = 'REF_VALIDATION_DATA'
-        self.assertTrue(self._compare_table_defition_in_code_and_database(table_name))
-        self.assertTrue(self._compare_table_key_definitions_in_code_and_db(table_name))
-
-    def test_REF_TRANSFORMATION_1(self):
-        table_name = 'REF_TRANSFORMATION_CLEANSING'
         self.assertTrue(self._compare_table_defition_in_code_and_database(table_name))
         self.assertTrue(self._compare_table_key_definitions_in_code_and_db(table_name))
 

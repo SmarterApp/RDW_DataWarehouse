@@ -13,6 +13,7 @@ import re
 
 from sfv import error_codes
 from udl2_util.file_util import abs_path_join
+from udl2_util.measurement import measure_cpu_plus_elasped_time
 
 
 class CsvValidator():
@@ -20,7 +21,7 @@ class CsvValidator():
     Invoke a suite of validations for csv files.
     """
 
-
+    @measure_cpu_plus_elasped_time
     def  __init__(self):
         """Constructor
         @param arg_udl_db: database connections
@@ -37,7 +38,7 @@ class CsvValidator():
                                 IsCsvWellFormed()
                                 ]
 
-
+    @measure_cpu_plus_elasped_time
     def execute(self, dir_path, file_name, batch_sid):
         """
         Run all validation tests and return a list of error codes for all failures, or
@@ -64,6 +65,7 @@ class CsvValidator():
 
 class IsSourceFolderAccessible(object):
     """Job to check for accessible source folder"""
+    @measure_cpu_plus_elasped_time
     def execute(self, dir_path, file_name, batch_sid):
         """Check if the path exists, is a directory, and we can read from it
 
@@ -89,6 +91,7 @@ class IsSourceFolderAccessible(object):
 
 class IsSourceFileAccessible(object):
     """Job to check for accessible source file"""
+    @measure_cpu_plus_elasped_time
     def execute(self, dir_path, file_name, batch_sid):
         """Check if file exists, is readable and is not a directory
 
@@ -115,6 +118,7 @@ class IsSourceFileAccessible(object):
 
 class IsFileBlank(object):
     """Job to check for accessible blank file"""
+    @measure_cpu_plus_elasped_time
     def execute(self, dir_path, file_name, batch_sid):
         """Check if the file is blank
 
@@ -141,7 +145,7 @@ class IsFileBlank(object):
 
 class IsSourceFileCommaDelimited(object):
     """Job to check for comma delimited source file"""
-
+    @measure_cpu_plus_elasped_time
     def execute(self, dir_path, file_name, batch_sid):
         """Execute that the file is indeed comma delimited
 
@@ -206,6 +210,7 @@ class IsSourceFileCommaDelimited(object):
 
 class DoesSourceFileContainDuplicateHeaders(object):
     """Job to check for source file with duplicate headers"""
+    @measure_cpu_plus_elasped_time
     def execute(self, dir_path, file_name, batch_sid):
         """
         Check to make sure the file does not contain duplicate headers
@@ -245,6 +250,7 @@ class DoesSourceFileContainDuplicateHeaders(object):
 
 class DoesSourceFileContainHeaders(object):
     """Job to check for source file with headers"""
+    @measure_cpu_plus_elasped_time
     def execute(self, dir_path, file_name, batch_sid):
         """Check to make sure the file contains non-empty headers
 
@@ -295,16 +301,19 @@ class DoesSourceFileContainHeaders(object):
 
 class IsCsvWellFormed(object):
     """Job to check for well formed csv file"""
-
+    
+    @measure_cpu_plus_elasped_time
     def __init__(self):
         # Initially, lines_to_validate was defined within a configuration file, here we hard code it for now
         # TODO: define lines_to_validate in a configuration file
         self._lines_to_validate = 1 #int(CONFIG.get_config("validation_lines"))
 
+    @measure_cpu_plus_elasped_time
     def set_lines_to_validate(self, lines_to_validate):
         """mutator for lines_to_validate"""
         self._lines_to_validate = lines_to_validate
 
+    @measure_cpu_plus_elasped_time
     def execute(self, dir_path, file_name, batch_sid):
         """Execute to make sure that the number of headers is the same as the
         number of data-points on the first _lines_to_validate lines.
@@ -347,6 +356,7 @@ class IsCsvWellFormed(object):
         # we passed all tests
         return (error_codes.STATUS_OK, dir_path, file_name, batch_sid)
 
+    @measure_cpu_plus_elasped_time
     def _empty_header_has_data(self, headers, line):
         """
         Returns True if any header is empty but contains data in the
@@ -364,6 +374,7 @@ class IsCsvWellFormed(object):
 class DoesSourceFileHaveData(object):
     """Job to check for source file with data"""
 
+    @measure_cpu_plus_elasped_time
     def execute(self, dir_path, file_name, batch_sid):
         """Check if file has at least one data row, and make sure the data row
         and headers contain the same number of fields

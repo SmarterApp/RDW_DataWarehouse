@@ -4,7 +4,9 @@ from celery import Celery
 from kombu import Exchange, Queue
 import os
 import imp
-    
+from udl2_util.measurement import measure_cpu_plus_elasped_time
+
+@measure_cpu_plus_elasped_time
 def setup_udl2_queues(conf):
     queues = {}
     # set up default queues, which is always celery
@@ -15,6 +17,7 @@ def setup_udl2_queues(conf):
     return queues
 
 
+@measure_cpu_plus_elasped_time
 def setup_celery_conf(udl2_conf, celery, udl_queues):
     celery.conf.update(CELERY_TASK_RESULT_EXPIRES=10,  # TTL for results
         CELERYD_CONCURRENCY=10,  # number of available workers processes

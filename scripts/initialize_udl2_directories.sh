@@ -6,7 +6,9 @@ sudo -u root -s mkdir -p /opt/wgen/edware-udl/etc
 sudo -u root -s chmod 755 /opt/wgen
 sudo -u root -s chmod 755 /opt/wgen/edware-udl
 sudo -u root -s chmod 777 /opt/wgen/edware-udl/etc
-sudo -u root -s chown -R udl2.udl2 /opt/wgen/edware-udl/etc
+if [ `uname` == 'Linux' ]; then
+    sudo -u root -s chown -R udl2.udl2 /opt/wgen/edware-udl/etc
+fi
 
 echo "rebuild log directory"
 sudo -u root -s rm -fr /var/log/wgen/edware-udl/logs
@@ -18,7 +20,9 @@ sudo -u root -s chmod 755 /var/log/
 sudo -u root -s chmod 755 /var/log/wgen/
 sudo -u root -s chmod 755 /var/log/wgen/edware-udl/
 sudo -u root -s chmod 777 /var/log/wgen/edware-udl/logs
-sudo -u root -s chown -R udl2.udl2 /var/log/wgen/edware-udl/logs
+if [ `uname` == 'Linux' ]; then
+    sudo -u root -s chown -R udl2.udl2 /var/log/wgen/edware-udl/logs
+fi
 
 echo "rebuild zones directory"
 sudo -u root -s rm -fr /opt/wgen/edware-udl/zones
@@ -41,4 +45,6 @@ sudo -u root -s chmod 777 /opt/wgen/edware-udl/zones/datafiles
 sudo -u root -s chmod 777 /opt/wgen/edware-udl/zones/tests
 
 # we need to fix owner to udl2
-sudo -u root -s chown -R udl2.udl2 /opt/wgen/edware-udl/zones/
+if [ `uname` == 'Linux' ]; then
+    sudo -u root -s chown -R udl2.udl2 /opt/wgen/edware-udl/zones/
+fi

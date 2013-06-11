@@ -5,8 +5,9 @@ __author__ = 'abrien'
 
 from sfv.csv_validator import CsvValidator
 from sfv.json_validator import JsonValidator
+from udl2_util.measurement import measure_cpu_plus_elasped_time
 
-
+@measure_cpu_plus_elasped_time
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-f', dest='file_path', required=True, type=str, help="Path to the file to be validated.")

@@ -1,9 +1,10 @@
 from collections import OrderedDict
-
+from udl2_util.measurement import measure_cpu_plus_elasped_time
 
 # define the tables can be loaded in parallel
 # (target_table_name, source_table_name)
 # e.g. (target_table_in_star_schema, table_name_in_integration_tables)
+@measure_cpu_plus_elasped_time
 def get_target_tables_parallel():
     '''
     @return: an ordered dictionary, which maps the target dim table and integration table
@@ -20,6 +21,7 @@ def get_target_tables_parallel():
 # define the table should be loaded as the callback
 # (target_table_name, source_table_name)
 # e.g. (target_table_in_star_schema, table_name_in_integration_tables)
+@measure_cpu_plus_elasped_time
 def get_target_table_callback():
     '''
     @return: a dictionary, which maps the target fact table and integration table
@@ -30,6 +32,7 @@ def get_target_table_callback():
 
 
 # column mapping between source/integration table and target/star schema table
+@measure_cpu_plus_elasped_time
 def get_column_mapping():
     '''
     This column mapping is used in moving data from integration tables to target
@@ -192,6 +195,7 @@ def get_column_mapping():
     return column_map_integration_to_target
 
 
+@measure_cpu_plus_elasped_time
 def get_asmt_rec_id_info():
     '''
     This function provides information in the progress of moving data from integration table to fact table in target
@@ -208,6 +212,7 @@ def get_asmt_rec_id_info():
     return basic_map
 
 
+@measure_cpu_plus_elasped_time
 def get_inst_hier_rec_id_info():
     '''
     This function provides information in the progress of moving data from integration table to fact table in target
@@ -222,6 +227,7 @@ def get_inst_hier_rec_id_info():
     return basic_map
 
 """
+@measure_cpu_plus_elasped_time
 def get_section_rec_id_info():
     # need to be revised
     basic_map = {'rec_id': 'section_rec_id',

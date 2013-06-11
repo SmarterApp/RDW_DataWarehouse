@@ -1,17 +1,20 @@
 import json
 import os
 from sfv import error_codes
+from udl2_util.measurement import measure_cpu_plus_elasped_time
 
 class JsonValidator():
     """
     Invoke a suite of validations for json files.
     """
-
+    
+    @measure_cpu_plus_elasped_time
     def __init__(self):
         self.validators = [IsValidJsonFile(),
                            HasExpectedFormat()]
 
 
+    @measure_cpu_plus_elasped_time
     def execute(self, dir_path, file_name, batch_sid):
         """
         Run all validation tests and return a list of error codes for all failures, or
@@ -38,6 +41,7 @@ class JsonValidator():
 class IsValidJsonFile(object):
     '''Make sure the file contains a parsable json string'''
 
+    @measure_cpu_plus_elasped_time
     def execute(self, dir_path, file_name, batch_sid):
         '''
         Run json.load() on the given file, if it is invalid json, the exception will be caught and the proper code returned
@@ -61,6 +65,7 @@ class IsValidJsonFile(object):
 
 class HasExpectedFormat(object):
     '''Make sure the JSON file is formatted to our standards '''
+    @measure_cpu_plus_elasped_time
     def __init__(self):
 
         # mapping is a dictionary with keys = fields and values = paths to that field within the json structure
@@ -101,6 +106,7 @@ class HasExpectedFormat(object):
            }
 
 
+    @measure_cpu_plus_elasped_time
     def execute(self, dir_path, file_name, batch_sid):
         '''
         Iterate through all the elements of mapping, and check that we can reach all expected fields using
@@ -126,6 +132,7 @@ class HasExpectedFormat(object):
             return (error_codes.STATUS_OK, dir_path, file_name, batch_sid)
 
 
+    @measure_cpu_plus_elasped_time
     def does_json_path_exist(self, json_object, path):
         '''
         Given a json_object [a dictionary] and a path [a list of keys through the dictionary], ensure we can follow the path

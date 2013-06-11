@@ -4,12 +4,14 @@ from udl2 import message_keys as mk
 import move_to_target.column_mapping as col_map
 import move_to_target.create_queries as queries
 import datetime
+from udl2_util.measurement import measure_cpu_plus_elasped_time
 
 
 DBDRIVER = "postgresql"
 FAKE_INST_HIER_REC_ID = -1
 
 
+@measure_cpu_plus_elasped_time
 def explode_data_to_fact_table(conf, source_table, target_table, column_mapping, column_types):
     '''
     Main function to explode data from integration table INT_SBAC_ASMT_OUTCOME to star schema table fact_asmt_outcome
@@ -57,6 +59,7 @@ def explode_data_to_fact_table(conf, source_table, target_table, column_mapping,
     conn.close()
 
 
+@measure_cpu_plus_elasped_time
 def get_asmt_rec_id(conf, guid_column_name_in_target, guid_column_name_in_source, rec_id_column_name, target_table_name, source_table_name):
     '''
     Main function to get asmt_rec_id in dim_asmt table
@@ -80,6 +83,7 @@ def get_asmt_rec_id(conf, guid_column_name_in_target, guid_column_name_in_source
     return asmt_rec_id
 
 
+@measure_cpu_plus_elasped_time
 def execute_query_get_one_value(conn, query, column_name):
     '''
     This is the function to execute one query, and return one correct value returned by the query
@@ -101,6 +105,7 @@ def execute_query_get_one_value(conn, query, column_name):
     return one_value_result[0]
 
 
+@measure_cpu_plus_elasped_time
 def get_section_rec_id():
     '''
     This is the function to get section_rec_id from dim_section.
@@ -112,6 +117,7 @@ def get_section_rec_id():
     return '1', 'section_rec_id'
 
 
+@measure_cpu_plus_elasped_time
 def create_queries_for_move_to_fact_table(conf, source_table, target_table, column_mapping, column_types):
     '''
     Main function to create four queries(in order) for moving data from integration table
@@ -138,6 +144,7 @@ def create_queries_for_move_to_fact_table(conf, source_table, target_table, colu
     return [disable_trigger_query, insert_into_fact_table_query, update_inst_hier_rec_id_fk_query, enable_back_trigger_query]
 
 
+@measure_cpu_plus_elasped_time
 def explode_data_to_dim_table(conf, source_table, target_table, column_mapping, column_types):
     '''
     Main function to move data from source table to target tables.
@@ -162,6 +169,7 @@ def explode_data_to_dim_table(conf, source_table, target_table, column_mapping, 
     conn.close()
 
 
+@measure_cpu_plus_elasped_time
 def get_table_column_types(conf, target_table, column_names):
     '''
     Main function to get column types of a table by querying the table
@@ -191,6 +199,7 @@ def get_table_column_types(conf, target_table, column_names):
     return column_types
 
 
+@measure_cpu_plus_elasped_time
 def calculate_spend_time_as_second(start_time, finish_time):
     '''
     Main function to calculate period distance as seconds

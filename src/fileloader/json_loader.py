@@ -110,7 +110,7 @@ def load_to_table(data_dict, batch_id, db_host, db_name, db_user, db_port, db_pa
 
     # create insert statement and execute
     insert_into_int_table = s_int_table.insert().values(**data_dict)
-    db_util.execute_queries(conn, [insert_into_int_table], 'Exception in loading assessment data -- ')
+    db_util.execute_queries(conn, [insert_into_int_table], 'Exception in loading assessment data -- ', 'json_loader', 'load_to_table')
 
     # Close connection
     conn.close()

@@ -2,7 +2,7 @@ import datetime
 from udl2_util.database_util import connect_db, execute_queries
 from move_to_integration.column_mapping import get_column_mapping
 from udl2 import message_keys as mk
-from udl2_util.measurement import measure_cpu_plus_elasped_time
+from udl2_util.measurement import measure_cpu_plus_elasped_time, show_amount_of_data_affected
 
 @measure_cpu_plus_elasped_time
 def move_data_from_staging_to_integration(conf):
@@ -41,7 +41,7 @@ def move_data_from_staging_to_integration(conf):
                                        column_mapping['target'], conf[mk.ERROR_DB_SCHEMA], 'ERR_LIST', column_mapping['mapping'],
                                        conf[mk.BATCH_ID])
     except_msg = "problem when load data from staging table to integration table"
-    execute_queries(conn, [sql_query], except_msg)
+    execute_queries(conn, [sql_query], except_msg, 'move_to_integration', 'move_data_from_staging_to_integration')
     return 
 
 

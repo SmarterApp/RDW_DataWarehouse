@@ -43,6 +43,8 @@ udl2_conf = {
         'tests':'/opt/wgen/edware-udl/zones/tests/', # this is for running unit tests.
     },
     'logging': {  # log location. this should be in the long run as file locations or more sophisticated logging system
+        'level':'INFO',
+        'debug':'FALSE',
         'audit':'/var/log/wgen/edware-udl/logs/udl2.audit.log',  # for status log for everything
         'error':'/var/log/wgen/edware-udl/logs/udl2.error.log',  # for error message and exceptions, 
     },
@@ -72,7 +74,7 @@ udl2_conf = {
         'db_pass':'edware2013',
         'db_driver':'postgresql'
     },
-    'quiet_mode': True,
+    'quiet_mode': False,
 }
 
 

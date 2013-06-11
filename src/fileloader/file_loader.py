@@ -5,13 +5,21 @@ import random
 import argparse
 from udl2.database import UDL_METADATA
 from sqlalchemy.exc import NoSuchTableError
-from sqlalchemy.engine import create_engine
+from sqlalchemy.engine import create_engine, ResultProxy
 from udl2_util.file_util import extract_file_name
 import udl2.message_keys as mk
-from udl2_util.measurement import measure_cpu_plus_elasped_time
+from udl2_util.measurement import measure_cpu_plus_elasped_time, show_amount_of_data_affected
 
 
 DBDRIVER = "postgresql"
+
+@show_amount_of_data_affected
+def print_get_affected_rows(result, module, function):
+    '''
+    get affected rows of a query execution and return the info
+    '''
+    return {'amount':result.rowcount, 'unit':'rows','module':module,'function':function}
+
 
 
 @measure_cpu_plus_elasped_time
@@ -68,16 +76,17 @@ def canonicalize_header_field(field_name):
 def create_fdw_tables(conn, header_names, header_types, csv_file, csv_schema, csv_table, fdw_server):
     create_csv_ddl = queries.create_ddl_csv_query(header_names, header_types, csv_file, csv_schema, csv_table, fdw_server)
     drop_csv_ddl = queries.drop_ddl_csv_query(csv_schema, csv_table)
-    execute_queries(conn, [drop_csv_ddl, create_csv_ddl], 'Exception in creating fdw tables --')
+    execute_queries(conn, [drop_csv_ddl, create_csv_ddl], 'Exception in creating fdw tables --', 'file_loader', 'create_fdw_tables')
 
 
 @measure_cpu_plus_elasped_time
-def execute_queries(conn, list_of_queries, except_msg):
+def execute_queries(conn, list_of_queries, except_msg, caller_module=None, caller_func=None):
     trans = conn.begin()
     # execute queries
     try:
         for query in list_of_queries:
-            conn.execute(query)
+            result = conn.execute(query)
+            print_get_affected_rows(result, caller_module, caller_func)
         trans.commit()
     except Exception as e:
         print(except_msg, e)
@@ -107,13 +116,13 @@ def import_via_fdw(conn, stg_asmt_outcome_columns, batch_id, apply_rules, csv_ta
     insert_into_staging_table = queries.create_inserting_into_staging_query(stg_asmt_outcome_columns, apply_rules, csv_table_columns, header_types, staging_schema, staging_table, csv_schema, csv_table, start_seq, seq_name)
     drop_sequence = queries.drop_sequence_query(staging_schema, seq_name)
     # print('@@@@@@@', create_sequence)
-    execute_queries(conn, [create_sequence, insert_into_staging_table, drop_sequence], 'Exception in loading data -- ')
+    execute_queries(conn, [create_sequence, insert_into_staging_table, drop_sequence], 'Exception in loading data -- ', 'file_loader', 'import_via_fdw')
 
 
 @measure_cpu_plus_elasped_time
 def drop_fdw_tables(conn, csv_schema, csv_table):
     drop_csv_ddl = queries.drop_ddl_csv_query(csv_schema, csv_table)
-    execute_queries(conn, [drop_csv_ddl], 'Exception in drop fdw table -- ')
+    execute_queries(conn, [drop_csv_ddl], 'Exception in drop fdw table -- ', 'file_loader' , 'drop_fdw_tables')
 
 
 @measure_cpu_plus_elasped_time

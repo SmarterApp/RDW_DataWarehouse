@@ -13,7 +13,7 @@ import re
 
 from sfv import error_codes
 from udl2_util.file_util import abs_path_join
-from udl2_util.measurement import measure_cpu_plus_elasped_time
+from udl2_util.measurement import measure_cpu_plus_elasped_time, show_amount_of_data_affected
 
 
 class CsvValidator():

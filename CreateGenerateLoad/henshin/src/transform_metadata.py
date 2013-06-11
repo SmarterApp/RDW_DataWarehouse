@@ -8,8 +8,9 @@ Created on Mar 20, 2013
 from collections import OrderedDict
 import os
 import json
-import csv
 import copy
+
+from sqlalchemy import create_engine
 
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
@@ -25,7 +26,7 @@ CLAIMS = 'claims'
 PERFORMANCE = 'performance_levels'
 
 
-def transform_to_metadata(asmt_filename, output_path, output_filename_pattern):
+def transform_to_metadata(file_pattern, username, password, server, database, schema, port=5432):
     '''
     Open the CSV file and generate a json file for each row in the csv.
     @param asmt_filename: the path to the dim_asmt.csv file to use.
@@ -37,22 +38,33 @@ def transform_to_metadata(asmt_filename, output_path, output_filename_pattern):
 
     asmt_id_list = []
     row_mappings = read_mapping_json()
+    connection_str = 'postgresql+psycopg2://{username}:{password}@{server}:{port}/{database}'.format(username=username, password=password, server=server, port=port, database=database)
+    engine = create_engine(connection_str)
+    connection = engine.connect()
+    results = get_asmt_data_from_database(connection, schema)
 
-    try:
-        # open csv file and get header
-        with open(asmt_filename, 'r') as csvfile:
-            asmt_reader = csv.reader(csvfile)
-            header = next(asmt_reader)
+    header = results.keys()
 
-            # loop through rows and write a json file for each row
-            for row in asmt_reader:
-                data_dict = create_data_dict(header, row)
-                asmt_id = generate_json(data_dict, row_mappings, output_path, output_filename_pattern)
-                asmt_id_list.append(asmt_id)
+    for row in results:
+        data_dict = create_data_dict(header, row)
+        asmt_id = generate_json(data_dict, row_mappings, file_pattern)
+        asmt_id_list.append(asmt_id)
 
-        return asmt_id_list
-    except FileNotFoundError:
-        print('Unable to find the specified file: %s' % asmt_filename)
+    return asmt_id_list
+
+
+def get_asmt_data_from_database(connection, schema):
+    '''
+    Get all assessment records in the database
+    '''
+
+    query = '''
+    SELECT *
+    FROM {schema}.dim_asmt
+    '''.format(schema=schema)
+
+    results = connection.execute(query)
+    return results
 
 
 def create_data_dict(header, row):
@@ -69,12 +81,11 @@ def create_data_dict(header, row):
     return data_dict
 
 
-def generate_json(data_dict, mappings, output_path, filename_pattern):
+def generate_json(data_dict, mappings, file_pattern):
     '''
     @param data_dict: A dictionary containing the content for the output json file
     @param mappings: A dictionary that contains what the json keys should map to
-    @param output_path: the path to where the files should be written
-    @param filename_pattern: The pattern to be used that can be formatted with the asmt_id
+    @param file_pattern: The pattern to be used that can be formatted with the asmt_id
     @return: the asmt_id for the json file that was written
     '''
     # duplicate the mappings dict
@@ -91,7 +102,7 @@ def generate_json(data_dict, mappings, output_path, filename_pattern):
             asmt_ord_dict[json_section] = create_list_for_section(mappings[json_section], data_dict)
 
     # write json file
-    filename = os.path.join(output_path, filename_pattern.format(asmt_ord_dict[IDENTIFICATION][GUID]))
+    filename = file_pattern.format(asmt_ord_dict[IDENTIFICATION][GUID])
     write_json_file(asmt_ord_dict, filename)
 
     return asmt_ord_dict[IDENTIFICATION][GUID]

@@ -25,13 +25,23 @@ DATAFILE_PATH = os.path.dirname(os.path.realpath(__file__))
 components = DATAFILE_PATH.split(os.sep)
 DATAFILE_PATH = str.join(os.sep, components[:components.index('datageneration') + 1])
 
-ENTITY_TO_PATH_DICT = {InstitutionHierarchy: DATAFILE_PATH + '/datafiles/csv/dim_inst_hier.csv',
-                       Section: DATAFILE_PATH + '/datafiles/csv/dim_section.csv',
-                       Assessment: DATAFILE_PATH + '/datafiles/csv/dim_asmt.csv',
-                       AssessmentOutcome: DATAFILE_PATH + '/datafiles/csv/fact_asmt_outcome.csv',
-                       Staff: DATAFILE_PATH + '/datafiles/csv/dim_staff.csv',
-                       ExternalUserStudent: DATAFILE_PATH + '/datafiles/csv/external_user_student_rel.csv',
-                       Student: DATAFILE_PATH + '/datafiles/csv/dim_student.csv'}
+DATAPATH_CSV = os.path.join('datafiles', 'csv')
+
+CSV_FILE_NAMES = {InstitutionHierarchy: 'dim_inst_hier.csv',
+                  Section: 'dim_section.csv',
+                  Assessment: 'dim_asmt.csv',
+                  AssessmentOutcome: 'fact_asmt_outcome.csv',
+                  Staff: 'dim_staff.csv',
+                  ExternalUserStudent: 'external_user_student_rel.csv',
+                  Student: 'dim_student.csv'}
+
+ENTITY_TO_PATH_DICT = {InstitutionHierarchy: os.path.join(DATAFILE_PATH, DATAPATH_CSV, CSV_FILE_NAMES[InstitutionHierarchy]),
+                       Section: os.path.join(DATAFILE_PATH, DATAPATH_CSV, CSV_FILE_NAMES[Section]),
+                       Assessment: os.path.join(DATAFILE_PATH, DATAPATH_CSV, CSV_FILE_NAMES[Assessment]),
+                       AssessmentOutcome: os.path.join(DATAFILE_PATH, DATAPATH_CSV, CSV_FILE_NAMES[AssessmentOutcome]),
+                       Staff: os.path.join(DATAFILE_PATH, DATAPATH_CSV, CSV_FILE_NAMES[Staff]),
+                       ExternalUserStudent: os.path.join(DATAFILE_PATH, DATAPATH_CSV, CSV_FILE_NAMES[ExternalUserStudent]),
+                       Student: os.path.join(DATAFILE_PATH, DATAPATH_CSV, CSV_FILE_NAMES[Student])}
 
 LAST_NAMES = 'last_names'
 FEMALE_FIRST_NAMES = 'female_first_names'
@@ -48,17 +58,18 @@ NAMES_TO_PATH_DICT = {BIRDS: DATAFILE_PATH + '/datafiles/name_lists/birds.txt',
                       }
 
 
-def generate_data_from_config_file(config_module):
+def generate_data_from_config_file(config_module, output_dict):
 
     '''
     Main function that drives the data generation process
 
     @param config_module: module that contains all configuration information for the data creation process
+    @param output_dict: A dictionary containing paths for all output CSVs.
     @return nothing
     '''
 
     # First thing: prep the csv files by deleting their contents and adding appropriate headers
-    prepare_csv_files(ENTITY_TO_PATH_DICT)
+    prepare_csv_files(output_dict)
 
     # Next, prepare lists that are used to name various entities
     name_list_dictionary = generate_name_list_dictionary(NAMES_TO_PATH_DICT)
@@ -88,7 +99,7 @@ def generate_data_from_config_file(config_module):
     flat_grades_list = get_flat_grades_list(school_types)
     assessments = generate_assessments(flat_grades_list, scores_details[constants.CUT_POINTS],
                                        from_date, most_recent, to_date=to_date)
-    create_csv(assessments, ENTITY_TO_PATH_DICT[Assessment])
+    create_csv(assessments, output_dict[Assessment])
 
     # Iterate over all the states we're supposed to create
     # When we get down to the school level, we'll be able to generate an InstitutionHierarchy object
@@ -156,18 +167,18 @@ def generate_data_from_config_file(config_module):
                     school_type = school_types[school_type_name]
                     school_type_institution_hierarchies = generate_and_populate_institution_hierarchies(schools, school_type, current_state,
                                                                                                         district, assessments, subject_percentages,
-                                                                                                        config_module)
+                                                                                                        config_module, output_dict)
                     # Debugging
                     school_counts[school_type_name] += len(school_type_institution_hierarchies)
 
                     state_institution_hierarchies += school_type_institution_hierarchies
 
-                create_csv(district_level_staff, ENTITY_TO_PATH_DICT[Staff])
-        create_csv(state_level_staff, ENTITY_TO_PATH_DICT[Staff])
-        create_csv(state_institution_hierarchies, ENTITY_TO_PATH_DICT[InstitutionHierarchy])
+                create_csv(district_level_staff, output_dict[Staff])
+        create_csv(state_level_staff, output_dict[Staff])
+        create_csv(state_institution_hierarchies, output_dict[InstitutionHierarchy])
 
 
-def generate_and_populate_institution_hierarchies(schools, school_type, state, district, assessments, subject_percentages, config_module):
+def generate_and_populate_institution_hierarchies(schools, school_type, state, district, assessments, subject_percentages, config_module, output_dict):
     '''
     Given institution information (info about state, district, school), we create InstitutionHierarchy objects.
     We create one InstitutionHierarchy object for each school given in the school list.
@@ -186,17 +197,18 @@ def generate_and_populate_institution_hierarchies(schools, school_type, state, d
     @type assessments: list
     @param assessments: A list of Assessment objects for generating assessment outcome objects
     @param config_module: module that contains all configuration information for the data creation process
+    @param output_dict: A dictionary containing paths for all output CSVs.
     '''
     institution_hierarchies = []
     for school in schools:
         institution_hierarchy = generate_institution_hierarchy_from_helper_entities(state, district, school, config_module)
         institution_hierarchies.append(institution_hierarchy)
         # TODO: Don't populate the schools here. When this function returns, loop over the list and populate each school
-        populate_school(institution_hierarchy, school_type, assessments, subject_percentages, config_module)
+        populate_school(institution_hierarchy, school_type, assessments, subject_percentages, config_module, output_dict)
     return institution_hierarchies
 
 
-def populate_school(institution_hierarchy, school_type, assessments, subject_percentages, config_module):
+def populate_school(institution_hierarchy, school_type, assessments, subject_percentages, config_module, output_dict):
 
     '''
     Populate the provided the institution with staff, students, teachers, sections
@@ -208,6 +220,7 @@ def populate_school(institution_hierarchy, school_type, assessments, subject_per
     @type assessments: list of Assessments
     @param assessments: a list of assessment objects for creation of AssessmentOutcomes
     @param config_module: module that contains all configuration information for the data creation process
+    @param output_dict: A dictionary containing paths for all output CSVs.
     '''
 
     # Get student count information from config module
@@ -277,14 +290,14 @@ def populate_school(institution_hierarchy, school_type, assessments, subject_per
                 percent_to_take_assessment = subject_percentages[subject_name]
                 students_to_take_assessment = get_subset_of_students(students_in_section, percent_to_take_assessment)
 
-                create_csv(students_to_take_assessment, ENTITY_TO_PATH_DICT[Student])
+                create_csv(students_to_take_assessment, output_dict[Student])
                 asmt_outcomes_in_section = generate_assessment_outcomes_from_helper_entities_and_lists(students_to_take_assessment, score_list, teacher_guid, section, institution_hierarchy, assessment,
                                                                                                        eb_min_perc, eb_max_perc, eb_rand_adj_lo, eb_rand_adj_hi)
                 asmt_outcomes_for_grade.extend(asmt_outcomes_in_section)
-        create_csv(asmt_outcomes_for_grade, ENTITY_TO_PATH_DICT[AssessmentOutcome])
-    #create_csv(students_in_school, ENTITY_TO_PATH_DICT[Student])
-    create_csv(sections_in_school, ENTITY_TO_PATH_DICT[Section])
-    create_csv(staff_in_school, ENTITY_TO_PATH_DICT[Staff])
+        create_csv(asmt_outcomes_for_grade, output_dict[AssessmentOutcome])
+    #create_csv(students_in_school, output_dict[Student])
+    create_csv(sections_in_school, output_dict[Section])
+    create_csv(staff_in_school, output_dict[Staff])
 
 
 def prepare_csv_files(entity_to_path_dict):
@@ -297,10 +310,13 @@ def prepare_csv_files(entity_to_path_dict):
     for entity in entity_to_path_dict:
         path = entity_to_path_dict[entity]
         # By opening the file for writing, we implicitly delete the file contents
-        with open(path, 'w') as csv_file:
-            csv_writer = csv.writer(csv_file, delimiter=',', quoting=csv.QUOTE_MINIMAL)
-            # Here we write the header the the given entity
-            csv_writer.writerow(entity.getHeader())
+        try:
+            with open(path, 'w') as csv_file:
+                csv_writer = csv.writer(csv_file, delimiter=',', quoting=csv.QUOTE_MINIMAL)
+                # Here we write the header the the given entity
+                csv_writer.writerow(entity.getHeader())
+        except FileNotFoundError:
+            exit('The specified directory does not exist. Please create it and try again.')
 
 
 def generate_name_list_dictionary(list_name_to_path_dictionary):
@@ -714,13 +730,39 @@ def get_subset_of_students(students, percentage):
     return selection
 
 
+def create_output_dict(output_path):
+    '''
+    create a dictionary that specifies the output path for all csv files
+    @param output_path: the path to where to store the files
+    @type output_path: str
+    @return: A dict containing all ouput paths
+    @rtype: dict
+    '''
+    out_dict = {}
+
+    for fname in CSV_FILE_NAMES:
+        out_dict[fname] = os.path.join(output_path, CSV_FILE_NAMES[fname])
+
+    return out_dict
+
+
 def main(config_mod_name, output_path=None):
     t1 = datetime.datetime.now()
     config_module = import_module(args.config_module)
-    generate_data_from_config_file(config_module)
+
+    # setup output path dict
+    output_dict = ENTITY_TO_PATH_DICT
+    if output_path:
+        output_dict = create_output_dict(output_path)
+
+    # generate_data
+    generate_data_from_config_file(config_module, output_dict)
+
+    # print time
     t2 = datetime.datetime.now()
     print("data_generation starts ", t1)
     print("data_generation ends   ", t2)
+
 
 if __name__ == '__main__':
     # Argument parsing
@@ -732,11 +774,3 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     main(args.config_module, args.output_path)
-#
-#     t1 = datetime.datetime.now()
-#     config_module = import_module(args.config_module)
-#     generate_data_from_config_file(config_module)
-#     t2 = datetime.datetime.now()
-#
-#     print("data_generation starts ", t1)
-#     print("data_generation ends   ", t2)

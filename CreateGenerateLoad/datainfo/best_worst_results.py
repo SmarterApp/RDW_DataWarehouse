@@ -388,9 +388,9 @@ def get_input_args():
     parser.add_argument('-d', '--database', help='name of the database. default: edware', default='edware')
     parser.add_argument('-u', '--username', help='username for the db. default: edware', default='edware')
     parser.add_argument('-p', '--port', type=int, help='port to connect to. Default: 5432', default=5432)
-    parser.add_argument('--csv', help='output as csv file. will write to stdout by default', action='store_true')
+    parser.add_argument('--write_to_csv', help='output as csv file. will write to stdout by default', action='store_true')
     parser.add_argument('--worst', action='store_true', help='only get worst performers. By default will only get best')
-    parser.add_argument('--bestworst', action='store_true', help='Get best and worst performers')
+    parser.add_argument('--best_and_worst', action='store_true', help='Get best and worst performers')
     parser.add_argument('--students', type=int, help='number of best/worst students to return. default: 20', default=20)
     parser.add_argument('--schools', type=int, help='number of best/worst schools to return. default: 5', default=5)
     parser.add_argument('--districts', type=int, help='number of best/worst districts to return. default: 5', default=5)
@@ -399,27 +399,27 @@ def get_input_args():
     return parser.parse_args()
 
 
-if __name__ == '__main__':
-
-    # Get args from command line
-    args = get_input_args()
+def main(password='edware2013', schema='edware_mayuat_0_1', server='edwdbsrv1.poc.dum.edwdc.net', database='edware', username='edware',
+         port=5432, write_to_csv=False, worst=False, best_and_worst=False, students=20, schools=5, districts=5, filename='performances'):
+    '''
+    @param arg_dict: A dictionary with the following string arguments: username, password, server, port, and database,
+    the following int arguments: schools, students, districtrs
+    '''
 
     # Connect to database and set params
-    connection_str = 'postgresql+psycopg2://{username}:{password}@{server}:{port}/{database}'.format(**vars(args))
+    connection_str = 'postgresql+psycopg2://{username}:{password}@{server}:{port}/{database}'.format(username=username, password=password,
+                                                                                                     server=server, port=port, database=database)
     engine = create_engine(connection_str)
     connection = engine.connect()
-    schema = args.schema
-    student_limit = args.students
-    school_limit = args.schools
-    district_limit = args.districts
+
     student_results = []
     institution_results = []
     print_table_sizes(['dim_student', 'fact_asmt_outcome', 'dim_inst_hier'], connection, schema)
 
-    if not args.worst or args.bestworst:
+    if not worst or best_and_worst:
         # Get top performers for students, districts and schools
-        student_ela_results = get_edge_asmt_outcomes(connection, 'ELA', schema, student_limit)
-        student_math_results = get_edge_asmt_outcomes(connection, 'Math', schema, student_limit)
+        student_ela_results = get_edge_asmt_outcomes(connection, 'ELA', schema, students)
+        student_math_results = get_edge_asmt_outcomes(connection, 'Math', schema, students)
         # Get school, district and state information for the returned students
         # Add data to the existing result dictionaries
         get_additional_info(student_ela_results, schema, connection)
@@ -436,10 +436,10 @@ if __name__ == '__main__':
         institution_results += get_edge_institution('ELA', schema, connection, get_best=True, get_district=True)
         institution_results += get_edge_institution('Math', schema, connection, get_best=True, get_district=True)
 
-    if args.worst or args.bestworst:
+    if worst or best_and_worst:
         # Get worst performers for students, districts, schools
-        student_ela_results = get_edge_asmt_outcomes(connection, 'ELA', schema, student_limit, get_best=False)
-        student_math_results = get_edge_asmt_outcomes(connection, 'Math', schema, student_limit, get_best=False)
+        student_ela_results = get_edge_asmt_outcomes(connection, 'ELA', schema, students, get_best=False)
+        student_math_results = get_edge_asmt_outcomes(connection, 'Math', schema, students, get_best=False)
         # Get school, district and state information for the returned students
         # Add data to the existing result dictionaries
         get_additional_info(student_ela_results, schema, connection)
@@ -456,12 +456,19 @@ if __name__ == '__main__':
         institution_results += get_edge_institution('ELA', schema, connection, get_best=False, get_district=True)
         institution_results += get_edge_institution('Math', schema, connection, get_best=False, get_district=True)
 
-    to_csv = not args.csv
+    to_csv = not write_to_csv
 
     # output records for students
     student_rec_headers = [ASMT_SUB, ASMT_SCORE, F_NAME, L_NAME, STATE_NAME, DIST_NAME, SCH_NAME, ASMT_GRADE, BESTWORST]
-    output_records(student_rec_headers, student_results, to_stdout=to_csv, filename=args.filename, file_suffix='_students')
+    output_records(student_rec_headers, student_results, to_stdout=to_csv, filename=filename, file_suffix='_students')
 
     # output records for institutions
     inst_rec_headers = [SUBJECT, STATE_NAME, DIST_NAME, SCH_NAME, AVG_SCORE, BESTWORST]
-    output_records(inst_rec_headers, institution_results, to_stdout=to_csv, filename=args.filename, file_suffix='_institutions')
+    output_records(inst_rec_headers, institution_results, to_stdout=to_csv, filename=filename, file_suffix='_institutions')
+
+
+if __name__ == '__main__':
+
+    # Get args from command line
+    args = get_input_args()
+    main(**vars(args))

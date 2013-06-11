@@ -9,7 +9,7 @@ METADATA_FILE_PATTERN = 'METADATA_ASMT_ID_{0}.json'
 FACT_OUTCOME_FILE_PATTERN = 'REALDATA_ASMT_ID_{0}.csv'
 
 
-def henshin(dim_asmt, username, password, server, database, schema, output_path='output'):
+def henshin(username, password, server, database, schema, output_path='output', port=5432):
     '''
     Main method
     @param dim_asmt: the filename of the dim_asmt.csv file to use
@@ -20,18 +20,19 @@ def henshin(dim_asmt, username, password, server, database, schema, output_path=
     if not os.path.isdir(output_path):
         os.makedirs(output_path)
 
+    file_pattern = os.path.join(output_path, METADATA_FILE_PATTERN)
     # generate METADATA files
-    asmt_id_list = transform_to_metadata(dim_asmt, output_path, METADATA_FILE_PATTERN)
+    asmt_id_list = transform_to_metadata(file_pattern, username, password, server, database, schema, port)
     if asmt_id_list:
+        print('MetaData generated. \nGenerating RealData files.')
         file_pattern = os.path.join(output_path, FACT_OUTCOME_FILE_PATTERN)
         # generate REALDATA files
         #transform_to_realdata(fact_outcome, asmt_id_list, os.path.join(output_path, FACT_OUTCOME_FILE_PATTERN))
-        transform_to_realdata(file_pattern, username, password, server, database, schema, asmt_guid_list=None, port=5432)
+        transform_to_realdata(file_pattern, username, password, server, database, schema, asmt_guid_list=None, port=port)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Start transform metadata and outcome files')
 
-    parser.add_argument("-d", "--dim_asmt", default="dim_asmt.csv", help="name of dim_asmt csv file")
     parser.add_argument("-o", "--out_path", default="output", help="output directory")
     parser.add_argument('--password', help='password for the user. default: edware2013', default='edware2013')
     parser.add_argument('--schema', help='schema to use. default: mayuat_4', default='mayuat_4')
@@ -42,7 +43,6 @@ if __name__ == '__main__':
 
     # get arguments
     args = parser.parse_args()
-    dim_asmt_file = args.dim_asmt
     out_path = args.out_path
     username = args.username
     password = args.password
@@ -51,4 +51,4 @@ if __name__ == '__main__':
     schema = args.schema
     port = args.port
 
-    henshin(dim_asmt_file, username, password, host, database, schema, out_path)
+    henshin(username, password, host, database, schema, out_path, port)

@@ -236,14 +236,6 @@ def load_data_main(csvdir, host, database, user, passwd, schema, port=5432, trun
     # get an ordered list of tables
     ordered_tables = get_table_order(host, database, user, passwd, schema, port)
 
-    # convert the list of files to a set
-#     fileset = set(csv_file_names)
-
-    # determine if any csv files are missing from the list of tables
-#     missing_tables = set(ordered_tables) - fileset
-#     if missing_tables:
-#         raise AttributeError('The following table(s) are not present in one of the locations %s' % missing_tables)
-
     # truncate tables
     if truncate:
         truncate_db_tables(ordered_tables, schema, user, host, database, env)

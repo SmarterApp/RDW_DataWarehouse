@@ -1,3 +1,5 @@
+from udl2_util.measurement import measure_cpu_plus_elasped_time
+
 __author__ = 'abrien'
 
 # LZ to file_arrived

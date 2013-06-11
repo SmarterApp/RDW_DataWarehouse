@@ -7,6 +7,7 @@ import move_to_target.column_mapping as col_map
 from move_to_target.move_to_target import explode_data_to_dim_table, explode_data_to_fact_table, get_table_column_types, calculate_spend_time_as_second
 from celery import group
 import datetime
+from udl2_util.measurement import measure_cpu_plus_elasped_time
 
 
 logger = get_task_logger(__name__)
@@ -14,6 +15,7 @@ logger = get_task_logger(__name__)
 
 #*************implemented via group*************
 @celery.task(name='udl2.W_load_from_integration_to_star.explode_to_dims')
+@measure_cpu_plus_elasped_time
 def explode_to_dims(msg):
     '''
     This is the celery task to move data from integration tables to dim tables.
@@ -30,6 +32,7 @@ def explode_to_dims(msg):
 
 
 @celery.task(name="udl2.W_load_from_integration_to_star.explode_data_to_dim_table_task")
+@measure_cpu_plus_elasped_time
 def explode_data_to_dim_table_task(conf, source_table, dim_table, column_mapping, column_types):
     '''
     This is the celery task to move data from one integration table to one dim table.
@@ -43,6 +46,7 @@ def explode_data_to_dim_table_task(conf, source_table, dim_table, column_mapping
 
 
 @celery.task(name='udl2.W_load_from_integration_to_star.explode_to_fact')
+@measure_cpu_plus_elasped_time
 def explode_to_fact(msg):
     '''
     This is the celery task to move data from integration table to fact table.
@@ -67,6 +71,7 @@ def explode_to_fact(msg):
 
 
 @celery.task(name="udl2.W_load_from_integration_to_star.error_handler")
+@measure_cpu_plus_elasped_time
 def error_handler(uuid):
     '''
     This is the error handler task
@@ -77,6 +82,7 @@ def error_handler(uuid):
           exc, result.traceback))
 
 
+@measure_cpu_plus_elasped_time
 def create_group_tuple(task_name, arg_list):
     '''
     Create task call as a tuple
@@ -87,6 +93,7 @@ def create_group_tuple(task_name, arg_list):
     return tuple(grouped_tasks)
 
 
+@measure_cpu_plus_elasped_time
 def generate_conf(batch_id):
     '''
     Return all needed configuration information

@@ -3,10 +3,10 @@ Created on Jun 6, 2013
 
 @author: swimberly
 '''
-
+from udl2_util.measurement import measure_cpu_plus_elasped_time
 from udl2_util.database_util import get_sqlalch_table_object
 
-
+@measure_cpu_plus_elasped_time
 def populate_ref_column_map(conf_dict, db_engine, conn, schema_name, col_map_table):
     '''
     Take a dict containing the data to be loaded

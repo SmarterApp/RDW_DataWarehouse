@@ -10,12 +10,13 @@ import udl2.message_keys as mk
 import time
 import os
 import glob
-
+from udl2_util.measurement import measure_cpu_plus_elasped_time
 
 logger = get_task_logger(__name__)
 
 
 @celery.task(name="udl2.W_file_splitter.task")
+@measure_cpu_plus_elasped_time
 def task(incoming_msg):
     '''
     This is the celery task for splitting file
@@ -61,11 +62,13 @@ def task(incoming_msg):
 
 
 # TODO: Create a generic function that creates any of the (EXPANDED,ARRIVED,SUBFILES) etc. dirs in separate util file.
+@measure_cpu_plus_elasped_time
 def get_subfiles_dir(lzw, batch_id):
     subfiles_dir = os.path.join(lzw, batch_id, 'SUBFILES')
     return subfiles_dir + '/'
 
 
+@measure_cpu_plus_elasped_time
 def generate_msg_for_file_loader(split_file_tuple, header_file_path, lzw, jc):
     # TODO: It would be better to have a dict over a list, we can access with key instead of index - more clear.
     split_file_path = split_file_tuple[0]
@@ -82,6 +85,7 @@ def generate_msg_for_file_loader(split_file_tuple, header_file_path, lzw, jc):
 
 
 @celery.task(name="udl2.W_file_splitter.error_handler")
+@measure_cpu_plus_elasped_time
 def error_handler(uuid):
     result = AsyncResult(uuid)
     exc = result.get(propagate=False)

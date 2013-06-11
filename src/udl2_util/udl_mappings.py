@@ -3,8 +3,9 @@ Created on May 21, 2013
 
 @author: swimberly
 '''
+from udl2_util.measurement import measure_cpu_plus_elasped_time
 
-
+@measure_cpu_plus_elasped_time
 def get_json_to_asmt_tbl_mappings():
     ''' Return the mappings dict for mapping json file to the assessment integration table '''
 

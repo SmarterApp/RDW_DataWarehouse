@@ -23,6 +23,7 @@ from fileloader.json_loader import load_json
 from udl2_util.udl_mappings import get_json_to_asmt_tbl_mappings
 import udl2.message_keys as mk
 from udl2.celery import udl2_conf
+from udl2_util.measurement import measure_cpu_plus_elasped_time
 
 
 BATCH_ID = 'batch_id'
@@ -31,6 +32,7 @@ logger = get_task_logger(__name__)
 
 
 @celery.task(name="udl2.W_load_json_to_integration.task")
+@measure_cpu_plus_elasped_time
 def task(msg):
     lzw = msg[mk.LANDING_ZONE_WORK_DIR]
     jc = msg[mk.JOB_CONTROL]
@@ -44,6 +46,7 @@ def task(msg):
     return msg
 
 
+@measure_cpu_plus_elasped_time
 def generate_conf_for_loading(json_file, jc):
     '''
     takes the msg and pulls out the relevant parameters to pass
@@ -65,6 +68,7 @@ def generate_conf_for_loading(json_file, jc):
 
 
 @celery.task(name="udl2.W_load_json_to_integration.error_handler")
+@measure_cpu_plus_elasped_time
 def error_handler(uuid):
     result = AsyncResult(uuid)
     exc = result.get(propagate=False)

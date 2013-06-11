@@ -13,7 +13,7 @@ if [`uname` == 'Linux']; then
     sudo -u root -s "passwd udl2"
     sudo -u root -s "chown udl2.udl2 /opt/wgen/edware-udl/udl2"
     sudo -u root -s "chown udl2.udl2 /opt/wgen/edware-udl/udl2/.ssh"
-
+fi
 # create directories
 sudo -u root -s "./initialize_udl2_directories.sh"
 
@@ -22,7 +22,7 @@ echo `pwd`
 export CODE_DIR=`pwd`
 echo "copy udl2 installations' ssh keys"
 
-if [`uname` == 'Linux']; then
+if [ `uname` == 'Linux' ]; then
     sudo -u root -s "cp `pwd`/../git/id_rsa /opt/wgen/edware-udl/udl2/.ssh"
     sudo -u root -s "cp `pwd`/../git/id_rsa.pub /opt/wgen/edware-udl/udl2/.ssh" 
     sudo -u root -s "chown udl2.udl2 /opt/wgen/edware-udl/udl2/.ssh/id_rsa.pub"
@@ -36,16 +36,18 @@ fi
 echo "install virtualenv-3.3 for celery, due to python3 rpm install path under /opt/python3/bin, we need to specifiy the path"
 cd /opt/wgen/edware-udl/udl2
 echo "/opt/python3/bin/virtualenv-3.3 --distribute python3.3"
-if [`uname` == 'Linux']; then
+
+if [ `uname` == 'Linux' ]; then
     su udl2 -c "/opt/python3/bin/virtualenv-3.3 --distribute python3.3"
 else
     su root -c "virtualenv-3.3 --distribute python3.3"
-fi;
+fi
+
 # install virtualenv-2.7
 echo "install virtual-2.7 for flower"
 cd /opt/wgen/edware-udl/udl2
 echo "virtualenv-2.7 --distribute python2.7"
-if [`uname` == 'Linux']; then
+if [ `uname` == 'Linux' ]; then
     su udl2 -c "/usr/bin/virtualenv-2.7 --distribute python2.7"
 else
     su root -c "virtualenv-2.7 --distribute python2.7"
@@ -59,14 +61,15 @@ fi
 echo "install all python dependency code for udl2"
 cd  $CODE_DIR
 cd ../
-if [`uname` == 'Linux']; then
+
+if [ `uname` == 'Linux' ]; then
     su udl2 -c "source /opt/wgen/edware-udl/udl2/python3.3/bin/activate; /opt/wgen/edware-udl/udl2/python3.3/bin/python3.3 setup.py install"
 else
     su root -c "source /opt/wgen/edware-udl/udl2/python3.3/bin/activate; /opt/wgen/edware-udl/udl2/python3.3/bin/python3.3 setup.py install"
 fi 
 #install all python dependency for flower to monitor celery
 echo "install all python dependency code for flower to minitor celery"
-if [`uname` == 'Linux']; then
+if [ `uname` == 'Linux' ]; then
     su udl2 -c "source /opt/wgen/edware-udl/udl2/python2.7/bin/activate; /opt/wgen/edware-udl/udl2/python2.7/bin/pip-2.7 install flower"
 else
     su root -c "source /opt/wgen/edware-udl/udl2/python2.7/bin/activate; /opt/wgen/edware-udl/udl2/python2.7/bin/pip-2.7 install flower"

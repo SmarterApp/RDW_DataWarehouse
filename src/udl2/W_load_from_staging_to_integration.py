@@ -10,18 +10,20 @@ from celery.utils.log import get_task_logger
 import move_to_target.column_mapping as col_map
 from move_to_integration.move_to_integration import move_data_from_staging_to_integration
 import datetime
-
+from udl2_util.measurement import measure_cpu_plus_elasped_time
 
 logger = get_task_logger(__name__)
 
 
 #*************implemented via chord*************
 @celery.task(name="udl2.W_move_to_integration.task")
+@measure_cpu_plus_elasped_time
 def move_to_integration(batch):
     conf = generate_conf(batch)
     return batch
 
 
+@measure_cpu_plus_elasped_time
 def generate_conf(msg):
     conf = {
              # add batch_id from msg

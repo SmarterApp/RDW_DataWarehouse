@@ -31,6 +31,7 @@ from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from udl2_util.database_util import connect_db, execute_queries
 from udl2.populate_ref_tables import populate_ref_column_map
 from udl2 import ref_table_data
+from udl2_util.measurement import measure_cpu_plus_elasped_time
 
 #
 # UDL_METADATA stores all udl2 related database objects, which includes staging tables and table-independent sequeuces
@@ -320,6 +321,7 @@ UDL_METADATA = {
 }
 
 
+@measure_cpu_plus_elasped_time
 def _parse_args():
     '''
     private method to parse command line options when call from shell. We use it to setup/teardown database
@@ -335,6 +337,7 @@ def _parse_args():
     return (parser, args)
 
 
+@measure_cpu_plus_elasped_time
 def _create_conn_engine(udl2_conf):
     '''
     private method to create database connections via database_util
@@ -349,6 +352,7 @@ def _create_conn_engine(udl2_conf):
     return (conn, engine)
 
 
+@measure_cpu_plus_elasped_time
 def map_sql_type_to_sqlalchemy_type(sql_type):
     '''
     map sql data type in configuration file into what SQLAlchemy type is.
@@ -376,6 +380,7 @@ def map_sql_type_to_sqlalchemy_type(sql_type):
     return mapped_type
 
 
+@measure_cpu_plus_elasped_time
 def map_tuple_to_sqlalchemy_column(ddl_tuple):
     '''
     create a SQLAlchemy Column object from UDL_METADATA column
@@ -391,6 +396,7 @@ def map_tuple_to_sqlalchemy_column(ddl_tuple):
     return column
 
 
+@measure_cpu_plus_elasped_time
 def create_table_keys(key_ddl_dict, schema):
     '''
     Take a dictionary of key lists. Will check for 'foreign' and 'unique' in the list
@@ -420,6 +426,7 @@ def create_table_keys(key_ddl_dict, schema):
     return key_list
 
 
+@measure_cpu_plus_elasped_time
 def create_table(udl2_conf, metadata, schema, table_name):
     '''
     create a table from UDL_METADATA definitions
@@ -446,6 +453,7 @@ def create_table(udl2_conf, metadata, schema, table_name):
     return table
 
 
+@measure_cpu_plus_elasped_time
 def drop_table(udl2_conf, schema, table_name):
     '''
     drop a table
@@ -460,6 +468,7 @@ def drop_table(udl2_conf, schema, table_name):
     execute_queries(conn, [sql], except_msg)
 
 
+@measure_cpu_plus_elasped_time
 def create_sequence(udl2_conf, metadata, schema, seq_name):
     '''
     create a sequence from UDL_METADATA definitions
@@ -484,6 +493,7 @@ def create_sequence(udl2_conf, metadata, schema, seq_name):
     return sequence
 
 
+@measure_cpu_plus_elasped_time
 def drop_sequence(udl2_conf, schema, seq_name):
     '''
     drop schemas according to configuration file
@@ -498,6 +508,7 @@ def drop_sequence(udl2_conf, schema, seq_name):
     execute_queries(conn, [sql], except_msg)
 
 
+@measure_cpu_plus_elasped_time
 def create_udl2_schema(udl2_conf):
     '''
     create schemas according to configuration file
@@ -510,6 +521,7 @@ def create_udl2_schema(udl2_conf):
     execute_queries(conn, [sql], except_msg)
 
 
+@measure_cpu_plus_elasped_time
 def drop_udl2_schema(udl2_conf):
     '''
     drop schemas according to configuration file
@@ -522,6 +534,7 @@ def drop_udl2_schema(udl2_conf):
     execute_queries(conn, [sql], except_msg)
 
 
+@measure_cpu_plus_elasped_time
 def create_udl2_tables(udl2_conf):
     '''
     create tables in schema according to configuration file
@@ -539,6 +552,7 @@ def create_udl2_tables(udl2_conf):
     udl2_metadata.create_all(engine)
 
 
+@measure_cpu_plus_elasped_time
 def drop_udl2_tables(udl2_conf):
     '''
     drop tables according to configuration file
@@ -549,6 +563,7 @@ def drop_udl2_tables(udl2_conf):
         drop_table(udl2_conf, udl2_conf['staging_schema'], table)
 
 
+@measure_cpu_plus_elasped_time
 def create_udl2_sequence(udl2_conf):
     '''
     create sequences according to configuration file
@@ -561,6 +576,7 @@ def create_udl2_sequence(udl2_conf):
         create_sequence(udl2_conf, udl2_metadata, udl2_conf['staging_schema'], sequence)
 
 
+@measure_cpu_plus_elasped_time
 def drop_udl2_sequences(udl2_conf):
     '''
     drop sequences according to configuration file
@@ -571,6 +587,7 @@ def drop_udl2_sequences(udl2_conf):
         drop_sequence(udl2_conf, udl2_conf['staging_schema'], seq)
 
 
+@measure_cpu_plus_elasped_time
 def create_foreign_data_wrapper_extension(udl2_conf):
     '''
     create foreign data wrapper extension according to configuration file
@@ -583,6 +600,7 @@ def create_foreign_data_wrapper_extension(udl2_conf):
     execute_queries(conn, [sql], except_msg)
 
 
+@measure_cpu_plus_elasped_time
 def drop_foreign_data_wrapper_extension(udl2_conf):
     '''
     drop foreign data wrapper extension according to configuration file
@@ -595,6 +613,7 @@ def drop_foreign_data_wrapper_extension(udl2_conf):
     execute_queries(conn, [sql], except_msg)
 
 
+@measure_cpu_plus_elasped_time
 def create_dblink_extension(udl2_conf):
     '''
     create dblink extension according to configuration file
@@ -607,6 +626,7 @@ def create_dblink_extension(udl2_conf):
     execute_queries(conn, [sql], except_msg)
 
 
+@measure_cpu_plus_elasped_time
 def drop_dblink_extension(udl2_conf):
     '''
     drop dblink extension according to configuration file
@@ -619,6 +639,7 @@ def drop_dblink_extension(udl2_conf):
     execute_queries(conn, [sql], except_msg)
 
 
+@measure_cpu_plus_elasped_time
 def create_foreign_data_wrapper_server(udl2_conf):
     '''
     create server for foreign data wrapper according to configuration file
@@ -631,6 +652,7 @@ def create_foreign_data_wrapper_server(udl2_conf):
     execute_queries(conn, [sql], except_msg)
 
 
+@measure_cpu_plus_elasped_time
 def drop_foreign_data_wrapper_server(udl2_conf):
     '''
     drop server for foreign data wrapper according to configuration file
@@ -643,6 +665,7 @@ def drop_foreign_data_wrapper_server(udl2_conf):
     execute_queries(conn, [sql], except_msg)
 
 
+@measure_cpu_plus_elasped_time
 def load_fake_record_in_star_schema(udl2_conf):
     '''
     load two fake records into dim_int_hier and dim_section for integration table to create
@@ -675,6 +698,7 @@ def load_fake_record_in_star_schema(udl2_conf):
     execute_queries(conn, sqls, except_msg)
 
 
+@measure_cpu_plus_elasped_time
 def load_reference_data(udl2_conf):
     '''
     load the reference data into the referenct tables
@@ -685,6 +709,7 @@ def load_reference_data(udl2_conf):
     populate_ref_column_map(ref_table_info, engine, conn, udl2_conf['reference_schema'], 'REF_COLUMN_MAPPING')
 
 
+@measure_cpu_plus_elasped_time
 def setup_udl2_schema(udl2_conf):
     '''
     create whole udl2 database schema according to configuration file
@@ -701,6 +726,7 @@ def setup_udl2_schema(udl2_conf):
     load_reference_data(udl2_conf['udl2_db'])
 
 
+@measure_cpu_plus_elasped_time
 def teardown_udl2_schema(udl2_conf):
     '''
     drop whole udl2 database schema according to configuration file
@@ -715,6 +741,7 @@ def teardown_udl2_schema(udl2_conf):
     drop_dblink_extension(udl2_conf['target_db'])
 
 
+@measure_cpu_plus_elasped_time
 def main():
     '''
     create or drop udl2 database objects according to command line.

@@ -5,11 +5,13 @@ from celery.utils.log import get_task_logger
 from fileloader.file_loader import load_file
 from udl2_util.file_util import extract_file_name
 from udl2 import message_keys as mk
+from udl2_util.measurement import measure_cpu_plus_elasped_time
 
 
 logger = get_task_logger(__name__)
 
 @celery.task(name="udl2.W_load_to_staging_table.task")
+@measure_cpu_plus_elasped_time
 def task(msg):
     logger.info(task.name)
     logger.info('LOAD_CSV_TO_STAGING: Loading file <%s> to <%s> ' % (msg[mk.FILE_TO_LOAD], udl2_conf['udl2_db']['db_host']))
@@ -20,6 +22,7 @@ def task(msg):
     return msg
 
 
+@measure_cpu_plus_elasped_time
 def generate_conf_for_loading(file_to_load, start_seq, header_file_path, batch_id):
     csv_table = extract_file_name(file_to_load)
     conf = {
@@ -44,6 +47,7 @@ def generate_conf_for_loading(file_to_load, start_seq, header_file_path, batch_i
 
 
 @celery.task(name="udl2.W_file_loader.error_handler")
+@measure_cpu_plus_elasped_time
 def error_handler(uuid):
     result = AsyncResult(uuid)
     exc = result.get(propagate=False)

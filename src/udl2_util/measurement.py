@@ -34,8 +34,9 @@ def measure_cpu_time(fn, quite=udl2_conf['quiet_mode']):
             start_cpu_time = time.clock()
             result = fn(*args, **kwargs)
             end_cpu_time = time.clock()
-            print("cpu time {time:.10f} seconds for executing {function:s}".format(time=(end_cpu_time - start_cpu_time),
-                                                                                       function=fn.__name__,))
+            print("cpu time {time:.10f} seconds for executing {module:s}.{function:s}".format(time=(end_cpu_time - start_cpu_time),
+                                                                                              module=fn.__module__,
+                                                                                              function=fn.__name__,))
             return result   
     return _wrapped
 
@@ -53,8 +54,9 @@ def measure_elapsed_time(fn, quite=udl2_conf['quiet_mode']):
             start_time = time.time()
             result = fn(*args, **kwargs)
             end_time = time.time()
-            print("elapsed time {time:.10f} seconds for executing {function:s}".format(time=(end_time - start_time),
-                                                                                function=fn.__name__,))
+            print("elapsed time {time:.10f} seconds for executing {module:s}.{function:s}".format(time=(end_time - start_time),
+                                                                                                  module=fn.__module__,
+                                                                                                  function=fn.__name__,))
             return result
     return _wrapped
 
@@ -74,8 +76,13 @@ def measure_cpu_plus_elasped_time(fn, quite=udl2_conf['quiet_mode']):
             result = fn(*args, **kwargs)
             end_clock = time.clock()
             end_time = time.time()
-            print("cpu time {ctime:.10f} seconds, elapsed time {etime:.10f} seconds for executing {function:s}".format(etime=(end_time - start_time),
-                                                                                                           ctime=(end_clock - start_clock),
-                                                                                                           function=fn.__name__,))
+            print("cpu time {ctime:.10f} seconds, elapsed time {etime:.10f} seconds for executing {module:s}.{function:s}".format(etime=(end_time - start_time),
+                                                                                                                                  module=fn.__module__,
+                                                                                                                                  ctime=(end_clock - start_clock),
+                                                                                                                                  function=fn.__name__,))
             return result
     return _wrapped
+
+
+def show_amount_of_data_process(fn):
+    pass    

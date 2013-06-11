@@ -25,6 +25,10 @@ requires = [
     'services',
     'python3-memcached']
 
+docs_extras = [
+    'Sphinx',
+    'docutils',
+    'repoze.sphinx.autointerface']
 
 setup(name='smarter',
       version='0.1',
@@ -44,6 +48,8 @@ setup(name='smarter',
       zip_safe=False,
       test_suite='nose.collector',
       install_requires=requires,
+      extras_require={
+          'docs': docs_extras, },
       entry_points="""\
       [paste.app_factory]
       main = smarter:main

@@ -71,7 +71,8 @@ udl2_conf = {
         'db_user':'edware',
         'db_pass':'edware2013',
         'db_driver':'postgresql'
-    }
+    },
+    'quiet_mode': True,
 }
 
 

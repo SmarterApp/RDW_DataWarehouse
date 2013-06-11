@@ -10,10 +10,18 @@ Main method: measure_cpu_plus_elapsed_time(function_to_be_decorated)
 
 @author: ejen
 '''
+from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
+import imp
 import time
+try:
+    config_path_file = os.environ['UDL2_CONF']
+except Exception:
+    config_path_file = UDL2_DEFAULT_CONFIG_PATH_FILE
 
+udl2_conf = imp.load_source('udl2_conf', config_path_file)
+from udl2_conf import udl2_conf
 
-def measure_cpu_time(fn, quite=True):
+def measure_cpu_time(fn, quite=udl2_conf['quiet_mode']):
     '''
     a decorator measure cpu process time for executing fn and print out the result to standard error
     @param fn: function that are to be executed
@@ -32,7 +40,7 @@ def measure_cpu_time(fn, quite=True):
     return _wrapped
 
 
-def measure_elapsed_time(fn, quite=True):
+def measure_elapsed_time(fn, quite=udl2_conf['quiet_mode']):
     '''
     a decorator measure elasped time for executing fn and print out the result to standard error
     @param fn: function that are to be executed
@@ -51,7 +59,7 @@ def measure_elapsed_time(fn, quite=True):
     return _wrapped
 
 
-def measure_cpu_plus_elasped_time(fn, quite=True):
+def measure_cpu_plus_elasped_time(fn, quite=udl2_conf['quiet_mode']):
     '''
     a decorator measure elasped time for executing fn and print out the result to standard error
     @param fn: function that are to be executed

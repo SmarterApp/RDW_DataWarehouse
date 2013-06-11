@@ -330,13 +330,15 @@ function generate_ini {
 }
 
 function generate_docs {
-    # For now, we only have docs for edapi and edauth
-    if [ ${1:=""} == "edapi" ] || [ ${1:=""} == "edauth" ]; then
+    # Generate docs if docs directory exists 
+    if [ -d "$WORKSPACE/$1/docs" ]; then
+        echo "***************"
+        echo "Generating Docs"
+        echo "***************"
         cd "$WORKSPACE/$1"
 	python setup.py docs
         cd "$WORKSPACE/$1/docs"
         make html
-        # sphinx-build -b html -d _build/doctrees/ . _build/html/
     fi
     echo "Docs created in $WORKSPACE/$1/docs/_build/html"
 }

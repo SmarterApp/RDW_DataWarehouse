@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# edauth documentation build configuration file, created by
-# sphinx-quickstart on Mon Jun 10 15:43:45 2013.
+# smarter documentation build configuration file, created by
+# sphinx-quickstart on Mon Jun 10 17:53:40 2013.
 #
 # This file is execfile()d with the current directory set to its containing dir.
 #
@@ -19,12 +19,12 @@ import datetime
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#sys.path.insert(0, os.path.abspath('.'))
-
-# EdAuth has a dependency on edschema
+# Smarter has a dependency on edschema, edauth, edapi, service
 here = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.abspath(os.path.join(here, '..', '..', 'edschema')))
-
+sys.path.append(os.path.abspath(os.path.join(here, '..', '..', 'edapi')))
+sys.path.append(os.path.abspath(os.path.join(here, '..', '..', 'edauth')))
+sys.path.append(os.path.abspath(os.path.join(here, '..', '..', 'services')))
 
 # -- General configuration -----------------------------------------------------
 
@@ -54,9 +54,9 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'edauth'
+project = 'smarter'
 thisyear = datetime.datetime.now().year
-copyright = '2013-%s, Amplify Insight ' % thisyear
+copyright = '2013-%s, Amplify Insight' % thisyear
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -182,7 +182,7 @@ html_static_path = ['_static']
 #html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'edauthdoc'
+htmlhelp_basename = 'smarterdoc'
 
 
 # -- Options for LaTeX output --------------------------------------------------
@@ -259,7 +259,5 @@ texinfo_documents = [('index', 'edapi', 'edapi Documentation',
 
 # If true, do not generate a @detailmenu in the "Top" node's menu.
 #texinfo_no_detailmenu = False
-
-
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {'http://docs.python.org/': None, }

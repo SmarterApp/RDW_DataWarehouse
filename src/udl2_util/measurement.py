@@ -34,7 +34,7 @@ def measure_cpu_time(fn, quite=udl2_conf['quiet_mode']):
             start_cpu_time = time.clock()
             result = fn(*args, **kwargs)
             end_cpu_time = time.clock()
-            print("cpu time {time} seconds for executing {function}".format(time=(end_cpu_time - start_cpu_time),
+            print("cpu time {time:.10f} seconds for executing {function:s}".format(time=(end_cpu_time - start_cpu_time),
                                                                                        function=fn.__name__,))
             return result   
     return _wrapped
@@ -53,7 +53,7 @@ def measure_elapsed_time(fn, quite=udl2_conf['quiet_mode']):
             start_time = time.time()
             result = fn(*args, **kwargs)
             end_time = time.time()
-            print("elapsed time {time} seconds for executing {function}".format(time=(end_time - start_time),
+            print("elapsed time {time:.10f} seconds for executing {function:s}".format(time=(end_time - start_time),
                                                                                 function=fn.__name__,))
             return result
     return _wrapped
@@ -74,7 +74,7 @@ def measure_cpu_plus_elasped_time(fn, quite=udl2_conf['quiet_mode']):
             result = fn(*args, **kwargs)
             end_clock = time.clock()
             end_time = time.time()
-            print("cpu time {ctime} seconds, elapsed time {etime} seconds for executing {function}".format(etime=(end_time - start_time),
+            print("cpu time {ctime:.10f} seconds, elapsed time {etime:.10f} seconds for executing {function:s}".format(etime=(end_time - start_time),
                                                                                                            ctime=(end_clock - start_clock),
                                                                                                            function=fn.__name__,))
             return result

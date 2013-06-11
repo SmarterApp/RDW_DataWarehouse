@@ -25,6 +25,7 @@ from services.tests.pdf.test_tasks import get_cmd
 from services.celeryconfig import get_config
 import shutil
 from edauth.security.session import Session
+from smarter.security.roles.teacher import Teacher  # @UnusedImport
 
 
 class TestServices(Unittest_with_smarter_sqlite):

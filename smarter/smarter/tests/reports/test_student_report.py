@@ -12,6 +12,7 @@ from edapi.exceptions import NotFoundException
 from pyramid.testing import DummyRequest
 from pyramid import testing
 from edauth.security.session import Session
+from smarter.security.roles.teacher import Teacher  # @UnusedImport
 
 
 class TestStudentReport(Unittest_with_smarter_sqlite):

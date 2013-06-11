@@ -140,6 +140,10 @@ def get_error_code_for_notation(notation, scope):
     return random.randint(1, 1000)
 
 
+__validation_rules_func = {BYCOLUMN: by_column_func,
+                           BYRULE: by_rule_func}
+
+
 def generate_validation_proc(para):
     '''
     Main function to generate validation procedures
@@ -151,7 +155,7 @@ def generate_validation_proc(para):
         if isinstance(rule_content, list):
             temp = func(rule_content, **para)
             if temp is not None:
-                sql_stat.extend(func(rule_content, **para))
+                sql_stat.extend(temp)
         # BYCOLUMN
         elif isinstance(rule_content, dict):
             for column_name, rules_for_column in rule_content.items():
@@ -161,10 +165,6 @@ def generate_validation_proc(para):
         else:
             print("error")
     return sql_stat
-
-
-__validation_rules_func = {BYCOLUMN: by_column_func,
-                           BYRULE: by_rule_func}
 
 
 if __name__ == '__main__':

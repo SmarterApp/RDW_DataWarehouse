@@ -1,6 +1,8 @@
 from collections import OrderedDict
+from udl2_util.measurement import measure_cpu_plus_elasped_time
 
 # column mapping between source/integration table and target/star schema table
+@measure_cpu_plus_elasped_time
 def get_column_mapping(map_type):
     '''
     Key: {map_type}, e.g. 'unit_test', 'staging_to_integration_sbac_asmt_outcome',  'staging_to_integration_sbac_asmt'

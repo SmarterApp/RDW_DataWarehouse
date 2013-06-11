@@ -1,13 +1,16 @@
+from udl2_util.measurement import measure_cpu_plus_elasped_time
 
-
+@measure_cpu_plus_elasped_time
 def create_fdw_extension_query(csv_schema):
     return "CREATE EXTENSION IF NOT EXISTS file_fdw WITH SCHEMA {csv_schema}".format(csv_schema=csv_schema)
 
 
+@measure_cpu_plus_elasped_time
 def create_fdw_server_query(fdw_server):
     return "CREATE SERVER {fdw_server} FOREIGN DATA WRAPPER file_fdw".format(fdw_server=fdw_server)
 
 
+@measure_cpu_plus_elasped_time
 def create_ddl_csv_query(header_names, header_types, csv_file, csv_schema, csv_table, fdw_server):
     # TODO: if the csv_file does not have header row, need to set header = false in the OPTINOS
     ddl_parts = ["CREATE FOREIGN TABLE IF NOT EXISTS \"%s\".\"%s\" ( " % (csv_schema, csv_table),
@@ -19,11 +22,13 @@ def create_ddl_csv_query(header_names, header_types, csv_file, csv_schema, csv_t
     return ddl_parts
 
 
+@measure_cpu_plus_elasped_time
 def drop_ddl_csv_query(csv_schema, csv_table):
     ddl = 'DROP FOREIGN TABLE IF EXISTS "{csv_schema}"."{csv_table}"'.format(csv_schema=csv_schema, csv_table=csv_table)
     return ddl
 
 
+@measure_cpu_plus_elasped_time
 def create_staging_tables_query(header_types, header_names, csv_file, staging_schema, staging_table):
     # TODO: need to be replaced by importing from staging table definition
     ddl_parts = ["CREATE TABLE IF NOT EXISTS %s.%s (" % (staging_schema, staging_table),
@@ -32,12 +37,15 @@ def create_staging_tables_query(header_types, header_names, csv_file, staging_sc
     return "".join(ddl_parts)
 
 
+@measure_cpu_plus_elasped_time
 def drop_staging_tables_query(csv_schema, csv_table):
     ddl = 'DROP TABLE IF EXISTS "{csv_schema}"."{csv_table}"'.format(csv_schema=csv_schema, csv_table=csv_table)
     return ddl
 
 
-def create_inserting_into_staging_query(stg_asmt_outcome_columns, apply_rules, header_names, header_types, staging_schema, staging_table, csv_schema, csv_table, start_seq, seq_name):
+@measure_cpu_plus_elasped_time
+def create_inserting_into_staging_query(stg_asmt_outcome_columns, apply_rules, header_names, header_types, staging_schema,
+                                        staging_table, csv_schema, csv_table, start_seq, seq_name):
     trim_column_names = apply_transformation_rules(apply_rules, header_types, header_names)
     insert_sql = ["INSERT INTO \"{staging_schema}\".\"{staging_table}\"(",
                    ",".join(stg_asmt_outcome_columns),
@@ -45,11 +53,13 @@ def create_inserting_into_staging_query(stg_asmt_outcome_columns, apply_rules, h
                    ",".join(trim_column_names),
                    " FROM \"{csv_schema}\".\"{csv_table}\"",
                    ]
-    insert_sql = "".join(insert_sql).format(seq_name=seq_name, staging_schema=staging_schema, staging_table=staging_table, csv_schema=csv_schema, csv_table=csv_table)
+    insert_sql = "".join(insert_sql).format(seq_name=seq_name, staging_schema=staging_schema, staging_table=staging_table,
+                                            csv_schema=csv_schema, csv_table=csv_table)
     # print(insert_sql)
     return insert_sql
 
 
+@measure_cpu_plus_elasped_time
 def create_insert_assessment_into_integration_query(header, data, batch_id, int_schema, int_table):
     insert_sql = ['INSERT INTO "{int_schema}"."{int_table}"(',
                   ','.join(header),
@@ -62,18 +72,26 @@ def create_insert_assessment_into_integration_query(header, data, batch_id, int_
     return insert_sql
 
 
+@measure_cpu_plus_elasped_time
 def set_sequence_query(staging_table, start_seq):
-    return "SELECT pg_catalog.setval(pg_get_serial_sequence('{staging_table}', 'src_row_number'), {start_seq}, false)".format(staging_table=staging_table, start_seq=start_seq)
+    return "SELECT pg_catalog.setval(pg_get_serial_sequence('{staging_table}', 'src_row_number'), {start_seq}, false)".format(staging_table=staging_table,
+                                                                                                                              start_seq=start_seq)
 
 
+@measure_cpu_plus_elasped_time
 def create_sequence_query(staging_schema, seq_name, start_seq):
-    return 'CREATE SEQUENCE "{staging_schema}"."{seq_name}" START {start_seq}'.format(staging_schema=staging_schema, seq_name=seq_name, start_seq=start_seq)
+    return 'CREATE SEQUENCE "{staging_schema}"."{seq_name}" START {start_seq}'.format(staging_schema=staging_schema,
+                                                                                      seq_name=seq_name,
+                                                                                      start_seq=start_seq)
 
 
+@measure_cpu_plus_elasped_time
 def drop_sequence_query(staging_schema, seq_name):
-    return 'DROP SEQUENCE "{staging_schema}"."{seq_name}"'.format(staging_schema=staging_schema, seq_name=seq_name)
+    return 'DROP SEQUENCE "{staging_schema}"."{seq_name}"'.format(staging_schema=staging_schema,
+                                                                  seq_name=seq_name)
 
 
+@measure_cpu_plus_elasped_time
 def apply_transformation_rules(apply_rules, header_types, header_names):
     '''
     The function apply the some transformation rules

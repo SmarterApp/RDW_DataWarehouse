@@ -3,10 +3,12 @@ __author__ = 'abrien'
 import udl2_util.file_util as file_util
 import os
 import time
+from udl2_util.measurement import measure_cpu_plus_elasped_time
 
 ORIGINAL_FILE = 'original_file'
 SPLIT_FILES = 'split_files'
 
+@measure_cpu_plus_elasped_time
 def create_directory_structure_for_file_history(history_directory_path, landing_zone_file_path):
     '''
     This creates the entire directory structure within our history zone for the landing_zone_file.
@@ -40,6 +42,7 @@ def create_directory_structure_for_file_history(history_directory_path, landing_
         pass
 
 
+@measure_cpu_plus_elasped_time
 def create_root_history_directory_for_file(history, csv_file):
     '''
     This function creates the subdirectory within the history zone for csv_file (if it doesn't already exist).
@@ -61,6 +64,7 @@ def create_root_history_directory_for_file(history, csv_file):
     return file_history_dir
 
 
+@measure_cpu_plus_elasped_time
 def create_original_file_directory(file_history):
     '''
     Given the path to a file's history zone entry, this function creates a subdirectory called original_file.
@@ -78,6 +82,7 @@ def create_original_file_directory(file_history):
     return original_file_dir
 
 
+@measure_cpu_plus_elasped_time
 def create_split_files_directory(root_file_history_dir):
     '''
     Given a file's history entry, this function creates a subdirectory for the split files (found in the work zone)

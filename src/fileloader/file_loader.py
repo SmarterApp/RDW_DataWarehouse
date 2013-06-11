@@ -8,11 +8,13 @@ from sqlalchemy.exc import NoSuchTableError
 from sqlalchemy.engine import create_engine
 from udl2_util.file_util import extract_file_name
 import udl2.message_keys as mk
+from udl2_util.measurement import measure_cpu_plus_elasped_time
 
 
 DBDRIVER = "postgresql"
 
 
+@measure_cpu_plus_elasped_time
 def connect_db(db_user, db_password, db_host, db_name):
     '''
     Connect to database via sqlalchemy
@@ -29,6 +31,7 @@ def connect_db(db_user, db_password, db_host, db_name):
     return db_connection, engine
 
 
+@measure_cpu_plus_elasped_time
 def check_setup(staging_table, engine, conn):
     # check if staging table is defined or not
     if not engine.dialect.has_table(conn, staging_table):
@@ -36,6 +39,7 @@ def check_setup(staging_table, engine, conn):
         raise NoSuchTableError
 
 
+@measure_cpu_plus_elasped_time
 def extract_csv_header(csv_file):
     '''
     Extract header names and types from input csv file
@@ -51,6 +55,7 @@ def extract_csv_header(csv_file):
     return formatted_header_names, header_types
 
 
+@measure_cpu_plus_elasped_time
 def canonicalize_header_field(field_name):
     '''
     Canonicalize input field_name
@@ -59,12 +64,14 @@ def canonicalize_header_field(field_name):
     return field_name.replace('-', '_').replace(' ', '_').replace('#', '')
 
 
+@measure_cpu_plus_elasped_time
 def create_fdw_tables(conn, header_names, header_types, csv_file, csv_schema, csv_table, fdw_server):
     create_csv_ddl = queries.create_ddl_csv_query(header_names, header_types, csv_file, csv_schema, csv_table, fdw_server)
     drop_csv_ddl = queries.drop_ddl_csv_query(csv_schema, csv_table)
     execute_queries(conn, [drop_csv_ddl, create_csv_ddl], 'Exception in creating fdw tables --')
 
 
+@measure_cpu_plus_elasped_time
 def execute_queries(conn, list_of_queries, except_msg):
     trans = conn.begin()
     # execute queries
@@ -77,6 +84,7 @@ def execute_queries(conn, list_of_queries, except_msg):
         trans.rollback()
 
 
+@measure_cpu_plus_elasped_time
 def get_fields_map(conn, header_names, header_types, batch_id, csv_file, staging_schema, staging_table):
 
     """
@@ -91,6 +99,7 @@ def get_fields_map(conn, header_names, header_types, batch_id, csv_file, staging
     return stg_asmt_outcome_columns, csv_table_columns
 
 
+@measure_cpu_plus_elasped_time
 def import_via_fdw(conn, stg_asmt_outcome_columns, batch_id, apply_rules, csv_table_columns, header_types, staging_schema, staging_table, csv_schema, csv_table, start_seq):
     # create sequence name, use table_name and a random number combination
     seq_name = (csv_table + '_' + str(random.choice(range(1, 10)))).lower()
@@ -101,11 +110,13 @@ def import_via_fdw(conn, stg_asmt_outcome_columns, batch_id, apply_rules, csv_ta
     execute_queries(conn, [create_sequence, insert_into_staging_table, drop_sequence], 'Exception in loading data -- ')
 
 
+@measure_cpu_plus_elasped_time
 def drop_fdw_tables(conn, csv_schema, csv_table):
     drop_csv_ddl = queries.drop_ddl_csv_query(csv_schema, csv_table)
     execute_queries(conn, [drop_csv_ddl], 'Exception in drop fdw table -- ')
 
 
+@measure_cpu_plus_elasped_time
 def load_data_process(conn, conf):
     # read headers from header_file
     header_names, header_types = extract_csv_header(conf[mk.HEADERS])
@@ -132,6 +143,7 @@ def load_data_process(conn, conf):
     return time_as_seconds
 
 
+@measure_cpu_plus_elasped_time
 def load_file(conf):
     '''
     Main function to initiate file loader

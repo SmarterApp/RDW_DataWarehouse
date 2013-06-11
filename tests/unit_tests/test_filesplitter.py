@@ -5,9 +5,13 @@ import shutil
 import csv
 import imp
 from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
+from udl2_util.measurement import measure_elapsed_time, measure_cpu_time
+
 
 class Test(unittest.TestCase):
-	
+    
+	@measure_elapsed_time
+	@measure_cpu_time
 	def setUp(self):
 		try:
 		    config_path = ditc(os.environ)['UDL2_CONF']
@@ -21,7 +25,10 @@ class Test(unittest.TestCase):
 		self.test_file_name = 'test.csv'
 		self.output_dir =  udl2_conf['zones']['tests'] + 'testsplit/'
 		self.output_template = 'split_part_'
-
+		return
+    
+	@measure_elapsed_time
+	@measure_cpu_time
 	def test_create_output_dest(self):
 		#if directory exists, delete it
 		base =  os.path.splitext(os.path.basename(self.test_file_name))[0]
@@ -37,6 +44,8 @@ class Test(unittest.TestCase):
 		#clean up test directory
 		#shutil.rmtree(root)
 		
+	@measure_elapsed_time
+	@measure_cpu_time
 	def test_run_command(self):
 		#define test command
 		test_command = 'ls'
@@ -45,7 +54,9 @@ class Test(unittest.TestCase):
 		#check there is output and no error
 		assert output
 		assert err is None
-		
+	
+	@measure_elapsed_time
+	@measure_cpu_time
 	def test_get_list_split_files(self):
 		#create test split files
 		if not os.path.exists(self.output_dir): os.makedirs(self.output_dir)

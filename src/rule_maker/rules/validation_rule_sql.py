@@ -61,6 +61,7 @@ INSERT INTO "{schema}"."ERR_LIST" (record_sid,
 
 # check date format sql
 DATE_FORMAT_SQL = """
+--This function needs another proc function is_valid_date_year_format defined in pkg_utils
 INSERT INTO "{schema}"."ERR_LIST" (record_sid,
                                    batch_id,
                                    err_code,
@@ -74,5 +75,5 @@ INSERT INTO "{schema}"."ERR_LIST" (record_sid,
                                     now() AS create_date
                                FROM "{schema}"."{table}"
                               WHERE batch_sid = '{batch_id}'
-                                AND pkg_utils.is_valid_date_year_format({column},{date_format}) = 0
+                                AND pkg_utils.is_valid_date_year_format({column},'{date_format}') = 0
 """

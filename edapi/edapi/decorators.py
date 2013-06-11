@@ -11,7 +11,25 @@ from pyramid.security import authenticated_userid
 
 class report_config(object):
     '''
-    used for processing decorator '@report_config' in pyramid scans
+    Decorator to register data endpoint under /data/{reportname}
+
+    .. code-block:: python
+
+        from decorators import report_config
+
+        \'\'Expose /data/test_report endpoint with the specified params \'\'
+        @report_config(name="test_report", params={"free_text_field": {"type": "string",
+                                                                   "pattern": "^[a-z]$"
+                                                                   },
+                                               "numeric_field": {"type": "integer"},
+                                               "optional_field": {"type": "integer",
+                                                                  "required": False
+                                                                  },
+                                               "school_sizes": {"type": "integer", "name": "school_size_report"},
+                                               "student_lists": {"name": "student_list_report"}
+                                               }
+                   )
+        def generate(self, params):
     '''
 
     def __init__(self, **kwargs):

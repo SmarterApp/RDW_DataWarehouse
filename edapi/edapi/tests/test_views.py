@@ -10,7 +10,8 @@ from edapi.views import (get_report_registry,
                          generate_report_get,
                          generate_report_post,
                          get_request_body)
-from edapi import EDAPI_REPORTS_PLACEHOLDER, add_report_config, ContentTypePredicate
+
+from edapi.utils import ContentTypePredicate, EDAPI_REPORTS_PLACEHOLDER, add_report_config
 from edapi.tests.dummy import Dummy, DummyRequest, DummyValidator
 from edapi.exceptions import ReportNotFoundError, InvalidParameterError
 from edapi.httpexceptions import EdApiHTTPNotFound, EdApiHTTPPreconditionFailed,\

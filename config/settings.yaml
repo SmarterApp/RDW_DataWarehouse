@@ -186,7 +186,10 @@ qa1:
         idp_server_logout_url: https://auth0.qa.dum.edwdc.net/openam/IDPSloRedirect/metaAlias/idp
         name_qualifier: https://auth0.qa.dum.edwdc.net/openam
   '[handlers]':
-    keys: console, filelog, audit, syslog
+    keys: filelog, audit, syslog, security_event
+  '[logger_root]':
+    level: INFO
+    handlers: filelog
   '[handler_syslog]':
     class: logging.handlers.SysLogHandler
     args: '(''/dev/log'', handlers.SysLogHandler.LOG_LOCAL1)'
@@ -221,7 +224,10 @@ qa2:
         idp_server_logout_url: https://auth0.qa.dum.edwdc.net/openam/IDPSloRedirect/metaAlias/idp
         name_qualifier: https://auth0.qa.dum.edwdc.net/openam
   '[handlers]':
-    keys: console, filelog, audit, syslog
+    keys: filelog, audit, syslog, security_event
+  '[logger_root]':
+    level: INFO
+    handlers: filelog
   '[handler_syslog]':
     class: logging.handlers.SysLogHandler
     args: '(''/dev/log'', handlers.SysLogHandler.LOG_LOCAL1)'
@@ -267,7 +273,7 @@ uat:
         idp_server_logout_url: https://betaauth.smarterbalancedreporting.org/openam/IDPSloRedirect/metaAlias/idp
         name_qualifier: https://betaauth.smarterbalancedreporting.org/openam
   '[handlers]':
-    keys: audit, syslog
+    keys: audit, syslog, security_event
   '[logger_root]':
     level: INFO
     handlers: syslog
@@ -281,7 +287,7 @@ uat:
     args: '(''/dev/log'', handlers.SysLogHandler.LOG_LOCAL0)'
     level: WARN
     formatter: json
-  '[handler_audit]':
+  '[handler_security_event]':
     class: logging.handlers.SysLogHandler
     args: '(''/dev/log'', handlers.SysLogHandler.LOG_LOCAL2)'
     level: WARN

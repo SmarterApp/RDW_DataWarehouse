@@ -4,7 +4,7 @@ import csv
 import math
 import argparse
 import datetime
-from udl2_util.measurement import measure_cpu_plus_elasped_time
+from udl2_util.measurement import measure_cpu_plus_elasped_time, show_amount_of_data_affected
 
 
 @measure_cpu_plus_elasped_time

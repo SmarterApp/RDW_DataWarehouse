@@ -21,54 +21,54 @@ except Exception:
 udl2_conf = imp.load_source('udl2_conf', config_path_file)
 from udl2_conf import udl2_conf
 
-def measure_cpu_time(fn, quite=udl2_conf['quiet_mode']):
+def measure_cpu_time(fn, quiet=udl2_conf['quiet_mode']):
     '''
-    a decorator measure cpu process time for executing fn and print out the result to standard error
+    a decorator measure cpu process time for executing fn and print out the result to standard output
     @param fn: function that are to be executed
     @type fn: a funtion in python
     '''
     def _wrapped(*args, **kwargs):
-        if quite:
+        if quiet:
             return fn(*args, **kwargs)
         else:
             start_cpu_time = time.clock()
             result = fn(*args, **kwargs)
             end_cpu_time = time.clock()
-            print("cpu time {time:.10f} seconds for executing {module:s}.{function:s}".format(time=(end_cpu_time - start_cpu_time),
+            print("MEASURE-- cpu time {time:.10f} seconds for executing {module:s}.{function:s}".format(time=(end_cpu_time - start_cpu_time),
                                                                                               module=fn.__module__,
                                                                                               function=fn.__name__,))
             return result   
     return _wrapped
 
 
-def measure_elapsed_time(fn, quite=udl2_conf['quiet_mode']):
+def measure_elapsed_time(fn, quiet=udl2_conf['quiet_mode']):
     '''
-    a decorator measure elasped time for executing fn and print out the result to standard error
+    a decorator measure elasped time for executing fn and print out the result to standard output
     @param fn: function that are to be executed
     @type fn: a funtion in python
     '''
     def _wrapped(*args, **kwargs):
-        if quite:
+        if quiet:
             return fn(*args, **kwargs)
         else:
             start_time = time.time()
             result = fn(*args, **kwargs)
             end_time = time.time()
-            print("elapsed time {time:.10f} seconds for executing {module:s}.{function:s}".format(time=(end_time - start_time),
+            print("MEASURE-- elapsed time {time:.10f} seconds for executing {module:s}.{function:s}".format(time=(end_time - start_time),
                                                                                                   module=fn.__module__,
                                                                                                   function=fn.__name__,))
             return result
     return _wrapped
 
 
-def measure_cpu_plus_elasped_time(fn, quite=udl2_conf['quiet_mode']):
+def measure_cpu_plus_elasped_time(fn, quiet=udl2_conf['quiet_mode']):
     '''
-    a decorator measure elasped time for executing fn and print out the result to standard error
+    a decorator measure elasped time for executing fn and print out the result to standard output
     @param fn: function that are to be executed
     @type fn: a funtion in python
     '''
     def _wrapped(*args, **kwargs):
-        if quite:
+        if quiet:
             return fn(*args, **kwargs)
         else:
             start_time = time.time()
@@ -76,7 +76,7 @@ def measure_cpu_plus_elasped_time(fn, quite=udl2_conf['quiet_mode']):
             result = fn(*args, **kwargs)
             end_clock = time.clock()
             end_time = time.time()
-            print("cpu time {ctime:.10f} seconds, elapsed time {etime:.10f} seconds for executing {module:s}.{function:s}".format(etime=(end_time - start_time),
+            print("MEASURE-- cpu time {ctime:.10f} seconds, elapsed time {etime:.10f} seconds for executing {module:s}.{function:s}".format(etime=(end_time - start_time),
                                                                                                                                   module=fn.__module__,
                                                                                                                                   ctime=(end_clock - start_clock),
                                                                                                                                   function=fn.__name__,))
@@ -84,5 +84,20 @@ def measure_cpu_plus_elasped_time(fn, quite=udl2_conf['quiet_mode']):
     return _wrapped
 
 
-def show_amount_of_data_process(fn):
-    pass    
+def show_amount_of_data_affected(fn, quiet=udl2_conf['quiet_mode']):
+    '''
+    a decorator to print normalized message for amount of data to be moved
+    @param fn: function that are to be executed
+    @type fn: a funtion in python that return amount of data be moved
+    '''
+    def _wrapped(*args, **kwargs):
+        if quite:
+            return fn(*args, **kwargs)
+        else:
+            result = fn(*args, **kwargs)
+            print("MEASURE-- {amount:s} {unit:s} are moved by {module:s}.{function:s}".format(amount=result.amount,
+                                                                                              unit=result.unit,
+                                                                                              module=result.module,
+                                                                                              function=result.function))
+            return result
+    return _wrapped

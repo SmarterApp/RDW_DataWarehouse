@@ -8,7 +8,7 @@ from sqlalchemy.exc import NoSuchTableError
 from sqlalchemy.engine import create_engine
 from udl2_util.file_util import extract_file_name
 import udl2.message_keys as mk
-from udl2_util.measurement import measure_cpu_plus_elasped_time
+from udl2_util.measurement import measure_cpu_plus_elasped_time, show_amount_of_data_affected
 
 
 DBDRIVER = "postgresql"

@@ -76,7 +76,7 @@ __validation_rules_definition = {BYCOLUMN: {'guid_asmt': [ISNOTNULL],  # for EAC
 
 # dictionary to map notation and corresponding sql
 __validation_notation_sql_dict = {ISNOTNULL: {ALL: NULL_ALL_SQL, EACH: NULL_SQL, BOTH: 'TBD'},
-                                  DATE: 'TBD',
+                                  DATE: DATE_FORMAT_SQL,
                                   # AFTER_2001: 'TBD',
                                   UNIQUE: UNIQUE_SQL,
                                   # ALPHA: 'TBD',
@@ -109,10 +109,6 @@ def by_rule_func(rule_content, **parm):
     pass
 
 
-__validation_rules_func = {BYCOLUMN: by_column_func,
-                           BYRULE: by_rule_func}
-
-
 def get_sql_for_notations(rules_for_column, **parm):
     scope = EACH
     if ALL in rules_for_column:
@@ -126,12 +122,16 @@ def get_sql_for_notations(rules_for_column, **parm):
         parm['error_code'] = get_error_code_for_notation(notation, scope)
         if notation in list(__validation_notation_sql_dict.keys()):
             if notation == ISNOTNULL:
-                sql_stat_template = __validation_notation_sql_dict[notation][scope]
+                sql_stat_template = __validation_notation_sql_dict[ISNOTNULL][scope]
             elif notation == UNIQUE:
-                sql_stat_template = __validation_notation_sql_dict[notation]
-            # replace value in template
-            sql_statement = sql_stat_template.format(**parm)
-            sql_stat.append(sql_statement)
+                sql_stat_template = __validation_notation_sql_dict[UNIQUE]
+        elif isinstance(notation, dict):
+            if DATE in list(notation.keys()):
+                sql_stat_template = __validation_notation_sql_dict[DATE]
+                parm['date_format'] = notation[DATE]
+        # replace value in template
+        sql_statement = sql_stat_template.format(**parm)
+        sql_stat.append(sql_statement)
     return sql_stat
 
 
@@ -161,6 +161,10 @@ def generate_validation_proc(para):
         else:
             print("error")
     return sql_stat
+
+
+__validation_rules_func = {BYCOLUMN: by_column_func,
+                           BYRULE: by_rule_func}
 
 
 if __name__ == '__main__':

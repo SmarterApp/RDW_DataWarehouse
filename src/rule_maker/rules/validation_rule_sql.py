@@ -61,4 +61,18 @@ INSERT INTO "{schema}"."ERR_LIST" (record_sid,
 
 # check date format sql
 DATE_FORMAT_SQL = """
+INSERT INTO "{schema}"."ERR_LIST" (record_sid,
+                                   batch_id,
+                                   err_code,
+                                   err_source,
+                                   created_date
+                                    )
+                             SELECT record_sid,
+                                    batch_id,
+                                    {error_code} AS error_code,
+                                    {err_source} AS err_source,
+                                    now() AS create_date
+                               FROM "{schema}"."{table}"
+                              WHERE batch_sid = '{batch_id}'
+                                AND pkg_utils.is_valid_date_year_format({column},{date_format}) = 0
 """

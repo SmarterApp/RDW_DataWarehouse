@@ -25,6 +25,9 @@ def setup_celery_conf(udl2_conf, celery, udl_queues):
         CELERY_DEFAULT_QUEUE='celery',
         CELERY_DEFAULT_EXCHANGE='direct',
         CELERY_DEFAULT_ROUTING_KEY='celery',
+        CELERYD_LOG_DEBUG=udl2_conf['logging']['debug'],
+        CELERYD_LOG_LEVEL=udl2_conf['logging']['level'],
+        CELERYD_LOG_FILE=udl2_conf['logging']['audit'],
         CELERY_QUEUES=tuple(udl_queues.values()))
     return celery
 

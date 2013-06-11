@@ -18,7 +18,8 @@ def measure_cpu_time(fn):
         start_cpu_time = time.clock()
         fn(*args, **kwargs)
         end_cpu_time = time.clock()
-        print("cpu time %f" % (end_cpu_time - start_cpu_time))
+        print("cpu time {time} for executing {function}".format(time=end_cpu_time - start_cpu_time,
+                                                                function=fn.__name__))
     return _wrapped
 
 
@@ -28,5 +29,6 @@ def measure_elasped_time(fn):
         start_time = time.time()
         fn(*args, **kwargs)
         end_time = time.time()
-        print("elapsed time %f" % (end_time - start_time))
+        print("elapsed time {time} for executing {function}".format(time=end_time - start_time,
+                                                                    function=fn.__name__))
     return _wrapped

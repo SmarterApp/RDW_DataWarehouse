@@ -1,17 +1,18 @@
-from rule_maker.rules import transformations as t
 from rule_maker.rules import validations as v
+BY_COLUMN = 'by_column'
+BY_RULE = 'by_row'
 
 # UDL config file using our notation system
 
 validations = {
     'STG_SBAC_ASMT_OUTCOME': {
-        t.BY_COLUMN: {
+        BY_COLUMN: {
             'batch_id':[],
             'src_file_rec_num':[],
             'guid_asmt':[],
-            'guid_asmt_location':[IsGoodGuid,],
-            'name_asmt_location':[],
-            'grade_asmt':[],
+            'guid_asmt_location':[IsGoodGuid, {IsUniqueWithin: ['name_asmt_location']}],
+            'name_asmt_location': IsNotNull,
+            'grade_asmt':[IsNotNull, {InList:[3,4,5,6,7,8,11]}],
             'name_state':[],
             'code_state':[],
             'guid_district':[],
@@ -55,12 +56,12 @@ validations = {
             'type_staff':[],
             'created_date':[]
         },
-        t.BY_RULE: {
+        BY_RULE: {
 
         }
     },
     'STG_SBAC_ASMT': {
-        t.BY_COLUMN: {
+        BY_COLUMN: {
               'record_sid':[],
               'batch_id':[],
               'guid_asmt':[],
@@ -98,7 +99,7 @@ validations = {
               'score_cut_point_4':[],
               'created_date':[]
         },
-        t.BY_ROW: {
+        BY_ROW: {
 
         }
     }

@@ -46,3 +46,5 @@ IsSQLSafe       = 'IsSQLSafe'       # Validate if the Text does not have any res
 IsGoodGUID      = 'IsGoodGUID'      # Validate if the GUID is valid
 IsGoodEmail     = 'IsGoodEmail'     # Validate is the email is well-formed.
 
+NAME            = 'Name'
+

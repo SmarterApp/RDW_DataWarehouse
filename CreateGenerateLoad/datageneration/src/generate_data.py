@@ -643,7 +643,7 @@ def calculate_number_of_sections(number_of_students):
     @return: The number of students to put in each section as an int
     '''
     # TODO: Figure out how to calculate number_of_sections
-    return 1
+    return 8
 
 
 def calculate_claim_scores(asmt_score, assessment, ebmin, ebmax, rndlo, rndhi):
@@ -746,9 +746,9 @@ def create_output_dict(output_path):
     return out_dict
 
 
-def main(config_mod_name, output_path=None):
+def main(config_mod_name='dg_types', output_path=None):
     t1 = datetime.datetime.now()
-    config_module = import_module(args.config_module)
+    config_module = import_module(config_mod_name)
 
     # setup output path dict
     output_dict = ENTITY_TO_PATH_DICT

@@ -1,11 +1,11 @@
 __author__ = 'abrien'
 
-from entities import InstitutionHierarchy, Student, Section, Assessment, Staff, AssessmentOutcome
-from idgen import IdGen
-from generate_names import generate_first_or_middle_name, generate_last_name, possibly_generate_middle_name
+from datageneration.src.entities import InstitutionHierarchy, Student, Section, Assessment, Staff, AssessmentOutcome
+from datageneration.src.idgen import IdGen
+from datageneration.src.generate_names import generate_first_or_middle_name, generate_last_name, possibly_generate_middle_name
 from uuid import uuid4
-import constants as constants
-import util as util
+import datageneration.src.constants as constants
+import datageneration.src.util as util
 import random
 import datetime
 

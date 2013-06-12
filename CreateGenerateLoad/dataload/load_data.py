@@ -66,8 +66,8 @@ def get_input_args():
     @return: vars(args) -- A dict of the command line args
     '''
     parser = argparse.ArgumentParser(description='Script to load csv files to a db schema')
-    parser.add_argument("schema", help="set schema name.  required")
-    parser.add_argument("passwd", help="postgre password")
+    parser.add_argument('-s', '--schema', required=True, help="set schema name.  required")
+    parser.add_argument('-p', '--passwd', required=True, help="postgres password. required")
     parser.add_argument("-c", "--csvdir", default=None, help="The directory where the csv's are stored. If not specified it will assume you are already there")
     parser.add_argument("-d", "--database", default="edware", help="set database name default[edware]")
     parser.add_argument("--host", default="127.0.0.1", help="postgres host default[127.0.0.1]")

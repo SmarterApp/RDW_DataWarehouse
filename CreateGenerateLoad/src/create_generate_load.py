@@ -12,7 +12,15 @@ import sys
 import inspect
 import subprocess
 
+import datageneration.src.generate_data as generate_data
+# import load_data
+# import best_worst_results
+# import henshin
+
+
 CMD_FOLDER = os.path.realpath(os.path.abspath(os.path.split(inspect.getfile(inspect.currentframe()))[0]))
+DATA_GEN_OUTPUT = os.path.join(CMD_FOLDER, '..', 'datafiles', 'data_gen')
+
 HENSHIN_FOLDER = CMD_FOLDER.replace(os.path.join('CreateGenerateLoad', 'src'), os.path.join('Henshin', 'src'))
 DATA_LOAD_FOLDER = CMD_FOLDER.replace(os.path.join('CreateGenerateLoad', 'src'), os.path.join('DataGeneration', 'dataload'))
 DATA_INFO_MODULE = 'datainfo.best_worst_results'
@@ -20,7 +28,7 @@ LOAD_DATA_MODULE = 'load_data'
 HENSHIN_MODULE = 'henshin'
 
 
-def main(schema, database, host, user, passwd, port=5432, create=True, landing_zone=True, best_worst=True, config_file=None):
+def main(schema, database, host, user, passwd, port=5432, create=True, landing_zone=True, best_worst=True, config_file=None, data_gen_output=None):
     '''
     '''
     start_time = time.time()
@@ -30,10 +38,10 @@ def main(schema, database, host, user, passwd, port=5432, create=True, landing_z
         create_schema(schema, database, host, user, passwd)
 
     print('Generating New Data')
-    csv_dir = generate_data(config_file)
-
+    csv_dir = generate_data_to_csv(config_file)
+    exit()
     print('Loading New Data')
-    load_data(csv_dir, schema, database, host, user, passwd, port)
+    load_data_to_db(csv_dir, schema, database, host, user, passwd, port)
 
     if landing_zone:
         print('Transforming to landing zone')
@@ -55,23 +63,28 @@ def create_schema(schema_name, database, host, user, passwd):
     print(output.decode('UTF-8'))
 
 
-def generate_data(config_file=None):
+def generate_data_to_csv(config_file=None):
+    '''
+    generate data by calling the generate data script. 
+    '''
     print('Generating Data')
 
-    gen_data_loc = os.path.join(CMD_FOLDER, '..', '..', 'DataGeneration', 'src', 'generate_data.py')
-    gen_data_output = os.path.join(CMD_FOLDER, '..', '..', 'DataGeneration', 'datafiles', 'csv')
+    #gen_data_loc = os.path.join(CMD_FOLDER, '..', '..', 'DataGeneration', 'src', 'generate_data.py')
+    #gen_data_output = os.path.join(CMD_FOLDER, '..', '..', 'DataGeneration', 'datafiles', 'csv')
 
     if config_file:
-        output = system('python', gen_data_loc, '--config', config_file)
+        generate_data.main(config_mod_name=config_file, output_path=DATA_LOAD_FOLDER)
+        #output = system('python', gen_data_loc, '--config', config_file)
     else:
-        output = system('python', gen_data_loc)
+        generate_data.main(output_path=DATA_LOAD_FOLDER)
+        #output = system('python', gen_data_loc)
 
-    print(output.decode('UTF-8'))
-    print('Data Generation Complete')
-    return gen_data_output
+    #print(output.decode('UTF-8'))
+    print('\nData Generation Complete\n')
+    #return gen_data_output
 
 
-def load_data(csv_dir, schema, database, host, user, passwd, port):
+def load_data_to_db(csv_dir, schema, database, host, user, passwd, port):
     '''
     Load data into schema
     '''
@@ -122,7 +135,8 @@ def get_input_args():
     parser.add_argument('-p', '--passwd', default='edware', help='the password to use for the database')
     parser.add_argument('--host', default='localhost', help='the host to connect to. Default: "localhost"')
     parser.add_argument('--port', default=5432, help='the port number')
-    parser.add_argument('--data-gen-config-file', help='a configuration file to use for data generation')
+    parser.add_argument('--data-gen-config-file', default='datageneration.src.dg_types',
+                        help='a configuration file to use for data generation default: "datageneration.src.dg_types"')
 
     return parser.parse_args()
 
@@ -151,4 +165,5 @@ def system(*args, **kwargs):
 
 if __name__ == '__main__':
     input_args = get_input_args()
-    main(input_args.schema, input_args.database, input_args.host, input_args.username, input_args.passwd, input_args.port, input_args.create, input_args.landing_zone, input_args.best_worst, input_args.data_gen_config_file)
+    main(input_args.schema, input_args.database, input_args.host, input_args.username, input_args.passwd, input_args.port,
+         input_args.create, input_args.landing_zone, input_args.best_worst, input_args.data_gen_config_file)

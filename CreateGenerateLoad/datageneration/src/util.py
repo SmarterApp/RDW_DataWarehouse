@@ -1,5 +1,5 @@
 import random
-import constants as constants
+import datageneration.src.constants as constants
 import datetime
 
 

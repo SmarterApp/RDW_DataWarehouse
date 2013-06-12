@@ -8,7 +8,7 @@ import csv
 from sqlalchemy import create_engine
 
 
-def transform_to_realdata(file_pattern, username, password, server, database, schema, asmt_guid_list=None, port=5432):
+def transform_to_realdata(file_pattern, username, password, server, database, schema, asmt_guid_list=None, port=5432, single_file=False):
     '''
     Transform database data about asmt_outcomes to the realdata file format.
     '''
@@ -26,16 +26,23 @@ def transform_to_realdata(file_pattern, username, password, server, database, sc
         else:
             result_dict[row['guid_asmt']] = [row]
 
+    filename = file_pattern.format('all')
+    count = 0
+
     if asmt_guid_list:
         for asmt_guid in asmt_guid_list:
-            filename = file_pattern.format(asmt_guid)
+            if not single_file:
+                filename = file_pattern.format(asmt_guid)
             asmt_results = result_dict[asmt_guid]
             write_result(asmt_results, header, filename)
+            count += 1
     else:
         for asmt_guid in result_dict:
-            filename = file_pattern.format(asmt_guid)
+            if not single_file:
+                filename = file_pattern.format(asmt_guid)
             asmt_results = result_dict[asmt_guid]
             write_result(asmt_results, header, filename)
+            count += 1
 
 
 def run_asmt_outcome_query(connection, schema):
@@ -110,7 +117,7 @@ def run_asmt_outcome_query(connection, schema):
     return results
 
 
-def write_result(results, header, filename):
+def write_result(results, header, filename, single_file=False, count=0):
     '''
     take the files and output a csv file containing the data.
     @param results: list of Results obtained from the query. Each result is a list of values
@@ -119,30 +126,45 @@ def write_result(results, header, filename):
     @type header: list
     @param filename: the name of the file to write the results to
     @type filename: str
+    @keyword single_file: Whether to write all data to a single file
+    @type single_file: bool
+    @keyword count: The number of groups written thus far (the number of times
+    this method has been called. Only necessary if writing to a single file)
+    @type count: int
     '''
-    with open(filename, 'w') as csvfile:
-        writer = csv.writer(csvfile)
-        # write headers
-        writer.writerow(header)
-        for row in results:
-            writer.writerow(row)
+    if single_file:
+        with open(filename, 'a') as csvfile:
+            writer = csv.writer(csvfile)
+            if count == 0:
+                # write headers
+                writer.writerow(header)
+            for row in results:
+                writer.writerow(row)
+    else:
+        with open(filename, 'w') as csvfile:
+            writer = csv.writer(csvfile)
+            # write headers
+            writer.writerow(header)
+            for row in results:
+                writer.writerow(row)
 
 
 if __name__ == "__main__":
-    connection_str = 'postgresql+psycopg2://{username}:{password}@{server}:{port}/{database}'.format(username='edware', password='edware2013', server='edwdbsrv1', port=5432, database='edware')
-    engine = create_engine(connection_str)
-    connection = engine.connect()
-    run_asmt_outcome_query(connection, 'mayuat_2')
-    asmt_guid_list = ["f7745aef-88fa-44f9-b638-fadddd908c10", "92651562-92c2-46ad-bd41-334393c02a98", "ea91f151-2e4e-40d0-a2fd-bb67276080ed", "0eb7ddef-eb12-466c-8c6d-dd97a6016a75",
-        "b00ae0a1-5cbd-4f8a-b5d7-1c9c0204c6b7", "726e6d95-5295-4532-a500-e22f138d303a", "8f689325-4542-4d93-87bc-54b38778ec55", "966d6b92-9572-4483-be5f-bfe7f4e6850c",
-        "c73781b5-911e-4e6f-a874-84d560827e11", "df70d84c-3f9a-4996-aa40-ae039f0c9c70", "d904f960-762f-4093-a41f-203979533e0a", "ac4b6ee9-85f2-45fa-968b-0da8f52115cc",
-        "4685ad0a-24f2-4aa1-a30b-141732be7e74", "e0980f9a-dd2f-4795-b617-29afef573ee2"]
-    file_pattern = 'REALDATA_ASMT_ID_{0}.csv'
-    username = 'edware'
-    password = 'edware2013'
-    server = 'edwdbsrv1'
-    port = 5432
-    database = 'edware'
-    schema = 'mayuat_6'
-    #transform_realdata(file_pattern, username, password, server, database, schema, asmt_guid_list, port)
-    transform_to_realdata(file_pattern, username, password, server, database, schema)
+    print("No Main: usage: $ python henshin.py -h")
+#     connection_str = 'postgresql+psycopg2://{username}:{password}@{server}:{port}/{database}'.format(username='edware', password='edware2013', server='edwdbsrv1', port=5432, database='edware')
+#     engine = create_engine(connection_str)
+#     connection = engine.connect()
+#     run_asmt_outcome_query(connection, 'mayuat_2')
+#     asmt_guid_list = ["f7745aef-88fa-44f9-b638-fadddd908c10", "92651562-92c2-46ad-bd41-334393c02a98", "ea91f151-2e4e-40d0-a2fd-bb67276080ed", "0eb7ddef-eb12-466c-8c6d-dd97a6016a75",
+#         "b00ae0a1-5cbd-4f8a-b5d7-1c9c0204c6b7", "726e6d95-5295-4532-a500-e22f138d303a", "8f689325-4542-4d93-87bc-54b38778ec55", "966d6b92-9572-4483-be5f-bfe7f4e6850c",
+#         "c73781b5-911e-4e6f-a874-84d560827e11", "df70d84c-3f9a-4996-aa40-ae039f0c9c70", "d904f960-762f-4093-a41f-203979533e0a", "ac4b6ee9-85f2-45fa-968b-0da8f52115cc",
+#         "4685ad0a-24f2-4aa1-a30b-141732be7e74", "e0980f9a-dd2f-4795-b617-29afef573ee2"]
+#     file_pattern = 'REALDATA_ASMT_ID_{0}.csv'
+#     username = 'edware'
+#     password = 'edware2013'
+#     server = 'edwdbsrv1'
+#     port = 5432
+#     database = 'edware'
+#     schema = 'mayuat_6'
+#     #transform_realdata(file_pattern, username, password, server, database, schema, asmt_guid_list, port)
+#     transform_to_realdata(file_pattern, username, password, server, database, schema)

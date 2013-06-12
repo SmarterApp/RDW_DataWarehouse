@@ -1,6 +1,7 @@
-from helper_entities import State, District, School, Claim, ClaimScore, AssessmentScore
 from uuid import uuid4
-import util as util
+
+from datageneration.src.helper_entities import State, District, School, Claim, ClaimScore, AssessmentScore
+import datageneration.src.util as util
 
 
 def generate_state(state_name, state_code):

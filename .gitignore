@@ -26,3 +26,4 @@ smarter.egg-info
 #########################
 .project
 DataGeneration/.settings
+DataGeneration/dataload

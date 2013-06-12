@@ -1,10 +1,5 @@
 __author__ = 'abrien'
 
-from uuid import uuid4
-
-from idgen import IdGen
-from constants import MAXIMUM_ASSESSMENT_SCORE, MINIMUM_ASSESSMENT_SCORE, AVERAGE_ASSESSMENT_SCORE, ASSESSMENT_SCORE_STANDARD_DEVIATION
-
 
 # TODO: get rid of camel-cased function names
 class InstitutionHierarchy:

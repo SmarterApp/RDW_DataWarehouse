@@ -383,7 +383,7 @@ def get_input_args():
 
     parser = argparse.ArgumentParser(description='Script to get best or worst Students, Districts and Schools')
     parser.add_argument('--password', help='password for the user. default: edware2013', default='edware2013')
-    parser.add_argument('--schema', help='schema to use. default: mayuat_4', default='mayuat_4')
+    parser.add_argument('--schema', help='schema to use. default: edware_mayuat_0_1', default='edware_mayuat_0_1')
     parser.add_argument('-s', '--server', help='server path default: edwdbsrv1.poc.dum.edwdc.net', default='edwdbsrv1.poc.dum.edwdc.net')
     parser.add_argument('-d', '--database', help='name of the database. default: edware', default='edware')
     parser.add_argument('-u', '--username', help='username for the db. default: edware', default='edware')

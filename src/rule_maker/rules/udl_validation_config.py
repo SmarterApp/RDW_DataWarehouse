@@ -61,7 +61,7 @@ validations = {
         }
     },
     'STG_SBAC_ASMT': {
-        t.BY_COLUMN: {
+        BY_COLUMN: {
 
               'guid_asmt'          : [ IsNotNull, IsGoodGUID ],
               'type'               : { IsInList : ['SUMMATIVE', 'INTERIM'] },

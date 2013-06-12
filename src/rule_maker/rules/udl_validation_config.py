@@ -1,4 +1,5 @@
 from rule_maker.rules import transformations as t
+from rule_maker.rules import validations as v
 from rule_maker.rules.rule_keys import *
 
 # UDL config file using our notation system

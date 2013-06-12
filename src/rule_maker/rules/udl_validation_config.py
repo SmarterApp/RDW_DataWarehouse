@@ -1,17 +1,23 @@
+<<<<<<< HEAD
 from rule_maker.rules import transformations as t
 from rule_maker.rules.rule_keys import *
+=======
+from rule_maker.rules import validations as v
+BY_COLUMN = 'by_column'
+BY_RULE = 'by_row'
+>>>>>>> branch 'master' of git@github.wgenhq.net:Ed-Ware-SBAC/edware-udl-2.0.git
 
 # UDL config file using our notation system
 
 validations = {
     'STG_SBAC_ASMT_OUTCOME': {
-        t.BY_COLUMN: {
+        BY_COLUMN: {
             'batch_id':[],
             'src_file_rec_num':[],
             'guid_asmt':[],
-            'guid_asmt_location':[IsGoodGUID],
-            'name_asmt_location':[],
-            'grade_asmt':[],
+            'guid_asmt_location':[IsGoodGuid, {IsUniqueWithin: ['name_asmt_location']}],
+            'name_asmt_location': IsNotNull,
+            'grade_asmt':[IsNotNull, {InList:[3,4,5,6,7,8,11]}],
             'name_state':[],
             'code_state':[],
             'guid_district':[],
@@ -55,12 +61,12 @@ validations = {
             'type_staff':[],
             'created_date':[]
         },
-        t.BY_RULE: {
+        BY_RULE: {
 
         }
     },
     'STG_SBAC_ASMT': {
-        t.BY_COLUMN: {
+        BY_COLUMN: {
 
               'guid_asmt': [ IsNotNull, IsGoodGUID ],
               'type': { IsInList : ['SUMMATIVE', 'INTERIM'] },

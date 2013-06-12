@@ -2,6 +2,7 @@ import unittest
 import subprocess
 import csv
 import os
+import os.path
 from fileloader.file_loader import load_file, connect_db
 from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 import imp
@@ -23,10 +24,31 @@ class ITestLoadCsvToSBACStar(unittest.TestCase):
         pass
     
     def test_load_csv_to_sbac_star(self):
-        print("driver.py -c {datafiles}/REALDATA_ASMT_ValidData.csv -j {datafiles}/METADATA_ASMT_ValidData.json".format(datafiles=self.conf['zones']['datafiles']))
-        subprocess.call("driver.py -c {datafiles}/REALDATA_ASMT_ValidData.csv -j {datafiles}/METADATA_ASMT_ValidData.json".format(datafiles=self.conf['zones']['datafiles']),
-                        shell=True)
-    
+        if os.path.isfile("{datafiles}/REALDATA_ASMT_ValidData.csv".format(datafiles=self.conf['zones']['datafiles'])):
+            print("driver.py -c {datafiles}/REALDATA_ASMT_ValidData.csv -j {datafiles}/METADATA_ASMT_ValidData.json".format(datafiles=self.conf['zones']['datafiles']))
+            subprocess.call("driver.py -c {datafiles}/REALDATA_ASMT_ValidData.csv -j {datafiles}/METADATA_ASMT_ValidData.json".format(datafiles=self.conf['zones']['datafiles']),
+                            shell=True)
+            self.assertTrue(True)
+        else:
+            self.assertTrue(False)
+
+    def test_load_csv_to_sbac_star_300k(self):
+        if os.path.isfile("{datafiles}/REALDATA_ASMT_ID_300k.csv".format(datafiles=self.conf['zones']['datafiles'])):
+            print("driver.py -c {datafiles}/REALDATA_ASMT_ValidData.csv -j {datafiles}/METADATA_ASMT_ValidData.json".format(datafiles=self.conf['zones']['datafiles']))
+            subprocess.call("driver.py -c {datafiles}/REALDATA_ASMT_ID_300k.csv -j {datafiles}/METADATA_ASMT_ID_300k.json".format(datafiles=self.conf['zones']['datafiles']),
+                            shell=True)
+            self.assertTrue(True)
+        else:
+            self.assertTrue(False)
+
+    def test_load_csv_to_sbac_star_2500k(self):
+        if os.path.isfile("{datafiles}/REALDATA_ASMT_ValidData.csv".format(datafiles=self.conf['zones']['datafiles'])):
+            print("driver.py -c {datafiles}/REALDATA_ASMT_ValidData.csv -j {datafiles}/METADATA_ASMT_ValidData.json".format(datafiles=self.conf['zones']['datafiles']))
+            subprocess.call("driver.py -c {datafiles}/REALDATA_ASMT_ID_2500k.csv -j {datafiles}/METADATA_ASMT_ID_2500k.json".format(datafiles=self.conf['zones']['datafiles']),
+                            shell=True)
+            self.assertTrue(True)
+        else:
+            self.assertTrue(False)
 
 if __name__ == "__main__":
 	unittest.main()    

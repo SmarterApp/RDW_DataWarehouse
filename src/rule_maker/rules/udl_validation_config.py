@@ -61,17 +61,16 @@ validations = {
         }
     },
     'STG_SBAC_ASMT': {
-        BY_COLUMN: {
-              'record_sid':[],
-              'batch_id':[],
-              'guid_asmt':[],
-              'type':[],
-              'period':[],
-              'year':[],
-              'version':[],
-              'subject':[],
-              'score_overall_min':[],
-              'score_overall_max':[],
+        t.BY_COLUMN: {
+
+              'guid_asmt'          : [ IsNotNull, IsGoodGUID ],
+              'type'               : { IsInList : ['SUMMATIVE', 'INTERIM'] },
+              'period'             : [ ],
+              'year'               : { HasMaxLength : 4 },
+              'version'            : [],
+              'subject'            : { IsInList : ['MATH', 'ELA'],
+              'score_overall_min'  : [ IsNumber, { IsLessThan : '{score_overall_max}' } ],
+              'score_overall_max'  : [],
               'name_claim_1':[],
               'score_claim_1_min':[],
               'score_claim_1_max':[],
@@ -99,8 +98,9 @@ validations = {
               'score_cut_point_4':[],
               'created_date':[]
         },
-        BY_ROW: {
+        t.BY_RULE: {
 
         }
-    }
-}
+     }
+   }
+ }

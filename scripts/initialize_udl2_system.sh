@@ -7,7 +7,7 @@ sudo -u root -s "mkdir -p /opt/wgen/edware-udl/udl2/.ssh"
 sudo -u root -s "chmod 777 /opt/wgen/edware-udl/udl2/.ssh"
 
 # create udl2 system users for
-if [`uname` == 'Linux']; then
+if [ `uname` == 'Linux' ]; then
     echo "create udl2 users to run udl2 celery and own the zone area for work"
     sudo -u root -s "useradd -d /opt/wgen/edware-udl/udl2 -r -s /bin/sh udl2"
     sudo -u root -s "passwd udl2"
@@ -48,9 +48,9 @@ echo "install virtual-2.7 for flower"
 cd /opt/wgen/edware-udl/udl2
 echo "virtualenv-2.7 --distribute python2.7"
 if [ `uname` == 'Linux' ]; then
-    su udl2 -c "/usr/bin/virtualenv-2.7 --distribute python2.7"
+    su udl2 -c "/usr/bin/virtualenv-2.7 --distribute python2.7";
 else
-    su root -c "virtualenv-2.7 --distribute python2.7"
+    su root -c "virtualenv-2.7 --distribute python2.7";
 fi
 # pull code from git
 #echo "pull code from git"
@@ -63,14 +63,14 @@ cd  $CODE_DIR
 cd ../
 
 if [ `uname` == 'Linux' ]; then
-    su udl2 -c "source /opt/wgen/edware-udl/udl2/python3.3/bin/activate; /opt/wgen/edware-udl/udl2/python3.3/bin/python3.3 setup.py install"
+    su udl2 -c "source /opt/wgen/edware-udl/udl2/python3.3/bin/activate; /opt/wgen/edware-udl/udl2/python3.3/bin/python3.3 setup.py install";
 else
-    su root -c "source /opt/wgen/edware-udl/udl2/python3.3/bin/activate; /opt/wgen/edware-udl/udl2/python3.3/bin/python3.3 setup.py install"
+    su root -c "source /opt/wgen/edware-udl/udl2/python3.3/bin/activate; /opt/wgen/edware-udl/udl2/python3.3/bin/python3.3 setup.py install";
 fi 
 #install all python dependency for flower to monitor celery
 echo "install all python dependency code for flower to minitor celery"
 if [ `uname` == 'Linux' ]; then
-    su udl2 -c "source /opt/wgen/edware-udl/udl2/python2.7/bin/activate; /opt/wgen/edware-udl/udl2/python2.7/bin/pip-2.7 install flower"
+    su udl2 -c "source /opt/wgen/edware-udl/udl2/python2.7/bin/activate; /opt/wgen/edware-udl/udl2/python2.7/bin/pip-2.7 install flower";
 else
-    su root -c "source /opt/wgen/edware-udl/udl2/python2.7/bin/activate; /opt/wgen/edware-udl/udl2/python2.7/bin/pip-2.7 install flower"
+    su root -c "source /opt/wgen/edware-udl/udl2/python2.7/bin/activate; /opt/wgen/edware-udl/udl2/python2.7/bin/pip-2.7 install flower";
 fi

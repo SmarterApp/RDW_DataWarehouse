@@ -1,5 +1,6 @@
 from rule_maker.rules import transformations as t
 from rule_maker.rules import validations as v
+from rule_maker.rules.rule_keys import *
 
 # UDL config file using our notation system
 
@@ -9,7 +10,7 @@ validations = {
             'batch_id':[],
             'src_file_rec_num':[],
             'guid_asmt':[],
-            'guid_asmt_location':[IsGoodGuid,],
+            'guid_asmt_location':[IsGoodGUID],
             'name_asmt_location':[],
             'grade_asmt':[],
             'name_state':[],
@@ -61,16 +62,15 @@ validations = {
     },
     'STG_SBAC_ASMT': {
         t.BY_COLUMN: {
-              'record_sid':[],
-              'batch_id':[],
-              'guid_asmt':[],
-              'type':[],
-              'period':[],
-              'year':[],
-              'version':[],
-              'subject':[],
-              'score_overall_min':[],
-              'score_overall_max':[],
+
+              'guid_asmt'          : [ IsNotNull, IsGoodGUID ],
+              'type'               : { IsInList : ['SUMMATIVE', 'INTERIM'] },
+              'period'             : [ ],
+              'year'               : { HasMaxLength : 4 },
+              'version'            : [],
+              'subject'            : { IsInList : ['MATH', 'ELA'],
+              'score_overall_min'  : [ IsNumber, { IsLessThan : '{score_overall_max}' } ],
+              'score_overall_max'  : [],
               'name_claim_1':[],
               'score_claim_1_min':[],
               'score_claim_1_max':[],
@@ -98,8 +98,9 @@ validations = {
               'score_cut_point_4':[],
               'created_date':[]
         },
-        t.BY_ROW: {
+        t.BY_RULE: {
 
         }
-    }
-}
+     }
+   }
+ }

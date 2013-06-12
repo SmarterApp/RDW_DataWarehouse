@@ -31,4 +31,4 @@ transform_rules = {
                                      VCLEAN : UPPER, 
                                      RCLEAN : [ 'TO_CHAR', 'MIN0' ],  
                                                      }
-                }
+                } 

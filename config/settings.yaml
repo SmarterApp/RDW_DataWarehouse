@@ -62,6 +62,10 @@ common:
     run.npm.update: true
     # Timeout for pdf generation process
     pdf:
+      # expected pdf file size in bytes used to validate that pdf was generated without errors
+      minimum.file.size: 80000
+      # number of retries allowed after the first failure
+      retries.allowed: 2
       generate.timeout: 10
       report_base_dir: /tmp/pdf
       celery_timeout: 30

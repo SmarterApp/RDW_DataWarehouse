@@ -199,7 +199,7 @@ class TestServices(Unittest_with_smarter_sqlite):
         self.__request.matchdict['report'] = 'indivStudentReport.html'
         self.__request.cookies = {'edware': '123'}
         services.pdf.tasks.pdf_procs = get_cmd()
-        settings = {'celery.CELERY_ALWAYS_EAGER': True, 'pdf.generate.timeout': 1}
+        settings = {'celery.CELERY_ALWAYS_EAGER': True, 'pdf.generate.timeout': 1, 'pdf.minimum.file.size': 1}
         get_config(settings)
         # prepare empty file to mimic a pdf was generated
         pdf_file = generate_isr_report_path_by_student_guid(pdf_report_base_dir=self.__temp_dir, student_guid=studentGuid, asmt_type='SUMMATIVE')

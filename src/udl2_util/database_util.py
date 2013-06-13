@@ -12,11 +12,11 @@ from udl2_util.measurement import measure_cpu_plus_elasped_time, show_amount_of_
 
 
 @show_amount_of_data_affected
-def print_get_affected_rows(result, module, function):
+def print_get_affected_rows(result, action, module, function):
     '''
     get affected rows of a query execution and return the info
     '''
-    return {'amount':result.rowcount, 'unit':'rows','module':module,'function':function}
+    return {'amount':result.rowcount, 'action':action, 'unit':'rows','module':module,'function':function}
 
 
 @measure_cpu_plus_elasped_time
@@ -45,7 +45,7 @@ def execute_queries(conn, list_of_queries, except_msg, caller_module=None, calle
     try:
         for query in list_of_queries:
             result = conn.execute(query)
-            print_get_affected_rows(result, caller_module, caller_func)
+            print_get_affected_rows(result, 'moved', caller_module, caller_func)
         trans.commit()
     except Exception as e:
         print(except_msg, e)

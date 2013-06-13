@@ -36,7 +36,7 @@ sn: Hall
 givenName: Susan
 employeeNumber: 9639c422-ca1d-11e2-aabd-68a86d1e157a 
 uid: shall
-userPassword:: bGluZGEua2ltMTIzNA==
+userPassword:: c2hhbGwxMjM0
 
 dn: cn=Victor Lee,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
@@ -46,7 +46,7 @@ sn: Lee
 givenName: Victor
 employeeNumber: a492d004-ca1d-11e2-b162-68a86d1e157a
 uid: vlee
-userPassword:: Y2dyYXkxMjM0
+userPassword:: dmxlZTEyMzQ=
 
 dn: cn=Sara Lee,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
@@ -56,7 +56,7 @@ sn: Lee
 givenName: Sara
 employeeNumber: b1cada28-ca1d-11e2-a407-68a86d1e157a
 uid: slee
-userPassword:: cmJyYXZlcm1hbjEyMzQ=
+userPassword:: c2xlZTEyMzQ=
 
 dn: cn=Jamie Hine,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson
@@ -76,7 +76,7 @@ sn: Davis
 givenName: Chris
 employeeNumber: e92cb978-ca1d-11e2-950b-68a86d1e157a
 uid: cdavis
-userPassword:: anN0ZXZlbnNvbjEyMzQ=
+userPassword:: Y2RhdmlzMTIzNA==
 
 dn: cn=Kelly Tidd,ou=people,ou=cat,ou=environment,dc=edwdc,dc=net
 objectClass: inetOrgPerson

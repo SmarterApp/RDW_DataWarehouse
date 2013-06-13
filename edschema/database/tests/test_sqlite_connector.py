@@ -7,6 +7,8 @@ import unittest
 from database.sqlite_connector import create_sqlite
 from zope import component
 from database.connector import IDbUtil
+from sqlalchemy.types import BigInteger
+from sqlalchemy.ext.compiler import compiles
 
 
 class Test(unittest.TestCase):
@@ -58,6 +60,12 @@ def check_order_of_fact_asmt_outcome(sorted_tables):
         if table.key in foreign_keys_tables:
             foreign_keys_tables.remove(table.key)
     return False
+
+
+# Fixes failing test for schema definitions with BigIntegers
+@compiles(BigInteger, 'sqlite')
+def compile_big_int_sqlite(type_, compiler, **kw):
+    return 'INTEGER'
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

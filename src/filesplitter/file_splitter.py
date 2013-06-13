@@ -7,6 +7,14 @@ import datetime
 from udl2_util.measurement import measure_cpu_plus_elasped_time, show_amount_of_data_affected
 
 
+@show_amount_of_data_affected
+def print_get_splitted_rows(amount, unit, action, module, function):
+    '''
+    get rows to be splitted of by file splitter return the info
+    '''
+    return {'amount': amount, 'unit': unit, 'action':action, 'module':module,'function':function}
+
+
 @measure_cpu_plus_elasped_time
 def create_output_destination(file_name, output_path):
     #create output template from supplied input file path
@@ -93,10 +101,14 @@ def split_file(file_name, delimiter=',', row_limit=10000, parts=0, output_path='
 	print(word_count_cmd)
 	output,err = run_command(word_count_cmd)
 	totalrows = int(output.split()[0])
+	print_get_splitted_rows(totalrows, 'rows', 'splitted', 'file_splitter', 'split_file')
 	#if going by parts, get total rows and define row limit
 	if parts > 0:
 		row_limit = math.ceil(totalrows / parts) # round up for row limit
-			
+	
+	print_get_splitted_rows(totalrows, 'parts', 'divided', 'file_splitter', 'split_file')
+	print_get_splitted_rows(row_limit, 'rows', 'limited', 'file_splitter', 'split_file')
+	
 	if row_limit < totalrows or parts > 1:
 	#call unix split command
 		split_command = 'split -a1 -l {row_limit} {output_path}noheaders.csv {output_dir}'.format(row_limit=row_limit, output_path=output_path, output_dir=os.path.join(output_dir,output_name_template))

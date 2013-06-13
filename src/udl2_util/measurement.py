@@ -96,8 +96,9 @@ def show_amount_of_data_affected(fn, quiet=udl2_conf['quiet_mode']):
             return fn(*args, **kwargs)
         else:
             result = fn(*args, **kwargs)
-            print("MEASURE-- {amount:s} {unit:s} are moved by {module:s}.{function:s}".format(amount=str(result['amount']),
+            print("MEASURE-- {amount:s} {unit:s} are {action:s} by {module:s}.{function:s}".format(amount=str(result['amount']),
                                                                                               unit=result['unit'],
+                                                                                              action=result['action'],
                                                                                               module=result['module'],
                                                                                               function=result['function']))
             return result

@@ -42,7 +42,7 @@ class ITestLoadCsvToSBACStar(unittest.TestCase):
             self.assertTrue(False)
 
     def test_load_csv_to_sbac_star_2500k(self):
-        if os.path.isfile("{datafiles}/REALDATA_ASMT_ValidData.csv".format(datafiles=self.conf['zones']['datafiles'])):
+        if os.path.isfile("{datafiles}/REALDATA_ASMT_ID_2500k.csv".format(datafiles=self.conf['zones']['datafiles'])):
             print("driver.py -c {datafiles}/REALDATA_ASMT_ValidData.csv -j {datafiles}/METADATA_ASMT_ValidData.json".format(datafiles=self.conf['zones']['datafiles']))
             subprocess.call("driver.py -c {datafiles}/REALDATA_ASMT_ID_2500k.csv -j {datafiles}/METADATA_ASMT_ID_2500k.json".format(datafiles=self.conf['zones']['datafiles']),
                             shell=True)

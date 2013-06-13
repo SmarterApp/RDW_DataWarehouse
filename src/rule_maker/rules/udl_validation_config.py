@@ -15,7 +15,7 @@ ALL  = 'all'  # only an error if every row fails for this column (COLUMN rule in
                             # (was COL rule in old-UDL)
 BOTH = 'both'  # if ALL rows are bad, then one entry in ERR table
                             # if not, then check EACH row
-                            # (this magically happens in old-UDL)
+                            # (this magically happens in old-UDL) 
 ## ------------------------------------------------------------------------------------------
 
 

@@ -2,26 +2,38 @@
 from rule_maker.rules import transformations as t
 from rule_maker.rules.rule_keys import *
 
+BY_COLUMN = 'by_column'  # BY_COLUMN rules validate the indicated rule specific to the field it is tagged to
+BY_RULE   = 'by_row'     # BY_RULE rules validate assert conditions - these represent the true/correct state that must exists across multiple columns
 
-# BY_COLUMN rules validate the indicated rule specific to the field it is tagged to
-BY_COLUMN = 'by_column'
-# BY_RULE rules validate assert conditions - these represent the true/correct state that must exists across multiple columns
-BY_RULE   = 'by_row'
 
-# This section represents constant values that are referred to in the below rules 
+## ------------------- Rule Scope ---------------------------------------------------------
+EACH = 'each'  # (default) a rule applies to a single column and checks (in parallel) EACH row
+                            # put an entry into the ERR table for each bad row
+                            # (was ROW rule in old-UDL)
+ALL  = 'all'  # only an error if every row fails for this column (COLUMN rule in old-UDL)
+                            # put ONE entry in ERR table, and only if ALL rows are bad for this column
+                            # (was COL rule in old-UDL)
+BOTH = 'both'  # if ALL rows are bad, then one entry in ERR table
+                            # if not, then check EACH row
+                            # (this magically happens in old-UDL)
+## ------------------------------------------------------------------------------------------
+
+
+# ----- This section represents constant values that are referred to in the below rules -----
 DEFAULT_MAX_LENGTH = 256
 MIN_ASMT_SCORE     = 1200
 MAX_ASMT_SCORE     = 2400
+#--------------------------------------------------------------------------------------------
 
 
-# UDL Validations
+# ------------------------------------ UDL Validations---------------------------------------
 
 validations = {
     'STG_SBAC_ASMT_OUTCOME': {
         BY_COLUMN: {
             'batch_id'              : [],
             'src_file_rec_num'      : [],
-            'guid_asmt'             : [IsNotNull, IsGoodGUID],
+            'guid_asmt'             : [[IsNotNull] , IsGoodGUID],
             'guid_asmt_location'    : [IsGoodGUID, {IsUniqueWithin: ['name_asmt_location']}],
             'name_asmt_location'    : IsNotNull,
             'grade_asmt'            : [IsNotNull, {IsInList:[3,4,5,6,7,8,11]}],

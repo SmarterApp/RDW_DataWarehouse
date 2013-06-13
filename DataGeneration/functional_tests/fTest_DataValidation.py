@@ -278,18 +278,39 @@ class DataGenerationValidation(unittest.TestCase):
 
     # TC8: Count number of schools from CSVs and compare with Config file
     def test_number_of_schools(self):
-        typical1 = get_states()[0]['state_type']
-        district_type = get_state_types()[typical1][DISTRICT_TYPES_AND_COUNTS].keys()
-        school_type = get_district_types().keys()
+        state = get_state_types()[typical1]['district_types_and_counts']
+        state_keys = list(get_state_types()[typical1]['district_types_and_counts'].keys())
+        state_no = list(get_state_types()[typical1]['district_types_and_counts'].values())
+        total_schools = 0
+        final_total_schools = 0
+        min_final_total = 0
 
-        min_schools = 0
-        max_schools = 0
-        for values in district_type:
-            if values in school_type:
-                min_district_num = (get_district_types()[values][SCHOOL_COUNTS][MIN]) * (get_state_types()[typical1][DISTRICT_TYPES_AND_COUNTS][values])
-                max_district_num = (get_district_types()[values][SCHOOL_COUNTS][MAX]) * (get_state_types()[typical1][DISTRICT_TYPES_AND_COUNTS][values])
-                min_schools += min_district_num
-                max_schools += max_district_num
+        for index in range(len(state)):
+            state_no1 = state_no[index]
+            state_keys1 = state_keys[index]
+            sum_dist_ratio = sum(get_district_types()[state_keys1]['school_types_and_ratios'].values())
+            min_dist = get_district_types()[state_keys1]['school_counts']['min']
+            dist_ratio = get_district_types()[state_keys1]['school_types_and_ratios'].values()
+            total_schools = 0
+            for each in dist_ratio:
+                #min_dist_num = ((min_dist * each) // sum_dist_ratio)
+                min_dist_num = max(((min_dist) * (each // sum_dist_ratio)), 1)
+                total_schools += min_dist_num
+            final_total = total_schools * state_no1
+            min_final_total += final_total
+
+#        typical1 = get_states()[0]['state_type']
+#        district_type = get_state_types()[typical1][DISTRICT_TYPES_AND_COUNTS].keys()
+#        school_type = get_district_types().keys()
+#
+#        min_schools = 0
+#        max_schools = 0
+#        for values in district_type:
+#            if values in school_type:
+#                min_district_num = (get_district_types()[values][SCHOOL_COUNTS][MIN]) * (get_state_types()[typical1][DISTRICT_TYPES_AND_COUNTS][values])
+#                max_district_num = (get_district_types()[values][SCHOOL_COUNTS][MAX]) * (get_state_types()[typical1][DISTRICT_TYPES_AND_COUNTS][values])
+#                min_schools += min_district_num
+#                max_schools += max_district_num
         csv_files = [DataGenerationValidation.dim_inst_hier_csv, DataGenerationValidation.fact_asmt_outcome_csv,
                      DataGenerationValidation.dim_section_csv, DataGenerationValidation.dim_staff_csv, DataGenerationValidation.dim_student_csv]
         for each_csv in csv_files:
@@ -300,7 +321,8 @@ class DataGenerationValidation(unittest.TestCase):
                     school_guid = values['school_guid']
                     if school_guid != 'NA':
                         school_set.add(school_guid)
-            assert min_schools <= len(school_set) <= max_schools, 'Min School count in config file is ' + str(min_schools) + ' Max School count in config file is ' + str(max_schools) + ' but School count in ' + os.path.basename(each_csv)[:-4] + ' is ' + str(len(school_set))
+#            assert min_schools <= len(school_set) <= max_schools, 'Min School count in config file is ' + str(min_schools) + ' Max School count in config file is ' + str(max_schools) + ' but School count in ' + os.path.basename(each_csv)[:-4] + ' is ' + str(len(school_set))
+            assert min_final_total <= len(school_set), 'Min School count in config file is ' + str(min_final_total) + ' Max School count in config file is ' + 'but School count in ' + os.path.basename(each_csv)[:-4] + ' is ' + str(len(school_set))
         print('TC8: Passed: Count overall number of schools from CSVs and compare with Config file ')
 
     # TC9: Count number of students from CSVs and compare with Config file

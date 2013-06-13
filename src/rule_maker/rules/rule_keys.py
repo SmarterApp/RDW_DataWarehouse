@@ -1,3 +1,5 @@
+#@PydevCodeAnalysisIgnore
+
 # referenced from POC code
 INSTRUCTION = 'instruction'
 CANON = 'canon'
@@ -13,20 +15,21 @@ INLIST_WITH_OUTLIST = 'inlist_with_outlist'
 
 
 # Transformation Notations.
-UPPER     = 'upper'
-LOWER     = 'lower'
-REMNL     = 'remnl'
-TRIM      = 'trim'
-PCLEAN    = 'pclean'
-DATE      = 'date'
-DATEIN    = 'datein'
-DATEOUT   = 'dateout'
-LOOKUP    = 'lookup'
-INLIST    = 'inlist'
-OUTLIST   = 'outlist'
-CALCULATE = 'calculate'
-VCLEAN    = 'vclean'
-RCLEAN    = 'rclean' 
+UPPER           = 'upper'
+LOWER           = 'lower'
+REMNL           = 'remnl'
+TRIM            = 'trim'
+PCLEAN          = 'pclean'
+DATE            = 'date'
+DATEIN          = 'datein'
+DATEOUT         = 'dateout'
+LOOKUP          = 'lookup'
+INLIST          = 'inlist'
+OUTLIST         = 'outlist'
+COMPARE_LENGTH  = 'compare_length'
+CALCULATE       = 'calculate'
+VCLEAN          = 'vclean'
+RCLEAN          = 'rclean' 
 
 # Validation Notations.
 IsNotNull       = 'IsNotNull'       # Validate if data value(s) are Not Null or are not blank/empty strings

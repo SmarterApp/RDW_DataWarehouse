@@ -25,7 +25,7 @@ transform_rules = {
                                      OUTLIST : ['male','male','male','male','female','female','female','female','NS','NS','NS']     },
                    
                    'staffType'   : { PCLEAN  : [UPPER, REMNL, TRIM], 
-                                     LOOKUP  : {'Y': ['Y', '1', 'T'], 'N': ['N', '0', 'F'] } },
+                                     INLIST  : ['Staff', 'Teacher'], COMPARE_LENGTH : '1' },
                    
                    'calcWeight'  : { CALCULATE  : '( 1 - ( {claim_1} + {claim_2} + {claim_3} ) )' ,  
                                      PCLEAN : [ TRIM, REMNL], 

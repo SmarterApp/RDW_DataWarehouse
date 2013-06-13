@@ -11,6 +11,9 @@ from database.connector import IDbUtil
 import os
 from database.data_importer import import_csv_dir
 
+from sqlalchemy.types import BigInteger
+from sqlalchemy.ext.compiler import compiles
+
 
 class UT_Base(unittest.TestCase):
 
@@ -64,3 +67,9 @@ class Unittest_with_sqlite_no_data_load(UT_Base):
     def tearDownClass(cls):
         # destroy sqlite just in case
         destroy_sqlite(datasource_name=Unittest_with_sqlite.datasource_name)
+
+
+# Fixes failing test for schema definitions with BigIntegers
+@compiles(BigInteger, 'sqlite')
+def compile_big_int_sqlite(type_, compiler, **kw):
+    return 'INTEGER'

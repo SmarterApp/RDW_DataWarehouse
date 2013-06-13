@@ -7,9 +7,6 @@ import unittest
 from database.connector import DBConnection
 from database.tests.utils.unittest_with_sqlite import Unittest_with_sqlite
 
-from sqlalchemy.types import BigInteger
-from sqlalchemy.ext.compiler import compiles
-
 
 class TestEdMetadata(Unittest_with_sqlite):
 
@@ -29,12 +26,6 @@ class TestEdMetadata(Unittest_with_sqlite):
             query = dim_inst_hier.select(dim_inst_hier.c.district_guid == '228')
             result = connector.get_result(query)
             self.assertEqual('228', result[0]['district_guid'])
-
-
-# Fixes failing test for schema definitions with BigIntegers
-@compiles(BigInteger, 'sqlite')
-def compile_big_int_sqlite(type_, compiler, **kw):
-    return 'INTEGER'
 
 
 if __name__ == "__main__":

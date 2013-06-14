@@ -78,8 +78,7 @@ class TestCreatePdf(unittest.TestCase):
         prepare_file_path(file_name)
         with open(file_name, 'w') as file:
             file.write('%PDF-1.4')
-        task = get('cookie', 'url', file_name, always_generate=True)
-        self.assertIsNotNone(task)
+        self.assertRaises(PdfGenerationError, get, 'cookie', 'url', file_name, always_generate=True)
 
     def test_create_directory(self):
         file_name = os.path.join(self.__temp_dir, 'a', 'b', 'c', 'd.pdf')

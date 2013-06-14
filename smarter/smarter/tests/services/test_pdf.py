@@ -206,10 +206,7 @@ class TestServices(Unittest_with_smarter_sqlite):
         prepare_file_path(pdf_file)
         with open(pdf_file, 'w') as file:
             file.write('%PDF-1.4')
-        response = send_pdf_request(params)
-        self.assertIsInstance(response, Response)
-        self.assertEqual(response.content_type, 'application/pdf')
-        self.assertIsInstance(response.body, bytes)
+        self.assertRaises(EdApiHTTPInternalServerError, send_pdf_request, params)
 
 
 if __name__ == "__main__":

@@ -11,7 +11,7 @@ from celery.utils import strtobool
 # default timeout 20 seconds
 TIMEOUT = 20
 # default number of pdf generation retries
-RETRIES = 2
+RETRIES = 1
 # minimum file size of pdf generated
 MINIMUM_FILE_SIZE = 80000
 

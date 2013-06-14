@@ -13,6 +13,7 @@ from services.exceptions import PdfGenerationError
 import copy
 from services.celeryconfig import TIMEOUT
 import services
+from celery.exceptions import MaxRetriesExceededError, RetryTaskError
 
 pdf_procs = ['wkhtmltopdf']
 pdf_defaults = ['--enable-javascript', '--page-size', 'Letter', '--print-media-type', '-l', '--javascript-delay', '6000', '--footer-center', 'Page [page] of [toPage]', '--footer-font-size', '9']
@@ -23,8 +24,8 @@ FAIL = 1
 log = logging.getLogger('smarter')
 
 
-@celery.task(name='tasks.pdf.generate')
-def generate(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT, cookie_name='edware', grayScale=False, retries=0):
+@celery.task(name='tasks.pdf.generate', max_retries=services.celeryconfig.RETRIES)
+def generate(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT, cookie_name='edware', grayScale=False):
     '''
     Generates pdf from given url. Returns exist status code from shell command.
     We set up timeout in order to terminate pdf generating process, for wkhtmltopdf 0.10.0 doesn't exit
@@ -45,19 +46,32 @@ def generate(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT, coo
     except subprocess.TimeoutExpired:
         log.error('Pdf subprocess timed out')
     except:
-        log.error("Generate PDF error: %s", sys.exc_info())
+        log.error('Generate PDF error: %s', sys.exc_info())
         # Some exception happened, force a regenerate
         force_regenerate = True
 
     # Validate pdf file was generated and greater than a certain size
     if not validate_file(outputfile) or force_regenerate:
-        if retries < services.celeryconfig.RETRIES:
-            log.error("PDF %s failed validation, Going to retry #%s", outputfile, str(retries + 1))
-            return generate(cookie, url, outputfile, options=options, timeout=timeout, cookie_name=cookie_name, grayScale=grayScale, retries=retries + 1)
-        else:
-            log.error("Maximum retries of pdf generation reached. Removing pdf file %s as validation of file failed", outputfile)
-            delete_file(outputfile)
-            return FAIL
+        delete = False
+        log.error("PDF %s failed validation, Going to retry", outputfile)
+        kwargs = {'options': options, 'timeout': timeout, 'cookie_name': cookie_name, 'grayScale': grayScale}
+        try:
+            return generate.retry(args=[cookie, url, outputfile], kwargs=kwargs)
+        except MaxRetriesExceededError:
+            log.error('Pdf max retries has exceeded')
+            delete = True
+        except RetryTaskError:
+            log.error('All retries have failed')
+            delete = True
+        except:
+            log.error('Generate PDF error on retry: %s', sys.exc_info())
+            delete = True
+        finally:
+            if delete:
+                # If the retries throws an exception, return fail
+                log.error("Removing pdf file %s as exception was caught", outputfile)
+                delete_file(outputfile)
+                return FAIL
     else:
         return OK
 
@@ -68,6 +82,8 @@ def get(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT, cookie_n
     Reads pdf file if it exists, else it'll request to generate pdf.  Returns byte stream from generated pdf file
     '''
     if always_generate or not os.path.exists(outputfile):
+        # always delete it first
+        delete_file(outputfile)
         generate_task = generate(cookie, url, outputfile, options=pdf_defaults, timeout=timeout, cookie_name=cookie_name, grayScale=grayScale)
         if generate_task is FAIL:
             raise PdfGenerationError()

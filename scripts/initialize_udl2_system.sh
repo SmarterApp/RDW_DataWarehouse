@@ -13,6 +13,14 @@ if [ `uname` == 'Linux' ]; then
     sudo -u root -s "passwd udl2"
     sudo -u root -s "chown udl2.udl2 /opt/wgen/edware-udl/udl2"
     sudo -u root -s "chown udl2.udl2 /opt/wgen/edware-udl/udl2/.ssh"
+    sudo -u root -s "echo 'umask 0002' > /opt/wgen/edware-udl/udl2/.bashrc"
+    sudo -u root -s "echo 'umask 0002' > /opt/wgen/edware-udl/udl2/.bash_profile"
+    sudo -u root -s "echo 'umask 0002' > /opt/wgen/edware-udl/udl2/.profile"
+    sudo -u root -s "echo 'umask 0002' > /opt/wgen/edware-udl/udl2/.login"
+    sudo -u root -s "echo 'umask 0002' > /opt/wgen/edware-udl/udl2/.bash_login"
+    sudo -u root -s "chown udl2.udl2 /opt/wgen/edware-udl/udl2/.bash*"
+    sudo -u root -s "chown udl2.udl2 /opt/wgen/edware-udl/udl2/.profile"
+    sudo -u root -s "chown udl2.udl2 /opt/wgen/edware-udl/udl2/.loging"
 fi
 # create directories
 sudo -u root -s "./initialize_udl2_directories.sh"
@@ -38,9 +46,9 @@ cd /opt/wgen/edware-udl/udl2
 echo "/opt/python3/bin/virtualenv-3.3 --distribute python3.3"
 
 if [ `uname` == 'Linux' ]; then
-    su udl2 -c "/opt/python3/bin/virtualenv-3.3 --distribute python3.3"
+    su - udl2 -c "/opt/python3/bin/virtualenv-3.3 --distribute python3.3"
 else
-    su root -c "virtualenv-3.3 --distribute python3.3"
+    su - root -c "virtualenv-3.3 --distribute python3.3"
 fi
 
 # install virtualenv-2.7
@@ -48,9 +56,9 @@ echo "install virtual-2.7 for flower"
 cd /opt/wgen/edware-udl/udl2
 echo "virtualenv-2.7 --distribute python2.7"
 if [ `uname` == 'Linux' ]; then
-    su udl2 -c "/usr/bin/virtualenv-2.7 --distribute python2.7";
+    su - udl2 -c "/usr/bin/virtualenv-2.7 --distribute python2.7";
 else
-    su root -c "virtualenv-2.7 --distribute python2.7";
+    su - root -c "virtualenv-2.7 --distribute python2.7";
 fi
 # pull code from git
 #echo "pull code from git"
@@ -63,14 +71,14 @@ cd  $CODE_DIR
 cd ../
 
 if [ `uname` == 'Linux' ]; then
-    su udl2 -c "source /opt/wgen/edware-udl/udl2/python3.3/bin/activate; /opt/wgen/edware-udl/udl2/python3.3/bin/python3.3 setup.py install";
+    su - udl2 -c "source /opt/wgen/edware-udl/udl2/python3.3/bin/activate; /opt/wgen/edware-udl/udl2/python3.3/bin/python3.3 setup.py install";
 else
-    su root -c "source /opt/wgen/edware-udl/udl2/python3.3/bin/activate; /opt/wgen/edware-udl/udl2/python3.3/bin/python3.3 setup.py install";
+    su - root -c "source /opt/wgen/edware-udl/udl2/python3.3/bin/activate; /opt/wgen/edware-udl/udl2/python3.3/bin/python3.3 setup.py install";
 fi 
 #install all python dependency for flower to monitor celery
 echo "install all python dependency code for flower to minitor celery"
 if [ `uname` == 'Linux' ]; then
-    su udl2 -c "source /opt/wgen/edware-udl/udl2/python2.7/bin/activate; /opt/wgen/edware-udl/udl2/python2.7/bin/pip-2.7 install flower";
+    su - udl2 -c "source /opt/wgen/edware-udl/udl2/python2.7/bin/activate; /opt/wgen/edware-udl/udl2/python2.7/bin/pip-2.7 install flower";
 else
-    su root -c "source /opt/wgen/edware-udl/udl2/python2.7/bin/activate; /opt/wgen/edware-udl/udl2/python2.7/bin/pip-2.7 install flower";
+    su - root -c "source /opt/wgen/edware-udl/udl2/python2.7/bin/activate; /opt/wgen/edware-udl/udl2/python2.7/bin/pip-2.7 install flower";
 fi

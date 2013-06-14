@@ -62,6 +62,10 @@ common:
     run.npm.update: true
     # Timeout for pdf generation process
     pdf:
+      # expected pdf file size in bytes used to validate that pdf was generated without errors
+      minimum.file.size: 80000
+      # number of retries allowed after the first failure
+      retries.allowed: 2
       generate.timeout: 10
       report_base_dir: /tmp/pdf
       celery_timeout: 30
@@ -186,7 +190,10 @@ qa1:
         idp_server_logout_url: https://auth0.qa.dum.edwdc.net/openam/IDPSloRedirect/metaAlias/idp
         name_qualifier: https://auth0.qa.dum.edwdc.net/openam
   '[handlers]':
-    keys: console, filelog, audit, syslog
+    keys: filelog, audit, syslog, security_event
+  '[logger_root]':
+    level: INFO
+    handlers: filelog
   '[handler_syslog]':
     class: logging.handlers.SysLogHandler
     args: '(''/dev/log'', handlers.SysLogHandler.LOG_LOCAL1)'
@@ -221,7 +228,10 @@ qa2:
         idp_server_logout_url: https://auth0.qa.dum.edwdc.net/openam/IDPSloRedirect/metaAlias/idp
         name_qualifier: https://auth0.qa.dum.edwdc.net/openam
   '[handlers]':
-    keys: console, filelog, audit, syslog
+    keys: filelog, audit, syslog, security_event
+  '[logger_root]':
+    level: INFO
+    handlers: filelog
   '[handler_syslog]':
     class: logging.handlers.SysLogHandler
     args: '(''/dev/log'', handlers.SysLogHandler.LOG_LOCAL1)'
@@ -267,7 +277,7 @@ uat:
         idp_server_logout_url: https://betaauth.smarterbalancedreporting.org/openam/IDPSloRedirect/metaAlias/idp
         name_qualifier: https://betaauth.smarterbalancedreporting.org/openam
   '[handlers]':
-    keys: audit, syslog
+    keys: audit, syslog, security_event
   '[logger_root]':
     level: INFO
     handlers: syslog
@@ -281,7 +291,7 @@ uat:
     args: '(''/dev/log'', handlers.SysLogHandler.LOG_LOCAL0)'
     level: WARN
     formatter: json
-  '[handler_audit]':
+  '[handler_security_event]':
     class: logging.handlers.SysLogHandler
     args: '(''/dev/log'', handlers.SysLogHandler.LOG_LOCAL2)'
     level: WARN
@@ -307,7 +317,7 @@ localOpenAM:
   '[app:main]':
     edware:
       db:
-        schema_name: edware_sds_0_2
+        schema_name: edware_sds_0_3
         cat:
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
           echo: False
@@ -334,7 +344,7 @@ development:
         pool_size: 20
         max_overflow: 10
         cat:
-          schema_name: edware_sds_0_2
+          schema_name: edware_sds_0_3
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
         dog:
           schema_name: edware_sds_us15303_0_1
@@ -362,7 +372,7 @@ test:
     edware:
       db:
         cat:
-          schema_name: edware_sds_0_2
+          schema_name: edware_sds_0_3
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
         dog:
           schema_name: edware_sds_us15303_0_1
@@ -386,7 +396,7 @@ jenkins_dev:
     edware:
       db:
         cat:
-          schema_name: edware_sds_0_2
+          schema_name: edware_sds_0_3
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
         dog:
           schema_name: edware_sds_us15303_0_1

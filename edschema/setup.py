@@ -7,6 +7,11 @@ requires = [
 
 tests_require = requires
 
+docs_extras = [
+    'Sphinx',
+    'docutils',
+    'repoze.sphinx.autointerface']
+
 setup(name='edschema',
       version='0.1',
       description='Schema for EdWare',
@@ -25,6 +30,8 @@ setup(name='edschema',
       test_suite='nose.collector',
       install_requires=requires,
       tests_require=tests_require,
+      extras_require={
+          'docs': docs_extras, },
       entry_points="""\
       """,
       )

@@ -12,6 +12,7 @@ from edapi.exceptions import NotFoundException
 from pyramid.testing import DummyRequest
 from pyramid import testing
 from edauth.security.session import Session
+from smarter.security.roles.teacher import Teacher  # @UnusedImport
 
 
 class TestStudentReport(Unittest_with_smarter_sqlite):
@@ -63,9 +64,9 @@ class TestStudentReport(Unittest_with_smarter_sqlite):
         student_report = result[0]
 
         self.assertEqual('Math', student_report['asmt_subject'], 'asmt_subject')
-        self.assertEqual('Linda', student_report['teacher_first_name'], 'teacher first name')
+        self.assertEqual('Susan', student_report['teacher_first_name'], 'teacher first name')
         self.assertEqual(None, student_report['teacher_middle_name'], 'teacher middle name')
-        self.assertEqual('Kim', student_report['teacher_last_name'], 'teacher last name')
+        self.assertEqual('Hall', student_report['teacher_last_name'], 'teacher last name')
         self.assertEqual(21, student_report['date_taken_day'])
         self.assertEqual(9, student_report['date_taken_month'])
         self.assertEqual(2012, student_report['date_taken_year'])

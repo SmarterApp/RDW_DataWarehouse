@@ -16,15 +16,8 @@ Comprehensive reference material for every public API exposed by edapi
 
 .. toctree::
    :maxdepth: 1
-   :glob:
 
    apidoc/edapi.rst
-
-Contents:
-
-.. toctree::
-   :maxdepth: 2
-
 
 
 Indices and tables
@@ -33,4 +26,9 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+.. toctree::
+   :hidden:
+
+   glossary
 

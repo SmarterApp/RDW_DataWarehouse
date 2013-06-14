@@ -87,10 +87,6 @@ function run_unit_tests {
     echo "Running unit tests"
    
     cd "$WORKSPACE/$1"
-    # Tech debt in edapi logging test - it must go inside one more dir
-    if [ ${1:=""} == "edapi" ]; then
-       cd "$1"
-    fi
      
     nosetests --with-xunit --xunit-file=$WORKSPACE/nosetests.xml --cov-report xml
 
@@ -330,14 +326,17 @@ function generate_ini {
 }
 
 function generate_docs {
-    # For now, we only have docs for edapi
-    if [ ${1:=""} == "edapi" ]; then
-        cd "$WORKSPACE/edapi"
+    # Generate docs if docs directory exists 
+    if [ -d "$WORKSPACE/$1/docs" ]; then
+        echo "***************"
+        echo "Generating Docs"
+        echo "***************"
+        cd "$WORKSPACE/$1"
 	python setup.py docs
-        cd "$WORKSPACE/edapi/docs"
-        sphinx-build -b html -d _build/doctrees/ . _build/html/
+        cd "$WORKSPACE/$1/docs"
+        make html
     fi
-    echo "Docs created in $WORKSPACE/edapi/docs/_build/html"
+    echo "Docs created in $WORKSPACE/$1/docs/_build/html"
 }
 
 function main {

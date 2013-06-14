@@ -209,7 +209,7 @@ def saml2_post_consumer(request):
     else:
         message = "SAML response failed with Condition: {0}, Status: {1}, Signature: {2}".format(str(condition), str(status), str(signature))
         logger.info(message)
-        write_security_event(message, SECURITY_EVENT_TYPE.INFO)
+        write_security_event(message, SECURITY_EVENT_TYPE.WARN)
         redirect_url = request.route_url('login')
         headers = []
 

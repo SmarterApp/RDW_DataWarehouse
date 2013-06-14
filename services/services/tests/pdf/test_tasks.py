@@ -6,17 +6,21 @@ Created on May 14, 2013
 import unittest
 import services
 from services.pdf.tasks import generate, OK, FAIL, \
-    prepare_file_path, get
+    prepare_file_path, get, validate_file, delete_file
+from services.celeryconfig import setup_global_settings
 import platform
 import os
 import tempfile
 import shutil
+from services.exceptions import PdfGenerationError
 
 
 class TestCreatePdf(unittest.TestCase):
 
     def setUp(self):
         self.__temp_dir = tempfile.mkdtemp()
+        settings = {'pdf.minimum.file.size': '1'}
+        setup_global_settings(settings)
 
     def tearDown(self):
         shutil.rmtree(self.__temp_dir, ignore_errors=True)
@@ -24,6 +28,9 @@ class TestCreatePdf(unittest.TestCase):
     def test_generate_pdf_success_cmd(self):
         services.pdf.tasks.pdf_procs = ['echo', 'dummy']
         file_name = os.path.join(self.__temp_dir, 'b', 'd.pdf')
+        prepare_file_path(file_name)
+        with open(file_name, 'w') as file:
+            file.write('%PDF-1.4')
         task = generate('cookie', 'url', file_name)
         self.assertEqual(task, OK)
 
@@ -40,6 +47,14 @@ class TestCreatePdf(unittest.TestCase):
         task = generate('cookie', 'url', output_file, options=[], timeout=1)
         self.assertEqual(task, FAIL)
 
+    def test_generate_with_retries(self):
+        settings = {'pdf.minimum.file.size': '1000000'}
+        setup_global_settings(settings)
+        services.pdf.tasks.pdf_procs = ['echo', 'dummy']
+        file_name = os.path.join(self.__temp_dir, 'b', 'd.pdf')
+        task = generate('cookie', 'url', file_name)
+        self.assertEqual(task, FAIL)
+
     def test_generate_pdf_fail_cmd(self):
         services.pdf.tasks.pdf_procs = ['dummycmd']
         task = generate('cookie', 'url', 'outputfile')
@@ -49,7 +64,7 @@ class TestCreatePdf(unittest.TestCase):
         services.pdf.tasks.pdf_procs = ['echo', 'dummy']
         file_name = os.path.join(self.__temp_dir, 'i_dont_exist')
         # We can't test this method properly
-        self.assertRaises(FileNotFoundError, get, 'cookie', 'url', file_name)
+        self.assertRaises(PdfGenerationError, get, 'cookie', 'url', file_name)
 
     def test_get_pdf_valid_file(self):
         services.pdf.tasks.pdf_procs = ['echo', 'dummy']
@@ -77,7 +92,32 @@ class TestCreatePdf(unittest.TestCase):
         file_name = os.path.join(self.__temp_dir, 'a', 'b', 'c', 'd.pdf')
         prepare_file_path(file_name)
         prepare_file_path(file_name)
-        self.assertTrue(True)
+        self.assertTrue(os.path.exists(os.path.dirname(file_name)))
+
+    def test_validate_file_non_existing_file(self):
+        path = os.path.join(self.__temp_dir, 'notexist.pdf')
+        valid = validate_file(path)
+        self.assertFalse(valid)
+
+    def test_validate_file_existing_file(self):
+        here = os.path.abspath(__file__)
+        valid = validate_file(here)
+        self.assertTrue(valid)
+
+    def test_validate_file_size_too_small(self):
+        settings = {'pdf.minimum.file.size': '1000000'}
+        setup_global_settings(settings)
+        here = os.path.abspath(__file__)
+        valid = validate_file(here)
+        self.assertFalse(valid)
+
+    def test_delete_file(self):
+        file_name = os.path.join(self.__temp_dir, 'i_exist')
+        prepare_file_path(file_name)
+        with open(file_name, 'w') as file:
+            file.write('%PDF-1.4')
+        delete_file(file_name)
+        self.assertFalse(os.path.exists(file_name))
 
 
 def get_cmd():

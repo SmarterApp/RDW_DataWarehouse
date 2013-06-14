@@ -140,5 +140,67 @@
         "individual_student_report": "<h4>Purpose:</h4><p>This report is intended to summarize what your scores for a single year of summative assessments mean. It is a starting point for understanding your relative strengths and weaknesses so that you can identify opportunities for continued progress.</p><br/><h4>Uses:</h4><ul><li>As a student or parent, use this report to understand where this student is, in terms of their assessed grade, on the path towards career and college content-readiness. If the results do not match your understanding of where the student should be, you can focus on relative strengths and weaknesses (content forthcoming) to ascertain where the discrepancy may be.</li><li>As a teacher or administrator, use this report to support the teacher-student-parent partnership, whether it provides context for a parent-teacher conference or helps to identify areas to concentrate on in the coming year(s).</li></ul><br/><h4>Understanding your score:</h4><p>The Smarter Balanced Assessment is different than other tests with which you may be familiar.</p><ul><li>First, it is a criterion-referenced test, meaning that it measures individual student’s mastery of a particular set of academic knowledge and skills.</li><li>Second, the Smarter Balanced assessments take advantage of computer technology to customize each test to the individual student.When a student gets an item correct, the next item they see will be slightly more difficult. Likewise, if an item is incorrect, the next item will be somewhat less difficult. This procedure allows for more efficient and precise measurement of students' knowledge and skills.</li><li>As a result, scores are not meant to compare students to each other, but rather to determine how well each student mastered the content assessed.</li></ul><br/>",
         "list_of_students": "<h4>Purpose:</h4><p>This report is intended to provide a consolidated view of individual student scores for a given assessment, and acts as a bridge between larger aggregate views and the individual student reports.</p><br><h4>Uses:</h4><ul><li>Use this report to sort a list of students by their various scores, or alphabetically. Ordering students by Overall scores may reveal groups of students, for example those concentrated around cut-scores or those in need of significant extra support.</li><li>Filtering capability will be forthcoming in the next version of the Reporting system, which will allow you to narrow down the overall list according to a multitude of student and score attributes.</li></ul><br><h4>More information:</h4><p>A list of students will most often be used to see a section or class at-a-glance for a given assessment. Single-point Overall scale-scores and Error Bands are provided to illustrate a spatial representation of student performance, and the list shows how those Error Bands overlap. Claim scores are provided in numerical form, but are best understood relative to the overall score and compared to each other as relative strengths and weaknesses. The combination may lead to insights that help characterize the results of an assessment for a group of students.</p><br/>",
         "comparing_populations": "<h4>Purpose:</h4><p>This report compares large aggregations of students across organizational boundaries. The Achievement Level proportion bars provide a standardized say to view assessment results in a common format that describes their overall performance.</p><br><h4>Uses:</h4><ul><li>Use this view to compare summary performance of a large aggregation (e.g. school, district, state).</li><li>Keep in mind that the number of students assessed is an important part of any analysis.</li></ul><br><h4>More information:</h4><p>Currently, advanced functionality is limited to sorting by name and number of students assessed, but forthcoming functionality (including chained filters, multiple paths between levels, and bar alignment) will expand the comparative power of the report.</p><br/>"
+    },
+    
+    "students": {
+		"{{subject1}}_{{subject2}}": [
+				{"name":"", "items": [
+					{"name":"Students","index":"Students","field":"student_full_name","width":205,"style":"ui-ellipsis bold", "formatter":"showlink", "options":{"linkUrl":"indivStudentReport.html"}, "hidden":true, "sortorder":"asc"}
+				]},
+				{"name":"{{subject1}}","items":[
+					{"name":"Overall Score<div id='subject1_perfBar' class='header_perfBar'></div>","index":"Overall","field":"assessments.subject1.asmt_score","width":170,"formatter":"performanceBar","options":{"asmt_type":"subject1"},"sorttype":"int","align":"center","title":false},
+					{"name":"Teacher","index":"Teacher","field":"assessments.subject1.teacher_full_name","width":204,"style":"ui-ellipsis","resizable":false}
+					]
+				},
+				{"name":"{{subject2}}","items":[
+					{"name":"Overall Score<div id='subject2_perfBar' class='header_perfBar'></div>","index":"Overall","field":"assessments.subject2.asmt_score","width":170,"formatter":"performanceBar","options":{"asmt_type":"subject2"},"sorttype":"int","align":"center","title":false},
+					{"name":"Teacher","index":"Teacher","field":"assessments.subject2.teacher_full_name","width":204,"style":"ui-ellipsis","resizable":false}
+					]
+				}
+			],
+			"{{subject1}}": [
+				{"name":"", "items": [
+					{"name":"Students","index":"Students","field":"student_full_name","width":205,"style":"ui-ellipsis bold", "formatter":"showlink", "options":{"linkUrl":"indivStudentReport.html"}, "hidden":true, "sortorder":"asc"}
+				]},
+				{"name":"{{subject1}}","items":[			
+					{"name":"Overall Score<div id='subject1_perfBar' class='header_perfBar'></div>","index":"Overall","field":"assessments.subject1.asmt_score","width":170,"formatter":"performanceBar","options":{"asmt_type":"subject1"},"sorttype":"int","align":"center","title":false},
+					{"name":"Teacher","index":"Teacher","field":"assessments.subject1.teacher_full_name","width":155,"style":"ui-ellipsis","resizable":false}]
+				},
+				{"name": "<p class='claim_name'>{{claims.subject1.0.name}}</p>", "items": [
+					{"name":"{{claims.subject1.0.name2}}","index":"{{claims.subject1.0.name2}}","field":"assessments.subject1.claims.0.score","width":140,"formatter":"showConfidence","sorttype":"int","align":"center"}]
+				},
+				{"name": "<p class='claim_name'>{{claims.subject1.1.name}}</p>", "items": [
+					{"name":"{{claims.subject1.1.name2}}","index":"{{claims.subject1.1.name2}}","field":"assessments.subject1.claims.1.score","width":140,"formatter":"showConfidence","sorttype":"int","align":"center"}]
+				},
+				{"name": "<p class='claim_name'>{{claims.subject1.2.name}}</p>", "items": [
+					{"name":"{{claims.subject1.2.name2}}","index":"{{claims.subject1.2.name2}}","field":"assessments.subject1.claims.2.score","width":140,"formatter":"showConfidence","sorttype":"int","align":"center"}]
+				}
+			],
+			"{{subject2}}": [
+				{"name":"", "items": [
+					{"name":"Students","index":"Students","field":"student_full_name","width":205,"style":"ui-ellipsis bold", "formatter":"showlink", "options":{"linkUrl":"indivStudentReport.html"}, "hidden":true, "sortorder":"asc"}
+				]},
+				{"name":"{{subject2}}","items":[
+					{"name":"Overall Score<div id='subject2_perfBar' class='header_perfBar'></div>","index":"Overall","field":"assessments.subject2.asmt_score","width":170,"formatter":"performanceBar","options":{"asmt_type":"subject2"},"sorttype":"int","align":"center","title":false},
+					{"name":"Teacher","index":"Teacher","field":"assessments.subject2.teacher_full_name","width":155,"style":"ui-ellipsis","resizable":false}
+					]
+				},
+				{"name": "<p class='claim_name'>{{claims.subject2.0.name}}</p>", "items": [
+					{"name":"{{claims.subject2.0.name2}}","index":"{{claims.subject2.claims.0.name2}}","field":"assessments.subject2.claims.0.score","width":103,"formatter":"showConfidence","sorttype":"int","align":"center"}]
+				},
+				{"name": "<p class='claim_name'>{{claims.subject2.1.name}}</p>", "items": [
+					{"name":"{{claims.subject2.1.name2}}","index":"{{claims.subject2.1.name2}}","field":"assessments.subject2.claims.1.score","width":104,"formatter":"showConfidence","sorttype":"int","align":"center"}]
+				},
+				{"name": "<p class='claim_name'>{{claims.subject2.2.name}}</p>", "items": [
+					{"name":"{{claims.subject2.2.name2}}","index":"{{claims.subject2.2.name2}}","field":"assessments.subject2.claims.2.score","width":104,"formatter":"showConfidence","sorttype":"int","align":"center"}]
+				},
+				{"name": "<p class='claim_name'>{{claims.subject2.3.name}}</p>", "items": [
+					{"name":"{{claims.subject2.3.name2}}","index":"{{claims.subject2.3.name2}}","field":"assessments.subject2.claims.3.score","width":104,"formatter":"showConfidence","sorttype":"int","align":"center"}]
+				}
+			],
+		"customViews": {"{{subject1}}_{{subject2}}": "{{subject1}} & {{subject2}} Summative",
+						"{{subject1}}": "{{subject1}} Summative",
+						"{{subject2}}": "{{subject2}} Summative"
+						}
     }
 }

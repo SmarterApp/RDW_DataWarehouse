@@ -6,15 +6,18 @@ define [
   "edwareDataProxy"
   "edwareGrid"
   "edwareBreadcrumbs"
-  "text!edwareAssessmentDropdownViewSelectionTemplate"
   "edwareUtil"
   "edwareFooter"
-  "text!edwareLOSHeaderConfidenceLevelBarTemplate"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareAssessmentDropdownViewSelectionTemplate, edwareUtil, edwareFooter, edwareLOSHeaderConfidenceLevelBarTemplate) ->
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter) ->
 
   assessmentsData = {}
   studentsConfig = {}
   subjectsData = {}
+  edwareLOSHeaderConfidenceLevelBarTemplate = "<div class='progress' style='width: {{bar_width}}px;'>" +
+                                              "{{#cut_point_intervals}}" +
+                                              "<div class='bar' style='background-color: {{bg_color}}; background-image: -moz-linear-gradient(center top , {{bg_color}}, {{bg_color}}); background-image: -webkit-linear-gradient(top , {{bg_color}}, {{bg_color}}); background-image: -ms-linear-gradient(top , {{bg_color}}, {{bg_color}}); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr={{bg_color}}, endColorstr={{bg_color}}, GradientType=0); background-repeat: repeat-x; color: {{text_color}}; width: {{asmt_cut_point}}px;'></div>" +
+                                              "{{/cut_point_intervals}}" +
+                                              "</div>"
   
   # Add header to the page
   edwareUtil.getHeader()
@@ -33,6 +36,7 @@ define [
       feedbackData = data.feedback
       breadcrumbsConfigs = data.breadcrumb
       reportInfo = data.reportInfo
+      studentsConfig = data.students
       getStudentData "/data/list_of_students", params, defaultColors, (assessmentsData, contextData, subjectsData, claimsData, userData, cutPointsData) ->
         # append user_info (e.g. first and last name)
         if userData
@@ -41,54 +45,52 @@ define [
         # set school name as the page title from breadcrumb
         $("#school_name").html contextData.items[2].name
         
-        getStudentsConfig "../data/student.json", (callback_studentsConfig) ->
-          studentsConfig = callback_studentsConfig
-          # Use mustache template to replace text in json config
-          if assessmentsData['ALL'].length > 0
-            # Add assessments data there so we can get column names
-            combinedData = subjectsData
-            combinedData.claims =  claimsData
-            output = Mustache.render(JSON.stringify(studentsConfig), combinedData)
-            studentsConfig = JSON.parse(output)
-          
-          # populate select view
-          defaultView = createAssessmentViewSelectDropDown studentsConfig.customViews, cutPointsData
-          
-          $('#breadcrumb').breadcrumbs(contextData, breadcrumbsConfigs)
-          
-          renderStudentGrid(defaultView)
-          renderHeaderPerfBar(cutPointsData)
-          
-          # Show tooltip for overall score on mouseover
-          $(document).on
-            mouseenter: ->
-              elem = $(this)
-              elem.popover
-                html: true
-                trigger: "manual"
-                placement: (tip, element) ->
-                  edwareUtil.popupPlacement(element, 400, 220)
-                title: ->
-                  elem.parent().find(".losTooltip .js-popupTitle").html() 
-                template: '<div class="popover losPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
-                content: ->
-                  elem.parent().find(".losTooltip").html() # html is located in widgets/EDWARE.grid.formatter performanceBar method
-              .popover("show")
-            click: (e) ->
-              e.preventDefault()
-            mouseleave: ->
-              elem = $(this)
-              elem.popover("hide")
-          , ".asmtScore"
-          
-          # Generate footer links
-          $('#footer').generateFooter('list_of_students', reportInfo)
-          
-          # append user_info (e.g. first and last name)
-          if userData
-            role = edwareUtil.getRole userData
-            uid = edwareUtil.getUid userData
-            edwareUtil.renderFeedback(role, uid, "list_of_students", feedbackData)
+        # Use mustache template to replace text in json config
+        if assessmentsData['ALL'].length > 0
+          # Add assessments data there so we can get column names
+          combinedData = subjectsData
+          combinedData.claims =  claimsData
+          output = Mustache.render(JSON.stringify(studentsConfig), combinedData)
+          studentsConfig = JSON.parse(output)
+        
+        # populate select view
+        defaultView = createAssessmentViewSelectDropDown studentsConfig.customViews, cutPointsData
+        
+        $('#breadcrumb').breadcrumbs(contextData, breadcrumbsConfigs)
+        
+        renderStudentGrid(defaultView)
+        renderHeaderPerfBar(cutPointsData)
+        
+        # Show tooltip for overall score on mouseover
+        $(document).on
+          mouseenter: ->
+            elem = $(this)
+            elem.popover
+              html: true
+              trigger: "manual"
+              placement: (tip, element) ->
+                edwareUtil.popupPlacement(element, 400, 220)
+              title: ->
+                elem.parent().find(".losTooltip .js-popupTitle").html() 
+              template: '<div class="popover losPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
+              content: ->
+                elem.parent().find(".losTooltip").html() # html is located in widgets/EDWARE.grid.formatter performanceBar method
+            .popover("show")
+          click: (e) ->
+            e.preventDefault()
+          mouseleave: ->
+            elem = $(this)
+            elem.popover("hide")
+        , ".asmtScore"
+        
+        # Generate footer links
+        $('#footer').generateFooter('list_of_students', reportInfo)
+        
+        # append user_info (e.g. first and last name)
+        if userData
+          role = edwareUtil.getRole userData
+          uid = edwareUtil.getUid userData
+          edwareUtil.renderFeedback(role, uid, "list_of_students", feedbackData)
         
         
   renderHeaderPerfBar = (cutPointsData) ->
@@ -199,8 +201,21 @@ define [
     for key of customViewsData
       value = customViewsData[key]
       items.push({'key': key, 'value': value})
+      
+    assessmentDropdownViewTemplate =  "<div id='select_measure_title'>Select Measure: </div>" +
+                                      "<div class='btn-group'>" +
+                                      "<a class='btn dropdown-toggle' data-toggle='dropdown' href='#'>" +
+                                      "<span id='select_measure_current_view'></span>" +
+                                      "<span class='caret'></span>" +
+                                      "</a>" +
+                                      "<ul class='dropdown-menu'>" +
+                                      "{{#items}}" +
+                                      "<li><a href='#' id='{{key}}' class='viewOptions'>{{value}}</a></li>" +
+                                      "{{/items}}" +
+                                      "</ul>" +
+                                      "</div>"   
 
-    output = Mustache.to_html edwareAssessmentDropdownViewSelectionTemplate, {'items': items}
+    output = Mustache.to_html assessmentDropdownViewTemplate, {'items': items}
 
     $("#content #select_measure").append output
     

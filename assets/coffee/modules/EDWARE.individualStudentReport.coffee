@@ -1,5 +1,12 @@
 require ["../main"], (common) ->
-  require ["EDWARE.individualStudent", "edwareUtil"], (edwareIndividualStudent, edwareUtil) ->
-    params = edwareUtil.getUrlParams()
+  require ["EDWARE.individualStudent"], (edwareIndividualStudent) ->
+    getUrlParams = ->
+      params = {}
+      window.location.search.replace /[?&]+([^=&]+)=([^&]*)/g, (str, key, value) ->
+        params[key] = value
+    
+      params
+    
+    params = getUrlParams()
     edwareIndividualStudent.generateIndividualStudentReport params
 

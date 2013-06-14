@@ -45,16 +45,6 @@ require({
         'bootstrap': {
         	deps: ['jquery'],
             exports: 'bootstrap'
-        },
-        //below dependencies are for optimized code, to make sure jquery is loaded before optimized code running
-        'EDWARE.studentList': {
-        	deps: ['jquery']
-        },
-        'EDWARE.individualStudent': {
-        	deps: ['jquery']
-        },
-        'EDWARE.comparingPopulations': {
-        	deps: ['jquery']
         }
    }
 });

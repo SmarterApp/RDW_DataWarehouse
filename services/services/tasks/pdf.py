@@ -50,7 +50,7 @@ def generate(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT, coo
         shell = False
         if platform.system() == 'Windows':
             shell = True
-        prepare_file_path(outputfile)
+        prepare_path(outputfile)
         wkhtmltopdf_option = copy.deepcopy(options)
         if grayscale:
             wkhtmltopdf_option += ['-g']
@@ -65,10 +65,10 @@ def generate(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT, coo
         force_regenerate = True
     finally:
         # Validate pdf file was generated and greater than a certain size
-        if not is_valid_pdf_file(outputfile) or force_regenerate:
+        if not is_valid(outputfile) or force_regenerate:
             # If the retries throws an exception, return fail
             log.error("Pdf file validation failed.  Removing file %s. Will attempt to regenerate pdf", outputfile)
-            delete_file(outputfile)
+            delete(outputfile)
 
             kwargs = {'options': options, 'timeout': timeout, 'cookie_name': cookie_name, 'grayscale': grayscale}
             return generate.retry(args=[cookie, url, outputfile], kwargs=kwargs, exc=PdfGenerationError())
@@ -93,7 +93,7 @@ def get(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT, cookie_n
     '''
     if always_generate or not os.path.exists(outputfile):
         # always delete it first in case of regeneration error
-        delete_file(outputfile)
+        delete(outputfile)
         try:
             # This is a synchronous call
             generate.delay(cookie, url, outputfile, options=pdf_defaults, timeout=timeout, cookie_name=cookie_name, grayscale=grayscale).get()
@@ -107,7 +107,7 @@ def get(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT, cookie_n
     return stream
 
 
-def prepare_file_path(path):
+def prepare_path(path):
     '''
     Create the directory if it doesn't exist
 
@@ -117,7 +117,7 @@ def prepare_file_path(path):
         os.makedirs(os.path.dirname(path), 0o700)
 
 
-def is_valid_pdf_file(path):
+def is_valid(path):
     '''
     Validate file specified in path that the file exists and is larger than a configurable expected size
 
@@ -128,7 +128,7 @@ def is_valid_pdf_file(path):
     return os.path.exists(path) and (os.path.getsize(path) > services.celeryconfig.MINIMUM_FILE_SIZE)
 
 
-def delete_file(path):
+def delete(path):
     '''
     Delete file specified in path
 

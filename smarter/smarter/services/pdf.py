@@ -4,7 +4,7 @@ Created on May 17, 2013
 @author: dip
 '''
 from pyramid.view import view_config
-from services.pdf.tasks import get
+from services.tasks.pdf import get
 from urllib.parse import urljoin
 from pyramid.response import Response
 from smarter.security.context import check_context

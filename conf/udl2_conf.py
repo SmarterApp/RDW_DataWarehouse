@@ -32,7 +32,7 @@ udl2_conf = {
         'CELERY_SEND_EVENTS':True,  # send events for monitor
     },
     'rabbitmq': {  # rabbitmq server for local testing if we requires to bring up a rabbitmq server for UDL2 celery tasks on this machine. It will be ignore by celery if there are global rabbitmq-server
-        'RABBITMQ_SERVER_PATH':'/opt/local/sbin/rabbitmq-server',  # where the rabbitmq-server is located
+        'RABBITMQ_SERVER_PATH':['/opt/local/sbin/rabbitmq-server', '/usr/local/sbin/rabbitmq-server'],  # where the rabbitmq-server is located
     },
     'zones': {  # zones for where the files are uploaded and processed. it may change to other mechanisms, but we uses local file system for the moment.
         'landing':'/opt/wgen/edware-udl/zones/landing/',  # this is for where the uploaded files are located, it may be an url in the long run to get data

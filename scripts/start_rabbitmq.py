@@ -4,10 +4,16 @@ import subprocess
 import argparse
 from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 import imp
+import os.path
 
 def start_rabbitmq(RABBITMQ_SERVER):
-    try:    
-        subprocess.call(["sudo " +  RABBITMQ_SERVER + " &"], shell=True)
+    try:
+        if type(RABBITMQ_SERVER).__name__ == 'str':
+            subprocess.call(["sudo " +  RABBITMQ_SERVER + " &"], shell=True)
+        elif type(RABBITMQ_SERVER).__name__ == 'list':
+            for i in RABBITMQ_SERVER:
+                if os.path.isfile(i):
+                    subprocess.call(["sudo " +  i + " &"], shell=True)            
     except Exception as e:
         print(e)
 

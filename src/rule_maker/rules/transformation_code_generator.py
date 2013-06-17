@@ -52,6 +52,10 @@ def generate_single_transformation_code(code_version, rule_name, rule_def):
         action_sql_map[action][NOTATIONS] = notations
         action_sql_map[action][CODE] = generate_sql_for_action(code_version, rule_name, action, notations, extra_info)
 
+    # make default pclean expression, which assigns p_ to v_
+    if PCLEAN not in rule_def.keys():
+        action_sql_map[PCLEAN] = {}
+        action_sql_map[PCLEAN][CODE] = assignment('v_{col_name}', 'p_{col_name}', col_name=rule_name)
     # make default vclean expression, which assigns v_ to t_
     if VCLEAN not in rule_def.keys():
         action_sql_map[VCLEAN] = {}

@@ -5,7 +5,7 @@ Created on June 13, 2013
 '''
 from rule_maker.rules.rule_keys import PCLEAN, VCLEAN, RCLEAN, INLIST, LOOKUP, OUTLIST, COMPARE_LENGTH, DATE, CALCULATE
 from rule_maker.rules.udl_transformation_config import transform_rules, CLEANERS
-from rule_maker.rules.code_generator_util import action_fun_map, assignment, array_exp
+from rule_maker.rules.code_generator_util import action_fun_map, assignment, array_exp, declare_arraies
 import rule_maker.rules.code_generator_sql_template as sql_tpl
 
 FUNC_PREFIX = 'sp_'
@@ -46,10 +46,10 @@ def generate_single_transformation_code(code_version, rule_name, rule_def):
         action_sql_map[action][NOTATIONS] = notations
         action_sql_map[action][CODE] = generate_sql_for_action(code_version, rule_name, action, notations, extra_info)
 
-    # make default vclean expression, which is assign v_ to t_
+    # make default vclean expression, which assigns v_ to t_
     if VCLEAN not in rule_def.keys():
         action_sql_map[VCLEAN] = {}
-        action_sql_map[VCLEAN][CODE] = assignment('t_{col_name}', 'v_{col_name}', {'col_name': rule_name})
+        action_sql_map[VCLEAN][CODE] = assignment('t_{col_name}', 'v_{col_name}', col_name=rule_name)
     return generate_sql_proc(code_version, rule_name, action_sql_map)
 
 
@@ -71,15 +71,16 @@ def generate_sql_for_action(code_version, rule_name, action, notations, extra_in
     output:  v_yn = TRIM(REPLACE(UPPER(p_yn), CHR(13), NULL));
     '''
     if action in action_fun_map.keys():
+        parm = {}
         # if the action is inlist, we need to know the outlist, and compare_length
         if action is INLIST:
-            compare_length = extra_info[COMPARE_LENGTH] if COMPARE_LENGTH in extra_info.keys() else None
-            outlist = extra_info[OUTLIST] if OUTLIST in extra_info.keys() else None
-            return action_fun_map[action](code_version, rule_name, notations, compare_length, outlist)
-        else:
-            return action_fun_map[action](code_version, rule_name, notations)
+            if COMPARE_LENGTH in extra_info.keys():
+                parm[COMPARE_LENGTH] = extra_info[COMPARE_LENGTH]
+            if OUTLIST in extra_info.keys():
+                parm[OUTLIST] = extra_info[OUTLIST]
+        return action_fun_map[action](code_version, rule_name, notations, **parm)
     else:
-        # temp
+        # temporary
         return ''
 
 
@@ -107,24 +108,20 @@ def generate_sql_proc_default(code_version, rule_name, action_sql_map):
 
 
 def generate_sql_proc_top(code_version, rule_name, action_sql_map):
-    # initial function_top includes declaration of v_col, t_col, v_result
-    function_top = sql_tpl.func_top[code_version].format(func_name=FUNC_PREFIX + rule_name, col_name=rule_name)
-    # check if inlist and outlist available
-    if INLIST in action_sql_map.keys():
-        if OUTLIST in action_sql_map.keys():
-            function_top += array_exp(code_version, action_sql_map[INLIST][NOTATIONS], 'keys_{col_name}'.format(col_name=rule_name)) + '\n'
-            function_top += array_exp(code_version, action_sql_map[OUTLIST][NOTATIONS], 'vals_{col_name}'.format(col_name=rule_name)) + '\n'
-        else:
-            function_top += array_exp(code_version, action_sql_map[INLIST][NOTATIONS], 'vals_{col_name}'.format(col_name=rule_name)) + '\n'
-
-    return function_top + 'BEGIN\n'
+    '''
+    Main function to generate sql proc top part
+    '''
+    # initial function_basic_top includes declaration of v_col, t_col, v_result
+    function_basic_top = sql_tpl.generate_func_top(code_version).format(func_name=FUNC_PREFIX + rule_name, col_name=rule_name)
+    # check if need to declare array for inlist, outlist, or others
+    return ''.join([function_basic_top, declare_arraies(code_version, rule_name, NOTATIONS, action_sql_map)])
 
 
 def generate_sql_proc_body(action_sql_map):
     '''
     Order the action in action_sql_map, and construct the sql body
     '''
-    temp_list = ['' for _i in range(len(action_sql_map))]
+    temp_list = ['' for _i in range(len(action_sql_map) + 3)]
     j = 2
     for key, value in action_sql_map.items():
         if key == PCLEAN:
@@ -136,18 +133,21 @@ def generate_sql_proc_body(action_sql_map):
         else:
             temp_list[j] = value[CODE]
             j += 1
+    temp_list[:] = [i for i in temp_list if i != '']
+    temp_list.insert(0, sql_tpl.BEGIN.upper())
     return '\n'.join(list(temp_list))
 
 
 def generate_sql_proc_end(code_version, rule_name, action_sql_map):
-    # has inlist
+    '''
+    Main function to generate sql proc ending part
+    '''
+    second_key = sql_tpl.BASIC
     if INLIST in action_sql_map.keys():
-        return sql_tpl.func_end_for_not_found[code_version].format(col_name=rule_name)
-    # has loopup
+        second_key = sql_tpl.NOT_FOUND
     elif LOOKUP in action_sql_map.keys():
-        return sql_tpl.func_end[code_version].format(col_name=rule_name)
-
-    return  sql_tpl.func_end_basic[code_version].format(col_name=rule_name)
+        second_key = sql_tpl.IF_ELSE
+    return  sql_tpl.generate_func_end(code_version, second_key).format(col_name=rule_name, func_name=FUNC_PREFIX + rule_name)
 
 
 def generate_sql_proc_date(code_version, rule_name, action_sql_map):

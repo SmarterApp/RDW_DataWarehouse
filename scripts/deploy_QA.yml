@@ -1,5 +1,6 @@
 ---
 - hosts: $servers
+  user: root
 
   tasks:
     - name: uninstall smarter-dev if already installed

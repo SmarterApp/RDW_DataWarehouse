@@ -36,9 +36,9 @@ def generate(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT, coo
     This task can be retried.  It throws MaxRetriesExceededError exception when retries have been exhausted.
     By default, it will retry once, immediately without any time delay.
 
-    :param cookie: the cookie to pass into http request
-    :param url:  the url to request for
-    :param outputfile:  the path of the file to write pdf to
+    :param string cookie: the cookie to pass into http request
+    :param string url:  the url to request for
+    :param string outputfile:  the path of the file to write pdf to
     :param options:  options passed into wkhtmltopdf
     :param timeout:  subprocess call timeout value
     :param cookie_name:  the name of the cookie being passed into http request
@@ -111,7 +111,7 @@ def prepare_file_path(path):
     '''
     Create the directory if it doesn't exist
 
-    :param path: Path of the file to create directory for
+    :param string path: Path of the file to create directory for
     '''
     if os.path.exists(os.path.dirname(path)) is not True:
         os.makedirs(os.path.dirname(path), 0o700)
@@ -120,9 +120,10 @@ def prepare_file_path(path):
 def is_valid_pdf_file(path):
     '''
     Validate file specified in path that the file exists and is larger than a configurable expected size
-    Returns True if file is valid, else False
 
-    :param path: Path of the pdf file to validate
+    :param string path: Path of the pdf file to validate
+    :return:  True if file is valid, else False
+    :rtype: Boolean
     '''
     return os.path.exists(path) and (os.path.getsize(path) > services.celeryconfig.MINIMUM_FILE_SIZE)
 
@@ -131,7 +132,7 @@ def delete_file(path):
     '''
     Delete file specified in path
 
-    :param path: Path of the file to delete from file system
+    :param string path: Path of the file to delete from file system
     '''
     if os.path.exists(path):
         os.remove(path)

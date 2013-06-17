@@ -5,3 +5,4 @@ if [ "`uname`" == "Darwin" ]; then
 else 
     killall -9 celery;
 fi
+exit 0

@@ -334,6 +334,7 @@ function generate_docs {
         cd "$WORKSPACE/$1"
 	python setup.py docs
         cd "$WORKSPACE/$1/docs"
+        make clean
         make html
     fi
     echo "Docs created in $WORKSPACE/$1/docs/_build/html"

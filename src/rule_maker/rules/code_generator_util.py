@@ -8,22 +8,37 @@ from rule_maker.rules.code_generator_sql_template import POSTGRES, ORACLE, for_l
 
 
 def lower(code_version, col_name):
+    '''
+    Function to generate lower case expression
+    '''
     return 'LOWER(%s)' % (col_name)
 
 
 def upper(code_version, col_name):
+    '''
+    Function to generate upper case expression
+    '''
     return 'UPPER(%s)' % (col_name)
 
 
 def remnl(code_version, col_name):
+    '''
+    Function to generate removing spaces expression
+    '''
     return repace_exp[code_version].format(col_name=col_name)
 
 
 def trim(code_version, col_name):
+    '''
+    Function to generate trim expression
+    '''
     return 'TRIM(%s)' % (col_name)
 
 
 def vclean(code_version, col, action_list):
+    '''
+    Function to generate code for notation 'VCLEAN'
+    '''
     p_col = 'v_' + col
     prefix = 't_' + col + ' := '
     postfix = ';'
@@ -31,6 +46,9 @@ def vclean(code_version, col, action_list):
 
 
 def pclean(code_version, col, action_list):
+    '''
+    Function to generate code for notation 'PCLEAN'
+    '''
     p_col = 'p_' + col
     prefix = 'v_' + col + ' := '
     postfix = ';'
@@ -55,6 +73,7 @@ def clean_helper(code_version, col, action_list, prefix=None, postfix=None):
 
 def lookup(code_version, col, action_list):
     '''
+    Function to generate code for notation 'LOOKUP'
     LOOKUP: { 'High School'   : ['HS', 'HIGH SCHOOL'],
               'Middle School' : ['MS', 'MIDDLE SCHOOL'],
               'Elementary School' : ['ES' 'ELEMENTARY SCHOOL']
@@ -86,6 +105,9 @@ def make_substring_part(code_version, pref, col, val, length=None):
 
 
 def assignment(left_exp, right_exp, **parm):
+    '''
+    Function to generate assignment expression
+    '''
     concat = ''.join([left_exp, ' := ', right_exp, ';'])
     if parm and len(parm) > 0:
         return concat.format(**parm)
@@ -93,13 +115,16 @@ def assignment(left_exp, right_exp, **parm):
 
 
 def inlist(code_version, col, inlist, **parm):
+    '''
+    Function to generate code for notation 'INLIST'
+    '''
     initialize_v_result = assignment('v_result', '\'NOT FOUND\'') + '\n'
     return initialize_v_result + make_for_loop_exp(code_version, col, **parm)
 
 
 def make_for_loop_exp(code_version, col, **parm):
     '''
-    Make a for loop logic.
+    Function to generate for_loop expression
     Reference: https://github.wgenhq.net/Ed-Ware-SBAC/udl/blob/master/sql/udl_stg/pkg/pb_loader.sql#L691
     '''
     count_value = 'keys_' if OUTLIST in parm.keys() else 'vals_'
@@ -109,6 +134,9 @@ def make_for_loop_exp(code_version, col, **parm):
 
 
 def if_statment_for_compare_length(code_version, compare_length, count_value, col):
+    '''
+    Function to generate if statement for COMPARE_LENGTH
+    '''
     sub_str = substr_exp[code_version]
     index_str = index_exp[code_version]
     length_str = length_exp[code_version]
@@ -120,18 +148,11 @@ def if_statment_for_compare_length(code_version, compare_length, count_value, co
     return template.format(sub_str=sub_str, col_name=col, length_str=length_str, index_str=index_str, length=compare_length, count_value=count_value)
 
 
-def declare_arraies(code_version, rule_name, notations_const, action_sql_map):
-    declare_array = []
-    if INLIST in action_sql_map.keys():
-        if OUTLIST in action_sql_map.keys():
-            declare_array.append(array_exp[code_version].format(prefix='keys_', col_name=rule_name, value_list="\',\'".join(action_sql_map[INLIST][notations_const])))
-            declare_array.append(array_exp[code_version].format(prefix='vals_', col_name=rule_name, value_list="\',\'".join(action_sql_map[OUTLIST][notations_const])))
-        else:
-            declare_array.append(array_exp[code_version].format(prefix='vals_', col_name=rule_name, value_list="\',\'".join(action_sql_map[INLIST][notations_const])))
-
-    # may add more code for new cases
-    return '\n'.join(declare_array)
-
+def fun_name(*parts):
+    '''
+    Function to generate a function name by given parts
+    '''
+    return ''.join(*parts)
 
 action_fun_map = {'lower': lower,
                   'upper': upper,

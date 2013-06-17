@@ -33,7 +33,7 @@ def generate_transformations(code_version=sql_tpl.POSTGRES):
 
 def generate_single_transformation_code(code_version, rule_name, rule_def):
     '''
-    Main function to generate one transformation rule
+    Main function to generate one sql function for one transformation rule
     @param rule_name: rule name of the code to be generated.
                       It is a dict key in transform_rules in udl_transformation_config.py.
     @param rule_def: rule definition of the code to be generated.
@@ -44,7 +44,7 @@ def generate_single_transformation_code(code_version, rule_name, rule_def):
                                LOOKUP : {'Y': ['Y', '1', 'T'], 'N': ['N', '0', 'F'] }
                               }
     '''
-    # get extra information, for example, we need outlist and compare_length information for inlist
+    # get extra information, for example, we need outlist and compare_length for inlist
     extra_info = get_extra_info(rule_def)
     action_sql_map = {}
     for action, notations in rule_def.items():
@@ -169,7 +169,7 @@ def generate_sql_proc_body(action_sql_map):
     # the basic order of the body is: PCLEAN, VCLEAN, OTHERS, RCLEAN
     # initialize the ordered list as the size of action_sql_map plus three
     # 'Three' is mapping to PCLEAN, VCLEAN and RCLEAN
-    temp_list = ['' for _i in range(len(action_sql_map) + 3)]
+    temp_list = ['' for _i in range(len(action_sql_map) + len(CLEANERS))]
     # j is the index for body part which is not PCLEAN, VCLEAN and RCLEAN
     j = 2
     for key, value in action_sql_map.items():
@@ -214,7 +214,8 @@ def generate_sql_proc_date(code_version, rule_name, action_sql_map):
     Main function to generate complete sql code of one function for DATE format
     '''
     # TODO:
-    return 'date rule template for %s' % str(action_sql_map)
+    # return 'date rule template for %s' % str(action_sql_map)
+    return ''
 
 
 def generate_sql_proc_calc(code_version, rule_name, action_sql_map):
@@ -222,7 +223,8 @@ def generate_sql_proc_calc(code_version, rule_name, action_sql_map):
     Main function to generate complete sql code of one function for CALCULATION
     '''
     # TODO:
-    return 'calc rule template for %s' % str(action_sql_map)
+    # return 'calc rule template for %s' % str(action_sql_map)
+    return ''
 
 
 __template_func_map = {

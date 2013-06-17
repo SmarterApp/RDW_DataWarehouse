@@ -22,6 +22,9 @@ def get_celeryconfig(settings, prefix='celery'):
     Any value whose corresponding key starts with prefix and followed by a period
     is considered as celery configuration.
     Configuration key will be stored in uppercase as celery's convention.
+
+    :param settings:  dict of configurations
+    :param prefix: prefix in configurations used for configuring celery
     '''
     # load celery config
     celery_config = {}
@@ -37,6 +40,9 @@ def get_celeryconfig(settings, prefix='celery'):
 def get_config(settings, prefix='celery'):
     '''
     Sets timeout for subprocess call in task and return Celery config
+
+    :param settings:  dict of configurations
+    :param prefix: prefix in configurations used for configuring celery
     '''
     setup_global_settings(settings)
     # load celery config
@@ -47,6 +53,8 @@ def get_config(settings, prefix='celery'):
 def setup_global_settings(settings):
     '''
     Setup global settings for pdf tasks
+
+    :param settings:  dict of configurations
     '''
     global TIMEOUT
     global MINIMUM_FILE_SIZE
@@ -59,6 +67,8 @@ def setup_global_settings(settings):
 def convert_to_celery_options(config):
     '''
     Converts string representation of configuration to its expected data type
+
+    :param config:  dict of configurations
     '''
     type_map = {'any': ast.literal_eval,
                 'int': int,

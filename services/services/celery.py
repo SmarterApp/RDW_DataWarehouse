@@ -12,6 +12,9 @@ from services.celeryconfig import get_config
 def setup_celery(settings, prefix='celery'):
     '''
     Setup celery based on parameters defined in setting (ini file)
+
+    :param settings:  dict of configurations
+    :param prefix: prefix in configurations used for configuring celery
     '''
     celery_config = get_config(settings, prefix)
     celery.config_from_object(celery_config)

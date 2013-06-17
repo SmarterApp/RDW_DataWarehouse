@@ -11,8 +11,7 @@ class ServicesError(Exception):
     '''
     def __init__(self, msg):
         '''
-        @param msg: the error message.
-        @type msg: string
+        :param msg: the error message.
         '''
         self.msg = msg
 

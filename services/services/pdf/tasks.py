@@ -1,4 +1,6 @@
 '''
+Celery Tasks for pdf generation
+
 Created on May 10, 2013
 
 @author: dawu

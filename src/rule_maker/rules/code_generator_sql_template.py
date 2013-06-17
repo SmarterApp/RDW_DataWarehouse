@@ -184,8 +184,8 @@ substr_exp = {
 # array expression for different code version
 array_exp = {
              POSTGRES: """{prefix}{col_name} text[] = ARRAY['{value_list}'];""",
-             ORACLE: """ TYPE {col_name}_t IS VARRAY(255) OF VARCHAR2(255);
-        {prefix}{col_name} {col_name}_t := {col_name}_t ('{value_list}');
+             ORACLE: """ TYPE arr{col_name}_t IS VARRAY(255) OF VARCHAR2(255);
+        {prefix}{col_name} arr{col_name}_t := {col_name}_t ('{value_list}');
         """
              }
 

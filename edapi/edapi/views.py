@@ -21,8 +21,8 @@ MAX_REQUEST_URL_LENGTH = 2000
 def get_report_registry(request, name=None):
     '''
     given a request, return the registry belonging to edapi reports
-    @param name: the report name that is trying to get the registry (will get used if the registry is not found)
-    @type name: string
+    :param name: the report name that is trying to get the registry (will get used if the registry is not found)
+    :type name: string
     '''
     reg = request.registry.get(EDAPI_REPORTS_PLACEHOLDER)
     if (reg is None):
@@ -34,8 +34,8 @@ def get_request_body(request):
     '''
     returns pyramid request body as json, throws exception if request.json_body isn't valid json
 
-    @param request: the request object
-    @type request: request
+    :param request: the request object
+    :type request: request
     '''
     try:
         body = request.json_body
@@ -61,8 +61,8 @@ def get_report_config(request):
     '''
     handle the OPTIONS verb for data resource
 
-    @param request: the request object
-    @type request: request
+    :param request: the request object
+    :type request: request
     '''
     # gets the name of the report from the URL
     reportName = request.matchdict['name']
@@ -80,10 +80,10 @@ def generate_report_get(request, validator=None):
     '''
     handle GET verb for data resource
 
-    @param request: the request object
-    @type request: request
-    @param validator: the request object
-    @type request: request
+    :param request: the request object
+    :type request: request
+    :param validator: the request object
+    :type request: request
     '''
 
     # if full request URL with query string is too long
@@ -111,10 +111,10 @@ def generate_report_post(request, validator=None):
     '''
     handle POST verb for data resource
 
-    @param request: the request object
-    @type request: request
-    @param validator: the request object
-    @type request: request
+    :param request: the request object
+    :type request: request
+    :param validator: the request object
+    :type request: request
     '''
     try:
         # basic check that it is a correct json, if not an exception will get raised when accessing json_body.

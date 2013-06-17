@@ -21,10 +21,10 @@ blacklist_args_global = ['first_name', 'last_name']
 
 def audit_event(logger_name="audit", blacklist_args=[]):
     '''
-    @param logger_name: the logger we will insert to log messages to.
-    @type logger_name: string
-    @param blacklist_args: a list of arguments that we purposely will not log
-    @type blacklist_args: list
+    :param logger_name: the logger we will insert to log messages to.
+    :type logger_name: string
+    :param blacklist_args: a list of arguments that we purposely will not log
+    :type blacklist_args: list
     '''
     log = logging.getLogger(logger_name)
 
@@ -97,10 +97,10 @@ class JsonDictLoggingFormatter(logging.Formatter):
 
     def __init__(self, fmt=None, datefmt='%yyyymmdd %H:%M:%S'):
         '''
-        @param fmt: the log format string
-        @type fmt: string
-        @param datefmt: specialized date formatting
-        @type datefmt: string
+        :param fmt: the log format string
+        :type fmt: string
+        :param datefmt: specialized date formatting
+        :type datefmt: string
         '''
         logging.Formatter.__init__(self, fmt, datefmt)
         self.fmt_tkn = re.compile(r'\((.*?)\)', re.IGNORECASE).findall(self._fmt)
@@ -108,7 +108,7 @@ class JsonDictLoggingFormatter(logging.Formatter):
     def format(self, record):
         '''
         Formats a log record and serializes to json
-        @param record: the formatted record.
+        :param record: the formatted record.
         '''
         loggable = OrderedDict()
         keys = record.__dict__

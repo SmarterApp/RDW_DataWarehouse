@@ -34,13 +34,13 @@ class report_config(object):
 
     def __init__(self, **kwargs):
         '''
-        @param kwargs: function to accept an arbitrary number of keyword arguments.
+        :param kwargs: function to accept an arbitrary number of keyword arguments.
         '''
         self.__dict__.update(kwargs)
 
     def __call__(self, original_func):
         '''
-        @param original_func: a reference to the wrapped function
+        :param original_func: a reference to the wrapped function
         @type original_func: reference
         '''
         settings = self.__dict__.copy()
@@ -61,8 +61,8 @@ def user_info(orig_func):
     @wraps(orig_func)
     def wrap(*args, **kwds):
         '''
-        @param args: function to accept an arbitrary number of arguments.
-        @param kwds: function to accept an arbitrary number of keyword arguments.
+        :param args: function to accept an arbitrary number of arguments.
+        :param kwds: function to accept an arbitrary number of keyword arguments.
         '''
         results = orig_func(*args, **kwds)
         user = authenticated_userid(pyramid.threadlocal.get_current_request())

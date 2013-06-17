@@ -19,7 +19,7 @@ class TestCreatePdf(unittest.TestCase):
 
     def setUp(self):
         self.__temp_dir = tempfile.mkdtemp()
-        settings = {'pdf.minimum.file.size': '1'}
+        settings = {'pdf.minimum_file_size': '1'}
         setup_global_settings(settings)
 
     def tearDown(self):
@@ -47,7 +47,7 @@ class TestCreatePdf(unittest.TestCase):
         self.assertRaises(PdfGenerationError, generate, 'cookie', 'url', output_file, options=[], timeout=1)
 
     def test_generate_with_retries(self):
-        settings = {'pdf.minimum.file.size': '1000000'}
+        settings = {'pdf.minimum_file_size': '1000000'}
         setup_global_settings(settings)
         services.tasks.pdf.pdf_procs = ['echo', 'dummy']
         file_name = os.path.join(self.__temp_dir, 'b', 'd.pdf')
@@ -87,7 +87,7 @@ class TestCreatePdf(unittest.TestCase):
         self.assertTrue(valid)
 
     def test_validate_file_size_too_small(self):
-        settings = {'pdf.minimum.file.size': '1000000'}
+        settings = {'pdf.minimum_file_size': '1000000'}
         setup_global_settings(settings)
         here = os.path.abspath(__file__)
         valid = is_valid(here)

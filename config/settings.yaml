@@ -63,15 +63,17 @@ common:
     # Timeout for pdf generation process
     pdf:
       # expected pdf file size in bytes used to validate that pdf was generated without errors
-      minimum.file.size: 80000
+      minimum_file_size: 80000
       # number of retries allowed after the first failure
-      retries.allowed: 1
-      generate.timeout: 10
+      retries_allowed: 1
+      # delay in retry in seconds
+      retry_delay: 0
+      generate_timeout: 10
       report_base_dir: /tmp/pdf
       celery_timeout: 30
       # Don't regenerate if pdf is in file system
-      always.generate: False
-      superuser.session.timeout: 300000
+      always_generate: False
+      superuser_session_timeout: 300000
     # Used for tenancy
     ldap.base.dn: ou=environment,dc=edwdc,dc=net
     # Use context security
@@ -361,7 +363,7 @@ development:
     # Don't cache any static contents
     smarter.resources.static.max_age: 0
     # Always generate pdf regardless if it exists in file system
-    pdf.always.generate: True
+    pdf.always_generate: True
 
 test:
   '[app:main]':

@@ -27,7 +27,7 @@ class TestCeleryConfig(unittest.TestCase):
         self.assertEqual(len(config), 0)
 
     def test_get_config_test_timeout(self):
-        settings = {'pdf.generate.timeout': '50'}
+        settings = {'pdf.generate_timeout': '50'}
         celeryconfig.get_config(settings=settings, prefix="celery")
         self.assertEqual(services.celeryconfig.TIMEOUT, 50)
 

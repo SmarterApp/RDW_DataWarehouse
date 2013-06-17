@@ -26,7 +26,7 @@ FAIL = 1
 log = logging.getLogger('smarter')
 
 
-@celery.task(name='tasks.pdf.generate', max_retries=services.celeryconfig.RETRIES, default_retry_delay=0)
+@celery.task(name='tasks.pdf.generate', max_retries=services.celeryconfig.MAX_RETRIES, default_retry_delay=services.celeryconfig.RETRY_DELAY)
 def generate(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT, cookie_name='edware', grayscale=False):
     '''
     Generates pdf from given url. Returns exist status code from shell command.

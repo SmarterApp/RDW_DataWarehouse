@@ -106,7 +106,7 @@ def split_file(file_name, delimiter=',', row_limit=10000, parts=0, output_path='
 	if parts > 0:
 		row_limit = math.ceil(totalrows / parts) # round up for row limit
 	
-	print_get_splitted_rows(totalrows, 'parts', 'divided', 'file_splitter', 'split_file')
+	print_get_splitted_rows(parts, 'parts', 'divided', 'file_splitter', 'split_file')
 	print_get_splitted_rows(row_limit, 'rows', 'limited', 'file_splitter', 'split_file')
 	
 	if row_limit < totalrows or parts > 1:

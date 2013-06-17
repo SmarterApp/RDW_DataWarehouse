@@ -80,40 +80,40 @@ RETURN_STATEMENT: {
     v_result := t_{col_name};
 
     RETURN v_result;
-    """,
+""",
                               NOT_FOUND: """
     IF v_result = 'NOT FOUND' THEN
         v_result := v_{col_name};
     END IF;
 
     RETURN v_result;
-           """,
+""",
                               IF_ELSE: """
     ELSE
         v_result := v_{col_name};
     END IF;
     RETURN v_result;
-           """
+"""
 },
                    ORACLE: {
                             BASIC: """
     v_result := t_{col_name};
 
     RETURN v_result;
-    """,
+""",
                             NOT_FOUND: """
     IF v_result = 'NOT FOUND' THEN
         v_result := v_{col_name};
     END IF;
 
     RETURN v_result;
-           """,
+""",
                             IF_ELSE: """
     ELSE
         v_result := v_{col_name};
     END IF;
     RETURN v_result;
-           """
+"""
         }
 },
 
@@ -150,7 +150,7 @@ for_loop_exp = {POSTGRES: """
             EXIT;
         END IF;
     END LOOP;
-    """,
+""",
 ORACLE: """
     FOR cntr IN 1..{count_value}{col_name}.COUNT
     LOOP
@@ -159,7 +159,7 @@ ORACLE: """
             EXIT;
         END IF;
     END LOOP;
-    """}
+"""}
 
 
 # length expression

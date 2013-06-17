@@ -21,8 +21,7 @@ def generate_transformations(code_version=sql_tpl.POSTGRES):
     The default code version is postgresql.
     '''
     if code_version not in sql_tpl.SUPPORTED_VERSIONS:
-        print("Do not support version %s" % code_version)
-        raise Exception
+        raise ValueError("Do not support version %s" % code_version)
 
     generated_code = []
     for rule_name, rule_def in transform_rules.items():

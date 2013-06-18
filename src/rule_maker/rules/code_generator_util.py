@@ -3,8 +3,8 @@ Created on June 13, 2013
 
 @author: lichen
 '''
-from rule_maker.rules.rule_keys import PCLEAN, VCLEAN, LOOKUP, INLIST, OUTLIST, DATE, CALCULATE, COMPARE_LENGTH
-from rule_maker.rules.code_generator_sql_template import POSTGRES, ORACLE, for_loop_exp, length_exp, index_exp, substr_exp, array_exp, repace_exp
+from rule_maker.rules.rule_keys import PCLEAN, VCLEAN, LOOKUP, INLIST, OUTLIST, COMPARE_LENGTH
+from rule_maker.rules.code_generator_sql_template import for_loop_exp, length_exp, index_exp, substr_exp, repace_exp
 
 
 def lower(code_version, col_name):

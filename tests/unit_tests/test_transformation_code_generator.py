@@ -6,7 +6,7 @@ Created on June 17th, 2013
 
 import rule_maker.rules.transformation_code_generator as tg
 import rule_maker.rules.code_generator_sql_template as sql_tpl
-from rule_maker.rules.rule_keys import PCLEAN, VCLEAN, RCLEAN, INLIST, LOOKUP, OUTLIST, COMPARE_LENGTH, UPPER, REMNL, TRIM
+from rule_maker.rules.rule_keys import PCLEAN, INLIST, LOOKUP, OUTLIST, COMPARE_LENGTH, UPPER, REMNL, TRIM
 
 
 import unittest

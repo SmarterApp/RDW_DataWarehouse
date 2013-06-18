@@ -19,7 +19,7 @@ def create_pdf_user_session(settings, roles):
     Launch a session for pdf generation.
     '''
     # session expire time
-    session_expire_secs = int(settings['pdf.superuser_session_timeout'])
+    session_expire_secs = int(settings['pdf.superuser.session.timeout'])
     # Use pyramid's cookie helper to generate the cookie
     helper = __create_cookie_helper(settings)
     session = __create_session(roles=roles, expire_in_secs=session_expire_secs)
@@ -71,6 +71,8 @@ def __create_session(roles, expire_in_secs):
     # set user
     __uid = str(uuid.uuid4())
     session.set_uid(__uid)
+    # set tenant
+    session.set_tenant('cat')
     # save current session
     get_session_backend().create_new_session(session)
     return session

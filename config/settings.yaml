@@ -72,8 +72,9 @@ common:
       report_base_dir: /tmp/pdf
       celery_timeout: 30
       # Don't regenerate if pdf is in file system
-      always_generate: False
-      superuser_session_timeout: 300000
+      always.generate: False
+      superuser.session.timeout: 300000
+      base.url: http://localhost:6543/assets/html/
     # Used for tenancy
     ldap.base.dn: ou=environment,dc=edwdc,dc=net
     # Use context security

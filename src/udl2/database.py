@@ -308,7 +308,7 @@ UDL_METADATA = {
                 ('target_column', False, 'varchar(50)', '', True, 'Name of the target column'),
                 ('transformation_rule', False, 'varchar(50)', '', True, 'Name of the table to look for transformation or validation actions'),
                 ('stored_proc_name', False, 'varchar(50)', '', True, 'Name of stored procedure to use during this transformation'),
-                ('stored_proc_created_date', False, 'timestamp with time zone', '', True, 'Date when the stored procedure was added')
+                ('stored_proc_created_date', False, 'timestamp with time zone', '', True, 'Date when the stored procedure was added'),
                 ('created_date', False, 'timestamp with time zone', 'now()', False, 'Date on which record is inserted')
             ],
             'indexes': [],

@@ -51,7 +51,8 @@ def populate_stored_proc(engine, conn, ref_schema, ref_table_name):
 
     # get list of transformation rules
     trans_rules = get_transformation_rule_names(engine, conn, ref_schema, ref_table_name)
-
+    # tempory until values are in db.
+    trans_rules = ['clean', 'cleanUpper', 'cleanLower', 'date', 'schoolType']
     # get list of stored procedures and code to generate
     proc_list = generate_transformations(trans_rules)
     rule_map_list = []
@@ -63,7 +64,12 @@ def populate_stored_proc(engine, conn, ref_schema, ref_table_name):
             proc_name = proc[1]
             proc_sql = proc[2]
             print('Creating function:', proc_name)
-            conn.execute(proc_sql)
+
+            # execute sql
+            try:
+                conn.execute(proc_sql)
+            except:
+                print('UNABLE TO CREATE FUNCTION: %s, with sql: "%s"' % (proc_name, proc_sql))
             rule_map_list.append((rule_name, proc_name))
 
     # update db with stored proc names
@@ -88,7 +94,7 @@ def get_transformation_rule_names(engine, conn, ref_schema, ref_table_name):
     trans_rules = []
 
     # Create select statement to get distinct transformation rules
-    select_stmt = select(col_map_table.c.transformation_rule).distinct()
+    select_stmt = select([col_map_table.c.transformation_rule]).distinct()
 
     # Put each rule in list and return
     for row in conn.execute(select_stmt):
@@ -110,19 +116,24 @@ def update_column_mappings(rule_map_list, engine, conn, ref_schema, ref_table_na
     @param ref_table_name: the name of the reference table containing the column mapping info
     '''
 
+    # check that list is not empty before preceding.
+    if not rule_map_list:
+        print('NO FUNCTIONS ADDED TO DATABASE')
+        return
+
     # get column_mapping table object
     col_map_table = get_sqlalch_table_object(engine, ref_schema, ref_table_name)
 
     # Generate sql to perform update
-    update_stmt = col_map_table.update().where(col_map_table.c.transformation_rule == bindparam('rule'))
-    update_stmt = update_stmt.values(stored_proc_name=bindparam('proc'), stored_proc_created_date=datetime.datetime.now())
+    update_stmt = col_map_table.update().where(col_map_table.c.transformation_rule == bindparam('rule_name'))
+    update_stmt = update_stmt.values(stored_proc_name=bindparam('proc_name'), stored_proc_created_date=datetime.datetime.now())
 
     value_list = []
 
     # Create list of dicts that sqlalchemy will recognize
     # to update all rules with corresponding stored procedure.
     for pair in rule_map_list:
-        val_map = {'rule': pair[0], 'proc': pair[1]}
+        val_map = {'rule_name': pair[0], 'proc_name': pair[1]}
         value_list.append(val_map)
 
     # execute update statement

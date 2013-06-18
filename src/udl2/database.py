@@ -29,7 +29,7 @@ import imp
 import argparse
 from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from udl2_util.database_util import connect_db, execute_queries
-from udl2.populate_ref_tables import populate_ref_column_map
+from udl2.populate_ref_info import populate_ref_column_map, populate_stored_proc
 from udl2 import ref_table_data
 from udl2_util.measurement import measure_cpu_plus_elasped_time
 
@@ -710,6 +710,18 @@ def load_reference_data(udl2_conf):
 
 
 @measure_cpu_plus_elasped_time
+def load_stored_proc(udl2_conf):
+    '''
+    Generate and load the stored procedures to be used for transformations and
+    validations into the database.
+    @param udl2_conf: The configuration dictionary for
+    '''
+
+    (conn, engine) = _create_conn_engine(udl2_conf)
+    populate_stored_proc(engine, conn, udl2_conf['reference_schema'], 'REF_COLUMN_MAPPING')
+
+
+@measure_cpu_plus_elasped_time
 def setup_udl2_schema(udl2_conf):
     '''
     create whole udl2 database schema according to configuration file
@@ -724,6 +736,7 @@ def setup_udl2_schema(udl2_conf):
     create_udl2_sequence(udl2_conf['udl2_db'])
     load_fake_record_in_star_schema(udl2_conf['target_db'])
     load_reference_data(udl2_conf['udl2_db'])
+    load_stored_proc(udl2_conf['udl2_db'])
 
 
 @measure_cpu_plus_elasped_time

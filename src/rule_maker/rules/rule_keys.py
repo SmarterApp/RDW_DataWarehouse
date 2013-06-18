@@ -30,6 +30,9 @@ COMPARE_LENGTH  = 'compare_length'
 CALCULATE       = 'calculate'
 VCLEAN          = 'vclean'
 RCLEAN          = 'rclean' 
+TO_CHAR         = 'TO_CHAR'
+MIN0            = 'MIN0'
+
 
 # Validation Notations.
 IsNotNull       = 'IsNotNull'       # Validate if data value(s) are Not Null or are not blank/empty strings

@@ -36,7 +36,7 @@ transform_rules = {
                    'calcWeight'  : { CALCULATE  : '( 1 - ( {claim_1} + {claim_2} + {claim_3} ) )' ,
                                      PCLEAN : [ TRIM, REMNL],
                                      VCLEAN : UPPER,
-                                     RCLEAN : [ 'TO_CHAR', 'MIN0' ] },
+                                     RCLEAN : [ TO_CHAR, MIN0 ] },
                    
                    'asmtType'    :  { PCLEAN  : [UPPER, REMNL, TRIM],
                                       INLIST  : ['SUMMATIVE', 'INTERIM'], COMPARE_LENGTH : '1' },

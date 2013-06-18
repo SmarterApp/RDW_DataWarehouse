@@ -21,8 +21,7 @@ def generate_transformations(code_version=sql_tpl.POSTGRES):
     The default code version is postgresql.
     '''
     if code_version not in sql_tpl.SUPPORTED_VERSIONS:
-        print("Do not support version %s" % code_version)
-        raise Exception
+        raise ValueError("Do not support version %s" % code_version)
 
     generated_code = []
     for rule_name, rule_def in transform_rules.items():
@@ -46,20 +45,12 @@ def generate_single_transformation_code(code_version, rule_name, rule_def):
     '''
     # get extra information, for example, we need outlist and compare_length for inlist
     extra_info = get_extra_info(rule_def)
-    action_sql_map = {}
+    action_sql_map = initialize_action_sql_map(rule_name, rule_def.keys())
     for action, notations in rule_def.items():
         action_sql_map[action] = {}
         action_sql_map[action][NOTATIONS] = notations
         action_sql_map[action][CODE] = generate_sql_for_action(code_version, rule_name, action, notations, extra_info)
 
-    # make default pclean expression, which assigns p_ to v_
-    if PCLEAN not in rule_def.keys():
-        action_sql_map[PCLEAN] = {}
-        action_sql_map[PCLEAN][CODE] = assignment('v_{col_name}', 'p_{col_name}', col_name=rule_name)
-    # make default vclean expression, which assigns v_ to t_
-    if VCLEAN not in rule_def.keys():
-        action_sql_map[VCLEAN] = {}
-        action_sql_map[VCLEAN][CODE] = assignment('t_{col_name}', 'v_{col_name}', col_name=rule_name)
     return generate_sql_proc(code_version, rule_name, action_sql_map)
 
 
@@ -75,6 +66,23 @@ def get_extra_info(rule_def):
         if OUTLIST in rule_def.keys():
             info[OUTLIST] = rule_def[OUTLIST]
     return info
+
+
+def initialize_action_sql_map(rule_name, key_list):
+    '''
+    Function to initialize the sql map
+    Primarily for v_{rule_name}, and t_{rule_name}
+    '''
+    action_sql_map = {}
+    # make default pclean expression, which assigns p_ to v_
+    if PCLEAN not in key_list:
+        action_sql_map[PCLEAN] = {}
+        action_sql_map[PCLEAN][CODE] = assignment('v_{col_name}', 'p_{col_name}', col_name=rule_name)
+    # make default vclean expression, which assigns v_ to t_
+    if VCLEAN not in key_list:
+        action_sql_map[VCLEAN] = {}
+        action_sql_map[VCLEAN][CODE] = assignment('t_{col_name}', 'v_{col_name}', col_name=rule_name)
+    return action_sql_map
 
 
 def generate_sql_for_action(code_version, rule_name, action, notations, extra_info):

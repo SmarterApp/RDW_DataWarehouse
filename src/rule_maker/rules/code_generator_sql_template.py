@@ -80,40 +80,40 @@ RETURN_STATEMENT: {
     v_result := t_{col_name};
 
     RETURN v_result;
-    """,
+""",
                               NOT_FOUND: """
     IF v_result = 'NOT FOUND' THEN
         v_result := v_{col_name};
     END IF;
 
     RETURN v_result;
-           """,
+""",
                               IF_ELSE: """
     ELSE
         v_result := v_{col_name};
     END IF;
     RETURN v_result;
-           """
+"""
 },
                    ORACLE: {
                             BASIC: """
     v_result := t_{col_name};
 
     RETURN v_result;
-    """,
+""",
                             NOT_FOUND: """
     IF v_result = 'NOT FOUND' THEN
         v_result := v_{col_name};
     END IF;
 
     RETURN v_result;
-           """,
+""",
                             IF_ELSE: """
     ELSE
         v_result := v_{col_name};
     END IF;
     RETURN v_result;
-           """
+"""
         }
 },
 
@@ -150,7 +150,7 @@ for_loop_exp = {POSTGRES: """
             EXIT;
         END IF;
     END LOOP;
-    """,
+""",
 ORACLE: """
     FOR cntr IN 1..{count_value}{col_name}.COUNT
     LOOP
@@ -159,7 +159,7 @@ ORACLE: """
             EXIT;
         END IF;
     END LOOP;
-    """}
+"""}
 
 
 # length expression
@@ -184,8 +184,8 @@ substr_exp = {
 # array expression for different code version
 array_exp = {
              POSTGRES: """{prefix}{col_name} text[] = ARRAY['{value_list}'];""",
-             ORACLE: """ TYPE {col_name}_t IS VARRAY(255) OF VARCHAR2(255);
-        {prefix}{col_name} {col_name}_t := {col_name}_t ('{value_list}');
+             ORACLE: """ TYPE arr{col_name}_t IS VARRAY(255) OF VARCHAR2(255);
+        {prefix}{col_name} arr{col_name}_t := {col_name}_t ('{value_list}');
         """
              }
 

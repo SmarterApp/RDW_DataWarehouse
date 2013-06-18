@@ -71,7 +71,7 @@ def clean_helper(code_version, col, action_list, prefix=None, postfix=None):
     return out
 
 
-def lookup(code_version, col, action_list):
+def lookup(code_version, col, action_dict):
     '''
     Function to generate code for notation 'LOOKUP'
     LOOKUP: { 'High School'   : ['HS', 'HIGH SCHOOL'],
@@ -79,9 +79,12 @@ def lookup(code_version, col, action_list):
               'Elementary School' : ['ES' 'ELEMENTARY SCHOOL']
             }
     '''
+    # sort the dict
+    sorted_keys = sorted(action_dict.keys())
     ret = ''
     pref = '\n\tIF   '
-    for canon_value, accepted_value_list in action_list.items():
+    for canon_value in sorted_keys:
+        accepted_value_list = action_dict[canon_value]
         ret += lookup_helper(code_version, pref, col, canon_value, accepted_value_list)
         pref = '\n\tELSIF'
     return ret

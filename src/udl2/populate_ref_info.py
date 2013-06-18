@@ -32,6 +32,8 @@ def populate_ref_column_map(conf_dict, db_engine, conn, schema_name, col_map_tab
 def populate_stored_proc(engine, conn, ref_schema, ref_table_name):
     '''
     Generate and load stored procedures into the database
+    @return: The names of all the generated stored procedures
+    @rtype: list
     '''
 
     proc_list = generate_transformations()

@@ -3,6 +3,7 @@ Created on June 13, 2013
 
 @author: lichen
 '''
+import datetime
 from rule_maker.rules.rule_keys import PCLEAN, VCLEAN, RCLEAN, INLIST, LOOKUP, OUTLIST, COMPARE_LENGTH, DATE, CALCULATE
 from rule_maker.rules.udl_transformation_config import transform_rules, CLEANERS
 from rule_maker.rules.code_generator_util import action_fun_map, assignment, fun_name
@@ -13,21 +14,26 @@ NOTATIONS = 'notations'
 CODE = 'code'
 
 
-def generate_transformations(code_version=sql_tpl.POSTGRES):
+def generate_transformations(rule_names, rule_conf=transform_rules, code_version=sql_tpl.POSTGRES):
     '''
-    Main function to generate all transformation
-    rules defined in udl_transformation_config.py.
-    @param code_version: code version of procedure to be generated
-    The default code version is postgresql.
+    Main function to generate transformation code for given rule names
+    @param rule_names  : List of rule names
+    @param rule_conf   : Dictionary of rule names and rule content
+                         The default value is transform_rules defined in udl_transformation_config.py
+    @param code_version: Code version of procedure to be generated.
+                         The default code version is postgresql.
     '''
     if code_version not in sql_tpl.SUPPORTED_VERSIONS:
-        raise ValueError("Do not support version %s" % code_version)
+        raise ValueError("DO NOT SUPPORT CODE VERSION %s" % code_version)
 
-    generated_code = []
-    for rule_name, rule_def in transform_rules.items():
-        generated_code.append(generate_single_transformation_code(code_version, rule_name, rule_def))
-
-    return generated_code
+    generated_rule_code = []
+    for rule_name in rule_names:
+        if rule_name not in rule_conf.keys():
+            print("CANNOT GENERATE CODE FOR RULE %s" % rule_name)
+        else:
+            rule_def = rule_conf[rule_name]
+            generated_rule_code.append(generate_single_transformation_code(code_version, rule_name, rule_def))
+    return generated_rule_code
 
 
 def generate_single_transformation_code(code_version, rule_name, rule_def):
@@ -51,7 +57,9 @@ def generate_single_transformation_code(code_version, rule_name, rule_def):
         action_sql_map[action][NOTATIONS] = notations
         action_sql_map[action][CODE] = generate_sql_for_action(code_version, rule_name, action, notations, extra_info)
 
-    return generate_sql_proc(code_version, rule_name, action_sql_map)
+    func_name = fun_name(tuple(FUNC_PREFIX + rule_name))
+    generated_sql = generate_sql_proc(code_version, rule_name, action_sql_map, func_name)
+    return (rule_name, func_name, generated_sql)
 
 
 def get_extra_info(rule_def):
@@ -114,7 +122,7 @@ def generate_sql_for_action(code_version, rule_name, action, notations, extra_in
         return ''
 
 
-def generate_sql_proc(code_version, rule_name, action_sql_map):
+def generate_sql_proc(code_version, rule_name, action_sql_map, func_name):
     '''
     Main function to generate complete procedure code of one function
     @param code_version: code version of procedure to be generated
@@ -129,10 +137,10 @@ def generate_sql_proc(code_version, rule_name, action_sql_map):
         if notation in action_sql_map:
             func = __template_func_map[notation]
             break
-    return func(code_version, rule_name, action_sql_map)
+    return func(code_version, rule_name, action_sql_map, func_name)
 
 
-def generate_sql_proc_default(code_version, rule_name, action_sql_map):
+def generate_sql_proc_default(code_version, rule_name, action_sql_map, func_name):
     '''
     Main function to generate complete sql code of one function for LOOKUP, INLIST, OUTLIST
     @param code_version: code version of procedure to be generated
@@ -141,18 +149,21 @@ def generate_sql_proc_default(code_version, rule_name, action_sql_map):
                            for small pieces
     '''
     # get code top, body and end separately, then combine them together
-    code_top = generate_sql_proc_top(code_version, rule_name, action_sql_map)
+    code_top = generate_sql_proc_top(code_version, rule_name, action_sql_map, func_name)
     code_body = generate_sql_proc_body(action_sql_map)
     code_end = generate_sql_proc_end(code_version, rule_name, action_sql_map.keys())
     return '\n'.join([code_top, code_body, code_end])
 
 
-def generate_sql_proc_top(code_version, rule_name, action_sql_map):
+def generate_sql_proc_top(code_version, rule_name, action_sql_map, func_name):
     '''
     Main function to generate sql proc top part
     '''
+    # make a time comment at the beginning of each function
+    time_comment = 'GENERATED AT ' + str(datetime.datetime.now()) + '\n'
+    comment_stat = sql_tpl.comment_exp[code_version].format(comment=time_comment)
     # initial function_basic_top includes declaration of v_col, t_col, v_result
-    function_basic_top = sql_tpl.generate_func_top(code_version).format(func_name=fun_name(tuple(FUNC_PREFIX + rule_name)), col_name=rule_name)
+    function_basic_top = sql_tpl.generate_func_top(code_version, comment_stat).format(func_name=func_name, col_name=rule_name)
     # declare array for inlist, outlist, or others if necessary
     function_extra_top = declare_arraies(code_version, rule_name, NOTATIONS, action_sql_map)
     return ''.join([function_basic_top, function_extra_top])
@@ -221,7 +232,7 @@ def generate_sql_proc_end(code_version, rule_name, key_list):
                                                                        func_name=fun_name(tuple(FUNC_PREFIX + rule_name)))
 
 
-def generate_sql_proc_date(code_version, rule_name, action_sql_map):
+def generate_sql_proc_date(code_version, rule_name, action_sql_map, func_name):
     '''
     Main function to generate complete sql code of one function for DATE format
     '''
@@ -230,7 +241,7 @@ def generate_sql_proc_date(code_version, rule_name, action_sql_map):
     return ''
 
 
-def generate_sql_proc_calc(code_version, rule_name, action_sql_map):
+def generate_sql_proc_calc(code_version, rule_name, action_sql_map, func_name):
     '''
     Main function to generate complete sql code of one function for CALCULATION
     '''
@@ -246,6 +257,12 @@ __template_func_map = {
 
 
 if __name__ == '__main__':
-    trans_code_list = generate_transformations()
-    for rule in trans_code_list:
-        print(rule)
+    rule_names = transform_rules.keys()
+    rule_conf = transform_rules
+    trans_code_list = generate_transformations(rule_names, rule_conf=rule_conf)
+    for rule_pair in trans_code_list:
+        # print('********************')
+        # print('RULE NAME -- %s' % rule_pair[0])
+        # print('PROC NAME -- \n%s' % rule_pair[1])
+        # print('PROC CODE -- \n%s' % rule_pair[2])
+        print(rule_pair[2])

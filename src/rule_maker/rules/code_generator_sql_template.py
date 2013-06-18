@@ -197,16 +197,26 @@ repace_exp = {
              }
 
 
-def generate_func_top(code_version):
+# comment expression for different code version
+comment_exp = {
+               POSTGRES: """-- {comment}""",
+               ORACLE: """-- {comment}"""
+               }
+
+
+def generate_func_top(code_version, comment=None):
     '''
     Function to generate the top part of the procedure code
     It is consist of function_definition, parameter_definition,
     return_definition and declaring_parameters_in _function
     '''
-    return ''.join([TEMPLATE_CONTENT[FUNCTION_DEF][code_version],
+    fun_top_list = [TEMPLATE_CONTENT[FUNCTION_DEF][code_version],
                    TEMPLATE_CONTENT[PARAMETER_DEF][code_version],
                    TEMPLATE_CONTENT[RETURN_DEF][code_version],
-                   TEMPLATE_CONTENT[DECLEAR_DEF][code_version]])
+                   TEMPLATE_CONTENT[DECLEAR_DEF][code_version]]
+    if comment:
+        fun_top_list.insert(0, comment)
+    return ''.join(fun_top_list)
 
 
 def generate_func_end(code_version, second_key):

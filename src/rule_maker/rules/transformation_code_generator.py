@@ -5,7 +5,7 @@ Created on June 13, 2013
 '''
 from rule_maker.rules.rule_keys import PCLEAN, VCLEAN, RCLEAN, INLIST, LOOKUP, OUTLIST, COMPARE_LENGTH, DATE, CALCULATE
 from rule_maker.rules.udl_transformation_config import transform_rules, CLEANERS
-from rule_maker.rules.code_generator_util import action_fun_map, assignment, array_exp, fun_name
+from rule_maker.rules.code_generator_util import action_fun_map, assignment, fun_name
 import rule_maker.rules.code_generator_sql_template as sql_tpl
 
 FUNC_PREFIX = 'sp_'
@@ -165,10 +165,10 @@ def declare_arraies(code_version, rule_name, notations_const, action_sql_map):
     declare_array = []
     if INLIST in action_sql_map.keys():
         if OUTLIST in action_sql_map.keys():
-            declare_array.append(array_exp[code_version].format(prefix='keys_', col_name=rule_name, value_list="\',\'".join(action_sql_map[INLIST][notations_const])))
-            declare_array.append(array_exp[code_version].format(prefix='vals_', col_name=rule_name, value_list="\',\'".join(action_sql_map[OUTLIST][notations_const])))
+            declare_array.append(sql_tpl.array_exp[code_version].format(prefix='keys_', col_name=rule_name, value_list="\',\'".join(action_sql_map[INLIST][notations_const])))
+            declare_array.append(sql_tpl.array_exp[code_version].format(prefix='vals_', col_name=rule_name, value_list="\',\'".join(action_sql_map[OUTLIST][notations_const])))
         else:
-            declare_array.append(array_exp[code_version].format(prefix='vals_', col_name=rule_name, value_list="\',\'".join(action_sql_map[INLIST][notations_const])))
+            declare_array.append(sql_tpl.array_exp[code_version].format(prefix='vals_', col_name=rule_name, value_list="\',\'".join(action_sql_map[INLIST][notations_const])))
 
     # may add more code for new cases
     return '\n'.join(declare_array)

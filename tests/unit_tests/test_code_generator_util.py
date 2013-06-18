@@ -70,7 +70,6 @@ class TestCodeGeneratorUtil(unittest.TestCase):
         self.assertEqual(actual_result, expected_result)
 
     def test_lookup(self):
-        # def lookup(code_version, col, action_dict):
         col_name = 'test_col_10'
         action_list = {'High School': ['HS', 'HIGH SCHOOL'],
                        'Middle School': ['MS', 'MIDDLE SCHOOL'],

@@ -3,8 +3,8 @@ Created on June 13, 2013
 
 @author: lichen
 '''
-from rule_maker.rules.rule_keys import PCLEAN, VCLEAN, LOOKUP, INLIST, OUTLIST, COMPARE_LENGTH
-from rule_maker.rules.code_generator_sql_template import for_loop_exp, length_exp, index_exp, substr_exp, repace_exp
+from rule_maker.rules.rule_keys import PCLEAN, VCLEAN, RCLEAN, LOOKUP, TO_CHAR, INLIST, OUTLIST, MIN0, COMPARE_LENGTH
+from rule_maker.rules.code_generator_sql_template import for_loop_exp, length_exp, index_exp, substr_exp, repace_exp, tochar_exp, min0_exp
 
 
 def lower(code_version, col_name):
@@ -35,6 +35,17 @@ def trim(code_version, col_name):
     return 'TRIM(%s)' % (col_name)
 
 
+def to_char(code_version, col_name):
+    '''
+    Function to generate to char expression
+    '''
+    return tochar_exp[code_version].format(col_name=col_name)
+
+
+def min0(code_version, col_name):
+    return min0_exp[code_version].format(col_name=col_name)
+
+
 def vclean(code_version, col, action_list):
     '''
     Function to generate code for notation 'VCLEAN'
@@ -53,6 +64,17 @@ def pclean(code_version, col, action_list):
     prefix = 'v_' + col + ' := '
     postfix = ';'
     return clean_helper(code_version, p_col, action_list, prefix, postfix)
+
+
+def rclean(code_version, col, action_list):
+    '''
+    Function to generate code for notation 'PCLEAN'
+    '''
+    rclean_list = []
+    for action in action_list:
+        fun = action_fun_map[action]
+        rclean_list.append(fun(code_version, 'v_result'))
+    return ''.join(rclean_list)
 
 
 def clean_helper(code_version, col, action_list, prefix=None, postfix=None):
@@ -163,5 +185,8 @@ action_fun_map = {'lower': lower,
                   'trim': trim,
                   PCLEAN: pclean,
                   VCLEAN: vclean,
+                  RCLEAN: rclean,
                   LOOKUP: lookup,
+                  TO_CHAR: to_char,
+                  MIN0: min0,
                   INLIST: inlist}

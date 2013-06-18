@@ -203,6 +203,29 @@ comment_exp = {
                ORACLE: """-- {comment}"""
                }
 
+# to_char expression for different code version
+tochar_exp = {
+               POSTGRES: """{col_name} := CAST ({col_name} AS CHAR);""",
+               ORACLE: """TO_CHAR({col_name});"""
+              }
+
+# min 0 expression for different code version
+min0_exp = {
+            POSTGRES: """
+        IF {col_name} ~ '^[0-9]+$' AND
+            CAST({col_name} AS BIGINT) < 0 THEN
+            {col_name} := '0';
+        END IF;
+""",
+            # this expression might be modified
+            ORACLE: """
+        IF pkg_utils.is_number({col_name}) = 1 AND
+           TO_NUMBER({col_name}) < 0 THEN
+           {col_name} := '0';
+        END IF;
+"""
+            }
+
 
 def generate_func_top(code_version, comment=None):
     '''

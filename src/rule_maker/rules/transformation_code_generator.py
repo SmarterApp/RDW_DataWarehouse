@@ -114,6 +114,7 @@ def generate_sql_for_action(code_version, rule_name, action, notations, extra_in
         return action_fun_map[action](code_version, rule_name, notations, **parm)
     else:
         # temporary solution. Can be decided when writing code for rules: DATE and CALCULATION
+        print("This is not available now...%s, %s", rule_name, action)
         return ''
 
 

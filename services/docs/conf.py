@@ -197,7 +197,7 @@ latex_elements = {
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
-latex_documents = [('index', 'edapi.tex', 'edauth Documentation',
+latex_documents = [('index', 'edapi.tex', 'services Documentation',
                     '@dip @tosako @agrebneva @dwu', 'manual'),
                    ]
 
@@ -227,7 +227,7 @@ latex_documents = [('index', 'edapi.tex', 'edauth Documentation',
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'edapi', 'edauth Documentation',
+    ('index', 'edapi', 'services Documentation',
      ['@dip @tosako @agrebneva @dwu'], 1)
 ]
 
@@ -240,8 +240,8 @@ man_pages = [
 # Grouping the document tree into Texinfo files. List of tuples
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
-texinfo_documents = [('index', 'edapi', 'edapi Documentation',
-                      '@dip @tosako @agrebneva @dwu', 'edauth', 'One line description of project.',
+texinfo_documents = [('index', 'edapi', 'services Documentation',
+                      '@dip @tosako @agrebneva @dwu', 'services', 'One line description of project.',
                       'Miscellaneous'),
                      ]
 

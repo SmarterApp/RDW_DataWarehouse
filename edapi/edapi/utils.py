@@ -47,7 +47,7 @@ def add_report_config(self, delegate, **kwargs):
     '''
     directive used to save report_config decorators to Pyramid Configurator's registry
 
-    @param delegate: a delegate to the wrapped function
+    :param delegate: a delegate to the wrapped function
     '''
     settings = kwargs.copy()
     settings['reference'] = delegate
@@ -71,12 +71,12 @@ VALID_TYPES = enum(STRING='string', INTEGER='integer', NUMBER='number', BOOLEAN=
 def get_report_dict_value(dictionary, key, exception_to_raise=Exception):
     '''
     dict lookup and raises an exception if key doesn't exist
-    @param dictionary: the dictionary object
-    @type dictionary: dict
-    @param key: the report key
-    @type key: string
-    @param exception_to_raise: the exception we throw if the report is not found
-    @type exception_to_raise: exception
+    :param dictionary: the dictionary object
+    :type dictionary: dict
+    :param key: the report key
+    :type key: string
+    :param exception_to_raise: the exception we throw if the report is not found
+    :type exception_to_raise: exception
     '''
     report = dictionary.get(key)
     if (report is None):
@@ -92,8 +92,8 @@ def call_report(report, params):
     if it is, instantiate object first before calling function.
     else, just call the method
 
-    @param report: the report name
-    @type report: string
+    :param report: the report name
+    :type report: string
     '''
     (obj, method) = get_report_dict_value(report, REF_REFERENCE_FIELD_NAME)
 
@@ -109,11 +109,11 @@ def generate_report(registry, report_name, params, validator=None):
     '''
     generates a report by calling the report delegate for generating itself (received from the config repository).
 
-    @param registry: the report registry
-    @param report_name: the report name to be generated
-    @type report_name: string
-    @param validator: the validator object
-    @type validator: Validator
+    :param registry: the report registry
+    :param report_name: the report name to be generated
+    :type report_name: string
+    :param validator: the validator object
+    :type validator: Validator
     '''
     if not validator:
         validator = Validator()
@@ -135,9 +135,9 @@ def generate_report_config(registry, report_name):
     '''
     generates a report config by loading it from the config repository
 
-    @param registry: the report registry
-    @param report_name: the report name to have its config generated
-    @type report_name: string
+    :param registry: the report registry
+    :param report_name: the report name to have its config generated
+    :type report_name: string
     '''
     # load the report configuration from registry
     report = get_report_dict_value(registry, report_name, ReportNotFoundError)
@@ -155,7 +155,7 @@ def prepare_params(registry, params):
     '''
     looks for fields that can be expanded with no external configuration and expands them by calling the right method.
 
-    @param registry: the report registry
+    :param registry: the report registry
     '''
     response_dict = {}
     for (name, dictionary) in params.items():
@@ -182,9 +182,9 @@ def expand_field(registry, report_name, params):
     receives a report's name, tries to take it from the repository and see if it requires configuration, if not, generates the report and return the generated value.
     returns True if the value is changing or false otherwise
 
-    @param registry: the report registry
-    @param report_name: the report name to be generated
-    @type report_name: string
+    :param registry: the report registry
+    :param report_name: the report name to be generated
+    :type report_name: string
     '''
     if (params is not None):
         return (report_name, False)
@@ -198,8 +198,8 @@ def add_configuration_header(params_config):
     '''
     turns the schema into an well-formatted JSON schema by adding a header.
 
-    @param params_config: the original config json
-    @return: a well formatted json
+    :param params_config: the original config json
+    :return: a well formatted json
     '''
     result = {
         "$schema": "http://json-schema.org/draft-04/schema#",
@@ -221,9 +221,9 @@ class Validator:
         '''
         validates the given parameters with the report configuration validation definition
 
-        @param registry: the report registry
-        @param report_name: the report name to be generated
-        @type report_name: string
+        :param registry: the report registry
+        :param report_name: the report name to be generated
+        :type report_name: string
         '''
         report = get_report_dict_value(registry, report_name, ReportNotFoundError)
         params_config = get_report_dict_value(report, PARAMS_REFERENCE_FIELD_NAME, InvalidParameterError)
@@ -240,9 +240,9 @@ class Validator:
         This method checks String types and attempt to convert them to the defined type.
         This handles 'GET' requests when all parameters are converted into string.
 
-        @param registry: the report registry
-        @param report_name: the report name to be generated
-        @type report_name: string
+        :param registry: the report registry
+        :param report_name: the report name to be generated
+        :type report_name: string
         '''
         result = {}
         report = get_report_dict_value(registry, report_name, ReportNotFoundError)
@@ -287,9 +287,9 @@ class Validator:
         '''
         convert duplicate query params to arrays
 
-        @param registry: the report registry
-        @param report_name: the report name to be generated
-        @type report_name: string
+        :param registry: the report registry
+        :param report_name: the report name to be generated
+        :type report_name: string
         '''
         result = {}
         report = get_report_dict_value(registry, report_name, ReportNotFoundError)
@@ -318,8 +318,8 @@ class Validator:
         '''
         attempts to convert a string to bool, otherwise raising an error
 
-        @param s: the string to be converted to bool
-        @type s: string
+        :param s: the string to be converted to bool
+        :type s: string
         '''
         return s in ['true', 'True']
 
@@ -329,10 +329,10 @@ class Validator:
         '''
         converts a value to a given value type, if possible. otherwise, return the original value.
 
-        @param value: the string value
-        @type value: string
-        @param value_type: the target value type
-        @return: value_type value
+        :param value: the string value
+        :type value: string
+        :param value_type: the target value type
+        :return: value_type value
         '''
         try:
             return {

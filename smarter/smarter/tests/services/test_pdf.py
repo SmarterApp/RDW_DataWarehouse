@@ -20,7 +20,7 @@ from services.celery import setup_celery
 import tempfile
 from pyramid.registry import Registry
 from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_report_path_by_student_guid
-from services.pdf.tasks import prepare_file_path
+from services.tasks.pdf import prepare_path
 from services.tests.pdf.test_tasks import get_cmd
 from services.celeryconfig import get_config
 import shutil
@@ -85,10 +85,10 @@ class TestServices(Unittest_with_smarter_sqlite):
         self.__request.json_body = {'studentGuid': studentGuid}
         self.__request.cookies = {'edware': '123'}
         # Override the wkhtmltopdf command
-        services.pdf.tasks.pdf_procs = ['echo', 'dummy']
+        services.tasks.pdf.pdf_procs = ['echo', 'dummy']
         # prepare empty file
         pdf_file = generate_isr_report_path_by_student_guid(pdf_report_base_dir=self.__temp_dir, student_guid=studentGuid, asmt_type='SUMMATIVE')
-        prepare_file_path(pdf_file)
+        prepare_path(pdf_file)
         with open(pdf_file, 'w') as file:
             file.write('%PDF-1.4')
         response = post_pdf_service(self.__request)
@@ -123,11 +123,11 @@ class TestServices(Unittest_with_smarter_sqlite):
         self.__request.cookies = {'edware': '123'}
         # prepare empty file
         pdf_file = generate_isr_report_path_by_student_guid(pdf_report_base_dir=self.__temp_dir, student_guid=studentGuid, asmt_type='SUMMATIVE')
-        prepare_file_path(pdf_file)
+        prepare_path(pdf_file)
         with open(pdf_file, 'w') as file:
             file.write('%PDF-1.4')
         # Override the wkhtmltopdf command
-        services.pdf.tasks.pdf_procs = ['echo', 'dummy']
+        services.tasks.pdf.pdf_procs = ['echo', 'dummy']
         response = get_pdf_service(self.__request)
         self.assertIsInstance(response, Response)
         self.assertIsNotNone(response.body)
@@ -140,10 +140,10 @@ class TestServices(Unittest_with_smarter_sqlite):
         params['dummy'] = 'dummy'
         self.__request.matchdict['report'] = 'indivStudentReport.html'
         self.__request.cookies = {'edware': '123'}
-        services.pdf.tasks.pdf_procs = ['echo', 'dummy']
+        services.tasks.pdf.pdf_procs = ['echo', 'dummy']
         # prepare empty file
         pdf_file = generate_isr_report_path_by_student_guid(pdf_report_base_dir=self.__temp_dir, student_guid=studentGuid, asmt_type='SUMMATIVE')
-        prepare_file_path(pdf_file)
+        prepare_path(pdf_file)
         with open(pdf_file, 'w') as file:
             file.write('%PDF-1.4')
         response = send_pdf_request(params)
@@ -158,7 +158,7 @@ class TestServices(Unittest_with_smarter_sqlite):
         params['dummy'] = 'dummy'
         self.__request.matchdict['report'] = 'indivStudentReport.html'
         self.__request.cookies = {'edware': '123'}
-        services.pdf.tasks.pdf_procs = get_cmd()
+        services.tasks.pdf.pdf_procs = get_cmd()
         settings = {'celery.CELERY_ALWAYS_EAGER': True, 'pdf.generate.timeout': 1}
         get_config(settings)
         self.assertRaises(EdApiHTTPInternalServerError, send_pdf_request, params)
@@ -198,12 +198,12 @@ class TestServices(Unittest_with_smarter_sqlite):
         params['dummy'] = 'dummy'
         self.__request.matchdict['report'] = 'indivStudentReport.html'
         self.__request.cookies = {'edware': '123'}
-        services.pdf.tasks.pdf_procs = get_cmd()
-        settings = {'celery.CELERY_ALWAYS_EAGER': True, 'pdf.generate.timeout': 1, 'pdf.minimum.file.size': 1}
+        services.tasks.pdf.pdf_procs = get_cmd()
+        settings = {'celery.CELERY_ALWAYS_EAGER': True, 'pdf_generate_timeout': 1, 'pdf.minimum_file_size': 1}
         get_config(settings)
         # prepare empty file to mimic a pdf was generated
         pdf_file = generate_isr_report_path_by_student_guid(pdf_report_base_dir=self.__temp_dir, student_guid=studentGuid, asmt_type='SUMMATIVE')
-        prepare_file_path(pdf_file)
+        prepare_path(pdf_file)
         with open(pdf_file, 'w') as file:
             file.write('%PDF-1.4')
         self.assertRaises(EdApiHTTPInternalServerError, send_pdf_request, params)

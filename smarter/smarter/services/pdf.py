@@ -4,7 +4,7 @@ Created on May 17, 2013
 @author: dip
 '''
 from pyramid.view import view_config
-from services.pdf.tasks import get
+from services.tasks.pdf import get
 from urllib.parse import urljoin
 from pyramid.response import Response
 from smarter.security.context import check_context
@@ -98,7 +98,7 @@ def get_pdf_content(params):
     (cookie_name, cookie_value) = get_session_cookie()
     celery_timeout = int(pyramid.threadlocal.get_current_registry().settings.get('pdf.celery_timeout', '30'))
     always_generate = to_bool(pyramid.threadlocal.get_current_registry().settings.get('pdf.always.generate', False))
-    celery_response = get.delay(cookie_value, url, file_name, cookie_name=cookie_name, timeout=services.celeryconfig.TIMEOUT, grayScale=is_grayscale, always_generate=always_generate)  # @UndefinedVariable
+    celery_response = get.delay(cookie_value, url, file_name, cookie_name=cookie_name, timeout=services.celeryconfig.TIMEOUT, grayscale=is_grayscale, always_generate=always_generate)  # @UndefinedVariable
     pdf_stream = celery_response.get(timeout=celery_timeout)
 
     return Response(body=pdf_stream, content_type='application/pdf')

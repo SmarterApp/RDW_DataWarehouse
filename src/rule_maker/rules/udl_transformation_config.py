@@ -1,6 +1,10 @@
 # @PydevCodeAnalysisIgnore
 from rule_maker.rules.rule_keys import *
 
+# Note: 
+# 1) rule 'calcWeight' would not work for Math, since math has only three claims and the rule checks and calculates if the passed arguments 
+#    are not null and are numbers. This rule takes in three claim weights and calculates the fourth. (Math does not have a fourth claim)
+#    As such the rule works for ELA with four claims. We still keep the rule added for demo purposes.
 
 CLEANERS = set([PCLEAN, VCLEAN, RCLEAN])
 
@@ -32,6 +36,12 @@ transform_rules = {
                    'calcWeight'  : { CALCULATE  : '( 1 - ( {claim_1} + {claim_2} + {claim_3} ) )' ,
                                      PCLEAN : [ TRIM, REMNL],
                                      VCLEAN : UPPER,
-                                     RCLEAN : [ 'TO_CHAR', 'MIN0' ],
-                                                     }
+                                     RCLEAN : [ 'TO_CHAR', 'MIN0' ] },
+                   
+                   'asmtType'    :  { PCLEAN  : [UPPER, REMNL, TRIM],
+                                      INLIST  : ['SUMMATIVE', 'INTERIM'], COMPARE_LENGTH : '1' },
+                   
+                   'subjectType' :  { PCLEAN  : [ REMNL, TRIM],
+                                      LOOKUP  : { 'Math' : ['MATH', 'MATHS', 'math', 'maths','MATHEMATICS','Math'],
+                                                  'ELA'  : ['ela', 'Ela','English Language Arts','ELA'] } }
                 } 

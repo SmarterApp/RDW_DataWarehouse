@@ -109,16 +109,11 @@ def generate_sql_for_action(code_version, rule_name, action, notations, extra_in
     output:  v_yn = TRIM(REPLACE(UPPER(p_yn), CHR(13), NULL));
     '''
     if action in action_fun_map.keys():
-        parm = {}
         # if the action is inlist, we need to know the outlist, and compare_length
-        if action is INLIST:
-            if COMPARE_LENGTH in extra_info.keys():
-                parm[COMPARE_LENGTH] = extra_info[COMPARE_LENGTH]
-            if OUTLIST in extra_info.keys():
-                parm[OUTLIST] = extra_info[OUTLIST]
+        parm = extra_info if action is INLIST else {}
         return action_fun_map[action](code_version, rule_name, notations, **parm)
     else:
-        # temporary
+        # temporary solution. Can be decided when writing code for rules: DATE and CALCULATION
         return ''
 
 

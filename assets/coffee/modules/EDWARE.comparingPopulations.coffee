@@ -30,70 +30,70 @@ define [
         feedbackData = data.feedback
         breadcrumbsConfigs = data.breadcrumb
         reportInfo = data.reportInfo
-        getColumnConfig "../data/comparingPopulations.json", (gridConfig, customViews) ->
+        gridConfig = data.comparingPopulations.grid
+        customViews = data.comparingPopulations.customViews
+        # # append user_info (e.g. first and last name)
+        if user_info
+          $('#header .topLinks .user').html edwareUtil.getUserName user_info
           
-          # # append user_info (e.g. first and last name)
-          if user_info
-            $('#header .topLinks .user').html edwareUtil.getUserName user_info
-            
-          # Determine if the report is state, district or school view
-          reportType = getReportType(params)
-          
-          # Append colors to records and summary section
-          # Do not format data, or get breadcrumbs if the result is empty
-          if populationData.length > 0
-            populationData = appendColorToData populationData, asmtSubjectsData, colorsData, defaultColors
-            summaryData = appendColorToData summaryData, asmtSubjectsData, colorsData, defaultColors
-  
-            # Change the column name and link url based on the type of report the user is querying for
-            gridConfig[0].name = customViews[reportType].name
-            gridConfig[0].options.linkUrl = customViews[reportType].link
-            gridConfig[0].options.id_name = customViews[reportType].id_name
-            
-            if customViews[reportType].name is "Grade"
-              gridConfig[0].sorttype = "int"
-            
-            # Render breadcrumbs on the page
-            $('#breadcrumb').breadcrumbs(breadcrumbsData, breadcrumbsConfigs)
-            
-            # Set the Report title depending on the report that we're looking at
-            reportTitle = getReportTitle(breadcrumbsData, reportType)
-            $('#content h2').html reportTitle
-            
-            # Format the summary data for summary row purposes
-            summaryRowName = getOverallSummaryName(breadcrumbsData, reportType)
-            summaryData = formatSummaryData(summaryData, summaryRowName)
-            
-          # Create compare population grid for State/District/School view
-          edwareGrid.create "gridTable", gridConfig, populationData, summaryData
-          
-          # Generate footer
-          $('#footer').generateFooter('comparing_populations', reportInfo)
-          
-          # # append user_info (e.g. first and last name)
-          if user_info
-            role = edwareUtil.getRole user_info
-            uid = edwareUtil.getUid user_info
-            edwareUtil.renderFeedback(role, uid, "comparing_populations_" + reportType, feedbackData)
+        # Determine if the report is state, district or school view
+        reportType = getReportType(params)
         
-          # Show tooltip for population bar on mouseover
-          $(document).on
-            mouseenter: ->
-              e = $(this)
-              e.popover
-                html: true
-                placement: "top"
-                trigger: "manual"
-                template: '<div class="popover"><div class="arrow"></div><div class="popover-inner"><div class="popover-content"><p></p></div></div></div>'
-                content: ->
-                  e.find(".progressBar_tooltip").html() # template location: widgets/populatoinBar/template.html
-              .popover("show")
-            click: (e) ->
-              e.preventDefault()
-            mouseleave: ->
-              e = $(this)
-              e.popover("hide")
-          , ".progress"
+        # Append colors to records and summary section
+        # Do not format data, or get breadcrumbs if the result is empty
+        if populationData.length > 0
+          populationData = appendColorToData populationData, asmtSubjectsData, colorsData, defaultColors
+          summaryData = appendColorToData summaryData, asmtSubjectsData, colorsData, defaultColors
+
+          # Change the column name and link url based on the type of report the user is querying for
+          gridConfig[0].name = customViews[reportType].name
+          gridConfig[0].options.linkUrl = customViews[reportType].link
+          gridConfig[0].options.id_name = customViews[reportType].id_name
+          
+          if customViews[reportType].name is "Grade"
+            gridConfig[0].sorttype = "int"
+          
+          # Render breadcrumbs on the page
+          $('#breadcrumb').breadcrumbs(breadcrumbsData, breadcrumbsConfigs)
+          
+          # Set the Report title depending on the report that we're looking at
+          reportTitle = getReportTitle(breadcrumbsData, reportType)
+          $('#content h2').html reportTitle
+          
+          # Format the summary data for summary row purposes
+          summaryRowName = getOverallSummaryName(breadcrumbsData, reportType)
+          summaryData = formatSummaryData(summaryData, summaryRowName)
+          
+        # Create compare population grid for State/District/School view
+        edwareGrid.create "gridTable", gridConfig, populationData, summaryData
+        
+        # Generate footer
+        $('#footer').generateFooter('comparing_populations', reportInfo)
+        
+        # # append user_info (e.g. first and last name)
+        if user_info
+          role = edwareUtil.getRole user_info
+          uid = edwareUtil.getUid user_info
+          edwareUtil.renderFeedback(role, uid, "comparing_populations_" + reportType, feedbackData)
+      
+        # Show tooltip for population bar on mouseover
+        $(document).on
+          mouseenter: ->
+            e = $(this)
+            e.popover
+              html: true
+              placement: "top"
+              trigger: "manual"
+              template: '<div class="popover"><div class="arrow"></div><div class="popover-inner"><div class="popover-content"><p></p></div></div></div>'
+              content: ->
+                e.find(".progressBar_tooltip").html() # template location: widgets/populatoinBar/template.html
+            .popover("show")
+          click: (e) ->
+            e.preventDefault()
+          mouseleave: ->
+            e = $(this)
+            e.popover("hide")
+        , ".progress"
                   
   # Get population data from server       
   getPopulationData = (sourceURL, params, callback) ->

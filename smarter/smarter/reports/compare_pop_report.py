@@ -65,11 +65,11 @@ REPORT_NAME = "comparing_populations"
 def get_comparing_populations_report(params):
     results = None
     if Constants.SCHOOLGUID in params and Constants.DISTRICTGUID in params and Constants.STATECODE in params:
-        results = get_school_view_report(params)
+        results = get_school_view_report(params[Constants.STATECODE], params[Constants.DISTRICTGUID], params[Constants.SCHOOLGUID])
     elif params and Constants.DISTRICTGUID in params and Constants.STATECODE in params:
-        results = get_district_view_report(params)
+        results = get_district_view_report(params[Constants.STATECODE], params[Constants.DISTRICTGUID])
     elif Constants.STATECODE in params:
-        results = get_state_view_report(params)
+        results = get_state_view_report(params[Constants.STATECODE])
 
     return results
 
@@ -80,33 +80,44 @@ to manage cache efficiently, we needed to separate three reports
 
 
 @cache_region('public.data')
-def get_state_view_report(params):
+def get_state_view_report(stateCode):
     '''
     state view report
+    :param string stateCode:  State code representing the state
     '''
-    return get_report(params)
+    return get_report(stateCode)
 
 
 @cache_region('public.data')
-def get_district_view_report(params):
+def get_district_view_report(stateCode, districtGuid):
     '''
     district view report
+    :param string stateCode:  State code representing the state
+    :param string districtGuid:  Guid of the district
     '''
-    return get_report(params)
+    return get_report(stateCode, districtGuid)
 
 
-def get_school_view_report(params):
+def get_school_view_report(stateCode, districtGuid, schoolGuid):
     '''
     school view report
+    :param string stateCode:  State code representing the state
+    :param string districtGuid:  Guid of the district
+    :param string schoolGuid:  Guid of the school
     '''
-    return get_report(params)
+    return get_report(stateCode, districtGuid, schoolGuid)
 
 
-def get_report(params):
+def get_report(stateCode, districtGuid=None, schoolGuid=None):
     '''
     actual report call
+
+    :param string stateCode:  State code representing the state
+    :param string districtGuid:  Guid of the district, could be None
+    :param string schoolGuid:  Guid of the school, could be None
     '''
     # run query
+    params = {Constants.STATECODE: stateCode, Constants.DISTRICTGUID: districtGuid, Constants.SCHOOLGUID: schoolGuid}
     results = run_query(**params)
     if not results:
         raise NotFoundException("There are no results")

@@ -13,7 +13,7 @@ def setup_udl2_queues(conf):
     queues['default'] = Queue('celery',
                               Exchange(conf['celery_defaults']['CELERY_DEFAULT_EXCHANGE'],
                                        conf['celery_defaults']['CELERY_DEFAULT_EXCHANGE']),
-                             routing_key=conf['celery_defaults']['CELERY_DEFAULT_ROUTING_KEY'])
+                              routing_key=conf['celery_defaults']['CELERY_DEFAULT_ROUTING_KEY'])
     return queues
 
 

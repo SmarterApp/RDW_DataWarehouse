@@ -125,8 +125,10 @@ def split_file(file_name, delimiter=',', row_limit=10000, parts=0, output_path='
 		
 	#save headers to output dir
 	header_path = os.path.join(output_dir, 'headers.csv')
-	header_writer = csv.writer(open(header_path, 'w'), delimiter=delimiter)
-	header_writer.writerow(header)
+	with open(header_path, 'w') as csv_header_file:
+		header_writer = csv.writer(csv_header_file, delimiter=delimiter)
+		header_writer.writerow(header)
+		csv_header_file.flush() # EJ, make sure the file is writtend into disk. this happens only when benchmark prints frames
 	
 	end_time = datetime.datetime.now()
 	execution_time = end_time - start_time

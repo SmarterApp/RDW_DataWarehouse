@@ -52,6 +52,7 @@ def extract_csv_header(csv_file):
     '''
     Extract header names and types from input csv file
     '''
+    print(csv_file)
     with open(csv_file) as csv_obj:
         reader = csv.reader(csv_obj)
         header_names = next(reader)

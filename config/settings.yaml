@@ -77,7 +77,7 @@ common:
     # Used for tenancy
     ldap.base.dn: ou=environment,dc=edwdc,dc=net
     # Use context security
-    disable.context.security: False
+    disable.context.security: True
     
   '[server:main]':
     use: 'egg:waitress#main'

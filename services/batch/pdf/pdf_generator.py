@@ -5,10 +5,10 @@ Created on Jun 18, 2013
 '''
 import configparser
 from zope import component
-from edauth.security.session_backend import ISessionBackend, SessionBackend
-from edauth.security.batch_user_session import create_pdf_user_session
 from services.tasks.pdf import generate
 from urllib.parse import urljoin
+from edauth.security.session_backend import ISessionBackend, SessionBackend
+from edauth.security.batch_user_session import create_pdf_user_session
 
 
 class PDFGenerator():
@@ -32,6 +32,7 @@ class PDFGenerator():
         settings = self.__load_setting(configFile)
         self.__settings = settings
         self.__base_url = settings['pdf.base.url']
+        self.__queue_name = settings['pdf.batch.job.queue']
 
     def __load_setting(self, configFile):
         '''
@@ -55,7 +56,7 @@ class PDFGenerator():
         roles = ['SUPER_USER']
         (self.__cookie_name, self.__cookie_value) = create_pdf_user_session(self.__settings, roles, tenant)
 
-    def send_pdf_request(self, student_guid, report='indivStudentReport.html', file_name):
+    def send_pdf_request(self, student_guid, file_name, report='indivStudentReport.html'):
         '''
         Sends a student UUID and file path information to message queue.
 
@@ -66,4 +67,4 @@ class PDFGenerator():
         # build url for generating pdf
         pdf_url = urljoin(self.__base_url, report) + "?studentGuid=%s" % student_guid
         # send asynchronous request
-        generate.apply_async(self.__cookie_value, pdf_url, file_name, self.__cookie_name, queue='batch_pdf_gen')
+        generate.apply_async((self.__cookie_value, pdf_url, file_name), queue=self.__queue_name)

@@ -6,7 +6,7 @@ Created on Jun 18, 2013
 import configparser
 from zope import component
 from edauth.security.session_backend import ISessionBackend, SessionBackend
-from edauth.security import pdf_session
+from edauth.security import batch_user_session
 from batch.pdf import util
 import services
 import sys
@@ -67,14 +67,17 @@ class PDFGenerator():
 
     def get_cookie(self, settings):
         roles = ['SUPER_USER']
-        return pdf_session.create_pdf_user_session(settings, roles)
+        return batch_user_session.create_pdf_user_session(settings, roles)
     
     def query_student_info(self): 
         '''
         Queries students information from database
         '''
         # TODO: dummy data
-        return [{Constants.STUDENT_GUID : '1e042d8a-becf-40fb-a2a5-02ae6125db33'}]
+        return [{Constants.STUDENT_GUID : '3efe8485-9c16-4381-ab78-692353104cce',
+                 Constants.STATE_CODE : 'NY', Constants.ASMT_PERIOD_YEAR: '2012',
+                 Constants.SCHOOL_GUID: '228', Constants.DISTRICT_GUID: '228',
+                 Constants.ASMT_GRADE : '7'}]
         
     def build_params(self, student):
         '''

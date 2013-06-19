@@ -14,7 +14,7 @@ import re
 from pyramid.testing import DummyRequest
 
 
-def create_pdf_user_session(settings, roles):
+def create_pdf_user_session(settings, roles, tenant_name):
     '''
     Launch a session for pdf generation.
     '''
@@ -22,7 +22,6 @@ def create_pdf_user_session(settings, roles):
     session_expire_secs = int(settings['pdf.superuser.session.timeout'])
     # Use pyramid's cookie helper to generate the cookie
     helper = __create_cookie_helper(settings)
-    tenant_name = settings['pdf.superuser.tenant']
     session = __create_session(roles=roles, expire_in_secs=session_expire_secs, tenant_name=tenant_name)
     request = __create_dummy_request()
     # Retrieve cookie headers based on our session id

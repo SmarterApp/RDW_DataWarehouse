@@ -74,7 +74,6 @@ common:
       # Don't regenerate if pdf is in file system
       always.generate: False
       superuser.session.timeout: 300000
-      superuser.tenant: cat
       base.url: http://localhost:6543/assets/html/
     # Used for tenancy
     ldap.base.dn: ou=environment,dc=edwdc,dc=net

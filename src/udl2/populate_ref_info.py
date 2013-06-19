@@ -52,8 +52,7 @@ def populate_stored_proc(engine, conn, ref_schema, ref_table_name):
 
     # get list of transformation rules
     trans_rules = get_transformation_rule_names(engine, conn, ref_schema, ref_table_name)
-    # tempory until values are in db.
-    trans_rules = ['clean', 'cleanUpper', 'cleanLower', 'date', 'schoolType']
+
     # get list of stored procedures and code to generate
     proc_list = generate_transformations(trans_rules)
     rule_map_list = []

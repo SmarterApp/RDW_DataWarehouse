@@ -5,9 +5,12 @@ Created on May 22, 2013
 '''
 
 from collections import OrderedDict
+
 from sqlalchemy.engine import create_engine
 from sqlalchemy.sql.expression import func, text
 from sqlalchemy import MetaData
+from sqlalchemy.orm import sessionmaker
+
 from udl2_util.measurement import measure_cpu_plus_elasped_time, show_amount_of_data_affected
 
 
@@ -16,7 +19,7 @@ def print_get_affected_rows(result, action, module, function):
     '''
     get affected rows of a query execution and return the info
     '''
-    return {'amount':result.rowcount, 'action':action, 'unit':'rows','module':module,'function':function}
+    return {'amount': result.rowcount, 'action': action, 'unit': 'rows', 'module': module, 'function': function}
 
 
 @measure_cpu_plus_elasped_time
@@ -140,3 +143,18 @@ def get_sqlalch_table_object(db_engine, schema_name, table_name):
     metadata = get_schema_metadata(db_engine, schema_name)
     table = metadata.tables[schema_name + '.' + table_name]
     return table
+
+
+@measure_cpu_plus_elasped_time
+def create_sqlalch_session(db_engine):
+    '''
+    Create and return a sqlalchemy session for the given engine
+    @param db_engine: a SQLAlchemy engine object returned connect_db method
+    @type db_engine: qlalchemy.engine.base.Engine
+    @return: A sqlqlchemy session
+    @rtype: sqlalchemy.orm.session.Session
+    '''
+
+    Session = sessionmaker(bind=db_engine)
+    session = Session()
+    return session

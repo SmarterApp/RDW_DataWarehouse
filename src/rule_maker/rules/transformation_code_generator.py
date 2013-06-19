@@ -26,14 +26,14 @@ def generate_transformations(rule_names, rule_conf=transform_rules, code_version
     if code_version not in sql_tpl.SUPPORTED_VERSIONS:
         raise ValueError("DO NOT SUPPORT CODE VERSION %s" % code_version)
 
-    generated_rule_code = []
+    generated_rule_list = []
     for rule_name in rule_names:
         if rule_name not in rule_conf.keys():
             print("CANNOT GENERATE CODE FOR RULE %s" % rule_name)
         else:
             rule_def = rule_conf[rule_name]
-            generated_rule_code.append(generate_single_transformation_code(code_version, rule_name, rule_def))
-    return generated_rule_code
+            generated_rule_list.append(generate_single_transformation_code(code_version, rule_name, rule_def))
+    return generated_rule_list
 
 
 def generate_single_transformation_code(code_version, rule_name, rule_def):
@@ -155,7 +155,7 @@ def generate_sql_proc_top(code_version, rule_name, action_sql_map, func_name):
     Main function to generate sql proc top part
     '''
     # make a time comment at the beginning of each function
-    time_comment = 'GENERATED AT ' + str(datetime.datetime.now()) + '\n'
+    time_comment = 'THIS CODE IS GENERATED AT ' + str(datetime.datetime.now()) + '\n'
     function_comment_top = sql_tpl.comment_exp[code_version].format(comment=time_comment)
     # initial function_basic_top includes declaration of v_col, t_col, v_result
     function_basic_top = sql_tpl.generate_func_top(code_version).format(func_name=func_name, col_name=rule_name)

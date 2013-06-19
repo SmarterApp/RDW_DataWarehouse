@@ -16,7 +16,7 @@ SUPPORTED_VERSIONS = [POSTGRES, ORACLE]
 FUNCTION_DEF = 'fun_def'
 PARAMETER_DEF = 'parameter_def'
 RETURN_DEF = 'return_def'
-DECLEAR_DEF = 'declare'
+DECLEAR_DEF = 'declare_def'
 BEGIN = 'begin'
 RETURN_STATEMENT = 'return_statement'
 EXCEPTION = 'exception'
@@ -153,7 +153,7 @@ for_loop_exp = {POSTGRES: """
         END IF;
     END LOOP;
 """,
-ORACLE: """
+                ORACLE: """
     FOR cntr IN 1..{count_value}{col_name}.COUNT
     LOOP
             {if_statement}

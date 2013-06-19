@@ -16,4 +16,5 @@ class Constants():
     SCHOOL_GUID = 'school_guid'
     ASMT_GRADE = 'asmt_grade'
     SUMMATIVE = 'SUMMATIVE'
-    
+    # individual student report
+    INDIV_STUDENT_REPORT = 'indivStudentReport.html'

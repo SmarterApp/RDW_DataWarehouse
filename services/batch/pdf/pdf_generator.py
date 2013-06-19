@@ -6,38 +6,39 @@ Created on Jun 18, 2013
 import configparser
 from zope import component
 from edauth.security.session_backend import ISessionBackend, SessionBackend
-from edauth.security import batch_user_session
+from edauth.security.batch_user_session import create_pdf_user_session
 from batch.pdf import util
 import services
 import sys
 from services.tasks.pdf import generate
 from batch.pdf.constants import Constants
 
-# TODO:
-report = 'indivStudentReport.html'
 
 class PDFGenerator():
     '''
-    classdocs
+    Batch pdf pre-generation trigger.
     '''
 
     def __init__(self, configFile):
         '''
-        Constructor
+        Constructor with config file path as parameter.
         '''
-        self.init_setting(configFile)
-        self.init_cookie()
-    
-    def init_setting(self, configFile):
-        settings = self.load_setting(configFile)
+        self.__init_setting(configFile)
+        self.__init_cookie()
+
+    def __init_setting(self, configFile):
+        '''
+        Loads settings from configuration file.
+        '''
+        settings = self.__load_setting(configFile)
         self.settings = settings
         self.base_url = settings['pdf.base.url']
         # get isr file path name
         self.pdf_base_dir = settings.get('pdf.report_base_dir', "/tmp")
 
-    def load_setting(self, configFile):
+    def __load_setting(self, configFile):
         '''
-        Loads setting from ini file
+        Returns settings from app:main section in config file.
         '''
         config = configparser.ConfigParser()
         config.read(configFile)
@@ -47,40 +48,38 @@ class PDFGenerator():
             settings[option] = config.get(section, option)
         return settings
 
-    def init_cookie(self):
-        settings = self.settings
+    def __init_cookie(self):
+        '''
+        Creates cookie for generating pdf.
+        '''
         # initiate session backend
-        component.provideUtility(SessionBackend(settings), ISessionBackend)
-        # TODO: get current session cookie and request for pdf
-        (self.cookie_name, self.cookie_value) = self.get_cookie(settings)
-        
-    def send_pdf_request(self, student_guid, report, file_name):
+        component.provideUtility(SessionBackend(self.settings), ISessionBackend)
+        # get current session cookie and request for pdf
+        roles = ['SUPER_USER']
+        (self.cookie_name, self.cookie_value) = create_pdf_user_session(self.settings, roles)
+
+    def __send_pdf_request(self, student_guid, report, file_name):
         '''
-        Sends individual student UUID to generate PDFs.
+        Sends a student UUID and file path information to message queue.
         '''
-        if student_guid is None or file_name is None:
-            raise ValueError('Required parameter is missing')
         # build url for generating pdf
         pdf_url = util.build_url(self.base_url, report, student_guid)
         # send request
         generate.delay(self.cookie_value, pdf_url, file_name, cookie_name=self.cookie_name, timeout=services.celeryconfig.TIMEOUT)
 
-    def get_cookie(self, settings):
-        roles = ['SUPER_USER']
-        return batch_user_session.create_pdf_user_session(settings, roles)
-    
-    def query_student_info(self): 
+    def __query_student_info(self):
         '''
-        Queries students information from database
+        Queries students information from UDL process
         '''
-        # TODO: dummy data
-        return [{Constants.STUDENT_GUID : '3efe8485-9c16-4381-ab78-692353104cce',
-                 Constants.STATE_CODE : 'NY', Constants.ASMT_PERIOD_YEAR: '2012',
+        # TODO: dummy data, will include trigger mechanism from UDL process
+        return [{Constants.STUDENT_GUID: '3efe8485-9c16-4381-ab78-692353104cce',
+                 Constants.STATE_CODE: 'NY', Constants.ASMT_PERIOD_YEAR: '2012',
                  Constants.SCHOOL_GUID: '228', Constants.DISTRICT_GUID: '228',
-                 Constants.ASMT_GRADE : '7'}]
-        
-    def build_params(self, student):
+                 Constants.ASMT_GRADE: '7'}]
+
+    def __build_params(self, student):
         '''
+        Returns student_guid and file_name to generate pdf. File name is created based on student's information.
         '''
         student_guid = student[Constants.STUDENT_GUID]
         state_code = student[Constants.STATE_CODE]
@@ -93,18 +92,20 @@ class PDFGenerator():
         return (student_guid, file_name)
 
     def start(self):
-        students = self.query_student_info()
+        '''
+        Starts batch pdf generation process.
+        '''
+        students = self.__query_student_info()
         for student in students:
-            (student_guid, file_name) = self.build_params(student)
-            self.send_pdf_request(student_guid, report, file_name)
-
-    
-# TODO: grabs new results from database/file that need reports generated
+            (student_guid, file_name) = self.__build_params(student)
+            # send request to generate report
+            self.__send_pdf_request(student_guid, Constants.INDIV_STUDENT_REPORT, file_name)
 
 
-# TODO: includes trigger mechanism from UDL process
-
-# test
+# main function
 if __name__ == '__main__':
+    if (len(sys.argv) < 2):
+        print('Usage: python %s <path-to-config-file>' % __file__)
+        exit()
     configFile = sys.argv[1]
     PDFGenerator(configFile).start()

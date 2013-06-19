@@ -138,7 +138,7 @@ EXPECTED_RESULT_FOR_INLIST = """v_result := 'NOT FOUND';
 
     FOR cntr IN array_lower(vals_test_col_9, 1)..array_upper(vals_test_col_9, 1)
     LOOP
-            IF SUBSTRING(t_test_col_9, 1, CHAR_LENGTH(vals_test_col_9[cntr])) = vals_test_col_9[cntr] THEN
+        IF SUBSTRING(t_test_col_9, 1, CHAR_LENGTH(vals_test_col_9[cntr])) = vals_test_col_9[cntr] THEN
             v_result := vals_test_col_9[cntr];
             EXIT;
         END IF;

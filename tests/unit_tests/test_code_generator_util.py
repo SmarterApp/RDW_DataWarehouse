@@ -6,7 +6,7 @@ Created on June 17th, 2013
 
 import rule_maker.rules.code_generator_util as cu
 import rule_maker.rules.code_generator_sql_template as sql_tpl
-from rule_maker.rules.rule_keys import UPPER, REMNL, TRIM
+from rule_maker.rules.rule_keys import UPPER, REMNL, TRIM, TO_CHAR, MIN0
 
 
 import unittest
@@ -67,6 +67,30 @@ class TestCodeGeneratorUtil(unittest.TestCase):
         action_list = TRIM
         actual_result = cu.pclean(self.code_version, col_name, action_list)
         expected_result = 'v_test_col_8 := TRIM(p_test_col_8);'
+        self.assertEqual(actual_result, expected_result)
+
+    def test_rclean_list(self):
+        col_name = 'test_col_11'
+        action_list = [TO_CHAR, MIN0]
+        actual_result = cu.rclean(self.code_version, col_name, action_list)
+        expected_result = """v_result := CAST (v_result AS TEXT);
+        IF v_result ~ '^[0-9]+$' AND
+            CAST(v_result AS BIGINT) < 0 THEN
+            v_result := '0';
+        END IF;
+"""
+        self.assertEqual(actual_result, expected_result)
+
+    def test_rclean_single(self):
+        col_name = 'test_col_12'
+        action_list = MIN0
+        actual_result = cu.rclean(self.code_version, col_name, action_list)
+        expected_result = """
+        IF v_result ~ '^[0-9]+$' AND
+            CAST(v_result AS BIGINT) < 0 THEN
+            v_result := '0';
+        END IF;
+"""
         self.assertEqual(actual_result, expected_result)
 
     def test_lookup(self):

@@ -70,9 +70,22 @@ def rclean(code_version, col, action_list):
     '''
     Function to generate code for notation 'PCLEAN'
     '''
+    """
+    p_col = 'v_result'
+    prefix = 'v_result' + ' := '
+    postfix = ';'
+    return clean_helper(code_version, p_col, action_list, prefix, postfix)
+    """
+
     rclean_list = []
-    for action in action_list:
-        fun = action_fun_map[action]
+    # list of action
+    if isinstance(action_list, list):
+        for action in action_list:
+            fun = action_fun_map[action]
+            rclean_list.append(fun(code_version, 'v_result'))
+    # just one action
+    else:
+        fun = action_fun_map[action_list]
         rclean_list.append(fun(code_version, 'v_result'))
     return ''.join(rclean_list)
 

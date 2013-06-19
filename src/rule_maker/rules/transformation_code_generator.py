@@ -5,7 +5,7 @@ Created on June 13, 2013
 '''
 import datetime
 from rule_maker.rules.rule_keys import PCLEAN, VCLEAN, RCLEAN, INLIST, LOOKUP, OUTLIST, COMPARE_LENGTH, DATE, CALCULATE
-from rule_maker.rules.udl_transformation_config import transform_rules, CLEANERS
+from rule_maker.rules.udl_transformation_config import transform_rules
 from rule_maker.rules.code_generator_util import action_fun_map, assignment, fun_name
 import rule_maker.rules.code_generator_sql_template as sql_tpl
 
@@ -114,7 +114,6 @@ def generate_sql_for_action(code_version, rule_name, action, notations, extra_in
         return action_fun_map[action](code_version, rule_name, notations, **parm)
     else:
         # temporary solution. Can be decided when writing code for rules: DATE and CALCULATION
-        print("This is not available now...%s, %s", rule_name, action)
         return ''
 
 
@@ -147,7 +146,7 @@ def generate_sql_proc_default(code_version, rule_name, action_sql_map, func_name
     # get code top, body and end separately, then combine them together
     code_top = generate_sql_proc_top(code_version, rule_name, action_sql_map, func_name)
     code_body = generate_sql_proc_body(action_sql_map)
-    code_end = generate_sql_proc_end(code_version, rule_name, action_sql_map.keys())
+    code_end = generate_sql_proc_end(code_version, rule_name, action_sql_map)
     return '\n'.join([code_top, code_body, code_end])
 
 
@@ -157,12 +156,12 @@ def generate_sql_proc_top(code_version, rule_name, action_sql_map, func_name):
     '''
     # make a time comment at the beginning of each function
     time_comment = 'GENERATED AT ' + str(datetime.datetime.now()) + '\n'
-    comment_stat = sql_tpl.comment_exp[code_version].format(comment=time_comment)
+    function_comment_top = sql_tpl.comment_exp[code_version].format(comment=time_comment)
     # initial function_basic_top includes declaration of v_col, t_col, v_result
-    function_basic_top = sql_tpl.generate_func_top(code_version, comment_stat).format(func_name=func_name, col_name=rule_name)
+    function_basic_top = sql_tpl.generate_func_top(code_version).format(func_name=func_name, col_name=rule_name)
     # declare array for inlist, outlist, or others if necessary
     function_extra_top = declare_arraies(code_version, rule_name, NOTATIONS, action_sql_map)
-    return ''.join([function_basic_top, function_extra_top])
+    return ''.join([function_comment_top, function_basic_top, function_extra_top])
 
 
 def declare_arraies(code_version, rule_name, notations_const, action_sql_map):
@@ -185,10 +184,10 @@ def generate_sql_proc_body(action_sql_map):
     '''
     Order the action in action_sql_map, and construct the sql body
     '''
-    # the basic order of the body is: PCLEAN, VCLEAN, OTHERS, RCLEAN
-    # initialize the ordered list as the size of action_sql_map plus three
-    # 'Three' is mapping to PCLEAN, VCLEAN and RCLEAN
-    temp_list = ['' for _i in range(len(action_sql_map) + len(CLEANERS))]
+    # the basic order of the body is: PCLEAN, VCLEAN, OTHERS
+    # initialize the ordered list as the size of action_sql_map plus two
+    # 'Two' is mapping to PCLEAN, VCLEAN
+    temp_list = ['' for _i in range(len(action_sql_map) + 2)]
     # j is the index for body part which is not PCLEAN, VCLEAN and RCLEAN
     j = 2
     for key, value in action_sql_map.items():
@@ -198,11 +197,8 @@ def generate_sql_proc_body(action_sql_map):
         # if VCLEAN is available, add to index 1
         elif key == VCLEAN:
             temp_list[1] = value[CODE]
-        # if RCLEAN is available, add to index -1, end of body
-        elif key == RCLEAN:
-            temp_list[-1] = value[CODE]
-        # if it is other notation, add to current index j
-        else:
+        # if it is other notation but not RCLEAN, add to current index j
+        elif key != RCLEAN:
             temp_list[j] = value[CODE]
             j += 1
     # remove useless empty item
@@ -212,20 +208,23 @@ def generate_sql_proc_body(action_sql_map):
     return '\n'.join(list(temp_list))
 
 
-def generate_sql_proc_end(code_version, rule_name, key_list):
+def generate_sql_proc_end(code_version, rule_name, action_sql_map):
     '''
     Main function to generate sql proc ending part
     '''
     # default ending statement
     second_key = sql_tpl.BASIC
     # if has INLIST, the ending part has the checking for 'NOT FOUND' case
-    if INLIST in key_list:
+    if INLIST in action_sql_map.keys():
         second_key = sql_tpl.NOT_FOUND
     # if has LOOKUP, the ending part has the if_else statement
-    elif LOOKUP in key_list:
+    elif LOOKUP in action_sql_map.keys():
         second_key = sql_tpl.IF_ELSE
+    # default rclean
+    rclean_exp = action_sql_map[RCLEAN][CODE] if RCLEAN in action_sql_map.keys() else ''
     return  sql_tpl.generate_func_end(code_version, second_key).format(col_name=rule_name,
-                                                                       func_name=fun_name(tuple(FUNC_PREFIX + rule_name)))
+                                                                       func_name=fun_name(tuple(FUNC_PREFIX + rule_name)),
+                                                                       rclean_exp=rclean_exp)
 
 
 def generate_sql_proc_date(code_version, rule_name, action_sql_map, func_name):

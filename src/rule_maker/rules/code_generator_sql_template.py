@@ -78,40 +78,42 @@ RETURN_STATEMENT: {
                    POSTGRES: {
                               BASIC: """
     v_result := t_{col_name};
-
+    {rclean_exp}
     RETURN v_result;
 """,
                               NOT_FOUND: """
     IF v_result = 'NOT FOUND' THEN
         v_result := v_{col_name};
     END IF;
-
+    {rclean_exp}
     RETURN v_result;
 """,
                               IF_ELSE: """
     ELSE
         v_result := v_{col_name};
     END IF;
+    {rclean_exp}
     RETURN v_result;
 """
 },
                    ORACLE: {
                             BASIC: """
     v_result := t_{col_name};
-
+    {rclean_exp}
     RETURN v_result;
 """,
                             NOT_FOUND: """
     IF v_result = 'NOT FOUND' THEN
         v_result := v_{col_name};
     END IF;
-
+    {rclean_exp}
     RETURN v_result;
 """,
                             IF_ELSE: """
     ELSE
         v_result := v_{col_name};
     END IF;
+    {rclean_exp}
     RETURN v_result;
 """
         }
@@ -205,7 +207,7 @@ comment_exp = {
 
 # to_char expression for different code version
 tochar_exp = {
-               POSTGRES: """{col_name} := CAST ({col_name} AS CHAR);""",
+               POSTGRES: """{col_name} := CAST ({col_name} AS TEXT);""",
                ORACLE: """TO_CHAR({col_name});"""
               }
 
@@ -227,7 +229,7 @@ min0_exp = {
             }
 
 
-def generate_func_top(code_version, comment=None):
+def generate_func_top(code_version):
     '''
     Function to generate the top part of the procedure code
     It is consist of function_definition, parameter_definition,
@@ -237,8 +239,6 @@ def generate_func_top(code_version, comment=None):
                    TEMPLATE_CONTENT[PARAMETER_DEF][code_version],
                    TEMPLATE_CONTENT[RETURN_DEF][code_version],
                    TEMPLATE_CONTENT[DECLEAR_DEF][code_version]]
-    if comment:
-        fun_top_list.insert(0, comment)
     return ''.join(fun_top_list)
 
 

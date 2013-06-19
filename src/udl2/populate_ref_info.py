@@ -16,7 +16,8 @@ from udl2_util.measurement import measure_cpu_plus_elasped_time
 def populate_ref_column_map(conf_dict, db_engine, conn, schema_name, ref_table_name):
     '''
     Load the column mapping data to the specified reference table
-    @param conf_dict: dict containing keys 'column_mappings'(the data) & 'column_definitions'( the column info)
+    @param conf_dict: dict containing keys 'column_mappings'(the data) & 'column_definitions'(the column info)
+                      the column definition information should not contain columns that are populated by db
     @param db_engine: sqlalchemy engine object
     @param conn: sqlalchemy connection object
     @param schema_name: the name of the reference schema
@@ -30,8 +31,7 @@ def populate_ref_column_map(conf_dict, db_engine, conn, schema_name, ref_table_n
     for row in col_map_data:
         row_map = {}
         for i in range(len(row)):
-            if row[i] is not None:
-                row_map[col_map_columns[i]] = row[i]
+            row_map[col_map_columns[i]] = row[i]
         data_list.append(row_map)
 
     conn.execute(col_map_table.insert(), data_list)

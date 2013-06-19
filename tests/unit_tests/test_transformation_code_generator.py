@@ -77,9 +77,13 @@ class TestTransformationCodeGenerator(unittest.TestCase):
 
 
 def update_actual_result(actual_result):
-    start_index = actual_result[2].index('CREATE OR REPLACE')
-    actual_sql = actual_result[2][start_index:].replace('\t', '    ')
-    return (actual_result[0], actual_result[1], actual_sql)
+    delete_str = '-- THIS CODE WAS GENERATED AT'
+    copy_list = []
+    peices = actual_result[2].split('\n')
+    for peice in peices:
+        if peice[0: len(delete_str)] != delete_str:
+            copy_list.append(peice)
+    return (actual_result[0], actual_result[1], "\n".join(copy_list).replace('\t', '    '))
 
 
 # expected result
@@ -95,6 +99,7 @@ DECLARE
     v_result VARCHAR(255);
 
 BEGIN
+-- THIS CODE WAS GENERATED FOR POSTGRES OF RULE {col_name}
 v_{col_name} := TRIM(REPLACE(UPPER(p_{col_name}), CHR(13), ''));
 t_{col_name} := v_{col_name};
 
@@ -121,13 +126,14 @@ DECLARE
     v_result VARCHAR(255);
 vals_{col_name} text[] = ARRAY['abc','def'];
 BEGIN
+-- THIS CODE WAS GENERATED FOR POSTGRES OF RULE {col_name}
 v_{col_name} := p_{col_name};
 t_{col_name} := v_{col_name};
 v_result := 'NOT FOUND';
 
     FOR cntr IN array_lower(vals_{col_name}, 1)..array_upper(vals_{col_name}, 1)
     LOOP
-            IF SUBSTRING(t_{col_name}, 1, 2) = SUBSTRING(vals_{col_name}[cntr], 1, 2) THEN
+        IF SUBSTRING(t_{col_name}, 1, 2) = SUBSTRING(vals_{col_name}[cntr], 1, 2) THEN
             v_result := vals_{col_name}[cntr];
             EXIT;
         END IF;
@@ -160,13 +166,14 @@ DECLARE
 keys_{col_name} text[] = ARRAY['abc','def'];
 vals_{col_name} text[] = ARRAY['first','second'];
 BEGIN
+-- THIS CODE WAS GENERATED FOR POSTGRES OF RULE {col_name}
 v_{col_name} := p_{col_name};
 t_{col_name} := v_{col_name};
 v_result := 'NOT FOUND';
 
     FOR cntr IN array_lower(keys_{col_name}, 1)..array_upper(keys_{col_name}, 1)
     LOOP
-            IF SUBSTRING(t_{col_name}, 1, 2) = SUBSTRING(keys_{col_name}[cntr], 1, 2) THEN
+        IF SUBSTRING(t_{col_name}, 1, 2) = SUBSTRING(keys_{col_name}[cntr], 1, 2) THEN
             v_result := vals_{col_name}[cntr];
             EXIT;
         END IF;
@@ -198,6 +205,7 @@ DECLARE
     v_result VARCHAR(255);
 
 BEGIN
+-- THIS CODE WAS GENERATED FOR POSTGRES OF RULE {col_name}
 v_{col_name} := p_{col_name};
 t_{col_name} := v_{col_name};
 

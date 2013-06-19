@@ -3,7 +3,7 @@ Created on June 13, 2013
 
 @author: lichen
 '''
-from rule_maker.rules.rule_keys import PCLEAN, VCLEAN, RCLEAN, LOOKUP, TO_CHAR, INLIST, OUTLIST, MIN0, COMPARE_LENGTH
+from rule_maker.rules.rule_keys import LOWER, UPPER, REMNL, TRIM, PCLEAN, VCLEAN, RCLEAN, LOOKUP, TO_CHAR, INLIST, OUTLIST, MIN0, COMPARE_LENGTH
 from rule_maker.rules.code_generator_sql_template import for_loop_exp, length_exp, index_exp, substr_exp, repace_exp, tochar_exp, min0_exp
 
 
@@ -166,7 +166,7 @@ def make_for_loop_exp(code_version, col, **parm):
     Reference: https://github.wgenhq.net/Ed-Ware-SBAC/udl/blob/master/sql/udl_stg/pkg/pb_loader.sql#L691
     '''
     count_value = 'keys_' if OUTLIST in parm.keys() else 'vals_'
-    compare_length = parm[COMPARE_LENGTH] if COMPARE_LENGTH  in parm.keys() else None
+    compare_length = parm[COMPARE_LENGTH] if COMPARE_LENGTH in parm.keys() else None
     if_statement = if_statment_for_compare_length(code_version, compare_length, count_value, col)
     return for_loop_exp[code_version].format(col_name=col, count_value=count_value, if_statement=if_statement)
 
@@ -192,10 +192,10 @@ def fun_name(*parts):
     '''
     return ''.join(*parts)
 
-action_fun_map = {'lower': lower,
-                  'upper': upper,
-                  'remnl': remnl,
-                  'trim': trim,
+action_fun_map = {LOWER: lower,
+                  UPPER: upper,
+                  REMNL: remnl,
+                  TRIM: trim,
                   PCLEAN: pclean,
                   VCLEAN: vclean,
                   RCLEAN: rclean,

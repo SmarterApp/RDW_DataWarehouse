@@ -18,12 +18,13 @@ PARAMETER_DEF = 'parameter_def'
 RETURN_DEF = 'return_def'
 DECLEAR_DEF = 'declare_def'
 BEGIN = 'begin'
+COMMENTS = 'comments'
 RETURN_STATEMENT = 'return_statement'
 EXCEPTION = 'exception'
 END = 'end'
 
 # all ORDERED components in code template
-TEMPLATE_COMPONENT = [FUNCTION_DEF, PARAMETER_DEF, RETURN_DEF, DECLEAR_DEF, BEGIN, RETURN_STATEMENT, EXCEPTION, END]
+TEMPLATE_COMPONENT = [FUNCTION_DEF, PARAMETER_DEF, RETURN_DEF, DECLEAR_DEF, BEGIN, COMMENTS, RETURN_STATEMENT, EXCEPTION, END]
 
 # three kinds of code ending part
 BASIC = 'basic'
@@ -147,7 +148,7 @@ $$ LANGUAGE plpgsql;
 for_loop_exp = {POSTGRES: """
     FOR cntr IN array_lower({count_value}{col_name}, 1)..array_upper({count_value}{col_name}, 1)
     LOOP
-            {if_statement}
+        {if_statement}
             v_result := vals_{col_name}[cntr];
             EXIT;
         END IF;
@@ -156,7 +157,7 @@ for_loop_exp = {POSTGRES: """
                 ORACLE: """
     FOR cntr IN 1..{count_value}{col_name}.COUNT
     LOOP
-            {if_statement}
+        {if_statement}
             v_result := vals_{col_name}(cntr);
             EXIT;
         END IF;

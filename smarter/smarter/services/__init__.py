@@ -1,4 +1,13 @@
+'''
+Endpoints to services
+
+'''
+
+
 def includeme(config):
+    '''
+    routes to services
+    '''
     # Add heartbeat
     config.add_route('heartbeat', '/services/heartbeat')
 

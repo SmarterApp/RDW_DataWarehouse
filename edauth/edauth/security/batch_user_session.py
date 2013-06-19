@@ -1,5 +1,5 @@
 '''
-Batch PDF Generating User Session
+Batch User Session and Cookie Generation
 
 Created on May 30, 2013
 
@@ -14,9 +14,9 @@ import re
 from pyramid.testing import DummyRequest
 
 
-def create_pdf_user_session(settings, roles, tenant_name):
+def create_batch_user_session(settings, roles, tenant_name):
     '''
-    Launch a session for pdf generation.
+    Return a batch user session
     '''
     # session expire time
     session_expire_secs = int(settings['pdf.superuser.session.timeout'])

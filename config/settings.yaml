@@ -8,6 +8,7 @@ common:
     use: egg:smarter
     disable_stack_trace: false
     smarter.PATH: /usr/local/bin
+    application.base.url: localhost:6543 
     pyramid:
       reload_templates: true
       debug_all: false

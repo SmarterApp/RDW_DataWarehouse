@@ -48,12 +48,12 @@ class TestPdfSessionWithBeaker(TestPdfSession):
         component.provideUtility(SessionBackend(reg.settings), ISessionBackend)
 
     def test_launch_pdf_session(self):
-        (cookie_name, cookie_value) = batch_user_session.create_pdf_user_session(TestPdfSession.settings, TestPdfSession.roles)
+        (cookie_name, cookie_value) = batch_user_session.create_batch_user_session(TestPdfSession.settings, TestPdfSession.roles, 'test')
         self.assertEqual(cookie_name, "edware")
         self.assertIsNotNone(cookie_value)
 
     def test_pdf_batch_user_login(self):
-        (cookie_name, cookie_value) = batch_user_session.create_pdf_user_session(TestPdfSession.settings, TestPdfSession.roles)
+        (cookie_name, cookie_value) = batch_user_session.create_batch_user_session(TestPdfSession.settings, TestPdfSession.roles, 'test')
         session_id = self.get_session_id(cookie_name, cookie_value)
         session = session_backend.get_session_backend().get_session(session_id)
         self.assertIsNotNone(session)
@@ -72,12 +72,12 @@ class TestPdfSessionWithDB(TestPdfSession):
         destroy_sqlite(datasource_name='edauth')
 
     def test_launch_pdf_session(self):
-        (cookie_name, cookie_value) = pdf_session.create_pdf_user_session(TestPdfSession.settings, TestPdfSession.roles)
+        (cookie_name, cookie_value) = pdf_session.create_batch_user_session(TestPdfSession.settings, TestPdfSession.roles)
         self.assertEqual(cookie_name, "edware")
         self.assertIsNotNone(cookie_value)
 
     def test_pdf_batch_user_login(self):
-        (cookie_name, cookie_value) = pdf_session.create_pdf_user_session(TestPdfSession.settings, TestPdfSession.roles)
+        (cookie_name, cookie_value) = pdf_session.create_batch_user_session(TestPdfSession.settings, TestPdfSession.roles)
         session_id = self.get_session_id(cookie_name, cookie_value)
         # test if session is found
         with EdauthDBConnection() as connection:

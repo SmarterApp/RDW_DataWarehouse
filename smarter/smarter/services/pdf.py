@@ -28,6 +28,8 @@ KNOWN_REPORTS = ['indivstudentreport.html']
 def post_pdf_service(request):
     '''
     Handles POST request to /services/pdf
+
+    :param request:  Pyramid request object
     '''
     try:
         params = request.json_body
@@ -41,6 +43,8 @@ def post_pdf_service(request):
 def get_pdf_service(request):
     '''
     Handles GET request to /services/pdf
+
+    :param request:  Pyramid request object
     '''
     return send_pdf_request(request.GET)
 
@@ -48,6 +52,8 @@ def get_pdf_service(request):
 def send_pdf_request(params):
     '''
     Requests for pdf content, throws http exceptions when error occurs
+
+    :param params: python dict that contains query parameters from the request
     '''
     report = pyramid.threadlocal.get_current_request().matchdict['report'].lower()
     if report not in KNOWN_REPORTS:
@@ -71,6 +77,8 @@ def send_pdf_request(params):
 def get_pdf_content(params):
     '''
     Read pdf content from file system if it exists, else generate it
+
+    :param params: python dict that contains query parameters from the request
     '''
     student_guid = params.get('studentGuid')
     if student_guid is None:
@@ -107,6 +115,8 @@ def get_pdf_content(params):
 def has_context_for_pdf_request(student_guid):
     '''
     Validates that user has context to student_guid
+
+    :param student_guid:  guid of the student
     '''
     if type(student_guid) is not list:
         student_guid = [student_guid]

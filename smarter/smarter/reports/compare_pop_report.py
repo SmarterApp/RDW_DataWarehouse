@@ -20,6 +20,7 @@ from edapi.exceptions import NotFoundException
 import json
 from beaker.cache import cache_region
 from smarter.security.context import select_with_context
+from services.cache import CacheNamespaceMap, STATE_VIEW, DISTRICT_VIEW
 
 # Report service for Comparing Populations
 # Output:
@@ -78,8 +79,8 @@ def get_comparing_populations_report(params):
 to manage cache efficiently, we needed to separate three reports
 '''
 
-
 @cache_region('public.data')
+@CacheNamespaceMap.register(STATE_VIEW)
 def get_state_view_report(stateCode):
     '''
     state view report
@@ -89,6 +90,7 @@ def get_state_view_report(stateCode):
 
 
 @cache_region('public.data')
+@CacheNamespaceMap.register(DISTRICT_VIEW)
 def get_district_view_report(stateCode, districtGuid):
     '''
     district view report

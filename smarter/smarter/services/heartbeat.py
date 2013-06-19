@@ -14,7 +14,9 @@ from smarter.database import get_data_source_names
 @view_config(route_name='heartbeat', permission=NO_PERMISSION_REQUIRED, request_method='GET')
 def heartbeat(request):
     '''
-    Returns 200 when we get results from db
+    GET request that executes a Select 1 and returns status of 200 if database returns results
+
+    :param request:  Pyramid request object
     '''
     try:
         results = None

@@ -22,7 +22,8 @@ def create_pdf_user_session(settings, roles):
     session_expire_secs = int(settings['pdf.superuser.session.timeout'])
     # Use pyramid's cookie helper to generate the cookie
     helper = __create_cookie_helper(settings)
-    session = __create_session(roles=roles, expire_in_secs=session_expire_secs)
+    tenant_name = settings['pdf.superuser.tenant']
+    session = __create_session(roles=roles, expire_in_secs=session_expire_secs, tenant_name=tenant_name)
     request = __create_dummy_request()
     # Retrieve cookie headers based on our session id
     header = helper.remember(request, session.get_session_id())
@@ -54,7 +55,7 @@ def __create_dummy_request():
     return request
 
 
-def __create_session(roles, expire_in_secs):
+def __create_session(roles, expire_in_secs, tenant_name):
     # current local time
     current_datetime = datetime.now()
     # How long session lasts
@@ -72,7 +73,7 @@ def __create_session(roles, expire_in_secs):
     __uid = str(uuid.uuid4())
     session.set_uid(__uid)
     # set tenant
-    session.set_tenant('cat')
+    session.set_tenant(tenant_name)
     # save current session
     get_session_backend().create_new_session(session)
     return session

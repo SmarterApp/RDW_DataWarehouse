@@ -4,7 +4,7 @@ Created on Jun 3, 2013
 @author: dawu
 '''
 import unittest
-from edauth.security import pdf_session
+from edauth.security import batch_user_session
 from zope import component
 from edauth.security import session_backend
 from edauth.security.session_backend import ISessionBackend, SessionBackend
@@ -19,7 +19,8 @@ class TestPdfSession(unittest.TestCase):
     settings = {'auth.policy.cookie_name': 'edware',
                 'auth.policy.hashalg': 'sha512',
                 'auth.policy.secret': 'edware_secret',
-                'pdf.superuser_session_timeout': '300000'}
+                'pdf.superuser.session.timeout': '300000',
+                'pdf.superuser.tenant': 'cat'}
 
     def get_session_id(self, cookie_name, cookie_value):
         # create dummy request
@@ -47,12 +48,12 @@ class TestPdfSessionWithBeaker(TestPdfSession):
         component.provideUtility(SessionBackend(reg.settings), ISessionBackend)
 
     def test_launch_pdf_session(self):
-        (cookie_name, cookie_value) = pdf_session.create_pdf_user_session(TestPdfSession.settings, TestPdfSession.roles)
+        (cookie_name, cookie_value) = batch_user_session.create_pdf_user_session(TestPdfSession.settings, TestPdfSession.roles)
         self.assertEqual(cookie_name, "edware")
         self.assertIsNotNone(cookie_value)
 
     def test_pdf_batch_user_login(self):
-        (cookie_name, cookie_value) = pdf_session.create_pdf_user_session(TestPdfSession.settings, TestPdfSession.roles)
+        (cookie_name, cookie_value) = batch_user_session.create_pdf_user_session(TestPdfSession.settings, TestPdfSession.roles)
         session_id = self.get_session_id(cookie_name, cookie_value)
         session = session_backend.get_session_backend().get_session(session_id)
         self.assertIsNotNone(session)

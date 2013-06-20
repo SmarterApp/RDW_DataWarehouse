@@ -23,7 +23,6 @@ def cache_state_view_report(tenant, state_code, host, port, cookie_name, cookie_
     '''
     flush_state_view_report(namespace, state_code)
     return send_http_post_request(tenant, {'stateCode': state_code}, host, port, cookie_name, cookie_value)
-    # TODO retries?
 
 
 @celery.task(name='tasks.cache.district_view')
@@ -36,7 +35,6 @@ def cache_district_view_report(tenant, state_code, district_guid, host, port, co
     '''
     flush_district_view_report(namespace, state_code, district_guid)
     return send_http_post_request(tenant, {'stateCode': state_code, 'districtGuid': district_guid}, host, port, cookie_name, cookie_value)
-    # TODO retries?
 
 
 def flush_state_view_report(namespace, state_code):

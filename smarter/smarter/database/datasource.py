@@ -25,6 +25,6 @@ def setup_tenant_db_connection(tenant, config):
 
 def get_db_config_prefix(tenant):
     '''
-    Returns the prefix for a tenantmore  for sqlalchemy db configuration
+    Returns the prefix for a tenant  for sqlalchemy db configuration
     '''
     return 'edware.db.' + tenant + '.'

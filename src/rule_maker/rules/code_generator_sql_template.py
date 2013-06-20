@@ -195,7 +195,7 @@ array_exp = {
 
 # replacing expression for different code version
 repace_exp = {
-              POSTGRES: """REPLACE({col_name}, CHR(13), \'\')""",
+              POSTGRES: """REGEXP_REPLACE({col_name}, E\'[\\n\\r]+\', \'\', 'g')""",
               ORACLE: """ REPLACE({col_name}, CHR(13), NULL)"""
              }
 

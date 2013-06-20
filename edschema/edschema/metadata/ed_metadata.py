@@ -17,23 +17,16 @@ Command line options are available form --help, but as a quick start:
 @contact:    edwaredevs@wgen.net
 @deffield    updated: Updated
 '''
-from sqlalchemy.schema import MetaData, CreateSchema
+from sqlalchemy.schema import MetaData
 from sqlalchemy import Table, Column, Index
 from sqlalchemy import SmallInteger, String, Boolean, Float, BigInteger
 from sqlalchemy import ForeignKey
-import argparse
-from sqlalchemy.engine import create_engine
 from sqlalchemy.types import Text
 
 __all__ = []
 __version__ = 0.1
 __date__ = '2013-02-02'
 __updated__ = '2013-02-02'
-
-DBDRIVER = "postgresql+pypostgresql"
-DEBUG = 0
-VERBOSE = False
-
 
 def generate_ed_metadata(schema_name=None, bind=None):
 
@@ -230,36 +223,3 @@ def generate_ed_metadata(schema_name=None, bind=None):
     Index('fact_asmt_outcome_student_idx', assessment_outcome.c.student_guid, assessment_outcome.c.most_recent, unique=False)
 
     return metadata
-
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Create New Schema for EdWare')
-    parser.add_argument("-s", "--schema", help="set schema name.  required")
-    parser.add_argument("-d", "--database", default="edware", help="set database name default[edware]")
-    parser.add_argument("--host", default="127.0.0.1:5432", help="postgre host default[127.0.0.1:5432]")
-    parser.add_argument("-u", "--user", default="edware", help="postgre username default[edware]")
-    parser.add_argument("-p", "--passwd", default="edware", help="postgre password default[edware]")
-    args = parser.parse_args()
-
-    __schema = args.schema
-    __database = args.database
-    __host = args.host
-    __user = args.user
-    __passwd = args.passwd
-
-    if __schema is None:
-        print("Please specifiy --schema option")
-        exit(-1)
-    __URL = DBDRIVER + "://" + __user + ":" + __passwd + "@" + __host + "/" + __database
-    print("DB Driver:" + DBDRIVER)
-    print("     User:" + __user)
-    print("  Password:" + __passwd)
-    print("      Host:" + __host)
-    print("  Database:" + __database)
-    print("    Schema:" + __schema)
-    print("####################")
-    engine = create_engine(__URL, echo=True)
-    connection = engine.connect()
-    connection.execute(CreateSchema(__schema))
-    metadata = generate_ed_metadata(schema_name=__schema, bind=engine)
-    metadata.create_all(engine)

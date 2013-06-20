@@ -38,10 +38,7 @@ class PopulateRefInfoFTest(unittest.TestCase):
         self.rule_list = transformation_code_generator.generate_transformations(self.rule_names, rule_conf=self.rule_conf)
         self.testable_rules = []
         for rule in self.rule_list: 
-            print(rule[0])
             self.testable_rules.append(rule[0])
-        print("DAAAA")
-        print(self.testable_rules)
 
     def tearDown(self):
         pass

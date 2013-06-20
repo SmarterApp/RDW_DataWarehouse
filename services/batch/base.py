@@ -7,8 +7,15 @@ from edauth.security.batch_user_session import create_batch_user_session
 
 
 class BatchBase(object):
+    '''
+    A base class for batch processes
+    '''
 
     def __init__(self, settings, tenant):
+        '''
+        :param settings:  a python dict containing configurations
+        :param string tenant:  name of the tenant used to send batch processes
+        '''
         self.settings = settings
         self.tenant = tenant
 
@@ -16,7 +23,7 @@ class BatchBase(object):
 
     def __init_cookie(self):
         '''
-        Creates cookie for accessing smarter application
+        Creates a cookie for accessing smarter application
         '''
         # get current session cookie and request for pdf
         roles = ['SUPER_USER']

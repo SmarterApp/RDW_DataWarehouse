@@ -19,8 +19,7 @@ class TestPdfSession(unittest.TestCase):
     settings = {'auth.policy.cookie_name': 'edware',
                 'auth.policy.hashalg': 'sha512',
                 'auth.policy.secret': 'edware_secret',
-                'pdf.superuser.session.timeout': '300000',
-                'pdf.superuser.tenant': 'cat'}
+                'batch.user.session.timeout': '300000'}
 
     def get_session_id(self, cookie_name, cookie_value):
         # create dummy request

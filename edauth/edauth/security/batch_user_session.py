@@ -19,7 +19,7 @@ def create_batch_user_session(settings, roles, tenant_name):
     Return a batch user session
     '''
     # session expire time
-    session_expire_secs = int(settings['pdf.superuser.session.timeout'])
+    session_expire_secs = int(settings.get('batch.user.session.timeout'))
     # Use pyramid's cookie helper to generate the cookie
     helper = __create_cookie_helper(settings)
     session = __create_session(roles=roles, expire_in_secs=session_expire_secs, tenant_name=tenant_name)

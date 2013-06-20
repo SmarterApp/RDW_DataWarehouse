@@ -8,7 +8,8 @@ common:
     use: egg:smarter
     disable_stack_trace: false
     smarter.PATH: /usr/local/bin
-    application.base.url: localhost:6543 
+    application.base.url: localhost:6543
+    batch.user.session.timeout: 300000
     pyramid:
       reload_templates: true
       debug_all: false
@@ -74,7 +75,6 @@ common:
       celery_timeout: 30
       # Don't regenerate if pdf is in file system
       always.generate: False
-      superuser.session.timeout: 300000
       base.url: http://localhost:6543/assets/html/
       batch.job.queue: batch_pdf_gen
     # Used for tenancy

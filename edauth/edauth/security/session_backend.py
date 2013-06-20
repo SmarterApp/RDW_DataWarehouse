@@ -66,7 +66,6 @@ class BeakerBackend(Backend):
     Manipulates session that resides in persistent storage (memory, memcached)
     '''
     def __init__(self, settings):
-        # We'll save both the cachemanager
         self.cache_mgr = CacheManager(**parse_cache_config_options(settings))
 
     def create_new_session(self, session):

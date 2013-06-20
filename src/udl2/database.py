@@ -708,7 +708,7 @@ def load_reference_data(udl2_conf):
     '''
     (conn, engine) = _create_conn_engine(udl2_conf)
     ref_table_info = ref_table_data.ref_table_conf
-    populate_ref_column_map(ref_table_info, engine, conn, udl2_conf['reference_schema'], 'REF_COLUMN_MAPPING')
+    populate_ref_column_map(ref_table_info, engine, conn, udl2_conf['reference_schema'], udl2_conf['ref_table_name'])
 
 
 @measure_cpu_plus_elasped_time
@@ -720,7 +720,7 @@ def load_stored_proc(udl2_conf):
     '''
 
     (conn, engine) = _create_conn_engine(udl2_conf)
-    populate_stored_proc(engine, conn, udl2_conf['reference_schema'], 'REF_COLUMN_MAPPING')
+    populate_stored_proc(engine, conn, udl2_conf['reference_schema'], udl2_conf['ref_table_name'])
 
 
 @measure_cpu_plus_elasped_time

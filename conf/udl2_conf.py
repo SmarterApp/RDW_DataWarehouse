@@ -54,6 +54,7 @@ udl2_conf = {
         'fdw_server':'udl2_fdw_server',
         'staging_schema':'udl2',
         'integration_schema': 'udl2',
+        'ref_table_name': 'REF_COLUMN_MAPPING',
         'db_host':'localhost',
         'db_port':'5432',
         'db_name':'udl2',

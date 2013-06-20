@@ -60,7 +60,7 @@ class DataValidationErrorCode(unittest.TestCase):
     def test_duplicateHeaders_errorcode(self):
         # test#5 --> duplicate_values (3011)
         validate_instance = csv_validator.DoesSourceFileContainDuplicateHeaders()
-        expected_error_code = validate_instance.execute(self.conf['zones']['datafiles'], "realdata_3011.csv", 123)
+        expected_error_code = validate_instance.execute(self.conf['zones']['datafiles'], "REALDATA_3011.csv", 123)
         assert expected_error_code[0] == error_codes.SRC_FILE_HAS_DUPLICATE_HEADERS, "Validation Code for duplicate headers is incorrect"
         print("Passed: TC5: Validation Code for duplicate headers")
 

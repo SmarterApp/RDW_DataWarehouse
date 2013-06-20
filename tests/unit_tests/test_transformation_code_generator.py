@@ -100,7 +100,7 @@ DECLARE
 
 BEGIN
 -- THIS CODE WAS GENERATED FOR POSTGRES OF RULE {col_name}
-v_{col_name} := TRIM(REPLACE(UPPER(p_{col_name}), CHR(13), ''));
+v_{col_name} := TRIM(REGEXP_REPLACE(UPPER(p_{col_name}), E\'[\\n\\r]+\', \'\', \'g\'));
 t_{col_name} := v_{col_name};
 
     v_result := t_{col_name};

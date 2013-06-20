@@ -32,7 +32,7 @@ class TestCodeGeneratorUtil(unittest.TestCase):
     def test_remnl(self):
         col_name = 'test_col_3'
         actual_result = cu.remnl(self.code_version, col_name)
-        expected_result = 'REPLACE(test_col_3, CHR(13), \'\')'
+        expected_result = 'REGEXP_REPLACE(test_col_3, E\'[\\n\\r]+\', \'\', \'g\')'
         self.assertEqual(actual_result, expected_result)
 
     def test_trim(self):
@@ -45,7 +45,7 @@ class TestCodeGeneratorUtil(unittest.TestCase):
         col_name = 'test_col_5'
         action_list = [UPPER, REMNL, TRIM]
         actual_result = cu.vclean(self.code_version, col_name, action_list)
-        expected_result = 't_test_col_5 := TRIM(REPLACE(UPPER(v_test_col_5), CHR(13), \'\'));'
+        expected_result = 't_test_col_5 := TRIM(REGEXP_REPLACE(UPPER(v_test_col_5), E\'[\\n\\r]+\', \'\', \'g\'));'
         self.assertEqual(actual_result, expected_result)
 
     def test_vclean_single(self):
@@ -59,7 +59,7 @@ class TestCodeGeneratorUtil(unittest.TestCase):
         col_name = 'test_col_7'
         action_list = [REMNL, TRIM, UPPER]
         actual_result = cu.pclean(self.code_version, col_name, action_list)
-        expected_result = 'v_test_col_7 := UPPER(TRIM(REPLACE(p_test_col_7, CHR(13), \'\')));'
+        expected_result = 'v_test_col_7 := UPPER(TRIM(REGEXP_REPLACE(p_test_col_7, E\'[\\n\\r]+\', \'\', \'g\')));'
         self.assertEqual(actual_result, expected_result)
 
     def test_pclean_single(self):

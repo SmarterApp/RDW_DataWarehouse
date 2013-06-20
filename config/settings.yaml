@@ -8,7 +8,7 @@ common:
     use: egg:smarter
     disable_stack_trace: false
     smarter.PATH: /usr/local/bin
-    application.base.url: localhost:6543
+    application.url: localhost:6543
     batch.user.session.timeout: 300000
     pyramid:
       reload_templates: true

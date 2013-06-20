@@ -20,8 +20,8 @@ class PDFGenerator(BatchBase):
         :param string configFile: path to configuration file
         '''
         super().__init__(settings, tenant)
-        self.__base_url = settings.get('pdf.base.url', 'http://localhost:6543/assets/html')
-        self.__queue_name = settings.get('pdf.batch.job.queue', 'pdf_high_pri')
+        self.__base_url = settings.get('pdf.base.url')
+        self.__queue_name = settings.get('pdf.batch.job.queue', 'batch_pdf_gen')
 
     def send_pdf_request(self, student_guid, file_name, report='indivStudentReport.html'):
         '''

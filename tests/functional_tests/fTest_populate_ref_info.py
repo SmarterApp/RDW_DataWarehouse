@@ -10,11 +10,12 @@ import imp
 from importlib import import_module
 
 from sqlalchemy.sql.expression import select
-
+from udl2 import database
 from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from udl2_util.database_util import connect_db, get_sqlalch_table_object
 from udl2.populate_ref_info import populate_stored_proc
-
+from rule_maker.rules.udl_transformation_config import transform_rules
+from rule_maker.rules import transformation_code_generator
 
 class PopulateRefInfoFTest(unittest.TestCase):
 
@@ -26,27 +27,21 @@ class PopulateRefInfoFTest(unittest.TestCase):
 
         udl2_conf = imp.load_source('udl2_conf', config_path)
         from udl2_conf import udl2_conf
-        #udl2_conf = import_module(udl2_conf, 'udl2_conf')
-
-        self.user = udl2_conf['udl2_db']['db_user']
-        self.password = udl2_conf['udl2_db']['db_pass']
-        self.host = udl2_conf['udl2_db']['db_host']
-        self.db_name = udl2_conf['udl2_db']['db_database']
+        self.conn, self.engine = database._create_conn_engine(udl2_conf['udl2_db'])
         self.ref_schema = udl2_conf['udl2_db']['reference_schema']
         self.ref_table_name = udl2_conf['udl2_db']['ref_table_name']
-        db_driver = udl2_conf['udl2_db']['db_driver']
-        port = udl2_conf['udl2_db']['db_port']
+        self.ref_table = get_sqlalch_table_object(self.engine, self.ref_schema, self.ref_table_name)
 
         # Testable Rules
-        # TODO: once all rules are implemented this should just read the rules dict
-        self.testable_rules = ['clean', 'cleanUpper', 'cleanLower', 'schoolType', 'yn',
-                               'gender', 'staffType', 'asmtType', 'subjectType']
-
-        # connect to db
-        conn, engine = connect_db(db_driver, self.user, self.password, self.host, port, self.db_name)
-        self.conn = conn
-        self.engine = engine
-        self.ref_table = get_sqlalch_table_object(self.engine, self.ref_schema, self.ref_table_name)
+        self.rule_names = transform_rules.keys()
+        self.rule_conf = transform_rules
+        self.rule_list = transformation_code_generator.generate_transformations(self.rule_names, rule_conf=self.rule_conf)
+        self.testable_rules = []
+        for rule in self.rule_list: 
+            print(rule[0])
+            self.testable_rules.append(rule[0])
+        print("DAAAA")
+        print(self.testable_rules)
 
     def tearDown(self):
         pass

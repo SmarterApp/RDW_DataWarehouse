@@ -1,5 +1,6 @@
 from udl2_util.measurement import measure_cpu_plus_elasped_time
 
+
 @measure_cpu_plus_elasped_time
 def create_fdw_extension_query(csv_schema):
     return "CREATE EXTENSION IF NOT EXISTS file_fdw WITH SCHEMA {csv_schema}".format(csv_schema=csv_schema)
@@ -12,7 +13,6 @@ def create_fdw_server_query(fdw_server):
 
 @measure_cpu_plus_elasped_time
 def create_ddl_csv_query(header_names, header_types, csv_file, csv_schema, csv_table, fdw_server):
-    # TODO: if the csv_file does not have header row, need to set header = false in the OPTINOS
     ddl_parts = ["CREATE FOREIGN TABLE IF NOT EXISTS \"%s\".\"%s\" ( " % (csv_schema, csv_table),
                  ','.join([header_names[i] + ' ' + header_types[i] + ' ' for i in range(len(header_names))]),
                  ") SERVER %s " % fdw_server,
@@ -44,18 +44,17 @@ def drop_staging_tables_query(csv_schema, csv_table):
 
 
 @measure_cpu_plus_elasped_time
-def create_inserting_into_staging_query(stg_asmt_outcome_columns, apply_rules, header_names, header_types, staging_schema,
-                                        staging_table, csv_schema, csv_table, start_seq, seq_name):
-    trim_column_names = apply_transformation_rules(apply_rules, header_types, header_names)
+def create_inserting_into_staging_query(stg_asmt_outcome_columns, apply_rules, csv_table_columns, header_types, staging_schema,
+                                        staging_table, csv_schema, csv_table, start_seq, seq_name, transformation_rules):
+    column_names_with_proc = apply_transformation_rules(apply_rules, header_types, csv_table_columns, transformation_rules)
     insert_sql = ["INSERT INTO \"{staging_schema}\".\"{staging_table}\"(",
                    ",".join(stg_asmt_outcome_columns),
                    ") SELECT ",
-                   ",".join(trim_column_names),
+                   ",".join(column_names_with_proc),
                    " FROM \"{csv_schema}\".\"{csv_table}\"",
                    ]
     insert_sql = "".join(insert_sql).format(seq_name=seq_name, staging_schema=staging_schema, staging_table=staging_table,
                                             csv_schema=csv_schema, csv_table=csv_table)
-    # print(insert_sql)
     return insert_sql
 
 
@@ -92,15 +91,19 @@ def drop_sequence_query(staging_schema, seq_name):
 
 
 @measure_cpu_plus_elasped_time
-def apply_transformation_rules(apply_rules, header_types, header_names):
+def apply_transformation_rules(apply_rules, header_types, csv_table_columns, transformation_rules):
     '''
     The function apply the some transformation rules
     '''
     header_with_rules = []
-    for i in range(len(header_names)):
-        header_name = header_names[i]
-
+    for i in range(len(csv_table_columns)):
+        header_name = csv_table_columns[i]
+        rule = transformation_rules[i]
+        column_with_rule = header_name
         if apply_rules:
+            if rule is not None and rule != '':
+                column_with_rule = ''.join([rule, '(', header_name, ')'])
+            """
             header_type = header_types[i]
             # test for function map_gender. Hard code as a temporary solution
             if header_name.lower() in ['gender_1', 'gender_2', 'gender_3', 'gender_4']:
@@ -110,5 +113,15 @@ def apply_transformation_rules(apply_rules, header_types, header_names):
                 header_name = 'map_yn(' + header_name + ')'
             elif header_type.lower() == 'text':
                 header_name = "trim(replace(upper(" + header_name + "), CHR(13), ''))"
+
         header_with_rules.append(header_name)
+        """
+        header_with_rules.append(column_with_rule)
     return header_with_rules
+
+
+@measure_cpu_plus_elasped_time
+def get_column_mapping_query(staging_schema, ref_table, source_table):
+    return "SELECT source_column, target_column, stored_proc_name FROM \"{staging_schema}\".\"{ref_table}\" WHERE source_table='{source_table}'".format(staging_schema=staging_schema,
+                                                                                                                                                        ref_table=ref_table,
+                                                                                                                                                        source_table=source_table)

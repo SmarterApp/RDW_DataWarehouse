@@ -39,6 +39,7 @@ TARGET_DB_TABLE = 'staging_table'
 CSV_SCHEMA = 'csv_schema'
 CSV_TABLE = 'csv_table'
 FDW_SERVER = 'fdw_server'
+REF_TABLE = 'ref_table'
 
 # keys for conf sent to move_to_integration.move_data_from_staging_to_integration(conf)
 SOURCE_DB_DRIVER = 'source_db_driver'
@@ -51,7 +52,6 @@ SOURCE_DB_SCHEMA = 'source_db_schema'
 ERROR_DB_SCHEMA = 'error_schema'
 
 MAP_TYPE = 'map_type'
-
 
 
 # report errors

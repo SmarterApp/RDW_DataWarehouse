@@ -55,12 +55,24 @@ def execute_queries(conn, list_of_queries, except_msg, caller_module=None, calle
         trans.rollback()
 
 
+def execute_query_with_result(conn, query, except_msg, caller_module=None, caller_func=None):
+    trans = conn.begin()
+    # execute queries
+    try:
+        result = conn.execute(query)
+        trans.commit()
+        return result
+    except Exception as e:
+        print(except_msg, e)
+        trans.rollback()
+
+
 @measure_cpu_plus_elasped_time
 def get_table_columns_info(conn, table_name, is_conn_a_dblink=False):
     if is_conn_a_dblink:
         sql_query = text("")
     else:  # table is in the local database server
-        sql_query = text("SELECT column_name, data_type, character_maximum_length " +
+        sql_query = text("SELECT column_name, data_type, character_maximum_length " + 
                          "FROM information_schema.columns "
                          "WHERE table_name = \'%s\' "
                         % (table_name))

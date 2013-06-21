@@ -10,6 +10,7 @@ from udl2_util.measurement import measure_cpu_plus_elasped_time
 
 logger = get_task_logger(__name__)
 
+
 @celery.task(name="udl2.W_load_to_staging_table.task")
 @measure_cpu_plus_elasped_time
 def task(msg):
@@ -38,9 +39,10 @@ def generate_conf_for_loading(file_to_load, start_seq, header_file_path, batch_i
             mk.CSV_TABLE: csv_table,
             mk.FDW_SERVER: udl2_conf['udl2_db']['fdw_server'],
             mk.TARGET_DB_SCHEMA: udl2_conf['udl2_db']['staging_schema'],
-            # TODO: Get rid of the next 2 hard-coded values
+            # TODO: Get rid of the next 3 hard-coded values
             mk.TARGET_DB_TABLE: 'STG_SBAC_ASMT_OUTCOME',
-            mk.APPLY_RULES: False,
+            mk.APPLY_RULES: True,
+            mk.REF_TABLE: 'REF_COLUMN_MAPPING',
             mk.BATCH_ID: batch_id
     }
     return conf

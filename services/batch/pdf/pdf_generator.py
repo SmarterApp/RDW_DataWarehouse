@@ -21,7 +21,7 @@ class PDFGenerator(BatchBase):
         '''
         super().__init__(settings, tenant)
         self.__base_url = settings.get('pdf.base.url')
-        self.__queue_name = settings.get('pdf.batch.job.queue', 'batch_pdf_gen')
+        self.__queue_name = settings.get('pdf.batch.job.queue')
 
     def send_pdf_request(self, student_guid, file_name, report='indivStudentReport.html'):
         '''
@@ -35,4 +35,4 @@ class PDFGenerator(BatchBase):
         pdf_url = urljoin(self.__base_url, report) + "?studentGuid=%s" % student_guid
         # send asynchronous request
         kwargs = {'cookie_name': self.cookie_name}
-        generate.apply_async((self.cookie_value, pdf_url, file_name), kwargs=kwargs, queue=self.__queue_name)  # @UndefinedVariable
+        return generate.apply_async((self.cookie_value, pdf_url, file_name), kwargs=kwargs, queue=self.__queue_name)  # @UndefinedVariable

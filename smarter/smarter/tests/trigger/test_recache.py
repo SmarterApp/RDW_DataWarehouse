@@ -97,6 +97,7 @@ class TestRecache(Unittest_with_smarter_sqlite):
 
     def test_flush_report_in_cache_region(self):
         dummy_method('NY')
+        self.validate_cache_has_one_item()
         flush_report_in_cache_region(dummy_method, 'NY', region='test')
         self.validate_cache_is_empty()
 

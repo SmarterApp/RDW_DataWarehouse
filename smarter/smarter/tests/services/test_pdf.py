@@ -21,11 +21,11 @@ import tempfile
 from pyramid.registry import Registry
 from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_report_path_by_student_guid
 from services.tasks.pdf import prepare_path
-from services.tests.pdf.test_tasks import get_cmd
 from services.celeryconfig import get_config
 import shutil
 from edauth.security.session import Session
 from smarter.security.roles.teacher import Teacher  # @UnusedImport
+from services.tests.tasks.test_pdf import get_cmd
 
 
 class TestServices(Unittest_with_smarter_sqlite):

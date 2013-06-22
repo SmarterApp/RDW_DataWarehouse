@@ -9,12 +9,12 @@ from sqlalchemy.sql.expression import true
 from smarter.reports.helpers.constants import Constants
 
 
-def get_breadcrumbs_context(state_code=None, district_guid=None, school_guid=None, asmt_grade=None, student_name=None):
+def get_breadcrumbs_context(state_code=None, district_guid=None, school_guid=None, asmt_grade=None, student_name=None, datasource_name=None):
     '''
     Given certain known information, returns breadcrumbs context
     '''
     formatted_results = []
-    with SmarterDBConnection() as connector:
+    with SmarterDBConnection(name=datasource_name) as connector:
         dim_inst_hier = connector.get_table('dim_inst_hier')
 
         # Limit result count to one

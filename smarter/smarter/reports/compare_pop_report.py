@@ -20,6 +20,7 @@ from edapi.exceptions import NotFoundException
 import json
 from beaker.cache import cache_region
 from smarter.security.context import select_with_context
+from smarter.database.datasource import get_datasource_name
 
 # Report service for Comparing Populations
 # Output:
@@ -64,109 +65,109 @@ REPORT_NAME = "comparing_populations"
 @user_info
 def get_comparing_populations_report(params):
     results = None
+    report = ComparingPopReport()
     if Constants.SCHOOLGUID in params and Constants.DISTRICTGUID in params and Constants.STATECODE in params:
-        results = get_school_view_report(params[Constants.STATECODE], params[Constants.DISTRICTGUID], params[Constants.SCHOOLGUID])
+        results = report.get_school_view_report(params[Constants.STATECODE], params[Constants.DISTRICTGUID], params[Constants.SCHOOLGUID])
     elif params and Constants.DISTRICTGUID in params and Constants.STATECODE in params:
-        results = get_district_view_report(params[Constants.STATECODE], params[Constants.DISTRICTGUID])
+        results = report.get_district_view_report(params[Constants.STATECODE], params[Constants.DISTRICTGUID])
     elif Constants.STATECODE in params:
-        results = get_state_view_report(params[Constants.STATECODE])
+        results = report.get_state_view_report(params[Constants.STATECODE])
 
     return results
 
 
-'''
-to manage cache efficiently, we needed to separate three reports
-'''
-
-
-@cache_region('public.data')
-def get_state_view_report(stateCode):
+class ComparingPopReport(object):
     '''
-    state view report
-    :param string stateCode:  State code representing the state
-    '''
-    return get_report(stateCode)
-
-
-@cache_region('public.data')
-def get_district_view_report(stateCode, districtGuid):
-    '''
-    district view report
-    :param string stateCode:  State code representing the state
-    :param string districtGuid:  Guid of the district
-    '''
-    return get_report(stateCode, districtGuid)
-
-
-def get_school_view_report(stateCode, districtGuid, schoolGuid):
-    '''
-    school view report
-    :param string stateCode:  State code representing the state
-    :param string districtGuid:  Guid of the district
-    :param string schoolGuid:  Guid of the school
-    '''
-    return get_report(stateCode, districtGuid, schoolGuid)
-
-
-def get_report(stateCode, districtGuid=None, schoolGuid=None):
-    '''
-    actual report call
-
-    :param string stateCode:  State code representing the state
-    :param string districtGuid:  Guid of the district, could be None
-    :param string schoolGuid:  Guid of the school, could be None
-    '''
-    # run query
-    params = {Constants.STATECODE: stateCode, Constants.DISTRICTGUID: districtGuid, Constants.SCHOOLGUID: schoolGuid}
-    results = run_query(**params)
-    if not results:
-        raise NotFoundException("There are no results")
-
-    # arrange results
-    results = arrange_results(results, **params)
-
-    return results
-
-
-def run_query(**params):
-    '''
-    Run comparing populations query and return the results
+    Represents a comparing populations report
     '''
 
-    with SmarterDBConnection() as connector:
+    def __init__(self, tenant=None):
+        '''
+        :param tenant:  tenant name of the user
+        '''
+        self.tenant = tenant
+        self.datasource_name = None
+        if tenant:
+            self.datasource_name = get_datasource_name(tenant)
 
-        query_helper = QueryHelper(connector, **params)
+    @cache_region('public.data')
+    def get_state_view_report(self, stateCode):
+        '''
+        state view report
+        :param string stateCode:  State code representing the state
+        '''
+        return self.get_report(stateCode)
 
-        query = query_helper.get_query()
+    @cache_region('public.data')
+    def get_district_view_report(self, stateCode, districtGuid):
+        '''
+        district view report
+        :param string stateCode:  State code representing the state
+        :param string districtGuid:  Guid of the district
+        '''
+        return self.get_report(stateCode, districtGuid)
 
-        results = connector.get_result(query)
+    def get_school_view_report(self, stateCode, districtGuid, schoolGuid):
+        '''
+        school view report
+        :param string stateCode:  State code representing the state
+        :param string districtGuid:  Guid of the district
+        :param string schoolGuid:  Guid of the school
+        '''
+        return self.get_report(stateCode, districtGuid, schoolGuid)
 
-    return results
+    def get_report(self, stateCode, districtGuid=None, schoolGuid=None):
+        '''
+        actual report call
 
+        :param string stateCode:  State code representing the state
+        :param string districtGuid:  Guid of the district, could be None
+        :param string schoolGuid:  Guid of the school, could be None
+        '''
+        # run query
+        params = {Constants.STATECODE: stateCode, Constants.DISTRICTGUID: districtGuid, Constants.SCHOOLGUID: schoolGuid}
+        results = self.run_query(**params)
+        if not results:
+            raise NotFoundException("There are no results")
 
-def arrange_results(results, **param):
-    '''
-    Arrange the results in optimal way to be consumed by front-end
-    '''
-    subjects = {Constants.MATH: Constants.SUBJECT1, Constants.ELA: Constants.SUBJECT2}
-    arranged_results = {}
-    record_manager = RecordManager(subjects, **param)
+        # arrange results
+        results = self.arrange_results(results, **params)
 
-    for result in results:
-        # use record manager to update record with result set
-        record_manager.update_record(result)
+        return results
 
-    # bind the results
-    arranged_results[Constants.COLORS] = record_manager.get_asmt_custom_metadata()
-    arranged_results[Constants.SUMMARY] = record_manager.get_summary()
-    arranged_results[Constants.RECORDS] = record_manager.get_records()
-    # reverse map keys and values for subject
-    arranged_results[Constants.SUBJECTS] = record_manager.get_subjects()
+    def run_query(self, **params):
+        '''
+        Run comparing populations query and return the results
+        '''
+        with SmarterDBConnection(name=self.datasource_name) as connector:
+            query_helper = QueryHelper(connector, **params)
+            query = query_helper.get_query()
+            results = connector.get_result(query)
+        return results
 
-    # get breadcrumb context
-    arranged_results[Constants.CONTEXT] = get_breadcrumbs_context(state_code=param.get(Constants.STATECODE), district_guid=param.get(Constants.DISTRICTGUID), school_guid=param.get(Constants.SCHOOLGUID))
+    def arrange_results(self, results, **param):
+        '''
+        Arrange the results in optimal way to be consumed by front-end
+        '''
+        subjects = {Constants.MATH: Constants.SUBJECT1, Constants.ELA: Constants.SUBJECT2}
+        arranged_results = {}
+        record_manager = RecordManager(subjects, **param)
 
-    return arranged_results
+        for result in results:
+            # use record manager to update record with result set
+            record_manager.update_record(result)
+
+        # bind the results
+        arranged_results[Constants.COLORS] = record_manager.get_asmt_custom_metadata()
+        arranged_results[Constants.SUMMARY] = record_manager.get_summary()
+        arranged_results[Constants.RECORDS] = record_manager.get_records()
+        # reverse map keys and values for subject
+        arranged_results[Constants.SUBJECTS] = record_manager.get_subjects()
+
+        # get breadcrumb context
+        arranged_results[Constants.CONTEXT] = get_breadcrumbs_context(state_code=param.get(Constants.STATECODE), district_guid=param.get(Constants.DISTRICTGUID), school_guid=param.get(Constants.SCHOOLGUID), datasource_name=self.datasource_name)
+
+        return arranged_results
 
 
 class RecordManager():

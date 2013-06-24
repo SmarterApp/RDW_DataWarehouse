@@ -39,10 +39,11 @@ def generate_conf_for_loading(file_to_load, start_seq, header_file_path, batch_i
             mk.CSV_TABLE: csv_table,
             mk.FDW_SERVER: udl2_conf['udl2_db']['fdw_server'],
             mk.TARGET_DB_SCHEMA: udl2_conf['udl2_db']['staging_schema'],
-            # TODO: Get rid of the next 3 hard-coded values
+            # TODO: Get rid of the 1 hard-coded value
             mk.TARGET_DB_TABLE: 'STG_SBAC_ASMT_OUTCOME',
             mk.APPLY_RULES: True,
-            mk.REF_TABLE: 'REF_COLUMN_MAPPING',
+            mk.REF_TABLE: udl2_conf['udl2_db']['ref_table_name'],
+            mk.CSV_LZ_TABLE: udl2_conf['udl2_db']['csv_lz_table'],
             mk.BATCH_ID: batch_id
     }
     return conf

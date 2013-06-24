@@ -52,15 +52,13 @@ def create_fdw_tables(conn, header_names, header_types, csv_file, csv_schema, cs
 
 
 @measure_cpu_plus_elasped_time
-def get_fields_map(conn, header_names, header_types, ref_table, batch_id, csv_file, staging_schema, staging_table):
+def get_fields_map(conn, header_names, header_types, ref_table, csv_lz_table, batch_id, csv_file, staging_schema, staging_table):
 
     """
     Getting field mapper, which maps the column in staging table, and columns in csv table
     """
     # get column mapping from ref table
-    # TODO: replace hard-code source_table
-    source_table = 'LZ_CSV'
-    get_column_mapping_query = queries.get_column_mapping_query(staging_schema, ref_table, source_table)
+    get_column_mapping_query = queries.get_column_mapping_query(staging_schema, ref_table, csv_lz_table)
     column_mapping = execute_query_with_result(conn, get_column_mapping_query,
                                                'Exception in creating insertion query to stg table -- ',
                                                'file_loader', 'get_fields_map')
@@ -115,7 +113,7 @@ def load_data_process(conn, conf):
 
     # get field map
     stg_asmt_outcome_columns, csv_table_columns, transformation_rules = get_fields_map(conn, header_names, header_types,
-                                                                                       conf[mk.REF_TABLE], conf[mk.BATCH_ID], conf[mk.FILE_TO_LOAD],
+                                                                                       conf[mk.REF_TABLE], conf[mk.CSV_LZ_TABLE], conf[mk.BATCH_ID], conf[mk.FILE_TO_LOAD],
                                                                                        conf[mk.TARGET_DB_SCHEMA], conf[mk.TARGET_DB_TABLE])
 
     # load the data from FDW table to staging table

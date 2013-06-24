@@ -20,6 +20,12 @@ logger = logging.getLogger(__name__)
 def prepare_pre_cache(tenant, state_code, last_pre_cached):
     '''
     prepare which state and district are pre-cached
+
+    :param string tenant:  name of the tenant
+    :param string state_code:  stateCode representing the state
+    :param last_pre_cached:  dateTime of the last precached
+    :rType: list
+    :return:  list of results containing district guids
     '''
     with DBConnection(name=get_datasource_name(tenant)) as connector:
         fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
@@ -34,6 +40,12 @@ def prepare_pre_cache(tenant, state_code, last_pre_cached):
 def trigger_precache(tenant, state_code, results):
     '''
     call pre-cache function
+
+    :param string tenant:  name of the tenant
+    :param string state_code:  stateCode representing the state
+    :param list results:  list of results
+    :rType:  boolean
+    :returns:  True if precache is trigged and no exceptions are caught
     '''
     triggered = False
     if len(results) > 0:
@@ -55,6 +67,9 @@ def trigger_precache(tenant, state_code, results):
 def update_ed_stats_for_precached(tenant, state_code):
     '''
     update current timestamp to last_pre_cached field
+
+    :param string tenant:  name of the tenant
+    :param string state_code:  stateCode of the state
     '''
     with StatsDBConnection() as connector:
         udl_stats = connector.get_table('udl_stats')
@@ -63,6 +78,9 @@ def update_ed_stats_for_precached(tenant, state_code):
 
 
 def precached_task():
+    '''
+    Precaches reports based on udl stats
+    '''
     udl_stats_results = get_ed_stats()
     for udl_stats_result in udl_stats_results:
         tenant = udl_stats_result.get('tenant')
@@ -75,4 +93,7 @@ def precached_task():
 
 
 def run_cron_recache(settings):
+    '''
+    Configure and run cron job to flush and re-cache reports
+    '''
     run_cron_job(settings, 'trigger.recache.', precached_task)

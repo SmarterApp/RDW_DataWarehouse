@@ -21,6 +21,12 @@ logger = logging.getLogger(__name__)
 def prepare_pre_pdf(tenant, state_code, last_pdf_generated):
     '''
     prepare which state and district are pre-cached
+
+    :param string tenant:  name of the tenant
+    :param string state_code:  stateCode representing the state
+    :param last_pdf_generated:  dateTime of the last pdf generated
+    :rType: list
+    :return:  list of results containing student information used to generate pdf
     '''
     with DBConnection(name=get_datasource_name(tenant)) as connector:
         fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
@@ -45,6 +51,12 @@ def prepare_pre_pdf(tenant, state_code, last_pdf_generated):
 def trigger_pre_pdf(settings, tenant, state_code, results):
     '''
     call pre-pdf function
+
+    :param string tenant:  name of the tenant
+    :param string state_code:  stateCode representing the state
+    :param list results:  list of results
+    :rType:  boolean
+    :returns:  True if pdf generation is triggered and no exceptions are caught
     '''
     triggered = False
     base_dir = settings.get('pdf.report_base_dir', '/tmp')
@@ -69,6 +81,9 @@ def trigger_pre_pdf(settings, tenant, state_code, results):
 def update_ed_stats_for_prepdf(tenant, state_code):
     '''
     update current timestamp to last_pdf_generated field
+
+    :param string tenant:  name of the tenant
+    :param string state_code:  stateCode of the state
     '''
     with StatsDBConnection() as connector:
         udl_stats = connector.get_table('udl_stats')
@@ -77,6 +92,11 @@ def update_ed_stats_for_prepdf(tenant, state_code):
 
 
 def prepdf_task(settings):
+    '''
+    Generate pdfs for students that have new assessments
+
+    :param dict settings:  configuration for the application
+    '''
     udl_stats_results = get_ed_stats()
     for udl_stats_result in udl_stats_results:
         tenant = udl_stats_result.get('tenant')
@@ -89,4 +109,9 @@ def prepdf_task(settings):
 
 
 def run_cron_prepdf(settings):
+    '''
+    Configure and run cron job to regenerate pdfs for students with new assessment data
+
+    :param dict settings: configuration for the application
+    '''
     run_cron_job(settings, 'trigger.pdf.', prepdf_task)

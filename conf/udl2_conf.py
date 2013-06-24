@@ -63,6 +63,8 @@ udl2_conf = {
         'db_user':'udl2',
         'db_pass':'udl2abc1234',
         'db_driver':'postgresql',
+        'json_lz_table': 'LZ_JSON',
+        'csv_lz_table': 'LZ_CSV',
     },
     'target_db': {
         'db_schema': 'edware',

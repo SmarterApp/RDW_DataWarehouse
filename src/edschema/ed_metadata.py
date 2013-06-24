@@ -277,4 +277,4 @@ if __name__ == "__main__":
     elif __action == 'teardown':
         metadata = generate_ed_metadata(schema_name=__schema, bind=engine)
         metadata.drop_all(engine)
-        connection.execute(DropSchema(__schema))
+        connection.execute(DropSchema(__schema, cascade=True))

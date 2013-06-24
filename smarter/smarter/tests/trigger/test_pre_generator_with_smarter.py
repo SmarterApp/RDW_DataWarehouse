@@ -10,6 +10,7 @@ from beaker.cache import cache_managers, CacheManager, cache_regions
 from beaker.util import parse_cache_config_options
 from smarter.trigger.pre_cache_generator import prepare_pre_cache, \
     trigger_precache
+import datetime
 
 
 class TestPreCacheGenerator(Unittest_with_smarter_sqlite):
@@ -24,11 +25,15 @@ class TestPreCacheGenerator(Unittest_with_smarter_sqlite):
         self.tenant = get_unittest_tenant_name()
 
     def testPrepare_pre_cache(self):
-        results = prepare_pre_cache(self.tenant, 'NY', '20080101')
+        results = prepare_pre_cache(self.tenant, 'NY', datetime.datetime.strptime('20080101000000', '%Y%m%d%H%M%S'))
         self.assertEqual(2, len(results))
 
+    def testPrepare_pre_cache_nodata(self):
+        results = prepare_pre_cache(self.tenant, 'NY', datetime.datetime.strptime('20200101000000', '%Y%m%d%H%M%S'))
+        self.assertEqual(0, len(results))
+
     def testTrigger_precache(self):
-        results = prepare_pre_cache(self.tenant, 'NY', '20080101')
+        results = prepare_pre_cache(self.tenant, 'NY', datetime.datetime.strptime('20080101000000', '%Y%m%d%H%M%S'))
         triggered = trigger_precache(self.tenant, 'NY', results)
         self.assertTrue(triggered)
 
@@ -43,14 +48,14 @@ class TestPreCacheGenerator(Unittest_with_smarter_sqlite):
         self.assertFalse(triggered)
 
     def testTrigger_precache_with_empty_results(self):
-        results = prepare_pre_cache(self.tenant, 'DU', '20080101')
+        results = prepare_pre_cache(self.tenant, 'DU', datetime.datetime.strptime('20080101000000', '%Y%m%d%H%M%S'))
         triggered = trigger_precache(self.tenant, 'DU', results)
         self.assertFalse(triggered)
 
     def testTrigger_precache_with_unconfigured_region(self):
         # Clears all cache regions
         cache_regions.clear()
-        results = prepare_pre_cache(self.tenant, 'NY', '20080101')
+        results = prepare_pre_cache(self.tenant, 'NY', datetime.datetime.strptime('20080101000000', '%Y%m%d%H%M%S'))
         triggered = trigger_precache(self.tenant, 'NY', results)
         self.assertFalse(triggered)
 

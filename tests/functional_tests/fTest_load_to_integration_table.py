@@ -16,9 +16,10 @@ import imp
 import re
 from udl2 import message_keys as mk
 
+
 class FuncTestLoadToIntegrationTable(unittest.TestCase):
 
-    def setUp(self, ):
+    def setUp(self,):
         try:
             config_path = dict(os.environ)['UDL2_CONF']
         except Exception:
@@ -27,7 +28,7 @@ class FuncTestLoadToIntegrationTable(unittest.TestCase):
         from udl2_conf import udl2_conf
         self.conf = udl2_conf
 
-    def tearDown(self, ):
+    def tearDown(self,):
         (conn, engine) = connect_db(self.conf['udl2_db']['db_driver'],
                                     self.conf['udl2_db']['db_user'],
                                     self.conf['udl2_db']['db_pass'],
@@ -45,10 +46,9 @@ class FuncTestLoadToIntegrationTable(unittest.TestCase):
                                   staging_table='INT_SBAC_ASMT_OUTCOME',
                                   batch_id=self.conf['batch_id'])
         except_msg = "Can't not clean up test data from staging table inside functional test FuncTestLoadToIntegrationTable("
-        execute_queries(conn, [sql_stg, sql_int], except_msg )
-    
-    
-    def load_file_to_stage(self, ):
+        execute_queries(conn, [sql_stg, sql_int], except_msg)
+
+    def load_file_to_stage(self,):
         # file contain 30 rows
         conf = {
             mk.FILE_TO_LOAD: os.getcwd() + '/' + '../data/test_file_realdata.csv',
@@ -60,6 +60,8 @@ class FuncTestLoadToIntegrationTable(unittest.TestCase):
             mk.TARGET_DB_NAME: self.conf['udl2_db']['db_database'],
             mk.TARGET_DB_PASSWORD: self.conf['udl2_db']['db_pass'],
             mk.CSV_SCHEMA: self.conf['udl2_db']['staging_schema'],
+            mk.REF_TABLE: self.conf['udl2_db']['ref_table_name'],
+            mk.CSV_LZ_TABLE: self.conf['udl2_db']['csv_lz_table'],
             mk.FDW_SERVER: 'udl2_fdw_server',
             mk.TARGET_DB_SCHEMA: self.conf['udl2_db']['staging_schema'],
             mk.TARGET_DB_TABLE: 'STG_SBAC_ASMT_OUTCOME',
@@ -68,9 +70,8 @@ class FuncTestLoadToIntegrationTable(unittest.TestCase):
             mk.BATCH_ID: '00000000-0000-0000-0000-000000000000'
         }
         load_file(conf)
-    
 
-    def preloading_count(self, ):
+    def preloading_count(self,):
         (conn, engine) = connect_db(self.conf['udl2_db']['db_driver'],
                                     self.conf['udl2_db']['db_user'],
                                     self.conf['udl2_db']['db_pass'],
@@ -89,9 +90,8 @@ class FuncTestLoadToIntegrationTable(unittest.TestCase):
         for row in result:
             count = row[0]
         return count
-    
-    
-    def postloading_count(self, ):
+
+    def postloading_count(self,):
         (conn, engine) = connect_db(self.conf['udl2_db']['db_driver'],
                                     self.conf['udl2_db']['db_user'],
                                     self.conf['udl2_db']['db_pass'],
@@ -110,14 +110,13 @@ class FuncTestLoadToIntegrationTable(unittest.TestCase):
         for row in result:
             count = row[0]
         return count
-    
-    
-    def test_load_sbac_csv(self, ):
+
+    def test_load_sbac_csv(self,):
         '''
         functional tests for testing load from staging to integration as an independent unit tests.
         Use a fixed UUID for the moment. may be dynamic later.
-        
-        it loads 30 records from test csv file to stagint table then move it to integration. 
+
+        it loads 30 records from test csv file to stagint table then move it to integration.
         '''
         conf = {
             mk.BATCH_ID: '00000000-0000-0000-0000-000000000000',
@@ -139,6 +138,7 @@ class FuncTestLoadToIntegrationTable(unittest.TestCase):
             mk.TARGET_DB_PASSWORD: self.conf['udl2_db']['db_pass'],
             mk.TARGET_DB_SCHEMA: self.conf['udl2_db']['integration_schema'],
 
+            mk.REF_TABLE: self.conf['udl2_db']['ref_table_name'],
             mk.ERROR_DB_SCHEMA: self.conf['udl2_db']['staging_schema'],
 
             mk.MAP_TYPE: 'staging_to_integration_sbac_asmt_outcome'

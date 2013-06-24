@@ -7,13 +7,14 @@
 EdAuth Development Framework
 =================================================
 
-EdAuth is an authentication development framework using SAML2.
+EdAuth is an authentication development framework which provides Pyramid Security implementation. The module is responsible for user session maintenance and it based on common standards such as SAML2.
 
 Contents:
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
+   apidoc/edauth.rst
 
 
 Indices and tables

@@ -1,4 +1,4 @@
-edauth Package
+API Documentation
 ==============
 
 :mod:`edauth` Package

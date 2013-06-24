@@ -102,6 +102,9 @@ class TestRecache(Unittest_with_smarter_sqlite):
         flush_report_in_cache_region(dummy_method, 'NY', region='test')
         self.validate_cache_is_empty()
 
+    def test_flush_unconfigured_region(self):
+        self.assertRaises(KeyError, flush_report_in_cache_region, dummy_method, 'NY', region='unconfigured_region')
+
     def validate_cache_has_one_item(self):
         self.assertTrue(len(cache_managers.keys()), 1)
         for cache_region in cache_managers.values():

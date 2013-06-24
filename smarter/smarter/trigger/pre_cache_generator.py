@@ -3,7 +3,7 @@ Created on Jun 20, 2013
 
 @author: tosako
 '''
-from sqlalchemy.sql.expression import select, and_, distinct, func
+from sqlalchemy.sql.expression import select, and_, distinct, func, true
 from database.connector import DBConnection
 from smarter.database.datasource import get_datasource_name
 from smarter.trigger.cache.recache import CacheTrigger
@@ -21,7 +21,7 @@ def prepare_pre_cache(tenant, state_code, last_pre_cached):
         query = select([distinct(fact_asmt_outcome.c.district_guid).label('district_guid')], from_obj=[fact_asmt_outcome])
         query = query.where(fact_asmt_outcome.c.asmt_create_date > last_pre_cached)
         query = query.where(and_(fact_asmt_outcome.c.state_code == state_code))
-        query = query.where(and_(fact_asmt_outcome.c.most_recent == True))
+        query = query.where(and_(fact_asmt_outcome.c.most_recent == true()))
         results = connector.get_result(query)
         return results
 
@@ -42,7 +42,6 @@ def trigger_precache(tenant, state_code, results):
     except:
         triggered = False
     return triggered
-
 
 
 def update_ed_stats_for_precached(tenant, state_code):

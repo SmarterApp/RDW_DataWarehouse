@@ -10,7 +10,6 @@ from smarter.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_s
 
 class Test(Unittest_with_stats_sqlite):
 
-
     def testStatsDBConnection(self):
         connector = StatsDBConnection()
         udl_stats = connector.get_table('udl_stats')

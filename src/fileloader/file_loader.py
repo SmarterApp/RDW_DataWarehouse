@@ -60,7 +60,7 @@ def get_fields_map(conn, header_names, header_types, ref_table, csv_lz_table, ba
     # get column mapping from ref table
     get_column_mapping_query = queries.get_column_mapping_query(staging_schema, ref_table, csv_lz_table)
     column_mapping = execute_query_with_result(conn, get_column_mapping_query,
-                                               'Exception in creating insertion query to stg table -- ',
+                                               'Exception in getting column mapping between csv_table and staging table -- ',
                                                'file_loader', 'get_fields_map')
     csv_table_columns = ['\'' + str(batch_id) + '\'', 'nextval(\'{seq_name}\')']
     stg_asmt_outcome_columns = ['batch_id', 'record_sid']
@@ -91,7 +91,7 @@ def import_via_fdw(conn, stg_asmt_outcome_columns, csv_table_columns, transforma
                                                                             staging_schema, staging_table, csv_schema, csv_table, start_seq, seq_name,
                                                                             transformation_rules)
     drop_sequence = queries.drop_sequence_query(staging_schema, seq_name)
-    # print('@@@@@@@', insert_into_staging_table)
+    print('@@@@@@@', insert_into_staging_table)
     execute_queries(conn, [create_sequence, insert_into_staging_table, drop_sequence], 'Exception in loading data -- ', 'file_loader', 'import_via_fdw')
 
 

@@ -65,8 +65,6 @@ class PopulateRefInfoFTest(unittest.TestCase):
             stored_proc_query = "SELECT proname FROM pg_proc WHERE proname = 'sp_{0}';".format(rule.lower())
             res = self.conn.execute(stored_proc_query).fetchall()[0][0]
             expected = 'sp_{0}'.format(rule)
-            print(res)
-            print(expected)
             self.assertEqual(res.lower(), expected.lower())
 
     def test_rules_populate(self):

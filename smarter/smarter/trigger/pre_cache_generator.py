@@ -31,16 +31,19 @@ def trigger_precache(tenant, state_code, results):
     call pre-cache function
     '''
     triggered = False
-    try:
-        if len(results) > 0:
-            triggered = True
-            cache_trigger = CacheTrigger(tenant)
+    if len(results) > 0:
+        triggered = True
+        cache_trigger = CacheTrigger(tenant)
+        try:
             cache_trigger.recache_state_view_report(state_code)
-            for result in results:
+        except:
+            triggered = False
+        for result in results:
+            try:
                 district_guid = result.get('district_guid')
                 cache_trigger.recache_district_view_report(state_code, district_guid)
-    except:
-        triggered = False
+            except:
+                triggered = False
     return triggered
 
 

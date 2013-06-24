@@ -11,6 +11,7 @@ from apscheduler.scheduler import Scheduler
 from smarter.trigger.database.udl_stats import get_ed_stats
 from batch.pdf.pdf_generator import PDFGenerator
 from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_absolute_file_path_name
+from smarter.reports.helpers.constants import Constants
 
 
 def prepare_pre_pdf(tenant, state_code, last_pdf_generated):
@@ -18,16 +19,21 @@ def prepare_pre_pdf(tenant, state_code, last_pdf_generated):
     prepare which state and district are pre-cached
     '''
     with DBConnection(name=get_datasource_name(tenant)) as connector:
-        fact_asmt_outcome = connector.get_table('fact_asmt_outcome')
-        query = select([fact_asmt_outcome.c.student_guid.label('student_guid'),
-                        fact_asmt_outcome.c.asmt_period_year.label('asmt_period_year'),
-                        fact_asmt_outcome.c.district_guid.label('district_guid'),
-                        fact_asmt_outcome.c.school_guid.label('school_guid'),
-                        fact_asmt_outcome.c.asmt_grade.label('asmt_grade'),
-                        ], from_obj=[fact_asmt_outcome])
+        fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
+        dim_asmt = connector.get_table(Constants.DIM_ASMT)
+        query = select([fact_asmt_outcome.c.student_guid.label(Constants.STUDENT_GUID),
+                        dim_asmt.c.asmt_period_year.label(Constants.ASMT_PERIOD_YEAR),
+                        fact_asmt_outcome.c.district_guid.label(Constants.DISTRICT_GUID),
+                        fact_asmt_outcome.c.school_guid.label(Constants.SCHOOL_GUID),
+                        fact_asmt_outcome.c.asmt_grade.label(Constants.ASMT_GRADE)],
+                       from_obj=[fact_asmt_outcome
+                                 .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id,
+                                                      dim_asmt.c.most_recent,
+                                                      dim_asmt.c.asmt_type == Constants.SUMMATIVE))])
         query = query.where(fact_asmt_outcome.c.asmt_create_date > last_pdf_generated)
         query = query.where(and_(fact_asmt_outcome.c.state_code == state_code))
         query = query.where(and_(fact_asmt_outcome.c.most_recent == true()))
+        query = query.where(and_(fact_asmt_outcome.c.status == 'C'))
         results = connector.get_result(query)
         return results
 
@@ -38,22 +44,21 @@ def trigger_pre_pdf(settings, tenant, state_code, results):
     '''
     triggered = False
     base_dir = settings.get('pdf.report_base_dir', "/tmp")
-    try:
-        if len(results) > 0:
-            triggered = True
-            pdf_trigger = PDFGenerator(settings, tenant)
-            for result in results:
+    if len(results) > 0:
+        triggered = True
+        pdf_trigger = PDFGenerator(settings, tenant)
+        for result in results:
+            try:
                 student_guid = result.get('student_guid')
-                asmt_period_year = result.get('asmt_period_year')
+                asmt_period_year = str(result.get('asmt_period_year'))
                 district_guid = result.get('district_guid')
                 school_guid = result.get('school_guid')
                 asmt_grade = result.get('asmt_grade')
                 student_guid = result.get('student_guid')
-                datasource_name = get_datasource_name(tenant)
-                file_name = generate_isr_absolute_file_path_name(pdf_report_base_dir=base_dir, state_code=state_code, asmt_period_year=asmt_period_year, district_guid=district_guid, school_guid=school_guid, asmt_grade=asmt_grade, student_guid=student_guid, datasource=datasource_name)
+                file_name = generate_isr_absolute_file_path_name(pdf_report_base_dir=base_dir, state_code=state_code, asmt_period_year=asmt_period_year, district_guid=district_guid, school_guid=school_guid, asmt_grade=asmt_grade, student_guid=student_guid)
                 pdf_trigger.send_pdf_request(student_guid=student_guid, file_name=file_name)
-    except:
-        triggered = False
+            except:
+                triggered = False
     return triggered
 
 

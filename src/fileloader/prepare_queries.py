@@ -13,8 +13,8 @@ def create_fdw_server_query(fdw_server):
 
 @measure_cpu_plus_elasped_time
 def create_ddl_csv_query(header_names, header_types, csv_file, csv_schema, csv_table, fdw_server):
-    ddl_parts = ["CREATE FOREIGN TABLE IF NOT EXISTS \"%s\".\"%s\" ( " % (csv_schema, csv_table),
-                 ','.join([header_names[i] + ' ' + header_types[i] + ' ' for i in range(len(header_names))]),
+    ddl_parts = ['CREATE FOREIGN TABLE IF NOT EXISTS "%s"."%s" (' % (csv_schema, csv_table),
+                 ', '.join([header_names[i] + ' ' + header_types[i] for i in range(len(header_names))]),
                  ") SERVER %s " % fdw_server,
                  "OPTIONS (filename '%s', format '%s', header '%s')" % (csv_file, 'csv', 'false')]
     ddl_parts = "".join(ddl_parts)
@@ -31,9 +31,9 @@ def drop_ddl_csv_query(csv_schema, csv_table):
 @measure_cpu_plus_elasped_time
 def create_staging_tables_query(header_types, header_names, csv_file, staging_schema, staging_table):
     # TODO: need to be replaced by importing from staging table definition
-    ddl_parts = ["CREATE TABLE IF NOT EXISTS %s.%s (" % (staging_schema, staging_table),
-                 ','.join([header_names[i] + ' ' + header_types[i] for i in range(len(header_names))]),
-                 ") "]
+    ddl_parts = ['CREATE TABLE IF NOT EXISTS "%s"."%s" (' % (staging_schema, staging_table),
+                 ', '.join([header_names[i] + ' ' + header_types[i] for i in range(len(header_names))]),
+                 ")"]
     return "".join(ddl_parts)
 
 
@@ -47,11 +47,11 @@ def drop_staging_tables_query(csv_schema, csv_table):
 def create_inserting_into_staging_query(stg_asmt_outcome_columns, apply_rules, csv_table_columns, staging_schema,
                                         staging_table, csv_schema, csv_table, seq_name, transformation_rules):
     column_names_with_proc = apply_transformation_rules(apply_rules, csv_table_columns, transformation_rules)
-    insert_sql = ["INSERT INTO \"{staging_schema}\".\"{staging_table}\"(",
-                   ",".join(stg_asmt_outcome_columns),
-                   ") SELECT ",
-                   ",".join(column_names_with_proc),
-                   " FROM \"{csv_schema}\".\"{csv_table}\"",
+    insert_sql = ['INSERT INTO "{staging_schema}"."{staging_table}"(',
+                   ', '.join(stg_asmt_outcome_columns),
+                   ') SELECT ',
+                   ', '.join(column_names_with_proc),
+                   ' FROM "{csv_schema}"."{csv_table}"',
                    ]
     insert_sql = "".join(insert_sql).format(seq_name=seq_name, staging_schema=staging_schema, staging_table=staging_table,
                                             csv_schema=csv_schema, csv_table=csv_table)
@@ -61,10 +61,10 @@ def create_inserting_into_staging_query(stg_asmt_outcome_columns, apply_rules, c
 @measure_cpu_plus_elasped_time
 def create_insert_assessment_into_integration_query(header, data, batch_id, int_schema, int_table):
     insert_sql = ['INSERT INTO "{int_schema}"."{int_table}"(',
-                  ','.join(header),
-                  ')',
+                  ', '.join(header),
+                  ') ',
                   'VALUES (',
-                  ','.join(data),
+                  ', '.join(data),
                   ')']
     insert_sql = ''.join(insert_sql).format(int_schema=int_schema, int_table=int_table)
     # print(insert_sql)
@@ -109,6 +109,6 @@ def apply_transformation_rules(apply_rules, csv_table_columns, transformation_ru
 
 @measure_cpu_plus_elasped_time
 def get_column_mapping_query(staging_schema, ref_table, source_table):
-    return "SELECT source_column, target_column, stored_proc_name FROM \"{staging_schema}\".\"{ref_table}\" WHERE source_table='{source_table}'".format(staging_schema=staging_schema,
-                                                                                                                                                        ref_table=ref_table,
-                                                                                                                                                        source_table=source_table)
+    return 'SELECT source_column, target_column, stored_proc_name FROM "{staging_schema}"."{ref_table}" WHERE source_table=\'{source_table}\''.format(staging_schema=staging_schema,
+                                                                                                                                                      ref_table=ref_table,
+                                                                                                                                                      source_table=source_table)

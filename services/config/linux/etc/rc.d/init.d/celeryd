@@ -174,13 +174,19 @@ check_status () {
 }
 
 setup_queues () {
-    # celery queues
-    for worker_name in ${CELERYD_NODES}; do
-		# read worker name and queue name from front
-    	queue_name=${CELERYD_QUEUES%% *}
+    # celery queues and workers
+    declare -a queue_names=(${CELERYD_QUEUES}) 
+    declare -a worker_names=(${CELERYD_NODES})
+    worker_count=${#worker_names[@]}
+    index=0
+    while [ "${index}" -lt "${worker_count}" ]; do
+    	# worker name
+    	worker_name=${worker_names[$index]}
+		# read worker name and queue name
+    	queue_name=${queue_names[$index]}
     	# tails
-    	CELERYD_QUEUES=${CELERYD_QUEUES#* }
 		CELERYD_OPTS="${CELERYD_OPTS:-''} -Q:${worker_name} ${queue_name} "
+		index=$((index + 1))
     done
 }
 

@@ -12,6 +12,10 @@ from smarter.trigger.database.udl_stats import get_ed_stats
 from batch.pdf.pdf_generator import PDFGenerator
 from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_absolute_file_path_name
 from smarter.reports.helpers.constants import Constants
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 
 def prepare_pre_pdf(tenant, state_code, last_pdf_generated):
@@ -116,4 +120,5 @@ def run_cron_prepdf(settings):
         if len(cron_time) > 0:
             sched = Scheduler()
             sched.start()
+            logger.info('cron job is added for prepdf_task')
             sched.add_cron_job(prepdf_task, args=[settings], **cron_time)

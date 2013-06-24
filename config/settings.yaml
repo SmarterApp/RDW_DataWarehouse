@@ -39,12 +39,14 @@ common:
     trigger:
       recache:
         enable: False
-        cron:
-          day: '*/1'
+        schedule:
+          cron:
+            day: '*/1'
       pdf:
         enable: False
-        cron:
-          day: '*/1'
+        schedule:
+          cron:
+            day: '*/1'
 
     # Authentication
     auth:

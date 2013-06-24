@@ -10,6 +10,10 @@ from smarter.trigger.cache.recache import CacheTrigger
 from smarter.trigger.database.connector import StatsDBConnection
 from apscheduler.scheduler import Scheduler
 from smarter.trigger.database.udl_stats import get_ed_stats
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 
 def prepare_pre_cache(tenant, state_code, last_pre_cached):
@@ -101,4 +105,5 @@ def run_cron_recache(settings):
         if len(cron_time) > 0:
             sched = Scheduler()
             sched.start()
+            logger.info('cron job is added for precached_task')
             sched.add_cron_job(precached_task, **cron_time)

@@ -21,7 +21,7 @@ from sqlalchemy.schema import MetaData
 from sqlalchemy import Table, Column, Index
 from sqlalchemy import SmallInteger, String, Boolean, Float, BigInteger
 from sqlalchemy import ForeignKey
-from sqlalchemy.types import Text
+from sqlalchemy.types import Text, DateTime
 
 __all__ = []
 __version__ = 0.1
@@ -211,7 +211,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                Column('asmt_claim_4_score', SmallInteger, nullable=True),
                                Column('asmt_claim_4_score_range_min', SmallInteger, nullable=True),
                                Column('asmt_claim_4_score_range_max', SmallInteger, nullable=True),
-                               Column('asmt_create_date', String(8), nullable=False),
+                               Column('asmt_create_date', DateTime, nullable=False),
                                Column('status', String(2), nullable=False),
                                Column('most_recent', Boolean),
                                )

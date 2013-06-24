@@ -121,6 +121,7 @@ def load_data_process(conn, conf):
     # drop FDW table
     drop_fdw_tables(conn, conf[mk.CSV_SCHEMA], conf[mk.CSV_TABLE])
 
+    conn.close()
     return time_as_seconds
 
 

@@ -36,16 +36,6 @@ class TestPrepareQueries(unittest.TestCase):
         expected_value = 'DROP FOREIGN TABLE IF EXISTS "test_schema"."test_table"'
         self.assertEqual(actual_value, expected_value)
 
-    def test_create_staging_tables_query(self):
-        header_names = ['column1', 'column2', 'column3']
-        header_types = ['text', 'text', 'text']
-        csv_file = 'test_csv_file'
-        staging_schema = 'test_staging_schema'
-        staging_table = 'test_staging_table'
-        actual_value = queries.create_staging_tables_query(header_types, header_names, csv_file, staging_schema, staging_table)
-        expected_value = 'CREATE TABLE IF NOT EXISTS "test_staging_schema"."test_staging_table" (column1 text, column2 text, column3 text)'
-        self.assertEqual(actual_value, expected_value)
-
     def test_drop_staging_tables_query(self):
         actual_value = queries.drop_staging_tables_query('test_schema', 'test_table')
         expected_value = 'DROP TABLE IF EXISTS "test_schema"."test_table"'
@@ -71,16 +61,6 @@ class TestPrepareQueries(unittest.TestCase):
                                                                                       staging_table, csv_schema, csv_table, seq_name, transformation_rules)
         expected_value_without_tran_rules = 'INSERT INTO "test_staging_schema"."test_staging_table"(stg_col_1, stg_col_2, stg_col_3) SELECT csv_col_1, csv_col_2, csv_col_3 FROM "test_csv_schema"."test_csv_table"'
         self.assertEqual(actual_value_without_tran_rules, expected_value_without_tran_rules)
-
-    def test_create_insert_assessment_into_integration_query(self):
-        header = ['int_col_1', 'int_col_2', 'int_col_3']
-        data = ['int_val_1', 'int_val_2', 'int_val_3']
-        batch_id = '00000000-0000-0000-0000-000000000000'
-        int_schema = 'test_int_schema'
-        int_table = 'test_int_table'
-        actual_value = queries.create_insert_assessment_into_integration_query(header, data, batch_id, int_schema, int_table)
-        expected_value = 'INSERT INTO "test_int_schema"."test_int_table"(int_col_1, int_col_2, int_col_3) VALUES (int_val_1, int_val_2, int_val_3)'
-        self.assertEqual(actual_value, expected_value)
 
     def test_set_sequence_query(self):
         staging_table = 'test_staging_table'

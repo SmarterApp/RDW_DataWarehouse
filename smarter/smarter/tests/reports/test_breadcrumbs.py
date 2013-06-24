@@ -5,7 +5,7 @@ Created on Mar 8, 2013
 '''
 import unittest
 from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite,\
-    UnittestSmarterDBConnection, get_test_tenant_name
+    UnittestSmarterDBConnection, get_unittest_tenant_name
 from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
 from beaker.cache import CacheManager
 from pyramid.testing import DummyRequest
@@ -33,7 +33,7 @@ class TestContext(Unittest_with_smarter_sqlite):
         dummy_session.set_session_id('123')
         dummy_session.set_roles(['TEACHER'])
         dummy_session.set_uid('272')
-        dummy_session.set_tenant(get_test_tenant_name())
+        dummy_session.set_tenant(get_unittest_tenant_name())
         self.__config.testing_securitypolicy(dummy_session)
 
     def tearDown(self):

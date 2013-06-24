@@ -414,5 +414,7 @@ jenkins_dev:
         idp_server_logout_url: 'http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp'
         name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
     mode: test
+    pdf:
+      base.url: http://edwappsrv1.poc.dum.edwdc.net/assets/html/
     cache.public.data.url: edwappsrv1.poc.dum.edwdc.net:11211
     cache.session.url: edwappsrv2.poc.dum.edwdc.net:11211

@@ -7,7 +7,7 @@ Created on Jan 17, 2013
 import unittest
 from smarter.reports.student_report import get_student_report, get_student_assessment
 from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite,\
-    UnittestSmarterDBConnection, get_test_tenant_name
+    UnittestSmarterDBConnection, get_unittest_tenant_name
 from edapi.exceptions import NotFoundException
 from pyramid.testing import DummyRequest
 from pyramid import testing
@@ -28,7 +28,7 @@ class TestStudentReport(Unittest_with_smarter_sqlite):
         dummy_session = Session()
         dummy_session.set_roles(['TEACHER'])
         dummy_session.set_uid('272')
-        dummy_session.set_tenant(get_test_tenant_name())
+        dummy_session.set_tenant(get_unittest_tenant_name())
         self.__config.testing_securitypolicy(dummy_session)
 
     def tearDown(self):

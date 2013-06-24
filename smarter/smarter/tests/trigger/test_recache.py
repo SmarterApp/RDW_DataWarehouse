@@ -7,7 +7,7 @@ import unittest
 from beaker.cache import CacheManager, cache_region, cache_managers
 from beaker.util import parse_cache_config_options
 from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite,\
-    get_test_tenant_name
+    get_unittest_tenant_name
 from edapi.exceptions import NotFoundException
 from smarter.trigger.recache import CacheTrigger, flush_report_in_cache_region
 from smarter.reports.helpers.constants import Constants
@@ -32,7 +32,7 @@ class TestRecache(Unittest_with_smarter_sqlite):
         cache_managers.clear()
 
     def test_recache_state_view_report(self):
-        cache_trigger = CacheTrigger(get_test_tenant_name())
+        cache_trigger = CacheTrigger(get_unittest_tenant_name())
         results = cache_trigger.recache_state_view_report('NY')
 
         self.assertTrue(Constants.RECORDS in results, "returning JSON must have records")
@@ -50,11 +50,11 @@ class TestRecache(Unittest_with_smarter_sqlite):
         self.assertRaises(AttributeError, cache_trigger.recache_state_view_report, 'NY')
 
     def test_recache_state_view_report_invalid_state_code(self):
-        cache_trigger = CacheTrigger(get_test_tenant_name())
+        cache_trigger = CacheTrigger(get_unittest_tenant_name())
         self.assertRaises(NotFoundException, cache_trigger.recache_state_view_report, 'DU')
 
     def test_recache_district_view_report(self):
-        cache_trigger = CacheTrigger(get_test_tenant_name())
+        cache_trigger = CacheTrigger(get_unittest_tenant_name())
         results = cache_trigger.recache_district_view_report('NY', '228')
 
         # check top-level attributes
@@ -73,11 +73,11 @@ class TestRecache(Unittest_with_smarter_sqlite):
         self.assertRaises(Exception, cache_trigger.recache_district_view_report, 'NY', '228')
 
     def test_recache_district_view_report_invalid_district_guid(self):
-        cache_trigger = CacheTrigger(get_test_tenant_name())
+        cache_trigger = CacheTrigger(get_unittest_tenant_name())
         self.assertRaises(NotFoundException, cache_trigger.recache_district_view_report, 'NY', 'i_dont_exist')
 
     def test_flush_state_view_report(self):
-        cache_trigger = CacheTrigger(get_test_tenant_name())
+        cache_trigger = CacheTrigger(get_unittest_tenant_name())
         cache_trigger.recache_state_view_report('NY')
         self.validate_cache_has_one_item()
 
@@ -85,7 +85,7 @@ class TestRecache(Unittest_with_smarter_sqlite):
         self.validate_cache_is_empty()
 
     def test_flush_district_view_report(self):
-        cache_trigger = CacheTrigger(get_test_tenant_name())
+        cache_trigger = CacheTrigger(get_unittest_tenant_name())
         cache_trigger.recache_district_view_report('NY', '228')
         self.validate_cache_has_one_item()
         cache_trigger.flush_district_view_report('NY', '228')

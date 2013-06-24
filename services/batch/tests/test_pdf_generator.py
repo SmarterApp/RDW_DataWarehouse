@@ -64,6 +64,21 @@ class TestPdfGenerator(unittest.TestCase):
         self.assertIsNotNone(results.task_id)
         self.assertEqual(results.status, 'SUCCESS')
 
+    def test_build_url(self):
+        student_guid = '2343'
+        report = 'ISR.html'
+        results = self.pdf_generator.build_url(student_guid, report)
+        self.assertEqual(results, self.settings['pdf.base.url'] + '/' + report + '?studentGuid=' + student_guid)
+
+    def test_build_url_with_trailing_slash(self):
+        self.settings['pdf.base.url'] = 'http://dummy:8234/reports/'
+
+        self.pdf_generator = PDFGenerator(self.settings, 'myTenant')
+        student_guid = '2343'
+        report = 'ISR.html'
+        results = self.pdf_generator.build_url(student_guid, report)
+        self.assertEqual(results, self.settings['pdf.base.url'] + report + '?studentGuid=' + student_guid)
+
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

@@ -6,7 +6,7 @@ Created on Mar 11, 2013
 import unittest
 from smarter.reports.compare_pop_report import get_comparing_populations_report
 from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite,\
-    UnittestSmarterDBConnection, get_test_tenant_name
+    UnittestSmarterDBConnection, get_unittest_tenant_name
 from smarter.reports.helpers.constants import Constants
 from edapi.exceptions import NotFoundException
 from beaker.util import parse_cache_config_options
@@ -37,7 +37,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         dummy_session.set_session_id('123')
         dummy_session.set_roles(['TEACHER'])
         dummy_session.set_uid('272')
-        dummy_session.set_tenant(get_test_tenant_name())
+        dummy_session.set_tenant(get_unittest_tenant_name())
         self.__config.testing_securitypolicy(dummy_session)
 
     def tearDown(self):

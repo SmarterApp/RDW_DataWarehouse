@@ -5,7 +5,7 @@ Created on May 17, 2013
 '''
 import unittest
 from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite,\
-    get_test_tenant_name
+    get_unittest_tenant_name
 from edapi.exceptions import NotFoundException
 import os
 from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_report_path_by_student_guid, \
@@ -31,7 +31,7 @@ class TestISRPdfNameFormatter(Unittest_with_smarter_sqlite):
         component.provideUtility(SessionBackend(reg.settings), ISessionBackend)
         session = Session()
         session.set_session_id('123')
-        session.set_tenant(get_test_tenant_name())
+        session.set_tenant(get_unittest_tenant_name())
         get_session_backend().create_new_session(session)
         self.__config = testing.setUp(registry=reg, request=self.__request, hook_zca=False)
         self.__config.testing_securitypolicy(session)

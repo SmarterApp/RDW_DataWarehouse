@@ -10,7 +10,7 @@ from edapi.httpexceptions import EdApiHTTPPreconditionFailed, \
     EdApiHTTPForbiddenAccess, EdApiHTTPNotFound, EdApiHTTPInternalServerError
 from edapi.tests.test_views import DummyValueError
 from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite,\
-    UnittestSmarterDBConnection, get_test_tenant_name
+    UnittestSmarterDBConnection, get_unittest_tenant_name
 import services
 from pyramid.response import Response
 from smarter.services.pdf import post_pdf_service, get_pdf_service, send_pdf_request, \
@@ -38,7 +38,7 @@ class TestServices(Unittest_with_smarter_sqlite):
         reg.settings = {}
         reg.settings['pdf.report_base_dir'] = self.__temp_dir
         self.__config = testing.setUp(registry=reg, request=self.__request, hook_zca=False)
-        self.__tenant_name = get_test_tenant_name()
+        self.__tenant_name = get_unittest_tenant_name()
         with UnittestSmarterDBConnection() as connection:
             # Insert into user_mapping table
             user_mapping = connection.get_table('user_mapping')

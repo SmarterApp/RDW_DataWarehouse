@@ -83,7 +83,7 @@ class ComparingPopReport(object):
 
     def __init__(self, tenant=None):
         '''
-        :param tenant:  tenant name of the user
+        :param tenant:  tenant name of the user.  Specify if report is not going through a web request
         '''
         self.tenant = tenant
         self.datasource_name = None
@@ -94,7 +94,10 @@ class ComparingPopReport(object):
     def get_state_view_report(self, stateCode):
         '''
         state view report
+
         :param string stateCode:  State code representing the state
+        :rtype: dict
+        :returns: state view report
         '''
         return self.get_report(stateCode)
 
@@ -102,17 +105,23 @@ class ComparingPopReport(object):
     def get_district_view_report(self, stateCode, districtGuid):
         '''
         district view report
+
         :param string stateCode:  State code representing the state
         :param string districtGuid:  Guid of the district
+        :rtype: dict
+        :returns: district view report
         '''
         return self.get_report(stateCode, districtGuid)
 
     def get_school_view_report(self, stateCode, districtGuid, schoolGuid):
         '''
         school view report
+
         :param string stateCode:  State code representing the state
         :param string districtGuid:  Guid of the district
         :param string schoolGuid:  Guid of the school
+        :rtype: dict
+        :returns: school view report
         '''
         return self.get_report(stateCode, districtGuid, schoolGuid)
 
@@ -123,6 +132,8 @@ class ComparingPopReport(object):
         :param string stateCode:  State code representing the state
         :param string districtGuid:  Guid of the district, could be None
         :param string schoolGuid:  Guid of the school, could be None
+        :rtype: dict
+        :returns: A comparing populations report based on parameters supplied
         '''
         # run query
         params = {Constants.STATECODE: stateCode, Constants.DISTRICTGUID: districtGuid, Constants.SCHOOLGUID: schoolGuid}
@@ -138,6 +149,9 @@ class ComparingPopReport(object):
     def run_query(self, **params):
         '''
         Run comparing populations query and return the results
+
+        :rtype: dict
+        :returns:  results from database
         '''
         with SmarterDBConnection(name=self.datasource_name) as connector:
             query_helper = QueryHelper(connector, **params)
@@ -148,6 +162,9 @@ class ComparingPopReport(object):
     def arrange_results(self, results, **param):
         '''
         Arrange the results in optimal way to be consumed by front-end
+
+        :rtype: dict
+        :returns:  results arranged for front-end consumption
         '''
         subjects = {Constants.MATH: Constants.SUBJECT1, Constants.ELA: Constants.SUBJECT2}
         arranged_results = {}

@@ -17,6 +17,7 @@ from udl2.populate_ref_info import populate_stored_proc
 from rule_maker.rules.udl_transformation_config import transform_rules
 from rule_maker.rules import transformation_code_generator
 
+
 class PopulateRefInfoFTest(unittest.TestCase):
 
     def setUp(self):
@@ -37,13 +38,8 @@ class PopulateRefInfoFTest(unittest.TestCase):
         self.rule_conf = transform_rules
         self.rule_list = transformation_code_generator.generate_transformations(self.rule_names, rule_conf=self.rule_conf)
         self.testable_rules = []
-        for rule in self.rule_list: 
+        for rule in self.rule_list:
             self.testable_rules.append(rule[0])
-
-    def tearDown(self):
-        pass
-
-    def test_rules_populate(self):
 
         test_rows = []
         for rule in self.testable_rules:
@@ -57,18 +53,32 @@ class PopulateRefInfoFTest(unittest.TestCase):
             }
             test_rows.append(ins_dict)
         self.conn.execute(self.ref_table.insert(), test_rows)
+
+    def tearDown(self):
+        self.conn.execute(self.ref_table.delete().where(self.ref_table.c.phase == -999))
+
+    def test_stored_procedures_exist_in_db(self):
+
+        populate_stored_proc(self.engine, self.conn, self.ref_schema, self.ref_table_name)
+
+        for rule in self.testable_rules:
+            stored_proc_query = "SELECT proname FROM pg_proc WHERE proname = 'sp_{0}';".format(rule.lower())
+            res = self.conn.execute(stored_proc_query).fetchall()[0][0]
+            expected = 'sp_{0}'.format(rule)
+            print(res)
+            print(expected)
+            self.assertEqual(res.lower(), expected.lower())
+
+    def test_rules_populate(self):
+
         proc_map_list = populate_stored_proc(self.engine, self.conn, self.ref_schema, self.ref_table_name)
         proc_map = dict(proc_map_list)
 
         select_cols = [self.ref_table.c.transformation_rule, self.ref_table.c.stored_proc_name, self.ref_table.c.stored_proc_created_date]
-        select_stmt = select(select_cols).where(self.ref_table.c.phase == -1)
+        select_stmt = select(select_cols).where(self.ref_table.c.phase == -999)
 
         results = self.conn.execute(select_stmt)
 
         for res in results:
             self.assertEqual(res[1], proc_map[res[0]], 'Each row should have matching stored_proc and rule name')
             self.assertIsNotNone(res[2], 'Stored proc created date should not be null')
-
-        # Clean up
-        # TODO: If more test added created generic method for cleanup in tearDown
-        self.conn.execute(self.ref_table.delete().where(self.ref_table.c.phase == -999))

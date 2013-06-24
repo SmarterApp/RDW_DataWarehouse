@@ -45,7 +45,7 @@ def trigger_precache(tenant, state_code, results):
     :param string state_code:  stateCode representing the state
     :param list results:  list of results
     :rType:  boolean
-    :returns:  True if precache is trigged and no exceptions are caught
+    :returns:  True if precache is triggered and no exceptions are caught
     '''
     triggered = False
     if len(results) > 0:

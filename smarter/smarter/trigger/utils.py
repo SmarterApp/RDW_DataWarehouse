@@ -16,7 +16,7 @@ def run_cron_job(settings, prefix, job):
 
     :param dict settings:  configuration for the application
     :param string prefix:  the prefix to prepend to properties
-    :param job: reference to the function to run in cron job
+    :param job: reference to the function to run as a cron job
     '''
     enabled = settings.get(prefix + "enable", False)
     if enabled:

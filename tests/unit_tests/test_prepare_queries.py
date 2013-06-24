@@ -9,8 +9,6 @@ import fileloader.prepare_queries as queries
 
 
 class TestPrepareQueries(unittest.TestCase):
-    def setUp(self):
-        pass
 
     def test_create_fdw_extension_query(self):
         actual_value = queries.create_fdw_extension_query('test_schema')
@@ -61,15 +59,16 @@ class TestPrepareQueries(unittest.TestCase):
         staging_table = 'test_staging_table'
         csv_schema = 'test_csv_schema'
         csv_table = 'test_csv_table'
+        seq_name = 'test_seq_name'
         transformation_rules = ['sp_clean', 'gender', 'test_fun']
         actual_value_with_tran_rules = queries.create_inserting_into_staging_query(stg_asmt_outcome_columns, apply_rules, csv_table_columns, staging_schema,
-                                                                                   staging_table, csv_schema, csv_table, transformation_rules)
+                                                                                   staging_table, csv_schema, csv_table, seq_name, transformation_rules)
         expected_value_with_tran_rules = 'INSERT INTO "test_staging_schema"."test_staging_table"(stg_col_1, stg_col_2, stg_col_3) SELECT sp_clean(csv_col_1), gender(csv_col_2), test_fun(csv_col_3) FROM "test_csv_schema"."test_csv_table"'
         self.assertEqual(actual_value_with_tran_rules, expected_value_with_tran_rules)
 
         apply_rules = False
         actual_value_without_tran_rules = queries.create_inserting_into_staging_query(stg_asmt_outcome_columns, apply_rules, csv_table_columns, staging_schema,
-                                                                                      staging_table, csv_schema, csv_table, transformation_rules)
+                                                                                      staging_table, csv_schema, csv_table, seq_name, transformation_rules)
         expected_value_without_tran_rules = 'INSERT INTO "test_staging_schema"."test_staging_table"(stg_col_1, stg_col_2, stg_col_3) SELECT csv_col_1, csv_col_2, csv_col_3 FROM "test_csv_schema"."test_csv_table"'
         self.assertEqual(actual_value_without_tran_rules, expected_value_without_tran_rules)
 

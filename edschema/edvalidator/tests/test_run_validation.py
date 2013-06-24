@@ -7,6 +7,7 @@ import unittest
 import os
 from edvalidator.edvalidator import run_validation
 from edvalidator.tests.utils.metadata import generate_test_metadata
+from database.data_importer import DataImporterCastException
 
 
 class Test(unittest.TestCase):
@@ -48,8 +49,7 @@ class Test(unittest.TestCase):
         self.assertEqual(1, rtn_code)
 
     def test_validator_with_cast_error(self):
-        rtn_code = run_validation(metadata=generate_test_metadata(), missing_table_ignore=False, missing_field_ignore=False, dir_name=get_resource_dir('cast_error_csv'), verbose=False)
-        self.assertEqual(1, rtn_code)
+        self.assertRaises(DataImporterCastException, run_validation, generate_test_metadata(), False, False, get_resource_dir('cast_error_csv'), False)
 
 
 def get_resource_dir(dir_name):

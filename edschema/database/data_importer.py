@@ -119,20 +119,14 @@ def import_csv_dir(resources_dir, datasource_name=''):
         # Look through metadata and upload available imports with the same and and ext csv
         # use transaction.
         # if importing is okay. then commit the transaction; otherwise, roll back
-        transaction = connection.get_connection().begin()
-        try:
+        with connection.get_transaction() as _:
+            __foundImport = False
             for table in metadata.sorted_tables:
                 file = os.path.join(resources_dir, table.name + '.csv')
                 # if import exists, upload it
                 if os.path.exists(file):
-                    # Found csv file.  set it True
-                    __success = True
+                    # Found csv file
                     __import_csv_file(csv_file=file, connection=connection, table=table)
-            # if there is not an error, then commit
-            transaction.commit()
-        except Exception as e:
-            logging.error("Exception has occured: %s" % e)
-            # if there is an error, then roll back
-            transaction.rollback()
-            __success = False
+                    __foundImport = True
+            __success = __foundImport
     return __success

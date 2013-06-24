@@ -61,7 +61,7 @@ class DBConnection(ConnectionBase):
     # query and get result
     # Convert from result_set to dictionary.
     def get_result(self, query):
-        result = self.__connection.execute(query)
+        result = self.execute(query)
         result_rows = []
 
         rows = result.fetchall()
@@ -84,11 +84,11 @@ class DBConnection(ConnectionBase):
     def execute(self, statement, *multiparams, **params):
         return self.__connection.execute(statement, *multiparams, **params)
 
-    def get_connection(self):
+    def get_transaction(self):
         """
         return open connection
         """
-        return self.__connection
+        return self.__connection.begin()
 
     def close_connection(self):
         """

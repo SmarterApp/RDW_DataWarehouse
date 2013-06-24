@@ -10,6 +10,7 @@ from smarter.trigger.cache.recache import CacheTrigger
 from smarter.trigger.database.connector import StatsDBConnection
 from apscheduler.scheduler import Scheduler
 from smarter.trigger.database.udl_stats import get_ed_stats
+from smarter.reports.helpers.constants import Constants
 import logging
 
 
@@ -21,8 +22,8 @@ def prepare_pre_cache(tenant, state_code, last_pre_cached):
     prepare which state and district are pre-cached
     '''
     with DBConnection(name=get_datasource_name(tenant)) as connector:
-        fact_asmt_outcome = connector.get_table('fact_asmt_outcome')
-        query = select([distinct(fact_asmt_outcome.c.district_guid).label('district_guid')], from_obj=[fact_asmt_outcome])
+        fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
+        query = select([distinct(fact_asmt_outcome.c.district_guid).label(Constants.DISTRICT_GUID)], from_obj=[fact_asmt_outcome])
         query = query.where(fact_asmt_outcome.c.asmt_create_date > last_pre_cached)
         query = query.where(and_(fact_asmt_outcome.c.state_code == state_code))
         query = query.where(and_(fact_asmt_outcome.c.most_recent == true()))
@@ -44,7 +45,7 @@ def trigger_precache(tenant, state_code, results):
             triggered = False
         for result in results:
             try:
-                district_guid = result.get('district_guid')
+                district_guid = result.get(Constants.DISTRICT_GUID)
                 cache_trigger.recache_district_view_report(state_code, district_guid)
             except:
                 triggered = False

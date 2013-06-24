@@ -47,18 +47,18 @@ def trigger_pre_pdf(settings, tenant, state_code, results):
     call pre-pdf function
     '''
     triggered = False
-    base_dir = settings.get('pdf.report_base_dir', "/tmp")
+    base_dir = settings.get('pdf.report_base_dir', '/tmp')
     if len(results) > 0:
         triggered = True
         pdf_trigger = PDFGenerator(settings, tenant)
         for result in results:
             try:
-                student_guid = result.get('student_guid')
-                asmt_period_year = str(result.get('asmt_period_year'))
-                district_guid = result.get('district_guid')
-                school_guid = result.get('school_guid')
-                asmt_grade = result.get('asmt_grade')
-                student_guid = result.get('student_guid')
+                student_guid = result.get(Constants.STUDENT_GUID)
+                asmt_period_year = str(result.get(Constants.ASMT_PERIOD_YEAR))
+                district_guid = result.get(Constants.DISTRICT_GUID)
+                school_guid = result.get(Constants.SCHOOL_GUID)
+                asmt_grade = result.get(Constants.ASMT_GRADE)
+                student_guid = result.get(Constants.STUDENT_GUID)
                 file_name = generate_isr_absolute_file_path_name(pdf_report_base_dir=base_dir, state_code=state_code, asmt_period_year=asmt_period_year, district_guid=district_guid, school_guid=school_guid, asmt_grade=asmt_grade, student_guid=student_guid)
                 pdf_trigger.send_pdf_request(student_guid=student_guid, file_name=file_name)
             except:

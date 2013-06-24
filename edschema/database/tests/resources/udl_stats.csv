@@ -1,0 +1,1 @@
+tenant,state_code,load_start,load_end,load_status,record_loaded_count,last_pdf_generated,last_pre_cachedcat,NY,2013-01-01 00:01:12,2013-01-01 00:02:12,in-process,1000,,dog,NY,2013-01-01 00:01:12,2013-01-01 00:02:12,ingested,1000,2013-01-01 00:01:12,2013-01-01 00:01:12

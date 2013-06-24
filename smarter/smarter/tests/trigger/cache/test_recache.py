@@ -9,8 +9,9 @@ from beaker.util import parse_cache_config_options
 from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite,\
     get_unittest_tenant_name
 from edapi.exceptions import NotFoundException
-from smarter.trigger.recache import CacheTrigger, flush_report_in_cache_region
 from smarter.reports.helpers.constants import Constants
+from smarter.trigger.cache.recache import CacheTrigger,\
+    flush_report_in_cache_region
 
 
 @cache_region('test')

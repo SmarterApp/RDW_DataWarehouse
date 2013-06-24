@@ -11,12 +11,12 @@ def generate_stats_metadata(schema_name=None, bind=None):
     udl_stats = Table('udl_stats', metadata,
                         Column('tenant', String(32), primary_key=True),
                         Column('state_code', String(2), primary_key=True),
-                        Column('laod_start', DateTime, nullable=False),
+                        Column('load_start', DateTime, nullable=False),
                         Column('load_end', DateTime, nullable=False),
                         Column('load_status', String(32), nullable=False),
                         Column('record_loaded_count', BigInteger, nullable=False),
-                        Column('last_pdf_generated', DateTime, nullable=False),
-                        Column('last_pre_cached', DateTime, nullable=False)
+                        Column('last_pdf_generated', DateTime, nullable=True),
+                        Column('last_pre_cached', DateTime, nullable=True)
                         )
     Index('udl_stats_idx', udl_stats.c.tenant, udl_stats.c.state_code, unique=True)
     return metadata

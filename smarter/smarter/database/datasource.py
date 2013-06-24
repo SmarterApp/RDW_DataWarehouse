@@ -3,7 +3,7 @@ Created on Jun 3, 2013
 
 @author: dip
 '''
-from edschema.ed_metadata import generate_ed_metadata
+from edschema.metadata.ed_metadata import generate_ed_metadata
 from database.generic_connector import setup_db_connection_from_ini
 
 

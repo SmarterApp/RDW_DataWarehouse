@@ -6,7 +6,7 @@ Created on Feb 8, 2013
 from sqlalchemy.engine import create_engine
 from database.connector import DbUtil, IDbUtil
 from zope import component
-from edschema.ed_metadata import generate_ed_metadata
+from edschema.metadata.ed_metadata import generate_ed_metadata
 import sqlite3
 from sqlalchemy.schema import MetaData
 from sqlalchemy import event

@@ -1,4 +1,3 @@
-from edschema.ed_metadata import generate_ed_metadata
 from database.generic_connector import setup_db_connection_from_ini
 from smarter.database.datasource import get_datasource_name, get_db_config_prefix,\
     setup_tenant_db_connection

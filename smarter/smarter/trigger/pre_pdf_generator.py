@@ -49,8 +49,9 @@ def trigger_pre_pdf(settings, tenant, state_code, results):
                 school_guid = result.get('school_guid')
                 asmt_grade = result.get('asmt_grade')
                 student_guid = result.get('student_guid')
-                file_naem = generate_isr_absolute_file_path_name(pdf_report_base_dir=base_dir, state_code=state_code, asmt_period_year=asmt_period_year, district_guid=district_guid, school_guid=school_guid, asmt_grade=asmt_grade, student_guid=student_guid)
-                pdf_trigger.send_pdf_request(student_guid=student_guid, file_name=file_naem)
+                datasource_name = get_datasource_name(tenant)
+                file_name = generate_isr_absolute_file_path_name(pdf_report_base_dir=base_dir, state_code=state_code, asmt_period_year=asmt_period_year, district_guid=district_guid, school_guid=school_guid, asmt_grade=asmt_grade, student_guid=student_guid, datasource=datasource_name)
+                pdf_trigger.send_pdf_request(student_guid=student_guid, file_name=file_name)
     except:
         triggered = False
     return triggered

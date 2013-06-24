@@ -80,7 +80,7 @@ def prepdf_task(settings):
 
 
 def run_cron_prepdf(settings):
-    trigger_recache = settings.get("trigger.recache.enable", False)
+    trigger_recache = settings.get("trigger.pdf.enable", False)
     if trigger_recache:
         cron_time = {}
         year = settings.get("trigger.pdf.schedule.cron.year")

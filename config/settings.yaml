@@ -36,6 +36,15 @@ common:
         cron:
           # everyday
           day: '*/1'
+    trigger:
+      recache:
+        enable: False
+        cron:
+          day: '*/1'
+      pdf:
+        enable: False
+        cron:
+          day: '*/1'
 
     # Authentication
     auth:

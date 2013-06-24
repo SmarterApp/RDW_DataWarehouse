@@ -12,7 +12,7 @@ import signal
 from pyramid_beaker import set_cache_regions_from_settings
 import sys
 from services.celery import setup_celery
-from smarter import services
+from smarter import services, trigger
 from smarter.database import initialize_db
 
 logger = logging.getLogger(__name__)
@@ -70,6 +70,9 @@ def main(global_config, **settings):
 
     # include add routes from smarter.services. Calls includeme
     config.include(services)
+
+    # include add routes from smarter.trigger. Calls includeme
+    config.include(trigger)
 
     # scans smarter
     config.scan()

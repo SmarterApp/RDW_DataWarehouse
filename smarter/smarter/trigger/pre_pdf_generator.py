@@ -13,6 +13,7 @@ from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_absolute
 from smarter.reports.helpers.constants import Constants
 import logging
 from smarter.trigger.utils import run_cron_job
+from smarter.trigger.database import constants
 
 
 logger = logging.getLogger(__name__)
@@ -86,7 +87,7 @@ def update_ed_stats_for_prepdf(tenant, state_code):
     :param string state_code:  stateCode of the state
     '''
     with StatsDBConnection() as connector:
-        udl_stats = connector.get_table('udl_stats')
+        udl_stats = connector.get_table(constants.Constants.UDL_STATS)
         stmt = udl_stats.update(values={udl_stats.c.last_pdf_generated: func.now()}).where(udl_stats.c.state_code == state_code).where(udl_stats.c.tenant == tenant)
         connector.execute(stmt)
 
@@ -99,9 +100,9 @@ def prepdf_task(settings):
     '''
     udl_stats_results = get_ed_stats()
     for udl_stats_result in udl_stats_results:
-        tenant = udl_stats_result.get('tenant')
-        state_code = udl_stats_result.get('state_code')
-        last_pdf_generated = udl_stats_result.get('last_pdf_generated')
+        tenant = udl_stats_result.get(constants.Constants.TENANT)
+        state_code = udl_stats_result.get(constants.Constants.STATE_CODE)
+        last_pdf_generated = udl_stats_result.get(constants.Constants.LAST_PDF_GENERATED)
         fact_asmt_outcome_results = prepare_pre_pdf(tenant, state_code, last_pdf_generated)
         triggered_success = trigger_pre_pdf(settings, tenant, fact_asmt_outcome_results)
         if triggered_success:

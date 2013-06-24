@@ -12,6 +12,7 @@ from smarter.trigger.database.udl_stats import get_ed_stats
 from smarter.reports.helpers.constants import Constants
 import logging
 from smarter.trigger.utils import run_cron_job
+from smarter.trigger.database import constants
 
 
 logger = logging.getLogger(__name__)
@@ -72,7 +73,7 @@ def update_ed_stats_for_precached(tenant, state_code):
     :param string state_code:  stateCode of the state
     '''
     with StatsDBConnection() as connector:
-        udl_stats = connector.get_table('udl_stats')
+        udl_stats = connector.get_table(constants.Constants.UDL_STATS)
         stmt = udl_stats.update(values={udl_stats.c.last_pre_cached: func.now()}).where(udl_stats.c.state_code == state_code).where(udl_stats.c.tenant == tenant)
         connector.execute(stmt)
 
@@ -83,9 +84,9 @@ def precached_task():
     '''
     udl_stats_results = get_ed_stats()
     for udl_stats_result in udl_stats_results:
-        tenant = udl_stats_result.get('tenant')
-        state_code = udl_stats_result.get('state_code')
-        last_pre_cached = udl_stats_result.get('last_pre_cached')
+        tenant = udl_stats_result.get(constants.Constants.TENANT)
+        state_code = udl_stats_result.get(constants.Constants.STATE_CODE)
+        last_pre_cached = udl_stats_result.get(constants.Constants.LAST_PRE_CACHED)
         fact_asmt_outcome_results = prepare_pre_cache(tenant, state_code, last_pre_cached)
         triggered_success = trigger_precache(tenant, state_code, fact_asmt_outcome_results)
         if triggered_success:

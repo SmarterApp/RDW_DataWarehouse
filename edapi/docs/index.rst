@@ -7,7 +7,22 @@
 The EdAPI RESTful Development Framework
 =================================================
 
-EdAPI is an application development framework for exposing RESTful endpoints. 
+EdAPI is an application development framework that makes it easier to build RESTful web services.
+
+Creating a RESTful endpoint is accomplished with a simple Python decorator, hiding complexity from the developer.
+The decorator specifies a complete contract for an endpoint: the URI, input parameters, and parameter validation. 
+It also automatically registers the endpoint and exposes it to the end-user. 
+
+EdAPI includes other features and utilities useful for a RESTful API:
+
+    * Exception handling
+
+    * Easy-to-use audit logging
+
+    * Appending user information to REST responses, via decorators
+
+EdAPI is written in Python, and runs on the Pyramid web application framework.
+
 
 API Documentation
 ==================

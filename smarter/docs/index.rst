@@ -7,7 +7,7 @@
 Smarter Web Application
 =================================================
 
-Smarter is a Pyramid based web application.
+Smarter is a Pyramid based web application. TEST.
 
 Contents:
 

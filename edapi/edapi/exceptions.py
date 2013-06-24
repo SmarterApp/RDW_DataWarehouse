@@ -1,4 +1,6 @@
 '''
+This module contains exception classes used in EdApi
+
 Created on Jan 18, 2013
 
 @author: dip

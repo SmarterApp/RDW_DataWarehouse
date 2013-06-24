@@ -1,4 +1,7 @@
 '''
+
+This module contains commonly-used functionality applied via Python decorators.
+
 Created on Mar 13, 2013
 
 @author: tosako
@@ -11,7 +14,14 @@ from pyramid.security import authenticated_userid
 
 class report_config(object):
     '''
-    Decorator to register data endpoint under /data/{reportname}
+    Decorator to configure and register a data endpoint under /data/{reportname}.
+
+    :param kwargs: "name" specifies the name of the report.
+                   "params" specifies report input parameters, and must follow the
+                   JSON Schema conventions used by the Python Validictory library.
+    :type kwargs: key-value pairs
+
+    Example:
 
     .. code-block:: python
 
@@ -55,8 +65,7 @@ class report_config(object):
 
 def user_info(orig_func):
     '''
-    Append user_info to the returning result
-    This returns User name and roles
+    Decorator to append user name and roles to returned data.
     '''
     @wraps(orig_func)
     def wrap(*args, **kwds):

@@ -52,7 +52,7 @@ def create_fdw_tables(conn, header_names, header_types, csv_file, csv_schema, cs
 
 
 @measure_cpu_plus_elasped_time
-def get_fields_map(conn, header_names, header_types, ref_table, csv_lz_table, batch_id, csv_file, staging_schema, staging_table):
+def get_fields_map(conn, ref_table, csv_lz_table, batch_id, csv_file, staging_schema):
 
     """
     Getting field mapper, which maps the column in staging table, and columns in csv table
@@ -62,6 +62,8 @@ def get_fields_map(conn, header_names, header_types, ref_table, csv_lz_table, ba
     column_mapping = execute_query_with_result(conn, get_column_mapping_query,
                                                'Exception in getting column mapping between csv_table and staging table -- ',
                                                'file_loader', 'get_fields_map')
+
+    # column batch_id and record_id are in staging table, but not in csv_table
     csv_table_columns = ['\'' + str(batch_id) + '\'', 'nextval(\'{seq_name}\')']
     stg_asmt_outcome_columns = ['batch_id', 'record_sid']
     transformation_rules = ['', '']
@@ -70,25 +72,17 @@ def get_fields_map(conn, header_names, header_types, ref_table, csv_lz_table, ba
             csv_table_columns.append(mapping[0])
             stg_asmt_outcome_columns.append(mapping[1])
             transformation_rules.append(mapping[2])
-    """
-    # pick the columns from the 2nd to the last 2nd
-    stg_asmt_outcome_columns = [column_info[0] for column_info in UDL_METADATA['TABLES']['STG_SBAC_ASMT_OUTCOME']['columns'][1:-1]]
-    # map first column in staging table to batch_id, map second column in staging table to the expression of using sequence
-    csv_table_columns = header_names[:]
-    csv_table_columns.insert(0, '\'' + str(batch_id) + '\'')
-    csv_table_columns.insert(1, 'nextval(\'{seq_name}\')')
-    """
     return stg_asmt_outcome_columns, csv_table_columns, transformation_rules
 
 
 @measure_cpu_plus_elasped_time
-def import_via_fdw(conn, stg_asmt_outcome_columns, csv_table_columns, transformation_rules, header_types,
-                   batch_id, apply_rules, staging_schema, staging_table, csv_schema, csv_table, start_seq):
+def import_via_fdw(conn, stg_asmt_outcome_columns, csv_table_columns, transformation_rules,
+                   apply_rules, staging_schema, staging_table, csv_schema, csv_table, start_seq):
     # create sequence name, use table_name and a random number combination
     seq_name = (csv_table + '_' + str(random.choice(range(1, 10)))).lower()
     create_sequence = queries.create_sequence_query(staging_schema, seq_name, start_seq)
-    insert_into_staging_table = queries.create_inserting_into_staging_query(stg_asmt_outcome_columns, apply_rules, csv_table_columns, header_types,
-                                                                            staging_schema, staging_table, csv_schema, csv_table, start_seq, seq_name,
+    insert_into_staging_table = queries.create_inserting_into_staging_query(stg_asmt_outcome_columns, apply_rules, csv_table_columns,
+                                                                            staging_schema, staging_table, csv_schema, csv_table, seq_name,
                                                                             transformation_rules)
     drop_sequence = queries.drop_sequence_query(staging_schema, seq_name)
     print('@@@@@@@', insert_into_staging_table)
@@ -112,14 +106,13 @@ def load_data_process(conn, conf):
     create_fdw_tables(conn, header_names, header_types, conf[mk.FILE_TO_LOAD], conf[mk.CSV_SCHEMA], conf[mk.CSV_TABLE], conf[mk.FDW_SERVER])
 
     # get field map
-    stg_asmt_outcome_columns, csv_table_columns, transformation_rules = get_fields_map(conn, header_names, header_types,
-                                                                                       conf[mk.REF_TABLE], conf[mk.CSV_LZ_TABLE], conf[mk.BATCH_ID], conf[mk.FILE_TO_LOAD],
-                                                                                       conf[mk.TARGET_DB_SCHEMA], conf[mk.TARGET_DB_TABLE])
+    stg_asmt_outcome_columns, csv_table_columns, transformation_rules = get_fields_map(conn, conf[mk.REF_TABLE], conf[mk.CSV_LZ_TABLE],
+                                                                                       conf[mk.BATCH_ID], conf[mk.FILE_TO_LOAD], conf[mk.TARGET_DB_SCHEMA])
 
     # load the data from FDW table to staging table
     start_time = datetime.datetime.now()
-    import_via_fdw(conn, stg_asmt_outcome_columns, csv_table_columns, transformation_rules, header_types,
-                   conf[mk.BATCH_ID], conf[mk.APPLY_RULES], conf[mk.TARGET_DB_SCHEMA], conf[mk.TARGET_DB_TABLE],
+    import_via_fdw(conn, stg_asmt_outcome_columns, csv_table_columns, transformation_rules,
+                   conf[mk.APPLY_RULES], conf[mk.TARGET_DB_SCHEMA], conf[mk.TARGET_DB_TABLE],
                    conf[mk.CSV_SCHEMA], conf[mk.CSV_TABLE], conf[mk.ROW_START])
     finish_time = datetime.datetime.now()
     spend_time = finish_time - start_time

@@ -44,9 +44,9 @@ def drop_staging_tables_query(csv_schema, csv_table):
 
 
 @measure_cpu_plus_elasped_time
-def create_inserting_into_staging_query(stg_asmt_outcome_columns, apply_rules, csv_table_columns, header_types, staging_schema,
-                                        staging_table, csv_schema, csv_table, start_seq, seq_name, transformation_rules):
-    column_names_with_proc = apply_transformation_rules(apply_rules, header_types, csv_table_columns, transformation_rules)
+def create_inserting_into_staging_query(stg_asmt_outcome_columns, apply_rules, csv_table_columns, staging_schema,
+                                        staging_table, csv_schema, csv_table, seq_name, transformation_rules):
+    column_names_with_proc = apply_transformation_rules(apply_rules, csv_table_columns, transformation_rules)
     insert_sql = ["INSERT INTO \"{staging_schema}\".\"{staging_table}\"(",
                    ",".join(stg_asmt_outcome_columns),
                    ") SELECT ",

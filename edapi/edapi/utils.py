@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 class ContentTypePredicate(object):
     '''
-    custom predicate for routing by content-type
+    Custom predicate for routing by content-type
     '''
     def __init__(self, content_type, config):
         self.content_type = content_type.lower()
@@ -45,7 +45,7 @@ EDAPI_REPORTS_PLACEHOLDER = 'edapi_reports'
 
 def add_report_config(self, delegate, **kwargs):
     '''
-    directive used to save report_config decorators to Pyramid Configurator's registry
+    Saves report_config decorators to Pyramid Configurator's registry
 
     :param delegate: a delegate to the wrapped function
     '''
@@ -70,7 +70,7 @@ VALID_TYPES = enum(STRING='string', INTEGER='integer', NUMBER='number', BOOLEAN=
 
 def get_report_dict_value(dictionary, key, exception_to_raise=Exception):
     '''
-    dict lookup and raises an exception if key doesn't exist
+    Dict lookup and raises an exception if key doesn't exist
     :param dictionary: the dictionary object
     :type dictionary: dict
     :param key: the report key
@@ -86,7 +86,7 @@ def get_report_dict_value(dictionary, key, exception_to_raise=Exception):
 
 def call_report(report, params):
     '''
-    given a report (dict), get the value from reference key and call it
+    Given a report (dict), get the value from reference key and call it
 
     Check if obj variable is a class or not
     if it is, instantiate object first before calling function.
@@ -107,7 +107,7 @@ def call_report(report, params):
 
 def generate_report(registry, report_name, params, validator=None):
     '''
-    generates a report by calling the report delegate for generating itself (received from the config repository).
+    Generates a report by calling the report delegate for generating itself (received from the config repository).
 
     :param registry: the report registry
     :param report_name: the report name to be generated
@@ -133,7 +133,7 @@ def generate_report(registry, report_name, params, validator=None):
 
 def generate_report_config(registry, report_name):
     '''
-    generates a report config by loading it from the config repository
+    Generates a report config by loading it from the config repository
 
     :param registry: the report registry
     :param report_name: the report name to have its config generated
@@ -153,7 +153,7 @@ def generate_report_config(registry, report_name):
 
 def prepare_params(registry, params):
     '''
-    looks for fields that can be expanded with no external configuration and expands them by calling the right method.
+    Looks for fields that can be expanded with no external configuration and expands them by calling the right method.
 
     :param registry: the report registry
     '''
@@ -179,8 +179,9 @@ def prepare_params(registry, params):
 
 def expand_field(registry, report_name, params):
     '''
-    receives a report's name, tries to take it from the repository and see if it requires configuration, if not, generates the report and return the generated value.
-    returns True if the value is changing or false otherwise
+    Receives a report's name, tries to take it from the repository and see if it requires configuration,
+    If not, generates the report and return the generated value.
+    Returns True if the value is changing or false otherwise
 
     :param registry: the report registry
     :param report_name: the report name to be generated
@@ -196,7 +197,7 @@ def expand_field(registry, report_name, params):
 
 def add_configuration_header(params_config):
     '''
-    turns the schema into an well-formatted JSON schema by adding a header.
+    Turns the schema into an well-formatted JSON schema by adding a header.
 
     :param params_config: the original config json
     :return: a well formatted json
@@ -269,7 +270,7 @@ class Validator:
     @staticmethod
     def fix_type_one_val(value, config):
         '''
-        convert one value from string to defined type
+        Convert one value from string to defined type
         '''
 
         # check type for string items
@@ -285,7 +286,7 @@ class Validator:
     @staticmethod
     def convert_array_query_params(registry, report_name, params):
         '''
-        convert duplicate query params to arrays
+        Convert duplicate query params to arrays
 
         :param registry: the report registry
         :param report_name: the report name to be generated
@@ -316,7 +317,7 @@ class Validator:
     @staticmethod
     def boolify(s):
         '''
-        attempts to convert a string to bool, otherwise raising an error
+        Attempts to convert a string to bool, otherwise raising an error
 
         :param s: the string to be converted to bool
         :type s: string
@@ -327,7 +328,7 @@ class Validator:
     @staticmethod
     def convert(value, value_type):
         '''
-        converts a value to a given value type, if possible. otherwise, return the original value.
+        Converts a value to a given value type, if possible. otherwise, return the original value.
 
         :param value: the string value
         :type value: string
@@ -350,7 +351,7 @@ from functools import update_wrapper, wraps
 
 class decorator_adapter(object):
     '''
-    adapter for decorator used for instance methods and functions
+    Adapter for decorator used for instance methods and functions
     '''
     def __init__(self, decorator, func):
         update_wrapper(self, func)

@@ -7,12 +7,12 @@ from database.connector import DBConnection
 from smarter.database.datasource import get_datasource_name
 from sqlalchemy.sql.expression import select, and_, func, true
 from smarter.trigger.database.connector import StatsDBConnection
-from apscheduler.scheduler import Scheduler
 from smarter.trigger.database.udl_stats import get_ed_stats
 from batch.pdf.pdf_generator import PDFGenerator
 from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_absolute_file_path_name
 from smarter.reports.helpers.constants import Constants
 import logging
+from smarter.trigger.utils import run_cron_job
 
 
 logger = logging.getLogger(__name__)
@@ -89,36 +89,4 @@ def prepdf_task(settings):
 
 
 def run_cron_prepdf(settings):
-    trigger_recache = settings.get("trigger.pdf.enable", False)
-    if trigger_recache:
-        cron_time = {}
-        year = settings.get("trigger.pdf.schedule.cron.year")
-        month = settings.get("trigger.pdf.schedule.cron.month")
-        day = settings.get("trigger.pdf.schedule.cron.day")
-        week = settings.get("trigger.pdf.schedule.cron.week")
-        day_of_week = settings.get("trigger.pdf.schedule.cron.day_of_week")
-        hour = settings.get("trigger.pdf.schedule.cron.hour")
-        minute = settings.get("trigger.pdf.schedule.cron.minute")
-        second = settings.get("trigger.pdf.schedule.cron.second")
-
-        if year is not None:
-            cron_time['year'] = year
-        if month is not None:
-            cron_time['month'] = month
-        if day is not None:
-            cron_time['day'] = day
-        if week is not None:
-            cron_time['week'] = week
-        if day_of_week is not None:
-            cron_time['day_of_week'] = day_of_week
-        if hour is not None:
-            cron_time['hour'] = hour
-        if minute is not None:
-            cron_time['minute'] = minute
-        if second is not None:
-            cron_time['second'] = second
-        if len(cron_time) > 0:
-            sched = Scheduler()
-            sched.start()
-            logger.info('cron job is added for prepdf_task')
-            sched.add_cron_job(prepdf_task, args=[settings], **cron_time)
+    run_cron_job(settings, 'trigger.pdf.', prepdf_task)

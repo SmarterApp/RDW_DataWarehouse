@@ -6,6 +6,7 @@ Created on Jun 23, 2013
 from smarter.trigger.database.connector import StatsDBConnection
 from sqlalchemy.sql.expression import select
 
+
 def get_ed_stats():
     '''
     update last_pre_cached field

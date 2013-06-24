@@ -13,7 +13,7 @@ class Test(Unittest_with_stats_sqlite):
     def testStatsDBConnection(self):
         connector = StatsDBConnection()
         udl_stats = connector.get_table('udl_stats')
-        self.assertEqual(udl_stats.name,'udl_stats')
+        self.assertEqual(udl_stats.name, 'udl_stats')
 
 
 if __name__ == "__main__":

@@ -15,6 +15,7 @@ class Unittest_with_stats_sqlite(Unittest_with_sqlite):
     def setUpClass(cls):
         super().setUpClass(datasource_name='stats', metadata=generate_stats_metadata())
 
+
 # Fixes failing test for schema definitions with BigIntegers
 @compiles(BigInteger, 'sqlite')
 def compile_big_int_sqlite(type_, compiler, **kw):

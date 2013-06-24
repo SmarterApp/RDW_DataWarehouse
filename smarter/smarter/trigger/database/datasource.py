@@ -6,6 +6,7 @@ Created on Jun 3, 2013
 from database.generic_connector import setup_db_connection_from_ini
 from edschema.metadata.stats_metadata import generate_stats_metadata
 
+
 def setup_tenant_db_connection(tenant, config):
     prefix = 'edware_stats.db.'
     schema_key = 'schema_name'

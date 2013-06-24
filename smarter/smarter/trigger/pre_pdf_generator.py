@@ -5,7 +5,7 @@ Created on Jun 23, 2013
 '''
 from database.connector import DBConnection
 from smarter.database.datasource import get_datasource_name
-from sqlalchemy.sql.expression import select, and_, func
+from sqlalchemy.sql.expression import select, and_, func, true
 from smarter.trigger.database.connector import StatsDBConnection
 from apscheduler.scheduler import Scheduler
 from smarter.trigger.database.udl_stats import get_ed_stats
@@ -27,7 +27,7 @@ def prepare_pre_pdf(tenant, state_code, last_pdf_generated):
                         ], from_obj=[fact_asmt_outcome])
         query = query.where(fact_asmt_outcome.c.asmt_create_date > last_pdf_generated)
         query = query.where(and_(fact_asmt_outcome.c.state_code == state_code))
-        query = query.where(and_(fact_asmt_outcome.c.most_recent == True))
+        query = query.where(and_(fact_asmt_outcome.c.most_recent == true()))
         results = connector.get_result(query)
         return results
 
@@ -56,7 +56,6 @@ def trigger_pre_pdf(settings, tenant, state_code, results):
     return triggered
 
 
-
 def update_ed_stats_for_prepdf(tenant, state_code):
     '''
     update current timestamp to last_pdf_generated field
@@ -65,6 +64,7 @@ def update_ed_stats_for_prepdf(tenant, state_code):
         udl_stats = connector.get_table('udl_stats')
         stmt = udl_stats.update(values={udl_stats.c.last_pdf_generated: func.now()}).where(udl_stats.c.state_code == state_code).where(udl_stats.c.tenant == tenant)
         connector.execute(stmt)
+
 
 def prepdf_task(settings):
     udl_stats_results = get_ed_stats()

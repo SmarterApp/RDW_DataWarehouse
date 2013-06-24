@@ -102,3 +102,11 @@ class TestPrepareQueries(unittest.TestCase):
         actual_value = queries.get_column_mapping_query(staging_schema, ref_table, source_table)
         expected_value = 'SELECT source_column, target_column, stored_proc_name FROM "test_staging_schema"."test_ref_table" WHERE source_table=\'test_source_table\''
         self.assertEqual(actual_value, expected_value)
+
+    def test_get_columns_in_ref_table_query(self):
+        staging_schema = 'test_staging_schema'
+        ref_table = 'test_ref_table'
+        source_table = 'test_source_table'
+        actual_value = queries.get_columns_in_ref_table_query(staging_schema, ref_table, source_table)
+        expected_value = 'SELECT source_column FROM "test_staging_schema"."test_ref_table" WHERE source_table=\'test_source_table\''
+        self.assertEqual(actual_value, expected_value)

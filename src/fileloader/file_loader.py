@@ -21,18 +21,35 @@ def check_setup(staging_table, engine, conn):
 
 
 @measure_cpu_plus_elasped_time
-def extract_csv_header(csv_file):
+def extract_csv_header(conn, staging_schema, ref_table, csv_lz_table, csv_header_file):
     '''
     Extract header names and types from input csv file
     '''
-    print(csv_file)
-    with open(csv_file) as csv_obj:
+    # get ordered header names from input csv_header_file
+    with open(csv_header_file) as csv_obj:
         reader = csv.reader(csv_obj)
-        header_names = next(reader)
-        header_types = ['text'] * len(header_names)
-    formatted_header_names = [canonicalize_header_field(name) for name in header_names]
+        header_names_in_header_file = next(reader)
+        header_types = ['text'] * len(header_names_in_header_file)
 
+    # verify each headers also exist at ref_table
+    header_names_in_ref_table = get_csv_header_names_in_ref_table(conn, staging_schema, ref_table, csv_lz_table)
+    # if there are columns which exist at header file, but not defined in ref table, raise exception
+    diff_item = set(header_names_in_header_file) - set(header_names_in_ref_table)
+    if len(diff_item) > 0:
+        raise ValueError('Column does not matching bwt header file and mapping defined in %s, %s' % (ref_table, str(diff_item)))
+    formatted_header_names = [canonicalize_header_field(name) for name in header_names_in_header_file]
     return formatted_header_names, header_types
+
+
+@measure_cpu_plus_elasped_time
+def get_csv_header_names_in_ref_table(conn, staging_schema, ref_table, csv_lz_table):
+    header_names_in_ref_table = []
+    query = queries.get_columns_in_ref_table_query(staging_schema, ref_table, csv_lz_table)
+    csv_columns_in_ref_table = execute_query_with_result(conn, query, 'Exception in getting column names in table %s -- ' % ref_table,
+                                                        'file_loader', 'get_csv_header_names_in_ref_table')
+    if csv_columns_in_ref_table:
+        header_names_in_ref_table = [name[0] for name in csv_columns_in_ref_table]
+    return header_names_in_ref_table
 
 
 @measure_cpu_plus_elasped_time
@@ -100,7 +117,7 @@ def load_data_process(conn, conf):
     # read headers from header_file
     # TODO: decide: extract from csv or read from ref table. Maybe reading from csv is better for creating fdw
     # since it keeps same order of headers in csv
-    header_names, header_types = extract_csv_header(conf[mk.HEADERS])
+    header_names, header_types = extract_csv_header(conn, conf[mk.TARGET_DB_SCHEMA], conf[mk.REF_TABLE], conf[mk.CSV_LZ_TABLE], conf[mk.HEADERS])
 
     # create FDW table
     create_fdw_tables(conn, header_names, header_types, conf[mk.FILE_TO_LOAD], conf[mk.CSV_SCHEMA], conf[mk.CSV_TABLE], conf[mk.FDW_SERVER])

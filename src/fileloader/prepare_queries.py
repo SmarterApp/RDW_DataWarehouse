@@ -91,7 +91,7 @@ def drop_sequence_query(staging_schema, seq_name):
 
 
 @measure_cpu_plus_elasped_time
-def apply_transformation_rules(apply_rules, header_types, csv_table_columns, transformation_rules):
+def apply_transformation_rules(apply_rules, csv_table_columns, transformation_rules):
     '''
     The function apply the some transformation rules
     '''
@@ -103,19 +103,6 @@ def apply_transformation_rules(apply_rules, header_types, csv_table_columns, tra
         if apply_rules:
             if rule is not None and rule != '':
                 column_with_rule = ''.join([rule, '(', header_name, ')'])
-            """
-            header_type = header_types[i]
-            # test for function map_gender. Hard code as a temporary solution
-            if header_name.lower() in ['gender_1', 'gender_2', 'gender_3', 'gender_4']:
-                header_name = 'map_gender(' + header_name + ')'
-                # test for function map_yn. Hard code as a temporary solution
-            elif header_name.lower() in ['y_or_n_1', 'y_or_n_2', 'y_or_n_3', 'y_or_n_4']:
-                header_name = 'map_yn(' + header_name + ')'
-            elif header_type.lower() == 'text':
-                header_name = "trim(replace(upper(" + header_name + "), CHR(13), ''))"
-
-        header_with_rules.append(header_name)
-        """
         header_with_rules.append(column_with_rule)
     return header_with_rules
 

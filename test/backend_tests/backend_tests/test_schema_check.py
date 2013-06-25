@@ -14,6 +14,7 @@ from sqlalchemy import ForeignKey
 from edschema.metadata.ed_metadata import generate_ed_metadata
 from sqlalchemy.types import NULLTYPE, FLOAT, UnicodeText
 from sqlalchemy.dialects.postgresql import DOUBLE_PRECISION
+import datetime
 
 
 class EdTestSchema(TestBase):
@@ -73,9 +74,11 @@ class EdTestSchema(TestBase):
                 if str(self.ed_metadata.tables[table].columns[column].type) == 'FLOAT':
                     #need to do a manual comparison of FLOAT (SQLAlchemy type) and DOUBLE PRECISION(Postgres type)
                     assert str(self.live_db_metadata.tables[table].columns[column].type) == 'DOUBLE PRECISION'
+                elif self.ed_metadata.table[table].columns[column].type.python_type is datetime.datetime:
+                    assert self.live_db_metadata.table[table].columns[column].python_type is datetime.datetime
                 else:
                     #All other SQLAlchemy and equivalent Postgres types comparisons can be done with string casting
-                    assert str(self.live_db_metadata.tables[table].columns[column].type) == str(self.ed_metadata.tables[table].columns[column].type), "Column datatype mismatch:" + column
+                    assert str(self.live_db_metadata.tables[table].columns[column].type) == str(self.ed_metadata.tables[table].columns[column].type), "Column datatype mismatch"
 
     def test_with_bad_schema(self):
         self.test_foreign_key_datatypes(True)

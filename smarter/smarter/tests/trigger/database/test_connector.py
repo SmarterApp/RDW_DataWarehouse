@@ -4,8 +4,8 @@ Created on Jun 22, 2013
 @author: tosako
 '''
 import unittest
-from smarter.trigger.database.connector import StatsDBConnection
 from smarter.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite
+from smarter.database.udl_stats_connector import StatsDBConnection
 
 
 class Test(Unittest_with_stats_sqlite):

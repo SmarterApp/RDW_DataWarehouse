@@ -4,10 +4,10 @@ Created on May 17, 2013
 @author: tosako
 '''
 import os
-from smarter.database.connector import SmarterDBConnection
 from sqlalchemy.sql.expression import Select, and_
 from edapi.exceptions import NotFoundException
 from smarter.reports.helpers.constants import Constants
+from smarter.database.smarter_connector import SmarterDBConnection
 
 
 def generate_isr_report_path_by_student_guid(pdf_report_base_dir='/', student_guid=None, asmt_type=Constants.SUMMATIVE, grayScale=False):

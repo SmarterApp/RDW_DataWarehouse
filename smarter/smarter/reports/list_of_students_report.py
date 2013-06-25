@@ -8,7 +8,6 @@ from edapi.decorators import report_config, user_info
 from smarter.reports.helpers.name_formatter import format_full_name_rev
 from sqlalchemy.sql import select
 from sqlalchemy.sql import and_
-from smarter.database.connector import SmarterDBConnection
 from edapi.logging import audit_event
 from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
 from smarter.reports.helpers.constants import Constants
@@ -16,6 +15,7 @@ from smarter.reports.helpers.assessments import get_overall_asmt_interval, \
     get_cut_points, get_claims
 from edapi.exceptions import NotFoundException
 from smarter.security.context import select_with_context
+from smarter.database.smarter_connector import SmarterDBConnection
 
 REPORT_NAME = "list_of_students"
 

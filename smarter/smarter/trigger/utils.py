@@ -18,17 +18,18 @@ def run_cron_job(settings, prefix, job):
     :param string prefix:  the prefix to prepend to properties
     :param job: reference to the function to run as a cron job
     '''
-    enabled = settings.get(prefix + "enable", False)
+    enabled = settings.get(prefix + "enable", False).lower() == 'true'
     if enabled:
+        new_prefix = prefix + 'schedule.cron.'
         cron_time = {}
-        year = settings.get(prefix + "schedule.cron.year")
-        month = settings.get(prefix + "schedule.cron.month")
-        day = settings.get(prefix + "schedule.cron.day")
-        week = settings.get(prefix + "schedule.cron.week")
-        day_of_week = settings.get(prefix + "schedule.cron.day_of_week")
-        hour = settings.get(prefix + "schedule.cron.hour")
-        minute = settings.get(prefix + "schedule.cron.minute")
-        second = settings.get(prefix + "schedule.cron.second")
+        year = settings.get(new_prefix + "year")
+        month = settings.get(new_prefix + "month")
+        day = settings.get(new_prefix + "day")
+        week = settings.get(new_prefix + "week")
+        day_of_week = settings.get(new_prefix + "day_of_week")
+        hour = settings.get(new_prefix + "hour")
+        minute = settings.get(new_prefix + "minute")
+        second = settings.get(new_prefix + "second")
 
         if year is not None:
             cron_time['year'] = year

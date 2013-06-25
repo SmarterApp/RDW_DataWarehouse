@@ -4,15 +4,14 @@ Created on Jun 20, 2013
 @author: tosako
 '''
 from sqlalchemy.sql.expression import select, and_, distinct, func, true
-from database.connector import DBConnection
-from smarter.database.datasource import get_datasource_name
 from smarter.trigger.cache.recache import CacheTrigger
-from smarter.trigger.database.connector import StatsDBConnection
 from smarter.trigger.database.udl_stats import get_ed_stats
 from smarter.reports.helpers.constants import Constants
 import logging
 from smarter.trigger.utils import run_cron_job
 from smarter.trigger.database import constants
+from smarter.database.smarter_connector import SmarterDBConnection
+from smarter.database.udl_stats_connector import StatsDBConnection
 
 
 logger = logging.getLogger(__name__)
@@ -28,7 +27,7 @@ def prepare_pre_cache(tenant, state_code, last_pre_cached):
     :rType: list
     :return:  list of results containing district guids
     '''
-    with DBConnection(name=get_datasource_name(tenant)) as connector:
+    with SmarterDBConnection(tenant=tenant) as connector:
         fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
         query = select([distinct(fact_asmt_outcome.c.district_guid).label(Constants.DISTRICT_GUID)], from_obj=[fact_asmt_outcome])
         query = query.where(fact_asmt_outcome.c.asmt_create_date > last_pre_cached)
@@ -78,7 +77,7 @@ def update_ed_stats_for_precached(tenant, state_code):
         connector.execute(stmt)
 
 
-def precached_task():
+def precached_task(settings):
     '''
     Precaches reports based on udl stats
     '''

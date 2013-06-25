@@ -4,12 +4,12 @@ Created on Jun 3, 2013
 @author: dip
 '''
 import unittest
-from smarter.database.datasource import get_datasource_name,\
-    get_db_config_prefix, setup_tenant_db_connection
 from zope import component
 from database.connector import IDbUtil
 from smarter import database
 from smarter.database import initialize_db, get_data_source_names
+from smarter.database.smarter_connector import SmarterDBConnection
+from smarter.database.datasource import setup_tenant_db_connection
 
 
 class TestDatasource(unittest.TestCase):
@@ -23,24 +23,14 @@ class TestDatasource(unittest.TestCase):
         component.provideUtility(None, IDbUtil)
         database.datasource.TENANTS = []
 
-    def test_get_datasource_name_with_given_tenant(self):
-        tenant = 'dummy'
-        datasource_name = get_datasource_name(tenant)
-        self.assertEqual(datasource_name, 'smarter.dummy')
-
-    def test_get_db_config_prefix(self):
-        db_prefix = get_db_config_prefix('dummyTenant')
-        self.assertEqual(db_prefix, 'edware.db.dummyTenant.')
-
     def test_parse_db_settings(self):
         settings = {'edware.db.echo': 'True',
                     'edware.db.schema_name': 'dummySchema',
                     'edware.db.dummyTenant.url': 'sqlite:///:memory:',
                     'other': 'setting',
                     'dummy': 'other settings'}
-        initialize_db(settings)
-        self.assertIn(get_datasource_name('dummyTenant'), get_data_source_names())
-        dbUtil = component.queryUtility(IDbUtil, get_datasource_name('dummyTenant'))
+        initialize_db(SmarterDBConnection, settings)
+        dbUtil = component.queryUtility(IDbUtil, 'edware.db.dummyTenant')
         self.assertIsNotNone(dbUtil)
         self.assertEqual(dbUtil.get_engine().echo, True)
         self.assertEqual(dbUtil.get_metadata().schema, settings['edware.db.schema_name'])
@@ -52,9 +42,8 @@ class TestDatasource(unittest.TestCase):
                     'edware.db.dummyTenant.url': 'sqlite:///:memory:',
                     'ignoreMe': 'setting',
                     'dummy': 'other settings'}
-        initialize_db(settings)
-        self.assertIn(get_datasource_name('dummyTenant'), get_data_source_names())
-        dbUtil = component.queryUtility(IDbUtil, get_datasource_name('dummyTenant'))
+        initialize_db(SmarterDBConnection, settings)
+        dbUtil = component.queryUtility(IDbUtil, 'edware.db.dummyTenant')
         self.assertIsNotNone(dbUtil)
         self.assertEqual(dbUtil.get_engine().echo, True)
         self.assertEqual(dbUtil.get_metadata().schema, settings['edware.db.dummyTenant.schema_name'])
@@ -67,9 +56,8 @@ class TestDatasource(unittest.TestCase):
                     'edware.db.dummyTenant.url': 'sqlite:///:memory:',
                     'ignoreMe': 'setting',
                     'dummy': 'other settings'}
-        initialize_db(settings)
-        self.assertIn(get_datasource_name('dummyTenant'), get_data_source_names())
-        dbUtil = component.queryUtility(IDbUtil, get_datasource_name('dummyTenant'))
+        initialize_db(SmarterDBConnection, settings)
+        dbUtil = component.queryUtility(IDbUtil, 'edware.db.dummyTenant')
         self.assertIsNotNone(dbUtil)
         self.assertEqual(dbUtil.get_engine().echo, True)
         self.assertEqual(dbUtil.get_metadata().schema, settings['edware.db.dummyTenant.schema_name'])
@@ -86,22 +74,22 @@ class TestDatasource(unittest.TestCase):
                     'edware.db.bTenant.echo': 'True',
                     'ignoreMe': 'setting',
                     'dummy': 'other settings'}
-        initialize_db(settings)
+        initialize_db(SmarterDBConnection, settings)
         self.assertEquals(len(get_data_source_names()), 3)
-        self.assertIn(get_datasource_name('dummyTenant'), get_data_source_names())
-        self.assertIn(get_datasource_name('aTenant'), get_data_source_names())
-        self.assertIn(get_datasource_name('bTenant'), get_data_source_names())
-        dbUtil = component.queryUtility(IDbUtil, get_datasource_name('dummyTenant'))
+        self.assertIn('edware.db.dummyTenant', get_data_source_names())
+        self.assertIn('edware.db.aTenant', get_data_source_names())
+        self.assertIn('edware.db.bTenant', get_data_source_names())
+        dbUtil = component.queryUtility(IDbUtil, 'edware.db.dummyTenant')
         self.assertIsNotNone(dbUtil)
         self.assertEqual(dbUtil.get_engine().echo, True)
         self.assertEqual(dbUtil.get_metadata().schema, settings['edware.db.dummyTenant.schema_name'])
         self.assertEqual(dbUtil.get_engine().url.database, ':memory:')
-        dbUtil = component.queryUtility(IDbUtil, get_datasource_name('aTenant'))
+        dbUtil = component.queryUtility(IDbUtil, 'edware.db.aTenant')
         self.assertIsNotNone(dbUtil)
         self.assertEqual(dbUtil.get_engine().echo, False)
         self.assertEqual(dbUtil.get_metadata().schema, settings['edware.db.schema_name'])
         self.assertEqual(dbUtil.get_engine().url.database, ':memory:')
-        dbUtil = component.queryUtility(IDbUtil, get_datasource_name('bTenant'))
+        dbUtil = component.queryUtility(IDbUtil, 'edware.db.bTenant')
         self.assertIsNotNone(dbUtil)
         self.assertEqual(dbUtil.get_engine().echo, True)
         self.assertEqual(dbUtil.get_metadata().schema, settings['edware.db.schema_name'])
@@ -111,8 +99,8 @@ class TestDatasource(unittest.TestCase):
         settings = {'edware.db.dummyTenant.echo': 'False',
                     'edware.db.dummyTenant.schema_name': 'dummySchema',
                     'edware.db.dummyTenant.url': 'sqlite:///:memory:'}
-        setup_tenant_db_connection('dummyTenant', settings)
-        dbUtil = component.queryUtility(IDbUtil, get_datasource_name('dummyTenant'))
+        setup_tenant_db_connection(SmarterDBConnection, 'dummyTenant', settings)
+        dbUtil = component.queryUtility(IDbUtil, 'edware.db.dummyTenant')
         self.assertIsNotNone(dbUtil)
         self.assertEqual(dbUtil.get_engine().echo, False)
         self.assertEqual(dbUtil.get_metadata().schema, 'dummySchema')

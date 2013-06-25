@@ -4,17 +4,17 @@ Created on Mar 8, 2013
 @author: dip
 '''
 from sqlalchemy.sql import and_, select
-from smarter.database.connector import SmarterDBConnection
 from sqlalchemy.sql.expression import true
 from smarter.reports.helpers.constants import Constants
+from smarter.database.smarter_connector import SmarterDBConnection
 
 
-def get_breadcrumbs_context(state_code=None, district_guid=None, school_guid=None, asmt_grade=None, student_name=None, datasource_name=None):
+def get_breadcrumbs_context(state_code=None, district_guid=None, school_guid=None, asmt_grade=None, student_name=None, tenant=None):
     '''
     Given certain known information, returns breadcrumbs context
     '''
     formatted_results = []
-    with SmarterDBConnection(name=datasource_name) as connector:
+    with SmarterDBConnection(tenant=tenant) as connector:
         dim_inst_hier = connector.get_table('dim_inst_hier')
 
         # Limit result count to one

@@ -3,9 +3,9 @@ Created on Jun 23, 2013
 
 @author: tosako
 '''
-from smarter.trigger.database.connector import StatsDBConnection
 from sqlalchemy.sql.expression import select
 from smarter.trigger.database.constants import Constants
+from smarter.database.udl_stats_connector import StatsDBConnection
 
 
 def get_ed_stats():

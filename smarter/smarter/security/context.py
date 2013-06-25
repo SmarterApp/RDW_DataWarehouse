@@ -6,9 +6,9 @@ Created on May 7, 2013
 from sqlalchemy.sql.expression import Select, select, or_
 from pyramid.security import authenticated_userid
 import pyramid
-from smarter.database.connector import SmarterDBConnection
 from smarter.reports.helpers.constants import Constants
 from smarter.security.context_role_map import ContextRoleMap
+from smarter.database.smarter_connector import SmarterDBConnection
 
 
 def select_with_context(columns=None, whereclause=None, from_obj=[], **kwargs):

@@ -14,6 +14,8 @@ import sys
 from services.celery import setup_celery
 from smarter import services, trigger
 from smarter.database import initialize_db
+from smarter.database.smarter_connector import SmarterDBConnection
+from smarter.database.udl_stats_connector import StatsDBConnection
 
 logger = logging.getLogger(__name__)
 CAKE_PROC = None
@@ -31,7 +33,8 @@ def main(global_config, **settings):
     set_cache_regions_from_settings(settings)
     config = Configurator(settings=settings, root_factory=RootFactory)
 
-    initialize_db(settings)
+    initialize_db(SmarterDBConnection, settings)
+    initialize_db(StatsDBConnection, settings)
 
     # setup celery
     setup_celery(settings=settings, prefix="celery")

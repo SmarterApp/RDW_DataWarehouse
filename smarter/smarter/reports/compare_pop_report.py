@@ -8,7 +8,6 @@ from edapi.decorators import report_config, user_info
 from smarter.reports.helpers.percentage_calc import normalize_percentages
 from sqlalchemy.sql import select
 from sqlalchemy.sql import and_
-from smarter.database.connector import SmarterDBConnection
 from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
 from sqlalchemy.sql.expression import case, func, true, null, cast
 from sqlalchemy.types import INTEGER
@@ -20,7 +19,7 @@ from edapi.exceptions import NotFoundException
 import json
 from beaker.cache import cache_region
 from smarter.security.context import select_with_context
-from smarter.database.datasource import get_datasource_name
+from smarter.database.smarter_connector import SmarterDBConnection
 
 # Report service for Comparing Populations
 # Output:
@@ -86,9 +85,6 @@ class ComparingPopReport(object):
         :param tenant:  tenant name of the user.  Specify if report is not going through a web request
         '''
         self.tenant = tenant
-        self.datasource_name = None
-        if tenant:
-            self.datasource_name = get_datasource_name(tenant)
 
     @cache_region('public.data')
     def get_state_view_report(self, stateCode):
@@ -153,7 +149,7 @@ class ComparingPopReport(object):
         :rtype: dict
         :returns:  results from database
         '''
-        with SmarterDBConnection(name=self.datasource_name) as connector:
+        with SmarterDBConnection(tenant=self.tenant) as connector:
             query_helper = QueryHelper(connector, **params)
             query = query_helper.get_query()
             results = connector.get_result(query)
@@ -182,7 +178,7 @@ class ComparingPopReport(object):
         arranged_results[Constants.SUBJECTS] = record_manager.get_subjects()
 
         # get breadcrumb context
-        arranged_results[Constants.CONTEXT] = get_breadcrumbs_context(state_code=param.get(Constants.STATECODE), district_guid=param.get(Constants.DISTRICTGUID), school_guid=param.get(Constants.SCHOOLGUID), datasource_name=self.datasource_name)
+        arranged_results[Constants.CONTEXT] = get_breadcrumbs_context(state_code=param.get(Constants.STATECODE), district_guid=param.get(Constants.DISTRICTGUID), school_guid=param.get(Constants.SCHOOLGUID), tenant=self.tenant)
 
         return arranged_results
 

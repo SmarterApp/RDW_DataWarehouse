@@ -8,12 +8,13 @@ from database.tests.utils.unittest_with_sqlite import Unittest_with_sqlite
 from sqlalchemy.types import BigInteger
 from sqlalchemy.ext.compiler import compiles
 from edschema.metadata.stats_metadata import generate_stats_metadata
+from smarter.database.udl_stats_connector import StatsDBConnection
 
 
 class Unittest_with_stats_sqlite(Unittest_with_sqlite):
     @classmethod
     def setUpClass(cls):
-        super().setUpClass(datasource_name='stats', metadata=generate_stats_metadata())
+        super().setUpClass(datasource_name=StatsDBConnection.get_datasource_name(), metadata=generate_stats_metadata())
 
 
 # Fixes failing test for schema definitions with BigIntegers

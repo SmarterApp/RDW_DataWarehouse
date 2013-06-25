@@ -194,7 +194,7 @@ qa1:
         cat:
           schema_name: edware_sds_0_1
           url: postgresql+psycopg2://edware:edware2013@dwpool0.qa.dum.edwdc.net:6432/edware
-    edsare_stats:
+    edware_stats:
       db:
         schema_name: edware_sds_0_1
         url: postgresql+psycopg2://edware:edware2013@dwpool0.qa.dum.edwdc.net:6432/edware_stats
@@ -236,7 +236,7 @@ qa2:
         cat:
           schema_name: edware_delaware_0_1
           url: postgresql+psycopg2://edware:edware2013@dwpool0.qa.dum.edwdc.net:6434/edware
-    edsare_stats:
+    edware_stats:
       db:
         schema_name: edware_delaware_0_1
         url: postgresql+psycopg2://edware:edware2013@dwpool0.qa.dum.edwdc.net:6432/edware_stats
@@ -278,7 +278,7 @@ jenkins_qa:
         cat:
           schema_name: edware_sds_0_1
           url: postgresql+psycopg2://postgres:edware.qa.2013@dwpool0.qa.dum.edwdc.net:6432/edware
-    edsare_stats:
+    edware_stats:
       db:
         schema_name: edware_sds_0_1
         url: postgresql+psycopg2://edware:edware2013@dwpool0.qa.dum.edwdc.net:6432/edware_stats
@@ -293,7 +293,7 @@ uat:
         cat:
           schema_name: edware_uat_0_1
           url: postgresql+psycopg2://edware:edware.dmo.may.2013@dwpool0.dmo.som.edwdc.net:6434/edware
-    edsare_stats:
+    edware_stats:
       db:
         schema_name: edware_uat_0_1
         url: postgresql+psycopg2://edware:edware.dmo.may.2013@dwpool0.dmo.som.edwdc.net:6434/edware_stats
@@ -353,7 +353,7 @@ localOpenAM:
           schema_name: edware_sds_0_3
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
           echo: False
-    edsare_stats:
+    edware_stats:
       db:
         schema_name: edware_sds_0_3
         url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_stats
@@ -385,7 +385,7 @@ development:
         dog:
           schema_name: edware_sds_us15303_0_1
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
-    edsare_stats:
+    edware_stats:
       db:
         schema_name: edware_sds_0_3
         url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_stats
@@ -417,7 +417,7 @@ test:
         dog:
           schema_name: edware_sds_us15303_0_1
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
-    edsare_stats:
+    edware_stats:
       db:
         schema_name: edware_sds_0_3
         url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests_stats
@@ -445,7 +445,7 @@ jenkins_dev:
         dog:
           schema_name: edware_sds_us15303_0_1
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
-    edsare_stats:
+    edware_stats:
       db:
         schema_name: edware_sds_0_3
         url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests_stats

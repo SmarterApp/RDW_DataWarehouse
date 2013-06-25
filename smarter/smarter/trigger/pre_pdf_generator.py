@@ -3,10 +3,7 @@ Created on Jun 23, 2013
 
 @author: tosako
 '''
-from database.connector import DBConnection
-from smarter.database.datasource import get_datasource_name
 from sqlalchemy.sql.expression import select, and_, func, true
-from smarter.trigger.database.connector import StatsDBConnection
 from smarter.trigger.database.udl_stats import get_ed_stats
 from batch.pdf.pdf_generator import PDFGenerator
 from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_absolute_file_path_name
@@ -14,6 +11,8 @@ from smarter.reports.helpers.constants import Constants
 import logging
 from smarter.trigger.utils import run_cron_job
 from smarter.trigger.database import constants
+from smarter.database.smarter_connector import SmarterDBConnection
+from smarter.database.udl_stats_connector import StatsDBConnection
 
 
 logger = logging.getLogger(__name__)
@@ -29,7 +28,7 @@ def prepare_pre_pdf(tenant, state_code, last_pdf_generated):
     :rType: list
     :return:  list of results containing student information used to generate pdf
     '''
-    with DBConnection(name=get_datasource_name(tenant)) as connector:
+    with SmarterDBConnection(tenant=tenant) as connector:
         fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
         dim_asmt = connector.get_table(Constants.DIM_ASMT)
         query = select([fact_asmt_outcome.c.student_guid.label(Constants.STUDENT_GUID),

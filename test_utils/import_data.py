@@ -9,8 +9,7 @@ from database.data_importer import import_csv_dir
 import argparse
 import configparser
 from database.connector import DBConnection
-from edschema.ed_metadata import generate_ed_metadata
-from smarter.database.datasource import get_datasource_name
+from edschema.metadata.ed_metadata import generate_ed_metadata
 from smarter.database import get_data_source_names
 from smarter.database import initialize_db
 

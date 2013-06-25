@@ -75,7 +75,7 @@ class EdTestSchema(TestBase):
                     assert str(self.live_db_metadata.tables[table].columns[column].type) == 'DOUBLE PRECISION'
                 else:
                     #All other SQLAlchemy and equivalent Postgres types comparisons can be done with string casting
-                    assert str(self.live_db_metadata.tables[table].columns[column].type) == str(self.ed_metadata.tables[table].columns[column].type), "Column datatype mismatch"
+                    assert str(self.live_db_metadata.tables[table].columns[column].type) == str(self.ed_metadata.tables[table].columns[column].type), "Column datatype mismatch:" + column
 
     def test_with_bad_schema(self):
         self.test_foreign_key_datatypes(True)

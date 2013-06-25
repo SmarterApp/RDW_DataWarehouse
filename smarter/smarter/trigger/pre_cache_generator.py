@@ -30,8 +30,9 @@ def prepare_pre_cache(tenant, state_code, last_pre_cached):
     with SmarterDBConnection(tenant=tenant) as connector:
         fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
         query = select([distinct(fact_asmt_outcome.c.district_guid).label(Constants.DISTRICT_GUID)], from_obj=[fact_asmt_outcome])
-        query = query.where(fact_asmt_outcome.c.asmt_create_date > last_pre_cached)
-        query = query.where(and_(fact_asmt_outcome.c.state_code == state_code))
+        query = query.where(fact_asmt_outcome.c.state_code == state_code)
+        if last_pre_cached is not None:
+            query = query.where(and_(fact_asmt_outcome.c.record_create_datetime.__gt__(last_pre_cached)))
         query = query.where(and_(fact_asmt_outcome.c.most_recent == true()))
         results = connector.get_result(query)
         return results

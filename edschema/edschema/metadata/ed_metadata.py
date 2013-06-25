@@ -211,7 +211,8 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                Column('asmt_claim_4_score', SmallInteger, nullable=True),
                                Column('asmt_claim_4_score_range_min', SmallInteger, nullable=True),
                                Column('asmt_claim_4_score_range_max', SmallInteger, nullable=True),
-                               Column('asmt_create_date', DateTime, nullable=False),
+                               Column('asmt_create_date', String(8), nullable=False),
+                               Column('record_create_datetime', DateTime, nullable=False),
                                Column('status', String(2), nullable=False),
                                Column('most_recent', Boolean),
                                )

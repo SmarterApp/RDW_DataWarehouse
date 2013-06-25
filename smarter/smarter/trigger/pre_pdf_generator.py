@@ -40,10 +40,11 @@ def prepare_pre_pdf(tenant, state_code, last_pdf_generated):
                                  .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id,
                                                       dim_asmt.c.most_recent,
                                                       dim_asmt.c.asmt_type == Constants.SUMMATIVE))])
-        query = query.where(fact_asmt_outcome.c.asmt_create_date > last_pdf_generated)
-        query = query.where(and_(fact_asmt_outcome.c.state_code == state_code))
+        query = query.where(fact_asmt_outcome.c.state_code == state_code)
         query = query.where(and_(fact_asmt_outcome.c.most_recent == true()))
         query = query.where(and_(fact_asmt_outcome.c.status == 'C'))
+        if last_pdf_generated is not None:
+            query = query.where(and_(fact_asmt_outcome.c.record_create_datetime.__gt__(last_pdf_generated)))
         results = connector.get_result(query)
         return results
 

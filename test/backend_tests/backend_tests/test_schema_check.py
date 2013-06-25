@@ -75,9 +75,7 @@ class EdTestSchema(TestBase):
                     #need to do a manual comparison of FLOAT (SQLAlchemy type) and DOUBLE PRECISION(Postgres type)
                     assert str(self.live_db_metadata.tables[table].columns[column].type) == 'DOUBLE PRECISION'
                 elif self.ed_metadata.tables[table].columns[column].type.python_type is datetime.datetime:
-                    print('@@@@@@@@@@@@@@@@@@@@@@@@@@')
-                    print(str(self.live_db_metadata.tables[table].columns[column].type))
-                    #assert self.live_db_metadata.tables[table].columns[column].type is datetime.datetime
+                    assert str(self.live_db_metadata.tables[table].columns[column].type) == 'TIMESTAMP WITHOUT TIME ZONE'
                 else:
                     #All other SQLAlchemy and equivalent Postgres types comparisons can be done with string casting
                     assert str(self.live_db_metadata.tables[table].columns[column].type) == str(self.ed_metadata.tables[table].columns[column].type), "Column datatype mismatch"

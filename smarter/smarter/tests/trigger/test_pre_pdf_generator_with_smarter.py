@@ -7,7 +7,6 @@ import unittest
 from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite,\
     get_unittest_tenant_name
 from smarter.trigger.pre_pdf_generator import prepare_pre_pdf, trigger_pre_pdf
-import datetime
 import services
 from zope import component
 from edauth.security.session_backend import ISessionBackend, SessionBackend
@@ -23,11 +22,13 @@ class TestPrePdfGenerator(Unittest_with_smarter_sqlite):
         pass
 
     def test_prepare_pre_pdf(self):
-        results = prepare_pre_pdf(self.tenant, 'NY', datetime.datetime.strptime('20080101000000', '%Y%m%d%H%M%S'))
-        self.assertEqual(178, len(results))
+        results = prepare_pre_pdf(self.tenant, 'NY', '820568d0-ddaa-11e2-a63d-68a86d3c2f82')
+        self.assertEqual(58, len(results))
+        results = prepare_pre_pdf(self.tenant, 'NY', '90901b70-ddaa-11e2-a95d-68a86d3c2f82')
+        self.assertEqual(120, len(results))
 
     def test_prepare_pre_pdf_with_future_date(self):
-        results = prepare_pre_pdf(self.tenant, 'NY', datetime.datetime.strptime('20180101000000', '%Y%m%d%H%M%S'))
+        results = prepare_pre_pdf(self.tenant, 'NY', 'd1d7d814-ddb1-11e2-b3dd-68a86d3c2f82')
         self.assertEqual(0, len(results))
 
     def test_trigger_pre_pdf_with_empty_results(self):

@@ -4,21 +4,35 @@ Created on Jun 23, 2013
 @author: tosako
 '''
 from sqlalchemy.sql.expression import select, and_, func, true
-from smarter.trigger.database.udl_stats import get_ed_stats
 from batch.pdf.pdf_generator import PDFGenerator
 from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_absolute_file_path_name
-from smarter.reports.helpers.constants import Constants
 import logging
 from smarter.trigger.utils import run_cron_job
 from smarter.trigger.database import constants
 from smarter.database.smarter_connector import SmarterDBConnection
 from smarter.database.udl_stats_connector import StatsDBConnection
+from smarter.reports.helpers.constants import Constants
 
 
 logger = logging.getLogger(__name__)
 
 
-def prepare_pre_pdf(tenant, state_code, last_pdf_generated):
+def prepare_ed_stats():
+    with StatsDBConnection() as connector:
+        udl_stats = connector.get_table(constants.Constants.UDL_STATS)
+        query = select([udl_stats.c.tenant.label(constants.Constants.TENANT),
+                        udl_stats.c.state_code.label(constants.Constants.STATE_CODE),
+                        udl_stats.c.load_start.label(constants.Constants.LOAD_START),
+                        udl_stats.c.load_end.label(constants.Constants.LOAD_END),
+                        udl_stats.c.record_loaded_count.label(constants.Constants.RECORD_LOADED_COUNT),
+                        udl_stats.c.batch_guid.label(constants.Constants.BATCH_GUID), ],
+                       from_obj=[udl_stats])
+        query = query.where(udl_stats.c.load_status == constants.Constants.INGESTED)
+        query = query.where(and_(udl_stats.c.last_pre_cached is None))
+        return connector.get_result(query)
+
+
+def prepare_pre_pdf(tenant, state_code, batch_guid):
     '''
     prepare which state and district are pre-cached
 
@@ -41,10 +55,8 @@ def prepare_pre_pdf(tenant, state_code, last_pdf_generated):
                                                       dim_asmt.c.most_recent,
                                                       dim_asmt.c.asmt_type == Constants.SUMMATIVE))])
         query = query.where(fact_asmt_outcome.c.state_code == state_code)
+        query = query.where(and_(fact_asmt_outcome.c.batch_guid == batch_guid))
         query = query.where(and_(fact_asmt_outcome.c.most_recent == true()))
-        query = query.where(and_(fact_asmt_outcome.c.status == 'C'))
-        if last_pdf_generated is not None:
-            query = query.where(and_(fact_asmt_outcome.c.record_create_datetime.__gt__(last_pdf_generated)))
         results = connector.get_result(query)
         return results
 
@@ -80,7 +92,7 @@ def trigger_pre_pdf(settings, tenant, state_code, results):
     return triggered
 
 
-def update_ed_stats_for_prepdf(tenant, state_code):
+def update_ed_stats_for_prepdf(tenant, state_code, batch_guid):
     '''
     update current timestamp to last_pdf_generated field
 
@@ -89,7 +101,7 @@ def update_ed_stats_for_prepdf(tenant, state_code):
     '''
     with StatsDBConnection() as connector:
         udl_stats = connector.get_table(constants.Constants.UDL_STATS)
-        stmt = udl_stats.update(values={udl_stats.c.last_pdf_generated: func.now()}).where(udl_stats.c.state_code == state_code).where(udl_stats.c.tenant == tenant)
+        stmt = udl_stats.update(values={udl_stats.c.last_pdf_task_requested: func.now()}).where(udl_stats.c.state_code == state_code).where(udl_stats.c.tenant == tenant).where(udl_stats.c.batch_guid == batch_guid)
         connector.execute(stmt)
 
 
@@ -99,11 +111,11 @@ def prepdf_task(settings):
 
     :param dict settings:  configuration for the application
     '''
-    udl_stats_results = get_ed_stats()
+    udl_stats_results = prepare_ed_stats()
     for udl_stats_result in udl_stats_results:
         tenant = udl_stats_result.get(constants.Constants.TENANT)
         state_code = udl_stats_result.get(constants.Constants.STATE_CODE)
-        last_pdf_generated = udl_stats_result.get(constants.Constants.LAST_PDF_GENERATED)
+        last_pdf_generated = udl_stats_result.get(constants.Constants.BATCH_GUID)
         fact_asmt_outcome_results = prepare_pre_pdf(tenant, state_code, last_pdf_generated)
         triggered_success = trigger_pre_pdf(settings, tenant, fact_asmt_outcome_results)
         if triggered_success:

@@ -43,7 +43,7 @@ class FileSplitterFTest(unittest.TestCase):
             mk.ROW_START: 1,
             mk.REF_TABLE: udl2_conf['udl2_db']['ref_table_name'],
             mk.CSV_LZ_TABLE: udl2_conf['udl2_db']['csv_lz_table'],
-            'apply_rules': False
+            mk.APPLY_RULES: False
         }
         # connect to db
         conn, _engine = connect_db(self.conf[mk.SOURCE_DB_DRIVER], self.conf[mk.TARGET_DB_USER], self.conf[mk.TARGET_DB_PASSWORD],
@@ -91,6 +91,7 @@ class FileSplitterFTest(unittest.TestCase):
         self.conf[mk.ROW_START] = 124
         self.conf[mk.BATCH_ID] = generate_non_exsisting_batch_id(self.conf, self.conn)
         self.conf[mk.FILE_TO_LOAD] = self.CSV_FILE2
+        self.conf[mk.APPLY_RULES] = True
         load_file(self.conf)
 
         # Get newly loaded data for comparison
@@ -109,9 +110,9 @@ class FileSplitterFTest(unittest.TestCase):
             expect_row = expected_rows[i]
             for ci in range(len(res_row)):
                 if results.keys()[ci] in expect_row:
-                    self.assertEqual(res_row[ci], expect_row[results.keys()[ci]], 'Values are not the same for column %s' % results.keys()[ci])
+                    self.assertEqual(change_empty_vals_to_none(res_row[ci]), change_empty_vals_to_none(expect_row[results.keys()[ci]]), 'Values are not the same for column %s' % results.keys()[ci])
                 else:
-                    print('Column: %s, is not in csv file' % results.keys()[ci])
+                    print('Column: %s, is not in csv file no comparison was done' % results.keys()[ci])
 
     def tearDown(self):
         # truncate staging table or delete all rows just inserted.
@@ -189,3 +190,9 @@ def get_rows_in_table(conf, conn):
         print('Exception -- ', e)
         trans.rollback()
     return list(result)
+
+
+def change_empty_vals_to_none(val):
+    if val is 0 or val is '':
+        return None
+    return val

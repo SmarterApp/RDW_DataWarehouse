@@ -7,6 +7,7 @@ from sqlalchemy.exc import NoSuchTableError
 import udl2.message_keys as mk
 from udl2_util.measurement import measure_cpu_plus_elasped_time
 from udl2_util.database_util import execute_queries, execute_query_with_result, connect_db
+from udl2_util.file_util import extract_file_name
 
 
 DBDRIVER = "postgresql"
@@ -174,21 +175,23 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     conf = {
-            'csv_file': args.source_csv,
-            'header_file': args.header_csv,
-            'csv_table': 'csv_table_for_file_loader',
-            'db_host': 'localhost',
-            'db_port': '5432',
-            'db_user': 'udl2',
-            'db_name': 'udl2',
-            'db_password': 'udl2abc1234',
-            'csv_schema': 'udl2',
-            'fdw_server': 'udl2_fdw_server',
-            'staging_schema': 'udl2',
-            'staging_table': 'STG_SBAC_ASMT_OUTCOME',
-            'apply_rules': False,
-            'start_seq': 10,
-            'batch_id': 100
+            mk.FILE_TO_LOAD: args.source_csv,
+            mk.HEADERS: args.header_csv,
+            mk.ROW_START: 10,
+            mk.TARGET_DB_HOST: 'localhost',
+            mk.TARGET_DB_PORT: '5432',
+            mk.TARGET_DB_USER: 'udl2',
+            mk.TARGET_DB_NAME: 'udl2',
+            mk.TARGET_DB_PASSWORD: 'udl2abc1234',
+            mk.CSV_SCHEMA: 'udl2',
+            mk.CSV_TABLE: extract_file_name(args.source_csv),
+            mk.FDW_SERVER: 'udl2_fdw_server',
+            mk.TARGET_DB_SCHEMA: 'udl2',
+            mk.TARGET_DB_TABLE: 'STG_SBAC_ASMT_OUTCOME',
+            mk.APPLY_RULES: True,
+            mk.REF_TABLE: 'REF_COLUMN_MAPPING',
+            mk.CSV_LZ_TABLE: 'LZ_CSV',
+            mk.BATCH_ID: '00000000-0000-0000-0000-000000000000'
     }
     start_time = datetime.datetime.now()
     load_file(conf)

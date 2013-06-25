@@ -3,7 +3,7 @@ Created on Jun 23, 2013
 
 @author: tosako
 '''
-from sqlalchemy.sql.expression import select, and_, func, true
+from sqlalchemy.sql.expression import select, and_, func, true, null
 from batch.pdf.pdf_generator import PDFGenerator
 from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_absolute_file_path_name
 import logging
@@ -28,7 +28,7 @@ def prepare_ed_stats():
                         udl_stats.c.batch_guid.label(constants.Constants.BATCH_GUID), ],
                        from_obj=[udl_stats])
         query = query.where(udl_stats.c.load_status == constants.Constants.INGESTED)
-        query = query.where(and_(udl_stats.c.last_pre_cached is None))
+        query = query.where(and_(udl_stats.c.last_pdf_task_requested == null()))
         return connector.get_result(query)
 
 
@@ -61,7 +61,7 @@ def prepare_pre_pdf(tenant, state_code, batch_guid):
         return results
 
 
-def trigger_pre_pdf(settings, tenant, state_code, results):
+def trigger_pre_pdf(settings, state_code, tenant, results):
     '''
     call pre-pdf function
 
@@ -117,7 +117,7 @@ def prepdf_task(settings):
         state_code = udl_stats_result.get(constants.Constants.STATE_CODE)
         last_pdf_generated = udl_stats_result.get(constants.Constants.BATCH_GUID)
         fact_asmt_outcome_results = prepare_pre_pdf(tenant, state_code, last_pdf_generated)
-        triggered_success = trigger_pre_pdf(settings, tenant, fact_asmt_outcome_results)
+        triggered_success = trigger_pre_pdf(settings, state_code, tenant, fact_asmt_outcome_results)
         if triggered_success:
             update_ed_stats_for_prepdf(tenant, state_code)
 

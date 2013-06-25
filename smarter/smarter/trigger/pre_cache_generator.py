@@ -3,7 +3,7 @@ Created on Jun 20, 2013
 
 @author: tosako
 '''
-from sqlalchemy.sql.expression import select, and_, distinct, func, true
+from sqlalchemy.sql.expression import select, and_, distinct, func, true, null
 from smarter.trigger.cache.recache import CacheTrigger
 import logging
 from smarter.trigger.utils import run_cron_job
@@ -27,7 +27,7 @@ def prepare_ed_stats():
                         udl_stats.c.batch_guid.label(constants.Constants.BATCH_GUID), ],
                        from_obj=[udl_stats])
         query = query.where(udl_stats.c.load_status == constants.Constants.INGESTED)
-        query = query.where(and_(udl_stats.c.last_pre_cached is None))
+        query = query.where(and_(udl_stats.c.last_pre_cached == null()))
         return connector.get_result(query)
 
 

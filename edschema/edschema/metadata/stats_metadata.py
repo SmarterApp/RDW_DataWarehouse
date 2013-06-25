@@ -5,6 +5,7 @@ Created on Jun 19, 2013
 '''
 from sqlalchemy.schema import MetaData, Table, Column
 from sqlalchemy.types import String, DateTime, BigInteger
+import datetime
 
 
 def generate_stats_metadata(schema_name=None, bind=None):
@@ -17,7 +18,7 @@ def generate_stats_metadata(schema_name=None, bind=None):
                         Column('load_status', String(32), nullable=False),
                         Column('batch_guid', String(50), nullable=True),
                         Column('record_loaded_count', BigInteger, nullable=False),
-                        Column('last_pdf_task_requested', DateTime, nullable=True),
-                        Column('last_pre_cached', DateTime, nullable=True)
+                        Column('last_pdf_task_requested', DateTime, nullable=True, default=datetime.datetime.strptime('20000101000000', '%Y%m%d%H%M%S')),
+                        Column('last_pre_cached', DateTime, nullable=True, default=datetime.datetime.strptime('20000101000000', '%Y%m%d%H%M%S'))
                         )
     return metadata

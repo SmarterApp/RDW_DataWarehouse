@@ -83,7 +83,7 @@ class FileSplitterFTest(unittest.TestCase):
                     if value_in_csv and value_in_table:
                         self.assertEqual(value_in_csv, value_in_table)
                     # verify the src_file_rec_num and batch_id
-                    #self.assertEqual(row_in_table['src_file_rec_num'], row_number + self.conf[mk.ROW_START])
+                    self.assertEqual(row_in_table['src_file_rec_num'], row_number + self.conf[mk.ROW_START])
                     self.assertEqual(row_in_table['batch_id'], str(self.conf[mk.BATCH_ID]))
                 row_number += 1
 

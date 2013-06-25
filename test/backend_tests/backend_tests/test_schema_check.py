@@ -11,7 +11,7 @@ from sqlalchemy.schema import Table
 from sqlalchemy.schema import Column
 from sqlalchemy import String, Integer, Float, SmallInteger, Unicode, Date, DateTime
 from sqlalchemy import ForeignKey
-from edschema.ed_metadata import generate_ed_metadata
+from edschema.metadata.ed_metadata import generate_ed_metadata
 from sqlalchemy.types import NULLTYPE, FLOAT, UnicodeText
 from sqlalchemy.dialects.postgresql import DOUBLE_PRECISION
 

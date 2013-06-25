@@ -9,7 +9,7 @@ import uuid
 from udl2 import message_keys as mk
 
 
-class FileSplitterFTest(unittest.TestCase):
+class FileLoaderFTest(unittest.TestCase):
 
     def setUp(self):
         try:

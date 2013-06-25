@@ -1,5 +1,5 @@
 API Documentation
-=============
+=================
 
 :mod:`edapi` Package
 --------------------

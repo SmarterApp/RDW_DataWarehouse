@@ -5,7 +5,7 @@ Created on Mar 2, 2013
 '''
 import unittest
 import os
-from database.data_importer import import_csv_dir
+from database.data_importer import import_csv_dir, DataImporterLengthException
 from database.sqlite_connector import create_sqlite, destroy_sqlite
 from database.tests.utils.metadata import generate_test_metadata
 
@@ -37,8 +37,7 @@ class Test(unittest.TestCase):
     def test_import_csv_dir_exceeded_length(self):
         csv_dir = get_resource_dir('exceeded_length')
         self.assertTrue(os.path.exists(csv_dir))
-        result = import_csv_dir(csv_dir)
-        self.assertFalse(result)
+        self.assertRaises(DataImporterLengthException, import_csv_dir, csv_dir)
 
 
 def get_resource_dir(dir_name):

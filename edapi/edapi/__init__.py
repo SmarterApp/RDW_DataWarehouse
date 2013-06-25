@@ -1,5 +1,5 @@
 '''
-Entry point for edapi
+This package contains all modules and code of the EdAPI framework
 
 '''
 from pyramid.authentication import AuthTktAuthenticationPolicy
@@ -9,7 +9,9 @@ from edapi.utils import ContentTypePredicate, add_report_config
 
 def includeme(config):
     '''
-    this is automatically called by consumer of edapi when it calls config.include(edapi)
+    Initializes and registers the application's REST endpoints. It
+    is automatically called by a consumer of edapi when it calls
+    config.include(edapi).
     '''
 
     # routing for retrieving list of report names with GET

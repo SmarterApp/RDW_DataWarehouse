@@ -1,5 +1,5 @@
 '''
-Handles requests to endpoints
+Handles requests to REST endpoints
 
 Created on Jan 14, 2013
 
@@ -20,7 +20,8 @@ MAX_REQUEST_URL_LENGTH = 2000
 
 def get_report_registry(request, name=None):
     '''
-    given a request, return the registry belonging to edapi reports
+    Given a request, return the registry belonging to edapi reports
+
     :param name: the report name that is trying to get the registry (will get used if the registry is not found)
     :type name: string
     '''
@@ -32,7 +33,7 @@ def get_report_registry(request, name=None):
 
 def get_request_body(request):
     '''
-    returns pyramid request body as json, throws exception if request.json_body isn't valid json
+    Returns pyramid request body as json, throws exception if request.json_body isn't valid json
 
     :param request: the request object
     :type request: request
@@ -47,7 +48,7 @@ def get_request_body(request):
 @view_config(route_name='list_of_reports', renderer='json', request_method='GET')
 def get_list_of_reports(request):
     '''
-    returns list of reports in GET request
+    Returns list of reports in GET request
     '''
     try:
         reports = get_report_registry(request)
@@ -59,7 +60,7 @@ def get_list_of_reports(request):
 @view_config(route_name='report_get_option_post', renderer='json', request_method='OPTIONS')
 def get_report_config(request):
     '''
-    handle the OPTIONS verb for data resource
+    Handle OPTIONS for data resource
 
     :param request: the request object
     :type request: request
@@ -78,12 +79,11 @@ def get_report_config(request):
 @view_config(route_name='report_get_option_post', renderer='json', request_method='GET', content_type="application/json",)
 def generate_report_get(request, validator=None):
     '''
-    handle GET verb for data resource
+    Handle GET for data resource
 
     :param request: the request object
     :type request: request
-    :param validator: the request object
-    :type request: request
+    :param validator:
     '''
 
     # if full request URL with query string is too long
@@ -109,12 +109,11 @@ def generate_report_get(request, validator=None):
 @view_config(route_name='report_get_option_post', renderer='json', request_method='POST', content_type="application/json",)
 def generate_report_post(request, validator=None):
     '''
-    handle POST verb for data resource
+    Handle POST for data resource
 
     :param request: the request object
     :type request: request
-    :param validator: the request object
-    :type request: request
+    :param validator:
     '''
     try:
         # basic check that it is a correct json, if not an exception will get raised when accessing json_body.

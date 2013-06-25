@@ -20,7 +20,7 @@ extensions = [
 ]
 
 intersphinx_mapping = {
-    'zcomponent': ('http://docs.zope.org/zope.component', None),
+    #'zcomponent': ('http://docs.zope.org/zope.component', None),
     'sqla': ('http://docs.sqlalchemy.org/en/latest', None),
     'validictory': ('http://validictory.readthedocs.org/en/latest', None),
     'who': ('http://docs.repoze.org/who/latest', None),

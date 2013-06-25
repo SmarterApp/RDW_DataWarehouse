@@ -1,4 +1,7 @@
 '''
+This module contains extra logging functionality which supplements
+Python's built-in logging
+
 Created on Mar 5, 2013
 
 @author: aoren, agrebneva
@@ -21,6 +24,9 @@ blacklist_args_global = ['first_name', 'last_name']
 
 def audit_event(logger_name="audit", blacklist_args=[]):
     '''
+    Decorator that logs audit information for a method, including report name,
+    session id, and execution time.
+
     :param logger_name: the logger we will insert to log messages to.
     :type logger_name: string
     :param blacklist_args: a list of arguments that we purposely will not log
@@ -108,6 +114,7 @@ class JsonDictLoggingFormatter(logging.Formatter):
     def format(self, record):
         '''
         Formats a log record and serializes to json
+
         :param record: the formatted record.
         '''
         loggable = OrderedDict()

@@ -3,8 +3,7 @@ from setuptools import setup, find_packages
 install_requires = [
     "celery",
     "anyjson",
-    "amqp",
-    "edauth"
+    "amqp"
 ]
 
 tests_require = [

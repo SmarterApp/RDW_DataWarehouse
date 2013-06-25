@@ -7,6 +7,9 @@ from database.generic_connector import setup_db_connection_from_ini
 
 
 def setup_tenant_db_connection(connector_cls, tenant=None, config={}):
+    '''
+    Set up database connection
+    '''
     prefix = connector_cls.get_db_config_prefix(tenant)
     schema_key = prefix + 'schema_name'
     metadata = connector_cls.generate_metadata(config[schema_key])

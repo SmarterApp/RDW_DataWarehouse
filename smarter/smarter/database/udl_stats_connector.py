@@ -11,8 +11,7 @@ config_namespace = 'edware_stats.db'
 
 class StatsDBConnection(DBConnection):
     '''
-    DBConnector for Smarter Project
-    a name is required for tenancy database connection lookup
+    DBConnector for Stats
     '''
 
     def __init__(self, tenant=None):

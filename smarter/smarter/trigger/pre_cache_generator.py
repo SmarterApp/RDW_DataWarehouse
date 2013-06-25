@@ -17,6 +17,9 @@ logger = logging.getLogger(__name__)
 
 
 def prepare_ed_stats():
+    '''
+    Get stats data to determine data that has not been cached
+    '''
     with StatsDBConnection() as connector:
         udl_stats = connector.get_table(constants.Constants.UDL_STATS)
         query = select([udl_stats.c.tenant.label(constants.Constants.TENANT),

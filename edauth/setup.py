@@ -10,7 +10,9 @@ install_requires = [
     'SQLAlchemy',
     'PyCrypto>=2.6',
     'apscheduler',
-    'Beaker']
+    'Beaker',
+    'zope.component >= 4.0.2',
+    'zope.interface >= 4.0.3']
 
 tests_require = [
     'WebTest >= 1.3.1',  # py3 compat

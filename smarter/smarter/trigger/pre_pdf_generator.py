@@ -115,11 +115,11 @@ def prepdf_task(settings):
     for udl_stats_result in udl_stats_results:
         tenant = udl_stats_result.get(constants.Constants.TENANT)
         state_code = udl_stats_result.get(constants.Constants.STATE_CODE)
-        last_pdf_generated = udl_stats_result.get(constants.Constants.BATCH_GUID)
-        fact_asmt_outcome_results = prepare_pre_pdf(tenant, state_code, last_pdf_generated)
+        batch_guid = udl_stats_result.get(constants.Constants.BATCH_GUID)
+        fact_asmt_outcome_results = prepare_pre_pdf(tenant, state_code, batch_guid)
         triggered_success = trigger_pre_pdf(settings, state_code, tenant, fact_asmt_outcome_results)
         if triggered_success:
-            update_ed_stats_for_prepdf(tenant, state_code)
+            update_ed_stats_for_prepdf(tenant, state_code, batch_guid)
 
 
 def run_cron_prepdf(settings):

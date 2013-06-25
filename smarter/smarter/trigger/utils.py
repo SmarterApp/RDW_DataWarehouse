@@ -5,6 +5,7 @@ Created on Jun 24, 2013
 '''
 from apscheduler.scheduler import Scheduler
 import logging
+from edauth.utils import to_bool
 
 
 logger = logging.getLogger('smarter')
@@ -18,7 +19,7 @@ def run_cron_job(settings, prefix, job):
     :param string prefix:  the prefix to prepend to properties
     :param job: reference to the function to run as a cron job
     '''
-    enabled = settings.get(prefix + "enable", False).lower() == 'true'
+    enabled = to_bool(settings.get(prefix + "enable", 'False'))
     if enabled:
         new_prefix = prefix + 'schedule.cron.'
         cron_time = {}

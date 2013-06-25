@@ -101,15 +101,20 @@ class FileSplitterFTest(unittest.TestCase):
         expected_rows = get_clean_rows_from_file(self.CSV_FILE2_CLEAN)
 
         # sort rows
-        student_guid_index = results.keys().index('guid_student')
-        result_list = sorted(result_list, key=lambda i: i[student_guid_index])
-        expected_rows = sorted(expected_rows, key=lambda k: k['guid_student'])
+        student_guid_index = results.keys().index('guid_student')  # Determine index of guid_student in results
+        result_list = sorted(result_list, key=lambda i: i[student_guid_index])  # sort results using this index
+        expected_rows = sorted(expected_rows, key=lambda k: k['guid_student'])  # sort expected based on the key
 
+        # Loop through rows
         for i in range(len(result_list)):
             res_row = result_list[i]
             expect_row = expected_rows[i]
+
+            # Loop through columns
             for ci in range(len(res_row)):
                 if results.keys()[ci] in expect_row:
+                    # if column is in the expected data
+                    # change_empty_vals_to_none() converts all 0's and empty strings to None
                     self.assertEqual(change_empty_vals_to_none(res_row[ci]), change_empty_vals_to_none(expect_row[results.keys()[ci]]), 'Values are not the same for column %s' % results.keys()[ci])
                 else:
                     print('Column: %s, is not in csv file no comparison was done' % results.keys()[ci])

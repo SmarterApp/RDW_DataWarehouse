@@ -82,7 +82,7 @@ def get_fields_map(conn, ref_table, csv_lz_table, batch_id, csv_file, staging_sc
 
     # column batch_id and record_id are in staging table, but not in csv_table
     csv_table_columns = ['\'' + str(batch_id) + '\'', 'nextval(\'{seq_name}\')']
-    stg_asmt_outcome_columns = ['batch_id', 'record_sid']
+    stg_asmt_outcome_columns = ['batch_id', 'src_file_rec_num']
     transformation_rules = ['', '']
     if column_mapping:
         for mapping in column_mapping:

@@ -28,7 +28,7 @@ class FileSplitterFTest(unittest.TestCase):
         # set up database configuration
         self.conf = {
             mk.FILE_TO_LOAD: CSV_FILE,
-            'csv_table': CSV_TABLE,
+            mk.CSV_TABLE: CSV_TABLE,
             mk.HEADERS: HEADER_FILE,
             mk.TARGET_DB_HOST: udl2_conf['udl2_db']['db_host'],
             mk.TARGET_DB_PORT: udl2_conf['udl2_db']['db_port'],
@@ -37,7 +37,7 @@ class FileSplitterFTest(unittest.TestCase):
             mk.TARGET_DB_PASSWORD: udl2_conf['udl2_db']['db_pass'],
             mk.SOURCE_DB_DRIVER: udl2_conf['udl2_db']['db_driver'],
             mk.CSV_SCHEMA: udl2_conf['udl2_db']['csv_schema'],
-            'fdw_server': udl2_conf['udl2_db']['fdw_server'],
+            mk.FDW_SERVER: udl2_conf['udl2_db']['fdw_server'],
             mk.TARGET_DB_SCHEMA: udl2_conf['udl2_db']['staging_schema'],
             mk.TARGET_DB_TABLE: 'STG_SBAC_ASMT_OUTCOME',
             mk.ROW_START: 1,
@@ -110,6 +110,7 @@ class FileSplitterFTest(unittest.TestCase):
             expect_row = expected_rows[i]
             for ci in range(len(res_row)):
                 if results.keys()[ci] in expect_row:
+                    print(change_empty_vals_to_none(res_row[ci]), change_empty_vals_to_none(expect_row[results.keys()[ci]]))
                     self.assertEqual(change_empty_vals_to_none(res_row[ci]), change_empty_vals_to_none(expect_row[results.keys()[ci]]), 'Values are not the same for column %s' % results.keys()[ci])
                 else:
                     print('Column: %s, is not in csv file no comparison was done' % results.keys()[ci])

@@ -21,7 +21,7 @@ transform_rules = {
                    'schoolType' : {  PCLEAN  : [UPPER, REMNL, TRIM],
                                      LOOKUP  : { 'High School'   : ['HS', 'HIGH SCHOOL'],
                                                  'Middle School' : ['MS', 'MIDDLE SCHOOL'],
-                                                 'Elementary School' : ['ES' 'ELEMENTARY SCHOOL'] } },
+                                                 'Elementary School' : ['ES', 'ELEMENTARY SCHOOL'] } },
                    
                    'yn'          : { PCLEAN  : [UPPER, REMNL, TRIM],
                                      LOOKUP  : {'Y': ['Y', '1', 'T'], 'N': ['N', '0', 'F'] } },

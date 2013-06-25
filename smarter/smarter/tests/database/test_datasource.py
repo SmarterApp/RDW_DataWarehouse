@@ -6,10 +6,10 @@ Created on Jun 3, 2013
 import unittest
 from zope import component
 from database.connector import IDbUtil
-from smarter import database
 from smarter.database import initialize_db, get_data_source_names
 from smarter.database.smarter_connector import SmarterDBConnection
 from smarter.database.datasource import setup_tenant_db_connection
+from smarter.database.udl_stats_connector import StatsDBConnection
 
 
 class TestDatasource(unittest.TestCase):
@@ -20,8 +20,8 @@ class TestDatasource(unittest.TestCase):
         self.assertIsNone(dbUtil)
 
     def tearDown(self):
-        component.provideUtility(None, IDbUtil)
-        database.datasource.TENANTS = []
+        for name in get_data_source_names():
+            component.provideUtility(None, IDbUtil, name=name)
 
     def test_parse_db_settings(self):
         settings = {'edware.db.echo': 'True',
@@ -106,6 +106,16 @@ class TestDatasource(unittest.TestCase):
         self.assertEqual(dbUtil.get_metadata().schema, 'dummySchema')
         self.assertEqual(dbUtil.get_engine().url.database, ':memory:')
         self.assertEqual(len(settings.keys()), 2)
+
+    def test_initialize_db_without_tenants(self):
+        settings = {'edware_stats.db.schema_name': 'dummySchema',
+                    'edware_stats.db.url': 'sqlite:///:memory:'}
+        initialize_db(StatsDBConnection, settings)
+        self.assertEquals(len(get_data_source_names()), 1)
+        self.assertIn('edware_stats.db', get_data_source_names())
+        dbUtil = component.queryUtility(IDbUtil, 'edware_stats.db')
+        self.assertIsNotNone(dbUtil)
+        self.assertEqual(dbUtil.get_metadata().schema, settings['edware_stats.db.schema_name'])
 
 
 if __name__ == "__main__":

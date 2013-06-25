@@ -110,7 +110,6 @@ class FileSplitterFTest(unittest.TestCase):
             expect_row = expected_rows[i]
             for ci in range(len(res_row)):
                 if results.keys()[ci] in expect_row:
-                    print(change_empty_vals_to_none(res_row[ci]), change_empty_vals_to_none(expect_row[results.keys()[ci]]))
                     self.assertEqual(change_empty_vals_to_none(res_row[ci]), change_empty_vals_to_none(expect_row[results.keys()[ci]]), 'Values are not the same for column %s' % results.keys()[ci])
                 else:
                     print('Column: %s, is not in csv file no comparison was done' % results.keys()[ci])

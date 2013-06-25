@@ -66,5 +66,7 @@ setup(name='udl2',
                                                             'tests/data/REALDATA_3008.csv',
                                                             'tests/data/REALDATA_ASMT_ValidData.csv',
                                                             'tests/data/realdata_3008_3011.csv',
-                                                            'tests/data/test_file_realdata.csv']), ],
+                                                            'tests/data/test_file_realdata.csv',
+                                                            'tests/data/test_file_stored_proc_data.csv',
+                                                            'tests/data/test_file_stored_proc_data_CLEAN.csv']), ],
 ) 

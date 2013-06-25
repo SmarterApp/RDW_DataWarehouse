@@ -8,6 +8,7 @@ import imp
 import uuid
 from udl2 import message_keys as mk
 
+
 class FileSplitterFTest(unittest.TestCase):
 
     def setUp(self):
@@ -18,6 +19,8 @@ class FileSplitterFTest(unittest.TestCase):
         udl2_conf = imp.load_source('udl2_conf', config_path)
         from udl2_conf import udl2_conf
         CSV_FILE = os.path.join(udl2_conf['zones']['datafiles'], 'test_file_realdata.csv')
+        self.CSV_FILE2 = os.path.join(udl2_conf['zones']['datafiles'], 'test_file_stored_proc_data.csv')
+        self.CSV_FILE2_CLEAN = os.path.join(udl2_conf['zones']['datafiles'], 'test_file_stored_proc_data_CLEAN.csv')
         HEADER_FILE = os.path.join(udl2_conf['zones']['datafiles'], 'test_file_headers.csv')
         print(CSV_FILE)
         print(HEADER_FILE)
@@ -32,16 +35,19 @@ class FileSplitterFTest(unittest.TestCase):
             mk.TARGET_DB_USER: udl2_conf['udl2_db']['db_user'],
             mk.TARGET_DB_NAME: udl2_conf['udl2_db']['db_database'],
             mk.TARGET_DB_PASSWORD: udl2_conf['udl2_db']['db_pass'],
-            'csv_schema': udl2_conf['udl2_db']['csv_schema'],
+            mk.SOURCE_DB_DRIVER: udl2_conf['udl2_db']['db_driver'],
+            mk.CSV_SCHEMA: udl2_conf['udl2_db']['csv_schema'],
             'fdw_server': udl2_conf['udl2_db']['fdw_server'],
-            'staging_schema': udl2_conf['udl2_db']['staging_schema'],
-            'staging_table': 'STG_SBAC_ASMT_OUTCOME',
-            mk.ROW_START:1,
+            mk.TARGET_DB_SCHEMA: udl2_conf['udl2_db']['staging_schema'],
+            mk.TARGET_DB_TABLE: 'STG_SBAC_ASMT_OUTCOME',
+            mk.ROW_START: 1,
+            mk.REF_TABLE: udl2_conf['udl2_db']['ref_table_name'],
+            mk.CSV_LZ_TABLE: udl2_conf['udl2_db']['csv_lz_table'],
             'apply_rules': False
         }
         # connect to db
-        conn, _engine = connect_db(self.conf[mk.TARGET_DB_USER], self.conf[mk.TARGET_DB_PASSWORD],
-                                   self.conf[mk.TARGET_DB_HOST], self.conf[mk.TARGET_DB_NAME])
+        conn, _engine = connect_db(self.conf[mk.SOURCE_DB_DRIVER], self.conf[mk.TARGET_DB_USER], self.conf[mk.TARGET_DB_PASSWORD],
+                                   self.conf[mk.TARGET_DB_HOST], self.conf[mk.TARGET_DB_PORT], self.conf[mk.TARGET_DB_NAME])
         self.conn = conn
 
     def test_row_number(self):
@@ -77,13 +83,41 @@ class FileSplitterFTest(unittest.TestCase):
                     if value_in_csv and value_in_table:
                         self.assertEqual(value_in_csv, value_in_table)
                     # verify the src_file_rec_num and batch_id
-                    self.assertEqual(row_in_table['src_file_rec_num'], row_number + self.conf[mk.ROW_START])
+                    #self.assertEqual(row_in_table['src_file_rec_num'], row_number + self.conf[mk.ROW_START])
                     self.assertEqual(row_in_table['batch_id'], str(self.conf[mk.BATCH_ID]))
                 row_number += 1
 
+    def test_transformations_occur_during_load(self):
+        self.conf[mk.ROW_START] = 124
+        self.conf[mk.BATCH_ID] = generate_non_exsisting_batch_id(self.conf, self.conn)
+        self.conf[mk.FILE_TO_LOAD] = self.CSV_FILE2
+        load_file(self.conf)
+
+        # Get newly loaded data for comparison
+        sel_query = 'SELECT * FROM "{schema}"."{table}" WHERE batch_id=\'{batch}\''.format(schema=self.conf[mk.TARGET_DB_SCHEMA], table=self.conf[mk.TARGET_DB_TABLE], batch=self.conf['batch_id'])
+        results = self.conn.execute(sel_query)
+        result_list = results.fetchall()
+        expected_rows = get_clean_rows_from_file(self.CSV_FILE2_CLEAN)
+#         print('***R', result_list)
+#         print('**', expected_rows)
+
+        # sort rows
+        student_guid_index = results.keys().index('guid_student')
+        result_list = sorted(result_list, key=lambda i: i[student_guid_index])
+        expected_rows = sorted(expected_rows, key=lambda k: k['guid_student'])
+
+        for i in range(len(result_list)):
+            res_row = result_list[i]
+            expect_row = expected_rows[i]
+            for ci in range(len(res_row)):
+                if results.keys()[ci] in expect_row:
+                    self.assertEqual(res_row[ci], expect_row[results.keys()[ci]], 'Values are not the same')
+                else:
+                    print('Column: %s, is not in csv file' % results.keys()[ci])
+
     def tearDown(self):
         # truncate staging table or delete all rows just inserted.
-        query = 'DELETE FROM \"{schema_name}\".\"{table_name}\" WHERE batch_id=\'{batch_id}\''.format(schema_name=self.conf['staging_schema'], table_name=self.conf['staging_table'], batch_id=self.conf['batch_id'])
+        query = 'DELETE FROM \"{schema_name}\".\"{table_name}\" WHERE batch_id=\'{batch_id}\''.format(schema_name=self.conf[mk.TARGET_DB_SCHEMA], table_name=self.conf[mk.TARGET_DB_TABLE], batch_id=self.conf['batch_id'])
         trans = self.conn.begin()
         try:
             self.conn.execute(query)
@@ -95,8 +129,18 @@ class FileSplitterFTest(unittest.TestCase):
         print("Tear Down successful for batch", self.conf['batch_id'])
 
 
+def get_clean_rows_from_file(filename):
+    filerows = []
+
+    with open(filename) as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            filerows.append(row)
+    return filerows
+
+
 def generate_non_exsisting_batch_id(conf, conn):
-    query = "SELECT DISTINCT batch_id FROM \"{schema_name}\".\"{table_name}\"".format(schema_name=conf['staging_schema'], table_name=conf['staging_table'])
+    query = "SELECT DISTINCT batch_id FROM \"{schema_name}\".\"{table_name}\"".format(schema_name=conf[mk.TARGET_DB_SCHEMA], table_name=conf[mk.TARGET_DB_TABLE])
     trans = conn.begin()
     try:
         result = conn.execute(query)
@@ -111,6 +155,7 @@ def generate_non_exsisting_batch_id(conf, conn):
         #return max(exsisting_batch_ids) + 10
         return uuid.uuid4()
 
+
 def get_row_number_in_csv(csv_file):
     cmd_str = 'wc ' + csv_file
     prog = subprocess.Popen(cmd_str, stdout=subprocess.PIPE, shell=True)
@@ -121,7 +166,7 @@ def get_row_number_in_csv(csv_file):
 
 
 def get_row_number_in_table(conf, conn):
-    query = 'SELECT COUNT(*) FROM \"{schema_name}\".\"{table_name}\" WHERE batch_id=\'{batch_id}\''.format(schema_name=conf['staging_schema'], table_name=conf['staging_table'], batch_id=conf['batch_id'])
+    query = 'SELECT COUNT(*) FROM \"{schema_name}\".\"{table_name}\" WHERE batch_id=\'{batch_id}\''.format(schema_name=conf[mk.TARGET_DB_SCHEMA], table_name=conf[mk.TARGET_DB_TABLE], batch_id=conf['batch_id'])
     trans = conn.begin()
     try:
         result = conn.execute(query)
@@ -136,7 +181,7 @@ def get_row_number_in_table(conf, conn):
 
 
 def get_rows_in_table(conf, conn):
-    query = 'SELECT * FROM \"{schema_name}\".\"{table_name}\" WHERE batch_id=\'{batch_id}\''.format(schema_name=conf['staging_schema'], table_name=conf['staging_table'], batch_id=conf['batch_id'])
+    query = 'SELECT * FROM \"{schema_name}\".\"{table_name}\" WHERE batch_id=\'{batch_id}\''.format(schema_name=conf[mk.TARGET_DB_SCHEMA], table_name=conf[mk.TARGET_DB_TABLE], batch_id=conf['batch_id'])
     print(query)
     trans = conn.begin()
     try:

@@ -34,7 +34,7 @@ def main(global_config, **settings):
     config = Configurator(settings=settings, root_factory=RootFactory)
 
     initialize_db(SmarterDBConnection, settings)
-    initialize_db(StatsDBConnection, settings)
+    initialize_db(StatsDBConnection, settings, allow_schema_create=True)
 
     # setup celery
     setup_celery(settings=settings, prefix="celery")

@@ -9,7 +9,7 @@ def get_data_source_names():
     return [x[0] for x in list(getUtilitiesFor(IDbUtil))]
 
 
-def initialize_db(connector_cls, settings):
+def initialize_db(connector_cls, settings, allow_schema_create=False):
     '''
     Parses settings and sets up connection for each tenant
     '''
@@ -49,4 +49,4 @@ def initialize_db(connector_cls, settings):
         prefixed_options = {}
         for key, val in options.items():
             prefixed_options[config_prefix + key] = val
-        setup_tenant_db_connection(connector_cls, config=prefixed_options)
+        setup_tenant_db_connection(connector_cls, config=prefixed_options, allow_schema_create=allow_schema_create)

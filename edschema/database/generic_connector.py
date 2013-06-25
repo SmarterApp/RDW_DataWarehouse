@@ -11,7 +11,7 @@ from sqlalchemy.exc import DBAPIError
 from sqlalchemy.pool import NullPool
 
 
-def setup_db_connection_from_ini(settings, prefix, metadata, datasource_name='', allow_create=False):
+def setup_db_connection_from_ini(settings, prefix, metadata, datasource_name='', allow_schema_create=False):
     '''
     Setup a generic db connection
     @param settings: the settings file path
@@ -26,7 +26,7 @@ def setup_db_connection_from_ini(settings, prefix, metadata, datasource_name='',
     engine = engine_from_config(settings, prefix, **extra)
 
     # Create schema and its tables
-    if allow_create is True:
+    if allow_schema_create is True:
         connection = engine.connect()
         try:
             connection.execute(CreateSchema(metadata.schema))

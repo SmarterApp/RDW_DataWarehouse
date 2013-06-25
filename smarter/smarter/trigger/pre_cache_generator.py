@@ -55,12 +55,14 @@ def trigger_precache(tenant, state_code, results):
         try:
             cache_trigger.recache_state_view_report(state_code)
         except:
+            logger.warning('Recache of state view threw exception for %s', state_code)
             triggered = False
         for result in results:
             try:
                 district_guid = result.get(Constants.DISTRICT_GUID)
                 cache_trigger.recache_district_view_report(state_code, district_guid)
             except:
+                logger.warning('Recache of district view threw exception for state_code %s district_guid %s', state_code, district_guid)
                 triggered = False
     return triggered
 
@@ -81,6 +83,8 @@ def update_ed_stats_for_precached(tenant, state_code):
 def precached_task(settings):
     '''
     Precaches reports based on udl stats
+
+    :param dict settings:  configuration for the application
     '''
     udl_stats_results = get_ed_stats()
     for udl_stats_result in udl_stats_results:
@@ -96,5 +100,7 @@ def precached_task(settings):
 def run_cron_recache(settings):
     '''
     Configure and run cron job to flush and re-cache reports
+
+    :param dict settings:  configuration for the application
     '''
     run_cron_job(settings, 'trigger.recache.', precached_task)

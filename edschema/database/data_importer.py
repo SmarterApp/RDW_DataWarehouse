@@ -54,10 +54,10 @@ def __cast_data_type(column, value):
                     value = False
 
             if column.type.python_type is datetime.datetime:
-                if len(value)==14:
-                    value = datetime.datetime.strptime(value,'%Y%m%d%H%M%S')
+                if len(value) == 14:
+                    value = datetime.datetime.strptime(value, '%Y%m%d%H%M%S')
                 else:
-                    value = datetime.datetime.strptime(value,'%Y-%m-%d %H:%M:%S')
+                    value = datetime.datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
             else:
                 value = column.type.python_type(value)
         except:

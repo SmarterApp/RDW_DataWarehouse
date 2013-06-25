@@ -28,6 +28,7 @@ __version__ = 0.1
 __date__ = '2013-02-02'
 __updated__ = '2013-02-02'
 
+
 def generate_ed_metadata(schema_name=None, bind=None):
 
     metadata = MetaData(schema=schema_name, bind=bind)

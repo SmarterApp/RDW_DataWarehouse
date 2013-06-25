@@ -76,6 +76,7 @@ def trigger_pre_pdf(settings, tenant, state_code, results):
                 pdf_trigger.send_pdf_request(student_guid=student_guid, file_name=file_name)
             except:
                 triggered = False
+                logger.warning('Pdf generation failed for %s', student_guid)
     return triggered
 
 

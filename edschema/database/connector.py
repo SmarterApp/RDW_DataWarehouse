@@ -97,3 +97,24 @@ class DBConnection(ConnectionBase):
         if self.__connection is not None:
             self.__connection.close()
         self.__connection = None
+
+    @staticmethod
+    def get_datasource_name(tenant=None):
+        '''
+        return data source name
+        '''
+        raise Exception('need to implement get_datasource_name')
+
+    @staticmethod
+    def get_db_config_prefix(tenant=None):
+        '''
+        return config prefix
+        '''
+        raise Exception('need to implement get_db_config_prefix')
+
+    @staticmethod
+    def generate_metadata(schema_name=None, bind=None):
+        '''
+        return metadata
+        '''
+        raise Exception('need to implement generate_metadata')

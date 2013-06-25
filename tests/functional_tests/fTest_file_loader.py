@@ -98,8 +98,6 @@ class FileSplitterFTest(unittest.TestCase):
         results = self.conn.execute(sel_query)
         result_list = results.fetchall()
         expected_rows = get_clean_rows_from_file(self.CSV_FILE2_CLEAN)
-#         print('***R', result_list)
-#         print('**', expected_rows)
 
         # sort rows
         student_guid_index = results.keys().index('guid_student')
@@ -111,7 +109,7 @@ class FileSplitterFTest(unittest.TestCase):
             expect_row = expected_rows[i]
             for ci in range(len(res_row)):
                 if results.keys()[ci] in expect_row:
-                    self.assertEqual(res_row[ci], expect_row[results.keys()[ci]], 'Values are not the same')
+                    self.assertEqual(res_row[ci], expect_row[results.keys()[ci]], 'Values are not the same for column %s' % results.keys()[ci])
                 else:
                     print('Column: %s, is not in csv file' % results.keys()[ci])
 

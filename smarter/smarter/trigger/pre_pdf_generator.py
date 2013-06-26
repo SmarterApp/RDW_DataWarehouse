@@ -14,7 +14,7 @@ from smarter.database.udl_stats_connector import StatsDBConnection
 from smarter.reports.helpers.constants import Constants
 
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('smarter')
 
 
 def prepare_ed_stats():
@@ -76,6 +76,7 @@ def trigger_pre_pdf(settings, state_code, tenant, results):
     '''
     triggered = False
     base_dir = settings.get('pdf.report_base_dir', '/tmp')
+    logger.debug('trigger_pre_pdf has [%d] results to process', len(results))
     if len(results) > 0:
         triggered = True
         pdf_trigger = PDFGenerator(settings, tenant)
@@ -88,6 +89,7 @@ def trigger_pre_pdf(settings, state_code, tenant, results):
                 asmt_grade = result.get(Constants.ASMT_GRADE)
                 student_guid = result.get(Constants.STUDENT_GUID)
                 file_name = generate_isr_absolute_file_path_name(pdf_report_base_dir=base_dir, state_code=state_code, asmt_period_year=asmt_period_year, district_guid=district_guid, school_guid=school_guid, asmt_grade=asmt_grade, student_guid=student_guid)
+                logger.debug('pre-pdf for [%s]', file_name)
                 pdf_trigger.send_pdf_request(student_guid=student_guid, file_name=file_name)
             except:
                 triggered = False

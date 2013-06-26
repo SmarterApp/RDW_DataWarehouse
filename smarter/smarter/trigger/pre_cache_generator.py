@@ -13,7 +13,7 @@ from smarter.database.udl_stats_connector import StatsDBConnection
 from smarter.reports.helpers.constants import Constants
 
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('smarter')
 
 
 def prepare_ed_stats():
@@ -65,10 +65,12 @@ def trigger_precache(tenant, state_code, results):
     :returns:  True if precache is triggered and no exceptions are caught
     '''
     triggered = False
+    logger.debug('trigger_precache has [%d] results to process', len(results))
     if len(results) > 0:
         triggered = True
         cache_trigger = CacheTrigger(tenant)
         try:
+            logger.debug('pre-caching state[%s]', state_code)
             cache_trigger.recache_state_view_report(state_code)
         except:
             triggered = False
@@ -76,6 +78,7 @@ def trigger_precache(tenant, state_code, results):
         for result in results:
             try:
                 district_guid = result.get(Constants.DISTRICT_GUID)
+                logger.debug('pre-caching state[%s], district[%s]', state_code, district_guid)
                 cache_trigger.recache_district_view_report(state_code, district_guid)
             except:
                 triggered = False

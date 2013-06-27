@@ -39,7 +39,7 @@ class TestLoadToIntegrationTable(unittest.TestCase):
                          'error': 'ERR_LIST',
                          'mapping': OrderedDict([
                             ('batch_id', ("{src_field}", "batch_id")),
-                            ('substr_test', ("SUBSTR({src_field}, 0, 10)", "substr_test")),
+                            ('substr_test', ("SUBSTR({src_field}, 1, 10)", "substr_test")),
                             ('number_test', ("TO_NUMBER({src_field}, '99999')", "number_test")),
                             ])
                         })
@@ -50,7 +50,7 @@ class TestLoadToIntegrationTable(unittest.TestCase):
         query_result = """
         INSERT INTO "udl2"."INT_MOCK_LOAD"
             (batch_id, substr_test, number_test)
-        SELECT A.batch_id, SUBSTR(A.substr_test, 0, 10), TO_NUMBER(A.number_test, '99999')
+        SELECT A.batch_id, SUBSTR(A.substr_test, 1, 10), TO_NUMBER(A.number_test, '99999')
             FROM "udl2"."STG_MOCK_LOAD" AS A LEFT JOIN
             "udl2"."ERR_LIST" AS B ON (A.record_sid = B.record_sid )
              WHERE B.record_sid IS NULL AND A.batch_id = '00000000-0000-0000-0000-000000000000'

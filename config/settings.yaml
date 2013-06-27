@@ -435,7 +435,6 @@ jenkins_dev:
     celery:
       BROKER_URL: amqp://edware:edware1234@localhost//
       CELERY_IMPORTS: ('services.tasks.pdf',)
-      CELERY_RESULT_BACKEND: amqp
       CELERYD_CONCURRENCY: 8
     edware:
       db:

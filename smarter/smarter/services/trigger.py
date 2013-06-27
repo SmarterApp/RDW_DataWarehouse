@@ -12,7 +12,9 @@ from edapi.httpexceptions import EdApiHTTPNotFound
 @view_config(route_name='trigger', request_method='GET', renderer='json', permission='super_admin_rights')
 def trigger(request):
     '''
-    Request for on demand batch generation
+    Request for on demand batch generation for pdf and recache
+
+    :param request:  Pyramid request object
     '''
     trigger_name = request.matchdict['trigger_type']
     if trigger_name == 'pdf':
@@ -21,5 +23,5 @@ def trigger(request):
         precached_task(request.registry.settings)
     else:
         msg = '%s is not defined as a trigger' % trigger_name
-        return EdApiHTTPNotFound(msg)
+        raise EdApiHTTPNotFound(msg)
     return {'result': 'OK'}

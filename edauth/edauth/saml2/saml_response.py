@@ -8,7 +8,7 @@ from xml.dom.minidom import Node
 
 class SAMLResponse:
     '''
-    class to parse that XML receives from OpenAM
+    Parses SAML XML received from OpenAM
     '''
     def __init__(self, response_xml):
         self.__parse(response_xml)

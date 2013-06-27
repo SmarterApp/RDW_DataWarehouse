@@ -14,7 +14,6 @@ Subpackages
 
 .. toctree::
 
-    edauth.database
     edauth.saml2
     edauth.security
     edauth.tests

@@ -1,6 +1,11 @@
 saml2 Package
 =============
 
+.. automodule:: edauth.saml2
+    :members:
+    :undoc-members:
+    :show-inheritance:
+    
 :mod:`saml_idp_metadata` Module
 -------------------------------
 

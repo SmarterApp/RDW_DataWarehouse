@@ -38,10 +38,12 @@ def login(request):
     # Get roles
     principals = effective_principals(request)
 
-    # Requests will be forwarded here when users aren't authorized to those pages, how to prevent it?
+    # Requests will be forwarded here when users aren't authorized to those pages
+    # If they are unauthorized to those pages, they should have session id and principals
+    # and, if there is a session id and principals, return 403
     # Here, we return 403 for users that has a role of None
     # This can be an user that has no role from IDP or has a role that we don't know of
-    if Roles.get_invalid_role() in principals:
+    if Roles.get_invalid_role() in principals or (principals and session_id):
         message = "Forbidden view accessed by session_id %s" % session_id
         logger.warn(message)
         write_security_event(message, SECURITY_EVENT_TYPE.WARN, session_id)

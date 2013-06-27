@@ -435,6 +435,8 @@ jenkins_dev:
     celery:
       BROKER_URL: amqp://edware:edware1234@localhost//
       CELERY_IMPORTS: ('services.tasks.pdf',)
+      CELERY_RESULT_BACKEND: amqp
+      CELERY_TASK_RESULT_EXPIRES: 18000 # 5 hours
       CELERYD_CONCURRENCY: 8
     edware:
       db:

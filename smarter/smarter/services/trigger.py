@@ -23,5 +23,5 @@ def trigger(request):
         precached_task(request.registry.settings)
     else:
         msg = '%s is not defined as a trigger' % trigger_name
-        raise EdApiHTTPNotFound(msg)
+        return EdApiHTTPNotFound(msg)
     return {'result': 'OK'}

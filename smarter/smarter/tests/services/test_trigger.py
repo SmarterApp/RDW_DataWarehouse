@@ -31,7 +31,8 @@ class TestTrigger(Unittest_with_stats_sqlite_no_data_load):
 
     def test_invalid_key(self):
         self.__request.matchdict['trigger_type'] = 'invalid'
-        self.assertRaises(EdApiHTTPNotFound, trigger, self.__request)
+        rtn = trigger(self.__request)
+        self.assertIsInstance(rtn, EdApiHTTPNotFound)
 
     def test_cache_trigger(self):
         self.__request.matchdict['trigger_type'] = 'cache'

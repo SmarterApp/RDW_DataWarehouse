@@ -9,14 +9,6 @@ API Documentation
     :undoc-members:
     :show-inheritance:
 
-:mod:`utils` Module
--------------------
-
-.. automodule:: edauth.utils
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 Subpackages
 -----------
 
@@ -27,3 +19,10 @@ Subpackages
     edauth.security
     edauth.tests
 
+:mod:`utils` Module
+-------------------
+
+.. automodule:: edauth.utils
+    :members:
+    :undoc-members:
+    :show-inheritance:

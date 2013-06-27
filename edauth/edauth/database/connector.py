@@ -8,7 +8,7 @@ from database.connector import DBConnection
 
 class EdauthDBConnection(DBConnection):
     '''
-    DBConnector for Smarter Project
+    DBConnector for EdAuth Project
     '''
     # TODO:  Remove this when we know how to flush db
     def __init__(self):

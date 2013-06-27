@@ -7,9 +7,27 @@
 EdAuth Development Framework
 =================================================
 
-EdAuth is an authentication development framework which provides Pyramid Security implementation. The module is responsible for user session maintenance and it based on common standards such as SAML2.
+EdAuth is an authentication development framework that implements Pyramid Security.
+
+EdAuth provides infrastucture for authentication and user session management.
+It implements SAML2 Web Browser SSO Profile to integrate with an external Single Sign On system. 
+
+EdAuth also manages security-related data, such as:
+
+* tenancy
+* user information
+* roles
+
+Integration with SSO
+=======================
+
+The EdAuth SSO integration expects SAML2 XML responses in a certain format.
+
+:ref:`saml_example`
+
 
 Contents:
+=========
 
 .. toctree::
    :maxdepth: 1

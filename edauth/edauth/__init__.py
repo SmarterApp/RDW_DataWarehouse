@@ -1,5 +1,5 @@
 '''
-Entry point for edauth
+This is the top-level package for EdAuth.
 
 '''
 from pyramid.authorization import ACLAuthorizationPolicy
@@ -19,9 +19,11 @@ from edauth.security.session_backend import ISessionBackend, SessionBackend
 logger = logging.getLogger(__name__)
 
 
-# this is automatically called by consumer of edauth when it calls config.include(edauth)
 def includeme(config):
-
+    '''
+    Performs initialization tasks, such as setting configuration options.
+    It is automatically called by a consumer of edauth when it calls config.include(edauth).
+    '''
     settings = config.get_settings()
 
     setting_prefix = 'auth.policy.'
@@ -67,15 +69,17 @@ def includeme(config):
     config.scan(ignore='edauth.test')
 
 
-# Sets the list of known roles for authentication
-# roles is list of tuples
 def set_roles(roles):
+    '''
+    Sets the list of known roles for authentication. Roles is a list of tuples.
+    '''
     Roles.set_roles(roles)
 
 
 def run_cron_cleanup(settings):
-    # read cron time entries
-    # and pack in cron_time map
+    '''
+    Read cron time entries and pack in cron_time map.
+    '''
     cron_time = {}
     year = settings.get("cleanup.schedule.cron.year")
     month = settings.get("cleanup.schedule.cron.month")

@@ -7,7 +7,7 @@ saml2 Package
 .. automodule:: edauth.saml2.saml_idp_metadata
     :members:
     :undoc-members:
-    :show-inheritance:
+..    :show-inheritance:
 
 :mod:`saml_idp_metadata_manager` Module
 ---------------------------------------
@@ -15,7 +15,7 @@ saml2 Package
 .. automodule:: edauth.saml2.saml_idp_metadata_manager
     :members:
     :undoc-members:
-    :show-inheritance:
+..    :show-inheritance:
 
 :mod:`saml_request` Module
 --------------------------

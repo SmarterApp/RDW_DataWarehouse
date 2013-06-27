@@ -11,8 +11,7 @@ from edauth.saml2.saml_idp_metadata import SAML_IDP_Metadata
 
 class IDP_metadata_manager():
     '''
-    IPD metadata manager class
-    class SAML_IDP_Metadata is required for constructor
+    Takes a SAML IDP metadata file and creates a pem file
     '''
     def __init__(self, saml_idp_metadata_file_location):
         self.path = None
@@ -34,4 +33,7 @@ class IDP_metadata_manager():
         os.close(fd)
 
     def get_trusted_pem_filename(self):
+        '''
+        Returns location of the .pem file
+        '''
         return self.path

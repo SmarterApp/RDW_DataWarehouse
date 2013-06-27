@@ -114,10 +114,7 @@ class TestViews(unittest.TestCase):
         self.assertIsInstance(http, HTTPForbidden)
 
     def test_login_with_existing_session(self):
-        # set up session data
-        session = create_test_session(roles=['TEACHER'], uid='linda.kim', full_name='Linda Kim', idpSessionIndex='123')
-
-        self.__config.testing_securitypolicy(session.get_session_id(), ['TEACHER'])
+        self.__config.testing_securitypolicy(None, ['TEACHER'])
         self.__request.url = 'http://example.com/dummy/page'
         http = login(self.__request)
         url = urlparse(http.location)
@@ -126,14 +123,11 @@ class TestViews(unittest.TestCase):
         self.assertEqual(relay_state.path, "/dummy/page")
 
     def test_login_with_no_existing_session(self):
-        session_id = str(uuid.uuid1())
-        self.__config.testing_securitypolicy(session_id, ['TEACHER'])
+        session = create_test_session(roles=['TEACHER'], uid='linda.kim', full_name='Linda Kim', idpSessionIndex='123', name_id='abc')
+        self.__config.testing_securitypolicy(session.get_session_id(), ['TEACHER'])
         self.__request.url = 'http://example.com/dummy/page'
         http = login(self.__request)
-        url = urlparse(http.location)
-        queries = urllib.parse.parse_qs(url.query)
-        relay_state = urlsplit(_get_cipher().decrypt(queries['RelayState'][0]))
-        self.assertEqual(relay_state.path, "/dummy/page")
+        self.assertIsInstance(http, HTTPForbidden)
 
     def test_logout_with_no_existing_session(self):
         http = logout(self.__request)

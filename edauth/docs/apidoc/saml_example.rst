@@ -1,0 +1,83 @@
+.. _saml_example:
+
+EdAuth SAML2 Response Example
+=============================
+
+::
+
+	<samlp:Response xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" ID="s2c39419140bad5e9c015019bcaa49215bf00d0322" InResponseTo="afff094c-784c-11e2-a839-3c07546832b4" Version="2.0" IssueInstant="2013-02-16T15:22:45Z" Destination="http://localhost:6543/Hello_dip">
+	<saml:Issuer xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion">http://edwappsrv4.poc.dum.edwdc.net:18080/opensso</saml:Issuer>
+	<samlp:Status xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol">
+		<samlp:StatusCode  xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol"
+		Value="urn:oasis:names:tc:SAML:2.0:status:Success"></samlp:StatusCode>
+	</samlp:Status>
+	<saml:Assertion xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" ID="s2ebbf76ff861104ad157cb20bb464291766c9b9ef" IssueInstant="2013-02-16T15:22:45Z" Version="2.0">
+		<saml:Issuer>http://edwappsrv4.poc.dum.edwdc.net:18080/opensso</saml:Issuer>
+		<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+			<ds:SignedInfo>
+				<ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+				<ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+				<ds:Reference URI="#s2ebbf76ff861104ad157cb20bb464291766c9b9ef">
+					<ds:Transforms>
+						<ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+						<ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+					</ds:Transforms>
+					<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+					<ds:DigestValue>oLZK9WXPof8YQCJEX4nqBiZstIc=</ds:DigestValue>
+				</ds:Reference>
+			</ds:SignedInfo>
+			<ds:SignatureValue>ow0Zv+k98qKAYMViYR6V245esn1Q4Rs16cSZQoVI/1RpmRte1d4YSfmLCNESmPHKGA4VxF9lkVl6
+				JRNV991T7NzYc8ELNmPb15EazjA6f108gM3DkhaUS9rau4LO4j5FoiQq/n8BqOxFt3aP3T61bjmR
+				mnUtDOCS819n/xvL0TQ=</ds:SignatureValue>
+			<ds:KeyInfo>
+				<ds:X509Data>
+					<ds:X509Certificate>MIICQDCCAakCBEeNB0swDQYJKoZIhvcNAQEEBQAwZzELMAkGA1UEBhMCVVMxEzARBgNVBAgTCkNh
+						bGlmb3JuaWExFDASBgNVBAcTC1NhbnRhIENsYXJhMQwwCgYDVQQKEwNTdW4xEDAOBgNVBAsTB09w
+						ZW5TU08xDTALBgNVBAMTBHRlc3QwHhcNMDgwMTE1MTkxOTM5WhcNMTgwMTEyMTkxOTM5WjBnMQsw
+						CQYDVQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTEUMBIGA1UEBxMLU2FudGEgQ2xhcmExDDAK
+						BgNVBAoTA1N1bjEQMA4GA1UECxMHT3BlblNTTzENMAsGA1UEAxMEdGVzdDCBnzANBgkqhkiG9w0B
+						AQEFAAOBjQAwgYkCgYEArSQc/U75GB2AtKhbGS5piiLkmJzqEsp64rDxbMJ+xDrye0EN/q1U5Of+
+						RkDsaN/igkAvV1cuXEgTL6RlafFPcUX7QxDhZBhsYF9pbwtMzi4A4su9hnxIhURebGEmxKW9qJNY
+						Js0Vo5+IgjxuEWnjnnVgHTs1+mq5QYTA7E6ZyL8CAwEAATANBgkqhkiG9w0BAQQFAAOBgQB3Pw/U
+						QzPKTPTYi9upbFXlrAKMwtFf2OW4yvGWWvlcwcNSZJmTJ8ARvVYOMEVNbsT4OFcfu2/PeYoAdiDA
+						cGy/F2Zuj8XJJpuQRSE6PtQqBuDEHjjmOQJ0rV/r8mO1ZCtHRhpZ5zYRjhRC9eCbjx9VrFax0JDC
+						/FfwWigmrW0Y0Q==</ds:X509Certificate>
+				</ds:X509Data>
+			</ds:KeyInfo>
+		</ds:Signature>
+		<saml:Subject>
+			<saml:NameID Format="urn:oasis:names:tc:SAML:2.0:nameid-format:transient" NameQualifier="http://edwappsrv4.poc.dum.edwdc.net:18080/opensso">HcKrILiu6ZHJNnUs1SBk5LAvYm6H</saml:NameID>
+			<saml:SubjectConfirmation Method="urn:oasis:names:tc:SAML:2.0:cm:bearer">
+				<saml:SubjectConfirmationData InResponseTo="afff094c-784c-11e2-a839-3c07546832b4" NotOnOrAfter="2013-02-16T15:32:45Z" Recipient="http://localhost:6543/Hello_dip"/>
+			</saml:SubjectConfirmation>
+		</saml:Subject>
+		<saml:Conditions NotBefore="2013-02-16T15:12:45Z" NotOnOrAfter="2013-02-16T15:32:45Z">
+			<saml:AudienceRestriction>
+				<saml:Audience>http://localhost:6543/sp.xml</saml:Audience>
+			</saml:AudienceRestriction>
+		</saml:Conditions>
+		<saml:AuthnStatement AuthnInstant="2013-02-16T15:22:45Z" SessionIndex="s2cf00fa48b2cd9f2f20f376f56da788bb14bcac01">
+			<saml:AuthnContext>
+				<saml:AuthnContextClassRef>urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport</saml:AuthnContextClassRef>
+			</saml:AuthnContext>
+		</saml:AuthnStatement>
+		<saml:AttributeStatement>
+			<saml:Attribute Name="uid">
+				<saml:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">linda.kim</saml:AttributeValue>
+			</saml:Attribute>
+			<saml:Attribute Name="fullName">
+				<saml:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">Linda Kim</saml:AttributeValue>
+			</saml:Attribute>
+			<saml:Attribute Name="memberOf">
+				<saml:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">cn=Teacher,ou=groups,ou=environment,dc=edwdc,dc=net</saml:AttributeValue>
+			</saml:Attribute>
+			<saml:Attribute Name="guid">
+				<saml:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">55d56214-ca4b-11e2-8f31-68a86d1e157a</saml:AttributeValue>
+			</saml:Attribute>
+			<saml:Attribute Name="dn">
+				<saml:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">cn=People,ou=groups,ou=dummyOrg,ou=environment,dc=edwdc,dc=net</saml:AttributeValue>
+			</saml:Attribute>
+		</saml:AttributeStatement>
+	</saml:Assertion>
+	</samlp:Response>
+	

@@ -229,6 +229,21 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                Column('asmt_create_date', String(8), nullable=False),
                                Column('status', String(2), nullable=False),
                                Column('most_recent', Boolean),
+                               # Add 14 demographic columns
+                               Column('dmg_eth_hsp', Boolean, nullable=True),
+                               Column('dmg_eth_ain', Boolean, nullable=True),
+                               Column('dmg_eth_asn', Boolean, nullable=True),
+                               Column('dmg_eth_blk', Boolean, nullable=True),
+                               Column('dmg_eth_pcf', Boolean, nullable=True),
+                               Column('dmg_eth_wht', Boolean, nullable=True),
+                               Column('dmg_prg_iep', Boolean, nullable=True),
+                               Column('dmg_prg_lep', Boolean, nullable=True),
+                               Column('dmg_prg_504', Boolean, nullable=True),
+                               Column('dmg_tt1_apl', Boolean, nullable=True),
+                               Column('dmg_tt1_elg', Boolean, nullable=True),
+                               Column('dmg_tt1_rcv', Boolean, nullable=True),
+                               Column('dmg_tt1_swp', Boolean, nullable=True),
+                               Column('dmg_tt1_tap', Boolean, nullable=True),
                                )
 
     Index('fact_asmt_outcome_idx', assessment_outcome.c.asmnt_outcome_rec_id, unique=True)

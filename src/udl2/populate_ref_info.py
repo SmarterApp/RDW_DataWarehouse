@@ -34,7 +34,6 @@ def populate_ref_column_map(conf_dict, db_engine, conn, schema_name, ref_table_n
         for i in range(len(row)):
             row_map[col_map_columns[i]] = row[i]
         data_list.append(row_map)
-
     conn.execute(col_map_table.insert(), data_list)
 
 

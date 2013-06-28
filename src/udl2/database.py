@@ -331,7 +331,7 @@ UDL_METADATA = {
                 ('column_map_key', True, 'bigserial', '', False, 'Primary key for the table'),
                 ('phase', False, 'smallint', '', True, 'The phase in the pipeline where this mapping/transformation occurs'),
                 ('source_table', False, 'varchar(50)', '', False, 'name of the source table. could also be csv or json'),
-                ('source_column', False, 'varchar(50)', '', False, 'name of the source column'),
+                ('source_column', False, 'varchar(50)', '', True, 'name of the source column'),
                 ('target_table', False, 'varchar(50)', '', True, 'name of the target table'),
                 ('target_column', False, 'varchar(50)', '', True, 'Name of the target column'),
                 ('transformation_rule', False, 'varchar(50)', '', True, 'Name of the table to look for transformation or validation actions'),

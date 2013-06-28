@@ -16,6 +16,7 @@ from smarter.reports.helpers.assessments import get_overall_asmt_interval, \
 from edapi.exceptions import NotFoundException
 from smarter.security.context import select_with_context
 from smarter.database.smarter_connector import SmarterDBConnection
+from beaker.cache import cache_region
 
 REPORT_NAME = "list_of_students"
 
@@ -205,6 +206,7 @@ def get_list_of_students_report(params):
     return los_results
 
 
+@cache_region('public.data.short')
 def __get_asmt_data(connector, asmtSubject):
     '''
     Queries dim_asmt for cutpoint and custom metadata
@@ -230,8 +232,10 @@ def __get_asmt_data(connector, asmtSubject):
                     dim_asmt.c.asmt_claim_3_name.label('asmt_claim_3_name'),
                     dim_asmt.c.asmt_claim_4_name.label('asmt_claim_4_name')],
                    from_obj=[dim_asmt])
+
+    query.where(dim_asmt.c.most_recent)
     if asmtSubject is not None:
-        query = query.where(dim_asmt.c.asmt_subject.in_(asmtSubject))
+        query = query.where(and_(dim_asmt.c.asmt_subject.in_(asmtSubject)))
 
     # run it
     return connector.get_result(query)

@@ -20,9 +20,9 @@ common:
 
     # pyramid_beaker configuration
     cache:
-      regions: public.data, session
+      regions: public.data, public.data.short, session
       type: ext:memcached
-      expire: 31556940 # year
+      expire: 3600 # year
       public.data.expire: 31556940 # year
       session.expire: 1200 # 20 minutes
       lock_dir: /tmp/memcache
@@ -369,7 +369,7 @@ localOpenAM:
 development:
   '[app:main]':
     cache:
-      regions: public.data, session
+      regions: public.data, public.data.short, session
       type: memory
       public.data.expire: 10
     # Celery config
@@ -406,9 +406,10 @@ development:
 test:
   '[app:main]':
     cache:
-      regions: public.data, session
+      regions: public.data, public.data.short, session
       type: memory
       public.data.expire: 10
+      public.data.short.expire: 10
     edware:
       db:
         cat:
@@ -463,3 +464,4 @@ jenkins_dev:
       base.url: http://edwappsrv1.poc.dum.edwdc.net/assets/html/
     cache.public.data.url: edwappsrv1.poc.dum.edwdc.net:11211
     cache.session.url: edwappsrv2.poc.dum.edwdc.net:11211
+    cache.public.data.short.url: edwappsrv2.poc.dum.edwdc.net:11211

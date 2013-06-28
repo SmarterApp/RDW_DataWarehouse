@@ -72,10 +72,9 @@ define [
   populationBar = (value, options, rowObject) ->
     asmt_type = options.colModel.formatoptions.asmt_type
     subject = rowObject.results[asmt_type]
-    
     if subject
       results = edwarePopulationBar.create subject
-      "<div class = 'populationBar'>" + results + "</div>"
+      "<div class = 'populationBar'>" + results + "</div><div>" + subject.total + "</div>"
     else
       ""
  

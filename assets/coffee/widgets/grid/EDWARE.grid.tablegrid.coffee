@@ -56,11 +56,6 @@ define [
                 
               colModelItem.classes = item1.style  if item1.style
               colModelItem.frozen = item1.frozen  if item1.frozen
-                  
-              # Merge two column cells
-              if item1.colspan
-                colModelItem.cellattr = (rowId, val, rawObject, cm, rdata) ->
-                  ' colspan=2'
               
               # Hide column if the value is true
               if item1.hide

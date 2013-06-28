@@ -9,6 +9,15 @@ define [
   "edwareFooter"
 ], ($, bootstrap, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter) ->
   
+  myCustomSort1 = (cell, rowObject) ->
+      percent = rowObject.results.subject1.intervals[0].percentage
+      
+  myCustomSort2 = (cell, rowObject) ->
+      percent = rowObject.results.subject1.intervals[1].percentage     
+      
+  myCustomSort3 = (cell, rowObject) ->
+      percent = rowObject.results.subject1.intervals[3].percentage
+  
   # Add header to the page
   edwareUtil.getHeader()
   #
@@ -46,19 +55,20 @@ define [
           summaryData = appendColorToData summaryData, asmtSubjectsData, colorsData, defaultColors
 
           # Change the column name and link url based on the type of report the user is querying for
-          gridConfig[0].name = customViews[reportType].name
-          gridConfig[0].options.linkUrl = customViews[reportType].link
-          gridConfig[0].options.id_name = customViews[reportType].id_name
+          gridConfig[0].items[0].name = customViews[reportType].name
+          gridConfig[0].items[0].options.linkUrl = customViews[reportType].link
+          gridConfig[0].items[0].options.id_name = customViews[reportType].id_name
           
           if customViews[reportType].name is "Grade"
-            gridConfig[0].sorttype = "int"
+            gridConfig[0].items[0].sorttype = "int"
           
           # Render breadcrumbs on the page
           $('#breadcrumb').breadcrumbs(breadcrumbsData, breadcrumbsConfigs)
           
           # Set the Report title depending on the report that we're looking at
           reportTitle = getReportTitle(breadcrumbsData, reportType)
-          $('#content h2').html reportTitle
+          alignmentButton = "<div><button type='button' class='btn btn-primary' id='barAlignment' data-toggle='button'>Single Toggle</button></div>"
+          $('#content h2').html reportTitle + alignmentButton
           
           # Format the summary data for summary row purposes
           summaryRowName = getOverallSummaryName(breadcrumbsData, reportType)
@@ -94,7 +104,26 @@ define [
             e = $(this)
             e.popover("hide")
         , ".progress"
-                  
+        
+        grid = $("#gridTable")
+        cm = grid.getGridParam("colModel")[2];
+        $("#sort1").click ->
+          cm.sorttype = myCustomSort1
+          grid.trigger("reloadGrid")
+          
+        $("#sort2").click ->
+          cm.sorttype = myCustomSort2
+          grid.trigger("reloadGrid")
+            
+        $("#sort3").click ->
+          cm.sorttype = myCustomSort3
+          grid.trigger("reloadGrid")
+          
+        $("#barAlignment").click ->
+          $(".populationBar").css("width", "200px")
+        
+      
+                    
   # Get population data from server       
   getPopulationData = (sourceURL, params, callback) ->
     

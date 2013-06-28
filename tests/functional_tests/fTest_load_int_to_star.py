@@ -88,7 +88,7 @@ class IntToStarFTest(unittest.TestCase):
         #explode to dim tables
         dim_tables = column_mapping.get_target_tables_parallel()
         column_map = column_mapping.get_column_mapping()
-        batch_id = 'c721c7de-48b7-4c05-85bd-3ff360b6e844'
+        batch_id = '2411183a-dfb7-42f7-9b3e-bb7a597aa3e7'
         conf = W_load_from_integration_to_star.generate_conf(batch_id)
 
         for target in dim_tables.keys():
@@ -100,7 +100,7 @@ class IntToStarFTest(unittest.TestCase):
         move_to_target.explode_data_to_fact_table(conf, 'INT_SBAC_ASMT_OUTCOME', 'fact_asmt_outcome', column_map['fact_asmt_outcome'], column_types)
 
         count_template = """ SELECT COUNT(*) FROM "{schema}"."{table}" """
-        tables_to_check = {'dim_asmt':1,'dim_inst_hier':206,'dim_staff':206,'dim_student':9997,'fact_asmt_outcome':19793}
+        tables_to_check = {'dim_asmt':1,'dim_inst_hier':70,'dim_staff':70,'dim_student':94,'fact_asmt_outcome':99}
         
         for entry in tables_to_check.keys():
             sql = count_template.format(schema=self.udl2_conf['target_db']['db_schema'],table=entry)

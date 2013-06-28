@@ -370,7 +370,7 @@ development:
   '[app:main]':
     cache:
       regions: public.data, public.data.short, session
-      type: ext:memcached
+      type: memory
       public.data.expire: 10
     # Celery config
     celery:

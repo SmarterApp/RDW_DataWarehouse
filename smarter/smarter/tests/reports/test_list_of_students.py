@@ -12,11 +12,20 @@ from pyramid.testing import DummyRequest
 from pyramid import testing
 from edauth.security.session import Session
 from smarter.security.roles.teacher import Teacher  # @UnusedImport
+from beaker.cache import CacheManager
+from beaker.util import parse_cache_config_options
 
 
 class TestLOS(Unittest_with_smarter_sqlite):
 
     def setUp(self):
+        cache_opts = {
+            'cache.type': 'memory',
+            'cache.regions': 'public.data.short'
+        }
+
+        CacheManager(**parse_cache_config_options(cache_opts))
+
         # Set up user context
         self.__request = DummyRequest()
         # Must set hook_zca to false to work with unittest_with_sqlite

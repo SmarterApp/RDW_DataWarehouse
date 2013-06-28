@@ -231,7 +231,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                Column('most_recent', Boolean),
                                # Add 14 demographic columns
                                Column('dmg_eth_hsp', Boolean, nullable=True),
-                               Column('dmg_eth_ain', Boolean, nullable=True),
+                               Column('dmg_eth_ami', Boolean, nullable=True),
                                Column('dmg_eth_asn', Boolean, nullable=True),
                                Column('dmg_eth_blk', Boolean, nullable=True),
                                Column('dmg_eth_pcf', Boolean, nullable=True),

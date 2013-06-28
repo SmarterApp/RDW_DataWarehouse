@@ -17,6 +17,7 @@ def transform_to_realdata(file_pattern, username, password, server, database, sc
     connection = engine.connect()
     results = run_asmt_outcome_query(connection, schema)
     header = results.keys()
+    print(header)
 
     # pull out results and store in dict by 'guid_asmt'
     result_dict = {}
@@ -88,7 +89,7 @@ def run_asmt_outcome_query(connection, schema):
       fact_asmt_outcome.asmt_claim_4_score_range_min AS score_claim_4_min,
       fact_asmt_outcome.asmt_claim_4_score_range_max AS score_claim_4_max,
       fact_asmt_outcome.dmg_eth_hsp AS dmg_eth_hsp,
-      fact_asmt_outcome.dmg_eth_ain AS dmg_eth_ain,
+      fact_asmt_outcome.dmg_eth_ami AS dmg_eth_ami,
       fact_asmt_outcome.dmg_eth_asn AS dmg_eth_asn,
       fact_asmt_outcome.dmg_eth_blk AS dmg_eth_blk,
       fact_asmt_outcome.dmg_eth_pcf AS dmg_eth_pcf,

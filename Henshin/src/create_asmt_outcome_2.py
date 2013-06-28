@@ -87,6 +87,20 @@ def run_asmt_outcome_query(connection, schema):
       fact_asmt_outcome.asmt_claim_4_score AS score_claim_4,
       fact_asmt_outcome.asmt_claim_4_score_range_min AS score_claim_4_min,
       fact_asmt_outcome.asmt_claim_4_score_range_max AS score_claim_4_max,
+      fact_asmt_outcome.dmg_eth_hsp AS dmg_eth_hsp,
+      fact_asmt_outcome.dmg_eth_ain AS dmg_eth_ain,
+      fact_asmt_outcome.dmg_eth_asn AS dmg_eth_asn,
+      fact_asmt_outcome.dmg_eth_blk AS dmg_eth_blk,
+      fact_asmt_outcome.dmg_eth_pcf AS dmg_eth_pcf,
+      fact_asmt_outcome.dmg_eth_wht AS dmg_eth_wht,
+      fact_asmt_outcome.dmg_prg_iep AS dmg_prg_iep,
+      fact_asmt_outcome.dmg_prg_lep AS dmg_prg_lep,
+      fact_asmt_outcome.dmg_prg_504 AS dmg_prg_504,
+      fact_asmt_outcome.dmg_tt1_apl AS dmg_tt1_apl,
+      fact_asmt_outcome.dmg_tt1_elg AS dmg_tt1_elg,
+      fact_asmt_outcome.dmg_tt1_rcv AS dmg_tt1_rcv,
+      fact_asmt_outcome.dmg_tt1_swp AS dmg_tt1_swp,
+      fact_asmt_outcome.dmg_tt1_tap AS dmg_tt1_tap,
       dim_staff.staff_guid AS guid_staff,
       dim_staff.first_name AS name_staff_first,
       dim_staff.middle_name AS name_staff_middle,
@@ -144,5 +158,5 @@ if __name__ == "__main__":
     port = 5432
     database = 'edware'
     schema = 'mayuat_6'
-    #transform_realdata(file_pattern, username, password, server, database, schema, asmt_guid_list, port)
+    # transform_realdata(file_pattern, username, password, server, database, schema, asmt_guid_list, port)
     transform_to_realdata(file_pattern, username, password, server, database, schema)

@@ -206,7 +206,7 @@ def get_list_of_students_report(params):
     return los_results
 
 
-@cache_region('public.data.short')
+@cache_region('public.shortlived')
 def __get_asmt_data(connector, asmtSubject):
     '''
     Queries dim_asmt for cutpoint and custom metadata

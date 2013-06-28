@@ -9,9 +9,7 @@ define [
   $.fn.generateFooter = (reportName, content, legend) ->
     self = this
     data = {}
-    if reportName is 'individual_student_report'
-      data['imageFileName'] = 'legend_IndivStudent.png'
-    else if reportName is 'list_of_students'
+    if reportName is 'list_of_students'
       data['imageFileName'] = 'legend_ListofStudents.png'
     else if reportName is 'comparing_populations'
       data['imageFileName'] = 'legend_comparepop.png'

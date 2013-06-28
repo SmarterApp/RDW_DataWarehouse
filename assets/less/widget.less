@@ -494,3 +494,96 @@ th.ui-th-column div {
     line-height: 13px;
   }
 }
+
+#legendTemplate {
+  width: 569px;
+  height: 492px;
+  margin: 0;
+  
+  h4 {
+    color: @color-black;
+  }
+  
+  p {
+    font-size: 12px;
+    line-height: 100%;
+  }
+  
+  .section {
+    width: 100%;
+    float: left;
+    border-top: dashed 1px #b1b1b1;
+    margin: 10px;
+    padding-top: 10px;
+  }
+  
+  .achievement {
+    float: left;
+  }
+  
+  .claim_score {
+    border-left: dashed 1px #b1b1b1;
+    margin-left: 340px;
+    margin-right: 20px;
+    padding-left: 20px;
+  }
+  
+  .overall_score {
+    
+    .indicator {
+      border-radius: 5px 5px 5px 5px;
+      float: left;
+      width: 55px;
+      height: 30px;
+      font-size: 14px;
+      text-align: center;
+      display: table;
+      
+      .asmtScore {
+        vertical-align: middle;
+        display: table-cell;
+      }
+    }
+  }
+  
+  .confidenceLevel {
+    position: relative;
+    
+    .progressbar_indicator500{ 
+        background-image: url("../images/css_images.png"); 
+        background-position: -1260px 0; 
+        width: 13px; 
+        height: 30px; 
+     } 
+    
+    .progress {
+      height: 20px;
+    }
+  }
+  
+  table {
+    margin-left: 5px;
+    border-collapse: collapse;
+    font-size: 10px;
+    
+    th {
+      font-style: italic;
+      font-weight: normal;
+    }
+    
+    td {
+      border: 1px solid @color-B4;
+      text-align: center;
+      font-weight: bold;
+      color: @color-black;
+      
+      div.block {
+         width: 10px;
+         height: 10px;
+         display: inline-block;
+         margin:auto; 
+      }
+    }
+  }
+  
+}

@@ -63,6 +63,7 @@ define [
         feedbackData = configData.feedback
         breadcrumbsConfigs = configData.breadcrumb
         reportInfo = configData.reportInfo
+        legendInfo = configData.legendInfo
       
         i = 0
         while i < data.items.length
@@ -212,7 +213,10 @@ define [
             e.find(".claims_tooltip").html() # template location: templates/individualStudent_report/claimsInfo.html
         
         # Generate footer links
-        $('#footer').generateFooter('individual_student_report', reportInfo)
+        legend = {}
+        legend['items'] = data.items[0]
+        legend['legendInfo'] = legendInfo.individual_student_report
+        $('#footer').generateFooter('individual_student_report', reportInfo, legend)
         
         # append user_info (e.g. first and last name)
         if data.user_info

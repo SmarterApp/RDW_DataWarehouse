@@ -2,9 +2,11 @@ define [
   "jquery"
   "mustache"
   "bootstrap"
+  "edwareConfidenceLevelBar"
   "text!edwareFooterHtml"
-], ($, Mustache, bootstrap, footerTemplate) ->
-  $.fn.generateFooter = (reportName, content) ->
+  "text!edwareLegendTemplate"
+], ($, Mustache, bootstrap, edwareConfidenceLevelBar, footerTemplate, legendTemplate) ->
+  $.fn.generateFooter = (reportName, content, legend) ->
     self = this
     data = {}
     if reportName is 'individual_student_report'
@@ -15,6 +17,9 @@ define [
       data['imageFileName'] = 'legend_comparepop.png'
     
     data['report_info'] = content[reportName]
+    if legend
+      legend_info = createLegend legend
+      data['legend_info'] = legend_info
    
     output = Mustache.to_html footerTemplate, data
       
@@ -23,7 +28,35 @@ define [
     if reportName isnt 'individual_student_report'
       $('#print').hide()
     createPopover()
+    # create performance bar in legend
+    createConfidenceLevelBar(legend['items'])
+    
+  createConfidenceLevelBar = (item) ->
+    barContainer = "#legendTemplate .confidenceLevel"
+    edwareConfidenceLevelBar.create item, 500, barContainer
+    
+  createLegend = (legend) ->
+    data = {}
+    data['ALDs'] = createALDs legend['items']
+    data['legendInfo'] = legend['legendInfo']
+    data['asmtScore'] = legend['items'].asmt_score
+    Mustache.to_html legendTemplate, data
 
+  createALDs = (items) ->
+    ALDs = []
+    intervals = items.cut_point_intervals
+    i = 0
+    while i < intervals.length
+      interval = {}
+      interval['color'] = intervals[i]['bg_color']
+      interval['description'] = intervals[i]['name']
+      start_score = if i == 0 then items.asmt_score_min else intervals[i-1]['interval']
+      end_score = if i == intervals.length - 1 then items.asmt_score_max else (intervals[i]['interval'] - 1)
+      interval['range'] = start_score + '-' + end_score
+      ALDs.push interval
+      i++
+    ALDs
+  
   create = (containerId) ->
     $(containerId).generateFooter
                 

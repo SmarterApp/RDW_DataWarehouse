@@ -1,0 +1,44 @@
+<div id="legendTemplate">
+	<div class="section" style="border-top: none;">
+		<div class="achievement">
+			<!-- ALD -->
+			<h4>Achievement Level Descriptions (ALD):</h4>
+			<table>
+				<tr>
+					<th>Color</th>
+					<th>Description</th>
+					<th>Score Range</th>
+					<th>Outside Error Band</th>
+				</tr>
+				{{#ALDs}}
+				<tr>
+					<td><div class="block" style="background-color:{{color}};"></div></td>
+					<td>{{description}}</td>
+					<td>{{range}}</td>
+					<td width="45"><div class="block" style=" background-color:{{color}};"></div></td>
+				</tr>
+				{{/ALDs}}
+			</table>
+		</div>
+		<div class="claim_score">
+			<!-- Claim Score Details -->
+			<h4>Claim Score Details:</h4>
+			<h4>Relative Strength/Weakness</h4>
+			<p>
+				{{legendInfo.relative_strength_text}}
+			</p>
+		</div>
+	</div>
+	<div class="section overall_score">
+		<h4>Overall Score Details:</h4>
+		<div class="indicator" style="background-color: #e4c904; color: #000;">
+			<strong class="asmtScore">{{asmtScore}}</strong>
+		</div>
+		<div class="confidenceLevel"></div>
+		<div></div>
+	</div>
+	<div class="section">
+		<h4>Error Band:</h4>
+		<p>{{legendInfo.error_band}}</p>
+	</div>
+</div>

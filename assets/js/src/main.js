@@ -31,6 +31,7 @@ require({
 		edwarePopulationBarTemplate: '../widgets/populationBar/template.html',
 		edwareClaimsBarTemplate: '../widgets/claimsBar/template.html',
 		edwareAssessmentDropdownViewSelectionTemplate: '../../templates/assessment_dropdown_view_selection.html',
+		edwareLegendTemplate: '../widgets/footer/legendTemplate.html',
 		edwareHeaderHtml: '../widgets/header/header.html',
 		edwareFooterHtml: '../widgets/footer/template.html',
 		edwareFeedbackHTML: '../../templates/feedback/feedback.html'

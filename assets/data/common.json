@@ -142,6 +142,9 @@
         "comparing_populations": "<h4>Purpose:</h4><p>This report compares large aggregations of students across organizational boundaries. The Achievement Level proportion bars provide a standardized say to view assessment results in a common format that describes their overall performance.</p><br><h4>Uses:</h4><ul><li>Use this view to compare summary performance of a large aggregation (e.g. school, district, state).</li><li>Keep in mind that the number of students assessed is an important part of any analysis.</li></ul><br><h4>More information:</h4><p>Currently, advanced functionality is limited to sorting by name and number of students assessed, but forthcoming functionality (including chained filters, multiple paths between levels, and bar alignment) will expand the comparative power of the report.</p><br/>"
     },
     "legendInfo": {
+    	"sample_intervals" : {
+    		"asmt_score": 1789, "asmt_score_min": 1200, "asmt_score_max": 2400
+    	},
         "individual_student_report": {
         	"relative_strength_text": "The arrows show your claim score compared to your overall score. An up arrow means relative strength, while a down arrow may indicate a relative weakness.",
         	"error_band": "The error of a score comes from the amount of information provided by the test. It is based on how well a single test was able to deliver items of approprate difficulty for the student in the allotted test length. Smarter Balanced tests endeavor to provide the most precise scores possible within a reasonable time limit by delivering an adaptive test portion. We provide an Error Band to show the range of score values that a student's result for a single assessment is highly-likely to be on any given day."

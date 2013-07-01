@@ -1,6 +1,7 @@
 /* Print css */
 @media print {
-    .assessmentOtherInfoHeader.show { display: block;}
+}
+.assessmentOtherInfoHeader.show { display: block;}
      #breadcrumb {
         background-image: transparent;
         background: #ECECE6;
@@ -172,7 +173,7 @@
         }
       } 
    
-      .confidenceLevel { 
+      .confidenceLevel {
         height: 150px;
         .progress {
           .bar {
@@ -207,8 +208,186 @@
         }
       } 
       
-   
-}
-
-
- 
+      #legendTemplate {
+        width: 100%;
+        height: 710px;
+        
+        h4 {
+          font-size: 17px;
+        }
+        
+        h5 {
+          font-size: 17px;
+        }
+        
+        p {
+          font-size: 14px;
+        }
+        
+        img {
+          -webkit-transform: scale(1.2);
+          -moz-transform: scale(1.2);
+          -o-transform: scale(1.2);
+          -ms-transform: scale(1.2);
+          transform: scale(1.2);
+        }
+        
+        .section {
+          width: 100%;
+          margin: 2% 0 0 0;
+          padding-top: 2%;
+        }
+        
+        .claim_score {
+          background-image: none;
+          
+          .arrowBox {
+            display: none;
+          }
+          
+          .arrowBox_print {
+            display: block;
+            
+            .claim_score_arrow_bar_wrapper {
+              float: left;
+              display: block;
+              height:55px;
+              width:100px;
+              border-bottom: dashed 1px #b1b1b1;
+              
+                .claim_score_arrow_bar {
+                      background-image: -moz-linear-gradient(center top, #565656, #d3d3d3);
+                      background-image: -webkit-linear-gradient(top, #565656, #d3d3d3);
+                      background-image: -ms-linear-gradient(top, #565656, #d3d3d3);
+                      left: 23%; 
+                      height: 32px;
+                      bottom: 0;
+                      margin-bottom: 24px;
+                }
+            }
+            
+            .claim_score_indicator_wrapper {
+               position: relative;
+               top: 10px;
+               display: inline-block;
+            }
+          }
+          
+          p {
+            font-size: 14px;
+          }
+        }
+        
+        .losPerfBar {
+          display: none;
+        }
+        
+        .indicator {
+          border-radius: 5px 5px 5px 5px;
+          width: 65px;
+          height: 35px;
+          font-size: 18px;
+          
+          .asmtScore {
+            vertical-align: middle;
+            display: table-cell;
+          }
+        }
+        
+        .confidenceLevel {
+          display: inline-block;
+          margin: 0 0 0 11%;
+          
+          .aldDescText {
+            display: none;
+          }
+          
+          .progressbar_indicator500 { 
+            background-image: url("../images/css_images.png"); 
+            background-position: -1300px 0;
+            width: 200px;
+          }
+        }
+        
+        .desc_overall_score {
+            width: 120px;
+            text-align: left;
+            position: relative;
+            top: 8px;
+            left: 5px;
+            
+            span {
+              font-size: 14px;
+              margin-top: 0px;
+            }
+        }
+        
+        .desc_error_bands {
+          span {
+            font-style: italic;
+            font-size: 14px;
+          }
+        }
+        
+        .overall_score_lower {
+          margin-top: -7%; 
+        }
+        
+        .desc_overall_score_indicator {
+          position:relative; 
+          top: 6px;
+          margin-left:12px;
+        }
+        
+        .overall_upperleft {
+          margin-left:12px; 
+          margin-top: 13px;
+        }
+        
+        .overall_uppermid {
+          position: relative; 
+          top: 13px;
+          margin-left: 15%;
+        }
+        
+        .overall_right {
+          display:inline-block;
+          position: relative;
+          bottom: 102px;
+          left: -11%;
+          
+          .desc_scaled_score_range {
+            display: inline;
+            position: relative;
+            top: 2px;
+            left: 4px;
+          }
+        }
+        
+        .overall_lowerleft {
+          margin: 0 16.5% 8px 2%;
+        }
+        
+        .overall_lowermid {
+          margin: 0 2% 8px 0;
+        }
+        
+        table {
+          font-size: 16px;
+          
+          th {
+            font-style: italic;
+            font-weight: normal;
+          }
+          
+          td {
+            height: 38px;
+            
+            div.block {
+               width: 20px;
+               height: 20px;
+            }
+          }
+        }
+  
+    }

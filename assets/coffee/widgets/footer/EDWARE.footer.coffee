@@ -6,6 +6,13 @@ define [
   "text!edwareFooterHtml"
   "text!edwareLegendTemplate"
 ], ($, Mustache, bootstrap, edwareConfidenceLevelBar, footerTemplate, legendTemplate) ->
+  
+  edwareLOSHeaderConfidenceLevelBarTemplate = "<div class='progress' style='width: {{bar_width}}px;'>" +
+                                              "{{#cut_point_intervals}}" +
+                                              "<div class='bar' style='background-color: {{bg_color}}; background-image: -moz-linear-gradient(center top , {{bg_color}}, {{bg_color}}); background-image: -webkit-linear-gradient(top , {{bg_color}}, {{bg_color}}); background-image: -ms-linear-gradient(top , {{bg_color}}, {{bg_color}}); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr={{bg_color}}, endColorstr={{bg_color}}, GradientType=0); background-repeat: repeat-x; color: {{text_color}}; width: {{asmt_cut_point}}px;'></div>" +
+                                              "{{/cut_point_intervals}}" +
+                                              "</div>"
+                                              
   $.fn.generateFooter = (reportName, content, legend) ->
     self = this
     data = {}
@@ -26,18 +33,23 @@ define [
     if reportName isnt 'individual_student_report'
       $('#print').hide()
     createPopover()
-    # create performance bar in legend
-    createConfidenceLevelBar(legend['items'])
+    if legend
+      # create performance bar in legend
+      createConfidenceLevelBar(legend['subject'])
     
-  createConfidenceLevelBar = (item) ->
-    barContainer = "#legendTemplate .confidenceLevel"
-    edwareConfidenceLevelBar.create item, 500, barContainer
+  createConfidenceLevelBar = (subject) ->
+    # use mustache template to display the json data 
+    output = edwareConfidenceLevelBar.create subject, 300
+    $('#legendTemplate .losPerfBar').html(output)
+    # use mustache template to display the json data 
+    output = edwareConfidenceLevelBar.create subject, 500
+    $('#legendTemplate .confidenceLevel').html(output)
     
   createLegend = (legend) ->
     data = {}
-    data['ALDs'] = createALDs legend['items']
+    data['ALDs'] = createALDs legend['subject']
     data['legendInfo'] = legend['legendInfo']
-    data['asmtScore'] = legend['items'].asmt_score
+    data['asmtScore'] = legend['subject'].asmt_score
     Mustache.to_html legendTemplate, data
 
   createALDs = (items) ->

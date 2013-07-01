@@ -214,8 +214,8 @@ define [
         
         # Generate footer links
         legend = {}
-        legend['items'] = data.items[0]
         legend['legendInfo'] = legendInfo.individual_student_report
+        legend['subject'] = createSampleInterval data.items[0], legendInfo.sample_intervals
         $('#footer').generateFooter('individual_student_report', reportInfo, legend)
         
         # append user_info (e.g. first and last name)
@@ -226,15 +226,18 @@ define [
         
         # Report info and legend for print version, Grayscale logo for print version
         $($("#footerLinks").html()).clone().appendTo("#print_reportInfoContent")
-        if params['grayscale'] isnt 'true'
-          $("#print_reportInfoContent .legendPopup img").attr("src", "../images/legend_IndivStudent_color_print.png")
-        else
-          $("#print_reportInfoContent .legendPopup img").attr("src", "../images/legend_IndivStudent_gray_print.png")
-          $(".printHeader .logo img").attr("src", "../images/smarter_printlogo_gray.png")
+        #if params['grayscale'] isnt 'true'
+        #  $("#print_reportInfoContent .legendPopup img").attr("src", "../images/legend_IndivStudent_color_print.png")
+        #else
+        #  $("#print_reportInfoContent .legendPopup img").attr("src", "../images/legend_IndivStudent_gray_print.png")
+        #  $(".printHeader .logo img").attr("src", "../images/smarter_printlogo_gray.png")
         
-        $("#print_reportInfoContent .legendPopup img").attr("width", "850")
-        $("#print_reportInfoContent .legendPopup img").attr("height", "710")
+        #$("#print_reportInfoContent .legendPopup img").attr("width", "850")
+        #$("#print_reportInfoContent .legendPopup img").attr("height", "710")
         
+  createSampleInterval = (subject, sample_interval) ->
+    subject = $.extend(true, {}, subject, sample_interval)
+    
   #
   # render Claim Score Relative Difference (arrows)
   #

@@ -1,21 +1,22 @@
 <div id="legendTemplate">
+	<h3 class="printContent" style="margin-bottom: -3%">Legend:</h3>
 	<div class="section" style="border-top: none;">
 		<div class="achievement">
 			<!-- ALD -->
 			<h4>Achievement Level Descriptions (ALD):</h4>
 			<table>
 				<tr>
-					<th>Color</th>
+					<th style="width:17%;">Color</th>
 					<th>Description</th>
 					<th>Score Range</th>
-					<th>Outside Error Band</th>
+					<th style="width:17%;"><span>Outside Error Band</span></th>
 				</tr>
 				{{#ALDs}}
 				<tr>
 					<td><div class="block" style="background-color:{{color}};"></div></td>
 					<td>{{description}}</td>
 					<td>{{range}}</td>
-					<td width="45"><div class="block" style=" background-color:{{color}};"></div></td>
+					<td><div class="block" style="background-color:{{color}};"></div></td>
 				</tr>
 				{{/ALDs}}
 			</table>
@@ -23,22 +24,50 @@
 		<div class="claim_score">
 			<!-- Claim Score Details -->
 			<h4>Claim Score Details:</h4>
-			<h4>Relative Strength/Weakness</h4>
-			<p>
-				{{legendInfo.relative_strength_text}}
-			</p>
+			<div class="arrowBox">
+				<div class="claim_score_arrow_bar_wrapper"><div class="claim_score_arrow_bar"></div></div>
+				<div class="claim_score_indicator_wrapper"><h5>Overall Score</h5></div>
+			</div>
+			<div class="arrowBox_print printContent">
+				<img src="../images/claim_score.png" style="display: inline; margin: 25px 15px 25px 15px;"/>
+				<div class="claim_score_indicator_wrapper"><h5>Overall Score</h5></div>				
+			</div>
+			<div>
+				<h5>Relative Strength/Weakness</h5>
+				<p>
+					{{legendInfo.relative_strength_text}}
+				</p>
+			</div>
 		</div>
 	</div>
-	<div class="section overall_score">
+	<div class="section overall_score_wrapper">
 		<h4>Overall Score Details:</h4>
-		<div class="indicator" style="background-color: #e4c904; color: #000;">
-			<strong class="asmtScore">{{asmtScore}}</strong>
+		<div class="overall_score_upper">
+			<div class="indicator desc" style="background-color: #e4c904; color: #000; margin-left:15px;">
+				<strong class="asmtScore">{{asmtScore}}</strong>
+			</div>
+			<img src="../images/OVERALL_upperleft.png" class="overall_upperleft"/>
+			<div class="desc_overall_score"><h5>Overall Score</h5><span>(ALD color coded)</span></div>
+			<img src="../images/OVERALL_uppermid.png" class="overall_uppermid"/>
+			<h5 class="desc_overall_score_indicator">Overall Score Indicator</h5>
 		</div>
-		<div class="confidenceLevel"></div>
-		<div></div>
+		<div class="losPerfBar losPopover"></div>
+		<div class="confidenceLevel printContent"></div>
+		<div class="overall_right">
+			<img src="../images/OVERALL_upperleft.png">
+			<h5 class="desc_scaled_score_range">Scaled Score Range</h5>
+		</div>
+		<div class="overall_score_lower">
+			<h5>ALD Cutpoints</h5>
+			<img src="../images/OVERALL_lowerleft.png" class="overall_lowerleft"/>
+			<img src="../images/OVERALL_lowermid.png" class="overall_lowermid"/>
+			<div class="desc_error_bands"><h5>Error Bands</h5><span>(brackets denote min/max)</span></div>
+		</div>
 	</div>
 	<div class="section">
 		<h4>Error Band:</h4>
-		<p>{{legendInfo.error_band}}</p>
+		<p>
+			{{legendInfo.error_band}}
+		</p>
 	</div>
 </div>

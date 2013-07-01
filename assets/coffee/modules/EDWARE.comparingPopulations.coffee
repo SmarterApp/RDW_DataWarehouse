@@ -122,7 +122,7 @@ define [
         $("#barAlignment").click ->
           $(".populationBar").css("width", "200px")
         
-      
+        $('.dropdown-toggle').dropdown()
                     
   # Get population data from server       
   getPopulationData = (sourceURL, params, callback) ->

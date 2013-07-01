@@ -24,7 +24,7 @@ class TestLOS(Unittest_with_smarter_sqlite):
             'cache.regions': 'public.shortlived'
         }
 
-        CacheManager(**parse_cache_config_options(cache_opts))
+        cache = CacheManager(**parse_cache_config_options(cache_opts))
 
         # Set up user context
         self.__request = DummyRequest()

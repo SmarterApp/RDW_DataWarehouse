@@ -6,7 +6,7 @@ Created on Jan 14, 2013
 @author: aoren
 '''
 from pyramid.view import view_config
-from edapi.utils import generate_report_config,\
+from edapi.reports import generate_report_config,\
     generate_report, EDAPI_REPORTS_PLACEHOLDER
 from edapi.exceptions import ReportNotFoundError, InvalidParameterError,\
     ForbiddenError

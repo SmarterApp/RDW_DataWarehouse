@@ -4,7 +4,8 @@ This package contains all modules and code of the EdAPI framework
 '''
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
-from edapi.utils import ContentTypePredicate, add_report_config
+from edapi.utils import ContentTypePredicate
+from edapi.reports import add_report_config
 
 
 def includeme(config):

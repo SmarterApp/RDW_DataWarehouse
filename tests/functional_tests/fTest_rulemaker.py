@@ -33,7 +33,7 @@ class RuleGeneratorFTest(unittest.TestCase):
         
         session.commit()    
     
-    def tearDown(selF):
+    def tearDown(self):
         self.conn.close()
     
     def test_rule_with_inlist_outlist(self):

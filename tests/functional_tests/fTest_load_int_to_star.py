@@ -10,6 +10,7 @@ from udl2 import W_load_from_integration_to_star
 class IntToStarFTest(unittest.TestCase):
 
     def setUp(self):
+        print('here')
         try:
             config_path = dict(os.environ)['UDL2_CONF']
         except Exception:
@@ -23,22 +24,28 @@ class IntToStarFTest(unittest.TestCase):
         self.truncate_edware_tables()
         self.truncate_integration_tables()
 
+    def tearDown(self):
+        self.truncate_edware_tables()
+        self.truncate_integration()
+        self.udl2_conn.close()
+        self.target_conn.close()
+
     def truncate_edware_tables(self):
         template = """
             TRUNCATE "{target_schema}"."{target_table}" CASCADE
             """
-
+        
         sql_dim_asmt = template.format(target_schema=self.udl2_conf['target_db']['db_schema'],target_table='dim_asmt')
         sql_dim_inst_hier = template.format(target_schema=self.udl2_conf['target_db']['db_schema'],target_table='dim_inst_hier')
         sql_dim_section = template.format(target_schema=self.udl2_conf['target_db']['db_schema'],target_table='dim_section')
         sql_dim_staff = template.format(target_schema=self.udl2_conf['target_db']['db_schema'],target_table='dim_staff')
         sql_dim_student = template.format(target_schema=self.udl2_conf['target_db']['db_schema'],target_table='dim_student')
         sql_fact_asmt_outcome = template.format(target_schema=self.udl2_conf['target_db']['db_schema'],target_table='fact_asmt_outcome')
-
         except_msg = "Unable to clean up target db tabels"
         execute_queries(self.target_conn, [sql_dim_asmt, sql_dim_inst_hier, sql_dim_section, sql_dim_staff, sql_dim_student, sql_fact_asmt_outcome], except_msg)
 
     def truncate_integration_tables(self):
+        print('here2')
         sql_template = """
             TRUNCATE "{staging_schema}"."{staging_table}" CASCADE
             """
@@ -51,7 +58,7 @@ class IntToStarFTest(unittest.TestCase):
         execute_queries(self.udl2_conn, [sql_int_asmt, sql_int_asmt_outcome], except_msg)
 
     def test_load_int_to_star(self):
-        
+        print('here4')
         table = 'INT_SBAC_ASMT'
         insert_sql = """INSERT INTO "{staging_schema}"."{staging_table}" VALUES({value_string});"""
         insert_array = []
@@ -60,7 +67,7 @@ class IntToStarFTest(unittest.TestCase):
             next(cf) 
             for row in cf:
                 values = '"'+'", "'.join(row)+'"'
-                values = """'4', \'"""+"""', '""".join(row)+"""'"""
+                values = """'7', \'"""+"""', '""".join(row)+"""'"""
                 values = values.replace('""','"0"')
                 values = values.replace("''","'0'")
                 values = values.replace ("'DEFAULT'","DEFAULT")
@@ -68,7 +75,7 @@ class IntToStarFTest(unittest.TestCase):
                 insert_array.append(insert_string)
             except_msg = "Unable to insert into %s" % table
             execute_queries(self.udl2_conn, insert_array, except_msg)
-
+        print('here5')
         table = 'INT_SBAC_ASMT_OUTCOME'
         insert_array=[]
         with open('../data/INT_SBAC_ASMT_OUTCOME.csv') as f:
@@ -90,7 +97,7 @@ class IntToStarFTest(unittest.TestCase):
         column_map = column_mapping.get_column_mapping()
         batch_id = '2411183a-dfb7-42f7-9b3e-bb7a597aa3e7'
         conf = W_load_from_integration_to_star.generate_conf(batch_id)
-
+        print('here6')
         for target in dim_tables.keys():
             target_columns = column_map[target]
             column_types = move_to_target.get_table_column_types(conf,target,list(target_columns.keys()))
@@ -101,10 +108,12 @@ class IntToStarFTest(unittest.TestCase):
 
         count_template = """ SELECT COUNT(*) FROM "{schema}"."{table}" """
         tables_to_check = {'dim_asmt':1,'dim_inst_hier':70,'dim_staff':70,'dim_student':94,'fact_asmt_outcome':99}
-        
+        print('here7')
         for entry in tables_to_check.keys():
+            print(entry)
             sql = count_template.format(schema=self.udl2_conf['target_db']['db_schema'],table=entry)
             result = self.target_conn.execute(sql)
+            print('done')
             count = 0
             for row in result:
                 count = row[0]

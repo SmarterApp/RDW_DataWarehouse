@@ -33,6 +33,9 @@ class RuleGeneratorFTest(unittest.TestCase):
         
         session.commit()    
     
+    def tearDown(selF):
+        self.conn.close()
+    
     def test_rule_with_inlist_outlist(self):
         for rule in self.rule_list:
             rule_def = self.rule_conf[rule[0]]

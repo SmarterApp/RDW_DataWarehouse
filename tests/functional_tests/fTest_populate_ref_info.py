@@ -56,6 +56,7 @@ class PopulateRefInfoFTest(unittest.TestCase):
 
     def tearDown(self):
         self.conn.execute(self.ref_table.delete().where(self.ref_table.c.phase == -999))
+        self.conn.close()
 
     def test_stored_procedures_exist_in_db(self):
 

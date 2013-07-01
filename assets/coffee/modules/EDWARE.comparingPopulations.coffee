@@ -2,12 +2,13 @@
 define [
   "jquery"
   "bootstrap"
+  "mustache"
   "edwareDataProxy"
   "edwareGrid"
   "edwareBreadcrumbs"
   "edwareUtil"
   "edwareFooter"
-], ($, bootstrap, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter) ->
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter) ->
   
   myCustomSort1 = (cell, rowObject) ->
       percent = rowObject.results.subject1.intervals[0].percentage
@@ -41,6 +42,10 @@ define [
         reportInfo = data.reportInfo
         gridConfig = data.comparingPopulations.grid
         customViews = data.comparingPopulations.customViews
+        
+        output = Mustache.render(JSON.stringify(gridConfig), asmtSubjectsData)
+        gridConfig = JSON.parse(output)
+
         # # append user_info (e.g. first and last name)
         if user_info
           $('#header .topLinks .user').html edwareUtil.getUserName user_info
@@ -121,7 +126,10 @@ define [
           
         $("#barAlignment").click ->
           $(".populationBar").css("width", "200px")
-        
+
+        for asmtSubjectKey, asmtSubjectValue of asmtSubjectsData
+          dropdown = createDropdown(asmtSubjectKey, asmtSubjectValue, colorsData)
+        #$('#content h2').after dropdown
         $('.dropdown-toggle').dropdown()
                     
   # Get population data from server       
@@ -256,6 +264,25 @@ define [
     else if params['stateCode']
       reportType = 'state'
     reportType
-            
+
+  createDropdown = (subject, asmtSubject, colorsData) ->
+    asmtSubjectSort = $('#'+asmtSubject+"_sort")
+    position = asmtSubjectSort.offset()
+    if position isnt null
+      dropdown = $("<div class='dropdown' style='position:absolute;z-index:800;'></div>")
+      dropdown.css(position)
+      asmtSubjectSortValue = asmtSubjectSort.html()
+      asmtSubjectSort.html ''
+      caret = $("<a class='dropdown-toggle' id='dLabel' role='button'>"+asmtSubjectSortValue+"<b class='caret'></b></a>")
+      dropdown_menu = $("<ul class='dropdown-menu' role='menu' aria-labelledby='dLabel'></ul>")
+      
+      i = 0
+      len = colorsData[subject].length
+      while i < len
+        dropdown_menu.append($("<li><input type='radio' name='"+subject+"_sort'/>"+i+"</li>"))
+        i++
+      dropdown.append(caret).append(dropdown_menu)
+      $('#content').append(dropdown)
+    
   createPopulationGrid: createPopulationGrid
   

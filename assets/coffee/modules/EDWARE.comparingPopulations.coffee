@@ -191,6 +191,7 @@ define [
       j = 0
       while (j < data.length)
         data[j]['results'][k].intervals = appendColor data[j]['results'][k].intervals, colorsData[k], defaultColors
+        data[j]['results'][k].sort = calculateTotalPercentage data[j]['results'][k]
         j++
     data
   
@@ -211,11 +212,31 @@ define [
       else
         element.showPercentage = false
       
-      # format nubmers
+      # format numbers
       element.count = formatNumber element.count
       i++
     intervals
-    
+
+  calculateTotalPercentage = (data) ->
+    intervals = data.intervals
+    percentages = {}
+    len = intervals.length
+    i = 0
+    j = 0
+    while (j < len - 1)
+      # Prepopulate with 100%
+      percentages[j] = 100
+      j++
+    percentages[len] = data.total
+    while(i < len)
+      element = intervals[i]
+      k = 0
+      while (k < i and i < len)
+        percentages[k] = percentages[k] - element.percentage
+        k++
+      i++
+    percentages
+
   # Add comma as thousand separator to numbers
   # Return 0 if parameter is undefined
   formatNumber = (num) ->

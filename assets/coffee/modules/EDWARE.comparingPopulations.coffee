@@ -201,6 +201,7 @@ define [
       j = 0
       while (j < data.length)
         data[j]['results'][k].intervals = appendColor data[j]['results'][k].intervals, colorsData[k], defaultColors
+        data[j]['results'][k].sort = calculateTotalPercentage data[j]['results'][k]
         j++
     data
   
@@ -221,11 +222,31 @@ define [
       else
         element.showPercentage = false
       
-      # format nubmers
+      # format numbers
       element.count = formatNumber element.count
       i++
     intervals
-    
+
+  calculateTotalPercentage = (data) ->
+    intervals = data.intervals
+    percentages = {}
+    len = intervals.length
+    i = 0
+    j = 0
+    while (j < len - 1)
+      # Prepopulate with 100%
+      percentages[j] = 100
+      j++
+    percentages[len] = data.total
+    while(i < len)
+      element = intervals[i]
+      k = 0
+      while (k < i and i < len)
+        percentages[k] = percentages[k] - element.percentage
+        k++
+      i++
+    percentages
+
   # Add comma as thousand separator to numbers
   # Return 0 if parameter is undefined
   formatNumber = (num) ->
@@ -313,24 +334,23 @@ define [
       len = useThisColorsData[subject].length
       while i < len
         colorBar = ''
-        sortType = ''
+        sortID = ''
         j = 0
         k = 0
         #last row should display "Total Students"
+        sortID = asmtSubject + '_sort' + i
         if i is len - 1
           colorBar = "Total Students"
-          sortType = "totalStudents"
         else
           while j <= len
             #blank div for separator
             if i+1 is j
               colorBar = colorBar.concat("<div >&nbsp;</div>")
-              sortType = 'sort' + i
               k = 1
             else
               colorBar = colorBar.concat("<div style='background-color:"+useThisColorsData[subject][j-k].bg_color+";'>&nbsp;</div>")
             j++
-        dropdown_menu.append($("<div class='sortColorBlock'><li><input type='radio' name='"+subject+"_sort' value='"+sortType+"'/>"+colorBar+"</li></div>"))
+        dropdown_menu.append($("<div class='sortColorBlock'><li><input type='radio' name='"+asmtSubject+"_sort' id='"+sortID+"'/>"+colorBar+"</li></div>"))
         i++
       dropdown.append(caret).append(dropdown_menu)
       $('#content').append(dropdown)

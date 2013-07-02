@@ -212,7 +212,7 @@
 	            {"name":"{{subject1}}","items":[
 	            	{"name":"<div id='{{subject1}}_sort'>Select Sort</div>","index":"results.subject1.total","field":"results.subject1.total","width":388,"formatter":"populationBar","options":{"asmt_type":"subject1"},"title":false,"align":"center"}
 	            ]},
-	            {"name":"ELA","items":[
+	            {"name":"{{subject2}}","items":[
 	            	{"name":"<div id='{{subject2}}_sort'>Select Sort</div>","index":"results.subject2.total","field":"results.subject2.total","width":388,"formatter":"populationBar", "options":{"asmt_type":"subject2"}, "title":false,"align":"center"}
 	        	]}
 	        ],

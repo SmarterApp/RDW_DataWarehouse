@@ -72,9 +72,14 @@ define [
   populationBar = (value, options, rowObject) ->
     asmt_type = options.colModel.formatoptions.asmt_type
     subject = rowObject.results[asmt_type]
+    subject["alignmentALDStatus"] = edwareUtil.getALDAlignmentStatus()
     if subject
       results = edwarePopulationBar.create subject
-      "<div class = 'populationBar'>" + results + "</div><div>" + subject.total + "</div>"
+      
+      if subject["alignmentALDStatus"] is "off"
+        "<div class = 'populationBar'>" + results + "</div><div>" + subject.total + "</div>"
+      else
+        "<div class = 'populationBar' style='margin-left: 40px'>" + results + "</div><div>" + subject.total + "</div>"
     else
       ""
  

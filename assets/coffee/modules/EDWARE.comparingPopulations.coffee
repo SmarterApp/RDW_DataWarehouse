@@ -9,6 +9,7 @@ define [
   "edwareFooter"
 ], ($, bootstrap, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter) ->
   
+  alignmentPercent = ""
   myCustomSort1 = (cell, rowObject) ->
       percent = rowObject.results.subject1.intervals[0].percentage
       
@@ -67,8 +68,7 @@ define [
           
           # Set the Report title depending on the report that we're looking at
           reportTitle = getReportTitle(breadcrumbsData, reportType)
-          alignmentButton = "<div><button type='button' class='btn btn-primary' id='barAlignment' data-toggle='button'>Single Toggle</button></div>"
-          $('#content h2').html reportTitle + alignmentButton
+          $('#content h2').html reportTitle
           
           # Format the summary data for summary row purposes
           summaryRowName = getOverallSummaryName(breadcrumbsData, reportType)
@@ -119,8 +119,18 @@ define [
           cm.sorttype = myCustomSort3
           grid.trigger("reloadGrid")
           
-        $("#barAlignment").click ->
-          $(".populationBar").css("width", "200px")
+        $(".align_button").click ->
+          align_button_class = $(this).attr("class")
+          if align_button_class.indexOf("align_off") isnt -1
+            $(this).removeClass("align_off").addClass("align_on")
+            $(".populationBar").css("width", "200px")
+            edwareUtil.setALDAlignmentStatus "on"
+            
+          else
+            $(this).removeClass("align_on").addClass("align_off")
+            $(".populationBar").css("width", "265px")
+            edwareUtil.setALDAlignmentStatus "off"
+          
         
         $('.dropdown-toggle').dropdown()
                     
@@ -212,6 +222,7 @@ define [
     for k of summaryData.results
       name = 'results.' + k + '.total'
       data[name] = summaryData.results[k].total
+      
     data['subtitle'] = 'Reference Point'
     # Set header row to be true to indicate that it's the summary row
     data['header'] = true

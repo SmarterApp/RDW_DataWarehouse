@@ -15,6 +15,14 @@ define [
       policyContent_characterLimits: 256
       claims_characterLimits: 140
       
+  ALD_alignment_flag = "off"
+  
+  setALDAlignmentStatus = (value) ->
+    ALD_alignment_flag = value
+    
+  getALDAlignmentStatus = (value) ->
+    ALD_alignment_flag
+      
   getConstants = (value) ->
     constants[value]
       
@@ -156,3 +164,5 @@ define [
   format_full_name_reverse: format_full_name_reverse
   showGrayScale : showGrayScale
   showPdfCSS : showPdfCSS
+  setALDAlignmentStatus: setALDAlignmentStatus
+  getALDAlignmentStatus: getALDAlignmentStatus

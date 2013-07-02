@@ -312,7 +312,7 @@ define [
       dropdown.css(position)
       asmtSubjectSortValue = asmtSubjectSort.html()
       asmtSubjectSort.html ''
-      caret = $("<a class='dropdown-toggle' id='dLabel' role='button'>"+asmtSubjectSortValue+"<b class='caret'></b></a>")
+      caret = $("<a class='dropdown-toggle' id='"+asmtSubject+"_DropdownMenu' role='button'><span>"+asmtSubjectSortValue+"</span><b class='caret'></b></a>")
       dropdown_menu = $("<ul class='dropdown-menu' role='menu' aria-labelledby='dLabel'></ul>")
       
       #prepare color bars
@@ -339,15 +339,23 @@ define [
           while j <= len
             #blank div for separator
             if i+1 is j
-              colorBar = colorBar.concat("<div >&nbsp;</div>")
+              colorBar = colorBar.concat("<div class='colorBlock'>&nbsp;</div>")
               k = 1
             else
-              colorBar = colorBar.concat("<div style='background-color:"+useThisColorsData[subject][j-k].bg_color+";'>&nbsp;</div>")
+              colorBar = colorBar.concat("<div class='colorBlock' style='background-color:"+useThisColorsData[subject][j-k].bg_color+";'>&nbsp;</div>")
             j++
-        dropdown_menu.append($("<div class='sortColorBlock'><li><input type='radio' name='"+asmtSubject+"_sort' id='"+sortID+"'/>"+colorBar+"</li></div>"))
+        dropdown_menu.append($("<div class='sortColorsBlock'><li id='"+sortID+"' class='sortColorsGroup'><input type='radio' name='"+asmtSubject+"_sort' /><span>"+colorBar+"</span></li></div>"))
         i++
       dropdown.append(caret).append(dropdown_menu)
       $('#content').append(dropdown)
-    
+      $(document).on
+        click: (e) ->
+          e.preventDefault()
+          id = $(this).attr('id')
+          targetParentId=id.substring(0,id.indexOf('_')) + '_DropdownMenu'
+          
+          colorBar = $(this).children('span').html()
+          $('#'+targetParentId+' span').html(colorBar)
+      , '.sortColorsGroup'
   createPopulationGrid: createPopulationGrid
   

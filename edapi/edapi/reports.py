@@ -5,7 +5,7 @@ Created on Jan 16, 2013
 '''
 from edapi.exceptions import ReportNotFoundError, InvalidParameterError
 from edapi.utils import get_dict_value
-from edapi.validate import Validator
+from edapi.validation import Validator
 import inspect
 import logging
 

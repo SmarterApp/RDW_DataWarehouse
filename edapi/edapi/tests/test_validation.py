@@ -7,7 +7,7 @@ from edapi.tests.test_reports import TestReport
 from edapi import reports
 from unittest.mock import MagicMock
 import unittest
-from edapi.validate import Validator
+from edapi.validation import Validator
 from edapi.exceptions import InvalidParameterError
 from edapi.tests.dummy import Dummy, DummyGetParams
 

@@ -4,13 +4,15 @@
 		<div class="achievement">
 			<!-- ALD -->
 			<h4>Achievement Level Descriptions (ALD):</h4>
-			<table>
-				<tr>
-					<th class="ALD_table_header" style="width:17%;">Color</th>
-					<th class="ALD_table_header">Description</th>
-					<th class="ALD_table_header">Score Range</th>
-					<th class="ALD_table_header" style="width:17%;"><span>Outside Error Band</span></th>
-				</tr>
+			<table class="ALD_table">
+				<thead>
+					<tr>
+						<th class="ALD_table_header" style="width:17%;">Color</th>
+						<th class="ALD_table_header">Description</th>
+						<th class="ALD_table_header">Score Range</th>
+						<th class="ALD_table_header" style="width:17%;"><span>Outside Error Band</span></th>
+					</tr>
+				</thead>
 				{{#ALDs}}
 				<tr>
 					<td class="ALD_table_cell"><div class="legend_ALD_color" style="background-color:{{color}};"></div></td>
@@ -60,7 +62,7 @@
 			<div class="desc_error_bands"><h5>Error Bands</h5><span>(brackets denote min/max)</span></div>
 		</div>
 	</div>
-	<div class="section">
+	<div class="section error_band_wrapper">
 		<h4>Error Band:</h4>
 		<p>
 			{{legendInfo.error_band}}

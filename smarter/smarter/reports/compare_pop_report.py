@@ -80,13 +80,48 @@ class ComparingPopReport(object):
     Represents a comparing populations report
     '''
 
-    def __init__(self, tenant=None):
+    def __init__(self, tenant=None, filters={}):
         '''
         :param tenant:  tenant name of the user.  Specify if report is not going through a web request
         '''
         self.tenant = tenant
+        self.filters = filters
+        self.override_cache_criteria = False
 
-    @cache_region('public.data')
+    def set_override_cache_criteria(self, val):
+        self.override_cache_criteria = val
+
+    def set_filters(self, filters):
+        '''
+        Sets the demographic filters for comparing populations
+
+        :param dict filters:  key value pairs of demographic criteria
+        '''
+        self.filters = filters
+
+    def get_formatted_filters(self):
+        '''
+        Returns a list of tuples
+        This will be part of the cache key, so we want this to be sorted, deterministic
+        '''
+        return sorted(self.filters.items(), key=lambda x: x[0])
+
+    def is_cacheable(self):
+        '''
+        Returns true if there are less than 4 filters and we should cache it
+        '''
+        # TODO: derive 4 from config?
+        return self.override_cache_criteria or len(self.filters.keys()) < 4
+
+    def get_cacheable_filters(self):
+        '''
+        Returns the formatted filters if it meets caching criteria
+        '''
+        formatted_filters = []
+        if self.is_cacheable():
+            formatted_filters = self.get_formatted_filters()
+        return formatted_filters
+
     def get_state_view_report(self, stateCode):
         '''
         state view report
@@ -95,9 +130,22 @@ class ComparingPopReport(object):
         :rtype: dict
         :returns: state view report
         '''
-        return self.get_report(stateCode)
+        if self.is_cacheable():
+            return self.get_state_view_report_with_filters(stateCode, self.get_cacheable_filters())
+        else:
+            return self.get_report(stateCode, filters=self.filters)
 
     @cache_region('public.data')
+    def get_state_view_report_with_filters(self, stateCode, filters):
+        '''
+        state view report without any filters. Note that filters is formatted for cache key
+        If filters is not cacheable, we still need to get the report with the original set of filters
+
+        :param string stateCode:  State code representing the state
+        :param filter:  a list of tuples
+        '''
+        return self.get_report(stateCode, filters=self.filters)
+
     def get_district_view_report(self, stateCode, districtGuid):
         '''
         district view report
@@ -107,7 +155,20 @@ class ComparingPopReport(object):
         :rtype: dict
         :returns: district view report
         '''
-        return self.get_report(stateCode, districtGuid)
+        if self.is_cacheable():
+            return self.get_district_view_report_with_filters(stateCode, districtGuid, self.get_cacheable_filters())
+        else:
+            return self.get_report(stateCode, districtGuid, filters=self.filters)
+
+    @cache_region('public.data')
+    def get_district_view_report_with_filters(self, stateCode, districtGuid, filters):
+        '''
+        district view report without any filters.  Note that filters is formatted for cache key
+
+        :param string stateCode:  State code representing the state
+        :param string districtGuid:  Guid of the district
+        '''
+        return self.get_report(stateCode, districtGuid, filters=self.filters)
 
     def get_school_view_report(self, stateCode, districtGuid, schoolGuid):
         '''
@@ -121,7 +182,7 @@ class ComparingPopReport(object):
         '''
         return self.get_report(stateCode, districtGuid, schoolGuid)
 
-    def get_report(self, stateCode, districtGuid=None, schoolGuid=None):
+    def get_report(self, stateCode, districtGuid=None, schoolGuid=None, filters=None):
         '''
         actual report call
 
@@ -132,7 +193,7 @@ class ComparingPopReport(object):
         :returns: A comparing populations report based on parameters supplied
         '''
         # run query
-        params = {Constants.STATECODE: stateCode, Constants.DISTRICTGUID: districtGuid, Constants.SCHOOLGUID: schoolGuid}
+        params = {Constants.STATECODE: stateCode, Constants.DISTRICTGUID: districtGuid, Constants.SCHOOLGUID: schoolGuid, 'filters': filters}
         results = self.run_query(**params)
         if not results:
             raise NotFoundException("There are no results")
@@ -187,7 +248,7 @@ class RecordManager():
     '''
     record manager class
     '''
-    def __init__(self, subjects_map, stateCode=None, districtGuid=None, schoolGuid=None):
+    def __init__(self, subjects_map, stateCode=None, districtGuid=None, schoolGuid=None, **kwargs):
         self._stateCode = stateCode
         self._districtGuid = districtGuid
         self._schoolGuid = schoolGuid
@@ -395,10 +456,11 @@ class QueryHelper():
     '''
     VIEWS = enum(STATE_VIEW=1, DISTRICT_VIEW=2, SCHOOL_VIEW=3)
 
-    def __init__(self, connector, stateCode=None, districtGuid=None, schoolGuid=None):
+    def __init__(self, connector, stateCode=None, districtGuid=None, schoolGuid=None, filters=None):
         self._state_code = stateCode
         self._district_guid = districtGuid
         self._school_guid = schoolGuid
+        self._filters = filters
         self._view = self.VIEWS.STATE_VIEW
         if self._state_code is not None and self._district_guid is None and self._school_guid is None:
             self._view = self.VIEWS.STATE_VIEW
@@ -468,6 +530,9 @@ class QueryHelper():
         query = query.order_by(self._dim_inst_hier.c.district_name, self._dim_asmt.c.asmt_subject.desc())
         query = query.where(self._fact_asmt_outcome.c.state_code == self._state_code)
         query = query.where(self._fact_asmt_outcome.c.status == 'C')
+
+        # apply demographics conditions
+        query = self.apply_filters(query)
         return query
 
     def get_query_for_district_view(self):
@@ -483,6 +548,9 @@ class QueryHelper():
         query = query.order_by(self._dim_inst_hier.c.school_name, self._dim_asmt.c.asmt_subject.desc())
         query = query.where(and_(self._fact_asmt_outcome.c.state_code == self._state_code, self._fact_asmt_outcome.c.district_guid == self._district_guid))
         query = query.where(self._fact_asmt_outcome.c.status == 'C')
+
+        # apply demographics conditions
+        query = self.apply_filters(query)
         return query
 
     def get_query_for_school_view(self):
@@ -495,4 +563,26 @@ class QueryHelper():
         query = query.order_by(self._fact_asmt_outcome.c.asmt_grade, self._dim_asmt.c.asmt_subject.desc())
         query = query.where(and_(self._fact_asmt_outcome.c.state_code == self._state_code, self._fact_asmt_outcome.c.district_guid == self._district_guid, self._fact_asmt_outcome.c.school_guid == self._school_guid))
         query = query.where(self._fact_asmt_outcome.c.status == 'C')
+        return query
+
+    def apply_filters(self, query):
+        '''
+        Appends demographics conditions to the WHERE clause of the query
+
+        :param query: sqlalchemy query for the report to append where clauses to
+        '''
+        # maps internal values to column names of demographics
+#        filter_map = {'isAsian': self._fact_asmt_outcome.c.dmg_eth_asn,
+#                      'isBlack': self._fact_asmt_outcome.c.dmg_eth_blk}
+        filter_map = {}
+
+        if self._filters:
+            for k, v in self._filters.items():
+                column = filter_map.get(k)
+                if column:
+                    query = query.where(and_(column == v))
+                else:
+                    #TODO log
+                    pass
+
         return query

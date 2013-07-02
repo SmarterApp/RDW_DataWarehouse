@@ -39,6 +39,9 @@ common:
     trigger:
       recache:
         enable: False
+        filter.state: [{'Gender':'F', 'isAsian': False}, {'Gender':'M', 'isWhite': True}]
+        filter.district: [{'Gender':'F', 'isAsian': False}]
+        filter.cat.state: [{'Gender':'F'}]
         schedule:
           cron:
             day: '*/1'

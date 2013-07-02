@@ -33,29 +33,29 @@ class TestPreCacheGenerator(Unittest_with_smarter_sqlite):
 
     def testTrigger_precache(self):
         results = prepare_pre_cache(self.tenant, 'NY', '820568d0-ddaa-11e2-a63d-68a86d3c2f82')
-        triggered = trigger_precache(self.tenant, 'NY', results)
+        triggered = trigger_precache(self.tenant, 'NY', results, {})
         self.assertTrue(triggered)
 
     def testTrigger_precacheFail(self):
         results = [{'district_guid': 'I_dont_exist'}]
-        triggered = trigger_precache(self.tenant, 'NY', results)
+        triggered = trigger_precache(self.tenant, 'NY', results, {})
         self.assertFalse(triggered)
 
     def testTrigger_precache_with_invalid_state(self):
         results = [{'district_guid': '123'}]
-        triggered = trigger_precache(self.tenant, 'DU', results)
+        triggered = trigger_precache(self.tenant, 'DU', results, {})
         self.assertFalse(triggered)
 
     def testTrigger_precache_with_empty_results(self):
         results = prepare_pre_cache(self.tenant, 'DU', '820568d0-ddaa-11e2-a63d-68a86d3c2f82')
-        triggered = trigger_precache(self.tenant, 'DU', results)
+        triggered = trigger_precache(self.tenant, 'DU', results, {})
         self.assertFalse(triggered)
 
     def testTrigger_precache_with_unconfigured_region(self):
         # Clears all cache regions
         cache_regions.clear()
         results = prepare_pre_cache(self.tenant, 'NY', '820568d0-ddaa-11e2-a63d-68a86d3c2f82')
-        triggered = trigger_precache(self.tenant, 'NY', results)
+        triggered = trigger_precache(self.tenant, 'NY', results, {})
         self.assertFalse(triggered)
 
 if __name__ == "__main__":

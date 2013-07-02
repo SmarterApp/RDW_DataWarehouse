@@ -106,11 +106,7 @@ ref_table_conf = {
         ('1', 'LZ_CSV', 'dmg_prg_iep', 'STG_SBAC_ASMT_OUTCOME', 'dmg_prg_iep', 'yn'),
         ('1', 'LZ_CSV', 'dmg_prg_lep', 'STG_SBAC_ASMT_OUTCOME', 'dmg_prg_lep', 'yn'),
         ('1', 'LZ_CSV', 'dmg_prg_504', 'STG_SBAC_ASMT_OUTCOME', 'dmg_prg_504', 'yn'),
-        ('1', 'LZ_CSV', 'dmg_tt1_apl', 'STG_SBAC_ASMT_OUTCOME', 'dmg_tt1_apl', 'yn'),
-        ('1', 'LZ_CSV', 'dmg_tt1_elg', 'STG_SBAC_ASMT_OUTCOME', 'dmg_tt1_elg', 'yn'),
-        ('1', 'LZ_CSV', 'dmg_tt1_rcv', 'STG_SBAC_ASMT_OUTCOME', 'dmg_tt1_rcv', 'yn'),
-        ('1', 'LZ_CSV', 'dmg_tt1_swp', 'STG_SBAC_ASMT_OUTCOME', 'dmg_tt1_swp', 'yn'),
-        ('1', 'LZ_CSV', 'dmg_tt1_tap', 'STG_SBAC_ASMT_OUTCOME', 'dmg_tt1_tap', 'yn'),
+        ('1', 'LZ_CSV', 'dmg_prg_tt1', 'STG_SBAC_ASMT_OUTCOME', 'dmg_prg_tt1', 'yn'),
         # Staging to Integration
         ('3', 'STG_SBAC_ASMT_OUTCOME', 'batch_id', 'INT_SBAC_ASMT_OUTCOME', 'batch_id', None),
         ('3', 'STG_SBAC_ASMT_OUTCOME', 'guid_asmt', 'INT_SBAC_ASMT_OUTCOME', 'guid_asmt', None),
@@ -171,11 +167,7 @@ ref_table_conf = {
         ('3', 'STG_SBAC_ASMT_OUTCOME', 'dmg_prg_iep', 'INT_SBAC_ASMT_OUTCOME', 'dmg_prg_iep', None),
         ('3', 'STG_SBAC_ASMT_OUTCOME', 'dmg_prg_lep', 'INT_SBAC_ASMT_OUTCOME', 'dmg_prg_lep', None),
         ('3', 'STG_SBAC_ASMT_OUTCOME', 'dmg_prg_504', 'INT_SBAC_ASMT_OUTCOME', 'dmg_prg_504', None),
-        ('3', 'STG_SBAC_ASMT_OUTCOME', 'dmg_tt1_apl', 'INT_SBAC_ASMT_OUTCOME', 'dmg_tt1_apl', None),
-        ('3', 'STG_SBAC_ASMT_OUTCOME', 'dmg_tt1_elg', 'INT_SBAC_ASMT_OUTCOME', 'dmg_tt1_elg', None),
-        ('3', 'STG_SBAC_ASMT_OUTCOME', 'dmg_tt1_rcv', 'INT_SBAC_ASMT_OUTCOME', 'dmg_tt1_rcv', None),
-        ('3', 'STG_SBAC_ASMT_OUTCOME', 'dmg_tt1_swp', 'INT_SBAC_ASMT_OUTCOME', 'dmg_tt1_swp', None),
-        ('3', 'STG_SBAC_ASMT_OUTCOME', 'dmg_tt1_tap', 'INT_SBAC_ASMT_OUTCOME', 'dmg_tt1_tap', None),
+        ('3', 'STG_SBAC_ASMT_OUTCOME', 'dmg_prg_tt1', 'INT_SBAC_ASMT_OUTCOME', 'dmg_prg_tt1', None),
         # Integration to Target
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'nextval(\'"GLOBAL_REC_SEQ"\')', 'dim_asmt', 'asmt_rec_id', None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'guid_asmt', 'dim_asmt', 'asmt_guid', None),
@@ -305,11 +297,7 @@ ref_table_conf = {
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'dmg_prg_iep', 'fact_asmt_outcome', 'dmg_prg_iep', None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'dmg_prg_lep', 'fact_asmt_outcome', 'dmg_prg_lep', None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'dmg_prg_504', 'fact_asmt_outcome', 'dmg_prg_504', None),
-        ('4', 'INT_SBAC_ASMT_OUTCOME', 'dmg_tt1_apl', 'fact_asmt_outcome', 'dmg_tt1_apl', None),
-        ('4', 'INT_SBAC_ASMT_OUTCOME', 'dmg_tt1_elg', 'fact_asmt_outcome', 'dmg_tt1_elg', None),
-        ('4', 'INT_SBAC_ASMT_OUTCOME', 'dmg_tt1_rcv', 'fact_asmt_outcome', 'dmg_tt1_rcv', None),
-        ('4', 'INT_SBAC_ASMT_OUTCOME', 'dmg_tt1_swp', 'fact_asmt_outcome', 'dmg_tt1_swp', None),
-        ('4', 'INT_SBAC_ASMT_OUTCOME', 'dmg_tt1_tap', 'fact_asmt_outcome', 'dmg_tt1_tap', None)
+        ('4', 'INT_SBAC_ASMT_OUTCOME', 'dmg_prg_tt1', 'fact_asmt_outcome', 'dmg_prg_tt1', None),
     ]
 }
 

@@ -271,7 +271,7 @@ if __name__ == "__main__":
     __user = args.user
     __passwd = args.passwd
     __action = args.action
-    
+
     if __schema is None:
         print("Please specifiy --schema option")
         exit(-1)

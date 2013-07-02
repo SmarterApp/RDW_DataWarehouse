@@ -209,11 +209,11 @@
 	    		{"name":"", "items":[
 	            	{"name":"School Name","index":"name","field":"name","width":186,"style":"ui-ellipsis bold","formatter":"showlink","options":{"linkUrl":"studentList.html", "style":"marginLeft20"},"hidden":true,"sortorder":"asc"}
 	            ]},
-	            {"name":"Math","items":[
-	            	{"name":"Math <a href=# id=sort1>Red</a> | <a href=# id=sort2>Red+Yellow</a> | <a href=# id=sort3>Blue</a>","index":"results.subject1.total","field":"results.subject1.total","width":388,"formatter":"populationBar","options":{"asmt_type":"subject1"},"title":false,"align":"center"}
+	            {"name":"{{subject1}}","items":[
+	            	{"name":"<div id='{{subject1}}_sort'>Select Sort</div>","index":"results.subject1.total","field":"results.subject1.total","width":388,"formatter":"populationBar","options":{"asmt_type":"subject1"},"title":false,"align":"center"}
 	            ]},
 	            {"name":"ELA","items":[
-	            	{"name":"<span></span>","index":"results.subject2.total","field":"results.subject2.total","width":388,"formatter":"populationBar", "options":{"asmt_type":"subject2"}, "title":false,"align":"center"}
+	            	{"name":"<div id='{{subject2}}_sort'>Select Sort</div>","index":"results.subject2.total","field":"results.subject2.total","width":388,"formatter":"populationBar", "options":{"asmt_type":"subject2"}, "title":false,"align":"center"}
 	        	]}
 	        ],
 	    "customViews" : {"school": {"name": "Grade", "link": "studentList.html", "id_name": "asmtGrade"}, 

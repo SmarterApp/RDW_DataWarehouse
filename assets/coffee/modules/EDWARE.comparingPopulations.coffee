@@ -303,24 +303,24 @@ define [
       len = useThisColorsData[subject].length
       while i < len
         colorBar = ''
-        inputValue = ''
+        sortType = ''
         j = 0
         k = 0
         #last row should display "Total Students"
         if i is len - 1
           colorBar = "Total Students"
-          inputValue = "totalStudents"
+          sortType = "totalStudents"
         else
           while j <= len
             #blank div for separator
             if i+1 is j
               colorBar = colorBar.concat("<div >&nbsp;</div>")
-              inputValue = 'colorSort' + i
+              sortType = 'sort' + i
               k = 1
             else
               colorBar = colorBar.concat("<div style='background-color:"+useThisColorsData[subject][j-k].bg_color+";'>&nbsp;</div>")
             j++
-        dropdown_menu.append($("<div class='sortColorBlock'><li><input type='radio' name='"+subject+"_sort'/>"+colorBar+"</li></div>"))
+        dropdown_menu.append($("<div class='sortColorBlock'><li><input type='radio' name='"+subject+"_sort' value='"+sortType+"'/>"+colorBar+"</li></div>"))
         i++
       dropdown.append(caret).append(dropdown_menu)
       $('#content').append(dropdown)

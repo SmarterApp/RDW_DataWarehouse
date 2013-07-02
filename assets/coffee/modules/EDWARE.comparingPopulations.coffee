@@ -124,20 +124,30 @@ define [
           cm.sorttype = myCustomSort3
           grid.trigger("reloadGrid")
           
+        for asmtSubjectKey, asmtSubjectValue of asmtSubjectsData
+          dropdown = createDropdown asmtSubjectKey, asmtSubjectValue, colorsData, defaultColors
+          
         $(".align_button").click ->
           align_button_class = $(this).attr("class")
           if align_button_class.indexOf("align_off") isnt -1
             $(this).removeClass("align_off").addClass("align_on")
-            $(".populationBar").css("width", "200px")
             edwareUtil.setALDAlignmentStatus "on"
+            $("#gbox_gridTable").remove()
+            $(".gridHeight100").append("<table id='gridTable'></table>")
+            # Create compare population grid for State/District/School view
+            edwareGrid.create "gridTable", gridConfig, populationData, summaryData
+            $(".populationBar").css("width", "200px")
             
           else
             $(this).removeClass("align_on").addClass("align_off")
-            $(".populationBar").css("width", "265px")
             edwareUtil.setALDAlignmentStatus "off"
-
-        for asmtSubjectKey, asmtSubjectValue of asmtSubjectsData
-          dropdown = createDropdown asmtSubjectKey, asmtSubjectValue, colorsData, defaultColors
+          
+            $("#gbox_gridTable").remove()
+            $(".gridHeight100").append("<table id='gridTable'></table>")
+            # Create compare population grid for State/District/School view
+            edwareGrid.create "gridTable", gridConfig, populationData, summaryData
+            $(".populationBar").css("width", "265px")
+          
         $('.dropdown-toggle').dropdown()
                     
   # Get population data from server       

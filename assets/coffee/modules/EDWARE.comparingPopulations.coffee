@@ -227,11 +227,11 @@ define [
       # Prepopulate with 100%
       percentages[j] = 100
       j++
-    percentages[len] = data.total
+    percentages[len-1] = data.total
     while(i < len)
       element = intervals[i]
       k = 0
-      while (k < i and i < len)
+      while (k < i)
         percentages[k] = percentages[k] - element.percentage
         k++
       i++

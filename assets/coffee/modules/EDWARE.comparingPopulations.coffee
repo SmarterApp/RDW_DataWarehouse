@@ -190,15 +190,16 @@ define [
     for k of asmtSubjectsData
       j = 0
       while (j < data.length)
-        data[j]['results'][k].intervals = appendColor data[j]['results'][k].intervals, colorsData[k], defaultColors
-        data[j]['results'][k].sort = calculateTotalPercentage data[j]['results'][k]
+        appendColor data[j]['results'][k], colorsData[k], defaultColors
         j++
     data
   
   # Add color for each intervals
-  appendColor = (intervals, colorsData, defaultColors) ->
+  appendColor = (data, colorsData, defaultColors) ->
     i = 0
+    intervals = data.intervals
     len = intervals.length
+    percentages = prepareTotalPercentage data, len
     while (i < len)
       element = intervals[i]
       if colorsData and colorsData[i]
@@ -214,29 +215,32 @@ define [
       
       # format numbers
       element.count = formatNumber element.count
+      
+      # calculate sort percentages
+      percentages = calculateTotalPercentage percentages, i, element.percentage
       i++
-    intervals
+    # attach percentages to data
+    data.percentages = percentages
 
-  calculateTotalPercentage = (data) ->
-    intervals = data.intervals
+  # initialize total percentages for each sort interval
+  prepareTotalPercentage = (data, intervalLength) ->
     percentages = {}
-    len = intervals.length
-    i = 0
     j = 0
-    while (j < len - 1)
+    while (j < intervalLength - 1)
       # Prepopulate with 100%
       percentages[j] = 100
       j++
-    percentages[len-1] = data.total
-    while(i < len)
-      element = intervals[i]
-      k = 0
-      while (k < i)
-        percentages[k] = percentages[k] - element.percentage
-        k++
-      i++
+    percentages[intervalLength-1] = data.total
     percentages
 
+  # calculate percentages for each sort interval
+  calculateTotalPercentage = (percentages, i, currentPercentage) ->
+    k = 0
+    while (k < i)
+      percentages[k] = percentages[k] - currentPercentage
+      k++
+    percentages
+    
   # Add comma as thousand separator to numbers
   # Return 0 if parameter is undefined
   formatNumber = (num) ->

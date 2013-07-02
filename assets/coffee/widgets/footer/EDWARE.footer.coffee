@@ -42,7 +42,7 @@ define [
     output = edwareConfidenceLevelBar.create subject, 300
     $('#legendTemplate .losPerfBar').html(output)
     # use mustache template to display the json data 
-    output = edwareConfidenceLevelBar.create subject, 500
+    output = edwareConfidenceLevelBar.create subject, 640
     $('#legendTemplate .confidenceLevel').html(output)
     
   createLegend = (legend) ->

@@ -6,17 +6,17 @@
 			<h4>Achievement Level Descriptions (ALD):</h4>
 			<table>
 				<tr>
-					<th style="width:17%;">Color</th>
-					<th>Description</th>
-					<th>Score Range</th>
-					<th style="width:17%;"><span>Outside Error Band</span></th>
+					<th class="ALD_table_header" style="width:17%;">Color</th>
+					<th class="ALD_table_header">Description</th>
+					<th class="ALD_table_header">Score Range</th>
+					<th class="ALD_table_header" style="width:17%;"><span>Outside Error Band</span></th>
 				</tr>
 				{{#ALDs}}
 				<tr>
-					<td><div class="block" style="background-color:{{color}};"></div></td>
-					<td>{{description}}</td>
-					<td>{{range}}</td>
-					<td><div class="block" style="background-color:{{color}};"></div></td>
+					<td class="ALD_table_cell"><div class="legend_ALD_color" style="background-color:{{color}};"></div></td>
+					<td class="ALD_table_cell">{{description}}</td>
+					<td class="ALD_table_cell">{{range}}</td>
+					<td class="ALD_table_cell"><div class="legend_ALD_color legend_ALD_trans" style="background-color:{{color}};"></div></td>
 				</tr>
 				{{/ALDs}}
 			</table>
@@ -25,11 +25,7 @@
 			<!-- Claim Score Details -->
 			<h4>Claim Score Details:</h4>
 			<div class="arrowBox">
-				<div class="claim_score_arrow_bar_wrapper"><div class="claim_score_arrow_bar"></div></div>
-				<div class="claim_score_indicator_wrapper"><h5>Overall Score</h5></div>
-			</div>
-			<div class="arrowBox_print printContent">
-				<img src="../images/claim_score.png" style="display: inline; margin: 25px 15px 25px 15px;"/>
+				<img src="../images/claim_score.png" class="claim_score_arrow"/>
 				<div class="claim_score_indicator_wrapper"><h5>Overall Score</h5></div>				
 			</div>
 			<div>
@@ -43,7 +39,7 @@
 	<div class="section overall_score_wrapper">
 		<h4>Overall Score Details:</h4>
 		<div class="overall_score_upper">
-			<div class="indicator desc" style="background-color: #e4c904; color: #000; margin-left:15px;">
+			<div class="indicator_cell desc" style="background-color: #e4c904; color: #000; margin-left:15px;">
 				<strong class="asmtScore">{{asmtScore}}</strong>
 			</div>
 			<img src="../images/OVERALL_upperleft.png" class="overall_upperleft"/>

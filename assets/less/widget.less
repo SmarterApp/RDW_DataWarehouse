@@ -518,7 +518,7 @@ th.ui-th-column div {
   
   .section {
     float: left;
-    width: 96%;
+    width: 94%;
     border-top: dashed 1px #b1b1b1;
     margin: 1% 1% 0 1%;
     padding-top: 10px;
@@ -537,44 +537,20 @@ th.ui-th-column div {
     width: 41%;
     border-left: dashed 1px #b1b1b1;
     padding-left: 3%;
-    background-image: url("../images/overall_claims.png");
-    background-repeat: no-repeat;
-    background-position: 35px 39px;
     
     .arrowBox {
       position: relative;
-      height:80px;
-      background: @color-white url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAFCAYAAABB9hwOAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoTWFjaW50b3NoKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo5MDJGMDJFNjkyOEMxMUUyQTVDNUFEQ0E1OUI4ODREMSIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo5MDJGMDJFNzkyOEMxMUUyQTVDNUFEQ0E1OUI4ODREMSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjkwMkYwMkU0OTI4QzExRTJBNUM1QURDQTU5Qjg4NEQxIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjkwMkYwMkU1OTI4QzExRTJBNUM1QURDQTU5Qjg4NEQxIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+54ZEcAAAAH5JREFUeNpiDAsLYyAAmIA4AIiLofxeIN4AxP9AnJUrV2LVxILHQA4gjgfiEiBWQRK3AuI7QNwHxAuA+Ds2zYxYXCwCxFlAnA3EYgR88wqIpwLxNKDL3+AyGOSqIqgruRhIA9+AeCHIF0AL7sAMtoKGXwA0PCkB/6Dh3wsQYAADOBx2MoTVRAAAAABJRU5ErkJggg==') no-repeat;
-      background-position: 22.95% 25.75%;
-      z-index: -1;
       
-      .claim_score_arrow_bar_wrapper {
-        float: left;
-        display: block;
-        height:55px;
-        width:100px;
-        border-bottom: dashed 1px #b1b1b1;
-        
-          .claim_score_arrow_bar {
-                background-image: -moz-linear-gradient(center top, #565656, #d3d3d3);
-                background-image: -webkit-linear-gradient(top, #565656, #d3d3d3);
-                background-image: -ms-linear-gradient(top, #565656, #d3d3d3);
-                left: 23%; 
-                height: 32px;
-                bottom: 0;
-                margin-bottom: 24px;
-          }
+      .claim_score_arrow {
+        display: inline; 
+        margin: 20px 0px 10px 5px;
       }
       
       .claim_score_indicator_wrapper {
-         float: left;
-         margin-top: 47px;
-         margin-left: 9px;
+          position: relative;
+          top: 10px;
+          display: inline-block;
       }
-    }
-    
-    .arrowBox_print {
-      display: none;
     }
     
     p {
@@ -601,7 +577,7 @@ th.ui-th-column div {
       }
     }
     
-    .indicator {
+    .indicator_cell {
       border-radius: 3px 3px 3px 3px;
       float: left;
       font-size: 12px;
@@ -657,12 +633,12 @@ th.ui-th-column div {
   
     .overall_upperleft {
       margin-left: 3px; 
-      margin-top:  4px;
+      margin-top:  5px;
     }
     
     .overall_uppermid {
       position: relative; 
-      top: 3px;
+      top: 5px;
       margin-left: 57px;
     }
     
@@ -695,7 +671,7 @@ th.ui-th-column div {
     
     .progressbar_indicator300 { 
       background-image: url("../images/css_images.png"); 
-      background-position: -1237px 0;
+      background-position: -1238px 0;
       width: 18px; 
     }
     
@@ -711,33 +687,45 @@ th.ui-th-column div {
       .cutPoints {
         font-size: 10px;
       }
-    } 
+    }
+    
+    .transWrapper {
+      margin-top: 23px;
+    }
   }
   
   table {
-    width: 94%;
+    width: 92%;
+    margin-top: 3%;
     margin-left: 5px;
     border-collapse: collapse;
     font-size: 10px;
     
-    th {
+    th.ALD_table_header {
       font-style: italic;
       font-weight: normal;
       vertical-align: bottom;
     }
     
-    td {
+    td.ALD_table_cell {
       border: 1px solid @color-B4;
       text-align: center;
       font-weight: bold;
       color: @color-black;
       height: 28px;
       
-      div.block {
+      div.legend_ALD_color {
          width: 15px;
          height: 15px;
          display: table;
          margin:auto; 
+      }
+      
+    }
+    
+    th, td {
+      &:last-child {
+        display: none;
       }
     }
   }

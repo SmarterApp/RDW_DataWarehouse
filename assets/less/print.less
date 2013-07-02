@@ -1,6 +1,6 @@
 /* Print css */
 @media print {
-}
+
 .assessmentOtherInfoHeader.show { display: block;}
      #breadcrumb {
         background-image: transparent;
@@ -239,40 +239,16 @@
         }
         
         .claim_score {
-          background-image: none;
-          
           .arrowBox {
-            display: none;
-          }
-          
-          .arrowBox_print {
-            display: block;
-            
-            .claim_score_arrow_bar_wrapper {
-              float: left;
-              display: block;
-              height:55px;
-              width:100px;
-              border-bottom: dashed 1px #b1b1b1;
-              
-                .claim_score_arrow_bar {
-                      background-image: -moz-linear-gradient(center top, #565656, #d3d3d3);
-                      background-image: -webkit-linear-gradient(top, #565656, #d3d3d3);
-                      background-image: -ms-linear-gradient(top, #565656, #d3d3d3);
-                      left: 23%; 
-                      height: 32px;
-                      bottom: 0;
-                      margin-bottom: 24px;
-                }
+            .claim_score_arrow {
+              margin: 45px 15px 25px 15px;
             }
             
             .claim_score_indicator_wrapper {
-               position: relative;
-               top: 10px;
-               display: inline-block;
+                top: 22px;
             }
           }
-          
+        
           p {
             font-size: 14px;
           }
@@ -282,30 +258,24 @@
           display: none;
         }
         
-        .indicator {
+        .indicator_cell {
           border-radius: 5px 5px 5px 5px;
           width: 65px;
           height: 35px;
           font-size: 18px;
-          
-          .asmtScore {
-            vertical-align: middle;
-            display: table-cell;
-          }
         }
         
         .confidenceLevel {
           display: inline-block;
-          margin: 0 0 0 11%;
+          margin: 0 0 0 98px;
           
           .aldDescText {
             display: none;
           }
           
-          .progressbar_indicator500 { 
-            background-image: url("../images/css_images.png"); 
-            background-position: -1300px 0;
-            width: 200px;
+          .progressbar_indicator640 { 
+            background-position: -1255px 0;
+            width: 20px;
           }
         }
         
@@ -331,6 +301,7 @@
         
         .overall_score_lower {
           margin-top: -7%; 
+          margin-left: 3%;
         }
         
         .desc_overall_score_indicator {
@@ -347,14 +318,14 @@
         .overall_uppermid {
           position: relative; 
           top: 13px;
-          margin-left: 15%;
+          margin-left: 21%;
         }
         
         .overall_right {
           display:inline-block;
           position: relative;
           bottom: 102px;
-          left: -11%;
+          margin-left: 40px;
           
           .desc_scaled_score_range {
             display: inline;
@@ -365,7 +336,7 @@
         }
         
         .overall_lowerleft {
-          margin: 0 16.5% 8px 2%;
+          margin: 0 21% 8px 2%;
         }
         
         .overall_lowermid {
@@ -374,20 +345,28 @@
         
         table {
           font-size: 16px;
+          margin-top: 0;
           
-          th {
-            font-style: italic;
-            font-weight: normal;
-          }
-          
-          td {
+          td.ALD_table_cell {
             height: 38px;
             
-            div.block {
+            div.legend_ALD_color {
                width: 20px;
                height: 20px;
+            }
+            
+            div.legend_ALD_trans {
+              background-image: url("../images/ISRleftBracket_print.png");
+              background-position: 0px -20px;
+            }
+          }
+          
+          th, td {
+            &:last-child {
+              display: table-cell;
             }
           }
         }
   
     }
+}

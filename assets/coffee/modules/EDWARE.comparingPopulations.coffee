@@ -135,7 +135,9 @@ define [
             $(this).removeClass("align_on").addClass("align_off")
             $(".populationBar").css("width", "265px")
             edwareUtil.setALDAlignmentStatus "off"
-          
+
+        for asmtSubjectKey, asmtSubjectValue of asmtSubjectsData
+          dropdown = createDropdown asmtSubjectKey, asmtSubjectValue, colorsData, defaultColors
         $('.dropdown-toggle').dropdown()
                     
   # Get population data from server       
@@ -272,9 +274,14 @@ define [
       reportType = 'state'
     reportType
 
-  createDropdown = (subject, asmtSubject, colorsData) ->
+  # create dropdown menu for color bars
+  createDropdown = (subject, asmtSubject, colorsData, defaultColors) ->
+    # get <div> object where dropdown menu will be appear
     asmtSubjectSort = $('#'+asmtSubject+"_sort")
+    # get position of the dev
     position = asmtSubjectSort.offset()
+    
+    # prepare dropdown menu canvas
     if position isnt null
       dropdown = $("<div class='dropdown' style='position:absolute;z-index:800;'></div>")
       dropdown.css(position)
@@ -283,10 +290,37 @@ define [
       caret = $("<a class='dropdown-toggle' id='dLabel' role='button'>"+asmtSubjectSortValue+"<b class='caret'></b></a>")
       dropdown_menu = $("<ul class='dropdown-menu' role='menu' aria-labelledby='dLabel'></ul>")
       
+      #prepare color bars
       i = 0
-      len = colorsData[subject].length
+      #find out number of colors
+      useThisColorsData={}
+      if colorsData is 'undefined' or colorsData is null or $.isEmptyObject(colorsData) is true
+        useThisColorsData[subject] = defaultColors
+      else
+        useThisColorsData = colorsData
+      
+      #build color bars
+      len = useThisColorsData[subject].length
       while i < len
-        dropdown_menu.append($("<li><input type='radio' name='"+subject+"_sort'/>"+i+"</li>"))
+        colorBar = ''
+        inputValue = ''
+        j = 0
+        k = 0
+        #last row should display "Total Students"
+        if i is len - 1
+          colorBar = "Total Students"
+          inputValue = "totalStudents"
+        else
+          while j <= len
+            #blank div for separator
+            if i+1 is j
+              colorBar = colorBar.concat("<div >&nbsp;</div>")
+              inputValue = 'colorSort' + i
+              k = 1
+            else
+              colorBar = colorBar.concat("<div style='background-color:"+useThisColorsData[subject][j-k].bg_color+";'>&nbsp;</div>")
+            j++
+        dropdown_menu.append($("<div class='sortColorBlock'><li><input type='radio' name='"+subject+"_sort'/>"+colorBar+"</li></div>"))
         i++
       dropdown.append(caret).append(dropdown_menu)
       $('#content').append(dropdown)

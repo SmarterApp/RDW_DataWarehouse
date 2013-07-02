@@ -170,7 +170,7 @@ UDL_METADATA = {
                 ('dmg_prg_iep', False, 'varchar(256)', '', True, 'IEP (Individualized Education Program)'),
                 ('dmg_prg_lep', False, 'varchar(256)', '', True, 'LEP (Limited English Proficiency)'),
                 ('dmg_prg_504', False, 'varchar(256)', '', True, 'Section 504'),
-                ('dmg_prg_tt1', False, 'bool', '', True, 'Title I Status'),
+                ('dmg_prg_tt1', False, 'varchar(256)', '', True, 'Title I Status'),
                 ('date_assessed', False, 'varchar(256)', '', True, "Date on which student was assessed"),
                 ('score_asmt', False, 'varchar(256)', '', True, "Assessment Score"),
                 ('score_asmt_min', False, 'varchar(256)', '', True, "Assessment Score - Minimum"),

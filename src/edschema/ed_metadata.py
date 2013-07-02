@@ -239,11 +239,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                Column('dmg_prg_iep', Boolean, nullable=True),
                                Column('dmg_prg_lep', Boolean, nullable=True),
                                Column('dmg_prg_504', Boolean, nullable=True),
-                               Column('dmg_tt1_apl', Boolean, nullable=True),
-                               Column('dmg_tt1_elg', Boolean, nullable=True),
-                               Column('dmg_tt1_rcv', Boolean, nullable=True),
-                               Column('dmg_tt1_swp', Boolean, nullable=True),
-                               Column('dmg_tt1_tap', Boolean, nullable=True),
+                               Column('dmg_prg_tt1', Boolean, nullable=True),
                                )
 
     Index('fact_asmt_outcome_idx', assessment_outcome.c.asmnt_outcome_rec_id, unique=True)

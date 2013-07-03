@@ -11,6 +11,8 @@ smarter.egg-info?
 selenium-2.29.0-wgen
 OpenAM_customize_deploy_script.sh
 npm-debug.log
+DataGeneration.egg-info?
+
 # IDE generated files #
 #######################
 __pycache__
@@ -37,3 +39,14 @@ udl2/*.pyc
 udl2/.project
 udl2/test.log
 udl2/src/test.log
+smarter.egg-info
+.idea/
+
+#########################
+# csv's will be ignored #
+# added gitignore file  # 
+# to the csv directory  #
+#########################
+data_gen/.project
+data_gen/DataGeneration/.settings
+data_gen/DataGeneration/dataload

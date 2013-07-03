@@ -143,7 +143,7 @@
     },
     "legendInfo": {
     	"sample_intervals" : {
-    		"asmt_score": 1789, "asmt_score_min": 1200, "asmt_score_max": 2400
+    		"asmt_score": 1789, "asmt_score_interval": 65, "score_color" : "#e4c904"
     	},
         "individual_student_report": {
         	"relative_strength_text": "The arrows show your claim score compared to your overall score. An up arrow means relative strength, while a down arrow may indicate a relative weakness.",

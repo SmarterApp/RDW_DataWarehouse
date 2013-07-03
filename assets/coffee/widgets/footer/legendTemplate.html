@@ -18,7 +18,10 @@
 					<td class="ALD_table_cell"><div class="legend_ALD_color" style="background-color:{{color}};"></div></td>
 					<td class="ALD_table_cell">{{description}}</td>
 					<td class="ALD_table_cell">{{range}}</td>
-					<td class="ALD_table_cell"><div class="legend_ALD_color legend_ALD_trans" style="background-color:{{color}};"></div></td>
+					<td class="ALD_table_cell">
+						<div class="legend_ALD_color" style="background-color:{{color}};position: absolute; margin-left: 30px; margin-top: 5px;"></div>
+						<img src="../images/ISR_shades.png"/>
+					</td>
 				</tr>
 				{{/ALDs}}
 			</table>
@@ -41,7 +44,7 @@
 	<div class="section overall_score_wrapper">
 		<h4>Overall Score Details:</h4>
 		<div class="overall_score_upper">
-			<div class="indicator_cell desc" style="background-color: #e4c904; color: #000; margin-left:15px;">
+			<div class="indicator_cell desc" style="background-color: {{scoreColor}}; color: #000; margin-left:15px;">
 				<strong class="asmtScore">{{asmtScore}}</strong>
 			</div>
 			<img src="../images/OVERALL_upperleft.png" class="overall_upperleft"/>

@@ -50,6 +50,7 @@ define [
     data['ALDs'] = createALDs legend['subject']
     data['legendInfo'] = legend['legendInfo']
     data['asmtScore'] = legend['subject'].asmt_score
+    data['scoreColor'] = legend['subject'].score_color
     Mustache.to_html legendTemplate, data
 
   createALDs = (items) ->

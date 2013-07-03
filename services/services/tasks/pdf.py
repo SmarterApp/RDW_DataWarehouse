@@ -52,8 +52,8 @@ def generate(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT, coo
             shell = True
         prepare_path(outputfile)
         wkhtmltopdf_option = copy.deepcopy(options)
-        #if grayscale:
-        #    wkhtmltopdf_option += ['-g']
+        if grayscale:
+            wkhtmltopdf_option += ['--grayscale']
         wkhtmltopdf_option += ['--cookie', cookie_name, cookie, url, outputfile]
         subprocess.call(pdf_procs + wkhtmltopdf_option, timeout=timeout, shell=shell)
     except subprocess.TimeoutExpired:

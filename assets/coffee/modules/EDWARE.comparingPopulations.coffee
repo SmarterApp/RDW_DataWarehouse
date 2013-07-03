@@ -21,6 +21,17 @@ define [
   myCustomSort3 = (cell, rowObject) ->
       percent = rowObject.results.subject1.intervals[3].percentage
   
+  active_subject = ""
+  active_sort = ""
+  
+  popBarSort = (cell, rowObject) ->
+    for result of rowObject.results
+      cur = rowObject.results[result]
+      if cur.asmt_subject == active_subject
+        value = cur.sort[active_sort]
+        break
+    value
+
   # Add header to the page
   edwareUtil.getHeader()
   #
@@ -91,7 +102,7 @@ define [
           role = edwareUtil.getRole user_info
           uid = edwareUtil.getUid user_info
           edwareUtil.renderFeedback(role, uid, "comparing_populations_" + reportType, feedbackData)
-      
+        
         # Show tooltip for population bar on mouseover
         $(document).on
           mouseenter: ->
@@ -370,13 +381,27 @@ define [
           #unselect radio buttons
           $.each $('.inputColorBlock'), (index, inputColorBlockElement) ->
             $(inputColorBlockElement).prop('checked', false)
-
+          
         $(this).children('input').prop('checked',true)
         $('#'+$(this).attr('id')+'_input').attr('checked',true)
         subject = this.id.substring(0,this.id.indexOf('_'))
         targetParentId = subject+'_DropdownMenu'
         colorBar = $(this).children('div').html()
         $('#'+targetParentId+' div').html(colorBar)
+        
+        
+        # Set the active sort index and subject
+        active_sort = $('#' + $(this).attr('id') ).index()
+        active_subject = subject
+        
+        grid = $("#gridTable")
+        grid.trigger('reloadGrid')
+        
+        #Set sort type - can this be done in json?
+        cm = grid.getGridParam("colModel")[2];
+        cm.sorttype = popBarSort
+        cm = grid.getGridParam("colModel")[1];
+        cm.sorttype = popBarSort
         
     , '.colorsBlock'
   createPopulationGrid: createPopulationGrid

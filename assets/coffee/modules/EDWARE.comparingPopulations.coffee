@@ -328,9 +328,12 @@ define [
         dropdown = $("<div class='dropdown' style='position:absolute;z-index:800;'></div>")
         dropdown.css(position)
         asmtSubjectSortValue = asmtSubjectSort.html()
-        asmtSubjectSort.css('display', 'none')
-        caret = $("<a class='dropdown-toggle' id='"+asmtSubject+"_DropdownMenu' role='button'><div id='dropdown_title' style='float:left'>"+asmtSubjectSortValue+"</div><b class='caret'></b></a>")
-        dropdown_menu = $("<ul class='dropdown-menu' role='menu' aria-labelledby='dLabel'></ul>")
+        asmtSubjectSort.css('visibility', 'hidden')
+        asmtSubjectSort.parent().css('text-align','right')
+        asmtSubjectSort.parent().css('left','-10px')
+        asmtSubjectSort.parent().children('span').css('visibility', 'hidden')
+        caret = $("<a class='dropdown-toggle' id='"+asmtSubject+"_DropdownMenu' role='button'><div id='dropdown_title' style='float:left;'>"+asmtSubjectSortValue+"</div><b class='caret'></b></a>")
+        dropdown_menu = $("<ul class='dropdown-menu' style='min-width:200px' role='menu' aria-labelledby='dLabel'></ul>")
         
         #prepare color bars
         i = 0
@@ -377,6 +380,9 @@ define [
           asmtSubjectSort = $("#" + subject + "_sort")
           asmtSubjectSortValue = asmtSubjectSort.html()
           $(dropdown_a_element).children("#dropdown_title").html asmtSubjectSortValue
+          $(dropdown_a_element).children("#dropdown_title").css('margin-top','0px')
+          # hide sort arrows
+          asmtSubjectSort.parent().children('span').css('visibility', 'hidden')
           
           #unselect radio buttons
           $.each $('.inputColorBlock'), (index, inputColorBlockElement) ->
@@ -385,10 +391,13 @@ define [
         $(this).children('input').prop('checked',true)
         $('#'+$(this).attr('id')+'_input').attr('checked',true)
         subject = this.id.substring(0,this.id.indexOf('_'))
+        asmtSubjectSort = $("#" + subject + "_sort")
         targetParentId = subject+'_DropdownMenu'
         colorBar = $(this).children('div').html()
         $('#'+targetParentId+' div').html(colorBar)
         
+        # display sort arrows
+        asmtSubjectSort.parent().children('span').css('visibility', 'visible')
         
         # Set the active sort index and subject
         active_sort = $('#' + $(this).attr('id') ).index()

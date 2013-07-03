@@ -502,6 +502,7 @@ table {
   padding: 0;
 }
 .gridHeight100 {
+
   tr.jqgrow td {
     height: 100px;
   }
@@ -513,7 +514,7 @@ table {
   
   .ui-jqgrid tr.jqgrow td {
     white-space: normal !important;
-    
+    padding: 4px 2px;
     a {
       float: left;
     }
@@ -817,18 +818,20 @@ table {
     }
 }
 
-.sortColorBlock {
-  margin-bottom: 5px;
-  margin-left: 10px;
+.inputColorBlock {
+  margin-right: 10px;
+}
+.colorsBlock {
   li {
     line-height: 5px;
   }
-  div {
-    display: inline-block;
-    width: 20px;
-    height: 10px;
-  }
   input {
-    margin-right: 10px;
+    float: left;
+    margin: 0 5px 0
   }
+}
+.colorBlock {
+  display: inline-block;
+  width: 20px;
+  height: 10px;
 }

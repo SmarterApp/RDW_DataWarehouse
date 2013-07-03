@@ -29,3 +29,4 @@ edschema/database/tests/resources/tmpl
 */build/
 config/development.ini
 */docs/_build
+edschema/.pydevproject

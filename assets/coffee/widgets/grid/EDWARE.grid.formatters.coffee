@@ -10,6 +10,9 @@ define [
   # * EDWARE grid formatters
   # * Handles all the methods for displaying cutpoints, link in the grid
   # 
+  
+  math_count = 1
+  ela_count = 1
     
   showlink = (value, options, rowObject) ->
     link = options.colModel.formatoptions.linkUrl
@@ -75,14 +78,12 @@ define [
     subject["alignmentALDStatus"] = edwareUtil.getALDAlignmentStatus()
     if subject
       results = edwarePopulationBar.create subject
-      
+      if subject["alignmentALDStatus"] is "on"
+        return "<div class = 'populationBar' style='margin-left:" + subject.alignment + "px;'>" + results + "</div><div>" + subject.total + "</div>"
+          
       if subject["alignmentALDStatus"] is "off"
         "<div class = 'populationBar'>" + results + "</div><div>" + subject.total + "</div>"
-      else
-        "<div class = 'populationBar' style='margin-left: 40px'>" + results + "</div><div>" + subject.total + "</div>"
-    else
-      ""
- 
+
   showlink: showlink
   showOverallConfidence: showOverallConfidence
   showConfidence: showConfidence

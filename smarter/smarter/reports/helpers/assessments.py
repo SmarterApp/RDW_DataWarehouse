@@ -14,10 +14,11 @@ def get_overall_asmt_interval(result):
     return result['asmt_score'] - result['asmt_score_range_min']
 
 
-def get_cut_points(result):
+def get_cut_points(asmt_meta):
     '''
     Given a dictionary, return a formatted results for assessment cutpoints and colors
     '''
+    result = asmt_meta.copy()
     result['cut_point_intervals'] = []
 
     custom_metadata = result['asmt_custom_metadata']

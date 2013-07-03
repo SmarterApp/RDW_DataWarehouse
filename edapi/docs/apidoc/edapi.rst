@@ -41,6 +41,14 @@ API Documentation
     :undoc-members:
     :show-inheritance:
 
+:mod:`reports` Module
+-------------------
+
+.. automodule:: edapi.reports
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`utils` Module
 -------------------
 
@@ -49,6 +57,14 @@ API Documentation
     :undoc-members:
     :show-inheritance:
 
+:mod:`validation` Module
+-------------------
+
+.. automodule:: edapi.validation
+    :members:
+    :undoc-members:
+    :show-inheritance:
+    
 :mod:`views` Module
 -------------------
 

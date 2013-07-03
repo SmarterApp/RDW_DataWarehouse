@@ -1,5 +1,5 @@
 '''
-Entry point for edauth
+This is the top-level package for EdAuth.
 
 '''
 from pyramid.authorization import ACLAuthorizationPolicy
@@ -12,16 +12,17 @@ from edauth.security.utils import AESCipher, ICipher
 from zope import component
 import logging
 from apscheduler.scheduler import Scheduler
-from edauth.security.session_manager import cleanup_sessions
 from edauth.security.session_backend import ISessionBackend, SessionBackend
 
 
 logger = logging.getLogger(__name__)
 
 
-# this is automatically called by consumer of edauth when it calls config.include(edauth)
 def includeme(config):
-
+    '''
+    Performs initialization tasks, such as setting configuration options.
+    It is automatically called by a consumer of edauth when it calls config.include(edauth).
+    '''
     settings = config.get_settings()
 
     setting_prefix = 'auth.policy.'
@@ -67,43 +68,8 @@ def includeme(config):
     config.scan(ignore='edauth.test')
 
 
-# Sets the list of known roles for authentication
-# roles is list of tuples
 def set_roles(roles):
+    '''
+    Sets the list of known roles for authentication. Roles is a list of tuples.
+    '''
     Roles.set_roles(roles)
-
-
-def run_cron_cleanup(settings):
-    # read cron time entries
-    # and pack in cron_time map
-    cron_time = {}
-    year = settings.get("cleanup.schedule.cron.year")
-    month = settings.get("cleanup.schedule.cron.month")
-    day = settings.get("cleanup.schedule.cron.day")
-    week = settings.get("cleanup.schedule.cron.week")
-    day_of_week = settings.get("cleanup.schedule.cron.day_of_week")
-    hour = settings.get("cleanup.schedule.cron.hour")
-    minute = settings.get("cleanup.schedule.cron.minute")
-    second = settings.get("cleanup.schedule.cron.second")
-
-    if year is not None:
-        cron_time['year'] = year
-    if month is not None:
-        cron_time['month'] = month
-    if day is not None:
-        cron_time['day'] = day
-    if week is not None:
-        cron_time['week'] = week
-    if day_of_week is not None:
-        cron_time['day_of_week'] = day_of_week
-    if hour is not None:
-        cron_time['hour'] = hour
-    if minute is not None:
-        cron_time['minute'] = minute
-    if second is not None:
-        cron_time['second'] = second
-
-    if len(cron_time) > 0:
-        sched = Scheduler()
-        sched.start()
-        sched.add_cron_job(cleanup_sessions, **cron_time)

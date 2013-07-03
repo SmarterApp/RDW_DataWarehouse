@@ -4,8 +4,9 @@ Created on Jan 18, 2013
 @author: dip
 '''
 import unittest
-from edapi.utils import get_report_dict_value, generate_report, generate_report_config,\
-    expand_field, prepare_params, add_configuration_header
+from edapi.utils import get_dict_value, add_configuration_header
+from edapi.reports import generate_report, generate_report_config,\
+    expand_field, prepare_params
 from edapi.exceptions import ReportNotFoundError, InvalidParameterError
 from edapi.tests.dummy import DummyValidator, Dummy
 from edapi.tests.test_logger import TestLogger, test_function, test_display_name,\
@@ -65,16 +66,16 @@ class TestUtils(unittest.TestCase):
     def test_get_dict_value_with_key_not_found(self):
         dictionary = {}
         key = "test"
-        self.assertRaises(Exception, get_report_dict_value, dictionary, key)
+        self.assertRaises(Exception, get_dict_value, dictionary, key)
 
     def test_get_dict_value_with_custom_exception(self):
         dictionary = {}
         key = "test"
-        self.assertRaises(ReportNotFoundError, get_report_dict_value, dictionary, key, ReportNotFoundError)
+        self.assertRaises(ReportNotFoundError, get_dict_value, dictionary, key, ReportNotFoundError)
 
     def test_get_dict_value_with_valid_key(self):
         dictionary = {"test": "value"}
-        value = get_report_dict_value(dictionary, "test")
+        value = get_dict_value(dictionary, "test")
         self.assertEqual(value, dictionary.get("test"))
 
     def test_generate_report_with_failed_validation(self):

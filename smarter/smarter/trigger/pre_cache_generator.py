@@ -11,6 +11,7 @@ from smarter.trigger.database import constants
 from smarter.database.smarter_connector import SmarterDBConnection
 from smarter.database.udl_stats_connector import StatsDBConnection
 from smarter.reports.helpers.constants import Constants
+import ast
 
 
 logger = logging.getLogger('smarter')
@@ -54,7 +55,7 @@ def prepare_pre_cache(tenant, state_code, batch_guid):
         return results
 
 
-def trigger_precache(tenant, state_code, results):
+def trigger_precache(tenant, state_code, results, filter_config):
     '''
     call pre-cache function
 
@@ -68,7 +69,7 @@ def trigger_precache(tenant, state_code, results):
     logger.debug('trigger_precache has [%d] results to process', len(results))
     if len(results) > 0:
         triggered = True
-        cache_trigger = CacheTrigger(tenant)
+        cache_trigger = CacheTrigger(tenant, filter_config)
         try:
             logger.debug('pre-caching state[%s]', state_code)
             cache_trigger.recache_state_view_report(state_code)
@@ -105,13 +106,14 @@ def precached_task(settings):
 
     :param dict settings:  configuration for the application
     '''
+    filter_settings = parse_filter_config(settings)
     udl_stats_results = prepare_ed_stats()
     for udl_stats_result in udl_stats_results:
         tenant = udl_stats_result.get(constants.Constants.TENANT)
         state_code = udl_stats_result.get(constants.Constants.STATE_CODE)
         batch_guid = udl_stats_result.get(constants.Constants.BATCH_GUID)
         fact_asmt_outcome_results = prepare_pre_cache(tenant, state_code, batch_guid)
-        triggered_success = trigger_precache(tenant, state_code, fact_asmt_outcome_results)
+        triggered_success = trigger_precache(tenant, state_code, fact_asmt_outcome_results, filter_settings)
         if triggered_success:
             update_ed_stats_for_precached(tenant, state_code, batch_guid)
 
@@ -123,3 +125,18 @@ def run_cron_recache(settings):
      :param dict settings:  configuration for the application
     '''
     run_cron_job(settings, 'trigger.recache.', precached_task)
+
+
+def parse_filter_config(settings, prefix='trigger.recache.filter.'):
+    '''
+    Parse filtering criteria for caching state and district reports
+    Returns a python dictionary with keys: state or district or [tenantName].state, or [tenantName].district
+    '''
+    options = {}
+    prefix_len = len(prefix)
+    for key, val in settings.items():
+        if key.startswith(prefix):
+            new_key = key[prefix_len:]
+            # cast it to its type
+            options[new_key] = ast.literal_eval(val)
+    return options

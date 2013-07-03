@@ -8,7 +8,6 @@ import uuid
 import re
 from edauth.security.session import Session
 from edauth.security.roles import Roles
-from edauth.database.connector import EdauthDBConnection
 from edauth.security.session_backend import get_session_backend
 from edauth.security.tenant import get_tenant_name
 
@@ -144,9 +143,3 @@ def __get_roles(attributes):
     if not roles or Roles.has_undefined_roles(roles):
         roles.append(Roles.get_invalid_role())
     return roles
-
-
-def cleanup_sessions():
-    with EdauthDBConnection() as connection:
-        user_session = connection.get_table('user_session')
-        connection.execute(user_session.delete())

@@ -352,6 +352,20 @@ define [
         $('#content').append(dropdown)
     $(document).on
       click: (e) ->
+        # reset dropdown state
+        $.each $(".dropdown"), (index, dropdownElement) ->
+          # set to 'Select Sort'
+          dropdown_a_element = $(dropdownElement).children('a')
+          id = $(dropdown_a_element).attr("id")
+          subject = id.substring(0, id.indexOf("_"))
+          asmtSubjectSort = $("#" + subject + "_sort")
+          asmtSubjectSortValue = asmtSubjectSort.html()
+          $(dropdown_a_element).children("#dropdown_title").html asmtSubjectSortValue
+          
+          #unselect radio buttons
+          $.each $('.inputColorBlock'), (index, inputColorBlockElement) ->
+            $(inputColorBlockElement).prop('checked', false)
+
         $(this).children('input').prop('checked',true)
         $('#'+$(this).attr('id')+'_input').attr('checked',true)
         subject = this.id.substring(0,this.id.indexOf('_'))

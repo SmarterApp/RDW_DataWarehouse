@@ -17,7 +17,7 @@ from services.celeryconfig import TIMEOUT
 import services
 from celery.exceptions import MaxRetriesExceededError
 
-pdf_procs = ['/bin/wkhtmltopdf']
+pdf_procs = ['wkhtmltopdf']
 pdf_defaults = ['--enable-javascript', '--page-size', 'Letter', '--print-media-type', '-l', '--javascript-delay', '6000', '--footer-center', 'Page [page] of [toPage]', '--footer-font-size', '9']
 
 OK = 0
@@ -52,8 +52,8 @@ def generate(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT, coo
             shell = True
         prepare_path(outputfile)
         wkhtmltopdf_option = copy.deepcopy(options)
-        if grayscale:
-            wkhtmltopdf_option += ['-g']
+        #if grayscale:
+        #    wkhtmltopdf_option += ['-g']
         wkhtmltopdf_option += ['--cookie', cookie_name, cookie, url, outputfile]
         subprocess.call(pdf_procs + wkhtmltopdf_option, timeout=timeout, shell=shell)
     except subprocess.TimeoutExpired:

@@ -136,8 +136,8 @@ define [
             $(".populationBar").css("width", "265px")
             edwareUtil.setALDAlignmentStatus "off"
 
-        for asmtSubjectKey, asmtSubjectValue of asmtSubjectsData
-          dropdown = createDropdown asmtSubjectKey, asmtSubjectValue, colorsData, defaultColors
+        
+        dropdown = createDropdown asmtSubjectsData, colorsData, defaultColors
         $('.dropdown-toggle').dropdown()
                     
   # Get population data from server       
@@ -300,62 +300,65 @@ define [
     reportType
 
   # create dropdown menu for color bars
-  createDropdown = (subject, asmtSubject, colorsData, defaultColors) ->
-    # get <div> object where dropdown menu will be appear
-    asmtSubjectSort = $('#'+asmtSubject+"_sort")
-    # get position of the dev
-    position = asmtSubjectSort.offset()
-    
-    # prepare dropdown menu canvas
-    if position isnt null
-      dropdown = $("<div class='dropdown' style='position:absolute;z-index:800;'></div>")
-      dropdown.css(position)
-      asmtSubjectSortValue = asmtSubjectSort.html()
-      asmtSubjectSort.html ''
-      caret = $("<a class='dropdown-toggle' id='"+asmtSubject+"_DropdownMenu' role='button'><span>"+asmtSubjectSortValue+"</span><b class='caret'></b></a>")
-      dropdown_menu = $("<ul class='dropdown-menu' role='menu' aria-labelledby='dLabel'></ul>")
+  createDropdown = (asmtSubjectsData, colorsData, defaultColors) ->
+    for subject, asmtSubject of asmtSubjectsData
+      # get <div> object where dropdown menu will be appear
+      asmtSubjectSort = $('#'+asmtSubject+"_sort")
+      # get position of the dev
+      position = asmtSubjectSort.offset()
       
-      #prepare color bars
-      i = 0
-      #find out number of colors
-      useThisColorsData={}
-      if colorsData is 'undefined' or colorsData is null or $.isEmptyObject(colorsData) is true
-        useThisColorsData[subject] = defaultColors
-      else
-        useThisColorsData = colorsData
-      
-      #build color bars
-      len = useThisColorsData[subject].length
-      while i < len
-        colorBar = ''
-        sortID = ''
-        j = 0
-        k = 0
-        #last row should display "Total Students"
-        sortID = asmtSubject + '_sort' + i
-        if i is len - 1
-          colorBar = "Total Students"
+      # prepare dropdown menu canvas
+      if position isnt null
+        dropdown = $("<div class='dropdown' style='position:absolute;z-index:800;'></div>")
+        dropdown.css(position)
+        asmtSubjectSortValue = asmtSubjectSort.html()
+        asmtSubjectSort.css('display', 'none')
+        caret = $("<a class='dropdown-toggle' id='"+asmtSubject+"_DropdownMenu' role='button'><div id='dropdown_title' style='float:left'>"+asmtSubjectSortValue+"</div><b class='caret'></b></a>")
+        dropdown_menu = $("<ul class='dropdown-menu' role='menu' aria-labelledby='dLabel'></ul>")
+        
+        #prepare color bars
+        i = 0
+        #find out number of colors
+        useThisColorsData={}
+        if colorsData is 'undefined' or colorsData is null or $.isEmptyObject(colorsData) is true
+          useThisColorsData[subject] = defaultColors
         else
-          while j <= len
-            #blank div for separator
-            if i+1 is j
-              colorBar = colorBar.concat("<div class='colorBlock'>&nbsp;</div>")
-              k = 1
-            else
-              colorBar = colorBar.concat("<div class='colorBlock' style='background-color:"+useThisColorsData[subject][j-k].bg_color+";'>&nbsp;</div>")
-            j++
-        dropdown_menu.append($("<div class='sortColorsBlock'><li id='"+sortID+"' class='sortColorsGroup'><input type='radio' name='"+asmtSubject+"_sort' /><span>"+colorBar+"</span></li></div>"))
-        i++
-      dropdown.append(caret).append(dropdown_menu)
-      $('#content').append(dropdown)
-      $(document).on
-        click: (e) ->
-          e.preventDefault()
-          id = $(this).attr('id')
-          targetParentId=id.substring(0,id.indexOf('_')) + '_DropdownMenu'
-          
-          colorBar = $(this).children('span').html()
-          $('#'+targetParentId+' span').html(colorBar)
-      , '.sortColorsGroup'
+          useThisColorsData = colorsData
+        
+        #build color bars
+        len = useThisColorsData[subject].length
+        while i < len
+          colorBar = ''
+          sortID = ''
+          j = 0
+          k = 0
+          #last row should display "Total Students"
+          name = asmtSubject + '_sort'
+          sortID = name+'_'+i
+          if i is len - 1
+            colorBar = "Total Students"
+          else
+            while j <= len
+              #blank div for separator
+              if i+1 is j
+                colorBar = colorBar.concat("<div class='colorBlock'>&nbsp;</div>")
+                k = 1
+              else
+                colorBar = colorBar.concat("<div class='colorBlock' style='background-color:"+useThisColorsData[subject][j-k].bg_color+";'>&nbsp;</div>")
+              j++
+          dropdown_menu.append($("<li id='"+sortID+"' class='colorsBlock'><input id='"+sortID+"_input' type='radio' name='"+name+"' value='"+sortID+"' class='inputColorBlock'/><div>"+colorBar+"</div></li>"))
+          i++
+        dropdown.append(caret).append(dropdown_menu)
+        $('#content').append(dropdown)
+    $(document).on
+      click: (e) ->
+        $(this).children('input').prop('checked',true)
+        $('#'+$(this).attr('id')+'_input').attr('checked',true)
+        subject = this.id.substring(0,this.id.indexOf('_'))
+        targetParentId = subject+'_DropdownMenu'
+        colorBar = $(this).children('div').html()
+        $('#'+targetParentId+' div').html(colorBar)
+        
+    , '.colorsBlock'
   createPopulationGrid: createPopulationGrid
   

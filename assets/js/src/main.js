@@ -10,6 +10,7 @@ require({
 		edwareDataProxy: 'EDWARE.dataProxy',
 		edwareGrid: '../widgets/grid/EDWARE.grid.tablegrid',
 		edwareGridFormatters: '../widgets/grid/EDWARE.grid.formatters',
+		edwareGridSorters: '../widgets/grid/EDWARE.grid.sorters',
 		edwareStudentList: 'EDWARE.studentList',
 		edwareIndividualStudent: 'EDWARE.individualStudent',
 		edwareComparingPopulations: 'EDWARE.comparingPopulations',

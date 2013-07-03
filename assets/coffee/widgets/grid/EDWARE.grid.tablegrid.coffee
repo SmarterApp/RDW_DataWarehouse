@@ -2,8 +2,9 @@ define [
   'jquery'
   'jqGrid'
   'edwareUtil'
-  'edwareGridFormatters'
-], ($, jqGrid, edwareUtil, edwareGridFormatters) ->
+  'edwareGridFormatters',
+  'edwareGridSorters'
+], ($, jqGrid, edwareUtil, edwareGridFormatters, edwareGridSorters) ->
   #
   # * EDWARE grid
   # * The module contains EDWARE grid plugin and grid creation method
@@ -47,7 +48,7 @@ define [
   
               colModelItem.formatter = (if (edwareGridFormatters[item1.formatter]) then edwareGridFormatters[item1.formatter] else item1.formatter)  if item1.formatter
               colModelItem.formatoptions = item1.options  if item1.options
-              colModelItem.sorttype = item1.sorttype  if item1.sorttype
+              colModelItem.sorttype = (if (edwareGridSorters[item1.sorttype]) then edwareGridSorters[item1.sorttype] else item1.sorttype)  if item1.sorttype
               colModelItem.sortable = item1.sortable
               colModelItem.align = item1.align  if item1.align
               

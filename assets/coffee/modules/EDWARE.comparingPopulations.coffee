@@ -12,26 +12,7 @@ define [
   
   alignmentPercent = ""
   summaryData = []
-  myCustomSort1 = (cell, rowObject) ->
-      percent = rowObject.results.subject1.intervals[0].percentage
-      
-  myCustomSort2 = (cell, rowObject) ->
-      percent = rowObject.results.subject1.intervals[1].percentage     
-      
-  myCustomSort3 = (cell, rowObject) ->
-      percent = rowObject.results.subject1.intervals[3].percentage
   
-  active_subject = ""
-  active_sort = ""
-  
-  popBarSort = (cell, rowObject) ->
-    for result of rowObject.results
-      cur = rowObject.results[result]
-      if cur.asmt_subject == active_subject
-        value = cur.sort[active_sort]
-        break
-    value
-
   # Add header to the page
   edwareUtil.getHeader()
   #
@@ -121,18 +102,6 @@ define [
             e = $(this)
             e.popover("hide")
         , ".progress"
-        
-        $("#sort1").click ->
-          cm.sorttype = myCustomSort1
-          grid.trigger("reloadGrid")
-          
-        $("#sort2").click ->
-          cm.sorttype = myCustomSort2
-          grid.trigger("reloadGrid")
-            
-        $("#sort3").click ->
-          cm.sorttype = myCustomSort3
-          grid.trigger("reloadGrid")
           
         $(".align_button").click ->
           align_button_class = $(this).attr("class")
@@ -399,18 +368,8 @@ define [
         # display sort arrows
         asmtSubjectSort.parent().children('span').css('visibility', 'visible')
         
-        # Set the active sort index and subject
-        active_sort = $('#' + $(this).attr('id') ).index()
-        active_subject = subject
-        
-        grid = $("#gridTable")
-        grid.trigger('reloadGrid')
-        
-        #Set sort type - can this be done in json?
-        cm = grid.getGridParam("colModel")[2];
-        cm.sorttype = popBarSort
-        cm = grid.getGridParam("colModel")[1];
-        cm.sorttype = popBarSort
+        # Reload the grid
+        $("#gridTable").trigger('reloadGrid')
         
     , '.colorsBlock'
   createPopulationGrid: createPopulationGrid

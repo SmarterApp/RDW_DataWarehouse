@@ -191,7 +191,7 @@ class TestServices(Unittest_with_smarter_sqlite):
         self.assertFalse(has_context)
 
     def test_send_pdf_request_with_always_generate_flag(self):
-        self.__config.registry.settings['pdf.always.generate'] = 'True'
+        self.__config.registry.settings['pdf.always_generate'] = 'True'
         studentGuid = '3181376a-f3a8-40d3-bbde-e65fdd9f4494'
         params = {}
         params['studentGuid'] = studentGuid

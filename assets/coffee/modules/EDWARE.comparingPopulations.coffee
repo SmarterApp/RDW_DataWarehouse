@@ -300,21 +300,27 @@ define [
       
       # prepare dropdown menu canvas
       if asmtSubjectSort isnt null
-        dropdown = $("<div class='dropdown' style='position:absolute;z-index:800;'></div>")
+        #create dropdown and set to the center of each colomn
+        dropdown = $("<div class='dropdown'></div>")
         position = getCenterForDropdown(asmtSubject, asmtSubjectSort.width())
         dropdown.css(position)
+        
+        #read value 'Select Sort' then hide.
         asmtSubjectSortValue = asmtSubjectSort.html()
         asmtSubjectSort.css('visibility', 'hidden')
+        #move sort up/down to right side, then hide
         asmtSubjectSort.parent().css('text-align','right')
         asmtSubjectSort.parent().css('left','-10px')
         asmtSubjectSort.parent().children('span').css('visibility', 'hidden')
-        caret = $("<a class='dropdown-toggle' id='"+asmtSubject+"_DropdownMenu' role='button'><div id='dropdown_title' style='float:left;'>"+asmtSubjectSortValue+"</div><b class='caret'></b></a>")
-        dropdown_menu = $("<ul class='dropdown-menu' style='min-width:220px' role='menu' aria-labelledby='dLabel'></ul>")
+        
+        caret = $("<a class='dropdown-toggle' id='"+asmtSubject+"_DropdownMenu' role='button'><div class='dropdown_title'>"+asmtSubjectSortValue+"</div><b class='caret'></b></a>")
+        dropdown_menu = $("<ul class='dropdown-menu' role='menu' aria-labelledby='dLabel'></ul>")
         
         #prepare color bars
         i = 0
         #find out number of colors
         useThisColorsData={}
+        # detect custom color or defined color
         if colorsData is 'undefined' or colorsData is null or $.isEmptyObject(colorsData) is true
           useThisColorsData[subject] = defaultColors
         else
@@ -328,20 +334,20 @@ define [
           j = 0
           k = 0
           #last row should display "Total Students"
-          name = asmtSubject + '_sort'
-          sortID = name+'_'+i
+          sortID = asmtSubject + '_sort_'+i
           if i is len - 1
-            colorBar = "Total Students"
+            colorBar = "<div class='totalStudents'>Total Students</div>"
           else
             while j <= len
               #blank div for separator
               if i+1 is j
                 colorBar = colorBar.concat("<div class='colorBlock'>&nbsp;</div>")
                 k = 1
+              #set background color
               else
                 colorBar = colorBar.concat("<div class='colorBlock' style='background-color:"+useThisColorsData[subject][j-k].bg_color+";'>&nbsp;</div>")
               j++
-          dropdown_menu.append($("<li id='"+sortID+"' class='colorsBlock'><input id='"+sortID+"_input' type='radio' name='"+name+"' value='"+sortID+"' class='inputColorBlock'/><div>"+colorBar+"</div></li>"))
+          dropdown_menu.append($("<li id='"+sortID+"' class='colorsBlock'><input id='"+sortID+"_input' type='radio' name='colorBlock_sort' value='"+sortID+"' class='inputColorBlock'/><div>"+colorBar+"</div></li>"))
           i++
         dropdown.append(caret).append(dropdown_menu)
         $('#content').append(dropdown)
@@ -354,28 +360,31 @@ define [
         # reset dropdown state
         $.each $(".dropdown"), (index, dropdownElement) ->
           # reset to 'Select Sort'
+          # find anchor element which belongs to dropdown element.
           dropdown_a_element = $(dropdownElement).children('a')
+          #find subject name
           id = $(dropdown_a_element).attr("id")
           subject = id.substring(0, id.indexOf("_"))
           asmtSubjectSortValue = asmtSubjectSort.html()
-          dropdown_a_element_dropdown_title = $(dropdown_a_element).children("#dropdown_title")
+          #set 'Select Sort'
+          dropdown_a_element_dropdown_title = $(dropdown_a_element).children(".dropdown_title")
           dropdown_a_element_dropdown_title.html asmtSubjectSortValue
           dropdown_a_element_dropdown_title.css('margin-top','0px')
+          #set to the center of table header column
           position = getCenterForDropdown(subject, dropdown_a_element_dropdown_title.width())
           $(dropdownElement).css(position)
           # hide sort arrows
           asmtSubjectSort.parent().children('span').css('visibility', 'hidden')
           
-          #unselect radio buttons
-          $.each $('.inputColorBlock'), (index, inputColorBlockElement) ->
-            $(inputColorBlockElement).prop('checked', false)
-          
-        $(this).children('input').prop('checked',true)
+        # select radio button.
         $('#'+$(this).attr('id')+'_input').attr('checked',true)
+        # find subject name
         subject = this.id.substring(0,this.id.indexOf('_'))
+        # obtain selected color bar and set it to table header
         asmtSubjectSort = $("#" + subject + "_sort")
         targetParentId = subject+'_DropdownMenu'
         colorBar = $(this).children('div').html()
+        #set the center of table header
         $('#'+targetParentId+' div').html(colorBar)
         position = getCenterForDropdown(subject, $('#'+targetParentId+' div').width())
         $('#' + targetParentId).parent().css(position)

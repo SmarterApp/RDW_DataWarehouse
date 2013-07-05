@@ -391,12 +391,12 @@ define [
         asmtSubjectSort.parent().children('span').css('visibility', 'visible')
         
         # Enable sorting, Disable sorting in the other
-        index = 1
+        enableSortIndex = 1
         disableSortIndex = 2
         if subject == "ELA"
-          index = 2
+          enableSortIndex = 2
           disableSortIndex = 1
-        $("#gridTable").getGridParam("colModel")[index].sortable = true
+        $("#gridTable").getGridParam("colModel")[enableSortIndex].sortable = true
         $("#gridTable").getGridParam("colModel")[disableSortIndex].sortable = false
         
         # Reload the grid and setting active sort column, subject is the index of the column

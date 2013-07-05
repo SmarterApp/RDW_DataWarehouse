@@ -178,7 +178,7 @@ define [
       while (j < data.length)
         appendColor data[j]['results'][k], colorsData[k], defaultColors
         data[j]['results'][k].alignmentLine =  (((summaryDataAlignment) * 200) / 100) + 10
-        data[j]['results'][k].alignment =  (((summaryDataAlignment - data[j]['results'][k].sort[1]) * 200) / 100) + 10
+        data[j]['results'][k].alignment =  (((summaryDataAlignment - 100 + data[j]['results'][k].sort[1]) * 200) / 100) + 10
         j++
     data
   
@@ -187,7 +187,7 @@ define [
     i = 0
     intervals = data.intervals
     len = intervals.length
-    sort = prepareTotalPercentage data, len
+    sort = prepareTotalPercentage data.total, len
     while (i < len)
       element = intervals[i]
       if colorsData and colorsData[i]
@@ -211,22 +211,25 @@ define [
     data.sort = sort
 
   # initialize total percentages for each sort interval
-  prepareTotalPercentage = (data, intervalLength) ->
+  prepareTotalPercentage = (total, intervalLength) ->
     percentages = {}
     j = 0
     while (j < intervalLength - 1)
-      # Prepopulate with 100%
-      percentages[j] = 100
+      # Prepopulate
+      percentages[j] = 0
       j++
-    percentages[intervalLength-1] = data.total
+    percentages[intervalLength-1] = total
     percentages
 
   # calculate percentages for each sort interval
   calculateTotalPercentage = (percentages, i, currentPercentage) ->
-    k = 0
-    while (k < i)
-      percentages[k] = percentages[k] - currentPercentage
-      k++
+    k = 2
+    if (i == 0)
+      percentages[i] = currentPercentage
+    else
+      while (k <= i)
+        percentages[k-1] = percentages[k-1] + currentPercentage
+        k++
     percentages
     
   # Add comma as thousand separator to numbers
@@ -341,6 +344,10 @@ define [
           i++
         dropdown.append(caret).append(dropdown_menu)
         $('#content').append(dropdown)
+        
+        # Disable sorting
+        $("#gridTable").getGridParam("colModel")[1].sortable = false
+        $("#gridTable").getGridParam("colModel")[2].sortable = false
     $(document).on
       click: (e) ->
         # reset dropdown state
@@ -371,8 +378,18 @@ define [
         # display sort arrows
         asmtSubjectSort.parent().children('span').css('visibility', 'visible')
         
-        # Reload the grid
-        $("#gridTable").trigger('reloadGrid')
+        # Enable sorting, Disable sorting in the other
+        index = 1
+        disableSortIndex = 2
+        if subject == "ELA"
+          index = 2
+          disableSortIndex = 1
+        $("#gridTable").getGridParam("colModel")[index].sortable = true
+        $("#gridTable").getGridParam("colModel")[disableSortIndex].sortable = false
+        
+        # Reload the grid and setting active sort column, subject is the index of the column
+        $('#gridTable').sortGrid(subject, true, 'asc');
+
         
     , '.colorsBlock'
   createPopulationGrid: createPopulationGrid

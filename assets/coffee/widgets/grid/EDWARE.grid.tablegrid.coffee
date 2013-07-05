@@ -43,7 +43,7 @@ define [
               colNames.push item1.name
               colModelItem =
                 name: item1.field
-                index: item1.field
+                index: item1.index
                 width: item1.width
   
               colModelItem.formatter = (if (edwareGridFormatters[item1.formatter]) then edwareGridFormatters[item1.formatter] else item1.formatter)  if item1.formatter

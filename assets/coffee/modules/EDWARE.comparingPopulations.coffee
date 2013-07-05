@@ -102,29 +102,27 @@ define [
             e = $(this)
             e.popover("hide")
         , ".progress"
-          
+        
+        
+        #   
         $(".align_button").click ->
           align_button_class = $(this).attr("class")
-          grid = $("#gridTable")
-          cm = grid.getGridParam("colModel")[2];            
+          grid = $("#gridTable")         
           if align_button_class.indexOf("align_off") isnt -1
             $(this).removeClass("align_off").addClass("align_on")
             edwareUtil.setALDAlignmentStatus "on"
             grid.trigger("reloadGrid")         
-            $(".populationBar").css("width", "200px")
-            $(".alignmentLine").css("display", "block")        
+            edwareUtil.formatBarAlignment()        
             
           else
             $(this).removeClass("align_on").addClass("align_off")
             edwareUtil.setALDAlignmentStatus "off"
             grid.trigger("reloadGrid")
-            $(".populationBar").css("width", "265px")
-            $(".alignmentLine").css("display", "none")  
-
+            edwareUtil.formatBarAlignment() 
         
         dropdown = createDropdown asmtSubjectsData, colorsData, defaultColors
         $('.dropdown-toggle').dropdown()
-  
+            
   # Get population data from server       
   getPopulationData = (sourceURL, params, callback) ->
     
@@ -403,8 +401,8 @@ define [
         
         # Reload the grid and setting active sort column, subject is the index of the column
         $('#gridTable').sortGrid(subject, true, 'asc');
-
-        
+        # Set/reset bar alignment as per the alignment status
+        edwareUtil.formatBarAlignment() 
     , '.colorsBlock'
   getCenterForDropdown = (subject_name, width) ->
     position = $('#'+subject_name+'_sort').parent().offset()

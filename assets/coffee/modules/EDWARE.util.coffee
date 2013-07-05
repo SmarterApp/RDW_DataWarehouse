@@ -151,6 +151,17 @@ define [
   showPdfCSS = ->
     $('head').append("<link rel='stylesheet' type='text/css' href='../css/pdf.css' />");
     
+  # Change population bar width as per alignment on/off status
+  formatBarAlignment = ->
+    status = getALDAlignmentStatus()
+    if status is "on"
+      $(".populationBar").css("width", "200px")
+      $(".alignmentLine").css("display", "block")
+      
+    if status is "off"
+      $(".populationBar").css("width", "265px")
+      $(".alignmentLine").css("display", "none")
+    
   getConstants: getConstants
   displayErrorMessage: displayErrorMessage
   getUrlParams: getUrlParams 
@@ -166,3 +177,4 @@ define [
   showPdfCSS : showPdfCSS
   setALDAlignmentStatus: setALDAlignmentStatus
   getALDAlignmentStatus: getALDAlignmentStatus
+  formatBarAlignment: formatBarAlignment

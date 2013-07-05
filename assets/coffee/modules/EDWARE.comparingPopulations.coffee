@@ -296,11 +296,12 @@ define [
       # get <div> object where dropdown menu will be appear
       asmtSubjectSort = $('#'+asmtSubject+"_sort")
       # get position of the dev
-      position = asmtSubjectSort.offset()
+      #position = asmtSubjectSort.offset()
       
       # prepare dropdown menu canvas
-      if position isnt null
+      if asmtSubjectSort isnt null
         dropdown = $("<div class='dropdown' style='position:absolute;z-index:800;'></div>")
+        position = getCenterForDropdown(asmtSubject, asmtSubjectSort.width())
         dropdown.css(position)
         asmtSubjectSortValue = asmtSubjectSort.html()
         asmtSubjectSort.css('visibility', 'hidden')
@@ -308,7 +309,7 @@ define [
         asmtSubjectSort.parent().css('left','-10px')
         asmtSubjectSort.parent().children('span').css('visibility', 'hidden')
         caret = $("<a class='dropdown-toggle' id='"+asmtSubject+"_DropdownMenu' role='button'><div id='dropdown_title' style='float:left;'>"+asmtSubjectSortValue+"</div><b class='caret'></b></a>")
-        dropdown_menu = $("<ul class='dropdown-menu' style='min-width:200px' role='menu' aria-labelledby='dLabel'></ul>")
+        dropdown_menu = $("<ul class='dropdown-menu' style='min-width:220px' role='menu' aria-labelledby='dLabel'></ul>")
         
         #prepare color bars
         i = 0
@@ -352,14 +353,16 @@ define [
       click: (e) ->
         # reset dropdown state
         $.each $(".dropdown"), (index, dropdownElement) ->
-          # set to 'Select Sort'
+          # reset to 'Select Sort'
           dropdown_a_element = $(dropdownElement).children('a')
           id = $(dropdown_a_element).attr("id")
           subject = id.substring(0, id.indexOf("_"))
-          asmtSubjectSort = $("#" + subject + "_sort")
           asmtSubjectSortValue = asmtSubjectSort.html()
-          $(dropdown_a_element).children("#dropdown_title").html asmtSubjectSortValue
-          $(dropdown_a_element).children("#dropdown_title").css('margin-top','0px')
+          dropdown_a_element_dropdown_title = $(dropdown_a_element).children("#dropdown_title")
+          dropdown_a_element_dropdown_title.html asmtSubjectSortValue
+          dropdown_a_element_dropdown_title.css('margin-top','0px')
+          position = getCenterForDropdown(subject, dropdown_a_element_dropdown_title.width())
+          $(dropdownElement).css(position)
           # hide sort arrows
           asmtSubjectSort.parent().children('span').css('visibility', 'hidden')
           
@@ -374,6 +377,8 @@ define [
         targetParentId = subject+'_DropdownMenu'
         colorBar = $(this).children('div').html()
         $('#'+targetParentId+' div').html(colorBar)
+        position = getCenterForDropdown(subject, $('#'+targetParentId+' div').width())
+        $('#' + targetParentId).parent().css(position)
         
         # display sort arrows
         asmtSubjectSort.parent().children('span').css('visibility', 'visible')
@@ -392,5 +397,10 @@ define [
 
         
     , '.colorsBlock'
+  getCenterForDropdown = (subject_name, width) ->
+    position = $('#'+subject_name+'_sort').parent().offset()
+    position.left = position.left+$('#'+subject_name+'_sort').parent().width()/2-width/2
+    position
+    
   createPopulationGrid: createPopulationGrid
   

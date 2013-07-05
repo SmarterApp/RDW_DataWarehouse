@@ -112,12 +112,14 @@ define [
             edwareUtil.setALDAlignmentStatus "on"
             grid.trigger("reloadGrid")         
             $(".populationBar").css("width", "200px")
+            $(".alignmentLine").css("display", "block")        
             
           else
             $(this).removeClass("align_on").addClass("align_off")
             edwareUtil.setALDAlignmentStatus "off"
             grid.trigger("reloadGrid")
             $(".populationBar").css("width", "265px")
+            $(".alignmentLine").css("display", "none")  
 
         
         dropdown = createDropdown asmtSubjectsData, colorsData, defaultColors

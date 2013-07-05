@@ -79,10 +79,10 @@ define [
     if subject
       results = edwarePopulationBar.create subject
       if subject["alignmentALDStatus"] is "on"
-        return "<div class='barContainer'><div class = 'populationBar' style='margin-left:" + subject.alignment + "px;'>" + results + "</div><div class='text-right'>" + subject.total + "</div><div class='alignmentLine' style='margin-left:" + subject.alignmentLine + "px;'></div></div>"
+        return "<div class='barContainer'><div class = 'populationBar' style='margin-left:" + subject.alignment + "px;'>" + results + "</div><div class='text-right'>" + subject.total + "</div><div class='alignmentLine active' style='margin-left:" + subject.alignmentLine + "px;'></div></div>"
           
       if subject["alignmentALDStatus"] is "off"
-        "<div class = 'populationBar'>" + results + "</div><div>" + subject.total + "</div>"
+        "<div class='barContainer'><div class = 'populationBar'>" + results + "</div><div>" + subject.total + "</div><div class='alignmentLine' style='margin-left:" + subject.alignmentLine + "px;'></div></div>"
 
   showlink: showlink
   showOverallConfidence: showOverallConfidence

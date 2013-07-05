@@ -111,14 +111,12 @@ define [
           if align_button_class.indexOf("align_off") isnt -1
             $(this).removeClass("align_off").addClass("align_on")
             edwareUtil.setALDAlignmentStatus "on"
-            grid.trigger("reloadGrid")         
-            edwareUtil.formatBarAlignment()        
+            grid.trigger("reloadGrid")      
             
           else
             $(this).removeClass("align_on").addClass("align_off")
             edwareUtil.setALDAlignmentStatus "off"
-            grid.trigger("reloadGrid")
-            edwareUtil.formatBarAlignment() 
+            grid.trigger("reloadGrid") 
         
         dropdown = createDropdown asmtSubjectsData, colorsData, defaultColors
         $('.dropdown-toggle').dropdown()
@@ -401,9 +399,8 @@ define [
         
         # Reload the grid and setting active sort column, subject is the index of the column
         $('#gridTable').sortGrid(subject, true, 'asc');
-        # Set/reset bar alignment as per the alignment status
-        edwareUtil.formatBarAlignment() 
     , '.colorsBlock'
+    
   getCenterForDropdown = (subject_name, width) ->
     position = $('#'+subject_name+'_sort').parent().offset()
     position.left = position.left+$('#'+subject_name+'_sort').parent().width()/2-width/2

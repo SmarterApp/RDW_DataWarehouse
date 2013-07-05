@@ -145,57 +145,57 @@
     "students": {
 		"{{subject1}}_{{subject2}}": [
 				{"name":"", "items": [
-					{"name":"Students","index":"Students","field":"student_full_name","width":205,"style":"ui-ellipsis bold", "formatter":"showlink", "options":{"linkUrl":"indivStudentReport.html"}, "hidden":true, "sortorder":"asc"}
+					{"name":"Students","index":"student_full_name","field":"student_full_name","width":205,"style":"ui-ellipsis bold", "formatter":"showlink", "options":{"linkUrl":"indivStudentReport.html"}, "hidden":true, "sortorder":"asc"}
 				]},
 				{"name":"{{subject1}}","items":[
-					{"name":"Overall Score<div id='subject1_perfBar' class='header_perfBar'></div>","index":"Overall","field":"assessments.subject1.asmt_score","width":170,"formatter":"performanceBar","options":{"asmt_type":"subject1"},"sorttype":"int","align":"center","title":false},
-					{"name":"Teacher","index":"Teacher","field":"assessments.subject1.teacher_full_name","width":204,"style":"ui-ellipsis","resizable":false}
+					{"name":"Overall Score<div id='subject1_perfBar' class='header_perfBar'></div>","index":"assessments.subject1.asmt_score","field":"assessments.subject1.asmt_score","width":170,"formatter":"performanceBar","options":{"asmt_type":"subject1"},"sorttype":"int","align":"center","title":false},
+					{"name":"Teacher","index":"assessments.subject1.teacher_full_name","field":"assessments.subject1.teacher_full_name","width":204,"style":"ui-ellipsis","resizable":false}
 					]
 				},
 				{"name":"{{subject2}}","items":[
-					{"name":"Overall Score<div id='subject2_perfBar' class='header_perfBar'></div>","index":"Overall","field":"assessments.subject2.asmt_score","width":170,"formatter":"performanceBar","options":{"asmt_type":"subject2"},"sorttype":"int","align":"center","title":false},
-					{"name":"Teacher","index":"Teacher","field":"assessments.subject2.teacher_full_name","width":204,"style":"ui-ellipsis","resizable":false}
+					{"name":"Overall Score<div id='subject2_perfBar' class='header_perfBar'></div>","index":"assessments.subject2.asmt_score","field":"assessments.subject2.asmt_score","width":170,"formatter":"performanceBar","options":{"asmt_type":"subject2"},"sorttype":"int","align":"center","title":false},
+					{"name":"Teacher","index":"assessments.subject2.teacher_full_name","field":"assessments.subject2.teacher_full_name","width":204,"style":"ui-ellipsis","resizable":false}
 					]
 				}
 			],
 			"{{subject1}}": [
 				{"name":"", "items": [
-					{"name":"Students","index":"Students","field":"student_full_name","width":205,"style":"ui-ellipsis bold", "formatter":"showlink", "options":{"linkUrl":"indivStudentReport.html"}, "hidden":true, "sortorder":"asc"}
+					{"name":"Students","index":"student_full_name","field":"student_full_name","width":205,"style":"ui-ellipsis bold", "formatter":"showlink", "options":{"linkUrl":"indivStudentReport.html"}, "hidden":true, "sortorder":"asc"}
 				]},
 				{"name":"{{subject1}}","items":[			
-					{"name":"Overall Score<div id='subject1_perfBar' class='header_perfBar'></div>","index":"Overall","field":"assessments.subject1.asmt_score","width":170,"formatter":"performanceBar","options":{"asmt_type":"subject1"},"sorttype":"int","align":"center","title":false},
-					{"name":"Teacher","index":"Teacher","field":"assessments.subject1.teacher_full_name","width":155,"style":"ui-ellipsis","resizable":false}]
+					{"name":"Overall Score<div id='subject1_perfBar' class='header_perfBar'></div>","index":"assessments.subject1.asmt_score","field":"assessments.subject1.asmt_score","width":170,"formatter":"performanceBar","options":{"asmt_type":"subject1"},"sorttype":"int","align":"center","title":false},
+					{"name":"Teacher","index":"assessments.subject1.teacher_full_name","field":"assessments.subject1.teacher_full_name","width":155,"style":"ui-ellipsis","resizable":false}]
 				},
 				{"name": "<p class='claim_name'>{{claims.subject1.0.name}}</p>", "items": [
-					{"name":"{{claims.subject1.0.name2}}","index":"{{claims.subject1.0.name2}}","field":"assessments.subject1.claims.0.score","width":140,"formatter":"showConfidence","sorttype":"int","align":"center"}]
+					{"name":"{{claims.subject1.0.name2}}","index":"assessments.subject1.claims.0.score","field":"assessments.subject1.claims.0.score","width":140,"formatter":"showConfidence","sorttype":"int","align":"center"}]
 				},
 				{"name": "<p class='claim_name'>{{claims.subject1.1.name}}</p>", "items": [
-					{"name":"{{claims.subject1.1.name2}}","index":"{{claims.subject1.1.name2}}","field":"assessments.subject1.claims.1.score","width":140,"formatter":"showConfidence","sorttype":"int","align":"center"}]
+					{"name":"{{claims.subject1.1.name2}}","index":"assessments.subject1.claims.1.score","field":"assessments.subject1.claims.1.score","width":140,"formatter":"showConfidence","sorttype":"int","align":"center"}]
 				},
 				{"name": "<p class='claim_name'>{{claims.subject1.2.name}}</p>", "items": [
-					{"name":"{{claims.subject1.2.name2}}","index":"{{claims.subject1.2.name2}}","field":"assessments.subject1.claims.2.score","width":140,"formatter":"showConfidence","sorttype":"int","align":"center"}]
+					{"name":"{{claims.subject1.2.name2}}","index":"assessments.subject1.claims.2.score","field":"assessments.subject1.claims.2.score","width":140,"formatter":"showConfidence","sorttype":"int","align":"center"}]
 				}
 			],
 			"{{subject2}}": [
 				{"name":"", "items": [
-					{"name":"Students","index":"Students","field":"student_full_name","width":205,"style":"ui-ellipsis bold", "formatter":"showlink", "options":{"linkUrl":"indivStudentReport.html"}, "hidden":true, "sortorder":"asc"}
+					{"name":"Students","index":"student_full_name","field":"student_full_name","width":205,"style":"ui-ellipsis bold", "formatter":"showlink", "options":{"linkUrl":"indivStudentReport.html"}, "hidden":true, "sortorder":"asc"}
 				]},
 				{"name":"{{subject2}}","items":[
-					{"name":"Overall Score<div id='subject2_perfBar' class='header_perfBar'></div>","index":"Overall","field":"assessments.subject2.asmt_score","width":170,"formatter":"performanceBar","options":{"asmt_type":"subject2"},"sorttype":"int","align":"center","title":false},
-					{"name":"Teacher","index":"Teacher","field":"assessments.subject2.teacher_full_name","width":155,"style":"ui-ellipsis","resizable":false}
+					{"name":"Overall Score<div id='subject2_perfBar' class='header_perfBar'></div>","index":"assessments.subject2.asmt_score","field":"assessments.subject2.asmt_score","width":170,"formatter":"performanceBar","options":{"asmt_type":"subject2"},"sorttype":"int","align":"center","title":false},
+					{"name":"Teacher","index":"assessments.subject2.teacher_full_name","field":"assessments.subject2.teacher_full_name","width":155,"style":"ui-ellipsis","resizable":false}
 					]
 				},
 				{"name": "<p class='claim_name'>{{claims.subject2.0.name}}</p>", "items": [
-					{"name":"{{claims.subject2.0.name2}}","index":"{{claims.subject2.claims.0.name2}}","field":"assessments.subject2.claims.0.score","width":103,"formatter":"showConfidence","sorttype":"int","align":"center"}]
+					{"name":"{{claims.subject2.0.name2}}","index":"assessments.subject2.claims.0.score","field":"assessments.subject2.claims.0.score","width":103,"formatter":"showConfidence","sorttype":"int","align":"center"}]
 				},
 				{"name": "<p class='claim_name'>{{claims.subject2.1.name}}</p>", "items": [
-					{"name":"{{claims.subject2.1.name2}}","index":"{{claims.subject2.1.name2}}","field":"assessments.subject2.claims.1.score","width":104,"formatter":"showConfidence","sorttype":"int","align":"center"}]
+					{"name":"{{claims.subject2.1.name2}}","index":"assessments.subject2.claims.1.score","field":"assessments.subject2.claims.1.score","width":104,"formatter":"showConfidence","sorttype":"int","align":"center"}]
 				},
 				{"name": "<p class='claim_name'>{{claims.subject2.2.name}}</p>", "items": [
-					{"name":"{{claims.subject2.2.name2}}","index":"{{claims.subject2.2.name2}}","field":"assessments.subject2.claims.2.score","width":104,"formatter":"showConfidence","sorttype":"int","align":"center"}]
+					{"name":"{{claims.subject2.2.name2}}","index":"assessments.subject2.claims.2.score","field":"assessments.subject2.claims.2.score","width":104,"formatter":"showConfidence","sorttype":"int","align":"center"}]
 				},
 				{"name": "<p class='claim_name'>{{claims.subject2.3.name}}</p>", "items": [
-					{"name":"{{claims.subject2.3.name2}}","index":"{{claims.subject2.3.name2}}","field":"assessments.subject2.claims.3.score","width":104,"formatter":"showConfidence","sorttype":"int","align":"center"}]
+					{"name":"{{claims.subject2.3.name2}}","index":"assessments.subject2.claims.3.score","field":"assessments.subject2.claims.3.score","width":104,"formatter":"showConfidence","sorttype":"int","align":"center"}]
 				}
 			],
 		"customViews": {"{{subject1}}_{{subject2}}": "{{subject1}} & {{subject2}} Summative",

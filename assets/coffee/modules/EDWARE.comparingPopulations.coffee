@@ -175,6 +175,7 @@ define [
       summaryDataAlignment = summaryData[0].results[k].intervals[0].percentage + summaryData[0].results[k].intervals[1].percentage
       while (j < data.length)
         appendColor data[j]['results'][k], colorsData[k], defaultColors
+        data[j]['results'][k].alignmentLine =  (((summaryDataAlignment) * 200) / 100) + 10
         data[j]['results'][k].alignment =  (((summaryDataAlignment - data[j]['results'][k].sort[1]) * 200) / 100) + 10
         j++
     data

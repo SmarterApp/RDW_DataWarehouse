@@ -226,16 +226,12 @@ define [
         
         # Report info and legend for print version, Grayscale logo for print version
         $($("#footerLinks").html()).clone().appendTo("#print_reportInfoContent")
-        #if params['grayscale'] isnt 'true'
-        #  $("#print_reportInfoContent .legendPopup img").attr("src", "../images/legend_IndivStudent_color_print.png")
-        #else
-        #  $("#print_reportInfoContent .legendPopup img").attr("src", "../images/legend_IndivStudent_gray_print.png")
-        #  $(".printHeader .logo img").attr("src", "../images/smarter_printlogo_gray.png")
-        
-        #$("#print_reportInfoContent .legendPopup img").attr("width", "850")
-        #$("#print_reportInfoContent .legendPopup img").attr("height", "710")
+        if params['grayscale'] is 'true'
+          $(".printHeader .logo img").attr("src", "../images/smarter_printlogo_gray.png")
         
   createSampleInterval = (subject, sample_interval) ->
+    # merge sample and subject information
+    # the return value will be used to generate legend html page
     subject = $.extend(true, {}, subject, sample_interval)
     
   #

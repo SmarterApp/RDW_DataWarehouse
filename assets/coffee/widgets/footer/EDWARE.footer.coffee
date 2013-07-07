@@ -6,22 +6,19 @@ define [
   "text!edwareFooterHtml"
   "text!edwareLegendTemplate"
 ], ($, Mustache, bootstrap, edwareConfidenceLevelBar, footerTemplate, legendTemplate) ->
-  
-  edwareLOSHeaderConfidenceLevelBarTemplate = "<div class='progress' style='width: {{bar_width}}px;'>" +
-                                              "{{#cut_point_intervals}}" +
-                                              "<div class='bar' style='background-color: {{bg_color}}; background-image: -moz-linear-gradient(center top , {{bg_color}}, {{bg_color}}); background-image: -webkit-linear-gradient(top , {{bg_color}}, {{bg_color}}); background-image: -ms-linear-gradient(top , {{bg_color}}, {{bg_color}}); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr={{bg_color}}, endColorstr={{bg_color}}, GradientType=0); background-repeat: repeat-x; color: {{text_color}}; width: {{asmt_cut_point}}px;'></div>" +
-                                              "{{/cut_point_intervals}}" +
-                                              "</div>"
-                                              
+                                           
   $.fn.generateFooter = (reportName, content, legend) ->
     self = this
     data = {}
+    # keep these images to display legend on Cpop and LOS two reports
     if reportName is 'list_of_students'
       data['imageFileName'] = 'legend_ListofStudents.png'
     else if reportName is 'comparing_populations'
       data['imageFileName'] = 'legend_comparepop.png'
     
     data['report_info'] = content[reportName]
+    # create legend
+    # for the time being, we show legend in html format only on ISR
     if legend
       legend_info = createLegend legend
       data['legend_info'] = legend_info
@@ -39,21 +36,27 @@ define [
     
   createConfidenceLevelBar = (subject) ->
     # use mustache template to display the json data 
+    # show 300px performance bar on html page
     output = edwareConfidenceLevelBar.create subject, 300
     $('#legendTemplate .losPerfBar').html(output)
-    # use mustache template to display the json data 
+    # show 640px performance bar on pdf
     output = edwareConfidenceLevelBar.create subject, 640
     $('#legendTemplate .confidenceLevel').html(output)
     
   createLegend = (legend) ->
+    # create legend in html format from mustache template
     data = {}
+    # create ALD intervals
     data['ALDs'] = createALDs legend['subject']
+    # text from json file
     data['legendInfo'] = legend['legendInfo']
+    # need assessment score and color to display legend consistently across all ISR
     data['asmtScore'] = legend['subject'].asmt_score
     data['scoreColor'] = legend['subject'].score_color
     Mustache.to_html legendTemplate, data
 
   createALDs = (items) ->
+    # create intervals to display on ALD table
     ALDs = []
     intervals = items.cut_point_intervals
     i = 0

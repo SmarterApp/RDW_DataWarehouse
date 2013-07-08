@@ -229,7 +229,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                Column('asmt_create_date', String(8), nullable=False),
                                Column('status', String(2), nullable=False),
                                Column('most_recent', Boolean),
-                               # Add 14 demographic columns
+                               # Add 10 demographic columns
                                Column('dmg_eth_hsp', Boolean, nullable=True),
                                Column('dmg_eth_ami', Boolean, nullable=True),
                                Column('dmg_eth_asn', Boolean, nullable=True),

@@ -61,25 +61,22 @@ class Test(unittest.TestCase):
 
     def test_create_list_for_section(self):
         res = trans.create_list_for_section(self.claims_dict, self.claims_data)
-        self.assertEqual(len(res), 4)
-        for od in res:
-            self.assertIsInstance(od, OrderedDict)
-            self.assertIn('level', od)
-            self.assertIn('name', od)
-            self.assertIn('min_score', od)
-            self.assertIn('max_score', od)
-            self.assertIn('weight', od)
+        self.assertEqual(len(res), 5)
+        for values in res.values():
+            self.assertIsInstance(values, OrderedDict)
+            self.assertIn('name', values)
+            self.assertIn('cut_point', values)
 
     def test_transform_to_metadata(self):
         id_list = trans.transform_to_metadata(self.dim_asmt_file, self.json_output_dir, self.file_pattern)
         self.assertIsInstance(id_list, list)
         self.assertEqual(len(id_list), 3)
-        self.assertIn('111', id_list)
-        self.assertIn('222', id_list)
-        self.assertIn('333', id_list)
-        file_names = [os.path.join(self.json_output_dir, self.file_pattern.format('111')),
-                      os.path.join(self.json_output_dir, self.file_pattern.format('222')),
-                      os.path.join(self.json_output_dir, self.file_pattern.format('333'))]
+        self.assertIn('11111111-1111-1111-1111-111111111111', id_list)
+        self.assertIn('22222222-2222-2222-2222-222222222222', id_list)
+        self.assertIn('33333333-3333-3333-3333-333333333333', id_list)
+        file_names = [os.path.join(self.json_output_dir, self.file_pattern.format('11111111-1111-1111-1111-111111111111')),
+                      os.path.join(self.json_output_dir, self.file_pattern.format('22222222-2222-2222-2222-222222222222')),
+                      os.path.join(self.json_output_dir, self.file_pattern.format('33333333-3333-3333-3333-333333333333'))]
 
         for name in file_names:
             self.assertTrue(os.path.exists(name))
@@ -119,26 +116,57 @@ def create_mappings():
 
 
 def create_claims_dict():
-    claims_dict = OrderedDict()
-    claims_dict['level'] = [1, 2, 3, 4]
-    claims_dict['name'] = "asmt_claim_{0}_name"
-    claims_dict['min_score'] = "asmt_claim_{0}_score_min"
-    claims_dict['max_score'] = "asmt_claim_{0}_score_max"
-    claims_dict['weight'] = "asmt_claim_{0}_weight"
+    claims_dict = OrderedDict([('level_1', OrderedDict([('name', 'asmt_perf_lvl_name_1'), ('cut_point', 'asmt_score_min')])),
+                               ('level_2', OrderedDict([('name', 'asmt_perf_lvl_name_2'), ('cut_point', 'asmt_cut_point_1')])),
+                               ('level_3', OrderedDict([('name', 'asmt_perf_lvl_name_3'), ('cut_point', 'asmt_cut_point_2')])),
+                               ('level_4', OrderedDict([('name', 'asmt_perf_lvl_name_4'), ('cut_point', 'asmt_cut_point_3')])),
+                               ('level_5', OrderedDict([('name', 'asmt_perf_lvl_name_5'), ('cut_point', 'asmt_cut_point_4')]))])
     return claims_dict
 
 
 def create_claims_data():
-    claims_data = {}
-
-    for  i in range(1, 5):
-        claims_data['asmt_claim_{0}_name'.format(i)] = 'name{0}'.format(i)
-        claims_data['asmt_claim_{0}_score_min'.format(i)] = 10
-        claims_data['asmt_claim_{0}_score_max'.format(i)] = 99
-        claims_data['asmt_claim_{0}_weight'.format(i)] = 15
+    claims_data = {'asmt_custom_metadata': '',
+                   'asmt_guid': 'f99396c2-7654-43eb-8ee0-f5c3bd95d361',
+                   'asmt_rec_id': '1',
+                   'asmt_period': '2012',
+                   'asmt_period_year': '2012',
+                   'asmt_type': 'SUMMATIVE',
+                   'asmt_subject': 'Math',
+                   'asmt_version': 'V1',
+                   'asmt_claim_1_name': 'Concepts & Procedures',
+                   'asmt_claim_2_name': 'Problem Solving and Modeling & Data Analysis',
+                   'asmt_claim_3_name': 'Communicating Reasoning',
+                   'asmt_claim_4_name': '',
+                   'asmt_claim_1_score_weight': '0.4',
+                   'asmt_claim_2_score_weight': '0.45',
+                   'asmt_claim_3_score_weight': '0.15',
+                   'asmt_claim_4_score_weight': '0',
+                   'asmt_perf_lvl_name_1': 'Minimal Understanding',
+                   'asmt_perf_lvl_name_2': 'Partial Understanding',
+                   'asmt_perf_lvl_name_3': 'Adequate Understanding',
+                   'asmt_perf_lvl_name_4': 'Thorough Understanding',
+                   'asmt_perf_lvl_name_5': '',
+                   'asmt_cut_point_1': '1400',
+                   'asmt_cut_point_2': '1800',
+                   'asmt_cut_point_3': '2100',
+                   'asmt_cut_point_4': '',
+                   'asmt_score_min': '1200',
+                   'asmt_score_max': '2400',
+                   'asmt_claim_1_score_min': '1200',
+                   'asmt_claim_1_score_max': '2400',
+                   'asmt_claim_2_score_min': '1200',
+                   'asmt_claim_2_score_max': '2400',
+                   'asmt_claim_3_score_min': '1200',
+                   'asmt_claim_3_score_max': '2400',
+                   'asmt_claim_4_score_min': '0',
+                   'asmt_claim_4_score_max': '0',
+                   'from_date': '20130705',
+                   'to_date': '99991231',
+                   'most_recent': 'TRUE',
+}
 
     return claims_data
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

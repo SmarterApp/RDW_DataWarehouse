@@ -16,6 +16,6 @@ define [
           break
       value
     else
-      null
+      ""
   
   popBarSort:popBarSort

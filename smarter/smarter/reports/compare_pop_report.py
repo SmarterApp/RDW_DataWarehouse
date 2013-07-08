@@ -8,7 +8,6 @@ from edapi.decorators import report_config, user_info
 from smarter.reports.helpers.percentage_calc import normalize_percentages
 from sqlalchemy.sql import select
 from sqlalchemy.sql import and_
-from smarter.database.connector import SmarterDBConnection
 from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
 from sqlalchemy.sql.expression import case, func, true, null, cast
 from sqlalchemy.types import INTEGER
@@ -20,6 +19,7 @@ from edapi.exceptions import NotFoundException
 import json
 from beaker.cache import cache_region
 from smarter.security.context import select_with_context
+from smarter.database.smarter_connector import SmarterDBConnection
 
 # Report service for Comparing Populations
 # Output:
@@ -64,116 +64,191 @@ REPORT_NAME = "comparing_populations"
 @user_info
 def get_comparing_populations_report(params):
     results = None
+    report = ComparingPopReport()
     if Constants.SCHOOLGUID in params and Constants.DISTRICTGUID in params and Constants.STATECODE in params:
-        results = get_school_view_report(params[Constants.STATECODE], params[Constants.DISTRICTGUID], params[Constants.SCHOOLGUID])
+        results = report.get_school_view_report(params[Constants.STATECODE], params[Constants.DISTRICTGUID], params[Constants.SCHOOLGUID])
     elif params and Constants.DISTRICTGUID in params and Constants.STATECODE in params:
-        results = get_district_view_report(params[Constants.STATECODE], params[Constants.DISTRICTGUID])
+        results = report.get_district_view_report(params[Constants.STATECODE], params[Constants.DISTRICTGUID])
     elif Constants.STATECODE in params:
-        results = get_state_view_report(params[Constants.STATECODE])
+        results = report.get_state_view_report(params[Constants.STATECODE])
 
     return results
 
 
-'''
-to manage cache efficiently, we needed to separate three reports
-'''
-
-
-@cache_region('public.data')
-def get_state_view_report(stateCode):
+class ComparingPopReport(object):
     '''
-    state view report
-    :param string stateCode:  State code representing the state
-    '''
-    return get_report(stateCode)
-
-
-@cache_region('public.data')
-def get_district_view_report(stateCode, districtGuid):
-    '''
-    district view report
-    :param string stateCode:  State code representing the state
-    :param string districtGuid:  Guid of the district
-    '''
-    return get_report(stateCode, districtGuid)
-
-
-def get_school_view_report(stateCode, districtGuid, schoolGuid):
-    '''
-    school view report
-    :param string stateCode:  State code representing the state
-    :param string districtGuid:  Guid of the district
-    :param string schoolGuid:  Guid of the school
-    '''
-    return get_report(stateCode, districtGuid, schoolGuid)
-
-
-def get_report(stateCode, districtGuid=None, schoolGuid=None):
-    '''
-    actual report call
-
-    :param string stateCode:  State code representing the state
-    :param string districtGuid:  Guid of the district, could be None
-    :param string schoolGuid:  Guid of the school, could be None
-    '''
-    # run query
-    params = {Constants.STATECODE: stateCode, Constants.DISTRICTGUID: districtGuid, Constants.SCHOOLGUID: schoolGuid}
-    results = run_query(**params)
-    if not results:
-        raise NotFoundException("There are no results")
-
-    # arrange results
-    results = arrange_results(results, **params)
-
-    return results
-
-
-def run_query(**params):
-    '''
-    Run comparing populations query and return the results
+    Represents a comparing populations report
     '''
 
-    with SmarterDBConnection() as connector:
+    def __init__(self, tenant=None, filters={}):
+        '''
+        :param tenant:  tenant name of the user.  Specify if report is not going through a web request
+        '''
+        self.tenant = tenant
+        self.filters = filters
+        self.override_cache_criteria = False
 
-        query_helper = QueryHelper(connector, **params)
+    def set_override_cache_criteria(self, val):
+        self.override_cache_criteria = val
 
-        query = query_helper.get_query()
+    def set_filters(self, filters):
+        '''
+        Sets the demographic filters for comparing populations
 
-        results = connector.get_result(query)
+        :param dict filters:  key value pairs of demographic criteria
+        '''
+        self.filters = filters
 
-    return results
+    def get_formatted_filters(self):
+        '''
+        Returns a list of tuples
+        This will be part of the cache key, so we want this to be sorted, deterministic
+        '''
+        return sorted(self.filters.items(), key=lambda x: x[0])
 
+    def is_cacheable(self):
+        '''
+        Returns true if there are less than 4 filters and we should cache it
+        '''
+        # TODO: derive 4 from config?
+        return self.override_cache_criteria or len(self.filters.keys()) < 4
 
-def arrange_results(results, **param):
-    '''
-    Arrange the results in optimal way to be consumed by front-end
-    '''
-    subjects = {Constants.MATH: Constants.SUBJECT1, Constants.ELA: Constants.SUBJECT2}
-    arranged_results = {}
-    record_manager = RecordManager(subjects, **param)
+    def get_cacheable_filters(self):
+        '''
+        Returns the formatted filters if it meets caching criteria
+        '''
+        formatted_filters = []
+        if self.is_cacheable():
+            formatted_filters = self.get_formatted_filters()
+        return formatted_filters
 
-    for result in results:
-        # use record manager to update record with result set
-        record_manager.update_record(result)
+    def get_state_view_report(self, stateCode):
+        '''
+        state view report
 
-    # bind the results
-    arranged_results[Constants.COLORS] = record_manager.get_asmt_custom_metadata()
-    arranged_results[Constants.SUMMARY] = record_manager.get_summary()
-    arranged_results[Constants.RECORDS] = record_manager.get_records()
-    # reverse map keys and values for subject
-    arranged_results[Constants.SUBJECTS] = record_manager.get_subjects()
+        :param string stateCode:  State code representing the state
+        :rtype: dict
+        :returns: state view report
+        '''
+        if self.is_cacheable():
+            return self.get_state_view_report_with_filters(stateCode, self.get_cacheable_filters())
+        else:
+            return self.get_report(stateCode, filters=self.filters)
 
-    # get breadcrumb context
-    arranged_results[Constants.CONTEXT] = get_breadcrumbs_context(state_code=param.get(Constants.STATECODE), district_guid=param.get(Constants.DISTRICTGUID), school_guid=param.get(Constants.SCHOOLGUID))
+    @cache_region('public.data')
+    def get_state_view_report_with_filters(self, stateCode, filters):
+        '''
+        state view report without any filters. Note that filters is formatted for cache key
+        If filters is not cacheable, we still need to get the report with the original set of filters
 
-    return arranged_results
+        :param string stateCode:  State code representing the state
+        :param filter:  a list of tuples
+        '''
+        return self.get_report(stateCode, filters=self.filters)
+
+    def get_district_view_report(self, stateCode, districtGuid):
+        '''
+        district view report
+
+        :param string stateCode:  State code representing the state
+        :param string districtGuid:  Guid of the district
+        :rtype: dict
+        :returns: district view report
+        '''
+        if self.is_cacheable():
+            return self.get_district_view_report_with_filters(stateCode, districtGuid, self.get_cacheable_filters())
+        else:
+            return self.get_report(stateCode, districtGuid, filters=self.filters)
+
+    @cache_region('public.data')
+    def get_district_view_report_with_filters(self, stateCode, districtGuid, filters):
+        '''
+        district view report without any filters.  Note that filters is formatted for cache key
+
+        :param string stateCode:  State code representing the state
+        :param string districtGuid:  Guid of the district
+        '''
+        return self.get_report(stateCode, districtGuid, filters=self.filters)
+
+    def get_school_view_report(self, stateCode, districtGuid, schoolGuid):
+        '''
+        school view report
+
+        :param string stateCode:  State code representing the state
+        :param string districtGuid:  Guid of the district
+        :param string schoolGuid:  Guid of the school
+        :rtype: dict
+        :returns: school view report
+        '''
+        return self.get_report(stateCode, districtGuid, schoolGuid)
+
+    def get_report(self, stateCode, districtGuid=None, schoolGuid=None, filters=None):
+        '''
+        actual report call
+
+        :param string stateCode:  State code representing the state
+        :param string districtGuid:  Guid of the district, could be None
+        :param string schoolGuid:  Guid of the school, could be None
+        :rtype: dict
+        :returns: A comparing populations report based on parameters supplied
+        '''
+        # run query
+        params = {Constants.STATECODE: stateCode, Constants.DISTRICTGUID: districtGuid, Constants.SCHOOLGUID: schoolGuid, 'filters': filters}
+        results = self.run_query(**params)
+        if not results:
+            raise NotFoundException("There are no results")
+
+        # arrange results
+        results = self.arrange_results(results, **params)
+
+        return results
+
+    def run_query(self, **params):
+        '''
+        Run comparing populations query and return the results
+
+        :rtype: dict
+        :returns:  results from database
+        '''
+        with SmarterDBConnection(tenant=self.tenant) as connector:
+            query_helper = QueryHelper(connector, **params)
+            query = query_helper.get_query()
+            results = connector.get_result(query)
+        return results
+
+    def arrange_results(self, results, **param):
+        '''
+        Arrange the results in optimal way to be consumed by front-end
+
+        :rtype: dict
+        :returns:  results arranged for front-end consumption
+        '''
+        subjects = {Constants.MATH: Constants.SUBJECT1, Constants.ELA: Constants.SUBJECT2}
+        arranged_results = {}
+        record_manager = RecordManager(subjects, **param)
+
+        for result in results:
+            # use record manager to update record with result set
+            record_manager.update_record(result)
+
+        # bind the results
+        arranged_results[Constants.COLORS] = record_manager.get_asmt_custom_metadata()
+        arranged_results[Constants.SUMMARY] = record_manager.get_summary()
+        arranged_results[Constants.RECORDS] = record_manager.get_records()
+        # reverse map keys and values for subject
+        arranged_results[Constants.SUBJECTS] = record_manager.get_subjects()
+
+        # get breadcrumb context
+        arranged_results[Constants.CONTEXT] = get_breadcrumbs_context(state_code=param.get(Constants.STATECODE), district_guid=param.get(Constants.DISTRICTGUID), school_guid=param.get(Constants.SCHOOLGUID), tenant=self.tenant)
+
+        return arranged_results
 
 
 class RecordManager():
     '''
     record manager class
     '''
-    def __init__(self, subjects_map, stateCode=None, districtGuid=None, schoolGuid=None):
+    def __init__(self, subjects_map, stateCode=None, districtGuid=None, schoolGuid=None, **kwargs):
         self._stateCode = stateCode
         self._districtGuid = districtGuid
         self._schoolGuid = schoolGuid
@@ -381,10 +456,11 @@ class QueryHelper():
     '''
     VIEWS = enum(STATE_VIEW=1, DISTRICT_VIEW=2, SCHOOL_VIEW=3)
 
-    def __init__(self, connector, stateCode=None, districtGuid=None, schoolGuid=None):
+    def __init__(self, connector, stateCode=None, districtGuid=None, schoolGuid=None, filters=None):
         self._state_code = stateCode
         self._district_guid = districtGuid
         self._school_guid = schoolGuid
+        self._filters = filters
         self._view = self.VIEWS.STATE_VIEW
         if self._state_code is not None and self._district_guid is None and self._school_guid is None:
             self._view = self.VIEWS.STATE_VIEW
@@ -454,6 +530,9 @@ class QueryHelper():
         query = query.order_by(self._dim_inst_hier.c.district_name, self._dim_asmt.c.asmt_subject.desc())
         query = query.where(self._fact_asmt_outcome.c.state_code == self._state_code)
         query = query.where(self._fact_asmt_outcome.c.status == 'C')
+
+        # apply demographics conditions
+        query = self.apply_filters(query)
         return query
 
     def get_query_for_district_view(self):
@@ -469,6 +548,9 @@ class QueryHelper():
         query = query.order_by(self._dim_inst_hier.c.school_name, self._dim_asmt.c.asmt_subject.desc())
         query = query.where(and_(self._fact_asmt_outcome.c.state_code == self._state_code, self._fact_asmt_outcome.c.district_guid == self._district_guid))
         query = query.where(self._fact_asmt_outcome.c.status == 'C')
+
+        # apply demographics conditions
+        query = self.apply_filters(query)
         return query
 
     def get_query_for_school_view(self):
@@ -481,4 +563,26 @@ class QueryHelper():
         query = query.order_by(self._fact_asmt_outcome.c.asmt_grade, self._dim_asmt.c.asmt_subject.desc())
         query = query.where(and_(self._fact_asmt_outcome.c.state_code == self._state_code, self._fact_asmt_outcome.c.district_guid == self._district_guid, self._fact_asmt_outcome.c.school_guid == self._school_guid))
         query = query.where(self._fact_asmt_outcome.c.status == 'C')
+        return query
+
+    def apply_filters(self, query):
+        '''
+        Appends demographics conditions to the WHERE clause of the query
+
+        :param query: sqlalchemy query for the report to append where clauses to
+        '''
+        # maps internal values to column names of demographics
+#        filter_map = {'isAsian': self._fact_asmt_outcome.c.dmg_eth_asn,
+#                      'isBlack': self._fact_asmt_outcome.c.dmg_eth_blk}
+        filter_map = {}
+
+        if self._filters:
+            for k, v in self._filters.items():
+                column = filter_map.get(k)
+                if column:
+                    query = query.where(and_(column == v))
+                else:
+                    #TODO log
+                    pass
+
         return query

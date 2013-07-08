@@ -494,3 +494,251 @@ th.ui-th-column div {
     line-height: 13px;
   }
 }
+
+#legendTemplate {
+  width: 590px;
+  height: 492px;
+  
+  h4 {
+    font-size: 13px;
+    color: @color-black;
+  }
+  
+  h5 {
+    font-size: 11px;
+    font-weight: bold;
+    color: @color-black;
+  }
+  
+  p {
+    color: @color-black;
+    font-size: 12px;
+    line-height: 120%;
+  }
+  
+  .section {
+    float: left;
+    width: 96%;
+    border-top: dashed 1px #b1b1b1;
+    margin: 1% 2% 0 2%;
+    padding-top: 10px;
+  }
+  
+  .achievement {
+    float: left;
+    width: 55%;
+    display: block;
+    margin-bottom: 15px;
+  }
+  
+  .claim_score {
+    float: left;
+    display: block;
+    width: 41%;
+    border-left: dashed 1px #b1b1b1;
+    padding-left: 3%;
+    
+    .arrowBox {
+      position: relative;
+      
+      .claim_score_arrow {
+        display: inline; 
+        margin: 20px 0px 10px 5px;
+      }
+      
+      .claim_score_indicator_wrapper {
+          position: relative;
+          top: 10px;
+          display: inline-block;
+      }
+    }
+    
+    p {
+      font-size: 11px;
+    }
+  }
+  
+    .overall_score_upper {
+      margin-top: 18px;
+      
+      * {
+        display: inline-block;
+        vertical-align: top;
+      }
+    }
+    
+    .overall_score_lower {
+      display: block;
+      margin-top: -10px;
+      
+      * {
+        display: inline-block; 
+        vertical-align: bottom;
+      }
+    }
+    
+    .indicator_cell {
+      border-radius: 3px 3px 3px 3px;
+      float: left;
+      font-size: 12px;
+      text-align: center;
+      display: table;
+      width: 40px;
+      
+      .asmtScore {
+        vertical-align: middle;
+        display: table-cell;
+      }
+    }
+    
+    .desc {
+      float: left;
+      height: 21px;
+      display: table;
+      
+      h5 {
+          vertical-align: middle;
+          text-align: center;
+      }
+    }
+    
+    .desc_overall_score {
+      width: 95px;
+      text-align: left;
+      
+      span {
+        font-style: italic;
+        font-size: 11px;
+        margin-top: -7px;
+      }
+    }
+    
+    .desc_error_bands {
+      span {
+        font-style: italic;
+        font-size: 11px;
+      }
+    }
+    
+    .desc_indicator {
+      h5 {
+        margin-left: 133px;
+      }
+    }
+    
+    .desc_ald_cutpoints {
+      background-image: url("../images/OVERALL_lowerleft.png"); 
+      background-repeat: no-repeat;
+    }
+  
+    .overall_upperleft {
+      margin-left: 3px; 
+      margin-top:  5px;
+    }
+    
+    .overall_uppermid {
+      position: relative; 
+      top: 5px;
+      margin-left: 57px;
+    }
+    
+    .overall_right {
+      display:inline-block;
+      position: relative;
+      bottom: 35px;
+      
+      .desc_scaled_score_range {
+        display: inline;
+      }
+    }
+    
+    .overall_lowerleft {
+      margin: 0 63px 5px 0;
+    }
+    
+    .overall_lowermid {
+      margin: 0 0 5px 12px;
+    }
+    
+    #overall_lowermid69px {
+      display: none;
+    }
+    
+    
+  .losPerfBar {
+    position: relative;
+    height: 79px;
+    left: 52px;
+    margin-top: -24px;
+    margin-left: 30px;
+    display: inline-block;
+    
+    .progressbar_indicator300 { 
+      background-image: url("../images/css_images.png"); 
+      background-position: -1238px 0;
+      width: 18px; 
+    }
+    
+    .progress {
+      height: 20px;
+      margin-top: 31px;
+    }
+    
+    .overall_score {
+      font-size: 12px;
+    }
+    
+    .cutPointsBar {
+      .cutPoints {
+        font-size: 10px;
+      }
+    }
+    
+    .transWrapper {
+      margin-top: 23px;
+    }
+  }
+  
+  table {
+    width: 92%;
+    margin-top: 3%;
+    margin-left: 5px;
+    border-collapse: collapse;
+    font-size: 10px;
+    
+    th.ALD_table_header {
+      font-style: italic;
+      font-weight: normal;
+      vertical-align: bottom;
+    }
+    
+    td.ALD_table_cell {
+      border: 1px solid @color-B4;
+      text-align: center;
+      font-weight: bold;
+      color: @color-black;
+      height: 28px;
+      
+      div.legend_ALD_color {
+         width: 15px;
+         height: 15px;
+         display: table;
+         margin:auto; 
+      }
+      
+      div.legend_ALD_trans {
+        background-image: url("../images/ISRleftBracket_print.png");
+        background-position: 0px -20px;
+        z-index: 9999;
+      }
+      
+    }
+    
+    th, td {
+      &:last-child {
+        display: none;
+      }
+    }
+  }
+  
+}

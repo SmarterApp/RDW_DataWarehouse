@@ -11,9 +11,10 @@ from sqlalchemy.schema import Table
 from sqlalchemy.schema import Column
 from sqlalchemy import String, Integer, Float, SmallInteger, Unicode, Date, DateTime
 from sqlalchemy import ForeignKey
-from edschema.ed_metadata import generate_ed_metadata
+from edschema.metadata.ed_metadata import generate_ed_metadata
 from sqlalchemy.types import NULLTYPE, FLOAT, UnicodeText
 from sqlalchemy.dialects.postgresql import DOUBLE_PRECISION
+import datetime
 
 
 class EdTestSchema(TestBase):
@@ -73,6 +74,8 @@ class EdTestSchema(TestBase):
                 if str(self.ed_metadata.tables[table].columns[column].type) == 'FLOAT':
                     #need to do a manual comparison of FLOAT (SQLAlchemy type) and DOUBLE PRECISION(Postgres type)
                     assert str(self.live_db_metadata.tables[table].columns[column].type) == 'DOUBLE PRECISION'
+                elif self.ed_metadata.tables[table].columns[column].type.python_type is datetime.datetime:
+                    assert str(self.live_db_metadata.tables[table].columns[column].type) == 'TIMESTAMP WITHOUT TIME ZONE'
                 else:
                     #All other SQLAlchemy and equivalent Postgres types comparisons can be done with string casting
                     assert str(self.live_db_metadata.tables[table].columns[column].type) == str(self.ed_metadata.tables[table].columns[column].type), "Column datatype mismatch"

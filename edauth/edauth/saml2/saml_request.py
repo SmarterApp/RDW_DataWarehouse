@@ -1,4 +1,6 @@
 '''
+Contains classes to build SAML request messages
+
 Created on Feb 13, 2013
 
 @author: dip
@@ -13,16 +15,23 @@ class SamlRequest:
     '''Represents a SamlRequest'''
 
     def __init__(self, issuer_name):
-        # UUID based on host ID and current time, or use 4 to get random
+        '''
+        UUID based on host ID and current time, or use 4 to get random
+        '''
         self._uuid = str(uuid.uuid1())
         self._issuer_name = issuer_name
 
     def format_request(self, doc):
-        # Seriailize the doc's root element so that it will strip out the xml declaration
+        '''
+        Serialize the doc's root element so that it will strip out the xml declaration
+        '''
         data = doc.documentElement.toxml('utf-8')
         return {'SAMLRequest': deflate_base64_encode(data)}
 
     def get_id(self):
+        '''
+        Return request id
+        '''
         return self._uuid
 
 
@@ -32,9 +41,10 @@ class SamlAuthnRequest(SamlRequest):
     def __init__(self, issuer_name):
         super().__init__(issuer_name)
 
-    # Create XML SAML Auth Request
-    # returns a byte string of a SAML AuthnRequest
     def generate_saml_request(self):
+        '''
+        Creates an XML SAML Auth Request. Returns a byte string of a SAML AuthnRequest.
+        '''
         doc = Document()
         samlp_auth_request = doc.createElement('samlp:AuthnRequest')
         samlp_auth_request.setAttribute('xmlns:samlp', 'urn:oasis:names:tc:SAML:2.0:protocol')
@@ -70,6 +80,9 @@ class SamlLogoutRequest(SamlRequest):
         self._name_id = name_id
 
     def generate_saml_request(self):
+        '''
+        Creates an XML SAML Logout Request. Returns as a byte string.
+        '''
         doc = Document()
 
         samlp_logout_request = doc.createElement('saml2p:LogoutRequest')

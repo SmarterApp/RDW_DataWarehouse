@@ -63,6 +63,7 @@ define [
         feedbackData = configData.feedback
         breadcrumbsConfigs = configData.breadcrumb
         reportInfo = configData.reportInfo
+        legendInfo = configData.legendInfo
       
         i = 0
         while i < data.items.length
@@ -212,7 +213,10 @@ define [
             e.find(".claims_tooltip").html() # template location: templates/individualStudent_report/claimsInfo.html
         
         # Generate footer links
-        $('#footer').generateFooter('individual_student_report', reportInfo)
+        legend = {}
+        legend['legendInfo'] = legendInfo.individual_student_report
+        legend['subject'] = createSampleInterval data.items[0], legendInfo.sample_intervals
+        $('#footer').generateFooter('individual_student_report', reportInfo, legend)
         
         # append user_info (e.g. first and last name)
         if data.user_info
@@ -222,15 +226,14 @@ define [
         
         # Report info and legend for print version, Grayscale logo for print version
         $($("#footerLinks").html()).clone().appendTo("#print_reportInfoContent")
-        if params['grayscale'] isnt 'true'
-          $("#print_reportInfoContent .legendPopup img").attr("src", "../images/legend_IndivStudent_color_print.png")
-        else
-          $("#print_reportInfoContent .legendPopup img").attr("src", "../images/legend_IndivStudent_gray_print.png")
+        if params['grayscale'] is 'true'
           $(".printHeader .logo img").attr("src", "../images/smarter_printlogo_gray.png")
         
-        $("#print_reportInfoContent .legendPopup img").attr("width", "850")
-        $("#print_reportInfoContent .legendPopup img").attr("height", "710")
-        
+  createSampleInterval = (subject, sample_interval) ->
+    # merge sample and subject information
+    # the return value will be used to generate legend html page
+    subject = $.extend(true, {}, subject, sample_interval)
+    
   #
   # render Claim Score Relative Difference (arrows)
   #

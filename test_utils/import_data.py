@@ -9,10 +9,10 @@ from database.data_importer import import_csv_dir
 import argparse
 import configparser
 from database.connector import DBConnection
-from edschema.ed_metadata import generate_ed_metadata
-from smarter.database.datasource import get_datasource_name
+from edschema.metadata.ed_metadata import generate_ed_metadata
 from smarter.database import get_data_source_names
 from smarter.database import initialize_db
+from smarter.database.smarter_connector import SmarterDBConnection
 
 def main(config_file, resource_dir):
     '''
@@ -21,7 +21,7 @@ def main(config_file, resource_dir):
     config = configparser.ConfigParser()
     config.read(config_file)
 
-    initialize_db(config['app:main'])
+    initialize_db(SmarterDBConnection, config['app:main'])
     for tenant in get_data_source_names():
         delete_data(tenant)
         import_csv_dir(resource_dir, tenant)

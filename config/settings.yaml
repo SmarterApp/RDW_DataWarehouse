@@ -8,6 +8,7 @@ common:
     use: egg:smarter
     disable_stack_trace: false
     smarter.PATH: /usr/local/bin
+    batch.user.session.timeout: 300000
     pyramid:
       reload_templates: true
       debug_all: false
@@ -19,9 +20,9 @@ common:
 
     # pyramid_beaker configuration
     cache:
-      regions: public.data, session
+      regions: public.data, public.shortlived, session
       type: ext:memcached
-      expire: 31556940 # year
+      expire: 3600 # year
       public.data.expire: 31556940 # year
       session.expire: 1200 # 20 minutes
       lock_dir: /tmp/memcache
@@ -35,6 +36,20 @@ common:
         cron:
           # everyday
           day: '*/1'
+    trigger:
+      recache:
+        enable: False
+        filter.state: [{'Gender':'F', 'isAsian': False}, {'Gender':'M', 'isWhite': True}]
+        filter.district: [{'Gender':'F', 'isAsian': False}]
+        filter.cat.state: [{'Gender':'F'}]
+        schedule:
+          cron:
+            day: '*/1'
+      pdf:
+        enable: False
+        schedule:
+          cron:
+            day: '*/1'
 
     # Authentication
     auth:
@@ -63,7 +78,7 @@ common:
     # Timeout for pdf generation process
     pdf:
       # expected pdf file size in bytes used to validate that pdf was generated without errors
-      minimum_file_size: 80000
+      minimum_file_size: 60000
       # number of retries allowed after the first failure
       retries_allowed: 1
       # delay in retry in seconds
@@ -72,8 +87,9 @@ common:
       report_base_dir: /tmp/pdf
       celery_timeout: 30
       # Don't regenerate if pdf is in file system
-      always_generate: False
-      superuser_session_timeout: 300000
+      always.generate: False
+      base.url: http://localhost:6543/assets/html/
+      batch.job.queue: batch_pdf_gen
     # Used for tenancy
     ldap.base.dn: ou=environment,dc=edwdc,dc=net
     # Use context security
@@ -178,8 +194,13 @@ qa1:
     mode: prod
     edware:
       db:
+        cat:
+          schema_name: edware_sds_0_1
+          url: postgresql+psycopg2://edware:edware2013@dwpool0.qa.dum.edwdc.net:6432/edware
+    edware_stats:
+      db:
         schema_name: edware_sds_0_1
-        cat.url: postgresql+psycopg2://edware:edware2013@dwpool0.qa.dum.edwdc.net:6432/edware
+        url: postgresql+psycopg2://edware:edware2013@dwpool0.qa.dum.edwdc.net:6432/edware_stats
     auth:
       idp:
         metadata: /opt/edware/conf/idp_metadata.xml
@@ -215,9 +236,13 @@ qa2:
     mode: prod
     edware:
       db:
-        schema_name: edware_delaware_0_1
         cat:
+          schema_name: edware_delaware_0_1
           url: postgresql+psycopg2://edware:edware2013@dwpool0.qa.dum.edwdc.net:6434/edware
+    edware_stats:
+      db:
+        schema_name: edware_delaware_0_1
+        url: postgresql+psycopg2://edware:edware2013@dwpool0.qa.dum.edwdc.net:6432/edware_stats
     auth:
       idp:
         metadata: /opt/edware/conf/idp_metadata.xml
@@ -253,9 +278,13 @@ jenkins_qa:
     mode: test
     edware:
       db:
-        schema_name: edware_sds_0_1
         cat:
+          schema_name: edware_sds_0_1
           url: postgresql+psycopg2://postgres:edware.qa.2013@dwpool0.qa.dum.edwdc.net:6432/edware
+    edware_stats:
+      db:
+        schema_name: edware_sds_0_1
+        url: postgresql+psycopg2://edware:edware2013@dwpool0.qa.dum.edwdc.net:6432/edware_stats
 
 uat:
   '[app:main]':
@@ -264,9 +293,13 @@ uat:
     disable_stack_trace: true
     edware:
       db:
-        schema_name: edware_uat_0_1
         cat:
+          schema_name: edware_uat_0_1
           url: postgresql+psycopg2://edware:edware.dmo.may.2013@dwpool0.dmo.som.edwdc.net:6434/edware
+    edware_stats:
+      db:
+        schema_name: edware_uat_0_1
+        url: postgresql+psycopg2://edware:edware.dmo.may.2013@dwpool0.dmo.som.edwdc.net:6434/edware_stats
     auth:
       idp:
         metadata: /opt/edware/conf/idp_metadata.xml
@@ -319,10 +352,14 @@ localOpenAM:
   '[app:main]':
     edware:
       db:
-        schema_name: edware_sds_0_3
         cat:
+          schema_name: edware_sds_0_4
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
           echo: False
+    edware_stats:
+      db:
+        schema_name: edware_sds_0_4
+        url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_stats
     auth:
       skip.verify: False
       saml:
@@ -335,7 +372,7 @@ localOpenAM:
 development:
   '[app:main]':
     cache:
-      regions: public.data, session
+      regions: public.data, public.shortlived, session
       type: memory
       public.data.expire: 10
     # Celery config
@@ -346,11 +383,15 @@ development:
         pool_size: 20
         max_overflow: 10
         cat:
-          schema_name: edware_sds_0_3
+          schema_name: edware_sds_0_4
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
         dog:
-          schema_name: edware_sds_us15303_0_1
+          schema_name: edware_sds_0_4_dog
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware
+    edware_stats:
+      db:
+        schema_name: edware_sds_0_4
+        url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_stats
           
     auth:
       skip.verify: False
@@ -364,21 +405,25 @@ development:
     smarter.resources.static.max_age: 0
     # Always generate pdf regardless if it exists in file system
     pdf.always_generate: True
-
 test:
   '[app:main]':
     cache:
-      regions: public.data, session
+      regions: public.data, public.shortlived, session
       type: memory
       public.data.expire: 10
+      public.shortlived.expire: 10
     edware:
       db:
         cat:
-          schema_name: edware_sds_0_3
+          schema_name: edware_sds_0_4
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
         dog:
-          schema_name: edware_sds_us15303_0_1
+          schema_name: edware_sds_0_4_dog
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
+    edware_stats:
+      db:
+        schema_name: edware_sds_0_4
+        url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests_stats
     auth:
       skip.verify: False
       saml:
@@ -394,15 +439,20 @@ jenkins_dev:
       BROKER_URL: amqp://edware:edware1234@localhost//
       CELERY_IMPORTS: ('services.tasks.pdf',)
       CELERY_RESULT_BACKEND: amqp
+      CELERY_TASK_RESULT_EXPIRES: 18000 # 5 hours
       CELERYD_CONCURRENCY: 8
     edware:
       db:
         cat:
-          schema_name: edware_sds_0_3
+          schema_name: edware_sds_0_4
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
         dog:
-          schema_name: edware_sds_us15303_0_1
+          schema_name: edware_sds_0_4_dog
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
+    edware_stats:
+      db:
+        schema_name: edware_sds_0_4
+        url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests_stats
     auth:
       policy.secure: False
       skip.verify: False
@@ -412,5 +462,9 @@ jenkins_dev:
         idp_server_logout_url: 'http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp'
         name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
     mode: test
-    cache.public.data.url: edwappsrv1.poc.dum.edwdc.net:11211
-    cache.session.url: edwappsrv2.poc.dum.edwdc.net:11211
+    pdf:
+      base.url: http://edwappsrv1.poc.dum.edwdc.net/assets/html/
+    cache:
+      public.shortlived.url: edwappsrv2.poc.dum.edwdc.net:11211
+      public.data.url: edwappsrv1.poc.dum.edwdc.net:11211
+      session.url: edwappsrv2.poc.dum.edwdc.net:11211

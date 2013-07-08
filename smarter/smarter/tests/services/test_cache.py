@@ -16,7 +16,7 @@ from beaker.cache import CacheManager
 from pyramid.testing import DummyRequest
 
 
-class Test(Unittest_with_smarter_sqlite):
+class TestCache(Unittest_with_smarter_sqlite):
 
     def setUp(self):
         reg = {}

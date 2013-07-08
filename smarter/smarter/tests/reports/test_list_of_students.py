@@ -6,17 +6,26 @@ Created on Feb 4, 2013
 import unittest
 from smarter.reports.list_of_students_report import get_list_of_students_report
 from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite,\
-    UnittestSmarterDBConnection, get_test_tenant_name
+    UnittestSmarterDBConnection, get_unittest_tenant_name
 from edapi.exceptions import NotFoundException
 from pyramid.testing import DummyRequest
 from pyramid import testing
 from edauth.security.session import Session
 from smarter.security.roles.teacher import Teacher  # @UnusedImport
+from beaker.cache import CacheManager
+from beaker.util import parse_cache_config_options
 
 
 class TestLOS(Unittest_with_smarter_sqlite):
 
     def setUp(self):
+        cache_opts = {
+            'cache.type': 'memory',
+            'cache.regions': 'public.shortlived'
+        }
+
+        cache = CacheManager(**parse_cache_config_options(cache_opts))
+
         # Set up user context
         self.__request = DummyRequest()
         # Must set hook_zca to false to work with unittest_with_sqlite
@@ -28,7 +37,7 @@ class TestLOS(Unittest_with_smarter_sqlite):
         dummy_session = Session()
         dummy_session.set_roles(['TEACHER'])
         dummy_session.set_uid('272')
-        dummy_session.set_tenant(get_test_tenant_name())
+        dummy_session.set_tenant(get_unittest_tenant_name())
         self.__config.testing_securitypolicy(dummy_session)
 
     def tearDown(self):

@@ -8,7 +8,7 @@ from xml.dom.minidom import Node
 
 class SAML_IDP_Metadata():
     '''
-    SAML IDP Metadata parser class
+    Parses SAML IDP Metadata and stores it as a DOM
     '''
     def __init__(self, idp_metadata_dom):
         self.__entityID = None

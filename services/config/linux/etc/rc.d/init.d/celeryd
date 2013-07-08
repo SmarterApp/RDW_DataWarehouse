@@ -132,7 +132,7 @@ start_workers () {
                          --logfile="$CELERYD_LOG_FILE"      \
                          --loglevel="$CELERYD_LOG_LEVEL"    \
                          --cmd="$CELERYD"                   \
-                         $CELERYD_OPTS
+                         ${CELERYD_OPTS}
     sleep $SLEEP_SECONDS
 }
 
@@ -143,7 +143,7 @@ restart_workers () {
                            --logfile="$CELERYD_LOG_FILE"    \
                            --loglevel="$CELERYD_LOG_LEVEL"  \
                            --cmd="$CELERYD"                 \
-                           $CELERYD_OPTS
+                           ${CELERYD_OPTS}
     sleep $SLEEP_SECONDS
 }
 
@@ -173,11 +173,28 @@ check_status () {
     [ "$one_failed" ] && exit 1 || exit 0
 }
 
+setup_queues () {
+    # celery queues and workers
+    declare -a queue_names=(${CELERYD_QUEUES}) 
+    declare -a worker_names=(${CELERYD_NODES})
+    worker_count=${#worker_names[@]}
+    index=0
+    while [ "${index}" -lt "${worker_count}" ]; do
+    	# worker name
+    	worker_name=${worker_names[$index]}
+		# read worker name and queue name
+    	queue_name=${queue_names[$index]}
+    	# tails
+		CELERYD_OPTS="${CELERYD_OPTS:-''} -Q:${worker_name} ${queue_name} "
+		index=$((index + 1))
+    done
+}
 
 case "$1" in
     start)
         check_dev_null
         check_paths
+        setup_queues
         start_workers
     ;;
 
@@ -198,6 +215,7 @@ case "$1" in
     restart)
         check_dev_null
         check_paths
+        setup_queues
         restart_workers
     ;;
     try-restart)

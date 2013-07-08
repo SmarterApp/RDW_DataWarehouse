@@ -11,12 +11,12 @@ from sqlalchemy.sql import select
 from sqlalchemy.sql.expression import and_
 from edapi.exceptions import NotFoundException
 from string import capwords
-from smarter.database.connector import SmarterDBConnection
 from edapi.logging import audit_event
 from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
 from smarter.reports.helpers.assessments import get_cut_points, \
     get_overall_asmt_interval, get_claims
 from smarter.security.context import select_with_context
+from smarter.database.smarter_connector import SmarterDBConnection
 
 REPORT_NAME = 'individual_student_report'
 
@@ -107,7 +107,8 @@ def __calculateClaimScoreRelativeDifference(items):
     1. find absluate max claim score
     2. calculate relative difference
     '''
-    for item in items:
+    newItems = items.copy()
+    for item in newItems:
         asmt_score = item['asmt_score']
         claims = item['claims']
         maxAbsDiffScore = 0
@@ -122,12 +123,14 @@ def __calculateClaimScoreRelativeDifference(items):
                 claim['claim_score_relative_difference'] = 0
             else:
                 claim['claim_score_relative_difference'] = int((score - asmt_score) / maxAbsDiffScore * 100)
+    return newItems
 
 
 def __arrange_results(results):
     '''
     This method arranges the data retreievd from the db to make it easier to consume by the client
     '''
+    newResults = []
     for result in results:
 
         result['teacher_full_name'] = format_full_name(result['teacher_first_name'], result['teacher_middle_name'], result['teacher_last_name'])
@@ -142,11 +145,10 @@ def __arrange_results(results):
         result = get_cut_points(result)
 
         result['claims'] = get_claims(number_of_claims=5, result=result, include_names=True, include_scores=True, include_min_max_scores=True, include_indexer=True)
+        newResults.append(result)
 
     # rearranging the json so we could use it more easily with mustache
-    __calculateClaimScoreRelativeDifference(results)
-    results = {"items": results}
-    return results
+    return {"items": __calculateClaimScoreRelativeDifference(newResults)}
 
 
 @report_config(name=REPORT_NAME,

@@ -9,6 +9,15 @@ API Documentation
     :undoc-members:
     :show-inheritance:
 
+Subpackages
+-----------
+
+.. toctree::
+
+    edauth.saml2
+    edauth.security
+    edauth.tests
+
 :mod:`utils` Module
 -------------------
 
@@ -16,14 +25,3 @@ API Documentation
     :members:
     :undoc-members:
     :show-inheritance:
-
-Subpackages
------------
-
-.. toctree::
-
-    edauth.database
-    edauth.saml2
-    edauth.security
-    edauth.tests
-

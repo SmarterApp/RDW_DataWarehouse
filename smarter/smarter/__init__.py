@@ -12,8 +12,10 @@ import signal
 from pyramid_beaker import set_cache_regions_from_settings
 import sys
 from services.celery import setup_celery
-from smarter import services
+from smarter import services, trigger
 from smarter.database import initialize_db
+from smarter.database.smarter_connector import SmarterDBConnection
+from smarter.database.udl_stats_connector import StatsDBConnection
 
 logger = logging.getLogger(__name__)
 CAKE_PROC = None
@@ -31,7 +33,8 @@ def main(global_config, **settings):
     set_cache_regions_from_settings(settings)
     config = Configurator(settings=settings, root_factory=RootFactory)
 
-    initialize_db(settings)
+    initialize_db(SmarterDBConnection, settings)
+    initialize_db(StatsDBConnection, settings, allow_schema_create=True)
 
     # setup celery
     setup_celery(settings=settings, prefix="celery")
@@ -70,6 +73,9 @@ def main(global_config, **settings):
 
     # include add routes from smarter.services. Calls includeme
     config.include(services)
+
+    # include add routes from smarter.trigger. Calls includeme
+    config.include(trigger)
 
     # scans smarter
     config.scan()

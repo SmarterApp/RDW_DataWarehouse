@@ -1,6 +1,7 @@
 /* Print css */
 @media print {
-    .assessmentOtherInfoHeader.show { display: block;}
+
+.assessmentOtherInfoHeader.show { display: block;}
      #breadcrumb {
         background-image: transparent;
         background: #ECECE6;
@@ -172,7 +173,7 @@
         }
       } 
    
-      .confidenceLevel { 
+      .confidenceLevel {
         height: 150px;
         .progress {
           .bar {
@@ -207,8 +208,166 @@
         }
       } 
       
-   
+      #legendTemplate {
+        width: 100%;
+        height: 710px;
+        
+        h4 {
+          font-size: 17px;
+        }
+        
+        h5 {
+          font-size: 17px;
+        }
+        
+        p {
+          font-size: 14px;
+        }
+        
+        img {
+          -webkit-transform: scale(1.2);
+          -moz-transform: scale(1.2);
+          -o-transform: scale(1.2);
+          -ms-transform: scale(1.2);
+          transform: scale(1.2);
+        }
+        
+        .section {
+          width: 100%;
+          margin: 2% 0 0 0;
+          padding-top: 2%;
+        }
+        
+        .claim_score {
+          .arrowBox {
+            .claim_score_arrow {
+              margin: 45px 15px 25px 15px;
+            }
+            
+            .claim_score_indicator_wrapper {
+                top: 22px;
+            }
+          }
+        
+          p {
+            font-size: 14px;
+          }
+        }
+        
+        .losPerfBar {
+          display: none;
+        }
+        
+        .indicator_cell {
+          border-radius: 5px 5px 5px 5px;
+          width: 65px;
+          height: 35px;
+          font-size: 18px;
+        }
+        
+        .confidenceLevel {
+          display: inline-block;
+          margin: 0 0 0 98px;
+          
+          .aldDescText {
+            display: none;
+          }
+          
+          .progressbar_indicator640 { 
+            background-position: -1255px 0;
+            width: 20px;
+          }
+        }
+        
+        .desc_overall_score {
+            width: 120px;
+            text-align: left;
+            position: relative;
+            top: 8px;
+            left: 5px;
+            
+            span {
+              font-size: 14px;
+              margin-top: 0px;
+            }
+        }
+        
+        .desc_error_bands {
+          span {
+            font-style: italic;
+            font-size: 14px;
+          }
+        }
+        
+        .overall_score_lower {
+          margin-top: -7%; 
+          margin-left: 3%;
+        }
+        
+        .desc_overall_score_indicator {
+          position:relative; 
+          top: 6px;
+          margin-left:12px;
+        }
+        
+        .overall_upperleft {
+          margin-left:12px; 
+          margin-top: 13px;
+        }
+        
+        .overall_uppermid {
+          position: relative; 
+          top: 13px;
+          margin-left: 21%;
+        }
+        
+        .overall_right {
+          display:inline-block;
+          position: relative;
+          bottom: 102px;
+          margin-left: 40px;
+          
+          .desc_scaled_score_range {
+            display: inline;
+            position: relative;
+            top: 2px;
+            left: 4px;
+          }
+        }
+        
+        .overall_lowerleft {
+          margin: 0 19% 8px 2%;
+        }
+        
+        #overall_lowermid50px {
+          display: none;
+        }
+        
+        #overall_lowermid69px {
+          display: inline-block;
+        }
+        .overall_lowermid {
+          margin: 0 2% 8px 0;
+        }
+        
+        table {
+          font-size: 16px;
+          margin-top: 0;
+          
+          td.ALD_table_cell {
+            height: 38px;
+            
+            div.legend_ALD_color {
+               width: 20px;
+               height: 20px;
+            }
+          }
+          
+          th, td {
+            &:last-child {
+              display: table-cell;
+            }
+          }
+        }
+    }
 }
-
-
- 

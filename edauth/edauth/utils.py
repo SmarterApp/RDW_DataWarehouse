@@ -7,8 +7,9 @@ Created on Feb 25, 2013
 
 def convert_to_int(value):
     '''
-    converts a string value to int, returns None if value is None
-    @param value: the converted value
+    Converts a string value to int, returns None if value is None
+
+    :param value: the converted value
     '''
     converted_value = None
     if value is not None:
@@ -22,7 +23,8 @@ def convert_to_int(value):
 def to_bool(val):
     '''
     boolean True/False converter
-    @param val: the converted value
+
+    :param val: the converted value
     '''
     return val and val.lower() in ('true', 'True')
 

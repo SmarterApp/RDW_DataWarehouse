@@ -1,0 +1,75 @@
+<div id="legendTemplate">
+	<h3 class="printContent" style="margin-bottom: -3%">Legend:</h3>
+	<div class="section" style="border-top: none;">
+		<div class="achievement">
+			<!-- ALD -->
+			<h4>Achievement Level Descriptions (ALD):</h4>
+			<table class="ALD_table">
+				<thead>
+					<tr>
+						<th class="ALD_table_header" style="width:17%;">Color</th>
+						<th class="ALD_table_header">Description</th>
+						<th class="ALD_table_header">Score Range</th>
+						<th class="ALD_table_header" style="width:17%;"><span>Outside Error Band</span></th>
+					</tr>
+				</thead>
+				{{#ALDs}}
+				<tr>
+					<td class="ALD_table_cell"><div class="legend_ALD_color" style="background-color:{{color}};"></div></td>
+					<td class="ALD_table_cell">{{description}}</td>
+					<td class="ALD_table_cell">{{range}}</td>
+					<td class="ALD_table_cell">
+						<div class="legend_ALD_color" style="background-color:{{color}};position: absolute; margin-left: 30px; margin-top: 5px;"></div>
+						<img src="../images/ISR_shades.png"/>
+					</td>
+				</tr>
+				{{/ALDs}}
+			</table>
+		</div>
+		<div class="claim_score">
+			<!-- Claim Score Details -->
+			<h4>Claim Score Details:</h4>
+			<div class="arrowBox">
+				<img src="../images/claim_score.png" class="claim_score_arrow"/>
+				<div class="claim_score_indicator_wrapper"><h5>Overall Score</h5></div>				
+			</div>
+			<div>
+				<h5>Relative Strength/Weakness</h5>
+				<p>
+					{{legendInfo.relative_strength_text}}
+				</p>
+			</div>
+		</div>
+	</div>
+	<div class="section overall_score_wrapper">
+		<h4>Overall Score Details:</h4>
+		<div class="overall_score_upper">
+			<div class="indicator_cell desc" style="background-color: {{scoreColor}}; color: #000; margin-left:15px;">
+				<strong class="asmtScore">{{asmtScore}}</strong>
+			</div>
+			<img src="../images/OVERALL_upperleft.png" class="overall_upperleft"/>
+			<div class="desc_overall_score"><h5>Overall Score</h5><span>(ALD color coded)</span></div>
+			<img src="../images/OVERALL_uppermid.png" class="overall_uppermid"/>
+			<h5 class="desc_overall_score_indicator">Overall Score Indicator</h5>
+		</div>
+		<div class="losPerfBar losPopover"></div>
+		<div class="confidenceLevel printContent"></div>
+		<div class="overall_right">
+			<img src="../images/OVERALL_upperleft.png">
+			<h5 class="desc_scaled_score_range">Scaled Score Range</h5>
+		</div>
+		<div class="overall_score_lower">
+			<h5>ALD Cutpoints</h5>
+			<img src="../images/OVERALL_lowerleft.png" class="overall_lowerleft"/>
+			<img id="overall_lowermid50px" src="../images/OVERALL_lowermid.png" class="overall_lowermid"/>
+			<img id="overall_lowermid69px" src="../images/OVERALL_lowermid69px.png" class="overall_lowermid printContent"/>
+			<div class="desc_error_bands"><h5>Error Bands</h5><span>(brackets denote min/max)</span></div>
+		</div>
+	</div>
+	<div class="section error_band_wrapper">
+		<h4>Error Band:</h4>
+		<p>
+			{{legendInfo.error_band}}
+		</p>
+	</div>
+</div>

@@ -104,7 +104,7 @@ def infer_value(col):
             return str(uuid.uuid4())
         __counter += 1
         return col.name.replace('_', ' ').title() + " " + str(__counter)
-    elif datatype == datetime:
+    elif datatype is datetime:
         return "01/01/2011"
     elif datatype == bool:
         return 1

@@ -8,6 +8,7 @@ import os
 import csv
 import logging
 from sqlalchemy.types import Boolean
+import datetime
 
 logger = logging.getLogger(__name__)
 
@@ -52,7 +53,13 @@ def __cast_data_type(column, value):
                 elif value.lower() == 'false' or value == '0':
                     value = False
 
-            value = column.type.python_type(value)
+            if column.type.python_type is datetime.datetime:
+                if len(value) == 14:
+                    value = datetime.datetime.strptime(value, '%Y%m%d%H%M%S')
+                else:
+                    value = datetime.datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
+            else:
+                value = column.type.python_type(value)
         except:
             msg = 'Cast Exception: Column[%s.%s] value[%s] cast to[%s]' % (column.table.name, column.name, value, column.type.python_type)
             raise DataImporterCastException(msg)

@@ -4,10 +4,10 @@ Created on Jan 14, 2013
 @author: aoren
 '''
 from edapi.tests.test_reports import TestReport
-from edapi import utils
+from edapi import reports
 from unittest.mock import MagicMock
 import unittest
-from edapi.utils import Validator
+from edapi.validation import Validator
 from edapi.exceptions import InvalidParameterError
 from edapi.tests.dummy import Dummy, DummyGetParams
 
@@ -35,7 +35,7 @@ class TestReportConfig(unittest.TestCase):
         validator.validate_params_schema = MagicMock(return_value=(False, None))
         validator.fix_types = MagicMock(return_value=(False, None))
         validator.convert_array_query_params = MagicMock(return_value=(False, None))
-        self.assertRaises(InvalidParameterError, utils.generate_report, registry, "test", params, validator)
+        self.assertRaises(InvalidParameterError, reports.generate_report, registry, "test", params, validator)
 
     def test_validate_string_param(self):
         report_name = "test"

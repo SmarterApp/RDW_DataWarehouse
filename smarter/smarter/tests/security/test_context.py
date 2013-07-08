@@ -5,7 +5,7 @@ Created on May 7, 2013
 '''
 import unittest
 from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite,\
-    UnittestSmarterDBConnection, get_test_tenant_name
+    UnittestSmarterDBConnection, get_unittest_tenant_name
 from pyramid import testing
 from pyramid.testing import DummyRequest
 from smarter.security.context import select_with_context, check_context
@@ -26,7 +26,7 @@ class TestContext(Unittest_with_smarter_sqlite):
         self.__request = DummyRequest()
         # Must set hook_zca to false to work with unittest_with_sqlite
         self.__config = testing.setUp(request=self.__request, hook_zca=False)
-        self.__tenant_name = get_test_tenant_name()
+        self.__tenant_name = get_unittest_tenant_name()
 
     def tearDown(self):
         # reset the registry

@@ -3,28 +3,16 @@ Created on Jun 3, 2013
 
 @author: dip
 '''
-from edschema.ed_metadata import generate_ed_metadata
 from database.generic_connector import setup_db_connection_from_ini
 
 
-def get_datasource_name(tenant_name):
+def setup_tenant_db_connection(connector_cls, tenant=None, config={}, allow_schema_create=False):
     '''
-    Returns the name prepended with smarter in lower case
+    Set up database connection
     '''
-    return 'smarter.' + tenant_name.lower()
-
-
-def setup_tenant_db_connection(tenant, config):
-    prefix = get_db_config_prefix(tenant)
+    prefix = connector_cls.get_db_config_prefix(tenant)
     schema_key = prefix + 'schema_name'
-    metadata = generate_ed_metadata(config[schema_key])
+    metadata = connector_cls.generate_metadata(config[schema_key])
     # Pop schema name as sqlalchemy doesn't like db.schema_name being passed
     config.pop(schema_key)
-    setup_db_connection_from_ini(config, prefix, metadata, datasource_name=get_datasource_name(tenant))
-
-
-def get_db_config_prefix(tenant):
-    '''
-    Returns the prefix for a tenantmore  for sqlalchemy db configuration
-    '''
-    return 'edware.db.' + tenant + '.'
+    setup_db_connection_from_ini(config, prefix, metadata, datasource_name=connector_cls.get_datasource_name(tenant), allow_schema_create=allow_schema_create)

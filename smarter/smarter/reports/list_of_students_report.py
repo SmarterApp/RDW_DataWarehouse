@@ -8,7 +8,6 @@ from edapi.decorators import report_config, user_info
 from smarter.reports.helpers.name_formatter import format_full_name_rev
 from sqlalchemy.sql import select
 from sqlalchemy.sql import and_
-from smarter.database.connector import SmarterDBConnection
 from edapi.logging import audit_event
 from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
 from smarter.reports.helpers.constants import Constants
@@ -16,6 +15,8 @@ from smarter.reports.helpers.assessments import get_overall_asmt_interval, \
     get_cut_points, get_claims
 from edapi.exceptions import NotFoundException
 from smarter.security.context import select_with_context
+from smarter.database.smarter_connector import SmarterDBConnection
+from beaker.cache import cache_region
 
 REPORT_NAME = "list_of_students"
 
@@ -197,7 +198,7 @@ def get_list_of_students_report(params):
         los_results['assessments'] = assessments
 
         # query dim_asmt to get cutpoints and color metadata
-        asmt_data = __get_asmt_data(connector, asmtSubject)
+        asmt_data = __get_asmt_data(asmtSubject).copy()
         los_results['metadata'] = __format_cut_points(asmt_data, subjects_map)
         los_results['context'] = get_breadcrumbs_context(state_code=stateCode, district_guid=districtGuid, school_guid=schoolGuid, asmt_grade=asmtGrade)
         los_results['subjects'] = __reverse_map(subjects_map)
@@ -205,36 +206,40 @@ def get_list_of_students_report(params):
     return los_results
 
 
-def __get_asmt_data(connector, asmtSubject):
+@cache_region('public.shortlived')
+def __get_asmt_data(asmtSubject):
     '''
     Queries dim_asmt for cutpoint and custom metadata
     '''
-    dim_asmt = connector.get_table('dim_asmt')
+    with SmarterDBConnection() as connector:
+        dim_asmt = connector.get_table('dim_asmt')
 
-    # construct the query
-    query = select([dim_asmt.c.asmt_subject.label("asmt_subject"),
-                    dim_asmt.c.asmt_perf_lvl_name_1.label("asmt_cut_point_name_1"),
-                    dim_asmt.c.asmt_perf_lvl_name_2.label("asmt_cut_point_name_2"),
-                    dim_asmt.c.asmt_perf_lvl_name_3.label("asmt_cut_point_name_3"),
-                    dim_asmt.c.asmt_perf_lvl_name_4.label("asmt_cut_point_name_4"),
-                    dim_asmt.c.asmt_perf_lvl_name_5.label("asmt_cut_point_name_5"),
-                    dim_asmt.c.asmt_cut_point_1.label("asmt_cut_point_1"),
-                    dim_asmt.c.asmt_cut_point_2.label("asmt_cut_point_2"),
-                    dim_asmt.c.asmt_cut_point_3.label("asmt_cut_point_3"),
-                    dim_asmt.c.asmt_cut_point_4.label("asmt_cut_point_4"),
-                    dim_asmt.c.asmt_score_min.label('asmt_score_min'),
-                    dim_asmt.c.asmt_score_max.label('asmt_score_max'),
-                    dim_asmt.c.asmt_custom_metadata.label("asmt_custom_metadata"),
-                    dim_asmt.c.asmt_claim_1_name.label('asmt_claim_1_name'),
-                    dim_asmt.c.asmt_claim_2_name.label('asmt_claim_2_name'),
-                    dim_asmt.c.asmt_claim_3_name.label('asmt_claim_3_name'),
-                    dim_asmt.c.asmt_claim_4_name.label('asmt_claim_4_name')],
-                   from_obj=[dim_asmt])
-    if asmtSubject is not None:
-        query = query.where(dim_asmt.c.asmt_subject.in_(asmtSubject))
+        # construct the query
+        query = select([dim_asmt.c.asmt_subject.label("asmt_subject"),
+                        dim_asmt.c.asmt_perf_lvl_name_1.label("asmt_cut_point_name_1"),
+                        dim_asmt.c.asmt_perf_lvl_name_2.label("asmt_cut_point_name_2"),
+                        dim_asmt.c.asmt_perf_lvl_name_3.label("asmt_cut_point_name_3"),
+                        dim_asmt.c.asmt_perf_lvl_name_4.label("asmt_cut_point_name_4"),
+                        dim_asmt.c.asmt_perf_lvl_name_5.label("asmt_cut_point_name_5"),
+                        dim_asmt.c.asmt_cut_point_1.label("asmt_cut_point_1"),
+                        dim_asmt.c.asmt_cut_point_2.label("asmt_cut_point_2"),
+                        dim_asmt.c.asmt_cut_point_3.label("asmt_cut_point_3"),
+                        dim_asmt.c.asmt_cut_point_4.label("asmt_cut_point_4"),
+                        dim_asmt.c.asmt_score_min.label('asmt_score_min'),
+                        dim_asmt.c.asmt_score_max.label('asmt_score_max'),
+                        dim_asmt.c.asmt_custom_metadata.label("asmt_custom_metadata"),
+                        dim_asmt.c.asmt_claim_1_name.label('asmt_claim_1_name'),
+                        dim_asmt.c.asmt_claim_2_name.label('asmt_claim_2_name'),
+                        dim_asmt.c.asmt_claim_3_name.label('asmt_claim_3_name'),
+                        dim_asmt.c.asmt_claim_4_name.label('asmt_claim_4_name')],
+                       from_obj=[dim_asmt])
 
-    # run it
-    return connector.get_result(query)
+        query.where(dim_asmt.c.most_recent)
+        if asmtSubject is not None:
+            query = query.where(and_(dim_asmt.c.asmt_subject.in_(asmtSubject)))
+
+        # run it
+        return connector.get_result(query)
 
 
 def __format_cut_points(results, subjects_map):

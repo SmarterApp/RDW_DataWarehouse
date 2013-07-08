@@ -1,4 +1,7 @@
 '''
+Processes report requests. Invokes validation and makes calls to
+specific report generators. Used by the views module.
+
 Created on Jan 16, 2013
 
 @author: aoren

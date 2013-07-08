@@ -1,4 +1,6 @@
 '''
+Handles validation of report parameters
+
 Created on Jan 16, 2013
 
 @author: aoren

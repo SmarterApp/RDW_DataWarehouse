@@ -42,6 +42,7 @@ def enum(*sequential, **named):
 def get_dict_value(dictionary, key, exception_to_raise=Exception):
     '''
     Dict lookup and raises an exception if key doesn't exist
+
     :param dictionary: the dictionary object
     :type dictionary: dict
     :param key: the key

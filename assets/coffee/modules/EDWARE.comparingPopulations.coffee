@@ -129,6 +129,7 @@ define [
            curSortColumn = $('#gridTable').getGridParam('sortname')
            if curSortColumn == $('#gridTable').getGridParam('colModel')[0].name
              resetSortingHeader();
+             enableDisableSortingOnAssessments()
            edwareUtil.formatBarAlignment();
             
   # Get population data from server       
@@ -357,8 +358,8 @@ define [
         dropdown.append(caret).append(dropdown_menu)
         dropdown.appendTo(".dropdownSection")
         
-        # Disable sorting
-        disableSortingOnAssessments()
+    # Disable sorting
+    enableDisableSortingOnAssessments()
     $(document).on
       click: (e) ->
         # reset dropdown state
@@ -382,22 +383,13 @@ define [
         # display sort arrows
         asmtSubjectSort.parent().children('span').css('visibility', 'visible')
         
-        # Enable sorting, Disable sorting in the other
-        $.each $("#gridTable").getGridParam("colModel"), (index, colModel) ->
-          colModel.sortable = false
-          #set always enable the first column
-          if index is 0
-            colModel.sortable = true
-          else
-            if colModel.index is subject
-              colModel.sortable = true
+        enableDisableSortingOnAssessments subject
 
         # Reload the grid and setting active sort column, subject is the index of the column
         $('#gridTable').sortGrid(subject, true, 'asc');
     , '.colorsBlock'
   
   resetSortingHeader = () ->
-    disableSortingOnAssessments()
     $.each $(".dropdown"), (index, dropdownElement) ->
       # reset to 'Select Sort'
       # find anchor element which belongs to dropdown element.
@@ -418,10 +410,17 @@ define [
       # hide sort arrows
       asmtSubjectSort.parent().children('span').css('visibility', 'hidden')
       
-  disableSortingOnAssessments = () ->
-    # Disable sorting
-    $("#gridTable").getGridParam("colModel")[1].sortable = false
-    $("#gridTable").getGridParam("colModel")[2].sortable = false
+  enableDisableSortingOnAssessments = (subject) ->
+    # Enable sorting, Disable sorting in the other
+    $.each $("#gridTable").getGridParam("colModel"), (index, colModel) ->
+      colModel.sortable = false
+      #set always enable the first column
+      if index is 0
+        colModel.sortable = true
+      else
+        if colModel.index is subject
+          colModel.sortable = true
+
           
   getCenterForDropdown = (subject_name, width) ->
     position = $('#'+subject_name+'_sort').parent().offset()

@@ -198,7 +198,7 @@ def get_list_of_students_report(params):
         los_results['assessments'] = assessments
 
         # query dim_asmt to get cutpoints and color metadata
-        asmt_data = __get_asmt_data(asmtSubject)
+        asmt_data = __get_asmt_data(asmtSubject).copy()
         los_results['metadata'] = __format_cut_points(asmt_data, subjects_map)
         los_results['context'] = get_breadcrumbs_context(state_code=stateCode, district_guid=districtGuid, school_guid=schoolGuid, asmt_grade=asmtGrade)
         los_results['subjects'] = __reverse_map(subjects_map)

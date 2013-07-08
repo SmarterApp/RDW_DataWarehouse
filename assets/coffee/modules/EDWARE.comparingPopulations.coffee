@@ -123,7 +123,9 @@ define [
         
         # Display grid controls after grid renders
         $(".gridControls").css("display", "block")
-        
+                
+        # Extend jqgrid loadComplete event for Comparing population
+        # Reset ALD sorting dropdown options and handle bar alignment styling
         $('#gridTable').bind "jqGridLoadComplete.jqGrid", (e, data) ->
            # Get the current sort column and reset cpop sorting dropdown if the current sort column is the first column
            curSortColumn = $('#gridTable').getGridParam('sortname')
@@ -178,12 +180,14 @@ define [
           dataArray schoolColumnCfgs, comparePopCfgs
           
   # Traverse through to intervals to prepare to append color to data
+  # Handle population bar alignment calculations
   appendColorToData = (data, asmtSubjectsData, colorsData, defaultColors) ->
     for k of asmtSubjectsData
       j = 0
       summaryDataAlignment = summaryData[0].results[k].intervals[0].percentage + summaryData[0].results[k].intervals[1].percentage
       while (j < data.length)
         appendColor data[j]['results'][k], colorsData[k], defaultColors
+        
         data[j]['results'][k].alignmentLine =  (((summaryDataAlignment) * 200) / 100) + 10
         data[j]['results'][k].alignment =  (((summaryDataAlignment - 100 + data[j]['results'][k].sort[1]) * 200) / 100) + 10
         j++

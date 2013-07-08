@@ -1,232 +1,488 @@
 {
-    "breadcrumb": {
-        "items": [
-            {
-                "type": "state",
-                "queryParam": "stateCode",
-                "link": "/assets/html/comparingPopulations.html"
-            }, {
-                "type": "district",
-                "queryParam": "districtGuid",
-                "link": "/assets/html/comparingPopulations.html"
-            }, {
-                "type": "school",
-                "queryParam": "schoolGuid",
-                "link": "/assets/html/comparingPopulations.html"
-            }, {
-                "type": "grade",
-                "queryParam": "asmtGrade",
-                "link": "/assets/html/studentList.html"
-            }, {
-                "type": "student",
-                "queryParam": "student"
-            }
-        ]
-    },
+	"breadcrumb": {
+		"items": [
+			{
+				"type": "state",
+				"queryParam": "stateCode",
+				"link": "/assets/html/comparingPopulations.html"
+			}, {
+				"type": "district",
+				"queryParam": "districtGuid",
+				"link": "/assets/html/comparingPopulations.html"
+			}, {
+				"type": "school",
+				"queryParam": "schoolGuid",
+				"link": "/assets/html/comparingPopulations.html"
+			}, {
+				"type": "grade",
+				"queryParam": "asmtGrade",
+				"link": "/assets/html/studentList.html"
+			}, {
+				"type": "student",
+				"queryParam": "student"
+			}
+		]
+	},
 
-    "colors": [
-        {
-            "bg_color": "#DD514C",
-            "start_gradient_bg_color": "#EE5F5B",
-            "end_gradient_bg_color": "#C43C35",
-            "text_color": "#FFFFFF"
-        }, {
-            "bg_color": "#e4c904",
-            "start_gradient_bg_color": "#e3c703",
-            "end_gradient_bg_color": "#eed909",
-            "text_color": "#000"
-        }, {
-            "bg_color": "#6aa506",
-            "start_gradient_bg_color": "#3d9913",
-            "end_gradient_bg_color": "#65b92c",
-            "text_color": "#FFFFFF"
-        }, {
-            "bg_color": "#237ccb",
-            "start_gradient_bg_color": "#2078ca",
-            "end_gradient_bg_color": "#3a98d1",
-            "text_color": "#FFFFFF"
-        }
-    ],
-    
-    "grayColors": [
-        {
-            "bg_color": "#000000",
-            "text_color": "#FFFFFF"
-        }, {
-            "bg_color": "#686868",
-            "text_color": "#FFFFFF"
-        }, {
-            "bg_color": "#acacac",
-            "text_color": "#000"
-        }, {
-            "bg_color": "#d2d2d2",
-            "text_color": "#000"
-        }
-    ],
+	"colors": [
+		{
+			"bg_color": "#DD514C",
+			"start_gradient_bg_color": "#EE5F5B",
+			"end_gradient_bg_color": "#C43C35",
+			"text_color": "#FFFFFF"
+		}, {
+			"bg_color": "#e4c904",
+			"start_gradient_bg_color": "#e3c703",
+			"end_gradient_bg_color": "#eed909",
+			"text_color": "#000"
+		}, {
+			"bg_color": "#6aa506",
+			"start_gradient_bg_color": "#3d9913",
+			"end_gradient_bg_color": "#65b92c",
+			"text_color": "#FFFFFF"
+		}, {
+			"bg_color": "#237ccb",
+			"start_gradient_bg_color": "#2078ca",
+			"end_gradient_bg_color": "#3a98d1",
+			"text_color": "#FFFFFF"
+		}
+	],
 
-    "feedback": {
-        "PARENT": {
-            "individual_student_report": "GjmM_2fSzJnjlt3A_2bGMxRZ_2fw_3d_3d",
-            "list_of_students": "G36s4TWKfrELsjXZ7jq1Zg_3d_3d",
-            "comparing_populations_state": "XnbKuR5vwCZAL1GyHeJgSQ_3d_3d",
-            "comparing_populations_district": "xILjemwP1hZXE9T3mf278g_3d_3d",
-            "comparing_populations_school": "z6jXFrx1xI0KJFqiq1WH1Q_3d_3d"
-        },
-        "STUDENT": {
-            "individual_student_report": "TgykGLaGiMu3XZIwwiwhKw_3d_3d",
-            "list_of_students": "Y6JAH3Is_2b9aFJUCj5uRZ2A_3d_3d",
-            "comparing_populations_state": "B9Hzlr6ksG5nqOOoaDJgIw_3d_3d",
-            "comparing_populations_district": "4z4MOLKf6dQhLaBqBb0Xxg_3d_3d",
-            "comparing_populations_school": "yvjbuVuDhevpws94gWCYQA_3d_3d"
-        },
-        "TEACHER": {
-            "individual_student_report": "kSet9N4jx4AE2EKqOeJn2w_3d_3d",
-            "list_of_students": "VLvFLuVFlTJmr19_2by0QeSA_3d_3d",
-            "comparing_populations_state": "lHRt_2b3848QW3EnYHFaUqdg_3d_3d",
-            "comparing_populations_district": "GVYKrPRyWqbwNMAphmXlCQ_3d_3d",
-            "comparing_populations_school": "1Ap0xBboGETtpVw4QDkz6A_3d_3d"
-        },
-        "STATE_EDUCATION_ADMINISTRATOR_1": {
-            "individual_student_report": "o9_2bezbMGceYX6YbBMODiKQ_3d_3d",
-            "list_of_students": "BsltixqYBWuwB3ABSmSbRA_3d_3d",
-            "comparing_populations_state": "nJDbSwBbygYFZLK1wvJZ_2bQ_3d_3d",
-            "comparing_populations_district": "HO3URTYlchPyAUlwkuoaiw_3d_3d",
-            "comparing_populations_school": "4yjGUZEnXVrzEHuGdWZpHA_3d_3d"
-        },
-        "STATE_EDUCATION_ADMINISTRATOR_2": {
-            "individual_student_report": "o9_2bezbMGceYX6YbBMODiKQ_3d_3d",
-            "list_of_students": "BsltixqYBWuwB3ABSmSbRA_3d_3d",
-            "comparing_populations_state": "nJDbSwBbygYFZLK1wvJZ_2bQ_3d_3d",
-            "comparing_populations_district": "HO3URTYlchPyAUlwkuoaiw_3d_3d",
-            "comparing_populations_school": "4yjGUZEnXVrzEHuGdWZpHA_3d_3d"
-        },
-        "DISTRICT_EDUCATION_ADMINISTRATOR_1": {
-            "individual_student_report": "IRw0j_2fRqI_2bbPlsRW2P4pPA_3d_3d",
-            "list_of_students": "fqTapOJ5hGwWzpIOrIaLVw_3d_3d",
-            "comparing_populations_state": "V9BzknchSfeGAr_2b_2bOrF0Kw_3d_3d",
-            "comparing_populations_district": "hL4OH81SoK6lORWK3KhzzQ_3d_3d",
-            "comparing_populations_school": "l_2bYv7YqFVYG1un_2b938ZOyA_3d_3d"
-        },
-        "DISTRICT_EDUCATION_ADMINISTRATOR_2": {
-            "individual_student_report": "IRw0j_2fRqI_2bbPlsRW2P4pPA_3d_3d",
-            "list_of_students": "fqTapOJ5hGwWzpIOrIaLVw_3d_3d",
-            "comparing_populations_state": "V9BzknchSfeGAr_2b_2bOrF0Kw_3d_3d",
-            "comparing_populations_district": "hL4OH81SoK6lORWK3KhzzQ_3d_3d",
-            "comparing_populations_school": "l_2bYv7YqFVYG1un_2b938ZOyA_3d_3d"
-        },
-        "SCHOOL_EDUCATION_ADMINISTRATOR_1": {
-            "individual_student_report": "cj3Mr4WPZWMWxmE1rTK8vQ_3d_3d",
-            "list_of_students": "sY7A_2f_2fjgKeOcX9eGjS99BQ_3d_3d",
-            "comparing_populations_state": "BeJ2_2b1sCXM4lCeIoUPm8Ew_3d_3d",
-            "comparing_populations_district": "0_2f9EDlm6VmK2V_2b3nYCqodA_3d_3d",
-            "comparing_populations_school": "rSAqwl1CnYyhRh0wTANV_2bg_3d_3d"
-        },
-        "SCHOOL_EDUCATION_ADMINISTRATOR_2": {
-            "individual_student_report": "cj3Mr4WPZWMWxmE1rTK8vQ_3d_3d",
-            "list_of_students": "sY7A_2f_2fjgKeOcX9eGjS99BQ_3d_3d",
-            "comparing_populations_state": "BeJ2_2b1sCXM4lCeIoUPm8Ew_3d_3d",
-            "comparing_populations_district": "0_2f9EDlm6VmK2V_2b3nYCqodA_3d_3d",
-            "comparing_populations_school": "rSAqwl1CnYyhRh0wTANV_2bg_3d_3d"
-        },
-        "HIGHER_EDUCATION_ADMISSIONS_OFFICER": {
-            "individual_student_report": "iRRX0K6lwdrTWj5ZBsKNvg_3d_3d",
-            "list_of_students": "xHHhMnZTC23JsGG_2bkqJfqQ_3d_3d",
-            "comparing_populations_state": "0_2bCFlTqRnJOeC4ryoGhUlQ_3d_3d",
-            "comparing_populations_district": "umQqUXtFpf1Sr867HwmHNg_3d_3d",
-            "comparing_populations_school": "F95qaQ5ThveMC2XJZx1C7g_3d_3d"
-        }
-    },
-    "reportInfo": {
-        "individual_student_report": "<h4>Purpose:</h4><p>This report is intended to summarize what your scores for a single year of summative assessments mean. It is a starting point for understanding your relative strengths and weaknesses so that you can identify opportunities for continued progress.</p><br/><h4>Uses:</h4><ul><li>As a student or parent, use this report to understand where this student is, in terms of their assessed grade, on the path towards career and college content-readiness. If the results do not match your understanding of where the student should be, you can focus on relative strengths and weaknesses (content forthcoming) to ascertain where the discrepancy may be.</li><li>As a teacher or administrator, use this report to support the teacher-student-parent partnership, whether it provides context for a parent-teacher conference or helps to identify areas to concentrate on in the coming year(s).</li></ul><br/><h4>Understanding your score:</h4><p>The Smarter Balanced Assessment is different than other tests with which you may be familiar.</p><ul><li>First, it is a criterion-referenced test, meaning that it measures individual student’s mastery of a particular set of academic knowledge and skills.</li><li>Second, the Smarter Balanced assessments take advantage of computer technology to customize each test to the individual student.When a student gets an item correct, the next item they see will be slightly more difficult. Likewise, if an item is incorrect, the next item will be somewhat less difficult. This procedure allows for more efficient and precise measurement of students' knowledge and skills.</li><li>As a result, scores are not meant to compare students to each other, but rather to determine how well each student mastered the content assessed.</li></ul><br/>",
-        "list_of_students": "<h4>Purpose:</h4><p>This report is intended to provide a consolidated view of individual student scores for a given assessment, and acts as a bridge between larger aggregate views and the individual student reports.</p><br><h4>Uses:</h4><ul><li>Use this report to sort a list of students by their various scores, or alphabetically. Ordering students by Overall scores may reveal groups of students, for example those concentrated around cut-scores or those in need of significant extra support.</li><li>Filtering capability will be forthcoming in the next version of the Reporting system, which will allow you to narrow down the overall list according to a multitude of student and score attributes.</li></ul><br><h4>More information:</h4><p>A list of students will most often be used to see a section or class at-a-glance for a given assessment. Single-point Overall scale-scores and Error Bands are provided to illustrate a spatial representation of student performance, and the list shows how those Error Bands overlap. Claim scores are provided in numerical form, but are best understood relative to the overall score and compared to each other as relative strengths and weaknesses. The combination may lead to insights that help characterize the results of an assessment for a group of students.</p><br/>",
-        "comparing_populations": "<h4>Purpose:</h4><p>This report compares large aggregations of students across organizational boundaries. The Achievement Level proportion bars provide a standardized say to view assessment results in a common format that describes their overall performance.</p><br><h4>Uses:</h4><ul><li>Use this view to compare summary performance of a large aggregation (e.g. school, district, state).</li><li>Keep in mind that the number of students assessed is an important part of any analysis.</li></ul><br><h4>More information:</h4><p>Currently, advanced functionality is limited to sorting by name and number of students assessed, but forthcoming functionality (including chained filters, multiple paths between levels, and bar alignment) will expand the comparative power of the report.</p><br/>"
-    },
-    "legendInfo": {
-    	"sample_intervals" : {
-    		"asmt_score": 1789, "asmt_score_interval": 65, "score_color" : "#e4c904"
-    	},
-        "individual_student_report": {
-        	"relative_strength_text": "The arrows show your claim score compared to your overall score. An up arrow means relative strength, while a down arrow may indicate a relative weakness.",
-        	"error_band": "The error of a score comes from the amount of information provided by the test. It is based on how well a single test was able to deliver items of approprate difficulty for the student in the allotted test length. Smarter Balanced tests endeavor to provide the most precise scores possible within a reasonable time limit by delivering an adaptive test portion. We provide an Error Band to show the range of score values that a student's result for a single assessment is highly-likely to be on any given day."
-        }
-    },
-    "students": {
+	"grayColors": [
+		{
+			"bg_color": "#000000",
+			"text_color": "#FFFFFF"
+		}, {
+			"bg_color": "#686868",
+			"text_color": "#FFFFFF"
+		}, {
+			"bg_color": "#acacac",
+			"text_color": "#000"
+		}, {
+			"bg_color": "#d2d2d2",
+			"text_color": "#000"
+		}
+	],
+
+	"feedback": {
+		"PARENT": {
+			"individual_student_report": "GjmM_2fSzJnjlt3A_2bGMxRZ_2fw_3d_3d",
+			"list_of_students": "G36s4TWKfrELsjXZ7jq1Zg_3d_3d",
+			"comparing_populations_state": "XnbKuR5vwCZAL1GyHeJgSQ_3d_3d",
+			"comparing_populations_district": "xILjemwP1hZXE9T3mf278g_3d_3d",
+			"comparing_populations_school": "z6jXFrx1xI0KJFqiq1WH1Q_3d_3d"
+		},
+		"STUDENT": {
+			"individual_student_report": "TgykGLaGiMu3XZIwwiwhKw_3d_3d",
+			"list_of_students": "Y6JAH3Is_2b9aFJUCj5uRZ2A_3d_3d",
+			"comparing_populations_state": "B9Hzlr6ksG5nqOOoaDJgIw_3d_3d",
+			"comparing_populations_district": "4z4MOLKf6dQhLaBqBb0Xxg_3d_3d",
+			"comparing_populations_school": "yvjbuVuDhevpws94gWCYQA_3d_3d"
+		},
+		"TEACHER": {
+			"individual_student_report": "kSet9N4jx4AE2EKqOeJn2w_3d_3d",
+			"list_of_students": "VLvFLuVFlTJmr19_2by0QeSA_3d_3d",
+			"comparing_populations_state": "lHRt_2b3848QW3EnYHFaUqdg_3d_3d",
+			"comparing_populations_district": "GVYKrPRyWqbwNMAphmXlCQ_3d_3d",
+			"comparing_populations_school": "1Ap0xBboGETtpVw4QDkz6A_3d_3d"
+		},
+		"STATE_EDUCATION_ADMINISTRATOR_1": {
+			"individual_student_report": "o9_2bezbMGceYX6YbBMODiKQ_3d_3d",
+			"list_of_students": "BsltixqYBWuwB3ABSmSbRA_3d_3d",
+			"comparing_populations_state": "nJDbSwBbygYFZLK1wvJZ_2bQ_3d_3d",
+			"comparing_populations_district": "HO3URTYlchPyAUlwkuoaiw_3d_3d",
+			"comparing_populations_school": "4yjGUZEnXVrzEHuGdWZpHA_3d_3d"
+		},
+		"STATE_EDUCATION_ADMINISTRATOR_2": {
+			"individual_student_report": "o9_2bezbMGceYX6YbBMODiKQ_3d_3d",
+			"list_of_students": "BsltixqYBWuwB3ABSmSbRA_3d_3d",
+			"comparing_populations_state": "nJDbSwBbygYFZLK1wvJZ_2bQ_3d_3d",
+			"comparing_populations_district": "HO3URTYlchPyAUlwkuoaiw_3d_3d",
+			"comparing_populations_school": "4yjGUZEnXVrzEHuGdWZpHA_3d_3d"
+		},
+		"DISTRICT_EDUCATION_ADMINISTRATOR_1": {
+			"individual_student_report": "IRw0j_2fRqI_2bbPlsRW2P4pPA_3d_3d",
+			"list_of_students": "fqTapOJ5hGwWzpIOrIaLVw_3d_3d",
+			"comparing_populations_state": "V9BzknchSfeGAr_2b_2bOrF0Kw_3d_3d",
+			"comparing_populations_district": "hL4OH81SoK6lORWK3KhzzQ_3d_3d",
+			"comparing_populations_school": "l_2bYv7YqFVYG1un_2b938ZOyA_3d_3d"
+		},
+		"DISTRICT_EDUCATION_ADMINISTRATOR_2": {
+			"individual_student_report": "IRw0j_2fRqI_2bbPlsRW2P4pPA_3d_3d",
+			"list_of_students": "fqTapOJ5hGwWzpIOrIaLVw_3d_3d",
+			"comparing_populations_state": "V9BzknchSfeGAr_2b_2bOrF0Kw_3d_3d",
+			"comparing_populations_district": "hL4OH81SoK6lORWK3KhzzQ_3d_3d",
+			"comparing_populations_school": "l_2bYv7YqFVYG1un_2b938ZOyA_3d_3d"
+		},
+		"SCHOOL_EDUCATION_ADMINISTRATOR_1": {
+			"individual_student_report": "cj3Mr4WPZWMWxmE1rTK8vQ_3d_3d",
+			"list_of_students": "sY7A_2f_2fjgKeOcX9eGjS99BQ_3d_3d",
+			"comparing_populations_state": "BeJ2_2b1sCXM4lCeIoUPm8Ew_3d_3d",
+			"comparing_populations_district": "0_2f9EDlm6VmK2V_2b3nYCqodA_3d_3d",
+			"comparing_populations_school": "rSAqwl1CnYyhRh0wTANV_2bg_3d_3d"
+		},
+		"SCHOOL_EDUCATION_ADMINISTRATOR_2": {
+			"individual_student_report": "cj3Mr4WPZWMWxmE1rTK8vQ_3d_3d",
+			"list_of_students": "sY7A_2f_2fjgKeOcX9eGjS99BQ_3d_3d",
+			"comparing_populations_state": "BeJ2_2b1sCXM4lCeIoUPm8Ew_3d_3d",
+			"comparing_populations_district": "0_2f9EDlm6VmK2V_2b3nYCqodA_3d_3d",
+			"comparing_populations_school": "rSAqwl1CnYyhRh0wTANV_2bg_3d_3d"
+		},
+		"HIGHER_EDUCATION_ADMISSIONS_OFFICER": {
+			"individual_student_report": "iRRX0K6lwdrTWj5ZBsKNvg_3d_3d",
+			"list_of_students": "xHHhMnZTC23JsGG_2bkqJfqQ_3d_3d",
+			"comparing_populations_state": "0_2bCFlTqRnJOeC4ryoGhUlQ_3d_3d",
+			"comparing_populations_district": "umQqUXtFpf1Sr867HwmHNg_3d_3d",
+			"comparing_populations_school": "F95qaQ5ThveMC2XJZx1C7g_3d_3d"
+		}
+	},
+	"reportInfo": {
+		"individual_student_report": "<h4>Purpose:</h4><p>This report is intended to summarize what your scores for a single year of summative assessments mean. It is a starting point for understanding your relative strengths and weaknesses so that you can identify opportunities for continued progress.</p><br/><h4>Uses:</h4><ul><li>As a student or parent, use this report to understand where this student is, in terms of their assessed grade, on the path towards career and college content-readiness. If the results do not match your understanding of where the student should be, you can focus on relative strengths and weaknesses (content forthcoming) to ascertain where the discrepancy may be.</li><li>As a teacher or administrator, use this report to support the teacher-student-parent partnership, whether it provides context for a parent-teacher conference or helps to identify areas to concentrate on in the coming year(s).</li></ul><br/><h4>Understanding your score:</h4><p>The Smarter Balanced Assessment is different than other tests with which you may be familiar.</p><ul><li>First, it is a criterion-referenced test, meaning that it measures individual student’s mastery of a particular set of academic knowledge and skills.</li><li>Second, the Smarter Balanced assessments take advantage of computer technology to customize each test to the individual student.When a student gets an item correct, the next item they see will be slightly more difficult. Likewise, if an item is incorrect, the next item will be somewhat less difficult. This procedure allows for more efficient and precise measurement of students' knowledge and skills.</li><li>As a result, scores are not meant to compare students to each other, but rather to determine how well each student mastered the content assessed.</li></ul><br/>",
+		"list_of_students": "<h4>Purpose:</h4><p>This report is intended to provide a consolidated view of individual student scores for a given assessment, and acts as a bridge between larger aggregate views and the individual student reports.</p><br><h4>Uses:</h4><ul><li>Use this report to sort a list of students by their various scores, or alphabetically. Ordering students by Overall scores may reveal groups of students, for example those concentrated around cut-scores or those in need of significant extra support.</li><li>Filtering capability will be forthcoming in the next version of the Reporting system, which will allow you to narrow down the overall list according to a multitude of student and score attributes.</li></ul><br><h4>More information:</h4><p>A list of students will most often be used to see a section or class at-a-glance for a given assessment. Single-point Overall scale-scores and Error Bands are provided to illustrate a spatial representation of student performance, and the list shows how those Error Bands overlap. Claim scores are provided in numerical form, but are best understood relative to the overall score and compared to each other as relative strengths and weaknesses. The combination may lead to insights that help characterize the results of an assessment for a group of students.</p><br/>",
+		"comparing_populations": "<h4>Purpose:</h4><p>This report compares large aggregations of students across organizational boundaries. The Achievement Level proportion bars provide a standardized say to view assessment results in a common format that describes their overall performance.</p><br><h4>Uses:</h4><ul><li>Use this view to compare summary performance of a large aggregation (e.g. school, district, state).</li><li>Keep in mind that the number of students assessed is an important part of any analysis.</li></ul><br><h4>More information:</h4><p>Currently, advanced functionality is limited to sorting by name and number of students assessed, but forthcoming functionality (including chained filters, multiple paths between levels, and bar alignment) will expand the comparative power of the report.</p><br/>"
+	},
+	"legendInfo": {
+		"sample_intervals": {
+			"asmt_score": 1789,
+			"asmt_score_interval": 65,
+			"score_color": "#e4c904"
+		},
+		"individual_student_report": {
+			"relative_strength_text": "The arrows show your claim score compared to your overall score. An up arrow means relative strength, while a down arrow may indicate a relative weakness.",
+			"error_band": "The error of a score comes from the amount of information provided by the test. It is based on how well a single test was able to deliver items of approprate difficulty for the student in the allotted test length. Smarter Balanced tests endeavor to provide the most precise scores possible within a reasonable time limit by delivering an adaptive test portion. We provide an Error Band to show the range of score values that a student's result for a single assessment is highly-likely to be on any given day."
+		}
+	},
+	"students": {
 		"{{subject1}}_{{subject2}}": [
-				{"name":"", "items": [
-					{"name":"Students","index":"student_full_name","field":"student_full_name","width":205,"style":"ui-ellipsis bold", "formatter":"showlink", "options":{"linkUrl":"indivStudentReport.html"}, "hidden":true, "sortorder":"asc"}
-				]},
-				{"name":"{{subject1}}","items":[
-					{"name":"Overall Score<div id='subject1_perfBar' class='header_perfBar'></div>","index":"assessments.subject1.asmt_score","field":"assessments.subject1.asmt_score","width":170,"formatter":"performanceBar","options":{"asmt_type":"subject1"},"sorttype":"int","align":"center","title":false},
-					{"name":"Teacher","index":"assessments.subject1.teacher_full_name","field":"assessments.subject1.teacher_full_name","width":204,"style":"ui-ellipsis","resizable":false}
-					]
-				},
-				{"name":"{{subject2}}","items":[
-					{"name":"Overall Score<div id='subject2_perfBar' class='header_perfBar'></div>","index":"assessments.subject2.asmt_score","field":"assessments.subject2.asmt_score","width":170,"formatter":"performanceBar","options":{"asmt_type":"subject2"},"sorttype":"int","align":"center","title":false},
-					{"name":"Teacher","index":"assessments.subject2.teacher_full_name","field":"assessments.subject2.teacher_full_name","width":204,"style":"ui-ellipsis","resizable":false}
-					]
-				}
-			],
-			"{{subject1}}": [
-				{"name":"", "items": [
-					{"name":"Students","index":"student_full_name","field":"student_full_name","width":205,"style":"ui-ellipsis bold", "formatter":"showlink", "options":{"linkUrl":"indivStudentReport.html"}, "hidden":true, "sortorder":"asc"}
-				]},
-				{"name":"{{subject1}}","items":[			
-					{"name":"Overall Score<div id='subject1_perfBar' class='header_perfBar'></div>","index":"assessments.subject1.asmt_score","field":"assessments.subject1.asmt_score","width":170,"formatter":"performanceBar","options":{"asmt_type":"subject1"},"sorttype":"int","align":"center","title":false},
-					{"name":"Teacher","index":"assessments.subject1.teacher_full_name","field":"assessments.subject1.teacher_full_name","width":155,"style":"ui-ellipsis","resizable":false}]
-				},
-				{"name": "<p class='claim_name'>{{claims.subject1.0.name}}</p>", "items": [
-					{"name":"{{claims.subject1.0.name2}}","index":"assessments.subject1.claims.0.score","field":"assessments.subject1.claims.0.score","width":140,"formatter":"showConfidence","sorttype":"int","align":"center"}]
-				},
-				{"name": "<p class='claim_name'>{{claims.subject1.1.name}}</p>", "items": [
-					{"name":"{{claims.subject1.1.name2}}","index":"assessments.subject1.claims.1.score","field":"assessments.subject1.claims.1.score","width":140,"formatter":"showConfidence","sorttype":"int","align":"center"}]
-				},
-				{"name": "<p class='claim_name'>{{claims.subject1.2.name}}</p>", "items": [
-					{"name":"{{claims.subject1.2.name2}}","index":"assessments.subject1.claims.2.score","field":"assessments.subject1.claims.2.score","width":140,"formatter":"showConfidence","sorttype":"int","align":"center"}]
-				}
-			],
-			"{{subject2}}": [
-				{"name":"", "items": [
-					{"name":"Students","index":"student_full_name","field":"student_full_name","width":205,"style":"ui-ellipsis bold", "formatter":"showlink", "options":{"linkUrl":"indivStudentReport.html"}, "hidden":true, "sortorder":"asc"}
-				]},
-				{"name":"{{subject2}}","items":[
-					{"name":"Overall Score<div id='subject2_perfBar' class='header_perfBar'></div>","index":"assessments.subject2.asmt_score","field":"assessments.subject2.asmt_score","width":170,"formatter":"performanceBar","options":{"asmt_type":"subject2"},"sorttype":"int","align":"center","title":false},
-					{"name":"Teacher","index":"assessments.subject2.teacher_full_name","field":"assessments.subject2.teacher_full_name","width":155,"style":"ui-ellipsis","resizable":false}
-					]
-				},
-				{"name": "<p class='claim_name'>{{claims.subject2.0.name}}</p>", "items": [
-					{"name":"{{claims.subject2.0.name2}}","index":"assessments.subject2.claims.0.score","field":"assessments.subject2.claims.0.score","width":103,"formatter":"showConfidence","sorttype":"int","align":"center"}]
-				},
-				{"name": "<p class='claim_name'>{{claims.subject2.1.name}}</p>", "items": [
-					{"name":"{{claims.subject2.1.name2}}","index":"assessments.subject2.claims.1.score","field":"assessments.subject2.claims.1.score","width":104,"formatter":"showConfidence","sorttype":"int","align":"center"}]
-				},
-				{"name": "<p class='claim_name'>{{claims.subject2.2.name}}</p>", "items": [
-					{"name":"{{claims.subject2.2.name2}}","index":"assessments.subject2.claims.2.score","field":"assessments.subject2.claims.2.score","width":104,"formatter":"showConfidence","sorttype":"int","align":"center"}]
-				},
-				{"name": "<p class='claim_name'>{{claims.subject2.3.name}}</p>", "items": [
-					{"name":"{{claims.subject2.3.name2}}","index":"assessments.subject2.claims.3.score","field":"assessments.subject2.claims.3.score","width":104,"formatter":"showConfidence","sorttype":"int","align":"center"}]
-				}
-			],
-		"customViews": {"{{subject1}}_{{subject2}}": "{{subject1}} & {{subject2}} Summative",
-						"{{subject1}}": "{{subject1}} Summative",
-						"{{subject2}}": "{{subject2}} Summative"
-						}
-    },
-    
-    "comparingPopulations": {
-	    "grid": [
-	    		{"name":"", "items":[
-	            	{"name":"School Name","index":"name","field":"name","width":186,"style":"ui-ellipsis bold","formatter":"showlink","options":{"linkUrl":"studentList.html", "style":"marginLeft20"},"hidden":true,"sortorder":"asc"}
-	            ]},
-	            {"name":"{{subject1}}","items":[
-	            	{"name":"<ul class='dropdown-menu' style='display:block;' role='menu' aria-labelledby='dLabel'><li>2</li></ul><div id='{{subject1}}_sort' style='display: inline'>Select Sort</div>","index":"{{subject1}}","field":"results.subject1.total","width":388,"sorttype":"popBarSort","formatter":"populationBar","options":{"asmt_type":"subject1"},"title":false,"align":"center"}
-	            ]},
-	            {"name":"{{subject2}}","items":[
-	            	{"name":"<div id='{{subject2}}_sort' style='display: inline'>Select Sort</div>","index":"{{subject2}}","field":"results.subject2.total","width":388,"sorttype":"popBarSort","formatter":"populationBar", "options":{"asmt_type":"subject2"}, "title":false,"align":"center"}
-	        	]}
-	        ],
-	    "customViews" : {"school": {"name": "Grade", "link": "studentList.html", "id_name": "asmtGrade"}, 
-	                       "district": {"name": "School Name", "link": "comparingPopulations.html", "id_name": "schoolGuid"}, 
-	                       "state": {"name": "District Name", "link": "comparingPopulations.html", "id_name": "districtGuid"}
-	                       }
-    }
+			{
+				"name": "",
+				"items": [
+					{
+						"name": "Students",
+						"index": "student_full_name",
+						"field": "student_full_name",
+						"width": 205,
+						"style": "ui-ellipsis bold",
+						"formatter": "showlink",
+						"options": {
+							"linkUrl": "indivStudentReport.html"
+						},
+						"hidden": true,
+						"sortorder": "asc"
+					}
+				]
+			}, {
+				"name": "{{subject1}}",
+				"items": [
+					{
+						"name": "Overall Score<div id='subject1_perfBar' class='header_perfBar'></div>",
+						"index": "assessments.subject1.asmt_score",
+						"field": "assessments.subject1.asmt_score",
+						"width": 170,
+						"formatter": "performanceBar",
+						"options": {
+							"asmt_type": "subject1"
+						},
+						"sorttype": "int",
+						"align": "center",
+						"title": false
+					}, {
+						"name": "Teacher",
+						"index": "assessments.subject1.teacher_full_name",
+						"field": "assessments.subject1.teacher_full_name",
+						"width": 204,
+						"style": "ui-ellipsis",
+						"resizable": false
+					}
+				]
+			}, {
+				"name": "{{subject2}}",
+				"items": [
+					{
+						"name": "Overall Score<div id='subject2_perfBar' class='header_perfBar'></div>",
+						"index": "assessments.subject2.asmt_score",
+						"field": "assessments.subject2.asmt_score",
+						"width": 170,
+						"formatter": "performanceBar",
+						"options": {
+							"asmt_type": "subject2"
+						},
+						"sorttype": "int",
+						"align": "center",
+						"title": false
+					}, {
+						"name": "Teacher",
+						"index": "assessments.subject2.teacher_full_name",
+						"field": "assessments.subject2.teacher_full_name",
+						"width": 204,
+						"style": "ui-ellipsis",
+						"resizable": false
+					}
+				]
+			}
+		],
+		"{{subject1}}": [
+			{
+				"name": "",
+				"items": [
+					{
+						"name": "Students",
+						"index": "student_full_name",
+						"field": "student_full_name",
+						"width": 205,
+						"style": "ui-ellipsis bold",
+						"formatter": "showlink",
+						"options": {
+							"linkUrl": "indivStudentReport.html"
+						},
+						"hidden": true,
+						"sortorder": "asc"
+					}
+				]
+			}, {
+				"name": "{{subject1}}",
+				"items": [
+					{
+						"name": "Overall Score<div id='subject1_perfBar' class='header_perfBar'></div>",
+						"index": "assessments.subject1.asmt_score",
+						"field": "assessments.subject1.asmt_score",
+						"width": 170,
+						"formatter": "performanceBar",
+						"options": {
+							"asmt_type": "subject1"
+						},
+						"sorttype": "int",
+						"align": "center",
+						"title": false
+					}, {
+						"name": "Teacher",
+						"index": "assessments.subject1.teacher_full_name",
+						"field": "assessments.subject1.teacher_full_name",
+						"width": 155,
+						"style": "ui-ellipsis",
+						"resizable": false
+					}
+				]
+			}, {
+				"name": "<p class='claim_name'>{{claims.subject1.0.name}}</p>",
+				"items": [
+					{
+						"name": "{{claims.subject1.0.name2}}",
+						"index": "assessments.subject1.claims.0.score",
+						"field": "assessments.subject1.claims.0.score",
+						"width": 140,
+						"formatter": "showConfidence",
+						"sorttype": "int",
+						"align": "center"
+					}
+				]
+			}, {
+				"name": "<p class='claim_name'>{{claims.subject1.1.name}}</p>",
+				"items": [
+					{
+						"name": "{{claims.subject1.1.name2}}",
+						"index": "assessments.subject1.claims.1.score",
+						"field": "assessments.subject1.claims.1.score",
+						"width": 140,
+						"formatter": "showConfidence",
+						"sorttype": "int",
+						"align": "center"
+					}
+				]
+			}, {
+				"name": "<p class='claim_name'>{{claims.subject1.2.name}}</p>",
+				"items": [
+					{
+						"name": "{{claims.subject1.2.name2}}",
+						"index": "assessments.subject1.claims.2.score",
+						"field": "assessments.subject1.claims.2.score",
+						"width": 140,
+						"formatter": "showConfidence",
+						"sorttype": "int",
+						"align": "center"
+					}
+				]
+			}
+		],
+		"{{subject2}}": [
+			{
+				"name": "",
+				"items": [
+					{
+						"name": "Students",
+						"index": "student_full_name",
+						"field": "student_full_name",
+						"width": 205,
+						"style": "ui-ellipsis bold",
+						"formatter": "showlink",
+						"options": {
+							"linkUrl": "indivStudentReport.html"
+						},
+						"hidden": true,
+						"sortorder": "asc"
+					}
+				]
+			}, {
+				"name": "{{subject2}}",
+				"items": [
+					{
+						"name": "Overall Score<div id='subject2_perfBar' class='header_perfBar'></div>",
+						"index": "assessments.subject2.asmt_score",
+						"field": "assessments.subject2.asmt_score",
+						"width": 170,
+						"formatter": "performanceBar",
+						"options": {
+							"asmt_type": "subject2"
+						},
+						"sorttype": "int",
+						"align": "center",
+						"title": false
+					}, {
+						"name": "Teacher",
+						"index": "assessments.subject2.teacher_full_name",
+						"field": "assessments.subject2.teacher_full_name",
+						"width": 155,
+						"style": "ui-ellipsis",
+						"resizable": false
+					}
+				]
+			}, {
+				"name": "<p class='claim_name'>{{claims.subject2.0.name}}</p>",
+				"items": [
+					{
+						"name": "{{claims.subject2.0.name2}}",
+						"index": "assessments.subject2.claims.0.score",
+						"field": "assessments.subject2.claims.0.score",
+						"width": 103,
+						"formatter": "showConfidence",
+						"sorttype": "int",
+						"align": "center"
+					}
+				]
+			}, {
+				"name": "<p class='claim_name'>{{claims.subject2.1.name}}</p>",
+				"items": [
+					{
+						"name": "{{claims.subject2.1.name2}}",
+						"index": "assessments.subject2.claims.1.score",
+						"field": "assessments.subject2.claims.1.score",
+						"width": 104,
+						"formatter": "showConfidence",
+						"sorttype": "int",
+						"align": "center"
+					}
+				]
+			}, {
+				"name": "<p class='claim_name'>{{claims.subject2.2.name}}</p>",
+				"items": [
+					{
+						"name": "{{claims.subject2.2.name2}}",
+						"index": "assessments.subject2.claims.2.score",
+						"field": "assessments.subject2.claims.2.score",
+						"width": 104,
+						"formatter": "showConfidence",
+						"sorttype": "int",
+						"align": "center"
+					}
+				]
+			}, {
+				"name": "<p class='claim_name'>{{claims.subject2.3.name}}</p>",
+				"items": [
+					{
+						"name": "{{claims.subject2.3.name2}}",
+						"index": "assessments.subject2.claims.3.score",
+						"field": "assessments.subject2.claims.3.score",
+						"width": 104,
+						"formatter": "showConfidence",
+						"sorttype": "int",
+						"align": "center"
+					}
+				]
+			}
+		],
+		"customViews": {
+			"{{subject1}}_{{subject2}}": "{{subject1}} & {{subject2}} Summative",
+			"{{subject1}}": "{{subject1}} Summative",
+			"{{subject2}}": "{{subject2}} Summative"
+		}
+	},
+
+	"comparingPopulations": {
+		"grid": [
+			{
+				"name": "",
+				"items": [
+					{
+						"name": "School Name",
+						"index": "name",
+						"field": "name",
+						"width": 186,
+						"style": "ui-ellipsis bold",
+						"formatter": "showlink",
+						"options": {
+							"linkUrl": "studentList.html",
+							"style": "marginLeft20"
+						},
+						"hidden": true,
+						"sortorder": "asc"
+					}
+				]
+			}, {
+				"name": "{{subject1}}",
+				"items": [
+					{
+						"name": "<div id='{{subject1}}_sort' style='display: inline'></div>",
+						"index": "{{subject1}}",
+						"field": "results.subject1.total",
+						"width": 388,
+						"sorttype": "popBarSort",
+						"formatter": "populationBar",
+						"options": {
+							"asmt_type": "subject1"
+						},
+						"title": false,
+						"align": "center"
+					}
+				]
+			}, {
+				"name": "{{subject2}}",
+				"items": [
+					{
+						"name": "<div id='{{subject2}}_sort' style='display: inline'></div>",
+						"index": "{{subject2}}",
+						"field": "results.subject2.total",
+						"width": 388,
+						"sorttype": "popBarSort",
+						"formatter": "populationBar",
+						"options": {
+							"asmt_type": "subject2"
+						},
+						"title": false,
+						"align": "center"
+					}
+				]
+			}
+		],
+		"customViews": {
+			"school": {
+				"name": "Grade",
+				"link": "studentList.html",
+				"id_name": "asmtGrade"
+			},
+			"district": {
+				"name": "School Name",
+				"link": "comparingPopulations.html",
+				"id_name": "schoolGuid"
+			},
+			"state": {
+				"name": "District Name",
+				"link": "comparingPopulations.html",
+				"id_name": "districtGuid"
+			}
+		},
+		"customALDDropdown": {
+			"selectSort": "Select Sort",
+			"totalStudents": "Total Students"
+		}
+	}
 }

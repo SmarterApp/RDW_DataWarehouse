@@ -36,6 +36,7 @@ define [
         reportInfo = data.reportInfo
         gridConfig = data.comparingPopulations.grid
         customViews = data.comparingPopulations.customViews
+        customALDDropdown = data.comparingPopulations.customALDDropdown
         
         output = Mustache.render(JSON.stringify(gridConfig), asmtSubjectsData)
         gridConfig = JSON.parse(output)
@@ -118,7 +119,7 @@ define [
             edwareUtil.setALDAlignmentStatus "off"
             grid.trigger("reloadGrid") 
         
-        dropdown = createDropdown asmtSubjectsData, colorsData, defaultColors
+        dropdown = createDropdown asmtSubjectsData, colorsData, customALDDropdown
         $('.dropdown-toggle').dropdown()
         
         # Display grid controls after grid renders
@@ -130,7 +131,7 @@ define [
            # Get the current sort column and reset cpop sorting dropdown if the current sort column is the first column
            curSortColumn = $('#gridTable').getGridParam('sortname')
            if curSortColumn == $('#gridTable').getGridParam('colModel')[0].name
-             resetSortingHeader();
+             resetSortingHeader customALDDropdown;
              enableDisableSortingOnAssessments()
            edwareUtil.formatBarAlignment();
             
@@ -178,7 +179,7 @@ define [
           callback schoolColumnCfgs, comparePopCfgs
         else
           dataArray schoolColumnCfgs, comparePopCfgs
-          
+  
   # Traverse through to intervals to prepare to append color to data
   # Handle population bar alignment calculations
   appendColorToData = (data, asmtSubjectsData, colorsData, defaultColors) ->
@@ -302,49 +303,38 @@ define [
     reportType
 
   # create dropdown menu for color bars
-  createDropdown = (asmtSubjectsData, colorsData, defaultColors) ->
+  createDropdown = (asmtSubjectsData, colorsData, customALDDropdown) ->
     for subject, asmtSubject of asmtSubjectsData
       # get <div> object where dropdown menu will be appear
-      asmtSubjectSort = $('#'+asmtSubject+"_sort")
+      asmtSubjectSort = $('#' + asmtSubject + "_sort")
       
       # prepare dropdown menu canvas
       if asmtSubjectSort isnt null
         #create dropdown and set to the center of each colomn
-        dropdown = $("<div class='dropdown' id='"+asmtSubject+"_dropdown'></div>")
-        setCenterForDropdown(asmtSubject, asmtSubjectSort.width(), dropdown)
-       
-        #read value 'Select Sort' then hide.
-        asmtSubjectSortValue = asmtSubjectSort.html()
+        dropdown = $("<div class='dropdown' id='" + asmtSubject + "_dropdown'></div>")
+
         asmtSubjectSort.css('visibility', 'hidden')
         #move sort up/down to right side, then hide
-        asmtSubjectSort.parent().css('text-align','right')
-        asmtSubjectSort.parent().css('left','-10px')
-        asmtSubjectSort.parent().children('span').css('visibility', 'hidden')
+        asmtSubjectSort.parent().addClass('colorSortArrow')
+        asmtSubjectSort.siblings('span').css('visibility', 'hidden')
         
-        caret = $("<a class='dropdown-toggle' id='"+asmtSubject+"_DropdownMenu' role='button'><div class='dropdown_title'>"+asmtSubjectSortValue+"</div><b class='caret'></b></a>")
+        caret = $("<a class='dropdown-toggle' id='" + asmtSubject + "_DropdownMenu' role='button'><div class='dropdown_title'>" + customALDDropdown.selectSort + "</div><b class='caret'></b></a>")
         dropdown_menu = $("<ul class='dropdown-menu' role='menu' aria-labelledby='dLabel'></ul>")
         
         #prepare color bars
         i = 0
-        #find out number of colors
-        useThisColorsData={}
-        # detect custom color or defined color
-        if colorsData is 'undefined' or colorsData is null or $.isEmptyObject(colorsData) is true
-          useThisColorsData[subject] = defaultColors
-        else
-          useThisColorsData = colorsData
         
         #build color bars
-        len = useThisColorsData[subject].length
+        len = colorsData[subject].length
         while i < len
           colorBar = ''
           sortID = ''
           j = 0
           k = 0
           #last row should display "Total Students"
-          sortID = asmtSubject + '_sort_'+i
+          sortID = asmtSubject + '_sort_' + i
           if i is len - 1
-            colorBar = "<div class='totalStudents'>Total Students</div>"
+            colorBar = "<div class='totalStudents'>" + customALDDropdown.totalStudents + "</div>"
           else
             while j <= len
               #blank div for separator
@@ -353,19 +343,20 @@ define [
                 k = 1
               #set background color
               else
-                colorBar = colorBar.concat("<div class='colorBlock' style='background-color:"+useThisColorsData[subject][j-k].bg_color+";'>&nbsp;</div>")
+                colorBar = colorBar.concat("<div class='colorBlock' style='background-color:" + colorsData[subject][j-k].bg_color + ";'>&nbsp;</div>")
               j++
-          dropdown_menu.append($("<li id='"+sortID+"' class='colorsBlock'><input id='"+sortID+"_input' type='radio' name='colorBlock_sort' value='"+sortID+"' class='inputColorBlock'/><div>"+colorBar+"</div></li>"))
+          dropdown_menu.append($("<li id='" + sortID + "' class='colorsBlock'><input id='" + sortID + "_input' type='radio' name='colorBlock_sort' value='" + sortID + "' class='inputColorBlock'/><div>" + colorBar + "</div></li>"))
           i++
         dropdown.append(caret).append(dropdown_menu)
         dropdown.appendTo(".dropdownSection")
+        setCenterForDropdown(asmtSubject, caret.children('.dropdown_title').width(), dropdown)
         
     # Disable sorting
     enableDisableSortingOnAssessments()
     $(document).on
       click: (e) ->
         # reset dropdown state
-        resetSortingHeader()
+        resetSortingHeader customALDDropdown
         
         # select radio button.
         $('#'+$(this).attr('id')+'_input').attr('checked',true)
@@ -373,16 +364,16 @@ define [
         subject = this.id.substring(0,this.id.indexOf('_'))
         # obtain selected color bar and set it to table header
         asmtSubjectSort = $("#" + subject + "_sort")
-        targetParentId = subject+'_DropdownMenu'
+        targetParentId = subject + '_DropdownMenu'
         colorBar = $(this).children('div').html()
         #set the center of table header
-        targetParentElement_div = $('#'+targetParentId+' div')
+        targetParentElement_div = $('#' + targetParentId + ' div')
         targetParentElement_div.html(colorBar)
         setCenterForDropdown(subject, targetParentElement_div.width(), targetParentElement_div)
 
         
         # display sort arrows
-        asmtSubjectSort.parent().children('span').css('visibility', 'visible')
+        asmtSubjectSort.siblings('span').css('visibility', 'visible')
         
         enableDisableSortingOnAssessments subject
 
@@ -390,27 +381,24 @@ define [
         $('#gridTable').sortGrid(subject, true, 'asc');
     , '.colorsBlock'
   
-  resetSortingHeader = () ->
+  resetSortingHeader = (customALDDropdown) ->
+    # unselect radio button
+    $('.inputColorBlock').attr('checked', false)
     $.each $(".dropdown"), (index, dropdownElement) ->
-      # unselect radio button
-      $.each $('.inputColorBlock'), (index2, inputColorBlockElement) ->
-        $(inputColorBlockElement).attr('checked', false)
       # reset to 'Select Sort'
       # find anchor element which belongs to dropdown element.
       dropdown_a_element = $(dropdownElement).children('a')
       #find subject name
       id = $(dropdown_a_element).attr("id")
       subject = id.substring(0, id.indexOf("_"))
-      asmtSubjectSort = $('#'+subject+'_sort')
-      asmtSubjectSortValue = asmtSubjectSort.html()
+      asmtSubjectSort = $('#' + subject + '_sort')
       #set 'Select Sort'
       dropdown_a_element_dropdown_title = $(dropdown_a_element).children(".dropdown_title")
-      dropdown_a_element_dropdown_title.html asmtSubjectSortValue
-      dropdown_a_element_dropdown_title.css('margin-top','0px')
+      dropdown_a_element_dropdown_title.html customALDDropdown.selectSort
       #set to the center of table header column
       setCenterForDropdown(subject, dropdown_a_element_dropdown_title.width(), dropdown_a_element_dropdown_title)
       # hide sort arrows
-      asmtSubjectSort.parent().children('span').css('visibility', 'hidden')
+      asmtSubjectSort.siblings('span').css('visibility', 'hidden')
       # cloase open panel
       $(dropdownElement).removeClass('open')
       
@@ -427,11 +415,11 @@ define [
 
           
   setCenterForDropdown = (subject_name, width, targetElement) ->
-    position = $('#'+subject_name+'_sort').parent().offset()
+    position = $('#' + subject_name + '_sort').parent().offset()
     parent_position = $('#' + subject_name + '_sort').closest('.gridHeight100').offset()
     position.left -= parent_position.left
     position.top -= parent_position.top
-    position.left = position.left+$('#'+subject_name+'_sort').parent().width()/2-width/2
+    position.left = position.left + $('#' + subject_name + '_sort').parent().width()/2-width/2
     targetElement.closest('.dropdown').css('margin-left', position.left)
     targetElement.closest('.dropdown').css('margin-top', position.top)
 

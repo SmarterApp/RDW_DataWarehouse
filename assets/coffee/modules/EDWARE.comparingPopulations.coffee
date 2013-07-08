@@ -185,7 +185,7 @@ define [
     for k of asmtSubjectsData
       j = 0
       summaryDataAlignment = summaryData[0].results[k].intervals[0].percentage + summaryData[0].results[k].intervals[1].percentage
-      while (j < data.length)
+      while j < data.length
         appendColor data[j]['results'][k], colorsData[k], defaultColors
         
         data[j]['results'][k].alignmentLine =  (((summaryDataAlignment) * 200) / 100) + 10
@@ -199,7 +199,7 @@ define [
     intervals = data.intervals
     len = intervals.length
     sort = prepareTotalPercentage data.total, len
-    while (i < len)
+    while i < len
       element = intervals[i]
       if colorsData and colorsData[i]
         element.color = colorsData[i]
@@ -225,7 +225,7 @@ define [
   prepareTotalPercentage = (total, intervalLength) ->
     percentages = {}
     j = 0
-    while (j < intervalLength - 1)
+    while j < intervalLength - 1
       # Prepopulate
       percentages[j] = 0
       j++
@@ -235,10 +235,10 @@ define [
   # calculate percentages for each sort interval
   calculateTotalPercentage = (percentages, i, currentPercentage) ->
     k = 2
-    if (i == 0)
+    if i is 0
       percentages[i] = currentPercentage
     else
-      while (k <= i)
+      while k <= i
         percentages[k-1] = percentages[k-1] + currentPercentage
         k++
     percentages

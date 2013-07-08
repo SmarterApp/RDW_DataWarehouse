@@ -104,14 +104,14 @@ define [
         , ".progress"
         
         
-        #   
+        # Set population bar alignment on/off
         $(".align_button").click ->
           align_button_class = $(this).attr("class")
           grid = $("#gridTable")         
           if align_button_class.indexOf("align_off") isnt -1
             $(this).removeClass("align_off").addClass("align_on")
             edwareUtil.setALDAlignmentStatus "on"
-            grid.trigger("reloadGrid")      
+            grid.trigger("reloadGrid")
             
           else
             $(this).removeClass("align_on").addClass("align_off")
@@ -120,6 +120,9 @@ define [
         
         dropdown = createDropdown asmtSubjectsData, colorsData, defaultColors
         $('.dropdown-toggle').dropdown()
+        
+        # Display grid controls after grid renders
+        $(".gridControls").css("display", "block")
             
   # Get population data from server       
   getPopulationData = (sourceURL, params, callback) ->
@@ -291,16 +294,12 @@ define [
     for subject, asmtSubject of asmtSubjectsData
       # get <div> object where dropdown menu will be appear
       asmtSubjectSort = $('#'+asmtSubject+"_sort")
-      # get position of the dev
-      #position = asmtSubjectSort.offset()
       
       # prepare dropdown menu canvas
       if asmtSubjectSort isnt null
         #create dropdown and set to the center of each colomn
-        dropdown = $("<div class='dropdown'></div>")
-        position = getCenterForDropdown(asmtSubject, asmtSubjectSort.width())
-        dropdown.css(position)
-        
+        dropdown = $("<div class='dropdown' id='"+asmtSubject+"_dropdown'></div>")
+       
         #read value 'Select Sort' then hide.
         asmtSubjectSortValue = asmtSubjectSort.html()
         asmtSubjectSort.css('visibility', 'hidden')
@@ -346,7 +345,7 @@ define [
           dropdown_menu.append($("<li id='"+sortID+"' class='colorsBlock'><input id='"+sortID+"_input' type='radio' name='colorBlock_sort' value='"+sortID+"' class='inputColorBlock'/><div>"+colorBar+"</div></li>"))
           i++
         dropdown.append(caret).append(dropdown_menu)
-        $('#content').append(dropdown)
+        dropdown.appendTo(".dropdownSection")
         
         # Disable sorting
         $("#gridTable").getGridParam("colModel")[1].sortable = false
@@ -366,9 +365,6 @@ define [
           dropdown_a_element_dropdown_title = $(dropdown_a_element).children(".dropdown_title")
           dropdown_a_element_dropdown_title.html asmtSubjectSortValue
           dropdown_a_element_dropdown_title.css('margin-top','0px')
-          #set to the center of table header column
-          position = getCenterForDropdown(subject, dropdown_a_element_dropdown_title.width())
-          $(dropdownElement).css(position)
           # hide sort arrows
           asmtSubjectSort.parent().children('span').css('visibility', 'hidden')
           
@@ -382,8 +378,6 @@ define [
         colorBar = $(this).children('div').html()
         #set the center of table header
         $('#'+targetParentId+' div').html(colorBar)
-        position = getCenterForDropdown(subject, $('#'+targetParentId+' div').width())
-        $('#' + targetParentId).parent().css(position)
         
         # display sort arrows
         asmtSubjectSort.parent().children('span').css('visibility', 'visible')
@@ -400,11 +394,6 @@ define [
         # Reload the grid and setting active sort column, subject is the index of the column
         $('#gridTable').sortGrid(subject, true, 'asc');
     , '.colorsBlock'
-    
-  getCenterForDropdown = (subject_name, width) ->
-    position = $('#'+subject_name+'_sort').parent().offset()
-    position.left = position.left+$('#'+subject_name+'_sort').parent().width()/2-width/2
-    position
     
   createPopulationGrid: createPopulationGrid
   

@@ -137,6 +137,7 @@ h6 {
 .gridControls {
   margin: 7px 0 0 20px;
   padding-top:8px;
+  display: none;
   
   .align_label {
     background-image: url("../images/align_onoff.png");
@@ -538,8 +539,13 @@ table {
     
   }
   
+  .studentsTotal {
+    text-align: right;
+    padding-right: 30px;
+  }
+  
   .barContainer {
-    margin-left: 30px;
+    margin-left: 15px;
   }
 }
 
@@ -848,10 +854,23 @@ table {
   height: 14px;
   cursor:pointer;
 }
+.dropdownSection {
+  height: 0;
+}
 .dropdown {
   padding-top: 7px;
   position:absolute;
   z-index:800;
+  width:200px;
+}
+#Math_dropdown {
+  margin-left: 340px;
+  margin-top: 21px;
+}
+
+#ELA_dropdown {
+  margin-left: 680px;
+  margin-top: 21px;
 }
 .dropdown-menu {
   min-width:220px

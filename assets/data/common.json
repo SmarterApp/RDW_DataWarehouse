@@ -218,7 +218,7 @@
 	            	{"name":"School Name","index":"name","field":"name","width":186,"style":"ui-ellipsis bold","formatter":"showlink","options":{"linkUrl":"studentList.html", "style":"marginLeft20"},"hidden":true,"sortorder":"asc"}
 	            ]},
 	            {"name":"{{subject1}}","items":[
-	            	{"name":"<div id='{{subject1}}_sort' style='display: inline'>Select Sort</div>","index":"{{subject1}}","field":"results.subject1.total","width":388,"sorttype":"popBarSort","formatter":"populationBar","options":{"asmt_type":"subject1"},"title":false,"align":"center"}
+	            	{"name":"<ul class='dropdown-menu' style='display:block;' role='menu' aria-labelledby='dLabel'><li>2</li></ul><div id='{{subject1}}_sort' style='display: inline'>Select Sort</div>","index":"{{subject1}}","field":"results.subject1.total","width":388,"sorttype":"popBarSort","formatter":"populationBar","options":{"asmt_type":"subject1"},"title":false,"align":"center"}
 	            ]},
 	            {"name":"{{subject2}}","items":[
 	            	{"name":"<div id='{{subject2}}_sort' style='display: inline'>Select Sort</div>","index":"{{subject2}}","field":"results.subject2.total","width":388,"sorttype":"popBarSort","formatter":"populationBar", "options":{"asmt_type":"subject2"}, "title":false,"align":"center"}

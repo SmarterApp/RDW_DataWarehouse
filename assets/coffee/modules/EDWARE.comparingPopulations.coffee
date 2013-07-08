@@ -353,21 +353,8 @@ define [
     $(document).on
       click: (e) ->
         # reset dropdown state
-        $.each $(".dropdown"), (index, dropdownElement) ->
-          # reset to 'Select Sort'
-          # find anchor element which belongs to dropdown element.
-          dropdown_a_element = $(dropdownElement).children('a')
-          #find subject name
-          id = $(dropdown_a_element).attr("id")
-          subject = id.substring(0, id.indexOf("_"))
-          asmtSubjectSortValue = asmtSubjectSort.html()
-          #set 'Select Sort'
-          dropdown_a_element_dropdown_title = $(dropdown_a_element).children(".dropdown_title")
-          dropdown_a_element_dropdown_title.html asmtSubjectSortValue
-          dropdown_a_element_dropdown_title.css('margin-top','0px')
-          # hide sort arrows
-          asmtSubjectSort.parent().children('span').css('visibility', 'hidden')
-          
+        resetSortingHeader()
+        
         # select radio button.
         $('#'+$(this).attr('id')+'_input').attr('checked',true)
         # find subject name
@@ -394,6 +381,23 @@ define [
         # Reload the grid and setting active sort column, subject is the index of the column
         $('#gridTable').sortGrid(subject, true, 'asc');
     , '.colorsBlock'
-    
+  
+  resetSortingHeader = () ->
+    $.each $(".dropdown"), (index, dropdownElement) ->
+      # reset to 'Select Sort'
+      # find anchor element which belongs to dropdown element.
+      dropdown_a_element = $(dropdownElement).children('a')
+      #find subject name
+      id = $(dropdown_a_element).attr("id")
+      subject = id.substring(0, id.indexOf("_"))
+      asmtSubjectSort = $('#'+subject+'_sort')
+      asmtSubjectSortValue = asmtSubjectSort.html()
+      #set 'Select Sort'
+      dropdown_a_element_dropdown_title = $(dropdown_a_element).children(".dropdown_title")
+      dropdown_a_element_dropdown_title.html asmtSubjectSortValue
+      dropdown_a_element_dropdown_title.css('margin-top','0px')
+      # hide sort arrows
+      asmtSubjectSort.parent().children('span').css('visibility', 'hidden')
+          
   createPopulationGrid: createPopulationGrid
   

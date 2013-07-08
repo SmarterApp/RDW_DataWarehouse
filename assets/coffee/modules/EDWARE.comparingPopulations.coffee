@@ -123,6 +123,13 @@ define [
         
         # Display grid controls after grid renders
         $(".gridControls").css("display", "block")
+        
+        $('#gridTable').bind "jqGridLoadComplete.jqGrid", (e, data) ->
+           # Get the current sort column and reset cpop sorting dropdown if the current sort column is the first column
+           curSortColumn = $('#gridTable').getGridParam('sortname')
+           if curSortColumn == $('#gridTable').getGridParam('colModel')[0].name
+             resetSortingHeader();
+           edwareUtil.formatBarAlignment();
             
   # Get population data from server       
   getPopulationData = (sourceURL, params, callback) ->
@@ -351,8 +358,7 @@ define [
         dropdown.appendTo(".dropdownSection")
         
         # Disable sorting
-        $("#gridTable").getGridParam("colModel")[1].sortable = false
-        $("#gridTable").getGridParam("colModel")[2].sortable = false
+        disableSortingOnAssessments()
     $(document).on
       click: (e) ->
         # reset dropdown state
@@ -390,6 +396,7 @@ define [
     , '.colorsBlock'
   
   resetSortingHeader = () ->
+    disableSortingOnAssessments()
     $.each $(".dropdown"), (index, dropdownElement) ->
       # reset to 'Select Sort'
       # find anchor element which belongs to dropdown element.
@@ -409,6 +416,11 @@ define [
       dropdown_a_element_dropdown_title.closest('.dropdown').css('margin-top', position.top)
       # hide sort arrows
       asmtSubjectSort.parent().children('span').css('visibility', 'hidden')
+      
+  disableSortingOnAssessments = () ->
+    # Disable sorting
+    $("#gridTable").getGridParam("colModel")[1].sortable = false
+    $("#gridTable").getGridParam("colModel")[2].sortable = false
           
   getCenterForDropdown = (subject_name, width) ->
     position = $('#'+subject_name+'_sort').parent().offset()

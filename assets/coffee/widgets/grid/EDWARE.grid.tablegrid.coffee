@@ -137,9 +137,6 @@ define [
                 $("#gview_gridTable > .ui-jqgrid-bdiv").css('height', window.innerHeight * .75);
                else
                 $("#gview_gridTable > .ui-jqgrid-bdiv").css('height', window.innerHeight * .6);
-                
-               edwareUtil.formatBarAlignment();
-
     
           if footerData
             gridOptions.footerrow = true

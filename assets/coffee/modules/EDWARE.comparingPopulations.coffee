@@ -391,6 +391,9 @@ define [
   
   resetSortingHeader = () ->
     $.each $(".dropdown"), (index, dropdownElement) ->
+      # unselect radio button
+      $.each $('.inputColorBlock'), (index2, inputColorBlockElement) ->
+        $(inputColorBlockElement).attr('checked', false)
       # reset to 'Select Sort'
       # find anchor element which belongs to dropdown element.
       dropdown_a_element = $(dropdownElement).children('a')
@@ -409,6 +412,8 @@ define [
       dropdown_a_element_dropdown_title.closest('.dropdown').css('margin-top', position.top)
       # hide sort arrows
       asmtSubjectSort.parent().children('span').css('visibility', 'hidden')
+      # cloase open panel
+      $(dropdownElement).removeClass('open')
       
   enableDisableSortingOnAssessments = (subject) ->
     # Enable sorting, Disable sorting in the other

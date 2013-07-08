@@ -1,18 +1,18 @@
 security Package
 ================
 
-:mod:`callback` Module
-----------------------
+:mod:`batch_user_session` Module
+-------------------------
 
-.. automodule:: edauth.security.callback
+.. automodule:: edauth.security.batch_user_session
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`pdf_session` Module
--------------------------
+:mod:`callback` Module
+----------------------
 
-.. automodule:: edauth.security.pdf_session
+.. automodule:: edauth.security.callback
     :members:
     :undoc-members:
     :show-inheritance:

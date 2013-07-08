@@ -116,8 +116,26 @@ to the Identity Provider and required to log in.
 How EdAuth Integrates with SSO
 ==============================
 
-When EdAuth communicates with the Single Sign-On system, it expects SAML2 XML responses in a specific format.
-Click on the following link to see an example:
+The following are "behind-the-curtain" implementation details of how EdAuth integrates with 
+the Single Sign-On Identity Provider and the front-end user.
+
+For a helpful flow diagram of messages sent between the EdAuth-enabled app (the Service Provider), the IDP, and the user, 
+see the `SAML2 Wikipedia page <http://en.wikipedia.org/wiki/SAML_2.0#SP_Redirect_Artifact.3B_IdP_Redirect_Artifact>`_.
+
+SAML2 Messages
+--------------
+
+EdAuth communicates with the IDP with SAML2 XML messages.
+
+The IDP must be configured to send responses with certain custom attributes, that will be used by EdAuth:
+
+  * uid - the user id
+  * fullName - full name of the user
+  * memberOf - the roles granted to the user
+  * guid - globally unique identifier of the user
+  * dn - distinguished name, which specifies the user's tenancy
+
+The attributes must be sent in the <saml:AttributeStatement> block, as in the following example:
 
 :ref:`saml_example`
 

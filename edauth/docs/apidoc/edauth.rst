@@ -16,7 +16,7 @@ Subpackages
 
     edauth.saml2
     edauth.security
-    edauth.tests
+..    edauth.tests
 
 :mod:`utils` Module
 -------------------

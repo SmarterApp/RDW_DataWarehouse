@@ -1,6 +1,9 @@
 '''
 Batch User Session and Cookie Generation
 
+This functionality can be used by an application that needs
+to call REST endpoints without logging in through SSO.
+
 Created on May 30, 2013
 
 @author: dawu

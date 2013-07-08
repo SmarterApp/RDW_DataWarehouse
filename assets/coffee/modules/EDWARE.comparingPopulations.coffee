@@ -311,9 +311,7 @@ define [
       if asmtSubjectSort isnt null
         #create dropdown and set to the center of each colomn
         dropdown = $("<div class='dropdown' id='"+asmtSubject+"_dropdown'></div>")
-        position = getCenterForDropdown(asmtSubject, asmtSubjectSort.width())
-        dropdown.css('margin-left', position.left)
-        dropdown.css('margin-top', position.top)
+        setCenterForDropdown(asmtSubject, asmtSubjectSort.width(), dropdown)
        
         #read value 'Select Sort' then hide.
         asmtSubjectSortValue = asmtSubjectSort.html()
@@ -380,9 +378,8 @@ define [
         #set the center of table header
         targetParentElement_div = $('#'+targetParentId+' div')
         targetParentElement_div.html(colorBar)
-        position = getCenterForDropdown(subject, targetParentElement_div.width())
-        targetParentElement_div.closest('.dropdown').css('margin-left', position.left)
-        targetParentElement_div.closest('.dropdown').css('margin-top', position.top)
+        setCenterForDropdown(subject, targetParentElement_div.width(), targetParentElement_div)
+
         
         # display sort arrows
         asmtSubjectSort.parent().children('span').css('visibility', 'visible')
@@ -411,9 +408,7 @@ define [
       dropdown_a_element_dropdown_title.html asmtSubjectSortValue
       dropdown_a_element_dropdown_title.css('margin-top','0px')
       #set to the center of table header column
-      position = getCenterForDropdown(subject, dropdown_a_element_dropdown_title.width())
-      dropdown_a_element_dropdown_title.closest('.dropdown').css('margin-left', position.left)
-      dropdown_a_element_dropdown_title.closest('.dropdown').css('margin-top', position.top)
+      setCenterForDropdown(subject, dropdown_a_element_dropdown_title.width(), dropdown_a_element_dropdown_title)
       # hide sort arrows
       asmtSubjectSort.parent().children('span').css('visibility', 'hidden')
       # cloase open panel
@@ -431,13 +426,14 @@ define [
           colModel.sortable = true
 
           
-  getCenterForDropdown = (subject_name, width) ->
+  setCenterForDropdown = (subject_name, width, targetElement) ->
     position = $('#'+subject_name+'_sort').parent().offset()
     parent_position = $('#' + subject_name + '_sort').closest('.gridHeight100').offset()
     position.left -= parent_position.left
     position.top -= parent_position.top
     position.left = position.left+$('#'+subject_name+'_sort').parent().width()/2-width/2
-    position
+    targetElement.closest('.dropdown').css('margin-left', position.left)
+    targetElement.closest('.dropdown').css('margin-top', position.top)
 
   createPopulationGrid: createPopulationGrid
   

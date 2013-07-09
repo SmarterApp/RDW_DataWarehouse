@@ -1,4 +1,9 @@
 '''
+This module uses the Beaker library to store user sessions in
+backend storage (database, memcached, or other)
+
+Beaker config parameters are set in an .ini file.
+
 Created on May 24, 2013
 
 @author: dip

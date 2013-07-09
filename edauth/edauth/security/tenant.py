@@ -8,10 +8,13 @@ import pyramid.threadlocal
 
 def get_tenant_name(attributes):
     '''
-    @param attributes:  A dictionary of attributes with values that are lists
-    Returns the name of the tenant that the user belongs to in lower case, None if tenant is not found
-    Given the 'dn' from saml response, we grab the last 'ou' after we remove the ldap_base_dn
+    Returns the name of the tenant that the user belongs to in lower case, None if tenant is not found.
+
+    Given the 'dn' from saml response, we grab the last 'ou' after we remove the ldap_base_dn.
+
     Sample value: 'cn=userName,ou=myOrg,ou=myCompany,dc=myDomain,dc=com'
+
+    :param attributes:  A dictionary of attributes with values that are lists
     '''
     tenant = None
     dn = attributes.get('dn')

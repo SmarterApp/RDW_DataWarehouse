@@ -9,9 +9,9 @@ from edauth.security.session_manager import is_session_expired, get_user_session
 
 def session_check(session_id, request):
     '''
-    This is an authentication callback method,
-    Return a list of roles if the user session exists
-    Return an empty list of roles if no session is found in db, but cookie exists or if user session expired
+    This is an authentication callback method that checks if a user has an existing session.
+    If yes, it returns a list of roles.
+    Returns an empty list of roles if no session is found in db, but cookie exists or if user session expired.
     By returning an empty list, it will redirect user back to IDP to reauthenticate, and we will recreate new session
     '''
     roles = []

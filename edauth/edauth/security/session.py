@@ -8,6 +8,10 @@ from edauth.security.user import User
 
 
 class Session:
+    '''
+    Simple class that holds user session information, such as
+    guid, user id, name, roles, and tenant
+    '''
     def __init__(self):
         self.__initialize_session()
         # leave datetime only this class, not save in session context

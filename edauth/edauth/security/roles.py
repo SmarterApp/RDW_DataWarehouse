@@ -13,8 +13,8 @@ class Roles:
     @staticmethod
     def set_roles(mappings):
         '''
-        Sets the roles
-        mappings is a list of tuple of the form [(Allow, 'role_name', ('permissions'))]
+        Sets the roles.
+        Mappings is a list of tuples of the form [(Allow, 'role_name', ('permissions'))]
         TODO:  We probably don't need to make it as an enum anymore
         '''
         kwargs = {}

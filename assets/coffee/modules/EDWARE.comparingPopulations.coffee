@@ -138,11 +138,13 @@ define [
   formatBarAlignment = ->
     align_button_class = $(".align_button").attr("class")
     if align_button_class.indexOf("align_on") isnt -1
-      $(".populationBar").css("width", "200px")
+      $(".populationBar").css("width", "155px")
       $(".alignmentLine").css("display", "block")
+      $(".barContainer").css("margin-left", "80px")
     else
       $(".populationBar").css("width", "265px")
       $(".alignmentLine").css("display", "none")
+      $(".barContainer ").css("margin-left", "15px")
   
   # Get population data from server       
   getPopulationData = (sourceURL, params, callback) ->
@@ -198,8 +200,8 @@ define [
       while j < data.length
         appendColor data[j]['results'][k], colorsData[k], defaultColors
         
-        data[j]['results'][k].alignmentLine =  (((summaryDataAlignment) * 200) / 100) + 10
-        data[j]['results'][k].alignment =  (((summaryDataAlignment - 100 + data[j]['results'][k].sort[1]) * 200) / 100) + 10
+        data[j]['results'][k].alignmentLine =  (((summaryDataAlignment) * 155) / 100) + 10
+        data[j]['results'][k].alignment =  (((summaryDataAlignment - 100 + data[j]['results'][k].sort[1]) * 155) / 100) + 10
         j++
     data
   

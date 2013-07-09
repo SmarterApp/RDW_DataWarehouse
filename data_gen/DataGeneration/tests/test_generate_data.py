@@ -110,7 +110,7 @@ class Test(unittest.TestCase):
         total = 100
         percentages = self.perf_lvl_dist['ELA']['3']['percentages']
         res = generate_data.generate_list_of_scores(total, self.score_details, percentages, 'Math', 3)
-        self.assertEqual(len(res), 100) 
+        self.assertEqual(len(res), 100)
         for score in res:
             self.assertGreaterEqual(score, self.score_details['min'])
             self.assertLessEqual(score, self.score_details['max'])
@@ -336,7 +336,7 @@ class Test(unittest.TestCase):
         assmt.asmt_period_year = 2012
         assmt.asmt_period = 'Fall'
 
-        #asmts = generate_entities.generate_assessments([5], self.cut_points, date.today(), True, date.today())
+        # asmts = generate_entities.generate_assessments([5], self.cut_points, date.today(), True, date.today())
         return assmt  # asmts[0]
 
     def create_students(self, num, grade, section_guid, school_guid, state_code, subject, district_guid):
@@ -386,5 +386,5 @@ class DummyClass(object):
 
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

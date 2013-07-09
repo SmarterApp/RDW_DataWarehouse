@@ -15,14 +15,6 @@ define [
       policyContent_characterLimits: 256
       claims_characterLimits: 140
       
-  ALD_alignment_flag = "off"
-  
-  setALDAlignmentStatus = (value) ->
-    ALD_alignment_flag = value
-    
-  getALDAlignmentStatus = (value) ->
-    ALD_alignment_flag
-      
   getConstants = (value) ->
     constants[value]
       
@@ -151,17 +143,6 @@ define [
   showPdfCSS = ->
     $('head').append("<link rel='stylesheet' type='text/css' href='../css/pdf.css' />");
     
-  # Change population bar width as per alignment on/off status
-  formatBarAlignment = ->
-    status = getALDAlignmentStatus()
-    if status is "on"
-      $(".populationBar").css("width", "200px")
-      $(".alignmentLine").css("display", "block")
-      
-    if status is "off"
-      $(".populationBar").css("width", "265px")
-      $(".alignmentLine").css("display", "none")
-    
   getConstants: getConstants
   displayErrorMessage: displayErrorMessage
   getUrlParams: getUrlParams 
@@ -175,6 +156,3 @@ define [
   format_full_name_reverse: format_full_name_reverse
   showGrayScale : showGrayScale
   showPdfCSS : showPdfCSS
-  setALDAlignmentStatus: setALDAlignmentStatus
-  getALDAlignmentStatus: getALDAlignmentStatus
-  formatBarAlignment: formatBarAlignment

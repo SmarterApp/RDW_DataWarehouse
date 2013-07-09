@@ -111,12 +111,10 @@ define [
           grid = $("#gridTable")         
           if align_button_class.indexOf("align_off") isnt -1
             $(this).removeClass("align_off").addClass("align_on")
-            edwareUtil.setALDAlignmentStatus "on"
             grid.trigger("reloadGrid")
             
           else
             $(this).removeClass("align_on").addClass("align_off")
-            edwareUtil.setALDAlignmentStatus "off"
             grid.trigger("reloadGrid") 
         
         dropdown = createDropdown asmtSubjectsData, colorsData, customALDDropdown
@@ -133,8 +131,19 @@ define [
            if curSortColumn == $('#gridTable').getGridParam('colModel')[0].name
              resetSortingHeader customALDDropdown;
              enableDisableSortingOnAssessments()
-           edwareUtil.formatBarAlignment();
+             
+           formatBarAlignment();
             
+  # Change population bar width as per alignment on/off status
+  formatBarAlignment = ->
+    align_button_class = $(".align_button").attr("class")
+    if align_button_class.indexOf("align_on") isnt -1
+      $(".populationBar").css("width", "200px")
+      $(".alignmentLine").css("display", "block")
+    else
+      $(".populationBar").css("width", "265px")
+      $(".alignmentLine").css("display", "none")
+  
   # Get population data from server       
   getPopulationData = (sourceURL, params, callback) ->
     

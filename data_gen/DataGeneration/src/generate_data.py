@@ -19,6 +19,7 @@ from generate_scores import generate_overall_scores
 from gaussian_distributions import gauss_one, guess_std
 from errorband import calc_eb_params, calc_eb
 from adjust import adjust_pld
+from demographics import Demographics
 
 
 DATAFILE_PATH = os.path.dirname(os.path.realpath(__file__))
@@ -56,6 +57,9 @@ def generate_data_from_config_file(config_module):
     @param config_module: module that contains all configuration information for the data creation process
     @return nothing
     '''
+
+    # Setup demographics object
+    demographics = Demographics(config_module.get_demograph_file())
 
     # First thing: prep the csv files by deleting their contents and adding appropriate headers
     prepare_csv_files(ENTITY_TO_PATH_DICT)
@@ -155,7 +159,7 @@ def generate_data_from_config_file(config_module):
                     schools = schools_by_type[school_type_name]
                     school_type = school_types[school_type_name]
                     school_type_institution_hierarchies = generate_and_populate_institution_hierarchies(schools, school_type, current_state,
-                                                                                                        district, assessments, subject_percentages)
+                                                                                                        district, assessments, subject_percentages, demographics)
                     # Debugging
                     school_counts[school_type_name] += len(school_type_institution_hierarchies)
 
@@ -166,7 +170,7 @@ def generate_data_from_config_file(config_module):
         create_csv(state_institution_hierarchies, ENTITY_TO_PATH_DICT[InstitutionHierarchy])
 
 
-def generate_and_populate_institution_hierarchies(schools, school_type, state, district, assessments, subject_percentages):
+def generate_and_populate_institution_hierarchies(schools, school_type, state, district, assessments, subject_percentages, demographics):
     '''
     Given institution information (info about state, district, school), we create InstitutionHierarchy objects.
     We create one InstitutionHierarchy object for each school given in the school list.
@@ -190,11 +194,11 @@ def generate_and_populate_institution_hierarchies(schools, school_type, state, d
         institution_hierarchy = generate_institution_hierarchy_from_helper_entities(state, district, school)
         institution_hierarchies.append(institution_hierarchy)
         # TODO: Don't populate the schools here. When this function returns, loop over the list and populate each school
-        populate_school(institution_hierarchy, school_type, assessments, subject_percentages)
+        populate_school(institution_hierarchy, school_type, assessments, subject_percentages, demographics)
     return institution_hierarchies
 
 
-def populate_school(institution_hierarchy, school_type, assessments, subject_percentages):
+def populate_school(institution_hierarchy, school_type, assessments, subject_percentages, demographics):
 
     '''
     Populate the provided the institution with staff, students, teachers, sections
@@ -251,7 +255,8 @@ def populate_school(institution_hierarchy, school_type, assessments, subject_per
                                                   institution_hierarchy.district_guid, institution_hierarchy.school_guid,
                                                   from_date, most_recent, to_date=to_date)
             sections_in_school += sections_in_grade
-            score_list = generate_list_of_scores(number_of_students_in_grade, scores_details, performance_level_dist, subject_name, grade, pld_adjustment)
+            performance_level_percs = demographics.get_grade_demographics_total('typical1', subject_name, grade)
+            score_list = generate_list_of_scores(number_of_students_in_grade, scores_details, performance_level_percs, subject_name, grade, pld_adjustment)
             students_in_subject = students_in_grade[:]
             for section in sections_in_grade:
                 # TODO: More accurate math for num_of_students
@@ -274,9 +279,11 @@ def populate_school(institution_hierarchy, school_type, assessments, subject_per
                 percent_to_take_assessment = subject_percentages[subject_name]
                 students_to_take_assessment = get_subset_of_students(students_in_section, percent_to_take_assessment)
 
-                create_csv(students_to_take_assessment, ENTITY_TO_PATH_DICT[Student])
                 asmt_outcomes_in_section = generate_assessment_outcomes_from_helper_entities_and_lists(students_to_take_assessment, score_list, teacher_guid, section, institution_hierarchy, assessment,
                                                                                                        eb_min_perc, eb_max_perc, eb_rand_adj_lo, eb_rand_adj_hi)
+                #TODO: Remove hard coded demographic type
+                (updated_outcomes, updated_students) = demographics.assign_demographics(asmt_outcomes_in_section, students_to_take_assessment, subject_name, grade, 'typical1')
+                create_csv(students_to_take_assessment, ENTITY_TO_PATH_DICT[Student])
                 asmt_outcomes_for_grade.extend(asmt_outcomes_in_section)
         create_csv(asmt_outcomes_for_grade, ENTITY_TO_PATH_DICT[AssessmentOutcome])
     #create_csv(students_in_school, ENTITY_TO_PATH_DICT[Student])
@@ -413,7 +420,7 @@ def generate_list_of_scores(total, score_details, perf_lvl_dist, subject_name, g
     '''
     min_score = score_details[config_module.MIN]
     max_score = score_details[config_module.MAX]
-    percentage = perf_lvl_dist[subject_name][str(grade)][config_module.PERCENTAGES]
+    percentage = perf_lvl_dist  # [subject_name][str(grade)][config_module.PERCENTAGES]
     if pld_adjustment:
         percentage = adjust_pld(percentage, pld_adjustment)
 

@@ -108,8 +108,9 @@ class Test(unittest.TestCase):
 
     def test_generate_list_of_scores(self):
         total = 100
-        res = generate_data.generate_list_of_scores(total, self.score_details, self.perf_lvl_dist, 'Math', 3)
-        self.assertEqual(len(res), 100)
+        percentages = self.perf_lvl_dist['ELA']['3']['percentages']
+        res = generate_data.generate_list_of_scores(total, self.score_details, percentages, 'Math', 3)
+        self.assertEqual(len(res), 100) 
         for score in res:
             self.assertGreaterEqual(score, self.score_details['min'])
             self.assertLessEqual(score, self.score_details['max'])

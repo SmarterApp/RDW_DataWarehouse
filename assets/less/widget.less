@@ -518,7 +518,7 @@ th.ui-th-column div {
   
   .section {
     float: left;
-    width: 96%;
+    width: 95%;
     border-top: dashed 1px #b1b1b1;
     margin: 1% 2% 0 2%;
     padding-top: 10px;
@@ -570,11 +570,19 @@ th.ui-th-column div {
     .overall_score_lower {
       display: block;
       margin-top: -10px;
+      margin-bottom: 33px;
+      position: relative;
+      
+      h5, span {
+        top: 10px;
+      }
       
       * {
         display: inline-block; 
         vertical-align: bottom;
+        position: absolute;
       }
+      
     }
     
     .indicator_cell {
@@ -614,6 +622,12 @@ th.ui-th-column div {
     }
     
     .desc_error_bands {
+      left: 294px;
+      
+      * {
+        position: relative;
+      }
+      
       span {
         font-style: italic;
         font-size: 11px;
@@ -653,11 +667,11 @@ th.ui-th-column div {
     }
     
     .overall_lowerleft {
-      margin: 0 63px 5px 0;
+      left: 84px;
     }
     
     .overall_lowermid {
-      margin: 0 0 5px 12px;
+      left: 218px;
     }
     
     #overall_lowermid69px {

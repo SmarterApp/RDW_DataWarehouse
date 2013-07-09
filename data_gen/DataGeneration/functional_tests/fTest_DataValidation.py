@@ -5,7 +5,7 @@ import entities
 import itertools
 from generate_data import ENTITY_TO_PATH_DICT
 from zope.component.tests.examples import comp
-from dg_types import *
+from dg_types_test import *
 
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))

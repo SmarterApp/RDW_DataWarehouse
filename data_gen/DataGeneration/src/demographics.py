@@ -38,6 +38,7 @@ class Demographics(object):
 
     def __init__(self, demo_csv_file):
         self.dem_data = self._parse_file(demo_csv_file)
+        self.demo_keys = None
 
     def _parse_file(self, file_name):
         '''
@@ -116,19 +117,51 @@ class Demographics(object):
         total_dem = grade_demo[ALL_DEM][L_PERF_1:L_PERF_4 + 1]
         return total_dem
 
-    def assign_demographics(self, asmt_outcomes, students, subject, grade, dem_id):
+    def assign_scores_from_demograph(self, students, scores, subject, grade, dem_id, demograph_tracker):
+        '''
+        Take a list of students where most will have already been assigned demographics and assign them
+        scores for the 2nd subject based on the demographics that they posses
+        @param students: The list of students that need scores
+        @param score: The list of generated scores
+        @param subject: The subject to assign scores for
+        @param grade: The students grade
+        @param dem_id: The id to use for looking up demographic information
+        @param demograph_tracker: the object that is keeping track of the student demographics
+        '''
+        # Get the demographics corresponding to the id, subject, grade
+        grade_demo = self.get_grade_demographics(dem_id, subject, grade)
+
+        total_students = len(asmt_outcomes)
+
+        # Convert percentages to actual values, based on number of students given
+        dem_count_dict = percentages_to_values(grade_demo, total_students)
+
+        # Create an overall counts dict that just includes the counts
+        overall_counts = {}
+        for cd in dem_count_dict:
+            overall_counts[cd] = dem_count_dict[cd][L_TOTAL]
+
+        # order demographic categories by number of keys present
+        keys_by_desired_count = sorted(dem_count_dict, key=lambda k: dem_count_dict[k][L_TOTAL])
+
+        for key in keys_by_desired_count:
+            pass
+
+    def assign_demographics(self, asmt_outcomes, students, subject, grade, dem_id, demograph_tracker):
         '''
         Take fact assessment outcomes and apply demographics to the data based on dem_dict
         @param asmt_outcomdes: the list of all the fact assessments that were created
+        @param students: the list of student objects to assign demographics
+        @param subject: the subject that scores are being assigned for
+        @param grade: the grade that scores are being assigned for
+        @param dem_id: the demographic id to use for obtaining statistics
+        @param demograph_tracker: the object that is keeping track of the student demographics
         '''
         assert len(asmt_outcomes) == len(students)
 
         # Get the demographics corresponding to the id, subject, grade
         grade_demo = self.get_grade_demographics(dem_id, subject, grade)
 
-        #ordered_keys = sorted(grade_demo, key=lambda key: grade_demo[key][L_GROUPING])
-        #print(grade_demo)
-        groupings = sorted({grade_demo[x][L_GROUPING] for x in grade_demo})
         total_students = len(asmt_outcomes)
 
         # Convert percentages to actual values, based on number of students given
@@ -137,6 +170,8 @@ class Demographics(object):
         # Assign Male and Female Gender
         self._make_male_or_female(dem_count_dict['male'], dem_count_dict['female'], asmt_outcomes, students)
 
+        # Get ordered groupings list
+        groupings = sorted({grade_demo[x][L_GROUPING] for x in grade_demo})
         # Removing all and gender
         groupings.remove(0)
         groupings.remove(1)

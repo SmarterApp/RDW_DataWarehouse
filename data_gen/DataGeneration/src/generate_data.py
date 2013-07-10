@@ -244,6 +244,10 @@ def populate_school(institution_hierarchy, school_type, assessments, subject_per
         number_of_students_in_grade = calculate_number_of_students(student_min, student_max, student_avg)
         name_list_dictionary = generate_name_list_dictionary(NAMES_TO_PATH_DICT)
         students_in_grade = generate_students_from_institution_hierarchy(number_of_students_in_grade, institution_hierarchy, grade, -1, name_list_dictionary[BIRDS])
+
+        subject_num = 1
+        demog_tracker = None
+
         for subject_name in constants.SUBJECTS:
             number_of_sections = calculate_number_of_sections(number_of_students_in_grade)
             #TODO: figure out a way around this hack.
@@ -279,12 +283,24 @@ def populate_school(institution_hierarchy, school_type, assessments, subject_per
                 percent_to_take_assessment = subject_percentages[subject_name]
                 students_to_take_assessment = get_subset_of_students(students_in_section, percent_to_take_assessment)
 
-                asmt_outcomes_in_section = generate_assessment_outcomes_from_helper_entities_and_lists(students_to_take_assessment, score_list, teacher_guid, section, institution_hierarchy, assessment,
-                                                                                                       eb_min_perc, eb_max_perc, eb_rand_adj_lo, eb_rand_adj_hi)
-                #TODO: Remove hard coded demographic type
-                (updated_outcomes, updated_students) = demographics.assign_demographics(asmt_outcomes_in_section, students_to_take_assessment, subject_name, grade, 'typical1')
+                # if this is the first subject for this group of students
+                # assign demographics based on their scores
+                if subject_num == 1:
+                    asmt_outcomes_in_section = generate_assessment_outcomes_from_helper_entities_and_lists(students_to_take_assessment, score_list, teacher_guid, section, institution_hierarchy, assessment,
+                                                                                                           eb_min_perc, eb_max_perc, eb_rand_adj_lo, eb_rand_adj_hi)
+                    #TODO: Remove hard coded demographic type
+                    (updated_outcomes, updated_students) = demographics.assign_demographics(asmt_outcomes_in_section, students_to_take_assessment, subject_name, grade, 'typical1', demog_tracker)
+                    subject_num += 1
+                # else assign grades based on their demographics
+                elif subject_num == 2:
+                    asmt_outcomes_in_section = demographics.assign_scores_from_demograph(students_to_take_assessment, score_list, subject_name, grade, 'typical_1', demog_tracker)
+                    subject_num += 1
+                
+                # write student objects to dim_student csv
                 create_csv(students_to_take_assessment, ENTITY_TO_PATH_DICT[Student])
                 asmt_outcomes_for_grade.extend(asmt_outcomes_in_section)
+
+        # write asmt_outcomes to fact_asmt_outcome
         create_csv(asmt_outcomes_for_grade, ENTITY_TO_PATH_DICT[AssessmentOutcome])
     #create_csv(students_in_school, ENTITY_TO_PATH_DICT[Student])
     create_csv(sections_in_school, ENTITY_TO_PATH_DICT[Section])

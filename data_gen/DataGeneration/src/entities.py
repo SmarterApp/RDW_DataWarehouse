@@ -363,7 +363,9 @@ class Student():
     def __init__(self, student_rec_id, student_guid, first_name, last_name, address_1, city, zip_code,
                  gender, email, dob,
                  section_guid, grade, state_code, district_guid, school_guid, from_date, most_recent,
-                 middle_name=None, address_2=None, to_date=None):
+                 middle_name=None, address_2=None, to_date=None, dmg_eth_hsp='N', dmg_eth_ami='N', dmg_eth_asn='N',
+                 dmg_eth_blk='N', dmg_eth_pcf='N', dmg_eth_wht='N', dmg_prg_iep='N', dmg_prg_lep='N',
+                 dmg_prg_504='N', dmg_prg_tt1='N'):
 
         self.student_rec_id = student_rec_id
         self.student_guid = student_guid
@@ -386,6 +388,19 @@ class Student():
         self.to_date = to_date
         self.most_recent = most_recent
         self.has_updated_gender = False
+
+        # Demographic Data
+        self.dmg_eth_hsp = dmg_eth_hsp
+        self.dmg_eth_ami = dmg_eth_ami
+        self.dmg_eth_asn = dmg_eth_asn
+        self.dmg_eth_blk = dmg_eth_blk
+        self.dmg_eth_pcf = dmg_eth_pcf
+        self.dmg_eth_wht = dmg_eth_wht
+        self.dmg_prg_iep = dmg_prg_iep
+        self.dmg_prg_lep = dmg_prg_lep
+        self.dmg_prg_504 = dmg_prg_504
+        self.dmg_prg_tt1 = dmg_prg_tt1
+        self.demographics_assigned = False
 
     def getRow(self):
         return [self.student_rec_id, self.student_guid, self.first_name, self.middle_name, self.last_name, self.address_1, self.address_2,

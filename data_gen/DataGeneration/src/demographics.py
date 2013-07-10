@@ -8,6 +8,7 @@ import csv
 import random
 
 from generate_names import generate_first_or_middle_name, possibly_generate_middle_name
+from entities import Student
 
 
 H_ID = 0
@@ -256,6 +257,58 @@ class Demographics(object):
                 student.has_updated_gender = True
 
 
+class DemographicStatus(object):
+    '''
+    class DemographicStatus has demographic status for students
+    '''
+    def __init__(self, demo_names):
+        self.status_dict = self._initialize_status_dict(demo_names)
+
+    def _initialize_status_dict(self, demo_names):
+        status = {}
+        for demo_name in demo_names:
+            status[demo_name] = []
+        return status
+
+    def add(self, student_obj):
+        '''
+        Add one student object into the demographic status dictionary
+        The given student will be added into all demographic entries that he belongs to
+        '''
+        if isinstance(student_obj, Student):
+            # get all demo fields
+            stu_demo = student_obj.getDemoOfStudent()
+            for demo_name in stu_demo:
+                if demo_name in self.status_dict.keys():
+                    self.status_dict[demo_name].append(student_obj)
+
+    def pop(self, demo_name):
+        '''
+        Remove and return one student object from the given demographic type
+        This student will also be removed from all demographic types he belongs to
+        '''
+        removed_stu = None
+        if demo_name in self.status_dict.keys():
+            student_list = self.status_dict[demo_name]
+            if len(student_list) > 0:
+                # choose the first one
+                removed_stu = student_list[0]
+                # remove this student from all related demographic lists
+                self._update_status_dict(removed_stu)
+        else:
+            print("No demographic name %s" % demo_name)
+        return removed_stu
+
+    def _update_status_dict(self, student_obj):
+        stu_demo = student_obj.getDemoOfStudent()
+        for demo_name in stu_demo:
+            if demo_name in self.status_dict.keys():
+                try:
+                    self.status_dict[demo_name].remove(student_obj)
+                except ValueError:
+                    print("The student does not exist in demographic list %s " % demo_name)
+
+
 def percentages_to_values(grade_demo_dict, total_records):
     ret_dict = {}
 
@@ -290,7 +343,6 @@ def percentages_to_values(grade_demo_dict, total_records):
 
 
 if __name__ == '__main__':
-
     import json
     dem = Demographics('/Users/swimberly/projects/edware/fixture_data_generation/DataGeneration/datafiles/demographicStats.csv')
     print(json.dumps(dem.dem_data, indent=4))

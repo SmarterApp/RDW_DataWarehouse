@@ -188,7 +188,7 @@ def get_state_types():
                                                                'Small Average': 20, 'Small Poor': 5, 'Small Good': 5, 'Small Very Poor': 5, 'Small Very Good': 5
                                                                },
                                  'subjects_and_percentages': {'Math': .99, 'ELA': .99},
-                                 'demographics': 'typical1'}} 
+                                 'demographics': 'typical1'}}
     return state_types
 
 
@@ -261,6 +261,7 @@ def get_performance_level_distributions():
 def get_temporal_information():
     temporal_information = {'from_date': '20120901', 'to_date': None, 'most_recent': True, 'date_taken_year': '2015', 'date_taken_month': ''}
     return temporal_information
+
 
 def get_demograph_file():
     datafile_path = os.path.dirname(os.path.realpath(__file__))

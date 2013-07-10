@@ -132,21 +132,25 @@ class Demographics(object):
         # Get the demographics corresponding to the id, subject, grade
         grade_demo = self.get_grade_demographics(dem_id, subject, grade)
 
-        total_students = len(asmt_outcomes)
+        total_students = len(students)
 
         # Convert percentages to actual values, based on number of students given
         dem_count_dict = percentages_to_values(grade_demo, total_students)
-
-        # Create an overall counts dict that just includes the counts
-        overall_counts = {}
-        for cd in dem_count_dict:
-            overall_counts[cd] = dem_count_dict[cd][L_TOTAL]
 
         # order demographic categories by number of keys present
         keys_by_desired_count = sorted(dem_count_dict, key=lambda k: dem_count_dict[k][L_TOTAL])
 
         for key in keys_by_desired_count:
-            pass
+            students_to_request = dem_count_dict[key][L_TOTAL]
+
+            # Get that number of students
+            for _i in range(students_to_request):
+                student = demograph_tracker.pop(key)
+
+                if student:
+                    pass
+                else:
+                    break
 
     def assign_demographics(self, asmt_outcomes, students, subject, grade, dem_id, demograph_tracker):
         '''

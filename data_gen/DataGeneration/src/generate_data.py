@@ -455,7 +455,7 @@ def generate_list_of_scores(total, score_details, perf_lvl_dist, subject_name, g
     return scores
 
 
-def  generate_assessment_outcomes_from_helper_entities_and_lists(students, scores, teacher_guid, section, institution_hierarchy, assessment, ebmin, ebmax, rndlo, rndhi):
+def generate_assessment_outcomes_from_helper_entities_and_lists(students, scores, teacher_guid, section, institution_hierarchy, assessment, ebmin, ebmax, rndlo, rndhi):
     '''
     Generate assessment outcomes for a list of students
     @param students: List of the students to generate outcomes for

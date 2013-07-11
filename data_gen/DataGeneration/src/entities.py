@@ -185,9 +185,9 @@ class AssessmentOutcome(object):
                  asmt_claim_2_score, asmt_claim_2_score_range_min, asmt_claim_2_score_range_max,
                  asmt_claim_3_score, asmt_claim_3_score_range_min, asmt_claim_3_score_range_max,
                  asmt_claim_4_score, asmt_claim_4_score_range_min, asmt_claim_4_score_range_max,
-                 asmt_create_date, status, most_recent, dmg_eth_hsp='N', dmg_eth_ami='N', dmg_eth_asn='N',
-                 dmg_eth_blk='N', dmg_eth_pcf='N', dmg_eth_wht='N', dmg_prg_iep='N', dmg_prg_lep='N',
-                 dmg_prg_504='N', dmg_prg_tt1='N'):
+                 asmt_create_date, status, most_recent, dmg_eth_hsp=False, dmg_eth_ami=False, dmg_eth_asn=False,
+                 dmg_eth_blk=False, dmg_eth_pcf=False, dmg_eth_wht=False, dmg_prg_iep=False, dmg_prg_lep=False,
+                 dmg_prg_504=False, dmg_prg_tt1=False):
 
         self.asmnt_outcome_rec_id = asmnt_outcome_rec_id
         self.asmt_rec_id = asmt_rec_id
@@ -363,9 +363,9 @@ class Student():
     def __init__(self, student_rec_id, student_guid, first_name, last_name, address_1, city, zip_code,
                  gender, email, dob,
                  section_guid, grade, state_code, district_guid, school_guid, from_date, most_recent,
-                 middle_name=None, address_2=None, to_date=None, dmg_eth_hsp='N', dmg_eth_ami='N', dmg_eth_asn='N',
-                 dmg_eth_blk='N', dmg_eth_pcf='N', dmg_eth_wht='N', dmg_prg_iep='N', dmg_prg_lep='N',
-                 dmg_prg_504='N', dmg_prg_tt1='N'):
+                 middle_name=None, address_2=None, to_date=None, dmg_eth_hsp=False, dmg_eth_ami=False, dmg_eth_asn=False,
+                 dmg_eth_blk=False, dmg_eth_pcf=False, dmg_eth_wht=False, dmg_prg_iep=False, dmg_prg_lep=False,
+                 dmg_prg_504=False, dmg_prg_tt1=False):
 
         self.student_rec_id = student_rec_id
         self.student_guid = student_guid

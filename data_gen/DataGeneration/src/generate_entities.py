@@ -306,14 +306,14 @@ def generate_fact_assessment_outcomes(students, scores, asmt_rec_id, teacher_gui
                                       date_taken, date_taken_day, date_taken_month, date_taken_year):
     '''
     Generates AssessmentOutcome objects for each student in 'students' using the scores in 'scores'
-
+    Scores are assigned in the order of the score list
     @return: A list of AssessmentOutcome objects
     '''
 
     outcomes = []
 
     for student in students:
-        score = scores.pop()
+        score = scores.pop(0)
         # TODO: Create a function that unpacks score information, or break this function down into some other functions.
         claim_scores = score.claim_scores
 

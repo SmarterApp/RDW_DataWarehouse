@@ -19,7 +19,7 @@ from generate_scores import generate_overall_scores
 from gaussian_distributions import gauss_one, guess_std
 from errorband import calc_eb_params, calc_eb
 from adjust import adjust_pld
-from demographics import Demographics
+from demographics import Demographics, DemographicStatus
 
 
 DATAFILE_PATH = os.path.dirname(os.path.realpath(__file__))
@@ -245,8 +245,9 @@ def populate_school(institution_hierarchy, school_type, assessments, subject_per
         name_list_dictionary = generate_name_list_dictionary(NAMES_TO_PATH_DICT)
         students_in_grade = generate_students_from_institution_hierarchy(number_of_students_in_grade, institution_hierarchy, grade, -1, name_list_dictionary[BIRDS])
 
+        demograph_id = 'typical1'  # TODO: Get from config file
         subject_num = 1
-        demog_tracker = None
+        demo_status = DemographicStatus(demographics.get_demo_names(demograph_id))
 
         for subject_name in constants.SUBJECTS:
             number_of_sections = calculate_number_of_sections(number_of_students_in_grade)
@@ -259,7 +260,7 @@ def populate_school(institution_hierarchy, school_type, assessments, subject_per
                                                   institution_hierarchy.district_guid, institution_hierarchy.school_guid,
                                                   from_date, most_recent, to_date=to_date)
             sections_in_school += sections_in_grade
-            performance_level_percs = demographics.get_grade_demographics_total('typical1', subject_name, grade)
+            performance_level_percs = demographics.get_grade_demographics_total(demograph_id, subject_name, grade)
             score_list = generate_list_of_scores(number_of_students_in_grade, scores_details, performance_level_percs, subject_name, grade, pld_adjustment)
             students_in_subject = students_in_grade[:]
             for section in sections_in_grade:
@@ -289,13 +290,17 @@ def populate_school(institution_hierarchy, school_type, assessments, subject_per
                     asmt_outcomes_in_section = generate_assessment_outcomes_from_helper_entities_and_lists(students_to_take_assessment, score_list, teacher_guid, section, institution_hierarchy, assessment,
                                                                                                            eb_min_perc, eb_max_perc, eb_rand_adj_lo, eb_rand_adj_hi)
                     #TODO: Remove hard coded demographic type
-                    (updated_outcomes, updated_students) = demographics.assign_demographics(asmt_outcomes_in_section, students_to_take_assessment, subject_name, grade, 'typical1', demog_tracker)
+                    (updated_outcomes, updated_students) = demographics.assign_demographics(asmt_outcomes_in_section, students_to_take_assessment, subject_name, grade, demograph_id, demo_status)
                     subject_num += 1
+
                 # else assign grades based on their demographics
                 elif subject_num == 2:
-                    asmt_outcomes_in_section = demographics.assign_scores_from_demograph(students_to_take_assessment, score_list, subject_name, grade, 'typical_1', demog_tracker)
+                    (updated_students, new_scores) = demographics.assign_scores_from_demograph(students_to_take_assessment, score_list, subject_name, grade, demograph_id, demo_status, assessment)
+                    asmt_outcomes_in_section = generate_assessment_outcomes_from_helper_entities_and_lists(updated_students, new_scores, teacher_guid, section, institution_hierarchy, assessment,
+                                                                                                           eb_min_perc, eb_max_perc, eb_rand_adj_lo, eb_rand_adj_hi)
+                    demographics.update_demographics(updated_students, asmt_outcomes_in_section, demograph_id)
                     subject_num += 1
-                
+
                 # write student objects to dim_student csv
                 create_csv(students_to_take_assessment, ENTITY_TO_PATH_DICT[Student])
                 asmt_outcomes_for_grade.extend(asmt_outcomes_in_section)
@@ -450,7 +455,7 @@ def generate_list_of_scores(total, score_details, perf_lvl_dist, subject_name, g
     return scores
 
 
-def generate_assessment_outcomes_from_helper_entities_and_lists(students, scores, teacher_guid, section, institution_hierarchy, assessment, ebmin, ebmax, rndlo, rndhi):
+def  generate_assessment_outcomes_from_helper_entities_and_lists(students, scores, teacher_guid, section, institution_hierarchy, assessment, ebmin, ebmax, rndlo, rndhi):
     '''
     Generate assessment outcomes for a list of students
     @param students: List of the students to generate outcomes for

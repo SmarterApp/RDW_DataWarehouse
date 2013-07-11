@@ -8,13 +8,18 @@ define [
   "edwareBreadcrumbs"
   "edwareUtil"
   "edwareFooter"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter) ->
+  "edwareFilter"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareFilter) ->
   
   alignmentPercent = ""
   summaryData = []
   
   # Add header to the page
   edwareUtil.getHeader()
+  
+  # Add filter to the page
+  edwareFilter.generateFilter($('#cpopFilter'), $('.filter_label'))
+  
   #
   #    * Create Student data grid
   #    

@@ -23,6 +23,7 @@ require({
 		edwareFeedback: 'EDWARE.feedback',
 		edwareFooter: '../widgets/footer/EDWARE.footer',
 		edwareLoadingMask: '../widgets/loadingMask/EDWARE.loadingMask',
+		edwareFilter: '../widgets/filter/EDWARE.filter',
 		
 		// Templates
 		edwareBreadcrumbsTemplate: '../widgets/breadcrumb/template.html',
@@ -35,6 +36,7 @@ require({
 		edwareLegendTemplate: '../widgets/footer/legendTemplate.html',
 		edwareHeaderHtml: '../widgets/header/header.html',
 		edwareFooterHtml: '../widgets/footer/template.html',
+		edwareFilterTemplate: '../widgets/filter/template.html',
 		edwareFeedbackHTML: '../../templates/feedback/feedback.html'
 	},
 	shim: {

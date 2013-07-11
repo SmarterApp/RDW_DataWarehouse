@@ -285,7 +285,7 @@ ref_table_conf = {
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'score_claim_4', 'fact_asmt_outcome', 'asmt_claim_4_score', None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'score_claim_4_min', 'fact_asmt_outcome', 'asmt_claim_4_score_range_min', None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'score_claim_4_max', 'fact_asmt_outcome', 'asmt_claim_4_score_range_max', None),
-        ('4', 'INT_SBAC_ASMT_OUTCOME', "to_char(CURRENT_TIMESTAMP', 'yyyymmdd')", 'fact_asmt_outcome', 'asmt_create_date', None),
+        ('4', 'INT_SBAC_ASMT_OUTCOME', "CURRENT_TIMESTAMP", 'fact_asmt_outcome', 'record_create_datetime', None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', "' '", 'fact_asmt_outcome', 'status', None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'TRUE', 'fact_asmt_outcome', 'most_recent', None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'dmg_eth_hsp', 'fact_asmt_outcome', 'dmg_eth_hsp', None),

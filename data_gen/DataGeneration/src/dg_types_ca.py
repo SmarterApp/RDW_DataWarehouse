@@ -43,17 +43,17 @@ def get_school_types():
     students is a dictionary containing the min, max and avg number of students
     """
     school_types = {
-        'High School': {'type': 'High School', 'grades': [11], 'students': {'min': 50, 'max': 250, 'avg': 100}},
-        'Middle School': {'type': 'Middle School', 'grades': [6, 7, 8], 'students': {'min': 25, 'max': 100, 'avg': 50}},
-        'Elementary School': {'type': 'Elementary School', 'grades': [3, 4, 5], 'students': {'min': 10, 'max': 35, 'avg': 30}},
+        'High School': {'type': 'High School', 'grades': [11], 'students': {'min': 646, 'max': 2000, 'avg': 1405}},
+        'Middle School': {'type': 'Middle School', 'grades': [6, 7, 8], 'students': {'min': 200, 'max': 1000, 'avg': 662}},
+        'Elementary School': {'type': 'Elementary School', 'grades': [3, 4, 5], 'students': {'min': 200, 'max': 1000, 'avg': 381}},
 
-        'Poor High School': {'type': 'High School', 'grades': [11], 'students': {'min': 50, 'max': 250, 'avg': 100}, 'adjust_pld': -0.45},
-        'Poor Middle School': {'type': 'Middle School', 'grades': [6, 7, 8], 'students': {'min': 25, 'max': 100, 'avg': 50}, 'adjust_pld': -0.5},
-        'Poor Elementary School': {'type': 'Elementary School', 'grades': [3, 4, 5], 'students': {'min': 10, 'max': 35, 'avg': 30}, 'adjust_pld': -0.6},
+        'Poor High School': {'type': 'High School', 'grades': [11], 'students': {'min': 646, 'max': 2000, 'avg': 1805}, 'adjust_pld': -0.45},
+        'Poor Middle School': {'type': 'Middle School', 'grades': [6, 7, 8], 'students': {'min': 200, 'max': 1000, 'avg': 862}, 'adjust_pld': -0.5},
+        'Poor Elementary School': {'type': 'Elementary School', 'grades': [3, 4, 5], 'students': {'min': 200, 'max': 1000, 'avg': 581}, 'adjust_pld': -0.6},
 
-        'Good High School': {'type': 'High School', 'grades': [11], 'students': {'min': 50, 'max': 250, 'avg': 100}, 'adjust_pld': 0.35},
-        'Good Middle School': {'type': 'Middle School', 'grades': [6, 7, 8], 'students': {'min': 25, 'max': 100, 'avg': 50}, 'adjust_pld': 0.4},
-        'Good Elementary School': {'type': 'Elementary School', 'grades': [3, 4, 5], 'students': {'min': 10, 'max': 35, 'avg': 30}, 'adjust_pld': 0.5},
+        'Good High School': {'type': 'High School', 'grades': [11], 'students': {'min': 646, 'max': 2000, 'avg': 1805}, 'adjust_pld': 0.35},
+        'Good Middle School': {'type': 'Middle School', 'grades': [6, 7, 8], 'students': {'min': 200, 'max': 1000, 'avg': 862}, 'adjust_pld': 0.4},
+        'Good Elementary School': {'type': 'Elementary School', 'grades': [3, 4, 5], 'students': {'min': 200, 'max': 800, 'avg': 581}, 'adjust_pld': 0.5},
     }
 
     return school_types
@@ -185,9 +185,9 @@ def get_state_types():
 
     Initial numbers were Big=3, Medium=6, Small=40
     """
-    state_types = {'typical_1': {'district_types_and_counts': {'Big Average': 1, 'Big Poor': 1, 'Big Good': 1,
-                                                               'Medium Average': 2, 'Medium Poor': 1, 'Medium Good': 1, 'Medium Very Poor': 1, 'Medium Very Good': 1,
-                                                               'Small Average': 10, 'Small Poor': 5, 'Small Good': 5, 'Small Very Poor': 5, 'Small Very Good': 5
+    state_types = {'typical_1': {'district_types_and_counts': {'Big Average': 50, 'Big Poor': 25, 'Big Good': 50,
+                                                               'Medium Average': 50, 'Medium Poor': 25, 'Medium Good': 25, 'Medium Very Poor': 50, 'Medium Very Good': 50,
+                                                               'Small Average': 25, 'Small Poor': 50, 'Small Good': 25, 'Small Very Poor': 50, 'Small Very Good': 50,
                                                                },
                                  'subjects_and_percentages': {'Math': .99, 'ELA': .99},
                                  'demographics': 'typical1'}

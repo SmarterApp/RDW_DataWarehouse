@@ -109,6 +109,7 @@ def generate_data_from_config_file(config_module):
         state_type = state_types[state_type_name]
         district_types_and_counts = state_type[config_module.DISTRICT_TYPES_AND_COUNTS]
         subject_percentages = state_type[config_module.SUBJECT_AND_PERCENTAGES]
+        demographics_id = state_type[config_module.DEMOGRAPHICS]
 
         # TODO: should we add some randomness here? What are acceptable numbers? 5-10? 10-20?
         number_of_state_level_staff = 10
@@ -159,7 +160,7 @@ def generate_data_from_config_file(config_module):
                     schools = schools_by_type[school_type_name]
                     school_type = school_types[school_type_name]
                     school_type_institution_hierarchies = generate_and_populate_institution_hierarchies(schools, school_type, current_state,
-                                                                                                        district, assessments, subject_percentages, demographics)
+                                                                                                        district, assessments, subject_percentages, demographics, demographics_id)
                     # Debugging
                     school_counts[school_type_name] += len(school_type_institution_hierarchies)
 
@@ -170,7 +171,7 @@ def generate_data_from_config_file(config_module):
         create_csv(state_institution_hierarchies, ENTITY_TO_PATH_DICT[InstitutionHierarchy])
 
 
-def generate_and_populate_institution_hierarchies(schools, school_type, state, district, assessments, subject_percentages, demographics):
+def generate_and_populate_institution_hierarchies(schools, school_type, state, district, assessments, subject_percentages, demographics, demographics_id):
     '''
     Given institution information (info about state, district, school), we create InstitutionHierarchy objects.
     We create one InstitutionHierarchy object for each school given in the school list.
@@ -194,11 +195,11 @@ def generate_and_populate_institution_hierarchies(schools, school_type, state, d
         institution_hierarchy = generate_institution_hierarchy_from_helper_entities(state, district, school)
         institution_hierarchies.append(institution_hierarchy)
         # TODO: Don't populate the schools here. When this function returns, loop over the list and populate each school
-        populate_school(institution_hierarchy, school_type, assessments, subject_percentages, demographics)
+        populate_school(institution_hierarchy, school_type, assessments, subject_percentages, demographics, demographics_id)
     return institution_hierarchies
 
 
-def populate_school(institution_hierarchy, school_type, assessments, subject_percentages, demographics):
+def populate_school(institution_hierarchy, school_type, assessments, subject_percentages, demographics, demographics_id):
 
     '''
     Populate the provided the institution with staff, students, teachers, sections
@@ -245,7 +246,7 @@ def populate_school(institution_hierarchy, school_type, assessments, subject_per
         name_list_dictionary = generate_name_list_dictionary(NAMES_TO_PATH_DICT)
         students_in_grade = generate_students_from_institution_hierarchy(number_of_students_in_grade, institution_hierarchy, grade, -1, name_list_dictionary[BIRDS])
 
-        demograph_id = 'typical1'  # TODO: Get from config file
+        demograph_id = demographics_id  # TODO: Get from config file
         subject_num = 1
         demo_status = DemographicStatus(demographics.get_demo_names(demograph_id))
 

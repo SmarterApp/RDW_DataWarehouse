@@ -31,6 +31,7 @@ MOST_RECENT = 'most_recent'
 SUBJECT_AND_PERCENTAGES = 'subjects_and_percentages'
 TYPE = 'type'
 ADJUST_PLD = 'adjust_pld'
+DEMOGRAPHICS = 'demographics'
 
 
 def get_school_types():

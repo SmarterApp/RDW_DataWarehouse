@@ -42,7 +42,7 @@ def create_insert_query(conf, source_table, target_table, column_mapping, column
              ",".join(list(column_types.values())),
              ");"
             ]
-    insert_sql = "".join(insert_sql).format(target_shcema_and_table=combine_schema_and_table(conf[mk.TARGET_DB_NAME], target_table),
+    insert_sql = "".join(insert_sql).format(target_shcema_and_table=combine_schema_and_table(conf[mk.TARGET_DB_SCHEMA], target_table),
                                             db_password_target=conf[mk.TARGET_DB_PASSWORD],
                                             target_schema=conf[mk.TARGET_DB_SCHEMA],
                                             db_name=conf[mk.SOURCE_DB_NAME],

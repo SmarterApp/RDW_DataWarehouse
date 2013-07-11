@@ -36,6 +36,9 @@ def explode_data_to_fact_table(conf, source_table, target_table, column_mapping,
     column_mapping[asmt_rec_id_info['rec_id']] = str(asmt_rec_id)
     column_mapping[section_rec_id_column_name] = section_rec_id
 
+    # add batch id
+    column_mapping['batch_guid'] = '\'' + str(conf[mk.BATCH_ID]) + '\''
+
     # get list of queries to be executed
     queries = create_queries_for_move_to_fact_table(conf, source_table, target_table, column_mapping, column_types)
 
@@ -131,7 +134,7 @@ def create_queries_for_move_to_fact_table(conf, source_table, target_table, colu
 
     # create insertion insert_into_fact_table_query
     insert_into_fact_table_query = queries.create_insert_query(conf, source_table, target_table, column_mapping, column_types, False)
-    # print(insert_into_fact_table_query)
+    print(insert_into_fact_table_query)
 
     # update inst_hier_query back
     update_inst_hier_rec_id_fk_query = queries.update_inst_hier_rec_id_query(conf[mk.TARGET_DB_SCHEMA], FAKE_INST_HIER_REC_ID)

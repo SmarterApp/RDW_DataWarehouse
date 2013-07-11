@@ -353,7 +353,7 @@ def _parse_args():
     parser.add_argument('--config_file', dest='config_file',
                         help="full path to configuration file for UDL2, default is /opt/wgen/edware-udl/etc/udl2_conf.py")
     parser.add_argument('--action', dest='action', required=False,
-                        help="'setup' for setting up udl2 database. " +
+                        help="'setup' for setting up udl2 database. " + 
                              "'teardown' for tear down udl2 database")
     args = parser.parse_args()
     return (parser, args)
@@ -643,6 +643,7 @@ def create_dblink_extension(udl2_conf):
     '''
     print('create dblink extension')
     sql = "CREATE EXTENSION IF NOT EXISTS dblink WITH SCHEMA %s" % (udl2_conf['db_schema'])
+    print(sql)
     (conn, engine) = _create_conn_engine(udl2_conf)
     except_msg = "fail to create dblink extension"
     execute_queries(conn, [sql], except_msg)
@@ -698,23 +699,23 @@ def load_fake_record_in_star_schema(udl2_conf):
     (conn, engine) = _create_conn_engine(udl2_conf)
     sqls = [
         """
-        INSERT INTO "edware"."dim_section"(
+        INSERT INTO "{schema_name}"."dim_section"(
             section_rec_id, section_guid, section_name, grade, class_name,
             subject_name, state_code, district_guid, school_guid, from_date,
             to_date, most_recent)
         VALUES (1, 'fake_value', 'fake_value', 'fake_value', 'fake_value',
             'fake_value', 'FA', 'fake_value', 'fake_value', '99999999',
             '00000000', False);
-        """,
+        """.format(schema_name=udl2_conf['db_schema']),
         """
-        INSERT INTO "edware"."dim_inst_hier"(
+        INSERT INTO "{schema_name}"."dim_inst_hier"(
             inst_hier_rec_id, state_name, state_code, district_guid, district_name,
             school_guid, school_name, school_category, from_date, to_date,
             most_recent)
         VALUES (-1, 'fake_value', 'FA', 'fake_value', 'fake_value',
             'fake_value', 'fake_value', 'fake_value', '99999999', '00000000',
             False);
-        """,
+        """.format(schema_name=udl2_conf['db_schema']),
     ]
     except_msg = "fail to drop foreign data wrapper server"
     execute_queries(conn, sqls, except_msg)

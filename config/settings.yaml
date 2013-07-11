@@ -209,9 +209,9 @@ qa1:
       skip.verify: False
       saml:
         issuer_name: https://ha-int-pyweb1.qa.dum.edwdc.net
-        idp_server_login_url: https://auth0.qa.dum.edwdc.net/openam/SSORedirect/metaAlias/idp
-        idp_server_logout_url: https://auth0.qa.dum.edwdc.net/openam/IDPSloRedirect/metaAlias/idp
-        name_qualifier: https://auth0.qa.dum.edwdc.net/openam
+        idp_server_login_url: https://auth1.qa.dum.edwdc.net/openam/SSORedirect/metaAlias/idp
+        idp_server_logout_url: https://auth1.qa.dum.edwdc.net/openam/IDPSloRedirect/metaAlias/idp
+        name_qualifier: https://auth1.qa.dum.edwdc.net/openam
   '[handlers]':
     keys: filelog, audit, syslog, security_event
   '[logger_root]':
@@ -251,9 +251,9 @@ qa2:
       skip.verify: False
       saml:
         issuer_name: https://ha-int-pyweb2.qa.dum.edwdc.net
-        idp_server_login_url: https://auth0.qa.dum.edwdc.net/openam/SSORedirect/metaAlias/idp
-        idp_server_logout_url: https://auth0.qa.dum.edwdc.net/openam/IDPSloRedirect/metaAlias/idp
-        name_qualifier: https://auth0.qa.dum.edwdc.net/openam
+        idp_server_login_url: https://auth1.qa.dum.edwdc.net/openam/SSORedirect/metaAlias/idp
+        idp_server_logout_url: https://auth1.qa.dum.edwdc.net/openam/IDPSloRedirect/metaAlias/idp
+        name_qualifier: https://auth1.qa.dum.edwdc.net/openam
   '[handlers]':
     keys: filelog, audit, syslog, security_event
   '[logger_root]':

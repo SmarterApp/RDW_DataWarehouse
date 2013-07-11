@@ -756,3 +756,131 @@ th.ui-th-column div {
   }
   
 }
+
+// comparing population filter widget
+.filter {
+  background-color: gray;
+  //background-image: url("../images/Claim_arrowhead_up.png");
+  //background-repeat: no-repeat;
+  
+  
+  .section {
+    margin: 5px 2% 5px 2%;
+    
+    &:first-child {
+      h3 {
+        margin-left: 5px;
+        padding-top: 15px;
+        color: @color-white;
+      }
+    }
+  }
+  
+  .filter_section {
+    background-color: black;
+    border-radius: 5px;
+    padding: 20px 2% 5px 2%;
+    
+    .filter-wrapper {
+      display: inline-block;
+      border-right: solid 1px;
+      margin-left: 0px;
+      padding-left: 20px;
+      
+      &:nth-child(3n) {
+        border-right: none;
+      }
+      
+      &:nth-child(4n), &:nth-child(5n) {
+        .btn-group {
+          margin-bottom: 0px;
+        }
+      }
+    }
+  }
+  
+  .btn-group {
+    
+     display: inline-block;
+     margin-right: 24px;
+     margin-bottom: 20px;
+          
+     .btn-small {
+      font-size: 14px;
+      width: 250px;
+      
+      .display {
+        float: left;
+      }
+      
+      .caret {
+        float: right;
+      }
+    }
+    
+    .dropdown-menu {
+      min-width: 250px;
+      
+      label {
+        display: inline-block;
+        margin-left: 10px;
+        margin-top: 5px;
+        color: @color-black;
+        
+        input {
+          width: 15px;
+          height: 15px;
+          margin-right: 5px;
+          position: relative;
+          top: -4px;
+        }
+      }
+    }
+  }
+  
+  .grade_range {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    vertical-align: middle;
+    border-bottom: solid 1px;
+    
+    h4 {
+       display:inline-block;
+       margin-right:20px;
+    }
+    
+    * {
+      color: @color-white;
+    }
+    
+    label {
+      display: inline-block;
+      margin-right: 25px;
+      
+      input {
+        width: 15px;
+        height: 15px;
+        margin-right: 5px;
+        position: relative;
+        top: -3px;
+      }
+      
+      &:last-child {
+        padding-left: 30px;
+        border-left: solid 1px;
+      }
+      
+      &:hover {
+        color: @color-A4;
+        border-color: @color-white;
+      }
+    }
+  }
+  
+  .form-actions {
+    background-color: gray;
+    text-align: center;
+    border-top: none;
+  }
+
+}

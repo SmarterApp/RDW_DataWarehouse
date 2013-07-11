@@ -1,1 +1,33 @@
-<div>Hello World</div>
+<div class="filter">
+	<div class="section"><h3>Student Filters</h3></div>
+	<div class="section filter_section">
+			<div class="grade_range">
+				{{#grades}}
+				<h4>{{display}}:</h4> 
+				{{#options}}
+				<label><input id="{{value}}" type="checkbox" value="{{value}}">{{key}}</label></input>
+				{{/options}}
+				{{/grades}}
+			</div>
+			<div>
+				{{#filters}}
+				<div class="filter-wrapper">
+					<div class="btn-group">
+		                <button class="btn btn-small dropdown-toggle" data-toggle="dropdown"><span class="display">{{display}}</span><span class="caret"></span></button>
+		                <ul class="dropdown-menu">
+		                  {{#options}}
+		                  <li><label><input type="checkbox" value="{{value}}">{{key}}</label></li>
+		                  {{/options}}
+		                  <li class="divider"></li>
+		                  <li><a href="#">Separated link</a></li>
+		                </ul>
+		            </div>
+				</div>
+				{{/filters}}
+			</div>
+	</div>
+	<div class="section form-actions">
+	  <button id="cancel-btn" type="button" class="btn btn-primary">Cancel</button>
+	  <button type="submit" class="btn btn-primary">Apply Filters</button>
+	</div>
+</div>

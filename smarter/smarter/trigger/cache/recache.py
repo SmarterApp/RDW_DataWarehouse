@@ -50,7 +50,7 @@ class CacheTrigger(object):
 
         :param string stateCode: represents the state code
         '''
-        flush_report_in_cache_region(self.report.get_state_view_report_with_filters, state_code, filters)
+        flush_report_in_cache_region(self.report.get_state_view_report_with_cache, state_code, filters)
 
     def flush_district_view_report(self, state_code, district_guid, filters):
         '''
@@ -59,7 +59,7 @@ class CacheTrigger(object):
         :param string stateCode: code of the state
         :param string districtGuid:  guid of the district
         '''
-        flush_report_in_cache_region(self.report.get_district_view_report_with_filters, state_code, district_guid, filters)
+        flush_report_in_cache_region(self.report.get_district_view_report_with_cache, state_code, district_guid, filters)
 
     def init_filters(self, tenant, settings):
         '''

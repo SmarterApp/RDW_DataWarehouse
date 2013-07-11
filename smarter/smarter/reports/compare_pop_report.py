@@ -131,12 +131,12 @@ class ComparingPopReport(object):
         :returns: state view report
         '''
         if self.is_cacheable():
-            return self.get_state_view_report_with_filters(stateCode, self.get_cacheable_filters())
+            return self.get_state_view_report_with_cache(stateCode, self.get_cacheable_filters())
         else:
             return self.get_report(stateCode, filters=self.filters)
 
     @cache_region('public.data')
-    def get_state_view_report_with_filters(self, stateCode, filters):
+    def get_state_view_report_with_cache(self, stateCode, filters):
         '''
         state view report without any filters. Note that filters is formatted for cache key
         If filters is not cacheable, we still need to get the report with the original set of filters
@@ -156,12 +156,12 @@ class ComparingPopReport(object):
         :returns: district view report
         '''
         if self.is_cacheable():
-            return self.get_district_view_report_with_filters(stateCode, districtGuid, self.get_cacheable_filters())
+            return self.get_district_view_report_with_cache(stateCode, districtGuid, self.get_cacheable_filters())
         else:
             return self.get_report(stateCode, districtGuid, filters=self.filters)
 
     @cache_region('public.data')
-    def get_district_view_report_with_filters(self, stateCode, districtGuid, filters):
+    def get_district_view_report_with_cache(self, stateCode, districtGuid, filters):
         '''
         district view report without any filters.  Note that filters is formatted for cache key
 

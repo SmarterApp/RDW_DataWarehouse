@@ -3,31 +3,31 @@
 		"display" : "Grade Range",
 		"options" : [
 			{
-				"key" : "Grade 3",
+				"label" : "Grade 3",
 				"value" : "grade3"
 			},
 			{
-				"key" : "Grade 4",
+				"label" : "Grade 4",
 				"value" : "grade4"
 			},
 			{
-				"key" : "Grade 5",
+				"label" : "Grade 5",
 				"value" : "grade5"
 			},
 			{
-				"key" : "Grade 6",
+				"label" : "Grade 6",
 				"value" : "grade6"
 			},
 			{
-				"key" : "Grade 7",
+				"label" : "Grade 7",
 				"value" : "grade7"
 			},
 			{
-				"key" : "Grade 8",
+				"label" : "Grade 8",
 				"value" : "grade8"
 			},
 			{
-				"key" : "Grade 11",
+				"label" : "Grade 11",
 				"value" : "grade11"
 			}
 		]
@@ -37,11 +37,11 @@
 			"display" : "Gender",
 			"options" : [
 				{ 
-					"key": "Male",
+					"label": "Male",
 				  	"value": "M"
 				},
 				{
-					"key": "Female",
+					"label": "Female",
 				  	"value": "F"
 				}
 			]
@@ -53,7 +53,17 @@
 			"display" : "Disadvantaged"
 		},
 		{
-			"display" : "Disability"
+			"display" : "504",
+			"name" : "dmgPrg504",
+			"options" : [
+				{
+					"label" : "Yes",
+					"value" : "true"
+				},{
+					"label" : "No",
+					"value" : "false"
+				}
+			]
 		},
 		{
 			"display" : "Limited English Proficiency*"

@@ -63,9 +63,17 @@ define [
 
   submitEvent = () ->
     # construct params and send ajax call
-    params = {"sl":"1373638133", "stateCode": "NY" }
+    params = getUrlParams()
+    $('.filter input:checked').each () ->
+      params[$(this).val()] = 'true'
+    console.log(params)
     callback params if callback
     
+  getUrlParams = ->
+    params = {}
+    window.location.search.replace /[?&]+([^=&]+)=([^&]*)/g, (str, key, value) ->
+      params[key] = value
+    params
 
   generateFilter: generateFilter
   registerCallback: registerCallback

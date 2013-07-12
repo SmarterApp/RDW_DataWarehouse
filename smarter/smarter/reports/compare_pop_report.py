@@ -20,6 +20,8 @@ import json
 from beaker.cache import cache_region
 from smarter.security.context import select_with_context
 from smarter.database.smarter_connector import SmarterDBConnection
+from smarter.reports.filters.demographics import getDisabledFilter
+from smarter.reports.filters import Constants_filter_names
 
 # Report service for Comparing Populations
 # Output:
@@ -59,12 +61,22 @@ REPORT_NAME = "comparing_populations"
             "required": False,
             "pattern": "^[a-zA-Z0-9\-]{0,50}$",
         }
+    },
+    filters={
+        Constants_filter_names.DEMOGRAPHICS_PROGRAM_IEP: {
+            "type": "boolean",
+            "required": False
+        },
+        Constants_filter_names.DEMOGRAPHICS_PROGRAM_504: {
+            "type": "boolean",
+            "required": False
+        }
     })
 @audit_event()
 @user_info
-def get_comparing_populations_report(params):
+def get_comparing_populations_report(params, filters):
     results = None
-    report = ComparingPopReport()
+    report = ComparingPopReport(filters=filters)
     if Constants.SCHOOLGUID in params and Constants.DISTRICTGUID in params and Constants.STATECODE in params:
         results = report.get_school_view_report(params[Constants.STATECODE], params[Constants.DISTRICTGUID], params[Constants.SCHOOLGUID])
     elif params and Constants.DISTRICTGUID in params and Constants.STATECODE in params:
@@ -133,7 +145,7 @@ class ComparingPopReport(object):
         if self.is_cacheable():
             return self.get_state_view_report_with_cache(stateCode, self.get_cacheable_filters())
         else:
-            return self.get_report(stateCode, filters=self.filters)
+            return self.get_report(stateCode, filters=self.get_cacheable_filters())
 
     @cache_region('public.data')
     def get_state_view_report_with_cache(self, stateCode, filters):
@@ -144,7 +156,7 @@ class ComparingPopReport(object):
         :param string stateCode:  State code representing the state
         :param filter:  a list of tuples
         '''
-        return self.get_report(stateCode, filters=self.filters)
+        return self.get_report(stateCode, filters=filters)
 
     def get_district_view_report(self, stateCode, districtGuid):
         '''
@@ -158,7 +170,7 @@ class ComparingPopReport(object):
         if self.is_cacheable():
             return self.get_district_view_report_with_cache(stateCode, districtGuid, self.get_cacheable_filters())
         else:
-            return self.get_report(stateCode, districtGuid, filters=self.filters)
+            return self.get_report(stateCode, districtGuid, filters=self.get_cacheable_filters())
 
     @cache_region('public.data')
     def get_district_view_report_with_cache(self, stateCode, districtGuid, filters):
@@ -168,7 +180,7 @@ class ComparingPopReport(object):
         :param string stateCode:  State code representing the state
         :param string districtGuid:  Guid of the district
         '''
-        return self.get_report(stateCode, districtGuid, filters=self.filters)
+        return self.get_report(stateCode, districtGuid, filters=self.get_cacheable_filters())
 
     def get_school_view_report(self, stateCode, districtGuid, schoolGuid):
         '''
@@ -475,6 +487,10 @@ class QueryHelper():
         self._dim_asmt = connector.get_table(Constants.DIM_ASMT)
         self._fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
 
+        self._demographics_filters = []
+        if self._filters:
+            self._demographics_filters += getDisabledFilter(self._fact_asmt_outcome, self._filters)
+
     def build_columns(self):
         '''
         build select columns based on request
@@ -510,12 +526,20 @@ class QueryHelper():
         return columns + bar_widget_color_info + columns_for_perf_level
 
     def get_query(self):
+        query = None
         if self._view == self.VIEWS.STATE_VIEW:
-            return self.get_query_for_state_view()
+            query = self.get_query_for_state_view()
         elif self._view == self.VIEWS.DISTRICT_VIEW:
-            return self.get_query_for_district_view()
+            query = self.get_query_for_district_view()
         elif self._view == self.VIEWS.SCHOOL_VIEW:
-            return self.get_query_for_school_view()
+            query = self.get_query_for_school_view()
+
+        # apply demographics filters
+        if query is not None:
+            for demographics_filter in self._demographics_filters:
+                if demographics_filter is not None:
+                    query = query.where(demographics_filter)
+        return query
 
     def get_query_for_state_view(self):
         query = select(self.build_columns(),
@@ -530,9 +554,6 @@ class QueryHelper():
         query = query.order_by(self._dim_inst_hier.c.district_name, self._dim_asmt.c.asmt_subject.desc())
         query = query.where(self._fact_asmt_outcome.c.state_code == self._state_code)
         query = query.where(self._fact_asmt_outcome.c.status == 'C')
-
-        # apply demographics conditions
-        query = self.apply_filters(query)
         return query
 
     def get_query_for_district_view(self):
@@ -548,9 +569,6 @@ class QueryHelper():
         query = query.order_by(self._dim_inst_hier.c.school_name, self._dim_asmt.c.asmt_subject.desc())
         query = query.where(and_(self._fact_asmt_outcome.c.state_code == self._state_code, self._fact_asmt_outcome.c.district_guid == self._district_guid))
         query = query.where(self._fact_asmt_outcome.c.status == 'C')
-
-        # apply demographics conditions
-        query = self.apply_filters(query)
         return query
 
     def get_query_for_school_view(self):
@@ -563,26 +581,4 @@ class QueryHelper():
         query = query.order_by(self._fact_asmt_outcome.c.asmt_grade, self._dim_asmt.c.asmt_subject.desc())
         query = query.where(and_(self._fact_asmt_outcome.c.state_code == self._state_code, self._fact_asmt_outcome.c.district_guid == self._district_guid, self._fact_asmt_outcome.c.school_guid == self._school_guid))
         query = query.where(self._fact_asmt_outcome.c.status == 'C')
-        return query
-
-    def apply_filters(self, query):
-        '''
-        Appends demographics conditions to the WHERE clause of the query
-
-        :param query: sqlalchemy query for the report to append where clauses to
-        '''
-        # maps internal values to column names of demographics
-#        filter_map = {'isAsian': self._fact_asmt_outcome.c.dmg_eth_asn,
-#                      'isBlack': self._fact_asmt_outcome.c.dmg_eth_blk}
-        filter_map = {}
-
-        if self._filters:
-            for k, v in self._filters.items():
-                column = filter_map.get(k)
-                if column:
-                    query = query.where(and_(column == v))
-                else:
-                    #TODO log
-                    pass
-
         return query

@@ -8,9 +8,10 @@ Created on Jan 16, 2013
 '''
 from edapi.exceptions import ReportNotFoundError, InvalidParameterError
 from edapi.utils import get_dict_value
-from edapi.validation import Validator
+from edapi.validation import Validator, FILTERS_REFERENCE_FIELD_NAME
 import inspect
 import logging
+import copy
 
 
 REPORT_REFERENCE_FIELD_NAME = 'name'
@@ -39,7 +40,7 @@ def add_report_config(self, delegate, **kwargs):
         self.registry[EDAPI_REPORTS_PLACEHOLDER][settings['name']] = settings
 
 
-def call_report(report, params):
+def call_report(report, params, filters=None):
     '''
     Given a report (dict), get the value from reference key and call it
 
@@ -54,13 +55,13 @@ def call_report(report, params):
 
     if inspect.isclass(obj):
         inst = obj()
-        response = getattr(inst, method.__name__)(params)
+        response = getattr(inst, method.__name__)(params, filters)
     else:
-        response = method(params)
+        response = method(params, filters)
     return response
 
 
-def generate_report(registry, report_name, params, validator=None):
+def generate_report(registry, report_name, request_params, validator=None):
     '''
     Generates a report by calling the report delegate for generating itself (received from the config repository).
 
@@ -73,16 +74,22 @@ def generate_report(registry, report_name, params, validator=None):
     if not validator:
         validator = Validator()
 
-    params = validator.convert_array_query_params(registry, report_name, params)
-    params = validator.fix_types(registry, report_name, params)
-    validated = validator.validate_params_schema(registry, report_name, params)
+    params = validator.convert_array_query(PARAMS_REFERENCE_FIELD_NAME, registry, report_name, copy.deepcopy(request_params))
+    params = validator.fix_types(PARAMS_REFERENCE_FIELD_NAME, registry, report_name, params)
+    validated = validator.validate_schema(PARAMS_REFERENCE_FIELD_NAME, registry, report_name, params)
+    if (not validated[0]):
+        raise InvalidParameterError(msg=str(validated[1]))
+    # retrive filters
+    filters = validator.convert_array_query(FILTERS_REFERENCE_FIELD_NAME, registry, report_name, copy.deepcopy(request_params))
+    filters = validator.fix_types(FILTERS_REFERENCE_FIELD_NAME, registry, report_name, filters)
+    validated = validator.validate_schema(FILTERS_REFERENCE_FIELD_NAME, registry, report_name, filters)
 
     if (not validated[0]):
         raise InvalidParameterError(msg=str(validated[1]))
 
     report = get_dict_value(registry, report_name, ReportNotFoundError)
 
-    result = call_report(report, params)
+    result = call_report(report, params, filters)
     return result
 
 

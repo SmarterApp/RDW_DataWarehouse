@@ -111,19 +111,13 @@ define [
         
         
         # Set population bar alignment on/off
-        $(".align_button").click ->
-          align_button_class = $(this).attr("class")
-          grid = $("#gridTable")         
-          if align_button_class.indexOf("align_off") isnt -1
-            $(this).removeClass("align_off").addClass("align_on")
-            grid.trigger("reloadGrid")
-            
-          else
-            $(this).removeClass("align_on").addClass("align_off")
-            grid.trigger("reloadGrid") 
+        $(".align_button").unbind('click').click ->
+          $(this).toggleClass('align_off align_on')
+          $("#gridTable") .trigger("reloadGrid")
         
-        dropdown = createDropdown asmtSubjectsData, colorsData, customALDDropdown
-        $('.dropdown-toggle').dropdown()
+        if $('.dropdownSection').is(':empty')
+          dropdown = createDropdown asmtSubjectsData, colorsData, customALDDropdown
+          $('.dropdown-toggle').dropdown()
         
         # Display grid controls after grid renders
         $(".gridControls").css("display", "block")
@@ -134,10 +128,12 @@ define [
            # Get the current sort column and reset cpop sorting dropdown if the current sort column is the first column
            curSortColumn = $('#gridTable').getGridParam('sortname')
            if curSortColumn == $('#gridTable').getGridParam('colModel')[0].name
-             resetSortingHeader customALDDropdown;
+             # resetSortingHeader customALDDropdown;
              enableDisableSortingOnAssessments()
-             
            formatBarAlignment();
+        # Keep sorting and alignment status after regenerating grid
+        $('#gridTable').trigger "jqGridLoadComplete.jqGrid"
+        $('.colorsBlock input:checked').click()
             
   # Render comparing population grid
   renderGrid = (gridConfig, populationData, summaryData) ->
@@ -337,8 +333,6 @@ define [
         dropdown = $("<div class='dropdown' id='" + asmtSubject + "_dropdown'></div>")
 
         asmtSubjectSort.css('visibility', 'hidden')
-        #move sort up/down to right side, then hide
-        asmtSubjectSort.parent().addClass('colorSortArrow')
         asmtSubjectSort.siblings('span').css('visibility', 'hidden')
         
         caret = $("<a class='dropdown-toggle' id='" + asmtSubject + "_DropdownMenu' role='button'><div class='dropdown_title'>" + customALDDropdown.selectSort + "</div><b class='caret'></b></a>")
@@ -376,8 +370,7 @@ define [
         
     # Disable sorting
     enableDisableSortingOnAssessments()
-    $(document).on
-      click: (e) ->
+    $('.colorsBlock').click (e) ->
         # reset dropdown state
         resetSortingHeader customALDDropdown
         
@@ -393,8 +386,9 @@ define [
         targetParentElement_div = $('#' + targetParentId + ' div')
         targetParentElement_div.html(colorBar)
         setCenterForDropdown(subject, targetParentElement_div.width(), targetParentElement_div)
-
         
+        #move sort up/down to right side
+        asmtSubjectSort.parent().addClass('colorSortArrow')
         # display sort arrows
         asmtSubjectSort.siblings('span').css('visibility', 'visible')
         
@@ -402,7 +396,6 @@ define [
 
         # Reload the grid and setting active sort column, subject is the index of the column
         $('#gridTable').sortGrid(subject, true, 'asc');
-    , '.colorsBlock'
   
   resetSortingHeader = (customALDDropdown) ->
     # unselect radio button
@@ -420,9 +413,7 @@ define [
       dropdown_a_element_dropdown_title.html customALDDropdown.selectSort
       #set to the center of table header column
       setCenterForDropdown(subject, dropdown_a_element_dropdown_title.width(), dropdown_a_element_dropdown_title)
-      # hide sort arrows
-      asmtSubjectSort.siblings('span').css('visibility', 'hidden')
-      # cloase open panel
+      # close open panel
       $(dropdownElement).removeClass('open')
       
   enableDisableSortingOnAssessments = (subject) ->
@@ -446,6 +437,7 @@ define [
     targetElement.closest('.dropdown').css('margin-left', position.left)
     targetElement.closest('.dropdown').css('margin-top', position.top)
 
+  # register createPopulationGrid as callback in filter pop up
   filter.registerCallback createPopulationGrid
   
   createPopulationGrid: createPopulationGrid

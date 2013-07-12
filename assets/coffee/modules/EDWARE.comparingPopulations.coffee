@@ -18,7 +18,7 @@ define [
   edwareUtil.getHeader()
   
   # Add filter to the page
-  edwareFilter.generateFilter($('#cpopFilter'), $('.filter_label'))
+  filter = edwareFilter.generateFilter($('#cpopFilter'), $('.filter_label')) 
   
   #
   #    * Create Student data grid
@@ -77,9 +77,9 @@ define [
           # Format the summary data for summary row purposes
           summaryRowName = getOverallSummaryName(breadcrumbsData, reportType)
           summaryData = formatSummaryData(summaryData, summaryRowName)
-          
+        
         # Create compare population grid for State/District/School view
-        edwareGrid.create "gridTable", gridConfig, populationData, summaryData
+        renderGrid gridConfig, populationData, summaryData
         
         # Generate footer
         $('#footer').generateFooter('comparing_populations', reportInfo)
@@ -139,6 +139,13 @@ define [
              
            formatBarAlignment();
             
+  # Render comparing population grid
+  renderGrid = (gridConfig, populationData, summaryData) ->
+    $("#gbox_gridTable").remove()
+    $("#content .gridHeight100").append("<table id='gridTable'></table>")
+    # Create compare population grid for State/District/School view
+    edwareGrid.create "gridTable", gridConfig, populationData, summaryData       
+  
   # Change population bar width as per alignment on/off status
   formatBarAlignment = ->
     align_button_class = $(".align_button").attr("class")
@@ -439,5 +446,6 @@ define [
     targetElement.closest('.dropdown').css('margin-left', position.left)
     targetElement.closest('.dropdown').css('margin-top', position.top)
 
-  createPopulationGrid: createPopulationGrid
+  filter.registerCallback createPopulationGrid
   
+  createPopulationGrid: createPopulationGrid

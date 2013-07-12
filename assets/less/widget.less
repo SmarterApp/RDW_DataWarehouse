@@ -760,9 +760,6 @@ th.ui-th-column div {
 // comparing population filter widget
 .filter {
   background-color: gray;
-  //background-image: url("../images/Claim_arrowhead_up.png");
-  //background-repeat: no-repeat;
-  
   
   .section {
     margin: 5px 2% 5px 2%;
@@ -779,7 +776,7 @@ th.ui-th-column div {
   .filter_section {
     background-color: black;
     border-radius: 5px;
-    padding: 20px 2% 5px 2%;
+    padding: 20px 2% 20px 2%;
     
     .filter-wrapper {
       display: inline-block;
@@ -791,7 +788,7 @@ th.ui-th-column div {
         border-right: none;
       }
       
-      &:nth-child(4n), &:nth-child(5n) {
+      &:nth-last-child(1), &:nth-last-child(2), &:nth-last-child(3) {
         .btn-group {
           margin-bottom: 0px;
         }
@@ -874,6 +871,12 @@ th.ui-th-column div {
         color: @color-A4;
         border-color: @color-white;
       }
+      
+      &.blue {
+        color: @color-A4;
+        border-color: @color-white;
+      }
+      
     }
   }
   
@@ -881,6 +884,7 @@ th.ui-th-column div {
     background-color: gray;
     text-align: center;
     border-top: none;
+    margin-bottom: 0px;
   }
 
 }

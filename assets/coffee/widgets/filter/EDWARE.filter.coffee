@@ -3,8 +3,9 @@ define [
   "mustache"
   "bootstrap"
   "edwareDataProxy"
+  "edwareUtil"
   "text!edwareFilterTemplate"
-], ($, Mustache, bootstrap, edwareDataProxy, filterTemplate) ->
+], ($, Mustache, bootstrap, edwareDataProxy, edwareUtil, filterTemplate) ->
   
   callback = undefined
   
@@ -63,17 +64,11 @@ define [
 
   submitEvent = () ->
     # construct params and send ajax call
-    params = getUrlParams()
+    params = edwareUtil.getUrlParams()
     $('.filter input:checked').each () ->
       params[$(this).val()] = 'true'
     console.log(params)
     callback params if callback
     
-  getUrlParams = ->
-    params = {}
-    window.location.search.replace /[?&]+([^=&]+)=([^&]*)/g, (str, key, value) ->
-      params[key] = value
-    params
-
   generateFilter: generateFilter
   registerCallback: registerCallback

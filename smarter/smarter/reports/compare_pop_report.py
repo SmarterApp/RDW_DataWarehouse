@@ -20,8 +20,7 @@ import json
 from beaker.cache import cache_region
 from smarter.security.context import select_with_context
 from smarter.database.smarter_connector import SmarterDBConnection
-from smarter.reports.filters.demographics import getDisabledFilter
-from smarter.reports.filters import Constants_filter_names
+from smarter.reports.filters import Constants_filter_names, demographics
 
 # Report service for Comparing Populations
 # Output:
@@ -489,7 +488,7 @@ class QueryHelper():
 
         self._demographics_filters = []
         if self._filters:
-            self._demographics_filters += getDisabledFilter(self._fact_asmt_outcome, self._filters)
+            self._demographics_filters += demographics.getDisabledFilter(self._fact_asmt_outcome, self._filters)
 
     def build_columns(self):
         '''

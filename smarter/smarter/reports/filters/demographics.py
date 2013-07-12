@@ -13,9 +13,10 @@ def getBoolean(filters, filterName):
             value = _filter[1]
             if value is not None:
                 if type(value) == str:
-                    value = True if value.toLower() == 'true' else False
+                    value = True if value.lower() == 'true' else False
             break
-    return value 
+    return value
+
 
 def getDisabledFilter(fact_asmt_outcome, filters):
     '''

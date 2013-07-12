@@ -34,23 +34,18 @@
 	},
 	"filters" : [
 		{
-			"display" : "Gender",
+			"display" : "IEP",
+			"name" : "dmgPrgIep",
 			"options" : [
 				{ 
-					"label": "Male",
-				  	"value": "M"
+					"label": "Yes",
+				  	"value": "true"
 				},
 				{
-					"label": "Female",
-				  	"value": "F"
+					"label": "No",
+				  	"value": "false"
 				}
 			]
-		},
-		{
-			"display" : "Ethnicity"
-		},
-		{
-			"display" : "Disadvantaged"
 		},
 		{
 			"display" : "504",
@@ -64,12 +59,6 @@
 					"value" : "false"
 				}
 			]
-		},
-		{
-			"display" : "Limited English Proficiency*"
-		},
-		{
-			"display" : "Accomodations"
 		}
 	]
 }

@@ -1,34 +1,35 @@
 {
 	"grades" : {
 		"display" : "Grade Range",
+		"name" : "grade",
 		"options" : [
 			{
 				"label" : "Grade 3",
-				"value" : "grade3"
+				"value" : "3"
 			},
 			{
 				"label" : "Grade 4",
-				"value" : "grade4"
+				"value" : "4"
 			},
 			{
 				"label" : "Grade 5",
-				"value" : "grade5"
+				"value" : "5"
 			},
 			{
 				"label" : "Grade 6",
-				"value" : "grade6"
+				"value" : "6"
 			},
 			{
 				"label" : "Grade 7",
-				"value" : "grade7"
+				"value" : "7"
 			},
 			{
 				"label" : "Grade 8",
-				"value" : "grade8"
+				"value" : "8"
 			},
 			{
 				"label" : "Grade 11",
-				"value" : "grade11"
+				"value" : "11"
 			}
 		]
 	},

@@ -862,11 +862,6 @@ th.ui-th-column div {
     vertical-align: middle;
     border-bottom: solid 1px;
     
-    h4 {
-       display:inline-block;
-       margin-right:20px;
-    }
-    
     * {
       color: @color-white;
     }
@@ -883,8 +878,12 @@ th.ui-th-column div {
         top: -3px;
       }
       
+      &:nth-last-child(2) {
+        margin-right: 15px;       
+      }
+      
       &:last-child {
-        padding-left: 30px;
+        padding-left: 20px;
         border-left: solid 1px;
       }
       

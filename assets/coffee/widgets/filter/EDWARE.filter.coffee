@@ -30,7 +30,7 @@ define [
     )
     
     # prevent dropdown memu from disappearing
-    $('.dropdown-menu input, .dropdown-menu label').click( (e) ->
+    $('.dropdown-menu').click( (e) ->
         e.stopPropagation();
     );
     

@@ -3,9 +3,9 @@
 	<div class="section filter_section">
 			<div class="grade_range">
 				{{#grades}}
-				<h4>{{display}}:</h4> 
+				<h4>{{display}}:</h4>
 				{{#options}}
-				<label><input id="{{value}}" type="checkbox" value="{{value}}">{{key}}</label></input>
+				<label><input id="{{value}}" type="checkbox" value="{{value}}">{{label}}</label></input>
 				{{/options}}
 				{{/grades}}
 			</div>
@@ -16,10 +16,12 @@
 		                <button class="btn btn-small dropdown-toggle" data-toggle="dropdown"><span class="display">{{display}}</span><span class="caret"></span></button>
 		                <ul class="dropdown-menu">
 		                  {{#options}}
-		                  <li><label><input type="checkbox" value="{{value}}">{{key}}</label></li>
+		                  <li><label><input type="checkbox" value="{{value}}">{{label}}</label></li>
 		                  {{/options}}
+		                  {{#comment}}
 		                  <li class="divider"></li>
-		                  <li><a href="#">Separated link</a></li>
+		                  <li><p class="small">{{comment}}</p></li>
+		                  {{/comment}}
 		                </ul>
 		            </div>
 				</div>

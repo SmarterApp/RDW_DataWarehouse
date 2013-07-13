@@ -34,16 +34,96 @@
 	},
 	"filters" : [
 		{
-			"display" : "IEP",
-			"name" : "dmgPrgIep",
+			"display" : "Limited English Proficiency*",
+			"name" : "LEP",
+			"comment" : "*This category includes English Language Learners(ELL) if your state identifies students as ELL",
 			"options" : [
-				{ 
+				{
 					"label": "Yes",
 				  	"value": "true"
 				},
 				{
 					"label": "No",
 				  	"value": "false"
+				},
+				{
+					"label": "Not Stated",
+				  	"value": "none"
+				}
+			]
+		},
+		{
+			"display" : "Ethnicity",
+			"name" : "ethnicity",
+			"comment" : "*Not Hispanic or Latino",
+			"options" : [
+				{
+					"label": "Hispanic (all races)",
+				  	"value": "hispa"
+				},
+				{
+					"label": "African/Black American*",
+				  	"value": "afric"
+				},
+				{
+					"label": "Asian*",
+				  	"value": "asian"
+				},
+				{
+					"label": "White*",
+				  	"value": "white"
+				},
+				{
+					"label": "American Indian/Alaskan Native*",
+				  	"value": "aian"
+				},
+				{
+					"label": "Native Hawaiian or Pacific Islander*",
+				  	"value": "nhopi"
+				},
+				{
+					"label": "2 or more races*",
+				  	"value": "more"
+				},
+				{
+					"label": "Not Stated",
+				  	"value": "none"
+				}
+			]
+		},
+		{
+			"display" : "IEP",
+			"name" : "dmgPrgIep",
+			"options" : [
+				{
+					"label": "Yes",
+				  	"value": "true"
+				},
+				{
+					"label": "No",
+				  	"value": "false"
+				},
+				{
+					"label": "Not Stated",
+				  	"value": "none"
+				}
+			]
+		},
+		{
+			"display" : "Gender",
+			"name" : "gender",
+			"options" : [
+				{
+					"label": "Yes",
+				  	"value": "true"
+				},
+				{
+					"label": "No",
+				  	"value": "false"
+				},
+				{
+					"label": "Not Stated",
+				  	"value": "none"
 				}
 			]
 		},
@@ -57,6 +137,24 @@
 				},{
 					"label" : "No",
 					"value" : "false"
+				}
+			]
+		},
+		{
+			"display" : "Title 1",
+			"name" : "title1",
+			"options" : [
+				{
+					"label": "Yes",
+				  	"value": "true"
+				},
+				{
+					"label": "No",
+				  	"value": "false"
+				},
+				{
+					"label": "Not Stated",
+				  	"value": "none"
 				}
 			]
 		}

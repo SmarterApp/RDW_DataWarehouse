@@ -62,9 +62,7 @@ CACHE_REGION_PUBLIC_FILTERING_DATA = 'public.filtered_data'
             "type": "string",
             "required": False,
             "pattern": "^[a-zA-Z0-9\-]{0,50}$",
-        }
-    },
-    filters={
+        },
         Constants_filter_names.DEMOGRAPHICS_PROGRAM_IEP: {
             "type": "array",
             "required": False,
@@ -84,9 +82,9 @@ CACHE_REGION_PUBLIC_FILTERING_DATA = 'public.filtered_data'
     })
 @audit_event()
 @user_info
-def get_comparing_populations_report(params, filters):
+def get_comparing_populations_report(params):
     results = None
-    report = ComparingPopReport(filters=filters, **params)
+    report = ComparingPopReport(**params)
     if Constants.SCHOOLGUID in params and Constants.DISTRICTGUID in params and Constants.STATECODE in params:
         results = report.get_school_view_report()
     elif params and Constants.DISTRICTGUID in params and Constants.STATECODE in params:
@@ -113,7 +111,7 @@ class ComparingPopReport(object):
     '''
     Represents a comparing populations report
     '''
-    def __init__(self, stateCode=None, districtGuid=None, schoolGuid=None, tenant=None, filters={}):
+    def __init__(self, stateCode=None, districtGuid=None, schoolGuid=None, tenant=None, **filters):
         '''
         :param string stateCode:  State code representing the state
         :param string districtGuid:  Guid of the district, could be None
@@ -134,14 +132,6 @@ class ComparingPopReport(object):
         :param string guid:  the guid to set district guid to be
         '''
         self.district_guid = guid
-
-    def set_filters(self, filters):
-        '''
-        Sets the demographic filters for comparing populations
-
-        :param dict filters:  key value pairs of demographic criteria
-        '''
-        self.filters = filters
 
     def has_filters(self):
         '''
@@ -507,7 +497,8 @@ class QueryHelper():
 
         self._demographics_filters = []
         if self._filters:
-            self._demographics_filters += demographics.getDisabledFilter(self._fact_asmt_outcome, self._filters)
+            self._demographics_filters += demographics.getDemographicProgramIepFilter(self._fact_asmt_outcome, self._filters)
+            self._demographics_filters += demographics.getDemographicProgram504Filter(self._fact_asmt_outcome, self._filters)
 
     def build_columns(self):
         '''

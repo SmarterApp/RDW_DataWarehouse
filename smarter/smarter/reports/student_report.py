@@ -166,7 +166,7 @@ def __arrange_results(results):
                })
 @audit_event()
 @user_info
-def get_student_report(params, filters):
+def get_student_report(params):
     '''
     report for student and student_assessment
     '''

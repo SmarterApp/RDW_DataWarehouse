@@ -11,7 +11,6 @@ from edapi.exceptions import ReportNotFoundError, InvalidParameterError
 
 
 PARAMS_REFERENCE_FIELD_NAME = 'params'
-FILTERS_REFERENCE_FIELD_NAME = 'filters'
 VALID_TYPES = enum(STRING='string', INTEGER='integer', NUMBER='number', BOOLEAN='boolean', ANY='any', ARRAY='array')
 
 
@@ -21,17 +20,16 @@ class Validator:
     '''
 
     @staticmethod
-    def validate_schema(type_name, registry, report_name, params):
+    def validate_params_schema(registry, report_name, params):
         '''
         validates the given parameters with the report configuration validation definition
 
-        :param type_name: PARAMS_REFERENCE_FIELD_NAME or FILTERS_REFERENCE_FIELD_NAME
         :param registry: the report registry
         :param report_name: the report name to be generated
         :type report_name: string
         '''
         report = get_dict_value(registry, report_name, ReportNotFoundError)
-        params_config = get_dict_value(report, type_name, InvalidParameterError)
+        params_config = get_dict_value(report, PARAMS_REFERENCE_FIELD_NAME, InvalidParameterError)
         params_config = add_configuration_header(params_config)
         try:
             validictory.validate(params, params_config)
@@ -40,19 +38,18 @@ class Validator:
         return (True, None)
 
     @staticmethod
-    def fix_types(type_name, registry, report_name, params):
+    def fix_types(registry, report_name, params):
         '''
         This method checks String types and attempt to convert them to the defined type.
         This handles 'GET' requests when all parameters are converted into string.
 
-        :param type_name: PARAMS_REFERENCE_FIELD_NAME or FILTERS_REFERENCE_FIELD_NAME
         :param registry: the report registry
         :param report_name: the report name to be generated
         :type report_name: string
         '''
         result = {}
         report = get_dict_value(registry, report_name, ReportNotFoundError)
-        params_config = get_dict_value(report, type_name, InvalidParameterError)
+        params_config = get_dict_value(report, PARAMS_REFERENCE_FIELD_NAME, InvalidParameterError)
         for (key, value) in params.items():
             config = params_config.get(key)
             if (config is None):
@@ -89,18 +86,17 @@ class Validator:
         return value
 
     @staticmethod
-    def convert_array_query(type_name, registry, report_name, params):
+    def convert_array_query_params(registry, report_name, params):
         '''
         Convert duplicate query params to arrays
 
-        :param type_name: PARAMS_REFERENCE_FIELD_NAME or FILTERS_REFERENCE_FIELD_NAME
         :param registry: the report registry
         :param report_name: the report name to be generated
         :type report_name: string
         '''
         result = {}
         report = get_dict_value(registry, report_name, ReportNotFoundError)
-        params_config = get_dict_value(report, type_name, InvalidParameterError)
+        params_config = get_dict_value(report, PARAMS_REFERENCE_FIELD_NAME, InvalidParameterError)
 
         # iterate through params
         for (key, value) in params.items():

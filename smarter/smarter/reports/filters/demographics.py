@@ -21,7 +21,7 @@ def getValue(filters, filterName):
     return rtn_value
 
 
-def getDisabledFilter(fact_asmt_outcome, filters):
+def getDemographicProgramIepFilter(fact_asmt_outcome, filters):
     '''
     apply filters for Disability
     :rtype: sqlalchemy.sql.select
@@ -30,7 +30,6 @@ def getDisabledFilter(fact_asmt_outcome, filters):
     disabled_filter = []
     if filters:
         dmg_prg_iep = getValue(filters, Constants_filter_names.DEMOGRAPHICS_PROGRAM_IEP)
-        dmg_prg_504 = getValue(filters, Constants_filter_names.DEMOGRAPHICS_PROGRAM_504)
         if dmg_prg_iep != DEMOGRAPHICS_SELECTED_VALUE.NONE:
             in_value = []
             if dmg_prg_iep & DEMOGRAPHICS_SELECTED_VALUE.YES:
@@ -40,7 +39,18 @@ def getDisabledFilter(fact_asmt_outcome, filters):
             if dmg_prg_iep & DEMOGRAPHICS_SELECTED_VALUE.NOT_STATED:
                 in_value.append(None)
             disabled_filter.append(fact_asmt_outcome.c.dmg_prg_iep.in_(in_value))
+    return disabled_filter
 
+
+def getDemographicProgram504Filter(fact_asmt_outcome, filters):
+    '''
+    apply filters for Disability
+    :rtype: sqlalchemy.sql.select
+    :returns: filters applifed query
+    '''
+    disabled_filter = []
+    if filters:
+        dmg_prg_504 = getValue(filters, Constants_filter_names.DEMOGRAPHICS_PROGRAM_504)
         if dmg_prg_504 != DEMOGRAPHICS_SELECTED_VALUE.NONE:
             in_value = []
             if dmg_prg_504 & DEMOGRAPHICS_SELECTED_VALUE.YES:

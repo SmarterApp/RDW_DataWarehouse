@@ -71,7 +71,7 @@ REPORT_NAME = "list_of_students"
     })
 @audit_event()
 @user_info
-def get_list_of_students_report(params, filters):
+def get_list_of_students_report(params):
     stateCode = str(params[Constants.STATECODE])
     districtGuid = str(params[Constants.DISTRICTGUID])
     schoolGuid = str(params[Constants.SCHOOLGUID])

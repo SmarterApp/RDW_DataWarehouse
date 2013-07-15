@@ -68,55 +68,36 @@ define [
   submitEvent = () ->
     # construct params and send ajax call
     params = edwareUtil.getUrlParams()
-    filterVal = {}
-    filterVal["filters"] = []
-    filtersValOptions = filterVal["filters"]
-
-    o = {}
-    $('.filter input:checked').each () ->
-      params[$(this).val()] = 'true'
-      
-      
-      item = {}
-      value = {}
-        
-      item["display"] = $(this).data("display")
-      item["name"] = $(this).data("name")
-      item["options"] = []
-      
-      value["label"] = $(this).data("label")
-      value["value"] = $(this).data("value")
-      item["options"].push(value)
-      
-      filtersValOptions.push(item)
-    console.log(filterVal)
-    #console.log(params)
-    
-    selectedVal = $(".filter input").serializeFormJSON()
-    console.log(selectedVal)
-    
-    
-    generateSelectedFilterBar filterVal
+    selectedValues = fetchSelectedValues 'name', 'value'
+    selectedLabels = fetchSelectedLabels 'display', 'label'
+    console.log selectedLabels
+    generateSelectedFilterBar selectedLabels
     callback params if callback
     
   generateSelectedFilterBar = (obj) ->
     $(".selectedFilter_panel .filters").empty()
-    template = "{{#filters}}<div class='{{name}} selectedFilterGroup'><span>{{display}}:</span>{{#options}}<span>{{label}}</span>{{/options}}</div>{{/filters}}"
+    template = "{{#.}}<div class='{{name}} selectedFilterGroup'><span>{{display}}:</span>{{#options}}<span>{{.}}</span>{{/options}}</div>{{/.}}"
       
     output = Mustache.to_html(template, obj);
     $(".selectedFilter_panel .filters").html(output)
     
-  $.fn.serializeFormJSON = ->
-    o = {}
-    a = @serializeArray()
-    $.each a, ->
-      if o[@name]
-        o[@name] = [o[@name]]  unless o[@name].push
-        o[@name].push @value or ""
-      else
-        o[@name] = @value or ""
-  
-    o
+  fetchSelectedValues = (keyField, valueField) ->
+    # get fields of selected options in json format
+    params = {}
+    $('.filter .filter-group').each () ->
+      paramName = $(this).data(keyField)
+      paramValues = []
+      $(this).find('input:checked').each () ->
+        paramValues.push $(this).data(valueField)
+      params[paramName] = paramValues
+    params
     
+  fetchSelectedLabels = (nameField, labelField) ->
+    labels = fetchSelectedValues nameField, labelField
+    filterValue = for key, value of labels
+      val = {}; val['display'] = key; val['options'] = value
+      val if value.length > 0
+    (val for val in filterValue when val)
+
   generateFilter: generateFilter
   registerCallback: registerCallback

@@ -5,24 +5,19 @@ Created on Jul 11, 2013
 '''
 from smarter.reports.filters import Constants_filter_names
 from edapi import utils
-from sqlalchemy.sql.expression import true, false, or_
+from sqlalchemy.sql.expression import true, false
 
 DEMOGRAPHICS_SELECTED_VALUE = utils.enum(YES=1, NO=2, NOT_STATED=4, NONE=0)
 
 def getValue(filters, filterName):
     rtn_value = DEMOGRAPHICS_SELECTED_VALUE.NONE
-    for _filter in filters:
-        if _filter[0] == filterName:
-            value = _filter[1]
-            if type(value) is list:
-                for _value in value:
-                    if _value.upper() == 'Y':
-                        rtn_value |= DEMOGRAPHICS_SELECTED_VALUE.YES
-                    elif _value.upper() == 'N':
-                        rtn_value |= DEMOGRAPHICS_SELECTED_VALUE.NO
-                    elif _value.upper() == 'NS':
-                        rtn_value |= DEMOGRAPHICS_SELECTED_VALUE.NOT_STATED
-            break
+    for _filter in filters.get(filterName, []):
+        if _filter.upper() == 'Y':
+            rtn_value |= DEMOGRAPHICS_SELECTED_VALUE.YES
+        elif _filter.upper() == 'N':
+            rtn_value |= DEMOGRAPHICS_SELECTED_VALUE.NO
+        elif _filter.upper() == 'NS':
+            rtn_value |= DEMOGRAPHICS_SELECTED_VALUE.NOT_STATED
     return rtn_value
 
 

@@ -4,7 +4,9 @@ Created on Mar 11, 2013
 @author: dwu
 '''
 import unittest
-from smarter.reports.compare_pop_report import get_comparing_populations_report
+from smarter.reports.compare_pop_report import get_comparing_populations_report,\
+    ComparingPopReport, CACHE_REGION_PUBLIC_DATA,\
+    CACHE_REGION_PUBLIC_FILTERING_DATA
 from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite,\
     UnittestSmarterDBConnection, get_unittest_tenant_name
 from smarter.reports.helpers.constants import Constants
@@ -228,6 +230,28 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
     def test_invalid_params(self):
         params = {Constants.STATECODE: 'AA'}
         self.assertRaises(NotFoundException, get_comparing_populations_report, params)
+
+    def test_cache_route_without_filters(self):
+        cpop = ComparingPopReport()
+        name = cpop.get_cache_region_name()
+        self.assertEquals(name, CACHE_REGION_PUBLIC_DATA)
+
+    def test_cache_route_with_filter(self):
+        cpop = ComparingPopReport()
+        cpop.set_filters({'test': 'test'})
+        name = cpop.get_cache_region_name()
+        self.assertEquals(name, CACHE_REGION_PUBLIC_FILTERING_DATA)
+
+    def test_comparing_pop_has_filters(self):
+        cpop = ComparingPopReport(filters={'test': 'test'})
+        self.assertTrue(cpop.has_filters())
+        cpop.set_filters({})
+        self.assertFalse(cpop.has_filters())
+
+    def test_comparing_pop_get_formatted_filters(self):
+        cpop = ComparingPopReport(filters={'test': 'test', 'student': True})
+        formatted = cpop.get_formatted_filters()
+        self.assertEquals(formatted, [('student', True), ('test', 'test')])
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testReport']

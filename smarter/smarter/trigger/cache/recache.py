@@ -5,7 +5,6 @@ Created on Jun 20, 2013
 '''
 from smarter.reports.compare_pop_report import ComparingPopReport
 from smarter.reports.utils.cache import region_invalidate
-import collections
 
 
 class CacheTrigger(object):

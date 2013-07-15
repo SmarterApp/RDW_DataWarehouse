@@ -84,4 +84,4 @@ def region_invalidate(func, region, *args, namespace='smarter'):
         raise KeyError
     cache = Cache._get_cache(namespace, reg)
     cache_key = get_cache_key(args, func_name)
-    return cache.remove_value(cache_key)
+    cache.remove_value(cache_key)

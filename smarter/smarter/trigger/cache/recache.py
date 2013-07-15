@@ -3,19 +3,19 @@ Created on Jun 20, 2013
 
 @author: dip
 '''
-from beaker.cache import region_invalidate
 from smarter.reports.compare_pop_report import ComparingPopReport
+from smarter.reports.utils.cache import region_invalidate
+import collections
 
 
 class CacheTrigger(object):
 
-    def __init__(self, tenant, filter_config):
-        self.report = ComparingPopReport(tenant)
-        # Override caching rule so that all filters specified are cacheable
-        self.report.set_override_cache_criteria(True)
+    def __init__(self, tenant, state_code, filter_config):
+        self.state_code = state_code
+        self.report = ComparingPopReport(stateCode=state_code, tenant=tenant)
         self.init_filters(tenant, filter_config)
 
-    def recache_state_view_report(self, state_code):
+    def recache_state_view_report(self):
         '''
         Flush and recache state view report
 
@@ -23,13 +23,16 @@ class CacheTrigger(object):
         :rtype:  dict
         :returns: comparing populations state view report
         '''
+        # Ensure that district guid is None
+        self.report.set_district_guid(None)
         for state_filter in self.__state_filters:
             self.report.set_filters(state_filter)
+            region_name = self.report.get_cache_region_name()
             formatted_filters = self.report.get_formatted_filters()
-            self.flush_state_view_report(state_code, formatted_filters)
-            self.report.get_state_view_report(state_code)
+            self.flush_state_view_report(region_name, formatted_filters)
+            self.report.get_state_view_report()
 
-    def recache_district_view_report(self, state_code, district_guid):
+    def recache_district_view_report(self, district_guid):
         '''
         Flush and recache district report
 
@@ -38,28 +41,30 @@ class CacheTrigger(object):
         :rtype: dict
         :returns: comparing populations district view report
         '''
+        self.report.set_district_guid(district_guid)
         for district_filter in self.__district_filters:
             self.report.set_filters(district_filter)
+            region_name = self.report.get_cache_region_name()
             formatted_filters = self.report.get_formatted_filters()
-            self.flush_district_view_report(state_code, district_guid, formatted_filters)
-            self.report.get_district_view_report(state_code, district_guid)
+            self.flush_district_view_report(region_name, district_guid, formatted_filters)
+            self.report.get_district_view_report()
 
-    def flush_state_view_report(self, state_code, filters):
+    def flush_state_view_report(self, region_name, filters):
         '''
         Flush cache for Comparing Populations State View Report
 
         :param string stateCode: represents the state code
         '''
-        flush_report_in_cache_region(self.report.get_state_view_report_with_cache, state_code, filters)
+        flush_report_in_cache_region(self.report.get_cacheable_state_view_report, region_name, self.state_code, filters)
 
-    def flush_district_view_report(self, state_code, district_guid, filters):
+    def flush_district_view_report(self, region_name, district_guid, filters):
         '''
         Flush cache for Comparing Populations State View Report
 
         :param string stateCode: code of the state
         :param string districtGuid:  guid of the district
         '''
-        flush_report_in_cache_region(self.report.get_district_view_report_with_cache, state_code, district_guid, filters)
+        flush_report_in_cache_region(self.report.get_cacheable_district_view_report, region_name, self.state_code, district_guid, filters)
 
     def init_filters(self, tenant, settings):
         '''
@@ -81,7 +86,7 @@ class CacheTrigger(object):
         return filters
 
 
-def flush_report_in_cache_region(function, *args, region='public.data'):
+def flush_report_in_cache_region(function, region, *args):
     '''
     Flush a cache region
 

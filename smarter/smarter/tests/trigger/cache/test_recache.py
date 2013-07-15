@@ -4,16 +4,17 @@ Created on Jun 20, 2013
 @author: dip
 '''
 import unittest
-from beaker.cache import CacheManager, cache_region, cache_managers
+from beaker.cache import CacheManager, cache_managers
 from beaker.util import parse_cache_config_options
 from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite,\
     get_unittest_tenant_name
 from edapi.exceptions import NotFoundException
 from smarter.trigger.cache.recache import CacheTrigger,\
     flush_report_in_cache_region
+from smarter.reports.utils.cache import cache_region
 
 
-@cache_region('test')
+@cache_region('unittest')
 def dummy_method(state_code):
     return True
 
@@ -24,7 +25,7 @@ class TestRecache(Unittest_with_smarter_sqlite):
         cache_managers.clear()
         cache_opts = {
             'cache.type': 'memory',
-            'cache.regions': 'public.data, test'
+            'cache.regions': 'public.data, public.filtered_data, unittest'
         }
         self.cache_mgr = CacheManager(**parse_cache_config_options(cache_opts))
 
@@ -32,58 +33,58 @@ class TestRecache(Unittest_with_smarter_sqlite):
         cache_managers.clear()
 
     def test_recache_state_view_report(self):
-        cache_trigger = CacheTrigger(get_unittest_tenant_name(), {})
-        cache_trigger.recache_state_view_report('NY')
+        cache_trigger = CacheTrigger(get_unittest_tenant_name(), 'NY', {})
+        cache_trigger.recache_state_view_report()
         self.validate_cache_has_one_item()
 
     def test_recache_state_view_report_invalid_tenant(self):
-        cache_trigger = CacheTrigger('i_dont_exists', {})
-        self.assertRaises(AttributeError, cache_trigger.recache_state_view_report, 'NY')
+        cache_trigger = CacheTrigger('i_dont_exists', 'NY', {})
+        self.assertRaises(AttributeError, cache_trigger.recache_state_view_report)
 
     def test_recache_state_view_report_invalid_state_code(self):
-        cache_trigger = CacheTrigger(get_unittest_tenant_name(), {})
-        self.assertRaises(NotFoundException, cache_trigger.recache_state_view_report, 'DU')
+        cache_trigger = CacheTrigger(get_unittest_tenant_name(), 'DU', {})
+        self.assertRaises(NotFoundException, cache_trigger.recache_state_view_report)
 
     def test_recache_district_view_report(self):
-        cache_trigger = CacheTrigger(get_unittest_tenant_name(), {})
-        cache_trigger.recache_district_view_report('NY', '228')
+        cache_trigger = CacheTrigger(get_unittest_tenant_name(), 'NY', {})
+        cache_trigger.recache_district_view_report('228')
         self.validate_cache_has_one_item()
 
     def test_recache_district_view_report_invalid_tenant(self):
-        cache_trigger = CacheTrigger('i_dont_exists', {})
-        self.assertRaises(Exception, cache_trigger.recache_district_view_report, 'NY', '228')
+        cache_trigger = CacheTrigger('i_dont_exists', 'NY', {})
+        self.assertRaises(Exception, cache_trigger.recache_district_view_report, '228')
 
     def test_recache_district_view_report_invalid_district_guid(self):
-        cache_trigger = CacheTrigger(get_unittest_tenant_name(), {})
-        self.assertRaises(NotFoundException, cache_trigger.recache_district_view_report, 'NY', 'i_dont_exist')
+        cache_trigger = CacheTrigger(get_unittest_tenant_name(), 'NY', {})
+        self.assertRaises(NotFoundException, cache_trigger.recache_district_view_report, 'i_dont_exist')
 
     def test_flush_state_view_report(self):
-        cache_trigger = CacheTrigger(get_unittest_tenant_name(), {})
-        cache_trigger.recache_state_view_report('NY')
+        cache_trigger = CacheTrigger(get_unittest_tenant_name(), 'NY', {})
+        cache_trigger.recache_state_view_report()
         self.validate_cache_has_one_item()
 
-        cache_trigger.flush_state_view_report('NY', [])
+        cache_trigger.flush_state_view_report('public.data', [])
         self.validate_cache_is_empty()
 
     def test_flush_district_view_report(self):
-        cache_trigger = CacheTrigger(get_unittest_tenant_name(), {})
-        cache_trigger.recache_district_view_report('NY', '228')
+        cache_trigger = CacheTrigger(get_unittest_tenant_name(), 'NY', {})
+        cache_trigger.recache_district_view_report('228')
         self.validate_cache_has_one_item()
-        cache_trigger.flush_district_view_report('NY', '228', [])
+        cache_trigger.flush_district_view_report('public.data', '228', [])
         self.validate_cache_is_empty()
 
     def test_flush_report_in_cache_region_with_empty_cache(self):
-        flush_report_in_cache_region(dummy_method, 'NY')
+        flush_report_in_cache_region(dummy_method, 'unittest', 'NY')
         self.assertTrue(len(cache_managers.keys()), 0)
 
     def test_flush_report_in_cache_region(self):
         dummy_method('NY')
         self.validate_cache_has_one_item()
-        flush_report_in_cache_region(dummy_method, 'NY', region='test')
+        flush_report_in_cache_region(dummy_method, 'unittest', 'NY')
         self.validate_cache_is_empty()
 
     def test_flush_unconfigured_region(self):
-        self.assertRaises(KeyError, flush_report_in_cache_region, dummy_method, 'NY', region='unconfigured_region')
+        self.assertRaises(KeyError, flush_report_in_cache_region, dummy_method, 'unconfigured_region', 'NY')
 
     def validate_cache_has_one_item(self):
         self.assertTrue(len(cache_managers.keys()), 1)

@@ -69,10 +69,10 @@ def trigger_precache(tenant, state_code, results, filter_config):
     logger.debug('trigger_precache has [%d] results to process', len(results))
     if len(results) > 0:
         triggered = True
-        cache_trigger = CacheTrigger(tenant, filter_config)
+        cache_trigger = CacheTrigger(tenant, state_code, filter_config)
         try:
             logger.debug('pre-caching state[%s]', state_code)
-            cache_trigger.recache_state_view_report(state_code)
+            cache_trigger.recache_state_view_report()
         except:
             triggered = False
             logger.warning('Recache of state view threw exception for %s', state_code)
@@ -80,7 +80,7 @@ def trigger_precache(tenant, state_code, results, filter_config):
             try:
                 district_guid = result.get(Constants.DISTRICT_GUID)
                 logger.debug('pre-caching state[%s], district[%s]', state_code, district_guid)
-                cache_trigger.recache_district_view_report(state_code, district_guid)
+                cache_trigger.recache_district_view_report(district_guid)
             except:
                 triggered = False
                 logger.warning('Recache of district view threw exception for state_code %s district_guid %s', state_code, district_guid)

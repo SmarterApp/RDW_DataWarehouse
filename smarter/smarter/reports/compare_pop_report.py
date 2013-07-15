@@ -17,10 +17,11 @@ from edapi.logging import audit_event
 import collections
 from edapi.exceptions import NotFoundException
 import json
-from beaker.cache import cache_region
 from smarter.security.context import select_with_context
 from smarter.database.smarter_connector import SmarterDBConnection
 from smarter.reports.filters import Constants_filter_names, demographics
+from functools import wraps
+from smarter.reports.utils.cache import cache_region
 
 # Report service for Comparing Populations
 # Output:
@@ -40,6 +41,8 @@ from smarter.reports.filters import Constants_filter_names, demographics
 
 
 REPORT_NAME = "comparing_populations"
+CACHE_REGION_PUBLIC_DATA = 'public.data'
+CACHE_REGION_PUBLIC_FILTERING_DATA = 'public.filtered_data'
 
 
 @report_config(
@@ -75,32 +78,54 @@ REPORT_NAME = "comparing_populations"
 @user_info
 def get_comparing_populations_report(params, filters):
     results = None
-    report = ComparingPopReport(filters=filters)
+    report = ComparingPopReport(filters=filters, **params)
     if Constants.SCHOOLGUID in params and Constants.DISTRICTGUID in params and Constants.STATECODE in params:
-        results = report.get_school_view_report(params[Constants.STATECODE], params[Constants.DISTRICTGUID], params[Constants.SCHOOLGUID])
+        results = report.get_school_view_report()
     elif params and Constants.DISTRICTGUID in params and Constants.STATECODE in params:
-        results = report.get_district_view_report(params[Constants.STATECODE], params[Constants.DISTRICTGUID])
+        results = report.get_district_view_report()
     elif Constants.STATECODE in params:
-        results = report.get_state_view_report(params[Constants.STATECODE])
+        results = report.get_state_view_report()
 
     return results
+
+
+def comparing_populations_cache_route(func):
+    '''
+    Decorator used to route to appropriate cache region based on filters in comparing populations report
+    This is used in conjunction to smarter's cache_region decorator
+    '''
+    @wraps(func)
+    def wrapped(self, *args):
+        region = self.get_cache_region_name()
+        return func(self, *args, explicit_region=region)
+    return wrapped
 
 
 class ComparingPopReport(object):
     '''
     Represents a comparing populations report
     '''
-
-    def __init__(self, tenant=None, filters={}):
+    def __init__(self, stateCode=None, districtGuid=None, schoolGuid=None, tenant=None, filters={}):
         '''
+        :param string stateCode:  State code representing the state
+        :param string districtGuid:  Guid of the district, could be None
+        :param string schoolGuid:  Guid of the school, could be None
         :param tenant:  tenant name of the user.  Specify if report is not going through a web request
+        :param filter: dict of filters to apply to query
         '''
+        self.state_code = stateCode
+        self.district_guid = districtGuid
+        self.school_guid = schoolGuid
         self.tenant = tenant
         self.filters = filters
-        self.override_cache_criteria = False
 
-    def set_override_cache_criteria(self, val):
-        self.override_cache_criteria = val
+    def set_district_guid(self, guid):
+        '''
+        Sets district guid
+
+        :param string guid:  the guid to set district guid to be
+        '''
+        self.district_guid = guid
 
     def set_filters(self, filters):
         '''
@@ -110,6 +135,14 @@ class ComparingPopReport(object):
         '''
         self.filters = filters
 
+    def has_filters(self):
+        '''
+        Returns whether any filters are set
+
+        :returns:  True if there are filters
+        '''
+        return len(self.filters.keys()) > 0
+
     def get_formatted_filters(self):
         '''
         Returns a list of tuples
@@ -117,94 +150,72 @@ class ComparingPopReport(object):
         '''
         return sorted(self.filters.items(), key=lambda x: x[0])
 
-    def is_cacheable(self):
+    def get_cache_region_name(self):
         '''
-        Returns true if there are less than 4 filters and we should cache it
+        Returns cache region based on whether filters exist
         '''
-        # TODO: derive 4 from config?
-        return self.override_cache_criteria or len(self.filters.keys()) < 4
+        region = CACHE_REGION_PUBLIC_DATA
+        if self.has_filters():
+            region = CACHE_REGION_PUBLIC_FILTERING_DATA
+        return region
 
-    def get_cacheable_filters(self):
-        '''
-        Returns the formatted filters if it meets caching criteria
-        '''
-        formatted_filters = []
-        if self.is_cacheable():
-            formatted_filters = self.get_formatted_filters()
-        return formatted_filters
-
-    def get_state_view_report(self, stateCode):
+    def get_state_view_report(self):
         '''
         state view report
 
-        :param string stateCode:  State code representing the state
         :rtype: dict
         :returns: state view report
         '''
-        if self.is_cacheable():
-            return self.get_state_view_report_with_cache(stateCode, self.get_cacheable_filters())
-        else:
-            return self.get_report(stateCode, filters=self.get_cacheable_filters())
+        return self.get_cacheable_state_view_report(self.state_code, self.get_formatted_filters())
 
-    @cache_region('public.data')
-    def get_state_view_report_with_cache(self, stateCode, filters):
+    @comparing_populations_cache_route
+    @cache_region([CACHE_REGION_PUBLIC_DATA, CACHE_REGION_PUBLIC_FILTERING_DATA])
+    def get_cacheable_state_view_report(self, state_code, filters):
         '''
-        state view report without any filters. Note that filters is formatted for cache key
-        If filters is not cacheable, we still need to get the report with the original set of filters
+        state view report without any filters
 
-        :param string stateCode:  State code representing the state
-        :param filter:  a list of tuples
+        :param key:  a unique hashed key
         '''
-        return self.get_report(stateCode, filters=filters)
+        return self.get_report(state_code, filters=self.filters)
 
-    def get_district_view_report(self, stateCode, districtGuid):
+    def get_district_view_report(self):
         '''
         district view report
 
-        :param string stateCode:  State code representing the state
-        :param string districtGuid:  Guid of the district
         :rtype: dict
         :returns: district view report
         '''
-        if self.is_cacheable():
-            return self.get_district_view_report_with_cache(stateCode, districtGuid, self.get_cacheable_filters())
-        else:
-            return self.get_report(stateCode, districtGuid, filters=self.get_cacheable_filters())
+        return self.get_cacheable_district_view_report(self.state_code, self.district_guid, self.get_formatted_filters())
 
-    @cache_region('public.data')
-    def get_district_view_report_with_cache(self, stateCode, districtGuid, filters):
+    @comparing_populations_cache_route
+    @cache_region([CACHE_REGION_PUBLIC_DATA, CACHE_REGION_PUBLIC_FILTERING_DATA])
+    def get_cacheable_district_view_report(self, state_code, district_guid, filters):
         '''
         district view report without any filters.  Note that filters is formatted for cache key
 
         :param string stateCode:  State code representing the state
         :param string districtGuid:  Guid of the district
         '''
-        return self.get_report(stateCode, districtGuid, filters=self.get_cacheable_filters())
+        return self.get_report(state_code, district_guid=district_guid, filters=self.filters)
 
-    def get_school_view_report(self, stateCode, districtGuid, schoolGuid):
+    def get_school_view_report(self):
         '''
         school view report
 
-        :param string stateCode:  State code representing the state
-        :param string districtGuid:  Guid of the district
-        :param string schoolGuid:  Guid of the school
         :rtype: dict
         :returns: school view report
         '''
-        return self.get_report(stateCode, districtGuid, schoolGuid)
+        return self.get_report(self.state_code, self.district_guid, self.school_guid)
 
-    def get_report(self, stateCode, districtGuid=None, schoolGuid=None, filters=None):
+    def get_report(self, state_code, district_guid=None, school_guid=None, filters=None):
         '''
         actual report call
 
-        :param string stateCode:  State code representing the state
-        :param string districtGuid:  Guid of the district, could be None
-        :param string schoolGuid:  Guid of the school, could be None
         :rtype: dict
         :returns: A comparing populations report based on parameters supplied
         '''
         # run query
-        params = {Constants.STATECODE: stateCode, Constants.DISTRICTGUID: districtGuid, Constants.SCHOOLGUID: schoolGuid, 'filters': filters}
+        params = {Constants.STATECODE: state_code, Constants.DISTRICTGUID: district_guid, Constants.SCHOOLGUID: school_guid, 'filters': filters}
         results = self.run_query(**params)
         if not results:
             raise NotFoundException("There are no results")

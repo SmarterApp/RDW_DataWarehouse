@@ -291,7 +291,7 @@ class AssessmentOutcome(object):
                 'asmt_claim_2_score', 'asmt_claim_2_score_range_min', 'asmt_claim_2_score_range_max',
                 'asmt_claim_3_score', 'asmt_claim_3_score_range_min', 'asmt_claim_3_score_range_max',
                 'asmt_claim_4_score', 'asmt_claim_4_score_range_min', 'asmt_claim_4_score_range_max',
-                'asmt_create_date', 'status', 'most_recent', 'dmt_eth_hsp', 'dmg_eth_ami', 'dmg_eth_asn',
+                'asmt_create_date', 'status', 'most_recent', 'dmg_eth_hsp', 'dmg_eth_ami', 'dmg_eth_asn',
                 'dmg_eth_blk', 'dmg_eth_pcf', 'dmg_eth_wht', 'dmg_prg_iep', 'dmg_prg_lep', 'dmg_prg_504', 'dmg_prg_tt1']
 
 

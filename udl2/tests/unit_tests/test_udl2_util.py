@@ -20,14 +20,14 @@ class TestUdl2Util(unittest.TestCase):
         self.assertEquals(expected_result, actual_result)
 
     def test_abs_path_join(self):
-        path = ['this','is', 'a', 'fake','path']
-        expected_result = os.path.join(os.getcwd(), 'this',  'is', 'a', 'fake', 'path')
+        path = ['this', 'is', 'a', 'fake', 'path']
+        expected_result = os.path.join(os.getcwd(), 'this', 'is', 'a', 'fake', 'path')
         actual_result = file_util.abs_path_join(*path)
         self.assertEquals(expected_result, actual_result)
 
     def test_get_expanded_dir(self):
         lzw = 'landing_zone'
-        batch_id = 'batch_id'
-        expected = lzw + os.sep +  batch_id + os.sep + 'EXPANDED'
-        actual = file_util.get_expanded_dir(lzw, batch_id)
+        guid_batch = 'guid_batch'
+        expected = lzw + os.sep + guid_batch + os.sep + 'EXPANDED'
+        actual = file_util.get_expanded_dir(lzw, guid_batch)
         self.assertEquals(expected, actual)

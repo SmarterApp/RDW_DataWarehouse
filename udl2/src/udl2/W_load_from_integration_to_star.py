@@ -19,9 +19,9 @@ logger = get_task_logger(__name__)
 def explode_to_dims(msg):
     '''
     This is the celery task to move data from integration tables to dim tables.
-    In the input batch object, batch_id is provided.
+    In the input batch object, guid_batch is provided.
     '''
-    conf = generate_conf(msg[mk.BATCH_ID])
+    conf = generate_conf(msg[mk.GUID_BATCH])
     column_map = col_map.get_column_mapping()
     grouped_tasks = create_group_tuple(explode_data_to_dim_table_task,
                                        [(conf, source_table, dim_table, column_map[dim_table], get_table_column_types(conf, dim_table, list(column_map[dim_table].keys())))
@@ -42,7 +42,7 @@ def explode_data_to_dim_table_task(conf, source_table, dim_table, column_mapping
     explode_data_to_dim_table(conf, source_table, dim_table, column_mapping, column_types)
     finish_time = datetime.datetime.now()
     time_as_seconds = calculate_spend_time_as_second(start_time, finish_time)
-    #print('I am the exploder, moved data from %s into dim table %s in %.3f seconds' % (source_table, dim_table, time_as_seconds))
+    # print('I am the exploder, moved data from %s into dim table %s in %.3f seconds' % (source_table, dim_table, time_as_seconds))
 
 
 @celery.task(name='udl2.W_load_from_integration_to_star.explode_to_fact')
@@ -50,12 +50,12 @@ def explode_data_to_dim_table_task(conf, source_table, dim_table, column_mapping
 def explode_to_fact(msg):
     '''
     This is the celery task to move data from integration table to fact table.
-    In batch, batch_id is provided.
+    In batch, guid_batch is provided.
     '''
     logger.info('LOAD_FROM_INT_TO_STAR: Migrating fact_assessment_outcome from Integration to Star.')
     start_time = datetime.datetime.now()
-    batch_id = msg[mk.BATCH_ID]
-    conf = generate_conf(batch_id)
+    guid_batch = msg[mk.GUID_BATCH]
+    conf = generate_conf(guid_batch)
     # get column mapping
     column_map = col_map.get_column_mapping()
     fact_table = col_map.get_target_table_callback()[0]
@@ -66,8 +66,8 @@ def explode_to_fact(msg):
 
     finish_time = datetime.datetime.now()
     time_as_seconds = calculate_spend_time_as_second(start_time, finish_time)
-    #print('I am the exploder, copied data from staging table into fact table in %.3f seconds' % time_as_seconds)
-    return batch_id
+    # print('I am the exploder, copied data from staging table into fact table in %.3f seconds' % time_as_seconds)
+    return guid_batch
 
 
 @celery.task(name="udl2.W_load_from_integration_to_star.error_handler")
@@ -94,13 +94,13 @@ def create_group_tuple(task_name, arg_list):
 
 
 @measure_cpu_plus_elasped_time
-def generate_conf(batch_id):
+def generate_conf(guid_batch):
     '''
     Return all needed configuration information
     '''
     conf = {
-             # add batch_id from msg
-            mk.BATCH_ID: batch_id,
+             # add guid_batch from msg
+            mk.GUID_BATCH: guid_batch,
 
             # source schema
             mk.SOURCE_DB_SCHEMA: udl2_conf['udl2_db']['integration_schema'],

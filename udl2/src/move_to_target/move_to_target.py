@@ -37,7 +37,7 @@ def explode_data_to_fact_table(conf, source_table, target_table, column_mapping,
     column_mapping[section_rec_id_column_name] = section_rec_id
 
     # add batch id
-    column_mapping['batch_guid'] = '\'' + str(conf[mk.BATCH_ID]) + '\''
+    column_mapping['batch_guid'] = '\'' + str(conf[mk.GUID_BATCH]) + '\''
 
     # get list of queries to be executed
     queries = create_queries_for_move_to_fact_table(conf, source_table, target_table, column_mapping, column_types)
@@ -72,7 +72,7 @@ def get_asmt_rec_id(conf, guid_column_name_in_target, guid_column_name_in_source
     '''
     # connect to integration table, to get guid_column_value
     conn_to_source_db, _engine = connect_db(DBDRIVER, conf[mk.SOURCE_DB_USER], conf[mk.SOURCE_DB_PASSWORD], conf[mk.SOURCE_DB_HOST], conf[mk.SOURCE_DB_PORT], conf[mk.SOURCE_DB_NAME])
-    query_to_get_guid = queries.select_distinct_asmt_guid_query(conf[mk.SOURCE_DB_SCHEMA], source_table_name, guid_column_name_in_source, conf[mk.BATCH_ID])
+    query_to_get_guid = queries.select_distinct_asmt_guid_query(conf[mk.SOURCE_DB_SCHEMA], source_table_name, guid_column_name_in_source, conf[mk.GUID_BATCH])
     # print(query_to_get_guid)
     guid_column_value = execute_query_get_one_value(conn_to_source_db, query_to_get_guid, guid_column_name_in_source)
     conn_to_source_db.close()
@@ -99,7 +99,7 @@ def execute_query_get_one_value(conn, query, column_name):
     except Exception as exception:
         print(exception)
     if len(one_value_result) != 1:
-        # raise Exception('Rec id of %s has more/less than 1 record for batch %s' % (column_name, batch_id))
+        # raise Exception('Rec id of %s has more/less than 1 record for batch %s' % (column_name, guid_batch))
         print('Rec id of %s has more/less than 1 record, length is %d ' % (column_name, len(one_value_result)))
         if len(one_value_result) > 1:
             one_value_result = str(one_value_result[0])
@@ -152,7 +152,7 @@ def explode_data_to_dim_table(conf, source_table, target_table, column_mapping, 
     '''
     Main function to move data from source table to target tables.
     Source table can be INT_SBAC_ASMT, and INT_SBAC_ASMT_OUTCOME. Target table can be any dim tables in star schema.
-    @param conf: one dictionary which has database settings, and batch_id
+    @param conf: one dictionary which has database settings, and guid_batch
     @param source_table: name of the source table where the data comes from
     @param target_table: name of the target table where the data should be moved to
     @param column_mapping: one dictionary which defines mapping of:

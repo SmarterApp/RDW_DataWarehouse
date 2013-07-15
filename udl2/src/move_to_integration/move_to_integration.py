@@ -22,7 +22,7 @@ def move_data_from_staging_to_integration(conf):
     target_columns, source_columns_with_tran_rule = get_column_mapping_from_stg_to_int(conn, conf[mk.REF_TABLE], conf[mk.SOURCE_DB_TABLE],
                                                                                        conf[mk.TARGET_DB_TABLE], conf[mk.SOURCE_DB_SCHEMA])
     sql_query = create_migration_query(conf[mk.SOURCE_DB_SCHEMA], conf[mk.SOURCE_DB_TABLE], conf[mk.TARGET_DB_SCHEMA],
-                                       conf[mk.TARGET_DB_TABLE], conf[mk.ERROR_DB_SCHEMA], 'ERR_LIST', conf[mk.BATCH_ID],
+                                       conf[mk.TARGET_DB_TABLE], conf[mk.ERROR_DB_SCHEMA], 'ERR_LIST', conf[mk.GUID_BATCH],
                                        target_columns, source_columns_with_tran_rule)
     print(sql_query)
     except_msg = "problem when load data from staging table to integration table"
@@ -82,7 +82,7 @@ def get_varchar_column_name_and_length(conn, integration_table):
 
 @measure_cpu_plus_elasped_time
 def create_migration_query(source_schema, source_table, target_schema, target_table,
-                           error_schema, error_table, batch_id, target_columns, source_columns_with_tran_rule):
+                           error_schema, error_table, guid_batch, target_columns, source_columns_with_tran_rule):
     '''
     Create migration script in SQL text template. It will be a tech debt to migrate it to SQLAlchemy
     equivalent. Also the code may require updates after metadata definition are finalized
@@ -94,7 +94,7 @@ def create_migration_query(source_schema, source_table, target_schema, target_ta
     @param error_schema: schema name where error table resides
     @param error_table: table name for error tables
     @param mapping: mapping between columns in staging table, target table and rules for type conversion
-    @param batch_id: batch id for specific type.
+    @param guid_batch: batch id for specific type.
     '''
     target_columns_expand = ", ".join(target_columns)
     source_columns_expand = ", ".join(source_columns_with_tran_rule)
@@ -105,7 +105,7 @@ def create_migration_query(source_schema, source_table, target_schema, target_ta
     SELECT {source_columns}
         FROM "{source_schema}"."{source_table}" AS A LEFT JOIN
         "{error_schema}"."{error_table}" AS B ON (A.record_sid = B.record_sid )
-        WHERE B.record_sid IS NULL AND A.batch_id = \'{batch_id}\'
+        WHERE B.record_sid IS NULL AND A.guid_batch = \'{guid_batch}\'
     """
     sql = sql_template.format(target_schema=target_schema,
                               target_table=target_table,
@@ -115,7 +115,7 @@ def create_migration_query(source_schema, source_table, target_schema, target_ta
                               source_table=source_table,
                               error_schema=error_schema,
                               error_table=error_table,
-                              batch_id=batch_id)
+                              guid_batch=guid_batch)
     return sql
 
 

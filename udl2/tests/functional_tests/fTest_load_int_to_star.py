@@ -4,8 +4,9 @@ from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from udl2 import database
 from udl2_util.database_util import connect_db, execute_queries
 import imp
-from move_to_target import column_mapping, move_to_target 
+from move_to_target import column_mapping, move_to_target
 from udl2 import W_load_from_integration_to_star
+
 
 class IntToStarFTest(unittest.TestCase):
 
@@ -34,13 +35,13 @@ class IntToStarFTest(unittest.TestCase):
         template = """
             TRUNCATE "{target_schema}"."{target_table}" CASCADE
             """
-        
-        sql_dim_asmt = template.format(target_schema=self.udl2_conf['target_db']['db_schema'],target_table='dim_asmt')
-        sql_dim_inst_hier = template.format(target_schema=self.udl2_conf['target_db']['db_schema'],target_table='dim_inst_hier')
-        sql_dim_section = template.format(target_schema=self.udl2_conf['target_db']['db_schema'],target_table='dim_section')
-        sql_dim_staff = template.format(target_schema=self.udl2_conf['target_db']['db_schema'],target_table='dim_staff')
-        sql_dim_student = template.format(target_schema=self.udl2_conf['target_db']['db_schema'],target_table='dim_student')
-        sql_fact_asmt_outcome = template.format(target_schema=self.udl2_conf['target_db']['db_schema'],target_table='fact_asmt_outcome')
+
+        sql_dim_asmt = template.format(target_schema=self.udl2_conf['target_db']['db_schema'], target_table='dim_asmt')
+        sql_dim_inst_hier = template.format(target_schema=self.udl2_conf['target_db']['db_schema'], target_table='dim_inst_hier')
+        sql_dim_section = template.format(target_schema=self.udl2_conf['target_db']['db_schema'], target_table='dim_section')
+        sql_dim_staff = template.format(target_schema=self.udl2_conf['target_db']['db_schema'], target_table='dim_staff')
+        sql_dim_student = template.format(target_schema=self.udl2_conf['target_db']['db_schema'], target_table='dim_student')
+        sql_fact_asmt_outcome = template.format(target_schema=self.udl2_conf['target_db']['db_schema'], target_table='fact_asmt_outcome')
         except_msg = "Unable to clean up target db tabels"
         execute_queries(self.target_conn, [sql_dim_asmt, sql_dim_inst_hier, sql_dim_section, sql_dim_staff, sql_dim_student, sql_fact_asmt_outcome], except_msg)
 
@@ -50,9 +51,9 @@ class IntToStarFTest(unittest.TestCase):
             TRUNCATE "{staging_schema}"."{staging_table}" CASCADE
             """
         sql_int_asmt = sql_template.format(staging_schema=self.udl2_conf['udl2_db']['integration_schema'],
-                                  staging_table='INT_SBAC_ASMT') 
+                                  staging_table='INT_SBAC_ASMT')
         sql_int_asmt_outcome = sql_template.format(staging_schema=self.udl2_conf['udl2_db']['integration_schema'],
-                                  staging_table='INT_SBAC_ASMT_OUTCOME') 
+                                  staging_table='INT_SBAC_ASMT_OUTCOME')
 
         except_msg = "Unable to clean up integration tables"
         execute_queries(self.udl2_conn, [sql_int_asmt, sql_int_asmt_outcome], except_msg)
@@ -64,54 +65,54 @@ class IntToStarFTest(unittest.TestCase):
         insert_array = []
         with open('../data/INT_SBAC_ASMT.csv') as f:
             cf = csv.reader(f, delimiter=',', quoting=csv.QUOTE_ALL)
-            next(cf) 
+            next(cf)
             for row in cf:
-                values = '"'+'", "'.join(row)+'"'
-                values = """'7', \'"""+"""', '""".join(row)+"""'"""
-                values = values.replace('""','"0"')
-                values = values.replace("''","'0'")
-                values = values.replace ("'DEFAULT'","DEFAULT")
-                insert_string = insert_sql.format(staging_schema=self.udl2_conf['udl2_db']['integration_schema'],staging_table=table,value_string=values)
+                values = '"' + '", "'.join(row) + '"'
+                values = """'7', \'""" + """', '""".join(row) + """'"""
+                values = values.replace('""', '"0"')
+                values = values.replace("''", "'0'")
+                values = values.replace("'DEFAULT'", "DEFAULT")
+                insert_string = insert_sql.format(staging_schema=self.udl2_conf['udl2_db']['integration_schema'], staging_table=table, value_string=values)
                 insert_array.append(insert_string)
             except_msg = "Unable to insert into %s" % table
             execute_queries(self.udl2_conn, insert_array, except_msg)
         print('here5')
         table = 'INT_SBAC_ASMT_OUTCOME'
-        insert_array=[]
+        insert_array = []
         with open('../data/INT_SBAC_ASMT_OUTCOME.csv') as f:
             cf = csv.reader(f, delimiter=',', quoting=csv.QUOTE_ALL)
-            next(cf) 
+            next(cf)
             for row in cf:
-                values = '"'+'", "'.join(row)+'"'
-                values = """DEFAULT, \'"""+"""', '""".join(row)+"""'"""
-                values = values.replace('""','"0"')
-                values = values.replace("''","'0'")
-                values = values.replace ("'DEFAULT'","DEFAULT")
-                insert_string = insert_sql.format(staging_schema=self.udl2_conf['udl2_db']['integration_schema'],staging_table=table,value_string=values)
+                values = '"' + '", "'.join(row) + '"'
+                values = """DEFAULT, \'""" + """', '""".join(row) + """'"""
+                values = values.replace('""', '"0"')
+                values = values.replace("''", "'0'")
+                values = values.replace("'DEFAULT'", "DEFAULT")
+                insert_string = insert_sql.format(staging_schema=self.udl2_conf['udl2_db']['integration_schema'], staging_table=table, value_string=values)
                 insert_array.append(insert_string)
             except_msg = "Unable to insert into %s" % table
             execute_queries(self.udl2_conn, insert_array, except_msg)
 
-        #explode to dim tables
+        # explode to dim tables
         dim_tables = column_mapping.get_target_tables_parallel()
         column_map = column_mapping.get_column_mapping()
-        batch_id = '2411183a-dfb7-42f7-9b3e-bb7a597aa3e7'
-        conf = W_load_from_integration_to_star.generate_conf(batch_id)
+        guid_batch = '2411183a-dfb7-42f7-9b3e-bb7a597aa3e7'
+        conf = W_load_from_integration_to_star.generate_conf(guid_batch)
         print('here6')
         for target in dim_tables.keys():
             target_columns = column_map[target]
-            column_types = move_to_target.get_table_column_types(conf,target,list(target_columns.keys()))
+            column_types = move_to_target.get_table_column_types(conf, target, list(target_columns.keys()))
             move_to_target.explode_data_to_dim_table(conf, dim_tables[target], target, target_columns, column_types)
 
-        column_types = move_to_target.get_table_column_types(conf,'fact_asmt_outcome',list(column_map['fact_asmt_outcome'].keys()))
+        column_types = move_to_target.get_table_column_types(conf, 'fact_asmt_outcome', list(column_map['fact_asmt_outcome'].keys()))
         move_to_target.explode_data_to_fact_table(conf, 'INT_SBAC_ASMT_OUTCOME', 'fact_asmt_outcome', column_map['fact_asmt_outcome'], column_types)
 
         count_template = """ SELECT COUNT(*) FROM "{schema}"."{table}" """
-        tables_to_check = {'dim_asmt':1,'dim_inst_hier':70,'dim_staff':70,'dim_student':94,'fact_asmt_outcome':99}
+        tables_to_check = {'dim_asmt': 1, 'dim_inst_hier': 70, 'dim_staff': 70, 'dim_student': 94, 'fact_asmt_outcome': 99}
         print('here7')
         for entry in tables_to_check.keys():
             print(entry)
-            sql = count_template.format(schema=self.udl2_conf['target_db']['db_schema'],table=entry)
+            sql = count_template.format(schema=self.udl2_conf['target_db']['db_schema'], table=entry)
             result = self.target_conn.execute(sql)
             print('done')
             count = 0

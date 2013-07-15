@@ -6,7 +6,7 @@ file to the integration table.
 
 Main Method: load_json(conf)
 conf dictionary must contain the following keys:
-'json_file', 'batch_id', 'mappings', 'db_host', 'db_name', 'db_user',
+'json_file', 'guid_batch', 'mappings', 'db_host', 'db_name', 'db_user',
 'db_port', 'db_password', 'integration_table', 'integration_schema'
 
 Created on May 16, 2013
@@ -32,7 +32,7 @@ def load_json(conf):
 
     json_dict = read_json_file(conf[mk.FILE_TO_LOAD])
     flattened_json = flatten_json_dict(json_dict, conf[mk.MAPPINGS])
-    load_to_table(flattened_json, conf[mk.BATCH_ID], conf[mk.TARGET_DB_HOST], conf[mk.TARGET_DB_NAME], conf[mk.TARGET_DB_USER], conf[mk.TARGET_DB_PORT],
+    load_to_table(flattened_json, conf[mk.GUID_BATCH], conf[mk.TARGET_DB_HOST], conf[mk.TARGET_DB_NAME], conf[mk.TARGET_DB_USER], conf[mk.TARGET_DB_PORT],
                   conf[mk.TARGET_DB_PASSWORD], conf[mk.TARGET_DB_TABLE], conf[mk.TARGET_DB_SCHEMA])
 
 
@@ -84,11 +84,11 @@ def get_nested_data(location_list, json_dict):
 
 
 @measure_cpu_plus_elasped_time
-def load_to_table(data_dict, batch_id, db_host, db_name, db_user, db_port, db_password, int_table, int_schema):
+def load_to_table(data_dict, guid_batch, db_host, db_name, db_user, db_port, db_password, int_table, int_schema):
     '''
     Load the table into the proper table
     @param data_dict: the dictionary containing the data to be loaded
-    @param batch_id: the id for the batch
+    @param guid_batch: the id for the batch
     @param db_host: the database host
     @param db_name: the name of the database
     @param db_user: the username for the database
@@ -105,8 +105,8 @@ def load_to_table(data_dict, batch_id, db_host, db_name, db_user, db_port, db_pa
     # remove empty strings and replace with None
     data_dict = fix_empty_strings(data_dict)
 
-    # add the batch_id to the data
-    data_dict[mk.BATCH_ID] = batch_id
+    # add the guid_batch to the data
+    data_dict[mk.GUID_BATCH] = guid_batch
 
     # create insert statement and execute
     insert_into_int_table = s_int_table.insert().values(**data_dict)
@@ -146,7 +146,7 @@ if __name__ == '__main__':
             mk.TARGET_DB_PASSWORD: 'udl2abc1234',
             mk.TARGET_DB_SCHEMA: 'udl2',
             mk.TARGET_DB_TABLE: 'INT_SBAC_ASMT',
-            mk.BATCH_ID: 100
+            mk.GUID_BATCH: 100
     }
 
     start_time = time.time()

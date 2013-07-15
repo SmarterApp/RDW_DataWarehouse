@@ -18,8 +18,8 @@ logger = get_task_logger(__name__)
 @measure_cpu_plus_elasped_time
 def task(msg):
     logger.info("LOAD_FROM_STAGING_TO_INT: Migrating data from staging to integration.")
-    batch_id = msg[mk.JOB_CONTROL][1]
-    conf = generate_conf(batch_id)
+    guid_batch = msg[mk.JOB_CONTROL][1]
+    conf = generate_conf(guid_batch)
     move_data_from_staging_to_integration(conf)
     # print("Moved data from staging tables to integration tables")
 
@@ -27,9 +27,9 @@ def task(msg):
 
 
 @measure_cpu_plus_elasped_time
-def generate_conf(batch_id):
+def generate_conf(guid_batch):
     conf = {
-            mk.BATCH_ID: batch_id,
+            mk.GUID_BATCH: guid_batch,
             mk.SOURCE_DB_DRIVER: udl2_conf['udl2_db']['db_driver'],
 
             # source database setting

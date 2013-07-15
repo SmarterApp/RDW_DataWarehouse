@@ -105,7 +105,7 @@ ref_table_conf = {
         ('1', 'LZ_CSV', 'dmg_prg_504', 'STG_SBAC_ASMT_OUTCOME', 'dmg_prg_504', 'yn', None),
         ('1', 'LZ_CSV', 'dmg_prg_tt1', 'STG_SBAC_ASMT_OUTCOME', 'dmg_prg_tt1', 'yn', None),
         # Staging to Integration
-        ('3', 'STG_SBAC_ASMT_OUTCOME', 'batch_id', 'INT_SBAC_ASMT_OUTCOME', 'batch_id', None, None),
+        ('3', 'STG_SBAC_ASMT_OUTCOME', 'guid_batch', 'INT_SBAC_ASMT_OUTCOME', 'guid_batch', None, None),
         ('3', 'STG_SBAC_ASMT_OUTCOME', 'guid_asmt', 'INT_SBAC_ASMT_OUTCOME', 'guid_asmt', None, 'substr({src_column}, 1, {length})'),
         ('3', 'STG_SBAC_ASMT_OUTCOME', 'guid_asmt_location', 'INT_SBAC_ASMT_OUTCOME', 'guid_asmt_location', None, 'substr({src_column}, 1, {length})'),
         ('3', 'STG_SBAC_ASMT_OUTCOME', 'name_asmt_location', 'INT_SBAC_ASMT_OUTCOME', 'name_asmt_location', None, 'substr({src_column}, 1, {length})'),

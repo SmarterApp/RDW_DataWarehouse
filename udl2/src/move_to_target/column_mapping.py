@@ -1,6 +1,7 @@
 from collections import OrderedDict
 from udl2_util.measurement import measure_cpu_plus_elasped_time
 
+
 # define the tables can be loaded in parallel
 # (target_table_name, source_table_name)
 # e.g. (target_table_in_star_schema, table_name_in_integration_tables)
@@ -190,7 +191,7 @@ def get_column_mapping():
                 ('record_create_datetime', 'CURRENT_TIMESTAMP'),
                 ('status', '\' \''),
                 ('most_recent', 'True'),
-                ('batch_guid', 'batch_id'),
+                ('batch_guid', 'guid_batch'),
             ])
     }
     return column_map_integration_to_target

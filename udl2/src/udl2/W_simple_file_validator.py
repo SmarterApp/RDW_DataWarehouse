@@ -15,14 +15,14 @@ logger = get_task_logger(__name__)
 def task(msg):
     lzw = msg[mk.LANDING_ZONE_WORK_DIR]
     jc = msg[mk.JOB_CONTROL]
-    batch_id = jc[1]
+    guid_batch = jc[1]
 
-    expanded_dir = get_expanded_dir(lzw, batch_id)
+    expanded_dir = get_expanded_dir(lzw, guid_batch)
 
     sfv = SimpleFileValidator()
     error_map = {}
     for file_name in os.listdir(expanded_dir):
-        error_map[file_name] = sfv.execute(expanded_dir, file_name, batch_id)
+        error_map[file_name] = sfv.execute(expanded_dir, file_name, guid_batch)
 
     # TODO: Add logic that checks error list and writes to a log/db/etc
     for input_file in error_map.keys():
@@ -33,7 +33,6 @@ def task(msg):
             # TODO: Jump to ERROR_TASK
             for error in errors:
                 print('ERROR: ' + str(error))
-
 
 
 # TODO: Actually implement get_number_of_parts()

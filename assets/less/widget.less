@@ -759,9 +759,16 @@ th.ui-th-column div {
 
 // comparing population filter widget
 .selectedFilter_panel {
-  background-color: @color-B1;
-  padding: 5px 20px;
+  background-color: @color-C1;
+  border-bottom: solid 1px @color-C4;
+  padding: 8px 20px;
   color: @color-white;
+  
+  em {
+    font-size: 12px;
+    margin-left: 12px;
+    line-height: normal;
+  }
   
   title {
     margin-bottom: 0;
@@ -773,30 +780,32 @@ th.ui-th-column div {
   }
 }
 .filter {
-  background-color: @color-B1;
+  background-color: @color-C1;
   display: none;
-  padding: 10px 20px;
+  padding: 7px 20px;
   
   .section {
     
     &:first-child {
+      height: 38px;
+      
       h3 {
-        margin-left: 5px;
+        margin-left: 12px;
         color: @color-white;
       }
     }
   }
   
   .filter_section {
-    background-color: @color-black;
+    background-color: @color-C2;
     border-radius: 5px;
     padding: 20px 2% 20px 2%;
     
     .filter-wrapper {
       display: inline-block;
-      border-right: solid 1px;
+      border-right: solid 1px @color-C3;
       margin-left: 0px;
-      padding-left: 20px;
+      padding-left: 15px;
       
       &:nth-child(3n) {
         border-right: none;
@@ -819,17 +828,17 @@ th.ui-th-column div {
   }
   
   label {
-    font-size: 12px;
+    font-size: 13px;
   }
   .btn-group {
     
      display: inline-block;
-     margin-right: 24px;
+     margin-right: 19px;
      margin-bottom: 20px;
           
      .btn-small {
       font-size: 14px;
-      width: 267px;
+      width: 274px;
 
       .display {
         float: left;
@@ -841,7 +850,7 @@ th.ui-th-column div {
     }
     
     .dropdown-menu {
-      min-width: 267px;
+      min-width: 274px;
       
       label {
         display: inline-block;
@@ -874,10 +883,10 @@ th.ui-th-column div {
   }
   
   .grade_range {
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     padding-bottom: 10px;
     vertical-align: middle;
-    border-bottom: solid 1px;
+    border-bottom: solid 1px @color-C3;
     
     h4 {
       font-size: 12px;
@@ -907,24 +916,26 @@ th.ui-th-column div {
       
       &:last-child {
         padding-left: 20px;
-        border-left: solid 1px;
+        border-left: solid 1px @color-C3;
       }
       
       &:hover {
-        color: @color-A4;
-        border-color: @color-white;
+        color: @color-C5;
+        border-color: @color-C3;
       }
       
       &.blue {
-        color: @color-A4;
-        border-color: @color-white;
+        color: @color-C5;
+        border-color: @color-C3;
       }
       
     }
   }
   
   .form-actions {
-    background-color: @color-B1;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    background-color: @color-C1;
     text-align: center;
     border-top: none;
     margin: 0px;

@@ -9,14 +9,15 @@ from sqlalchemy.sql.expression import true, false
 
 DEMOGRAPHICS_SELECTED_VALUE = utils.enum(YES=1, NO=2, NOT_STATED=4, NONE=0)
 
+
 def getValue(filters, filterName):
     rtn_value = DEMOGRAPHICS_SELECTED_VALUE.NONE
     for _filter in filters.get(filterName, []):
-        if _filter.upper() == 'Y':
+        if _filter.upper() == Constants_filter_names.YES:
             rtn_value |= DEMOGRAPHICS_SELECTED_VALUE.YES
-        elif _filter.upper() == 'N':
+        elif _filter.upper() == Constants_filter_names.NO:
             rtn_value |= DEMOGRAPHICS_SELECTED_VALUE.NO
-        elif _filter.upper() == 'NS':
+        elif _filter.upper() == Constants_filter_names.NOT_STATED:
             rtn_value |= DEMOGRAPHICS_SELECTED_VALUE.NOT_STATED
     return rtn_value
 

@@ -91,7 +91,6 @@ def get_comparing_populations_report(params):
         results = report.get_district_view_report()
     elif Constants.STATECODE in params:
         results = report.get_state_view_report()
-
     return results
 
 
@@ -132,6 +131,14 @@ class ComparingPopReport(object):
         :param string guid:  the guid to set district guid to be
         '''
         self.district_guid = guid
+
+    def set_filters(self, filters):
+        '''
+        Sets the demographic filters for comparing populations
+
+        :param dict filters:  key value pairs of demographic criteria
+        '''
+        self.filters = filters
 
     def has_filters(self):
         '''

@@ -66,12 +66,20 @@ CACHE_REGION_PUBLIC_FILTERING_DATA = 'public.filtered_data'
     },
     filters={
         Constants_filter_names.DEMOGRAPHICS_PROGRAM_IEP: {
-            "type": "boolean",
-            "required": False
+            "type": "array",
+            "required": False,
+            "pattern": "^(Y|N|NS)$",
+            "items": {
+                "type": "string"
+            }
         },
         Constants_filter_names.DEMOGRAPHICS_PROGRAM_504: {
-            "type": "boolean",
-            "required": False
+            "type": "array",
+            "required": False,
+            "pattern": "^(Y|N|NS)$",
+            "items": {
+                "type": "string"
+            }
         }
     })
 @audit_event()

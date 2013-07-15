@@ -79,13 +79,19 @@ def generate_report(registry, report_name, request_params, validator=None):
     validated = validator.validate_schema(PARAMS_REFERENCE_FIELD_NAME, registry, report_name, params)
     if (not validated[0]):
         raise InvalidParameterError(msg=str(validated[1]))
-    # retrive filters
-    filters = validator.convert_array_query(FILTERS_REFERENCE_FIELD_NAME, registry, report_name, copy.deepcopy(request_params))
-    filters = validator.fix_types(FILTERS_REFERENCE_FIELD_NAME, registry, report_name, filters)
-    validated = validator.validate_schema(FILTERS_REFERENCE_FIELD_NAME, registry, report_name, filters)
 
-    if (not validated[0]):
-        raise InvalidParameterError(msg=str(validated[1]))
+    # retrive filters
+    # filters are optional parameters.  Ignore if any exception is raised
+    filters = {}
+    try:
+        filters = validator.convert_array_query(FILTERS_REFERENCE_FIELD_NAME, registry, report_name, copy.deepcopy(request_params))
+        filters = validator.fix_types(FILTERS_REFERENCE_FIELD_NAME, registry, report_name, filters)
+        validated = validator.validate_schema(FILTERS_REFERENCE_FIELD_NAME, registry, report_name, filters)
+
+        if (not validated[0]):
+            raise InvalidParameterError(msg=str(validated[1]))
+    except:
+        pass
 
     report = get_dict_value(registry, report_name, ReportNotFoundError)
 

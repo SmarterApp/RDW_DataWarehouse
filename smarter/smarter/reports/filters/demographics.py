@@ -4,18 +4,26 @@ Created on Jul 11, 2013
 @author: tosako
 '''
 from smarter.reports.filters import Constants_filter_names
+from edapi import utils
+from sqlalchemy.sql.expression import true, false, or_
 
+DEMOGRAPHICS_SELECTED_VALUE = utils.enum(YES=1, NO=2, NOT_STATED=4, NONE=0)
 
-def getBoolean(filters, filterName):
-    value = None
+def getValue(filters, filterName):
+    rtn_value = DEMOGRAPHICS_SELECTED_VALUE.NONE
     for _filter in filters:
         if _filter[0] == filterName:
             value = _filter[1]
-            if value is not None:
-                if type(value) == str:
-                    value = True if value.lower() == 'true' else False
+            if type(value) is list:
+                for _value in value:
+                    if _value.upper() == 'Y':
+                        rtn_value |= DEMOGRAPHICS_SELECTED_VALUE.YES
+                    elif _value.upper() == 'N':
+                        rtn_value |= DEMOGRAPHICS_SELECTED_VALUE.NO
+                    elif _value.upper() == 'NS':
+                        rtn_value |= DEMOGRAPHICS_SELECTED_VALUE.NOT_STATED
             break
-    return value
+    return rtn_value
 
 
 def getDisabledFilter(fact_asmt_outcome, filters):
@@ -26,10 +34,25 @@ def getDisabledFilter(fact_asmt_outcome, filters):
     '''
     disabled_filter = []
     if filters:
-        dmg_prg_iep = getBoolean(filters, Constants_filter_names.DEMOGRAPHICS_PROGRAM_IEP)
-        dmg_prg_504 = getBoolean(filters, Constants_filter_names.DEMOGRAPHICS_PROGRAM_504)
-        if dmg_prg_iep is not None:
-            disabled_filter.append(fact_asmt_outcome.c.dmg_prg_iep == dmg_prg_iep)
-        if dmg_prg_504 is not None:
-            disabled_filter.append(fact_asmt_outcome.c.dmg_prg_504 == dmg_prg_504)
+        dmg_prg_iep = getValue(filters, Constants_filter_names.DEMOGRAPHICS_PROGRAM_IEP)
+        dmg_prg_504 = getValue(filters, Constants_filter_names.DEMOGRAPHICS_PROGRAM_504)
+        if dmg_prg_iep != DEMOGRAPHICS_SELECTED_VALUE.NONE:
+            in_value = []
+            if dmg_prg_iep & DEMOGRAPHICS_SELECTED_VALUE.YES:
+                in_value.append(true())
+            if dmg_prg_iep & DEMOGRAPHICS_SELECTED_VALUE.NO:
+                in_value.append(false())
+            if dmg_prg_iep & DEMOGRAPHICS_SELECTED_VALUE.NOT_STATED:
+                in_value.append(None)
+            disabled_filter.append(fact_asmt_outcome.c.dmg_prg_iep.in_(in_value))
+
+        if dmg_prg_504 != DEMOGRAPHICS_SELECTED_VALUE.NONE:
+            in_value = []
+            if dmg_prg_504 & DEMOGRAPHICS_SELECTED_VALUE.YES:
+                in_value.append(true())
+            if dmg_prg_504 & DEMOGRAPHICS_SELECTED_VALUE.NO:
+                in_value.append(false())
+            if dmg_prg_504 & DEMOGRAPHICS_SELECTED_VALUE.NOT_STATED:
+                in_value.append(None)
+            disabled_filter.append(fact_asmt_outcome.c.dmg_prg_504.in_(in_value))
     return disabled_filter

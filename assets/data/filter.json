@@ -99,15 +99,15 @@
 			"options" : [
 				{
 					"label": "Yes",
-				  	"value": "true"
+				  	"value": "Y"
 				},
 				{
 					"label": "No",
-				  	"value": "false"
+				  	"value": "N"
 				},
 				{
 					"label": "Not Stated",
-				  	"value": "none"
+				  	"value": "NS"
 				}
 			]
 		},
@@ -131,10 +131,14 @@
 			"options" : [
 				{
 					"label" : "Yes",
-					"value" : "true"
+					"value" : "Y"
 				},{
 					"label" : "No",
-					"value" : "false"
+					"value" : "N"
+				},
+				{
+					"label": "Not Stated",
+				  	"value": "NS"
 				}
 			]
 		},

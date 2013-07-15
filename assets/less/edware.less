@@ -128,7 +128,15 @@ h6 {
   .title {
     line-height: normal;
     background-color: @color-B10;  
-    min-height: 50px;  
+    min-height: 40px;  
+  }
+  
+  .filterArrow {
+    background-color: @color-B10;
+    min-height: 10px;
+    background-image: url('../images/Claim_arrowhead_up.png');
+    background-repeat: no-repeat;
+    background-position: 925px 5px;
   }
   
   h2 {
@@ -189,11 +197,12 @@ h6 {
   }
   
   .filter_label {
-    margin: 0px 30px 0px 15px;
+    margin: 0px 25px 0px 15px;
     padding-left: 15px;
     border-left: solid 1px;
     height: 30px;
     line-height: 32px;
+    cursor: pointer;
     
     span {
       vertical-align: middle;

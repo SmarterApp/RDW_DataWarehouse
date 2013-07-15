@@ -69,8 +69,10 @@ define [
     # construct params and send ajax call
     params = edwareUtil.getUrlParams()
     selectedValues = fetchSelectedValues 'name', 'value'
+    # merge selected options into param
+    $.extend(params, selectedValues)
     selectedLabels = fetchSelectedLabels 'display', 'label'
-    console.log selectedLabels
+    console.log params
     generateSelectedFilterBar selectedLabels
     callback params if callback
     
@@ -89,7 +91,7 @@ define [
       paramValues = []
       $(this).find('input:checked').each () ->
         paramValues.push $(this).data(valueField)
-      params[paramName] = paramValues
+      params[paramName] = paramValues if paramValues.length > 0
     params
     
   fetchSelectedLabels = (nameField, labelField) ->
@@ -97,7 +99,7 @@ define [
     filterValue = for key, value of labels
       val = {}; val['display'] = key; val['options'] = value
       val if value.length > 0
-    (val for val in filterValue when val)
+    filterValue
 
   generateFilter: generateFilter
   registerCallback: registerCallback

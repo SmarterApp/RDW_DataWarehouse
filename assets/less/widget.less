@@ -760,15 +760,16 @@ th.ui-th-column div {
 // comparing population filter widget
 .selectedFilter_panel {
   background-color: @color-C1;
-  border-bottom: solid 1px @color-C4;
+  border-bottom: solid 1px @color-B11;
   padding: 8px 20px;
   color: @color-white;
   display: none;
+  font-size: 12px;
   
   em {
     font-size: 12px;
-    margin-left: 12px;
     line-height: normal;
+    margin: 4px 10px 0 0;
   }
   
   title {
@@ -778,6 +779,7 @@ th.ui-th-column div {
   .selectedFilterGroup {
     float: left;
     margin-right: 10px;
+    border-right: solid 1px @color-B11;
     
     .seperator:last-child {
       display: none;
@@ -796,10 +798,6 @@ th.ui-th-column div {
         background-position: 0 0;
       }
     }
-  }
-  
-  em {
-    margin-right: 10px;
   }
   
   .removeAllFilters {

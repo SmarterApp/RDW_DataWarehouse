@@ -58,13 +58,16 @@ define [
     # remove all filters
     $(".removeAllFilters .icon_removeAll").click( () ->
       removeAllSelectedFilters()
+      submitEvent()
     )
     
     # remove individual filters
     $(document).on
         click: (e) ->
            $(this).parent().remove()
+           label = $(this).parent().data("label")
            removeAllSelectedFilters() if $(".filters").children().length <= 0
+           submitEvent()
       , ".selectedFilterGroup .removeIcon"
 
   removeAllSelectedFilters = ->
@@ -100,7 +103,7 @@ define [
     
   generateSelectedFilterBar = (obj) ->
     $(".selectedFilter_panel .filters").empty()
-    template = "{{#.}}<div class='selectedFilterGroup' data-name={{name}}><div class='pull-left'><span>{{display}}: </span>{{#options}}<span>{{.}}</span> <span class='seperator'>, </span>{{/options}}</div><div class='removeIcon pull-left'></div></div>{{/.}}"
+    template = "{{#.}}<div class='selectedFilterGroup'><div class='pull-left'><span>{{display}}: </span>{{#options}}<span>{{.}}</span> <span class='seperator'>, </span>{{/options}}</div><div class='removeIcon pull-left'></div></div>{{/.}}"
       
     output = Mustache.to_html(template, obj);
     $(".selectedFilter_panel .filters").html(output)

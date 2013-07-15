@@ -37,8 +37,9 @@ define [
         e.stopPropagation();
     );
     
-    # bind cancel button
+     # Uncheck/reset all checkboxes
     $('.filter #cancel-btn').click( () ->
+      resetFilterForm()
       $(filterPanel).slideUp('slow')
     )
     
@@ -51,10 +52,31 @@ define [
     
     # toggle grades checkbox effect
     $('.grade_range label input').click( () ->
-      $(this).parent().toggleClass('blue');
+      $(this).parent().toggleClass('blue')
     )
+    
+    # remove all filters
+    $(".removeAllFilters .icon_removeAll").click( () ->
+      removeAllSelectedFilters()
+    )
+    
+    # remove individual filters
+    $(document).on
+        click: (e) ->
+           $(this).parent().remove()
+           removeAllSelectedFilters() if $(".filters").children().length <= 0
+      , ".selectedFilterGroup .removeIcon"
 
-
+  removeAllSelectedFilters = ->
+    $(".selectedFilter_panel").css("display", "none")
+    $(".selectedFilter_panel .filters").html("")
+    resetFilterForm()
+    
+  resetFilterForm = ->
+      checkBox = $('.filter .filter-group').find("input:checked")
+      checkBox.attr("checked", false)
+      checkBox.parent().toggleClass('blue');
+      
   fetchConfig = () ->
     options =
       async: false
@@ -73,15 +95,16 @@ define [
     $.extend(params, selectedValues)
     selectedLabels = fetchSelectedLabels 'display', 'label'
     console.log params
-    generateSelectedFilterBar selectedLabels
+    generateSelectedFilterBar selectedLabels if selectedLabels.length > 0
     callback params if callback
     
   generateSelectedFilterBar = (obj) ->
     $(".selectedFilter_panel .filters").empty()
-    template = "{{#.}}<div class='{{name}} selectedFilterGroup'><span>{{display}}:</span>{{#options}}<span>{{.}}</span>{{/options}}</div>{{/.}}"
+    template = "{{#.}}<div class='selectedFilterGroup' data-name={{name}}><div class='pull-left'><span>{{display}}: </span>{{#options}}<span>{{.}}</span> <span class='seperator'>, </span>{{/options}}</div><div class='removeIcon pull-left'></div></div>{{/.}}"
       
     output = Mustache.to_html(template, obj);
     $(".selectedFilter_panel .filters").html(output)
+    $(".selectedFilter_panel").css("display", "block")
     
   fetchSelectedValues = (keyField, valueField) ->
     # get fields of selected options in json format

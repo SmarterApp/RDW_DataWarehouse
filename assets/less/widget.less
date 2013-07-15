@@ -763,6 +763,7 @@ th.ui-th-column div {
   border-bottom: solid 1px @color-C4;
   padding: 8px 20px;
   color: @color-white;
+  display: none;
   
   em {
     font-size: 12px;
@@ -777,6 +778,45 @@ th.ui-th-column div {
   .selectedFilterGroup {
     float: left;
     margin-right: 10px;
+    
+    .seperator:last-child {
+      display: none;
+    }
+    
+    .removeIcon {
+      background-image: url("../images/filter_clearbuttons.png");
+      background-position: -14px 0;
+      background-repeat: no-repeat;
+      width: 13px;
+      height: 12px;
+      margin: 3px 8px;
+      cursor: pointer;
+      
+      &:hover {
+        background-position: 0 0;
+      }
+    }
+  }
+  
+  em {
+    margin-right: 10px;
+  }
+  
+  .removeAllFilters {
+    color: @color-A5;
+    float: right;
+    width: 80px;
+    
+    .icon_removeAll {
+      background-image: url("../images/filter_clearbuttons.png");
+      background-position: -27px 0;
+      background-repeat: no-repeat;
+      height: 12px;
+      display: block;
+      margin: 3px 0 0 60px;
+      cursor: pointer;
+      
+    }
   }
 }
 .filter {

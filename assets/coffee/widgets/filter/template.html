@@ -1,10 +1,18 @@
+<div class="selectedFilter_panel">
+	<div>
+		<em class="pull-left">Filter by:</em>
+		<div class="filters clearfix">
+			
+		</div>
+	</div>
+</div>
 <div class="filter">
 	<div class="section"><h3>Student Filters</h3></div>
 	<div class="section filter_section">
 			<div class="grade_range">
 				{{#grades}}
 				{{#options}}
-				<label><input id="{{value}}" type="checkbox" value="{{value}}">{{label}}</label></input>
+				<label><input id="{{value}}" type="checkbox" value="{{value}}" name="{{name}}" data-display=Grades data-name={{name}} data-label={{value}} data-value={{value}}>{{label}}</label></input>
 				{{/options}}
 				{{/grades}}
 			</div>
@@ -15,7 +23,7 @@
 		                <button class="btn btn-small dropdown-toggle" data-toggle="dropdown"><span class="display">{{display}}</span><span class="caret"></span></button>
 		                <ul class="dropdown-menu">
 		                  {{#options}}
-		                  <li><label><input type="checkbox" value="{{value}}">{{label}}</label></li>
+		                  <li><label><input type="checkbox" value="{{value}}" name="{{name}}" data-display={{display}} data-name={{name}} data-label={{label}} data-value={{value}}>{{label}}</label></li>
 		                  {{/options}}
 		                  {{#comment}}
 		                  <li class="divider"></li>
@@ -30,5 +38,4 @@
 	<div class="section form-actions">
 	  <button id="cancel-btn" type="button" class="btn btn-primary">Cancel</button>
 	  <button id="submit-btn" type="submit" class="btn btn-primary">Apply Filters</button>
-	</div>
 </div>

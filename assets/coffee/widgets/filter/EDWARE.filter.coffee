@@ -9,24 +9,27 @@ define [
   
   callback = undefined
   
+  mapping = {}
+  
   # Generate a filter
   generateFilter = (filterHook, filterTrigger) ->
     config = fetchConfig()
     output = Mustache.to_html filterTemplate, config
     $(filterHook).html(output)
+    filterPanel = $(filterHook).find('.filter')
     # bind click event
-    bindEvent(filterTrigger, filterHook)
+    bindEvent(filterTrigger, filterPanel)
     this
 
   registerCallback = (callback_func) ->
     callback = callback_func
 
-  bindEvent = (trigger, filterHook) ->
+  bindEvent = (trigger, filterPanel) ->
     $(trigger).click( () ->
-       if $(filterHook).is(":hidden")
-         $(filterHook).slideDown('slow')
+       if $(filterPanel).is(":hidden")
+         $(filterPanel).slideDown('slow')
        else
-         $(filterHook).slideUp('slow')
+         $(filterPanel).slideUp('slow')
     )
     
     # prevent dropdown memu from disappearing
@@ -36,14 +39,14 @@ define [
     
     # bind cancel button
     $('.filter #cancel-btn').click( () ->
-      $(filterHook).slideUp('slow')
+      $(filterPanel).slideUp('slow')
     )
     
     # bind submit buttom
     $('.filter #submit-btn').click( () ->
       submitEvent()
       # slide up filter popup
-      $(filterHook).slideUp('slow')
+      $(filterPanel).slideUp('slow')
     )
     
     # toggle grades checkbox effect
@@ -65,10 +68,55 @@ define [
   submitEvent = () ->
     # construct params and send ajax call
     params = edwareUtil.getUrlParams()
+    filterVal = {}
+    filterVal["filters"] = []
+    filtersValOptions = filterVal["filters"]
+
+    o = {}
     $('.filter input:checked').each () ->
       params[$(this).val()] = 'true'
-    console.log(params)
+      
+      
+      item = {}
+      value = {}
+        
+      item["display"] = $(this).data("display")
+      item["name"] = $(this).data("name")
+      item["options"] = []
+      
+      value["label"] = $(this).data("label")
+      value["value"] = $(this).data("value")
+      item["options"].push(value)
+      
+      filtersValOptions.push(item)
+    console.log(filterVal)
+    #console.log(params)
+    
+    selectedVal = $(".filter input").serializeFormJSON()
+    console.log(selectedVal)
+    
+    
+    generateSelectedFilterBar filterVal
     callback params if callback
+    
+  generateSelectedFilterBar = (obj) ->
+    $(".selectedFilter_panel .filters").empty()
+    template = "{{#filters}}<div class='{{name}} selectedFilterGroup'><span>{{display}}:</span>{{#options}}<span>{{label}}</span>{{/options}}</div>{{/filters}}"
+      
+    output = Mustache.to_html(template, obj);
+    $(".selectedFilter_panel .filters").html(output)
+    
+  $.fn.serializeFormJSON = ->
+    o = {}
+    a = @serializeArray()
+    $.each a, ->
+      if o[@name]
+        o[@name] = [o[@name]]  unless o[@name].push
+        o[@name].push @value or ""
+      else
+        o[@name] = @value or ""
+  
+    o
     
   generateFilter: generateFilter
   registerCallback: registerCallback

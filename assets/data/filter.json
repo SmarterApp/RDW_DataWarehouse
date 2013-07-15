@@ -39,6 +39,7 @@
 			"name" : "LEP",
 			"comment" : "*This category includes English Language Learners(ELL) if your state identifies students as ELL",
 			"options" : [
+
 				{
 					"label": "Yes",
 				  	"value": "true"
@@ -115,16 +116,12 @@
 			"name" : "gender",
 			"options" : [
 				{
-					"label": "Yes",
-				  	"value": "true"
+					"label": "Male",
+				  	"value": "M"
 				},
 				{
-					"label": "No",
-				  	"value": "false"
-				},
-				{
-					"label": "Not Stated",
-				  	"value": "none"
+					"label": "Female",
+				  	"value": "F"
 				}
 			]
 		},

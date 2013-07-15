@@ -758,23 +758,37 @@ th.ui-th-column div {
 }
 
 // comparing population filter widget
+.selectedFilter_panel {
+  background-color: @color-B1;
+  padding: 5px 20px;
+  color: @color-white;
+  
+  title {
+    margin-bottom: 0;
+  }
+  
+  .selectedFilterGroup {
+    float: left;
+    margin-right: 10px;
+  }
+}
 .filter {
-  background-color: gray;
+  background-color: @color-B1;
+  display: none;
+  padding: 10px 20px;
   
   .section {
-    margin: 5px 2% 5px 2%;
     
     &:first-child {
       h3 {
         margin-left: 5px;
-        padding-top: 15px;
         color: @color-white;
       }
     }
   }
   
   .filter_section {
-    background-color: black;
+    background-color: @color-black;
     border-radius: 5px;
     padding: 20px 2% 20px 2%;
     
@@ -804,6 +818,9 @@ th.ui-th-column div {
     }
   }
   
+  label {
+    font-size: 12px;
+  }
   .btn-group {
     
      display: inline-block;
@@ -813,7 +830,7 @@ th.ui-th-column div {
      .btn-small {
       font-size: 14px;
       width: 267px;
-      
+
       .display {
         float: left;
       }
@@ -862,6 +879,12 @@ th.ui-th-column div {
     vertical-align: middle;
     border-bottom: solid 1px;
     
+    h4 {
+      font-size: 12px;
+      display: inline-block;
+      margin-right: 20px;
+    }
+
     * {
       color: @color-white;
     }
@@ -901,10 +924,10 @@ th.ui-th-column div {
   }
   
   .form-actions {
-    background-color: gray;
+    background-color: @color-B1;
     text-align: center;
     border-top: none;
-    margin-bottom: 0px;
+    margin: 0px;
   }
 
 }

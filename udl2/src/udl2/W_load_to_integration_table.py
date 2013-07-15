@@ -21,7 +21,7 @@ def task(msg):
     batch_id = msg[mk.JOB_CONTROL][1]
     conf = generate_conf(batch_id)
     move_data_from_staging_to_integration(conf)
-    #print("Moved data from staging tables to integration tables")
+    # print("Moved data from staging tables to integration tables")
 
     return msg
 
@@ -39,6 +39,7 @@ def generate_conf(batch_id):
             mk.SOURCE_DB_NAME: udl2_conf['udl2_db']['db_database'],
             mk.SOURCE_DB_PASSWORD: udl2_conf['udl2_db']['db_pass'],
             mk.SOURCE_DB_SCHEMA: udl2_conf['udl2_db']['staging_schema'],
+            mk.SOURCE_DB_TABLE: 'STG_SBAC_ASMT_OUTCOME',
 
             # target database setting
             mk.TARGET_DB_HOST: udl2_conf['udl2_db']['db_host'],
@@ -47,10 +48,10 @@ def generate_conf(batch_id):
             mk.TARGET_DB_NAME: udl2_conf['udl2_db']['db_database'],
             mk.TARGET_DB_PASSWORD: udl2_conf['udl2_db']['db_pass'],
             mk.TARGET_DB_SCHEMA: udl2_conf['udl2_db']['integration_schema'],
+            mk.TARGET_DB_TABLE: 'INT_SBAC_ASMT_OUTCOME',
 
             mk.ERROR_DB_SCHEMA: udl2_conf['udl2_db']['staging_schema'],
-
-            mk.MAP_TYPE: 'staging_to_integration_sbac_asmt_outcome'
+            mk.REF_TABLE: udl2_conf['udl2_db']['ref_table_name'],
 
     }
     return conf

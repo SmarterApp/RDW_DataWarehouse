@@ -129,6 +129,7 @@ class FuncTestLoadToIntegrationTable(unittest.TestCase):
             mk.SOURCE_DB_NAME: self.conf['udl2_db']['db_database'],
             mk.SOURCE_DB_PASSWORD: self.conf['udl2_db']['db_pass'],
             mk.SOURCE_DB_SCHEMA: self.conf['udl2_db']['staging_schema'],
+            mk.SOURCE_DB_TABLE: 'STG_SBAC_ASMT_OUTCOME',
 
             # target database setting
             mk.TARGET_DB_HOST: self.conf['udl2_db']['db_host'],
@@ -137,11 +138,11 @@ class FuncTestLoadToIntegrationTable(unittest.TestCase):
             mk.TARGET_DB_NAME: self.conf['udl2_db']['db_database'],
             mk.TARGET_DB_PASSWORD: self.conf['udl2_db']['db_pass'],
             mk.TARGET_DB_SCHEMA: self.conf['udl2_db']['integration_schema'],
+            mk.TARGET_DB_TABLE: 'INT_SBAC_ASMT_OUTCOME',
 
             mk.REF_TABLE: self.conf['udl2_db']['ref_table_name'],
             mk.ERROR_DB_SCHEMA: self.conf['udl2_db']['staging_schema'],
 
-            mk.MAP_TYPE: 'staging_to_integration_sbac_asmt_outcome'
         }
         self.conf['batch_id'] = '00000000-0000-0000-0000-000000000000'
         self.load_file_to_stage()

@@ -50,6 +50,7 @@ SOURCE_DB_HOST = 'source_db_host'
 SOURCE_DB_PORT = 'source_db_port'
 SOURCE_DB_NAME = 'source_db_name'
 SOURCE_DB_SCHEMA = 'source_db_schema'
+SOURCE_DB_TABLE = 'source_db_table'
 ERROR_DB_SCHEMA = 'error_schema'
 
 MAP_TYPE = 'map_type'

@@ -43,11 +43,11 @@ class FuncTestLoadToIntegrationTable(unittest.TestCase):
             WHERE guid_batch = '{guid_batch}'
             """
         sql_stg = sql_template.format(staging_schema=self.conf['udl2_db']['staging_schema'],
-                                  staging_table='STG_SBAC_ASMT_OUTCOME',
-                                  guid_batch=self.conf['guid_batch'])
+                                      staging_table='STG_SBAC_ASMT_OUTCOME',
+                                      guid_batch=self.conf['guid_batch'])
         sql_int = sql_template.format(staging_schema=self.conf['udl2_db']['staging_schema'],
-                                  staging_table='INT_SBAC_ASMT_OUTCOME',
-                                  guid_batch=self.conf['guid_batch'])
+                                      staging_table='INT_SBAC_ASMT_OUTCOME',
+                                      guid_batch=self.conf['guid_batch'])
         except_msg = "Can't not clean up test data from staging table inside functional test FuncTestLoadToIntegrationTable("
         execute_queries(conn, [sql_stg, sql_int], except_msg)
 
@@ -156,40 +156,40 @@ class FuncTestLoadToIntegrationTable(unittest.TestCase):
         print(postloading_total)
         self.assertEqual(preloading_total + 30, postloading_total)
 
-        int_avg_query=""" SELECT avg(score_asmt::int),
-	        avg(score_asmt_min),
-	        avg(score_asmt_max),
-	        avg(score_claim_1),
-	        avg(score_claim_1_min),
-	        avg(score_claim_1_max), 
-	        avg(score_claim_2),
-	        avg(score_claim_2_min),
-	        avg(score_claim_2_max), 
-	        avg(score_claim_3),
-	        avg(score_claim_3_min),
-	        avg(score_claim_3_max), 
-	        avg(score_claim_4),
-	        avg(score_claim_4_min),
-	        avg(score_claim_4_max) FROM udl2."INT_SBAC_ASMT_OUTCOME" """
+        int_avg_query = """ SELECT avg(score_asmt::int),
+        avg(score_asmt_min),
+        avg(score_asmt_max),
+        avg(score_claim_1),
+        avg(score_claim_1_min),
+        avg(score_claim_1_max),
+        avg(score_claim_2),
+        avg(score_claim_2_min),
+        avg(score_claim_2_max),
+        avg(score_claim_3),
+        avg(score_claim_3_min),
+        avg(score_claim_3_max),
+        avg(score_claim_4),
+        avg(score_claim_4_min),
+        avg(score_claim_4_max) FROM udl2."INT_SBAC_ASMT_OUTCOME" """
         result = self.udl2_conn.execute(int_avg_query)
         for row in result:
             int_asmt_avgs = row
 
-        stg_avg_query=""" select avg(score_asmt::int),
-	        avg(score_asmt_min::int),
-	        avg(score_asmt_max::int),
-	        avg(score_claim_1::int),
-	        avg(score_claim_1_min::int),
-	        avg(score_claim_1_max::int), 
-	        avg(score_claim_2::int),
-	        avg(score_claim_2_min::int),
-	        avg(score_claim_2_max::int), 
-	        avg(score_claim_3::int),
-	        avg(score_claim_3_min::int),
-	        avg(score_claim_3_max::int), 
-	        avg(score_claim_4::int),
-	        avg(score_claim_4_min::int),
-	        avg(score_claim_4_max::int) from udl2."STG_SBAC_ASMT_OUTCOME";"""
+        stg_avg_query = """ select avg(score_asmt::int),
+        avg(score_asmt_min::int),
+        avg(score_asmt_max::int),
+        avg(score_claim_1::int),
+        avg(score_claim_1_min::int),
+        avg(score_claim_1_max::int),
+        avg(score_claim_2::int),
+        avg(score_claim_2_min::int),
+        avg(score_claim_2_max::int),
+        avg(score_claim_3::int),
+        avg(score_claim_3_min::int),
+        avg(score_claim_3_max::int),
+        avg(score_claim_4::int),
+        avg(score_claim_4_min::int),
+        avg(score_claim_4_max::int) from udl2."STG_SBAC_ASMT_OUTCOME";"""
         result = self.udl2_conn.execute(stg_avg_query)
         for row in result:
             stg_asmt_avgs = row

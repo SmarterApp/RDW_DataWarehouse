@@ -353,7 +353,7 @@ def _parse_args():
     parser.add_argument('--config_file', dest='config_file',
                         help="full path to configuration file for UDL2, default is /opt/wgen/edware-udl/etc/udl2_conf.py")
     parser.add_argument('--action', dest='action', required=False,
-                        help="'setup' for setting up udl2 database. " + 
+                        help="'setup' for setting up udl2 database. " +
                              "'teardown' for tear down udl2 database")
     args = parser.parse_args()
     return (parser, args)

@@ -1,0 +1,23 @@
+{
+  "state": [
+    {
+      "dmgPrg504": ["Y"]
+    },
+    {
+      "dmgPrg504": ["N"]
+    }
+  ],
+  "district": [
+    {
+      "dmgPrg504": ["Y"]
+    },
+    {
+      "dmgPrg504": ["N"]
+    }
+  ],
+  "cat.state": [
+    {
+      "dmgPrg504": ["N"]
+    }
+  ]
+}

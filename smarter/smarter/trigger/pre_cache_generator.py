@@ -11,7 +11,6 @@ from smarter.trigger.database import constants
 from smarter.database.smarter_connector import SmarterDBConnection
 from smarter.database.udl_stats_connector import StatsDBConnection
 from smarter.reports.helpers.constants import Constants
-import ast
 import json
 import os
 
@@ -139,7 +138,7 @@ def read_config_from_json_file(file_name):
         return {}
     abspath = os.path.abspath(file_name)
     if not os.path.exists(abspath):
-        raise Exception()
+        raise Exception('File %s not found' % abspath)
     with open(abspath) as file:
         data = json.load(file)
     return data

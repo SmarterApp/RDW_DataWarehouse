@@ -9,7 +9,8 @@ from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smart
 from beaker.cache import cache_managers, CacheManager, cache_regions
 from beaker.util import parse_cache_config_options
 from smarter.trigger.pre_cache_generator import prepare_pre_cache, \
-    trigger_precache
+    trigger_precache, read_config_from_json_file
+import os
 
 
 class TestPreCacheGenerator(Unittest_with_smarter_sqlite):
@@ -57,6 +58,15 @@ class TestPreCacheGenerator(Unittest_with_smarter_sqlite):
         results = prepare_pre_cache(self.tenant, 'NY', '820568d0-ddaa-11e2-a63d-68a86d3c2f82')
         triggered = trigger_precache(self.tenant, 'NY', results, {})
         self.assertFalse(triggered)
+
+    def test_read_config_file_with_invalid_file(self):
+        self.assertRaises(Exception, read_config_from_json_file, '../I_dont_exist.json')
+
+    def test_read_config_file_with_valid_file(self):
+        cwd = os.path.abspath(os.path.dirname(__file__))
+        data = read_config_from_json_file(os.path.join(cwd, 'resource/filter.json'))
+        self.assertEqual(len(data.keys()), 3)
+
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']

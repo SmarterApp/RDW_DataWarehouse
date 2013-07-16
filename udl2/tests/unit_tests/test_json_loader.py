@@ -18,8 +18,8 @@ class TestJsonLoader(unittest.TestCase):
                           'id': {'year': '2015', 'id': '28', 'subject': 'Math', 'period': '2015', 'type': 'SUMMATIVE', 'version': 'V1'}
                           }
         self.mappings = {'val1': ['pls', 'pl1', 'name'], 'val2': ['pls', 'pl2', 'name'], 'val3': ['pls', 'pl3', 'name'], 'val4': ['pls', 'pl2', 'level'],
-                        'val5': ['id', 'year'], 'val6': ['id', 'type'], 'val7': ['pls', 'pl3', 'cp'], 'val8': ['pls', 'pl1', 'level']
-                        }
+                         'val5': ['id', 'year'], 'val6': ['id', 'type'], 'val7': ['pls', 'pl3', 'cp'], 'val8': ['pls', 'pl1', 'level']
+                         }
 
     def test_flatten_json_dict(self):
         expected = {'val1': 'Minimal',

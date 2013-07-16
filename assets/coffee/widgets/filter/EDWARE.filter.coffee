@@ -106,7 +106,7 @@ define [
   submitEvent = () ->
     # construct params and send ajax call
     params = edwareUtil.getUrlParams()
-    selectedValues = fetchSelectedValues
+    selectedValues = fetchSelectedValues()
     # merge selected options into param
     $.extend(params, selectedValues)
     console.log params

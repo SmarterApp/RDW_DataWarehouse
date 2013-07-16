@@ -19,9 +19,9 @@ BEGIN
         IF v_date_mapped IS NOT NULL THEN
             v_format_found := 1;
             EXIT;
-	END IF;
-	EXCEPTION WHEN OTHERS THEN
-	    -- Do nothing
+        END IF;
+    EXCEPTION WHEN OTHERS THEN
+        -- Do nothing
         END;
     END LOOP;
     IF v_format_found = 1 THEN

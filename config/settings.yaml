@@ -40,9 +40,7 @@ common:
     trigger:
       recache:
         enable: False
-        filter.state: [{'Gender':'F', 'isAsian': False}, {'Gender':'M', 'isWhite': True}]
-        filter.district: [{'Gender':'F', 'isAsian': False}]
-        filter.cat.state: [{'Gender':'F'}]
+        filter.file:  /opt/edware/conf/comparing_populations_precache_filters.json
         schedule:
           cron:
             day: '*/1'
@@ -406,6 +404,7 @@ development:
     smarter.resources.static.max_age: 0
     # Always generate pdf regardless if it exists in file system
     pdf.always_generate: True
+    trigger.recache.filter.file:  ../config/comparing_populations_precache_filters.json
 test:
   '[app:main]':
     cache:
@@ -433,6 +432,7 @@ test:
         issuer_name: http://localhost:6543/sp.xml
         name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
     mode: dev
+    trigger.recache.filter.file:  ../config/comparing_populations_precache_filters.json
 
 jenkins_dev:
   '[app:main]':

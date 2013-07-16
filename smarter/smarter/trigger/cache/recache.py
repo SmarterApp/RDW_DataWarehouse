@@ -3,7 +3,8 @@ Created on Jun 20, 2013
 
 @author: dip
 '''
-from smarter.reports.compare_pop_report import ComparingPopReport
+from smarter.reports.compare_pop_report import ComparingPopReport,\
+    get_cache_region_name, get_comparing_populations_cache_key
 from smarter.reports.utils.cache import region_invalidate
 
 
@@ -26,9 +27,9 @@ class CacheTrigger(object):
         self.report.set_district_guid(None)
         for state_filter in self.__state_filters:
             self.report.set_filters(state_filter)
-            region_name = self.report.get_cache_region_name()
-            formatted_filters = self.report.get_formatted_filters()
-            self.flush_state_view_report(region_name, formatted_filters)
+            region_name = get_cache_region_name(self.report)
+            args = get_comparing_populations_cache_key(self.report)
+            self.flush_state_view_report(region_name, *args)
             self.report.get_state_view_report()
 
     def recache_district_view_report(self, district_guid):
@@ -43,27 +44,27 @@ class CacheTrigger(object):
         self.report.set_district_guid(district_guid)
         for district_filter in self.__district_filters:
             self.report.set_filters(district_filter)
-            region_name = self.report.get_cache_region_name()
-            formatted_filters = self.report.get_formatted_filters()
-            self.flush_district_view_report(region_name, district_guid, formatted_filters)
+            region_name = get_cache_region_name(self.report)
+            args = get_comparing_populations_cache_key(self.report)
+            self.flush_district_view_report(region_name, *args)
             self.report.get_district_view_report()
 
-    def flush_state_view_report(self, region_name, filters):
+    def flush_state_view_report(self, region_name, *args):
         '''
         Flush cache for Comparing Populations State View Report
 
         :param string stateCode: represents the state code
         '''
-        flush_report_in_cache_region(self.report.get_cacheable_state_view_report, region_name, self.state_code, filters)
+        flush_report_in_cache_region(self.report.get_state_view_report, region_name, *args)
 
-    def flush_district_view_report(self, region_name, district_guid, filters):
+    def flush_district_view_report(self, region_name, *args):
         '''
         Flush cache for Comparing Populations State View Report
 
         :param string stateCode: code of the state
         :param string districtGuid:  guid of the district
         '''
-        flush_report_in_cache_region(self.report.get_cacheable_district_view_report, region_name, self.state_code, district_guid, filters)
+        flush_report_in_cache_region(self.report.get_district_view_report, region_name, *args)
 
     def init_filters(self, tenant, settings):
         '''

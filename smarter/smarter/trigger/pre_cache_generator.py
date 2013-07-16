@@ -12,6 +12,8 @@ from smarter.database.smarter_connector import SmarterDBConnection
 from smarter.database.udl_stats_connector import StatsDBConnection
 from smarter.reports.helpers.constants import Constants
 import ast
+import json
+import os
 
 
 logger = logging.getLogger('smarter')
@@ -106,7 +108,7 @@ def precached_task(settings):
 
     :param dict settings:  configuration for the application
     '''
-    filter_settings = parse_filter_config(settings)
+    filter_settings = read_config_from_json_file(settings.get('trigger.recache.filter.file'))
     udl_stats_results = prepare_ed_stats()
     for udl_stats_result in udl_stats_results:
         tenant = udl_stats_result.get(constants.Constants.TENANT)
@@ -127,16 +129,17 @@ def run_cron_recache(settings):
     run_cron_job(settings, 'trigger.recache.', precached_task)
 
 
-def parse_filter_config(settings, prefix='trigger.recache.filter.'):
+def read_config_from_json_file(file_name):
     '''
-    Parse filtering criteria for caching state and district reports
-    Returns a python dictionary with keys: state or district or [tenantName].state, or [tenantName].district
+    Read precache filtering setings from .json file
+
+    :param string file_name:  path of json file that contains filters
     '''
-    options = {}
-    prefix_len = len(prefix)
-    for key, val in settings.items():
-        if key.startswith(prefix):
-            new_key = key[prefix_len:]
-            # cast it to its type
-            options[new_key] = ast.literal_eval(val)
-    return options
+    if file_name is None:
+        return {}
+    abspath = os.path.abspath(file_name)
+    if not os.path.exists(abspath):
+        raise Exception()
+    with open(abspath) as file:
+        data = json.load(file)
+    return data

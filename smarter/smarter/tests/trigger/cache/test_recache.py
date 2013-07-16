@@ -62,25 +62,26 @@ class TestRecache(Unittest_with_smarter_sqlite):
         cache_trigger = CacheTrigger(get_unittest_tenant_name(), 'NY', {})
         cache_trigger.recache_state_view_report()
         self.validate_cache_has_one_item()
-
-        cache_trigger.flush_state_view_report('public.data', [])
+        args = ['NY', []]
+        cache_trigger.flush_state_view_report('public.data', *args)
         self.validate_cache_is_empty()
 
     def test_flush_district_view_report(self):
         cache_trigger = CacheTrigger(get_unittest_tenant_name(), 'NY', {})
         cache_trigger.recache_district_view_report('228')
         self.validate_cache_has_one_item()
-        cache_trigger.flush_district_view_report('public.data', '228', [])
+        args = ['NY', '228', []]
+        cache_trigger.flush_district_view_report('public.data', *args)
         self.validate_cache_is_empty()
 
     def test_flush_report_in_cache_region_with_empty_cache(self):
-        flush_report_in_cache_region(dummy_method, 'unittest', 'NY')
+        flush_report_in_cache_region(dummy_method, 'unittest', ('NY'))
         self.assertTrue(len(cache_managers.keys()), 0)
 
     def test_flush_report_in_cache_region(self):
         dummy_method('NY')
         self.validate_cache_has_one_item()
-        flush_report_in_cache_region(dummy_method, 'unittest', 'NY')
+        flush_report_in_cache_region(dummy_method, 'unittest', ('NY'))
         self.validate_cache_is_empty()
 
     def test_flush_unconfigured_region(self):

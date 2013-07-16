@@ -23,7 +23,7 @@ def get_cache_key(args, func_name):
     return cache_key
 
 
-def cache_region(region, namespace='smarter', *decor_args):
+def cache_region(region, namespace='smarter', router=None, key_generator=None, *decor_args):
     '''
     Custom cache region decorator for smarter
 
@@ -38,21 +38,26 @@ def cache_region(region, namespace='smarter', *decor_args):
         func_name = util.func_namespace(func)
 
         @wraps(func)
-        def cached(*args, explicit_region=None):
+        def cached(*args):
             if type(region) is list:
                 region_name = region[0]
             else:
                 region_name = region
 
-            if explicit_region is not None:
-                region_name = explicit_region
+            if router is not None:
+                region_name = router(*args)
+
             if cache.get(region_name) is None:
                 reg = cache_regions.get(region_name)
                 cache[region_name] = Cache._get_cache(namespace, reg)
-            if skip_self:
-                combined_args = decor_args + args[1:]
+
+            if key_generator is not None:
+                combined_args = decor_args + key_generator(*args)
             else:
-                combined_args = decor_args + args
+                if skip_self:
+                    combined_args = decor_args + args[1:]
+                else:
+                    combined_args = decor_args + args
 
             cache_key = get_cache_key(combined_args, func_name)
 

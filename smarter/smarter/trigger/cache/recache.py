@@ -4,7 +4,7 @@ Created on Jun 20, 2013
 @author: dip
 '''
 from smarter.reports.compare_pop_report import ComparingPopReport,\
-    get_cache_region_name, get_comparing_populations_cache_key
+    get_comparing_populations_cache_key, get_comparing_populations_cache_route
 from smarter.reports.utils.cache import region_invalidate
 
 
@@ -27,7 +27,7 @@ class CacheTrigger(object):
         self.report.set_district_guid(None)
         for state_filter in self.__state_filters:
             self.report.set_filters(state_filter)
-            region_name = get_cache_region_name(self.report)
+            region_name = get_comparing_populations_cache_route(self.report)
             args = get_comparing_populations_cache_key(self.report)
             self.flush_state_view_report(region_name, *args)
             self.report.get_state_view_report()
@@ -44,7 +44,7 @@ class CacheTrigger(object):
         self.report.set_district_guid(district_guid)
         for district_filter in self.__district_filters:
             self.report.set_filters(district_filter)
-            region_name = get_cache_region_name(self.report)
+            region_name = get_comparing_populations_cache_route(self.report)
             args = get_comparing_populations_cache_key(self.report)
             self.flush_district_view_report(region_name, *args)
             self.report.get_district_view_report()

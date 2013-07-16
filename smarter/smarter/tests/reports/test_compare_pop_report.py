@@ -6,7 +6,7 @@ Created on Mar 11, 2013
 import unittest
 from smarter.reports.compare_pop_report import get_comparing_populations_report,\
     ComparingPopReport, CACHE_REGION_PUBLIC_DATA,\
-    CACHE_REGION_PUBLIC_FILTERING_DATA, get_cache_region_name
+    CACHE_REGION_PUBLIC_FILTERING_DATA, get_comparing_populations_cache_route
 from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite,\
     UnittestSmarterDBConnection, get_unittest_tenant_name
 from smarter.reports.helpers.constants import Constants
@@ -234,12 +234,12 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
 
     def test_cache_route_without_filters(self):
         cpop = ComparingPopReport()
-        name = get_cache_region_name(cpop)
+        name = get_comparing_populations_cache_route(cpop)
         self.assertEquals(name, CACHE_REGION_PUBLIC_DATA)
 
     def test_cache_route_with_filter(self):
         cpop = ComparingPopReport(**{'test': 'test'})
-        name = get_cache_region_name(cpop)
+        name = get_comparing_populations_cache_route(cpop)
         self.assertEquals(name, CACHE_REGION_PUBLIC_FILTERING_DATA)
 
     def test_state_view_with_504_yes(self):

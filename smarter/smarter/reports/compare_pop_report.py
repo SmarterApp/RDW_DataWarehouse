@@ -94,24 +94,26 @@ def get_comparing_populations_report(params):
     return results
 
 
-def comparing_populations_cache_route(func):
+def get_comparing_populations_cache_route(comparing_pop):
     '''
-    Decorator used to route to appropriate cache region based on filters in comparing populations report
-    This is used in conjunction to smarter's cache_region decorator
+    Returns cache region based on whether filters exist
+    It accepts one positional parameter, namely, 'self' in ComparingPopReport instance
+
+    :param comparing_pop:  instance of ComparingPopReport
     '''
-    @wraps(func)
-    def wrapped(self, *args):
-        region = get_cache_region_name(self)
-        cache_args = get_comparing_populations_cache_key(self)
-        return func(self, *cache_args, explicit_region=region)
-    return wrapped
+    region = CACHE_REGION_PUBLIC_DATA
+    if len(comparing_pop.filters.keys()) > 0:
+        region = CACHE_REGION_PUBLIC_FILTERING_DATA
+    return region
 
 
 def get_comparing_populations_cache_key(comparing_pop):
     '''
     Returns cache key for comparing populations report
+    It accepts one positional parameter, namely, 'self' in ComparingPopReport instance
 
     :param comparing_pop:  instance of ComparingPopReport
+    :returns: a tuple representing a unique key for comparing populations report
     '''
     cache_args = []
     if comparing_pop.state_code is not None:
@@ -121,19 +123,7 @@ def get_comparing_populations_cache_key(comparing_pop):
     filters = comparing_pop.filters
     # sorts dictionary of keys
     cache_args.append(sorted(filters.items(), key=lambda x: x[0]))
-    return cache_args
-
-
-def get_cache_region_name(comparing_pop):
-    '''
-    Returns cache region based on whether filters exist
-
-    :param comparing_pop:  instance of ComparingPopReport
-    '''
-    region = CACHE_REGION_PUBLIC_DATA
-    if len(comparing_pop.filters.keys()) > 0:
-        region = CACHE_REGION_PUBLIC_FILTERING_DATA
-    return region
+    return tuple(cache_args)
 
 
 class ComparingPopReport(object):
@@ -170,9 +160,8 @@ class ComparingPopReport(object):
         '''
         self.filters = filters
 
-    @comparing_populations_cache_route
-    @cache_region([CACHE_REGION_PUBLIC_DATA, CACHE_REGION_PUBLIC_FILTERING_DATA])
-    def get_state_view_report(self, *args):
+    @cache_region([CACHE_REGION_PUBLIC_DATA, CACHE_REGION_PUBLIC_FILTERING_DATA], router=get_comparing_populations_cache_route, key_generator=get_comparing_populations_cache_key)
+    def get_state_view_report(self):
         '''
         state view report
 
@@ -181,9 +170,8 @@ class ComparingPopReport(object):
         '''
         return self.get_report()
 
-    @comparing_populations_cache_route
-    @cache_region([CACHE_REGION_PUBLIC_DATA, CACHE_REGION_PUBLIC_FILTERING_DATA])
-    def get_district_view_report(self, *args):
+    @cache_region([CACHE_REGION_PUBLIC_DATA, CACHE_REGION_PUBLIC_FILTERING_DATA], router=get_comparing_populations_cache_route, key_generator=get_comparing_populations_cache_key)
+    def get_district_view_report(self):
         '''
         district view report
 

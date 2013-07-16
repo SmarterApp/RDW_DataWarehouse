@@ -66,7 +66,7 @@ CACHE_REGION_PUBLIC_FILTERING_DATA = 'public.filtered_data'
         Constants_filter_names.DEMOGRAPHICS_PROGRAM_IEP: {
             "type": "array",
             "required": False,
-            "pattern": "^(Y|N|NS)$",
+            "pattern": "^(" + Constants_filter_names.YES + "|" + Constants_filter_names.NO + "|" + Constants_filter_names.NOT_STATED + ")$",
             "items": {
                 "type": "string"
             }
@@ -74,7 +74,7 @@ CACHE_REGION_PUBLIC_FILTERING_DATA = 'public.filtered_data'
         Constants_filter_names.DEMOGRAPHICS_PROGRAM_504: {
             "type": "array",
             "required": False,
-            "pattern": "^(Y|N|NS)$",
+            "pattern": "^(" + Constants_filter_names.YES + "|" + Constants_filter_names.NO + "|" + Constants_filter_names.NOT_STATED + ")$",
             "items": {
                 "type": "string"
             }
@@ -524,10 +524,10 @@ class QueryHelper():
         # apply demographics filters
         if query is not None:
             if self._filters:
-                filter_iep = demographics.getDemographicProgramIepFilter(self._filters)
+                filter_iep = demographics.getDemographicProgramFilter(Constants_filter_names.DEMOGRAPHICS_PROGRAM_IEP, self._filters)
                 if filter_iep:
                     query = query.where(self._fact_asmt_outcome.c.dmg_prg_iep.in_(filter_iep))
-                filter_504 = demographics.getDemographicProgram504Filter(self._filters)
+                filter_504 = demographics.getDemographicProgramFilter(Constants_filter_names.DEMOGRAPHICS_PROGRAM_504, self._filters)
                 if filter_504:
                     query = query.where(self._fact_asmt_outcome.c.dmg_prg_504.in_(filter_504))
 

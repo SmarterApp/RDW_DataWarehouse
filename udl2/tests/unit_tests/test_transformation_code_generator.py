@@ -104,7 +104,7 @@ v_{col_name} := TRIM(REGEXP_REPLACE(UPPER(p_{col_name}), E\'[\\n\\r]+\', \'\', \
 t_{col_name} := v_{col_name};
 
     v_result := t_{col_name};
-    
+
     RETURN v_result;
 
 EXCEPTION
@@ -143,7 +143,7 @@ v_result := 'NOT FOUND';
     IF v_result = 'NOT FOUND' THEN
         v_result := v_{col_name};
     END IF;
-    
+
     RETURN v_result;
 
 EXCEPTION
@@ -183,7 +183,7 @@ v_result := 'NOT FOUND';
     IF v_result = 'NOT FOUND' THEN
         v_result := v_{col_name};
     END IF;
-    
+
     RETURN v_result;
 
 EXCEPTION
@@ -219,7 +219,7 @@ t_{col_name} := v_{col_name};
     ELSE
         v_result := v_{col_name};
     END IF;
-    
+
     RETURN v_result;
 
 EXCEPTION

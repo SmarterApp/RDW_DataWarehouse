@@ -3,7 +3,6 @@ import re
 FUNC_NAME = 'func'
 
 
-
 _calc_func_parameters = """
 CREATE OR REPLACE FUNCTION {func_name}
 (
@@ -18,7 +17,7 @@ DECLARE
 {variable_declarations}
 """
 
-_calc_func_prepare_variables= """
+_calc_func_prepare_variables = """
 BEGIN
 {variable_preparations}
 """
@@ -46,6 +45,7 @@ RETURN v_{unknown_col};
 END;
 $$ LANGUAGE plpgsql
     """
+
 
 def create_calculated_value_sql_function(function_name, function_formula, known_column_names, unknown_column_name):
     result = ''
@@ -85,7 +85,7 @@ def generate_parameter_declarations(param_list):
 
 def generate_parameter_declaration(base_name, var_type='VARCHAR(255)'):
     parameter_declaration = 'p_{base_name} {var_type}'
-    result = parameter_declaration.format(base_name=base_name, var_type = var_type.upper())
+    result = parameter_declaration.format(base_name=base_name, var_type=var_type.upper())
     return result
 
 
@@ -179,9 +179,11 @@ def find_all_cols(formula):
     var_names = regex.findall(formula)
     return var_names
 
+
 # vclean
 def wrap_variable(var_name, wrapper="(%s::int)"):
     return wrapper % var_name
+
 
 # rclean
 def wrap_formula(formula, wrapper="ceiling(%s)::int;"):
@@ -193,7 +195,6 @@ def generate_function_end(unknown_column_name):
     return func_end
 
 
-
 if __name__ == '__main__':
     unknown_column_name = 'daze_correct'
     known_column_names = ['daze_incorrect', 'daze_adjusted']
@@ -201,8 +202,6 @@ if __name__ == '__main__':
     function_formula = '({daze_incorrect}-{daze_adjusted})/2'
     result = create_calculated_value_sql_function(function_name, function_formula, known_column_names, unknown_column_name)
     print(str(result))
-
-
 
 
 '''
@@ -242,8 +241,6 @@ if __name__ == '__main__':
         RETURN v_return;
     END calc_daze_correct;
 '''
-
-
 
 """
 v_{need} := TRIM(REPLACE(p_{need}, CHR(13), NULL));

@@ -7,6 +7,7 @@ from sfv.csv_validator import CsvValidator
 from sfv.json_validator import JsonValidator
 from udl2_util.measurement import measure_cpu_plus_elasped_time
 
+
 @measure_cpu_plus_elasped_time
 def main():
     parser = argparse.ArgumentParser()
@@ -29,7 +30,6 @@ def main():
 
     for error_code in error_codes:
         print(error_code)
-
 
 
 if __name__ == "__main__":

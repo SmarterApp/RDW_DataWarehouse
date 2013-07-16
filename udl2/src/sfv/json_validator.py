@@ -3,16 +3,16 @@ import os
 from sfv import error_codes
 from udl2_util.measurement import measure_cpu_plus_elasped_time
 
+
 class JsonValidator():
     """
     Invoke a suite of validations for json files.
     """
-    
+
     @measure_cpu_plus_elasped_time
     def __init__(self):
         self.validators = [IsValidJsonFile(),
                            HasExpectedFormat()]
-
 
     @measure_cpu_plus_elasped_time
     def execute(self, dir_path, file_name, batch_sid):
@@ -105,7 +105,6 @@ class HasExpectedFormat(object):
                'asmt_cut_point_4': ['performance_levels', 'level_5', 'cut_point']
            }
 
-
     @measure_cpu_plus_elasped_time
     def execute(self, dir_path, file_name, batch_sid):
         '''
@@ -130,7 +129,6 @@ class HasExpectedFormat(object):
                 if not self.does_json_path_exist(json_object, path):
                     return (error_codes.SRC_JSON_INVALID_FORMAT, dir_path, file_name, batch_sid, field)
             return (error_codes.STATUS_OK, dir_path, file_name, batch_sid)
-
 
     @measure_cpu_plus_elasped_time
     def does_json_path_exist(self, json_object, path):

@@ -100,7 +100,7 @@ SDS = small data set. Used by reporting team for testing.
 The data generated here will be added to the 50 or so existing SDS records 'by hand'
 
 Need to generate here:
-Approximately 400 students 
+Approximately 400 students
 3 districts:
 district #1: 1 high school,  1 middle school,  1 elementary school
 district #2: 1 high school,  2 middle schools, 1 elementary school
@@ -132,17 +132,17 @@ def get_district_types():
     district_types = {'SDS Average': {'school_counts': {'min': 1, 'max': 4, 'avg': 3},  # if SML_MIN = 5 then (80, 160, 120)
                                       'school_types_and_ratios': {
                                           'High School': 1, 'Middle School': 1, 'Elementary School': 1}},
-                      
+
                       'SDS Good': {'school_counts': {'min': 1, 'max': 4, 'avg': 3},
                                    'school_types_and_ratios': {
-                                       'High School': 1, 'Middle School': 1, 'Elementary School': 1, 'Good Middle School': 1 }
+                                       'High School': 1, 'Middle School': 1, 'Elementary School': 1, 'Good Middle School': 1}
                                    },
-                      
+
                       'SDS Poor': {'school_counts': {'min': 1, 'max': 4, 'avg': 3},
                                    'school_types_and_ratios': {
                                        'High School': 1, 'Middle School': 1, 'Elementary School': 1, 'Poor Elementary School': 1}
                                    }
-                    
+
                       }
     return district_types
 
@@ -156,9 +156,7 @@ def get_state_types():
 
     Initial numbers were Big=3, Medium=6, Small=40
     """
-    state_types = {'SDS': {'district_types_and_counts': {'SDS Average': 1, 'SDS Poor': 1, 'SDS Good': 1},
-                                 'subjects_and_percentages': {'Math': .99, 'ELA': .99},
-                                 'demographics': 'typical1'}
+    state_types = {'SDS': {'district_types_and_counts': {'SDS Average': 1, 'SDS Poor': 1, 'SDS Good': 1}, 'subjects_and_percentages': {'Math': .99, 'ELA': .99}, 'demographics': 'typical1'}
                    }
     return state_types
 

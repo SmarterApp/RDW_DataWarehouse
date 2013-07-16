@@ -8,6 +8,7 @@ from udl2_util.measurement import measure_cpu_plus_elasped_time
 ORIGINAL_FILE = 'original_file'
 SPLIT_FILES = 'split_files'
 
+
 @measure_cpu_plus_elasped_time
 def create_directory_structure_for_file_history(history_directory_path, landing_zone_file_path):
     '''

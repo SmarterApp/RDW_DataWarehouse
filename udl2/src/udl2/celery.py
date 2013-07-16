@@ -6,6 +6,7 @@ import os
 import imp
 from udl2_util.measurement import measure_cpu_plus_elasped_time
 
+
 @measure_cpu_plus_elasped_time
 def setup_udl2_queues(conf):
     queues = {}
@@ -46,9 +47,9 @@ from udl2_conf import udl2_conf
 # the celery instance has to be named as celery due to celery driver looks for this object in celery.py
 # this is the default protocol between celery system and our implementation of tasks.
 
-celery = Celery(udl2_conf['celery']['root'],  
-                broker=udl2_conf['celery']['broker'], 
-                backend=udl2_conf['celery']['backend'], 
+celery = Celery(udl2_conf['celery']['root'],
+                broker=udl2_conf['celery']['broker'],
+                backend=udl2_conf['celery']['backend'],
                 include=udl2_conf['celery']['include'])
 
 # Create all queues entities to be use by task functions

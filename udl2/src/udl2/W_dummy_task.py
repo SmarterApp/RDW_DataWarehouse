@@ -5,6 +5,7 @@ from udl2_util.measurement import measure_cpu_plus_elasped_time
 
 logger = get_task_logger(__name__)
 
+
 @celery.task(name="udl2.W_dummy_task.task")
 @measure_cpu_plus_elasped_time
 def task(msg):

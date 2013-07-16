@@ -102,7 +102,7 @@ def split_file(file_name, delimiter=',', row_limit=10000, parts=0, output_path='
 	output,err = run_command(word_count_cmd)
 	totalrows = int(output.split()[0])
 	print_get_splitted_rows(totalrows, 'rows', 'splitted', 'file_splitter', 'split_file')
-	#if going by parts, get total rows and define row limit
+	# if going by parts, get total rows and define row limit
 	if parts > 0:
 		row_limit = math.ceil(totalrows / parts) # round up for row limit
 
@@ -111,7 +111,7 @@ def split_file(file_name, delimiter=',', row_limit=10000, parts=0, output_path='
 
 	if row_limit < totalrows or parts > 1:
 	#call unix split command
-		split_command = 'split -a1 -l {row_limit} {output_path}noheaders.csv {output_dir}'.format(row_limit=row_limit, output_path=output_path, output_dir=os.path.join(output_dir,output_name_template))
+		split_command = 'split -a1 -l {row_limit} {output_path}noheaders.csv {output_dir}'.format(row_limit = row_limit, output_path = output_path, output_dir = os.path.join(output_dir,output_name_template))
 		print(split_command)
 		run_command(split_command)
 		split_file_list = get_list_split_files(output_name_template, output_dir)

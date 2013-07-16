@@ -147,16 +147,18 @@ h6 {
 }
 
 .gridControls {
-  margin: 10px 0 0 20px;
+  //margin: 10px 0 0 20px;
   display: none;
   float: right;
+  position: relative;
   
   .align_label {
     background-image: url("../images/align_onoff.png");
     background-repeat: no-repeat;
     padding-left: 30px;
-    position: relative;
-    top: 7px;
+    position: absolute;
+    bottom: -23px;
+    right: 169px;
   }
   
   label {
@@ -166,8 +168,10 @@ h6 {
   
   .align_control {
     margin-left: 8px;
-    position: relative;
+    position: absolute;
     top: 7px;
+    right: 90px;
+    width: 75px;
   }
   
   .align_button {
@@ -189,16 +193,18 @@ h6 {
   }
   
   .filter_label {
-    margin: 0px 25px 0px 15px;
     padding-left: 15px;
     border-left: solid 1px;
     height: 30px;
     line-height: 32px;
     cursor: pointer;
+    position: absolute;
+    right: 30px;
     
     span {
-      vertical-align: middle;
+      position: absolute;
       margin-left: 5px;
+      top: 15px;
     }
   }
   

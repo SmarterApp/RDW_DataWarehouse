@@ -38,10 +38,10 @@ define [
     );
     
     # bind cancel button
-    $('.filter #cancel-btn').click( () ->
-      $(filterPanel).slideUp('slow')
-      resetFilterForm()
-    )
+    $('.filter #cancel-btn').click () ->
+      $(filterPanel).slideUp 'slow', () ->
+          $(filterArrow).hide() if $(".filters").children().length <= 0
+      clearOptions()
     
     # bind submit buttom
     $('.filter #submit-btn').click( () ->
@@ -62,22 +62,23 @@ define [
     )
     
   # remove individual filters
-  removeFilter  = (label, form) ->
+  removeFilter  = (label, dropdown) ->
     #remove label
     $(label).remove()
     # reset filter
-    resetFilterForm form
+    clearOptions dropdown
     removeAllSelectedFilters() if $(".filters").children().length <= 0
+    # ajax call
     submitEvent()
     
   removeAllSelectedFilters = ->
     $(".selectedFilter_panel").slideUp 'fast', () ->
       $(".filterArrow").hide() if $('.filter').is(":hidden")
     $(".selectedFilter_panel .filters").html("")
-    resetFilterForm $('.filter .filter-group')
+    clearOptions $('.filter .filter-group')
     
-  resetFilterForm = (form)->
-      checkBox = $(form).find("input:checked")
+  clearOptions = (element)->
+      checkBox = $(element).find("input:checked")
       checkBox.attr("checked", false)
       checkBox.parent().toggleClass('blue')
 
@@ -107,7 +108,7 @@ define [
     $(filterPanel).empty()
     
     $('.filter .filter-group').each () ->
-      form = $(this)
+      dropdown = $(this)
       param = {}
       param.display = $(this).data('display')
       param.values = []
@@ -116,7 +117,7 @@ define [
       label = generateLabel param
       # bind to remove event
       $('.removeIcon', label).click () ->
-        removeFilter $(label), $(form) 
+        removeFilter $(label), $(dropdown) 
       $(filterPanel).append(label) if param.values.length > 0
     $(".selectedFilter_panel").show()
   

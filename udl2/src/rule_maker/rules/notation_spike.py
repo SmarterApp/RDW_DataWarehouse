@@ -16,6 +16,7 @@ transformation_calculate = {
     }
 }
 
+
 def parse_dict(key):
     '''
     For different kinds of rules, this function returns
@@ -33,14 +34,7 @@ def parse_dict(key):
     column_name = key
     function_name = parts[NAME]
     sql_statement = dc.create_calculated_value_sql_function(formula)
-
-
-
     return func, parm
-
-
-
-
 
 if __name__ == '__main__':
     pass

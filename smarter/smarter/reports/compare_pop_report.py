@@ -502,11 +502,6 @@ class QueryHelper():
         self._dim_asmt = connector.get_table(Constants.DIM_ASMT)
         self._fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
 
-        self._demographics_filters = []
-        if self._filters:
-            self._demographics_filters += demographics.getDemographicProgramIepFilter(self._fact_asmt_outcome, self._filters)
-            self._demographics_filters += demographics.getDemographicProgram504Filter(self._fact_asmt_outcome, self._filters)
-
     def build_columns(self):
         '''
         build select columns based on request
@@ -552,9 +547,14 @@ class QueryHelper():
 
         # apply demographics filters
         if query is not None:
-            for demographics_filter in self._demographics_filters:
-                if demographics_filter is not None:
-                    query = query.where(demographics_filter)
+            if self._filters:
+                filter_iep = demographics.getDemographicProgramIepFilter(self._filters)
+                if filter_iep:
+                    query = query.where(self._fact_asmt_outcome.c.dmg_prg_iep.in_(filter_iep))
+                filter_504 = demographics.getDemographicProgram504Filter(self._filters)
+                if filter_504:
+                    query = query.where(self._fact_asmt_outcome.c.dmg_prg_504.in_(filter_504))
+
         return query
 
     def get_query_for_state_view(self):

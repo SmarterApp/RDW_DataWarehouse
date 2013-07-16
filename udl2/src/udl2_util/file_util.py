@@ -5,7 +5,6 @@ import shutil
 import glob
 from udl2_util.measurement import measure_cpu_plus_elasped_time
 
-
 @measure_cpu_plus_elasped_time
 def extract_file_name(file_path):
     '''

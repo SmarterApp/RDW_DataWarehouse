@@ -13,7 +13,7 @@ import re
 
 from sfv import error_codes
 from udl2_util.file_util import abs_path_join
-from udl2_util.measurement import measure_cpu_plus_elasped_time, show_amount_of_data_affected
+from udl2_util.measurement import measure_cpu_plus_elasped_time
 
 
 class CsvValidator():
@@ -104,7 +104,7 @@ class IsSourceFileAccessible(object):
         @return: tuple of the form: (status_code, dir_path, file_name, batch_sid)
         """
         full_path = abs_path_join(dir_path, file_name)
-        
+
         try:
             if os.path.exists(full_path) and os.access(full_path, os.R_OK) and os.path.isfile(full_path):
                 return (error_codes.STATUS_OK, dir_path, file_name, batch_sid)
@@ -131,7 +131,7 @@ class IsFileBlank(object):
         @return: tuple of the form: (status_code, dir_path, file_name, batch_sid)
         """
         full_path = abs_path_join(dir_path, file_name)
-        
+
         try:
             if os.stat(full_path).st_size > 0:
                 return (error_codes.STATUS_OK, dir_path, file_name, batch_sid)
@@ -141,7 +141,7 @@ class IsFileBlank(object):
             return (error_codes.SRC_FILE_NOT_ACCESSIBLE_SFV, dir_path, file_name, batch_sid)
         except Exception as e1:
             return (error_codes.STATUS_UNKNOWN_ERROR, dir_path, file_name, batch_sid)
-        
+
 
 class IsSourceFileCommaDelimited(object):
     """Job to check for comma delimited source file"""
@@ -166,7 +166,7 @@ class IsSourceFileCommaDelimited(object):
             return (error_codes.SRC_FILE_NOT_ACCESSIBLE_SFV, dir_path, file_name, batch_sid)
         except Exception as e1:
             return (error_codes.STATUS_UNKNOWN_ERROR, dir_path, file_name, batch_sid)
-        
+
         attempt_hack = False
         sample_data = None
         # use csv.sniffer to detect the dialect, then close the file
@@ -227,7 +227,7 @@ class DoesSourceFileContainDuplicateHeaders(object):
 
         processed_headers = []
         headers = None
-        
+
         try:
             with open(full_path, 'rU') as file_to_validate:
                 # headers = file_to_validate.readline()
@@ -238,7 +238,7 @@ class DoesSourceFileContainDuplicateHeaders(object):
             return (error_codes.SRC_FILE_NOT_ACCESSIBLE_SFV, dir_path, file_name, batch_sid)
         except Exception as e1:
             return (error_codes.STATUS_UNKNOWN_ERROR, dir_path, file_name, batch_sid)
-        
+
         for header in headers:
             if header.lower() in processed_headers:
                 return (error_codes.SRC_FILE_HAS_DUPLICATE_HEADERS, dir_path, file_name, batch_sid)
@@ -277,7 +277,6 @@ class DoesSourceFileContainHeaders(object):
             return (error_codes.SRC_FILE_NOT_ACCESSIBLE_SFV, dir_path, file_name, batch_sid)
         except Exception as e1:
             return (error_codes.STATUS_UNKNOWN_ERROR, dir_path, file_name, batch_sid)
-            
 
         if len(first_four_lines) == 0:
             # No rows, so no header.
@@ -301,12 +300,12 @@ class DoesSourceFileContainHeaders(object):
 
 class IsCsvWellFormed(object):
     """Job to check for well formed csv file"""
-    
+
     @measure_cpu_plus_elasped_time
     def __init__(self):
         # Initially, lines_to_validate was defined within a configuration file, here we hard code it for now
         # TODO: define lines_to_validate in a configuration file
-        self._lines_to_validate = 1 #int(CONFIG.get_config("validation_lines"))
+        self._lines_to_validate = 1   # int(CONFIG.get_config("validation_lines"))
 
     @measure_cpu_plus_elasped_time
     def set_lines_to_validate(self, lines_to_validate):
@@ -331,11 +330,11 @@ class IsCsvWellFormed(object):
         try:
             with open(full_path, 'rU') as file_to_validate:
                 file_reader = csv.reader(file_to_validate)
-    
+
                 # get the headers
                 headers = next(file_reader)
                 num_headers = len(headers)
-    
+
                 # check the number of data points
                 while (file_reader.line_num - 1) < self._lines_to_validate:
                     try:
@@ -343,7 +342,7 @@ class IsCsvWellFormed(object):
                     # execute to make sure we haven't hit the end of the file
                     except StopIteration:
                         return (error_codes.SRC_FILE_HAS_NO_DATA, dir_path, file_name, batch_sid)
-    
+
                     # validate the number of data entries
                     if len(line) != num_headers or self._empty_header_has_data(headers, line):
                         return (error_codes.SRC_FILE_HEADERS_MISMATCH_DATA,
@@ -352,7 +351,7 @@ class IsCsvWellFormed(object):
             return (error_codes.SRC_FILE_NOT_ACCESSIBLE_SFV, dir_path, file_name, batch_sid)
         except Exception as e1:
             return (error_codes.STATUS_UNKNOWN_ERROR, dir_path, file_name, batch_sid)
-        
+
         # we passed all tests
         return (error_codes.STATUS_OK, dir_path, file_name, batch_sid)
 

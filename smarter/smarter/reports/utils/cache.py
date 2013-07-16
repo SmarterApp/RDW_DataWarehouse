@@ -29,6 +29,8 @@ def cache_region(region, namespace='smarter', router=None, key_generator=None, *
 
     :param region:  a list of region or a string representing a region
     :param namespace:  namespace name
+    :param router:  a reference to a function that returns a region name for region routing needs
+    :param key_generator:  a reference to a function that returns a tuple representing the cache key
     :param decor_args:  additional arguments used as cache key
     '''
     cache = {}

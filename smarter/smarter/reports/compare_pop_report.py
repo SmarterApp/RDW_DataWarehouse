@@ -97,7 +97,7 @@ def get_comparing_populations_report(params):
 def get_comparing_populations_cache_route(comparing_pop):
     '''
     Returns cache region based on whether filters exist
-    It accepts one positional parameter, namely, 'self' in ComparingPopReport instance
+    It accepts one positional parameter, namely, a ComparingPopReport instance
 
     :param comparing_pop:  instance of ComparingPopReport
     '''
@@ -110,7 +110,7 @@ def get_comparing_populations_cache_route(comparing_pop):
 def get_comparing_populations_cache_key(comparing_pop):
     '''
     Returns cache key for comparing populations report
-    It accepts one positional parameter, namely, 'self' in ComparingPopReport instance
+    It accepts one positional parameter, namely, a ComparingPopReport instance
 
     :param comparing_pop:  instance of ComparingPopReport
     :returns: a tuple representing a unique key for comparing populations report

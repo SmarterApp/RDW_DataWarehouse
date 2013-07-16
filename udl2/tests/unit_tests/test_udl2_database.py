@@ -3,7 +3,7 @@ Created on May 22, 2013
 
 @author: ejen
 '''
-import sys
+#import sys
 import os
 import unittest
 import logging
@@ -34,11 +34,11 @@ class TestUdl2Database(unittest.TestCase):
 
     def _create_conn_engine(self, udl2_conf):
         (conn, engine) = connect_db(udl2_conf['udl2_db']['db_driver'],
-                                udl2_conf['udl2_db']['db_user'],
-                                udl2_conf['udl2_db']['db_pass'],
-                                udl2_conf['udl2_db']['db_host'],
-                                udl2_conf['udl2_db']['db_port'],
-                                udl2_conf['udl2_db']['db_name'])
+                                    udl2_conf['udl2_db']['db_user'],
+                                    udl2_conf['udl2_db']['db_pass'],
+                                    udl2_conf['udl2_db']['db_host'],
+                                    udl2_conf['udl2_db']['db_port'],
+                                    udl2_conf['udl2_db']['db_name'])
         return (conn, engine)
 
     def _compare_column_names(self, ddl_in_code, ddl_in_db):

@@ -182,7 +182,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
 
         # check district-level results
         records = results[Constants.RECORDS]
-        self.assertEqual(2, len(records), "2 districts in the list")
+        self.assertEqual(5, len(records), "5 districts in the list")
         found_district = False
         for record in records:
             if record[Constants.ID] == '228':
@@ -205,13 +205,13 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         summ_results = results[Constants.SUMMARY][0][Constants.RESULTS]
         self.assertEqual(2, len(summ_results))
         subject1 = summ_results[Constants.SUBJECT1]
-        self.assertEqual(88, subject1[Constants.TOTAL])
+        self.assertEqual(489, subject1[Constants.TOTAL])
         self.assertEqual(Constants.MATH, subject1[Constants.ASMT_SUBJECT])
         intervals = subject1[Constants.INTERVALS]
         self.assertEqual(4, len(intervals))
         self.assertEqual(1, intervals[0][Constants.LEVEL])
-        self.assertEqual(18, intervals[0][Constants.PERCENTAGE])
-        self.assertEqual(16, intervals[0][Constants.COUNT])
+        self.assertEqual(7, intervals[0][Constants.PERCENTAGE])
+        self.assertEqual(36, intervals[0][Constants.COUNT])
 
         # check subjects
         self.assertEqual(Constants.MATH, results[Constants.SUBJECTS][Constants.SUBJECT1])

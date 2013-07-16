@@ -6,7 +6,7 @@ Main Celery Task:
 method: task(msg)
 name: "udl2.W_load_json_to_integration.task"
 msg parameter requires the following:
-'file_to_load', 'batch_id'
+'file_to_load', 'guid_batch'
 
 Error Handler:
 method: error_handler()
@@ -26,7 +26,7 @@ from udl2.celery import udl2_conf
 from udl2_util.measurement import measure_cpu_plus_elasped_time
 
 
-BATCH_ID = 'batch_id'
+GUID_BATCH = 'guid_batch'
 
 logger = get_task_logger(__name__)
 
@@ -36,8 +36,8 @@ logger = get_task_logger(__name__)
 def task(msg):
     lzw = msg[mk.LANDING_ZONE_WORK_DIR]
     jc = msg[mk.JOB_CONTROL]
-    batch_id = jc[1]
-    expanded_dir = file_util.get_expanded_dir(lzw, batch_id)
+    guid_batch = jc[1]
+    expanded_dir = file_util.get_expanded_dir(lzw, guid_batch)
     json_file = file_util.get_file_type_from_dir('.json', expanded_dir)
     logger.info('LOAD_JSON_TO_INTEGRATION: Loading json file <%s>' % json_file)
     conf = generate_conf_for_loading(json_file, jc)
@@ -62,7 +62,7 @@ def generate_conf_for_loading(json_file, jc):
         mk.TARGET_DB_PASSWORD: udl2_conf['udl2_db']['db_pass'],
         mk.TARGET_DB_SCHEMA: udl2_conf['udl2_db']['integration_schema'],
         mk.TARGET_DB_TABLE: 'INT_SBAC_ASMT',
-        BATCH_ID: jc[1]
+        GUID_BATCH: jc[1]
     }
     return conf
 

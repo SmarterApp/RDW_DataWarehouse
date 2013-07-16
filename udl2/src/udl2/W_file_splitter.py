@@ -9,7 +9,6 @@ import filesplitter.file_splitter as file_splitter
 import udl2.message_keys as mk
 import time
 import os
-import glob
 from udl2_util.measurement import measure_cpu_plus_elasped_time
 
 logger = get_task_logger(__name__)
@@ -29,13 +28,13 @@ def task(incoming_msg):
     # Get necessary params for file_splitter
     lzw = incoming_msg[mk.LANDING_ZONE_WORK_DIR]
     jc = incoming_msg[mk.JOB_CONTROL]
-    batch_id = jc[1]
+    guid_batch = jc[1]
     parts = incoming_msg[mk.PARTS]
 
-    expanded_dir = file_util.get_expanded_dir(lzw, batch_id)
+    expanded_dir = file_util.get_expanded_dir(lzw, guid_batch)
     csv_file = file_util.get_file_type_from_dir('.csv', expanded_dir)
 
-    subfiles_dir = get_subfiles_dir(lzw, batch_id)
+    subfiles_dir = get_subfiles_dir(lzw, guid_batch)
     file_util.create_directory(subfiles_dir)
 
     # do actual work of splitting file
@@ -63,8 +62,8 @@ def task(incoming_msg):
 
 # TODO: Create a generic function that creates any of the (EXPANDED,ARRIVED,SUBFILES) etc. dirs in separate util file.
 @measure_cpu_plus_elasped_time
-def get_subfiles_dir(lzw, batch_id):
-    subfiles_dir = os.path.join(lzw, batch_id, 'SUBFILES')
+def get_subfiles_dir(lzw, guid_batch):
+    subfiles_dir = os.path.join(lzw, guid_batch, 'SUBFILES')
     return subfiles_dir + '/'
 
 

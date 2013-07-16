@@ -25,7 +25,7 @@ class TestPrePdfGenerator(Unittest_with_smarter_sqlite):
         results = prepare_pre_pdf(self.tenant, 'NY', '820568d0-ddaa-11e2-a63d-68a86d3c2f82')
         self.assertEqual(58, len(results))
         results = prepare_pre_pdf(self.tenant, 'NY', '90901b70-ddaa-11e2-a95d-68a86d3c2f82')
-        self.assertEqual(118, len(results))
+        self.assertEqual(888, len(results))
         results = prepare_pre_pdf(self.tenant, 'NY', 'd2d02660-ddd7-11e2-a28f-0800200c9a66')
         self.assertEqual(2, len(results))
 

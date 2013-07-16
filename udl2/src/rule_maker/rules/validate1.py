@@ -192,7 +192,7 @@ def generate_validation_proc(para):
 
 
 if __name__ == '__main__':
-    para = {'batch_id': 'be310a4c-e2db-4237-8c73-57d7a4f355a3',
+    para = {'guid_batch': 'be310a4c-e2db-4237-8c73-57d7a4f355a3',
             'err_source': 6,
             'schema': 'udl2',
             'table': 'INT_SBAC_ASMT_OUTCOME'

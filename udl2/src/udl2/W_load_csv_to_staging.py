@@ -16,15 +16,15 @@ logger = get_task_logger(__name__)
 def task(msg):
     logger.info(task.name)
     logger.info('LOAD_CSV_TO_STAGING: Loading file <%s> to <%s> ' % (msg[mk.FILE_TO_LOAD], udl2_conf['udl2_db']['db_host']))
-    batch_id = msg[mk.JOB_CONTROL][1]
-    conf = generate_conf_for_loading(msg[mk.FILE_TO_LOAD], msg[mk.ROW_START], msg[mk.HEADERS], batch_id)
+    guid_batch = msg[mk.JOB_CONTROL][1]
+    conf = generate_conf_for_loading(msg[mk.FILE_TO_LOAD], msg[mk.ROW_START], msg[mk.HEADERS], guid_batch)
     load_file(conf)
 
     return msg
 
 
 @measure_cpu_plus_elasped_time
-def generate_conf_for_loading(file_to_load, start_seq, header_file_path, batch_id):
+def generate_conf_for_loading(file_to_load, start_seq, header_file_path, guid_batch):
     csv_table = extract_file_name(file_to_load)
     conf = {
             mk.FILE_TO_LOAD: file_to_load,
@@ -44,7 +44,7 @@ def generate_conf_for_loading(file_to_load, start_seq, header_file_path, batch_i
             mk.APPLY_RULES: True,
             mk.REF_TABLE: udl2_conf['udl2_db']['ref_table_name'],
             mk.CSV_LZ_TABLE: udl2_conf['udl2_db']['csv_lz_table'],
-            mk.BATCH_ID: batch_id
+            mk.GUID_BATCH: guid_batch
     }
     return conf
 

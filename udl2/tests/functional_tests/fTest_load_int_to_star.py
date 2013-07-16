@@ -91,8 +91,8 @@ class IntToStarFTest(unittest.TestCase):
         #explode to dim tables
         dim_tables = column_mapping.get_target_tables_parallel()
         column_map = column_mapping.get_column_mapping()
-        batch_id = '2411183a-dfb7-42f7-9b3e-bb7a597aa3e7'
-        conf = W_load_from_integration_to_star.generate_conf(batch_id)
+        guid_batch = '2411183a-dfb7-42f7-9b3e-bb7a597aa3e7'
+        conf = W_load_from_integration_to_star.generate_conf(guid_batch)
         for target in dim_tables.keys():
             target_columns = column_map[target]
             column_types = move_to_target.get_table_column_types(conf,target,list(target_columns.keys()))

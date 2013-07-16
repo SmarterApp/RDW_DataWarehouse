@@ -17,6 +17,7 @@ from pyramid.testing import DummyRequest
 from pyramid import testing
 from edauth.security.session import Session
 from smarter.security.roles.teacher import Teacher  # @UnusedImport
+from smarter.reports.filters import Constants_filter_names
 
 
 class TestComparingPopulations(Unittest_with_smarter_sqlite):
@@ -24,7 +25,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
     def setUp(self):
         cache_opts = {
             'cache.type': 'memory',
-            'cache.regions': 'public.data'
+            'cache.regions': 'public.data,public.filtered_data'
         }
         CacheManager(**parse_cache_config_options(cache_opts))
 
@@ -241,6 +242,48 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         name = get_cache_region_name(cpop)
         self.assertEquals(name, CACHE_REGION_PUBLIC_FILTERING_DATA)
 
+    def test_state_view_with_504_yes(self):
+        testParam = {}
+        testParam[Constants.STATECODE] = 'NY'
+        testParam[Constants_filter_names.DEMOGRAPHICS_PROGRAM_504] = ['Y']
+        results = get_comparing_populations_report(testParam)
+        self.assertEqual(len(results['records']), 1)
+        self.assertEqual(results['records'][0]['results']['subject1']['total'], 20)
+        self.assertEqual(results['records'][0]['results']['subject2']['total'], 20)
+
+    def test_state_view_with_504_no(self):
+        testParam = {}
+        testParam[Constants.STATECODE] = 'NY'
+        testParam[Constants_filter_names.DEMOGRAPHICS_PROGRAM_504] = ['N']
+        results = get_comparing_populations_report(testParam)
+        self.assertEqual(len(results['records']), 5)
+        self.assertEqual(results['records'][1]['results']['subject1']['total'], 134)
+        self.assertEqual(results['records'][2]['results']['subject2']['total'], 148)
+
+    def test_state_view_with_504_not_stated(self):
+        testParam = {}
+        testParam[Constants.STATECODE] = 'NY'
+        testParam[Constants_filter_names.DEMOGRAPHICS_PROGRAM_504] = ['NS']
+        self.assertRaises(NotFoundException, get_comparing_populations_report, testParam)
+
+    def test_state_view_with_iep_yes(self):
+        testParam = {}
+        testParam[Constants.STATECODE] = 'NY'
+        testParam[Constants_filter_names.DEMOGRAPHICS_PROGRAM_IEP] = ['Y']
+        results = get_comparing_populations_report(testParam)
+        self.assertEqual(len(results['records']), 5)
+        self.assertEqual(results['records'][0]['results']['subject1']['total'], 8)
+        self.assertEqual(results['records'][4]['results']['subject2']['total'], 14)
+
+    def test_state_view_with_iep_yes_504_no(self):
+        testParam = {}
+        testParam[Constants.STATECODE] = 'NY'
+        testParam[Constants_filter_names.DEMOGRAPHICS_PROGRAM_IEP] = ['Y']
+        testParam[Constants_filter_names.DEMOGRAPHICS_PROGRAM_504] = ['N']
+        results = get_comparing_populations_report(testParam)
+        self.assertEqual(len(results['records']), 5)
+        self.assertEqual(results['records'][1]['results']['subject1']['total'], 15)
+        self.assertEqual(results['records'][2]['results']['subject2']['total'], 21)
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testReport']

@@ -513,10 +513,10 @@ class QueryHelper():
         # apply demographics filters
         if query is not None:
             if self._filters:
-                filter_iep = demographics.getDemographicProgramFilter(Constants_filter_names.DEMOGRAPHICS_PROGRAM_IEP, self._filters)
+                filter_iep = demographics.getDemographicFilter(Constants_filter_names.DEMOGRAPHICS_PROGRAM_IEP, self._filters)
                 if filter_iep:
                     query = query.where(self._fact_asmt_outcome.c.dmg_prg_iep.in_(filter_iep))
-                filter_504 = demographics.getDemographicProgramFilter(Constants_filter_names.DEMOGRAPHICS_PROGRAM_504, self._filters)
+                filter_504 = demographics.getDemographicFilter(Constants_filter_names.DEMOGRAPHICS_PROGRAM_504, self._filters)
                 if filter_504:
                     query = query.where(self._fact_asmt_outcome.c.dmg_prg_504.in_(filter_504))
 

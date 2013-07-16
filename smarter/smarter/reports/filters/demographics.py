@@ -7,7 +7,7 @@ from smarter.reports.filters import Constants_filter_names
 from sqlalchemy.sql.expression import true, false
 
 
-def getDemographicProgramFilter(filter_name, filters):
+def getDemographicFilter(filter_name, filters):
     '''
     apply filters for Disability
     :rtype: sqlalchemy.sql.select

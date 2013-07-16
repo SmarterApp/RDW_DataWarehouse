@@ -85,7 +85,7 @@ def generate_parameter_declarations(param_list):
 
 def generate_parameter_declaration(base_name, var_type='VARCHAR(255)'):
     parameter_declaration = 'p_{base_name} {var_type}'
-    result = parameter_declaration.format(base_name = base_name, var_type = var_type.upper())
+    result = parameter_declaration.format(base_name=base_name, var_type=var_type.upper())
     return result
 
 

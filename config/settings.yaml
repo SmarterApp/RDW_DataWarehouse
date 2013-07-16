@@ -466,7 +466,7 @@ jenkins_dev:
     pdf:
       base.url: http://edwappsrv1.poc.dum.edwdc.net/assets/html/
     cache:
-      public.shortlived.url: edwappsrv2.poc.dum.edwdc.net:11211
-      public.filtered_data: edwappsrv1.poc.dum.edwdc.net:11211
+      public.shortlived.url: edwappsrv1.poc.dum.edwdc.net:11211
+      public.filtered_data.url: edwappsrv1.poc.dum.edwdc.net:11211
       public.data.url: edwappsrv1.poc.dum.edwdc.net:11211
       session.url: edwappsrv2.poc.dum.edwdc.net:11211

@@ -7,7 +7,7 @@ Created on May 22, 2013
 from collections import OrderedDict
 
 from sqlalchemy.engine import create_engine
-from sqlalchemy.sql.expression import func, text
+from sqlalchemy.sql.expression import text
 from sqlalchemy import MetaData
 from sqlalchemy.orm import sessionmaker
 
@@ -72,7 +72,7 @@ def get_table_columns_info(conn, table_name, is_conn_a_dblink=False):
     if is_conn_a_dblink:
         sql_query = text("")
     else:  # table is in the local database server
-        sql_query = text("SELECT column_name, data_type, character_maximum_length " + 
+        sql_query = text("SELECT column_name, data_type, character_maximum_length " +
                          "FROM information_schema.columns "
                          "WHERE table_name = \'%s\' "
                         % (table_name))

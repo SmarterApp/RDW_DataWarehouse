@@ -72,7 +72,7 @@ define [
     
   removeAllSelectedFilters = ->
     $(".selectedFilter_panel").slideUp 'fast', () ->
-      $(".filterArrow").hide()
+      $(".filterArrow").hide() if $('.filter').is(":hidden")
     $(".selectedFilter_panel .filters").html("")
     resetFilterForm $('.filter .filter-group')
     

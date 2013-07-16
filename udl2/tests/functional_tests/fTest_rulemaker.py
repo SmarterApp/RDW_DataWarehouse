@@ -9,6 +9,7 @@ from sqlalchemy import func
 from udl2_util.database_util import create_sqlalch_session
 from sqlalchemy.exc import ProgrammingError
 
+
 class RuleGeneratorFTest(unittest.TestCase):
 
     def setUp(self):
@@ -30,18 +31,18 @@ class RuleGeneratorFTest(unittest.TestCase):
                 session.execute(rule[2])
             except ProgrammingError as e:
                 raise AssertionError('UNABLE TO CREATE FUNCTION: %s, Error: "%s"' % (rule[0], e))
-        
-        session.commit()    
-    
+
+        session.commit()
+
     def tearDown(self):
         self.conn.close()
-    
+
     def test_rule_with_inlist_outlist(self):
         for rule in self.rule_list:
             rule_def = self.rule_conf[rule[0]]
             if 'inlist' in rule_def and 'outlist' in rule_def:
-                for (input_val,output_val) in zip(rule_def['inlist'],rule_def['outlist']):
-                    result = self.engine.execute("SELECT %s('%s')" % (rule[1],input_val))
+                for (input_val, output_val) in zip(rule_def['inlist'], rule_def['outlist']):
+                    result = self.engine.execute("SELECT %s('%s')" % (rule[1], input_val))
                     assert result.fetchone()[0] == output_val
 
     def test_rule_with_inlist_compare_length(self):
@@ -51,7 +52,7 @@ class RuleGeneratorFTest(unittest.TestCase):
                 for input_val in rule_def['inlist']:
                     test_val = input_val[:int(rule_def['compare_length'])]
                     test_val += 'asdf'
-                    result = self.engine.execute("SELECT %s('%s')" % (rule[1],input_val))
+                    result = self.engine.execute("SELECT %s('%s')" % (rule[1], input_val))
                     assert result.fetchone()[0] == input_val
 
     def test_rule_with_lookup(self):
@@ -61,19 +62,18 @@ class RuleGeneratorFTest(unittest.TestCase):
                 print('FOUND A RULE WITHLOOKUP')
                 for lookup_val in rule_def['lookup'].keys():
                     for possible_val in rule_def['lookup'][lookup_val]:
-                        result = self.engine.execute("SELECT %s('%s')" % (rule[1],possible_val))
+                        result = self.engine.execute("SELECT %s('%s')" % (rule[1], possible_val))
                         assert result.fetchone()[0] == lookup_val
+
     def test_cleanup_rules(self):
-        clean_rules = [('sp_clean','this \nshould be cleaned. ','this should be cleaned.'),
-                       ('sp_cleanUpper','this \nshould be cleaned. ','THIS SHOULD BE CLEANED.'),
-                       ('sp_cleanLower','ThIs \nShouLd Be cLeaNed. ','this should be cleaned.')]
-        
+        clean_rules = [('sp_clean', 'this \nshould be cleaned. ', 'this should be cleaned.'),
+                       ('sp_cleanUpper', 'this \nshould be cleaned. ', 'THIS SHOULD BE CLEANED.'),
+                       ('sp_cleanLower', 'ThIs \nShouLd Be cLeaNed. ', 'this should be cleaned.')]
+
         for each in clean_rules:
-            result = self.engine.execute("SELECT %s('%s')" % (each[0],each[1]))
+            result = self.engine.execute("SELECT %s('%s')" % (each[0], each[1]))
             temp = result.fetchone()[0]
             assert temp == each[2]
-
-
 
     def test_rule_definitions(self):
         for each in self.rule_conf:

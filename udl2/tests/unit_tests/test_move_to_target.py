@@ -73,7 +73,7 @@ def generate_conf(guid_batch, udl2_conf):
     Return all needed configuration information
     '''
     conf = {
-             # add guid_batch from msg
+            # add guid_batch from msg
             mk.GUID_BATCH: guid_batch,
 
             # source schema

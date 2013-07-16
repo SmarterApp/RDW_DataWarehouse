@@ -30,7 +30,7 @@ class TestLoadToIntegrationTable(unittest.TestCase):
         target_columns = ['guid_batch', 'substr_test', 'number_test']
         source_columns_with_tran_rule = ['A.guid_batch', 'SUBSTR(A.substr_test, 1, 10)', 'TO_NUMBER(A.number_test, \'99999\')']
         actual_query_result = create_migration_query(source_schema, source_table, target_schema, target_table,
-                                       error_schema, error_table, guid_batch, target_columns, source_columns_with_tran_rule)
+                                                     error_schema, error_table, guid_batch, target_columns, source_columns_with_tran_rule)
         self.assertEqual(re.sub('\s+', ' ', expected_query_result.replace('\n', ' ').replace('\t', ' ')),
                          re.sub('\s+', ' ', actual_query_result.replace('\n', ' ').replace('\t', ' ')))
 

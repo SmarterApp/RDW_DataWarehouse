@@ -37,7 +37,7 @@ class TestMoveToTarget(unittest.TestCase):
 
         expected_query_1 = 'ALTER TABLE \"edware\".\"{target_table}\" DISABLE TRIGGER ALL'.format(target_table=target_table)
         expected_query_2 = get_expected_insert_query_for_fact_table(target_table, column_mapping['asmt_rec_id'], column_mapping['section_rec_id'], guid_batch,
-                                                            conf[mk.SOURCE_DB_NAME], conf[mk.SOURCE_DB_USER], conf[mk.SOURCE_DB_PASSWORD])
+                                                                    conf[mk.SOURCE_DB_NAME], conf[mk.SOURCE_DB_USER], conf[mk.SOURCE_DB_PASSWORD])
         expected_query_3 = get_expected_update_inst_hier_rec_id_query(target_table)
         expected_query_4 = 'ALTER TABLE \"edware\".\"{target_table}\" ENABLE TRIGGER ALL'.format(target_table=target_table)
         expected_value = [expected_query_1, expected_query_2, expected_query_3, expected_query_4]
@@ -138,7 +138,7 @@ def get_expected_insert_query_for_fact_table(table_name, asmt_rec_id, section_re
             'asmt_claim_2_score_range_max smallint,asmt_claim_3_score smallint,asmt_claim_3_score_range_min smallint,asmt_claim_3_score_range_max smallint,'\
             'asmt_claim_4_score smallint,asmt_claim_4_score_range_min smallint,asmt_claim_4_score_range_max smallint,record_create_datetime timestamp without time zone,'\
             'status character varying(2),most_recent boolean,batch_guid character varying(50));'.format(table_name=table_name, asmt_rec_id=asmt_rec_id, section_rec_id=section_rec_id, guid_batch=guid_batch,
-                                                                       dbname=dbname, user=user, password=password)
+                                                                                                        dbname=dbname, user=user, password=password)
 
 
 def get_expected_update_inst_hier_rec_id_query(table_name):

@@ -5,6 +5,7 @@ from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from sqlalchemy import create_engine
 from udl2 import database
 
+
 class UniuqeCount(unittest.TestCase):
 
     def setUp(self):

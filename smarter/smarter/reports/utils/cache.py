@@ -43,14 +43,14 @@ def cache_region(region, namespace='smarter', router=None, key_generator=None, *
                 region_name = region[0]
             else:
                 region_name = region
-
+            # If router exist, use it to determine the cache region
             if router is not None:
                 region_name = router(*args)
 
             if cache.get(region_name) is None:
                 reg = cache_regions.get(region_name)
                 cache[region_name] = Cache._get_cache(namespace, reg)
-
+            # If key generator exists, use it to generate a key
             if key_generator is not None:
                 combined_args = decor_args + key_generator(*args)
             else:

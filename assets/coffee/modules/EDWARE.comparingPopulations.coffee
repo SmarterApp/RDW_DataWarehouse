@@ -17,9 +17,6 @@ define [
   # Add header to the page
   edwareUtil.getHeader()
   
-  # Add filter to the page
-  filter = edwareFilter.generateFilter($('#cpopFilter'), $('.filter_label')) 
-  
   #
   #    * Create Student data grid
   #    
@@ -134,7 +131,10 @@ define [
         # Keep sorting and alignment status after regenerating grid
         $('#gridTable').trigger "jqGridLoadComplete.jqGrid"
         $('.colorsBlock input:checked').click()
-            
+
+  # Add filter to the page
+  edwareFilter.create $('#cpopFilter'), $('.filter_label'), createPopulationGrid 
+
   # Render comparing population grid
   renderGrid = (gridConfig, populationData, summaryData) ->
     $("#gbox_gridTable").remove()
@@ -437,7 +437,5 @@ define [
     targetElement.closest('.dropdown').css('margin-left', position.left)
     targetElement.closest('.dropdown').css('margin-top', position.top)
 
-  # register createPopulationGrid as callback in filter pop up
-  filter.registerCallback createPopulationGrid
   
   createPopulationGrid: createPopulationGrid

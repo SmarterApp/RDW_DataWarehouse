@@ -7,19 +7,30 @@ define [
   "text!edwareFilterTemplate"
 ], ($, Mustache, bootstrap, edwareDataProxy, edwareUtil, filterTemplate) ->
   
+  # * EDWARE filter widget
+  # * The module contains EDWARE filter creation method
+  
+  # callback function
   callback = undefined
   
+  #
+  #    *  EDWARE Filter plugin
+  #    *  @param filterHook - Panel config data
+  #    *  @param filterTrigger - 
+  #    *  @param callback_func - callback function, triggered by click event on apply button
+  #    *  Example: $("#table1").edwareGrid(columnItems, gridOptions)
+  #  
+    
   # Generate a filter
-  generateFilter = (filterHook, filterTrigger) ->
-    config = fetchConfig()
+  createFilter = (filterHook, filterTrigger, callback_func) ->
+    # register callback
+    callback = callback_func
+    # load config from server
+    config = loadConfig()
     output = Mustache.to_html filterTemplate, config
     $(filterHook).html(output)
     # bind click event
     bindEvent(filterTrigger, filterHook)
-    this
-
-  registerCallback = (callback_func) ->
-    callback = callback_func
 
   bindEvent = (trigger, filterHook) ->
     filterArrow = $(filterHook).find('.filterArrow')
@@ -82,7 +93,7 @@ define [
       checkBox.attr("checked", false)
       checkBox.parent().toggleClass('blue')
 
-  fetchConfig = () ->
+  loadConfig = () ->
     options =
       async: false
       method: "GET"
@@ -95,15 +106,16 @@ define [
   submitEvent = () ->
     # construct params and send ajax call
     params = edwareUtil.getUrlParams()
-    selectedValues = fetchSelectedValues 'name', 'value'
+    selectedValues = fetchSelectedValues
     # merge selected options into param
     $.extend(params, selectedValues)
     console.log params
     callback params if callback
     # display selected filters on html page
-    displaySelectedLabels $(".selectedFilter_panel .filters")
+    createSelectedFilterPanel()
     
-  displaySelectedLabels = (filterPanel) ->
+  createSelectedFilterPanel = ->
+    filterPanel = $(".selectedFilter_panel .filters")
     # remove existing filter labels
     $(filterPanel).empty()
     
@@ -115,7 +127,7 @@ define [
       $(this).find('input:checked').each () ->
         param.values.push $(this).data('label')
       label = generateLabel param
-      # bind to remove event
+      # attach click event on remove icon
       $('.removeIcon', label).click () ->
         removeFilter $(label), $(dropdown) 
       $(filterPanel).append(label) if param.values.length > 0
@@ -126,17 +138,17 @@ define [
     output = Mustache.to_html(template, data)
     $(output)
     
-  fetchSelectedValues = (keyField, valueField) ->
+  # get parameters for ajax call
+  fetchSelectedValues = ->
     # get fields of selected options in json format
     params = {}
     $('.filter .filter-group').each () ->
-      paramName = $(this).data(keyField)
+      paramName = $(this).data('name')
       paramValues = []
       $(this).find('input:checked').each () ->
-        paramValues.push $(this).data(valueField)
+        paramValues.push $(this).data('value')
       params[paramName] = paramValues if paramValues.length > 0
     params
 
 
-  generateFilter: generateFilter
-  registerCallback: registerCallback
+  create: createFilter

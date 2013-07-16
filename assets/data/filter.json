@@ -1,6 +1,6 @@
 {
 	"grades" : {
-		"display" : "Grade Range",
+		"display" : "Grades",
 		"name" : "grade",
 		"options" : [
 			{

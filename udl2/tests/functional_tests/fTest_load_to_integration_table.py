@@ -40,14 +40,14 @@ class FuncTestLoadToIntegrationTable(unittest.TestCase):
                                     self.conf['udl2_db']['db_name'])
         sql_template = """
             DELETE FROM "{staging_schema}"."{staging_table}"
-            WHERE batch_id = '{batch_id}'
+            WHERE guid_batch = '{guid_batch}'
             """
         sql_stg = sql_template.format(staging_schema=self.conf['udl2_db']['staging_schema'],
                                   staging_table='STG_SBAC_ASMT_OUTCOME',
-                                  batch_id=self.conf['batch_id'])
+                                  guid_batch=self.conf['guid_batch'])
         sql_int = sql_template.format(staging_schema=self.conf['udl2_db']['staging_schema'],
                                   staging_table='INT_SBAC_ASMT_OUTCOME',
-                                  batch_id=self.conf['batch_id'])
+                                  guid_batch=self.conf['guid_batch'])
         except_msg = "Can't not clean up test data from staging table inside functional test FuncTestLoadToIntegrationTable("
         execute_queries(conn, [sql_stg, sql_int], except_msg)
 
@@ -70,7 +70,7 @@ class FuncTestLoadToIntegrationTable(unittest.TestCase):
             mk.TARGET_DB_TABLE: 'STG_SBAC_ASMT_OUTCOME',
             mk.APPLY_RULES: False,
             mk.ROW_START: 10,
-            mk.BATCH_ID: '00000000-0000-0000-0000-000000000000'
+            mk.GUID_BATCH: '00000000-0000-0000-0000-000000000000'
         }
         load_file(conf)
 
@@ -83,11 +83,11 @@ class FuncTestLoadToIntegrationTable(unittest.TestCase):
                                     self.conf['udl2_db']['db_name'])
         sql_template = """
             SELECT COUNT(*) FROM "{staging_schema}"."{staging_table}"
-            WHERE batch_id = '{batch_id}'
+            WHERE guid_batch = '{guid_batch}'
         """
         sql = sql_template.format(staging_schema=self.conf['udl2_db']['staging_schema'],
                                   staging_table='INT_SBAC_ASMT_OUTCOME',
-                                  batch_id=self.conf['batch_id'])
+                                  guid_batch=self.conf['guid_batch'])
         result = conn.execute(sql)
         count = 0
         for row in result:
@@ -103,11 +103,11 @@ class FuncTestLoadToIntegrationTable(unittest.TestCase):
                                     self.conf['udl2_db']['db_name'])
         sql_template = """
             SELECT COUNT(*) FROM "{staging_schema}"."{staging_table}"
-            WHERE batch_id = '{batch_id}'
+            WHERE guid_batch = '{guid_batch}'
         """
         sql = sql_template.format(staging_schema=self.conf['udl2_db']['staging_schema'],
                                   staging_table='INT_SBAC_ASMT_OUTCOME',
-                                  batch_id=self.conf['batch_id'])
+                                  guid_batch=self.conf['guid_batch'])
         result = conn.execute(sql)
         count = 0
         for row in result:
@@ -122,7 +122,7 @@ class FuncTestLoadToIntegrationTable(unittest.TestCase):
         it loads 30 records from test csv file to stagint table then move it to integration.
         '''
         conf = {
-            mk.BATCH_ID: '00000000-0000-0000-0000-000000000000',
+            mk.GUID_BATCH: '00000000-0000-0000-0000-000000000000',
             mk.SOURCE_DB_DRIVER: self.conf['udl2_db']['db_driver'],
 
             # source database setting
@@ -132,6 +132,7 @@ class FuncTestLoadToIntegrationTable(unittest.TestCase):
             mk.SOURCE_DB_NAME: self.conf['udl2_db']['db_database'],
             mk.SOURCE_DB_PASSWORD: self.conf['udl2_db']['db_pass'],
             mk.SOURCE_DB_SCHEMA: self.conf['udl2_db']['staging_schema'],
+            mk.SOURCE_DB_TABLE: 'STG_SBAC_ASMT_OUTCOME',
 
             # target database setting
             mk.TARGET_DB_HOST: self.conf['udl2_db']['db_host'],
@@ -140,13 +141,13 @@ class FuncTestLoadToIntegrationTable(unittest.TestCase):
             mk.TARGET_DB_NAME: self.conf['udl2_db']['db_database'],
             mk.TARGET_DB_PASSWORD: self.conf['udl2_db']['db_pass'],
             mk.TARGET_DB_SCHEMA: self.conf['udl2_db']['integration_schema'],
+            mk.TARGET_DB_TABLE: 'INT_SBAC_ASMT_OUTCOME',
 
             mk.REF_TABLE: self.conf['udl2_db']['ref_table_name'],
             mk.ERROR_DB_SCHEMA: self.conf['udl2_db']['staging_schema'],
 
-            mk.MAP_TYPE: 'staging_to_integration_sbac_asmt_outcome'
         }
-        self.conf['batch_id'] = '00000000-0000-0000-0000-000000000000'
+        self.conf['guid_batch'] = '00000000-0000-0000-0000-000000000000'
         self.load_file_to_stage()
         preloading_total = self.postloading_count()
         print(preloading_total)

@@ -2,7 +2,7 @@
 
 # initialize edware star schema
 
-python3.3 -m edschema.ed_metadata -s edware -d edware --host=localhost:5432 -u edware -p edware2013
+python3.3 -m edschema.metadata_generator --metadata edware -s edware -d edware --host=localhost:5432 -u edware -p edware2013
 
 
 # use virtualenv to run initialization script

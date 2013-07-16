@@ -53,7 +53,7 @@ class FileLoaderFTest(unittest.TestCase):
     def test_row_number(self):
         # load data
         self.conf[mk.ROW_START] = 10
-        self.conf[mk.BATCH_ID] = generate_non_exsisting_batch_id(self.conf, self.conn)
+        self.conf[mk.GUID_BATCH] = generate_non_exsisting_guid_batch(self.conf, self.conn)
         load_file(self.conf)
 
         # verify
@@ -64,7 +64,7 @@ class FileLoaderFTest(unittest.TestCase):
     def test_compare_data(self):
         # load data
         self.conf[mk.ROW_START] = 24
-        self.conf[mk.BATCH_ID] = generate_non_exsisting_batch_id(self.conf, self.conn)
+        self.conf[mk.GUID_BATCH] = generate_non_exsisting_guid_batch(self.conf, self.conn)
         load_file(self.conf)
 
         # get the result of db
@@ -82,20 +82,20 @@ class FileLoaderFTest(unittest.TestCase):
                     value_in_table = row_in_table[i + 3]
                     if value_in_csv and value_in_table:
                         self.assertEqual(value_in_csv, value_in_table)
-                    # verify the src_file_rec_num and batch_id
+                    # verify the src_file_rec_num and guid_batch
                     self.assertEqual(row_in_table['src_file_rec_num'], row_number + self.conf[mk.ROW_START])
-                    self.assertEqual(row_in_table['batch_id'], str(self.conf[mk.BATCH_ID]))
+                    self.assertEqual(row_in_table['guid_batch'], str(self.conf[mk.GUID_BATCH]))
                 row_number += 1
 
     def test_transformations_occur_during_load(self):
         self.conf[mk.ROW_START] = 124
-        self.conf[mk.BATCH_ID] = generate_non_exsisting_batch_id(self.conf, self.conn)
+        self.conf[mk.GUID_BATCH] = generate_non_exsisting_guid_batch(self.conf, self.conn)
         self.conf[mk.FILE_TO_LOAD] = self.CSV_FILE2
         self.conf[mk.APPLY_RULES] = True
         load_file(self.conf)
 
         # Get newly loaded data for comparison
-        sel_query = 'SELECT * FROM "{schema}"."{table}" WHERE batch_id=\'{batch}\''.format(schema=self.conf[mk.TARGET_DB_SCHEMA], table=self.conf[mk.TARGET_DB_TABLE], batch=self.conf['batch_id'])
+        sel_query = 'SELECT * FROM "{schema}"."{table}" WHERE guid_batch=\'{batch}\''.format(schema=self.conf[mk.TARGET_DB_SCHEMA], table=self.conf[mk.TARGET_DB_TABLE], batch=self.conf['guid_batch'])
         results = self.conn.execute(sel_query)
         result_list = results.fetchall()
         expected_rows = get_clean_rows_from_file(self.CSV_FILE2_CLEAN)
@@ -121,7 +121,7 @@ class FileLoaderFTest(unittest.TestCase):
 
     def tearDown(self):
         # truncate staging table or delete all rows just inserted.
-        query = 'DELETE FROM \"{schema_name}\".\"{table_name}\" WHERE batch_id=\'{batch_id}\''.format(schema_name=self.conf[mk.TARGET_DB_SCHEMA], table_name=self.conf[mk.TARGET_DB_TABLE], batch_id=self.conf['batch_id'])
+        query = 'DELETE FROM \"{schema_name}\".\"{table_name}\" WHERE guid_batch=\'{guid_batch}\''.format(schema_name=self.conf[mk.TARGET_DB_SCHEMA], table_name=self.conf[mk.TARGET_DB_TABLE], guid_batch=self.conf['guid_batch'])
         trans = self.conn.begin()
         try:
             self.conn.execute(query)
@@ -130,7 +130,7 @@ class FileLoaderFTest(unittest.TestCase):
             print('Exception -- ', e)
             trans.rollback()
         self.conn.close()
-        print("Tear Down successful for batch", self.conf['batch_id'])
+        print("Tear Down successful for batch", self.conf['guid_batch'])
 
 
 def get_clean_rows_from_file(filename):
@@ -143,8 +143,8 @@ def get_clean_rows_from_file(filename):
     return filerows
 
 
-def generate_non_exsisting_batch_id(conf, conn):
-    query = "SELECT DISTINCT batch_id FROM \"{schema_name}\".\"{table_name}\"".format(schema_name=conf[mk.TARGET_DB_SCHEMA], table_name=conf[mk.TARGET_DB_TABLE])
+def generate_non_exsisting_guid_batch(conf, conn):
+    query = "SELECT DISTINCT guid_batch FROM \"{schema_name}\".\"{table_name}\"".format(schema_name=conf[mk.TARGET_DB_SCHEMA], table_name=conf[mk.TARGET_DB_TABLE])
     trans = conn.begin()
     try:
         result = conn.execute(query)
@@ -152,11 +152,11 @@ def generate_non_exsisting_batch_id(conf, conn):
     except Exception as e:
         print('Exception -- ', e)
         trans.rollback()
-    exsisting_batch_ids = [row[0] for row in result]
-    if len(exsisting_batch_ids) == 0:
+    exsisting_guid_batchs = [row[0] for row in result]
+    if len(exsisting_guid_batchs) == 0:
         return uuid.uuid4()
     else:
-        #return max(exsisting_batch_ids) + 10
+        #return max(exsisting_guid_batchs) + 10
         return uuid.uuid4()
 
 
@@ -170,7 +170,7 @@ def get_row_number_in_csv(csv_file):
 
 
 def get_row_number_in_table(conf, conn):
-    query = 'SELECT COUNT(*) FROM \"{schema_name}\".\"{table_name}\" WHERE batch_id=\'{batch_id}\''.format(schema_name=conf[mk.TARGET_DB_SCHEMA], table_name=conf[mk.TARGET_DB_TABLE], batch_id=conf['batch_id'])
+    query = 'SELECT COUNT(*) FROM \"{schema_name}\".\"{table_name}\" WHERE guid_batch=\'{guid_batch}\''.format(schema_name=conf[mk.TARGET_DB_SCHEMA], table_name=conf[mk.TARGET_DB_TABLE], guid_batch=conf['guid_batch'])
     trans = conn.begin()
     try:
         result = conn.execute(query)
@@ -185,7 +185,7 @@ def get_row_number_in_table(conf, conn):
 
 
 def get_rows_in_table(conf, conn):
-    query = 'SELECT * FROM \"{schema_name}\".\"{table_name}\" WHERE batch_id=\'{batch_id}\''.format(schema_name=conf[mk.TARGET_DB_SCHEMA], table_name=conf[mk.TARGET_DB_TABLE], batch_id=conf['batch_id'])
+    query = 'SELECT * FROM \"{schema_name}\".\"{table_name}\" WHERE guid_batch=\'{guid_batch}\''.format(schema_name=conf[mk.TARGET_DB_SCHEMA], table_name=conf[mk.TARGET_DB_TABLE], guid_batch=conf['guid_batch'])
     print(query)
     trans = conn.begin()
     try:

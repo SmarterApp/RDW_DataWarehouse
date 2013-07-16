@@ -84,10 +84,10 @@ def create_fdw_tables(conn, header_names, header_types, csv_file, csv_schema, cs
 
 
 @measure_cpu_plus_elasped_time
-def get_fields_map(conn, ref_table, csv_lz_table, batch_id, csv_file, staging_schema):
+def get_fields_map(conn, ref_table, csv_lz_table, guid_batch, csv_file, staging_schema):
     '''
     Getting field mapping, which maps the columns in staging table, and columns in csv table
-    The mapping is defined in the given ref_table except for batch_id and src_file_rec_num
+    The mapping is defined in the given ref_table except for guid_batch and src_file_rec_num
     @return: stg_asmt_outcome_columns - list of columns in staging table
              csv_table_columns - list of corresponding columns in csv table
              transformation_rules - list of transformation rules for corresponding columns
@@ -98,9 +98,9 @@ def get_fields_map(conn, ref_table, csv_lz_table, batch_id, csv_file, staging_sc
                                                'Exception in getting column mapping between csv_table and staging table -- ',
                                                'file_loader', 'get_fields_map')
 
-    # column batch_id and src_file_rec_num are in staging table, but not in csv_table
-    csv_table_columns = ['\'' + str(batch_id) + '\'', 'nextval(\'{seq_name}\')']
-    stg_asmt_outcome_columns = ['batch_id', 'src_file_rec_num']
+    # column guid_batch and src_file_rec_num are in staging table, but not in csv_table
+    csv_table_columns = ['\'' + str(guid_batch) + '\'', 'nextval(\'{seq_name}\')']
+    stg_asmt_outcome_columns = ['guid_batch', 'src_file_rec_num']
     transformation_rules = ['', '']
     if column_mapping:
         for mapping in column_mapping:
@@ -155,7 +155,7 @@ def load_data_process(conn, conf):
 
     # get field map
     stg_asmt_outcome_columns, csv_table_columns, transformation_rules = get_fields_map(conn, conf[mk.REF_TABLE], conf[mk.CSV_LZ_TABLE],
-                                                                                       conf[mk.BATCH_ID], conf[mk.FILE_TO_LOAD], conf[mk.TARGET_DB_SCHEMA])
+                                                                                       conf[mk.GUID_BATCH], conf[mk.FILE_TO_LOAD], conf[mk.TARGET_DB_SCHEMA])
 
     # load the data from FDW table to staging table
     start_time = datetime.datetime.now()
@@ -222,7 +222,7 @@ if __name__ == '__main__':
             mk.APPLY_RULES: True,
             mk.REF_TABLE: 'REF_COLUMN_MAPPING',
             mk.CSV_LZ_TABLE: 'LZ_CSV',
-            mk.BATCH_ID: '00000000-0000-0000-0000-000000000000'
+            mk.GUID_BATCH: '00000000-0000-0000-0000-000000000000'
     }
     start_time = datetime.datetime.now()
     load_file(conf)

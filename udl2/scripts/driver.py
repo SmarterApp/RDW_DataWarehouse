@@ -13,15 +13,15 @@ import imp
 
 
 # Paths to our various directories
-#THIS_MODULE_PATH = os.path.abspath(__file__)
-#SRC_DIRECTORY = os.path.dirname(THIS_MODULE_PATH)
-#ROOT_DIRECTORY = os.path.dirname(SRC_DIRECTORY)
-#ZONES = os.path.join(ROOT_DIRECTORY, 'zones')
-#LANDING_ZONE = os.path.join(ZONES, 'landing')
-#ARRIVALS = os.path.join(ZONES, 'arrivals')
-#WORK_ZONE = os.path.join(LANDING_ZONE, 'work')
-#HISTORY_ZONE = os.path.join(LANDING_ZONE, 'history')
-#DATAFILES = os.path.join(ROOT_DIRECTORY, 'datafiles')
+# THIS_MODULE_PATH = os.path.abspath(__file__)
+# SRC_DIRECTORY = os.path.dirname(THIS_MODULE_PATH)
+# ROOT_DIRECTORY = os.path.dirname(SRC_DIRECTORY)
+# ZONES = os.path.join(ROOT_DIRECTORY, 'zones')
+# LANDING_ZONE = os.path.join(ZONES, 'landing')
+# ARRIVALS = os.path.join(ZONES, 'arrivals')
+# WORK_ZONE = os.path.join(LANDING_ZONE, 'work')
+# HISTORY_ZONE = os.path.join(LANDING_ZONE, 'history')
+# DATAFILES = os.path.join(ROOT_DIRECTORY, 'datafiles')
 
 
 def start_pipeline(csv_file_path, json_file_path, udl2_conf):
@@ -48,10 +48,10 @@ def start_pipeline(csv_file_path, json_file_path, udl2_conf):
 
     # Prepare parameters for task msgs
     archived_file = os.path.join('fake', 'path', 'to', 'fake_archived_file.zip')
-    batch_id = str(uuid4())
+    guid_batch = str(uuid4())
     lzw = udl2_conf['zones']['work']
     jc_table = {}
-    jc = (jc_table, batch_id)
+    jc = (jc_table, guid_batch)
 
     # TODO: After implementing expander, change generate_message_for_file_arrived() so it includes the actual zipped file.
     arrival_msg = generate_message_for_file_arrived(archived_file, lzw, jc)
@@ -64,7 +64,7 @@ def start_pipeline(csv_file_path, json_file_path, udl2_conf):
     file_content_validator_msg = generate_file_content_validator_msg()
     load_json_msg = generate_load_json_msg(lzw, jc)
     load_to_int_msg = generate_load_to_int_msg(jc)
-    integration_to_star_msg = generate_integration_to_star_msg(batch_id)
+    integration_to_star_msg = generate_integration_to_star_msg(guid_batch)
 
     pipeline_chain_1 = chain(W_file_arrived.task.si(arrival_msg), W_file_expander.task.si(expander_msg),
                            W_simple_file_validator.task.si(simple_file_validator_msg), W_file_splitter.task.si(splitter_msg),
@@ -89,7 +89,7 @@ def generate_file_expander_msg(landing_zone_work_dir, file_to_expand, jc):
     msg = {
         mk.LANDING_ZONE_WORK_DIR: landing_zone_work_dir,
         mk.FILE_TO_EXPAND: file_to_expand,
-        # Tuple containing config info for job control table and the batch_id for the file upload
+        # Tuple containing config info for job control table and the guid_batch for the file upload
         mk.JOB_CONTROL: jc
     }
     return msg
@@ -118,9 +118,11 @@ def generate_splitter_msg(lzw, jc):
     }
     return splitter_msg
 
+
 def generate_file_content_validator_msg():
     # TODO: Implement me please, empty maps are boring.
     return {}
+
 
 def generate_load_json_msg(lzw, jc):
     msg = {
@@ -128,6 +130,7 @@ def generate_load_json_msg(lzw, jc):
         mk.JOB_CONTROL: jc
     }
     return msg
+
 
 def generate_load_to_int_msg(jc):
     msg = {
@@ -145,15 +148,17 @@ def generate_msg_report_error(email):
 
 def generate_move_to_target(job_control):
     msg = {
-        mk.BATCH_ID: job_control[1]
+        mk.GUID_BATCH: job_control[1]
     }
     return msg
 
-def generate_integration_to_star_msg(batch_id):
+
+def generate_integration_to_star_msg(guid_batch):
     msg = {
-        mk.BATCH_ID: batch_id
+        mk.GUID_BATCH: guid_batch
     }
     return msg
+
 
 def create_unique_file_name(file_path):
     '''

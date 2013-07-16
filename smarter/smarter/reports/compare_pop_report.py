@@ -274,27 +274,15 @@ class RecordManager():
         subject_alias_name = self._subjects_map[subject_name]
         total = result[Constants.TOTAL]
         # create intervals
-        display_level = result[Constants.DISPLAY_LEVEL]
         intervals = []
-        if display_level >= 1:
-            intervals.append(self.create_interval(result, Constants.LEVEL1))
-        if display_level >= 2:
-            intervals.append(self.create_interval(result, Constants.LEVEL2))
-        if display_level >= 3:
-            intervals.append(self.create_interval(result, Constants.LEVEL3))
-        if display_level >= 4:
-            intervals.append(self.create_interval(result, Constants.LEVEL4))
-        if display_level >= 5:
-            intervals.append(self.create_interval(result, Constants.LEVEL5))
+        for i in range(1, result[Constants.DISPLAY_LEVEL] + 1):
+            intervals.append(self.create_interval(result, i))
 
         # make sure percentages add to 100%
         self.adjust_percentages(intervals)
 
         # reformatting for record object
-        __subject = {}
-        __subject[Constants.TOTAL] = total
-        __subject[Constants.ASMT_SUBJECT] = subject_name
-        __subject[Constants.INTERVALS] = intervals
+        __subject = {Constants.TOTAL: total, Constants.ASMT_SUBJECT: subject_name, Constants.INTERVALS: intervals}
         __subjects = record.subjects
         __subjects[subject_alias_name] = __subject
         record.subjects = __subjects
@@ -368,13 +356,8 @@ class RecordManager():
         records = []
         # iterate list sorted by "Record.name"
         for record in self._tracking_record.values():
-            __record = {}
-            __record[Constants.ID] = record.id
-            __record[Constants.NAME] = record.name
-            __record[Constants.RESULTS] = record.subjects
-            __record[Constants.PARAMS] = {}
-            __record[Constants.PARAMS][Constants.STATECODE] = self._stateCode
-            __record[Constants.PARAMS][Constants.ID] = record.id
+            __record = {Constants.ID: record.id, Constants.NAME: record.name, Constants.RESULTS: record.subjects}
+            __record[Constants.PARAMS] = {Constants.STATECODE: self._stateCode, Constants.ID: record.id}
             if self._districtGuid is not None:
                 __record[Constants.PARAMS][Constants.DISTRICTGUID] = self._districtGuid
             if self._schoolGuid is not None:
@@ -382,17 +365,13 @@ class RecordManager():
             records.append(__record)
         return records
 
-    def create_interval(self, result, level_name):
+    def create_interval(self, result, level):
         '''
         create interval for paritular level
         '''
-        level_count = result[level_name]
+        level_count = result['level{0}'.format(level)]
         total = result[Constants.TOTAL]
-        level = int(level_name[5:])
-        interval = {}
-        interval[Constants.COUNT] = level_count
-        interval[Constants.LEVEL] = level
-        interval[Constants.PERCENTAGE] = self.calculate_percentage(level_count, total)
+        interval = {Constants.COUNT: level_count, Constants.LEVEL: level, Constants.PERCENTAGE: self.calculate_percentage(level_count, total)}
         return interval
 
     @staticmethod
@@ -400,10 +379,7 @@ class RecordManager():
         '''
         calculate percentage
         '''
-        __percentage = 0
-        if total != 0:
-            __percentage = count / total * 100
-        return __percentage
+        return 0 if total == 0 else count / total * 100
 
     @staticmethod
     def adjust_percentages(intervals):

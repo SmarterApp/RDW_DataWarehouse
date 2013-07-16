@@ -4,10 +4,10 @@ from udl2_util.measurement import measure_cpu_plus_elasped_time
 
 
 @measure_cpu_plus_elasped_time
-def select_distinct_asmt_guid_query(schema_name, table_name, column_name, batch_id):
-    return "SELECT DISTINCT {guid_column_name_in_source} FROM {source_schema_and_table} WHERE batch_id=\'{batch_id}\'".format(guid_column_name_in_source=column_name,
+def select_distinct_asmt_guid_query(schema_name, table_name, column_name, guid_batch):
+    return "SELECT DISTINCT {guid_column_name_in_source} FROM {source_schema_and_table} WHERE guid_batch=\'{guid_batch}\'".format(guid_column_name_in_source=column_name,
                                                                                                                           source_schema_and_table=combine_schema_and_table(schema_name, table_name),
-                                                                                                                          batch_id=batch_id
+                                                                                                                          guid_batch=guid_batch
                                                                                                                           )
 
 
@@ -32,13 +32,13 @@ def create_insert_query(conf, source_table, target_table, column_mapping, column
     distinct_expression = 'DISTINCT ' if need_distinct else ''
     seq_expression = list(column_mapping.values())[0].replace("'", "''")
 
-    # TODO:if batch_id is changed to uuid, need to add quotes around it
+    # TODO:if guid_batch is changed to uuid, need to add quotes around it
     insert_sql = [
              "INSERT INTO {target_shcema_and_table}(",
              ",".join(list(column_mapping.keys())),
              ")  SELECT * FROM dblink(\'dbname={db_name} user={db_user} password={db_password}\', \'SELECT {seq_expression}, * FROM (SELECT {distinct_expression}",
              ",".join(value.replace("'", "''") for value in list(column_mapping.values())[1:]),
-             " FROM {source_schema_and_table} WHERE batch_id=\'\'{batch_id}\'\') as y\') AS t(",
+             " FROM {source_schema_and_table} WHERE guid_batch=\'\'{guid_batch}\'\') as y\') AS t(",
              ",".join(list(column_types.values())),
              ");"
             ]
@@ -51,7 +51,7 @@ def create_insert_query(conf, source_table, target_table, column_mapping, column
                                             seq_expression=seq_expression,
                                             distinct_expression=distinct_expression,
                                             source_schema_and_table=combine_schema_and_table(conf[mk.SOURCE_DB_SCHEMA], source_table),
-                                            batch_id=conf[mk.BATCH_ID])
+                                            guid_batch=conf[mk.GUID_BATCH])
 
     return insert_sql
 

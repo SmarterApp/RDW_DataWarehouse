@@ -7,11 +7,11 @@ import argparse
 
 def main():
     parser = argparse.ArgumentParser(description='Move data from staging to integration, and to target')
-    parser.add_argument("-b", "--batch_id", type=str, default='00000000-0000-0000-0000-000000000000', help="Batch id")
+    parser.add_argument("-b", "--guid_batch", type=str, default='00000000-0000-0000-0000-000000000000', help="guid batch")
     parser.add_argument("-j", "--json_file", type=str, required=True, help="json file")
     args = parser.parse_args()
 
-    batch = {'batch_id': args.batch_id,
+    batch = {'guid_batch': args.guid_batch,
              'file_to_load': args.json_file,
              'load_to_integration_table_type': 'staging_to_integration_sbac_asmt_outcome'}
 

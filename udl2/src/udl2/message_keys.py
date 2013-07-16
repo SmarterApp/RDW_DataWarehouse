@@ -6,7 +6,7 @@ __author__ = 'abrien'
 INPUT_FILE_PATH = 'input_file_path'
 JOB_CONTROL = 'job_control'
 LANDING_ZONE_WORK_DIR = 'landing_zone_work_dir'
-BATCH_ID = 'batch_id'
+GUID_BATCH = 'guid_batch'
 
 # file_arrived to file_expander
 FILE_TO_EXPAND = 'file_to_expand'
@@ -50,6 +50,7 @@ SOURCE_DB_HOST = 'source_db_host'
 SOURCE_DB_PORT = 'source_db_port'
 SOURCE_DB_NAME = 'source_db_name'
 SOURCE_DB_SCHEMA = 'source_db_schema'
+SOURCE_DB_TABLE = 'source_db_table'
 ERROR_DB_SCHEMA = 'error_schema'
 
 MAP_TYPE = 'map_type'
@@ -57,9 +58,6 @@ MAP_TYPE = 'map_type'
 
 # report errors
 EMAIL = 'email_address'
-
-# move_to_target
-BATCH_ID = 'batch_id'
 
 # load_to_integration
 INT_TABLE_TYPE = 'load_to_integration_table_type'

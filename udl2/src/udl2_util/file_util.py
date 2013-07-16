@@ -109,11 +109,11 @@ def create_directory(path):
 
 
 @measure_cpu_plus_elasped_time
-def get_expanded_dir(lzw, batch_id):
-    batch_id = str(batch_id)
-    batch_id_dir = os.path.join(lzw, batch_id)
+def get_expanded_dir(lzw, guid_batch):
+    guid_batch = str(guid_batch)
+    guid_batch_dir = os.path.join(lzw, guid_batch)
     # TODO: put 'EXPANDED', 'ARRIVED', 'SUBFILES' into a constants file and import
-    expanded_dir = os.path.join(batch_id_dir, 'EXPANDED')
+    expanded_dir = os.path.join(guid_batch_dir, 'EXPANDED')
     print('get_expanded_dir', expanded_dir)
     return expanded_dir
 

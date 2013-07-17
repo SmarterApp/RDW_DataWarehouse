@@ -20,6 +20,7 @@ from gaussian_distributions import gauss_one, guess_std
 from errorband import calc_eb_params, calc_eb
 from adjust import adjust_pld
 from demographics import Demographics, DemographicStatus
+from uuid import uuid4
 
 
 DATAFILE_PATH = os.path.dirname(os.path.realpath(__file__))
@@ -94,6 +95,8 @@ def generate_data_from_config_file(config_module):
                                        from_date, most_recent, to_date=to_date)
     create_csv(assessments, ENTITY_TO_PATH_DICT[Assessment])
 
+    # generate one batch_guid for all records
+    batch_guid = uuid4()
     # Iterate over all the states we're supposed to create
     # When we get down to the school level, we'll be able to generate an InstitutionHierarchy object
     for state in states:
@@ -160,7 +163,7 @@ def generate_data_from_config_file(config_module):
                     schools = schools_by_type[school_type_name]
                     school_type = school_types[school_type_name]
                     school_type_institution_hierarchies = generate_and_populate_institution_hierarchies(schools, school_type, current_state,
-                                                                                                        district, assessments, subject_percentages, demographics, demographics_id)
+                                                                                                        district, assessments, subject_percentages, demographics, demographics_id, batch_guid)
                     # Debugging
                     school_counts[school_type_name] += len(school_type_institution_hierarchies)
 
@@ -171,7 +174,7 @@ def generate_data_from_config_file(config_module):
         create_csv(state_institution_hierarchies, ENTITY_TO_PATH_DICT[InstitutionHierarchy])
 
 
-def generate_and_populate_institution_hierarchies(schools, school_type, state, district, assessments, subject_percentages, demographics, demographics_id):
+def generate_and_populate_institution_hierarchies(schools, school_type, state, district, assessments, subject_percentages, demographics, demographics_id, batch_guid):
     '''
     Given institution information (info about state, district, school), we create InstitutionHierarchy objects.
     We create one InstitutionHierarchy object for each school given in the school list.
@@ -195,11 +198,11 @@ def generate_and_populate_institution_hierarchies(schools, school_type, state, d
         institution_hierarchy = generate_institution_hierarchy_from_helper_entities(state, district, school)
         institution_hierarchies.append(institution_hierarchy)
         # TODO: Don't populate the schools here. When this function returns, loop over the list and populate each school
-        populate_school(institution_hierarchy, school_type, assessments, subject_percentages, demographics, demographics_id)
+        populate_school(institution_hierarchy, school_type, assessments, subject_percentages, demographics, demographics_id, batch_guid)
     return institution_hierarchies
 
 
-def populate_school(institution_hierarchy, school_type, assessments, subject_percentages, demographics, demographics_id):
+def populate_school(institution_hierarchy, school_type, assessments, subject_percentages, demographics, demographics_id, batch_guid):
 
     '''
     Populate the provided the institution with staff, students, teachers, sections
@@ -252,7 +255,7 @@ def populate_school(institution_hierarchy, school_type, assessments, subject_per
 
         for subject_name in constants.SUBJECTS:
             number_of_sections = calculate_number_of_sections(number_of_students_in_grade)
-            #TODO: figure out a way around this hack.
+            # TODO: figure out a way around this hack.
             temporal_information = config_module.get_temporal_information()
             from_date = temporal_information[config_module.FROM_DATE]
             most_recent = temporal_information[config_module.MOST_RECENT]
@@ -270,7 +273,7 @@ def populate_school(institution_hierarchy, school_type, assessments, subject_per
                 number_of_students_in_section = number_of_students_in_grade // number_of_sections
                 # TODO: Set up district naming like PeopleNames to remove the following line (which is also called in generate_data)
                 # name_list_dictionary = generate_name_list_dictionary(NAMES_TO_PATH_DICT)
-                #students_in_section = generate_students_from_institution_hierarchy(number_of_students_in_section, institution_hierarchy, grade, section.section_guid, name_list_dictionary[BIRDS])
+                # students_in_section = generate_students_from_institution_hierarchy(number_of_students_in_section, institution_hierarchy, grade, section.section_guid, name_list_dictionary[BIRDS])
                 students_in_section = students_in_subject[:number_of_students_in_section]
                 students_in_subject[:number_of_students_in_section] = []
                 set_students_rec_id_and_section_id(students_in_section, section.section_guid)
@@ -289,8 +292,8 @@ def populate_school(institution_hierarchy, school_type, assessments, subject_per
                 # assign demographics based on their scores
                 if subject_num == 1:
                     asmt_outcomes_in_section = generate_assessment_outcomes_from_helper_entities_and_lists(students_to_take_assessment, score_list, teacher_guid, section, institution_hierarchy, assessment,
-                                                                                                           eb_min_perc, eb_max_perc, eb_rand_adj_lo, eb_rand_adj_hi)
-                    #TODO: Remove hard coded demographic type
+                                                                                                           eb_min_perc, eb_max_perc, eb_rand_adj_lo, eb_rand_adj_hi, batch_guid)
+                    # TODO: Remove hard coded demographic type
                     (updated_outcomes, updated_students) = demographics.assign_demographics(asmt_outcomes_in_section, students_to_take_assessment, subject_name, grade, demograph_id, demo_status)
                     subject_num += 1
 
@@ -298,7 +301,7 @@ def populate_school(institution_hierarchy, school_type, assessments, subject_per
                 elif subject_num == 2:
                     (updated_students, new_scores) = demographics.assign_scores_from_demograph(students_to_take_assessment, score_list, subject_name, grade, demograph_id, demo_status, assessment)
                     asmt_outcomes_in_section = generate_assessment_outcomes_from_helper_entities_and_lists(updated_students, new_scores, teacher_guid, section, institution_hierarchy, assessment,
-                                                                                                           eb_min_perc, eb_max_perc, eb_rand_adj_lo, eb_rand_adj_hi)
+                                                                                                           eb_min_perc, eb_max_perc, eb_rand_adj_lo, eb_rand_adj_hi, batch_guid)
                     demographics.update_demographics(updated_students, asmt_outcomes_in_section, demograph_id)
                     subject_num += 1
 
@@ -308,7 +311,7 @@ def populate_school(institution_hierarchy, school_type, assessments, subject_per
 
         # write asmt_outcomes to fact_asmt_outcome
         create_csv(asmt_outcomes_for_grade, ENTITY_TO_PATH_DICT[AssessmentOutcome])
-    #create_csv(students_in_school, ENTITY_TO_PATH_DICT[Student])
+    # create_csv(students_in_school, ENTITY_TO_PATH_DICT[Student])
     create_csv(sections_in_school, ENTITY_TO_PATH_DICT[Section])
     create_csv(staff_in_school, ENTITY_TO_PATH_DICT[Staff])
 
@@ -456,7 +459,7 @@ def generate_list_of_scores(total, score_details, perf_lvl_dist, subject_name, g
     return scores
 
 
-def generate_assessment_outcomes_from_helper_entities_and_lists(students, scores, teacher_guid, section, institution_hierarchy, assessment, ebmin, ebmax, rndlo, rndhi):
+def generate_assessment_outcomes_from_helper_entities_and_lists(students, scores, teacher_guid, section, institution_hierarchy, assessment, ebmin, ebmax, rndlo, rndhi, batch_guid):
     '''
     Generate assessment outcomes for a list of students
     @param students: List of the students to generate outcomes for
@@ -497,7 +500,7 @@ def generate_assessment_outcomes_from_helper_entities_and_lists(students, scores
     asmt_outcomes = generate_fact_assessment_outcomes(students, asmt_scores, asmt_rec_id, teacher_guid, state_code,
                                                       district_guid, school_guid, section_guid, inst_hier_rec_id,
                                                       section_rec_id, where_taken_id, where_taken_name, asmt_grade,
-                                                      enrl_grade, date_taken, date_taken_day, date_taken_month, date_taken_year)
+                                                      enrl_grade, date_taken, date_taken_day, date_taken_month, date_taken_year, batch_guid)
 
     return asmt_outcomes
 

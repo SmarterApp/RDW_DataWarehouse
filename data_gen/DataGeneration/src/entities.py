@@ -185,7 +185,7 @@ class AssessmentOutcome(object):
                  asmt_claim_2_score, asmt_claim_2_score_range_min, asmt_claim_2_score_range_max,
                  asmt_claim_3_score, asmt_claim_3_score_range_min, asmt_claim_3_score_range_max,
                  asmt_claim_4_score, asmt_claim_4_score_range_min, asmt_claim_4_score_range_max,
-                 asmt_create_date, status, most_recent, dmg_eth_hsp=False, dmg_eth_ami=False, dmg_eth_asn=False,
+                 status, most_recent, batch_guid, dmg_eth_hsp=False, dmg_eth_ami=False, dmg_eth_asn=False,
                  dmg_eth_blk=False, dmg_eth_pcf=False, dmg_eth_wht=False, dmg_prg_iep=False, dmg_prg_lep=False,
                  dmg_prg_504=False, dmg_prg_tt1=False):
 
@@ -231,9 +231,9 @@ class AssessmentOutcome(object):
         self.asmt_claim_4_score_range_min = asmt_claim_4_score_range_min
         self.asmt_claim_4_score_range_max = asmt_claim_4_score_range_max
 
-        self.asmt_create_date = asmt_create_date
         self.status = status
         self.most_recent = most_recent
+        self.batch_guid = batch_guid
 
         # Demographic Data
         self.dmg_eth_hsp = dmg_eth_hsp
@@ -274,7 +274,7 @@ class AssessmentOutcome(object):
                 self.asmt_claim_2_score, self.asmt_claim_2_score_range_min, self.asmt_claim_2_score_range_max,
                 self.asmt_claim_3_score, self.asmt_claim_3_score_range_min, self.asmt_claim_3_score_range_max,
                 self.asmt_claim_4_score, self.asmt_claim_4_score_range_min, self.asmt_claim_4_score_range_max,
-                self.asmt_create_date, self.status, self.most_recent, self.dmg_eth_hsp, self.dmg_eth_ami,
+                self.status, self.most_recent, self.batch_guid, self.dmg_eth_hsp, self.dmg_eth_ami,
                 self.dmg_eth_asn, self.dmg_eth_blk, self.dmg_eth_pcf, self.dmg_eth_wht, self.dmg_prg_iep,
                 self.dmg_prg_lep, self.dmg_prg_504, self.dmg_prg_tt1]
 
@@ -291,7 +291,7 @@ class AssessmentOutcome(object):
                 'asmt_claim_2_score', 'asmt_claim_2_score_range_min', 'asmt_claim_2_score_range_max',
                 'asmt_claim_3_score', 'asmt_claim_3_score_range_min', 'asmt_claim_3_score_range_max',
                 'asmt_claim_4_score', 'asmt_claim_4_score_range_min', 'asmt_claim_4_score_range_max',
-                'asmt_create_date', 'status', 'most_recent', 'dmg_eth_hsp', 'dmg_eth_ami', 'dmg_eth_asn',
+                'status', 'most_recent', 'batch_guid', 'dmg_eth_hsp', 'dmg_eth_ami', 'dmg_eth_asn',
                 'dmg_eth_blk', 'dmg_eth_pcf', 'dmg_eth_wht', 'dmg_prg_iep', 'dmg_prg_lep', 'dmg_prg_504', 'dmg_prg_tt1']
 
 

@@ -241,7 +241,9 @@ class TestGenerateEntities(unittest.TestCase):
             'asmt_claim_3_score_range_max': 1890,
             'asmt_claim_4_score': 1729,
             'asmt_claim_4_score_range_min': 1629,
-            'asmt_claim_4_score_range_max': 1829
+            'asmt_claim_4_score_range_max': 1829,
+            'batch_guid': '00000000-0000-0000-0000-000000000000'
+
         }
         assessment_outcome = generate_fact_assessment_outcome(**params)
         self.assertIsInstance(assessment_outcome, AssessmentOutcome)
@@ -296,7 +298,8 @@ class TestGenerateEntities(unittest.TestCase):
             'date_taken': date(2013, 4, 23),
             'date_taken_day': 23,
             'date_taken_month': 4,
-            'date_taken_year': 2013
+            'date_taken_year': 2013,
+            'batch_guid': '00000000-0000-0000-0000-000000000000'
         }
 
         assessment_outcomes = generate_fact_assessment_outcomes(**params)

@@ -141,8 +141,10 @@ class Test(unittest.TestCase):
         ebmax = 8
         rndlo = -10
         rndhi = 25
+        batch_guid = '00000000-0000-0000-0000-000000000000'
+
         res = generate_data.generate_assessment_outcomes_from_helper_entities_and_lists(students, scores, teacher_guid, section, institution_hierarchy,
-                                                                                        assessment, ebmin, ebmax, rndlo, rndhi)
+                                                                                        assessment, ebmin, ebmax, rndlo, rndhi, batch_guid)
 
         expected_scores = scores[:]
         self.assertEqual(len(res), 10)

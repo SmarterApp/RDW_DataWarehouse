@@ -118,7 +118,7 @@ def generate_sections(number_of_sections, subject_name, grade, state_code, distr
 
     @return: a list of section objects
     '''
-    #TODO: figure out class and section names
+    # TODO: figure out class and section names
     sections = []
     for i in range(number_of_sections):
         section = generate_section(subject_name, grade, state_code, district_guid, school_guid, i, i,
@@ -275,17 +275,16 @@ def generate_fact_assessment_outcome(asmt_rec_id, student_guid, teacher_guid, st
                                      asmt_claim_1_score, asmt_claim_1_score_range_min, asmt_claim_1_score_range_max,
                                      asmt_claim_2_score, asmt_claim_2_score_range_min, asmt_claim_2_score_range_max,
                                      asmt_claim_3_score, asmt_claim_3_score_range_min, asmt_claim_3_score_range_max,
-                                     asmt_claim_4_score, asmt_claim_4_score_range_min, asmt_claim_4_score_range_max):
+                                     asmt_claim_4_score, asmt_claim_4_score_range_min, asmt_claim_4_score_range_max,
+                                     batch_guid):
     id_generator = IdGen()
     asmnt_outcome_rec_id = id_generator.get_id()
-
-    asmt_create_date = datetime.date.today().strftime('%Y%m%d')
 
     status = 'C'
     most_recent = True
 
     # TODO: Fix this hack
-    #asmt_perf_lvl = 1
+    # asmt_perf_lvl = 1
 
     asmt_outcome = AssessmentOutcome(asmnt_outcome_rec_id, asmt_rec_id, student_guid,
                                      teacher_guid, state_code, district_guid, school_guid, section_guid, inst_hier_rec_id, section_rec_id,
@@ -295,7 +294,7 @@ def generate_fact_assessment_outcome(asmt_rec_id, student_guid, teacher_guid, st
                                      asmt_claim_2_score, asmt_claim_2_score_range_min, asmt_claim_2_score_range_max,
                                      asmt_claim_3_score, asmt_claim_3_score_range_min, asmt_claim_3_score_range_max,
                                      asmt_claim_4_score, asmt_claim_4_score_range_min, asmt_claim_4_score_range_max,
-                                     asmt_create_date, status, most_recent)
+                                     status, most_recent, batch_guid)
 
     return asmt_outcome
 
@@ -303,7 +302,7 @@ def generate_fact_assessment_outcome(asmt_rec_id, student_guid, teacher_guid, st
 # TODO: Move this function somewhere else (generate_data?) since it uses helper_entities (students, scores)
 def generate_fact_assessment_outcomes(students, scores, asmt_rec_id, teacher_guid, state_code, district_guid, school_guid, section_guid,
                                       inst_hier_rec_id, section_rec_id, where_taken_id, where_taken_name, asmt_grade, enrl_grade,
-                                      date_taken, date_taken_day, date_taken_month, date_taken_year):
+                                      date_taken, date_taken_day, date_taken_month, date_taken_year, batch_guid):
     '''
     Generates AssessmentOutcome objects for each student in 'students' using the scores in 'scores'
     Scores are assigned in the order of the score list
@@ -341,7 +340,8 @@ def generate_fact_assessment_outcomes(students, scores, asmt_rec_id, teacher_gui
                                                         asmt_claim_1_score, asmt_claim_1_score_range_min, asmt_claim_1_score_range_max,
                                                         asmt_claim_2_score, asmt_claim_2_score_range_min, asmt_claim_2_score_range_max,
                                                         asmt_claim_3_score, asmt_claim_3_score_range_min, asmt_claim_3_score_range_max,
-                                                        asmt_claim_4_score, asmt_claim_4_score_range_min, asmt_claim_4_score_range_max)
+                                                        asmt_claim_4_score, asmt_claim_4_score_range_min, asmt_claim_4_score_range_max,
+                                                        batch_guid)
         outcomes.append(asmt_outcome)
 
     return outcomes

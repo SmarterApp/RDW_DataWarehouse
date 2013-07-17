@@ -52,7 +52,7 @@ define [
     $('.filter #cancel-btn').click () ->
       $(filterPanel).slideUp 'slow', () ->
           $(filterArrow).hide() if $(".filters").children().length <= 0
-      clearOptions()
+          clearOptions $(filterPanel)
     
     # bind submit buttom
     $('.filter #submit-btn').click( () ->
@@ -72,6 +72,32 @@ define [
       submitEvent()
     )
     
+    # display user selected option on dropdown
+    $('.dropdown-menu input', filterHook).click (e) ->
+      showOptions $(this).closest('.btn-group')
+      
+  # show selected options on dropdown component
+  showOptions = (buttonGroup) ->
+    button = $('button', buttonGroup)
+    text = getSelectedOptionText buttonGroup
+    # remove existing text
+    $('.selected', button).remove()
+    # compute width property, subtract 20px for margin
+    textLength = computeTextWidth button
+    $('.display', button).append $('<div class="selected">').css('width', textLength).text(text)
+    
+  # get selected option text as string separated by comma
+  getSelectedOptionText = (buttonGroup) ->
+    delimiter = ', '
+    text =  $('input:checked', buttonGroup).map(() ->
+                  $(this).data('label')
+            ).get().join(delimiter)
+    if text isnt "" then '(' + text + ')'  else ""
+  
+  # compute width property for text
+  computeTextWidth = (button) ->
+    parseInt($(button).css('width')) - parseInt($('.display', button).css('width')) - 20
+  
   # remove individual filters
   removeFilter  = (label, dropdown) ->
     #remove label
@@ -92,6 +118,8 @@ define [
       checkBox = $(element).find("input:checked")
       checkBox.attr("checked", false)
       checkBox.parent().toggleClass('blue')
+      # reset dropdown component text
+      $(element).find('.selected').remove()
 
   loadConfig = () ->
     options =
@@ -104,15 +132,19 @@ define [
     config
 
   submitEvent = () ->
-    # construct params and send ajax call
-    params = edwareUtil.getUrlParams()
     selectedValues = fetchSelectedValues()
-    # merge selected options into param
-    $.extend(params, selectedValues)
-    console.log params
-    callback params if callback
-    # display selected filters on html page
-    createSelectedFilterPanel()
+    if $.isEmptyObject(selectedValues)
+      $('.filter #cancel-btn').trigger('click')
+    else
+      # construct params and send ajax call
+      params = edwareUtil.getUrlParams()
+      # merge selected options into param
+      $.extend(params, selectedValues)
+      console.log params
+      callback params if callback
+      # display selected filters on html page
+      createSelectedFilterPanel() 
+      
     
   createSelectedFilterPanel = ->
     filterPanel = $(".selectedFilter_panel .filters")

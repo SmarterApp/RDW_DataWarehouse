@@ -14,7 +14,7 @@ __location__ = '../data'
 
 
 class DataValidationErrorCode(unittest.TestCase):
-    
+
     def setUp(self, ):
         try:
             config_path = dict(os.environ)['UDL2_CONF']
@@ -23,7 +23,7 @@ class DataValidationErrorCode(unittest.TestCase):
             udl2_conf = imp.load_source('udl2_conf', config_path)
             from udl2_conf import udl2_conf
         self.conf = udl2_conf
-        
+
     # For bad CSVFiles
     def test_sourcefolder_errorcode(self):
         CSV_FOLDER = "csv_file11"

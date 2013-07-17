@@ -277,9 +277,7 @@ class RecordManager():
         subject_alias_name = self._subjects_map[subject_name]
         total = result[Constants.TOTAL]
         # create intervals
-        intervals = []
-        for i in range(1, result[Constants.DISPLAY_LEVEL] + 1):
-            intervals.append(self.create_interval(result, i))
+        intervals = [self.create_interval(result, i) for i in range(1, result[Constants.DISPLAY_LEVEL] + 1)]
 
         # make sure percentages add to 100%
         self.adjust_percentages(intervals)
@@ -389,13 +387,8 @@ class RecordManager():
         '''
         normalize interval percentages to always add up to 100
         '''
-        # read percentages into a list
-        percentages = []
-        for interval in intervals:
-            percentages.append(interval[Constants.PERCENTAGE])
-
         # do the normalization
-        percentages = normalize_percentages(percentages)
+        percentages = normalize_percentages([interval[Constants.PERCENTAGE] for interval in intervals])
 
         # set percentages back in intervals
         for idx, val in enumerate(percentages):
@@ -467,30 +460,31 @@ class QueryHelper():
 
         # use pivot table for summarize from level1 to level5
         columns = columns + [func.count(case([(self._fact_asmt_outcome.c.asmt_perf_lvl == 1, self._fact_asmt_outcome.c.student_guid)])).label(Constants.LEVEL1),
-                                  func.count(case([(self._fact_asmt_outcome.c.asmt_perf_lvl == 2, self._fact_asmt_outcome.c.student_guid)])).label(Constants.LEVEL2),
-                                  func.count(case([(self._fact_asmt_outcome.c.asmt_perf_lvl == 3, self._fact_asmt_outcome.c.student_guid)])).label(Constants.LEVEL3),
-                                  func.count(case([(self._fact_asmt_outcome.c.asmt_perf_lvl == 4, self._fact_asmt_outcome.c.student_guid)])).label(Constants.LEVEL4),
-                                  func.count(case([(self._fact_asmt_outcome.c.asmt_perf_lvl == 5, self._fact_asmt_outcome.c.student_guid)])).label(Constants.LEVEL5),
-                                  func.count(self._fact_asmt_outcome.c.student_guid).label(Constants.TOTAL),
-                                  # if asmt_perf_lvl_name_# is null, it means data should not be displayed.
-                                  # Find display level
-                                  func.max(cast(case([(self._dim_asmt.c.asmt_perf_lvl_name_5 != null(), '5'),
-                                                      (self._dim_asmt.c.asmt_perf_lvl_name_4 != null(), '4'),
-                                                      (self._dim_asmt.c.asmt_perf_lvl_name_3 != null(), '3'),
-                                                      (self._dim_asmt.c.asmt_perf_lvl_name_2 != null(), '2'),
-                                                      (self._dim_asmt.c.asmt_perf_lvl_name_1 != null(), '1')],
-                                                     else_='0'), INTEGER)).label(Constants.DISPLAY_LEVEL)]
+                             func.count(case([(self._fact_asmt_outcome.c.asmt_perf_lvl == 2, self._fact_asmt_outcome.c.student_guid)])).label(Constants.LEVEL2),
+                             func.count(case([(self._fact_asmt_outcome.c.asmt_perf_lvl == 3, self._fact_asmt_outcome.c.student_guid)])).label(Constants.LEVEL3),
+                             func.count(case([(self._fact_asmt_outcome.c.asmt_perf_lvl == 4, self._fact_asmt_outcome.c.student_guid)])).label(Constants.LEVEL4),
+                             func.count(case([(self._fact_asmt_outcome.c.asmt_perf_lvl == 5, self._fact_asmt_outcome.c.student_guid)])).label(Constants.LEVEL5),
+                             func.count(self._fact_asmt_outcome.c.student_guid).label(Constants.TOTAL),
+                             # if asmt_perf_lvl_name_# is null, it means data should not be displayed.
+                             # Find display level
+                             func.max(cast(case([(self._dim_asmt.c.asmt_perf_lvl_name_5 != null(), '5'),
+                                                 (self._dim_asmt.c.asmt_perf_lvl_name_4 != null(), '4'),
+                                                 (self._dim_asmt.c.asmt_perf_lvl_name_3 != null(), '3'),
+                                                 (self._dim_asmt.c.asmt_perf_lvl_name_2 != null(), '2'),
+                                                 (self._dim_asmt.c.asmt_perf_lvl_name_1 != null(), '1')],
+                                           else_='0'), INTEGER)).label(Constants.DISPLAY_LEVEL)]
         query = f(extra_columns + columns,
-                  from_obj=[self._fact_asmt_outcome
-                                 .join(self._dim_asmt,
-                                       and_(self._dim_asmt.c.asmt_rec_id == self._fact_asmt_outcome.c.asmt_rec_id, self._dim_asmt.c.asmt_type == Constants.SUMMATIVE, self._dim_asmt.c.most_recent == true(), self._fact_asmt_outcome.c.most_recent == true())
-                                       )
-                                 .join(self._dim_inst_hier,
-                                       and_(self._dim_inst_hier.c.inst_hier_rec_id == self._fact_asmt_outcome.c.inst_hier_rec_id, self._dim_inst_hier.c.most_recent == true())
-                                       )]
-                  ).group_by(self._dim_asmt.c.asmt_subject, self._dim_asmt.c.asmt_custom_metadata
-                  ).order_by(self._dim_asmt.c.asmt_subject.desc()
-                  ).where(and_(self._fact_asmt_outcome.c.state_code == self._state_code, self._fact_asmt_outcome.c.status == 'C'))
+                  from_obj=[self._fact_asmt_outcome.join(
+                            self._dim_asmt,
+                            and_(self._dim_asmt.c.asmt_rec_id == self._fact_asmt_outcome.c.asmt_rec_id,
+                                 self._dim_asmt.c.asmt_type == Constants.SUMMATIVE,
+                                 self._dim_asmt.c.most_recent == true(),
+                                 self._fact_asmt_outcome.c.most_recent == true())).join(
+                            self._dim_inst_hier, and_(self._dim_inst_hier.c.inst_hier_rec_id == self._fact_asmt_outcome.c.inst_hier_rec_id, self._dim_inst_hier.c.most_recent == true()))]
+                  ).group_by(self._dim_asmt.c.asmt_subject, self._dim_asmt.c.asmt_custom_metadata)
+        query = query.order_by(self._dim_asmt.c.asmt_subject.desc())
+        query = query.where(and_(self._fact_asmt_outcome.c.state_code == self._state_code, self._fact_asmt_outcome.c.status == 'C'))
+
         # apply demographics filters
         if query is not None:
             if self._filters:
@@ -506,18 +500,18 @@ class QueryHelper():
         return self._f()
 
     def get_query_for_state_view(self):
-        return self.build_query(select, [self._dim_inst_hier.c.district_name.label(Constants.NAME), self._dim_inst_hier.c.district_guid.label(Constants.ID)]
-                                 ).group_by(self._dim_inst_hier.c.district_name, self._dim_inst_hier.c.district_guid
-                                 ).order_by(self._dim_inst_hier.c.district_name)
+        query = self.build_query(select, [self._dim_inst_hier.c.district_name.label(Constants.NAME), self._dim_inst_hier.c.district_guid.label(Constants.ID)])
+        query = query.group_by(self._dim_inst_hier.c.district_name, self._dim_inst_hier.c.district_guid)
+        return query.order_by(self._dim_inst_hier.c.district_name)
 
     def get_query_for_district_view(self):
-        return self.build_query(select, [self._dim_inst_hier.c.school_name.label(Constants.NAME), self._dim_inst_hier.c.school_guid.label(Constants.ID)]
-                                 ).group_by(self._dim_inst_hier.c.school_name, self._dim_inst_hier.c.school_guid
-                                 ).order_by(self._dim_inst_hier.c.school_name
-                                 ).where(self._fact_asmt_outcome.c.district_guid == self._district_guid)
+        query = self.build_query(select, [self._dim_inst_hier.c.school_name.label(Constants.NAME), self._dim_inst_hier.c.school_guid.label(Constants.ID)])
+        query = query.group_by(self._dim_inst_hier.c.school_name, self._dim_inst_hier.c.school_guid)
+        query = query.order_by(self._dim_inst_hier.c.school_name)
+        return query.where(self._fact_asmt_outcome.c.district_guid == self._district_guid)
 
     def get_query_for_school_view(self):
-        return self.build_query(select_with_context, [self._fact_asmt_outcome.c.asmt_grade.label(Constants.NAME), self._fact_asmt_outcome.c.asmt_grade.label(Constants.ID)]
-                                 ).group_by(self._fact_asmt_outcome.c.asmt_grade
-                                 ).order_by(self._fact_asmt_outcome.c.asmt_grade
-                                 ).where(and_(self._fact_asmt_outcome.c.district_guid == self._district_guid, self._fact_asmt_outcome.c.school_guid == self._school_guid))
+        query = self.build_query(select_with_context, [self._fact_asmt_outcome.c.asmt_grade.label(Constants.NAME), self._fact_asmt_outcome.c.asmt_grade.label(Constants.ID)])
+        query = query.group_by(self._fact_asmt_outcome.c.asmt_grade)
+        query = query.order_by(self._fact_asmt_outcome.c.asmt_grade)
+        return query.where(and_(self._fact_asmt_outcome.c.district_guid == self._district_guid, self._fact_asmt_outcome.c.school_guid == self._school_guid))

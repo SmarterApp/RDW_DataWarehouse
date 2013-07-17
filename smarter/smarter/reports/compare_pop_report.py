@@ -500,9 +500,10 @@ class QueryHelper():
                                  self._dim_asmt.c.most_recent == true(),
                                  self._fact_asmt_outcome.c.most_recent == true())).join(
                             self._dim_inst_hier, and_(self._dim_inst_hier.c.inst_hier_rec_id == self._fact_asmt_outcome.c.inst_hier_rec_id, self._dim_inst_hier.c.most_recent == true()))]
-                  ).group_by(self._dim_asmt.c.asmt_subject, self._dim_asmt.c.asmt_custom_metadata)
-        query = query.order_by(self._dim_asmt.c.asmt_subject.desc())
-        query = query.where(and_(self._fact_asmt_outcome.c.state_code == self._state_code, self._fact_asmt_outcome.c.status == 'C'))
+                  )\
+            .group_by(self._dim_asmt.c.asmt_subject, self._dim_asmt.c.asmt_custom_metadata)\
+            .order_by(self._dim_asmt.c.asmt_subject.desc())\
+            .where(and_(self._fact_asmt_outcome.c.state_code == self._state_code, self._fact_asmt_outcome.c.status == 'C'))
 
         # apply demographics filters
         if query is not None:
@@ -525,18 +526,18 @@ class QueryHelper():
         return self._f()
 
     def get_query_for_state_view(self):
-        query = self.build_query(select, [self._dim_inst_hier.c.district_name.label(Constants.NAME), self._dim_inst_hier.c.district_guid.label(Constants.ID)])
-        query = query.group_by(self._dim_inst_hier.c.district_name, self._dim_inst_hier.c.district_guid)
-        return query.order_by(self._dim_inst_hier.c.district_name)
+        return self.build_query(select, [self._dim_inst_hier.c.district_name.label(Constants.NAME), self._dim_inst_hier.c.district_guid.label(Constants.ID)])\
+                   .group_by(self._dim_inst_hier.c.district_name, self._dim_inst_hier.c.district_guid)\
+                   .order_by(self._dim_inst_hier.c.district_name)
 
     def get_query_for_district_view(self):
-        query = self.build_query(select, [self._dim_inst_hier.c.school_name.label(Constants.NAME), self._dim_inst_hier.c.school_guid.label(Constants.ID)])
-        query = query.group_by(self._dim_inst_hier.c.school_name, self._dim_inst_hier.c.school_guid)
-        query = query.order_by(self._dim_inst_hier.c.school_name)
-        return query.where(self._fact_asmt_outcome.c.district_guid == self._district_guid)
+        return self.build_query(select, [self._dim_inst_hier.c.school_name.label(Constants.NAME), self._dim_inst_hier.c.school_guid.label(Constants.ID)])\
+                   .group_by(self._dim_inst_hier.c.school_name, self._dim_inst_hier.c.school_guid)\
+                   .order_by(self._dim_inst_hier.c.school_name)\
+                   .where(self._fact_asmt_outcome.c.district_guid == self._district_guid)
 
     def get_query_for_school_view(self):
-        query = self.build_query(select_with_context, [self._fact_asmt_outcome.c.asmt_grade.label(Constants.NAME), self._fact_asmt_outcome.c.asmt_grade.label(Constants.ID)])
-        query = query.group_by(self._fact_asmt_outcome.c.asmt_grade)
-        query = query.order_by(self._fact_asmt_outcome.c.asmt_grade)
-        return query.where(and_(self._fact_asmt_outcome.c.district_guid == self._district_guid, self._fact_asmt_outcome.c.school_guid == self._school_guid))
+        return self.build_query(select_with_context, [self._fact_asmt_outcome.c.asmt_grade.label(Constants.NAME), self._fact_asmt_outcome.c.asmt_grade.label(Constants.ID)])\
+                   .group_by(self._fact_asmt_outcome.c.asmt_grade)\
+                   .order_by(self._fact_asmt_outcome.c.asmt_grade)\
+                   .where(and_(self._fact_asmt_outcome.c.district_guid == self._district_guid, self._fact_asmt_outcome.c.school_guid == self._school_guid))

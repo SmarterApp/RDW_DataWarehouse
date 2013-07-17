@@ -15,8 +15,7 @@ Created on May 10, 2013
 
 @author: ejen
 '''
-from sqlalchemy.schema import (MetaData, CreateSchema, CreateTable,
-    CreateSequence, ForeignKeyConstraint, UniqueConstraint)
+from sqlalchemy.schema import (MetaData, CreateSchema, CreateTable, CreateSequence, ForeignKeyConstraint, UniqueConstraint)
 from sqlalchemy import Table, Column, Index, Sequence
 from sqlalchemy import SmallInteger, String, Date, Boolean
 from sqlalchemy import ForeignKey

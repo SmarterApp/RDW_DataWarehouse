@@ -54,8 +54,8 @@ def measure_cpu_time(fn, quiet=udl2_conf['quiet_mode']):
             frames = [fn.__name__] + [of[1] + ':' + of[3] for of in outer_frames]
             frames = remove_celery_system_frame_objects(frames)
             print("MEASURE-- cpu time {time:.10f} seconds for executing {module:s}.{function:s}".format(time=(end_cpu_time - start_cpu_time),
-                                                                                              module=fn.__module__,
-                                                                                              function=fn.__name__,))
+                                                                                                        module=fn.__module__,
+                                                                                                        function=fn.__name__,))
             return result
     return _wrapped
 
@@ -78,8 +78,8 @@ def measure_elapsed_time(fn, quiet=udl2_conf['quiet_mode']):
             frames = [fn.__name__] + [of[1] + ':' + of[3] for of in outer_frames]
             frames = remove_celery_system_frame_objects(frames)
             print("MEASURE-- elapsed time {time:.10f} seconds for executing {module:s}.{function:s}".format(time=(end_time - start_time),
-                                                                                                  module=fn.__module__,
-                                                                                                  function=fn.__name__,))
+                                                                                                            module=fn.__module__,
+                                                                                                            function=fn.__name__,))
             return result
     return _wrapped
 

@@ -30,11 +30,11 @@ def connect_db(db_driver, db_user, db_password, db_host, db_port, db_name):
 
     # TODO:define conf_args content
     db_string = '{db_driver}://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}'.format(db_driver=db_driver,
-                                                                                            db_user=db_user,
-                                                                                            db_password=db_password,
-                                                                                            db_host=db_host,
-                                                                                            db_port=db_port,
-                                                                                            db_name=db_name)
+                                                                                             db_user=db_user,
+                                                                                             db_password=db_password,
+                                                                                             db_host=db_host,
+                                                                                             db_port=db_port,
+                                                                                             db_name=db_name)
     # print(db_string)
     engine = create_engine(db_string)
     db_connection = engine.connect()
@@ -75,7 +75,7 @@ def get_table_columns_info(conn, table_name, is_conn_a_dblink=False):
         sql_query = text("SELECT column_name, data_type, character_maximum_length " +
                          "FROM information_schema.columns "
                          "WHERE table_name = \'%s\' "
-                        % (table_name))
+                         % (table_name))
     result = conn.execute(sql_query)
     columns = []
     for row in result:

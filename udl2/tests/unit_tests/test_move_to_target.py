@@ -72,28 +72,26 @@ def generate_conf(guid_batch, udl2_conf):
     '''
     Return all needed configuration information
     '''
-    conf = {
-            # add guid_batch from msg
-            mk.GUID_BATCH: guid_batch,
+    conf = {  # add guid_batch from msg
+              mk.GUID_BATCH: guid_batch,
 
-            # source schema
-            mk.SOURCE_DB_SCHEMA: udl2_conf['udl2_db']['integration_schema'],
-            # source database setting
-            mk.SOURCE_DB_HOST: udl2_conf['udl2_db']['db_host'],
-            mk.SOURCE_DB_PORT: udl2_conf['udl2_db']['db_port'],
-            mk.SOURCE_DB_USER: udl2_conf['udl2_db']['db_user'],
-            mk.SOURCE_DB_NAME: udl2_conf['udl2_db']['db_database'],
-            mk.SOURCE_DB_PASSWORD: udl2_conf['udl2_db']['db_pass'],
+              # source schema
+              mk.SOURCE_DB_SCHEMA: udl2_conf['udl2_db']['integration_schema'],
+              # source database setting
+              mk.SOURCE_DB_HOST: udl2_conf['udl2_db']['db_host'],
+              mk.SOURCE_DB_PORT: udl2_conf['udl2_db']['db_port'],
+              mk.SOURCE_DB_USER: udl2_conf['udl2_db']['db_user'],
+              mk.SOURCE_DB_NAME: udl2_conf['udl2_db']['db_database'],
+              mk.SOURCE_DB_PASSWORD: udl2_conf['udl2_db']['db_pass'],
 
-            # target schema
-            mk.TARGET_DB_SCHEMA: udl2_conf['target_db']['db_schema'],
-            # target database setting
-            mk.TARGET_DB_HOST: udl2_conf['target_db']['db_host'],
-            mk.TARGET_DB_PORT: udl2_conf['target_db']['db_port'],
-            mk.TARGET_DB_USER: udl2_conf['target_db']['db_user'],
-            mk.TARGET_DB_NAME: udl2_conf['target_db']['db_database'],
-            mk.TARGET_DB_PASSWORD: udl2_conf['target_db']['db_pass'],
-    }
+              # target schema
+              mk.TARGET_DB_SCHEMA: udl2_conf['target_db']['db_schema'],
+              # target database setting
+              mk.TARGET_DB_HOST: udl2_conf['target_db']['db_host'],
+              mk.TARGET_DB_PORT: udl2_conf['target_db']['db_port'],
+              mk.TARGET_DB_USER: udl2_conf['target_db']['db_user'],
+              mk.TARGET_DB_NAME: udl2_conf['target_db']['db_database'],
+              mk.TARGET_DB_PASSWORD: udl2_conf['target_db']['db_pass'], }
     return conf
 
 
@@ -119,33 +117,33 @@ def get_expected_column_types_for_fact_table(table_name):
 
 def get_expected_insert_query_for_fact_table(table_name, asmt_rec_id, section_rec_id, guid_batch, dbname, user, password):
     return 'INSERT INTO "edware"."{table_name}"(asmnt_outcome_rec_id,asmt_rec_id,student_guid,teacher_guid,state_code,district_guid,'\
-            'school_guid,section_guid,inst_hier_rec_id,section_rec_id,where_taken_id,where_taken_name,asmt_grade,enrl_grade,date_taken,'\
-            'date_taken_day,date_taken_month,date_taken_year,asmt_score,asmt_score_range_min,asmt_score_range_max,asmt_perf_lvl,'\
-            'asmt_claim_1_score,asmt_claim_1_score_range_min,asmt_claim_1_score_range_max,asmt_claim_2_score,asmt_claim_2_score_range_min,'\
-            'asmt_claim_2_score_range_max,asmt_claim_3_score,asmt_claim_3_score_range_min,asmt_claim_3_score_range_max,asmt_claim_4_score,'\
-            'asmt_claim_4_score_range_min,asmt_claim_4_score_range_max,record_create_datetime,status,most_recent,batch_guid) '\
-            ' SELECT * FROM dblink(\'dbname={dbname} user={user} password={password}\', \'SELECT nextval(\'\'"GLOBAL_REC_SEQ"\'\'), * FROM '\
-            '(SELECT {asmt_rec_id},guid_student,guid_staff,code_state,guid_district,guid_school,\'\' \'\',-1,{section_rec_id},guid_asmt_location,name_asmt_location,grade_asmt,'\
-            'grade_enrolled,date_assessed,date_taken_day,date_taken_month,date_taken_year,score_asmt,score_asmt_min,score_asmt_max,score_perf_level,'\
-            'score_claim_1,score_claim_1_min,score_claim_1_max,score_claim_2,score_claim_2_min,score_claim_2_max,score_claim_3,score_claim_3_min,score_claim_3_max,'\
-            'score_claim_4,score_claim_4_min,score_claim_4_max,CURRENT_TIMESTAMP,\'\' \'\',True,guid_batch '\
-            'FROM "udl2"."INT_SBAC_ASMT_OUTCOME" WHERE guid_batch=\'\'{guid_batch}\'\') as y\') AS t(asmnt_outcome_rec_id bigint,asmt_rec_id bigint,student_guid character varying(50),'\
-            'teacher_guid character varying(50),state_code character varying(2),district_guid character varying(50),school_guid character varying(50),'\
-            'section_guid character varying(50),inst_hier_rec_id bigint,section_rec_id bigint,where_taken_id character varying(50),where_taken_name character varying(256),'\
-            'asmt_grade character varying(10),enrl_grade character varying(10),date_taken character varying(8),date_taken_day smallint,date_taken_month smallint,'\
-            'date_taken_year smallint,asmt_score smallint,asmt_score_range_min smallint,asmt_score_range_max smallint,asmt_perf_lvl smallint,asmt_claim_1_score smallint,'\
-            'asmt_claim_1_score_range_min smallint,asmt_claim_1_score_range_max smallint,asmt_claim_2_score smallint,asmt_claim_2_score_range_min smallint,'\
-            'asmt_claim_2_score_range_max smallint,asmt_claim_3_score smallint,asmt_claim_3_score_range_min smallint,asmt_claim_3_score_range_max smallint,'\
-            'asmt_claim_4_score smallint,asmt_claim_4_score_range_min smallint,asmt_claim_4_score_range_max smallint,record_create_datetime timestamp without time zone,'\
-            'status character varying(2),most_recent boolean,batch_guid character varying(50));'.format(table_name=table_name, asmt_rec_id=asmt_rec_id, section_rec_id=section_rec_id, guid_batch=guid_batch,
-                                                                                                        dbname=dbname, user=user, password=password)
+           'school_guid,section_guid,inst_hier_rec_id,section_rec_id,where_taken_id,where_taken_name,asmt_grade,enrl_grade,date_taken,'\
+           'date_taken_day,date_taken_month,date_taken_year,asmt_score,asmt_score_range_min,asmt_score_range_max,asmt_perf_lvl,'\
+           'asmt_claim_1_score,asmt_claim_1_score_range_min,asmt_claim_1_score_range_max,asmt_claim_2_score,asmt_claim_2_score_range_min,'\
+           'asmt_claim_2_score_range_max,asmt_claim_3_score,asmt_claim_3_score_range_min,asmt_claim_3_score_range_max,asmt_claim_4_score,'\
+           'asmt_claim_4_score_range_min,asmt_claim_4_score_range_max,record_create_datetime,status,most_recent,batch_guid) '\
+           ' SELECT * FROM dblink(\'dbname={dbname} user={user} password={password}\', \'SELECT nextval(\'\'"GLOBAL_REC_SEQ"\'\'), * FROM '\
+           '(SELECT {asmt_rec_id},guid_student,guid_staff,code_state,guid_district,guid_school,\'\' \'\',-1,{section_rec_id},guid_asmt_location,name_asmt_location,grade_asmt,'\
+           'grade_enrolled,date_assessed,date_taken_day,date_taken_month,date_taken_year,score_asmt,score_asmt_min,score_asmt_max,score_perf_level,'\
+           'score_claim_1,score_claim_1_min,score_claim_1_max,score_claim_2,score_claim_2_min,score_claim_2_max,score_claim_3,score_claim_3_min,score_claim_3_max,'\
+           'score_claim_4,score_claim_4_min,score_claim_4_max,CURRENT_TIMESTAMP,\'\' \'\',True,guid_batch '\
+           'FROM "udl2"."INT_SBAC_ASMT_OUTCOME" WHERE guid_batch=\'\'{guid_batch}\'\') as y\') AS t(asmnt_outcome_rec_id bigint,asmt_rec_id bigint,student_guid character varying(50),'\
+           'teacher_guid character varying(50),state_code character varying(2),district_guid character varying(50),school_guid character varying(50),'\
+           'section_guid character varying(50),inst_hier_rec_id bigint,section_rec_id bigint,where_taken_id character varying(50),where_taken_name character varying(256),'\
+           'asmt_grade character varying(10),enrl_grade character varying(10),date_taken character varying(8),date_taken_day smallint,date_taken_month smallint,'\
+           'date_taken_year smallint,asmt_score smallint,asmt_score_range_min smallint,asmt_score_range_max smallint,asmt_perf_lvl smallint,asmt_claim_1_score smallint,'\
+           'asmt_claim_1_score_range_min smallint,asmt_claim_1_score_range_max smallint,asmt_claim_2_score smallint,asmt_claim_2_score_range_min smallint,'\
+           'asmt_claim_2_score_range_max smallint,asmt_claim_3_score smallint,asmt_claim_3_score_range_min smallint,asmt_claim_3_score_range_max smallint,'\
+           'asmt_claim_4_score smallint,asmt_claim_4_score_range_min smallint,asmt_claim_4_score_range_max smallint,record_create_datetime timestamp without time zone,'\
+           'status character varying(2),most_recent boolean,batch_guid character varying(50));'.format(table_name=table_name, asmt_rec_id=asmt_rec_id, section_rec_id=section_rec_id, guid_batch=guid_batch,
+                                                                                                       dbname=dbname, user=user, password=password)
 
 
 def get_expected_update_inst_hier_rec_id_query(table_name):
     return 'UPDATE "edware"."{table_name}" SET inst_hier_rec_id=dim.dim_inst_hier_rec_id FROM '\
-    '(SELECT inst_hier_rec_id AS dim_inst_hier_rec_id, state_code AS dim_state_code,district_guid AS dim_district_guid,school_guid AS dim_school_guid '\
-    'FROM "edware"."dim_inst_hier")dim WHERE inst_hier_rec_id=-1 AND state_code=dim_state_code AND '\
-    'district_guid=dim_district_guid AND school_guid=dim_school_guid'.format(table_name=table_name)
+        '(SELECT inst_hier_rec_id AS dim_inst_hier_rec_id, state_code AS dim_state_code,district_guid AS dim_district_guid,school_guid AS dim_school_guid '\
+        'FROM "edware"."dim_inst_hier")dim WHERE inst_hier_rec_id=-1 AND state_code=dim_state_code AND '\
+        'district_guid=dim_district_guid AND school_guid=dim_school_guid'.format(table_name=table_name)
 
 
 def get_expected_column_types_for_dim_inst_hier(table_name):

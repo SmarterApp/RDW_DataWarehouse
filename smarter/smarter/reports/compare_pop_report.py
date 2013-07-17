@@ -198,7 +198,9 @@ class ComparingPopReport(object):
         # run query
         params = {Constants.STATECODE: self.state_code, Constants.DISTRICTGUID: self.district_guid, Constants.SCHOOLGUID: self.school_guid, 'filters': self.filters}
         results = self.run_query(**params)
-        if not results:
+
+        # Only return 404 if results is empty and there are no filters being applied
+        if not results and len(self.filters.keys()) is 0:
             raise NotFoundException("There are no results")
 
         # arrange results

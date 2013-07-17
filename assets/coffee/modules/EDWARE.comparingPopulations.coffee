@@ -129,10 +129,16 @@ define [
         $('#gridTable').bind "jqGridLoadComplete.jqGrid", (e, data) ->
            # Get the current sort column and reset cpop sorting dropdown if the current sort column is the first column
            curSortColumn = $('#gridTable').getGridParam('sortname')
-           if curSortColumn == $('#gridTable').getGridParam('colModel')[0].name
+           if $('#gridTable').getGridParam('colModel') and curSortColumn == $('#gridTable').getGridParam('colModel')[0].name
              # resetSortingHeader customALDDropdown;
              enableDisableSortingOnAssessments()
            formatBarAlignment();
+           # Hide the drop down if data is empty
+           if populationData.length is 0
+             $('.dropdownSection').hide()
+           else
+             $('.dropdownSection').show()
+           
         # Keep sorting and alignment status after regenerating grid
         $('#gridTable').trigger "jqGridLoadComplete.jqGrid"
         $('.colorsBlock input:checked').click()

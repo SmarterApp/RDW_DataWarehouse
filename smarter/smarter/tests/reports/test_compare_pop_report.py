@@ -264,7 +264,8 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         testParam = {}
         testParam[Constants.STATECODE] = 'NY'
         testParam[Constants_filter_names.DEMOGRAPHICS_PROGRAM_504] = ['NS']
-        self.assertRaises(NotFoundException, get_comparing_populations_report, testParam)
+        results = get_comparing_populations_report(testParam)
+        self.assertEqual(len(results['records']), 0)
 
     def test_state_view_with_iep_yes(self):
         testParam = {}
@@ -284,6 +285,14 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         self.assertEqual(len(results['records']), 5)
         self.assertEqual(results['records'][1]['results']['subject1']['total'], 15)
         self.assertEqual(results['records'][2]['results']['subject2']['total'], 21)
+
+    def test_filters_with_no_results(self):
+        testParam = {}
+        testParam[Constants.STATECODE] = 'NY'
+        testParam[Constants_filter_names.DEMOGRAPHICS_PROGRAM_504] = ['NS']
+        testParam[Constants_filter_names.DEMOGRAPHICS_PROGRAM_IEP] = ['NS']
+        results = get_comparing_populations_report(testParam)
+        self.assertEqual(len(results['records']), 0)
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testReport']

@@ -294,6 +294,26 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 0)
 
+    def test_district_view_with_grades(self):
+        testParam = {}
+        testParam[Constants.STATECODE] = 'NY'
+        testParam[Constants.DISTRICTGUID] = '229'
+        testParam[Constants_filter_names.GRADE] = ['3']
+        results = get_comparing_populations_report(testParam)
+        self.assertEqual(results['records'][0]['results']['subject1']['total'], 2)
+        self.assertEqual(len(results['records']), 1)
+
+    def test_view_with_multi_grades(self):
+        testParam = {}
+        testParam[Constants.STATECODE] = 'NY'
+        testParam[Constants.DISTRICTGUID] = '229'
+        testParam[Constants_filter_names.GRADE] = ['3', '6', '7', '11']
+        results = get_comparing_populations_report(testParam)
+        self.assertEqual(results['records'][0]['results']['subject1']['total'], 2)
+        self.assertEqual(results['records'][2]['results']['subject1']['total'], 5)
+        self.assertEqual(len(results['records']), 3)
+
+
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testReport']
     unittest.main()

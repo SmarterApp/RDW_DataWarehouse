@@ -237,9 +237,9 @@ def generate_func_top(code_version):
     return_definition and declaring_parameters_in _function
     '''
     fun_top_list = [TEMPLATE_CONTENT[FUNCTION_DEF][code_version],
-                   TEMPLATE_CONTENT[PARAMETER_DEF][code_version],
-                   TEMPLATE_CONTENT[RETURN_DEF][code_version],
-                   TEMPLATE_CONTENT[DECLEAR_DEF][code_version]]
+                    TEMPLATE_CONTENT[PARAMETER_DEF][code_version],
+                    TEMPLATE_CONTENT[RETURN_DEF][code_version],
+                    TEMPLATE_CONTENT[DECLEAR_DEF][code_version]]
     return ''.join(fun_top_list)
 
 
@@ -249,5 +249,5 @@ def generate_func_end(code_version, second_key):
     It is consist of return_statement, exception_handling and ending_statement
     '''
     return ''.join([TEMPLATE_CONTENT[RETURN_STATEMENT][code_version][second_key],
-                   TEMPLATE_CONTENT[EXCEPTION][code_version],
-                   TEMPLATE_CONTENT[END][code_version]])
+                    TEMPLATE_CONTENT[EXCEPTION][code_version],
+                    TEMPLATE_CONTENT[END][code_version]])

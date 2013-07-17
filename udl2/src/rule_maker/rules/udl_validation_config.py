@@ -1,4 +1,4 @@
-#@PydevCodeAnalysisIgnore
+
 from rule_maker.rules import transformations as t
 from rule_maker.rules.rule_keys import *
 
@@ -15,7 +15,7 @@ ALL = 'all'  # only an error if every row fails for this column (COLUMN rule in 
                             # (was COL rule in old-UDL)
 BOTH = 'both'  # if ALL rows are bad, then one entry in ERR table
                             # if not, then check EACH row
-                            # (this magically happens in old-UDL) 
+                            # (this magically happens in old-UDL)
 ## ------------------------------------------------------------------------------------------
 
 
@@ -31,7 +31,7 @@ MAX_ASMT_SCORE = 2400
 validations = {
     'STG_SBAC_ASMT_OUTCOME': {
         BY_COLUMN: {
-            'guid_batch'              : [],
+            'guid_batch'            : [],
             'src_file_rec_num'      : [],
             'guid_asmt'             : [[IsNotNull] , IsGoodGUID],
             'guid_asmt_location'    : [IsGoodGUID, {IsUniqueWithin: ['name_asmt_location']}],

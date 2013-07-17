@@ -72,68 +72,67 @@ def get_list_split_files(output_name_template, output_dir):
 
 @measure_cpu_plus_elasped_time
 def split_file(file_name, delimiter=',', row_limit=10000, parts=0, output_path='./'):
-	# make sure output path ending in '/' so concat will work correctly
-	if output_path[-1] != '/':
-		output_path = output_path + '/'
-	start_time = datetime.datetime.now()
-	isValid = os.path.exists(file_name) and os.path.isfile(file_name)
-	if isValid is False:
-		raise Exception('File not found!')
+    # make sure output path ending in '/' so concat will work correctly
+    if output_path[-1] != '/':
+        output_path = output_path + '/'
+    start_time = datetime.datetime.now()
+    isValid = os.path.exists(file_name) and os.path.isfile(file_name)
+    if isValid is False:
+        raise Exception('File not found!')
 
-	check_row_count(file_name)
-	#open file
-	filehandler = open(file_name,'r')
+    check_row_count(file_name)
+    # open file
+    filehandler = open(file_name, 'r')
 
-	#set up output location
-	output_name_template, output_dir = create_output_destination(file_name, output_path)
+    # set up output location
+    output_name_template, output_dir = create_output_destination(file_name, output_path)
 
-	#store header
-	reader_obj = csv.reader(open(file_name))
-	header = next(reader_obj)
+    # store header
+    reader_obj = csv.reader(open(file_name))
+    header = next(reader_obj)
 
-	#create copy of csv without the header
-	remove_header_cmd = "sed '1d' {file_name} > {output_path}noheaders.csv".format(file_name=file_name, output_path=output_path)
-	print(remove_header_cmd)
-	run_command(remove_header_cmd)
+    # create copy of csv without the header
+    remove_header_cmd = "sed '1d' {file_name} > {output_path}noheaders.csv".format(file_name=file_name, output_path=output_path)
+    print(remove_header_cmd)
+    run_command(remove_header_cmd)
 
+    word_count_cmd = "wc {output_path}noheaders.csv".format(output_path=output_path)
+    print(word_count_cmd)
+    output, err = run_command(word_count_cmd)
+    totalrows = int(output.split()[0])
+    print_get_splitted_rows(totalrows, 'rows', 'splitted', 'file_splitter', 'split_file')
+    # if going by parts, get total rows and define row limit
+    if parts > 0:
+        row_limit = math.ceil(totalrows / parts)  # round up for row limit
 
-	word_count_cmd = "wc {output_path}noheaders.csv".format(output_path=output_path)
-	print(word_count_cmd)
-	output,err = run_command(word_count_cmd)
-	totalrows = int(output.split()[0])
-	print_get_splitted_rows(totalrows, 'rows', 'splitted', 'file_splitter', 'split_file')
-	# if going by parts, get total rows and define row limit
-	if parts > 0:
-		row_limit = math.ceil(totalrows / parts) # round up for row limit
+    print_get_splitted_rows(parts, 'parts', 'divided', 'file_splitter', 'split_file')
+    print_get_splitted_rows(row_limit, 'rows', 'limited', 'file_splitter', 'split_file')
 
-	print_get_splitted_rows(parts, 'parts', 'divided', 'file_splitter', 'split_file')
-	print_get_splitted_rows(row_limit, 'rows', 'limited', 'file_splitter', 'split_file')
+    if row_limit < totalrows or parts > 1:
+    # call unix split command
+        split_command = 'split -a1 -l {row_limit} {output_path}noheaders.csv {output_dir}'.format(row_limit=row_limit, output_path=output_path, output_dir=os.path.join(output_dir, output_name_template))
+        print(split_command)
+        run_command(split_command)
+        split_file_list = get_list_split_files(output_name_template, output_dir)
+    # clean up
+        os.remove('{output_path}noheaders.csv'.format(output_path=output_path))
+    else:
+    # only splitting into one file, just move noheaders.csv instead
+        move_command = 'mv {output_path}noheaders.csv {dest_path}'.format(output_path=output_path, dest_path=os.path.join(output_dir, output_name_template + 'a'))
+        run_command(move_command)
+        split_file_list = [[os.path.join(output_dir, output_name_template + 'a'), totalrows, 1]]
 
-	if row_limit < totalrows or parts > 1:
-	#call unix split command
-		split_command = 'split -a1 -l {row_limit} {output_path}noheaders.csv {output_dir}'.format(row_limit = row_limit, output_path = output_path, output_dir = os.path.join(output_dir,output_name_template))
-		print(split_command)
-		run_command(split_command)
-		split_file_list = get_list_split_files(output_name_template, output_dir)
-	#clean up
-		os.remove('{output_path}noheaders.csv'.format(output_path=output_path))
-	else:
-	#only splitting into one file, just move noheaders.csv instead
-		move_command = 'mv {output_path}noheaders.csv {dest_path}'.format(output_path=output_path, dest_path=os.path.join(output_dir,output_name_template+'a'))
-		run_command(move_command)
-		split_file_list = [[os.path.join(output_dir,output_name_template+'a'),totalrows,1]]
+    # save headers to output dir
+    header_path = os.path.join(output_dir, 'headers.csv')
+    with open(header_path, 'w') as csv_header_file:
+        header_writer = csv.writer(csv_header_file, delimiter=delimiter)
+        header_writer.writerow(header)
+        csv_header_file.flush()  # EJ, make sure the file is writtend into disk. this happens only when benchmark prints frames
 
-	#save headers to output dir
-	header_path = os.path.join(output_dir, 'headers.csv')
-	with open(header_path, 'w') as csv_header_file:
-		header_writer = csv.writer(csv_header_file, delimiter=delimiter)
-		header_writer.writerow(header)
-		csv_header_file.flush() # EJ, make sure the file is writtend into disk. this happens only when benchmark prints frames
-
-	end_time = datetime.datetime.now()
-	execution_time = end_time - start_time
-	#print('The file splitter completed at %s with an execution time of %s for %s rows into %s files' % (str(end_time)[:-3],str(execution_time)[:-3],totalrows,len(split_file_list)))
-	return split_file_list, header_path
+    end_time = datetime.datetime.now()
+    execution_time = end_time - start_time
+    # print('The file splitter completed at %s with an execution time of %s for %s rows into %s files' % (str(end_time)[:-3],str(execution_time)[:-3],totalrows,len(split_file_list)))
+    return split_file_list, header_path
 
 
 if __name__ == "__main__":

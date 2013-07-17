@@ -40,6 +40,7 @@ IsUnique = 'IsUnique'  # Validate if the data in the indicated column list is un
 IsUniqueWithin = 'IsUniqueWithin'  # Validate if the data in the indicated column list is unique across the guid_batch and the indicated field
 HasMaxLength = 'HasMaxLength'  # Validate if the length for the data in the indicated column is within the indicated max length.
 IsInList = 'IsInList'  # Validate if the data in the indicated column (column1) is in the list of values defined.
+IsInRange = 'IsInRange'  # Validate is the number is within the given min and max values.
 IsLessThan = 'IsLessThan'  # Validate if the data in the indicated column is less than the provided value.
 IsMoreThan = 'IsMoreThan'  # Validate if the data in the given column is greater than the provided value.
 IsBefore = 'IsBefore'  # Validate if the date in the given column exists before the provided date.

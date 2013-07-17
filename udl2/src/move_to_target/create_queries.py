@@ -6,19 +6,16 @@ from udl2_util.measurement import measure_cpu_plus_elasped_time
 @measure_cpu_plus_elasped_time
 def select_distinct_asmt_guid_query(schema_name, table_name, column_name, guid_batch):
     return "SELECT DISTINCT {guid_column_name_in_source} FROM {source_schema_and_table} WHERE guid_batch=\'{guid_batch}\'".format(guid_column_name_in_source=column_name,
-                                                                                                                          source_schema_and_table=combine_schema_and_table(schema_name, table_name),
-                                                                                                                          guid_batch=guid_batch
-                                                                                                                          )
+                                                                                                                                  source_schema_and_table=combine_schema_and_table(schema_name, table_name),
+                                                                                                                                  guid_batch=guid_batch)
 
 
 @measure_cpu_plus_elasped_time
 def select_distinct_asmt_rec_id_query(schema_name, target_table_name, rec_id_column_name, guid_column_name_in_target, guid_column_value):
-    return "SELECT DISTINCT {rec_id_column_name} FROM {source_schema_and_table} WHERE {guid_column_name_in_target}=\'{guid_column_value_got}\'".format(
-                                                                                                                      rec_id_column_name=rec_id_column_name,
-                                                                                                                      source_schema_and_table=combine_schema_and_table(schema_name, target_table_name),
-                                                                                                                      guid_column_name_in_target=guid_column_name_in_target,
-                                                                                                                      guid_column_value_got=guid_column_value
-                                                                                                                      )
+    return "SELECT DISTINCT {rec_id_column_name} FROM {source_schema_and_table} WHERE {guid_column_name_in_target}=\'{guid_column_value_got}\'".format(rec_id_column_name=rec_id_column_name,
+                                                                                                                                                       source_schema_and_table=combine_schema_and_table(schema_name, target_table_name),
+                                                                                                                                                       guid_column_name_in_target=guid_column_name_in_target,
+                                                                                                                                                       guid_column_value_got=guid_column_value)
 
 
 @measure_cpu_plus_elasped_time
@@ -33,15 +30,14 @@ def create_insert_query(conf, source_table, target_table, column_mapping, column
     seq_expression = list(column_mapping.values())[0].replace("'", "''")
 
     # TODO:if guid_batch is changed to uuid, need to add quotes around it
-    insert_sql = [
-             "INSERT INTO {target_shcema_and_table}(",
-             ",".join(list(column_mapping.keys())),
-             ")  SELECT * FROM dblink(\'dbname={db_name} user={db_user} password={db_password}\', \'SELECT {seq_expression}, * FROM (SELECT {distinct_expression}",
-             ",".join(value.replace("'", "''") for value in list(column_mapping.values())[1:]),
-             " FROM {source_schema_and_table} WHERE guid_batch=\'\'{guid_batch}\'\') as y\') AS t(",
-             ",".join(list(column_types.values())),
-             ");"
-            ]
+    insert_sql = ["INSERT INTO {target_shcema_and_table}(",
+                  ",".join(list(column_mapping.keys())),
+                  ")  SELECT * FROM dblink(\'dbname={db_name} user={db_user} password={db_password}\', \'SELECT {seq_expression}, * FROM (SELECT {distinct_expression}",
+                  ",".join(value.replace("'", "''") for value in list(column_mapping.values())[1:]),
+                  " FROM {source_schema_and_table} WHERE guid_batch=\'\'{guid_batch}\'\') as y\') AS t(",
+                  ",".join(list(column_types.values())),
+                  ");"
+                  ]
     insert_sql = "".join(insert_sql).format(target_shcema_and_table=combine_schema_and_table(conf[mk.TARGET_DB_SCHEMA], target_table),
                                             db_password_target=conf[mk.TARGET_DB_PASSWORD],
                                             target_schema=conf[mk.TARGET_DB_SCHEMA],
@@ -77,13 +73,13 @@ def update_inst_hier_rec_id_query(schema, condition_value):
     '''
     info_map = col_map.get_inst_hier_rec_id_info()
     update_query = ["UPDATE {schema_and_fact_table} ",
-             "SET {inst_hier_in_fact}=dim.dim_{inst_hier_in_dim} FROM (SELECT ",
-             "{inst_hier_in_dim} AS dim_{inst_hier_in_dim}, ",
-             ",".join(guid_in_dim + ' AS dim_' + guid_in_dim for guid_in_dim in list(info_map['guid_column_map'].keys())),
-             " FROM {schema_and_dim_table})dim",
-             " WHERE {inst_hier_in_fact}={fake_value} AND ",
-             " AND ".join(guid_in_fact + '=dim_' + guid_in_dim for guid_in_dim, guid_in_fact in info_map['guid_column_map'].items())
-             ]
+                    "SET {inst_hier_in_fact}=dim.dim_{inst_hier_in_dim} FROM (SELECT ",
+                    "{inst_hier_in_dim} AS dim_{inst_hier_in_dim}, ",
+                    ",".join(guid_in_dim + ' AS dim_' + guid_in_dim for guid_in_dim in list(info_map['guid_column_map'].keys())),
+                    " FROM {schema_and_dim_table})dim",
+                    " WHERE {inst_hier_in_fact}={fake_value} AND ",
+                    " AND ".join(guid_in_fact + '=dim_' + guid_in_dim for guid_in_dim, guid_in_fact in info_map['guid_column_map'].items())]
+
     update_query = "".join(update_query).format(schema_and_fact_table=combine_schema_and_table(schema, info_map['table_map'][1]),
                                                 schema_and_dim_table=combine_schema_and_table(schema, info_map['table_map'][0]),
                                                 inst_hier_in_dim=info_map['rec_id_map'][0],

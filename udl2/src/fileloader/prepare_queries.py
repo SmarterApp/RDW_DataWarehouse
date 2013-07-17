@@ -39,11 +39,11 @@ def create_inserting_into_staging_query(stg_asmt_outcome_columns, apply_rules, c
                                         staging_table, csv_schema, csv_table, seq_name, transformation_rules):
     column_names_with_proc = apply_transformation_rules(apply_rules, csv_table_columns, transformation_rules)
     insert_sql = ['INSERT INTO "{staging_schema}"."{staging_table}"(',
-                   ', '.join(stg_asmt_outcome_columns),
-                   ') SELECT ',
-                   ', '.join(column_names_with_proc),
-                   ' FROM "{csv_schema}"."{csv_table}"',
-                   ]
+                  ', '.join(stg_asmt_outcome_columns),
+                  ') SELECT ',
+                  ', '.join(column_names_with_proc),
+                  ' FROM "{csv_schema}"."{csv_table}"',
+                  ]
     # note: seq_name is used in the expression of column record_sid in stg_asmt_outcome_columns
     insert_sql = "".join(insert_sql).format(seq_name=seq_name, staging_schema=staging_schema, staging_table=staging_table,
                                             csv_schema=csv_schema, csv_table=csv_table)

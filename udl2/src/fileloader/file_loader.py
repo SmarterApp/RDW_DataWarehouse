@@ -57,7 +57,7 @@ def get_csv_header_names_in_ref_table(conn, staging_schema, ref_table, csv_lz_ta
     header_names_in_ref_table = []
     query = queries.get_columns_in_ref_table_query(staging_schema, ref_table, csv_lz_table)
     csv_columns_in_ref_table = execute_query_with_result(conn, query, 'Exception in getting column names in table %s -- ' % ref_table,
-                                                        'file_loader', 'get_csv_header_names_in_ref_table')
+                                                         'file_loader', 'get_csv_header_names_in_ref_table')
     if csv_columns_in_ref_table:
         header_names_in_ref_table = [name[0] for name in csv_columns_in_ref_table]
     return header_names_in_ref_table
@@ -205,8 +205,7 @@ if __name__ == '__main__':
     parser.add_argument('-m', dest='header_csv', required=True, help="path to the header file")
     args = parser.parse_args()
 
-    conf = {
-            mk.FILE_TO_LOAD: args.source_csv,
+    conf = {mk.FILE_TO_LOAD: args.source_csv,
             mk.HEADERS: args.header_csv,
             mk.ROW_START: 10,
             mk.TARGET_DB_HOST: 'localhost',
@@ -223,7 +222,7 @@ if __name__ == '__main__':
             mk.REF_TABLE: 'REF_COLUMN_MAPPING',
             mk.CSV_LZ_TABLE: 'LZ_CSV',
             mk.GUID_BATCH: '00000000-0000-0000-0000-000000000000'
-    }
+            }
     start_time = datetime.datetime.now()
     load_file(conf)
     finish_time = datetime.datetime.now()

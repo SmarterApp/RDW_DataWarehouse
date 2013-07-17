@@ -136,8 +136,7 @@ if __name__ == '__main__':
     json_file = args.source_json
     mapping = get_json_to_asmt_tbl_mappings()
 
-    conf = {
-            mk.FILE_TO_LOAD: json_file,
+    conf = {mk.FILE_TO_LOAD: json_file,
             mk.MAPPINGS: mapping,
             mk.TARGET_DB_HOST: 'localhost',
             mk.TARGET_DB_PORT: '5432',
@@ -147,7 +146,7 @@ if __name__ == '__main__':
             mk.TARGET_DB_SCHEMA: 'udl2',
             mk.TARGET_DB_TABLE: 'INT_SBAC_ASMT',
             mk.GUID_BATCH: 100
-    }
+            }
 
     start_time = time.time()
     load_json(conf)

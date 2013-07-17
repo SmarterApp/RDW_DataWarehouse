@@ -1,4 +1,4 @@
-# @PydevCodeAnalysisIgnore
+#@PydevCodeAnalysisIgnore
 from rule_maker.rules import transformations as t
 from rule_maker.rules.rule_keys import *
 

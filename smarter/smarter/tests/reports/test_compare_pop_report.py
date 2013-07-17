@@ -313,6 +313,23 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         self.assertEqual(results['records'][2]['results']['subject1']['total'], 5)
         self.assertEqual(len(results['records']), 3)
 
+    def test_view_with_lep_yes(self):
+        testParam = {}
+        testParam[Constants.STATECODE] = 'NY'
+        testParam[Constants.DISTRICTGUID] = 'c912df4b-acdf-40ac-9a91-f66aefac7851'
+        testParam[Constants_filter_names.DEMOGRAPHICS_PROGRAM_LEP] = ['Y']
+        results = get_comparing_populations_report(testParam)
+        self.assertEqual(len(results['records']), 2)
+        self.assertEqual(results['records'][0]['results']['subject1']['total'], 1)
+
+    def test_view_with_lep_no(self):
+        testParam = {}
+        testParam[Constants.STATECODE] = 'NY'
+        testParam[Constants.DISTRICTGUID] = 'c912df4b-acdf-40ac-9a91-f66aefac7851'
+        testParam[Constants_filter_names.DEMOGRAPHICS_PROGRAM_LEP] = ['N']
+        results = get_comparing_populations_report(testParam)
+        self.assertEqual(len(results['records']), 3)
+        self.assertEqual(results['records'][1]['results']['subject1']['total'], 16)
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testReport']

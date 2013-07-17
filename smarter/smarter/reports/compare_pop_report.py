@@ -19,8 +19,9 @@ from edapi.exceptions import NotFoundException
 import json
 from smarter.security.context import select_with_context
 from smarter.database.smarter_connector import SmarterDBConnection
-from smarter.reports.filters import Constants_filter_names, demographics
+from smarter.reports.filters import Constants_filter_names
 from smarter.reports.utils.cache import cache_region
+from smarter.reports.filters.demographics import getDemographicFilter
 
 # Report service for Comparing Populations
 # Output:
@@ -61,6 +62,14 @@ CACHE_REGION_PUBLIC_FILTERING_DATA = 'public.filtered_data'
             "type": "string",
             "required": False,
             "pattern": "^[a-zA-Z0-9\-]{0,50}$",
+        },
+        Constants_filter_names.DEMOGRAPHICS_PROGRAM_LEP: {
+            "type": "array",
+            "required": False,
+            "items": {
+                "type": "string",
+                "pattern": "^(" + Constants_filter_names.YES + "|" + Constants_filter_names.NO + "|" + Constants_filter_names.NOT_STATED + ")$",
+            }
         },
         Constants_filter_names.DEMOGRAPHICS_PROGRAM_IEP: {
             "type": "array",
@@ -498,12 +507,15 @@ class QueryHelper():
         # apply demographics filters
         if query is not None:
             if self._filters:
-                filter_iep = demographics.getDemographicFilter(Constants_filter_names.DEMOGRAPHICS_PROGRAM_IEP, self._filters)
+                filter_iep = getDemographicFilter(Constants_filter_names.DEMOGRAPHICS_PROGRAM_IEP, self._filters)
                 if filter_iep:
                     query = query.where(self._fact_asmt_outcome.c.dmg_prg_iep.in_(filter_iep))
-                filter_504 = demographics.getDemographicFilter(Constants_filter_names.DEMOGRAPHICS_PROGRAM_504, self._filters)
+                filter_504 = getDemographicFilter(Constants_filter_names.DEMOGRAPHICS_PROGRAM_504, self._filters)
                 if filter_504:
                     query = query.where(self._fact_asmt_outcome.c.dmg_prg_504.in_(filter_504))
+                filter_lep = getDemographicFilter(Constants_filter_names.DEMOGRAPHICS_PROGRAM_LEP, self._filters)
+                if filter_lep:
+                    query = query.where(self._fact_asmt_outcome.c.dmg_prg_lep.in_(filter_lep))
                 filter_grade = self._filters.get(Constants_filter_names.GRADE)
                 if self._filters.get(Constants_filter_names.GRADE):
                     query = query.where(self._fact_asmt_outcome.c.asmt_grade.in_(filter_grade))

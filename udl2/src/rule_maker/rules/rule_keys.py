@@ -29,7 +29,7 @@ OUTLIST = 'outlist'
 COMPARE_LENGTH = 'compare_length'
 CALCULATE = 'calculate'
 VCLEAN = 'vclean'
-RCLEAN = 'rclean' 
+RCLEAN = 'rclean'
 TO_CHAR = 'TO_CHAR'
 MIN0 = 'MIN0'
 
@@ -40,7 +40,7 @@ IsUnique = 'IsUnique'  # Validate if the data in the indicated column list is un
 IsUniqueWithin = 'IsUniqueWithin'  # Validate if the data in the indicated column list is unique across the guid_batch and the indicated field
 HasMaxLength = 'HasMaxLength'  # Validate if the length for the data in the indicated column is within the indicated max length.
 IsInList = 'IsInList'  # Validate if the data in the indicated column (column1) is in the list of values defined.
-IsLessThan = 'IsLessThan'  # Validate if the data in the indicated column is less than the provided value. 
+IsLessThan = 'IsLessThan'  # Validate if the data in the indicated column is less than the provided value.
 IsMoreThan = 'IsMoreThan'  # Validate if the data in the given column is greater than the provided value.
 IsBefore = 'IsBefore'  # Validate if the date in the given column exists before the provided date.
 IsAfter = 'IsAfter'  # Validate if the date in the given column exists after the provided date.
@@ -53,4 +53,3 @@ IsGoodGUID = 'IsGoodGUID'  # Validate if the GUID is valid
 IsGoodEmail = 'IsGoodEmail'  # Validate is the email is well-formed.
 
 NAME = 'Name'
-

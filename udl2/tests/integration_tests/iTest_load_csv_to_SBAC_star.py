@@ -25,52 +25,52 @@ class ITestLoadCsvToSBACStar(unittest.TestCase):
         pass
 
     def test_load_csv_to_sbac_star(self):
-        if os.path.isfile("{datafiles}/REALDATA_ASMT_ValidData.csv".format(datafiles=self.conf['zones']['datafiles'])):
-            print("driver.py -c {datafiles}/REALDATA_ASMT_ValidData.csv -j {datafiles}/METADATA_ASMT_ValidData.json".format(datafiles=self.conf['zones']['datafiles']))
-            subprocess.call("driver.py -c {datafiles}/REALDATA_ASMT_ValidData.csv -j {datafiles}/METADATA_ASMT_ValidData.json".format(datafiles=self.conf['zones']['datafiles']),
+        if os.path.isfile("{datafiles}/REALDATA_ASMT_ID.csv".format(datafiles=self.conf['zones']['datafiles'])):
+            print("driver.py -c {datafiles}/REALDATA_ASMT_ID.csv -j {datafiles}/METADATA_ASMT_ID.json".format(datafiles=self.conf['zones']['datafiles']))
+            subprocess.call("driver.py -c {datafiles}/REALDATA_ASMT_ID.csv -j {datafiles}/METADATA_ASMT_ID.json".format(datafiles=self.conf['zones']['datafiles']),
                             shell=True)
             self.assertTrue(True)
         else:
             self.assertTrue(False)
 
-    def test_load_csv_to_sbac_star_300k(self):
-        '''
-        you need to copy the test data to {datafiles} specified in configuration file under conf['zones']['datafiles']
-        The files is located on shared drive inside Amplify Insight under __EDWARE__\\Landing Zone Data\\300k_asmts.zip
-        '''
-        if os.path.isfile("{datafiles}/REALDATA_ASMT_ID_300k.csv".format(datafiles=self.conf['zones']['datafiles'])):
-            print("driver.py -c {datafiles}/REALDATA_ASMT_ValidData.csv -j {datafiles}/METADATA_ASMT_ValidData.json".format(datafiles=self.conf['zones']['datafiles']))
-            subprocess.call("driver.py -c {datafiles}/REALDATA_ASMT_ID_300k.csv -j {datafiles}/METADATA_ASMT_ID_300k.json".format(datafiles=self.conf['zones']['datafiles']),
-                            shell=True)
-            self.assertTrue(True)
-        else:
-            self.assertTrue(False)
-
-    def test_load_csv_to_sbac_star_2500k(self):
-        '''
-        you need to copy the test data to {datafiles} specified in configuration file under conf['zones']['datafiles']
-        The files is located on shared drive inside Amplify Insight under __EDWARE__\\Landing Zone Data\\2500k_asmts.zip
-        '''
-        if os.path.isfile("{datafiles}/REALDATA_ASMT_ID_2500k.csv".format(datafiles=self.conf['zones']['datafiles'])):
-            print("driver.py -c {datafiles}/REALDATA_ASMT_ValidData.csv -j {datafiles}/METADATA_ASMT_ValidData.json".format(datafiles=self.conf['zones']['datafiles']))
-            subprocess.call("driver.py -c {datafiles}/REALDATA_ASMT_ID_2500k.csv -j {datafiles}/METADATA_ASMT_ID_2500k.json".format(datafiles=self.conf['zones']['datafiles']),
-                            shell=True)
-            self.assertTrue(True)
-        else:
-            self.assertTrue(False)
-
-    def test_load_csv_to_sbac_star_25M(self):
-        '''
-        you need to copy the test data to {datafiles} specified in configuration file under conf['zones']['datafiles']
-        The files is located on shared drive inside Amplify Insight under __EDWARE__\\Landing Zone Data\\25millions_asmts.zip
-        '''
-        if os.path.isfile("{datafiles}/REALDATA_ASMT_ID_25M.csv".format(datafiles=self.conf['zones']['datafiles'])):
-            print("driver.py -c {datafiles}/REALDATA_ASMT_ValidData.csv -j {datafiles}/METADATA_ASMT_ValidData.json".format(datafiles=self.conf['zones']['datafiles']))
-            subprocess.call("driver.py -c {datafiles}/REALDATA_ASMT_ID_25M.csv -j {datafiles}/METADATA_ASMT_ID_25M.json".format(datafiles=self.conf['zones']['datafiles']),
-                            shell=True)
-            self.assertTrue(True)
-        else:
-            self.assertTrue(False)
+#    def test_load_csv_to_sbac_star_300k(self):
+#        '''
+#        you need to copy the test data to {datafiles} specified in configuration file under conf['zones']['datafiles']
+#        The files is located on shared drive inside Amplify Insight under __EDWARE__\\Landing Zone Data\\300k_asmts.zip
+#        '''
+#        if os.path.isfile("{datafiles}/REALDATA_ASMT_ID_300k.csv".format(datafiles=self.conf['zones']['datafiles'])):
+#            print("driver.py -c {datafiles}/REALDATA_ASMT_ID.csv -j {datafiles}/METADATA_ASMT_ValidData.json".format(datafiles=self.conf['zones']['datafiles']))
+#            subprocess.call("driver.py -c {datafiles}/REALDATA_ASMT_ID_300k.csv -j {datafiles}/METADATA_ASMT_ID_300k.json".format(datafiles=self.conf['zones']['datafiles']),
+#                            shell=True)
+#            self.assertTrue(True)
+#        else:
+#            self.assertTrue(False)
+#
+#    def test_load_csv_to_sbac_star_2500k(self):
+#        '''
+#        you need to copy the test data to {datafiles} specified in configuration file under conf['zones']['datafiles']
+#        The files is located on shared drive inside Amplify Insight under __EDWARE__\\Landing Zone Data\\2500k_asmts.zip
+#        '''
+#        if os.path.isfile("{datafiles}/REALDATA_ASMT_ID_2500k.csv".format(datafiles=self.conf['zones']['datafiles'])):
+#            print("driver.py -c {datafiles}/REALDATA_ASMT_ID.csv -j {datafiles}/METADATA_ASMT_ValidData.json".format(datafiles=self.conf['zones']['datafiles']))
+#            subprocess.call("driver.py -c {datafiles}/REALDATA_ASMT_ID_2500k.csv -j {datafiles}/METADATA_ASMT_ID_2500k.json".format(datafiles=self.conf['zones']['datafiles']),
+#                            shell=True)
+#            self.assertTrue(True)
+#        else:
+#            self.assertTrue(False)
+#
+#    def test_load_csv_to_sbac_star_25M(self):
+#        '''
+#        you need to copy the test data to {datafiles} specified in configuration file under conf['zones']['datafiles']
+#        The files is located on shared drive inside Amplify Insight under __EDWARE__\\Landing Zone Data\\25millions_asmts.zip
+#        '''
+#        if os.path.isfile("{datafiles}/REALDATA_ASMT_ID_25M.csv".format(datafiles=self.conf['zones']['datafiles'])):
+#            print("driver.py -c {datafiles}/REALDATA_ASMT_ID.csv -j {datafiles}/METADATA_ASMT_ValidData.json".format(datafiles=self.conf['zones']['datafiles']))
+#            subprocess.call("driver.py -c {datafiles}/REALDATA_ASMT_ID_25M.csv -j {datafiles}/METADATA_ASMT_ID_25M.json".format(datafiles=self.conf['zones']['datafiles']),
+#                            shell=True)
+#            self.assertTrue(True)
+#        else:
+#            self.assertTrue(False)
 
 if __name__ == "__main__":
     unittest.main()

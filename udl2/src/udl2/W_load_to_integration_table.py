@@ -5,7 +5,7 @@ Created on May 22, 2013
 '''
 from __future__ import absolute_import
 from udl2.celery import celery, udl2_conf
-from udl2 import  message_keys as mk
+from udl2 import message_keys as mk
 from celery.utils.log import get_task_logger
 from move_to_integration.move_to_integration import move_data_from_staging_to_integration
 from udl2_util.measurement import measure_cpu_plus_elasped_time

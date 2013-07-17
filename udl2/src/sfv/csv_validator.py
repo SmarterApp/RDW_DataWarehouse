@@ -22,7 +22,7 @@ class CsvValidator():
     """
 
     @measure_cpu_plus_elasped_time
-    def  __init__(self):
+    def __init__(self):
         """Constructor
         @param arg_udl_db: database connections
         @type arg_udl_db: udl.lib.UdlDb

@@ -26,8 +26,7 @@ def task(msg):
 @measure_cpu_plus_elasped_time
 def generate_conf_for_loading(file_to_load, start_seq, header_file_path, guid_batch):
     csv_table = extract_file_name(file_to_load)
-    conf = {
-            mk.FILE_TO_LOAD: file_to_load,
+    conf = {mk.FILE_TO_LOAD: file_to_load,
             mk.ROW_START: start_seq,
             mk.HEADERS: header_file_path,
             mk.TARGET_DB_HOST: udl2_conf['udl2_db']['db_host'],
@@ -44,8 +43,7 @@ def generate_conf_for_loading(file_to_load, start_seq, header_file_path, guid_ba
             mk.APPLY_RULES: True,
             mk.REF_TABLE: udl2_conf['udl2_db']['ref_table_name'],
             mk.CSV_LZ_TABLE: udl2_conf['udl2_db']['csv_lz_table'],
-            mk.GUID_BATCH: guid_batch
-    }
+            mk.GUID_BATCH: guid_batch}
     return conf
 
 

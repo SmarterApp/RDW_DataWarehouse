@@ -54,24 +54,23 @@ ALLNULL = 'all_null'
 __validation_rules_definition = {BYCOLUMN: {'guid_asmt': [ISNOTNULL],  # for EACH row where guid_teacher is null, put record id in ERR table
                                             'guid_student': [ISNOTNULL, ALL],  # record one error in ERR table if in ALL rows guid_student is NULL
                                             'guid_assessment': [ISNOTNULL, BOTH],  # combination of ALL then EACH
-                                            'date_assessed': [ISNOTNULL, {DATE:'YYYY-MM-DD'}],  # check EACH date not null, and has the given format
+                                            'date_assessed': [ISNOTNULL, {DATE: 'YYYY-MM-DD'}],  # check EACH date not null, and has the given format
                                             'dob_student': [ISNOTNULL, AFTER_2001, ALL],  # record 1 error if ALL dob_student are NULL or if all dob_student are less than Jan 1st 2001
                                             'guid_staff': [[ISNOTNULL, ALL], [ISUNIQUE, EACH]],
                                             'name_student_first': ALPHA,
                                             'guid_inst_hier': GUID
+                                            },
 
-                                 },
+                                 #==============================================
+                                 # BYRULE: { 'sumto100' : ['measure1', 'measure2', 'measure3'], # checks that the sum of these 3 columns is exactly 100
+                                 #          'sumtox': {'total':1200, 'columns':['colABC', 'colXYZ']},  # checks that colABC + colXYZ == 1200
+                                 #          NULL: ['dob_student', 'dob_teacher'], # record an error for EACH row where both the dob_student AND dob_teacher are NULL}
+                                 #==============================================
 
-#                                BYRULE: { 'sumto100' : ['measure1', 'measure2', 'measure3'], # checks that the sum of these 3 columns is exactly 100
-#                                          'sumtox': {'total':1200, 'columns':['colABC', 'colXYZ']},  # checks that colABC + colXYZ == 1200
-#                                          NULL: ['dob_student', 'dob_teacher'], # record an error for EACH row where both the dob_student AND dob_teacher are NULL
-#                                        }
-
-                                 BYRULE: [{NAME:'check-123', ASSERT:'{measure1}+{measure2}+{measure3}=100'},
-                                          {NAME:'checkABCXYZ', ASSERT: '{colABC}+{colXYZ}!=1200'},
-                                          {NAME:'both-dob-null', ALLNULL:['dob_student', 'dob_teacher']}
-                                          ]
-                  }
+                                 BYRULE: [{NAME: 'check-123', ASSERT: '{measure1}+{measure2}+{measure3}=100'},
+                                          {NAME: 'checkABCXYZ', ASSERT: '{colABC}+{colXYZ}!=1200'},
+                                          {NAME: 'both-dob-null', ALLNULL: ['dob_student', 'dob_teacher']}
+                                          ]}
 
 
 # dictionary to map notation and corresponding sql
@@ -81,7 +80,7 @@ __validation_notation_sql_dict = {ISNOTNULL: {ALL: NULL_ALL_SQL, EACH: NULL_SQL,
                                   ISUNIQUE: UNIQUE_SQL,
                                   REGEX: '\nGOING TO GENERATE SQL FOR REGEX RULE\n',
                                   # GUID: 'TBD'
-                               }
+                                  }
 
 
 __validation_rules_error_code = {}
@@ -195,8 +194,7 @@ if __name__ == '__main__':
     para = {'guid_batch': 'be310a4c-e2db-4237-8c73-57d7a4f355a3',
             'err_source': 6,
             'schema': 'udl2',
-            'table': 'INT_SBAC_ASMT_OUTCOME'
-    }
+            'table': 'INT_SBAC_ASMT_OUTCOME'}
     validation_proc = generate_validation_proc(para)
     print("Generated %i number of rules" % len(validation_proc))
     for proc in validation_proc:

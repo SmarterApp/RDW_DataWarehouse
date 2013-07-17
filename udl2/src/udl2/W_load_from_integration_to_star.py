@@ -98,26 +98,24 @@ def generate_conf(guid_batch):
     '''
     Return all needed configuration information
     '''
-    conf = {
-             # add guid_batch from msg
-            mk.GUID_BATCH: guid_batch,
+    conf = {  # add guid_batch from msg
+              mk.GUID_BATCH: guid_batch,
 
-            # source schema
-            mk.SOURCE_DB_SCHEMA: udl2_conf['udl2_db']['integration_schema'],
-            # source database setting
-            mk.SOURCE_DB_HOST: udl2_conf['udl2_db']['db_host'],
-            mk.SOURCE_DB_PORT: udl2_conf['udl2_db']['db_port'],
-            mk.SOURCE_DB_USER: udl2_conf['udl2_db']['db_user'],
-            mk.SOURCE_DB_NAME: udl2_conf['udl2_db']['db_database'],
-            mk.SOURCE_DB_PASSWORD: udl2_conf['udl2_db']['db_pass'],
+              # source schema
+              mk.SOURCE_DB_SCHEMA: udl2_conf['udl2_db']['integration_schema'],
+              # source database setting
+              mk.SOURCE_DB_HOST: udl2_conf['udl2_db']['db_host'],
+              mk.SOURCE_DB_PORT: udl2_conf['udl2_db']['db_port'],
+              mk.SOURCE_DB_USER: udl2_conf['udl2_db']['db_user'],
+              mk.SOURCE_DB_NAME: udl2_conf['udl2_db']['db_database'],
+              mk.SOURCE_DB_PASSWORD: udl2_conf['udl2_db']['db_pass'],
 
-            # target schema
-            mk.TARGET_DB_SCHEMA: udl2_conf['target_db']['db_schema'],
-            # target database setting
-            mk.TARGET_DB_HOST: udl2_conf['target_db']['db_host'],
-            mk.TARGET_DB_PORT: udl2_conf['target_db']['db_port'],
-            mk.TARGET_DB_USER: udl2_conf['target_db']['db_user'],
-            mk.TARGET_DB_NAME: udl2_conf['target_db']['db_database'],
-            mk.TARGET_DB_PASSWORD: udl2_conf['target_db']['db_pass'],
-    }
+              # target schema
+              mk.TARGET_DB_SCHEMA: udl2_conf['target_db']['db_schema'],
+              # target database setting
+              mk.TARGET_DB_HOST: udl2_conf['target_db']['db_host'],
+              mk.TARGET_DB_PORT: udl2_conf['target_db']['db_port'],
+              mk.TARGET_DB_USER: udl2_conf['target_db']['db_user'],
+              mk.TARGET_DB_NAME: udl2_conf['target_db']['db_database'],
+              mk.TARGET_DB_PASSWORD: udl2_conf['target_db']['db_pass'], }
     return conf

@@ -133,17 +133,14 @@ define [
 
   submitEvent = () ->
     selectedValues = fetchSelectedValues()
-    if $.isEmptyObject(selectedValues)
-      $('.filter #cancel-btn').trigger('click')
-    else
-      # construct params and send ajax call
-      params = edwareUtil.getUrlParams()
-      # merge selected options into param
-      $.extend(params, selectedValues)
-      console.log params
-      callback params if callback
-      # display selected filters on html page
-      createSelectedFilterPanel() 
+    # construct params and send ajax call
+    params = edwareUtil.getUrlParams()
+    # merge selected options into param
+    $.extend(params, selectedValues)
+    console.log params
+    callback params if callback
+    # display selected filters on html page
+    createSelectedFilterPanel() unless $.isEmptyObject(selectedValues)
       
     
   createSelectedFilterPanel = ->

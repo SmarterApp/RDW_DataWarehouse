@@ -65,17 +65,25 @@ CACHE_REGION_PUBLIC_FILTERING_DATA = 'public.filtered_data'
         Constants_filter_names.DEMOGRAPHICS_PROGRAM_IEP: {
             "type": "array",
             "required": False,
-            "pattern": "^(" + Constants_filter_names.YES + "|" + Constants_filter_names.NO + "|" + Constants_filter_names.NOT_STATED + ")$",
             "items": {
-                "type": "string"
+                "type": "string",
+                "pattern": "^(" + Constants_filter_names.YES + "|" + Constants_filter_names.NO + "|" + Constants_filter_names.NOT_STATED + ")$",
             }
         },
         Constants_filter_names.DEMOGRAPHICS_PROGRAM_504: {
             "type": "array",
             "required": False,
-            "pattern": "^(" + Constants_filter_names.YES + "|" + Constants_filter_names.NO + "|" + Constants_filter_names.NOT_STATED + ")$",
             "items": {
-                "type": "string"
+                "type": "string",
+                "pattern": "^(" + Constants_filter_names.YES + "|" + Constants_filter_names.NO + "|" + Constants_filter_names.NOT_STATED + ")$",
+            }
+        },
+        Constants_filter_names.GRADE: {
+            "type": "array",
+            "required": False,
+            "items": {
+                "type": "string",
+                "pattern": "^(3|4|5|6|7|8|11)$"
             }
         }
     })
@@ -496,6 +504,9 @@ class QueryHelper():
                 filter_504 = demographics.getDemographicFilter(Constants_filter_names.DEMOGRAPHICS_PROGRAM_504, self._filters)
                 if filter_504:
                     query = query.where(self._fact_asmt_outcome.c.dmg_prg_504.in_(filter_504))
+                filter_grade = self._filters.get(Constants_filter_names.GRADE)
+                if self._filters.get(Constants_filter_names.GRADE):
+                    query = query.where(self._fact_asmt_outcome.c.asmt_grade.in_(filter_grade))
         return query
 
     def get_query(self):

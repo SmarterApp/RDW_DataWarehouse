@@ -335,7 +335,7 @@ define [
         asmtSubjectSort.css('visibility', 'hidden')
         asmtSubjectSort.siblings('span').css('visibility', 'hidden')
         
-        caret = $("<a class='dropdown-toggle' id='" + asmtSubject + "_DropdownMenu' role='button'><div class='dropdown_title'>" + customALDDropdown.selectSort + "</div><b class='caret'></b></a>")
+        caret = $("<a class='dropdown-toggle' id='" + asmtSubject + "_DropdownMenu' role='button' data-toggle='dropdown'><div class='dropdown_title'>" + customALDDropdown.selectSort + "</div><b class='caret'></b></a>")
         dropdown_menu = $("<ul class='dropdown-menu' role='menu' aria-labelledby='dLabel'></ul>")
         
         #prepare color bars

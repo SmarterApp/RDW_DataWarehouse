@@ -15,8 +15,8 @@ udl2_conf = {
                            'udl2.W_load_from_integration_to_star',
                            'udl2.W_report_error_or_success',
                            'udl2.W_final_cleanup'
-              ],
-    },
+                           ],
+               },
     'file_splitter': {  # Options for file_splitter
         'row_limit': 10000,  # default row number for split files
         'parts': 1,  # default parts of files

@@ -6,14 +6,15 @@ from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 import imp
 import os.path
 
+
 def start_rabbitmq(RABBITMQ_SERVER):
     try:
         if type(RABBITMQ_SERVER).__name__ == 'str':
-            subprocess.call(["sudo " +  RABBITMQ_SERVER + " &"], shell=True)
+            subprocess.call(["sudo " + RABBITMQ_SERVER + " &"], shell=True)
         elif type(RABBITMQ_SERVER).__name__ == 'list':
             for i in RABBITMQ_SERVER:
                 if os.path.isfile(i):
-                    subprocess.call(["sudo " +  i + " &"], shell=True)            
+                    subprocess.call(["sudo " + i + " &"], shell=True)
     except Exception as e:
         print(e)
 
@@ -32,7 +33,7 @@ if __name__ == '__main__':
         config_path_file = UDL2_DEFAULT_CONFIG_PATH_FILE
     else:
         config_path_file = args.config_file
-        
+
     udl2_conf = imp.load_source('udl2_conf', config_path_file)
     from udl2_conf import udl2_conf
     start_rabbitmq(udl2_conf['rabbitmq']['RABBITMQ_SERVER_PATH'])

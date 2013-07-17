@@ -42,8 +42,7 @@ def get_parameters():
     parser.add_argument("-i", "--input_file", required=True, help="input file")
     parser.add_argument("-o", "--output_path", default=FILE_SPLITTER_CONF['output_path'], help="output directory")
     args = parser.parse_args()
-    conf = {
-            'parts': args.parts,
+    conf = {'parts': args.parts,
             'row_limit': args.row_limit,
             'input_file': args.input_file,
             'output_path': args.output_path,

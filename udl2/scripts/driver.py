@@ -67,11 +67,11 @@ def start_pipeline(csv_file_path, json_file_path, udl2_conf):
     integration_to_star_msg = generate_integration_to_star_msg(guid_batch)
 
     pipeline_chain_1 = chain(W_file_arrived.task.si(arrival_msg), W_file_expander.task.si(expander_msg),
-                           W_simple_file_validator.task.si(simple_file_validator_msg), W_file_splitter.task.si(splitter_msg),
-                           W_file_content_validator.task.si(file_content_validator_msg), W_load_json_to_integration.task.si(load_json_msg),
-                           W_load_to_integration_table.task.si(load_to_int_msg),
-                           W_load_from_integration_to_star.explode_to_dims.si(integration_to_star_msg),
-                           W_load_from_integration_to_star.explode_to_fact.si(integration_to_star_msg))
+                             W_simple_file_validator.task.si(simple_file_validator_msg), W_file_splitter.task.si(splitter_msg),
+                             W_file_content_validator.task.si(file_content_validator_msg), W_load_json_to_integration.task.si(load_json_msg),
+                             W_load_to_integration_table.task.si(load_to_int_msg),
+                             W_load_from_integration_to_star.explode_to_dims.si(integration_to_star_msg),
+                             W_load_from_integration_to_star.explode_to_fact.si(integration_to_star_msg))
 
     result = pipeline_chain_1.delay()
 

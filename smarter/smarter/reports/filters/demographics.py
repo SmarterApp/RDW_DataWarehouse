@@ -11,7 +11,7 @@ def getDemographicFilter(filter_name, filters):
     '''
     apply filters for Disability
     :rtype: sqlalchemy.sql.select
-    :returns: filters applifed query
+    :returns: list of filters to be applied to query
     '''
     filter_map = {Constants_filter_names.YES: true(),
                   Constants_filter_names.NO: false(),

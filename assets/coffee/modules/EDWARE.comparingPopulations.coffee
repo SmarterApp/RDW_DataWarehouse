@@ -50,6 +50,11 @@ define [
         # Determine if the report is state, district or school view
         reportType = getReportType(params)
         
+        # Check for colors, set to default color if it's null
+        for color, value of colorsData
+          if value is null
+            colorsData[color] = defaultColors
+        
         # Append colors to records and summary section
         # Do not format data, or get breadcrumbs if the result is empty
         if populationData.length > 0
@@ -214,15 +219,15 @@ define [
     data
   
   # Add color for each intervals
-  appendColor = (data, colorsData, defaultColors) ->
+  appendColor = (data, colors, defaultColors) ->
     i = 0
     intervals = data.intervals
     len = intervals.length
     sort = prepareTotalPercentage data.total, len
     while i < len
       element = intervals[i]
-      if colorsData and colorsData[i]
-        element.color = colorsData[i]
+      if colors and colors[i]
+        element.color = colors[i]
       else
         element.color = defaultColors[i]
         

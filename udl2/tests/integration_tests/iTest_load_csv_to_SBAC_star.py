@@ -27,7 +27,7 @@ class ITestLoadCsvToSBACStar(unittest.TestCase):
     def test_load_csv_to_sbac_star(self):
         if os.path.isfile("{datafiles}/REALDATA_ASMT_ID.csv".format(datafiles=self.conf['zones']['datafiles'])):
             print("driver.py -c {datafiles}/REALDATA_ASMT_ID.csv -j {datafiles}/METADATA_ASMT_ID.json".format(datafiles=self.conf['zones']['datafiles']))
-            subprocess.call("driver.py -c {datafiles}/REALDATA_ASMT_ID.csv -j {datafiles}/METADATA_ASMT_ID.json".format(datafiles=self.conf['zones']['datafiles']),
+            subprocess.call("../../scripts/driver.py -c {datafiles}/REALDATA_ASMT_ID.csv -j {datafiles}/METADATA_ASMT_ID.json".format(datafiles=self.conf['zones']['datafiles']),
                             shell=True)
             self.assertTrue(True)
         else:

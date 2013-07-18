@@ -89,11 +89,11 @@ class IntToStarFTest(unittest.TestCase):
             except_msg = "Unable to insert into %s" % table
             execute_queries(self.udl2_conn, insert_array, except_msg)
 
-        #explode to dim tables
+        # explode to dim tables
         dim_tables = column_mapping.get_target_tables_parallel()
         column_map = column_mapping.get_column_mapping()
         guid_batch = '2411183a-dfb7-42f7-9b3e-bb7a597aa3e7'
-        conf = W_load_from_integration_to_star.generate_conf(guid_batch)
+        conf = W_load_from_integration_to_star.generate_conf(guid_batch, 4)
         for target in dim_tables.keys():
             target_columns = column_map[target]
             column_types = move_to_target.get_table_column_types(conf, target, list(target_columns.keys()))
@@ -102,7 +102,7 @@ class IntToStarFTest(unittest.TestCase):
         column_types = move_to_target.get_table_column_types(conf, 'fact_asmt_outcome', list(column_map['fact_asmt_outcome'].keys()))
         move_to_target.explode_data_to_fact_table(conf, 'INT_SBAC_ASMT_OUTCOME', 'fact_asmt_outcome', column_map['fact_asmt_outcome'], column_types)
 
-        #check star schema table counts
+        # check star schema table counts
         count_template = """ SELECT COUNT(*) FROM "{schema}"."{table}" """
         tables_to_check = {'dim_asmt': 1, 'dim_inst_hier': 70, 'dim_staff': 70, 'dim_student': 94, 'fact_asmt_outcome': 99}
         for entry in tables_to_check.keys():
@@ -113,7 +113,7 @@ class IntToStarFTest(unittest.TestCase):
                 count = row[0]
             assert int(count) == tables_to_check[entry]
 
-        #check asmt score avgs
+        # check asmt score avgs
         int_avg_query = """ SELECT avg(score_asmt),
         avg(score_asmt_min),
         avg(score_asmt_max),

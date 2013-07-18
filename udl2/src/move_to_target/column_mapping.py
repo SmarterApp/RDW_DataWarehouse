@@ -181,7 +181,6 @@ def get_column_mapping():
                                                                           ('asmt_claim_4_score', 'score_claim_4'),
                                                                           ('asmt_claim_4_score_range_min', 'score_claim_4_min'),
                                                                           ('asmt_claim_4_score_range_max', 'score_claim_4_max'),
-                                                                          ('record_create_datetime', 'CURRENT_TIMESTAMP'),
                                                                           ('status', '\' \''),
                                                                           ('most_recent', 'True'),
                                                                           ('batch_guid', 'guid_batch'),

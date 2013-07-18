@@ -3,11 +3,13 @@ from udl2.celery import celery, udl2_conf
 from celery.result import AsyncResult
 from celery.utils.log import get_task_logger
 from udl2 import message_keys as mk
-import move_to_target.column_mapping as col_map
 from move_to_target.move_to_target import explode_data_to_dim_table, explode_data_to_fact_table, get_table_column_types, calculate_spend_time_as_second
 from celery import group
 import datetime
 from udl2_util.measurement import measure_cpu_plus_elasped_time
+from move_to_target import create_queries as queries
+from udl2_util.database_util import connect_db, execute_query_with_result
+from collections import OrderedDict
 
 
 logger = get_task_logger(__name__)
@@ -21,14 +23,66 @@ def explode_to_dims(msg):
     This is the celery task to move data from integration tables to dim tables.
     In the input batch object, guid_batch is provided.
     '''
-    conf = generate_conf(msg[mk.GUID_BATCH])
-    column_map = col_map.get_column_mapping()
+    conf = generate_conf(msg[mk.GUID_BATCH], msg[mk.PHASE])
+    table_map, column_map = get_table_and_column_mapping(conf, 'dim_')
     grouped_tasks = create_group_tuple(explode_data_to_dim_table_task,
                                        [(conf, source_table, dim_table, column_map[dim_table], get_table_column_types(conf, dim_table, list(column_map[dim_table].keys())))
-                                        for dim_table, source_table in col_map.get_target_tables_parallel().items()])
+                                        for dim_table, source_table in table_map.items()])
     result_uuid = group(*grouped_tasks)()
     msg['dim_tables'] = result_uuid.get()
     return msg
+
+
+@measure_cpu_plus_elasped_time
+def get_table_and_column_mapping(conf, table_name_prefix=None):
+    (conn_source, _engine) = connect_db(conf[mk.SOURCE_DB_DRIVER],
+                                        conf[mk.SOURCE_DB_USER],
+                                        conf[mk.SOURCE_DB_PASSWORD],
+                                        conf[mk.SOURCE_DB_HOST],
+                                        conf[mk.SOURCE_DB_PORT],
+                                        conf[mk.SOURCE_DB_NAME])
+    table_map = get_table_mapping(conn_source, conf[mk.SOURCE_DB_SCHEMA], conf[mk.REF_TABLE], conf[mk.PHASE], table_name_prefix)
+    column_map = get_column_mapping_from_int_to_star(conn_source, conf[mk.SOURCE_DB_SCHEMA], conf[mk.REF_TABLE], conf[mk.PHASE], list(table_map.keys()))
+    conn_source.close()
+    return table_map, column_map
+
+
+@measure_cpu_plus_elasped_time
+def get_table_mapping(conn, schema_name, table_name, phase_number, table_name_prefix=None):
+    table_mapping_query = queries.get_dim_table_mapping_query(schema_name, table_name, phase_number)
+    table_mapping_result = execute_query_with_result(conn, table_mapping_query, 'Exception -- getting table mapping', 'W_load_from_integration_to_star', 'get_table_mapping')
+    table_mapping_dict = {}
+    if table_mapping_result:
+        for mapping in table_mapping_result:
+            if table_name_prefix:
+                if mapping[0].startswith(table_name_prefix):
+                    table_mapping_dict[mapping[0]] = mapping[1]
+            else:
+                table_mapping_dict[mapping[0]] = mapping[1]
+    return table_mapping_dict
+
+
+@measure_cpu_plus_elasped_time
+def get_column_mapping_from_int_to_star(conn, schema_name, table_name, phase_number, dim_tables):
+    column_map = {}
+    for dim_table in dim_tables:
+        # get column map for this dim_table
+        column_mapping_query = queries.get_dim_column_mapping_query(schema_name, table_name, phase_number, dim_table)
+        column_mapping_result = execute_query_with_result(conn, column_mapping_query, 'Exception -- getting column mapping', 'W_load_from_integration_to_star', 'get_column_mapping_from_int_to_star')
+        column_mapping_list = []
+        if column_mapping_result:
+            for mapping in column_mapping_result:
+                # mapping[0]: target_column, mapping[1]: source_column
+                target_column = mapping[0]
+                source_column = mapping[1]
+                target_source_pair = (target_column, source_column)
+                # this is the primary key, need to put the pair in front
+                if source_column is not None and 'nextval' in source_column:
+                    column_mapping_list.insert(0, target_source_pair)
+                else:
+                    column_mapping_list.append(target_source_pair)
+        column_map[dim_table] = OrderedDict(column_mapping_list)
+    return column_map
 
 
 @celery.task(name="udl2.W_load_from_integration_to_star.explode_data_to_dim_table_task")
@@ -55,13 +109,14 @@ def explode_to_fact(msg):
     logger.info('LOAD_FROM_INT_TO_STAR: Migrating fact_assessment_outcome from Integration to Star.')
     start_time = datetime.datetime.now()
     guid_batch = msg[mk.GUID_BATCH]
-    conf = generate_conf(guid_batch)
+    phase_number = msg[mk.PHASE]
+    conf = generate_conf(guid_batch, phase_number)
     # get column mapping
-    column_map = col_map.get_column_mapping()
-    fact_table = col_map.get_target_table_callback()[0]
-    source_table_for_fact_table = col_map.get_target_table_callback()[1]
+    table_map, column_map = get_table_and_column_mapping(conf, 'fact_')
+    # column_map = col_map.get_column_mapping()
+    fact_table = list(table_map.keys())[0]
+    source_table_for_fact_table = list(table_map.values())[0]
     column_types = get_table_column_types(conf, fact_table, list(column_map[fact_table].keys()))
-
     explode_data_to_fact_table(conf, source_table_for_fact_table, fact_table, column_map[fact_table], column_types)
 
     finish_time = datetime.datetime.now()
@@ -94,12 +149,15 @@ def create_group_tuple(task_name, arg_list):
 
 
 @measure_cpu_plus_elasped_time
-def generate_conf(guid_batch):
+def generate_conf(guid_batch, phase_number):
     '''
     Return all needed configuration information
     '''
     conf = {  # add guid_batch from msg
               mk.GUID_BATCH: guid_batch,
+
+              # db driver
+              mk.SOURCE_DB_DRIVER: udl2_conf['udl2_db']['db_driver'],
 
               # source schema
               mk.SOURCE_DB_SCHEMA: udl2_conf['udl2_db']['integration_schema'],
@@ -117,5 +175,8 @@ def generate_conf(guid_batch):
               mk.TARGET_DB_PORT: udl2_conf['target_db']['db_port'],
               mk.TARGET_DB_USER: udl2_conf['target_db']['db_user'],
               mk.TARGET_DB_NAME: udl2_conf['target_db']['db_database'],
-              mk.TARGET_DB_PASSWORD: udl2_conf['target_db']['db_pass'], }
+              mk.TARGET_DB_PASSWORD: udl2_conf['target_db']['db_pass'],
+              mk.REF_TABLE: udl2_conf['udl2_db']['ref_table_name'],
+              mk.PHASE: int(phase_number)
+    }
     return conf

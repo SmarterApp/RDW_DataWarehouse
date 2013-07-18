@@ -155,7 +155,9 @@ def generate_move_to_target(job_control):
 
 def generate_integration_to_star_msg(guid_batch):
     msg = {
-        mk.GUID_BATCH: guid_batch
+        mk.GUID_BATCH: guid_batch,
+        mk.PHASE: 4
+
     }
     return msg
 

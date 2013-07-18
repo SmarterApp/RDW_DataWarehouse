@@ -36,8 +36,7 @@ def create_insert_query(conf, source_table, target_table, column_mapping, column
                   ",".join(value.replace("'", "''") for value in list(column_mapping.values())[1:]),
                   " FROM {source_schema_and_table} WHERE guid_batch=\'\'{guid_batch}\'\') as y\') AS t(",
                   ",".join(list(column_types.values())),
-                  ");"
-                  ]
+                  ");"]
     insert_sql = "".join(insert_sql).format(target_shcema_and_table=combine_schema_and_table(conf[mk.TARGET_DB_SCHEMA], target_table),
                                             db_password_target=conf[mk.TARGET_DB_PASSWORD],
                                             target_schema=conf[mk.TARGET_DB_SCHEMA],
@@ -103,3 +102,21 @@ def combine_schema_and_table(schema_name, table_name):
     Function to create the expression of "schema_name"."table_name"
     '''
     return '\"' + schema_name + '\".\"' + table_name + '\"'
+
+
+@measure_cpu_plus_elasped_time
+def get_dim_table_mapping_query(schema_name, table_name, phase_number):
+    '''
+    Function to create the expression of "schema_name"."table_name"
+    '''
+    return "SELECT distinct target_table, source_table FROM {source_schema_and_table} WHERE phase={phase_number}".format(source_schema_and_table=combine_schema_and_table(schema_name, table_name),
+                                                                                                                         phase_number=phase_number)
+
+
+@measure_cpu_plus_elasped_time
+def get_dim_column_mapping_query(schema_name, table_name, phase_number, dim_table):
+    '''
+    Function to create the expression of "schema_name"."table_name"
+    '''
+    return "SELECT distinct target_column, source_column FROM {source_schema_and_table} WHERE target_table='{target_table}'".format(source_schema_and_table=combine_schema_and_table(schema_name, table_name),
+                                                                                                                                    target_table=dim_table)

@@ -55,6 +55,7 @@ ERROR_DB_SCHEMA = 'error_schema'
 
 MAP_TYPE = 'map_type'
 
+PHASE = 'phase'
 
 # report errors
 EMAIL = 'email_address'

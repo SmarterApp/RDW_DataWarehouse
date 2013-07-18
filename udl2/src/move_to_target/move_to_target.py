@@ -32,12 +32,8 @@ def explode_data_to_fact_table(conf, source_table, target_table, column_mapping,
     section_rec_id, section_rec_id_column_name = get_section_rec_id()
 
     # update above 2 foreign keys in column mapping
-    column_mapping = col_map.get_column_mapping()[target_table]
     column_mapping[asmt_rec_id_info['rec_id']] = str(asmt_rec_id)
     column_mapping[section_rec_id_column_name] = section_rec_id
-
-    # add batch id
-    column_mapping['batch_guid'] = '\'' + str(conf[mk.GUID_BATCH]) + '\''
 
     # get list of queries to be executed
     queries = create_queries_for_move_to_fact_table(conf, source_table, target_table, column_mapping, column_types)
@@ -155,7 +151,7 @@ def explode_data_to_dim_table(conf, source_table, target_table, column_mapping, 
     @param conf: one dictionary which has database settings, and guid_batch
     @param source_table: name of the source table where the data comes from
     @param target_table: name of the target table where the data should be moved to
-    @param column_mapping: one dictionary which defines mapping of:
+    @param column_mapping: list of tuple of:
                            column_name_in_target, column_name_in_source
     @param column_types: data types of all columns in one target table
     '''
@@ -165,7 +161,7 @@ def explode_data_to_dim_table(conf, source_table, target_table, column_mapping, 
     # create insertion query
     # TODO: find out if the affected rows, time can be returned, so that the returned info can be put in the log
     query = queries.create_insert_query(conf, source_table, target_table, column_mapping, column_types, True)
-    # print(query)
+    print('#########', query)
 
     # execute the query
     execute_queries(conn, [query], 'Exception -- exploding data from integration to target {target_table}'.format(target_table=target_table),

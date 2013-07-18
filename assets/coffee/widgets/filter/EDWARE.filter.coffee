@@ -233,8 +233,8 @@ define [
   #    *  EDWARE Filter plugin
   #    *  @param filterHook - Panel config data
   #    *  @param filterTrigger - 
-  #    *  @param callback_func - callback function, triggered by click event on apply button
-  #    *  Example: $("#table1").edwareGrid(columnItems, gridOptions)
+  #    *  @param callback - callback function, triggered by click event on apply button
+  #    *  Example: $("#table1").edwareFilter(filterTrigger, callbackFunction)
   #  
   (($)->
     $.fn.edwareFilter = (filterTrigger, callback) ->

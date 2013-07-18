@@ -85,8 +85,9 @@ define [
           
       else
         output = "<div class='barContainer'><div class = 'populationBar'>" + results + "</div><div class='studentsTotal'>" + subject.total + "</div><div class='alignmentLine' style='margin-left:" + subject.alignmentLine + "px;'></div></div>"
-      
-      output
+    else
+      output = ""      
+    output
 
   showlink: showlink
   showOverallConfidence: showOverallConfidence

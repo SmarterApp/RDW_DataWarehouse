@@ -1,4 +1,4 @@
-smarter Package
+Documentation
 ===============
 
 :mod:`smarter` Package

@@ -7,13 +7,34 @@
 Smarter Web Application
 =================================================
 
-Smarter is a Pyramid based web application. TEST.
+Smarter is a Pyramid-based web reporting application, developed for
+the Smarter Balanced Assessment Consortium.
 
-Contents:
+Smarter features include:
+
+    * RESTful data service
+    * Individual and aggregated assessment result reports
+    * PDF report generation
+    * Integration with Single Sign On
+    * Role-based access to student PII (Personally Identifiable Information)
+
+Specific reports:
+
+    * Individual Student Report
+    * List of Students
+    * Comparing Populations (State, District, and School level)
+
+Smarter uses the *EdApi*, *EdAuth*, and *EdServices* libraries for
+REST endpoint setup, integration with Single Sign-On, PDF generation, and more.
+
+
+Contents
+========
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
+   apidoc/smarter.rst
 
 
 Indices and tables

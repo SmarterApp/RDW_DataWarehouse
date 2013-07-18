@@ -22,7 +22,12 @@ CAKE_PROC = None
 
 
 def main(global_config, **settings):
-    """ This function returns a Pyramid WSGI application.
+    """
+    Starting point for the Smarter application. Prepares the environment and
+    applies configurations. Sets paths, permissions, routes. Calls includeme
+    methods of EdAuth, EdApi, and EdServices.
+
+    Returns a Pyramid WSGI application.
     """
     # Prepare for environment specific
     if 'smarter.PATH' in settings:
@@ -90,7 +95,7 @@ def main(global_config, **settings):
 
 def prepare_env(settings):
     '''
-    Prepare environment for assets, less, compile coffeescripts
+    Prepare environment for assets, LESS. Compile coffeescript.
     '''
     global CAKE_PROC
     mode = settings.get('mode', 'prod').upper()

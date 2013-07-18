@@ -31,5 +31,6 @@ Subpackages
 .. toctree::
 
     smarter.reports.exceptions
+    smarter.reports.filters
     smarter.reports.helpers
-
+    smarter.reports.utils

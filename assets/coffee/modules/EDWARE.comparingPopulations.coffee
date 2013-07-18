@@ -144,7 +144,7 @@ define [
         $('.colorsBlock input:checked').click()
 
   # Add filter to the page
-  edwareFilter.create $('#cpopFilter'), $('.filter_label'), createPopulationGrid 
+  $('#cpopFilter').edwareFilter $('.filter_label'), createPopulationGrid 
 
   # Render comparing population grid
   renderGrid = (gridConfig, populationData, summaryData) ->

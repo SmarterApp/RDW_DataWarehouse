@@ -265,7 +265,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         testParam[Constants.STATECODE] = 'NY'
         testParam[Constants_filter_names.DEMOGRAPHICS_PROGRAM_504] = ['NS']
         results = get_comparing_populations_report(testParam)
-        self.assertEqual(len(results['records']), 0)
+        self.assertEqual(len(results['records']), 2)
 
     def test_state_view_with_iep_yes(self):
         testParam = {}
@@ -292,7 +292,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         testParam[Constants_filter_names.DEMOGRAPHICS_PROGRAM_504] = ['NS']
         testParam[Constants_filter_names.DEMOGRAPHICS_PROGRAM_IEP] = ['NS']
         results = get_comparing_populations_report(testParam)
-        self.assertEqual(len(results['records']), 0)
+        self.assertEqual(len(results['records']), 2)
 
     def test_district_view_with_grades(self):
         testParam = {}

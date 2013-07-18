@@ -9,7 +9,7 @@ from smarter.reports.helpers.percentage_calc import normalize_percentages
 from sqlalchemy.sql import select
 from sqlalchemy.sql import and_
 from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
-from sqlalchemy.sql.expression import case, func, true, null, cast
+from sqlalchemy.sql.expression import case, func, true, null, cast, or_
 from sqlalchemy.types import INTEGER
 from smarter.reports.exceptions.parameter_exception import InvalidParameterException
 from smarter.reports.helpers.constants import Constants
@@ -508,15 +508,15 @@ class QueryHelper():
         # apply demographics filters
         if query is not None:
             if self._filters:
-                filter_iep = getDemographicFilter(Constants_filter_names.DEMOGRAPHICS_PROGRAM_IEP, self._filters)
-                if filter_iep:
-                    query = query.where(self._fact_asmt_outcome.c.dmg_prg_iep.in_(filter_iep))
-                filter_504 = getDemographicFilter(Constants_filter_names.DEMOGRAPHICS_PROGRAM_504, self._filters)
-                if filter_504:
-                    query = query.where(self._fact_asmt_outcome.c.dmg_prg_504.in_(filter_504))
-                filter_lep = getDemographicFilter(Constants_filter_names.DEMOGRAPHICS_PROGRAM_LEP, self._filters)
-                if filter_lep:
-                    query = query.where(self._fact_asmt_outcome.c.dmg_prg_lep.in_(filter_lep))
+                filter_iep = getDemographicFilter(Constants_filter_names.DEMOGRAPHICS_PROGRAM_IEP, self._fact_asmt_outcome.c.dmg_prg_iep, self._filters)
+                if filter_iep is not None:
+                    query = query.where(filter_iep)
+                filter_504 = getDemographicFilter(Constants_filter_names.DEMOGRAPHICS_PROGRAM_504, self._fact_asmt_outcome.c.dmg_prg_504, self._filters)
+                if filter_504 is not None:
+                    query = query.where(filter_504)
+                filter_lep = getDemographicFilter(Constants_filter_names.DEMOGRAPHICS_PROGRAM_LEP, self._fact_asmt_outcome.c.dmg_prg_lep, self._filters)
+                if filter_lep is not None:
+                    query = query.where(filter_lep)
                 filter_grade = self._filters.get(Constants_filter_names.GRADE)
                 if self._filters.get(Constants_filter_names.GRADE):
                     query = query.where(self._fact_asmt_outcome.c.asmt_grade.in_(filter_grade))

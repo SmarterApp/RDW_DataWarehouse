@@ -14,26 +14,23 @@ class Test(unittest.TestCase):
 
     def test_getDemographicProgramFilter(self):
         test_filter = {}
-        value = getDemographicFilter(DEMOGRAPHICS_PROGRAM_IEP, test_filter)
+        value = getDemographicFilter(DEMOGRAPHICS_PROGRAM_IEP, None, test_filter)
         self.assertFalse(value)
         test_filter = {DEMOGRAPHICS_PROGRAM_IEP: [Constants_filter_names.YES]}
-        value = getDemographicFilter(DEMOGRAPHICS_PROGRAM_IEP, test_filter)
-        self.assertEqual(1, len(value))
-        self.assertEqual(type(value[0]), type(true()))
+        value = getDemographicFilter(DEMOGRAPHICS_PROGRAM_IEP, True, test_filter)
+        self.assertEqual(str(value), str(True == true()))
         test_filter = {DEMOGRAPHICS_PROGRAM_IEP: [Constants_filter_names.NO]}
-        value = getDemographicFilter(DEMOGRAPHICS_PROGRAM_IEP, test_filter)
-        self.assertEqual(1, len(value))
-        self.assertEqual(type(value[0]), type(false()))
+        value = getDemographicFilter(DEMOGRAPHICS_PROGRAM_IEP, False, test_filter)
+        self.assertEqual(str(value), str(False == false()))
         test_filter = {DEMOGRAPHICS_PROGRAM_IEP: [Constants_filter_names.NOT_STATED]}
-        value = getDemographicFilter(DEMOGRAPHICS_PROGRAM_IEP, test_filter)
-        self.assertEqual(1, len(value))
-        self.assertEqual(value[0], None)
+        value = getDemographicFilter(DEMOGRAPHICS_PROGRAM_IEP, None, test_filter)
+        self.assertEqual(value, True)
         test_filter = {DEMOGRAPHICS_PROGRAM_IEP: [Constants_filter_names.YES, Constants_filter_names.NO, Constants_filter_names.NOT_STATED]}
-        value = getDemographicFilter(DEMOGRAPHICS_PROGRAM_IEP, test_filter)
+        value = getDemographicFilter(DEMOGRAPHICS_PROGRAM_IEP, None, test_filter)
         self.assertEqual(3, len(value))
         test_filter = {DEMOGRAPHICS_PROGRAM_IEP: [Constants_filter_names.YES, 'whatever']}
-        value = getDemographicFilter(DEMOGRAPHICS_PROGRAM_IEP, test_filter)
-        self.assertEqual(1, len(value))
+        value = getDemographicFilter(DEMOGRAPHICS_PROGRAM_IEP, True, test_filter)
+        self.assertEqual(str(value), str(True == true()))
 
 
 if __name__ == "__main__":

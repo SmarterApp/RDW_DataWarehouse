@@ -111,13 +111,15 @@ def explode_to_fact(msg):
     guid_batch = msg[mk.GUID_BATCH]
     phase_number = msg[mk.PHASE]
     conf = generate_conf(guid_batch, phase_number)
-    # get column mapping
-    table_map, column_map = get_table_and_column_mapping(conf, 'fact_')
-    # column_map = col_map.get_column_mapping()
-    fact_table = list(table_map.keys())[0]
-    source_table_for_fact_table = list(table_map.values())[0]
-    column_types = get_table_column_types(conf, fact_table, list(column_map[fact_table].keys()))
-    explode_data_to_fact_table(conf, source_table_for_fact_table, fact_table, column_map[fact_table], column_types)
+    # get fact table column mapping
+    fact_table_map, fact_column_map = get_table_and_column_mapping(conf, 'fact_')
+    fact_table = list(fact_table_map.keys())[0]
+    source_table_for_fact_table = list(fact_table_map.values())[0]
+    fact_column_types = get_table_column_types(conf, fact_table, list(fact_column_map[fact_table].keys()))
+
+    # get dim table column mapping, part of this is used for 2 foreign keys in fact table
+    dim_table_map, dim_column_map = get_table_and_column_mapping(conf, 'dim_')
+    explode_data_to_fact_table(conf, source_table_for_fact_table, fact_table, fact_column_map[fact_table], fact_column_types, dim_table_map, dim_column_map)
 
     finish_time = datetime.datetime.now()
     time_as_seconds = calculate_spend_time_as_second(start_time, finish_time)

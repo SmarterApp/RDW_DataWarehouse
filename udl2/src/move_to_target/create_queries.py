@@ -66,23 +66,27 @@ def enable_trigger_query(schema_name, table_name, is_enable):
 
 
 @measure_cpu_plus_elasped_time
-def update_inst_hier_rec_id_query(schema, condition_value):
+def update_inst_hier_rec_id_query(schema, condition_value, fact_table):
     '''
     Main function to crate query to update foreign key inst_hier_rec_id in table fact_asmt_outcome
     '''
-    info_map = col_map.get_inst_hier_rec_id_info()
+    dim_table = 'dim_inst_hier'
+    rec_id_in_fact = 'inst_hier_rec_id'
+    rec_id_in_dim = 'inst_hier_rec_id'
+    three_guids_in_dim_and_fact = ['state_code', 'district_guid', 'school_guid']
+
     update_query = ["UPDATE {schema_and_fact_table} ",
                     "SET {inst_hier_in_fact}=dim.dim_{inst_hier_in_dim} FROM (SELECT ",
                     "{inst_hier_in_dim} AS dim_{inst_hier_in_dim}, ",
-                    ",".join(guid_in_dim + ' AS dim_' + guid_in_dim for guid_in_dim in list(info_map['guid_column_map'].keys())),
+                    ",".join(guid_in_dim + ' AS dim_' + guid_in_dim for guid_in_dim in three_guids_in_dim_and_fact),
                     " FROM {schema_and_dim_table})dim",
                     " WHERE {inst_hier_in_fact}={fake_value} AND ",
-                    " AND ".join(guid_in_fact + '=dim_' + guid_in_dim for guid_in_dim, guid_in_fact in info_map['guid_column_map'].items())]
+                    " AND ".join(guid_in_fact + '=dim_' + guid_in_fact for guid_in_fact in three_guids_in_dim_and_fact)]
 
-    update_query = "".join(update_query).format(schema_and_fact_table=combine_schema_and_table(schema, info_map['table_map'][1]),
-                                                schema_and_dim_table=combine_schema_and_table(schema, info_map['table_map'][0]),
-                                                inst_hier_in_dim=info_map['rec_id_map'][0],
-                                                inst_hier_in_fact=info_map['rec_id_map'][1],
+    update_query = "".join(update_query).format(schema_and_fact_table=combine_schema_and_table(schema, fact_table),
+                                                schema_and_dim_table=combine_schema_and_table(schema, dim_table),
+                                                inst_hier_in_dim=rec_id_in_dim,
+                                                inst_hier_in_fact=rec_id_in_fact,
                                                 fake_value=condition_value)
     return update_query
 

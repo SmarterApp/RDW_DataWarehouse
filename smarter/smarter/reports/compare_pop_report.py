@@ -22,7 +22,7 @@ from smarter.database.smarter_connector import SmarterDBConnection
 from smarter.reports.filters import Constants_filter_names
 from smarter.reports.utils.cache import cache_region
 from smarter.reports.filters.demographics import get_demographic_filter,\
-    get_ethnicity
+    get_ethnicity_filter
 
 # Report service for Comparing Populations
 # Output:
@@ -531,7 +531,7 @@ class QueryHelper():
                 if self._filters.get(Constants_filter_names.GRADE):
                     query = query.where(self._fact_asmt_outcome.c.asmt_grade.in_(filter_grade))
                 if self._filters.get(Constants_filter_names.ETHNICITY):
-                    query = query.where(get_ethnicity(self._filters, self._fact_asmt_outcome))
+                    query = query.where(get_ethnicity_filter(self._filters, self._fact_asmt_outcome))
         return query
 
     def get_query(self):

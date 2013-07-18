@@ -73,9 +73,9 @@ def get_ethnicity_filter(filters, table):
 
             if true_value_column:
                 criterias[true_value_column] = True
-            if false_value_columns:
-                for column in false_value_columns:
-                    criterias[column] = False
+
+            for column in false_value_columns:
+                criterias[column] = False
             # convert to sqlalchemy expressions for current ethnic selection
             expr = convert_to_expression(criterias, table)
             # append to list of all clauses
@@ -107,7 +107,7 @@ def get_false_value_columns(name):
     if name == Constants_filter_names.NOT_STATED:
         return list_of_ethnics
     elif name == Constants_filter_names.HSP:
-        return None
+        return []
     else:
         # Based on filter value, get the corresponding column name and remove it from the list
         # Since we know that that column should have a value of True

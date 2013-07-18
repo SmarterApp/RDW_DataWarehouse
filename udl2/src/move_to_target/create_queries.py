@@ -1,4 +1,3 @@
-import move_to_target.column_mapping as col_map
 from udl2 import message_keys as mk
 from udl2_util.measurement import measure_cpu_plus_elasped_time
 

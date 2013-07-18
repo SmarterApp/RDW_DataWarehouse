@@ -1,7 +1,6 @@
 from udl2_util.database_util import execute_queries, connect_db
 from collections import OrderedDict
 from udl2 import message_keys as mk
-# import move_to_target.column_mapping as col_map
 import move_to_target.create_queries as queries
 import datetime
 from udl2_util.measurement import measure_cpu_plus_elasped_time

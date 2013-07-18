@@ -168,7 +168,7 @@ def __arrange_results(results):
 @user_info
 def get_student_report(params):
     '''
-    report for student and student_assessment
+    Individual Student Report
     '''
     # get studentId
     student_guid = str(params['studentGuid'])

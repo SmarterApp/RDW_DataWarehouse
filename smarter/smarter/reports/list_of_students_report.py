@@ -20,19 +20,6 @@ from smarter.reports.utils.cache import cache_region
 
 REPORT_NAME = "list_of_students"
 
-# Report for List of Students.
-# This function will be refactor when schema is updated to the latest.
-# Output:
-#    Cutpoint for each subject
-#    and
-#    Array of
-#     Student last name
-#     student first name
-#     student middle initial
-#     student assessment grade
-#     student enrollment grade
-#     assessment array [teacher full name, assmt subject, claim scores and descriptions ]
-
 
 @report_config(
     name=REPORT_NAME,
@@ -72,6 +59,9 @@ REPORT_NAME = "list_of_students"
 @audit_event()
 @user_info
 def get_list_of_students_report(params):
+    '''
+    List of Students Report
+    '''
     stateCode = str(params[Constants.STATECODE])
     districtGuid = str(params[Constants.DISTRICTGUID])
     schoolGuid = str(params[Constants.SCHOOLGUID])

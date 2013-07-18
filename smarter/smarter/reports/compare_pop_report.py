@@ -24,22 +24,6 @@ from smarter.reports.utils.cache import cache_region
 from smarter.reports.filters.demographics import get_demographic_filter,\
     get_ethnicity_filter
 
-# Report service for Comparing Populations
-# Output:
-#    overall context id - state, district, or school
-#    overall context name - state, district, or school
-#    Array of
-#     id (district, school, or grade)
-#     name (district, school, or grade)
-#     Map of results
-#      asmt subject
-#      count of students in level 1
-#      count of students in level 2
-#      count of students in level 3
-#      count of students in level 4
-#      count of students in level 5
-#      TOTAL number of students
-
 
 REPORT_NAME = "comparing_populations"
 CACHE_REGION_PUBLIC_DATA = 'public.data'
@@ -154,7 +138,7 @@ def get_comparing_populations_cache_key(comparing_pop):
 
 class ComparingPopReport(object):
     '''
-    Represents a comparing populations report
+    Comparing populations report
     '''
     def __init__(self, stateCode=None, districtGuid=None, schoolGuid=None, tenant=None, **filters):
         '''
@@ -189,7 +173,7 @@ class ComparingPopReport(object):
     @cache_region([CACHE_REGION_PUBLIC_DATA, CACHE_REGION_PUBLIC_FILTERING_DATA], router=get_comparing_populations_cache_route, key_generator=get_comparing_populations_cache_key)
     def get_state_view_report(self):
         '''
-        state view report
+        State view report
 
         :rtype: dict
         :returns: state view report
@@ -199,7 +183,7 @@ class ComparingPopReport(object):
     @cache_region([CACHE_REGION_PUBLIC_DATA, CACHE_REGION_PUBLIC_FILTERING_DATA], router=get_comparing_populations_cache_route, key_generator=get_comparing_populations_cache_key)
     def get_district_view_report(self):
         '''
-        district view report
+        District view report
 
         :rtype: dict
         :returns: district view report
@@ -208,7 +192,7 @@ class ComparingPopReport(object):
 
     def get_school_view_report(self):
         '''
-        school view report
+        School view report
 
         :rtype: dict
         :returns: school view report
@@ -217,7 +201,7 @@ class ComparingPopReport(object):
 
     def get_report(self):
         '''
-        actual report call
+        Actual report call
 
         :rtype: dict
         :returns: A comparing populations report based on parameters supplied
@@ -453,7 +437,7 @@ def enum(**enums):
 
 class QueryHelper():
     '''
-    helper class to build sqlalchemy query based on the view
+    Helper class to build a sqlalchemy query based on the view type (state, district, or school)
     '''
     VIEWS = enum(STATE_VIEW=1, DISTRICT_VIEW=2, SCHOOL_VIEW=3)
 

@@ -28,6 +28,7 @@ var baseConfigs = {
 		edwareFeedback: '../../js/src/modules/EDWARE.feedback',
 		edwareFooter: '../../js/src/widgets/footer/EDWARE.footer',
 		edwareLoadingMask: '../../js/src/widgets/loadingMask/EDWARE.loadingMask',
+		edwareFilter: '../../js/src/widgets/filter/EDWARE.filter',
 	    
 	    edwareBreadcrumbsTemplate: '../../js/src/widgets/breadcrumb/template.html',
 	    edwareHeaderHtml: '../../js/src/widgets/header/header.html',
@@ -38,7 +39,8 @@ var baseConfigs = {
 		edwareClaimsBarTemplate: '../../js/src/widgets/claimsBar/template.html',
 		edwareAssessmentDropdownViewSelectionTemplate: '../../js/templates/assessment_dropdown_view_selection.html',
 		edwareLOSHeaderConfidenceLevelBarTemplate: '../../js/templates/LOS_header_perf_bar.html',
-		edwareFeedbackHTML: '../../js/templates/feedback/feedback.html'
+		edwareFeedbackHTML: '../../js/templates/feedback/feedback.html',
+		edwareFilterTemplate: '../../js/src/widgets/filter/template.html'
 		
 	},
 	shim: {

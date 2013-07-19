@@ -3,6 +3,10 @@ from udl2_util.database_util import connect_db, execute_queries, get_table_colum
 from udl2 import message_keys as mk
 from udl2_util.measurement import measure_cpu_plus_elasped_time
 import fileloader.prepare_queries as queries
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 
 @measure_cpu_plus_elasped_time
@@ -24,7 +28,7 @@ def move_data_from_staging_to_integration(conf):
     sql_query = create_migration_query(conf[mk.SOURCE_DB_SCHEMA], conf[mk.SOURCE_DB_TABLE], conf[mk.TARGET_DB_SCHEMA],
                                        conf[mk.TARGET_DB_TABLE], conf[mk.ERROR_DB_SCHEMA], 'ERR_LIST', conf[mk.GUID_BATCH],
                                        target_columns, source_columns_with_tran_rule)
-    print(sql_query)
+    logger.debug(sql_query)
     except_msg = "problem when load data from staging table to integration table"
     execute_queries(conn, [sql_query], except_msg, 'move_to_integration', 'move_data_from_staging_to_integration')
     return

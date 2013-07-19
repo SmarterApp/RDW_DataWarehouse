@@ -35,6 +35,11 @@ def explode_to_dims(msg):
 
 @measure_cpu_plus_elasped_time
 def get_table_and_column_mapping(conf, table_name_prefix=None):
+    '''
+    The main function to get the table mapping and column mapping from reference table
+    @param conf: configuration dictionary
+    @param table_name_prefix: the prefix of the table name
+    '''
     (conn_source, _engine) = connect_db(conf[mk.SOURCE_DB_DRIVER],
                                         conf[mk.SOURCE_DB_USER],
                                         conf[mk.SOURCE_DB_PASSWORD],
@@ -117,9 +122,7 @@ def explode_to_fact(msg):
     source_table_for_fact_table = list(fact_table_map.values())[0]
     fact_column_types = get_table_column_types(conf, fact_table, list(fact_column_map[fact_table].keys()))
 
-    # get dim table column mapping, part of this is used for 2 foreign keys in fact table
-    dim_table_map, dim_column_map = get_table_and_column_mapping(conf, 'dim_')
-    explode_data_to_fact_table(conf, source_table_for_fact_table, fact_table, fact_column_map[fact_table], fact_column_types, dim_table_map, dim_column_map)
+    explode_data_to_fact_table(conf, source_table_for_fact_table, fact_table, fact_column_map[fact_table], fact_column_types)
 
     finish_time = datetime.datetime.now()
     time_as_seconds = calculate_spend_time_as_second(start_time, finish_time)
@@ -179,6 +182,7 @@ def generate_conf(guid_batch, phase_number):
               mk.TARGET_DB_NAME: udl2_conf['target_db']['db_database'],
               mk.TARGET_DB_PASSWORD: udl2_conf['target_db']['db_pass'],
               mk.REF_TABLE: udl2_conf['udl2_db']['ref_table_name'],
-              mk.PHASE: int(phase_number)
+              mk.PHASE: int(phase_number),
+              mk.MOVE_TO_TARGET: udl2_conf['move_to_target']
     }
     return conf

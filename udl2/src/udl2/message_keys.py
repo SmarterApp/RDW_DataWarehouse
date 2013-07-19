@@ -62,3 +62,6 @@ EMAIL = 'email_address'
 
 # load_to_integration
 INT_TABLE_TYPE = 'load_to_integration_table_type'
+
+# move to target
+MOVE_TO_TARGET = 'move_to_target'

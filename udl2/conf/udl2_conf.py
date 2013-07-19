@@ -23,6 +23,20 @@ udl2_conf = {
         'output_path': '.',  # where the newly generated split file located
         'keep_headers': True,  # preserve csv header for importing
     },
+    'move_to_target': [{'rec_id': 'asmt_rec_id',
+                        'target_table': 'dim_asmt',
+                        'source_table': 'INT_SBAC_ASMT',
+                        'guid_column_name': 'asmt_guid',
+                        'guid_column_in_source': 'guid_asmt'},
+
+                       {'rec_id_map': ('inst_hier_rec_id', 'inst_hier_rec_id'),
+                        'table_map': ('dim_inst_hier', 'fact_asmt_outcome'),
+                        'guid_column_map': dict([('state_code', 'state_code'),
+                                                 ('district_guid', 'district_guid'),
+                                                 ('school_guid', 'school_guid')])},
+                       {'rec_id': 'section_rec_id',
+                        'value': '1'}
+    ],
     'celery_defaults': {
         'CELERY_DEFAULT_QUEUE': 'celery',  # default celery queue name for celery internal tasks
         'CELERY_DEFAULT_EXCHANGE': 'direct',  # default celery exchange name, and exchange type

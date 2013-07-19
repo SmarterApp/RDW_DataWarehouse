@@ -8,10 +8,12 @@ import udl2.message_keys as mk
 from udl2_util.measurement import measure_cpu_plus_elasped_time
 from udl2_util.database_util import execute_queries, execute_query_with_result, connect_db
 from udl2_util.file_util import extract_file_name
+import logging
 
 
 DBDRIVER = "postgresql"
 DATA_TYPE_IN_FDW_TABLE = 'text'
+logger = logging.getLogger(__name__)
 
 
 @measure_cpu_plus_elasped_time
@@ -22,7 +24,7 @@ def check_setup(staging_table, engine, conn):
     '''
     # check if staging table is defined or not
     if not engine.dialect.has_table(conn, staging_table):
-        print("There is no staging table -- %s " % staging_table)
+        logger.error("There is no staging table -- %s " % staging_table)
         raise NoSuchTableError
 
 
@@ -127,7 +129,7 @@ def import_via_fdw(conn, stg_asmt_outcome_columns, csv_table_columns, transforma
                                                                             transformation_rules)
     # query 3 -- create query to drop sequence
     drop_sequence = queries.drop_sequence_query(staging_schema, seq_name)
-    print('@@@@@@@', insert_into_staging_table)
+    logger.debug('@@@@@@@', insert_into_staging_table)
 
     # execute 3 queries in order
     execute_queries(conn, [create_sequence, insert_into_staging_table, drop_sequence], 'Exception in loading data -- ', 'file_loader', 'import_via_fdw')
@@ -227,4 +229,4 @@ if __name__ == '__main__':
     load_file(conf)
     finish_time = datetime.datetime.now()
     spend_time = finish_time - start_time
-    print("\nSpend time --", spend_time)
+    logger.info("\nSpend time --", spend_time)

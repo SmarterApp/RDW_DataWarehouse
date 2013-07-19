@@ -4,14 +4,16 @@ from udl2 import message_keys as mk
 import move_to_target.create_queries as queries
 import datetime
 from udl2_util.measurement import measure_cpu_plus_elasped_time
+import logging
 
 
 DBDRIVER = "postgresql"
 FAKE_INST_HIER_REC_ID = -1
+logger = logging.getLogger(__name__)
 
 
 @measure_cpu_plus_elasped_time
-def explode_data_to_fact_table(conf, source_table, target_table, column_mapping, column_types, dim_table_map, dim_column_map):
+def explode_data_to_fact_table(conf, source_table, target_table, column_mapping, column_types):
     '''
     Main function to explode data from integration table INT_SBAC_ASMT_OUTCOME to star schema table fact_asmt_outcome
     The basic steps are:
@@ -21,19 +23,22 @@ def explode_data_to_fact_table(conf, source_table, target_table, column_mapping,
     3. Update foreign key inst_hier_rec_id by comparing district_guid, school_guid and state_code
     4. Enable trigger of table fact_asmt_outcome
     '''
-
+    asmt_rec_id_info = conf[mk.MOVE_TO_TARGET][0]
     # get asmt_rec_id, which is one foreign key in fact table
-    asmt_rec_id, asmt_rec_id_column_name = get_asmt_rec_id(conf, dim_table_map, dim_column_map)
+    asmt_rec_id, asmt_rec_id_column_name = get_asmt_rec_id(conf, asmt_rec_id_info['guid_column_name'], asmt_rec_id_info['guid_column_in_source'],
+                                                           asmt_rec_id_info['rec_id'], asmt_rec_id_info['target_table'], asmt_rec_id_info['source_table'])
 
     # get section_rec_id, which is one foreign key in fact table. We set to a fake value
-    section_rec_id, section_rec_id_column_name = get_section_rec_id()
+    section_rec_id_info = conf[mk.MOVE_TO_TARGET][2]
+    section_rec_id = section_rec_id_info['value']
+    section_rec_id_column_name = section_rec_id_info['rec_id']
 
     # update above 2 foreign keys in column mapping
     column_mapping[asmt_rec_id_column_name] = str(asmt_rec_id)
-    column_mapping[section_rec_id_column_name] = section_rec_id
+    column_mapping[section_rec_id_column_name] = str(section_rec_id)
 
     # get list of queries to be executed
-    queries = create_queries_for_move_to_fact_table(conf, source_table, target_table, column_mapping, column_types, dim_table_map)
+    queries = create_queries_for_move_to_fact_table(conf, source_table, target_table, column_mapping, column_types)
 
     # create database connection (connect to target)
     conn, _engine = connect_db(DBDRIVER, conf[mk.TARGET_DB_USER], conf[mk.TARGET_DB_PASSWORD], conf[mk.TARGET_DB_HOST], conf[mk.TARGET_DB_PORT], conf[mk.TARGET_DB_NAME])
@@ -43,37 +48,26 @@ def explode_data_to_fact_table(conf, source_table, target_table, column_mapping,
     start_time_p1 = datetime.datetime.now()
     execute_queries(conn, queries[0:2], 'Exception -- exploding data from integration to fact table part 1', 'move_to_target', 'explode_data_to_fact_table')
     finish_time_p1 = datetime.datetime.now()
-    spend_time_p1 = calculate_spend_time_as_second(start_time_p1, finish_time_p1)
-    # print("I am the exploder, copied data into fact table with fake inst_hier_rec_id in %.3f seconds" % spend_time_p1)
+    _spend_time_p1 = calculate_spend_time_as_second(start_time_p1, finish_time_p1)
+    # print("I am the exploder, copied data into fact table with fake inst_hier_rec_id in %.3f seconds" % _spend_time_p1)
 
     # print("I am the exploder, about to update inst_hier_rec_id as value in dim_inst_hier")
     execute_queries(conn, queries[2:4], 'Exception -- exploding data from integration to fact table part 2', 'move_to_target', 'explode_data_to_fact_table')
     finish_time_p2 = datetime.datetime.now()
-    spend_time_p2 = calculate_spend_time_as_second(finish_time_p1, finish_time_p2)
-    # print("I am the exploder, updated inst_hier_rec_id as value in dim_inst_hier in %.3f seconds" % spend_time_p2)
+    _spend_time_p2 = calculate_spend_time_as_second(finish_time_p1, finish_time_p2)
+    # print("I am the exploder, updated inst_hier_rec_id as value in dim_inst_hier in %.3f seconds" % _spend_time_p2)
 
     conn.close()
 
 
 @measure_cpu_plus_elasped_time
-def get_asmt_rec_id(conf, dim_table_map, dim_column_map):
+def get_asmt_rec_id(conf, guid_column_name_in_target, guid_column_name_in_source, rec_id_column_name, target_table_name, source_table_name):
     '''
     Main function to get asmt_rec_id in dim_asmt table
     Steps:
     1. Get guid_amst from integration table INT_SBAC_ASMT
     2. Select asmt_rec_id from dim_asmt by the same guid_amst got from 1. It should have 1 value
     '''
-    # rec_id name of table dim_asmt
-    rec_id_column_name = 'asmt_rec_id'
-    # target table dim_asmt
-    target_table_name = 'dim_asmt'
-    # source table INT_SBAC_ASMT
-    source_table_name = dim_table_map[target_table_name]
-    # guid column name in target table dim_asmt
-    guid_column_name_in_target = 'asmt_guid'
-    # guid column name in source table INT_SBAC_ASMT
-    guid_column_name_in_source = dim_column_map[target_table_name][guid_column_name_in_target]
-
     # connect to integration table, to get the value of guid_asmt
     conn_to_source_db, _engine = connect_db(DBDRIVER, conf[mk.SOURCE_DB_USER], conf[mk.SOURCE_DB_PASSWORD], conf[mk.SOURCE_DB_HOST], conf[mk.SOURCE_DB_PORT], conf[mk.SOURCE_DB_NAME])
     query_to_get_guid = queries.select_distinct_asmt_guid_query(conf[mk.SOURCE_DB_SCHEMA], source_table_name, guid_column_name_in_source, conf[mk.GUID_BATCH])
@@ -101,10 +95,10 @@ def execute_query_get_one_value(conn, query, column_name):
         for row in result:
             one_value_result.append(row[0])
     except Exception as exception:
-        print(exception)
+        logger.exception(exception)
     if len(one_value_result) != 1:
         # raise Exception('Rec id of %s has more/less than 1 record for batch %s' % (column_name, guid_batch))
-        print('Rec id of %s has more/less than 1 record, length is %d ' % (column_name, len(one_value_result)))
+        logger.info('Rec id of %s has more/less than 1 record, length is %d ' % (column_name, len(one_value_result)))
         if len(one_value_result) > 1:
             one_value_result = str(one_value_result[0])
         else:
@@ -113,19 +107,7 @@ def execute_query_get_one_value(conn, query, column_name):
 
 
 @measure_cpu_plus_elasped_time
-def get_section_rec_id():
-    '''
-    This is the function to get section_rec_id from dim_section.
-    Currently, we don't have to populate table dim_section, but section_rec_id is a foreign key in fact_asmt_outcome table.
-    Thus, we make a fake row in dim_section table with section_rec_id = 1. It should be setup in setup.py afterwards.
-    @return: value of section_rec_id which is 1, and column name of section_rec_id
-    '''
-    # need to read the fake value from conf file
-    return '1', 'section_rec_id'
-
-
-@measure_cpu_plus_elasped_time
-def create_queries_for_move_to_fact_table(conf, source_table, target_table, column_mapping, column_types, dim_table_map):
+def create_queries_for_move_to_fact_table(conf, source_table, target_table, column_mapping, column_types):
     '''
     Main function to create four queries(in order) for moving data from integration table
     INT_SBAC_ASMT_OUTCOME to star schema table fact_asmt_outcome.
@@ -138,10 +120,10 @@ def create_queries_for_move_to_fact_table(conf, source_table, target_table, colu
 
     # create insertion insert_into_fact_table_query
     insert_into_fact_table_query = queries.create_insert_query(conf, source_table, target_table, column_mapping, column_types, False)
-    print(insert_into_fact_table_query)
+    logger.info(insert_into_fact_table_query)
 
     # update inst_hier_query back
-    update_inst_hier_rec_id_fk_query = queries.update_inst_hier_rec_id_query(conf[mk.TARGET_DB_SCHEMA], FAKE_INST_HIER_REC_ID, target_table)
+    update_inst_hier_rec_id_fk_query = queries.update_inst_hier_rec_id_query(conf[mk.TARGET_DB_SCHEMA], FAKE_INST_HIER_REC_ID, conf['move_to_target'][1])
     # print(update_inst_hier_rec_id_fk_query)
 
     # enable foreign key in fact table

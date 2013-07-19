@@ -8,7 +8,7 @@ from edauth.security.views import login, saml2_post_consumer, logout_redirect, _
     _get_landing_page
 from pyramid import testing
 from pyramid.testing import DummyRequest
-from pyramid.httpexceptions import HTTPFound, HTTPForbidden
+from pyramid.httpexceptions import HTTPFound, HTTPForbidden, HTTPUnauthorized
 from urllib.parse import urlparse, urlsplit
 import urllib
 from edauth.security.views import logout
@@ -20,6 +20,7 @@ from edauth.security.session_backend import ISessionBackend, SessionBackend
 from pyramid.registry import Registry
 from edauth.tests.test_helper.create_session import create_test_session
 from beaker.cache import cache_managers, cache_regions
+import json
 
 
 def get_saml_from_resource_file(file_mame):
@@ -31,12 +32,17 @@ def get_saml_from_resource_file(file_mame):
 
 
 class EdAuthDummyRequest(DummyRequest):
-    def __init__(self):
+    def __init__(self, xhr=False):
         super().__init__()
+        self.xhr = xhr
 
     @property
     def is_xhr(self):
-        return False
+        return self.xhr
+
+    @property
+    def referrer(self):
+        return self.url
 
 
 class TestViews(unittest.TestCase):
@@ -93,6 +99,17 @@ class TestViews(unittest.TestCase):
         self.assertIsNotNone(queries['SAMLRequest'])
         relay_state = urlsplit(_get_cipher().decrypt(queries['RelayState'][0]))
         self.assertEqual(relay_state.path, "/dummy/report")
+
+    def test_login_with_xhr(self):
+        self.__request = EdAuthDummyRequest(True)
+        self.__request.url = 'http://example.com/dummy/data'
+        # Must set hook_zca to false to work with uniittest_with_sqlite
+        self.__config = testing.setUp(registry=self.registry, request=self.__request, hook_zca=False)
+        resp = login(self.__request)
+        self.assertIsInstance(resp, HTTPUnauthorized)
+
+        body = json.loads(resp.body.decode())
+        self.assertIsNotNone(body['redirect'])
 
     def test_login_referred_by_logout_url(self):
         self.__request.url = 'http://example.com/dummy/logout'

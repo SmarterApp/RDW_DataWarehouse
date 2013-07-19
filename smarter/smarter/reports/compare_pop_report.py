@@ -79,7 +79,7 @@ CACHE_REGION_PUBLIC_FILTERING_DATA = 'public.filtered_data'
                 "type": "string",
                 "pattern": "^(" + Constants_filter_names.DEMOGRAPHICS_ETHNICITY_AMERICAN + "|" + Constants_filter_names.DEMOGRAPHICS_ETHNICITY_ASIAN + "|" +
                 Constants_filter_names.DEMOGRAPHICS_ETHNICITY_BLACK + "|" + Constants_filter_names.DEMOGRAPHICS_ETHNICITY_HISPANIC + "|" + Constants_filter_names.DEMOGRAPHICS_ETHNICITY_PACIFIC + "|" +
-                Constants_filter_names.TWO + "|" + Constants_filter_names.DEMOGRAPHICS_ETHNICITY_WHITE + "|" + Constants_filter_names.NOT_STATED + ")$",
+                Constants_filter_names.DEMOGRAPHICS_ETHNICITY_MULTI + "|" + Constants_filter_names.DEMOGRAPHICS_ETHNICITY_WHITE + "|" + Constants_filter_names.NOT_STATED + ")$",
             }
         },
         Constants_filter_names.GRADE: {
@@ -501,22 +501,8 @@ class QueryHelper():
             .where(and_(self._fact_asmt_outcome.c.state_code == self._state_code, self._fact_asmt_outcome.c.status == 'C'))
 
         # apply demographics filters
-        if query is not None:
-            if self._filters:
-                filter_iep = get_demographic_filter(Constants_filter_names.DEMOGRAPHICS_PROGRAM_IEP, self._fact_asmt_outcome.c.dmg_prg_iep, self._filters)
-                if filter_iep is not None:
-                    query = query.where(filter_iep)
-                filter_504 = get_demographic_filter(Constants_filter_names.DEMOGRAPHICS_PROGRAM_504, self._fact_asmt_outcome.c.dmg_prg_504, self._filters)
-                if filter_504 is not None:
-                    query = query.where(filter_504)
-                filter_lep = get_demographic_filter(Constants_filter_names.DEMOGRAPHICS_PROGRAM_LEP, self._fact_asmt_outcome.c.dmg_prg_lep, self._filters)
-                if filter_lep is not None:
-                    query = query.where(filter_lep)
-                filter_grade = self._filters.get(Constants_filter_names.GRADE)
-                if self._filters.get(Constants_filter_names.GRADE):
-                    query = query.where(self._fact_asmt_outcome.c.asmt_grade.in_(filter_grade))
-                if self._filters.get(Constants_filter_names.ETHNICITY):
-                    query = query.where(get_ethnicity_filter(self._filters, self._fact_asmt_outcome))
+        query = self.apply_demographics_filter(query)
+
         return query
 
     def get_query(self):
@@ -538,3 +524,22 @@ class QueryHelper():
                    .group_by(self._fact_asmt_outcome.c.asmt_grade)\
                    .order_by(self._fact_asmt_outcome.c.asmt_grade)\
                    .where(and_(self._fact_asmt_outcome.c.district_guid == self._district_guid, self._fact_asmt_outcome.c.school_guid == self._school_guid))
+
+    def apply_demographics_filter(self, query):
+        if query is not None:
+            if self._filters:
+                filter_iep = get_demographic_filter(Constants_filter_names.DEMOGRAPHICS_PROGRAM_IEP, self._fact_asmt_outcome.c.dmg_prg_iep, self._filters)
+                if filter_iep is not None:
+                    query = query.where(filter_iep)
+                filter_504 = get_demographic_filter(Constants_filter_names.DEMOGRAPHICS_PROGRAM_504, self._fact_asmt_outcome.c.dmg_prg_504, self._filters)
+                if filter_504 is not None:
+                    query = query.where(filter_504)
+                filter_lep = get_demographic_filter(Constants_filter_names.DEMOGRAPHICS_PROGRAM_LEP, self._fact_asmt_outcome.c.dmg_prg_lep, self._filters)
+                if filter_lep is not None:
+                    query = query.where(filter_lep)
+                filter_grade = self._filters.get(Constants_filter_names.GRADE)
+                if self._filters.get(Constants_filter_names.GRADE):
+                    query = query.where(self._fact_asmt_outcome.c.asmt_grade.in_(filter_grade))
+                if self._filters.get(Constants_filter_names.ETHNICITY):
+                    query = query.where(get_ethnicity_filter(self._filters, self._fact_asmt_outcome))
+        return query

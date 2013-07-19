@@ -61,31 +61,31 @@
 			"options" : [
 				{
 					"label": "Hispanic or Latino (all races)",
-				  	"value": "dmg_eth_hsp"
+				  	"value": "dmgEthHsp"
 				},
 				{
 					"label": "Black*",
-				  	"value": "dmg_eth_blk"
+				  	"value": "dmgEthNBlk"
 				},
 				{
 					"label": "Asian*",
-				  	"value": "dmg_eth_asn"
+				  	"value": "dmgEthAsn"
 				},
 				{
 					"label": "White*",
-				  	"value": "dmg_eth_wht"
+				  	"value": "dmgEthWht"
 				},
 				{
 					"label": "American Indian or Alaska Native*",
-				  	"value": "dmg_eth_ami"
+				  	"value": "dmgEthAmi"
 				},
 				{
 					"label": "Native Hawaiian or Pacific Islander*",
-				  	"value": "dmg_eth_pcf"
+				  	"value": "dmgEthPcf"
 				},
 				{
 					"label": "Two or more races",
-				  	"value": "TWO"
+				  	"value": "dmgEthMulti"
 				},
 				{
 					"label": "Not Stated",

@@ -5,18 +5,39 @@ Created on Jul 11, 2013
 '''
 from smarter.reports.filters import Constants_filter_names
 from sqlalchemy.sql.expression import true, false, or_, null, and_, case
+from smarter.reports.helpers.constants import Constants
+import copy
+
+
+# Maps Yes, No and Not Stated to equivalent SQLAlchemey values
+filter_map = {Constants_filter_names.YES: true(),
+              Constants_filter_names.NO: false(),
+              Constants_filter_names.NOT_STATED: null()}
+
+# maps filter values to column names
+map_of_ethnics = {Constants_filter_names.DEMOGRAPHICS_ETHNICITY_AMERICAN: Constants.DMG_ETH_AMI,
+                  Constants_filter_names.DEMOGRAPHICS_ETHNICITY_ASIAN: Constants.DMG_ETH_ASN,
+                  Constants_filter_names.DEMOGRAPHICS_ETHNICITY_BLACK: Constants.DMG_ETH_BLK,
+                  Constants_filter_names.DEMOGRAPHICS_ETHNICITY_HISPANIC: Constants.DMG_ETH_HSP,
+                  Constants_filter_names.DEMOGRAPHICS_ETHNICITY_PACIFIC: Constants.DMG_ETH_PCF,
+                  Constants_filter_names.DEMOGRAPHICS_ETHNICITY_WHITE: Constants.DMG_ETH_WHT}
+
+# Map of ethnicity columns
+ethnicity_value_map = {Constants.DMG_ETH_AMI: [],
+                       Constants.DMG_ETH_ASN: [],
+                       Constants.DMG_ETH_BLK: [],
+                       Constants.DMG_ETH_HSP: [],
+                       Constants.DMG_ETH_PCF: [],
+                       Constants.DMG_ETH_WHT: []}
 
 
 def get_demographic_filter(filter_name, column, filters):
     '''
-    apply filters for Disability
+    Apply filters for Disability
+
     :rtype: sqlalchemy.sql.select
     :returns: list of filters to be applied to query
     '''
-    filter_map = {Constants_filter_names.YES: true(),
-                  Constants_filter_names.NO: false(),
-                  Constants_filter_names.NOT_STATED: null()
-                  }
     where_clause = None
     expr = []
     target_filter = filters.get(filter_name, None)
@@ -29,15 +50,6 @@ def get_demographic_filter(filter_name, column, filters):
     if expr:
         where_clause = or_(*expr)
     return where_clause
-
-
-# list of column names of all list_of_ethnics
-list_of_ethnics = [Constants_filter_names.DEMOGRAPHICS_ETHNICITY_AMERICAN,
-                   Constants_filter_names.DEMOGRAPHICS_ETHNICITY_ASIAN,
-                   Constants_filter_names.DEMOGRAPHICS_ETHNICITY_BLACK,
-                   Constants_filter_names.DEMOGRAPHICS_ETHNICITY_PACIFIC,
-                   Constants_filter_names.DEMOGRAPHICS_ETHNICITY_WHITE,
-                   Constants_filter_names.DEMOGRAPHICS_ETHNICITY_HISPANIC]
 
 
 def get_ethnicity_filter(filters, table):
@@ -53,15 +65,17 @@ def get_ethnicity_filter(filters, table):
 
     for ethnic in ethnics:
         # Handle 'Two or more' list_of_ethnics selection differently
-        if ethnic == Constants_filter_names.TWO:
+        if ethnic == Constants_filter_names.DEMOGRAPHICS_ETHNICITY_MULTI:
             clauses.append(get_two_or_more_ethnicity_expr(table))
         else:
             value_map = get_ethnicity_value_map()
-            false_value_columns = get_false_value_columns(ethnic)
+            # Based on filter name, get the corresponding column name
+            column_name = map_of_ethnics.get(ethnic)
+            false_value_columns = get_false_value_columns(column_name)
 
             # "Not stated" will not have to set any columns to True
-            if ethnic in value_map:
-                value_map[ethnic].append(Constants_filter_names.YES)
+            if column_name in value_map:
+                value_map[column_name].append(Constants_filter_names.YES)
 
             for column in false_value_columns:
                 # values of FALSE or NULL
@@ -83,13 +97,7 @@ def get_ethnicity_value_map():
     :rtype dict
     :returns a dictionary that maps column names to a value of None
     '''
-    value_map = {Constants_filter_names.DEMOGRAPHICS_ETHNICITY_AMERICAN: [],
-                 Constants_filter_names.DEMOGRAPHICS_ETHNICITY_ASIAN: [],
-                 Constants_filter_names.DEMOGRAPHICS_ETHNICITY_BLACK: [],
-                 Constants_filter_names.DEMOGRAPHICS_ETHNICITY_HISPANIC: [],
-                 Constants_filter_names.DEMOGRAPHICS_ETHNICITY_PACIFIC: [],
-                 Constants_filter_names.DEMOGRAPHICS_ETHNICITY_WHITE: []}
-    return value_map.copy()
+    return copy.deepcopy(ethnicity_value_map)
 
 
 def get_false_value_columns(name):
@@ -98,13 +106,14 @@ def get_false_value_columns(name):
 
     :param string name:  name of the ethnicity filter
     '''
-    if name == Constants_filter_names.NOT_STATED:
-        return list_of_ethnics
-    elif name == Constants_filter_names.DEMOGRAPHICS_ETHNICITY_HISPANIC:
+    if name is None:
+        # multi (two or more race) wiill have a name of none
+        return get_list_of_ethnic_columns()
+    elif name == Constants.DMG_ETH_HSP:
         return []
     else:
         # Remove itself from the list
-        results = list_of_ethnics.copy()
+        results = get_list_of_ethnic_columns()
         results.remove(name)
         return results
 
@@ -131,12 +140,12 @@ def get_two_or_more_ethnicity_expr(table):
     :returns: sqlalchemy binary expression
     '''
     # Get all the list_of_ethnics except for hispanic
-    non_hisp_ethnics = list_of_ethnics.copy()
-    non_hisp_ethnics.remove(Constants_filter_names.DEMOGRAPHICS_ETHNICITY_HISPANIC)
+    non_hisp_ethnics = get_list_of_ethnic_columns()
+    non_hisp_ethnics.remove(Constants.DMG_ETH_HSP)
 
     # initialize expression
     expr = 0
-    no_hisp = or_(table.c[Constants_filter_names.DEMOGRAPHICS_ETHNICITY_HISPANIC] == false(), table.c[Constants_filter_names.DEMOGRAPHICS_ETHNICITY_HISPANIC] == null())
+    no_hisp = or_(table.c[Constants.DMG_ETH_HSP] == false(), table.c[Constants.DMG_ETH_HSP] == null())
     for ethnic in non_hisp_ethnics:
         and_clause = and_(table.c[ethnic] == true(), no_hisp)
         # Creates a case expression that returns 1 if row contains an ethnicity and hispanic is False or NULL
@@ -144,3 +153,10 @@ def get_two_or_more_ethnicity_expr(table):
         expr = expr + case([(and_clause, 1)], else_=0)
     # Final expression is that the sum of all the case statements should be at least 2
     return expr >= 2
+
+
+def get_list_of_ethnic_columns():
+    '''
+    Returns a list of ethnic column names
+    '''
+    return copy.deepcopy(list(map_of_ethnics.values()))

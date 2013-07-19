@@ -21,7 +21,7 @@ from sqlalchemy.schema import MetaData
 from sqlalchemy import Table, Column, Index
 from sqlalchemy import SmallInteger, String, Boolean, Float, BigInteger
 from sqlalchemy import ForeignKey
-from sqlalchemy.types import Text, DateTime
+from sqlalchemy.types import Text
 
 __all__ = []
 __version__ = 0.1

@@ -1,6 +1,5 @@
 import os
 import unittest
-import move_to_target.column_mapping as col_mapping
 import move_to_target.create_queries as queries
 from move_to_target import move_to_target
 from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
@@ -27,9 +26,9 @@ class TestMoveToTarget(unittest.TestCase):
     def test_create_queries_for_move_to_fact_table(self):
         guid_batch = '8866c6d5-7e5e-4c54-bf4e-775abc4021b2'
         conf = generate_conf(guid_batch, self.conf)
-        source_table = col_mapping.get_target_table_callback()[1]
-        target_table = col_mapping.get_target_table_callback()[0]
-        column_mapping = col_mapping.get_column_mapping()[target_table]
+        source_table = 'INT_SBAC_ASMT_OUTCOME'
+        target_table = 'fact_asmt_outcome'
+        column_mapping = get_expected_column_mapping()[target_table]
         # give value for 2 foreign keys
         column_mapping['asmt_rec_id'] = '100'
         column_mapping['section_rec_id'] = '1'
@@ -53,8 +52,8 @@ class TestMoveToTarget(unittest.TestCase):
     def test_create_insert_query_for_dim_table(self):
         guid_batch = '8866c6d5-7e5e-4c54-bf4e-775abc4021b2'
         conf = generate_conf(guid_batch, self.conf)
-        target_table, source_table = list(col_mapping.get_target_tables_parallel().items())[0]
-        column_mapping = col_mapping.get_column_mapping()[target_table]
+        target_table, source_table = ('dim_inst_hier', 'INT_SBAC_ASMT_OUTCOME')
+        column_mapping = get_expected_column_mapping()[target_table]
         column_types = get_expected_column_types_for_dim_inst_hier(target_table)
         actual_value = queries.create_insert_query(conf, source_table, target_table, column_mapping, column_types, True)
         expected_value = get_expected_insert_query_for_dim_inst_hier(target_table, guid_batch, conf[mk.SOURCE_DB_NAME], conf[mk.SOURCE_DB_USER], conf[mk.SOURCE_DB_PASSWORD])
@@ -92,13 +91,13 @@ def generate_conf(guid_batch, udl2_conf):
               mk.TARGET_DB_USER: udl2_conf['target_db']['db_user'],
               mk.TARGET_DB_NAME: udl2_conf['target_db']['db_database'],
               mk.TARGET_DB_PASSWORD: udl2_conf['target_db']['db_pass'],
-              mk.MOVE_TO_TARGET: udl2_conf['move_to_target']
-}
+              mk.MOVE_TO_TARGET: udl2_conf['move_to_target']}
     return conf
 
 
 def get_expected_column_types_for_fact_table(table_name):
-    column_names = list(col_mapping.get_column_mapping()[table_name].keys())
+    print(table_name)
+    column_names = list(get_expected_column_mapping()[table_name].keys())
     column_types = ['asmnt_outcome_rec_id bigint', 'asmt_rec_id bigint', 'student_guid character varying(50)',
                     'teacher_guid character varying(50)', 'state_code character varying(2)', 'district_guid character varying(50)',
                     'school_guid character varying(50)', 'section_guid character varying(50)', 'inst_hier_rec_id bigint',
@@ -149,7 +148,7 @@ def get_expected_update_inst_hier_rec_id_query(table_name):
 
 
 def get_expected_column_types_for_dim_inst_hier(table_name):
-    column_names = list(col_mapping.get_column_mapping()[table_name].keys())
+    column_names = list(get_expected_column_mapping()[table_name].keys())
     column_types = ['inst_hier_rec_id bigint', 'state_name character varying(32)', 'state_code character varying(2)', 'district_guid character varying(50)',
                     'district_name character varying(256)', 'school_guid character varying(50)', 'school_name character varying(256)',
                     'school_category character varying(20)', 'from_date character varying(8)', 'to_date character varying(8)', 'most_recent boolean']
@@ -170,6 +169,145 @@ def get_expected_insert_query_for_dim_inst_hier(table_name, guid_batch, dbname, 
            'school_category character varying(20),from_date character varying(8),to_date character varying(8),'\
            'most_recent boolean);'.format(table_name=table_name, guid_batch=guid_batch, dbname=dbname, user=user, password=password)
 
+
+def get_expected_column_mapping():
+    '''
+    This column mapping is used in moving data from integration tables to target
+    Key -- target table name, e.g. dim_asmt
+    Value -- ordered dictionary: (column_in_target_table, column_in_source_table), e.g. 'asmt_guid': 'guid_asmt'
+    '''
+
+    column_map_integration_to_target = {'dim_asmt': OrderedDict([('asmt_rec_id', 'nextval(\'"GLOBAL_REC_SEQ"\')'),
+                                                                 ('asmt_guid', 'guid_asmt'),
+                                                                 ('asmt_type', 'type'),
+                                                                 ('asmt_period', 'period'),
+                                                                 ('asmt_period_year', 'year'),
+                                                                 ('asmt_version', 'version'),
+                                                                 ('asmt_subject', 'subject'),
+                                                                 ('asmt_claim_1_name', 'name_claim_1'),
+                                                                 ('asmt_claim_2_name', 'name_claim_2'),
+                                                                 ('asmt_claim_3_name', 'name_claim_3'),
+                                                                 ('asmt_claim_4_name', 'name_claim_4'),
+                                                                 ('asmt_perf_lvl_name_1', 'name_perf_lvl_1'),
+                                                                 ('asmt_perf_lvl_name_2', 'name_perf_lvl_2'),
+                                                                 ('asmt_perf_lvl_name_3', 'name_perf_lvl_3'),
+                                                                 ('asmt_perf_lvl_name_4', 'name_perf_lvl_4'),
+                                                                 ('asmt_perf_lvl_name_5', 'name_perf_lvl_5'),
+                                                                 ('asmt_score_min', 'score_overall_min'),
+                                                                 ('asmt_score_max', 'score_overall_max'),
+                                                                 ('asmt_claim_1_score_min', 'score_claim_1_min'),
+                                                                 ('asmt_claim_1_score_max', 'score_claim_1_max'),
+                                                                 ('asmt_claim_1_score_weight', 'score_claim_1_weight'),
+                                                                 ('asmt_claim_2_score_min', 'score_claim_2_min'),
+                                                                 ('asmt_claim_2_score_max', 'score_claim_2_max'),
+                                                                 ('asmt_claim_2_score_weight', 'score_claim_2_weight'),
+                                                                 ('asmt_claim_3_score_min', 'score_claim_3_min'),
+                                                                 ('asmt_claim_3_score_max', 'score_claim_3_max'),
+                                                                 ('asmt_claim_3_score_weight', 'score_claim_3_weight'),
+                                                                 ('asmt_claim_4_score_min', 'score_claim_4_min'),
+                                                                 ('asmt_claim_4_score_max', 'score_claim_4_max'),
+                                                                 ('asmt_claim_4_score_weight', 'score_claim_4_weight'),
+                                                                 ('asmt_cut_point_1', 'score_cut_point_1'),
+                                                                 ('asmt_cut_point_2', 'score_cut_point_2'),
+                                                                 ('asmt_cut_point_3', 'score_cut_point_3'),
+                                                                 ('asmt_cut_point_4', 'score_cut_point_4'),
+                                                                 ('asmt_custom_metadata', 'NULL'),
+                                                                 ('from_date', "TO_CHAR(CURRENT_TIMESTAMP, 'yyyymmdd')"),
+                                                                 ('to_date', "'99991231'"),
+                                                                 ('most_recent', 'TRUE'),
+                                                                 ]),
+
+                                        'dim_inst_hier': OrderedDict([('inst_hier_rec_id', 'nextval(\'"GLOBAL_REC_SEQ"\')'),
+                                                                      ('state_name', 'name_state'),
+                                                                      ('state_code', 'code_state'),
+                                                                      ('district_guid', 'guid_district'),
+                                                                      ('district_name', 'name_district'),
+                                                                      ('school_guid', 'guid_school'),
+                                                                      ('school_name', 'name_school'),
+                                                                      ('school_category', 'type_school'),
+                                                                      ('from_date', "to_char(CURRENT_TIMESTAMP, 'yyyymmdd')"),
+                                                                      ('to_date', "'99991231'"),
+                                                                      ('most_recent', 'True'),
+                                                                      ]),
+                                        'dim_student': OrderedDict([('student_rec_id', 'nextval(\'"GLOBAL_REC_SEQ"\')'),
+                                                                    ('student_guid', 'guid_student'),
+                                                                    ('first_name', 'name_student_first'),
+                                                                    ('middle_name', 'name_student_middle'),
+                                                                    ('last_name', 'name_student_last'),
+                                                                    ('address_1', 'address_student_line1'),
+                                                                    ('address_2', 'address_student_line2'),
+                                                                    ('city', 'address_student_city'),
+                                                                    ('zip_code', 'address_student_zip'),
+                                                                    ('gender', 'gender_student'),
+                                                                    ('email', 'email_student'),
+                                                                    ('dob', 'dob_student'),
+                                                                    # TODO: the fake value for 'section_guid' will be replaced by reading from conf
+                                                                    ('section_guid', '\' \''),
+                                                                    ('grade', 'grade_enrolled'),
+                                                                    ('state_code', 'code_state'),
+                                                                    ('district_guid', 'guid_district'),
+                                                                    ('school_guid', 'guid_school'),
+                                                                    ('from_date', "to_char(CURRENT_TIMESTAMP, 'yyyymmdd')"),
+                                                                    ('to_date', "'99991231'"),
+                                                                    ('most_recent', 'True'),
+                                                                    ]),
+
+                                        'dim_staff': OrderedDict([('staff_rec_id', 'nextval(\'"GLOBAL_REC_SEQ"\')'),
+                                                                  ('staff_guid', 'guid_staff'),
+                                                                  ('first_name', 'name_staff_first'),
+                                                                  ('middle_name', 'name_staff_middle'),
+                                                                  ('last_name', 'name_staff_last'),
+                                                                  # TODO: the fake value for 'section_guid' will be replaced by reading from conf
+                                                                  ('section_guid', '\' \''),
+                                                                  ('hier_user_type', 'type_staff'),
+                                                                  ('state_code', 'code_state'),
+                                                                  ('district_guid', 'guid_district'),
+                                                                  ('school_guid', 'guid_school'),
+                                                                  ('from_date', "to_char(CURRENT_TIMESTAMP, 'yyyymmdd')"),
+                                                                  ('to_date', "'99991231'"),
+                                                                  ('most_recent', 'True'),
+                                                                  ]),
+
+                                        'fact_asmt_outcome': OrderedDict([('asmnt_outcome_rec_id', 'nextval(\'"GLOBAL_REC_SEQ"\')'),
+                                                                          ('asmt_rec_id', None),
+                                                                          ('student_guid', 'guid_student'),
+                                                                          ('teacher_guid', 'guid_staff'),
+                                                                          ('state_code', 'code_state'),
+                                                                          ('district_guid', 'guid_district'),
+                                                                          ('school_guid', 'guid_school'),
+                                                                          ('section_guid', '\' \''),
+                                                                          ('inst_hier_rec_id', '-1'),
+                                                                          ('section_rec_id', None),
+                                                                          ('where_taken_id', 'guid_asmt_location'),
+                                                                          ('where_taken_name', 'name_asmt_location'),
+                                                                          ('asmt_grade', 'grade_asmt'),
+                                                                          ('enrl_grade', 'grade_enrolled'),
+                                                                          ('date_taken', 'date_assessed'),
+                                                                          ('date_taken_day', 'date_taken_day'),  # date_assessed is a varchar(8)
+                                                                          ('date_taken_month', 'date_taken_month'),  # date_assessed is a varchar(8)
+                                                                          ('date_taken_year', 'date_taken_year'),  # date_assessed is a varchar(8)
+                                                                          ('asmt_score', 'score_asmt'),
+                                                                          ('asmt_score_range_min', 'score_asmt_min'),
+                                                                          ('asmt_score_range_max', 'score_asmt_max'),
+                                                                          ('asmt_perf_lvl', 'score_perf_level'),
+                                                                          ('asmt_claim_1_score', 'score_claim_1'),
+                                                                          ('asmt_claim_1_score_range_min', 'score_claim_1_min'),
+                                                                          ('asmt_claim_1_score_range_max', 'score_claim_1_max'),
+                                                                          ('asmt_claim_2_score', 'score_claim_2'),
+                                                                          ('asmt_claim_2_score_range_min', 'score_claim_2_min'),
+                                                                          ('asmt_claim_2_score_range_max', 'score_claim_2_max'),
+                                                                          ('asmt_claim_3_score', 'score_claim_3'),
+                                                                          ('asmt_claim_3_score_range_min', 'score_claim_3_min'),
+                                                                          ('asmt_claim_3_score_range_max', 'score_claim_3_max'),
+                                                                          ('asmt_claim_4_score', 'score_claim_4'),
+                                                                          ('asmt_claim_4_score_range_min', 'score_claim_4_min'),
+                                                                          ('asmt_claim_4_score_range_max', 'score_claim_4_max'),
+                                                                          ('status', '\' \''),
+                                                                          ('most_recent', 'True'),
+                                                                          ('batch_guid', 'guid_batch'),
+                                                                          ])
+                                        }
+    return column_map_integration_to_target
 
 if __name__ == '__main__':
     unittest.main()

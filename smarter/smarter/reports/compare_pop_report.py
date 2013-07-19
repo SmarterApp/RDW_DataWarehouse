@@ -77,8 +77,9 @@ CACHE_REGION_PUBLIC_FILTERING_DATA = 'public.filtered_data'
             "required": False,
             "items": {
                 "type": "string",
-                "pattern": "^(" + Constants_filter_names.AMI + "|" + Constants_filter_names.ASN + "|" + Constants_filter_names.BLK + "|" + Constants_filter_names.HSP +
-                "|" + Constants_filter_names.PCF + "|" + Constants_filter_names.TWO + "|" + Constants_filter_names.WHT + "|" + Constants_filter_names.NOT_STATED + ")$",
+                "pattern": "^(" + Constants_filter_names.DEMOGRAPHICS_ETHNICITY_AMERICAN + "|" + Constants_filter_names.DEMOGRAPHICS_ETHNICITY_ASIAN + "|" +
+                Constants_filter_names.DEMOGRAPHICS_ETHNICITY_BLACK + "|" + Constants_filter_names.DEMOGRAPHICS_ETHNICITY_HISPANIC + "|" + Constants_filter_names.DEMOGRAPHICS_ETHNICITY_PACIFIC + "|" +
+                Constants_filter_names.TWO + "|" + Constants_filter_names.DEMOGRAPHICS_ETHNICITY_WHITE + "|" + Constants_filter_names.NOT_STATED + ")$",
             }
         },
         Constants_filter_names.GRADE: {

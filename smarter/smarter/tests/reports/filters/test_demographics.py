@@ -6,9 +6,9 @@ Created on Jul 16, 2013
 import unittest
 from smarter.reports.filters import Constants_filter_names
 from smarter.reports.filters.Constants_filter_names import DEMOGRAPHICS_PROGRAM_IEP
-from sqlalchemy.sql.expression import true, false
+from sqlalchemy.sql.expression import true, false, null
 from smarter.reports.filters.demographics import get_demographic_filter,\
-    get_new_criterias, get_false_value_columns, get_ethnicity_filter,\
+    get_ethnicity_value_map, get_false_value_columns, get_ethnicity_filter,\
     get_two_or_more_ethnicity_expr, convert_to_expression
 from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite_no_data_load,\
     UnittestSmarterDBConnection
@@ -28,7 +28,7 @@ class TestDemographics(Unittest_with_smarter_sqlite_no_data_load):
         self.assertEqual(str(value), str(False == false()))
         test_filter = {DEMOGRAPHICS_PROGRAM_IEP: [Constants_filter_names.NOT_STATED]}
         value = get_demographic_filter(DEMOGRAPHICS_PROGRAM_IEP, None, test_filter)
-        self.assertEqual(value, True)
+        self.assertEqual(str(value), str(None == null()))
         test_filter = {DEMOGRAPHICS_PROGRAM_IEP: [Constants_filter_names.YES, Constants_filter_names.NO, Constants_filter_names.NOT_STATED]}
         value = get_demographic_filter(DEMOGRAPHICS_PROGRAM_IEP, None, test_filter)
         self.assertEqual(3, len(value))
@@ -37,7 +37,7 @@ class TestDemographics(Unittest_with_smarter_sqlite_no_data_load):
         self.assertEqual(str(value), str(True == true()))
 
     def test_get_new_criterias(self):
-        result = get_new_criterias()
+        result = get_ethnicity_value_map()
         self.assertEqual(len(result.keys()), 6)
         self.assertIn(Constants_filter_names.DEMOGRAPHICS_ETHNICITY_BLACK, result)
 
@@ -47,18 +47,18 @@ class TestDemographics(Unittest_with_smarter_sqlite_no_data_load):
         self.assertIn(Constants_filter_names.DEMOGRAPHICS_ETHNICITY_HISPANIC, result)
 
     def test_get_false_value_columns_with_Hispanic(self):
-        result = get_false_value_columns(Constants_filter_names.HSP)
+        result = get_false_value_columns(Constants_filter_names.DEMOGRAPHICS_ETHNICITY_HISPANIC)
         self.assertEqual(len(result), 0)
 
     def test_get_false_value_columns(self):
-        result = get_false_value_columns(Constants_filter_names.BLK)
+        result = get_false_value_columns(Constants_filter_names.DEMOGRAPHICS_ETHNICITY_BLACK)
         self.assertEqual(len(result), 5)
         self.assertNotIn(Constants_filter_names.DEMOGRAPHICS_ETHNICITY_BLACK, result)
 
     def test_get_ethnicity_filter_single_filter(self):
         with UnittestSmarterDBConnection() as connection:
             fact_asmt_outcome = connection.get_table('fact_asmt_outcome')
-            filters = {'ethnicity': [Constants_filter_names.WHT]}
+            filters = {'ethnicity': [Constants_filter_names.DEMOGRAPHICS_ETHNICITY_WHITE]}
             clauses = get_ethnicity_filter(filters, fact_asmt_outcome)
             self.assertIsNotNone(clauses)
 
@@ -108,21 +108,21 @@ class TestDemographics(Unittest_with_smarter_sqlite_no_data_load):
     def test_convert_to_expression_test_true(self):
         with UnittestSmarterDBConnection() as connection:
             fact_asmt_outcome = connection.get_table('fact_asmt_outcome')
-            param = {Constants_filter_names.DEMOGRAPHICS_ETHNICITY_PACIFIC: True}
+            param = {Constants_filter_names.DEMOGRAPHICS_ETHNICITY_PACIFIC: [Constants_filter_names.YES]}
             result = convert_to_expression(param, fact_asmt_outcome)
             self.assertEqual('fact_asmt_outcome.dmg_eth_pcf = true', str(result))
 
     def test_convert_to_expression_test_false(self):
         with UnittestSmarterDBConnection() as connection:
             fact_asmt_outcome = connection.get_table('fact_asmt_outcome')
-            param = {Constants_filter_names.DEMOGRAPHICS_ETHNICITY_PACIFIC: False}
+            param = {Constants_filter_names.DEMOGRAPHICS_ETHNICITY_PACIFIC: [Constants_filter_names.NO, Constants_filter_names.NOT_STATED]}
             result = convert_to_expression(param, fact_asmt_outcome)
             self.assertEqual('fact_asmt_outcome.dmg_eth_pcf = false OR fact_asmt_outcome.dmg_eth_pcf IS NULL', str(result))
 
     def test_convert_to_expression_test_None(self):
         with UnittestSmarterDBConnection() as connection:
             fact_asmt_outcome = connection.get_table('fact_asmt_outcome')
-            param = {Constants_filter_names.DEMOGRAPHICS_ETHNICITY_PACIFIC: None}
+            param = {Constants_filter_names.DEMOGRAPHICS_ETHNICITY_PACIFIC: []}
             result = convert_to_expression(param, fact_asmt_outcome)
             self.assertEqual('', str(result))
 

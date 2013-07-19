@@ -331,6 +331,16 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         self.assertEqual(len(results['records']), 3)
         self.assertEqual(results['records'][1]['results']['subject1']['total'], 16)
 
+    def test_view_with_lep_multi(self):
+        testParam = {}
+        testParam[Constants.STATECODE] = 'NY'
+        testParam[Constants.DISTRICTGUID] = 'c912df4b-acdf-40ac-9a91-f66aefac7851'
+        testParam[Constants_filter_names.DEMOGRAPHICS_PROGRAM_LEP] = ['N', 'Y', 'NS']
+        results = get_comparing_populations_report(testParam)
+        self.assertEqual(len(results['records']), 3)
+        self.assertEqual(results['records'][1]['results']['subject1']['total'], 17)
+
+
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testReport']
     unittest.main()

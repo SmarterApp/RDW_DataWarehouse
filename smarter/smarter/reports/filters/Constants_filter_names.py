@@ -9,12 +9,6 @@ NO = 'N'
 NOT_STATED = 'NS'
 NONE = 'NONE'
 
-HSP = 'HSP'
-AMI = 'AMI'
-ASN = 'ASN'
-BLK = 'BLK'
-PCF = 'PCF'
-WHT = 'WHT'
 TWO = 'TWO'
 
 DEMOGRAPHICS_PROGRAM_504 = 'dmgPrg504'

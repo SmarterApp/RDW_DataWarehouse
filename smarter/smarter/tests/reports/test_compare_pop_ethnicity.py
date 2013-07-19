@@ -54,7 +54,7 @@ class TestComparingPopulationsEthnicity(Unittest_with_smarter_sqlite):
         testParam[Constants.STATECODE] = 'NY'
         testParam[Constants.DISTRICTGUID] = '228'
         testParam[Constants.SCHOOLGUID] = '248'
-        testParam[Constants_filter_names.ETHNICITY] = [Constants_filter_names.HSP]
+        testParam[Constants_filter_names.ETHNICITY] = [Constants_filter_names.DEMOGRAPHICS_ETHNICITY_HISPANIC]
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 1)
         self.assertEqual(results['records'][0]['results']['subject1']['total'], 3)
@@ -64,7 +64,7 @@ class TestComparingPopulationsEthnicity(Unittest_with_smarter_sqlite):
         testParam[Constants.STATECODE] = 'NY'
         testParam[Constants.DISTRICTGUID] = '228'
         testParam[Constants.SCHOOLGUID] = '248'
-        testParam[Constants_filter_names.ETHNICITY] = [Constants_filter_names.BLK]
+        testParam[Constants_filter_names.ETHNICITY] = [Constants_filter_names.DEMOGRAPHICS_ETHNICITY_BLACK]
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 1)
         self.assertEqual(results['records'][0]['results']['subject1']['total'], 1)
@@ -75,7 +75,7 @@ class TestComparingPopulationsEthnicity(Unittest_with_smarter_sqlite):
         testParam[Constants.STATECODE] = 'NY'
         testParam[Constants.DISTRICTGUID] = '228'
         testParam[Constants.SCHOOLGUID] = '248'
-        testParam[Constants_filter_names.ETHNICITY] = [Constants_filter_names.ASN]
+        testParam[Constants_filter_names.ETHNICITY] = [Constants_filter_names.DEMOGRAPHICS_ETHNICITY_ASIAN]
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 1)
         self.assertEqual(results['records'][0]['results']['subject1']['total'], 1)
@@ -86,7 +86,7 @@ class TestComparingPopulationsEthnicity(Unittest_with_smarter_sqlite):
         testParam[Constants.STATECODE] = 'NY'
         testParam[Constants.DISTRICTGUID] = '228'
         testParam[Constants.SCHOOLGUID] = '248'
-        testParam[Constants_filter_names.ETHNICITY] = [Constants_filter_names.WHT]
+        testParam[Constants_filter_names.ETHNICITY] = [Constants_filter_names.DEMOGRAPHICS_ETHNICITY_WHITE]
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 1)
         self.assertEqual(results['records'][0]['results']['subject1']['total'], 1)
@@ -97,7 +97,7 @@ class TestComparingPopulationsEthnicity(Unittest_with_smarter_sqlite):
         testParam[Constants.STATECODE] = 'NY'
         testParam[Constants.DISTRICTGUID] = '228'
         testParam[Constants.SCHOOLGUID] = '248'
-        testParam[Constants_filter_names.ETHNICITY] = [Constants_filter_names.AMI]
+        testParam[Constants_filter_names.ETHNICITY] = [Constants_filter_names.DEMOGRAPHICS_ETHNICITY_AMERICAN]
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 1)
         self.assertEqual(results['records'][0]['results']['subject1']['total'], 1)
@@ -108,7 +108,7 @@ class TestComparingPopulationsEthnicity(Unittest_with_smarter_sqlite):
         testParam[Constants.STATECODE] = 'NY'
         testParam[Constants.DISTRICTGUID] = '228'
         testParam[Constants.SCHOOLGUID] = '248'
-        testParam[Constants_filter_names.ETHNICITY] = [Constants_filter_names.PCF]
+        testParam[Constants_filter_names.ETHNICITY] = [Constants_filter_names.DEMOGRAPHICS_ETHNICITY_PACIFIC]
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 1)
         self.assertEqual(results['records'][0]['results']['subject1']['total'], 1)
@@ -141,7 +141,7 @@ class TestComparingPopulationsEthnicity(Unittest_with_smarter_sqlite):
         testParam[Constants.STATECODE] = 'NY'
         testParam[Constants.DISTRICTGUID] = '228'
         testParam[Constants.SCHOOLGUID] = '248'
-        testParam[Constants_filter_names.ETHNICITY] = [Constants_filter_names.ASN, Constants_filter_names.WHT]
+        testParam[Constants_filter_names.ETHNICITY] = [Constants_filter_names.DEMOGRAPHICS_ETHNICITY_ASIAN, Constants_filter_names.DEMOGRAPHICS_ETHNICITY_WHITE]
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 1)
         self.assertEqual(results['records'][0]['results']['subject1']['total'], 2)
@@ -152,13 +152,13 @@ class TestComparingPopulationsEthnicity(Unittest_with_smarter_sqlite):
         testParam[Constants.STATECODE] = 'NY'
         testParam[Constants.DISTRICTGUID] = '228'
         testParam[Constants.SCHOOLGUID] = '248'
-        testParam[Constants_filter_names.ETHNICITY] = [Constants_filter_names.ASN,
-                                                       Constants_filter_names.WHT,
-                                                       Constants_filter_names.AMI,
-                                                       Constants_filter_names.BLK,
-                                                       Constants_filter_names.HSP,
+        testParam[Constants_filter_names.ETHNICITY] = [Constants_filter_names.DEMOGRAPHICS_ETHNICITY_AMERICAN,
+                                                       Constants_filter_names.DEMOGRAPHICS_ETHNICITY_ASIAN,
+                                                       Constants_filter_names.DEMOGRAPHICS_ETHNICITY_BLACK,
+                                                       Constants_filter_names.DEMOGRAPHICS_ETHNICITY_HISPANIC,
+                                                       Constants_filter_names.DEMOGRAPHICS_ETHNICITY_PACIFIC,
                                                        Constants_filter_names.NOT_STATED,
-                                                       Constants_filter_names.PCF,
+                                                       Constants_filter_names.DEMOGRAPHICS_ETHNICITY_WHITE,
                                                        Constants_filter_names.TWO]
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 1)

@@ -60,11 +60,11 @@
 			"comment" : "*Not Hispanic or Latino",
 			"options" : [
 				{
-					"label": "Hispanic (all races)",
+					"label": "Hispanic or Latino (all races)",
 				  	"value": "dmg_eth_hsp"
 				},
 				{
-					"label": "African/Black American*",
+					"label": "Black*",
 				  	"value": "dmg_eth_blk"
 				},
 				{
@@ -76,7 +76,7 @@
 				  	"value": "dmg_eth_wht"
 				},
 				{
-					"label": "American Indian/Alaskan Native*",
+					"label": "American Indian or Alaska Native*",
 				  	"value": "dmg_eth_ami"
 				},
 				{
@@ -84,7 +84,7 @@
 				  	"value": "dmg_eth_pcf"
 				},
 				{
-					"label": "2 or more races*",
+					"label": "Two or more races",
 				  	"value": "TWO"
 				},
 				{

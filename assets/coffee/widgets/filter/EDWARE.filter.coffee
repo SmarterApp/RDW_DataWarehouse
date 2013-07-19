@@ -203,12 +203,16 @@ define [
       param.display = this.dropdown.data('display')
       param.values = []
       this.dropdown.find('input:checked').each () ->
-        param.values.push $(this).data('label')
+        label = $(this).data('label').toString()
+        # remove asterisk * from the label
+        label = label.replace /\*$/, ""
+        param.values.push label
       this.label = this.generateLabel param
       this.isEmpty = (param.values.length == 0)
       
     generateLabel: (data) ->
-      template = "{{#.}}<div class='selectedFilterGroup'><div class='pull-left'><span>{{display}}: </span>{{#values}}<span>{{.}}</span> <span class='seperator'>, </span>{{/values}}</div><div class='removeIcon pull-left'></div></div>{{/.}}"
+      #template = "{{#.}}<div class='selectedFilterGroup'><div class='pull-left'><span>{{display}}: </span>{{#values}}<span>{{.}}</span> <span class='seperator'>, </span>{{/values}}</div><div class='removeIcon pull-left'></div></div>{{/.}}"
+      template = "{{#.}}<span class='selectedFilterGroup'><span><span>{{display}}: </span>{{#values}}<span>{{.}}</span> <span class='seperator'>, </span>{{/values}}</span><div class='removeIcon'></span></span>{{/.}}"
       output = Mustache.to_html(template, data)
       $(output)
       

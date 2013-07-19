@@ -19,7 +19,12 @@ define [
     constants[value]
       
   displayErrorMessage = (error) ->
-    $("#errorMessage").html(error);
+    
+    if error isnt ""
+      $("#errorMessage").show().html(error)
+    else
+      $("#errorMessage").hide()
+      
     
   getUrlParams = ->
     params = {}

@@ -778,29 +778,33 @@ th.ui-th-column div {
   
   .filters {
     width: 780px;
+    float: left;
+    
+    div {
+      display: inline-block;
+    }
   }
   
   .selectedFilterGroup {
-    float: left;
     margin-right: 10px;
     border-right: solid 1px @color-B11;
+    }
     
-    .seperator:last-child {
+  .seperator:last-child {
       display: none;
     }
     
-    .removeIcon {
-      background-image: url("../images/filter_clearbuttons.png");
-      background-position: -14px 0;
-      background-repeat: no-repeat;
-      width: 13px;
-      height: 12px;
-      margin: 3px 8px;
-      cursor: pointer;
-      
-      &:hover {
-        background-position: 0 0;
-      }
+  .removeIcon {
+    background-image: url("../images/filter_clearbuttons.png");
+    background-position: -14px 0;
+    background-repeat: no-repeat;
+    width: 13px;
+    height: 12px;
+    margin: -1px 8px;
+    cursor: pointer;
+    
+    &:hover {
+      background-position: 0 0;
     }
   }
   

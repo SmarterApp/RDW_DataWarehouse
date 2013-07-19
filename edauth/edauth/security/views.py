@@ -5,7 +5,8 @@ Created on Feb 13, 2013
 '''
 from pyramid.security import NO_PERMISSION_REQUIRED, forget, remember, \
     effective_principals, unauthenticated_userid
-from pyramid.httpexceptions import HTTPFound, HTTPForbidden, HTTPMovedPermanently
+from pyramid.httpexceptions import HTTPFound, HTTPForbidden, HTTPMovedPermanently,\
+    HTTPUnauthorized
 from pyramid.view import view_config, forbidden_view_config
 import base64
 from edauth.saml2.saml_request import SamlAuthnRequest, SamlLogoutRequest
@@ -22,6 +23,7 @@ from urllib.parse import parse_qs, urlsplit, urlunsplit
 from edauth.security.utils import SECURITY_EVENT_TYPE, _get_cipher,\
     write_security_event
 from datetime import datetime
+import json
 
 
 @view_config(route_name='login', permission=NO_PERMISSION_REQUIRED)
@@ -53,7 +55,12 @@ def login(request):
     if session_id is not None:
         expire_session(session_id)
 
-    referrer = request.url
+    if request.is_xhr:
+        # If it's a xhr request, use the referrer URL
+        referrer = request.referrer
+    else:
+        referrer = request.url
+
     if referrer == request.route_url('login'):
         # Never redirect back to login page
         # TODO make it a const
@@ -93,8 +100,14 @@ def login(request):
     params.update(saml_request.generate_saml_request())
     params = urllib.parse.urlencode(params)
 
+    redirect_url = url + "?%s" % params
+    # Treat ajax calls differently
+    # We need to return 401 with a redirect url and the front end will handle the redirect
+    if request.is_xhr:
+        return HTTPUnauthorized(body=json.dumps({'redirect': redirect_url}), content_type='application/json')
+
     # Redirect to openam
-    return HTTPFound(location=url + "?%s" % params)
+    return HTTPFound(location=redirect_url)
 
 
 def _get_landing_page(request, redirect_url_decoded, headers):

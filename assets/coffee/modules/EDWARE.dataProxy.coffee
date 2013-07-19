@@ -32,8 +32,14 @@ define [
           else
             data
         error: (xhr, ajaxOptions, thrownError) -> 
-          dataLoader.remove()                
-          location.href = "/assets/public/error.html"
+          dataLoader.remove()
+          redirect_url = "/assets/public/error.html"
+          # Read the redirect url on 401 Unauthorized Error
+          if xhr.status == 401 and xhr.getResponseHeader('Content-Type').indexOf("application/json") != -1
+            response = JSON.parse(xhr.responseText)
+            redirect_url = response.redirect
+          # Redirect the user to the appropriate url
+          location.href = redirect_url
       )          
          
   

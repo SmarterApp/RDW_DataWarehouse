@@ -13,7 +13,6 @@ from urllib.parse import urlparse, urlsplit
 import urllib
 from edauth.security.views import logout
 import os
-import uuid
 from pyramid.response import Response
 from edauth.security.utils import ICipher, AESCipher
 from zope import component
@@ -29,6 +28,15 @@ def get_saml_from_resource_file(file_mame):
         xml = f.read()
     f.close()
     return xml
+
+
+class EdAuthDummyRequest(DummyRequest):
+    def __init__(self):
+        super().__init__()
+
+    @property
+    def is_xhr(self):
+        return False
 
 
 class TestViews(unittest.TestCase):
@@ -48,7 +56,7 @@ class TestViews(unittest.TestCase):
         self.registry.settings['cache.regions'] = 'session'
         self.registry.settings['cache.type'] = 'memory'
 
-        self.__request = DummyRequest()
+        self.__request = EdAuthDummyRequest()
         # Must set hook_zca to false to work with uniittest_with_sqlite
         self.__config = testing.setUp(registry=self.registry, request=self.__request, hook_zca=False)
 

@@ -2,10 +2,11 @@ import unittest
 import csv
 from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from udl2 import database
-from udl2_util.database_util import connect_db, execute_queries
+from udl2_util.database_util import execute_queries
 import imp
 from move_to_target import column_mapping, move_to_target
 from udl2 import W_load_from_integration_to_star
+import os
 
 
 class IntToStarFTest(unittest.TestCase):

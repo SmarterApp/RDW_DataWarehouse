@@ -100,8 +100,8 @@ def explode_data_to_dim_table_task(conf, source_table, dim_table, column_mapping
     start_time = datetime.datetime.now()
     explode_data_to_dim_table(conf, source_table, dim_table, column_mapping, column_types)
     finish_time = datetime.datetime.now()
-    time_as_seconds = calculate_spend_time_as_second(start_time, finish_time)
-    # print('I am the exploder, moved data from %s into dim table %s in %.3f seconds' % (source_table, dim_table, time_as_seconds))
+    _time_as_seconds = calculate_spend_time_as_second(start_time, finish_time)
+    # print('I am the exploder, moved data from %s into dim table %s in %.3f seconds' % (source_table, dim_table, _time_as_seconds))
 
 
 @celery.task(name='udl2.W_load_from_integration_to_star.explode_to_fact')
@@ -125,8 +125,8 @@ def explode_to_fact(msg):
     explode_data_to_fact_table(conf, source_table_for_fact_table, fact_table, fact_column_map[fact_table], fact_column_types)
 
     finish_time = datetime.datetime.now()
-    time_as_seconds = calculate_spend_time_as_second(start_time, finish_time)
-    # print('I am the exploder, copied data from staging table into fact table in %.3f seconds' % time_as_seconds)
+    _time_as_seconds = calculate_spend_time_as_second(start_time, finish_time)
+    # print('I am the exploder, copied data from staging table into fact table in %.3f seconds' % _time_as_seconds)
     return guid_batch
 
 

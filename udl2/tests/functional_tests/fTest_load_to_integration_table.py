@@ -170,7 +170,7 @@ class FuncTestLoadToIntegrationTable(unittest.TestCase):
         avg(score_claim_3_max),
         avg(score_claim_4),
         avg(score_claim_4_min),
-        avg(score_claim_4_max) FROM udl2."INT_SBAC_ASMT_OUTCOME" """
+        avg(score_claim_4_max) FROM "udl2"."INT_SBAC_ASMT_OUTCOME" WHERE guid_batch='{guid_batch}'""".format(guid_batch=self.conf['guid_batch'])
         result = self.udl2_conn.execute(int_avg_query)
         for row in result:
             int_asmt_avgs = row
@@ -189,7 +189,7 @@ class FuncTestLoadToIntegrationTable(unittest.TestCase):
         avg(score_claim_3_max::int),
         avg(score_claim_4::int),
         avg(score_claim_4_min::int),
-        avg(score_claim_4_max::int) from udl2."STG_SBAC_ASMT_OUTCOME";"""
+        avg(score_claim_4_max::int) from "udl2"."STG_SBAC_ASMT_OUTCOME"  WHERE guid_batch='{guid_batch}';""".format(guid_batch=self.conf['guid_batch'])
         result = self.udl2_conn.execute(stg_avg_query)
         for row in result:
             stg_asmt_avgs = row

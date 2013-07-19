@@ -59,6 +59,7 @@ def get_table_mapping(conn, schema_name, table_name, phase_number, table_name_pr
     table_mapping_dict = {}
     if table_mapping_result:
         for mapping in table_mapping_result:
+            # mapping[0]: target_table, mapping[1]: source_table
             if table_name_prefix:
                 if mapping[0].startswith(table_name_prefix):
                     table_mapping_dict[mapping[0]] = mapping[1]

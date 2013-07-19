@@ -4,9 +4,10 @@ from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from udl2 import database
 from udl2_util.database_util import execute_queries
 import imp
-from move_to_target import column_mapping, move_to_target
+from move_to_target import move_to_target
 from udl2 import W_load_from_integration_to_star
 import os
+from collections import OrderedDict
 
 
 class IntToStarFTest(unittest.TestCase):
@@ -91,17 +92,18 @@ class IntToStarFTest(unittest.TestCase):
             execute_queries(self.udl2_conn, insert_array, except_msg)
 
         # explode to dim tables
-        dim_tables = column_mapping.get_target_tables_parallel()
-        column_map = column_mapping.get_column_mapping()
         guid_batch = '2411183a-dfb7-42f7-9b3e-bb7a597aa3e7'
         conf = W_load_from_integration_to_star.generate_conf(guid_batch, 4)
-        for target in dim_tables.keys():
+        table_map, column_map = W_load_from_integration_to_star.get_table_and_column_mapping(conf, 'dim_')
+        for target in table_map.keys():
             target_columns = column_map[target]
             column_types = move_to_target.get_table_column_types(conf, target, list(target_columns.keys()))
-            move_to_target.explode_data_to_dim_table(conf, dim_tables[target], target, target_columns, column_types)
+            move_to_target.explode_data_to_dim_table(conf, table_map[target], target, target_columns, column_types)
 
-        column_types = move_to_target.get_table_column_types(conf, 'fact_asmt_outcome', list(column_map['fact_asmt_outcome'].keys()))
-        move_to_target.explode_data_to_fact_table(conf, 'INT_SBAC_ASMT_OUTCOME', 'fact_asmt_outcome', column_map['fact_asmt_outcome'], column_types)
+        # explode to fact table
+        table_map, column_map = W_load_from_integration_to_star.get_table_and_column_mapping(conf, 'fact_')
+        column_types = move_to_target.get_table_column_types(conf, list(table_map.keys())[0], list(column_map['fact_asmt_outcome'].keys()))
+        move_to_target.explode_data_to_fact_table(conf, list(table_map.values())[0], list(table_map.keys())[0], column_map['fact_asmt_outcome'], column_types)
 
         # check star schema table counts
         count_template = """ SELECT COUNT(*) FROM "{schema}"."{table}" """

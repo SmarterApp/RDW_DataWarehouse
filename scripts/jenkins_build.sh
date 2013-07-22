@@ -280,7 +280,7 @@ function import_data_from_csv {
 
 function build_rpm {
     # prerequisite there is a venv inside workspace (ie. run setup_virtualenv)
-    rm -rf $WORKSPACE/rpmbuild
+    rm -rf /var/lib/jenkins/rpmbuild
 
     echo "Build RPM"
     echo "Build Number:"
@@ -293,11 +293,11 @@ function build_rpm {
     cd "$WORKSPACE/rpm/SPEC"
     rpmbuild -bb smarter.spec
     
-    scp $WORKSPACE/rpmbuild/RPMS/x86_64/smarter${SMARTER_ENV_NAME}-${RPM_VERSION}-${BUILD_NUMBER}.el6.x86_64.rpm pynest@${PYNEST_SERVER}:/opt/wgen/rpms
+    scp /var/lib/jenkins/rpmbuild/RPMS/x86_64/smarter${SMARTER_ENV_NAME}-${RPM_VERSION}-${BUILD_NUMBER}.el6.x86_64.rpm pynest@${PYNEST_SERVER}:/opt/wgen/rpms
     ssh pynest@${PYNEST_SERVER} "ln -sf /opt/wgen/rpms/smarter${SMARTER_ENV_NAME}-${RPM_VERSION}-${BUILD_NUMBER}.el6.x86_64.rpm /opt/wgen/rpms/smarter-latest.rpm"
     
     echo "Upload to pulp" 
-    pulp-admin content upload --dir $WORKSPACE/rpmbuild/RPMS/x86_64 --repoid edware-el6-x86_64-upstream --nosig -v
+    pulp-admin content upload --dir /var/lib/jenkins/rpmbuild/RPMS/x86_64 --repoid edware-el6-x86_64-upstream --nosig -v
 
     echo "Finished building RPM"
 }

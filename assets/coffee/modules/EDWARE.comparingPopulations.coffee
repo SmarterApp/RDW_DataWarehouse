@@ -218,10 +218,12 @@ define [
       if summaryData[0].results[k]
         summaryDataAlignment = summaryData[0].results[k].intervals[0].percentage + summaryData[0].results[k].intervals[1].percentage
         while j < data.length
-          appendColor data[j]['results'][k], colorsData[k], defaultColors
-          
-          data[j]['results'][k].alignmentLine =  (((summaryDataAlignment) * 155) / 100) + 10
-          data[j]['results'][k].alignment =  (((summaryDataAlignment - 100 + data[j]['results'][k].sort[1]) * 155) / 100) + 10
+          # summary data may exist, but not for individual results
+          if data[j]['results'][k]
+            appendColor data[j]['results'][k], colorsData[k], defaultColors
+            
+            data[j]['results'][k].alignmentLine =  (((summaryDataAlignment) * 155) / 100) + 10
+            data[j]['results'][k].alignment =  (((summaryDataAlignment - 100 + data[j]['results'][k].sort[1]) * 155) / 100) + 10
           j++
     data
   

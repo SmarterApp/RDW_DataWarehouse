@@ -3,7 +3,7 @@
         {
             "dmgPrgIep": ["Y"]
         }, {
-            "title1": ["Y"]
+            "dmgPrgTt1": ["Y"]
         }, {
             "dmgPrgLep": ["Y"]
         }, {
@@ -42,25 +42,25 @@
             "dmgPrgIep": ["Y"],
             "grade": ["11"]
         }, {
-            "title1": ["Y"],
+            "dmgPrgTt1": ["Y"],
             "grade": ["3"]
         }, {
-            "title1": ["Y"],
+            "dmgPrgTt1": ["Y"],
             "grade": ["4"]
         }, {
-            "title1": ["Y"],
+            "dmgPrgTt1": ["Y"],
             "grade": ["5"]
         }, {
-            "title1": ["Y"],
+            "dmgPrgTt1": ["Y"],
             "grade": ["6"]
         }, {
-            "title1": ["Y"],
+            "dmgPrgTt1": ["Y"],
             "grade": ["7"]
         }, {
-            "title1": ["Y"],
+            "dmgPrgTt1": ["Y"],
             "grade": ["8"]
         }, {
-            "title1": ["Y"],
+            "dmgPrgTt1": ["Y"],
             "grade": ["11"]
         }, {
             "dmgPrgLep": ["Y"],
@@ -89,7 +89,7 @@
         {
             "dmgPrgIep": ["Y"]
         }, {
-            "title1": ["Y"]
+            "dmgPrgTt1": ["Y"]
         }, {
             "dmgPrgLep": ["Y"]
         }, {
@@ -128,25 +128,25 @@
             "dmgPrgIep": ["Y"],
             "grade": ["11"]
         }, {
-            "title1": ["Y"],
+            "dmgPrgTt1": ["Y"],
             "grade": ["3"]
         }, {
-            "title1": ["Y"],
+            "dmgPrgTt1": ["Y"],
             "grade": ["4"]
         }, {
-            "title1": ["Y"],
+            "dmgPrgTt1": ["Y"],
             "grade": ["5"]
         }, {
-            "title1": ["Y"],
+            "dmgPrgTt1": ["Y"],
             "grade": ["6"]
         }, {
-            "title1": ["Y"],
+            "dmgPrgTt1": ["Y"],
             "grade": ["7"]
         }, {
-            "title1": ["Y"],
+            "dmgPrgTt1": ["Y"],
             "grade": ["8"]
         }, {
-            "title1": ["Y"],
+            "dmgPrgTt1": ["Y"],
             "grade": ["11"]
         }, {
             "dmgPrgLep": ["Y"],

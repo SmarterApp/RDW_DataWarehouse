@@ -72,6 +72,14 @@ CACHE_REGION_PUBLIC_FILTERING_DATA = 'public.filtered_data'
                 "pattern": "^(" + Constants_filter_names.YES + "|" + Constants_filter_names.NO + "|" + Constants_filter_names.NOT_STATED + ")$",
             }
         },
+        Constants_filter_names.DEMOGRAPHICS_PROGRAM_TT1: {
+            "type": "array",
+            "required": False,
+            "items": {
+                "type": "string",
+                "pattern": "^(" + Constants_filter_names.YES + "|" + Constants_filter_names.NO + "|" + Constants_filter_names.NOT_STATED + ")$",
+            }
+        },
         Constants_filter_names.ETHNICITY: {
             "type": "array",
             "required": False,
@@ -537,6 +545,9 @@ class QueryHelper():
                 filter_lep = get_demographic_filter(Constants_filter_names.DEMOGRAPHICS_PROGRAM_LEP, self._fact_asmt_outcome.c.dmg_prg_lep, self._filters)
                 if filter_lep is not None:
                     query = query.where(filter_lep)
+                filter_tt1 = get_demographic_filter(Constants_filter_names.DEMOGRAPHICS_PROGRAM_TT1, self._fact_asmt_outcome.c.dmg_prg_tt1, self._filters)
+                if filter_tt1 is not None:
+                    query = query.where(filter_tt1)
                 filter_grade = self._filters.get(Constants_filter_names.GRADE)
                 if self._filters.get(Constants_filter_names.GRADE):
                     query = query.where(self._fact_asmt_outcome.c.asmt_grade.in_(filter_grade))

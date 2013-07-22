@@ -340,6 +340,44 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         self.assertEqual(len(results['records']), 3)
         self.assertEqual(results['records'][1]['results']['subject1']['total'], 17)
 
+    def test_view_with_title1_yes(self):
+        testParam = {}
+        testParam[Constants.STATECODE] = 'NY'
+        testParam[Constants.DISTRICTGUID] = '229'
+        testParam[Constants_filter_names.DEMOGRAPHICS_PROGRAM_TT1] = ['Y']
+        results = get_comparing_populations_report(testParam)
+        self.assertEqual(len(results['records']), 3)
+        self.assertEqual(results['records'][1]['results']['subject1']['total'], 1)
+
+    def test_view_with_title1_no(self):
+        testParam = {}
+        testParam[Constants.STATECODE] = 'NY'
+        testParam[Constants.DISTRICTGUID] = '229'
+        testParam[Constants_filter_names.DEMOGRAPHICS_PROGRAM_TT1] = ['N']
+        results = get_comparing_populations_report(testParam)
+        self.assertEqual(len(results['records']), 3)
+        self.assertEqual(results['records'][0]['results']['subject1']['total'], 2)
+        self.assertEqual(results['records'][0]['results']['subject2']['total'], 3)
+
+    def test_view_with_title1_NS(self):
+        testParam = {}
+        testParam[Constants.STATECODE] = 'NY'
+        testParam[Constants.DISTRICTGUID] = '229'
+        testParam[Constants_filter_names.DEMOGRAPHICS_PROGRAM_TT1] = ['NS']
+        results = get_comparing_populations_report(testParam)
+        self.assertEqual(len(results['records']), 1)
+        self.assertEqual(results['records'][0]['results']['subject1']['total'], 1)
+        self.assertEqual(results['records'][0]['results']['subject2']['total'], 2)
+
+    def test_view_with_title1_multi(self):
+        testParam = {}
+        testParam[Constants.STATECODE] = 'NY'
+        testParam[Constants.DISTRICTGUID] = '229'
+        testParam[Constants_filter_names.DEMOGRAPHICS_PROGRAM_TT1] = ['Y', 'N', 'NS']
+        results = get_comparing_populations_report(testParam)
+        self.assertEqual(len(results['records']), 3)
+        self.assertEqual(results['records'][2]['results']['subject1']['total'], 5)
+        self.assertEqual(results['records'][2]['results']['subject2']['total'], 5)
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testReport']

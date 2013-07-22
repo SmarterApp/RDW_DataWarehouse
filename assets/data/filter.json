@@ -144,7 +144,7 @@
 		},
 		{
 			"display" : "Title 1",
-			"name" : "title1",
+			"name" : "dmgPrgTt1",
 			"options" : [
 				{
 					"label": "Yes",

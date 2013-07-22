@@ -130,7 +130,7 @@ define [
            # Get the current sort column and reset cpop sorting dropdown if the current sort column is the first column
            curSortColumn = $('#gridTable').getGridParam('sortname')
            if $('#gridTable').getGridParam('colModel') and curSortColumn == $('#gridTable').getGridParam('colModel')[0].name
-             # resetSortingHeader customALDDropdown;
+             resetSortingHeader customALDDropdown
              enableDisableSortingOnAssessments()
            formatBarAlignment();
            # Hide the drop down if data is empty

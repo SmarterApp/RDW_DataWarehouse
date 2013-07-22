@@ -1,6 +1,7 @@
 {
 	"grades" : {
 		"display" : "Grades",
+		"tag" : "Grades",
 		"name" : "grade",
 		"options" : [
 			{
@@ -36,6 +37,7 @@
 	"filters" : [
 		{
 			"display" : "Limited English Proficiency*",
+			"tag" : "LEP",
 			"name" : "dmgPrgLep",
 			"comment" : "*This category includes English Language Learners(ELL) if your state identifies students as ELL",
 			"options" : [
@@ -56,6 +58,7 @@
 		},
 		{
 			"display" : "Ethnicity",
+			"tag" : "Ethnicity",
 			"name" : "ethnicity",
 			"comment" : "*Not Hispanic or Latino",
 			"options" : [
@@ -95,6 +98,7 @@
 		},
 		{
 			"display" : "IEP",
+			"tag" : "IEP",
 			"name" : "dmgPrgIep",
 			"options" : [
 				{
@@ -113,6 +117,7 @@
 		},
 		{
 			"display" : "Gender",
+			"tag" : "Gender",
 			"name" : "gender",
 			"options" : [
 				{
@@ -127,6 +132,7 @@
 		},
 		{
 			"display" : "504",
+			"tag" : "504",
 			"name" : "dmgPrg504",
 			"options" : [
 				{
@@ -144,6 +150,7 @@
 		},
 		{
 			"display" : "Title 1",
+			"tag" : "Title 1",
 			"name" : "dmgPrgTt1",
 			"options" : [
 				{

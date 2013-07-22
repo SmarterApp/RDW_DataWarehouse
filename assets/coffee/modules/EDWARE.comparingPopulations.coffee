@@ -144,7 +144,15 @@ define [
         $('.colorsBlock input:checked').click()
 
   # Add filter to the page
-  $('#cpopFilter').edwareFilter $('.filter_label'), createPopulationGrid 
+  loadFilter = ->
+    options =
+        async: false
+        method: "GET"
+      
+      configs = {}
+      edwareDataProxy.getDatafromSource "../data/filter.json", options, (data) ->
+        configs = data
+        $('#cpopFilter').edwareFilter $('.filter_label'), configs, createPopulationGrid
 
   # Render comparing population grid
   renderGrid = (gridConfig, populationData, summaryData) ->
@@ -450,6 +458,9 @@ define [
     position.left = position.left + $('#' + subject_name + '_sort').parent().width()/2-width/2
     targetElement.closest('.dropdown').css('margin-left', position.left)
     targetElement.closest('.dropdown').css('margin-top', position.top)
-
+    
   
+  # load filter panel
+  loadFilter()
+
   createPopulationGrid: createPopulationGrid

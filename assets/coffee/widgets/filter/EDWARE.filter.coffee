@@ -17,7 +17,7 @@ define [
   
   class EdwareFilter
     
-    constructor: (@filterArea, @filterTrigger, @callback) ->
+    constructor: (@filterArea, @filterTrigger, @configs, @callback) ->
       this.loadPage()
       this.initialize()
       # bind click event
@@ -40,19 +40,8 @@ define [
 
     loadPage: ->
       # load config from server
-      config = this.loadConfig()
-      output = Mustache.to_html filterTemplate, config
+      output = Mustache.to_html filterTemplate, this.configs
       $(this.filterArea).html output
-    
-    loadConfig: ->
-      options =
-        async: false
-        method: "GET"
-      
-      config = {}
-      edwareDataProxy.getDatafromSource "../data/filter.json", options, (data) ->
-        config = data
-      config
       
     bindEvents: ->
       self = this
@@ -212,7 +201,7 @@ define [
       
     generateLabel: (data) ->
       #template = "{{#.}}<div class='selectedFilterGroup'><div class='pull-left'><span>{{display}}: </span>{{#values}}<span>{{.}}</span> <span class='seperator'>, </span>{{/values}}</div><div class='removeIcon pull-left'></div></div>{{/.}}"
-      template = "{{#.}}<span class='selectedFilterGroup'><span><span>{{display}}: </span>{{#values}}<span>{{.}}</span> <span class='seperator'>, </span>{{/values}}</span><div class='removeIcon'></span></span>{{/.}}"
+      template = "{{#.}}<span class='selectedFilterGroup'><span><span>{{display}}: </span>{{#values}}<span>{{.}}</span><span class='seperator'>, </span>{{/values}}</span><div class='removeIcon'></span></span>{{/.}}"
       output = Mustache.to_html(template, data)
       $(output)
       
@@ -241,6 +230,6 @@ define [
   #    *  Example: $("#table1").edwareFilter(filterTrigger, callbackFunction)
   #  
   (($)->
-    $.fn.edwareFilter = (filterTrigger, callback) ->
-      new EdwareFilter($(this), filterTrigger, callback)
+    $.fn.edwareFilter = (filterTrigger, configs, callback) ->
+      new EdwareFilter($(this), filterTrigger, configs, callback)
   ) jQuery

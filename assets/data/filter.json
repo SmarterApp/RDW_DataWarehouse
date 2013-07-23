@@ -116,21 +116,6 @@
 			]
 		},
 		{
-			"display" : "Gender",
-			"tag" : "Gender",
-			"name" : "gender",
-			"options" : [
-				{
-					"label": "Male",
-				  	"value": "M"
-				},
-				{
-					"label": "Female",
-				  	"value": "F"
-				}
-			]
-		},
-		{
 			"display" : "504",
 			"tag" : "504",
 			"name" : "dmgPrg504",

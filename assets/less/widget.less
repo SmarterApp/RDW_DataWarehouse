@@ -761,7 +761,7 @@ th.ui-th-column div {
 .selectedFilter_panel {
   background-color: @color-C1;
   border-bottom: solid 1px @color-B11;
-  padding: 8px 20px;
+  padding: 4px 20px;
   color: @color-white;
   display: none;
   font-size: 12px;
@@ -811,7 +811,7 @@ th.ui-th-column div {
   .removeAllFilters {
     color: @color-A5;
     float: right;
-    width: 80px;
+    width: 62px;
     
     .icon_removeAll {
       background-image: url("../images/filter_clearbuttons.png");
@@ -819,10 +819,17 @@ th.ui-th-column div {
       background-repeat: no-repeat;
       height: 12px;
       display: block;
-      margin: 3px 0 0 60px;
+      margin: 3px 0 0 52px;
       cursor: pointer;
+      width: 13px;
+      
+      &:hover {
+        background-position: 1px 0;
+      }
       
     }
+    
+    
   }
 }
 

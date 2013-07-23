@@ -1,7 +1,7 @@
 import argparse
 import os
-from transform_metadata import transform_to_metadata
-from create_asmt_outcome_2 import transform_to_realdata
+from Henshin.src.transform_metadata import transform_to_metadata
+from Henshin.src.create_asmt_outcome_2 import transform_to_realdata
 
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
@@ -25,7 +25,7 @@ def henshin(dim_asmt, username, password, server, database, schema, output_path=
     if asmt_id_list:
         file_pattern = os.path.join(output_path, FACT_OUTCOME_FILE_PATTERN)
         # generate REALDATA files
-        #transform_to_realdata(fact_outcome, asmt_id_list, os.path.join(output_path, FACT_OUTCOME_FILE_PATTERN))
+        # transform_to_realdata(fact_outcome, asmt_id_list, os.path.join(output_path, FACT_OUTCOME_FILE_PATTERN))
         transform_to_realdata(file_pattern, username, password, server, database, schema, asmt_guid_list=None, port=5432)
 
 if __name__ == '__main__':

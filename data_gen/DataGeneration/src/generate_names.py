@@ -5,7 +5,7 @@ Created on Jan 3, 2013
 '''
 
 import random
-from read_naming_lists import PeopleNames
+from DataGeneration.src.read_naming_lists import PeopleNames
 
 
 def generate_first_or_middle_name(gender):

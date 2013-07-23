@@ -7,8 +7,8 @@ Created on Jul 1, 2013
 import csv
 import random
 
-from generate_names import generate_first_or_middle_name, possibly_generate_middle_name
-from entities import Student
+from DataGeneration.src.generate_names import generate_first_or_middle_name, possibly_generate_middle_name
+from DataGeneration.src.entities import Student
 
 
 H_ID = 0

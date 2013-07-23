@@ -4,7 +4,7 @@ Created on Apr 15, 2013
 @author: kallen
 '''
 import unittest
-from generate_scores import split_total_by_precentages, \
+from DataGeneration.src.generate_scores import split_total_by_precentages, \
     generate_random_scores_by_percentage_between_cut_points, generate_overall_scores
 
 

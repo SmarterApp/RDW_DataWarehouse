@@ -1,11 +1,11 @@
 import unittest
 import csv
 import os
-import entities
+import DataGeneration.src.entities as entities
 import itertools
-from generate_data import ENTITY_TO_PATH_DICT
+from DataGeneration.src.generate_data import ENTITY_TO_PATH_DICT
 from zope.component.tests.examples import comp
-from dg_types_test import *
+from DataGeneration.src.dg_types_test import *
 
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
@@ -293,7 +293,7 @@ class DataGenerationValidation(unittest.TestCase):
             dist_ratio = get_district_types()[state_keys1]['school_types_and_ratios'].values()
             total_schools = 0
             for each in dist_ratio:
-                #min_dist_num = ((min_dist * each) // sum_dist_ratio)
+                # min_dist_num = ((min_dist * each) // sum_dist_ratio)
                 min_dist_num = max(((min_dist) * (each // sum_dist_ratio)), 1)
                 total_schools += min_dist_num
             final_total = total_schools * state_no1

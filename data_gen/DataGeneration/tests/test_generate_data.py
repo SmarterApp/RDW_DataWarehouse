@@ -6,10 +6,10 @@ Created on Apr 17, 2013
 import unittest
 import os
 from datetime import date
-import generate_data
-import generate_entities
-from helper_entities import District
-from entities import Staff, AssessmentOutcome, InstitutionHierarchy
+import DataGeneration.src.generate_data as generate_data
+import DataGeneration.src.generate_entities as generate_entities
+from DataGeneration.src.helper_entities import District
+from DataGeneration.src.entities import Staff, AssessmentOutcome, InstitutionHierarchy
 
 
 class Test(unittest.TestCase):
@@ -76,7 +76,7 @@ class Test(unittest.TestCase):
                              'Elementary School': {'type': 'Elementary School', 'grades': [3, 4, 5], 'students': {'min': 10, 'max': 35, 'avg': 30}}}
         name_list1 = ['name_%d' % i for i in range(20)]
         name_list2 = ['name2_%d' % i for i in range(20)]
-        res = generate_data.create_school_dictionary(school_counts, ratios, school_types_dict, name_list1, name_list2)
+        res = generate_data.create_school_dictionary(self.config_module, school_counts, ratios, school_types_dict, name_list1, name_list2)
         self.assertEqual(len(res), 3)
         elm_sch_len = len(res['Elementary School'])
         mid_sch_len = len(res['Middle School'])
@@ -97,7 +97,7 @@ class Test(unittest.TestCase):
         school.school_guid = 'sguid1'
         school.school_category = 'Middle'
 
-        res = generate_data.generate_institution_hierarchy_from_helper_entities(state, district, school)
+        res = generate_data.generate_institution_hierarchy_from_helper_entities(self.config_module, state, district, school)
 
         self.assertIsInstance(res, InstitutionHierarchy)
         self.assertEqual(res.state_name, 'Georgia')
@@ -109,7 +109,7 @@ class Test(unittest.TestCase):
     def test_generate_list_of_scores(self):
         total = 100
         percentages = self.perf_lvl_dist['ELA']['3']['percentages']
-        res = generate_data.generate_list_of_scores(total, self.score_details, percentages, 'Math', 3)
+        res = generate_data.generate_list_of_scores(self.config_module, total, self.score_details, percentages, 'Math', 3)
         self.assertEqual(len(res), 100)
         for score in res:
             self.assertGreaterEqual(score, self.score_details['min'])
@@ -173,7 +173,7 @@ class Test(unittest.TestCase):
         section_guid = 'sect123'
         street_names = ['Broadway', 'Wall', 'Spring', 'Houston', 'Washington', 'Main', 'Fulton', 'Chambers']
 
-        res = generate_data.generate_students_from_institution_hierarchy(number_of_students, institution_hierarchy, grade, section_guid, street_names)
+        res = generate_data.generate_students_from_institution_hierarchy(self.config_module, number_of_students, institution_hierarchy, grade, section_guid, street_names)
         self.assertEqual(len(res), number_of_students)
         for student in res:
             street_name = student.address_1.split()[1]
@@ -208,7 +208,7 @@ class Test(unittest.TestCase):
         section_guid = 'sect234'
         temp_data = self.get_temporal_information_mock()
 
-        res = generate_data.generate_teaching_staff_from_institution_hierarchy(num_of_staff, institution_hierarchy, section_guid)
+        res = generate_data.generate_teaching_staff_from_institution_hierarchy(self.config_module, num_of_staff, institution_hierarchy, section_guid)
 
         self.assertEqual(len(res), num_of_staff)
         for staff in res:
@@ -228,7 +228,7 @@ class Test(unittest.TestCase):
         temp_data = self.get_temporal_information_mock()
         district_guid = 'distguid'
         school_guid = 'schoolguid'
-        res = generate_data.generate_non_teaching_staff(num_of_staff, state_code, district_guid, school_guid)
+        res = generate_data.generate_non_teaching_staff(self.config_module, num_of_staff, state_code, district_guid, school_guid)
         self.assertEqual(len(res), num_of_staff)
         for staff in res:
             self.assertIsInstance(staff, Staff)
@@ -274,7 +274,7 @@ class Test(unittest.TestCase):
             'Elementary School': {'grades': [1, 3, 4, 5], 'students': {'min': 20, 'max': 70, 'avg': 60}}
         }
         expected_items = [11, 9, 10, 6, 7, 8, 1, 3, 4, 5]
-        res = generate_data.get_flat_grades_list(school_config)
+        res = generate_data.get_flat_grades_list(school_config, 'grades')
         self.assertEqual(len(res), len(expected_items))
         for it in expected_items:
             self.assertIn(it, res)

@@ -4,7 +4,7 @@ Created on Jan 5, 2013
 @author: swimberly
 '''
 
-from name_info import NameInfo
+from DataGeneration.src.name_info import NameInfo
 import random
 import os
 
@@ -101,7 +101,7 @@ def _generate_names(total_num, all_names, scale):
             generated_names[name.name] = num
             count += num
 
-    #Generate enough people to fill remaining slots (total_num - count)
+    # Generate enough people to fill remaining slots (total_num - count)
     ks = list(generated_names.keys())
     ks_size = len(ks)
     add_count = 0

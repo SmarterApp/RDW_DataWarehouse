@@ -3,29 +3,38 @@ import datetime
 import os
 import csv
 import random
-import util
-import stats as stats
-import constants as constants
+import DataGeneration.src.util as util
+import DataGeneration.src.stats as stats
+import DataGeneration.src.constants as constants
 from collections import Counter
-from idgen import IdGen
-from write_to_csv import create_csv
+from DataGeneration.src.idgen import IdGen
+from DataGeneration.src.write_to_csv import create_csv
 from importlib import import_module
-from generate_entities import (generate_institution_hierarchy, generate_sections, generate_students, generate_multiple_staff,
-                               generate_fact_assessment_outcomes, generate_assessments)
-from generate_helper_entities import generate_state, generate_district, generate_school, generate_assessment_score, generate_claim_score
-from entities import InstitutionHierarchy, Section, Assessment, AssessmentOutcome, \
+from DataGeneration.src.generate_entities import (generate_institution_hierarchy, generate_sections, generate_students, generate_multiple_staff,
+                                                  generate_fact_assessment_outcomes, generate_assessments)
+from DataGeneration.src.generate_helper_entities import generate_state, generate_district, generate_school, generate_assessment_score, generate_claim_score
+from DataGeneration.src.entities import InstitutionHierarchy, Section, Assessment, AssessmentOutcome, \
     Staff, ExternalUserStudent, Student
-from generate_scores import generate_overall_scores
-from gaussian_distributions import gauss_one, guess_std
-from errorband import calc_eb_params, calc_eb
-from adjust import adjust_pld
-from demographics import Demographics, DemographicStatus
+from DataGeneration.src.generate_scores import generate_overall_scores
+from DataGeneration.src.gaussian_distributions import gauss_one, guess_std
+from DataGeneration.src.errorband import calc_eb_params, calc_eb
+from DataGeneration.src.adjust import adjust_pld
+from DataGeneration.src.demographics import Demographics, DemographicStatus
 from uuid import uuid4
 
 
 DATAFILE_PATH = os.path.dirname(os.path.realpath(__file__))
 components = DATAFILE_PATH.split(os.sep)
 DATAFILE_PATH = str.join(os.sep, components[:components.index('DataGeneration') + 1])
+
+
+CSV_FILE_NAMES = {InstitutionHierarchy: 'dim_inst_hier.csv',
+                  Section: 'dim_section.csv',
+                  Assessment: 'dim_asmt.csv',
+                  AssessmentOutcome: 'fact_asmt_outcome.csv',
+                  Staff: 'dim_staff.csv',
+                  ExternalUserStudent: 'external_user_student_rel.csv',
+                  Student: 'dim_student.csv'}
 
 ENTITY_TO_PATH_DICT = {InstitutionHierarchy: DATAFILE_PATH + '/datafiles/csv/dim_inst_hier.csv',
                        Section: DATAFILE_PATH + '/datafiles/csv/dim_section.csv',
@@ -48,10 +57,10 @@ NAMES_TO_PATH_DICT = {BIRDS: DATAFILE_PATH + '/datafiles/name_lists/birds.txt',
                       MAMMALS: DATAFILE_PATH + '/datafiles/name_lists/mammals.txt',
                       ANIMALS: os.path.join(DATAFILE_PATH, 'datafiles', 'name_lists', 'one-word-animal-names.txt')
                       }
+CONFIG_MODULE = ''
 
 
-def generate_data_from_config_file(config_module):
-
+def generate_data_from_config_file(config_module, output_dict):
     '''
     Main function that drives the data generation process
 
@@ -63,7 +72,7 @@ def generate_data_from_config_file(config_module):
     demographics = Demographics(config_module.get_demograph_file())
 
     # First thing: prep the csv files by deleting their contents and adding appropriate headers
-    prepare_csv_files(ENTITY_TO_PATH_DICT)
+    prepare_csv_files(output_dict)
 
     # Next, prepare lists that are used to name various entities
     name_list_dictionary = generate_name_list_dictionary(NAMES_TO_PATH_DICT)
@@ -90,10 +99,10 @@ def generate_data_from_config_file(config_module):
     to_date = temporal_information[config_module.TO_DATE]
 
     # Generate Assessment CSV File
-    flat_grades_list = get_flat_grades_list(school_types)
+    flat_grades_list = get_flat_grades_list(school_types, config_module.GRADES)
     assessments = generate_assessments(flat_grades_list, scores_details[config_module.CUT_POINTS],
                                        from_date, most_recent, to_date=to_date)
-    create_csv(assessments, ENTITY_TO_PATH_DICT[Assessment])
+    create_csv(assessments, output_dict[Assessment])
 
     # generate one batch_guid for all records
     batch_guid = uuid4()
@@ -117,7 +126,7 @@ def generate_data_from_config_file(config_module):
         # TODO: should we add some randomness here? What are acceptable numbers? 5-10? 10-20?
         number_of_state_level_staff = 10
         # Create the state-level staff
-        state_level_staff = generate_non_teaching_staff(number_of_state_level_staff, state_code=current_state.state_code)
+        state_level_staff = generate_non_teaching_staff(config_module, number_of_state_level_staff, state_code=current_state.state_code)
 
         # Create all the districts for the given state.
         # We don't have a state, district, or school table, but we have an institution_hierarchy table.
@@ -150,10 +159,10 @@ def generate_data_from_config_file(config_module):
                 print('populating district: %s: %s' % (district.district_name, district_type_name))
                 # TODO: should we add some randomness here? What are acceptable numbers? 5-10? 10-20?
                 number_of_district_level_staff = 10
-                district_level_staff = generate_non_teaching_staff(number_of_district_level_staff, state_code=current_state.state_code,
+                district_level_staff = generate_non_teaching_staff(config_module, number_of_district_level_staff, state_code=current_state.state_code,
                                                                    district_guid=district.district_guid)
 
-                schools_by_type = create_school_dictionary(school_counts, school_types_and_ratios, school_types,
+                schools_by_type = create_school_dictionary(config_module, school_counts, school_types_and_ratios, school_types,
                                                            school_names_1, school_names_2)
 
                 # Debugging
@@ -163,18 +172,18 @@ def generate_data_from_config_file(config_module):
                     schools = schools_by_type[school_type_name]
                     school_type = school_types[school_type_name]
                     school_type_institution_hierarchies = generate_and_populate_institution_hierarchies(schools, school_type, current_state,
-                                                                                                        district, assessments, subject_percentages, demographics, demographics_id, batch_guid)
+                                                                                                        district, assessments, subject_percentages, demographics, demographics_id, batch_guid, config_module, output_dict)
                     # Debugging
                     school_counts[school_type_name] += len(school_type_institution_hierarchies)
 
                     state_institution_hierarchies += school_type_institution_hierarchies
 
-                create_csv(district_level_staff, ENTITY_TO_PATH_DICT[Staff])
-        create_csv(state_level_staff, ENTITY_TO_PATH_DICT[Staff])
-        create_csv(state_institution_hierarchies, ENTITY_TO_PATH_DICT[InstitutionHierarchy])
+                create_csv(district_level_staff, output_dict[Staff])
+        create_csv(state_level_staff, output_dict[Staff])
+        create_csv(state_institution_hierarchies, output_dict[InstitutionHierarchy])
 
 
-def generate_and_populate_institution_hierarchies(schools, school_type, state, district, assessments, subject_percentages, demographics, demographics_id, batch_guid):
+def generate_and_populate_institution_hierarchies(schools, school_type, state, district, assessments, subject_percentages, demographics, demographics_id, batch_guid, config_module, output_dict):
     '''
     Given institution information (info about state, district, school), we create InstitutionHierarchy objects.
     We create one InstitutionHierarchy object for each school given in the school list.
@@ -195,14 +204,14 @@ def generate_and_populate_institution_hierarchies(schools, school_type, state, d
     '''
     institution_hierarchies = []
     for school in schools:
-        institution_hierarchy = generate_institution_hierarchy_from_helper_entities(state, district, school)
+        institution_hierarchy = generate_institution_hierarchy_from_helper_entities(config_module, state, district, school)
         institution_hierarchies.append(institution_hierarchy)
         # TODO: Don't populate the schools here. When this function returns, loop over the list and populate each school
-        populate_school(institution_hierarchy, school_type, assessments, subject_percentages, demographics, demographics_id, batch_guid)
+        populate_school(institution_hierarchy, school_type, assessments, subject_percentages, demographics, demographics_id, batch_guid, config_module, output_dict)
     return institution_hierarchies
 
 
-def populate_school(institution_hierarchy, school_type, assessments, subject_percentages, demographics, demographics_id, batch_guid):
+def populate_school(institution_hierarchy, school_type, assessments, subject_percentages, demographics, demographics_id, batch_guid, config_module, output_dict):
 
     '''
     Populate the provided the institution with staff, students, teachers, sections
@@ -240,14 +249,14 @@ def populate_school(institution_hierarchy, school_type, assessments, subject_per
     staff_in_school = []
     # TODO: should we add some randomness here? What are acceptable numbers? 5-10? 10-20?
     number_of_school_level_staff = 5
-    school_level_staff = generate_non_teaching_staff(number_of_school_level_staff, state_code=institution_hierarchy.state_code,
+    school_level_staff = generate_non_teaching_staff(config_module, number_of_school_level_staff, state_code=institution_hierarchy.state_code,
                                                      district_guid=institution_hierarchy.district_guid, school_guid=institution_hierarchy.school_guid)
     staff_in_school += school_level_staff
     for grade in grades:
         asmt_outcomes_for_grade = []
         number_of_students_in_grade = calculate_number_of_students(student_min, student_max, student_avg)
         name_list_dictionary = generate_name_list_dictionary(NAMES_TO_PATH_DICT)
-        students_in_grade = generate_students_from_institution_hierarchy(number_of_students_in_grade, institution_hierarchy, grade, -1, name_list_dictionary[BIRDS])
+        students_in_grade = generate_students_from_institution_hierarchy(config_module, number_of_students_in_grade, institution_hierarchy, grade, -1, name_list_dictionary[BIRDS])
 
         demograph_id = demographics_id  # TODO: Get from config file
         subject_num = 1
@@ -265,7 +274,7 @@ def populate_school(institution_hierarchy, school_type, assessments, subject_per
                                                   from_date, most_recent, to_date=to_date)
             sections_in_school += sections_in_grade
             performance_level_percs = demographics.get_grade_demographics_total(demograph_id, subject_name, grade)
-            score_list = generate_list_of_scores(number_of_students_in_grade, scores_details, performance_level_percs, subject_name, grade, pld_adjustment)
+            score_list = generate_list_of_scores(config_module, number_of_students_in_grade, scores_details, performance_level_percs, subject_name, grade, pld_adjustment)
             students_in_subject = students_in_grade[:]
             for section in sections_in_grade:
                 # TODO: More accurate math for num_of_students
@@ -273,14 +282,14 @@ def populate_school(institution_hierarchy, school_type, assessments, subject_per
                 number_of_students_in_section = number_of_students_in_grade // number_of_sections
                 # TODO: Set up district naming like PeopleNames to remove the following line (which is also called in generate_data)
                 # name_list_dictionary = generate_name_list_dictionary(NAMES_TO_PATH_DICT)
-                # students_in_section = generate_students_from_institution_hierarchy(number_of_students_in_section, institution_hierarchy, grade, section.section_guid, name_list_dictionary[BIRDS])
+                # students_in_section = generate_students_from_institution_hierarchy(config_module, number_of_students_in_section, institution_hierarchy, grade, section.section_guid, name_list_dictionary[BIRDS])
                 students_in_section = students_in_subject[:number_of_students_in_section]
                 students_in_subject[:number_of_students_in_section] = []
                 set_students_rec_id_and_section_id(students_in_section, section.section_guid)
                 students_in_school += students_in_section
                 # TODO: should we add some randomness here? What are acceptable numbers? 1-2? 1-3?
                 number_of_staff_in_section = 1
-                teachers_in_section = generate_teaching_staff_from_institution_hierarchy(number_of_staff_in_section, institution_hierarchy, section.section_guid)
+                teachers_in_section = generate_teaching_staff_from_institution_hierarchy(config_module, number_of_staff_in_section, institution_hierarchy, section.section_guid)
                 staff_in_school += teachers_in_section
                 assessment = select_assessment_from_list(assessments, grade, subject_name)
                 teacher_guid = teachers_in_section[0].staff_guid
@@ -306,14 +315,14 @@ def populate_school(institution_hierarchy, school_type, assessments, subject_per
                     subject_num += 1
 
                 # write student objects to dim_student csv
-                create_csv(students_to_take_assessment, ENTITY_TO_PATH_DICT[Student])
+                create_csv(students_to_take_assessment, output_dict[Student])
                 asmt_outcomes_for_grade.extend(asmt_outcomes_in_section)
 
         # write asmt_outcomes to fact_asmt_outcome
-        create_csv(asmt_outcomes_for_grade, ENTITY_TO_PATH_DICT[AssessmentOutcome])
-    # create_csv(students_in_school, ENTITY_TO_PATH_DICT[Student])
-    create_csv(sections_in_school, ENTITY_TO_PATH_DICT[Section])
-    create_csv(staff_in_school, ENTITY_TO_PATH_DICT[Staff])
+        create_csv(asmt_outcomes_for_grade, output_dict[AssessmentOutcome])
+    # create_csv(students_in_school, output_dict[Student])
+    create_csv(sections_in_school, output_dict[Section])
+    create_csv(staff_in_school, output_dict[Staff])
 
 
 def prepare_csv_files(entity_to_path_dict):
@@ -366,7 +375,7 @@ def generate_district_dictionary(district_types_and_counts, district_names_1, di
     return district_dictionary
 
 
-def create_school_dictionary(school_counts, school_types_and_ratios, school_types_dict, school_names_1, school_names_2):
+def create_school_dictionary(config_module, school_counts, school_types_and_ratios, school_types_dict, school_names_1, school_names_2):
     '''
     Creates a dictionary of schools that matches the school counts and ratios
     @param school_counts: A dictionary containing school population information
@@ -389,7 +398,7 @@ def create_school_dictionary(school_counts, school_types_and_ratios, school_type
     for school_type in school_types_and_ratios:
         # Get the ratio so we can calculate the number of school types to create for each district
         school_type_ratio = school_types_and_ratios[school_type]
-        number_of_schools_for_type = max(round(school_type_ratio * ratio_unit), 1)  # int(school_type_ratio * ratio_unit)
+        number_of_schools_for_type = int(max(round(school_type_ratio * ratio_unit), 1))  # int(school_type_ratio * ratio_unit)
 
         school_list = []
         school_type_name = school_types_dict[school_type][config_module.TYPE]
@@ -400,7 +409,7 @@ def create_school_dictionary(school_counts, school_types_and_ratios, school_type
     return school_dictionary
 
 
-def generate_institution_hierarchy_from_helper_entities(state, district, school):
+def generate_institution_hierarchy_from_helper_entities(config_module, state, district, school):
     '''
     Create an InstitutionHierarchy object from the helper entities provided
     @param state: a State object
@@ -426,7 +435,7 @@ def generate_institution_hierarchy_from_helper_entities(state, district, school)
     return institution_hierarchy
 
 
-def generate_list_of_scores(total, score_details, perf_lvl_dist, subject_name, grade, pld_adjustment=None):
+def generate_list_of_scores(config_module, total, score_details, perf_lvl_dist, subject_name, grade, pld_adjustment=None):
     '''
     Generate a list of overall scores to use in the creation of assessment outcomes
     @type total: int
@@ -541,7 +550,7 @@ def translate_scores_to_assessment_score(scores, cut_points, assessment, ebmin, 
     return score_list
 
 
-def generate_students_from_institution_hierarchy(number_of_students, institution_hierarchy, grade, section_guid, street_names):
+def generate_students_from_institution_hierarchy(config_module, number_of_students, institution_hierarchy, grade, section_guid, street_names):
     '''
     Generates a list of students
     @param number_of_students: The number of students to generate
@@ -579,7 +588,7 @@ def set_students_rec_id_and_section_id(students, section_guid):
     return students
 
 
-def generate_teaching_staff_from_institution_hierarchy(number_of_staff, institution_hierarchy, section_guid):
+def generate_teaching_staff_from_institution_hierarchy(config_module, number_of_staff, institution_hierarchy, section_guid):
     '''
     Generate teachers based on the institution hierarchy object that is provided
     @param number_of_staff: The number of teachers to generate
@@ -600,7 +609,7 @@ def generate_teaching_staff_from_institution_hierarchy(number_of_staff, institut
     return staff_list
 
 
-def generate_non_teaching_staff(number_of_staff, state_code='NA', district_guid='NA', school_guid='NA'):
+def generate_non_teaching_staff(config_module, number_of_staff, state_code='NA', district_guid='NA', school_guid='NA'):
     '''
     Generate staff that are not teachers
     @param number_of_staff: The number of staff memebers to generate
@@ -696,7 +705,7 @@ def calculate_claim_scores(asmt_score, assessment, ebmin, ebmax, rndlo, rndhi):
     return claim_scores
 
 
-def get_flat_grades_list(school_config):
+def get_flat_grades_list(school_config, grade_key):
     '''
     pull out grades from score_config and place in flat list
     @param school_config: A dictionary of school info
@@ -705,7 +714,7 @@ def get_flat_grades_list(school_config):
     grades = []
 
     for school_type in school_config:
-        grades.extend(school_config[school_type][config_module.GRADES])
+        grades.extend(school_config[school_type][grade_key])
 
     # remove duplicates
     grades = list(set(grades))
@@ -739,17 +748,51 @@ def get_subset_of_students(students, percentage):
     return selection
 
 
+def create_output_dict(output_path):
+    '''
+    create a dictionary that specifies the output path for all csv files
+    @param output_path: the path to where to store the files
+    @type output_path: str
+    @return: A dict containing all ouput paths
+    @rtype: dict
+    '''
+    out_dict = {}
+
+    for fname in CSV_FILE_NAMES:
+        out_dict[fname] = os.path.join(output_path, CSV_FILE_NAMES[fname])
+
+    return out_dict
+
+
+def main(config_mod_name='dg_types', output_path=None):
+    t1 = datetime.datetime.now()
+    config_module = import_module(config_mod_name)
+
+    # setup output path dict
+    output_dict = ENTITY_TO_PATH_DICT
+    if output_path:
+        output_dict = create_output_dict(output_path)
+    # generate_data
+    generate_data_from_config_file(config_module, output_dict)
+
+    # print time
+    t2 = datetime.datetime.now()
+    print("data_generation starts ", t1)
+    print("data_generation ends   ", t2)
+
+    # extract the output folder path
+    output_components = list(output_dict.values())[0].split(os.sep)
+    output_folder = str.join(os.sep, output_components[:-1])
+    return output_folder
+
+
 if __name__ == '__main__':
     # Argument parsing
     parser = argparse.ArgumentParser(description='Generate fixture data from a configuration file.')
     parser.add_argument('--config', dest='config_module', action='store', default='dg_types',
                         help='Specify the configuration module that informs that data creation process.', required=False)
+    parser.add_argument('--output', dest='output_path', action='store',
+                        help='Specify the location of the output csv files', required=False)
     args = parser.parse_args()
 
-    t1 = datetime.datetime.now()
-    config_module = import_module(args.config_module)
-    generate_data_from_config_file(config_module)
-    t2 = datetime.datetime.now()
-
-    print("data_generation starts ", t1)
-    print("data_generation ends   ", t2)
+    main(args.config_module, args.output_path)

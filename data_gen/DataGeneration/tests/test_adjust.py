@@ -4,7 +4,7 @@ Created on Apr 28, 2013
 @author: ken
 '''
 import unittest
-import adjust
+import DataGeneration.src.adjust as adjust
 
 
 class Test(unittest.TestCase):

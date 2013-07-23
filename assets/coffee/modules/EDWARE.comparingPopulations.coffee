@@ -13,6 +13,8 @@ define [
   
   alignmentPercent = ""
   summaryData = []
+  currentSortInfo = {}
+  
   
   # Add header to the page
   edwareUtil.getHeader()
@@ -80,8 +82,29 @@ define [
           summaryRowName = getOverallSummaryName(breadcrumbsData, reportType)
           summaryData = formatSummaryData(summaryData, summaryRowName)
         
+        # For filtering, we need to reapply the current sort column in gridConfig before we re-render the grid
+        if currentSortInfo.name
+          for element in gridConfig
+            if element.items[0].index == currentSortInfo.name
+              element.items[0]["sortorder"] = currentSortInfo.order
+            else
+              delete element.items[0].sortorder
+        
         # Create compare population grid for State/District/School view
         renderGrid gridConfig, populationData, summaryData
+        
+        # Enable the sorting arrows in dropdown if the current sort column isn't the first column
+        curSortColumn = $('#gridTable').getGridParam('sortname')
+        if $('#gridTable').getGridParam('colModel') and curSortColumn != $('#gridTable').getGridParam('colModel')[0].name
+          enableSortingOnSubject curSortColumn
+        
+        # Hide the drop down if data is empty
+        if populationData.length is 0
+          $('.dropdownSection').hide()
+        else
+          $('.dropdownSection').show() 
+          # Re-position dropdown - this is important when the active column isn't a dropdown and we're rendering from a no results report
+          positionDropdown customALDDropdown
         
         # Generate footer
         $('#footer').generateFooter('comparing_populations', reportInfo)
@@ -128,21 +151,14 @@ define [
         # Reset ALD sorting dropdown options and handle bar alignment styling
         $('#gridTable').bind "jqGridLoadComplete.jqGrid", (e, data) ->
            # Get the current sort column and reset cpop sorting dropdown if the current sort column is the first column
-           curSortColumn = $('#gridTable').getGridParam('sortname')
-           if $('#gridTable').getGridParam('colModel') and curSortColumn == $('#gridTable').getGridParam('colModel')[0].name
+           # Save the current sorting column and order
+           currentSortInfo['name'] = $('#gridTable').getGridParam('sortname')
+           currentSortInfo['order'] = $('#gridTable').getGridParam('sortorder')
+           if $('#gridTable').getGridParam('colModel') and currentSortInfo['name'] == $('#gridTable').getGridParam('colModel')[0].name
              resetSortingHeader customALDDropdown
              enableDisableSortingOnAssessments()
            formatBarAlignment();
-           # Hide the drop down if data is empty
-           if populationData.length is 0
-             $('.dropdownSection').hide()
-           else
-             $('.dropdownSection').show()
            
-        # Keep sorting and alignment status after regenerating grid
-        $('#gridTable').trigger "jqGridLoadComplete.jqGrid"
-        $('.colorsBlock input:checked').click()
-
   # Add filter to the page
   loadFilter = ->
     options =
@@ -408,16 +424,20 @@ define [
         targetParentElement_div = $('#' + targetParentId + ' div')
         targetParentElement_div.html(colorBar)
         setCenterForDropdown(subject, targetParentElement_div.width(), targetParentElement_div)
-        
-        #move sort up/down to right side
-        asmtSubjectSort.parent().addClass('colorSortArrow')
-        # display sort arrows
-        asmtSubjectSort.siblings('span').css('visibility', 'visible')
-        
-        enableDisableSortingOnAssessments subject
 
-        # Reload the grid and setting active sort column, subject is the index of the column
+        enableSortingOnSubject subject
         $('#gridTable').sortGrid(subject, true, 'asc');
+
+  # set drop down sort arrow visiblity and enable/disable sortable columns
+  enableSortingOnSubject = (subject) ->
+    # obtain selected color bar and set it to table header
+    asmtSubjectSort = $("#" + subject + "_sort")
+    #move sort up/down to right side
+    asmtSubjectSort.parent().addClass('colorSortArrow')
+    # display sort arrows
+    asmtSubjectSort.siblings('span').css('visibility', 'visible')
+    # enable/disable column to be sortable
+    enableDisableSortingOnAssessments subject
   
   resetSortingHeader = (customALDDropdown) ->
     # unselect radio button
@@ -435,6 +455,8 @@ define [
       dropdown_a_element_dropdown_title.html customALDDropdown.selectSort
       #set to the center of table header column
       setCenterForDropdown(subject, dropdown_a_element_dropdown_title.width(), dropdown_a_element_dropdown_title)
+      # remove sort arrows
+      asmtSubjectSort.siblings('span').css('visibility', 'hidden')
       # close open panel
       $(dropdownElement).removeClass('open')
       
@@ -448,8 +470,20 @@ define [
       else
         if colModel.index is subject
           colModel.sortable = true
-
-          
+  
+  # Only use this to reposition dropdown (calling setCenterForDropdown)
+  positionDropdown = (customALDDropdown) ->
+     $.each $(".dropdown"), (index, dropdownElement) ->
+      #find subject name
+      dropdown_a_element = $(dropdownElement).children('a')
+      id = $(dropdown_a_element).attr("id")
+      subject = id.substring(0, id.indexOf("_"))
+      asmtSubjectSort = $('#' + subject + '_sort')
+      #set 'Select Sort'
+      dropdown_a_element_dropdown_title = $(dropdown_a_element).children(".dropdown_title")
+      #set to the center of table header column
+      setCenterForDropdown(subject, dropdown_a_element_dropdown_title.width(), dropdown_a_element_dropdown_title)
+     
   setCenterForDropdown = (subject_name, width, targetElement) ->
     position = $('#' + subject_name + '_sort').parent().offset()
     parent_position = $('#' + subject_name + '_sort').closest('.gridHeight100').offset()
@@ -458,7 +492,6 @@ define [
     position.left = position.left + $('#' + subject_name + '_sort').parent().width()/2-width/2
     targetElement.closest('.dropdown').css('margin-left', position.left)
     targetElement.closest('.dropdown').css('margin-top', position.top)
-    
   
   # load filter panel
   loadFilter()

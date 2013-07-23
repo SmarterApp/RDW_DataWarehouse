@@ -90,7 +90,7 @@ define [
       else
          filterPanel.trigger FILTER_CLOSE
          
-    closeFilter: ->
+    closeFilter: (callback) ->
       this.filterPanel.slideUp 'slow'
       noTags = $(this.tagPanel).is(':empty')
       if noTags
@@ -100,6 +100,8 @@ define [
       else
         this.tagPanelWrapper.show()
         this.filterArrow.show()
+        
+      callback() if callback
 
     clearAll: ->
       # clear tag panel
@@ -111,10 +113,11 @@ define [
       $(this).trigger FILTER_SUBMIT
   
     submitFilter: ->
-      this.submitAjaxCall this.callback
+      self = this
       # display selected filters on html page
-      this.createFilterBar this
-      this.closeFilter()
+      self.createFilterBar self
+      self.closeFilter ->
+          self.submitAjaxCall self.callback
     
     createFilterBar: ->
       self = this

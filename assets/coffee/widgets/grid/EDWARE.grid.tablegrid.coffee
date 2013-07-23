@@ -63,7 +63,7 @@ define [
                 colModelItem.cellattr = (rowId, val, rawObject, cm, rdata) ->
                   ' style="display:none;"'
               options.sortorder = item1.sortorder  if item1.sortorder
-              options.sortname = item1.field  if item1.sortorder
+              options.sortname = item1.index  if item1.sortorder
               colModelItem.resizable = false # prevent the user from manually resizing the columns
               colModel.push colModelItem
               j++

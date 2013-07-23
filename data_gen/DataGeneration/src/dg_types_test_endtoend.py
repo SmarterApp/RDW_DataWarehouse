@@ -184,9 +184,7 @@ def get_state_types():
 
     Initial numbers were Big=3, Medium=6, Small=40
     """
-    state_types = {'typical_1': {'district_types_and_counts': {
-                                                               'Medium Average': 2
-                                                               },
+    state_types = {'typical_1': {'district_types_and_counts': {'Medium Average': 2},
                                  'subjects_and_percentages': {'Math': .99, 'ELA': .99},
                                  'demographics': 'typical1'}}
     return state_types

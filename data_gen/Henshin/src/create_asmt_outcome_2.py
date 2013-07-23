@@ -46,7 +46,7 @@ def run_asmt_outcome_query(connection, schema):
     '''
 
     query = '''
-    SELECT
+    SELECT DISTINCT
       dim_asmt.asmt_guid AS guid_asmt,
       fact_asmt_outcome.where_taken_id AS guid_asmt_location,
       fact_asmt_outcome.where_taken_name AS name_asmt_location,
@@ -115,7 +115,6 @@ def run_asmt_outcome_query(connection, schema):
       fact_asmt_outcome.student_guid = dim_student.student_guid
     ORDER BY guid_asmt
     '''.format(schema=schema)
-
     results = connection.execute(query)
     return results
 

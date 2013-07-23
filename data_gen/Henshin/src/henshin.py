@@ -24,9 +24,10 @@ def henshin(dim_asmt, username, password, server, database, schema, output_path=
     asmt_id_list = transform_to_metadata(dim_asmt, output_path, METADATA_FILE_PATTERN)
     if asmt_id_list:
         file_pattern = os.path.join(output_path, FACT_OUTCOME_FILE_PATTERN)
-        # generate REALDATA files
-        # transform_to_realdata(fact_outcome, asmt_id_list, os.path.join(output_path, FACT_OUTCOME_FILE_PATTERN))
         transform_to_realdata(file_pattern, username, password, server, database, schema, asmt_guid_list=None, port=5432)
+
+    print("Henshin is completed")
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Start transform metadata and outcome files')

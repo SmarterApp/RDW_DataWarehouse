@@ -3,18 +3,14 @@ Created on May 24, 2013
 
 @author: ejen
 '''
-import sys
 import os
 import unittest
-import logging
 from udl2 import database
-from udl2.database import UDL_METADATA
-from udl2_util.database_util import connect_db, execute_queries, get_table_columns_info
+from udl2_util.database_util import connect_db, execute_queries
 from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from move_to_integration.move_to_integration import move_data_from_staging_to_integration
 from fileloader.file_loader import load_file
 import imp
-import re
 from udl2 import message_keys as mk
 
 
@@ -195,6 +191,31 @@ class FuncTestLoadToIntegrationTable(unittest.TestCase):
             stg_asmt_avgs = row
 
         assert stg_asmt_avgs == int_asmt_avgs
+
+        #get staging demographics counts
+        demographics = ['dmg_eth_hsp', 'dmg_eth_ami', 'dmg_eth_asn', 'dmg_eth_blk', 'dmg_eth_pcf', 'dmg_eth_wht', 'dmg_prg_iep', 'dmg_prg_lep', 'dmg_prg_504', 'dmg_prg_tt1']
+        stg_demo_dict = {}
+        int_demo_dict = {}
+
+        for entry in demographics:
+            #get staging
+            demo_query = """ select count({demographic}) from "udl2"."STG_SBAC_ASMT_OUTCOME" where guid_batch='{guid_batch}' and ({demographic} = 'Y' or {demographic} = 'y' or {demographic} = 'yes');""".format(demographic=entry, guid_batch=self.conf['guid_batch'])
+            result = self.udl2_conn.execute(demo_query)
+            for row in result:
+                demo_count = row[0]
+
+            stg_demo_dict[entry] = demo_count
+            #get integration
+            demo_query = """ select count({demographic}) from "udl2"."INT_SBAC_ASMT_OUTCOME" where guid_batch='{guid_batch}' and {demographic} = 'TRUE';""".format(guid_batch=self.conf['guid_batch'], demographic=entry)
+
+            result = self.udl2_conn.execute(demo_query)
+            for row in result:
+                demo_count = row[0]
+
+            int_demo_dict[entry] = demo_count
+
+        assert stg_demo_dict == int_demo_dict
+
 
 if __name__ == '__main__':
     unittest.main()

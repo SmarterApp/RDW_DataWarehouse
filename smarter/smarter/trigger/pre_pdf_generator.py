@@ -3,7 +3,7 @@ Created on Jun 23, 2013
 
 @author: tosako
 '''
-from sqlalchemy.sql.expression import select, and_, func, true, null
+from sqlalchemy.sql.expression import select, and_, func, true, null, distinct
 from batch.pdf.pdf_generator import PDFGenerator
 from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_absolute_file_path_name
 import logging
@@ -48,7 +48,7 @@ def prepare_pre_pdf(tenant, state_code, batch_guid):
     with SmarterDBConnection(tenant=tenant) as connector:
         fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
         dim_asmt = connector.get_table(Constants.DIM_ASMT)
-        query = select([fact_asmt_outcome.c.student_guid.label(Constants.STUDENT_GUID),
+        query = select([distinct(fact_asmt_outcome.c.student_guid).label(Constants.STUDENT_GUID),
                         dim_asmt.c.asmt_period_year.label(Constants.ASMT_PERIOD_YEAR),
                         fact_asmt_outcome.c.district_guid.label(Constants.DISTRICT_GUID),
                         fact_asmt_outcome.c.school_guid.label(Constants.SCHOOL_GUID),

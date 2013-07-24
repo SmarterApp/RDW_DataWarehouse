@@ -6,4 +6,4 @@ python generate_data.py --config dg_types_test_endtoend
 cd ../dataload/
 python load_data.py -c ../datafiles/csv -t edware_udl_test edware2013
 cd ../../Henshin/src/
-python henshin.py -d ../../DataGeneration/datafiles/csv/dim_asmt.csv -o ../../../udl2/tests/integration_tests --schema edware_udl_test --host localhost
+python henshin.py -d ../../DataGeneration/datafiles/csv/dim_asmt.csv -o /opt/wgen/edware-udl/zones/datafiles/henshin_out --schema edware_udl_test --host localhost

@@ -34,14 +34,10 @@ class ITestLoadCsvToSBACStar(unittest.TestCase):
         #subprocess.call('rm REALDATA*',shell=True)
 
     def test_load_csv_to_sbac_star(self):
-        #if os.path.isfile("{datafiles}/REALDATA_ASMT_ID.csv".format(datafiles=self.conf['zones']['datafiles'])):
         for each in range(self.file_count):
             print("driver.py -c {henshin_dir}/REALDATA_ASMT_ID_{count}.csv -j {henshin_dir}/METADATA_ASMT_ID_{count}.json".format(count=each, henshin_dir=HENSHIN_FILE_LOCATIONS))
             subprocess.call("python ../../scripts/driver.py -c {henshin_dir}/REALDATA_ASMT_ID_{count}.csv -j {henshin_dir}/METADATA_ASMT_ID_{count}.json".format(count=each, henshin_dir=HENSHIN_FILE_LOCATIONS), shell=True)
         self.assertTrue(True)
-        #else:
-        #time.sleep(800)
-            #self.assertTrue(False)
 
 if __name__ == "__main__":
     unittest.main()

@@ -96,15 +96,17 @@ define [
         # Enable the sorting arrows in dropdown if the current sort column isn't the first column
         curSortColumn = $('#gridTable').getGridParam('sortname')
         if $('#gridTable').getGridParam('colModel') and curSortColumn != $('#gridTable').getGridParam('colModel')[0].name
-          enableSortingOnSubject curSortColumn
+          enableSortableColumnWithSortArrow curSortColumn
+        # Apply alignment
+        formatBarAlignment()
         
         # Hide the drop down if data is empty
         if populationData.length is 0
           $('.dropdownSection').hide()
         else
           $('.dropdownSection').show() 
-          # Re-position dropdown - this is important when the active column isn't a dropdown and we're rendering from a no results report
-          positionDropdown customALDDropdown
+          # Re-position dropdown - this is important when the active column is the first column and we're rendering from a no results report
+          positionDropdown customALDDropdown, false
         
         # Generate footer
         $('#footer').generateFooter('comparing_populations', reportInfo)
@@ -425,11 +427,11 @@ define [
         targetParentElement_div.html(colorBar)
         setCenterForDropdown(subject, targetParentElement_div.width(), targetParentElement_div)
 
-        enableSortingOnSubject subject
+        enableSortableColumnWithSortArrow subject
         $('#gridTable').sortGrid(subject, true, 'asc');
 
   # set drop down sort arrow visiblity and enable/disable sortable columns
-  enableSortingOnSubject = (subject) ->
+  enableSortableColumnWithSortArrow = (subject) ->
     # obtain selected color bar and set it to table header
     asmtSubjectSort = $("#" + subject + "_sort")
     #move sort up/down to right side
@@ -442,23 +444,7 @@ define [
   resetSortingHeader = (customALDDropdown) ->
     # unselect radio button
     $('.inputColorBlock').attr('checked', false)
-    $.each $(".dropdown"), (index, dropdownElement) ->
-      # reset to 'Select Sort'
-      # find anchor element which belongs to dropdown element.
-      dropdown_a_element = $(dropdownElement).children('a')
-      #find subject name
-      id = $(dropdown_a_element).attr("id")
-      subject = id.substring(0, id.indexOf("_"))
-      asmtSubjectSort = $('#' + subject + '_sort')
-      #set 'Select Sort'
-      dropdown_a_element_dropdown_title = $(dropdown_a_element).children(".dropdown_title")
-      dropdown_a_element_dropdown_title.html customALDDropdown.selectSort
-      #set to the center of table header column
-      setCenterForDropdown(subject, dropdown_a_element_dropdown_title.width(), dropdown_a_element_dropdown_title)
-      # remove sort arrows
-      asmtSubjectSort.siblings('span').css('visibility', 'hidden')
-      # close open panel
-      $(dropdownElement).removeClass('open')
+    positionDropdown customALDDropdown, true
       
   enableDisableSortingOnAssessments = (subject) ->
     # Enable sorting, Disable sorting in the other
@@ -472,7 +458,7 @@ define [
           colModel.sortable = true
   
   # Only use this to reposition dropdown (calling setCenterForDropdown)
-  positionDropdown = (customALDDropdown) ->
+  positionDropdown = (customALDDropdown, reset) ->
      $.each $(".dropdown"), (index, dropdownElement) ->
       #find subject name
       dropdown_a_element = $(dropdownElement).children('a')
@@ -481,6 +467,12 @@ define [
       asmtSubjectSort = $('#' + subject + '_sort')
       #set 'Select Sort'
       dropdown_a_element_dropdown_title = $(dropdown_a_element).children(".dropdown_title")
+      # removes the sort arrows
+      if reset is true
+        dropdown_a_element_dropdown_title.html customALDDropdown.selectSort
+        asmtSubjectSort.siblings('span').css('visibility', 'hidden')
+        # close open panel
+        $(dropdownElement).removeClass('open') 
       #set to the center of table header column
       setCenterForDropdown(subject, dropdown_a_element_dropdown_title.width(), dropdown_a_element_dropdown_title)
      

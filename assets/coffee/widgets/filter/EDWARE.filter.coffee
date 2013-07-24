@@ -15,6 +15,8 @@ define [
   
   RESET_DROPDOWN = 'edware.filter.reset.dropdown'
   
+  FILTER_PARAMS = 'edware.filter.params'
+  
   class EdwareFilter
     
     constructor: (@filterArea, @filterTrigger, @configs, @callback) ->
@@ -22,7 +24,7 @@ define [
       this.initialize()
       # bind click event
       this.bindEvents()
-      return this.filterArea
+      return this
       
     initialize: ->
       # initialize variables
@@ -51,7 +53,7 @@ define [
       
       # attach click event to cancel button
       this.cancelButton.click () ->
-        self.closeFilter()
+        self.cancel self
       
       # attach click event to submit button
       this.submitButton.click () ->
@@ -81,6 +83,24 @@ define [
       $(this.options).click ->
         self.showOptions $(this).closest('.btn-group')
         
+    cancel: (self) ->
+      self.reset()
+      self.closeFilter()
+
+    reset: () ->
+      # reset all filters
+      this.filters.each () ->
+        $(this).trigger RESET_DROPDOWN
+	  # load params from session storage
+      params = sessionStorage.getItem(FILTER_PARAMS) if sessionStorage 
+      # reset params
+      if params
+        $.each JSON.parse(params), (key, value) ->
+          filter = $('.filter-group[data-name=' + key + ']')
+          if filter isnt undefined
+            $('input', filter).each ->
+              $(this).trigger 'click' if $(this).val() in value
+
     toggleFilterArea: (self) ->
       filterPanel = $(self.filterPanel)
       filterArrow = $(self.filterArrow)
@@ -135,6 +155,8 @@ define [
       params = edwareUtil.getUrlParams()
       # merge selected options into param
       $.extend(params, selectedValues)
+      # save param to session storage
+      sessionStorage.setItem(FILTER_PARAMS, JSON.stringify(params)) if sessionStorage
       console.log params
       callback params if callback
       
@@ -177,9 +199,14 @@ define [
     
     # compute width property for text
     computeTextWidth: (button) ->
-      parseInt($(button).css('width')) - parseInt($('.display', button).css('width')) - 20
+      buttonWidth = $(button).width()
+      displayWidth = $('.display', button).width()
+      # 20 for padding
+      buttonWidth - displayWidth - 20
 
-
+    loadReport: (params) ->
+      this.reset()
+      this.submitFilter()
 
   class EdwareFilterTag
     
@@ -236,3 +263,4 @@ define [
     $.fn.edwareFilter = (filterTrigger, configs, callback) ->
       new EdwareFilter($(this), filterTrigger, configs, callback)
   ) jQuery
+

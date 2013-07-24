@@ -29,9 +29,8 @@ class ITestLoadCsvToSBACStar(unittest.TestCase):
         self.file_count = len(list_of_files)
 
     def tearDown(self):
-        pass
-        #subprocess.call("rm METADATA*",shell=True)
-        #subprocess.call('rm REALDATA*',shell=True)
+        subprocess.call("rm {henshin_dir}/METADATA*".format(henshin_dir=HENSHIN_FILE_LOCATIONS), shell=True)
+        subprocess.call("rm {henshin_dir}/REALDATA*".format(henshin_dir=HENSHIN_FILE_LOCATIONS), shell=True)
 
     def test_load_csv_to_sbac_star(self):
         for each in range(self.file_count):

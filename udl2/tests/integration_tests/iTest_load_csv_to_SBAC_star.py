@@ -36,6 +36,7 @@ class ITestLoadCsvToSBACStar(unittest.TestCase):
         for each in range(self.file_count):
             print("driver.py -c {henshin_dir}/REALDATA_ASMT_ID_{count}.csv -j {henshin_dir}/METADATA_ASMT_ID_{count}.json".format(count=each, henshin_dir=HENSHIN_FILE_LOCATIONS))
             subprocess.call("python ../../scripts/driver.py -c {henshin_dir}/REALDATA_ASMT_ID_{count}.csv -j {henshin_dir}/METADATA_ASMT_ID_{count}.json".format(count=each, henshin_dir=HENSHIN_FILE_LOCATIONS), shell=True)
+
         self.assertTrue(True)
 
 if __name__ == "__main__":

@@ -9,7 +9,7 @@ import os
 
 from mock import MagicMock
 
-from dataload import load_data
+from DataGeneration.dataload import load_data
 
 
 class TestDataLoad(unittest.TestCase):

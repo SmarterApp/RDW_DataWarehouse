@@ -52,7 +52,7 @@ function setup_virtualenv {
            python setup-developer.py develop
         else 
            echo "running setup.py"
-           python setup.py develop
+           python setup.py install 
         fi
     done
  

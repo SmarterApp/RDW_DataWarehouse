@@ -178,9 +178,17 @@ def generate_data_from_config_file(config_module, output_dict):
 
                     state_institution_hierarchies += school_type_institution_hierarchies
 
-                create_csv(district_level_staff, output_dict[Staff])
-        create_csv(state_level_staff, output_dict[Staff])
-        create_csv(state_institution_hierarchies, output_dict[InstitutionHierarchy])
+                # Write district staff to file
+                create_csv(district_level_staff, ENTITY_TO_PATH_DICT[Staff])
+
+        # Calculate total students for each grade
+        student_tots_dict = get_student_totals(state_institution_hierarchies)
+        print(student_tots_dict)
+        student_pool_dict = generate_student_pool(student_tots_dict, demographics, assessments)
+
+        # Write staff and institutions to file
+        create_csv(state_level_staff, ENTITY_TO_PATH_DICT[Staff])
+        create_csv(state_institution_hierarchies, ENTITY_TO_PATH_DICT[InstitutionHierarchy])
 
 
 def generate_and_populate_institution_hierarchies(schools, school_type, state, district, assessments, subject_percentages, demographics, demographics_id, batch_guid, config_module, output_dict):
@@ -206,12 +214,38 @@ def generate_and_populate_institution_hierarchies(schools, school_type, state, d
     for school in schools:
         institution_hierarchy = generate_institution_hierarchy_from_helper_entities(config_module, state, district, school)
         institution_hierarchies.append(institution_hierarchy)
+
+        get_student_counts(institution_hierarchy, school_type, subject_percentages)
         # TODO: Don't populate the schools here. When this function returns, loop over the list and populate each school
-        populate_school(institution_hierarchy, school_type, assessments, subject_percentages, demographics, demographics_id, batch_guid, config_module, output_dict)
+        #populate_school(institution_hierarchy, school_type, assessments, subject_percentages, demographics, demographics_id, batch_guid)
     return institution_hierarchies
 
 
-def populate_school(institution_hierarchy, school_type, assessments, subject_percentages, demographics, demographics_id, batch_guid, config_module, output_dict):
+def get_student_counts(institution_hierarchy, school_type, subject_percentages):
+    '''
+    '''
+    # Get student count information from config module
+    student_counts = school_type[config_module.STUDENTS]
+    student_min = student_counts[config_module.MIN]
+    student_max = student_counts[config_module.MAX]
+    student_avg = student_counts[config_module.AVG]
+
+    stud_counts = {}
+    grades = school_type[config_module.GRADES]
+    for grade in grades:
+        number_of_students_in_grade = calculate_number_of_students(student_min, student_max, student_avg)
+        stud_counts[grade] = number_of_students_in_grade
+
+    institution_hierarchy.student_counts = stud_counts
+
+
+def generate_student_pool(student_totals, assessments, demographics, demographics_id):
+    '''
+    '''
+    pass
+
+
+def populate_school(institution_hierarchy, school_type, assessments, subject_percentages, demographics, demographics_id, batch_guid):
 
     '''
     Populate the provided the institution with staff, students, teachers, sections
@@ -746,6 +780,24 @@ def get_subset_of_students(students, percentage):
     selection_size = int(student_len * percentage)
     selection = random.sample(students, selection_size)
     return selection
+
+
+def get_student_totals(inst_hiers):
+    '''
+    take a list of institution hierarchies and sum the total students that should be generated for each grade
+    @param inst_hiers: A list of InstitutionHierarchy objects
+    @return: A dictionary of sums with the grade as the key
+    '''
+
+    sums = {}
+    for inst in inst_hiers:
+        for grade in inst.student_counts:
+            if sums.get(grade):
+                sums[grade] += inst.student_counts[grade]
+            else:
+                sums[grade] = inst.student_counts[grade]
+
+    return sums
 
 
 def create_output_dict(output_path):

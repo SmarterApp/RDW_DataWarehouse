@@ -28,6 +28,9 @@ class InstitutionHierarchy:
         self.to_date = to_date
         self.most_recent = most_recent
 
+        # Attributes that will not be written
+        self.student_counts = {}
+
     def getRow(self):
         '''
         Returns the information stored in this object as csv row

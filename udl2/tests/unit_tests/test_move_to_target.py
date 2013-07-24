@@ -124,10 +124,10 @@ def get_expected_insert_query_for_fact_table(table_name, asmt_rec_id, section_re
            'asmt_claim_2_score_range_max,asmt_claim_3_score,asmt_claim_3_score_range_min,asmt_claim_3_score_range_max,asmt_claim_4_score,'\
            'asmt_claim_4_score_range_min,asmt_claim_4_score_range_max,status,most_recent,batch_guid) '\
            ' SELECT * FROM dblink(\'dbname={dbname} user={user} password={password}\', \'SELECT nextval(\'\'"GLOBAL_REC_SEQ"\'\'), * FROM '\
-           '(SELECT {asmt_rec_id},guid_student,guid_staff,code_state,guid_district,guid_school,\'\' \'\',-1,{section_rec_id},guid_asmt_location,name_asmt_location,grade_asmt,'\
+           '(SELECT {asmt_rec_id},guid_student,guid_staff,code_state,guid_district,guid_school,\'\'\'\',-1,{section_rec_id},guid_asmt_location,name_asmt_location,grade_asmt,'\
            'grade_enrolled,date_assessed,date_taken_day,date_taken_month,date_taken_year,score_asmt,score_asmt_min,score_asmt_max,score_perf_level,'\
            'score_claim_1,score_claim_1_min,score_claim_1_max,score_claim_2,score_claim_2_min,score_claim_2_max,score_claim_3,score_claim_3_min,score_claim_3_max,'\
-           'score_claim_4,score_claim_4_min,score_claim_4_max,\'\' \'\',True,guid_batch '\
+           'score_claim_4,score_claim_4_min,score_claim_4_max,\'\'\'\',True,guid_batch '\
            'FROM "udl2"."INT_SBAC_ASMT_OUTCOME" WHERE guid_batch=\'\'{guid_batch}\'\') as y\') AS t(asmnt_outcome_rec_id bigint,asmt_rec_id bigint,student_guid character varying(50),'\
            'teacher_guid character varying(50),state_code character varying(2),district_guid character varying(50),school_guid character varying(50),'\
            'section_guid character varying(50),inst_hier_rec_id bigint,section_rec_id bigint,where_taken_id character varying(50),where_taken_name character varying(256),'\
@@ -242,7 +242,7 @@ def get_expected_column_mapping():
                                                                     ('email', 'email_student'),
                                                                     ('dob', 'dob_student'),
                                                                     # TODO: the fake value for 'section_guid' will be replaced by reading from conf
-                                                                    ('section_guid', '\' \''),
+                                                                    ('section_guid', '\'\''),
                                                                     ('grade', 'grade_enrolled'),
                                                                     ('state_code', 'code_state'),
                                                                     ('district_guid', 'guid_district'),
@@ -258,7 +258,7 @@ def get_expected_column_mapping():
                                                                   ('middle_name', 'name_staff_middle'),
                                                                   ('last_name', 'name_staff_last'),
                                                                   # TODO: the fake value for 'section_guid' will be replaced by reading from conf
-                                                                  ('section_guid', '\' \''),
+                                                                  ('section_guid', '\'\''),
                                                                   ('hier_user_type', 'type_staff'),
                                                                   ('state_code', 'code_state'),
                                                                   ('district_guid', 'guid_district'),
@@ -275,7 +275,7 @@ def get_expected_column_mapping():
                                                                           ('state_code', 'code_state'),
                                                                           ('district_guid', 'guid_district'),
                                                                           ('school_guid', 'guid_school'),
-                                                                          ('section_guid', '\' \''),
+                                                                          ('section_guid', '\'\''),
                                                                           ('inst_hier_rec_id', '-1'),
                                                                           ('section_rec_id', None),
                                                                           ('where_taken_id', 'guid_asmt_location'),
@@ -302,7 +302,7 @@ def get_expected_column_mapping():
                                                                           ('asmt_claim_4_score', 'score_claim_4'),
                                                                           ('asmt_claim_4_score_range_min', 'score_claim_4_min'),
                                                                           ('asmt_claim_4_score_range_max', 'score_claim_4_max'),
-                                                                          ('status', '\' \''),
+                                                                          ('status', '\'\''),
                                                                           ('most_recent', 'True'),
                                                                           ('batch_guid', 'guid_batch'),
                                                                           ])

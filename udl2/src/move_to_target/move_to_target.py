@@ -151,7 +151,7 @@ def explode_data_to_dim_table(conf, source_table, target_table, column_mapping, 
     # create insertion query
     # TODO: find out if the affected rows, time can be returned, so that the returned info can be put in the log
     query = queries.create_insert_query(conf, source_table, target_table, column_mapping, column_types, True)
-    # print('#########', query)
+    logger.info(query)
 
     # execute the query
     execute_queries(conn, [query], 'Exception -- exploding data from integration to target {target_table}'.format(target_table=target_table),

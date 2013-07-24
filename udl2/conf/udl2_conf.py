@@ -36,7 +36,7 @@ udl2_conf = {
                                                  ('school_guid', 'school_guid')])},
                        {'rec_id': 'section_rec_id',
                         'value': '1'}
-    ],
+                       ],
     'celery_defaults': {
         'CELERY_DEFAULT_QUEUE': 'celery',  # default celery queue name for celery internal tasks
         'CELERY_DEFAULT_EXCHANGE': 'direct',  # default celery exchange name, and exchange type

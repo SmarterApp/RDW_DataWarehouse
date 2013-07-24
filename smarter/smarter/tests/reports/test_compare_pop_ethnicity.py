@@ -27,7 +27,7 @@ class TestComparingPopulationsEthnicity(Unittest_with_smarter_sqlite):
         CacheManager(**parse_cache_config_options(cache_opts))
 
         self.__request = DummyRequest()
-        # Must set hook_zca to false to work with unittest_with_sqlite
+        # Must set hook_zca to false to work with unittest_with_sqlite.
         self.__config = testing.setUp(request=self.__request, hook_zca=False)
         with UnittestSmarterDBConnection() as connection:
             # Insert into user_mapping table

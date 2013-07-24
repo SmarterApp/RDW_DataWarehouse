@@ -7,7 +7,6 @@ import imp
 from move_to_target import move_to_target
 from udl2 import W_load_from_integration_to_star
 import os
-from collections import OrderedDict
 
 
 class IntToStarFTest(unittest.TestCase):

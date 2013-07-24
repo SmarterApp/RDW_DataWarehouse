@@ -1,27 +1,10 @@
 database Package
 ================
 
-:mod:`connector` Module
+:mod:`constants` Module
 -----------------------
 
-.. automodule:: smarter.trigger.database.connector
+.. automodule:: smarter.trigger.database.constants
     :members:
     :undoc-members:
     :show-inheritance:
-
-:mod:`datasource` Module
-------------------------
-
-.. automodule:: smarter.trigger.database.datasource
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`udl_stats` Module
------------------------
-
-.. automodule:: smarter.trigger.database.udl_stats
-    :members:
-    :undoc-members:
-    :show-inheritance:
-

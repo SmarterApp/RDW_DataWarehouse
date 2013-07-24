@@ -41,9 +41,10 @@ def select_with_context(columns=None, whereclause=None, from_obj=[], **kwargs):
 
 def check_context(student_guids):
     '''
-    Given a list of student guids, return true if user has context to it, false otherwise
-    @param student_guids: guids of students that we want to check whether the user has context to
-    @type student_guids: list
+    Given a list of student guids, return true if user has access to see their data, false otherwise
+
+    :param student_guids: guids of students that we want to check whether the user has context to
+    :type student_guids: list
     '''
     if len(student_guids) is 0:
         return False
@@ -67,8 +68,9 @@ def check_context(student_guids):
 def __get_user_info(connector):
     '''
     Returns user guid and roles
-    @param connector: dbconection that is used to query database
-    @type connector: DBConnection
+
+    :param connector: dbconection that is used to query database
+    :type connector: DBConnection
     '''
     # get role and context
     user = authenticated_userid(pyramid.threadlocal.get_current_request())

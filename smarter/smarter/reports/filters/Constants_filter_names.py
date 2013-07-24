@@ -1,4 +1,6 @@
 '''
+Constants used by report filters
+
 Created on Jul 11, 2013
 
 @author: tosako

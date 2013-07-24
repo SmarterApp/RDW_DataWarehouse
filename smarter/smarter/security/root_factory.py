@@ -9,9 +9,9 @@ from smarter.security.constants import RolesConstants
 
 class RootFactory(object):
     '''
-    Called on every request sent to the application by pyramid
-    The root factory returns the traversal root of an application
-    Right now, we're saying that all roles have permission
+    Called on every request sent to the application by pyramid.
+    The root factory returns the traversal root of an application.
+    Right now, we're saying that all roles have permission.
     '''
     __acl__ = [(Allow, RolesConstants.DEPLOYMENT_ADMINISTRATOR, ('view', 'logout')),
                (Allow, RolesConstants.SYSTEM_ADMINISTRATOR, ('view', 'logout')),

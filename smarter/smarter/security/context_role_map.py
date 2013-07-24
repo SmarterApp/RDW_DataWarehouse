@@ -16,8 +16,8 @@ class ContextRoleMap():
     @classmethod
     def get_context(cls, role_name):
         '''
-        Given a role name, returns context object for that role
-        If role is not found, return default context object
+        Given a role name, returns context object for that role.
+        If role is not found, return default context object.
         '''
         context = cls.__context.get(role_name.lower())
         disable_context_security = to_bool(pyramid.threadlocal.get_current_registry().settings.get('disable.context.security', 'False'))

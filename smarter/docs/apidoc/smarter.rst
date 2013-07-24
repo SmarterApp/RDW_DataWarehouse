@@ -26,5 +26,6 @@ Subpackages
     smarter.reports
     smarter.security
     smarter.services
+    smarter.trigger
     smarter.tests
 

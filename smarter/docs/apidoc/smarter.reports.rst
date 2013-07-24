@@ -1,6 +1,11 @@
 reports Package
 ===============
 
+.. automodule:: smarter.reports
+    :members:
+    :undoc-members:
+    :show-inheritance:
+    
 :mod:`compare_pop_report` Module
 --------------------------------
 

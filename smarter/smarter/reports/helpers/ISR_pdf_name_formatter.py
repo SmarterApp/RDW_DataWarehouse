@@ -12,8 +12,8 @@ from smarter.database.smarter_connector import SmarterDBConnection
 
 def generate_isr_report_path_by_student_guid(pdf_report_base_dir='/', student_guid=None, asmt_type=Constants.SUMMATIVE, grayScale=False):
     '''
-    get report absolute path by student_guid.
-    if the directroy path does not exist, then create it.
+    Get Individual Student Report absolute path by student_guid.
+    If the directory path does not exist, then create it.
     For security, the directory will be created with only the owner can read-write.
     '''
     # find state_code, asmt_period_year, district_guid, school_guid, and asmt_grade from DB
@@ -47,7 +47,7 @@ def generate_isr_report_path_by_student_guid(pdf_report_base_dir='/', student_gu
 
 def generate_isr_absolute_file_path_name(pdf_report_base_dir='/', state_code=None, asmt_period_year=None, district_guid=None, school_guid=None, asmt_grade=None, student_guid=None, asmt_type=Constants.SUMMATIVE, grayScale=False):
     '''
-    generate isr absolute file path name
+    Generate Individual Student Report absolute file path name
     '''
     dirname = os.path.join(pdf_report_base_dir, state_code, asmt_period_year, district_guid, school_guid, asmt_grade, 'isr', asmt_type, student_guid)
     return dirname + (".g.pdf" if grayScale else ".pdf")

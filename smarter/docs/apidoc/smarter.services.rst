@@ -1,9 +1,6 @@
 services Package
 ================
 
-:mod:`services` Package
------------------------
-
 .. automodule:: smarter.services
     :members:
     :undoc-members:
@@ -33,3 +30,10 @@ services Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`trigger` Module
+-----------------
+
+.. automodule:: smarter.services.trigger
+    :members:
+    :undoc-members:
+    :show-inheritance:

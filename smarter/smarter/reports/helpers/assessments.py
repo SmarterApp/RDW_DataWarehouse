@@ -1,4 +1,6 @@
 '''
+Helper functions for assessment data
+
 Created on Mar 20, 2013
 
 @author: dip
@@ -8,8 +10,8 @@ import json
 
 def get_overall_asmt_interval(result):
     '''
-    Given a dictionary, return overall assessment interval
-    Logic is to interval is the difference of score and min score range
+    Given a dictionary, return overall assessment interval.
+    Logic is to interval is the difference of score and min score range.
     '''
     return result['asmt_score'] - result['asmt_score_range_min']
 
@@ -55,8 +57,8 @@ def get_cut_points(asmt_meta):
 
 def get_claims(number_of_claims=0, result=None, include_names=False, include_scores=False, include_indexer=False, include_min_max_scores=False):
     '''
-    Returns a list of claims information
-    if get_name_only is True, it returns only the name of the claim and its equivalence claim number name
+    Returns a list of claims information.
+    If get_name_only is True, it returns only the name of the claim and its equivalence claim number name.
     '''
     claims = []
     for index in range(1, number_of_claims + 1):

@@ -1,12 +1,12 @@
 '''
-Endpoints to services
-
+Services are endpoints that extend and support SBAC reports, such as
+heartbeat, pdf generation, cache management, and triggering of batch jobs.
 '''
 
 
 def includeme(config):
     '''
-    routes to services
+    Routes to service endpoints
     '''
     # Add heartbeat
     config.add_route('heartbeat', '/services/heartbeat')

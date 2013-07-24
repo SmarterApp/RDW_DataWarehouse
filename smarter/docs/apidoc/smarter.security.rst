@@ -1,6 +1,11 @@
 security Package
 ================
 
+.. automodule:: smarter.security
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`constants` Module
 -----------------------
 

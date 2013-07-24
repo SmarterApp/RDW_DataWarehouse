@@ -1,4 +1,8 @@
 '''
+Breadcrumbs are a front-end navigation widget to traverse up
+and down the report hierarchy. They are displayed at the top
+of each report.
+
 Created on Mar 8, 2013
 
 @author: dip

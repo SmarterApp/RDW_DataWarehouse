@@ -184,7 +184,7 @@ def generate_data_from_config_file(config_module, output_dict):
         # Calculate total students for each grade
         student_tots_dict = get_student_totals(state_institution_hierarchies)
         print(student_tots_dict)
-        student_pool_dict = generate_student_pool(student_tots_dict, demographics, assessments)
+        student_pool_dict = generate_student_pool(student_tots_dict, assessments, demographics, demographics_id, config_module)
 
         # Write staff and institutions to file
         create_csv(state_level_staff, ENTITY_TO_PATH_DICT[Staff])
@@ -215,13 +215,13 @@ def generate_and_populate_institution_hierarchies(schools, school_type, state, d
         institution_hierarchy = generate_institution_hierarchy_from_helper_entities(config_module, state, district, school)
         institution_hierarchies.append(institution_hierarchy)
 
-        get_student_counts(institution_hierarchy, school_type, subject_percentages)
+        get_student_counts(institution_hierarchy, school_type, subject_percentages, config_module)
         # TODO: Don't populate the schools here. When this function returns, loop over the list and populate each school
         #populate_school(institution_hierarchy, school_type, assessments, subject_percentages, demographics, demographics_id, batch_guid)
     return institution_hierarchies
 
 
-def get_student_counts(institution_hierarchy, school_type, subject_percentages):
+def get_student_counts(institution_hierarchy, school_type, subject_percentages, config_module):
     '''
     '''
     # Get student count information from config module
@@ -239,13 +239,64 @@ def get_student_counts(institution_hierarchy, school_type, subject_percentages):
     institution_hierarchy.student_counts = stud_counts
 
 
-def generate_student_pool(student_totals, assessments, demographics, demographics_id):
+def generate_student_pool(student_totals, assessments, demographics, demographics_id, config_module):
+    '''
+    '''
+
+    all_students = []
+
+    # Get Error Band Information from config_module
+    eb_dict = config_module.get_error_band()
+    eb_min_perc = eb_dict[config_module.MIN_PERC]
+    eb_max_perc = eb_dict[config_module.MAX_PERC]
+    eb_rand_adj_lo = eb_dict[config_module.RAND_ADJ_PNT_LO]
+    eb_rand_adj_hi = eb_dict[config_module.RAND_ADJ_PNT_HI]
+
+    scores_details = config_module.get_scores()
+
+    # will ignore performance level adjustments for now, This may cause problems.
+    # may need to factor all pld adjustments into the total pld somehow.
+
+    for grade in student_totals:
+        students_to_gen = student_totals[grade]
+        students_in_grade = []
+        demo_status = DemographicStatus(demographics.get_demo_names(demographics_id))
+
+        for subject_name in constants.SUBJECTS:
+            # Pull out the proper performance level percentages
+            performance_level_percs = demographics.get_grade_demographics_total(demographics_id, subject_name, grade)
+
+            print(performance_level_percs)
+            # Generate Scores
+            scores = generate_list_of_scores(config_module, students_to_gen, scores_details, performance_level_percs, subject_name, grade)
+
+            # Pull out the correct assessment from the list
+            assessment = select_assessment_from_list(assessments, grade, subject_name)
+
+            # The cut_points in score details do not include min and max score. The score generator needs the min and max to be included
+            cut_points = [assessment.asmt_cut_point_1, assessment.asmt_cut_point_2, assessment.asmt_cut_point_3]
+            if assessment.asmt_cut_point_4:
+                cut_points.append(assessment.asmt_cut_point_4)
+
+            asmt_scores = translate_scores_to_assessment_score(scores, cut_points, assessment, eb_min_perc, eb_max_perc, eb_rand_adj_lo, eb_rand_adj_hi)
+            unassigned_studs = demographics.generate_students_and_demographics(students_to_gen, subject_name, grade,
+                                                                               asmt_scores, demographics_id, demo_status)
+            print(len(unassigned_studs))
+            exit()
+
+        # Add students in grade to overall student list
+        all_students += students_in_grade
+
+    return all_students
+
+
+def generate_unassigned_students(scores, assessment):
     '''
     '''
     pass
 
 
-def populate_school(institution_hierarchy, school_type, assessments, subject_percentages, demographics, demographics_id, batch_guid):
+def populate_school(institution_hierarchy, school_type, assessments, subject_percentages, demographics, demographics_id, batch_guid, config_module, output_dict):
 
     '''
     Populate the provided the institution with staff, students, teachers, sections

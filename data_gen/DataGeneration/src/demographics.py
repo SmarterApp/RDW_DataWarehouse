@@ -9,6 +9,7 @@ import random
 
 from DataGeneration.src.generate_names import generate_first_or_middle_name, possibly_generate_middle_name
 from DataGeneration.src.entities import Student
+from helper_entities import UnassignedStudent
 
 
 H_ID = 0
@@ -52,6 +53,91 @@ class Demographics(object):
             keys.remove('all')
 
         return keys
+
+    def generate_students_and_demographics(self, total_students, subject, grade, asmt_scores, dem_id, demograph_tracker):
+        '''
+        '''
+        # sanity check
+        assert len(asmt_scores) == total_students
+
+        # Get the demographics corresponding to the id, subject, grade
+        grade_demo = self.get_grade_demographics(dem_id, subject, grade)
+
+        # Convert percentages to actual values, based on number of students given
+        dem_count_dict = percentages_to_values(grade_demo, total_students)
+
+        # Create Students with genders
+        unassigned_studs = self._make_unassigned_students(total_students, dem_count_dict['male'], dem_count_dict['female'], subject, grade, asmt_scores)
+        return unassigned_studs
+
+    def _make_unassigned_students(self, total_students, male_list, female_list, subject, grade, asmt_scores):
+        '''
+        Create unassignedStudents with the given numbers for each gender.
+        '''
+        print(male_list)
+        print(female_list)
+
+        students = []
+        male_tot_count = male_list[L_TOTAL]
+        female_tot_count = female_list[L_TOTAL]
+        male_pl_counts = male_list[L_PERF_1:]
+        female_pl_counts = female_list[L_PERF_1:]
+        print('male female total', male_list[L_TOTAL] + female_list[L_TOTAL])
+        print('score len', len(asmt_scores))
+
+        assert (male_list[L_TOTAL] + female_list[L_TOTAL]) <= len(asmt_scores)
+
+        else_count = 0
+        remains = [0, 0, 0, 0]
+        start = [0, 0, 0, 0]
+        m_count = 0
+        f_count = 0
+
+        female_first = False  # Attempt to give score to female first
+
+        #for asmt_score in asmt_scores:
+        while asmt_scores:
+            asmt_score = asmt_scores.pop()
+            student_pl = asmt_score.perf_lvl
+            pl_index = student_pl - 1
+            start[pl_index] += 1
+
+            # Check that perf_lvl still needs students
+            # and that it is a female turn.
+            if female_pl_counts[pl_index] > 0:
+                gender = 'female'
+                female_pl_counts[pl_index] -= 1
+                female_tot_count -= 1
+                f_count += 1
+
+            # else Check that perf_lvl still needs students
+            # and that it is a male turn.
+            elif male_pl_counts[pl_index] > 0:
+                gender = 'male'
+                male_pl_counts[pl_index] -= 1
+                male_tot_count -= 1
+                m_count += 1
+
+            # Once all perf_lvls have been filed,
+            # place remaining scores wherever there is room
+            elif male_tot_count > 0:
+                gender = 'male'
+                male_pl_counts[pl_index] -= 1
+                male_tot_count -= 1
+                m_count += 1
+            else:
+                gender = 'female'
+                female_pl_counts[pl_index] -= 1
+                female_tot_count -= 1
+                f_count += 1
+
+            # create and append new student to list
+            students.append(UnassignedStudent(grade, gender, asmt_score))
+
+        print(else_count, male_pl_counts, female_pl_counts)
+        print(start, remains)
+        print('f', f_count, 'm', m_count)
+        return students
 
     def assign_demographics(self, asmt_outcomes, students, subject, grade, dem_id, demograph_tracker):
         '''
@@ -367,7 +453,7 @@ class Demographics(object):
         males = []
         females = []
         male_pl_counts = male_list[L_PERF_1:]
-        female_pl_counts = male_list[L_PERF_1:]
+        female_pl_counts = female_list[L_PERF_1:]
 
         for i in range(len(students)):
             assert students[i].student_guid == asmt_outcomes[i].student_guid

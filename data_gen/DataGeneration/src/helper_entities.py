@@ -1,3 +1,10 @@
+import random
+from uuid import uuid4
+from DataGeneration.src.generate_names import (generate_first_or_middle_name, generate_last_name,
+    possibly_generate_middle_name)
+import DataGeneration.src.util as util
+
+
 class State:
     '''
     State object
@@ -79,6 +86,65 @@ class AssessmentScore:
         String method
         '''
         return ("Score:[overall: %s, claims: %s]" % (self.overall_score, self.claim_scores))
+
+
+class UnassignedStudent(object):
+    '''
+    UnassignedStudent.
+    Object to hold a student that has scores and demographic information but does not yet have
+    school information
+    '''
+
+    def __init__(self, grade, gender, asmt_scores, dmg_eth_hsp=False, dmg_eth_ami=False, dmg_eth_asn=False,
+                 dmg_eth_blk=False, dmg_eth_pcf=False, dmg_eth_wht=False, dmg_prg_iep=False, dmg_prg_lep=False,
+                 dmg_prg_504=False, dmg_prg_tt1=False):
+        '''
+        Create an unassignedStudent object and populate with name, address, and dob based on the gender and grade.
+        Other demographics are optional at initialization.
+        @param asmt_scores: A dictionary of asmt_scores where the keys are the subject for the assessment
+        @type asmt_scores: dict
+        '''
+
+        self.grade = grade
+        self.gender = gender
+        self.student_guid = uuid4()
+        self.first_name = generate_first_or_middle_name(gender)
+        self.middle_name = possibly_generate_middle_name(gender)
+        self.last_name = generate_last_name()
+
+        # TODO: implement city-zip map
+        self.zip_code = random.randint(10000, 99999)
+        #self.email = util.generate_email_address(self.first_name, self.last_name, self.school_name)
+        self.dob = util.generate_dob(grade)
+
+        # Demographic Data
+        self.dmg_eth_hsp = dmg_eth_hsp
+        self.dmg_eth_ami = dmg_eth_ami
+        self.dmg_eth_asn = dmg_eth_asn
+        self.dmg_eth_blk = dmg_eth_blk
+        self.dmg_eth_pcf = dmg_eth_pcf
+        self.dmg_eth_wht = dmg_eth_wht
+        self.dmg_prg_iep = dmg_prg_iep
+        self.dmg_prg_lep = dmg_prg_lep
+        self.dmg_prg_504 = dmg_prg_504
+        self.dmg_prg_tt1 = dmg_prg_tt1
+
+        # a dict that contains an assessment score object that corresponds to each subject
+        self.asmt_scores = asmt_scores
+        self.asmt_rec_ids = {}
+
+    def set_additional_info(self, asmt_score, assessment, street_names):
+        '''
+        Set the additional student info that may not be available at object creation
+        '''
+
+        # Set address info
+        self.address_1 = util.generate_address(street_names)
+
+        # TODO: change city name
+        city_name_1 = random.choice(street_names)
+        city_name_2 = random.choice(street_names)
+        self.city = city_name_1 + ' ' + city_name_2
 
 
 class StudentBioInfo:

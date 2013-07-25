@@ -99,7 +99,7 @@ define [
           filter = $('.filter-group[data-name=' + key + ']')
           if filter isnt undefined
             $('input', filter).each ->
-              $(this).trigger 'click' if $(this).val() in value
+              $(this).attr('checked', true).triggerHandler('click') if $(this).val() in value
 
     toggleFilterArea: (self) ->
       filterPanel = $(self.filterPanel)
@@ -120,7 +120,6 @@ define [
       else
         this.tagPanelWrapper.show()
         this.filterArrow.show()
-        
       callback() if callback
 
     clearAll: ->
@@ -178,17 +177,17 @@ define [
       checkBox.parent().toggleClass('blue')
       # reset dropdown component text
       $(this).find('.selected').remove()
-    
+
     # show selected options on dropdown component
     showOptions: (buttonGroup) ->
-      button = $('button', buttonGroup)
       text = this.getSelectedOptionText buttonGroup
       # remove existing text
+      button = $('button', buttonGroup)
       $('.selected', button).remove()
       # compute width property, subtract 20px for margin
       textLength = this.computeTextWidth button
       $('.display', button).append $('<div class="selected">').css('width', textLength).text(text)
-      
+
     # get selected option text as string separated by comma
     getSelectedOptionText: (buttonGroup) ->
       delimiter = ', '
@@ -196,13 +195,14 @@ define [
                     $(this).data('label')
               ).get().join(delimiter)
       if text isnt "" then '(' + text + ')'  else ""
-    
+
     # compute width property for text
     computeTextWidth: (button) ->
-      buttonWidth = $(button).width()
-      displayWidth = $('.display', button).width()
-      # 20 for padding
-      buttonWidth - displayWidth - 20
+      # compute display text width this way because $().width() doesn't work somehow
+      displayWidth = $('.display', button).text().length * 10
+      width = $(button).width() - displayWidth - 20
+      # keep minimum width 55px
+      if width > 0 then width else 55
 
     loadReport: (params) ->
       this.reset()

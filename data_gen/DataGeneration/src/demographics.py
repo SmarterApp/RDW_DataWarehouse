@@ -93,8 +93,6 @@ class Demographics(object):
         m_count = 0
         f_count = 0
 
-        female_first = False  # Attempt to give score to female first
-
         #for asmt_score in asmt_scores:
         while asmt_scores:
             asmt_score = asmt_scores.pop()

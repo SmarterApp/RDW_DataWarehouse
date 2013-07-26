@@ -11,7 +11,7 @@ from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smart
 from edapi.exceptions import NotFoundException
 from smarter.trigger.cache.recache import CacheTrigger,\
     flush_report_in_cache_region
-from smarter.reports.utils.cache import cache_region
+from smarter.reports.utils.cache import cache_region, region_invalidate
 
 
 @cache_region('unittest')
@@ -63,7 +63,7 @@ class TestRecache(Unittest_with_smarter_sqlite):
         cache_trigger.recache_state_view_report()
         self.validate_cache_has_one_item()
         args = ['NY', []]
-        cache_trigger.flush_state_view_report('public.data', *args)
+        flush_report_in_cache_region(cache_trigger.report.get_report, 'public.data', *args)
         self.validate_cache_is_empty()
 
     def test_flush_district_view_report(self):
@@ -71,21 +71,21 @@ class TestRecache(Unittest_with_smarter_sqlite):
         cache_trigger.recache_district_view_report('228')
         self.validate_cache_has_one_item()
         args = ['NY', '228', []]
-        cache_trigger.flush_district_view_report('public.data', *args)
+        flush_report_in_cache_region(cache_trigger.report.get_report, 'public.data', *args)
         self.validate_cache_is_empty()
 
     def test_flush_report_in_cache_region_with_empty_cache(self):
-        flush_report_in_cache_region(dummy_method, 'unittest', ('NY'))
+        region_invalidate(dummy_method, 'unittest', ('NY'))
         self.assertTrue(len(cache_managers.keys()), 0)
 
     def test_flush_report_in_cache_region(self):
         dummy_method('NY')
         self.validate_cache_has_one_item()
-        flush_report_in_cache_region(dummy_method, 'unittest', ('NY'))
+        region_invalidate(dummy_method, 'unittest', ('NY'))
         self.validate_cache_is_empty()
 
     def test_flush_unconfigured_region(self):
-        self.assertRaises(KeyError, flush_report_in_cache_region, dummy_method, 'unconfigured_region', 'NY')
+        self.assertRaises(KeyError, region_invalidate, dummy_method, 'unconfigured_region', 'NY')
 
     def validate_cache_has_one_item(self):
         self.assertTrue(len(cache_managers.keys()), 1)

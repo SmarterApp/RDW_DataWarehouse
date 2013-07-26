@@ -41,13 +41,12 @@ def cache_region(region, namespace='smarter', router=None, key_generator=None, *
 
         @wraps(func)
         def cached(*args):
-            if type(region) is list:
-                region_name = region[0]
-            else:
-                region_name = region
+            region_name = region[0] if type(region) is list else region
             # If router exist, use it to determine the cache region
             if router is not None:
                 region_name = router(*args)
+            if region_name is None:
+                return func(*args)
 
             if cache.get(region_name) is None:
                 reg = cache_regions.get(region_name)
@@ -56,10 +55,7 @@ def cache_region(region, namespace='smarter', router=None, key_generator=None, *
             if key_generator is not None:
                 combined_args = decor_args + key_generator(*args)
             else:
-                if skip_self:
-                    combined_args = decor_args + args[1:]
-                else:
-                    combined_args = decor_args + args
+                combined_args = decor_args + args[1:] if skip_self else args
 
             cache_key = get_cache_key(combined_args, func_name)
 

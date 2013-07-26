@@ -102,28 +102,20 @@ CACHE_REGION_PUBLIC_FILTERING_DATA = 'public.filtered_data'
 @audit_event()
 @user_info
 def get_comparing_populations_report(params):
-    results = None
-    report = ComparingPopReport(**params)
-    if Constants.SCHOOLGUID in params and Constants.DISTRICTGUID in params and Constants.STATECODE in params:
-        results = report.get_school_view_report()
-    elif params and Constants.DISTRICTGUID in params and Constants.STATECODE in params:
-        results = report.get_district_view_report()
-    elif Constants.STATECODE in params:
-        results = report.get_state_view_report()
-    return results
+    return ComparingPopReport(**params).get_report()
 
 
 def get_comparing_populations_cache_route(comparing_pop):
     '''
     Returns cache region based on whether filters exist
     It accepts one positional parameter, namely, a ComparingPopReport instance
+    If school_guid is present, return none - do not cache
 
     :param comparing_pop:  instance of ComparingPopReport
     '''
-    region = CACHE_REGION_PUBLIC_DATA
-    if len(comparing_pop.filters.keys()) > 0:
-        region = CACHE_REGION_PUBLIC_FILTERING_DATA
-    return region
+    if comparing_pop.school_guid is not None:
+        return None  # do not cache school level
+    return CACHE_REGION_PUBLIC_FILTERING_DATA if len(comparing_pop.filters.keys()) > 0 else CACHE_REGION_PUBLIC_DATA
 
 
 def get_comparing_populations_cache_key(comparing_pop):
@@ -180,34 +172,6 @@ class ComparingPopReport(object):
         self.filters = filters
 
     @cache_region([CACHE_REGION_PUBLIC_DATA, CACHE_REGION_PUBLIC_FILTERING_DATA], router=get_comparing_populations_cache_route, key_generator=get_comparing_populations_cache_key)
-    def get_state_view_report(self):
-        '''
-        State view report
-
-        :rtype: dict
-        :returns: state view report
-        '''
-        return self.get_report()
-
-    @cache_region([CACHE_REGION_PUBLIC_DATA, CACHE_REGION_PUBLIC_FILTERING_DATA], router=get_comparing_populations_cache_route, key_generator=get_comparing_populations_cache_key)
-    def get_district_view_report(self):
-        '''
-        District view report
-
-        :rtype: dict
-        :returns: district view report
-        '''
-        return self.get_report()
-
-    def get_school_view_report(self):
-        '''
-        School view report
-
-        :rtype: dict
-        :returns: school view report
-        '''
-        return self.get_report()
-
     def get_report(self):
         '''
         Actual report call
@@ -249,7 +213,6 @@ class ComparingPopReport(object):
         :returns:  results arranged for front-end consumption
         '''
         subjects = {Constants.MATH: Constants.SUBJECT1, Constants.ELA: Constants.SUBJECT2}
-        arranged_results = {}
         record_manager = RecordManager(subjects, **param)
 
         for result in results:
@@ -257,16 +220,10 @@ class ComparingPopReport(object):
             record_manager.update_record(result)
 
         # bind the results
-        arranged_results[Constants.COLORS] = record_manager.get_asmt_custom_metadata()
-        arranged_results[Constants.SUMMARY] = record_manager.get_summary()
-        arranged_results[Constants.RECORDS] = record_manager.get_records()
-        # reverse map keys and values for subject
-        arranged_results[Constants.SUBJECTS] = record_manager.get_subjects()
-
-        # get breadcrumb context
-        arranged_results[Constants.CONTEXT] = get_breadcrumbs_context(state_code=param.get(Constants.STATECODE), district_guid=param.get(Constants.DISTRICTGUID), school_guid=param.get(Constants.SCHOOLGUID), tenant=self.tenant)
-
-        return arranged_results
+        return {Constants.COLORS: record_manager.get_asmt_custom_metadata(),
+                Constants.SUMMARY: record_manager.get_summary(), Constants.RECORDS: record_manager.get_records(),
+                Constants.SUBJECTS: record_manager.get_subjects(),  # reverse map keys and values for subject
+                Constants.CONTEXT: get_breadcrumbs_context(state_code=param.get(Constants.STATECODE), district_guid=param.get(Constants.DISTRICTGUID), school_guid=param.get(Constants.SCHOOLGUID), tenant=self.tenant)}
 
 
 class RecordManager():

@@ -29,8 +29,8 @@ class CacheTrigger(object):
             self.report.set_filters(state_filter)
             region_name = get_comparing_populations_cache_route(self.report)
             args = get_comparing_populations_cache_key(self.report)
-            self.flush_state_view_report(region_name, *args)
-            self.report.get_state_view_report()
+            flush_report_in_cache_region(self.report.get_report, region_name, *args)
+            self.report.get_report()
 
     def recache_district_view_report(self, district_guid):
         '''
@@ -46,25 +46,8 @@ class CacheTrigger(object):
             self.report.set_filters(district_filter)
             region_name = get_comparing_populations_cache_route(self.report)
             args = get_comparing_populations_cache_key(self.report)
-            self.flush_district_view_report(region_name, *args)
-            self.report.get_district_view_report()
-
-    def flush_state_view_report(self, region_name, *args):
-        '''
-        Flush cache for Comparing Populations State View Report
-
-        :param string stateCode: represents the state code
-        '''
-        flush_report_in_cache_region(self.report.get_state_view_report, region_name, *args)
-
-    def flush_district_view_report(self, region_name, *args):
-        '''
-        Flush cache for Comparing Populations State View Report
-
-        :param string stateCode: code of the state
-        :param string districtGuid:  guid of the district
-        '''
-        flush_report_in_cache_region(self.report.get_district_view_report, region_name, *args)
+            flush_report_in_cache_region(self.report.get_report, region_name, *args)
+            self.report.get_report()
 
     def init_filters(self, tenant, settings):
         '''

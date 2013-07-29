@@ -133,7 +133,7 @@ class UnassignedStudent(object):
         self.asmt_scores = asmt_scores
         self.asmt_rec_ids = {}
 
-    def set_additional_info(self, asmt_score, assessment, street_names):
+    def set_additional_info(self, street_names):
         '''
         Set the additional student info that may not be available at object creation
         '''

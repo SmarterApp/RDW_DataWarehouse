@@ -95,13 +95,13 @@ def generate_data_from_config_file(config_module, output_dict):
 
     # Get temporal information
     temporal_information = config_module.get_temporal_information()
-    from_date = temporal_information[config_module.FROM_DATE]
-    most_recent = temporal_information[config_module.MOST_RECENT]
-    to_date = temporal_information[config_module.TO_DATE]
+    from_date = temporal_information[constants.FROM_DATE]
+    most_recent = temporal_information[constants.MOST_RECENT]
+    to_date = temporal_information[constants.TO_DATE]
 
     # Generate Assessment CSV File
-    flat_grades_list = get_flat_grades_list(school_types, config_module.GRADES)
-    assessments = generate_assessments(flat_grades_list, scores_details[config_module.CUT_POINTS],
+    flat_grades_list = get_flat_grades_list(school_types, constants.GRADES)
+    assessments = generate_assessments(flat_grades_list, scores_details[constants.CUT_POINTS],
                                        from_date, most_recent, to_date=to_date)
     create_csv(assessments, output_dict[Assessment])
 
@@ -111,18 +111,18 @@ def generate_data_from_config_file(config_module, output_dict):
     # When we get down to the school level, we'll be able to generate an InstitutionHierarchy object
     for state in states:
         # Pull out basic state information
-        state_name = state[config_module.NAME]
-        state_code = state[config_module.STATE_CODE]
+        state_name = state[constants.NAME]
+        state_code = state[constants.STATE_CODE]
 
         # Create state object from gathered info
         current_state = generate_state(state_name, state_code)
 
         # Pull out information on districts within this state
-        state_type_name = state[config_module.STATE_TYPE]
+        state_type_name = state[constants.STATE_TYPE]
         state_type = state_types[state_type_name]
-        district_types_and_counts = state_type[config_module.DISTRICT_TYPES_AND_COUNTS]
-        subject_percentages = state_type[config_module.SUBJECT_AND_PERCENTAGES]
-        demographics_id = state_type[config_module.DEMOGRAPHICS]
+        district_types_and_counts = state_type[constants.DISTRICT_TYPES_AND_COUNTS]
+        subject_percentages = state_type[constants.SUBJECT_AND_PERCENTAGES]
+        demographics_id = state_type[constants.DEMOGRAPHICS]
 
         # TODO: should we add some randomness here? What are acceptable numbers? 5-10? 10-20?
         number_of_state_level_staff = 10
@@ -151,10 +151,10 @@ def generate_data_from_config_file(config_module, output_dict):
 
             # Pull out school information for this type of district
             # Here we get info on the types of schools to create
-            school_types_and_ratios = district_type[config_module.SCHOOL_TYPES_AND_RATIOS]
+            school_types_and_ratios = district_type[constants.SCHOOL_TYPES_AND_RATIOS]
 
             # Here we get info on the number of schools to create
-            school_counts = district_type[config_module.SCHOOL_COUNTS]
+            school_counts = district_type[constants.SCHOOL_COUNTS]
 
             for district in districts:
                 print('populating district: %s: %s' % (district.district_name, district_type_name))
@@ -226,13 +226,13 @@ def get_student_counts(institution_hierarchy, school_type, subject_percentages, 
     '''
     '''
     # Get student count information from config module
-    student_counts = school_type[config_module.STUDENTS]
-    student_min = student_counts[config_module.MIN]
-    student_max = student_counts[config_module.MAX]
-    student_avg = student_counts[config_module.AVG]
+    student_counts = school_type[constants.STUDENTS]
+    student_min = student_counts[constants.MIN]
+    student_max = student_counts[constants.MAX]
+    student_avg = student_counts[constants.AVG]
 
     stud_counts = {}
-    grades = school_type[config_module.GRADES]
+    grades = school_type[constants.GRADES]
     for grade in grades:
         number_of_students_in_grade = calculate_number_of_students(student_min, student_max, student_avg)
         stud_counts[grade] = number_of_students_in_grade
@@ -248,10 +248,10 @@ def generate_student_pool(student_totals, assessments, demographics, demographic
 
     # Get Error Band Information from config_module
     eb_dict = config_module.get_error_band()
-    eb_min_perc = eb_dict[config_module.MIN_PERC]
-    eb_max_perc = eb_dict[config_module.MAX_PERC]
-    eb_rand_adj_lo = eb_dict[config_module.RAND_ADJ_PNT_LO]
-    eb_rand_adj_hi = eb_dict[config_module.RAND_ADJ_PNT_HI]
+    eb_min_perc = eb_dict[constants.MIN_PERC]
+    eb_max_perc = eb_dict[constants.MAX_PERC]
+    eb_rand_adj_lo = eb_dict[constants.RAND_ADJ_PNT_LO]
+    eb_rand_adj_hi = eb_dict[constants.RAND_ADJ_PNT_HI]
 
     scores_details = config_module.get_scores()
 
@@ -267,6 +267,8 @@ def generate_student_pool(student_totals, assessments, demographics, demographic
         demo_status = DemographicStatus(demographics.get_demo_names(demographics_id))
 
         for subject_name in constants.SUBJECTS:
+            print()
+            print('generating grade: %s, subject: %s' % (grade, subject_name))
             # Pull out the proper performance level percentages
             performance_level_percs = demographics.get_grade_demographics_total(demographics_id, subject_name, grade)
 
@@ -286,14 +288,14 @@ def generate_student_pool(student_totals, assessments, demographics, demographic
 
             # if assessments have not already been assigned for one grade
             if not students_in_grade:
-                unassigned_studs = demographics.generate_students_and_demographics(students_to_gen, subject_name, grade,
-                                                                               asmt_scores, demographics_id, demo_status)
+                unassigned_studs = demographics.generate_students_and_demographics(students_to_gen, subject_name, grade, asmt_scores,
+                                                                                   demographics_id, demo_status, name_list_dictionary[BIRDS])
                 print(len(unassigned_studs))
                 students_in_grade += unassigned_studs
             else:
                 demographics.assign_scores_by_demographics(unassigned_studs, subject_name, grade, asmt_scores,
                                                            demographics_id, demo_status)
-                print(unassigned_studs[0].asmt_scores)
+
         y = [x for x in unassigned_studs if len(x.asmt_scores) != 2]
         print('y', y)
 
@@ -302,12 +304,6 @@ def generate_student_pool(student_totals, assessments, demographics, demographic
 
     exit('exit1')
     return all_students
-
-
-def generate_unassigned_students(scores, assessment):
-    '''
-    '''
-    pass
 
 
 def populate_school(institution_hierarchy, school_type, assessments, subject_percentages, demographics, demographics_id, batch_guid, config_module, output_dict):
@@ -324,24 +320,24 @@ def populate_school(institution_hierarchy, school_type, assessments, subject_per
     '''
 
     # Get student count information from config module
-    student_counts = school_type[config_module.STUDENTS]
-    student_min = student_counts[config_module.MIN]
-    student_max = student_counts[config_module.MAX]
-    student_avg = student_counts[config_module.AVG]
+    student_counts = school_type[constants.STUDENTS]
+    student_min = student_counts[constants.MIN]
+    student_max = student_counts[constants.MAX]
+    student_avg = student_counts[constants.AVG]
 
     # Get Error Band Information from config_module
     eb_dict = config_module.get_error_band()
-    eb_min_perc = eb_dict[config_module.MIN_PERC]
-    eb_max_perc = eb_dict[config_module.MAX_PERC]
-    eb_rand_adj_lo = eb_dict[config_module.RAND_ADJ_PNT_LO]
-    eb_rand_adj_hi = eb_dict[config_module.RAND_ADJ_PNT_HI]
+    eb_min_perc = eb_dict[constants.MIN_PERC]
+    eb_max_perc = eb_dict[constants.MAX_PERC]
+    eb_rand_adj_lo = eb_dict[constants.RAND_ADJ_PNT_LO]
+    eb_rand_adj_hi = eb_dict[constants.RAND_ADJ_PNT_HI]
 
     # Get scoring information from config module
     performance_level_dist = config_module.get_performance_level_distributions()
     scores_details = config_module.get_scores()
-    pld_adjustment = school_type.get(config_module.ADJUST_PLD, None)
+    pld_adjustment = school_type.get(constants.ADJUST_PLD, None)
 
-    grades = school_type[config_module.GRADES]
+    grades = school_type[constants.GRADES]
 
     students_in_school = []
     sections_in_school = []
@@ -365,9 +361,9 @@ def populate_school(institution_hierarchy, school_type, assessments, subject_per
             number_of_sections = calculate_number_of_sections(number_of_students_in_grade)
             # TODO: figure out a way around this hack.
             temporal_information = config_module.get_temporal_information()
-            from_date = temporal_information[config_module.FROM_DATE]
-            most_recent = temporal_information[config_module.MOST_RECENT]
-            to_date = temporal_information[config_module.TO_DATE]
+            from_date = temporal_information[constants.FROM_DATE]
+            most_recent = temporal_information[constants.MOST_RECENT]
+            to_date = temporal_information[constants.TO_DATE]
             sections_in_grade = generate_sections(number_of_sections, subject_name, grade, institution_hierarchy.state_code,
                                                   institution_hierarchy.district_guid, institution_hierarchy.school_guid,
                                                   from_date, most_recent, to_date=to_date)
@@ -484,9 +480,9 @@ def create_school_dictionary(config_module, school_counts, school_types_and_rati
     @param school_names_2: A 2nd list of names to use in naming schools
     @return: A dictionary with school types as keys and a list of schools as values
     '''
-    num_schools_min = school_counts[config_module.MIN]
-    num_schools_avg = school_counts[config_module.AVG]
-    num_schools_max = school_counts[config_module.MAX]
+    num_schools_min = school_counts[constants.MIN]
+    num_schools_avg = school_counts[constants.AVG]
+    num_schools_max = school_counts[constants.MAX]
     # TODO: Can we assume number of schools is a normal distribution?
     number_of_schools_in_district = calculate_number_of_schools(num_schools_min, num_schools_max, num_schools_avg)
 
@@ -500,7 +496,7 @@ def create_school_dictionary(config_module, school_counts, school_types_and_rati
         number_of_schools_for_type = int(max(round(school_type_ratio * ratio_unit), 1))  # int(school_type_ratio * ratio_unit)
 
         school_list = []
-        school_type_name = school_types_dict[school_type][config_module.TYPE]
+        school_type_name = school_types_dict[school_type][constants.TYPE]
         for _i in range(number_of_schools_for_type):
             school = generate_school(school_type_name, school_names_1, school_names_2)
             school_list.append(school)
@@ -523,9 +519,9 @@ def generate_institution_hierarchy_from_helper_entities(config_module, state, di
     school_name = school.school_name
     school_category = school.school_category
     temporal_information = config_module.get_temporal_information()
-    from_date = temporal_information[config_module.FROM_DATE]
-    most_recent = temporal_information[config_module.MOST_RECENT]
-    to_date = temporal_information[config_module.TO_DATE]
+    from_date = temporal_information[constants.FROM_DATE]
+    most_recent = temporal_information[constants.MOST_RECENT]
+    to_date = temporal_information[constants.TO_DATE]
 
     institution_hierarchy = generate_institution_hierarchy(state_name, state_code,
                                                            district_guid, district_name,
@@ -551,14 +547,14 @@ def generate_list_of_scores(config_module, total, score_details, perf_lvl_dist, 
     @param pld_adjustment: The amount to adjust the performance level distribution. Taken from config file
     @return: A list of scores as ints
     '''
-    min_score = score_details[config_module.MIN]
-    max_score = score_details[config_module.MAX]
-    percentage = perf_lvl_dist  # [subject_name][str(grade)][config_module.PERCENTAGES]
+    min_score = score_details[constants.MIN]
+    max_score = score_details[constants.MAX]
+    percentage = perf_lvl_dist  # [subject_name][str(grade)][constants.PERCENTAGES]
     if pld_adjustment:
         percentage = adjust_pld(percentage, pld_adjustment)
 
     # The cut_points in score details do not include min and max score. The score generator needs the min and max to be included
-    cut_points = score_details[config_module.CUT_POINTS]
+    cut_points = score_details[constants.CUT_POINTS]
     inclusive_cut_points = [min_score]
     inclusive_cut_points.extend(cut_points)
     inclusive_cut_points.append(max_score)
@@ -665,9 +661,9 @@ def generate_students_from_institution_hierarchy(config_module, number_of_studen
     school_name = institution_hierarchy.school_name
 
     temporal_information = config_module.get_temporal_information()
-    from_date = temporal_information[config_module.FROM_DATE]
-    most_recent = temporal_information[config_module.MOST_RECENT]
-    to_date = temporal_information[config_module.TO_DATE]
+    from_date = temporal_information[constants.FROM_DATE]
+    most_recent = temporal_information[constants.MOST_RECENT]
+    to_date = temporal_information[constants.TO_DATE]
 
     students = generate_students(number_of_students, section_guid, grade, state_code, district_guid, school_guid, school_name, street_names, from_date, most_recent, to_date=to_date)
     return students
@@ -700,9 +696,9 @@ def generate_teaching_staff_from_institution_hierarchy(config_module, number_of_
     school_guid = institution_hierarchy.school_guid
     hier_user_type = 'Teacher'
     temporal_information = config_module.get_temporal_information()
-    from_date = temporal_information[config_module.FROM_DATE]
-    most_recent = temporal_information[config_module.MOST_RECENT]
-    to_date = temporal_information[config_module.TO_DATE]
+    from_date = temporal_information[constants.FROM_DATE]
+    most_recent = temporal_information[constants.MOST_RECENT]
+    to_date = temporal_information[constants.TO_DATE]
     staff_list = generate_multiple_staff(number_of_staff, hier_user_type, from_date, most_recent, state_code=state_code, district_guid=district_guid,
                                          school_guid=school_guid, section_guid=section_guid, to_date=to_date)
     return staff_list
@@ -719,9 +715,9 @@ def generate_non_teaching_staff(config_module, number_of_staff, state_code='NA',
     '''
     hier_user_type = 'Staff'
     temporal_information = config_module.get_temporal_information()
-    from_date = temporal_information[config_module.FROM_DATE]
-    most_recent = temporal_information[config_module.MOST_RECENT]
-    to_date = temporal_information[config_module.TO_DATE]
+    from_date = temporal_information[constants.FROM_DATE]
+    most_recent = temporal_information[constants.MOST_RECENT]
+    to_date = temporal_information[constants.TO_DATE]
     staff_list = generate_multiple_staff(number_of_staff, hier_user_type, from_date, most_recent, state_code=state_code,
                                          district_guid=district_guid, school_guid=school_guid, to_date=to_date)
     return staff_list

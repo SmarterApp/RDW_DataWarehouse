@@ -6,6 +6,7 @@ Created on June 17th, 2013
 
 import rule_maker.rules.transformation_code_generator as tg
 import rule_maker.rules.code_generator_sql_template as sql_tpl
+import rule_maker.rules.code_generator_special_rules as sr
 from rule_maker.rules.rule_keys import PCLEAN, INLIST, LOOKUP, OUTLIST, COMPARE_LENGTH, UPPER, REMNL, TRIM
 
 
@@ -76,6 +77,13 @@ class TestTransformationCodeGenerator(unittest.TestCase):
         print("expected == %s" % str(expected_result))
         print("actual   == %s" % str(actual_result_update))
         self.assertEqual(actual_result_update, expected_result)
+
+    def test_special_rule(self):
+        rule_name = 'deriveEthnicity'
+        rule_names = [rule_name]
+        actual_result = tg.generate_transformations(rule_names)
+        expected_result = [(rule_name, sr.special_rules[rule_name][0], sr.special_rules[rule_name][1])]
+        self.assertEqual(actual_result, expected_result)
 
 
 def update_actual_result(actual_result):
@@ -229,6 +237,9 @@ EXCEPTION
         RETURN v_{col_name};
 END;
 $$ LANGUAGE plpgsql;
+"""
+
+EXPECTED_CODE_FOR_DERIVE_ETH = """
 """
 
 if __name__ == "__main__":

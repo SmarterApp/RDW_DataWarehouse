@@ -220,7 +220,9 @@ class FuncTestLoadToIntegrationTable(unittest.TestCase):
     def test_derive_eth_function(self):
         function_name = sr.special_rules['deriveEthnicity'][0]
         # dmg_eth_blk, dmg_eth_asn, dmg_eth_hsp, dmg_eth_ami, dmg_eth_pcf, dmg_eth_wht
-        prepare_data = {'not stated': {'src_column': "NULL, NULL, NULL, NULL, NULL, NULL", 'expected_code': 0},
+        prepare_data = {'exception': {'src_column': "'sda', 'dg', 'a', 'q', 't', 'fff'", 'expected_code': -1},
+                        'not stated 1': {'src_column': "NULL, NULL, NULL, NULL, NULL, NULL", 'expected_code': 0},
+                        'not stated 2': {'src_column': "'f', NULL, NULL, 'f', NULL, 'f'", 'expected_code': 0},
                         'african american': {'src_column': "'y', 'n', 'n', 'n', 'n', 'n'", 'expected_code': 1},
                         'asian': {'src_column': "'n', 'y', 'n', 'n', 'n', 'n'", 'expected_code': 2},
                         'hispanic 1': {'src_column': "'n', 'n', 'y', 'n', 'n', 'n'", 'expected_code': 3},

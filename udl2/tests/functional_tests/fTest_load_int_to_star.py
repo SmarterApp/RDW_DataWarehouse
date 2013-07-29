@@ -25,11 +25,13 @@ class IntToStarFTest(unittest.TestCase):
         self.truncate_edware_tables()
         self.truncate_integration_tables()
 
+    """
     def tearDown(self):
         self.truncate_edware_tables()
         self.truncate_integration_tables()
         self.udl2_conn.close()
         self.target_conn.close()
+    """
 
     def truncate_edware_tables(self):
         template = """
@@ -98,7 +100,6 @@ class IntToStarFTest(unittest.TestCase):
             target_columns = column_map[target]
             column_types = move_to_target.get_table_column_types(conf, target, list(target_columns.keys()))
             move_to_target.explode_data_to_dim_table(conf, table_map[target], target, target_columns, column_types)
-
         # explode to fact table
         table_map, column_map = W_load_from_integration_to_star.get_table_and_column_mapping(conf, 'fact_')
         column_types = move_to_target.get_table_column_types(conf, list(table_map.keys())[0], list(column_map['fact_asmt_outcome'].keys()))
@@ -106,14 +107,14 @@ class IntToStarFTest(unittest.TestCase):
 
         # check star schema table counts
         count_template = """ SELECT COUNT(*) FROM "{schema}"."{table}" """
-        tables_to_check = {'dim_asmt': 1, 'dim_inst_hier': 70, 'dim_staff': 70, 'dim_student': 94, 'fact_asmt_outcome': 99}
+        tables_to_check = {'dim_asmt': 1, 'dim_inst_hier': 71, 'dim_staff': 71, 'dim_student': 94, 'fact_asmt_outcome': 99}
         for entry in tables_to_check.keys():
             sql = count_template.format(schema=self.udl2_conf['target_db']['db_schema'], table=entry)
             result = self.target_conn.execute(sql)
             count = 0
             for row in result:
                 count = row[0]
-            assert int(count) == tables_to_check[entry]
+            self.assertEqual(int(count), tables_to_check[entry])
 
         # check asmt score avgs
         int_avg_query = """ SELECT avg(score_asmt),

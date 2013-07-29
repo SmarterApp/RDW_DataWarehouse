@@ -225,7 +225,8 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                Column('dmg_prg_iep', Boolean, nullable=True),
                                Column('dmg_prg_lep', Boolean, nullable=True),
                                Column('dmg_prg_504', Boolean, nullable=True),
-                               Column('dmg_prg_tt1', Boolean, nullable=True)
+                               Column('dmg_prg_tt1', Boolean, nullable=True),
+                               Column('dmg_eth_derived', SmallInteger, nullable=True)
                                )
 
     Index('fact_asmt_outcome_idx', assessment_outcome.c.asmnt_outcome_rec_id, unique=True)

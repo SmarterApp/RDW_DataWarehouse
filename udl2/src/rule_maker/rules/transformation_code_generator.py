@@ -8,6 +8,7 @@ from rule_maker.rules.rule_keys import PCLEAN, VCLEAN, RCLEAN, INLIST, LOOKUP, O
 from rule_maker.rules.udl_transformation_config import transform_rules
 from rule_maker.rules.code_generator_util import action_fun_map, assignment, fun_name
 import rule_maker.rules.code_generator_sql_template as sql_tpl
+from rule_maker.rules.code_generator_special_rules import special_rules
 
 FUNC_PREFIX = 'sp_'
 NOTATIONS = 'notations'
@@ -28,14 +29,21 @@ def generate_transformations(rule_names, rule_conf=transform_rules, code_version
 
     generated_rule_list = []
     for rule_name in rule_names:
-        if rule_name not in rule_conf.keys():
-            print("CANNOT GENERATE CODE FOR RULE %s" % rule_name)
-        else:
+        # check if it is a special rule case
+        if rule_name in special_rules.keys():
+            # append a tuple: rule_name, func_name, generated_sql
+            generated_rule_list.append((rule_name, special_rules[rule_name][0], special_rules[rule_name][1]))
+            # if this rule is also defined in rule_conf, use the one in special rule
+            if rule_name in rule_conf.keys():
+                print("RULE -- %s IS GENERATED AS DEFINED IN SPECIAL RULES" % rule_name)
+        elif rule_name in rule_conf.keys():
             rule_def = rule_conf[rule_name]
             generated_rule_tuple = generate_single_transformation_code(code_version, rule_name, rule_def)
             # this is to exclude the rules which have not implemented yet
             if len(generated_rule_tuple[2]) > 0:
                 generated_rule_list.append(generated_rule_tuple)
+        else:
+            print("CANNOT GENERATE CODE FOR RULE %s" % rule_name)
     return generated_rule_list
 
 

@@ -12,6 +12,7 @@ from move_to_integration.move_to_integration import move_data_from_staging_to_in
 from fileloader.file_loader import load_file
 import imp
 from udl2 import message_keys as mk
+import rule_maker.rules.code_generator_special_rules as sr
 
 
 class FuncTestLoadToIntegrationTable(unittest.TestCase):
@@ -192,20 +193,20 @@ class FuncTestLoadToIntegrationTable(unittest.TestCase):
 
         assert stg_asmt_avgs == int_asmt_avgs
 
-        #get staging demographics counts
+        # get staging demographics counts
         demographics = ['dmg_eth_hsp', 'dmg_eth_ami', 'dmg_eth_asn', 'dmg_eth_blk', 'dmg_eth_pcf', 'dmg_eth_wht', 'dmg_prg_iep', 'dmg_prg_lep', 'dmg_prg_504', 'dmg_prg_tt1']
         stg_demo_dict = {}
         int_demo_dict = {}
 
         for entry in demographics:
-            #get staging
+            # get staging
             demo_query = """ select count({demographic}) from "udl2"."STG_SBAC_ASMT_OUTCOME" where guid_batch='{guid_batch}' and ({demographic} = 'Y' or {demographic} = 'y' or {demographic} = 'yes');""".format(demographic=entry, guid_batch=self.conf['guid_batch'])
             result = self.udl2_conn.execute(demo_query)
             for row in result:
                 demo_count = row[0]
 
             stg_demo_dict[entry] = demo_count
-            #get integration
+            # get integration
             demo_query = """ select count({demographic}) from "udl2"."INT_SBAC_ASMT_OUTCOME" where guid_batch='{guid_batch}' and {demographic} = 'TRUE';""".format(guid_batch=self.conf['guid_batch'], demographic=entry)
 
             result = self.udl2_conn.execute(demo_query)
@@ -216,6 +217,37 @@ class FuncTestLoadToIntegrationTable(unittest.TestCase):
 
         assert stg_demo_dict == int_demo_dict
 
+    def test_derive_eth_function(self):
+        function_name = sr.special_rules['deriveEthnicity'][0]
+        # dmg_eth_blk, dmg_eth_asn, dmg_eth_hsp, dmg_eth_ami, dmg_eth_pcf, dmg_eth_wht
+        prepare_data = {'not stated': {'src_column': "NULL, NULL, NULL, NULL, NULL, NULL", 'expected_code': 0},
+                        'african american': {'src_column': "'y', 'n', 'n', 'n', 'n', 'n'", 'expected_code': 1},
+                        'asian': {'src_column': "'n', 'y', 'n', 'n', 'n', 'n'", 'expected_code': 2},
+                        'hispanic 1': {'src_column': "'n', 'n', 'y', 'n', 'n', 'n'", 'expected_code': 3},
+                        'hispanic 2': {'src_column': "'n', 'n', 'y', 'y', 'n', 'y'", 'expected_code': 3},
+                        'native american': {'src_column': "'n', 'n', 'n', 'y', 'n', 'n'", 'expected_code': 4},
+                        'pacific islander': {'src_column': "'n', 'n', 'n', 'n', 'y', 'n'", 'expected_code': 5},
+                        'white': {'src_column': "'n', 'n', 'n', 'n', 'n', 'y'", 'expected_code': 6},
+                        'two or more races 1': {'src_column': "'y', 'n', 'n', 'n', 'n', 'y'", 'expected_code': 7},
+                        'two or more races 2': {'src_column': "'n', 'y', 'n', 'n', NULL, 'y'", 'expected_code': 7},
+                        'two or more races 3': {'src_column': "'y', 'y', 'n', 'y', 'y', 'y'", 'expected_code': 7}
+                        }
+        self.conf['guid_batch'] = '00000000-0000-0000-0000-000000000000'
+        (conn, _engine) = connect_db(self.conf['udl2_db']['db_driver'],
+                                     self.conf['udl2_db']['db_user'],
+                                     self.conf['udl2_db']['db_pass'],
+                                     self.conf['udl2_db']['db_host'],
+                                     self.conf['udl2_db']['db_port'],
+                                     self.conf['udl2_db']['db_name'])
+        sql_template = 'SELECT %s;' % function_name
+        for _key, value in prepare_data.items():
+            sql = sql_template.format(src_column=value['src_column'])
+            result = conn.execute(sql)
+            actual_value = ''
+            for r in result:
+                actual_value = r[0]
+                break
+            self.assertEqual(actual_value, value['expected_code'])
 
 if __name__ == '__main__':
     unittest.main()

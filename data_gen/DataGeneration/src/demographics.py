@@ -68,14 +68,159 @@ class Demographics(object):
 
         # Create Students with genders
         unassigned_studs = self._make_unassigned_students(total_students, dem_count_dict['male'], dem_count_dict['female'], subject, grade, asmt_scores)
+
+        # Get ordered groupings list
+        groupings = sorted({grade_demo[x][L_GROUPING] for x in grade_demo})
+        # Removing all and gender
+        groupings.remove(0)
+        groupings.remove(1)
+
+        # Assign other demographics
+        for group in groupings:
+            self._assign_other_demographics(dem_count_dict, group, unassigned_studs, subject)
+
+        # Add students to demograph tracker
+        demograph_tracker.add_many(unassigned_studs)
+
         return unassigned_studs
+
+    def assign_scores_by_demographics(self, students, subject, grade, asmt_scores, dem_id, demograph_tracker):
+        '''
+        '''
+        # Get the demographics corresponding to the id, subject, grade
+        grade_demo = self.get_grade_demographics(dem_id, subject, grade)
+
+        total_students = len(students)
+
+        # Convert percentages to actual values, based on number of students given
+        dem_count_dict = percentages_to_values(grade_demo, total_students)
+
+        # order demographic categories by number of keys present
+        keys_by_desired_count = sorted(dem_count_dict, key=lambda k: dem_count_dict[k][L_TOTAL])
+
+        # Remove the all key
+        if 'all' in keys_by_desired_count:
+            keys_by_desired_count.remove('all')
+
+        # get dict containing scores
+        score_dict = self._divide_scores_into_perf_lvls(asmt_scores)
+        short_count = 0
+
+        for key in keys_by_desired_count:
+            students_to_request = dem_count_dict[key][L_TOTAL]
+
+            # Get that number of students
+            for _i in range(students_to_request):
+                student = demograph_tracker.pop(key)
+
+                if student:
+                    perf_level = self._determine_perf_lvl(dem_count_dict[key][L_PERF_1:])
+                    score = self._pick_score_in_pl(perf_level, score_dict)
+                    dem_count_dict = self._update_dem_counts(student, perf_level, dem_count_dict)
+                    student.asmt_scores[subject] = score
+                else:
+                    print('No student', key, _i, students_to_request)
+                    short_count += 1
+                    break
+        print('short_count', short_count)
+
+    def _assign_other_demographics(self, grade_count_dict, group, u_students, subject):
+        '''
+        Give the unassigned students the remaining set of demographics
+        '''
+        group_dict = {}
+        pl_short = {}
+        all_pl = [0, 0, 0, 0, 0, 0]
+
+        # for storing unused students during the first loop through
+        unused_studs = []
+
+        # filter all items in this group to new dictionary
+        for key in grade_count_dict:
+            if grade_count_dict[key][L_GROUPING] == group:
+                group_dict[key] = grade_count_dict[key][:]
+
+        # order keys by overall totals
+        ordered_group_keys = sorted(group_dict, key=lambda k: group_dict[k][L_TOTAL])
+        print('ordered_group_keys', ordered_group_keys)
+        print('group_dict', group_dict)
+
+        # Assign demographics to students
+        for stud in u_students:
+            asmt_score = stud.asmt_scores[subject]
+            perf_lvl = asmt_score.perf_lvl
+            demographic_set = False
+            all_pl[perf_lvl] += 1
+
+            # loop through available demographics
+            # if the value for that perf_lvl is not 0. Give the outcome that demographic
+            for demo_key in ordered_group_keys:
+                pl_index = perf_lvl + 1  # offset perf_lvl by 1
+                if group_dict[demo_key][pl_index] > 0:
+                    self._set_demographic_in_object(stud, demo_key, group_dict, perf_lvl)
+                    demographic_set = True
+                    break
+
+            # if no demographic was set, assign demographic randomly
+            # only if there is more than 1 demographic type in the group
+            if not demographic_set and len(group_dict) > 1:
+                print('group_dict', group_dict)
+
+                # debugging
+                if not pl_short.get(demo_key):
+                    pl_short[demo_key] = [0, 0, 0, 0, 0, 0]
+                pl_short[demo_key][pl_index] += 1
+
+                # Add this student to the list of unused students
+                unused_studs.append(stud)
+
+        # the number of unused students should be less that 1%
+        if len(unused_studs) / len(u_students) > .01:
+            print('******GREATER THAN 1% OFF')
+            print('len(unused_studs)', len(unused_studs))
+            print('len(u_students)', len(u_students))
+            print('len(unused_studs) / len(u_students) %.3f' % (len(unused_studs) / len(u_students)))
+
+        # loop through unused studs and assign to a demographic that needs values
+        for stud in unused_studs:
+            asmt_score = stud.asmt_scores[subject]
+            perf_lvl = asmt_score.perf_lvl
+            demographic_set = False
+
+            # loop through demos to see which has space
+            for demo_key in ordered_group_keys:
+                pl_index = perf_lvl + 1  # offset perf_lvl by 1
+                if group_dict[demo_key][L_TOTAL] > 0:
+                    self._set_demographic_in_object(stud, demo_key, group_dict, perf_lvl)
+                    demographic_set = True
+                    break
+
+            # if all demographics have been filled. Randomly assign a demographic
+            if not demographic_set:
+                rnd_demo = random.choice(ordered_group_keys)
+                self._set_demographic_in_object(stud, rnd_demo, group_dict, perf_lvl)
+
+        print('unused_studs', len(unused_studs))
+        print('all_pl', all_pl)
+        print('group_dict', group_dict)
+        print('pl_short', pl_short)
+        return u_students
+
+    def _set_demographic_in_object(self, student, demo_key, group_dict, perf_lvl):
+        '''
+        Set the demographic in the student object to be true
+        '''
+        pl_index = perf_lvl + 1  # offset perf_lvl by 1
+        setattr(student, demo_key, True)
+        group_dict[demo_key][pl_index] -= 1
+        group_dict[demo_key][L_TOTAL] -= 1
 
     def _make_unassigned_students(self, total_students, male_list, female_list, subject, grade, asmt_scores):
         '''
         Create unassignedStudents with the given numbers for each gender.
         '''
-        print(male_list)
-        print(female_list)
+        print('male_list', male_list)
+        print('female_list', female_list)
 
         students = []
         male_tot_count = male_list[L_TOTAL]
@@ -130,10 +275,11 @@ class Demographics(object):
                 f_count += 1
 
             # create and append new student to list
-            students.append(UnassignedStudent(grade, gender, asmt_score))
+            asmt_dict = {subject: asmt_score}
+            students.append(UnassignedStudent(grade, gender, asmt_dict))
 
-        print(else_count, male_pl_counts, female_pl_counts)
-        print(start, remains)
+        print('else_count, male_pl_counts, female_pl_counts', else_count, male_pl_counts, female_pl_counts)
+        print('start, remains', start, remains)
         print('f', f_count, 'm', m_count)
         return students
 
@@ -341,32 +487,17 @@ class Demographics(object):
 
         return dem_count_dict
 
-    def _divide_scores_into_perf_lvls(self, scores, assessment):
+    def _divide_scores_into_perf_lvls(self, asmt_scores):
         '''
         Take a list of scores and an assessment object. Create a dict that places each score into a bucket
         where the key is the integer representing the performance level.
         '''
-        sorted_scores = sorted(scores)
+        sorted_scores = sorted(asmt_scores, key=lambda sc: sc.overall_score)
         score_dict = {1: [], 2: [], 3: [], 4: [], 5: []}
 
         # loop through sorted scores and assign to a performance level based on the assessment
         for sc in sorted_scores:
-            if sc < assessment.asmt_cut_point_1:
-                score_dict[1].append(sc)
-            elif sc < assessment.asmt_cut_point_2:
-                score_dict[2].append(sc)
-            elif sc < assessment.asmt_cut_point_3:
-                score_dict[3].append(sc)
-
-            # if there is a 4th cutpoint add to pl4 and pl5
-            if assessment.asmt_cut_point_4:
-                if sc < assessment.asmt_cut_point_4:
-                    score_dict[4].append(sc)
-                else:
-                    score_dict[5].append(sc)
-            # otherwise add the value to pl4
-            else:
-                score_dict[4].append(sc)
+            score_dict[sc.perf_lvl].append(sc)
 
         return score_dict
 
@@ -386,15 +517,15 @@ class Demographics(object):
         else:
             max_tries = len(scores_dict)
             for i in range(max_tries):
-                new_pl = (perf_level + i) % max_tries
+                new_pl = ((perf_level + i) % max_tries) + 1
                 if scores_dict[new_pl]:
                     score = scores_dict[new_pl].pop(0)
                     break
 
         if not score:
-            print(perf_level)
-            print(scores_dict)
-            exit()
+            print('perf_level', perf_level)
+            print('scores_dict', scores_dict)
+            exit('exited')
 
         return score
 
@@ -508,7 +639,7 @@ class DemographicStatus(object):
         Add one student object into the demographic status dictionary
         The given student will be added into all demographic entries that he belongs to
         '''
-        if isinstance(student_obj, Student):
+        if isinstance(student_obj, Student) or isinstance(student_obj, UnassignedStudent):
             # get all demo fields
             stu_demo = student_obj.getDemoOfStudent()
             for demo_name in stu_demo:

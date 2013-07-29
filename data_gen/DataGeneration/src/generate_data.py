@@ -19,7 +19,8 @@ from DataGeneration.src.generate_scores import generate_overall_scores
 from DataGeneration.src.gaussian_distributions import gauss_one, guess_std
 from DataGeneration.src.errorband import calc_eb_params, calc_eb
 from DataGeneration.src.adjust import adjust_pld
-from DataGeneration.src.demographics import Demographics, DemographicStatus
+#from DataGeneration.src.demographics import Demographics, DemographicStatus
+from demographics import Demographics, DemographicStatus
 from uuid import uuid4
 
 
@@ -254,6 +255,9 @@ def generate_student_pool(student_totals, assessments, demographics, demographic
 
     scores_details = config_module.get_scores()
 
+    # get name list dict for street name generation
+    name_list_dictionary = generate_name_list_dictionary(NAMES_TO_PATH_DICT)
+
     # will ignore performance level adjustments for now, This may cause problems.
     # may need to factor all pld adjustments into the total pld somehow.
 
@@ -279,14 +283,24 @@ def generate_student_pool(student_totals, assessments, demographics, demographic
                 cut_points.append(assessment.asmt_cut_point_4)
 
             asmt_scores = translate_scores_to_assessment_score(scores, cut_points, assessment, eb_min_perc, eb_max_perc, eb_rand_adj_lo, eb_rand_adj_hi)
-            unassigned_studs = demographics.generate_students_and_demographics(students_to_gen, subject_name, grade,
+
+            # if assessments have not already been assigned for one grade
+            if not students_in_grade:
+                unassigned_studs = demographics.generate_students_and_demographics(students_to_gen, subject_name, grade,
                                                                                asmt_scores, demographics_id, demo_status)
-            print(len(unassigned_studs))
-            exit()
+                print(len(unassigned_studs))
+                students_in_grade += unassigned_studs
+            else:
+                demographics.assign_scores_by_demographics(unassigned_studs, subject_name, grade, asmt_scores,
+                                                           demographics_id, demo_status)
+                print(unassigned_studs[0].asmt_scores)
+        y = [x for x in unassigned_studs if len(x.asmt_scores) != 2]
+        print('y', y)
 
         # Add students in grade to overall student list
         all_students += students_in_grade
 
+    exit('exit1')
     return all_students
 
 

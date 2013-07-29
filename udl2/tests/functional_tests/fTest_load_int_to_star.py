@@ -25,13 +25,11 @@ class IntToStarFTest(unittest.TestCase):
         self.truncate_edware_tables()
         self.truncate_integration_tables()
 
-    """
     def tearDown(self):
         self.truncate_edware_tables()
         self.truncate_integration_tables()
         self.udl2_conn.close()
         self.target_conn.close()
-    """
 
     def truncate_edware_tables(self):
         template = """

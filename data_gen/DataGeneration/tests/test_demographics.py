@@ -6,29 +6,199 @@ Created on Jul 29, 2013
 import unittest
 import os
 import csv
-from demographics import Demographics, DemographicStatus
+import random
+from datetime import date
+
+from helper_entities import AssessmentScore, UnassignedStudent
+from demographics import Demographics, DemographicStatus, L_PERF_1
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
 
-class Test(unittest.TestCase):
+class DemographicsTest(unittest.TestCase):
 
     def setUp(self):
-        self.dem_obj = Demographics(write_test_csv_file())
+        self.csv_file = write_csv_file()
+        self.dem_obj = Demographics(self.csv_file)
         self.dem_id = 'typical1'
+        self.dem_categories = ['male', 'dmg_eth_asn', 'dmg_eth_blk', 'dmg_prg_lep', 'dmg_prg_iep',
+                         'dmg_prg_tt1', 'dmg_eth_wht', 'female', 'dmg_eth_hsp', 'dmg_eth_ami']
+
+        self.dem_keys = self.dem_categories + ['all']
+        self.address_name_list = ['addr_name_%s' % i for i in range(25)]
 
     def tearDown(self):
-        pass
+        os.remove(self.csv_file)
 
-    def test_get_demo_names(self):
-        result = self.dem_obj.get_demo_names(self.dem_id, 'math', 3)
+    def test_get_demo_names_with_string(self):
+        result = self.dem_obj.get_demo_names(self.dem_id, 'math', '3')
+        expected = self.dem_categories
+
+        for val in expected:
+            self.assertIn(val, result, 'check that all expeted keys are return')
+        self.assertEqual(len(expected), len(result), 'Check that size of both lists are the same')
+
+    def test_get_demo_names_with_int(self):
+        result = self.dem_obj.get_demo_names(self.dem_id, 'math', 12)
+        expected = self.dem_categories
+
+        for val in expected:
+            self.assertIn(val, result, 'check that all expected keys are return')
+        self.assertEqual(len(expected), len(result), 'Check that size of both lists are the same')
+
+    def test_get_grade_demographics_keys_and_values_lengths_int(self):
+        result = self.dem_obj.get_grade_demographics(self.dem_id, 'math', 3)
+
+        for key in self.dem_keys:
+            self.assertIn(key, result, 'dict contains all keys')
+            self.assertIsInstance(result[key], list, 'check value is list')
+            self.assertEqual(len(result[key]), 6, 'check length of value')
+
+    def test_get_grade_demographics_keys_and_values_lengths_string(self):
+        result = self.dem_obj.get_grade_demographics(self.dem_id, 'math', '12')
+
+        for key in self.dem_keys:
+            self.assertIn(key, result, 'dict contains all keys')
+            self.assertIsInstance(result[key], list, 'check value is list')
+            self.assertEqual(len(result[key]), 6, 'check length of value')
+
+    def test_get_grade_demographics_demographic_percentage_sums(self):
+        # if corrections is added, for percentages that do not sum.
+        # data should be added for the appropriate cases
+        result = self.dem_obj.get_grade_demographics(self.dem_id, 'math', '3')
+
+        for k in result:
+            perc_sum = sum(result[k][L_PERF_1:])
+            self.assertEqual(perc_sum, 100, 'check that percentages for %s sum to 100' % k)
+
+# TODO: ADD TEST FOR SUM ACROSS GROUPS OF DEMOGRAPHICS
+
+    def test_get_grade_demographics_total_values(self):
+        result = self.dem_obj.get_grade_demographics_total(self.dem_id, 'math', '3')
+
+        self.assertIsInstance(result, list, 'check result is list')
+        self.assertEqual(len(result), 4, 'check the length of the list')
+
+    def test_get_grade_demographics_total_values_int(self):
+        result = self.dem_obj.get_grade_demographics_total(self.dem_id, 'math', 12)
+
+        self.assertIsInstance(result, list, 'check result is list')
+        self.assertEqual(len(result), 4, 'check the length of the list')
+
+    def test_get_grade_demographics_percentage_sum(self):
+        result = self.dem_obj.get_grade_demographics_total(self.dem_id, 'math', 12)
+
+        perc_sum = sum(result)
+        self.assertEqual(perc_sum, 100, 'Check sum of percentages is 100')
+
+    def test_generate_students_and_demographics_result_length(self):
+        demograph_tracker = DemographicStatus(self.dem_obj.get_demo_names(self.dem_id, 'math', 3))
+        asmt_scores = generate_100_asmt_scores(self.dem_obj.get_grade_demographics_total(self.dem_id, 'math', 3))
+        results = self.dem_obj.generate_students_and_demographics(100, 'math', 3, asmt_scores, self.dem_id, demograph_tracker, self.address_name_list)
+
+        self.assertEqual(len(results), 100)
+
+    def test_generate_students_and_demographics_result_type(self):
+        demograph_tracker = DemographicStatus(self.dem_obj.get_demo_names(self.dem_id, 'math', 3))
+        asmt_scores = generate_100_asmt_scores(self.dem_obj.get_grade_demographics_total(self.dem_id, 'math', 3))
+
+        results = self.dem_obj.generate_students_and_demographics(100, 'math', 3, asmt_scores, self.dem_id, demograph_tracker, self.address_name_list)
+
+        for res in results:
+            self.assertIsInstance(res, UnassignedStudent)
+
+    def test_generate_students_and_demographics_all_scores_assigned(self):
+        demograph_tracker = DemographicStatus(self.dem_obj.get_demo_names(self.dem_id, 'math', 3))
+        asmt_scores = generate_100_asmt_scores(self.dem_obj.get_grade_demographics_total(self.dem_id, 'math', 3))
+
+        results = self.dem_obj.generate_students_and_demographics(100, 'math', 3, asmt_scores, self.dem_id, demograph_tracker, self.address_name_list)
+
+        for res in results:
+            assigned_score = res.asmt_scores['math']
+            asmt_scores.remove(assigned_score)
+
+        self.assertListEqual(asmt_scores, [])
+
+    def test_generate_students_and_demographics_check_name_and_address(self):
+        demograph_tracker = DemographicStatus(self.dem_obj.get_demo_names(self.dem_id, 'math', 3))
+        asmt_scores = generate_100_asmt_scores(self.dem_obj.get_grade_demographics_total(self.dem_id, 'math', 3))
+
+        results = self.dem_obj.generate_students_and_demographics(100, 'math', 3, asmt_scores, self.dem_id, demograph_tracker, self.address_name_list)
+
+        for res in results:
+            self.assertIsInstance(res.first_name, str)
+            self.assertIsInstance(res.last_name, str)
+            self.assertGreater(len(res.first_name), 0)
+            self.assertGreater(len(res.last_name), 0)
+            self.assertIsInstance(res.zip_code, int)
+            self.assertIsNotNone(res.dob)
+
+            self.assertEqual(len(str(res.zip_code)), 5)
+            self.assertIsInstance(res.address_1, str)
+            self.assertGreater(len(res.address_1), 0)
+            self.assertIsInstance(res.city, str)
+            self.assertGreater(len(res.city), 0)
+
+    def test_generate_students_and_demographics_check_demographics(self):
+        demograph_tracker = DemographicStatus(self.dem_obj.get_demo_names(self.dem_id, 'math', 3))
+        asmt_scores = generate_100_asmt_scores(self.dem_obj.get_grade_demographics_total(self.dem_id, 'math', 3))
+
+        results = self.dem_obj.generate_students_and_demographics(100, 'math', 3, asmt_scores, self.dem_id, demograph_tracker, self.address_name_list)
+
+        for res in results:
+            self.assertIn(res.gender, ('male', 'female'))
+            given_dems = res.getDemoOfStudent()
+            self.assertGreater(len(given_dems), 0)
+            print(given_dems)
+            self.assertGreaterEqual(ethnicity_count(given_dems), 1)
+
+    def test_assign_scores_by_demographics(self):
+        demograph_tracker = DemographicStatus(self.dem_obj.get_demo_names(self.dem_id, 'math', 3))
+        asmt_scores_math = generate_100_asmt_scores(self.dem_obj.get_grade_demographics_total(self.dem_id, 'math', 3))
+        students = self.dem_obj.generate_students_and_demographics(100, 'math', 3, asmt_scores_math, self.dem_id, demograph_tracker, self.address_name_list)
+
+        asmt_scores_ela = generate_100_asmt_scores(self.dem_obj.get_grade_demographics_total(self.dem_id, 'ela', 3))
+        self.dem_obj.assign_scores_by_demographics(students, 'ela', 3, asmt_scores_ela, self.dem_id, demograph_tracker)
+
+        for student in students:
+            self.assertEqual(len(student.asmt_scores), 2, 'check all students have 2 scores')
 
 
-class DummyClass(object):
-    pass
+def ethnicity_count(demographics):
+    count = 0
+    for dem in demographics:
+        if 'eth' in dem:
+            count += 1
+    return count
 
 
-def write_test_csv_file():
+def generate_100_asmt_scores(perf_lvl_percents):
+    assessment_scores = []
+    score_ranges = [(1200, 1399), (1400, 1799), (1800, 2099), (2100, 2400)]
+    for i in range(len(perf_lvl_percents)):
+        perf_level = i + 1
+        count = perf_lvl_percents[i]
+        lo_range = score_ranges[i][0]
+        hi_range = score_ranges[i][1]
+        assessment_scores += generate_asmt_scores_in_range(count, lo_range, hi_range, perf_level)
+    print('assessment_scores', assessment_scores)
+    return assessment_scores
+
+
+def generate_asmt_scores_in_range(count, lo_range, hi_range, perf_level):
+    assessment_scores = []
+
+    for _i in range(count):
+        score = random.randint(lo_range, hi_range)
+        interval_min = score - 50
+        interval_max = score + 50
+        claim_scores = None
+        create_date = date.today()
+        assessment_scores.append(AssessmentScore(score, perf_level, interval_min, interval_max, claim_scores, create_date))
+    return assessment_scores
+
+
+def write_csv_file():
     csv_file_data = [
         ('ID', 'grouping', 'subject', 'grade', 'demographic', 'col_name', 'Total', 1, 2, '3', 4),
         ('typical1', '0', 'math', '3', 'All Students', 'all', '100', '9', '30', '48', '13'),
@@ -36,7 +206,7 @@ def write_test_csv_file():
         ('typical1', '1', 'math', '3', 'Male', 'male', '51', '10', '29', '48', '13'),
         ('typical1', '2', 'math', '3', 'American Indian or Alaska Native', 'dmg_eth_ami', '1', '12', '36', '43', '9'),
         ('typical1', '2', 'math', '3', 'Black or African American', 'dmg_eth_blk', '18', '17', '40', '37', '6'),
-        ('typical1', '2', 'math', '3', 'Hispanic or Latino', 'dmg_eth_his', '24', '13', '37', '43', '7'),
+        ('typical1', '2', 'math', '3', 'Hispanic or Latino', 'dmg_eth_hsp', '24', '13', '37', '43', '7'),
         ('typical1', '2', 'math', '3', 'Asian or Native Hawaiian/Other Pacific Islander', 'dmg_eth_asn', '9', '3', '16', '53', '28'),
         ('typical1', '2', 'math', '3', 'White', 'dmg_eth_wht', '48', '5', '25', '54', '16'),
         ('typical1', '3', 'math', '3', 'Students with Disabilities  (IEP)', 'dmg_prg_iep', '15', '29', '42', '26', '3'),
@@ -49,12 +219,38 @@ def write_test_csv_file():
         ('typical1', '1', 'math', '12', 'Male', 'male', '51', '8', '33', '40', '19'),
         ('typical1', '2', 'math', '12', 'American Indian or Alaska Native', 'dmg_eth_ami', '1', '9', '40', '39', '12'),
         ('typical1', '2', 'math', '12', 'Black or African American', 'dmg_eth_blk', '19', '14', '45', '34', '7'),
-        ('typical1', '2', 'math', '12', 'Hispanic or Latino', 'dmg_eth_his', '22', '11', '40', '39', '10'),
+        ('typical1', '2', 'math', '12', 'Hispanic or Latino', 'dmg_eth_hsp', '22', '11', '40', '39', '10'),
         ('typical1', '2', 'math', '12', 'Asian or Native Hawaiian/Other Pacific Islander', 'dmg_eth_asn', '8', '2', '14', '37', '47'),
         ('typical1', '2', 'math', '12', 'White', 'dmg_eth_wht', '50', '4', '25', '47', '24'),
         ('typical1', '3', 'math', '12', 'Students with Disabilities  (IEP)', 'dmg_prg_iep', '16', '27', '50', '21', '2'),
         ('typical1', '4', 'math', '12', 'LEP', 'dmg_prg_lep', '9', '23', '42', '32', '3'),
-        ('typical1', '5', 'math', '12', 'Economically Disadvantaged', 'dmg_prg_tt1', '56', '20', '38', '39', '3')
+        ('typical1', '5', 'math', '12', 'Economically Disadvantaged', 'dmg_prg_tt1', '56', '20', '38', '39', '3'),
+
+        ('ID', 'grouping', 'subject', 'grade', 'demographic', 'col_name', 'Total', 1, 2, 3, 4),
+        ('typical1', 0, 'ela', 3, 'All Students', 'all', 100, 14, 30, 49, 7),
+        ('typical1', 1, 'ela', 3, 'Female', 'female', 49, 11, 29, 52, 8),
+        ('typical1', 1, 'ela', 3, 'Male', 'male', 51, 16, 33, 46, 5),
+        ('typical1', 2, 'ela', 3, 'American Indian or Alaska Native', 'dmg_eth_ami', 1, 18, 36, 42, 4),
+        ('typical1', 2, 'ela', 3, 'Black or African American', 'dmg_eth_blk', 18, 21, 40, 37, 2),
+        ('typical1', 2, 'ela', 3, 'Hispanic or Latino', 'dmg_eth_hsp', 24, 20, 39, 38, 3),
+        ('typical1', 2, 'ela', 3, 'Asian or Native Hawaiian/Other Pacific Islander', 'dmg_eth_asn', 8, 8, 22, 57, 13),
+        ('typical1', 2, 'ela', 3, 'White', 'dmg_eth_wht', 48, 9, 25, 57, 9),
+        ('typical1', 3, 'ela', 3, 'Students with Disabilities  (IEP)', 'dmg_prg_iep', 15, 45, 37, 17, 1),
+        ('typical1', 4, 'ela', 3, 'LEP', 'dmg_prg_lep', 9, 38, 43, 19, 0),
+        ('typical1', 5, 'ela', 3, 'Economically Disadvantaged', 'dmg_prg_tt1', 56, 20, 38, 39, 3),
+
+        ('ID', 'grouping', 'subject', 'grade', 'demographic', 'col_name', 'Total', 1, 2, 3, 4),
+        ('typical1', 0, 'ela', 11, 'All Students', 'all', 100, 7, 43, 48, 2),
+        ('typical1', 1, 'ela', 11, 'Female', 'female', 49, 5, 39, 53, 3),
+        ('typical1', 1, 'ela', 11, 'Male', 'male', 51, 9, 46, 44, 1),
+        ('typical1', 2, 'ela', 11, 'American Indian or Alaska Native', 'dmg_eth_ami', 1, 10, 52, 37, 1),
+        ('typical1', 2, 'ela', 11, 'Black or African American', 'dmg_eth_blk', 19, 11, 59, 30, 0),
+        ('typical1', 2, 'ela', 11, 'Hispanic or Latino ', 'dmg_eth_hsp', 22, 12, 55, 33, 0),
+        ('typical1', 2, 'ela', 11, 'Asian or Native Hawaiian/Other Pacific Islander', 'dmg_eth_asn', 8, 7, 28, 61, 4),
+        ('typical1', 2, 'ela', 11, 'White', 'dmg_eth_wht', 50, 4, 33, 60, 3),
+        ('typical1', 3, 'ela', 11, 'Students with Disabilities  (IEP)', 'dmg_prg_iep', 16, 29, 60, 11, 0),
+        ('typical1', 4, 'ela', 11, 'LEP', 'dmg_prg_lep', 5, 43, 54, 3, 0),
+        ('typical1', 5, 'ela', 11, 'Economically Disadvantaged', 'dmg_prg_tt1', 52, 11, 54, 34, 1)
     ]
 
     file_path = os.path.join(__location__, 'test_file.csv')

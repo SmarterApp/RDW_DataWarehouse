@@ -51,7 +51,7 @@ class Demographics(object):
     def get_demo_names(self, dem_id, subject='math', grade='3'):
         ''' return the list of demographics '''
 
-        keys = list(self.dem_data[dem_id][subject][grade].keys())
+        keys = list(self.dem_data[dem_id][subject][str(grade)].keys())
         if 'all' in keys:
             keys.remove('all')
 
@@ -59,9 +59,19 @@ class Demographics(object):
 
     def generate_students_and_demographics(self, total_students, subject, grade, asmt_scores, dem_id, demograph_tracker, address_name_list):
         '''
+        Generate students with demographics to match the percentages for the given grade and subject
+        @param total_students: The total number of students to generate
+        @param subject: the current subject
+        @param grade: the grade of all the students
+        @param asmt_scores: A list of assessment score objects
+        @param dem_id: the demographic id
+        @param demograph_tracker: the DemographicStatus object to use
+        @param address_name_list: The list of names to use when generating addresses
         '''
         # sanity check
         assert len(asmt_scores) == total_students
+
+        scores_to_assign = asmt_scores[:]
 
         # Get the demographics corresponding to the id, subject, grade
         grade_demo = self.get_grade_demographics(dem_id, subject, grade)
@@ -71,7 +81,7 @@ class Demographics(object):
 
         # Create Students with genders
         unassigned_studs = self._make_unassigned_students(total_students, dem_count_dict['male'], dem_count_dict['female'],
-                                                          subject, grade, asmt_scores, address_name_list)
+                                                          subject, grade, scores_to_assign, address_name_list)
 
         # Get ordered groupings list
         groupings = sorted({grade_demo[x][L_GROUPING] for x in grade_demo})
@@ -592,6 +602,10 @@ class Demographics(object):
                 # Add this student to the list of unused students
                 unused_studs.append(stud)
 
+            #######
+            if len(stud.getDemoOfStudent()) <= 1:
+                print('dem of student less than 1')
+            #######
         # the number of unused students should be less that 1%
         if len(unused_studs) / len(u_students) > .01:
             print('******GREATER THAN 1% OFF')
@@ -617,6 +631,11 @@ class Demographics(object):
             if not demographic_set:
                 rnd_demo = random.choice(ordered_group_keys)
                 self._set_demographic_in_object(stud, rnd_demo, group_dict, perf_lvl)
+
+            #######
+            if len(stud.getDemoOfStudent()) <= 1:
+                print('dem of student less than 1')
+            #######
 
         print('unused_studs', len(unused_studs))
         print('all_pl', all_pl)

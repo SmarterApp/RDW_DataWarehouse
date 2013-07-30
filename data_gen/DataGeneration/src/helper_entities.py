@@ -146,28 +146,12 @@ class UnassignedStudent(object):
         city_name_2 = random.choice(street_names)
         self.city = city_name_1 + ' ' + city_name_2
 
-    def getDemoOfStudent(self):
+    def getDemoOfStudent(self, substr='dmg'):
         demo = []
-        if self.dmg_eth_hsp is True:
-            demo.append('dmg_eth_hsp')
-        if self.dmg_eth_ami is True:
-            demo.append('dmg_eth_ami')
-        if self.dmg_eth_asn is True:
-            demo.append('dmg_eth_asn')
-        if self.dmg_eth_blk is True:
-            demo.append('dmg_eth_blk')
-        if self.dmg_eth_pcf is True:
-            demo.append('dmg_eth_pcf')
-        if self.dmg_eth_wht is True:
-            demo.append('dmg_eth_wht')
-        if self.dmg_prg_iep is True:
-            demo.append('dmg_prg_iep')
-        if self.dmg_prg_lep is True:
-            demo.append('dmg_prg_lep')
-        if self.dmg_prg_504 is True:
-            demo.append('dmg_prg_504')
-        if self.dmg_prg_tt1 is True:
-            demo.append('dmg_prg_tt1')
+        for attr_name in self.__dict__:
+            if substr in attr_name and self.__dict__[attr_name] == True:
+                demo.append(attr_name)
+
         demo.append(self.gender)
 
         return demo

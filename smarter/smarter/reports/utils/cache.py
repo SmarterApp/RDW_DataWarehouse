@@ -8,6 +8,7 @@ from beaker.cache import cache_regions, Cache
 import hashlib
 from functools import wraps
 import collections
+import json
 
 
 def get_cache_key(args, func_name):
@@ -60,9 +61,12 @@ def cache_region(region, namespace='smarter', router=None, key_generator=None, *
             cache_key = get_cache_key(combined_args, func_name)
 
             def go():
-                return func(*args)
+                value = func(*args)
+                # jsonify object to avoid pickle to get better performance
+                return json.dumps(value)
 
-            return cache[region_name].get_value(cache_key, createfunc=go)
+            value = cache[region_name].get_value(cache_key, createfunc=go)
+            return json.loads(value)
         cached._func_name = func_name
         return cached
     return decorate

@@ -38,7 +38,7 @@ define [
       this.filters = $('.filter-group', this.filterPanel)
       this.tagPanelWrapper = $('.selectedFilter_panel', this.filterArea)
       this.tagPanel = $('.filters', this.tagPanelWrapper)
-      this.clearAllButton = $('.icon_removeAll', this.filterArea)
+      this.clearAllButton = $('.removeAllFilters', this.filterArea)
 
     loadPage: ->
       # load config from server

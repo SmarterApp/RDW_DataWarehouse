@@ -1,0 +1,34 @@
+
+HISPANIC_CODE = 3
+TWO_OR_MORE_RACES_CODE = 7
+
+
+def derive_demographic(demo_list):
+    '''
+    Main function to generate the derived demographic columns
+    '''
+    try:
+        # TODO: need to decide the value. is it true/false, or f/t, or others
+        if demo_list[HISPANIC_CODE - 1].lower() == 'true':
+            return HISPANIC_CODE
+        else:
+            race_count = 0
+            result = 0
+            for i in range(len(demo_list)):
+                if i == HISPANIC_CODE - 1:
+                    continue
+                else:
+                    if demo_list[i].lower() == 'true':
+                        race_count += 1
+                        result = i + 1
+            if race_count > 1:
+                return TWO_OR_MORE_RACES_CODE
+            else:
+                return result
+    except:
+        print("Generate derived demographic column error")
+        return -1
+
+
+if __name__ == '__main__':
+    print(derive_demographic(['false', 'false', 'false', 'true', 'true', 'true', 'true']))

@@ -40,14 +40,14 @@ define [
     create: () ->
       # create dropdown and set to the center of each colomn
       output = $(Mustache.to_html dropdownTemplate, this.config)
+      # remove the last color bar
+      output.find('li:nth-last-child(2)').remove()
       # set margin for color bar
       options = output.find('li')
       $.each options, (index, element) ->
         $('.colorBlock', element).eq(index).addClass('margin_right')
         # set index for sorting
         $('input', element).attr('data-index', index)
-      # set index for totalStudents option
-      $('.inputColorBlock:last', output).attr('data-index', options.length - 2)
       output
 
   class EdwareDropdown

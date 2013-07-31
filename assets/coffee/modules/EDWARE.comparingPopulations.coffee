@@ -270,10 +270,11 @@ define [
   appendColor = (data, colors, defaultColors) ->
     i = 0
     intervals = data.intervals
-    len = intervals.length
+    len = colors.length
     sort = prepareTotalPercentage data.total, len
     while i < len
       element = intervals[i]
+      element = {'count': 0, 'percentage': 0} if element is undefined
       if colors and colors[i]
         element.color = colors[i]
       else

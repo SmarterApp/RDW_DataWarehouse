@@ -234,5 +234,11 @@ def generate_ed_metadata(schema_name=None, bind=None):
     Index('fact_asmt_outcome_district_idx', assessment_outcome.c.district_guid, assessment_outcome.c.most_recent, unique=False)
     Index('fact_asmt_outcome_school_grade_idx', assessment_outcome.c.school_guid, assessment_outcome.c.district_guid, assessment_outcome.c.asmt_grade, assessment_outcome.c.most_recent, unique=False)
     Index('fact_asmt_outcome_student_idx', assessment_outcome.c.student_guid, assessment_outcome.c.most_recent, unique=False)
+    # Filtering related indices
+    Index('fact_asmt_outcome_grade', assessment_outcome.c.state_code, assessment_outcome.c.most_recent, assessment_outcome.c.asmt_grade, unique=False)
+    Index('fact_asmt_outcome_lep', assessment_outcome.c.state_code, assessment_outcome.c.most_recent, assessment_outcome.c.dmg_prg_lep, unique=False)
+    Index('fact_asmt_outcome_504', assessment_outcome.c.state_code, assessment_outcome.c.most_recent, assessment_outcome.c.dmg_prg_504, unique=False)
+    Index('fact_asmt_outcome_tt1', assessment_outcome.c.state_code, assessment_outcome.c.most_recent, assessment_outcome.c.dmg_prg_tt1, unique=False)
+    Index('fact_asmt_outcome_iep', assessment_outcome.c.state_code, assessment_outcome.c.most_recent, assessment_outcome.c.dmg_prg_iep, unique=False)
 
     return metadata

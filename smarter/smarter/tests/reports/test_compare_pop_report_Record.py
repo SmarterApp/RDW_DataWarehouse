@@ -16,7 +16,7 @@ class Test(unittest.TestCase):
         self.assertIsNone(record.name)
 
     def test_record(self):
-        record = Record(record_id='id1', name='name1')
+        record = Record(inst_id='id1', name='name1')
         self.assertEqual(0, len(record.subjects))
         self.assertEqual('id1', record.id)
         self.assertEqual('name1', record.name)

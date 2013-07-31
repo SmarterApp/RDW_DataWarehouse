@@ -156,7 +156,6 @@ define [
       $.extend(params, selectedValues)
       # save param to session storage
       sessionStorage.setItem(FILTER_PARAMS, JSON.stringify(params)) if sessionStorage
-      console.log params
       callback params if callback
       
     # get parameters for ajax call

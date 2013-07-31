@@ -880,21 +880,37 @@ table {
 .inputColorBlock {
   margin-right: 10px;
 }
+
 .colorsBlock {
   margin: 15px;
+  
   input {
     float: left;
     margin: 0 10px 0 0;
     position: relative;
     top: 4px;
   }
+  
+  &:nth-last-child(2) {
+    display: none;
+  }
 }
+
+.colorBar {
+    word-spacing: -4px;
+}
+
 .colorBlock {
   display: inline-block;
   width: 30px;
   height: 10px;
   cursor:pointer;
 }
+
+  .margin_right {
+    margin-right: 30px;    
+  }
+
 .dropdownSection {
   height: 0;
 }

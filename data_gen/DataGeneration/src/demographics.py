@@ -138,62 +138,6 @@ class Demographics(object):
                     break
         print('short_count', short_count)
 
-#     def assign_demographics(self, asmt_outcomes, students, subject, grade, dem_id, demograph_tracker):
-#         '''
-#         Take fact assessment outcomes and apply demographics to the data based on dem_dict
-#         @param asmt_outcomdes: the list of all the fact assessments that were created
-#         @param students: the list of student objects to assign demographics
-#         @param subject: the subject that scores are being assigned for
-#         @param grade: the grade that scores are being assigned for
-#         @param dem_id: the demographic id to use for obtaining statistics
-#         @param demograph_tracker: the object that is keeping track of the student demographics
-#         '''
-#         assert len(asmt_outcomes) == len(students)
-#
-#         # Get the demographics corresponding to the id, subject, grade
-#         grade_demo = self.get_grade_demographics(dem_id, subject, grade)
-#
-#         total_students = len(asmt_outcomes)
-#
-#         # Convert percentages to actual values, based on number of students given
-#         dem_count_dict = percentages_to_values(grade_demo, total_students)
-#
-#         # Assign Male and Female Gender
-#         self._make_male_or_female(dem_count_dict['male'], dem_count_dict['female'], asmt_outcomes, students)
-#
-#         # Get ordered groupings list
-#         groupings = sorted({grade_demo[x][L_GROUPING] for x in grade_demo})
-#         # Removing all and gender
-#         groupings.remove(0)
-#         groupings.remove(1)
-#
-#         # Assign other demographics
-#         for group in groupings:
-#             self._make_other_demographics(dem_count_dict, group, asmt_outcomes, students)
-#
-#         # Add students to demograph tracker
-#         demograph_tracker.add_many(students)
-#
-#         return asmt_outcomes, students
-#
-#     def update_demographics(self, students, asmt_outcomes, dem_id):
-#         ''' update the asmt_outcomes with the proper demographics '''
-#         demos_to_update = self.get_demo_names(dem_id)
-#         if 'male' in demos_to_update:
-#             demos_to_update.remove('male')
-#         if 'female' in demos_to_update:
-#             demos_to_update.remove('female')
-#
-#         for i in range(len(students)):
-#             assert students[i].student_guid == asmt_outcomes[i].student_guid
-#
-#             # loop through demographics and update
-#             for dm in demos_to_update:
-#                 dm_value = getattr(students[i], dm)
-#                 setattr(asmt_outcomes[i], dm, dm_value)
-#
-#         return asmt_outcomes
-
     def get_grade_demographics(self, dem_id, subject, grade):
         '''
         Get the demographic data that corresponds to the provided values
@@ -215,59 +159,6 @@ class Demographics(object):
         grade_demo = self.get_grade_demographics(dem_id, subject, grade)
         total_dem = grade_demo[ALL_DEM][L_PERF_1:L_PERF_4 + 1]
         return total_dem
-
-#     def assign_scores_from_demograph(self, students, scores, subject, grade, dem_id, demograph_tracker, assessment):
-#         '''
-#         Take a list of students where most will have already been assigned demographics and assign them
-#         scores for the 2nd subject based on the demographics that they posses
-#         @param students: The list of students that need scores
-#         @param score: The list of generated scores
-#         @param subject: The subject to assign scores for
-#         @param grade: The students grade
-#         @param dem_id: The id to use for looking up demographic information
-#         @param demograph_tracker: the object that is keeping track of the student demographics
-#         @return: A list of tuples of the form (student_object, score)
-#         '''
-#         student_list = []
-#         score_list = []
-#         # Get the demographics corresponding to the id, subject, grade
-#         grade_demo = self.get_grade_demographics(dem_id, subject, grade)
-#
-#         total_students = len(students)
-#
-#         # Convert percentages to actual values, based on number of students given
-#         dem_count_dict = percentages_to_values(grade_demo, total_students)
-#
-#         # order demographic categories by number of keys present
-#         keys_by_desired_count = sorted(dem_count_dict, key=lambda k: dem_count_dict[k][L_TOTAL])
-#         # print('keys_by_desired_count', keys_by_desired_count)
-#
-#         # Remove the all key
-#         if 'all' in keys_by_desired_count:
-#             keys_by_desired_count.remove('all')
-#
-#         # get dict containing scores
-#         score_dict = self._divide_scores_into_perf_lvls(scores, assessment)
-#
-#         for key in keys_by_desired_count:
-#             students_to_request = dem_count_dict[key][L_TOTAL]
-#             # print(key, dem_count_dict)
-#
-#             # Get that number of students
-#             for _i in range(students_to_request):
-#                 student = demograph_tracker.pop(key)
-#
-#                 if student:
-#                     perf_level = self._determine_perf_lvl(dem_count_dict[key][L_PERF_1:])
-#                     score = self._pick_score_in_pl(perf_level, score_dict)
-#                     dem_count_dict = self._update_dem_counts(student, perf_level, dem_count_dict)
-#                     student_list.append(student)
-#                     score_list.append(score)
-#                 else:
-#                     # print('No student', key, _i, students_to_request)
-#                     break
-#
-#         return student_list, score_list
 
     ##*********************************
     # # Private Methods
@@ -395,82 +286,6 @@ class Demographics(object):
                 available_pls.append(i + 1)  # add 1 so that perf level >= 1 (not >= 0)
         return random.choice(available_pls)
 
-    def _make_other_demographics(self, grade_count_dict, group, asmt_outcomes, students):
-        '''
-        '''
-        group_dict = {}
-
-        # filter all items in this group to new dictionary
-        for key in grade_count_dict:
-            if grade_count_dict[key][L_GROUPING] == group:
-                group_dict[key] = grade_count_dict[key][:]
-
-        # Assign students the demographics
-        for i in range(len(asmt_outcomes)):
-        # for outcome in asmt_outcomes:
-            out_pl = asmt_outcomes[i].asmt_perf_lvl
-            demographic_set = False
-
-            # loop through available demographics
-            # if the value for that perf_lvl is not 0. Give the outcome that demographic
-            for demo_key in group_dict:
-                pl_index = out_pl + 1  # offset perf_lvl by 1
-                if group_dict[demo_key][pl_index]:
-                    setattr(asmt_outcomes[i], demo_key, True)
-                    setattr(students[i], demo_key, True)
-                    group_dict[demo_key][pl_index] -= 1
-                    demographic_set = True
-                    break
-
-            # if no demographic was set, assign demographic randomly
-            # only if demographic is grouped with other demographics
-            if not demographic_set and len(group_dict) > 1:
-                rand_dem = random.choice(list(group_dict.keys()))
-                setattr(asmt_outcomes[i], rand_dem, True)
-                setattr(students[i], rand_dem, True)
-
-        return asmt_outcomes
-
-    def _make_male_or_female(self, male_list, female_list, asmt_outcomes, students):
-        '''
-        '''
-        males = []
-        females = []
-        male_pl_counts = male_list[L_PERF_1:]
-        female_pl_counts = female_list[L_PERF_1:]
-
-        for i in range(len(students)):
-            assert students[i].student_guid == asmt_outcomes[i].student_guid
-            student_pl = asmt_outcomes[i].asmt_perf_lvl
-
-            if male_pl_counts[student_pl - 1]:
-                males.append(students[i])
-                male_pl_counts[student_pl - 1] -= 1
-            elif female_pl_counts[student_pl - 1]:
-                females.append(students[i])
-                female_pl_counts[student_pl - 1] -= 1
-            else:
-                if random.randint(0, 1):
-                    males.append(students[i])
-                else:
-                    females.append(students[i])
-
-        self._assign_gender(males, 'male')
-        self._assign_gender(females, 'female')
-
-        return students
-
-    def _assign_gender(self, student_list, gender):
-        '''
-        '''
-        for student in student_list:
-            # Check to see if student already has new gender
-            if not student.has_updated_gender:
-                student.gender = gender
-                student.first_name = generate_first_or_middle_name(gender)
-                student.middle_name = possibly_generate_middle_name(gender)
-                student.has_updated_gender = True
-
     def _set_demographic_in_object(self, student, demo_key, group_dict, perf_lvl):
         '''
         Set the demographic in the student object to be true
@@ -500,8 +315,6 @@ class Demographics(object):
         else_count = 0
         remains = [0, 0, 0, 0]
         start = [0, 0, 0, 0]
-        m_count = 0
-        f_count = 0
 
         # for asmt_score in asmt_scores:
         while asmt_scores:
@@ -516,7 +329,6 @@ class Demographics(object):
                 gender = 'female'
                 female_pl_counts[pl_index] -= 1
                 female_tot_count -= 1
-                f_count += 1
 
             # else Check that perf_lvl still needs students
             # and that it is a male turn.
@@ -524,7 +336,6 @@ class Demographics(object):
                 gender = 'male'
                 male_pl_counts[pl_index] -= 1
                 male_tot_count -= 1
-                m_count += 1
 
             # Once all perf_lvls have been filed,
             # place remaining scores wherever there is room
@@ -532,12 +343,10 @@ class Demographics(object):
                 gender = 'male'
                 male_pl_counts[pl_index] -= 1
                 male_tot_count -= 1
-                m_count += 1
             elif female_tot_count > 0:
                 gender = 'female'
                 female_pl_counts[pl_index] -= 1
                 female_tot_count -= 1
-                f_count += 1
             else:
                 print('**No room for you')
 
@@ -549,7 +358,6 @@ class Demographics(object):
 
         print('else_count, male_pl_counts, female_pl_counts', else_count, male_pl_counts, female_pl_counts)
         print('start, remains', start, remains)
-        print('f', f_count, 'm', m_count)
         return students
 
     def _assign_other_demographics(self, grade_count_dict, group, u_students, subject):
@@ -602,10 +410,6 @@ class Demographics(object):
                 # Add this student to the list of unused students
                 unused_studs.append(stud)
 
-            #######
-            if len(stud.getDemoOfStudent()) <= 1:
-                print('dem of student less than 1')
-            #######
         # the number of unused students should be less that 1%
         if len(unused_studs) / len(u_students) > .01:
             print('******GREATER THAN 1% OFF')
@@ -631,11 +435,6 @@ class Demographics(object):
             if not demographic_set:
                 rnd_demo = random.choice(ordered_group_keys)
                 self._set_demographic_in_object(stud, rnd_demo, group_dict, perf_lvl)
-
-            #######
-            if len(stud.getDemoOfStudent()) <= 1:
-                print('dem of student less than 1')
-            #######
 
         print('unused_studs', len(unused_studs))
         print('all_pl', all_pl)

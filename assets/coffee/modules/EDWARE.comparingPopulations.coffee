@@ -122,7 +122,11 @@ define [
         
         # Create compare population grid for State/District/School view
         renderGrid gridConfig, populationData, summaryData
-
+        
+        # Enable the sorting arrows in dropdown if the current sort column isn't the first column
+        curSortColumn = $('#gridTable').getGridParam('sortname')
+        if $('#gridTable').getGridParam('colModel') and curSortColumn != $('#gridTable').getGridParam('colModel')[0].name
+          enableSortableColumnWithSortArrow curSortColumn
         # Apply alignment
         formatBarAlignment()
         

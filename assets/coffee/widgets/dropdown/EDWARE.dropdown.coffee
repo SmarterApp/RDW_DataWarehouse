@@ -109,8 +109,13 @@ define [
 
     resetAll: () ->
       # reset dropdown state
+      # hide arrow icons
+      this.hideSortArrow()
       this.resetDropdown()
       this.setCenter()
+      
+    hideSortArrow: () ->
+      $('#gbox_gridTable .colorSortArrow span.s-ico').css('visibility', 'hidden')
 
     resetDropdown: () ->
       # unselect radio button

@@ -9,9 +9,7 @@ from smarter.reports.helpers.percentage_calc import normalize_percentages
 from sqlalchemy.sql import select
 from sqlalchemy.sql import and_
 from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
-from sqlalchemy.sql.expression import case, func, true, null, cast
-from sqlalchemy.types import INTEGER
-from smarter.reports.exceptions.parameter_exception import InvalidParameterException
+from sqlalchemy.sql.expression import func, true, case, null
 from smarter.reports.helpers.constants import Constants
 from edapi.logging import audit_event
 import collections
@@ -21,8 +19,9 @@ from smarter.security.context import select_with_context
 from smarter.database.smarter_connector import SmarterDBConnection
 from smarter.reports.filters import Constants_filter_names
 from smarter.reports.utils.cache import cache_region
-from smarter.reports.filters.demographics import get_demographic_filter,\
+from smarter.reports.filters.demographics import get_demographic_filter, \
     get_ethnicity_filter
+from smarter.reports.exceptions.parameter_exception import InvalidParameterException
 
 
 REPORT_NAME = "comparing_populations"
@@ -187,10 +186,7 @@ class ComparingPopReport(object):
         if not results and len(self.filters.keys()) is 0:
             raise NotFoundException("There are no results")
 
-        # arrange results
-        results = self.arrange_results(results, **params)
-
-        return results
+        return self.arrange_results(results, **params)
 
     def run_query(self, **params):
         '''
@@ -205,6 +201,26 @@ class ComparingPopReport(object):
             results = connector.get_result(query)
         return results
 
+    def get_asmt_levels(self):
+        # TODO:  remove this query after we move levels to its own table
+        asmt_map = {}
+        with SmarterDBConnection(tenant=self.tenant) as connector:
+            dim_asmt = connector.get_table(Constants.DIM_ASMT)
+            query = select([dim_asmt.c.asmt_subject.label(Constants.ASMT_SUBJECT),
+                            func.max(case([(dim_asmt.c.asmt_perf_lvl_name_5 != null(), 5),
+                                           (dim_asmt.c.asmt_perf_lvl_name_4 != null(), 4),
+                                           (dim_asmt.c.asmt_perf_lvl_name_3 != null(), 3),
+                                           (dim_asmt.c.asmt_perf_lvl_name_2 != null(), 2),
+                                           (dim_asmt.c.asmt_perf_lvl_name_1 != null(), 1)],
+                                          else_='0')).label(Constants.DISPLAY_LEVEL).label(Constants.LEVEL)],
+                           from_obj=[dim_asmt])\
+                .where(dim_asmt.c.most_recent == true())\
+                .group_by(dim_asmt.c.asmt_subject)
+            results = connector.get_result(query)
+            for result in results:
+                asmt_map[result[Constants.ASMT_SUBJECT]] = result[Constants.LEVEL]
+        return asmt_map
+
     def arrange_results(self, results, **param):
         '''
         Arrange the results in optimal way to be consumed by front-end
@@ -212,11 +228,10 @@ class ComparingPopReport(object):
         :rtype: dict
         :returns:  results arranged for front-end consumption
         '''
-        subjects = {Constants.MATH: Constants.SUBJECT1, Constants.ELA: Constants.SUBJECT2}
-        record_manager = RecordManager(subjects, **param)
+        subjects = collections.OrderedDict({Constants.MATH: Constants.SUBJECT1, Constants.ELA: Constants.SUBJECT2})
+        record_manager = RecordManager(subjects, self.get_asmt_levels(), **param)
 
         for result in results:
-            # use record manager to update record with result set
             record_manager.update_record(result)
 
         # bind the results
@@ -230,48 +245,48 @@ class RecordManager():
     '''
     record manager class
     '''
-    def __init__(self, subjects_map, stateCode=None, districtGuid=None, schoolGuid=None, **kwargs):
+    def __init__(self, subjects_map, asmt_levels, stateCode=None, districtGuid=None, schoolGuid=None, **kwargs):
         self._stateCode = stateCode
         self._districtGuid = districtGuid
         self._schoolGuid = schoolGuid
         self._subjects_map = subjects_map
         self._tracking_record = collections.OrderedDict()
         self._asmt_custom_metadata_results = {}
+        self._summary = {}
+        self._asmt_level = asmt_levels
+        self.init_summary(self._summary)
+
+    def init_summary(self, data):
+        if self._subjects_map is not None:
+            for alias in self._subjects_map.values():
+                data[alias] = {}
 
     def update_record(self, result):
         '''
-        add a result set to manager and calculate percentage, then store by the name of subjects
+        add a result set to manager, and store by the name of subjects
         '''
-        rec_id = result[Constants.ID]
-        name = result[Constants.NAME]
-        # get record from the memory
-        record = self._tracking_record.get(rec_id, None)
-        # otherwise, create new empty reord
+        inst_id = result[Constants.ID]
+        record = self._tracking_record.get(inst_id, None)
+        subject_alias_name = self._subjects_map[result[Constants.ASMT_SUBJECT]]
+        # otherwise, create new empty record
         if record is None:
-            # it requires unique ID and and name
-            record = Record(record_id=rec_id, name=name)
-            self._tracking_record[rec_id] = record
+            record = Record(inst_id=inst_id, name=result[Constants.NAME])
+            self._tracking_record[inst_id] = record
+            self.init_summary(record.subjects)
 
-        subject_name = result[Constants.ASMT_SUBJECT]
-        subject_alias_name = self._subjects_map[subject_name]
-        total = result[Constants.TOTAL]
-        # create intervals
-        intervals = [self.create_interval(result, i) for i in range(1, result[Constants.DISPLAY_LEVEL] + 1)]
+        # Update overall summary and summary for current record
+        self.update_interval(self._summary[subject_alias_name], result[Constants.LEVEL], result[Constants.TOTAL])
+        self.update_interval(record.subjects[subject_alias_name], result[Constants.LEVEL], result[Constants.TOTAL])
 
-        # make sure percentages add to 100%
-        self.adjust_percentages(intervals)
-
-        # reformatting for record object
-        __subject = {Constants.TOTAL: total, Constants.ASMT_SUBJECT: subject_name, Constants.INTERVALS: intervals}
-        __subjects = record.subjects
-        __subjects[subject_alias_name] = __subject
-        record.subjects = __subjects
-
+        # TODO:  cpop query doesn't have custom_metadata anymore - remove this in refactoring
         if subject_alias_name not in self._asmt_custom_metadata_results:
             custom_metadata = result.get(Constants.ASMT_CUSTOM_METADATA)
             if custom_metadata:
                 custom_metadata = json.loads(custom_metadata)
             self._asmt_custom_metadata_results[subject_alias_name] = custom_metadata
+
+    def update_interval(self, data, level, count):
+        data[level] = data.get(level, 0) + count
 
     def get_asmt_custom_metadata(self):
         '''
@@ -286,73 +301,46 @@ class RecordManager():
         return {v: k for k, v in self._subjects_map.items()}
 
     def get_summary(self):
+        return [{Constants.RESULTS: self.format_results(self._summary)}]
+
+    def format_results(self, data):
         '''
         return summary of all records
         '''
         results = collections.OrderedDict()
-        summary_records = [{Constants.RESULTS: results}]
-        for record in self._tracking_record.values():
-            # get subjects record from "record"
-            subjects_record = record.subjects
-            # iterate each subjects
-            for subject_alias_name in subjects_record.keys():
-                # get subject record
-                subject_record = subjects_record[subject_alias_name]
-                # get processed subject record. If this is the first time, then create empty record
-                if subject_alias_name not in results:
-                    results[subject_alias_name] = {}
-                summary_record = results[subject_alias_name]
-                # sum up total
-                summary_record[Constants.TOTAL] = summary_record.get(Constants.TOTAL, 0) + subject_record[Constants.TOTAL]
-                # add subject name
-                summary_record[Constants.ASMT_SUBJECT] = subject_record[Constants.ASMT_SUBJECT]
-                # get intervals
-                subject_intervals = subject_record[Constants.INTERVALS]
-                size_of_interval = len(subject_intervals)
-                summary_record_intervals = summary_record.get(Constants.INTERVALS, None)
-                # if there is not intervals in summary record,
-                # then initialize fixed-size list
-                if summary_record_intervals is None:
-                    summary_record_intervals = [None] * size_of_interval
-                    summary_record[Constants.INTERVALS] = summary_record_intervals
-                for index in range(size_of_interval):
-                    if summary_record_intervals[index] is None:
-                        summary_record_intervals[index] = {}
-                    summary_interval = summary_record_intervals[index]
-                    subject_interval = subject_intervals[index]
-                    summary_interval[Constants.COUNT] = summary_interval.get(Constants.COUNT, 0) + subject_interval[Constants.COUNT]
-                    summary_interval[Constants.PERCENTAGE] = self.calculate_percentage(summary_interval[Constants.COUNT], summary_record[Constants.TOTAL])
-                    summary_interval[Constants.LEVEL] = subject_interval[Constants.LEVEL]
-
+        if self._subjects_map is not None:
+            for name, alias in self._subjects_map.items():
+                levels = self._asmt_level.get(name)
+                if levels and self._asmt_level[name] != len(data[alias]):
+                    for index in range(1, levels):
+                        if data[alias].get(index) is None:
+                            data[alias][index] = 0
+                intervals = []
+                total = 0
+                for level, count in data[alias].items():
+                    total += count
+                    intervals.append({Constants.LEVEL: level, Constants.COUNT: count})
+                for interval in intervals:
+                    interval[Constants.PERCENTAGE] = self.calculate_percentage(interval[Constants.COUNT], total)
                 # make sure percentages add to 100%
-                self.adjust_percentages(summary_record_intervals)
-
-        return summary_records
+                if total > 0:
+                    results[alias] = {Constants.ASMT_SUBJECT: name, Constants.INTERVALS: intervals, Constants.TOTAL: total}
+                    self.adjust_percentages(results[alias][Constants.INTERVALS])
+        return results
 
     def get_records(self):
         '''
         return record in array and ordered by name
         '''
         records = []
-        # iterate list sorted by "Record.name"
         for record in self._tracking_record.values():
-            __record = {Constants.ID: record.id, Constants.NAME: record.name, Constants.RESULTS: record.subjects}
-            __record[Constants.PARAMS] = {Constants.STATECODE: self._stateCode, Constants.ID: record.id}
+            __record = {Constants.ID: record.id, Constants.NAME: record.name, Constants.RESULTS: self.format_results(record.subjects), Constants.PARAMS: {Constants.STATECODE: self._stateCode, Constants.ID: record.id}}
             if self._districtGuid is not None:
                 __record[Constants.PARAMS][Constants.DISTRICTGUID] = self._districtGuid
             if self._schoolGuid is not None:
                 __record[Constants.PARAMS][Constants.SCHOOLGUID] = self._schoolGuid
             records.append(__record)
         return records
-
-    def create_interval(self, result, level):
-        '''
-        create interval for paritular level
-        '''
-        level_count = result['level{0}'.format(level)]
-        total = result[Constants.TOTAL]
-        interval = {Constants.COUNT: level_count, Constants.LEVEL: level, Constants.PERCENTAGE: self.calculate_percentage(level_count, total)}
-        return interval
 
     @staticmethod
     def calculate_percentage(count, total):
@@ -375,8 +363,8 @@ class RecordManager():
 
 
 class Record():
-    def __init__(self, record_id=None, name=None):
-        self._id = record_id
+    def __init__(self, inst_id=None, name=None):
+        self._id = inst_id
         self._name = name
         self._subjects = {}
 
@@ -412,7 +400,6 @@ class QueryHelper():
         self._district_guid = districtGuid
         self._school_guid = schoolGuid
         self._filters = filters
-        self._view = self.VIEWS.STATE_VIEW
         if self._state_code is not None and self._district_guid is None and self._school_guid is None:
             self._view = self.VIEWS.STATE_VIEW
             self._f = self.get_query_for_state_view
@@ -424,7 +411,6 @@ class QueryHelper():
             self._f = self.get_query_for_school_view
         else:
             raise InvalidParameterException()
-        # get dim_inst_hier, dim_asmt, and fact_asmt_outcome tables
         self._dim_inst_hier = connector.get_table(Constants.DIM_INST_HIER)
         self._dim_asmt = connector.get_table(Constants.DIM_ASMT)
         self._fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
@@ -433,42 +419,25 @@ class QueryHelper():
         '''
         build select columns based on request
         '''
-        # these are static
-        # get information about bar colors
-        columns = [self._dim_asmt.c.asmt_custom_metadata.label(Constants.ASMT_CUSTOM_METADATA), self._dim_asmt.c.asmt_subject.label(Constants.ASMT_SUBJECT)]
-
-        # use pivot table for summarize from level1 to level5
-        columns = columns + [func.count(case([(self._fact_asmt_outcome.c.asmt_perf_lvl == 1, self._fact_asmt_outcome.c.student_guid)])).label(Constants.LEVEL1),
-                             func.count(case([(self._fact_asmt_outcome.c.asmt_perf_lvl == 2, self._fact_asmt_outcome.c.student_guid)])).label(Constants.LEVEL2),
-                             func.count(case([(self._fact_asmt_outcome.c.asmt_perf_lvl == 3, self._fact_asmt_outcome.c.student_guid)])).label(Constants.LEVEL3),
-                             func.count(case([(self._fact_asmt_outcome.c.asmt_perf_lvl == 4, self._fact_asmt_outcome.c.student_guid)])).label(Constants.LEVEL4),
-                             func.count(case([(self._fact_asmt_outcome.c.asmt_perf_lvl == 5, self._fact_asmt_outcome.c.student_guid)])).label(Constants.LEVEL5),
-                             func.count(self._fact_asmt_outcome.c.student_guid).label(Constants.TOTAL),
-                             # if asmt_perf_lvl_name_# is null, it means data should not be displayed.
-                             # Find display level
-                             func.max(cast(case([(self._dim_asmt.c.asmt_perf_lvl_name_5 != null(), '5'),
-                                                 (self._dim_asmt.c.asmt_perf_lvl_name_4 != null(), '4'),
-                                                 (self._dim_asmt.c.asmt_perf_lvl_name_3 != null(), '3'),
-                                                 (self._dim_asmt.c.asmt_perf_lvl_name_2 != null(), '2'),
-                                                 (self._dim_asmt.c.asmt_perf_lvl_name_1 != null(), '1')],
-                                           else_='0'), INTEGER)).label(Constants.DISPLAY_LEVEL)]
-        query = f(extra_columns + columns,
+        query = f(extra_columns +
+                  [self._dim_asmt.c.asmt_custom_metadata.label(Constants.ASMT_CUSTOM_METADATA),
+                   self._dim_asmt.c.asmt_subject.label(Constants.ASMT_SUBJECT),
+                   self._fact_asmt_outcome.c.asmt_perf_lvl.label(Constants.LEVEL),
+                   func.count(self._fact_asmt_outcome.c.asmt_rec_id).label(Constants.TOTAL)],
                   from_obj=[self._fact_asmt_outcome.join(
                             self._dim_asmt,
                             and_(self._dim_asmt.c.asmt_rec_id == self._fact_asmt_outcome.c.asmt_rec_id,
                                  self._dim_asmt.c.asmt_type == Constants.SUMMATIVE,
-                                 self._dim_asmt.c.most_recent == true(),
-                                 self._fact_asmt_outcome.c.most_recent == true())).join(
-                            self._dim_inst_hier, and_(self._dim_inst_hier.c.inst_hier_rec_id == self._fact_asmt_outcome.c.inst_hier_rec_id, self._dim_inst_hier.c.most_recent == true()))]
+                                 self._dim_asmt.c.most_recent == true())).join(
+                            self._dim_inst_hier, and_(self._dim_inst_hier.c.inst_hier_rec_id == self._fact_asmt_outcome.c.inst_hier_rec_id))]
                   )\
-            .group_by(self._dim_asmt.c.asmt_subject, self._dim_asmt.c.asmt_custom_metadata)\
+            .group_by(self._dim_asmt.c.asmt_subject,
+                      self._dim_asmt.c.asmt_custom_metadata,
+                      self._fact_asmt_outcome.c.asmt_perf_lvl)\
             .order_by(self._dim_asmt.c.asmt_subject.desc())\
-            .where(and_(self._fact_asmt_outcome.c.state_code == self._state_code, self._fact_asmt_outcome.c.status == 'C'))
-
-        # apply demographics filters
-        query = self.apply_demographics_filter(query)
-
-        return query
+            .where(and_(self._fact_asmt_outcome.c.state_code == self._state_code, self._fact_asmt_outcome.c.most_recent == true()))
+        # apply demographics filters to query
+        return self.apply_demographics_filter(query)
 
     def get_query(self):
         return self._f()

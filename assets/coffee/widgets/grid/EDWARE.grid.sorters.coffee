@@ -4,11 +4,11 @@ define [
 ], ($, jqGrid) ->
 
   popBarSort = (cell, rowObject) ->
-    checked = $('.inputColorBlock:checked').val()
+    checked = $('.inputColorBlock:checked')
     if checked
-      subject = checked.substring(0, checked.indexOf('_'))
-      index = $('#' + checked ).index()
-      
+      subject = checked.data('subject')
+      index = checked.data('index')
+      value = -1
       for result of rowObject.results
         cur = rowObject.results[result]
         if cur.asmt_subject == subject

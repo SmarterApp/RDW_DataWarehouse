@@ -26,6 +26,7 @@ require({
 		edwareFooter: '../widgets/footer/EDWARE.footer',
 		edwareLoadingMask: '../widgets/loadingMask/EDWARE.loadingMask',
 		edwareFilter: '../widgets/filter/EDWARE.filter',
+		edwareDropdown: '../widgets/dropdown/EDWARE.dropdown',
 		
 		// Templates
 		edwareBreadcrumbsTemplate: '../widgets/breadcrumb/template.html',
@@ -39,6 +40,7 @@ require({
 		edwareHeaderHtml: '../widgets/header/header.html',
 		edwareFooterHtml: '../widgets/footer/template.html',
 		edwareFilterTemplate: '../widgets/filter/template.html',
+		edwareDropdownTemplate: '../widgets/dropdown/template.html',
 		edwareFeedbackHTML: '../../templates/feedback/feedback.html'
 	},
 	shim: {

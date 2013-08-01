@@ -15,7 +15,7 @@ define [
   
   RESET_DROPDOWN = 'edware.filter.reset.dropdown'
   
-  FILTER_PARAMS = 'edware.filter.params'
+  FILTER_PARAMS = document.cookie + 'edware.filter.params'
   
   class EdwareFilter
     
@@ -38,7 +38,7 @@ define [
       this.filters = $('.filter-group', this.filterPanel)
       this.tagPanelWrapper = $('.selectedFilter_panel', this.filterArea)
       this.tagPanel = $('.filters', this.tagPanelWrapper)
-      this.clearAllButton = $('.icon_removeAll', this.filterArea)
+      this.clearAllButton = $('.removeAllFilters', this.filterArea)
 
     loadPage: ->
       # load config from server
@@ -156,7 +156,6 @@ define [
       $.extend(params, selectedValues)
       # save param to session storage
       sessionStorage.setItem(FILTER_PARAMS, JSON.stringify(params)) if sessionStorage
-      console.log params
       callback params if callback
       
     # get parameters for ajax call

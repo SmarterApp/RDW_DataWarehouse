@@ -1,0 +1,26 @@
+<div class='dropdown' data-subject='{{asmtSubject}}'>
+	<a class='dropdown-toggle' role='button' data-toggle='dropdown'>
+		<div class='dropdown_title'>{{selectSort}}</div>
+		<b class='caret'></b>
+	</a>
+	<ul class='dropdown-menu' role='menu' aria-labelledby='dLabel'>
+		{{#colors}}
+		<li class='colorsBlock'>
+			<label>
+				<input type='radio' name='colorBlock_sort' class='inputColorBlock' data-subject='{{asmtSubject}}'/>
+				<div class="colorBar">
+					{{#colors}}
+					<div class='colorBlock' style='background-color:{{bg_color}}'></div>
+					{{/colors}}
+				</div>
+			</label>
+		</li>
+		{{/colors}}
+		<li class='colorsBlock'>
+			<label>
+				<input type='radio' name='colorBlock_sort' class='inputColorBlock' data-subject='{{asmtSubject}}'/>
+				<div class='totalStudents'>{{totalStudents}}</div>
+			</label>
+		</li>
+	</ul>
+</div>

@@ -57,14 +57,16 @@ def get_column_mapping_from_stg_to_int(conn, ref_table, staging_table, integrati
             source_column = mapping[0]
             target_column = mapping[1]
             stored_proc_exp = mapping[2]
+            source_column_with_query_prefix = ', '.join(['A.' + sub_srouce_column.strip() for sub_srouce_column in source_column.split(',')])
+
             # if this target column has the length information we got before
             if stored_proc_exp is not None:
                 if target_column in column_name_length_dict.keys():
-                    stored_proc_exp = stored_proc_exp.format(src_column='A.' + source_column, length=column_name_length_dict[target_column])
+                    stored_proc_exp = stored_proc_exp.format(src_column=source_column_with_query_prefix, length=column_name_length_dict[target_column])
                 else:
-                    stored_proc_exp = stored_proc_exp.format(src_column='A.' + source_column)
+                    stored_proc_exp = stored_proc_exp.format(src_column=source_column_with_query_prefix)
             else:
-                stored_proc_exp = 'A.' + source_column
+                stored_proc_exp = source_column_with_query_prefix
             target_columns.append(target_column)
             source_columns_with_tran_rule.append(stored_proc_exp)
     return target_columns, source_columns_with_tran_rule

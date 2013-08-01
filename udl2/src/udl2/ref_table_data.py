@@ -155,7 +155,6 @@ ref_table_conf = {
         ('3', 'STG_SBAC_ASMT_OUTCOME', 'name_staff_last', 'INT_SBAC_ASMT_OUTCOME', 'name_staff_last', None, 'substr({src_column}, 1, {length})'),
         ('3', 'STG_SBAC_ASMT_OUTCOME', 'type_staff', 'INT_SBAC_ASMT_OUTCOME', 'type_staff', None, 'substr({src_column}, 1, {length})'),
         ('3', 'STG_SBAC_ASMT_OUTCOME', 'created_date', 'INT_SBAC_ASMT_OUTCOME', 'created_date', None, None),
-        # TODO: type conversion for all demographic fields? Type is boolean. Can we do cast?
         ('3', 'STG_SBAC_ASMT_OUTCOME', 'dmg_eth_hsp', 'INT_SBAC_ASMT_OUTCOME', 'dmg_eth_hsp', None, 'cast({src_column} as bool)'),
         ('3', 'STG_SBAC_ASMT_OUTCOME', 'dmg_eth_ami', 'INT_SBAC_ASMT_OUTCOME', 'dmg_eth_ami', None, 'cast({src_column} as bool)'),
         ('3', 'STG_SBAC_ASMT_OUTCOME', 'dmg_eth_asn', 'INT_SBAC_ASMT_OUTCOME', 'dmg_eth_asn', None, 'cast({src_column} as bool)'),
@@ -166,6 +165,7 @@ ref_table_conf = {
         ('3', 'STG_SBAC_ASMT_OUTCOME', 'dmg_prg_lep', 'INT_SBAC_ASMT_OUTCOME', 'dmg_prg_lep', None, 'cast({src_column} as bool)'),
         ('3', 'STG_SBAC_ASMT_OUTCOME', 'dmg_prg_504', 'INT_SBAC_ASMT_OUTCOME', 'dmg_prg_504', None, 'cast({src_column} as bool)'),
         ('3', 'STG_SBAC_ASMT_OUTCOME', 'dmg_prg_tt1', 'INT_SBAC_ASMT_OUTCOME', 'dmg_prg_tt1', None, 'cast({src_column} as bool)'),
+        ('3', 'STG_SBAC_ASMT_OUTCOME', "dmg_eth_blk, dmg_eth_asn, dmg_eth_hsp, dmg_eth_ami, dmg_eth_pcf, dmg_eth_wht", 'INT_SBAC_ASMT_OUTCOME', 'dmg_eth_derived', 'deriveEthnicity', None),
         # Integration to Target
         ('4', 'INT_SBAC_ASMT', 'nextval(\'"GLOBAL_REC_SEQ"\')', 'dim_asmt', 'asmt_rec_id', None, None),
         ('4', 'INT_SBAC_ASMT', 'guid_asmt', 'dim_asmt', 'asmt_guid', None, None),
@@ -296,6 +296,8 @@ ref_table_conf = {
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'dmg_prg_lep', 'fact_asmt_outcome', 'dmg_prg_lep', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'dmg_prg_504', 'fact_asmt_outcome', 'dmg_prg_504', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'dmg_prg_tt1', 'fact_asmt_outcome', 'dmg_prg_tt1', None, None),
+        ('4', 'INT_SBAC_ASMT_OUTCOME', 'dmg_eth_derived', 'fact_asmt_outcome', 'dmg_eth_derived', None, None),
+
     ]
 }
 

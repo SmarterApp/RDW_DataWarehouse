@@ -229,13 +229,13 @@ class ComparingPopReport(object):
         '''
         subjects = collections.OrderedDict({Constants.MATH: Constants.SUBJECT1, Constants.ELA: Constants.SUBJECT2})
         asmt_custom_metadata = get_asmt_custom_metadata(stateCode=param.get(Constants.STATECODE), tenant=self.tenant)
-        record_manager = RecordManager(subjects, self.get_asmt_levels(), asmt_custom_metadata, **param)
+        record_manager = RecordManager(subjects, self.get_asmt_levels(), **param)
 
         for result in results:
             record_manager.update_record(result)
 
         # bind the results
-        return {Constants.COLORS: record_manager.get_asmt_custom_metadata(),
+        return {Constants.COLORS: asmt_custom_metadata,
                 Constants.SUMMARY: record_manager.get_summary(), Constants.RECORDS: record_manager.get_records(),
                 Constants.SUBJECTS: record_manager.get_subjects(),  # reverse map keys and values for subject
                 Constants.CONTEXT: get_breadcrumbs_context(state_code=param.get(Constants.STATECODE), district_guid=param.get(Constants.DISTRICTGUID), school_guid=param.get(Constants.SCHOOLGUID), tenant=self.tenant)}
@@ -245,13 +245,12 @@ class RecordManager():
     '''
     record manager class
     '''
-    def __init__(self, subjects_map, asmt_levels, asmt_cstm_metadata, stateCode=None, districtGuid=None, schoolGuid=None, **kwargs):
+    def __init__(self, subjects_map, asmt_levels, stateCode=None, districtGuid=None, schoolGuid=None, **kwargs):
         self._stateCode = stateCode
         self._districtGuid = districtGuid
         self._schoolGuid = schoolGuid
         self._subjects_map = subjects_map
         self._tracking_record = collections.OrderedDict()
-        self._asmt_custom_metadata_results = asmt_cstm_metadata
         self._summary = {}
         self._asmt_level = asmt_levels
         self.init_summary(self._summary)
@@ -280,12 +279,6 @@ class RecordManager():
 
     def update_interval(self, data, level, count):
         data[level] = data.get(level, 0) + int(count)
-
-    def get_asmt_custom_metadata(self):
-        '''
-        for FE color information for each subjects
-        '''
-        return self._asmt_custom_metadata_results
 
     def get_subjects(self):
         '''
@@ -449,9 +442,9 @@ class QueryHelper():
         if self._view in [self.VIEWS.STATE_VIEW, self.VIEWS.DISTRICT_VIEW]:
             subquery = query.alias()
             query = f(extra_columns +
-                      [subquery.c[Constants.ASMT_CUSTOM_METADATA], subquery.c[Constants.ASMT_SUBJECT], subquery.c[Constants.LEVEL], func.sum(subquery.c[Constants.TOTAL]).label(Constants.TOTAL)],
+                      [subquery.c[Constants.ASMT_SUBJECT], subquery.c[Constants.LEVEL], func.sum(subquery.c[Constants.TOTAL]).label(Constants.TOTAL)],
                       from_obj=[self._dim_inst_hier.join(subquery, self._dim_inst_hier.c.inst_hier_rec_id == subquery.c[Constants.INST_HIER_REC_ID])])\
-                .group_by(subquery.c[Constants.ASMT_SUBJECT], subquery.c[Constants.LEVEL], subquery.c[Constants.ASMT_CUSTOM_METADATA])
+                .group_by(subquery.c[Constants.ASMT_SUBJECT], subquery.c[Constants.LEVEL])
         return query.order_by(query.c[Constants.ASMT_SUBJECT].desc())
 
     def get_query(self):

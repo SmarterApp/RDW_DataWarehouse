@@ -9,7 +9,7 @@ from smarter.reports.helpers.percentage_calc import normalize_percentages
 from sqlalchemy.sql import select
 from sqlalchemy.sql import and_
 from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
-from sqlalchemy.sql.expression import func, true, case, null, column
+from sqlalchemy.sql.expression import func, true, case, null
 from smarter.reports.helpers.constants import Constants
 from edapi.logging import audit_event
 import collections
@@ -178,7 +178,6 @@ class ComparingPopReport(object):
         :rtype: dict
         :returns: A comparing populations report based on parameters supplied
         '''
-        # run query
         params = {Constants.STATECODE: self.state_code, Constants.DISTRICTGUID: self.district_guid, Constants.SCHOOLGUID: self.school_guid, 'filters': self.filters}
         results = self.run_query(**params)
 
@@ -483,23 +482,22 @@ class QueryHelper():
                    .order_by(self._fact_asmt_outcome.c.asmt_grade)
 
     def apply_demographics_filter(self, query):
-        if query is not None:
-            if self._filters:
-                filter_iep = get_demographic_filter(Constants_filter_names.DEMOGRAPHICS_PROGRAM_IEP, self._fact_asmt_outcome.c.dmg_prg_iep, self._filters)
-                if filter_iep is not None:
-                    query = query.where(filter_iep)
-                filter_504 = get_demographic_filter(Constants_filter_names.DEMOGRAPHICS_PROGRAM_504, self._fact_asmt_outcome.c.dmg_prg_504, self._filters)
-                if filter_504 is not None:
-                    query = query.where(filter_504)
-                filter_lep = get_demographic_filter(Constants_filter_names.DEMOGRAPHICS_PROGRAM_LEP, self._fact_asmt_outcome.c.dmg_prg_lep, self._filters)
-                if filter_lep is not None:
-                    query = query.where(filter_lep)
-                filter_tt1 = get_demographic_filter(Constants_filter_names.DEMOGRAPHICS_PROGRAM_TT1, self._fact_asmt_outcome.c.dmg_prg_tt1, self._filters)
-                if filter_tt1 is not None:
-                    query = query.where(filter_tt1)
-                filter_grade = self._filters.get(Constants_filter_names.GRADE)
-                if self._filters.get(Constants_filter_names.GRADE):
-                    query = query.where(self._fact_asmt_outcome.c.asmt_grade.in_(filter_grade))
-                if self._filters.get(Constants_filter_names.ETHNICITY):
-                    query = query.where(get_ethnicity_filter(self._filters, self._fact_asmt_outcome))
+        if self._filters:
+            filter_iep = get_demographic_filter(Constants_filter_names.DEMOGRAPHICS_PROGRAM_IEP, self._fact_asmt_outcome.c.dmg_prg_iep, self._filters)
+            if filter_iep is not None:
+                query = query.where(filter_iep)
+            filter_504 = get_demographic_filter(Constants_filter_names.DEMOGRAPHICS_PROGRAM_504, self._fact_asmt_outcome.c.dmg_prg_504, self._filters)
+            if filter_504 is not None:
+                query = query.where(filter_504)
+            filter_lep = get_demographic_filter(Constants_filter_names.DEMOGRAPHICS_PROGRAM_LEP, self._fact_asmt_outcome.c.dmg_prg_lep, self._filters)
+            if filter_lep is not None:
+                query = query.where(filter_lep)
+            filter_tt1 = get_demographic_filter(Constants_filter_names.DEMOGRAPHICS_PROGRAM_TT1, self._fact_asmt_outcome.c.dmg_prg_tt1, self._filters)
+            if filter_tt1 is not None:
+                query = query.where(filter_tt1)
+            filter_grade = self._filters.get(Constants_filter_names.GRADE)
+            if self._filters.get(Constants_filter_names.GRADE):
+                query = query.where(self._fact_asmt_outcome.c.asmt_grade.in_(filter_grade))
+            if self._filters.get(Constants_filter_names.ETHNICITY):
+                query = query.where(get_ethnicity_filter(self._filters, self._fact_asmt_outcome))
         return query

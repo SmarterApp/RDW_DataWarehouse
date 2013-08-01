@@ -233,12 +233,13 @@ class RecordManager():
     '''
     record manager class
     '''
-    def __init__(self, subjects_map, asmt_levels, stateCode=None, districtGuid=None, schoolGuid=None, **kwargs):
+    def __init__(self, subjects_map, asmt_levels, asmt_cstm_metadata, stateCode=None, districtGuid=None, schoolGuid=None, **kwargs):
         self._stateCode = stateCode
         self._districtGuid = districtGuid
         self._schoolGuid = schoolGuid
         self._subjects_map = subjects_map
         self._tracking_record = collections.OrderedDict()
+        self._asmt_custom_metadata_results = asmt_cstm_metadata
         self._summary = {}
         self._asmt_level = asmt_levels
         self.init_summary(self._summary)

@@ -5,7 +5,6 @@ Created on Mar 20, 2013
 
 @author: dip
 '''
-import json
 
 
 def get_overall_asmt_interval(result):
@@ -16,17 +15,12 @@ def get_overall_asmt_interval(result):
     return result['asmt_score'] - result['asmt_score_range_min']
 
 
-def get_cut_points(asmt_meta):
+def get_cut_points(custom, asmt_meta):
     '''
     Given a dictionary, return a formatted results for assessment cutpoints and colors
     '''
     result = asmt_meta.copy()
     result['cut_point_intervals'] = []
-
-    custom_metadata = result['asmt_custom_metadata']
-    custom = None if not custom_metadata else json.loads(custom_metadata)
-    # once we use the data, we clean it from the result
-    del(result['asmt_custom_metadata'])
 
     # go over the 4 cut points
     for i in range(1, 5):

@@ -14,7 +14,6 @@ from smarter.reports.helpers.constants import Constants
 from edapi.logging import audit_event
 import collections
 from edapi.exceptions import NotFoundException
-import json
 from smarter.security.context import select_with_context
 from smarter.database.smarter_connector import SmarterDBConnection
 from smarter.reports.filters import Constants_filter_names
@@ -22,6 +21,7 @@ from smarter.reports.utils.cache import cache_region
 from smarter.reports.filters.demographics import get_demographic_filter, \
     get_ethnicity_filter
 from smarter.reports.exceptions.parameter_exception import InvalidParameterException
+from smarter.reports.utils.metadata import get_asmt_custom_metadata
 
 
 REPORT_NAME = "comparing_populations"
@@ -229,7 +229,8 @@ class ComparingPopReport(object):
         :returns:  results arranged for front-end consumption
         '''
         subjects = collections.OrderedDict({Constants.MATH: Constants.SUBJECT1, Constants.ELA: Constants.SUBJECT2})
-        record_manager = RecordManager(subjects, self.get_asmt_levels(), **param)
+        asmt_custom_metadata = get_asmt_custom_metadata(stateCode=param.get(Constants.STATECODE))
+        record_manager = RecordManager(subjects, self.get_asmt_levels(), asmt_custom_metadata, **param)
 
         for result in results:
             record_manager.update_record(result)
@@ -245,13 +246,13 @@ class RecordManager():
     '''
     record manager class
     '''
-    def __init__(self, subjects_map, asmt_levels, stateCode=None, districtGuid=None, schoolGuid=None, **kwargs):
+    def __init__(self, subjects_map, asmt_levels, asmt_cstm_metadata, stateCode=None, districtGuid=None, schoolGuid=None, **kwargs):
         self._stateCode = stateCode
         self._districtGuid = districtGuid
         self._schoolGuid = schoolGuid
         self._subjects_map = subjects_map
         self._tracking_record = collections.OrderedDict()
-        self._asmt_custom_metadata_results = {}
+        self._asmt_custom_metadata_results = asmt_cstm_metadata
         self._summary = {}
         self._asmt_level = asmt_levels
         self.init_summary(self._summary)
@@ -277,13 +278,6 @@ class RecordManager():
         # Update overall summary and summary for current record
         self.update_interval(self._summary[subject_alias_name], result[Constants.LEVEL], result[Constants.TOTAL])
         self.update_interval(record.subjects[subject_alias_name], result[Constants.LEVEL], result[Constants.TOTAL])
-
-        # TODO:  cpop query doesn't have custom_metadata anymore - remove this in refactoring
-        if subject_alias_name not in self._asmt_custom_metadata_results:
-            custom_metadata = result.get(Constants.ASMT_CUSTOM_METADATA)
-            if custom_metadata:
-                custom_metadata = json.loads(custom_metadata)
-            self._asmt_custom_metadata_results[subject_alias_name] = custom_metadata
 
     def update_interval(self, data, level, count):
         data[level] = data.get(level, 0) + count
@@ -420,19 +414,16 @@ class QueryHelper():
         build select columns based on request
         '''
         query = f(extra_columns +
-                  [self._dim_asmt.c.asmt_custom_metadata.label(Constants.ASMT_CUSTOM_METADATA),
-                   self._dim_asmt.c.asmt_subject.label(Constants.ASMT_SUBJECT),
+                  [self._dim_asmt.c.asmt_subject.label(Constants.ASMT_SUBJECT),
                    self._fact_asmt_outcome.c.asmt_perf_lvl.label(Constants.LEVEL),
                    func.count(self._fact_asmt_outcome.c.asmt_rec_id).label(Constants.TOTAL)],
-                  from_obj=[self._fact_asmt_outcome.join(
-                            self._dim_asmt,
-                            and_(self._dim_asmt.c.asmt_rec_id == self._fact_asmt_outcome.c.asmt_rec_id,
-                                 self._dim_asmt.c.asmt_type == Constants.SUMMATIVE,
-                                 self._dim_asmt.c.most_recent == true())).join(
-                            self._dim_inst_hier, and_(self._dim_inst_hier.c.inst_hier_rec_id == self._fact_asmt_outcome.c.inst_hier_rec_id))]
+                  from_obj=[self._fact_asmt_outcome
+                            .join(self._dim_asmt, and_(self._dim_asmt.c.asmt_rec_id == self._fact_asmt_outcome.c.asmt_rec_id, 
+                                                       self._dim_asmt.c.asmt_type == Constants.SUMMATIVE, 
+                                                       self._dim_asmt.c.most_recent == true()))
+                            .join(self._dim_inst_hier, and_(self._dim_inst_hier.c.inst_hier_rec_id == self._fact_asmt_outcome.c.inst_hier_rec_id))]
                   )\
             .group_by(self._dim_asmt.c.asmt_subject,
-                      self._dim_asmt.c.asmt_custom_metadata,
                       self._fact_asmt_outcome.c.asmt_perf_lvl)\
             .order_by(self._dim_asmt.c.asmt_subject.desc())\
             .where(and_(self._fact_asmt_outcome.c.state_code == self._state_code, self._fact_asmt_outcome.c.most_recent == true()))

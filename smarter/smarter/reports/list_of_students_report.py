@@ -17,6 +17,8 @@ from edapi.exceptions import NotFoundException
 from smarter.security.context import select_with_context
 from smarter.database.smarter_connector import SmarterDBConnection
 from smarter.reports.utils.cache import cache_region
+from smarter.reports.utils.metadata import get_subjects_map,\
+    get_asmt_custom_metadata
 
 REPORT_NAME = "list_of_students"
 
@@ -135,14 +137,7 @@ def get_list_of_students_report(params):
         if not results:
             raise NotFoundException("There are no results")
 
-        subjects_map = {}
-        # This assumes that we take asmtSubject as optional param
-        if asmtSubject is None or (Constants.MATH in asmtSubject and Constants.ELA in asmtSubject):
-            subjects_map = {Constants.MATH: Constants.SUBJECT1, Constants.ELA: Constants.SUBJECT2}
-        elif Constants.MATH in asmtSubject:
-                subjects_map = {Constants.MATH: Constants.SUBJECT1}
-        elif Constants.ELA in asmtSubject:
-                subjects_map = {Constants.ELA: Constants.SUBJECT1}
+        subjects_map = get_subjects_map(asmtSubject)
 
         # Formatting data for Front End
         for result in results:
@@ -187,9 +182,11 @@ def get_list_of_students_report(params):
 
         los_results['assessments'] = assessments
 
-        # query dim_asmt to get cutpoints and color metadata
-        asmt_data = __get_asmt_data(asmtSubject).copy()
-        los_results['metadata'] = __format_cut_points(asmt_data, subjects_map)
+        # query dim_asmt to get cutpoints
+        asmt_data = __get_asmt_data(asmtSubject, stateCode).copy()
+        # color metadata
+        custom_metadata_map = get_asmt_custom_metadata(stateCode)
+        los_results['metadata'] = __format_cut_points(asmt_data, subjects_map, custom_metadata_map)
         los_results['context'] = get_breadcrumbs_context(state_code=stateCode, district_guid=districtGuid, school_guid=schoolGuid, asmt_grade=asmtGrade)
         los_results['subjects'] = __reverse_map(subjects_map)
 
@@ -197,12 +194,12 @@ def get_list_of_students_report(params):
 
 
 @cache_region('public.shortlived')
-def __get_asmt_data(asmtSubject):
+def __get_asmt_data(asmtSubject, stateCode):
     '''
     Queries dim_asmt for cutpoint and custom metadata
     '''
     with SmarterDBConnection() as connector:
-        dim_asmt = connector.get_table('dim_asmt')
+        dim_asmt = connector.get_table(Constants.DIM_ASMT)
 
         # construct the query
         query = select([dim_asmt.c.asmt_subject.label("asmt_subject"),
@@ -217,7 +214,6 @@ def __get_asmt_data(asmtSubject):
                         dim_asmt.c.asmt_cut_point_4.label("asmt_cut_point_4"),
                         dim_asmt.c.asmt_score_min.label('asmt_score_min'),
                         dim_asmt.c.asmt_score_max.label('asmt_score_max'),
-                        dim_asmt.c.asmt_custom_metadata.label("asmt_custom_metadata"),
                         dim_asmt.c.asmt_claim_1_name.label('asmt_claim_1_name'),
                         dim_asmt.c.asmt_claim_2_name.label('asmt_claim_2_name'),
                         dim_asmt.c.asmt_claim_3_name.label('asmt_claim_3_name'),
@@ -232,7 +228,7 @@ def __get_asmt_data(asmtSubject):
         return connector.get_result(query)
 
 
-def __format_cut_points(results, subjects_map):
+def __format_cut_points(results, subjects_map, custom_metadata_map):
     '''
     Returns formatted cutpoints in JSON
     '''
@@ -240,8 +236,9 @@ def __format_cut_points(results, subjects_map):
     claims = {}
     for result in results:
         subject_name = subjects_map[result["asmt_subject"]]
+        custom = custom_metadata_map.get(subject_name)
         # Get formatted cutpoints data
-        cutpoint = get_cut_points(result)
+        cutpoint = get_cut_points(custom, result)
         cutpoints[subject_name] = cutpoint
         # Get formatted claims data
         claims[subject_name] = get_claims(number_of_claims=4, result=result, include_names=True)

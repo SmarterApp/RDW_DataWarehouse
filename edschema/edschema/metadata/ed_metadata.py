@@ -168,7 +168,6 @@ def generate_ed_metadata(schema_name=None, bind=None):
                        Column('asmt_cut_point_2', SmallInteger, nullable=True),
                        Column('asmt_cut_point_3', SmallInteger, nullable=True),
                        Column('asmt_cut_point_4', SmallInteger, nullable=True),
-                       Column('asmt_custom_metadata', Text, nullable=True),
                        Column('from_date', String(8), nullable=False),
                        Column('to_date', String(8), nullable=True),
                        Column('most_recent', Boolean),
@@ -176,6 +175,13 @@ def generate_ed_metadata(schema_name=None, bind=None):
 
     Index('dim_asmt_rec_idx', assessment.c.asmt_rec_id, unique=True)
     Index('dim_asmt_id_typex', assessment.c.asmt_rec_id, assessment.c.asmt_type, assessment.c.most_recent, unique=False)
+
+    assessment_custom_metadata = Table('dim_asmt_custom_metadata', metadata,
+                                       Column('asmt_custom_metadata', Text, nullable=True),
+                                       Column('state_code', String(2), nullable=False),
+                                       Column('asmt_subject', String(100), nullable=False)
+                                       )
+    Index('dim_asmt_custom_id_idx', assessment_custom_metadata.c.state_code, assessment_custom_metadata.c.asmt_subject, unique=True)
 
     assessment_outcome = Table('fact_asmt_outcome', metadata,
                                Column('asmnt_outcome_rec_id', BigInteger, primary_key=True),

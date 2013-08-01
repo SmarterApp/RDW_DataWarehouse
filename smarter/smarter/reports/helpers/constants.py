@@ -44,6 +44,7 @@ class Constants():
     DIM_ASMT = 'dim_asmt'
     DIM_STAFF = 'dim_staff'
     DIM_STUDENT = 'dim_student'
+    DIM_ASMT_CUSTOM_METADATA = 'dim_asmt_custom_metadata'
     FACT_ASMT_OUTCOME = 'fact_asmt_outcome'
     USER_MAPPING = 'user_mapping'
     ASMT_CUSTOM_METADATA = 'asmt_custom_metadata'

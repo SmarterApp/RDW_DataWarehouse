@@ -121,7 +121,6 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
                         'two or more races 2': {'src_column': "'n', 'y', 'n', 'n', NULL, 'y'", 'expected_code': 7},
                         'two or more races 3': {'src_column': "'y', 'y', 'n', 'y', 'y', 'y'", 'expected_code': 7}
                         }
-        self.conf['guid_batch'] = '00000000-0000-0000-0000-000000000000'
         sql_template = 'SELECT %s;' % function_name
         for _key, value in prepare_data.items():
             sql = sql_template.format(src_column=value['src_column'])

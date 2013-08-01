@@ -28,14 +28,14 @@ class TestRecache(Unittest_with_smarter_sqlite):
             'cache.regions': 'public.data, public.filtered_data, unittest'
         }
         self.cache_mgr = CacheManager(**parse_cache_config_options(cache_opts))
-
+ 
     def tearDown(self):
         cache_managers.clear()
 
     def test_recache_state_view_report(self):
         cache_trigger = CacheTrigger(get_unittest_tenant_name(), 'NY', {})
         cache_trigger.recache_state_view_report()
-        self.validate_cache_has_one_item()
+        self.validate_cache_has_expected_number_of_item(2)
 
     def test_recache_state_view_report_invalid_tenant(self):
         cache_trigger = CacheTrigger('i_dont_exists', 'NY', {})
@@ -48,7 +48,7 @@ class TestRecache(Unittest_with_smarter_sqlite):
     def test_recache_district_view_report(self):
         cache_trigger = CacheTrigger(get_unittest_tenant_name(), 'NY', {})
         cache_trigger.recache_district_view_report('228')
-        self.validate_cache_has_one_item()
+        self.validate_cache_has_expected_number_of_item(2)
 
     def test_recache_district_view_report_invalid_tenant(self):
         cache_trigger = CacheTrigger('i_dont_exists', 'NY', {})
@@ -61,7 +61,7 @@ class TestRecache(Unittest_with_smarter_sqlite):
     def test_flush_state_view_report(self):
         cache_trigger = CacheTrigger(get_unittest_tenant_name(), 'NY', {})
         cache_trigger.recache_state_view_report()
-        self.validate_cache_has_expectrd_number_of_item(2)
+        self.validate_cache_has_expected_number_of_item(2)
         args = ['NY', []]
         flush_report_in_cache_region(cache_trigger.report.get_report, 'public.data', *args)
         self.validate_cache_has_expected_number_of_item(1)
@@ -80,9 +80,9 @@ class TestRecache(Unittest_with_smarter_sqlite):
 
     def test_flush_report_in_cache_region(self):
         dummy_method('NY')
-        self.validate_cache_has_one_item()
+        self.validate_cache_has_expected_number_of_item(2)
         region_invalidate(dummy_method, 'unittest', ('NY'))
-        self.validate_cache_is_empty()
+        self.validate_cache_has_expected_number_of_item(1)
 
     def test_flush_unconfigured_region(self):
         self.assertRaises(KeyError, region_invalidate, dummy_method, 'unconfigured_region', 'NY')

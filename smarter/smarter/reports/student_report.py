@@ -18,8 +18,8 @@ from smarter.reports.helpers.assessments import get_cut_points, \
 from smarter.security.context import select_with_context
 from smarter.database.smarter_connector import SmarterDBConnection
 from smarter.reports.helpers.constants import Constants
-from smarter.reports.utils.metadata import get_subjects_map,\
-    get_asmt_custom_metadata
+from smarter.reports.helpers.metadata import get_asmt_custom_metadata,\
+    get_subjects_map
 
 REPORT_NAME = 'individual_student_report'
 

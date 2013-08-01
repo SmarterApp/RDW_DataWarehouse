@@ -17,7 +17,7 @@ from edapi.exceptions import NotFoundException
 from smarter.security.context import select_with_context
 from smarter.database.smarter_connector import SmarterDBConnection
 from smarter.reports.utils.cache import cache_region
-from smarter.reports.utils.metadata import get_subjects_map,\
+from smarter.reports.helpers.metadata import get_subjects_map,\
     get_asmt_custom_metadata
 
 REPORT_NAME = "list_of_students"

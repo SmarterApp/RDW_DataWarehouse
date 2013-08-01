@@ -21,7 +21,7 @@ from smarter.reports.utils.cache import cache_region
 from smarter.reports.filters.demographics import get_demographic_filter, \
     get_ethnicity_filter
 from smarter.reports.exceptions.parameter_exception import InvalidParameterException
-from smarter.reports.utils.metadata import get_asmt_custom_metadata
+from smarter.reports.helpers.metadata import get_asmt_custom_metadata
 
 
 REPORT_NAME = "comparing_populations"

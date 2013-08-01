@@ -229,7 +229,7 @@ class ComparingPopReport(object):
         :returns:  results arranged for front-end consumption
         '''
         subjects = collections.OrderedDict({Constants.MATH: Constants.SUBJECT1, Constants.ELA: Constants.SUBJECT2})
-        asmt_custom_metadata = get_asmt_custom_metadata(stateCode=param.get(Constants.STATECODE))
+        asmt_custom_metadata = get_asmt_custom_metadata(stateCode=param.get(Constants.STATECODE),tenant=self.tenant)
         record_manager = RecordManager(subjects, self.get_asmt_levels(), asmt_custom_metadata, **param)
 
         for result in results:

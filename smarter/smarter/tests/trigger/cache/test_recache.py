@@ -6,12 +6,12 @@ Created on Jun 20, 2013
 import unittest
 from beaker.cache import CacheManager, cache_managers
 from beaker.util import parse_cache_config_options
-from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite,\
-    get_unittest_tenant_name
 from edapi.exceptions import NotFoundException
 from smarter.trigger.cache.recache import CacheTrigger,\
     flush_report_in_cache_region
 from smarter.reports.utils.cache import cache_region, region_invalidate
+from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite,\
+    get_unittest_tenant_name
 
 
 @cache_region('unittest')

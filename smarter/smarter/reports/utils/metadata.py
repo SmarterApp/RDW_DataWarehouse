@@ -8,7 +8,7 @@ from smarter.reports.helpers.constants import Constants
 from sqlalchemy.sql import select
 import json
 
-def get_asmt_custom_metadata(stateCode):
+def get_asmt_custom_metadata(stateCode, tenant=None):
     '''
     Query assessment custom metadata from database
     
@@ -17,7 +17,7 @@ def get_asmt_custom_metadata(stateCode):
     :returns: a dictionary of custom metadata with subject id as key and metadata as its value 
     '''
     asmt_cstm_meta_map = {}
-    with SmarterDBConnection() as connector:
+    with SmarterDBConnection(tenant) as connector:
         # query custom metadata by state code
         dim_asmt_cstm = connector.get_table(Constants.DIM_ASMT_CUSTOM_METADATA)
         query = select([dim_asmt_cstm.c.asmt_custom_metadata.label(Constants.ASMT_CUSTOM_METADATA),

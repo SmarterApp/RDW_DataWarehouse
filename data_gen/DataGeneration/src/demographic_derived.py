@@ -9,7 +9,7 @@ def derive_demographic(demo_list):
     '''
     try:
         # TODO: need to decide the value. is it true/false, or f/t, or others
-        if demo_list[HISPANIC_CODE - 1].lower() == 'true':
+        if demo_list[HISPANIC_CODE - 1] == True:
             return HISPANIC_CODE
         else:
             race_count = 0
@@ -18,7 +18,7 @@ def derive_demographic(demo_list):
                 if i == HISPANIC_CODE - 1:
                     continue
                 else:
-                    if demo_list[i].lower() == 'true':
+                    if demo_list[i] == True:
                         race_count += 1
                         result = i + 1
             if race_count > 1:
@@ -31,4 +31,4 @@ def derive_demographic(demo_list):
 
 
 if __name__ == '__main__':
-    print(derive_demographic(['false', 'false', 'false', 'true', 'true', 'true', 'true']))
+    print(derive_demographic([False, True, True, True, True, True]))

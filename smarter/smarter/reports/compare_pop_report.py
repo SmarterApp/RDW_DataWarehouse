@@ -205,7 +205,7 @@ class ComparingPopReport(object):
         for subject, data in metadata.items():
             asmt_map[subject] = 4
             if data:
-                asmt_map[subject] = len(data) 
+                asmt_map[subject] = len(data)
         return asmt_map
 
     def arrange_results(self, results, **param):
@@ -217,7 +217,7 @@ class ComparingPopReport(object):
         '''
         subjects = collections.OrderedDict({Constants.MATH: Constants.SUBJECT1, Constants.ELA: Constants.SUBJECT2})
         asmt_custom_metadata = get_asmt_custom_metadata(stateCode=param.get(Constants.STATECODE), tenant=self.tenant)
-        record_manager = RecordManager(subjects, self.get_asmt_levels(), asmt_custom_metadata, **param)
+        record_manager = RecordManager(subjects, self.get_asmt_levels(asmt_custom_metadata), asmt_custom_metadata, **param)
 
         for result in results:
             record_manager.update_record(result)

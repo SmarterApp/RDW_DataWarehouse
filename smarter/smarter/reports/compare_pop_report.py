@@ -200,24 +200,12 @@ class ComparingPopReport(object):
             results = connector.get_result(query)
         return results
 
-    def get_asmt_levels(self):
-        # TODO:  remove this query after we move levels to its own table
+    def get_asmt_levels(self, metadata):
         asmt_map = {}
-        with SmarterDBConnection(tenant=self.tenant) as connector:
-            dim_asmt = connector.get_table(Constants.DIM_ASMT)
-            query = select([dim_asmt.c.asmt_subject.label(Constants.ASMT_SUBJECT),
-                            func.max(case([(dim_asmt.c.asmt_perf_lvl_name_5 != null(), 5),
-                                           (dim_asmt.c.asmt_perf_lvl_name_4 != null(), 4),
-                                           (dim_asmt.c.asmt_perf_lvl_name_3 != null(), 3),
-                                           (dim_asmt.c.asmt_perf_lvl_name_2 != null(), 2),
-                                           (dim_asmt.c.asmt_perf_lvl_name_1 != null(), 1)],
-                                          else_=0)).label(Constants.DISPLAY_LEVEL).label(Constants.LEVEL)],
-                           from_obj=[dim_asmt])\
-                .where(dim_asmt.c.most_recent == true())\
-                .group_by(dim_asmt.c.asmt_subject)
-            results = connector.get_result(query)
-            for result in results:
-                asmt_map[result[Constants.ASMT_SUBJECT]] = result[Constants.LEVEL]
+        for subject, data in metadata.items():
+            asmt_map[subject] = 4
+            if data:
+                asmt_map[subject] = len(data) 
         return asmt_map
 
     def arrange_results(self, results, **param):
@@ -229,7 +217,7 @@ class ComparingPopReport(object):
         '''
         subjects = collections.OrderedDict({Constants.MATH: Constants.SUBJECT1, Constants.ELA: Constants.SUBJECT2})
         asmt_custom_metadata = get_asmt_custom_metadata(stateCode=param.get(Constants.STATECODE), tenant=self.tenant)
-        record_manager = RecordManager(subjects, self.get_asmt_levels(), **param)
+        record_manager = RecordManager(subjects, self.get_asmt_levels(asmt_custom_metadata), **param)
 
         for result in results:
             record_manager.update_record(result)

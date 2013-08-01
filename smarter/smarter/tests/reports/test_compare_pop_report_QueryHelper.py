@@ -48,7 +48,7 @@ class Test(Unittest_with_smarter_sqlite_no_data_load):
             columns = query._raw_columns
             dim_inst_hier = connection.get_table(Constants.DIM_INST_HIER)
 
-        self.assertEquals(6, len(columns))
+        self.assertEquals(5, len(columns))
         # first three columns are for state view columns
         # test alias name
         self.assertEqual(columns[0].name, Constants.NAME, 'test for alias name')
@@ -57,8 +57,7 @@ class Test(Unittest_with_smarter_sqlite_no_data_load):
         self.assertEqual(columns[1].name, Constants.ID, 'test for alias name')
         self.assertEqual(columns[1].element.table.name, dim_inst_hier.name)
         self.assertEqual(columns[1].element.name, dim_inst_hier.c.district_guid.name)
-        self.assertEqual(columns[3].name, Constants.ASMT_SUBJECT, 'test for alias name')
-        self.check_asmt_custom_metadata(connection, columns[2])
+        self.assertEqual(columns[2].name, Constants.ASMT_SUBJECT, 'test for alias name')
 
     def test_build_columns_district_view(self):
         with UnittestSmarterDBConnection() as connection:
@@ -67,7 +66,7 @@ class Test(Unittest_with_smarter_sqlite_no_data_load):
             columns = query._raw_columns
             dim_inst_hier = connection.get_table(Constants.DIM_INST_HIER)
 
-        self.assertEquals(6, len(columns))
+        self.assertEquals(5, len(columns))
 
         # first three columns are for district view columns
         # test alias name
@@ -77,8 +76,7 @@ class Test(Unittest_with_smarter_sqlite_no_data_load):
         self.assertEqual(columns[1].name, Constants.ID, 'test for alias name')
         self.assertEqual(columns[1].element.table.name, dim_inst_hier.name)
         self.assertEqual(columns[1].element.name, dim_inst_hier.c.school_guid.name)
-        self.assertEqual(columns[3].name, Constants.ASMT_SUBJECT, 'test for alias name')
-        self.check_asmt_custom_metadata(connection, columns[2])
+        self.assertEqual(columns[2].name, Constants.ASMT_SUBJECT, 'test for alias name')
 
     def test_build_columns_school_view(self):
         with UnittestSmarterDBConnection() as connection:
@@ -87,22 +85,14 @@ class Test(Unittest_with_smarter_sqlite_no_data_load):
             columns = query._raw_columns
             fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
 
-        self.assertEquals(6, len(columns))
+        self.assertEquals(5, len(columns))
         # first two columns are for school view columns
         # test alias name
         self.assertEqual(columns[0].name, Constants.NAME, 'test for alias name')
         self.assertEqual(columns[1].name, Constants.ID, 'test for alias name')
         self.assertEqual(columns[1].element.table.name, fact_asmt_outcome.name)
         self.assertEqual(columns[1].element.name, fact_asmt_outcome.c.asmt_grade.name)
-        self.assertEqual(columns[3].name, Constants.ASMT_SUBJECT, 'test for alias name')
-        self.check_asmt_custom_metadata(connection, columns[2])
-
-    def check_asmt_custom_metadata(self, connection, asmt_custom_metadata_column):
-        self.assertEqual(asmt_custom_metadata_column.name, Constants.ASMT_CUSTOM_METADATA)
-        # reuse when asmt_custom_metadata is moved to its table
-        #dim_asmt = connection.get_table(Constants.DIM_ASMT)
-        #self.assertEqual(asmt_custom_metadata_column.element.table.name, dim_asmt.name)
-        #self.assertEqual(asmt_custom_metadata_column.element.name, dim_asmt.c.asmt_custom_metadata.name)
+        self.assertEqual(columns[2].name, Constants.ASMT_SUBJECT, 'test for alias name')
 
     def check_performance_level_column(self, column, alias_name):
         self.assertEqual(column.key, alias_name)

@@ -4,63 +4,86 @@ Created on Jul 31, 2013
 @author: swimberly
 '''
 
-import constants
+from uuid import uuid4
+
+from demographic_values import get_single_demo_value
+from demographics import L_GROUPING, L_TOTAL, L_PERF_1, L_PERF_2, L_PERF_3, L_PERF_4
 from gaussian_distributions import gauss_one, guess_std
-from demographics import L_GROUPING, L_TOTAL
+import constants
 
 
 class StatePopulation(object):
     '''
     Class to maintain and calculate the population counts for a state
     '''
-    def __init__(self, name, state_code, state_type, district_counts_dict, district_types_dict, school_types_dict):
+    def __init__(self, name, state_code, state_type, subject='math'):
         ''' Constructor '''
 
         self.name = name
         self.state_code = state_code
         self.state_type = state_type
-        self.district_counts_dict = district_counts_dict
-
-        self.district_types_dict = district_types_dict
-        self.school_types_dict = school_types_dict
+        self.subject = subject
 
         # Population info
+        self.state_total_students = 0
         self.total_student_by_grade = {}
+        self.state_demographic_totals = {}
         self.districts = []
 
-        # Generate Districts
-        self.get_district_counts()
-
-    def get_district_counts(self):
+    def populate_state(self, state_types_dict, district_types_dict, school_types_dict):
         '''
         '''
-
+        state_districts = []
+        district_counts_dict = state_types_dict[self.state_type][constants.DISTRICT_TYPES_AND_COUNTS]
         # Loop through the district counts and generate district populations for each district type
-        for district_type in self.district_counts_dict:
-            for _i in range(self.district_counts_dict[district_type]):
-                district_type_info = self.district_types_dict[district_type]
-                dist_pop = DistrictPopulation(district_type, district_type_info, self.school_types_dict)
-                self.total_student_by_grade = add_populations(self.total_student_by_grade, dist_pop.total_student_by_grade)
-                self.districts.append(dist_pop)
+        for district_type in district_counts_dict:
+            district_counts = district_counts_dict[district_type]
+            district_info = district_types_dict[district_type]
+            state_districts += self._generate_districts(district_type, district_counts, district_info, school_types_dict, self.subject)
+
+        self.districts = state_districts
+        return state_districts
+
+    def get_state_demographics(self, demo_obj, demo_id):
+        '''
+        '''
+        for district in self.districts:
+            # set the district's demographics
+            district.determine_district_demographics(demo_obj, demo_id)
+            # sum those demographics with the state's
+            state_sum = add_populations(district.district_demographic_totals, self.state_demographic_totals)
+            self.state_demographic_totals = state_sum
+
+    def _generate_districts(self, district_type, district_counts, district_info, school_types_dict, subject='math'):
+        '''
+        '''
+        dist_pop_list = []
+        for _i in range(district_counts):
+            dist_pop = DistrictPopulation(district_type, subject)
+            #self.total_student_by_grade = add_populations(self.total_student_by_grade, dist_pop.total_student_by_grade)
+            dist_pop.populate_district(district_info, school_types_dict)
+            dist_pop_list.append(dist_pop)
+        return dist_pop_list
 
 
 class DistrictPopulation(object):
     '''
     Class to maintain and calculate the population counts for a state
     '''
-    def __init__(self, district_type, district_type_dict, school_types_dict):
+    def __init__(self, district_type, subject='math'):
         self.district_type = district_type
-        self.district_type_dict = district_type_dict
-        self.school_types_dict
+        self.guid = str(uuid4())
+        self.subject = subject
 
         self.total_student_by_grade = {}
+        self.district_demographic_totals = {}
         self.schools = []
 
-        #
-
-    def get_school_counts(self):
-        school_counts = self.district_type_dict[constants.SCHOOL_COUNTS]
-        school_types_and_ratios = self.district_type_dict[constants.SCHOOL_TYPES_AND_RATIOS]
+    def populate_district(self, district_type_dict, school_types_dict):
+        '''
+        '''
+        school_counts = district_type_dict[constants.SCHOOL_COUNTS]
+        school_types_and_ratios = district_type_dict[constants.SCHOOL_TYPES_AND_RATIOS]
 
         school_min = school_counts[constants.MIN]
         school_max = school_counts[constants.MAX]
@@ -76,14 +99,38 @@ class DistrictPopulation(object):
             school_type_ratio = school_types_and_ratios[school_type]
             number_of_schools_for_type = int(max(round(school_type_ratio * ratio_unit), 1))
 
-            school_type_name = self.school_types_dict[school_type][constants.TYPE]
+            self.schools += self._generate_schools_in_school_type(school_type, school_types_dict[school_type], number_of_schools_for_type, self.subject)
+
+    def determine_district_demographics(self, dem_obj, dem_id):
+        '''
+        for each school, calculate its demographic numbers and sum with the districts demographic numbers
+        @param dem_obj: A demographic object
+        @param dem_id: the demographic id to use to look up values
+        '''
+        for school in self.schools:
+            # set the school demographics
+            school.determine_school_demographic_numbers(dem_obj, dem_id)
+            # sum the school population with the district population
+            distr_sum = add_populations(school.school_demographics, self.district_demographic_totals)
+            self.district_demographic_totals = distr_sum
+
+    def _generate_schools_in_school_type(self, school_type, school_type_dict, count, subject):
+        '''
+        '''
+        school_pops = []
+        for _i in range(count):
+            school_pop = SchoolPopulation(school_type, subject)
+            school_pop.generate_student_numbers(school_type_dict)
+            school_pops.append(school_pop)
+
+        return school_pops
 
 
 class SchoolPopulation(object):
     '''
     Class to maintain and calculate the populations counts of a state
     '''
-    def __init__(self, school_type, school_type_dict, demographics, demographics_id):
+    def __init__(self, school_type, subject='math'):
         '''
         @param school_type: type of school
         @param school_type_dict: The dictionary corresponding to the type of school
@@ -91,35 +138,108 @@ class SchoolPopulation(object):
         '''
 
         self.school_type = school_type
-        self.school_type_dict = school_type_dict
-        self.demographics = demographics
-        self.demographics_id = demographics_id
+        self.subject = subject
+        self.guid = str(uuid4())
 
-        self.total_students_by_grade = {}
+        self.total_students_by_grade = None
+        self.school_demographics = None
 
-    def generate_student_numbers(self):
+    def generate_student_numbers(self, school_type_dict):
         '''
         '''
-
-        for grade in self.school_type_dict[constants.GRADES]:
-            student_range_dict = self.school_type_dict[constants.STUDENTS]
+        school_value_dict = {}
+        for grade in school_type_dict[constants.GRADES]:
+            student_range_dict = school_type_dict[constants.STUDENTS]
             student_min = student_range_dict[constants.MIN]
             student_max = student_range_dict[constants.MAX]
             student_avg = student_range_dict[constants.AVG]
-            tot_students = calculate_number_of_items(student_min, student_max, student_avg)
+            school_value_dict[grade] = calculate_number_of_items(student_min, student_max, student_avg)
 
-            self.calculate_demographic_numbers(tot_students, grade)
+        self.total_students_by_grade = school_value_dict
 
-    def calculate_demographic_numbers(self, total_students, grade, subject):
+    def determine_school_demographic_numbers(self, demo_obj, demo_id):
         '''
         '''
+        school_dem_values = {}
+        for grade in self.total_students_by_grade:
+            students_in_grade = self.total_students_by_grade[grade]
+            grade_demo_values = self._calculate_grade_demographic_numbers(students_in_grade, grade, self.subject, demo_obj, demo_id)
+            school_dem_values[grade] = grade_demo_values
+        self.school_demographics = school_dem_values
 
-        grade_demographics = self.demographics.get_grade_demographics(self.demographics_id, subject, grade)
+    def _calculate_grade_demographic_numbers(self, total_students, grade, subject, demo_obj, demographics_id):
+        '''
+        '''
+        grade_value_dict = {}
+
+        grade_demographics = demo_obj.get_grade_demographics(demographics_id, subject, grade)
 
         # get set of groups
         groups = {grade_demographics[x][L_GROUPING] for x in grade_demographics}
 
-        # TODO: Begin here: For each group. loop and call lili's method for calculating counts
+        for group in groups:
+            group_dict = {k: grade_demographics[k] for k in grade_demographics if grade_demographics[k][L_GROUPING] == group}
+            group_value_dict = calculate_group_demographic_numbers(group_dict, group, total_students)
+            grade_value_dict.update(group_value_dict)
+
+        return grade_value_dict
+
+
+def construct_state_counts_dict(state_population):
+    '''
+    '''
+    state_counts = {}
+
+    for district_popl in state_population.districts:
+        state_counts[district_popl.guid] = construct_district_counts_dict(district_popl)
+
+    return state_counts
+
+
+def construct_district_counts_dict(district_populations):
+    '''
+    '''
+    district_counts = {}
+
+    for school_popl in district_populations.schools:
+        district_counts[school_popl.guid] = school_popl.total_students_by_grade
+
+    return district_counts
+
+
+def calculate_school_total_students(grades, min_students, max_students, avg_students):
+    '''
+    Given a grade number, return the number of students in that grade
+    @return: a dict of grades mapped to totals
+    '''
+    grade_counts = {}
+    for grade in grades:
+        grade_counts[grade] = calculate_number_of_items(min_students, max_students, avg_students)
+
+    return grade_counts
+
+
+def calculate_group_demographic_numbers(group_dict, group_num, total_students):
+    '''
+    '''
+    demo_counts = {}
+
+    # get list of demographic names
+    dem_name_list = list(group_dict.keys())
+    # get list of the overall percentages to pass to method that will compute actual values
+    dem_perc_list = [group_dict[x][L_TOTAL] for x in dem_name_list]
+
+    overall_counts = get_single_demo_value(total_students, dem_name_list, dem_perc_list)
+
+    # loop each demographic and compute the performance level numbers
+    for demo in group_dict:
+        # get total overall numbers
+        demo_counts[demo] = [group_num, overall_counts[demo], 0, 0, 0, 0]
+        perf_lvl_names = [L_PERF_1, L_PERF_2, L_PERF_3, L_PERF_4]
+        perf_lvl_values = get_single_demo_value(overall_counts[demo], perf_lvl_names, group_dict[demo][L_PERF_1:])
+        demo_counts[demo][L_PERF_1:] = [perf_lvl_values[i] for i in perf_lvl_names]
+
+    return demo_counts
 
 
 def add_populations(population_dict_1, population_dict_2):
@@ -178,10 +298,13 @@ def calculate_number_of_items(item_min, item_max, item_avg):
     '''
     standard_dev, _r_avg = guess_std(item_min, item_max, item_avg)
     number_of_items = gauss_one(item_min, item_max, item_avg, standard_dev)
-    return int(number_of_items)
+    return number_of_items
 
 
 if __name__ == '__main__':
+    import demographics
+    import os
+    import dg_types
     demo1 = {'a': [1, 10, 2, 3, 4, 1], 'b': [1, 10, 2, 3, 4, 1], 'c': [1, 10, 2, 3, 4, 1], 'd': [1, 10, 2, 3, 4, 1]}
     demo2 = {'a': [1, 20, 5, 10, 4, 1], 'b': [1, 20, 5, 10, 4, 1], 'c': [1, 20, 5, 10, 4, 1], 'd': [1, 20, 5, 10, 4, 1]}
 
@@ -202,3 +325,42 @@ if __name__ == '__main__':
     print()
     print({}, dems_1, add_populations({}, dems_1), sep='\n')
     print()
+    print(calculate_group_demographic_numbers({'d': [0, 40, 10, 20, 30, 40], 'e': [0, 40, 20, 30, 40, 10], 'f': [0, 20, 20, 20, 20, 40]}, 0, 100))
+
+    csv_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'datafiles', 'demographicStats.csv')
+    demo_obj = demographics.Demographics(csv_file)
+    sch_type_dict = {'Middle School': {'type': 'Middle School', 'grades': [6, 7, 8], 'students': {'min': 25, 'max': 100, 'avg': 50}}}
+    school_pop = SchoolPopulation('Middle School')
+    print(school_pop)
+    print(school_pop.generate_student_numbers(sch_type_dict['Middle School']))
+
+    district_type_dict = {'school_counts': {'min': 10, 'max': 15, 'avg': 12},
+                          'school_types_and_ratios': {'High School': 5, 'Middle School': 10, 'Elementary School': 15}}
+    school_types_dict = {
+        'High School': {'type': 'High School', 'grades': [11], 'students': {'min': 50, 'max': 250, 'avg': 100}},
+        'Middle School': {'type': 'Middle School', 'grades': [6, 7, 8], 'students': {'min': 25, 'max': 100, 'avg': 50}},
+        'Elementary School': {'type': 'Elementary School', 'grades': [3, 4, 5], 'students': {'min': 10, 'max': 35, 'avg': 30}}}
+    district_pop = DistrictPopulation('Big Average')
+    district_pop.populate_district(district_type_dict, school_types_dict)
+    print(len(district_pop.schools))
+
+    state_types_dict = {'typical_1': {'district_types_and_counts': {'Big Average': 1},
+                                 'subjects_and_percentages': {'Math': .99, 'ELA': .99},
+                                 'demographics': 'typical1'}}
+    district_types_dict = {'Big Average': district_type_dict}
+    state_pop = StatePopulation("BState", 'BS', 'typical_1')
+    state_pop.populate_state(state_types_dict, district_types_dict, school_types_dict)
+
+    print(construct_state_counts_dict(state_pop))
+    print(school_pop.determine_school_demographic_numbers(demo_obj, 'typical1'))
+    district_pop.determine_district_demographics(demo_obj, 'typical1')
+    print(district_pop.district_demographic_totals)
+    state_pop.get_state_demographics(demo_obj, 'typical1')
+    print(state_pop.state_demographic_totals)
+    print('\n\n\n')
+
+    state_pop2 = StatePopulation('Example State', 'ES', 'typical_1')
+    state_pop2.populate_state(dg_types.get_state_types(), dg_types.get_district_types(), dg_types.get_school_types())
+    print(len(state_pop2.districts))
+    state_pop2.get_state_demographics(demo_obj, 'typical1')
+    print(state_pop2.state_demographic_totals)

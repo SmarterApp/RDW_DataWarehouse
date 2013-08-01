@@ -159,9 +159,9 @@ def __arrange_results(results, subjects_map, custom_metadata_map):
 @report_config(name=REPORT_NAME,
                params={
                    "studentGuid": {
-                   "type": "string",
-                   "required": True,
-                   "pattern": "^[a-zA-Z0-9\-]{0,50}$"},
+                       "type": "string",
+                       "required": True,
+                       "pattern": "^[a-zA-Z0-9\-]{0,50}$"},
                    "assessmentGuid": {
                        "name": "student_assessments_report",
                        "type": "string",
@@ -208,11 +208,9 @@ def get_student_report(params):
 @report_config(name='student_assessments_report',
                params={
                    "studentGuid": {
-                   "type": "string",
-                   "required": True
-                   }
-               }
-               )
+                       "type": "string",
+                       "required": True}
+               })
 def get_student_assessment(params):
 
     # get studentId

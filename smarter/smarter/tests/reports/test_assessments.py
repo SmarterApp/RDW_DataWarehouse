@@ -26,7 +26,7 @@ class TestAssessments(unittest.TestCase):
                   'asmt_cut_point_name_4': 'four',
                   'asmt_cut_point_name_5': 'five',
                   'asmt_score_max': 500}
-        custom = [{"one":"1"},{"two":"1"},{"three":"1"},{"four":"1"}]
+        custom = [{"one": "1"}, {"two": "1"}, {"three": "1"}, {"four": "1"}]
         formatted_results = get_cut_points(custom, result)
         self.assertNotIn('asmt_custom_metadata', formatted_results)
         self.assertNotIn('asmt_cut_point_name_5', formatted_results)

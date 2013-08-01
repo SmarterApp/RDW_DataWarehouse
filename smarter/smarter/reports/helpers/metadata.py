@@ -8,14 +8,15 @@ from smarter.reports.helpers.constants import Constants
 from sqlalchemy.sql import select
 import json
 
+
 def get_asmt_custom_metadata(stateCode, tenant=None):
     '''
     Query assessment custom metadata from database
-    
+
     :param string stateCode: state code
     :param string tenant: tenant info for database connection
     :rtype: dict
-    :returns: dict of custom metadata with subject id as key and metadata as its value 
+    :returns: dict of custom metadata with subject id as key and metadata as its value
     '''
     asmt_cstm_meta_map = {}
     with SmarterDBConnection(tenant) as connector:
@@ -34,13 +35,14 @@ def get_asmt_custom_metadata(stateCode, tenant=None):
             asmt_cstm_meta_map[result[Constants.ASMT_SUBJECT]] = custom_metadata
     return asmt_cstm_meta_map
 
+
 def get_subjects_map(asmtSubject=None):
     '''
     Generate subjects mapping based on given assessment subject type.
 
     :asmtSubject string asmtSubject: assessment subject
     :rtype: dict
-    :returns: dict of subjects mapping of given assessment. If subject is None, return all subjects mapping. 
+    :returns: dict of subjects mapping of given assessment. If subject is None, return all subjects mapping.
     '''
     subjects_map = {}
     # This assumes that we take asmtSubject as optional param
@@ -51,4 +53,3 @@ def get_subjects_map(asmtSubject=None):
     elif Constants.ELA in asmtSubject:
             subjects_map = {Constants.ELA: Constants.SUBJECT1}
     return subjects_map
-

@@ -30,6 +30,7 @@ class Constants():
     PERCENTAGE = 'percentage'
     COUNT = 'count'
     INTERVALS = 'intervals'
+    INST_HIER_REC_ID = 'inst_hier_rec_id'
     LEVEL = 'level'
     LEVEL1 = 'level1'
     LEVEL2 = 'level2'

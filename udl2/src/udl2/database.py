@@ -64,28 +64,27 @@ UDL_METADATA = {
         },
         'UDL_BATCH': {
             'columns': [
-                ('batch_sid', True, 'varchar(256)', '', False, ""),
-                ('batch_user_status', False, 'varchar(50)', '', True, ""),
-                ('job_status', False, 'varchar(50)', '', True, ""),
-                ('task_id', False, 'varchar(255)', '', True, ""),
-                ('task_status_url', False, 'varchar(255)', '', True, ""),
+                ('batch_sid', True, 'bigserial', '', False, "Sequential Auto-increment"),
+                ('guid_batch', False, 'varchar(256)', '', False, "Batch guid which caused the record insert"),
+                ('load_type', False, 'varchar(50)', '', True, ""),
+                ('working_schema', False, 'varchar(50)', '', True, ""),
+                ('udl_phase', False, 'varchar(50)', '', True, ""),
+                ('udl_phase_step', False, 'varchar(50)', '', True, ""),
+                ('udl_phase_step_status', False, 'varchar(50)', '', True, ""),
+                ('udl_leaf', False, 'bool', '', True, ""),
+                ('size_records', False, 'bigint', '', True, ""),
+                ('size_units', False, 'bigint', '', True, ""),
+                ('start_timestamp', False, 'timestamp', 'now()', True, ""),
+                ('end_timestamp', False, 'timestamp', 'now()', True, ""),
+                ('duration', False, 'interval', '', True, ""),
+                ('time / million records', False, 'time', '', True, ""),
+                ('records / hour', False, 'bigint', '', True, ""),
+                ('task_id', False, 'varchar(256)', '', True, ""),
+                ('task_status_udl', False, 'varchar(256)', '', True, ""),
                 ('user_sid', False, 'bigint', '', True, ""),
-                ('user_email', False, 'varchar(255)', '', True, ""),
-                ('src_file_name', False, 'varchar(255)', '', True, ""),
-                ('source_folder', False, 'varchar(120)', '', True, ""),
-                ('parent_file_type', False, 'varchar(80)', '', True, ""),
-                ('src_file_type', False, 'varchar(80)', '', True, ""),
-                ('process_instruction', False, 'json', '', True, ""),
-                ('etl_stg_target', False, 'varchar(127)', '', True, ""),
-                ('etl_int_src', False, 'varchar(127)', '', True, ""),
-                ('etl_int_target', False, 'varchar(127)', '', True, ""),
-                ('etl_hist_src', False, 'varchar(127)', '', True, ""),
-                ('etl_hist_target', False, 'varchar(127)', '', True, ""),
-                ('etl_err_src', False, 'varchar(127)', '', True, ""),
-                ('error_file_path', False, 'varchar(250)', '', True, ""),
-                ('archive_name', False, 'varchar(120)', '', True, ""),
+                ('user_email', False, 'varchar(256)', '', True, ""),
                 ('created_date', False, 'timestamp', 'now()', True, ""),
-                ('mod_date', False, 'timestamp', 'now()', True, ""),
+                ('mod_date', False, 'timestamp', 'now()', False, ""),
             ],
             'keys': {},
             'indexes': [],
@@ -386,11 +385,14 @@ def map_sql_type_to_sqlalchemy_type(sql_type):
         'timestamp with time zone': TIMESTAMP(True),
         'bigint': BIGINT,
         'smallint': SMALLINT,
+        'bigint': BIGINT,
         'bigserial': BIGINT,
         'varchar': VARCHAR,
         'double': FLOAT,
         'json': TEXT,
-        'bool': BOOLEAN
+        'bool': BOOLEAN,
+        'interval': Interval,
+        'time': Time
     }
     try:
         mapped_type = sql_type_mapped_type[sql_type]
@@ -462,7 +464,7 @@ def create_table(udl2_conf, metadata, schema, table_name):
     arguments = [table_name, metadata]
 
     for c_ddl in column_ddl:
-        # print(c_ddl)
+        print(c_ddl)
         column = map_tuple_to_sqlalchemy_column(c_ddl)
         arguments.append(column)
 

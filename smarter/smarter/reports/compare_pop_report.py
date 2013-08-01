@@ -178,7 +178,6 @@ class ComparingPopReport(object):
         :rtype: dict
         :returns: A comparing populations report based on parameters supplied
         '''
-        # run query
         params = {Constants.STATECODE: self.state_code, Constants.DISTRICTGUID: self.district_guid, Constants.SCHOOLGUID: self.school_guid, 'filters': self.filters}
         results = self.run_query(**params)
 
@@ -212,7 +211,7 @@ class ComparingPopReport(object):
                                            (dim_asmt.c.asmt_perf_lvl_name_3 != null(), 3),
                                            (dim_asmt.c.asmt_perf_lvl_name_2 != null(), 2),
                                            (dim_asmt.c.asmt_perf_lvl_name_1 != null(), 1)],
-                                          else_='0')).label(Constants.DISPLAY_LEVEL).label(Constants.LEVEL)],
+                                          else_=0)).label(Constants.DISPLAY_LEVEL).label(Constants.LEVEL)],
                            from_obj=[dim_asmt])\
                 .where(dim_asmt.c.most_recent == true())\
                 .group_by(dim_asmt.c.asmt_subject)
@@ -229,7 +228,7 @@ class ComparingPopReport(object):
         :returns:  results arranged for front-end consumption
         '''
         subjects = collections.OrderedDict({Constants.MATH: Constants.SUBJECT1, Constants.ELA: Constants.SUBJECT2})
-        asmt_custom_metadata = get_asmt_custom_metadata(stateCode=param.get(Constants.STATECODE),tenant=self.tenant)
+        asmt_custom_metadata = get_asmt_custom_metadata(stateCode=param.get(Constants.STATECODE), tenant=self.tenant)
         record_manager = RecordManager(subjects, self.get_asmt_levels(), asmt_custom_metadata, **param)
 
         for result in results:
@@ -280,7 +279,7 @@ class RecordManager():
         self.update_interval(record.subjects[subject_alias_name], result[Constants.LEVEL], result[Constants.TOTAL])
 
     def update_interval(self, data, level, count):
-        data[level] = data.get(level, 0) + count
+        data[level] = data.get(level, 0) + int(count)
 
     def get_asmt_custom_metadata(self):
         '''
@@ -409,26 +408,51 @@ class QueryHelper():
         self._dim_asmt = connector.get_table(Constants.DIM_ASMT)
         self._fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
 
-    def build_query(self, f, extra_columns):
+    def __build_query(self, f):
         '''
         build select columns based on request
         '''
-        query = f(extra_columns +
+        extra_columns = {self.VIEWS.STATE_VIEW: [self._dim_inst_hier.c.inst_hier_rec_id.label(Constants.INST_HIER_REC_ID)],
+                         self.VIEWS.DISTRICT_VIEW: [self._dim_inst_hier.c.inst_hier_rec_id.label(Constants.INST_HIER_REC_ID)],
+                         self.VIEWS.SCHOOL_VIEW: [self._fact_asmt_outcome.c.asmt_grade.label(Constants.NAME), self._fact_asmt_outcome.c.asmt_grade.label(Constants.ID)]}
+
+        extra_group_by = {self.VIEWS.STATE_VIEW: self._dim_inst_hier.c.inst_hier_rec_id,
+                          self.VIEWS.DISTRICT_VIEW: self._dim_inst_hier.c.inst_hier_rec_id,
+                          self.VIEWS.SCHOOL_VIEW: self._fact_asmt_outcome.c.asmt_grade}
+
+        extra_where_clause = {self.VIEWS.DISTRICT_VIEW: self._fact_asmt_outcome.c.district_guid == self._district_guid,
+                              self.VIEWS.SCHOOL_VIEW: and_(self._fact_asmt_outcome.c.district_guid == self._district_guid, self._fact_asmt_outcome.c.school_guid == self._school_guid)}
+
+        query = f(extra_columns[self._view] +
                   [self._dim_asmt.c.asmt_subject.label(Constants.ASMT_SUBJECT),
                    self._fact_asmt_outcome.c.asmt_perf_lvl.label(Constants.LEVEL),
-                   func.count(self._fact_asmt_outcome.c.asmt_rec_id).label(Constants.TOTAL)],
-                  from_obj=[self._fact_asmt_outcome
-                            .join(self._dim_asmt, and_(self._dim_asmt.c.asmt_rec_id == self._fact_asmt_outcome.c.asmt_rec_id, 
-                                                       self._dim_asmt.c.asmt_type == Constants.SUMMATIVE, 
-                                                       self._dim_asmt.c.most_recent == true()))
-                            .join(self._dim_inst_hier, and_(self._dim_inst_hier.c.inst_hier_rec_id == self._fact_asmt_outcome.c.inst_hier_rec_id))]
+                   func.count().label(Constants.TOTAL)],
+                  from_obj=[self._fact_asmt_outcome.join(
+                            self._dim_asmt, and_(self._dim_asmt.c.asmt_rec_id == self._fact_asmt_outcome.c.asmt_rec_id,
+                                                 self._dim_asmt.c.asmt_type == Constants.SUMMATIVE,
+                                                 self._dim_asmt.c.most_recent == true())).join(
+                            self._dim_inst_hier, and_(self._dim_inst_hier.c.inst_hier_rec_id == self._fact_asmt_outcome.c.inst_hier_rec_id))]
                   )\
-            .group_by(self._dim_asmt.c.asmt_subject,
+            .group_by(extra_group_by[self._view],
+                      self._dim_asmt.c.asmt_subject,
                       self._fact_asmt_outcome.c.asmt_perf_lvl)\
-            .order_by(self._dim_asmt.c.asmt_subject.desc())\
             .where(and_(self._fact_asmt_outcome.c.state_code == self._state_code, self._fact_asmt_outcome.c.most_recent == true()))
+
+        if extra_where_clause.get(self._view) is not None:
+            query = query.where(extra_where_clause[self._view])
         # apply demographics filters to query
         return self.apply_demographics_filter(query)
+
+    def build_query(self, f, extra_columns=[]):
+        query = self.__build_query(f)
+        # We don't need to query dim_inst_hier for school view
+        if self._view in [self.VIEWS.STATE_VIEW, self.VIEWS.DISTRICT_VIEW]:
+            subquery = query.alias()
+            query = f(extra_columns +
+                      [subquery.c[Constants.ASMT_CUSTOM_METADATA], subquery.c[Constants.ASMT_SUBJECT], subquery.c[Constants.LEVEL], func.sum(subquery.c[Constants.TOTAL]).label(Constants.TOTAL)],
+                      from_obj=[self._dim_inst_hier.join(subquery, self._dim_inst_hier.c.inst_hier_rec_id == subquery.c[Constants.INST_HIER_REC_ID])])\
+                .group_by(subquery.c[Constants.ASMT_SUBJECT], subquery.c[Constants.LEVEL], subquery.c[Constants.ASMT_CUSTOM_METADATA])
+        return query.order_by(query.c[Constants.ASMT_SUBJECT].desc())
 
     def get_query(self):
         return self._f()
@@ -441,33 +465,30 @@ class QueryHelper():
     def get_query_for_district_view(self):
         return self.build_query(select, [self._dim_inst_hier.c.school_name.label(Constants.NAME), self._dim_inst_hier.c.school_guid.label(Constants.ID)])\
                    .group_by(self._dim_inst_hier.c.school_name, self._dim_inst_hier.c.school_guid)\
-                   .order_by(self._dim_inst_hier.c.school_name)\
-                   .where(self._fact_asmt_outcome.c.district_guid == self._district_guid)
+                   .order_by(self._dim_inst_hier.c.school_name)
 
     def get_query_for_school_view(self):
-        return self.build_query(select_with_context, [self._fact_asmt_outcome.c.asmt_grade.label(Constants.NAME), self._fact_asmt_outcome.c.asmt_grade.label(Constants.ID)])\
+        return self.build_query(select_with_context)\
                    .group_by(self._fact_asmt_outcome.c.asmt_grade)\
-                   .order_by(self._fact_asmt_outcome.c.asmt_grade)\
-                   .where(and_(self._fact_asmt_outcome.c.district_guid == self._district_guid, self._fact_asmt_outcome.c.school_guid == self._school_guid))
+                   .order_by(self._fact_asmt_outcome.c.asmt_grade)
 
     def apply_demographics_filter(self, query):
-        if query is not None:
-            if self._filters:
-                filter_iep = get_demographic_filter(Constants_filter_names.DEMOGRAPHICS_PROGRAM_IEP, self._fact_asmt_outcome.c.dmg_prg_iep, self._filters)
-                if filter_iep is not None:
-                    query = query.where(filter_iep)
-                filter_504 = get_demographic_filter(Constants_filter_names.DEMOGRAPHICS_PROGRAM_504, self._fact_asmt_outcome.c.dmg_prg_504, self._filters)
-                if filter_504 is not None:
-                    query = query.where(filter_504)
-                filter_lep = get_demographic_filter(Constants_filter_names.DEMOGRAPHICS_PROGRAM_LEP, self._fact_asmt_outcome.c.dmg_prg_lep, self._filters)
-                if filter_lep is not None:
-                    query = query.where(filter_lep)
-                filter_tt1 = get_demographic_filter(Constants_filter_names.DEMOGRAPHICS_PROGRAM_TT1, self._fact_asmt_outcome.c.dmg_prg_tt1, self._filters)
-                if filter_tt1 is not None:
-                    query = query.where(filter_tt1)
-                filter_grade = self._filters.get(Constants_filter_names.GRADE)
-                if self._filters.get(Constants_filter_names.GRADE):
-                    query = query.where(self._fact_asmt_outcome.c.asmt_grade.in_(filter_grade))
-                if self._filters.get(Constants_filter_names.ETHNICITY):
-                    query = query.where(get_ethnicity_filter(self._filters, self._fact_asmt_outcome))
+        if self._filters:
+            filter_iep = get_demographic_filter(Constants_filter_names.DEMOGRAPHICS_PROGRAM_IEP, self._fact_asmt_outcome.c.dmg_prg_iep, self._filters)
+            if filter_iep is not None:
+                query = query.where(filter_iep)
+            filter_504 = get_demographic_filter(Constants_filter_names.DEMOGRAPHICS_PROGRAM_504, self._fact_asmt_outcome.c.dmg_prg_504, self._filters)
+            if filter_504 is not None:
+                query = query.where(filter_504)
+            filter_lep = get_demographic_filter(Constants_filter_names.DEMOGRAPHICS_PROGRAM_LEP, self._fact_asmt_outcome.c.dmg_prg_lep, self._filters)
+            if filter_lep is not None:
+                query = query.where(filter_lep)
+            filter_tt1 = get_demographic_filter(Constants_filter_names.DEMOGRAPHICS_PROGRAM_TT1, self._fact_asmt_outcome.c.dmg_prg_tt1, self._filters)
+            if filter_tt1 is not None:
+                query = query.where(filter_tt1)
+            filter_grade = self._filters.get(Constants_filter_names.GRADE)
+            if self._filters.get(Constants_filter_names.GRADE):
+                query = query.where(self._fact_asmt_outcome.c.asmt_grade.in_(filter_grade))
+            if self._filters.get(Constants_filter_names.ETHNICITY):
+                query = query.where(get_ethnicity_filter(self._filters, self._fact_asmt_outcome))
         return query

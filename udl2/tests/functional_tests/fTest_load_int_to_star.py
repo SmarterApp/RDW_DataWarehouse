@@ -1,61 +1,15 @@
-import unittest
 import csv
-from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
-from udl2 import database
 from udl2_util.database_util import execute_queries
-import imp
 from move_to_target import move_to_target
 from udl2 import W_load_from_integration_to_star
-import os
+from tests.functional_tests.util import UDLTestHelper
 
 
-class IntToStarFTest(unittest.TestCase):
+class IntToStarFTest(UDLTestHelper):
 
-    def setUp(self):
-        try:
-            config_path = dict(os.environ)['UDL2_CONF']
-        except Exception:
-            config_path = UDL2_DEFAULT_CONFIG_PATH_FILE
-        udl2_conf = imp.load_source('udl2_conf', config_path)
-        from udl2_conf import udl2_conf
-        self.udl2_conf = udl2_conf
-        self.udl2_conn, self.udl2_engine = database._create_conn_engine(self.udl2_conf['udl2_db'])
-        self.target_conn, self.target_engine = database._create_conn_engine(self.udl2_conf['target_db'])
-
-        self.truncate_edware_tables()
-        self.truncate_integration_tables()
-
-    def tearDown(self):
-        self.truncate_edware_tables()
-        self.truncate_integration_tables()
-        self.udl2_conn.close()
-        self.target_conn.close()
-
-    def truncate_edware_tables(self):
-        template = """
-            TRUNCATE "{target_schema}"."{target_table}" CASCADE
-            """
-
-        sql_dim_asmt = template.format(target_schema=self.udl2_conf['target_db']['db_schema'], target_table='dim_asmt')
-        sql_dim_inst_hier = template.format(target_schema=self.udl2_conf['target_db']['db_schema'], target_table='dim_inst_hier')
-        sql_dim_section = template.format(target_schema=self.udl2_conf['target_db']['db_schema'], target_table='dim_section')
-        sql_dim_staff = template.format(target_schema=self.udl2_conf['target_db']['db_schema'], target_table='dim_staff')
-        sql_dim_student = template.format(target_schema=self.udl2_conf['target_db']['db_schema'], target_table='dim_student')
-        sql_fact_asmt_outcome = template.format(target_schema=self.udl2_conf['target_db']['db_schema'], target_table='fact_asmt_outcome')
-        except_msg = "Unable to clean up target db tabels"
-        execute_queries(self.target_conn, [sql_dim_asmt, sql_dim_inst_hier, sql_dim_section, sql_dim_staff, sql_dim_student, sql_fact_asmt_outcome], except_msg)
-
-    def truncate_integration_tables(self):
-        sql_template = """
-            TRUNCATE "{staging_schema}"."{staging_table}" CASCADE
-            """
-        sql_int_asmt = sql_template.format(staging_schema=self.udl2_conf['udl2_db']['integration_schema'],
-                                           staging_table='INT_SBAC_ASMT')
-        sql_int_asmt_outcome = sql_template.format(staging_schema=self.udl2_conf['udl2_db']['integration_schema'],
-                                                   staging_table='INT_SBAC_ASMT_OUTCOME')
-
-        except_msg = "Unable to clean up integration tables"
-        execute_queries(self.udl2_conn, [sql_int_asmt, sql_int_asmt_outcome], except_msg)
+    @classmethod
+    def setUpClass(cls):
+        super(IntToStarFTest, cls).setUpClass()
 
     def test_load_int_to_star(self):
         table = 'INT_SBAC_ASMT'
@@ -115,42 +69,7 @@ class IntToStarFTest(unittest.TestCase):
             self.assertEqual(int(count), tables_to_check[entry])
 
         # check asmt score avgs
-        int_avg_query = """ SELECT avg(score_asmt),
-        avg(score_asmt_min),
-        avg(score_asmt_max),
-        avg(score_claim_1),
-        avg(score_claim_1_min),
-        avg(score_claim_1_max),
-        avg(score_claim_2),
-        avg(score_claim_2_min),
-        avg(score_claim_2_max),
-        avg(score_claim_3),
-        avg(score_claim_3_min),
-        avg(score_claim_3_max),
-        avg(score_claim_4),
-        avg(score_claim_4_min),
-        avg(score_claim_4_max) FROM udl2."INT_SBAC_ASMT_OUTCOME" """
-        result = self.udl2_conn.execute(int_avg_query)
-        for row in result:
-            int_asmt_avgs = row
-
-        star_avg_query = """ select avg(asmt_score),
-        avg(asmt_score_range_min),
-        avg(asmt_score_range_max),
-        avg(asmt_claim_1_score),
-        avg(asmt_claim_1_score_range_min),
-        avg(asmt_claim_1_score_range_max),
-        avg(asmt_claim_2_score),
-        avg(asmt_claim_2_score_range_min),
-        avg(asmt_claim_2_score_range_max),
-        avg(asmt_claim_3_score),
-        avg(asmt_claim_3_score_range_min),
-        avg(asmt_claim_3_score_range_max),
-        avg(asmt_claim_4_score),
-        avg(asmt_claim_4_score_range_min),
-        avg(asmt_claim_4_score_range_max) from edware.fact_asmt_outcome """
-        result = self.target_conn.execute(star_avg_query)
-        for row in result:
-            star_asmt_avgs = row
+        int_asmt_avgs = self.get_integration_asmt_score_avgs()
+        star_asmt_avgs = self.get_edware_asmt_score_avgs()
 
         assert int_asmt_avgs == star_asmt_avgs

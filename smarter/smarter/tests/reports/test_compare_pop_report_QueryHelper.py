@@ -94,6 +94,13 @@ class Test(Unittest_with_smarter_sqlite_no_data_load):
         self.assertEqual(columns[1].element.name, fact_asmt_outcome.c.asmt_grade.name)
         self.assertEqual(columns[2].name, Constants.ASMT_SUBJECT, 'test for alias name')
 
+    def check_asmt_custom_metadata(self, connection, asmt_custom_metadata_column):
+        self.assertEqual(asmt_custom_metadata_column.name, Constants.ASMT_CUSTOM_METADATA)
+        # reuse when asmt_custom_metadata is moved to its table
+        #dim_asmt = connection.get_table(Constants.DIM_ASMT)
+        #self.assertEqual(asmt_custom_metadata_column.element.table.name, dim_asmt.name)
+        #self.assertEqual(asmt_custom_metadata_column.element.name, dim_asmt.c.asmt_custom_metadata.name)
+
     def check_performance_level_column(self, column, alias_name):
         self.assertEqual(column.key, alias_name)
 

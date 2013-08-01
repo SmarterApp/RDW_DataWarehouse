@@ -72,7 +72,7 @@ class TestStudentReport(Unittest_with_smarter_sqlite):
         self.assertEqual(2012, student_report['date_taken_year'])
 
     def test_custom_metadata(self):
-        params = {"studentGuid": 'dae1acf4-afb0-4013-90ba-9dcde4b25621'}
+        params = {"studentGuid": 'dae1acf4-afb0-4013-90ba-9dcde4b25621', "stateCode": 'NY'}
         result = get_student_report(params)['items']
         student_report = result[0]
 

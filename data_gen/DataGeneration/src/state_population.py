@@ -32,6 +32,13 @@ class StatePopulation(object):
 
     def populate_state(self, state_types_dict, district_types_dict, school_types_dict):
         '''
+        create the districts that comprise the state based on information taken from the configuration
+        information provided
+        Functions populates the 'districts' list for the class
+        @param state_types_dict: the state type dictionary provided in the configuration file
+        @param district_types_dict: the district type dictionary provided in the configuration file
+        @param school_types_dict: the school type dictionary provided in the configuration file
+        @return: None
         '''
         state_districts = []
         district_counts_dict = state_types_dict[self.state_type][constants.DISTRICT_TYPES_AND_COUNTS]
@@ -42,10 +49,15 @@ class StatePopulation(object):
             state_districts += self._generate_districts(district_type, district_counts, district_info, school_types_dict, self.subject)
 
         self.districts = state_districts
-        return state_districts
 
     def get_state_demographics(self, demo_obj, demo_id):
         '''
+        Computes and returns a dictionary of the states demographics. This is done by summing
+        the demographic values across all the schools in the state
+        Sets the 'state_demographic_totals' dictionary
+        @param demo_obj: A demographic object containing all the demographic data
+        @param demo_id: The ID to use for accessing the demographic data
+        @return: None
         '''
         for district in self.districts:
             # set the district's demographics
@@ -56,6 +68,13 @@ class StatePopulation(object):
 
     def _generate_districts(self, district_type, district_counts, district_info, school_types_dict, subject='math'):
         '''
+        generate a number of districts that have the given type
+        @param district_type: the type of the district
+        @param district_counts: the number of districts to generate
+        @param district_info: the dictionary that contains information for this type of district (taken from the configuration file)
+        @param school_types_dict: the school types dict, from the configuration file
+        @keyword subject: the subject
+        @return: a list of districtPopulation objects
         '''
         dist_pop_list = []
         for _i in range(district_counts):
@@ -81,6 +100,10 @@ class DistrictPopulation(object):
 
     def populate_district(self, district_type_dict, school_types_dict):
         '''
+        Populate the district with school
+        @param district_type_dict: The dict that contains information only about this district
+        @param school_types_dict: the dictionary containing information about all school types
+        @return: None
         '''
         school_counts = district_type_dict[constants.SCHOOL_COUNTS]
         school_types_and_ratios = district_type_dict[constants.SCHOOL_TYPES_AND_RATIOS]
@@ -116,6 +139,12 @@ class DistrictPopulation(object):
 
     def _generate_schools_in_school_type(self, school_type, school_type_dict, count, subject):
         '''
+        For a given school type generate the given count of schools
+        @param school_type: the type of the school
+        @param school_type_dict: a dictionary containing information only about the given school type
+        @param count: the number of schools to generate
+        @param subject: the subject
+        @return: A list of schoolPopulation objects
         '''
         school_pops = []
         for _i in range(count):
@@ -146,6 +175,9 @@ class SchoolPopulation(object):
 
     def generate_student_numbers(self, school_type_dict):
         '''
+        Calculate the number of students by grade for the school
+        @param school_type_dict: the dictionary contain information only for the given school type
+        @return: None
         '''
         school_value_dict = {}
         for grade in school_type_dict[constants.GRADES]:
@@ -159,6 +191,12 @@ class SchoolPopulation(object):
 
     def determine_school_demographic_numbers(self, demo_obj, demo_id):
         '''
+        determine the school demographic numbers
+        populates the 'school_demographics' instance variable
+        @param demo_obj: a demographic object
+        @param demo_obj: A demographic object containing all the demographic data
+        @param demo_id: The ID to use for accessing the demographic data
+        @return: None
         '''
         school_dem_values = {}
         for grade in self.total_students_by_grade:
@@ -169,6 +207,7 @@ class SchoolPopulation(object):
 
     def _calculate_grade_demographic_numbers(self, total_students, grade, subject, demo_obj, demographics_id):
         '''
+        For a given grade determine the number of students to place in each demographic including performance levels
         '''
         grade_value_dict = {}
 
@@ -187,6 +226,8 @@ class SchoolPopulation(object):
 
 def construct_state_counts_dict(state_population):
     '''
+    Construct a dictionary that contains the populations for each district and school given
+    a state population object
     '''
     state_counts = {}
 
@@ -198,6 +239,8 @@ def construct_state_counts_dict(state_population):
 
 def construct_district_counts_dict(district_populations):
     '''
+    Construct a dictionary that contains the populations for each district and school given
+    a district population object
     '''
     district_counts = {}
 
@@ -221,6 +264,12 @@ def calculate_school_total_students(grades, min_students, max_students, avg_stud
 
 def calculate_group_demographic_numbers(group_dict, group_num, total_students):
     '''
+    Calculate the group demographic numbers for a given group
+    @param group_dict: the dictionary of demographic percents that corresponds to a group
+    @param group_num: the group's number
+    @param total_students: the total number of students to distribute
+    @return: a dictionary contain demographic numbers of the form:
+    {<demo_name>: [<group_num>, <overall_number>, <pl1_count>, <pl2_count>, <pl3_count>, <pl4_count>], ...}
     '''
     demo_counts = {}
 

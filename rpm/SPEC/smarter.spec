@@ -115,6 +115,13 @@ cp -r virtualenv %{buildroot}/opt
 %attr(755,root,root) /opt/virtualenv/bin/pviews
 %attr(755,root,root) /opt/virtualenv/bin/pygmentize
 %attr(755,root,root) /opt/virtualenv/bin/python3.3
+%attr(755,root,root) /opt/virtualenv/bin/celery
+%attr(755,root,root) /opt/virtualenv/bin/celery
+%attr(755,root,root) /opt/virtualenv/bin/celerybeat
+%attr(755,root,root) /opt/virtualenv/bin/celeryctl
+%attr(755,root,root) /opt/virtualenv/bin/celeryd
+%attr(755,root,root) /opt/virtualenv/bin/celeryd-multi
+%attr(755,root,root) /opt/virtualenv/bin/celeryev
 /opt/virtualenv/bin/python
 /opt/virtualenv/bin/python3
 %attr(755,root,root) /etc/rc.d/init.d/celeryd

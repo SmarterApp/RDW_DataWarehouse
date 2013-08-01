@@ -9,7 +9,7 @@ from smarter.reports.helpers.percentage_calc import normalize_percentages
 from sqlalchemy.sql import select
 from sqlalchemy.sql import and_
 from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
-from sqlalchemy.sql.expression import func, true, case, null
+from sqlalchemy.sql.expression import func, true
 from smarter.reports.helpers.constants import Constants
 from edapi.logging import audit_event
 import collections
@@ -200,12 +200,13 @@ class ComparingPopReport(object):
             results = connector.get_result(query)
         return results
 
-    def get_asmt_levels(self, metadata):
+    def get_asmt_levels(self, subjects, metadata):
         asmt_map = {}
-        for subject, data in metadata.items():
-            asmt_map[subject] = 4
-            if data:
-                asmt_map[subject] = len(data)
+        for alias in subjects.values():
+            asmt_map[alias] = 4
+            color = metadata.get(alias)
+            if color:
+                asmt_map[alias] = len(color)
         return asmt_map
 
     def arrange_results(self, results, **param):
@@ -216,8 +217,8 @@ class ComparingPopReport(object):
         :returns:  results arranged for front-end consumption
         '''
         subjects = collections.OrderedDict({Constants.MATH: Constants.SUBJECT1, Constants.ELA: Constants.SUBJECT2})
-        asmt_custom_metadata = get_asmt_custom_metadata(stateCode=param.get(Constants.STATECODE), tenant=self.tenant)
-        record_manager = RecordManager(subjects, self.get_asmt_levels(asmt_custom_metadata), asmt_custom_metadata, **param)
+        asmt_custom_metadata = get_asmt_custom_metadata(param.get(Constants.STATECODE), self.tenant)
+        record_manager = RecordManager(subjects, self.get_asmt_levels(subjects, asmt_custom_metadata), **param)
 
         for result in results:
             record_manager.update_record(result)
@@ -233,13 +234,12 @@ class RecordManager():
     '''
     record manager class
     '''
-    def __init__(self, subjects_map, asmt_levels, asmt_cstm_metadata, stateCode=None, districtGuid=None, schoolGuid=None, **kwargs):
+    def __init__(self, subjects_map, asmt_levels, stateCode=None, districtGuid=None, schoolGuid=None, **kwargs):
         self._stateCode = stateCode
         self._districtGuid = districtGuid
         self._schoolGuid = schoolGuid
         self._subjects_map = subjects_map
         self._tracking_record = collections.OrderedDict()
-        self._asmt_custom_metadata_results = asmt_cstm_metadata
         self._summary = {}
         self._asmt_level = asmt_levels
         self.init_summary(self._summary)
@@ -285,8 +285,8 @@ class RecordManager():
         results = collections.OrderedDict()
         if self._subjects_map is not None:
             for name, alias in self._subjects_map.items():
-                levels = self._asmt_level.get(name)
-                if levels and self._asmt_level[name] != len(data[alias]):
+                levels = self._asmt_level.get(alias)
+                if levels and levels != len(data[alias]):
                     for index in range(1, levels):
                         if data[alias].get(index) is None:
                             data[alias][index] = 0

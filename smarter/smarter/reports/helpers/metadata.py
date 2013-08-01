@@ -7,8 +7,10 @@ from smarter.database.smarter_connector import SmarterDBConnection
 from smarter.reports.helpers.constants import Constants
 from sqlalchemy.sql import select
 import json
+from smarter.reports.utils.cache import cache_region
 
 
+@cache_region('public.data')
 def get_asmt_custom_metadata(stateCode, tenant=None):
     '''
     Query assessment custom metadata from database

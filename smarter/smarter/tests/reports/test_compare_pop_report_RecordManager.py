@@ -6,10 +6,9 @@ Created on Mar 11, 2013
 import unittest
 import os
 import json
-from smarter.reports.compare_pop_report import RecordManager, \
-    Record
 from smarter.reports.helpers.constants import Constants
 import collections
+from smarter.reports.compare_pop_report import RecordManager, Record
 
 
 class Test(unittest.TestCase):
@@ -29,7 +28,7 @@ class Test(unittest.TestCase):
 
     def test_RecordManager_get_record(self):
         param = {Constants.STATECODE: 'DE'}
-        manager = RecordManager(None, {}, {}, **param)
+        manager = RecordManager(None, {}, **param)
         record3 = Record(inst_id=3, name='aaa')
         record1 = Record(inst_id=1, name='bbb')
         record2 = Record(inst_id=2, name='ccc')
@@ -67,7 +66,7 @@ class Test(unittest.TestCase):
         param = {Constants.STATECODE: 'DE'}
         subjects = {Constants.MATH: Constants.SUBJECT1, Constants.ELA: Constants.SUBJECT2}
         asmt_levels = {Constants.MATH: 5, Constants.ELA: 5}
-        manager = RecordManager(subjects, asmt_levels, {}, **param)
+        manager = RecordManager(subjects, asmt_levels, **param)
         manager._summary = {Constants.SUBJECT1: {1: 10, 2: 20, 3: 30, 4: 40, 5: 50}, Constants.SUBJECT2: {5: 50}}
         summary_records = manager.get_summary()
 
@@ -85,7 +84,7 @@ class Test(unittest.TestCase):
     def test_RecordManager_get_subjects(self):
         param = {Constants.STATECODE: 'DE'}
         subjects = {'a': 'b', 'c': 'd'}
-        manager = RecordManager(subjects, {}, {}, **param)
+        manager = RecordManager(subjects, {}, **param)
         subjects = manager.get_subjects()
         self.assertEqual('a', subjects['b'])
 
@@ -94,8 +93,7 @@ class Test(unittest.TestCase):
         param = {Constants.STATECODE: 'DE', Constants.DISTRICTGUID: '245', Constants.SCHOOLGUID: '92499'}
         subjects = {Constants.MATH: Constants.SUBJECT1, Constants.ELA: Constants.SUBJECT2}
         asmt_levels = {Constants.MATH: 3, Constants.ELA: 5}
-        asmt_custom_metadata = {'subject1': '', 'subject2': ''}
-        manager = RecordManager(subjects, asmt_levels, asmt_custom_metadata, **param)
+        manager = RecordManager(subjects, asmt_levels, **param)
         for result in results:
             manager.update_record(result)
         self.assertEqual(1, len(manager._tracking_record))

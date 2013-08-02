@@ -11,7 +11,7 @@ from smarter.reports.utils.cache import cache_region
 
 
 @cache_region('public.data')
-def get_asmt_custom_metadata(stateCode, tenant=None):
+def get_custom_metadata(stateCode, tenant=None):
     '''
     Query assessment custom metadata from database
 
@@ -20,10 +20,10 @@ def get_asmt_custom_metadata(stateCode, tenant=None):
     :rtype: dict
     :returns: dict of custom metadata with subject id as key and metadata as its value
     '''
-    asmt_cstm_meta_map = {}
+    cstm_meta_map = {}
     with SmarterDBConnection(tenant) as connector:
         # query custom metadata by state code
-        dim_asmt_cstm = connector.get_table(Constants.DIM_ASMT_CUSTOM_METADATA)
+        dim_asmt_cstm = connector.get_table(Constants.CUSTOM_METADATA)
         query = select([dim_asmt_cstm.c.asmt_custom_metadata.label(Constants.ASMT_CUSTOM_METADATA),
                         dim_asmt_cstm.c.asmt_subject.label(Constants.ASMT_SUBJECT)],
                        from_obj=[dim_asmt_cstm])\
@@ -36,8 +36,8 @@ def get_asmt_custom_metadata(stateCode, tenant=None):
             if custom_metadata:
                 custom_metadata = json.loads(custom_metadata)
             subject = subject_map.get(result[Constants.ASMT_SUBJECT])
-            asmt_cstm_meta_map[subject] = custom_metadata
-    return asmt_cstm_meta_map
+            cstm_meta_map[subject] = custom_metadata
+    return cstm_meta_map
 
 
 def get_subjects_map(asmtSubject=None):

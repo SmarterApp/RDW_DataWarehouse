@@ -21,7 +21,7 @@ from smarter.reports.utils.cache import cache_region
 from smarter.reports.filters.demographics import get_demographic_filter, \
     get_ethnicity_filter
 from smarter.reports.exceptions.parameter_exception import InvalidParameterException
-from smarter.reports.helpers.metadata import get_asmt_custom_metadata
+from smarter.reports.helpers.metadata import get_custom_metadata
 
 
 REPORT_NAME = "comparing_populations"
@@ -217,14 +217,14 @@ class ComparingPopReport(object):
         :returns:  results arranged for front-end consumption
         '''
         subjects = collections.OrderedDict({Constants.MATH: Constants.SUBJECT1, Constants.ELA: Constants.SUBJECT2})
-        asmt_custom_metadata = get_asmt_custom_metadata(param.get(Constants.STATECODE), self.tenant)
-        record_manager = RecordManager(subjects, self.get_asmt_levels(subjects, asmt_custom_metadata), **param)
+        custom_metadata = get_custom_metadata(param.get(Constants.STATECODE), self.tenant)
+        record_manager = RecordManager(subjects, self.get_asmt_levels(subjects, custom_metadata), **param)
 
         for result in results:
             record_manager.update_record(result)
 
         # bind the results
-        return {Constants.COLORS: asmt_custom_metadata,
+        return {Constants.COLORS: custom_metadata,
                 Constants.SUMMARY: record_manager.get_summary(), Constants.RECORDS: record_manager.get_records(),
                 Constants.SUBJECTS: record_manager.get_subjects(),  # reverse map keys and values for subject
                 Constants.CONTEXT: get_breadcrumbs_context(state_code=param.get(Constants.STATECODE), district_guid=param.get(Constants.DISTRICTGUID), school_guid=param.get(Constants.SCHOOLGUID), tenant=self.tenant)}

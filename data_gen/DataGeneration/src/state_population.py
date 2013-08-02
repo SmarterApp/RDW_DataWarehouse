@@ -321,6 +321,10 @@ def sum_dict_of_demographics(demograph_dict_1, demograph_dict_2):
     if not demograph_dict_1 or not demograph_dict_2:
         return demograph_dict_1 or demograph_dict_2
 
+    missing_demographic_keys = set(demograph_dict_1.keys()) ^ set(demograph_dict_2.keys())
+    if missing_demographic_keys:
+        raise KeyError('Keys %s not in both dictionaries' % missing_demographic_keys)
+
     demographic_sums = {}
 
     # loop through all the demographics

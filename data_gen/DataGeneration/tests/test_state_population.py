@@ -5,8 +5,13 @@ Created on Aug 2, 2013
 '''
 import unittest
 import uuid
+import os
+import csv
 
 import state_population as sp
+import demographics as dmg
+
+__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
 
 class Test(unittest.TestCase):
@@ -16,6 +21,28 @@ class Test(unittest.TestCase):
 
     def tearDown(self):
         pass
+
+    def test__calculate_grade_demographic_numbers(self):
+        csv_file = write_demographics_csv()
+        demo_obj = dmg.Demographics(csv_file)
+        school_pop = sp.SchoolPopulation('Middle School')
+        results = school_pop._calculate_grade_demographic_numbers(100, 3, 'math', demo_obj, 'typical1')
+
+        # Do Assertions
+
+        os.remove(csv_file)
+
+    def test_SchoolPopulation_generate_student_numbers(self):
+        school_pop = sp.SchoolPopulation('Middle School')
+        self.assertIsNone(school_pop.total_students_by_grade)
+        school_pop.generate_student_numbers(get_school_types()['Middle School'])
+        student_counts = school_pop.total_students_by_grade
+        self.assertIsNotNone(student_counts)
+
+        # check each grade
+        self.assertEqual(student_counts[6], 50)
+        self.assertEqual(student_counts[7], 50)
+        self.assertEqual(student_counts[8], 50)
 
     def test_construct_state_counts_dict(self):
         state_pop = sp.StatePopulation('Example State', 'ES', 'typical_1')
@@ -172,6 +199,32 @@ def get_state_types():
                                  'demographics': 'typical1'}
                    }
     return state_types
+
+
+def write_demographics_csv():
+    csv_file_data = [
+        ('ID', 'grouping', 'subject', 'grade', 'demographic', 'col_name', 'Total', 1, 2, '3', 4),
+        ('typical1', '0', 'math', '3', 'All Students', 'all', '100', '9', '30', '48', '13'),
+        ('typical1', '1', 'math', '3', 'Female', 'female', '49', '8', '31', '49', '12'),
+        ('typical1', '1', 'math', '3', 'Male', 'male', '51', '10', '29', '48', '13'),
+        ('typical1', '2', 'math', '3', 'American Indian or Alaska Native', 'dmg_eth_ami', '1', '12', '36', '43', '9'),
+        ('typical1', '2', 'math', '3', 'Black or African American', 'dmg_eth_blk', '18', '17', '40', '37', '6'),
+        ('typical1', '2', 'math', '3', 'Hispanic or Latino', 'dmg_eth_hsp', '24', '13', '37', '43', '7'),
+        ('typical1', '2', 'math', '3', 'Asian or Native Hawaiian/Other Pacific Islander', 'dmg_eth_asn', '9', '3', '16', '53', '28'),
+        ('typical1', '2', 'math', '3', 'White', 'dmg_eth_wht', '48', '5', '25', '54', '16'),
+        ('typical1', '3', 'math', '3', 'Students with Disabilities  (IEP)', 'dmg_prg_iep', '15', '29', '42', '26', '3'),
+        ('typical1', '4', 'math', '3', 'LEP', 'dmg_prg_lep', '9', '23', '42', '32', '3'),
+        ('typical1', '5', 'math', '3', 'Economically Disadvantaged', 'dmg_prg_tt1', '57', '13', '37', '42', '8')
+    ]
+
+    file_path = os.path.join(__location__, 'test_file.csv')
+
+    with open(file_path, 'w') as cfile:
+        cwriter = csv.writer(cfile)
+        for row in csv_file_data:
+            cwriter.writerow(row)
+
+    return file_path
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

@@ -29,15 +29,17 @@ def get_custom_metadata(stateCode, tenant=None):
                        from_obj=[dim_asmt_cstm])\
             .where(dim_asmt_cstm.c.state_code == stateCode)
         results = connector.get_result(query)
-        subject_map = get_subjects_map()
-        # format by subject
         for result in results:
             custom_metadata = result.get(Constants.ASMT_CUSTOM_METADATA)
             if custom_metadata:
                 custom_metadata = json.loads(custom_metadata)
-            subject = subject_map.get(result[Constants.ASMT_SUBJECT])
-            cstm_meta_map[subject] = custom_metadata
-    return cstm_meta_map
+            cstm_meta_map[result[Constants.ASMT_SUBJECT]] = custom_metadata
+    # format by subject
+    result = {}
+    subject_map = get_subjects_map()
+    for key, value in subject_map.items():
+        result[value] = cstm_meta_map.get(key)
+    return result
 
 
 def get_subjects_map(asmtSubject=None):

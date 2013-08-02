@@ -270,7 +270,7 @@ define [
   appendColor = (data, colors, defaultColors) ->
     i = 0
     intervals = data.intervals
-    len = defaultColors.length
+    len = colors.length
     sort = prepareTotalPercentage data.total, len
     while i < len
       element = intervals[i]

@@ -50,11 +50,11 @@ class TestCache(unittest.TestCase):
     def test_region_invalidate_invalid_func(self):
         self.assertRaises(KeyError, region_invalidate, dummy_method, 'unittest', 'ny')
 
-#    def test_region_invalidate(self):
-#        before_invalidate = self.get_cache_key_count()
-#        region_invalidate(dummy_cache_method, 'dummyunittest', 'nyc')
-#        after_flush = self.get_cache_key_count()
-#        self.assertEqual(before_invalidate, after_flush)
+    def test_region_invalidate(self):
+        before_invalidate = self.get_cache_key_count()
+        region_invalidate(dummy_cache_method, 'dummyunittest', 'nyc')
+        after_flush = self.get_cache_key_count()
+        self.assertTrue(before_invalidate < after_flush)
 
     def test_region_invalidate_valid_caching(self):
         dummy_cache_method('ny')

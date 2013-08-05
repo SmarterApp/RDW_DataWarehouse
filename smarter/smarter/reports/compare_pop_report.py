@@ -232,9 +232,6 @@ class ComparingPopReport(object):
 
 
 class RecordManager():
-    '''
-    record manager class
-    '''
     def __init__(self, subjects_map, asmt_levels, stateCode=None, districtGuid=None, schoolGuid=None, **kwargs):
         self._stateCode = stateCode
         self._districtGuid = districtGuid
@@ -427,6 +424,9 @@ class QueryHelper():
         return self.apply_demographics_filter(query)
 
     def build_query(self, f, extra_columns=[]):
+        '''
+        Builds subquery to get the name of district or schools
+        '''
         query = self.__build_query(f)
         # We don't need to query dim_inst_hier for school view
         if self._view in [self.VIEWS.STATE_VIEW, self.VIEWS.DISTRICT_VIEW]:
@@ -456,6 +456,9 @@ class QueryHelper():
                    .order_by(self._fact_asmt_outcome.c.asmt_grade)
 
     def apply_demographics_filter(self, query):
+        '''
+        Demographics related filters
+        '''
         if self._filters:
             filter_iep = get_demographic_filter(Constants_filter_names.DEMOGRAPHICS_PROGRAM_IEP, self._fact_asmt_outcome.c.dmg_prg_iep, self._filters)
             if filter_iep is not None:

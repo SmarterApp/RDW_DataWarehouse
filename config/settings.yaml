@@ -403,7 +403,8 @@ development:
     # Don't cache any static contents
     smarter.resources.static.max_age: 0
     # Always generate pdf regardless if it exists in file system
-    pdf.always_generate: True
+    pdf:
+      always_generate: True
     trigger.recache.filter.file:  ../config/comparing_populations_precache_filters.json
 test:
   '[app:main]':

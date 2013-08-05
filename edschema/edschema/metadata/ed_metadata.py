@@ -177,10 +177,10 @@ def generate_ed_metadata(schema_name=None, bind=None):
     Index('dim_asmt_id_typex', assessment.c.asmt_rec_id, assessment.c.asmt_type, assessment.c.most_recent, unique=False)
 
     custom_metadata = Table('custom_metadata', metadata,
-                                       Column('asmt_custom_metadata', Text, nullable=True),
-                                       Column('state_code', String(2), nullable=False),
-                                       Column('asmt_subject', String(100), nullable=False)
-                                       )
+                            Column('asmt_custom_metadata', Text, nullable=True),
+                            Column('state_code', String(2), nullable=False),
+                            Column('asmt_subject', String(100), nullable=False)
+                            )
     Index('custom_metadata_id_idx', custom_metadata.c.state_code, custom_metadata.c.asmt_subject, unique=True)
 
     assessment_outcome = Table('fact_asmt_outcome', metadata,

@@ -10,7 +10,7 @@ import json
 from smarter.reports.utils.cache import cache_region
 
 
-@cache_region('public.data')
+@cache_region('public.shortlived')
 def get_custom_metadata(stateCode, tenant=None):
     '''
     Query assessment custom metadata from database

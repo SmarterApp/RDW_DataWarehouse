@@ -14,7 +14,7 @@ def dummy_method(stateCode):
     return True
 
 
-@cache_region('unittest')
+@cache_region('dummyunittest')
 def dummy_cache_method(stateCode):
     return True
 
@@ -25,7 +25,7 @@ class TestCache(unittest.TestCase):
         cache_managers.clear()
         cache_opts = {
             'cache.type': 'memory',
-            'cache.regions': 'unittest',
+            'cache.regions': 'dummyunittest',
             'cache.expire': 10
         }
         self.cache_mgr = CacheManager(**parse_cache_config_options(cache_opts))
@@ -50,25 +50,24 @@ class TestCache(unittest.TestCase):
     def test_region_invalidate_invalid_func(self):
         self.assertRaises(KeyError, region_invalidate, dummy_method, 'unittest', 'ny')
 
-    def test_region_invalidate(self):
-        region_invalidate(dummy_cache_method, 'unittest', 'ny')
-        self.validate_cache_is_empty()
+#    def test_region_invalidate(self):
+#        before_invalidate = self.get_cache_key_count()
+#        region_invalidate(dummy_cache_method, 'dummyunittest', 'nyc')
+#        after_flush = self.get_cache_key_count()
+#        self.assertEqual(before_invalidate, after_flush)
 
     def test_region_invalidate_valid_caching(self):
         dummy_cache_method('ny')
-        self.validate_cache_has_one_item()
-        region_invalidate(dummy_cache_method, 'unittest', 'ny')
-        self.validate_cache_is_empty()
+        before_invalidate = self.get_cache_key_count()
+        region_invalidate(dummy_cache_method, 'dummyunittest', 'ny')
+        after_flush = self.get_cache_key_count()
+        self.assertEqual(before_invalidate - 1, after_flush)
 
-    def validate_cache_has_one_item(self):
-        self.assertTrue(len(cache_managers.keys()), 1)
+    def get_cache_key_count(self):
+        count = 0
         for cache_region in cache_managers.values():
-            self.assertEqual(len(cache_region.namespace.dictionary.keys()), 1)
-
-    def validate_cache_is_empty(self):
-        self.assertTrue(len(cache_managers.keys()), 1)
-        for cache_region in cache_managers.values():
-            self.assertEqual(len(cache_region.namespace.dictionary.keys()), 0)
+            count += len(cache_region.namespace.dictionary.keys())
+        return count
 
 
 if __name__ == "__main__":

@@ -66,16 +66,16 @@ class TestGenerateScores(unittest.TestCase):
         self.assertTrue(min_number <= min(actual_numbers) and max(actual_numbers) <= max_number)
 
     def test_generate_random_scores(self):
-        percentage = [30, 34, 28, 8]
+        counts = [600, 680, 560, 160]
         cut_points = [1200, 1575, 1875, 2175, 2400]
         total = 2000
-        actual_scores = generate_scores.generate_random_scores_by_percentage_between_cut_points(percentage, cut_points, total)
-        for i in range(len(percentage)):
-            if i == len(percentage) - 1:
+        actual_scores = generate_scores.generate_random_scores_by_percentage_between_cut_points(counts, cut_points, total)
+        for i in range(len(counts)):
+            if i == len(counts) - 1:
                 high_bound = cut_points[i + 1] + 1
             else:
                 high_bound = cut_points[i + 1]
-            expected_number = int(total * percentage[i] / 100)
+            expected_number = counts[i]
             actual_socres_in_level = [x for x in actual_scores if x in range(cut_points[i], high_bound)]
             self.assertEqual(len(actual_socres_in_level), expected_number)
 
@@ -87,7 +87,7 @@ class TestGenerateScores(unittest.TestCase):
         # a > b
         return a <= b + diff
 
-    def test_generate_overall_scores(self):
+    def test_generate_overall_scores_percentage(self):
         percentage = [20, 40, 30, 10]
         cut_points = [1200, 1575, 1875, 2175, 2400]
         min_score = cut_points[0]
@@ -129,3 +129,31 @@ class TestGenerateScores(unittest.TestCase):
             self.assertTrue(self.is_close(pc, percentage[i], 1))
 
         # can add graph display here
+
+    def test_generate_overall_scores_counts(self):
+        counts = [2586, 5173, 3720, 1454]
+        cut_points = [1200, 1575, 1875, 2175, 2400]
+        min_score = cut_points[0]
+        max_score = cut_points[-1]
+        total = 12933
+        actual_scores = generate_scores.generate_overall_scores(counts, cut_points, min_score, max_score, total, is_percentage=False)
+        self.assertEqual(len(actual_scores), total)
+
+        cp1min, cp1max = cut_points[0], cut_points[1]
+        cp2min, cp2max = cut_points[1], cut_points[2]
+        cp3min, cp3max = cut_points[2], cut_points[3]
+        cp4min, cp4max = cut_points[3], cut_points[4] + 1
+
+        count1 = len(actual_scores)
+
+        pl1 = [x for x in actual_scores if x in range(cp1min, cp1max)]
+        pl2 = [x for x in actual_scores if x in range(cp2min, cp2max)]
+        pl3 = [x for x in actual_scores if x in range(cp3min, cp3max)]
+        pl4 = [x for x in actual_scores if x in range(cp4min, cp4max)]
+        expected_total = len(actual_scores)
+
+        self.assertEqual(len(pl1), counts[0])
+        self.assertEqual(len(pl2), counts[1])
+        self.assertEqual(len(pl3), counts[2])
+        self.assertEqual(len(pl4), counts[3])
+        self.assertEqual(total, expected_total)

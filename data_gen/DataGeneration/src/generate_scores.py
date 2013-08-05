@@ -5,13 +5,19 @@ points, minimum score, maximum score and total number
 import random
 
 
-def generate_overall_scores(percentages, cut_points, min_score, max_score, total):
+def generate_overall_scores(percentages_or_counts, cut_points, min_score, max_score, total, is_percentage=True):
     '''
     Main function to generate given total number of scores in range(min_score, max_score)
     Generated scores satisfy given percentage distribution, and cut_points
     '''
+    counts = []
+    if is_percentage is True:
+        counts = split_total_by_precentages(percentages_or_counts, total)
+    else:
+        counts = percentages_or_counts
+
     # generate random scores
-    generated_random_numbers = generate_random_scores_by_percentage_between_cut_points(percentages, cut_points, total)
+    generated_random_numbers = generate_random_scores_by_percentage_between_cut_points(counts, cut_points, total)
 
     # calculate average, and standard deviation from generated_random_numbers
     actual_avg, actual_std = calculate_avg_std(generated_random_numbers)
@@ -23,22 +29,22 @@ def generate_overall_scores(percentages, cut_points, min_score, max_score, total
     gauss_and_random_lists = gauss_numbers + generated_random_numbers
 
     # select total number from gauss_and_random_lists
-    sample_in_gauss_and_random_lists = sub_sample_list(gauss_and_random_lists, cut_points, percentages, total)
+    sample_in_gauss_and_random_lists = sub_sample_list(gauss_and_random_lists, cut_points, counts, total)
     # ORIGINAL CODE FOLLOWS
-    #sample_in_gauss_and_random_lists = random.sample(gauss_and_random_lists, total)
+    # sample_in_gauss_and_random_lists = random.sample(gauss_and_random_lists, total)
 
     # do adjustment for the list
-    final_scores_list = adjust_list(sample_in_gauss_and_random_lists, percentages, cut_points, total)
+    final_scores_list = adjust_list(sample_in_gauss_and_random_lists, counts, cut_points, total)
 
     return final_scores_list
 
 
-def generate_random_scores_by_percentage_between_cut_points(percentages, cut_points, total):
+def generate_random_scores_by_percentage_between_cut_points(count_for_level, cut_points, total):
     '''
     Generate random scores by percentages in each performance level (as defined by cut_points)
 
     INPUT:
-    percentages = list of percentages - one for each performance level
+    count_for_level = list of counts - one for each performance level
     cut_points = list of cut points - these help define the performance levels
     total = total number of scores to generate
 
@@ -52,19 +58,19 @@ def generate_random_scores_by_percentage_between_cut_points(percentages, cut_poi
     performance level n : runs from cut_points[n-1] to cut_points[n]
 
     '''
-    assert len(percentages) == len(cut_points) - 1
+    assert len(count_for_level) == len(cut_points) - 1
 
-    pl_count = len(percentages)
+    pl_count = len(count_for_level)
     last_pl = pl_count - 1
     all_scores = []
 
-    count_for_level = split_total_by_precentages(percentages, total)
+    # count_for_level = split_total_by_precentages(percentages, total)
 
     for i in range(pl_count):
         lo = cut_points[i]
         hi = cut_points[i + 1]
-        if i != last_pl:        # do not include the higher cut point in the PL range
-            hi -= 1             # unless it is the last PL
+        if i != last_pl:  # do not include the higher cut point in the PL range
+            hi -= 1  # unless it is the last PL
 
         pl_scores = generate_random_numbers(lo, hi, count_for_level[i])
         all_scores.extend(pl_scores)
@@ -85,8 +91,8 @@ def split_total_by_precentages(percentages, total):
     out_list = [0] * need
 
     for i in range(need):
-        val = (percentages[i] * total) / 100        # calculate according to the percentage
-        val = int(val)                              # round the result DOWN to the nearest integer
+        val = (percentages[i] * total) / 100  # calculate according to the percentage
+        val = int(val)  # round the result DOWN to the nearest integer
         out_list[i] = val
 
     diff = total - sum(out_list)
@@ -135,10 +141,10 @@ def gauss_list(avg, std, num):
     return result
 
 
-def sub_sample_list(score_list, cut_points, percentages, total):
+def sub_sample_list(score_list, cut_points, pl_counts, total):
     """ return a sub-sample of the 'score_list' so that there are only 'total' scores, but sample by perforamce levels
     """
-    pl_counts = split_total_by_precentages(percentages, total)
+    # pl_counts = split_total_by_precentages(percentages, total)
     outlist = []
     pl_count = len(cut_points) - 1
     last_pl = pl_count - 1
@@ -146,8 +152,8 @@ def sub_sample_list(score_list, cut_points, percentages, total):
     for i in range(pl_count):
         lo = cut_points[i]
         hi = cut_points[i + 1]
-        if i != last_pl:        # do not include the higher cut point in the PL range
-            hi -= 1             # unless it is the last PL
+        if i != last_pl:  # do not include the higher cut point in the PL range
+            hi -= 1  # unless it is the last PL
 
         split_list = [x for x in score_list if lo <= x <= hi]
         sub_list = random.sample(split_list, pl_counts[i])
@@ -156,20 +162,20 @@ def sub_sample_list(score_list, cut_points, percentages, total):
     return outlist
 
 
-def adjust_list(total_list, percentages, cut_points, total):
+def adjust_list(total_list, required_numbers, cut_points, total):
     '''
     Make adjustment of input total_list
     First, split the total list into each level
     For each split list, call function add_or_delete(), return a split_adjust_list
     Return combination of all split_adjust_list
     '''
-    assert len(percentages) == len(cut_points) - 1 and len(cut_points) >= 3
+    assert len(required_numbers) == len(cut_points) - 1 and len(cut_points) >= 3
 
-    pl_count = len(percentages)
+    pl_count = len(required_numbers)
     last_pl = pl_count - 1
 
     adjusted_list = []
-    required_numbers = split_total_by_precentages(percentages, total)
+    # required_numbers = split_total_by_precentages(percentages, total)
 
     for i in range(pl_count):
         required = required_numbers[i]
@@ -178,15 +184,15 @@ def adjust_list(total_list, percentages, cut_points, total):
 
         lo = cut_points[i]
         hi = cut_points[i + 1]
-        if i != last_pl:        # do not include the higher cut point in the PL range
-            hi -= 1             # unless it is the last PL
+        if i != last_pl:  # do not include the higher cut point in the PL range
+            hi -= 1  # unless it is the last PL
 
         split_list = [x for x in total_list if lo <= x <= hi]
 
         if (len(split_list) > 0):
             split_adjust = add_or_delete(split_list, required)
         else:
-            print("WARNING: in adjust_list() : nothing in split_list : PL-lo=%d, PL-hi=%d, required=%d, percentage=%d" % (lo, hi, required, percentages[i]))
+            print("WARNING: in adjust_list() : nothing in split_list : PL-lo=%d, PL-hi=%d, required=%d" % (lo, hi, required))
             split_adjust = generate_random_numbers(lo, hi, required)
 
         adjusted_list.extend(split_adjust)

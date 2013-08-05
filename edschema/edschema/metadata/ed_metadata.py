@@ -81,7 +81,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                      Column('address_2', String(256), nullable=True),
                      Column('city', String(100), nullable=False),
                      Column('zip_code', String(5), nullable=False),
-                     Column('gender', String(10), nullable=False),
+                     Column('gender', String(10), nullable=True),
                      Column('email', String(256), nullable=False),
                      Column('dob', String(8), nullable=False),
                      Column('section_guid', String(50), nullable=False),

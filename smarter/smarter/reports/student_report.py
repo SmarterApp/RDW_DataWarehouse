@@ -17,16 +17,19 @@ from smarter.reports.helpers.assessments import get_cut_points, \
     get_overall_asmt_interval, get_claims
 from smarter.security.context import select_with_context
 from smarter.database.smarter_connector import SmarterDBConnection
+from smarter.reports.helpers.constants import Constants
+from smarter.reports.helpers.metadata import get_custom_metadata,\
+    get_subjects_map
 
 REPORT_NAME = 'individual_student_report'
 
 
 def __prepare_query(connector, student_guid, assessment_guid):
     # get table metadatas
-    fact_asmt_outcome = connector.get_table('fact_asmt_outcome')
-    dim_student = connector.get_table('dim_student')
-    dim_asmt = connector.get_table('dim_asmt')
-    dim_staff = connector.get_table('dim_staff')
+    fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
+    dim_student = connector.get_table(Constants.DIM_STUDENT)
+    dim_asmt = connector.get_table(Constants.DIM_ASMT)
+    dim_staff = connector.get_table(Constants.DIM_STAFF)
     query = select_with_context([fact_asmt_outcome.c.student_guid,
                                 dim_student.c.first_name.label('student_first_name'),
                                 dim_student.c.middle_name.label('student_middle_name'),
@@ -49,7 +52,6 @@ def __prepare_query(connector, student_guid, assessment_guid):
                                 dim_asmt.c.asmt_cut_point_2.label("asmt_cut_point_2"),
                                 dim_asmt.c.asmt_cut_point_3.label("asmt_cut_point_3"),
                                 dim_asmt.c.asmt_cut_point_4.label("asmt_cut_point_4"),
-                                dim_asmt.c.asmt_custom_metadata.label('asmt_custom_metadata'),
                                 fact_asmt_outcome.c.asmt_grade.label('asmt_grade'),
                                 fact_asmt_outcome.c.asmt_score.label('asmt_score'),
                                 fact_asmt_outcome.c.asmt_score_range_min.label('asmt_score_range_min'),
@@ -126,7 +128,7 @@ def __calculateClaimScoreRelativeDifference(items):
     return newItems
 
 
-def __arrange_results(results):
+def __arrange_results(results, subjects_map, custom_metadata_map):
     '''
     This method arranges the data retreievd from the db to make it easier to consume by the client
     '''
@@ -141,8 +143,11 @@ def __arrange_results(results):
 
         result['asmt_score_interval'] = get_overall_asmt_interval(result)
 
+        # custom metadata
+        subject_name = subjects_map[result["asmt_subject"]]
+        custom = custom_metadata_map.get(subject_name)
         # format and rearrange cutpoints
-        result = get_cut_points(result)
+        result = get_cut_points(custom, result)
 
         result['claims'] = get_claims(number_of_claims=5, result=result, include_names=True, include_scores=True, include_min_max_scores=True, include_indexer=True)
         newResults.append(result)
@@ -154,9 +159,9 @@ def __arrange_results(results):
 @report_config(name=REPORT_NAME,
                params={
                    "studentGuid": {
-                   "type": "string",
-                   "required": True,
-                   "pattern": "^[a-zA-Z0-9\-]{0,50}$"},
+                       "type": "string",
+                       "required": True,
+                       "pattern": "^[a-zA-Z0-9\-]{0,50}$"},
                    "assessmentGuid": {
                        "name": "student_assessments_report",
                        "type": "string",
@@ -189,8 +194,12 @@ def get_student_report(params):
         else:
             raise NotFoundException("There are no results for student id {0}".format(student_guid))
 
+        # color metadata
+        custom_metadata_map = get_custom_metadata(params.get(Constants.STATECODE))
+        # subjects map
+        subjects_map = get_subjects_map()
         # prepare the result for the client
-        result = __arrange_results(result)
+        result = __arrange_results(result, subjects_map, custom_metadata_map)
 
         result['context'] = context
     return result
@@ -199,11 +208,9 @@ def get_student_report(params):
 @report_config(name='student_assessments_report',
                params={
                    "studentGuid": {
-                   "type": "string",
-                   "required": True
-                   }
-               }
-               )
+                       "type": "string",
+                       "required": True}
+               })
 def get_student_assessment(params):
 
     # get studentId

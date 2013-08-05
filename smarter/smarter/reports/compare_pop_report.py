@@ -9,12 +9,11 @@ from smarter.reports.helpers.percentage_calc import normalize_percentages
 from sqlalchemy.sql import select
 from sqlalchemy.sql import and_
 from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
-from sqlalchemy.sql.expression import func, true, case, null
+from sqlalchemy.sql.expression import func, true
 from smarter.reports.helpers.constants import Constants
 from edapi.logging import audit_event
 import collections
 from edapi.exceptions import NotFoundException
-import json
 from smarter.security.context import select_with_context
 from smarter.database.smarter_connector import SmarterDBConnection
 from smarter.reports.filters import Constants_filter_names
@@ -22,6 +21,7 @@ from smarter.reports.utils.cache import cache_region
 from smarter.reports.filters.demographics import get_demographic_filter, \
     get_ethnicity_filter
 from smarter.reports.exceptions.parameter_exception import InvalidParameterException
+from smarter.reports.helpers.metadata import get_custom_metadata
 
 
 REPORT_NAME = "comparing_populations"
@@ -200,24 +200,13 @@ class ComparingPopReport(object):
             results = connector.get_result(query)
         return results
 
-    def get_asmt_levels(self):
-        # TODO:  remove this query after we move levels to its own table
+    def get_asmt_levels(self, subjects, metadata):
         asmt_map = {}
-        with SmarterDBConnection(tenant=self.tenant) as connector:
-            dim_asmt = connector.get_table(Constants.DIM_ASMT)
-            query = select([dim_asmt.c.asmt_subject.label(Constants.ASMT_SUBJECT),
-                            func.max(case([(dim_asmt.c.asmt_perf_lvl_name_5 != null(), 5),
-                                           (dim_asmt.c.asmt_perf_lvl_name_4 != null(), 4),
-                                           (dim_asmt.c.asmt_perf_lvl_name_3 != null(), 3),
-                                           (dim_asmt.c.asmt_perf_lvl_name_2 != null(), 2),
-                                           (dim_asmt.c.asmt_perf_lvl_name_1 != null(), 1)],
-                                          else_=0)).label(Constants.DISPLAY_LEVEL).label(Constants.LEVEL)],
-                           from_obj=[dim_asmt])\
-                .where(dim_asmt.c.most_recent == true())\
-                .group_by(dim_asmt.c.asmt_subject)
-            results = connector.get_result(query)
-            for result in results:
-                asmt_map[result[Constants.ASMT_SUBJECT]] = result[Constants.LEVEL]
+        for alias in subjects.values():
+            asmt_map[alias] = 4
+            color = metadata.get(alias)
+            if color:
+                asmt_map[alias] = len(color)
         return asmt_map
 
     def arrange_results(self, results, **param):
@@ -228,13 +217,14 @@ class ComparingPopReport(object):
         :returns:  results arranged for front-end consumption
         '''
         subjects = collections.OrderedDict({Constants.MATH: Constants.SUBJECT1, Constants.ELA: Constants.SUBJECT2})
-        record_manager = RecordManager(subjects, self.get_asmt_levels(), **param)
+        custom_metadata = get_custom_metadata(param.get(Constants.STATECODE), self.tenant)
+        record_manager = RecordManager(subjects, self.get_asmt_levels(subjects, custom_metadata), **param)
 
         for result in results:
             record_manager.update_record(result)
 
         # bind the results
-        return {Constants.COLORS: record_manager.get_asmt_custom_metadata(),
+        return {Constants.COLORS: custom_metadata,
                 Constants.SUMMARY: record_manager.get_summary(), Constants.RECORDS: record_manager.get_records(),
                 Constants.SUBJECTS: record_manager.get_subjects(),  # reverse map keys and values for subject
                 Constants.CONTEXT: get_breadcrumbs_context(state_code=param.get(Constants.STATECODE), district_guid=param.get(Constants.DISTRICTGUID), school_guid=param.get(Constants.SCHOOLGUID), tenant=self.tenant)}
@@ -250,7 +240,6 @@ class RecordManager():
         self._schoolGuid = schoolGuid
         self._subjects_map = subjects_map
         self._tracking_record = collections.OrderedDict()
-        self._asmt_custom_metadata_results = {}
         self._summary = {}
         self._asmt_level = asmt_levels
         self.init_summary(self._summary)
@@ -277,21 +266,8 @@ class RecordManager():
         self.update_interval(self._summary[subject_alias_name], result[Constants.LEVEL], result[Constants.TOTAL])
         self.update_interval(record.subjects[subject_alias_name], result[Constants.LEVEL], result[Constants.TOTAL])
 
-        # TODO:  cpop query doesn't have custom_metadata anymore - remove this in refactoring
-        if subject_alias_name not in self._asmt_custom_metadata_results:
-            custom_metadata = result.get(Constants.ASMT_CUSTOM_METADATA)
-            if custom_metadata:
-                custom_metadata = json.loads(custom_metadata)
-            self._asmt_custom_metadata_results[subject_alias_name] = custom_metadata
-
     def update_interval(self, data, level, count):
         data[level] = data.get(level, 0) + int(count)
-
-    def get_asmt_custom_metadata(self):
-        '''
-        for FE color information for each subjects
-        '''
-        return self._asmt_custom_metadata_results
 
     def get_subjects(self):
         '''
@@ -309,8 +285,8 @@ class RecordManager():
         results = collections.OrderedDict()
         if self._subjects_map is not None:
             for name, alias in self._subjects_map.items():
-                levels = self._asmt_level.get(name)
-                if levels and self._asmt_level[name] != len(data[alias]):
+                levels = self._asmt_level.get(alias)
+                if levels and levels != len(data[alias]):
                     for index in range(1, levels):
                         if data[alias].get(index) is None:
                             data[alias][index] = 0
@@ -430,20 +406,17 @@ class QueryHelper():
                               self.VIEWS.SCHOOL_VIEW: and_(self._fact_asmt_outcome.c.district_guid == self._district_guid, self._fact_asmt_outcome.c.school_guid == self._school_guid)}
 
         query = f(extra_columns[self._view] +
-                  [self._dim_asmt.c.asmt_custom_metadata.label(Constants.ASMT_CUSTOM_METADATA),
-                   self._dim_asmt.c.asmt_subject.label(Constants.ASMT_SUBJECT),
+                  [self._dim_asmt.c.asmt_subject.label(Constants.ASMT_SUBJECT),
                    self._fact_asmt_outcome.c.asmt_perf_lvl.label(Constants.LEVEL),
                    func.count().label(Constants.TOTAL)],
                   from_obj=[self._fact_asmt_outcome.join(
-                            self._dim_asmt,
-                            and_(self._dim_asmt.c.asmt_rec_id == self._fact_asmt_outcome.c.asmt_rec_id,
-                                 self._dim_asmt.c.asmt_type == Constants.SUMMATIVE,
-                                 self._dim_asmt.c.most_recent == true())).join(
+                            self._dim_asmt, and_(self._dim_asmt.c.asmt_rec_id == self._fact_asmt_outcome.c.asmt_rec_id,
+                                                 self._dim_asmt.c.asmt_type == Constants.SUMMATIVE,
+                                                 self._dim_asmt.c.most_recent == true())).join(
                             self._dim_inst_hier, and_(self._dim_inst_hier.c.inst_hier_rec_id == self._fact_asmt_outcome.c.inst_hier_rec_id))]
                   )\
             .group_by(extra_group_by[self._view],
                       self._dim_asmt.c.asmt_subject,
-                      self._dim_asmt.c.asmt_custom_metadata,
                       self._fact_asmt_outcome.c.asmt_perf_lvl)\
             .where(and_(self._fact_asmt_outcome.c.state_code == self._state_code, self._fact_asmt_outcome.c.most_recent == true()))
 
@@ -458,9 +431,9 @@ class QueryHelper():
         if self._view in [self.VIEWS.STATE_VIEW, self.VIEWS.DISTRICT_VIEW]:
             subquery = query.alias()
             query = f(extra_columns +
-                      [subquery.c[Constants.ASMT_CUSTOM_METADATA], subquery.c[Constants.ASMT_SUBJECT], subquery.c[Constants.LEVEL], func.sum(subquery.c[Constants.TOTAL]).label(Constants.TOTAL)],
+                      [subquery.c[Constants.ASMT_SUBJECT], subquery.c[Constants.LEVEL], func.sum(subquery.c[Constants.TOTAL]).label(Constants.TOTAL)],
                       from_obj=[self._dim_inst_hier.join(subquery, self._dim_inst_hier.c.inst_hier_rec_id == subquery.c[Constants.INST_HIER_REC_ID])])\
-                .group_by(subquery.c[Constants.ASMT_SUBJECT], subquery.c[Constants.LEVEL], subquery.c[Constants.ASMT_CUSTOM_METADATA])
+                .group_by(subquery.c[Constants.ASMT_SUBJECT], subquery.c[Constants.LEVEL])
         return query.order_by(query.c[Constants.ASMT_SUBJECT].desc())
 
     def get_query(self):

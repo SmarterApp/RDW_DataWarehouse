@@ -6,10 +6,9 @@ Created on Mar 11, 2013
 import unittest
 import os
 import json
-from smarter.reports.compare_pop_report import RecordManager, \
-    Record
 from smarter.reports.helpers.constants import Constants
 import collections
+from smarter.reports.compare_pop_report import RecordManager, Record
 
 
 class Test(unittest.TestCase):
@@ -97,7 +96,6 @@ class Test(unittest.TestCase):
         manager = RecordManager(subjects, asmt_levels, **param)
         for result in results:
             manager.update_record(result)
-        self.assertEqual(2, len(manager.get_asmt_custom_metadata()))
         self.assertEqual(1, len(manager._tracking_record))
         summary = manager.get_summary()
         self.assertEqual(3, len(summary[0]['results']['subject1']))

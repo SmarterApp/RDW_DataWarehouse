@@ -66,7 +66,7 @@ class Test(unittest.TestCase):
 
     def test_01(self):
         total = 254565
-        percentages = [33, 33, 34, 0]
+        percentages = [84006, 84006, 86553, 0]
         cut_points = [1200, 1575, 1875, 2175, 2400]
         generated_random_numbers = generate_random_scores_by_percentage_between_cut_points(percentages, cut_points, total)
         count = len(generated_random_numbers)
@@ -74,25 +74,25 @@ class Test(unittest.TestCase):
 
     def test_02(self):
         total = 10
-        percentages = [70, 20, 10, 0]
+        counts = [7, 2, 1, 0]
         cut_points = [1200, 1575, 1875, 2175, 2400]
         min_score = cut_points[0]
         max_score = cut_points[-1]
-        generated_random_numbers = generate_random_scores_by_percentage_between_cut_points(percentages, cut_points, total)
+        generated_random_numbers = generate_random_scores_by_percentage_between_cut_points(counts, cut_points, total)
         count = len(generated_random_numbers)
         self.assertEqual(total, count)
 
-        total_count_by_percentages = split_total_by_precentages(percentages, total)
+        total_count_by_percentages = split_total_by_precentages(counts, total)
         new_total = sum(total_count_by_percentages)
         self.assertEqual(total, new_total)
 
-        final_scores_list = generate_overall_scores(percentages, cut_points, min_score, max_score, total)
+        final_scores_list = generate_overall_scores(counts, cut_points, min_score, max_score, total)
         count = len(final_scores_list)
         self.assertEqual(total, count)
 
     def test_03(self):
         total = 10
-        percentages = [71, 29, 0, 0]
+        percentages = [7, 3, 0, 0]
         cut_points = [1200, 1575, 1875, 2175, 2400]
         min_score = cut_points[0]
         max_score = cut_points[-1]
@@ -117,11 +117,12 @@ class Test(unittest.TestCase):
         actual_scores = generate_overall_scores(percentages, cut_points, min_score, max_score, total)
         self.assertEqual(len(actual_scores), total)
 
-        generated_random_numbers = generate_random_scores_by_percentage_between_cut_points(percentages, cut_points, total)
+        pl_counts = split_total_by_precentages(percentages, total)
+        generated_random_numbers = generate_random_scores_by_percentage_between_cut_points(pl_counts, cut_points, total)
         count = len(generated_random_numbers)
         self.assertEqual(total, count)
 
-        total_count_by_percentages = split_total_by_precentages(percentages, total)
+        total_count_by_percentages = split_total_by_precentages(pl_counts, total)
         new_total = sum(total_count_by_percentages)
         self.assertEqual(total, new_total)
 

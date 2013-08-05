@@ -14,6 +14,7 @@ config_namespace = 'edware.db'
 class SmarterDBConnection(DBConnection):
     '''
     DBConnector for Smarter Project
+    This is used for database connection for reports
     '''
 
     def __init__(self, tenant=None):
@@ -30,16 +31,25 @@ class SmarterDBConnection(DBConnection):
 
     @staticmethod
     def get_datasource_name(tenant=None):
+        '''
+        Returns datasource name for a tenant
+        '''
         if tenant is None:
             return config_namespace
         return config_namespace + '.' + tenant
 
     @staticmethod
     def get_db_config_prefix(tenant=None):
+        '''
+        Returns database config prefix based on tenant name
+        '''
         if tenant is None:
             return config_namespace + '.'
         return config_namespace + '.' + tenant + '.'
 
     @staticmethod
     def generate_metadata(schema_name=None, bind=None):
+        '''
+        Generates metadata for edware
+        '''
         return generate_ed_metadata(schema_name=schema_name, bind=bind)

@@ -63,15 +63,13 @@ REPORT_NAME = "list_of_students"
 def get_list_of_students_report(params):
     '''
     List of Students Report
+    :param dict params:  dictionary of parameters for List of student report
     '''
     stateCode = str(params[Constants.STATECODE])
     districtGuid = str(params[Constants.DISTRICTGUID])
     schoolGuid = str(params[Constants.SCHOOLGUID])
     asmtGrade = str(params[Constants.ASMTGRADE])
-    # asmt_subject is optional.
-    asmtSubject = None
-    if Constants.ASMTSUBJECT in params:
-        asmtSubject = params[Constants.ASMTSUBJECT]
+    asmtSubject = params.get(Constants.ASMTSUBJECT, None)
     with SmarterDBConnection() as connector:
         # get handle to tables
         dim_student = connector.get_table('dim_student')

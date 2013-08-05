@@ -33,6 +33,23 @@ def cache_region(region, namespace='smarter', router=None, key_generator=None, *
     :param router:  a reference to a function that returns a region name for region routing needs
     :param key_generator:  a reference to a function that returns a tuple representing the cache key
     :param decor_args:  additional arguments used as cache key
+    
+    Example::
+
+        @cache_region('region1')
+        def read_from_db(id, field, value)
+            return database.query(id, field, value)
+            
+    This will cache results to region1 and the cache key will be on paramter values
+    
+    Example::
+    
+        @cache_region(['region1' 'region2'], router=get_region, key_generator=get_key_generator)
+        def read_from_db(id, field, value)
+            return database.query(id, field, value)
+    
+    This will setup two cache regions, and will call get_region function that will return the region name for route cache results to
+    It will generate the cache key get_key_generator()
     '''
     cache = {}
 

@@ -3,8 +3,6 @@ Created on Jan 13, 2013
 
 @author: tosako
 '''
-
-
 from edapi.decorators import report_config, user_info
 from smarter.reports.helpers.name_formatter import format_full_name
 from sqlalchemy.sql import select
@@ -25,11 +23,13 @@ REPORT_NAME = 'individual_student_report'
 
 
 def __prepare_query(connector, student_guid, assessment_guid):
-    # get table metadatas
-    fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
-    dim_student = connector.get_table(Constants.DIM_STUDENT)
-    dim_asmt = connector.get_table(Constants.DIM_ASMT)
-    dim_staff = connector.get_table(Constants.DIM_STAFF)
+    '''
+    Returns query for individual student report
+    '''
+    fact_asmt_outcome = connector.get_table('fact_asmt_outcome')
+    dim_student = connector.get_table('dim_student')
+    dim_asmt = connector.get_table('dim_asmt')
+    dim_staff = connector.get_table('dim_staff')
     query = select_with_context([fact_asmt_outcome.c.student_guid,
                                 dim_student.c.first_name.label('student_first_name'),
                                 dim_student.c.middle_name.label('student_middle_name'),
@@ -212,12 +212,12 @@ def get_student_report(params):
                        "required": True}
                })
 def get_student_assessment(params):
-
-    # get studentId
+    '''
+    Given a student id, return student assessment
+    '''
     student_guid = params['studentGuid']
 
     with SmarterDBConnection() as connection:
-        # get table metadatas
         dim_asmt = connection.get_table('dim_asmt')
         fact_asmt_outcome = connection.get_table('fact_asmt_outcome')
 

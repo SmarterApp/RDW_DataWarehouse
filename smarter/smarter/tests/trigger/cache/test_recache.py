@@ -28,7 +28,7 @@ class TestRecache(Unittest_with_smarter_sqlite):
             'cache.regions': 'public.data, public.filtered_data, unittest'
         }
         self.cache_mgr = CacheManager(**parse_cache_config_options(cache_opts))
- 
+
     def tearDown(self):
         cache_managers.clear()
 

@@ -200,6 +200,19 @@ function show_help {
     echo "jenkins_build.sh -f -m smarter -d edapi"
 }
 
+function generate_docs {
+    # Generate docs if docs directory exists 
+    if [ -d "$WORKSPACE/$1/docs" ]; then
+        echo "***************"
+        echo "Generating Docs"
+        echo "***************"
+        cd "$WORKSPACE/$1/docs"
+        make clean
+        make html
+    fi
+    echo "Docs created in $WORKSPACE/$1/docs/_build/html"
+}
+
 function main {
 
     get_opts $@
@@ -212,6 +225,7 @@ function main {
             run_unit_tests $MAIN_PKG
         fi
         check_pep8 $MAIN_PKG
+        generate_docs $MAIN_PKG
     elif [ ${MODE:=""} == "EPYD" ]; then
         set_vars_for_epydoc
         setup_python2_virtualenv

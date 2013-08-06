@@ -30,18 +30,18 @@ class StatePopulation(object):
         self.state_demographic_totals = {}
         self.districts = []
 
-    def populate_state(self, state_types_dict, district_types_dict, school_types_dict):
+    def populate_state(self, state_type_dict, district_types_dict, school_types_dict):
         '''
         create the districts that comprise the state based on information taken from the configuration
         information provided
         Functions populates the 'districts' list for the class
-        @param state_types_dict: the state type dictionary provided in the configuration file
+        @param state_type_dict: information pertaining to the type of state (as a dict)
         @param district_types_dict: the district type dictionary provided in the configuration file
         @param school_types_dict: the school type dictionary provided in the configuration file
         @return: None
         '''
         state_districts = []
-        district_counts_dict = state_types_dict[self.state_type][constants.DISTRICT_TYPES_AND_COUNTS]
+        district_counts_dict = state_type_dict[constants.DISTRICT_TYPES_AND_COUNTS]
         # Loop through the district counts and generate district populations for each district type
         for district_type in district_counts_dict:
             district_counts = district_counts_dict[district_type]

@@ -57,6 +57,20 @@ class Demographics(object):
 
         return keys
 
+    def generate_students_from_domographic_counts(self, state_population, address_name_list):
+        '''
+        Construct pools of students for each grade and performance level with assigned demographics
+        @param state_population: A state population object that has been populated with demographic data
+        @param addrss_name_list: A list of names to use for addresses.
+        @return: A dictionary of students with the following form {<grade>: {'PL1': [students], 'PL2': [students], ...} }
+        '''
+
+        demographic_totals = state_population.state_demographic_totals
+        subject = state_population.subject
+
+        for grade in demographic_totals:
+            raw_scores = None
+
     def generate_students_and_demographics(self, total_students, subject, grade, asmt_scores, dem_id, demograph_tracker, address_name_list):
         '''
         Generate students with demographics to match the percentages for the given grade and subject

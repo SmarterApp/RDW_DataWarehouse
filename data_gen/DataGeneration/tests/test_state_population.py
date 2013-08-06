@@ -30,7 +30,7 @@ class Test(unittest.TestCase):
 
     def test_StatePopulation_get_state_demographics(self):
         state_pop = sp.StatePopulation('Example', 'ES', 'typical_1')
-        state_pop.populate_state(get_state_types(), get_district_types(), get_school_types())
+        state_pop.populate_state(get_state_types()['typical_1'], get_district_types(), get_school_types())
         state_pop.get_state_demographics(self.demo_obj, self.demo_id)
 
         self.assertEqual(len(state_pop.state_demographic_totals), len(self.grades))
@@ -39,7 +39,7 @@ class Test(unittest.TestCase):
     def test_StatePopulation_populate_state(self):
         state_pop = sp.StatePopulation('Example', 'ES', 'typical_1')
         self.assertEqual(state_pop.districts, [])
-        state_pop.populate_state(get_state_types(), get_district_types(), get_school_types())
+        state_pop.populate_state(get_state_types()['typical_1'], get_district_types(), get_school_types())
 
         self.assertEqual(len(state_pop.districts), 1)
 
@@ -124,7 +124,7 @@ class Test(unittest.TestCase):
 
     def test_construct_state_counts_dict(self):
         state_pop = sp.StatePopulation('Example State', 'ES', 'typical_1')
-        state_pop.populate_state(get_state_types(), get_district_types(), get_school_types())
+        state_pop.populate_state(get_state_types()['typical_1'], get_district_types(), get_school_types())
         results = sp.construct_state_counts_dict(state_pop)
 
         self.assertEqual(len(results), 1)

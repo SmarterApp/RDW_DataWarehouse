@@ -199,7 +199,7 @@ define [
     computeTextWidth: (button) ->
       # compute display text width this way because $().width() doesn't work somehow
       displayWidth = $('.display', button).text().length * 10
-      width = $(button).width() - displayWidth - 20
+      width = $(button).width() - displayWidth - 35
       # keep minimum width 55px
       if width > 0 then width else 55
 

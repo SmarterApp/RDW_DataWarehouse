@@ -68,7 +68,7 @@ define [
     
     create: () ->
       for subject, asmtSubject of this.asmtSubjectsData
-        if this.hasSubject(subject) and not this.hasMenu(subject)
+        if this.hasSubject(subject) and not this.hasMenu(subject) and this.hasData(subject)
           config = this.generateConfig(subject, asmtSubject)
           menu = new EdwareDropdownMenu(this, config)
           #cache generated dropdown menu

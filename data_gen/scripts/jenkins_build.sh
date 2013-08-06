@@ -90,7 +90,7 @@ function check_pep8 {
 
 	ignore="E501"
 
-	pep8 --ignore=$ignore $WORKSPACE/$1
+	pep8 --exclude='*/docs/*' --ignore=$ignore $WORKSPACE/$1
 
 	echo "finished check code style against pep8"
 }

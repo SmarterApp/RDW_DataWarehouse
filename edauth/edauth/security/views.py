@@ -6,7 +6,7 @@ Created on Feb 13, 2013
 from pyramid.security import NO_PERMISSION_REQUIRED, forget, remember, \
     effective_principals, unauthenticated_userid
 from pyramid.httpexceptions import HTTPFound, HTTPMovedPermanently,\
-    HTTPUnauthorized, HTTPError
+    HTTPForbidden, HTTPUnauthorized, HTTPError
 from pyramid.view import view_config, forbidden_view_config
 import base64
 from edauth.saml2.saml_request import SamlAuthnRequest, SamlLogoutRequest
@@ -51,7 +51,7 @@ def login(request):
         message = "Forbidden view accessed by session_id %s" % session_id
         logger.warn(message)
         write_security_event(message, SECURITY_EVENT_TYPE.WARN, session_id)
-        raise NotAuthorized()
+        return HTTPForbidden()
 
     # clear out the session if we found one in the cookie
     if session_id is not None:

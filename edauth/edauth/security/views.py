@@ -5,8 +5,8 @@ Created on Feb 13, 2013
 '''
 from pyramid.security import NO_PERMISSION_REQUIRED, forget, remember, \
     effective_principals, unauthenticated_userid
-from pyramid.httpexceptions import HTTPFound, HTTPForbidden, HTTPMovedPermanently,\
-    HTTPUnauthorized
+from pyramid.httpexceptions import HTTPFound, HTTPMovedPermanently,\
+    HTTPUnauthorized, HTTPError
 from pyramid.view import view_config, forbidden_view_config
 import base64
 from edauth.saml2.saml_request import SamlAuthnRequest, SamlLogoutRequest
@@ -24,6 +24,8 @@ from edauth.security.utils import SECURITY_EVENT_TYPE, _get_cipher,\
     write_security_event
 from datetime import datetime
 import json
+import pyramid.security
+from edauth.security.exceptions import NotAuthorized
 
 
 @view_config(route_name='login', permission=NO_PERMISSION_REQUIRED)
@@ -49,7 +51,7 @@ def login(request):
         message = "Forbidden view accessed by session_id %s" % session_id
         logger.warn(message)
         write_security_event(message, SECURITY_EVENT_TYPE.WARN, session_id)
-        return HTTPForbidden()
+        raise NotAuthorized()
 
     # clear out the session if we found one in the cookie
     if session_id is not None:
@@ -83,8 +85,7 @@ def login(request):
         # Protect ourselves from infinite loop
         duration = int(current_time) - last_access
         if duration < 3:
-            # we cannot rely on notfound_view_config
-            return HTTPMovedPermanently(location=request.application_url + '/error')
+            raise NotAuthorized()
 
     query_params['sl'] = current_time
     # rebuild url
@@ -203,7 +204,7 @@ def saml2_post_consumer(request):
             message = 'No Tenant was found.  Rejecting User'
             logger.warn(message)
             write_security_event(message, SECURITY_EVENT_TYPE.WARN, session_id)
-            return HTTPForbidden()
+            raise NotAuthorized()
 
         # Save session id to cookie
         headers = remember(request, session_id)
@@ -251,3 +252,26 @@ def logout_redirect(request):
     </html>
     '''
     return Response(body=html, content_type='text/html')
+
+
+@view_config(context=HTTPError, permission=pyramid.security.NO_PERMISSION_REQUIRED)
+def error_handler(request):
+    '''
+    All 4xx-5xx get redirected
+    '''
+    return error_redirect(request)
+
+
+@view_config(context=Exception, permission=pyramid.security.NO_PERMISSION_REQUIRED)
+def error_handler_catchall_exc(request):
+    '''
+    All exceptions gets redirected here
+    '''
+    return error_redirect(request)
+
+
+def error_redirect(request):
+    '''
+    Errors get redirected here
+    '''
+    return HTTPMovedPermanently(location=request.route_url('error'), expires=0, cache_control='no-store, no-cache, must-revalidate')

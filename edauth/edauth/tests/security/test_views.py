@@ -8,7 +8,7 @@ from edauth.security.views import login, saml2_post_consumer, logout_redirect, _
     _get_landing_page
 from pyramid import testing
 from pyramid.testing import DummyRequest
-from pyramid.httpexceptions import HTTPFound, HTTPForbidden, HTTPUnauthorized
+from pyramid.httpexceptions import HTTPFound, HTTPUnauthorized
 from urllib.parse import urlparse, urlsplit
 import urllib
 from edauth.security.views import logout
@@ -21,6 +21,7 @@ from pyramid.registry import Registry
 from edauth.tests.test_helper.create_session import create_test_session
 from beaker.cache import cache_managers, cache_regions
 import json
+from edauth.security.exceptions import NotAuthorized
 
 
 def get_saml_from_resource_file(file_mame):
@@ -135,8 +136,7 @@ class TestViews(unittest.TestCase):
         self.__config.testing_securitypolicy(session.get_session_id(), ['NONE'])
 
         self.__request.url = 'http://example.com/dummy/page'
-        http = login(self.__request)
-        self.assertIsInstance(http, HTTPForbidden)
+        self.assertRaises(NotAuthorized, login, self.__request)
 
     def test_login_with_existing_session(self):
         self.__config.testing_securitypolicy(None, ['TEACHER'])
@@ -151,8 +151,7 @@ class TestViews(unittest.TestCase):
         session = create_test_session(roles=['TEACHER'], uid='linda.kim', full_name='Linda Kim', idpSessionIndex='123', name_id='abc')
         self.__config.testing_securitypolicy(session.get_session_id(), ['TEACHER'])
         self.__request.url = 'http://example.com/dummy/page'
-        http = login(self.__request)
-        self.assertIsInstance(http, HTTPForbidden)
+        self.assertRaises(NotAuthorized, login, self.__request)
 
     def test_logout_with_no_existing_session(self):
         http = logout(self.__request)

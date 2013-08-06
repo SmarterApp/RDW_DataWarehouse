@@ -121,7 +121,7 @@ define [
       # unselect radio button
       $('.inputColorBlock').attr('checked', false)
       $(".dropdown").removeClass('open')
-      $('.dropdown_title').html this.config['selectSort']
+      $('.dropdown_title').html this.config['selectSort'] if this.config isnt undefined
 
     update: (@summaryData, @asmtSubjectsData, @colorsData) ->
       this.initialize()

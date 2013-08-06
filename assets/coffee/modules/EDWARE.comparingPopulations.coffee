@@ -93,24 +93,24 @@ define [
           populationData = appendColorToData populationData, asmtSubjectsData, colorsData, defaultColors
           summaryData = appendColorToData summaryData, asmtSubjectsData, colorsData, defaultColors
 
-          # Change the column name and link url based on the type of report the user is querying for
-          gridConfig[0].items[0].name = customViews[reportType].name
-          gridConfig[0].items[0].options.linkUrl = customViews[reportType].link
-          gridConfig[0].items[0].options.id_name = customViews[reportType].id_name
+        # Change the column name and link url based on the type of report the user is querying for
+        gridConfig[0].items[0].name = customViews[reportType].name
+        gridConfig[0].items[0].options.linkUrl = customViews[reportType].link
+        gridConfig[0].items[0].options.id_name = customViews[reportType].id_name
           
-          if customViews[reportType].name is "Grade"
-            gridConfig[0].items[0].sorttype = "int"
+        if customViews[reportType].name is "Grade"
+          gridConfig[0].items[0].sorttype = "int"
           
-          # Render breadcrumbs on the page
-          $('#breadcrumb').breadcrumbs(breadcrumbsData, breadcrumbsConfigs)
+        # Render breadcrumbs on the page
+        $('#breadcrumb').breadcrumbs(breadcrumbsData, breadcrumbsConfigs)
           
-          # Set the Report title depending on the report that we're looking at
-          reportTitle = getReportTitle(breadcrumbsData, reportType)
-          $('#content h2').html reportTitle
+        # Set the Report title depending on the report that we're looking at
+        reportTitle = getReportTitle(breadcrumbsData, reportType)
+        $('#content h2').html reportTitle
           
-          # Format the summary data for summary row purposes
-          summaryRowName = getOverallSummaryName(breadcrumbsData, reportType)
-          summaryData = formatSummaryData(summaryData, summaryRowName)
+        # Format the summary data for summary row purposes
+        summaryRowName = getOverallSummaryName(breadcrumbsData, reportType)
+        summaryData = formatSummaryData(summaryData, summaryRowName)
         
         # For filtering, we need to reapply the current sort column in gridConfig before we re-render the grid
         if currentSortInfo.name

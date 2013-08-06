@@ -1,7 +1,7 @@
 import random
 from uuid import uuid4
 from DataGeneration.src.generate_names import (generate_first_or_middle_name, generate_last_name,
-    possibly_generate_middle_name)
+                                               possibly_generate_middle_name)
 import DataGeneration.src.util as util
 
 
@@ -149,7 +149,7 @@ class UnassignedStudent(object):
     def getDemoOfStudent(self, substr='dmg'):
         demo = []
         for attr_name in self.__dict__:
-            if substr in attr_name and self.__dict__[attr_name] == True:
+            if substr in attr_name and self.__dict__[attr_name] is True:
                 demo.append(attr_name)
 
         demo.append(self.gender)

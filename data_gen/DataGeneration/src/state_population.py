@@ -398,8 +398,8 @@ if __name__ == '__main__':
     print(len(district_pop.schools))
 
     state_types_dict = {'typical_1': {'district_types_and_counts': {'Big Average': 1},
-                                 'subjects_and_percentages': {'Math': .99, 'ELA': .99},
-                                 'demographics': 'typical1'}}
+                                      'subjects_and_percentages': {'Math': .99, 'ELA': .99},
+                                      'demographics': 'typical1'}}
     district_types_dict = {'Big Average': district_type_dict}
     state_pop = StatePopulation("BState", 'BS', 'typical_1')
     state_pop.populate_state(state_types_dict, district_types_dict, school_types_dict)

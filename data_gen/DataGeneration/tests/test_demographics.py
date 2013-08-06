@@ -9,7 +9,7 @@ import csv
 import random
 from datetime import date
 
-from helper_entities import AssessmentScore, UnassignedStudent
+from helper_entities import AssessmentScore, StudentInfo
 from demographics import Demographics, DemographicStatus, L_PERF_1
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
@@ -22,7 +22,7 @@ class DemographicsTest(unittest.TestCase):
         self.dem_obj = Demographics(self.csv_file)
         self.dem_id = 'typical1'
         self.dem_categories = ['male', 'dmg_eth_asn', 'dmg_eth_blk', 'dmg_prg_lep', 'dmg_prg_iep',
-                         'dmg_prg_tt1', 'dmg_eth_wht', 'female', 'dmg_eth_hsp', 'dmg_eth_ami']
+                               'dmg_prg_tt1', 'dmg_eth_wht', 'female', 'dmg_eth_hsp', 'dmg_eth_ami']
 
         self.dem_keys = self.dem_categories + ['all']
         self.address_name_list = ['addr_name_%s' % i for i in range(25)]
@@ -105,7 +105,7 @@ class DemographicsTest(unittest.TestCase):
         results = self.dem_obj.generate_students_and_demographics(100, 'math', 3, asmt_scores, self.dem_id, demograph_tracker, self.address_name_list)
 
         for res in results:
-            self.assertIsInstance(res, UnassignedStudent)
+            self.assertIsInstance(res, StudentInfo)
 
     def test_generate_students_and_demographics_all_scores_assigned(self):
         demograph_tracker = DemographicStatus(self.dem_obj.get_demo_names(self.dem_id, 'math', 3))

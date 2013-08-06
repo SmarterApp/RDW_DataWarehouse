@@ -4,20 +4,25 @@ Created on Aug 5, 2013
 @author: swimberly
 '''
 
-from demographics import Demographics, DemographicStatus
-from state_population import StatePopulation
-from uuid import uuid4
-import constants
-import datetime
 from importlib import import_module
+from uuid import uuid4
+import datetime
 import argparse
 import os
+import csv
 
+from demographics import Demographics, DemographicStatus, generate_students_from_demographic_counts
+from generate_entities import generate_assessments
+from write_to_csv import create_csv
+from state_population import StatePopulation
+import constants
 from entities import (InstitutionHierarchy, Section, Assessment, AssessmentOutcome,
                       Staff, ExternalUserStudent, Student)
 
 
 DATAFILE_PATH = os.path.dirname(os.path.realpath(__file__))
+components = DATAFILE_PATH.split(os.sep)
+DATAFILE_PATH = str.join(os.sep, components[:components.index('DataGeneration') + 1])
 
 ENTITY_TO_PATH_DICT = {InstitutionHierarchy: os.path.join(DATAFILE_PATH, 'datafiles', 'csv', 'dim_inst_hier.csv'),
                        Section: os.path.join(DATAFILE_PATH, 'datafiles', 'csv', 'dim_section.csv'),
@@ -47,6 +52,9 @@ def generate_data_from_config_file(config_module, output_dict):
     # Setup demographics object
     demographics_info = Demographics(config_module.get_demograph_file())
 
+    # First thing: prep the csv files by deleting their contents and adding appropriate headers
+    prepare_csv_files(output_dict)
+
     # Get information from the config module
     school_types = config_module.get_school_types()
     district_types = config_module.get_district_types()
@@ -56,6 +64,18 @@ def generate_data_from_config_file(config_module, output_dict):
 
     # generate one batch_guid for all records
     batch_guid = uuid4()
+
+    # Get temporal information
+    temporal_information = config_module.get_temporal_information()
+    from_date = temporal_information[constants.FROM_DATE]
+    most_recent = temporal_information[constants.MOST_RECENT]
+    to_date = temporal_information[constants.TO_DATE]
+
+    # Generate Assessment CSV File
+    flat_grades_list = get_flat_grades_list(school_types, constants.GRADES)
+    assessments = generate_assessments(flat_grades_list, scores_details[constants.CUT_POINTS],
+                                       from_date, most_recent, to_date=to_date)
+    create_csv(assessments, output_dict[Assessment])
 
     for state in states:
         # Pull out basic state information
@@ -76,7 +96,24 @@ def generate_data_from_config_file(config_module, output_dict):
         # Calculate the Math Demographic numbers for the state
         state_population.get_state_demographics(demographics_info, demographics_id)
 
-        print(state_population.state_demographic_totals)
+        generate_students_from_demographic_counts(state_population, assessments)
+
+
+def get_flat_grades_list(school_config, grade_key):
+    '''
+    pull out grades from score_config and place in flat list
+    @param school_config: A dictionary of school info
+    @return: list of grades
+    '''
+    grades = []
+
+    for school_type in school_config:
+        grades.extend(school_config[school_type][grade_key])
+
+    # remove duplicates
+    grades = list(set(grades))
+
+    return grades
 
 
 def create_output_dict(output_path):
@@ -93,6 +130,22 @@ def create_output_dict(output_path):
         out_dict[fname] = os.path.join(output_path, CSV_FILE_NAMES[fname])
 
     return out_dict
+
+
+def prepare_csv_files(entity_to_path_dict):
+    '''
+    Erase each csv file and then add appropriate header
+
+    @type entity_to_path_dict: dict
+    @param entity_to_path_dict: Each key is an entity's class, and each value is the path to its csv file
+    '''
+    for entity in entity_to_path_dict:
+        path = entity_to_path_dict[entity]
+        # By opening the file for writing, we implicitly delete the file contents
+        with open(path, 'w') as csv_file:
+            csv_writer = csv.writer(csv_file, delimiter=',', quoting=csv.QUOTE_MINIMAL)
+            # Here we write the header the the given entity
+            csv_writer.writerow(entity.getHeader())
 
 
 def main(config_mod_name='dg_types', output_path=None):

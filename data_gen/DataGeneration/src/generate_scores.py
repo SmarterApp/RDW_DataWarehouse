@@ -75,7 +75,7 @@ def generate_random_scores_by_percentage_between_cut_points(count_for_level, cut
         pl_scores = generate_random_numbers(lo, hi, count_for_level[i])
         all_scores.extend(pl_scores)
 
-    assert len(all_scores) == total
+    assert len(all_scores) >= total
     return all_scores
 
 

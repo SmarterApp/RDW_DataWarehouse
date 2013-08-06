@@ -6,10 +6,13 @@ Created on Jul 1, 2013
 
 import csv
 import random
+import math
 
 from DataGeneration.src.generate_names import generate_first_or_middle_name, possibly_generate_middle_name
 from DataGeneration.src.entities import Student
-from helper_entities import UnassignedStudent
+from helper_entities import StudentInfo
+from generate_scores import generate_overall_scores
+from util import select_assessment_from_list, get_list_of_cutpoints
 
 
 H_ID = 0
@@ -34,6 +37,38 @@ L_PERF_4 = 5
 ALL_DEM = 'all'
 
 
+def generate_students_from_demographic_counts(state_population, assessments):
+    '''
+    Construct pools of students for each grade and performance level with assigned demographics
+    @param state_population: A state population object that has been populated with demographic data
+    @param addrss_name_list: A list of names to use for addresses.
+    @return: A dictionary of students with the following form {<grade>: {'PL1': [students], 'PL2': [students], ...} }
+    '''
+
+    demographic_totals = state_population.state_demographic_totals
+    subject = state_population.subject
+
+    for grade in demographic_totals:
+        grade_demographic_totals = demographic_totals[grade]
+        assessment = select_assessment_from_list(assessments, grade, subject)
+        min_score = assessment.asmt_score_min
+        max_score = assessment.asmt_score_max
+
+        cut_points = get_list_of_cutpoints(assessment)
+        # Create list of cutpoints that includes min and max score values
+        inclusive_cut_points = [min_score]
+        inclusive_cut_points.extend(cut_points)
+        inclusive_cut_points.append(max_score)
+
+        overall_counts = grade_demographic_totals[ALL_DEM]
+        total_students = math.ceil(overall_counts[L_TOTAL])
+        perf_lvl_counts = [math.ceil(overall_counts[i]) for i in range(L_PERF_1, L_PERF_4 + 1)]
+
+        raw_scores = generate_overall_scores(perf_lvl_counts, inclusive_cut_points, min_score, max_score, total_students, False)
+        print(grade)
+        print(len(raw_scores))
+
+
 class Demographics(object):
     ''' Object for maintaining and creating demographic information. '''
 
@@ -56,20 +91,6 @@ class Demographics(object):
             keys.remove('all')
 
         return keys
-
-    def generate_students_from_domographic_counts(self, state_population, address_name_list):
-        '''
-        Construct pools of students for each grade and performance level with assigned demographics
-        @param state_population: A state population object that has been populated with demographic data
-        @param addrss_name_list: A list of names to use for addresses.
-        @return: A dictionary of students with the following form {<grade>: {'PL1': [students], 'PL2': [students], ...} }
-        '''
-
-        demographic_totals = state_population.state_demographic_totals
-        subject = state_population.subject
-
-        for grade in demographic_totals:
-            raw_scores = None
 
     def generate_students_and_demographics(self, total_students, subject, grade, asmt_scores, dem_id, demograph_tracker, address_name_list):
         '''
@@ -366,7 +387,7 @@ class Demographics(object):
 
             # create and append new student to list
             asmt_dict = {subject: asmt_score}
-            u_stud = UnassignedStudent(grade, gender, asmt_dict)
+            u_stud = StudentInfo(grade, gender, asmt_dict)
             u_stud.set_additional_info(address_names)
             students.append(u_stud)
 
@@ -479,7 +500,7 @@ class DemographicStatus(object):
         Add one student object into the demographic status dictionary
         The given student will be added into all demographic entries that he belongs to
         '''
-        if isinstance(student_obj, Student) or isinstance(student_obj, UnassignedStudent):
+        if isinstance(student_obj, Student) or isinstance(student_obj, StudentInfo):
             # get all demo fields
             stu_demo = student_obj.getDemoOfStudent()
             for demo_name in stu_demo:

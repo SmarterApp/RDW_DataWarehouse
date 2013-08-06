@@ -191,5 +191,20 @@ def select_assessment_from_list(asmt_list, grade, subject):
     @return: A single assessment object that has the grade and subject specified. None if no match found
     '''
     for asmt in asmt_list:
-        if asmt.asmt_grade == grade and asmt.asmt_subject == subject:
+        if asmt.asmt_grade == grade and asmt.asmt_subject.lower() == subject.lower():
             return asmt
+
+
+def get_list_of_cutpoints(assessment):
+    '''
+    Given an assessment object, return a list of cutpoints
+    @param assessment: the assessment to create the list of cutpoints from
+    @return: A list of cutpoints
+    '''
+    # The cut_points in score details do not include min and max score.
+    # The score generator needs the min and max to be included
+    cut_points = [assessment.asmt_cut_point_1, assessment.asmt_cut_point_2, assessment.asmt_cut_point_3]
+    if assessment.asmt_cut_point_4:
+        cut_points.append(assessment.asmt_cut_point_4)
+    return cut_points
+

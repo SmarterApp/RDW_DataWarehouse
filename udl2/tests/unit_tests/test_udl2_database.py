@@ -64,6 +64,8 @@ class TestUdl2Database(unittest.TestCase):
                 column_type = 'varchar'
             elif c[1] == 'timestamp without time zone':
                 column_type = 'timestamp'
+            elif c[1] == 'time without time zone':
+                column_type = 'time'
             elif c[1] == 'double precision':
                 column_type = 'double'
             elif c[1] == 'boolean':

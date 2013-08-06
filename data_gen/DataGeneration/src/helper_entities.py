@@ -88,9 +88,9 @@ class AssessmentScore:
         return ("Score:[overall: %s, claims: %s]" % (self.overall_score, self.claim_scores))
 
 
-class UnassignedStudent(object):
+class StudentInfo(object):
     '''
-    UnassignedStudent.
+    StudentInfo.
     Object to hold a student that has scores and demographic information but does not yet have
     school information
     '''
@@ -124,6 +124,8 @@ class UnassignedStudent(object):
         self.dmg_eth_blk = dmg_eth_blk
         self.dmg_eth_pcf = dmg_eth_pcf
         self.dmg_eth_wht = dmg_eth_wht
+        self.dmg_eth_2mr = False
+        self.dmg_eth_nst = False
         self.dmg_prg_iep = dmg_prg_iep
         self.dmg_prg_lep = dmg_prg_lep
         self.dmg_prg_504 = dmg_prg_504

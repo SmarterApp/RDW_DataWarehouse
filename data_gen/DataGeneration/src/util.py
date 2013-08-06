@@ -180,3 +180,16 @@ def chop_year_off_asmt_period(asmt_period):
     '''
     component_strings = asmt_period.split()
     return component_strings[0]
+
+
+def select_assessment_from_list(asmt_list, grade, subject):
+    '''
+    select the proper assessment from a list
+    @param asmt_list: A list of Assessment objects
+    @param grade: The grade to search for in the assessment list
+    @param subject: The subject to search for in the assessment list
+    @return: A single assessment object that has the grade and subject specified. None if no match found
+    '''
+    for asmt in asmt_list:
+        if asmt.asmt_grade == grade and asmt.asmt_subject == subject:
+            return asmt

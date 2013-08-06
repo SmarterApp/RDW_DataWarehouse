@@ -8,7 +8,10 @@ import subprocess
 
 subprocess.call('cd ./scripts/; ./install_udl_requirements.sh', shell=True)
 
-requires = ['celery(>=3.0.19)']
+requires = ['celery(>=3.0.19)',
+            'Sphinx',
+            'docutils',
+            'repoze.sphinx.autointerface']
 
 scripts = ['scripts/initialize_udl2_database.sh',
            'scripts/initialize_udl2_system.sh',

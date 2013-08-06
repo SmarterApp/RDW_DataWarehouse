@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 import os
 
 here = os.path.abspath(os.path.dirname(__file__))
@@ -10,7 +10,10 @@ requires = ['psycopg2',
             'py-postgresql',
             'mock',
             'zope.component >= 4.0.2',
-            'zope.interface >= 4.0.3']
+            'zope.interface >= 4.0.3',
+            'Sphinx',
+            'docutils',
+            'repoze.sphinx.autointerface']
 
 tests_require = requires + [
     'nose >= 1.2.1',

@@ -366,21 +366,16 @@ class QueryHelper():
     '''
     Helper class to build a sqlalchemy query based on the view type (state, district, or school)
     '''
-    VIEWS = enum(STATE_VIEW=1, DISTRICT_VIEW=2, SCHOOL_VIEW=3)
-
     def __init__(self, connector, stateCode=None, districtGuid=None, schoolGuid=None, filters=None):
         self._state_code = stateCode
         self._district_guid = districtGuid
         self._school_guid = schoolGuid
         self._filters = filters
         if self._state_code is not None and self._district_guid is None and self._school_guid is None:
-            self._view = self.VIEWS.STATE_VIEW
             self._f = self.get_query_for_state_view
         elif self._state_code is not None and self._district_guid is not None and self._school_guid is None:
-            self._view = self.VIEWS.DISTRICT_VIEW
             self._f = self.get_query_for_district_view
         elif self._state_code is not None and self._district_guid is not None and self._school_guid is not None:
-            self._view = self.VIEWS.SCHOOL_VIEW
             self._f = self.get_query_for_school_view
         else:
             raise InvalidParameterException()
@@ -388,22 +383,11 @@ class QueryHelper():
         self._dim_asmt = connector.get_table(Constants.DIM_ASMT)
         self._fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
 
-    def __build_query(self, f):
+    def build_query(self, f, extra_columns):
         '''
         build select columns based on request
         '''
-        extra_columns = {self.VIEWS.STATE_VIEW: [self._dim_inst_hier.c.inst_hier_rec_id.label(Constants.INST_HIER_REC_ID)],
-                         self.VIEWS.DISTRICT_VIEW: [self._dim_inst_hier.c.inst_hier_rec_id.label(Constants.INST_HIER_REC_ID)],
-                         self.VIEWS.SCHOOL_VIEW: [self._fact_asmt_outcome.c.asmt_grade.label(Constants.NAME), self._fact_asmt_outcome.c.asmt_grade.label(Constants.ID)]}
-
-        extra_group_by = {self.VIEWS.STATE_VIEW: self._dim_inst_hier.c.inst_hier_rec_id,
-                          self.VIEWS.DISTRICT_VIEW: self._dim_inst_hier.c.inst_hier_rec_id,
-                          self.VIEWS.SCHOOL_VIEW: self._fact_asmt_outcome.c.asmt_grade}
-
-        extra_where_clause = {self.VIEWS.DISTRICT_VIEW: self._fact_asmt_outcome.c.district_guid == self._district_guid,
-                              self.VIEWS.SCHOOL_VIEW: and_(self._fact_asmt_outcome.c.district_guid == self._district_guid, self._fact_asmt_outcome.c.school_guid == self._school_guid)}
-
-        query = f(extra_columns[self._view] +
+        query = f(extra_columns +
                   [self._dim_asmt.c.asmt_subject.label(Constants.ASMT_SUBJECT),
                    self._fact_asmt_outcome.c.asmt_perf_lvl.label(Constants.LEVEL),
                    func.count().label(Constants.TOTAL)],
@@ -413,47 +397,51 @@ class QueryHelper():
                                                  self._dim_asmt.c.most_recent == true())).join(
                             self._dim_inst_hier, and_(self._dim_inst_hier.c.inst_hier_rec_id == self._fact_asmt_outcome.c.inst_hier_rec_id))]
                   )\
-            .group_by(extra_group_by[self._view],
-                      self._dim_asmt.c.asmt_subject,
+            .group_by(self._dim_asmt.c.asmt_subject,
                       self._fact_asmt_outcome.c.asmt_perf_lvl)\
             .where(and_(self._fact_asmt_outcome.c.state_code == self._state_code, self._fact_asmt_outcome.c.most_recent == true()))
 
-        if extra_where_clause.get(self._view) is not None:
-            query = query.where(extra_where_clause[self._view])
         # apply demographics filters to query
         return self.apply_demographics_filter(query)
 
-    def build_query(self, f, extra_columns=[]):
+    def build_query_for_inst_name(self, f, inner_query, extra_columns=[]):
         '''
-        Builds subquery to get the name of district or schools
+        Builds inner_query to get the name of district or schools
         '''
-        query = self.__build_query(f)
-        # We don't need to query dim_inst_hier for school view
-        if self._view in [self.VIEWS.STATE_VIEW, self.VIEWS.DISTRICT_VIEW]:
-            subquery = query.alias()
-            query = f(extra_columns +
-                      [subquery.c[Constants.ASMT_SUBJECT], subquery.c[Constants.LEVEL], func.sum(subquery.c[Constants.TOTAL]).label(Constants.TOTAL)],
-                      from_obj=[self._dim_inst_hier.join(subquery, self._dim_inst_hier.c.inst_hier_rec_id == subquery.c[Constants.INST_HIER_REC_ID])])\
-                .group_by(subquery.c[Constants.ASMT_SUBJECT], subquery.c[Constants.LEVEL])
-        return query.order_by(query.c[Constants.ASMT_SUBJECT].desc())
+        inner_query = inner_query.alias()
+        return f(extra_columns +
+                 [inner_query.c[Constants.ASMT_SUBJECT], inner_query.c[Constants.LEVEL], func.sum(inner_query.c[Constants.TOTAL]).label(Constants.TOTAL)],
+                 from_obj=[self._dim_inst_hier.join(inner_query, self._dim_inst_hier.c.inst_hier_rec_id == inner_query.c[Constants.INST_HIER_REC_ID])])\
+            .group_by(inner_query.c[Constants.ASMT_SUBJECT], inner_query.c[Constants.LEVEL])\
+            .order_by(inner_query.c[Constants.ASMT_SUBJECT].desc())
 
     def get_query(self):
         return self._f()
 
     def get_query_for_state_view(self):
-        return self.build_query(select, [self._dim_inst_hier.c.district_name.label(Constants.NAME), self._dim_inst_hier.c.district_guid.label(Constants.ID)])\
+        f = select
+        inner_query = self.build_query(f, [self._dim_inst_hier.c.inst_hier_rec_id.label(Constants.INST_HIER_REC_ID)])\
+                          .group_by(self._dim_inst_hier.c.inst_hier_rec_id)
+
+        return self.build_query_for_inst_name(f, inner_query, [self._dim_inst_hier.c.district_name.label(Constants.NAME), self._dim_inst_hier.c.district_guid.label(Constants.ID)])\
                    .group_by(self._dim_inst_hier.c.district_name, self._dim_inst_hier.c.district_guid)\
                    .order_by(self._dim_inst_hier.c.district_name)
 
     def get_query_for_district_view(self):
-        return self.build_query(select, [self._dim_inst_hier.c.school_name.label(Constants.NAME), self._dim_inst_hier.c.school_guid.label(Constants.ID)])\
+        f = select
+        inner_query = self.build_query(f, [self._dim_inst_hier.c.inst_hier_rec_id.label(Constants.INST_HIER_REC_ID)])\
+                          .group_by(self._dim_inst_hier.c.inst_hier_rec_id)\
+                          .where(self._fact_asmt_outcome.c.district_guid == self._district_guid)
+
+        return self.build_query_for_inst_name(f, inner_query, [self._dim_inst_hier.c.school_name.label(Constants.NAME), self._dim_inst_hier.c.school_guid.label(Constants.ID)])\
                    .group_by(self._dim_inst_hier.c.school_name, self._dim_inst_hier.c.school_guid)\
                    .order_by(self._dim_inst_hier.c.school_name)
 
     def get_query_for_school_view(self):
-        return self.build_query(select_with_context)\
+        return self.build_query(select_with_context, [self._fact_asmt_outcome.c.asmt_grade.label(Constants.NAME), self._fact_asmt_outcome.c.asmt_grade.label(Constants.ID)])\
                    .group_by(self._fact_asmt_outcome.c.asmt_grade)\
-                   .order_by(self._fact_asmt_outcome.c.asmt_grade)
+                   .where(and_(self._fact_asmt_outcome.c.district_guid == self._district_guid, self._fact_asmt_outcome.c.school_guid == self._school_guid))\
+                   .order_by(self._dim_asmt.c.asmt_subject.desc(), self._fact_asmt_outcome.c.asmt_grade)
 
     def apply_demographics_filter(self, query):
         '''

@@ -201,7 +201,6 @@ ref_table_conf = {
         ('4', 'INT_SBAC_ASMT', 'score_cut_point_2', 'dim_asmt', 'asmt_cut_point_2', None, None),
         ('4', 'INT_SBAC_ASMT', 'score_cut_point_3', 'dim_asmt', 'asmt_cut_point_3', None, None),
         ('4', 'INT_SBAC_ASMT', 'score_cut_point_4', 'dim_asmt', 'asmt_cut_point_4', None, None),
-        ('4', 'INT_SBAC_ASMT', 'NULL', 'dim_asmt', 'asmt_custom_metadata', None, None),
         ('4', 'INT_SBAC_ASMT', "TO_CHAR(CURRENT_TIMESTAMP, 'yyyymmdd')", 'dim_asmt', 'from_date', None, None),
         ('4', 'INT_SBAC_ASMT', "'99991231'", 'dim_asmt', 'to_date', None, None),
         ('4', 'INT_SBAC_ASMT', 'TRUE', 'dim_asmt', 'most_recent', None, None),

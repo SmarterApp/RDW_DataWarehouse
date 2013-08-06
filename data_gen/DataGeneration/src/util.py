@@ -207,4 +207,3 @@ def get_list_of_cutpoints(assessment):
     if assessment.asmt_cut_point_4:
         cut_points.append(assessment.asmt_cut_point_4)
     return cut_points
-

@@ -25,12 +25,14 @@ class District:
     Intended for record keeping when creating InstitutionHierarchy objects
     '''
 
-    def __init__(self, district_guid, district_name):
+    def __init__(self, district_guid, district_name, district_type=None, school_populations=None):
         '''
         Constructor
         '''
         self.district_guid = district_guid
         self.district_name = district_name
+        self.district_type = district_type
+        self.school_populations = school_populations
 
 
 class School:
@@ -39,10 +41,13 @@ class School:
     Intended for record keeping when creating InstitutionHierarchy objects
     '''
 
-    def __init__(self, school_guid, school_name, school_category):
+    def __init__(self, school_guid, school_name, school_category, grade_performance_level_counts, district_name, district_guid):
         self.school_guid = school_guid
         self.school_name = school_name
         self.school_category = school_category
+        self.grade_performance_level_counts = grade_performance_level_counts
+        self.district_name = district_name
+        self.district_guid = district_guid
 
 
 class Claim:

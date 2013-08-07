@@ -13,19 +13,21 @@ def generate_state(state_name, state_code):
     return State(state_name, state_code)
 
 
-def generate_district(name_list_1, name_list_2):
+def generate_district(name_list_1, name_list_2, district_population=None):
     '''
     Generate a district
     @param name_list_1: The list of names to use for naming
     @param name_list_2: The 2nd list of names to use for naming
     @return: A District object
     '''
-    district_guid = uuid4()
+    district_guid = district_population.guid
     district_name = util.generate_district_name(name_list_1, name_list_2)
+    if district_population:
+        return District(district_guid, district_name, district_population.district_type, district_population.schools)
     return District(district_guid, district_name)
 
 
-def generate_school(school_type, name_list_1, name_list_2):
+def generate_school(school_type, name_list_1, name_list_2, grade_performance_level_counts=None, district_name=None, district_guid=None):
     '''
     Generate a school
     @param school_type: The type of school. (ie. Middle)
@@ -35,7 +37,7 @@ def generate_school(school_type, name_list_1, name_list_2):
     '''
     school_guid = uuid4()
     school_name = util.generate_school_name(school_type, name_list_1, name_list_2)
-    return School(school_guid, school_name, school_type)
+    return School(school_guid, school_name, school_type, grade_performance_level_counts, district_name, district_guid)
 
 
 # TODO: Remove this function and just use constructor directly

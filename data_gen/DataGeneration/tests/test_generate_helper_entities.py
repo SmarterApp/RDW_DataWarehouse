@@ -1,9 +1,9 @@
 __author__ = 'abrien'
 
 import unittest
-from DataGeneration.src.generate_helper_entities import generate_state, generate_school, generate_claim, generate_district, \
+from generate_helper_entities import generate_state, generate_school, generate_claim, generate_district, \
     generate_assessment_score, generate_claim_score
-from DataGeneration.src.helper_entities import ClaimScore, AssessmentScore
+from helper_entities import ClaimScore, AssessmentScore
 from uuid import UUID
 from datetime import date
 

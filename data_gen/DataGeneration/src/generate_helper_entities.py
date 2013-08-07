@@ -20,7 +20,7 @@ def generate_district(name_list_1, name_list_2, district_population=None):
     @param name_list_2: The 2nd list of names to use for naming
     @return: A District object
     '''
-    district_guid = district_population.guid
+    district_guid = district_population.guid if district_population else uuid4()
     district_name = util.generate_district_name(name_list_1, name_list_2)
     if district_population:
         return District(district_guid, district_name, district_population.district_type, district_population.schools)

@@ -89,7 +89,7 @@ class Test(unittest.TestCase):
             self.assertIsNotNone(sch_pop.total_students_by_grade)
 
     def test_SchoolPopulation_determine_school_demographic_numbers(self):
-        school_pop = sp.SchoolPopulation('Middle School')
+        school_pop = sp.SchoolPopulation('Middle School', 'Middle School')
         school_pop.generate_student_numbers(get_school_types()['Middle School'])
         school_pop.determine_school_demographic_numbers(self.demo_obj, self.demo_id)
 
@@ -103,7 +103,7 @@ class Test(unittest.TestCase):
         self.verify_demographic_grade_dict_structure(school_demo)
 
     def test_SchoolPopulation__calculate_grade_demographic_numbers(self):
-        school_pop = sp.SchoolPopulation('Middle School')
+        school_pop = sp.SchoolPopulation('Middle School', 'Middle School')
         results = school_pop._calculate_grade_demographic_numbers(100, 3, 'math', self.demo_obj, self.demo_id)
 
         for dmg_key in self.expected_demos:
@@ -111,7 +111,7 @@ class Test(unittest.TestCase):
             self.assertEqual(len(results[dmg_key]), 6)
 
     def test_SchoolPopulation_generate_student_numbers(self):
-        school_pop = sp.SchoolPopulation('Middle School')
+        school_pop = sp.SchoolPopulation('Middle School', 'Middle School')
         self.assertIsNone(school_pop.total_students_by_grade)
         school_pop.generate_student_numbers(get_school_types()['Middle School'])
         student_counts = school_pop.total_students_by_grade
@@ -129,7 +129,7 @@ class Test(unittest.TestCase):
 
         self.assertEqual(len(results), 1)
         for guid, district_dict in results.items():
-            self.assertIsInstance(uuid.UUID(guid), uuid.UUID)
+            self.assertIsInstance(guid, uuid.UUID)
             self.assertEqual(len(district_dict), 9)
             for s_guid, grade_dict in district_dict.items():
                 self.assertIsInstance(uuid.UUID(s_guid), uuid.UUID)

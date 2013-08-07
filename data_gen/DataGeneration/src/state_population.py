@@ -223,19 +223,7 @@ class SchoolPopulation(object):
             group_dict = {k: grade_demographics[k] for k in grade_demographics if grade_demographics[k][L_GROUPING] == group}
             group_value_dict = calculate_group_demographic_numbers(group_dict, group, total_students)
             grade_value_dict.update(group_value_dict)
-#             tot_count
-#             for i in range(L_TOTAL, L_PERF_4 + 1):
-#                 tot_count[i] = 
-#             if group == 0:
-#                 print(group_value_dict)
-# 
-#         total_counts = [0, 0, 0, 0, 0, 0]
-#         for demo in group_value_dict:
-#             demo_nums = group_value_dict[demo]
-#             for i in range(L_TOTAL, len(demo_nums)):
-#                 total_counts[i] += demo_nums[i]
 
-#         grade_value_dict[ALL_DEM] = total_counts
 #         print('***********', total_counts)
 #         compute_total_from_other_demos(grade_value_dict)
 #         print(grade_value_dict['all'])

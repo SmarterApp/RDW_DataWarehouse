@@ -35,38 +35,7 @@ L_PERF_3 = 4
 L_PERF_4 = 5
 
 ALL_DEM = 'all'
-
-
-def generate_students_from_demographic_counts(state_population, assessments):
-    '''
-    Construct pools of students for each grade and performance level with assigned demographics
-    @param state_population: A state population object that has been populated with demographic data
-    @param addrss_name_list: A list of names to use for addresses.
-    @return: A dictionary of students with the following form {<grade>: {'PL1': [students], 'PL2': [students], ...} }
-    '''
-
-    demographic_totals = state_population.state_demographic_totals
-    subject = state_population.subject
-
-    for grade in demographic_totals:
-        grade_demographic_totals = demographic_totals[grade]
-        assessment = select_assessment_from_list(assessments, grade, subject)
-        min_score = assessment.asmt_score_min
-        max_score = assessment.asmt_score_max
-
-        cut_points = get_list_of_cutpoints(assessment)
-        # Create list of cutpoints that includes min and max score values
-        inclusive_cut_points = [min_score]
-        inclusive_cut_points.extend(cut_points)
-        inclusive_cut_points.append(max_score)
-
-        overall_counts = grade_demographic_totals[ALL_DEM]
-        total_students = math.ceil(overall_counts[L_TOTAL])
-        perf_lvl_counts = [math.ceil(overall_counts[i]) for i in range(L_PERF_1, L_PERF_4 + 1)]
-
-        raw_scores = generate_overall_scores(perf_lvl_counts, inclusive_cut_points, min_score, max_score, total_students, False)
-        print(grade)
-        print(len(raw_scores))
+OVERALL_GROUP = 0
 
 
 class Demographics(object):

@@ -73,3 +73,9 @@ class IntToStarFTest(UDLTestHelper):
         star_asmt_avgs = self.get_edware_asmt_score_avgs()
 
         assert int_asmt_avgs == star_asmt_avgs
+
+        # check demographic counts
+        int_demo_dict = self.get_integration_demographic_counts()
+        star_demo_dict = self.get_star_schema_demographic_counts()
+
+        assert int_demo_dict == star_demo_dict

@@ -165,4 +165,33 @@ class UDLTestHelper(unittest.TestCase):
 
             results_dict[entry] = demo_count
 
+        #get derived ethnicity
+        eth_query = """ select count({demographic}) from "udl2"."INT_SBAC_ASMT_OUTCOME" where {demographic} IS NOT NULL;""".format(demographic='dmg_eth_derived')
+        result = self.udl2_conn.execute(eth_query)
+        for row in result:
+            derived_count = row[0]
+        results_dict['dmg_eth_derived'] = derived_count
+
+        return results_dict
+
+    def get_star_schema_demographic_counts(self):
+        demographics = ['dmg_eth_hsp', 'dmg_eth_ami', 'dmg_eth_asn', 'dmg_eth_blk', 'dmg_eth_pcf', 'dmg_eth_wht', 'dmg_prg_iep', 'dmg_prg_lep', 'dmg_prg_504', 'dmg_prg_tt1']
+        results_dict = {}
+
+        for entry in demographics:
+            #get staging
+            demo_query = """ select count({demographic}) from "edware"."fact_asmt_outcome" where {demographic};""".format(demographic=entry)
+            result = self.target_conn.execute(demo_query)
+            for row in result:
+                demo_count = row[0]
+
+            results_dict[entry] = demo_count
+
+        #get derived ethnicity
+        eth_query = """ select count({demographic}) from "edware"."fact_asmt_outcome" where {demographic} IS NOT NULL;""".format(demographic='dmg_eth_derived')
+        result = self.target_conn.execute(eth_query)
+        for row in result:
+            derived_count = row[0]
+        results_dict['dmg_eth_derived'] = derived_count
+
         return results_dict

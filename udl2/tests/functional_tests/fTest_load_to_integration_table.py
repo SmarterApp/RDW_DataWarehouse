@@ -102,6 +102,8 @@ class FuncTestLoadToIntegrationTable(UDLTestHelper):
         stg_demo_dict = self.get_staging_demographic_counts()
         int_demo_dict = self.get_integration_demographic_counts()
 
+        derived_count = int_demo_dict.pop('dmg_eth_derived', None)
+        assert derived_count
         assert stg_demo_dict == int_demo_dict
 
     def test_derive_eth_function(self):

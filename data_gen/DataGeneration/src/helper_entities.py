@@ -119,7 +119,7 @@ class StudentInfo(object):
 
         # TODO: implement city-zip map
         self.zip_code = random.randint(10000, 99999)
-        #self.email = util.generate_email_address(self.first_name, self.last_name, self.school_name)
+        # self.email = util.generate_email_address(self.first_name, self.last_name, self.school_name)
         self.dob = util.generate_dob(grade)
 
         # Demographic Data
@@ -162,6 +162,16 @@ class StudentInfo(object):
         demo.append(self.gender)
 
         return demo
+
+    def set_dmg_eth_2mr(self):
+        '''
+        Set the value for dmg_eth_2mr
+        '''
+        student_demo = self.getDemoOfStudent()
+        if len(student_demo) > 1 and 'dmg_eth_hsp' not in student_demo:
+            self.dmg_eth_2mr = True
+        else:
+            self.dmg_eth_2mr = False
 
 
 class StudentBioInfo:

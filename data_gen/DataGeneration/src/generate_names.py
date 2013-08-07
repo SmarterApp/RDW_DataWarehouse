@@ -20,6 +20,8 @@ def generate_first_or_middle_name(gender):
         names = people_names._instance.male_names
     elif gender == 'female':
         names = people_names._instance.female_names
+    elif gender == 'not specified':
+        names = random.choice(people_names._instance.female_names, people_names._instance.male_names)
     else:
         raise Exception('Illegal gender value [must be "male" or "female"]')
     rand_index = random.randint(0, len(names) - 1)

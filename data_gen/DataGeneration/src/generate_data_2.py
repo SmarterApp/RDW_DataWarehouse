@@ -346,6 +346,9 @@ def assign_demographic_to_students(demographic_name, student_pool, count, perfor
         index = random.randint(0, len(student_list) - 1)
         student_info = student_list.pop(index)
         setattr(student_info, demographic_name, True)
+    # set 'dmg_eth_2rm' to StudentInfo
+    for student_info in student_list:
+        student_info.set_dmg_eth_2mr()
 
 
 def create_asmt_score_pool_dict(assessment_scores):

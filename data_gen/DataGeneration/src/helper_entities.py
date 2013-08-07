@@ -168,7 +168,11 @@ class StudentInfo(object):
         Set the value for dmg_eth_2mr
         '''
         student_demo = self.getDemoOfStudent()
-        if len(student_demo) > 1 and 'dmg_eth_hsp' not in student_demo:
+        if 'dmg_eth_2mr' in student_demo:
+            # we do not want dmg_eth_2mr to be counted as a demographic
+            student_demo.remove('dmg_eth_2mr')
+        # since there is a gender value in student_demo. two or more races means len(student_demo) > 2
+        if len(student_demo) > 2 and 'dmg_eth_hsp' not in student_demo:
             self.dmg_eth_2mr = True
         else:
             self.dmg_eth_2mr = False

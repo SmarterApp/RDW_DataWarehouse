@@ -22,9 +22,10 @@ common:
     cache:
       regions: public.data, public.filtered_data, public.shortlived, session
       type: ext:memcached
-      expire: 3600 # year
+      expire: 3600 # one hour
       public.data.expire: 31556940 # year
-      public.filtered_data.expire: 2678400 # one month
+      public.filtered_data.expire: 15552000 # six month
+      public.shortlived.expire: 7776000 # three months
       session.expire: 1200 # 20 minutes
       lock_dir: /tmp/memcache
     
@@ -188,18 +189,32 @@ common:
 
 # End logging configuration
 
-qa1:
+qa0:
   '[app:main]':
     mode: prod
+    celery:
+      BROKER_URL: amqp://edware:edware1234@rbtmqdw0.qa.dum.edwdc.net//
+      CELERY_IMPORTS: ('services.tasks.pdf',)
+      CELERY_RESULT_BACKEND: amqp
+      CELERY_TASK_RESULT_EXPIRES: 18000 # 5 hours
+      CELERYD_CONCURRENCY: 8
+    cache:
+      public.shortlived.url: twprxydw0.qa.dum.edwdc.net:22122
+      public.data.url: twprxydw0.qa.dum.edwdc.net:22122
+      session.url: twprxydw0.qa.dum.edwdc.net:22122
+      public.filtered_data.url: twprxydw0.qa.dum.edwdc.net:22122
+    pdf:
+      base.url: https://ha-int-pyweb0.qa.dum.edwdc.net/assets/html
+      report_base_dir: /opt/edware/pdf
     edware:
       db:
         cat:
-          schema_name: edware_sds_0_5
-          url: postgresql+psycopg2://edware:edware2013@dwpool0.qa.dum.edwdc.net:6432/edware
+          schema_name: edware_ca_0_2
+          url: postgresql+psycopg2://edware:edware2013@dwpool1.qa.dum.edwdc.net:6432/edware
     edware_stats:
       db:
-        schema_name: edware_sds_0_5
-        url: postgresql+psycopg2://edware:edware2013@dwpool0.qa.dum.edwdc.net:6432/edware_stats
+        schema_name: edware_ca_0_2
+        url: postgresql+psycopg2://edware:edware2013@dwpool1.qa.dum.edwdc.net:6432/edware_stats
     auth:
       idp:
         metadata: /opt/edware/conf/idp_metadata.xml
@@ -207,20 +222,30 @@ qa1:
         secure: true
       skip.verify: False
       saml:
-        issuer_name: https://ha-int-pyweb1.qa.dum.edwdc.net
+        issuer_name: https://ha-int-pyweb0.qa.dum.edwdc.net
         idp_server_login_url: https://auth1.qa.dum.edwdc.net/openam/SSORedirect/metaAlias/idp
         idp_server_logout_url: https://auth1.qa.dum.edwdc.net/openam/IDPSloRedirect/metaAlias/idp
         name_qualifier: https://auth1.qa.dum.edwdc.net/openam
   '[handlers]':
-    keys: filelog, audit, syslog, security_event
+    keys: audit, syslog, security_event
   '[logger_root]':
     level: INFO
-    handlers: filelog
+    handlers: syslog
   '[handler_syslog]':
     class: logging.handlers.SysLogHandler
     args: '(''/dev/log'', handlers.SysLogHandler.LOG_LOCAL1)'
     level: WARN
     formatter: generic
+  '[handler_audit]':
+    class: logging.handlers.SysLogHandler
+    args: '(''/dev/log'', handlers.SysLogHandler.LOG_LOCAL0)'
+    level: WARN
+    formatter: json
+  '[handler_security_event]':
+    class: logging.handlers.SysLogHandler
+    args: '(''/dev/log'', handlers.SysLogHandler.LOG_LOCAL2)'
+    level: WARN
+    formatter: json
   '[logger_smarter]':
     level: WARN
     handlers: syslog
@@ -229,48 +254,14 @@ qa1:
     level: WARN
     handlers: syslog
     qualname: edauth
-
-qa2:
-  '[app:main]':
-    mode: prod
-    edware:
-      db:
-        cat:
-          schema_name: edware_sds_0_5
-          url: postgresql+psycopg2://edware:edware2013@dwpool0.qa.dum.edwdc.net:6434/edware
-    edware_stats:
-      db:
-        schema_name: edware_sds_0_5
-        url: postgresql+psycopg2://edware:edware2013@dwpool0.qa.dum.edwdc.net:6432/edware_stats
-    auth:
-      idp:
-        metadata: /opt/edware/conf/idp_metadata.xml
-      policy:
-        secure: true
-      skip.verify: False
-      saml:
-        issuer_name: https://ha-int-pyweb2.qa.dum.edwdc.net
-        idp_server_login_url: https://auth1.qa.dum.edwdc.net/openam/SSORedirect/metaAlias/idp
-        idp_server_logout_url: https://auth1.qa.dum.edwdc.net/openam/IDPSloRedirect/metaAlias/idp
-        name_qualifier: https://auth1.qa.dum.edwdc.net/openam
-  '[handlers]':
-    keys: filelog, audit, syslog, security_event
-  '[logger_root]':
-    level: INFO
-    handlers: filelog
-  '[handler_syslog]':
-    class: logging.handlers.SysLogHandler
-    args: '(''/dev/log'', handlers.SysLogHandler.LOG_LOCAL1)'
-    level: WARN
-    formatter: generic
-  '[logger_smarter]':
+  '[logger_sqlalchemy]':
     level: WARN
     handlers: syslog
-    qualname: smarter
-  '[logger_edauth]':
-    level: WARN
+    qualname: sqlalchemy
+  '[logger_exc_logger]':
+    level: ERROR
     handlers: syslog
-    qualname: edauth
+    qualname: exc_logger
 
 jenkins_qa:
   '[app:main]':

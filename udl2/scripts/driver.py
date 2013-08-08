@@ -10,6 +10,8 @@ from udl2 import message_keys as mk
 from uuid import uuid4
 from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 import imp
+from preetl.pre_etl import pre_etl_job
+
 
 
 # Paths to our various directories
@@ -48,7 +50,11 @@ def start_pipeline(csv_file_path, json_file_path, udl2_conf):
 
     # Prepare parameters for task msgs
     archived_file = os.path.join('fake', 'path', 'to', 'fake_archived_file.zip')
-    guid_batch = str(uuid4())
+    guid_batch = pre_etl_job(udl2_conf)
+    if guid_batch is None:
+        print("CANNOT GENERATE guid_batch in PRE ETL, UDL2 PIPELINE STOPPED")
+        return
+
     lzw = udl2_conf['zones']['work']
     jc_table = {}
     jc = (jc_table, guid_batch)

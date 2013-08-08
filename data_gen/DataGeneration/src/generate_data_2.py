@@ -27,6 +27,7 @@ from generate_helper_entities import generate_claim_score, generate_assessment_s
 from helper_entities import StudentInfo
 from print_state_population import print_state_population
 import util
+from assign_students_subjects_scores import assign_scores_for_subjects
 
 
 DATAFILE_PATH = os.path.dirname(os.path.realpath(__file__))
@@ -138,19 +139,80 @@ def generate_data_from_config_file(config_module, output_dict):
         districts = create_districts(state_population, district_names_1, district_names_2)
         schools = create_schools(districts, school_names_1, school_names_2)
 
-        populate_schools(schools, student_info_dict, subject_percentages)
+        populate_schools(schools, student_info_dict, subject_percentages, demographics_info, demographics_id, assessments, error_band_dict, state_name, state_code)
 
 
-def populate_schools(school_list, student_info_dict, subject_percentages):
+def populate_schools(school_list, student_info_dict, subject_percentages, demographics_info, demographics_id, assessments, error_band_dict, state_name, state_code):
     '''
     '''
+    eb_min_perc = error_band_dict[constants.MIN_PERC]
+    eb_max_perc = error_band_dict[constants.MAX_PERC]
+    eb_rand_adj_lo = error_band_dict[constants.RAND_ADJ_PNT_LO]
+    eb_rand_adj_hi = error_band_dict[constants.RAND_ADJ_PNT_HI]
+
     print('school_list', len(school_list))
     for school in school_list:
         school_counts = school.grade_performance_level_counts
+        students_in_school = []
+        # TODO:
+        # create_institution_hierarchies
+
         for grade in school_counts:
-            #print('grades', school_counts.keys())
+
+            # TODO:
+            # create subject sections
+            # create teachers
+
+            # Generate Students that have Math scores and demographics
             students = get_students_by_counts(grade, school_counts[grade], student_info_dict)
-            #print(len(students))
+
+            # Get ELA assessment information
+            ela_subject = 'ELA'
+            assessment = select_assessment_from_list(assessments, grade, ela_subject)
+            min_score = assessment.asmt_score_min
+            max_score = assessment.asmt_score_max
+
+            cut_points = get_list_of_cutpoints(assessment)
+            # Create list of cutpoints that includes min and max score values
+            inclusive_cut_points = [min_score]
+            inclusive_cut_points.extend(cut_points)
+            inclusive_cut_points.append(max_score)
+
+            all_grade_demo_info = demographics_info.get_grade_demographics(demographics_id, ela_subject, grade)
+            ela_perf = {demo_name: demo_list[L_PERF_1:] for demo_name, demo_list in all_grade_demo_info.items()}
+            assign_scores_for_subjects(students, ela_perf, inclusive_cut_points, min_score, max_score, grade, ela_subject,
+                                       assessment, eb_min_perc, eb_max_perc, eb_rand_adj_lo, eb_rand_adj_hi)
+
+            apply_subject_percentages(subject_percentages, students)
+            students_in_school += students
+            # TODO:
+            # place students in sections
+            # create assessment records
+            # create student records
+
+        #write_dim_student_and_fact_asmt(students_in_school, school, state_name, state_code)
+
+
+def apply_subject_percentages(subject_percentages, students):
+    '''
+    based on the percentages for each student taking an assessment, remove a subject
+    record for that percentage of students
+    '''
+    # For each subject, calculate the number of students that should not have
+    # this assessment record
+    for subject in subject_percentages:
+        percentage = subject_percentages[subject]
+
+        student_size = len(students)
+        students_with_out_subject = int((1 - percentage) * student_size)
+
+        # sample the correct students and remove their assessment score
+        for student in random.sample(students, students_with_out_subject):
+            del student.asmt_scores[subject]
+
+
+def write_dim_student_and_fact_asmt(students, school, state_name, state_code):
+    print('writing files')
 
 
 def get_students_by_counts(grade, grade_counts, student_info_dict):
@@ -165,15 +227,16 @@ def get_students_by_counts(grade, grade_counts, student_info_dict):
             continue
         pl_count = grade_counts[pl]
         for i in range(pl_count):
-            index = random.randint(0, len(student_info_dict[grade][pl]))
             if len(student_info_dict[grade][pl]) <= 0:
                 #print(student_info_dict[grade])
                 #print('i', i, 'pl_count', pl_count, 'pl', pl)
                 short_sum += pl_count - i
                 break
-            students.append(student_info_dict[grade][pl].pop())
+            index = random.randint(0, len(student_info_dict[grade][pl]) - 1)
+            students.append(student_info_dict[grade][pl].pop(index))
 
-    print('short_sum', short_sum)
+    if short_sum:
+        print('short_sum', short_sum)
     return students
 
 
@@ -310,7 +373,7 @@ def create_student_infos_by_gender(gender, count, performance_level, score_pool,
             break
         index = random.randint(0, len(score_list) - 1)
         score = score_list.pop(index)
-        asmt_score_dict = {'math': score}
+        asmt_score_dict = {'Math': score}
         student_info = StudentInfo(grade, gender, asmt_score_dict)
         student_info_list.append(student_info)
 
@@ -341,7 +404,7 @@ def assign_demographic_to_students(demographic_name, student_pool, count, perfor
     for _i in range(count):
         if len(student_list) <= 0:
             print('demographic_name', demographic_name)
-            print('i was', _i, 'count was', count, 'perf_lvl was', performance_level)
+            print('short by', count - _i, 'perf_lvl was', performance_level)
             break
         index = random.randint(0, len(student_list) - 1)
         student_info = student_list.pop(index)

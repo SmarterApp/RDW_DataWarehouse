@@ -27,6 +27,8 @@ DISTRICT_SUFFIX = ['District', 'School District', 'Schools', 'County Schools', '
 ADD_SUFFIX = ["ROAD", "AVE", "STREET", "PARKWAY", "BLVD", "WAY"]
 
 SUBJECTS = ["Math", "ELA"]
+MATH = SUBJECTS[0]
+ELA = SUBJECTS[1]
 
 GENDERS = ['male', 'female']
 

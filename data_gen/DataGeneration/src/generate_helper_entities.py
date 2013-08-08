@@ -3,14 +3,14 @@ from uuid import uuid4
 import DataGeneration.src.util as util
 
 
-def generate_state(state_name, state_code):
+def generate_state(state_name, state_code, districts=None):
     '''
     Generate a state based on name and code
     @param state_name: The name of the state. (ie. Kansas)
     @param state_code: The code for the state. (ie. KS)
     @return: A State object
     '''
-    return State(state_name, state_code)
+    return State(state_name, state_code, districts)
 
 
 def generate_district(name_list_1, name_list_2, district_population=None):

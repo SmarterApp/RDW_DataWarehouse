@@ -29,6 +29,8 @@ class StatePopulation(object):
         self.total_student_by_grade = {}
         self.state_demographic_totals = {}
         self.districts = []
+        self.subject_percentages = None
+        self.demographics_id = None
 
     def populate_state(self, state_type_dict, district_types_dict, school_types_dict):
         '''

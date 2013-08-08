@@ -81,9 +81,9 @@ def verify_demo_scores(studentinfo_list, demo_perf, cut_points, min_score, max_s
         total = sum(value)
         value = [round(v / total * 100) for v in value]
         student_demo_perf_dict[key] = value
-    print('*******\ndemo_name, calculated_perc, required_perc\n____________________________________')
-    for key, value in student_demo_perf_dict.items():
-        print(key, value, demo_perf[key])
+#     print('*******\ndemo_name, calculated_perc, required_perc\n____________________________________')
+#     for key, value in student_demo_perf_dict.items():
+#         print(key, value, demo_perf[key])
 
 
 def calcualte_perf_level(subject_score, cut_points):

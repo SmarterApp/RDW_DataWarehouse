@@ -11,12 +11,14 @@ class State:
     Intended for record keeping when creating InstitutionHierarchy objects
     '''
 
-    def __init__(self, state_name, state_code):
+    def __init__(self, state_name, state_code, districts=None, state_type=None):
         '''
         Constructor
         '''
         self.state_code = state_code
         self.state_name = state_name
+        self.state_type = state_type
+        self.districts = districts
 
 
 class District:
@@ -33,6 +35,7 @@ class District:
         self.district_name = district_name
         self.district_type = district_type
         self.school_populations = school_populations
+        self.schools = None
 
 
 class School:
@@ -48,6 +51,7 @@ class School:
         self.grade_performance_level_counts = grade_performance_level_counts
         self.district_name = district_name
         self.district_guid = district_guid
+        self.student_info = None
 
 
 class Claim:
@@ -122,6 +126,19 @@ class StudentInfo(object):
         # self.email = util.generate_email_address(self.first_name, self.last_name, self.school_name)
         self.dob = util.generate_dob(grade)
 
+        # data to be set after initialization
+        self.student_rec_id = None
+        self.email = None
+        self.address_1 = None
+        self.addres_2 = None
+        self.city = None
+        self.state_code = None
+        self.district_guid = None
+        self.school_guid = None
+        self.from_date = None
+        self.to_date = None
+        self.most_recent = None
+
         # Demographic Data
         self.dmg_eth_hsp = dmg_eth_hsp
         self.dmg_eth_ami = dmg_eth_ami
@@ -139,19 +156,26 @@ class StudentInfo(object):
         # a dict that contains an assessment score object that corresponds to each subject
         self.asmt_scores = asmt_scores
         self.asmt_rec_ids = {}
+        self.section_guids = {}
+        self.teacher_guids = {}
 
-    def set_additional_info(self, street_names):
+    def set_additional_info(self, student_rec_id, email, address_1, city, section_guid, state_code, district_guid,
+                            school_guid, from_date, to_date, most_recent, address_2=None):
         '''
         Set the additional student info that may not be available at object creation
         '''
-
-        # Set address info
-        self.address_1 = util.generate_address(street_names)
-
-        # TODO: change city name
-        city_name_1 = random.choice(street_names)
-        city_name_2 = random.choice(street_names)
-        self.city = city_name_1 + ' ' + city_name_2
+        self.student_rec_id = student_rec_id
+        self.email = email
+        self.address_1 = address_1
+        self.address_2 = address_2
+        self.city = city
+        self.section_guid = section_guid
+        self.state_code = state_code
+        self.district_guid = district_guid
+        self.school_guid = school_guid
+        self.from_date = from_date
+        self.to_date = to_date
+        self.most_recent = most_recent
 
     def getDemoOfStudent(self, substr='dmg'):
         demo = []

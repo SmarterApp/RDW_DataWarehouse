@@ -14,8 +14,8 @@ import math
 import random
 
 import stats
-from demographics import Demographics, DemographicStatus, ALL_DEM, L_GROUPING, L_TOTAL, L_PERF_1, L_PERF_4, OVERALL_GROUP
-from generate_entities import generate_assessments
+from demographics import Demographics, ALL_DEM, L_GROUPING, L_TOTAL, L_PERF_1, L_PERF_4, OVERALL_GROUP
+from generate_entities import generate_assessments, generate_institution_hierarchy, generate_sections, generate_multiple_staff
 from write_to_csv import create_csv
 from state_population import StatePopulation
 import constants
@@ -23,11 +23,12 @@ from generate_scores import generate_overall_scores
 from entities import (InstitutionHierarchy, Section, Assessment, AssessmentOutcome,
                       Staff, ExternalUserStudent, Student)
 from errorband import calc_eb_params, calc_eb
-from generate_helper_entities import generate_claim_score, generate_assessment_score, generate_district, generate_school
+from generate_helper_entities import generate_claim_score, generate_assessment_score, generate_district, generate_school, generate_state
 from helper_entities import StudentInfo
 from print_state_population import print_state_population
 import util
 from assign_students_subjects_scores import assign_scores_for_subjects
+from idgen import IdGen
 
 
 DATAFILE_PATH = os.path.dirname(os.path.realpath(__file__))
@@ -68,9 +69,50 @@ NAMES_TO_PATH_DICT = {BIRDS: os.path.join(DATAFILE_PATH, 'datafiles', 'name_list
 def generate_data_from_config_file(config_module, output_dict):
     '''
     Main function that drives the data generation process
+    Collects all relevant info from the config files and calls methods to generate states and remaining data
 
     @param config_module: module that contains all configuration information for the data creation process
     @return nothing
+    '''
+
+    # generate one batch_guid for all records
+    batch_guid = uuid4()
+
+    (demographics_info, district_names, school_names, street_names, states_config, state_types, district_types,
+     school_types, scores_details, from_date, to_date, most_recent, error_band_dict) = get_values_from_config(config_module)
+
+    # Generate Assessment CSV File
+    flat_grades_list = get_flat_grades_list(school_types, constants.GRADES)
+    assessments = generate_assessments(flat_grades_list, scores_details[constants.CUT_POINTS],
+                                       from_date, most_recent, to_date=to_date)
+
+    # Generate the all the data
+    state_populations = generate_state_populations(states_config, state_types, demographics_info, assessments, district_types,
+                                                   school_types, district_names, school_names, error_band_dict, from_date,
+                                                   most_recent, to_date)
+
+    states = generate_real_states(state_populations, assessments, error_band_dict, district_names, school_names,
+                                  demographics_info, from_date, most_recent, to_date, street_names)
+
+    output_generated_data(states, assessments, batch_guid, output_dict)
+
+
+def output_generated_data(states, assessments, batch_guid, output_dict):
+    '''
+    '''
+    # First thing: prep the csv files by deleting their contents and adding appropriate headers
+    prepare_csv_files(output_dict)
+
+    create_csv(assessments, output_dict[Assessment])
+
+    for state in states:
+        pass
+
+
+def get_values_from_config(config_module):
+    '''
+    Given a config module pull out all information that is necessary for the generation of data
+    In some cases also will create the relevant objects
     '''
 
     # Setup demographics object
@@ -80,15 +122,13 @@ def generate_data_from_config_file(config_module, output_dict):
     name_list_dictionary = generate_name_list_dictionary(NAMES_TO_PATH_DICT)
 
     # We're going to use the birds and fish list to name our districts
-    district_names_1 = name_list_dictionary[ANIMALS]
-    district_names_2 = name_list_dictionary[ANIMALS]
+    district_names = (name_list_dictionary[ANIMALS], name_list_dictionary[ANIMALS])
 
     # We're going to use mammals and birds to names our schools
-    school_names_1 = name_list_dictionary[ANIMALS]
-    school_names_2 = name_list_dictionary[ANIMALS]
+    school_names = (name_list_dictionary[ANIMALS], name_list_dictionary[ANIMALS])
 
-    # First thing: prep the csv files by deleting their contents and adding appropriate headers
-    prepare_csv_files(output_dict)
+    # Use birds for street names
+    street_names = name_list_dictionary[BIRDS]
 
     # Get information from the config module
     school_types = config_module.get_school_types()
@@ -97,23 +137,28 @@ def generate_data_from_config_file(config_module, output_dict):
     states = config_module.get_states()
     scores_details = config_module.get_scores()
 
-    # generate one batch_guid for all records
-    batch_guid = uuid4()
-
     # Get temporal information
     temporal_information = config_module.get_temporal_information()
     from_date = temporal_information[constants.FROM_DATE]
     most_recent = temporal_information[constants.MOST_RECENT]
     to_date = temporal_information[constants.TO_DATE]
 
-    # Generate Assessment CSV File
-    flat_grades_list = get_flat_grades_list(school_types, constants.GRADES)
-    assessments = generate_assessments(flat_grades_list, scores_details[constants.CUT_POINTS],
-                                       from_date, most_recent, to_date=to_date)
-    create_csv(assessments, output_dict[Assessment])
-
     # Get Error Band Information from config_module
     error_band_dict = config_module.get_error_band()
+
+    derived_values = (demographics_info, district_names, school_names, street_names, states, state_types,
+                      district_types, school_types, scores_details, from_date, to_date, most_recent, error_band_dict)
+
+    return derived_values
+
+
+def generate_state_populations(states, state_types, demographics_info, assessments, district_types, school_types,
+                               district_names, school_names, error_band_dict, from_date, most_recent, to_date):
+    '''
+    Take all relevant information and loop through the states to generate the relevant data
+    '''
+
+    state_populations = []
 
     for state in states:
         # Pull out basic state information
@@ -132,65 +177,156 @@ def generate_data_from_config_file(config_module, output_dict):
         state_population.populate_state(state_type, district_types, school_types)
         # Calculate the Math Demographic numbers for the state
         state_population.get_state_demographics(demographics_info, demographics_id)
+        state_population.demographics_id = demographics_id
+        state_population.subject_percentages = subject_percentages
+
+        # Print Population info
         print_state_population(state_population)
 
-        student_info_dict = generate_students_from_demographic_counts(state_population, assessments, error_band_dict)
+        state_populations.append(state_population)
 
-        districts = create_districts(state_population, district_names_1, district_names_2)
-        schools = create_schools(districts, school_names_1, school_names_2)
-
-        populate_schools(schools, student_info_dict, subject_percentages, demographics_info, demographics_id, assessments, error_band_dict, state_name, state_code)
+    return state_populations
 
 
-def populate_schools(school_list, student_info_dict, subject_percentages, demographics_info, demographics_id, assessments, error_band_dict, state_name, state_code):
+def generate_real_states(state_populations, assessments, error_band_dict, district_names, school_names,
+                         demographics_info, from_date, most_recent, to_date, street_names):
     '''
+    Generate a real state with districts, schools, students, sections and teachers
+    '''
+    real_states = []
+
+    for state_population in state_populations:
+        demographics_id = state_population.demographics_id
+        subject_percentages = state_population.subject_percentages
+
+        # generate pool of students for state
+        student_info_dict = generate_students_info_from_demographic_counts(state_population, assessments, error_band_dict)
+
+        # create districts
+        districts = create_districts(state_population, district_names[0], district_names[1], school_names[0],
+                                     school_names[1], student_info_dict, subject_percentages, demographics_info,
+                                     demographics_id, assessments, error_band_dict, state_population.name,
+                                     state_population.state_code, from_date, most_recent, to_date, street_names)
+
+        # Create the actual state object
+        state = generate_state(state_population.name, state_population.state_code, districts)
+        real_states.append(state)
+    return real_states
+
+
+def get_school_population(school, student_info_dict, subject_percentages, demographics_info, demographics_id,
+                          assessments, error_band_dict, state_name, state_code, from_date, most_recent, to_date, street_names):
+    '''
+    create teachers, students and sections for a school
     '''
     eb_min_perc = error_band_dict[constants.MIN_PERC]
     eb_max_perc = error_band_dict[constants.MAX_PERC]
     eb_rand_adj_lo = error_band_dict[constants.RAND_ADJ_PNT_LO]
     eb_rand_adj_hi = error_band_dict[constants.RAND_ADJ_PNT_HI]
 
-    print('school_list', len(school_list))
-    for school in school_list:
-        school_counts = school.grade_performance_level_counts
-        students_in_school = []
-        # TODO:
-        # create_institution_hierarchies
+    school_counts = school.grade_performance_level_counts
+    students_in_school = []
+    sections_in_school = []
+    teachers_in_school = []
 
-        for grade in school_counts:
+    for grade in school_counts:
 
-            # TODO:
-            # create subject sections
-            # create teachers
+        number_of_sections = 1
+        math_sections = generate_sections(number_of_sections, constants.MATH, grade, state_code, school.district_guid,
+                                          school.school_guid, from_date, most_recent, to_date=to_date)
+        ela_sections = generate_sections(number_of_sections, constants.ELA, grade, state_code, school.district_guid,
+                                         school.school_guid, from_date, most_recent, to_date=to_date)
+        sections_in_school += math_sections + ela_sections
 
-            # Generate Students that have Math scores and demographics
-            students = get_students_by_counts(grade, school_counts[grade], student_info_dict)
+        # create teachers
+        staff_per_section = 1
+        math_staff = generate_teachers_for_sections(staff_per_section, math_sections, from_date, most_recent, to_date, school, state_code)
+        ela_staff = generate_teachers_for_sections(staff_per_section, ela_sections, from_date, most_recent, to_date, school, state_code)
 
-            # Get ELA assessment information
-            ela_subject = 'ELA'
-            assessment = select_assessment_from_list(assessments, grade, ela_subject)
-            min_score = assessment.asmt_score_min
-            max_score = assessment.asmt_score_max
+        # Generate Students that have Math scores and demographics
+        students = get_students_by_counts(grade, school_counts[grade], student_info_dict)
 
-            cut_points = get_list_of_cutpoints(assessment)
-            # Create list of cutpoints that includes min and max score values
-            inclusive_cut_points = [min_score]
-            inclusive_cut_points.extend(cut_points)
-            inclusive_cut_points.append(max_score)
+        # Get ELA assessment information
+        assessment = select_assessment_from_list(assessments, grade, constants.ELA)
+        min_score = assessment.asmt_score_min
+        max_score = assessment.asmt_score_max
 
-            all_grade_demo_info = demographics_info.get_grade_demographics(demographics_id, ela_subject, grade)
-            ela_perf = {demo_name: demo_list[L_PERF_1:] for demo_name, demo_list in all_grade_demo_info.items()}
-            assign_scores_for_subjects(students, ela_perf, inclusive_cut_points, min_score, max_score, grade, ela_subject,
-                                       assessment, eb_min_perc, eb_max_perc, eb_rand_adj_lo, eb_rand_adj_hi)
+        cut_points = get_list_of_cutpoints(assessment)
+        # Create list of cutpoints that includes min and max score values
+        inclusive_cut_points = [min_score] + cut_points + [max_score]
 
-            apply_subject_percentages(subject_percentages, students)
-            students_in_school += students
-            # TODO:
-            # place students in sections
-            # create assessment records
-            # create student records
+        all_grade_demo_info = demographics_info.get_grade_demographics(demographics_id, constants.ELA, grade)
+        ela_perf = {demo_name: demo_list[L_PERF_1:] for demo_name, demo_list in all_grade_demo_info.items()}
+        assign_scores_for_subjects(students, ela_perf, inclusive_cut_points, min_score, max_score, grade, constants.ELA,
+                                   assessment, eb_min_perc, eb_max_perc, eb_rand_adj_lo, eb_rand_adj_hi)
 
-        #write_dim_student_and_fact_asmt(students_in_school, school, state_name, state_code)
+        assign_students_sections(students, math_sections, ela_sections)
+        set_student_institution_information(students, school, from_date, most_recent, to_date, street_names,
+                                            math_staff[0], ela_staff[0], state_code)
+        apply_subject_percentages(subject_percentages, students)
+
+        students_in_school += students
+
+    return students_in_school, teachers_in_school, sections_in_school
+
+
+def generate_teachers_for_sections(staff_per_section, sections, from_date, most_recent, to_date, school, state_code):
+    '''
+    '''
+    all_staff = []
+    for section in sections:
+        staff = generate_multiple_staff(staff_per_section, 'Teacher', from_date, most_recent,
+                                        state_code=state_code, district_guid=school.district_guid,
+                                        school_guid=school.school_guid, section_guid=section.section_guid,
+                                        to_date=to_date)
+
+        all_staff += staff
+
+    return all_staff
+
+
+def set_student_institution_information(students, school, from_date, most_recent, to_date, street_names, math_teacher, ela_teacher, state_code):
+    '''
+    For each student assigned to a school. Set the relevant information
+    '''
+    id_generator = IdGen()
+    for student in students:
+        city_name_1 = random.choice(street_names)
+        city_name_2 = random.choice(street_names)
+
+        student.student_rec_id = id_generator.get_id()
+        student.school_guid = school.school_guid
+        student.district_guid = school.district_guid
+        student.state_code = state_code
+        student.from_date = from_date
+        student.most_recent = most_recent
+        student.to_date = to_date
+        student.email = util.generate_email_address(student.first_name, student.last_name, school.school_name)
+        student.address_1 = util.generate_address(street_names)
+        student.city = city_name_1 + ' ' + city_name_2
+        student.teacher_guids = {constants.MATH: math_teacher.staff_guid, constants.ELA: ela_teacher.staff_guid}
+
+    return students
+
+
+def assign_students_sections(students, math_sections, ela_sections):
+    '''
+    For a list of students and sections. Assign each student a section for math and ela
+    '''
+    assert len(math_sections) == len(ela_sections)
+    student_size = len(students)
+    students_per_section = math.ceil(student_size / len(math_sections))
+
+    student_index = 0
+
+    for i in range(len(math_sections)):
+        for _j in range(min(students_per_section, student_size)):
+            # place the section guid in section guid dict for the student
+            students[student_index].section_guids[constants.MATH] = math_sections[i].section_guid
+            students[student_index].section_guids[constants.ELA] = ela_sections[i].section_guid
+            student_index += 1
+
+    return students
 
 
 def apply_subject_percentages(subject_percentages, students):
@@ -240,28 +376,60 @@ def get_students_by_counts(grade, grade_counts, student_info_dict):
     return students
 
 
-def create_schools(districts, school_names_1, school_names_2):
+def create_schools(district, school_names_1, school_names_2, student_info_dict, subject_percentages,
+                   demographics_info, demographics_id, assessments, error_band_dict, state_name,
+                   state_code, from_date, most_recent, to_date, street_names):
     '''
-    create and return a list of schools
+    create and return a list of schools from a list of districts
     '''
     schools = []
 
-    for district in districts:
-        for sch_pop in district.school_populations:
-            grade_perf_lvl_counts = {}
-            # Loop through grades counts and get the overall counts
-            for grade, demo_dict in sch_pop.school_demographics.items():
-                grade_counts = demo_dict[ALL_DEM][L_TOTAL:]
-                grade_perf_lvl_counts[grade] = [round(x) for x in grade_counts]
+    for sch_pop in district.school_populations:
+        grade_perf_lvl_counts = {}
+        # Loop through grades counts and get the overall counts
+        for grade, demo_dict in sch_pop.school_demographics.items():
+            grade_counts = demo_dict[ALL_DEM][L_TOTAL:]
+            grade_perf_lvl_counts[grade] = [round(x) for x in grade_counts]
 
-            school = generate_school(sch_pop.school_type_name, school_names_1, school_names_2,
-                                     grade_perf_lvl_counts, district.district_name, district.district_guid)
-            schools.append(school)
+        school = generate_school(sch_pop.school_type_name, school_names_1, school_names_2,
+                                 grade_perf_lvl_counts, district.district_name, district.district_guid)
+
+        population_data = get_school_population(school, student_info_dict, subject_percentages, demographics_info,
+                                                demographics_id, assessments, error_band_dict, state_name, state_code,
+                                                from_date, most_recent, to_date, street_names)
+        students, teachers, sections = population_data
+        #students = set_student_additional_info(school, street_names, students)
+
+        school.students = students
+        school.teachers = teachers
+        school.sections = sections
+        schools.append(school)
 
     return schools
 
 
-def create_districts(state_population, district_names_1, district_names_2):
+# def set_student_additional_info(school, street_names, students):
+#     '''
+#     Set the remaining necessary information for a student
+#     '''
+#     id_generator = IdGen()
+#     for student in students:
+#         student.email = util.generate_email_address(student.first_name, student.last_name, school.school_name)
+#         student.address_1 = util.generate_address(street_names)
+#         city_name_1 = random.choice(street_names)
+#         city_name_2 = random.choice(street_names)
+#         student.city = city_name_1 + ' ' + city_name_2
+#         student.student_rec_id = id_generator.get_id()
+#         student.state_code = school.state_code
+#
+#         student.set_additional_info(email=email, address_1=address_1, city=city, student_rec_id=student_rec_id)
+#
+#     return students
+
+
+def create_districts(state_population, district_names_1, district_names_2, school_names_1, school_names_2, student_info_dict,
+                     subject_percentages, demographics_info, demographics_id, assessments, error_band_dict, state_name,
+                     state_code, from_date, most_recent, to_date, street_names):
     '''
     create and return a list of districts
     '''
@@ -270,12 +438,15 @@ def create_districts(state_population, district_names_1, district_names_2):
 
     for dist_pop in district_populations:
         district = generate_district(district_names_1, district_names_2, dist_pop)
+        district.schools = create_schools(district, school_names_1, school_names_2, student_info_dict, subject_percentages,
+                                          demographics_info, demographics_id, assessments, error_band_dict, state_name,
+                                          state_code, from_date, most_recent, to_date, street_names)
         districts.append(district)
 
     return districts
 
 
-def generate_students_from_demographic_counts(state_population, assessments, error_band_dict):
+def generate_students_info_from_demographic_counts(state_population, assessments, error_band_dict):
     '''
     Construct pools of students for each grade and performance level with assigned demographics
     @param state_population: A state population object that has been populated with demographic data
@@ -510,6 +681,32 @@ def get_list_of_cutpoints(assessment):
     if assessment.asmt_cut_point_4:
         cut_points.append(assessment.asmt_cut_point_4)
     return cut_points
+
+
+def generate_institution_hierarchy_from_helper_entities(config_module, state, district, school):
+    '''
+    Create an InstitutionHierarchy object from the helper entities provided
+    @param state: a State object
+    @param district: A District object
+    @param school: A School object
+    '''
+    state_name = state.state_name
+    state_code = state.state_code
+    district_guid = district.district_guid
+    district_name = district.district_name
+    school_guid = school.school_guid
+    school_name = school.school_name
+    school_category = school.school_category
+    temporal_information = config_module.get_temporal_information()
+    from_date = temporal_information[constants.FROM_DATE]
+    most_recent = temporal_information[constants.MOST_RECENT]
+    to_date = temporal_information[constants.TO_DATE]
+
+    institution_hierarchy = generate_institution_hierarchy(state_name, state_code,
+                                                           district_guid, district_name,
+                                                           school_guid, school_name, school_category,
+                                                           from_date, most_recent, to_date)
+    return institution_hierarchy
 
 
 def create_output_dict(output_path):

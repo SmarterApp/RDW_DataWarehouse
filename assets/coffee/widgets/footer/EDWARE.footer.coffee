@@ -4,8 +4,54 @@ define [
   "bootstrap"
   "edwareConfidenceLevelBar"
   "text!edwareFooterHtml"
-  "text!edwareLegendTemplate"
-], ($, Mustache, bootstrap, edwareConfidenceLevelBar, footerTemplate, legendTemplate) ->
+  "text!ISRTemplate"
+  "text!LOSTemplate"
+  "text!CPopTemplate"
+], ($, Mustache, bootstrap, edwareConfidenceLevelBar, footerTemplate, ISRTemplate, LOSTemplate, CPopTemplate) ->
+
+  Legend = {
+    init: (reportName, legend) ->
+      this.createLegend reportName, legend
+    ,
+
+    createLegend: (legendName, legend) ->
+      # create legend in html format from mustache template
+      data = {}
+      # create ALD intervals
+      data['ALDs'] = this.createALDs legend['subject']
+      # text from json file
+      data['legendInfo'] = legend['legendInfo']
+      # need assessment score and color to display legend consistently across all ISR
+      data['asmtScore'] = legend['subject'].asmt_score
+      data['scoreColor'] = legend['subject'].score_color
+      template = this.getTemplate legendName
+      Mustache.to_html template, data
+    ,
+
+    getTemplate: (legendName) ->
+      if legendName is 'individual_student_report'
+        return ISRTemplate
+      if legendName is 'list_of_students'
+        return LOSTemplate
+      if legendName is 'comparing_populations'
+        return CPopTemplate
+
+    createALDs: (items) ->
+      # create intervals to display on ALD table
+      ALDs = []
+      intervals = items.cut_point_intervals
+      i = 0
+      while i < intervals.length
+        interval = {}
+        interval['color'] = intervals[i]['bg_color']
+        interval['description'] = intervals[i]['name']
+        start_score = if i == 0 then items.asmt_score_min else intervals[i-1]['interval']
+        end_score = if i == intervals.length - 1 then items.asmt_score_max else (intervals[i]['interval'] - 1)
+        interval['range'] = start_score + '-' + end_score
+        ALDs.push interval
+        i++
+      ALDs
+  }
                                            
   $.fn.generateFooter = (reportName, content, legend) ->
     self = this
@@ -13,15 +59,12 @@ define [
     # keep these images to display legend on Cpop and LOS two reports
     if reportName is 'list_of_students'
       data['imageFileName'] = 'legend_ListofStudents.png'
-    else if reportName is 'comparing_populations'
-      data['imageFileName'] = 'legend_comparepop.png'
     
     data['report_info'] = content[reportName]
     # create legend
     # for the time being, we show legend in html format only on ISR
     if legend
-      legend_info = createLegend legend
-      data['legend_info'] = legend_info
+      data['legend_info'] = Legend.init(reportName, legend)
    
     output = Mustache.to_html footerTemplate, data
       
@@ -43,33 +86,7 @@ define [
     output = edwareConfidenceLevelBar.create subject, 640
     $('#legendTemplate .confidenceLevel').html(output)
     
-  createLegend = (legend) ->
-    # create legend in html format from mustache template
-    data = {}
-    # create ALD intervals
-    data['ALDs'] = createALDs legend['subject']
-    # text from json file
-    data['legendInfo'] = legend['legendInfo']
-    # need assessment score and color to display legend consistently across all ISR
-    data['asmtScore'] = legend['subject'].asmt_score
-    data['scoreColor'] = legend['subject'].score_color
-    Mustache.to_html legendTemplate, data
 
-  createALDs = (items) ->
-    # create intervals to display on ALD table
-    ALDs = []
-    intervals = items.cut_point_intervals
-    i = 0
-    while i < intervals.length
-      interval = {}
-      interval['color'] = intervals[i]['bg_color']
-      interval['description'] = intervals[i]['name']
-      start_score = if i == 0 then items.asmt_score_min else intervals[i-1]['interval']
-      end_score = if i == intervals.length - 1 then items.asmt_score_max else (intervals[i]['interval'] - 1)
-      interval['range'] = start_score + '-' + end_score
-      ALDs.push interval
-      i++
-    ALDs
   
   create = (containerId) ->
     $(containerId).generateFooter

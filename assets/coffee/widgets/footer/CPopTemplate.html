@@ -1,0 +1,39 @@
+<div id="legendTemplate">
+	<h3 class="printContent" style="margin-bottom: -3%">Legend:</h3>
+	<div class="section" style="border-top: none;">
+		<div class="achievement">
+			<!-- ALD -->
+			<h4>Achievement Level Descriptions (ALD):</h4>
+			<table class="ALD_table">
+				<thead>
+					<tr>
+						<th class="ALD_table_header" style="width:17%;">Color</th>
+						<th class="ALD_table_header">Description</th>
+						<th class="ALD_table_header">Score Range</th>
+						<th class="ALD_table_header" style="width:17%;"><span>Outside Error Band</span></th>
+					</tr>
+				</thead>
+				{{#ALDs}}
+				<tr>
+					<td class="ALD_table_cell"><div class="legend_ALD_color" style="background-color:{{color}};"></div></td>
+					<td class="ALD_table_cell">{{description}}</td>
+					<td class="ALD_table_cell">{{range}}</td>
+					<td class="ALD_table_cell">
+						<div class="legend_ALD_color" style="background-color:{{color}};position: absolute; margin-left: 30px; margin-top: 5px;"></div>
+						<img src="../images/ISR_shades.png"/>
+					</td>
+				</tr>
+				{{/ALDs}}
+			</table>
+		</div>
+	</div>
+	<div class="section">
+	  <h4>Population Bar Details:</h4>
+	  <div>Population Color Bar</div>
+	  <div>
+	    <h5>Percentage of population</h5>
+	    <h5>Total Students</h5>
+	    <p>The width of a colored segment is proportional to the number of students in that segment. If a colored segment represents less than 10% of the students tested, then no percentage is displayed.</p>
+	  <div>
+	</div>
+</div>

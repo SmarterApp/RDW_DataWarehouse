@@ -91,77 +91,77 @@ class DemographicsTest(unittest.TestCase):
         perc_sum = sum(result)
         self.assertEqual(perc_sum, 100, 'Check sum of percentages is 100')
 
-    def test_generate_students_and_demographics_result_length(self):
-        demograph_tracker = DemographicStatus(self.dem_obj.get_demo_names(self.dem_id, 'math', 3))
-        asmt_scores = generate_100_asmt_scores(self.dem_obj.get_grade_demographics_total(self.dem_id, 'math', 3))
-        results = self.dem_obj.generate_students_and_demographics(100, 'math', 3, asmt_scores, self.dem_id, demograph_tracker, self.address_name_list)
-
-        self.assertEqual(len(results), 100)
-
-    def test_generate_students_and_demographics_result_type(self):
-        demograph_tracker = DemographicStatus(self.dem_obj.get_demo_names(self.dem_id, 'math', 3))
-        asmt_scores = generate_100_asmt_scores(self.dem_obj.get_grade_demographics_total(self.dem_id, 'math', 3))
-
-        results = self.dem_obj.generate_students_and_demographics(100, 'math', 3, asmt_scores, self.dem_id, demograph_tracker, self.address_name_list)
-
-        for res in results:
-            self.assertIsInstance(res, StudentInfo)
-
-    def test_generate_students_and_demographics_all_scores_assigned(self):
-        demograph_tracker = DemographicStatus(self.dem_obj.get_demo_names(self.dem_id, 'math', 3))
-        asmt_scores = generate_100_asmt_scores(self.dem_obj.get_grade_demographics_total(self.dem_id, 'math', 3))
-
-        results = self.dem_obj.generate_students_and_demographics(100, 'math', 3, asmt_scores, self.dem_id, demograph_tracker, self.address_name_list)
-
-        for res in results:
-            assigned_score = res.asmt_scores['math']
-            asmt_scores.remove(assigned_score)
-
-        self.assertListEqual(asmt_scores, [])
-
-    def test_generate_students_and_demographics_check_name_and_address(self):
-        demograph_tracker = DemographicStatus(self.dem_obj.get_demo_names(self.dem_id, 'math', 3))
-        asmt_scores = generate_100_asmt_scores(self.dem_obj.get_grade_demographics_total(self.dem_id, 'math', 3))
-
-        results = self.dem_obj.generate_students_and_demographics(100, 'math', 3, asmt_scores, self.dem_id, demograph_tracker, self.address_name_list)
-
-        for res in results:
-            self.assertIsInstance(res.first_name, str)
-            self.assertIsInstance(res.last_name, str)
-            self.assertGreater(len(res.first_name), 0)
-            self.assertGreater(len(res.last_name), 0)
-            self.assertIsInstance(res.zip_code, int)
-            self.assertIsNotNone(res.dob)
-
-            self.assertEqual(len(str(res.zip_code)), 5)
-            self.assertIsInstance(res.address_1, str)
-            self.assertGreater(len(res.address_1), 0)
-            self.assertIsInstance(res.city, str)
-            self.assertGreater(len(res.city), 0)
-
-    def test_generate_students_and_demographics_check_demographics(self):
-        demograph_tracker = DemographicStatus(self.dem_obj.get_demo_names(self.dem_id, 'math', 3))
-        asmt_scores = generate_100_asmt_scores(self.dem_obj.get_grade_demographics_total(self.dem_id, 'math', 3))
-
-        results = self.dem_obj.generate_students_and_demographics(100, 'math', 3, asmt_scores, self.dem_id, demograph_tracker, self.address_name_list)
-
-        for res in results:
-            self.assertIn(res.gender, ('male', 'female'))
-            given_dems = res.getDemoOfStudent()
-            self.assertGreater(len(given_dems), 0)
-            print(given_dems)
-            self.assertGreaterEqual(ethnicity_count(given_dems), 1)
-
-    def test_assign_scores_by_demographics(self):
-        demograph_tracker = DemographicStatus(self.dem_obj.get_demo_names(self.dem_id, 'math', 3))
-        asmt_scores_math = generate_100_asmt_scores(self.dem_obj.get_grade_demographics_total(self.dem_id, 'math', 3))
-        students = self.dem_obj.generate_students_and_demographics(100, 'math', 3, asmt_scores_math, self.dem_id, demograph_tracker, self.address_name_list)
-
-        asmt_scores_ela = generate_100_asmt_scores(self.dem_obj.get_grade_demographics_total(self.dem_id, 'ela', 3))
-        self.dem_obj.assign_scores_by_demographics(students, 'ela', 3, asmt_scores_ela, self.dem_id, demograph_tracker)
-
-        for student in students:
-            self.assertEqual(len(student.asmt_scores), 2, 'check all students have 2 scores')
+#     def test_generate_students_and_demographics_result_length(self):
+#         demograph_tracker = DemographicStatus(self.dem_obj.get_demo_names(self.dem_id, 'math', 3))
+#         asmt_scores = generate_100_asmt_scores(self.dem_obj.get_grade_demographics_total(self.dem_id, 'math', 3))
+#         results = self.dem_obj.generate_students_and_demographics(100, 'math', 3, asmt_scores, self.dem_id, demograph_tracker, self.address_name_list)
+#
+#         self.assertEqual(len(results), 100)
+#
+#     def test_generate_students_and_demographics_result_type(self):
+#         demograph_tracker = DemographicStatus(self.dem_obj.get_demo_names(self.dem_id, 'math', 3))
+#         asmt_scores = generate_100_asmt_scores(self.dem_obj.get_grade_demographics_total(self.dem_id, 'math', 3))
+#
+#         results = self.dem_obj.generate_students_and_demographics(100, 'math', 3, asmt_scores, self.dem_id, demograph_tracker, self.address_name_list)
+#
+#         for res in results:
+#             self.assertIsInstance(res, StudentInfo)
+#
+#     def test_generate_students_and_demographics_all_scores_assigned(self):
+#         demograph_tracker = DemographicStatus(self.dem_obj.get_demo_names(self.dem_id, 'math', 3))
+#         asmt_scores = generate_100_asmt_scores(self.dem_obj.get_grade_demographics_total(self.dem_id, 'math', 3))
+#
+#         results = self.dem_obj.generate_students_and_demographics(100, 'math', 3, asmt_scores, self.dem_id, demograph_tracker, self.address_name_list)
+#
+#         for res in results:
+#             assigned_score = res.asmt_scores['math']
+#             asmt_scores.remove(assigned_score)
+#
+#         self.assertListEqual(asmt_scores, [])
+#
+#     def test_generate_students_and_demographics_check_name_and_address(self):
+#         demograph_tracker = DemographicStatus(self.dem_obj.get_demo_names(self.dem_id, 'math', 3))
+#         asmt_scores = generate_100_asmt_scores(self.dem_obj.get_grade_demographics_total(self.dem_id, 'math', 3))
+#
+#         results = self.dem_obj.generate_students_and_demographics(100, 'math', 3, asmt_scores, self.dem_id, demograph_tracker, self.address_name_list)
+#
+#         for res in results:
+#             self.assertIsInstance(res.first_name, str)
+#             self.assertIsInstance(res.last_name, str)
+#             self.assertGreater(len(res.first_name), 0)
+#             self.assertGreater(len(res.last_name), 0)
+#             self.assertIsInstance(res.zip_code, int)
+#             self.assertIsNotNone(res.dob)
+#
+#             self.assertEqual(len(str(res.zip_code)), 5)
+#             self.assertIsInstance(res.address_1, str)
+#             self.assertGreater(len(res.address_1), 0)
+#             self.assertIsInstance(res.city, str)
+#             self.assertGreater(len(res.city), 0)
+#
+#     def test_generate_students_and_demographics_check_demographics(self):
+#         demograph_tracker = DemographicStatus(self.dem_obj.get_demo_names(self.dem_id, 'math', 3))
+#         asmt_scores = generate_100_asmt_scores(self.dem_obj.get_grade_demographics_total(self.dem_id, 'math', 3))
+#
+#         results = self.dem_obj.generate_students_and_demographics(100, 'math', 3, asmt_scores, self.dem_id, demograph_tracker, self.address_name_list)
+#
+#         for res in results:
+#             self.assertIn(res.gender, ('male', 'female'))
+#             given_dems = res.getDemoOfStudent()
+#             self.assertGreater(len(given_dems), 0)
+#             print(given_dems)
+#             self.assertGreaterEqual(ethnicity_count(given_dems), 1)
+#
+#     def test_assign_scores_by_demographics(self):
+#         demograph_tracker = DemographicStatus(self.dem_obj.get_demo_names(self.dem_id, 'math', 3))
+#         asmt_scores_math = generate_100_asmt_scores(self.dem_obj.get_grade_demographics_total(self.dem_id, 'math', 3))
+#         students = self.dem_obj.generate_students_and_demographics(100, 'math', 3, asmt_scores_math, self.dem_id, demograph_tracker, self.address_name_list)
+#
+#         asmt_scores_ela = generate_100_asmt_scores(self.dem_obj.get_grade_demographics_total(self.dem_id, 'ela', 3))
+#         self.dem_obj.assign_scores_by_demographics(students, 'ela', 3, asmt_scores_ela, self.dem_id, demograph_tracker)
+#
+#         for student in students:
+#             self.assertEqual(len(student.asmt_scores), 2, 'check all students have 2 scores')
 
 
 def ethnicity_count(demographics):

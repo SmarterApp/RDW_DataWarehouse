@@ -15,7 +15,7 @@ import random
 
 import stats
 from demographics import Demographics, ALL_DEM, L_GROUPING, L_TOTAL, L_PERF_1, L_PERF_4, OVERALL_GROUP
-from generate_entities import (generate_assessments, generate_institution_hierarchy, generate_sections, 
+from generate_entities import (generate_assessments, generate_institution_hierarchy, generate_sections,
                                generate_multiple_staff, generate_assessment_outcomes_from_student_info,
                                generate_students_from_student_info)
 from write_to_csv import create_csv
@@ -490,7 +490,7 @@ def create_districts(state_population, district_names_1, district_names_2, schoo
         # generate district staff
         number_of_district_level_staff = 10
         district.staff = generate_non_teaching_staff(number_of_district_level_staff, from_date, most_recent, to_date,
-                                                           state_code=state_code, district_guid=district.district_guid)
+                                                     state_code=state_code, district_guid=district.district_guid)
         districts.append(district)
 
     return districts

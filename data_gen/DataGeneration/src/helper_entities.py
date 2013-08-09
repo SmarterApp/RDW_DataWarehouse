@@ -161,7 +161,9 @@ class StudentInfo(object):
         self.asmt_scores = asmt_scores
         self.asmt_rec_ids = {}
         self.section_guids = {}
+        self.section_rec_ids = {}
         self.teacher_guids = {}
+        self.asmt_dates_taken = {}
 
     def set_additional_info(self, student_rec_id, email, address_1, city, section_guid, state_code, district_guid,
                             school_guid, from_date, to_date, most_recent, address_2=None):
@@ -195,7 +197,7 @@ class StudentInfo(object):
         '''
         Set the value for dmg_eth_2mr
         '''
-        student_demo = self.getDemoOfStudent()
+        student_demo = self.getDemoOfStudent('dmg_eth')
         if 'dmg_eth_2mr' in student_demo:
             # we do not want dmg_eth_2mr to be counted as a demographic
             student_demo.remove('dmg_eth_2mr')

@@ -21,6 +21,7 @@ def generate_students_from_student_info(student_info_list):
         for subject in student_info.asmt_scores:
             params = {
                 'student_rec_id': student_info.student_rec_ids.pop(),
+                'student_guid': student_info.student_guid,
                 'section_guid': student_info.section_guids[subject],
                 'first_name': student_info.first_name,
                 'last_name': student_info.last_name,
@@ -46,10 +47,71 @@ def generate_students_from_student_info(student_info_list):
     return student_list
 
 
-def generate_assessment_outcomes_from_student_info(student_info_list):
+def generate_assessment_outcomes_from_student_info(student_info_list, batch_guid, inst_hierarchy):
     '''
     '''
-    pass
+    outcome_list = []
+    idgen = IdGen()
+
+    for student_info in student_info_list:
+        for subject in student_info.asmt_scores:
+            asmt_score_obj = student_info.asmt_scores[subject]
+            date_taken = student_info.asmt_dates_taken[subject]
+            claim_scores = asmt_score_obj.claim_scores
+            status = 'C'
+
+            params = {
+                'asmnt_outcome_rec_id': idgen.get_id(),
+                'asmt_rec_id': student_info.asmt_rec_ids[subject],
+                'student_guid': student_info.student_guid,
+                'teacher_guid': student_info.teacher_guids[subject],
+                'state_code': student_info.state_code,
+                'district_guid': student_info.district_guid,
+                'school_guid': student_info.school_guid,
+                'section_guid': student_info.section_guids[subject],
+                'inst_hier_rec_id': inst_hierarchy.inst_hier_rec_id,
+                'section_rec_id': student_info.section_rec_ids[subject],
+                'where_taken_id': student_info.school_guid,
+                'where_taken_name': inst_hierarchy.school_name,
+                'asmt_grade': student_info.grade,
+                'enrl_grade': student_info.grade,
+                'date_taken': date_taken,
+                'date_taken_day': date_taken.day,
+                'date_taken_month': date_taken.month,
+                'date_taken_year': date_taken.year,
+                'asmt_score': asmt_score_obj.overall_score,
+                'asmt_score_range_min': asmt_score_obj.interval_min,
+                'asmt_score_range_max': asmt_score_obj.interval_max,
+                'asmt_perf_lvl': asmt_score_obj.perf_lvl,
+                'asmt_claim_1_score': claim_scores[0].claim_score,
+                'asmt_claim_1_score_range_min': claim_scores[0].claim_score_interval_minimum,
+                'asmt_claim_1_score_range_max': claim_scores[0].claim_score_interval_minimum,
+                'asmt_claim_2_score': claim_scores[1].claim_score,
+                'asmt_claim_2_score_range_min': claim_scores[1].claim_score_interval_minimum,
+                'asmt_claim_2_score_range_max': claim_scores[1].claim_score_interval_maximum,
+                'asmt_claim_3_score': claim_scores[2].claim_score,
+                'asmt_claim_3_score_range_min': claim_scores[2].claim_score_interval_minimum,
+                'asmt_claim_3_score_range_max': claim_scores[2].claim_score_interval_maximum,
+                'asmt_claim_4_score': claim_scores[3].claim_score if len(claim_scores) > 3 else None,
+                'asmt_claim_4_score_range_min': claim_scores[3].claim_score_interval_minimum if len(claim_scores) > 3 else None,
+                'asmt_claim_4_score_range_max': claim_scores[3].claim_score_interval_maximum if len(claim_scores) > 3 else None,
+                'status': status,
+                'most_recent': student_info.most_recent,
+                'batch_guid': batch_guid,
+                'dmg_eth_hsp': student_info.dmg_eth_hsp,
+                'dmg_eth_ami': student_info.dmg_eth_ami,
+                'dmg_eth_asn': student_info.dmg_eth_asn,
+                'dmg_eth_blk': student_info.dmg_eth_blk,
+                'dmg_eth_pcf': student_info.dmg_eth_pcf,
+                'dmg_eth_wht': student_info.dmg_eth_wht,
+                'dmg_prg_iep': student_info.dmg_prg_iep,
+                'dmg_prg_lep': student_info.dmg_prg_lep,
+                'dmg_prg_504': student_info.dmg_prg_504,
+                'dmg_prg_tt1': student_info.dmg_prg_tt1
+            }
+            outcome_list.append(AssessmentOutcome(**params))
+
+    return outcome_list
 
 
 def generate_institution_hierarchy(state_name, state_code,

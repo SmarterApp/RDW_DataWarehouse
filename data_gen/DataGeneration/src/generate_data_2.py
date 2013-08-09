@@ -15,7 +15,9 @@ import random
 
 import stats
 from demographics import Demographics, ALL_DEM, L_GROUPING, L_TOTAL, L_PERF_1, L_PERF_4, OVERALL_GROUP
-from generate_entities import generate_assessments, generate_institution_hierarchy, generate_sections, generate_multiple_staff
+from generate_entities import (generate_assessments, generate_institution_hierarchy, generate_sections, 
+                               generate_multiple_staff, generate_assessment_outcomes_from_student_info,
+                               generate_students_from_student_info)
 from write_to_csv import create_csv
 from state_population import StatePopulation
 import constants
@@ -102,11 +104,13 @@ def output_generated_data_to_csv(states, assessments, batch_guid, output_dict, f
     '''
     # First thing: prep the csv files by deleting their contents and adding appropriate headers
     prepare_csv_files(output_dict)
+    print('Writing CSV files')
 
     create_csv(assessments, output_dict[Assessment])
 
     institution_hierarchies = []
     staff = []
+    sections = []
 
     for state in states:
         staff += state.staff
@@ -114,13 +118,20 @@ def output_generated_data_to_csv(states, assessments, batch_guid, output_dict, f
             staff += district.staff
             for school in district.schools:
                 staff += school.teachers
+                sections += school.sections
+
                 inst_hier = generate_institution_hierarchy_from_helper_entities(state, district, school, from_date,
                                                                                 most_recent, to_date)
                 institution_hierarchies.append(inst_hier)
-                student_entities = None
-                fact_assessment_entities = None
+                student_entities = generate_students_from_student_info(school.student_info)
+                fact_assessment_entities = generate_assessment_outcomes_from_student_info(school.student_info, batch_guid, inst_hier)
 
+                create_csv(student_entities, output_dict[Student])
+                create_csv(fact_assessment_entities, output_dict[AssessmentOutcome])
 
+    create_csv(institution_hierarchies, output_dict[InstitutionHierarchy])
+    create_csv(sections, output_dict[Section])
+    create_csv(staff, output_dict[Staff])
 
 
 def get_values_from_config(config_module):
@@ -266,22 +277,27 @@ def get_school_population(school, student_info_dict, subject_percentages, demogr
         students = get_students_by_counts(grade, school_counts[grade], student_info_dict)
 
         # Get ELA assessment information
-        assessment = select_assessment_from_list(assessments, grade, constants.ELA)
-        min_score = assessment.asmt_score_min
-        max_score = assessment.asmt_score_max
+        math_assessment = select_assessment_from_list(assessments, grade, constants.MATH)
+        math_date_taken = util.generate_date_given_assessment(math_assessment)
+        ela_assessment = select_assessment_from_list(assessments, grade, constants.ELA)
+        ela_date_taken = util.generate_date_given_assessment(ela_assessment)
+        min_score = ela_assessment.asmt_score_min
+        max_score = ela_assessment.asmt_score_max
 
-        cut_points = get_list_of_cutpoints(assessment)
+        cut_points = get_list_of_cutpoints(ela_assessment)
         # Create list of cutpoints that includes min and max score values
         inclusive_cut_points = [min_score] + cut_points + [max_score]
 
         all_grade_demo_info = demographics_info.get_grade_demographics(demographics_id, constants.ELA, grade)
         ela_perf = {demo_name: demo_list[L_PERF_1:] for demo_name, demo_list in all_grade_demo_info.items()}
         assign_scores_for_subjects(students, ela_perf, inclusive_cut_points, min_score, max_score, grade, constants.ELA,
-                                   assessment, eb_min_perc, eb_max_perc, eb_rand_adj_lo, eb_rand_adj_hi)
+                                   ela_assessment, eb_min_perc, eb_max_perc, eb_rand_adj_lo, eb_rand_adj_hi)
 
         assign_students_sections(students, math_sections, ela_sections)
         set_student_institution_information(students, school, from_date, most_recent, to_date, street_names,
                                             math_staff[0], ela_staff[0], state_code)
+        set_students_asmt_info(students, [constants.ELA, constants.MATH], [ela_assessment.asmt_rec_id, math_assessment.asmt_rec_id],
+                               [ela_date_taken, math_date_taken])
         apply_subject_percentages(subject_percentages, students)
 
         students_in_school += students
@@ -342,9 +358,23 @@ def assign_students_sections(students, math_sections, ela_sections):
         for _j in range(min(students_per_section, student_size)):
             # place the section guid in section guid dict for the student
             students[student_index].section_guids[constants.MATH] = math_sections[i].section_guid
+            students[student_index].section_rec_ids[constants.MATH] = math_sections[i].section_rec_id
             students[student_index].section_guids[constants.ELA] = ela_sections[i].section_guid
+            students[student_index].section_rec_ids[constants.ELA] = ela_sections[i].section_rec_id
             student_index += 1
 
+    return students
+
+
+def set_students_asmt_info(students, subjects, asmt_rec_ids, dates_taken):
+    '''
+    take a list of students and assign them assessment record ids.
+    subjects and asmt_rec_ids are lists that should match
+    '''
+    for student in students:
+        for i in range(len(subjects)):
+            student.asmt_rec_ids[subjects[i]] = asmt_rec_ids[i]
+            student.asmt_dates_taken[subjects[i]] = dates_taken[i]
     return students
 
 

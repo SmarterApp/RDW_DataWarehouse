@@ -46,6 +46,12 @@ def generate_students_from_student_info(student_info_list):
     return student_list
 
 
+def generate_assessment_outcomes_from_student_info(student_info_list):
+    '''
+    '''
+    pass
+
+
 def generate_institution_hierarchy(state_name, state_code,
                                    district_guid, district_name,
                                    school_guid, school_name, school_category,

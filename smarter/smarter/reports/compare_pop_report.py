@@ -18,8 +18,7 @@ from smarter.security.context import select_with_context
 from smarter.database.smarter_connector import SmarterDBConnection
 from smarter.reports.filters import Constants_filter_names
 from smarter.reports.utils.cache import cache_region
-from smarter.reports.filters.demographics import get_demographic_filter, \
-    get_ethnicity_filter
+from smarter.reports.filters.demographics import get_demographic_filter
 from smarter.reports.exceptions.parameter_exception import InvalidParameterException
 from smarter.reports.helpers.metadata import get_custom_metadata
 
@@ -86,7 +85,7 @@ CACHE_REGION_PUBLIC_FILTERING_DATA = 'public.filtered_data'
                 "type": "string",
                 "pattern": "^(" + Constants_filter_names.DEMOGRAPHICS_ETHNICITY_AMERICAN + "|" + Constants_filter_names.DEMOGRAPHICS_ETHNICITY_ASIAN + "|" +
                 Constants_filter_names.DEMOGRAPHICS_ETHNICITY_BLACK + "|" + Constants_filter_names.DEMOGRAPHICS_ETHNICITY_HISPANIC + "|" + Constants_filter_names.DEMOGRAPHICS_ETHNICITY_PACIFIC + "|" +
-                Constants_filter_names.DEMOGRAPHICS_ETHNICITY_MULTI + "|" + Constants_filter_names.DEMOGRAPHICS_ETHNICITY_WHITE + "|" + Constants_filter_names.NOT_STATED + ")$",
+                Constants_filter_names.DEMOGRAPHICS_ETHNICITY_MULTI + "|" + Constants_filter_names.DEMOGRAPHICS_ETHNICITY_WHITE + "|" + Constants_filter_names.DEMOGRAPHICS_ETHNICITY_NOT_STATED + ")$",
             }
         },
         Constants_filter_names.GRADE: {
@@ -463,6 +462,7 @@ class QueryHelper():
             filter_grade = self._filters.get(Constants_filter_names.GRADE)
             if self._filters.get(Constants_filter_names.GRADE):
                 query = query.where(self._fact_asmt_outcome.c.asmt_grade.in_(filter_grade))
-            if self._filters.get(Constants_filter_names.ETHNICITY):
-                query = query.where(get_ethnicity_filter(self._filters, self._fact_asmt_outcome))
+            filter_eth = self._filters.get(Constants_filter_names.ETHNICITY)
+            if filter_eth is not None:
+                query = query.where(self._fact_asmt_outcome.c.dmg_eth_derived.in_(filter_eth))
         return query

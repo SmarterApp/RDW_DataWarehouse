@@ -147,7 +147,12 @@ define [
     
   showPdfCSS = ->
     $('head').append("<link rel='stylesheet' type='text/css' href='../css/pdf.css' />");
-    
+
+  # Add comma as thousand separator to numbers
+  # Return 0 if parameter is undefined
+  formatNumber = (num) ->
+    if num then num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") else 0
+
   getConstants: getConstants
   displayErrorMessage: displayErrorMessage
   getUrlParams: getUrlParams 
@@ -161,3 +166,4 @@ define [
   format_full_name_reverse: format_full_name_reverse
   showGrayScale : showGrayScale
   showPdfCSS : showPdfCSS
+  formatNumber: formatNumber

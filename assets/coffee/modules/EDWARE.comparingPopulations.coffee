@@ -286,9 +286,6 @@ define [
       else
         element.showPercentage = false
       
-      # format numbers
-      element.count = formatNumber element.count
-      
       # calculate sort sort
       sort = calculateTotalPercentage sort, i, element.percentage
       i++
@@ -316,12 +313,7 @@ define [
         percentages[k-1] = percentages[k-1] + currentPercentage
         k++
     percentages
-    
-  # Add comma as thousand separator to numbers
-  # Return 0 if parameter is undefined
-  formatNumber = (num) ->
-    if num then num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") else 0
-  
+      
   # Format the summary data for summary row rendering purposes
   formatSummaryData = (summaryData, summaryRowName) ->
     data = {}

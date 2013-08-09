@@ -79,15 +79,21 @@ define [
     
     output = ""
     if subject
+      subject = formatSubject subject
       results = edwarePopulationBar.create subject
       if align_button_class.indexOf("align_on") isnt -1
         output = "<div class='barContainer'><div class='alignmentHighlightSection'><div class = 'populationBar' style='margin-left:" + subject.alignment + "px;'>" + results + "</div></div><div class='studentsTotal'>" + subject.total + "</div><div class='alignmentLine' style='margin-left:" + subject.alignmentLine + "px;'></div></div>"
-          
       else
         output = "<div class='barContainer'><div class = 'populationBar'>" + results + "</div><div class='studentsTotal'>" + subject.total + "</div><div class='alignmentLine' style='margin-left:" + subject.alignmentLine + "px;'></div></div>"
     else
       output = ""      
     output
+
+  formatSubject = (subject)->
+    subject.total = edwareUtil.formatNumber(subject.total)
+    for interval in subject.intervals
+      interval.count = edwareUtil.formatNumber(interval.count) if interval
+    subject
 
   showlink: showlink
   showOverallConfidence: showOverallConfidence

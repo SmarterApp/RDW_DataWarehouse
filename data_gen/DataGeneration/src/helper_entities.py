@@ -19,6 +19,7 @@ class State:
         self.state_name = state_name
         self.state_type = state_type
         self.districts = districts
+        self.staff = None
 
 
 class District:
@@ -36,6 +37,7 @@ class District:
         self.district_type = district_type
         self.school_populations = school_populations
         self.schools = None
+        self.staff = None
 
 
 class School:
@@ -52,6 +54,8 @@ class School:
         self.district_name = district_name
         self.district_guid = district_guid
         self.student_info = None
+        self.teachers = None
+        self.sections = None
 
 
 class Claim:
@@ -127,7 +131,7 @@ class StudentInfo(object):
         self.dob = util.generate_dob(grade)
 
         # data to be set after initialization
-        self.student_rec_id = None
+        self.student_rec_ids = None
         self.email = None
         self.address_1 = None
         self.addres_2 = None

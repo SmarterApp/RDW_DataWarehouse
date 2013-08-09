@@ -94,10 +94,10 @@ def generate_data_from_config_file(config_module, output_dict):
     states = generate_real_states(state_populations, assessments, error_band_dict, district_names, school_names,
                                   demographics_info, from_date, most_recent, to_date, street_names)
 
-    output_generated_data(states, assessments, batch_guid, output_dict)
+    output_generated_data_to_csv(states, assessments, batch_guid, output_dict, from_date, most_recent, to_date)
 
 
-def output_generated_data(states, assessments, batch_guid, output_dict):
+def output_generated_data_to_csv(states, assessments, batch_guid, output_dict, from_date, most_recent, to_date):
     '''
     '''
     # First thing: prep the csv files by deleting their contents and adding appropriate headers
@@ -105,8 +105,22 @@ def output_generated_data(states, assessments, batch_guid, output_dict):
 
     create_csv(assessments, output_dict[Assessment])
 
+    institution_hierarchies = []
+    staff = []
+
     for state in states:
-        pass
+        staff += state.staff
+        for district in state.districts:
+            staff += district.staff
+            for school in district.schools:
+                staff += school.teachers
+                inst_hier = generate_institution_hierarchy_from_helper_entities(state, district, school, from_date,
+                                                                                most_recent, to_date)
+                institution_hierarchies.append(inst_hier)
+                student_entities = None
+                fact_assessment_entities = None
+
+
 
 
 def get_values_from_config(config_module):
@@ -210,6 +224,11 @@ def generate_real_states(state_populations, assessments, error_band_dict, distri
 
         # Create the actual state object
         state = generate_state(state_population.name, state_population.state_code, districts)
+
+        # Create the state-level staff
+        number_of_state_level_staff = 10
+        state_level_staff = generate_non_teaching_staff(number_of_state_level_staff, from_date, most_recent, to_date, state_code=state.state_code)
+        state.staff = state_level_staff
         real_states.append(state)
     return real_states
 
@@ -294,7 +313,7 @@ def set_student_institution_information(students, school, from_date, most_recent
         city_name_1 = random.choice(street_names)
         city_name_2 = random.choice(street_names)
 
-        student.student_rec_id = id_generator.get_id()
+        student.student_rec_ids = [id_generator.get_id(), id_generator.get_id()]
         student.school_guid = school.school_guid
         student.district_guid = school.district_guid
         student.state_code = state_code
@@ -347,10 +366,6 @@ def apply_subject_percentages(subject_percentages, students):
             del student.asmt_scores[subject]
 
 
-def write_dim_student_and_fact_asmt(students, school, state_name, state_code):
-    print('writing files')
-
-
 def get_students_by_counts(grade, grade_counts, student_info_dict):
     '''
     @param grade_counts: A five element list that contains the performance level counts for a grade
@@ -400,7 +415,7 @@ def create_schools(district, school_names_1, school_names_2, student_info_dict, 
         students, teachers, sections = population_data
         #students = set_student_additional_info(school, street_names, students)
 
-        school.students = students
+        school.student_info = students
         school.teachers = teachers
         school.sections = sections
         schools.append(school)
@@ -441,6 +456,11 @@ def create_districts(state_population, district_names_1, district_names_2, schoo
         district.schools = create_schools(district, school_names_1, school_names_2, student_info_dict, subject_percentages,
                                           demographics_info, demographics_id, assessments, error_band_dict, state_name,
                                           state_code, from_date, most_recent, to_date, street_names)
+
+        # generate district staff
+        number_of_district_level_staff = 10
+        district.staff = generate_non_teaching_staff(number_of_district_level_staff, from_date, most_recent, to_date,
+                                                           state_code=state_code, district_guid=district.district_guid)
         districts.append(district)
 
     return districts
@@ -683,7 +703,22 @@ def get_list_of_cutpoints(assessment):
     return cut_points
 
 
-def generate_institution_hierarchy_from_helper_entities(config_module, state, district, school):
+def generate_non_teaching_staff(number_of_staff, from_date, most_recent, to_date, state_code='NA', district_guid='NA', school_guid='NA'):
+    '''
+    Generate staff that are not teachers
+    @param number_of_staff: The number of staff memebers to generate
+    @keyword state_code: The state code to use for the staff memeber. If applicable.
+    @keyword district_guid: The guid to the district the staff member is in. If applicable.
+    @keyword school_guid: The guid to the school the staff member is in. If applicable.
+    @return: a list of Staff objects
+    '''
+    hier_user_type = 'Staff'
+    staff_list = generate_multiple_staff(number_of_staff, hier_user_type, from_date, most_recent, state_code=state_code,
+                                         district_guid=district_guid, school_guid=school_guid, to_date=to_date)
+    return staff_list
+
+
+def generate_institution_hierarchy_from_helper_entities(state, district, school, from_date, most_recent, to_date):
     '''
     Create an InstitutionHierarchy object from the helper entities provided
     @param state: a State object
@@ -697,10 +732,6 @@ def generate_institution_hierarchy_from_helper_entities(config_module, state, di
     school_guid = school.school_guid
     school_name = school.school_name
     school_category = school.school_category
-    temporal_information = config_module.get_temporal_information()
-    from_date = temporal_information[constants.FROM_DATE]
-    most_recent = temporal_information[constants.MOST_RECENT]
-    to_date = temporal_information[constants.TO_DATE]
 
     institution_hierarchy = generate_institution_hierarchy(state_name, state_code,
                                                            district_guid, district_name,

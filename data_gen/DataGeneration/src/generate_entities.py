@@ -10,6 +10,42 @@ import random
 import datetime
 
 
+def generate_students_from_student_info(student_info_list):
+    '''
+    Given a student info object, create a list of student entities
+    '''
+
+    student_list = []
+
+    for student_info in student_info_list:
+        for subject in student_info.asmt_scores:
+            params = {
+                'student_rec_id': student_info.student_rec_ids.pop(),
+                'section_guid': student_info.section_guids[subject],
+                'first_name': student_info.first_name,
+                'last_name': student_info.last_name,
+                'address_1': student_info.address_1,
+                'city': student_info.city,
+                'zip_code': student_info.zip_code,
+                'gender': student_info.gender,
+                'email': student_info.email,
+                'dob': student_info.dob,
+                'grade': student_info.grade,
+                'state_code': student_info.state_code,
+                'district_guid': student_info.district_guid,
+                'school_guid': student_info.school_guid,
+                'from_date': student_info.from_date,
+                'most_recent': student_info.most_recent,
+                'middle_name': student_info.middle_name,
+                'to_date': student_info.to_date
+            }
+
+            # create new student from dict
+            student_list.append(Student(**params))
+
+    return student_list
+
+
 def generate_institution_hierarchy(state_name, state_code,
                                    district_guid, district_name,
                                    school_guid, school_name, school_category,

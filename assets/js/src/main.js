@@ -24,6 +24,7 @@ require({
 		edwarePopulationBar: '../widgets/populationBar/EDWARE.populationBar',
 		edwareFeedback: 'EDWARE.feedback',
 		edwareFooter: '../widgets/footer/EDWARE.footer',
+		edwareLegend: '../widgets/footer/EDWARE.legend',
 		edwareLoadingMask: '../widgets/loadingMask/EDWARE.loadingMask',
 		edwareFilter: '../widgets/filter/EDWARE.filter',
 		edwareDropdown: '../widgets/dropdown/EDWARE.dropdown',

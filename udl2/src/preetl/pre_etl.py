@@ -1,20 +1,23 @@
 from uuid import uuid4
-import preetl.create_queries as queries
+from preetl import create_queries as queries
 from udl2_util.database_util import connect_db, execute_queries
 import logging
 from celery.utils.log import get_task_logger
 import datetime
+from udl2.errorcodes import BATCH_REC_FAILED
 
 
-def pre_etl_job(udl2_conf, load_type='Assessment'):
+def pre_etl_job(udl2_conf, log_file=None, load_type='Assessment'):
     '''
     PRE ETL function: create a new guid_batch and insert one row into batch table
     @param udl2_conf: udl2 config, which is got from udl.udl2_conf
+    @param log_file: name of the log_file, by default is None, and it will be set to the value in config file
     @param load_type: load type of the current job. The default value is 'Assessment'
     '''
-    logger = get_logger(udl2_conf, for_error=True)
+    logger = get_logger(udl2_conf, udl2_conf['logging']['error'] if log_file is None else log_file)
+
     try:
-        # generate guid_batch
+        # generate a guid_batch
         guid_batch = str(uuid4())
 
         # prepare content to be inserted into batch table
@@ -45,20 +48,20 @@ def pre_etl_job(udl2_conf, load_type='Assessment'):
         return guid_batch
 
     except Exception as e:
-        logger.error(str(e))
+        logger.error(BATCH_REC_FAILED + ': ' + str(e))
+        return None
 
 
-def get_logger(udl2_conf, for_error=False):
+def get_logger(udl2_conf, log_file):
     '''
-    Get/create a logger object. The created logger object will record log message into log file
+    Get/create a logger object. The created logger object will record log message into the log file
     @param udl2_conf: udl2 config, which is got from udl.udl2_conf. It has the log file path
-    @param for_error: if it is true, log file will be the 'error' log file, otherwise, the log file is the 'audit' log file
+    @param log_file: name of the log_file
     '''
     logger = logging.getLogger(__name__)
-    logger.setLevel(udl2_conf['logging']['level'])
-    log_file_key = 'error' if for_error is True else 'audit'
-    fh = logging.FileHandler(udl2_conf['logging'][log_file_key])
-    # set the log format same as the as one in celery logger
-    fh.setFormatter(logging.Formatter("[%(asctime)s: %(levelname)s/PreEtl] %(message)s"))
-    logger.addHandler(fh)
+    hdlr = logging.FileHandler(log_file)
+    formatter = logging.Formatter('[%(asctime)s: %(levelname)s/%(module)s] %(message)s')
+    hdlr.setFormatter(formatter)
+    logger.addHandler(hdlr)
+    logger.setLevel(logging.DEBUG)
     return logger

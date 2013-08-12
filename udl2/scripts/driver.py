@@ -13,7 +13,6 @@ import imp
 from preetl.pre_etl import pre_etl_job
 
 
-
 # Paths to our various directories
 # THIS_MODULE_PATH = os.path.abspath(__file__)
 # SRC_DIRECTORY = os.path.dirname(THIS_MODULE_PATH)

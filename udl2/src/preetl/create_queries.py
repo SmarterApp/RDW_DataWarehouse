@@ -4,7 +4,7 @@ def insert_batch_row_query(schema, batch_table, **para_dict):
     column_list = []
     value_list = []
     # split pair of column name, and value in the same order
-    for column, value in para_dict.items():
+    for column, value in sorted(para_dict.items()):
         column_list.append(column)
         value_list.append("'" + value + "'")
     column_list = ",".join(column_list)

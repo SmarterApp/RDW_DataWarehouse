@@ -453,25 +453,6 @@ def create_schools(district, school_names_1, school_names_2, student_info_dict, 
     return schools
 
 
-# def set_student_additional_info(school, street_names, students):
-#     '''
-#     Set the remaining necessary information for a student
-#     '''
-#     id_generator = IdGen()
-#     for student in students:
-#         student.email = util.generate_email_address(student.first_name, student.last_name, school.school_name)
-#         student.address_1 = util.generate_address(street_names)
-#         city_name_1 = random.choice(street_names)
-#         city_name_2 = random.choice(street_names)
-#         student.city = city_name_1 + ' ' + city_name_2
-#         student.student_rec_id = id_generator.get_id()
-#         student.state_code = school.state_code
-#
-#         student.set_additional_info(email=email, address_1=address_1, city=city, student_rec_id=student_rec_id)
-#
-#     return students
-
-
 def create_districts(state_population, district_names_1, district_names_2, school_names_1, school_names_2, student_info_dict,
                      subject_percentages, demographics_info, demographics_id, assessments, error_band_dict, state_name,
                      state_code, from_date, most_recent, to_date, street_names):

@@ -246,7 +246,6 @@ def generate_assessment(asmt_type, asmt_period, asmt_period_year, asmt_subject, 
     asmt_guid = uuid4()
 
     asmt_version = 'V1'
-    asmt_custom_metadata = None
 
     performance_levels = constants.PERFORMANCE_LEVELS
 
@@ -298,7 +297,7 @@ def generate_assessment(asmt_type, asmt_period, asmt_period_year, asmt_subject, 
                       asmt_claim_2_score_min, asmt_claim_2_score_max, asmt_claim_2_score_weight,
                       asmt_claim_3_score_min, asmt_claim_3_score_max, asmt_claim_3_score_weight,
                       asmt_claim_4_score_min, asmt_claim_4_score_max, asmt_claim_4_score_weight,
-                      asmt_custom_metadata, asmt_cut_point_1, asmt_cut_point_2, asmt_cut_point_3, asmt_cut_point_4,
+                      asmt_cut_point_1, asmt_cut_point_2, asmt_cut_point_3, asmt_cut_point_4,
                       to_date=to_date)
 
     return asmt

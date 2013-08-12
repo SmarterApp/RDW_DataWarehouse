@@ -88,7 +88,6 @@ class Assessment:
                  asmt_claim_2_score_min=None, asmt_claim_2_score_max=None, asmt_claim_2_score_weight=None,
                  asmt_claim_3_score_min=None, asmt_claim_3_score_max=None, asmt_claim_3_score_weight=None,
                  asmt_claim_4_score_min=None, asmt_claim_4_score_max=None, asmt_claim_4_score_weight=None,
-                 asmt_custom_metadata=None,
                  asmt_cut_point_1=None, asmt_cut_point_2=None, asmt_cut_point_3=None, asmt_cut_point_4=None,
                  to_date=None):
         '''
@@ -140,8 +139,6 @@ class Assessment:
         self.asmt_cut_point_3 = asmt_cut_point_3
         self.asmt_cut_point_4 = asmt_cut_point_4
 
-        self.asmt_custom_metadata = asmt_custom_metadata
-
         self.to_date = to_date
         self.most_recent = most_recent
 
@@ -161,7 +158,7 @@ class Assessment:
                 self.asmt_claim_3_score_min, self.asmt_claim_3_score_max, self.asmt_claim_3_score_weight,
                 self.asmt_claim_4_score_min, self.asmt_claim_4_score_max, self.asmt_claim_4_score_weight,
                 self.asmt_cut_point_1, self.asmt_cut_point_2, self.asmt_cut_point_3, self.asmt_cut_point_4,
-                self.asmt_custom_metadata, self.from_date, self.to_date, self.most_recent]
+                self.from_date, self.to_date, self.most_recent]
 
     @classmethod
     def getHeader(cls):
@@ -174,7 +171,7 @@ class Assessment:
                 'asmt_claim_3_score_min', 'asmt_claim_3_score_max', 'asmt_claim_3_score_weight',
                 'asmt_claim_4_score_min', 'asmt_claim_4_score_max', 'asmt_claim_4_score_weight',
                 'asmt_cut_point_1', 'asmt_cut_point_2', 'asmt_cut_point_3', 'asmt_cut_point_4',
-                'asmt_custom_metadata', 'from_date', 'to_date', 'most_recent']
+                'from_date', 'to_date', 'most_recent']
 
 
 class AssessmentOutcome(object):

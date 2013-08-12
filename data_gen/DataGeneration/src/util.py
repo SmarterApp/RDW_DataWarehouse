@@ -89,7 +89,9 @@ def create_list_from_file(file_path):
         lines = name_file.readlines()
         names = []
         for line in lines:
-            names.append(line.strip())
+            line_clean = line.strip()
+            if len(line_clean) > 0:
+                names.append(line_clean)
     return names
 
 

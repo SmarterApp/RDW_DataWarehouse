@@ -2,10 +2,18 @@ import unittest
 import DataGeneration.src.util as util
 import re
 import datetime
+import os
 from DataGeneration.src.constants import ASSMT_PERIOD_TO_MONTHS_DICT
+from DataGeneration.src.entities import Assessment
 
 
 class TestUtil2(unittest.TestCase):
+
+    def test_generate_district_name_exception(self):
+        list_1 = ['red', 'blue', 'green']
+        list_2 = ['cat', 'dog', 'bird']
+        max_name_length = 1
+        self.assertRaises(Exception, util.generate_district_name, list_1, list_2, max_name_length)
 
     def test_generate_district_name_with_max(self):
         list_1 = ['red', 'blue', 'green']
@@ -26,6 +34,12 @@ class TestUtil2(unittest.TestCase):
         master_list = list_1 + list_2
         for word in non_suffix_words:
             self.assertIn(word, master_list)
+
+    def test_generate_school_name_exception(self):
+        list_1 = ['red', 'blue', 'green']
+        list_2 = ['cat', 'dog', 'bird']
+        max_name_length = 1
+        self.assertRaises(Exception, util.generate_school_name, 'High School', list_1, list_2, max_name_length)
 
     def test_generate_school_name_no_max(self):
         list_1 = ['red', 'blue', 'green']
@@ -103,6 +117,48 @@ class TestUtil2(unittest.TestCase):
         period = util.chop_year_off_asmt_period(asmt_period)
         self.assertIsInstance(period, str)
         self.assertEquals(period, 'Spring')
+
+    def test_select_assessment_from_list_none(self):
+        asmt_1 = Assessment(1, 'guid_1', 'summative', '2013', '2013', 'V1', 'subject1',
+                            2, '01/01/13', True)
+        asmt_2 = Assessment(2, 'guid_2', 'summative', '2013', '2013', 'V1', 'subject2',
+                            1, '01/01/13', True)
+        asmt_list = [asmt_1, asmt_2]
+        grade = 3
+        subject = 'unknown'
+        actual_asmt = util.select_assessment_from_list(asmt_list, grade, subject)
+        self.assertIsNone(actual_asmt)
+
+    def test_select_assessment_from_list(self):
+        asmt_1 = Assessment(1, 'guid_1', 'summative', '2013', '2013', 'V1', 'subject1',
+                            3, '01/01/13', True)
+        asmt_2 = Assessment(2, 'guid_2', 'summative', '2013', '2013', 'V1', 'subject2',
+                            1, '01/01/13', True)
+        asmt_list = [asmt_1, asmt_2]
+        grade = 3
+        subject = 'subject1'
+        actual_asmt = util.select_assessment_from_list(asmt_list, grade, subject)
+        self.assertEqual(actual_asmt, asmt_1)
+
+    def test_get_list_of_cutpoints_three_cut_points(self):
+        cut_points = [1200, 1800, 2100]
+        asmt_1 = Assessment(1, 'guid_1', 'summative', '2013', '2013', 'V1', 'subject1',
+                            3, '01/01/13', True, asmt_cut_point_1=cut_points[0], asmt_cut_point_2=cut_points[1], asmt_cut_point_3=cut_points[2])
+        actual_cut_points = util.get_list_of_cutpoints(asmt_1)
+        self.assertEqual(actual_cut_points, cut_points)
+
+    def test_get_list_of_cutpoints_four_cut_points(self):
+        cut_points = [1200, 1600, 1900, 2100]
+        asmt_1 = Assessment(1, 'guid_1', 'summative', '2013', '2013', 'V1', 'subject1',
+                            3, '01/01/13', True, asmt_cut_point_1=cut_points[0], asmt_cut_point_2=cut_points[1], asmt_cut_point_3=cut_points[2], asmt_cut_point_4=cut_points[3])
+        actual_cut_points = util.get_list_of_cutpoints(asmt_1)
+        self.assertEqual(actual_cut_points, cut_points)
+
+    def test_create_list_from_file(self):
+        current_file_path = os.path.dirname(os.path.realpath(__file__))
+        actual_names = util.create_list_from_file(os.sep.join([current_file_path, 'test_data', 'test_file_for_create_list_from_file.txt']))
+        expected_names = ['word1', 'word2', 'word3']
+        self.assertEqual(actual_names, expected_names)
 
 
 class DummyAssessment(object):

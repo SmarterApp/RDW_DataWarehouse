@@ -80,7 +80,7 @@ UDL_METADATA = {
                 ('time_for_one_million_records', False, 'time', '', True, ""),
                 ('records_per_hour', False, 'bigint', '', True, ""),
                 ('task_id', False, 'varchar(256)', '', True, ""),
-                ('task_status_udl', False, 'varchar(256)', '', True, ""),
+                ('task_status_url', False, 'varchar(256)', '', True, ""),
                 ('user_sid', False, 'bigint', '', True, ""),
                 ('user_email', False, 'varchar(256)', '', True, ""),
                 ('created_date', False, 'timestamp', 'now()', True, ""),

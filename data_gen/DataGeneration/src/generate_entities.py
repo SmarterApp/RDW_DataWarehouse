@@ -75,7 +75,7 @@ def generate_assessment_outcomes_from_student_info(student_info_list, batch_guid
                 'where_taken_name': inst_hierarchy.school_name,
                 'asmt_grade': student_info.grade,
                 'enrl_grade': student_info.grade,
-                'date_taken': date_taken,
+                'date_taken': date_taken.strftime('%Y%m%d'),
                 'date_taken_day': date_taken.day,
                 'date_taken_month': date_taken.month,
                 'date_taken_year': date_taken.year,

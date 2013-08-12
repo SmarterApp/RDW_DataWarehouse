@@ -272,6 +272,7 @@ def get_school_population(school, student_info_dict, subject_percentages, demogr
         staff_per_section = 1
         math_staff = generate_teachers_for_sections(staff_per_section, math_sections, from_date, most_recent, to_date, school, state_code)
         ela_staff = generate_teachers_for_sections(staff_per_section, ela_sections, from_date, most_recent, to_date, school, state_code)
+        teachers_in_school += math_staff + ela_staff
 
         # Generate Students that have Math scores and demographics
         students = get_students_by_counts(grade, school_counts[grade], student_info_dict)

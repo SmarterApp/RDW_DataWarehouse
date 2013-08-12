@@ -3,6 +3,7 @@ __author__ = 'abrien'
 from DataGeneration.src.entities import InstitutionHierarchy, Student, Section, Assessment, Staff, AssessmentOutcome
 from DataGeneration.src.idgen import IdGen
 from DataGeneration.src.generate_names import generate_first_or_middle_name, generate_last_name, possibly_generate_middle_name
+from demographic_derived import derive_demographic
 from uuid import uuid4
 import DataGeneration.src.constants as constants
 import DataGeneration.src.util as util
@@ -107,7 +108,8 @@ def generate_assessment_outcomes_from_student_info(student_info_list, batch_guid
                 'dmg_prg_iep': student_info.dmg_prg_iep,
                 'dmg_prg_lep': student_info.dmg_prg_lep,
                 'dmg_prg_504': student_info.dmg_prg_504,
-                'dmg_prg_tt1': student_info.dmg_prg_tt1
+                'dmg_prg_tt1': student_info.dmg_prg_tt1,
+                'dmg_eth_derived': derive_demographic(student_info.getDemoOfStudent())
             }
             outcome_list.append(AssessmentOutcome(**params))
 

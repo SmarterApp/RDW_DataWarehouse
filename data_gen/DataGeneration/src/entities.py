@@ -187,7 +187,7 @@ class AssessmentOutcome(object):
                  asmt_claim_4_score, asmt_claim_4_score_range_min, asmt_claim_4_score_range_max,
                  status, most_recent, batch_guid, dmg_eth_hsp=False, dmg_eth_ami=False, dmg_eth_asn=False,
                  dmg_eth_blk=False, dmg_eth_pcf=False, dmg_eth_wht=False, dmg_prg_iep=False, dmg_prg_lep=False,
-                 dmg_prg_504=False, dmg_prg_tt1=False):
+                 dmg_prg_504=False, dmg_prg_tt1=False, dmg_eth_derived=None):
 
         self.asmnt_outcome_rec_id = asmnt_outcome_rec_id
         self.asmt_rec_id = asmt_rec_id
@@ -246,20 +246,21 @@ class AssessmentOutcome(object):
         self.dmg_prg_lep = dmg_prg_lep
         self.dmg_prg_504 = dmg_prg_504
         self.dmg_prg_tt1 = dmg_prg_tt1
+        self.dmg_eth_derived = dmg_eth_derived
 
-    def set_demograph(self, dmg_eth_hsp=None, dmg_eth_ami=None, dmg_eth_asn=None, dmg_eth_blk=None, dmg_eth_pcf=None, dmg_eth_wht=None,
-                      dmg_prg_iep=None, dmg_prg_lep=None, dmg_prg_504=None, dmg_prg_tt1=None):
-
-        self.dmg_eth_hsp = dmg_eth_hsp if dmg_eth_hsp is not None else self.dmg_eth_hsp
-        self.dmg_eth_ami = dmg_eth_ami if dmg_eth_ami is not None else self.dmg_eth_ami
-        self.dmg_eth_asn = dmg_eth_asn if dmg_eth_asn is not None else self.dmg_eth_asn
-        self.dmg_eth_blk = dmg_eth_blk if dmg_eth_blk is not None else self.dmg_eth_blk
-        self.dmg_eth_pcf = dmg_eth_pcf if dmg_eth_pcf is not None else self.dmg_eth_pcf
-        self.dmg_eth_wht = dmg_eth_wht if dmg_eth_wht is not None else self.dmg_eth_wht
-        self.dmg_prg_iep = dmg_prg_iep if dmg_prg_iep is not None else self.dmg_prg_iep
-        self.dmg_prg_lep = dmg_prg_lep if dmg_prg_lep is not None else self.dmg_prg_lep
-        self.dmg_prg_504 = dmg_prg_504 if dmg_prg_504 is not None else self.dmg_prg_504
-        self.dmg_prg_tt1 = dmg_prg_tt1 if dmg_prg_tt1 is not None else self.dmg_prg_tt1
+#     def set_demograph(self, dmg_eth_hsp=None, dmg_eth_ami=None, dmg_eth_asn=None, dmg_eth_blk=None, dmg_eth_pcf=None, dmg_eth_wht=None,
+#                       dmg_prg_iep=None, dmg_prg_lep=None, dmg_prg_504=None, dmg_prg_tt1=None):
+#
+#         self.dmg_eth_hsp = dmg_eth_hsp if dmg_eth_hsp is not None else self.dmg_eth_hsp
+#         self.dmg_eth_ami = dmg_eth_ami if dmg_eth_ami is not None else self.dmg_eth_ami
+#         self.dmg_eth_asn = dmg_eth_asn if dmg_eth_asn is not None else self.dmg_eth_asn
+#         self.dmg_eth_blk = dmg_eth_blk if dmg_eth_blk is not None else self.dmg_eth_blk
+#         self.dmg_eth_pcf = dmg_eth_pcf if dmg_eth_pcf is not None else self.dmg_eth_pcf
+#         self.dmg_eth_wht = dmg_eth_wht if dmg_eth_wht is not None else self.dmg_eth_wht
+#         self.dmg_prg_iep = dmg_prg_iep if dmg_prg_iep is not None else self.dmg_prg_iep
+#         self.dmg_prg_lep = dmg_prg_lep if dmg_prg_lep is not None else self.dmg_prg_lep
+#         self.dmg_prg_504 = dmg_prg_504 if dmg_prg_504 is not None else self.dmg_prg_504
+#         self.dmg_prg_tt1 = dmg_prg_tt1 if dmg_prg_tt1 is not None else self.dmg_prg_tt1
 
     def getRow(self):
         return [self.asmnt_outcome_rec_id, self.asmt_rec_id,
@@ -276,7 +277,7 @@ class AssessmentOutcome(object):
                 self.asmt_claim_4_score, self.asmt_claim_4_score_range_min, self.asmt_claim_4_score_range_max,
                 self.status, self.most_recent, self.batch_guid, self.dmg_eth_hsp, self.dmg_eth_ami,
                 self.dmg_eth_asn, self.dmg_eth_blk, self.dmg_eth_pcf, self.dmg_eth_wht, self.dmg_prg_iep,
-                self.dmg_prg_lep, self.dmg_prg_504, self.dmg_prg_tt1]
+                self.dmg_prg_lep, self.dmg_prg_504, self.dmg_prg_tt1, self.dmg_eth_derived]
 
     @classmethod
     def getHeader(cls):
@@ -292,7 +293,8 @@ class AssessmentOutcome(object):
                 'asmt_claim_3_score', 'asmt_claim_3_score_range_min', 'asmt_claim_3_score_range_max',
                 'asmt_claim_4_score', 'asmt_claim_4_score_range_min', 'asmt_claim_4_score_range_max',
                 'status', 'most_recent', 'batch_guid', 'dmg_eth_hsp', 'dmg_eth_ami', 'dmg_eth_asn',
-                'dmg_eth_blk', 'dmg_eth_pcf', 'dmg_eth_wht', 'dmg_prg_iep', 'dmg_prg_lep', 'dmg_prg_504', 'dmg_prg_tt1']
+                'dmg_eth_blk', 'dmg_eth_pcf', 'dmg_eth_wht', 'dmg_prg_iep', 'dmg_prg_lep', 'dmg_prg_504',
+                'dmg_prg_tt1', 'dmg_eth_derived']
 
 
 class Person(object):

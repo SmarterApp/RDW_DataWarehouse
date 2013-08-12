@@ -184,7 +184,7 @@ common:
 
 # End logging configuration
 
-qa0:
+qa:
   '[app:main]':
     mode: prod
     celery:
@@ -204,11 +204,11 @@ qa0:
     edware:
       db:
         cat:
-          schema_name: edware_ca_0_2
+          schema_name: edware_es_1_0
           url: postgresql+psycopg2://edware:edware2013@dwpool1.qa.dum.edwdc.net:6432/edware
     edware_stats:
       db:
-        schema_name: edware_ca_0_2
+        schema_name: edware_es_1_0
         url: postgresql+psycopg2://edware:edware2013@dwpool1.qa.dum.edwdc.net:6432/edware_stats
     auth:
       idp:

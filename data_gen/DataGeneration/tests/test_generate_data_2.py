@@ -15,7 +15,7 @@ class Test(unittest.TestCase):
                       3: [x for x in range(100)], 4: [x for x in range(100)]}
         demographic_totals = {'male': [1, 20, 5, 5, 5, 5],
                               'female': [1, 24, 6, 6, 6, 6],
-                              'not specified': [1, 28, 7, 7, 7, 7],
+                              'not_stated': [1, 28, 7, 7, 7, 7],
                               'dmg_eth_ami': [2, 28, 7, 7, 7, 7],
                               'dmg_eth_blk': [2, 24, 6, 6, 6, 6]}
         grade = 3
@@ -96,7 +96,7 @@ class Test(unittest.TestCase):
         group_num = 1
         score_pool = {1: [x for x in range(100)], 2: [x for x in range(100)],
                       3: [x for x in range(100)], 4: [x for x in range(100)]}
-        demographic_totals = {'male': [1, 20, 5, 5, 5, 5], 'female': [1, 24, 6, 6, 6, 6], 'not specified': [1, 28, 7, 7, 7, 7]}
+        demographic_totals = {'male': [1, 20, 5, 5, 5, 5], 'female': [1, 24, 6, 6, 6, 6], 'not_stated': [1, 28, 7, 7, 7, 7]}
         grade = 3
         result = gd2.create_student_info_dict(group_num, score_pool, demographic_totals, grade)
 

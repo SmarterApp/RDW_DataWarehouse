@@ -239,7 +239,7 @@ qa:
   '[handler_security_event]':
     class: logging.handlers.SysLogHandler
     args: '(''/dev/log'', handlers.SysLogHandler.LOG_LOCAL2)'
-    level: WARN
+    level: INFO
     formatter: json
   '[logger_smarter]':
     level: WARN
@@ -327,7 +327,7 @@ uat:
   '[handler_security_event]':
     class: logging.handlers.SysLogHandler
     args: '(''/dev/log'', handlers.SysLogHandler.LOG_LOCAL2)'
-    level: WARN
+    level: INFO
     formatter: json
   '[logger_smarter]':
     level: WARN

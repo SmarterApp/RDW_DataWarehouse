@@ -274,16 +274,29 @@ jenkins_qa:
 uat:
   '[app:main]':
     mode: prod
-    pdf.report_base_dir: /opt/edware/pdf
+    celery:
+      BROKER_URL: amqp://edware:edware1234@rbtmqdw0.dmo.som.edwdc.net//
+      CELERY_IMPORTS: ('services.tasks.pdf',)
+      CELERY_RESULT_BACKEND: amqp
+      CELERY_TASK_RESULT_EXPIRES: 18000 # 5 hours
+      CELERYD_CONCURRENCY: 8
+    cache:
+      public.shortlived.url: twprxydw0.dmo.som.edwdc.net:22121
+      public.data.url: twprxydw0.dmo.som.edwdc.net:22121
+      session.url: twprxydw0.dmo.som.edwdc.net:22121
+      public.filtered_data.url: twprxydw0.dmo.som.edwdc.net:22121
+    pdf:
+      base.url: https://beta.smarterbalancedreporting.org/assets/html
+      report_base_dir: /opt/edware/pdf
     disable_stack_trace: true
     edware:
       db:
         cat:
-          schema_name: edware_uat_0_5
+          schema_name: edware_uat_1_0
           url: postgresql+psycopg2://edware:edware.dmo.may.2013@dwpool0.dmo.som.edwdc.net:6434/edware
     edware_stats:
       db:
-        schema_name: edware_uat_0_5
+        schema_name: edware_uat_1_0
         url: postgresql+psycopg2://edware:edware.dmo.may.2013@dwpool0.dmo.som.edwdc.net:6434/edware_stats
     auth:
       idp:

@@ -156,7 +156,7 @@ class TestUtil2(unittest.TestCase):
 
     def test_create_list_from_file(self):
         current_file_path = os.path.dirname(os.path.realpath(__file__))
-        actual_names = util.create_list_from_file(os.sep.join([current_file_path, 'test_data', 'test_file_for_create_list_from_file.txt']))
+        actual_names = util.create_list_from_file(os.path.join(current_file_path, 'test_data', 'test_file_for_create_list_from_file.txt'))
         expected_names = ['word1', 'word2', 'word3']
         self.assertEqual(actual_names, expected_names)
 

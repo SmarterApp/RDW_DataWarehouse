@@ -72,11 +72,7 @@ cd -
 
 deactivate
 echo -e "/opt/edware/smarter\n." > virtualenv/lib/python3.3/site-packages/smarter.egg-link
-sed -i 's/\/var\/lib\/jenkins\/rpmbuild\/BUILD/\/opt/g' virtualenv/bin/activate
-sed -i 's/\/var\/lib\/jenkins\/rpmbuild\/BUILD/\/opt/g' virtualenv/bin/pip
-sed -i 's/\/var\/lib\/jenkins\/rpmbuild\/BUILD/\/opt/g' virtualenv/bin/pserve
-sed -i 's/\/var\/lib\/jenkins\/rpmbuild\/BUILD/\/opt/g' virtualenv/bin/pcreate
-
+find virtualenv/bin -type f -exec sed -i 's/\/var\/lib\/jenkins\/rpmbuild\/BUILD/\/opt/g' {} \;
 
 %install
 cp -r virtualenv %{buildroot}/opt
@@ -131,21 +127,17 @@ id celery > /dev/null 2>&1
 if [ $? != 0 ]; then
    useradd celery
 fi
-/etc/init.d/httpd stop
 if [ ! -d /opt/edware/log ]; then
     mkdir -p /opt/edware/log
 fi
 
 %post
 chkconfig --add celeryd
-/etc/init.d/httpd start
 
 %preun
 chkconfig --del celeryd
-/etc/init.d/httpd stop
 
 %postun
-/etc/init.d/httpd start
 userdel -rf celery > /dev/null 2>&1
 
 %changelog

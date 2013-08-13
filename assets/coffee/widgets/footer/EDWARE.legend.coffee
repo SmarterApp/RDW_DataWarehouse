@@ -3,18 +3,11 @@ define [
   "mustache"
   "edwareConfidenceLevelBar"
   "edwarePopulationBar"
-<<<<<<< Updated upstream
-  "text!ISRTemplate"
-  "text!LOSTemplate"
-  "text!CPopTemplate"
-], ($, Mustache, edwareConfidenceLevelBar, edwarePopulationBar, ISRTemplate, LOSTemplate, CPopTemplate) ->
-=======
   "edwareLOSConfidenceLevelBar"
   "text!ISRTemplate"
   "text!LOSTemplate"
   "text!CPopTemplate"
 ], ($, Mustache, edwareConfidenceLevelBar, edwarePopulationBar, edwareLOSConfidenceLevelBar, ISRTemplate, LOSTemplate, CPopTemplate) ->
->>>>>>> Stashed changes
 
   class Legend
 
@@ -66,11 +59,7 @@ define [
 
     createBar: ->
       output = edwarePopulationBar.create this.subject
-<<<<<<< Updated upstream
-      $('#legendTemplate .populationBar', this.container).html(output)
-=======
       $('#legendTemplate .populationBar', this.container).prepend(output)
->>>>>>> Stashed changes
       # remove pop up when hovering over population bar
       this.container.find('.progressBar_tooltip').remove()
 
@@ -94,14 +83,10 @@ define [
     getTemplate: ->
       LOSTemplate
 
-<<<<<<< Updated upstream
-=======
     createBar: ->
       output = edwareLOSConfidenceLevelBar.create this.subject, 150
       $('#legendTemplate .confidenceLevel', this.container).html(output)
 
-
->>>>>>> Stashed changes
 
   ( ($) ->
     $.fn.createLegend = (reportName, data) ->

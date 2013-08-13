@@ -221,33 +221,3 @@ class StudentInfo(object):
         6. White
         '''
         return [self.dmg_eth_blk, self.dmg_eth_asn, self.dmg_eth_hsp, self.dmg_eth_ami, self.dmg_eth_pcf, self.dmg_eth_wht]
-
-
-class StudentBioInfo:
-
-    def __init__(self, student_guid, first_name, last_name, address_1, dob, district_guid, state_code, gender, email, school_guid, zip_code, city, middle_name=None, address_2=None):
-
-        super().__init__(first_name, last_name, middle_name=middle_name)
-
-        # Ids can either be given to the constructor or provided by constructor
-        # Either way, both Id fields must have a value
-        id_generator = IdGen()
-        if student_guid is None:
-            self.student_guid = id_generator.get_id()
-        else:
-            self.student_guid = student_guid
-        if student_rec_id is None:
-            self.student_rec_id = id_generator.get_id()
-        else:
-            self.student_rec_id = student_rec_id
-
-        self.address_1 = address_1
-        self.address_2 = address_2
-        self.dob = dob
-        self.district_guid = district_guid
-        self.city = city
-        self.state_code = state_code
-        self.zip_code = zip_code
-        self.gender = gender
-        self.email = email
-        self.school_guid = school_guid

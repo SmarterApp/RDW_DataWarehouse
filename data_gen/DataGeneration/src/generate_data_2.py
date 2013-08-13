@@ -278,14 +278,14 @@ def get_school_population(school, student_info_dict, subject_percentages, demogr
         students = get_students_by_counts(grade, school_counts[grade], student_info_dict)
 
         # Get ELA assessment information
-        math_assessment = select_assessment_from_list(assessments, grade, constants.MATH)
+        math_assessment = util.select_assessment_from_list(assessments, grade, constants.MATH)
         math_date_taken = util.generate_date_given_assessment(math_assessment)
-        ela_assessment = select_assessment_from_list(assessments, grade, constants.ELA)
+        ela_assessment = util.select_assessment_from_list(assessments, grade, constants.ELA)
         ela_date_taken = util.generate_date_given_assessment(ela_assessment)
         min_score = ela_assessment.asmt_score_min
         max_score = ela_assessment.asmt_score_max
 
-        cut_points = get_list_of_cutpoints(ela_assessment)
+        cut_points = util.get_list_of_cutpoints(ela_assessment)
         # Create list of cutpoints that includes min and max score values
         inclusive_cut_points = [min_score] + cut_points + [max_score]
 
@@ -410,8 +410,8 @@ def get_students_by_counts(grade, grade_counts, student_info_dict):
         pl_count = grade_counts[pl]
         for i in range(pl_count):
             if len(student_info_dict[grade][pl]) <= 0:
-                #print(student_info_dict[grade])
-                #print('i', i, 'pl_count', pl_count, 'pl', pl)
+                # print(student_info_dict[grade])
+                # print('i', i, 'pl_count', pl_count, 'pl', pl)
                 short_sum += pl_count - i
                 break
             index = random.randint(0, len(student_info_dict[grade][pl]) - 1)
@@ -444,7 +444,7 @@ def create_schools(district, school_names_1, school_names_2, student_info_dict, 
                                                 demographics_id, assessments, error_band_dict, state_name, state_code,
                                                 from_date, most_recent, to_date, street_names)
         students, teachers, sections = population_data
-        #students = set_student_additional_info(school, street_names, students)
+        # students = set_student_additional_info(school, street_names, students)
 
         school.student_info = students
         school.teachers = teachers
@@ -498,11 +498,11 @@ def generate_students_info_from_demographic_counts(state_population, assessments
 
     for grade in demographic_totals:
         grade_demographic_totals = demographic_totals[grade]
-        assessment = select_assessment_from_list(assessments, grade, subject)
+        assessment = util.select_assessment_from_list(assessments, grade, subject)
         min_score = assessment.asmt_score_min
         max_score = assessment.asmt_score_max
 
-        cut_points = get_list_of_cutpoints(assessment)
+        cut_points = util.get_list_of_cutpoints(assessment)
         # Create list of cutpoints that includes min and max score values
         inclusive_cut_points = [min_score]
         inclusive_cut_points.extend(cut_points)
@@ -686,33 +686,6 @@ def get_flat_grades_list(school_config, grade_key):
     grades = list(set(grades))
 
     return grades
-
-
-def select_assessment_from_list(asmt_list, grade, subject):
-    '''
-    select the proper assessment from a list
-    @param asmt_list: A list of Assessment objects
-    @param grade: The grade to search for in the assessment list
-    @param subject: The subject to search for in the assessment list
-    @return: A single assessment object that has the grade and subject specified. None if no match found
-    '''
-    for asmt in asmt_list:
-        if asmt.asmt_grade == grade and asmt.asmt_subject.lower() == subject.lower():
-            return asmt
-
-
-def get_list_of_cutpoints(assessment):
-    '''
-    Given an assessment object, return a list of cutpoints
-    @param assessment: the assessment to create the list of cutpoints from
-    @return: A list of cutpoints
-    '''
-    # The cut_points in score details do not include min and max score.
-    # The score generator needs the min and max to be included
-    cut_points = [assessment.asmt_cut_point_1, assessment.asmt_cut_point_2, assessment.asmt_cut_point_3]
-    if assessment.asmt_cut_point_4:
-        cut_points.append(assessment.asmt_cut_point_4)
-    return cut_points
 
 
 def generate_non_teaching_staff(number_of_staff, from_date, most_recent, to_date, state_code='NA', district_guid='NA', school_guid='NA'):

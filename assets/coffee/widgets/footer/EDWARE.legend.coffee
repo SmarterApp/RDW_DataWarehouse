@@ -84,8 +84,8 @@ define [
       LOSTemplate
 
     createBar: ->
-      output = edwareLOSConfidenceLevelBar.create this.subject, 150
-      $('#legendTemplate .confidenceLevel', this.container).html(output)
+      output = edwareLOSConfidenceLevelBar.create this.subject, 110
+      $('#legendTemplate .confidenceLevel', this.container).append(output)
 
 
   ( ($) ->

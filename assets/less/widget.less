@@ -756,19 +756,180 @@ th.ui-th-column div {
   }
 
   .losPerformanceBar {
+      overflow: hidden;
+      margin-bottom: 8px;
 
-      .indicator_cell {
-	  position: relative;
-	  top: 10px;
-	  margin-right: 15px;
+      #overall_score_details {
+	  float: left;
+	  width: 330px;
+	  border-right: solid 1px @color-B7;
+	  margin: 5px 0 10px 0;
+	  padding-right: 5px;
+	  
+	  .confidenceLevel {
+	      border: solid 1px #d0d0d0;
+	      height: auto;
+	      width: 170px;
+	      float: left;
+	      position: relative;
+	      display: inline-block;
+	      margin-bottom: 13px;
+	      margin-left: 5px;
+
+	      .indicator_cell {
+		  position: relative;
+		  display: inline-table;
+		  top: 10px;
+		  left: 10px;
+	      }
+
+	      .progress {
+		  position: relative;
+		  height: 40px;
+		  margin: 0 0 0 60px;
+
+		  .bar {
+		      border-right: 1px dashed #000;
+		  }
+	      }
+
+	      .scoreWrapper {
+
+		  .indicator {
+		      background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAkCAYAAABBn/B2AAAAGXRF…nZ18KVAEOflZW1v8gPsxMcxUVlekgs0F8xtE4oqogQIABAOYcK5weP3EcAAAAAElFTkSuQmCC') no-repeat top center;
+		      z-index: 3000;
+		  }
+
+		  .interval {
+		      margin-top: 4px;
+		      height: 33px;
+		      border-left: 1px solid #a0a0a0;
+		      border-right: 1px solid #a0a0a0;
+		      background: @color-B7;
+		      opacity: .8;
+		      position: relative;
+		  }
+	      }
+
+	      .arrow1 {
+		  background-image: url('../images/roster_overallarrow.png');
+		  width: 187px;
+		  height: 27px;
+		  position: absolute;
+		  background-repeat: no-repeat;
+		  top: -17px;
+		  left: 108px;
+	      }
+	      .arrow2 {
+		  background-image: url('../images/roster_errorbandarrow.png');
+		  width: 187px;
+		  height: 27px;
+		  position: absolute;
+		  background-repeat: no-repeat;
+		  top: 38px;
+		  left: 93px;
+	      }
+	      .arrow3 {
+		  background-image: url('../images/roster_downarrow.png');
+		  width: 187px;
+		  height: 27px;
+		  position: absolute;
+		  background-repeat: no-repeat;
+		  top: 31px;
+		  left: 26px;
+	      }
+	      .arrow4 {
+		  background-image: url('../images/roster_scalescore_cmppop_total.png');
+		  width: 187px;
+		  height: 27px;
+		  position: absolute;
+		  background-repeat: no-repeat;
+		  top: 14px;
+		  left: 169px;
+	      }	      
+	  }
+
+	  .notes {
+	      display: inline-block;
+	      float:right;
+	      width: 130px;
+	  }
+
+	  .numeric_score {
+	      clear: left;
+	  }
+
+	  p {
+
+	      font-weight: normal;
+	      color: @color-B2;
+	      font-size: 11px;
+	      font-style: italic;
+	  }
       }
 
-      .confidenceLevel {
+      #claim_score_details {
+	  float: left;
+	  margin-left: 15px;
 
-	  .progress {
-	      position: relative;
+	  .claim_score_cell {
+	      display: block;
+	      width: 100px;
 	      height: 40px;
+	      text-align: center;
+	      border: solid 1px @color-B7;
+	      margin-left: 5px;
+	      margin-bottom: 16px;
+
+	      span {
+		  position: relative;
+		  top: 10px;
+		  font-weight: bold;
+
+		  .smaller {
+		      display: inline;
+		      font-weight: lighter;
+		      font-size: 11px;
+		  }
+	      }
 	  }
+
+	  .claim_score_note {
+	      margin-top: 4px;
+	      margin-left: 90px;
+	  }
+
+	  .error_band_note {
+	      width: 113px;
+	      margin-left: 69px;
+
+	      p {
+		  font-size: 11px;
+		  font-weight: normal;
+		  font-style: italic;
+		  color: @color-B2;
+	      }
+	  }
+
+	  .arrow1 {
+	      background-image: url('../images/roster_claimscorearrow.png');
+	      width: 261px;
+	      height: 27px;
+	      position: relative;
+	      background-repeat: no-repeat;
+	      top: -38px;
+	      left: 32px;
+	  }
+
+	  .arrow2 {
+	      background-image: url('../images/roster_downarrow.png');
+	      width: 261px;
+	      height: 27px;
+	      position: relative;
+	      background-repeat: no-repeat;
+	      top: -18px;
+	      left: 62px;
+	  }	  
       }
   }
 
@@ -863,6 +1024,10 @@ th.ui-th-column div {
 	      font-size: 11px;
 	  }
       }
+  }
+
+  .error_band_wrapper {
+      padding-bottom: 10px;
   }
 }
 

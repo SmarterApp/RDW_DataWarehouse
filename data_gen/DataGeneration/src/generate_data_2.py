@@ -13,7 +13,6 @@ import csv
 import math
 import random
 
-import stats
 from demographics import Demographics, ALL_DEM, L_GROUPING, L_TOTAL, L_PERF_1, L_PERF_4, OVERALL_GROUP
 from generate_entities import (generate_assessments, generate_institution_hierarchy, generate_sections,
                                generate_multiple_staff, generate_assessment_outcomes_from_student_info,
@@ -24,13 +23,13 @@ import constants
 from generate_scores import generate_overall_scores
 from entities import (InstitutionHierarchy, Section, Assessment, AssessmentOutcome,
                       Staff, ExternalUserStudent, Student)
-from errorband import calc_eb_params, calc_eb
-from generate_helper_entities import generate_claim_score, generate_assessment_score, generate_district, generate_school, generate_state
+from generate_helper_entities import generate_district, generate_school, generate_state
 from helper_entities import StudentInfo
 from print_state_population import print_state_population
 import util
 from assign_students_subjects_scores import assign_scores_for_subjects
 from idgen import IdGen
+import claim_score_calculation
 
 
 DATAFILE_PATH = os.path.dirname(os.path.realpath(__file__))
@@ -513,7 +512,7 @@ def generate_students_info_from_demographic_counts(state_population, assessments
         perf_lvl_counts = [math.ceil(overall_counts[i]) for i in range(L_PERF_1, L_PERF_4 + 1)]
 
         raw_scores = generate_overall_scores(perf_lvl_counts, inclusive_cut_points, min_score, max_score, total_students, False)
-        asmt_scores = util.translate_scores_to_assessment_score(raw_scores, cut_points, assessment, eb_min_perc, eb_max_perc, eb_rand_adj_lo, eb_rand_adj_hi)
+        asmt_scores = claim_score_calculation.translate_scores_to_assessment_score(raw_scores, cut_points, assessment, eb_min_perc, eb_max_perc, eb_rand_adj_lo, eb_rand_adj_hi)
 
         score_pool_dict = create_asmt_score_pool_dict(asmt_scores)
         student_info_dict = generate_students_with_demographics(score_pool_dict, grade_demographic_totals, grade)

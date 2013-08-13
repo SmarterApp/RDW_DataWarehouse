@@ -254,6 +254,79 @@ class Test(unittest.TestCase):
         demo_2 = {'dmg_1': [0, 12, 3, 3, 3, 3], 'dmg_2': [0, 16, 4, 4, 4, 4], 'dmg_4': [1, 20, 5, 5, 5, 5], 'dmg_5': [1, 20, 5, 5, 5, 5]}
         self.assertRaises(KeyError, sp.sum_dict_of_demographics, demo_1, demo_2)
 
+    def test_round_demographic_numbers(self):
+        demo_1 = {'dmg_1': [0, 21.95, 5.3, 5.98, 5.55, 5.12], 'dmg_2': [0, 19.92, 0.66, 6.32, 6.15, 6.79], 'dmg_3': [1, 28.65, 7.65, 7, 7, 7]}
+        expected = {'dmg_1': [0, 22, 5, 6, 6, 5], 'dmg_2': [0, 20, 1, 6, 6, 7], 'dmg_3': [1, 29, 8, 7, 7, 7]}
+
+        result = sp.round_demographic_numbers(demo_1)
+        self.assertDictEqual(result, expected)
+
+    def test_round_demographic_numbers_2(self):
+        demo_1 = {'dmg_1': [0, 21.2, 5.3, 5.3, 5.3, 5.3]}
+        expected = {'dmg_1': [0, 20, 5, 5, 5, 5]}
+
+        result = sp.round_demographic_numbers(demo_1)
+        self.assertDictEqual(result, expected)
+
+    def test_determine_max_counts(self):
+        demo_1 = {'dmg_1': [0, 47, 15, 6, 21, 5], 'dmg_2': [1, 40, 10, 10, 10, 10], 'dmg_3': [2, 29, 8, 7, 7, 7]}
+        expected = [None, 56, 15, 10, 21, 10]
+
+        result = sp.determine_max_counts(demo_1)
+        self.assertListEqual(result, expected)
+
+    def test_calculate_group_sums(self):
+        demo_1 = {'dmg_1': [0, 47, 15, 6, 21, 5], 'dmg_2': [0, 40, 10, 10, 10, 10], 'dmg_3': [2, 29, 8, 7, 7, 7]}
+        expected = [0, 87, 25, 16, 31, 15]
+
+        result = sp.calculate_group_sums(demo_1, 0)
+        self.assertListEqual(result, expected)
+
+    def test_distribute_extras_in_group(self):
+        demo_1 = {'dmg_1': [0, 18, 5, 6, 2, 5], 'dmg_2': [0, 40, 10, 10, 10, 10], 'dmg_3': [2, 29, 8, 7, 7, 7]}
+        output = {'dmg_1': [0, 18, 5, 6, 2, 5], 'dmg_2': [0, 40, 10, 10, 10, 10], 'dmg_3': [2, 29, 8, 7, 7, 7]}
+        percents = {'dmg_1': [0, 48, 20, 10, 20, 50], 'dmg_2': [0, 52, 25, 25, 25, 25], 'dmg_3': [2, 45, 10, 10, 10, 10]}
+        group = 0
+        index = 2
+        count = 12
+        expected = {'dmg_1': [0, 24, 11, 6, 2, 5], 'dmg_2': [0, 46, 16, 10, 10, 10], 'dmg_3': [2, 29, 8, 7, 7, 7]}
+
+        result = sp.distribute_extras_in_group(group, index, demo_1, count, percents, output)
+        self.assertDictEqual(result, expected)
+
+    def test_distribute_extras_in_group_2(self):
+        demo_1 = {'dmg_1': [0, 18, 5, 6, 2, 5], 'dmg_2': [0, 40, 10, 10, 10, 10], 'dmg_3': [2, 29, 8, 7, 7, 7]}
+        output = {'dmg_1': [0, 18, 5, 6, 2, 5], 'dmg_2': [0, 40, 10, 10, 10, 10], 'dmg_3': [2, 29, 8, 7, 7, 7]}
+        percents = {'dmg_1': [0, 80, 20, 10, 20, 50], 'dmg_2': [0, 20, 25, 25, 25, 25], 'dmg_3': [2, 45, 10, 10, 10, 10]}
+        group = 0
+        index = 2
+        count = 20
+        expected = {'dmg_1': [0, 34, 21, 6, 2, 5], 'dmg_2': [0, 44, 14, 10, 10, 10], 'dmg_3': [2, 29, 8, 7, 7, 7]}
+
+        result = sp.distribute_extras_in_group(group, index, demo_1, count, percents, output)
+        self.assertDictEqual(result, expected)
+
+    def test_distribute_extras_in_group_3(self):
+        demo_1 = {'dmg_1': [0, 18, 5, 6, 2, 5], 'dmg_2': [0, 40, 10, 10, 10, 10], 'dmg_3': [0, 29, 8, 7, 7, 7]}
+        output = {'dmg_1': [0, 18, 5, 6, 2, 5], 'dmg_2': [0, 40, 10, 10, 10, 10], 'dmg_3': [0, 29, 8, 7, 7, 7]}
+        percents = {'dmg_1': [0, 40, 20, 10, 20, 50], 'dmg_2': [0, 59, 25, 25, 25, 25], 'dmg_3': [0, 1, 10, 10, 10, 10]}
+        group = 0
+        index = 2
+        count = 20
+        expected = {'dmg_1': [0, 26, 13, 6, 2, 5], 'dmg_2': [0, 52, 22, 10, 10, 10], 'dmg_3': [0, 29, 8, 7, 7, 7]}
+
+        result = sp.distribute_extras_in_group(group, index, demo_1, count, percents, output)
+        self.assertDictEqual(result, expected)
+
+    def test_balance_demographic_numbers(self):
+        demo_1 = {'dmg_1': [0, 20., 5.3, 5.98, 5, 5], 'dmg_2': [0, 24, 6, 6, 6, 6], 'dmg_3': [1, 28, 7, 7, 7, 7]}
+        percents = {'dmg_1': [0, 40, 20, 10, 20, 50], 'dmg_2': [0, 59, 25, 25, 25, 25], 'dmg_3': [0, 1, 10, 10, 10, 10]}
+
+        expected = {}
+
+    ##=========================
+    ## Verification methods
+    ##=========================
     def verify_demographic_list_structure(self, demo_list):
         self.assertEqual(len(demo_list), 6)
         for val in demo_list:

@@ -37,5 +37,7 @@ def derive_demographic(demo_list):
         return -1
 
 
+"""
 if __name__ == '__main__':
     print(derive_demographic([False, True, True, True, True, True]))
+"""

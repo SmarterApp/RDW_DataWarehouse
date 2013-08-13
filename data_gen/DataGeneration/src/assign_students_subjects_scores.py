@@ -1,6 +1,6 @@
 from DataGeneration.src.helper_entities import StudentInfo
 from DataGeneration.src.generate_scores import generate_overall_scores
-from DataGeneration.src.generate_data import translate_scores_to_assessment_score
+from DataGeneration.src.claim_score_calculation import translate_scores_to_assessment_score
 from DataGeneration.src.entities import Assessment
 from DataGeneration.src.generate_entities import generate_assessment
 
@@ -22,7 +22,7 @@ def assign_scores_for_subjects(studentinfo_list, demo_perf, cut_points, min_scor
         perf = demo_perf[demo]
         total_students = len(studentinfo_subset)
         scores = generate_overall_scores(perf, cut_points, min_score, max_score, total_students)
-        asmt_scores = translate_scores_to_assessment_score(scores, cut_points, assessment, ebmin, ebmax, rndlo, rndhi)
+        asmt_scores = translate_scores_to_assessment_score(scores, cut_points[1:-1], assessment, ebmin, ebmax, rndlo, rndhi)
         for i in range(len(studentinfo_subset)):
             (studentinfo_subset[i].asmt_scores)[subject] = asmt_scores[i]
     # return

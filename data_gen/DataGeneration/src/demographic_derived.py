@@ -7,7 +7,12 @@ def derive_demographic(demo_list):
     '''
     Main function to generate the derived demographic columns.
     @param demo_list: list of boolean values for each demographic. The order is:
-    African American, Asian, Hispanic, Native American / Alaskan Native, Pacific Islander, White
+    1. African American,
+    2. Asian,
+    3. Hispanic,
+    4. Native American / Alaskan Native,
+    5. Pacific Islander,
+    6. White
     '''
     try:
         # TODO: need to decide the value. is it true/false, or f/t, or others

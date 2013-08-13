@@ -207,6 +207,18 @@ class StudentInfo(object):
         else:
             self.dmg_eth_2mr = False
 
+    def get_stu_demo_list(self):
+        '''
+        Returns a list of boolean values for each demographic. The order is:
+        1. African American,
+        2. Asian,
+        3. Hispanic,
+        4. Native American / Alaskan Native,
+        5. Pacific Islander,
+        6. White
+        '''
+        return [self.dmg_eth_blk, self.dmg_eth_asn, self.dmg_eth_hsp, self.dmg_eth_ami, self.dmg_eth_pcf, self.dmg_eth_wht]
+
 
 class StudentBioInfo:
 

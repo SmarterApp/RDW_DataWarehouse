@@ -37,6 +37,8 @@ define [
       breadcrumbsConfigs = data.breadcrumb
       reportInfo = data.reportInfo
       studentsConfig = data.students
+      legendInfo = data.legendInfo
+
       getStudentData "/data/list_of_students", params, defaultColors, (assessmentsData, contextData, subjectsData, claimsData, userData, cutPointsData) ->
         # append user_info (e.g. first and last name)
         if userData
@@ -84,7 +86,10 @@ define [
         , ".asmtScore"
         
         # Generate footer links
-        $('#footer').generateFooter('list_of_students', reportInfo)
+        legend = {}
+        legend['legendInfo'] = legendInfo.individual_student_report
+        legend['subject'] = legendInfo.sample_intervals
+        $('#footer').generateFooter('list_of_students', reportInfo, legend)
         
         # append user_info (e.g. first and last name)
         if userData

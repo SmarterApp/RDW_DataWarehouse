@@ -187,6 +187,7 @@ common:
 qa:
   '[app:main]':
     mode: prod
+    smarter.PATH: /usr/local/bin:/opt/wkhtmltopdf/bin
     celery:
       BROKER_URL: amqp://edware:edware1234@rbtmqdw0.qa.dum.edwdc.net//
       CELERY_IMPORTS: ('services.tasks.pdf',)
@@ -274,6 +275,7 @@ jenkins_qa:
 uat:
   '[app:main]':
     mode: prod
+    smarter.PATH: /usr/local/bin:/opt/wkhtmltopdf/bin
     celery:
       BROKER_URL: amqp://edware:edware1234@rbtmqdw0.dmo.som.edwdc.net//
       CELERY_IMPORTS: ('services.tasks.pdf',)

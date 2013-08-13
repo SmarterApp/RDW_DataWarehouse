@@ -109,7 +109,7 @@ def generate_assessment_outcomes_from_student_info(student_info_list, batch_guid
                 'dmg_prg_lep': student_info.dmg_prg_lep,
                 'dmg_prg_504': student_info.dmg_prg_504,
                 'dmg_prg_tt1': student_info.dmg_prg_tt1,
-                'dmg_eth_derived': derive_demographic(student_info.getDemoOfStudent())
+                'dmg_eth_derived': derive_demographic(student_info.get_stu_demo_list())
             }
             outcome_list.append(AssessmentOutcome(**params))
 

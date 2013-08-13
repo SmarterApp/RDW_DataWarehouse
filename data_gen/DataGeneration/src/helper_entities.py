@@ -200,12 +200,15 @@ class StudentInfo(object):
         student_demo = self.getDemoOfStudent('dmg_eth')
         if 'dmg_eth_2mr' in student_demo:
             # we do not want dmg_eth_2mr to be counted as a demographic
+            student_demos = random.sample(['dmg_eth_asn', 'dmg_eth_blk', 'dmg_eth_ami', 'dmg_eth_pcf', 'dmg_eth_wht'], 2)
+            for demo in student_demos:
+                setattr(self, demo, True)
             student_demo.remove('dmg_eth_2mr')
-        # since there is a gender value in student_demo. two or more races means len(student_demo) > 2
-        if len(student_demo) > 2 and 'dmg_eth_hsp' not in student_demo:
-            self.dmg_eth_2mr = True
-        else:
-            self.dmg_eth_2mr = False
+#         # since there is a gender value in student_demo. two or more races means len(student_demo) > 2
+#         if len(student_demo) > 2 and 'dmg_eth_hsp' not in student_demo:
+#             self.dmg_eth_2mr = True
+#         else:
+#             self.dmg_eth_2mr = False
 
     def get_stu_demo_list(self):
         '''

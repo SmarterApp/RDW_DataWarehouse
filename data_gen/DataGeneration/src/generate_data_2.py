@@ -30,6 +30,7 @@ import util
 from assign_students_subjects_scores import assign_scores_for_subjects
 from idgen import IdGen
 import claim_score_calculation
+from print_student_info_pool import print_student_info_pool_counts
 
 
 DATAFILE_PATH = os.path.dirname(os.path.realpath(__file__))
@@ -225,7 +226,7 @@ def generate_real_states(state_populations, assessments, error_band_dict, distri
 
         # generate pool of students for state
         student_info_dict = generate_students_info_from_demographic_counts(state_population, assessments, error_band_dict)
-
+        print_student_info_pool_counts(student_info_dict, demographics_info, demographics_id)
         # create districts
         districts = create_districts(state_population, district_names[0], district_names[1], school_names[0],
                                      school_names[1], student_info_dict, subject_percentages, demographics_info,

@@ -513,7 +513,7 @@ def generate_students_info_from_demographic_counts(state_population, assessments
         perf_lvl_counts = [math.ceil(overall_counts[i]) for i in range(L_PERF_1, L_PERF_4 + 1)]
 
         raw_scores = generate_overall_scores(perf_lvl_counts, inclusive_cut_points, min_score, max_score, total_students, False)
-        asmt_scores = translate_scores_to_assessment_score(raw_scores, cut_points, assessment, eb_min_perc, eb_max_perc, eb_rand_adj_lo, eb_rand_adj_hi)
+        asmt_scores = util.translate_scores_to_assessment_score(raw_scores, cut_points, assessment, eb_min_perc, eb_max_perc, eb_rand_adj_lo, eb_rand_adj_hi)
 
         score_pool_dict = create_asmt_score_pool_dict(asmt_scores)
         student_info_dict = generate_students_with_demographics(score_pool_dict, grade_demographic_totals, grade)
@@ -590,7 +590,11 @@ def assign_demographics_for_grouping(group_num, student_info_pool, demographic_t
     # Copy student_info pools lists
     student_info_dict = {perf_lvl: student_info_pool[perf_lvl][:] for perf_lvl in student_info_pool}
 
-    for demo_name, demo_list in demographic_totals.items():
+    # sort names by the number to be generated
+    ordered_demo_names = sorted(demographic_totals, key=lambda k: demographic_totals[k][L_TOTAL])
+
+    for demo_name in ordered_demo_names:
+        demo_list = demographic_totals[demo_name]
         if demo_list[L_GROUPING] != group_num:
             continue
         for i in range(L_PERF_1, L_PERF_4 + 1):
@@ -633,42 +637,6 @@ def create_asmt_score_pool_dict(assessment_scores):
         score_pl_dict[perf_lvl].append(asmt_score)
 
     return score_pl_dict
-
-
-def translate_scores_to_assessment_score(scores, cut_points, assessment, ebmin, ebmax, rndlo, rndhi):
-    '''
-    Translate a list of assessment scores to AssessmentScore objects
-    @param scores: list containing score integers
-    @param cut_points: list of cutpoint scores as integers
-    @param assessment: The assessment object that the outcome will be for
-    @param ebmin: The divisor of the minimum error band, taken from the config file
-    @param ebmax: The divisor of the maximum error band, taken from the config file
-    @param rndlo: The lower bound for getting the random adjustment of the error band
-    @param rndhi: The higher bound for getting the random adjustment of the error band
-    @return: list of AssessmentScore objects
-    '''
-    score_list = []
-
-    score_min = assessment.asmt_score_min
-    score_max = assessment.asmt_score_max
-
-    for score in scores:
-        perf_lvl = None
-        for i in range(len(cut_points)):
-            if score < cut_points[i]:
-                perf_lvl = i + 1  # perf lvls are >= 1
-                break
-        if perf_lvl is None and score >= cut_points[-1]:
-            perf_lvl = len(cut_points) + 1
-
-        scenter, ebmin, ebstep = calc_eb_params(score_min, score_max, ebmin, ebmax)
-        ebleft, ebright, _ebhalf = calc_eb(score, score_min, score_max, scenter, ebmin, ebstep, rndlo, rndhi)
-        claim_scores = calculate_claim_scores(score, assessment, ebmin, ebmax, rndlo, rndhi)
-        asmt_create_date = datetime.date.today().strftime('%Y%m%d')
-        asmt_score = generate_assessment_score(score, perf_lvl, round(ebleft), round(ebright), claim_scores, asmt_create_date)
-
-        score_list.append(asmt_score)
-    return score_list
 
 
 def get_flat_grades_list(school_config, grade_key):
@@ -739,47 +707,6 @@ def create_output_dict(output_path):
         out_dict[fname] = os.path.join(output_path, CSV_FILE_NAMES[fname])
 
     return out_dict
-
-
-def calculate_claim_scores(asmt_score, assessment, ebmin, ebmax, rndlo, rndhi):
-    '''
-    Calculate a students claim scores from their overall score. Calculate the associated
-    claim error bands as well and store in ClaimScore Objects.
-    @param asmt_score: The integer value representing the students score on the assessment
-    @param assessment: the assessment object corresponding to the student's score
-    @param ebmin: The divisor of the minimum error band, taken from the config file
-    @param ebmax: The divisor of the maximum error band, taken from the config file
-    @param rndlo: The lower bound for getting the random adjustment of the error band
-    @param rndhi: The higher bound for getting the random adjustment of the error band
-    @return: a list of ClaimScore objects for the given score and assessment
-    '''
-    claim_scores = []
-    claim_list = [(assessment.asmt_claim_1_score_min, assessment.asmt_claim_1_score_max, assessment.asmt_claim_1_score_weight),
-                  (assessment.asmt_claim_2_score_min, assessment.asmt_claim_2_score_max, assessment.asmt_claim_2_score_weight),
-                  (assessment.asmt_claim_3_score_min, assessment.asmt_claim_3_score_max, assessment.asmt_claim_3_score_weight)]
-    percentages = [assessment.asmt_claim_1_score_weight, assessment.asmt_claim_2_score_weight, assessment.asmt_claim_3_score_weight]
-    if assessment.asmt_claim_4_name:
-        claim_list.append((assessment.asmt_claim_4_score_min, assessment.asmt_claim_4_score_max, assessment.asmt_claim_4_score_weight))
-        percentages.append(assessment.asmt_claim_4_score_weight)
-
-    range_min = assessment.asmt_claim_1_score_min
-    range_max = assessment.asmt_claim_1_score_max
-    weighted_claim_scores = stats.distribute_by_percentages(asmt_score, range_min, range_max, percentages)
-
-    for i in range(len(claim_list)):
-        # Get basic claim information from claim tuple
-        claim_minimum_score = claim_list[i][0]
-        claim_maximum_score = claim_list[i][1]
-        scaled_claim_score = weighted_claim_scores[i]
-
-        # calculate the claim score
-
-        scenter, ebmin, ebstep = calc_eb_params(claim_minimum_score, claim_maximum_score, ebmin, ebmax)
-        ebleft, ebright, _ebhalf = calc_eb(scaled_claim_score, claim_minimum_score, claim_maximum_score, scenter, ebmin, ebstep, rndlo, rndhi)
-        claim_score = generate_claim_score(scaled_claim_score, round(ebleft), round(ebright))
-        claim_scores.append(claim_score)
-
-    return claim_scores
 
 
 def prepare_csv_files(entity_to_path_dict):

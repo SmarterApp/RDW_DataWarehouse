@@ -278,9 +278,12 @@ def distribute_extras_in_group(group, perf_lvl_index, demographic_dict, count, d
     for name in sorted_names:
 
         percentage = dem_percents[name][L_TOTAL] / 100
-        count_to_gain = round(remaining * percentage)
-        remaining -= count_to_gain
-        result_dict[name][perf_lvl_index] += count_to_gain
+        count_to_gain = round(count * percentage)
+
+        actual_count_to_gain = max(min(count_to_gain, remaining), 0)
+        result_dict[name][perf_lvl_index] += actual_count_to_gain
+        result_dict[name][L_TOTAL] += actual_count_to_gain
+        remaining -= actual_count_to_gain
 
     if remaining > 0:
         result_dict[sorted_names[-1]][perf_lvl_index] += remaining
@@ -335,22 +338,22 @@ def round_demographic_numbers(demographics_dict):
     return rounded_demographics
 
 
-def compute_total_from_other_demos(grade_value_dict):
-    group_sum_list = []
-
-    groups = {grade_value_dict[x][L_GROUPING] for x in grade_value_dict}
-
-    for group in groups:
-        if group == 0:
-            continue
-        group_sum = [group, 0, 0, 0, 0, 0]
-        group_demos = {k: dlist for k, dlist in grade_value_dict.items() if dlist[L_GROUPING] == group}
-
-        for _demo_name, demo_list in group_demos.items():
-            for i in range(L_TOTAL, len(demo_list)):
-                group_sum[i] += demo_list[i]
-        group_sum_list.append(group_sum)
-    print(group_sum_list)
+# def compute_total_from_other_demos(grade_value_dict):
+#     group_sum_list = []
+#
+#     groups = {grade_value_dict[x][L_GROUPING] for x in grade_value_dict}
+#
+#     for group in groups:
+#         if group == 0:
+#             continue
+#         group_sum = [group, 0, 0, 0, 0, 0]
+#         group_demos = {k: dlist for k, dlist in grade_value_dict.items() if dlist[L_GROUPING] == group}
+#
+#         for _demo_name, demo_list in group_demos.items():
+#             for i in range(L_TOTAL, len(demo_list)):
+#                 group_sum[i] += demo_list[i]
+#         group_sum_list.append(group_sum)
+#     print(group_sum_list)
 
 
 def construct_state_counts_dict(state_population):

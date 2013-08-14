@@ -86,7 +86,8 @@ define [
     createBar: ->
       output = edwareLOSConfidenceLevelBar.create this.subject, 110
       $('#legendTemplate .confidenceLevel', this.container).append(output)
-
+      $('.interval', this.container).css('margin-left', '89px').css('width', '28px')
+      $('.indicator', this.container).css('margin-left', '98px')
 
   ( ($) ->
     $.fn.createLegend = (reportName, data) ->

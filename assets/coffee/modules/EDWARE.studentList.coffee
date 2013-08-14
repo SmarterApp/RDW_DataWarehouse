@@ -86,10 +86,11 @@ define [
         , ".asmtScore"
         
         # Generate footer links
-        legend = {}
-        legend['legendInfo'] = legendInfo.individual_student_report
-        legend['subject'] = legendInfo.sample_intervals
-        $('#footer').generateFooter('list_of_students', reportInfo, legend)
+        $('#footer').generateFooter('list_of_students', reportInfo, {
+          'legendInfo': legendInfo.list_of_students,
+          # merge cut points data with sample data
+          'subject': $.extend(true, {}, cutPointsData.subject1, legendInfo.sample_intervals)
+        })
         
         # append user_info (e.g. first and last name)
         if userData

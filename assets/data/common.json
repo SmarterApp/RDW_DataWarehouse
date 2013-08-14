@@ -245,6 +245,26 @@
 		"individual_student_report": {
 			"relative_strength_text": "The arrows show your claim score compared to your overall score. An up arrow means relative strength, while a down arrow may indicate a relative weakness.",
 			"error_band": "The error of a score comes from the amount of information provided by the test. It is based on how well a single test was able to deliver items of approprate difficulty for the student in the allotted test length. Smarter Balanced tests endeavor to provide the most precise scores possible within a reasonable time limit by delivering an adaptive test portion. We provide an Error Band to show the range of score values that a student's result for a single assessment is highly-likely to be on any given day."
+		},
+		"comparing_population": {
+			"indicator": "8,345",
+			"desc1": "Percentage of population",
+			"desc2": "Total Students",
+			"desc3": "The width of a colored segment is proportional to the number of students in that segment. If a colored segment represents less than 10% of the students tested, then no percentage is displayed.",
+			"notes": ["Rollover/Tap bar for breakdown of population numbers","Percentages are rounded to the nearest whole number. Therefore, small percentages may be reported as '0'."]
+		},
+		"list_of_students": {
+			"desc1": "Overall Score Indicator",
+			"desc2": "Scaled Score Range",
+			"desc3": "Error Band",
+			"desc4": "(size of error band is indicated graphically)",
+			"desc5": "Numeric Score",
+			"desc6": "(color coded by Achievement Level)",
+			"desc7": "Claim Score",
+			"desc8": "1381 ",
+			"desc10": "Error Band",
+			"desc11": "(size of error band is indicated numerically)",
+			"error_band": "The error of a score comes from the amount of information provided by the test. It is based on how well a single test was able to deliver items of approprate difficulty for the student in the allotted test length. Smarter Balanced tests endeavor to provide the most precise scores possible within a reasonable time limit by delivering an adaptive test portion. We provide an Error Band to show the range of score values that a student's result for a single assessment is highly-likely to be on any given day."
 		}
 	},
 	"students": {

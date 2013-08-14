@@ -132,10 +132,15 @@ define [
         formatBarAlignment()
         
         # Generate footer
-        legend = {}
-        legend['legendInfo'] = legendInfo.individual_student_report
-        legend['subject'] = legendInfo.sample_intervals
-        $('#footer').generateFooter('comparing_populations', reportInfo, legend)
+        $('#footer').generateFooter('comparing_populations', reportInfo, {
+          'legendInfo': legendInfo.comparing_population,
+          'subject': (()->
+              # merge default color data into sample intervals data
+              for color, i in colorsData.subject1
+                legendInfo.sample_intervals.intervals[i].color = color
+              legendInfo.sample_intervals
+            )()
+        })
         
         # append user_info (e.g. first and last name)
         if user_info

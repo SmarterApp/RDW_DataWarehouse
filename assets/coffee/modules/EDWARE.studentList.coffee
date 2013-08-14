@@ -89,7 +89,7 @@ define [
         $('#footer').generateFooter('list_of_students', reportInfo, {
           'legendInfo': legendInfo.list_of_students,
           # merge cut points data with sample data
-          'subject': $.extend(true, {}, cutPointsData.subject1, legendInfo.sample_intervals)
+          'subject': $.extend(true, {}, cutPointsData.subject1 || cutPointsData.subject2 , legendInfo.sample_intervals)
         })
         
         # append user_info (e.g. first and last name)

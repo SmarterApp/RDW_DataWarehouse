@@ -136,7 +136,7 @@ define [
           'legendInfo': legendInfo.comparing_population,
           'subject': (()->
               # merge default color data into sample intervals data
-              for color, i in colorsData.subject1
+              for color, i in colorsData.subject1 || colorsData.subject2
                 legendInfo.sample_intervals.intervals[i].color = color
               legendInfo.sample_intervals
             )()

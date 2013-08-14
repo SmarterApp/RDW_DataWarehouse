@@ -136,7 +136,7 @@ class Demographics(object):
         '''
         ret_list = [row_list[H_GROUPING], row_list[H_TOTAL], row_list[H_PERF_1], row_list[H_PERF_2], row_list[H_PERF_3], row_list[H_PERF_4]]
         # convert to ints and return
-        return [int(x) for x in ret_list]
+        return [float(x) for x in ret_list]
 
 
 class DemographicStatus(object):

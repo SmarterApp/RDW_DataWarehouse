@@ -68,7 +68,7 @@ NAMES_TO_PATH_DICT = {BIRDS: os.path.join(DATAFILE_PATH, 'datafiles', 'name_list
                       }
 
 
-def generate_data_from_config_file(config_module, output_dict):
+def generate_data_from_config_file(config_module, output_dict, do_pld_adjustment=True):
     '''
     Main function that drives the data generation process
     Collects all relevant info from the config files and calls methods to generate states and remaining data
@@ -91,7 +91,7 @@ def generate_data_from_config_file(config_module, output_dict):
     # Generate the all the data
     state_populations = generate_state_populations(states_config, state_types, demographics_info, assessments, district_types,
                                                    school_types, district_names, school_names, error_band_dict, from_date,
-                                                   most_recent, to_date)
+                                                   most_recent, to_date, do_pld_adjustment)
 
     states = generate_real_states(state_populations, assessments, error_band_dict, district_names, school_names,
                                   demographics_info, from_date, most_recent, to_date, street_names)
@@ -178,7 +178,7 @@ def get_values_from_config(config_module):
 
 
 def generate_state_populations(states, state_types, demographics_info, assessments, district_types, school_types,
-                               district_names, school_names, error_band_dict, from_date, most_recent, to_date):
+                               district_names, school_names, error_band_dict, from_date, most_recent, to_date, do_pld_adjustment):
     '''
     Take all relevant information and loop through the states to generate the relevant data
     '''
@@ -197,7 +197,7 @@ def generate_state_populations(states, state_types, demographics_info, assessmen
         demographics_id = state_type[constants.DEMOGRAPHICS]
 
         # Create State Population object
-        state_population = StatePopulation(state_name, state_code, state_type_name)
+        state_population = StatePopulation(state_name, state_code, state_type_name, do_pld_adjustment=do_pld_adjustment)
         # calculate the states total number of object
         state_population.populate_state(state_type, district_types, school_types)
         # Calculate the Math Demographic numbers for the state
@@ -549,16 +549,19 @@ def create_student_info_dict(group_num, score_pool, demographic_totals, grade):
     Create a dictionary of student info objects
     '''
     student_info_dict = {perf_lvl: [] for perf_lvl in score_pool}
+    ordered_names = sorted(demographic_totals, key=lambda k: demographic_totals[k][L_TOTAL])
 
     # loop through possible genders and create the appropriate number of students for each Performance Level
-    for demo_name, demo_list in demographic_totals.items():
+    for demo_name in ordered_names:
+        demo_list = demographic_totals[demo_name]
         if demo_list[L_GROUPING] != group_num:
             continue
         for i in range(L_PERF_1, L_PERF_4 + 1):
             perf_lvl_count = math.ceil(demo_list[i])
             perf_lvl = i - 1
-            student_info_dict[perf_lvl] += create_student_infos_by_gender(demo_name, perf_lvl_count, perf_lvl,
-                                                                          score_pool, grade)
+            generated_student_info = create_student_infos_by_gender(demo_name, perf_lvl_count, perf_lvl,
+                                                                    score_pool, grade)
+            student_info_dict[perf_lvl] += generated_student_info
 
     return student_info_dict
 
@@ -571,8 +574,7 @@ def create_student_infos_by_gender(gender, count, performance_level, score_pool,
     score_list = score_pool[performance_level]
     for _i in range(count):
         if len(score_list) <= 0:
-            print('demographic_name', gender)
-            print('short by', count - _i, 'perf_lvl was', performance_level, 'grade', grade)
+            print('short by: ', count - _i, '\tperf_lvl was:', performance_level, '\tgrade:', grade, '\tdemographic_name:', gender)
             break
         index = random.randint(0, len(score_list) - 1)
         score = score_list.pop(index)
@@ -610,8 +612,7 @@ def assign_demographic_to_students(demographic_name, student_pool, count, perfor
     student_list = student_pool[performance_level]
     for _i in range(count):
         if len(student_list) <= 0:
-            print('demographic_name', demographic_name)
-            print('short by', count - _i, 'perf_lvl was', performance_level)
+            print('short by:', count - _i, '\tperf_lvl was:', performance_level, '\tdemographic_name:', demographic_name)
             break
         index = random.randint(0, len(student_list) - 1)
         student_info = student_list.pop(index)
@@ -740,7 +741,7 @@ def generate_name_list_dictionary(list_name_to_path_dictionary):
     return name_list_dictionary
 
 
-def main(config_mod_name='dg_types', output_path=None):
+def main(config_mod_name='dg_types', output_path=None, do_pld_adjustment=True):
     t1 = datetime.datetime.now()
     config_module = import_module(config_mod_name)
 
@@ -749,7 +750,7 @@ def main(config_mod_name='dg_types', output_path=None):
     if output_path:
         output_dict = create_output_dict(output_path)
     # generate_data
-    generate_data_from_config_file(config_module, output_dict)
+    generate_data_from_config_file(config_module, output_dict, do_pld_adjustment)
 
     # print time
     t2 = datetime.datetime.now()
@@ -769,6 +770,8 @@ if __name__ == '__main__':
                         help='Specify the configuration module that informs that data creation process.', required=False)
     parser.add_argument('--output', dest='output_path', action='store',
                         help='Specify the location of the output csv files', required=False)
+    parser.add_argument('-N', '--no-pld-adjustment', dest='do_pld_adjustment', action='store_false',
+                        help='Specify this flag to generate data without applying the performance level adjustments')
     args = parser.parse_args()
 
-    main(args.config_module, args.output_path)
+    main(args.config_module, args.output_path, args.do_pld_adjustment)

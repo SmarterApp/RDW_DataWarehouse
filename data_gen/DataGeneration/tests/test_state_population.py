@@ -319,10 +319,14 @@ class Test(unittest.TestCase):
         self.assertDictEqual(result, expected)
 
     def test_balance_demographic_numbers(self):
-        demo_1 = {'dmg_1': [0, 20., 5.3, 5.98, 5, 5], 'dmg_2': [0, 24, 6, 6, 6, 6], 'dmg_3': [1, 28, 7, 7, 7, 7]}
-        percents = {'dmg_1': [0, 40, 20, 10, 20, 50], 'dmg_2': [0, 59, 25, 25, 25, 25], 'dmg_3': [0, 1, 10, 10, 10, 10]}
+        pass
 
-        expected = {}
+    def test_apply_pld_to_grade_demographics(self):
+        demo_1 = {'dmg_1': [0, 80, 20, 10, 20, 50], 'dmg_2': [0, 20, 25, 25, 25, 25], 'dmg_3': [2, 45, 13, 37, 42, 8]}
+        pld_adjust = .45
+        expected = {'dmg_1': [0, 80, 11, 6, 24, 59], 'dmg_2': [0, 20, 14, 14, 36, 36], 'dmg_3': [2, 45, 8, 21, 58, 13]}
+        results = sp.apply_pld_to_grade_demographics(pld_adjust, demo_1)
+        self.assertDictEqual(results, expected)
 
     ##=========================
     ## Verification methods

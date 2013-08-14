@@ -10,7 +10,7 @@ BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 BuildRequires:	python3
 BuildRequires:	python3-libs
-Requires:	xmlsec1 python3-mod_wsgi xmlsec1-openssl xmlsec1-openssl-devel
+Requires:	xmlsec1 python3-mod_wsgi xmlsec1-openssl xmlsec1-openssl-devel fuse-encfs
 AutoReqProv: no
 
 %define _unpackaged_files_terminate_build 0
@@ -126,6 +126,7 @@ cp -r virtualenv %{buildroot}/opt
 id celery > /dev/null 2>&1
 if [ $? != 0 ]; then
    useradd celery
+   usermod -G fuse celery
 fi
 if [ ! -d /opt/edware/log ]; then
     mkdir -p /opt/edware/log

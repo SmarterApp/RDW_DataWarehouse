@@ -19,7 +19,7 @@ def convert_demo_by_group(demo_totals):
         groups = [[], [], [], [], [], []]
         demo_info = demo_totals[key]
         for demo_name, demo_value in demo_info.items():
-            group_number = demo_value[0]
+            group_number = int(demo_value[0])
             groups[group_number].append({demo_name: demo_value[1:]})
         grades[key] = groups
     return grades

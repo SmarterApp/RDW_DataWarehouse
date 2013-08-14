@@ -37,6 +37,8 @@ define [
       breadcrumbsConfigs = data.breadcrumb
       reportInfo = data.reportInfo
       studentsConfig = data.students
+      legendInfo = data.legendInfo
+
       getStudentData "/data/list_of_students", params, defaultColors, (assessmentsData, contextData, subjectsData, claimsData, userData, cutPointsData) ->
         # append user_info (e.g. first and last name)
         if userData
@@ -84,7 +86,11 @@ define [
         , ".asmtScore"
         
         # Generate footer links
-        $('#footer').generateFooter('list_of_students', reportInfo)
+        $('#footer').generateFooter('list_of_students', reportInfo, {
+          'legendInfo': legendInfo.list_of_students,
+          # merge cut points data with sample data
+          'subject': $.extend(true, {}, cutPointsData.subject1 || cutPointsData.subject2 , legendInfo.sample_intervals)
+        })
         
         # append user_info (e.g. first and last name)
         if userData

@@ -71,7 +71,8 @@ define [
         gridConfig = data.comparingPopulations.grid
         customViews = data.comparingPopulations.customViews
         customALDDropdown = data.comparingPopulations.customALDDropdown
-        
+        legendInfo = data.legendInfo
+                
         output = Mustache.render(JSON.stringify(gridConfig), asmtSubjectsData)
         gridConfig = JSON.parse(output)
 
@@ -131,7 +132,15 @@ define [
         formatBarAlignment()
         
         # Generate footer
-        $('#footer').generateFooter('comparing_populations', reportInfo)
+        $('#footer').generateFooter('comparing_populations', reportInfo, {
+          'legendInfo': legendInfo.comparing_population,
+          'subject': (()->
+              # merge default color data into sample intervals data
+              for color, i in colorsData.subject1 || colorsData.subject2
+                legendInfo.sample_intervals.intervals[i].color = color
+              legendInfo.sample_intervals
+            )()
+        })
         
         # append user_info (e.g. first and last name)
         if user_info

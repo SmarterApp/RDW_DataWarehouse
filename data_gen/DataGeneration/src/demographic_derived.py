@@ -5,7 +5,14 @@ TWO_OR_MORE_RACES_CODE = 7
 
 def derive_demographic(demo_list):
     '''
-    Main function to generate the derived demographic columns
+    Main function to generate the derived demographic columns.
+    @param demo_list: list of boolean values for each demographic. The order is:
+    1. African American,
+    2. Asian,
+    3. Hispanic,
+    4. Native American / Alaskan Native,
+    5. Pacific Islander,
+    6. White
     '''
     try:
         # TODO: need to decide the value. is it true/false, or f/t, or others
@@ -30,5 +37,7 @@ def derive_demographic(demo_list):
         return -1
 
 
+"""
 if __name__ == '__main__':
     print(derive_demographic([False, True, True, True, True, True]))
+"""

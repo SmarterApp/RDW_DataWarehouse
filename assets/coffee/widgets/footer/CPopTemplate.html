@@ -1,0 +1,47 @@
+<div id="legendTemplate" style="height:440px">
+    <div class="section" style="border-top: none;">
+	<div class="achievement">
+	    <!-- ALD -->
+	    <h4>Achievement Level Descriptions (ALD):</h4>
+	    <table class="ALD_table">
+		<thead>
+		    <tr>
+			<th class="ALD_table_header" style="width:17%;">Color</th>
+			<th class="ALD_table_header">Description</th>
+			<th class="ALD_table_header">Score Range</th>
+			<th class="ALD_table_header" style="width:17%;"><span>Outside Error Band</span></th>
+		    </tr>
+		</thead>
+				{{#ALDs}}
+		<tr>
+		    <td class="ALD_table_cell"><div class="legend_ALD_color" style="background-color:{{color}};"></div></td>
+		    <td class="ALD_table_cell">{{description}}</td>
+		    <td class="ALD_table_cell">{{range}}</td>
+		    <td class="ALD_table_cell">
+			<div class="legend_ALD_color" style="background-color:{{color}};position: absolute; margin-left: 30px; margin-top: 5px;"></div>
+			<img src="../images/ISR_shades.png"/>
+		    </td>
+		</tr>
+				{{/ALDs}}
+	    </table>
+	</div>
+    </div>
+    <div class="section populationBarDetails">
+	<h4>Population Bar Details:</h4>
+	<div class="populationBar">
+            <div class="arrow1"></div>
+            <div class="arrow2"></div>
+            <div class="arrow3"></div>
+            <span class="indicator">{{legendInfo.indicator}}</span>
+        </div>
+	<div class="description">
+	    <h5>{{legendInfo.desc1}}</h5>
+	    <h5>{{legendInfo.desc2}}</h5>
+	    <p>{{legendInfo.desc3}}</p>
+	</div>
+        <div class="notes">
+            <h5>Notes:</h5>
+            <p>{{#legendInfo.notes}}{{.}}<br/><br/>{{/legendInfo.notes}}</p>
+        </div>
+    </div>
+</div>

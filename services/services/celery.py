@@ -38,5 +38,6 @@ if prod_config:
         options = config.options(section_name)
         for option in options:
             conf[option] = config.get(section_name, option)
-
+        if 'smarter.path' in conf:
+            os.environ['PATH'] += os.pathsep + conf['smarter.path']
         setup_celery(conf)

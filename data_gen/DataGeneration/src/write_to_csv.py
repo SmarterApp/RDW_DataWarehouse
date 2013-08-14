@@ -21,9 +21,7 @@ def clear_files(entity_to_path_dict):
     Truncate csv files in constants.ENT_LIST
     '''
     for path in entity_to_path_dict.values():
-        cur_file = open(path, "w")
-        cur_file.truncate()
-        cur_file.close()
+        clear_file(path)
 
 
 def clear_file(path):

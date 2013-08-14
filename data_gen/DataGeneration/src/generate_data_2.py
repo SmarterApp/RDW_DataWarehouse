@@ -13,7 +13,6 @@ import csv
 import math
 import random
 
-import stats
 from demographics import Demographics, ALL_DEM, L_GROUPING, L_TOTAL, L_PERF_1, L_PERF_4, OVERALL_GROUP
 from generate_entities import (generate_assessments, generate_institution_hierarchy, generate_sections,
                                generate_multiple_staff, generate_assessment_outcomes_from_student_info,
@@ -24,13 +23,14 @@ import constants
 from generate_scores import generate_overall_scores
 from entities import (InstitutionHierarchy, Section, Assessment, AssessmentOutcome,
                       Staff, ExternalUserStudent, Student)
-from errorband import calc_eb_params, calc_eb
-from generate_helper_entities import generate_claim_score, generate_assessment_score, generate_district, generate_school, generate_state
+from generate_helper_entities import generate_district, generate_school, generate_state
 from helper_entities import StudentInfo
 from print_state_population import print_state_population
 import util
 from assign_students_subjects_scores import assign_scores_for_subjects
 from idgen import IdGen
+import claim_score_calculation
+from print_student_info_pool import print_student_info_pool_counts
 
 
 DATAFILE_PATH = os.path.dirname(os.path.realpath(__file__))
@@ -68,7 +68,7 @@ NAMES_TO_PATH_DICT = {BIRDS: os.path.join(DATAFILE_PATH, 'datafiles', 'name_list
                       }
 
 
-def generate_data_from_config_file(config_module, output_dict):
+def generate_data_from_config_file(config_module, output_dict, do_pld_adjustment=True):
     '''
     Main function that drives the data generation process
     Collects all relevant info from the config files and calls methods to generate states and remaining data
@@ -91,7 +91,7 @@ def generate_data_from_config_file(config_module, output_dict):
     # Generate the all the data
     state_populations = generate_state_populations(states_config, state_types, demographics_info, assessments, district_types,
                                                    school_types, district_names, school_names, error_band_dict, from_date,
-                                                   most_recent, to_date)
+                                                   most_recent, to_date, do_pld_adjustment)
 
     states = generate_real_states(state_populations, assessments, error_band_dict, district_names, school_names,
                                   demographics_info, from_date, most_recent, to_date, street_names)
@@ -178,7 +178,7 @@ def get_values_from_config(config_module):
 
 
 def generate_state_populations(states, state_types, demographics_info, assessments, district_types, school_types,
-                               district_names, school_names, error_band_dict, from_date, most_recent, to_date):
+                               district_names, school_names, error_band_dict, from_date, most_recent, to_date, do_pld_adjustment):
     '''
     Take all relevant information and loop through the states to generate the relevant data
     '''
@@ -197,7 +197,7 @@ def generate_state_populations(states, state_types, demographics_info, assessmen
         demographics_id = state_type[constants.DEMOGRAPHICS]
 
         # Create State Population object
-        state_population = StatePopulation(state_name, state_code, state_type_name)
+        state_population = StatePopulation(state_name, state_code, state_type_name, do_pld_adjustment=do_pld_adjustment)
         # calculate the states total number of object
         state_population.populate_state(state_type, district_types, school_types)
         # Calculate the Math Demographic numbers for the state
@@ -226,7 +226,7 @@ def generate_real_states(state_populations, assessments, error_band_dict, distri
 
         # generate pool of students for state
         student_info_dict = generate_students_info_from_demographic_counts(state_population, assessments, error_band_dict)
-
+        print_student_info_pool_counts(student_info_dict, demographics_info, demographics_id)
         # create districts
         districts = create_districts(state_population, district_names[0], district_names[1], school_names[0],
                                      school_names[1], student_info_dict, subject_percentages, demographics_info,
@@ -272,19 +272,20 @@ def get_school_population(school, student_info_dict, subject_percentages, demogr
         staff_per_section = 1
         math_staff = generate_teachers_for_sections(staff_per_section, math_sections, from_date, most_recent, to_date, school, state_code)
         ela_staff = generate_teachers_for_sections(staff_per_section, ela_sections, from_date, most_recent, to_date, school, state_code)
+        teachers_in_school += math_staff + ela_staff
 
         # Generate Students that have Math scores and demographics
         students = get_students_by_counts(grade, school_counts[grade], student_info_dict)
 
         # Get ELA assessment information
-        math_assessment = select_assessment_from_list(assessments, grade, constants.MATH)
+        math_assessment = util.select_assessment_from_list(assessments, grade, constants.MATH)
         math_date_taken = util.generate_date_given_assessment(math_assessment)
-        ela_assessment = select_assessment_from_list(assessments, grade, constants.ELA)
+        ela_assessment = util.select_assessment_from_list(assessments, grade, constants.ELA)
         ela_date_taken = util.generate_date_given_assessment(ela_assessment)
         min_score = ela_assessment.asmt_score_min
         max_score = ela_assessment.asmt_score_max
 
-        cut_points = get_list_of_cutpoints(ela_assessment)
+        cut_points = util.get_list_of_cutpoints(ela_assessment)
         # Create list of cutpoints that includes min and max score values
         inclusive_cut_points = [min_score] + cut_points + [max_score]
 
@@ -409,8 +410,8 @@ def get_students_by_counts(grade, grade_counts, student_info_dict):
         pl_count = grade_counts[pl]
         for i in range(pl_count):
             if len(student_info_dict[grade][pl]) <= 0:
-                #print(student_info_dict[grade])
-                #print('i', i, 'pl_count', pl_count, 'pl', pl)
+                # print(student_info_dict[grade])
+                # print('i', i, 'pl_count', pl_count, 'pl', pl)
                 short_sum += pl_count - i
                 break
             index = random.randint(0, len(student_info_dict[grade][pl]) - 1)
@@ -443,7 +444,7 @@ def create_schools(district, school_names_1, school_names_2, student_info_dict, 
                                                 demographics_id, assessments, error_band_dict, state_name, state_code,
                                                 from_date, most_recent, to_date, street_names)
         students, teachers, sections = population_data
-        #students = set_student_additional_info(school, street_names, students)
+        # students = set_student_additional_info(school, street_names, students)
 
         school.student_info = students
         school.teachers = teachers
@@ -497,11 +498,11 @@ def generate_students_info_from_demographic_counts(state_population, assessments
 
     for grade in demographic_totals:
         grade_demographic_totals = demographic_totals[grade]
-        assessment = select_assessment_from_list(assessments, grade, subject)
+        assessment = util.select_assessment_from_list(assessments, grade, subject)
         min_score = assessment.asmt_score_min
         max_score = assessment.asmt_score_max
 
-        cut_points = get_list_of_cutpoints(assessment)
+        cut_points = util.get_list_of_cutpoints(assessment)
         # Create list of cutpoints that includes min and max score values
         inclusive_cut_points = [min_score]
         inclusive_cut_points.extend(cut_points)
@@ -512,7 +513,7 @@ def generate_students_info_from_demographic_counts(state_population, assessments
         perf_lvl_counts = [math.ceil(overall_counts[i]) for i in range(L_PERF_1, L_PERF_4 + 1)]
 
         raw_scores = generate_overall_scores(perf_lvl_counts, inclusive_cut_points, min_score, max_score, total_students, False)
-        asmt_scores = translate_scores_to_assessment_score(raw_scores, cut_points, assessment, eb_min_perc, eb_max_perc, eb_rand_adj_lo, eb_rand_adj_hi)
+        asmt_scores = claim_score_calculation.translate_scores_to_assessment_score(raw_scores, cut_points, assessment, eb_min_perc, eb_max_perc, eb_rand_adj_lo, eb_rand_adj_hi)
 
         score_pool_dict = create_asmt_score_pool_dict(asmt_scores)
         student_info_dict = generate_students_with_demographics(score_pool_dict, grade_demographic_totals, grade)
@@ -548,16 +549,19 @@ def create_student_info_dict(group_num, score_pool, demographic_totals, grade):
     Create a dictionary of student info objects
     '''
     student_info_dict = {perf_lvl: [] for perf_lvl in score_pool}
+    ordered_names = sorted(demographic_totals, key=lambda k: demographic_totals[k][L_TOTAL])
 
     # loop through possible genders and create the appropriate number of students for each Performance Level
-    for demo_name, demo_list in demographic_totals.items():
+    for demo_name in ordered_names:
+        demo_list = demographic_totals[demo_name]
         if demo_list[L_GROUPING] != group_num:
             continue
         for i in range(L_PERF_1, L_PERF_4 + 1):
             perf_lvl_count = math.ceil(demo_list[i])
             perf_lvl = i - 1
-            student_info_dict[perf_lvl] += create_student_infos_by_gender(demo_name, perf_lvl_count, perf_lvl,
-                                                                          score_pool, grade)
+            generated_student_info = create_student_infos_by_gender(demo_name, perf_lvl_count, perf_lvl,
+                                                                    score_pool, grade)
+            student_info_dict[perf_lvl] += generated_student_info
 
     return student_info_dict
 
@@ -570,8 +574,7 @@ def create_student_infos_by_gender(gender, count, performance_level, score_pool,
     score_list = score_pool[performance_level]
     for _i in range(count):
         if len(score_list) <= 0:
-            print('demographic_name', gender)
-            print('short by', count - _i, 'perf_lvl was', performance_level, 'grade', grade)
+            print('short by: ', count - _i, '\tperf_lvl was:', performance_level, '\tgrade:', grade, '\tdemographic_name:', gender)
             break
         index = random.randint(0, len(score_list) - 1)
         score = score_list.pop(index)
@@ -589,7 +592,11 @@ def assign_demographics_for_grouping(group_num, student_info_pool, demographic_t
     # Copy student_info pools lists
     student_info_dict = {perf_lvl: student_info_pool[perf_lvl][:] for perf_lvl in student_info_pool}
 
-    for demo_name, demo_list in demographic_totals.items():
+    # sort names by the number to be generated
+    ordered_demo_names = sorted(demographic_totals, key=lambda k: demographic_totals[k][L_TOTAL])
+
+    for demo_name in ordered_demo_names:
+        demo_list = demographic_totals[demo_name]
         if demo_list[L_GROUPING] != group_num:
             continue
         for i in range(L_PERF_1, L_PERF_4 + 1):
@@ -605,8 +612,7 @@ def assign_demographic_to_students(demographic_name, student_pool, count, perfor
     student_list = student_pool[performance_level]
     for _i in range(count):
         if len(student_list) <= 0:
-            print('demographic_name', demographic_name)
-            print('short by', count - _i, 'perf_lvl was', performance_level)
+            print('short by:', count - _i, '\tperf_lvl was:', performance_level, '\tdemographic_name:', demographic_name)
             break
         index = random.randint(0, len(student_list) - 1)
         student_info = student_list.pop(index)
@@ -634,42 +640,6 @@ def create_asmt_score_pool_dict(assessment_scores):
     return score_pl_dict
 
 
-def translate_scores_to_assessment_score(scores, cut_points, assessment, ebmin, ebmax, rndlo, rndhi):
-    '''
-    Translate a list of assessment scores to AssessmentScore objects
-    @param scores: list containing score integers
-    @param cut_points: list of cutpoint scores as integers
-    @param assessment: The assessment object that the outcome will be for
-    @param ebmin: The divisor of the minimum error band, taken from the config file
-    @param ebmax: The divisor of the maximum error band, taken from the config file
-    @param rndlo: The lower bound for getting the random adjustment of the error band
-    @param rndhi: The higher bound for getting the random adjustment of the error band
-    @return: list of AssessmentScore objects
-    '''
-    score_list = []
-
-    score_min = assessment.asmt_score_min
-    score_max = assessment.asmt_score_max
-
-    for score in scores:
-        perf_lvl = None
-        for i in range(len(cut_points)):
-            if score < cut_points[i]:
-                perf_lvl = i + 1  # perf lvls are >= 1
-                break
-        if perf_lvl is None and score >= cut_points[-1]:
-            perf_lvl = len(cut_points) + 1
-
-        scenter, ebmin, ebstep = calc_eb_params(score_min, score_max, ebmin, ebmax)
-        ebleft, ebright, _ebhalf = calc_eb(score, score_min, score_max, scenter, ebmin, ebstep, rndlo, rndhi)
-        claim_scores = calculate_claim_scores(score, assessment, ebmin, ebmax, rndlo, rndhi)
-        asmt_create_date = datetime.date.today().strftime('%Y%m%d')
-        asmt_score = generate_assessment_score(score, perf_lvl, round(ebleft), round(ebright), claim_scores, asmt_create_date)
-
-        score_list.append(asmt_score)
-    return score_list
-
-
 def get_flat_grades_list(school_config, grade_key):
     '''
     pull out grades from score_config and place in flat list
@@ -685,33 +655,6 @@ def get_flat_grades_list(school_config, grade_key):
     grades = list(set(grades))
 
     return grades
-
-
-def select_assessment_from_list(asmt_list, grade, subject):
-    '''
-    select the proper assessment from a list
-    @param asmt_list: A list of Assessment objects
-    @param grade: The grade to search for in the assessment list
-    @param subject: The subject to search for in the assessment list
-    @return: A single assessment object that has the grade and subject specified. None if no match found
-    '''
-    for asmt in asmt_list:
-        if asmt.asmt_grade == grade and asmt.asmt_subject.lower() == subject.lower():
-            return asmt
-
-
-def get_list_of_cutpoints(assessment):
-    '''
-    Given an assessment object, return a list of cutpoints
-    @param assessment: the assessment to create the list of cutpoints from
-    @return: A list of cutpoints
-    '''
-    # The cut_points in score details do not include min and max score.
-    # The score generator needs the min and max to be included
-    cut_points = [assessment.asmt_cut_point_1, assessment.asmt_cut_point_2, assessment.asmt_cut_point_3]
-    if assessment.asmt_cut_point_4:
-        cut_points.append(assessment.asmt_cut_point_4)
-    return cut_points
 
 
 def generate_non_teaching_staff(number_of_staff, from_date, most_recent, to_date, state_code='NA', district_guid='NA', school_guid='NA'):
@@ -767,47 +710,6 @@ def create_output_dict(output_path):
     return out_dict
 
 
-def calculate_claim_scores(asmt_score, assessment, ebmin, ebmax, rndlo, rndhi):
-    '''
-    Calculate a students claim scores from their overall score. Calculate the associated
-    claim error bands as well and store in ClaimScore Objects.
-    @param asmt_score: The integer value representing the students score on the assessment
-    @param assessment: the assessment object corresponding to the student's score
-    @param ebmin: The divisor of the minimum error band, taken from the config file
-    @param ebmax: The divisor of the maximum error band, taken from the config file
-    @param rndlo: The lower bound for getting the random adjustment of the error band
-    @param rndhi: The higher bound for getting the random adjustment of the error band
-    @return: a list of ClaimScore objects for the given score and assessment
-    '''
-    claim_scores = []
-    claim_list = [(assessment.asmt_claim_1_score_min, assessment.asmt_claim_1_score_max, assessment.asmt_claim_1_score_weight),
-                  (assessment.asmt_claim_2_score_min, assessment.asmt_claim_2_score_max, assessment.asmt_claim_2_score_weight),
-                  (assessment.asmt_claim_3_score_min, assessment.asmt_claim_3_score_max, assessment.asmt_claim_3_score_weight)]
-    percentages = [assessment.asmt_claim_1_score_weight, assessment.asmt_claim_2_score_weight, assessment.asmt_claim_3_score_weight]
-    if assessment.asmt_claim_4_name:
-        claim_list.append((assessment.asmt_claim_4_score_min, assessment.asmt_claim_4_score_max, assessment.asmt_claim_4_score_weight))
-        percentages.append(assessment.asmt_claim_4_score_weight)
-
-    range_min = assessment.asmt_claim_1_score_min
-    range_max = assessment.asmt_claim_1_score_max
-    weighted_claim_scores = stats.distribute_by_percentages(asmt_score, range_min, range_max, percentages)
-
-    for i in range(len(claim_list)):
-        # Get basic claim information from claim tuple
-        claim_minimum_score = claim_list[i][0]
-        claim_maximum_score = claim_list[i][1]
-        scaled_claim_score = weighted_claim_scores[i]
-
-        # calculate the claim score
-
-        scenter, ebmin, ebstep = calc_eb_params(claim_minimum_score, claim_maximum_score, ebmin, ebmax)
-        ebleft, ebright, _ebhalf = calc_eb(scaled_claim_score, claim_minimum_score, claim_maximum_score, scenter, ebmin, ebstep, rndlo, rndhi)
-        claim_score = generate_claim_score(scaled_claim_score, round(ebleft), round(ebright))
-        claim_scores.append(claim_score)
-
-    return claim_scores
-
-
 def prepare_csv_files(entity_to_path_dict):
     '''
     Erase each csv file and then add appropriate header
@@ -839,7 +741,7 @@ def generate_name_list_dictionary(list_name_to_path_dictionary):
     return name_list_dictionary
 
 
-def main(config_mod_name='dg_types', output_path=None):
+def main(config_mod_name='dg_types', output_path=None, do_pld_adjustment=True):
     t1 = datetime.datetime.now()
     config_module = import_module(config_mod_name)
 
@@ -848,7 +750,7 @@ def main(config_mod_name='dg_types', output_path=None):
     if output_path:
         output_dict = create_output_dict(output_path)
     # generate_data
-    generate_data_from_config_file(config_module, output_dict)
+    generate_data_from_config_file(config_module, output_dict, do_pld_adjustment)
 
     # print time
     t2 = datetime.datetime.now()
@@ -868,6 +770,8 @@ if __name__ == '__main__':
                         help='Specify the configuration module that informs that data creation process.', required=False)
     parser.add_argument('--output', dest='output_path', action='store',
                         help='Specify the location of the output csv files', required=False)
+    parser.add_argument('-N', '--no-pld-adjustment', dest='do_pld_adjustment', action='store_false',
+                        help='Specify this flag to generate data without applying the performance level adjustments')
     args = parser.parse_args()
 
-    main(args.config_module, args.output_path)
+    main(args.config_module, args.output_path, args.do_pld_adjustment)

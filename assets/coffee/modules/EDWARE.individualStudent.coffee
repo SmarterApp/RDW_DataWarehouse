@@ -213,10 +213,10 @@ define [
             e.find(".claims_tooltip").html() # template location: templates/individualStudent_report/claimsInfo.html
         
         # Generate footer links
-        legend = {}
-        legend['legendInfo'] = legendInfo.individual_student_report
-        legend['subject'] = createSampleInterval data.items[0], legendInfo.sample_intervals
-        $('#footer').generateFooter('individual_student_report', reportInfo, legend)
+        $('#footer').generateFooter('individual_student_report', reportInfo, {
+          'legendInfo': legendInfo.individual_student_report,
+          'subject': createSampleInterval data.items[0], legendInfo.sample_intervals
+        })
         
         # append user_info (e.g. first and last name)
         if data.user_info

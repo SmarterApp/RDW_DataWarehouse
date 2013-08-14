@@ -2,7 +2,7 @@ import random
 from uuid import uuid4
 from DataGeneration.src.generate_names import (generate_first_or_middle_name, generate_last_name,
                                                possibly_generate_middle_name)
-import DataGeneration.src.util as util
+import util as util
 
 
 class State:
@@ -200,39 +200,24 @@ class StudentInfo(object):
         student_demo = self.getDemoOfStudent('dmg_eth')
         if 'dmg_eth_2mr' in student_demo:
             # we do not want dmg_eth_2mr to be counted as a demographic
+            student_demos = random.sample(['dmg_eth_asn', 'dmg_eth_blk', 'dmg_eth_ami', 'dmg_eth_pcf', 'dmg_eth_wht'], 2)
+            for demo in student_demos:
+                setattr(self, demo, True)
             student_demo.remove('dmg_eth_2mr')
-        # since there is a gender value in student_demo. two or more races means len(student_demo) > 2
-        if len(student_demo) > 2 and 'dmg_eth_hsp' not in student_demo:
-            self.dmg_eth_2mr = True
-        else:
-            self.dmg_eth_2mr = False
+#         # since there is a gender value in student_demo. two or more races means len(student_demo) > 2
+#         if len(student_demo) > 2 and 'dmg_eth_hsp' not in student_demo:
+#             self.dmg_eth_2mr = True
+#         else:
+#             self.dmg_eth_2mr = False
 
-
-class StudentBioInfo:
-
-    def __init__(self, student_guid, first_name, last_name, address_1, dob, district_guid, state_code, gender, email, school_guid, zip_code, city, middle_name=None, address_2=None):
-
-        super().__init__(first_name, last_name, middle_name=middle_name)
-
-        # Ids can either be given to the constructor or provided by constructor
-        # Either way, both Id fields must have a value
-        id_generator = IdGen()
-        if student_guid is None:
-            self.student_guid = id_generator.get_id()
-        else:
-            self.student_guid = student_guid
-        if student_rec_id is None:
-            self.student_rec_id = id_generator.get_id()
-        else:
-            self.student_rec_id = student_rec_id
-
-        self.address_1 = address_1
-        self.address_2 = address_2
-        self.dob = dob
-        self.district_guid = district_guid
-        self.city = city
-        self.state_code = state_code
-        self.zip_code = zip_code
-        self.gender = gender
-        self.email = email
-        self.school_guid = school_guid
+    def get_stu_demo_list(self):
+        '''
+        Returns a list of boolean values for each demographic. The order is:
+        1. African American,
+        2. Asian,
+        3. Hispanic,
+        4. Native American / Alaskan Native,
+        5. Pacific Islander,
+        6. White
+        '''
+        return [self.dmg_eth_blk, self.dmg_eth_asn, self.dmg_eth_hsp, self.dmg_eth_ami, self.dmg_eth_pcf, self.dmg_eth_wht]

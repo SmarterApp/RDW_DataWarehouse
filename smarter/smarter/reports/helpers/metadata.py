@@ -7,7 +7,7 @@ from smarter.database.smarter_connector import SmarterDBConnection
 from smarter.reports.helpers.constants import Constants
 from sqlalchemy.sql import select
 import json
-from smarter.reports.utils.cache import cache_region
+from edapi.cache import cache_region
 
 
 @cache_region('public.shortlived')

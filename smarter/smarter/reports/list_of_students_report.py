@@ -16,9 +16,9 @@ from smarter.reports.helpers.assessments import get_overall_asmt_interval, \
 from edapi.exceptions import NotFoundException
 from smarter.security.context import select_with_context
 from smarter.database.smarter_connector import SmarterDBConnection
-from smarter.reports.utils.cache import cache_region
 from smarter.reports.helpers.metadata import get_subjects_map,\
     get_custom_metadata
+from edapi.cache import cache_region
 
 REPORT_NAME = "list_of_students"
 

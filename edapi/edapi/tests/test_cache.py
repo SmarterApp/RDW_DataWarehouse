@@ -4,10 +4,9 @@ Created on Jul 15, 2013
 @author: dip
 '''
 import unittest
-from smarter.reports.utils.cache import get_cache_key, region_invalidate,\
-    cache_region
 from beaker.cache import cache_managers, CacheManager
 from beaker.util import parse_cache_config_options
+from edapi.cache import cache_region, get_cache_key, region_invalidate
 
 
 def dummy_method(stateCode):
@@ -54,7 +53,7 @@ class TestCache(unittest.TestCase):
         before_invalidate = self.get_cache_key_count()
         region_invalidate(dummy_cache_method, 'dummyunittest', 'nyc')
         after_flush = self.get_cache_key_count()
-        self.assertTrue(before_invalidate < after_flush)
+        self.assertTrue(before_invalidate <= after_flush)
 
     def test_region_invalidate_valid_caching(self):
         dummy_cache_method('ny')

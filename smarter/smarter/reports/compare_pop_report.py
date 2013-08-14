@@ -17,10 +17,10 @@ from edapi.exceptions import NotFoundException
 from smarter.security.context import select_with_context
 from smarter.database.smarter_connector import SmarterDBConnection
 from smarter.reports.filters import Constants_filter_names
-from smarter.reports.utils.cache import cache_region
 from smarter.reports.filters.demographics import get_demographic_filter
 from smarter.reports.exceptions.parameter_exception import InvalidParameterException
 from smarter.reports.helpers.metadata import get_custom_metadata
+from edapi.cache import cache_region
 
 
 REPORT_NAME = "comparing_populations"

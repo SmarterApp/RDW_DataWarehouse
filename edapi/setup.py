@@ -9,7 +9,8 @@ install_requires = [
     'pyramid >= 1.3.1',
     'venusian >= 1.0a3',
     'validictory >= 0.8',
-    'simplejson']
+    'simplejson',
+    'Beaker']
 
 tests_require = [
     'WebTest >= 1.3.1',  # py3 compat

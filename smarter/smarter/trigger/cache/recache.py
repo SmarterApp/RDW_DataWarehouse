@@ -5,7 +5,7 @@ Created on Jun 20, 2013
 '''
 from smarter.reports.compare_pop_report import ComparingPopReport,\
     get_comparing_populations_cache_key, get_comparing_populations_cache_route
-from smarter.reports.utils.cache import region_invalidate
+from edapi.cache import region_invalidate
 
 
 class CacheTrigger(object):

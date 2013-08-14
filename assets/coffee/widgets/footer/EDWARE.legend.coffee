@@ -9,13 +9,16 @@ define [
   "text!CPopTemplate"
 ], ($, Mustache, edwareConfidenceLevelBar, edwarePopulationBar, edwareLOSConfidenceLevelBar, ISRTemplate, LOSTemplate, CPopTemplate) ->
 
+  # Legend base class.
+  # This is an abstract class, derived class should implement two functions: getTemplate() and createBar()
   class Legend
 
+    # constructor with legend information as parameter
     constructor: (@legend) ->
       this.subject = this.legend['subject']
 
+    # create legend in html format from mustache template
     create: (@container) ->
-      # create legend in html format from mustache template
       data = {}
       # create ALD intervals
       data['ALDs'] = this.createALDs this.subject
@@ -29,12 +32,15 @@ define [
       # create color bars
       this.createBar()
 
+    # get template of legend section
     getTemplate: ->
       ""
 
+    # create custom color bars
     createBar: ->
       ""
 
+    # create ALDs table
     createALDs: (items) ->
       # create intervals to display on ALD table
       ALDs = []
@@ -52,6 +58,7 @@ define [
       ALDs
 
 
+  # Legend section on comparing population report
   class CPopLegend extends Legend
 
     getTemplate: ->
@@ -64,6 +71,7 @@ define [
       this.container.find('.progressBar_tooltip').remove()
 
 
+  # Legend section on individual student report
   class ISRLegend extends Legend
 
     getTemplate: ->
@@ -78,6 +86,7 @@ define [
       output = edwareConfidenceLevelBar.create this.subject, 640
       $('#legendTemplate .confidenceLevel', this.container).html(output)
 
+  # Legend section on list of students report
   class LOSLegend extends Legend
 
     getTemplate: ->
@@ -86,10 +95,16 @@ define [
     createBar: ->
       output = edwareLOSConfidenceLevelBar.create this.subject, 110
       $('#legendTemplate .confidenceLevel', this.container).append(output)
+      # customize interval width and position
       $('.interval', this.container).css('margin-left', '89px').css('width', '28px')
       $('.indicator', this.container).css('margin-left', '98px')
 
   ( ($) ->
+
+    # jQuery extension for creating legend section
+    # 
+    # reportName: report name, should be one of three names: 'individual_student_report', 'list_of_students', 'comparing_populations'.
+    # data: contains legend info.
     $.fn.createLegend = (reportName, data) ->
       legend = undefined
       # create legend object

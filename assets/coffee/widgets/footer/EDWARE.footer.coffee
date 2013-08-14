@@ -8,10 +8,9 @@ define [
 ], ($, Mustache, bootstrap, edwareConfidenceLevelBar, footerTemplate, edwareLegend) ->
 
   $.fn.generateFooter = (reportName, content, legend) ->
-    self = this
-    data = {}
-    data['report_info'] = content[reportName]
-    self.html Mustache.to_html footerTemplate, data
+    this.html Mustache.to_html footerTemplate, {
+      'report_info': content[reportName]
+    }
     # show "Print" only on ISR
     if reportName isnt 'individual_student_report'
       $('#print').hide()

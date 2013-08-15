@@ -5,7 +5,7 @@ from celery.utils.log import get_task_logger
 from fileloader.file_loader import load_file
 from udl2_util.file_util import extract_file_name
 from udl2 import message_keys as mk
-from udl2_util.measurement import measure_cpu_plus_elasped_time
+from udl2_util.measurement import measure_cpu_plus_elasped_time, benchmarking_udl2
 
 
 logger = get_task_logger(__name__)
@@ -16,7 +16,7 @@ logger = get_task_logger(__name__)
 def task(msg):
     logger.info(task.name)
     logger.info('LOAD_CSV_TO_STAGING: Loading file <%s> to <%s> ' % (msg[mk.FILE_TO_LOAD], udl2_conf['udl2_db']['db_host']))
-    guid_batch = msg[mk.JOB_CONTROL][1]
+    guid_batch = msg[mk.GUID_BATCH]
     conf = generate_conf_for_loading(msg[mk.FILE_TO_LOAD], msg[mk.ROW_START], msg[mk.HEADERS], guid_batch)
     load_file(conf)
 

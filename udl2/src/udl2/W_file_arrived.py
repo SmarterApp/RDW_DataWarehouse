@@ -25,8 +25,7 @@ def task(incoming_msg):
     # Retrieve parameters from the incoming message
     uploaded_file = incoming_msg[mk.INPUT_FILE_PATH]
     lzw = incoming_msg[mk.LANDING_ZONE_WORK_DIR]
-    jc_table_conf = incoming_msg[mk.JOB_CONTROL]
-    guid_batch = jc_table_conf[1]
+    guid_batch = incoming_msg[mk.GUID_BATCH]
 
     logger.info('W_FILE_ARRIVED: received file <%s> with guid_batch = <%s>' % (uploaded_file, guid_batch))
 

@@ -5,6 +5,7 @@ import logging
 from celery.utils.log import get_task_logger
 import datetime
 from udl2.errorcodes import BATCH_REC_FAILED
+from udl2 import message_keys as mk
 
 
 def pre_etl_job(udl2_conf, log_file=None, load_type='Assessment'):
@@ -21,15 +22,16 @@ def pre_etl_job(udl2_conf, log_file=None, load_type='Assessment'):
         guid_batch = str(uuid4())
 
         # prepare content to be inserted into batch table
-        parm = {'guid_batch': guid_batch,
-                'load_type': load_type,
-                'working_schema': udl2_conf['udl2_db']['staging_schema'],
-                'udl_phase': 'PRE ETL',
-                'udl_leaf': str(False),
+        parm = {mk.GUID_BATCH: guid_batch,
+                mk.LOAD_TYPE: load_type,
+                mk.WORKING_SCHEMA: udl2_conf['udl2_db']['staging_schema'],
+                mk.UDL_PHASE: 'PRE ETL',
+                mk.UDL_LEAF: str(False),
+                mk.UDL_PHASE_STEP_STATUS: mk.SUCCESS
                 }
 
-        schema = parm['working_schema']
-        batch_table = udl2_conf['udl2_db']['batch_table_name']
+        schema = parm[mk.WORKING_SCHEMA]
+        batch_table = udl2_conf['udl2_db']['batch_table']
 
         # create the insertion query
         insert_query = queries.insert_batch_row_query(schema, batch_table, **parm)

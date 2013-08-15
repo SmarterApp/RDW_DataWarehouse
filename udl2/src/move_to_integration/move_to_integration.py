@@ -30,8 +30,8 @@ def move_data_from_staging_to_integration(conf):
                                        target_columns, source_columns_with_tran_rule)
     logger.debug(sql_query)
     except_msg = "problem when load data from staging table to integration table"
-    execute_queries(conn, [sql_query], except_msg, 'move_to_integration', 'move_data_from_staging_to_integration')
-    return
+    query_result = execute_queries(conn, [sql_query], except_msg, 'move_to_integration', 'move_data_from_staging_to_integration')
+    return query_result[0]
 
 
 @measure_cpu_plus_elasped_time

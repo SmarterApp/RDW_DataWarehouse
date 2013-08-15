@@ -17,11 +17,11 @@ def print_get_splitted_rows(amount, unit, action, module, function):
 
 @measure_cpu_plus_elasped_time
 def create_output_destination(file_name, output_path):
-    #create output template from supplied input file path
+    # create output template from supplied input file path
     base = os.path.splitext(os.path.basename(file_name))[0]
     output_name_template = base + '_part_'
 
-    #create output directory
+    # create output directory
     output_dir = output_path
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
@@ -37,11 +37,11 @@ def run_command(cmd_string):
 
 @measure_cpu_plus_elasped_time
 def check_row_count(file_name):
-    #get line count of original file
+    # get line count of original file
     word_count_cmd = "wc %s" % file_name
     output, err = run_command(word_count_cmd)
     totalrows = int(output.split()[0])
-    #windows encoded csvs should have exactly one row
+    # windows encoded csvs should have exactly one row
     if totalrows <= 1:
         raise Exception('Unable to split, file has %s rows' % str(totalrows))
     return None
@@ -50,20 +50,20 @@ def check_row_count(file_name):
 @measure_cpu_plus_elasped_time
 def get_list_split_files(output_name_template, output_dir):
     output_list = []
-    #get line count of all files in output directory that match template
+    # get line count of all files in output directory that match template
     get_files_command = 'wc %s*' % os.path.join(output_dir, output_name_template)
     output, err = run_command(get_files_command)
 
     list_of_result_rows = output.splitlines()
 
-    #record filename, line count as well as the calculated row start position
+    # record filename, line count as well as the calculated row start position
     for each in range(len(list_of_result_rows)):
         line_count, word_count, char_count, filename = list_of_result_rows[each].split()
         if each == 0:
             row_start = 1
         else:
             row_start = output_list[each - 1][1] * each + 1
-        #if statement excludes 'total' row from command response
+        # if statement excludes 'total' row from command response
         if output_name_template in filename.decode('utf-8'):
             output_list.append([filename.decode('utf-8'), int(line_count), row_start])
 
@@ -96,10 +96,12 @@ def split_file(file_name, delimiter=',', row_limit=10000, parts=0, output_path='
     print(remove_header_cmd)
     run_command(remove_header_cmd)
 
-    word_count_cmd = "wc {output_path}noheaders.csv".format(output_path=output_path)
+    # command to get file line count, and size
+    word_count_cmd = "wc -l -c {output_path}noheaders.csv".format(output_path=output_path)
     print(word_count_cmd)
     output, err = run_command(word_count_cmd)
     totalrows = int(output.split()[0])
+    filesize = round(int(output.split()[1]) / 1000)
     print_get_splitted_rows(totalrows, 'rows', 'splitted', 'file_splitter', 'split_file')
     # if going by parts, get total rows and define row limit
     if parts > 0:
@@ -132,7 +134,7 @@ def split_file(file_name, delimiter=',', row_limit=10000, parts=0, output_path='
     end_time = datetime.datetime.now()
     execution_time = end_time - start_time
     # print('The file splitter completed at %s with an execution time of %s for %s rows into %s files' % (str(end_time)[:-3],str(execution_time)[:-3],totalrows,len(split_file_list)))
-    return split_file_list, header_path
+    return split_file_list, header_path, totalrows, filesize
 
 
 if __name__ == "__main__":
@@ -140,7 +142,7 @@ if __name__ == "__main__":
     parser.add_argument('inputfile', help='input file path')
     parser.add_argument('-o', '--output', default='.', help='output file path')
 
-    #can split only by rows or parts, not both
+    # can split only by rows or parts, not both
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-r', '--rows', type=int, default=10000, help='number of rows per each output file')
     group.add_argument('-p', '--parts', type=int, default=0, help='number of parts to split file into, regardless of rows')

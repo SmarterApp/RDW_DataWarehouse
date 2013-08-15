@@ -5,17 +5,16 @@ from sfv.simple_file_validator import SimpleFileValidator
 from udl2_util.file_util import get_expanded_dir
 import os
 import udl2.message_keys as mk
-from udl2_util.measurement import measure_cpu_plus_elasped_time
+from udl2_util.measurement import measure_cpu_plus_elasped_time, benchmarking_udl2
 
 logger = get_task_logger(__name__)
 
 
 @celery.task(name="udl2.W_file_validator.task")
-@measure_cpu_plus_elasped_time
+@benchmarking_udl2
 def task(msg):
     lzw = msg[mk.LANDING_ZONE_WORK_DIR]
-    jc = msg[mk.JOB_CONTROL]
-    guid_batch = jc[1]
+    guid_batch = msg[mk.GUID_BATCH]
 
     expanded_dir = get_expanded_dir(lzw, guid_batch)
 
@@ -33,6 +32,10 @@ def task(msg):
             # TODO: Jump to ERROR_TASK
             for error in errors:
                 print('ERROR: ' + str(error))
+
+    # benchmark
+    benchmark = {mk.TASK_ID: str(task.request.id)}
+    return benchmark
 
 
 # TODO: Actually implement get_number_of_parts()

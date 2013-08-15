@@ -46,7 +46,7 @@ def explode_data_to_fact_table(conf, source_table, target_table, column_mapping,
     # execute above four queries in order, 2 parts
     # print("I am the exploder, about to copy data into fact table with fake inst_hier_rec_id")
     start_time_p1 = datetime.datetime.now()
-    execute_queries(conn, queries[0:2], 'Exception -- exploding data from integration to fact table part 1', 'move_to_target', 'explode_data_to_fact_table')
+    affected_rows_first = execute_queries(conn, queries[0:2], 'Exception -- exploding data from integration to fact table part 1', 'move_to_target', 'explode_data_to_fact_table')
     finish_time_p1 = datetime.datetime.now()
     _spend_time_p1 = calculate_spend_time_as_second(start_time_p1, finish_time_p1)
     # print("I am the exploder, copied data into fact table with fake inst_hier_rec_id in %.3f seconds" % _spend_time_p1)
@@ -58,6 +58,9 @@ def explode_data_to_fact_table(conf, source_table, target_table, column_mapping,
     # print("I am the exploder, updated inst_hier_rec_id as value in dim_inst_hier in %.3f seconds" % _spend_time_p2)
 
     conn.close()
+
+    # returns the number of rows that are inserted into fact table. It maps to the second query result
+    return affected_rows_first[1]
 
 
 @measure_cpu_plus_elasped_time
@@ -154,9 +157,11 @@ def explode_data_to_dim_table(conf, source_table, target_table, column_mapping, 
     logger.info(query)
 
     # execute the query
-    execute_queries(conn, [query], 'Exception -- exploding data from integration to target {target_table}'.format(target_table=target_table),
-                    'move_to_target', 'explode_data_to_dim_table')
+    affected_rows = execute_queries(conn, [query], 'Exception -- exploding data from integration to target {target_table}'.format(target_table=target_table),
+                                    'move_to_target', 'explode_data_to_dim_table')
     conn.close()
+
+    return affected_rows
 
 
 @measure_cpu_plus_elasped_time

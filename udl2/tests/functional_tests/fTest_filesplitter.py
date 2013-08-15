@@ -29,7 +29,7 @@ class TestFileSplitter(unittest.TestCase):
         output_file.close()
 
     def test_parts(self):
-        output_list, header_path = file_splitter.split_file(self.test_file_name, parts=5, output_path=self.conf['zones']['tests'] + 'splitter_test/')
+        output_list, header_path, totalrows, filesize = file_splitter.split_file(self.test_file_name, parts=5, output_path=self.conf['zones']['tests'] + 'splitter_test/')
         print(self.test_file_name)
         print(output_list)
         print(header_path)
@@ -45,7 +45,7 @@ class TestFileSplitter(unittest.TestCase):
                     assert int(row[0].strip('Row')) == i
 
     def test_rowlimit(self):
-        output_list, header_path = file_splitter.split_file(self.test_file_name, row_limit=5, output_path=self.conf['zones']['tests'] + 'splitter_test/')
+        output_list, header_path, totalrows, filesize = file_splitter.split_file(self.test_file_name, row_limit=5, output_path=self.conf['zones']['tests'] + 'splitter_test/')
         assert len(output_list) == 2
         for entry in output_list:
             assert 'test_part_' in entry[0]

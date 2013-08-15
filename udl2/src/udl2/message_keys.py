@@ -4,7 +4,6 @@ __author__ = 'abrien'
 
 # LZ to file_arrived
 INPUT_FILE_PATH = 'input_file_path'
-JOB_CONTROL = 'job_control'
 LANDING_ZONE_WORK_DIR = 'landing_zone_work_dir'
 GUID_BATCH = 'guid_batch'
 
@@ -65,3 +64,18 @@ INT_TABLE_TYPE = 'load_to_integration_table_type'
 
 # move to target
 MOVE_TO_TARGET = 'move_to_target'
+
+# for benchmarking
+UDL_PHASE = 'udl_phase'
+UDL_LEAF = 'udl_leaf'
+SIZE_RECORDS = 'size_records'
+SIZE_UNITS = 'size_units'
+TASK_ID = 'task_id'
+LOAD_TYPE = 'load_type'
+WORKING_SCHEMA = 'working_schema'
+START_TIMESTAMP = 'start_timestamp'
+END_TIMESTAMP = 'end_timestamp'
+DURATION = 'duration'
+UDL_PHASE_STEP_STATUS = 'udl_phase_step_status'
+SUCCESS = 'SUCCESS'
+BATCH_TABLE = 'batch_table'

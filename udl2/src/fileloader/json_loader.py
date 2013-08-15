@@ -32,8 +32,8 @@ def load_json(conf):
 
     json_dict = read_json_file(conf[mk.FILE_TO_LOAD])
     flattened_json = flatten_json_dict(json_dict, conf[mk.MAPPINGS])
-    load_to_table(flattened_json, conf[mk.GUID_BATCH], conf[mk.TARGET_DB_HOST], conf[mk.TARGET_DB_NAME], conf[mk.TARGET_DB_USER], conf[mk.TARGET_DB_PORT],
-                  conf[mk.TARGET_DB_PASSWORD], conf[mk.TARGET_DB_TABLE], conf[mk.TARGET_DB_SCHEMA])
+    return load_to_table(flattened_json, conf[mk.GUID_BATCH], conf[mk.TARGET_DB_HOST], conf[mk.TARGET_DB_NAME], conf[mk.TARGET_DB_USER], conf[mk.TARGET_DB_PORT],
+                         conf[mk.TARGET_DB_PASSWORD], conf[mk.TARGET_DB_TABLE], conf[mk.TARGET_DB_SCHEMA])
 
 
 @measure_cpu_plus_elasped_time
@@ -110,10 +110,11 @@ def load_to_table(data_dict, guid_batch, db_host, db_name, db_user, db_port, db_
 
     # create insert statement and execute
     insert_into_int_table = s_int_table.insert().values(**data_dict)
-    db_util.execute_queries(conn, [insert_into_int_table], 'Exception in loading assessment data -- ', 'json_loader', 'load_to_table')
+    affected_row = db_util.execute_queries(conn, [insert_into_int_table], 'Exception in loading assessment data -- ', 'json_loader', 'load_to_table')
 
     # Close connection
     conn.close()
+    return affected_row[0]
 
 
 @measure_cpu_plus_elasped_time

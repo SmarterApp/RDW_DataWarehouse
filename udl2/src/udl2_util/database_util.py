@@ -46,10 +46,13 @@ def execute_queries(conn, list_of_queries, except_msg, caller_module=None, calle
     trans = conn.begin()
     # execute queries
     try:
+        row_affected_list = []
         for query in list_of_queries:
             result = conn.execute(query)
-            print_get_affected_rows(result, 'moved', caller_module, caller_func)
+            count = result.rowcount
+            row_affected_list.append(count)
         trans.commit()
+        return row_affected_list
     except Exception as e:
         print(except_msg, e)
         trans.rollback()

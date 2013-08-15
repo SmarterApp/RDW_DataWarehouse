@@ -6,7 +6,7 @@ from udl2 import message_keys as mk
 from move_to_target.move_to_target import explode_data_to_dim_table, explode_data_to_fact_table, get_table_column_types, calculate_spend_time_as_second
 from celery import group
 import datetime
-from udl2_util.measurement import measure_cpu_plus_elasped_time
+from udl2_util.measurement import measure_cpu_plus_elasped_time, benchmarking_udl2
 from move_to_target import create_queries as queries
 from udl2_util.database_util import connect_db, execute_query_with_result
 from collections import OrderedDict
@@ -17,7 +17,7 @@ logger = get_task_logger(__name__)
 
 #*************implemented via group*************
 @celery.task(name='udl2.W_load_from_integration_to_star.explode_to_dims')
-@measure_cpu_plus_elasped_time
+@benchmarking_udl2
 def explode_to_dims(msg):
     '''
     This is the celery task to move data from integration tables to dim tables.
@@ -30,7 +30,16 @@ def explode_to_dims(msg):
                                         for dim_table, source_table in table_map.items()])
     result_uuid = group(*grouped_tasks)()
     msg['dim_tables'] = result_uuid.get()
-    return msg
+
+    total_affected_rows = 0
+    for dim_table_result in msg['dim_tables']:
+        total_affected_rows += dim_table_result[mk.SIZE_RECORDS][0]
+
+    benchmark = {mk.TASK_ID: str(explode_to_dims.request.id),
+                 mk.WORKING_SCHEMA: conf[mk.TARGET_DB_SCHEMA],
+                 mk.SIZE_RECORDS: total_affected_rows
+                 }
+    return benchmark
 
 
 @measure_cpu_plus_elasped_time
@@ -99,14 +108,22 @@ def explode_data_to_dim_table_task(conf, source_table, dim_table, column_mapping
     '''
     logger.info('LOAD_FROM_INT_TO_STAR: migrating source table <%s> to <%s>' % (source_table, dim_table))
     start_time = datetime.datetime.now()
-    explode_data_to_dim_table(conf, source_table, dim_table, column_mapping, column_types)
+    affected_rows = explode_data_to_dim_table(conf, source_table, dim_table, column_mapping, column_types)
     finish_time = datetime.datetime.now()
     _time_as_seconds = calculate_spend_time_as_second(start_time, finish_time)
     # print('I am the exploder, moved data from %s into dim table %s in %.3f seconds' % (source_table, dim_table, _time_as_seconds))
+    benchmark = {mk.UDL_PHASE: 'INT --> DIM:' + dim_table,
+                 mk.SIZE_RECORDS: affected_rows,
+                 mk.TASK_ID: str(explode_data_to_dim_table_task.request.id),
+                 mk.GUID_BATCH: conf[mk.GUID_BATCH],
+                 mk.WORKING_SCHEMA: conf[mk.TARGET_DB_SCHEMA],
+                 mk.UDL_LEAF: True
+                 }
+    return benchmark
 
 
 @celery.task(name='udl2.W_load_from_integration_to_star.explode_to_fact')
-@measure_cpu_plus_elasped_time
+@benchmarking_udl2
 def explode_to_fact(msg):
     '''
     This is the celery task to move data from integration table to fact table.
@@ -123,12 +140,19 @@ def explode_to_fact(msg):
     source_table_for_fact_table = list(fact_table_map.values())[0]
     fact_column_types = get_table_column_types(conf, fact_table, list(fact_column_map[fact_table].keys()))
 
-    explode_data_to_fact_table(conf, source_table_for_fact_table, fact_table, fact_column_map[fact_table], fact_column_types)
+    affected_rows = explode_data_to_fact_table(conf, source_table_for_fact_table, fact_table, fact_column_map[fact_table], fact_column_types)
 
     finish_time = datetime.datetime.now()
     _time_as_seconds = calculate_spend_time_as_second(start_time, finish_time)
     # print('I am the exploder, copied data from staging table into fact table in %.3f seconds' % _time_as_seconds)
-    return guid_batch
+
+    benchmark = {mk.UDL_PHASE: 'INT --> FACT TABLE',
+                 mk.TASK_ID: str(explode_to_fact.request.id),
+                 mk.GUID_BATCH: guid_batch,
+                 mk.WORKING_SCHEMA: conf[mk.TARGET_DB_SCHEMA],
+                 mk.SIZE_RECORDS: affected_rows
+                 }
+    return benchmark
 
 
 @celery.task(name="udl2.W_load_from_integration_to_star.error_handler")

@@ -25,7 +25,7 @@ from preetl.pre_etl import pre_etl_job
 # DATAFILES = os.path.join(ROOT_DIRECTORY, 'datafiles')
 
 
-def start_pipeline(csv_file_path, json_file_path, udl2_conf):
+def start_pipeline(csv_file_path, json_file_path, udl2_conf, load_type='Assessment'):
     '''
     Begins the UDL Pipeline process by copying the file found at 'csv_file_path' to the landing zone arrivals dir and
     initiating our main pipeline chain.
@@ -49,27 +49,28 @@ def start_pipeline(csv_file_path, json_file_path, udl2_conf):
 
     # Prepare parameters for task msgs
     archived_file = os.path.join('fake', 'path', 'to', 'fake_archived_file.zip')
-    guid_batch = pre_etl_job(udl2_conf)
+    guid_batch = pre_etl_job(udl2_conf, load_type=load_type)
     if guid_batch is None:
         print("CANNOT GENERATE guid_batch in PRE ETL, UDL2 PIPELINE STOPPED")
         return
 
     lzw = udl2_conf['zones']['work']
-    jc_table = {}
-    jc = (jc_table, guid_batch)
+    jc_batch_table = udl2_conf['udl2_db']['batch_table']
+        
+    # generate common message for each stage
+    common_msg = generate_common_message(jc_batch_table, guid_batch, load_type)
 
     # TODO: After implementing expander, change generate_message_for_file_arrived() so it includes the actual zipped file.
-    arrival_msg = generate_message_for_file_arrived(archived_file, lzw, jc)
-
-    expander_msg = generate_file_expander_msg(lzw, archived_file, jc)
+    arrival_msg = generate_message_for_file_arrived(archived_file, lzw, common_msg)
+    expander_msg = generate_file_expander_msg(lzw, archived_file, common_msg)
     expander_msg = extend_file_expander_msg_temp(expander_msg, json_file_path, csv_file_path)
 
-    simple_file_validator_msg = generate_file_validator_msg(lzw, jc)
-    splitter_msg = generate_splitter_msg(lzw, jc)
-    file_content_validator_msg = generate_file_content_validator_msg()
-    load_json_msg = generate_load_json_msg(lzw, jc)
-    load_to_int_msg = generate_load_to_int_msg(jc)
-    integration_to_star_msg = generate_integration_to_star_msg(guid_batch)
+    simple_file_validator_msg = generate_file_validator_msg(lzw, common_msg)
+    splitter_msg = generate_splitter_msg(lzw, common_msg)
+    file_content_validator_msg = generate_file_content_validator_msg(common_msg)
+    load_json_msg = generate_load_json_msg(lzw, common_msg)
+    load_to_int_msg = generate_load_to_int_msg(common_msg)
+    integration_to_star_msg = generate_integration_to_star_msg(common_msg)
 
     pipeline_chain_1 = chain(W_file_arrived.task.si(arrival_msg), W_file_expander.task.si(expander_msg),
                              W_simple_file_validator.task.si(simple_file_validator_msg), W_file_splitter.task.si(splitter_msg),
@@ -78,26 +79,30 @@ def start_pipeline(csv_file_path, json_file_path, udl2_conf):
                              W_load_from_integration_to_star.explode_to_dims.si(integration_to_star_msg),
                              W_load_from_integration_to_star.explode_to_fact.si(integration_to_star_msg))
 
-    result = pipeline_chain_1.delay()
+    result = pipeline_chain_1.delay()    
 
 
-def generate_message_for_file_arrived(archived_file_path, lzw, jc):
+def generate_common_message(jc_batch_table, guid_batch, load_type):
+    return {mk.BATCH_TABLE: jc_batch_table,
+            mk.GUID_BATCH: guid_batch,
+            mk.LOAD_TYPE: load_type
+            }
+
+
+def generate_message_for_file_arrived(archived_file_path, lzw, common_message):
     msg = {
         mk.INPUT_FILE_PATH: archived_file_path,
-        mk.LANDING_ZONE_WORK_DIR: lzw,
-        mk.JOB_CONTROL: jc
+        mk.LANDING_ZONE_WORK_DIR: lzw
     }
-    return msg
+    return combine_messages(common_message, msg)
 
 
-def generate_file_expander_msg(landing_zone_work_dir, file_to_expand, jc):
+def generate_file_expander_msg(landing_zone_work_dir, file_to_expand, common_message):
     msg = {
         mk.LANDING_ZONE_WORK_DIR: landing_zone_work_dir,
-        mk.FILE_TO_EXPAND: file_to_expand,
-        # Tuple containing config info for job control table and the guid_batch for the file upload
-        mk.JOB_CONTROL: jc
-    }
-    return msg
+        mk.FILE_TO_EXPAND: file_to_expand
+        }
+    return combine_messages(common_message, msg)
 
 
 def extend_file_expander_msg_temp(msg, json_filename, csv_filename):
@@ -106,42 +111,36 @@ def extend_file_expander_msg_temp(msg, json_filename, csv_filename):
     return msg
 
 
-def generate_file_validator_msg(landing_zone_work_dir, job_control):
+def generate_file_validator_msg(landing_zone_work_dir, common_message):
+    msg = {mk.LANDING_ZONE_WORK_DIR: landing_zone_work_dir}
+    return combine_messages(common_message, msg)
+
+
+def generate_splitter_msg(lzw, common_message):
     msg = {
-        mk.LANDING_ZONE_WORK_DIR: landing_zone_work_dir,
-        mk.JOB_CONTROL: job_control
-    }
-    return msg
-
-
-def generate_splitter_msg(lzw, jc):
-    splitter_msg = {
         mk.LANDING_ZONE_WORK_DIR: lzw,
-        mk.JOB_CONTROL: jc,
         # TODO: remove hard-coded 4
         mk.PARTS: 4
     }
-    return splitter_msg
+    return combine_messages(common_message, msg)
 
 
-def generate_file_content_validator_msg():
+def generate_file_content_validator_msg(common_message):
     # TODO: Implement me please, empty maps are boring.
-    return {}
+    msg = {}
+    return combine_messages(common_message, msg)
 
 
-def generate_load_json_msg(lzw, jc):
+def generate_load_json_msg(lzw, common_message):
     msg = {
-        mk.LANDING_ZONE_WORK_DIR: lzw,
-        mk.JOB_CONTROL: jc
-    }
-    return msg
+        mk.LANDING_ZONE_WORK_DIR: lzw
+        }
+    return combine_messages(common_message, msg)
 
 
-def generate_load_to_int_msg(jc):
-    msg = {
-        mk.JOB_CONTROL: jc
-    }
-    return msg
+def generate_load_to_int_msg(common_message):
+    msg = {}
+    return combine_messages(common_message, msg)
 
 
 def generate_msg_report_error(email):
@@ -151,21 +150,19 @@ def generate_msg_report_error(email):
     return msg
 
 
-def generate_move_to_target(job_control):
+def generate_integration_to_star_msg(common_message):
     msg = {
-        mk.GUID_BATCH: job_control[1]
-    }
-    return msg
-
-
-def generate_integration_to_star_msg(guid_batch):
-    msg = {
-        mk.GUID_BATCH: guid_batch,
         mk.PHASE: 4
-
     }
-    return msg
+    return combine_messages(common_message, msg)
 
+
+def combine_messages(msg1, msg2):
+    '''
+    Combine two dictionary into one dictionary.
+    If msg1 and msg2 has the same key, returns the value in the msg2
+    '''
+    return dict(list(msg1.items()) + list(msg2.items()))
 
 def create_unique_file_name(file_path):
     '''

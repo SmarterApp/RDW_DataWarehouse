@@ -23,8 +23,7 @@ def task(incoming_msg):
     # Retrieve parameters from the incoming message
     file_to_expand = incoming_msg[mk.FILE_TO_EXPAND]
     lzw = incoming_msg[mk.LANDING_ZONE_WORK_DIR]
-    job_control = incoming_msg[mk.JOB_CONTROL]
-    guid_batch = job_control[1]
+    guid_batch = incoming_msg[mk.GUID_BATCH]
 
     expanded_dir = file_util.get_expanded_dir(lzw, guid_batch)
     print('before create_directory', expanded_dir)

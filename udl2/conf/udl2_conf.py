@@ -69,7 +69,7 @@ udl2_conf = {
         'staging_schema': 'udl2',
         'integration_schema': 'udl2',
         'ref_table_name': 'REF_COLUMN_MAPPING',
-        'batch_table_name': 'UDL_BATCH',
+        'batch_table': 'UDL_BATCH',
         'db_host': 'localhost',
         'db_port': '5432',
         'db_name': 'udl2',

@@ -68,7 +68,7 @@ UDL_METADATA = {
                 ('guid_batch', False, 'varchar(256)', '', False, "Batch guid which caused the record insert"),
                 ('load_type', False, 'varchar(50)', '', True, ""),
                 ('working_schema', False, 'varchar(50)', '', True, ""),
-                ('udl_phase', False, 'varchar(50)', '', True, ""),
+                ('udl_phase', False, 'varchar(256)', '', True, ""),
                 ('udl_phase_step', False, 'varchar(50)', '', True, ""),
                 ('udl_phase_step_status', False, 'varchar(50)', '', True, ""),
                 ('udl_leaf', False, 'bool', '', True, ""),

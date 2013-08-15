@@ -8,22 +8,26 @@ from udl2.celery import celery, udl2_conf
 from udl2 import message_keys as mk
 from celery.utils.log import get_task_logger
 from move_to_integration.move_to_integration import move_data_from_staging_to_integration
-from udl2_util.measurement import measure_cpu_plus_elasped_time
+from udl2_util.measurement import measure_cpu_plus_elasped_time, benchmarking_udl2
 
 logger = get_task_logger(__name__)
 
 
 #*************implemented via chord*************
 @celery.task(name="udl2.W_load_to_integration_table.task")
-@measure_cpu_plus_elasped_time
+@benchmarking_udl2
 def task(msg):
     logger.info("LOAD_FROM_STAGING_TO_INT: Migrating data from staging to integration.")
-    guid_batch = msg[mk.JOB_CONTROL][1]
+    guid_batch = msg[mk.GUID_BATCH]
     conf = generate_conf(guid_batch)
-    move_data_from_staging_to_integration(conf)
-    # print("Moved data from staging tables to integration tables")
+    affected_rows = move_data_from_staging_to_integration(conf)
 
-    return msg
+    # benchmark
+    benchmark = {mk.SIZE_RECORDS: affected_rows,
+                 mk.TASK_ID: str(task.request.id),
+                 mk.WORKING_SCHEMA: conf[mk.TARGET_DB_SCHEMA]
+                 }
+    return benchmark
 
 
 @measure_cpu_plus_elasped_time

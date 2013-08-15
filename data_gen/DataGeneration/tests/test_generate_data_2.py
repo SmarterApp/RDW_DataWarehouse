@@ -3,12 +3,162 @@ Created on Aug 6, 2013
 
 @author: swimberly
 '''
+from datetime import date
+import unittest
+import csv
+import os
+
+from DataGeneration.src.entities import InstitutionHierarchy, Staff
 import generate_data_2 as gd2
 import helper_entities as he
-import unittest
+from generate_entities import generate_assessments
+import demographics as dmg
+import state_population as sp
+
+__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
 
 class Test(unittest.TestCase):
+
+    def setUp(self):
+        self.from_date = '20120901'
+        self.to_date = None
+        self.most_recent = True
+        self.date_taken_year = '2012'
+
+        self.entity_to_path_dict = {DummyEntity1: os.path.join(__location__, 'dummy_ent_1.fortest'),
+                                    DummyEntity2: os.path.join(__location__, 'dummy_ent_2.fortest')}
+        self.csv_file_names = {DummyEntity1: 'dummy_ent_1.fortest',
+                               DummyEntity2: 'dummy_ent_2.fortest'}
+        self.csv_file = write_demographics_csv()
+        self.demo_obj = dmg.Demographics(self.csv_file)
+        self.demo_id = 'typical1'
+        self.state_population = sp.StatePopulation('Test', 'TS', 'typical_1')
+        self.state_population.populate_state(get_state_types()['typical_1'], get_district_types(), get_school_types())
+        self.state_population.get_state_demographics(self.demo_obj, self.demo_id)
+        self.error_band_dict = {'min_divisor': 32, 'max_divisor': 8, 'random_adjustment_points_lo': -10, 'random_adjustment_points_hi': 25}
+
+    def test_generate_data_from_config_file(self):
+        pass
+
+    def test_output_generated_data_to_csv(self):
+        pass
+
+    def test_get_values_from_config(self):
+        pass
+
+    def test_generate_state_populations(self):
+        pass
+
+    def test_generate_real_states(self):
+        pass
+
+    def test_get_school_population(self):
+        pass
+
+    def test_generate_teachers_for_sections(self):
+        pass
+
+    def test_set_student_institution_information(self):
+        pass
+
+    def test_assign_students_sections(self):
+        pass
+
+    def test_set_students_asmt_info(self):
+        pass
+
+    def test_apply_subject_percentages(self):
+        pass
+
+    def test_get_students_by_counts(self):
+        pass
+
+#     def test_create_schools(self):
+#         district_pop = sp.DistrictPopulation('Big Average')
+#         district_pop.populate_district(get_district_types()['Big Average'], get_school_types())
+#         district_pop.determine_district_demographics(self.demo_obj, self.demo_id)
+#
+#         school_names = ['s{0}'.format(i) for i in range(30)]
+#         street_names = ['st{0}'.format(i) for i in range(30)]
+#         district = he.District('guid1', 'District9', 'Big Average', district_pop.schools)
+#         subject_percentages = {'Math': .99, 'ELA': .99}
+#         assessments = generate_assessments([3, 4, 5, 6, 7, 8, 11], [1400, 1800, 2100], date.today(), True)
+#         student_info_dict = gd2.generate_students_info_from_demographic_counts(self.state_population, assessments, self.error_band_dict)
+#
+#         result = gd2.create_schools(district, school_names, school_names, student_info_dict, subject_percentages,
+#                                     self.demo_obj, self.demo_id, assessments, self.error_band_dict, 'Test', 'TS',
+#                                     date.today(), True, None, street_names)
+#
+#         self.assertEqual(len(result), len(district_pop.schools))
+#         for school in result:
+#             self.assertEqual(len(school.student_info), 50)
+#             self.assertEqual(len(school.teachers), 2)
+#             self.assertEqual(len(school.sections), 2)
+
+    def test_create_districts(self):
+        district_names = ['n{0}'.format(i) for i in range(30)]
+        school_names = ['s{0}'.format(i) for i in range(30)]
+        street_names = ['st{0}'.format(i) for i in range(30)]
+        subject_percentages = {'Math': .99, 'ELA': .99}
+        assessments = generate_assessments([3, 4, 5, 6, 7, 8, 11], [1400, 1800, 2100], date.today(), True)
+        student_info_dict = gd2.generate_students_info_from_demographic_counts(self.state_population, assessments, self.error_band_dict)
+
+        results = gd2.create_districts(self.state_population, district_names, district_names, school_names, school_names,
+                                       student_info_dict, subject_percentages, self.demo_obj, self.demo_id, assessments,
+                                       self.error_band_dict, "Test", 'TS', date.today(), True, None, street_names)
+
+        # taken from state_types dict
+        expected_district_count = 3
+        self.assertEqual(len(results), expected_district_count)
+        for district in results:
+            self.assertEqual(len(district.staff), 10)
+            self.assertEqual(len(district.schools), 10)
+
+    def test_generate_students_info_from_demographic_counts_overall_counts(self):
+        state_pop = DummyClass()
+        state_pop.subject = 'math'
+        grade = 3
+        state_pop.state_demographic_totals = {3: {'all': [0, 72, 18, 18, 18, 18],
+                                                  'male': [1, 20, 5, 5, 5, 5],
+                                                  'female': [1, 24, 6, 6, 6, 6],
+                                                  'not_stated': [1, 28, 7, 7, 7, 7],
+                                                  'dmg_eth_ami': [2, 48, 12, 12, 12, 12],
+                                                  'dmg_eth_blk': [2, 24, 6, 6, 6, 6]}
+                                              }
+        assessments = generate_assessments([grade], [1400, 1800, 2100], date.today(), True)
+
+        result = gd2.generate_students_info_from_demographic_counts(state_pop, assessments, self.error_band_dict)
+
+        self.assertEqual(len(result[grade][1]), 18)
+        self.assertEqual(len(result[grade][2]), 18)
+        self.assertEqual(len(result[grade][3]), 18)
+        self.assertEqual(len(result[grade][4]), 18)
+
+    def test_generate_students_info_from_demographic_counts_counts(self):
+        state_pop = DummyClass()
+        state_pop.subject = 'math'
+        grade = 3
+        state_pop.state_demographic_totals = {3: {'all': [0, 72, 18, 18, 18, 18],
+                                                  'male': [1, 20, 5, 5, 5, 5],
+                                                  'female': [1, 24, 6, 6, 6, 6],
+                                                  'not_stated': [1, 28, 7, 7, 7, 7],
+                                                  'dmg_eth_ami': [2, 48, 12, 12, 12, 12],
+                                                  'dmg_eth_blk': [2, 24, 5.5, 5.2, 6, 6]}
+                                              }
+        assessments = generate_assessments([grade], [1400, 1800, 2100], date.today(), True)
+
+        result = gd2.generate_students_info_from_demographic_counts(state_pop, assessments, self.error_band_dict)
+
+        self.assertEqual(len(result[grade]), 4)
+        for pl in result[grade]:
+            counts = {'male': 0, 'female': 0, 'not_stated': 0, 'dmg_eth_ami': 0, 'dmg_eth_blk': 0}
+            expected_counts = {'male': 5, 'female': 6, 'not_stated': 7, 'dmg_eth_ami': 12, 'dmg_eth_blk': 6}
+            for student in result[grade][pl]:
+                demographs = student.getDemoOfStudent()
+                for demo in demographs:
+                    counts[demo] += 1
+            self.assertDictEqual(counts, expected_counts)
 
     def test_generate_students_with_demographics(self):
         score_pool = {1: [x for x in range(100)], 2: [x for x in range(100)],
@@ -43,9 +193,7 @@ class Test(unittest.TestCase):
                     bcounts[perf_lvl] += 1
                 if stu.dmg_eth_asn is True:
                     acounts[perf_lvl] += 1
-        print(bcounts)
-        print(acounts)
-        print(wcounts)
+
         self.assertEqual(bcounts[1], 6)
         self.assertEqual(acounts[2], 7)
         self.assertEqual(wcounts[3], 5)
@@ -112,6 +260,230 @@ class Test(unittest.TestCase):
         studentInfo_list = gd2.create_student_infos_by_gender(gender, count, performance_level, score_pool, grade)
         self.assertEqual(len(studentInfo_list), count)
         print(studentInfo_list[0].asmt_scores)
+
+    def test_create_asmt_score_pool_dict(self):
+        total = 100
+        perf_lvls = 4
+        pl_size = total / perf_lvls
+        asmt_scores = [DummyClass() for _x in range(total)]
+        for i in range(len(asmt_scores)):
+            asmt_scores[i].perf_lvl = (i % perf_lvls) + 1
+
+        result = gd2.create_asmt_score_pool_dict(asmt_scores)
+        self.assertEqual(len(result), perf_lvls)
+
+        # Check all performance levels have 25 scores
+        [self.assertEqual(len(result[pl]), pl_size) for pl in result]
+
+    def test_generate_name_list_dictionary(self):
+        list_name_to_path_dictionary = {}
+        file_count = 10
+        name_count = 50
+        file_names = self.create_mock_name_files(file_count, name_count)
+        for name in file_names:
+            list_name_to_path_dictionary[name] = name
+        res = gd2.generate_name_list_dictionary(list_name_to_path_dictionary)
+
+        self.assertEqual(len(res), file_count)
+        for name in res:
+            number_of_lines = len(res[name])
+            self.assertEqual(number_of_lines, name_count)
+        self.remove_files(file_names)
+
+    def test_get_flat_grades_list(self):
+        school_config = {
+            'High School': {'grades': [11], 'students': {'min': 100, 'max': 500, 'avg': 300}},
+            'Jr. High School': {'grades': [9, 10, 11], 'students': {'min': 100, 'max': 500, 'avg': 300}},
+            'Middle School': {'grades': [6, 7, 8], 'students': {'min': 50, 'max': 200, 'avg': 150}},
+            'Elementary School': {'grades': [1, 3, 4, 5], 'students': {'min': 20, 'max': 70, 'avg': 60}}
+        }
+        expected_items = [11, 9, 10, 6, 7, 8, 1, 3, 4, 5]
+        res = gd2.get_flat_grades_list(school_config, 'grades')
+        self.assertEqual(len(res), len(expected_items))
+        for it in expected_items:
+            self.assertIn(it, res)
+        diffs = set(expected_items) ^ set(res)
+        self.assertFalse(diffs)
+
+    def test_generate_non_teaching_staff(self):
+        '''
+        copied from old version
+        '''
+        state_code = 'GA'
+        num_of_staff = 20
+        district_guid = 'distguid'
+        school_guid = 'schoolguid'
+        res = gd2.generate_non_teaching_staff(num_of_staff, self.from_date, self.most_recent, self.to_date,
+                                              state_code, district_guid, school_guid)
+        self.assertEqual(len(res), num_of_staff)
+        for staff in res:
+            self.assertIsInstance(staff, Staff)
+            self.assertEqual(staff.hier_user_type, 'Staff')
+            self.assertEqual(staff.to_date, self.to_date)
+            self.assertEqual(staff.from_date, self.from_date)
+            self.assertEqual(staff.most_recent, self.most_recent)
+            self.assertEqual(staff.state_code, state_code)
+            self.assertEqual(staff.district_guid, district_guid)
+            self.assertEqual(staff.school_guid, school_guid)
+
+    def test_generate_institution_hierarchy_from_helper_entities(self):
+        '''
+        copied from old version
+        '''
+        state = DummyClass()
+        state.state_name = 'Georgia'
+        state.state_code = 'GA'
+        district = DummyClass()
+        district.district_guid = 'dguid1'
+        district.district_name = 'District1'
+        school = DummyClass()
+        school.school_name = 'School1'
+        school.school_guid = 'sguid1'
+        school.school_category = 'Middle'
+
+        res = gd2.generate_institution_hierarchy_from_helper_entities(state, district, school, self.from_date,
+                                                                      self.most_recent, self.to_date)
+
+        self.assertIsInstance(res, InstitutionHierarchy)
+        self.assertEqual(res.state_name, 'Georgia')
+        self.assertEqual(res.state_code, 'GA')
+        self.assertEqual(res.district_name, 'District1')
+        self.assertEqual(res.school_name, 'School1')
+        self.assertEqual(res.school_category, 'Middle')
+
+    def test_create_output_dict(self):
+        gd2.CSV_FILE_NAMES = self.csv_file_names
+        result = gd2.create_output_dict(__location__)
+
+        self.assertDictEqual(result, self.entity_to_path_dict)
+
+    def test_prepare_csv_files(self):
+        gd2.prepare_csv_files(self.entity_to_path_dict)
+        for entity in self.entity_to_path_dict:
+            self.read_row_in_csv(self.entity_to_path_dict[entity], entity.getHeader())
+        self.remove_files(list(self.entity_to_path_dict.values()))
+
+    ##==================================
+    ## Helper Methods
+    ##==================================
+    def read_row_in_csv(self, file_name, row):
+        with open(file_name, 'r') as f:
+            csv_reader = csv.reader(f)
+            header = next(csv_reader)
+            self.assertListEqual(header, row)
+
+    def create_mock_name_files(self, file_count, name_count):
+        list_name = 'unit_test_file_for_testing{num}'
+        file_list = []
+        for i in range(file_count):
+            file_name = list_name.format(num=i)
+            with open(file_name, 'w') as f:
+                for i in range(name_count):
+                    f.write('name_{0}\n'.format(i))
+            file_list.append(file_name)
+        return file_list
+
+    def remove_files(self, file_list):
+        for name in file_list:
+            os.remove(name)
+
+
+class DummyClass:
+    pass
+
+
+class DummyEntity1(object):
+    def __init__(self):
+        pass
+
+    @classmethod
+    def getHeader(self):
+        return ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o']
+
+
+class DummyEntity2(object):
+    def __init__(self):
+        pass
+
+    @classmethod
+    def getHeader(self):
+        return ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14']
+
+
+def write_demographics_csv():
+    csv_file_data = [
+        ('ID', 'grouping', 'subject', 'grade', 'demographic', 'col_name', 'Total', 1, 2, '3', 4),
+        ('typical1', '0', 'math', '3', 'All Students', 'all', '100', '9', '30', '48', '13'),
+        ('typical1', '1', 'math', '3', 'Female', 'female', '49', '8', '31', '49', '12'),
+        ('typical1', '1', 'math', '3', 'Male', 'male', '51', '10', '29', '48', '13'),
+        ('typical1', '2', 'math', '3', 'American Indian or Alaska Native', 'dmg_eth_ami', '1', '12', '36', '43', '9'),
+        ('typical1', '2', 'math', '3', 'Black or African American', 'dmg_eth_blk', '18', '17', '40', '37', '6'),
+        ('typical1', '2', 'math', '3', 'Hispanic or Latino', 'dmg_eth_hsp', '24', '13', '37', '43', '7'),
+        ('typical1', '2', 'math', '3', 'Asian or Native Hawaiian/Other Pacific Islander', 'dmg_eth_asn', '9', '3', '16', '53', '28'),
+        ('typical1', '2', 'math', '3', 'White', 'dmg_eth_wht', '48', '5', '25', '54', '16'),
+        ('typical1', '3', 'math', '3', 'Students with Disabilities  (IEP)', 'dmg_prg_iep', '15', '29', '42', '26', '3'),
+        ('typical1', '4', 'math', '3', 'LEP', 'dmg_prg_lep', '9', '23', '42', '32', '3'),
+        ('typical1', '5', 'math', '3', 'Economically Disadvantaged', 'dmg_prg_tt1', '57', '13', '37', '42', '8'),
+
+        ('ID', 'grouping', 'subject', 'grade', 'demographic', 'col_name', 'Total', 1, 2, '3', 4),
+        ('typical1', '0', 'math', '11', 'All Students', 'all', '100', '9', '30', '48', '13'),
+        ('typical1', '1', 'math', '11', 'Female', 'female', '49', '8', '31', '49', '12'),
+        ('typical1', '1', 'math', '11', 'Male', 'male', '51', '10', '29', '48', '13'),
+        ('typical1', '2', 'math', '11', 'American Indian or Alaska Native', 'dmg_eth_ami', '1', '12', '36', '43', '9'),
+        ('typical1', '2', 'math', '11', 'Black or African American', 'dmg_eth_blk', '18', '17', '40', '37', '6'),
+        ('typical1', '2', 'math', '11', 'Hispanic or Latino', 'dmg_eth_hsp', '24', '13', '37', '43', '7'),
+        ('typical1', '2', 'math', '11', 'Asian or Native Hawaiian/Other Pacific Islander', 'dmg_eth_asn', '9', '3', '16', '53', '28'),
+        ('typical1', '2', 'math', '11', 'White', 'dmg_eth_wht', '48', '5', '25', '54', '16'),
+        ('typical1', '3', 'math', '11', 'Students with Disabilities  (IEP)', 'dmg_prg_iep', '15', '29', '42', '26', '3'),
+        ('typical1', '4', 'math', '11', 'LEP', 'dmg_prg_lep', '9', '23', '42', '32', '3'),
+        ('typical1', '5', 'math', '11', 'Economically Disadvantaged', 'dmg_prg_tt1', '57', '13', '37', '42', '8'),
+
+        ('ID', 'grouping', 'subject', 'grade', 'demographic', 'col_name', 'Total', 1, 2, '3', 4),
+        ('typical1', '0', 'ela', '11', 'All Students', 'all', '100', '9', '30', '48', '13'),
+        ('typical1', '1', 'ela', '11', 'Female', 'female', '49', '8', '31', '49', '12'),
+        ('typical1', '1', 'ela', '11', 'Male', 'male', '51', '10', '29', '48', '13'),
+        ('typical1', '2', 'ela', '11', 'American Indian or Alaska Native', 'dmg_eth_ami', '1', '12', '36', '43', '9'),
+        ('typical1', '2', 'ela', '11', 'Black or African American', 'dmg_eth_blk', '18', '17', '40', '37', '6'),
+        ('typical1', '2', 'ela', '11', 'Hispanic or Latino', 'dmg_eth_hsp', '24', '13', '37', '43', '7'),
+        ('typical1', '2', 'ela', '11', 'Asian or Native Hawaiian/Other Pacific Islander', 'dmg_eth_asn', '9', '3', '16', '53', '28'),
+        ('typical1', '2', 'ela', '11', 'White', 'dmg_eth_wht', '48', '5', '25', '54', '16'),
+        ('typical1', '3', 'ela', '11', 'Students with Disabilities  (IEP)', 'dmg_prg_iep', '15', '29', '42', '26', '3'),
+        ('typical1', '4', 'ela', '11', 'LEP', 'dmg_prg_lep', '9', '23', '42', '32', '3'),
+        ('typical1', '5', 'ela', '11', 'Economically Disadvantaged', 'dmg_prg_tt1', '57', '13', '37', '42', '8'),
+    ]
+
+    file_path = os.path.join(__location__, 'test_file.csv')
+
+    with open(file_path, 'w') as cfile:
+        cwriter = csv.writer(cfile)
+        for row in csv_file_data:
+            cwriter.writerow(row)
+
+    return file_path
+
+
+def get_district_types():
+    district_types = {'Big Average': {'school_counts': {'min': 10, 'max': 10, 'avg': 10},
+                                      'school_types_and_ratios': {
+                                          'High School': 1}}}  # , 'Middle School': 1, 'Elementary School': 1}}}
+    return district_types
+
+
+def get_school_types():
+    school_types = {
+        'High School': {'type': 'High School', 'grades': [11], 'students': {'min': 50, 'max': 50, 'avg': 50}},
+        'Middle School': {'type': 'Middle School', 'grades': [6, 7, 8], 'students': {'min': 50, 'max': 50, 'avg': 50}},
+        'Elementary School': {'type': 'Elementary School', 'grades': [3, 4, 5], 'students': {'min': 50, 'max': 50, 'avg': 50}}}
+
+    return school_types
+
+
+def get_state_types():
+    state_types = {'typical_1': {'district_types_and_counts': {'Big Average': 3},
+                                 'subjects_and_percentages': {'Math': .99, 'ELA': .99},
+                                 'demographics': 'typical1'}
+                   }
+    return state_types
 
 
 if __name__ == "__main__":

@@ -9,6 +9,7 @@ import random
 
 from DataGeneration.src.entities import Student
 from helper_entities import StudentInfo
+from dg_fix_stats import tryfixboth
 
 
 H_ID = 0
@@ -70,6 +71,12 @@ class Demographics(object):
         @rtype: dict
         '''
         return self.dem_data[dem_id.lower()][subject.lower()][str(grade)]
+
+    def get_subject_demographics(self, dem_id, subject):
+        '''
+        Get the demographic data for a particular subject
+        '''
+        return self.dem_data[dem_id.lower()][subject.lower()]
 
     def get_grade_demographics_total(self, dem_id, subject, grade):
         '''
@@ -139,98 +146,55 @@ class Demographics(object):
         return [float(x) for x in ret_list]
 
 
-class DemographicStatus(object):
+# def percentages_to_values(grade_demo_dict, total_records):
+#     ret_dict = {}
+#
+#     for k in grade_demo_dict:
+#         perc_list = grade_demo_dict[k]
+#
+#         # Grouping
+#         val_list = [perc_list[L_GROUPING]]  # place first value in list
+#
+#         # Total
+#         total_value = int((perc_list[L_TOTAL] / 100) * total_records)
+#         if total_value == 0:
+#             total_value += 1
+#         val_list.append(total_value)
+#
+#         # Performance Levels
+#         for i in range(L_PERF_1, L_PERF_4 + 1):
+#             pl_total = int((perc_list[i] / 100) * total_value)
+#             val_list.append(pl_total)
+#
+#         # check that we have enough values
+#         diff = total_value - sum(val_list[L_PERF_1:L_PERF_4 + 1])
+#
+#         # randomly add values for the differences
+#         for i in range(diff):
+#             l_index = random.randint(L_PERF_1, L_PERF_4)
+#             val_list[l_index] += 1
+#
+#         ret_dict[k] = val_list
+#
+#     return ret_dict
+
+
+def fix_demographic_statistics(demo_obj, demo_id, subject):
     '''
-    class DemographicStatus has demographic status for students
+    Wrapper for calling function to apply grade demographics
     '''
-    def __init__(self, demo_names):
-        self.status_dict = self._initialize_status_dict(demo_names)
+    all_grade_demos = demo_obj.get_subject_demographics(demo_id, subject)
 
-    def _initialize_status_dict(self, demo_names):
-        status = {}
-        for demo_name in demo_names:
-            status[demo_name] = []
-        return status
+    ordered_grades = sorted(all_grade_demos, key=lambda k: int(k))
 
-    def add_many(self, student_list):
-        for student in student_list:
-            self.add(student)
+    for grade in ordered_grades:
+        print('fix1: Grade:', grade)
+        tryfixboth(all_grade_demos[grade], demo_id, subject, grade)
+        #print("===" * 40)
 
-    def add(self, student_obj):
-        '''
-        Add one student object into the demographic status dictionary
-        The given student will be added into all demographic entries that he belongs to
-        '''
-        if isinstance(student_obj, Student) or isinstance(student_obj, StudentInfo):
-            # get all demo fields
-            stu_demo = student_obj.getDemoOfStudent()
-            for demo_name in stu_demo:
-                if demo_name in self.status_dict.keys():
-                    self.status_dict[demo_name].append(student_obj)
-
-    def pop(self, demo_name):
-        '''
-        Remove and return one student object from the given demographic type
-        This student will also be removed from all demographic types he belongs to
-        '''
-        removed_stu = None
-        if demo_name in self.status_dict.keys():
-            student_list = self.status_dict[demo_name]
-            if len(student_list) > 0:
-                # choose the first one
-                removed_stu = student_list[0]
-                # remove this student from all related demographic lists
-                self._update_status_dict(removed_stu)
-        else:
-            print("No demographic name %s" % demo_name)
-        return removed_stu
-
-    def _update_status_dict(self, student_obj):
-        stu_demo = student_obj.getDemoOfStudent()
-        for demo_name in stu_demo:
-            if demo_name in self.status_dict.keys():
-                try:
-                    self.status_dict[demo_name].remove(student_obj)
-                except ValueError:
-                    print("The student does not exist in demographic list %s " % demo_name)
-
-
-def percentages_to_values(grade_demo_dict, total_records):
-    ret_dict = {}
-
-    for k in grade_demo_dict:
-        perc_list = grade_demo_dict[k]
-
-        # Grouping
-        val_list = [perc_list[L_GROUPING]]  # place first value in list
-
-        # Total
-        total_value = int((perc_list[L_TOTAL] / 100) * total_records)
-        if total_value == 0:
-            total_value += 1
-        val_list.append(total_value)
-
-        # Performance Levels
-        for i in range(L_PERF_1, L_PERF_4 + 1):
-            pl_total = int((perc_list[i] / 100) * total_value)
-            val_list.append(pl_total)
-
-        # check that we have enough values
-        diff = total_value - sum(val_list[L_PERF_1:L_PERF_4 + 1])
-
-        # randomly add values for the differences
-        for i in range(diff):
-            l_index = random.randint(L_PERF_1, L_PERF_4)
-            val_list[l_index] += 1
-
-        ret_dict[k] = val_list
-
-    return ret_dict
-
-
-if __name__ == '__main__':
+if __name__ == "__main__":
+    import dg_types
     import json
-    dem = Demographics('/Users/swimberly/projects/edware/fixture_data_generation/DataGeneration/datafiles/demographicStats.csv')
-    # print(json.dumps(dem.dem_data, indent=4))
-    # print(json.dumps(dem.get_grade_demographics('typical1', 'math', '5'), indent=2))
-    print(dem.get_demo_names('typical1'))
+    demo_obj = Demographics(dg_types.get_demograph_file())
+    fix_demographic_statistics(demo_obj, 'typical1', 'math')
+    #print(demo_obj.get_grade_demographics('typical1', 'math', 6))

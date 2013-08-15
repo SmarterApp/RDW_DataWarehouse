@@ -510,7 +510,15 @@ def generate_students_info_from_demographic_counts(state_population, assessments
 
         overall_counts = grade_demographic_totals[ALL_DEM]
         total_students = math.ceil(overall_counts[L_TOTAL])
-        perf_lvl_counts = [math.ceil(overall_counts[i]) for i in range(L_PERF_1, L_PERF_4 + 1)]
+        # Generate 5% more than the actual count
+        perf_lvl_surplus = .05
+        perf_lvl_counts = []
+        for i in range(L_PERF_1, L_PERF_4 + 1):
+            count = math.ceil(overall_counts[i])
+            surplus = int(perf_lvl_surplus * count)
+            count += surplus
+            perf_lvl_counts.append(count)
+        #perf_lvl_counts = [math.ceil(overall_counts[i]) for i in range(L_PERF_1, L_PERF_4 + 1)]
 
         raw_scores = generate_overall_scores(perf_lvl_counts, inclusive_cut_points, min_score, max_score, total_students, False)
         asmt_scores = claim_score_calculation.translate_scores_to_assessment_score(raw_scores, cut_points, assessment, eb_min_perc, eb_max_perc, eb_rand_adj_lo, eb_rand_adj_hi)
@@ -535,7 +543,7 @@ def generate_students_with_demographics(score_pool, demographic_totals, grade):
 
     # Create new student info objects with a gender assigned and scores
     student_info_dict = create_student_info_dict(gender_group, score_pool, demographic_totals, grade)
-
+    print('Grade:', grade)
     for group in groupings:
         if group == OVERALL_GROUP or group == gender_group:
             continue

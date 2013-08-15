@@ -30,7 +30,7 @@ class DemographicsTest(unittest.TestCase):
     def tearDown(self):
         os.remove(self.csv_file)
 
-    def test_get_demo_names_with_string(self):
+    def test_Demographics_get_demo_names_with_string(self):
         result = self.dem_obj.get_demo_names(self.dem_id, 'math', '3')
         expected = self.dem_categories
 
@@ -38,7 +38,7 @@ class DemographicsTest(unittest.TestCase):
             self.assertIn(val, result, 'check that all expeted keys are return')
         self.assertEqual(len(expected), len(result), 'Check that size of both lists are the same')
 
-    def test_get_demo_names_with_int(self):
+    def test_Demographics_get_demo_names_with_int(self):
         result = self.dem_obj.get_demo_names(self.dem_id, 'math', 12)
         expected = self.dem_categories
 
@@ -46,7 +46,7 @@ class DemographicsTest(unittest.TestCase):
             self.assertIn(val, result, 'check that all expected keys are return')
         self.assertEqual(len(expected), len(result), 'Check that size of both lists are the same')
 
-    def test_get_grade_demographics_keys_and_values_lengths_int(self):
+    def test_Demographics_get_grade_demographics_keys_and_values_lengths_int(self):
         result = self.dem_obj.get_grade_demographics(self.dem_id, 'math', 3)
 
         for key in self.dem_keys:
@@ -54,7 +54,7 @@ class DemographicsTest(unittest.TestCase):
             self.assertIsInstance(result[key], list, 'check value is list')
             self.assertEqual(len(result[key]), 6, 'check length of value')
 
-    def test_get_grade_demographics_keys_and_values_lengths_string(self):
+    def test_Demographics_get_grade_demographics_keys_and_values_lengths_string(self):
         result = self.dem_obj.get_grade_demographics(self.dem_id, 'math', '12')
 
         for key in self.dem_keys:
@@ -62,7 +62,7 @@ class DemographicsTest(unittest.TestCase):
             self.assertIsInstance(result[key], list, 'check value is list')
             self.assertEqual(len(result[key]), 6, 'check length of value')
 
-    def test_get_grade_demographics_demographic_percentage_sums(self):
+    def test_Demographics_get_grade_demographics_demographic_percentage_sums(self):
         # if corrections is added, for percentages that do not sum.
         # data should be added for the appropriate cases
         result = self.dem_obj.get_grade_demographics(self.dem_id, 'math', '3')
@@ -71,25 +71,67 @@ class DemographicsTest(unittest.TestCase):
             perc_sum = sum(result[k][L_PERF_1:])
             self.assertEqual(perc_sum, 100, 'check that percentages for %s sum to 100' % k)
 
-# TODO: ADD TEST FOR SUM ACROSS GROUPS OF DEMOGRAPHICS
+    def test_Demographics_get_subject_demographics(self):
+        result = self.dem_obj.get_subject_demographics('typical1', 'math')
+        self.assertIn('3', result)
+        self.assertIn('12', result)
 
-    def test_get_grade_demographics_total_values(self):
+    def test_Demographics_get_grade_demographics_total_values(self):
         result = self.dem_obj.get_grade_demographics_total(self.dem_id, 'math', '3')
 
         self.assertIsInstance(result, list, 'check result is list')
         self.assertEqual(len(result), 4, 'check the length of the list')
 
-    def test_get_grade_demographics_total_values_int(self):
+    def test_Demographics_get_grade_demographics_total_values_int(self):
         result = self.dem_obj.get_grade_demographics_total(self.dem_id, 'math', 12)
 
         self.assertIsInstance(result, list, 'check result is list')
         self.assertEqual(len(result), 4, 'check the length of the list')
 
-    def test_get_grade_demographics_percentage_sum(self):
+    def test_Demographics_get_grade_demographics_percentage_sum(self):
         result = self.dem_obj.get_grade_demographics_total(self.dem_id, 'math', 12)
 
         perc_sum = sum(result)
         self.assertEqual(perc_sum, 100, 'Check sum of percentages is 100')
+
+    def test_Demographics__parse_file(self):
+        result = self.dem_obj._parse_file(self.csv_file)
+        self.assertIsInstance(result, dict)
+        self.assertIn('typical1', result)
+        self.assertIn('math', result['typical1'])
+        self.assertIn('3', result['typical1']['ela'])
+        self.assertIn('female', result['typical1']['ela']['3'])
+
+    def test_Demographics__add_row(self):
+        row = ('typical1', '0', 'math', '3', 'All Students', 'all', '100', '9', '30', '48', '13')
+        dem_dict = {}
+        expected = {'typical1': {'math': {'3': {'all': [0, 100, 9, 30, 48, 13]}}}}
+        result = self.dem_obj._add_row(row, dem_dict)
+        self.assertDictEqual(result, expected)
+
+    def test_Demographics__add_row_2(self):
+        row = ('typical1', '2', 'math', '3', 'Black or African American', 'dmg_eth_blk', '18', '17', '40', '37', '6')
+        dem_dict = {'typical1': {'math': {'3': {'all': [0, 100, 9, 30, 48, 13]}}}}
+        expected = {'typical1': {'math': {'3': {'all': [0, 100, 9, 30, 48, 13],
+                                                'dmg_eth_blk': [2, 18, 17, 40, 37, 6]}}}}
+        result = self.dem_obj._add_row(row, dem_dict)
+        self.assertDictEqual(result, expected)
+
+    def test_Demographics__add_row_3(self):
+        row = ('typical1', 1, 'ela', '11', 'Female', 'female', 49, 5, 39, 53, 3)
+        dem_dict = {'typical1': {'math': {'3': {'all': [0, 100, 9, 30, 48, 13],
+                                                'dmg_eth_blk': [2, 18, 17, 40, 37, 6]}}}}
+        expected = {'typical1': {'math': {'3': {'all': [0, 100, 9, 30, 48, 13],
+                                                'dmg_eth_blk': [2, 18, 17, 40, 37, 6]}},
+                                 'ela': {'11': {'female': [1, 49, 5, 39, 53, 3]}}}}
+        result = self.dem_obj._add_row(row, dem_dict)
+        self.assertDictEqual(result, expected)
+
+    def test_Demographics__construct_dem_list(self):
+        row = ('typical1', 1, 'ela', '11', 'Female', 'female', 49, 5, 39, 53, 3)
+        result = self.dem_obj._construct_dem_list(row)
+        expected = [1, 49, 5, 39, 53, 3]
+        self.assertListEqual(result, expected)
 
 
 def ethnicity_count(demographics):

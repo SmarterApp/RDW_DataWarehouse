@@ -15,8 +15,9 @@ def convert_demo_by_group(demo_totals):
     '''
     grades = {}
     for key in sorted(demo_totals.keys()):
-        # total 6 groups
-        groups = [[], [], [], [], [], []]
+        # total 7 groups
+        # TODO: Allow variable number of groups
+        groups = [[], [], [], [], [], [], []]
         demo_info = demo_totals[key]
         for demo_name, demo_value in demo_info.items():
             group_number = int(demo_value[0])

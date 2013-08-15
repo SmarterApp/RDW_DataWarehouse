@@ -153,12 +153,6 @@ define [
       params: params
   
     edwareDataProxy.getDatafromSource sourceURL, options, (data) ->
-      # # append user_info (e.g. first and last name)
-      # if data.user_info
-        # $('#header .topLinks .user').html edwareUtil.getUserName data.user_info
-        # role = edwareUtil.getRole data.user_info
-        # uid = edwareUtil.getUid data.user_info
-        # edwareFeedback.renderFeedback(role, uid, "list_of_students")
       assessmentsData = data.assessments
       contextData = data.context
       subjectsData = data.subjects
@@ -225,7 +219,7 @@ define [
 
     $("#content #select_measure").append output
     
-    # add event to change view for aseessment
+    # add event to change view for assessment
     $(document).on
      click: (e) ->
         e.preventDefault()
@@ -273,8 +267,12 @@ define [
           cutpoint = assessmentCutpoints[key]
           $.extend assessment[key], cutpoint
           assessment[key].asmt_type = value # display asssessment type in the tooltip title
-          assessment[key].score_bg_color = assessment[key].cut_point_intervals[assessment[key].asmt_perf_lvl-1].bg_color
-          assessment[key].score_text_color = assessment[key].cut_point_intervals[assessment[key].asmt_perf_lvl-1].text_color
+          if assessment[key].asmt_perf_lvl > assessment[key].cut_point_intervals.length # this is to prevent bad data where there is no color an asmt_perf_lvl that is out of range
+            assessment[key].score_bg_color = "#D0D0D0"
+            assessment[key].score_text_color = "#000000"
+          else
+            assessment[key].score_bg_color = assessment[key].cut_point_intervals[assessment[key].asmt_perf_lvl - 1].bg_color
+            assessment[key].score_text_color = assessment[key].cut_point_intervals[assessment[key].asmt_perf_lvl - 1].text_color
           # save the assessment to the particular subject
           allAssessments[value.toUpperCase()].push row
     assessmentsData = allAssessments

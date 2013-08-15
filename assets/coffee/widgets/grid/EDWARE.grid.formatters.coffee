@@ -56,7 +56,7 @@ define [
     asmt_type = options.colModel.formatoptions.asmt_type
     subject = rowObject.assessments[asmt_type]
     if subject
-      score_ALD = subject.cut_point_intervals[subject.asmt_perf_lvl-1]["name"]
+      score_ALD = if not subject.cut_point_intervals[subject.asmt_perf_lvl-1] then "" else subject.cut_point_intervals[subject.asmt_perf_lvl-1]["name"] 
       subject.score_color = subject.score_bg_color
       results =  edwareLOSConfidenceLevelBar.create subject, 120
       results2 =  edwareConfidenceLevelBar.create subject, 300

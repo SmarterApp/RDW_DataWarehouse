@@ -151,7 +151,7 @@ def describe_tasks(fn):
 
 def benchmarking_udl2(func):
     '''
-    Decorator for benchmarking UDL2 stages (Worker level)
+    Decorator for benchmarking UDL2 stages (Worker level, and be updated to use for all levels)
     '''
     def wrapper_func(*args, **kwargs):
         start_time = datetime.datetime.now()
@@ -171,7 +171,10 @@ def benchmarking_udl2(func):
 
 
 def record_benchmark_in_batch_table(start_time, end_time, result):
-    # TODO: should use try-except
+    '''
+    Record a benchmarking result into batch table
+    '''
+    # TODO: can use try-except
     if result is None:
         return
 
@@ -188,10 +191,9 @@ def record_benchmark_in_batch_table(start_time, end_time, result):
         result[mk.UDL_LEAF] = False
 
     # insert into batch table
-    from udl2.celery import celery, udl2_conf
     from udl2_util.database_util import connect_db, execute_queries
 
-    insert_query = queries.insert_batch_row_query(udl2_conf['udl2_db']['staging_schema'], result[mk.GUID_BATCH], **result)
+    insert_query = queries.insert_batch_row_query(udl2_conf['udl2_db']['staging_schema'], udl2_conf['udl2_db']['batch_table'], **result)
 
     # create database connection
     (conn, _engine) = connect_db(udl2_conf['udl2_db']['db_driver'],

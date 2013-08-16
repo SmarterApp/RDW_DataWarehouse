@@ -214,6 +214,22 @@ function run_functional_tests {
     echo "Finish running functional tests"
 }
 
+function run_e2e_tests {
+    echo "Run End to End Integration tests"
+    #enable python environment
+    enable_python27
+
+    cd "$WORKSPACE/$FUNC_DIR"
+
+    sed -i.bak 's/port = 6543/port = 80/g' test.ini
+    sed -i.bak "s/host=localhost/host=$HOSTNAME/g" test.ini
+    export DISPLAY=:6.0
+
+    nosetests -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
+
+    echo "Finish running End to End Integration tests"
+}
+
 function create_sym_link_for_apache {
     echo "Creating symbolic links"
 
@@ -367,7 +383,8 @@ function main {
         setup_python33_functional_test_dependencies
         run_python33_functional_tests
         setup_functional_test_dependencies
-        run_functional_tests
+        run_e2e_tests
+	run_functional_tests
         check_pep8 "$FUNC_DIR"
     elif [ ${MODE:=""} == "RPM" ]; then
         build_rpm

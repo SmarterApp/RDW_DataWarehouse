@@ -16,6 +16,7 @@ import imp
 import time
 import datetime
 from preetl import create_queries as queries
+import math
 
 try:
     config_path_file = os.environ['UDL2_CONF']
@@ -180,7 +181,8 @@ def record_benchmark_in_batch_table(start_time, end_time, result):
 
     from udl2 import message_keys as mk
     # add time
-    result[mk.DURATION] = str(end_time - start_time)
+    duration = end_time - start_time
+    result[mk.DURATION] = str(duration)
     result[mk.START_TIMESTAMP] = str(start_time)
     result[mk.END_TIMESTAMP] = str(end_time)
     # add status, by default is SUCCESS
@@ -189,6 +191,20 @@ def record_benchmark_in_batch_table(start_time, end_time, result):
     # add udl_leaf, by default is False
     if mk.UDL_LEAF not in list(result.keys()):
         result[mk.UDL_LEAF] = False
+
+    # TODO: calculate two columns: time_for_one_million_records, records_per_hour
+    """
+    if mk.SIZE_RECORDS in result.keys():
+        try:
+            result[mk.TIME_FOR_ONE_MILLION_RECORDS] = str(1000000 * duration / int(result[mk.SIZE_RECORDS]))
+            result[mk.RECORDS_PER_HOUR] = math.ceil(3600 * int(result[mk.SIZE_RECORDS]) / (duration.microseconds * 1000000))
+            
+            # a = str(1000000 * duration / int(result[mk.SIZE_RECORDS]))
+            # b = math.ceil(3600 * int(result[mk.SIZE_RECORDS]) / (duration.microseconds * 1000000))
+            print("********", result[mk.TIME_FOR_ONE_MILLION_RECORDS], result[mk.RECORDS_PER_HOUR], result[mk.SIZE_RECORDS], duration)
+        except ValueError:
+            print("*************", result[mk.SIZE_RECORDS], duration.seconds, duration)
+    """
 
     # insert into batch table
     from udl2_util.database_util import connect_db, execute_queries

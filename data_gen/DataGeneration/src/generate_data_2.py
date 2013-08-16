@@ -248,6 +248,7 @@ def get_school_population(school, student_info_dict, subject_percentages, demogr
                           assessments, error_band_dict, state_name, state_code, from_date, most_recent, to_date, street_names):
     '''
     create teachers, students and sections for a school
+    @param school: a school object
     '''
     eb_min_perc = error_band_dict[constants.MIN_PERC]
     eb_max_perc = error_band_dict[constants.MAX_PERC]
@@ -390,11 +391,12 @@ def apply_subject_percentages(subject_percentages, students):
         percentage = subject_percentages[subject]
 
         student_size = len(students)
-        students_with_out_subject = int((1 - percentage) * student_size)
+        students_with_out_subject = student_size - int(percentage * student_size)
 
         # sample the correct students and remove their assessment score
         for student in random.sample(students, students_with_out_subject):
             del student.asmt_scores[subject]
+    return students
 
 
 def get_students_by_counts(grade, grade_counts, student_info_dict):
@@ -410,8 +412,6 @@ def get_students_by_counts(grade, grade_counts, student_info_dict):
         pl_count = grade_counts[pl]
         for i in range(pl_count):
             if len(student_info_dict[grade][pl]) <= 0:
-                # print(student_info_dict[grade])
-                # print('i', i, 'pl_count', pl_count, 'pl', pl)
                 short_sum += pl_count - i
                 break
             index = random.randint(0, len(student_info_dict[grade][pl]) - 1)

@@ -7,6 +7,7 @@ from datetime import date
 import unittest
 import csv
 import os
+from collections import Counter
 
 from DataGeneration.src.entities import InstitutionHierarchy, Staff
 import generate_data_2 as gd2
@@ -14,6 +15,7 @@ import helper_entities as he
 from generate_entities import generate_assessments
 import demographics as dmg
 import state_population as sp
+from generate_helper_entities import generate_school
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
@@ -54,7 +56,71 @@ class Test(unittest.TestCase):
         pass
 
     def test_get_school_population(self):
-        pass
+        school_pop = sp.SchoolPopulation('High School', 'High School')
+        school_pop.generate_student_numbers(get_school_types()['High School'])
+        school_pop.determine_school_demographic_numbers(self.demo_obj, self.demo_id)
+        school_names = ['s{0}'.format(i) for i in range(30)]
+        street_names = ['st{0}'.format(i) for i in range(30)]
+
+        subject_percentages = {'Math': .99, 'ELA': .99}
+        school_grade_counts = {11: [round(x) for x in school_pop.school_demographics[11]['all'][1:]]}
+        school = generate_school('High School', school_names, school_names, school_grade_counts, 'dist1', 'dguid')
+        assessments = generate_assessments([11], [1400, 1800, 2100], date.today(), True)
+
+        student_info_dict = gd2.generate_students_info_from_demographic_counts(self.state_population, assessments, self.error_band_dict)
+        result = gd2.get_school_population(school, student_info_dict, subject_percentages, self.demo_obj, self.demo_id,
+                                           assessments, self.error_band_dict, 'Test', 'TS',
+                                           date.today(), True, None, street_names)
+        res_students, res_teachers, res_sections = result
+        self.assertEqual(len(res_sections), 2)
+        self.assertEqual(len(res_teachers), 2)
+        self.assertEqual(len(res_students), 100)
+
+    def test_get_school_population_2(self):
+        school_pop = sp.SchoolPopulation('High School', 'High School')
+        school_pop.generate_student_numbers(get_school_types()['High School'])
+        school_pop.determine_school_demographic_numbers(self.demo_obj, self.demo_id)
+        school_names = ['s{0}'.format(i) for i in range(30)]
+        street_names = ['st{0}'.format(i) for i in range(30)]
+
+        subject_percentages = {'Math': .99, 'ELA': .99}
+        school_grade_counts = {11: [round(x) for x in school_pop.school_demographics[11]['all'][1:]]}
+        school = generate_school('High School', school_names, school_names, school_grade_counts, 'dist1', 'dguid')
+        assessments = generate_assessments([11], [1400, 1800, 2100], date.today(), True)
+
+        student_info_dict = gd2.generate_students_info_from_demographic_counts(self.state_population, assessments, self.error_band_dict)
+        result = gd2.get_school_population(school, student_info_dict, subject_percentages, self.demo_obj, self.demo_id,
+                                           assessments, self.error_band_dict, 'Test', 'TS',
+                                           date.today(), True, None, street_names)
+        res_students, res_teachers, res_sections = result
+
+        teacher_guids = [t.staff_guid for t in res_teachers]
+        section_guids = [s.section_guid for s in res_sections]
+        section_rec_ids = [s.section_rec_id for s in res_sections]
+        math_count, ela_count = 0, 0
+        for student in res_students:
+            if student.asmt_scores.get('Math'):
+                math_count += 1
+                self.assertIsNotNone(student.asmt_dates_taken.get('Math'))
+                self.assertIn(student.teacher_guids['Math'], teacher_guids)
+                self.assertIn(student.section_guids['Math'], section_guids)
+                self.assertIn(student.section_rec_ids['Math'], section_rec_ids)
+
+            if student.asmt_scores.get('ELA'):
+                ela_count += 1
+                self.assertIsNotNone(student.asmt_dates_taken.get('ELA'))
+                self.assertIn(student.teacher_guids['ELA'], teacher_guids)
+                self.assertIn(student.section_guids['ELA'], section_guids)
+                self.assertIn(student.section_rec_ids['ELA'], section_rec_ids)
+
+            self.assertIsNotNone(student.school_guid)
+            self.assertIsNotNone(student.state_code)
+            self.assertIsNotNone(student.district_guid)
+            self.assertIsNotNone(student.from_date)
+            self.assertIsNotNone(student.most_recent)
+
+        self.assertEqual(math_count, 99, 'Check that 99% took this subject')
+        self.assertEqual(ela_count, 99, 'Check that 99% took this subject')
 
     def test_generate_teachers_for_sections(self):
         pass
@@ -63,38 +129,138 @@ class Test(unittest.TestCase):
         pass
 
     def test_assign_students_sections(self):
-        pass
+        students = [DummyClass(section_rec_ids={}, section_guids={}) for _x in range(100)]
+        math_sections = [DummyClass(section_guid='mg10', section_rec_id='mr10')]
+        ela_sections = [DummyClass(section_guid='eg10', section_rec_id='er10')]
+        expected_guid = {'Math': 'mg10', 'ELA': 'eg10'}
+        expected_rec = {'Math': 'mr10', 'ELA': 'er10'}
+
+        result = gd2.assign_students_sections(students, math_sections, ela_sections)
+
+        for student in result:
+            self.assertDictEqual(student.section_rec_ids, expected_rec)
+            self.assertDictEqual(student.section_guids, expected_guid)
+
+    def test_assign_students_sections_2(self):
+        students = [DummyClass(section_rec_ids={}, section_guids={}) for _x in range(100)]
+        math_sections = [DummyClass(section_guid='mg{0}'.format(i),
+                                    section_rec_id='mr{0}'.format(i)) for i in range(10)]
+        ela_sections = [DummyClass(section_guid='eg{0}'.format(i), section_rec_id='er{0}'.format(i))
+                        for i in range(10)]
+        section_guid_count = Counter()
+        section_rec_count = Counter()
+
+        result = gd2.assign_students_sections(students, math_sections, ela_sections)
+
+        for student in result:
+            section_rec_count[student.section_rec_ids['Math']] += 1
+            section_rec_count[student.section_rec_ids['ELA']] += 1
+            section_guid_count[student.section_guids['Math']] += 1
+            section_guid_count[student.section_guids['ELA']] += 1
+
+        self.assertEqual(len(section_rec_count), 20, '10 math, 10 ela')
+        self.assertEqual(len(section_guid_count), 20, '10 math, 10 ela')
+        for guid in section_guid_count:
+            self.assertEqual(section_guid_count[guid], 10, 'Each section should have 10 students')
+        for rec_id in section_rec_count:
+            self.assertEqual(section_rec_count[rec_id], 10, 'Each section should have 10 students')
 
     def test_set_students_asmt_info(self):
-        pass
+        students = [DummyClass(asmt_rec_ids={}, asmt_dates_taken={}) for _x in range(100)]
+        subjects = ['Math', 'ELA']
+        asmt_rec_ids = ['123', '456']
+        dates_taken = [date(2013, 12, 2), date(2001, 11, 5)]
+        expected_asmt_rec_ids = {'Math': '123', 'ELA': '456'}
+        expected_dates_taken = {'Math': date(2013, 12, 2), 'ELA': date(2001, 11, 5)}
+
+        result = gd2.set_students_asmt_info(students, subjects, asmt_rec_ids, dates_taken)
+
+        for student in result:
+            self.assertDictEqual(student.asmt_rec_ids, expected_asmt_rec_ids)
+            self.assertDictEqual(student.asmt_dates_taken, expected_dates_taken)
 
     def test_apply_subject_percentages(self):
-        pass
+        students = [DummyClass(asmt_scores={'Math': 'score', 'ELA': 'score'}) for _i in range(100)]
+        subject_percentages = {'Math': .75, 'ELA': .75}
+        result = gd2.apply_subject_percentages(subject_percentages, students)
+
+        math_count, ela_count = 0, 0
+        for student in result:
+            if student.asmt_scores.get('Math'):
+                math_count += 1
+            if student.asmt_scores.get('ELA'):
+                ela_count += 1
+        self.assertEqual(math_count, 75)
+        self.assertEqual(ela_count, 75)
+
+    def test_apply_subject_percentages_2(self):
+        students = [DummyClass(asmt_scores={'Math': 'score', 'ELA': 'score'}) for _i in range(100)]
+        subject_percentages = {'Math': .80, 'ELA': .95}
+        gd2.apply_subject_percentages(subject_percentages, students)
+
+        math_count, ela_count = 0, 0
+        for student in students:
+            if student.asmt_scores.get('Math'):
+                math_count += 1
+            if student.asmt_scores.get('ELA'):
+                ela_count += 1
+        self.assertEqual(math_count, 80)
+        self.assertEqual(ela_count, 95)
 
     def test_get_students_by_counts(self):
-        pass
+        grade = 11
+        grade_counts = [100, 35, 40, 15, 10]
+        student_info_dict = {grade: {1: [DummyClass(pl=1) for _x in range(35)], 2: [DummyClass(pl=2) for _x in range(40)],
+                                     3: [DummyClass(pl=3) for _x in range(15)], 4: [DummyClass(pl=4) for _x in range(10)]}}
+        results = gd2.get_students_by_counts(grade, grade_counts, student_info_dict)
+        self.assertEqual(len(results), 100)
+        counts = [100, 0, 0, 0, 0]
+        for student in results:
+            counts[student.pl] += 1
 
-#     def test_create_schools(self):
-#         district_pop = sp.DistrictPopulation('Big Average')
-#         district_pop.populate_district(get_district_types()['Big Average'], get_school_types())
-#         district_pop.determine_district_demographics(self.demo_obj, self.demo_id)
-#
-#         school_names = ['s{0}'.format(i) for i in range(30)]
-#         street_names = ['st{0}'.format(i) for i in range(30)]
-#         district = he.District('guid1', 'District9', 'Big Average', district_pop.schools)
-#         subject_percentages = {'Math': .99, 'ELA': .99}
-#         assessments = generate_assessments([3, 4, 5, 6, 7, 8, 11], [1400, 1800, 2100], date.today(), True)
-#         student_info_dict = gd2.generate_students_info_from_demographic_counts(self.state_population, assessments, self.error_band_dict)
-#
-#         result = gd2.create_schools(district, school_names, school_names, student_info_dict, subject_percentages,
-#                                     self.demo_obj, self.demo_id, assessments, self.error_band_dict, 'Test', 'TS',
-#                                     date.today(), True, None, street_names)
-#
-#         self.assertEqual(len(result), len(district_pop.schools))
-#         for school in result:
-#             self.assertEqual(len(school.student_info), 50)
-#             self.assertEqual(len(school.teachers), 2)
-#             self.assertEqual(len(school.sections), 2)
+        self.assertListEqual(counts, grade_counts)
+
+    def test_get_students_by_counts_2(self):
+        grade = 11
+        grade_counts = [100, 35, 40, 15, 10]
+        student_info_dict = {grade: {1: [DummyClass(pl=1) for _x in range(35)], 2: [DummyClass(pl=2) for _x in range(35)],
+                                     3: [DummyClass(pl=3) for _x in range(15)], 4: [DummyClass(pl=4) for _x in range(10)]}}
+        results = gd2.get_students_by_counts(grade, grade_counts, student_info_dict)
+        self.assertEqual(len(results), 95)
+        expected_counts = [100, 35, 35, 15, 10]
+        counts = [100, 0, 0, 0, 0]
+        for student in results:
+            counts[student.pl] += 1
+
+        self.assertListEqual(counts, expected_counts)
+
+    def test_create_schools(self):
+        district_pop = sp.DistrictPopulation('Big Average')
+        district_pop.populate_district(get_district_types()['Big Average'], get_school_types())
+        district_pop.determine_district_demographics(self.demo_obj, self.demo_id)
+
+        school_names = ['s{0}'.format(i) for i in range(30)]
+        street_names = ['st{0}'.format(i) for i in range(30)]
+        district = he.District('guid1', 'District9', 'Big Average', district_pop.schools)
+        subject_percentages = {'Math': .99, 'ELA': .99}
+        assessments = generate_assessments([3, 4, 5, 6, 7, 8, 11], [1400, 1800, 2100], date.today(), True)
+        student_info_dict = gd2.generate_students_info_from_demographic_counts(self.state_population, assessments, self.error_band_dict)
+
+        result = gd2.create_schools(district, school_names, school_names, student_info_dict, subject_percentages,
+                                    self.demo_obj, self.demo_id, assessments, self.error_band_dict, 'Test', 'TS',
+                                    date.today(), True, None, street_names)
+
+        self.assertEqual(len(result), len(district_pop.schools))
+        for school in result:
+            self.assertIsNotNone(school.student_info)
+            self.assertIsInstance(school.student_info, list)
+            self.assertGreater(len(school.student_info), 0)
+            self.assertIsNotNone(school.teachers)
+            self.assertIsInstance(school.teachers, list)
+            self.assertGreater(len(school.teachers), 0)
+            self.assertIsNotNone(school.sections)
+            self.assertIsInstance(school.sections, list)
+            self.assertGreater(len(school.sections), 0)
 
     def test_create_districts(self):
         district_names = ['n{0}'.format(i) for i in range(30)]
@@ -389,7 +555,9 @@ class Test(unittest.TestCase):
 
 
 class DummyClass:
-    pass
+    def __init__(self, **kwargs):
+        for arg in kwargs:
+            setattr(self, arg, kwargs[arg])
 
 
 class DummyEntity1(object):
@@ -471,9 +639,9 @@ def get_district_types():
 
 def get_school_types():
     school_types = {
-        'High School': {'type': 'High School', 'grades': [11], 'students': {'min': 50, 'max': 50, 'avg': 50}},
-        'Middle School': {'type': 'Middle School', 'grades': [6, 7, 8], 'students': {'min': 50, 'max': 50, 'avg': 50}},
-        'Elementary School': {'type': 'Elementary School', 'grades': [3, 4, 5], 'students': {'min': 50, 'max': 50, 'avg': 50}}}
+        'High School': {'type': 'High School', 'grades': [11], 'students': {'min': 100, 'max': 100, 'avg': 100}},
+        'Middle School': {'type': 'Middle School', 'grades': [6, 7, 8], 'students': {'min': 100, 'max': 100, 'avg': 100}},
+        'Elementary School': {'type': 'Elementary School', 'grades': [3, 4, 5], 'students': {'min': 100, 'max': 100, 'avg': 100}}}
 
     return school_types
 

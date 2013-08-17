@@ -123,10 +123,57 @@ class Test(unittest.TestCase):
         self.assertEqual(ela_count, 99, 'Check that 99% took this subject')
 
     def test_generate_teachers_for_sections(self):
-        pass
+        school = DummyClass(school_guid='s1', district_guid='d1', school_name='school1')
+        sections = [DummyClass(section_guid='sec1'), DummyClass(section_guid='sec2')]
+        from_date = date.today()
+        most_recent = True
+        to_date = date(2015, 12, 12)
+        state_code = 'TS'
+        staff_per_section = 10
+
+        result = gd2.generate_teachers_for_sections(staff_per_section, sections, from_date, most_recent, to_date, school, state_code)
+        sec_count = Counter()
+        self.assertEqual(len(result), 20)
+        for staff in result:
+            self.assertIsInstance(staff, Staff)
+            sec_count[staff.section_guid] += 1
+        self.assertEqual(sec_count['sec1'], 10)
+        self.assertEqual(sec_count['sec2'], 10)
 
     def test_set_student_institution_information(self):
-        pass
+        students = [DummyClass(first_name='fname{0}'.format(i), last_name='lname{0}'.format(i))
+                    for i in range(20)]
+        school = DummyClass(school_guid='s1', district_guid='d1', school_name='school1')
+        from_date = date.today()
+        most_recent = True
+        street_names = ['snames{0}'.format(i) for i in range(25)]
+        state_code = 'TS'
+        math_teacher = DummyClass(staff_guid='m1')
+        ela_teacher = DummyClass(staff_guid='e1')
+        expected_teacher_guids = {'Math': 'm1', 'ELA': 'e1'}
+        to_date = date(2015, 12, 12)
+
+        result = gd2.set_student_institution_information(students, school, from_date, most_recent, to_date, street_names, math_teacher, ela_teacher, state_code)
+
+        for student in result:
+            self.assertEqual(len(student.student_rec_ids), 2)
+            self.assertIsNotNone(student.school_guid)
+            self.assertIsNotNone(student.district_guid)
+            self.assertIsNotNone(student.state_code)
+            self.assertIsNotNone(student.school_guid)
+            self.assertIsNotNone(student.district_guid)
+            self.assertIsNotNone(student.state_code)
+            self.assertIsNotNone(student.from_date)
+            self.assertIsNotNone(student.most_recent)
+            self.assertIsNotNone(student.to_date)
+            self.assertIsNotNone(student.email)
+            self.assertIsNotNone(student.address_1)
+
+            self.assertDictEqual(student.teacher_guids, expected_teacher_guids)
+            student_cities = student.city.split()
+            self.assertEqual(len(student_cities), 2)
+            self.assertIn('sname', student_cities[0])
+            self.assertIn('sname', student_cities[1])
 
     def test_assign_students_sections(self):
         students = [DummyClass(section_rec_ids={}, section_guids={}) for _x in range(100)]

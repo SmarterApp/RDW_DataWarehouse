@@ -21,8 +21,8 @@ from write_to_csv import create_csv
 from state_population import StatePopulation
 import constants
 from generate_scores import generate_overall_scores
-from entities import (InstitutionHierarchy, Section, Assessment, AssessmentOutcome,
-                      Staff, ExternalUserStudent, Student)
+from DataGeneration.src.entities import (InstitutionHierarchy, Section, Assessment, AssessmentOutcome,
+                                         Staff, ExternalUserStudent, Student)
 from generate_helper_entities import generate_district, generate_school, generate_state
 from helper_entities import StudentInfo
 from print_state_population import print_state_population
@@ -97,6 +97,8 @@ def generate_data_from_config_file(config_module, output_dict, do_pld_adjustment
                                   demographics_info, from_date, most_recent, to_date, street_names)
 
     output_generated_data_to_csv(states, assessments, batch_guid, output_dict, from_date, most_recent, to_date)
+
+    return True
 
 
 def output_generated_data_to_csv(states, assessments, batch_guid, output_dict, from_date, most_recent, to_date):

@@ -9,7 +9,9 @@ import csv
 import os
 from collections import Counter
 
-from DataGeneration.src.entities import InstitutionHierarchy, Staff
+from DataGeneration.src.entities import (InstitutionHierarchy, Staff, Section, Assessment,
+                                         AssessmentOutcome, ExternalUserStudent, Student)
+from DataGeneration.src.helper_entities import State
 import generate_data_2 as gd2
 import helper_entities as he
 from generate_entities import generate_assessments
@@ -38,22 +40,124 @@ class Test(unittest.TestCase):
         self.state_population = sp.StatePopulation('Test', 'TS', 'typical_1')
         self.state_population.populate_state(get_state_types()['typical_1'], get_district_types(), get_school_types())
         self.state_population.get_state_demographics(self.demo_obj, self.demo_id)
+        self.state_population.demographics_id = self.demo_id
         self.error_band_dict = {'min_divisor': 32, 'max_divisor': 8, 'random_adjustment_points_lo': -10, 'random_adjustment_points_hi': 25}
+        self.ts_cvs_names = {InstitutionHierarchy: os.path.join(__location__, 'ts_dim_inst_hier.csv'),
+                             Section: os.path.join(__location__, 'ts_dim_section.csv'),
+                             Assessment: os.path.join(__location__, 'ts_dim_asmt.csv'),
+                             AssessmentOutcome: os.path.join(__location__, 'ts_fact_asmt_outcome.csv'),
+                             Staff: os.path.join(__location__, 'ts_dim_staff.csv'),
+                             ExternalUserStudent: os.path.join(__location__, 'ts_external_user_student_rel.csv'),
+                             Student: os.path.join(__location__, 'ts_dim_student.csv')}
 
     def test_generate_data_from_config_file(self):
-        pass
+        config_module = DummyClass()
+        config_module.get_demograph_file = lambda *x: self.csv_file
+        config_module.get_school_types = get_school_types
+        config_module.get_district_types = get_district_types
+        config_module.get_state_types = get_state_types
+        config_module.get_states = lambda *x: [{'name': 'Example State', 'state_code': 'ES', 'state_type': 'typical_1'}]
+        config_module.get_scores = lambda *x: {'min': 1200, 'max': 2400, 'cut_points': [1400, 1800, 2100]}
+        config_module.get_temporal_information = lambda *x: {'from_date': '20120901', 'to_date': None, 'most_recent': True, 'date_taken_year': '2015', 'date_taken_month': ''}
+        config_module.get_error_band = lambda *x: self.error_band_dict
+
+        output_dict = self.ts_cvs_names
+
+        self.assertTrue(gd2.generate_data_from_config_file(config_module, output_dict))
+        self.remove_files(list(self.ts_cvs_names.values()))
 
     def test_output_generated_data_to_csv(self):
         pass
 
     def test_get_values_from_config(self):
-        pass
+        config_module = DummyClass()
+        config_module.get_demograph_file = lambda *x: self.csv_file
+        config_module.get_school_types = get_school_types
+        config_module.get_district_types = get_district_types
+        config_module.get_state_types = get_state_types
+        config_module.get_states = lambda *x: [{'name': 'Example State', 'state_code': 'ES', 'state_type': 'typical_1'}]
+        config_module.get_scores = lambda *x: {'min': 1200, 'max': 2400, 'cut_points': [1400, 1800, 2100]}
+        config_module.get_temporal_information = lambda *x: {'from_date': '20120901', 'to_date': None, 'most_recent': True, 'date_taken_year': '2015', 'date_taken_month': ''}
+        config_module.get_error_band = lambda *x: self.error_band_dict
+
+        results = gd2.get_values_from_config(config_module)
+        (demographics_info, district_names, school_names, street_names, states, state_types,
+         district_types, school_types, scores_details, from_date, to_date, most_recent, error_band_dict) = results
+
+        self.assertIsInstance(demographics_info, dmg.Demographics)
+        self.assertIsInstance(district_names, tuple)
+        self.assertIsInstance(district_names[0], list)
+        self.assertIsInstance(district_names[1], list)
+        self.assertEqual(len(district_names), 2)
+        self.assertIsInstance(school_names, tuple)
+        self.assertIsInstance(school_names[0], list)
+        self.assertIsInstance(school_names[1], list)
+        self.assertEqual(len(school_names), 2)
+        self.assertIsInstance(street_names, list)
+        self.assertEqual(states, [{'name': 'Example State', 'state_code': 'ES', 'state_type': 'typical_1'}])
+        self.assertEqual(state_types, get_state_types())
+        self.assertEqual(district_types, get_district_types())
+        self.assertEqual(school_types, get_school_types())
+        self.assertEqual(scores_details, config_module.get_scores())
+        self.assertEqual(from_date, '20120901')
+        self.assertIsNone(to_date)
+        self.assertTrue(most_recent)
+        self.assertDictEqual(error_band_dict, self.error_band_dict)
 
     def test_generate_state_populations(self):
-        pass
+        states = [{'name': 'Example State', 'state_code': 'ES', 'state_type': 'typical_1'},
+                  {'name': 'Example State 2', 'state_code': 'E2', 'state_type': 'typical_1'}]
+        assessments = generate_assessments([11], [1400, 1800, 2100], date.today(), True)
+        district_names = ['n{0}'.format(i) for i in range(30)]
+        school_names = ['s{0}'.format(i) for i in range(30)]
+        from_date = date.today()
+        most_recent = True
+        to_date = date(2015, 12, 12)
+
+        results = gd2.generate_state_populations(states, get_state_types(), self.demo_obj, assessments, get_district_types(),
+                                                 get_school_types(), district_names, school_names, self.error_band_dict, from_date, most_recent,
+                                                 to_date, True)
+
+        self.assertEqual(len(results), 2)
+        for state_pop in results:
+            self.assertIsInstance(state_pop, sp.StatePopulation)
+            self.assertIsNotNone(state_pop.subject_percentages)
+            self.assertEqual(len(state_pop.districts), 3)
+            self.assertEqual(state_pop.state_demographic_totals[11]['all'][1], 3 * 10 * 100, '3 districts, each with 10 schools. Each school has 100 students in grade 11')
 
     def test_generate_real_states(self):
-        pass
+        state_population = self.state_population
+        state_population.subject_percentages = {'Math': .99, 'ELA': .99}
+        assessments = generate_assessments([11], [1400, 1800, 2100], date.today(), True)
+        district_names = ['n{0}'.format(i) for i in range(30)]
+        school_names = ['s{0}'.format(i) for i in range(30)]
+        street_names = ['st{0}'.format(i) for i in range(30)]
+        from_date = date.today()
+        most_recent = True
+        to_date = date(2015, 12, 12)
+        result = gd2.generate_real_states([state_population], assessments, self.error_band_dict, district_names, school_names,
+                                          self.demo_obj, from_date, most_recent, to_date, street_names)
+
+        self.assertEqual(len(result), 1)
+        gen_state = result[0]
+        self.assertEqual(len(gen_state.staff), 10)
+        self.assertEqual(len(gen_state.districts), 3)
+        self.assertIsInstance(gen_state, State)
+
+    def test_generate_real_states_2(self):
+        state_population = self.state_population
+        state_population.subject_percentages = {'Math': .99, 'ELA': .99}
+        assessments = generate_assessments([11], [1400, 1800, 2100], date.today(), True)
+        district_names = ['n{0}'.format(i) for i in range(30)]
+        school_names = ['s{0}'.format(i) for i in range(30)]
+        street_names = ['st{0}'.format(i) for i in range(30)]
+        from_date = date.today()
+        most_recent = True
+        to_date = date(2015, 12, 12)
+        result = gd2.generate_real_states([state_population, state_population], assessments, self.error_band_dict, district_names, school_names,
+                                          self.demo_obj, from_date, most_recent, to_date, street_names)
+
+        self.assertEqual(len(result), 2)
 
     def test_get_school_population(self):
         school_pop = sp.SchoolPopulation('High School', 'High School')

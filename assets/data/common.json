@@ -244,7 +244,7 @@
 		},
 		"individual_student_report": {
 			"relative_strength_text": "The arrows show your claim score compared to your overall score. An up arrow means relative strength, while a down arrow may indicate a relative weakness.",
-			"error_band": "The error of a score comes from the amount of information provided by the test. It is based on how well a single test was able to deliver items of approprate difficulty for the student in the allotted test length. Smarter Balanced tests endeavor to provide the most precise scores possible within a reasonable time limit by delivering an adaptive test portion. We provide an Error Band to show the range of score values that a student's result for a single assessment is highly-likely to be on any given day."
+			"error_band": "The error of a score comes from the amount of information provided by the test. It is based on how well a single test was able to deliver items of appropriate difficulty for the student in the allotted test length. Smarter Balanced tests endeavor to provide the most precise scores possible within a reasonable time limit by delivering an adaptive test portion. We provide an Error Band to show the range of score values that a student's result for a single assessment is highly likely to be on any given day."
 		},
 		"comparing_population": {
 			"indicator": "8,345",
@@ -264,7 +264,7 @@
 			"desc8": "1381 ",
 			"desc9": "Error Band",
 			"desc10": "(size of error band is indicated numerically)",
-			"error_band": "The error of a score comes from the amount of information provided by the test. It is based on how well a single test was able to deliver items of approprate difficulty for the student in the allotted test length. Smarter Balanced tests endeavor to provide the most precise scores possible within a reasonable time limit by delivering an adaptive test portion. We provide an Error Band to show the range of score values that a student's result for a single assessment is highly-likely to be on any given day."
+			"error_band": "The error of a score comes from the amount of information provided by the test. It is based on how well a single test was able to deliver items of appropriate difficulty for the student in the allotted test length. Smarter Balanced tests endeavor to provide the most precise scores possible within a reasonable time limit by delivering an adaptive test portion. We provide an Error Band to show the range of score values that a student's result for a single assessment is highly likely to be on any given day."
 		}
 	},
 	"students": {

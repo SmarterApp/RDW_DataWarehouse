@@ -50,3 +50,4 @@ smarter.egg-info
 data_gen/.project
 data_gen/DataGeneration/.settings
 data_gen/CreateGenerateLoad/build
+data_gen/.settings

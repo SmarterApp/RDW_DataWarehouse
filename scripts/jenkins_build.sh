@@ -16,6 +16,7 @@ function check_vars {
 }
 
 function set_vars {
+    export PATH=$PATH:/opt/python3/bin
     VIRTUALENV_DIR="$WORKSPACE/edwaretest_venv"
     FUNC_VIRTUALENV_DIR="$WORKSPACE/functest_venv"
     FUNC_DIR="edware_test/edware_test/functional_tests"
@@ -215,7 +216,7 @@ function run_functional_tests {
     
     if $RUN_END_TO_END; then
        cd e2e_tests
-       nosetests -v --with-xunit -xunit-file=$WORKSPACE/nostests.xml
+       nosetests -v --with-xunit --xunit-file=$WORKSPACE/nostests.xml
     else
        nosetests --exclude-dir=e2e_tests -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
     fi
@@ -373,8 +374,10 @@ function main {
         restart_apache
         restart_celeryd
         import_data_from_csv
-        setup_python33_functional_test_dependencies
-        run_python33_functional_tests
+        if (! $RUN_END_TO_END;) then
+           setup_python33_functional_test_dependencies
+           run_python33_functional_tests
+        fi
         setup_functional_test_dependencies
         run_functional_tests
         check_pep8 "$FUNC_DIR"

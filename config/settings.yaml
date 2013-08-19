@@ -193,7 +193,7 @@ qa:
       CELERY_IMPORTS: ('services.tasks.pdf',)
       CELERY_RESULT_BACKEND: amqp
       CELERY_TASK_RESULT_EXPIRES: 18000 # 5 hours
-      CELERYD_CONCURRENCY: 8
+      CELERYD_CONCURRENCY: 20
     cache:
       public.shortlived.url: twprxydw0.qa.dum.edwdc.net:22121
       public.data.url: twprxydw0.qa.dum.edwdc.net:22121
@@ -281,7 +281,7 @@ uat:
       CELERY_IMPORTS: ('services.tasks.pdf',)
       CELERY_RESULT_BACKEND: amqp
       CELERY_TASK_RESULT_EXPIRES: 18000 # 5 hours
-      CELERYD_CONCURRENCY: 8
+      CELERYD_CONCURRENCY: 20
     cache:
       public.shortlived.url: twprxydw0.dmo.som.edwdc.net:22121
       public.data.url: twprxydw0.dmo.som.edwdc.net:22121

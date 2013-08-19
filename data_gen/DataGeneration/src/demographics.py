@@ -5,11 +5,8 @@ Created on Jul 1, 2013
 '''
 
 import csv
-import random
 
-from DataGeneration.src.entities import Student
-from helper_entities import StudentInfo
-from dg_fix_stats import tryfixboth
+from DataGeneration.src.dg_fix_stats import tryfixboth
 
 
 H_ID = 0
@@ -146,39 +143,6 @@ class Demographics(object):
         return [float(x) for x in ret_list]
 
 
-# def percentages_to_values(grade_demo_dict, total_records):
-#     ret_dict = {}
-#
-#     for k in grade_demo_dict:
-#         perc_list = grade_demo_dict[k]
-#
-#         # Grouping
-#         val_list = [perc_list[L_GROUPING]]  # place first value in list
-#
-#         # Total
-#         total_value = int((perc_list[L_TOTAL] / 100) * total_records)
-#         if total_value == 0:
-#             total_value += 1
-#         val_list.append(total_value)
-#
-#         # Performance Levels
-#         for i in range(L_PERF_1, L_PERF_4 + 1):
-#             pl_total = int((perc_list[i] / 100) * total_value)
-#             val_list.append(pl_total)
-#
-#         # check that we have enough values
-#         diff = total_value - sum(val_list[L_PERF_1:L_PERF_4 + 1])
-#
-#         # randomly add values for the differences
-#         for i in range(diff):
-#             l_index = random.randint(L_PERF_1, L_PERF_4)
-#             val_list[l_index] += 1
-#
-#         ret_dict[k] = val_list
-#
-#     return ret_dict
-
-
 def fix_demographic_statistics(demo_obj, demo_id, subject):
     '''
     Wrapper for calling function to apply grade demographics
@@ -193,7 +157,7 @@ def fix_demographic_statistics(demo_obj, demo_id, subject):
         #print("===" * 40)
 
 if __name__ == "__main__":
-    import dg_types
+    import DataGeneration.src.dg_types as dg_types
     import json
     demo_obj = Demographics(dg_types.get_demograph_file())
     fix_demographic_statistics(demo_obj, 'typical1', 'math')

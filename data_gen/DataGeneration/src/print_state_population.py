@@ -1,6 +1,6 @@
-import state_population as sp
-import dg_types as dt
-import demographics
+import DataGeneration.src.state_population as sp
+import DataGeneration.src.dg_types as dt
+import DataGeneration.src.demographics as demographics
 import os
 
 DATAFILE_PATH = os.path.dirname(os.path.realpath(__file__))

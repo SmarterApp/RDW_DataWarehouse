@@ -2,7 +2,7 @@ import random
 from uuid import uuid4
 from DataGeneration.src.generate_names import (generate_first_or_middle_name, generate_last_name,
                                                possibly_generate_middle_name)
-import util as util
+import DataGeneration.src.util as util
 
 
 class State:

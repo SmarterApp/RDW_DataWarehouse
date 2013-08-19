@@ -3,10 +3,10 @@ Created on Aug 13, 2013
 
 @author: swimberly
 '''
-from errorband import calc_eb_params, calc_eb
-from generate_helper_entities import generate_assessment_score, generate_claim_score
+from DataGeneration.src.errorband import calc_eb_params, calc_eb
+from DataGeneration.src.generate_helper_entities import generate_assessment_score, generate_claim_score
 import datetime
-import stats
+import DataGeneration.src.stats as stats
 
 
 def translate_scores_to_assessment_score(scores, cut_points, assessment, ebmin, ebmax, rndlo, rndhi):

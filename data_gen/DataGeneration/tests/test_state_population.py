@@ -9,8 +9,8 @@ import os
 import csv
 import numbers
 
-import state_population as sp
-import demographics as dmg
+import DataGeneration.src.state_population as sp
+import DataGeneration.src.demographics as dmg
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 

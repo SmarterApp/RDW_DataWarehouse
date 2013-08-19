@@ -9,8 +9,8 @@ import csv
 import random
 from datetime import date
 
-from helper_entities import AssessmentScore
-from demographics import Demographics, L_PERF_1
+from DataGeneration.src.helper_entities import AssessmentScore
+from DataGeneration.src.demographics import Demographics, L_PERF_1
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 

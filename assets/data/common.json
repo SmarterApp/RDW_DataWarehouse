@@ -262,8 +262,8 @@
 			"desc6": "(color coded by Achievement Level)",
 			"desc7": "Claim Score",
 			"desc8": "1381 ",
-			"desc10": "Error Band",
-			"desc11": "(size of error band is indicated numerically)",
+			"desc9": "Error Band",
+			"desc10": "(size of error band is indicated numerically)",
 			"error_band": "The error of a score comes from the amount of information provided by the test. It is based on how well a single test was able to deliver items of approprate difficulty for the student in the allotted test length. Smarter Balanced tests endeavor to provide the most precise scores possible within a reasonable time limit by delivering an adaptive test portion. We provide an Error Band to show the range of score values that a student's result for a single assessment is highly-likely to be on any given day."
 		}
 	},

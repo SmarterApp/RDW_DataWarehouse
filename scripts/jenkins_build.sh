@@ -99,13 +99,14 @@ function run_unit_tests {
 
 function get_opts {
     if ( ! getopts ":m:d:ufhb" opt); then
-	echo "Usage: `basename $0` options (-n) (-u) (-f) (-b) (-m main_package) (-d dependencies) -h for help";
+	echo "Usage: `basename $0` options (-n) (-u) (-f) (-b) (-e) (-m main_package) (-d dependencies) -h for help";
 	exit $E_OPTERROR;
     fi
  
     # By default, make the mode to be unit
     MODE='UNIT'
     RUN_UNIT_TEST=true
+    RUN_END_TO_END=false
 
     while getopts ":m:d:ufbhn" opt; do
         case $opt in 
@@ -127,6 +128,9 @@ function get_opts {
             n)
                RUN_UNIT_TEST=false
                ;; 
+            e)
+               RUN_END_TO_END=true
+               ;;
             m)  
                MAIN_PKG=$OPTARG
                INSTALL_PKGS=("${INSTALL_PKGS[@]}" "$MAIN_PKG")
@@ -208,26 +212,15 @@ function run_functional_tests {
     sed -i.bak 's/port = 6543/port = 80/g' test.ini
     sed -i.bak "s/host=localhost/host=$HOSTNAME/g" test.ini
     export DISPLAY=:6.0
-
-    nosetests -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
+    
+    if $RUN_END_TO_END; then
+       cd e2e_tests
+       nosetests -v --with-xunit -xunit-file=$WORKSPACE/nostests.xml
+    else
+       nosetests --exclude-dir=e2e_tests -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
+    fi
 
     echo "Finish running functional tests"
-}
-
-function run_e2e_tests {
-    echo "Run End to End Integration tests"
-    #enable python environment
-    enable_python27
-
-    cd "$WORKSPACE/$FUNC_DIR"
-
-    sed -i.bak 's/port = 6543/port = 80/g' test.ini
-    sed -i.bak "s/host=localhost/host=$HOSTNAME/g" test.ini
-    export DISPLAY=:6.0
-
-    nosetests -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
-
-    echo "Finish running End to End Integration tests"
 }
 
 function create_sym_link_for_apache {
@@ -383,8 +376,7 @@ function main {
         setup_python33_functional_test_dependencies
         run_python33_functional_tests
         setup_functional_test_dependencies
-        run_e2e_tests
-	run_functional_tests
+        run_functional_tests
         check_pep8 "$FUNC_DIR"
     elif [ ${MODE:=""} == "RPM" ]; then
         build_rpm

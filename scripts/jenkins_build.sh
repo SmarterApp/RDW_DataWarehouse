@@ -216,7 +216,7 @@ function run_functional_tests {
     
     if $RUN_END_TO_END; then
        cd e2e_tests
-       nosetests -v --with-xunit --xunit-file=$WORKSPACE/nostests.xml
+       nosetests -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
     else
        nosetests --exclude-dir=e2e_tests -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
     fi

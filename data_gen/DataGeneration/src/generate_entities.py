@@ -85,7 +85,7 @@ def generate_assessment_outcomes_from_student_info(student_info_list, batch_guid
                 'asmt_perf_lvl': asmt_score_obj.perf_lvl,
                 'asmt_claim_1_score': claim_scores[0].claim_score,
                 'asmt_claim_1_score_range_min': claim_scores[0].claim_score_interval_minimum,
-                'asmt_claim_1_score_range_max': claim_scores[0].claim_score_interval_minimum,
+                'asmt_claim_1_score_range_max': claim_scores[0].claim_score_interval_maximum,
                 'asmt_claim_2_score': claim_scores[1].claim_score,
                 'asmt_claim_2_score_range_min': claim_scores[1].claim_score_interval_minimum,
                 'asmt_claim_2_score_range_max': claim_scores[1].claim_score_interval_maximum,

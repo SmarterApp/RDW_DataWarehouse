@@ -95,8 +95,7 @@ def get(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT, cookie_n
         # always delete it first in case of regeneration error
         delete(outputfile)
         try:
-            # This is a synchronous call
-            generate.delay(cookie, url, outputfile, options=pdf_defaults, timeout=timeout, cookie_name=cookie_name, grayscale=grayscale).get()
+            generate(cookie, url, outputfile, options=pdf_defaults, timeout=timeout, cookie_name=cookie_name, grayscale=grayscale)
         except MaxRetriesExceededError:
             log.error("Max retries exceeded in PDF Generation")
             raise PdfGenerationError()

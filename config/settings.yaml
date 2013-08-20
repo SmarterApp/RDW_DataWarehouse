@@ -200,7 +200,7 @@ qa:
       session.url: twprxydw0.qa.dum.edwdc.net:22121
       public.filtered_data.url: twprxydw0.qa.dum.edwdc.net:22121
     pdf:
-      base.url: https://ha-int-pyweb0.qa.dum.edwdc.net/assets/html
+      base.url: https://ha-int-pyweb0.qa.dum.edwdc.net/assets/html/
       report_base_dir: /opt/edware/pdf
     edware:
       db:
@@ -288,7 +288,7 @@ uat:
       session.url: twprxydw0.dmo.som.edwdc.net:22121
       public.filtered_data.url: twprxydw0.dmo.som.edwdc.net:22121
     pdf:
-      base.url: https://beta.smarterbalancedreporting.org/assets/html
+      base.url: https://beta.smarterbalancedreporting.org/assets/html/
       report_base_dir: /opt/edware/pdf
     disable_stack_trace: true
     edware:

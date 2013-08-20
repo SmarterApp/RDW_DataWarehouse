@@ -12,9 +12,8 @@ from datetime import datetime, timedelta
 from edauth.security.session import Session
 from edauth.security.session_backend import get_session_backend
 import uuid
-from pyramid.authentication import AuthTktCookieHelper
-import re
-from pyramid.testing import DummyRequest
+from pyramid.authentication import AuthTktCookieHelper, AuthTicket
+import time as time_mod
 
 
 def create_batch_user_session(settings, roles, tenant_name):
@@ -23,45 +22,40 @@ def create_batch_user_session(settings, roles, tenant_name):
     '''
     # session expire time
     session_expire_secs = int(settings.get('batch.user.session.timeout'))
-    # Use pyramid's cookie helper to generate the cookie
-    helper = __create_cookie_helper(settings)
     session = __create_session(roles=roles, expire_in_secs=session_expire_secs, tenant_name=tenant_name)
-    request = __create_dummy_request()
-    # Retrieve cookie headers based on our session id
-    header = helper.remember(request, session.get_session_id())
-    # get current session cookie and request for pdf
-    (cookie_name, cookie_value) = __parse_cookie(header)
-    return (cookie_name, cookie_value)
+    return __create_cookie(settings, session.get_session_id(), session_expire_secs)
 
 
-def __create_cookie_helper(settings):
-    cookie_secret = settings['auth.policy.secret']
-    cookie_name = settings['auth.policy.cookie_name']
-    cookie_hashalg = settings['auth.policy.hashalg']
-    return AuthTktCookieHelper(secret=cookie_secret, cookie_name=cookie_name, hashalg=cookie_hashalg)
+def __create_cookie(settings, userid, expire_in_secs):
+    auth_helper = AuthTktCookieHelper(secret=settings['auth.policy.secret'],
+                                      cookie_name=settings['auth.policy.cookie_name'],
+                                      hashalg=settings['auth.policy.hashalg'])
+    user_data = ''
+    encoding_data = auth_helper.userid_type_encoders.get(type(userid))
 
+    if encoding_data:
+        encoding, encoder = encoding_data
+        userid = encoder(userid)
+        user_data = 'userid_type:%s' % encoding
 
-def __parse_cookie(header):
-    '''
-    Parse cookie information from header
-    '''
-    cookie_str = header[0][1]
-    cookie_name = cookie_str.split("=", 1)[0]
-    cookie_value = re.search(cookie_name + '=(.*?);', cookie_str).group(1)
-    return (cookie_name, cookie_value)
+    ticket = AuthTicket(auth_helper.secret,
+                        userid,
+                        '0.0.0.0',
+                        tokens=tuple([]),
+                        user_data=user_data,
+                        time=time_mod.mktime((datetime.now() + timedelta(seconds=expire_in_secs)).timetuple()),
+                        cookie_name=auth_helper.cookie_name,
+                        secure=auth_helper.secure,
+                        hashalg=auth_helper.hashalg)
 
-
-def __create_dummy_request():
-    request = DummyRequest()
-    request.environ = {'HTTP_HOST': 'localhost'}
-    return request
+    return (settings['auth.policy.cookie_name'], ticket.cookie_value())
 
 
 def __create_session(roles, expire_in_secs, tenant_name):
     # current local time
     current_datetime = datetime.now()
     # How long session lasts
-    expiration_datetime = current_datetime + timedelta(seconds=expire_in_secs)
+    expiration_datetime = datetime.now() + timedelta(seconds=expire_in_secs)
     # create session SAML Response
     session = Session()
     # make a UUID based on the host ID and current time

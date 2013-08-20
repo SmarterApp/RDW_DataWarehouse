@@ -202,6 +202,7 @@ qa:
     pdf:
       base.url: https://ha-int-pyweb0.qa.dum.edwdc.net/assets/html/
       report_base_dir: /opt/edware/pdf
+      generate_timeout: 30
     edware:
       db:
         cat:
@@ -210,7 +211,7 @@ qa:
     edware_stats:
       db:
         schema_name: edware_es_1_0
-        url: postgresql+psycopg2://edware:edware2013@dwpool1.qa.dum.edwdc.net:6432/edware_stats
+        url: postgresql+psycopg2://edware:edware2013@dbpgdw0.qa.dum.edwdc.net:5432/edware_stats
     auth:
       idp:
         metadata: /opt/edware/conf/idp_metadata.xml
@@ -290,6 +291,7 @@ uat:
     pdf:
       base.url: https://beta.smarterbalancedreporting.org/assets/html/
       report_base_dir: /opt/edware/pdf
+      generate_timeout: 30
     disable_stack_trace: true
     edware:
       db:
@@ -299,7 +301,7 @@ uat:
     edware_stats:
       db:
         schema_name: edware_uat_1_0
-        url: postgresql+psycopg2://edware:edware.dmo.may.2013@dwpool0.dmo.som.edwdc.net:6434/edware_stats
+        url: postgresql+psycopg2://edware:edware.dmo.may.2013@dbpgdw0.dmo.som.edwdc.net:5432/edware_stats
     auth:
       idp:
         metadata: /opt/edware/conf/idp_metadata.xml

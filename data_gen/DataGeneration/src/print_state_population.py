@@ -41,8 +41,9 @@ def print_school_info(state_population):
     print_devider()
 
 
-def print_demographic_info(state_population):
-    demo_totals = state_population.state_demographic_totals
+def print_demographic_info(state_population=None, demo_totals=None):
+    if state_population:
+        demo_totals = state_population.state_demographic_totals
 
     print("Demographic counts in each grade:")
     demo_by_group = convert_demo_by_group(demo_totals)

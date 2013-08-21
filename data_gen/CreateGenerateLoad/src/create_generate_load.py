@@ -19,9 +19,9 @@ import Henshin.src.henshin as henshin
 # import best_worst_results
 # import henshin
 
-
 CMD_FOLDER = os.path.realpath(os.path.abspath(os.path.split(inspect.getfile(inspect.currentframe()))[0]))
 DATA_GEN_OUTPUT = os.path.join(CMD_FOLDER, 'datafiles')
+EDSCHEMA_PATH = os.path.join(CMD_FOLDER, '..', '..', '..', 'edschema', 'edschema', 'metadata_generator.py')
 
 HENSHIN_FOLDER = os.path.join(CMD_FOLDER, '../../', 'Henshin', 'src')
 DATA_LOAD_FOLDER = os.path.join(CMD_FOLDER, '../../', 'DataGeneration', 'dataload')
@@ -64,9 +64,9 @@ def main(schema, database, host, user, passwd, port=5432, create=True, landing_z
 
 def create_schema(schema_name, database, host, user, passwd):
     print('cloning edware repo to run the ed_schema code')
-    folder = get_ed_schema_code()
-    ed_schema_file = os.path.join(folder, 'edschema', 'edschema', 'metadata_generator.py')
-    output = system('python', ed_schema_file, '-s', schema_name, '-d', database, '--host', host, '-u', user, '-p', passwd)
+    #folder = get_ed_schema_code()
+    #ed_schema_file = os.path.join(folder, 'edschema', 'edschema', 'metadata_generator.py')
+    output = system('python', EDSCHEMA_PATH, '-s', schema_name, '-d', database, '--host', host, '-u', user, '-p', passwd, '-m', 'edware')
     print(output.decode('UTF-8'))
 
 

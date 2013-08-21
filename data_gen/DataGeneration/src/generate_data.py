@@ -408,6 +408,8 @@ def get_students_by_counts(grade, grade_counts, student_info_dict):
     '''
     students = []
     short_sum = 0
+    total = grade_counts[0]
+
     for pl in range(len(grade_counts)):
         if pl == 0:
             continue
@@ -420,7 +422,7 @@ def get_students_by_counts(grade, grade_counts, student_info_dict):
             students.append(student_info_dict[grade][pl].pop(index))
 
     if short_sum:
-        print('short_sum', short_sum)
+        print('short_sum\t', short_sum, '\tout of', total, '\tgrade', grade)
     return students
 
 
@@ -541,14 +543,12 @@ def generate_students_with_demographics(score_pool, demographic_totals, grade):
     '''
 
     gender_group = 1
-    groupings = sorted({count_list[L_GROUPING] for _x, count_list in demographic_totals.items()})
+    groupings = sorted({count_list[L_GROUPING] for count_list in demographic_totals.values() if count_list[L_GROUPING] not in [OVERALL_GROUP, gender_group]})  # TODO: Could pull out and define list as a constant elsewhere
 
     # Create new student info objects with a gender assigned and scores
     student_info_dict = create_student_info_dict(gender_group, score_pool, demographic_totals, grade)
     print('Grade:', grade)
     for group in groupings:
-        if group == OVERALL_GROUP or group == gender_group:
-            continue
         assign_demographics_for_grouping(group, student_info_dict, demographic_totals)
 
     return student_info_dict
@@ -643,9 +643,7 @@ def create_asmt_score_pool_dict(assessment_scores):
 
     for asmt_score in assessment_scores:
         perf_lvl = asmt_score.perf_lvl
-        if not score_pl_dict.get(perf_lvl):
-            score_pl_dict[perf_lvl] = []
-        score_pl_dict[perf_lvl].append(asmt_score)
+        score_pl_dict[perf_lvl] = score_pl_dict.get(perf_lvl, []) + [asmt_score]
 
     return score_pl_dict
 

@@ -4,11 +4,15 @@ dn: ou=environment,dc=edwdc,dc=net
 objectClass: organizationalUnit
 ou: environment
 
-dn: ou=people,ou=environment,dc=edwdc,dc=net
+dn: ou=ES,ou=environment,dc=edwdc,dc=net
+objectClass: organizationalUnit
+ou: ES
+
+dn: ou=people,ou=ES,ou=environment,dc=edwdc,dc=net
 objectClass: organizationalUnit
 ou: people
 
-dn: ou=groups,ou=environment,dc=edwdc,dc=net
+dn: ou=groups,ou=ES,ou=environment,dc=edwdc,dc=net
 objectClass: organizationalUnit
 ou: groups
 

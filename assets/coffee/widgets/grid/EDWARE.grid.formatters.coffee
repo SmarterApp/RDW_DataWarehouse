@@ -10,7 +10,9 @@ define [
   # * EDWARE grid formatters
   # * Handles all the methods for displaying cutpoints, link in the grid
   # 
-  
+
+  PopulationBarCache = {}
+
   math_count = 1
   ela_count = 1
     
@@ -68,11 +70,22 @@ define [
       toolTip = "<div class='losTooltip hide'><div class='js-popupTitle hide'>"+student_name+ " | " + subject.asmt_type + " Overall Score</div>"
       toolTip = toolTip + "<div class='summary'><div class='title left'>Overall Score</div><div class='score left' style='background:"+subject.score_bg_color+";color:"+subject.score_text_color+"'><span>"+subject.asmt_score+"</span></div><div class='description' style='color:"+subject.score_bg_color+"'>"+score_ALD+"</div></div><hr/><div class='losPerfBar'>"+results2+"</div><div class='errorBand'>Error Band: <strong>"+subject.asmt_score_range_min+"-"+subject.asmt_score_range_max+"</strong></div></div>"
         
-      output = perfBar + toolTip   
+      output = perfBar + toolTip
     else
       ""
 
   populationBar = (value, options, rowObject) ->
+    objectId = options.rowId + options.pos
+    # if object id is defined and within cache
+    if objectId and PopulationBarCache[objectId] != undefined
+      output = PopulationBarCache[objectId]
+    else
+      # draw population bar
+      output = drawPopulationBar(value, options, rowObject)
+      PopulationBarCache[objectId] = output
+    output  
+
+  drawPopulationBar = (value, options, rowObject) ->
     asmt_type = options.colModel.formatoptions.asmt_type
     subject = rowObject.results[asmt_type]
     align_button_class = $(".align_button").attr("class")

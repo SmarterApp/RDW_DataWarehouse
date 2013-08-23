@@ -6,7 +6,8 @@ Created on Mar 11, 2013
 import unittest
 from smarter.reports.compare_pop_report import get_comparing_populations_report,\
     ComparingPopReport, CACHE_REGION_PUBLIC_DATA,\
-    CACHE_REGION_PUBLIC_FILTERING_DATA, get_comparing_populations_cache_route
+    CACHE_REGION_PUBLIC_FILTERING_DATA, get_comparing_populations_cache_route,\
+    set_default_min_cell_size
 from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite,\
     UnittestSmarterDBConnection, get_unittest_tenant_name
 from smarter.reports.helpers.constants import Constants
@@ -42,6 +43,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         dummy_session.set_uid('272')
         dummy_session.set_tenant(get_unittest_tenant_name())
         self.__config.testing_securitypolicy(dummy_session)
+        set_default_min_cell_size(0)
 
     def tearDown(self):
         # reset the registry
@@ -378,6 +380,18 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         self.assertEqual(len(results['records']), 3)
         self.assertEqual(results['records'][2]['results']['subject1']['total'], 5)
         self.assertEqual(results['records'][2]['results']['subject2']['total'], 5)
+
+    def test_comparing_populations_min_cell_size(self):
+        testParam = {}
+        testParam[Constants.STATECODE] = 'NY'
+        testParam[Constants.DISTRICTGUID] = '229'
+        testParam[Constants_filter_names.ETHNICITY] = [Constants_filter_names.DEMOGRAPHICS_ETHNICITY_HISPANIC]
+        set_default_min_cell_size(5)
+        results = get_comparing_populations_report(testParam)
+        self.assertEqual(len(results['records']), 3)
+        # total must be filtered out
+        self.assertEqual(results['records'][0]['results']['subject1']['total'], -1)
+        set_default_min_cell_size(0)
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testReport']

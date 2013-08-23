@@ -6,7 +6,8 @@ Created on Mar 8, 2013
 import unittest
 from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite_no_data_load,\
     UnittestSmarterDBConnection, get_unittest_tenant_name
-from smarter.reports.compare_pop_report import QueryHelper
+from smarter.reports.compare_pop_report import QueryHelper,\
+    set_default_min_cell_size
 from smarter.reports.helpers.constants import Constants
 from smarter.reports.exceptions.parameter_exception import InvalidParameterException
 from edauth.security.session import Session
@@ -31,6 +32,7 @@ class Test(Unittest_with_smarter_sqlite_no_data_load):
         dummy_session.set_uid('272')
         dummy_session.set_tenant(get_unittest_tenant_name())
         self.__config.testing_securitypolicy(dummy_session)
+        set_default_min_cell_size(0)
 
     def tearDown(self):
         # reset the registry

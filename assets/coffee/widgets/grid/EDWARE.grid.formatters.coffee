@@ -77,14 +77,15 @@ define [
     subject = rowObject.results[asmt_type]
     align_button_class = $(".align_button").attr("class")
     
-    output = ""
+    output = "Insufficient Data"
     if subject
       subject = formatSubject subject
       results = edwarePopulationBar.create subject
-      if align_button_class.indexOf("align_on") isnt -1
-        output = "<div class='barContainer'><div class='alignmentHighlightSection'><div class = 'populationBar' style='margin-left:" + subject.alignment + "px;'>" + results + "</div></div><div class='studentsTotal'>" + subject.total + "</div><div class='alignmentLine' style='margin-left:" + subject.alignmentLine + "px;'></div></div>"
-      else
-        output = "<div class='barContainer'><div class = 'populationBar'>" + results + "</div><div class='studentsTotal'>" + subject.total + "</div><div class='alignmentLine' style='margin-left:" + subject.alignmentLine + "px;'></div></div>"
+      if value > 0
+        if align_button_class.indexOf("align_on") isnt -1
+          output = "<div class='barContainer'><div class='alignmentHighlightSection'><div class = 'populationBar' style='margin-left:" + subject.alignment + "px;'>" + results + "</div></div><div class='studentsTotal'>" + subject.total + "</div><div class='alignmentLine' style='margin-left:" + subject.alignmentLine + "px;'></div></div>"
+        else
+          output = "<div class='barContainer'><div class = 'populationBar'>" + results + "</div><div class='studentsTotal'>" + subject.total + "</div><div class='alignmentLine' style='margin-left:" + subject.alignmentLine + "px;'></div></div>"
     else
       output = ""      
     output

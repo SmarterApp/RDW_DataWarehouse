@@ -26,6 +26,7 @@ from edapi.cache import cache_region
 REPORT_NAME = "comparing_populations"
 CACHE_REGION_PUBLIC_DATA = 'public.data'
 CACHE_REGION_PUBLIC_FILTERING_DATA = 'public.filtered_data'
+DEFAULT_MIN_CELL_SIZE = 0
 
 
 @report_config(
@@ -136,6 +137,14 @@ def get_comparing_populations_cache_key(comparing_pop):
     return tuple(cache_args)
 
 
+def set_default_min_cell_size(default_min_cell_size):
+    '''
+    UTs ONLY!!!
+    '''
+    global DEFAULT_MIN_CELL_SIZE
+    DEFAULT_MIN_CELL_SIZE = default_min_cell_size
+
+
 class ComparingPopReport(object):
     '''
     Comparing populations report
@@ -200,15 +209,6 @@ class ComparingPopReport(object):
             results = connector.get_result(query)
         return results
 
-    def get_asmt_levels(self, subjects, metadata):
-        asmt_map = {}
-        for alias in subjects.values():
-            asmt_map[alias] = 4
-            color = metadata.get(alias)
-            if color:
-                asmt_map[alias] = len(color)
-        return asmt_map
-
     def arrange_results(self, results, **param):
         '''
         Arrange the results in optimal way to be consumed by front-end
@@ -218,7 +218,7 @@ class ComparingPopReport(object):
         '''
         subjects = collections.OrderedDict({Constants.MATH: Constants.SUBJECT1, Constants.ELA: Constants.SUBJECT2})
         custom_metadata = get_custom_metadata(param.get(Constants.STATECODE), self.tenant)
-        record_manager = RecordManager(subjects, self.get_asmt_levels(subjects, custom_metadata), **param)
+        record_manager = RecordManager(subjects, self.get_asmt_levels(subjects, custom_metadata), custom_metadata, **param)
 
         for result in results:
             record_manager.update_record(result)
@@ -229,16 +229,28 @@ class ComparingPopReport(object):
                 Constants.SUBJECTS: record_manager.get_subjects(),  # reverse map keys and values for subject
                 Constants.CONTEXT: get_breadcrumbs_context(state_code=param.get(Constants.STATECODE), district_guid=param.get(Constants.DISTRICTGUID), school_guid=param.get(Constants.SCHOOLGUID), tenant=self.tenant)}
 
+    @staticmethod
+    def get_asmt_levels(subjects, metadata):
+        asmt_map = {}
+        for alias in subjects.values():
+            asmt_map[alias] = 4
+            color = metadata.get(alias)
+            if color:
+                asmt_map[alias] = len(color)
+        return asmt_map
+
 
 class RecordManager():
-    def __init__(self, subjects_map, asmt_levels, stateCode=None, districtGuid=None, schoolGuid=None, **kwargs):
+    def __init__(self, subjects_map, asmt_level, custom_metadata={}, stateCode=None, districtGuid=None, schoolGuid=None, **kwargs):
         self._stateCode = stateCode
         self._districtGuid = districtGuid
         self._schoolGuid = schoolGuid
         self._subjects_map = subjects_map
         self._tracking_record = collections.OrderedDict()
         self._summary = {}
-        self._asmt_level = asmt_levels
+        self._custom_metadata = custom_metadata
+        self._min_cell_size = custom_metadata.get(Constants.MIN_CELL_SIZE, DEFAULT_MIN_CELL_SIZE)
+        self._asmt_level = asmt_level
         self.init_summary(self._summary)
 
     def init_summary(self, data):
@@ -280,6 +292,7 @@ class RecordManager():
         return summary of all records
         '''
         results = collections.OrderedDict()
+
         if self._subjects_map is not None:
             for name, alias in self._subjects_map.items():
                 levels = self._asmt_level.get(alias)
@@ -294,10 +307,12 @@ class RecordManager():
                     intervals.append({Constants.LEVEL: level, Constants.COUNT: count})
                 for interval in intervals:
                     interval[Constants.PERCENTAGE] = self.calculate_percentage(interval[Constants.COUNT], total)
-                # make sure percentages add to 100%
-                if total > 0:
-                    results[alias] = {Constants.ASMT_SUBJECT: name, Constants.INTERVALS: intervals, Constants.TOTAL: total}
-                    self.adjust_percentages(results[alias][Constants.INTERVALS])
+                # adjust for min cell size policy and do not return data if violated
+                if total > self._min_cell_size:
+                    results[alias] = {Constants.ASMT_SUBJECT: name, Constants.INTERVALS: self.adjust_percentages(intervals), Constants.TOTAL: total}
+                else:
+                    results[alias] = {Constants.ASMT_SUBJECT: name, Constants.INTERVALS: [{} for _ in range(0, len(intervals))], Constants.TOTAL: -1}
+
         return results
 
     def get_records(self):
@@ -328,10 +343,11 @@ class RecordManager():
         '''
         # do the normalization
         percentages = normalize_percentages([interval[Constants.PERCENTAGE] for interval in intervals])
-
+        newIntervals = intervals.copy()
         # set percentages back in intervals
         for idx, val in enumerate(percentages):
-            intervals[idx][Constants.PERCENTAGE] = val
+            newIntervals[idx][Constants.PERCENTAGE] = val
+        return newIntervals
 
 
 class Record():

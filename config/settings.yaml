@@ -295,7 +295,7 @@ uat:
     disable_stack_trace: true
     edware:
       db:
-        ES:
+        es:
           schema_name: edware_uat_1_0
           url: postgresql+psycopg2://edware:edware.dmo.may.2013@dwpool0.dmo.som.edwdc.net:6434/edware
     edware_stats:

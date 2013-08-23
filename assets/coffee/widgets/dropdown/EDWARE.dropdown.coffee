@@ -76,7 +76,7 @@ define [
           $(this.dropdownSection).append menu
           
     hasData: (subject) ->
-      this.summaryData.results and this.summaryData.results[subject] and this.summaryData.results[subject].total >= 0
+      this.summaryData.results and this.summaryData.results[subject] and this.summaryData.results[subject].total != -1
 
     hasSubject: (subject) ->
       this.colorsData[subject] isnt undefined

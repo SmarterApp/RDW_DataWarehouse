@@ -5,6 +5,7 @@ import psycopg2                     # import postgres support
 import csv                          # imports the csv module
 import sys                          # imports the sys module
 import base64, hashlib, os          # imports hash library and stuff for sha1 passwords      
+from uuid import uuid4              # imports to generate Guid
 
 # main
 def main():
@@ -148,12 +149,16 @@ def format_inetOrgPerson(_user, _uid, _email, _passwd):
     
     #passwd = fname[0:1].lower() + lname.lower() + "1234"
     
-    strInetOrgPerson =  "dn: cn="+ _user +",ou=people,ou=environment,dc=edwdc,dc=net\n" + \
+    # generate unique employeeNumber as Guid
+    employeeGuid = uuid4()
+    
+    strInetOrgPerson =  "dn: cn="+ _user +",ou=people,ou=ES,ou=environment,dc=edwdc,dc=net\n" + \
                         "objectClass: inetOrgPerson\n" + \
                         "objectClass: top\n" + \
                         "cn: " + _user + "\n" + \
                         "sn: " + lname + "\n" + \
                         "givenName: " + fname + "\n" + \
+                        "employeeNumber: " + str(employeeGuid) + "\n" + \
                         "uid: " + _email + "\n" + \
                         "mail: " + _email + "\n" + \
                         "userPassword: " + ssha_password(_passwd) + "\n"
@@ -162,13 +167,13 @@ def format_inetOrgPerson(_user, _uid, _email, _passwd):
 
 def format_groupOfNames(_group, _user_roles):
     _group = _group.strip()
-    strGroupOfNames = "dn: cn="+ _group +",ou=groups,ou=environment,dc=edwdc,dc=net\n" + \
+    strGroupOfNames = "dn: cn="+ _group +",ou=groups,ou=ES,ou=environment,dc=edwdc,dc=net\n" + \
                       "objectClass: groupOfNames\n" + \
                       "objectClass: top\n" + \
                       "cn: "+ _group + "\n"
     
     for user in _user_roles:
-        strGroupOfNames += "member: cn=" + user + ",ou=people,ou=environment,dc=edwdc,dc=net\n"
+        strGroupOfNames += "member: cn=" + user + ",ou=people,ou=ES,ou=environment,dc=edwdc,dc=net\n"
         
     return strGroupOfNames + "\n"
 

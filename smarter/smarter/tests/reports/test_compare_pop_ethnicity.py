@@ -13,7 +13,8 @@ from pyramid import testing
 from edauth.security.session import Session
 from smarter.reports.helpers.constants import Constants
 from smarter.reports.filters import Constants_filter_names
-from smarter.reports.compare_pop_report import get_comparing_populations_report
+from smarter.reports.compare_pop_report import get_comparing_populations_report,\
+    set_default_min_cell_size
 from smarter.security.roles.default import DefaultRole  # @UnusedImport
 
 
@@ -39,6 +40,7 @@ class TestComparingPopulationsEthnicity(Unittest_with_smarter_sqlite):
         dummy_session.set_uid('272')
         dummy_session.set_tenant(get_unittest_tenant_name())
         self.__config.testing_securitypolicy(dummy_session)
+        set_default_min_cell_size(0)
 
     def tearDown(self):
         # reset the registry

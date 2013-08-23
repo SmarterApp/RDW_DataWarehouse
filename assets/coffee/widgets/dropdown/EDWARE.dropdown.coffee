@@ -76,7 +76,7 @@ define [
           $(this.dropdownSection).append menu
           
     hasData: (subject) ->
-      this.summaryData.results and this.summaryData.results[subject]
+      this.summaryData.results and this.summaryData.results[subject] and this.summaryData.results[subject].total != -1
 
     hasSubject: (subject) ->
       this.colorsData[subject] isnt undefined
@@ -101,11 +101,12 @@ define [
   
     setCenterForDropdown: (subject_name, width, targetElement) ->
       position = $('#' + subject_name + '_sort').parent().offset()
-      parent_position = $('#' + subject_name + '_sort').closest('.gridHeight100').offset()
-      position.left -= parent_position.left
-      position.top -= parent_position.top
-      position.left = position.left + $('#' + subject_name + '_sort').parent().width()/2-width/2
-      $(targetElement).closest('.dropdown').css('margin-left', position.left).css('margin-top', position.top)
+      if position
+        parent_position = $('#' + subject_name + '_sort').closest('.gridHeight100').offset()
+        position.left -= parent_position.left
+        position.top -= parent_position.top
+        position.left = position.left + $('#' + subject_name + '_sort').parent().width()/2-width/2
+        $(targetElement).closest('.dropdown').css('margin-left', position.left).css('margin-top', position.top)
 
     resetAll: () ->
       # reset dropdown state

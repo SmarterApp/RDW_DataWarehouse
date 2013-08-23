@@ -30,7 +30,7 @@ LOAD_DATA_MODULE = 'load_data'
 HENSHIN_MODULE = 'henshin'
 
 
-def main(schema, database, host, user, passwd, port=5432, create=True, landing_zone=True, best_worst=True, config_file=None, data_gen_output=None):
+def main(schema, database, host, user, passwd, port=5432, create=True, landing_zone=True, best_worst=True, config_file=None, data_gen_output=None, pld_off=False, generated_path=None):
     '''
     Main function to chain these processes in sequence:
     0. generate schema if the given create = True
@@ -44,8 +44,11 @@ def main(schema, database, host, user, passwd, port=5432, create=True, landing_z
         print('Step 0 -- Creating schema "%s" in database "%s" at "%s"' % (schema, database, host))
         create_schema(schema, database, host, user, passwd)
 
-    print('Step 1 -- Generating New Data')
-    csv_dir = generate_data_to_csv(config_file)
+    csv_dir = generated_path
+    print(csv_dir)
+    if not csv_dir:
+        print('Step 1 -- Generating New Data')
+        csv_dir = generate_data_to_csv(config_file, pld_off)
 
     print('Step 2 -- Loading New Data into star schema')
     load_data_to_db(csv_dir, schema, database, host, user, passwd, port)
@@ -70,20 +73,19 @@ def create_schema(schema_name, database, host, user, passwd):
     print(output.decode('UTF-8'))
 
 
-def generate_data_to_csv(config_file=None):
+def generate_data_to_csv(config_file=None, pld_off=False):
     '''
     generate data by calling the generate data script.
     '''
     print('Generating Data')
 
-    # gen_data_loc = os.path.join(CMD_FOLDER, '..', '..', 'DataGeneration', 'src', 'generate_data.py')
-    # gen_data_output = os.path.join(CMD_FOLDER, '..', '..', 'DataGeneration', 'datafiles', 'csv')
+    do_pld_adjustment = not pld_off
 
     if config_file:
-        gen_data_output = generate_data.main(config_mod_name=config_file, output_path=DATA_LOAD_FOLDER)
+        gen_data_output = generate_data.main(config_mod_name=config_file, output_path=DATA_LOAD_FOLDER, do_pld_adjustment=do_pld_adjustment)
         # output = system('python', gen_data_loc, '--config', config_file)
     else:
-        gen_data_output = generate_data.main(output_path=DATA_LOAD_FOLDER)
+        gen_data_output = generate_data.main(output_path=DATA_LOAD_FOLDER, do_pld_adjustment=do_pld_adjustment)
         # output = system('python', gen_data_loc)
 
     # print(output.decode('UTF-8'))
@@ -133,16 +135,19 @@ def get_input_args():
 
     parser = ArgumentParser(description='Script to get best or worst Students, Districts and Schools')
     parser.add_argument('-c', '--create', action='store_true', help='create a new schema')
-    parser.add_argument('-l', '--landing-zone', action='store_true', default=True, help='flag generate landing zone file format')
-    parser.add_argument('-b', '--best-worst', action='store_true', default=True, help='flag to create csv files that show the best and worst performers in the data')
+    parser.add_argument('-l', '--landing-zone', action='store_true', help='flag generate landing zone file format')
+    parser.add_argument('-b', '--best-worst', action='store_true', help='flag to create csv files that show the best and worst performers in the data')
     parser.add_argument('-s', '--schema', required=True, help='the name of the schema to use')
     parser.add_argument('-d', '--database', default='edware', help='the name of the database to connect to. Default: "edware"')
     parser.add_argument('-u', '--username', default='edware', help='the username for the database')
     parser.add_argument('-p', '--passwd', default='edware', help='the password to use for the database')
+    parser.add_argument('--pld-off', action='store_true', help='Whether to not apply the performance level adjustments')
     parser.add_argument('--host', default='localhost', help='the host to connect to. Default: "localhost"')
     parser.add_argument('--port', default=5432, help='the port number')
     parser.add_argument('--data-gen-config-file', default='DataGeneration.src.dg_types',
                         help='a configuration file to use for data generation default: "datageneration.src.dg_types"')
+    parser.add_argument('--generated-csv-path', default=None,
+                        help='if the csv files have already been generated specify the path here, No new files will be generated')
 
     return parser.parse_args()
 
@@ -171,5 +176,5 @@ def system(*args, **kwargs):
 
 if __name__ == '__main__':
     input_args = get_input_args()
-    main(input_args.schema, input_args.database, input_args.host, input_args.username, input_args.passwd, input_args.port,
-         input_args.create, input_args.landing_zone, input_args.best_worst, input_args.data_gen_config_file)
+    main(input_args.schema, input_args.database, input_args.host, input_args.username, input_args.passwd, input_args.port, input_args.create,
+         input_args.landing_zone, input_args.best_worst, input_args.data_gen_config_file, pld_off=input_args.pld_off, generated_path=input_args.generated_csv_path)

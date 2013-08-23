@@ -174,7 +174,7 @@ class Test(unittest.TestCase):
         student_info_dict = gd2.generate_students_info_from_demographic_counts(self.state_population, assessments, self.error_band_dict)
         result = gd2.get_school_population(school, student_info_dict, subject_percentages, self.demo_obj, self.demo_id,
                                            assessments, self.error_band_dict, 'Test', 'TS',
-                                           date.today(), True, None, street_names)
+                                           date.today(), True, None, street_names, 0)
         res_students, res_teachers, res_sections = result
         self.assertEqual(len(res_sections), 2)
         self.assertEqual(len(res_teachers), 2)
@@ -195,7 +195,7 @@ class Test(unittest.TestCase):
         student_info_dict = gd2.generate_students_info_from_demographic_counts(self.state_population, assessments, self.error_band_dict)
         result = gd2.get_school_population(school, student_info_dict, subject_percentages, self.demo_obj, self.demo_id,
                                            assessments, self.error_band_dict, 'Test', 'TS',
-                                           date.today(), True, None, street_names)
+                                           date.today(), True, None, street_names, 0)
         res_students, res_teachers, res_sections = result
 
         teacher_guids = [t.staff_guid for t in res_teachers]
@@ -317,18 +317,26 @@ class Test(unittest.TestCase):
             self.assertEqual(section_rec_count[rec_id], 10, 'Each section should have 10 students')
 
     def test_set_students_asmt_info(self):
-        students = [DummyClass(asmt_rec_ids={}, asmt_dates_taken={}) for _x in range(100)]
+        students = [DummyClass(asmt_rec_ids={}, asmt_dates_taken={}, asmt_years={}, asmt_types={}, asmt_subjects={}) for _x in range(100)]
         subjects = ['Math', 'ELA']
         asmt_rec_ids = ['123', '456']
         dates_taken = [date(2013, 12, 2), date(2001, 11, 5)]
+        asmt_types = ['SUMMATIVE', 'SUMMATIVE']
+        asmt_years = [2015, 1920]
         expected_asmt_rec_ids = {'Math': '123', 'ELA': '456'}
         expected_dates_taken = {'Math': date(2013, 12, 2), 'ELA': date(2001, 11, 5)}
+        expected_asmt_types = {'Math': 'SUMMATIVE', 'ELA': 'SUMMATIVE'}
+        expected_asmt_years = {'Math': 2015, 'ELA': 1920}
+        expected_asmt_subjects = {'Math': 'Math', 'ELA': 'ELA'}
 
-        result = gd2.set_students_asmt_info(students, subjects, asmt_rec_ids, dates_taken)
+        result = gd2.set_students_asmt_info(students, subjects, asmt_rec_ids, dates_taken, asmt_years, asmt_types)
 
         for student in result:
             self.assertDictEqual(student.asmt_rec_ids, expected_asmt_rec_ids)
             self.assertDictEqual(student.asmt_dates_taken, expected_dates_taken)
+            self.assertDictEqual(student.asmt_years, expected_asmt_years)
+            self.assertDictEqual(student.asmt_types, expected_asmt_types)
+            self.assertDictEqual(student.asmt_subjects, expected_asmt_subjects)
 
     def test_apply_subject_percentages(self):
         students = [DummyClass(asmt_scores={'Math': 'score', 'ELA': 'score'}) for _i in range(100)]

@@ -18,7 +18,7 @@ from DataGeneration.src.generate_entities import (generate_assessments, generate
                                                   generate_multiple_staff, generate_assessment_outcomes_from_student_info,
                                                   generate_students_from_student_info)
 from DataGeneration.src.write_to_csv import create_csv
-from DataGeneration.src.state_population import StatePopulation
+from DataGeneration.src.state_population import StatePopulation, apply_pld_to_grade_demographics
 import DataGeneration.src.constants as constants
 from DataGeneration.src.generate_scores import generate_overall_scores
 from DataGeneration.src.entities import (InstitutionHierarchy, Section, Assessment, AssessmentOutcome,
@@ -246,8 +246,8 @@ def generate_real_states(state_populations, assessments, error_band_dict, distri
     return real_states
 
 
-def get_school_population(school, student_info_dict, subject_percentages, demographics_info, demographics_id,
-                          assessments, error_band_dict, state_name, state_code, from_date, most_recent, to_date, street_names):
+def get_school_population(school, student_info_dict, subject_percentages, demographics_info, demographics_id, assessments,
+                          error_band_dict, state_name, state_code, from_date, most_recent, to_date, street_names, pld_adjustment):
     '''
     create teachers, students and sections for a school
     @param school: a school object
@@ -283,8 +283,12 @@ def get_school_population(school, student_info_dict, subject_percentages, demogr
         # Get ELA assessment information
         math_assessment = util.select_assessment_from_list(assessments, grade, constants.MATH)
         math_date_taken = util.generate_date_given_assessment(math_assessment)
+        math_asmt_type = math_assessment.asmt_type
+        math_asmt_year = math_assessment.asmt_period_year
         ela_assessment = util.select_assessment_from_list(assessments, grade, constants.ELA)
         ela_date_taken = util.generate_date_given_assessment(ela_assessment)
+        ela_asmt_type = ela_assessment.asmt_type
+        ela_asmt_year = ela_assessment.asmt_period_year
         min_score = ela_assessment.asmt_score_min
         max_score = ela_assessment.asmt_score_max
 
@@ -293,7 +297,8 @@ def get_school_population(school, student_info_dict, subject_percentages, demogr
         inclusive_cut_points = [min_score] + cut_points + [max_score]
 
         all_grade_demo_info = demographics_info.get_grade_demographics(demographics_id, constants.ELA, grade)
-        ela_perf = {demo_name: demo_list[L_PERF_1:] for demo_name, demo_list in all_grade_demo_info.items()}
+        adjusted_demographics = apply_pld_to_grade_demographics(pld_adjustment, all_grade_demo_info)
+        ela_perf = {demo_name: demo_list[L_PERF_1:] for demo_name, demo_list in adjusted_demographics.items()}
         assign_scores_for_subjects(students, ela_perf, inclusive_cut_points, min_score, max_score, grade, constants.ELA,
                                    ela_assessment, eb_min_perc, eb_max_perc, eb_rand_adj_lo, eb_rand_adj_hi)
 
@@ -301,7 +306,7 @@ def get_school_population(school, student_info_dict, subject_percentages, demogr
         set_student_institution_information(students, school, from_date, most_recent, to_date, street_names,
                                             math_staff[0], ela_staff[0], state_code)
         set_students_asmt_info(students, [constants.ELA, constants.MATH], [ela_assessment.asmt_rec_id, math_assessment.asmt_rec_id],
-                               [ela_date_taken, math_date_taken])
+                               [ela_date_taken, math_date_taken], [ela_asmt_year, math_asmt_year], [ela_asmt_type, math_asmt_type])
         apply_subject_percentages(subject_percentages, students)
 
         students_in_school += students
@@ -370,7 +375,7 @@ def assign_students_sections(students, math_sections, ela_sections):
     return students
 
 
-def set_students_asmt_info(students, subjects, asmt_rec_ids, dates_taken):
+def set_students_asmt_info(students, subjects, asmt_rec_ids, dates_taken, years, types):
     '''
     take a list of students and assign them assessment record ids.
     subjects and asmt_rec_ids are lists that should match
@@ -379,6 +384,9 @@ def set_students_asmt_info(students, subjects, asmt_rec_ids, dates_taken):
         for i in range(len(subjects)):
             student.asmt_rec_ids[subjects[i]] = asmt_rec_ids[i]
             student.asmt_dates_taken[subjects[i]] = dates_taken[i]
+            student.asmt_years[subjects[i]] = years[i]
+            student.asmt_types[subjects[i]] = types[i]
+            student.asmt_subjects[subjects[i]] = subjects[i]
     return students
 
 
@@ -446,7 +454,7 @@ def create_schools(district, school_names_1, school_names_2, student_info_dict, 
 
         population_data = get_school_population(school, student_info_dict, subject_percentages, demographics_info,
                                                 demographics_id, assessments, error_band_dict, state_name, state_code,
-                                                from_date, most_recent, to_date, street_names)
+                                                from_date, most_recent, to_date, street_names, sch_pop.pld_adjustment)
         students, teachers, sections = population_data
         # students = set_student_additional_info(school, street_names, students)
 

@@ -165,6 +165,11 @@ class StudentInfo(object):
         self.teacher_guids = {}
         self.asmt_dates_taken = {}
 
+        # New Assessment Information
+        self.asmt_types = {}
+        self.asmt_subjects = {}
+        self.asmt_years = {}
+
     def set_additional_info(self, student_rec_id, email, address_1, city, section_guid, state_code, district_guid,
                             school_guid, from_date, to_date, most_recent, address_2=None):
         '''

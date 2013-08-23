@@ -180,8 +180,9 @@ class AssessmentOutcome(object):
                  asmt_claim_2_score, asmt_claim_2_score_range_min, asmt_claim_2_score_range_max,
                  asmt_claim_3_score, asmt_claim_3_score_range_min, asmt_claim_3_score_range_max,
                  asmt_claim_4_score, asmt_claim_4_score_range_min, asmt_claim_4_score_range_max,
-                 status, most_recent, batch_guid, dmg_eth_hsp=False, dmg_eth_ami=False, dmg_eth_asn=False,
-                 dmg_eth_blk=False, dmg_eth_pcf=False, dmg_eth_wht=False, dmg_prg_iep=False, dmg_prg_lep=False,
+                 status, most_recent, batch_guid, asmt_type, asmt_year, asmt_subject, gender,
+                 dmg_eth_hsp=False, dmg_eth_ami=False, dmg_eth_asn=False, dmg_eth_blk=False,
+                 dmg_eth_pcf=False, dmg_eth_wht=False, dmg_prg_iep=False, dmg_prg_lep=False,
                  dmg_prg_504=False, dmg_prg_tt1=False, dmg_eth_derived=None):
 
         self.asmnt_outcome_rec_id = asmnt_outcome_rec_id
@@ -203,11 +204,18 @@ class AssessmentOutcome(object):
         self.date_taken_month = date_taken_month
         self.date_taken_year = date_taken_year
 
+        self.gender = gender
+
         # Overall Assessment Data
         self.asmt_score = asmt_score
         self.asmt_score_range_min = asmt_score_range_min
         self.asmt_score_range_max = asmt_score_range_max
         self.asmt_perf_lvl = asmt_perf_lvl
+
+        # General Assessment info
+        self.asmt_type = asmt_type
+        self.asmt_year = asmt_year
+        self.asmt_subject = asmt_subject
 
         # Assessment Claim Data
         self.asmt_claim_1_score = asmt_claim_1_score
@@ -256,8 +264,10 @@ class AssessmentOutcome(object):
                 self.asmt_claim_2_score, self.asmt_claim_2_score_range_min, self.asmt_claim_2_score_range_max,
                 self.asmt_claim_3_score, self.asmt_claim_3_score_range_min, self.asmt_claim_3_score_range_max,
                 self.asmt_claim_4_score, self.asmt_claim_4_score_range_min, self.asmt_claim_4_score_range_max,
-                self.status, self.most_recent, self.batch_guid, self.dmg_eth_hsp, self.dmg_eth_ami,
-                self.dmg_eth_asn, self.dmg_eth_blk, self.dmg_eth_pcf, self.dmg_eth_wht, self.dmg_prg_iep,
+                self.status, self.most_recent, self.batch_guid,
+                self.asmt_type, self.asmt_year, self.asmt_subject, self.gender,
+                self.dmg_eth_hsp, self.dmg_eth_ami, self.dmg_eth_asn, self.dmg_eth_blk,
+                self.dmg_eth_pcf, self.dmg_eth_wht, self.dmg_prg_iep,
                 self.dmg_prg_lep, self.dmg_prg_504, self.dmg_prg_tt1, self.dmg_eth_derived]
 
     @classmethod
@@ -273,9 +283,10 @@ class AssessmentOutcome(object):
                 'asmt_claim_2_score', 'asmt_claim_2_score_range_min', 'asmt_claim_2_score_range_max',
                 'asmt_claim_3_score', 'asmt_claim_3_score_range_min', 'asmt_claim_3_score_range_max',
                 'asmt_claim_4_score', 'asmt_claim_4_score_range_min', 'asmt_claim_4_score_range_max',
-                'status', 'most_recent', 'batch_guid', 'dmg_eth_hsp', 'dmg_eth_ami', 'dmg_eth_asn',
-                'dmg_eth_blk', 'dmg_eth_pcf', 'dmg_eth_wht', 'dmg_prg_iep', 'dmg_prg_lep', 'dmg_prg_504',
-                'dmg_prg_tt1', 'dmg_eth_derived']
+                'status', 'most_recent', 'batch_guid',
+                'asmt_type', 'asmt_year', 'asmt_subject', 'gender',
+                'dmg_eth_hsp', 'dmg_eth_ami', 'dmg_eth_asn', 'dmg_eth_blk', 'dmg_eth_pcf',
+                'dmg_eth_wht', 'dmg_prg_iep', 'dmg_prg_lep', 'dmg_prg_504', 'dmg_prg_tt1', 'dmg_eth_derived']
 
 
 class Person(object):
@@ -346,9 +357,7 @@ class Student():
     def __init__(self, student_rec_id, student_guid, first_name, last_name, address_1, city, zip_code,
                  gender, email, dob,
                  section_guid, grade, state_code, district_guid, school_guid, from_date, most_recent,
-                 middle_name=None, address_2=None, to_date=None, dmg_eth_hsp=False, dmg_eth_ami=False, dmg_eth_asn=False,
-                 dmg_eth_blk=False, dmg_eth_pcf=False, dmg_eth_wht=False, dmg_prg_iep=False, dmg_prg_lep=False,
-                 dmg_prg_504=False, dmg_prg_tt1=False):
+                 middle_name=None, address_2=None, to_date=None):
 
         self.student_rec_id = student_rec_id
         self.student_guid = student_guid
@@ -371,29 +380,6 @@ class Student():
         self.to_date = to_date
         self.most_recent = most_recent
         self.has_updated_gender = False
-
-        # Demographic Data
-        self.dmg_eth_hsp = dmg_eth_hsp
-        self.dmg_eth_ami = dmg_eth_ami
-        self.dmg_eth_asn = dmg_eth_asn
-        self.dmg_eth_blk = dmg_eth_blk
-        self.dmg_eth_pcf = dmg_eth_pcf
-        self.dmg_eth_wht = dmg_eth_wht
-        self.dmg_prg_iep = dmg_prg_iep
-        self.dmg_prg_lep = dmg_prg_lep
-        self.dmg_prg_504 = dmg_prg_504
-        self.dmg_prg_tt1 = dmg_prg_tt1
-        self.demographics_assigned = False
-
-    def getDemoOfStudent(self, substr='dmg'):
-        demo = []
-        for attr_name in self.__dict__:
-            if substr in attr_name and self.__dict__[attr_name] is True:
-                demo.append(attr_name)
-
-        demo.append(self.gender)
-
-        return demo
 
     def getRow(self):
         return [self.student_rec_id, self.student_guid, self.first_name, self.middle_name, self.last_name, self.address_1, self.address_2,

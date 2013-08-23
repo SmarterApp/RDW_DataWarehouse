@@ -83,7 +83,7 @@ define [
       # draw population bar
       output = drawPopulationBar(value, options, rowObject)
       PopulationBarCache[objectId] = output
-    output  
+    output
 
   drawPopulationBar = (value, options, rowObject) ->
     asmt_type = options.colModel.formatoptions.asmt_type

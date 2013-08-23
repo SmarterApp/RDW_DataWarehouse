@@ -2,8 +2,8 @@ define [
   'jquery'
   'jqGrid'
   'edwareUtil'
-  'edwareGridFormatters',
-  'edwareGridSorters'
+  'edwareGridFormatters'
+  'edwareGridSorters'  
 ], ($, jqGrid, edwareUtil, edwareGridFormatters, edwareGridSorters) ->
   #
   # * EDWARE grid
@@ -46,9 +46,9 @@ define [
                 index: item1.index
                 width: item1.width
   
-              colModelItem.formatter = (if (edwareGridFormatters[item1.formatter]) then edwareGridFormatters[item1.formatter] else item1.formatter)  if item1.formatter
+              colModelItem.formatter = (edwareGridFormatters[item1.formatter] || item1.formatter)  if item1.formatter
               colModelItem.formatoptions = item1.options  if item1.options
-              colModelItem.sorttype = (if (edwareGridSorters[item1.sorttype]) then edwareGridSorters[item1.sorttype] else item1.sorttype)  if item1.sorttype
+              colModelItem.sorttype = item1.sorttype if item1.sorttype
               colModelItem.sortable = item1.sortable
               colModelItem.align = item1.align  if item1.align
               
@@ -107,7 +107,15 @@ define [
           $(this).jqGrid('footerData','set', footerData, true);
         
     ) jQuery
-    
+
+    (($) ->
+      $.fn.sortBySubject = (subject, index) ->
+        colModels = this.jqGrid("getGridParam", "colModel");
+        for colModel in colModels
+          colModel.sorttype = edwareGridSorters.create(index) if colModel.index == subject
+        this.sortGrid(subject, true, 'asc')
+    ) jQuery
+
     #
     #    * Creates EDWARE grid
     #    * @param tableId - The container id for grid

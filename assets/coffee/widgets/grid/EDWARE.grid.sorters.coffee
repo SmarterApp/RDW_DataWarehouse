@@ -3,8 +3,8 @@ define [
   'jqGrid'
 ], ($, jqGrid) ->
 
-  popBarSort = (cell, rowObject) ->
-    index = $('.inputColorBlock:checked').data('index')
-    cell[index]
+  createPopBarSorter = (index) ->
+    return (cell, rowObject) ->
+      cell[index]
   
-  popBarSort:popBarSort
+  create: createPopBarSorter

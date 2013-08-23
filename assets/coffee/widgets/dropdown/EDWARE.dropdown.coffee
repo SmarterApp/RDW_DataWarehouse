@@ -30,12 +30,13 @@ define [
       $this.attr('checked', true)
       dropdown = $this.closest('div.dropdown')
       subject = dropdown.data('subject')
+      index = $this.data('index')
       # obtain selected color bar and set it to table header
       colorBar = $this.next().clone()
       #set the center of table header
       dropdownTitle = $('.dropdown_title', dropdown)
       dropdownTitle.html(colorBar)
-      this.dropdown.callback subject
+      this.dropdown.callback(subject, index)
 
     create: () ->
       # create dropdown and set to the center of each colomn

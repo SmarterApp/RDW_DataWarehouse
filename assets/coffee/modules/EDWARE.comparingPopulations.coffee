@@ -8,152 +8,153 @@ define [
   "edwareBreadcrumbs"
   "edwareUtil"
   "edwareFooter"
+  "edwareHeader"
   "edwareDropdown"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareDropdown) ->
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwareDropdown) ->
 
+  REPORT_NAME = "comparingPopulationsReport"
+
+  LANGUAGE = "en"
 
   POPULATION_BAR_WIDTH = 145
-  
-  alignmentPercent = ""
-  summaryData = []
-  currentSortInfo = {}
-  
-  
-  # Add header to the page
-  edwareUtil.getHeader()
-  
-  # dropdown menu
-  edwareDropdown = undefined
-  
-  sortBySubject = (subject) ->
-    enableSortableColumnWithSortArrow subject
-    $('#gridTable').sortGrid(subject, true, 'asc')
-    
-  # set drop down sort arrow visiblity and enable/disable sortable columns
-  enableSortableColumnWithSortArrow = (subject) ->
-    # obtain selected color bar and set it to table header
-    asmtSubjectSort = $("#" + subject + "_sort")
-    #move sort up/down to right side
-    asmtSubjectSort.parent().addClass('colorSortArrow')
-    # display sort arrows
-    asmtSubjectSort.siblings('span').css('visibility', 'visible')
-    # enable/disable column to be sortable
-    enableDisableSortingOnAssessments subject
-  
 
-  enableDisableSortingOnAssessments = (subject) ->
-    # Enable sorting, Disable sorting in the other
-    $.each $("#gridTable").getGridParam("colModel"), (index, colModel) ->
-      colModel.sortable = false
-      #set always enable the first column
-      if index is 0
-        colModel.sortable = true
-      else
-        if colModel.index is subject
-          colModel.sortable = true
-  
-  #
-  #    * Create Student data grid
-  #    
-  createPopulationGrid = (params) ->
-    
-    # Get school data from the server
-    getPopulationData "/data/comparing_populations", params, (populationData, summaryData, asmtSubjectsData, metaData, breadcrumbsData, user_info) ->
-      
-      # Read Default colors from json
-      defaultColors = {}
+  AFTER_GRID_LOAD_COMPLETE = 'jqGridLoadComplete.jqGrid'
+
+  class GridConfig
+
+    constructor: (template, subjects, customView) ->
+      output = Mustache.render(JSON.stringify(template), subjects)
+      this.gridConfig = JSON.parse(output)
+      this
+
+    customize: (customView) ->
+      # Change the column name and link url based on the type of report the user is querying for
+      this.gridConfig[0].items[0].name = customView.name
+      this.gridConfig[0].items[0].options.linkUrl = customView.link
+      this.gridConfig[0].items[0].options.id_name = customView.id_name
+
+      if customView.name is "Grade"
+        this.gridConfig[0].items[0].sorttype = "int"
+      this
+
+    build: ()->
+      this.gridConfig
+
+
+  class PopulationGrid
+
+    constructor: () ->
+      config = edwareDataProxy.getDataForReport REPORT_NAME, LANGUAGE
+      this.initialize(config)
+
+    initialize: (config)->
+      this.config = config
+      this.breadcrumbsConfigs = config.breadcrumb
+      this.configTemplate = config.comparingPopulations.grid
+      this.customViews = config.comparingPopulations.customViews
+      this.labels = config.labels
+      this.defaultColors = config.colors
+      this.gridContainer = $('.gridHeight100')
+      this.gridControlPanel = $(".gridControls")
+      # create align button
+      this.alignment = new Alignment($('.align_button'))
+      # default sort
+      this.sort = {
+        name: 'name'
+        order: 'asc'
+        index: 0
+      }
+
+    sortBySubject: (sort) ->
+      this.sort = $.extend(this.sort, sort)
+      $('#gridTable').sortBySubject(this.sort.name, this.sort.index, this.sort.order)
+
+    reload: (@param) ->
+      # initialize variables
+      this.reportType = this.getReportType(param)
+      data = this.fetchData param
+      this.data = data
+      this.populationData = this.data.records
+      this.summaryData = this.data.summary
+      this.asmtSubjectsData = this.data.subjects
+      this.colorsData = this.data.colors
+      #Check for colors, set to default color if it's null
+      for color, value of this.colorsData
+        if value is null
+          this.colorsData[color] = this.defaultColors
+
+      # process breadcrumbs
+      this.renderBreadcrumbs(data.context)
+      this.createGrid()
+      this.updateDropdown()
+      this.createHeaderAndFooter()
+
+    createHeaderAndFooter: ()->
+      edwareFooter.create('comparing_populations', this.data, this.config)
+      edwareHeader.create(this.data, this.config, this.reportType)
+
+    fetchData: (params)->
+      # Determine if the report is state, district or school view"
       options =
         async: false
-        method: "GET"
-    
-      data = edwareDataProxy.getDataForReport "comparingPopulationsReport", "en"
-      defaultColors = data.colors
-      feedbackData = data.feedback
-      breadcrumbsConfigs = data.breadcrumb
-      reportInfo = data.reportInfo
-      gridConfig = data.comparingPopulations.grid
-      customViews = data.comparingPopulations.customViews
-      customALDDropdown = data.comparingPopulations.customALDDropdown
-      legendInfo = data.legendInfo
-      this.labels = data.labels
-              
-      output = Mustache.render(JSON.stringify(gridConfig), asmtSubjectsData)
-      gridConfig = JSON.parse(output)
+        method: "POST"
+        params: params
+      
+      studentsData = undefined
+      edwareDataProxy.getDatafromSource "/data/comparing_populations", options, (data)->
+        studentsData = data
+      studentsData
 
-      # # append user_info (e.g. first and last name)
-      if user_info
-        $('#header .topLinks .user').html edwareUtil.getUserName user_info
-        
-      # Determine if the report is state, district or school view
-      reportType = getReportType(params)
-      
-      # Check for colors, set to default color if it's null
-      for subject, value of metaData
-        if value.colors is null
-          metaData[subject].colors = defaultColors
-      
+    # Based on query parameters, return the type of report that the user is requesting for
+    getReportType: (params) ->
+      if params['schoolGuid']
+        reportType = 'school'
+      else if params['districtGuid']
+        reportType = 'district'
+      else if params['stateCode']
+        reportType = 'state'
+      reportType
+
+    createGrid: () -> 
       # Append colors to records and summary section
       # Do not format data, or get breadcrumbs if the result is empty
-      if populationData.length > 0
-        populationData = appendColorToData populationData, asmtSubjectsData, metaData, defaultColors
-        summaryData = appendColorToData summaryData, asmtSubjectsData, metaData, defaultColors
+      this.populationData = new PopulationDataWrapper(this.summaryData[0], this.asmtSubjectsData, this.colorsData, this.defaultColors).process(this.populationData)
+      summaryData = new PopulationDataWrapper(this.summaryData[0], this.asmtSubjectsData, this.colorsData, this.defaultColors).process(this.summaryData)
+      this.summaryData = this.formatSummaryData summaryData
+      this.renderGrid()
+      self = this
+      $('#gridTable').on AFTER_GRID_LOAD_COMPLETE, ()->
+        self.afterGridLoadComplete()
+      self.afterGridLoadComplete()
 
-      # Change the column name and link url based on the type of report the user is querying for
-      gridConfig[0].items[0].name = customViews[reportType].name
-      gridConfig[0].items[0].options.linkUrl = customViews[reportType].link
-      gridConfig[0].items[0].options.id_name = customViews[reportType].id_name
-        
-      if customViews[reportType].name is "Grade"
-        gridConfig[0].items[0].sorttype = "int"
-        
-      # Render breadcrumbs on the page
-      $('#breadcrumb').breadcrumbs(breadcrumbsData, breadcrumbsConfigs)
-        
-      # Set the Report title depending on the report that we're looking at
-      reportTitle = getReportTitle(breadcrumbsData, reportType)
-      $('#content h2').html reportTitle
-        
-      # Format the summary data for summary row purposes
-      summaryRowName = getOverallSummaryName(breadcrumbsData, reportType)
-      summaryData = formatSummaryData(summaryData, summaryRowName)
+    afterGridLoadComplete: () ->
+      this.bindEvents()
+      this.alignment.update()
+      # Save the current sorting column and order to apply after filtering
+      this.sort = $.extend this.sort, {
+        order: $('#gridTable').getGridParam('sortorder')
+        name: $('#gridTable').getGridParam('sortname')
+      }
       
-      # For filtering, we need to reapply the current sort column in gridConfig before we re-render the grid
-      if currentSortInfo.name
-        for element in gridConfig
-          if element.items[0].index == currentSortInfo.name
-            element.items[0]["sortorder"] = currentSortInfo.order
-          else
-            delete element.items[0].sortorder
-      
+    renderGrid: () ->
+      this.gridContainer.html($("<table id='gridTable'/>"))
+      gridConfig = new GridConfig(this.configTemplate, this.asmtSubjectsData)
+                             .customize(this.customViews[this.reportType])
+                             .build()
       # Create compare population grid for State/District/School view
-      renderGrid gridConfig, populationData, summaryData
-      
-      # Enable the sorting arrows in dropdown if the current sort column isn't the first column
-      curSortColumn = $('#gridTable').getGridParam('sortname')
-      if $('#gridTable').getGridParam('colModel') and curSortColumn != $('#gridTable').getGridParam('colModel')[0].name
-        enableSortableColumnWithSortArrow curSortColumn
-      # Apply alignment
-      formatBarAlignment()
-      
-      # Generate footer
-      $('#footer').generateFooter('comparing_populations', reportInfo, {
-        'legendInfo': legendInfo,
-        'subject': (()->
-            # merge default color data into sample intervals data
-            for color, i in metaData.subject1.colors || metaData.subject2.colors
-              legendInfo.sample_intervals.intervals[i].color = color
-            legendInfo.sample_intervals
-          )()
-      }, this.labels)
-      
-      # append user_info (e.g. first and last name)
-      if user_info
-        role = edwareUtil.getRole user_info
-        uid = edwareUtil.getUid user_info
-        edwareUtil.renderFeedback(role, uid, "comparing_populations_" + reportType, feedbackData)
-      
+      edwareGrid.create "gridTable", gridConfig, this.populationData, this.summaryData
+      this.sortBySubject this.sort
+      # Display grid controls after grid renders
+      this.gridControlPanel.show()
+
+    renderBreadcrumbs: (breadcrumbsData)->
+      this.breadcrumbs = new Breadcrumbs(breadcrumbsData, this.breadcrumbsConfigs, this.reportType)
+      # Set the Report title depending on the report that we're looking at
+      $('#content h2').html this.breadcrumbs.getReportTitle()
+
+    bindEvents: ()->
       # Show tooltip for population bar on mouseover
-      $(document).on
+      $(".progress").on
         mouseenter: ->
           e = $(this)
           e.popover
@@ -169,225 +170,186 @@ define [
         mouseleave: ->
           e = $(this)
           e.popover("hide")
-      , ".progress"
-      
-      
-      # Set population bar alignment on/off
-      $(".align_button").unbind('click').click ->
-        $(this).toggleClass('align_off align_on')
-        $("#gridTable") .trigger("reloadGrid")
-      
+                
+      self = this
+      $('#gridTable_name').click ()->
+        # Get the current sort column and reset cpop sorting dropdown if the current sort column is the first column
+        self.edwareDropdown.resetAll()
+
+    updateDropdown: ()->
       # create drop down menus
-      if edwareDropdown is undefined
-        edwareDropdown = $('.dropdownSection').edwareDropdown(customALDDropdown, sortBySubject)
+      this.edwareDropdown = this.createDropdown(this.config.comparingPopulations.customALDDropdown) if not this.edwareDropdown
       # update dropdown menus status
-      edwareDropdown.update(summaryData, asmtSubjectsData, metaData)
+      this.edwareDropdown.update(this.summaryData, this.asmtSubjectsData, this.colorsData)
+          
+    createDropdown: (customALDDropdown)->
+      self = this
+      $('.dropdownSection').edwareDropdown customALDDropdown, (subject, index)->
+        self.sortBySubject subject, index
 
-      # Display grid controls after grid renders
-      $(".gridControls").css("display", "block")
-              
-      # Extend jqgrid loadComplete event for Comparing population
-      # Reset ALD sorting dropdown options and handle bar alignment styling
-      $('#gridTable').bind "jqGridLoadComplete.jqGrid", (e, data) ->
-         # Get the current sort column and reset cpop sorting dropdown if the current sort column is the first column
-         # Save the current sorting column and order
-         currentSortInfo['name'] = $('#gridTable').getGridParam('sortname')
-         currentSortInfo['order'] = $('#gridTable').getGridParam('sortorder')
-         if $('#gridTable').getGridParam('colModel') and currentSortInfo['name'] == $('#gridTable').getGridParam('colModel')[0].name
-           edwareDropdown.resetAll()
-           enableDisableSortingOnAssessments()
-         formatBarAlignment();
-
-  # Render comparing population grid
-  renderGrid = (gridConfig, populationData, summaryData) ->
-    $("#gbox_gridTable").remove()
-    $("#content .gridHeight100").append("<table id='gridTable'></table>")
-    # Create compare population grid for State/District/School view
-    edwareGrid.create "gridTable", gridConfig, populationData, summaryData       
-  
-  # Change population bar width as per alignment on/off status
-  formatBarAlignment = ->
-    align_button_class = $(".align_button").attr("class")
-    if align_button_class.indexOf("align_on") isnt -1
-      $(".gridHeight100 .populationBar").width(215)
-      $(".gridHeight100 .progress").width(POPULATION_BAR_WIDTH)
-      $(".alignmentLine").css("display", "block")
-      $(".barContainer").css("margin-left", "48px")
-      $(".leftPercentageTotal").show()
-      $(".rightPercentageTotal").show()
-      $(".gridHeight100 .percentageOnBar").hide()
-      
-    else
-      $(".populationBar").css("width", "265px")
-      $(".progress").width(265)
-      $(".alignmentLine").css("display", "none")
-      $(".barContainer ").css("margin-left", "15px")
-      $(".leftPercentageTotal").hide()
-      $(".rightPercentageTotal").hide()
-      $(".gridHeight100 .percentageOnBar").show()
-  
-  # Get population data from server       
-  getPopulationData = (sourceURL, params, callback) ->
-    
-    dataArray = []
-    
-    return false if sourceURL is "undefined" or typeof sourceURL is "number" or typeof sourceURL is "function" or typeof sourceURL is "object"
-    
-    options =
-      async: true
-      method: "POST"
-      params: params
-  
-    edwareDataProxy.getDatafromSource sourceURL, options, (data) ->
-      populationData = data.records
-      summaryData = data.summary
-      asmtSubjectsData = data.subjects
-      metaData = data.metadata
-      breadcrumbsData = data.context
-      user_info = data.user_info
-      
-      if callback
-        callback populationData, summaryData, asmtSubjectsData, metaData, breadcrumbsData, user_info
-      else
-        dataArray populationData, summaryData, asmtSubjectsData, metaData, breadcrumbsData, user_info
-      
-  # Returns column configurations for population grid   
-  getColumnConfig = (configURL, callback) ->
-      
-      dataArray = []
-            
-      return false  if configURL is "undefined" or typeof configURL is "number" or typeof configURL is "function" or typeof configURL is "object"
-      
-      options =
-        async: false
-        method: "GET"
-      
-      edwareDataProxy.getDatafromSource configURL, options, (data) ->
-        schoolColumnCfgs = data.grid
-        comparePopCfgs = data.customViews
-         
-        if callback
-          callback schoolColumnCfgs, comparePopCfgs
-        else
-          dataArray schoolColumnCfgs, comparePopCfgs
-  
-  # Traverse through to intervals to prepare to append color to data
-  # Handle population bar alignment calculations
-  appendColorToData = (data, asmtSubjectsData, metaData, defaultColors) ->
-    for k of asmtSubjectsData
-      j = 0
-      if summaryData[0].results[k]
-        summaryDataAlignment = summaryData[0].results[k].intervals[0].percentage + summaryData[0].results[k].intervals[1].percentage
-        while j < data.length
-          # summary data may exist, but not for individual results
-          if data[j]['results'][k]
-            appendColor data[j]['results'][k], metaData[k].colors, defaultColors
-            
-            data[j]['results'][k].alignmentLine =  (((summaryDataAlignment) * POPULATION_BAR_WIDTH) / 100) + 10 + 35
-            data[j]['results'][k].alignment =  (((summaryDataAlignment - 100 + data[j]['results'][k].sort[1]) * POPULATION_BAR_WIDTH) / 100) + 10
-          j++
-    data
-  
-  # Add color for each intervals
-  appendColor = (data, colors, defaultColors) ->
-    i = 0
-    intervals = data.intervals
-    len = colors.length
-    sort = prepareTotalPercentage data.total, len
-    while i < len
-      element = intervals[i]
-      element = {'count': 0, 'percentage': 0} if element is undefined
-      if colors and colors[i]
-        element.color = colors[i]
-      else
-        element.color = defaultColors[i]
+      # Format the summary data for summary row rendering purposes
+    formatSummaryData: (summaryData) ->
+      summaryRowName = this.breadcrumbs.getOverallSummaryName()
+      data = {}
+      summaryData = summaryData[0]
+      for k of summaryData.results
+        name = 'results.' + k + '.total'
+        data[name] = summaryData.results[k].total
         
-      # if percentage is less than 9 then remove the percentage text from the bar
-      if element.percentage > 9
-        element.showPercentage = true
+      data['subtitle'] = this.labels['reference_point']#'Reference Point'
+      # Set header row to be true to indicate that it's the summary row
+      data['header'] = true
+      data['results'] = summaryData.results
+      data['name'] = summaryRowName
+      data
+
+
+  class Breadcrumbs
+
+    constructor: (@breadcrumbsData, @breadcrumbsConfigs, @reportType) ->
+      # Render breadcrumbs on the page
+      $('#breadcrumb').breadcrumbs(breadcrumbsData, breadcrumbsConfigs)
+
+    getReportTitle: () ->
+    # Returns report title based on the type of report
+      if this.reportType is 'state'
+        data = this.addApostropheS(this.breadcrumbsData.items[0].name) + ' Districts'
+      else if this.reportType is 'district'
+        data = this.addApostropheS(this.breadcrumbsData.items[1].name) + ' Schools'
+      else if this.reportType is 'school'
+        data = this.addApostropheS(this.breadcrumbsData.items[2].name) + ' Grades'
+      'Comparing '+ data + ' on Math & ELA'
+
+    # Format the summary data for summary row purposes
+    getOverallSummaryName: () ->
+        # Returns the overall summary row name based on the type of report
+      if this.reportType is 'state'
+        data = this.breadcrumbsData.items[0].name + ' District'
+      else if this.reportType is 'district'
+        data = this.breadcrumbsData.items[1].name + ' School'
+      else if this.reportType is 'school'
+        data = this.breadcrumbsData.items[2].name + ' Grade'
+      'Overall ' + data + ' Summary'
+
+    # Add an 's to a word
+    addApostropheS: (word) ->
+      if word.substr(word.length - 1) is "s"
+        word = word + "'"
       else
-        element.showPercentage = false
-      
-      # calculate sort sort
-      sort = calculateTotalPercentage sort, i, element.percentage
-      i++
-    # attach sort to data
-    data.sort = sort
-
-  # initialize total percentages for each sort interval
-  prepareTotalPercentage = (total, intervalLength) ->
-    percentages = {}
-    j = 0
-    while j < intervalLength - 1
-      # Prepopulate
-      percentages[j] = 0
-      j++
-    percentages[intervalLength-1] = total
-    percentages
-
-  # calculate percentages for each sort interval
-  calculateTotalPercentage = (percentages, i, currentPercentage) ->
-    k = 2
-    if i is 0
-      percentages[i] = currentPercentage
-    else
-      while k <= i
-        percentages[k-1] = percentages[k-1] + currentPercentage
-        k++
-    percentages
-      
-  # Format the summary data for summary row rendering purposes
-  formatSummaryData = (summaryData, summaryRowName) ->
-    data = {}
-    summaryData = summaryData[0]
-    for k of summaryData.results
-      name = 'results.' + k + '.total'
-      data[name] = summaryData.results[k].total
-      
-    data['subtitle'] = this.labels['reference_point']#'Reference Point'
-    # Set header row to be true to indicate that it's the summary row
-    data['header'] = true
-    data['results'] = summaryData.results
-    data['name'] = summaryRowName
-    data
- 
-  # Returns report title based on the type of report
-  getReportTitle = (breadcrumbsData, reportType) ->
-    if reportType is 'state'
-      data = addApostropheS(breadcrumbsData.items[0].name) + ' Districts'
-    else if reportType is 'district'
-      data = addApostropheS(breadcrumbsData.items[1].name) + ' Schools'
-    else if reportType is 'school'
-      data = addApostropheS(breadcrumbsData.items[2].name) + ' Grades'
-    'Comparing '+ data + ' on Math & ELA'
-      
-  # Returns the overall summary row name based on the type of report
-  getOverallSummaryName = (breadcrumbsData, reportType) ->
-    if reportType is 'state'
-      data = breadcrumbsData.items[0].name + ' District'
-    else if reportType is 'district'
-      data = breadcrumbsData.items[1].name + ' School'
-    else if reportType is 'school'
-      data = breadcrumbsData.items[2].name + ' Grade'
-    'Overall ' + data + ' Summary'
-    
-  # Add an 's to a word
-  addApostropheS = (word) ->
-    if word.substr(word.length - 1) is "s"
-      word = word + "'"
-    else
-      word = word + "'s"
-    word
-    
-  # Based on query parameters, return the type of report that the user is requesting for
-  getReportType = (params) ->
-    if params['schoolGuid']
-      reportType = 'school'
-    else if params['districtGuid']
-      reportType = 'district'
-    else if params['stateCode']
-      reportType = 'state'
-    reportType
+        word = word + "'s"
+      word
 
 
-  createPopulationGrid: createPopulationGrid
+  class PopulationDataWrapper
+  
+    constructor: (@summaryData, @asmtSubjectsData, @colorsData, @defaultColors) ->
+
+    # Traverse through to intervals to prepare to append color to data
+    # Handle population bar alignment calculations
+    process: (data) ->
+      #TODO
+      for k of this.asmtSubjectsData
+        j = 0
+        if this.summaryData.results[k]
+          summaryDataAlignment = this.summaryData.results[k].intervals[0].percentage + this.summaryData.results[k].intervals[1].percentage
+          while j < data.length
+            # summary data may exist, but not for individual results
+            if data[j]['results'][k]
+              appendColor data[j]['results'][k], this.colorsData[k], this.defaultColors
+              data[j]['results'][k].alignmentLine =  (((summaryDataAlignment) * POPULATION_BAR_WIDTH) / 100) + 10 + 35
+              data[j]['results'][k].alignment =  (((summaryDataAlignment - 100 + data[j]['results'][k].sort[1]) * POPULATION_BAR_WIDTH) / 100) + 10
+            j++
+      this.appendSortingAccessor data
+
+    appendSortingAccessor: (data) ->
+      for item in data
+        for subject of this.asmtSubjectsData
+          subjectData = item['results'][subject]
+          if subjectData
+            item[subjectData.asmt_subject] = subjectData.sort
+      data
+
+      # Add color for each intervals
+    appendColor = (data, colors, defaultColors) ->
+      i = 0
+      intervals = data.intervals
+      len = colors.length
+      sort = prepareTotalPercentage data.total, len
+      while i < len
+        element = intervals[i]
+        element = {'count': 0, 'percentage': 0} if element is undefined
+        if colors and colors[i]
+          element.color = colors[i]
+        else
+          element.color = defaultColors[i]
+          
+        # if percentage is less than 9 then remove the percentage text from the bar
+        if element.percentage > 9
+          element.showPercentage = true
+        else
+          element.showPercentage = false
+        
+        # calculate sort
+        sort = calculateTotalPercentage sort, i, element.percentage
+        i++
+      # attach sort to data
+      data.sort = sort
+
+    # calculate percentages for each sort interval
+    calculateTotalPercentage = (percentages, i, currentPercentage) ->
+      k = 2
+      if i is 0
+        percentages[i] = currentPercentage
+      else
+        while k <= i
+          percentages[k-1] = percentages[k-1] + currentPercentage
+          k++
+      percentages
+
+    # initialize total percentages for each sort interval
+    prepareTotalPercentage = (total, intervalLength) ->
+      percentages = {}
+      j = 0
+      while j < intervalLength - 1
+        # Prepopulate
+        percentages[j] = 0
+        j++
+      percentages[intervalLength-1] = total
+      percentages      
+
+
+  class Alignment
+
+    constructor: (@trigger)->
+      this.aligned = false
+      this.bindEvents()
+
+    bindEvents: ()->
+      # Set population bar alignment on/off
+      self = this
+      this.trigger.unbind('click').click () ->
+        self.aligned = not self.aligned
+        # toggle component
+        self.trigger.toggleClass('align_on align_off')
+        # update alignment
+        self.update()
+
+    update: () ->
+      if this.aligned
+        this.showAlignment()
+      else
+        this.hideAlignment()
+
+    # Change population bar width as per alignment on/off status
+    showAlignment: () ->
+      $(".barContainer").addClass('alignment').removeClass('default')
+      $(".populationBar").each ()->
+        $this = $(this)
+        $this.css "margin-left", $this.data('margin-left')
+
+    hideAlignment: () ->
+      $(".barContainer").addClass('default').removeClass('alignment')
+      $(".populationBar").removeAttr('style')    
+
+      
+  PopulationGrid: PopulationGrid

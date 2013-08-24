@@ -92,13 +92,30 @@ class Test(unittest.TestCase):
         results = get_results('school_view_results.json')
         param = {Constants.STATECODE: 'DE', Constants.DISTRICTGUID: '245', Constants.SCHOOLGUID: '92499'}
         subjects = {Constants.MATH: Constants.SUBJECT1, Constants.ELA: Constants.SUBJECT2}
-        asmt_levels = {Constants.MATH: 3, Constants.ELA: 5}
+        asmt_levels = {Constants.SUBJECT1: 3, Constants.SUBJECT2: 5}
         manager = RecordManager(subjects, asmt_levels, **param)
         for result in results:
             manager.update_record(result)
         self.assertEqual(1, len(manager._tracking_record))
         summary = manager.get_summary()
         self.assertEqual(3, len(summary[0]['results']['subject1']))
+
+    def test_RecordManager_format_data(self):
+        data = {'subject2': {1: 1, 2: 2, 3: 1}, 'subject1': {2: 2}}
+        subjects = {Constants.MATH: Constants.SUBJECT1, Constants.ELA: Constants.SUBJECT2}
+        asmt_levels = {Constants.SUBJECT1: 4, Constants.SUBJECT2: 2}
+        manager = RecordManager(subjects, asmt_levels)
+        formatted_data = manager.format_results(data)
+        self.assertEqual(len(formatted_data['subject1']['intervals']), 4)
+        self.assertEqual(formatted_data['subject1']['intervals'][0]['percentage'], 0)
+        self.assertEqual(formatted_data['subject1']['intervals'][0]['count'], 0)
+        self.assertEqual(formatted_data['subject1']['intervals'][0]['level'], 1)
+        self.assertEqual(formatted_data['subject1']['intervals'][1]['percentage'], 100)
+        self.assertEqual(formatted_data['subject1']['intervals'][1]['count'], 2)
+        self.assertEqual(formatted_data['subject1']['intervals'][1]['level'], 2)
+        self.assertEqual(formatted_data['subject1']['intervals'][3]['percentage'], 0)
+        self.assertEqual(formatted_data['subject1']['intervals'][3]['count'], 0)
+        self.assertEqual(formatted_data['subject1']['intervals'][3]['level'], 4)
 
 
 def get_results(file_name):

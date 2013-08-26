@@ -391,6 +391,10 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         self.assertEqual(len(results['records']), 3)
         # total must be filtered out
         self.assertEqual(results['records'][0]['results']['subject1']['total'], -1)
+        self.assertEqual(results['records'][0]['results']['subject1']['intervals'][0]['percentage'], -1)
+        self.assertEqual(results['records'][0]['results']['subject1']['intervals'][1]['percentage'], -1)
+        self.assertEqual(results['records'][0]['results']['subject1']['intervals'][2]['percentage'], -1)
+        self.assertEqual(results['records'][0]['results']['subject1']['intervals'][3]['percentage'], -1)
         set_default_min_cell_size(0)
 
 if __name__ == "__main__":

@@ -31,8 +31,13 @@ ASMT_GUID = 'asmt_guid'
 ASMT_REC_ID = 'asmt_rec_id'
 MATH = 'Math'
 ELA = 'ELA'
-DEMO_STATS_CSV = os.path.join(__location__, '..', 'datafiles', 'demographicStats.csv')
 DEMO_ID = 'typical1'
+DERIVED_ETH_STR = 'dmg_eth_derived'
+DMG_ETH_HSP = 'dmg_eth_hsp'
+DMG_ETH_2MR = 'dmg_eth_2mr'
+
+
+DEMO_STATS_CSV = os.path.join(__location__, '..', 'datafiles', 'demographicStats.csv')
 REGULAR_OUTPUT_PATH = os.path.join(__location__, '..', 'datafiles', 'csv')
 
 DEMO_LIST = ['dmg_eth_hsp', 'dmg_eth_ami', 'dmg_eth_asn', 'dmg_eth_blk', 'dmg_eth_pcf', 'dmg_eth_wht', 'dmg_prg_iep', 'dmg_prg_lep', 'dmg_prg_504', 'dmg_prg_tt1']
@@ -52,6 +57,7 @@ DEMO_BY_GROUP = {'all': 0, 'male': 1, 'female': 1, 'not_stated': 1, 'dmg_eth_nst
                  'dmg_eth_ami': 2, 'dmg_eth_pcf': 2, 'dmg_eth_wht': 2, 'dmg_eth_2mr': 2, 'dmg_prg_iep': 3, 'dmg_prg_lep': 4, 'dmg_prg_504': 5, 'dmg_prg_tt1': 6}
 
 REPORT_DEMO_SET = set(DEMO_LIST + DERIVED_ETH_LIST + [ALL])
+SIMPLE_ETH_LIST = ['dmg_eth_hsp', 'dmg_eth_ami', 'dmg_eth_asn', 'dmg_eth_blk', 'dmg_eth_pcf', 'dmg_eth_wht']
 
 
 class DemographicsFuncTest(unittest.TestCase):
@@ -131,6 +137,19 @@ class DemographicsFuncTest(unittest.TestCase):
                     percent_diff_dict[grade][demo].append(determine_percent_difference((result_pl_percent - expected_pl_percent), expected_pl_percent))
 
         return percent_diff_dict
+
+    def verify_derived_demographic(self, row_dict):
+        given_derived_eth = row_dict[DERIVED_ETH_STR]
+        ethnicities = [eth for eth in SIMPLE_ETH_LIST if row_dict[eth] == 'True']
+
+        if DMG_ETH_HSP in ethnicities:
+            derived_eth = DERIVED_ETH_LIST.index(DMG_ETH_HSP)
+        elif len(ethnicities) > 1:
+            derived_eth = DERIVED_ETH_LIST.index(DMG_ETH_2MR)
+        else:
+            derived_eth = DERIVED_ETH_LIST.index(ethnicities[0])
+
+        self.assertEqual(given_derived_eth, derived_eth)
 
 
 def determine_percent_difference(dividend, divisor):

@@ -222,9 +222,9 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                Column('most_recent', Boolean),
                                Column('batch_guid', String(50), nullable=True),
                                # Add 4 assessment columns
-                               Column('asmt_type', String(16), nullable=True),
-                               Column('asmt_period_year', SmallInteger, nullable=True),
-                               Column('asmt_subject', String(100), nullable=True),
+                               Column('asmt_type', String(16), nullable=False),
+                               Column('asmt_period_year', SmallInteger, nullable=False),
+                               Column('asmt_subject', String(100)),
                                Column('gender', String(10), nullable=True),
                                # Add 10 demographic columns
                                Column('dmg_eth_hsp', Boolean, nullable=True),

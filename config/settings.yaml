@@ -73,7 +73,7 @@ common:
     # Timeout for pdf generation process
     pdf:
       # expected pdf file size in bytes used to validate that pdf was generated without errors
-      minimum_file_size: 60000
+      minimum_file_size: 59000
       # number of retries allowed after the first failure
       retries_allowed: 1
       # delay in retry in seconds
@@ -295,7 +295,7 @@ uat:
     disable_stack_trace: true
     edware:
       db:
-        ES:
+        es:
           schema_name: edware_uat_1_0
           url: postgresql+psycopg2://edware:edware.dmo.may.2013@dwpool0.dmo.som.edwdc.net:6434/edware
     edware_stats:

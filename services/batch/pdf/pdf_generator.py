@@ -47,5 +47,5 @@ class PDFGenerator(BatchBase):
         :param string report:  the name of the report
         '''
         # Encode the query parameters and append it to url
-        encoded_params = urllib.parse.urlencode({'studentGuid': student_guid})
+        encoded_params = urllib.parse.urlencode({'studentGuid': student_guid, 'pdf': 'true'})
         return urljoin(self.__base_url, report) + "?%s" % encoded_params

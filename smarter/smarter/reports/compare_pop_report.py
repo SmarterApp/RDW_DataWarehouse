@@ -297,7 +297,7 @@ class RecordManager():
             for name, alias in self._subjects_map.items():
                 levels = self._asmt_level.get(alias)
                 if levels and levels != len(data[alias]):
-                    for index in range(1, levels):
+                    for index in range(1, levels + 1):
                         if data[alias].get(index) is None:
                             data[alias][index] = 0
                 intervals = []

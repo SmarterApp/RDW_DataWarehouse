@@ -419,10 +419,10 @@ test:
     edware:
       db:
         cat:
-          schema_name: edware_sds_0_5
+          schema_name: edware_sds_0_6
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
         dog:
-          schema_name: edware_sds_0_5_dog
+          schema_name: edware_sds_0_6_dog
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
     edware_stats:
       db:

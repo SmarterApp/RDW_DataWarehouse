@@ -113,7 +113,7 @@ function run_func_tests {
     cd "$WORKSPACE/$1"
 
     python src/generate_data.py --config dg_types_test
-    nosetests functional_tests/fTest_DataValidation.py
+    nosetests functional_tests/fTest*.py
 }
 
 function setup_epydoc_dependencies {

@@ -57,9 +57,7 @@ REPORT_DEMO_SET = set(DEMO_LIST + DERIVED_ETH_LIST + [ALL])
 class DemographicsFuncTest(unittest.TestCase):
 
     def f_test_generated_data_demographics(self):
-        #output_location = run_data_generation()
-        #fact_asmt_path = os.path.join(output_location, FACT_ASMT)
-        #asmt_recs = get_asmt_rec_ids_by_subject(output_location)
+
         fact_asmt_path = os.path.join(REGULAR_OUTPUT_PATH, FACT_ASMT)
         asmt_recs = get_asmt_rec_ids_by_subject(REGULAR_OUTPUT_PATH)
         subject_counts_dict = self.get_demographic_counts_from_fact_csv(fact_asmt_path, asmt_recs)
@@ -241,25 +239,25 @@ def convert_subject_dict_for_printing(subject_percent_dict):
     return result_dict
 
 
-def run_data_generation():
-    data_gen_loc = os.path.join(__location__, '..', 'src', 'generate_data.py')
-    output_loc = os.path.join(__location__, 'test_output')
-    config_file = 'dg_types'
-    print('generating data for %s' % config_file)
-    output = system('python', data_gen_loc, '--config', config_file, '--output', output_loc, '-N')
-    sys.stdout.buffer.write(output)
-    return output_loc
+# def run_data_generation():
+#     data_gen_loc = os.path.join(__location__, '..', 'src', 'generate_data.py')
+#     output_loc = os.path.join(__location__, 'test_output')
+#     config_file = 'dg_types'
+#     print('generating data for %s' % config_file)
+#     output = system('python', data_gen_loc, '--config', config_file, '--output', output_loc, '-N')
+#     sys.stdout.buffer.write(output)
+#     return output_loc
 
 
-def system(*args, **kwargs):
-    '''
-    Method for running system calls
-    Taken from the pre-commit file for python3 in the scripts directory
-    '''
-    kwargs.setdefault('stdout', subprocess.PIPE)
-    proc = subprocess.Popen(args, **kwargs)
-    out, _err = proc.communicate()
-    return out
+# def system(*args, **kwargs):
+#     '''
+#     Method for running system calls
+#     Taken from the pre-commit file for python3 in the scripts directory
+#     '''
+#     kwargs.setdefault('stdout', subprocess.PIPE)
+#     proc = subprocess.Popen(args, **kwargs)
+#     out, _err = proc.communicate()
+#     return out
 
 
 if __name__ == "__main__":

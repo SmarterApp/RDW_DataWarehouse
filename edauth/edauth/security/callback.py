@@ -3,8 +3,7 @@ Created on Feb 11, 2013
 
 @author: dip
 '''
-from edauth.security.session_manager import is_session_expired, get_user_session,\
-    update_session_access
+from edauth.security.session_manager import is_session_expired, get_user_session
 
 
 def session_check(session_id, request):
@@ -21,6 +20,6 @@ def session_check(session_id, request):
     if session is not None:
         if not is_session_expired(session):
             roles = session.get_roles()
-            update_session_access(session)
+            # We no longer update last access time of session
 
     return roles

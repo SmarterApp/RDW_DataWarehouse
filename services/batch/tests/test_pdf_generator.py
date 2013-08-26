@@ -15,6 +15,7 @@ import shutil
 import os
 import services
 from services.tasks.pdf import prepare_path
+from urllib.parse import urlparse, parse_qs
 
 
 class TestPdfGenerator(unittest.TestCase):
@@ -68,7 +69,12 @@ class TestPdfGenerator(unittest.TestCase):
         student_guid = '2343'
         report = 'ISR.html'
         results = self.pdf_generator.build_url(student_guid, report)
-        self.assertEqual(results, self.settings['pdf.base.url'] + '/' + report + '?studentGuid=' + student_guid)
+        url = urlparse(results)
+        self.assertEqual(url.scheme + "://" + url.netloc + url.path, self.settings['pdf.base.url'] + '/' + report)
+        query_param = parse_qs(url.query)
+        self.assertEqual(len(query_param.keys()), 2)
+        self.assertEqual(query_param['studentGuid'][0], student_guid)
+        self.assertEqual(query_param['pdf'][0], 'true')
 
     def test_build_url_with_trailing_slash(self):
         self.settings['pdf.base.url'] = 'http://dummy:8234/reports/'
@@ -77,7 +83,12 @@ class TestPdfGenerator(unittest.TestCase):
         student_guid = '2343'
         report = 'ISR.html'
         results = self.pdf_generator.build_url(student_guid, report)
-        self.assertEqual(results, self.settings['pdf.base.url'] + report + '?studentGuid=' + student_guid)
+        url = urlparse(results)
+        self.assertEqual(url.scheme + "://" + url.netloc + url.path, self.settings['pdf.base.url'] + report)
+        query_param = parse_qs(url.query)
+        self.assertEqual(len(query_param.keys()), 2)
+        self.assertEqual(query_param['studentGuid'][0], student_guid)
+        self.assertEqual(query_param['pdf'][0], 'true')
 
 
 if __name__ == "__main__":

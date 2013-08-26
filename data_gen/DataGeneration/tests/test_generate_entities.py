@@ -6,8 +6,7 @@ from DataGeneration.src.generate_entities import (generate_institution_hierarchy
                                                   generate_assessment, generate_students, generate_sections, generate_assessments,
                                                   generate_multiple_staff, generate_students_from_student_info,
                                                   generate_assessment_outcomes_from_student_info)
-from DataGeneration.src.entities import Student, Section, Assessment, Staff, AssessmentOutcome
-from DataGeneration.src.helper_entities import AssessmentScore, ClaimScore
+from DataGeneration.src.entities import Student, Section, Assessment, Staff
 
 
 class TestGenerateEntities(unittest.TestCase):

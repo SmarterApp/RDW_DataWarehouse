@@ -77,6 +77,6 @@ setup(name='udl2',
                                                                         'tests/data/integration/METADATA_ASMT_ID_1.json',
                                                                         'tests/data/integration/METADATA_ASMT_ID_2.json',
                                                                         'tests/data/integration/REALDATA_ASMT_ID_0.csv',
-                                                                        'tests/data/integration/REALDATA_ASMT_ID_0.csv',
-                                                                        'tests/data/integration/REALDATA_ASMT_ID_0.csv']), ],
+                                                                        'tests/data/integration/REALDATA_ASMT_ID_1.csv',
+                                                                        'tests/data/integration/REALDATA_ASMT_ID_2.csv']), ],
       )

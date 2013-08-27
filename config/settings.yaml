@@ -217,6 +217,7 @@ qa:
         metadata: /opt/edware/conf/idp_metadata.xml
       policy:
         secure: true
+        http_only: true
       skip.verify: False
       saml:
         issuer_name: https://ha-int-pyweb0.qa.dum.edwdc.net
@@ -307,6 +308,7 @@ uat:
         metadata: /opt/edware/conf/idp_metadata.xml
       policy:
         secure: true
+        http_only: true
       skip.verify: False
       saml:
         issuer_name: https://pyweb.dmo.som.edwdc.net

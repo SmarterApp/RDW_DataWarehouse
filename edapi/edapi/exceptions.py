@@ -42,10 +42,7 @@ class InvalidParameterError(EdApiError):
         :param msg: the error message.
         :type msg: string
         '''
-        if msg is None:
-            self.msg = "Invalid Parameters"
-        else:
-            self.msg = msg
+        self.msg = "Error"
 
 
 class ForbiddenError(EdApiError):

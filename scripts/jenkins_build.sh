@@ -341,30 +341,16 @@ function generate_ini {
 function generate_docs {
     # Generate docs if docs directory exists 
     if [ -d "$WORKSPACE/$1/docs" ]; then
-	generate_python_docs $1
-	generate_coffee_docs $1
+        echo "***************"
+        echo "Generating Docs"
+        echo "***************"
+        cd "$WORKSPACE/$1"
+	python setup.py docs
+        cd "$WORKSPACE/$1/docs"
+        make clean
+        make html
     fi
     echo "Docs created in $WORKSPACE/$1/docs/_build/html"
-}
-
-function generate_coffee_docs {
-    echo "**********************"
-    echo "Generating Coffee Docs"
-    echo "**********************"
-    cd "$WORKSPACE/$1/docs"
-    targets="$WORKSPACE/$1/assets/coffee"
-    coffeedoc --parser "requirejs" --output assets $targets
-}
-
-function generate_python_docs {
-    echo "**********************"
-    echo "Generating Python Docs"
-    echo "**********************"
-    cd "$WORKSPACE/$1"
-    python setup.py docs
-    cd "$WORKSPACE/$1/docs"
-    make clean
-    make html
 }
 
 function main {

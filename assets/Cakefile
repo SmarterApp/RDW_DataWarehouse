@@ -12,6 +12,7 @@ shell = require 'shelljs'
 coffeepath = 'coffee'
 lesspath = 'less'
 jspath = 'js/src'
+coffeedoc = 'coffeedoc'
 
 buildCoffee = (source) ->
     destDir = path.dirname source.replace(coffeepath, jspath)
@@ -63,6 +64,8 @@ copyScripts = () ->
 
 task 'build:coffee', ->
     walkDir coffeepath, (source) -> buildCoffee source
+    # genereate coffee doc
+    shell.exec('coffeedoc --parser requirejs ' + coffeepath)
 
 task 'build:less', ->
     compile 'less/style.less', 'css/style.css'

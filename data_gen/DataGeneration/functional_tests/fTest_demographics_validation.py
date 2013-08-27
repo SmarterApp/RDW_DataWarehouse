@@ -35,6 +35,7 @@ DEMO_ID = 'typical1'
 DERIVED_ETH_STR = 'dmg_eth_derived'
 DMG_ETH_HSP = 'dmg_eth_hsp'
 DMG_ETH_2MR = 'dmg_eth_2mr'
+DMG_ETH_NST = 'dmg_eth_nst'
 
 
 DEMO_STATS_CSV = os.path.join(__location__, '..', 'datafiles', 'demographicStats.csv')
@@ -83,6 +84,7 @@ class DemographicsFuncTest(unittest.TestCase):
             # Loop through rows in the csv
             for row in c_reader:
                 count_dict = self.analyze_fact_asmt_row(row, count_dict, asmt_rec_ids)
+                self.verify_derived_demographic(row)
         #print(json.dumps(count_dict, indent=4))
         return count_dict
 
@@ -146,10 +148,11 @@ class DemographicsFuncTest(unittest.TestCase):
             derived_eth = DERIVED_ETH_LIST.index(DMG_ETH_HSP)
         elif len(ethnicities) > 1:
             derived_eth = DERIVED_ETH_LIST.index(DMG_ETH_2MR)
+        elif len(ethnicities) == 0:
+            derived_eth = DERIVED_ETH_LIST.index(DMG_ETH_NST)
         else:
             derived_eth = DERIVED_ETH_LIST.index(ethnicities[0])
-
-        self.assertEqual(given_derived_eth, derived_eth)
+        self.assertEqual(int(given_derived_eth), int(derived_eth))
 
 
 def determine_percent_difference(dividend, divisor):

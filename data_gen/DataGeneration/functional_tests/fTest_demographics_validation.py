@@ -6,9 +6,6 @@ Created on Aug 19, 2013
 import unittest
 import csv
 import os
-import subprocess
-import json
-import sys
 
 import DataGeneration.src.demographics as dmg
 from DataGeneration.src.print_state_population import print_demographic_info
@@ -259,27 +256,6 @@ def convert_subject_dict_for_printing(subject_percent_dict):
         for demo in subject_percent_dict[grade]:
             result_dict[int(grade)][demo] = [DEMO_BY_GROUP[demo]] + subject_percent_dict[grade][demo]
     return result_dict
-
-
-# def run_data_generation():
-#     data_gen_loc = os.path.join(__location__, '..', 'src', 'generate_data.py')
-#     output_loc = os.path.join(__location__, 'test_output')
-#     config_file = 'dg_types'
-#     print('generating data for %s' % config_file)
-#     output = system('python', data_gen_loc, '--config', config_file, '--output', output_loc, '-N')
-#     sys.stdout.buffer.write(output)
-#     return output_loc
-
-
-# def system(*args, **kwargs):
-#     '''
-#     Method for running system calls
-#     Taken from the pre-commit file for python3 in the scripts directory
-#     '''
-#     kwargs.setdefault('stdout', subprocess.PIPE)
-#     proc = subprocess.Popen(args, **kwargs)
-#     out, _err = proc.communicate()
-#     return out
 
 
 if __name__ == "__main__":

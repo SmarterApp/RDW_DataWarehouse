@@ -15,7 +15,7 @@ define [
   
   RESET_DROPDOWN = 'edware.filter.reset.dropdown'
   
-  FILTER_PARAMS = document.cookie + 'edware.filter.params'
+  FILTER_PARAMS = 'edware.filter.params'
   
   class EdwareFilter
     

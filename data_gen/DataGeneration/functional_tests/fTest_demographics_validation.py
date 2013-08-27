@@ -115,6 +115,9 @@ class DemographicsFuncTest(unittest.TestCase):
         return subject_count_dict
 
     def validate_math_percentages(self, subject_percent_dict):
+        '''
+        For each of the percentages, verify that they are within a certain threshold.
+        '''
         math_percentages = subject_percent_dict[MATH]
         demo_obj = dmg.Demographics(DEMO_STATS_CSV)
         subject_demographics = demo_obj.get_subject_demographics(DEMO_ID, MATH)
@@ -126,18 +129,27 @@ class DemographicsFuncTest(unittest.TestCase):
                 percent_diff_dict[grade][demo] = []
                 expected_total_perc = subject_demographics[grade][demo][dmg.L_TOTAL]
                 resulting_percent = math_percentages[grade][demo][0]
-                self.assertAlmostEqual(expected_total_perc, resulting_percent, places=None, delta=0.5)
+                #self.assertAlmostEqual(expected_total_perc, resulting_percent, places=None, delta=0.5)
+                tot_perc_diff = determine_percent_difference((resulting_percent - expected_total_perc), expected_total_perc)
+                self.assertLessEqual(abs(tot_perc_diff), 15)
 
-                percent_diff_dict[grade][demo].append(determine_percent_difference((resulting_percent - expected_total_perc), expected_total_perc))
+                percent_diff_dict[grade][demo].append(tot_perc_diff)
                 for i in range(1, dmg.L_PERF_4):
                     result_pl_percent = math_percentages[grade][demo][i]
                     expected_pl_percent = subject_demographics[grade][demo][i + dmg.L_TOTAL]
                     #self.assertAlmostEqual(result_pl_percent, expected_pl_percent, delta=1, msg='Not Equal for grade %s, demo %s, perf level %s' % (grade, demo, i))
-                    percent_diff_dict[grade][demo].append(determine_percent_difference((result_pl_percent - expected_pl_percent), expected_pl_percent))
+                    perf_lvl_perc_diff = determine_percent_difference((result_pl_percent - expected_pl_percent), expected_pl_percent)
+                    if resulting_percent != 0.0:
+                        # if the resulting percent is 0. Then the other values should be 0%. This is not always the case in the demographicStats
+                        self.assertLessEqual(abs(perf_lvl_perc_diff), 100, resulting_percent)
+                    percent_diff_dict[grade][demo].append(perf_lvl_perc_diff)
 
         return percent_diff_dict
 
     def verify_derived_demographic(self, row_dict):
+        '''
+        verify that the derived ethnicity is correct for the given ethnicity list
+        '''
         given_derived_eth = row_dict[DERIVED_ETH_STR]
         ethnicities = [eth for eth in SIMPLE_ETH_LIST if row_dict[eth] == 'True']
 
@@ -153,12 +165,21 @@ class DemographicsFuncTest(unittest.TestCase):
 
 
 def determine_percent_difference(dividend, divisor):
+    '''
+    Given a dividend and a divisor, divide the two and avoid divide by zero errors
+    @return: a number that is the result of the division
+    '''
     if divisor == 0:
         return 0
     return (dividend / divisor) * -100
 
 
 def convert_subject_counts_to_percentages(subject_counts_dict):
+    '''
+    Given the dictionary of demographics for a subject. Calculate the percentages of the totals for each value
+    input dict of the shape {<subject>: {<grade>: {<demographic>: [<total>, <pl1>, <pl2>, <pl3>, <pl4>], ...}, ...}, ...}
+    @return: A dictionary of the same shape
+    '''
     percents_by_subject = {}
 
     for subject in subject_counts_dict:
@@ -175,6 +196,11 @@ def convert_subject_counts_to_percentages(subject_counts_dict):
 
 
 def determine_demographic_percentages(demographic_counts):
+    '''
+    Given a dictionary of demographics. The percentages for that demographic will be calculated based on the overall totals
+    input dict of the shape {<demographic>: [<total>, <pl1>, <pl2>, <pl3>, <pl4>], ...}
+    @return: A dictionary of the same shape
+    '''
     demographic_percentages = {}
     total_students = demographic_counts[ALL][0]
     overall_percent_list = determine_percents_from_list(demographic_counts[ALL])
@@ -205,6 +231,11 @@ def determine_percents_from_list(demographic_list):
 
 
 def determine_percent_of_total(total, value):
+    '''
+    calculate the percentage a value is of the total.
+    if the total is 1000 and 100 is the value. 10 will be returned
+    @return: a number representing the percentage
+    '''
     if total == 0:
         return 0
     perc_decimal = value / total
@@ -214,6 +245,9 @@ def determine_percent_of_total(total, value):
 
 
 def get_asmt_rec_ids_by_subject(output_location):
+    '''
+    sort the asmt rec ids into ela and math and output a dictionary containing both categories
+    '''
     asmt_recs = {MATH: [], ELA: []}
     dim_asmt_path = os.path.join(output_location, DIM_ASMT)
     with open(dim_asmt_path, 'r') as c_file:
@@ -224,15 +258,18 @@ def get_asmt_rec_ids_by_subject(output_location):
 
 
 def find_demographics(fact_row_dict):
-    row_demographics = []
-    for demo in DEMO_LIST:
-        if fact_row_dict[demo] == 'True':
-            row_demographics.append(demo)
-
-    return row_demographics
+    '''
+    Given a row dictionary from the csvDictReader return a list of each demographic that is true
+    '''
+    return [demo for demo in DEMO_LIST if fact_row_dict[demo] == 'True']
 
 
 def translate_row_demographics_list(row_demo_list):
+    '''
+    Given a demographics row dict return a list that has the all the program demographics as well as the
+    ethnicities boiled expanded to include the names of possible derived ethnicities
+    @return: a list of all demographics
+    '''
     translated_list = []
     ethnicities = [x for x in row_demo_list if 'eth' in x]
     if len(ethnicities) > 1:
@@ -250,6 +287,10 @@ def translate_row_demographics_list(row_demo_list):
 
 
 def convert_subject_dict_for_printing(subject_percent_dict):
+    '''
+    Take the subject percentage dictionary and convert it to the form required by the
+    print method for demographics
+    '''
     result_dict = {}
     for grade in subject_percent_dict:
         result_dict[int(grade)] = {}

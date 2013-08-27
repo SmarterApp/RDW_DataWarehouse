@@ -63,8 +63,4 @@ if __name__ == '__main__':
     parser.add_argument('-o', '--output-file', help='the location and name of the output file')
     args = parser.parse_args()
 
-#     fact_file = '/Users/swimberly/projects/edware/edware/edschema/database/tests/resources/fact_asmt_outcome.csv'
-#     student_file = '/Users/swimberly/projects/edware/edware/edschema/database/tests/resources/dim_student.csv'
-#     output_file = '/Users/swimberly/Desktop/fact_asmt_outcome.csv'
-
     main(args.fact_file, args.student_file, args.output_file)

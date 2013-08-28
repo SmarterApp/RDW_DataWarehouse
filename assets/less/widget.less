@@ -560,10 +560,16 @@ th.ui-th-column div {
   
     .overall_score_upper {
       margin-top: 18px;
+      position: relative;
       
       * {
         display: inline-block;
         vertical-align: top;
+      }
+
+      .desc_overall_score_indicator {
+        position: relative;
+	left: 140px;
       }
     }
     
@@ -592,6 +598,8 @@ th.ui-th-column div {
       text-align: center;
       display: table;
       width: 40px;
+      position: absolute;
+      left: 15px;
       
       .asmtScore {
         vertical-align: middle;
@@ -611,9 +619,11 @@ th.ui-th-column div {
     }
     
     .desc_overall_score {
-      width: 95px;
+      width: 97px;
       text-align: left;
-      
+      left: 85px;
+      position: relative;
+
       span {
         font-style: italic;
         font-size: 11px;
@@ -646,14 +656,15 @@ th.ui-th-column div {
     }
   
     .overall_upperleft {
-      margin-left: 3px; 
-      margin-top:  5px;
+      position: absolute;
+      left: 60px;
+      top: 6px;
     }
     
     .overall_uppermid {
       position: relative; 
       top: 5px;
-      margin-left: 57px;
+      left: 140px;
     }
     
     .overall_right {

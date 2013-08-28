@@ -1,5 +1,5 @@
 /* Print css */
-@media print {
+
 
 .assessmentOtherInfoHeader.show { display: block;}
      #breadcrumb {
@@ -69,7 +69,7 @@
       .pageBreak { page-break-after:always;}
       .sidebar { display: none; }
       .contentWrapper { margin-left: 0; width: 100%; }
-      .confidenceLevel { margin: 20px auto 0; width: 640px;}
+      .confidenceLevel { position: relative; margin: 20px auto 0; width: 640px;}
       .info2 a { display: none; }
       .claims { background: none; }
       .claims .link { display: none; }
@@ -289,10 +289,9 @@
         .desc_overall_score {
             width: 120px;
             text-align: left;
-            position: relative;
-            top: 8px;
-            left: 5px;
-            
+	    left: 92px;
+	    top: 6px;
+
             span {
               font-size: 14px;
               margin-top: 0px;
@@ -300,7 +299,8 @@
         }
         
         .desc_error_bands {
-          
+          left: 285px;
+	  
           h5 {
             left: 200px;
           }
@@ -315,29 +315,32 @@
           margin-top: -7%; 
           margin-left: 3%;
         }
-        
-        .desc_overall_score_indicator {
-          position:relative; 
-          top: 6px;
-          margin-left:12px;
-        }
+
+	.overall_score_upper {
+          .desc_overall_score_indicator {
+            position:relative; 
+            top: 6px;
+	    left: 295px;
+          }
+	}
         
         .overall_upperleft {
-          margin-left:12px; 
-          margin-top: 13px;
+	  position: relative;
+	  top: 12px;
+	  left: 88px;
         }
         
         .overall_uppermid {
-          position: relative; 
-          top: 13px;
-          margin-left: 21%;
+          position: relative;
+	  top: 12px;
+	  left: 287px;  
         }
         
         .overall_right {
           display:inline-block;
           position: relative;
           bottom: 102px;
-          margin-left: 40px;
+          margin-left: 23px;
           
           .desc_scaled_score_range {
             display: inline;
@@ -359,7 +362,7 @@
           display: inline-block;
         }
         .overall_lowermid {
-          left: 380px;
+          left: 369px;
         }
         
         table {
@@ -382,4 +385,5 @@
           }
         }
     }
+@media print {
 }

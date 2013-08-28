@@ -1,0 +1,32 @@
+{
+	"labels": {
+		"achievement_level_descriptors": "Achievement Level Descriptors (ALD)",
+		"ald_color_coded": "ALD color coded",
+		"ald_cutpoints": "ALD Cutpoints",
+		"brackets_denote_min_max": "brackets denote min/max",
+		"claims": "Claims",
+		"claim_score_details": "Claim Score Details",
+		"color": "Color",
+		"date": "Date",
+		"description": "Description",
+		"district": "District",
+		"error_bands": "Error Bands",
+		"error_band": "Error Band",
+		"find_out_more": "Find out more",
+		"grade": "Grade",
+		"legend": "Legend",
+		"outside_error_band": "Outside Error Band",
+		"overall_score": "Overall Score",
+		"overall_score_details": "Overall Score Details",
+		"overall_score_indicator": "Overall Score Indicator",
+		"policy_information": "Policy Information",
+		"practical_implications": "Practical Implications",
+		"relative_strength_weakness": "Relative Strength/Weakness",
+		"report_info": "Report Info",
+		"scaled_score_range": "Scaled Score Range",
+		"school": "School",
+		"score_range": "Score Range",
+		"state": "State",
+		"teacher": "Teacher"
+	}
+}

@@ -1,0 +1,32 @@
+{
+	"labels": {
+		"achievement_level_descriptors": "アチーブメントレベルの記述 (ADL)",
+		"ald_cutpoints": "ALD カットポイント",
+		"ald_color_coded": "ALD色分け",
+		"brackets_denote_min_max": "カッコ内は最小/最大の表示",
+		"claims": "クレーム",
+		"claim_score_details": "クレームスコアの詳細",
+		"color": "色",
+		"date": "日付",
+		"description": "説明",
+		"district": "校区",
+		"error_bands": "エラーバンド",
+		"error_band": "エラーバンド",
+		"find_out_more": "詳細をご覧ください",
+		"grade": "グレード",
+		"legend": "使用符号の説明",
+		"outside_error_band": "エラーバンド外",
+		"overall_score": "総合評点",
+		"overall_score_details": "全体のスコアの詳細",
+		"overall_score_indicator": "全体のスコア指標",
+		"policy_information": "方針情報",
+		"practical_implications": "実用的な含意",
+		"relative_strength_weakness": "相対的な長所/短所",
+		"report_info": "リポート　インフォ",
+		"scaled_score_range": "スケールされたスコア範囲",
+		"school": "学校",
+		"score_range": "スコア範囲",
+		"state": "州",
+		"teacher": "教師"
+	}
+}

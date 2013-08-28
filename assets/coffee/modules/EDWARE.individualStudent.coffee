@@ -34,16 +34,8 @@ define [
     # Add header to the page
     edwareUtil.getHeader()
       
-    # Get temporary CMS data from data/content.json file
-    getContent "../data/content/jp/content.json", (tempContent) ->
-      content = tempContent
-    configData = {}
-    getContent "../data/common/jp/common.json", (tempContent) ->
-      configData = tempContent
-    indivStudentreport_data = {}
-    getContent "../data/common/jp/indivStudentreport.json", (tempContent) ->
-      $.extend(configData,tempContent)
-    
+
+    configData = edwareDataProxy.getDataForReport "indivStudentreport", "jp"
       
     # Get individual student report data from the server
     options =
@@ -90,7 +82,7 @@ define [
         items.count = i
 
         # set role-based content
-        items.content = content.content
+        items.content = configData.content
         
 
         # Select cutpoint color and background color properties for the overall score info section
@@ -103,19 +95,19 @@ define [
         items.score_name = performance_level.name
         
         # set level-based overall ald content
-        overallALD = Mustache.render(content.overall_ald[items.asmt_subject], items)
+        overallALD = Mustache.render(configData.overall_ald[items.asmt_subject], items)
         overallALD = edwareUtil.truncateContent(overallALD, edwareUtil.getConstants("overall_ald"))
         items.overall_ald = overallALD
         
         # set psychometric_implications content
-        psychometricContent = Mustache.render(content.psychometric_implications[items.asmt_subject], items)
+        psychometricContent = Mustache.render(configData.psychometric_implications[items.asmt_subject], items)
         
         # if the content is more than character limits then truncate the string and add ellipsis (...)
         psychometricContent = edwareUtil.truncateContent(psychometricContent, edwareUtil.getConstants("psychometric_characterLimits"))
         items.psychometric_implications = psychometricContent
         
         # set policy content
-        grade = content.policy_content[items.grade]
+        grade = configData.policy_content[items.grade]
         if grade 
           if items.grade is "11"
             policyContent = grade[items.asmt_subject]
@@ -144,12 +136,12 @@ define [
           
           claim.claim_score_weight = claimScoreWeightArray[claim.assessmentUC][j]
           
-          claimContent = content.claims[items.asmt_subject]["description"][claim.indexer]
+          claimContent = configData.claims[items.asmt_subject]["description"][claim.indexer]
           # if the content is more than character limits then truncate the string and add ellipsis (...)
           claimContent = edwareUtil.truncateContent(claimContent, edwareUtil.getConstants("claims_characterLimits"))
           claim.desc = claimContent
           
-          claim.score_desc = content.claims[items.asmt_subject]["scoreTooltip"][claim.indexer]
+          claim.score_desc = configData.claims[items.asmt_subject]["scoreTooltip"][claim.indexer]
           
           j++
         

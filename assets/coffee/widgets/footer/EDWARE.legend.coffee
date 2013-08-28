@@ -15,8 +15,10 @@ define [
   class Legend
 
     # constructor with legend information as parameter
-    constructor: (@legend) ->
+    constructor: (@legend, @reportName) ->
       this.subject = this.legend['subject']
+      data = edwareDataProxy.getDataForReport reportName, "jp"
+      $.extend(legend, data)
       
     # create legend in html format from mustache template
     create: (@container) ->
@@ -32,14 +34,11 @@ define [
       container = this.container
       createBar = this.createBar
       subject = this.subject
-      options =
-        async: false
-        method: "GET"
-      edwareDataProxy.getDatafromSource "../data/common/jp/common.json", options, (common_data) ->
-        data.labels = common_data.labels
-        container.html Mustache.to_html(template, data)
-        # create color bars
-        createBar(subject, container)
+      
+      data.labels = this.legend.labels
+      container.html Mustache.to_html(template, data)
+      # create color bars
+      createBar(subject, container)
 
 
     # get template of legend section
@@ -84,14 +83,6 @@ define [
   # Legend section on individual student report
   class ISRLegend extends Legend
 
-    constructor: (@legend) ->
-      super legend
-      options =
-        async: false
-        method: "GET"
-      edwareDataProxy.getDatafromSource "../data/common/jp/indivStudentreport.json", options, (indivStudentreport_data) ->
-        $.extend(legend, indivStudentreport_data)
-
     getTemplate: ->
       ISRTemplate
 
@@ -127,7 +118,7 @@ define [
       legend = undefined
       # create legend object
       if reportName is 'individual_student_report'
-        legend = new ISRLegend(data)
+        legend = new ISRLegend(data, 'indivStudentreport')
       if reportName is 'list_of_students'
         legend = new LOSLegend(data)
       if reportName is 'comparing_populations'

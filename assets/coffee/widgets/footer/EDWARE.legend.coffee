@@ -118,7 +118,7 @@ define [
       legend = undefined
       # create legend object
       if reportName is 'individual_student_report'
-        legend = new ISRLegend(data, 'indivStudentreport')
+        legend = new ISRLegend(data, 'indivStudentReport')
       if reportName is 'list_of_students'
         legend = new LOSLegend(data)
       if reportName is 'comparing_populations'

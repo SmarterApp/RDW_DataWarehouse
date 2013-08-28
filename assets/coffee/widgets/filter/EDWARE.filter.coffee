@@ -193,15 +193,15 @@ define [
       text =  $('input:checked', buttonGroup).map(() ->
                     $(this).data('label')
               ).get().join(delimiter)
-      if text isnt "" then '(' + text + ')'  else ""
+      if text isnt "" then '[' + text + ']'  else ""
 
     # compute width property for text
     computeTextWidth: (button) ->
       # compute display text width this way because $().width() doesn't work somehow
       displayWidth = $('.display', button).text().length * 10
       width = $(button).width() - displayWidth - 35
-      # keep minimum width 55px
-      if width > 0 then width else 55
+      # keep minimum width 30px
+      if width > 0 then width else 30
 
     loadReport: (params) ->
       this.reset()

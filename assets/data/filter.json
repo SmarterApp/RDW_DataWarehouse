@@ -36,7 +36,7 @@
 	},
 	"filters" : [
 		{
-			"display" : "Limited English Proficient*",
+			"display" : "Limited English Proficient (LEP)*",
 			"tag" : "LEP",
 			"name" : "dmgPrgLep",
 			"comment" : "*This category includes English Language Learners(ELL) if your state identifies students as ELL",

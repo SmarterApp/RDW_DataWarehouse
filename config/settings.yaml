@@ -54,6 +54,7 @@ common:
         secret: edware_secret
         cookie_name: edware
         hashalg: sha512
+        http_only: true
         # Represents the lifetime of the cookie itself, if it's not set, it's session based cookie
         #max_age: 2400
         # Maximum number of seconds which a newly issued ticket will be considered valid
@@ -217,7 +218,6 @@ qa:
         metadata: /opt/edware/conf/idp_metadata.xml
       policy:
         secure: true
-        http_only: true
       skip.verify: False
       saml:
         issuer_name: https://ha-int-pyweb0.qa.dum.edwdc.net
@@ -308,7 +308,6 @@ uat:
         metadata: /opt/edware/conf/idp_metadata.xml
       policy:
         secure: true
-        http_only: true
       skip.verify: False
       saml:
         issuer_name: https://pyweb.dmo.som.edwdc.net

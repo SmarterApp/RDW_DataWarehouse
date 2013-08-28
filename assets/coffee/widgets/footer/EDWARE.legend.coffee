@@ -1,13 +1,14 @@
 define [
   "jquery"
   "mustache"
+  "edwareDataProxy"
   "edwareConfidenceLevelBar"
   "edwarePopulationBar"
   "edwareLOSConfidenceLevelBar"
   "text!ISRTemplate"
   "text!LOSTemplate"
   "text!CPopTemplate"
-], ($, Mustache, edwareConfidenceLevelBar, edwarePopulationBar, edwareLOSConfidenceLevelBar, ISRTemplate, LOSTemplate, CPopTemplate) ->
+], ($, Mustache, edwareDataProxy, edwareConfidenceLevelBar, edwarePopulationBar, edwareLOSConfidenceLevelBar, ISRTemplate, LOSTemplate, CPopTemplate) ->
 
   # Legend base class.
   # This is an abstract class, derived class should implement two functions: getTemplate() and createBar()
@@ -16,7 +17,7 @@ define [
     # constructor with legend information as parameter
     constructor: (@legend) ->
       this.subject = this.legend['subject']
-
+      
     # create legend in html format from mustache template
     create: (@container) ->
       data = {}
@@ -28,9 +29,18 @@ define [
       data['asmtScore'] = this.legend['subject'].asmt_score
       data['scoreColor'] = this.legend['subject'].score_color
       template = this.getTemplate()
-      this.container.html Mustache.to_html(template, data)
-      # create color bars
-      this.createBar()
+      container = this.container
+      createBar = this.createBar
+      subject = this.subject
+      options =
+        async: false
+        method: "GET"
+      edwareDataProxy.getDatafromSource "../data/common/jp/common.json", options, (common_data) ->
+        data.labels = common_data.labels
+        container.html Mustache.to_html(template, data)
+        # create color bars
+        createBar(subject, container)
+
 
     # get template of legend section
     getTemplate: ->
@@ -64,27 +74,35 @@ define [
     getTemplate: ->
       CPopTemplate
 
-    createBar: ->
-      output = edwarePopulationBar.create this.subject
-      $('#legendTemplate .populationBar', this.container).prepend(output)
+    createBar:(subject, container) ->
+      output = edwarePopulationBar.create subject
+      $('#legendTemplate .populationBar', container).prepend(output)
       # remove pop up when hovering over population bar
-      this.container.find('.progressBar_tooltip').remove()
+      container.find('.progressBar_tooltip').remove()
 
 
   # Legend section on individual student report
   class ISRLegend extends Legend
 
+    constructor: (@legend) ->
+      super legend
+      options =
+        async: false
+        method: "GET"
+      edwareDataProxy.getDatafromSource "../data/common/jp/indivStudentreport.json", options, (indivStudentreport_data) ->
+        $.extend(legend, indivStudentreport_data)
+
     getTemplate: ->
       ISRTemplate
 
-    createBar: ->
+    createBar: (subject, container)->
       # use mustache template to display the json data 
       # show 300px performance bar on html page
-      output = edwareConfidenceLevelBar.create this.subject, 300
-      $('#legendTemplate .losPerfBar', this.container).html(output)
+      output = edwareConfidenceLevelBar.create subject, 300
+      $('#legendTemplate .losPerfBar', container).html(output)
       # show 640px performance bar on pdf
-      output = edwareConfidenceLevelBar.create this.subject, 640
-      $('#legendTemplate .confidenceLevel', this.container).html(output)
+      output = edwareConfidenceLevelBar.create subject, 640
+      $('#legendTemplate .confidenceLevel', container).html(output)
 
   # Legend section on list of students report
   class LOSLegend extends Legend
@@ -92,12 +110,12 @@ define [
     getTemplate: ->
       LOSTemplate
 
-    createBar: ->
-      output = edwareLOSConfidenceLevelBar.create this.subject, 110
-      $('#legendTemplate .confidenceLevel', this.container).append(output)
+    createBar: (subject, container)->
+      output = edwareLOSConfidenceLevelBar.create subject, 110
+      $('#legendTemplate .confidenceLevel', container).append(output)
       # customize interval width and position
-      $('.interval', this.container).css('margin-left', '89px').css('width', '28px')
-      $('.indicator', this.container).css('margin-left', '98px')
+      $('.interval', container).css('margin-left', '89px').css('width', '28px')
+      $('.indicator', container).css('margin-left', '98px')
 
   ( ($) ->
 

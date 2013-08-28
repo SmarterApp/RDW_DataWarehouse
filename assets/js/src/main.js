@@ -43,8 +43,8 @@ require({
 		edwareHeaderHtml: '../widgets/header/header.html',
 		edwareFooterHtml: '../widgets/footer/template.html',
 		edwareFilterTemplate: '../widgets/filter/template.html',
-		edwareDropdownTemplate: '../widgets/dropdown/template.html',
-		edwareFeedbackHTML: '../../templates/feedback/feedback.html'
+		edwareDropdownTemplate: '../widgets/dropdown/template.html'
+
 	},
 	shim: {
         'jqGrid': {

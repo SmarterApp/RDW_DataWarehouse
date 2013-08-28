@@ -39,7 +39,6 @@ var baseConfigs = {
 		edwareClaimsBarTemplate: '../../js/src/widgets/claimsBar/template.html',
 		edwareAssessmentDropdownViewSelectionTemplate: '../../js/templates/assessment_dropdown_view_selection.html',
 		edwareLOSHeaderConfidenceLevelBarTemplate: '../../js/templates/LOS_header_perf_bar.html',
-		edwareFeedbackHTML: '../../js/templates/feedback/feedback.html',
 		edwareFilterTemplate: '../../js/src/widgets/filter/template.html'
 		
 	},

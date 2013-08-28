@@ -1,11 +1,11 @@
-<h2>{{items.0.student_full_name}} | Grade {{items.0.grade}}</h2>
+<h2>{{items.0.student_full_name}} | {{labels.grade}} {{items.0.grade}}</h2>
 {{#items}}
 <div id="assessmentSection{{count}}" class="innerBox clearfix">
 	<div class="sidebar pull-left">
 		<h1>{{asmt_subject}}</h1>
 		<h3 class="type"><strong>{{asmt_type}} {{asmt_period}} </strong></h3>
-		<div class="teacher"><span class="labelText">Teacher:</span> <span>{{teacher_full_name}}</span></div>
-		<div class="date"><span class="labelText">Date:</span> <span>{{date_taken_month}}/{{date_taken_day}}/{{date_taken_year}}</span></div>
+        <div class="teacher"><span class="labelText">{{labels.teacher}}:</span> <span>{{teacher_full_name}}</span></div>
+        <div class="date"><span class="labelText">{{labels.date}}:</span> <span>{{date_taken_month}}/{{date_taken_day}}/{{date_taken_year}}</span></div>
 		<hr>
 		<div class="psychometric">{{{psychometric_implications}}}</div>
 		<hr>
@@ -14,9 +14,9 @@
 	<div class="printHeader printContent">
 		<div class="logo"><img src="../images/smarter_printlogo.png" width="150" height="47" /></div>
 		<div class="summary">
-			<div class="title">{{items.0.student_full_name}} &nbsp;&nbsp; Grade {{items.0.grade}}</div>
-			<span class="label">State:</span> {{context.items.0.name}} &nbsp;&nbsp;<span class="label">District:</span> {{context.items.1.name}}<br/>
-			<span class="label">School:</span> {{context.items.2.name}}
+            <div class="title">{{items.0.student_full_name}} &nbsp;&nbsp; {{labels.grade}} {{items.0.grade}}</div>
+            <span class="label">{{labels.state}}:</span> {{context.items.0.name}} &nbsp;&nbsp;<span class="label">{{labels.district}}:</span> {{context.items.1.name}}<br/>
+            <span class="label">{{labels.school}}:</span> {{context.items.2.name}}
 		</div>
 	</div>
 	<div class="contentWrapper">
@@ -26,26 +26,26 @@
 				
 				<div class="pull-right">
 					<h3 class="type pull-left marginLeft20"><strong>{{asmt_type}} {{asmt_period}} </strong></h3>
-					<div class="teacher pull-left marginLeft20"><span class="labelText">Teacher:</span> <span>{{teacher_full_name}}</span></div>
-					<div class="date pull-left marginLeft20"><span class="labelText">Date:</span> <span>{{date_taken_month}}/{{date_taken_day}}/{{date_taken_year}}</span></div>
+                    <div class="teacher pull-left marginLeft20"><span class="labelText">{{labels.teacher}}:</span> <span>{{teacher_full_name}}</span></div>
+                    <div class="date pull-left marginLeft20"><span class="labelText">{{labels.date}}:</span> <span>{{date_taken_month}}/{{date_taken_day}}/{{date_taken_year}}</span></div>
 				</div>
 			</div>
 			<div class='info'>
-				<div class="overallText"><strong>Overall Score</strong></div>
+                <div class="overallText"><strong>{{labels.overall_score}}</strong></div>
 				<div class="indicator" style="background-color: {{score_bg_color}}; color: {{score_text_color}};"><strong class="asmtScore">{{asmt_score}}</strong></div>
 				<div class="overallDesc" style="color: {{score_color}}"><strong class="scoreName">{{score_name}}</strong></div>
 			</div>
 
 			<div class="info2">
 				<p>{{{overall_ald}}}</p>
-				<div class="text-right"><a href="#">Find out more >></a></div>
+                <div class="text-right"><a href="#">{{labels.find_out_more}} >></a></div>
 			</div>
 		</div>
 		<div class="confidenceLevel">
 			
 		</div>
 		<div class="claimsSection clearfix">
-			<h3>Claims</h3>
+            <h3>{{labels.claims}}</h3>
 			<ul class="inline unstyled">
 				{{#claims}}
 				<li id="claim{{indexer}}" class="claims" style="width: {{claim_box_width}}">
@@ -75,12 +75,12 @@
 							  		<div class="claimsBar">
 							  			
 							  		</div>
-							  		<div class="errorBand">Error Band: <strong>{{range_min_score}}-{{range_max_score}}</strong></div>
+                                    <div class="errorBand">{{labels.error_band}}: <strong>{{range_min_score}}-{{range_max_score}}</strong></div>
 						  		</div>
 							</div>
 						</div>
 						<div class="description">{{desc}}</div>
-						<div class="link pull-right"><a href="#">Find out more >></a></div>
+                        <div class="link pull-right"><a href="#">{{labels.find_out_more}} >></a></div>
 					</div>
 				</li>
 				{{/claims}}
@@ -90,9 +90,9 @@
 	<div class="assessmentOtherInfoHeader printHeader">
 		<div class="logo"><img src="../images/smarter_printlogo.png" width="150" height="47" /></div>
 		<div class="summary">
-			<div class="title">{{items.0.student_full_name}} &nbsp;&nbsp; Grade {{items.0.grade}}</div>
-			<span class="label">State:</span> {{context.items.0.name}} &nbsp;&nbsp;<span class="label">District:</span> {{context.items.1.name}}<br/>
-			<span class="label">School:</span> {{context.items.2.name}}
+            <div class="title">{{items.0.student_full_name}} &nbsp;&nbsp; {{labels.grade}} {{items.0.grade}}</div>
+            <span class="label">{{labels.state}}:</span> {{context.items.0.name}} &nbsp;&nbsp;<span class="label">{{labels.district}}:</span> {{context.items.1.name}}<br/>
+            <span class="label">{{labels.school}}:</span> {{context.items.2.name}}
 		</div>
 	</div>
 	<div class="assessmentOtherInfo printContent">
@@ -100,13 +100,13 @@
 			<ul class="unstyled">
 				{{#psychometric_implications}}
 				<li class="inline">
-					<h3>Practical Implications</h3>
+                <h3>{{labels.practical_implications}}</h3>
 					<div class="desc">{{{psychometric_implications}}}</div>
 				</li>
 				{{/psychometric_implications}}
 				{{#policy_content}}
 				<li class="inline">
-					<h3>Policy Information</h3>
+                <h3>{{labels.policy_information}}</h3>
 					<div class="desc">{{{policy_content}}}</div>
 				</li>
 				{{/policy_content}}
@@ -119,9 +119,9 @@
 	<div class="printHeader">
 		<div class="logo"><img src="../images/smarter_printlogo.png" width="150" height="47" /></div>
 		<div class="summary">
-			<div class="title">{{items.0.student_full_name}} &nbsp;&nbsp; Grade {{items.0.grade}}</div>
-			<span class="label">State:</span> {{context.items.0.name}} &nbsp;&nbsp;<span class="label">District:</span> {{context.items.1.name}}<br/>
-			<span class="label">School:</span> {{context.items.2.name}}
+            <div class="title">{{items.0.student_full_name}} &nbsp;&nbsp; {{labels.grade}} {{items.0.grade}}</div>
+            <span class="label">{{labels.state}}:</span> {{context.items.0.name}} &nbsp;&nbsp;<span class="label">{{labels.district}}:</span> {{context.items.1.name}}<br/>
+            <span class="label">{{labels.school}}:</span> {{context.items.2.name}}
 		</div>
 	</div>
 </div>

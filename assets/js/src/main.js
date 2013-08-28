@@ -75,6 +75,8 @@ require({
 	})(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
 	
 	ga('create', 'UA-43067000-1', 'edwdc.net');
-	ga('send', 'pageview', window.location.pathname); 
-	
+	ga('send', 'pageview', {
+        'page':  window.location.pathname,
+        'location': window.location.protocol + "://" + window.location.host + window.location.pathname,
+        'title': document.title});
 }).call(this);

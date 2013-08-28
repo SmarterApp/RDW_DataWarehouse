@@ -33,6 +33,7 @@ DERIVED_ETH_STR = 'dmg_eth_derived'
 DMG_ETH_HSP = 'dmg_eth_hsp'
 DMG_ETH_2MR = 'dmg_eth_2mr'
 DMG_ETH_NST = 'dmg_eth_nst'
+GENDER_STR = 'gender'
 
 
 DEMO_STATS_CSV = os.path.join(__location__, '..', 'datafiles', 'demographicStats.csv')
@@ -54,7 +55,8 @@ DERIVED_ETH_LIST = ['dmg_eth_nst', 'dmg_eth_blk', 'dmg_eth_asn', 'dmg_eth_hsp', 
 DEMO_BY_GROUP = {'all': 0, 'male': 1, 'female': 1, 'not_stated': 1, 'dmg_eth_nst': 2, 'dmg_eth_blk': 2, 'dmg_eth_asn': 2, 'dmg_eth_hsp': 2,
                  'dmg_eth_ami': 2, 'dmg_eth_pcf': 2, 'dmg_eth_wht': 2, 'dmg_eth_2mr': 2, 'dmg_prg_iep': 3, 'dmg_prg_lep': 4, 'dmg_prg_504': 5, 'dmg_prg_tt1': 6}
 
-REPORT_DEMO_SET = set(DEMO_LIST + DERIVED_ETH_LIST + [ALL])
+GENDERS = ['male', 'female', 'not_stated']
+REPORT_DEMO_SET = set(DEMO_LIST + DERIVED_ETH_LIST + [ALL] + GENDERS)
 SIMPLE_ETH_LIST = ['dmg_eth_hsp', 'dmg_eth_ami', 'dmg_eth_asn', 'dmg_eth_blk', 'dmg_eth_pcf', 'dmg_eth_wht']
 
 
@@ -82,11 +84,13 @@ class DemographicsFuncTest(unittest.TestCase):
             for row in c_reader:
                 count_dict = self.analyze_fact_asmt_row(row, count_dict, asmt_rec_ids)
                 self.verify_derived_demographic(row)
-        #print(json.dumps(count_dict, indent=4))
+
         return count_dict
 
     def analyze_fact_asmt_row(self, row_dict, subject_count_dict, asmt_rec_id_dict):
-
+        '''
+        For a row in the csv file count the number of each demographic is present
+        '''
         # pull out necessary info
         grade = row_dict[GRADE]
         perf_lvl = int(row_dict[PERF_LVL])
@@ -129,15 +133,17 @@ class DemographicsFuncTest(unittest.TestCase):
                 percent_diff_dict[grade][demo] = []
                 expected_total_perc = subject_demographics[grade][demo][dmg.L_TOTAL]
                 resulting_percent = math_percentages[grade][demo][0]
-                #self.assertAlmostEqual(expected_total_perc, resulting_percent, places=None, delta=0.5)
+
                 tot_perc_diff = determine_percent_difference((resulting_percent - expected_total_perc), expected_total_perc)
                 self.assertLessEqual(abs(tot_perc_diff), 15)
 
                 percent_diff_dict[grade][demo].append(tot_perc_diff)
+
+                # Loop over each perf_lvl
                 for i in range(1, dmg.L_PERF_4):
                     result_pl_percent = math_percentages[grade][demo][i]
                     expected_pl_percent = subject_demographics[grade][demo][i + dmg.L_TOTAL]
-                    #self.assertAlmostEqual(result_pl_percent, expected_pl_percent, delta=1, msg='Not Equal for grade %s, demo %s, perf level %s' % (grade, demo, i))
+
                     perf_lvl_perc_diff = determine_percent_difference((result_pl_percent - expected_pl_percent), expected_pl_percent)
                     if resulting_percent != 0.0:
                         # if the resulting percent is 0. Then the other values should be 0%. This is not always the case in the demographicStats
@@ -153,15 +159,25 @@ class DemographicsFuncTest(unittest.TestCase):
         given_derived_eth = row_dict[DERIVED_ETH_STR]
         ethnicities = [eth for eth in SIMPLE_ETH_LIST if row_dict[eth] == 'True']
 
-        if DMG_ETH_HSP in ethnicities:
-            derived_eth = DERIVED_ETH_LIST.index(DMG_ETH_HSP)
-        elif len(ethnicities) > 1:
-            derived_eth = DERIVED_ETH_LIST.index(DMG_ETH_2MR)
-        elif len(ethnicities) == 0:
-            derived_eth = DERIVED_ETH_LIST.index(DMG_ETH_NST)
-        else:
-            derived_eth = DERIVED_ETH_LIST.index(ethnicities[0])
+        derived_eth = derive_ethnicity(ethnicities)
         self.assertEqual(int(given_derived_eth), int(derived_eth))
+
+
+def derive_ethnicity(ethnicity_list):
+    '''
+    Take a list of ethnicities and return the corresponding integer value for the derived ethnicity
+    @param ethnicity_list: A list of ethnicities
+    @return: An integer value representing the derived ethnicity (defined in the constants)
+    '''
+    if DMG_ETH_HSP in ethnicity_list:
+        derived_eth = DERIVED_ETH_LIST.index(DMG_ETH_HSP)
+    elif len(ethnicity_list) > 1:
+        derived_eth = DERIVED_ETH_LIST.index(DMG_ETH_2MR)
+    elif len(ethnicity_list) == 0:
+        derived_eth = DERIVED_ETH_LIST.index(DMG_ETH_NST)
+    else:
+        derived_eth = DERIVED_ETH_LIST.index(ethnicity_list[0])
+    return derived_eth
 
 
 def determine_percent_difference(dividend, divisor):
@@ -261,7 +277,7 @@ def find_demographics(fact_row_dict):
     '''
     Given a row dictionary from the csvDictReader return a list of each demographic that is true
     '''
-    return [demo for demo in DEMO_LIST if fact_row_dict[demo] == 'True']
+    return [demo for demo in DEMO_LIST if fact_row_dict[demo] == 'True'] + [fact_row_dict[GENDER_STR]]
 
 
 def translate_row_demographics_list(row_demo_list):
@@ -272,15 +288,17 @@ def translate_row_demographics_list(row_demo_list):
     '''
     translated_list = []
     ethnicities = [x for x in row_demo_list if 'eth' in x]
-    if len(ethnicities) > 1:
-        if DERIVED_ETH_LIST[3] in ethnicities:
-            translated_list.append(DERIVED_ETH_LIST[3])
-        else:
-            translated_list.append(DERIVED_ETH_LIST[7])
-    elif len(ethnicities) == 0:
-        translated_list.append(DERIVED_ETH_LIST[0])
-    else:
-        translated_list += ethnicities
+    derived_eth = derive_ethnicity(ethnicities)
+    translated_list.append(DERIVED_ETH_LIST[derived_eth])
+#     if len(ethnicities) > 1:
+#         if DERIVED_ETH_LIST[3] in ethnicities:
+#             translated_list.append(DERIVED_ETH_LIST[3])
+#         else:
+#             translated_list.append(DERIVED_ETH_LIST[7])
+#     elif len(ethnicities) == 0:
+#         translated_list.append(DERIVED_ETH_LIST[0])
+#     else:
+#         translated_list += ethnicities
 
     translated_list += [x for x in row_demo_list if 'eth' not in x]
     return translated_list

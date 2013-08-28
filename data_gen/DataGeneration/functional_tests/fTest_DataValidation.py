@@ -1,17 +1,25 @@
-import unittest
+import DataGeneration.src.entities as entities
 import csv
 import os
-import DataGeneration.src.entities as entities
-import itertools
-from DataGeneration.src.generate_data import ENTITY_TO_PATH_DICT
-from zope.component.tests.examples import comp
-from DataGeneration.src.dg_types_test import *
+import unittest
+from DataGeneration.src.dg_types_test import get_scores, get_states, get_state_types, get_district_types, get_school_types
+from DataGeneration.src.constants import DISTRICT_TYPES_AND_COUNTS, MIN, MAX, CUT_POINTS, SCHOOL_TYPES_AND_RATIOS, SCHOOL_COUNTS, GRADES, STUDENTS
 
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
 typical1 = get_states()[0]['state_type']
 DISTRICT_COUNT = sum(get_state_types()[typical1][DISTRICT_TYPES_AND_COUNTS].values())
+
+components = __location__.split(os.sep)
+DATAFILE_PATH = str.join(os.sep, components[:components.index('DataGeneration') + 1])
+ENTITY_TO_PATH_DICT = {'InstitutionHierarchy': os.path.join(DATAFILE_PATH, 'datafiles', 'csv', 'dim_inst_hier.csv'),
+                       'Section': os.path.join(DATAFILE_PATH, 'datafiles', 'csv', 'dim_section.csv'),
+                       'Assessment': os.path.join(DATAFILE_PATH, 'datafiles', 'csv', 'dim_asmt.csv'),
+                       'AssessmentOutcome': os.path.join(DATAFILE_PATH, 'datafiles', 'csv', 'fact_asmt_outcome.csv'),
+                       'Staff': os.path.join(DATAFILE_PATH, 'datafiles', 'csv', 'dim_staff.csv'),
+                       'ExternalUserStudent': os.path.join(DATAFILE_PATH, 'datafiles', 'csv', 'external_user_student_rel.csv'),
+                       'Student': os.path.join(DATAFILE_PATH, 'datafiles', 'csv', 'dim_student.csv')}
 
 # Get scores from config file
 min_asmt_score = get_scores()[MIN]

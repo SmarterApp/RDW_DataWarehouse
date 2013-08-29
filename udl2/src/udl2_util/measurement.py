@@ -198,7 +198,7 @@ def record_benchmark_in_batch_table(start_time, end_time, result):
         try:
             result[mk.TIME_FOR_ONE_MILLION_RECORDS] = str(1000000 * duration / int(result[mk.SIZE_RECORDS]))
             result[mk.RECORDS_PER_HOUR] = math.ceil(3600 * int(result[mk.SIZE_RECORDS]) / (duration.microseconds * 1000000))
-            
+
             # a = str(1000000 * duration / int(result[mk.SIZE_RECORDS]))
             # b = math.ceil(3600 * int(result[mk.SIZE_RECORDS]) / (duration.microseconds * 1000000))
             print("********", result[mk.TIME_FOR_ONE_MILLION_RECORDS], result[mk.RECORDS_PER_HOUR], result[mk.SIZE_RECORDS], duration)

@@ -19,3 +19,6 @@ def includeme(config):
 
     # Add trigger endpoints
     config.add_route('trigger', '/services/trigger/{trigger_type}')
+
+    # Add user information endpoints
+    config.add_route('user_info', '/services/userinfo')

@@ -25,7 +25,6 @@ define [
     else
       $("#errorMessage").hide()
       
-    
   getUrlParams = ->
     params = {}
     window.location.search.replace /[?&]+([^=&]+)=([^&]*)/g, (str, key, value) ->
@@ -45,6 +44,10 @@ define [
   # Given an user_info object, return the uid
   getUid = (userInfo) ->
     userInfo._User__info.uid
+
+  # Given an user_info object, return the uid
+  getGuid = (userInfo) ->
+    userInfo._User__info.guid
 
   format_full_name_reverse = (first_name, middle_name, last_name) ->
     if (middle_name && middle_name.length > 0)
@@ -135,12 +138,11 @@ define [
                   "</div>" +
                   "<div id='headerTitle'>Reporting Beta UAT - DRAFT SYSTEM</div>" + 
                   "<div class='topLinks'>" +
-                  "<span id='headerUser' class='user'></span><span class='seperator'>|</span><span id='headerLogout'><a href='/logout' target='iframe_logout'>Log Out</a></span>" +
+                  "<span id='headerUser' class='user'></span><span class='seperator'>|</span><span id='headerLogout'><a id='logout_button' href='/logout' target='iframe_logout'>Log Out</a></span>" +
                   "</div>" +
                   "<!--This iframe is used for logout redirect.  Do not remove it.-->" +
                   "<iframe frameborder='0' height='0px' width='0px' name='iframe_logout'></iframe>"
     $("#header").html(header_html)
-
 
   showGrayScale = ->
     $('head').append("<link rel='stylesheet' type='text/css' href='../css/grayscale.css' />");
@@ -159,6 +161,7 @@ define [
   getRole: getRole
   getUserName: getUserName
   getUid: getUid
+  getGuid: getGuid
   truncateContent: truncateContent
   renderFeedback: renderFeedback
   popupPlacement: popupPlacement

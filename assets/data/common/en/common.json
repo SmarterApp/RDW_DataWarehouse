@@ -138,7 +138,6 @@
 	},
 	"reportInfo": {
 		"list_of_students": "<h4>Purpose:</h4><p>This report is intended to provide a consolidated view of individual student scores for a given assessment, and acts as a bridge between larger aggregate views and the individual student reports.</p><br><h4>Uses:</h4><ul><li>Use this report to sort a list of students by their various scores, or alphabetically. Ordering students by Overall scores may reveal groups of students, for example those concentrated around cut-scores or those in need of significant extra support.</li><li>Filtering capability will be forthcoming in the next version of the Reporting system, which will allow you to narrow down the overall list according to a multitude of student and score attributes.</li></ul><br><h4>More information:</h4><p>A list of students will most often be used to see a section or class at-a-glance for a given assessment. Single-point Overall scale-scores and Error Bands are provided to illustrate a spatial representation of student performance, and the list shows how those Error Bands overlap. Claim scores are provided in numerical form, but are best understood relative to the overall score and compared to each other as relative strengths and weaknesses. The combination may lead to insights that help characterize the results of an assessment for a group of students.</p><br/>",
-		"comparing_populations": "<h4>Purpose:</h4><p>This report compares large aggregations of students across organizational boundaries. The Achievement Level proportion bars provide a standardized way to view assessment results in a common format that describes their overall performance.</p><br><h4>Uses:</h4><ul><li>Use this view to compare summary performance of a large aggregation (e.g. school, district, state).</li><li>Keep in mind that the number of students assessed is an important part of any analysis.</li></ul><br><h4>Features:</h4><ul><li>Align proportion bars by end-points or by the Level 3 cut-score.</li><li>Sort aggregations by any column:<ul><li>Name</li><li>Proportion of students at or above Level 3</li><li>Number of students tested</li></ul></li><li>Filter aggregations by student attributes:<ul><li> Grade or multiple grades</li><li>Gender and/or Ethnicity</li><li>Limited English Proficient (LEP)</li><li>Disadvantaged status (Title 1)</li><li>Disability (504/IEP)</li></ul></li></ul><br/>"
 	},
 	"legendInfo": {
 		"sample_intervals": {
@@ -240,13 +239,6 @@
 					"showPercentage": true 
 				}
 			]
-		},
-		"comparing_population": {
-			"indicator": "8,345",
-			"desc1": "Percentage of population",
-			"desc2": "Total Students",
-			"desc3": "The width of a colored segment is proportional to the number of students in that segment. If a colored segment represents less than 10% of the students tested, then no percentage is displayed.",
-			"notes": ["Rollover/Tap bar for breakdown of population numbers","Percentages are rounded to the nearest whole number. Therefore, small percentages may be reported as '0'."]
 		},
 		"list_of_students": {
 			"desc1": "Overall Score Indicator",

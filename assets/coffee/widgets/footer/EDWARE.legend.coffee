@@ -122,7 +122,7 @@ define [
       if reportName is 'list_of_students'
         legend = new LOSLegend(data)
       if reportName is 'comparing_populations'
-        legend = new CPopLegend(data)
+        legend = new CPopLegend(data, 'comparingPopulationsReport')
       # create legend section
       legend.create $(this) if legend
       $(this)

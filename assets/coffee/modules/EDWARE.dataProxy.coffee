@@ -44,16 +44,22 @@ define [
          
   getDataForReport = (reportName, language) ->
     language = "en" if language is null or language is `undefined`
-    json_url = ["../data/content/" + language + "/content.json", "../data/common/" + language + "/common.json", "../data/common/" + language + "/labels.json", "../data/common/" + language + "/" + reportName + ".json"]
+    json_url = ["../data/content/" + language + "/content.json", "../data/common/" + language + "/common.json", "../data/common/" + language + "/labels.json"]
+    report_json_url = "../data/common/" + language + "/" + reportName + ".json"
     options =
         async: false
         method: "GET"
     idx = 0
     data = {}
     while idx < json_url.length
-      tmp_data = getDatafromSource json_url[idx], options, (tmp_data)->
+      getDatafromSource json_url[idx], options, (tmp_data)->
         $.extend data, tmp_data if typeof tmp_data is "object"
       idx++
+    # merge legend
+    getDatafromSource report_json_url, options, (tmp_data)->
+      data['reportInfo'] = tmp_data['reportInfo']
+      for key of tmp_data['legendInfo']
+        data['legendInfo'][key] = tmp_data['legendInfo'][key] if tmp_data['legendInfo'].hasOwnProperty(key)
     data
 
   # Check 401 error

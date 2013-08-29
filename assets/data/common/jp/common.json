@@ -567,8 +567,8 @@
 			}
 		},
 		"customALDDropdown": {
-			"selectSort": "Select Sort",
-			"totalStudents": "Total Students"
+			"selectSort": "並び替え",
+			"totalStudents": "総生徒数"
 		}
 	}
 }

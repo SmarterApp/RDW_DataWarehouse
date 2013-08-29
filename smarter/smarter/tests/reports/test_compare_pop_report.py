@@ -397,6 +397,29 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         self.assertEqual(results['records'][0]['results']['subject1']['intervals'][3]['percentage'], -1)
         set_default_min_cell_size(0)
 
+    def test_comparing_populations_with_gender(self):
+        testParam = {}
+        testParam[Constants.STATECODE] = 'NY'
+        testParam[Constants.DISTRICTGUID] = '229'
+        testParam[Constants_filter_names.GENDER] = [Constants_filter_names.DEMOGRAPHICS_GENDER_MALE]
+        results = get_comparing_populations_report(testParam)
+        self.assertEqual(len(results['records']), 3)
+        self.assertEqual(results['records'][0]['results']['subject1']['total'], 11)
+        self.assertEqual(results['records'][0]['results']['subject2']['total'], 11)
+        self.assertEqual(results['records'][1]['results']['subject1']['total'], 1)
+        self.assertEqual(results['records'][1]['results']['subject2']['total'], -1)
+
+    def test_comparing_populations_with_gender_not_stated(self):
+        testParam = {}
+        testParam[Constants.STATECODE] = 'NY'
+        testParam[Constants.DISTRICTGUID] = '229'
+        testParam[Constants_filter_names.GENDER] = [Constants_filter_names.DEMOGRAPHICS_GENDER_NOT_STATED]
+        results = get_comparing_populations_report(testParam)
+        self.assertEqual(len(results['records']), 1)
+        self.assertEqual(results['records'][0]['results']['subject1']['total'], 1)
+        self.assertEqual(results['records'][0]['results']['subject2']['total'], -1)
+
+
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testReport']
     unittest.main()

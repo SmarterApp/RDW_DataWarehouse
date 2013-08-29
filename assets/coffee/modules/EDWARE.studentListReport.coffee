@@ -1,9 +1,15 @@
-require ["EDWARE.studentList"], (edwareStudentList) ->
-  getUrlParams = ->
-    params = {}
-    window.location.search.replace /[?&]+([^=&]+)=([^&]*)/g, (str, key, value) ->
-      params[key] = value
-  
-    params
-  params = getUrlParams()
-  edwareStudentList.createStudentGrid params
+require ["EDWARE.studentList", "edwareFilter", "edwareDataProxy"], (edwareStudentList, edwareFilter, edwareDataProxy) ->
+    # Add filter to the page
+  configs = {}
+
+  ( () ->
+    options =
+        async: false
+        method: "GET"
+      
+      edwareDataProxy.getDatafromSource "../data/filter.json", options, (data) ->
+        configs = data
+  )()
+
+  filter = $('#losFilter').edwareFilter $('.filter_label'), configs, edwareStudentList.createStudentGrid
+  filter.loadReport()

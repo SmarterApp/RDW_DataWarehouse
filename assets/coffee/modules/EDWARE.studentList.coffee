@@ -217,7 +217,7 @@ define [
 
     output = Mustache.to_html assessmentDropdownViewTemplate, {'items': items}
 
-    $("#content #select_measure").append output
+    $("#content #select_measure").html output
     
     # add event to change view for assessment
     $(document).on

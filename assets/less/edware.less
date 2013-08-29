@@ -6,6 +6,7 @@ body {
   margin: 0 auto;
   width: 980px;
   color: @color-B2;
+  overflow-y:hidden;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -153,14 +154,7 @@ h6 {
   position: relative;
   margin-top: 8px;
   margin-right: 30px;
-  
-  .seperator {
-    width: 1px;
-    height: 30px;
-    background: @color-B3;
-    margin: 0 10px;
-  }
-  
+    
   .align_label {
     background-image: url("../images/align_onoff.png");
     background-repeat: no-repeat;
@@ -207,10 +201,31 @@ h6 {
       margin-top: 5px;
     }
   }
-  
 }
 
-#cpopFilter {
+  .seperator {
+    width: 1px;
+    height: 30px;
+    background: @color-B3;
+    margin: 0 10px;
+  }
+
+.losWrapper{
+    
+  .filter_label {
+    margin-top: 6px;
+    margin-right: 25px;
+    cursor: pointer;
+    
+    span {
+      position: absolute;
+      margin-left: 5px;
+      margin-top: 7px;
+    }
+  }
+}
+
+#cpopFilter, #losFilter {
   position: relative;
 }
 
@@ -616,7 +631,6 @@ table {
   
 #select_measure {
   float: right;
-  margin-right: 20px;
   
   .btn-group {
     float: right;

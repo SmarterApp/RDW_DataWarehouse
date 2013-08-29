@@ -101,7 +101,10 @@ def run_asmt_outcome_query(connection, schema):
       dim_staff.first_name AS name_staff_first,
       dim_staff.middle_name AS name_staff_middle,
       dim_staff.last_name AS name_staff_last,
-      dim_staff.hier_user_type AS type_staff
+      dim_staff.hier_user_type AS type_staff,
+      fact_asmt_outcome.asmt_type AS asmt_type,
+      fact_asmt_outcome.asmt_year AS asmt_year,
+      fact_asmt_outcome.asmt_subject AS asmt_subject
     FROM
       {schema}.fact_asmt_outcome,
       {schema}.dim_inst_hier,

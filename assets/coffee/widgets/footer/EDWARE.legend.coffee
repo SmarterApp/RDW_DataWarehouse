@@ -70,6 +70,9 @@ define [
   # Legend section on comparing population report
   class CPopLegend extends Legend
 
+    constructor: (@legend) ->
+      super legend, 'comparingPopulationsReport'
+      
     getTemplate: ->
       CPopTemplate
 
@@ -83,6 +86,9 @@ define [
   # Legend section on individual student report
   class ISRLegend extends Legend
 
+    constructor: (@legend) ->
+      super legend, 'indivStudentReport'
+      
     getTemplate: ->
       ISRTemplate
 
@@ -97,6 +103,9 @@ define [
 
   # Legend section on list of students report
   class LOSLegend extends Legend
+
+    constructor: (@legend) ->
+      super legend, 'studentList'
 
     getTemplate: ->
       LOSTemplate
@@ -118,11 +127,11 @@ define [
       legend = undefined
       # create legend object
       if reportName is 'individual_student_report'
-        legend = new ISRLegend(data, 'indivStudentReport')
+        legend = new ISRLegend(data)
       if reportName is 'list_of_students'
         legend = new LOSLegend(data)
       if reportName is 'comparing_populations'
-        legend = new CPopLegend(data, 'comparingPopulationsReport')
+        legend = new CPopLegend(data)
       # create legend section
       legend.create $(this) if legend
       $(this)

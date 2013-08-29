@@ -136,9 +136,6 @@
 			"comparing_populations_school": "F95qaQ5ThveMC2XJZx1C7g_3d_3d"
 		}
 	},
-	"reportInfo": {
-		"list_of_students": "<h4>Purpose:</h4><p>This report is intended to provide a consolidated view of individual student scores for a given assessment, and acts as a bridge between larger aggregate views and the individual student reports.</p><br><h4>Uses:</h4><ul><li>Use this report to sort a list of students by their various scores, or alphabetically. Ordering students by Overall scores may reveal groups of students, for example those concentrated around cut-scores or those in need of significant extra support.</li><li>Filtering capability will be forthcoming in the next version of the Reporting system, which will allow you to narrow down the overall list according to a multitude of student and score attributes.</li></ul><br><h4>More information:</h4><p>A list of students will most often be used to see a section or class at-a-glance for a given assessment. Single-point Overall scale-scores and Error Bands are provided to illustrate a spatial representation of student performance, and the list shows how those Error Bands overlap. Claim scores are provided in numerical form, but are best understood relative to the overall score and compared to each other as relative strengths and weaknesses. The combination may lead to insights that help characterize the results of an assessment for a group of students.</p><br/>"
-	},
 	"legendInfo": {
 		"sample_intervals": {
 			"asmt_score": 1789,
@@ -239,19 +236,6 @@
 					"showPercentage": true 
 				}
 			]
-		},
-		"list_of_students": {
-			"desc1": "全体のスコアインジケータ",
-			"desc2": "スケーリングスコアレンジ",
-			"desc3": "エラーバンド",
-			"desc4": "(誤差範囲の大きさをグラフィカルに示されている)",
-			"desc5": "数値スコア",
-			"desc6": "(達成度によって色分け)",
-			"desc7": "クレームスコア",
-			"desc8": "1381 ",
-			"desc9": "エラーバンド",
-			"desc10": "(誤差範囲の大きさを数値的に示されている)",
-			"error_band": "T彼はスコアの誤差は、テストによって提供される情報の量から来ている。それは、単一のテストが割り当てられたテスト長の学生のための適切な難易度のアイテムをお届けすることができましたどれだけに基づいています。スマートバランステストは適応型テストの部分を提供することで、合理的な制限時間内で可能な最も正確なスコアを提供するよう努め。我々は、単一の評価のための学生の結果は、任意の特定の日になる可能性が高いとスコア値の範囲を示すために、エラーバンドを提供します。"
 		}
 	},
 	"students": {

@@ -1,0 +1,16 @@
+{
+	"reportInfo": "<h4>Purpose:</h4><p>This report is intended to provide a consolidated view of individual student scores for a given assessment, and acts as a bridge between larger aggregate views and the individual student reports.</p><br><h4>Uses:</h4><ul><li>Use this report to sort a list of students by their various scores, or alphabetically. Ordering students by Overall scores may reveal groups of students, for example those concentrated around cut-scores or those in need of significant extra support.</li><li>Filtering capability will be forthcoming in the next version of the Reporting system, which will allow you to narrow down the overall list according to a multitude of student and score attributes.</li></ul><br><h4>More information:</h4><p>A list of students will most often be used to see a section or class at-a-glance for a given assessment. Single-point Overall scale-scores and Error Bands are provided to illustrate a spatial representation of student performance, and the list shows how those Error Bands overlap. Claim scores are provided in numerical form, but are best understood relative to the overall score and compared to each other as relative strengths and weaknesses. The combination may lead to insights that help characterize the results of an assessment for a group of students.</p><br/>",
+	"legendInfo": {
+		"desc1": "Overall Score Indicator",
+		"desc2": "Scaled Score Range",
+		"desc3": "Error Band",
+		"desc4": "(size of error band is indicated graphically)",
+		"desc5": "Numeric Score",
+		"desc6": "(color coded by Achievement Level)",
+		"desc7": "Claim Score",
+		"desc8": "1381 ",
+		"desc9": "Error Band",
+		"desc10": "(size of error band is indicated numerically)",
+		"error_band": "The error of a score comes from the amount of information provided by the test. It is based on how well a single test was able to deliver items of appropriate difficulty for the student in the allotted test length. Smarter Balanced tests endeavor to provide the most precise scores possible within a reasonable time limit by delivering an adaptive test portion. We provide an Error Band to show the range of score values that a student's result for a single assessment is highly likely to be on any given day."
+	}
+}

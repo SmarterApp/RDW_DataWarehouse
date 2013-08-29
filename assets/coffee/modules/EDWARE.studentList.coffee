@@ -31,74 +31,74 @@ define [
       async: false
       method: "GET"
 
-    edwareDataProxy.getDatafromSource "../data/common.json", options, (data) ->
-      defaultColors = data.colors
-      feedbackData = data.feedback
-      breadcrumbsConfigs = data.breadcrumb
-      reportInfo = data.reportInfo
-      studentsConfig = data.students
-      legendInfo = data.legendInfo
+    data = edwareDataProxy.getDataForReport "studentList", "jp"
+    defaultColors = data.colors
+    feedbackData = data.feedback
+    breadcrumbsConfigs = data.breadcrumb
+    reportInfo = data.reportInfo
+    studentsConfig = data.students
+    legendInfo = data.legendInfo
 
-      getStudentData "/data/list_of_students", params, defaultColors, (assessmentsData, contextData, subjectsData, claimsData, userData, cutPointsData) ->
-        # append user_info (e.g. first and last name)
-        if userData
-          $('#header .topLinks .user').html edwareUtil.getUserName userData
-            
-        # set school name as the page title from breadcrumb
-        $("#school_name").html contextData.items[2].name
-        
-        # Use mustache template to replace text in json config
-        if assessmentsData['ALL'].length > 0
-          # Add assessments data there so we can get column names
-          combinedData = subjectsData
-          combinedData.claims =  claimsData
-          output = Mustache.render(JSON.stringify(studentsConfig), combinedData)
-          studentsConfig = JSON.parse(output)
-        
-        # populate select view
-        defaultView = createAssessmentViewSelectDropDown studentsConfig.customViews, cutPointsData
-        
-        $('#breadcrumb').breadcrumbs(contextData, breadcrumbsConfigs)
-        
-        renderStudentGrid(defaultView)
-        renderHeaderPerfBar(cutPointsData)
-        
-        # Show tooltip for overall score on mouseover
-        $(document).on
-          mouseenter: ->
-            elem = $(this)
-            elem.popover
-              html: true
-              trigger: "manual"
-              placement: (tip, element) ->
-                edwareUtil.popupPlacement(element, 400, 220)
-              title: ->
-                elem.parent().find(".losTooltip .js-popupTitle").html() 
-              template: '<div class="popover losPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
-              content: ->
-                elem.parent().find(".losTooltip").html() # html is located in widgets/EDWARE.grid.formatter performanceBar method
-            .popover("show")
-          click: (e) ->
-            e.preventDefault()
-          mouseleave: ->
-            elem = $(this)
-            elem.popover("hide")
-        , ".asmtScore"
-        
-        # Generate footer links
-        $('#footer').generateFooter('list_of_students', reportInfo, {
-          'legendInfo': legendInfo.list_of_students,
-          # merge cut points data with sample data
-          'subject': $.extend(true, {}, cutPointsData.subject1 || cutPointsData.subject2 , legendInfo.sample_intervals)
-        })
-        
-        # append user_info (e.g. first and last name)
-        if userData
-          role = edwareUtil.getRole userData
-          uid = edwareUtil.getUid userData
-          edwareUtil.renderFeedback(role, uid, "list_of_students", feedbackData)
-        
-        
+    getStudentData "/data/list_of_students", params, defaultColors, (assessmentsData, contextData, subjectsData, claimsData, userData, cutPointsData) ->
+      # append user_info (e.g. first and last name)
+      if userData
+        $('#header .topLinks .user').html edwareUtil.getUserName userData
+          
+      # set school name as the page title from breadcrumb
+      $("#school_name").html contextData.items[2].name
+      
+      # Use mustache template to replace text in json config
+      if assessmentsData['ALL'].length > 0
+        # Add assessments data there so we can get column names
+        combinedData = subjectsData
+        combinedData.claims =  claimsData
+        output = Mustache.render(JSON.stringify(studentsConfig), combinedData)
+        studentsConfig = JSON.parse(output)
+      
+      # populate select view
+      defaultView = createAssessmentViewSelectDropDown studentsConfig.customViews, cutPointsData
+      
+      $('#breadcrumb').breadcrumbs(contextData, breadcrumbsConfigs)
+      
+      renderStudentGrid(defaultView)
+      renderHeaderPerfBar(cutPointsData)
+      
+      # Show tooltip for overall score on mouseover
+      $(document).on
+        mouseenter: ->
+          elem = $(this)
+          elem.popover
+            html: true
+            trigger: "manual"
+            placement: (tip, element) ->
+              edwareUtil.popupPlacement(element, 400, 220)
+            title: ->
+              elem.parent().find(".losTooltip .js-popupTitle").html() 
+            template: '<div class="popover losPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
+            content: ->
+              elem.parent().find(".losTooltip").html() # html is located in widgets/EDWARE.grid.formatter performanceBar method
+          .popover("show")
+        click: (e) ->
+          e.preventDefault()
+        mouseleave: ->
+          elem = $(this)
+          elem.popover("hide")
+      , ".asmtScore"
+      
+      # Generate footer links
+      $('#footer').generateFooter('list_of_students', reportInfo, {
+        'legendInfo': legendInfo,
+        # merge cut points data with sample data
+        'subject': $.extend(true, {}, cutPointsData.subject1 || cutPointsData.subject2 , legendInfo.sample_intervals)
+      }, data.labels)
+      
+      # append user_info (e.g. first and last name)
+      if userData
+        role = edwareUtil.getRole userData
+        uid = edwareUtil.getUid userData
+        edwareUtil.renderFeedback(role, uid, "list_of_students", feedbackData)
+      
+      
   renderHeaderPerfBar = (cutPointsData) ->
     for key of cutPointsData
         items = cutPointsData[key]

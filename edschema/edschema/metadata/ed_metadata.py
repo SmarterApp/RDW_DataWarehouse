@@ -223,7 +223,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                Column('batch_guid', String(50), nullable=True),
                                # Add 4 assessment columns
                                Column('asmt_type', String(16), nullable=False),
-                               Column('asmt_period_year', SmallInteger, nullable=False),
+                               Column('asmt_year', SmallInteger, nullable=False),
                                Column('asmt_subject', String(100)),
                                Column('gender', String(10), nullable=True),
                                # Add 10 demographic columns

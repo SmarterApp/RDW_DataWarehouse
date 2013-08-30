@@ -9,6 +9,13 @@ define [
   #    * Generate confidence level bar and calculate cutpoint pixel width, score position, score interval position
   #    
   $.fn.populationBar = (items) ->
+    if items.sort
+      rightTotalPercentage = items.sort[1]
+      leftTotalPercentage = 100 - rightTotalPercentage
+      if rightTotalPercentage > 0
+        items.rightTotalPercentage = rightTotalPercentage
+      if leftTotalPercentage > 0
+        items.leftTotalPercentage = leftTotalPercentage
     output = Mustache.to_html populationBarTemplate, items
     # If there is no container, return the output
     if this.length > 0

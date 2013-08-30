@@ -298,7 +298,7 @@ uat:
       db:
         es:
           schema_name: edware_uat_1_0
-          url: postgresql+psycopg2://edware:edware.dmo.may.2013@dwpool0.dmo.som.edwdc.net:6434/edware
+          url: postgresql+psycopg2://edware:edware.dmo.may.2013@dwpool0.dmo.som.edwdc.net:6432/edware
     edware_stats:
       db:
         schema_name: edware_uat_1_0

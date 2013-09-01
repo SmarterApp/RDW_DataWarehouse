@@ -12,10 +12,8 @@ define [
     if items.sort
       rightTotalPercentage = items.sort[1]
       leftTotalPercentage = 100 - rightTotalPercentage
-      if rightTotalPercentage > 0
-        items.rightTotalPercentage = rightTotalPercentage
-      if leftTotalPercentage > 0
-        items.leftTotalPercentage = leftTotalPercentage
+      if rightTotalPercentage > 0 then items.rightTotalPercentage = rightTotalPercentage
+      if leftTotalPercentage > 0 then items.leftTotalPercentage = leftTotalPercentage
     output = Mustache.to_html populationBarTemplate, items
     # If there is no container, return the output
     if this.length > 0

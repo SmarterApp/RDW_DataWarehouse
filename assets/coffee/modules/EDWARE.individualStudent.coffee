@@ -53,7 +53,7 @@ define [
         $('#header .topLinks .user').html edwareUtil.getUserName data.user_info
         
       options =
-        async: false
+        async: true
         method: "GET"
     
       edwareDataProxy.getDatafromSource "../data/common.json", options, (configData) ->
@@ -315,7 +315,7 @@ define [
       return false  if configURL is "undefined" or typeof configURL is "number" or typeof configURL is "function" or typeof configURL is "object"
       
       options =
-        async: false
+        async: true
         method: "GET"
       
       edwareDataProxy.getDatafromSource configURL, options, (data) ->

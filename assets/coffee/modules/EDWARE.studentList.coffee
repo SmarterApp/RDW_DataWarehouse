@@ -31,7 +31,7 @@ define [
       async: false
       method: "GET"
 
-    data = edwareDataProxy.getDataForReport "studentList", "jp"
+    data = edwareDataProxy.getDataForReport "studentList", "en"
     defaultColors = data.colors
     feedbackData = data.feedback
     breadcrumbsConfigs = data.breadcrumb

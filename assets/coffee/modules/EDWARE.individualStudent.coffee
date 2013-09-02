@@ -35,7 +35,7 @@ define [
     edwareUtil.getHeader()
       
 
-    configData = edwareDataProxy.getDataForReport "indivStudentReport", "jp"
+    configData = edwareDataProxy.getDataForReport "indivStudentReport", "en"
       
     # Get individual student report data from the server
     options =

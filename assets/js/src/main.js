@@ -28,7 +28,8 @@ require({
 		edwareLoadingMask: '../widgets/loadingMask/EDWARE.loadingMask',
 		edwareFilter: '../widgets/filter/EDWARE.filter',
 		edwareDropdown: '../widgets/dropdown/EDWARE.dropdown',
-		
+                edwareSessionStorage: '../widgets/clientStorage/EDWARE.sessionStorage',
+
 		// Templates
 		edwareBreadcrumbsTemplate: '../widgets/breadcrumb/template.html',
 		edwareConfidenceLevelBarTemplate: '../widgets/confidenceLevelBar/template.html',
@@ -73,7 +74,7 @@ require({
 		a.src = g;
 		m.parentNode.insertBefore(a, m)
 	})(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
-	
+
 	ga('create', 'UA-43067000-1', 'edwdc.net');
 	ga('send', 'pageview', {
         'page':  window.location.pathname,

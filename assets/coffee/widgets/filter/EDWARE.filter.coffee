@@ -4,8 +4,9 @@ define [
   "bootstrap"
   "edwareDataProxy"
   "edwareUtil"
+  "edwareSessionStorage"
   "text!edwareFilterTemplate"
-], ($, Mustache, bootstrap, edwareDataProxy, edwareUtil, filterTemplate) ->
+], ($, Mustache, bootstrap, edwareDataProxy, edwareUtil, edwareSessionStorage, filterTemplate) ->
   
   # * EDWARE filter widget
   # * The module contains EDWARE filter creation method
@@ -14,8 +15,6 @@ define [
   FILTER_SUBMIT = 'edware.filter.submit'
   
   RESET_DROPDOWN = 'edware.filter.reset.dropdown'
-  
-  FILTER_PARAMS = 'edware.filter.params'
   
   class EdwareFilter
     
@@ -39,6 +38,8 @@ define [
       this.tagPanelWrapper = $('.selectedFilter_panel', this.filterArea)
       this.tagPanel = $('.filters', this.tagPanelWrapper)
       this.clearAllButton = $('.removeAllFilters', this.filterArea)
+      # set session storage
+      this.storage = edwareSessionStorage.filterStorage
 
     loadPage: ->
       # load config from server
@@ -69,7 +70,7 @@ define [
     
       # prevent dropdown memu from disappearing
       $(this.dropdownMenu).click (e) ->
-          e.stopPropagation()
+        e.stopPropagation()
       
       $(this.filters).on RESET_DROPDOWN, this.clearOptions
        
@@ -82,7 +83,12 @@ define [
       # display user selected option on dropdown
       $(this.options).click ->
         self.showOptions $(this).closest('.btn-group')
-        
+
+      # bind logout events
+      $("#logout_button").click ->
+        # clear session storage
+        self.storage.clear()
+
     cancel: (self) ->
       self.reset()
       self.closeFilter()
@@ -91,8 +97,8 @@ define [
       # reset all filters
       this.filters.each () ->
         $(this).trigger RESET_DROPDOWN
-	  # load params from session storage
-      params = sessionStorage.getItem(FILTER_PARAMS) if sessionStorage 
+  	  # load params from session storage
+      params = this.storage.load()
       # reset params
       if params
         $.each JSON.parse(params), (key, value) ->
@@ -155,7 +161,7 @@ define [
       # merge selected options into param
       $.extend(params, selectedValues)
       # save param to session storage
-      sessionStorage.setItem(FILTER_PARAMS, JSON.stringify(params)) if sessionStorage
+      this.storage.save(params)
       callback params if callback
       
     # get parameters for ajax call
@@ -193,15 +199,15 @@ define [
       text =  $('input:checked', buttonGroup).map(() ->
                     $(this).data('label')
               ).get().join(delimiter)
-      if text isnt "" then '(' + text + ')'  else ""
+      if text isnt "" then '[' + text + ']'  else ""
 
     # compute width property for text
     computeTextWidth: (button) ->
       # compute display text width this way because $().width() doesn't work somehow
       displayWidth = $('.display', button).text().length * 10
       width = $(button).width() - displayWidth - 35
-      # keep minimum width 55px
-      if width > 0 then width else 55
+      # keep minimum width 30px
+      if width > 0 then width else 30
 
     loadReport: (params) ->
       this.reset()

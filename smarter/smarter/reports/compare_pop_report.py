@@ -96,6 +96,14 @@ DEFAULT_MIN_CELL_SIZE = 0
                 "type": "string",
                 "pattern": "^(3|4|5|6|7|8|11)$"
             }
+        },
+        Constants_filter_names.GENDER: {
+            "type": "array",
+            "required": False,
+            "items": {
+                "type": "string",
+                "pattern": "^(" + Constants_filter_names.DEMOGRAPHICS_GENDER_MALE + "|" + Constants_filter_names.DEMOGRAPHICS_GENDER_FEMALE + "|" + Constants_filter_names.DEMOGRAPHICS_GENDER_NOT_STATED + ")$"
+            }
         }
     })
 @audit_event()
@@ -395,7 +403,6 @@ class QueryHelper():
         else:
             raise InvalidParameterException()
         self._dim_inst_hier = connector.get_table(Constants.DIM_INST_HIER)
-        self._dim_asmt = connector.get_table(Constants.DIM_ASMT)
         self._fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
 
     def build_query(self, f, extra_columns):
@@ -403,18 +410,14 @@ class QueryHelper():
         build select columns based on request
         '''
         query = f(extra_columns +
-                  [self._dim_asmt.c.asmt_subject.label(Constants.ASMT_SUBJECT),
+                  [self._fact_asmt_outcome.c.asmt_subject.label(Constants.ASMT_SUBJECT),
                    self._fact_asmt_outcome.c.asmt_perf_lvl.label(Constants.LEVEL),
                    func.count().label(Constants.TOTAL)],
-                  from_obj=[self._fact_asmt_outcome.join(
-                            self._dim_asmt, and_(self._dim_asmt.c.asmt_rec_id == self._fact_asmt_outcome.c.asmt_rec_id,
-                                                 self._dim_asmt.c.asmt_type == Constants.SUMMATIVE,
-                                                 self._dim_asmt.c.most_recent == true())).join(
-                            self._dim_inst_hier, and_(self._dim_inst_hier.c.inst_hier_rec_id == self._fact_asmt_outcome.c.inst_hier_rec_id))]
+                  from_obj=[self._fact_asmt_outcome.join(self._dim_inst_hier, and_(self._dim_inst_hier.c.inst_hier_rec_id == self._fact_asmt_outcome.c.inst_hier_rec_id))]
                   )\
-            .group_by(self._dim_asmt.c.asmt_subject,
+            .group_by(self._fact_asmt_outcome.c.asmt_subject,
                       self._fact_asmt_outcome.c.asmt_perf_lvl)\
-            .where(and_(self._fact_asmt_outcome.c.state_code == self._state_code, self._fact_asmt_outcome.c.most_recent == true()))
+            .where(and_(self._fact_asmt_outcome.c.state_code == self._state_code, self._fact_asmt_outcome.c.most_recent == true(), self._fact_asmt_outcome.c.asmt_type == Constants.SUMMATIVE))
 
         # apply demographics filters to query
         return self.apply_demographics_filter(query)
@@ -456,7 +459,7 @@ class QueryHelper():
         return self.build_query(select_with_context, [self._fact_asmt_outcome.c.asmt_grade.label(Constants.NAME), self._fact_asmt_outcome.c.asmt_grade.label(Constants.ID)])\
                    .group_by(self._fact_asmt_outcome.c.asmt_grade)\
                    .where(and_(self._fact_asmt_outcome.c.district_guid == self._district_guid, self._fact_asmt_outcome.c.school_guid == self._school_guid))\
-                   .order_by(self._dim_asmt.c.asmt_subject.desc(), self._fact_asmt_outcome.c.asmt_grade)
+                   .order_by(self._fact_asmt_outcome.c.asmt_subject.desc(), self._fact_asmt_outcome.c.asmt_grade)
 
     def apply_demographics_filter(self, query):
         '''
@@ -481,4 +484,7 @@ class QueryHelper():
             filter_eth = self._filters.get(Constants_filter_names.ETHNICITY)
             if filter_eth is not None:
                 query = query.where(self._fact_asmt_outcome.c.dmg_eth_derived.in_(filter_eth))
+            filter_gender = self._filters.get(Constants_filter_names.GENDER)
+            if filter_gender is not None:
+                query = query.where(self._fact_asmt_outcome.c.gender.in_(filter_gender))
         return query

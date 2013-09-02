@@ -208,11 +208,18 @@ define [
     if align_button_class.indexOf("align_on") isnt -1
       $(".populationBar").css("width", "155px")
       $(".alignmentLine").css("display", "block")
-      $(".barContainer").css("margin-left", "80px")
+      $(".barContainer").css("margin-left", "100px")
+      $(".leftPercentageTotal").show()
+      $(".rightPercentageTotal").show()
+      $(".percentageOnBar").hide()
+      
     else
       $(".populationBar").css("width", "265px")
       $(".alignmentLine").css("display", "none")
       $(".barContainer ").css("margin-left", "15px")
+      $(".leftPercentageTotal").hide()
+      $(".rightPercentageTotal").hide()
+      $(".percentageOnBar").show()
   
   # Get population data from server       
   getPopulationData = (sourceURL, params, callback) ->

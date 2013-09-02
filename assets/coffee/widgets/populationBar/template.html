@@ -2,7 +2,7 @@
 	{{#intervals}}
   	<div class="bar" style="background-color: {{#color}}{{bg_color}}; background-image: -moz-linear-gradient(center top , {{start_gradient_bg_color}}, {{end_gradient_bg_color}}); background-image: -webkit-linear-gradient(top , {{start_gradient_bg_color}}, {{end_gradient_bg_color}}); background-image: -ms-linear-gradient(top , {{start_gradient_bg_color}}, {{end_gradient_bg_color}}); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr={{start_gradient_bg_color}}, endColorstr={{end_gradient_bg_color}}, GradientType=0); background-repeat: repeat-x; color: {{text_color}}{{/color}}; width: {{percentage}}%;">
   		{{#showPercentage}}
-  			<span class="marginRight5">{{percentage}}%</span>
+  			<span class="marginRight5 percentageOnBar hide">{{percentage}}%</span>
   		{{/showPercentage}}
   	</div>
   	{{/intervals}}
@@ -16,3 +16,9 @@
 		</ul>
 	</div>
 </div>
+{{#leftTotalPercentage}}
+<div class="leftPercentageTotal hide">{{leftTotalPercentage}}%</div>
+{{/leftTotalPercentage}}
+{{#rightTotalPercentage}}
+<div class="rightPercentageTotal hide">{{rightTotalPercentage}}%</div>
+{{/rightTotalPercentage}}

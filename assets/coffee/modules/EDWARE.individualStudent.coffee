@@ -301,24 +301,5 @@ define [
     $(claimArrowBox).addClass(triangle_img)
     $(claimArrowBox).css("background-position", "50% " + triangle_y_position + "%")
     $(claimArrowBox).append arrow_bar
-  #
-  # get role-based content
-  #
-  getContent = (configURL, callback) ->
-      content = {}
-      
-      return false  if configURL is "undefined" or typeof configURL is "number" or typeof configURL is "function" or typeof configURL is "object"
-      
-      options =
-        async: false
-        method: "GET"
-      
-      edwareDataProxy.getDatafromSource configURL, options, (data) ->
-          content = data
-
-          if callback
-            callback content
-          else
-            content
 
   generateIndividualStudentReport: generateIndividualStudentReport

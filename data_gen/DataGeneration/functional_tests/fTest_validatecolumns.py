@@ -45,12 +45,13 @@ class ColumnValidationFuncTest(unittest.TestCase):
         print(database_columns.keys())
 
         for table in csv_columns:
-            csv_col_set = set(csv_columns[table])
-            db_col_set = set(database_columns[table])
-            self.assertSetEqual(csv_col_set, db_col_set, 'check for same columns in table %s' % table)
+            self.assertListEqual(csv_columns[table], database_columns[table], 'check for same columns in table %s' % table)
             self.assertEqual(len(csv_columns[table]), len(database_columns[table]), 'check length of the two column lists')
 
     def get_headers_from_csv(self):
+        '''
+        Open each csv file and pull out the first row
+        '''
         headers = {}
         for entity in ENTITY_TO_PATH_DICT:
             with open(ENTITY_TO_PATH_DICT[entity], "r") as csv_file:

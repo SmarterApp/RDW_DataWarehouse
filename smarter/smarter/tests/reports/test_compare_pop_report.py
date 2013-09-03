@@ -300,7 +300,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         testParam = {}
         testParam[Constants.STATECODE] = 'NY'
         testParam[Constants.DISTRICTGUID] = '229'
-        testParam[Constants_filter_names.GRADE] = ['3']
+        testParam[Constants_filter_names.DEMOGRAPHICS_GRADE] = ['3']
         results = get_comparing_populations_report(testParam)
         self.assertEqual(results['records'][0]['results']['subject1']['total'], 2)
         self.assertEqual(len(results['records']), 1)
@@ -309,7 +309,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         testParam = {}
         testParam[Constants.STATECODE] = 'NY'
         testParam[Constants.DISTRICTGUID] = '229'
-        testParam[Constants_filter_names.GRADE] = ['3', '6', '7', '11']
+        testParam[Constants_filter_names.DEMOGRAPHICS_GRADE] = ['3', '6', '7', '11']
         results = get_comparing_populations_report(testParam)
         self.assertEqual(results['records'][0]['results']['subject1']['total'], 2)
         self.assertEqual(results['records'][2]['results']['subject1']['total'], 5)
@@ -385,7 +385,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         testParam = {}
         testParam[Constants.STATECODE] = 'NY'
         testParam[Constants.DISTRICTGUID] = '229'
-        testParam[Constants_filter_names.ETHNICITY] = [Constants_filter_names.DEMOGRAPHICS_ETHNICITY_HISPANIC]
+        testParam[Constants_filter_names.DEMOGRAPHICS_ETHNICITY] = [Constants_filter_names.DEMOGRAPHICS_ETHNICITY_HISPANIC]
         set_default_min_cell_size(5)
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 3)
@@ -401,7 +401,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         testParam = {}
         testParam[Constants.STATECODE] = 'NY'
         testParam[Constants.DISTRICTGUID] = '229'
-        testParam[Constants_filter_names.GENDER] = [Constants_filter_names.DEMOGRAPHICS_GENDER_MALE]
+        testParam[Constants_filter_names.DEMOGRAPHICS_GENDER] = [Constants_filter_names.DEMOGRAPHICS_GENDER_MALE]
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 3)
         self.assertEqual(results['records'][0]['results']['subject1']['total'], 11)
@@ -413,7 +413,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         testParam = {}
         testParam[Constants.STATECODE] = 'NY'
         testParam[Constants.DISTRICTGUID] = '229'
-        testParam[Constants_filter_names.GENDER] = [Constants_filter_names.DEMOGRAPHICS_GENDER_NOT_STATED]
+        testParam[Constants_filter_names.DEMOGRAPHICS_GENDER] = [Constants_filter_names.DEMOGRAPHICS_GENDER_NOT_STATED]
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 1)
         self.assertEqual(results['records'][0]['results']['subject1']['total'], 1)

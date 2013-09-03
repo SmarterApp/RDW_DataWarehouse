@@ -142,7 +142,7 @@ define [
             gridOptions.footerrow = true
             
           if columnData is null or columnData is `undefined` or columnData.length < 1
-            edwareUtil.displayErrorMessage "There is no data available for your request."
+            edwareUtil.displayNoResultsMessge()
           else
             edwareUtil.displayErrorMessage ""
             gridOptions = $.extend(gridOptions, options)  if options

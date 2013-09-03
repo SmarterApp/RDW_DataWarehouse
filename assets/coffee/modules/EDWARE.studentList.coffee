@@ -48,12 +48,11 @@ define [
       $("#school_name").html contextData.items[2].name
       
       # Use mustache template to replace text in json config
-      if assessmentsData['ALL'].length > 0
-        # Add assessments data there so we can get column names
-        combinedData = subjectsData
-        combinedData.claims =  claimsData
-        output = Mustache.render(JSON.stringify(studentsConfig), combinedData)
-        studentsConfig = JSON.parse(output)
+      # Add assessments data there so we can get column names
+      combinedData = subjectsData
+      combinedData.claims =  claimsData
+      output = Mustache.render(JSON.stringify(studentsConfig), combinedData)
+      studentsConfig = JSON.parse(output)
       
       # populate select view
       defaultView = createAssessmentViewSelectDropDown studentsConfig.customViews, cutPointsData
@@ -133,14 +132,18 @@ define [
     $("#content").append("<table id='gridTable'></table>")
     # Reset the error message, in case previous view shows an error
     edwareUtil.displayErrorMessage ""
-    dataName = viewName.toUpperCase()
-    # If the view name is not one of the subjects, default it to the default assessments data
-    if not (dataName of assessmentsData)
-      dataName = 'ALL'
-    edwareGrid.create "gridTable", studentsConfig[viewName], assessmentsData[dataName]
-    
-    # Add dark border color between Math and ELA section to emphasize the division
-    $('.jqg-second-row-header th:nth-child(1), .jqg-second-row-header th:nth-child(2), .ui-jqgrid .ui-jqgrid-htable th.ui-th-column:nth-child(1), .ui-jqgrid .ui-jqgrid-htable th.ui-th-column:nth-child(3), .ui-jqgrid tr.jqgrow td:nth-child(1), .ui-jqgrid tr.jqgrow td:nth-child(3)').css("border-right", "solid 1px #B1B1B1");
+    if assessmentsData["ALL"].length > 0
+      dataName = viewName.toUpperCase()
+      # If the view name is not one of the subjects, default it to the default assessments data
+      if not (dataName of assessmentsData)
+        dataName = 'ALL'
+      edwareGrid.create "gridTable", studentsConfig[viewName], assessmentsData[dataName]
+      
+      # Add dark border color between Math and ELA section to emphasize the division
+      $('.jqg-second-row-header th:nth-child(1), .jqg-second-row-header th:nth-child(2), .ui-jqgrid .ui-jqgrid-htable th.ui-th-column:nth-child(1), .ui-jqgrid .ui-jqgrid-htable th.ui-th-column:nth-child(3), .ui-jqgrid tr.jqgrow td:nth-child(1), .ui-jqgrid tr.jqgrow td:nth-child(3)').css("border-right", "solid 1px #B1B1B1");
+    else
+      # Display no results error message
+      edwareUtil.displayNoResultsMessge()
 
   getStudentData = (sourceURL, params, defaultColors, callback) ->    
     assessmentArray = []

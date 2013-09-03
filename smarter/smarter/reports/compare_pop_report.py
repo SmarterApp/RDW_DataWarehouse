@@ -16,11 +16,12 @@ import collections
 from edapi.exceptions import NotFoundException
 from smarter.security.context import select_with_context
 from smarter.database.smarter_connector import SmarterDBConnection
-from smarter.reports.filters import Constants_filter_names
-from smarter.reports.filters.demographics import get_demographic_filter
 from smarter.reports.exceptions.parameter_exception import InvalidParameterException
 from smarter.reports.helpers.metadata import get_custom_metadata
 from edapi.cache import cache_region
+from smarter.reports.filters.demographics import apply_demographics_filter_to_query,\
+    DEMOGRAPHICS_CONFIG
+from smarter.reports.helpers.utils import merge_dict
 
 
 REPORT_NAME = "comparing_populations"
@@ -31,7 +32,7 @@ DEFAULT_MIN_CELL_SIZE = 0
 
 @report_config(
     name=REPORT_NAME,
-    params={
+    params=merge_dict({
         Constants.STATECODE: {
             "type": "string",
             "required": True,
@@ -46,66 +47,8 @@ DEFAULT_MIN_CELL_SIZE = 0
             "type": "string",
             "required": False,
             "pattern": "^[a-zA-Z0-9\-]{0,50}$",
-        },
-        Constants_filter_names.DEMOGRAPHICS_PROGRAM_LEP: {
-            "type": "array",
-            "required": False,
-            "items": {
-                "type": "string",
-                "pattern": "^(" + Constants_filter_names.YES + "|" + Constants_filter_names.NO + "|" + Constants_filter_names.NOT_STATED + ")$",
-            }
-        },
-        Constants_filter_names.DEMOGRAPHICS_PROGRAM_IEP: {
-            "type": "array",
-            "required": False,
-            "items": {
-                "type": "string",
-                "pattern": "^(" + Constants_filter_names.YES + "|" + Constants_filter_names.NO + "|" + Constants_filter_names.NOT_STATED + ")$",
-            }
-        },
-        Constants_filter_names.DEMOGRAPHICS_PROGRAM_504: {
-            "type": "array",
-            "required": False,
-            "items": {
-                "type": "string",
-                "pattern": "^(" + Constants_filter_names.YES + "|" + Constants_filter_names.NO + "|" + Constants_filter_names.NOT_STATED + ")$",
-            }
-        },
-        Constants_filter_names.DEMOGRAPHICS_PROGRAM_TT1: {
-            "type": "array",
-            "required": False,
-            "items": {
-                "type": "string",
-                "pattern": "^(" + Constants_filter_names.YES + "|" + Constants_filter_names.NO + "|" + Constants_filter_names.NOT_STATED + ")$",
-            }
-        },
-        Constants_filter_names.ETHNICITY: {
-            "type": "array",
-            "required": False,
-            "items": {
-                "type": "string",
-                "pattern": "^(" + Constants_filter_names.DEMOGRAPHICS_ETHNICITY_AMERICAN + "|" + Constants_filter_names.DEMOGRAPHICS_ETHNICITY_ASIAN + "|" +
-                Constants_filter_names.DEMOGRAPHICS_ETHNICITY_BLACK + "|" + Constants_filter_names.DEMOGRAPHICS_ETHNICITY_HISPANIC + "|" + Constants_filter_names.DEMOGRAPHICS_ETHNICITY_PACIFIC + "|" +
-                Constants_filter_names.DEMOGRAPHICS_ETHNICITY_MULTI + "|" + Constants_filter_names.DEMOGRAPHICS_ETHNICITY_WHITE + "|" + Constants_filter_names.DEMOGRAPHICS_ETHNICITY_NOT_STATED + ")$",
-            }
-        },
-        Constants_filter_names.GRADE: {
-            "type": "array",
-            "required": False,
-            "items": {
-                "type": "string",
-                "pattern": "^(3|4|5|6|7|8|11)$"
-            }
-        },
-        Constants_filter_names.GENDER: {
-            "type": "array",
-            "required": False,
-            "items": {
-                "type": "string",
-                "pattern": "^(" + Constants_filter_names.DEMOGRAPHICS_GENDER_MALE + "|" + Constants_filter_names.DEMOGRAPHICS_GENDER_FEMALE + "|" + Constants_filter_names.DEMOGRAPHICS_GENDER_NOT_STATED + ")$"
-            }
         }
-    })
+    }, DEMOGRAPHICS_CONFIG))
 @audit_event()
 @user_info
 def get_comparing_populations_report(params):
@@ -420,7 +363,7 @@ class QueryHelper():
             .where(and_(self._fact_asmt_outcome.c.state_code == self._state_code, self._fact_asmt_outcome.c.most_recent == true(), self._fact_asmt_outcome.c.asmt_type == Constants.SUMMATIVE))
 
         # apply demographics filters to query
-        return self.apply_demographics_filter(query)
+        return apply_demographics_filter_to_query(query, self._fact_asmt_outcome, self._filters)
 
     def build_query_for_inst_name(self, f, inner_query, extra_columns=[]):
         '''
@@ -460,31 +403,3 @@ class QueryHelper():
                    .group_by(self._fact_asmt_outcome.c.asmt_grade)\
                    .where(and_(self._fact_asmt_outcome.c.district_guid == self._district_guid, self._fact_asmt_outcome.c.school_guid == self._school_guid))\
                    .order_by(self._fact_asmt_outcome.c.asmt_subject.desc(), self._fact_asmt_outcome.c.asmt_grade)
-
-    def apply_demographics_filter(self, query):
-        '''
-        Demographics related filters
-        '''
-        if self._filters:
-            filter_iep = get_demographic_filter(Constants_filter_names.DEMOGRAPHICS_PROGRAM_IEP, self._fact_asmt_outcome.c.dmg_prg_iep, self._filters)
-            if filter_iep is not None:
-                query = query.where(filter_iep)
-            filter_504 = get_demographic_filter(Constants_filter_names.DEMOGRAPHICS_PROGRAM_504, self._fact_asmt_outcome.c.dmg_prg_504, self._filters)
-            if filter_504 is not None:
-                query = query.where(filter_504)
-            filter_lep = get_demographic_filter(Constants_filter_names.DEMOGRAPHICS_PROGRAM_LEP, self._fact_asmt_outcome.c.dmg_prg_lep, self._filters)
-            if filter_lep is not None:
-                query = query.where(filter_lep)
-            filter_tt1 = get_demographic_filter(Constants_filter_names.DEMOGRAPHICS_PROGRAM_TT1, self._fact_asmt_outcome.c.dmg_prg_tt1, self._filters)
-            if filter_tt1 is not None:
-                query = query.where(filter_tt1)
-            filter_grade = self._filters.get(Constants_filter_names.GRADE)
-            if self._filters.get(Constants_filter_names.GRADE):
-                query = query.where(self._fact_asmt_outcome.c.asmt_grade.in_(filter_grade))
-            filter_eth = self._filters.get(Constants_filter_names.ETHNICITY)
-            if filter_eth is not None:
-                query = query.where(self._fact_asmt_outcome.c.dmg_eth_derived.in_(filter_eth))
-            filter_gender = self._filters.get(Constants_filter_names.GENDER)
-            if filter_gender is not None:
-                query = query.where(self._fact_asmt_outcome.c.gender.in_(filter_gender))
-        return query

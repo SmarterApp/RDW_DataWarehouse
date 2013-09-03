@@ -24,12 +24,13 @@ class TestLOS(Unittest_with_smarter_sqlite):
             'cache.regions': 'public.shortlived'
         }
 
-        cache = CacheManager(**parse_cache_config_options(cache_opts))
+        CacheManager(**parse_cache_config_options(cache_opts))
 
         # Set up user context
         self.__request = DummyRequest()
         # Must set hook_zca to false to work with unittest_with_sqlite
         self.__config = testing.setUp(request=self.__request, hook_zca=False)
+        # Set up context security
         with UnittestSmarterDBConnection() as connection:
             # Insert into user_mapping table
             user_mapping = connection.get_table('user_mapping')
@@ -53,7 +54,7 @@ class TestLOS(Unittest_with_smarter_sqlite):
         testParam = {}
         testParam['districtGuid'] = '228'
         testParam['schoolGuid'] = '242'
-        testParam['asmtGrade'] = 3
+        testParam['asmtGrade'] = '3'
         testParam['stateCode'] = 'NY'
         testParam['asmtSubject'] = ['ELA', 'Math']
         results = get_list_of_students_report(testParam)
@@ -82,7 +83,7 @@ class TestLOS(Unittest_with_smarter_sqlite):
         testParam['stateCode'] = 'NY'
         testParam['districtGuid'] = '228'
         testParam['schoolGuid'] = '242'
-        testParam['asmtGrade'] = 3
+        testParam['asmtGrade'] = '3'
         testParam['asmtSubject'] = ['ELA', 'Math']
         results = get_list_of_students_report(testParam)
 
@@ -92,7 +93,7 @@ class TestLOS(Unittest_with_smarter_sqlite):
         testParam = {}
         testParam['districtGuid'] = '228'
         testParam['schoolGuid'] = '242'
-        testParam['asmtGrade'] = 3
+        testParam['asmtGrade'] = '3'
         testParam['stateCode'] = 'NY'
         testParam['asmtSubject'] = ['ELA']
         results = get_list_of_students_report(testParam)
@@ -112,7 +113,7 @@ class TestLOS(Unittest_with_smarter_sqlite):
         testParam = {}
         testParam['districtGuid'] = '228'
         testParam['schoolGuid'] = '242'
-        testParam['asmtGrade'] = 3
+        testParam['asmtGrade'] = '3'
         testParam['stateCode'] = 'NY'
         testParam['asmtSubject'] = ['Math']
         results = get_list_of_students_report(testParam)
@@ -135,6 +136,16 @@ class TestLOS(Unittest_with_smarter_sqlite):
         testParam['stateCode'] = 'NY'
         testParam['asmtSubject'] = ['Dummy']
         self.assertRaises(NotFoundException, get_list_of_students_report, testParam)
+
+    def test_LOS_with_filters(self):
+        testParam = {'asmtGrade': '3', 'gender': ['male'], 'stateCode': 'NY', 'districtGuid': '228', 'schoolGuid': '242'}
+        results = get_list_of_students_report(testParam)
+        self.assertEqual(len(results['assessments']), 17)
+
+        testParam['gender'] = ['not_stated']
+        results = get_list_of_students_report(testParam)
+        self.assertEqual(len(results['assessments']), 0)
+
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testReport']

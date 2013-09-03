@@ -63,136 +63,137 @@ define [
         async: false
         method: "GET"
     
-      edwareDataProxy.getDatafromSource "../data/common.json", options, (data) ->
-        defaultColors = data.colors
-        feedbackData = data.feedback
-        breadcrumbsConfigs = data.breadcrumb
-        reportInfo = data.reportInfo
-        gridConfig = data.comparingPopulations.grid
-        customViews = data.comparingPopulations.customViews
-        customALDDropdown = data.comparingPopulations.customALDDropdown
-        legendInfo = data.legendInfo
-                
-        output = Mustache.render(JSON.stringify(gridConfig), asmtSubjectsData)
-        gridConfig = JSON.parse(output)
+      data = edwareDataProxy.getDataForReport "comparingPopulationsReport", "en"
+      defaultColors = data.colors
+      feedbackData = data.feedback
+      breadcrumbsConfigs = data.breadcrumb
+      reportInfo = data.reportInfo
+      gridConfig = data.comparingPopulations.grid
+      customViews = data.comparingPopulations.customViews
+      customALDDropdown = data.comparingPopulations.customALDDropdown
+      legendInfo = data.legendInfo
+      this.labels = data.labels
+              
+      output = Mustache.render(JSON.stringify(gridConfig), asmtSubjectsData)
+      gridConfig = JSON.parse(output)
 
-        # # append user_info (e.g. first and last name)
-        if user_info
-          $('#header .topLinks .user').html edwareUtil.getUserName user_info
-          
-        # Determine if the report is state, district or school view
-        reportType = getReportType(params)
+      # # append user_info (e.g. first and last name)
+      if user_info
+        $('#header .topLinks .user').html edwareUtil.getUserName user_info
         
-        # Check for colors, set to default color if it's null
-        for color, value of colorsData
-          if value is null
-            colorsData[color] = defaultColors
-        
-        # Append colors to records and summary section
-        # Do not format data, or get breadcrumbs if the result is empty
-        if populationData.length > 0
-          populationData = appendColorToData populationData, asmtSubjectsData, colorsData, defaultColors
-          summaryData = appendColorToData summaryData, asmtSubjectsData, colorsData, defaultColors
+      # Determine if the report is state, district or school view
+      reportType = getReportType(params)
+      
+      # Check for colors, set to default color if it's null
+      for color, value of colorsData
+        if value is null
+          colorsData[color] = defaultColors
+      
+      # Append colors to records and summary section
+      # Do not format data, or get breadcrumbs if the result is empty
+      if populationData.length > 0
+        populationData = appendColorToData populationData, asmtSubjectsData, colorsData, defaultColors
+        summaryData = appendColorToData summaryData, asmtSubjectsData, colorsData, defaultColors
 
-        # Change the column name and link url based on the type of report the user is querying for
-        gridConfig[0].items[0].name = customViews[reportType].name
-        gridConfig[0].items[0].options.linkUrl = customViews[reportType].link
-        gridConfig[0].items[0].options.id_name = customViews[reportType].id_name
-          
-        if customViews[reportType].name is "Grade"
-          gridConfig[0].items[0].sorttype = "int"
-          
-        # Render breadcrumbs on the page
-        $('#breadcrumb').breadcrumbs(breadcrumbsData, breadcrumbsConfigs)
-          
-        # Set the Report title depending on the report that we're looking at
-        reportTitle = getReportTitle(breadcrumbsData, reportType)
-        $('#content h2').html reportTitle
-          
-        # Format the summary data for summary row purposes
-        summaryRowName = getOverallSummaryName(breadcrumbsData, reportType)
-        summaryData = formatSummaryData(summaryData, summaryRowName)
+      # Change the column name and link url based on the type of report the user is querying for
+      gridConfig[0].items[0].name = customViews[reportType].name
+      gridConfig[0].items[0].options.linkUrl = customViews[reportType].link
+      gridConfig[0].items[0].options.id_name = customViews[reportType].id_name
         
-        # For filtering, we need to reapply the current sort column in gridConfig before we re-render the grid
-        if currentSortInfo.name
-          for element in gridConfig
-            if element.items[0].index == currentSortInfo.name
-              element.items[0]["sortorder"] = currentSortInfo.order
-            else
-              delete element.items[0].sortorder
+      if customViews[reportType].name is "Grade"
+        gridConfig[0].items[0].sorttype = "int"
         
-        # Create compare population grid for State/District/School view
-        renderGrid gridConfig, populationData, summaryData
+      # Render breadcrumbs on the page
+      $('#breadcrumb').breadcrumbs(breadcrumbsData, breadcrumbsConfigs)
         
-        # Enable the sorting arrows in dropdown if the current sort column isn't the first column
-        curSortColumn = $('#gridTable').getGridParam('sortname')
-        if $('#gridTable').getGridParam('colModel') and curSortColumn != $('#gridTable').getGridParam('colModel')[0].name
-          enableSortableColumnWithSortArrow curSortColumn
-        # Apply alignment
-        formatBarAlignment()
+      # Set the Report title depending on the report that we're looking at
+      reportTitle = getReportTitle(breadcrumbsData, reportType)
+      $('#content h2').html reportTitle
         
-        # Generate footer
-        $('#footer').generateFooter('comparing_populations', reportInfo, {
-          'legendInfo': legendInfo.comparing_population,
-          'subject': (()->
-              # merge default color data into sample intervals data
-              for color, i in colorsData.subject1 || colorsData.subject2
-                legendInfo.sample_intervals.intervals[i].color = color
-              legendInfo.sample_intervals
-            )()
-        })
-        
-        # append user_info (e.g. first and last name)
-        if user_info
-          role = edwareUtil.getRole user_info
-          uid = edwareUtil.getUid user_info
-          edwareUtil.renderFeedback(role, uid, "comparing_populations_" + reportType, feedbackData)
-        
-        # Show tooltip for population bar on mouseover
-        $(document).on
-          mouseenter: ->
-            e = $(this)
-            e.popover
-              html: true
-              placement: "top"
-              trigger: "manual"
-              template: '<div class="popover"><div class="arrow"></div><div class="popover-inner"><div class="popover-content"><p></p></div></div></div>'
-              content: ->
-                e.find(".progressBar_tooltip").html() # template location: widgets/populatoinBar/template.html
-            .popover("show")
-          click: (e) ->
-            e.preventDefault()
-          mouseleave: ->
-            e = $(this)
-            e.popover("hide")
-        , ".progress"
-        
-        
-        # Set population bar alignment on/off
-        $(".align_button").unbind('click').click ->
-          $(this).toggleClass('align_off align_on')
-          $("#gridTable") .trigger("reloadGrid")
-        
-        # create drop down menus
-        if edwareDropdown is undefined
-          edwareDropdown = $('.dropdownSection').edwareDropdown(customALDDropdown, sortBySubject)
-        # update dropdown menus status
-        edwareDropdown.update(summaryData, asmtSubjectsData, colorsData)
+      # Format the summary data for summary row purposes
+      summaryRowName = getOverallSummaryName(breadcrumbsData, reportType)
+      summaryData = formatSummaryData(summaryData, summaryRowName)
+      
+      # For filtering, we need to reapply the current sort column in gridConfig before we re-render the grid
+      if currentSortInfo.name
+        for element in gridConfig
+          if element.items[0].index == currentSortInfo.name
+            element.items[0]["sortorder"] = currentSortInfo.order
+          else
+            delete element.items[0].sortorder
+      
+      # Create compare population grid for State/District/School view
+      renderGrid gridConfig, populationData, summaryData
+      
+      # Enable the sorting arrows in dropdown if the current sort column isn't the first column
+      curSortColumn = $('#gridTable').getGridParam('sortname')
+      if $('#gridTable').getGridParam('colModel') and curSortColumn != $('#gridTable').getGridParam('colModel')[0].name
+        enableSortableColumnWithSortArrow curSortColumn
+      # Apply alignment
+      formatBarAlignment()
+      
+      # Generate footer
+      $('#footer').generateFooter('comparing_populations', reportInfo, {
+        'legendInfo': legendInfo,
+        'subject': (()->
+            # merge default color data into sample intervals data
+            for color, i in colorsData.subject1 || colorsData.subject2
+              legendInfo.sample_intervals.intervals[i].color = color
+            legendInfo.sample_intervals
+          )()
+      }, this.labels)
+      
+      # append user_info (e.g. first and last name)
+      if user_info
+        role = edwareUtil.getRole user_info
+        uid = edwareUtil.getUid user_info
+        edwareUtil.renderFeedback(role, uid, "comparing_populations_" + reportType, feedbackData)
+      
+      # Show tooltip for population bar on mouseover
+      $(document).on
+        mouseenter: ->
+          e = $(this)
+          e.popover
+            html: true
+            placement: "top"
+            trigger: "manual"
+            template: '<div class="popover"><div class="arrow"></div><div class="popover-inner"><div class="popover-content"><p></p></div></div></div>'
+            content: ->
+              e.find(".progressBar_tooltip").html() # template location: widgets/populatoinBar/template.html
+          .popover("show")
+        click: (e) ->
+          e.preventDefault()
+        mouseleave: ->
+          e = $(this)
+          e.popover("hide")
+      , ".progress"
+      
+      
+      # Set population bar alignment on/off
+      $(".align_button").unbind('click').click ->
+        $(this).toggleClass('align_off align_on')
+        $("#gridTable") .trigger("reloadGrid")
+      
+      # create drop down menus
+      if edwareDropdown is undefined
+        edwareDropdown = $('.dropdownSection').edwareDropdown(customALDDropdown, sortBySubject)
+      # update dropdown menus status
+      edwareDropdown.update(summaryData, asmtSubjectsData, colorsData)
 
-        # Display grid controls after grid renders
-        $(".gridControls").css("display", "block")
-                
-        # Extend jqgrid loadComplete event for Comparing population
-        # Reset ALD sorting dropdown options and handle bar alignment styling
-        $('#gridTable').bind "jqGridLoadComplete.jqGrid", (e, data) ->
-           # Get the current sort column and reset cpop sorting dropdown if the current sort column is the first column
-           # Save the current sorting column and order
-           currentSortInfo['name'] = $('#gridTable').getGridParam('sortname')
-           currentSortInfo['order'] = $('#gridTable').getGridParam('sortorder')
-           if $('#gridTable').getGridParam('colModel') and currentSortInfo['name'] == $('#gridTable').getGridParam('colModel')[0].name
-             edwareDropdown.resetAll()
-             enableDisableSortingOnAssessments()
-           formatBarAlignment();
+      # Display grid controls after grid renders
+      $(".gridControls").css("display", "block")
+              
+      # Extend jqgrid loadComplete event for Comparing population
+      # Reset ALD sorting dropdown options and handle bar alignment styling
+      $('#gridTable').bind "jqGridLoadComplete.jqGrid", (e, data) ->
+         # Get the current sort column and reset cpop sorting dropdown if the current sort column is the first column
+         # Save the current sorting column and order
+         currentSortInfo['name'] = $('#gridTable').getGridParam('sortname')
+         currentSortInfo['order'] = $('#gridTable').getGridParam('sortorder')
+         if $('#gridTable').getGridParam('colModel') and currentSortInfo['name'] == $('#gridTable').getGridParam('colModel')[0].name
+           edwareDropdown.resetAll()
+           enableDisableSortingOnAssessments()
+         formatBarAlignment();
 
   # Render comparing population grid
   renderGrid = (gridConfig, populationData, summaryData) ->
@@ -338,7 +339,7 @@ define [
       name = 'results.' + k + '.total'
       data[name] = summaryData.results[k].total
       
-    data['subtitle'] = 'Reference Point'
+    data['subtitle'] = this.labels['reference_point']#'Reference Point'
     # Set header row to be true to indicate that it's the summary row
     data['header'] = true
     data['results'] = summaryData.results

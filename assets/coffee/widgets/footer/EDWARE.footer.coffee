@@ -7,14 +7,15 @@ define [
   "edwareLegend"
 ], ($, Mustache, bootstrap, edwareConfidenceLevelBar, footerTemplate, edwareLegend) ->
 
-  $.fn.generateFooter = (reportName, content, legend) ->
+  $.fn.generateFooter = (reportName, content, legend, labels) ->
     this.html Mustache.to_html footerTemplate, {
-      'report_info': content[reportName]
+      'report_info': content,
+      'labels': labels
     }
     # show "Print" only on ISR
     if reportName isnt 'individual_student_report'
       $('#print').hide()
-    createPopover()
+    createPopover(labels)
     # create legend
     $('.legendPopup').createLegend(reportName, legend)
   
@@ -33,7 +34,7 @@ define [
   hidePopover = (id) ->
     $(id).popover("hide")
    
-  createPopover = ->
+  createPopover =(labels) ->
     
     # Survey monkey popup
     $("#feedback").popover
@@ -41,7 +42,7 @@ define [
       placement: "top"
       container: "footer"
       title: ->
-          '<div class="pull-right hideButton"><a class="pull-right" href="#" id="close" data-id="feedback">Hide <img src="../images/hide_x.png"></img></i></a></div><div class="lead">Feedback</div>'
+          '<div class="pull-right hideButton"><a class="pull-right" href="#" id="close" data-id="feedback">'+labels.hide+' <img src="../images/hide_x.png"></img></i></a></div><div class="lead">'+labels.feedback+'</div>'
       template: '<div class="popover footerPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
       content: ->
         $(".surveyMonkeyPopup").html()
@@ -51,7 +52,7 @@ define [
       placement: "top"
       container: "div"
       title: ->
-        '<div class="pull-right hideButton"><a class="pull-right" href="#" id="close" data-id="legend">Hide <img src="../images/hide_x.png"></img></i></a></div><div class="lead">Legend</div>'
+        '<div class="pull-right hideButton"><a class="pull-right" href="#" id="close" data-id="legend">'+labels.hide+' <img src="../images/hide_x.png"></img></i></a></div><div class="lead">'+labels.legend+'</div>'
       template: '<div class="popover footerPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
       content: ->
         $("#footerLinks .legendPopup").html()
@@ -61,7 +62,7 @@ define [
       placement: "top"
       container: "div"
       title: ->
-        '<div class="pull-right hideButton"><a class="pull-right" href="#" id="close" data-id="aboutReport">Hide <img src="../images/hide_x.png"></img></i></a></div><div class="lead">Report Info</div>'
+        '<div class="pull-right hideButton"><a class="pull-right" href="#" id="close" data-id="aboutReport">'+labels.hide+' <img src="../images/hide_x.png"></img></i></a></div><div class="lead">'+labels.report_info+'</div>'
       template: '<div class="popover footerPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
       content: ->
         $("#footerLinks .aboutReportPopup").html()
@@ -71,7 +72,7 @@ define [
       placement: "top"
       container: "div"
       title: ->
-        '<div class="pull-right hideButton"><a class="pull-right" href="#" id="close" data-id="help">Hide <img src="../images/hide_x.png"></img></i></a></div><div class="lead">Help</div>'
+        '<div class="pull-right hideButton"><a class="pull-right" href="#" id="close" data-id="help">'+labels.hide+' <img src="../images/hide_x.png"></img></i></a></div><div class="lead">'+labels.help+'</div>'
       template: '<div class="popover footerPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
       content: ->
         $(".helpPopup").html()
@@ -81,7 +82,7 @@ define [
       placement: "top"
       container: "div"
       title: ->
-        '<div class="pull-right hideButton"><a class="pull-right" href="#" id="close" data-id="print">Hide <img src="../images/hide_x.png"></img></i></a></div><div class="lead">Print Options</div>'
+        '<div class="pull-right hideButton"><a class="pull-right" href="#" id="close" data-id="print">'+labels.hide+' <img src="../images/hide_x.png"></img></i></a></div><div class="lead">'+labels.print_options+'</div>'
       template: '<div class="popover footerPopover printFooterPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
       content: ->
         $(".printPopup").html()

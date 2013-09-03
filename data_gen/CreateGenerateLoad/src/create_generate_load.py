@@ -66,9 +66,6 @@ def main(schema, database, host, user, passwd, port=5432, create=True, landing_z
 
 
 def create_schema(schema_name, database, host, user, passwd):
-    print('cloning edware repo to run the ed_schema code')
-    #folder = get_ed_schema_code()
-    #ed_schema_file = os.path.join(folder, 'edschema', 'edschema', 'metadata_generator.py')
     output = system('python', EDSCHEMA_PATH, '-s', schema_name, '-d', database, '--host', host, '-u', user, '-p', passwd, '-m', 'edware')
     print(output.decode('UTF-8'))
 

@@ -18,7 +18,7 @@ define [
   getConstants = (value) ->
     constants[value]
     
-  displayNoResultsMessge = ->
+  displayNoResultsMessage = ->
     displayErrorMessage "There is no data available for your request."
       
   displayErrorMessage = (error) ->
@@ -173,4 +173,4 @@ define [
   showGrayScale : showGrayScale
   showPdfCSS : showPdfCSS
   formatNumber: formatNumber
-  displayNoResultsMessge: displayNoResultsMessge
+  displayNoResultsMessage: displayNoResultsMessage

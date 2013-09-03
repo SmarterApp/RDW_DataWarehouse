@@ -219,6 +219,7 @@ function run_functional_tests {
        nosetests -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
     else
        nosetests --exclude-dir=e2e_tests -v --with-xunit --xunit-file=$WORKSPACE/nosetests.xml
+       generate_docs functional_tests
     fi
 
     echo "Finish running functional tests"

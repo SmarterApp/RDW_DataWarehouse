@@ -10,6 +10,9 @@ define [
   "edwareFooter"
   "edwareDropdown"
 ], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareDropdown) ->
+
+
+  POPULATION_BAR_WIDTH = 145
   
   alignmentPercent = ""
   summaryData = []
@@ -206,15 +209,17 @@ define [
   formatBarAlignment = ->
     align_button_class = $(".align_button").attr("class")
     if align_button_class.indexOf("align_on") isnt -1
-      $(".populationBar").css("width", "155px")
+      $(".populationBar").width(215)
+      $(".progress").width(POPULATION_BAR_WIDTH)
       $(".alignmentLine").css("display", "block")
-      $(".barContainer").css("margin-left", "80px")
+      $(".barContainer").css("margin-left", "60px")
       $(".leftPercentageTotal").show()
       $(".rightPercentageTotal").show()
       $(".percentageOnBar").hide()
       
     else
       $(".populationBar").css("width", "265px")
+      $(".progress").width(265)
       $(".alignmentLine").css("display", "none")
       $(".barContainer ").css("margin-left", "15px")
       $(".leftPercentageTotal").hide()
@@ -278,8 +283,8 @@ define [
           if data[j]['results'][k]
             appendColor data[j]['results'][k], colorsData[k], defaultColors
             
-            data[j]['results'][k].alignmentLine =  (((summaryDataAlignment) * 155) / 100) + 10
-            data[j]['results'][k].alignment =  (((summaryDataAlignment - 100 + data[j]['results'][k].sort[1]) * 155) / 100) + 10
+            data[j]['results'][k].alignmentLine =  (((summaryDataAlignment) * POPULATION_BAR_WIDTH) / 100) + 10 + 35
+            data[j]['results'][k].alignment =  (((summaryDataAlignment - 100 + data[j]['results'][k].sort[1]) * POPULATION_BAR_WIDTH) / 100) + 10
           j++
     data
   

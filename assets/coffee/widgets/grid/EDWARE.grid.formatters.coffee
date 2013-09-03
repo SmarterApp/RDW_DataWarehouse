@@ -70,7 +70,7 @@ define [
         
       output = perfBar + toolTip   
     else
-      ""   
+      ""
 
   populationBar = (value, options, rowObject) ->
     asmt_type = options.colModel.formatoptions.asmt_type

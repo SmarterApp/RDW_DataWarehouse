@@ -5,6 +5,7 @@ Created on Mar 20, 2013
 
 @author: dip
 '''
+from smarter.reports.helpers.constants import Constants
 
 
 def get_overall_asmt_interval(result):
@@ -38,8 +39,9 @@ def get_cut_points(custom, asmt_meta):
             del(result['asmt_cut_point_name_{0}'.format(i)])
             del(result['asmt_cut_point_{0}'.format(i)])
             # connect the custom metadata content to the cut_point_interval object
-            if custom is not None:
-                result['cut_point_intervals'].append(dict(list(cut_point_interval_object.items()) + list(custom[i - 1].items())))
+            colors = custom.get(Constants.COLORS)
+            if colors is not None and len(colors) >= i:
+                result['cut_point_intervals'].append(dict(list(cut_point_interval_object.items()) + list(colors[i - 1].items())))
             else:
                 result['cut_point_intervals'].append(cut_point_interval_object)
 

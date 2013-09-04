@@ -175,7 +175,7 @@ class ComparingPopReport(object):
             record_manager.update_record(result)
 
         # bind the results
-        return {Constants.COLORS: custom_metadata,
+        return {Constants.METADATA: custom_metadata,
                 Constants.SUMMARY: record_manager.get_summary(), Constants.RECORDS: record_manager.get_records(),
                 Constants.SUBJECTS: record_manager.get_subjects(),  # reverse map keys and values for subject
                 Constants.CONTEXT: get_breadcrumbs_context(state_code=param.get(Constants.STATECODE), district_guid=param.get(Constants.DISTRICTGUID), school_guid=param.get(Constants.SCHOOLGUID), tenant=self.tenant)}
@@ -185,7 +185,7 @@ class ComparingPopReport(object):
         asmt_map = {}
         for alias in subjects.values():
             asmt_map[alias] = 4
-            color = metadata.get(alias)
+            color = metadata.get(alias, {}).get(Constants.COLORS)
             if color:
                 asmt_map[alias] = len(color)
         return asmt_map

@@ -34,11 +34,12 @@ def get_custom_metadata(stateCode, tenant=None):
             if custom_metadata:
                 custom_metadata = json.loads(custom_metadata)
             cstm_meta_map[result[Constants.ASMT_SUBJECT]] = custom_metadata
-    # format by subject
+    # format by subject, we will always return a map of colors and minimum cell size
     result = {}
     subject_map = get_subjects_map()
     for key, value in subject_map.items():
-        result[value] = cstm_meta_map.get(key)
+        metadata = cstm_meta_map.get(key, {})
+        result[value] = {Constants.COLORS: metadata.get(Constants.COLORS), Constants.MIN_CELL_SIZE: metadata.get(Constants.MIN_CELL_SIZE)}
     return result
 
 

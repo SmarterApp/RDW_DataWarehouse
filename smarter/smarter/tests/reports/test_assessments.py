@@ -6,6 +6,7 @@ Created on Mar 20, 2013
 import unittest
 from smarter.reports.helpers.assessments import get_overall_asmt_interval,\
     get_cut_points, get_claims
+from smarter.reports.helpers.constants import Constants
 
 
 class TestAssessments(unittest.TestCase):
@@ -26,7 +27,7 @@ class TestAssessments(unittest.TestCase):
                   'asmt_cut_point_name_4': 'four',
                   'asmt_cut_point_name_5': 'five',
                   'asmt_score_max': 500}
-        custom = [{"one": "1"}, {"two": "1"}, {"three": "1"}, {"four": "1"}]
+        custom = {Constants.COLORS: [{"one": "1"}, {"two": "1"}, {"three": "1"}, {"four": "1"}]}
         formatted_results = get_cut_points(custom, result)
         self.assertNotIn('asmt_custom_metadata', formatted_results)
         self.assertNotIn('asmt_cut_point_name_5', formatted_results)
@@ -50,7 +51,7 @@ class TestAssessments(unittest.TestCase):
                   'asmt_cut_point_name_4': 'four',
                   'asmt_cut_point_name_5': 'five',
                   'asmt_score_max': 500}
-        custom = None
+        custom = {Constants.COLORS: None}
         formatted_results = get_cut_points(custom, result)
         self.assertEqual(len(formatted_results['cut_point_intervals'][0].keys()), 2)
 

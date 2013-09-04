@@ -50,6 +50,7 @@ class Constants():
     SUBJECTS = 'subjects'
     SUBJECT1 = 'subject1'
     SUBJECT2 = 'subject2'
+    METADATA = 'metadata'
     COLORS = 'colors'
     SUMMARY = 'summary'
     RECORDS = 'records'

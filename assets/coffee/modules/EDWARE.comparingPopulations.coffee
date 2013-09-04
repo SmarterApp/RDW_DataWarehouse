@@ -58,7 +58,7 @@ define [
   createPopulationGrid = (params) ->
     
     # Get school data from the server
-    getPopulationData "/data/comparing_populations", params, (populationData, summaryData, asmtSubjectsData, colorsData, breadcrumbsData, user_info) ->
+    getPopulationData "/data/comparing_populations", params, (populationData, summaryData, asmtSubjectsData, metaData, breadcrumbsData, user_info) ->
       
       # Read Default colors from json
       defaultColors = {}
@@ -88,15 +88,15 @@ define [
       reportType = getReportType(params)
       
       # Check for colors, set to default color if it's null
-      for color, value of colorsData
-        if value is null
-          colorsData[color] = defaultColors
+      for subject, value of metaData
+        if value.colors is null
+          metaData[subject].colors = defaultColors
       
       # Append colors to records and summary section
       # Do not format data, or get breadcrumbs if the result is empty
       if populationData.length > 0
-        populationData = appendColorToData populationData, asmtSubjectsData, colorsData, defaultColors
-        summaryData = appendColorToData summaryData, asmtSubjectsData, colorsData, defaultColors
+        populationData = appendColorToData populationData, asmtSubjectsData, metaData, defaultColors
+        summaryData = appendColorToData summaryData, asmtSubjectsData, metaData, defaultColors
 
       # Change the column name and link url based on the type of report the user is querying for
       gridConfig[0].items[0].name = customViews[reportType].name
@@ -140,7 +140,7 @@ define [
         'legendInfo': legendInfo,
         'subject': (()->
             # merge default color data into sample intervals data
-            for color, i in colorsData.subject1 || colorsData.subject2
+            for color, i in metaData.subject1.colors || metaData.subject2.colors
               legendInfo.sample_intervals.intervals[i].color = color
             legendInfo.sample_intervals
           )()
@@ -181,7 +181,7 @@ define [
       if edwareDropdown is undefined
         edwareDropdown = $('.dropdownSection').edwareDropdown(customALDDropdown, sortBySubject)
       # update dropdown menus status
-      edwareDropdown.update(summaryData, asmtSubjectsData, colorsData)
+      edwareDropdown.update(summaryData, asmtSubjectsData, metaData)
 
       # Display grid controls after grid renders
       $(".gridControls").css("display", "block")
@@ -242,14 +242,14 @@ define [
       populationData = data.records
       summaryData = data.summary
       asmtSubjectsData = data.subjects
-      colorsData = data.colors
+      metaData = data.metadata
       breadcrumbsData = data.context
       user_info = data.user_info
       
       if callback
-        callback populationData, summaryData, asmtSubjectsData, colorsData, breadcrumbsData, user_info
+        callback populationData, summaryData, asmtSubjectsData, metaData, breadcrumbsData, user_info
       else
-        dataArray populationData, summaryData, asmtSubjectsData, colorsData, breadcrumbsData, user_info
+        dataArray populationData, summaryData, asmtSubjectsData, metaData, breadcrumbsData, user_info
       
   # Returns column configurations for population grid   
   getColumnConfig = (configURL, callback) ->
@@ -273,7 +273,7 @@ define [
   
   # Traverse through to intervals to prepare to append color to data
   # Handle population bar alignment calculations
-  appendColorToData = (data, asmtSubjectsData, colorsData, defaultColors) ->
+  appendColorToData = (data, asmtSubjectsData, metaData, defaultColors) ->
     for k of asmtSubjectsData
       j = 0
       if summaryData[0].results[k]
@@ -281,7 +281,7 @@ define [
         while j < data.length
           # summary data may exist, but not for individual results
           if data[j]['results'][k]
-            appendColor data[j]['results'][k], colorsData[k], defaultColors
+            appendColor data[j]['results'][k], metaData[k].colors, defaultColors
             
             data[j]['results'][k].alignmentLine =  (((summaryDataAlignment) * POPULATION_BAR_WIDTH) / 100) + 10 + 35
             data[j]['results'][k].alignment =  (((summaryDataAlignment - 100 + data[j]['results'][k].sort[1]) * POPULATION_BAR_WIDTH) / 100) + 10

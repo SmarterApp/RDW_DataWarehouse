@@ -195,7 +195,7 @@ def get_student_report(params):
             raise NotFoundException("There are no results for student id {0}".format(student_guid))
 
         # color metadata
-        custom_metadata_map = get_custom_metadata(params.get(Constants.STATECODE))
+        custom_metadata_map = get_custom_metadata(result[0].get(Constants.STATE_CODE), None)
         # subjects map
         subjects_map = get_subjects_map()
         # prepare the result for the client

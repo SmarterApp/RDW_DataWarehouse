@@ -63,7 +63,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
 
         # check top-level attributes
         self.assertTrue(Constants.RECORDS in results, "returning JSON must have records")
-        self.assertTrue(Constants.COLORS in results, "returning JSON must have colors")
+        self.assertTrue(Constants.METADATA in results, "returning JSON must have colors")
         self.assertTrue(Constants.SUBJECTS in results, "returning JSON must have subjects")
         self.assertTrue('context' in results, "returning JSON must have context")
         self.assertTrue(Constants.SUMMARY in results, "returning JSON must have summary")
@@ -108,8 +108,8 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         self.assertEqual('Sunset - Eastern Elementary', context_items[2][Constants.NAME])
 
         # check colors
-        self.assertTrue('text_color' in results[Constants.COLORS][Constants.SUBJECT1][0])
-        self.assertTrue('bg_color' in results[Constants.COLORS][Constants.SUBJECT1][0])
+        self.assertTrue('text_color' in results[Constants.METADATA][Constants.SUBJECT1][Constants.COLORS][0])
+        self.assertTrue('bg_color' in results[Constants.METADATA][Constants.SUBJECT1][Constants.COLORS][0])
 
     def test_district_view(self):
         testParam = {}
@@ -119,7 +119,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
 
         # check top-level attributes
         self.assertTrue(Constants.RECORDS in results, "returning JSON must have records")
-        self.assertTrue(Constants.COLORS in results, "returning JSON must have colors")
+        self.assertTrue(Constants.METADATA in results, "returning JSON must have colors")
         self.assertTrue(Constants.SUBJECTS in results, "returning JSON must have subjects")
         self.assertTrue('context' in results, "returning JSON must have context")
         self.assertTrue(Constants.SUMMARY in results, "returning JSON must have summary")
@@ -168,8 +168,8 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         self.assertEqual('Sunset School District', context_items[1][Constants.NAME])
 
         # check colors
-        self.assertTrue('text_color' in results[Constants.COLORS][Constants.SUBJECT1][0])
-        self.assertTrue('bg_color' in results[Constants.COLORS][Constants.SUBJECT1][0])
+        self.assertTrue('text_color' in results[Constants.METADATA][Constants.SUBJECT1][Constants.COLORS][0])
+        self.assertTrue('bg_color' in results[Constants.METADATA][Constants.SUBJECT1][Constants.COLORS][0])
 
     def test_state_view(self):
         testParam = {}
@@ -178,7 +178,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
 
         # check top-level attributes
         self.assertTrue(Constants.RECORDS in results, "returning JSON must have records")
-        self.assertTrue(Constants.COLORS in results, "returning JSON must have colors")
+        self.assertTrue(Constants.METADATA in results, "returning JSON must have colors")
         self.assertTrue(Constants.SUBJECTS in results, "returning JSON must have subjects")
         self.assertTrue('context' in results, "returning JSON must have context")
         self.assertTrue(Constants.SUMMARY in results, "returning JSON must have summary")
@@ -226,9 +226,9 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         self.assertEqual('New York', context_items[0][Constants.NAME])
 
         # check colors
-        self.assertEqual(len(results[Constants.COLORS][Constants.SUBJECT1]), 4)
-        self.assertTrue('text_color' in results[Constants.COLORS][Constants.SUBJECT1][0])
-        self.assertTrue('bg_color' in results[Constants.COLORS][Constants.SUBJECT1][0])
+        self.assertEqual(len(results[Constants.METADATA][Constants.SUBJECT1][Constants.COLORS]), 4)
+        self.assertTrue('text_color' in results[Constants.METADATA][Constants.SUBJECT1][Constants.COLORS][0])
+        self.assertTrue('bg_color' in results[Constants.METADATA][Constants.SUBJECT1][Constants.COLORS][0])
 
     def test_invalid_params(self):
         params = {Constants.STATECODE: 'AA'}

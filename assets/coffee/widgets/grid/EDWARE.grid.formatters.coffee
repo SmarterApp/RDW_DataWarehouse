@@ -72,7 +72,7 @@ define [
         
       output = perfBar + toolTip
     else
-      ""
+      "" 
 
   populationBar = (value, options, rowObject) ->
     objectId = options.rowId + options.pos
@@ -95,10 +95,7 @@ define [
       subject = formatSubject subject
       results = edwarePopulationBar.create subject
       if parseInt(value) > 0
-        if align_button_class.indexOf("align_on") isnt -1
           output = "<div class='barContainer'><div class='alignmentHighlightSection'><div class = 'populationBar' style='margin-left:" + subject.alignment + "px;'>" + results + "</div></div><div class='studentsTotal'>" + subject.total + "</div><div class='alignmentLine' style='margin-left:" + subject.alignmentLine + "px;'></div></div>"
-        else
-          output = "<div class='barContainer'><div class = 'populationBar'>" + results + "</div><div class='studentsTotal'>" + subject.total + "</div><div class='alignmentLine' style='margin-left:" + subject.alignmentLine + "px;'></div></div>"
     else
       output = ""      
     output

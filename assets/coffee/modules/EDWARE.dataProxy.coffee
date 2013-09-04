@@ -39,7 +39,7 @@ define [
             response = JSON.parse(xhr.responseText)
             redirect_url = response.redirect
           # Redirect the user to the appropriate url
-          location.href = redirect_url
+          # location.href = redirect_url
       )          
          
   getDataForReport = (reportName, language) ->

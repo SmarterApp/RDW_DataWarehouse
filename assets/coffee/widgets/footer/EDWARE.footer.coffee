@@ -27,9 +27,6 @@ define [
     # show 640px performance bar on pdf
     output = edwareConfidenceLevelBar.create subject, 640
     $('#legendTemplate .confidenceLevel').html(output)
-  
-  create = (containerId) ->
-    $(containerId).generateFooter
                 
   hidePopover = (id) ->
     $(id).popover("hide")
@@ -113,5 +110,22 @@ define [
       $("#footer .nav li a").removeClass("active")
       window.open(url, "_blank",'toolbar=0,location=0,menubar=0,status=0,resizable=yes')
     , "#printButton"
+
+  create = (reportName, data, config) ->
+      labels = config.labels
+      reportInfo = config.reportInfo
+      colorsData = data.colors
+      legendInfo = config.legendInfo
+      # Generate footer
+      $('#footer').generateFooter(reportName, reportInfo, {
+        'legendInfo': legendInfo,
+        'subject': (()->
+            # merge default color data into sample intervals data
+            for color, i in colorsData.subject1 || colorsData.subject2
+              legendInfo.sample_intervals.intervals[i].color = color
+            legendInfo.sample_intervals
+          )()
+      }, labels)
+
 
   create: create

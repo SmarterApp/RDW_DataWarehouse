@@ -88,7 +88,7 @@ define [
       this.config = {}
       this.config['totalStudents'] = this.customALDDropdown.totalStudents
       this.config['selectSort'] = this.customALDDropdown.selectSort
-      this.config['colors'] = this.colorsData[subject]
+      this.config['colors'] = this.colorsData[subject].colors
       this.config['asmtSubject'] = asmtSubject
       this.config
           

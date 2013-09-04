@@ -12,7 +12,7 @@ logger = get_task_logger(__name__)
 
 
 @celery.task(name="udl2.W_load_to_staging_table.task")
-@measure_cpu_plus_elasped_time
+@benchmarking_udl2
 def task(msg):
     logger.info(task.name)
     logger.info('LOAD_CSV_TO_STAGING: Loading file <%s> to <%s> ' % (msg[mk.FILE_TO_LOAD], udl2_conf['udl2_db']['db_host']))
@@ -20,10 +20,16 @@ def task(msg):
     conf = generate_conf_for_loading(msg[mk.FILE_TO_LOAD], msg[mk.ROW_START], msg[mk.HEADERS], guid_batch)
     load_file(conf)
 
-    return msg
+    #return msg
+    benchmark = {mk.TASK_ID: str(task.request.id),
+                 mk.WORKING_SCHEMA: conf[mk.TARGET_DB_SCHEMA],
+                 mk.SIZE_RECORDS: msg[mk.SIZE_RECORDS]
+                 }
+    #benchmark.update(msg)
+    return benchmark
 
 
-@measure_cpu_plus_elasped_time
+#@measure_cpu_plus_elasped_time
 def generate_conf_for_loading(file_to_load, start_seq, header_file_path, guid_batch):
     csv_table = extract_file_name(file_to_load)
     conf = {mk.FILE_TO_LOAD: file_to_load,
@@ -48,7 +54,7 @@ def generate_conf_for_loading(file_to_load, start_seq, header_file_path, guid_ba
 
 
 @celery.task(name="udl2.W_file_loader.error_handler")
-@measure_cpu_plus_elasped_time
+#@measure_cpu_plus_elasped_time
 def error_handler(uuid):
     result = AsyncResult(uuid)
     exc = result.get(propagate=False)

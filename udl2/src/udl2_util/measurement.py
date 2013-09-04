@@ -164,7 +164,7 @@ def benchmarking_udl2(func):
         # add load_type
         result[mk.LOAD_TYPE] = args[0][mk.LOAD_TYPE]
         # add phase name
-        result[mk.UDL_PHASE] = str(func.__module__) + '.' + str(func.__name__)
+        result[mk.UDL_PHASE] = str(func.__module__) + '.' + str(func.__name__) + ' ' + result.get(mk.UDL_PHASE, '')
         # insert result into batch table
         record_benchmark_in_batch_table(start_time, end_time, result)
         return result

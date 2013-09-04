@@ -29,6 +29,7 @@ def task(incoming_msg):
     lzw = incoming_msg[mk.LANDING_ZONE_WORK_DIR]
     guid_batch = incoming_msg[mk.GUID_BATCH]
     parts = incoming_msg[mk.PARTS]
+    load_type = incoming_msg[mk.LOAD_TYPE]
 
     expanded_dir = file_util.get_expanded_dir(lzw, guid_batch)
     csv_file = file_util.get_file_type_from_dir('.csv', expanded_dir)
@@ -48,7 +49,7 @@ def task(incoming_msg):
     # for each of sub file, call loading task
     loader_tasks = []
     for split_file_tuple in split_file_tuple_list:
-        message_for_file_loader = generate_msg_for_file_loader(split_file_tuple, header_file_path, lzw, guid_batch)
+        message_for_file_loader = generate_msg_for_file_loader(split_file_tuple, header_file_path, lzw, guid_batch, load_type)
         loader_task = W_load_csv_to_staging.task.si(message_for_file_loader)
         loader_tasks.append(loader_task)
     loader_group = group(loader_tasks)
@@ -75,10 +76,11 @@ def get_subfiles_dir(lzw, guid_batch):
 
 
 @measure_cpu_plus_elasped_time
-def generate_msg_for_file_loader(split_file_tuple, header_file_path, lzw, guid_batch):
+def generate_msg_for_file_loader(split_file_tuple, header_file_path, lzw, guid_batch, load_type):
     # TODO: It would be better to have a dict over a list, we can access with key instead of index - more clear.
     split_file_path = split_file_tuple[0]
     split_file_row_start = split_file_tuple[2]
+    record_count = split_file_tuple[1]
 
     file_loader_msg = {}
     file_loader_msg[mk.FILE_TO_LOAD] = split_file_path
@@ -86,6 +88,8 @@ def generate_msg_for_file_loader(split_file_tuple, header_file_path, lzw, guid_b
     file_loader_msg[mk.HEADERS] = header_file_path
     file_loader_msg[mk.LANDING_ZONE_WORK_DIR] = lzw
     file_loader_msg[mk.GUID_BATCH] = guid_batch
+    file_loader_msg[mk.LOAD_TYPE] = load_type
+    file_loader_msg[mk.SIZE_RECORDS] = record_count
 
     return file_loader_msg
 

@@ -56,7 +56,7 @@ def start_pipeline(csv_file_path, json_file_path, udl2_conf, load_type='Assessme
 
     lzw = udl2_conf['zones']['work']
     jc_batch_table = udl2_conf['udl2_db']['batch_table']
-        
+
     # generate common message for each stage
     common_msg = generate_common_message(jc_batch_table, guid_batch, load_type)
 
@@ -79,7 +79,7 @@ def start_pipeline(csv_file_path, json_file_path, udl2_conf, load_type='Assessme
                              W_load_from_integration_to_star.explode_to_dims.si(integration_to_star_msg),
                              W_load_from_integration_to_star.explode_to_fact.si(integration_to_star_msg))
 
-    result = pipeline_chain_1.delay()    
+    result = pipeline_chain_1.delay()
 
 
 def generate_common_message(jc_batch_table, guid_batch, load_type):
@@ -163,6 +163,7 @@ def combine_messages(msg1, msg2):
     If msg1 and msg2 has the same key, returns the value in the msg2
     '''
     return dict(list(msg1.items()) + list(msg2.items()))
+
 
 def create_unique_file_name(file_path):
     '''

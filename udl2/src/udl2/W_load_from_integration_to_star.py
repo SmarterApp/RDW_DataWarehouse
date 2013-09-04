@@ -23,7 +23,7 @@ def explode_to_dims(msg):
     This is the celery task to move data from integration tables to dim tables.
     In the input batch object, guid_batch is provided.
     '''
-    conf = generate_conf(msg[mk.GUID_BATCH], msg[mk.PHASE])
+    conf = generate_conf(msg[mk.GUID_BATCH], msg[mk.PHASE], msg[mk.LOAD_TYPE])
     table_map, column_map = get_table_and_column_mapping(conf, 'dim_')
     grouped_tasks = create_group_tuple(explode_data_to_dim_table_task,
                                        [(conf, source_table, dim_table, column_map[dim_table], get_table_column_types(conf, dim_table, list(column_map[dim_table].keys())))
@@ -33,7 +33,7 @@ def explode_to_dims(msg):
 
     total_affected_rows = 0
     for dim_table_result in msg['dim_tables']:
-        total_affected_rows += dim_table_result[mk.SIZE_RECORDS][0]
+        total_affected_rows += dim_table_result[mk.SIZE_RECORDS]
 
     benchmark = {mk.TASK_ID: str(explode_to_dims.request.id),
                  mk.WORKING_SCHEMA: conf[mk.TARGET_DB_SCHEMA],
@@ -102,6 +102,7 @@ def get_column_mapping_from_int_to_star(conn, schema_name, table_name, phase_num
 
 @celery.task(name="udl2.W_load_from_integration_to_star.explode_data_to_dim_table_task")
 @measure_cpu_plus_elasped_time
+@benchmarking_udl2
 def explode_data_to_dim_table_task(conf, source_table, dim_table, column_mapping, column_types):
     '''
     This is the celery task to move data from one integration table to one dim table.
@@ -113,7 +114,7 @@ def explode_data_to_dim_table_task(conf, source_table, dim_table, column_mapping
     _time_as_seconds = calculate_spend_time_as_second(start_time, finish_time)
     # print('I am the exploder, moved data from %s into dim table %s in %.3f seconds' % (source_table, dim_table, _time_as_seconds))
     benchmark = {mk.UDL_PHASE: 'INT --> DIM:' + dim_table,
-                 mk.SIZE_RECORDS: affected_rows,
+                 mk.SIZE_RECORDS: affected_rows[0],
                  mk.TASK_ID: str(explode_data_to_dim_table_task.request.id),
                  mk.GUID_BATCH: conf[mk.GUID_BATCH],
                  mk.WORKING_SCHEMA: conf[mk.TARGET_DB_SCHEMA],
@@ -133,7 +134,8 @@ def explode_to_fact(msg):
     start_time = datetime.datetime.now()
     guid_batch = msg[mk.GUID_BATCH]
     phase_number = msg[mk.PHASE]
-    conf = generate_conf(guid_batch, phase_number)
+    load_type = msg[mk.LOAD_TYPE]
+    conf = generate_conf(guid_batch, phase_number, load_type)
     # get fact table column mapping
     fact_table_map, fact_column_map = get_table_and_column_mapping(conf, 'fact_')
     fact_table = list(fact_table_map.keys())[0]
@@ -179,7 +181,7 @@ def create_group_tuple(task_name, arg_list):
 
 
 @measure_cpu_plus_elasped_time
-def generate_conf(guid_batch, phase_number):
+def generate_conf(guid_batch, phase_number, load_type):
     '''
     Return all needed configuration information
     '''
@@ -208,6 +210,7 @@ def generate_conf(guid_batch, phase_number):
               mk.TARGET_DB_PASSWORD: udl2_conf['target_db']['db_pass'],
               mk.REF_TABLE: udl2_conf['udl2_db']['ref_table_name'],
               mk.PHASE: int(phase_number),
-              mk.MOVE_TO_TARGET: udl2_conf['move_to_target']
+              mk.MOVE_TO_TARGET: udl2_conf['move_to_target'],
+              mk.LOAD_TYPE: load_type
     }
     return conf

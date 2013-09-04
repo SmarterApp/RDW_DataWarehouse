@@ -212,7 +212,7 @@ define [
       $(".populationBar").width(215)
       $(".progress").width(POPULATION_BAR_WIDTH)
       $(".alignmentLine").css("display", "block")
-      $(".barContainer").css("margin-left", "60px")
+      $(".barContainer").css("margin-left", "50px")
       $(".leftPercentageTotal").show()
       $(".rightPercentageTotal").show()
       $(".percentageOnBar").hide()

@@ -209,13 +209,13 @@ define [
   formatBarAlignment = ->
     align_button_class = $(".align_button").attr("class")
     if align_button_class.indexOf("align_on") isnt -1
-      $(".populationBar").width(215)
-      $(".progress").width(POPULATION_BAR_WIDTH)
+      $(".gridHeight100 .populationBar").width(215)
+      $(".gridHeight100 .progress").width(POPULATION_BAR_WIDTH)
       $(".alignmentLine").css("display", "block")
       $(".barContainer").css("margin-left", "48px")
       $(".leftPercentageTotal").show()
       $(".rightPercentageTotal").show()
-      $(".percentageOnBar").hide()
+      $(".gridHeight100 .percentageOnBar").hide()
       
     else
       $(".populationBar").css("width", "265px")
@@ -224,7 +224,7 @@ define [
       $(".barContainer ").css("margin-left", "15px")
       $(".leftPercentageTotal").hide()
       $(".rightPercentageTotal").hide()
-      $(".percentageOnBar").show()
+      $(".gridHeight100 .percentageOnBar").show()
   
   # Get population data from server       
   getPopulationData = (sourceURL, params, callback) ->

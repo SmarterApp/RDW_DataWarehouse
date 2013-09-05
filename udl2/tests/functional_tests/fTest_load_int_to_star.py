@@ -46,7 +46,7 @@ class IntToStarFTest(UDLTestHelper):
 
         # explode to dim tables
         guid_batch = '2411183a-dfb7-42f7-9b3e-bb7a597aa3e7'
-        conf = W_load_from_integration_to_star.generate_conf(guid_batch, 4)
+        conf = W_load_from_integration_to_star.generate_conf(guid_batch, 4, 'Assessment')
         table_map, column_map = W_load_from_integration_to_star.get_table_and_column_mapping(conf, 'dim_')
         for target in table_map.keys():
             target_columns = column_map[target]

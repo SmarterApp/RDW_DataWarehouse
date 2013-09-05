@@ -200,7 +200,6 @@ class RecordManager():
         self._tracking_record = collections.OrderedDict()
         self._summary = {}
         self._custom_metadata = custom_metadata
-        self._min_cell_size = custom_metadata.get(Constants.MIN_CELL_SIZE, DEFAULT_MIN_CELL_SIZE)
         self._asmt_level = asmt_level
         self.init_summary(self._summary)
 
@@ -259,7 +258,7 @@ class RecordManager():
                 for interval in intervals:
                     interval[Constants.PERCENTAGE] = self.calculate_percentage(interval[Constants.COUNT], total)
                 # adjust for min cell size policy and do not return data if violated
-                if total > self._min_cell_size:
+                if total > self._custom_metadata.get(alias, {}).get(Constants.MIN_CELL_SIZE, DEFAULT_MIN_CELL_SIZE):
                     results[alias] = {Constants.ASMT_SUBJECT: name, Constants.INTERVALS: self.adjust_percentages(intervals), Constants.TOTAL: total}
                 else:
                     results[alias] = {Constants.ASMT_SUBJECT: name, Constants.INTERVALS: [{Constants.PERCENTAGE: -1} for _ in range(0, len(intervals))], Constants.TOTAL: -1}

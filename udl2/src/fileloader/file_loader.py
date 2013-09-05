@@ -130,7 +130,6 @@ def import_via_fdw(conn, stg_asmt_outcome_columns, csv_table_columns, transforma
     # query 3 -- create query to drop sequence
     drop_sequence = queries.drop_sequence_query(staging_schema, seq_name)
     # logger.debug('@@@@@@@', insert_into_staging_table)
-    print('*******', insert_into_staging_table)
 
     # execute 3 queries in order
     execute_queries(conn, [create_sequence, insert_into_staging_table, drop_sequence], 'Exception in loading data -- ', 'file_loader', 'import_via_fdw')

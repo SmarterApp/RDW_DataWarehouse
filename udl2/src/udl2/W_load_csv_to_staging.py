@@ -23,13 +23,12 @@ def task(msg):
     #return msg
     benchmark = {mk.TASK_ID: str(task.request.id),
                  mk.WORKING_SCHEMA: conf[mk.TARGET_DB_SCHEMA],
-                 mk.SIZE_RECORDS: msg[mk.SIZE_RECORDS]
+                 mk.SIZE_RECORDS: msg[mk.SIZE_RECORDS],
+                 mk.UDL_LEAF: True
                  }
-    #benchmark.update(msg)
     return benchmark
 
 
-#@measure_cpu_plus_elasped_time
 def generate_conf_for_loading(file_to_load, start_seq, header_file_path, guid_batch):
     csv_table = extract_file_name(file_to_load)
     conf = {mk.FILE_TO_LOAD: file_to_load,
@@ -54,7 +53,6 @@ def generate_conf_for_loading(file_to_load, start_seq, header_file_path, guid_ba
 
 
 @celery.task(name="udl2.W_file_loader.error_handler")
-#@measure_cpu_plus_elasped_time
 def error_handler(uuid):
     result = AsyncResult(uuid)
     exc = result.get(propagate=False)

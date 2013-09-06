@@ -46,7 +46,6 @@ class ColumnValidationFuncTest(unittest.TestCase):
 
         for table in csv_columns:
             self.assertListEqual(csv_columns[table], database_columns[table], 'check for same columns in table %s' % table)
-            self.assertEqual(len(csv_columns[table]), len(database_columns[table]), 'check length of the two column lists')
 
     def get_headers_from_csv(self):
         '''

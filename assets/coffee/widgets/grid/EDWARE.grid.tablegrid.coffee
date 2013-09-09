@@ -109,11 +109,13 @@ define [
     ) jQuery
 
     (($) ->
-      $.fn.sortBySubject = (subject, index) ->
+      $.fn.sortBySubject = (subject, index, order) ->
+        order = order || 'asc'
         colModels = this.jqGrid("getGridParam", "colModel");
-        for colModel in colModels
-          colModel.sorttype = edwareGridSorters.create(index) if colModel.index == subject
-        this.sortGrid(subject, true, 'asc')
+        if subject != 'name' and colModels != undefined
+          for colModel in colModels
+            colModel.sorttype = edwareGridSorters.create(index) if colModel.index == subject
+        this.sortGrid(subject, false, order)
     ) jQuery
 
     #

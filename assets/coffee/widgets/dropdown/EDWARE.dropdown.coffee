@@ -8,35 +8,35 @@ define [
   class EdwareDropdownMenu
     
     constructor: (@dropdown, @config, @callback) ->
-      this.initialize()
       this.menu = this.create()
+      this.arrows = $('.arrow', this.menu)
       this.bindEvents()
       return this.menu
-
-    initialize: () ->
-      # get <div> object where dropdown menu will be appear
-      this.asmtSubjectSort = $('#' + this.config['asmtSubject'] + "_sort")
     
     bindEvents: () ->
       self = this;
       $('input.inputColorBlock', this.menu).click (e) ->
-        self.dropdown.resetDropdown()
+        e.stopPropagation()        
+        self.dropdown.resetAll()
         self.sort e.target
-        self.dropdown.setCenter()
 
     sort: (sortItem) ->
       $this = $(sortItem)
       # check current selection
       $this.attr('checked', true)
-      dropdown = $this.closest('div.dropdown')
-      subject = dropdown.data('subject')
-      index = $this.data('index')
+      # check current selection
+      dropdown = $this.closest('div.dropdown').addClass('active')
       # obtain selected color bar and set it to table header
       colorBar = $this.next().clone()
-      #set the center of table header
-      dropdownTitle = $('.dropdown_title', dropdown)
-      dropdownTitle.html(colorBar)
-      this.dropdown.callback(subject, index)
+      # set the center of table header
+      $('.dropdown_title', dropdown).html(colorBar)
+      # set center
+      $('.center', dropdown).width $this.data('width')
+      # show arrow
+      this.arrows.toggleClass('hide');
+      subject = dropdown.data('subject')
+      index = $this.data('index')
+      this.dropdown.callback {name: subject, index: index, order: 'asc'}
 
     create: () ->
       # create dropdown and set to the center of each colomn
@@ -55,12 +55,20 @@ define [
     
     constructor: (@dropdownSection, @customALDDropdown, @callback) ->
       this.menus = {}
+      this.bindEvents()
       
-    initialize: () ->
+    update: (@summaryData, @asmtSubjectsData, @colorsData) ->
       # Hide the drop down if data is empty
       this.hideEmptyData()
       this.create()
-      
+
+    bindEvents: () ->
+      $(document).on 'click', '.dropdown.active', (e) ->
+        $this = $(this)
+        sortBtn = $("#" + $this.data('subject') + "_sort")
+        $('.arrow', $this).toggleClass('desc');
+        sortBtn.trigger 'click'
+        
     hideEmptyData: () ->
       for subject, asmtSubject of this.asmtSubjectsData
         if not this.hasData(subject) and this.hasMenu(subject)
@@ -68,7 +76,8 @@ define [
           this.menus[subject] = undefined
     
     create: () ->
-      for subject, asmtSubject of this.asmtSubjectsData
+      for subject in Object.keys(this.asmtSubjectsData).sort()
+        asmtSubject = this.asmtSubjectsData[subject]
         if this.hasSubject(subject) and not this.hasMenu(subject) and this.hasData(subject)
           config = this.generateConfig(subject, asmtSubject)
           menu = new EdwareDropdownMenu(this, config)
@@ -93,41 +102,16 @@ define [
       this.config['asmtSubject'] = asmtSubject
       this.config
           
-    setCenter: () ->
-      self = this
-      $(".dropdown").each (index, element) ->
-        subject = $(element).data('subject')
-        width = $('.dropdown_title', element).width()
-        self.setCenterForDropdown(subject, width, element)
-  
-    setCenterForDropdown: (subject_name, width, targetElement) ->
-      position = $('#' + subject_name + '_sort').parent().offset()
-      if position
-        parent_position = $('#' + subject_name + '_sort').closest('.gridHeight100').offset()
-        position.left -= parent_position.left
-        position.top -= parent_position.top
-        position.left = position.left + $('#' + subject_name + '_sort').parent().width()/2-width/2
-        $(targetElement).closest('.dropdown').css('margin-left', position.left).css('margin-top', position.top)
-
     resetAll: () ->
-      # reset dropdown state
-      # hide arrow icons
-      this.hideSortArrow()
-      this.resetDropdown()
-      this.setCenter()
-      
-    hideSortArrow: () ->
-      $('#gbox_gridTable .colorSortArrow span.s-ico').css('visibility', 'hidden')
-
-    resetDropdown: () ->
       # unselect radio button
       $('.inputColorBlock').attr('checked', false)
-      $(".dropdown").removeClass('open')
+      $dropdown = $('.dropdown')
+      $dropdown.removeClass('open').removeClass('active').unbind('click')
+      $('.center', $dropdown).attr('style','')
+      # hide arrow icons
+      $(".arrow", $dropdown).addClass('hide')
       $('.dropdown_title').html this.config['selectSort'] if this.config isnt undefined
 
-    update: (@summaryData, @asmtSubjectsData, @colorsData) ->
-      this.initialize()
-      this.setCenter()
       
   #
   #    *  EDWARE Filter plugin

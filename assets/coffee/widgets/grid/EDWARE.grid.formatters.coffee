@@ -6,12 +6,11 @@ define [
   'edwareConfidenceLevelBar'
   'edwareLOSConfidenceLevelBar'  
 ], ($, jqGrid, edwareUtil, edwarePopulationBar, edwareConfidenceLevelBar, edwareLOSConfidenceLevelBar) ->
+  
   #
   # * EDWARE grid formatters
   # * Handles all the methods for displaying cutpoints, link in the grid
   # 
-
-  PopulationBarCache = {}
 
   math_count = 1
   ela_count = 1
@@ -75,17 +74,6 @@ define [
       "" 
 
   populationBar = (value, options, rowObject) ->
-    objectId = options.rowId + options.pos
-    # if object id is defined and within cache
-    if objectId and PopulationBarCache[objectId] != undefined
-      output = PopulationBarCache[objectId]
-    else
-      # draw population bar
-      output = drawPopulationBar(value, options, rowObject)
-      PopulationBarCache[objectId] = output
-    output
-
-  drawPopulationBar = (value, options, rowObject) ->
     asmt_type = options.colModel.formatoptions.asmt_type
     subject = rowObject.results[asmt_type]
     align_button_class = $(".align_button").attr("class")
@@ -95,9 +83,9 @@ define [
       subject = formatSubject subject
       results = edwarePopulationBar.create subject
       if parseInt(value) > 0
-          output = "<div class='barContainer'><div class='alignmentHighlightSection'><div class = 'populationBar' style='margin-left:" + subject.alignment + "px;'>" + results + "</div></div><div class='studentsTotal'>" + subject.total + "</div><div class='alignmentLine' style='margin-left:" + subject.alignmentLine + "px;'></div></div>"
+          output =  "<div class='barContainer default'><div class='alignmentHighlightSection'><div class = 'populationBar' data-margin-left='" + subject.alignment + "'>" + results + "</div></div><div class='studentsTotal'>" + subject.total + "</div><div class='alignmentLine' style='margin-left:" + subject.alignmentLine + "px;'></div></div>"
     else
-      output = ""      
+      output = ""
     output
 
   formatSubject = (subject)->

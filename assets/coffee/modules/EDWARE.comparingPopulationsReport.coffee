@@ -1,4 +1,7 @@
 require ["EDWARE.comparingPopulations", "edwareFilter", "edwareDataProxy"], (edwareComparingPopulations,edwareFilter, edwareDataProxy) ->
+  # Create population grid
+  populationGrid = new edwareComparingPopulations.PopulationGrid()
+
   # Add filter to the page
   configs = {}
 
@@ -10,5 +13,7 @@ require ["EDWARE.comparingPopulations", "edwareFilter", "edwareDataProxy"], (edw
       edwareDataProxy.getDatafromSource "../data/filter.json", options, (data) ->
         configs = data
   )()
-  filter = $('#cpopFilter').edwareFilter $('.filter_label'), configs, edwareComparingPopulations.createPopulationGrid
+  # TODO: move config to filter widget
+  filter = $('#cpopFilter').edwareFilter $('.filter_label'), configs, (param)->
+    populationGrid.reload(param)
   filter.loadReport()

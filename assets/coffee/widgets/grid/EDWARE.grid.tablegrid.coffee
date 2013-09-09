@@ -115,7 +115,7 @@ define [
         if subject != 'name' and colModels != undefined
           for colModel in colModels
             colModel.sorttype = edwareGridSorters.create(index) if colModel.index == subject
-        this.sortGrid(subject, false, order)
+        this.sortGrid(subject, true, order)
     ) jQuery
 
     #

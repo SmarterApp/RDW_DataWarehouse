@@ -20,6 +20,10 @@ define [
         self.dropdown.resetAll()
         self.sort e.target
 
+      $('ul').click (e)->
+        e.stopPropagation()
+        $(e.target).closest('.center').removeClass('open')
+
     sort: (sortItem) ->
       $this = $(sortItem)
       # check current selection
@@ -106,8 +110,8 @@ define [
       # unselect radio button
       $('.inputColorBlock').attr('checked', false)
       $dropdown = $('.dropdown')
-      $dropdown.removeClass('open').removeClass('active').unbind('click')
-      $('.center', $dropdown).attr('style','')
+      $dropdown.removeClass('active').unbind('click')
+      $('.center', $dropdown).removeClass('open').attr('style','')
       # hide arrow icons
       $(".arrow", $dropdown).addClass('hide')
       $('.dropdown_title').html this.config['selectSort'] if this.config isnt undefined

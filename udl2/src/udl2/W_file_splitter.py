@@ -7,15 +7,15 @@ from udl2_util import file_util
 from celery import group
 import filesplitter.file_splitter as file_splitter
 import udl2.message_keys as mk
-import time
+import datetime
 import os
-from udl2_util.measurement import measure_cpu_plus_elasped_time, benchmarking_udl2
+from udl2_util.measurement import measure_cpu_plus_elasped_time, benchmarking_udl2, record_benchmark
 
 logger = get_task_logger(__name__)
 
 
 @celery.task(name="udl2.W_file_splitter.task")
-@benchmarking_udl2
+#@benchmarking_udl2
 def task(incoming_msg):
     '''
     This is the celery task for splitting file
@@ -23,7 +23,7 @@ def task(incoming_msg):
     # parse the message
     # expanded_msg = parse_initial_message(incoming_msg)
 
-    start_time = time.time()
+    start_time = datetime.datetime.now()
 
     # Get necessary params for file_splitter
     lzw = incoming_msg[mk.LANDING_ZONE_WORK_DIR]
@@ -40,11 +40,15 @@ def task(incoming_msg):
     # do actual work of splitting file
     split_file_tuple_list, header_file_path, totalrows, filesize = file_splitter.split_file(csv_file, parts=parts, output_path=subfiles_dir)
 
-    finish_time = time.time()
-    spend_time = int(finish_time - start_time)
+    finish_time = datetime.datetime.now()
+    spend_time = finish_time - start_time
 
     logger.info(task.name)
-    logger.info("FILE_SPLITTER: Split <%s> into %i sub-files in %i" % (csv_file, parts, spend_time))
+    logger.info("FILE_SPLITTER: Split <%s> into %i sub-files in %s" % (csv_file, parts, spend_time))
+
+    # Benchmark New
+    record_benchmark(start_time, finish_time, guid_batch, load_type, udl_phase='udl2.W_file_splitter.task', size_records=totalrows,
+                                         size_units=filesize, task_id=str(task.request.id))
 
     # for each of sub file, call loading task
     loader_tasks = []

@@ -1,24 +1,26 @@
 from __future__ import absolute_import
-from udl2.celery import celery, udl2_conf
 from celery.result import AsyncResult
 from celery.utils.log import get_task_logger
 from fileloader.file_loader import load_file
-from udl2_util.file_util import extract_file_name
 from udl2 import message_keys as mk
-from udl2_util.measurement import measure_cpu_plus_elasped_time, benchmarking_udl2
+from udl2.celery import celery, udl2_conf
+from udl2_util.file_util import extract_file_name
+from udl2_util.measurement import measure_cpu_plus_elasped_time, benchmarking_udl2, record_benchmark
+import datetime
 
 
 logger = get_task_logger(__name__)
 
 
 @celery.task(name="udl2.W_load_to_staging_table.task")
-@benchmarking_udl2
 def task(msg):
+    start_time = datetime.datetime.now()
     logger.info(task.name)
     logger.info('LOAD_CSV_TO_STAGING: Loading file <%s> to <%s> ' % (msg[mk.FILE_TO_LOAD], udl2_conf['udl2_db']['db_host']))
     guid_batch = msg[mk.GUID_BATCH]
     conf = generate_conf_for_loading(msg[mk.FILE_TO_LOAD], msg[mk.ROW_START], msg[mk.HEADERS], guid_batch)
     load_file(conf)
+    end_time = datetime.datetime.now()
 
     #return msg
     benchmark = {mk.TASK_ID: str(task.request.id),
@@ -26,7 +28,8 @@ def task(msg):
                  mk.SIZE_RECORDS: msg[mk.SIZE_RECORDS],
                  mk.UDL_LEAF: True
                  }
-    return benchmark
+    record_benchmark(start_time, end_time, msg[mk.GUID_BATCH], msg[mk.LOAD_TYPE], "udl2.W_load_to_staging_table.task", **benchmark)
+    return msg
 
 
 def generate_conf_for_loading(file_to_load, start_seq, header_file_path, guid_batch):

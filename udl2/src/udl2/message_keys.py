@@ -1,5 +1,3 @@
-from udl2_util.measurement import measure_cpu_plus_elasped_time
-
 __author__ = 'abrien'
 
 # LZ to file_arrived
@@ -81,3 +79,5 @@ SUCCESS = 'SUCCESS'
 RECORDS_PER_HOUR = 'records_per_hour'
 TIME_FOR_ONE_MILLION_RECORDS = 'time_for_one_million_records'
 BATCH_TABLE = 'batch_table'
+USER_EMAIL = 'user_email'
+TASK_URL = 'task_status_url'

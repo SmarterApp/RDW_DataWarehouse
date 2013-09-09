@@ -16,6 +16,7 @@ import imp
 import time
 import datetime
 from preetl import create_queries as queries
+from udl2 import message_keys as mk
 import math
 
 try:
@@ -158,7 +159,6 @@ def benchmarking_udl2(func):
         start_time = datetime.datetime.now()
         result = func(*args, **kwargs)
         end_time = datetime.datetime.now()
-        from udl2 import message_keys as mk
         # add guid batch
         result[mk.GUID_BATCH] = args[0][mk.GUID_BATCH]
         # add load_type
@@ -171,6 +171,32 @@ def benchmarking_udl2(func):
     return wrapper_func
 
 
+def record_benchmark(start_time, end_time, batch_guid, load_type, udl_phase, **optional_columns):
+    '''
+    Record the benchmarking data in the batch table
+
+    @param start_time: The time the task began
+    @param end_time: The ending time of the task
+    @param batch_guid: The guid for the current batch
+    @param load_type: The type of the files being loaded. ie. Assessment
+    @param udl_phase: the name of the phase/task being benchmarked
+    @param optional_columns: optional columns as kwargs:
+        optional_columns should be in the list: [working_schema, size_records, size_units, phase_status,
+                                                 udl_leaf=False, task_id, task_status_url, user_email]
+        note: If the batch table is updated this list will need to be updated
+    '''
+    optional_col_list = [mk.WORKING_SCHEMA, mk.SIZE_RECORDS, mk.SIZE_UNITS, mk.UDL_PHASE_STEP_STATUS, mk.UDL_LEAF, mk.TASK_ID, mk.USER_EMAIL, mk.TASK_URL]
+    result = {mk.GUID_BATCH: batch_guid,
+              mk.LOAD_TYPE: load_type,
+              mk.UDL_PHASE: udl_phase,
+              }
+
+    # loop over the keys and only update the result dict if the key is in the expected list of keys and the value is not none
+    [result.update({key: value}) for key, value in optional_columns.items() if key in optional_col_list and value is not None]
+    print('*****Calling record_benchmark')
+    record_benchmark_in_batch_table(start_time, end_time, result)
+
+
 def record_benchmark_in_batch_table(start_time, end_time, result):
     '''
     Record a benchmarking result into batch table
@@ -179,7 +205,6 @@ def record_benchmark_in_batch_table(start_time, end_time, result):
     if result is None:
         return
 
-    from udl2 import message_keys as mk
     # add time
     duration = end_time - start_time
     result[mk.DURATION] = str(duration)

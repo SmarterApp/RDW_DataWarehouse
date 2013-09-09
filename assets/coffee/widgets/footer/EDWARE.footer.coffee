@@ -114,7 +114,7 @@ define [
   create = (reportName, data, config) ->
       labels = config.labels
       reportInfo = config.reportInfo
-      colorsData = data.colors
+      colorsData = data.metadata
       legendInfo = config.legendInfo
       # Generate footer
       $('#footer').generateFooter(reportName, reportInfo, {

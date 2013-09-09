@@ -77,11 +77,10 @@ define [
       this.populationData = this.data.records
       this.summaryData = this.data.summary
       this.asmtSubjectsData = this.data.subjects
-      this.colorsData = this.data.colors
       #Check for colors, set to default color if it's null
-      for color, value of this.colorsData
+      for subject, value of this.data.metadata
         if value is null
-          this.colorsData[color] = this.defaultColors
+          this.data.metadata[subject] = this.defaultColors
 
       # process breadcrumbs
       this.renderBreadcrumbs(data.context)
@@ -118,8 +117,8 @@ define [
     createGrid: () -> 
       # Append colors to records and summary section
       # Do not format data, or get breadcrumbs if the result is empty
-      this.populationData = new PopulationDataWrapper(this.summaryData[0], this.asmtSubjectsData, this.colorsData, this.defaultColors).process(this.populationData)
-      summaryData = new PopulationDataWrapper(this.summaryData[0], this.asmtSubjectsData, this.colorsData, this.defaultColors).process(this.summaryData)
+      this.populationData = new PopulationDataWrapper(this.summaryData[0], this.asmtSubjectsData, this.data.metadata, this.defaultColors).process(this.populationData)
+      summaryData = new PopulationDataWrapper(this.summaryData[0], this.asmtSubjectsData, this.data.metadata, this.defaultColors).process(this.summaryData)
       this.summaryData = this.formatSummaryData summaryData
       this.renderGrid()
       self = this
@@ -180,7 +179,7 @@ define [
       # create drop down menus
       this.edwareDropdown = this.createDropdown(this.config.comparingPopulations.customALDDropdown) if not this.edwareDropdown
       # update dropdown menus status
-      this.edwareDropdown.update(this.summaryData, this.asmtSubjectsData, this.colorsData)
+      this.edwareDropdown.update(this.summaryData, this.asmtSubjectsData, this.data.metadata)
           
     createDropdown: (customALDDropdown)->
       self = this
@@ -273,7 +272,7 @@ define [
     appendColor = (data, colors, defaultColors) ->
       i = 0
       intervals = data.intervals
-      len = colors.length
+      len = colors['colors'].length
       sort = prepareTotalPercentage data.total, len
       while i < len
         element = intervals[i]

@@ -4,33 +4,35 @@ Created on May 22, 2013
 @author: ejen
 '''
 from __future__ import absolute_import
+import datetime
+
 from udl2.celery import celery, udl2_conf
 from udl2 import message_keys as mk
 from celery.utils.log import get_task_logger
 from move_to_integration.move_to_integration import move_data_from_staging_to_integration
-from udl2_util.measurement import measure_cpu_plus_elasped_time, benchmarking_udl2
+from udl2_util.measurement import BatchTableBenchmark
 
 logger = get_task_logger(__name__)
 
 
 #*************implemented via chord*************
 @celery.task(name="udl2.W_load_to_integration_table.task")
-@benchmarking_udl2
 def task(msg):
+    start_time = datetime.datetime.now()
     logger.info("LOAD_FROM_STAGING_TO_INT: Migrating data from staging to integration.")
     guid_batch = msg[mk.GUID_BATCH]
     conf = generate_conf(guid_batch)
     affected_rows = move_data_from_staging_to_integration(conf)
+    end_time = datetime.datetime.now()
 
     # benchmark
-    benchmark = {mk.SIZE_RECORDS: affected_rows,
-                 mk.TASK_ID: str(task.request.id),
-                 mk.WORKING_SCHEMA: conf[mk.TARGET_DB_SCHEMA]
-                 }
-    return benchmark
+    benchmark = BatchTableBenchmark(guid_batch, msg[mk.LOAD_TYPE], task.name, start_time, end_time, size_records=affected_rows,
+                                    task_id=str(task.request.id), working_schema=conf[mk.TARGET_DB_SCHEMA])
+    benchmark.record_benchmark()
+    return msg
 
 
-@measure_cpu_plus_elasped_time
+# @measure_cpu_plus_elasped_time
 def generate_conf(guid_batch):
     conf = {mk.GUID_BATCH: guid_batch,
             mk.SOURCE_DB_DRIVER: udl2_conf['udl2_db']['db_driver'],

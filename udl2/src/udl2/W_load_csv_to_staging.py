@@ -5,7 +5,7 @@ from fileloader.file_loader import load_file
 from udl2 import message_keys as mk
 from udl2.celery import celery, udl2_conf
 from udl2_util.file_util import extract_file_name
-from udl2_util.measurement import measure_cpu_plus_elasped_time, benchmarking_udl2, record_benchmark
+from udl2_util.measurement import BatchTableBenchmark
 import datetime
 
 
@@ -22,13 +22,10 @@ def task(msg):
     load_file(conf)
     end_time = datetime.datetime.now()
 
-    #return msg
-    benchmark = {mk.TASK_ID: str(task.request.id),
-                 mk.WORKING_SCHEMA: conf[mk.TARGET_DB_SCHEMA],
-                 mk.SIZE_RECORDS: msg[mk.SIZE_RECORDS],
-                 mk.UDL_LEAF: True
-                 }
-    record_benchmark(start_time, end_time, msg[mk.GUID_BATCH], msg[mk.LOAD_TYPE], "udl2.W_load_to_staging_table.task", **benchmark)
+    #Record benchmark
+    benchmark = BatchTableBenchmark(msg[mk.GUID_BATCH], msg[mk.LOAD_TYPE], task.name, start_time, end_time, task_id=str(task.request.id),
+                                    working_schema=conf[mk.TARGET_DB_SCHEMA], udl_leaf=True, size_records=msg[mk.SIZE_RECORDS])
+    benchmark.record_benchmark()
     return msg
 
 

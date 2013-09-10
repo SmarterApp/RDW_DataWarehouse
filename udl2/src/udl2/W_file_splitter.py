@@ -9,13 +9,12 @@ import filesplitter.file_splitter as file_splitter
 import udl2.message_keys as mk
 import datetime
 import os
-from udl2_util.measurement import measure_cpu_plus_elasped_time, benchmarking_udl2, record_benchmark
+from udl2_util.measurement import BatchTableBenchmark
 
 logger = get_task_logger(__name__)
 
 
 @celery.task(name="udl2.W_file_splitter.task")
-#@benchmarking_udl2
 def task(incoming_msg):
     '''
     This is the celery task for splitting file
@@ -46,30 +45,24 @@ def task(incoming_msg):
     logger.info(task.name)
     logger.info("FILE_SPLITTER: Split <%s> into %i sub-files in %s" % (csv_file, parts, spend_time))
 
-    # Benchmark New
-    record_benchmark(start_time, finish_time, guid_batch, load_type, udl_phase='udl2.W_file_splitter.task', size_records=totalrows,
-                                         size_units=filesize, task_id=str(task.request.id))
+    # Benchmark
+    benchmark = BatchTableBenchmark(guid_batch, load_type, task.name, start_time, finish_time,
+                                    size_records=totalrows, size_units=filesize, udl_phase_step_status=mk.SUCCESS,
+                                    task_id=str(task.request.id))
+    benchmark.record_benchmark()
 
-    # for each of sub file, call loading task
-    loader_tasks = []
-    for split_file_tuple in split_file_tuple_list:
-        message_for_file_loader = generate_msg_for_file_loader(split_file_tuple, header_file_path, lzw, guid_batch, load_type)
-        loader_task = W_load_csv_to_staging.task.si(message_for_file_loader)
-        loader_tasks.append(loader_task)
-    loader_group = group(loader_tasks)
-    result = loader_group.delay()
-    result.get()
-
-    # benchmark
-    benchmark = {mk.SIZE_RECORDS: totalrows,
-                 mk.SIZE_UNITS: filesize,
-                 mk.TASK_ID: str(task.request.id)
-                 }
-    return benchmark
+    # Outgoing message to be piped to the parallel file loader
+    outgoing_msg = {}
+    outgoing_msg.update(incoming_msg)
+    outgoing_msg.update({mk.SPLIT_FILE_LIST: split_file_tuple_list,
+                         mk.HEADER_FILE_PATH: header_file_path,
+                         mk.SIZE_RECORDS: totalrows
+                         })
+    return outgoing_msg
 
 
 # TODO: Create a generic function that creates any of the (EXPANDED,ARRIVED,SUBFILES) etc. dirs in separate util file.
-@measure_cpu_plus_elasped_time
+# @measure_cpu_plus_elasped_time
 def get_subfiles_dir(lzw, guid_batch):
     print("##############")
     print(lzw)
@@ -79,7 +72,7 @@ def get_subfiles_dir(lzw, guid_batch):
     return subfiles_dir + '/'
 
 
-@measure_cpu_plus_elasped_time
+# @measure_cpu_plus_elasped_time
 def generate_msg_for_file_loader(split_file_tuple, header_file_path, lzw, guid_batch, load_type):
     # TODO: It would be better to have a dict over a list, we can access with key instead of index - more clear.
     split_file_path = split_file_tuple[0]
@@ -99,7 +92,7 @@ def generate_msg_for_file_loader(split_file_tuple, header_file_path, lzw, guid_b
 
 
 @celery.task(name="udl2.W_file_splitter.error_handler")
-@measure_cpu_plus_elasped_time
+# @measure_cpu_plus_elasped_time
 def error_handler(uuid):
     result = AsyncResult(uuid)
     exc = result.get(propagate=False)

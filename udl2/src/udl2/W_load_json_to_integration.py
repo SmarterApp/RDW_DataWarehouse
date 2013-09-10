@@ -14,6 +14,7 @@ name: "udl2.W_load_json_to_integration.error_handler"
 '''
 
 from __future__ import absolute_import
+import datetime
 
 from celery.result import AsyncResult
 from celery.utils.log import get_task_logger
@@ -23,15 +24,15 @@ from fileloader.json_loader import load_json
 from udl2_util.udl_mappings import get_json_to_asmt_tbl_mappings
 import udl2.message_keys as mk
 from udl2.celery import udl2_conf
-from udl2_util.measurement import measure_cpu_plus_elasped_time, benchmarking_udl2
+from udl2_util.measurement import BatchTableBenchmark
 
 
 logger = get_task_logger(__name__)
 
 
 @celery.task(name="udl2.W_load_json_to_integration.task")
-@benchmarking_udl2
 def task(msg):
+    start_time = datetime.datetime.now()
     lzw = msg[mk.LANDING_ZONE_WORK_DIR]
     guid_batch = msg[mk.GUID_BATCH]
     expanded_dir = file_util.get_expanded_dir(lzw, guid_batch)
@@ -39,15 +40,16 @@ def task(msg):
     logger.info('LOAD_JSON_TO_INTEGRATION: Loading json file <%s>' % json_file)
     conf = generate_conf_for_loading(json_file, guid_batch)
     affected_rows = load_json(conf)
+    end_time = datetime.datetime.now()
 
-    benchmark = {mk.TASK_ID: str(task.request.id),
-                 mk.WORKING_SCHEMA: conf[mk.TARGET_DB_SCHEMA],
-                 mk.SIZE_RECORDS: affected_rows
-                 }
-    return benchmark
+    # record benchmark
+    benchmark = BatchTableBenchmark(guid_batch, msg[mk.LOAD_TYPE], task.name, start_time, end_time, task_id=str(task.request.id),
+                                    working_schema=conf[mk.TARGET_DB_SCHEMA], size_records=affected_rows)
+    benchmark.record_benchmark()
+    return msg
 
 
-@measure_cpu_plus_elasped_time
+# @measure_cpu_plus_elasped_time
 def generate_conf_for_loading(json_file, guid_batch):
     '''
     takes the msg and pulls out the relevant parameters to pass
@@ -69,7 +71,7 @@ def generate_conf_for_loading(json_file, guid_batch):
 
 
 @celery.task(name="udl2.W_load_json_to_integration.error_handler")
-@measure_cpu_plus_elasped_time
+# @measure_cpu_plus_elasped_time
 def error_handler(uuid):
     result = AsyncResult(uuid)
     exc = result.get(propagate=False)

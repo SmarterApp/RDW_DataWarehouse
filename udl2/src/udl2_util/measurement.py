@@ -11,13 +11,15 @@ Main method: measure_cpu_plus_elapsed_time(function_to_be_decorated)
 @author: ejen
 '''
 import inspect
-from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
+import math
 import imp
 import time
 import datetime
+
+from udl2_util.database_util import connect_db, execute_queries
+from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from preetl import create_queries as queries
 from udl2 import message_keys as mk
-import math
 
 try:
     config_path_file = os.environ['UDL2_CONF']
@@ -181,19 +183,18 @@ def record_benchmark(start_time, end_time, batch_guid, load_type, udl_phase, **o
     @param load_type: The type of the files being loaded. ie. Assessment
     @param udl_phase: the name of the phase/task being benchmarked
     @param optional_columns: optional columns as kwargs:
-        optional_columns should be in the list: [working_schema, size_records, size_units, phase_status,
+        optional_columns should be in the list: [working_schema, size_records, size_units, phase_status, udl_phase_step
                                                  udl_leaf=False, task_id, task_status_url, user_email]
         note: If the batch table is updated this list will need to be updated
     '''
-    optional_col_list = [mk.WORKING_SCHEMA, mk.SIZE_RECORDS, mk.SIZE_UNITS, mk.UDL_PHASE_STEP_STATUS, mk.UDL_LEAF, mk.TASK_ID, mk.USER_EMAIL, mk.TASK_URL]
+
     result = {mk.GUID_BATCH: batch_guid,
               mk.LOAD_TYPE: load_type,
               mk.UDL_PHASE: udl_phase,
               }
-
+    result.update(optional_columns)
     # loop over the keys and only update the result dict if the key is in the expected list of keys and the value is not none
-    [result.update({key: value}) for key, value in optional_columns.items() if key in optional_col_list and value is not None]
-    print('*****Calling record_benchmark')
+
     record_benchmark_in_batch_table(start_time, end_time, result)
 
 
@@ -232,7 +233,7 @@ def record_benchmark_in_batch_table(start_time, end_time, result):
     """
 
     # insert into batch table
-    from udl2_util.database_util import connect_db, execute_queries
+    #from udl2_util.database_util import connect_db, execute_queries
 
     insert_query = queries.insert_batch_row_query(udl2_conf['udl2_db']['staging_schema'], udl2_conf['udl2_db']['batch_table'], **result)
 
@@ -246,3 +247,53 @@ def record_benchmark_in_batch_table(start_time, end_time, result):
     # insert into batch table
     execute_queries(conn, [insert_query], 'Exception in record_benchmark_in_batch_table, execute query to insert into batch table', 'measurement', 'record_benchmark_in_batch_table')
     conn.close()
+
+
+class BatchTableBenchmark(object):
+    '''
+    Class for maintaining the information required to populate the batch table
+    '''
+
+    def __init__(self, guid_batch, load_type, udl_phase, start_timestamp, end_timestamp, working_schema=None, size_records=None, size_units=None,
+                 udl_phase_step_status=mk.SUCCESS, udl_phase_step=None, udl_leaf=False, task_id=None, task_status_url=None, user_email=None, user_sid=None):
+        '''Constructor'''
+        self.guid_batch = guid_batch
+        self.load_type = load_type
+        self.udl_phase = udl_phase
+        self.start_timestamp = str(start_timestamp)
+        self.end_timestamp = str(end_timestamp)
+        self.duration = str(end_timestamp - start_timestamp)
+        self.working_schema = working_schema
+        self.size_records = size_records
+        self.size_units = size_units
+        self.udl_phase_step_status = udl_phase_step_status
+        self.udl_phase_step = udl_phase_step
+        self.udl_leaf = udl_leaf
+        self.task_id = task_id
+        self.task_status_url = task_status_url
+        self.user_email = user_email
+        self.user_sid = user_sid
+
+    def get_result_dict(self):
+        '''
+        Get a dictionary containing all instance attributes that are not None
+        '''
+        return {col: val for col, val in self.__dict__.items() if val is not None}
+
+    def record_benchmark(self):
+        '''
+        Record the benchmark information for the this instance of the benchmarking information
+        '''
+        result = self.get_result_dict()
+        insert_query = queries.insert_batch_row_query(udl2_conf['udl2_db']['staging_schema'], udl2_conf['udl2_db']['batch_table'], **result)
+
+        # create database connection
+        (conn, _engine) = connect_db(udl2_conf['udl2_db']['db_driver'],
+                                     udl2_conf['udl2_db']['db_user'],
+                                     udl2_conf['udl2_db']['db_pass'],
+                                     udl2_conf['udl2_db']['db_host'],
+                                     udl2_conf['udl2_db']['db_port'],
+                                     udl2_conf['udl2_db']['db_database'])
+        # insert into batch table
+        execute_queries(conn, [insert_query], 'Exception in record_benchmark_in_batch_table, execute query to insert into batch table', 'measurement', 'record_benchmark_in_batch_table')
+        conn.close()

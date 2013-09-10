@@ -8,13 +8,15 @@ udl2_conf = {
                            'udl2.W_file_expander',
                            'udl2.W_simple_file_validator',
                            'udl2.W_file_splitter',
+                           'udl2.W_parallel_csv_load',
                            'udl2.W_load_csv_to_staging',
                            'udl2.W_file_content_validator',
                            'udl2.W_load_json_to_integration',
                            'udl2.W_load_to_integration_table',
                            'udl2.W_load_from_integration_to_star',
                            'udl2.W_report_error_or_success',
-                           'udl2.W_final_cleanup'
+                           'udl2.W_final_cleanup',
+                           'udl2.W_all_done',
                            ],
                },
     'file_splitter': {  # Options for file_splitter

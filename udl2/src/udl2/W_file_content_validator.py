@@ -8,9 +8,11 @@ Created on May 24, 2013
 '''
 
 from __future__ import absolute_import
+import datetime
+
 from udl2.celery import celery
 from celery.utils.log import get_task_logger
-from udl2_util.measurement import measure_cpu_plus_elasped_time, benchmarking_udl2
+from udl2_util.measurement import BatchTableBenchmark
 from udl2 import message_keys as mk
 
 
@@ -18,11 +20,15 @@ logger = get_task_logger(__name__)
 
 
 @celery.task(name='udl2.W_file_content_validator.task')
-@benchmarking_udl2
 def task(msg):
+    start_time = datetime.datetime.now()
     logger.info(task.name)
     logger.info('FILE_CONTENT_VALIDATOR: I am the File Content Validation Dummy. Hopefully I\'ll be implemented soon.')
     # TODO Validate file
 
-    benchmark = {mk.TASK_ID: str(task.request.id)}
-    return benchmark
+    end_time = datetime.datetime.now()
+
+    benchmark = BatchTableBenchmark(msg[mk.GUID_BATCH], msg[mk.LOAD_TYPE], task.name, start_time, end_time, task_id=str(task.request.id))
+    benchmark.record_benchmark()
+
+    return msg

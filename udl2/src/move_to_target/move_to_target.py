@@ -3,7 +3,7 @@ from collections import OrderedDict
 from udl2 import message_keys as mk
 import move_to_target.create_queries as queries
 import datetime
-from udl2_util.measurement import measure_cpu_plus_elasped_time
+from udl2_util.measurement import BatchTableBenchmark
 import logging
 
 
@@ -12,7 +12,6 @@ FAKE_INST_HIER_REC_ID = -1
 logger = logging.getLogger(__name__)
 
 
-@measure_cpu_plus_elasped_time
 def explode_data_to_fact_table(conf, source_table, target_table, column_mapping, column_types):
     '''
     Main function to explode data from integration table INT_SBAC_ASMT_OUTCOME to star schema table fact_asmt_outcome
@@ -44,26 +43,33 @@ def explode_data_to_fact_table(conf, source_table, target_table, column_mapping,
     conn, _engine = connect_db(DBDRIVER, conf[mk.TARGET_DB_USER], conf[mk.TARGET_DB_PASSWORD], conf[mk.TARGET_DB_HOST], conf[mk.TARGET_DB_PORT], conf[mk.TARGET_DB_NAME])
 
     # execute above four queries in order, 2 parts
-    # print("I am the exploder, about to copy data into fact table with fake inst_hier_rec_id")
+    # First part: Disable Trigger & Load Data
     start_time_p1 = datetime.datetime.now()
     affected_rows_first = execute_queries(conn, queries[0:2], 'Exception -- exploding data from integration to fact table part 1', 'move_to_target', 'explode_data_to_fact_table')
     finish_time_p1 = datetime.datetime.now()
-    _spend_time_p1 = calculate_spend_time_as_second(start_time_p1, finish_time_p1)
-    # print("I am the exploder, copied data into fact table with fake inst_hier_rec_id in %.3f seconds" % _spend_time_p1)
 
-    # print("I am the exploder, about to update inst_hier_rec_id as value in dim_inst_hier")
+    # Record benchmark
+    benchmark = BatchTableBenchmark(conf[mk.GUID_BATCH], conf[mk.LOAD_TYPE], 'udl2.W_load_from_integration_to_star.explode_to_fact', start_time_p1, finish_time_p1,
+                                    working_schema=conf[mk.TARGET_DB_SCHEMA],
+                                    udl_phase_step='Disable Trigger & Load Data')
+    benchmark.record_benchmark()
+
+    # Second part: Update Inst Hier Rec Id FK & Re-enable Trigger
+    start_time_p2 = datetime.datetime.now()
     execute_queries(conn, queries[2:4], 'Exception -- exploding data from integration to fact table part 2', 'move_to_target', 'explode_data_to_fact_table')
     finish_time_p2 = datetime.datetime.now()
-    _spend_time_p2 = calculate_spend_time_as_second(finish_time_p1, finish_time_p2)
-    # print("I am the exploder, updated inst_hier_rec_id as value in dim_inst_hier in %.3f seconds" % _spend_time_p2)
 
+    # Record benchmark
+    benchmark = BatchTableBenchmark(conf[mk.GUID_BATCH], conf[mk.LOAD_TYPE], 'udl2.W_load_from_integration_to_star.explode_to_fact', start_time_p2, finish_time_p2,
+                                    working_schema=conf[mk.TARGET_DB_SCHEMA],
+                                    udl_phase_step='Update Inst Hier Rec Id FK & Re-enable Trigger')
+    benchmark.record_benchmark()
     conn.close()
 
     # returns the number of rows that are inserted into fact table. It maps to the second query result
     return affected_rows_first[1]
 
 
-@measure_cpu_plus_elasped_time
 def get_asmt_rec_id(conf, guid_column_name_in_target, guid_column_name_in_source, rec_id_column_name, target_table_name, source_table_name):
     '''
     Main function to get asmt_rec_id in dim_asmt table
@@ -87,7 +93,6 @@ def get_asmt_rec_id(conf, guid_column_name_in_target, guid_column_name_in_source
     return asmt_rec_id, rec_id_column_name
 
 
-@measure_cpu_plus_elasped_time
 def execute_query_get_one_value(conn, query, column_name):
     '''
     This is the function to execute one query, and return one correct value returned by the query
@@ -109,7 +114,6 @@ def execute_query_get_one_value(conn, query, column_name):
     return one_value_result[0]
 
 
-@measure_cpu_plus_elasped_time
 def create_queries_for_move_to_fact_table(conf, source_table, target_table, column_mapping, column_types):
     '''
     Main function to create four queries(in order) for moving data from integration table
@@ -136,7 +140,6 @@ def create_queries_for_move_to_fact_table(conf, source_table, target_table, colu
     return [disable_trigger_query, insert_into_fact_table_query, update_inst_hier_rec_id_fk_query, enable_back_trigger_query]
 
 
-@measure_cpu_plus_elasped_time
 def explode_data_to_dim_table(conf, source_table, target_table, column_mapping, column_types):
     '''
     Main function to move data from source table to target tables.
@@ -164,7 +167,6 @@ def explode_data_to_dim_table(conf, source_table, target_table, column_mapping, 
     return affected_rows
 
 
-@measure_cpu_plus_elasped_time
 def get_table_column_types(conf, target_table, column_names):
     '''
     Main function to get column types of a table by querying the table
@@ -194,7 +196,6 @@ def get_table_column_types(conf, target_table, column_names):
     return column_types
 
 
-@measure_cpu_plus_elasped_time
 def calculate_spend_time_as_second(start_time, finish_time):
     '''
     Main function to calculate period distance as seconds

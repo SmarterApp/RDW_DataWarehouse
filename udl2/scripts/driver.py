@@ -3,13 +3,14 @@ from __future__ import absolute_import
 import os
 import argparse
 import time
-from celery import chain
-from udl2 import W_file_arrived, W_file_expander, W_simple_file_validator, W_file_splitter, W_file_content_validator, \
-    W_load_json_to_integration, W_load_to_integration_table, W_load_from_integration_to_star
-from udl2 import message_keys as mk
-from uuid import uuid4
-from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
+import datetime
 import imp
+
+from celery import chain
+from udl2 import (W_file_arrived, W_file_expander, W_simple_file_validator, W_file_splitter, W_file_content_validator,
+                  W_load_json_to_integration, W_load_to_integration_table, W_load_from_integration_to_star, W_parallel_csv_load, W_all_done)
+from udl2 import message_keys as mk
+from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from preetl.pre_etl import pre_etl_job
 
 
@@ -71,13 +72,16 @@ def start_pipeline(csv_file_path, json_file_path, udl2_conf, load_type='Assessme
     load_json_msg = generate_load_json_msg(lzw, common_msg)
     load_to_int_msg = generate_load_to_int_msg(common_msg)
     integration_to_star_msg = generate_integration_to_star_msg(common_msg)
+    all_done_msg = generate_all_done_msg(common_msg)
 
     pipeline_chain_1 = chain(W_file_arrived.task.si(arrival_msg), W_file_expander.task.si(expander_msg),
                              W_simple_file_validator.task.si(simple_file_validator_msg), W_file_splitter.task.si(splitter_msg),
+                             W_parallel_csv_load.task.s(),
                              W_file_content_validator.task.si(file_content_validator_msg), W_load_json_to_integration.task.si(load_json_msg),
                              W_load_to_integration_table.task.si(load_to_int_msg),
                              W_load_from_integration_to_star.explode_to_dims.si(integration_to_star_msg),
-                             W_load_from_integration_to_star.explode_to_fact.si(integration_to_star_msg))
+                             W_load_from_integration_to_star.explode_to_fact.si(integration_to_star_msg),
+                             W_all_done.task.si(all_done_msg))
 
     result = pipeline_chain_1.delay()
 
@@ -153,6 +157,13 @@ def generate_msg_report_error(email):
 def generate_integration_to_star_msg(common_message):
     msg = {
         mk.PHASE: 4
+    }
+    return combine_messages(common_message, msg)
+
+
+def generate_all_done_msg(common_message):
+    msg = {
+        mk.START_TIMESTAMP: datetime.datetime.now()
     }
     return combine_messages(common_message, msg)
 

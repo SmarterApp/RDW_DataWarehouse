@@ -15,7 +15,8 @@ def run_cake_task(task, message):
         print('Cake command fail in %s' % message)   
 
 def optimize_javascript():
-    run_cake_task('optimize', 'Optimizing Javascript')
+    pass
+    #run_cake_task('optimize', 'Optimizing Javascript')
     
 def compile():
     run_cake_task('setup', 'Compiling coffeescripts')

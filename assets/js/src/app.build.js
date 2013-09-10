@@ -6,10 +6,8 @@
 	optimize: 'uglify',
 	modules: [
 	{
-		//exclude jquery to avoid duplication
 		name : "EDWARE.comparingPopulations"
 	},
-	
 	{
 		name : "EDWARE.comparingPopulationsReport"
 	},

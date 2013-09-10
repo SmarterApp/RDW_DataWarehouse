@@ -39,7 +39,7 @@ define [
       
     # Get individual student report data from the server
     options =
-      async: true
+      async: true 
       method: "POST"
       params: params
       
@@ -208,11 +208,10 @@ define [
           e.find(".claims_tooltip").html() # template location: templates/individualStudent_report/claimsInfo.html
       
       # Generate footer links
-      if params['pdf'] isnt 'true'
-        $('#footer').generateFooter('individual_student_report', reportInfo, {
-          'legendInfo': legendInfo,
-          'subject': createSampleInterval data.items[0], legendInfo.sample_intervals
-        }, configData.labels)
+      $('#footer').generateFooter('individual_student_report', reportInfo, {
+        'legendInfo': legendInfo,
+        'subject': createSampleInterval data.items[0], legendInfo.sample_intervals
+      }, configData.labels)
       
       # append user_info (e.g. first and last name)
       if data.user_info

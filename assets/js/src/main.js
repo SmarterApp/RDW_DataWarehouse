@@ -29,6 +29,7 @@ require({
 		edwareFilter: '../widgets/filter/EDWARE.filter',
 		edwareDropdown: '../widgets/dropdown/EDWARE.dropdown',
         edwareSessionStorage: '../widgets/clientStorage/EDWARE.sessionStorage',
+        edwareLanguageSelector: '../widgets/languageSelector/EDWARE.languageSelector',
 
 		// Templates
 		edwareBreadcrumbsTemplate: '../widgets/breadcrumb/template.html',

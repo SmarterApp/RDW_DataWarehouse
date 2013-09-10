@@ -2,13 +2,15 @@ define [
   "jquery"
   "mustache"
   "edwareUtil"
-], ($, Mustache, edwareUtil) ->
+  "edwareLanguageSelector"
+], ($, Mustache, edwareUtil, edwareLanguageSelector) ->
 
   HEADER_TEMPLATE = "<div id='logo'>" +
                     "<img src='../images/smarterHeader_logo.png' alt='logo' height='36' width='112'>" +
                     "</div>" +
                     "<div id='headerTitle'>Reporting Beta UAT - DRAFT SYSTEM</div>" + 
                     "<div class='topLinks'>" +
+                    "<span id='language_selector'></span><span class='seperator'>|</span>" +
                     "<span id='headerUser' class='user'>{{userName}}</span><span class='seperator'>|</span><span id='headerLogout'><a id='logout_button' href='/logout' target='iframe_logout'>Log Out</a></span>" +
                     "</div>" +
                     "<!--This iframe is used for logout redirect.  Do not remove it.-->" +
@@ -23,6 +25,9 @@ define [
 
     output = Mustache.to_html(HEADER_TEMPLATE, params)
     $("#header").html(output)
+    
+    # Add language selector
+    edwareLanguageSelector.create $('#language_selector')
 
     feedbackData = config.feedback
     role = edwareUtil.getRole userInfo

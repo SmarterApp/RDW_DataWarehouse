@@ -17,7 +17,7 @@ define [
     # constructor with legend information as parameter
     constructor: (@legend, @reportName) ->
       this.subject = this.legend['subject']
-      data = edwareDataProxy.getDataForReport reportName, "en"
+      data = edwareDataProxy.getDataForReport reportName
       $.extend(legend, data)
       
     # create legend in html format from mustache template

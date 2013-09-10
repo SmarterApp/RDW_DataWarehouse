@@ -18,8 +18,6 @@ define [
 
   REPORT_NAME = "comparingPopulationsReport"
 
-  LANGUAGE = "en"
-
   POPULATION_BAR_WIDTH = 145
 
   AFTER_GRID_LOAD_COMPLETE = 'jqGridLoadComplete.jqGrid'
@@ -50,7 +48,7 @@ define [
   class PopulationGrid
 
     constructor: () ->
-      config = edwareDataProxy.getDataForReport REPORT_NAME, LANGUAGE
+      config = edwareDataProxy.getDataForReport REPORT_NAME
       this.initialize(config)
 
     initialize: (config)->

@@ -42,8 +42,8 @@ define [
           location.href = redirect_url
       )          
          
-  getDataForReport = (reportName, language) ->
-    language = "en" if language is null or language is `undefined`
+  getDataForReport = (reportName) ->
+    language = edwareUtil.getSelectedLanguage()
     json_url = ["../data/content/" + language + "/content.json", "../data/common/" + language + "/common.json", "../data/common/" + language + "/labels.json"]
     report_json_url = "../data/common/" + language + "/" + reportName + ".json"
     options =

@@ -1,4 +1,8 @@
-#global define
+###
+# Comparing Population Report #
+
+###
+
 define [
   "jquery"
   "bootstrap"
@@ -20,21 +24,23 @@ define [
 
   AFTER_GRID_LOAD_COMPLETE = 'jqGridLoadComplete.jqGrid'
 
-  class GridConfig
-
-    constructor: (template, subjects, customView) ->
+  class ConfigBuilder
+    ### Grid configuration builder. ###
+    
+    constructor: (template, subjects) ->
+      ###
+      
+      ###
       output = Mustache.render(JSON.stringify(template), subjects)
       this.gridConfig = JSON.parse(output)
       this
 
     customize: (customView) ->
-      # Change the column name and link url based on the type of report the user is querying for
-      this.gridConfig[0].items[0].name = customView.name
-      this.gridConfig[0].items[0].options.linkUrl = customView.link
-      this.gridConfig[0].items[0].options.id_name = customView.id_name
-
-      if customView.name is "Grade"
-        this.gridConfig[0].items[0].sorttype = "int"
+      firstColumn = this.gridConfig[0].items[0]
+      firstColumn.name = customView.name
+      firstColumn.options.linkUrl = customView.link
+      firstColumn.options.id_name = customView.id_name
+      firstColumn.sorttype = "int" if customView.name is "Grade"
       this
 
     build: ()->
@@ -117,7 +123,7 @@ define [
     createGrid: () -> 
       # Append colors to records and summary section
       # Do not format data, or get breadcrumbs if the result is empty
-      preprocessor = new PopulationDataWrapper(this.summaryData[0], this.asmtSubjectsData, this.data.metadata, this.defaultColors)
+      preprocessor = new DataProcessor(this.summaryData[0], this.asmtSubjectsData, this.data.metadata, this.defaultColors)
       this.populationData = preprocessor.process(this.populationData)
       summaryData = preprocessor.process(this.summaryData)
       this.summaryData = this.formatSummaryData summaryData
@@ -138,7 +144,8 @@ define [
       
     renderGrid: () ->
       this.gridContainer.html($("<table id='gridTable'/>"))
-      gridConfig = new GridConfig(this.configTemplate, this.asmtSubjectsData)
+      # Change the column name and link url based on the type of report the user is querying for
+      gridConfig = new ConfigBuilder(this.configTemplate, this.asmtSubjectsData)
                              .customize(this.customViews[this.reportType])
                              .build()
       # Create compare population grid for State/District/School view
@@ -240,7 +247,7 @@ define [
       word
 
 
-  class PopulationDataWrapper
+  class DataProcessor
   
     constructor: (@summaryData, @asmtSubjectsData, @colorsData, @defaultColors) ->
 

@@ -20,7 +20,7 @@ define [
         self.dropdown.resetAll()
         self.sort e.target
 
-      $('ul').click (e)->
+      $('ul', this.menu).click (e)->
         e.stopPropagation()
         $(e.target).closest('.center').removeClass('open')
 
@@ -116,7 +116,7 @@ define [
       $(".arrow", $dropdown).addClass('hide')
       $('.dropdown_title').html this.config['selectSort'] if this.config isnt undefined
 
-      
+
   #
   #    *  EDWARE Filter plugin
   #    *  @param filterHook - Panel config data

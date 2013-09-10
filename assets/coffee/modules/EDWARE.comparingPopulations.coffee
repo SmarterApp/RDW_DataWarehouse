@@ -117,8 +117,9 @@ define [
     createGrid: () -> 
       # Append colors to records and summary section
       # Do not format data, or get breadcrumbs if the result is empty
-      this.populationData = new PopulationDataWrapper(this.summaryData[0], this.asmtSubjectsData, this.data.metadata, this.defaultColors).process(this.populationData)
-      summaryData = new PopulationDataWrapper(this.summaryData[0], this.asmtSubjectsData, this.data.metadata, this.defaultColors).process(this.summaryData)
+      preprocessor = new PopulationDataWrapper(this.summaryData[0], this.asmtSubjectsData, this.data.metadata, this.defaultColors)
+      this.populationData = preprocessor.process(this.populationData)
+      summaryData = preprocessor.process(this.summaryData)
       this.summaryData = this.formatSummaryData summaryData
       this.renderGrid()
       self = this
@@ -246,19 +247,29 @@ define [
     # Traverse through to intervals to prepare to append color to data
     # Handle population bar alignment calculations
     process: (data) ->
-      #TODO
-      for k of this.asmtSubjectsData
-        j = 0
-        if this.summaryData.results[k]
-          summaryDataAlignment = this.summaryData.results[k].intervals[0].percentage + this.summaryData.results[k].intervals[1].percentage
-          while j < data.length
-            # summary data may exist, but not for individual results
-            if data[j]['results'][k]
-              appendColor data[j]['results'][k], this.colorsData[k], this.defaultColors
-              data[j]['results'][k].alignmentLine =  (((summaryDataAlignment) * POPULATION_BAR_WIDTH) / 100) + 10 + 35
-              data[j]['results'][k].alignment =  (((summaryDataAlignment - 100 + data[j]['results'][k].sort[1]) * POPULATION_BAR_WIDTH) / 100) + 10
-            j++
-      this.appendSortingAccessor data
+      data = this.appendColors data
+      data = this.appendAlignmentOffset data
+      data = this.appendSortingAccessor data
+      data
+
+    appendColors: (data) ->
+      for item in data
+        for subject of this.asmtSubjectsData
+          subjectData = item['results'][subject]
+          if subjectData
+            this.appendColor subjectData, this.colorsData[subject]
+      data
+
+    appendAlignmentOffset: (data) ->
+      for item in data
+        for subject of this.asmtSubjectsData
+          subjectData = item['results'][subject]
+          summary = this.summaryData.results[subject]
+          if summary and subjectData
+            summaryDataAlignment = summary.intervals[0].percentage + summary.intervals[1].percentage
+            subjectData.alignmentLine =  (((summaryDataAlignment) * POPULATION_BAR_WIDTH) / 100) + 10 + 35
+            subjectData.alignment =  (((summaryDataAlignment - 100 + subjectData.sort[1]) * POPULATION_BAR_WIDTH) / 100) + 10
+      data
 
     appendSortingAccessor: (data) ->
       for item in data
@@ -269,8 +280,9 @@ define [
       data
 
       # Add color for each intervals
-    appendColor = (data, colors, defaultColors) ->
+    appendColor: (data, colors) ->
       i = 0
+      defaultColors = this.defaultColors
       intervals = data.intervals
       len = colors['colors'].length
       sort = prepareTotalPercentage data.total, len

@@ -94,7 +94,7 @@ define [
 
     createHeaderAndFooter: ()->
       edwareFooter.create('comparing_populations', this.data, this.config)
-      edwareHeader.create(this.data, this.config, this.reportType)
+      edwareHeader.create(this.data, this.config, "comparing_populations_" + this.reportType)
 
     fetchData: (params)->
       # Determine if the report is state, district or school view"

@@ -8,7 +8,8 @@ define [
   "edwareBreadcrumbs"
   "edwareUtil"
   "edwareFooter"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter) ->
+  "edwareHeader"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader) ->
 
   assessmentsData = {}
   studentsConfig = {}
@@ -18,9 +19,6 @@ define [
                                               "<div class='bar' style='background-color: {{bg_color}}; background-image: -moz-linear-gradient(center top , {{bg_color}}, {{bg_color}}); background-image: -webkit-linear-gradient(top , {{bg_color}}, {{bg_color}}); background-image: -ms-linear-gradient(top , {{bg_color}}, {{bg_color}}); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr={{bg_color}}, endColorstr={{bg_color}}, GradientType=0); background-repeat: repeat-x; color: {{text_color}}; width: {{asmt_cut_point}}px;'></div>" +
                                               "{{/cut_point_intervals}}" +
                                               "</div>"
-  
-  # Add header to the page
-  edwareUtil.getHeader()
   
   #
   #    * Create Student data grid
@@ -40,9 +38,6 @@ define [
     legendInfo = data.legendInfo
 
     getStudentData "/data/list_of_students", params, defaultColors, (assessmentsData, contextData, subjectsData, claimsData, userData, cutPointsData) ->
-      # append user_info (e.g. first and last name)
-      if userData
-        $('#header .topLinks .user').html edwareUtil.getUserName userData
           
       # set school name as the page title from breadcrumb
       $("#school_name").html contextData.items[2].name
@@ -90,13 +85,8 @@ define [
         # merge cut points data with sample data
         'subject': $.extend(true, {}, cutPointsData.subject1 || cutPointsData.subject2 , legendInfo.sample_intervals)
       }, data.labels)
-      
-      # append user_info (e.g. first and last name)
-      if userData
-        role = edwareUtil.getRole userData
-        uid = edwareUtil.getUid userData
-        edwareUtil.renderFeedback(role, uid, "list_of_students", feedbackData)
-      
+      #Add header
+      edwareHeader.create({"user_info": userData}, data, "list_of_students")
       
   renderHeaderPerfBar = (cutPointsData) ->
     for key of cutPointsData

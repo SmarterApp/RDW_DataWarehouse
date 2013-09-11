@@ -10,7 +10,8 @@ define [
   "edwareBreadcrumbs"
   "edwareUtil"
   "edwareFooter"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareConfidenceLevelBar, edwareClaimsBar, indivStudentReportTemplate, edwareBreadcrumbs, edwareUtil, edwareFooter) ->
+  "edwareHeader"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareConfidenceLevelBar, edwareClaimsBar, indivStudentReportTemplate, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader) ->
   
   # claim score weight in percentage
   claimScoreWeightArray = {
@@ -31,10 +32,6 @@ define [
     
     content = {}
     
-    # Add header to the page
-    edwareUtil.getHeader()
-      
-
     configData = edwareDataProxy.getDataForReport "indivStudentReport"
       
     # Get individual student report data from the server
@@ -47,11 +44,6 @@ define [
    
       defaultColors = {}
       
-      # append user_info (e.g. first and last name)
-      if data.user_info
-        $('#header .topLinks .user').html edwareUtil.getUserName data.user_info
-        
-
       defaultColors = configData.colors
       defaultGrayColors = configData.grayColors
       feedbackData = configData.feedback
@@ -213,12 +205,8 @@ define [
         'subject': createSampleInterval data.items[0], legendInfo.sample_intervals
       }, configData.labels)
       
-      # append user_info (e.g. first and last name)
-      if data.user_info
-        role = edwareUtil.getRole data.user_info
-        uid = edwareUtil.getUid data.user_info
-        edwareUtil.renderFeedback(role, uid, "individual_student_report", feedbackData)
-      
+      edwareHeader.create(data, configData, "individual_student_report")
+     
       # Report info and legend for print version, Grayscale logo for print version
       $($("#footerLinks").html()).clone().appendTo("#print_reportInfoContent")
       if params['grayscale'] is 'true'

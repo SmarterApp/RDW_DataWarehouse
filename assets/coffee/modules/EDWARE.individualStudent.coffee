@@ -200,12 +200,12 @@ define [
           e.find(".claims_tooltip").html() # template location: templates/individualStudent_report/claimsInfo.html
       
       # Generate footer links
-      $('#footer').generateFooter('individual_student_report', reportInfo, {
+      this.isrFooter = $('#footer').generateFooter('individual_student_report', reportInfo, {
         'legendInfo': legendInfo,
         'subject': createSampleInterval data.items[0], legendInfo.sample_intervals
-      }, configData.labels)
+      }, configData.labels) unless this.isrFooter
       
-      edwareHeader.create(data, configData, "individual_student_report")
+      this.isrHeader = edwareHeader.create(data, configData, "individual_student_report") unless this.isrHeader
      
       # Report info and legend for print version, Grayscale logo for print version
       $($("#footerLinks").html()).clone().appendTo("#print_reportInfoContent")

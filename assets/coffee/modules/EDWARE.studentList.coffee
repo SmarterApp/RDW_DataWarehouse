@@ -80,13 +80,13 @@ define [
       , ".asmtScore"
       
       # Generate footer links
-      $('#footer').generateFooter('list_of_students', reportInfo, {
+      this.losFooter = $('#footer').generateFooter('list_of_students', reportInfo, {
         'legendInfo': legendInfo,
         # merge cut points data with sample data
         'subject': $.extend(true, {}, cutPointsData.subject1 || cutPointsData.subject2 , legendInfo.sample_intervals)
-      }, data.labels)
+      }, data.labels) unless this.losFooter
       #Add header
-      edwareHeader.create({"user_info": userData}, data, "list_of_students")
+      this.losHeader = edwareHeader.create({"user_info": userData}, data, "list_of_students") unless this.losHeader
       
   renderHeaderPerfBar = (cutPointsData) ->
     for key of cutPointsData

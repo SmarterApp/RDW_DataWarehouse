@@ -1,7 +1,6 @@
 import datetime
 from udl2_util.database_util import connect_db, execute_queries, get_table_columns_info, execute_query_with_result
 from udl2 import message_keys as mk
-from udl2_util.measurement import measure_cpu_plus_elasped_time
 import fileloader.prepare_queries as queries
 import logging
 
@@ -9,7 +8,6 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-@measure_cpu_plus_elasped_time
 def move_data_from_staging_to_integration(conf):
     '''
     map sql data type in configuration file into what SQLAlchemy type is.
@@ -34,7 +32,6 @@ def move_data_from_staging_to_integration(conf):
     return query_result[0]
 
 
-@measure_cpu_plus_elasped_time
 def get_column_mapping_from_stg_to_int(conn, ref_table, staging_table, integration_table, schema_name):
     '''
     Getting column mapping, which maps the columns in staging table, and columns in integration table
@@ -72,7 +69,6 @@ def get_column_mapping_from_stg_to_int(conn, ref_table, staging_table, integrati
     return target_columns, source_columns_with_tran_rule
 
 
-@measure_cpu_plus_elasped_time
 def get_varchar_column_name_and_length(conn, integration_table):
     '''
     Getting the column length of all varchar columns in integration table
@@ -86,7 +82,6 @@ def get_varchar_column_name_and_length(conn, integration_table):
     return column_name_length_dict
 
 
-@measure_cpu_plus_elasped_time
 def create_migration_query(source_schema, source_table, target_schema, target_table,
                            error_schema, error_table, guid_batch, target_columns, source_columns_with_tran_rule):
     '''

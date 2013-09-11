@@ -32,7 +32,6 @@ def task(msg):
     return msg
 
 
-# @measure_cpu_plus_elasped_time
 def generate_conf(guid_batch):
     conf = {mk.GUID_BATCH: guid_batch,
             mk.SOURCE_DB_DRIVER: udl2_conf['udl2_db']['db_driver'],

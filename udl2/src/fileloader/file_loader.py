@@ -5,7 +5,6 @@ import random
 import argparse
 from sqlalchemy.exc import NoSuchTableError
 import udl2.message_keys as mk
-from udl2_util.measurement import measure_cpu_plus_elasped_time
 from udl2_util.database_util import execute_queries, execute_query_with_result, connect_db
 from udl2_util.file_util import extract_file_name
 import logging
@@ -16,7 +15,6 @@ DATA_TYPE_IN_FDW_TABLE = 'text'
 logger = logging.getLogger(__name__)
 
 
-@measure_cpu_plus_elasped_time
 def check_setup(staging_table, engine, conn):
     '''
     Function to check if the given staging table exists or not
@@ -28,7 +26,6 @@ def check_setup(staging_table, engine, conn):
         raise NoSuchTableError
 
 
-@measure_cpu_plus_elasped_time
 def extract_csv_header(conn, staging_schema, ref_table, csv_lz_table, csv_header_file):
     '''
     Extract header names and header types from input csv file,
@@ -51,7 +48,6 @@ def extract_csv_header(conn, staging_schema, ref_table, csv_lz_table, csv_header
     return formatted_header_names, header_types
 
 
-@measure_cpu_plus_elasped_time
 def get_csv_header_names_in_ref_table(conn, staging_schema, ref_table, csv_lz_table):
     '''
     Function to get header names in the given ref_table
@@ -65,7 +61,6 @@ def get_csv_header_names_in_ref_table(conn, staging_schema, ref_table, csv_lz_ta
     return header_names_in_ref_table
 
 
-@measure_cpu_plus_elasped_time
 def canonicalize_header_field(field_name):
     '''
     Canonicalize input field_name
@@ -74,7 +69,6 @@ def canonicalize_header_field(field_name):
     return field_name.replace('-', '_').replace(' ', '_').replace('#', '')
 
 
-@measure_cpu_plus_elasped_time
 def create_fdw_tables(conn, header_names, header_types, csv_file, csv_schema, csv_table, fdw_server):
     '''
     Create one foreign table which maps to the given csv_file on the given fdw_server
@@ -85,7 +79,6 @@ def create_fdw_tables(conn, header_names, header_types, csv_file, csv_schema, cs
     execute_queries(conn, [drop_csv_ddl, create_csv_ddl], 'Exception in creating fdw tables --', 'file_loader', 'create_fdw_tables')
 
 
-@measure_cpu_plus_elasped_time
 def get_fields_map(conn, ref_table, csv_lz_table, guid_batch, csv_file, staging_schema):
     '''
     Getting field mapping, which maps the columns in staging table, and columns in csv table
@@ -112,7 +105,6 @@ def get_fields_map(conn, ref_table, csv_lz_table, guid_batch, csv_file, staging_
     return stg_asmt_outcome_columns, csv_table_columns, transformation_rules
 
 
-@measure_cpu_plus_elasped_time
 def import_via_fdw(conn, stg_asmt_outcome_columns, csv_table_columns, transformation_rules,
                    apply_rules, staging_schema, staging_table, csv_schema, csv_table, start_seq):
     '''
@@ -135,7 +127,6 @@ def import_via_fdw(conn, stg_asmt_outcome_columns, csv_table_columns, transforma
     execute_queries(conn, [create_sequence, insert_into_staging_table, drop_sequence], 'Exception in loading data -- ', 'file_loader', 'import_via_fdw')
 
 
-@measure_cpu_plus_elasped_time
 def drop_fdw_tables(conn, csv_schema, csv_table):
     '''
     Drop foreign table
@@ -144,7 +135,6 @@ def drop_fdw_tables(conn, csv_schema, csv_table):
     execute_queries(conn, [drop_csv_ddl], 'Exception in drop fdw table -- ', 'file_loader', 'drop_fdw_tables')
 
 
-@measure_cpu_plus_elasped_time
 def load_data_process(conn, conf):
     '''
     Load data from csv to staging table. The database connection and configuration information are provided
@@ -176,7 +166,6 @@ def load_data_process(conn, conf):
     return time_as_seconds
 
 
-@measure_cpu_plus_elasped_time
 def load_file(conf):
     '''
     Main function to initiate file loader

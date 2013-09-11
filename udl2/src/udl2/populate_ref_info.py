@@ -10,10 +10,8 @@ from sqlalchemy.exc import ProgrammingError
 
 from rule_maker.rules.transformation_code_generator import generate_transformations
 from udl2_util.database_util import get_sqlalch_table_object, create_sqlalch_session
-from udl2_util.measurement import measure_cpu_plus_elasped_time
 
 
-@measure_cpu_plus_elasped_time
 def populate_ref_column_map(conf_dict, db_engine, conn, schema_name, ref_table_name):
     '''
     Load the column mapping data to the specified reference table
@@ -37,7 +35,6 @@ def populate_ref_column_map(conf_dict, db_engine, conn, schema_name, ref_table_n
     conn.execute(col_map_table.insert(), data_list)
 
 
-@measure_cpu_plus_elasped_time
 def populate_stored_proc(engine, conn, ref_schema, ref_table_name):
     '''
     Generate and load stored procedures into the database
@@ -83,7 +80,6 @@ def populate_stored_proc(engine, conn, ref_schema, ref_table_name):
     return rule_map_list
 
 
-@measure_cpu_plus_elasped_time
 def get_transformation_rule_names(engine, conn, ref_schema, ref_table_name):
     '''
     Get a list of all used transformation rule names from the database
@@ -111,7 +107,6 @@ def get_transformation_rule_names(engine, conn, ref_schema, ref_table_name):
     return trans_rules
 
 
-@measure_cpu_plus_elasped_time
 def update_column_mappings(rule_map_list, engine, conn, ref_schema, ref_table_name):
     '''
     loop through the column mapping rows in the database and populate the

@@ -33,6 +33,7 @@ class Constants():
     INST_HIER_REC_ID = 'inst_hier_rec_id'
     LEVEL = 'level'
     TOTAL = 'total'
+    UNFILTERED_TOTAL = 'unfilteredTotal'
     NAME = 'name'
     ID = 'id'
     RESULTS = 'results'

@@ -62,7 +62,6 @@ def task(incoming_msg):
 
 
 # TODO: Create a generic function that creates any of the (EXPANDED,ARRIVED,SUBFILES) etc. dirs in separate util file.
-# @measure_cpu_plus_elasped_time
 def get_subfiles_dir(lzw, guid_batch):
     print("##############")
     print(lzw)
@@ -72,7 +71,6 @@ def get_subfiles_dir(lzw, guid_batch):
     return subfiles_dir + '/'
 
 
-# @measure_cpu_plus_elasped_time
 def generate_msg_for_file_loader(split_file_tuple, header_file_path, lzw, guid_batch, load_type):
     # TODO: It would be better to have a dict over a list, we can access with key instead of index - more clear.
     split_file_path = split_file_tuple[0]
@@ -92,7 +90,6 @@ def generate_msg_for_file_loader(split_file_tuple, header_file_path, lzw, guid_b
 
 
 @celery.task(name="udl2.W_file_splitter.error_handler")
-# @measure_cpu_plus_elasped_time
 def error_handler(uuid):
     result = AsyncResult(uuid)
     exc = result.get(propagate=False)

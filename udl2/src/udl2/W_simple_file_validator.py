@@ -44,6 +44,5 @@ def task(msg):
 
 
 # TODO: Actually implement get_number_of_parts()
-# @measure_cpu_plus_elasped_time
 def get_number_of_parts():
     return 4

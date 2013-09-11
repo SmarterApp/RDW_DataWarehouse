@@ -3,10 +3,8 @@ __author__ = 'abrien'
 import os
 import shutil
 import glob
-from udl2_util.measurement import measure_cpu_plus_elasped_time
 
 
-@measure_cpu_plus_elasped_time
 def extract_file_name(file_path):
     '''
     Given a path to a file, this function removes the path and the extension, simply returning the filename.
@@ -22,14 +20,12 @@ def extract_file_name(file_path):
     return file_name
 
 
-@measure_cpu_plus_elasped_time
 def extract_file_ext(file_path):
     file_name_and_ext = os.path.basename(file_path)
     file_ext = os.path.splitext(file_name_and_ext)[1]
     return file_ext
 
 
-@measure_cpu_plus_elasped_time
 def copy_file(source_file, target_directory):
     '''
     This function moves the source file to the target directory by wrapping shutil.copy2(...)
@@ -54,7 +50,6 @@ def copy_file(source_file, target_directory):
         return False
 
 
-@measure_cpu_plus_elasped_time
 def remove_file(target_file):
     '''
     This function removes target_file by wrapping os.remove()
@@ -70,7 +65,6 @@ def remove_file(target_file):
         print(e)
 
 
-@measure_cpu_plus_elasped_time
 def move_file_and_confirm(file_to_move, target_directory):
     '''
     This function moves a file to a different directory.
@@ -87,7 +81,6 @@ def move_file_and_confirm(file_to_move, target_directory):
         remove_file(file_to_move)
 
 
-@measure_cpu_plus_elasped_time
 def abs_path_join(*args):
     """Performs os.path.join on all args, then returns the absolute path
 
@@ -101,14 +94,12 @@ def abs_path_join(*args):
         return os.path.abspath(full_path)
 
 
-@measure_cpu_plus_elasped_time
 def create_directory(path):
     if not os.path.exists(path):
         os.makedirs(path)
     return path
 
 
-@measure_cpu_plus_elasped_time
 def get_expanded_dir(lzw, guid_batch):
     guid_batch = str(guid_batch)
     guid_batch_dir = os.path.join(lzw, guid_batch)
@@ -118,7 +109,6 @@ def get_expanded_dir(lzw, guid_batch):
     return expanded_dir
 
 
-@measure_cpu_plus_elasped_time
 def get_file_type_from_dir(extension, directory):
     wildcard = '*' + extension
     wild_card_path = os.path.join(directory, wildcard)

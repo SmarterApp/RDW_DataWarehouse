@@ -6,18 +6,18 @@ define [
   
   create = (language_selector) ->
     iso_language = edwareUtil.getSelectedLanguage()
-    language_name = sessionStorage.getItem('language_name')
-    language_name = "English"  if language_name is null or language_name is `undefined`
     selector = '<span class="btn-group">' +
     '<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">' +
-    '<span id="selected_language" lang="' + iso_language + '">' + language_name + '</span><span class="caret"></span>' +
-    '</button>' +
-    '<ul class="dropdown-menu" role="menu">'
+    '<span id="selected_language" lang="' + iso_language + '">'
     options =
       async: false
       method: "GET"
     edwareDataProxy.getDatafromSource "../data/languages.json", options, (data)->
       languages = data['languages']
+      selector += languages[iso_language] + '</span><span class="caret"></span>' +
+      '</button>' +
+      '<ul class="dropdown-menu" role="menu">'
+      
       $.each languages, (lang, name) ->
         selector += '<li class="language_selections"><a href="#" id="' + lang + '" >' + name + '</a></li>'
     selector += '</ul></span>'

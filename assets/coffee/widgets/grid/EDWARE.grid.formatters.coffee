@@ -1,11 +1,15 @@
 define [
   'jquery'
+  'mustache'
   'jqGrid'
   'edwareUtil'
   'edwarePopulationBar'
   'edwareConfidenceLevelBar'
   'edwareLOSConfidenceLevelBar'  
-], ($, jqGrid, edwareUtil, edwarePopulationBar, edwareConfidenceLevelBar, edwareLOSConfidenceLevelBar) ->
+], ($, Mustache, jqGrid, edwareUtil, edwarePopulationBar, edwareConfidenceLevelBar, edwareLOSConfidenceLevelBar) ->
+
+  POPULATION_BAR_TEMPLATE = "<div class='barContainer default'><div class='alignmentHighlightSection'><div class ='populationBar' data-margin-left='{{alignment}}'>{{{populationBar}}}</div></div><div class='studentsTotal'>{{total}}</div>{{#unfilteredTotal}}<div class='unfilteredTotal'>{{ratio}}% of {{unfilteredTotal}}</div>{{/unfilteredTotal}}<div class='alignmentLine' style='margin-left:{{alignmentLine}}px;'></div></div>"
+
   
   #
   # * EDWARE grid formatters
@@ -74,22 +78,29 @@ define [
       "" 
 
   populationBar = (value, options, rowObject) ->
+    if parseInt(value) <= 0
+      return "Insufficient Data"
+
     asmt_type = options.colModel.formatoptions.asmt_type
     subject = rowObject.results[asmt_type]
-    align_button_class = $(".align_button").attr("class")
-    
-    output = "Insufficient Data"
-    if subject
-      subject = formatSubject subject
-      results = edwarePopulationBar.create subject
-      if parseInt(value) > 0
-          output =  "<div class='barContainer default'><div class='alignmentHighlightSection'><div class = 'populationBar' data-margin-left='" + subject.alignment + "'>" + results + "</div></div><div class='studentsTotal'>" + subject.total + "</div><div class='alignmentLine' style='margin-left:" + subject.alignmentLine + "px;'></div></div>"
-    else
-      output = ""
-    output
+    if not subject
+      return ""
+
+    subject = formatSubject subject
+    return Mustache.to_html POPULATION_BAR_TEMPLATE, {
+      alignment: subject.alignment,
+      alignmentLine: subject.alignmentLine,
+      total: subject.total,
+      unfilteredTotal: subject.unfilteredTotal,
+      ratio: subject.ratio,
+      populationBar: edwarePopulationBar.create(subject)
+    }
 
   formatSubject = (subject)->
     subject.total = edwareUtil.formatNumber(subject.total)
+    subject.unfilteredTotal = edwareUtil.formatNumber(subject.unfilteredTotal)
+    ratio = subject.total * 100.0 / subject.unfilteredTotal
+    subject.ratio = edwareUtil.formatNumber(Math.round(ratio))
     for interval in subject.intervals
       interval.count = edwareUtil.formatNumber(interval.count) if interval
     subject

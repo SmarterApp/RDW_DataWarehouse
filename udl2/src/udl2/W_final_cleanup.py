@@ -3,7 +3,6 @@ from udl2.celery import celery
 from celery.result import AsyncResult
 from celery.utils.log import get_task_logger
 from final_cleanup.final_cleanup import create_directory_structure_for_file_history
-from udl2_util.measurement import measure_cpu_plus_elasped_time
 
 # Keys for the incoming message
 ROW_LIMIT = 'row_limit'
@@ -22,7 +21,6 @@ logger = get_task_logger(__name__)
 
 
 @celery.task(name="udl2.W_final_cleanup.task")
-@measure_cpu_plus_elasped_time
 def task(msg):
     '''
     Celery task that handles clean-up of files created during the UDL process.
@@ -45,7 +43,6 @@ def task(msg):
 
 
 @celery.task(name="udl2.W_final_cleanup.error_handler")
-@measure_cpu_plus_elasped_time
 def error_handler(uuid):
     result = AsyncResult(uuid)
     exc = result.get(propagate=False)

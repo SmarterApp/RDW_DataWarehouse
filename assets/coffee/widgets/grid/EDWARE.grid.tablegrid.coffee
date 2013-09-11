@@ -130,7 +130,8 @@ define [
       return (tableId, columnItems, columnData, footerData, options) ->
           
           columnData = columnData[columnItems.root]  if columnItems.root and columnData isnt null and columnData isnt `undefined`
-          
+          gridHeight = options['gridHeight'] if options
+
           gridOptions =
             data: columnData
             datatype: "local"
@@ -140,13 +141,11 @@ define [
             rowNum: 10000
             shrinkToFit: false
             loadComplete: ->
-               # Move footer row to the top of the table
-               $("div.ui-jqgrid-sdiv").insertBefore $("div.ui-jqgrid-bdiv")
-               
-               if window.innerHeight > 800
-                $("#gview_gridTable > .ui-jqgrid-bdiv").css('height', window.innerHeight * .75);
-               else
-                $("#gview_gridTable > .ui-jqgrid-bdiv").css('height', window.innerHeight * .6);
+              # Move footer row to the top of the table
+              $("div.ui-jqgrid-sdiv").insertBefore $("div.ui-jqgrid-bdiv")
+              $("#gview_gridTable > .ui-jqgrid-bdiv").css {
+                  'min-height': 100, 'height': gridHeight || window.innerHeight * 0.6;
+              }
     
           if footerData
             gridOptions.footerrow = true

@@ -3,14 +3,14 @@
     <div class="section" style="border-top: none;">
 	<div class="achievement">
 	    <!-- ALD -->
-	    <h4>Achievement Level Descriptors (ALD):</h4>
+	    <h4>{{labels.achievement_level_descriptors}}:</h4>
 	    <table class="ALD_table">
 		<thead>
 		    <tr>
-			<th class="ALD_table_header" style="width:17%;">Color</th>
-			<th class="ALD_table_header">Description</th>
-			<th class="ALD_table_header">Score Range</th>
-			<th class="ALD_table_header" style="width:17%;"><span>Outside Error Band</span></th>
+			<th class="ALD_table_header" style="width:17%;">{{labels.color}}</th>
+			<th class="ALD_table_header">{{labels.description}}</th>
+			<th class="ALD_table_header">{{labels.score_range}}</th>
+			<th class="ALD_table_header" style="width:17%;"><span>{{labels.outside_error_band}}</span></th>
 		    </tr>
 		</thead>
 				{{#ALDs}}
@@ -29,7 +29,7 @@
     </div>
     <div class="section losPerformanceBar">
         <div id="overall_score_details">
-	    <h4>Overall Score Details:</h4>
+	    <h4>{{labels.overall_score_details}}:</h4>
             <div class="confidenceLevel">
                 <div class="indicator_cell desc" style="background-color: {{scoreColor}}; color: #000;">
                     <strong class="asmtScore">{{asmtScore}}</strong>
@@ -51,7 +51,7 @@
             </div>
         </div>
         <div id="claim_score_details">
-            <h4>Claim Score Details:</h4>
+            <h4>{{labels.claim_score_details}}:</h4>
             <h5 class="claim_score_note">{{legendInfo.desc7}}</h5>
             <div class="claim_score_cell">
                 <span>{{legendInfo.desc8}}<div class="smaller">(&plusmn; 21)</div></span>
@@ -65,7 +65,7 @@
         </div>
     </div>
     <div class="section error_band_wrapper">
-	<h4>Error Band:</h4>
+	<h4>{{labels.error_band}}:</h4>
 	<p>{{legendInfo.error_band}}</p>
     </div>
 </div>

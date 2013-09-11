@@ -11,7 +11,7 @@ define [
                     "<div id='headerTitle'>Reporting Beta UAT - DRAFT SYSTEM</div>" + 
                     "<div class='topLinks'>" +
                     "<span id='language_selector'></span><span class='seperator'>|</span>" +
-                    "<span id='headerUser' class='user'></span><span class='seperator'>|</span><span id='headerLogout'><a id='logout_button' href='/logout' target='iframe_logout'>Log Out</a></span>" +
+                    "<span id='headerUser' class='user'></span><span class='seperator'>|</span><span id='headerLogout'><a id='logout_button' href='/logout' target='iframe_logout'>{{labels.logout}}</a></span>" +
                     "</div>" +
                     "<!--This iframe is used for logout redirect.  Do not remove it.-->" +
                     "<iframe frameborder='0' height='0px' width='0px' name='iframe_logout'></iframe>"
@@ -20,7 +20,8 @@ define [
   create = (data, config, reportName) ->
     userInfo = data.user_info
 
-    $("#header").html(HEADER_TEMPLATE)
+    output = Mustache.render(HEADER_TEMPLATE, config)
+    $("#header").html(output)
 
     # Add header to the page
     userName = edwareUtil.getUserName userInfo

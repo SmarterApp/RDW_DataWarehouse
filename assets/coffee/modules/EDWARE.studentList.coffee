@@ -50,7 +50,7 @@ define [
       studentsConfig = JSON.parse(output)
       
       # populate select view
-      defaultView = createAssessmentViewSelectDropDown studentsConfig.customViews, cutPointsData
+      defaultView = createAssessmentViewSelectDropDown studentsConfig.customViews, cutPointsData, data.labels
       
       $('#breadcrumb').breadcrumbs(contextData, breadcrumbsConfigs)
       
@@ -189,13 +189,13 @@ define [
           data
 
   # creating the assessment view drop down
-  createAssessmentViewSelectDropDown = (customViewsData, cutPointsData)->
+  createAssessmentViewSelectDropDown = (customViewsData, cutPointsData, labels)->
     items = []
     for key of customViewsData
       value = customViewsData[key]
       items.push({'key': key, 'value': value})
       
-    assessmentDropdownViewTemplate =  "<div id='select_measure_title'>Select Measure: </div>" +
+    assessmentDropdownViewTemplate =  "<div id='select_measure_title'>{{labels.select_measure}}: </div>" +
                                       "<div class='btn-group'>" +
                                       "<a class='btn dropdown-toggle' data-toggle='dropdown' href='#'>" +
                                       "<span id='select_measure_current_view'></span>" +
@@ -208,7 +208,7 @@ define [
                                       "</ul>" +
                                       "</div>"   
 
-    output = Mustache.to_html assessmentDropdownViewTemplate, {'items': items}
+    output = Mustache.to_html assessmentDropdownViewTemplate, {'items': items, 'labels': labels}
 
     $("#content #select_measure").html output
     

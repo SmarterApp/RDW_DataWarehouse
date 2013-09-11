@@ -3,7 +3,8 @@ define [
   "jquery"
   "edwareUtil"
   "edwareLoadingMask"
-], ($, edwareUtil, edwareLoadingMask) ->
+  'edwareLanguage'
+], ($, edwareUtil, edwareLoadingMask, i18n) ->
   
   #
   #    * Get data from the server via ajax call
@@ -43,8 +44,9 @@ define [
       )          
          
   getDataForReport = (reportName) ->
-    language = edwareUtil.getSelectedLanguage()
-    json_url = ["../data/content/" + language + "/content.json", "../data/common/" + language + "/common.json", "../data/common/" + language + "/labels.json"]
+    language = i18n.getSelectedLanguage()
+    json_url = ["../data/content/" + language + "/content.json", "../data/common/" + language + "/common.json",
+      "../data/common/" + language + "/labels.json"]
     report_json_url = "../data/common/" + language + "/" + reportName + ".json"
     options =
         async: false
@@ -60,6 +62,9 @@ define [
       data['reportInfo'] = tmp_data['reportInfo']
       for key of tmp_data['legendInfo']
         data['legendInfo'][key] = tmp_data['legendInfo'][key] if tmp_data['legendInfo'].hasOwnProperty(key)
+    # load messages resources
+    getDatafromSource "../data/common/" + language + "/messages.json", options, (data) ->
+      i18n.saveResources(data)
     data
 
   # Check 401 error

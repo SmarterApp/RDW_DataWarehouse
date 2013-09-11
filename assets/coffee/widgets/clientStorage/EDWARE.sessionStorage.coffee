@@ -4,9 +4,9 @@
 This module provides client side session storage.
 ###
 define [
-  "edwareDataProxy"
+  "jquery"
   "edwareUtil"
-], (edwareDataProxy, edwareUtil) ->
+], ($, edwareUtil) ->
 
   clearAll = () ->
     ### Clears all session storage. ###
@@ -14,15 +14,11 @@ define [
 
   loadKeyPrefix = () ->
     ### Loads user information and use user guid as key prefix. ###
-    options =
-      async: false
-      method: "POST"
-
     guid = ''
-    edwareDataProxy.getDatafromSource "/services/userinfo", options, (data) ->
+    $.getJSON("/services/userinfo").done (data) ->
       guid = edwareUtil.getGuid data.user_info
     guid
-
+    
   PREFIX = loadKeyPrefix()
 
   ### Edware session storage. ###
@@ -51,4 +47,5 @@ define [
   Filter Storage
   ###
   filterStorage: new EdwareSessionStorage('edware.filter.params')
+  i18nStorage: new EdwareSessionStorage('edware.i18n.iso.language')
   clearAll: clearAll

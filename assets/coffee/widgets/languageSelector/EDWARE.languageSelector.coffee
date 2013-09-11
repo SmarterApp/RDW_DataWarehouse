@@ -1,11 +1,11 @@
 define [
   "jquery"
   "edwareDataProxy"
-  "edwareUtil"
-],($, edwareDataProxy, edwareUtil) ->
+  "edwareLanguage"
+],($, edwareDataProxy, language) ->
   
   create = (language_selector) ->
-    iso_language = edwareUtil.getSelectedLanguage()
+    iso_language = language.getSelectedLanguage()
     selector = '<span class="btn-group">' +
     '<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">' +
     '<span id="selected_language" lang="' + iso_language + '">'
@@ -25,13 +25,15 @@ define [
     $('.language_selections').on
       click: (e) ->
         e.preventDefault()
-        current_selected_lang = edwareUtil.getSelectedLanguage()
+        current_selected_lang = language.getSelectedLanguage()
         lang_id = $(this).children('a').attr "id"
         language_name = $('#' + lang_id).text()
         $('#selected_language').html language_name
-        sessionStorage.setItem('language_name', language_name)
         $('#selected_language').attr('lang', lang_id)
-        sessionStorage.setItem('iso_language', lang_id)
+        language.saveSelectedLanguage {
+          'language_id': lang_id,
+          'language_name': language_name
+        }
         location.reload() unless current_selected_lang is lang_id
   
   create: create

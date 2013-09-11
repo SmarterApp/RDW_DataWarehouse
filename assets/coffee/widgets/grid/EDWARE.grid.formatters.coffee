@@ -5,8 +5,9 @@ define [
   'edwareUtil'
   'edwarePopulationBar'
   'edwareConfidenceLevelBar'
-  'edwareLOSConfidenceLevelBar'  
-], ($, Mustache, jqGrid, edwareUtil, edwarePopulationBar, edwareConfidenceLevelBar, edwareLOSConfidenceLevelBar) ->
+  'edwareLOSConfidenceLevelBar'
+  'edwareLanguage'
+], ($, Mustache, jqGrid, edwareUtil, edwarePopulationBar, edwareConfidenceLevelBar, edwareLOSConfidenceLevelBar, i18n) ->
 
   POPULATION_BAR_TEMPLATE = "<div class='barContainer default'><div class='alignmentHighlightSection'><div class ='populationBar' data-margin-left='{{alignment}}'>{{{populationBar}}}</div></div><div class='studentsTotal'>{{total}}</div>{{#unfilteredTotal}}<div class='unfilteredTotal'>{{ratio}}% of {{unfilteredTotal}}</div>{{/unfilteredTotal}}<div class='alignmentLine' style='margin-left:{{alignmentLine}}px;'></div></div>"
 
@@ -79,7 +80,7 @@ define [
 
   populationBar = (value, options, rowObject) ->
     if parseInt(value) <= 0
-      return "Insufficient Data"
+      return i18n.getMessage('insufficient.data')
 
     asmt_type = options.colModel.formatoptions.asmt_type
     subject = rowObject.results[asmt_type]

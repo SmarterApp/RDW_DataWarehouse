@@ -145,11 +145,6 @@ define [
   formatNumber = (num) ->
     if num then num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") else 0
 
-  getSelectedLanguage = () ->
-    iso_language = sessionStorage.getItem('iso_language')
-    iso_language = "en"  if iso_language is null or iso_language is `undefined`
-    iso_language
-
   getConstants: getConstants
   displayErrorMessage: displayErrorMessage
   getUrlParams: getUrlParams 
@@ -165,4 +160,3 @@ define [
   showPdfCSS : showPdfCSS
   formatNumber: formatNumber
   displayNoResultsMessage: displayNoResultsMessage
-  getSelectedLanguage: getSelectedLanguage

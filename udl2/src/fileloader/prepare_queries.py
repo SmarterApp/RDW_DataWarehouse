@@ -1,6 +1,5 @@
 
 
-
 def create_fdw_extension_query(csv_schema):
     return "CREATE EXTENSION IF NOT EXISTS file_fdw WITH SCHEMA {csv_schema}".format(csv_schema=csv_schema)
 

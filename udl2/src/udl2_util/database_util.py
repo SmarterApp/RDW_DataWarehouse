@@ -11,10 +11,7 @@ from sqlalchemy.sql.expression import text
 from sqlalchemy import MetaData
 from sqlalchemy.orm import sessionmaker
 
-#from udl2_util.measurement import measure_cpu_plus_elasped_time, show_amount_of_data_affected
 
-
-# @show_amount_of_data_affected
 def print_get_affected_rows(result, action, module, function):
     '''
     get affected rows of a query execution and return the info
@@ -22,7 +19,6 @@ def print_get_affected_rows(result, action, module, function):
     return {'amount': result.rowcount, 'action': action, 'unit': 'rows', 'module': module, 'function': function}
 
 
-# @measure_cpu_plus_elasped_time
 def connect_db(db_driver, db_user, db_password, db_host, db_port, db_name):
     '''
     Connect to database via sqlalchemy
@@ -41,7 +37,6 @@ def connect_db(db_driver, db_user, db_password, db_host, db_port, db_name):
     return db_connection, engine
 
 
-# @measure_cpu_plus_elasped_time
 def execute_queries(conn, list_of_queries, except_msg, caller_module=None, caller_func=None):
     trans = conn.begin()
     # execute queries
@@ -70,7 +65,6 @@ def execute_query_with_result(conn, query, except_msg, caller_module=None, calle
         trans.rollback()
 
 
-# @measure_cpu_plus_elasped_time
 def get_table_columns_info(conn, table_name, is_conn_a_dblink=False):
     if is_conn_a_dblink:
         sql_query = text("")
@@ -86,7 +80,6 @@ def get_table_columns_info(conn, table_name, is_conn_a_dblink=False):
     return columns
 
 
-# @measure_cpu_plus_elasped_time
 def get_table_column_types(conf, target_table, column_names):
     column_types = OrderedDict([(column_name, '') for column_name in column_names])
     conn, _engine = connect_db(conf['db_user_target'], conf['db_password_target'], conf['db_host_target'], conf['db_name_target'])
@@ -111,7 +104,6 @@ def get_table_column_types(conf, target_table, column_names):
     return column_types
 
 
-# @measure_cpu_plus_elasped_time
 def create_information_query(conf, target_table):
     select_query = ["SELECT * FROM dblink(\'dbname={db_name_target} user={db_user_target} password={db_password_target}\',"
                     "\'SELECT column_name, data_type, character_maximum_length FROM information_schema.columns WHERE table_name=\''{target_table}\''')"
@@ -124,7 +116,6 @@ def create_information_query(conf, target_table):
     return select_query
 
 
-# @measure_cpu_plus_elasped_time
 def get_schema_metadata(db_engine, schema_name=None):
     '''
     Get the SQLAlchemy MetaData object
@@ -141,7 +132,6 @@ def get_schema_metadata(db_engine, schema_name=None):
     return metadata
 
 
-# @measure_cpu_plus_elasped_time
 def get_sqlalch_table_object(db_engine, schema_name, table_name):
     '''
     Get a SQLAlchemy table object for the given table and schema name
@@ -160,7 +150,6 @@ def get_sqlalch_table_object(db_engine, schema_name, table_name):
     return table
 
 
-# @measure_cpu_plus_elasped_time
 def create_sqlalch_session(db_engine):
     '''
     Create and return a sqlalchemy session for the given engine

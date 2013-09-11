@@ -49,7 +49,6 @@ def task(msg):
     return msg
 
 
-# @measure_cpu_plus_elasped_time
 def generate_conf_for_loading(json_file, guid_batch):
     '''
     takes the msg and pulls out the relevant parameters to pass
@@ -71,7 +70,6 @@ def generate_conf_for_loading(json_file, guid_batch):
 
 
 @celery.task(name="udl2.W_load_json_to_integration.error_handler")
-# @measure_cpu_plus_elasped_time
 def error_handler(uuid):
     result = AsyncResult(uuid)
     exc = result.get(propagate=False)

@@ -1,15 +1,12 @@
 from udl2 import message_keys as mk
-from udl2_util.measurement import measure_cpu_plus_elasped_time
 
 
-@measure_cpu_plus_elasped_time
 def select_distinct_asmt_guid_query(schema_name, table_name, column_name, guid_batch):
     return "SELECT DISTINCT {guid_column_name_in_source} FROM {source_schema_and_table} WHERE guid_batch=\'{guid_batch}\'".format(guid_column_name_in_source=column_name,
                                                                                                                                   source_schema_and_table=combine_schema_and_table(schema_name, table_name),
                                                                                                                                   guid_batch=guid_batch)
 
 
-@measure_cpu_plus_elasped_time
 def select_distinct_asmt_rec_id_query(schema_name, target_table_name, rec_id_column_name, guid_column_name_in_target, guid_column_value):
     return "SELECT DISTINCT {rec_id_column_name} FROM {source_schema_and_table} WHERE {guid_column_name_in_target}=\'{guid_column_value_got}\'".format(rec_id_column_name=rec_id_column_name,
                                                                                                                                                        source_schema_and_table=combine_schema_and_table(schema_name, target_table_name),
@@ -17,7 +14,6 @@ def select_distinct_asmt_rec_id_query(schema_name, target_table_name, rec_id_col
                                                                                                                                                        guid_column_value_got=guid_column_value)
 
 
-@measure_cpu_plus_elasped_time
 def create_insert_query(conf, source_table, target_table, column_mapping, column_types, need_distinct):
     '''
     Main function to create query to insert data from source table to target table
@@ -50,7 +46,6 @@ def create_insert_query(conf, source_table, target_table, column_mapping, column
     return insert_sql
 
 
-@measure_cpu_plus_elasped_time
 def enable_trigger_query(schema_name, table_name, is_enable):
     '''
     Main function to crate a query to disable/enable trigger in table
@@ -64,7 +59,6 @@ def enable_trigger_query(schema_name, table_name, is_enable):
     return query
 
 
-@measure_cpu_plus_elasped_time
 def update_inst_hier_rec_id_query(schema, condition_value, info_map):
     '''
     Main function to crate query to update foreign key inst_hier_rec_id in table fact_asmt_outcome
@@ -85,7 +79,6 @@ def update_inst_hier_rec_id_query(schema, condition_value, info_map):
     return update_query
 
 
-@measure_cpu_plus_elasped_time
 def create_information_query(target_table):
     '''
     Main function to crate query to get column types in a table. 'information_schema.columns' is used.
@@ -94,7 +87,6 @@ def create_information_query(target_table):
     return select_query
 
 
-@measure_cpu_plus_elasped_time
 def combine_schema_and_table(schema_name, table_name):
     '''
     Function to create the expression of "schema_name"."table_name"
@@ -102,7 +94,6 @@ def combine_schema_and_table(schema_name, table_name):
     return '\"' + schema_name + '\".\"' + table_name + '\"'
 
 
-@measure_cpu_plus_elasped_time
 def get_dim_table_mapping_query(schema_name, table_name, phase_number):
     '''
     Function to create the expression of "schema_name"."table_name"
@@ -111,7 +102,6 @@ def get_dim_table_mapping_query(schema_name, table_name, phase_number):
                                                                                                                          phase_number=phase_number)
 
 
-@measure_cpu_plus_elasped_time
 def get_dim_column_mapping_query(schema_name, table_name, phase_number, dim_table):
     '''
     Function to create the expression of "schema_name"."table_name"

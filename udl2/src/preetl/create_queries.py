@@ -1,6 +1,10 @@
 
 
 def insert_batch_row_query(schema, batch_table, **para_dict):
+    '''
+    Create the sql to insert a row into the batch table.
+    It is expected that items in the para_dict do not have None values
+    '''
     column_list = []
     value_list = []
     # split pair of column name, and value in the same order

@@ -2,7 +2,6 @@ from __future__ import absolute_import
 from udl2.celery import celery
 from celery.utils.log import get_task_logger
 from udl2 import message_keys as mk
-from udl2_util.measurement import measure_cpu_plus_elasped_time
 
 __author__ = 'abrien'
 
@@ -20,7 +19,6 @@ logger = get_task_logger(__name__)
 
 
 @celery.task(name="udl2.W_file_arrived.task")
-@measure_cpu_plus_elasped_time
 def task(incoming_msg):
     # Retrieve parameters from the incoming message
     uploaded_file = incoming_msg[mk.INPUT_FILE_PATH]

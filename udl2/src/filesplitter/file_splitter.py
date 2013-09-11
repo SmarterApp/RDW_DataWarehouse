@@ -4,10 +4,8 @@ import csv
 import math
 import argparse
 import datetime
-from udl2_util.measurement import measure_cpu_plus_elasped_time, show_amount_of_data_affected
 
 
-@show_amount_of_data_affected
 def print_get_splitted_rows(amount, unit, action, module, function):
     '''
     get rows to be splitted of by file splitter return the info
@@ -15,7 +13,6 @@ def print_get_splitted_rows(amount, unit, action, module, function):
     return {'amount': amount, 'unit': unit, 'action': action, 'module': module, 'function': function}
 
 
-@measure_cpu_plus_elasped_time
 def create_output_destination(file_name, output_path):
     # create output template from supplied input file path
     base = os.path.splitext(os.path.basename(file_name))[0]
@@ -28,14 +25,12 @@ def create_output_destination(file_name, output_path):
     return output_name_template, output_dir
 
 
-@measure_cpu_plus_elasped_time
 def run_command(cmd_string):
     p = subprocess.Popen(cmd_string, stdout=subprocess.PIPE, shell=True)
     (output, err) = p.communicate()
     return output, err
 
 
-@measure_cpu_plus_elasped_time
 def check_row_count(file_name):
     # get line count of original file
     word_count_cmd = "wc %s" % file_name
@@ -47,7 +42,6 @@ def check_row_count(file_name):
     return None
 
 
-@measure_cpu_plus_elasped_time
 def get_list_split_files(output_name_template, output_dir):
     output_list = []
     # get line count of all files in output directory that match template
@@ -70,7 +64,6 @@ def get_list_split_files(output_name_template, output_dir):
     return output_list
 
 
-@measure_cpu_plus_elasped_time
 def split_file(file_name, delimiter=',', row_limit=10000, parts=0, output_path='./'):
     # make sure output path ending in '/' so concat will work correctly
     if output_path[-1] != '/':

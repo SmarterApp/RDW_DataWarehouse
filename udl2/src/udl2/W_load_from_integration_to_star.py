@@ -44,7 +44,6 @@ def explode_to_dims(msg):
     return msg
 
 
-# @measure_cpu_plus_elasped_time
 def get_table_and_column_mapping(conf, table_name_prefix=None):
     '''
     The main function to get the table mapping and column mapping from reference table
@@ -63,7 +62,6 @@ def get_table_and_column_mapping(conf, table_name_prefix=None):
     return table_map, column_map
 
 
-# @measure_cpu_plus_elasped_time
 def get_table_mapping(conn, schema_name, table_name, phase_number, table_name_prefix=None):
     table_mapping_query = queries.get_dim_table_mapping_query(schema_name, table_name, phase_number)
     table_mapping_result = execute_query_with_result(conn, table_mapping_query, 'Exception -- getting table mapping', 'W_load_from_integration_to_star', 'get_table_mapping')
@@ -79,7 +77,6 @@ def get_table_mapping(conn, schema_name, table_name, phase_number, table_name_pr
     return table_mapping_dict
 
 
-# @measure_cpu_plus_elasped_time
 def get_column_mapping_from_int_to_star(conn, schema_name, table_name, phase_number, dim_tables):
     column_map = {}
     for dim_table in dim_tables:
@@ -155,7 +152,6 @@ def explode_to_fact(msg):
 
 
 @celery.task(name="udl2.W_load_from_integration_to_star.error_handler")
-# @measure_cpu_plus_elasped_time
 def error_handler(uuid):
     '''
     This is the error handler task
@@ -166,7 +162,6 @@ def error_handler(uuid):
           exc, result.traceback))
 
 
-# @measure_cpu_plus_elasped_time
 def create_group_tuple(task_name, arg_list):
     '''
     Create task call as a tuple
@@ -177,7 +172,6 @@ def create_group_tuple(task_name, arg_list):
     return tuple(grouped_tasks)
 
 
-# @measure_cpu_plus_elasped_time
 def generate_conf(guid_batch, phase_number, load_type):
     '''
     Return all needed configuration information

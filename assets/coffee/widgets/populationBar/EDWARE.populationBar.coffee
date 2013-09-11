@@ -22,6 +22,6 @@ define [
       output
         
   create = (data, container) ->    
-    $(container).populationBar data      
+    $(container).populationBar data
           
   create: create

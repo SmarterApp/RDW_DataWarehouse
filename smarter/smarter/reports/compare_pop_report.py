@@ -55,8 +55,46 @@ def get_comparing_populations_report(params):
     '''
     Comparing Populations Report
     '''
+    noFilters = _is_filtering(params)
+    if noFilters:
+        return get_unfiltered_report(params)  
+    else:
+        return get_filtered_report(params)
+
+def _is_filtering(params):
+    '''
+    Return true if no demographics parameter
+    '''
+    return params.keys().isdisjoint(DEMOGRAPHICS_CONFIG.keys())
+
+def get_filtered_report(params):
+    '''
+    Comparing Populations Report with filters
+    '''    
+    filtered = ComparingPopReport(**params).get_report()
+    unfiltered = get_unfiltered_report(params)
+    return merge_results(filtered, unfiltered)
+
+def get_unfiltered_report(params):
+    '''
+    Comparing Populations Report without filters
+    '''
+    params = { k: v for k, v in params.items() if k not in DEMOGRAPHICS_CONFIG }
     return ComparingPopReport(**params).get_report()
 
+def merge_results(filtered, unfiltered):
+    '''
+    Merge unfiltered count to filtered results
+    '''
+    cache = { record['id']: record['results'] for record in unfiltered['records'] }
+    for subject in filtered['subjects']:
+        # merge summary
+        filtered['summary'][0]['results'][subject]['unfilteredTotal'] = unfiltered['summary'][0]['results'][subject]['total'] 
+        # merge each record
+        for record in filtered['records']:
+            total = cache[record['id']][subject]['total']
+            record['results'][subject]['unfilteredTotal'] = total
+    return filtered
 
 def get_comparing_populations_cache_route(comparing_pop):
     '''

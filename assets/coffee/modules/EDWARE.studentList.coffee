@@ -127,7 +127,7 @@ define [
       # If the view name is not one of the subjects, default it to the default assessments data
       if not (dataName of assessmentsData)
         dataName = 'ALL'
-      edwareGrid.create "gridTable", studentsConfig[viewName], assessmentsData[dataName], { gridHeight: window.innerHeight - 225 }
+      edwareGrid.create "gridTable", studentsConfig[viewName], assessmentsData[dataName], undefined, { gridHeight: window.innerHeight - 235}
       
       # Add dark border color between Math and ELA section to emphasize the division
       $('.jqg-second-row-header th:nth-child(1), .jqg-second-row-header th:nth-child(2), .ui-jqgrid .ui-jqgrid-htable th.ui-th-column:nth-child(1), .ui-jqgrid .ui-jqgrid-htable th.ui-th-column:nth-child(3), .ui-jqgrid tr.jqgrow td:nth-child(1), .ui-jqgrid tr.jqgrow td:nth-child(3)').css("border-right", "solid 1px #B1B1B1");

@@ -85,11 +85,11 @@ define [
       , ".asmtScore"
       
       # Generate footer links
-      $('#footer').generateFooter('list_of_students', reportInfo, {
+      this.losfooter = $('#footer').generateFooter('list_of_students', reportInfo, {
         'legendInfo': legendInfo,
         # merge cut points data with sample data
         'subject': $.extend(true, {}, cutPointsData.subject1 || cutPointsData.subject2 , legendInfo.sample_intervals)
-      }, data.labels)
+      }, data.labels) if not this.losfooter
       
       # append user_info (e.g. first and last name)
       if userData

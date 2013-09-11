@@ -86,14 +86,15 @@ def merge_results(filtered, unfiltered):
     '''
     Merge unfiltered count to filtered results
     '''
-    cache = { record['id']: record['results'] for record in unfiltered['records'] }
-    for subject in filtered['subjects']:
+    cache = { record[Constants.ID]: record[Constants.RESULTS] for record in unfiltered[Constants.RECORDS] }
+    for subject in filtered[Constants.SUBJECTS]:
         # merge summary
-        filtered['summary'][0]['results'][subject]['unfilteredTotal'] = unfiltered['summary'][0]['results'][subject]['total'] 
+        filtered[Constants.SUMMARY][0][Constants.RESULTS][subject][Constants.UNFILTERED_TOTAL] = \
+            unfiltered[Constants.SUMMARY][0][Constants.RESULTS][subject][Constants.TOTAL]
         # merge each record
-        for record in filtered['records']:
-            total = cache[record['id']][subject]['total']
-            record['results'][subject]['unfilteredTotal'] = total
+        for record in filtered[Constants.RECORDS]:
+            total = cache[record[Constants.ID]][subject][Constants.TOTAL]
+            record[Constants.RESULTS][subject][Constants.UNFILTERED_TOTAL] = total
     return filtered
 
 def get_comparing_populations_cache_route(comparing_pop):

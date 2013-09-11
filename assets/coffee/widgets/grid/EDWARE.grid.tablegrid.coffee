@@ -51,6 +51,7 @@ define [
               colModelItem.sorttype = item1.sorttype if item1.sorttype
               colModelItem.sortable = item1.sortable
               colModelItem.align = item1.align  if item1.align
+              colModelItem.labels = options.labels if options.labels
               
               if item1.title isnt undefined
                 colModelItem.title = item1.title

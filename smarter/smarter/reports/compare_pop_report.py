@@ -57,9 +57,10 @@ def get_comparing_populations_report(params):
     '''
     noFilters = _is_filtering(params)
     if noFilters:
-        return get_unfiltered_report(params)  
+        return get_unfiltered_report(params)
     else:
         return get_filtered_report(params)
+
 
 def _is_filtering(params):
     '''
@@ -67,26 +68,29 @@ def _is_filtering(params):
     '''
     return params.keys().isdisjoint(DEMOGRAPHICS_CONFIG.keys())
 
+
 def get_filtered_report(params):
     '''
     Comparing Populations Report with filters
-    '''    
+    '''
     filtered = ComparingPopReport(**params).get_report()
     unfiltered = get_unfiltered_report(params)
     return merge_results(filtered, unfiltered)
+
 
 def get_unfiltered_report(params):
     '''
     Comparing Populations Report without filters
     '''
-    params = { k: v for k, v in params.items() if k not in DEMOGRAPHICS_CONFIG }
+    params = {k: v for k, v in params.items() if k not in DEMOGRAPHICS_CONFIG}
     return ComparingPopReport(**params).get_report()
+
 
 def merge_results(filtered, unfiltered):
     '''
     Merge unfiltered count to filtered results
     '''
-    cache = { record[Constants.ID]: record[Constants.RESULTS] for record in unfiltered[Constants.RECORDS] }
+    cache = {record[Constants.ID]: record[Constants.RESULTS] for record in unfiltered[Constants.RECORDS]}
     for subject in filtered[Constants.SUBJECTS]:
         # merge summary
         filtered[Constants.SUMMARY][0][Constants.RESULTS][subject][Constants.UNFILTERED_TOTAL] = \
@@ -96,6 +100,7 @@ def merge_results(filtered, unfiltered):
             total = cache[record[Constants.ID]][subject][Constants.TOTAL]
             record[Constants.RESULTS][subject][Constants.UNFILTERED_TOTAL] = total
     return filtered
+
 
 def get_comparing_populations_cache_route(comparing_pop):
     '''

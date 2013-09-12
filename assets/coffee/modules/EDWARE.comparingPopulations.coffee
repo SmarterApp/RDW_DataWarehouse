@@ -61,7 +61,7 @@ define [
       this.defaultColors = config.colors
       this.gridContainer = $('.gridHeight100')
       this.gridHeight = window.innerHeight - 335 #subtract footer and header height
-      this.reRenderComparingPopulationsHtml()
+      edwareUtil.reRenderBody this.labels
       # create align button
       this.alignment = new Alignment('.align_button')
       # default sort
@@ -158,13 +158,6 @@ define [
       this.breadcrumbs = new Breadcrumbs(breadcrumbsData, this.breadcrumbsConfigs, this.reportType)
       # set title
       $('.title h2').html this.breadcrumbs.getReportTitle()
-    
-    reRenderComparingPopulationsHtml:()->
-      # render alignment
-      output = Mustache.to_html $('body').html(), {
-        labels: this.labels
-      }
-      $('body').html output
 
     bindEvents: ()->
       # Show tooltip for population bar on mouseover

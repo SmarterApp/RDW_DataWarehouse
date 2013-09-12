@@ -145,6 +145,13 @@ define [
   formatNumber = (num) ->
     if num then num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") else 0
 
+  reRenderBody = (labels) ->
+    body = $('body').html()
+    output = Mustache.to_html body, {
+        labels: labels
+    }
+    $('body').html output
+
   getConstants: getConstants
   displayErrorMessage: displayErrorMessage
   getUrlParams: getUrlParams 
@@ -160,3 +167,4 @@ define [
   showPdfCSS : showPdfCSS
   formatNumber: formatNumber
   displayNoResultsMessage: displayNoResultsMessage
+  reRenderBody: reRenderBody

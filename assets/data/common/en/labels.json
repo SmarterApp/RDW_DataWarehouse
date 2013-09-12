@@ -4,9 +4,12 @@
 		"ald_color_coded": "ALD color coded",
 		"ald_cutpoints": "ALD Cutpoints",
 		"align": "Align",
+		"apply_filters": "Apply Filters",
 		"brackets_denote_min_max": "brackets denote min/max",
+		"cancel": "Cancel",
 		"claims": "Claims",
 		"claim_score_details": "Claim Score Details",
+		"clear_all": "Clear All",
 		"color": "Color",
 		"date": "Date",
 		"description": "Description",
@@ -15,6 +18,7 @@
 		"error_band": "Error Band",
 		"feedback": "Feedback",
 		"filter": "Filter",
+		"filterd_by": "Filtered by",
 		"find_out_more": "Find out more",
 		"grade": "Grade",
 		"help": "Help",
@@ -43,6 +47,7 @@
 		"score_range": "Score Range",
 		"select_measure": "Select Measure",
 		"state": "State",
+		"student_filters": "Student Filters",
 		"teacher": "Teacher"
 	}
 }

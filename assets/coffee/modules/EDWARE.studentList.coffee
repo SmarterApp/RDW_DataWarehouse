@@ -36,7 +36,8 @@ define [
     reportInfo = data.reportInfo
     studentsConfig = data.students
     legendInfo = data.legendInfo
-
+    labels = data.labels
+    
     getStudentData "/data/list_of_students", params, defaultColors, (assessmentsData, contextData, subjectsData, claimsData, userData, cutPointsData) ->
           
       # set school name as the page title from breadcrumb
@@ -87,7 +88,8 @@ define [
       }, data.labels) unless this.losFooter
       #Add header
       this.losHeader = edwareHeader.create({"user_info": userData}, data, "list_of_students") unless this.losHeader
-      
+  reRenderStudentListHtml = ()->
+    
   renderHeaderPerfBar = (cutPointsData) ->
     for key of cutPointsData
         items = cutPointsData[key]

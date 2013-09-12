@@ -64,9 +64,24 @@ define [
         data['legendInfo'][key] = tmp_data['legendInfo'][key] if tmp_data['legendInfo'].hasOwnProperty(key)
     data
 
+  getDataForFilter = ()->
+    language = i18n.getSelectedLanguage()
+    json_url = ["../data/common/" + language + "/labels.json", "../data/filter/" + language + "/filter.json"]
+    options =
+        async: false
+        method: "GET"
+    idx = 0
+    data = {}
+    while idx < json_url.length
+      getDatafromSource json_url[idx], options, (tmp_data)->
+        $.extend data, tmp_data if typeof tmp_data is "object"
+      idx++
+    data
+    
   # Check 401 error
   check401Error = (status) ->
     location.href = "login.html?redirectURL=" + window.location.href if status is 401
         
   getDatafromSource: getDatafromSource
   getDataForReport: getDataForReport
+  getDataForFilter: getDataForFilter

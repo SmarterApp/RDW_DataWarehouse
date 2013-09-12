@@ -62,9 +62,6 @@ define [
       data['reportInfo'] = tmp_data['reportInfo']
       for key of tmp_data['legendInfo']
         data['legendInfo'][key] = tmp_data['legendInfo'][key] if tmp_data['legendInfo'].hasOwnProperty(key)
-    # load messages resources
-    getDatafromSource "../data/common/" + language + "/messages.json", options, (data) ->
-      i18n.saveResources(data)
     data
 
   # Check 401 error

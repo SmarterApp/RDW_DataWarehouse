@@ -10,13 +10,5 @@ define [
   saveSelectedLanguage = (item) ->
     clientStorage.i18nStorage.save(item)
 
-  saveResources = (data) ->
-    this.i18n_data = data
-
-  getMessage = (key) ->
-    this.i18n_data[key]
-
   getSelectedLanguage: getSelectedLanguage
   saveSelectedLanguage: saveSelectedLanguage
-  saveResources: saveResources
-  getMessage: getMessage

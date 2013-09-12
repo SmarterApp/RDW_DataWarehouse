@@ -210,14 +210,9 @@ define [
       # keep minimum width 30px
       if width > 0 then width else 30
 
-    setTriggerText: (text) ->
-      $span = this.filterTrigger.find('span')
-      this.filterTrigger.html(text).append($span)
-      
     loadReport: (params) ->
       this.reset()
       this.submitFilter()
-      this.setTriggerText i18n.getMessage('filter.text')
 
   class EdwareFilterTag
     

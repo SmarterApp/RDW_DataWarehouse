@@ -421,6 +421,19 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         self.assertEqual(results['records'][0]['results']['subject1']['total'], 1)
         self.assertEqual(results['records'][0]['results']['subject2']['total'], -1)
 
+    def test_filter_with_unfiltered_results(self):
+        testParam = {}
+        testParam[Constants.STATECODE] = 'NY'
+        testParam[Constants.DISTRICTGUID] = '229'
+        testParam[Constants_filter_names.DEMOGRAPHICS_GENDER] = [Constants_filter_names.DEMOGRAPHICS_GENDER_MALE]
+        results = get_comparing_populations_report(testParam)
+        self.assertEqual(len(results['records']), 3)
+        self.assertEqual(results['records'][0]['results']['subject1']['unfilteredTotal'], 25)
+        self.assertEqual(results['records'][0]['results']['subject2']['unfilteredTotal'], 25)
+        self.assertEqual(results['records'][1]['results']['subject1']['unfilteredTotal'], 5)
+        self.assertEqual(results['records'][1]['results']['subject2']['unfilteredTotal'], 5)
+        self.assertEqual(results['summary'][0]['results']['subject1']['unfilteredTotal'], 32)
+        self.assertEqual(results['summary'][0]['results']['subject2']['unfilteredTotal'], 34)
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testReport']

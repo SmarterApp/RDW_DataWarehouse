@@ -14,14 +14,13 @@
    	<div id="breadcrumb"></div>
    	<div id="content" class="cPop_Wrapper">
 	    <div class="title clearfix">
-	   	<h2></h2>
-	   	<div class="gridControls pull-right">
-	   	    <div class="align_label pull-left">Align</div>
-	   	    <div class="align_control pull-left"><label class="pull-left">On</label><div class="align_button align_off pull-left"></div><label class="pull-left">Off</label></div>
-	   	    <div class="verticalBar pull-left"></div>
-	   	    <div class="filter_label pull-left">Filter<span class="caret"></span></div>
-	   	</div>
-	    </div>
+	        <h2></h2>
+	        <div class="gridControls pull-right">
+                    <div id='alignment'></div>
+	            <div class="verticalBar pull-left"></div>
+	            <div class="filter_label pull-left">Filter<span class="caret"></span></div>
+	        </div>
+            </div>
 	    <div id="cpopFilter"></div>
    	    <div id="errorMessage"></div>
    	    <div class="dropdownSection"></div>
@@ -32,4 +31,8 @@
         <div id="footer">
         </div>
     </body>
+    <script id="alignment_template" type="text/template">
+        <div class="align_label pull-left">{{align}}</div>
+	<div class="align_control pull-left"><label class="pull-left">{{on}}</label><div class="align_button align_off pull-left"></div><label class="pull-left">{{off}}</label></div>
+    </script>
 </html>

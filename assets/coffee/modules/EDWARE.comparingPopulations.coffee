@@ -14,7 +14,8 @@ define [
   "edwareFooter"
   "edwareHeader"
   "edwareDropdown"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwareDropdown) ->
+  "edwareLanguage"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwareDropdown, i18n) ->
 
   REPORT_NAME = "comparingPopulationsReport"
 
@@ -59,10 +60,9 @@ define [
       this.labels = config.labels
       this.defaultColors = config.colors
       this.gridContainer = $('.gridHeight100')
-      this.gridControlPanel = $(".gridControls")
       this.gridHeight = window.innerHeight - 335 #subtract footer and header height
       # create align button
-      this.alignment = new Alignment($('.align_button'))
+      this.alignment = new Alignment('.align_button')
       # default sort
       this.sort = {
         name: 'name'
@@ -151,12 +151,19 @@ define [
       edwareGrid.create "gridTable", gridConfig, this.populationData, this.summaryData, { gridHeight: this.gridHeight }
       this.sortBySubject this.sort
       # Display grid controls after grid renders
-      this.gridControlPanel.show()
+      $(".gridControls").show()
 
     renderBreadcrumbs: (breadcrumbsData)->
       this.breadcrumbs = new Breadcrumbs(breadcrumbsData, this.breadcrumbsConfigs, this.reportType)
-      # Set the Report title depending on the report that we're looking at
-      $('#content h2').html this.breadcrumbs.getReportTitle()
+      # set title
+      $('.title h2').html this.breadcrumbs.getReportTitle()
+      # render alignment
+      output = Mustache.to_html $('#alignment_template').html(), {
+        align: i18n.getMessage 'alignment.text'
+        on: i18n.getMessage 'alignment.on'
+        off: i18n.getMessage 'alignment.off'
+      }
+      $('#alignment').replaceWith output
 
     bindEvents: ()->
       # Show tooltip for population bar on mouseover
@@ -337,17 +344,17 @@ define [
 
   class Alignment
 
-    constructor: (@trigger)->
+    constructor: (@triggerClass)->
       this.aligned = false
       this.bindEvents()
 
     bindEvents: ()->
       # Set population bar alignment on/off
       self = this
-      this.trigger.unbind('click').click () ->
+      $(document).on 'click', this.triggerClass, () ->
         self.aligned = not self.aligned
         # toggle component
-        self.trigger.toggleClass('align_on align_off')
+        $(self.triggerClass).toggleClass('align_on align_off')
         # update alignment
         self.update()
 

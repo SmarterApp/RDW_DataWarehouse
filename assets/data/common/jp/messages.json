@@ -1,3 +1,7 @@
 {
-	"insufficient.data": "Insufficient Data JP"
+	"insufficient.data": "Insufficient Data JP",
+	"alignment.text": "Align JP",
+	"alignment.on": "On",
+	"alignment.off": "Off",
+	"filter.text": "Filter JP"
 }

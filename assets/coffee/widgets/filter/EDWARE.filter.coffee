@@ -6,7 +6,8 @@ define [
   "edwareUtil"
   "edwareSessionStorage"
   "text!edwareFilterTemplate"
-], ($, Mustache, bootstrap, edwareDataProxy, edwareUtil, edwareSessionStorage, filterTemplate) ->
+  "edwareLanguage"
+], ($, Mustache, bootstrap, edwareDataProxy, edwareUtil, edwareSessionStorage, filterTemplate, i18n) ->
   
   # * EDWARE filter widget
   # * The module contains EDWARE filter creation method
@@ -209,9 +210,14 @@ define [
       # keep minimum width 30px
       if width > 0 then width else 30
 
+    setTriggerText: (text) ->
+      $span = this.filterTrigger.find('span')
+      this.filterTrigger.html(text).append($span)
+      
     loadReport: (params) ->
       this.reset()
       this.submitFilter()
+      this.setTriggerText i18n.getMessage('filter.text')
 
   class EdwareFilterTag
     

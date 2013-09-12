@@ -230,12 +230,19 @@ define [
     getOverallSummaryName: () ->
         # Returns the overall summary row name based on the type of report
       if this.reportType is 'state'
-        data = this.breadcrumbsData.items[0].name + ' District'
+        return this.breadcrumbsData.items[0].id + ' State Overall'
       else if this.reportType is 'district'
-        data = this.breadcrumbsData.items[1].name + ' School'
+        districtName = this.breadcrumbsData.items[1].name
+        districtName = districtName.replace(/Schools$/, '').trimRight()
+        districtName = districtName.replace(/District$/, '').trimRight()
+        districtName = districtName.replace(/School$/, '').trimRight()
+        return districtName + ' District Overall'
       else if this.reportType is 'school'
-        data = this.breadcrumbsData.items[2].name + ' Grade'
-      'Overall ' + data + ' Summary'
+        schoolName = this.breadcrumbsData.items[2].name
+        schoolName = schoolName.replace(/School$/, '').trimRight()
+        return schoolName + ' School Overall'
+      else
+        return this.breadcrumbsData.items[3].name + ' Overall'
 
     # Add an 's to a word
     addApostropheS: (word) ->

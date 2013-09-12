@@ -15,10 +15,17 @@ define [
   loadKeyPrefix = () ->
     ### Loads user information and use user guid as key prefix. ###
     guid = ''
-    $.getJSON("/services/userinfo").done (data) ->
-      guid = edwareUtil.getGuid data.user_info
+    $.ajax {
+      # have to use a separate ajax call to avoid circular dependancy issue as it was when using dataProxy
+      url: '/services/userinfo'
+      type: 'POST'
+      dataType: 'json'
+      async: false
+      success: (data) ->
+        guid = edwareUtil.getGuid data.user_info
+    }
     guid
-    
+
   PREFIX = loadKeyPrefix()
 
   ### Edware session storage. ###

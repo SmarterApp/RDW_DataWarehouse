@@ -31,8 +31,7 @@ define [
         $('#selected_language').html language_name
         $('#selected_language').attr('lang', lang_id)
         language.saveSelectedLanguage {
-          'language_id': lang_id,
-          'language_name': language_name
+          'language_id': lang_id
         }
         location.reload() unless current_selected_lang is lang_id
   

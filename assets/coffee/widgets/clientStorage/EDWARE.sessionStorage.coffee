@@ -47,5 +47,5 @@ define [
   Filter Storage
   ###
   filterStorage: new EdwareSessionStorage('edware.filter.params')
-  i18nStorage: new EdwareSessionStorage('edware.i18n.iso.language')
+  i18nStorage: new EdwareSessionStorage('edware.iso.language')
   clearAll: clearAll

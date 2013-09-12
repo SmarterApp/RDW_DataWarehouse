@@ -19,8 +19,8 @@ from smarter.database.smarter_connector import SmarterDBConnection
 from smarter.reports.helpers.metadata import get_subjects_map,\
     get_custom_metadata
 from edapi.cache import cache_region
-from smarter.reports.filters.demographics import apply_demographics_filter_to_query,\
-    has_demographics_filters, DEMOGRAPHICS_CONFIG
+from smarter.reports.helpers.filters import apply_filter_to_query,\
+    has_filters, FILTERS_CONFIG
 from smarter.reports.helpers.utils import merge_dict
 
 REPORT_NAME = "list_of_students"
@@ -60,7 +60,7 @@ REPORT_NAME = "list_of_students"
                 "type": "string"
             },
         }
-    }, DEMOGRAPHICS_CONFIG))
+    }, FILTERS_CONFIG))
 @audit_event()
 @user_info
 def get_list_of_students_report(params):
@@ -132,12 +132,12 @@ def get_list_of_students_report(params):
             query = query.where(and_(dim_asmt.c.asmt_subject.in_(asmtSubject)))
 
         # Apply demographics to the query
-        query = apply_demographics_filter_to_query(query, fact_asmt_outcome, params)
+        query = apply_filter_to_query(query, fact_asmt_outcome, params)
         query = query.order_by(dim_student.c.last_name).order_by(dim_student.c.first_name)
 
         results = connector.get_result(query)
 
-        if not results and not has_demographics_filters(params):
+        if not results and not has_filters(params):
             raise NotFoundException("There are no results")
 
         subjects_map = get_subjects_map(asmtSubject)

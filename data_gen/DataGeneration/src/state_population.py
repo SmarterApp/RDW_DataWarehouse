@@ -17,7 +17,8 @@ class StatePopulation(object):
     '''
     Class to maintain and calculate the population counts for a state
     '''
-    def __init__(self, name, state_code, state_type, subject='math', do_pld_adjustment=True):
+    def __init__(self, name, state_code, state_type, subject='math', do_pld_adjustment=True, state_demographic_totals=None,
+                 districts=None, subject_percentages=None, demographics_id=None):
         ''' Constructor '''
 
         self.name = name
@@ -27,12 +28,10 @@ class StatePopulation(object):
         self.do_pld_adjustment = do_pld_adjustment
 
         # Population info
-        self.state_total_students = 0
-        self.total_student_by_grade = {}
-        self.state_demographic_totals = {}
-        self.districts = []
-        self.subject_percentages = None
-        self.demographics_id = None
+        self.state_demographic_totals = {} if state_demographic_totals is None else state_demographic_totals
+        self.districts = [] if districts is None else districts
+        self.subject_percentages = subject_percentages
+        self.demographics_id = demographics_id
 
     def populate_state(self, state_type_dict, district_types_dict, school_types_dict):
         '''
@@ -83,7 +82,6 @@ class StatePopulation(object):
         dist_pop_list = []
         for _i in range(district_counts):
             dist_pop = DistrictPopulation(district_type, subject, self.do_pld_adjustment)
-            # self.total_student_by_grade = add_populations(self.total_student_by_grade, dist_pop.total_student_by_grade)
             dist_pop.populate_district(district_info, school_types_dict)
             dist_pop_list.append(dist_pop)
         return dist_pop_list
@@ -99,7 +97,6 @@ class DistrictPopulation(object):
         self.subject = subject
         self.do_pld_adjustment = do_pld_adjustment
 
-        self.total_student_by_grade = {}
         self.district_demographic_totals = {}
         self.schools = []
 
@@ -357,6 +354,17 @@ def calculate_group_demographic_numbers(group_dict, group_num, total_students):
         demo_counts[demo][L_PERF_1:] = [perf_lvl_values[i] for i in perf_lvl_names]
 
     return demo_counts
+
+
+def add_list_of_district_populations(population_list):
+    '''
+    Take a list of population count dictionaries and return a new population dictionary that is the sum of the dictionaries
+    '''
+    new_population = {}
+    for population in population_list:
+        new_population = add_populations(new_population, population.district_demographic_totals)
+
+    return new_population
 
 
 def add_populations(population_dict_1, population_dict_2):

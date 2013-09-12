@@ -18,7 +18,7 @@ from DataGeneration.src.generate_entities import (generate_assessments, generate
                                                   generate_multiple_staff, generate_assessment_outcomes_from_student_info,
                                                   generate_students_from_student_info)
 from DataGeneration.src.write_to_csv import create_csv
-from DataGeneration.src.state_population import StatePopulation, apply_pld_to_grade_demographics
+from DataGeneration.src.state_population import StatePopulation, apply_pld_to_grade_demographics, add_list_of_district_populations
 import DataGeneration.src.constants as constants
 from DataGeneration.src.generate_scores import generate_overall_scores
 from DataGeneration.src.entities import (InstitutionHierarchy, Section, Assessment, AssessmentOutcome,
@@ -88,15 +88,23 @@ def generate_data_from_config_file(config_module, output_dict, do_pld_adjustment
     assessments = generate_assessments(flat_grades_list, scores_details[constants.CUT_POINTS],
                                        from_date, most_recent, to_date=to_date)
 
+    # prepare csv files and output assessment data
+    prepare_csv_files(output_dict)
+    create_csv(assessments, output_dict[Assessment])
+
     # Generate the all the data
     state_populations = generate_state_populations(states_config, state_types, demographics_info, assessments, district_types,
                                                    school_types, district_names, school_names, error_band_dict, from_date,
                                                    most_recent, to_date, do_pld_adjustment)
 
-    states = generate_real_states(state_populations, assessments, error_band_dict, district_names, school_names,
-                                  demographics_info, from_date, most_recent, to_date, street_names)
+    for state_population in state_populations:
+        # generate districts in chunks and write to file
+        generate_districts_in_chunks(state_population, assessments, error_band_dict, district_names, school_names, demographics_info,
+                                     from_date, most_recent, to_date, street_names, batch_guid, output_dict, max_chunk=10)
 
-    output_generated_data_to_csv(states, assessments, batch_guid, output_dict, from_date, most_recent, to_date)
+        state = generate_state(state_population.name, state_population.state_code)
+        create_state_level_staff(state, from_date, most_recent, to_date, number_of_state_level_staff=10)
+        output_state_staff_to_csv(state, batch_guid, output_dict, from_date, most_recent, to_date)
 
     return True
 
@@ -130,6 +138,39 @@ def output_generated_data_to_csv(states, assessments, batch_guid, output_dict, f
 
                 create_csv(student_entities, output_dict[Student])
                 create_csv(fact_assessment_entities, output_dict[AssessmentOutcome])
+
+    create_csv(institution_hierarchies, output_dict[InstitutionHierarchy])
+    create_csv(sections, output_dict[Section])
+    create_csv(staff, output_dict[Staff])
+
+
+def output_state_staff_to_csv(state, batch_guid, output_dict, from_date, most_recent, to_date):
+    '''
+    '''
+    state_staff = state.staff
+    create_csv(state_staff, output_dict[Staff])
+
+
+def output_generated_districts_to_csv(districts, state, batch_guid, output_dict, from_date, most_recent, to_date):
+    '''
+    '''
+    staff = []
+    sections = []
+    institution_hierarchies = []
+
+    for district in districts:
+        staff += district.staff
+        for school in district.schools:
+            staff += school.teachers
+            sections += school.sections
+            inst_hier = generate_institution_hierarchy_from_helper_entities(state, district, school, from_date,
+                                                                            most_recent, to_date)
+            institution_hierarchies.append(inst_hier)
+            student_entities = generate_students_from_student_info(school.student_info)
+            fact_assessment_entities = generate_assessment_outcomes_from_student_info(school.student_info, batch_guid, inst_hier)
+
+            create_csv(student_entities, output_dict[Student])
+            create_csv(fact_assessment_entities, output_dict[AssessmentOutcome])
 
     create_csv(institution_hierarchies, output_dict[InstitutionHierarchy])
     create_csv(sections, output_dict[Section])
@@ -215,35 +256,70 @@ def generate_state_populations(states, state_types, demographics_info, assessmen
     return state_populations
 
 
-def generate_real_states(state_populations, assessments, error_band_dict, district_names, school_names,
-                         demographics_info, from_date, most_recent, to_date, street_names):
+def generate_districts_in_chunks(state_population, assessments, error_band_dict, district_names, school_names,
+                                 demographics_info, from_date, most_recent, to_date, street_names, batch_guid, output_dict, max_chunk=10):
+    '''
+    '''
+    for chunk_position in range(0, len(state_population.districts), max_chunk):
+        new_state_population = get_district_chunk(state_population, max_chunk, chunk_position)
+        districts = generate_districts_for_state_population_chunk(new_state_population, assessments, error_band_dict, district_names, school_names,
+                                                                  demographics_info, from_date, most_recent, to_date, street_names)
+        # write district to file
+        output_generated_districts_to_csv(districts, state_population, batch_guid, output_dict, from_date, most_recent, to_date)
+
+
+def get_district_chunk(state_population, chunk_size, start_pos):
+    '''
+    '''
+    districts = state_population.districts
+    if start_pos > len(districts):
+        return
+
+    new_districts = districts[start_pos: start_pos + chunk_size]
+    new_state_population = create_state_population_from_districts(new_districts, state_population)
+    return new_state_population
+
+
+def create_state_population_from_districts(district_list, state_population):
+    '''
+    create a new state population object from a subset of districts
+    '''
+    state_demographic_totals = add_list_of_district_populations(district_list)
+
+    new_state_population = StatePopulation(state_population.name, state_population.state_code, state_population.state_type, state_population.subject,
+                                           state_population.do_pld_adjustment, state_demographic_totals, district_list,
+                                           state_population.subject_percentages, state_population.demographics_id)
+    return new_state_population
+
+
+def generate_districts_for_state_population_chunk(state_populations_chunk, assessments, error_band_dict, district_names, school_names,
+                                                  demographics_info, from_date, most_recent, to_date, street_names):
     '''
     Generate a real state with districts, schools, students, sections and teachers
     '''
-    real_states = []
 
-    for state_population in state_populations:
-        demographics_id = state_population.demographics_id
-        subject_percentages = state_population.subject_percentages
+    #for state_population in state_populations:
+    demographics_id = state_populations_chunk.demographics_id
+    subject_percentages = state_populations_chunk.subject_percentages
 
-        # generate pool of students for state
-        student_info_dict = generate_students_info_from_demographic_counts(state_population, assessments, error_band_dict)
-        print_student_info_pool_counts(student_info_dict, demographics_info, demographics_id)
-        # create districts
-        districts = create_districts(state_population, district_names[0], district_names[1], school_names[0],
-                                     school_names[1], student_info_dict, subject_percentages, demographics_info,
-                                     demographics_id, assessments, error_band_dict, state_population.name,
-                                     state_population.state_code, from_date, most_recent, to_date, street_names)
+    # generate pool of students for state
+    student_info_dict = generate_students_info_from_demographic_counts(state_populations_chunk, assessments, error_band_dict)
+    print_student_info_pool_counts(student_info_dict, demographics_info, demographics_id)
+    # create districts
+    districts = create_districts(state_populations_chunk, district_names[0], district_names[1], school_names[0],
+                                 school_names[1], student_info_dict, subject_percentages, demographics_info,
+                                 demographics_id, assessments, error_band_dict, state_populations_chunk.name,
+                                 state_populations_chunk.state_code, from_date, most_recent, to_date, street_names)
+    return districts
 
-        # Create the actual state object
-        state = generate_state(state_population.name, state_population.state_code, districts)
 
-        # Create the state-level staff
-        number_of_state_level_staff = 10
-        state_level_staff = generate_non_teaching_staff(number_of_state_level_staff, from_date, most_recent, to_date, state_code=state.state_code)
-        state.staff = state_level_staff
-        real_states.append(state)
-    return real_states
+def create_state_level_staff(state, from_date, most_recent, to_date, number_of_state_level_staff=10):
+    '''
+    Create the state-level staff
+    '''
+    state_level_staff = generate_non_teaching_staff(number_of_state_level_staff, from_date, most_recent, to_date, state_code=state.state_code)
+    state.staff = state_level_staff
+    return state
 
 
 def get_school_population(school, student_info_dict, subject_percentages, demographics_info, demographics_id, assessments,
@@ -429,8 +505,8 @@ def get_students_by_counts(grade, grade_counts, student_info_dict):
             index = random.randint(0, len(student_info_dict[grade][pl]) - 1)
             students.append(student_info_dict[grade][pl].pop(index))
 
-    if short_sum:
-        print('short_sum\t', short_sum, '\tout of', total, '\tgrade', grade)
+    #if short_sum:
+        #print('short_sum\t', short_sum, '\tout of', total, '\tgrade', grade)
     return students
 
 
@@ -500,6 +576,7 @@ def generate_students_info_from_demographic_counts(state_population, assessments
     '''
 
     demographic_totals = state_population.state_demographic_totals
+
     subject = state_population.subject
     eb_min_perc = error_band_dict[constants.MIN_PERC]
     eb_max_perc = error_band_dict[constants.MAX_PERC]
@@ -592,7 +669,7 @@ def create_student_infos_by_gender(gender, count, performance_level, score_pool,
     score_list = score_pool[performance_level]
     for _i in range(count):
         if len(score_list) <= 0:
-            print('short by: ', count - _i, '\tperf_lvl was:', performance_level, '\tgrade:', grade, '\tdemographic_name:', gender)
+            #print('short by: ', count - _i, '\tperf_lvl was:', performance_level, '\tgrade:', grade, '\tdemographic_name:', gender)
             break
         index = random.randint(0, len(score_list) - 1)
         score = score_list.pop(index)
@@ -630,7 +707,7 @@ def assign_demographic_to_students(demographic_name, student_pool, count, perfor
     student_list = student_pool[performance_level]
     for _i in range(count):
         if len(student_list) <= 0:
-            print('short by:', count - _i, '\tperf_lvl was:', performance_level, '\tdemographic_name:', demographic_name)
+            #print('short by:', count - _i, '\tperf_lvl was:', performance_level, '\tdemographic_name:', demographic_name)
             break
         index = random.randint(0, len(student_list) - 1)
         student_info = student_list.pop(index)
@@ -688,15 +765,15 @@ def generate_non_teaching_staff(number_of_staff, from_date, most_recent, to_date
     return staff_list
 
 
-def generate_institution_hierarchy_from_helper_entities(state, district, school, from_date, most_recent, to_date):
+def generate_institution_hierarchy_from_helper_entities(state_population, district, school, from_date, most_recent, to_date):
     '''
     Create an InstitutionHierarchy object from the helper entities provided
-    @param state: a State object
+    @param state_population: a State population
     @param district: A District object
     @param school: A School object
     '''
-    state_name = state.state_name
-    state_code = state.state_code
+    state_name = state_population.name
+    state_code = state_population.state_code
     district_guid = district.district_guid
     district_name = district.district_name
     school_guid = school.school_guid

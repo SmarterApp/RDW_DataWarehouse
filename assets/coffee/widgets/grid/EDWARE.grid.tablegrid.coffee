@@ -52,8 +52,8 @@ define [
           $(@grid.headers[@p.lastsort].el).find(">div.ui-jqgrid-sortable>span.s-ico").show()  if @p.lastsort >= 0 and @p.lastsort isnt idxcol and @p.colModel[@p.lastsort].sortable isnt false
       )
       this.table.jqGrid options
-      # this.table.jqGrid "hideCol", "rn"
-      # this.table.setGridWidth options.defaultWidth, false
+      this.table.jqGrid "hideCol", "rn"
+      this.table.setGridWidth options.defaultWidth, false
       
     renderFooter: () ->
       # Add footer row to the grid
@@ -71,10 +71,18 @@ define [
       }
 
     getColumnNames: () ->
-      item.name for item in column['items'] for column in this.columns
+      columnNames = []
+      for column in this.columns
+        for item in column['items'] 
+          columnNames.push item.name
+      columnNames
 
     getColumnModels: () ->
-      this.getColumnModel column['items'][0] for column in this.columns
+      models = []
+      for column in this.columns
+        for item in column['items'] 
+         models.push this.getColumnModel item 
+      models
       
     getColumnModel: (column) ->
       colModelItem =
@@ -89,7 +97,7 @@ define [
       colModelItem.sortable = column.sortable
       colModelItem.align = column.align if column.align
       colModelItem.labels = this.options.labels
-      colModelItem.title = column.title if column.title
+      colModelItem.title = column.title
       colModelItem.classes = column.style if column.style
       colModelItem.frozen = column.frozen if column.frozen
 
@@ -142,8 +150,6 @@ define [
   #    * @param options
   #    
   create = (config) ->
-    # tableId, columnItems, columnData, footerData, options
-    # columnData = config['data'][columnItems.root]
     # merge configuration
     config = $.extend true, {}, DEFAULT_CONFIG, config
     options = config['options']

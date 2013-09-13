@@ -100,7 +100,7 @@ def generate_data_from_config_file(config_module, output_dict, do_pld_adjustment
     for state_population in state_populations:
         # generate districts in chunks and write to file
         generate_districts_in_chunks(state_population, assessments, error_band_dict, district_names, school_names, demographics_info,
-                                     from_date, most_recent, to_date, street_names, batch_guid, output_dict, max_chunk=10)
+                                     from_date, most_recent, to_date, street_names, batch_guid, output_dict, max_chunk=1)
 
         state = generate_state(state_population.name, state_population.state_code)
         create_state_level_staff(state, from_date, most_recent, to_date, number_of_state_level_staff=10)

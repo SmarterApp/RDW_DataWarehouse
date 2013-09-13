@@ -125,39 +125,79 @@ class Test(unittest.TestCase):
             self.assertEqual(len(state_pop.districts), 3)
             self.assertEqual(state_pop.state_demographic_totals[11]['all'][1], 3 * 10 * 100, '3 districts, each with 10 schools. Each school has 100 students in grade 11')
 
-    def test_generate_real_states(self):
+    def test_get_district_chunk(self):
         state_population = self.state_population
-        state_population.subject_percentages = {'Math': .99, 'ELA': .99}
+        chunk_size = 2
+        start_pos = 0
+
+        expected_all_students = state_population.districts[0].district_demographic_totals[11]['all'][1] +\
+            state_population.districts[1].district_demographic_totals[11]['all'][1]
+        result = gd2.get_district_chunk(state_population, chunk_size, start_pos)
+        self.assertEqual(len(result.districts), 2)
+        print('expected_all_students', expected_all_students)
+        self.assertEqual(expected_all_students, result.state_demographic_totals[11]['all'][1])
+
+    def test_get_district_chunk_2(self):
+        state_population = self.state_population
+        chunk_size = 2
+        start_pos = 2
+
+        result = gd2.get_district_chunk(state_population, chunk_size, start_pos)
+        self.assertEqual(len(result.districts), 1)
+
+    def test_create_state_population_from_districts(self):
+        state_population = self.state_population
+        district_list = [state_population.districts[0]]
+
+        result = gd2.create_state_population_from_districts(district_list, state_population)
+        self.assertDictEqual(result.state_demographic_totals, state_population.districts[0].district_demographic_totals)
+        self.assertIsNot(state_population, result)
+        self.assertListEqual(result.districts, district_list)
+
+    def test_generate_districts_for_state_population_chunk(self):
+        state_populations_chunk = self.state_population
+        state_populations_chunk.subject_percentages = {'Math': .99, 'ELA': .99}
         assessments = generate_assessments([11], [1400, 1800, 2100], date.today(), True)
+        eb_dict = self.error_band_dict
         district_names = ['n{0}'.format(i) for i in range(30)]
         school_names = ['s{0}'.format(i) for i in range(30)]
         street_names = ['st{0}'.format(i) for i in range(30)]
         from_date = date.today()
         most_recent = True
         to_date = date(2015, 12, 12)
-        result = gd2.generate_real_states([state_population], assessments, self.error_band_dict, district_names, school_names,
-                                          self.demo_obj, from_date, most_recent, to_date, street_names)
 
-        self.assertEqual(len(result), 1)
-        gen_state = result[0]
-        self.assertEqual(len(gen_state.staff), 10)
-        self.assertEqual(len(gen_state.districts), 3)
-        self.assertIsInstance(gen_state, State)
+        results = gd2.generate_districts_for_state_population_chunk(state_populations_chunk, assessments, eb_dict, district_names,
+                                                                   school_names, self.demo_obj, from_date, most_recent, to_date, street_names)
 
-    def test_generate_real_states_2(self):
-        state_population = self.state_population
-        state_population.subject_percentages = {'Math': .99, 'ELA': .99}
+        self.assertEqual(len(results), 3)
+
+    def test_generate_districts_for_state_population_chunk_2(self):
+        state_populations_chunk = self.state_population
+        state_populations_chunk.districts = state_populations_chunk.districts[0:2]
+        state_populations_chunk.subject_percentages = {'Math': .99, 'ELA': .99}
         assessments = generate_assessments([11], [1400, 1800, 2100], date.today(), True)
+        eb_dict = self.error_band_dict
         district_names = ['n{0}'.format(i) for i in range(30)]
         school_names = ['s{0}'.format(i) for i in range(30)]
         street_names = ['st{0}'.format(i) for i in range(30)]
         from_date = date.today()
         most_recent = True
         to_date = date(2015, 12, 12)
-        result = gd2.generate_real_states([state_population, state_population], assessments, self.error_band_dict, district_names, school_names,
-                                          self.demo_obj, from_date, most_recent, to_date, street_names)
 
-        self.assertEqual(len(result), 2)
+        results = gd2.generate_districts_for_state_population_chunk(state_populations_chunk, assessments, eb_dict, district_names,
+                                                                   school_names, self.demo_obj, from_date, most_recent, to_date, street_names)
+
+        self.assertEqual(len(results), 2)
+
+    def test_create_state_level_staff(self):
+        state = DummyClass(name='Example', state_code='ES', staff=None)
+        from_date = date.today()
+        most_recent = True
+        to_date = date(2015, 12, 12)
+        staff_count = 25
+
+        results = gd2.create_state_level_staff(state, from_date, most_recent, to_date, staff_count)
+        self.assertEqual(len(results.staff), 25)
 
     def test_get_school_population(self):
         school_pop = sp.SchoolPopulation('High School', 'High School')
@@ -631,9 +671,6 @@ class Test(unittest.TestCase):
         self.assertFalse(diffs)
 
     def test_generate_non_teaching_staff(self):
-        '''
-        copied from old version
-        '''
         state_code = 'GA'
         num_of_staff = 20
         district_guid = 'distguid'
@@ -652,12 +689,9 @@ class Test(unittest.TestCase):
             self.assertEqual(staff.school_guid, school_guid)
 
     def test_generate_institution_hierarchy_from_helper_entities(self):
-        '''
-        copied from old version
-        '''
-        state = DummyClass()
-        state.state_name = 'Georgia'
-        state.state_code = 'GA'
+        state_population = DummyClass()
+        state_population.name = 'Georgia'
+        state_population.state_code = 'GA'
         district = DummyClass()
         district.district_guid = 'dguid1'
         district.district_name = 'District1'
@@ -666,7 +700,7 @@ class Test(unittest.TestCase):
         school.school_guid = 'sguid1'
         school.school_category = 'Middle'
 
-        res = gd2.generate_institution_hierarchy_from_helper_entities(state, district, school, self.from_date,
+        res = gd2.generate_institution_hierarchy_from_helper_entities(state_population, district, school, self.from_date,
                                                                       self.most_recent, self.to_date)
 
         self.assertIsInstance(res, InstitutionHierarchy)

@@ -143,19 +143,19 @@ define [
       }
       
     renderGrid: () ->
-      this.gridContainer.html($("<table id='gridTable'/>"))
+      $('#gridTable').jqGrid('GridUnload')
       # Change the column name and link url based on the type of report the user is querying for
       gridConfig = new ConfigBuilder(this.configTemplate, this.asmtSubjectsData)
                              .customize(this.customViews[this.reportType])
                              .build()
       # Create compare population grid for State/District/School view
-      #TODO edwareGrid.create "gridTable", gridConfig, this.populationData, this.summaryData, 
       edwareGrid.create {
         data: this.populationData
         columns: gridConfig
         footer: this.summaryData
         options:
           gridHeight: this.gridHeight
+          labels: this.labels
       }
       this.sortBySubject this.sort
       # Display grid controls after grid renders

@@ -81,7 +81,7 @@ define [
 
   populationBar = (value, options, rowObject) ->
     if parseInt(value) <= 0
-      return i18n.getMessage('insufficient.data')
+      return options.colModel.labels['insufficient_data']
 
     asmt_type = options.colModel.formatoptions.asmt_type
     subject = rowObject.results[asmt_type]

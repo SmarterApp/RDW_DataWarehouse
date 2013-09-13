@@ -149,7 +149,14 @@ define [
                              .customize(this.customViews[this.reportType])
                              .build()
       # Create compare population grid for State/District/School view
-      edwareGrid.create "gridTable", gridConfig, this.populationData, this.summaryData, { gridHeight: this.gridHeight }
+      #TODO edwareGrid.create "gridTable", gridConfig, this.populationData, this.summaryData, 
+      edwareGrid.create {
+        data: this.populationData
+        columns: gridConfig
+        footer: this.summaryData
+        options:
+          gridHeight: this.gridHeight
+      }
       this.sortBySubject this.sort
       # Display grid controls after grid renders
       $(".gridControls").show()

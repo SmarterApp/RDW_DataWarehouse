@@ -140,7 +140,7 @@ define [
       $('.jqg-second-row-header th:nth-child(1), .jqg-second-row-header th:nth-child(2), .ui-jqgrid .ui-jqgrid-htable th.ui-th-column:nth-child(1), .ui-jqgrid .ui-jqgrid-htable th.ui-th-column:nth-child(3), .ui-jqgrid tr.jqgrow td:nth-child(1), .ui-jqgrid tr.jqgrow td:nth-child(3)').css("border-right", "solid 1px #B1B1B1");
     else
       # Display no results error message
-      edwareUtil.displayNoResultsMessage()
+      edwareUtil.displayErrorMessage labels['no_results']
 
   getStudentData = (sourceURL, params, defaultColors, callback) ->    
     assessmentArray = []

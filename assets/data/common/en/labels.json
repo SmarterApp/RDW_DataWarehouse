@@ -48,6 +48,7 @@
 		"select_measure": "Select Measure",
 		"state": "State",
 		"student_filters": "Student Filters",
-		"teacher": "Teacher"
+		"teacher": "Teacher",
+		"no_results": "There is no data available for your request."
 	}
 }

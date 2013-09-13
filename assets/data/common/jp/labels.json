@@ -48,6 +48,7 @@
 		"select_measure": "セレクトメジャー",
 		"state": "州",
 		"student_filters": "学生フィルタ",
-		"teacher": "教師"
+		"teacher": "教師",
+		"no_results": "結果ません"
 	}
 }

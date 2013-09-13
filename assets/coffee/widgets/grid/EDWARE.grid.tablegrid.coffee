@@ -161,7 +161,7 @@ define [
       edwareUtil.displayErrorMessage ''
       $('#' + config['tableId']).edwareGrid columns, options, footer
     else
-      edwareUtil.displayNoResultsMessage()
+      edwareUtil.displayErrorMessage  options.labels['no_results']
       
   create: create
     

@@ -302,7 +302,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         testParam[Constants.DISTRICTGUID] = '229'
         testParam[filters.FILTERS_GRADE] = ['3']
         results = get_comparing_populations_report(testParam)
-        self.assertEqual(results['records'][0]['results']['subject1']['total'], 2)
+        self.assertEqual(results['records'][0]['results']['subject1']['total'], -1)
         self.assertEqual(len(results['records']), 1)
 
     def test_view_with_multi_grades(self):
@@ -311,7 +311,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         testParam[Constants.DISTRICTGUID] = '229'
         testParam[filters.FILTERS_GRADE] = ['3', '6', '7', '11']
         results = get_comparing_populations_report(testParam)
-        self.assertEqual(results['records'][0]['results']['subject1']['total'], 2)
+        self.assertEqual(results['records'][0]['results']['subject1']['total'], -1)
         self.assertEqual(results['records'][2]['results']['subject1']['total'], 5)
         self.assertEqual(len(results['records']), 3)
 
@@ -322,7 +322,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         testParam[filters.FILTERS_PROGRAM_LEP] = ['Y']
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 2)
-        self.assertEqual(results['records'][0]['results']['subject1']['total'], 1)
+        self.assertEqual(results['records'][0]['results']['subject1']['total'], -1)
 
     def test_view_with_lep_no(self):
         testParam = {}
@@ -349,7 +349,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         testParam[filters.FILTERS_PROGRAM_TT1] = ['Y']
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 3)
-        self.assertEqual(results['records'][1]['results']['subject1']['total'], 1)
+        self.assertEqual(results['records'][1]['results']['subject1']['total'], -1)
 
     def test_view_with_title1_no(self):
         testParam = {}
@@ -358,7 +358,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         testParam[filters.FILTERS_PROGRAM_TT1] = ['N']
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 3)
-        self.assertEqual(results['records'][0]['results']['subject1']['total'], 2)
+        self.assertEqual(results['records'][0]['results']['subject1']['total'], -1)
         self.assertEqual(results['records'][0]['results']['subject2']['total'], 3)
 
     def test_view_with_title1_NS(self):
@@ -368,8 +368,8 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         testParam[filters.FILTERS_PROGRAM_TT1] = ['NS']
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 1)
-        self.assertEqual(results['records'][0]['results']['subject1']['total'], 1)
-        self.assertEqual(results['records'][0]['results']['subject2']['total'], 2)
+        self.assertEqual(results['records'][0]['results']['subject1']['total'], -1)
+        self.assertEqual(results['records'][0]['results']['subject2']['total'], -1)
 
     def test_view_with_title1_multi(self):
         testParam = {}
@@ -408,7 +408,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         self.assertEqual(len(results['records']), 3)
         self.assertEqual(results['records'][0]['results']['subject1']['total'], 11)
         self.assertEqual(results['records'][0]['results']['subject2']['total'], 11)
-        self.assertEqual(results['records'][1]['results']['subject1']['total'], 1)
+        self.assertEqual(results['records'][1]['results']['subject1']['total'], -1)
         self.assertEqual(results['records'][1]['results']['subject2']['total'], -1)
 
     def test_comparing_populations_with_gender_not_stated(self):
@@ -418,7 +418,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         testParam[filters.FILTERS_GENDER] = [filters.FILTERS_GENDER_NOT_STATED]
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 1)
-        self.assertEqual(results['records'][0]['results']['subject1']['total'], 1)
+        self.assertEqual(results['records'][0]['results']['subject1']['total'], -1)
         self.assertEqual(results['records'][0]['results']['subject2']['total'], -1)
 
     def test_filter_with_unfiltered_results(self):

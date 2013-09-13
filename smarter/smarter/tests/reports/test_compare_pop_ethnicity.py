@@ -69,8 +69,8 @@ class TestComparingPopulationsEthnicity(Unittest_with_smarter_sqlite):
         testParam[filters.FILTERS_ETHNICITY] = [filters.FILTERS_ETHNICITY_BLACK]
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 1)
-        self.assertEqual(results['records'][0]['results']['subject1']['total'], 1)
-        self.assertEqual(results['records'][0]['results']['subject2']['total'], 1)
+        self.assertEqual(results['records'][0]['results']['subject1']['total'], -1)
+        self.assertEqual(results['records'][0]['results']['subject2']['total'], -1)
 
     def test_comparing_populations_ethnicity_asn(self):
         testParam = {}
@@ -80,8 +80,8 @@ class TestComparingPopulationsEthnicity(Unittest_with_smarter_sqlite):
         testParam[filters.FILTERS_ETHNICITY] = [filters.FILTERS_ETHNICITY_ASIAN]
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 1)
-        self.assertEqual(results['records'][0]['results']['subject1']['total'], 1)
-        self.assertEqual(results['records'][0]['results']['subject2']['total'], 1)
+        self.assertEqual(results['records'][0]['results']['subject1']['total'], -1)
+        self.assertEqual(results['records'][0]['results']['subject2']['total'], -1)
 
     def test_comparing_populations_ethnicity_wht(self):
         testParam = {}
@@ -91,8 +91,8 @@ class TestComparingPopulationsEthnicity(Unittest_with_smarter_sqlite):
         testParam[filters.FILTERS_ETHNICITY] = [filters.FILTERS_ETHNICITY_WHITE]
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 1)
-        self.assertEqual(results['records'][0]['results']['subject1']['total'], 1)
-        self.assertEqual(results['records'][0]['results']['subject2']['total'], 1)
+        self.assertEqual(results['records'][0]['results']['subject1']['total'], -1)
+        self.assertEqual(results['records'][0]['results']['subject2']['total'], -1)
 
     def test_comparing_populations_ethnicity_ami(self):
         testParam = {}
@@ -102,8 +102,8 @@ class TestComparingPopulationsEthnicity(Unittest_with_smarter_sqlite):
         testParam[filters.FILTERS_ETHNICITY] = [filters.FILTERS_ETHNICITY_AMERICAN]
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 1)
-        self.assertEqual(results['records'][0]['results']['subject1']['total'], 1)
-        self.assertEqual(results['records'][0]['results']['subject2']['total'], 1)
+        self.assertEqual(results['records'][0]['results']['subject1']['total'], -1)
+        self.assertEqual(results['records'][0]['results']['subject2']['total'], -1)
 
     def test_comparing_populations_ethnicity_pcf(self):
         testParam = {}
@@ -113,8 +113,8 @@ class TestComparingPopulationsEthnicity(Unittest_with_smarter_sqlite):
         testParam[filters.FILTERS_ETHNICITY] = [filters.FILTERS_ETHNICITY_PACIFIC]
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 1)
-        self.assertEqual(results['records'][0]['results']['subject1']['total'], 1)
-        self.assertEqual(results['records'][0]['results']['subject2']['total'], 1)
+        self.assertEqual(results['records'][0]['results']['subject1']['total'], -1)
+        self.assertEqual(results['records'][0]['results']['subject2']['total'], -1)
 
     def test_comparing_populations_ethnicity_two_or_more(self):
         testParam = {}
@@ -124,8 +124,8 @@ class TestComparingPopulationsEthnicity(Unittest_with_smarter_sqlite):
         testParam[filters.FILTERS_ETHNICITY] = [filters.FILTERS_ETHNICITY_MULTI]
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 1)
-        self.assertEqual(results['records'][0]['results']['subject1']['total'], 1)
-        self.assertEqual(results['records'][0]['results']['subject2']['total'], 1)
+        self.assertEqual(results['records'][0]['results']['subject1']['total'], -1)
+        self.assertEqual(results['records'][0]['results']['subject2']['total'], -1)
 
     def test_comparing_populations_ethnicity_not_stated(self):
         testParam = {}
@@ -135,8 +135,8 @@ class TestComparingPopulationsEthnicity(Unittest_with_smarter_sqlite):
         testParam[filters.FILTERS_ETHNICITY] = [filters.FILTERS_ETHNICITY_NOT_STATED]
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 1)
-        self.assertEqual(results['records'][0]['results']['subject1']['total'], 2)
-        self.assertEqual(results['records'][0]['results']['subject2']['total'], 2)
+        self.assertEqual(results['records'][0]['results']['subject1']['total'], -1)
+        self.assertEqual(results['records'][0]['results']['subject2']['total'], -1)
 
     def test_comparing_populations_ethnicity_blk_wht(self):
         testParam = {}
@@ -146,8 +146,8 @@ class TestComparingPopulationsEthnicity(Unittest_with_smarter_sqlite):
         testParam[filters.FILTERS_ETHNICITY] = [filters.FILTERS_ETHNICITY_ASIAN, filters.FILTERS_ETHNICITY_WHITE]
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 1)
-        self.assertEqual(results['records'][0]['results']['subject1']['total'], 2)
-        self.assertEqual(results['records'][0]['results']['subject2']['total'], 2)
+        self.assertEqual(results['records'][0]['results']['subject1']['total'], -1)
+        self.assertEqual(results['records'][0]['results']['subject2']['total'], -1)
 
     def test_comparing_populations_ethnicity_all(self):
         testParam = {}

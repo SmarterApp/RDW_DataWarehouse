@@ -7,10 +7,11 @@
 		"apply_filters": "フィルター",
 		"brackets_denote_min_max": "カッコ内は最小/最大の表示",
 		"cancel": "キャンセル",
+		"claim": "クレーム",
 		"claims": "クレーム",
 		"claim_score_details": "クレームスコアの詳細",
 		"clear_all": "すべてをクリアー",
-		"color": "色",
+		"color": "カラー",
 		"date": "日付",
 		"description": "説明",
 		"district": "校区",
@@ -21,12 +22,15 @@
 		"filter": "フィルター",
 		"filterd_by": "使用中のフィルター",
 		"grade": "グレード",
+		"grayscale": "白黒",
+		"grayscale_message": "白黒プリント",
 		"help": "ヘルプ",
 		"help_message": "あなたが援助を必要とする、またはご質問、コメント、または懸念がある場合は、<br/><a href='mailto:SmarterBalancedReporting@wgen.net?subject=HELPDESK: Help request'>システム管理者</a>に電子メールを送信してください。",
 		"hide": "閉じる",
 		"insufficient_data": "不十分なデータ",
 		"legend": "使用符号の説明",
 		"logout": "ログアウト",
+		"no_results": "データはありません。",
 		"notes": "注釈",
 		"off": "オフ",
 		"on": "オン",
@@ -49,6 +53,22 @@
 		"state": "州",
 		"student_filters": "学生フィルタ",
 		"teacher": "教師",
-		"no_results": "結果ません"
+		"dim_asmt": {
+			"claim_name": {
+				"communicating_reasoning": "推論",
+				"concepts_and_procedures": "概念と手順",
+				"problem_solving_and_modeling_and_data_analysis": "問題解決とモデリングとデータ解析",
+				"reading": "読解力",
+				"research_and_inquiry": "リサーチ＆探究",
+				"speaking_and_listening": "スピーキング＆リスニング",
+				"writing": "筆記力"
+			},
+			"perf_lvl_name":{
+				"adequate_understanding": "十分な理解",
+				"minimal_understanding": "最低限の理解",
+				"partial_understanding": "部分的な理解",
+				"thorough_understanding": "完全な理解"
+			}
+		}
 	}
 }

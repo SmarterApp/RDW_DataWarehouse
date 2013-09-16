@@ -7,6 +7,7 @@
 		"apply_filters": "Apply Filters",
 		"brackets_denote_min_max": "brackets denote min/max",
 		"cancel": "Cancel",
+		"claim": "Claim",
 		"claims": "Claims",
 		"claim_score_details": "Claim Score Details",
 		"clear_all": "Clear All",
@@ -21,12 +22,15 @@
 		"filterd_by": "Filtered by",
 		"find_out_more": "Find out more",
 		"grade": "Grade",
+		"grayscale": "Grayscale",
+		"grayscale_message": "use for black & white printing",
 		"help": "Help",
 		"help_message": "If you require assistance, or have questions, comments, or concerns, please send an email to <br/><a href='mailto:SmarterBalancedReporting@wgen.net?subject=HELPDESK: Help request'>System Administrator</a>.",
 		"hide": "Hide",
 		"insufficient_data": "Insufficient Data",
 		"legend": "Legend",
 		"logout": "Log Out",
+		"no_results": "There is no data available for your request.",
 		"notes": "Notes",
 		"off": "Off",
 		"on": "On",
@@ -49,6 +53,22 @@
 		"state": "State",
 		"student_filters": "Student Filters",
 		"teacher": "Teacher",
-		"no_results": "There is no data available for your request."
+		"dim_asmt": {
+			"claim_name": {
+				"communicating_reasoning": "Communicating Reasoning",
+				"concepts_and_procedures": "Concepts & Procedures",
+				"problem_solving_and_modeling_and_data_analysis": "Problem Solving and Modeling & Data Analysis",
+				"reading": "Reading",
+				"research_and_inquiry": "Research & Inquiry",
+				"speaking_and_listening": "Speaking & Listening",
+				"writing": "Writing"
+			},
+			"perf_lvl_name":{
+				"adequate_understanding": "Adequate Understanding",
+				"minimal_understanding": "Minimal Understanding",
+				"partial_understanding": "Partial Understanding",
+				"thorough_understanding": "Thorough Understanding"
+			}
+		}
 	}
 }

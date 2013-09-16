@@ -1,10 +1,11 @@
 #global define
 define [
   "jquery"
+  "mustache"
   "edwareUtil"
   "edwareLoadingMask"
   'edwareLanguage'
-], ($, edwareUtil, edwareLoadingMask, i18n) ->
+], ($, Mustache, edwareUtil, edwareLoadingMask, i18n) ->
   
   #
   #    * Get data from the server via ajax call
@@ -62,6 +63,7 @@ define [
       data['reportInfo'] = tmp_data['reportInfo']
       for key of tmp_data['legendInfo']
         data['legendInfo'][key] = tmp_data['legendInfo'][key] if tmp_data['legendInfo'].hasOwnProperty(key)
+      data['legendInfo'] = JSON.parse(Mustache.render(JSON.stringify(data['legendInfo']), {"labels":data.labels}))
     data
 
   getDataForFilter = ()->

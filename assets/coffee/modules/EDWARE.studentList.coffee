@@ -36,10 +36,11 @@ define [
     reportInfo = data.reportInfo
     studentsConfig = data.students
     legendInfo = data.legendInfo
-    labels = data.labels
+    this.labels = data.labels
     
     getStudentData "/data/list_of_students", params, defaultColors, (assessmentsData, contextData, subjectsData, claimsData, userData, cutPointsData) ->
-          
+      claimsData = JSON.parse(Mustache.render(JSON.stringify(claimsData), data))
+      cutPointsData = JSON.parse(Mustache.render(JSON.stringify(cutPointsData), data))
       # set school name as the page title from breadcrumb
       $("#school_name").html contextData.items[2].name
       
@@ -153,6 +154,7 @@ define [
       params: params
   
     edwareDataProxy.getDatafromSource sourceURL, options, (data) ->
+      data = JSON.parse(Mustache.render(JSON.stringify(data), {"labels":this.labels}))
       assessmentsData = data.assessments
       contextData = data.context
       subjectsData = data.subjects

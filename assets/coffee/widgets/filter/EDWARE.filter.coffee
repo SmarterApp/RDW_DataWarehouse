@@ -41,6 +41,7 @@ define [
       this.clearAllButton = $('.removeAllFilters', this.filterArea)
       # set session storage
       this.storage = edwareSessionStorage.filterStorage
+      this.template = this.configs['not_stated_message']
 
     loadPage: ->
       # load config from server
@@ -213,6 +214,20 @@ define [
     loadReport: (params) ->
       this.reset()
       this.submitFilter()
+
+    update: (data) ->
+      self = this
+      total = data['total']
+      $('.filter-wrapper').each () ->
+        filterName = $(this).data('name')
+        count = data[filterName]
+        percentage = Math.round(count * 100.0 / total)
+        self.updatePercentage(this, percentage) if count > 0
+          
+    updatePercentage: (filter, percentage) ->
+      output = Mustache.to_html this.template, { 'percentage': percentage }
+      $('p.not_stated', filter).html output
+
 
   class EdwareFilterTag
     

@@ -8,7 +8,8 @@ require ["EDWARE.comparingPopulations", "edwareFilter", "edwareDataProxy"], (edw
   ( () ->
       configs =edwareDataProxy.getDataForFilter()
   )()
-  # TODO: move config to filter widget
+  # move config to filter widget
   filter = $('#cpopFilter').edwareFilter $('.filter_label'), configs, (param)->
     populationGrid.reload(param)
+  populationGrid.setFilter(filter)
   filter.loadReport()

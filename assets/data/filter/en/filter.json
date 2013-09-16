@@ -1,4 +1,5 @@
 {
+	"not_stated_message": "*{{percentage}}% reported \"not stated\"",
 	"grades" : {
 		"display" : "Grades",
 		"tag" : "Grades",

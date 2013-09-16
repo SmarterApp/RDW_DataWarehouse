@@ -19,8 +19,8 @@ from smarter.database.smarter_connector import SmarterDBConnection
 from smarter.reports.exceptions.parameter_exception import InvalidParameterException
 from smarter.reports.helpers.metadata import get_custom_metadata
 from edapi.cache import cache_region
-from smarter.reports.filters.demographics import apply_demographics_filter_to_query,\
-    DEMOGRAPHICS_CONFIG
+from smarter.reports.helpers.filters import FILTERS_CONFIG, has_filters,\
+    apply_filter_to_query
 from smarter.reports.helpers.utils import merge_dict
 
 
@@ -48,42 +48,21 @@ DEFAULT_MIN_CELL_SIZE = 0
             "required": False,
             "pattern": "^[a-zA-Z0-9\-]{0,50}$",
         }
-    }, DEMOGRAPHICS_CONFIG))
+    }, FILTERS_CONFIG))
 @audit_event()
 @user_info
 def get_comparing_populations_report(params):
     '''
     Comparing Populations Report
     '''
-    noFilters = _is_filtering(params)
-    if noFilters:
-        return get_unfiltered_report(params)
+    report = ComparingPopReport(**params).get_report()
+    # if has filters, merge with some unfiltered data, if not just return report
+    if has_filters(params):
+        no_filter_params = {k: v for k, v in params.items() if k not in FILTERS_CONFIG}
+        unfiltered = ComparingPopReport(**no_filter_params).get_report()
+        return merge_results(report, unfiltered)
     else:
-        return get_filtered_report(params)
-
-
-def _is_filtering(params):
-    '''
-    Return true if no demographics parameter
-    '''
-    return params.keys().isdisjoint(DEMOGRAPHICS_CONFIG.keys())
-
-
-def get_filtered_report(params):
-    '''
-    Comparing Populations Report with filters
-    '''
-    filtered = ComparingPopReport(**params).get_report()
-    unfiltered = get_unfiltered_report(params)
-    return merge_results(filtered, unfiltered)
-
-
-def get_unfiltered_report(params):
-    '''
-    Comparing Populations Report without filters
-    '''
-    params = {k: v for k, v in params.items() if k not in DEMOGRAPHICS_CONFIG}
-    return ComparingPopReport(**params).get_report()
+        return report
 
 
 def merge_results(filtered, unfiltered):
@@ -407,7 +386,7 @@ class QueryHelper():
             .order_by(self._fact_asmt_outcome.c.asmt_subject.desc())
 
         # apply demographics filters to query
-        return apply_demographics_filter_to_query(query, self._fact_asmt_outcome, self._filters)
+        return apply_filter_to_query(query, self._fact_asmt_outcome, self._filters)
 
     def get_query(self):
         return self._f()

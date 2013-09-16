@@ -57,9 +57,9 @@ class TestCustomMetaData(Unittest_with_smarter_sqlite):
         self.assertIsNotNone(subject1, "subject1 should not be empty")
         self.assertEqual(4, len(subject1[Constants.COLORS]), "subject 1 should contain 4 colors")
         self.assertIsInstance(subject1[Constants.COLORS][0], dict, "subject 1 value should be a json object")
-        self.assertEqual(0, subject1[Constants.MIN_CELL_SIZE])
+        self.assertEqual(2, subject1[Constants.MIN_CELL_SIZE])
         subject2 = results.get('subject2')
-        self.assertEqual(0, subject2[Constants.MIN_CELL_SIZE])
+        self.assertEqual(2, subject2[Constants.MIN_CELL_SIZE])
 
     def test_get_empty_custom_metadata(self):
         tenant = get_unittest_tenant_name()

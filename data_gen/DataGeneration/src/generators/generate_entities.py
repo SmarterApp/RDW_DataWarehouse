@@ -368,7 +368,7 @@ def generate_multiple_staff(number_of_staff, hier_user_type, from_date, most_rec
     will be 'NA' for not applicable.
     '''
     staff_list = []
-    for i in range(number_of_staff):
+    for _i in range(number_of_staff):
         staff_member = generate_staff(hier_user_type, from_date, most_recent, state_code=state_code,
                                       district_guid=district_guid, school_guid=school_guid,
                                       section_guid=section_guid, to_date=to_date)

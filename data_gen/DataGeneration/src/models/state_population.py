@@ -6,8 +6,8 @@ Created on Jul 31, 2013
 
 from uuid import uuid4
 
-from DataGeneration.src.demographic_values import get_single_demo_value
-from DataGeneration.src.demographics import L_GROUPING, L_TOTAL, L_PERF_1, L_PERF_2, L_PERF_3, L_PERF_4
+from DataGeneration.src.demographics.demographic_values import get_single_demo_value
+from DataGeneration.src.demographics.demographics import L_GROUPING, L_TOTAL, L_PERF_1, L_PERF_2, L_PERF_3, L_PERF_4
 from DataGeneration.src.calc.gaussian_distributions import gauss_one, guess_std
 from DataGeneration.src.calc.adjust import adjust_pld
 import DataGeneration.src.constants.constants as constants

@@ -13,7 +13,7 @@ import csv
 import math
 import random
 
-from DataGeneration.src.demographics import Demographics, ALL_DEM, L_GROUPING, L_TOTAL, L_PERF_1, L_PERF_4, OVERALL_GROUP
+from DataGeneration.src.demographics.demographics import Demographics, ALL_DEM, L_GROUPING, L_TOTAL, L_PERF_1, L_PERF_4, OVERALL_GROUP
 from DataGeneration.src.generators.generate_entities import (generate_assessments, generate_institution_hierarchy, generate_sections,
                                                   generate_multiple_staff, generate_assessment_outcomes_from_student_info,
                                                   generate_students_from_student_info)
@@ -27,10 +27,10 @@ from DataGeneration.src.generators.generate_helper_entities import generate_dist
 from DataGeneration.src.models.helper_entities import StudentInfo
 from DataGeneration.src.utils.print_state_population import print_state_population
 import DataGeneration.src.utils.util as util
-from DataGeneration.src.assign_students_subjects_scores import assign_scores_for_subjects
+from DataGeneration.src.utils.assign_students_subjects_scores import assign_scores_for_subjects
 from DataGeneration.src.utils.idgen import IdGen
 import DataGeneration.src.calc.claim_score_calculation as claim_score_calculation
-from DataGeneration.src.print_student_info_pool import print_student_info_pool_counts
+from DataGeneration.src.utils.print_student_info_pool import print_student_info_pool_counts
 
 
 DATAFILE_PATH = os.path.dirname(os.path.realpath(__file__))

@@ -4,7 +4,7 @@ Created on Jan 5, 2013
 @author: swimberly
 '''
 
-from DataGeneration.src.name_info import NameInfo
+from DataGeneration.src.utils.name_info import NameInfo
 import random
 import os
 

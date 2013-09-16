@@ -29,7 +29,7 @@ from DataGeneration.src.utils.print_state_population import print_state_populati
 import DataGeneration.src.utils.util as util
 from DataGeneration.src.assign_students_subjects_scores import assign_scores_for_subjects
 from DataGeneration.src.utils.idgen import IdGen
-import DataGeneration.src.math.claim_score_calculation as claim_score_calculation
+import DataGeneration.src.calc.claim_score_calculation as claim_score_calculation
 from DataGeneration.src.print_student_info_pool import print_student_info_pool_counts
 
 

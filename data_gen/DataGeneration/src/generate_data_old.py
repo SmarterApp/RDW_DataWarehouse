@@ -4,7 +4,7 @@ import os
 import csv
 import random
 import DataGeneration.src.utils.util as util
-import DataGeneration.src.math.stats as stats
+import DataGeneration.src.calc.stats as stats
 import DataGeneration.src.constants.constants as constants
 from collections import Counter
 from DataGeneration.src.utils.idgen import IdGen
@@ -16,9 +16,9 @@ from DataGeneration.src.generators.generate_helper_entities import generate_stat
 from DataGeneration.src.models.entities import InstitutionHierarchy, Section, Assessment, AssessmentOutcome, \
     Staff, ExternalUserStudent, Student
 from DataGeneration.src.generators.generate_scores import generate_overall_scores
-from DataGeneration.src.math.gaussian_distributions import gauss_one, guess_std
-from DataGeneration.src.math.errorband import calc_eb_params, calc_eb
-from DataGeneration.src.math.adjust import adjust_pld
+from DataGeneration.src.calc.gaussian_distributions import gauss_one, guess_std
+from DataGeneration.src.calc.errorband import calc_eb_params, calc_eb
+from DataGeneration.src.calc.adjust import adjust_pld
 #from DataGeneration.src.demographics import Demographics, DemographicStatus
 from demographics import Demographics, DemographicStatus
 from uuid import uuid4

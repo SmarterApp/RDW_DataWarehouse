@@ -6,7 +6,7 @@ Created on Jul 1, 2013
 
 import csv
 
-from DataGeneration.src.util_scripts.util_scripts.dg_fix_stats import tryfixboth
+from DataGeneration.src.util_scripts.dg_fix_stats import tryfixboth
 
 
 H_ID = 0

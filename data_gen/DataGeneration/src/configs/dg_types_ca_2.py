@@ -102,11 +102,11 @@ def get_district_types():
     district_types = {'Big Average': {'school_counts': {'min': BIG_MIN, 'max': BIG_MAX, 'avg': BIG_AVG},  # if SML_MIN = 5 then (80, 160, 120)
                                       'school_types_and_ratios': {
                                           'High School': NORM_HIGH, 'Middle School': NORM_MIDL, 'Elementary School': NORM_ELEM}},
-                     
+
                       'Medium Average': {'school_counts': {'min': MED_MIN, 'max': MED_MAX, 'avg': MED_AVG},  # if SML_MIN = 5 then (20, 40, 30)
                                          'school_types_and_ratios': {
                                              'High School': NORM_HIGH, 'Middle School': NORM_MIDL, 'Elementary School': NORM_ELEM}},
-                      
+
                       'Small Average': {'school_counts': {'min': SML_MIN, 'max': SML_MAX, 'avg': SML_AVG},  # if SML_MIN = 5 then (5, 10, 7)
                                         'school_types_and_ratios': {
                                             'High School': NORM_HIGH, 'Middle School': NORM_MIDL, 'Elementary School': NORM_ELEM}}
@@ -123,7 +123,7 @@ def get_state_types():
 
     Initial numbers were Big=3, Medium=6, Small=40
     """
-    state_types = {'typical_1': {'district_types_and_counts': {'Big Average': 300, 'Medium Average': 600, 'Small Average': 500 },
+    state_types = {'typical_1': {'district_types_and_counts': {'Big Average': 300, 'Medium Average': 600, 'Small Average': 500},
                                  'subjects_and_percentages': {'Math': .99, 'ELA': .99},
                                  'demographics': 'typical1'}
                    }
@@ -204,4 +204,4 @@ def get_temporal_information():
 
 def get_demograph_file():
     datafile_path = os.path.dirname(os.path.realpath(__file__))
-    return os.path.join(datafile_path, '..', 'datafiles', 'demographicStats.csv')
+    return os.path.join(datafile_path, '..', '..', 'datafiles', 'demographicStats.csv')

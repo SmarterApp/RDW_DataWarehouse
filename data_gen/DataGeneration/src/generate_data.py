@@ -17,7 +17,7 @@ from DataGeneration.src.demographics.demographics import Demographics, ALL_DEM, 
 from DataGeneration.src.generators.generate_entities import (generate_assessments, generate_institution_hierarchy, generate_sections,
                                                   generate_multiple_staff, generate_assessment_outcomes_from_student_info,
                                                   generate_students_from_student_info)
-from DataGeneration.src.writers.write_to_csv import create_csv
+from DataGeneration.src.writers.write_to_csv import create_csv, prepare_csv_files
 from DataGeneration.src.models.state_population import StatePopulation, apply_pld_to_grade_demographics, add_list_of_district_populations
 import DataGeneration.src.constants.constants as constants
 from DataGeneration.src.generators.generate_scores import generate_overall_scores
@@ -801,22 +801,6 @@ def create_output_dict(output_path):
         out_dict[fname] = os.path.join(output_path, CSV_FILE_NAMES[fname])
 
     return out_dict
-
-
-def prepare_csv_files(entity_to_path_dict):
-    '''
-    Erase each csv file and then add appropriate header
-
-    @type entity_to_path_dict: dict
-    @param entity_to_path_dict: Each key is an entity's class, and each value is the path to its csv file
-    '''
-    for entity in entity_to_path_dict:
-        path = entity_to_path_dict[entity]
-        # By opening the file for writing, we implicitly delete the file contents
-        with open(path, 'w') as csv_file:
-            csv_writer = csv.writer(csv_file, delimiter=',', quoting=csv.QUOTE_MINIMAL)
-            # Here we write the header the the given entity
-            csv_writer.writerow(entity.getHeader())
 
 
 def generate_name_list_dictionary(list_name_to_path_dictionary):

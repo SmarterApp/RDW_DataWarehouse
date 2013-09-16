@@ -340,17 +340,15 @@ def get_school_population(school, student_info_dict, subject_percentages, demogr
 
     for grade in school_counts:
 
-        number_of_sections = 1
-        math_sections = generate_sections(number_of_sections, constants.MATH, grade, state_code, school.district_guid,
+        math_sections = generate_sections(constants.NUMBER_OF_SECTIONS, constants.MATH, grade, state_code, school.district_guid,
                                           school.school_guid, from_date, most_recent, to_date=to_date)
-        ela_sections = generate_sections(number_of_sections, constants.ELA, grade, state_code, school.district_guid,
+        ela_sections = generate_sections(constants.NUMBER_OF_SECTIONS, constants.ELA, grade, state_code, school.district_guid,
                                          school.school_guid, from_date, most_recent, to_date=to_date)
         sections_in_school += math_sections + ela_sections
 
         # create teachers
-        staff_per_section = 1
-        math_staff = generate_teachers_for_sections(staff_per_section, math_sections, from_date, most_recent, to_date, school, state_code)
-        ela_staff = generate_teachers_for_sections(staff_per_section, ela_sections, from_date, most_recent, to_date, school, state_code)
+        math_staff = generate_teachers_for_sections(constants.STAFF_PER_SECTION, math_sections, from_date, most_recent, to_date, school, state_code)
+        ela_staff = generate_teachers_for_sections(constants.STAFF_PER_SECTION, ela_sections, from_date, most_recent, to_date, school, state_code)
         teachers_in_school += math_staff + ela_staff
 
         # Generate Students that have Math scores and demographics
@@ -558,8 +556,7 @@ def create_districts(state_population, district_names_1, district_names_2, schoo
                                           state_code, from_date, most_recent, to_date, street_names)
 
         # generate district staff
-        number_of_district_level_staff = 10
-        district.staff = generate_non_teaching_staff(number_of_district_level_staff, from_date, most_recent, to_date,
+        district.staff = generate_non_teaching_staff(constants.NUMBER_OF_DISTRICT_LEVEL_STAFF, from_date, most_recent, to_date,
                                                      state_code=state_code, district_guid=district.district_guid)
         districts.append(district)
 

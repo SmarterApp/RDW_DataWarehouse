@@ -1,12 +1,12 @@
 __author__ = 'abrien'
 
-from DataGeneration.src.entities import InstitutionHierarchy, Student, Section, Assessment, Staff, AssessmentOutcome
-from DataGeneration.src.idgen import IdGen
-from DataGeneration.src.generate_names import generate_first_or_middle_name, generate_last_name, possibly_generate_middle_name
+from DataGeneration.src.models.entities import InstitutionHierarchy, Student, Section, Assessment, Staff, AssessmentOutcome
+from DataGeneration.src.utils.idgen import IdGen
+from DataGeneration.src.generators.generate_names import generate_first_or_middle_name, generate_last_name, possibly_generate_middle_name
 from DataGeneration.src.demographic_derived import derive_demographic
 from uuid import uuid4
-import DataGeneration.src.constants as constants
-import DataGeneration.src.util as util
+import DataGeneration.src.constants.constants as constants
+import DataGeneration.src.utils.util as util
 import random
 
 

@@ -6,7 +6,7 @@ Created on Jul 1, 2013
 
 import csv
 
-from DataGeneration.src.util_scripts.dg_fix_stats import tryfixboth
+from DataGeneration.src.util_scripts.util_scripts.dg_fix_stats import tryfixboth
 
 
 H_ID = 0
@@ -157,7 +157,7 @@ def fix_demographic_statistics(demo_obj, demo_id, subject):
         #print("===" * 40)
 
 if __name__ == "__main__":
-    import DataGeneration.src.dg_types as dg_types
+    import DataGeneration.src.configs.dg_types as dg_types
     import json
     demo_obj = Demographics(dg_types.get_demograph_file())
     fix_demographic_statistics(demo_obj, 'typical1', 'math')

@@ -14,22 +14,22 @@ import math
 import random
 
 from DataGeneration.src.demographics import Demographics, ALL_DEM, L_GROUPING, L_TOTAL, L_PERF_1, L_PERF_4, OVERALL_GROUP
-from DataGeneration.src.generate_entities import (generate_assessments, generate_institution_hierarchy, generate_sections,
+from DataGeneration.src.generators.generate_entities import (generate_assessments, generate_institution_hierarchy, generate_sections,
                                                   generate_multiple_staff, generate_assessment_outcomes_from_student_info,
                                                   generate_students_from_student_info)
-from DataGeneration.src.write_to_csv import create_csv
-from DataGeneration.src.state_population import StatePopulation, apply_pld_to_grade_demographics, add_list_of_district_populations
-import DataGeneration.src.constants as constants
-from DataGeneration.src.generate_scores import generate_overall_scores
-from DataGeneration.src.entities import (InstitutionHierarchy, Section, Assessment, AssessmentOutcome,
+from DataGeneration.src.writers.write_to_csv import create_csv
+from DataGeneration.src.models.state_population import StatePopulation, apply_pld_to_grade_demographics, add_list_of_district_populations
+import DataGeneration.src.constants.constants as constants
+from DataGeneration.src.generators.generate_scores import generate_overall_scores
+from DataGeneration.src.models.entities import (InstitutionHierarchy, Section, Assessment, AssessmentOutcome,
                                          Staff, ExternalUserStudent, Student)
-from DataGeneration.src.generate_helper_entities import generate_district, generate_school, generate_state
-from DataGeneration.src.helper_entities import StudentInfo
-from DataGeneration.src.print_state_population import print_state_population
-import DataGeneration.src.util as util
+from DataGeneration.src.generators.generate_helper_entities import generate_district, generate_school, generate_state
+from DataGeneration.src.models.helper_entities import StudentInfo
+from DataGeneration.src.utils.print_state_population import print_state_population
+import DataGeneration.src.utils.util as util
 from DataGeneration.src.assign_students_subjects_scores import assign_scores_for_subjects
-from DataGeneration.src.idgen import IdGen
-import DataGeneration.src.claim_score_calculation as claim_score_calculation
+from DataGeneration.src.utils.idgen import IdGen
+import DataGeneration.src.math.claim_score_calculation as claim_score_calculation
 from DataGeneration.src.print_student_info_pool import print_student_info_pool_counts
 
 

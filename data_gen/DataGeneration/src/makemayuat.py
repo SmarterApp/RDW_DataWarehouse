@@ -3,7 +3,7 @@ Created on Apr 4, 2013
 
 @author: kallen
 '''
-import DataGeneration.src.dg_types as dg_types
+import DataGeneration.src.configs.dg_types as dg_types
 
 
 def calculate_number_of_students():

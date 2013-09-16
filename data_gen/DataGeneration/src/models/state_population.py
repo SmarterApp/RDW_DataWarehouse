@@ -8,9 +8,9 @@ from uuid import uuid4
 
 from DataGeneration.src.demographic_values import get_single_demo_value
 from DataGeneration.src.demographics import L_GROUPING, L_TOTAL, L_PERF_1, L_PERF_2, L_PERF_3, L_PERF_4
-from DataGeneration.src.gaussian_distributions import gauss_one, guess_std
-from DataGeneration.src.adjust import adjust_pld
-import DataGeneration.src.constants as constants
+from DataGeneration.src.math.gaussian_distributions import gauss_one, guess_std
+from DataGeneration.src.math.adjust import adjust_pld
+import DataGeneration.src.constants.constants as constants
 
 
 class StatePopulation(object):

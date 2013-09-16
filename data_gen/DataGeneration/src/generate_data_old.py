@@ -3,22 +3,22 @@ import datetime
 import os
 import csv
 import random
-import DataGeneration.src.util as util
-import DataGeneration.src.stats as stats
-import DataGeneration.src.constants as constants
+import DataGeneration.src.utils.util as util
+import DataGeneration.src.math.stats as stats
+import DataGeneration.src.constants.constants as constants
 from collections import Counter
-from DataGeneration.src.idgen import IdGen
-from DataGeneration.src.write_to_csv import create_csv
+from DataGeneration.src.utils.idgen import IdGen
+from DataGeneration.src.writers.write_to_csv import create_csv
 from importlib import import_module
-from DataGeneration.src.generate_entities import (generate_institution_hierarchy, generate_sections, generate_students, generate_multiple_staff,
+from DataGeneration.src.generators.generate_entities import (generate_institution_hierarchy, generate_sections, generate_students, generate_multiple_staff,
                                                   generate_fact_assessment_outcomes, generate_assessments)
-from DataGeneration.src.generate_helper_entities import generate_state, generate_district, generate_school, generate_assessment_score, generate_claim_score
-from DataGeneration.src.entities import InstitutionHierarchy, Section, Assessment, AssessmentOutcome, \
+from DataGeneration.src.generators.generate_helper_entities import generate_state, generate_district, generate_school, generate_assessment_score, generate_claim_score
+from DataGeneration.src.models.entities import InstitutionHierarchy, Section, Assessment, AssessmentOutcome, \
     Staff, ExternalUserStudent, Student
-from DataGeneration.src.generate_scores import generate_overall_scores
-from DataGeneration.src.gaussian_distributions import gauss_one, guess_std
-from DataGeneration.src.errorband import calc_eb_params, calc_eb
-from DataGeneration.src.adjust import adjust_pld
+from DataGeneration.src.generators.generate_scores import generate_overall_scores
+from DataGeneration.src.math.gaussian_distributions import gauss_one, guess_std
+from DataGeneration.src.math.errorband import calc_eb_params, calc_eb
+from DataGeneration.src.math.adjust import adjust_pld
 #from DataGeneration.src.demographics import Demographics, DemographicStatus
 from demographics import Demographics, DemographicStatus
 from uuid import uuid4

@@ -11,11 +11,10 @@ from collections import Counter
 
 from DataGeneration.src.models.entities import (InstitutionHierarchy, Staff, Section, Assessment,
                                          AssessmentOutcome, ExternalUserStudent, Student)
-from DataGeneration.src.models.helper_entities import State
 import DataGeneration.src.generate_data as gd2
 import DataGeneration.src.models.helper_entities as he
 from DataGeneration.src.generators.generate_entities import generate_assessments
-import DataGeneration.src.demographics as dmg
+import DataGeneration.src.demographics.demographics as dmg
 import DataGeneration.src.models.state_population as sp
 from DataGeneration.src.generators.generate_helper_entities import generate_school
 

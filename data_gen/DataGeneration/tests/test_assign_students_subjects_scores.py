@@ -1,5 +1,5 @@
 import unittest
-from DataGeneration.src.assign_students_subjects_scores import assign_scores_for_subjects
+from DataGeneration.src.utils.assign_students_subjects_scores import assign_scores_for_subjects
 from DataGeneration.src.models.helper_entities import StudentInfo
 from DataGeneration.src.generators.generate_entities import generate_assessment
 import random
@@ -18,23 +18,23 @@ class TestAssignStudentsSubjectsScores(unittest.TestCase):
 
         # make student info
         studentinfo_list = []
-        for i in range(300):
+        for _i in range(300):
             studentinfo_list.append(StudentInfo(grade, random.choice(gender_list), {'Math': random.randint(min_score, max_score)}, dmg_eth_hsp=True))
-        for i in range(200):
+        for _i in range(200):
             studentinfo_list.append(StudentInfo(grade, random.choice(gender_list), {'Math': random.randint(min_score, max_score)}, dmg_eth_ami=True))
-        for i in range(400):
+        for _i in range(400):
             studentinfo_list.append(StudentInfo(grade, random.choice(gender_list), {'Math': random.randint(min_score, max_score)}, dmg_eth_asn=True))
-        for i in range(300):
+        for _i in range(300):
             studentinfo_list.append(StudentInfo(grade, random.choice(gender_list), {'Math': random.randint(min_score, max_score)}, dmg_eth_blk=True))
-        for i in range(500):
+        for _i in range(500):
             studentinfo_list.append(StudentInfo(grade, random.choice(gender_list), {'Math': random.randint(min_score, max_score)}, dmg_eth_pcf=True))
-        for i in range(600):
+        for _i in range(600):
             studentinfo_list.append(StudentInfo(grade, random.choice(gender_list), {'Math': random.randint(min_score, max_score)}, dmg_eth_wht=True))
-        for i in range(50):
+        for _i in range(50):
             studentinfo = StudentInfo(grade, random.choice(gender_list), {'Math': random.randint(min_score, max_score)})
             studentinfo.dmg_eth_nst = True
             studentinfo_list.append(studentinfo)
-        for i in range(200):
+        for _i in range(200):
             studentinfo = StudentInfo(grade, random.choice(gender_list), {'Math': random.randint(min_score, max_score)})
             studentinfo.dmg_eth_2mr = True
             studentinfo_list.append(studentinfo)

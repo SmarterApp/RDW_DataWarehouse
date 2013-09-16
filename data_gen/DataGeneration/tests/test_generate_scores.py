@@ -1,5 +1,5 @@
 import unittest
-import DataGeneration.src.generate_scores as generate_scores
+import DataGeneration.src.generators.generate_scores as generate_scores
 
 
 class TestGenerateScores(unittest.TestCase):

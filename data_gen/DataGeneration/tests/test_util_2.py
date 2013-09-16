@@ -1,10 +1,10 @@
 import unittest
-import DataGeneration.src.util as util
+import DataGeneration.src.utils.util as util
 import re
 import datetime
 import os
-from DataGeneration.src.constants import ASSMT_PERIOD_TO_MONTHS_DICT
-from DataGeneration.src.entities import Assessment
+from DataGeneration.src.constants.constants import ASSMT_PERIOD_TO_MONTHS_DICT
+from DataGeneration.src.models.entities import Assessment
 
 
 class TestUtil2(unittest.TestCase):

@@ -9,15 +9,15 @@ import csv
 import os
 from collections import Counter
 
-from DataGeneration.src.entities import (InstitutionHierarchy, Staff, Section, Assessment,
+from DataGeneration.src.models.entities import (InstitutionHierarchy, Staff, Section, Assessment,
                                          AssessmentOutcome, ExternalUserStudent, Student)
-from DataGeneration.src.helper_entities import State
+from DataGeneration.src.models.helper_entities import State
 import DataGeneration.src.generate_data as gd2
-import DataGeneration.src.helper_entities as he
-from DataGeneration.src.generate_entities import generate_assessments
+import DataGeneration.src.models.helper_entities as he
+from DataGeneration.src.generators.generate_entities import generate_assessments
 import DataGeneration.src.demographics as dmg
-import DataGeneration.src.state_population as sp
-from DataGeneration.src.generate_helper_entities import generate_school
+import DataGeneration.src.models.state_population as sp
+from DataGeneration.src.generators.generate_helper_entities import generate_school
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 

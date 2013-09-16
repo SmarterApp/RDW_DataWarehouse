@@ -1,7 +1,7 @@
 import unittest
 from DataGeneration.src.assign_students_subjects_scores import assign_scores_for_subjects
-from DataGeneration.src.helper_entities import StudentInfo
-from DataGeneration.src.generate_entities import generate_assessment
+from DataGeneration.src.models.helper_entities import StudentInfo
+from DataGeneration.src.generators.generate_entities import generate_assessment
 import random
 import math
 

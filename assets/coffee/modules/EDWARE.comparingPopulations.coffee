@@ -241,7 +241,7 @@ define [
         return this.breadcrumbsData.items[0].id + ' State Overall'
       else if this.reportType is 'district'
         districtName = this.breadcrumbsData.items[1].name
-        districtName = districtName.replace(/Schools$/, '').trimRight()
+        districtName = districtName.replace(/(Schools)|(Public Schools)$/, '').trimRight()
         districtName = districtName.replace(/District$/, '').trimRight()
         districtName = districtName.replace(/School$/, '').trimRight()
         return districtName + ' District Overall'

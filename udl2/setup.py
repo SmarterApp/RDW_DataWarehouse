@@ -74,6 +74,6 @@ setup(name='udl2',
                                                              'tests/data/test_file_stored_proc_data.csv',
                                                              'tests/data/test_file_stored_proc_data_CLEAN.csv',
                                                              'tests/data/Benchmarking_json_file.json',
-                                                             'tests/data/BeNCHMARK_DATA.csv']),
+                                                             'tests/data/BENCHMARK_DATA.csv']),
                   ],
       )

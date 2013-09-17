@@ -154,7 +154,6 @@ define [
       params: params
   
     edwareDataProxy.getDatafromSource sourceURL, options, (data) ->
-      data = JSON.parse(Mustache.render(JSON.stringify(data), {"labels":this.labels}))
       assessmentsData = data.assessments
       contextData = data.context
       subjectsData = data.subjects

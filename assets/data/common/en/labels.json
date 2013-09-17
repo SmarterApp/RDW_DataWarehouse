@@ -53,22 +53,18 @@
 		"state": "State",
 		"student_filters": "Student Filters",
 		"teacher": "Teacher",
-		"dim_asmt": {
-			"claim_name": {
-				"communicating_reasoning": "Communicating Reasoning",
-				"concepts_and_procedures": "Concepts & Procedures",
-				"problem_solving_and_modeling_and_data_analysis": "Problem Solving and Modeling & Data Analysis",
-				"reading": "Reading",
-				"research_and_inquiry": "Research & Inquiry",
-				"speaking_and_listening": "Speaking & Listening",
-				"writing": "Writing"
-			},
-			"perf_lvl_name":{
-				"adequate_understanding": "Adequate Understanding",
-				"minimal_understanding": "Minimal Understanding",
-				"partial_understanding": "Partial Understanding",
-				"thorough_understanding": "Thorough Understanding"
-			}
+		"asmt": {
+			"Communicating Reasoning": "Communicating Reasoning",
+			"Concepts & Procedures": "Concepts & Procedures",
+			"Problem Solving and Modeling & Data Analysis": "Problem Solving and Modeling & Data Analysis",
+			"Reading": "Reading",
+			"Research & Inquiry": "Research & Inquiry",
+			"Speaking & Listening": "Speaking & Listening",
+			"Writing": "Writing",
+			"Adequate Understanding": "Adequate Understanding",
+			"Minimal Understanding": "Minimal Understanding",
+			"Partial Understanding": "Partial Understanding",
+			"Thorough Understanding": "Thorough Understanding"
 		}
 	}
 }

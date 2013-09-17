@@ -154,7 +154,7 @@
 				 	"bg_color": "#DD514C",
 					"end_gradient_bg_color": "#C43C35",
 					"interval": "1400",
-					"name": "{{labels.dim_asmt.perf_lvl_name.minimal_understanding}}",
+					"name": "Minimal Understanding",
 					"start_gradient_bg_color": "#EE5F5B",
 					"text_color": "#FFFFFF"
 				},
@@ -163,7 +163,7 @@
 				 	"bg_color": "#e4c904",
 					"end_gradient_bg_color": "#eed909",
 					"interval": "1800",
-					"name": "{{labels.dim_asmt.perf_lvl_name.partial_understanding}}",
+					"name": "Partial Understanding",
 					"start_gradient_bg_color": "#e3c703",
 					"text_color": "#000"
 				},
@@ -172,7 +172,7 @@
 				 	"bg_color": "#6aa506",
 					"end_gradient_bg_color": "#65b92c",
 					"interval": "2100",
-					"name": "{{labels.dim_asmt.perf_lvl_name.adequate_understanding}}",
+					"name": "Adequate Understanding",
 					"start_gradient_bg_color": "#3d9913",
 					"text_color": "#FFFFFF"
 				},
@@ -181,7 +181,7 @@
 				 	"bg_color": "#237ccb",
 					"end_gradient_bg_color": "#3a98d1",
 					"interval": "2400",
-					"name": "{{labels.dim_asmt.perf_lvl_name.thorough_understanding}}",
+					"name": "Thorough Understanding",
 					"start_gradient_bg_color": "#2078ca",
 					"text_color": "#FFFFFF"
 				}

@@ -68,8 +68,8 @@ def get_comparing_populations_report(params):
 
 
 def get_not_stated_count(params):
-    not_stated_params = {Constants.STATECODE: params.get(Constants.STATECODE), \
-                         Constants.DISTRICTGUID: params.get(Constants.DISTRICT_GUID), \
+    not_stated_params = {Constants.STATECODE: params.get(Constants.STATECODE),
+                         Constants.DISTRICTGUID: params.get(Constants.DISTRICT_GUID),
                          Constants.SCHOOLGUID: params.get(Constants.SCHOOL_GUID)}
     return ComparingPopStatReport(**not_stated_params).get_report()
 

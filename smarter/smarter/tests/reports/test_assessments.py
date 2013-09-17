@@ -72,7 +72,7 @@ class TestAssessments(unittest.TestCase):
         claims = get_claims(number_of_claims=1, result=result, include_scores=True, include_names=True)
         self.assertEqual(len(result), 3)
         self.assertTrue(len(claims), 1)
-        self.assertEqual(claims[0]['name2'], 'Claim 1')
+        self.assertEqual(claims[0]['name2'], '{{labels.claim}} 1')
 
     def test_get_claims_for_Math(self):
         result = {'asmt_cut_point_name_1': 'one',
@@ -95,7 +95,7 @@ class TestAssessments(unittest.TestCase):
         claims = get_claims(number_of_claims=2, result=result, include_names=True, include_scores=True)
         self.assertEqual(len(result), 4)
         self.assertTrue(len(claims), 2)
-        self.assertEqual(claims[1]['name2'], 'Claims 2 & 4')
+        self.assertEqual(claims[1]['name2'], '{{labels.claims}} 2 & 4')
 
     def test_get_claims_for_names_only(self):
         result = {'asmt_cut_point_name_1': 'one',
@@ -118,7 +118,7 @@ class TestAssessments(unittest.TestCase):
         claims = get_claims(number_of_claims=2, result=result, include_names=True)
         self.assertEqual(len(result), 4)
         self.assertTrue(len(claims), 2)
-        self.assertEqual(claims[1]['name2'], 'Claim 2')
+        self.assertEqual(claims[1]['name2'], '{{labels.claim}} 2')
         self.assertEqual(len(claims[0]), 2)
         self.assertEqual(len(claims[1]), 2)
 

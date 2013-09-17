@@ -1,13 +1,13 @@
 <div class="filterArrow"></div>
 <div class="selectedFilter_panel clearfix">
 	<div>
-		<em class="pull-left">Filtered by: </em>
+		<em class="pull-left">{{labels.filterd_by}}: </em>
 		<div class="filters"></div>
-		<div class="removeAllFilters"><div class="pull-left">Clear All </div><div class="icon_removeAll"></div></div>
+		<div class="removeAllFilters"><div class="pull-left">{{labels.clear_all}} </div><div class="icon_removeAll"></div></div>
 	</div>
 </div>
 <div class="filter">
-	<div class="section"><h3>Student Filters</h3></div>
+	<div class="section"><h3>{{labels.student_filters}}</h3></div>
 	<div class="section filter_section">
 			{{#grades}}
 			<div class="grade_range filter-group" data-name="{{name}}" data-display="{{display}}">
@@ -36,6 +36,6 @@
 			</div>
 	</div>
 	<div class="section form-actions">
-	  <button id="cancel-btn" type="button" class="btn btn-primary">Cancel</button>
-	  <button id="submit-btn" type="submit" class="btn btn-primary">Apply Filters</button>
+	  <button id="cancel-btn" type="button" class="btn btn-primary">{{labels.cancel}}</button>
+	  <button id="submit-btn" type="submit" class="btn btn-primary">{{labels.apply_filters}}</button>
 </div>

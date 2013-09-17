@@ -18,7 +18,7 @@ from pyramid.testing import DummyRequest
 from pyramid import testing
 from edauth.security.session import Session
 from smarter.security.roles.teacher import Teacher  # @UnusedImport
-from smarter.reports.filters import Constants_filter_names
+from smarter.reports.helpers import filters
 
 
 class TestComparingPopulations(Unittest_with_smarter_sqlite):
@@ -247,7 +247,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
     def test_state_view_with_504_yes(self):
         testParam = {}
         testParam[Constants.STATECODE] = 'NY'
-        testParam[Constants_filter_names.DEMOGRAPHICS_PROGRAM_504] = ['Y']
+        testParam[filters.FILTERS_PROGRAM_504] = ['Y']
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 1)
         self.assertEqual(results['records'][0]['results']['subject1']['total'], 20)
@@ -256,7 +256,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
     def test_state_view_with_504_no(self):
         testParam = {}
         testParam[Constants.STATECODE] = 'NY'
-        testParam[Constants_filter_names.DEMOGRAPHICS_PROGRAM_504] = ['N']
+        testParam[filters.FILTERS_PROGRAM_504] = ['N']
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 5)
         self.assertEqual(results['records'][1]['results']['subject1']['total'], 134)
@@ -265,14 +265,14 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
     def test_state_view_with_504_not_stated(self):
         testParam = {}
         testParam[Constants.STATECODE] = 'NY'
-        testParam[Constants_filter_names.DEMOGRAPHICS_PROGRAM_504] = ['NS']
+        testParam[filters.FILTERS_PROGRAM_504] = ['NS']
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 2)
 
     def test_state_view_with_iep_yes(self):
         testParam = {}
         testParam[Constants.STATECODE] = 'NY'
-        testParam[Constants_filter_names.DEMOGRAPHICS_PROGRAM_IEP] = ['Y']
+        testParam[filters.FILTERS_PROGRAM_IEP] = ['Y']
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 5)
         self.assertEqual(results['records'][0]['results']['subject1']['total'], 8)
@@ -281,8 +281,8 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
     def test_state_view_with_iep_yes_504_no(self):
         testParam = {}
         testParam[Constants.STATECODE] = 'NY'
-        testParam[Constants_filter_names.DEMOGRAPHICS_PROGRAM_IEP] = ['Y']
-        testParam[Constants_filter_names.DEMOGRAPHICS_PROGRAM_504] = ['N']
+        testParam[filters.FILTERS_PROGRAM_IEP] = ['Y']
+        testParam[filters.FILTERS_PROGRAM_504] = ['N']
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 5)
         self.assertEqual(results['records'][1]['results']['subject1']['total'], 15)
@@ -291,8 +291,8 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
     def test_filters_with_no_results(self):
         testParam = {}
         testParam[Constants.STATECODE] = 'NY'
-        testParam[Constants_filter_names.DEMOGRAPHICS_PROGRAM_504] = ['NS']
-        testParam[Constants_filter_names.DEMOGRAPHICS_PROGRAM_IEP] = ['NS']
+        testParam[filters.FILTERS_PROGRAM_504] = ['NS']
+        testParam[filters.FILTERS_PROGRAM_IEP] = ['NS']
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 2)
 
@@ -300,18 +300,18 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         testParam = {}
         testParam[Constants.STATECODE] = 'NY'
         testParam[Constants.DISTRICTGUID] = '229'
-        testParam[Constants_filter_names.DEMOGRAPHICS_GRADE] = ['3']
+        testParam[filters.FILTERS_GRADE] = ['3']
         results = get_comparing_populations_report(testParam)
-        self.assertEqual(results['records'][0]['results']['subject1']['total'], 2)
+        self.assertEqual(results['records'][0]['results']['subject1']['total'], -1)
         self.assertEqual(len(results['records']), 1)
 
     def test_view_with_multi_grades(self):
         testParam = {}
         testParam[Constants.STATECODE] = 'NY'
         testParam[Constants.DISTRICTGUID] = '229'
-        testParam[Constants_filter_names.DEMOGRAPHICS_GRADE] = ['3', '6', '7', '11']
+        testParam[filters.FILTERS_GRADE] = ['3', '6', '7', '11']
         results = get_comparing_populations_report(testParam)
-        self.assertEqual(results['records'][0]['results']['subject1']['total'], 2)
+        self.assertEqual(results['records'][0]['results']['subject1']['total'], -1)
         self.assertEqual(results['records'][2]['results']['subject1']['total'], 5)
         self.assertEqual(len(results['records']), 3)
 
@@ -319,16 +319,16 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         testParam = {}
         testParam[Constants.STATECODE] = 'NY'
         testParam[Constants.DISTRICTGUID] = 'c912df4b-acdf-40ac-9a91-f66aefac7851'
-        testParam[Constants_filter_names.DEMOGRAPHICS_PROGRAM_LEP] = ['Y']
+        testParam[filters.FILTERS_PROGRAM_LEP] = ['Y']
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 2)
-        self.assertEqual(results['records'][0]['results']['subject1']['total'], 1)
+        self.assertEqual(results['records'][0]['results']['subject1']['total'], -1)
 
     def test_view_with_lep_no(self):
         testParam = {}
         testParam[Constants.STATECODE] = 'NY'
         testParam[Constants.DISTRICTGUID] = 'c912df4b-acdf-40ac-9a91-f66aefac7851'
-        testParam[Constants_filter_names.DEMOGRAPHICS_PROGRAM_LEP] = ['N']
+        testParam[filters.FILTERS_PROGRAM_LEP] = ['N']
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 3)
         self.assertEqual(results['records'][1]['results']['subject1']['total'], 16)
@@ -337,7 +337,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         testParam = {}
         testParam[Constants.STATECODE] = 'NY'
         testParam[Constants.DISTRICTGUID] = 'c912df4b-acdf-40ac-9a91-f66aefac7851'
-        testParam[Constants_filter_names.DEMOGRAPHICS_PROGRAM_LEP] = ['N', 'Y', 'NS']
+        testParam[filters.FILTERS_PROGRAM_LEP] = ['N', 'Y', 'NS']
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 3)
         self.assertEqual(results['records'][1]['results']['subject1']['total'], 17)
@@ -346,36 +346,36 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         testParam = {}
         testParam[Constants.STATECODE] = 'NY'
         testParam[Constants.DISTRICTGUID] = '229'
-        testParam[Constants_filter_names.DEMOGRAPHICS_PROGRAM_TT1] = ['Y']
+        testParam[filters.FILTERS_PROGRAM_TT1] = ['Y']
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 3)
-        self.assertEqual(results['records'][1]['results']['subject1']['total'], 1)
+        self.assertEqual(results['records'][1]['results']['subject1']['total'], -1)
 
     def test_view_with_title1_no(self):
         testParam = {}
         testParam[Constants.STATECODE] = 'NY'
         testParam[Constants.DISTRICTGUID] = '229'
-        testParam[Constants_filter_names.DEMOGRAPHICS_PROGRAM_TT1] = ['N']
+        testParam[filters.FILTERS_PROGRAM_TT1] = ['N']
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 3)
-        self.assertEqual(results['records'][0]['results']['subject1']['total'], 2)
+        self.assertEqual(results['records'][0]['results']['subject1']['total'], -1)
         self.assertEqual(results['records'][0]['results']['subject2']['total'], 3)
 
     def test_view_with_title1_NS(self):
         testParam = {}
         testParam[Constants.STATECODE] = 'NY'
         testParam[Constants.DISTRICTGUID] = '229'
-        testParam[Constants_filter_names.DEMOGRAPHICS_PROGRAM_TT1] = ['NS']
+        testParam[filters.FILTERS_PROGRAM_TT1] = ['NS']
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 1)
-        self.assertEqual(results['records'][0]['results']['subject1']['total'], 1)
-        self.assertEqual(results['records'][0]['results']['subject2']['total'], 2)
+        self.assertEqual(results['records'][0]['results']['subject1']['total'], -1)
+        self.assertEqual(results['records'][0]['results']['subject2']['total'], -1)
 
     def test_view_with_title1_multi(self):
         testParam = {}
         testParam[Constants.STATECODE] = 'NY'
         testParam[Constants.DISTRICTGUID] = '229'
-        testParam[Constants_filter_names.DEMOGRAPHICS_PROGRAM_TT1] = ['Y', 'N', 'NS']
+        testParam[filters.FILTERS_PROGRAM_TT1] = ['Y', 'N', 'NS']
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 3)
         self.assertEqual(results['records'][2]['results']['subject1']['total'], 5)
@@ -385,7 +385,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         testParam = {}
         testParam[Constants.STATECODE] = 'NY'
         testParam[Constants.DISTRICTGUID] = '229'
-        testParam[Constants_filter_names.DEMOGRAPHICS_ETHNICITY] = [Constants_filter_names.DEMOGRAPHICS_ETHNICITY_HISPANIC]
+        testParam[filters.FILTERS_ETHNICITY] = [filters.FILTERS_ETHNICITY_HISPANIC]
         # TODO: Fix this when metadata has the correct value set
         # We probably don't need to set the default min cell size after we set a value in csv
 #        set_default_min_cell_size(5)
@@ -403,24 +403,37 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         testParam = {}
         testParam[Constants.STATECODE] = 'NY'
         testParam[Constants.DISTRICTGUID] = '229'
-        testParam[Constants_filter_names.DEMOGRAPHICS_GENDER] = [Constants_filter_names.DEMOGRAPHICS_GENDER_MALE]
+        testParam[filters.FILTERS_GENDER] = [filters.FILTERS_GENDER_MALE]
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 3)
         self.assertEqual(results['records'][0]['results']['subject1']['total'], 11)
         self.assertEqual(results['records'][0]['results']['subject2']['total'], 11)
-        self.assertEqual(results['records'][1]['results']['subject1']['total'], 1)
+        self.assertEqual(results['records'][1]['results']['subject1']['total'], -1)
         self.assertEqual(results['records'][1]['results']['subject2']['total'], -1)
 
     def test_comparing_populations_with_gender_not_stated(self):
         testParam = {}
         testParam[Constants.STATECODE] = 'NY'
         testParam[Constants.DISTRICTGUID] = '229'
-        testParam[Constants_filter_names.DEMOGRAPHICS_GENDER] = [Constants_filter_names.DEMOGRAPHICS_GENDER_NOT_STATED]
+        testParam[filters.FILTERS_GENDER] = [filters.FILTERS_GENDER_NOT_STATED]
         results = get_comparing_populations_report(testParam)
         self.assertEqual(len(results['records']), 1)
-        self.assertEqual(results['records'][0]['results']['subject1']['total'], 1)
+        self.assertEqual(results['records'][0]['results']['subject1']['total'], -1)
         self.assertEqual(results['records'][0]['results']['subject2']['total'], -1)
 
+    def test_filter_with_unfiltered_results(self):
+        testParam = {}
+        testParam[Constants.STATECODE] = 'NY'
+        testParam[Constants.DISTRICTGUID] = '229'
+        testParam[filters.FILTERS_GENDER] = [filters.FILTERS_GENDER_MALE]
+        results = get_comparing_populations_report(testParam)
+        self.assertEqual(len(results['records']), 3)
+        self.assertEqual(results['records'][0]['results']['subject1']['unfilteredTotal'], 25)
+        self.assertEqual(results['records'][0]['results']['subject2']['unfilteredTotal'], 25)
+        self.assertEqual(results['records'][1]['results']['subject1']['unfilteredTotal'], 5)
+        self.assertEqual(results['records'][1]['results']['subject2']['unfilteredTotal'], 5)
+        self.assertEqual(results['summary'][0]['results']['subject1']['unfilteredTotal'], 32)
+        self.assertEqual(results['summary'][0]['results']['subject2']['unfilteredTotal'], 34)
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testReport']

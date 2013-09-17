@@ -10,7 +10,8 @@ define [
   "edwareBreadcrumbs"
   "edwareUtil"
   "edwareFooter"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareConfidenceLevelBar, edwareClaimsBar, indivStudentReportTemplate, edwareBreadcrumbs, edwareUtil, edwareFooter) ->
+  "edwareHeader"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareConfidenceLevelBar, edwareClaimsBar, indivStudentReportTemplate, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader) ->
   
   # claim score weight in percentage
   claimScoreWeightArray = {
@@ -31,11 +32,7 @@ define [
     
     content = {}
     
-    # Add header to the page
-    edwareUtil.getHeader()
-      
-
-    configData = edwareDataProxy.getDataForReport "indivStudentReport", "en"
+    configData = edwareDataProxy.getDataForReport "indivStudentReport"
       
     # Get individual student report data from the server
     options =
@@ -44,21 +41,18 @@ define [
       params: params
       
     edwareDataProxy.getDatafromSource "/data/individual_student_report", options, (data) ->
+      
+      data = JSON.parse(Mustache.render(JSON.stringify(data), {"labels":configData.labels}))
    
       defaultColors = {}
       
-      # append user_info (e.g. first and last name)
-      if data.user_info
-        $('#header .topLinks .user').html edwareUtil.getUserName data.user_info
-        
-
       defaultColors = configData.colors
       defaultGrayColors = configData.grayColors
       feedbackData = configData.feedback
       breadcrumbsConfigs = configData.breadcrumb
       reportInfo = configData.reportInfo
-      legendInfo = configData.legendInfo
       data.labels = configData.labels
+      legendInfo = configData.legendInfo
     
       i = 0
       while i < data.items.length
@@ -208,17 +202,13 @@ define [
           e.find(".claims_tooltip").html() # template location: templates/individualStudent_report/claimsInfo.html
       
       # Generate footer links
-      $('#footer').generateFooter('individual_student_report', reportInfo, {
+      this.isrFooter = $('#footer').generateFooter('individual_student_report', reportInfo, {
         'legendInfo': legendInfo,
         'subject': createSampleInterval data.items[0], legendInfo.sample_intervals
-      }, configData.labels)
+      }, configData.labels) unless this.isrFooter
       
-      # append user_info (e.g. first and last name)
-      if data.user_info
-        role = edwareUtil.getRole data.user_info
-        uid = edwareUtil.getUid data.user_info
-        edwareUtil.renderFeedback(role, uid, "individual_student_report", feedbackData)
-      
+      this.isrHeader = edwareHeader.create(data, configData, "individual_student_report") unless this.isrHeader
+     
       # Report info and legend for print version, Grayscale logo for print version
       $($("#footerLinks").html()).clone().appendTo("#print_reportInfoContent")
       if params['grayscale'] is 'true'

@@ -14,11 +14,10 @@ define [
   "edwareFooter"
   "edwareHeader"
   "edwareDropdown"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwareDropdown) ->
+  "edwareLanguage"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwareDropdown, i18n) ->
 
   REPORT_NAME = "comparingPopulationsReport"
-
-  LANGUAGE = "en"
 
   POPULATION_BAR_WIDTH = 145
 
@@ -50,7 +49,7 @@ define [
   class PopulationGrid
 
     constructor: () ->
-      config = edwareDataProxy.getDataForReport REPORT_NAME, LANGUAGE
+      config = edwareDataProxy.getDataForReport REPORT_NAME
       this.initialize(config)
 
     initialize: (config)->
@@ -61,9 +60,10 @@ define [
       this.labels = config.labels
       this.defaultColors = config.colors
       this.gridContainer = $('.gridHeight100')
-      this.gridControlPanel = $(".gridControls")
+      this.gridHeight = window.innerHeight - 335 #subtract footer and header height
+      edwareUtil.reRenderBody this.labels
       # create align button
-      this.alignment = new Alignment($('.align_button'))
+      this.alignment = new Alignment('.align_button')
       # default sort
       this.sort = {
         name: 'name'
@@ -95,8 +95,8 @@ define [
       this.createHeaderAndFooter()
 
     createHeaderAndFooter: ()->
-      edwareFooter.create('comparing_populations', this.data, this.config)
-      edwareHeader.create(this.data, this.config, this.reportType)
+      this.footer = edwareFooter.create('comparing_populations', this.data, this.config) unless this.footer
+      this.header = edwareHeader.create(this.data, this.config, "comparing_populations_" + this.reportType) unless this.header
 
     fetchData: (params)->
       # Determine if the report is state, district or school view"
@@ -143,21 +143,28 @@ define [
       }
       
     renderGrid: () ->
-      this.gridContainer.html($("<table id='gridTable'/>"))
+      $('#gridTable').jqGrid('GridUnload')
       # Change the column name and link url based on the type of report the user is querying for
       gridConfig = new ConfigBuilder(this.configTemplate, this.asmtSubjectsData)
                              .customize(this.customViews[this.reportType])
                              .build()
       # Create compare population grid for State/District/School view
-      edwareGrid.create "gridTable", gridConfig, this.populationData, this.summaryData
+      edwareGrid.create {
+        data: this.populationData
+        columns: gridConfig
+        footer: this.summaryData
+        options:
+          gridHeight: this.gridHeight
+          labels: this.labels
+      }
       this.sortBySubject this.sort
       # Display grid controls after grid renders
-      this.gridControlPanel.show()
+      $(".gridControls").show()
 
     renderBreadcrumbs: (breadcrumbsData)->
       this.breadcrumbs = new Breadcrumbs(breadcrumbsData, this.breadcrumbsConfigs, this.reportType)
-      # Set the Report title depending on the report that we're looking at
-      $('#content h2').html this.breadcrumbs.getReportTitle()
+      # set title
+      $('.title h2').html this.breadcrumbs.getReportTitle()
 
     bindEvents: ()->
       # Show tooltip for population bar on mouseover
@@ -231,12 +238,19 @@ define [
     getOverallSummaryName: () ->
         # Returns the overall summary row name based on the type of report
       if this.reportType is 'state'
-        data = this.breadcrumbsData.items[0].name + ' District'
+        return this.breadcrumbsData.items[0].id + ' State Overall'
       else if this.reportType is 'district'
-        data = this.breadcrumbsData.items[1].name + ' School'
+        districtName = this.breadcrumbsData.items[1].name
+        districtName = districtName.replace(/Schools$/, '').trimRight()
+        districtName = districtName.replace(/District$/, '').trimRight()
+        districtName = districtName.replace(/School$/, '').trimRight()
+        return districtName + ' District Overall'
       else if this.reportType is 'school'
-        data = this.breadcrumbsData.items[2].name + ' Grade'
-      'Overall ' + data + ' Summary'
+        schoolName = this.breadcrumbsData.items[2].name
+        schoolName = schoolName.replace(/School$/, '').trimRight()
+        return schoolName + ' School Overall'
+      else
+        return this.breadcrumbsData.items[3].name + ' Overall'
 
     # Add an 's to a word
     addApostropheS: (word) ->
@@ -338,17 +352,17 @@ define [
 
   class Alignment
 
-    constructor: (@trigger)->
+    constructor: (@triggerClass)->
       this.aligned = false
       this.bindEvents()
 
     bindEvents: ()->
       # Set population bar alignment on/off
       self = this
-      this.trigger.unbind('click').click () ->
+      $(document).on 'click', this.triggerClass, () ->
         self.aligned = not self.aligned
         # toggle component
-        self.trigger.toggleClass('align_on align_off')
+        $(self.triggerClass).toggleClass('align_on align_off')
         # update alignment
         self.update()
 

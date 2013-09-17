@@ -9,19 +9,19 @@
         <script src="../js/src/main.js"></script>
         <link rel="shortcut icon" href="../images/icons/favicon.ico" />
     </head>
-    <body>
+    <body style="overflow-y: hidden;">
 	<div id="header"></div>
    	<div id="breadcrumb"></div>
    	<div id="content" class="cPop_Wrapper">
 	    <div class="title clearfix">
-	   	<h2></h2>
-	   	<div class="gridControls pull-right">
-	   	    <div class="align_label pull-left">Align</div>
-	   	    <div class="align_control pull-left"><label class="pull-left">On</label><div class="align_button align_off pull-left"></div><label class="pull-left">Off</label></div>
-	   	    <div class="verticalBar pull-left"></div>
-	   	    <div class="filter_label pull-left">Filter<span class="caret"></span></div>
-	   	</div>
-	    </div>
+	        <h2></h2>
+                <ul class='gridControls'>
+                    <li class='align_label'>{{labels.align}}</li>
+	            <li class='align_button_area'><label>{{labels.on}}</label><div class="align_button align_off"></div><label>{{labels.off}}</label></li>
+                    <li><div class='verticalBar'></div></li>
+	            <li><div class="filter_label">{{labels.filter}}<span class="caret"></span></div></li>
+                </ul>
+            </div>
 	    <div id="cpopFilter"></div>
    	    <div id="errorMessage"></div>
    	    <div class="dropdownSection"></div>

@@ -6,7 +6,8 @@ define [
   "edwareUtil"
   "edwareSessionStorage"
   "text!edwareFilterTemplate"
-], ($, Mustache, bootstrap, edwareDataProxy, edwareUtil, edwareSessionStorage, filterTemplate) ->
+  "edwareLanguage"
+], ($, Mustache, bootstrap, edwareDataProxy, edwareUtil, edwareSessionStorage, filterTemplate, i18n) ->
   
   # * EDWARE filter widget
   # * The module contains EDWARE filter creation method

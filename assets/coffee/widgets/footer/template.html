@@ -35,16 +35,16 @@
 	</div>
 	<div class="helpPopup">
 		<p>
-			If you require assistance, or have questions, comments, or concerns, please send an email to <br/><a href="mailto:SmarterBalancedReporting@wgen.net?subject=HELPDESK: Help request">System Administrator</a>.
+			{{{labels.help_message}}}
 		</p>
 	</div>
 	<div class="printPopup">
 		<div>
-			<input type="radio" name="print_options" value="color" checked> Color<br/>
-			<input type="radio" name="print_options" value="gray"> Grayscale (use for black &amp; white printing)
+			<input type="radio" name="print_options" value="color" checked> {{labels.color}}<br/>
+			<input type="radio" name="print_options" value="gray"> {{labels.grayscale}} ({{{labels.grayscale_message}}})
 		</div>
 		<div id='printButtonContent'>
-			<button id="printButton" type="button" class="btn btn-info">Print</button>
+			<button id="printButton" type="button" class="btn btn-info">{{labels.print}}</button>
 		</div>
 	</div>
 </div>

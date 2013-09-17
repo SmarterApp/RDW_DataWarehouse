@@ -166,15 +166,11 @@ h6 {
 	.leftPercentageTotal, .rightPercentageTotal {
 	    display: none;
 	}
-	
-	.unfilteredTotal {
-	    display: none;
-	}
+
     }
 
     .barContainer.alignment {
 	margin-left: 60px;
-	position: relative;
 	
 	.populationBar {
 	    width: 215px;
@@ -195,6 +191,11 @@ h6 {
 	.leftPercentageTotal, .rightPercentageTotal {
 	    display: block;
 	}
+	
+    }
+
+    .barContainer {
+	position: relative;
 
 	.unfilteredTotal {
 	    display: block;
@@ -203,41 +204,46 @@ h6 {
 	    position: absolute;
 	    text-align: right;
 	    right: 27px;
-	}	
+	}
     }
-
 }
 
 .gridControls {
-    //margin: 10px 0 0 20px;
     display: none;
-    float: right;
     position: relative;
-    margin-top: 8px;
-    margin-right: 30px;
-    
-    .align_label {
-	background-image: url("../images/align_onoff.png");
-	background-repeat: no-repeat;
-	padding-left: 30px;
-	margin-top: 10px;
+    right: 15px;
+    float: right;
+
+    li {
+	display: inline-block;
+	position: relative;
+	padding: 2px 3px 0 3px;
+
+	label {
+	    float: left;
+	    padding: 0 3px;
+	    font-size: 11px;
+	}
+
+	.verticalBar {
+	    width: 1px;
+	    height: 30px;
+	    background: @color-B3;
+	    margin: 0 3px;
+	    top: 10px;
+	    position: relative;
+	}
     }
-    
-    label {
-	margin: 0 3px;
-	font-size: 11px;
-    }
-    
-    .align_control {
-	margin-left: 8px;
-	width: 75px;
-	margin-top: 8px;
-    }
-    
-    .align_button {
-	width: 30px;
-	height: 16px;
-	cursor: pointer;
+
+    .align_button_area {
+	top: 12px;
+
+	.align_button {
+	    width: 30px;
+	    height: 16px;
+	    cursor: pointer;
+	    float: left;
+	}
     }
     
     .align_off {
@@ -249,17 +255,23 @@ h6 {
     .align_on {
 	background-image: url("../images/align_onoff.png");
 	background-repeat: no-repeat;
-	background-position: 0 -33px; 
+	background-position: 0 -33px;
     }
-    
+
+    .align_label {
+	background-image: url("../images/align_onoff.png");
+	background-repeat: no-repeat;
+	padding-left: 30px;
+	background-position: 0 6px;
+    }
+
     .filter_label {
-	margin-top: 10px;
 	cursor: pointer;
 	
 	span {
-	    position: absolute;
-	    margin-left: 5px;
-	    margin-top: 5px;
+	    position: relative;
+	    left: 5px;
+	    top: 7px;
 	}
     }
 }
@@ -279,7 +291,7 @@ h6 {
     }
 }
 
-.gridControls, .losWrapper {
+.losWrapper {
     .verticalBar {
 	width: 1px;
 	height: 30px;

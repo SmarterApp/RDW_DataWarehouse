@@ -8,7 +8,8 @@ define [
   "edwareBreadcrumbs"
   "edwareUtil"
   "edwareFooter"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter) ->
+  "edwareHeader"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader) ->
 
   assessmentsData = {}
   studentsConfig = {}
@@ -19,9 +20,6 @@ define [
                                               "{{/cut_point_intervals}}" +
                                               "</div>"
   
-  # Add header to the page
-  edwareUtil.getHeader()
-  
   #
   #    * Create Student data grid
   #    
@@ -31,19 +29,18 @@ define [
       async: false
       method: "GET"
 
-    data = edwareDataProxy.getDataForReport "studentList", "en"
+    data = edwareDataProxy.getDataForReport "studentList"
     defaultColors = data.colors
     feedbackData = data.feedback
     breadcrumbsConfigs = data.breadcrumb
     reportInfo = data.reportInfo
     studentsConfig = data.students
     legendInfo = data.legendInfo
-
+    this.labels = data.labels
+    
     getStudentData "/data/list_of_students", params, defaultColors, (assessmentsData, contextData, subjectsData, claimsData, userData, cutPointsData) ->
-      # append user_info (e.g. first and last name)
-      if userData
-        $('#header .topLinks .user').html edwareUtil.getUserName userData
-          
+      claimsData = JSON.parse(Mustache.render(JSON.stringify(claimsData), data))
+      cutPointsData = JSON.parse(Mustache.render(JSON.stringify(cutPointsData), data))
       # set school name as the page title from breadcrumb
       $("#school_name").html contextData.items[2].name
       
@@ -55,11 +52,11 @@ define [
       studentsConfig = JSON.parse(output)
       
       # populate select view
-      defaultView = createAssessmentViewSelectDropDown studentsConfig.customViews, cutPointsData
+      defaultView = createAssessmentViewSelectDropDown studentsConfig.customViews, cutPointsData, data.labels
       
       $('#breadcrumb').breadcrumbs(contextData, breadcrumbsConfigs)
       
-      renderStudentGrid(defaultView)
+      renderStudentGrid(defaultView, data.labels)
       renderHeaderPerfBar(cutPointsData)
       
       # Show tooltip for overall score on mouseover
@@ -85,19 +82,15 @@ define [
       , ".asmtScore"
       
       # Generate footer links
-      $('#footer').generateFooter('list_of_students', reportInfo, {
+      this.losFooter = $('#footer').generateFooter('list_of_students', reportInfo, {
         'legendInfo': legendInfo,
         # merge cut points data with sample data
         'subject': $.extend(true, {}, cutPointsData.subject1 || cutPointsData.subject2 , legendInfo.sample_intervals)
-      }, data.labels)
-      
-      # append user_info (e.g. first and last name)
-      if userData
-        role = edwareUtil.getRole userData
-        uid = edwareUtil.getUid userData
-        edwareUtil.renderFeedback(role, uid, "list_of_students", feedbackData)
-      
-      
+      }, data.labels) unless this.losFooter
+      #Add header
+      this.losHeader = edwareHeader.create({"user_info": userData}, data, "list_of_students") unless this.losHeader
+  reRenderStudentListHtml = ()->
+    
   renderHeaderPerfBar = (cutPointsData) ->
     for key of cutPointsData
         items = cutPointsData[key]
@@ -127,7 +120,7 @@ define [
         $("#"+key+"_perfBar").html(output) 
         
     
-  renderStudentGrid = (viewName)->
+  renderStudentGrid = (viewName, labels)->
     $("#gbox_gridTable").remove()
     $("#content").append("<table id='gridTable'></table>")
     # Reset the error message, in case previous view shows an error
@@ -137,13 +130,18 @@ define [
       # If the view name is not one of the subjects, default it to the default assessments data
       if not (dataName of assessmentsData)
         dataName = 'ALL'
-      edwareGrid.create "gridTable", studentsConfig[viewName], assessmentsData[dataName]
-      
+      edwareGrid.create {
+        data: assessmentsData[dataName]
+        columns: studentsConfig[viewName]
+        options:
+          gridHeight: window.innerHeight - 235
+          labels: labels
+      }
       # Add dark border color between Math and ELA section to emphasize the division
       $('.jqg-second-row-header th:nth-child(1), .jqg-second-row-header th:nth-child(2), .ui-jqgrid .ui-jqgrid-htable th.ui-th-column:nth-child(1), .ui-jqgrid .ui-jqgrid-htable th.ui-th-column:nth-child(3), .ui-jqgrid tr.jqgrow td:nth-child(1), .ui-jqgrid tr.jqgrow td:nth-child(3)').css("border-right", "solid 1px #B1B1B1");
     else
       # Display no results error message
-      edwareUtil.displayNoResultsMessage()
+      edwareUtil.displayErrorMessage labels['no_results']
 
   getStudentData = (sourceURL, params, defaultColors, callback) ->    
     assessmentArray = []
@@ -156,6 +154,7 @@ define [
       params: params
   
     edwareDataProxy.getDatafromSource sourceURL, options, (data) ->
+      data = JSON.parse(Mustache.render(JSON.stringify(data), {"labels":this.labels}))
       assessmentsData = data.assessments
       contextData = data.context
       subjectsData = data.subjects
@@ -199,13 +198,13 @@ define [
           data
 
   # creating the assessment view drop down
-  createAssessmentViewSelectDropDown = (customViewsData, cutPointsData)->
+  createAssessmentViewSelectDropDown = (customViewsData, cutPointsData, labels)->
     items = []
     for key of customViewsData
       value = customViewsData[key]
       items.push({'key': key, 'value': value})
       
-    assessmentDropdownViewTemplate =  "<div id='select_measure_title'>Select Measure: </div>" +
+    assessmentDropdownViewTemplate =  "<div id='select_measure_title'>{{labels.select_measure}}: </div>" +
                                       "<div class='btn-group'>" +
                                       "<a class='btn dropdown-toggle' data-toggle='dropdown' href='#'>" +
                                       "<span id='select_measure_current_view'></span>" +
@@ -218,7 +217,7 @@ define [
                                       "</ul>" +
                                       "</div>"   
 
-    output = Mustache.to_html assessmentDropdownViewTemplate, {'items': items}
+    output = Mustache.to_html assessmentDropdownViewTemplate, {'items': items, 'labels': labels}
 
     $("#content #select_measure").html output
     
@@ -228,7 +227,7 @@ define [
         e.preventDefault()
         viewName = $(this).attr "id"
         $("#select_measure_current_view").html $('#' + viewName).text()
-        renderStudentGrid viewName
+        renderStudentGrid viewName, labels
         renderHeaderPerfBar cutPointsData
         
         # Add dark border color between Math and ELA section to emphasize the division

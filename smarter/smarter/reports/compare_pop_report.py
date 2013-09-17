@@ -19,8 +19,8 @@ from smarter.database.smarter_connector import SmarterDBConnection
 from smarter.reports.exceptions.parameter_exception import InvalidParameterException
 from smarter.reports.helpers.metadata import get_custom_metadata
 from edapi.cache import cache_region
-from smarter.reports.filters.demographics import apply_demographics_filter_to_query,\
-    DEMOGRAPHICS_CONFIG
+from smarter.reports.helpers.filters import FILTERS_CONFIG, has_filters,\
+    apply_filter_to_query
 from smarter.reports.helpers.utils import merge_dict
 
 
@@ -48,42 +48,21 @@ DEFAULT_MIN_CELL_SIZE = 0
             "required": False,
             "pattern": "^[a-zA-Z0-9\-]{0,50}$",
         }
-    }, DEMOGRAPHICS_CONFIG))
+    }, FILTERS_CONFIG))
 @audit_event()
 @user_info
 def get_comparing_populations_report(params):
     '''
     Comparing Populations Report
     '''
-    noFilters = _is_filtering(params)
-    if noFilters:
-        return get_unfiltered_report(params)
+    report = ComparingPopReport(**params).get_report()
+    # if has filters, merge with some unfiltered data, if not just return report
+    if has_filters(params):
+        no_filter_params = {k: v for k, v in params.items() if k not in FILTERS_CONFIG}
+        unfiltered = ComparingPopReport(**no_filter_params).get_report()
+        return merge_results(report, unfiltered)
     else:
-        return get_filtered_report(params)
-
-
-def _is_filtering(params):
-    '''
-    Return true if no demographics parameter
-    '''
-    return params.keys().isdisjoint(DEMOGRAPHICS_CONFIG.keys())
-
-
-def get_filtered_report(params):
-    '''
-    Comparing Populations Report with filters
-    '''
-    filtered = ComparingPopReport(**params).get_report()
-    unfiltered = get_unfiltered_report(params)
-    return merge_results(filtered, unfiltered)
-
-
-def get_unfiltered_report(params):
-    '''
-    Comparing Populations Report without filters
-    '''
-    params = {k: v for k, v in params.items() if k not in DEMOGRAPHICS_CONFIG}
-    return ComparingPopReport(**params).get_report()
+        return report
 
 
 def merge_results(filtered, unfiltered):
@@ -401,48 +380,30 @@ class QueryHelper():
                    func.count().label(Constants.TOTAL)],
                   from_obj=[self._fact_asmt_outcome.join(self._dim_inst_hier, and_(self._dim_inst_hier.c.inst_hier_rec_id == self._fact_asmt_outcome.c.inst_hier_rec_id))]
                   )\
+            .where(and_(self._fact_asmt_outcome.c.state_code == self._state_code, self._fact_asmt_outcome.c.most_recent == true(), self._fact_asmt_outcome.c.asmt_type == Constants.SUMMATIVE))\
             .group_by(self._fact_asmt_outcome.c.asmt_subject,
                       self._fact_asmt_outcome.c.asmt_perf_lvl)\
-            .where(and_(self._fact_asmt_outcome.c.state_code == self._state_code, self._fact_asmt_outcome.c.most_recent == true(), self._fact_asmt_outcome.c.asmt_type == Constants.SUMMATIVE))
+            .order_by(self._fact_asmt_outcome.c.asmt_subject.desc())
 
         # apply demographics filters to query
-        return apply_demographics_filter_to_query(query, self._fact_asmt_outcome, self._filters)
-
-    def build_query_for_inst_name(self, f, inner_query, extra_columns=[]):
-        '''
-        Builds inner_query to get the name of district or schools
-        '''
-        inner_query = inner_query.alias()
-        return f(extra_columns +
-                 [inner_query.c[Constants.ASMT_SUBJECT], inner_query.c[Constants.LEVEL], func.sum(inner_query.c[Constants.TOTAL]).label(Constants.TOTAL)],
-                 from_obj=[self._dim_inst_hier.join(inner_query, self._dim_inst_hier.c.inst_hier_rec_id == inner_query.c[Constants.INST_HIER_REC_ID])])\
-            .group_by(inner_query.c[Constants.ASMT_SUBJECT], inner_query.c[Constants.LEVEL])\
-            .order_by(inner_query.c[Constants.ASMT_SUBJECT].desc())
+        return apply_filter_to_query(query, self._fact_asmt_outcome, self._filters)
 
     def get_query(self):
         return self._f()
 
     def get_query_for_state_view(self):
-        f = select
-        inner_query = self.build_query(f, [self._dim_inst_hier.c.inst_hier_rec_id.label(Constants.INST_HIER_REC_ID)])\
-                          .group_by(self._dim_inst_hier.c.inst_hier_rec_id)
-
-        return self.build_query_for_inst_name(f, inner_query, [self._dim_inst_hier.c.district_name.label(Constants.NAME), self._dim_inst_hier.c.district_guid.label(Constants.ID)])\
+        return self.build_query(select, [self._dim_inst_hier.c.district_name.label(Constants.NAME), self._dim_inst_hier.c.district_guid.label(Constants.ID)])\
                    .group_by(self._dim_inst_hier.c.district_name, self._dim_inst_hier.c.district_guid)\
                    .order_by(self._dim_inst_hier.c.district_name)
 
     def get_query_for_district_view(self):
-        f = select
-        inner_query = self.build_query(f, [self._dim_inst_hier.c.inst_hier_rec_id.label(Constants.INST_HIER_REC_ID)])\
-                          .group_by(self._dim_inst_hier.c.inst_hier_rec_id)\
-                          .where(self._fact_asmt_outcome.c.district_guid == self._district_guid)
-
-        return self.build_query_for_inst_name(f, inner_query, [self._dim_inst_hier.c.school_name.label(Constants.NAME), self._dim_inst_hier.c.school_guid.label(Constants.ID)])\
-                   .group_by(self._dim_inst_hier.c.school_name, self._dim_inst_hier.c.school_guid)\
+        return self.build_query(select, [self._dim_inst_hier.c.school_name.label(Constants.NAME), self._dim_inst_hier.c.school_guid.label(Constants.ID)])\
+                   .where(and_(self._fact_asmt_outcome.c.district_guid == self._district_guid))\
+                   .group_by(self._dim_inst_hier.c.school_guid, self._dim_inst_hier.c.school_name)\
                    .order_by(self._dim_inst_hier.c.school_name)
 
     def get_query_for_school_view(self):
         return self.build_query(select_with_context, [self._fact_asmt_outcome.c.asmt_grade.label(Constants.NAME), self._fact_asmt_outcome.c.asmt_grade.label(Constants.ID)])\
-                   .group_by(self._fact_asmt_outcome.c.asmt_grade)\
                    .where(and_(self._fact_asmt_outcome.c.district_guid == self._district_guid, self._fact_asmt_outcome.c.school_guid == self._school_guid))\
-                   .order_by(self._fact_asmt_outcome.c.asmt_subject.desc(), self._fact_asmt_outcome.c.asmt_grade)
+                   .group_by(self._fact_asmt_outcome.c.asmt_grade)\
+                   .order_by(self._fact_asmt_outcome.c.asmt_grade)

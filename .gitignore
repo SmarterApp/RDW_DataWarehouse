@@ -41,6 +41,9 @@ udl2/test.log
 udl2/src/test.log
 smarter.egg-info
 .idea/
+.project
+.pydevproject
+.settings/
 
 #########################
 # csv's will be ignored #

@@ -334,22 +334,23 @@ def get_school_population(school, student_info_dict, subject_percentages, demogr
     eb_rand_adj_hi = error_band_dict[constants.RAND_ADJ_PNT_HI]
 
     school_counts = school.grade_performance_level_counts
+    
     students_in_school = []
-    sections_in_school = []
-    teachers_in_school = []
+    subject_sections_map = {}
+    subject_teachers_map = {}
 
     for grade in school_counts:
 
-        math_sections = generate_sections(constants.NUMBER_OF_SECTIONS, constants.MATH, grade, state_code, school.district_guid,
+        for subject in constants.SUBJECTS:
+            # create sections
+            sections = generate_sections(constants.NUMBER_OF_SECTIONS, subject, grade, state_code, school.district_guid,
                                           school.school_guid, from_date, most_recent, to_date=to_date)
-        ela_sections = generate_sections(constants.NUMBER_OF_SECTIONS, constants.ELA, grade, state_code, school.district_guid,
-                                         school.school_guid, from_date, most_recent, to_date=to_date)
-        sections_in_school += math_sections + ela_sections
+            subject_sections_map[subject] = sections
 
-        # create teachers
-        math_staff = generate_teachers_for_sections(constants.STAFF_PER_SECTION, math_sections, from_date, most_recent, to_date, school, state_code)
-        ela_staff = generate_teachers_for_sections(constants.STAFF_PER_SECTION, ela_sections, from_date, most_recent, to_date, school, state_code)
-        teachers_in_school += math_staff + ela_staff
+            # create teachers
+            staff = generate_teachers_for_sections(constants.STAFF_PER_SECTION, sections, from_date, most_recent, 
+                                                    to_date, school, state_code) 
+            subject_teachers_map[subject] =  staff
 
         # Generate Students that have Math scores and demographics
         students = get_students_by_counts(grade, school_counts[grade], student_info_dict)
@@ -376,14 +377,17 @@ def get_school_population(school, student_info_dict, subject_percentages, demogr
         assign_scores_for_subjects(students, ela_perf, inclusive_cut_points, min_score, max_score, grade, constants.ELA,
                                    ela_assessment, eb_min_perc, eb_max_perc, eb_rand_adj_lo, eb_rand_adj_hi)
 
-        assign_students_sections(students, math_sections, ela_sections)
+        assign_students_sections(students, subject_sections_map[constants.MATH], subject_sections_map[constants.ELA])
         set_student_institution_information(students, school, from_date, most_recent, to_date, street_names,
-                                            math_staff[0], ela_staff[0], state_code)
+                                            subject_teachers_map[constants.MATH][0], subject_teachers_map[constants.ELA][0], state_code)
         set_students_asmt_info(students, [constants.ELA, constants.MATH], [ela_assessment.asmt_rec_id, math_assessment.asmt_rec_id],
                                [ela_date_taken, math_date_taken], [ela_asmt_year, math_asmt_year], [ela_asmt_type, math_asmt_type])
         apply_subject_percentages(subject_percentages, students)
 
         students_in_school += students
+
+    sections_in_school = [j for i in subject_sections_map.values() for j in i]
+    teachers_in_school = [j for i in subject_teachers_map.values() for j in i]
 
     return students_in_school, teachers_in_school, sections_in_school
 

@@ -6,18 +6,19 @@ Created on Jul 31, 2013
 
 from uuid import uuid4
 
-from DataGeneration.src.demographic_values import get_single_demo_value
-from DataGeneration.src.demographics import L_GROUPING, L_TOTAL, L_PERF_1, L_PERF_2, L_PERF_3, L_PERF_4
-from DataGeneration.src.gaussian_distributions import gauss_one, guess_std
-from DataGeneration.src.adjust import adjust_pld
-import DataGeneration.src.constants as constants
+from DataGeneration.src.demographics.demographic_values import get_single_demo_value
+from DataGeneration.src.demographics.demographics import L_GROUPING, L_TOTAL, L_PERF_1, L_PERF_2, L_PERF_3, L_PERF_4
+from DataGeneration.src.calc.gaussian_distributions import gauss_one, guess_std
+from DataGeneration.src.calc.adjust import adjust_pld
+import DataGeneration.src.constants.constants as constants
 
 
 class StatePopulation(object):
     '''
     Class to maintain and calculate the population counts for a state
     '''
-    def __init__(self, name, state_code, state_type, subject='math', do_pld_adjustment=True):
+    def __init__(self, name, state_code, state_type, subject='math', do_pld_adjustment=True, state_demographic_totals=None,
+                 districts=None, subject_percentages=None, demographics_id=None):
         ''' Constructor '''
 
         self.name = name
@@ -27,12 +28,10 @@ class StatePopulation(object):
         self.do_pld_adjustment = do_pld_adjustment
 
         # Population info
-        self.state_total_students = 0
-        self.total_student_by_grade = {}
-        self.state_demographic_totals = {}
-        self.districts = []
-        self.subject_percentages = None
-        self.demographics_id = None
+        self.state_demographic_totals = {} if state_demographic_totals is None else state_demographic_totals
+        self.districts = [] if districts is None else districts
+        self.subject_percentages = subject_percentages
+        self.demographics_id = demographics_id
 
     def populate_state(self, state_type_dict, district_types_dict, school_types_dict):
         '''
@@ -83,7 +82,6 @@ class StatePopulation(object):
         dist_pop_list = []
         for _i in range(district_counts):
             dist_pop = DistrictPopulation(district_type, subject, self.do_pld_adjustment)
-            # self.total_student_by_grade = add_populations(self.total_student_by_grade, dist_pop.total_student_by_grade)
             dist_pop.populate_district(district_info, school_types_dict)
             dist_pop_list.append(dist_pop)
         return dist_pop_list
@@ -99,7 +97,6 @@ class DistrictPopulation(object):
         self.subject = subject
         self.do_pld_adjustment = do_pld_adjustment
 
-        self.total_student_by_grade = {}
         self.district_demographic_totals = {}
         self.schools = []
 
@@ -261,36 +258,6 @@ def apply_pld_to_grade_demographics(pld_adjustment, grade_demographics):
     return adjusted_values
 
 
-def determine_max_counts(group_sums):
-    '''
-    TODO: Remove if unused
-    takes a dictionary of group sum and returns the max for each performance level
-    '''
-    # make group number None
-    max_counts = [None, 0, 0, 0, 0, 0]
-
-    for i in range(L_TOTAL, len(max_counts)):
-        # put each count across groups and put in new list
-        perf_count_list = [group_counts[i] for _k, group_counts in group_sums.items()]
-        max_counts[i] = max(perf_count_list)
-
-    # print('max_counts - actual', max_counts[L_TOTAL] - sum(max_counts[L_PERF_1:]))
-    max_counts[L_TOTAL] = sum(max_counts[L_PERF_1:])
-    return max_counts
-
-
-def calculate_group_sums(demographic_dict, group):
-    '''
-    TODO: Remove if unused
-    '''
-    group_sums = [group, 0, 0, 0, 0, 0]
-    for _demo_name, demo_values in demographic_dict.items():
-        if demo_values[L_GROUPING] == group:
-            for i in range(1, len(demo_values)):
-                group_sums[i] += demo_values[i]
-    return group_sums
-
-
 def construct_state_counts_dict(state_population):
     '''
     TODO: Remove if unused
@@ -316,18 +283,6 @@ def construct_district_counts_dict(district_populations):
         district_counts[school_popl.guid] = school_popl.total_students_by_grade
 
     return district_counts
-
-
-def calculate_school_total_students(grades, min_students, max_students, avg_students):
-    '''
-    Given a grade number, return the number of students in that grade
-    @return: a dict of grades mapped to totals
-    '''
-    grade_counts = {}
-    for grade in grades:
-        grade_counts[grade] = calculate_number_of_items(min_students, max_students, avg_students)
-
-    return grade_counts
 
 
 def calculate_group_demographic_numbers(group_dict, group_num, total_students):
@@ -357,6 +312,17 @@ def calculate_group_demographic_numbers(group_dict, group_num, total_students):
         demo_counts[demo][L_PERF_1:] = [perf_lvl_values[i] for i in perf_lvl_names]
 
     return demo_counts
+
+
+def add_list_of_district_populations(population_list):
+    '''
+    Take a list of population count dictionaries and return a new population dictionary that is the sum of the dictionaries
+    '''
+    new_population = {}
+    for population in population_list:
+        new_population = add_populations(new_population, population.district_demographic_totals)
+
+    return new_population
 
 
 def add_populations(population_dict_1, population_dict_2):

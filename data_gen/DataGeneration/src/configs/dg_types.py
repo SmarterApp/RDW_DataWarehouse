@@ -6,34 +6,6 @@ Created on Apr 4, 2013
 
 import os
 
-# TODO: move to separate constants file
-GRADES = 'grades'
-STUDENTS = 'students'
-STATE_TYPE = 'state_type'
-DISTRICT_TYPES_AND_COUNTS = 'district_types_and_counts'
-SCHOOL_COUNTS = 'school_counts'
-MIN = 'min'
-AVG = 'avg'
-MAX = 'max'
-SCHOOL_TYPES_AND_RATIOS = 'school_types_and_ratios'
-NAME = 'name'
-PERCENTAGES = 'percentages'
-GAMMA = 'gamma'
-STD = 'std'
-STATE_CODE = 'state_code'
-CUT_POINTS = 'cut_points'
-MIN_PERC = 'min_divisor'
-MAX_PERC = 'max_divisor'
-RAND_ADJ_PNT_LO = 'random_adjustment_points_lo'
-RAND_ADJ_PNT_HI = 'random_adjustment_points_hi'
-FROM_DATE = 'from_date'
-TO_DATE = 'to_date'
-MOST_RECENT = 'most_recent'
-SUBJECT_AND_PERCENTAGES = 'subjects_and_percentages'
-TYPE = 'type'
-ADJUST_PLD = 'adjust_pld'
-DEMOGRAPHICS = 'demographics'
-
 
 def get_school_types():
     """
@@ -192,10 +164,6 @@ def get_state_types():
                                  'subjects_and_percentages': {'Math': .99, 'ELA': .99},
                                  'demographics': 'typical1'}
                    }
-    state_types = {'typical_1': {'district_types_and_counts': {'Medium Average': 2},
-                                 'subjects_and_percentages': {'Math': .99, 'ELA': .99},
-                                 'demographics': 'typical1'}}
-
     return state_types
 
 
@@ -273,4 +241,4 @@ def get_temporal_information():
 
 def get_demograph_file():
     datafile_path = os.path.dirname(os.path.realpath(__file__))
-    return os.path.join(datafile_path, '..', 'datafiles', 'demographicStats.csv')
+    return os.path.join(datafile_path, '..', '..', 'datafiles', 'demographicStats.csv')

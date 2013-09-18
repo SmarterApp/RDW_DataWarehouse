@@ -1,6 +1,22 @@
 import csv
 
 
+def prepare_csv_files(entity_to_path_dict):
+    '''
+    Erase each csv file and then add appropriate header
+
+    @type entity_to_path_dict: dict
+    @param entity_to_path_dict: Each key is an entity's class, and each value is the path to its csv file
+    '''
+    for entity in entity_to_path_dict:
+        path = entity_to_path_dict[entity]
+        # By opening the file for writing, we implicitly delete the file contents
+        with open(path, 'w') as csv_file:
+            csv_writer = csv.writer(csv_file, delimiter=',', quoting=csv.QUOTE_MINIMAL)
+            # Here we write the header the the given entity
+            csv_writer.writerow(entity.getHeader())
+
+
 def create_csv(entity_list, filename):
     '''
     Write each entity in entity_list into the given file

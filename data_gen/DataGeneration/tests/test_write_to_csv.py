@@ -1,7 +1,7 @@
 import unittest
-import DataGeneration.src.write_to_csv as write_to_csv
+import DataGeneration.src.writers.write_to_csv as write_to_csv
 import os
-from DataGeneration.src.entities import Assessment
+from DataGeneration.src.models.entities import Assessment
 
 
 class TestWriteToCSV(unittest.TestCase):

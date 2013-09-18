@@ -5,7 +5,7 @@ Created on Apr 19, 2013
 '''
 import unittest
 
-import DataGeneration.src.stats as stats
+import DataGeneration.src.calc.stats as stats
 
 
 class Test(unittest.TestCase):

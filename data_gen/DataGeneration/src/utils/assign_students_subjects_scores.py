@@ -1,8 +1,5 @@
-from DataGeneration.src.helper_entities import StudentInfo
-from DataGeneration.src.generate_scores import generate_overall_scores
-from DataGeneration.src.claim_score_calculation import translate_scores_to_assessment_score
-from DataGeneration.src.entities import Assessment
-from DataGeneration.src.generate_entities import generate_assessment
+from DataGeneration.src.generators.generate_scores import generate_overall_scores
+from DataGeneration.src.calc.claim_score_calculation import translate_scores_to_assessment_score
 
 
 DMG_ETH_NST = 'dmg_eth_nst'

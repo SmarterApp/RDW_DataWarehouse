@@ -269,4 +269,4 @@ def get_temporal_information():
 
 def get_demograph_file():
     datafile_path = os.path.dirname(os.path.realpath(__file__))
-    return os.path.join(datafile_path, '..', 'datafiles', 'demographicStats.csv')
+    return os.path.join(datafile_path, '..', '..', 'datafiles', 'demographicStats.csv')

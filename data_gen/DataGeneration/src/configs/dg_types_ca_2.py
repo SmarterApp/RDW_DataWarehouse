@@ -6,6 +6,7 @@ Created on Apr 4, 2013
 
 import os
 
+# TODO: move to separate constants file
 GRADES = 'grades'
 STUDENTS = 'students'
 STATE_TYPE = 'state_type'
@@ -42,32 +43,24 @@ def get_school_types():
     students is a dictionary containing the min, max and avg number of students
     """
     school_types = {
-        'High School': {'type': 'High School', 'grades': [11], 'students': {'min': 10, 'max': 30, 'avg': 20}},
-        'Middle School': {'type': 'Middle School', 'grades': [6, 7, 8], 'students': {'min': 10, 'max': 30, 'avg': 20}},
-        'Elementary School': {'type': 'Elementary School', 'grades': [3, 4, 5], 'students': {'min': 5, 'max': 15, 'avg': 10}},
-
-        'Poor High School': {'type': 'High School', 'grades': [11], 'students': {'min': 10, 'max': 30, 'avg': 20}, 'adjust_pld': -0.45},
-        'Poor Middle School': {'type': 'Middle School', 'grades': [6, 7, 8], 'students': {'min': 10, 'max': 30, 'avg': 20}, 'adjust_pld': -0.5},
-        'Poor Elementary School': {'type': 'Elementary School', 'grades': [3, 4, 5], 'students': {'min': 5, 'max': 15, 'avg': 10}, 'adjust_pld': -0.6},
-
-        'Good High School': {'type': 'High School', 'grades': [11], 'students': {'min': 10, 'max': 30, 'avg': 20}, 'adjust_pld': 0.35},
-        'Good Middle School': {'type': 'Middle School', 'grades': [6, 7, 8], 'students': {'min': 10, 'max': 30, 'avg': 20}, 'adjust_pld': 0.4},
-        'Good Elementary School': {'type': 'Elementary School', 'grades': [3, 4, 5], 'students': {'min': 5, 'max': 15, 'avg': 10}, 'adjust_pld': 0.5},
+        'High School': {'type': 'High School', 'grades': [9, 10, 11, 12], 'students': {'min': 12, 'max': 500, 'avg': 300}},
+        'Middle School': {'type': 'Middle School', 'grades': [6, 7, 8], 'students': {'min': 17, 'max': 300, 'avg': 200}},
+        'Elementary School': {'type': 'Elementary School', 'grades': [1, 2, 3, 4, 5], 'students': {'min': 10, 'max': 200, 'avg': 80}}
     }
 
     return school_types
 
 # District sizes : min/max/avg schools per type of district
-SML_MIN = 5
+SML_MIN = 3
 SML_MAX = 2 * SML_MIN
 SML_AVG = int((SML_MAX + SML_MIN) / 2)
 
-MED_MIN = 4 * SML_MIN  # if small min =  5 then medium min = 20
-MED_MAX = 4 * SML_MAX  # if small max = 10 then medium max = 40
+MED_MIN = 2 * SML_MIN  # if small min =  5 then medium min = 20
+MED_MAX = 2 * SML_MAX  # if small max = 10 then medium max = 40
 MED_AVG = int((MED_MAX + MED_MIN) / 2)
 
-BIG_MIN = 4 * MED_MIN  # if medium min = 20 then big min =  80
-BIG_MAX = 4 * MED_MAX  # if medium max = 40 then big max = 160
+BIG_MIN = 2 * MED_MIN  # if medium min = 20 then big min =  80
+BIG_MAX = 2 * MED_MAX  # if medium max = 40 then big max = 160
 BIG_AVG = int((BIG_MAX + BIG_MIN) / 2)
 
 # School ratios
@@ -95,30 +88,6 @@ VERY_FEAT_HIGH = 7 * BASE_HIGH
 VERY_FEAT_MIDL = 7 * BASE_MIDL
 VERY_FEAT_ELEM = 7 * BASE_ELEM
 
-"""
-SDS = small data set. Used by reporting team for testing.
-The data generated here will be added to the 50 or so existing SDS records 'by hand'
-
-Need to generate here:
-Approximately 400 students
-3 districts:
-district #1: 1 high school,  1 middle school,  1 elementary school
-district #2: 1 high school,  2 middle schools, 1 elementary school
-district #3: 1 high school,  1 middle school,  2 elementary schools
-
-an elementary school has three grades: 3, 4, 5
-a middle school has three grades: 6, 7, 8
-a high school has one grade: 11
-
-Obviously they really have more grades, but assessments are currently only applied for these grades.
-
-To keep the generated data to around 400 students we will have these counts per grade:
-high school = 20 / grade
-middle school = 20 / grade
-elementary school = 10 / grade
-
-"""
-
 
 def get_district_types():
     """
@@ -128,21 +97,19 @@ def get_district_types():
     'school_types_and_ratios' is dictionary containing the ratios of High to Middle to Elementary schools
     (ie. 1:2:5 -- {'High': 1, 'Middle': 2, 'Elementary': 5})
 
+    <ken 2013-05-07> Added good/poor/average districts of medium and small size
     """
-    district_types = {'SDS Average': {'school_counts': {'min': 1, 'max': 4, 'avg': 3},  # if SML_MIN = 5 then (80, 160, 120)
+    district_types = {'Big Average': {'school_counts': {'min': BIG_MIN, 'max': BIG_MAX, 'avg': BIG_AVG},  # if SML_MIN = 5 then (80, 160, 120)
                                       'school_types_and_ratios': {
-                                          'High School': 1, 'Middle School': 1, 'Elementary School': 1}},
+                                          'High School': NORM_HIGH, 'Middle School': NORM_MIDL, 'Elementary School': NORM_ELEM}},
 
-                      'SDS Good': {'school_counts': {'min': 1, 'max': 4, 'avg': 3},
-                                   'school_types_and_ratios': {
-                                       'High School': 1, 'Middle School': 1, 'Elementary School': 1, 'Good Middle School': 1}
-                                   },
+                      'Medium Average': {'school_counts': {'min': MED_MIN, 'max': MED_MAX, 'avg': MED_AVG},  # if SML_MIN = 5 then (20, 40, 30)
+                                         'school_types_and_ratios': {
+                                             'High School': NORM_HIGH, 'Middle School': NORM_MIDL, 'Elementary School': NORM_ELEM}},
 
-                      'SDS Poor': {'school_counts': {'min': 1, 'max': 4, 'avg': 3},
-                                   'school_types_and_ratios': {
-                                       'High School': 1, 'Middle School': 1, 'Elementary School': 1, 'Poor Elementary School': 1}
-                                   }
-
+                      'Small Average': {'school_counts': {'min': SML_MIN, 'max': SML_MAX, 'avg': SML_AVG},  # if SML_MIN = 5 then (5, 10, 7)
+                                        'school_types_and_ratios': {
+                                            'High School': NORM_HIGH, 'Middle School': NORM_MIDL, 'Elementary School': NORM_ELEM}}
                       }
     return district_types
 
@@ -156,7 +123,9 @@ def get_state_types():
 
     Initial numbers were Big=3, Medium=6, Small=40
     """
-    state_types = {'SDS': {'district_types_and_counts': {'SDS Average': 1, 'SDS Poor': 1, 'SDS Good': 1}, 'subjects_and_percentages': {'Math': .99, 'ELA': .99}, 'demographics': 'typical1'}
+    state_types = {'typical_1': {'district_types_and_counts': {'Big Average': 300, 'Medium Average': 600, 'Small Average': 500},
+                                 'subjects_and_percentages': {'Math': .99, 'ELA': .99},
+                                 'demographics': 'typical1'}
                    }
     return state_types
 
@@ -169,7 +138,7 @@ def get_states():
     'state_code' is the code for that state (eg. NY)
     'state_type' is the type of the state. This should match something that has been defined in get_state_types()
     """
-    states = [{'name': 'New York', 'state_code': 'NY', 'state_type': 'SDS'}]
+    states = [{'name': 'California', 'state_code': 'CA', 'state_type': 'typical_1'}]
     return states
 
 
@@ -235,7 +204,4 @@ def get_temporal_information():
 
 def get_demograph_file():
     datafile_path = os.path.dirname(os.path.realpath(__file__))
-    return os.path.join(datafile_path, '..', 'datafiles', 'demographicStats.csv')
-
-if __name__ == "__main__":
-    print("in dg_types.py")
+    return os.path.join(datafile_path, '..', '..', 'datafiles', 'demographicStats.csv')

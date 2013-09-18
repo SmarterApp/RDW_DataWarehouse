@@ -43,16 +43,16 @@ def get_school_types():
     """
     school_types = {
         'High School': {'type': 'High School', 'grades': [11], 'students': {'min': 50, 'max': 250, 'avg': 100}},
-        'Middle School': {'type': 'Middle School', 'grades': [6, 7, 8], 'students': {'min': 25, 'max': 100, 'avg': 50}},
-        'Elementary School': {'type': 'Elementary School', 'grades': [3, 4, 5], 'students': {'min': 10, 'max': 35, 'avg': 30}},
+        'Middle School': {'type': 'Middle School', 'grades': [6], 'students': {'min': 25, 'max': 100, 'avg': 50}},
+        'Elementary School': {'type': 'Elementary School', 'grades': [3], 'students': {'min': 10, 'max': 35, 'avg': 30}},
 
-        'Poor High School': {'type': 'High School', 'grades': [11], 'students': {'min': 50, 'max': 250, 'avg': 100}},  # 'adjust_pld': -0.45},
-        'Poor Middle School': {'type': 'Middle School', 'grades': [6, 7, 8], 'students': {'min': 25, 'max': 100, 'avg': 50}},  # 'adjust_pld': -0.5},
-        'Poor Elementary School': {'type': 'Elementary School', 'grades': [3, 4, 5], 'students': {'min': 10, 'max': 35, 'avg': 30}},  # 'adjust_pld': -0.6},
+        'Poor High School': {'type': 'High School', 'grades': [11], 'students': {'min': 50, 'max': 250, 'avg': 100}, 'adjust_pld': -0.45},
+        'Poor Middle School': {'type': 'Middle School', 'grades': [6], 'students': {'min': 25, 'max': 100, 'avg': 50}, 'adjust_pld': -0.5},
+        'Poor Elementary School': {'type': 'Elementary School', 'grades': [3], 'students': {'min': 10, 'max': 35, 'avg': 30}, 'adjust_pld': -0.6},
 
-        'Good High School': {'type': 'High School', 'grades': [11], 'students': {'min': 50, 'max': 250, 'avg': 100}},  # 'adjust_pld': 0.35},
-        'Good Middle School': {'type': 'Middle School', 'grades': [6, 7, 8], 'students': {'min': 25, 'max': 100, 'avg': 50}},  # 'adjust_pld': 0.4},
-        'Good Elementary School': {'type': 'Elementary School', 'grades': [3, 4, 5], 'students': {'min': 10, 'max': 35, 'avg': 30}},  # 'adjust_pld': 0.5},
+        'Good High School': {'type': 'High School', 'grades': [11], 'students': {'min': 50, 'max': 250, 'avg': 100}, 'adjust_pld': 0.35},
+        'Good Middle School': {'type': 'Middle School', 'grades': [6], 'students': {'min': 25, 'max': 100, 'avg': 50}, 'adjust_pld': 0.4},
+        'Good Elementary School': {'type': 'Elementary School', 'grades': [3], 'students': {'min': 10, 'max': 35, 'avg': 30}, 'adjust_pld': 0.5},
     }
 
     return school_types
@@ -184,10 +184,7 @@ def get_state_types():
 
     Initial numbers were Big=3, Medium=6, Small=40
     """
-    state_types = {'typical_1': {'district_types_and_counts': {'Big Average': 1, 'Big Poor': 1, 'Big Good': 1,
-                                                               'Medium Average': 2, 'Medium Poor': 1, 'Medium Good': 1, 'Medium Very Poor': 1, 'Medium Very Good': 1,
-                                                               'Small Average': 20, 'Small Poor': 5, 'Small Good': 5, 'Small Very Poor': 5, 'Small Very Good': 5
-                                                               },
+    state_types = {'typical_1': {'district_types_and_counts': {'Medium Average': 2},
                                  'subjects_and_percentages': {'Math': .99, 'ELA': .99},
                                  'demographics': 'typical1'}}
     return state_types
@@ -241,19 +238,11 @@ def get_performance_level_distributions():
     """
 
     pld = {'ELA': {'3': {'percentages': [30, 34, 28, 9]},
-                   '4': {'percentages': [29, 36, 28, 7]},
-                   '5': {'percentages': [27, 38, 29, 6]},
                    '6': {'percentages': [26, 39, 29, 6]},
-                   '7': {'percentages': [25, 40, 30, 5]},
-                   '8': {'percentages': [23, 42, 31, 4]},
                    '11': {'percentages': [21, 44, 32, 3]}
                    },
            'Math': {'3': {'percentages': [14, 42, 37, 7]},
-                    '4': {'percentages': [16, 42, 35, 7]},
-                    '5': {'percentages': [18, 41, 33, 8]},
                     '6': {'percentages': [20, 40, 31, 9]},
-                    '7': {'percentages': [22, 39, 30, 9]},
-                    '8': {'percentages': [24, 38, 29, 9]},
                     '11': {'percentages': [26, 37, 28, 9]}}
            }
     return pld
@@ -266,4 +255,4 @@ def get_temporal_information():
 
 def get_demograph_file():
     datafile_path = os.path.dirname(os.path.realpath(__file__))
-    return os.path.join(datafile_path, '..', 'datafiles', 'demographicStats.csv')
+    return os.path.join(datafile_path, '..', '..', 'datafiles', 'demographicStats.csv')

@@ -1,5 +1,6 @@
 import unittest
-from DataGeneration.src.demographic_derived import derive_demographic, HISPANIC_CODE, TWO_OR_MORE_RACES_CODE
+from DataGeneration.src.demographics.demographic_derived import derive_demographic
+from DataGeneration.src.constants.constants import HISPANIC_CODE, TWO_OR_MORE_RACES_CODE
 
 
 class TestDemographicDerived(unittest.TestCase):

@@ -7,8 +7,8 @@ import unittest
 import csv
 import os
 
-import DataGeneration.src.demographics as dmg
-from DataGeneration.src.print_state_population import print_demographic_info
+import DataGeneration.src.demographics.demographics as dmg
+from DataGeneration.src.utils.print_state_population import print_demographic_info
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 

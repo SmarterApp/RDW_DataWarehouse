@@ -1,9 +1,9 @@
-import DataGeneration.src.entities as entities
+import DataGeneration.src.models.entities as entities
 import csv
 import os
 import unittest
-from DataGeneration.src.dg_types_test import get_scores, get_states, get_state_types, get_district_types, get_school_types
-from DataGeneration.src.constants import DISTRICT_TYPES_AND_COUNTS, MIN, MAX, CUT_POINTS, SCHOOL_TYPES_AND_RATIOS, SCHOOL_COUNTS, GRADES, STUDENTS
+from DataGeneration.src.configs.dg_types_test import get_scores, get_states, get_state_types, get_district_types, get_school_types
+from DataGeneration.src.constants.constants import DISTRICT_TYPES_AND_COUNTS, MIN, MAX, CUT_POINTS, SCHOOL_TYPES_AND_RATIOS, SCHOOL_COUNTS, GRADES, STUDENTS
 
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))

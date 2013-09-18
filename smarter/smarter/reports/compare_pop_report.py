@@ -22,7 +22,8 @@ from edapi.cache import cache_region
 from smarter.reports.helpers.filters import FILTERS_CONFIG, has_filters,\
     apply_filter_to_query
 from smarter.reports.helpers.utils import merge_dict
-from smarter.reports.helpers.compare_pop_stat_report import ComparingPopStatReport
+from smarter.reports.helpers.compare_pop_stat_report import ComparingPopStatReport,\
+    get_not_stated_count
 
 
 REPORT_NAME = "comparing_populations"
@@ -65,13 +66,6 @@ def get_comparing_populations_report(params):
         unfiltered = ComparingPopReport(**no_filter_params).get_report()
         report = merge_results(report, unfiltered)
     return report
-
-
-def get_not_stated_count(params):
-    not_stated_params = {Constants.STATECODE: params.get(Constants.STATECODE),
-                         Constants.DISTRICTGUID: params.get(Constants.DISTRICT_GUID),
-                         Constants.SCHOOLGUID: params.get(Constants.SCHOOL_GUID)}
-    return ComparingPopStatReport(**not_stated_params).get_report()
 
 
 def merge_results(filtered, unfiltered):

@@ -15,6 +15,13 @@ from sqlalchemy.sql.functions import count
 from edapi.cache import cache_region
 
 
+def get_not_stated_count(params):
+    not_stated_params = {Constants.STATECODE: params.get(Constants.STATECODE),
+                         Constants.DISTRICTGUID: params.get(Constants.DISTRICTGUID),
+                         Constants.SCHOOLGUID: params.get(Constants.SCHOOLGUID)}
+    return ComparingPopStatReport(**not_stated_params).get_report()
+
+
 def get_comparing_populations_not_stated_cache_key(comparing_pop):
     '''
     Returns cache key for comparing populations not stated students count

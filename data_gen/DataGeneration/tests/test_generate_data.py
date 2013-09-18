@@ -10,7 +10,7 @@ import os
 from collections import Counter
 
 from DataGeneration.src.models.entities import (InstitutionHierarchy, Staff, Section, Assessment,
-                                         AssessmentOutcome, ExternalUserStudent, Student)
+                                                AssessmentOutcome, ExternalUserStudent, Student)
 import DataGeneration.src.generate_data as gd2
 import DataGeneration.src.models.helper_entities as he
 from DataGeneration.src.generators.generate_entities import generate_assessments
@@ -166,7 +166,7 @@ class Test(unittest.TestCase):
         to_date = date(2015, 12, 12)
 
         results = gd2.generate_districts_for_state_population_chunk(state_populations_chunk, assessments, eb_dict, district_names,
-                                                                   school_names, self.demo_obj, from_date, most_recent, to_date, street_names)
+                                                                    school_names, self.demo_obj, from_date, most_recent, to_date, street_names)
 
         self.assertEqual(len(results), 3)
 
@@ -184,7 +184,7 @@ class Test(unittest.TestCase):
         to_date = date(2015, 12, 12)
 
         results = gd2.generate_districts_for_state_population_chunk(state_populations_chunk, assessments, eb_dict, district_names,
-                                                                   school_names, self.demo_obj, from_date, most_recent, to_date, street_names)
+                                                                    school_names, self.demo_obj, from_date, most_recent, to_date, street_names)
 
         self.assertEqual(len(results), 2)
 

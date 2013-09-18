@@ -15,14 +15,14 @@ import random
 
 from DataGeneration.src.demographics.demographics import Demographics, ALL_DEM, L_GROUPING, L_TOTAL, L_PERF_1, L_PERF_4, OVERALL_GROUP
 from DataGeneration.src.generators.generate_entities import (generate_assessments, generate_institution_hierarchy, generate_sections,
-                                                  generate_multiple_staff, generate_assessment_outcomes_from_student_info,
-                                                  generate_students_from_student_info)
+                                                             generate_multiple_staff, generate_assessment_outcomes_from_student_info,
+                                                             generate_students_from_student_info)
 from DataGeneration.src.writers.write_to_csv import create_csv, prepare_csv_files
 from DataGeneration.src.models.state_population import StatePopulation, apply_pld_to_grade_demographics, add_list_of_district_populations
 import DataGeneration.src.constants.constants as constants
 from DataGeneration.src.generators.generate_scores import generate_overall_scores
 from DataGeneration.src.models.entities import (InstitutionHierarchy, Section, Assessment, AssessmentOutcome,
-                                         Staff, ExternalUserStudent, Student)
+                                                Staff, ExternalUserStudent, Student)
 from DataGeneration.src.generators.generate_helper_entities import generate_district, generate_school, generate_state
 from DataGeneration.src.models.helper_entities import StudentInfo
 from DataGeneration.src.utils.print_state_population import print_state_population
@@ -334,7 +334,7 @@ def get_school_population(school, student_info_dict, subject_percentages, demogr
     eb_rand_adj_hi = error_band_dict[constants.RAND_ADJ_PNT_HI]
 
     school_counts = school.grade_performance_level_counts
-    
+
     students_in_school = []
     subject_sections_map = {}
     subject_teachers_map = {}
@@ -344,13 +344,13 @@ def get_school_population(school, student_info_dict, subject_percentages, demogr
         for subject in constants.SUBJECTS:
             # create sections
             sections = generate_sections(constants.NUMBER_OF_SECTIONS, subject, grade, state_code, school.district_guid,
-                                          school.school_guid, from_date, most_recent, to_date=to_date)
+                                         school.school_guid, from_date, most_recent, to_date=to_date)
             subject_sections_map[subject] = sections
 
             # create teachers
-            staff = generate_teachers_for_sections(constants.STAFF_PER_SECTION, sections, from_date, most_recent, 
-                                                    to_date, school, state_code) 
-            subject_teachers_map[subject] =  staff
+            staff = generate_teachers_for_sections(constants.STAFF_PER_SECTION, sections, from_date, most_recent,
+                                                   to_date, school, state_code)
+            subject_teachers_map[subject] = staff
 
         # Generate Students that have Math scores and demographics
         students = get_students_by_counts(grade, school_counts[grade], student_info_dict)

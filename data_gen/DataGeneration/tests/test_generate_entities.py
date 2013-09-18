@@ -3,9 +3,9 @@ import DataGeneration.src.constants.constants as constants
 from datetime import date
 from uuid import UUID, uuid4
 from DataGeneration.src.generators.generate_entities import (generate_institution_hierarchy, generate_student, generate_section, generate_staff,
-                                                         generate_assessment, generate_students, generate_sections, generate_assessments,
-                                                         generate_multiple_staff, generate_students_from_student_info,
-                                                         generate_assessment_outcomes_from_student_info)
+                                                             generate_assessment, generate_students, generate_sections, generate_assessments,
+                                                             generate_multiple_staff, generate_students_from_student_info,
+                                                             generate_assessment_outcomes_from_student_info)
 from DataGeneration.src.models.entities import Student, Section, Assessment, Staff
 
 

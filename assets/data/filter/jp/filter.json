@@ -1,5 +1,5 @@
 {
-	"not_stated_message": "*{{percentage}}% reported \"not stated\"",
+	"not_stated_message": "*{{percentage}}% 記載なし",
 	"grades" : {
 		"display" : "学年",
 		"tag" : "学年",

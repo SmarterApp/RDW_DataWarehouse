@@ -42,7 +42,9 @@ class TestSessionManagerWithCache(unittest.TestCase):
         testing.tearDown()
 
     def test_create_session_from_SAMLResponse(self):
-        session = create_new_user_session(create_SAMLResponse('SAMLResponse.xml'))
+        module = __import__('edauth.security.basic_identity_parser', fromlist=['BasicIdentityParser'])
+        identity_parser_class = getattr(module, 'BasicIdentityParser')
+        session = create_new_user_session(create_SAMLResponse('SAMLResponse.xml'), identity_parser_class)
         self.assertIsNotNone(session, "session should not be None")
         self.assertEqual(len(session.get_session_id()), 36, "session id Length must be 36, UUID")
         self.assertEqual(session.get_uid(), "linda.kim", "uid is linda.kim")
@@ -52,7 +54,9 @@ class TestSessionManagerWithCache(unittest.TestCase):
         self.assertEqual(session.get_guid(), '55d56214-ca4b-11e2-8f31-68a86d1e157a')
 
     def test_update_last_access_session(self):
-        session = create_new_user_session(create_SAMLResponse('SAMLResponse.xml'))
+        module = __import__('edauth.security.basic_identity_parser', fromlist=['BasicIdentityParser'])
+        identity_parser_class = getattr(module, 'BasicIdentityParser')
+        session = create_new_user_session(create_SAMLResponse('SAMLResponse.xml'), identity_parser_class)
         session_id = session.get_session_id()
         last_access = session.get_last_access()
         time.sleep(1)
@@ -62,20 +66,26 @@ class TestSessionManagerWithCache(unittest.TestCase):
         self.assertTrue(last_access < latest_last_access, "last_access should be updated")
 
     def test_expire_session(self):
-        session = create_new_user_session(create_SAMLResponse('SAMLResponse.xml'))
+        module = __import__('edauth.security.basic_identity_parser', fromlist=['BasicIdentityParser'])
+        identity_parser_class = getattr(module, 'BasicIdentityParser')
+        session = create_new_user_session(create_SAMLResponse('SAMLResponse.xml'), identity_parser_class)
         session_id = session.get_session_id()
         expire_session(session_id)
         latest_session = get_user_session(session_id)
         self.assertIsNone(latest_session, "session should be deleted")
 
     def test_session_expiration(self):
-        session = create_new_user_session(create_SAMLResponse('SAMLResponse.xml'), session_expire_after_in_secs=1)
+        module = __import__('edauth.security.basic_identity_parser', fromlist=['BasicIdentityParser'])
+        identity_parser_class = getattr(module, 'BasicIdentityParser')
+        session = create_new_user_session(create_SAMLResponse('SAMLResponse.xml'), identity_parser_class, session_expire_after_in_secs=1)
         self.assertFalse(is_session_expired(session), "session should not be expired yet")
         time.sleep(2)
         self.assertTrue(is_session_expired(session), "session should be expired")
 
     def test_create_session_with_no_roles(self):
-        session = create_new_user_session(create_SAMLResponse('SAMLResponse_no_memberOf.xml'))
+        module = __import__('edauth.security.basic_identity_parser', fromlist=['BasicIdentityParser'])
+        identity_parser_class = getattr(module, 'BasicIdentityParser')
+        session = create_new_user_session(create_SAMLResponse('SAMLResponse_no_memberOf.xml'), identity_parser_class)
         self.assertEquals(session.get_roles(), [Roles.get_invalid_role()], "no memberOf should have insert a role of none")
 
 

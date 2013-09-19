@@ -488,7 +488,7 @@ air:
       celery_always_eager: true
     edware:
       db:
-        cat:
+        ca:
           schema_name: edware_sds_0_8
           url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
         dog:
@@ -505,6 +505,7 @@ air:
         idp_server_logout_url: http://sso-dev.opentestsystem.org:8080/auth/IDPSloRedirect/metaAlias/sbac/idp
         issuer_name: http://localhost:6543/sp.xml
         name_qualifier: http://sso-dev.opentestsystem.org:8080/auth
+        identity_parser: smarter.security.sbac_identity_parser.SbacIdentityParser
       idp:
         metadata: ../../resource/air_idp_metadata.xml
     # Don't cache any static contents

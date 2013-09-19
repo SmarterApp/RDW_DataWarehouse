@@ -5,7 +5,7 @@ Created on Feb 13, 2013
 '''
 from pyramid.security import NO_PERMISSION_REQUIRED, forget, remember, \
     effective_principals, unauthenticated_userid
-from pyramid.httpexceptions import HTTPFound, HTTPMovedPermanently,\
+from pyramid.httpexceptions import HTTPFound, HTTPMovedPermanently, \
     HTTPForbidden, HTTPUnauthorized, HTTPError
 from pyramid.view import view_config, forbidden_view_config
 import base64
@@ -20,7 +20,7 @@ from edauth.saml2.saml_response_manager import SAMLResponseManager
 from edauth.saml2.saml_idp_metadata_manager import IDP_metadata_manager
 from edauth import logger
 from urllib.parse import parse_qs, urlsplit, urlunsplit
-from edauth.security.utils import SECURITY_EVENT_TYPE, _get_cipher,\
+from edauth.security.utils import SECURITY_EVENT_TYPE, _get_cipher, \
     write_security_event
 from datetime import datetime
 import json
@@ -197,7 +197,13 @@ def saml2_post_consumer(request):
 
         # create a session
         session_timeout = convert_to_int(request.registry.settings['auth.session.timeout'])
-        session_id = create_new_user_session(__SAMLResponse_manager.get_SAMLResponse(), session_timeout).get_session_id()
+        identity_parser_name = request.registry.settings.get('auth.saml.identity_parser', 'edauth.security.basic_identity_parser.BasicIdentityParser')
+        identity_parser_array = identity_parser_name.split('.')
+        loading_class = identity_parser_array.pop()
+        #Reflection to load identity parser class
+        module = __import__('.'.join(identity_parser_array), fromlist=[loading_class])
+        identity_parser_class = getattr(module, loading_class)
+        session_id = create_new_user_session(__SAMLResponse_manager.get_SAMLResponse(), identity_parser_class, session_timeout).get_session_id()
 
         # If user doesn't have a Tenant, return 403
         if get_user_session(session_id).get_tenant() is None:

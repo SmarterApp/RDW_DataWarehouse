@@ -103,7 +103,7 @@ define [
       this.filter.update this.notStatedData
 
     createHeaderAndFooter: ()->
-      this.footer = edwareFooter.create('comparing_populations', this.data, this.config) unless this.footer
+      this.footer = edwareFooter.create('comparing_populations', this.data.metadata, this.config) unless this.footer
       this.header = edwareHeader.create(this.data, this.config, "comparing_populations_" + this.reportType) unless this.header
 
     fetchData: (params)->

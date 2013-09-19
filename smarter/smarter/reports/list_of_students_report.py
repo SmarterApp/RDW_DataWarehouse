@@ -81,7 +81,6 @@ def get_list_of_students_report(params):
         dim_asmt = connector.get_table('dim_asmt')
         fact_asmt_outcome = connector.get_table('fact_asmt_outcome')
 
-        students = {}
 
         query = select_with_context([dim_student.c.student_guid.label('student_guid'),
                                     dim_student.c.first_name.label('student_first_name'),
@@ -97,6 +96,7 @@ def get_list_of_students_report(params):
                                     fact_asmt_outcome.c.asmt_score_range_min.label('asmt_score_range_min'),
                                     fact_asmt_outcome.c.asmt_score_range_max.label('asmt_score_range_max'),
                                     fact_asmt_outcome.c.asmt_perf_lvl.label('asmt_perf_lvl'),
+                                    dim_asmt.c.asmt_type.label('asmt_type'),
                                     dim_asmt.c.asmt_score_min.label('asmt_score_min'),
                                     dim_asmt.c.asmt_score_max.label('asmt_score_max'),
                                     dim_asmt.c.asmt_claim_1_name.label('asmt_claim_1_name'),
@@ -142,15 +142,16 @@ def get_list_of_students_report(params):
             raise NotFoundException("There are no results")
 
         subjects_map = get_subjects_map(asmtSubject)
+        students = {}
 
         # Formatting data for Front End
         for result in results:
             student_guid = result['student_guid']
-            student = {}
+            student = {'SUMMATIVE': {}, 'INTERIM': {}}
             assessments = {}
             if student_guid in students:
                 student = students[student_guid]
-                assessments = student['assessments']
+                assessments = student[result['asmt_type']]
             else:
                 student['student_guid'] = result['student_guid']
                 student['student_first_name'] = result['student_first_name']
@@ -162,6 +163,7 @@ def get_list_of_students_report(params):
             assessment['teacher_full_name'] = format_full_name_rev(result['teacher_first_name'], result['teacher_middle_name'], result['teacher_last_name'])
             assessment['asmt_grade'] = result['asmt_grade']
             assessment['asmt_score'] = result['asmt_score']
+            assessment['asmt_type'] = result['asmt_type']
             assessment['asmt_score_range_min'] = result['asmt_score_range_min']
             assessment['asmt_score_range_max'] = result['asmt_score_range_max']
             assessment['asmt_score_interval'] = get_overall_asmt_interval(result)
@@ -169,7 +171,7 @@ def get_list_of_students_report(params):
             assessment['claims'] = get_claims(number_of_claims=4, result=result, include_scores=True)
 
             assessments[subjects_map[result['asmt_subject']]] = assessment
-            student['assessments'] = assessments
+            student[result['asmt_type']] = assessments
 
             students[student_guid] = student
 

@@ -111,10 +111,9 @@ define [
       window.open(url, "_blank",'toolbar=0,location=0,menubar=0,status=0,resizable=yes')
     , "#printButton"
 
-  create = (reportName, data, config) ->
+  create = (reportName, colorsData, config) ->
       labels = config.labels
       reportInfo = config.reportInfo
-      colorsData = data.metadata
       legendInfo = config.legendInfo
       # Generate footer
       $('#footer').generateFooter(reportName, reportInfo, {

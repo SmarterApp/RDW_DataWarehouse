@@ -57,10 +57,11 @@ define [
       "<div><strong>" + value + "</strong> (&#177;" + confidence + ")</div>"
     else
       ""
-    
+
+  #TODO refactor performance bar code
   performanceBar = (value, options, rowObject) ->
-    asmt_type = options.colModel.formatoptions.asmt_type
-    subject = rowObject.assessments[asmt_type]
+    subject_type = options.colModel.formatoptions.asmt_type
+    subject = rowObject.assessments[subject_type]
     labels = options.colModel.labels
     if subject
       score_ALD = if not subject.cut_point_intervals[subject.asmt_perf_lvl-1] then "" else subject.cut_point_intervals[subject.asmt_perf_lvl-1]["name"] 
@@ -72,7 +73,7 @@ define [
       student_name = student_name + " " + rowObject.student_middle_name[0] + "." if rowObject.student_middle_name
       student_name = student_name + " " + rowObject.student_last_name if rowObject.student_last_name
       perfBar = "<div class='asmtScore' style='background-color:"+ subject.score_bg_color + "; color: "+ subject.score_text_color + ";'>" + subject.asmt_score + "</div><div class = 'confidenceLevel'>" +results+ "</div>"
-      toolTip = "<div class='losTooltip hide'><div class='js-popupTitle hide'>"+student_name+ " | " + subject.asmt_type + " " + labels.overall_score + "</div>"
+      toolTip = "<div class='losTooltip hide'><div class='js-popupTitle hide'>"+student_name+ " | " + subject.subject_type + " " + labels.overall_score + "</div>"
       toolTip = toolTip + "<div class='summary'><div class='title left'>" + labels.overall_score + "</div><div class='score left' style='background:"+subject.score_bg_color+";color:"+subject.score_text_color+"'><span>"+subject.asmt_score+"</span></div><div class='description' style='color:"+subject.score_bg_color+"'>"+score_ALD+"</div></div><hr/><div class='losPerfBar'>"+results2+"</div><div class='errorBand'>" + labels.error_band + ": <strong>"+subject.asmt_score_range_min+"-"+subject.asmt_score_range_max+"</strong></div></div>"
         
       output = perfBar + toolTip
@@ -82,7 +83,6 @@ define [
   populationBar = (value, options, rowObject) ->
     if parseInt(value) <= 0
       return options.colModel.labels['insufficient_data']
-
     asmt_type = options.colModel.formatoptions.asmt_type
     subject = rowObject.results[asmt_type]
     if not subject

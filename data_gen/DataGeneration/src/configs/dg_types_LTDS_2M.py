@@ -42,17 +42,9 @@ def get_school_types():
     students is a dictionary containing the min, max and avg number of students
     """
     school_types = {
-        'High School': {'type': 'High School', 'grades': [11], 'students': {'min': 10, 'max': 30, 'avg': 20}},
-        'Middle School': {'type': 'Middle School', 'grades': [6, 7, 8], 'students': {'min': 10, 'max': 30, 'avg': 20}},
-        'Elementary School': {'type': 'Elementary School', 'grades': [3, 4, 5], 'students': {'min': 5, 'max': 15, 'avg': 10}},
-
-        'Poor High School': {'type': 'High School', 'grades': [11], 'students': {'min': 10, 'max': 30, 'avg': 20}, 'adjust_pld': -0.45},
-        'Poor Middle School': {'type': 'Middle School', 'grades': [6, 7, 8], 'students': {'min': 10, 'max': 30, 'avg': 20}, 'adjust_pld': -0.5},
-        'Poor Elementary School': {'type': 'Elementary School', 'grades': [3, 4, 5], 'students': {'min': 5, 'max': 15, 'avg': 10}, 'adjust_pld': -0.6},
-
-        'Good High School': {'type': 'High School', 'grades': [11], 'students': {'min': 10, 'max': 30, 'avg': 20}, 'adjust_pld': 0.35},
-        'Good Middle School': {'type': 'Middle School', 'grades': [6, 7, 8], 'students': {'min': 10, 'max': 30, 'avg': 20}, 'adjust_pld': 0.4},
-        'Good Elementary School': {'type': 'Elementary School', 'grades': [3, 4, 5], 'students': {'min': 5, 'max': 15, 'avg': 10}, 'adjust_pld': 0.5},
+        'High School': {'type': 'High School', 'grades': [9, 10, 11, 12], 'students': {'min': 12, 'max': 500, 'avg': 300}},
+        'Middle School': {'type': 'Middle School', 'grades': [6, 7, 8], 'students': {'min': 17, 'max': 300, 'avg': 200}},
+        'Elementary School': {'type': 'Elementary School', 'grades': [1, 2, 3, 4, 5], 'students': {'min': 10, 'max': 200, 'avg': 80}}
     }
 
     return school_types
@@ -99,7 +91,7 @@ VERY_FEAT_ELEM = 7 * BASE_ELEM
 LTDS = Load Testing data set. Used by QA for UDL load testing.
 
 Need to generate here:
-Approximately 1M Fact Assessment Outcome Records
+Approximately 2M Fact Assessment Outcome Records
 
 """
 
@@ -137,7 +129,7 @@ def get_state_types():
 
     Initial numbers were Big=3, Medium=6, Small=40
     """
-    state_types = {'LTDS': {'district_types_and_counts': {'Big Average': 250, 'Medium Average': 250, 'Small Average': 250}, 'subjects_and_percentages': {'Math': .99, 'ELA': .99}, 'demographics': 'typical1'}
+    state_types = {'LTDS': {'district_types_and_counts': {'Big Average': 50, 'Medium Average': 80, 'Small Average': 50}, 'subjects_and_percentages': {'Math': .99, 'ELA': .99}, 'demographics': 'typical1'}
                    }
     return state_types
 

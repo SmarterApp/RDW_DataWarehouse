@@ -21,7 +21,7 @@ class StatePopulation(object):
                  districts=None, subject_percentages=None, demographics_id=None):
         ''' Constructor '''
 
-        self.name = name
+        self.state_name = name
         self.state_code = state_code
         self.state_type = state_type
         self.subject = subject

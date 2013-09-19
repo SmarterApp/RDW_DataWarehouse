@@ -134,7 +134,7 @@ class StudentInfo(object):
         self.student_rec_ids = None
         self.email = None
         self.address_1 = None
-        self.addres_2 = None
+        self.address_2 = None
         self.city = None
         self.state_code = None
         self.district_guid = None
@@ -160,9 +160,11 @@ class StudentInfo(object):
         # a dict that contains an assessment score object that corresponds to each subject
         self.asmt_scores = asmt_scores
         self.asmt_rec_ids = {}
+        self.asmt_guids = {}
         self.section_guids = {}
         self.section_rec_ids = {}
         self.teacher_guids = {}
+        self.teachers = {}
         self.asmt_dates_taken = {}
 
         # New Assessment Information

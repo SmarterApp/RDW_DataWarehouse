@@ -476,3 +476,40 @@ jenkins_dev:
       public.filtered_data.url: edwappsrv1.poc.dum.edwdc.net:11211
       public.data.url: edwappsrv1.poc.dum.edwdc.net:11211
       session.url: edwappsrv2.poc.dum.edwdc.net:11211
+
+air:
+  '[app:main]':
+    cache:
+      regions: public.data, public.filtered_data, public.shortlived, session
+      type: memory
+      public.data.expire: 10
+    # Celery config
+    celery:
+      celery_always_eager: true
+    edware:
+      db:
+        cat:
+          schema_name: edware_sds_0_8
+          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
+        dog:
+          schema_name: edware_sds_0_8_dog
+          url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_functional_tests
+    edware_stats:
+      db:
+        schema_name: edware_sds_0_7
+        url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_stats
+    auth:
+      skip.verify: False
+      saml:
+        idp_server_login_url: http://sso-dev.opentestsystem.org:8080/auth/SSORedirect/metaAlias/sbac/idp
+        idp_server_logout_url: http://sso-dev.opentestsystem.org:8080/auth/IDPSloRedirect/metaAlias/sbac/idp
+        issuer_name: http://localhost:6543/sp.xml
+        name_qualifier: http://sso-dev.opentestsystem.org:8080/auth
+      idp:
+        metadata: ../../resource/air_idp_metadata.xml
+    # Don't cache any static contents
+    smarter.resources.static.max_age: 0
+    # Always generate pdf regardless if it exists in file system
+    pdf:
+      always_generate: True
+    trigger.recache.filter.file:  ../config/comparing_populations_precache_filters.json

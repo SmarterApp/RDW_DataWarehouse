@@ -1,7 +1,7 @@
 import random
 from uuid import uuid4
 from DataGeneration.src.generators.generate_names import (generate_first_or_middle_name, generate_last_name,
-                                               possibly_generate_middle_name)
+                                                          possibly_generate_middle_name)
 import DataGeneration.src.utils.util as util
 
 

@@ -1,6 +1,6 @@
 {
 	"labels": {
-		"achievement_level_descriptors": "アチーブメントレベルの記述 (ADL)",
+		"achievement_level_descriptors": "アチーブメントレベルの記述 (ALD)",
 		"ald_cutpoints": "ALD カットポイント",
 		"ald_color_coded": "ALD色分け",
 		"align": "整列",
@@ -53,22 +53,18 @@
 		"state": "州",
 		"student_filters": "学生フィルタ",
 		"teacher": "教師",
-		"dim_asmt": {
-			"claim_name": {
-				"communicating_reasoning": "推論",
-				"concepts_and_procedures": "概念と手順",
-				"problem_solving_and_modeling_and_data_analysis": "問題解決とモデリングとデータ解析",
-				"reading": "読解力",
-				"research_and_inquiry": "リサーチ＆探究",
-				"speaking_and_listening": "スピーキング＆リスニング",
-				"writing": "筆記力"
-			},
-			"perf_lvl_name":{
-				"adequate_understanding": "十分な理解",
-				"minimal_understanding": "最低限の理解",
-				"partial_understanding": "部分的な理解",
-				"thorough_understanding": "完全な理解"
-			}
+		"asmt": {
+			"Communicating Reasoning": "推論",
+			"Concepts & Procedures": "概念と手順",
+			"Problem Solving and Modeling & Data Analysis": "問題解決とモデリングとデータ解析",
+			"Reading": "読解力",
+			"Research & Inquiry": "リサーチ＆探究",
+			"Speaking & Listening": "スピーキング＆リスニング",
+			"Writing": "筆記力",
+			"Adequate Understanding": "十分な理解",
+			"Minimal Understanding": "最低限の理解",
+			"Partial Understanding": "部分的な理解",
+			"Thorough Understanding": "完全な理解"
 		}
 	}
 }

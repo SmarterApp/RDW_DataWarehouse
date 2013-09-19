@@ -22,6 +22,7 @@ from edapi.cache import cache_region
 from smarter.reports.helpers.filters import apply_filter_to_query,\
     has_filters, FILTERS_CONFIG
 from smarter.reports.helpers.utils import merge_dict
+from smarter.reports.helpers.compare_pop_stat_report import get_not_stated_count
 
 REPORT_NAME = "list_of_students"
 
@@ -192,6 +193,8 @@ def get_list_of_students_report(params):
         los_results['metadata'] = __format_cut_points(asmt_data, subjects_map, custom_metadata_map)
         los_results['context'] = get_breadcrumbs_context(state_code=stateCode, district_guid=districtGuid, school_guid=schoolGuid, asmt_grade=asmtGrade)
         los_results['subjects'] = __reverse_map(subjects_map)
+        # query not stated students count
+        los_results[Constants.NOT_STATED] = get_not_stated_count(params)
 
     return los_results
 

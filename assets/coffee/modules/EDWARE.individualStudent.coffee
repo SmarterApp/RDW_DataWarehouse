@@ -41,9 +41,7 @@ define [
       params: params
       
     edwareDataProxy.getDatafromSource "/data/individual_student_report", options, (data) ->
-      
       data = JSON.parse(Mustache.render(JSON.stringify(data), {"labels":configData.labels}))
-   
       defaultColors = {}
       
       defaultColors = configData.colors

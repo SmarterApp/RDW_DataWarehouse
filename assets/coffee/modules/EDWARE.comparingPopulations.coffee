@@ -71,6 +71,9 @@ define [
         index: 0
       }
 
+    setFilter: (filter) ->
+      this.filter = filter
+
     sortBySubject: (sort) ->
       this.sort = $.extend(this.sort, sort)
       $('#gridTable').sortBySubject(this.sort.name, this.sort.index, this.sort.order)
@@ -83,6 +86,7 @@ define [
       this.populationData = this.data.records
       this.summaryData = this.data.summary
       this.asmtSubjectsData = this.data.subjects
+      this.notStatedData = this.data.not_stated
       #Check for colors, set to default color if it's null
       for subject, value of this.data.metadata
         if value is null
@@ -92,7 +96,11 @@ define [
       this.renderBreadcrumbs(data.context)
       this.createGrid()
       this.updateDropdown()
+      this.updateFilter()
       this.createHeaderAndFooter()
+
+    updateFilter: ()->
+      this.filter.update this.notStatedData
 
     createHeaderAndFooter: ()->
       this.footer = edwareFooter.create('comparing_populations', this.data, this.config) unless this.footer
@@ -241,7 +249,7 @@ define [
         return this.breadcrumbsData.items[0].id + ' State Overall'
       else if this.reportType is 'district'
         districtName = this.breadcrumbsData.items[1].name
-        districtName = districtName.replace(/Schools$/, '').trimRight()
+        districtName = districtName.replace(/(Schools)|(Public Schools)$/, '').trimRight()
         districtName = districtName.replace(/District$/, '').trimRight()
         districtName = districtName.replace(/School$/, '').trimRight()
         return districtName + ' District Overall'

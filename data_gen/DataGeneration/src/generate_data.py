@@ -69,7 +69,7 @@ NAMES_TO_PATH_DICT = {BIRDS: os.path.join(DATAFILE_PATH, 'datafiles', 'name_list
                       }
 
 
-def generate_data_from_config_file(config_module, output_dict, do_pld_adjustment=True, star_format=True, landing_zone_format=False, single_file=True):
+def generate_data_from_config_file(config_module, output_dict, do_pld_adjustment=True, star_format=True, landing_zone_format=False, single_file=True, district_chunk_size=1):
     '''
     Main function that drives the data generation process
     Collects all relevant info from the config files and calls methods to generate states and remaining data
@@ -105,7 +105,7 @@ def generate_data_from_config_file(config_module, output_dict, do_pld_adjustment
     for state_population in state_populations:
         # generate districts in chunks and write to file
         generate_districts_in_chunks(state_population, assessments, error_band_dict, district_names, school_names, demographics_info,
-                                     from_date, most_recent, to_date, street_names, batch_guid, output_dict, max_chunk=1,
+                                     from_date, most_recent, to_date, street_names, batch_guid, output_dict, max_chunk=district_chunk_size,
                                      star_format=star_format, landing_zone_format=landing_zone_format, single_file=single_file)
 
         state = generate_state(state_population.state_name, state_population.state_code)
@@ -838,7 +838,7 @@ def generate_name_list_dictionary(list_name_to_path_dictionary):
     return name_list_dictionary
 
 
-def main(config_mod_name='dg_types', output_path=None, do_pld_adjustment=True, star_format=True, landing_zone_format=False, single_file=True):
+def main(config_mod_name='dg_types', output_path=None, do_pld_adjustment=True, star_format=True, landing_zone_format=False, single_file=True, district_chunk_size=1):
     t1 = datetime.datetime.now()
     config_module = import_module(config_mod_name)
 
@@ -847,7 +847,7 @@ def main(config_mod_name='dg_types', output_path=None, do_pld_adjustment=True, s
     if output_path:
         output_dict = create_output_dict(output_path)
     # generate_data
-    generate_data_from_config_file(config_module, output_dict, do_pld_adjustment, star_format, landing_zone_format, single_file)
+    generate_data_from_config_file(config_module, output_dict, do_pld_adjustment, star_format, landing_zone_format, single_file, district_chunk_size)
 
     # print time
     t2 = datetime.datetime.now()
@@ -867,6 +867,8 @@ if __name__ == '__main__':
                         help='Specify the configuration module that informs that data creation process.', required=False)
     parser.add_argument('--output', dest='output_path', action='store',
                         help='Specify the location of the output csv files', required=False)
+    parser.add_argument('-d', '--district-chunk-size', type=int, default=1,
+                        help='The number of district to generate and output at a time. Default: 1')
     parser.add_argument('-N', '--no-pld-adjustment', dest='do_pld_adjustment', action='store_false',
                         help='Specify this flag to generate data without applying the performance level adjustments')
     parser.add_argument('-l', '--lz-format', action='store_true', dest='lz_format',
@@ -881,4 +883,4 @@ if __name__ == '__main__':
     landing_zone = True if args.star_and_lz or args.lz_format else False
     single_file = not args.multi_lz_files
 
-    main(args.config_module, args.output_path, args.do_pld_adjustment, star_format, landing_zone, single_file)
+    main(args.config_module, args.output_path, args.do_pld_adjustment, star_format, landing_zone, single_file, args.district_chunk_size)

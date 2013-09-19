@@ -426,12 +426,12 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         testParam[Constants.STATECODE] = 'NY'
         testParam[Constants.DISTRICTGUID] = '229'
         results = get_comparing_populations_report(testParam)
-        self.assertEqual(results['not_stated']['total'], 492)
-        self.assertEqual(results['not_stated']['dmgPrg504'], 4)
-        self.assertEqual(results['not_stated']['dmgPrgIep'], 5)
-        self.assertEqual(results['not_stated']['dmgPrgLep'], 6)
-        self.assertEqual(results['not_stated']['dmgPrgTt1'], 5)
-        self.assertEqual(results['not_stated']['ethnicity'], 6)
+        self.assertEqual(results['not_stated']['total'], 35)
+        self.assertEqual(results['not_stated']['dmgPrg504'], 2)
+        self.assertEqual(results['not_stated']['dmgPrgIep'], 2)
+        self.assertEqual(results['not_stated']['dmgPrgLep'], 2)
+        self.assertEqual(results['not_stated']['dmgPrgTt1'], 2)
+        self.assertEqual(results['not_stated']['ethnicity'], 1)
         self.assertEqual(results['not_stated']['gender'], 0)
 
     def test_filter_with_unfiltered_results(self):

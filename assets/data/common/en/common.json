@@ -487,7 +487,7 @@
 			}
 		],
 		"customViews": {
-			"asmtTypes": ["Summative", "Interim"],
+			"asmtTypes": ["Summative", "Comprehensive Interim"],
 			"items": {
 				"{{subject1}}_{{subject2}}": "{{subject1}} & {{subject2}} {{asmtType}}",
 				"{{subject1}}": "{{subject1}} {{asmtType}}",

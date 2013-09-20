@@ -10,7 +10,7 @@ from sqlalchemy.sql import select
 from sqlalchemy.sql import and_
 from edapi.logging import audit_event
 from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
-from smarter.reports.helpers.constants import Constants
+from smarter.reports.helpers.constants import Constants, AssessmentType
 from smarter.reports.helpers.assessments import get_overall_asmt_interval, \
     get_cut_points, get_claims
 from edapi.exceptions import NotFoundException
@@ -80,8 +80,6 @@ def get_list_of_students_report(params):
         dim_staff = connector.get_table('dim_staff')
         dim_asmt = connector.get_table('dim_asmt')
         fact_asmt_outcome = connector.get_table('fact_asmt_outcome')
-
-
         query = select_with_context([dim_student.c.student_guid.label('student_guid'),
                                     dim_student.c.first_name.label('student_first_name'),
                                     dim_student.c.middle_name.label('student_middle_name'),
@@ -119,7 +117,7 @@ def get_list_of_students_report(params):
                                               .join(dim_student, and_(dim_student.c.student_guid == fact_asmt_outcome.c.student_guid,
                                                                       dim_student.c.most_recent,
                                                                       dim_student.c.section_guid == fact_asmt_outcome.c.section_guid))
-                                              .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id, dim_asmt.c.asmt_type.in_(['SUMMATIVE', 'INTERIM'])))
+                                              .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id, dim_asmt.c.asmt_type.in_([AssessmentType.SUMMATIVE, AssessmentType.COMPREHENSIVE_INTERIM])))
                                               .join(dim_staff, and_(dim_staff.c.staff_guid == fact_asmt_outcome.c.teacher_guid,
                                                     dim_staff.c.most_recent, dim_staff.c.section_guid == fact_asmt_outcome.c.section_guid))])
         query = query.where(fact_asmt_outcome.c.state_code == stateCode)
@@ -147,11 +145,11 @@ def get_list_of_students_report(params):
         # Formatting data for Front End
         for result in results:
             student_guid = result['student_guid']
-            student = {'SUMMATIVE': {}, 'INTERIM': {}}
+            student = {}
             assessments = {}
             if student_guid in students:
                 student = students[student_guid]
-                assessments = student[result['asmt_type']]
+                assessments = student.get(result['asmt_type'], {})
             else:
                 student['student_guid'] = result['student_guid']
                 student['student_first_name'] = result['student_first_name']

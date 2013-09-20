@@ -4,7 +4,7 @@ Created on Sep 16, 2013
 @author: dawu
 '''
 from smarter.database.smarter_connector import SmarterDBConnection
-from smarter.reports.helpers.constants import Constants
+from smarter.reports.helpers.constants import Constants, AssessmentType
 from smarter.reports.helpers.filters import NOT_STATED, \
     apply_filter_to_query, FILTERS_PROGRAM_504, FILTERS_PROGRAM_IEP, \
     FILTERS_PROGRAM_LEP, FILTERS_PROGRAM_TT1, FILTERS_ETHNICITY, \
@@ -97,7 +97,7 @@ class ComparingPopStatReport:
         _fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
         query = select([count(distinct(_fact_asmt_outcome.c.student_guid)).label(Constants.COUNT)],
                        from_obj=[_fact_asmt_outcome])\
-            .where(and_(_fact_asmt_outcome.c.most_recent == true(), _fact_asmt_outcome.c.asmt_type == Constants.SUMMATIVE))
+            .where(and_(_fact_asmt_outcome.c.most_recent == true(), _fact_asmt_outcome.c.asmt_type == AssessmentType.SUMMATIVE))
         if self.state_code is not None:
             query = query.where(and_(_fact_asmt_outcome.c.state_code == self.state_code))
         if self.district_guid is not None:

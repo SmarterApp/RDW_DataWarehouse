@@ -5,6 +5,14 @@ Created on Mar 12, 2013
 '''
 
 
+class AssessmentType():
+    '''
+    constants for asmt types
+    '''
+    SUMMATIVE = 'SUMMATIVE'
+    COMPREHENSIVE_INTERIM = 'COMPREHENSIVE INTERIM'
+
+
 class Constants():
     '''
     constants for reports
@@ -13,7 +21,6 @@ class Constants():
     DISTRICTGUID = 'districtGuid'
     SCHOOLGUID = 'schoolGuid'
     ASMTSUBJECT = 'asmtSubject'
-    SUMMATIVE = 'SUMMATIVE'
     ASMT_SUBJECT = 'asmt_subject'
     ASMT_GRADE = 'asmt_grade'
     ASMT_GRADE_NAME = 'asmt_grade_name'

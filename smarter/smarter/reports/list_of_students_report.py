@@ -119,7 +119,7 @@ def get_list_of_students_report(params):
                                               .join(dim_student, and_(dim_student.c.student_guid == fact_asmt_outcome.c.student_guid,
                                                                       dim_student.c.most_recent,
                                                                       dim_student.c.section_guid == fact_asmt_outcome.c.section_guid))
-                                              .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id, dim_asmt.c.asmt_type == 'SUMMATIVE'))
+                                              .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id, dim_asmt.c.asmt_type.in_(['SUMMATIVE', 'INTERIM'])))
                                               .join(dim_staff, and_(dim_staff.c.staff_guid == fact_asmt_outcome.c.teacher_guid,
                                                     dim_staff.c.most_recent, dim_staff.c.section_guid == fact_asmt_outcome.c.section_guid))])
         query = query.where(fact_asmt_outcome.c.state_code == stateCode)

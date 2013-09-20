@@ -32,6 +32,7 @@ class StatePopulation(object):
         self.districts = [] if districts is None else districts
         self.subject_percentages = subject_percentages
         self.demographics_id = demographics_id
+        self.total_students_in_state = 0
 
     def populate_state(self, state_type_dict, district_types_dict, school_types_dict):
         '''
@@ -83,6 +84,7 @@ class StatePopulation(object):
         for _i in range(district_counts):
             dist_pop = DistrictPopulation(district_type, subject, self.do_pld_adjustment)
             dist_pop.populate_district(district_info, school_types_dict)
+            self.total_students_in_state += dist_pop.total_student_in_district
             dist_pop_list.append(dist_pop)
         return dist_pop_list
 
@@ -99,6 +101,7 @@ class DistrictPopulation(object):
 
         self.district_demographic_totals = {}
         self.schools = []
+        self.total_student_in_district = 0
 
     def populate_district(self, district_type_dict, school_types_dict):
         '''
@@ -154,6 +157,7 @@ class DistrictPopulation(object):
             school_pop = SchoolPopulation(school_type, school_type_name, subject, self.do_pld_adjustment)
             school_pop.generate_student_numbers(school_type_dict)
             school_pops.append(school_pop)
+            self.total_student_in_district += school_pop.total_students_in_school
 
         return school_pops
 
@@ -178,6 +182,7 @@ class SchoolPopulation(object):
         self.pld_adjustment = None
         self.total_students_by_grade = None
         self.school_demographics = None
+        self.total_students_in_school = 0
 
     def generate_student_numbers(self, school_type_dict):
         '''
@@ -193,6 +198,7 @@ class SchoolPopulation(object):
             student_max = student_range_dict[constants.MAX]
             student_avg = student_range_dict[constants.AVG]
             school_value_dict[grade] = calculate_number_of_items(student_min, student_max, student_avg)
+            self.total_students_in_school += school_value_dict[grade]
 
         self.total_students_by_grade = school_value_dict
 

@@ -34,6 +34,7 @@ from DataGeneration.src.utils.print_student_info_pool import print_student_info_
 from DataGeneration.src.models.landing_zone_data_format import output_generated_districts_to_lz_format, prepare_lz_csv_file, output_generated_asmts_to_json
 
 
+IDEAL_DISTRICT_CHUNK = 100000
 DATAFILE_PATH = os.path.dirname(os.path.realpath(__file__))
 components = DATAFILE_PATH.split(os.sep)
 DATAFILE_PATH = str.join(os.sep, components[:components.index('DataGeneration') + 1])
@@ -69,7 +70,7 @@ NAMES_TO_PATH_DICT = {BIRDS: os.path.join(DATAFILE_PATH, 'datafiles', 'name_list
                       }
 
 
-def generate_data_from_config_file(config_module, output_dict, do_pld_adjustment=True, star_format=True, landing_zone_format=False, single_file=True, district_chunk_size=1):
+def generate_data_from_config_file(config_module, output_dict, do_pld_adjustment=True, star_format=True, landing_zone_format=False, single_file=True, district_chunk_size=0):
     '''
     Main function that drives the data generation process
     Collects all relevant info from the config files and calls methods to generate states and remaining data
@@ -104,6 +105,8 @@ def generate_data_from_config_file(config_module, output_dict, do_pld_adjustment
 
     for state_population in state_populations:
         # generate districts in chunks and write to file
+        district_chunk_size = district_chunk_size if district_chunk_size >= 1 else calculate_dist_chunk(state_population)
+        print('district_chunk size', district_chunk_size)
         generate_districts_in_chunks(state_population, assessments, error_band_dict, district_names, school_names, demographics_info,
                                      from_date, most_recent, to_date, street_names, batch_guid, output_dict, max_chunk=district_chunk_size,
                                      star_format=star_format, landing_zone_format=landing_zone_format, single_file=single_file)
@@ -827,6 +830,15 @@ def create_output_dict(output_path):
     return out_dict
 
 
+def calculate_dist_chunk(state_population):
+    '''
+    using the state population object and the number of students present, determine how large a chunk should be.
+    '''
+    avg_district_size = state_population.total_students_in_state / len(state_population.districts)
+    district_chunk = IDEAL_DISTRICT_CHUNK / avg_district_size
+    return max(1, int(district_chunk))
+
+
 def generate_name_list_dictionary(list_name_to_path_dictionary):
     '''
     Create a dictionary that contains naming lists as keys and a list of file
@@ -842,7 +854,7 @@ def generate_name_list_dictionary(list_name_to_path_dictionary):
     return name_list_dictionary
 
 
-def main(config_mod_name='dg_types', output_path=None, do_pld_adjustment=True, star_format=True, landing_zone_format=False, single_file=True, district_chunk_size=1):
+def main(config_mod_name='dg_types', output_path=None, do_pld_adjustment=True, star_format=True, landing_zone_format=False, single_file=True, district_chunk_size=0):
     t1 = datetime.datetime.now()
     config_module = import_module(config_mod_name)
 
@@ -871,8 +883,8 @@ if __name__ == '__main__':
                         help='Specify the configuration module that informs that data creation process.', required=False)
     parser.add_argument('--output', dest='output_path', action='store',
                         help='Specify the location of the output csv files', required=False)
-    parser.add_argument('-d', '--district-chunk-size', type=int, default=1,
-                        help='The number of district to generate and output at a time. Default: 1')
+    parser.add_argument('-d', '--district-chunk-size', type=int, default=0,
+                        help='The number of district to generate and output at a time. If this value is less than 1 this will be calculated at run time. Default: 0')
     parser.add_argument('-N', '--no-pld-adjustment', dest='do_pld_adjustment', action='store_false',
                         help='Specify this flag to generate data without applying the performance level adjustments')
     parser.add_argument('-l', '--lz-format', action='store_true', dest='lz_format',

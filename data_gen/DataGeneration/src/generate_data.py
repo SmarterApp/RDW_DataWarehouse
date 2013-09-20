@@ -9,7 +9,6 @@ from uuid import uuid4
 import datetime
 import argparse
 import os
-import csv
 import math
 import random
 

@@ -352,10 +352,14 @@ def get_school_population(school, student_info_dict, subject_percentages, demogr
     school_counts = school.grade_performance_level_counts
 
     students_in_school = []
-    subject_sections_map = {}
-    subject_teachers_map = {}
+
+    sections_in_school = []
+    teachers_in_school = []
 
     for grade in school_counts:
+
+        subject_sections_map = {}
+        subject_teachers_map = {}
 
         for subject in constants.SUBJECTS:
             # create sections
@@ -403,8 +407,8 @@ def get_school_population(school, student_info_dict, subject_percentages, demogr
 
         students_in_school += students
 
-    sections_in_school = [j for i in subject_sections_map.values() for j in i]
-    teachers_in_school = [j for i in subject_teachers_map.values() for j in i]
+        sections_in_school += [j for i in subject_sections_map.values() for j in i]
+        teachers_in_school += [j for i in subject_teachers_map.values() for j in i]
 
     return students_in_school, teachers_in_school, sections_in_school
 

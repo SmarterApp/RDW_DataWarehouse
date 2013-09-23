@@ -115,15 +115,17 @@ define [
     # Also append cutpoints & colors into each assessment
     formatAssessmentsData: (assessmentCutpoints) ->
       this.cache = {}
-      for asmtType in this.asmtTypes
+      for asmt in this.asmtTypes
+        asmtType = asmt['id']
         this.cache[asmtType] = {} if not this.cache[asmtType]
-        this.cache[asmtType]['Math_ELA'] = this.assessmentsData
+        this.cache[asmtType]['Math_ELA'] = [] if not this.cache[asmtType]['Math_ELA']
         for row in this.assessmentsData
           # Format student name
           row['student_full_name'] = edwareUtil.format_full_name_reverse row['student_first_name'], row['student_middle_name'], row['student_last_name']
           # This is for links in drill down
           row['params'] = {"studentGuid": row['student_guid']}
           assessment = row[asmtType.toUpperCase()]
+          this.cache[asmtType]['Math_ELA'].push row if assessment
           for key, value of this.subjectsData
             # check that we have such assessment first, since a student may not have taken it
             if assessment and key of assessment
@@ -213,12 +215,12 @@ define [
       items = []
       # render dropdown
       for asmtType in customViews.asmtTypes
-        subjects['asmtType'] = asmtType
+        subjects['asmtType'] = asmtType['label']
         for key, value of customViews.items
           items.push {
             'key': Mustache.to_html(key, subjects)
             'value': Mustache.to_html(value, subjects)
-            'asmtType': asmtType
+            'asmtType': asmtType['id']
           }
       $("#asmtTypeDropdown").html Mustache.to_html DROPDOWN_VIEW_TEMPLATE, {'items': items}
       # bind events

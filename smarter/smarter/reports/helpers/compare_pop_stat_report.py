@@ -95,7 +95,7 @@ class ComparingPopStatReport:
                              If filters is none, then it will return query which retieves all unique students count.
         '''
         _fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
-        query = select([count(distinct(_fact_asmt_outcome.c.student_guid)).label(Constants.COUNT)],
+        query = select([count().label(Constants.COUNT)],
                        from_obj=[_fact_asmt_outcome])\
             .where(and_(_fact_asmt_outcome.c.most_recent == true(), _fact_asmt_outcome.c.asmt_type == AssessmentType.SUMMATIVE))
         if self.state_code is not None:

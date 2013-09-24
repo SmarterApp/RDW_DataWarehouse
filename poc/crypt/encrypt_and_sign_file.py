@@ -5,16 +5,15 @@ import time
 
 from pprint import pprint
 
-gpg = gnupg.GPG(gnupghome='/Users/Shared/Amplify/wgen_dev/gpghome')
- 
-
 parser = argparse.ArgumentParser()
 parser.add_argument("--source", dest="source_file")
 parser.add_argument("--dest", dest="dest_file")
 parser.add_argument("--sendto", dest="sendto")
 parser.add_argument("--signwith", dest="signwith")
-parser.add_argument("--passphrase", dest="passphrase")
+parser.add_argument("--passphrase", dest="passphrase", default=None)
 args = parser.parse_args()
+
+gpg = gnupg.GPG(gnupghome='/Users/Shared/Amplify/wgen_dev/gpghome')
 
 start=time.time()
 with open(args.source_file, 'rb') as f:
@@ -24,7 +23,14 @@ end=time.time()
 print ('ok: ', status.ok)
 print ('status: ', status.status)
 print ('stderr: ', status.stderr)
-print ('source file size (B): ', os.path.getsize(args.source_file))
-print ('time taken (ms): ', round((end-start)*1000))
-print ('encrypted file size (B): ', os.path.getsize(args.dest_file))
-print ('signed with: ', args.signwith)
+
+if(status.ok):
+	print('SUCCESS')
+	if(os.path.isfile(args.source_file)):
+		print ('source file size (B): ', os.path.getsize(args.source_file))
+	if(os.path.isfile(args.dest_file)):
+		print ('encrypted file size (B): ', os.path.getsize(args.dest_file))
+		print ('signed with: ', args.signwith)
+	print ('time taken (ms): ', round((end-start)*1000))
+else:
+	print('FAILED')

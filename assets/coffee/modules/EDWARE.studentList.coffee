@@ -107,8 +107,9 @@ define [
         params: params
       
       studentsData = undefined
+      labels = this.labels
       edwareDataProxy.getDatafromSource "/data/list_of_students", options, (data)->
-        studentsData = JSON.parse(Mustache.render(JSON.stringify(data), {"labels":this.labels}))
+        studentsData = JSON.parse(Mustache.render(JSON.stringify(data), {"labels": labels}))
       studentsData
 
     # For each subject, filter out its data

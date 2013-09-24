@@ -16,4 +16,3 @@ print(ascii_private_key)
 # writing keys to a file
 with open('data/mykeyfile.asc', 'w') as f:
     f.write(ascii_public_key)
-    f.write(ascii_private_key)

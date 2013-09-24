@@ -891,7 +891,7 @@ if __name__ == '__main__':
     parser.add_argument('-b', '--star-and-lz', action='store_true',
                         help='create both star schema and landing zone output file')
     parser.add_argument('-m', '--multi-lz-files', action='store_true',
-                        help='write the landing zone csv files to one file instead of multiple files')
+                        help='write the landing zone csv files to multiple files instead of one single file')
     args = parser.parse_args()
 
     star_format = True if args.star_and_lz or not args.lz_format else False

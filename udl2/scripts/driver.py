@@ -26,7 +26,7 @@ from preetl.pre_etl import pre_etl_job
 # DATAFILES = os.path.join(ROOT_DIRECTORY, 'datafiles')
 
 
-def start_pipeline(csv_file_path, json_file_path, udl2_conf, load_type='Assessment'):
+def start_pipeline(csv_file_path, json_file_path, udl2_conf, load_type='Assessment', **kwargs):
     '''
     Begins the UDL Pipeline process by copying the file found at 'csv_file_path' to the landing zone arrivals dir and
     initiating our main pipeline chain.
@@ -74,6 +74,7 @@ def start_pipeline(csv_file_path, json_file_path, udl2_conf, load_type='Assessme
     integration_to_star_msg = generate_integration_to_star_msg(common_msg)
     all_done_msg = generate_all_done_msg(common_msg)
 
+    callback_task = kwargs['callback']  # (kwargs=back_msg)
     pipeline_chain_1 = chain(W_file_arrived.task.si(arrival_msg), W_file_expander.task.si(expander_msg),
                              W_simple_file_validator.task.si(simple_file_validator_msg), W_file_splitter.task.si(splitter_msg),
                              W_parallel_csv_load.task.s(),
@@ -83,7 +84,16 @@ def start_pipeline(csv_file_path, json_file_path, udl2_conf, load_type='Assessme
                              W_load_from_integration_to_star.explode_to_fact.si(integration_to_star_msg),
                              W_all_done.task.si(all_done_msg))
 
-    result = pipeline_chain_1.delay()
+    if kwargs.get('callback'):
+        back_msg = {'batch_guid': guid_batch, 'file_index': kwargs['file_index'], 'directory': kwargs['directory']}
+        print('***back_msg', back_msg)
+        callback_task = kwargs['callback']
+
+        # append the callback to the chain and run the chain
+        (pipeline_chain_1 | callback_task.si(back_msg)).delay()
+
+    else:
+        pipeline_chain_1.delay()
 
 
 def generate_common_message(jc_batch_table, guid_batch, load_type):

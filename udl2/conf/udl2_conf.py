@@ -17,6 +17,7 @@ udl2_conf = {
                            'udl2.W_report_error_or_success',
                            'udl2.W_final_cleanup',
                            'udl2.W_all_done',
+                           'benchmarking.run_benchmarks',
                            ],
                },
     'file_splitter': {  # Options for file_splitter

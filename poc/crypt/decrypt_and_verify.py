@@ -27,7 +27,7 @@ if(status.ok):
 	if(os.path.isfile(args.source_file)):
 		print ('source file size (B): ', os.path.getsize(args.source_file))
 	if(os.path.isfile(args.dest_file)):
-		print ('encrypted file size (B): ', os.path.getsize(args.dest_file))
+		print ('decrypted file size (B): ', os.path.getsize(args.dest_file))
 	print ('time taken (ms): ', round((end-start)*1000))
 	print ('signer: ', status.username)
 	print ('signer key id: ', status.key_id)

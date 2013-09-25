@@ -144,8 +144,8 @@ define [
               this.cache[asmtType][value].push row
 
     renderGrid: (asmtType, viewName) ->
-      # set dropdown text
-      name = asmtType.replace /\s+/g, "-"
+      # set dropdown text, replace spaces with _ for selector id
+      name = asmtType.replace /\s+/g, "_"
       $('#select_measure_current_view').text $('#'+ name + '_' + viewName).text()
       $('#gridTable').jqGrid('GridUnload')
       
@@ -223,7 +223,7 @@ define [
             'key': Mustache.to_html(key, subjects)
             'value': Mustache.to_html(value, subjects)
             'asmtType': asmtType['name']
-            'id': asmtType['name'].replace /\s+/g, "-"
+            'id': asmtType['name'].replace /\s+/g, "_"
           }
       $("#asmtTypeDropdown").html Mustache.to_html DROPDOWN_VIEW_TEMPLATE, {'items': items}
       # bind events

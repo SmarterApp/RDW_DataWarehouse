@@ -56,7 +56,7 @@ class TestComparingPopulationsStat(Unittest_with_smarter_sqlite):
         testParam[Constants.STATECODE] = 'NY'
         testParam[Constants.DISTRICTGUID] = '229'
         results = ComparingPopStatReport(**testParam).get_report()
-        self.assertEqual(results['total'], 46)
+        self.assertEqual(results['total'], 47)
         self.assertEqual(results['dmgPrg504'], 3)
         self.assertEqual(results['dmgPrgIep'], 3)
         self.assertEqual(results['dmgPrgLep'], 1)
@@ -68,7 +68,7 @@ class TestComparingPopulationsStat(Unittest_with_smarter_sqlite):
         testParam = {}
         testParam[Constants.STATECODE] = 'NY'
         results = ComparingPopStatReport(**testParam).get_report()
-        self.assertEqual(results['total'], 928)
+        self.assertEqual(results['total'], 929)
         self.assertEqual(results['dmgPrg504'], 7)
         self.assertEqual(results['dmgPrgIep'], 9)
         self.assertEqual(results['dmgPrgLep'], 9)

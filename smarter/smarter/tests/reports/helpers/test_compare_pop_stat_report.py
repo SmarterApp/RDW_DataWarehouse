@@ -56,11 +56,11 @@ class TestComparingPopulationsStat(Unittest_with_smarter_sqlite):
         testParam[Constants.STATECODE] = 'NY'
         testParam[Constants.DISTRICTGUID] = '229'
         results = ComparingPopStatReport(**testParam).get_report()
-        self.assertEqual(results['total'], 66)
+        self.assertEqual(results['total'], 46)
         self.assertEqual(results['dmgPrg504'], 3)
         self.assertEqual(results['dmgPrgIep'], 3)
-        self.assertEqual(results['dmgPrgLep'], 3)
-        self.assertEqual(results['dmgPrgTt1'], 3)
+        self.assertEqual(results['dmgPrgLep'], 1)
+        self.assertEqual(results['dmgPrgTt1'], 1)
         self.assertEqual(results['ethnicity'], 1)
         self.assertEqual(results['gender'], 0)
 
@@ -68,11 +68,11 @@ class TestComparingPopulationsStat(Unittest_with_smarter_sqlite):
         testParam = {}
         testParam[Constants.STATECODE] = 'NY'
         results = ComparingPopStatReport(**testParam).get_report()
-        self.assertEqual(results['total'], 948)
+        self.assertEqual(results['total'], 928)
         self.assertEqual(results['dmgPrg504'], 7)
         self.assertEqual(results['dmgPrgIep'], 9)
-        self.assertEqual(results['dmgPrgLep'], 11)
-        self.assertEqual(results['dmgPrgTt1'], 9)
+        self.assertEqual(results['dmgPrgLep'], 9)
+        self.assertEqual(results['dmgPrgTt1'], 7)
         self.assertEqual(results['ethnicity'], 11)
         self.assertEqual(results['gender'], 0)
 

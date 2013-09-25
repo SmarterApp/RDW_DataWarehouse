@@ -52,10 +52,10 @@ class TestStudentReport(Unittest_with_smarter_sqlite):
         params = {"studentGuid": 'dae1acf4-afb0-4013-90ba-9dcde4b25621'}
         result = get_student_assessment(params)
 
-        self.assertEqual(4, len(result), "studentGuid should have 4 assessments")
+        self.assertEqual(6, len(result), "studentGuid should have 4 assessments")
         self.assertEqual('ELA', result[0]['asmt_subject'], 'asmt_subject ELA')
         self.assertEqual('ELA', result[1]['asmt_subject'], 'asmt_subject ELA')
-        self.assertEqual('Math', result[2]['asmt_subject'], 'asmt_subject Math')
+        self.assertEqual('ELA', result[2]['asmt_subject'], 'asmt_subject Math')
         self.assertEqual('Math', result[3]['asmt_subject'], 'asmt_subject Math')
 
     def test_assessment_header_info(self):

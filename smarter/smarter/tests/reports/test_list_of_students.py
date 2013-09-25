@@ -21,7 +21,7 @@ class TestLOS(Unittest_with_smarter_sqlite):
     def setUp(self):
         cache_opts = {
             'cache.type': 'memory',
-            'cache.regions': 'public.shortlived'
+            'cache.regions': 'public.data,public.filtered_data,public.shortlived'
         }
 
         CacheManager(**parse_cache_config_options(cache_opts))
@@ -146,6 +146,12 @@ class TestLOS(Unittest_with_smarter_sqlite):
         results = get_list_of_students_report(testParam)
         self.assertEqual(len(results['assessments']), 0)
 
+    def test_asmt_type(self):
+        testParam = {'asmtGrade': '3', 'stateCode': 'NY', 'districtGuid': '228', 'schoolGuid': '242'}
+        results = get_list_of_students_report(testParam)
+        self.assertEqual(len(results['assessments']), 35)
+        self.assertIsNotNone(results['assessments'][0]['COMPREHENSIVE INTERIM']['subject1'])
+        self.assertIsNotNone(results['assessments'][0]['SUMMATIVE']['subject1'])
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testReport']

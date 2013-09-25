@@ -74,7 +74,6 @@ def start_pipeline(csv_file_path, json_file_path, udl2_conf, load_type='Assessme
     integration_to_star_msg = generate_integration_to_star_msg(common_msg)
     all_done_msg = generate_all_done_msg(common_msg)
 
-    callback_task = kwargs['callback']  # (kwargs=back_msg)
     pipeline_chain_1 = chain(W_file_arrived.task.si(arrival_msg), W_file_expander.task.si(expander_msg),
                              W_simple_file_validator.task.si(simple_file_validator_msg), W_file_splitter.task.si(splitter_msg),
                              W_parallel_csv_load.task.s(),

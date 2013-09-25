@@ -1,8 +1,9 @@
 import os
 import gnupg
 from pprint import pprint
-
-gpg = gnupg.GPG(gnupghome='/Users/Shared/Amplify/wgen_dev/gpghome')
+from gnupg_props import *
+ 
+gpg = gnupg.GPG(gnupghome=GNUPG_HOME)
  
 public_keys = gpg.list_keys()
 private_keys = gpg.list_keys(True)

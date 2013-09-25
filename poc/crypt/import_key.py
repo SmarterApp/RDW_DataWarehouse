@@ -1,9 +1,16 @@
 import os
 import gnupg
+import argparse
 from pprint import pprint
-gpg = gnupg.GPG(gnupghome='/Users/Shared/Amplify/wgen_dev/gpghome')
- 
-key_data = open('/Users/Shared/Amplify/wgen_dev/edware/poc/crypt/data/foopubkey.txt').read()
+from gnupg_props import *
+
+gpg = gnupg.GPG(gnupghome=GNUPG_HOME)
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--key_file", dest="key_file")
+args = parser.parse_args()
+
+key_data = open(args.key_file).read()
 import_result = gpg.import_keys(key_data)
 pprint(import_result.count)
 pprint(import_result.results)

@@ -1,16 +1,16 @@
 import os
 import gnupg
+import argparse
+from gnupg_props import *
  
-# uncomment the below line if you want to start fresh by removing all old keys generated
-#os.system('rm -rf /Users/Shared/Amplify/wgen_dev/gpghome')
-gpg = gnupg.GPG(gnupghome='/Users/Shared/Amplify/wgen_dev/gpghome')
+gpg = gnupg.GPG(gnupghome=GNUPG_HOME)
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--email", dest="name_email")
+parser.add_argument("--passphrase", dest="passphrase", default=None)
+args = parser.parse_args()
 
 #key1
-input_data = gpg.gen_key_input(key_type='RSA', key_length=1024, name_email='edware_dataprovider_1@amplify.com',passphrase='edware udl2')
+input_data = gpg.gen_key_input(key_type='RSA', key_length=1024, name_email=args.name_email,passphrase=args.passphrase)
 key = gpg.gen_key(input_data)
-print(key)
-
-#key2
-input_data = gpg.gen_key_input(key_type='RSA', key_length=1024, name_email='amplify@amplify.com',passphrase='edware udl2')
-key = gpg.gen_key(input_data)
-print(key)
+print('Generated key: '+ str(key))

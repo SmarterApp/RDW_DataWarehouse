@@ -4,6 +4,7 @@ import argparse
 import time
 
 from pprint import pprint
+from gnupg_props import *
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--source", dest="source_file")
@@ -13,7 +14,7 @@ parser.add_argument("--signwith", dest="signwith")
 parser.add_argument("--passphrase", dest="passphrase", default=None)
 args = parser.parse_args()
 
-gpg = gnupg.GPG(gnupghome='/Users/Shared/Amplify/wgen_dev/gpghome')
+gpg = gnupg.GPG(gnupghome=GNUPG_HOME)
 
 start=time.time()
 with open(args.source_file, 'rb') as f:

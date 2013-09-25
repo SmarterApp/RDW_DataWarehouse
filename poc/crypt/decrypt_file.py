@@ -4,8 +4,9 @@ import argparse
 import time
 
 from pprint import pprint
-
-gpg = gnupg.GPG(gnupghome='/Users/Shared/Amplify/wgen_dev/gpghome')
+from gnupg_props import *
+ 
+gpg = gnupg.GPG(gnupghome=GNUPG_HOME)
  
 
 parser = argparse.ArgumentParser()

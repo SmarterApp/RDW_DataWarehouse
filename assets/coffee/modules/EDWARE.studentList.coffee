@@ -117,7 +117,7 @@ define [
     formatAssessmentsData: (assessmentCutpoints) ->
       this.cache = {}
       for asmt in this.asmtTypes
-        asmtType = asmt['id']
+        asmtType = asmt['name']
         this.cache[asmtType] = {} if not this.cache[asmtType]
         this.cache[asmtType]['Math_ELA'] = [] if not this.cache[asmtType]['Math_ELA']
         for row in this.assessmentsData
@@ -145,7 +145,8 @@ define [
 
     renderGrid: (asmtType, viewName) ->
       # set dropdown text
-      $('#select_measure_current_view').text $('#'+ asmtType + '_' + viewName).text()
+      name = asmtType.replace /\s+/g, "-"
+      $('#select_measure_current_view').text $('#'+ name + '_' + viewName).text()
       $('#gridTable').jqGrid('GridUnload')
       
       edwareGrid.create {
@@ -216,12 +217,13 @@ define [
       items = []
       # render dropdown
       for asmtType in customViews.asmtTypes
-        subjects['asmtType'] = asmtType['label']
+        subjects['asmtType'] = asmtType['display']
         for key, value of customViews.items
           items.push {
             'key': Mustache.to_html(key, subjects)
             'value': Mustache.to_html(value, subjects)
-            'asmtType': asmtType['id']
+            'asmtType': asmtType['name']
+            'id': asmtType['name'].replace /\s+/g, "-"
           }
       $("#asmtTypeDropdown").html Mustache.to_html DROPDOWN_VIEW_TEMPLATE, {'items': items}
       # bind events

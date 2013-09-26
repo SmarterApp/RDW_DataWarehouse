@@ -328,6 +328,7 @@ def generate_districts_for_state_population_chunk(state_populations_chunk, asses
     student_info_dict = generate_students_info_from_demographic_counts(state_populations_chunk, assessments, error_band_dict)
     print_student_info_pool_counts(student_info_dict, demographics_info, demographics_id)
     # create districts
+    print('Creating the actual districts')
     districts = create_districts(state_populations_chunk, district_names[0], district_names[1], school_names[0],
                                  school_names[1], student_info_dict, subject_percentages, demographics_info,
                                  demographics_id, assessments, error_band_dict, state_populations_chunk.state_name,
@@ -584,6 +585,7 @@ def create_districts(state_population, district_names_1, district_names_2, schoo
 
     for dist_pop in district_populations:
         district = generate_district(district_names_1, district_names_2, dist_pop)
+        print('Generating %s schools' % len(district.school_populations))
         district.schools = create_schools(district, school_names_1, school_names_2, student_info_dict, subject_percentages,
                                           demographics_info, demographics_id, assessments, error_band_dict, state_name,
                                           state_code, from_date, most_recent, to_date, street_names)
@@ -662,7 +664,7 @@ def generate_students_with_demographics(score_pool, demographic_totals, grade):
 
     # Create new student info objects with a gender assigned and scores
     student_info_dict = create_student_info_dict(gender_group, score_pool, demographic_totals, grade)
-    print('Grade:', grade)
+    print('Generating Student in Grade:', grade)
     for group in groupings:
         assign_demographics_for_grouping(group, student_info_dict, demographic_totals)
 

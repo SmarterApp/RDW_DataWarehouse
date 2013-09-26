@@ -26,7 +26,7 @@ class TestStudentReport(Unittest_with_smarter_sqlite):
         }
 
         CacheManager(**parse_cache_config_options(cache_opts))
-        
+
         self.__request = DummyRequest()
         # Must set hook_zca to false to work with uniittest_with_sqlite
         self.__config = testing.setUp(request=self.__request, hook_zca=False)
@@ -66,7 +66,7 @@ class TestStudentReport(Unittest_with_smarter_sqlite):
         self.assertEqual('ELA', result[1]['asmt_subject'], 'asmt_subject ELA')
         self.assertEqual('ELA', result[2]['asmt_subject'], 'asmt_subject Math')
         self.assertEqual('Math', result[3]['asmt_subject'], 'asmt_subject Math')
-    
+
     def test_distribution(self):
         params = {"studentGuid": 'dae1acf4-afb0-4013-90ba-9dcde4b25621'}
         result = get_student_report(params)

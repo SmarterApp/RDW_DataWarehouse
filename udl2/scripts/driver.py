@@ -84,8 +84,8 @@ def start_pipeline(csv_file_path, json_file_path, udl2_conf, load_type='Assessme
                              W_all_done.task.si(all_done_msg))
 
     if kwargs.get('callback'):
-        back_msg = {'batch_guid': guid_batch, 'file_index': kwargs['file_index'], 'directory': kwargs['directory']}
-        print('***back_msg', back_msg)
+        #back_msg = {'batch_guid': guid_batch, 'file_index': kwargs['file_index'], 'directory': kwargs['directory']}
+        back_msg = {key: val for key, val in kwargs.items() if key != 'callback'}
         callback_task = kwargs['callback']
 
         # append the callback to the chain and run the chain

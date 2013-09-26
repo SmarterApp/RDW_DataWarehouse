@@ -98,6 +98,7 @@ def generate_data_from_config_file(config_module, output_dict, do_pld_adjustment
         output_generated_asmts_to_json(assessments, output_dict)
 
     # Generate the all the data
+    print('Generating State Population Counts')
     state_populations = generate_state_populations(states_config, state_types, demographics_info, assessments, district_types,
                                                    school_types, district_names, school_names, error_band_dict, from_date,
                                                    most_recent, to_date, do_pld_adjustment)
@@ -163,10 +164,12 @@ def output_state_staff_to_csv(state, batch_guid, output_dict, from_date, most_re
 def output_data_to_selected_format(districts, state, batch_guid, output_dict, from_date, most_recent, to_date, star_format=True, landing_zone_format=False, single_file=True):
     '''
     '''
+    print('Writing data to file: %s districts' % len(districts))
     if star_format:
         output_generated_districts_to_csv(districts, state, batch_guid, output_dict, from_date, most_recent, to_date)
     if landing_zone_format:
         output_generated_districts_to_lz_format(districts, state, batch_guid, output_dict, from_date, most_recent, to_date, single_file)
+    print('Data write complete')
 
 
 def output_generated_districts_to_csv(districts, state, batch_guid, output_dict, from_date, most_recent, to_date):
@@ -280,6 +283,7 @@ def generate_districts_in_chunks(state_population, assessments, error_band_dict,
     '''
     for chunk_position in range(0, len(state_population.districts), max_chunk):
         new_state_population = get_district_chunk(state_population, max_chunk, chunk_position)
+        print('Generating %s districts' % len(new_state_population.districts))
         districts = generate_districts_for_state_population_chunk(new_state_population, assessments, error_band_dict, district_names, school_names,
                                                                   demographics_info, from_date, most_recent, to_date, street_names)
         # write district to file

@@ -160,13 +160,27 @@ def get_file_path_from_output_dict(output_dict):
 
 def add_student_realdata_to_dict(student_realdata_list, real_data_dict, single_file_key, single_file=True):
     '''
+    Given a list of students and the realdata dictionary. Place students in the correct bucket of for their assessment.
+    If single file is true, place all students in the same bucket
+    @param student_realdata_list: The current list of students to place in the dictionary
+    @param real_data_dict: The dictionary containing mappings from assessments to lists of students
+    @param single_file_key: the key to use when single_file is true
+    @param single_file: Whether or not to write all data to a single file
     '''
 
     if single_file:
-        real_data_dict[single_file_key] = real_data_dict.get(single_file_key, []) + student_realdata_list
+        # real_data_dict[single_file_key] = real_data_dict.get(single_file_key, []) + student_realdata_list -- VERY SLOW
+        if real_data_dict.get(single_file_key):
+            real_data_dict[single_file_key].extend(student_realdata_list)
+        else:
+            real_data_dict[single_file_key] = student_realdata_list
     else:
+        # real_data_dict[rd_record.guid_asmt] = real_data_dict.get(rd_record.guid_asmt, []) + [rd_record] -- SLOW
         for rd_record in student_realdata_list:
-            real_data_dict[rd_record.guid_asmt] = real_data_dict.get(rd_record.guid_asmt, []) + [rd_record]
+            if real_data_dict.get(rd_record.guid_asmt):
+                real_data_dict[rd_record.guid_asmt].append(rd_record)
+            else:
+                real_data_dict[rd_record.guid_asmt] = [rd_record]
     return real_data_dict
 
 

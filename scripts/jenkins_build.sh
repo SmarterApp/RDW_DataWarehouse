@@ -367,7 +367,7 @@ function main {
         fi
         check_pep8 $MAIN_PKG
         generate_docs $MAIN_PKG
-        build_egg $MAIN_PKG
+        #build_egg $MAIN_PKG
     elif [ ${MODE:=""} == "FUNC" ]; then
         setup_virtualenv $@
         generate_ini

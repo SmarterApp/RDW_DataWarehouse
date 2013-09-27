@@ -2,10 +2,11 @@
 Created on Jan 13, 2013
 '''
 from sqlalchemy.sql import select
-from sqlalchemy.sql.expression import func, label
+from sqlalchemy.sql.expression import label, case
 from smarter.database.smarter_connector import SmarterDBConnection
 from smarter.reports.helpers.constants import Constants, AssessmentType
 from edapi.cache import cache_region
+from sqlalchemy.sql.functions import count
 
 BUCKET_SIZE = 20
 
@@ -18,7 +19,9 @@ def get_summary_distribution(state_code, district_guid=None, school_guid=None, a
     with SmarterDBConnection() as connection:
         fact_asmt_outcome = connection.get_table('fact_asmt_outcome')
         #  should it be always for summative?
-        query = select([label(Constants.SCORE_BUCKET, (fact_asmt_outcome.c.asmt_score / get_bucket_size()) * get_bucket_size()), func.count().label(Constants.TOTAL)],
+        query = select([label(Constants.SCORE_BUCKET, (fact_asmt_outcome.c.asmt_score / get_bucket_size()) * get_bucket_size()),
+                        count(case([(fact_asmt_outcome.c.asmt_subject == Constants.MATH, 1)], else_=0)).label(Constants.TOTAL_MATH),
+                        count(case([(fact_asmt_outcome.c.asmt_subject == Constants.ELA, 1)], else_=0)).label(Constants.TOTAL_ELA)],
                        from_obj=[fact_asmt_outcome])
         query = query.where(fact_asmt_outcome.c.state_code == state_code)
         query = query.where(fact_asmt_outcome.c.asmt_type == asmt_type)

@@ -25,43 +25,64 @@ from smarter.reports.helpers.utils import merge_dict
 from smarter.reports.helpers.compare_pop_stat_report import get_not_stated_count
 
 REPORT_NAME = "list_of_students"
+PARAMS = merge_dict({
+    Constants.STATECODE: {
+        "type": "string",
+        "required": True,
+        "pattern": "^[a-zA-Z0-9\-]{0,50}$",
+    },
+    Constants.DISTRICTGUID: {
+        "type": "string",
+        "required": True,
+        "pattern": "^[a-zA-Z0-9\-]{0,50}$",
+    },
+    Constants.SCHOOLGUID: {
+        "type": "string",
+        "required": True,
+        "pattern": "^[a-zA-Z0-9\-]{0,50}$",
+    },
+    Constants.ASMTGRADE: {
+        "type": "string",
+        "maxLength": 2,
+        "required": True,
+        "pattern": "^[K0-9]+$",
+    },
+    Constants.ASMTSUBJECT: {
+        "type": "array",
+        "required": False,
+        "minLength": 1,
+        "maxLength": 100,
+        "pattern": "^[a-zA-Z0-9\.]+$",
+        "items": {
+            "type": "string"
+        },
+    }
+}, FILTERS_CONFIG)
+
+
+@report_config(
+    name=REPORT_NAME + '_csv',
+    params=PARAMS)
+def get_list_of_students_extract_report(params):
+    '''
+    CSV version of list of student
+    '''
+    # Get results from db
+    results = get_list_of_students(params)
+    header = []
+    rows = []
+    # Reformat data
+    for result in results:
+        if len(header) is 0:
+            header = list(result.keys())
+        rows.append(list(result.values()))
+
+    return {'header': header, 'rows': rows, 'file_name': 'list_of_students.csv'}
 
 
 @report_config(
     name=REPORT_NAME,
-    params=merge_dict({
-        Constants.STATECODE: {
-            "type": "string",
-            "required": True,
-            "pattern": "^[a-zA-Z0-9\-]{0,50}$",
-        },
-        Constants.DISTRICTGUID: {
-            "type": "string",
-            "required": True,
-            "pattern": "^[a-zA-Z0-9\-]{0,50}$",
-        },
-        Constants.SCHOOLGUID: {
-            "type": "string",
-            "required": True,
-            "pattern": "^[a-zA-Z0-9\-]{0,50}$",
-        },
-        Constants.ASMTGRADE: {
-            "type": "string",
-            "maxLength": 2,
-            "required": True,
-            "pattern": "^[K0-9]+$",
-        },
-        Constants.ASMTSUBJECT: {
-            "type": "array",
-            "required": False,
-            "minLength": 1,
-            "maxLength": 100,
-            "pattern": "^[a-zA-Z0-9\.]+$",
-            "items": {
-                "type": "string"
-            },
-        }
-    }, FILTERS_CONFIG))
+    params=PARAMS)
 @audit_event()
 @user_info
 def get_list_of_students_report(params):
@@ -69,6 +90,78 @@ def get_list_of_students_report(params):
     List of Students Report
     :param dict params:  dictionary of parameters for List of student report
     '''
+    stateCode = str(params[Constants.STATECODE])
+    districtGuid = str(params[Constants.DISTRICTGUID])
+    schoolGuid = str(params[Constants.SCHOOLGUID])
+    asmtGrade = str(params[Constants.ASMTGRADE])
+    asmtSubject = params.get(Constants.ASMTSUBJECT, None)
+
+    results = get_list_of_students(params)
+
+    if not results and not has_filters(params):
+        raise NotFoundException("There are no results")
+
+    subjects_map = get_subjects_map(asmtSubject)
+    students = {}
+
+    # Formatting data for Front End
+    for result in results:
+        student_guid = result['student_guid']
+        student = {}
+        assessments = {}
+        if student_guid in students:
+            student = students[student_guid]
+            assessments = student.get(result['asmt_type'], {})
+        else:
+            student['student_guid'] = result['student_guid']
+            student['student_first_name'] = result['student_first_name']
+            student['student_middle_name'] = result['student_middle_name']
+            student['student_last_name'] = result['student_last_name']
+            student['enrollment_grade'] = result['enrollment_grade']
+
+        assessment = {}
+        assessment['teacher_full_name'] = format_full_name_rev(result['teacher_first_name'], result['teacher_middle_name'], result['teacher_last_name'])
+        assessment['asmt_grade'] = result['asmt_grade']
+        assessment['asmt_score'] = result['asmt_score']
+        assessment['asmt_type'] = result['asmt_type']
+        assessment['asmt_score_range_min'] = result['asmt_score_range_min']
+        assessment['asmt_score_range_max'] = result['asmt_score_range_max']
+        assessment['asmt_score_interval'] = get_overall_asmt_interval(result)
+        assessment['asmt_perf_lvl'] = result['asmt_perf_lvl']
+        assessment['claims'] = get_claims(number_of_claims=4, result=result, include_scores=True)
+
+        assessments[subjects_map[result['asmt_subject']]] = assessment
+        student[result['asmt_type']] = assessments
+
+        students[student_guid] = student
+
+    # including assessments and cutpoints to returning JSON
+    los_results = {}
+    assessments = []
+
+    # keep them in orders from result set
+    student_guid_track = {}
+    for result in results:
+        if result['student_guid'] not in student_guid_track:
+            assessments.append(students[result['student_guid']])
+            student_guid_track[result['student_guid']] = True
+
+    los_results['assessments'] = assessments
+
+    # query dim_asmt to get cutpoints
+    asmt_data = __get_asmt_data(asmtSubject, stateCode).copy()
+    # color metadata
+    custom_metadata_map = get_custom_metadata(stateCode, None)
+    los_results['metadata'] = __format_cut_points(asmt_data, subjects_map, custom_metadata_map)
+    los_results['context'] = get_breadcrumbs_context(state_code=stateCode, district_guid=districtGuid, school_guid=schoolGuid, asmt_grade=asmtGrade)
+    los_results['subjects'] = __reverse_map(subjects_map)
+    # query not stated students count
+    los_results[Constants.NOT_STATED] = get_not_stated_count(params)
+
+    return los_results
+
+
+def get_list_of_students(params):
     stateCode = str(params[Constants.STATECODE])
     districtGuid = str(params[Constants.DISTRICTGUID])
     schoolGuid = str(params[Constants.SCHOOLGUID])
@@ -134,69 +227,7 @@ def get_list_of_students_report(params):
         query = apply_filter_to_query(query, fact_asmt_outcome, params)
         query = query.order_by(dim_student.c.last_name).order_by(dim_student.c.first_name)
 
-        results = connector.get_result(query)
-
-        if not results and not has_filters(params):
-            raise NotFoundException("There are no results")
-
-        subjects_map = get_subjects_map(asmtSubject)
-        students = {}
-
-        # Formatting data for Front End
-        for result in results:
-            student_guid = result['student_guid']
-            student = {}
-            assessments = {}
-            if student_guid in students:
-                student = students[student_guid]
-                assessments = student.get(result['asmt_type'], {})
-            else:
-                student['student_guid'] = result['student_guid']
-                student['student_first_name'] = result['student_first_name']
-                student['student_middle_name'] = result['student_middle_name']
-                student['student_last_name'] = result['student_last_name']
-                student['enrollment_grade'] = result['enrollment_grade']
-
-            assessment = {}
-            assessment['teacher_full_name'] = format_full_name_rev(result['teacher_first_name'], result['teacher_middle_name'], result['teacher_last_name'])
-            assessment['asmt_grade'] = result['asmt_grade']
-            assessment['asmt_score'] = result['asmt_score']
-            assessment['asmt_type'] = result['asmt_type']
-            assessment['asmt_score_range_min'] = result['asmt_score_range_min']
-            assessment['asmt_score_range_max'] = result['asmt_score_range_max']
-            assessment['asmt_score_interval'] = get_overall_asmt_interval(result)
-            assessment['asmt_perf_lvl'] = result['asmt_perf_lvl']
-            assessment['claims'] = get_claims(number_of_claims=4, result=result, include_scores=True)
-
-            assessments[subjects_map[result['asmt_subject']]] = assessment
-            student[result['asmt_type']] = assessments
-
-            students[student_guid] = student
-
-        # including assessments and cutpoints to returning JSON
-        los_results = {}
-        assessments = []
-
-        # keep them in orders from result set
-        student_guid_track = {}
-        for result in results:
-            if result['student_guid'] not in student_guid_track:
-                assessments.append(students[result['student_guid']])
-                student_guid_track[result['student_guid']] = True
-
-        los_results['assessments'] = assessments
-
-        # query dim_asmt to get cutpoints
-        asmt_data = __get_asmt_data(asmtSubject, stateCode).copy()
-        # color metadata
-        custom_metadata_map = get_custom_metadata(stateCode, None)
-        los_results['metadata'] = __format_cut_points(asmt_data, subjects_map, custom_metadata_map)
-        los_results['context'] = get_breadcrumbs_context(state_code=stateCode, district_guid=districtGuid, school_guid=schoolGuid, asmt_grade=asmtGrade)
-        los_results['subjects'] = __reverse_map(subjects_map)
-        # query not stated students count
-        los_results[Constants.NOT_STATED] = get_not_stated_count(params)
-
-    return los_results
+        return connector.get_result(query)
 
 
 @cache_region('public.shortlived')

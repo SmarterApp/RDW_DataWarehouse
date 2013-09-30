@@ -1,4 +1,4 @@
-services Package
+Services Package
 ================
 
 :mod:`celery` Module

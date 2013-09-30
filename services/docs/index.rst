@@ -7,13 +7,14 @@
 Services Development Framework
 =================================================
 
-Provides services to applications. TESt.
-
+A distributed PDF generation framework that utilized wkhtmltopdf library for html to pdf conversion and rabbitMQ/celery for task management and distribution.
+ 
 Contents:
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
+   apidoc/services.rst
 
 
 Indices and tables

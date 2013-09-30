@@ -6,6 +6,7 @@ Created on Sep 27, 2013
 import unittest
 from edapi.renderer.csv import CSVRenderer
 from pyramid.response import Response
+import platform
 
 
 class DummyReq():
@@ -19,21 +20,25 @@ class TestCSVRenderer(unittest.TestCase):
         value = {'header': ['a', 'b'], 'rows': [['1', '2'], ['c', 'd']], 'file_name': 'test.csv'}
         output = csv(value, {'request': DummyReq()})
         self.assertIsNotNone(output)
-        self.assertEqual('a,b\r\n1,2\r\nc,d\r\n', output)
+        # Check for non windows user
+        if platform.system() != 'Windows':
+            self.assertEqual('a,b\r\n1,2\r\nc,d\r\n', output)
 
     def test_with_one_row(self):
         csv = CSVRenderer(None)
         value = {'header': ['a', 'b'], 'rows': [['1', '2']], 'file_name': 'test.csv'}
         output = csv(value, {'request': DummyReq()})
         self.assertIsNotNone(output)
-        self.assertEqual('a,b\r\n1,2\r\n', output)
+        if platform.system() != 'Windows':
+            self.assertEqual('a,b\r\n1,2\r\n', output)
 
     def test_empty_results(self):
         csv = CSVRenderer(None)
         value = {'header': [], 'rows': [], 'file_name': 'test.csv'}
         output = csv(value, {'request': DummyReq()})
         self.assertIsNotNone(output)
-        self.assertEqual('\r\n', output)
+        if platform.system() != 'Windows':
+            self.assertEqual('\r\n', output)
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

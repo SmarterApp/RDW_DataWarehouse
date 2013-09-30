@@ -135,11 +135,12 @@ define [
 
     $.fn.sortBySubject = (subject, index, order) ->
       order = order || 'asc'
-      colModels = this.jqGrid("getGridParam", "colModel");
+      colModels = this.jqGrid("getGridParam", "colModel")
       if subject != 'name' and colModels != undefined
         for colModel in colModels
           colModel.sorttype = edwareGridSorters.create(index) if colModel.index == subject
       this.sortGrid(subject, true, order)
+
 
   #
   #    * Creates EDWARE grid

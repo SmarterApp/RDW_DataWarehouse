@@ -56,11 +56,11 @@ class TestComparingPopulationsStat(Unittest_with_smarter_sqlite):
         testParam[Constants.STATECODE] = 'NY'
         testParam[Constants.DISTRICTGUID] = '229'
         results = ComparingPopStatReport(**testParam).get_report()
-        self.assertEqual(results['total'], 35)
-        self.assertEqual(results['dmgPrg504'], 2)
-        self.assertEqual(results['dmgPrgIep'], 2)
-        self.assertEqual(results['dmgPrgLep'], 2)
-        self.assertEqual(results['dmgPrgTt1'], 2)
+        self.assertEqual(results['total'], 47)
+        self.assertEqual(results['dmgPrg504'], 3)
+        self.assertEqual(results['dmgPrgIep'], 3)
+        self.assertEqual(results['dmgPrgLep'], 1)
+        self.assertEqual(results['dmgPrgTt1'], 1)
         self.assertEqual(results['ethnicity'], 1)
         self.assertEqual(results['gender'], 0)
 
@@ -68,12 +68,12 @@ class TestComparingPopulationsStat(Unittest_with_smarter_sqlite):
         testParam = {}
         testParam[Constants.STATECODE] = 'NY'
         results = ComparingPopStatReport(**testParam).get_report()
-        self.assertEqual(results['total'], 492)
-        self.assertEqual(results['dmgPrg504'], 4)
-        self.assertEqual(results['dmgPrgIep'], 5)
-        self.assertEqual(results['dmgPrgLep'], 6)
-        self.assertEqual(results['dmgPrgTt1'], 5)
-        self.assertEqual(results['ethnicity'], 6)
+        self.assertEqual(results['total'], 929)
+        self.assertEqual(results['dmgPrg504'], 7)
+        self.assertEqual(results['dmgPrgIep'], 9)
+        self.assertEqual(results['dmgPrgLep'], 9)
+        self.assertEqual(results['dmgPrgTt1'], 7)
+        self.assertEqual(results['ethnicity'], 11)
         self.assertEqual(results['gender'], 0)
 
     def test_comparing_populations_with_not_stated_count_school_view(self):
@@ -82,12 +82,12 @@ class TestComparingPopulationsStat(Unittest_with_smarter_sqlite):
         testParam[Constants.DISTRICTGUID] = '228'
         testParam[Constants.SCHOOLGUID] = '242'
         results = ComparingPopStatReport(**testParam).get_report()
-        self.assertEqual(results['total'], 35)
-        self.assertEqual(results['dmgPrg504'], 2)
-        self.assertEqual(results['dmgPrgIep'], 3)
-        self.assertEqual(results['dmgPrgLep'], 4)
-        self.assertEqual(results['dmgPrgTt1'], 3)
-        self.assertEqual(results['ethnicity'], 3)
+        self.assertEqual(results['total'], 70)
+        self.assertEqual(results['dmgPrg504'], 4)
+        self.assertEqual(results['dmgPrgIep'], 6)
+        self.assertEqual(results['dmgPrgLep'], 8)
+        self.assertEqual(results['dmgPrgTt1'], 6)
+        self.assertEqual(results['ethnicity'], 6)
         self.assertEqual(results['gender'], 0)
 
 if __name__ == "__main__":

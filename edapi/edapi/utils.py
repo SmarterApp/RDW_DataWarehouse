@@ -27,6 +27,10 @@ class ContentTypePredicate(object):
 
     def __call__(self, context, request):
         content_type = getattr(request, 'content_type', None)
+        # content-type in query param of a GET request trumps content-type found in request header
+        params = request.GET
+        if params and params.get('content-type') is not None:
+            content_type = params.get('content-type')
         if not content_type or len(content_type) == 0:
             content_type = ContentTypePredicate.default_content_type()
         return content_type.lower() == self.content_type

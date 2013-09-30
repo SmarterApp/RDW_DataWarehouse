@@ -11,54 +11,58 @@ define [
   "edwareHeader"
 ], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader) ->
 
-  assessmentsData = {}
-  studentsConfig = {}
-  subjectsData = {}
-  edwareLOSHeaderConfidenceLevelBarTemplate = "<div class='progress' style='width: {{bar_width}}px;'>" +
-                                              "{{#cut_point_intervals}}" +
-                                              "<div class='bar' style='background-color: {{bg_color}}; background-image: -moz-linear-gradient(center top , {{bg_color}}, {{bg_color}}); background-image: -webkit-linear-gradient(top , {{bg_color}}, {{bg_color}}); background-image: -ms-linear-gradient(top , {{bg_color}}, {{bg_color}}); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr={{bg_color}}, endColorstr={{bg_color}}, GradientType=0); background-repeat: repeat-x; color: {{text_color}}; width: {{asmt_cut_point}}px;'></div>" +
-                                              "{{/cut_point_intervals}}" +
-                                              "</div>"
+  REPORT_NAME = 'studentList'
   
-  #
-  #    * Create Student data grid
-  #    
-  createStudentGrid = (params) ->
-    
-    options =
-      async: false
-      method: "GET"
+  DROPDOWN_VIEW_TEMPLATE = $('#assessmentDropdownViewTemplate').html()
 
-    data = edwareDataProxy.getDataForReport "studentList"
-    defaultColors = data.colors
-    feedbackData = data.feedback
-    breadcrumbsConfigs = data.breadcrumb
-    reportInfo = data.reportInfo
-    studentsConfig = data.students
-    legendInfo = data.legendInfo
-    this.labels = data.labels
-    
-    getStudentData "/data/list_of_students", params, defaultColors, (assessmentsData, contextData, subjectsData, claimsData, userData, cutPointsData) ->
-      claimsData = JSON.parse(Mustache.render(JSON.stringify(claimsData), data))
-      cutPointsData = JSON.parse(Mustache.render(JSON.stringify(cutPointsData), data))
-      # set school name as the page title from breadcrumb
-      $("#school_name").html contextData.items[2].name
-      
-      # Use mustache template to replace text in json config
-      # Add assessments data there so we can get column names
-      combinedData = subjectsData
-      combinedData.claims =  claimsData
-      output = Mustache.render(JSON.stringify(studentsConfig), combinedData)
-      studentsConfig = JSON.parse(output)
-      
-      # populate select view
-      defaultView = createAssessmentViewSelectDropDown studentsConfig.customViews, cutPointsData, data.labels
-      
-      $('#breadcrumb').breadcrumbs(contextData, breadcrumbsConfigs)
-      
-      renderStudentGrid(defaultView, data.labels)
-      renderHeaderPerfBar(cutPointsData)
-      
+  LOS_HEADER_BAR_TEMPLATE = $('#edwareLOSHeaderConfidenceLevelBarTemplate').html()
+
+  class StudentGrid
+  
+    constructor: () ->
+      config = edwareDataProxy.getDataForReport REPORT_NAME
+      this.initialize(config)
+
+    initialize: (config) ->
+      this.config = config
+      this.defaultColors = config.colors
+      this.feedbackData = config.feedback
+      this.breadcrumbsConfigs = config.breadcrumb
+      this.reportInfo = config.reportInfo
+      this.studentsConfig = config.students
+      this.asmtTypes = config.students.customViews.asmtTypes
+      this.legendInfo = config.legendInfo
+      this.labels = config.labels
+      this.gridHeight = window.innerHeight - 235
+
+    reload: (params) ->
+      data = this.fetchData params
+      this.data = data
+      this.assessmentsData = data.assessments
+      this.contextData = data.context
+      this.subjectsData = data.subjects
+      this.userData = data.user_info
+      this.cutPointsData = this.createCutPoints()
+      this.columnData = this.createColumns()
+      #  append cutpoints into each individual assessment data
+      this.formatAssessmentsData this.cutPointsData
+      # process breadcrumbs
+      this.renderBreadcrumbs(data.context)
+      this.createHeaderAndFooter()
+      this.createGrid()
+      this.bindEvents()
+
+    createCutPoints: () ->
+      cutPointsData = this.data.metadata.cutpoints
+      cutPointsData = JSON.parse(Mustache.render(JSON.stringify(cutPointsData),this.data))
+      #if cut points don't have background colors, then it will use default background colors
+      for key, items of cutPointsData
+        for interval, i in items.cut_point_intervals
+          if not interval.bg_color
+            $.extend(interval, this.defaultColors[i])
+      cutPointsData
+          
+    bindEvents: ()->
       # Show tooltip for overall score on mouseover
       $(document).on
         mouseenter: ->
@@ -80,203 +84,176 @@ define [
           elem = $(this)
           elem.popover("hide")
       , ".asmtScore"
-      
-      # Generate footer links
-      this.losFooter = $('#footer').generateFooter('list_of_students', reportInfo, {
-        'legendInfo': legendInfo,
-        # merge cut points data with sample data
-        'subject': $.extend(true, {}, cutPointsData.subject1 || cutPointsData.subject2 , legendInfo.sample_intervals)
-      }, data.labels) unless this.losFooter
-      #Add header
-      this.losHeader = edwareHeader.create({"user_info": userData}, data, "list_of_students") unless this.losHeader
-  reRenderStudentListHtml = ()->
-    
-  renderHeaderPerfBar = (cutPointsData) ->
-    for key of cutPointsData
-        items = cutPointsData[key]
-        items.bar_width = 120
-        
-        items.asmt_score_min = items.asmt_score_min
-        items.asmt_score_max = items.asmt_score_max
-        
-        # Last cut point of the assessment
-        items.last_interval = items.cut_point_intervals[items.cut_point_intervals.length-1]
-      
-        items.score_min_max_difference =  items.asmt_score_max - items.asmt_score_min
-        
-        # Calculate width for first cutpoint
-        items.cut_point_intervals[0].asmt_cut_point =  ((items.cut_point_intervals[0].interval - items.asmt_score_min) / items.score_min_max_difference) * items.bar_width
-        
-        # Calculate width for last cutpoint
-        items.last_interval.asmt_cut_point =  ((items.last_interval.interval - items.cut_point_intervals[items.cut_point_intervals.length-2].interval) / items.score_min_max_difference) * items.bar_width
-        
-        # Calculate width for cutpoints other than first and last cutpoints
-        j = 1     
-        while j < items.cut_point_intervals.length - 1
-          items.cut_point_intervals[j].asmt_cut_point =  ((items.cut_point_intervals[j].interval - items.cut_point_intervals[j-1].interval) / items.score_min_max_difference) * items.bar_width
-          j++
-        # use mustache template to display the json data  
-        output = Mustache.to_html edwareLOSHeaderConfidenceLevelBarTemplate, items
-        $("#"+key+"_perfBar").html(output) 
-        
-    
-  renderStudentGrid = (viewName, labels)->
-    $("#gbox_gridTable").remove()
-    $("#content").append("<table id='gridTable'></table>")
-    # Reset the error message, in case previous view shows an error
-    edwareUtil.displayErrorMessage ""
-    if assessmentsData["ALL"].length > 0
-      dataName = viewName.toUpperCase()
-      # If the view name is not one of the subjects, default it to the default assessments data
-      if not (dataName of assessmentsData)
-        dataName = 'ALL'
-      edwareGrid.create {
-        data: assessmentsData[dataName]
-        columns: studentsConfig[viewName]
-        options:
-          gridHeight: window.innerHeight - 235
-          labels: labels
-      }
-      # Add dark border color between Math and ELA section to emphasize the division
-      $('.jqg-second-row-header th:nth-child(1), .jqg-second-row-header th:nth-child(2), .ui-jqgrid .ui-jqgrid-htable th.ui-th-column:nth-child(1), .ui-jqgrid .ui-jqgrid-htable th.ui-th-column:nth-child(3), .ui-jqgrid tr.jqgrow td:nth-child(1), .ui-jqgrid tr.jqgrow td:nth-child(3)').css("border-right", "solid 1px #B1B1B1");
-    else
-      # Display no results error message
-      edwareUtil.displayErrorMessage labels['no_results']
 
-  getStudentData = (sourceURL, params, defaultColors, callback) ->    
-    assessmentArray = []
-    
-    return false if sourceURL is "undefined" or typeof sourceURL is "number" or typeof sourceURL is "function" or typeof sourceURL is "object"
-    
-    options =
-      async: true
-      method: "POST"
-      params: params
-  
-    edwareDataProxy.getDatafromSource sourceURL, options, (data) ->
-      data = JSON.parse(Mustache.render(JSON.stringify(data), {"labels":this.labels}))
-      assessmentsData = data.assessments
-      contextData = data.context
-      subjectsData = data.subjects
-      claimsData = data.metadata.claims
-      cutPointsData = data.metadata.cutpoints
-      userData = data.user_info
+    createHeaderAndFooter: () ->
+      this.footer = edwareFooter.create('list_of_students', this.cutPointsData, this.config) unless this.footer
+      this.header = edwareHeader.create(this.data, this.config, 'list_of_students') unless this.header
+
+    renderBreadcrumbs: () ->
+      $('#breadcrumb').breadcrumbs(this.contextData, this.breadcrumbsConfigs)
       
-      # if cut points don't have background colors, then it will use default background colors
-      for key of cutPointsData
-        items = cutPointsData[key]
-        
-        j = 0
-        while j < items.cut_point_intervals.length
-          if !items.cut_point_intervals[j].bg_color
-            $.extend(items.cut_point_intervals[j], defaultColors[j])
-          j++
+    createGrid: () ->
+      # set school name as the page title from breadcrumb
+      $("#school_name").html this.contextData.items[2].name
+      # populate select view
+      this.createDropdown()
+      this.renderGrid this.asmtTypeDropdown.getAsmtType(), this.asmtTypeDropdown.getCurrentView()
       
-      #  append cutpoints into each individual assessment data
-      formatAssessmentsData cutPointsData
-      
-      if callback
-        callback assessmentsData, contextData, subjectsData, claimsData, userData, cutPointsData
-      else
-        assessmentArray assessmentsData, contextData, subjectsData, claimsData, userData, cutPointsData
-      
-      
-  getStudentsConfig = (configURL, callback) ->
-      studentColumnCfgs = {}
-      
-      return false  if configURL is "undefined" or typeof configURL is "number" or typeof configURL is "function" or typeof configURL is "object"
-      
+    fetchData: (params) ->
+      # Determine if the report is state, district or school view"
       options =
         async: false
-        method: "GET"
+        method: "POST"
+        params: params
       
-      edwareDataProxy.getDatafromSource configURL, options, (data) ->
+      studentsData = undefined
+      labels = this.labels
+      edwareDataProxy.getDatafromSource "/data/list_of_students", options, (data)->
+        studentsData = JSON.parse(Mustache.render(JSON.stringify(data), {"labels": labels}))
+      studentsData
+
+    # For each subject, filter out its data
+    # Also append cutpoints & colors into each assessment
+    formatAssessmentsData: (assessmentCutpoints) ->
+      this.cache = {}
+      for asmt in this.asmtTypes
+        asmtType = asmt['name']
+        this.cache[asmtType] = {} if not this.cache[asmtType]
+        this.cache[asmtType]['Math_ELA'] = [] if not this.cache[asmtType]['Math_ELA']
+        for row in this.assessmentsData
+          # Format student name
+          row['student_full_name'] = edwareUtil.format_full_name_reverse row['student_first_name'], row['student_middle_name'], row['student_last_name']
+          # This is for links in drill down
+          row['params'] = {"studentGuid": row['student_guid']}
+          assessment = row[asmtType.toUpperCase()]
+          this.cache[asmtType]['Math_ELA'].push row if assessment
+          for key, value of this.subjectsData
+            # check that we have such assessment first, since a student may not have taken it
+            if assessment and key of assessment
+              cutpoint = assessmentCutpoints[key]
+              $.extend assessment[key], cutpoint
+              assessment[key].asmt_type = value # display asssessment type in the tooltip title
+              if assessment[key].asmt_perf_lvl > assessment[key].cut_point_intervals.length # this is to prevent bad data where there is no color an asmt_perf_lvl that is out of range
+                assessment[key].score_bg_color = "#D0D0D0"
+                assessment[key].score_text_color = "#000000"
+              else
+                assessment[key].score_bg_color = assessment[key].cut_point_intervals[assessment[key].asmt_perf_lvl - 1].bg_color
+                assessment[key].score_text_color = assessment[key].cut_point_intervals[assessment[key].asmt_perf_lvl - 1].text_color
+              # save the assessment to the particular subject
+              this.cache[asmtType][value] = [] if not this.cache[asmtType][value]
+              this.cache[asmtType][value].push row
+
+    renderGrid: (asmtType, viewName) ->
+      # set dropdown text, replace spaces with _ for selector id
+      name = asmtType.replace /\s+/g, "_"
+      $('#select_measure_current_view').text $('#'+ name + '_' + viewName).text()
+      $('#gridTable').jqGrid('GridUnload')
       
-        if callback
-          callback data
-        else
-          data
+      edwareGrid.create {
+        data: this.getAsmtData(asmtType, viewName)
+        columns: this.columnData[viewName]
+        options:
+          gridHeight: this.gridHeight
+          labels: this.labels
+      }
+      #TODO Add dark border color between Math and ELA section to emphasize the division
+      $('.jqg-second-row-header th:nth-child(1), .jqg-second-row-header th:nth-child(2), .ui-jqgrid .ui-jqgrid-htable th.ui-th-column:nth-child(1), .ui-jqgrid .ui-jqgrid-htable th.ui-th-column:nth-child(3), .ui-jqgrid tr.jqgrow td:nth-child(1), .ui-jqgrid tr.jqgrow td:nth-child(3)').css("border-right", "solid 1px #B1B1B1")
+      this.renderHeaderPerfBar(this.cutPointsData)
 
-  # creating the assessment view drop down
-  createAssessmentViewSelectDropDown = (customViewsData, cutPointsData, labels)->
-    items = []
-    for key of customViewsData
-      value = customViewsData[key]
-      items.push({'key': key, 'value': value})
-      
-    assessmentDropdownViewTemplate =  "<div id='select_measure_title'>{{labels.select_measure}}: </div>" +
-                                      "<div class='btn-group'>" +
-                                      "<a class='btn dropdown-toggle' data-toggle='dropdown' href='#'>" +
-                                      "<span id='select_measure_current_view'></span>" +
-                                      "<span class='caret'></span>" +
-                                      "</a>" +
-                                      "<ul class='dropdown-menu'>" +
-                                      "{{#items}}" +
-                                      "<li><a href='#' id='{{key}}' class='viewOptions'>{{value}}</a></li>" +
-                                      "{{/items}}" +
-                                      "</ul>" +
-                                      "</div>"   
+    getAsmtData: (asmtType, viewName)->
+      data = this.cache[asmtType][viewName]
+      if data
+        for item in data
+          item.assessments = item[asmtType.toUpperCase()]
+      data
 
-    output = Mustache.to_html assessmentDropdownViewTemplate, {'items': items, 'labels': labels}
+    createColumns: () ->
+      # Use mustache template to replace text in json config
+      # Add assessments data there so we can get column names
+      claimsData = JSON.parse(Mustache.render(JSON.stringify(this.data.metadata.claims), this.data))
+      combinedData = this.data.subjects
+      combinedData.claims =  claimsData
+      columnData = JSON.parse(Mustache.render(JSON.stringify(this.studentsConfig), combinedData))
+      columnData
 
-    $("#content #select_measure").html output
-    
-    # add event to change view for assessment
-    $(document).on
-     click: (e) ->
+    # creating the assessment view drop down
+    createDropdown: ()->
+      self = this
+      this.asmtTypeDropdown = new AsmtTypeDropdown this.studentsConfig.customViews, this.subjectsData, (asmtType, viewName) ->
+        self.renderGrid asmtType, viewName
+
+    renderHeaderPerfBar: (cutPointsData) ->
+      for key of cutPointsData
+          items = cutPointsData[key]
+          items.bar_width = 120
+
+          items.asmt_score_min = items.asmt_score_min
+          items.asmt_score_max = items.asmt_score_max
+
+          # Last cut point of the assessment
+          items.last_interval = items.cut_point_intervals[items.cut_point_intervals.length-1]
+
+          items.score_min_max_difference =  items.asmt_score_max - items.asmt_score_min
+
+          # Calculate width for first cutpoint
+          items.cut_point_intervals[0].asmt_cut_point =  ((items.cut_point_intervals[0].interval - items.asmt_score_min) / items.score_min_max_difference) * items.bar_width
+
+          # Calculate width for last cutpoint
+          items.last_interval.asmt_cut_point =  ((items.last_interval.interval - items.cut_point_intervals[items.cut_point_intervals.length-2].interval) / items.score_min_max_difference) * items.bar_width
+
+          # Calculate width for cutpoints other than first and last cutpoints
+          j = 1     
+          while j < items.cut_point_intervals.length - 1
+            items.cut_point_intervals[j].asmt_cut_point =  ((items.cut_point_intervals[j].interval - items.cut_point_intervals[j-1].interval) / items.score_min_max_difference) * items.bar_width
+            j++
+          # use mustache template to display the json data  
+          output = Mustache.to_html LOS_HEADER_BAR_TEMPLATE, items
+          $("#"+key+"_perfBar").html(output) 
+
+
+  class AsmtTypeDropdown
+  
+    constructor: (customViews, subjects, @callback) ->
+      items = []
+      # render dropdown
+      for asmtType in customViews.asmtTypes
+        subjects['asmtType'] = asmtType['display']
+        for key, value of customViews.items
+          items.push {
+            'key': Mustache.to_html(key, subjects)
+            'value': Mustache.to_html(value, subjects)
+            'asmtType': asmtType['name']
+            'id': asmtType['name'].replace /\s+/g, "_"
+          }
+      $("#asmtTypeDropdown").html Mustache.to_html DROPDOWN_VIEW_TEMPLATE, {'items': items}
+      # bind events
+      this.bindEvents()
+      # the first element name as default view
+      this.currentView = items[0].key
+      this.asmtType = items[0].asmtType
+
+    bindEvents: () ->
+      self = this
+      # add event to change view for assessment
+      $(document).on 'click', '.viewOptions', (e) ->
         e.preventDefault()
-        viewName = $(this).attr "id"
-        $("#select_measure_current_view").html $('#' + viewName).text()
-        renderStudentGrid viewName, labels
-        renderHeaderPerfBar cutPointsData
-        
+        viewName = $(this).data('name')
+        asmtType = $(this).data('type')
+        self.currentView = viewName
+        self.asmtType = asmtType
+        self.callback asmtType, viewName
+
         # Add dark border color between Math and ELA section to emphasize the division
         if viewName is "Math_ELA"
-          $('.jqg-second-row-header th:nth-child(1), .jqg-second-row-header th:nth-child(2), .ui-jqgrid .ui-jqgrid-htable th.ui-th-column:nth-child(1), .ui-jqgrid .ui-jqgrid-htable th.ui-th-column:nth-child(3), .ui-jqgrid tr.jqgrow td:nth-child(1), .ui-jqgrid tr.jqgrow td:nth-child(3)').css("border-right", "solid 1px #b1b1b1");
+          $('.jqg-second-row-header th:nth-child(1), .jqg-second-row-header th:nth-child(2), .ui-jqgrid .ui-jqgrid-htable th.ui-th-column:nth-child(1), .ui-jqgrid .ui-jqgrid-htable th.ui-th-column:nth-child(3), .ui-jqgrid tr.jqgrow td:nth-child(1), .ui-jqgrid tr.jqgrow td:nth-child(3)').css("border-right", "solid 1px #b1b1b1")
         else
-          $('.jqg-second-row-header th:nth-child(1), .jqg-second-row-header th:nth-child(2), .ui-jqgrid .ui-jqgrid-htable th.ui-th-column:nth-child(1), .ui-jqgrid .ui-jqgrid-htable th.ui-th-column:nth-child(3), .ui-jqgrid tr.jqgrow td:nth-child(1), .ui-jqgrid tr.jqgrow td:nth-child(3)').css("border-right", "solid 1px #d0d0d0");
-          $('.ui-jqgrid tr.jqgrow td:nth-child(1), .ui-jqgrid tr.jqgrow td:nth-child(3)').css("border-right", "solid 1px #E2E2E2");
-    , ".viewOptions"
-    
-    # return the first element name as default view
-    defaultView = items[0].key
-    $("#select_measure_current_view").html $('#' + defaultView).text()
-    defaultView
-    
+          $('.jqg-second-row-header th:nth-child(1), .jqg-second-row-header th:nth-child(2), .ui-jqgrid .ui-jqgrid-htable th.ui-th-column:nth-child(1), .ui-jqgrid .ui-jqgrid-htable th.ui-th-column:nth-child(3), .ui-jqgrid tr.jqgrow td:nth-child(1), .ui-jqgrid tr.jqgrow td:nth-child(3)').css("border-right", "solid 1px #d0d0d0")
+          $('.ui-jqgrid tr.jqgrow td:nth-child(1), .ui-jqgrid tr.jqgrow td:nth-child(3)').css("border-right", "solid 1px #E2E2E2")
 
-  # For each subject, filter out its data
-  # Also append cutpoints & colors into each assessment
-  formatAssessmentsData = (assessmentCutpoints) ->
-    
-    # use mustache template to display the json data  
-    output = Mustache.to_html edwareLOSHeaderConfidenceLevelBarTemplate, assessmentCutpoints 
-      
-      
-    # We keep a set of data for each assessment subject
-    allAssessments = {'ALL': assessmentsData}
-    for key, value of subjectsData
-      allAssessments[value.toUpperCase()] = []
-    
-    for row in allAssessments["ALL"]
-      # Format student name
-      row['student_full_name'] = edwareUtil.format_full_name_reverse row['student_first_name'], row['student_middle_name'], row['student_last_name']
-      # This is for links in drill down
-      row['params'] = {"studentGuid": row['student_guid']}
-      assessment = row['assessments']
-      for key, value of subjectsData
-        # check that we have such assessment first, since a student may not have taken it
-        if key of assessment
-          cutpoint = assessmentCutpoints[key]
-          $.extend assessment[key], cutpoint
-          assessment[key].asmt_type = value # display asssessment type in the tooltip title
-          if assessment[key].asmt_perf_lvl > assessment[key].cut_point_intervals.length # this is to prevent bad data where there is no color an asmt_perf_lvl that is out of range
-            assessment[key].score_bg_color = "#D0D0D0"
-            assessment[key].score_text_color = "#000000"
-          else
-            assessment[key].score_bg_color = assessment[key].cut_point_intervals[assessment[key].asmt_perf_lvl - 1].bg_color
-            assessment[key].score_text_color = assessment[key].cut_point_intervals[assessment[key].asmt_perf_lvl - 1].text_color
-          # save the assessment to the particular subject
-          allAssessments[value.toUpperCase()].push row
-    assessmentsData = allAssessments
-          
-  createStudentGrid: createStudentGrid
+    getCurrentView: () ->
+      this.currentView
+
+    getAsmtType: ()->
+      this.asmtType
+  
+  StudentGrid: StudentGrid

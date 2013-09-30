@@ -356,22 +356,25 @@ class Test(unittest.TestCase):
             self.assertEqual(section_rec_count[rec_id], 10, 'Each section should have 10 students')
 
     def test_set_students_asmt_info(self):
-        students = [DummyClass(asmt_rec_ids={}, asmt_dates_taken={}, asmt_years={}, asmt_types={}, asmt_subjects={}) for _x in range(100)]
+        students = [DummyClass(asmt_rec_ids={}, asmt_guids={}, asmt_dates_taken={}, asmt_years={}, asmt_types={}, asmt_subjects={}) for _x in range(100)]
         subjects = ['Math', 'ELA']
         asmt_rec_ids = ['123', '456']
+        asmt_guids = ['ag123', 'ag123r4']
         dates_taken = [date(2013, 12, 2), date(2001, 11, 5)]
         asmt_types = ['SUMMATIVE', 'SUMMATIVE']
         asmt_years = [2015, 1920]
         expected_asmt_rec_ids = {'Math': '123', 'ELA': '456'}
+        expected_asmt_guids = {'Math': 'ag123', 'ELA': 'ag123r4'}
         expected_dates_taken = {'Math': date(2013, 12, 2), 'ELA': date(2001, 11, 5)}
         expected_asmt_types = {'Math': 'SUMMATIVE', 'ELA': 'SUMMATIVE'}
         expected_asmt_years = {'Math': 2015, 'ELA': 1920}
         expected_asmt_subjects = {'Math': 'Math', 'ELA': 'ELA'}
 
-        result = gd2.set_students_asmt_info(students, subjects, asmt_rec_ids, dates_taken, asmt_years, asmt_types)
+        result = gd2.set_students_asmt_info(students, subjects, asmt_rec_ids, asmt_guids, dates_taken, asmt_years, asmt_types)
 
         for student in result:
             self.assertDictEqual(student.asmt_rec_ids, expected_asmt_rec_ids)
+            self.assertDictEqual(student.asmt_guids, expected_asmt_guids)
             self.assertDictEqual(student.asmt_dates_taken, expected_dates_taken)
             self.assertDictEqual(student.asmt_years, expected_asmt_years)
             self.assertDictEqual(student.asmt_types, expected_asmt_types)
@@ -689,7 +692,7 @@ class Test(unittest.TestCase):
 
     def test_generate_institution_hierarchy_from_helper_entities(self):
         state_population = DummyClass()
-        state_population.name = 'Georgia'
+        state_population.state_name = 'Georgia'
         state_population.state_code = 'GA'
         district = DummyClass()
         district.district_guid = 'dguid1'

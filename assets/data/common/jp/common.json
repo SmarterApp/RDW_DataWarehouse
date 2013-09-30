@@ -487,10 +487,13 @@
 			}
 		],
 		"customViews": {
-			"{{subject1}}_{{subject2}}": "{{subject1}} & {{subject2}} Summative",
-			"{{subject1}}": "{{subject1}} Summative",
-			"{{subject2}}": "{{subject2}} Summative"
-		}
+		  "asmtTypes": [{"name": "summative", "display": "累積的な"}, {"name": "comprehensive interim", "display": "暫定的な"}],
+			"items": {
+                "{{subject1}}_{{subject2}}": "{{subject1}} & {{subject2}} {{asmtType}}",
+                "{{subject1}}": "{{subject1}} {{asmtType}}",
+                "{{subject2}}": "{{subject2}} {{asmtType}}"
+            }
+        }
 	},
 
 	"comparingPopulations": {

@@ -9,7 +9,6 @@ from uuid import uuid4
 import datetime
 import argparse
 import os
-import csv
 import math
 import random
 
@@ -31,8 +30,10 @@ from DataGeneration.src.utils.assign_students_subjects_scores import assign_scor
 from DataGeneration.src.utils.idgen import IdGen
 import DataGeneration.src.calc.claim_score_calculation as claim_score_calculation
 from DataGeneration.src.utils.print_student_info_pool import print_student_info_pool_counts
+from DataGeneration.src.models.landing_zone_data_format import output_generated_districts_to_lz_format, prepare_lz_csv_file, output_generated_asmts_to_json
 
 
+IDEAL_DISTRICT_CHUNK = 100000
 DATAFILE_PATH = os.path.dirname(os.path.realpath(__file__))
 components = DATAFILE_PATH.split(os.sep)
 DATAFILE_PATH = str.join(os.sep, components[:components.index('DataGeneration') + 1])
@@ -68,7 +69,7 @@ NAMES_TO_PATH_DICT = {BIRDS: os.path.join(DATAFILE_PATH, 'datafiles', 'name_list
                       }
 
 
-def generate_data_from_config_file(config_module, output_dict, do_pld_adjustment=True):
+def generate_data_from_config_file(config_module, output_dict, do_pld_adjustment=True, star_format=True, landing_zone_format=False, single_file=True, district_chunk_size=0):
     '''
     Main function that drives the data generation process
     Collects all relevant info from the config files and calls methods to generate states and remaining data
@@ -89,22 +90,31 @@ def generate_data_from_config_file(config_module, output_dict, do_pld_adjustment
                                        from_date, most_recent, to_date=to_date)
 
     # prepare csv files and output assessment data
-    prepare_csv_files(output_dict)
-    create_csv(assessments, output_dict[Assessment])
+    if star_format:
+        prepare_csv_files(output_dict)
+        create_csv(assessments, output_dict[Assessment])
+    else:
+        prepare_lz_csv_file(output_dict, assessments, single_file)
+        output_generated_asmts_to_json(assessments, output_dict)
 
     # Generate the all the data
+    print('Generating State Population Counts')
     state_populations = generate_state_populations(states_config, state_types, demographics_info, assessments, district_types,
                                                    school_types, district_names, school_names, error_band_dict, from_date,
                                                    most_recent, to_date, do_pld_adjustment)
 
     for state_population in state_populations:
         # generate districts in chunks and write to file
+        district_chunk_size = district_chunk_size if district_chunk_size >= 1 else calculate_dist_chunk(state_population)
+        print('district_chunk size', district_chunk_size)
         generate_districts_in_chunks(state_population, assessments, error_band_dict, district_names, school_names, demographics_info,
-                                     from_date, most_recent, to_date, street_names, batch_guid, output_dict, max_chunk=1)
+                                     from_date, most_recent, to_date, street_names, batch_guid, output_dict, max_chunk=district_chunk_size,
+                                     star_format=star_format, landing_zone_format=landing_zone_format, single_file=single_file)
 
-        state = generate_state(state_population.name, state_population.state_code)
+        state = generate_state(state_population.state_name, state_population.state_code)
         create_state_level_staff(state, from_date, most_recent, to_date, number_of_state_level_staff=10)
-        output_state_staff_to_csv(state, batch_guid, output_dict, from_date, most_recent, to_date)
+        if star_format:
+            output_state_staff_to_csv(state, batch_guid, output_dict, from_date, most_recent, to_date)
 
     return True
 
@@ -149,6 +159,17 @@ def output_state_staff_to_csv(state, batch_guid, output_dict, from_date, most_re
     '''
     state_staff = state.staff
     create_csv(state_staff, output_dict[Staff])
+
+
+def output_data_to_selected_format(districts, state, batch_guid, output_dict, from_date, most_recent, to_date, star_format=True, landing_zone_format=False, single_file=True):
+    '''
+    '''
+    print('Writing data to file: %s districts' % len(districts))
+    if star_format:
+        output_generated_districts_to_csv(districts, state, batch_guid, output_dict, from_date, most_recent, to_date)
+    if landing_zone_format:
+        output_generated_districts_to_lz_format(districts, state, batch_guid, output_dict, from_date, most_recent, to_date, single_file)
+    print('Data write complete')
 
 
 def output_generated_districts_to_csv(districts, state, batch_guid, output_dict, from_date, most_recent, to_date):
@@ -256,16 +277,17 @@ def generate_state_populations(states, state_types, demographics_info, assessmen
     return state_populations
 
 
-def generate_districts_in_chunks(state_population, assessments, error_band_dict, district_names, school_names,
-                                 demographics_info, from_date, most_recent, to_date, street_names, batch_guid, output_dict, max_chunk=10):
+def generate_districts_in_chunks(state_population, assessments, error_band_dict, district_names, school_names, demographics_info, from_date, most_recent,
+                                 to_date, street_names, batch_guid, output_dict, max_chunk=10, star_format=True, landing_zone_format=False, single_file=True):
     '''
     '''
     for chunk_position in range(0, len(state_population.districts), max_chunk):
         new_state_population = get_district_chunk(state_population, max_chunk, chunk_position)
+        print('Generating %s districts' % len(new_state_population.districts))
         districts = generate_districts_for_state_population_chunk(new_state_population, assessments, error_band_dict, district_names, school_names,
                                                                   demographics_info, from_date, most_recent, to_date, street_names)
         # write district to file
-        output_generated_districts_to_csv(districts, state_population, batch_guid, output_dict, from_date, most_recent, to_date)
+        output_data_to_selected_format(districts, state_population, batch_guid, output_dict, from_date, most_recent, to_date, star_format, landing_zone_format, single_file)
 
 
 def get_district_chunk(state_population, chunk_size, start_pos):
@@ -286,7 +308,7 @@ def create_state_population_from_districts(district_list, state_population):
     '''
     state_demographic_totals = add_list_of_district_populations(district_list)
 
-    new_state_population = StatePopulation(state_population.name, state_population.state_code, state_population.state_type, state_population.subject,
+    new_state_population = StatePopulation(state_population.state_name, state_population.state_code, state_population.state_type, state_population.subject,
                                            state_population.do_pld_adjustment, state_demographic_totals, district_list,
                                            state_population.subject_percentages, state_population.demographics_id)
     return new_state_population
@@ -306,9 +328,10 @@ def generate_districts_for_state_population_chunk(state_populations_chunk, asses
     student_info_dict = generate_students_info_from_demographic_counts(state_populations_chunk, assessments, error_band_dict)
     print_student_info_pool_counts(student_info_dict, demographics_info, demographics_id)
     # create districts
+    print('Creating the actual districts')
     districts = create_districts(state_populations_chunk, district_names[0], district_names[1], school_names[0],
                                  school_names[1], student_info_dict, subject_percentages, demographics_info,
-                                 demographics_id, assessments, error_band_dict, state_populations_chunk.name,
+                                 demographics_id, assessments, error_band_dict, state_populations_chunk.state_name,
                                  state_populations_chunk.state_code, from_date, most_recent, to_date, street_names)
     return districts
 
@@ -336,10 +359,14 @@ def get_school_population(school, student_info_dict, subject_percentages, demogr
     school_counts = school.grade_performance_level_counts
 
     students_in_school = []
-    subject_sections_map = {}
-    subject_teachers_map = {}
+
+    sections_in_school = []
+    teachers_in_school = []
 
     for grade in school_counts:
+
+        subject_sections_map = {}
+        subject_teachers_map = {}
 
         for subject in constants.SUBJECTS:
             # create sections
@@ -381,13 +408,14 @@ def get_school_population(school, student_info_dict, subject_percentages, demogr
         set_student_institution_information(students, school, from_date, most_recent, to_date, street_names,
                                             subject_teachers_map[constants.MATH][0], subject_teachers_map[constants.ELA][0], state_code)
         set_students_asmt_info(students, [constants.ELA, constants.MATH], [ela_assessment.asmt_rec_id, math_assessment.asmt_rec_id],
-                               [ela_date_taken, math_date_taken], [ela_asmt_year, math_asmt_year], [ela_asmt_type, math_asmt_type])
+                               [ela_assessment.asmt_guid, math_assessment.asmt_guid], [ela_date_taken, math_date_taken],
+                               [ela_asmt_year, math_asmt_year], [ela_asmt_type, math_asmt_type])
         apply_subject_percentages(subject_percentages, students)
 
         students_in_school += students
 
-    sections_in_school = [j for i in subject_sections_map.values() for j in i]
-    teachers_in_school = [j for i in subject_teachers_map.values() for j in i]
+        sections_in_school += [j for i in subject_sections_map.values() for j in i]
+        teachers_in_school += [j for i in subject_teachers_map.values() for j in i]
 
     return students_in_school, teachers_in_school, sections_in_school
 
@@ -427,6 +455,7 @@ def set_student_institution_information(students, school, from_date, most_recent
         student.address_1 = util.generate_address(street_names)
         student.city = city_name_1 + ' ' + city_name_2
         student.teacher_guids = {constants.MATH: math_teacher.staff_guid, constants.ELA: ela_teacher.staff_guid}
+        student.teachers = {constants.MATH: math_teacher, constants.ELA: ela_teacher}
 
     return students
 
@@ -453,7 +482,7 @@ def assign_students_sections(students, math_sections, ela_sections):
     return students
 
 
-def set_students_asmt_info(students, subjects, asmt_rec_ids, dates_taken, years, types):
+def set_students_asmt_info(students, subjects, asmt_rec_ids, asmt_guids, dates_taken, years, types):
     '''
     take a list of students and assign them assessment record ids.
     subjects and asmt_rec_ids are lists that should match
@@ -461,6 +490,7 @@ def set_students_asmt_info(students, subjects, asmt_rec_ids, dates_taken, years,
     for student in students:
         for i in range(len(subjects)):
             student.asmt_rec_ids[subjects[i]] = asmt_rec_ids[i]
+            student.asmt_guids[subjects[i]] = asmt_guids[i]
             student.asmt_dates_taken[subjects[i]] = dates_taken[i]
             student.asmt_years[subjects[i]] = years[i]
             student.asmt_types[subjects[i]] = types[i]
@@ -555,6 +585,7 @@ def create_districts(state_population, district_names_1, district_names_2, schoo
 
     for dist_pop in district_populations:
         district = generate_district(district_names_1, district_names_2, dist_pop)
+        print('Generating %s schools' % len(district.school_populations))
         district.schools = create_schools(district, school_names_1, school_names_2, student_info_dict, subject_percentages,
                                           demographics_info, demographics_id, assessments, error_band_dict, state_name,
                                           state_code, from_date, most_recent, to_date, street_names)
@@ -633,7 +664,7 @@ def generate_students_with_demographics(score_pool, demographic_totals, grade):
 
     # Create new student info objects with a gender assigned and scores
     student_info_dict = create_student_info_dict(gender_group, score_pool, demographic_totals, grade)
-    print('Grade:', grade)
+    print('Generating Student in Grade:', grade)
     for group in groupings:
         assign_demographics_for_grouping(group, student_info_dict, demographic_totals)
 
@@ -773,7 +804,7 @@ def generate_institution_hierarchy_from_helper_entities(state_population, distri
     @param district: A District object
     @param school: A School object
     '''
-    state_name = state_population.name
+    state_name = state_population.state_name
     state_code = state_population.state_code
     district_guid = district.district_guid
     district_name = district.district_name
@@ -804,6 +835,15 @@ def create_output_dict(output_path):
     return out_dict
 
 
+def calculate_dist_chunk(state_population):
+    '''
+    using the state population object and the number of students present, determine how large a chunk should be.
+    '''
+    avg_district_size = state_population.total_students_in_state / len(state_population.districts)
+    district_chunk = IDEAL_DISTRICT_CHUNK / avg_district_size
+    return max(1, int(district_chunk))
+
+
 def generate_name_list_dictionary(list_name_to_path_dictionary):
     '''
     Create a dictionary that contains naming lists as keys and a list of file
@@ -819,7 +859,7 @@ def generate_name_list_dictionary(list_name_to_path_dictionary):
     return name_list_dictionary
 
 
-def main(config_mod_name='dg_types', output_path=None, do_pld_adjustment=True):
+def main(config_mod_name='dg_types', output_path=None, do_pld_adjustment=True, star_format=True, landing_zone_format=False, single_file=True, district_chunk_size=0):
     t1 = datetime.datetime.now()
     config_module = import_module(config_mod_name)
 
@@ -828,7 +868,7 @@ def main(config_mod_name='dg_types', output_path=None, do_pld_adjustment=True):
     if output_path:
         output_dict = create_output_dict(output_path)
     # generate_data
-    generate_data_from_config_file(config_module, output_dict, do_pld_adjustment)
+    generate_data_from_config_file(config_module, output_dict, do_pld_adjustment, star_format, landing_zone_format, single_file, district_chunk_size)
 
     # print time
     t2 = datetime.datetime.now()
@@ -844,12 +884,24 @@ def main(config_mod_name='dg_types', output_path=None, do_pld_adjustment=True):
 if __name__ == '__main__':
     # Argument parsing
     parser = argparse.ArgumentParser(description='Generate fixture data from a configuration file.')
-    parser.add_argument('--config', dest='config_module', action='store', default='dg_types',
+    parser.add_argument('--config', dest='config_module', action='store', default='configs.dg_types',
                         help='Specify the configuration module that informs that data creation process.', required=False)
     parser.add_argument('--output', dest='output_path', action='store',
                         help='Specify the location of the output csv files', required=False)
+    parser.add_argument('-d', '--district-chunk-size', type=int, default=0,
+                        help='The number of district to generate and output at a time. If this value is less than 1 this will be calculated at run time. Default: 0')
     parser.add_argument('-N', '--no-pld-adjustment', dest='do_pld_adjustment', action='store_false',
                         help='Specify this flag to generate data without applying the performance level adjustments')
+    parser.add_argument('-l', '--lz-format', action='store_true', dest='lz_format',
+                        help='generate landing zone format instead of star schema format')
+    parser.add_argument('-b', '--star-and-lz', action='store_true',
+                        help='create both star schema and landing zone output file')
+    parser.add_argument('-m', '--multi-lz-files', action='store_true',
+                        help='write the landing zone csv files to multiple files instead of one single file')
     args = parser.parse_args()
 
-    main(args.config_module, args.output_path, args.do_pld_adjustment)
+    star_format = True if args.star_and_lz or not args.lz_format else False
+    landing_zone = True if args.star_and_lz or args.lz_format else False
+    single_file = not args.multi_lz_files
+
+    main(args.config_module, args.output_path, args.do_pld_adjustment, star_format, landing_zone, single_file, args.district_chunk_size)

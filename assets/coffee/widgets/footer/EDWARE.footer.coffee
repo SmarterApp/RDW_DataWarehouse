@@ -15,6 +15,8 @@ define [
     # show "Print" only on ISR
     if reportName isnt 'individual_student_report'
       $('#print').hide()
+    if reportName isnt 'list_of_students'
+      $('#export').hide()
     createPopover(labels)
     # create legend
     $('.legendPopup').createLegend(reportName, legend)
@@ -83,6 +85,17 @@ define [
       template: '<div class="popover footerPopover printFooterPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
       content: ->
         $(".printPopup").html()
+   
+    # TODO:  export is temporary placed in the footer.  If it's permanent, we need to update template.html for hiding another popovers
+    $("#export").popover
+      html: true
+      placement: "top"
+      container: "div"
+      title: ->
+        '<div class="pull-right hideButton"><a class="pull-right" href="#" id="close" data-id="export">'+labels.hide+' <img src="../images/hide_x.png"></img></i></a></div><div class="lead"> Export</div>'
+      template: '<div class="popover footerPopover exportFooterPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
+      content: ->
+        $(".exportPopup").html()
      
   # Make the footer button active when associate popup opens up
   $(document).on
@@ -111,10 +124,20 @@ define [
       window.open(url, "_blank",'toolbar=0,location=0,menubar=0,status=0,resizable=yes')
     , "#printButton"
 
-  create = (reportName, data, config) ->
+  # Export Button
+  $(document).on
+    click: ->
+      val=$('input[name=export_options]:checked').val()
+      url= window.location.protocol + "//" + window.location.host + "/data/list_of_students_csv" + location.search + "&content-type=text/csv"
+      $("#export").popover "hide"
+      $("#footer .nav li a").removeClass("active")
+      
+      window.open(url, "_blank",'toolbar=0,location=0,menubar=0,status=0,resizable=yes')
+    , "#exportButton"
+
+  create = (reportName, colorsData, config) ->
       labels = config.labels
       reportInfo = config.reportInfo
-      colorsData = data.metadata
       legendInfo = config.legendInfo
       # Generate footer
       $('#footer').generateFooter(reportName, reportInfo, {

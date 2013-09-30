@@ -77,6 +77,7 @@ def get_report_config(request):
 
 
 @view_config(route_name='report_get_option_post', renderer='json', request_method='GET', content_type="application/json",)
+@view_config(route_name='report_get_option_post', renderer='csv', request_method='GET', content_type="text/csv")
 def generate_report_get(request, validator=None):
     '''
     Handle GET for data resource
@@ -107,6 +108,7 @@ def generate_report_get(request, validator=None):
 
 
 @view_config(route_name='report_get_option_post', renderer='json', request_method='POST', content_type="application/json",)
+@view_config(route_name='report_get_option_post', renderer='csv', request_method='POST', content_type="text/csv")
 def generate_report_post(request, validator=None):
     '''
     Handle POST for data resource

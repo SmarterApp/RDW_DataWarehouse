@@ -10,7 +10,7 @@ from sqlalchemy.sql import select
 from sqlalchemy.sql import and_
 from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
 from sqlalchemy.sql.expression import func, true
-from smarter.reports.helpers.constants import Constants
+from smarter.reports.helpers.constants import Constants, AssessmentType
 from edapi.logging import audit_event
 import collections
 from edapi.exceptions import NotFoundException
@@ -22,9 +22,7 @@ from edapi.cache import cache_region
 from smarter.reports.helpers.filters import FILTERS_CONFIG, has_filters,\
     apply_filter_to_query
 from smarter.reports.helpers.utils import merge_dict
-from smarter.reports.helpers.compare_pop_stat_report import ComparingPopStatReport,\
-    get_not_stated_count
-
+from smarter.reports.helpers.compare_pop_stat_report import get_not_stated_count
 
 REPORT_NAME = "comparing_populations"
 CACHE_REGION_PUBLIC_DATA = 'public.data'
@@ -284,7 +282,8 @@ class RecordManager():
                 for interval in intervals:
                     interval[Constants.PERCENTAGE] = self.calculate_percentage(interval[Constants.COUNT], total)
                 # adjust for min cell size policy and do not return data if violated
-                if total > self._custom_metadata.get(alias, {}).get(Constants.MIN_CELL_SIZE, DEFAULT_MIN_CELL_SIZE):
+                min_cell_size = self._custom_metadata.get(alias, {}).get(Constants.MIN_CELL_SIZE, DEFAULT_MIN_CELL_SIZE)
+                if total > (min_cell_size if min_cell_size else DEFAULT_MIN_CELL_SIZE):
                     results[alias] = {Constants.ASMT_SUBJECT: name, Constants.INTERVALS: self.adjust_percentages(intervals), Constants.TOTAL: total}
                 else:
                     results[alias] = {Constants.ASMT_SUBJECT: name, Constants.INTERVALS: [{Constants.PERCENTAGE: -1} for _ in range(0, len(intervals))], Constants.TOTAL: -1}
@@ -383,7 +382,7 @@ class QueryHelper():
                    func.count().label(Constants.TOTAL)],
                   from_obj=[self._fact_asmt_outcome.join(self._dim_inst_hier, and_(self._dim_inst_hier.c.inst_hier_rec_id == self._fact_asmt_outcome.c.inst_hier_rec_id))]
                   )\
-            .where(and_(self._fact_asmt_outcome.c.state_code == self._state_code, self._fact_asmt_outcome.c.most_recent == true(), self._fact_asmt_outcome.c.asmt_type == Constants.SUMMATIVE))\
+            .where(and_(self._fact_asmt_outcome.c.state_code == self._state_code, self._fact_asmt_outcome.c.most_recent == true(), self._fact_asmt_outcome.c.asmt_type == AssessmentType.SUMMATIVE))\
             .group_by(self._fact_asmt_outcome.c.asmt_subject,
                       self._fact_asmt_outcome.c.asmt_perf_lvl)\
             .order_by(self._fact_asmt_outcome.c.asmt_subject.desc())

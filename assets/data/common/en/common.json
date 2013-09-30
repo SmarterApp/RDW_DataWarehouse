@@ -487,9 +487,12 @@
 			}
 		],
 		"customViews": {
-			"{{subject1}}_{{subject2}}": "{{subject1}} & {{subject2}} Summative",
-			"{{subject1}}": "{{subject1}} Summative",
-			"{{subject2}}": "{{subject2}} Summative"
+			"asmtTypes": [{"name": "summative", "display": "Summative"}, {"name": "comprehensive interim", "display": "Interim Comp."}],
+			"items": {
+				"{{subject1}}_{{subject2}}": "{{subject1}} & {{subject2}} {{asmtType}}",
+				"{{subject1}}": "{{subject1}} {{asmtType}}",
+				"{{subject2}}": "{{subject2}} {{asmtType}}"
+			}
 		}
 	},
 

@@ -6,6 +6,7 @@ from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from edapi.utils import ContentTypePredicate
 from edapi.reports import add_report_config
+from edapi.renderer import csv
 
 
 def includeme(config):
@@ -25,6 +26,8 @@ def includeme(config):
     config.add_directive('add_report_config', add_report_config)
 
     config.add_view_predicate('content_type', ContentTypePredicate)
+
+    config.add_renderer('csv', csv.CSVRenderer)
 
     # scans edapi, ignoring test package
     config.scan(ignore='edapi.test')

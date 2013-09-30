@@ -136,7 +136,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
     assessment = Table('dim_asmt', metadata,
                        Column('asmt_rec_id', BigInteger, primary_key=True),
                        Column('asmt_guid', String(50), nullable=False),
-                       Column('asmt_type', String(16), nullable=False),
+                       Column('asmt_type', String(32), nullable=False),
                        Column('asmt_period', String(32), nullable=False),
                        Column('asmt_period_year', SmallInteger, nullable=False),
                        Column('asmt_version', String(16), nullable=False),
@@ -222,7 +222,7 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                Column('most_recent', Boolean),
                                Column('batch_guid', String(50), nullable=True),
                                # Add 4 assessment columns
-                               Column('asmt_type', String(16), nullable=False),
+                               Column('asmt_type', String(32), nullable=False),
                                Column('asmt_year', SmallInteger, nullable=False),
                                Column('asmt_subject', String(100)),
                                Column('gender', String(10), nullable=True),

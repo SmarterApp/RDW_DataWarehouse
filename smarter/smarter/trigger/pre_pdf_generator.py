@@ -11,7 +11,7 @@ from smarter.trigger.utils import run_cron_job
 from smarter.trigger.database import constants
 from smarter.database.smarter_connector import SmarterDBConnection
 from smarter.database.udl_stats_connector import StatsDBConnection
-from smarter.reports.helpers.constants import Constants
+from smarter.reports.helpers.constants import Constants, AssessmentType
 
 
 logger = logging.getLogger('smarter')
@@ -56,7 +56,7 @@ def prepare_pre_pdf(tenant, state_code, batch_guid):
                        from_obj=[fact_asmt_outcome
                                  .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id,
                                                       dim_asmt.c.most_recent,
-                                                      dim_asmt.c.asmt_type == Constants.SUMMATIVE))])
+                                                      dim_asmt.c.asmt_type == AssessmentType.SUMMATIVE))])
         query = query.where(fact_asmt_outcome.c.state_code == state_code)
         query = query.where(and_(fact_asmt_outcome.c.batch_guid == batch_guid))
         query = query.where(and_(fact_asmt_outcome.c.most_recent == true()))

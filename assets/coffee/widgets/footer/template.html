@@ -15,6 +15,9 @@
 		<a id="feedback" rel="popover" class="pull-right" onclick='$("#aboutReport").popover("hide");$("#legend").popover("hide");$("#help").popover("hide");$("#print").popover("hide");'><i class="icon-comment icon-white"></i> {{labels.feedback}}</a>
 	</li>
 	<li>
+		<a id="export" rel="popover" class="pull-right" onclick='$("#aboutReport").popover("hide");$("#legend").popover("hide");$("#help").popover("hide");$("#print").popover("hide");'><i class="icon-file icon-white"></i> Export</a>
+	</li>
+	<li>
 		<div id="copyright">
 			Smarter Balanced &#169; Copyright 2013 <br/>
 			DRAFT: All images and data are <span class="underline">unofficial</span> and for internal testing purposes only
@@ -45,6 +48,14 @@
 		</div>
 		<div id='printButtonContent'>
 			<button id="printButton" type="button" class="btn btn-info">{{labels.print}}</button>
+		</div>
+	</div>
+	<div class="exportPopup">
+		<div>
+			<input type="radio" name="export_options" value="csv" checked>Export to CSV format<br/>
+		</div>
+		<div id='exportButtonContent'>
+			<button id="exportButton" type="button" class="btn btn-info">Export</button>
 		</div>
 	</div>
 </div>

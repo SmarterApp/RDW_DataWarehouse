@@ -57,10 +57,11 @@ define [
       "<div><strong>" + value + "</strong> (&#177;" + confidence + ")</div>"
     else
       ""
-    
+
+  #TODO refactor performance bar code
   performanceBar = (value, options, rowObject) ->
-    asmt_type = options.colModel.formatoptions.asmt_type
-    subject = rowObject.assessments[asmt_type]
+    subject_type = options.colModel.formatoptions.asmt_type
+    subject = rowObject.assessments[subject_type]
     labels = options.colModel.labels
     if subject
       score_ALD = if not subject.cut_point_intervals[subject.asmt_perf_lvl-1] then "" else subject.cut_point_intervals[subject.asmt_perf_lvl-1]["name"] 
@@ -82,7 +83,6 @@ define [
   populationBar = (value, options, rowObject) ->
     if parseInt(value) <= 0
       return options.colModel.labels['insufficient_data']
-
     asmt_type = options.colModel.formatoptions.asmt_type
     subject = rowObject.results[asmt_type]
     if not subject

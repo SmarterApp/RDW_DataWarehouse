@@ -43,6 +43,8 @@ def generate(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT, coo
     :param timeout:  subprocess call timeout value
     :param cookie_name:  the name of the cookie being passed into http request
     :param grayscale: whether to generate pdf in grayscale
+
+    NB! celery.task misbehaves so this doc will not go to apidocs. Please modify manually in rst
     '''
     force_regenerate = False
     try:
@@ -90,6 +92,8 @@ def get(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT, cookie_n
     :param cookie_name:  the name of the cookie being passed into http request
     :param grayscale: whether to generate pdf in grayscale
     :param always_generate: whether to always generate pdf instead of checking file system first
+
+    NB! celery.task misbehaves so this doc will not go to apidocs. Please modify manually in rst
     '''
     if always_generate or not os.path.exists(outputfile):
         # always delete it first in case of regeneration error

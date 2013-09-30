@@ -30,6 +30,6 @@ Subpackages
 
 .. toctree::
 
-    services.pdf
+    services.tasks
     services.tests
 

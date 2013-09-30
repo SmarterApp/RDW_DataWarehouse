@@ -97,10 +97,12 @@ def get_pdf_content(params):
 
     # check for gray scale request
     is_grayscale = bool(params.get('grayscale', 'false').lower() == 'true')
+    # read language
+    lang = params.get('lang', 'en').lower()
 
     # get isr file path name
     pdf_base_dir = pyramid.threadlocal.get_current_registry().settings.get('pdf.report_base_dir', "/tmp")
-    file_name = generate_isr_report_path_by_student_guid(pdf_report_base_dir=pdf_base_dir, student_guid=student_guid, asmt_type=AssessmentType.SUMMATIVE, grayScale=is_grayscale)
+    file_name = generate_isr_report_path_by_student_guid(pdf_report_base_dir=pdf_base_dir, student_guid=student_guid, asmt_type=AssessmentType.SUMMATIVE, grayScale=is_grayscale, lang=lang)
 
     # get current session cookie and request for pdf
     (cookie_name, cookie_value) = get_session_cookie()

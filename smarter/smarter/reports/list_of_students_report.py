@@ -63,6 +63,7 @@ PARAMS = merge_dict({
 @report_config(
     name=REPORT_NAME + '_csv',
     params=PARAMS)
+@audit_event()
 def get_list_of_students_extract_report(params):
     '''
     CSV version of list of student

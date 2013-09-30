@@ -95,8 +95,9 @@ define [
     createGrid: () ->
       # set school name as the page title from breadcrumb
       $("#school_name").html this.contextData.items[2].name
-      # populate select view
-      this.createDropdown()
+      # populate select view, only create the dropdown when it doesn't exit
+      if not this.asmtTypeDropdown
+        this.createDropdown()
       this.renderGrid this.asmtTypeDropdown.getAsmtType(), this.asmtTypeDropdown.getCurrentView()
       
     fetchData: (params) ->

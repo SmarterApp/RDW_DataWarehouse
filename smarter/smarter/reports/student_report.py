@@ -203,9 +203,6 @@ def get_student_report(params):
         result = __arrange_results(result, subjects_map, custom_metadata_map)
 
         result['context'] = context
-        result['distribution_state'] = get_summary_distribution(first_student['state_code'])
-        result['distribution_district'] = get_summary_distribution(first_student['state_code'], first_student['district_guid'])
-        result['distribution_school'] = get_summary_distribution(first_student['state_code'], first_student['district_guid'], first_student['school_guid'])
     return result
 
 

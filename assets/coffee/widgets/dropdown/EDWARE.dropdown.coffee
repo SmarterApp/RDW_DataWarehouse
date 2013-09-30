@@ -88,6 +88,9 @@ define [
           #cache generated dropdown menu
           this.menus[subject] = menu
           $(this.dropdownSection).append menu
+        else
+          # append an empty div as a placeholder for a dropdown that shouldn't be rendered
+          $(this.dropdownSection).append '<div class="dropdown clearfix"></div>'
           
     hasData: (subject) ->
       this.summaryData.results and this.summaryData.results[subject] and this.summaryData.results[subject].total != -1

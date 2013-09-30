@@ -67,14 +67,6 @@ class TestStudentReport(Unittest_with_smarter_sqlite):
         self.assertEqual('ELA', result[2]['asmt_subject'], 'asmt_subject Math')
         self.assertEqual('Math', result[3]['asmt_subject'], 'asmt_subject Math')
 
-    def test_distribution(self):
-        params = {"studentGuid": 'dae1acf4-afb0-4013-90ba-9dcde4b25621'}
-        result = get_student_report(params)
-
-        self.assertEqual(59, len(result["distribution_state"]), 'must have 59 distribution buckets for state')
-        self.assertEqual(45, len(result["distribution_district"]), 'must have distribution 45 buckets for district')
-        self.assertEqual(34, len(result["distribution_school"]), 'must have 34 distribution buckets for school')
-
     def test_assessment_header_info(self):
         params = {"studentGuid": 'dae1acf4-afb0-4013-90ba-9dcde4b25621'}
         result = get_student_report(params)['items']

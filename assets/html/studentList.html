@@ -12,7 +12,11 @@
     <body style="overflow-y: hidden;">
 	<div id="header"></div>
 	<div id="breadcrumb"></div>
-	<div id="content" class="losWrapper">
+	<div id="footer"></div>
+    </body>
+
+	<script type="text/template" id="edwareLOSBody">
+		<div id="content" class="losWrapper">
 	    <div class="filter_label pull-right">{{labels.filter}}<span class="caret"></span></div>
 	    <div class="verticalBar pull-right"></div>
 	    <div id="select_measure">
@@ -33,8 +37,7 @@
 	        <table id="gridTable"></table>
 	    </div>
 	</div>
-	<div id="footer"></div>
-    </body>
+	</script>
 
     <script type="text/template" id="edwareLOSHeaderConfidenceLevelBarTemplate">
      <div class='progress' style='width: {{bar_width}}px;'>

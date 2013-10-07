@@ -26,7 +26,7 @@ from preetl.pre_etl import pre_etl_job
 # DATAFILES = os.path.join(ROOT_DIRECTORY, 'datafiles')
 
 
-def start_pipeline(csv_file_path, json_file_path, udl2_conf, load_type='Assessment', **kwargs):
+def start_pipeline(csv_file_path, json_file_path, udl2_conf, load_type='Assessment', file_parts=4, **kwargs):
     '''
     Begins the UDL Pipeline process by copying the file found at 'csv_file_path' to the landing zone arrivals dir and
     initiating our main pipeline chain.
@@ -67,7 +67,7 @@ def start_pipeline(csv_file_path, json_file_path, udl2_conf, load_type='Assessme
     expander_msg = extend_file_expander_msg_temp(expander_msg, json_file_path, csv_file_path)
 
     simple_file_validator_msg = generate_file_validator_msg(lzw, common_msg)
-    splitter_msg = generate_splitter_msg(lzw, common_msg)
+    splitter_msg = generate_splitter_msg(lzw, common_msg, file_parts)
     file_content_validator_msg = generate_file_content_validator_msg(common_msg)
     load_json_msg = generate_load_json_msg(lzw, common_msg)
     load_to_int_msg = generate_load_to_int_msg(common_msg)
@@ -129,11 +129,11 @@ def generate_file_validator_msg(landing_zone_work_dir, common_message):
     return combine_messages(common_message, msg)
 
 
-def generate_splitter_msg(lzw, common_message):
+def generate_splitter_msg(lzw, common_message, file_parts):
     msg = {
         mk.LANDING_ZONE_WORK_DIR: lzw,
         # TODO: remove hard-coded 4
-        mk.PARTS: 4
+        mk.PARTS: file_parts
     }
     return combine_messages(common_message, msg)
 
@@ -212,6 +212,7 @@ if __name__ == '__main__':
     parser.add_argument('-j', dest='source_json', required=True, help="path to the source json file.")
     parser.add_argument('-t', dest='apply_transformation_rules', default='True', help="apply transformation rules or not")
     parser.add_argument('-f', dest='config_file', default=UDL2_DEFAULT_CONFIG_PATH_FILE, help="configuration file for UDL2")
+    parser.add_argument('-p', dest='file_parts', default=4, type=int, help="The number or parts that the given csv file should be split into. Default=4")
     args = parser.parse_args()
 
     if args.config_file is None:
@@ -220,4 +221,4 @@ if __name__ == '__main__':
         config_path_file = args.config_file
     udl2_conf = imp.load_source('udl2_conf', config_path_file)
     from udl2_conf import udl2_conf
-    start_pipeline(args.source_csv, args.source_json, udl2_conf)
+    start_pipeline(args.source_csv, args.source_json, udl2_conf, file_parts=args.file_parts)

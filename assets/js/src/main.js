@@ -31,6 +31,7 @@ require({
         edwareSessionStorage: '../widgets/clientStorage/EDWARE.sessionStorage',
         edwareLanguageSelector: '../widgets/languageSelector/EDWARE.languageSelector',
         edwareLanguage: '../widgets/languageSelector/EDWARE.language',
+        edwareGridStickyCompare: '../widgets/grid/EDWARE.grid.stickyCompare',
 
 		// Templates
 		edwareBreadcrumbsTemplate: '../widgets/breadcrumb/template.html',

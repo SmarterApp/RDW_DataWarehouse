@@ -44,8 +44,42 @@
   
 #gbox_gridTable { overflow: hidden; margin-bottom: 40px;}
 table { border-collapse: separate; }
-table td .progress {
-  margin-bottom: 0;
+table td {
+  .progress {
+    margin-bottom: 0;
+  }
+  
+  // Sticky Comparison related
+  .stickyCompareLabel {
+    display: inline-block;
+    margin-left: 5px;
+    font-size: 11px;
+    color: @color-B1;
+  }
+  
+  .stickyCompareLabelChecked {
+    display: inline-block;
+    margin-left: 5px;
+    font-size: 11px;
+    color: @color-A2;
+  }
+  
+  .stickyRemoveLabel {
+    font-size: 11px;
+    color: @color-B1;
+    display: inline-block;
+    margin-left: 3px;
+    vertical-align: middle; 
+  }
+  .removeIcon {
+    background-image: url("../images/filter_clearbuttons.png");
+    background-position: -14px 0;
+    background-repeat: no-repeat;
+    width: 13px;
+    height: 12px;
+    cursor: pointer;
+    display: inline-block;
+  }
 }
 .ui-widget { font-family: arial; }
 .ui-jqgrid tr.jqgrow td.bold { font-weight: bold; }

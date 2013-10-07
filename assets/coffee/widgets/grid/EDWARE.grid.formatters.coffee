@@ -35,11 +35,37 @@ define [
         i++
       if options.colModel.formatoptions.id_name is "asmtGrade"
          "<a class="+cssClass+" href=\"" + link + "?" + params + "\">" + $.jgrid.htmlEncode("Grade " + value) + "</a>"
+      else if options.colModel.formatoptions.id_name in ["districtGuid", "schoolGuid"]
+        "<div class='marginLeft20'><input class='marginLeft20 stickyCheckbox' type='checkbox' value=\"" + rowObject.id + "\" data-value=\"" + rowObject.id + "\"></input><label class='stickyCompareLabel'>Compare</label></div><a class="+cssClass+" href=\"" + link + "?" + params + "\">" + $.jgrid.htmlEncode(value) + "</a>"
       else
         "<a class="+cssClass+" href=\"" + link + "?" + params + "\">" + $.jgrid.htmlEncode(value) + "</a>"
+
     else
-      "<div class="+cssClass+"><span class=summarySubtitle>" + rowObject.subtitle + ":</span><br/><span class='summaryTitle'>"+value+"</span></div>"
-  
+      # This is for summary row (grid footer)
+      "<div class="+cssClass+"><span class=summarySubtitle>" + rowObject.subtitle + ":</span><br/><span class='summaryTitle'>"+value+"</span></div><span><button id='stickyCompare' class='btn btn-mini' type='button'>Compare</button><button id='stickyDeselectAllRows' class='btn btn-mini' type='button'>Deselect All</button></span>"
+
+  showlinkWithFilteredRows = (value, options, rowObject) ->
+    # Used when sticky comparison is enabled
+    link = options.colModel.formatoptions.linkUrl
+    cssClass = options.colModel.formatoptions.style
+    unless rowObject.header
+      params = ""
+      i = 0 
+      for k, v of rowObject.params
+        if (i != 0)
+          params = params + "&"
+        if k == "id"
+          k = options.colModel.formatoptions.id_name
+        params = params + k + "=" + v
+        i++
+      if options.colModel.formatoptions.id_name is "asmtGrade"
+         "<a class="+cssClass+" href=\"" + link + "?" + params + "\">" + $.jgrid.htmlEncode("Grade " + value) + "</a>"
+      else
+        "<div class='removeIcon marginLeft20 stickyCompareRemove' value=\"" + rowObject.id + "\" data-value=\"" + rowObject.id + "\"></div><label class='stickyRemoveLabel'>Remove</label><a class="+cssClass+" href=\"" + link + "?" + params + "\">" + $.jgrid.htmlEncode(value) + "</a>"
+    else
+      # This is for summary row (grid footer)
+      "<div class="+cssClass+"><span class=summarySubtitle>" + rowObject.subtitle + ":</span><br/><span class='summaryTitle'>"+value+"</span></div><button id='stickyShowAll' class='btn btn-mini' type='button'>Show All Districts</button>"
+ 
   showOverallConfidence = (value, options, rowObject) ->
     names = options.colModel.name.split "."
     subject = rowObject[names[0]][names[1]]
@@ -108,6 +134,7 @@ define [
     subject
 
   showlink: showlink
+  showlinkWithFilteredRows: showlinkWithFilteredRows
   showOverallConfidence: showOverallConfidence
   showConfidence: showConfidence
   performanceBar: performanceBar

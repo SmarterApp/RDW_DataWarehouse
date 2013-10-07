@@ -15,7 +15,8 @@ define [
   "edwareHeader"
   "edwareDropdown"
   "edwareLanguage"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwareDropdown, i18n) ->
+  "edwareGridStickyCompare"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwareDropdown, i18n, edwareGridStickyCompare) ->
 
   REPORT_NAME = "comparingPopulationsReport"
 
@@ -40,6 +41,7 @@ define [
       firstColumn.options.linkUrl = customView.link
       firstColumn.options.id_name = customView.id_name
       firstColumn.sorttype = "int" if customView.name is "Grade"
+      firstColumn.formatter = customView.formatter
       this
 
     build: ()->
@@ -81,6 +83,7 @@ define [
     reload: (@param) ->
       # initialize variables
       this.reportType = this.getReportType(param)
+      this.stickyCompare = new edwareGridStickyCompare.EdwareGridStickyCompare this.reportType, param, this.renderGrid.bind(this)
       data = this.fetchData param
       this.data = data
       this.populationData = this.data.records
@@ -139,26 +142,40 @@ define [
       self = this
       $('#gridTable').on AFTER_GRID_LOAD_COMPLETE, ()->
         self.afterGridLoadComplete()
-      self.afterGridLoadComplete()
 
     afterGridLoadComplete: () ->
       this.bindEvents()
+      # Rebind events and reset sticky comparison
+      this.stickyCompare.reset()
       this.alignment.update()
       # Save the current sorting column and order to apply after filtering
       this.sort = $.extend this.sort, {
         order: $('#gridTable').getGridParam('sortorder')
         name: $('#gridTable').getGridParam('sortname')
       }
-      
+    
     renderGrid: () ->
       $('#gridTable').jqGrid('GridUnload')
+      # Filter out selected rows, if any
+      gridData = [] 
+      selectedRows = this.stickyCompare.getSelectedRows()
+      if selectedRows.length > 0
+        this.customViews[this.reportType]['formatter'] = 'showlinkWithFilteredRows'
+        for data in this.populationData
+          if data.id in selectedRows
+            gridData.push data
+      else
+        this.customViews[this.reportType]['formatter'] = 'showlink'
+        gridData = this.populationData
+
       # Change the column name and link url based on the type of report the user is querying for
       gridConfig = new ConfigBuilder(this.configTemplate, this.asmtSubjectsData)
                              .customize(this.customViews[this.reportType])
                              .build()
+      
       # Create compare population grid for State/District/School view
       edwareGrid.create {
-        data: this.populationData
+        data: gridData
         columns: gridConfig
         footer: this.summaryData
         options:
@@ -166,7 +183,10 @@ define [
           labels: this.labels
       }
       this.sortBySubject this.sort
+      
       # Display grid controls after grid renders
+      # TODO: We might need to ensure grid is completely loaded
+      this.afterGridLoadComplete()
       $(".gridControls").show()
 
     renderBreadcrumbs: (breadcrumbsData)->

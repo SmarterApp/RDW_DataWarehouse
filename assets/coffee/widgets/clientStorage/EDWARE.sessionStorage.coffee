@@ -55,4 +55,5 @@ define [
   ###
   filterStorage: new EdwareSessionStorage('edware.filter.params')
   i18nStorage: new EdwareSessionStorage('edware.iso.language')
+  stickyCompStorage: new EdwareSessionStorage('edware.sticky.comparison')
   clearAll: clearAll

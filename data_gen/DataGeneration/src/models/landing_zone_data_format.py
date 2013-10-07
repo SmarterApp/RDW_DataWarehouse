@@ -15,7 +15,7 @@ from DataGeneration.src.writers.write_to_csv import create_csv, prepare_csv_file
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 JSONFILE = os.path.join(__location__, '..', '..', 'datafiles', 'mappings.json')
 
-LANDING_ZONE_FILE_PATTERN = 'REALDATA_DATA_ASMT_ID_{0}.csv'
+LANDING_ZONE_FILE_PATTERN = 'REALDATA_ASMT_ID_{0}.csv'
 LANDING_ZONE_SINGLE_FILE = 'REALDATA_RECORDS.csv'
 JSON_PATTERN = 'METADATA_ASMT_ID_{0}.json'
 IDENTIFICATION = 'identification'

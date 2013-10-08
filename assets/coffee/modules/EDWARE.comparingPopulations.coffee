@@ -83,24 +83,25 @@ define [
     reload: (@param) ->
       # initialize variables
       this.reportType = this.getReportType(param)
-      data = this.fetchData param
-      this.data = data
-      this.populationData = this.data.records
-      this.summaryData = this.data.summary
-      this.asmtSubjectsData = this.data.subjects
-      this.notStatedData = this.data.not_stated
-      #Check for colors, set to default color if it's null
-      for subject, value of this.data.metadata
-        if value is null
-          this.data.metadata[subject] = this.defaultColors
+      self = this
+      this.fetchData param, (data)->
+        self.data = data
+        self.populationData = self.data.records
+        self.summaryData = self.data.summary
+        self.asmtSubjectsData = self.data.subjects
+        self.notStatedData = self.data.not_stated
+        #Check for colors, set to default color if it's null
+        for subject, value of self.data.metadata
+          if value is null
+            self.data.metadata[subject] = self.defaultColors
 
-      # process breadcrumbs
-      this.renderBreadcrumbs(data.context)
-      this.stickyCompare.setReportInfo this.reportType, this.breadcrumbs.getOrgType(), this.breadcrumbs.getDisplayType(), param
-      this.createGrid()
-      this.updateDropdown()
-      this.updateFilter()
-      this.createHeaderAndFooter()
+        # process breadcrumbs
+        self.renderBreadcrumbs(data.context)
+        this.stickyCompare.setReportInfo this.reportType, this.breadcrumbs.getOrgType(), this.breadcrumbs.getDisplayType(), param
+        self.createGrid()
+        self.updateDropdown()
+        self.updateFilter()
+        self.createHeaderAndFooter()
 
     updateFilter: ()->
       this.filter.update this.notStatedData
@@ -109,17 +110,15 @@ define [
       this.footer = edwareFooter.create('comparing_populations', this.data.metadata, this.config) unless this.footer
       this.header = edwareHeader.create(this.data, this.config, "comparing_populations_" + this.reportType) unless this.header
 
-    fetchData: (params)->
+    fetchData: (params, callback)->
       # Determine if the report is state, district or school view"
       options =
-        async: false
+        async: true
         method: "POST"
         params: params
       
       studentsData = undefined
-      edwareDataProxy.getDatafromSource "/data/comparing_populations", options, (data)->
-        studentsData = data
-      studentsData
+      edwareDataProxy.getDatafromSource "/data/comparing_populations", options, callback
 
     # Based on query parameters, return the type of report that the user is requesting for
     getReportType: (params) ->
@@ -182,9 +181,8 @@ define [
           gridHeight: this.gridHeight
           labels: this.labels
           stickyCompareEnabled: stickyCompareEnabled
+          sort: this.sort
       }
-      this.sortBySubject this.sort
-      
       # Display grid controls after grid renders
       # TODO: We might need to ensure grid is completely loaded
       this.afterGridLoadComplete()

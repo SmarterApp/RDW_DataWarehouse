@@ -1,9 +1,11 @@
 from __future__ import absolute_import
+import os
+
 from udl2.celery import celery
 from celery.utils.log import get_task_logger
 from udl2_util import file_util
+from fileexpander.file_expander import expand_file
 import udl2.message_keys as mk
-import os
 
 __author__ = 'abrien'
 
@@ -26,10 +28,11 @@ def task(incoming_msg):
     expanded_dir = file_util.get_expanded_dir(lzw, guid_batch)
     print('before create_directory', expanded_dir)
     file_util.create_directory(expanded_dir)
-    unpacked_json_file = unpack_json_file(file_to_expand, expanded_dir, incoming_msg[mk.JSON_FILENAME])
-    unpacked_csv_file = unpack_csv_file(file_to_expand, expanded_dir, incoming_msg[mk.CSV_FILENAME])
+    #unpacked_json_file = unpack_json_file(file_to_expand, expanded_dir, incoming_msg[mk.JSON_FILENAME])
+    #unpacked_csv_file = unpack_csv_file(file_to_expand, expanded_dir, incoming_msg[mk.CSV_FILENAME])
+    expanded_file = expand_file(file_to_expand, expanded_dir)
 
-    logger.info('W_FILE_EXPANDER: expanded file <%s> with guid_batch = <%s> to <%s> and <%s>' % (file_to_expand, guid_batch, unpacked_csv_file, unpacked_json_file))
+    logger.info('W_FILE_EXPANDER: expanded file <%s> with guid_batch = <%s> to <%s> and <%s>' % (file_to_expand, guid_batch, expanded_file, expanded_file))
 
 
 def unpack_json_file(file_to_expand, expanded_dir, json_filepath):

@@ -69,7 +69,7 @@ def add_data_to_history_table(connect_db, history_id, cpu_info, last_UDL_run_dat
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Create New Schema for EdWare')
-    parser.add_argument("-s", "--schema", default="udl_ benchmark", help="set schema name default[udl_benchmark]")
+    parser.add_argument("-s", "--schema", default="udl_benchmark", help="set schema name default[udl_benchmark]")
     parser.add_argument("-d", "--database", default="udl_benchmark", help="set database name default[udl_benchmark]")
     parser.add_argument("--host", default="127.0.0.1", help="postgre host default[127.0.0.1]")
     parser.add_argument("--port", default='5432', help="default port[5432")

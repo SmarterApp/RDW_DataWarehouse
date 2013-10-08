@@ -48,9 +48,9 @@ define [
       else if options.colModel.formatoptions.id_name in ["districtGuid", "schoolGuid"]
         if not options.colModel.stickyCompareEnabled
           # sticky comparison is not activated, show checkbox
-          "<div class='marginLeft20'><input class='stickyCheckbox' type='checkbox' value=\"" + rowObject.id + "\" data-value=\"" + rowObject.id + "\"></input><label class='stickyCompareLabel'>Compare</label></div><a class="+cssClass+" href=\"" + link + "?" + params + "\">" + displayValue + "</a>"
+          "<div class='marginLeft20 paddingBottom17'><input class='stickyCheckbox' type='checkbox' value=\"" + rowObject.id + "\" data-value=\"" + rowObject.id + "\"></input><label class='stickyCompareLabel'>Compare</label></div><a class="+cssClass+" href=\"" + link + "?" + params + "\">" + displayValue + "</a>"
         else
-          "<div class='removeIcon marginLeft20 stickyCompareRemove' value=\"" + rowObject.id + "\" data-value=\"" + rowObject.id + "\"></div><label class='stickyRemoveLabel'>Remove</label><a class="+cssClass+" href=\"" + link + "?" + params + "\">" + displayValue + "</a>"
+          "<div class='marginLeft20 paddingBottom17'><div class='removeIcon stickyCompareRemove' value=\"" + rowObject.id + "\" data-value=\"" + rowObject.id + "\"></div><label class='stickyRemoveLabel'>Remove</label></div><a class="+cssClass+" href=\"" + link + "?" + params + "\">" + displayValue + "</a>"
       else
         "<a class="+cssClass+" href=\"" + link + "?" + params + "\">" + displayValue + "</a>"
     else

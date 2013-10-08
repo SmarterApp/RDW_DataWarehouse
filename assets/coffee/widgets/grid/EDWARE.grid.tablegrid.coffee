@@ -100,6 +100,7 @@ define [
       colModelItem.title = column.title
       colModelItem.classes = column.style if column.style
       colModelItem.frozen = column.frozen if column.frozen
+      colModelItem.stickyCompareEnabled = this.options.stickyCompareEnabled
 
       #Hide column if the value is true
       if column.hide

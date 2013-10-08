@@ -23,6 +23,16 @@ define [
   showlink = (value, options, rowObject) ->
     link = options.colModel.formatoptions.linkUrl
     cssClass = options.colModel.formatoptions.style
+    displayValue = value
+    if options.colModel.formatoptions.id_name is "asmtGrade"
+      displayValue = "Grade " + value
+    displayValue = $.jgrid.htmlEncode(displayValue)
+    
+    # Set cell value tooltip
+    options.colModel.cellattr = (rowId, val, rawObject, cm, rdata) ->
+      'title="' + displayValue + '"'
+    
+    # Build url query param
     unless rowObject.header
       params = ""
       i = 0 
@@ -34,38 +44,19 @@ define [
         params = params + k + "=" + v
         i++
       if options.colModel.formatoptions.id_name is "asmtGrade"
-         "<a class="+cssClass+" href=\"" + link + "?" + params + "\">" + $.jgrid.htmlEncode("Grade " + value) + "</a>"
+         "<a class="+cssClass+" href=\"" + link + "?" + params + "\">" + displayValue + "</a>"
       else if options.colModel.formatoptions.id_name in ["districtGuid", "schoolGuid"]
-        "<div class='marginLeft20'><input class='marginLeft20 stickyCheckbox' type='checkbox' value=\"" + rowObject.id + "\" data-value=\"" + rowObject.id + "\"></input><label class='stickyCompareLabel'>Compare</label></div><a class="+cssClass+" href=\"" + link + "?" + params + "\">" + $.jgrid.htmlEncode(value) + "</a>"
+        if not options.colModel.stickyCompareEnabled
+          # sticky comparison is not activated, show checkbox
+          "<div class='marginLeft20'><input class='stickyCheckbox' type='checkbox' value=\"" + rowObject.id + "\" data-value=\"" + rowObject.id + "\"></input><label class='stickyCompareLabel'>Compare</label></div><a class="+cssClass+" href=\"" + link + "?" + params + "\">" + displayValue + "</a>"
+        else
+          "<div class='removeIcon marginLeft20 stickyCompareRemove' value=\"" + rowObject.id + "\" data-value=\"" + rowObject.id + "\"></div><label class='stickyRemoveLabel'>Remove</label><a class="+cssClass+" href=\"" + link + "?" + params + "\">" + displayValue + "</a>"
       else
-        "<a class="+cssClass+" href=\"" + link + "?" + params + "\">" + $.jgrid.htmlEncode(value) + "</a>"
-
+        "<a class="+cssClass+" href=\"" + link + "?" + params + "\">" + displayValue + "</a>"
     else
       # This is for summary row (grid footer)
       "<div class="+cssClass+"><span class=summarySubtitle>" + rowObject.subtitle + ":</span><br/><span class='summaryTitle'>"+value+"</span></div>"
 
-  showlinkWithFilteredRows = (value, options, rowObject) ->
-    # Used when sticky comparison is enabled
-    link = options.colModel.formatoptions.linkUrl
-    cssClass = options.colModel.formatoptions.style
-    unless rowObject.header
-      params = ""
-      i = 0 
-      for k, v of rowObject.params
-        if (i != 0)
-          params = params + "&"
-        if k == "id"
-          k = options.colModel.formatoptions.id_name
-        params = params + k + "=" + v
-        i++
-      if options.colModel.formatoptions.id_name is "asmtGrade"
-         "<a class="+cssClass+" href=\"" + link + "?" + params + "\">" + $.jgrid.htmlEncode("Grade " + value) + "</a>"
-      else
-        "<div class='removeIcon marginLeft20 stickyCompareRemove' value=\"" + rowObject.id + "\" data-value=\"" + rowObject.id + "\"></div><label class='stickyRemoveLabel'>Remove</label><a class="+cssClass+" href=\"" + link + "?" + params + "\">" + $.jgrid.htmlEncode(value) + "</a>"
-    else
-      # This is for summary row (grid footer)
-      "<div class="+cssClass+"><span class=summarySubtitle>" + rowObject.subtitle + ":</span><br/><span class='summaryTitle'>"+value+"</span></div>"
- 
   showOverallConfidence = (value, options, rowObject) ->
     names = options.colModel.name.split "."
     subject = rowObject[names[0]][names[1]]
@@ -134,7 +125,6 @@ define [
     subject
 
   showlink: showlink
-  showlinkWithFilteredRows: showlinkWithFilteredRows
   showOverallConfidence: showOverallConfidence
   showConfidence: showConfidence
   performanceBar: performanceBar

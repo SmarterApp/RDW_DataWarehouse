@@ -41,7 +41,6 @@ define [
       firstColumn.options.linkUrl = customView.link
       firstColumn.options.id_name = customView.id_name
       firstColumn.sorttype = "int" if customView.name is "Grade"
-      firstColumn.formatter = customView.formatter
       this
 
     build: ()->
@@ -159,13 +158,13 @@ define [
       # Filter out selected rows, if any
       gridData = [] 
       selectedRows = this.stickyCompare.getSelectedRows()
+      stickyCompareEnabled = false
       if selectedRows.length > 0
-        this.customViews[this.reportType]['formatter'] = 'showlinkWithFilteredRows'
+        stickyCompareEnabled = true
         for data in this.populationData
           if data.id in selectedRows
             gridData.push data
       else
-        this.customViews[this.reportType]['formatter'] = 'showlink'
         gridData = this.populationData
 
       # Change the column name and link url based on the type of report the user is querying for
@@ -181,6 +180,7 @@ define [
         options:
           gridHeight: this.gridHeight
           labels: this.labels
+          stickyCompareEnabled: stickyCompareEnabled
       }
       this.sortBySubject this.sort
       

@@ -33,7 +33,7 @@ define [
       $(document).on 'click', '.stickyCheckbox', () ->
         self.resetCompareRowControls()
         if not $(this).is(':checked')
-          $(this).siblings("label").text(self.displayText)
+          $(this).siblings("label").text("Compare")
           $(this).siblings("label").removeClass "stickyCompareLabelChecked"
           $(this).siblings("label").addClass "stickyCompareLabel"
         else

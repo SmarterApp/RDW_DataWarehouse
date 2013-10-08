@@ -8,15 +8,18 @@ define [
   
   class EdwareGridStickyCompare
     
-    constructor: (@reportType, @orgName, @displayType, @params, @callback) ->
+    constructor: (@callback) ->
       this.initialize()
+      this
       
     initialize: () ->
       this.storage = edwareSessionStorage.stickyCompStorage
-      this.selectedRows = this.getSelectedRows()
       this.bindEvents()
       this.createButtonBar()
 
+    setReportInfo: (@reportType, @orgName, @displayType, @params) ->
+      this
+      
     update: () ->
       # show and hide appropriate buttons
       # Hide buttons based on whether any selection is already made

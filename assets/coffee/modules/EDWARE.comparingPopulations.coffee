@@ -71,6 +71,7 @@ define [
         order: 'asc'
         index: 0
       }
+      this.stickyCompare = new edwareStickyCompare.EdwareGridStickyCompare this.renderGrid.bind(this)
 
     setFilter: (filter) ->
       this.filter = filter
@@ -95,7 +96,7 @@ define [
 
       # process breadcrumbs
       this.renderBreadcrumbs(data.context)
-      this.stickyCompare = new edwareStickyCompare.EdwareGridStickyCompare this.reportType, this.breadcrumbs.getOrgType(), this.breadcrumbs.getDisplayType(), param, this.renderGrid.bind(this)
+      this.stickyCompare.setReportInfo this.reportType, this.breadcrumbs.getOrgType(), this.breadcrumbs.getDisplayType(), param
       this.createGrid()
       this.updateDropdown()
       this.updateFilter()

@@ -15,7 +15,8 @@ define [
       height: "auto"
       viewrecords: true
       autoencode: true
-      rowNum: 10000
+      rowNum: 100
+      scroll: true
       gridview: true
       shrinkToFit: false
       defaultWidth: 980

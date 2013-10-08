@@ -22,8 +22,6 @@ define [
 
   POPULATION_BAR_WIDTH = 145
 
-  AFTER_GRID_LOAD_COMPLETE = 'jqGridLoadComplete.jqGrid'
-
   class ConfigBuilder
     ### Grid configuration builder. ###
     
@@ -138,9 +136,6 @@ define [
       summaryData = preprocessor.process(this.summaryData)
       this.summaryData = this.formatSummaryData summaryData
       this.renderGrid()
-      self = this
-      $('#gridTable').on AFTER_GRID_LOAD_COMPLETE, ()->
-        self.afterGridLoadComplete()
 
     afterGridLoadComplete: () ->
       this.bindEvents()
@@ -171,7 +166,8 @@ define [
       gridConfig = new ConfigBuilder(this.configTemplate, this.asmtSubjectsData)
                              .customize(this.customViews[this.reportType])
                              .build()
-      
+
+      self = this
       # Create compare population grid for State/District/School view
       edwareGrid.create {
         data: gridData
@@ -182,10 +178,11 @@ define [
           labels: this.labels
           stickyCompareEnabled: stickyCompareEnabled
           sort: this.sort
+          gridComplete: () ->
+            self.afterGridLoadComplete()
       }
-      # Display grid controls after grid renders
-      # TODO: We might need to ensure grid is completely loaded
       this.afterGridLoadComplete()
+      # Display grid controls after grid renders
       $(".gridControls").show()
 
     renderBreadcrumbs: (breadcrumbsData)->

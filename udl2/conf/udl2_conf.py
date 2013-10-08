@@ -96,6 +96,7 @@ udl2_conf = {
         'db_driver': 'postgresql'
     },
     'quiet_mode': False,
+    'gpg_home': '/to/be/decided',
 }
 
 

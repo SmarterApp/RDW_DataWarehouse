@@ -35,7 +35,6 @@ def __print_status(status):
     print('ok: ', status.ok)
     print('status: ', status.status)
     print('stderr: ', status.stderr)
-
     if(status.ok):
         print('SUCCESS')
         print('signer: ', status.username)
@@ -48,15 +47,13 @@ def __print_status(status):
         print('FAILED')
 
 
-def __decrypt_file_contents(file_to_decrypt, destination_dir, passphrase, gpg_home):
+def __decrypt_file_contents(file_to_decrypt, output_file, passphrase, gpg_home):
     '''
     verify signature, decrypt and write the decrypted file to the destination directory
     '''
-    output_file = destination_dir + '/' + os.path.splitext(os.path.basename(file_to_decrypt))[0]
     gpg = gnupg.GPG(gnupghome=gpg_home)
     with open(file_to_decrypt, 'rb') as f:
         status = gpg.decrypt_file(f, passphrase=passphrase, output=output_file)
-
     return status
 
 
@@ -67,9 +64,16 @@ def decrypt_file(file_to_decrypt, destination_dir, passphrase, gpg_home):
     if not __is_valid__file(file_to_decrypt):
         raise Exception('Invalid source file -- %s' % file_to_decrypt)
 
-    status = __decrypt_file_contents(file_to_decrypt, destination_dir, passphrase, gpg_home)
+    output_file = destination_dir + '/' + os.path.splitext(os.path.basename(file_to_decrypt))[0]
+    status = __decrypt_file_contents(file_to_decrypt, output_file, passphrase, gpg_home)
+
     __print_status(status)
-    return 1
+
+    if not status.ok:
+        raise Exception('Decryption Failed')
+    if status.trust_level is None or status.trust_level < 4:
+        raise Exception('Verification Failed. Signature not trusted')
+    return output_file
 
 
 if __name__ == "__main__":

@@ -107,18 +107,22 @@ define [
     # Reset Grid rows checkbox and button text
     resetCompareRowControls: () ->
       count = $('.stickyCheckbox:checked').length
-      text =  "Compare"
+      this.updateDisplayText(count)
       if count > 0
-        text  += " " + count + " " + this.displayType
         this.showCompareSelectedButtons()
-        if count > 1
-          text += "s"
       else
         # Hide all buttons
         this.hideCompareSection()
-      $('.stickyCheckbox:checked').siblings("label").text(text)
-      $('#stickyCompare-btn').text(text)
-    
+      $('.stickyCheckbox:checked').siblings("label").text(this.displayText)
+      $('#stickyCompare-btn').text(this.displayText)
+
+    updateDisplayText: (count) ->
+      this.displayText = "Compare"
+      if count > 0
+        this.displayText  += " " + count + " " + this.displayType
+        if count > 1
+          this.displayText += "s"
+
     createButtonBar: () ->
       output = Mustache.to_html edwareStickyCompareTemplate, {}
       $('#stickyCompareSection').html output

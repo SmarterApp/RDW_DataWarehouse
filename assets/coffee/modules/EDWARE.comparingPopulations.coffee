@@ -14,9 +14,8 @@ define [
   "edwareFooter"
   "edwareHeader"
   "edwareDropdown"
-  "edwareLanguage"
   "edwareGridStickyCompare"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwareDropdown, i18n, edwareStickyCompare) ->
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwareDropdown, edwareStickyCompare) ->
 
   REPORT_NAME = "comparingPopulationsReport"
 

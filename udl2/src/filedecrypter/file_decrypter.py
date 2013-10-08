@@ -9,8 +9,6 @@ import gnupg
 
 logger = logging.getLogger(__name__)
 
-gpg = gnupg.GPG(gnupghome='/Users/sravi/.gnupg')
-
 def __is_file_exists(file_to_decrypt):
     '''
     check if file exists and readable
@@ -49,25 +47,26 @@ def __print_status(status):
         print('FAILED')
 
 
-def __decrypt_file_contents(file_to_decrypt, destination_dir, passphrase):
+def __decrypt_file_contents(file_to_decrypt, destination_dir, passphrase, gpg_home):
     '''
     verify signature, decrypt and write the decrypted file to the destination directory
     '''
     output_file = destination_dir + '/' + os.path.splitext(os.path.basename(file_to_decrypt))[0]
+    gpg = gnupg.GPG(gnupghome=gpg_home)
     with open(file_to_decrypt, 'rb') as f:
         status = gpg.decrypt_file(f, passphrase=passphrase, output=output_file)
 
     return status
 
 
-def decrypt_file(file_to_decrypt, destination_dir, passphrase):
+def decrypt_file(file_to_decrypt, destination_dir, passphrase, gpg_home):
     '''
     Verify and Decrypt the file after needed validations
     '''
     if not __is_valid__file(file_to_decrypt):
         raise Exception('Invalid source file -- %s' % file_to_decrypt)
 
-    status = __decrypt_file_contents(file_to_decrypt, destination_dir, passphrase)
+    status = __decrypt_file_contents(file_to_decrypt, destination_dir, passphrase, gpg_home)
     __print_status(status)
     return 1
 
@@ -77,6 +76,7 @@ if __name__ == "__main__":
     parser.add_argument('-i', '--input', dest='file_to_decrypt', help='file_to_expand')
     parser.add_argument('-o', '--output', dest='destination_dir', default='.', help='output directory')
     parser.add_argument('-p', '--passphrase', dest='passphrase', default=None, help='passphrase to access private verifier key')
+    parser.add_argument('-gh', '--gpghome', dest='gpg_home', help='GPG Home directory for keys')
 
     args = parser.parse_args()
     print("Input file is: " + args.file_to_decrypt)
@@ -84,4 +84,4 @@ if __name__ == "__main__":
     if args.destination_dir:
         print("Decrypt files to: " + args.destination_dir)
 
-    decrypt_file(args.file_to_decrypt, args.destination_dir, args.passphrase)
+    decrypt_file(args.file_to_decrypt, args.destination_dir, args.passphrase, args.gpg_home)

@@ -82,15 +82,16 @@ define [
     create: () ->
       for subject in Object.keys(this.asmtSubjectsData).sort()
         asmtSubject = this.asmtSubjectsData[subject]
-        if this.hasSubject(subject) and not this.hasMenu(subject) and this.hasData(subject)
-          config = this.generateConfig(subject, asmtSubject)
-          menu = new EdwareDropdownMenu(this, config)
-          #cache generated dropdown menu
-          this.menus[subject] = menu
-          $(this.dropdownSection).append menu
-        else
-          # append an empty div as a placeholder for a dropdown that shouldn't be rendered
-          $(this.dropdownSection).append '<div class="dropdown clearfix"></div>'
+        if this.hasSubject(subject) and not this.hasMenu(subject)
+          if this.hasData(subject)
+            config = this.generateConfig(subject, asmtSubject)
+            menu = new EdwareDropdownMenu(this, config)
+            #cache generated dropdown menu
+            this.menus[subject] = menu
+            $(this.dropdownSection).append menu
+          else
+            # append an empty div as a placeholder for a dropdown that shouldn't be rendered
+            $(this.dropdownSection).append '<div class="dropdown clearfix"></div>'
           
     hasData: (subject) ->
       this.summaryData.results and this.summaryData.results[subject] and this.summaryData.results[subject].total != -1

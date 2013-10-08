@@ -15,13 +15,12 @@ define [
   "edwareHeader"
   "edwareDropdown"
   "edwareLanguage"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwareDropdown, i18n) ->
+  "edwareGridStickyCompare"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwareDropdown, i18n, edwareStickyCompare) ->
 
   REPORT_NAME = "comparingPopulationsReport"
 
   POPULATION_BAR_WIDTH = 145
-
-  AFTER_GRID_LOAD_COMPLETE = 'jqGridLoadComplete.jqGrid'
 
   class ConfigBuilder
     ### Grid configuration builder. ###
@@ -70,6 +69,7 @@ define [
         order: 'asc'
         index: 0
       }
+      this.stickyCompare = new edwareStickyCompare.EdwareGridStickyCompare this.renderGrid.bind(this)
 
     setFilter: (filter) ->
       this.filter = filter
@@ -95,6 +95,7 @@ define [
 
         # process breadcrumbs
         self.renderBreadcrumbs(data.context)
+        self.stickyCompare.setReportInfo self.reportType, self.breadcrumbs.getOrgType(), self.breadcrumbs.getDisplayType(), param
         self.createGrid()
         self.updateDropdown()
         self.updateFilter()
@@ -135,36 +136,52 @@ define [
       summaryData = preprocessor.process(this.summaryData)
       this.summaryData = this.formatSummaryData summaryData
       this.renderGrid()
-      self = this
-      $('#gridTable').on AFTER_GRID_LOAD_COMPLETE, ()->
-        self.afterGridLoadComplete()
-      self.afterGridLoadComplete()
 
     afterGridLoadComplete: () ->
       this.bindEvents()
+      # Rebind events and reset sticky comparison
+      this.stickyCompare.update()
       this.alignment.update()
       # Save the current sorting column and order to apply after filtering
       this.sort = $.extend this.sort, {
         order: $('#gridTable').getGridParam('sortorder')
         name: $('#gridTable').getGridParam('sortname')
       }
-      
+    
     renderGrid: () ->
       $('#gridTable').jqGrid('GridUnload')
+      # Filter out selected rows, if any
+      gridData = [] 
+      selectedRows = this.stickyCompare.getSelectedRows()
+      stickyCompareEnabled = false
+      if selectedRows.length > 0
+        stickyCompareEnabled = true
+        for data in this.populationData
+          if data.id in selectedRows
+            gridData.push data
+      else
+        gridData = this.populationData
+
       # Change the column name and link url based on the type of report the user is querying for
       gridConfig = new ConfigBuilder(this.configTemplate, this.asmtSubjectsData)
                              .customize(this.customViews[this.reportType])
                              .build()
+
+      self = this
       # Create compare population grid for State/District/School view
       edwareGrid.create {
-        data: this.populationData
+        data: gridData
         columns: gridConfig
         footer: this.summaryData
         options:
           gridHeight: this.gridHeight
           labels: this.labels
+          stickyCompareEnabled: stickyCompareEnabled
           sort: this.sort
+          gridComplete: () ->
+            self.afterGridLoadComplete()
       }
+      this.afterGridLoadComplete()
       # Display grid controls after grid renders
       $(".gridControls").show()
 
@@ -230,16 +247,28 @@ define [
     constructor: (@breadcrumbsData, @breadcrumbsConfigs, @reportType) ->
       # Render breadcrumbs on the page
       $('#breadcrumb').breadcrumbs(breadcrumbsData, breadcrumbsConfigs)
+      this.initialize()
+      
+    initialize: () ->
+      if this.reportType is 'state'
+        this.orgType = this.breadcrumbsData.items[0].name
+        this.displayType = "District"
+      else if this.reportType is 'district'
+        this.orgType = this.breadcrumbsData.items[1].name
+        this.displayType = "School"
+      else if this.reportType is 'school'
+        this.orgType = this.breadcrumbsData.items[2].name
+        this.displayType = "Grade"
+    
+    getOrgType: () ->
+      this.orgType
+    
+    getDisplayType: () ->
+      this.displayType
 
     getReportTitle: () ->
     # Returns report title based on the type of report
-      if this.reportType is 'state'
-        data = this.addApostropheS(this.breadcrumbsData.items[0].name) + ' Districts'
-      else if this.reportType is 'district'
-        data = this.addApostropheS(this.breadcrumbsData.items[1].name) + ' Schools'
-      else if this.reportType is 'school'
-        data = this.addApostropheS(this.breadcrumbsData.items[2].name) + ' Grades'
-      'Comparing '+ data + ' on Math & ELA'
+      'Comparing '+ this.addApostropheS(this.orgType) + ' ' + this.displayType + 's' + ' on Math & ELA'
 
     # Format the summary data for summary row purposes
     getOverallSummaryName: () ->

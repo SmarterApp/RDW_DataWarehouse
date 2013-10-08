@@ -31,6 +31,7 @@ require({
         edwareSessionStorage: '../widgets/clientStorage/EDWARE.sessionStorage',
         edwareLanguageSelector: '../widgets/languageSelector/EDWARE.languageSelector',
         edwareLanguage: '../widgets/languageSelector/EDWARE.language',
+        edwareGridStickyCompare: '../widgets/grid/EDWARE.grid.stickyCompare',
 
 		// Templates
 		edwareBreadcrumbsTemplate: '../widgets/breadcrumb/template.html',
@@ -46,7 +47,8 @@ require({
 		edwareHeaderHtml: '../widgets/header/header.html',
 		edwareFooterHtml: '../widgets/footer/template.html',
 		edwareFilterTemplate: '../widgets/filter/template.html',
-		edwareDropdownTemplate: '../widgets/dropdown/template.html'
+		edwareDropdownTemplate: '../widgets/dropdown/template.html',
+		edwareStickyCompareTemplate: '../widgets/grid/stickyCompare.template.html'
 
 	},
 	shim: {

@@ -73,12 +73,9 @@ define [
         self.updateSelection()
         
     getSelectedRows: () ->
-      # TODO more elegent way?
-      data = this.getDataFromStorage()[this.reportType]
-      if not data then data = {}
-      data = data[this.getOrgId()]
-      if not data then data = []
-      data
+      # Gets the rows selected for the current report view
+      data = this.getDataFromStorage()[this.reportType] || {}
+      data[this.getOrgId()] || []
 
     updateSelection: () ->
       this.saveSelectedRowsToStorage()

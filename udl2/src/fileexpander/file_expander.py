@@ -66,7 +66,7 @@ def expand_file(file_to_expand, expanded_dir):
     # the contents of the tar file will be validated as part of simple file validator
     __extract_tar_file_contents(file_to_expand, expanded_dir)
 
-    return 1
+    return expanded_dir
 
 
 if __name__ == "__main__":

@@ -42,7 +42,7 @@ define [
 
     else
       # This is for summary row (grid footer)
-      "<div class="+cssClass+"><span class=summarySubtitle>" + rowObject.subtitle + ":</span><br/><span class='summaryTitle'>"+value+"</span></div><span><button id='stickyCompare' class='btn btn-mini' type='button'>Compare</button><button id='stickyDeselectAllRows' class='btn btn-mini' type='button'>Deselect All</button></span>"
+      "<div class="+cssClass+"><span class=summarySubtitle>" + rowObject.subtitle + ":</span><br/><span class='summaryTitle'>"+value+"</span></div>"
 
   showlinkWithFilteredRows = (value, options, rowObject) ->
     # Used when sticky comparison is enabled
@@ -64,7 +64,7 @@ define [
         "<div class='removeIcon marginLeft20 stickyCompareRemove' value=\"" + rowObject.id + "\" data-value=\"" + rowObject.id + "\"></div><label class='stickyRemoveLabel'>Remove</label><a class="+cssClass+" href=\"" + link + "?" + params + "\">" + $.jgrid.htmlEncode(value) + "</a>"
     else
       # This is for summary row (grid footer)
-      "<div class="+cssClass+"><span class=summarySubtitle>" + rowObject.subtitle + ":</span><br/><span class='summaryTitle'>"+value+"</span></div><button id='stickyShowAll' class='btn btn-mini' type='button'>Show All Districts</button>"
+      "<div class="+cssClass+"><span class=summarySubtitle>" + rowObject.subtitle + ":</span><br/><span class='summaryTitle'>"+value+"</span></div>"
  
   showOverallConfidence = (value, options, rowObject) ->
     names = options.colModel.name.split "."

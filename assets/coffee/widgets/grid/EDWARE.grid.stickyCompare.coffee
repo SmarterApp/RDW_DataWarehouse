@@ -1,31 +1,39 @@
 define [
   'jquery'
+  'mustache'
   'edwareUtil'
   'edwareSessionStorage'
-], ($, edwareUtil, edwareSessionStorage) ->
+  'text!edwareStickyCompareTemplate'
+], ($, Mustache, edwareUtil, edwareSessionStorage, edwareStickyCompareTemplate) ->
   
   class EdwareGridStickyCompare
     
-    constructor: (@reportType, @params, @callback) ->
+    constructor: (@reportType, @orgName, @displayType, @params, @callback) ->
       this.initialize()
       
     initialize: () ->
       this.storage = edwareSessionStorage.stickyCompStorage
       this.selectedRows = this.getSelectedRows()
       this.bindEvents()
+      this.createButtonBar()
 
-    reset: () ->
-      this.bindEvents()
-      this.hideButtons()
+    update: () ->
+      # show and hide appropriate buttons
+      # Hide buttons based on whether any selection is already made
+      this.selectedRows = this.getSelectedRows()
+      if this.selectedRows.length > 0
+        this.showCompareEnabledButtons()
+      else
+        this.hideCompareSection()
         
     # All events related to grid filtering of rows
     bindEvents: () ->
       self = this  
       # checkboxes in each row
-      $('.stickyCheckbox').click () ->
-        text = self.resetCompareRowControls()
+      $(document).on 'click', '.stickyCheckbox', () ->
+        self.resetCompareRowControls()
         if not $(this).is(':checked')
-          $(this).siblings("label").text(text)
+          $(this).siblings("label").text(self.displayText)
           $(this).siblings("label").removeClass "stickyCompareLabelChecked"
           $(this).siblings("label").addClass "stickyCompareLabel"
         else
@@ -33,38 +41,34 @@ define [
           $(this).siblings("label").removeClass "stickyCompareLabel"
   
       # Binds to compare button in summary row
-      $('#stickyCompare').click () ->
+      $(document).on 'click', '#stickyCompare-btn', () ->
         self.selectedRows = []
         $('.stickyCheckbox:checked').each () ->
           value = String($(this).data('value'))
           self.selectedRows.push value
         if self.selectedRows.length > 0
-          self.updateSelection() 
+          self.updateSelection()
+          self.showCompareEnabledButtons()
       
       # Deselect Button in summary row
-      $('#stickyDeselectAllRows').click () ->
+      $(document).on 'click', '#stickyDeselect-btn', () ->
         self.selectedRows = []
         $('.stickyCheckbox').attr('checked', false)  
-        text = self.resetCompareRowControls()
-        $('.stickyCheckbox').siblings("label").text(text)
+        self.resetCompareRowControls()
+        $('.stickyCheckbox').siblings("label").text(self.displayText)
       
       # Show all district button
-      $('#stickyShowAll').click () ->
+      $(document).on 'click', '#stickyShowAll-btn', () ->
         self.selectedRows = []
         self.updateSelection()
       
-      # Remove button on rows 
-      $('.stickyCompareRemove').click () ->
+      # Remove button on each row in grid 
+      $(document).on 'click', '.stickyCompareRemove', () ->
         value = String($(this).data('value'))
         index = self.selectedRows.indexOf(value)
         self.selectedRows.splice(index, 1) if index > -1
         self.updateSelection()
         
-    hideButtons: () ->
-      # Hide buttons
-      $('#stickyCompare').hide()
-      $('#stickyDeselectAllRows').hide()
- 
     getSelectedRows: () ->
       # TODO more elegent way?
       data = this.getDataFromStorage()[this.reportType]
@@ -102,21 +106,44 @@ define [
       
     # Reset Grid rows checkbox and button text
     resetCompareRowControls: () ->
-      text = "Compare"
       count = $('.stickyCheckbox:checked').length
+      text =  "Compare"
       if count > 0
-        # Show button
-        $('#stickyCompare').show()
-        $('#stickyDeselectAllRows').show()
-        if this.reportType is "state" then orgType = "District" else orgType = "School"
-        text += " " + count + " " + orgType
+        text  += " " + count + " " + this.displayType
+        this.showCompareSelectedButtons()
         if count > 1
           text += "s"
       else
-        $('#stickyCompare').hide()
-        $('#stickyDeselectAllRows').hide()
+        # Hide all buttons
+        this.hideCompareSection()
       $('.stickyCheckbox:checked').siblings("label").text(text)
-      $('#stickyCompare').text(text)
-      text
+      $('#stickyCompare-btn').text(text)
+    
+    createButtonBar: () ->
+      output = Mustache.to_html edwareStickyCompareTemplate, {}
+      $('#stickyCompareSection').html output
+      this.hideCompareSection()
+   
+    hideCompareSection: () ->
+      $('#stickyCompareSection').hide()
+    
+    showCompareSection: () ->
+      $('#stickyCompareSection').show()
+
+    showCompareSelectedButtons: () ->
+      this.showCompareSection()
+      $('#compareSelectedActions').show()
+      $('#compareEnabledActions').hide()
+    
+    showCompareEnabledButtons: () ->
+      this.showCompareSection()
+      $('#stickyShowAll-btn').text("Show All " + this.displayType + "s")
+      count = this.selectedRows.length
+      text = "Comparing " + String(count) + " " + this.orgName + " " + this.displayType
+      text += "s" if count > 1
+      $('#stickyEnabledDescription').text(text)
+      $('#compareSelectedActions').hide()
+      $('#compareEnabledActions').show()
+  
   
   EdwareGridStickyCompare:EdwareGridStickyCompare

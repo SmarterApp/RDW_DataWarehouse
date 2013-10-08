@@ -16,7 +16,7 @@ define [
   "edwareDropdown"
   "edwareLanguage"
   "edwareGridStickyCompare"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwareDropdown, i18n, edwareGridStickyCompare) ->
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwareDropdown, i18n, edwareStickyCompare) ->
 
   REPORT_NAME = "comparingPopulationsReport"
 
@@ -83,7 +83,6 @@ define [
     reload: (@param) ->
       # initialize variables
       this.reportType = this.getReportType(param)
-      this.stickyCompare = new edwareGridStickyCompare.EdwareGridStickyCompare this.reportType, param, this.renderGrid.bind(this)
       data = this.fetchData param
       this.data = data
       this.populationData = this.data.records
@@ -97,6 +96,7 @@ define [
 
       # process breadcrumbs
       this.renderBreadcrumbs(data.context)
+      this.stickyCompare = new edwareStickyCompare.EdwareGridStickyCompare this.reportType, this.breadcrumbs.getOrgType(), this.breadcrumbs.getDisplayType(), param, this.renderGrid.bind(this)
       this.createGrid()
       this.updateDropdown()
       this.updateFilter()
@@ -146,7 +146,7 @@ define [
     afterGridLoadComplete: () ->
       this.bindEvents()
       # Rebind events and reset sticky comparison
-      this.stickyCompare.reset()
+      this.stickyCompare.update()
       this.alignment.update()
       # Save the current sorting column and order to apply after filtering
       this.sort = $.extend this.sort, {
@@ -251,16 +251,28 @@ define [
     constructor: (@breadcrumbsData, @breadcrumbsConfigs, @reportType) ->
       # Render breadcrumbs on the page
       $('#breadcrumb').breadcrumbs(breadcrumbsData, breadcrumbsConfigs)
+      this.initialize()
+      
+    initialize: () ->
+      if this.reportType is 'state'
+        this.orgType = this.breadcrumbsData.items[0].name
+        this.displayType = "District"
+      else if this.reportType is 'district'
+        this.orgType = this.breadcrumbsData.items[1].name
+        this.displayType = "School"
+      else if this.reportType is 'school'
+        this.orgType = this.breadcrumbsData.items[2].name
+        this.displayType = "Grade"
+    
+    getOrgType: () ->
+      this.orgType
+    
+    getDisplayType: () ->
+      this.displayType
 
     getReportTitle: () ->
     # Returns report title based on the type of report
-      if this.reportType is 'state'
-        data = this.addApostropheS(this.breadcrumbsData.items[0].name) + ' Districts'
-      else if this.reportType is 'district'
-        data = this.addApostropheS(this.breadcrumbsData.items[1].name) + ' Schools'
-      else if this.reportType is 'school'
-        data = this.addApostropheS(this.breadcrumbsData.items[2].name) + ' Grades'
-      'Comparing '+ data + ' on Math & ELA'
+      'Comparing '+ this.addApostropheS(this.orgType) + ' ' + this.displayType + 's' + ' on Math & ELA'
 
     # Format the summary data for summary row purposes
     getOverallSummaryName: () ->

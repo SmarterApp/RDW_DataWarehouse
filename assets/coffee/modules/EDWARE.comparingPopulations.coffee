@@ -97,7 +97,7 @@ define [
 
         # process breadcrumbs
         self.renderBreadcrumbs(data.context)
-        this.stickyCompare.setReportInfo this.reportType, this.breadcrumbs.getOrgType(), this.breadcrumbs.getDisplayType(), param
+        self.stickyCompare.setReportInfo self.reportType, self.breadcrumbs.getOrgType(), self.breadcrumbs.getDisplayType(), param
         self.createGrid()
         self.updateDropdown()
         self.updateFilter()

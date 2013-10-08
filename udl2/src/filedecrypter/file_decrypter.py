@@ -9,6 +9,7 @@ import gnupg
 
 logger = logging.getLogger(__name__)
 
+
 def __is_file_exists(file_to_decrypt):
     '''
     check if file exists and readable
@@ -25,24 +26,24 @@ def __is_valid__file(file_to_decrypt):
         valid = True
         print("File exists and is readable -- %s " % file_to_decrypt)
     else:
-        print("File missing or un-readable -- %s " % file_to_decrypt)        
+        print("File missing or un-readable -- %s " % file_to_decrypt)
 
     return valid
 
 
 def __print_status(status):
-    print ('ok: ', status.ok)
-    print ('status: ', status.status)
-    print ('stderr: ', status.stderr)
+    print('ok: ', status.ok)
+    print('status: ', status.status)
+    print('stderr: ', status.stderr)
 
     if(status.ok):
         print('SUCCESS')
-        print ('signer: ', status.username)
-        print ('signer key id: ', status.key_id)
-        print ('signer key fingerprint: ', status.fingerprint)
-        print ('signer signature id: ', status.signature_id)
-        print ('signer trust level: ', status.trust_level)
-        print ('signer trust text: ', status.trust_text)
+        print('signer: ', status.username)
+        print('signer key id: ', status.key_id)
+        print('signer key fingerprint: ', status.fingerprint)
+        print('signer signature id: ', status.signature_id)
+        print('signer trust level: ', status.trust_level)
+        print('signer trust text: ', status.trust_text)
     else:
         print('FAILED')
 

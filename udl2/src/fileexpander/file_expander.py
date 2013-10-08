@@ -28,18 +28,18 @@ def __is_valid__tar_file(file_to_expand):
     '''
     Basic file validation checks before expanding
     '''
-    valid=False
+    valid = False
     if __is_file_exists(file_to_expand):
-        valid=True
+        valid = True
         print("File exists and is readable -- %s " % file_to_expand)
     else:
-        print("File missing or un-readable -- %s " % file_to_expand)        
+        print("File missing or un-readable -- %s " % file_to_expand)
 
     if valid:
         if __is_tar_file(file_to_expand):
             print("Tar file format recongnized -- %s " % file_to_expand)
         else:
-            valid=False
+            valid = False
             print("Tar file format un-recongnized -- %s " % file_to_expand)
     return valid
 
@@ -50,7 +50,7 @@ def __extract_tar_file_contents(file_to_expand, expanded_dir):
     '''
     tar = tarfile.open(file_to_expand, "r:gz")
     for tarinfo in tar:
-        print (tarinfo.name, tarinfo.size, " bytes in size, is a regular file: ", tarinfo.isreg())
+        print(tarinfo.name, tarinfo.size, " bytes in size, is a regular file: ", tarinfo.isreg())
     # TODO: how to deal with file's which are archived with absolute paths
     tar.extractall(expanded_dir)
     tar.close()

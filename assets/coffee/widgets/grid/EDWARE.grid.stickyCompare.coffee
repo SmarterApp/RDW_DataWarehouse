@@ -17,6 +17,12 @@ define [
       this.bindEvents()
       this.createButtonBar()
       this.selectedRows = []
+      this.compareSelectedActions = $('#compareSelectedActions')
+      this.compareEnabledActions = $('#compareEnabledActions')
+      this.stickyEnabledDescription = $('#stickyEnabledDescription')
+      this.stickyCompareBtn = $('#stickyCompare-btn')
+      this.stickyDeselectBtn = $('#stickyDeselect-btn')
+      this.stickyShowAllBtn = $('#stickyShowAll-btn')
 
     # Sets information when we know what type of report it is, etc.
     # compareMode is set to false since we know that the html is reloaded
@@ -90,9 +96,7 @@ define [
       # Set the mode based on whether any rows are returned
       # Gets the rows selected for the current report view
       this.selectedRows = this.getDataForReport()
-      this.compareMode = false
-      if this.selectedRows.length > 0
-        this.compareMode = true
+      this.compareMode = this.selectedRows.length > 0
       this.selectedRows
     
     getDataForReport: () ->
@@ -145,33 +149,34 @@ define [
         # Hide all buttons
         this.hideCompareSection()
       $('.stickyCheckbox:checked').siblings("label").text(text)
-      $('#stickyCompare-btn').text(text)
+      this.stickyCompareBtn.text(text)
 
     createButtonBar: () ->
       output = Mustache.to_html edwareStickyCompareTemplate, {}
       $('#stickyCompareSection').html output
+      this.compareSection = $('#stickyCompareSection')
       this.hideCompareSection()
    
     hideCompareSection: () ->
-      $('#stickyCompareSection').hide()
+      this.compareSection.hide()
     
     showCompareSection: () ->
-      $('#stickyCompareSection').show()
+      this.compareSection.show()
 
     showCompareSelectedButtons: () ->
       this.showCompareSection()
-      $('#compareSelectedActions').show()
-      $('#compareEnabledActions').hide()
+      this.compareSelectedActions.show()
+      this.compareEnabledActions.hide()
     
     showCompareEnabledButtons: () ->
       this.showCompareSection()
-      $('#stickyShowAll-btn').text("Show All " + this.displayType + "s")
+      this.stickyShowAllBtn.text("Show All " + this.displayType + "s")
       count = this.selectedRows.length
       text = "Comparing " + String(count) + " " + this.orgName + " " + this.displayType
       text += "s" if count > 1
-      $('#stickyEnabledDescription').text(text)
-      $('#compareSelectedActions').hide()
-      $('#compareEnabledActions').show()
+      this.stickyEnabledDescription.text(text)
+      this.compareSelectedActions.hide()
+      this.compareEnabledActions.show()
   
   
   EdwareGridStickyCompare:EdwareGridStickyCompare

@@ -156,6 +156,8 @@ define [
       if selectedRows.length > 0
         stickyCompareEnabled = true
         for data in this.populationData
+          if gridData.length is selectedRows.length
+            break
           if data.id in selectedRows
             gridData.push data
       else

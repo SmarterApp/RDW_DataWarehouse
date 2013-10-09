@@ -7,5 +7,4 @@ require ["EDWARE.individualStudent"], (edwareIndividualStudent) ->
     params
   
   params = getUrlParams()
-  edwareIndividualStudent.generateIndividualStudentReport params
-
+  new edwareIndividualStudent.EdwareISR(params).load()

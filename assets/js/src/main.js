@@ -32,6 +32,7 @@ require({
         edwareLanguageSelector: '../widgets/languageSelector/EDWARE.languageSelector',
         edwareLanguage: '../widgets/languageSelector/EDWARE.language',
         edwareGridStickyCompare: '../widgets/grid/EDWARE.grid.stickyCompare',
+        edwareAsmtDropdown: '../widgets/asmtDropdown/EDWARE.asmtDropdown',
 
 		// Templates
 		edwareBreadcrumbsTemplate: '../widgets/breadcrumb/template.html',

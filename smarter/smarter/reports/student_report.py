@@ -95,8 +95,7 @@ def __prepare_query(connector, student_guid, assessment_guid):
                                                                 fact_asmt_outcome.c.section_guid == dim_staff.c.section_guid,
                                                                 dim_staff.c.most_recent))
                                           .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id,
-                                                               dim_asmt.c.most_recent,
-                                                               dim_asmt.c.asmt_type == 'SUMMATIVE'))])
+                                                               dim_asmt.c.most_recent))])
     query = query.where(and_(fact_asmt_outcome.c.most_recent, fact_asmt_outcome.c.status == 'C', fact_asmt_outcome.c.student_guid == student_guid))
     if assessment_guid is not None:
         query = query.where(dim_asmt.c.asmt_guid == assessment_guid)
@@ -133,7 +132,7 @@ def __arrange_results(results, subjects_map, custom_metadata_map):
     '''
     This method arranges the data retreievd from the db to make it easier to consume by the client
     '''
-    newResults = []
+    new_results = {}
     for result in results:
 
         result['teacher_full_name'] = format_full_name(result['teacher_first_name'], result['teacher_middle_name'], result['teacher_last_name'])
@@ -151,10 +150,16 @@ def __arrange_results(results, subjects_map, custom_metadata_map):
         result = get_cut_points(custom, result)
 
         result['claims'] = get_claims(number_of_claims=5, result=result, include_names=True, include_scores=True, include_min_max_scores=True, include_indexer=True)
-        newResults.append(result)
+
+        if new_results.get(result['asmt_type']) is None:
+            new_results[result['asmt_type']] = []
+
+        new_results[result['asmt_type']].append(result)
 
     # rearranging the json so we could use it more easily with mustache
-    return {"items": __calculateClaimScoreRelativeDifference(newResults)}
+    for key, value in new_results.items():
+        new_results[key] = __calculateClaimScoreRelativeDifference(value)
+    return {"items": new_results}
 
 
 @report_config(name=REPORT_NAME,

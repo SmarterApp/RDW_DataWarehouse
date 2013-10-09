@@ -1,5 +1,5 @@
-<h2>{{items.0.student_full_name}} | {{labels.grade}} {{items.0.grade}}</h2>
-{{#items}}
+<h2>{{current.0.student_full_name}} | {{labels.grade}} {{current.0.grade}}</h2>
+{{#current}}
 <div id="assessmentSection{{count}}" class="innerBox clearfix">
 	<div class="sidebar pull-left">
 		<h1>{{asmt_subject}}</h1>
@@ -14,7 +14,7 @@
 	<div class="printHeader printContent">
 		<div class="logo"><img src="../images/smarter_printlogo.png" width="150" height="47" /></div>
 		<div class="summary">
-            <div class="title">{{items.0.student_full_name}} &nbsp;&nbsp; {{labels.grade}} {{items.0.grade}}</div>
+            <div class="title">{{current.0.student_full_name}} &nbsp;&nbsp; {{labels.grade}} {{current.0.grade}}</div>
             <span class="label">{{labels.state}}:</span> {{context.items.0.name}} &nbsp;&nbsp;<span class="label">{{labels.district}}:</span> {{context.items.1.name}}<br/>
             <span class="label">{{labels.school}}:</span> {{context.items.2.name}}
 		</div>
@@ -90,7 +90,7 @@
 	<div class="assessmentOtherInfoHeader printHeader">
 		<div class="logo"><img src="../images/smarter_printlogo.png" width="150" height="47" /></div>
 		<div class="summary">
-            <div class="title">{{items.0.student_full_name}} &nbsp;&nbsp; {{labels.grade}} {{items.0.grade}}</div>
+            <div class="title">{{current.0.student_full_name}} &nbsp;&nbsp; {{labels.grade}} {{current.0.grade}}</div>
             <span class="label">{{labels.state}}:</span> {{context.items.0.name}} &nbsp;&nbsp;<span class="label">{{labels.district}}:</span> {{context.items.1.name}}<br/>
             <span class="label">{{labels.school}}:</span> {{context.items.2.name}}
 		</div>
@@ -114,12 +114,12 @@
 		</div>
 </div>
 <div class="pageBreak"></div>
-{{/items}}
+{{/current}}
 <div id="print_reportInfoContent" class="printContent clearfix">
 	<div class="printHeader">
 		<div class="logo"><img src="../images/smarter_printlogo.png" width="150" height="47" /></div>
 		<div class="summary">
-            <div class="title">{{items.0.student_full_name}} &nbsp;&nbsp; {{labels.grade}} {{items.0.grade}}</div>
+            <div class="title">{{current.0.student_full_name}} &nbsp;&nbsp; {{labels.grade}} {{current.0.grade}}</div>
             <span class="label">{{labels.state}}:</span> {{context.items.0.name}} &nbsp;&nbsp;<span class="label">{{labels.district}}:</span> {{context.items.1.name}}<br/>
             <span class="label">{{labels.school}}:</span> {{context.items.2.name}}
 		</div>

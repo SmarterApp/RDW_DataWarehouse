@@ -37,7 +37,6 @@ define [
       self = this  
       # checkboxes in each row
       $(document).on 'click', '.stickyCheckbox', () ->
-        self.resetCompareRowControls()
         if not $(this).is(':checked')
           $(this).siblings("label").text("Compare")
           $(this).siblings("label").removeClass "stickyCompareLabelChecked"
@@ -47,6 +46,7 @@ define [
           $(this).siblings("label").addClass "stickyCompareLabelChecked"
           $(this).siblings("label").removeClass "stickyCompareLabel"
           self.addCurrentRow this
+        self.resetCompareRowControls()
   
       # Binds to compare button in summary row
       $(document).on 'click', '#stickyCompare-btn', () ->
@@ -134,22 +134,18 @@ define [
       
     # Reset Grid rows checkbox and button text
     resetCompareRowControls: () ->
-      count = $('.stickyCheckbox:checked').length
-      this.updateDisplayText count
+      text = "Compare"
+      count = this.selectedRows.length
       if count > 0
+        text += " " + count + " " + this.displayType
         this.showCompareSelectedButtons()
+        if count > 1 
+          text += "s"
       else
         # Hide all buttons
         this.hideCompareSection()
-      $('.stickyCheckbox:checked').siblings("label").text(this.displayText)
-      $('#stickyCompare-btn').text(this.displayText)
-
-    updateDisplayText: (count) ->
-      this.displayText = "Compare"
-      if count > 0
-        this.displayText  += " " + count + " " + this.displayType
-        if count > 1
-          this.displayText += "s"
+      $('.stickyCheckbox:checked').siblings("label").text(text)
+      $('#stickyCompare-btn').text(text)
 
     createButtonBar: () ->
       output = Mustache.to_html edwareStickyCompareTemplate, {}

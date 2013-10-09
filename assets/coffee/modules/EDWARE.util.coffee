@@ -30,7 +30,8 @@ define [
       
   getUrlParams = ->
     params = {}
-    window.location.search.replace /[?&]+([^=&]+)=([^&]*)/g, (str, key, value) ->
+    decoded = decodeURIComponent(window.location.search).replace(/\+/g, ' ')
+    decoded.replace /[?&]+([^=&]+)=([^&]*)/g, (str, key, value) ->
       params[key] = value
   
     params

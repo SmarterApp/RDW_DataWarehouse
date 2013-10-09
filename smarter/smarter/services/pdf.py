@@ -16,7 +16,7 @@ from edapi.httpexceptions import EdApiHTTPPreconditionFailed, \
     EdApiHTTPForbiddenAccess, EdApiHTTPInternalServerError, EdApiHTTPNotFound
 from services.exceptions import PdfGenerationError
 from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_report_path_by_student_guid
-from smarter.reports.helpers.constants import Constants, AssessmentType
+from smarter.reports.helpers.constants import AssessmentType
 import services.celeryconfig
 from edauth.utils import to_bool
 
@@ -81,11 +81,16 @@ def get_pdf_content(params):
     :param params: python dict that contains query parameters from the request
     '''
     student_guid = params.get('studentGuid')
-    if student_guid is None:
+    asmt_type = params.get('asmtType', AssessmentType.SUMMATIVE)
+    if student_guid is None or asmt_type is None:
         raise InvalidParameterError('Required parameter is missing')
 
     if not has_context_for_pdf_request(student_guid):
         raise ForbiddenError('Access Denied')
+
+    asmt_type = asmt_type.upper()
+    if asmt_type not in [AssessmentType.SUMMATIVE, AssessmentType.COMPREHENSIVE_INTERIM]:
+        raise InvalidParameterError('Unknown assessment type')
 
     report = pyramid.threadlocal.get_current_request().matchdict['report']
 
@@ -102,7 +107,7 @@ def get_pdf_content(params):
 
     # get isr file path name
     pdf_base_dir = pyramid.threadlocal.get_current_registry().settings.get('pdf.report_base_dir', "/tmp")
-    file_name = generate_isr_report_path_by_student_guid(pdf_report_base_dir=pdf_base_dir, student_guid=student_guid, asmt_type=AssessmentType.SUMMATIVE, grayScale=is_grayscale, lang=lang)
+    file_name = generate_isr_report_path_by_student_guid(pdf_report_base_dir=pdf_base_dir, student_guid=student_guid, asmt_type=asmt_type, grayScale=is_grayscale, lang=lang)
 
     # get current session cookie and request for pdf
     (cookie_name, cookie_value) = get_session_cookie()

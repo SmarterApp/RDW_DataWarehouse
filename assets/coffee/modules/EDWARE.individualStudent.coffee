@@ -22,15 +22,27 @@ define [
   
   class EdwareISR
     
-    constructor: (@params) ->
+    constructor: () ->
       this.initialize()
       this
       
     initialize: () ->
+      this.getParams()
       this.isPdf = false
+      this.currentAsmtType = "Summative" 
+      
+      if this.params['grayscale'] is 'true'
+        this.isGrayscale = true
+      if this.params['pdf'] is 'true'
+        this.isPdf = true
+        this.currentAsmtType = this.params['asmtType'] if this.params['asmtType']
+
       this.configData = edwareDataProxy.getDataForReport "indivStudentReport"
       this.loadCss()
- 
+   
+    getParams: () ->
+      this.params = edwareUtil.getUrlParams()
+    
     fetchData: (callback) ->
       # Get individual student report data from the server
       options =
@@ -42,11 +54,10 @@ define [
     
     loadCss: () ->
       # Show grayscale
-      if this.params['grayscale'] is 'true'
+      if this.isGrayscale
         edwareUtil.showGrayScale()
       # Load css for pdf generation
-      if this.params['pdf'] is 'true'
-        this.isPdf = true
+      if this.isPdf
         edwareUtil.showPdfCSS()
 
     load: () ->
@@ -68,8 +79,9 @@ define [
         if not self.isPdf
           self.createBreadcrumb()
           self.createDropdown()
-        else
-          self.render self.params['asmtType']
+          self.currentAsmtType = self.asmtTypes[0] if self.asmtTypes.indexOf("Summative") is -1
+          
+        self.render self.currentAsmtType
 
     processData: () ->
       for asmt of this.data.items
@@ -85,7 +97,7 @@ define [
               $.extend(items.cut_point_intervals[j], defaultColors[j])
             j++
             
-          if this.params['grayscale'] is 'true'
+          if this.isGrayscale
             j = 0
             while j < items.cut_point_intervals.length
               $.extend(items.cut_point_intervals[j], this.defaultGrayColors[j])
@@ -229,7 +241,7 @@ define [
      
       # Report info and legend for print version, Grayscale logo for print version
       $($("#footerLinks").html()).clone().appendTo("#print_reportInfoContent")
-      if this.params['grayscale'] is 'true'
+      if isGrayscale
         $(".printHeader .logo img").attr("src", "../images/smarter_printlogo_gray.png")
         
     createSampleInterval : (subject, sample_interval) ->

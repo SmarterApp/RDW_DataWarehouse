@@ -117,10 +117,13 @@ define [
   $(document).on
     click: ->
       val=$('input[name=print_options]:checked').val()
+      asmtType = $('#selectedAsmtType').text()
       url=document.URL.replace("indivStudentReport","print")
       url += '&pdf=true'
       if val is "gray"
         url += "&grayscale=true"
+      if asmtType
+         url += "&asmtType=" + encodeURI asmtType
       url += "&lang=" + edwareLanguage.getSelectedLanguage()
       $("#print").popover "hide"
       $("#footer .nav li a").removeClass("active")

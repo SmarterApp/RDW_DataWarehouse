@@ -8,6 +8,10 @@ GUID_BATCH = 'guid_batch'
 # file_arrived to file_expander
 FILE_TO_EXPAND = 'file_to_expand'
 
+# file_decrypter
+FILE_TO_DECRYPT = 'file_to_decrypt'
+PASSPHRASE = 'passphrase'
+
 # file_expander to file_validator
 JSON_FILENAME = 'json_filename'
 CSV_FILENAME = 'csv_filename'

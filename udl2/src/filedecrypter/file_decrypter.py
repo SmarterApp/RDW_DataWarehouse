@@ -10,19 +10,19 @@ import gnupg
 logger = logging.getLogger(__name__)
 
 
-def __is_file_exists(file_to_decrypt):
+def _is_file_exists(file_to_decrypt):
     '''
     check if file exists and readable
     '''
     return os.path.isfile(file_to_decrypt) and os.access(file_to_decrypt, os.R_OK)
 
 
-def __is_valid__file(file_to_decrypt):
+def _is_valid__file(file_to_decrypt):
     '''
     Basic file validation checks before decrypting
     '''
     valid = False
-    if __is_file_exists(file_to_decrypt):
+    if _is_file_exists(file_to_decrypt):
         valid = True
         print("File exists and is readable -- %s " % file_to_decrypt)
     else:
@@ -31,7 +31,7 @@ def __is_valid__file(file_to_decrypt):
     return valid
 
 
-def __print_status(status):
+def _print_status(status):
     print('ok: ', status.ok)
     print('status: ', status.status)
     print('stderr: ', status.stderr)
@@ -47,7 +47,7 @@ def __print_status(status):
         print('FAILED')
 
 
-def __decrypt_file_contents(file_to_decrypt, output_file, passphrase, gpg_home):
+def _decrypt_file_contents(file_to_decrypt, output_file, passphrase, gpg_home):
     '''
     verify signature, decrypt and write the decrypted file to the destination directory
     '''
@@ -61,13 +61,13 @@ def decrypt_file(file_to_decrypt, destination_dir, passphrase, gpg_home):
     '''
     Verify and Decrypt the file after needed validations
     '''
-    if not __is_valid__file(file_to_decrypt):
+    if not _is_valid__file(file_to_decrypt):
         raise Exception('Invalid source file -- %s' % file_to_decrypt)
 
     output_file = destination_dir + '/' + os.path.splitext(os.path.basename(file_to_decrypt))[0]
-    status = __decrypt_file_contents(file_to_decrypt, output_file, passphrase, gpg_home)
+    status = _decrypt_file_contents(file_to_decrypt, output_file, passphrase, gpg_home)
 
-    __print_status(status)
+    _print_status(status)
 
     if not status.ok:
         raise Exception('Decryption Failed')

@@ -1,6 +1,15 @@
 define [
   "jquery"
-], ($) ->
+  "mustache"
+], ($, Mustache) ->
+
+  ASMT_TYPE_DROPDOWN_TEMPLATE =
+    '<div class="btn-group">' +
+      '<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span id="selectedAsmtType">{{defaultValue}}</span><span class="caret"></span></button>' +
+      '<ul class="dropdown-menu" role="menu">' +
+        '{{#dropdownValues}}<li class="asmtSelection" data-value="{{.}}"><a href="#">{{.}}</a></li>{{/dropdownValues}}' +
+      '</ul>' +
+    '</div>'
 
   class EdwareAsmtDropdown
     
@@ -22,17 +31,12 @@ define [
       defaultValue = "Summative"
       if this.dropdownValues.indexOf("Summative") == -1
         defaultValue = this.dropdownValues[0]
-      selector = '<span class="btn-group">' +
-      '<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">' +
-      '<span id="selectedAsmtType">' + defaultValue +
-      '</span><span class="caret"></span></button>' +
-      '<ul class="dropdown-menu" role="menu">'
-      for value in this.dropdownValues
-        selector += '<li class="asmtSelection" data-value="' + value + '"><a href="#">' + value + '</a></li>'
-      selector += '</ul></span>'
+      selector = Mustache.to_html ASMT_TYPE_DROPDOWN_TEMPLATE, {
+        defaultValue: defaultValue,
+        dropdownValues: this.dropdownValues
+      }
       this.dropdownSection.html(selector)
-      # Calls callback function with the default value
-      this.callback defaultValue
+
       
   # dropdownValues is an array of values to feed into dropdown
   (($)->

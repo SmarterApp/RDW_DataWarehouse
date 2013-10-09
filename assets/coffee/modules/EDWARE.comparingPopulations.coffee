@@ -110,7 +110,6 @@ define [
     fetchData: (params, callback)->
       # Determine if the report is state, district or school view"
       options =
-        async: true
         method: "POST"
         params: params
       
@@ -182,7 +181,6 @@ define [
           gridComplete: () ->
             self.afterGridLoadComplete()
       }
-      this.afterGridLoadComplete()
       # Display grid controls after grid renders
       $(".gridControls").show()
 

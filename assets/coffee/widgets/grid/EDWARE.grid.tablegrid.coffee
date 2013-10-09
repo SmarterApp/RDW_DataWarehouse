@@ -133,6 +133,8 @@ define [
     $.fn.edwareGrid = (columns, options, footer) ->
       grid = new EdwareGrid(this, columns, options, footer)
       grid.render()
+      # trigger gridComplete event
+      options.gridComplete() if options.gridComplete
 
       colModel = $(this).jqGrid("getGridParam", "colModel")
       $("#gbox_" + $.jgrid.jqID($(this)[0].id) + " tr.ui-jqgrid-labels th.ui-th-column").each (i) ->

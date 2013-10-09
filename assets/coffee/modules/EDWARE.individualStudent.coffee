@@ -12,7 +12,8 @@ define [
   "edwareFooter"
   "edwareHeader"
   "edwareAsmtDropdown"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareConfidenceLevelBar, edwareClaimsBar, indivStudentReportTemplate, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwareAsmtDropdown) ->
+  "edwareSessionStorage"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareConfidenceLevelBar, edwareClaimsBar, indivStudentReportTemplate, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwareAsmtDropdown, clientStorage) ->
   
   # claim score weight in percentage
   claimScoreWeightArray = {
@@ -28,6 +29,7 @@ define [
       
     initialize: () ->
       this.getParams()
+      this.storage = clientStorage.preferences
       this.isPdf = false
       this.currentAsmtType = "Summative" 
       
@@ -36,12 +38,26 @@ define [
       if this.params['pdf'] is 'true'
         this.isPdf = true
         this.currentAsmtType = this.params['asmtType'] if this.params['asmtType']
+      else
+        this.currentAsmtType = this.getAsmtPreference()
 
       this.configData = edwareDataProxy.getDataForReport "indivStudentReport"
       this.loadCss()
    
     getParams: () ->
       this.params = edwareUtil.getUrlParams()
+   
+    updateView: (asmtType) ->
+      this.saveAsmtPreference asmtType
+      this.render asmtType
+    
+    saveAsmtPreference: (asmtType) ->
+      this.storage.update({'asmtType': asmtType})
+    
+    getAsmtPreference: () ->
+      pref = JSON.parse(this.storage.load())
+      pref = {} if not pref
+      pref['asmtType'] || this.currentAsmtType
     
     fetchData: (callback) ->
       # Get individual student report data from the server
@@ -125,7 +141,7 @@ define [
           items.overall_ald = overallALD
           
           # set psychometric_implications content
-          psychometricContent = Mustache.render(this.configData.psychometric_implications[items.asmt_subject], items)
+          psychometricContent = Mustache.render(this.configData.psychometric_implications[asmt][items.asmt_subject], items)
           
           # if the content is more than character limits then truncate the string and add ellipsis (...)
           psychometricContent = edwareUtil.truncateContent(psychometricContent, edwareUtil.getConstants("psychometric_characterLimits"))
@@ -241,7 +257,7 @@ define [
      
       # Report info and legend for print version, Grayscale logo for print version
       $($("#footerLinks").html()).clone().appendTo("#print_reportInfoContent")
-      if isGrayscale
+      if this.isGrayscale
         $(".printHeader .logo img").attr("src", "../images/smarter_printlogo_gray.png")
         
     createSampleInterval : (subject, sample_interval) ->
@@ -322,7 +338,8 @@ define [
 
     # Create assessment type dropdown
     createDropdown : () ->
-      this.dropdown = $('#asmtDropdownSection').edwareAsmtDropdown this.asmtTypes, this.render.bind(this)
-      this.dropdown.create()       
+      this.dropdown = $('#asmtDropdownSection').edwareAsmtDropdown this.asmtTypes, this.updateView.bind(this)
+      this.dropdown.create()
+      this.dropdown.setSelectedValue this.currentAsmtType     
  
   EdwareISR: EdwareISR

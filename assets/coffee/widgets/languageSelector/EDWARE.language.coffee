@@ -4,12 +4,12 @@ define [
 ], (clientStorage, edwareUtil) ->
   
   getSelectedLanguage = () ->
-    iso_language = clientStorage.i18nStorage.load()
+    iso_language = clientStorage.preferences.load()
     lang_id = JSON.parse(iso_language).language_id if iso_language
     lang_id || edwareUtil.getUrlParams()['lang'] ||'en'
 
   saveSelectedLanguage = (item) ->
-    clientStorage.i18nStorage.save(item)
+    clientStorage.preferences.update(item)
 
   getSelectedLanguage: getSelectedLanguage
   saveSelectedLanguage: saveSelectedLanguage

@@ -37,6 +37,8 @@ define [
       }
       this.dropdownSection.html(selector)
 
+    setSelectedValue: (value) ->
+      $('#selectedAsmtType').html value
       
   # dropdownValues is an array of values to feed into dropdown
   (($)->

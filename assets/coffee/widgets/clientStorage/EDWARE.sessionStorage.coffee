@@ -45,7 +45,14 @@ define [
       Data must be able to convert to a JSON string in order to be put into session storage.
       ###
       sessionStorage.setItem(this.key, JSON.stringify(data))
-
+    
+    update: (data) ->
+      ###
+      Merge data into existing storage
+      ###
+      merged = $.extend(JSON.parse(this.load()), data)
+      sessionStorage.setItem(this.key, JSON.stringify(merged))
+    
     clear: () ->
       ### Clear data ###
       sessionStorage.removeItem(this.key)
@@ -54,6 +61,6 @@ define [
   Filter Storage
   ###
   filterStorage: new EdwareSessionStorage('edware.filter.params')
-  i18nStorage: new EdwareSessionStorage('edware.iso.language')
+  preferences: new EdwareSessionStorage('edware.preferences')
   stickyCompStorage: new EdwareSessionStorage('edware.sticky.comparison')
   clearAll: clearAll

@@ -5,6 +5,7 @@ import shutil
 from filedecrypter import file_decrypter
 from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 import imp
+import gnupg
 
 
 class TestFileDecrypter(unittest.TestCase):
@@ -20,6 +21,7 @@ class TestFileDecrypter(unittest.TestCase):
         # test source files
         self.test_source_file_1 = self.conf['zones']['datafiles'] + 'test_source_file_tar_gzipped.tar.gz.gpg'
         self.test_source_file_2 = self.conf['zones']['datafiles'] + 'test_corrupted_source_file_tar_gzipped.tar.gz.gpg'
+        # temp directory for testing decrypter
         self.decrypter_test_dir = self.conf['zones']['tests'] + 'decrypter_test/'
         if not os.path.exists(self.decrypter_test_dir):
             os.makedirs(self.decrypter_test_dir)
@@ -30,12 +32,14 @@ class TestFileDecrypter(unittest.TestCase):
         # copy files to tests zone
         shutil.copyfile(self.test_source_file_1, self.test_valid_file)
         shutil.copyfile(self.test_source_file_2, self.test_corrupted_file)
+        # set the gpg key home
+        self.gpg_test_home = self.conf['zones']['datafiles'] + 'keys'
 
     def test_decrypter_for_valid_file(self):
         assert os.path.isfile(self.test_valid_file)
         decrypted_file = None
         status = None
-        status, decrypted_file = file_decrypter.decrypt_file(self.test_valid_file, self.decrypter_test_dir, 'sbac udl2', '/Users/sravi/.gnupg')
+        status, decrypted_file = file_decrypter.decrypt_file(self.test_valid_file, self.decrypter_test_dir, 'sbac udl2', self.gpg_test_home)
         assert os.path.isfile(decrypted_file)
         assert status.ok is True
         assert status.trust_level is 4
@@ -48,7 +52,7 @@ class TestFileDecrypter(unittest.TestCase):
         decrypted_file = None
         status = None
         try:
-            status, decrypted_file = file_decrypter.decrypt_file(self.test_invalid_file, self.decrypter_test_dir, 'sbac udl2', '/Users/sravi/.gnupg')
+            status, decrypted_file = file_decrypter.decrypt_file(self.test_invalid_file, self.decrypter_test_dir, 'sbac udl2', self.gpg_test_home)
         except Exception as e:
             print('Exception -- ', e)
         assert decrypted_file is None
@@ -58,7 +62,7 @@ class TestFileDecrypter(unittest.TestCase):
         decrypted_file = None
         status = None
         try:
-            status, decrypted_file = file_decrypter.decrypt_file(self.test_corrupted_file, self.decrypter_test_dir, 'sbac udl2', '/Users/sravi/.gnupg')
+            status, decrypted_file = file_decrypter.decrypt_file(self.test_corrupted_file, self.decrypter_test_dir, 'sbac udl2', self.gpg_test_home)
         except Exception as e:
             print('Exception -- ', e)
         assert decrypted_file is None
@@ -69,7 +73,7 @@ class TestFileDecrypter(unittest.TestCase):
         decrypted_file = None
         status = None
         try:
-            status, decrypted_file = file_decrypter.decrypt_file(self.test_valid_file, self.decrypter_test_dir, 'wrong passphrase', '/Users/sravi/.gnupg')
+            status, decrypted_file = file_decrypter.decrypt_file(self.test_valid_file, self.decrypter_test_dir, 'wrong passphrase', self.gpg_test_home)
         except Exception as e:
             print('Exception -- ', e)
         assert decrypted_file is None

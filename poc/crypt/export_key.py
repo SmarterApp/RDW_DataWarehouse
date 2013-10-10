@@ -18,5 +18,6 @@ print(ascii_public_key)
 print(ascii_private_key)
  
 # writing keys to a file
-with open('data/mykeyfile.asc', 'w') as f:
+with open('DD87CFFF75C7BEC2.asc', 'w') as f:
     f.write(ascii_public_key)
+    f.write(ascii_private_key)

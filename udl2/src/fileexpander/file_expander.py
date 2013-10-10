@@ -31,16 +31,16 @@ def _is_valid__tar_file(file_to_expand):
     valid = False
     if _is_file_exists(file_to_expand):
         valid = True
-        print("File exists and is readable -- %s " % file_to_expand)
+        logger.info("File exists and is readable -- %s " % file_to_expand)
     else:
-        print("File missing or un-readable -- %s " % file_to_expand)
+        logger.error("File missing or un-readable -- %s " % file_to_expand)
 
     if valid:
         if _is_tar_file(file_to_expand):
-            print("Tar file format recongnized -- %s " % file_to_expand)
+            logger.info("Tar file format recongnized -- %s " % file_to_expand)
         else:
             valid = False
-            print("Tar file format un-recongnized -- %s " % file_to_expand)
+            logger.error("Tar file format un-recongnized -- %s " % file_to_expand)
     return valid
 
 

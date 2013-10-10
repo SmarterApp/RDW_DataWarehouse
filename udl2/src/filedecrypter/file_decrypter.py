@@ -24,27 +24,24 @@ def _is_valid__file(file_to_decrypt):
     valid = False
     if _is_file_exists(file_to_decrypt):
         valid = True
-        print("File exists and is readable -- %s " % file_to_decrypt)
+        logger.log("File exists and is readable -- %s " % file_to_decrypt)
     else:
-        print("File missing or un-readable -- %s " % file_to_decrypt)
+        logger.error("File missing or un-readable -- %s " % file_to_decrypt)
 
     return valid
 
 
 def _print_status(status):
-    print('ok: ', status.ok)
-    print('status: ', status.status)
-    print('stderr: ', status.stderr)
+    logger.info('ok: ', status.ok)
+    logger.debug('status: ', status.status)
+    logger.debug('stderr: ', status.stderr)
     if(status.ok):
-        print('SUCCESS')
-        print('signer: ', status.username)
-        print('signer key id: ', status.key_id)
-        print('signer key fingerprint: ', status.fingerprint)
-        print('signer signature id: ', status.signature_id)
-        print('signer trust level: ', status.trust_level)
-        print('signer trust text: ', status.trust_text)
-    else:
-        print('FAILED')
+        logger.debug('signer: ', status.username)
+        logger.debug('signer key id: ', status.key_id)
+        logger.debug('signer key fingerprint: ', status.fingerprint)
+        logger.debug('signer signature id: ', status.signature_id)
+        logger.debug('signer trust level: ', status.trust_level)
+        logger.debug('signer trust text: ', status.trust_text)
 
 
 def _decrypt_file_contents(file_to_decrypt, output_file, passphrase, gpg_home):

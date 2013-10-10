@@ -79,6 +79,8 @@ define [
     # Create assessment type dropdown
     createAsmtDropdown: () ->
       if this.reportType isnt 'school'
+        # remove asmt type dropdown and vertical bar
+        $('.gridControls').children(':lt(2)').remove()
         # only show asmt type dropdown on school view
         return
       self = this

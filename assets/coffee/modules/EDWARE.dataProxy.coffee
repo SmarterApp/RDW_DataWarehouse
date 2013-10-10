@@ -4,8 +4,8 @@ define [
   "mustache"
   "edwareUtil"
   "edwareLoadingMask"
-  'edwareLanguage'
-], ($, Mustache, edwareUtil, edwareLoadingMask, i18n) ->
+  'edwarePreferences'
+], ($, Mustache, edwareUtil, edwareLoadingMask, edwarePreferences) ->
   
   #
   #    * Get data from the server via ajax call
@@ -45,7 +45,7 @@ define [
       )          
          
   getDataForReport = (reportName) ->
-    language = i18n.getSelectedLanguage()
+    language = edwarePreferences.getSelectedLanguage()
     json_url = ["../data/content/" + language + "/content.json", "../data/common/" + language + "/common.json",
       "../data/common/" + language + "/labels.json"]
     report_json_url = "../data/common/" + language + "/" + reportName + ".json"
@@ -67,7 +67,7 @@ define [
     data
 
   getDataForFilter = ()->
-    language = i18n.getSelectedLanguage()
+    language = edwarePreferences.getSelectedLanguage()
     json_url = ["../data/common/" + language + "/labels.json", "../data/filter/" + language + "/filter.json"]
     options =
         async: false

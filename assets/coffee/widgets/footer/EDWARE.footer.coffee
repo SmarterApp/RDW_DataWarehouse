@@ -6,8 +6,8 @@ define [
   "edwareSessionStorage"
   "text!edwareFooterHtml"
   "edwareLegend"
-  "edwareLanguage"
-], ($, Mustache, bootstrap, edwareConfidenceLevelBar, edwareSessionStorage, footerTemplate, edwareLegend, edwareLanguage) ->
+  "edwarePreferences"
+], ($, Mustache, bootstrap, edwareConfidenceLevelBar, edwareSessionStorage, footerTemplate, edwareLegend, edwarePreferences) ->
   
   $.fn.generateFooter = (reportName, content, legend, labels) ->
     this.html Mustache.to_html footerTemplate, {
@@ -124,7 +124,7 @@ define [
         url += "&grayscale=true"
       if asmtType
          url += "&asmtType=" + encodeURI asmtType
-      url += "&lang=" + edwareLanguage.getSelectedLanguage()
+      url += "&lang=" + edwarePreference.getSelectedLanguage()
       $("#print").popover "hide"
       $("#footer .nav li a").removeClass("active")
       window.open(url, "_blank",'toolbar=0,location=0,menubar=0,status=0,resizable=yes')

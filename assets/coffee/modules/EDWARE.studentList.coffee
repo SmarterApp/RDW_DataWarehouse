@@ -9,7 +9,8 @@ define [
   "edwareUtil"
   "edwareFooter"
   "edwareHeader"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader) ->
+  "edwarePreferences"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwarePreferences) ->
 
   REPORT_NAME = 'studentList'
   

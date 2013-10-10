@@ -50,7 +50,7 @@ define [
       ###
       Merge data into existing storage
       ###
-      merged = $.extend(JSON.parse(this.load()), data)
+      merged = $.extend(JSON.parse(this.load() || "{}"), data)
       sessionStorage.setItem(this.key, JSON.stringify(merged))
     
     clear: () ->

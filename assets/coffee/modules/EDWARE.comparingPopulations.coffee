@@ -15,7 +15,8 @@ define [
   "edwareHeader"
   "edwareDropdown"
   "edwareGridStickyCompare"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwareDropdown, edwareStickyCompare) ->
+  "edwarePreferences"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwareDropdown, edwareStickyCompare, edwarePreferences) ->
 
   REPORT_NAME = "comparingPopulationsReport"
 
@@ -80,6 +81,7 @@ define [
     reload: (@param) ->
       # initialize variables
       this.reportType = this.getReportType(param)
+      this.updateAsmtTypePreference()
       self = this
       this.fetchData param, (data)->
         self.data = data
@@ -99,6 +101,14 @@ define [
         self.updateDropdown()
         self.updateFilter()
         self.createHeaderAndFooter()
+
+    updateAsmtTypePreference: () ->
+      if this.reportType in ['state', 'district']
+        # Reset back to summative
+        edwarePreferences.saveAsmtPreference 'Summative'
+      else
+        # Use this assessment type for school view
+        this.currentAsmtType = edwarePreferences.getAsmtPreference()
 
     updateFilter: ()->
       this.filter.update this.notStatedData

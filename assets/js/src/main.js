@@ -30,9 +30,9 @@ require({
 		edwareDropdown: '../widgets/dropdown/EDWARE.dropdown',
         edwareSessionStorage: '../widgets/clientStorage/EDWARE.sessionStorage',
         edwareLanguageSelector: '../widgets/languageSelector/EDWARE.languageSelector',
-        edwareLanguage: '../widgets/languageSelector/EDWARE.language',
         edwareGridStickyCompare: '../widgets/grid/EDWARE.grid.stickyCompare',
         edwareAsmtDropdown: '../widgets/asmtDropdown/EDWARE.asmtDropdown',
+        edwarePreferences: 'EDWARE.preferences',
 
 		// Templates
 		edwareBreadcrumbsTemplate: '../widgets/breadcrumb/template.html',

@@ -12,8 +12,8 @@ define [
   "edwareFooter"
   "edwareHeader"
   "edwareAsmtDropdown"
-  "edwareSessionStorage"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareConfidenceLevelBar, edwareClaimsBar, indivStudentReportTemplate, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwareAsmtDropdown, clientStorage) ->
+  "edwarePreferences"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareConfidenceLevelBar, edwareClaimsBar, indivStudentReportTemplate, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwareAsmtDropdown, edwarePreferences) ->
   
   # claim score weight in percentage
   claimScoreWeightArray = {
@@ -29,7 +29,6 @@ define [
       
     initialize: () ->
       this.getParams()
-      this.storage = clientStorage.preferences
       this.isPdf = false
       this.currentAsmtType = "Summative" 
       
@@ -39,7 +38,7 @@ define [
         this.isPdf = true
         this.currentAsmtType = this.params['asmtType'] if this.params['asmtType']
       else
-        this.currentAsmtType = this.getAsmtPreference()
+        this.currentAsmtType = edwarePreferences.getAsmtPreference()
 
       this.configData = edwareDataProxy.getDataForReport "indivStudentReport"
       this.loadCss()
@@ -48,16 +47,8 @@ define [
       this.params = edwareUtil.getUrlParams()
    
     updateView: (asmtType) ->
-      this.saveAsmtPreference asmtType
+      edwarePreferences.saveAsmtPreference asmtType
       this.render asmtType
-    
-    saveAsmtPreference: (asmtType) ->
-      this.storage.update({'asmtType': asmtType})
-    
-    getAsmtPreference: () ->
-      pref = JSON.parse(this.storage.load())
-      pref = {} if not pref
-      pref['asmtType'] || this.currentAsmtType
     
     fetchData: (callback) ->
       # Get individual student report data from the server

@@ -5,14 +5,27 @@ Created on May 2, 2013
 '''
 from setuptools import setup
 import subprocess
+import sys
 
-subprocess.call('cd ./scripts/; ./install_udl_requirements.sh', shell=True)
+#subprocess.call('cd ./scripts/; ./install_udl_requirements.sh', shell=True)
 
 install_requires = ['celery >= 3.0.19',
                     'Sphinx',
                     'docutils',
                     'repoze.sphinx.autointerface',
-                    'python-gnupg']
+                    'python-gnupg',
+                    'anyjson >= 0.3.3',
+                    'amqp >= 1.0.11',
+                    'SQLAlchemy >= 0.8.1',
+                    'psycopg2 >= 2.5',
+                    'nose >= 1.3.0',
+                    'coverage >= 3.6',
+                    'nose-cov >= 1.6',
+                    'mock >= 1.0.1',
+                    'pep8 >= 1.4.5',
+                    'py-postgresql >= 1.1.0', ]
+
+install_requires.append('pyinotify') if sys.platform == 'linux' else None
 
 scripts = ['scripts/initialize_udl2_database.sh',
            'scripts/initialize_udl2_system.sh',

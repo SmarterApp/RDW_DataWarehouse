@@ -20,6 +20,23 @@ function create_tenant_directories {
 
 }
 
+function update_permissions {
+     # landing directories
+    sudo -u root -s chmod 777 /opt/wgen/edware-udl/zones/landing/arrivals/$1
+    sudo -u root -s chmod 777 /opt/wgen/edware-udl/zones/landing/work/$1
+    sudo -u root -s chmod 777 /opt/wgen/edware-udl/zones/landing/history/$1
+
+    #pickup directories
+    sudo -u root -s chmod 777 /opt/wgen/edware-udl/zones/pickup/work/$1
+    sudo -u root -s chmod 777 /opt/wgen/edware-udl/zones/pickup/departures/$1
+    sudo -u root -s chmod 777 /opt/wgen/edware-udl/zones/pickup/history/$1
+
+    # landing-work subdirectores
+    sudo -u root -s chmod 777 /opt/wgen/edware-udl/zones/pickup/landing/work/$1/arrived
+    sudo -u root -s chmod 777 /opt/wgen/edware-udl/zones/pickup/landing/work/$1/expanded
+    sudo -u root -s chmod 777 /opt/wgen/edware-udl/zones/pickup/landing/work/$1/subfiles
+}
+
 function remove_tenant_directories {
     # landing directories
     sudo -u root -s rm -rf /opt/wgen/edware-udl/zones/landing/arrivals/$1
@@ -80,6 +97,7 @@ function main {
     get_opts $@
     if [ ${MODE:=""} == "CREATE" ]; then
         create_tenant_directories $TENANT
+        update_permissions $TENANT
     elif [ ${MODE:=""} == "REMOVE" ]; then
         remove_tenant_directories $TENANT
     fi

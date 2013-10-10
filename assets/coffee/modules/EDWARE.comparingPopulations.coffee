@@ -23,7 +23,7 @@ define [
 
   POPULATION_BAR_WIDTH = 145
 
-  DEFAULT_ASMT_TYPE = "SUMMATIVE"
+  DEFAULT_ASMT_TYPE = "Summative"
 
   class ConfigBuilder
     ### Grid configuration builder. ###
@@ -86,7 +86,7 @@ define [
       self = this
       this.asmtDropdown = $('#asmtDropdown').edwareAsmtDropdown this.asmtTypes, (asmtType) ->
         # save assessment type
-        edwarePreferences.saveAsmtPreference asmtType.toUpperCase()
+        edwarePreferences.saveAsmtPreference asmtType
         self.reload self.param
       this.asmtDropdown.create()
 
@@ -104,7 +104,7 @@ define [
       # create assessment type dropdown list
       this.createAsmtDropdown() if not this.asmtDropdown
       # set current query assessment type
-      param.asmtType = this.currentAsmtType
+      param.asmtType = this.currentAsmtType.toUpperCase()
       self = this
       this.fetchData param, (data)->
         self.data = data

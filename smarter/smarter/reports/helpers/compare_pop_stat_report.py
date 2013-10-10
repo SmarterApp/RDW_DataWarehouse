@@ -22,6 +22,15 @@ def get_not_stated_count(params):
                          Constants.ASMTTYPE: params.get(Constants.ASMTTYPE)}
     return ComparingPopStatReport(**not_stated_params).get_report()
 
+def get_comparing_populations_not_stated_cache_route(comparing_pop):
+    '''
+    Returns cache region based on whether filters exist
+    If school_guid is present, return none - do not cache
+
+    :param comparing_pop:  instance of ComparingPopReport
+    '''
+    # do not cache school level
+    return 'public.data' if comparing_pop.school_guid is None else None
 
 def get_comparing_populations_not_stated_cache_key(comparing_pop):
     '''
@@ -56,7 +65,7 @@ class ComparingPopStatReport:
         self.asmt_type = asmtType
         self.tenant = tenant
 
-    @cache_region(['public.data'], key_generator=get_comparing_populations_not_stated_cache_key)
+    @cache_region(['public.data'], router=get_comparing_populations_not_stated_cache_route, key_generator=get_comparing_populations_not_stated_cache_key)
     def get_report(self):
         '''
         Formats queries for not stated students count and returns results.

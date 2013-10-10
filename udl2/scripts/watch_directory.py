@@ -1,5 +1,7 @@
 import argparse
-from pyinotify import WatchManager, Notifier, ThreadedNotifier, EventsCodes, ProcessEvent, IN_CLOSE_WRITE
+import subprocess
+
+from pyinotify import WatchManager, Notifier, ProcessEvent, IN_CLOSE_WRITE
 
 __author__ = 'swimberly'
 
@@ -7,6 +9,7 @@ __author__ = 'swimberly'
 class EventHandler(ProcessEvent):
     def process_IN_CLOSE_WRITE(self, event):
         print("file created and written:", event.pathname)
+        #subprocess.call('driver.py')
 
 
 def monitor_directory(directory_path):

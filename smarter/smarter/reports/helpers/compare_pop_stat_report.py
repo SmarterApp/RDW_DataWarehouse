@@ -9,7 +9,7 @@ from smarter.reports.helpers.filters import NOT_STATED, \
     apply_filter_to_query, FILTERS_PROGRAM_504, FILTERS_PROGRAM_IEP, \
     FILTERS_PROGRAM_LEP, FILTERS_PROGRAM_TT1, FILTERS_ETHNICITY, \
     FILTERS_ETHNICITY_NOT_STATED, FILTERS_GENDER_NOT_STATED, FILTERS_GENDER
-from sqlalchemy.sql.expression import and_, true, select, distinct
+from sqlalchemy.sql.expression import and_, true, select
 from smarter.reports.helpers import filters
 from sqlalchemy.sql.functions import count
 from edapi.cache import cache_region
@@ -18,7 +18,8 @@ from edapi.cache import cache_region
 def get_not_stated_count(params):
     not_stated_params = {Constants.STATECODE: params.get(Constants.STATECODE),
                          Constants.DISTRICTGUID: params.get(Constants.DISTRICTGUID),
-                         Constants.SCHOOLGUID: params.get(Constants.SCHOOLGUID)}
+                         Constants.SCHOOLGUID: params.get(Constants.SCHOOLGUID),
+                         Constants.ASMTTYPE: params.get(Constants.ASMTTYPE)}
     return ComparingPopStatReport(**not_stated_params).get_report()
 
 
@@ -42,7 +43,7 @@ class ComparingPopStatReport:
     Statistic data for Comparing Population Report. Only contains not stated students count for now.
     '''
 
-    def __init__(self, stateCode=None, districtGuid=None, schoolGuid=None, tenant=None):
+    def __init__(self, stateCode=None, districtGuid=None, schoolGuid=None, asmtType=AssessmentType.SUMMATIVE, tenant=None):
         '''
         :param string stateCode:  State code representing the state
         :param string districtGuid:  Guid of the district, could be None
@@ -52,6 +53,7 @@ class ComparingPopStatReport:
         self.state_code = stateCode
         self.district_guid = districtGuid
         self.school_guid = schoolGuid
+        self.asmt_type = asmtType
         self.tenant = tenant
 
     @cache_region(['public.data'], key_generator=get_comparing_populations_not_stated_cache_key)
@@ -67,7 +69,7 @@ class ComparingPopStatReport:
         # query ethnicity
         results[FILTERS_ETHNICITY] = self.run_query({FILTERS_ETHNICITY: FILTERS_ETHNICITY_NOT_STATED})
         # query gender
-        results[FILTERS_GENDER] = self.run_query({FILTERS_GENDER: FILTERS_GENDER_NOT_STATED})
+        results[FILTERS_GENDER] = self.run_query({FILTERS_GENDER: [FILTERS_GENDER_NOT_STATED]})
         # query program filters
         for filterName in [FILTERS_PROGRAM_504, FILTERS_PROGRAM_IEP, FILTERS_PROGRAM_LEP, FILTERS_PROGRAM_TT1]:
             filters = {filterName: [NOT_STATED]}
@@ -84,7 +86,7 @@ class ComparingPopStatReport:
         with SmarterDBConnection(tenant=self.tenant) as connector:
             query = self.get_query(connector, filters)
             results = connector.get_result(query)
-        return results[0].get(Constants.COUNT)
+        return results[0].get(Constants.COUNT) if results else 0
 
     def get_query(self, connector, filters):
         '''
@@ -97,7 +99,7 @@ class ComparingPopStatReport:
         _fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
         query = select([count().label(Constants.COUNT)],
                        from_obj=[_fact_asmt_outcome])\
-            .where(and_(_fact_asmt_outcome.c.most_recent == true(), _fact_asmt_outcome.c.asmt_type == AssessmentType.SUMMATIVE))
+            .where(and_(_fact_asmt_outcome.c.most_recent == true(), _fact_asmt_outcome.c.asmt_type == self.asmt_type))
         if self.state_code is not None:
             query = query.where(and_(_fact_asmt_outcome.c.state_code == self.state_code))
         if self.district_guid is not None:

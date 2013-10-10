@@ -74,6 +74,8 @@ define [
         sortBtn.trigger 'click'
         
     hideEmptyData: () ->
+      # remove all empty dropdown
+      $('.dropdown', this.dropdownSection).remove()
       for subject, asmtSubject of this.asmtSubjectsData
         if not this.hasData(subject) and this.hasMenu(subject)
           $(this.menus[subject]).remove()
@@ -87,11 +89,11 @@ define [
             config = this.generateConfig(subject, asmtSubject)
             menu = new EdwareDropdownMenu(this, config)
             #cache generated dropdown menu
-            this.menus[subject] = menu
             $(this.dropdownSection).append menu
+            this.menus[subject] = menu
           else
             # append an empty div as a placeholder for a dropdown that shouldn't be rendered
-            $(this.dropdownSection).append '<div class="dropdown clearfix"></div>'
+            menu = $('<div class="dropdown clearfix"></div>')
           
     hasData: (subject) ->
       this.summaryData.results and this.summaryData.results[subject] and this.summaryData.results[subject].total != -1

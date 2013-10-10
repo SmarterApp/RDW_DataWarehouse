@@ -221,7 +221,16 @@ define [
         filterName = $(this).data('name')
         count = data[filterName]
         percentage = Math.round(count * 100.0 / total)
-        self.updatePercentage(this, percentage) if count > 0
+        if count > 0
+          # show percentage
+          self.updatePercentage(this, percentage)
+        else
+          # hide percentage
+          self.hidePercentage(this)
+
+    hidePercentage: (filter) ->
+      $('p.not_stated', filter).remove()
+      
           
     updatePercentage: (filter, percentage) ->
       output = Mustache.to_html this.template, { 'percentage': percentage }

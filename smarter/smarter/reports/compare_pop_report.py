@@ -47,6 +47,11 @@ DEFAULT_MIN_CELL_SIZE = 0
             "type": "string",
             "required": False,
             "pattern": "^[a-zA-Z0-9\-]{0,50}$",
+        },
+        Constants.ASMTTYPE: {
+            "type": "string",
+            "required": False,
+            "pattern": "^[a-zA-Z0-9 ]{0,50}$",
         }
     }, FILTERS_CONFIG))
 @audit_event()
@@ -124,7 +129,7 @@ class ComparingPopReport(object):
     '''
     Comparing populations report
     '''
-    def __init__(self, stateCode=None, districtGuid=None, schoolGuid=None, tenant=None, **filters):
+    def __init__(self, stateCode=None, districtGuid=None, schoolGuid=None, asmtType=AssessmentType.SUMMATIVE, tenant=None, **filters):
         '''
         :param string stateCode:  State code representing the state
         :param string districtGuid:  Guid of the district, could be None
@@ -135,6 +140,7 @@ class ComparingPopReport(object):
         self.state_code = stateCode
         self.district_guid = districtGuid
         self.school_guid = schoolGuid
+        self.asmt_type = asmtType
         self.tenant = tenant
         self.filters = filters
 
@@ -162,7 +168,8 @@ class ComparingPopReport(object):
         :rtype: dict
         :returns: A comparing populations report based on parameters supplied
         '''
-        params = {Constants.STATECODE: self.state_code, Constants.DISTRICTGUID: self.district_guid, Constants.SCHOOLGUID: self.school_guid, 'filters': self.filters}
+        params = {Constants.STATECODE: self.state_code, Constants.DISTRICTGUID: self.district_guid, \
+                  Constants.SCHOOLGUID: self.school_guid, Constants.ASMTTYPE: self.asmt_type, 'filters': self.filters}
         results = self.run_query(**params)
 
         # Only return 404 if results is empty and there are no filters being applied
@@ -356,10 +363,11 @@ class QueryHelper():
     '''
     Helper class to build a sqlalchemy query based on the view type (state, district, or school)
     '''
-    def __init__(self, connector, stateCode=None, districtGuid=None, schoolGuid=None, filters=None):
+    def __init__(self, connector, stateCode=None, districtGuid=None, schoolGuid=None, asmtType=AssessmentType.SUMMATIVE, filters=None):
         self._state_code = stateCode
         self._district_guid = districtGuid
         self._school_guid = schoolGuid
+        self._asmt_type = asmtType
         self._filters = filters
         if self._state_code is not None and self._district_guid is None and self._school_guid is None:
             self._f = self.get_query_for_state_view
@@ -382,7 +390,7 @@ class QueryHelper():
                    func.count().label(Constants.TOTAL)],
                   from_obj=[self._fact_asmt_outcome.join(self._dim_inst_hier, and_(self._dim_inst_hier.c.inst_hier_rec_id == self._fact_asmt_outcome.c.inst_hier_rec_id))]
                   )\
-            .where(and_(self._fact_asmt_outcome.c.state_code == self._state_code, self._fact_asmt_outcome.c.most_recent == true(), self._fact_asmt_outcome.c.asmt_type == AssessmentType.SUMMATIVE))\
+            .where(and_(self._fact_asmt_outcome.c.state_code == self._state_code, self._fact_asmt_outcome.c.most_recent == true(), self._fact_asmt_outcome.c.asmt_type == self._asmt_type))\
             .group_by(self._fact_asmt_outcome.c.asmt_subject,
                       self._fact_asmt_outcome.c.asmt_perf_lvl)\
             .order_by(self._fact_asmt_outcome.c.asmt_subject.desc())

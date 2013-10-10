@@ -22,6 +22,8 @@ class Constants():
     SCHOOLGUID = 'schoolGuid'
     ASMTSUBJECT = 'asmtSubject'
     ASMT_SUBJECT = 'asmt_subject'
+    ASMTTYPE = 'asmtType'
+    ASMT_TYPE = 'asmt_type'
     ASMT_GRADE = 'asmt_grade'
     ASMT_GRADE_NAME = 'asmt_grade_name'
     ASMTGRADE = 'asmtGrade'

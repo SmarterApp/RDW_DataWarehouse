@@ -16,11 +16,14 @@ define [
   "edwareDropdown"
   "edwareGridStickyCompare"
   "edwarePreferences"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwareDropdown, edwareStickyCompare, edwarePreferences) ->
+  "edwareAsmtDropdown"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwareDropdown, edwareStickyCompare, edwarePreferences, edwareAsmtDropdown) ->
 
   REPORT_NAME = "comparingPopulationsReport"
 
   POPULATION_BAR_WIDTH = 145
+
+  DEFAULT_ASMT_TYPE = "SUMMATIVE"
 
   class ConfigBuilder
     ### Grid configuration builder. ###
@@ -70,6 +73,20 @@ define [
         index: 0
       }
       this.stickyCompare = new edwareStickyCompare.EdwareGridStickyCompare this.renderGrid.bind(this)
+      this.asmtTypes = for asmtType in config.students.customViews.asmtTypes
+        asmtType.name
+      
+    # Create assessment type dropdown
+    createAsmtDropdown: () ->
+      if this.reportType isnt 'school'
+        # only show asmt type dropdown on school view
+        return
+      self = this
+      this.asmtDropdown = $('#asmtDropdownSection').edwareAsmtDropdown this.asmtTypes, (asmtType) ->
+        # save assessment type
+        edwarePreferences.saveAsmtPreference asmtType.toUpperCase()
+        self.reload self.param
+      this.asmtDropdown.create()
 
     setFilter: (filter) ->
       this.filter = filter
@@ -82,6 +99,10 @@ define [
       # initialize variables
       this.reportType = this.getReportType(param)
       this.updateAsmtTypePreference()
+      # create assessment type dropdown list
+      this.createAsmtDropdown() if not this.asmtDropdown
+      # set current query assessment type
+      param.asmtType = this.currentAsmtType
       self = this
       this.fetchData param, (data)->
         self.data = data
@@ -95,8 +116,8 @@ define [
             self.data.metadata[subject] = self.defaultColors
 
         # process breadcrumbs
-        self.renderBreadcrumbs(data.context)
-        self.stickyCompare.setReportInfo self.reportType, self.breadcrumbs.getOrgType(), self.breadcrumbs.getDisplayType(), param
+        self.renderBreadcrumbs(self.data.context)
+        self.stickyCompare.setReportInfo self.reportType, self.breadcrumbs.getOrgType(), self.breadcrumbs.getDisplayType(), self.param
         self.createGrid()
         self.updateDropdown()
         self.updateFilter()
@@ -105,10 +126,9 @@ define [
     updateAsmtTypePreference: () ->
       if this.reportType in ['state', 'district']
         # Reset back to summative
-        edwarePreferences.saveAsmtPreference 'Summative'
-      else
-        # Use this assessment type for school view
-        this.currentAsmtType = edwarePreferences.getAsmtPreference()
+        edwarePreferences.saveAsmtPreference DEFAULT_ASMT_TYPE
+      # Use this assessment type for school view
+      this.currentAsmtType = edwarePreferences.getAsmtPreference()
 
     updateFilter: ()->
       this.filter.update this.notStatedData

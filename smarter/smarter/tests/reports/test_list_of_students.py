@@ -150,8 +150,8 @@ class TestLOS(Unittest_with_smarter_sqlite):
         testParam = {'asmtGrade': '3', 'stateCode': 'NY', 'districtGuid': '228', 'schoolGuid': '242'}
         results = get_list_of_students_report(testParam)
         self.assertEqual(len(results['assessments']), 35)
-        self.assertIsNotNone(results['assessments'][0]['COMPREHENSIVE INTERIM']['subject1'])
-        self.assertIsNotNone(results['assessments'][0]['SUMMATIVE']['subject1'])
+        self.assertIsNotNone(results['assessments'][0]['Comprehensive Interim']['subject1'])
+        self.assertIsNotNone(results['assessments'][0]['Summative']['subject1'])
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testReport']

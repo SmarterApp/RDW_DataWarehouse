@@ -23,6 +23,7 @@ from smarter.reports.helpers.filters import apply_filter_to_query,\
     has_filters, FILTERS_CONFIG
 from smarter.reports.helpers.utils import merge_dict
 from smarter.reports.helpers.compare_pop_stat_report import get_not_stated_count
+from string import capwords
 
 REPORT_NAME = "list_of_students"
 PARAMS = merge_dict({
@@ -112,7 +113,7 @@ def get_list_of_students_report(params):
         assessments = {}
         if student_guid in students:
             student = students[student_guid]
-            assessments = student.get(result['asmt_type'], {})
+            assessments = student.get(capwords(result['asmt_type'], ' '), {})
         else:
             student['student_guid'] = result['student_guid']
             student['student_first_name'] = result['student_first_name']
@@ -124,7 +125,7 @@ def get_list_of_students_report(params):
         assessment['teacher_full_name'] = format_full_name_rev(result['teacher_first_name'], result['teacher_middle_name'], result['teacher_last_name'])
         assessment['asmt_grade'] = result['asmt_grade']
         assessment['asmt_score'] = result['asmt_score']
-        assessment['asmt_type'] = result['asmt_type']
+        assessment['asmt_type'] = capwords(result['asmt_type'], ' ')
         assessment['asmt_score_range_min'] = result['asmt_score_range_min']
         assessment['asmt_score_range_max'] = result['asmt_score_range_max']
         assessment['asmt_score_interval'] = get_overall_asmt_interval(result)
@@ -132,7 +133,7 @@ def get_list_of_students_report(params):
         assessment['claims'] = get_claims(number_of_claims=4, result=result, include_scores=True)
 
         assessments[subjects_map[result['asmt_subject']]] = assessment
-        student[result['asmt_type']] = assessments
+        student[capwords(result['asmt_type'], ' ')] = assessments
 
         students[student_guid] = student
 

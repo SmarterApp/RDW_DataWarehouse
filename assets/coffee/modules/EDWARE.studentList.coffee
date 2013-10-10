@@ -118,17 +118,18 @@ define [
     # Also append cutpoints & colors into each assessment
     formatAssessmentsData: (assessmentCutpoints) ->
       this.cache = {}
+      allSubjects = this.data.subjects.subject1 + "_" + this.data.subjects.subject2
       for asmt in this.asmtTypes
         asmtType = asmt['name']
         this.cache[asmtType] = {} if not this.cache[asmtType]
-        this.cache[asmtType]['Math_ELA'] = [] if not this.cache[asmtType]['Math_ELA']
+        this.cache[asmtType][allSubjects] = [] if not this.cache[asmtType][allSubjects]
         for row in this.assessmentsData
           # Format student name
           row['student_full_name'] = edwareUtil.format_full_name_reverse row['student_first_name'], row['student_middle_name'], row['student_last_name']
           # This is for links in drill down
           row['params'] = {"studentGuid": row['student_guid']}
-          assessment = row[asmtType.toUpperCase()]
-          this.cache[asmtType]['Math_ELA'].push row if assessment
+          assessment = row[asmtType]
+          this.cache[asmtType][allSubjects].push row if assessment
           for key, value of this.subjectsData
             # check that we have such assessment first, since a student may not have taken it
             if assessment and key of assessment
@@ -166,7 +167,7 @@ define [
       data = this.cache[asmtType][viewName]
       if data
         for item in data
-          item.assessments = item[asmtType.toUpperCase()]
+          item.assessments = item[asmtType]
       data
 
     createColumns: () ->

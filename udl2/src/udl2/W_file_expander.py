@@ -30,7 +30,7 @@ def task(incoming_msg):
     file_util.create_directory(expanded_dir)
     #unpacked_json_file = unpack_json_file(file_to_expand, expanded_dir, incoming_msg[mk.JSON_FILENAME])
     #unpacked_csv_file = unpack_csv_file(file_to_expand, expanded_dir, incoming_msg[mk.CSV_FILENAME])
-    expanded_file = expand_file(file_to_expand, expanded_dir)
+    file_contents = expand_file(file_to_expand, expanded_dir)
 
     logger.info('W_FILE_EXPANDER: expanded file <%s> with guid_batch = <%s> to <%s> and <%s>' % (file_to_expand, guid_batch, expanded_file, expanded_file))
 

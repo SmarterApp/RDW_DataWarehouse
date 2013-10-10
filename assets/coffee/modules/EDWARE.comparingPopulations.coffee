@@ -84,7 +84,7 @@ define [
         # only show asmt type dropdown on school view
         return
       self = this
-      this.asmtDropdown = $('#asmtDropdownSection').edwareAsmtDropdown this.asmtTypes, (asmtType) ->
+      this.asmtDropdown = $('#asmtDropdown').edwareAsmtDropdown this.asmtTypes, (asmtType) ->
         # save assessment type
         edwarePreferences.saveAsmtPreference asmtType.toUpperCase()
         self.reload self.param

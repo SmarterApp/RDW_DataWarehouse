@@ -99,7 +99,17 @@ define [
       # populate select view, only create the dropdown when it doesn't exit
       if not this.asmtTypeDropdown
         this.createDropdown()
-      this.renderGrid this.asmtTypeDropdown.getAsmtType(), this.asmtTypeDropdown.getCurrentView()
+      # Get asmtType from storage
+      asmtType = edwarePreferences.getAsmtPreference() || 'Summative'
+      currentView = this.data.subjects.subject1 + "_" + this.data.subjects.subject2      
+      this.updateView asmtType, currentView
+    
+    updateView: (asmtType, viewName) ->
+      # set dropdown text
+      this.asmtTypeDropdown.setSelectedText asmtType, viewName
+      # save preference to storage
+      edwarePreferences.saveAsmtPreference asmtType
+      this.renderGrid asmtType, viewName
       
     fetchData: (params) ->
       # Determine if the report is state, district or school view"
@@ -147,9 +157,6 @@ define [
               this.cache[asmtType][value].push row
 
     renderGrid: (asmtType, viewName) ->
-      # set dropdown text, replace spaces with _ for selector id
-      name = asmtType.replace /\s+/g, "_"
-      $('#select_measure_current_view').text $('#'+ name + '_' + viewName).text()
       $('#gridTable').jqGrid('GridUnload')
       
       edwareGrid.create {
@@ -181,9 +188,7 @@ define [
 
     # creating the assessment view drop down
     createDropdown: ()->
-      self = this
-      this.asmtTypeDropdown = new AsmtTypeDropdown this.studentsConfig.customViews, this.subjectsData, (asmtType, viewName) ->
-        self.renderGrid asmtType, viewName
+      this.asmtTypeDropdown = new AsmtTypeDropdown this.studentsConfig.customViews, this.subjectsData, this.updateView.bind(this)
 
     renderHeaderPerfBar: (cutPointsData) ->
       for key of cutPointsData
@@ -213,7 +218,6 @@ define [
           output = Mustache.to_html LOS_HEADER_BAR_TEMPLATE, items
           $("#"+key+"_perfBar").html(output) 
 
-
   class AsmtTypeDropdown
   
     constructor: (customViews, subjects, @callback) ->
@@ -226,7 +230,7 @@ define [
             'key': Mustache.to_html(key, subjects)
             'value': Mustache.to_html(value, subjects)
             'asmtType': asmtType['name']
-            'id': asmtType['name'].replace /\s+/g, "_"
+            'id': this.formatAsmt asmtType['name']
           }
       $("#asmtTypeDropdown").html Mustache.to_html DROPDOWN_VIEW_TEMPLATE, {'items': items}
       # bind events
@@ -258,5 +262,13 @@ define [
 
     getAsmtType: ()->
       this.asmtType
-  
+      
+    formatAsmt: (asmt) ->
+      # Replaces spaces with _ for html id purposes
+      asmt.replace /\s+/g, "_"
+    
+    setSelectedText:(asmtType, view) ->
+      name = this.formatAsmt asmtType
+      $('#select_measure_current_view').text $('#'+ name + '_' + view).text()
+
   StudentGrid: StudentGrid

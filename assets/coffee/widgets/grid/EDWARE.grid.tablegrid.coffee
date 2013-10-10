@@ -16,8 +16,8 @@ define [
       viewrecords: true
       autoencode: true
       rowNum: 100
-      scroll: true
-      gridview: true
+      gridview: true 
+      scroll: 1
       shrinkToFit: false
       defaultWidth: 980
       loadComplete: () ->

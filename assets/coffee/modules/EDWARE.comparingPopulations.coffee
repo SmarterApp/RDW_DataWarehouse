@@ -89,6 +89,8 @@ define [
         edwarePreferences.saveAsmtPreference asmtType
         self.reload self.param
       this.asmtDropdown.create()
+      # select default asmt type
+      this.asmtDropdown.setSelectedValue this.currentAsmtType
 
     setFilter: (filter) ->
       this.filter = filter

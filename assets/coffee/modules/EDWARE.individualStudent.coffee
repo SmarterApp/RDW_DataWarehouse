@@ -89,8 +89,8 @@ define [
           self.createDropdown()
           
           # Temp for testing
-          # self.d = $('#disclaimerInfo').edwareDisclaimer()
-          # self.d.create()
+          self.d = $('#disclaimerInfo').edwareDisclaimer()
+          self.d.create()
           
           self.currentAsmtType = self.asmtTypes[0] if self.asmtTypes.indexOf("Summative") is -1
           
@@ -335,6 +335,7 @@ define [
 
     # Create assessment type dropdown
     createDropdown : () ->
+      this.asmtTypes = this.asmtTypes.sort().reverse()
       this.dropdown = $('#asmtDropdownSection').edwareAsmtDropdown this.asmtTypes, this.updateView.bind(this)
       this.dropdown.create()
       this.dropdown.setSelectedValue this.currentAsmtType     

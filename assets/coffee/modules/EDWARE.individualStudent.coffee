@@ -13,7 +13,8 @@ define [
   "edwareHeader"
   "edwareAsmtDropdown"
   "edwarePreferences"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareConfidenceLevelBar, edwareClaimsBar, indivStudentReportTemplate, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwareAsmtDropdown, edwarePreferences) ->
+  "edwareDisclaimer"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareConfidenceLevelBar, edwareClaimsBar, indivStudentReportTemplate, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwareAsmtDropdown, edwarePreferences, edwareDisclaimer) ->
   
   # claim score weight in percentage
   claimScoreWeightArray = {
@@ -86,6 +87,11 @@ define [
         if not self.isPdf
           self.createBreadcrumb()
           self.createDropdown()
+          
+          # Temp for testing
+          # self.d = $('#disclaimerInfo').edwareDisclaimer()
+          # self.d.create()
+          
           self.currentAsmtType = self.asmtTypes[0] if self.asmtTypes.indexOf("Summative") is -1
           
         self.render self.currentAsmtType

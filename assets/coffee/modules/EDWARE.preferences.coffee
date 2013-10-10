@@ -14,12 +14,20 @@ define [
   
   getSelectedLanguage = () ->
     iso_language = getPreferences()
-    lang_id = iso_language.language_id if iso_language
+    lang_id = iso_language.languageId if iso_language
     lang_id || edwareUtil.getUrlParams()['lang'] ||'en'
 
   saveSelectedLanguage = (lang) ->
-    savePreferences {"language_id": lang}
+    savePreferences {"languageId": lang}
 
+  getInterimInfo = () ->
+    pref = getPreferences()
+    info = pref.interimDisclaimer if pref
+    info || false
+  
+  saveInterimInfo = () ->
+    savePreferences {"interimDisclaimerLoaded": true}
+    
   savePreferences = (data) ->
     clientStorage.preferences.update(data)
     
@@ -30,5 +38,7 @@ define [
   getAsmtPreference:getAsmtPreference
   getSelectedLanguage: getSelectedLanguage
   saveSelectedLanguage: saveSelectedLanguage
+  getInterimInfo:getInterimInfo
+  saveInterimInfo:saveInterimInfo
   savePreferences:savePreferences
   getPreferences:getPreferences

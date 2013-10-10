@@ -33,6 +33,7 @@ require({
         edwareGridStickyCompare: '../widgets/grid/EDWARE.grid.stickyCompare',
         edwareAsmtDropdown: '../widgets/asmtDropdown/EDWARE.asmtDropdown',
         edwarePreferences: 'EDWARE.preferences',
+        edwareDisclaimer: '../widgets/interimDisclaimer/EDWARE.disclaimer',
 
 		// Templates
 		edwareBreadcrumbsTemplate: '../widgets/breadcrumb/template.html',

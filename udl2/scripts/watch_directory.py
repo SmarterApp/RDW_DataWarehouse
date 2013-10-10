@@ -1,5 +1,5 @@
 import argparse
-from pyinotify import WatchManager, Notifier, ThreadedNotifier, EventsCodes, ProcessEvent
+from pyinotify import WatchManager, Notifier, ThreadedNotifier, EventsCodes, ProcessEvent, IN_CLOSE_WRITE
 
 __author__ = 'swimberly'
 
@@ -18,7 +18,7 @@ def monitor_directory(directory_path):
     """
     wm = WatchManager()
 
-    mask = EventsCodes.IN_CLOSE_WRITE  # watched events
+    mask = IN_CLOSE_WRITE  # watched events
 
     handler = EventHandler()
     notifier = Notifier(wm, handler)

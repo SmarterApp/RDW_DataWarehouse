@@ -50,7 +50,7 @@ class TestFileExpander(unittest.TestCase):
     def test_expander_for_corrupted_file(self):
         assert os.path.isfile(self.test_corrupted_file)
         try:
-            file_expander.expand_file(self.test_invalid_file, self.expanded_dir)
+            file_expander.expand_file(self.test_corrupted_file, self.expanded_dir)
         except Exception as e:
             print('Exception -- ', e)
         assert not os.path.exists(self.expanded_dir)

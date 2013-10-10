@@ -10,8 +10,12 @@ define [
     constructor: (@dropdown, @config, @callback) ->
       this.menu = this.create()
       this.arrows = $('.arrow', this.menu)
+      this
+
+    getElement: ()->
+      # bind events
       this.bindEvents()
-      return this.menu
+      this.menu
     
     bindEvents: () ->
       self = this;
@@ -74,27 +78,27 @@ define [
         sortBtn.trigger 'click'
         
     hideEmptyData: () ->
-      # remove all empty dropdown
-      $('.dropdown', this.dropdownSection).remove()
-      for subject, asmtSubject of this.asmtSubjectsData
-        if not this.hasData(subject) and this.hasMenu(subject)
-          $(this.menus[subject]).remove()
-          this.menus[subject] = undefined
+      # remove all dropdown menus
+      $(this.dropdownSection).empty()
     
     create: () ->
       for subject in Object.keys(this.asmtSubjectsData).sort()
         asmtSubject = this.asmtSubjectsData[subject]
-        if this.hasSubject(subject) and not this.hasMenu(subject)
-          if this.hasData(subject)
-            config = this.generateConfig(subject, asmtSubject)
-            menu = new EdwareDropdownMenu(this, config)
+        if this.hasSubject(subject) and this.hasData(subject)
+          if not this.hasMenu(subject)
             #cache generated dropdown menu
-            $(this.dropdownSection).append menu
-            this.menus[subject] = menu
-          else
-            # append an empty div as a placeholder for a dropdown that shouldn't be rendered
-            menu = $('<div class="dropdown clearfix"></div>')
-          
+            this.menus[subject] = this.createMenu subject, asmtSubject
+          menu = this.menus[subject].getElement()
+        else
+          # append an empty div as a placeholder for a dropdown that shouldn't be rendered
+          menu = $('<div class="dropdown clearfix"></div>')
+          this.menus[subject] = undefined
+        $(this.dropdownSection).append menu
+
+    createMenu: (subject, asmtSubject) ->
+      config = this.generateConfig(subject, asmtSubject)
+      new EdwareDropdownMenu(this, config)
+                      
     hasData: (subject) ->
       this.summaryData.results and this.summaryData.results[subject] and this.summaryData.results[subject].total != -1
 

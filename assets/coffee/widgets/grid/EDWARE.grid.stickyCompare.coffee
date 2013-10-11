@@ -75,6 +75,11 @@ define [
       $(document).on 'click', '.stickyCompareRemove', () ->
         self.removeCurrentRow this
         self.updateSelection()
+      
+      # On logout, clear storage
+      $(document).on 'click', '#logout_button', () ->
+        # clear session storage
+        self.storage.clear()
     
     # Given a row in the grid, add its value to selectedRows
     addCurrentRow: (row) ->

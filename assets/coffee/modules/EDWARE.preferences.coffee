@@ -8,6 +8,10 @@ define [
   
   shortTermStorage = new clientStorage.EdwareClientStorage KEY, false
   longTermStorage = new clientStorage.EdwareClientStorage KEY, true
+  
+  # On logout, clear storage
+  $(document).on 'click', '#logout_button', () ->
+    shortTermStorage.clear()
 
   saveAsmtPreference = (asmtType) ->
     savePreferences {"asmtType": asmtType}

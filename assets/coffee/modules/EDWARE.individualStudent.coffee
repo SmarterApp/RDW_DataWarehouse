@@ -89,7 +89,7 @@ define [
           self.createDropdown()
           
           # Temp for testing
-          self.d = $('#disclaimerInfo').edwareDisclaimer()
+          self.d = $('#disclaimerInfo').edwareDisclaimer self.configData.interimDisclaimer
           self.d.create()
           
           self.currentAsmtType = self.asmtTypes[0] if self.asmtTypes.indexOf("Summative") is -1

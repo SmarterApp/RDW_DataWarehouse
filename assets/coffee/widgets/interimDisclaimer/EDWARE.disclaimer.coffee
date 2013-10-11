@@ -7,15 +7,11 @@ define [
   # TODO: put content in json and i18n
   DISCLAIMER_TEMPLATE =  
     '<div class="interimDisclaimerIcon">' +
-    '<div class="interimDisclaimer hide">' +
-     '1.      Tasks and items on interim tests are scored locally by teachers  This is a professional development opportunity for teachers that promotes understanding of scoring activity. Local scoring, however, is not subject to the rigorous controls used in summative assessment. Local results may show some variation.' +
-     '2.      Interim assessment questions are not secure. They may be used for classroom discussion or in shorter, more targeted tests.  When this is the case, familiarity with test questions my affect student performance.' +
-     '3.      If test questions are shared widely, item parameters may differ from those established in secure field testing. This affects the accuracy of interim scale scores.' +
-     '</div>' +
+    '<div class="interimDisclaimer hide">{{{content}}}</div>' +
      '</div>'
   class EdwareDisclaimer
     
-    constructor: (@disclaimerSection) ->
+    constructor: (@disclaimerSection, @content) ->
       this.bindEvents()
       this
       
@@ -40,7 +36,8 @@ define [
 
     # Call this to create the disclaimer icon
     create: () ->
-      this.disclaimerSection.html DISCLAIMER_TEMPLATE
+      output = Mustache.to_html DISCLAIMER_TEMPLATE, {'content': this.content}
+      this.disclaimerSection.html output
       if not this.hasLoaded()
         # TODO make popup and make it stay
         
@@ -54,6 +51,6 @@ define [
       edwarePreferences.saveInterimInfo()
         
   (($)->
-    $.fn.edwareDisclaimer = () ->
-      new EdwareDisclaimer($(this))
+    $.fn.edwareDisclaimer = (content) ->
+      new EdwareDisclaimer($(this), content)
   ) jQuery

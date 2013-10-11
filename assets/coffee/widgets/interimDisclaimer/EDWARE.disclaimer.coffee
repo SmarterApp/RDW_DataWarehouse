@@ -4,11 +4,10 @@ define [
   "edwarePreferences"
 ], ($, Mustache, edwarePreferences) ->
   
-  # TODO: put content in json and i18n
   DISCLAIMER_TEMPLATE =  
     '<div class="interimDisclaimerIcon">' +
-    '<div class="interimDisclaimer hide">{{{content}}}</div>' +
-     '</div>'
+      '<div class="interimDisclaimer hide">{{{content}}}</div>' +
+    '</div>'
   class EdwareDisclaimer
     
     constructor: (@disclaimerSection, @content) ->

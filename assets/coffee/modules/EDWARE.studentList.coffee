@@ -10,7 +10,8 @@ define [
   "edwareFooter"
   "edwareHeader"
   "edwarePreferences"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwarePreferences) ->
+  "edwareDisclaimer"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwarePreferences, edwareDisclaimer) ->
 
   REPORT_NAME = 'studentList'
   
@@ -98,8 +99,8 @@ define [
       # set school name as the page title from breadcrumb
       $("#school_name").html this.contextData.items[2].name
       # populate select view, only create the dropdown when it doesn't exit
-      if not this.asmtTypeDropdown
-        this.createDropdown()
+      this.createDropdown() if not this.asmtTypeDropdown
+      this.createDisclaimer() if not this.disclaimer
       # Get asmtType from storage
       asmtType = edwarePreferences.getAsmtPreference() || 'Summative'
       currentView = this.data.subjects.subject1 + "_" + this.data.subjects.subject2      
@@ -110,6 +111,7 @@ define [
       this.asmtTypeDropdown.setSelectedText asmtType, viewName
       # save preference to storage
       edwarePreferences.saveAsmtPreference asmtType
+      this.updateDisclaimer asmtType
       this.renderGrid asmtType, viewName
       
     fetchData: (params) ->
@@ -190,6 +192,13 @@ define [
     # creating the assessment view drop down
     createDropdown: ()->
       this.asmtTypeDropdown = new AsmtTypeDropdown this.studentsConfig.customViews, this.subjectsData, this.updateView.bind(this)
+    
+    createDisclaimer: () ->
+      this.disclaimer = $('#losDisclaimerInfo').edwareDisclaimer this.config.interimDisclaimer
+      this.disclaimer.create()
+
+    updateDisclaimer: (asmtType) ->
+      this.disclaimer.update asmtType
 
     renderHeaderPerfBar: (cutPointsData) ->
       for key of cutPointsData
@@ -239,7 +248,7 @@ define [
       # the first element name as default view
       this.currentView = items[0].key
       this.asmtType = items[0].asmtType
-
+      
     bindEvents: () ->
       self = this
       # add event to change view for assessment

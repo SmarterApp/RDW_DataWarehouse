@@ -432,7 +432,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         self.assertEqual(results['not_stated']['dmgPrgLep'], 1)
         self.assertEqual(results['not_stated']['dmgPrgTt1'], 1)
         self.assertEqual(results['not_stated']['ethnicity'], 1)
-        self.assertEqual(results['not_stated']['gender'], 0)
+        self.assertEqual(results['not_stated']['gender'], 1)
 
     def test_filter_with_unfiltered_results(self):
         testParam = {}

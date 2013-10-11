@@ -168,7 +168,7 @@ class ComparingPopReport(object):
         :rtype: dict
         :returns: A comparing populations report based on parameters supplied
         '''
-        params = {Constants.STATECODE: self.state_code, Constants.DISTRICTGUID: self.district_guid, \
+        params = {Constants.STATECODE: self.state_code, Constants.DISTRICTGUID: self.district_guid,
                   Constants.SCHOOLGUID: self.school_guid, Constants.ASMTTYPE: self.asmt_type, 'filters': self.filters}
         results = self.run_query(**params)
 

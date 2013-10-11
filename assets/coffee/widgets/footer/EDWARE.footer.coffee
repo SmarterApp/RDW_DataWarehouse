@@ -36,7 +36,6 @@ define [
     $(id).popover("hide")
    
   createPopover =(labels) ->
-    
     # Survey monkey popup
     $("#feedback").popover
       html: true

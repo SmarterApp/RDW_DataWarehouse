@@ -3,11 +3,11 @@ define [
   "mustache"
   "bootstrap"
   "edwareConfidenceLevelBar"
-  "edwareSessionStorage"
+  "edwareClientStorage"
   "text!edwareFooterHtml"
   "edwareLegend"
   "edwarePreferences"
-], ($, Mustache, bootstrap, edwareConfidenceLevelBar, edwareSessionStorage, footerTemplate, edwareLegend, edwarePreferences) ->
+], ($, Mustache, bootstrap, edwareConfidenceLevelBar, edwareClientStorage, footerTemplate, edwareLegend, edwarePreferences) ->
   
   $.fn.generateFooter = (reportName, content, legend, labels) ->
     this.html Mustache.to_html footerTemplate, {
@@ -135,7 +135,7 @@ define [
     click: ->
       val=$('input[name=export_options]:checked').val()
       # We need to read the params in session storage, remove edwareSessionStorage when this code gets moved from footer
-      params = JSON.parse edwareSessionStorage.filterStorage.load()
+      params = JSON.parse edwareClientStorage.filterStorage.load()
       url = window.location.protocol + "//" + window.location.host + "/data/list_of_students_csv?" + $.param(params, true) + "&content-type=text/csv"
       $("#export").popover "hide"
       $("#footer .nav li a").removeClass("active")

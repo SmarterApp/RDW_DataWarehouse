@@ -2,9 +2,9 @@ define [
   'jquery'
   'mustache'
   'edwareUtil'
-  'edwareSessionStorage'
+  'edwareClientStorage'
   'text!edwareStickyCompareTemplate'
-], ($, Mustache, edwareUtil, edwareSessionStorage, edwareStickyCompareTemplate) ->
+], ($, Mustache, edwareUtil, edwareClientStorage, edwareStickyCompareTemplate) ->
   
   class EdwareGridStickyCompare
     
@@ -13,7 +13,7 @@ define [
       this
       
     initialize: () ->
-      this.storage = edwareSessionStorage.stickyCompStorage
+      this.storage = edwareClientStorage.stickyCompStorage
       this.bindEvents()
       this.createButtonBar()
       this.selectedRows = []

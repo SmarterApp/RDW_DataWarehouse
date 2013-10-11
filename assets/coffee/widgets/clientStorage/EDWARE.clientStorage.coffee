@@ -1,5 +1,5 @@
 ###
-# Edware Session Storage #
+# Edware client Storage #
 
 This module provides client side session storage.
 ###
@@ -7,10 +7,11 @@ define [
   "jquery"
   "edwareUtil"
 ], ($, edwareUtil) ->
-
+  
   clearAll = () ->
-    ### Clears all session storage. ###
+    ### Clears all client storage. ###
     sessionStorage.clear()
+    localStorage.clear()
 
   loadKeyPrefix = () ->
     ### Loads user information and use user guid as key prefix. ###
@@ -28,39 +29,43 @@ define [
 
   PREFIX = loadKeyPrefix()
 
-  ### Edware session storage. ###
-  class EdwareSessionStorage
+  ### Edware client storage. ###
+  class EdwareClientStorage
 
-    constructor: (key) ->
-      ### Constructor with storage key as parameter. ###
+    constructor: (key, @isLongTerm) ->
+      ### Constructor with storage key, and whether we should use localStorage vs. sessionStorage as parameter. ###
       this.key = PREFIX + key
+      # By default, we use sessionStorage unless isLongTerm is true
+      this.isLongTerm = if typeof @isLongTerm isnt "undefined" then @isLongTerm else false
+      this.storage = if this.isLongTerm then localStorage else sessionStorage
+      this
 
     load: () ->
       ### Loads data from session storage###
-      sessionStorage.getItem(this.key)
+      this.storage.getItem(this.key)
 
     save: (data) ->
       ###
       Saves data into session storage.
       Data must be able to convert to a JSON string in order to be put into session storage.
       ###
-      sessionStorage.setItem(this.key, JSON.stringify(data))
+      this.storage.setItem(this.key, JSON.stringify(data))
     
     update: (data) ->
       ###
       Merge data into existing storage
       ###
       merged = $.extend(JSON.parse(this.load() || "{}"), data)
-      sessionStorage.setItem(this.key, JSON.stringify(merged))
+      this.storage.setItem(this.key, JSON.stringify(merged))
     
     clear: () ->
       ### Clear data ###
-      sessionStorage.removeItem(this.key)
+      this.storage.removeItem(this.key)
 
   ###
   Filter Storage
   ###
-  filterStorage: new EdwareSessionStorage('edware.filter.params')
-  preferences: new EdwareSessionStorage('edware.preferences')
-  stickyCompStorage: new EdwareSessionStorage('edware.sticky.comparison')
+  filterStorage: new EdwareClientStorage('edware.filter.params')
+  stickyCompStorage: new EdwareClientStorage('edware.sticky.comparison')
+  EdwareClientStorage: EdwareClientStorage
   clearAll: clearAll

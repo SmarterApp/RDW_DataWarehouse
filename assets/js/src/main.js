@@ -28,7 +28,7 @@ require({
 		edwareLoadingMask: '../widgets/loadingMask/EDWARE.loadingMask',
 		edwareFilter: '../widgets/filter/EDWARE.filter',
 		edwareDropdown: '../widgets/dropdown/EDWARE.dropdown',
-        edwareSessionStorage: '../widgets/clientStorage/EDWARE.sessionStorage',
+        edwareClientStorage: '../widgets/clientStorage/EDWARE.clientStorage',
         edwareLanguageSelector: '../widgets/languageSelector/EDWARE.languageSelector',
         edwareGridStickyCompare: '../widgets/grid/EDWARE.grid.stickyCompare',
         edwareAsmtDropdown: '../widgets/asmtDropdown/EDWARE.asmtDropdown',

@@ -4,9 +4,9 @@ define [
   "bootstrap"
   "edwareDataProxy"
   "edwareUtil"
-  "edwareSessionStorage"
+  "edwareClientStorage"
   "text!edwareFilterTemplate"
-], ($, Mustache, bootstrap, edwareDataProxy, edwareUtil, edwareSessionStorage, filterTemplate) ->
+], ($, Mustache, bootstrap, edwareDataProxy, edwareUtil, edwareClientStorage, filterTemplate) ->
   
   # * EDWARE filter widget
   # * The module contains EDWARE filter creation method
@@ -39,7 +39,7 @@ define [
       this.tagPanel = $('.filters', this.tagPanelWrapper)
       this.clearAllButton = $('.removeAllFilters', this.filterArea)
       # set session storage
-      this.storage = edwareSessionStorage.filterStorage
+      this.storage = edwareClientStorage.filterStorage
       this.template = this.configs['not_stated_message']
 
     loadPage: ->
@@ -86,7 +86,7 @@ define [
         self.showOptions $(this).closest('.btn-group')
 
       # bind logout events
-      $("#logout_button").click ->
+      $(document).on 'click', '#logout_button', () ->
         # clear session storage
         self.storage.clear()
 

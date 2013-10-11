@@ -23,16 +23,14 @@ define [
       $(document).on 'mouseenter', '.interimDisclaimerIcon', (e) ->
           e = $(this)
           e.popover
+            html: true
             placement: "bottom"
             trigger: "hover"
             template: DISCLAIMER_POPOVER_TEMPLATE
+            container: '.interimDisclaimerIcon'
             content: ->
-              e.find(".interimDisclaimer").html() 
+              e.find(".interimDisclaimer").html()
           .popover("show")
-
-      # Hide tooltip when click
-      $(document).on 'click', '.interimDisclaimerPopover', () ->
-        $(this).fadeOut(150)
 
     # Call this to create the disclaimer icon
     create: () ->

@@ -41,7 +41,7 @@ define [
     $("#feedback").popover
       html: true
       placement: "top"
-      container: "footer"
+      container: 'body'
       title: ->
           '<div class="pull-right hideButton"><a class="pull-right" href="#" id="close" data-id="feedback">'+labels.hide+' <img src="../images/hide_x.png"></img></i></a></div><div class="lead">'+labels.feedback+'</div>'
       template: '<div class="popover footerPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
@@ -51,7 +51,7 @@ define [
     $("#legend").popover
       html: true
       placement: "top"
-      container: "div"
+      container: 'body'
       title: ->
         '<div class="pull-right hideButton"><a class="pull-right" href="#" id="close" data-id="legend">'+labels.hide+' <img src="../images/hide_x.png"></img></i></a></div><div class="lead">'+labels.legend+'</div>'
       template: '<div class="popover footerPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
@@ -61,7 +61,7 @@ define [
     $("#aboutReport").popover
       html: true
       placement: "top"
-      container: "div"
+      container: 'body'      
       title: ->
         '<div class="pull-right hideButton"><a class="pull-right" href="#" id="close" data-id="aboutReport">'+labels.hide+' <img src="../images/hide_x.png"></img></i></a></div><div class="lead">'+labels.report_info+'</div>'
       template: '<div class="popover footerPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
@@ -71,7 +71,7 @@ define [
     $("#help").popover
       html: true
       placement: "top"
-      container: "div"
+      container: 'body'
       title: ->
         '<div class="pull-right hideButton"><a class="pull-right" href="#" id="close" data-id="help">'+labels.hide+' <img src="../images/hide_x.png"></img></i></a></div><div class="lead">'+labels.help+'</div>'
       template: '<div class="popover footerPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
@@ -81,7 +81,7 @@ define [
     $("#print").popover
       html: true
       placement: "top"
-      container: "div"
+      container: 'body'
       title: ->
         '<div class="pull-right hideButton"><a class="pull-right" href="#" id="close" data-id="print">'+labels.hide+' <img src="../images/hide_x.png"></img></i></a></div><div class="lead">'+labels.print_options+'</div>'
       template: '<div class="popover footerPopover printFooterPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
@@ -92,7 +92,6 @@ define [
     $("#export").popover
       html: true
       placement: "top"
-      container: "div"
       title: ->
         '<div class="pull-right hideButton"><a class="pull-right" href="#" id="close" data-id="export">'+labels.hide+' <img src="../images/hide_x.png"></img></i></a></div><div class="lead"> Export</div>'
       template: '<div class="popover footerPopover exportFooterPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'

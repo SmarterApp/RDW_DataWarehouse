@@ -22,6 +22,7 @@ def get_not_stated_count(params):
                          Constants.ASMTTYPE: params.get(Constants.ASMTTYPE)}
     return ComparingPopStatReport(**not_stated_params).get_report()
 
+
 def get_comparing_populations_not_stated_cache_route(comparing_pop):
     '''
     Returns cache region based on whether filters exist
@@ -31,6 +32,7 @@ def get_comparing_populations_not_stated_cache_route(comparing_pop):
     '''
     # do not cache school level
     return 'public.data' if comparing_pop.school_guid is None else None
+
 
 def get_comparing_populations_not_stated_cache_key(comparing_pop):
     '''

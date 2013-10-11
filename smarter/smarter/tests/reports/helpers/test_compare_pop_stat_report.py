@@ -4,8 +4,7 @@ Created on Mar 11, 2013
 @author: dwu
 '''
 import unittest
-from smarter.reports.compare_pop_report import get_comparing_populations_report,\
-    set_default_min_cell_size
+from smarter.reports.compare_pop_report import set_default_min_cell_size
 from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite,\
     UnittestSmarterDBConnection, get_unittest_tenant_name
 from smarter.reports.helpers.constants import Constants
@@ -62,7 +61,7 @@ class TestComparingPopulationsStat(Unittest_with_smarter_sqlite):
         self.assertEqual(results['dmgPrgLep'], 1)
         self.assertEqual(results['dmgPrgTt1'], 1)
         self.assertEqual(results['ethnicity'], 1)
-        self.assertEqual(results['gender'], 0)
+        self.assertEqual(results['gender'], 1)
 
     def test_comparing_populations_with_not_stated_count_state_view(self):
         testParam = {}
@@ -74,7 +73,7 @@ class TestComparingPopulationsStat(Unittest_with_smarter_sqlite):
         self.assertEqual(results['dmgPrgLep'], 9)
         self.assertEqual(results['dmgPrgTt1'], 7)
         self.assertEqual(results['ethnicity'], 11)
-        self.assertEqual(results['gender'], 0)
+        self.assertEqual(results['gender'], 1)
 
     def test_comparing_populations_with_not_stated_count_school_view(self):
         testParam = {}

@@ -100,15 +100,6 @@ def create_directory(path):
     return path
 
 
-def get_expanded_dir(lzw, guid_batch):
-    guid_batch = str(guid_batch)
-    guid_batch_dir = os.path.join(lzw, guid_batch)
-    # TODO: put 'EXPANDED', 'ARRIVED', 'SUBFILES' into a constants file and import
-    expanded_dir = os.path.join(guid_batch_dir, 'EXPANDED')
-    print('get_expanded_dir', expanded_dir)
-    return expanded_dir
-
-
 def get_file_type_from_dir(extension, directory):
     wildcard = '*' + extension
     wild_card_path = os.path.join(directory, wildcard)

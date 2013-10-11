@@ -5,7 +5,6 @@ from celery.utils.log import get_task_logger
 from filedecrypter.file_decrypter import decrypt_file
 import udl2.message_keys as mk
 from udl2.celery import celery, udl2_conf
-from udl2_util.file_util import get_decrypted_dir
 
 __author__ = 'swimberly'
 

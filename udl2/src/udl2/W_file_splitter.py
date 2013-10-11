@@ -25,16 +25,16 @@ def task(incoming_msg):
     start_time = datetime.datetime.now()
 
     # Get necessary params for file_splitter
-    lzw = incoming_msg[mk.LANDING_ZONE_WORK_DIR]
     guid_batch = incoming_msg[mk.GUID_BATCH]
     parts = incoming_msg[mk.PARTS]
     load_type = incoming_msg[mk.LOAD_TYPE]
 
-    expanded_dir = file_util.get_expanded_dir(lzw, guid_batch)
+    tenant_directory_paths = incoming_msg[mk.TENANT_DIRECTORY_PATHS]
+    expanded_dir = tenant_directory_paths['expanded']
     csv_file = file_util.get_file_type_from_dir('.csv', expanded_dir)
 
-    subfiles_dir = get_subfiles_dir(lzw, guid_batch)
-    file_util.create_directory(subfiles_dir)
+    subfiles_dir = tenant_directory_paths['subfiles']
+    #file_util.create_directory(subfiles_dir)
 
     # do actual work of splitting file
     split_file_tuple_list, header_file_path, totalrows, filesize = file_splitter.split_file(csv_file, parts=parts, output_path=subfiles_dir)
@@ -59,34 +59,6 @@ def task(incoming_msg):
                          mk.SIZE_RECORDS: totalrows
                          })
     return outgoing_msg
-
-
-# TODO: Create a generic function that creates any of the (EXPANDED,ARRIVED,SUBFILES) etc. dirs in separate util file.
-def get_subfiles_dir(lzw, guid_batch):
-    print("##############")
-    print(lzw)
-    print(guid_batch)
-    subfiles_dir = os.path.join(lzw, guid_batch, 'SUBFILES')
-    print(subfiles_dir)
-    return subfiles_dir + '/'
-
-
-def generate_msg_for_file_loader(split_file_tuple, header_file_path, lzw, guid_batch, load_type):
-    # TODO: It would be better to have a dict over a list, we can access with key instead of index - more clear.
-    split_file_path = split_file_tuple[0]
-    split_file_row_start = split_file_tuple[2]
-    record_count = split_file_tuple[1]
-
-    file_loader_msg = {}
-    file_loader_msg[mk.FILE_TO_LOAD] = split_file_path
-    file_loader_msg[mk.ROW_START] = split_file_row_start
-    file_loader_msg[mk.HEADERS] = header_file_path
-    file_loader_msg[mk.LANDING_ZONE_WORK_DIR] = lzw
-    file_loader_msg[mk.GUID_BATCH] = guid_batch
-    file_loader_msg[mk.LOAD_TYPE] = load_type
-    file_loader_msg[mk.SIZE_RECORDS] = record_count
-
-    return file_loader_msg
 
 
 @celery.task(name="udl2.W_file_splitter.error_handler")

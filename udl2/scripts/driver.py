@@ -14,18 +14,6 @@ from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from preetl.pre_etl import pre_etl_job
 
 
-# Paths to our various directories
-# THIS_MODULE_PATH = os.path.abspath(__file__)
-# SRC_DIRECTORY = os.path.dirname(THIS_MODULE_PATH)
-# ROOT_DIRECTORY = os.path.dirname(SRC_DIRECTORY)
-# ZONES = os.path.join(ROOT_DIRECTORY, 'zones')
-# LANDING_ZONE = os.path.join(ZONES, 'landing')
-# ARRIVALS = os.path.join(ZONES, 'arrivals')
-# WORK_ZONE = os.path.join(LANDING_ZONE, 'work')
-# HISTORY_ZONE = os.path.join(LANDING_ZONE, 'history')
-# DATAFILES = os.path.join(ROOT_DIRECTORY, 'datafiles')
-
-
 def start_pipeline(archive_file, udl2_conf, load_type='Assessment', file_parts=4, **kwargs):
     '''
     Begins the UDL Pipeline process by copying the file found at 'archive_file' to the landing zone arrivals dir and
@@ -37,15 +25,6 @@ def start_pipeline(archive_file, udl2_conf, load_type='Assessment', file_parts=4
     @type udl2: dict
     '''
 
-    # Create a unique name for the file when it is placed in the "Landing Zone"
-    # arrivals_dir = ARRIVALS
-    # unique_filename = create_unique_file_name(csv_file_path)
-    # full_path_to_arrival_dir_file = os.path.join(arrivals_dir, unique_filename)
-    # Copy the file over, using the new (unique) filename
-    # shutil.copy(csv_file_path, full_path_to_arrival_dir_file)
-    # Now, add a task to the file splitter queue, passing in the path to the landing zone file
-    # and the directory to use when writing the split files
-
     # Prepare parameters for task msgs
     guid_batch = pre_etl_job(udl2_conf, load_type=load_type)
     if guid_batch is None:
@@ -56,26 +35,18 @@ def start_pipeline(archive_file, udl2_conf, load_type='Assessment', file_parts=4
     jc_batch_table = udl2_conf['udl2_db']['batch_table']
 
     # generate common message for each stage
-    common_msg = generate_common_message(jc_batch_table, guid_batch, load_type)
+    common_msg = generate_common_message(jc_batch_table, guid_batch, load_type, file_parts)
     arrival_msg = generate_message_for_file_arrived(archive_file, lzw, common_msg)
-
-    # TODO: cleanup these global messages and chain the tasks with previous step output message
-    simple_file_validator_msg = generate_file_validator_msg(lzw, common_msg)
-    splitter_msg = generate_splitter_msg(lzw, common_msg, file_parts)
-    file_content_validator_msg = generate_file_content_validator_msg(common_msg)
-    load_json_msg = generate_load_json_msg(lzw, common_msg)
-    load_to_int_msg = generate_load_to_int_msg(common_msg)
-    integration_to_star_msg = generate_integration_to_star_msg(common_msg)
     all_done_msg = generate_all_done_msg(common_msg)
 
     pipeline_chain_1 = chain(W_file_arrived.task.si(arrival_msg), 
                              W_file_decrypter.task.s(), W_file_expander.task.s(),
-                             W_simple_file_validator.task.si(simple_file_validator_msg), W_file_splitter.task.si(splitter_msg),
+                             W_simple_file_validator.task.s(), W_file_splitter.task.s(),
                              W_parallel_csv_load.task.s(),
-                             W_file_content_validator.task.si(file_content_validator_msg), W_load_json_to_integration.task.si(load_json_msg),
-                             W_load_to_integration_table.task.si(load_to_int_msg),
-                             W_load_from_integration_to_star.explode_to_dims.si(integration_to_star_msg),
-                             W_load_from_integration_to_star.explode_to_fact.si(integration_to_star_msg),
+                             W_file_content_validator.task.s(), W_load_json_to_integration.task.s(),
+                             W_load_to_integration_table.task.s(),
+                             W_load_from_integration_to_star.explode_to_dims.s(),
+                             W_load_from_integration_to_star.explode_to_fact.s(),
                              W_all_done.task.si(all_done_msg))
 
     if kwargs.get('callback'):
@@ -90,69 +61,19 @@ def start_pipeline(archive_file, udl2_conf, load_type='Assessment', file_parts=4
         pipeline_chain_1.delay()
 
 
-def generate_common_message(jc_batch_table, guid_batch, load_type):
-    return {mk.BATCH_TABLE: jc_batch_table,
+def generate_common_message(jc_batch_table, guid_batch, load_type, file_parts):
+    return {
+            mk.BATCH_TABLE: jc_batch_table,
             mk.GUID_BATCH: guid_batch,
-            mk.LOAD_TYPE: load_type
-            }
+            mk.LOAD_TYPE: load_type,
+            mk.PARTS: file_parts
+        }
 
 
 def generate_message_for_file_arrived(archive_file, lzw, common_message):
     msg = {
         mk.INPUT_FILE_PATH: archive_file,
         mk.LANDING_ZONE_WORK_DIR: lzw
-    }
-    return combine_messages(common_message, msg)
-
-
-def extend_file_expander_msg_temp(msg, json_filename, csv_filename):
-    msg[mk.JSON_FILENAME] = json_filename
-    msg[mk.CSV_FILENAME] = csv_filename
-    return msg
-
-
-def generate_file_validator_msg(landing_zone_work_dir, common_message):
-    msg = {mk.LANDING_ZONE_WORK_DIR: landing_zone_work_dir}
-    return combine_messages(common_message, msg)
-
-
-def generate_splitter_msg(lzw, common_message, file_parts):
-    msg = {
-        mk.LANDING_ZONE_WORK_DIR: lzw,
-        # TODO: remove hard-coded 4
-        mk.PARTS: file_parts
-    }
-    return combine_messages(common_message, msg)
-
-
-def generate_file_content_validator_msg(common_message):
-    # TODO: Implement me please, empty maps are boring.
-    msg = {}
-    return combine_messages(common_message, msg)
-
-
-def generate_load_json_msg(lzw, common_message):
-    msg = {
-        mk.LANDING_ZONE_WORK_DIR: lzw
-        }
-    return combine_messages(common_message, msg)
-
-
-def generate_load_to_int_msg(common_message):
-    msg = {}
-    return combine_messages(common_message, msg)
-
-
-def generate_msg_report_error(email):
-    msg = {
-        mk.EMAIL: email
-    }
-    return msg
-
-
-def generate_integration_to_star_msg(common_message):
-    msg = {
-        mk.PHASE: 4
     }
     return combine_messages(common_message, msg)
 

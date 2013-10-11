@@ -29,7 +29,12 @@ def task(msg):
     benchmark = BatchTableBenchmark(guid_batch, msg[mk.LOAD_TYPE], task.name, start_time, end_time, size_records=affected_rows,
                                     task_id=str(task.request.id), working_schema=conf[mk.TARGET_DB_SCHEMA])
     benchmark.record_benchmark()
-    return msg
+
+    # Outgoing message to be piped to the file expander
+    outgoing_msg = {}
+    outgoing_msg.update(msg)
+    outgoing_msg.update({mk.PHASE: 4})
+    return outgoing_msg
 
 
 def generate_conf(guid_batch):

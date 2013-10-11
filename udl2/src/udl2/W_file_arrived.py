@@ -4,7 +4,6 @@ from filearrived.file_arrived import move_file_from_arrivals
 import os
 from celery.utils.log import get_task_logger
 from udl2 import message_keys as mk
-from udl2_util.file_util import get_arrived_dir
 
 
 __author__ = 'abrien'

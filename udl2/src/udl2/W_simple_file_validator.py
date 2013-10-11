@@ -2,7 +2,6 @@ from __future__ import absolute_import
 from celery.utils.log import get_task_logger
 from sfv.simple_file_validator import SimpleFileValidator
 from udl2.celery import celery
-from udl2_util.file_util import get_expanded_dir
 from udl2_util.measurement import BatchTableBenchmark
 import datetime
 import os
@@ -12,12 +11,12 @@ logger = get_task_logger(__name__)
 
 
 @celery.task(name="udl2.W_file_validator.task")
-def task(msg):
+def task(incoming_msg):
     start_time = datetime.datetime.now()
-    lzw = msg[mk.LANDING_ZONE_WORK_DIR]
-    guid_batch = msg[mk.GUID_BATCH]
+    guid_batch = incoming_msg[mk.GUID_BATCH]
 
-    expanded_dir = get_expanded_dir(lzw, guid_batch)
+    tenant_directory_paths = incoming_msg[mk.TENANT_DIRECTORY_PATHS]
+    expanded_dir = tenant_directory_paths['expanded']
 
     sfv = SimpleFileValidator()
     error_map = {}
@@ -37,10 +36,13 @@ def task(msg):
     end_time = datetime.datetime.now()
 
     # benchmark
-    benchmark = BatchTableBenchmark(guid_batch, msg[mk.LOAD_TYPE], task.name, start_time, end_time, task_id=str(task.request.id))
+    benchmark = BatchTableBenchmark(guid_batch, incoming_msg[mk.LOAD_TYPE], task.name, start_time, end_time, task_id=str(task.request.id))
     benchmark.record_benchmark()
 
-    return msg
+    # Outgoing message to be piped to the file splitter
+    outgoing_msg = {}
+    outgoing_msg.update(incoming_msg)
+    return outgoing_msg
 
 
 # TODO: Actually implement get_number_of_parts()

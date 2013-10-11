@@ -5,12 +5,12 @@ INPUT_FILE_PATH = 'input_file_path'
 LANDING_ZONE_WORK_DIR = 'landing_zone_work_dir'
 GUID_BATCH = 'guid_batch'
 
-# file_arrived to file_expander
-FILE_TO_EXPAND = 'file_to_expand'
-
-# file_decrypter
+# file_arrived to file_decrypter
 FILE_TO_DECRYPT = 'file_to_decrypt'
-PASSPHRASE = 'passphrase'
+TENANT_DIRECTORY_PATHS = 'tenant_directory_paths'
+
+# file_decrypter to file_expander
+FILE_TO_EXPAND = 'file_to_expand'
 
 # file_expander to file_validator
 JSON_FILENAME = 'json_filename'

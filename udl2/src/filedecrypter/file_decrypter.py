@@ -24,24 +24,24 @@ def _is_valid__file(file_to_decrypt):
     valid = False
     if _is_file_exists(file_to_decrypt):
         valid = True
-        logger.log("File exists and is readable -- %s " % file_to_decrypt)
+        logger.info('File exists and is readable -- %s ' % file_to_decrypt)
     else:
-        logger.error("File missing or un-readable -- %s " % file_to_decrypt)
+        logger.error('File missing or un-readable -- %s ' % file_to_decrypt)
 
     return valid
 
 
 def _print_status(status):
-    logger.info('ok: ', status.ok)
-    logger.debug('status: ', status.status)
-    logger.debug('stderr: ', status.stderr)
+    logger.info('ok: %s ' % status.ok)
+    logger.debug('status: %s ' % status.status)
+    logger.debug('stderr: %s ' % status.stderr)
     if(status.ok):
-        logger.debug('signer: ', status.username)
-        logger.debug('signer key id: ', status.key_id)
-        logger.debug('signer key fingerprint: ', status.fingerprint)
-        logger.debug('signer signature id: ', status.signature_id)
-        logger.debug('signer trust level: ', status.trust_level)
-        logger.debug('signer trust text: ', status.trust_text)
+        logger.debug('signer: %s ' % status.username)
+        logger.debug('signer key id: %s ' % status.key_id)
+        logger.debug('signer key fingerprint: %s ' % status.fingerprint)
+        logger.debug('signer signature id: %s ' % status.signature_id)
+        logger.debug('signer trust level: %s ' % status.trust_level)
+        logger.debug('signer trust text: %s ' % status.trust_text)
 
 
 def _decrypt_file_contents(file_to_decrypt, output_file, passphrase, gpg_home):
@@ -81,9 +81,9 @@ if __name__ == "__main__":
     parser.add_argument('-gh', '--gpghome', dest='gpg_home', help='GPG Home directory for keys')
 
     args = parser.parse_args()
-    print("Input file is: " + args.file_to_decrypt)
-    print("Passphrase: " + args.passphrase)
+    print('Input file is: ' + args.file_to_decrypt)
+    print('Passphrase: ' + args.passphrase)
     if args.destination_dir:
-        print("Decrypt files to: " + args.destination_dir)
+        print('Decrypt files to: ' + args.destination_dir)
 
     decrypt_file(args.file_to_decrypt, args.destination_dir, args.passphrase, args.gpg_home)

@@ -7,6 +7,7 @@ import shutil
 from udl2.celery import udl2_conf
 
 ARRIVED = 'arrived'
+DECRYPTED = 'decrypted'
 EXPANDED = 'expanded'
 SUBFILES = 'subfiles'
 HISTORY = 'history'
@@ -60,6 +61,7 @@ def _create_directory_paths(tenant_name, batch_guid):
 
     directories = {
         ARRIVED: os.path.join(udl2_conf['zones']['work'], tenant_name, ARRIVED, dir_name),
+        DECRYPTED: os.path.join(udl2_conf['zones']['work'], tenant_name, DECRYPTED, dir_name),
         EXPANDED: os.path.join(udl2_conf['zones']['work'], tenant_name, EXPANDED, dir_name),
         SUBFILES: os.path.join(udl2_conf['zones']['work'], tenant_name, SUBFILES, dir_name),
         HISTORY: os.path.join(udl2_conf['zones']['history'], tenant_name, dir_name)
@@ -75,4 +77,4 @@ def _create_batch_directories(directory_dict):
     """
 
     for directory in directory_dict.values():
-        os.mkdir(directory, mode=0o777)
+        os.makedirs(directory, mode=0o777)

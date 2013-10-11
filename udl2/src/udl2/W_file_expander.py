@@ -22,17 +22,22 @@ def task(incoming_msg):
 
     # Retrieve parameters from the incoming message
     file_to_expand = incoming_msg[mk.FILE_TO_EXPAND]
-    lzw = incoming_msg[mk.LANDING_ZONE_WORK_DIR]
     guid_batch = incoming_msg[mk.GUID_BATCH]
+    tenant_directory_paths = incoming_msg[mk.TENANT_DIRECTORY_PATHS]
+    expand_to_dir = tenant_directory_paths['expanded']
 
-    expanded_dir = file_util.get_expanded_dir(lzw, guid_batch)
-    print('before create_directory', expanded_dir)
-    file_util.create_directory(expanded_dir)
-    #unpacked_json_file = unpack_json_file(file_to_expand, expanded_dir, incoming_msg[mk.JSON_FILENAME])
-    #unpacked_csv_file = unpack_csv_file(file_to_expand, expanded_dir, incoming_msg[mk.CSV_FILENAME])
-    file_contents = expand_file(file_to_expand, expanded_dir)
+    logger.info('W_FILE_EXPANDER: expand file <%s> with guid_batch = <%s> to directory <%s>' % (file_to_expand, guid_batch, expand_to_dir))
+    file_contents = expand_file(file_to_expand, expand_to_dir)
+    logger.info('W_FILE_EXPANDER: expanded files:  <%s> and <%s>' % (file_contents[0], file_contents[1]))
 
-    logger.info('W_FILE_EXPANDER: expanded file <%s> with guid_batch = <%s> to <%s> and <%s>' % (file_to_expand, guid_batch, expanded_file, expanded_file))
+    # Outgoing message to be piped to the file expander
+    outgoing_msg = {}
+    outgoing_msg.update(incoming_msg)
+    outgoing_msg.update({
+        mk.JSON_FILENAME: file_contents[0],
+        mk.CSV_FILENAME: file_contents[1]
+        })
+    return outgoing_msg
 
 
 def unpack_json_file(file_to_expand, expanded_dir, json_filepath):

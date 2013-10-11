@@ -49,7 +49,12 @@ define [
    
     updateView: (asmtType) ->
       edwarePreferences.saveAsmtPreference asmtType
+      this.currentAsmtType = asmtType
+      this.updateDisclaimer()
       this.render asmtType
+    
+    updateDisclaimer: () ->
+      this.disclaimer.update this.currentAsmtType
     
     fetchData: (callback) ->
       # Get individual student report data from the server
@@ -87,12 +92,10 @@ define [
         if not self.isPdf
           self.createBreadcrumb()
           self.createDropdown()
-          
-          # Temp for testing
-          self.d = $('#disclaimerInfo').edwareDisclaimer self.configData.interimDisclaimer
-          self.d.create()
-          
+          self.disclaimer = $('#disclaimerInfo').edwareDisclaimer self.configData.interimDisclaimer
+          self.disclaimer.create()
           self.currentAsmtType = self.asmtTypes[0] if self.asmtTypes.indexOf("Summative") is -1
+          self.updateDisclaimer()
           
         self.render self.currentAsmtType
 

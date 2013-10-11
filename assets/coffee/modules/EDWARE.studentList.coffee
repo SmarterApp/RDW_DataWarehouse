@@ -71,6 +71,7 @@ define [
           elem.popover
             html: true
             trigger: "manual"
+            container: 'body'
             placement: (tip, element) ->
               edwareUtil.popupPlacement(element, 400, 220)
             title: ->

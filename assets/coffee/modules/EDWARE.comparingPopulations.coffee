@@ -98,7 +98,6 @@ define [
     createDisclaimer: () ->
       if this.reportType is 'school'
         this.disclaimer = $('.disclaimerInfo').edwareDisclaimer this.config.interimDisclaimer
-        this.disclaimer.create()
         this.updateDisclaimer()
     
     updateDisclaimer: () ->
@@ -238,22 +237,20 @@ define [
 
     bindEvents: ()->
       # Show tooltip for population bar on mouseover
-      $(".progress").on
-        mouseenter: ->
-          e = $(this)
-          e.popover
+      $(".progress").popover
             html: true
-            placement: "top"
-            trigger: "manual"
+            placement: 'top'
+            container: 'body'
+            trigger: 'hover'
             template: '<div class="popover"><div class="arrow"></div><div class="popover-inner"><div class="popover-content"><p></p></div></div></div>'
             content: ->
-              e.find(".progressBar_tooltip").html() # template location: widgets/populatoinBar/template.html
-          .popover("show")
-        click: (e) ->
-          e.preventDefault()
-        mouseleave: ->
-          e = $(this)
-          e.popover("hide")
+              $(this).find(".progressBar_tooltip").html() # template location: widgets/populatoinBar/template.html
+      # .mouseenter (e)->
+      #   e.stopImmediatePropagation()
+      #   $(this).popover('show')
+      # .mouseleave (e) ->
+      #   e.stopImmediatePropagation()
+      #   $(this).popover('hide')
                 
       self = this
       $('#gridTable_name').click ()->

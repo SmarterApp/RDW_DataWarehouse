@@ -93,7 +93,7 @@ define [
           self.createBreadcrumb()
           self.createDropdown()
           self.disclaimer = $('.disclaimerInfo').edwareDisclaimer self.configData.interimDisclaimer
-          self.disclaimer.create()
+          # self.disclaimer.create()
           self.currentAsmtType = self.asmtTypes[0] if self.asmtTypes.indexOf("Summative") is -1
           self.updateDisclaimer()
           

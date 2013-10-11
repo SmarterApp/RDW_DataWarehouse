@@ -14,36 +14,46 @@ define [
   class EdwareDisclaimer
     
     constructor: (@disclaimerSection, @content) ->
+      this.initialize()
       this.bindEvents()
+      this.displayPopover()
       this
+
+    displayPopover: ()->
+      if this.hasLoaded()
+        return
+      # make popup and make it stay
+      this.icon.mouseenter()
+      setTimeout ()->
+        this.popover.fadeOut(150)
+      , 3000
+      # This will save that we've loaded it the first time
+      this.saveLoadedInfo()
       
     bindEvents: () ->
       self = this
       # Show tooltip on mouseover
-      $(document).on 'mouseenter', '.interimDisclaimerIcon', (e) ->
-          e = $(this)
-          e.popover
-            html: true
-            placement: "bottom"
-            trigger: "hover"
-            template: DISCLAIMER_POPOVER_TEMPLATE
-            container: '.interimDisclaimerIcon'
-            content: ->
-              e.find(".interimDisclaimer").html()
-          .popover("show")
+      this.icon.popover
+        html: true
+        placement: "bottom"
+        trigger: "manual"
+        template: DISCLAIMER_POPOVER_TEMPLATE
+        content: ->
+          $(this).find(".interimDisclaimer").html()
+      .mouseenter ()->
+        $(this).popover('show')
+        popover = $('.interimDisclaimerPopover').remove()
+        self.icon.append popover
+      .mouseleave ()->
+        $(this).popover('hide')
 
     # Call this to create the disclaimer icon
-    create: () ->
+    initialize: () ->
       output = Mustache.to_html DISCLAIMER_TEMPLATE, {'content': this.content}
       this.disclaimerSection.html output
-      if not this.hasLoaded()
-        # make popup and make it stay
-        $('.interimDisclaimerIcon').mouseenter()
-        setTimeout ()->
-          $('.interimDisclaimerPopover').fadeOut(150)
-        , 3000
-        # This will save that we've loaded it the first time
-        this.saveLoadedInfo()
+      this.icon = $('.interimDisclaimerIcon')
+      this.popover = $('.interimDisclaimerPopover')
+      this.container = $('.disclaimerInfo')
    
     hasLoaded: () ->
       edwarePreferences.getInterimInfo()

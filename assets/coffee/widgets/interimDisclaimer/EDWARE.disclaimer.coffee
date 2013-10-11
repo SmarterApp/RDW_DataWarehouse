@@ -8,6 +8,9 @@ define [
     '<div class="interimDisclaimerIcon">' +
       '<div class="interimDisclaimer hide">{{{content}}}</div>' +
     '</div>'
+
+  DISCLAIMER_POPOVER_TEMPLATE = '<div class="popover interimDisclaimerPopover"><div class="arrow"></div><div class="popover-inner"><div class="popover-content"><p></p></div></div></div>'
+  
   class EdwareDisclaimer
     
     constructor: (@disclaimerSection, @content) ->
@@ -20,26 +23,27 @@ define [
       $(document).on 'mouseenter', '.interimDisclaimerIcon', (e) ->
           e = $(this)
           e.popover
-            html: true
             placement: "bottom"
-            trigger: "manual"
-            template: '<div class="popover interimDisclaimerPopover"><div class="arrow"></div><div class="popover-inner"><div class="popover-content"><p></p></div></div></div>'
+            trigger: "hover"
+            template: DISCLAIMER_POPOVER_TEMPLATE
             content: ->
               e.find(".interimDisclaimer").html() 
           .popover("show")
-      $(document).on 'click', '.interimDisclaimerIcon', (e) ->
-          e.preventDefault()
-      $(document).on 'mouseleave', '.interimDisclaimerIcon', (e) ->
-          e = $(this)
-          e.popover("hide")
+
+      # Hide tooltip when click
+      $(document).on 'click', '.interimDisclaimerPopover', () ->
+        $(this).fadeOut(150)
 
     # Call this to create the disclaimer icon
     create: () ->
       output = Mustache.to_html DISCLAIMER_TEMPLATE, {'content': this.content}
       this.disclaimerSection.html output
       if not this.hasLoaded()
-        # TODO make popup and make it stay
-        
+        # make popup and make it stay
+        $('.interimDisclaimerIcon').mouseenter()
+        setTimeout ()->
+          $('.interimDisclaimerPopover').fadeOut(150)
+        , 3000
         # This will save that we've loaded it the first time
         this.saveLoadedInfo()
    

@@ -52,8 +52,10 @@ define [
       edwarePreferences.saveInterimInfo()
     
     update: (asmtType) ->
-      visible = if asmtType is "Comprehensive Interim" then "visible" else "hidden"
-      this.disclaimerSection.css('visibility', visible)
+      if asmtType is "Comprehensive Interim"
+        this.disclaimerSection.show()
+      else
+        this.disclaimerSection.hide()
         
   (($)->
     $.fn.edwareDisclaimer = (content) ->

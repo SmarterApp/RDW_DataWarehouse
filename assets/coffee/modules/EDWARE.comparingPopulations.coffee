@@ -97,7 +97,7 @@ define [
     
     createDisclaimer: () ->
       if this.reportType is 'school'
-        this.disclaimer = $('#cpopDisclaimerInfo').edwareDisclaimer this.config.interimDisclaimer
+        this.disclaimer = $('.disclaimerInfo').edwareDisclaimer this.config.interimDisclaimer
         this.disclaimer.create()
         this.updateDisclaimer()
     

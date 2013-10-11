@@ -28,7 +28,7 @@ define [
             html: true
             placement: "bottom"
             trigger: "manual"
-            template: '<div class="popover"><div class="arrow"></div><div class="popover-inner"><div class="popover-content"><p></p></div></div></div>'
+            template: '<div class="popover interimDisclaimerPopover"><div class="arrow"></div><div class="popover-inner"><div class="popover-content"><p></p></div></div></div>'
             content: ->
               e.find(".interimDisclaimer").html() 
           .popover("show")

@@ -195,7 +195,6 @@ define [
     
     createDisclaimer: () ->
       this.disclaimer = $('#losDisclaimerInfo').edwareDisclaimer this.config.interimDisclaimer
-      this.disclaimer.create()
 
     updateDisclaimer: (asmtType) ->
       this.disclaimer.update asmtType

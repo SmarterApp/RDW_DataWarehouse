@@ -32,9 +32,6 @@ sudo -u root -s mkdir -p /opt/wgen/edware-udl/zones/
 sudo -u root -s mkdir -p /opt/wgen/edware-udl/zones/landing
 sudo -u root -s mkdir -p /opt/wgen/edware-udl/zones/pickup
 
-# remove
-sudo -u root -s mkdir -p /opt/wgen/edware-udl/zones/arrivals
-
 sudo -u root -s mkdir -p /opt/wgen/edware-udl/zones/landing/work
 sudo -u root -s mkdir -p /opt/wgen/edware-udl/zones/landing/arrivals
 sudo -u root -s mkdir -p /opt/wgen/edware-udl/zones/landing/history
@@ -59,9 +56,6 @@ sudo -u root -s chmod 777 /opt/wgen/edware-udl/zones/landing/history
 sudo -u root -s chmod 777 /opt/wgen/edware-udl/zones/pickup/work
 sudo -u root -s chmod 777 /opt/wgen/edware-udl/zones/pickup/departures
 sudo -u root -s chmod 777 /opt/wgen/edware-udl/zones/pickup/history
-
-# remove
-sudo -u root -s chmod 777 /opt/wgen/edware-udl/zones/arrivals
 
 sudo -u root -s chmod 777 /opt/wgen/edware-udl/zones/landing/history
 sudo -u root -s chmod 777 /opt/wgen/edware-udl/zones/datafiles

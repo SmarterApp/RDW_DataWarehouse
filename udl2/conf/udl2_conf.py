@@ -5,6 +5,7 @@ udl2_conf = {
                'broker': 'amqp://guest@localhost//',  # this is the url to message broker. Currently it is located on localhost for rabbitmq
                'backend': 'amqp://guest@localhost//',  # this is the url to task results for each request. Currently it is located on localhost for rabbitmq
                'include': ['udl2.W_file_arrived',
+                           'udl2.W_file_decrypter',
                            'udl2.W_file_expander',
                            'udl2.W_simple_file_validator',
                            'udl2.W_file_splitter',
@@ -101,7 +102,8 @@ udl2_conf = {
         'db_driver': 'postgresql'
     },
     'quiet_mode': False,
-    'gpg_home': '/to/be/decided',
+    'gpg_home': '/opt/wgen/edware-udl/zones/datafiles/keys',
+    'passphrase': 'sbac udl2'
 }
 
 

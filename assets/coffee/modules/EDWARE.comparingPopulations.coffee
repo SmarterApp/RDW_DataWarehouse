@@ -17,7 +17,8 @@ define [
   "edwareGridStickyCompare"
   "edwarePreferences"
   "edwareAsmtDropdown"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwareDropdown, edwareStickyCompare, edwarePreferences, edwareAsmtDropdown) ->
+  "edwareDisclaimer"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwareDropdown, edwareStickyCompare, edwarePreferences, edwareAsmtDropdown, edwareDisclaimer) ->
 
   REPORT_NAME = "comparingPopulationsReport"
 
@@ -86,12 +87,23 @@ define [
       self = this
       this.asmtDropdown = $('#asmtDropdown').edwareAsmtDropdown this.asmtTypes, (asmtType) ->
         # save assessment type
+        self.currentAsmtType = asmtType
         edwarePreferences.saveAsmtPreference asmtType
+        self.updateDisclaimer()
         self.reload self.param
       this.asmtDropdown.create()
       # select default asmt type
       this.asmtDropdown.setSelectedValue this.currentAsmtType
-
+    
+    createDisclaimer: () ->
+      if this.reportType is 'school'
+        this.disclaimer = $('#cpopDisclaimerInfo').edwareDisclaimer this.config.interimDisclaimer
+        this.disclaimer.create()
+        this.updateDisclaimer()
+    
+    updateDisclaimer: () ->
+      this.disclaimer.update this.currentAsmtType
+ 
     setFilter: (filter) ->
       this.filter = filter
 
@@ -105,6 +117,7 @@ define [
       this.updateAsmtTypePreference()
       # create assessment type dropdown list
       this.createAsmtDropdown() if not this.asmtDropdown
+      this.createDisclaimer() if not this.disclaimer
       # set current query assessment type
       param.asmtType = this.currentAsmtType.toUpperCase()
       self = this

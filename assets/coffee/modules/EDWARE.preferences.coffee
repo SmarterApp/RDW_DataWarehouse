@@ -31,7 +31,7 @@ define [
 
   getInterimInfo = () ->
     pref = getPreferences true
-    info = pref.interimDisclaimer if pref
+    info = pref.interimDisclaimerLoaded if pref
     info || false
   
   saveInterimInfo = () ->

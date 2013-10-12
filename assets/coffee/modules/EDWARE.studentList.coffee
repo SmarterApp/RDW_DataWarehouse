@@ -38,21 +38,22 @@ define [
       this.gridHeight = window.innerHeight - 235
 
     reload: (params) ->
-      data = this.fetchData params
-      this.data = data
-      this.assessmentsData = data.assessments
-      this.contextData = data.context
-      this.subjectsData = data.subjects
-      this.userData = data.user_info
-      this.cutPointsData = this.createCutPoints()
-      this.columnData = this.createColumns()
-      #  append cutpoints into each individual assessment data
-      this.formatAssessmentsData this.cutPointsData
-      # process breadcrumbs
-      this.renderBreadcrumbs(data.context)
-      this.createHeaderAndFooter()
-      this.createGrid()
-      this.bindEvents()
+      self = this
+      this.fetchData params, (data)->
+        self.data = data
+        self.assessmentsData = data.assessments
+        self.contextData = data.context
+        self.subjectsData = data.subjects
+        self.userData = data.user_info
+        self.cutPointsData = self.createCutPoints()
+        self.columnData = self.createColumns()
+        #  append cutpoints into each individual assessment data
+        self.formatAssessmentsData self.cutPointsData
+        # process breadcrumbs
+        self.renderBreadcrumbs(data.context)
+        self.createHeaderAndFooter()
+        self.createGrid()
+        self.bindEvents()
 
     createCutPoints: () ->
       cutPointsData = this.data.metadata.cutpoints
@@ -116,10 +117,9 @@ define [
       # show the content upon rendering complete to prevent seeing the pre-templated text on the html
       $('.gridControls').show()
       
-    fetchData: (params) ->
+    fetchData: (params, callback) ->
       # Determine if the report is state, district or school view"
       options =
-        async: false
         method: "POST"
         params: params
       
@@ -127,7 +127,7 @@ define [
       labels = this.labels
       edwareDataProxy.getDatafromSource "/data/list_of_students", options, (data)->
         studentsData = JSON.parse(Mustache.render(JSON.stringify(data), {"labels": labels}))
-      studentsData
+        callback studentsData
 
     # For each subject, filter out its data
     # Also append cutpoints & colors into each assessment

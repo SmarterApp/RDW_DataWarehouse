@@ -195,7 +195,7 @@ define [
       output = Mustache.to_html indivStudentReportTemplate, this.data     
       $("#individualStudentContent").html output
       
-      this.renderClaimScoreRelativeDifference()
+      this.renderClaimScoreRelativeDifference asmtType
       
       # Generate Confidence Level bar for each assessment      
       i = 0
@@ -270,27 +270,26 @@ define [
     #
     # render Claim Score Relative Difference (arrows)
     #
-    renderClaimScoreRelativeDifference : () ->
+    renderClaimScoreRelativeDifference : (asmtType) ->
       i = 0
-      for asmt of this.data.items
-        while i < this.data.items[asmt].length
-          items = this.data.items[asmt][i]
-          # find grand parent element ID
-          assessmentSectionId = '#assessmentSection' + i
-          claims = items.claims
-          j = 0
-          while j < claims.length
-            claim = claims[j]
-            # if relative difference is 0, draw diamond on the dashed line, positive, then render uppder div
-            if claim.claim_score_relative_difference == 0
-              this.drawUpArrow(assessmentSectionId, claim.indexer, 0)
-              this.drawDownArrow(assessmentSectionId, claim.indexer, 0)
-            else if claim.claim_score_relative_difference > 0
-              this.drawUpArrow(assessmentSectionId, claim.indexer, claim.claim_score_relative_difference)
-            else
-              this.drawDownArrow(assessmentSectionId, claim.indexer, claim.claim_score_relative_difference)
-            j++
-          i++
+      while i < this.data.items[asmtType].length
+        items = this.data.items[asmtType][i]
+        # find grand parent element ID
+        assessmentSectionId = '#assessmentSection' + i
+        claims = items.claims
+        j = 0
+        while j < claims.length
+          claim = claims[j]
+          # if relative difference is 0, draw diamond on the dashed line, positive, then render uppder div
+          if claim.claim_score_relative_difference == 0
+            this.drawUpArrow(assessmentSectionId, claim.indexer, 0)
+            this.drawDownArrow(assessmentSectionId, claim.indexer, 0)
+          else if claim.claim_score_relative_difference > 0
+            this.drawUpArrow(assessmentSectionId, claim.indexer, claim.claim_score_relative_difference)
+          else
+            this.drawDownArrow(assessmentSectionId, claim.indexer, claim.claim_score_relative_difference)
+          j++
+        i++
     
     # draw down triangle and arrow on target <div/>
     #  

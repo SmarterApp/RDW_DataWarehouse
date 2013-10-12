@@ -97,7 +97,7 @@ define [
       
     createGrid: () ->
       # set school name as the page title from breadcrumb
-      $("#school_name").html this.contextData.items[2].name
+      $(".title h2").html this.contextData.items[2].name
       # populate select view, only create the dropdown when it doesn't exit
       this.createDropdown() if not this.asmtTypeDropdown
       this.createDisclaimer() if not this.disclaimer
@@ -113,6 +113,8 @@ define [
       edwarePreferences.saveAsmtPreference asmtType
       this.updateDisclaimer asmtType
       this.renderGrid asmtType, viewName
+      # show the content upon rendering complete to prevent seeing the pre-templated text on the html
+      $('.gridControls').show()
       
     fetchData: (params) ->
       # Determine if the report is state, district or school view"
@@ -194,7 +196,7 @@ define [
       this.asmtTypeDropdown = new AsmtTypeDropdown this.studentsConfig.customViews, this.subjectsData, this.updateView.bind(this)
     
     createDisclaimer: () ->
-      this.disclaimer = $('#losDisclaimerInfo').edwareDisclaimer this.config.interimDisclaimer
+      this.disclaimer = $('.disclaimerInfo').edwareDisclaimer this.config.interimDisclaimer
 
     updateDisclaimer: (asmtType) ->
       this.disclaimer.update asmtType

@@ -14,14 +14,16 @@
    	<div id="breadcrumb"></div>
    	<div id="content" class="cPop_Wrapper">
 	    <div class="title clearfix">
-	        <h2></h2>
+                <h2></h2>
                 <ul class='gridControls'>
-                    <li class="asmtTypePlaceholder"><div id="asmtDropdown"></div></li>
-                    <li class="cpopDisclaimer"><div class="disclaimerInfo"></div></li>
-                    <li class="asmtTypePlaceholder"><div class="verticalBar"></div></li>
-                    <li class='align_label'>{{labels.align}}</li>
-	            <li class='align_button_area'><label>{{labels.on}}</label><div class="align_button align_off"></div><label>{{labels.off}}</label></li>
-                    <li><div class='verticalBar'></div></li>
+                    <li>
+                        <div class="asmtDropdown"></div>
+                        <div class="disclaimerInfo"></div>
+                    </li>
+                    <li>
+                        <div class='align_label'>{{labels.align}}</div>
+                        <div class='align_button_area'><label>{{labels.on}}</label><div class="align_button align_off"></div><label>{{labels.off}}</label></div>
+                    </li>
 	            <li><div class="filter_label">{{labels.filter}}<span class="caret"></span></div></li>
                 </ul>
             </div>
@@ -33,7 +35,6 @@
 	        <table id="gridTable"></table>
 	    </div>
 	</div>
-        <div id="footer">
-        </div>
+        <div id="footer"></div>
     </body>
 </html>

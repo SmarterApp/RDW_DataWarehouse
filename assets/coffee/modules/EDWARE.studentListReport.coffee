@@ -5,9 +5,7 @@ require ["EDWARE.studentList", "edwareFilter", "edwareDataProxy", "edwareUtil"],
 
   ( () ->
     configs =edwareDataProxy.getDataForFilter()
-    # Append the content into the body to prevent seeing the pre-templated text on the html
-    $('body').append($('#edwareLOSBody').html())
-    edwareUtil.reRenderBody configs.labels
+      edwareUtil.reRenderBody configs.labels
   )()
 
   filter = $('#losFilter').edwareFilter $('.filter_label'), configs, (param)->

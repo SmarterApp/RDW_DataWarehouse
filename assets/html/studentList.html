@@ -12,33 +12,37 @@
     <body style="overflow-y: hidden;">
 	<div id="header"></div>
 	<div id="breadcrumb"></div>
-	<div id="footer"></div>
-    </body>
-
-	<script type="text/template" id="edwareLOSBody">
-		<!-- The content below gets appended to body tag of this html -->
-		<div id="content" class="losWrapper">
-	    <div class="filter_label pull-right">{{labels.filter}}<span class="caret"></span></div>
-	    <div class="verticalBar pull-right"></div>
-	    <div id="select_measure">
-                <div id='select_measure_title'>{{labels.select_measure}}: </div>
-                <div class='btn-group'>
-                    <a class='btn dropdown-toggle' data-toggle='dropdown' href='#'>
-                        <span id='select_measure_current_view'></span>
-                        <span class='caret'></span>
-                    </a>
-                    <ul id='asmtTypeDropdown' class='dropdown-menu'></ul>
-                </div>
-                <div id="losDisclaimerInfo"></div
+        <!-- The content below gets appended to body tag of this html -->
+        <div id="content" class="losWrapper">
+            <div class='clearfix title'>
+	        <h2></h2>
+                <ul class='gridControls'>
+                    <li>
+                        <div id='select_measure_title'>{{labels.select_measure}}: </div>
+                        <div class="asmtDropdown">
+                            <div class='btn-group'>
+                                <a class='btn dropdown-toggle' data-toggle='dropdown' href='#'>
+                                    <span id='select_measure_current_view'></span>
+                                    <span class='caret'></span>
+                                </a>
+                                <ul id='asmtTypeDropdown' class='dropdown-menu'></ul>
+                            </div>
+                        </div>
+                        <div class="disclaimerInfo"></div>
+                    </li>
+                    <li>
+                        <div class="filter_label">{{labels.filter}}<span class="caret"></span></div>
+                    </li>
+                </ul>
             </div>
-	    <h2 id="school_name"></h2>
 	    <div id="losFilter"></div>
 	    <div id="errorMessage"></div>
    	    <div>
 	        <table id="gridTable"></table>
 	    </div>
 	</div>
-	</script>
+	<div id="footer"></div>
+    </body>
 
     <script type="text/template" id="edwareLOSHeaderConfidenceLevelBarTemplate">
      <div class='progress' style='width: {{bar_width}}px;'>

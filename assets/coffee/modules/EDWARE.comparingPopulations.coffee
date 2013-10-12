@@ -81,11 +81,11 @@ define [
     createAsmtDropdown: () ->
       if this.reportType isnt 'school'
         # remove asmt type dropdown and vertical bar
-        $('.gridControls .asmtTypePlaceholder').remove()
+        $('.gridControls .asmtDropdown').parent().remove()
         # only show asmt type dropdown on school view
         return
       self = this
-      this.asmtDropdown = $('#asmtDropdown').edwareAsmtDropdown this.asmtTypes, (asmtType) ->
+      this.asmtDropdown = $('.asmtDropdown').edwareAsmtDropdown this.asmtTypes, (asmtType) ->
         # save assessment type
         self.currentAsmtType = asmtType
         edwarePreferences.saveAsmtPreference asmtType

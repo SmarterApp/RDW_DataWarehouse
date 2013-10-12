@@ -259,6 +259,8 @@ define [
       $($("#footerLinks").html()).clone().appendTo("#print_reportInfoContent")
       if this.isGrayscale
         $(".printHeader .logo img").attr("src", "../images/smarter_printlogo_gray.png")
+      # show control panel upon rendering complete
+      $('.gridControls').show()
         
     createSampleInterval : (subject, sample_interval) ->
       # merge sample and subject information
@@ -339,7 +341,7 @@ define [
     # Create assessment type dropdown
     createDropdown : () ->
       this.asmtTypes = this.asmtTypes.sort().reverse()
-      this.dropdown = $('#asmtDropdownSection').edwareAsmtDropdown this.asmtTypes, this.updateView.bind(this)
+      this.dropdown = $('.asmtDropdown').edwareAsmtDropdown this.asmtTypes, this.updateView.bind(this)
       this.dropdown.create()
       this.dropdown.setSelectedValue this.currentAsmtType     
  

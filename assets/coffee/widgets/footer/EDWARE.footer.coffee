@@ -122,7 +122,7 @@ define [
         url += "&grayscale=true"
       if asmtType
          url += "&asmtType=" + encodeURI asmtType
-      url += "&lang=" + edwarePreference.getSelectedLanguage()
+      url += "&lang=" + edwarePreferences.getSelectedLanguage()
       $("#print").popover "hide"
       $("#footer .nav li a").removeClass("active")
       window.open(url, "_blank",'toolbar=0,location=0,menubar=0,status=0,resizable=yes')

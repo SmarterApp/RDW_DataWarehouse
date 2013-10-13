@@ -1,33 +1,31 @@
 import os
-import subprocess
-import csv
-import math
 import argparse
-import datetime
 import logging
 import tarfile
+
+__author__ = 'sravi'
 
 logger = logging.getLogger(__name__)
 
 
 def _is_file_exists(file_to_expand):
-    '''
+    """
     check if file exists and readable
-    '''
+    """
     return os.path.isfile(file_to_expand) and os.access(file_to_expand, os.R_OK)
 
 
 def _is_tar_file(file_to_expand):
-    '''
+    """
     check for valid tar file
-    '''
+    """
     return tarfile.is_tarfile(file_to_expand)
 
 
 def _is_valid__tar_file(file_to_expand):
-    '''
+    """
     Basic file validation checks before expanding
-    '''
+    """
     valid = False
     if _is_file_exists(file_to_expand):
         valid = True
@@ -37,17 +35,17 @@ def _is_valid__tar_file(file_to_expand):
 
     if valid:
         if _is_tar_file(file_to_expand):
-            logger.info("Tar file format recongnized -- %s " % file_to_expand)
+            logger.info("Tar file format recognized -- %s " % file_to_expand)
         else:
             valid = False
-            logger.error("Tar file format un-recongnized -- %s " % file_to_expand)
+            logger.error("Tar file format un-recognized -- %s " % file_to_expand)
     return valid
 
 
 def _extract_tar_file_contents(file_to_expand, expanded_dir):
-    '''
+    """
     extract file contents to the destination directory
-    '''
+    """
     tar_file_contents = []
     tar = tarfile.open(file_to_expand, "r:gz")
     for tarinfo in tar:

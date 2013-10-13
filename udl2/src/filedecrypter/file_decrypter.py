@@ -1,26 +1,24 @@
 import os
-import subprocess
-import csv
-import math
 import argparse
-import datetime
 import logging
 import gnupg
+
+__author__ = 'sravi'
 
 logger = logging.getLogger(__name__)
 
 
 def _is_file_exists(file_to_decrypt):
-    '''
+    """
     check if file exists and readable
-    '''
+    """
     return os.path.isfile(file_to_decrypt) and os.access(file_to_decrypt, os.R_OK)
 
 
 def _is_valid__file(file_to_decrypt):
-    '''
+    """
     Basic file validation checks before decrypting
-    '''
+    """
     valid = False
     if _is_file_exists(file_to_decrypt):
         valid = True
@@ -45,9 +43,9 @@ def _print_status(status):
 
 
 def _decrypt_file_contents(file_to_decrypt, output_file, passphrase, gpg_home):
-    '''
+    """
     verify signature, decrypt and write the decrypted file to the destination directory
-    '''
+    """
     gpg = gnupg.GPG(gnupghome=gpg_home)
     with open(file_to_decrypt, 'rb') as f:
         status = gpg.decrypt_file(f, passphrase=passphrase, output=output_file)
@@ -55,9 +53,9 @@ def _decrypt_file_contents(file_to_decrypt, output_file, passphrase, gpg_home):
 
 
 def decrypt_file(file_to_decrypt, destination_dir, passphrase, gpg_home):
-    '''
+    """
     Verify and Decrypt the file after needed validations
-    '''
+    """
     if not _is_valid__file(file_to_decrypt):
         raise Exception('Invalid source file -- %s' % file_to_decrypt)
 

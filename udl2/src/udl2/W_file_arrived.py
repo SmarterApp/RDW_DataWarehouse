@@ -16,7 +16,7 @@ The file will initially arrive at zones/landing/arrivals/<TENANT>/ASSMT.tar.gz.g
 Based on the GUID_BATCH created in pre_etl, this worker will create work zone subdirectories
 Then, it moves the file from zones/landing/<TENANT>/arrivals to zones/landing/work/<TENANT>/<TS_GUID_BATCH>/arrived/
 
-The output of this worker will serve as the input to the subsequent worker [file_decrypter].
+The output of this worker will serve as the input to the subsequent worker [W_file_decrypter].
 '''
 
 logger = get_task_logger(__name__)
@@ -24,10 +24,10 @@ logger = get_task_logger(__name__)
 
 @celery.task(name="udl2.W_file_arrived.task")
 def task(incoming_msg):
-    '''
+    """
     This is the celery task for moving the file from arrivals to work/arrivals zone
     and creating all the folders needed for this batch run under work zone
-    '''
+    """
     start_time = datetime.datetime.now()
 
     # Retrieve parameters from the incoming message
@@ -42,7 +42,6 @@ def task(incoming_msg):
     tenant_directory_paths = move_file_from_arrivals(input_source_file, guid_batch)
 
     finish_time = datetime.datetime.now()
-    spend_time = finish_time - start_time
 
     # Benchmark
     benchmark = BatchTableBenchmark(guid_batch, load_type, task.name, start_time, finish_time, task_id=str(task.request.id))
@@ -52,7 +51,6 @@ def task(incoming_msg):
     outgoing_msg = {}
     outgoing_msg.update(incoming_msg)
     outgoing_msg.update({
-    					mk.FILE_TO_DECRYPT: tenant_directory_paths['arrived'] + '/' + os.path.basename(input_source_file),
-    					mk.TENANT_DIRECTORY_PATHS: tenant_directory_paths
-    					})
+        mk.FILE_TO_DECRYPT: tenant_directory_paths['arrived'] + '/' + os.path.basename(input_source_file),
+        mk.TENANT_DIRECTORY_PATHS: tenant_directory_paths})
     return outgoing_msg

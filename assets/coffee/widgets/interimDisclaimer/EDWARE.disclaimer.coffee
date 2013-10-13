@@ -25,7 +25,7 @@ define [
       # make popup and make it stay
       this.icon.mouseenter()
       setTimeout ()->
-        this.popover.fadeOut(150)
+        this.popover.fadeOut(150) if this.popover
       , 3000
       # This will save that we've loaded it the first time
       this.saveLoadedInfo()

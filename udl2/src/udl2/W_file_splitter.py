@@ -1,14 +1,11 @@
 from __future__ import absolute_import
 from udl2.celery import celery
-from udl2 import W_load_csv_to_staging
 from celery.result import AsyncResult
 from celery.utils.log import get_task_logger
 from udl2_util import file_util
-from celery import group
 import filesplitter.file_splitter as file_splitter
 import udl2.message_keys as mk
 import datetime
-import os
 from udl2_util.measurement import BatchTableBenchmark
 
 logger = get_task_logger(__name__)
@@ -19,8 +16,6 @@ def task(incoming_msg):
     '''
     This is the celery task for splitting file
     '''
-    # parse the message
-    # expanded_msg = parse_initial_message(incoming_msg)
 
     start_time = datetime.datetime.now()
 

@@ -88,3 +88,10 @@ TIME_FOR_ONE_MILLION_RECORDS = 'time_for_one_million_records'
 BATCH_TABLE = 'batch_table'
 USER_EMAIL = 'user_email'
 TASK_URL = 'task_status_url'
+
+# TODO: find a right place for these string constants
+ARRIVED = 'arrived'
+DECRYPTED = 'decrypted'
+EXPANDED = 'expanded'
+SUBFILES = 'subfiles'
+HISTORY = 'history'

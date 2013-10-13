@@ -51,6 +51,6 @@ def task(incoming_msg):
     outgoing_msg = {}
     outgoing_msg.update(incoming_msg)
     outgoing_msg.update({
-        mk.FILE_TO_DECRYPT: tenant_directory_paths['arrived'] + '/' + os.path.basename(input_source_file),
+        mk.FILE_TO_DECRYPT: tenant_directory_paths[mk.ARRIVED] + '/' + os.path.basename(input_source_file),
         mk.TENANT_DIRECTORY_PATHS: tenant_directory_paths})
     return outgoing_msg

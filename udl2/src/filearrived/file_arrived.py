@@ -4,13 +4,8 @@ import time
 import os
 import shutil
 
+from udl2 import message_keys as mk
 from udl2.celery import udl2_conf
-
-ARRIVED = 'arrived'
-DECRYPTED = 'decrypted'
-EXPANDED = 'expanded'
-SUBFILES = 'subfiles'
-HISTORY = 'history'
 
 
 def move_file_from_arrivals(incoming_file, batch_guid):
@@ -23,7 +18,7 @@ def move_file_from_arrivals(incoming_file, batch_guid):
     tenant_name = _get_tenant_name(incoming_file)
     tenant_directory_paths = _create_directory_paths(tenant_name, batch_guid)
     _create_batch_directories(tenant_directory_paths)
-    _move_file_to_work_and_history(incoming_file, tenant_directory_paths[ARRIVED], tenant_directory_paths[HISTORY])
+    _move_file_to_work_and_history(incoming_file, tenant_directory_paths[mk.ARRIVED], tenant_directory_paths[mk.HISTORY])
     return tenant_directory_paths
 
 
@@ -60,11 +55,15 @@ def _create_directory_paths(tenant_name, batch_guid):
     dir_name += '_' + batch_guid
 
     directories = {
-        ARRIVED: os.path.join(udl2_conf['zones']['work'], tenant_name, ARRIVED, dir_name),
-        DECRYPTED: os.path.join(udl2_conf['zones']['work'], tenant_name, DECRYPTED, dir_name),
-        EXPANDED: os.path.join(udl2_conf['zones']['work'], tenant_name, EXPANDED, dir_name),
-        SUBFILES: os.path.join(udl2_conf['zones']['work'], tenant_name, SUBFILES, dir_name),
-        HISTORY: os.path.join(udl2_conf['zones']['history'], tenant_name, dir_name)
+        mk.ARRIVED: os.path.join(udl2_conf['zones']['work'], tenant_name,
+                                 udl2_conf['work_zone_sub_dir']['arrived'], dir_name),
+        mk.DECRYPTED: os.path.join(udl2_conf['zones']['work'], tenant_name,
+                                   udl2_conf['work_zone_sub_dir']['decrypted'], dir_name),
+        mk.EXPANDED: os.path.join(udl2_conf['zones']['work'], tenant_name,
+                                  udl2_conf['work_zone_sub_dir']['expanded'], dir_name),
+        mk.SUBFILES: os.path.join(udl2_conf['zones']['work'], tenant_name,
+                                  udl2_conf['work_zone_sub_dir']['subfiles'], dir_name),
+        mk.HISTORY: os.path.join(udl2_conf['zones']['history'], tenant_name, dir_name)
     }
     return directories
 

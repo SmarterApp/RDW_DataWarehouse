@@ -31,7 +31,7 @@ def task(incoming_msg):
     file_to_expand = incoming_msg[mk.FILE_TO_EXPAND]
     guid_batch = incoming_msg[mk.GUID_BATCH]
     tenant_directory_paths = incoming_msg[mk.TENANT_DIRECTORY_PATHS]
-    expand_to_dir = tenant_directory_paths['expanded']
+    expand_to_dir = tenant_directory_paths[mk.EXPANDED]
     load_type = incoming_msg[mk.LOAD_TYPE]
 
     logger.info('W_FILE_EXPANDER: expand file <%s> with guid_batch = <%s> to directory <%s>' % (file_to_expand, guid_batch, expand_to_dir))

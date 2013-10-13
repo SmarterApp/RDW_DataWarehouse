@@ -31,7 +31,7 @@ def task(incoming_msg):
     guid_batch = incoming_msg[mk.GUID_BATCH]
     gpghome = udl2_conf ['gpg_home']
     tenant_directory_paths = incoming_msg[mk.TENANT_DIRECTORY_PATHS]
-    decrypt_to_dir = tenant_directory_paths['decrypted']
+    decrypt_to_dir = tenant_directory_paths[mk.DECRYPTED]
     load_type = incoming_msg[mk.LOAD_TYPE]
 
     logger.info('W_FILE_DECRYPTER: received file <%s> with guid_batch = <%s>' % (file_to_decrypt, guid_batch))

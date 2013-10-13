@@ -16,7 +16,7 @@ def task(incoming_msg):
     guid_batch = incoming_msg[mk.GUID_BATCH]
 
     tenant_directory_paths = incoming_msg[mk.TENANT_DIRECTORY_PATHS]
-    expanded_dir = tenant_directory_paths['expanded']
+    expanded_dir = tenant_directory_paths[mk.EXPANDED]
 
     sfv = SimpleFileValidator()
     error_map = {}

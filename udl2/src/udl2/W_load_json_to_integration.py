@@ -36,7 +36,7 @@ def task(msg):
     lzw = msg[mk.LANDING_ZONE_WORK_DIR]
     guid_batch = msg[mk.GUID_BATCH]
     tenant_directory_paths = msg[mk.TENANT_DIRECTORY_PATHS]
-    expanded_dir = tenant_directory_paths['expanded']
+    expanded_dir = tenant_directory_paths[mk.EXPANDED]
     json_file = file_util.get_file_type_from_dir('.json', expanded_dir)
     logger.info('LOAD_JSON_TO_INTEGRATION: Loading json file <%s>' % json_file)
     conf = generate_conf_for_loading(json_file, guid_batch)

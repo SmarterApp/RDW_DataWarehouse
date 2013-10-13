@@ -25,14 +25,15 @@ def task(incoming_msg):
     load_type = incoming_msg[mk.LOAD_TYPE]
 
     tenant_directory_paths = incoming_msg[mk.TENANT_DIRECTORY_PATHS]
-    expanded_dir = tenant_directory_paths['expanded']
+    expanded_dir = tenant_directory_paths[mk.EXPANDED]
     csv_file = file_util.get_file_type_from_dir('.csv', expanded_dir)
 
-    subfiles_dir = tenant_directory_paths['subfiles']
+    subfiles_dir = tenant_directory_paths[mk.SUBFILES]
     #file_util.create_directory(subfiles_dir)
 
     # do actual work of splitting file
-    split_file_tuple_list, header_file_path, totalrows, filesize = file_splitter.split_file(csv_file, parts=parts, output_path=subfiles_dir)
+    split_file_tuple_list, header_file_path, \
+        totalrows, filesize = file_splitter.split_file(csv_file, parts=parts, output_path=subfiles_dir)
 
     finish_time = datetime.datetime.now()
     spend_time = finish_time - start_time

@@ -63,7 +63,13 @@ udl2_conf = {
         'pickup-history': '/opt/wgen/edware-udl/zones/pickup/history',
         'datafiles': '/opt/wgen/edware-udl/zones/datafiles/',  # this is for storing test sample data files
         'tests': '/opt/wgen/edware-udl/zones/tests/',  # this is for running unit tests.
-
+    },
+    'work_zone_sub_dir': {
+        'arrived': 'arrived',
+        'decrypted': 'decrypted',
+        'expanded': 'expanded',
+        'subfiles': 'subfiles',
+        'history': 'history'
     },
     'logging': {  # log location. this should be in the long run as file locations or more sophisticated logging system
         'level': 'INFO',

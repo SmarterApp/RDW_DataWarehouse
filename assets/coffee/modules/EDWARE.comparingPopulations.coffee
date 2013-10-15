@@ -123,6 +123,10 @@ define [
       this.fetchData param, (data)->
         self.data = data
         self.populationData = self.data.records
+        if not self.data.context.items[0]
+          # no results
+          self.displayNoResults()
+          return
         self.summaryData = self.data.summary
         self.asmtSubjectsData = self.data.subjects
         self.notStatedData = self.data.not_stated
@@ -138,6 +142,11 @@ define [
         self.updateDropdown()
         self.updateFilter()
         self.createHeaderAndFooter()
+
+    displayNoResults: () ->
+      # no results
+      $('#gridTable').jqGrid('GridUnload')
+      edwareUtil.displayErrorMessage  this.labels['no_results']
 
     updateAsmtTypePreference: () ->
       if this.reportType in ['state', 'district']
@@ -311,7 +320,7 @@ define [
 
     getReportTitle: () ->
     # Returns report title based on the type of report
-      'Comparing '+ this.addApostropheS(this.orgType) + ' ' + this.displayType + 's' + ' on Math & ELA'
+      'Comparing '+ this.addApostropheS(this.orgType) + ' ' + this.displayType + 's'
 
     # Format the summary data for summary row purposes
     getOverallSummaryName: () ->

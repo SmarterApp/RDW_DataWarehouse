@@ -115,7 +115,7 @@ define [
          filterArrow.show()
          filterPanel.slideDown 'slow'
       else
-         filterPanel.trigger FILTER_CLOSE
+         self.cancel self
          
     closeFilter: (callback) ->
       this.filterPanel.slideUp 'slow'

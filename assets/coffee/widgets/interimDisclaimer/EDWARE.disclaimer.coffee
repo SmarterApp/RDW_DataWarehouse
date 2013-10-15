@@ -25,7 +25,7 @@ define [
       # make popup and make it stay
       this.icon.mouseenter()
       setTimeout ()->
-        this.popover.fadeOut(150) if this.popover
+        $('.interimDisclaimerPopover').fadeOut(150)
       , 3000
       # This will save that we've loaded it the first time
       this.saveLoadedInfo()
@@ -52,7 +52,6 @@ define [
       output = Mustache.to_html DISCLAIMER_TEMPLATE, {'content': this.content}
       this.disclaimerSection.html output
       this.icon = $('.interimDisclaimerIcon')
-      this.popover = $('.interimDisclaimerPopover')
       this.container = $('.disclaimerInfo')
    
     hasLoaded: () ->

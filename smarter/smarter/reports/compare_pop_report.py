@@ -173,8 +173,8 @@ class ComparingPopReport(object):
         results = self.run_query(**params)
 
         # Only return 404 if results is empty and there are no filters being applied
-        if not results and len(self.filters.keys()) is 0:
-            raise NotFoundException("There are no results")
+        #if not results and len(self.filters.keys()) is 0:
+        #    raise NotFoundException("There are no results")
 
         return self.arrange_results(results, **params)
 

@@ -1,15 +1,20 @@
 from __future__ import absolute_import
 from udl2.celery import celery
 from celery.utils.log import get_task_logger
-from udl2_util import file_util
 import udl2.message_keys as mk
-import os
+from fileexpander.file_expander import expand_file
+from udl2_util.measurement import BatchTableBenchmark
+import datetime
 
-__author__ = 'abrien'
+
+__author__ = 'sravi'
 
 '''
-This task takes a zipped file in landing_zone/work/GUID_BATCH/arrived/
-and unpacks into landing_zone/work/GUID_BATCH/expanded
+File Expander Worker for the UDL Pipeline.
+The decrypted file at zones/landing/work/<TENANT>/<TS_GUID_BATCH>/decrypted/ is expanded
+and written to zones/landing/work/<TENANT>/<TS_GUID_BATCH>/expanded/
+
+The output of this worker will serve as the input to the subsequent worker [W_simple_file_validator].
 '''
 
 logger = get_task_logger(__name__)
@@ -17,30 +22,32 @@ logger = get_task_logger(__name__)
 
 @celery.task(name="udl2.W_file_expander.task")
 def task(incoming_msg):
+    """
+    This is the celery task to expand the decrypted file
+    """
+    start_time = datetime.datetime.now()
 
     # Retrieve parameters from the incoming message
     file_to_expand = incoming_msg[mk.FILE_TO_EXPAND]
-    lzw = incoming_msg[mk.LANDING_ZONE_WORK_DIR]
     guid_batch = incoming_msg[mk.GUID_BATCH]
+    tenant_directory_paths = incoming_msg[mk.TENANT_DIRECTORY_PATHS]
+    expand_to_dir = tenant_directory_paths[mk.EXPANDED]
+    load_type = incoming_msg[mk.LOAD_TYPE]
 
-    expanded_dir = file_util.get_expanded_dir(lzw, guid_batch)
-    print('before create_directory', expanded_dir)
-    file_util.create_directory(expanded_dir)
-    unpacked_json_file = unpack_json_file(file_to_expand, expanded_dir, incoming_msg[mk.JSON_FILENAME])
-    unpacked_csv_file = unpack_csv_file(file_to_expand, expanded_dir, incoming_msg[mk.CSV_FILENAME])
+    logger.info('W_FILE_EXPANDER: expand file <%s> with guid_batch = <%s> to directory <%s>' % (file_to_expand, guid_batch, expand_to_dir))
+    file_contents = expand_file(file_to_expand, expand_to_dir)
+    logger.info('W_FILE_EXPANDER: expanded files:  <%s> and <%s>' % (file_contents[0], file_contents[1]))
 
-    logger.info('W_FILE_EXPANDER: expanded file <%s> with guid_batch = <%s> to <%s> and <%s>' % (file_to_expand, guid_batch, unpacked_csv_file, unpacked_json_file))
+    finish_time = datetime.datetime.now()
 
+    # Benchmark
+    benchmark = BatchTableBenchmark(guid_batch, load_type, task.name, start_time, finish_time, task_id=str(task.request.id))
+    benchmark.record_benchmark()
 
-def unpack_json_file(file_to_expand, expanded_dir, json_filepath):
-    # TODO: Remove 3rd param and actually implement this method
-    if file_util.copy_file(json_filepath, expanded_dir):
-        return os.path.join(expanded_dir, os.path.basename(json_filepath))
-    return None
-
-
-def unpack_csv_file(file_to_expand, expanded_dir, csv_filename):
-    # TODO: Remove 3rd param and actually implement this method
-    if file_util.copy_file(csv_filename, expanded_dir):
-        return os.path.join(expanded_dir, os.path.basename(csv_filename))
-    return None
+    # Outgoing message to be piped to the file expander
+    outgoing_msg = {}
+    outgoing_msg.update(incoming_msg)
+    outgoing_msg.update({
+        mk.JSON_FILENAME: file_contents[0],
+        mk.CSV_FILENAME: file_contents[1]})
+    return outgoing_msg

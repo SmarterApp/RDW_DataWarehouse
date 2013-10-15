@@ -1,3 +1,1 @@
-GNUPG_HOME='/Users/root/.gnupg'
-
-#GNUPG_HOME='/Users/sravi/.gnupg'
+GNUPG_HOME='/opt/wgen/edware-udl/zones/datafiles/keys'

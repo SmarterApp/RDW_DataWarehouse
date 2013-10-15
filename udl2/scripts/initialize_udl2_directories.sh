@@ -30,18 +30,36 @@ sudo -u root -s rm -fr /opt/wgen/edware-udl/zones
 echo "make zones directory"
 sudo -u root -s mkdir -p /opt/wgen/edware-udl/zones/
 sudo -u root -s mkdir -p /opt/wgen/edware-udl/zones/landing
-sudo -u root -s mkdir -p /opt/wgen/edware-udl/zones/arrivals
+sudo -u root -s mkdir -p /opt/wgen/edware-udl/zones/pickup
+
 sudo -u root -s mkdir -p /opt/wgen/edware-udl/zones/landing/work
+sudo -u root -s mkdir -p /opt/wgen/edware-udl/zones/landing/arrivals
 sudo -u root -s mkdir -p /opt/wgen/edware-udl/zones/landing/history
+
+sudo -u root -s mkdir -p /opt/wgen/edware-udl/zones/pickup/work
+sudo -u root -s mkdir -p /opt/wgen/edware-udl/zones/pickup/departures
+sudo -u root -s mkdir -p /opt/wgen/edware-udl/zones/pickup/history
+
+# For testing
 sudo -u root -s mkdir -p /opt/wgen/edware-udl/zones/datafiles
+sudo -u root -s mkdir -p /opt/wgen/edware-udl/zones/datafiles/keys
 sudo -u root -s mkdir -p /opt/wgen/edware-udl/zones/tests
+
 # we need to fix permission later not to own by root but udl app user
 sudo -u root -s chmod 777 /opt/wgen/edware-udl/zones
 sudo -u root -s chmod 777 /opt/wgen/edware-udl/zones/landing
-sudo -u root -s chmod 777 /opt/wgen/edware-udl/zones/arrivals
+sudo -u root -s chmod 777 /opt/wgen/edware-udl/zones/pickup
+
 sudo -u root -s chmod 777 /opt/wgen/edware-udl/zones/landing/work
+sudo -u root -s chmod 777 /opt/wgen/edware-udl/zones/landing/arrivals
+sudo -u root -s chmod 777 /opt/wgen/edware-udl/zones/landing/history
+sudo -u root -s chmod 777 /opt/wgen/edware-udl/zones/pickup/work
+sudo -u root -s chmod 777 /opt/wgen/edware-udl/zones/pickup/departures
+sudo -u root -s chmod 777 /opt/wgen/edware-udl/zones/pickup/history
+
 sudo -u root -s chmod 777 /opt/wgen/edware-udl/zones/landing/history
 sudo -u root -s chmod 777 /opt/wgen/edware-udl/zones/datafiles
+sudo -u root -s chmod 777 /opt/wgen/edware-udl/zones/datafiles/keys
 sudo -u root -s chmod 777 /opt/wgen/edware-udl/zones/tests
 
 # we need to fix owner to udl2

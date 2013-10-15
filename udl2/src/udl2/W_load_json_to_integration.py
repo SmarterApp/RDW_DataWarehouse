@@ -35,7 +35,8 @@ def task(msg):
     start_time = datetime.datetime.now()
     lzw = msg[mk.LANDING_ZONE_WORK_DIR]
     guid_batch = msg[mk.GUID_BATCH]
-    expanded_dir = file_util.get_expanded_dir(lzw, guid_batch)
+    tenant_directory_paths = msg[mk.TENANT_DIRECTORY_PATHS]
+    expanded_dir = tenant_directory_paths[mk.EXPANDED]
     json_file = file_util.get_file_type_from_dir('.json', expanded_dir)
     logger.info('LOAD_JSON_TO_INTEGRATION: Loading json file <%s>' % json_file)
     conf = generate_conf_for_loading(json_file, guid_batch)

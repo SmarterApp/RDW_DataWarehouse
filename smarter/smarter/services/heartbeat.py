@@ -23,6 +23,12 @@ def heartbeat(request):
 
 
 def __check_celery(request):
+    '''
+    GET request that executes put a task to celery and retrieve result to verify celery service
+    is functioning
+
+    :param request:  Pyramid request object
+    '''
     return HTTPOk()
 
 

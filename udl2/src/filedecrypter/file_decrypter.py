@@ -11,6 +11,8 @@ logger = logging.getLogger(__name__)
 def _is_file_exists(file_to_decrypt):
     """
     check if file exists and readable
+    :param file_to_decrypt: the path of the file to be decrypted
+    :return: boolean true, if the file exists and is readable
     """
     return os.path.isfile(file_to_decrypt) and os.access(file_to_decrypt, os.R_OK)
 
@@ -18,6 +20,8 @@ def _is_file_exists(file_to_decrypt):
 def _is_valid__file(file_to_decrypt):
     """
     Basic file validation checks before decrypting
+    :param file_to_decrypt: the path of the file to be decrypted
+    :return: boolean true, if the file is a valid file
     """
     valid = False
     if _is_file_exists(file_to_decrypt):
@@ -30,6 +34,11 @@ def _is_valid__file(file_to_decrypt):
 
 
 def _print_status(status):
+    """
+    Print the entire gnupg status object after decryption
+    :param status: gnupg return status after attempting decryption
+    :return: None
+    """
     logger.info('ok: %s ' % status.ok)
     logger.debug('status: %s ' % status.status)
     logger.debug('stderr: %s ' % status.stderr)
@@ -45,6 +54,11 @@ def _print_status(status):
 def _decrypt_file_contents(file_to_decrypt, output_file, passphrase, gpg_home):
     """
     verify signature, decrypt and write the decrypted file to the destination directory
+    :param file_to_decrypt: the path of the file to be decrypted
+    :param output_file: the path to write the output decrypted file
+    :param passphrase: passphrase to access the secret key for decryption from key repo
+    :param gpg_home: Home folder for gpg to fetch the keys
+    :return: status: the gnupg status object after attempting decryption
     """
     gpg = gnupg.GPG(gnupghome=gpg_home)
     with open(file_to_decrypt, 'rb') as f:
@@ -55,6 +69,12 @@ def _decrypt_file_contents(file_to_decrypt, output_file, passphrase, gpg_home):
 def decrypt_file(file_to_decrypt, destination_dir, passphrase, gpg_home):
     """
     Verify and Decrypt the file after needed validations
+    :param file_to_decrypt: the path of the file to be decrypted
+    :param destination_dir: destination directory path
+    :param passphrase: passphrase to access the secret key for decryption from key repo
+    :param gpg_home: Home folder for gpg to fetch the keys
+    :return status: gpg decryption status object
+    :return output_file: full path to the decrypted file
     """
     if not _is_valid__file(file_to_decrypt):
         raise Exception('Invalid source file -- %s' % file_to_decrypt)
@@ -72,6 +92,9 @@ def decrypt_file(file_to_decrypt, destination_dir, passphrase, gpg_home):
 
 
 if __name__ == "__main__":
+    """
+    Entry point to file_decrypter to run as stand alone script
+    """
     parser = argparse.ArgumentParser(description='Process file decrypter args')
     parser.add_argument('-i', '--input', dest='file_to_decrypt', help='file_to_expand')
     parser.add_argument('-o', '--output', dest='destination_dir', default='.', help='output directory')

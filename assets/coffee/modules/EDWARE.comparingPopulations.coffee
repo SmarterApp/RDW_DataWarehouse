@@ -230,7 +230,7 @@ define [
         footer: this.summaryData
         options:
           gridHeight: this.gridHeight
-          labels: this.labels
+          labels: this.labels 
           stickyCompareEnabled: stickyCompareEnabled
           sort: this.sort
           gridComplete: () ->
@@ -320,7 +320,7 @@ define [
 
     getReportTitle: () ->
     # Returns report title based on the type of report
-      'Comparing '+ this.addApostropheS(this.orgType) + ' ' + this.displayType + 's'
+      'Comparing '+ this.addApostropheS(this.orgType) + ' ' + this.displayType + 's' + ' on Math & ELA'
 
     # Format the summary data for summary row purposes
     getOverallSummaryName: () ->

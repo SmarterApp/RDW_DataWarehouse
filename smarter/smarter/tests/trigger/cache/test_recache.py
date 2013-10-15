@@ -6,7 +6,6 @@ Created on Jun 20, 2013
 import unittest
 from beaker.cache import CacheManager, cache_managers
 from beaker.util import parse_cache_config_options
-from edapi.exceptions import NotFoundException
 from smarter.trigger.cache.recache import CacheTrigger,\
     flush_report_in_cache_region
 from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite,\
@@ -41,10 +40,6 @@ class TestRecache(Unittest_with_smarter_sqlite):
         cache_trigger = CacheTrigger('i_dont_exists', 'NY', {})
         self.assertRaises(AttributeError, cache_trigger.recache_state_view_report)
 
-    def test_recache_state_view_report_invalid_state_code(self):
-        cache_trigger = CacheTrigger(get_unittest_tenant_name(), 'DU', {})
-        self.assertRaises(NotFoundException, cache_trigger.recache_state_view_report)
-
     def test_recache_district_view_report(self):
         cache_trigger = CacheTrigger(get_unittest_tenant_name(), 'NY', {})
         cache_trigger.recache_district_view_report('228')
@@ -53,10 +48,6 @@ class TestRecache(Unittest_with_smarter_sqlite):
     def test_recache_district_view_report_invalid_tenant(self):
         cache_trigger = CacheTrigger('i_dont_exists', 'NY', {})
         self.assertRaises(Exception, cache_trigger.recache_district_view_report, '228')
-
-    def test_recache_district_view_report_invalid_district_guid(self):
-        cache_trigger = CacheTrigger(get_unittest_tenant_name(), 'NY', {})
-        self.assertRaises(NotFoundException, cache_trigger.recache_district_view_report, 'i_dont_exist')
 
     def test_flush_state_view_report(self):
         cache_trigger = CacheTrigger(get_unittest_tenant_name(), 'NY', {})

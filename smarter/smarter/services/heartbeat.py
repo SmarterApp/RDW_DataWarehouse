@@ -13,6 +13,20 @@ from database.connector import DBConnection
 
 @view_config(route_name='heartbeat', permission=NO_PERMISSION_REQUIRED, request_method='GET')
 def heartbeat(request):
+    check_list = [__check_datasource, __check_celery]
+    results = [check_task(request) for check_task in check_list]
+    results = map(lambda x: isinstance(x, HTTPServerError().__class__), results)
+    if True in results:
+        return HTTPServerError()
+    else:
+        return HTTPOk()
+
+
+def __check_celery(request):
+    return HTTPOk()
+
+
+def __check_datasource(request):
     '''
     GET request that executes a Select 1 and returns status of 200 if database returns results
 

@@ -7,9 +7,11 @@ __author__ = 'swimberly'
 
 
 class EventHandler(ProcessEvent):
+
     def process_IN_CLOSE_WRITE(self, event):
         print("file created and written:", event.pathname)
-        #subprocess.call('driver.py')
+        cmd = 'driver.py -a {}'.format(event.pathname)
+        subprocess.call(cmd, shell=True)
 
 
 def monitor_directory(directory_path):

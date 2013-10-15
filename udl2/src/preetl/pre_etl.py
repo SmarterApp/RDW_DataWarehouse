@@ -2,8 +2,6 @@ from uuid import uuid4
 from preetl import create_queries as queries
 from udl2_util.database_util import connect_db, execute_queries
 import logging
-from celery.utils.log import get_task_logger
-import datetime
 from udl2.errorcodes import BATCH_REC_FAILED
 from udl2 import message_keys as mk
 

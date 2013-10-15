@@ -82,7 +82,7 @@ def get_pdf_content(params):
     '''
     student_guid = params.get('studentGuid')
     asmt_type = params.get('asmtType', AssessmentType.SUMMATIVE)
-    if student_guid is None or asmt_type is None:
+    if student_guid is None:
         raise InvalidParameterError('Required parameter is missing')
 
     if not has_context_for_pdf_request(student_guid):

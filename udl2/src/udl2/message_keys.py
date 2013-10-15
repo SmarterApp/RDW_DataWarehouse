@@ -5,7 +5,11 @@ INPUT_FILE_PATH = 'input_file_path'
 LANDING_ZONE_WORK_DIR = 'landing_zone_work_dir'
 GUID_BATCH = 'guid_batch'
 
-# file_arrived to file_expander
+# file_arrived to file_decrypter
+FILE_TO_DECRYPT = 'file_to_decrypt'
+TENANT_DIRECTORY_PATHS = 'tenant_directory_paths'
+
+# file_decrypter to file_expander
 FILE_TO_EXPAND = 'file_to_expand'
 
 # file_expander to file_validator
@@ -84,3 +88,10 @@ TIME_FOR_ONE_MILLION_RECORDS = 'time_for_one_million_records'
 BATCH_TABLE = 'batch_table'
 USER_EMAIL = 'user_email'
 TASK_URL = 'task_status_url'
+
+# TODO: find a right place for these string constants
+ARRIVED = 'arrived'
+DECRYPTED = 'decrypted'
+EXPANDED = 'expanded'
+SUBFILES = 'subfiles'
+HISTORY = 'history'

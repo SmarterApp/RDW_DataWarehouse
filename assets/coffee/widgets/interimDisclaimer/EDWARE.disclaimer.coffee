@@ -26,7 +26,7 @@ define [
       this.icon.mouseenter()
       setTimeout ()->
         $('.interimDisclaimerPopover').fadeOut(150)
-      , 3000
+      , 10000
       # This will save that we've loaded it the first time
       this.saveLoadedInfo()
       

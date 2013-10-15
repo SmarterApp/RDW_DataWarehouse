@@ -13,3 +13,4 @@ require ["EDWARE.studentList", "edwareFilter", "edwareDataProxy", "edwareUtil"],
     studentGrid.reload(param)
     
   filter.loadReport()
+  filter.update {}

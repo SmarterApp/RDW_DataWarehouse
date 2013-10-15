@@ -16,6 +16,7 @@ import copy
 from services.celeryconfig import TIMEOUT
 import services
 from celery.exceptions import MaxRetriesExceededError
+from datetime import datetime
 
 pdf_procs = ['wkhtmltopdf']
 pdf_defaults = ['--enable-javascript', '--page-size', 'Letter', '--print-media-type', '-l', '--javascript-delay', '6000', '--footer-center', 'Page [page] of [toPage]', '--footer-font-size', '9']
@@ -24,6 +25,12 @@ OK = 0
 FAIL = 1
 
 log = logging.getLogger('smarter')
+
+
+@celery.task(name='tasks.pdf.heartbeat')
+def check_heartbeat():
+    heartbeat = "heartbeat " + str(datetime.now())
+    return heartbeat
 
 
 @celery.task(name='tasks.pdf.generate', max_retries=services.celeryconfig.MAX_RETRIES, default_retry_delay=services.celeryconfig.RETRY_DELAY)

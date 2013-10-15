@@ -9,6 +9,7 @@ from pyramid.httpexceptions import HTTPOk, HTTPServerError
 from sqlalchemy.sql.expression import select
 from smarter.database import get_data_source_names
 from database.connector import DBConnection
+from services.tasks.pdf import check_heartbeat
 
 
 @view_config(route_name='heartbeat', permission=NO_PERMISSION_REQUIRED, request_method='GET')
@@ -24,12 +25,17 @@ def heartbeat(request):
 
 def __check_celery(request):
     '''
-    GET request that executes put a task to celery and retrieve result to verify celery service
+    GET request that executes a task via celery and retrieve result to verify celery service
     is functioning
 
     :param request:  Pyramid request object
     '''
-    return HTTPOk()
+    celery_response = check_heartbeat.delay()
+    heartbeat_message = celery_response.get()
+    if heartbeat_message[0:9] == 'heartbeat':
+        return HTTPOk()
+    else:
+        return HTTPServerError()
 
 
 def __check_datasource(request):

@@ -3,11 +3,11 @@ define [
   "mustache"
   "bootstrap"
   "edwareConfidenceLevelBar"
-  "edwareSessionStorage"
+  "edwareClientStorage"
   "text!edwareFooterHtml"
   "edwareLegend"
-  "edwareLanguage"
-], ($, Mustache, bootstrap, edwareConfidenceLevelBar, edwareSessionStorage, footerTemplate, edwareLegend, edwareLanguage) ->
+  "edwarePreferences"
+], ($, Mustache, bootstrap, edwareConfidenceLevelBar, edwareClientStorage, footerTemplate, edwareLegend, edwarePreferences) ->
   
   $.fn.generateFooter = (reportName, content, legend, labels) ->
     this.html Mustache.to_html footerTemplate, {
@@ -36,12 +36,11 @@ define [
     $(id).popover("hide")
    
   createPopover =(labels) ->
-    
     # Survey monkey popup
     $("#feedback").popover
       html: true
       placement: "top"
-      container: "footer"
+      container: 'body'
       title: ->
           '<div class="pull-right hideButton"><a class="pull-right" href="#" id="close" data-id="feedback">'+labels.hide+' <img src="../images/hide_x.png"></img></i></a></div><div class="lead">'+labels.feedback+'</div>'
       template: '<div class="popover footerPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
@@ -51,7 +50,7 @@ define [
     $("#legend").popover
       html: true
       placement: "top"
-      container: "div"
+      container: 'body'
       title: ->
         '<div class="pull-right hideButton"><a class="pull-right" href="#" id="close" data-id="legend">'+labels.hide+' <img src="../images/hide_x.png"></img></i></a></div><div class="lead">'+labels.legend+'</div>'
       template: '<div class="popover footerPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
@@ -61,7 +60,7 @@ define [
     $("#aboutReport").popover
       html: true
       placement: "top"
-      container: "div"
+      container: 'body'      
       title: ->
         '<div class="pull-right hideButton"><a class="pull-right" href="#" id="close" data-id="aboutReport">'+labels.hide+' <img src="../images/hide_x.png"></img></i></a></div><div class="lead">'+labels.report_info+'</div>'
       template: '<div class="popover footerPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
@@ -71,7 +70,7 @@ define [
     $("#help").popover
       html: true
       placement: "top"
-      container: "div"
+      container: 'body'
       title: ->
         '<div class="pull-right hideButton"><a class="pull-right" href="#" id="close" data-id="help">'+labels.hide+' <img src="../images/hide_x.png"></img></i></a></div><div class="lead">'+labels.help+'</div>'
       template: '<div class="popover footerPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
@@ -81,7 +80,7 @@ define [
     $("#print").popover
       html: true
       placement: "top"
-      container: "div"
+      container: 'body'
       title: ->
         '<div class="pull-right hideButton"><a class="pull-right" href="#" id="close" data-id="print">'+labels.hide+' <img src="../images/hide_x.png"></img></i></a></div><div class="lead">'+labels.print_options+'</div>'
       template: '<div class="popover footerPopover printFooterPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
@@ -92,7 +91,6 @@ define [
     $("#export").popover
       html: true
       placement: "top"
-      container: "div"
       title: ->
         '<div class="pull-right hideButton"><a class="pull-right" href="#" id="close" data-id="export">'+labels.hide+' <img src="../images/hide_x.png"></img></i></a></div><div class="lead"> Export</div>'
       template: '<div class="popover footerPopover exportFooterPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
@@ -117,11 +115,14 @@ define [
   $(document).on
     click: ->
       val=$('input[name=print_options]:checked').val()
+      asmtType = $('#selectedAsmtType').text()
       url=document.URL.replace("indivStudentReport","print")
       url += '&pdf=true'
       if val is "gray"
         url += "&grayscale=true"
-      url += "&lang=" + edwareLanguage.getSelectedLanguage()
+      if asmtType
+         url += "&asmtType=" + encodeURI asmtType
+      url += "&lang=" + edwarePreferences.getSelectedLanguage()
       $("#print").popover "hide"
       $("#footer .nav li a").removeClass("active")
       window.open(url, "_blank",'toolbar=0,location=0,menubar=0,status=0,resizable=yes')
@@ -132,7 +133,7 @@ define [
     click: ->
       val=$('input[name=export_options]:checked').val()
       # We need to read the params in session storage, remove edwareSessionStorage when this code gets moved from footer
-      params = JSON.parse edwareSessionStorage.filterStorage.load()
+      params = JSON.parse edwareClientStorage.filterStorage.load()
       url = window.location.protocol + "//" + window.location.host + "/data/list_of_students_csv?" + $.param(params, true) + "&content-type=text/csv"
       $("#export").popover "hide"
       $("#footer .nav li a").removeClass("active")

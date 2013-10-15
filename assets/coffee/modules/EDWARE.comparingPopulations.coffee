@@ -14,14 +14,17 @@ define [
   "edwareFooter"
   "edwareHeader"
   "edwareDropdown"
-  "edwareLanguage"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwareDropdown, i18n) ->
+  "edwareGridStickyCompare"
+  "edwarePreferences"
+  "edwareAsmtDropdown"
+  "edwareDisclaimer"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwareDropdown, edwareStickyCompare, edwarePreferences, edwareAsmtDropdown, edwareDisclaimer) ->
 
   REPORT_NAME = "comparingPopulationsReport"
 
   POPULATION_BAR_WIDTH = 145
 
-  AFTER_GRID_LOAD_COMPLETE = 'jqGridLoadComplete.jqGrid'
+  DEFAULT_ASMT_TYPE = "Summative"
 
   class ConfigBuilder
     ### Grid configuration builder. ###
@@ -70,7 +73,36 @@ define [
         order: 'asc'
         index: 0
       }
-
+      this.stickyCompare = new edwareStickyCompare.EdwareGridStickyCompare this.renderGrid.bind(this)
+      this.asmtTypes = for asmtType in config.students.customViews.asmtTypes
+        asmtType.name
+      
+    # Create assessment type dropdown
+    createAsmtDropdown: () ->
+      if this.reportType isnt 'school'
+        # remove asmt type dropdown and vertical bar
+        $('.gridControls .asmtDropdown').parent().remove()
+        # only show asmt type dropdown on school view
+        return
+      self = this
+      this.asmtDropdown = $('.asmtDropdown').edwareAsmtDropdown this.asmtTypes, (asmtType) ->
+        # save assessment type
+        self.currentAsmtType = asmtType
+        edwarePreferences.saveAsmtPreference asmtType
+        self.updateDisclaimer()
+        self.reload self.param
+      this.asmtDropdown.create()
+      # select default asmt type
+      this.asmtDropdown.setSelectedValue this.currentAsmtType
+    
+    createDisclaimer: () ->
+      if this.reportType is 'school'
+        this.disclaimer = $('.disclaimerInfo').edwareDisclaimer this.config.interimDisclaimer
+        this.updateDisclaimer()
+    
+    updateDisclaimer: () ->
+      this.disclaimer.update this.currentAsmtType
+ 
     setFilter: (filter) ->
       this.filter = filter
 
@@ -81,23 +113,47 @@ define [
     reload: (@param) ->
       # initialize variables
       this.reportType = this.getReportType(param)
-      data = this.fetchData param
-      this.data = data
-      this.populationData = this.data.records
-      this.summaryData = this.data.summary
-      this.asmtSubjectsData = this.data.subjects
-      this.notStatedData = this.data.not_stated
-      #Check for colors, set to default color if it's null
-      for subject, value of this.data.metadata
-        if value is null
-          this.data.metadata[subject] = this.defaultColors
+      this.updateAsmtTypePreference()
+      # create assessment type dropdown list
+      this.createAsmtDropdown() if not this.asmtDropdown
+      this.createDisclaimer() if not this.disclaimer
+      # set current query assessment type
+      param.asmtType = this.currentAsmtType.toUpperCase()
+      self = this
+      this.fetchData param, (data)->
+        self.data = data
+        self.populationData = self.data.records
+        if not self.data.context.items[0]
+          # no results
+          self.displayNoResults()
+          return
+        self.summaryData = self.data.summary
+        self.asmtSubjectsData = self.data.subjects
+        self.notStatedData = self.data.not_stated
+        #Check for colors, set to default color if it's null
+        for subject, value of self.data.metadata
+          if value is null
+            self.data.metadata[subject] = self.defaultColors
 
-      # process breadcrumbs
-      this.renderBreadcrumbs(data.context)
-      this.createGrid()
-      this.updateDropdown()
-      this.updateFilter()
-      this.createHeaderAndFooter()
+        # process breadcrumbs
+        self.renderBreadcrumbs(self.data.context)
+        self.stickyCompare.setReportInfo self.reportType, self.breadcrumbs.getOrgType(), self.breadcrumbs.getDisplayType(), self.param
+        self.createGrid()
+        self.updateDropdown()
+        self.updateFilter()
+        self.createHeaderAndFooter()
+
+    displayNoResults: () ->
+      # no results
+      $('#gridTable').jqGrid('GridUnload')
+      edwareUtil.displayErrorMessage  this.labels['no_results']
+
+    updateAsmtTypePreference: () ->
+      if this.reportType in ['state', 'district']
+        # Reset back to summative
+        edwarePreferences.saveAsmtPreference DEFAULT_ASMT_TYPE
+      # Use this assessment type for school view
+      this.currentAsmtType = edwarePreferences.getAsmtPreference()
 
     updateFilter: ()->
       this.filter.update this.notStatedData
@@ -106,17 +162,14 @@ define [
       this.footer = edwareFooter.create('comparing_populations', this.data.metadata, this.config) unless this.footer
       this.header = edwareHeader.create(this.data, this.config, "comparing_populations_" + this.reportType) unless this.header
 
-    fetchData: (params)->
+    fetchData: (params, callback)->
       # Determine if the report is state, district or school view"
       options =
-        async: false
         method: "POST"
         params: params
       
       studentsData = undefined
-      edwareDataProxy.getDatafromSource "/data/comparing_populations", options, (data)->
-        studentsData = data
-      studentsData
+      edwareDataProxy.getDatafromSource "/data/comparing_populations", options, callback
 
     # Based on query parameters, return the type of report that the user is requesting for
     getReportType: (params) ->
@@ -136,36 +189,53 @@ define [
       summaryData = preprocessor.process(this.summaryData)
       this.summaryData = this.formatSummaryData summaryData
       this.renderGrid()
-      self = this
-      $('#gridTable').on AFTER_GRID_LOAD_COMPLETE, ()->
-        self.afterGridLoadComplete()
-      self.afterGridLoadComplete()
 
     afterGridLoadComplete: () ->
       this.bindEvents()
+      # Rebind events and reset sticky comparison
+      this.stickyCompare.update()
       this.alignment.update()
       # Save the current sorting column and order to apply after filtering
       this.sort = $.extend this.sort, {
         order: $('#gridTable').getGridParam('sortorder')
         name: $('#gridTable').getGridParam('sortname')
       }
-      
+    
     renderGrid: () ->
       $('#gridTable').jqGrid('GridUnload')
+      # Filter out selected rows, if any
+      gridData = [] 
+      selectedRows = this.stickyCompare.getSelectedRows()
+      stickyCompareEnabled = false
+      if selectedRows.length > 0
+        stickyCompareEnabled = true
+        for data in this.populationData
+          if gridData.length is selectedRows.length
+            break
+          if data.id in selectedRows
+            gridData.push data
+      else
+        gridData = this.populationData
+
       # Change the column name and link url based on the type of report the user is querying for
       gridConfig = new ConfigBuilder(this.configTemplate, this.asmtSubjectsData)
                              .customize(this.customViews[this.reportType])
                              .build()
+
+      self = this
       # Create compare population grid for State/District/School view
       edwareGrid.create {
-        data: this.populationData
+        data: gridData
         columns: gridConfig
         footer: this.summaryData
         options:
           gridHeight: this.gridHeight
           labels: this.labels
+          stickyCompareEnabled: stickyCompareEnabled
+          sort: this.sort
+          gridComplete: () ->
+            self.afterGridLoadComplete()
       }
-      this.sortBySubject this.sort
       # Display grid controls after grid renders
       $(".gridControls").show()
 
@@ -176,22 +246,20 @@ define [
 
     bindEvents: ()->
       # Show tooltip for population bar on mouseover
-      $(".progress").on
-        mouseenter: ->
-          e = $(this)
-          e.popover
+      $(".progress").popover
             html: true
-            placement: "top"
-            trigger: "manual"
+            placement: 'top'
+            container: 'body'
+            trigger: 'hover'
             template: '<div class="popover"><div class="arrow"></div><div class="popover-inner"><div class="popover-content"><p></p></div></div></div>'
             content: ->
-              e.find(".progressBar_tooltip").html() # template location: widgets/populatoinBar/template.html
-          .popover("show")
-        click: (e) ->
-          e.preventDefault()
-        mouseleave: ->
-          e = $(this)
-          e.popover("hide")
+              $(this).find(".progressBar_tooltip").html() # template location: widgets/populatoinBar/template.html
+      # .mouseenter (e)->
+      #   e.stopImmediatePropagation()
+      #   $(this).popover('show')
+      # .mouseleave (e) ->
+      #   e.stopImmediatePropagation()
+      #   $(this).popover('hide')
                 
       self = this
       $('#gridTable_name').click ()->
@@ -231,16 +299,28 @@ define [
     constructor: (@breadcrumbsData, @breadcrumbsConfigs, @reportType) ->
       # Render breadcrumbs on the page
       $('#breadcrumb').breadcrumbs(breadcrumbsData, breadcrumbsConfigs)
+      this.initialize()
+      
+    initialize: () ->
+      if this.reportType is 'state'
+        this.orgType = this.breadcrumbsData.items[0].name
+        this.displayType = "District"
+      else if this.reportType is 'district'
+        this.orgType = this.breadcrumbsData.items[1].name
+        this.displayType = "School"
+      else if this.reportType is 'school'
+        this.orgType = this.breadcrumbsData.items[2].name
+        this.displayType = "Grade"
+    
+    getOrgType: () ->
+      this.orgType
+    
+    getDisplayType: () ->
+      this.displayType
 
     getReportTitle: () ->
     # Returns report title based on the type of report
-      if this.reportType is 'state'
-        data = this.addApostropheS(this.breadcrumbsData.items[0].name) + ' Districts'
-      else if this.reportType is 'district'
-        data = this.addApostropheS(this.breadcrumbsData.items[1].name) + ' Schools'
-      else if this.reportType is 'school'
-        data = this.addApostropheS(this.breadcrumbsData.items[2].name) + ' Grades'
-      'Comparing '+ data + ' on Math & ELA'
+      'Comparing '+ this.addApostropheS(this.orgType) + ' ' + this.displayType + 's'
 
     # Format the summary data for summary row purposes
     getOverallSummaryName: () ->

@@ -15,7 +15,9 @@ define [
       height: "auto"
       viewrecords: true
       autoencode: true
-      rowNum: 10000
+      rowNum: 100
+      gridview: true 
+      scroll: 1
       shrinkToFit: false
       defaultWidth: 980
       loadComplete: () ->
@@ -23,12 +25,23 @@ define [
 
   class EdwareGrid
   
-    constructor: (@table, @columns, @options, @footer) ->
+    constructor: (@table, columns, @options, @footer) ->
+      this.columns = this.setSortedColumn columns
       this.options.footerrow = true if this.footer
       self = this
       this.options.loadComplete = () ->
         self.afterLoadComplete()
-    
+
+    setSortedColumn: (columns) ->
+      sorted = this.options.sort
+      return columns if not sorted
+      
+      for column in columns
+        if sorted.name == column.items[0].index
+          column.items[0].sortorder = sorted.order || 'asc'
+          column.items[0].sorttype = edwareGridSorters.create(sorted.index) if sorted.name != 'name'
+        column
+
     afterLoadComplete: () ->
       # Move footer row to the top of the table
       $("div.ui-jqgrid-sdiv").insertBefore $("div.ui-jqgrid-bdiv")
@@ -100,13 +113,14 @@ define [
       colModelItem.title = column.title
       colModelItem.classes = column.style if column.style
       colModelItem.frozen = column.frozen if column.frozen
+      colModelItem.stickyCompareEnabled = this.options.stickyCompareEnabled
 
       #Hide column if the value is true
       if column.hide
         colModelItem.cellattr = (rowId, val, rawObject, cm, rdata) ->
           ' style="display:none;"'
       this.options.sortorder = column.sortorder  if column.sortorder
-      this.options.sortname = column.index  if column.sortorder      
+      this.options.sortname = column.index  if column.sortorder
       colModelItem
 
     getHeaders: () ->
@@ -119,6 +133,8 @@ define [
     $.fn.edwareGrid = (columns, options, footer) ->
       grid = new EdwareGrid(this, columns, options, footer)
       grid.render()
+      # trigger gridComplete event
+      options.gridComplete() if options.gridComplete
 
       colModel = $(this).jqGrid("getGridParam", "colModel")
       $("#gbox_" + $.jgrid.jqID($(this)[0].id) + " tr.ui-jqgrid-labels th.ui-th-column").each (i) ->

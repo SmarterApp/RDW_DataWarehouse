@@ -4,10 +4,9 @@ define [
   "bootstrap"
   "edwareDataProxy"
   "edwareUtil"
-  "edwareSessionStorage"
+  "edwareClientStorage"
   "text!edwareFilterTemplate"
-  "edwareLanguage"
-], ($, Mustache, bootstrap, edwareDataProxy, edwareUtil, edwareSessionStorage, filterTemplate, i18n) ->
+], ($, Mustache, bootstrap, edwareDataProxy, edwareUtil, edwareClientStorage, filterTemplate) ->
   
   # * EDWARE filter widget
   # * The module contains EDWARE filter creation method
@@ -40,7 +39,7 @@ define [
       this.tagPanel = $('.filters', this.tagPanelWrapper)
       this.clearAllButton = $('.removeAllFilters', this.filterArea)
       # set session storage
-      this.storage = edwareSessionStorage.filterStorage
+      this.storage = edwareClientStorage.filterStorage
       this.template = this.configs['not_stated_message']
 
     loadPage: ->
@@ -87,7 +86,7 @@ define [
         self.showOptions $(this).closest('.btn-group')
 
       # bind logout events
-      $("#logout_button").click ->
+      $(document).on 'click', '#logout_button', () ->
         # clear session storage
         self.storage.clear()
 
@@ -116,7 +115,7 @@ define [
          filterArrow.show()
          filterPanel.slideDown 'slow'
       else
-         filterPanel.trigger FILTER_CLOSE
+         self.cancel self
          
     closeFilter: (callback) ->
       this.filterPanel.slideUp 'slow'
@@ -222,7 +221,16 @@ define [
         filterName = $(this).data('name')
         count = data[filterName]
         percentage = Math.round(count * 100.0 / total)
-        self.updatePercentage(this, percentage) if count > 0
+        if count > 0
+          # show percentage
+          self.updatePercentage(this, percentage)
+        else
+          # hide percentage
+          self.hidePercentage(this)
+
+    hidePercentage: (filter) ->
+      $('p.not_stated', filter).remove()
+      
           
     updatePercentage: (filter, percentage) ->
       output = Mustache.to_html this.template, { 'percentage': percentage }

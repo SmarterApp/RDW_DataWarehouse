@@ -1,11 +1,2 @@
-require ["EDWARE.individualStudent"], (edwareIndividualStudent) ->
-  getUrlParams = ->
-    params = {}
-    window.location.search.replace /[?&]+([^=&]+)=([^&]*)/g, (str, key, value) ->
-      params[key] = value
-  
-    params
-  
-  params = getUrlParams()
-  edwareIndividualStudent.generateIndividualStudentReport params
-
+require ["EDWARE.individualStudent", "edwareUtil"], (edwareIndividualStudent, edwareUtil) ->
+  new edwareIndividualStudent.EdwareISR().load()

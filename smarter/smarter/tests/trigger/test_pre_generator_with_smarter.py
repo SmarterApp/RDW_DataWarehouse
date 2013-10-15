@@ -37,15 +37,15 @@ class TestPreCacheGenerator(Unittest_with_smarter_sqlite):
         triggered = trigger_precache(self.tenant, 'NY', results, {})
         self.assertTrue(triggered)
 
-    def testTrigger_precacheFail(self):
+    def testTrigger_precache_with_bad_district(self):
         results = [{'district_guid': 'I_dont_exist'}]
         triggered = trigger_precache(self.tenant, 'NY', results, {})
-        self.assertFalse(triggered)
+        self.assertTrue(triggered)
 
     def testTrigger_precache_with_invalid_state(self):
         results = [{'district_guid': '123'}]
         triggered = trigger_precache(self.tenant, 'DU', results, {})
-        self.assertFalse(triggered)
+        self.assertTrue(triggered)
 
     def testTrigger_precache_with_empty_results(self):
         results = prepare_pre_cache(self.tenant, 'DU', '820568d0-ddaa-11e2-a63d-68a86d3c2f82')

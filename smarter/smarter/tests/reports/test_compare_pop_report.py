@@ -10,7 +10,7 @@ from smarter.reports.compare_pop_report import get_comparing_populations_report,
     set_default_min_cell_size
 from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite,\
     UnittestSmarterDBConnection, get_unittest_tenant_name
-from smarter.reports.helpers.constants import Constants
+from smarter.reports.helpers.constants import Constants, AssessmentType
 from edapi.exceptions import NotFoundException
 from beaker.util import parse_cache_config_options
 from beaker.cache import CacheManager
@@ -232,7 +232,8 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
 
     def test_invalid_params(self):
         params = {Constants.STATECODE: 'AA'}
-        self.assertRaises(NotFoundException, get_comparing_populations_report, params)
+        actual = get_comparing_populations_report(params)['records']
+        self.assertListEqual([], actual, "Should return no results")
 
     def test_cache_route_without_filters(self):
         cpop = ComparingPopReport()
@@ -425,6 +426,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         testParam = {}
         testParam[Constants.STATECODE] = 'NY'
         testParam[Constants.DISTRICTGUID] = '229'
+        testParam[Constants.ASMTTYPE] = AssessmentType.SUMMATIVE
         results = get_comparing_populations_report(testParam)
         self.assertEqual(results['not_stated']['total'], 47)
         self.assertEqual(results['not_stated']['dmgPrg504'], 3)
@@ -432,7 +434,7 @@ class TestComparingPopulations(Unittest_with_smarter_sqlite):
         self.assertEqual(results['not_stated']['dmgPrgLep'], 1)
         self.assertEqual(results['not_stated']['dmgPrgTt1'], 1)
         self.assertEqual(results['not_stated']['ethnicity'], 1)
-        self.assertEqual(results['not_stated']['gender'], 0)
+        self.assertEqual(results['not_stated']['gender'], 1)
 
     def test_filter_with_unfiltered_results(self):
         testParam = {}

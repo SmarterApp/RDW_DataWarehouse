@@ -112,12 +112,18 @@ h6 {
 }
 
 #content { 
-    margin-top: 20px; 
     min-height: 200px;
     
     h2 {
 	color: @color-A1;
 	padding-left: 20px;
+    }
+
+    .title {
+	h2 {
+	    float: left;
+	    padding-top: 5px;
+	}
     }
 }
 
@@ -130,12 +136,7 @@ h6 {
 	background-color: @color-B10;  
 	min-height: 50px;  
     }
-    
-    h2 {
-	float: left;
-	padding-top: 5px;
-    }
-    
+
     .s-ico {
 	visibility : hidden;
 	
@@ -209,15 +210,29 @@ h6 {
 }
 
 .gridControls {
-    display: none;
-    position: relative;
-    right: 15px;
+    list-style: none;
+    padding-top: 10px;
     float: right;
+    display: none;
 
-    li {
+    &>li {
 	display: inline-block;
-	position: relative;
-	padding: 2px 3px 0 3px;
+	vertical-align: middle;
+	border-right: solid 1px @color-B3;
+	padding: 0 15px 0 10px;
+	height: 30px;
+
+	&:last-child {
+	    border: none;
+	}
+
+	&>div {
+	    height: 20px;
+	    top: 50%;
+	    margin-top: -10px;
+	    position: relative;
+	    float: left;
+	}
 
 	label {
 	    float: left;
@@ -225,19 +240,12 @@ h6 {
 	    font-size: 11px;
 	}
 
-	.verticalBar {
-	    width: 1px;
-	    height: 30px;
-	    background: @color-B3;
-	    margin: 0 3px;
-	    top: 10px;
-	    position: relative;
-	}
     }
 
     .align_button_area {
-	top: 12px;
 
+	padding-left: 10px;
+	
 	.align_button {
 	    width: 30px;
 	    height: 16px;
@@ -262,7 +270,7 @@ h6 {
 	background-image: url("../images/align_onoff.png");
 	background-repeat: no-repeat;
 	padding-left: 30px;
-	background-position: 0 6px;
+	background-position: 0 4px;
     }
 
     .filter_label {
@@ -274,29 +282,16 @@ h6 {
 	    top: 7px;
 	}
     }
-}
 
-.losWrapper{
-    
-    .filter_label {
-	margin-top: 6px;
-	margin-right: 25px;
-	cursor: pointer;
-	
-	span {
-	    position: absolute;
-	    margin-left: 5px;
-	    margin-top: 7px;
-	}
-    }
-}
-
-.losWrapper {
-    .verticalBar {
-	width: 1px;
+    .asmtDropdown {
+	position: relative;
+	top: 50%;
+	margin-top: -15px;
 	height: 30px;
-	background: @color-B3;
-	margin: 0 10px;
+
+	#asmtTypeDropdown {
+	    z-index: 9999;
+	}
     }
 }
 
@@ -705,19 +700,9 @@ table {
     }
 }
 
-#select_measure {
-    float: right;
-    
-    .btn-group {
-	float: right;
-	z-index: 4999;
-    }
-}
-
 #select_measure_title {
     float: left;
     margin-right: 5px;
-    margin-top: 6px;
 }
 
 .claim_name {
@@ -1101,4 +1086,19 @@ table {
     font-size: 15px;
     font-weight: normal;
     display: none;
+}
+
+.interimDisclaimerPopover {
+    left: initial !important;
+    right: -19px;
+    top: 20px !important;
+
+    .arrow {
+	right: 14px !important;
+	left: initial !important;
+    }
+
+    .popover-content {
+	width: 400px;
+    }
 }

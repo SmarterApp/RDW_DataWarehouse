@@ -6,8 +6,7 @@ define [
   'edwarePopulationBar'
   'edwareConfidenceLevelBar'
   'edwareLOSConfidenceLevelBar'
-  'edwareLanguage'
-], ($, Mustache, jqGrid, edwareUtil, edwarePopulationBar, edwareConfidenceLevelBar, edwareLOSConfidenceLevelBar, i18n) ->
+], ($, Mustache, jqGrid, edwareUtil, edwarePopulationBar, edwareConfidenceLevelBar, edwareLOSConfidenceLevelBar) ->
 
   POPULATION_BAR_TEMPLATE = "<div class='barContainer default'><div class='alignmentHighlightSection'><div class ='populationBar' data-margin-left='{{alignment}}'>{{{populationBar}}}</div></div><div class='studentsTotal'>{{total}}</div>{{#unfilteredTotal}}<div class='unfilteredTotal'>{{ratio}}% of {{unfilteredTotal}}</div>{{/unfilteredTotal}}<div class='alignmentLine' style='margin-left:{{alignmentLine}}px;'></div></div>"
 
@@ -23,6 +22,16 @@ define [
   showlink = (value, options, rowObject) ->
     link = options.colModel.formatoptions.linkUrl
     cssClass = options.colModel.formatoptions.style
+    displayValue = value
+    if options.colModel.formatoptions.id_name is "asmtGrade"
+      displayValue = "Grade " + value
+    displayValue = $.jgrid.htmlEncode(displayValue)
+    
+    # Set cell value tooltip
+    options.colModel.cellattr = (rowId, val, rawObject, cm, rdata) ->
+      'title="' + displayValue + '"'
+    
+    # Build url query param
     unless rowObject.header
       params = ""
       i = 0 
@@ -34,12 +43,19 @@ define [
         params = params + k + "=" + v
         i++
       if options.colModel.formatoptions.id_name is "asmtGrade"
-         "<a class="+cssClass+" href=\"" + link + "?" + params + "\">" + $.jgrid.htmlEncode("Grade " + value) + "</a>"
+         "<a class="+cssClass+" href=\"" + link + "?" + params + "\">" + displayValue + "</a>"
+      else if options.colModel.formatoptions.id_name in ["districtGuid", "schoolGuid"]
+        if not options.colModel.stickyCompareEnabled
+          # sticky comparison is not activated, show checkbox
+          "<div class='marginLeft20 paddingBottom17'><input class='stickyCheckbox' type='checkbox' value=\"" + rowObject.id + "\" data-value=\"" + rowObject.id + "\"></input><label class='stickyCompareLabel'>Compare</label></div><a class="+cssClass+" href=\"" + link + "?" + params + "\">" + displayValue + "</a>"
+        else
+          "<div class='marginLeft20 paddingBottom17'><div class='removeIcon stickyCompareRemove' value=\"" + rowObject.id + "\" data-value=\"" + rowObject.id + "\"></div><label class='stickyRemoveLabel'>Remove</label></div><a class="+cssClass+" href=\"" + link + "?" + params + "\">" + displayValue + "</a>"
       else
-        "<a class="+cssClass+" href=\"" + link + "?" + params + "\">" + $.jgrid.htmlEncode(value) + "</a>"
+        "<a class="+cssClass+" href=\"" + link + "?" + params + "\">" + displayValue + "</a>"
     else
+      # This is for summary row (grid footer)
       "<div class="+cssClass+"><span class=summarySubtitle>" + rowObject.subtitle + ":</span><br/><span class='summaryTitle'>"+value+"</span></div>"
-  
+
   showOverallConfidence = (value, options, rowObject) ->
     names = options.colModel.name.split "."
     subject = rowObject[names[0]][names[1]]

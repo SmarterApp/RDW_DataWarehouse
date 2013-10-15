@@ -51,7 +51,7 @@ class TestStudentReport(Unittest_with_smarter_sqlite):
 
     def test_student_report(self):
         params = {"studentGuid": 'dae1acf4-afb0-4013-90ba-9dcde4b25621', "assessmentGuid": 20}
-        result = get_student_report(params)['items']
+        result = get_student_report(params)['items']['Summative']
         self.assertEqual(1, len(result), "studentGuid should have 1 report")
         self.assertEqual('ELA', result[0]['asmt_subject'], 'asmt_subject')
         self.assertEqual('2200', result[0]['claims'][0]['score'], 'asmt_claim_1_score 88')
@@ -69,7 +69,7 @@ class TestStudentReport(Unittest_with_smarter_sqlite):
 
     def test_assessment_header_info(self):
         params = {"studentGuid": 'dae1acf4-afb0-4013-90ba-9dcde4b25621'}
-        result = get_student_report(params)['items']
+        result = get_student_report(params)['items']['Summative']
         student_report = result[0]
 
         self.assertEqual('Math', student_report['asmt_subject'], 'asmt_subject')
@@ -82,7 +82,7 @@ class TestStudentReport(Unittest_with_smarter_sqlite):
 
     def test_custom_metadata(self):
         params = {"studentGuid": 'dae1acf4-afb0-4013-90ba-9dcde4b25621', "stateCode": 'NY'}
-        result = get_student_report(params)['items']
+        result = get_student_report(params)['items']['Summative']
         student_report = result[0]
 
         cut_points_list = student_report['cut_point_intervals']
@@ -104,7 +104,7 @@ class TestStudentReport(Unittest_with_smarter_sqlite):
 
     def test_score_interval(self):
         params = {"studentGuid": 'dae1acf4-afb0-4013-90ba-9dcde4b25621'}
-        result = get_student_report(params)['items']
+        result = get_student_report(params)['items']['Summative']
         student_report = result[0]
 
         self.assertEqual(student_report['asmt_score'], student_report['asmt_score_range_min'] + student_report['asmt_score_interval'])
@@ -121,7 +121,7 @@ class TestStudentReport(Unittest_with_smarter_sqlite):
 
     def test_claims(self):
         params = {"studentGuid": 'dae1acf4-afb0-4013-90ba-9dcde4b25621'}
-        items = get_student_report(params)['items']
+        items = get_student_report(params)['items']['Summative']
         result = items[0]
         self.assertEqual(3, len(result['claims']))
         self.assertEqual('Concepts & Procedures', result['claims'][0]['name'])

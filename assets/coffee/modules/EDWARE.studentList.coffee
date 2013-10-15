@@ -9,7 +9,9 @@ define [
   "edwareUtil"
   "edwareFooter"
   "edwareHeader"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader) ->
+  "edwarePreferences"
+  "edwareDisclaimer"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwarePreferences, edwareDisclaimer) ->
 
   REPORT_NAME = 'studentList'
   
@@ -36,21 +38,22 @@ define [
       this.gridHeight = window.innerHeight - 235
 
     reload: (params) ->
-      data = this.fetchData params
-      this.data = data
-      this.assessmentsData = data.assessments
-      this.contextData = data.context
-      this.subjectsData = data.subjects
-      this.userData = data.user_info
-      this.cutPointsData = this.createCutPoints()
-      this.columnData = this.createColumns()
-      #  append cutpoints into each individual assessment data
-      this.formatAssessmentsData this.cutPointsData
-      # process breadcrumbs
-      this.renderBreadcrumbs(data.context)
-      this.createHeaderAndFooter()
-      this.createGrid()
-      this.bindEvents()
+      self = this
+      this.fetchData params, (data)->
+        self.data = data
+        self.assessmentsData = data.assessments
+        self.contextData = data.context
+        self.subjectsData = data.subjects
+        self.userData = data.user_info
+        self.cutPointsData = self.createCutPoints()
+        self.columnData = self.createColumns()
+        #  append cutpoints into each individual assessment data
+        self.formatAssessmentsData self.cutPointsData
+        # process breadcrumbs
+        self.renderBreadcrumbs(data.context)
+        self.createHeaderAndFooter()
+        self.createGrid()
+        self.bindEvents()
 
     createCutPoints: () ->
       cutPointsData = this.data.metadata.cutpoints
@@ -70,6 +73,7 @@ define [
           elem.popover
             html: true
             trigger: "manual"
+            container: 'body'
             placement: (tip, element) ->
               edwareUtil.popupPlacement(element, 400, 220)
             title: ->
@@ -94,16 +98,28 @@ define [
       
     createGrid: () ->
       # set school name as the page title from breadcrumb
-      $("#school_name").html this.contextData.items[2].name
+      $(".title h2").html this.contextData.items[2].name
       # populate select view, only create the dropdown when it doesn't exit
-      if not this.asmtTypeDropdown
-        this.createDropdown()
-      this.renderGrid this.asmtTypeDropdown.getAsmtType(), this.asmtTypeDropdown.getCurrentView()
+      this.createDropdown() if not this.asmtTypeDropdown
+      this.createDisclaimer() if not this.disclaimer
+      # Get asmtType from storage
+      asmtType = edwarePreferences.getAsmtPreference() || 'Summative'
+      currentView = this.data.subjects.subject1 + "_" + this.data.subjects.subject2      
+      this.updateView asmtType, currentView
+    
+    updateView: (asmtType, viewName) ->
+      # set dropdown text
+      this.asmtTypeDropdown.setSelectedText asmtType, viewName
+      # save preference to storage
+      edwarePreferences.saveAsmtPreference asmtType
+      this.updateDisclaimer asmtType
+      this.renderGrid asmtType, viewName
+      # show the content upon rendering complete to prevent seeing the pre-templated text on the html
+      $('.gridControls').show()
       
-    fetchData: (params) ->
+    fetchData: (params, callback) ->
       # Determine if the report is state, district or school view"
       options =
-        async: false
         method: "POST"
         params: params
       
@@ -111,23 +127,24 @@ define [
       labels = this.labels
       edwareDataProxy.getDatafromSource "/data/list_of_students", options, (data)->
         studentsData = JSON.parse(Mustache.render(JSON.stringify(data), {"labels": labels}))
-      studentsData
+        callback studentsData
 
     # For each subject, filter out its data
     # Also append cutpoints & colors into each assessment
     formatAssessmentsData: (assessmentCutpoints) ->
       this.cache = {}
+      allSubjects = this.data.subjects.subject1 + "_" + this.data.subjects.subject2
       for asmt in this.asmtTypes
         asmtType = asmt['name']
         this.cache[asmtType] = {} if not this.cache[asmtType]
-        this.cache[asmtType]['Math_ELA'] = [] if not this.cache[asmtType]['Math_ELA']
+        this.cache[asmtType][allSubjects] = [] if not this.cache[asmtType][allSubjects]
         for row in this.assessmentsData
           # Format student name
           row['student_full_name'] = edwareUtil.format_full_name_reverse row['student_first_name'], row['student_middle_name'], row['student_last_name']
           # This is for links in drill down
           row['params'] = {"studentGuid": row['student_guid']}
-          assessment = row[asmtType.toUpperCase()]
-          this.cache[asmtType]['Math_ELA'].push row if assessment
+          assessment = row[asmtType]
+          this.cache[asmtType][allSubjects].push row if assessment
           for key, value of this.subjectsData
             # check that we have such assessment first, since a student may not have taken it
             if assessment and key of assessment
@@ -145,9 +162,6 @@ define [
               this.cache[asmtType][value].push row
 
     renderGrid: (asmtType, viewName) ->
-      # set dropdown text, replace spaces with _ for selector id
-      name = asmtType.replace /\s+/g, "_"
-      $('#select_measure_current_view').text $('#'+ name + '_' + viewName).text()
       $('#gridTable').jqGrid('GridUnload')
       
       edwareGrid.create {
@@ -165,7 +179,7 @@ define [
       data = this.cache[asmtType][viewName]
       if data
         for item in data
-          item.assessments = item[asmtType.toUpperCase()]
+          item.assessments = item[asmtType]
       data
 
     createColumns: () ->
@@ -179,9 +193,13 @@ define [
 
     # creating the assessment view drop down
     createDropdown: ()->
-      self = this
-      this.asmtTypeDropdown = new AsmtTypeDropdown this.studentsConfig.customViews, this.subjectsData, (asmtType, viewName) ->
-        self.renderGrid asmtType, viewName
+      this.asmtTypeDropdown = new AsmtTypeDropdown this.studentsConfig.customViews, this.subjectsData, this.updateView.bind(this)
+    
+    createDisclaimer: () ->
+      this.disclaimer = $('.disclaimerInfo').edwareDisclaimer this.config.interimDisclaimer
+
+    updateDisclaimer: (asmtType) ->
+      this.disclaimer.update asmtType
 
     renderHeaderPerfBar: (cutPointsData) ->
       for key of cutPointsData
@@ -211,7 +229,6 @@ define [
           output = Mustache.to_html LOS_HEADER_BAR_TEMPLATE, items
           $("#"+key+"_perfBar").html(output) 
 
-
   class AsmtTypeDropdown
   
     constructor: (customViews, subjects, @callback) ->
@@ -224,7 +241,7 @@ define [
             'key': Mustache.to_html(key, subjects)
             'value': Mustache.to_html(value, subjects)
             'asmtType': asmtType['name']
-            'id': asmtType['name'].replace /\s+/g, "_"
+            'id': this.formatAsmt asmtType['name']
           }
       $("#asmtTypeDropdown").html Mustache.to_html DROPDOWN_VIEW_TEMPLATE, {'items': items}
       # bind events
@@ -232,7 +249,7 @@ define [
       # the first element name as default view
       this.currentView = items[0].key
       this.asmtType = items[0].asmtType
-
+      
     bindEvents: () ->
       self = this
       # add event to change view for assessment
@@ -256,5 +273,13 @@ define [
 
     getAsmtType: ()->
       this.asmtType
-  
+      
+    formatAsmt: (asmt) ->
+      # Replaces spaces with _ for html id purposes
+      asmt.replace /\s+/g, "_"
+    
+    setSelectedText:(asmtType, view) ->
+      name = this.formatAsmt asmtType
+      $('#select_measure_current_view').text $('#'+ name + '_' + view).text()
+
   StudentGrid: StudentGrid

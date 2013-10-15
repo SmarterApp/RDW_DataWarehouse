@@ -37,6 +37,9 @@ define [
       this.key = PREFIX + key
       # By default, we use sessionStorage unless isLongTerm is true
       this.isLongTerm = if typeof @isLongTerm isnt "undefined" then @isLongTerm else false
+      # Test if localStorage is supported, if not, make it sessionStorage
+      if this.isLongTerm and not('localStorage' of window and window['localStorage'] isnt null)
+        this.isLongTerm = false
       this.storage = if this.isLongTerm then localStorage else sessionStorage
       this
 

@@ -36,7 +36,8 @@ scripts = ['scripts/initialize_udl2_database.sh',
            'scripts/start_rabbitmq.py',
            'scripts/start_celery.py',
            'scripts/stop_celery.sh',
-           'scripts/driver.py', ]
+           'scripts/driver.py',
+           'scripts/add_tenant.sh', ]
 
 setup(name='udl2',
       version='0.1',

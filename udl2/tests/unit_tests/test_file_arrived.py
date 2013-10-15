@@ -53,10 +53,40 @@ class TestFileArrived(unittest.TestCase):
         self.assertDictEqual(expected, result)
 
     def test__create_batch_directories(self):
-        pass
+        directories = {
+            'dir1': '/tmp/udl2_test1',
+            'dir2': '/tmp/udl2_test2/',
+            'dir3': '/tmp/udl2_test3'
+        }
+
+        for directory in directories.values():
+            self.assertFalse(os.path.isdir(directory))
+
+        file_arrived._create_batch_directories(directories)
+
+        for directory in directories.values():
+            self.assertTrue(os.path.isdir(directory))
+            os.rmdir(directory)
 
     def test__move_file_to_work_and_history(self):
-        pass
+        incoming_file = '/tmp/udl2_test1.txt'
+        arrived_dir = '/tmp/udl2_test_arrived'
+        history_dir = '/tmp/udl2_test_history'
+        os.mkdir(arrived_dir)
+        os.mkdir(history_dir)
+        open(incoming_file, 'w')
+        self.assertTrue(os.path.isfile(incoming_file))
+        file_arrived._move_file_to_work_and_history(incoming_file, arrived_dir, history_dir)
+
+        self.assertFalse(os.path.isfile(incoming_file))
+        self.assertTrue(os.path.isfile(os.path.join(arrived_dir, 'udl2_test1.txt')))
+        self.assertTrue(os.path.isfile(os.path.join(history_dir, 'udl2_test1.txt')))
+
+        # cleanup
+        os.remove(os.path.join(arrived_dir, 'udl2_test1.txt'))
+        os.remove(os.path.join(history_dir, 'udl2_test1.txt'))
+        os.rmdir(arrived_dir)
+        os.rmdir(history_dir)
 
     def test_move_file_from_arrivals(self):
         pass

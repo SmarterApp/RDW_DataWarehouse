@@ -4,10 +4,7 @@ Created on May 2, 2013
 @author: ejen
 '''
 from setuptools import setup
-import subprocess
 import sys
-
-#subprocess.call('cd ./scripts/; ./install_udl_requirements.sh', shell=True)
 
 install_requires = ['celery >= 3.0.19',
                     'Sphinx',

@@ -42,6 +42,8 @@ def get_comparing_populations_not_stated_cache_key(comparing_pop):
     :returns: a tuple representing a unique key for comparing populations report
     '''
     cache_args = []
+    if comparing_pop.asmt_type is not None:
+        cache_args.append(comparing_pop.asmt_type)
     if comparing_pop.state_code is not None:
         cache_args.append(comparing_pop.state_code)
     if comparing_pop.district_guid is not None:

@@ -34,6 +34,7 @@ class TestPdfGenerator(unittest.TestCase):
         self.settings['celery.CELERY_ALWAYS_EAGER'] = True
         self.settings['pdf.base.url'] = 'http://dummy:8234'
         self.settings['pdf.batch.job.queue'] = 'dummyQueue'
+        self.settings['pdf.health_check.job.queue'] = 'dummyQueue'
         self.settings['pdf.report_base_dir'] = self.__temp_dir
         self.settings['pdf.minimum_file_size'] = 0
 

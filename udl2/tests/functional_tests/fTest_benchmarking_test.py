@@ -17,7 +17,7 @@ FACT_OUTCOME_FILE_PATTERN = '/opt/wgen/edware-udl/zones/datafiles/BENCHMARK_DATA
 UDL2_DEFAULT_CONFIG_PATH_FILE = '/opt/wgen/edware-udl/etc/udl2_conf.py'
 #TODO: use encrypted version of the two files above
 ARCHIVED_FILE = '/opt/wgen/edware-udl/zones/datafiles/test_source_file_tar_gzipped.tar.gz.gpg'
-TENANT_DIR = 'opt/wgen/edware-udl/zones/landing/arrivals/test_tenant/'
+TENANT_DIR = '/opt/wgen/edware-udl/zones/landing/arrivals/test_tenant/'
 
 
 class ValidateTableData(unittest.TestCase):

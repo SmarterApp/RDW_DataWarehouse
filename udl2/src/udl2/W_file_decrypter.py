@@ -27,9 +27,9 @@ def task(incoming_msg):
     """
     start_time = datetime.datetime.now()
     file_to_decrypt = incoming_msg[mk.FILE_TO_DECRYPT]
-    passphrase = udl2_conf ['passphrase']
+    passphrase = udl2_conf['passphrase']
     guid_batch = incoming_msg[mk.GUID_BATCH]
-    gpghome = udl2_conf ['gpg_home']
+    gpghome = udl2_conf['gpg_home']
     tenant_directory_paths = incoming_msg[mk.TENANT_DIRECTORY_PATHS]
     decrypt_to_dir = tenant_directory_paths[mk.DECRYPTED]
     load_type = incoming_msg[mk.LOAD_TYPE]

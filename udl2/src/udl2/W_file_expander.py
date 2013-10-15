@@ -51,4 +51,3 @@ def task(incoming_msg):
         mk.JSON_FILENAME: file_contents[0],
         mk.CSV_FILENAME: file_contents[1]})
     return outgoing_msg
-

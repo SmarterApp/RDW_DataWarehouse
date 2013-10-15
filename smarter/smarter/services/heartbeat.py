@@ -14,7 +14,7 @@ from services.tasks.pdf import check_heartbeat
 
 @view_config(route_name='heartbeat', permission=NO_PERMISSION_REQUIRED, request_method='GET')
 def heartbeat(request):
-    check_list = [__check_datasource, __check_celery]
+    check_list = [check_datasource, check_celery]
     results = [check_task(request) for check_task in check_list]
     results = map(lambda x: isinstance(x, HTTPServerError().__class__), results)
     if True in results:
@@ -23,22 +23,26 @@ def heartbeat(request):
         return HTTPOk()
 
 
-def __check_celery(request):
+def check_celery(request):
     '''
     GET request that executes a task via celery and retrieve result to verify celery service
     is functioning
 
     :param request:  Pyramid request object
     '''
-    celery_response = check_heartbeat.delay()
-    heartbeat_message = celery_response.get()
+    try:
+        celery_response = check_heartbeat.delay()
+        heartbeat_message = celery_response.get()
+    except Exception:
+        heartbeat_message = 'heartattack'
+
     if heartbeat_message[0:9] == 'heartbeat':
         return HTTPOk()
     else:
         return HTTPServerError()
 
 
-def __check_datasource(request):
+def check_datasource(request):
     '''
     GET request that executes a Select 1 and returns status of 200 if database returns results
 

@@ -29,6 +29,12 @@ log = logging.getLogger('smarter')
 
 @celery.task(name='tasks.pdf.heartbeat')
 def check_heartbeat():
+    '''
+    Return heartbeat message with current timestamp. The task caller can check timestamp to see
+    validation of message but it is not require to check.
+
+    The heartbeat message should sent via adhoc celery queue instead of using queue for pdf generator.
+    '''
     heartbeat = "heartbeat " + str(datetime.now())
     return heartbeat
 

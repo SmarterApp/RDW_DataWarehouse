@@ -44,26 +44,27 @@ define [
       # checkboxes in each row
       $(document).on 'click', '.stickyCheckbox', () ->
         if not $(this).is(':checked')
-          $(this).siblings("label").text("Compare")
-          $(this).siblings("label").removeClass "stickyCompareLabelChecked"
-          $(this).siblings("label").addClass "stickyCompareLabel"
-          self.removeCurrentRow this
+          self.uncheckedEvent this
         else
-          $(this).siblings("label").addClass "stickyCompareLabelChecked"
-          $(this).siblings("label").removeClass "stickyCompareLabel"
-          self.addCurrentRow this
-        self.resetCompareRowControls()
+          self.checkedEvent this
   
       # Binds to compare button in summary row
       $(document).on 'click', '#stickyCompare-btn', () ->
-        self.compareMode = true
-        self.updateSelection() if self.selectedRows.length > 0
+        self.compare()
+      
+      # Text that appears next to checkbox after checkbox is clicked
+      $(document).on 'click', '.stickyCompareLabelChecked', () ->
+        self.compare()
       
       # Deselect Button in summary row
       $(document).on 'click', '#stickyDeselect-btn', () ->
         self.selectedRows = []
         $('.stickyCheckbox').attr('checked', false)  
-        $('.stickyCheckbox').siblings("label").text("Compare")
+        # Remove class of checkedlabel, add class of regular label and then set the text
+        label = $('.stickyCheckbox').siblings("label")
+        label.addClass('stickyCompareLabel')
+        label.removeClass('stickyCompareLabelChecked')
+        label.text("Compare")
         self.resetCompareRowControls()
       
       # Show all district button
@@ -75,12 +76,38 @@ define [
       $(document).on 'click', '.stickyCompareRemove', () ->
         self.removeCurrentRow this
         self.updateSelection()
+        
+      # Remove Label
+      $(document).on 'click', '.stickyRemoveLabel', () ->
+        row = $(this).siblings('.stickyCompareRemove')
+        self.removeCurrentRow row
+        self.updateSelection()
       
       # On logout, clear storage
       $(document).on 'click', '#logout_button', () ->
         # clear session storage
         self.storage.clear()
     
+    # rows have been selected, compare the selections
+    compare: () ->
+      this.compareMode = true
+      this.updateSelection() if this.selectedRows.length > 0
+    
+    # uncheck of checkbox event
+    uncheckedEvent: (element) ->
+      $(element).siblings("label").text("Compare")
+      $(element).siblings("label").removeClass "stickyCompareLabelChecked"
+      $(element).siblings("label").addClass "stickyCompareLabel"
+      this.removeCurrentRow element
+      this.resetCompareRowControls()
+    
+    # checkbox has been checked
+    checkedEvent: (element) ->
+      $(element).siblings("label").addClass "stickyCompareLabelChecked"
+      $(element).siblings("label").removeClass "stickyCompareLabel"
+      this.addCurrentRow element
+      this.resetCompareRowControls()
+              
     # Given a row in the grid, add its value to selectedRows
     addCurrentRow: (row) ->
       value = this.getCurrentRowValue row

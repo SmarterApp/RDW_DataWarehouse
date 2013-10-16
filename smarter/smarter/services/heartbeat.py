@@ -9,7 +9,7 @@ from pyramid.httpexceptions import HTTPOk, HTTPServerError
 from sqlalchemy.sql.expression import select
 from smarter.database import get_data_source_names
 from database.connector import DBConnection
-from services.tasks.pdf import health_check
+from services.tasks import health_check
 import pyramid.threadlocal
 
 

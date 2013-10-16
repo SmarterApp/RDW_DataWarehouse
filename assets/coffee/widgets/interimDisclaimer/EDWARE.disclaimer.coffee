@@ -41,11 +41,24 @@ define [
         content: ->
           $(this).find(".interimDisclaimer").html()
       .mouseenter ()->
+        # move popover
         $(this).popover('show')
-        popover = $('.interimDisclaimerPopover').remove()
-        self.icon.append popover
+        self.setPosition()
       .mouseleave ()->
         $(this).popover('hide')
+
+    setPosition: ()->
+      offset = this.icon.offset()
+      popover = $('.interimDisclaimerPopover')
+      popover.removeAttr('style').css {
+        top: offset.top + 20
+        left: offset.left - 400
+      }
+      # update arrow
+      arrow = $(".arrow", popover)
+      arrow.removeAttr('style').css {
+        left: 407
+      }      
 
     # Call this to create the disclaimer icon
     initialize: () ->

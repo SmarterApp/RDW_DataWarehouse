@@ -37,6 +37,10 @@ define [
           this.showCompareEnabledButtons()
         else
           this.hideCompareSection()
+      else
+        # We may reach to this state when user selects some checkbox, and then submit a filter that cause grid to re-render
+        if this.selectedRows.length is 0
+          this.hideCompareSection()
         
     # All events related to grid filtering of rows
     bindEvents: () ->

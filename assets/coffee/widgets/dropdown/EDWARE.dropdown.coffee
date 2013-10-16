@@ -100,7 +100,9 @@ define [
       new EdwareDropdownMenu(this, config)
                       
     hasData: (subject) ->
-      this.summaryData.results and this.summaryData.results[subject] and this.summaryData.results[subject].total != -1
+      # this.summaryData.results and this.summaryData.results[subject] and this.summaryData.results[subject].total != -1
+      # directly check grid columns for summaryData is not updated when sticky comparison is on
+      $('td[aria-describedby*="'+ subject + '.total"]').length > 0
 
     hasSubject: (subject) ->
       this.colorsData[subject] isnt undefined

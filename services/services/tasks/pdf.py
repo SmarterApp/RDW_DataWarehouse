@@ -16,7 +16,6 @@ import copy
 from services.celeryconfig import TIMEOUT
 import services
 from celery.exceptions import MaxRetriesExceededError
-from datetime import datetime
 
 pdf_procs = ['wkhtmltopdf']
 pdf_defaults = ['--enable-javascript', '--page-size', 'Letter', '--print-media-type', '-l', '--javascript-delay', '6000', '--footer-center', 'Page [page] of [toPage]', '--footer-font-size', '9']
@@ -25,18 +24,6 @@ OK = 0
 FAIL = 1
 
 log = logging.getLogger('smarter')
-
-
-@celery.task(name='tasks.pdf.health_check')
-def health_check():
-    '''
-    Return heartbeat message with current timestamp. The task caller can check timestamp to see
-    validation of message but it is not require to check.
-
-    The heartbeat message should sent via adhoc celery queue instead of using queue for pdf generator.
-    '''
-    heartbeat = "heartbeat " + str(datetime.now())
-    return heartbeat
 
 
 @celery.task(name='tasks.pdf.generate', max_retries=services.celeryconfig.MAX_RETRIES, default_retry_delay=services.celeryconfig.RETRY_DELAY)

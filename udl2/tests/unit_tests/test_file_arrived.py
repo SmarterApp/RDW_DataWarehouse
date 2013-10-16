@@ -89,5 +89,17 @@ class TestFileArrived(unittest.TestCase):
         os.rmdir(history_dir)
 
     def test_move_file_from_arrivals(self):
-        pass
+        incoming_file = '/tmp/udl2_test1.txt'
+        batch_guid = 'guid1234'
+        open(incoming_file, 'w')
+
+        result = file_arrived.move_file_from_arrivals(incoming_file, batch_guid)
+        self.assertEqual(len(result), 5)
+
+        # cleanup
+        os.remove(os.path.join(result[mk.ARRIVED], 'udl2_test1.txt'))
+        os.remove(os.path.join(result[mk.HISTORY], 'udl2_test1.txt'))
+        for directory in result.values():
+            os.rmdir(directory)
+
 

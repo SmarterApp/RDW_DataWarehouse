@@ -4,7 +4,7 @@
 ###
 
 common:
-  '[app:main]': 
+  '[app:main]':
     use: egg:smarter
     disable_stack_trace: false
     smarter.PATH: /usr/local/bin
@@ -28,7 +28,7 @@ common:
       public.shortlived.expire: 7776000 # three months
       session.expire: 1200 # 20 minutes
       lock_dir: /tmp/memcache
-    
+
     # Database
     edware:
       db:
@@ -59,7 +59,7 @@ common:
         #max_age: 2400
         # Maximum number of seconds which a newly issued ticket will be considered valid
         timeout: 1200
-        # Session expiration time 
+        # Session expiration time
       session:
         timeout: 1200
       idp:
@@ -86,16 +86,17 @@ common:
       always_generate: False
       base.url: http://localhost:6543/assets/html/
       batch.job.queue: batch_pdf_gen
+      health_check.job.queue: health_check
     # Used for tenancy
     ldap.base.dn: ou=environment,dc=edwdc,dc=net
     # Use context security
     disable.context.security: True
-    
+
   '[server:main]':
     use: 'egg:waitress#main'
     host: 0.0.0.0
     port: 6543
-    
+
   ###
   # logging configuration
   # http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/logging.html
@@ -109,7 +110,7 @@ common:
 
   '[formatters]':
     keys: generic, json
-    
+
   '[logger_edauth]':
     level: DEBUG
     handlers: filelog
@@ -143,7 +144,7 @@ common:
     qualname: audit
     # Important: this means it doesn't propagate to root logger
     propagate: 0
-    
+
   '[logger_security_event]':
     level: INFO
     handlers: security_event
@@ -156,22 +157,22 @@ common:
     args: (sys.stderr,)
     level: NOTSET
     formatter: generic
-    
+
   '[handler_filelog]':
     class: logging.handlers.TimedRotatingFileHandler
-    args: '(''/tmp/smarter.log'',''midnight'')'  # (path, when) 
+    args: '(''/tmp/smarter.log'',''midnight'')'  # (path, when)
     level: INFO
     formatter: generic
 
   '[handler_audit]':
     class: logging.handlers.TimedRotatingFileHandler
-    args: '(''/tmp/audit.log'',''midnight'')'   # (path, when) 
+    args: '(''/tmp/audit.log'',''midnight'')'   # (path, when)
     level: INFO
     formatter: json
-    
+
   '[handler_security_event]':
     class: logging.handlers.TimedRotatingFileHandler
-    args: '(''/tmp/security_event.log'',''midnight'')'   # (path, when) 
+    args: '(''/tmp/security_event.log'',''midnight'')'   # (path, when)
     level: INFO
     formatter: json
 
@@ -204,6 +205,7 @@ qa:
       base.url: https://ha-int-pyweb0.qa.dum.edwdc.net/assets/html/
       report_base_dir: /opt/edware/pdf
       generate_timeout: 30
+      health_check.job.queue: health_check
     edware:
       db:
         cat:
@@ -293,6 +295,7 @@ uat:
       base.url: https://beta.smarterbalancedreporting.org/assets/html/
       report_base_dir: /opt/edware/pdf
       generate_timeout: 30
+      health_check.job.queue: health_check
     disable_stack_trace: true
     edware:
       db:
@@ -395,7 +398,7 @@ development:
       db:
         schema_name: edware_sds_1_0
         url: postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_stats
-          
+
     auth:
       skip.verify: False
       saml:
@@ -403,12 +406,13 @@ development:
         idp_server_logout_url: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp
         issuer_name: http://localhost:6543/sp.xml
         name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
-    
+
     # Don't cache any static contents
     smarter.resources.static.max_age: 0
     # Always generate pdf regardless if it exists in file system
     pdf:
       always_generate: True
+      health_check.job.queue: health_check
     trigger.recache.filter.file:  ../config/comparing_populations_precache_filters.json
 test:
   '[app:main]':
@@ -471,6 +475,7 @@ jenkins_dev:
     pdf:
       report_base_dir: /opt/edware/pdf
       base.url: http://edwappsrv1.poc.dum.edwdc.net/assets/html/
+      health_check.job.queue: health_check
     cache:
       public.shortlived.url: edwappsrv1.poc.dum.edwdc.net:11211
       public.filtered_data.url: edwappsrv1.poc.dum.edwdc.net:11211
@@ -513,4 +518,5 @@ air:
     # Always generate pdf regardless if it exists in file system
     pdf:
       always_generate: True
+      health_check.job.queue: health_check
     trigger.recache.filter.file:  ../config/comparing_populations_precache_filters.json

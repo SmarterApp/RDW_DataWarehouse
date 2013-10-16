@@ -40,6 +40,7 @@ class TestPrePdfGenerator(Unittest_with_smarter_sqlite):
     def test_trigger_pre_pdf(self):
         settings = {'pdf.base.url': 'http://dummy:1223',
                     'pdf.batch.job.queue': 'dummy',
+                    'pdf.health_check.job.queue': 'dummy',
                     'batch.user.session.timeout': 10000,
                     'auth.policy.secret': 'dummySecret',
                     'auth.policy.cookie_name': 'dummy',

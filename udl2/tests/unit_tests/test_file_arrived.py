@@ -101,5 +101,3 @@ class TestFileArrived(unittest.TestCase):
         os.remove(os.path.join(result[mk.HISTORY], 'udl2_test1.txt'))
         for directory in result.values():
             os.rmdir(directory)
-
-

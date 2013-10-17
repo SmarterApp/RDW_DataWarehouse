@@ -48,6 +48,7 @@ class Constants():
     UNFILTERED_TOTAL = 'unfilteredTotal'
     NAME = 'name'
     ID = 'id'
+    ROWID = 'rowId'
     RESULTS = 'results'
     DIM_INST_HIER = 'dim_inst_hier'
     DIM_ASMT = 'dim_asmt'

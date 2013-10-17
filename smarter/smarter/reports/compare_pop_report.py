@@ -13,7 +13,6 @@ from sqlalchemy.sql.expression import func, true
 from smarter.reports.helpers.constants import Constants, AssessmentType
 from edapi.logging import audit_event
 import collections
-from edapi.exceptions import NotFoundException
 from smarter.security.context import select_with_context
 from smarter.database.smarter_connector import SmarterDBConnection
 from smarter.reports.exceptions.parameter_exception import InvalidParameterException
@@ -302,13 +301,15 @@ class RecordManager():
         return record in array and ordered by name
         '''
         records = []
+        row_id = 0
         for record in self._tracking_record.values():
-            __record = {Constants.ID: record.id, Constants.NAME: record.name, Constants.RESULTS: self.format_results(record.subjects), Constants.PARAMS: {Constants.STATECODE: self._stateCode, Constants.ID: record.id}}
+            __record = {Constants.ROWID: row_id, Constants.ID: record.id, Constants.NAME: record.name, Constants.RESULTS: self.format_results(record.subjects), Constants.PARAMS: {Constants.STATECODE: self._stateCode, Constants.ID: record.id}}
             if self._districtGuid is not None:
                 __record[Constants.PARAMS][Constants.DISTRICTGUID] = self._districtGuid
             if self._schoolGuid is not None:
                 __record[Constants.PARAMS][Constants.SCHOOLGUID] = self._schoolGuid
             records.append(__record)
+            row_id += 1
         return records
 
     @staticmethod

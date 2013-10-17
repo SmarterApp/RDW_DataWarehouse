@@ -137,7 +137,7 @@ define [
 
         # process breadcrumbs
         self.renderBreadcrumbs(self.data.context)
-        self.stickyCompare.setReportInfo self.reportType, self.breadcrumbs.getOrgType(), self.breadcrumbs.getDisplayType(), self.param
+        self.stickyCompare.setReportInfo self.reportType, self.breadcrumbs.getDisplayType(), self.param
         self.createGrid()
         self.updateDropdown()
         self.updateFilter()
@@ -212,7 +212,7 @@ define [
         for data in this.populationData
           if gridData.length is selectedRows.length
             break
-          if data.id in selectedRows
+          if data.rowId in selectedRows
             gridData.push data
       else
         gridData = this.populationData

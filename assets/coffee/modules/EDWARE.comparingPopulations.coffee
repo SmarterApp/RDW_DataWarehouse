@@ -18,7 +18,8 @@ define [
   "edwarePreferences"
   "edwareAsmtDropdown"
   "edwareDisclaimer"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwareDropdown, edwareStickyCompare, edwarePreferences, edwareAsmtDropdown, edwareDisclaimer) ->
+  "edwareConstants"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwareDropdown, edwareStickyCompare, edwarePreferences, edwareAsmtDropdown, edwareDisclaimer, Constants) ->
 
   REPORT_NAME = "comparingPopulationsReport"
 
@@ -159,8 +160,11 @@ define [
       this.filter.update this.notStatedData
 
     createHeaderAndFooter: ()->
-      this.footer = edwareFooter.create('comparing_populations', this.data.metadata, this.config) unless this.footer
+      this.footer = new edwareFooter.EdwareFooter(Constants.REPORT_TYPE.CPOP, this.data.metadata, this.config, this.fetchExportData.bind(this)) unless this.footer
       this.header = edwareHeader.create(this.data, this.config, "comparing_populations_" + this.reportType) unless this.header
+
+    fetchExportData: () ->
+      this.populationData
 
     fetchData: (params, callback)->
       # Determine if the report is state, district or school view"

@@ -15,10 +15,25 @@ define [
     getFileName: () ->
       'hello'
 
+
+  class LOSBuilder extends CSVBuilder
+  
+    build: (data) ->
+      records = data.map (record)->
+        result = []
+        result.push record.name
+        result.push record.results.subject1.asmt_subject
+        result.push record.results.subject1.total
+        result.push record.results.subject2.asmt_subject
+        result.push record.results.subject2.total
+        result.join Constants.DELIMITOR.COMMA
+      records.join Constants.DELIMITOR.NEWLINE      
+
+  
   class CPopBuilder extends CSVBuilder
   
-    build: (@data) ->
-      records = this.data.map (record)->
+    build: (data) ->
+      records = data.map (record)->
         result = []
         result.push record.name
         result.push record.results.subject1.asmt_subject
@@ -36,15 +51,13 @@ define [
 
   download = (content, filename) ->
     uri = 'data:application/csv;charset=UTF-8,' + encodeURIComponent(content)
-    link = $('a').html(filename)
+    link = $('<a>').html(filename).attr('href', uri).attr('download', filename)
     if (typeof link.download != "undefined") and filename
       # download with file name
-      link.setAttribute("href", uri)
-      link.setAttribute("download", filename)
-      link.click();
+      link.click()
     else
       # download as anonymous file
-      window.open(uri);
+      window.open(uri)
 
   exportCSV = (reportType, data) ->
     builder = builderFactory(reportType)

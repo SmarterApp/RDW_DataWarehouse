@@ -6,6 +6,15 @@ define [
   'text!edwareStickyCompareTemplate'
 ], ($, Mustache, edwareUtil, edwareClientStorage, edwareStickyCompareTemplate) ->
   
+  STICKY_CHAIN_TEMPLATE =  
+    '<div id="stickyChain">' +
+      '<div class="stickyChainContent hide">{{{content}}}</div>' +
+    '</div>'
+
+  STICKY_CHAIN_POPOVER_TEMPLATE = '<div class="popover stickyChainPopover"><div class="arrow"></div><div class="popover-inner"><div class="popover-content"><p></p></div></div></div>'
+  
+  STICKY_ITEM_TEMPLATE = "<table>{{#values}}<tr><td>{{{name}}}</td><td><div class='removeStickyChainIcon' id='stickyChain_{{id}}'data-id='{{id}}'></div></td></tr>{{/values}}</table>" 
+  
   class EdwareGridStickyCompare
     
     constructor: (@callback) ->
@@ -21,12 +30,13 @@ define [
       this.compareEnabledActions = $('#compareEnabledActions')
       this.stickyEnabledDescription = $('#stickyEnabledDescription')
       this.stickyCompareBtn = $('#stickyCompare-btn')
+      this.stickyChainBtn = $('#stickyChain-btn')
       this.stickyDeselectBtn = $('#stickyDeselect-btn')
       this.stickyShowAllBtn = $('#stickyShowAll-btn')
 
     # Sets information when we know what type of report it is, etc.
     # compareMode is set to false since we know that the html is reloaded
-    setReportInfo: (@reportType, @orgName, @displayType, @params) ->
+    setReportInfo: (@reportType, @displayType, @params) ->
       this.compareMode = false
       
     update: () ->
@@ -47,8 +57,12 @@ define [
       self = this  
       # checkboxes in each row
       $(document).on 'click', '.stickyCheckbox', () ->
+        # TODO: Hide popover - valid?
+        self.removeStickyChainPopover()
         if not $(this).is(':checked')
           self.uncheckedEvent this
+          # Remove the item from the sticky chain list
+          self.removeStickyChainItem $('#stickyChain_'+ $(this).data('value'))
         else
           self.checkedEvent this
   
@@ -86,6 +100,22 @@ define [
         row = $(this).siblings('.stickyCompareRemove')
         self.removeCurrentRow row
         self.updateSelection()
+     
+      # Sticky chain list
+      $(document).on 'click', '#stickyChain-btn', (e) ->
+        e = $(this)
+        self.displayStickyChainPopover e
+        e.popover('toggle')
+      
+      # remove icon on sticky chain
+      $(document).on 'click', '.removeStickyChainIcon', () ->
+        rowId = $(this).data('id')
+        # Uncheck the checkbox in the grid
+        element = $('#sticky_' + rowId)
+        element.attr('checked', false)
+        self.uncheckedEvent element
+        # Remove this row from popover
+        self.removeStickyChainItem($(this))
       
       # On logout, clear storage
       $(document).on 'click', '#logout_button', () ->
@@ -96,6 +126,7 @@ define [
     compare: () ->
       this.compareMode = true
       this.updateSelection() if this.selectedRows.length > 0
+      this.removeStickyChainPopover()
     
     # uncheck of checkbox event
     uncheckedEvent: (element) ->
@@ -125,7 +156,7 @@ define [
     
     # Returns the value of a row
     getCurrentRowValue: (row) ->
-      String($(row).data('value'))
+      parseInt($(row).data('value'))
     
     getSelectedRows: () ->
       # When this gets called, it means we should read from storage
@@ -149,8 +180,30 @@ define [
         this.hideCompareSection()
       # calls a callback function (render grid)
       this.callback()
-
-   # Update session storage for selected rows
+      
+    displayStickyChainPopover: (e) ->
+      this.updateStickyChain()
+      e.popover
+        html: true
+        placement: "bottom"
+        trigger: "manual"
+        template: STICKY_CHAIN_POPOVER_TEMPLATE
+        content: ->
+          $(this).find("#stickyChain").html()
+          $('.stickyChainContent').show()
+    
+    updateStickyChain: () ->
+      stickyList = this.renderStickyChainRows()
+      output = Mustache.to_html STICKY_CHAIN_TEMPLATE, {'content': stickyList}
+      $('#stickyChainSection').html output
+    
+    removeStickyChainPopover: () ->
+      $('#stickyChain-btn').popover('destroy')
+    
+    removeStickyChainItem: (element) ->
+      element.parent().parent().remove()
+    
+    # Update session storage for selected rows
     saveSelectedRowsToStorage: () ->
       if this.reportType in ['state', 'district']
         data = this.getDataFromStorage()
@@ -177,15 +230,17 @@ define [
       text = "Compare"
       count = this.selectedRows.length
       if count > 0
-        text += " " + count + " " + this.displayType
+        countText = count + " " + this.displayType
         this.showCompareSelectedButtons()
         if count > 1 
-          text += "s"
+          countText += "s"
       else
         # Hide all buttons
         this.hideCompareSection()
+      text += " " + countText if countText
       $('.stickyCheckbox:checked').siblings("label").text(text)
       this.stickyCompareBtn.text(text)
+      this.stickyChainBtn.text(countText + " Selected")
 
     createButtonBar: () ->
       output = Mustache.to_html edwareStickyCompareTemplate, {}
@@ -195,6 +250,8 @@ define [
    
     hideCompareSection: () ->
       this.compareSection.hide()
+      # TODO: This is wrong as we're using toggle ....
+      this.removeStickyChainPopover()
     
     showCompareSection: () ->
       this.compareSection.show()
@@ -208,11 +265,24 @@ define [
       this.showCompareSection()
       this.stickyShowAllBtn.text("Show All " + this.displayType + "s")
       count = this.selectedRows.length
-      text = "Comparing " + String(count) + " " + this.orgName + " " + this.displayType
+      text = "Comparing " + String(count) + " " + this.displayType
       text += "s" if count > 1
       this.stickyEnabledDescription.text(text)
       this.compareSelectedActions.hide()
       this.compareEnabledActions.show()
+
+    renderStickyChainRows: () ->
+      data = {}
+      for row in this.selectedRows
+        name = $('#sticky_' + row).data("name")
+        data[name] = row
+      # Sort based on names
+      names = Object.keys(data).sort()
+      sortedData = {}
+      sortedData['values'] = []
+      for name in names
+        sortedData.values.push {'name': name, 'id': data[name]}
+      Mustache.to_html STICKY_ITEM_TEMPLATE, sortedData
   
   
   EdwareGridStickyCompare:EdwareGridStickyCompare

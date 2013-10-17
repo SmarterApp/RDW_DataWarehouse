@@ -91,7 +91,8 @@ define [
       , ".asmtScore"
 
     createHeaderAndFooter: () ->
-      this.footer = new edwareFooter.EdwareFooter(Constants.REPORT_TYPE.LOS, this.cutPointsData, this.config, this.fetchExportData.bind(this)) unless this.footer
+      this.config.colorsData = this.cutPointsData
+      this.footer = new edwareFooter.EdwareFooter(Constants.REPORT_TYPE.LOS, this.config, this.fetchExportData.bind(this)) unless this.footer
       this.header = edwareHeader.create(this.data, this.config, 'list_of_students') unless this.header
 
     fetchExportData: () ->

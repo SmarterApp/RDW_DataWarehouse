@@ -15,19 +15,20 @@ define [
 
   class EdwareFooter
   
-    constructor: (@reportName, colorsData, config, @fetchExportData) ->
-      this.initialize(colorsData, config)
+    constructor: (@reportName, config, @fetchExportData) ->
+      this.initialize(config)
       # Generate footer
       this.create()
       this.bindEvents()
 
-    initialize: (colorsData, config)->
+    initialize: (config)->
       this.labels = config.labels
       this.reportInfo = config.reportInfo
       legendInfo = config.legendInfo
       this.legend = {
         legendInfo: legendInfo,
-        subject: (()->
+        subject: config.subject || (()->
+          colorsData = config.colorsData
           # merge default color data into sample intervals data
           for color, i in colorsData.subject1 || colorsData.subject2
             legendInfo.sample_intervals.intervals[i].color = color

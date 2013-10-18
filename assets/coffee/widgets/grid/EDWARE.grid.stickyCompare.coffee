@@ -106,6 +106,7 @@ define [
       $(document).on 'click', '#stickyChain-btn', (e) ->
         self.displayStickyChainPopover '#stickyChain-btn'
         $('#stickyChain-btn').popover('toggle')
+        self.setPosition()
       
       # remove icon on sticky chain
       $(document).on 'click', '.removeStickyChainIcon', () ->
@@ -191,6 +192,15 @@ define [
         content: ->
           $(document).find(".stickyChainContent").html()
     
+    setPosition: ()->
+      offset = $('#stickyChain-btn').offset()
+      popover = $('.stickyChainPopover')
+      popover.appendTo('#compareSelectedActions')
+      popover.removeAttr('style').css {
+        top: 0
+        left: -10
+      }
+      
     updateStickyChain: () ->
       stickyList = this.renderStickyChainRows()
       output = Mustache.to_html STICKY_CHAIN_TEMPLATE, {'content': stickyList}

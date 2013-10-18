@@ -11,7 +11,7 @@ define [
     build: (@data) ->
 
     getFileName: () ->
-      this.reportType + '_' + new Date().toString()
+      this.reportType + '_' + new Date().getTime()
 
 
   class ISRBuilder extends CSVBuilder
@@ -56,13 +56,16 @@ define [
 
   download = (content, filename) ->
     uri = 'data:application/csv;charset=UTF-8,' + encodeURIComponent(content)
-    link = $('<a>').html(filename).attr('href', uri).attr('download', filename)
-    if (typeof link.download != "undefined") and filename
+    link = $('<a>').html(filename).attr('href', uri).attr('download', filename)[0]
+    if link.download and filename
+      # have to append link to body element, or it's not gonna work in Firefox
+      $('body').append link
       # download with file name
       link.click()
+      $(link).remove()
     else
       # download as anonymous file
-      window.open(uri)
+      window.open(uri, '_parent')
 
   exportCSV = (reportType, data) ->
     builder = builderFactory(reportType)

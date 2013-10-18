@@ -165,8 +165,13 @@ define [
       this.header = edwareHeader.create(this.data, this.config, "comparing_populations_" + this.reportType) unless this.header
 
     fetchExportData: () ->
-      this.populationData
-
+      gridDataIDs = $("#gridTable").getDataIDs()
+      mapping = {}
+      $.each this.populationData, () ->
+        mapping[this.id] = this
+      return $.map gridDataIDs, (id)->
+        mapping[id]
+        
     fetchData: (params, callback)->
       # Determine if the report is state, district or school view"
       options =

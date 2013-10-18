@@ -118,7 +118,9 @@ define [
         content: $(".printPopup").html()
 
     createExport: () ->
-      # TODO:  export is temporary placed in the footer.  If it's permanent, we need to update template.html for hiding another popovers
+      if this.reportName is Constants.REPORT_TYPE.ISR
+        $('#export').hide()
+        return
       $("#export").popover
         html: true
         title: Mustache.to_html TITLE_TEMPLATE, {

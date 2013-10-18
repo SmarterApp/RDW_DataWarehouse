@@ -39,7 +39,7 @@ def check_celery(request):
         celery_response = health_check.apply_async(queue=queue)
         heartbeat_message = celery_response.get()
     except Exception:
-        heartbeat_message = 'heartattack'
+        return HTTPServerError()
 
     if heartbeat_message[0:9] == 'heartbeat':
         return HTTPOk()

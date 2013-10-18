@@ -83,7 +83,7 @@ define [
         label = $('.stickyCheckbox').siblings("label")
         label.addClass('stickyCompareLabel')
         label.removeClass('stickyCompareLabelChecked')
-        label.text(this.labels.compare)
+        label.text(self.labels.compare)
         self.resetCompareRowControls()
       
       # Show all district button

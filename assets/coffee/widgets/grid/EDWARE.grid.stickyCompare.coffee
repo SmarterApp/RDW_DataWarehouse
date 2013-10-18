@@ -104,7 +104,7 @@ define [
      
       # Sticky chain list
       $(document).on 'click', '#stickyChain-btn', (e) ->
-        self.displayStickyChainPopover '#stickyChain-btn'
+        self.displayStickyChainPopover()
         $('#stickyChain-btn').popover('toggle')
         self.setPosition()
       
@@ -182,7 +182,7 @@ define [
       # calls a callback function (render grid)
       this.callback()
       
-    displayStickyChainPopover: (e) ->
+    displayStickyChainPopover: () ->
       this.updateStickyChain()
       $('#stickyChain-btn').popover
         html: true
@@ -192,10 +192,11 @@ define [
         content: ->
           $(document).find(".stickyChainContent").html()
     
-    setPosition: ()->
+    setPosition: () ->
       offset = $('#stickyChain-btn').offset()
       popover = $('.stickyChainPopover')
       popover.appendTo('#compareSelectedActions')
+      width = $('#stickyChain-btn').width()
       popover.removeAttr('style').css {
         top: 0
         left: -10
@@ -203,7 +204,7 @@ define [
       # update arrow
       arrow = $(".arrow", popover)
       arrow.removeAttr('style').css {
-        left: 80
+        left: ( width/2 ) + 25
       } 
       
     updateStickyChain: () ->

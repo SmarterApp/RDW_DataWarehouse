@@ -200,6 +200,11 @@ define [
         top: 0
         left: -10
       }
+      # update arrow
+      arrow = $(".arrow", popover)
+      arrow.removeAttr('style').css {
+        left: 80
+      } 
       
     updateStickyChain: () ->
       stickyList = this.renderStickyChainRows()

@@ -513,7 +513,8 @@
 							"style": "marginLeft20"
 						},
 						"hidden": true,
-						"sortorder": "asc"
+						"sortorder": "asc",
+						"export": true
 					}
 				]
 			}, {
@@ -530,7 +531,8 @@
 							"asmt_type": "subject1"
 						},
 						"title": false,
-						"align": "center"
+						"align": "center",
+						"export": true
 					}
 				]
 			}, {
@@ -547,7 +549,8 @@
 							"asmt_type": "subject2"
 						},
 						"title": false,
-						"align": "center"
+						"align": "center",
+						"export": true
 					}
 				]
 			}

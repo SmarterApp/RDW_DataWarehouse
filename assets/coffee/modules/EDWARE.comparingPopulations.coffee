@@ -169,8 +169,12 @@ define [
       mapping = {}
       $.each this.populationData, () ->
         mapping[this.id] = this
-      return $.map gridDataIDs, (id)->
+      data = $.map gridDataIDs, (id)->
         mapping[id]
+      return {
+        data: data,
+        config: this.gridConfig
+      }
         
     fetchData: (params, callback)->
       # Determine if the report is state, district or school view"
@@ -228,7 +232,7 @@ define [
         gridData = this.populationData
 
       # Change the column name and link url based on the type of report the user is querying for
-      gridConfig = new ConfigBuilder(this.configTemplate, this.asmtSubjectsData)
+      this.gridConfig = new ConfigBuilder(this.configTemplate, this.asmtSubjectsData)
                              .customize(this.customViews[this.reportType])
                              .build()
 
@@ -236,7 +240,7 @@ define [
       # Create compare population grid for State/District/School view
       edwareGrid.create {
         data: gridData
-        columns: gridConfig
+        columns: this.gridConfig
         footer: this.summaryData
         options:
           gridHeight: this.gridHeight

@@ -13,6 +13,18 @@ define [
     getFileName: () ->
       this.reportType + '_' + new Date().getTime()
 
+    CSVBuilder::getPropertyByString = (object, fields)->
+      # fields = fields.replace(/\[(\w+)\]/g, '.$1'); # convert indexefields to propertiefields
+      # fields = fields.replace(/^\./, '');           # fieldstrip a leading dot
+      properties = fields.split('.')
+      while properties.length
+        property = properties.shift()
+        if object[property]
+          object = object[property]
+        else
+          return
+      return object
+
 
   class ISRBuilder extends CSVBuilder
   
@@ -23,6 +35,7 @@ define [
   class LOSBuilder extends CSVBuilder
   
     build: (data) ->
+      return 'this,is,los'
       records = data.map (record)->
         result = []
         result.push record.name
@@ -36,17 +49,21 @@ define [
 
   class CPopBuilder extends CSVBuilder
   
-    build: (data) ->
+    build: (data, config) ->
+      columns = this.toExportColumns config
       records = data.map (record)->
         result = []
-        result.push record.name
-        result.push record.results.subject1.asmt_subject
-        result.push record.results.subject1.total
-        result.push record.results.subject2.asmt_subject
-        result.push record.results.subject2.total
+        for column in columns
+          result.push CSVBuilder::getPropertyByString(record, column.field) if column.export
         result.join Constants.DELIMITOR.COMMA
       records.join Constants.DELIMITOR.NEWLINE
 
+    toExportColumns: (config)->
+      columns = []
+      for column in config
+        $.map column.items, (item)->
+          columns.push item
+      columns
       
   builderFactory = (reportType)->
     switch reportType
@@ -67,9 +84,9 @@ define [
       # download as anonymous file
       window.open(uri, '_parent')
 
-  exportCSV = (reportType, data) ->
+  exportCSV = (reportType, model) ->
     builder = builderFactory(reportType)
-    download builder.build(data), builder.getFileName()
+    download builder.build(model.data, model.config), builder.getFileName()
 
 
   exportCSV: exportCSV

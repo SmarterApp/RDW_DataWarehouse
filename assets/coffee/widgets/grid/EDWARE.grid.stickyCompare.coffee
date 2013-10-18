@@ -104,9 +104,8 @@ define [
      
       # Sticky chain list
       $(document).on 'click', '#stickyChain-btn', (e) ->
-        e = $(this)
-        self.displayStickyChainPopover e
-        e.popover('toggle')
+        self.displayStickyChainPopover '#stickyChain-btn'
+        $('#stickyChain-btn').popover('toggle')
       
       # remove icon on sticky chain
       $(document).on 'click', '.removeStickyChainIcon', () ->
@@ -184,14 +183,13 @@ define [
       
     displayStickyChainPopover: (e) ->
       this.updateStickyChain()
-      e.popover
+      $('#stickyChain-btn').popover
         html: true
         placement: "bottom"
         trigger: "manual"
         template: STICKY_CHAIN_POPOVER_TEMPLATE
         content: ->
-          $(this).find("#stickyChain").html()
-          $('.stickyChainContent').show()
+          $(document).find(".stickyChainContent").html()
     
     updateStickyChain: () ->
       stickyList = this.renderStickyChainRows()

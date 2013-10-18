@@ -17,7 +17,7 @@ define [
   
   class EdwareGridStickyCompare
     
-    constructor: (@callback) ->
+    constructor: (@labels, @callback) ->
       this.initialize()
       this
       
@@ -38,6 +38,7 @@ define [
     # compareMode is set to false since we know that the html is reloaded
     setReportInfo: (@reportType, @displayType, @params) ->
       this.compareMode = false
+      this.displayType = this.displayType.toLowerCase()
       
     update: () ->
       # Hide buttons based on whether any selection is already made
@@ -82,7 +83,7 @@ define [
         label = $('.stickyCheckbox').siblings("label")
         label.addClass('stickyCompareLabel')
         label.removeClass('stickyCompareLabelChecked')
-        label.text("Compare")
+        label.text(this.labels.compare)
         self.resetCompareRowControls()
       
       # Show all district button
@@ -130,7 +131,7 @@ define [
     
     # uncheck of checkbox event
     uncheckedEvent: (element) ->
-      $(element).siblings("label").text("Compare")
+      $(element).siblings("label").text(this.labels.compare)
       $(element).siblings("label").removeClass "stickyCompareLabelChecked"
       $(element).siblings("label").addClass "stickyCompareLabel"
       this.removeCurrentRow element
@@ -224,33 +225,38 @@ define [
       else if this.params['stateCode']
         id  = this.params['stateCode']
       id
+    
+    getDisplayTypes: () ->
+      # Returns the plural form of displayType
+      this.displayType + "s"
       
     # Reset Grid rows checkbox and button text
     resetCompareRowControls: () ->
-      text = "Compare"
+      text = this.labels.compare
+      labelNameKey = this.displayType
       count = this.selectedRows.length
       if count > 0
-        countText = count + " " + this.displayType
+        labelNameKey = this.getDisplayTypes() if count > 1
+        countText = count + " " + this.labels[labelNameKey]
         this.showCompareSelectedButtons()
-        if count > 1 
-          countText += "s"
       else
         # Hide all buttons
         this.hideCompareSection()
       text += " " + countText if countText
       $('.stickyCheckbox:checked').siblings("label").text(text)
       this.stickyCompareBtn.text(text)
-      this.stickyChainBtn.text(countText + " Selected")
-
+      # To display ex. "districts_selected" label
+      this.stickyChainBtn.text(count + " " + this.labels[labelNameKey + "_selected"])
+ 
     createButtonBar: () ->
-      output = Mustache.to_html edwareStickyCompareTemplate, {}
+      output = Mustache.to_html edwareStickyCompareTemplate, {'labels': this.labels}
       $('#stickyCompareSection').html output
       this.compareSection = $('#stickyCompareSection')
       this.hideCompareSection()
    
     hideCompareSection: () ->
       this.compareSection.hide()
-      # TODO: This is wrong as we're using toggle ....
+      # TODO: Verify that we can destroy popover
       this.removeStickyChainPopover()
     
     showCompareSection: () ->
@@ -263,10 +269,10 @@ define [
     
     showCompareEnabledButtons: () ->
       this.showCompareSection()
-      this.stickyShowAllBtn.text("Show All " + this.displayType + "s")
+      this.stickyShowAllBtn.text(this.labels.show_all + " " + this.labels[this.getDisplayTypes()])
       count = this.selectedRows.length
-      text = "Comparing " + String(count) + " " + this.displayType
-      text += "s" if count > 1
+      text = this.labels.viewing + " " + String(count) + " " 
+      if count > 1 then text += this.labels[this.getDisplayTypes()] else text += this.labels[this.displayType]
       this.stickyEnabledDescription.text(text)
       this.compareSelectedActions.hide()
       this.compareEnabledActions.show()

@@ -73,7 +73,7 @@ define [
         order: 'asc'
         index: 0
       }
-      this.stickyCompare = new edwareStickyCompare.EdwareGridStickyCompare this.renderGrid.bind(this)
+      this.stickyCompare = new edwareStickyCompare.EdwareGridStickyCompare this.labels, this.renderGrid.bind(this)
       this.asmtTypes = for asmtType in config.students.customViews.asmtTypes
         asmtType.name
       

@@ -8,13 +8,9 @@ define [
   
   STICKY_CHAIN_TEMPLATE =  
     '<div id="stickyChain">' +
-      '<div class="stickyChainContent hide">{{{content}}}</div>' +
+      '<div class="stickyChainContent">{{{content}}}</div>' +
     '</div>'
 
-  STICKY_CHAIN_POPOVER_TEMPLATE = '<div class="popover stickyChainPopover"><div class="arrow"></div><div class="popover-inner"><div class="popover-content"><p></p></div></div></div>'
-  
-  STICKY_ITEM_TEMPLATE = "<table>{{#values}}<tr><td>{{{name}}}</td><td><div class='removeStickyChainIcon' id='stickyChain_{{id}}'data-id='{{id}}'></div></td></tr>{{/values}}</table>" 
-  
   class EdwareGridStickyCompare
     
     constructor: (@labels, @callback) ->
@@ -63,6 +59,7 @@ define [
         if not $(this).is(':checked')
           self.uncheckedEvent this
           # Remove the item from the sticky chain list
+          #$('#stickyChainHR_'+ $(this).data('value')).remove()
           self.removeStickyChainItem $('#stickyChain_'+ $(this).data('value'))
         else
           self.checkedEvent this
@@ -116,7 +113,7 @@ define [
         element.attr('checked', false)
         self.uncheckedEvent element
         # Remove this row from popover
-        self.removeStickyChainItem($(this))
+        self.removeStickyChainItem($(this).parent())
       
       # On logout, clear storage
       $(document).on 'click', '#logout_button', () ->
@@ -183,14 +180,14 @@ define [
       this.callback()
       
     displayStickyChainPopover: () ->
-      this.updateStickyChain()
+      self = this
       $('#stickyChain-btn').popover
         html: true
         placement: "bottom"
         trigger: "manual"
-        template: STICKY_CHAIN_POPOVER_TEMPLATE
+        template: '<div class="popover stickyChainPopover"><div class="arrow"></div><div class="popover-inner"><div class="popover-content"><p></p></div></div></div>'
         content: ->
-          $(document).find(".stickyChainContent").html()
+          self.renderStickyChainRows()
     
     setPosition: () ->
       offset = $('#stickyChain-btn').offset()
@@ -206,17 +203,18 @@ define [
       arrow.removeAttr('style').css {
         left: ( width/2 ) + 25
       } 
-      
-    updateStickyChain: () ->
-      stickyList = this.renderStickyChainRows()
-      output = Mustache.to_html STICKY_CHAIN_TEMPLATE, {'content': stickyList}
-      $('#stickyChainSection').html output
     
     removeStickyChainPopover: () ->
       $('#stickyChain-btn').popover('destroy')
     
     removeStickyChainItem: (element) ->
-      element.parent().parent().remove()
+      parent = element.parent()
+      element.remove()
+      #make sure border is also deleted
+      children = parent.children()
+      children[children.length-1].remove() if children[children.length-1].id is ""
+      children[0].remove() if children[0].id is ""
+      
     
     # Update session storage for selected rows
     saveSelectedRowsToStorage: () ->
@@ -292,17 +290,22 @@ define [
       this.compareEnabledActions.show()
 
     renderStickyChainRows: () ->
+      element = $('<div id="stickyChainTable" class="nav"></div>')
       data = {}
       for row in this.selectedRows
         name = $('#sticky_' + row).data("name")
         data[name] = row
       # Sort based on names
       names = Object.keys(data).sort()
-      sortedData = {}
-      sortedData['values'] = []
+      idx = 0
       for name in names
-        sortedData.values.push {'name': name, 'id': data[name]}
-      Mustache.to_html STICKY_ITEM_TEMPLATE, sortedData
+        element.append $('<div class="tableRow"><hr class="tableCellHR"/><hr class="tableCellHR"/></div>') if idx > 0
+        row = $('<div id="stickyChain_' + idx + '" class="tableRow"></div>')
+        row.append $('<div class="tableCellLeft">' + name + '</div>')
+        row.append $('<div data-id="' + idx + '" class="tableCellRight removeStickyChainIcon"></div>')
+        element.append row
+        idx++
+      $('<div></div>').append(element).html()
   
   
   EdwareGridStickyCompare:EdwareGridStickyCompare

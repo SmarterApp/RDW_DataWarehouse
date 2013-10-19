@@ -1386,6 +1386,11 @@ th.ui-th-column div {
   #compareSelectedActions{
     position: relative;
     margin-top: 4px;
+    .popover-content {
+      padding-left: 10px;
+      max-height: 40px;
+      overflow-y: auto;
+    }
   }
   
   #compareEnabledActions{
@@ -1446,10 +1451,9 @@ th.ui-th-column div {
     .removeStickyChainIcon {
       background-image: url("../images/remove_button.png");
       background-repeat: no-repeat;
+      background-position: center;
       width: 12px;
-      height: 12px;
       cursor: pointer;
-      display: inline-block;
     }
     
     table {
@@ -1490,3 +1494,22 @@ th.ui-th-column div {
   width: 400px;
     }
 }
+#stickyChainTable {
+  display: table;
+  .tableRow {
+    display:table-row;
+      .tableCellLeft {
+        display:table-cell;
+        width: 210px;
+      }
+      .tableCellRight {
+        display:table-cell;
+        width: 20px;
+      }
+      .tableCellHR {
+        display:table-cell;
+      }
+  }
+
+}
+

@@ -6,11 +6,6 @@ define [
   'text!edwareStickyCompareTemplate'
 ], ($, Mustache, edwareUtil, edwareClientStorage, edwareStickyCompareTemplate) ->
   
-  STICKY_CHAIN_TEMPLATE =  
-    '<div id="stickyChain">' +
-      '<div class="stickyChainContent">{{{content}}}</div>' +
-    '</div>'
-
   class EdwareGridStickyCompare
     
     constructor: (@labels, @callback) ->

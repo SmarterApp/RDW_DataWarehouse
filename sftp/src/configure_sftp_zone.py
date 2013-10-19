@@ -1,7 +1,7 @@
 """
 Created on Oct 17, 2013
 
-Module to initialize the sftp zones and creating groups
+Module to configure sftp zones
 """
 
 __author__ = 'sravi'

@@ -22,7 +22,7 @@ def _create_group(name):
         if rtn_code != 0:
             print('groupadd %s failed' % name)
     else:
-        None
+        print('Not a Unix machine. Not adding group: %s' % name)
 
 
 def initialize(sftp_conf):

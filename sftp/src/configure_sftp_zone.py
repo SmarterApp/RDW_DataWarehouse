@@ -70,4 +70,4 @@ def initialize(sftp_conf):
 def cleanup(sftp_conf):
     sftp_zone_path = os.path.join(sftp_conf['sftp_home'], sftp_conf['sftp_base_dir'])
     _cleanup_sftp_zone(sftp_zone_path)
-    print('SFTP zone cleanup successfully')
+    print('SFTP zone cleanedup successfully')

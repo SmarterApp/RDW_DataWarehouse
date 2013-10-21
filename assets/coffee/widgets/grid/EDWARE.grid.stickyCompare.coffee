@@ -43,6 +43,10 @@ define [
         # We may reach to this state when user selects some checkbox, and then submit a filter that cause grid to re-render
         if this.selectedRows.length is 0
           this.hideCompareSection()
+        else
+          # This happens when grid re-renders on sort and we need to reapply checkboxes to true
+          for row in this.selectedRows
+            $('#sticky_' + row).attr('checked', true)
         
     # All events related to grid filtering of rows
     bindEvents: () ->
@@ -73,8 +77,7 @@ define [
         $('.stickyCheckbox').attr('checked', false)  
         # Remove class of checkedlabel, add class of regular label and then set the text
         label = $('.stickyCheckbox').siblings("label")
-        label.addClass('stickyCompareLabel')
-        label.removeClass('stickyCompareLabelChecked')
+        label.toggleClass("stickyCompareLabel stickyCompareLabelChecked")
         label.text(self.labels.compare)
         self.resetCompareRowControls()
       
@@ -96,6 +99,7 @@ define [
      
       # Sticky chain list
       $(document).on 'click', '#stickyChain-btn', (e) ->
+        $(this).toggleClass("stickyChainOn stickyChainOff")
         self.displayStickyChainPopover()
         $('#stickyChain-btn').popover('toggle')
         self.setPosition()
@@ -123,16 +127,15 @@ define [
     
     # uncheck of checkbox event
     uncheckedEvent: (element) ->
-      $(element).siblings("label").text(this.labels.compare)
-      $(element).siblings("label").removeClass "stickyCompareLabelChecked"
-      $(element).siblings("label").addClass "stickyCompareLabel"
+      label = $(element).siblings("label")
+      label.text(this.labels.compare)
+      label.toggleClass("stickyCompareLabel stickyCompareLabelChecked")
       this.removeCurrentRow element
       this.resetCompareRowControls()
     
     # checkbox has been checked
     checkedEvent: (element) ->
-      $(element).siblings("label").addClass "stickyCompareLabelChecked"
-      $(element).siblings("label").removeClass "stickyCompareLabel"
+      $(element).siblings("label").toggleClass("stickyCompareLabelChecked stickyCompareLabel")
       this.addCurrentRow element
       this.resetCompareRowControls()
               
@@ -185,16 +188,15 @@ define [
           self.renderStickyChainRows()
     
     setPosition: () ->
-      offset = $('#stickyChain-btn').offset()
       popover = $('.stickyChainPopover')
       popover.appendTo('#compareSelectedActions')
-      width = $('#stickyChain-btn').width()
       popover.removeAttr('style').css {
         top: 0
         left: -10
       }
       # update arrow
       arrow = $(".arrow", popover)
+      width = $('#stickyChain-btn').width()
       arrow.removeAttr('style').css {
         left: ( width/2 ) + 25
       } 

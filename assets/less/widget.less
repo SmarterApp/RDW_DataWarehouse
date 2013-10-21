@@ -54,6 +54,14 @@ table td {
     padding-bottom: 17px;
   }
   
+  .marginRight10 {
+    margin-right: 10px;
+  }
+  
+  .verticalAlignMiddle{
+    vertical-align: middle;
+  }
+  
   .stickyCompareLabel {
     display: inline-block;
     margin-left: 5px;
@@ -1383,6 +1391,25 @@ th.ui-th-column div {
   border-bottom: 1px solid @color-B4;
   border-top: 1px solid @color-B4;
   
+  
+  .stickyControls {
+    list-style: none;
+    margin: 0px;
+    
+    &>li:first-child {
+      border-left: none;
+      padding-left:5px;
+      padding-right: 15px;
+    }
+
+    &>li {
+      display: inline-block;
+      vertical-align: middle;
+      border-left: solid 1px @color-B3;
+      padding-left:15px;
+    }
+  }
+  
   #compareSelectedActions{
     position: relative;
     margin-top: 4px;
@@ -1400,7 +1427,6 @@ th.ui-th-column div {
   #stickyEnabledDescription{
     display:inline;
     vertical-align: middle;
-    margin-left: 10px;
     font-size: 13px;
     color: @color-B1;
   }
@@ -1425,6 +1451,7 @@ th.ui-th-column div {
       font-size: 13px;
       height: 28px;
       color: @color-A2;
+      margin-left: 8px;
       background-color: @color-white;
       background-image: -webkit-gradient(linear,0 0,0 100%,from(@color-white),to(@color-white));
       background-image: -webkit-linear-gradient(top,@color-white,@color-white);
@@ -1436,11 +1463,32 @@ th.ui-th-column div {
         background-position: initial;
       }
   }
+  .stickyChainOff{
+      text-shadow: none;
+      font-size: 13px;
+      height: 28px;
+      color: @color-B1;
+      background-color: @color-white;
+      background-image: -webkit-gradient(linear,0 0,0 100%,from(@color-white),to(@color-white));
+      background-image: -webkit-linear-gradient(top,@color-white,@color-white);
+      background-image: -o-linear-gradient(top,@color-white,@color-white);
+      background-image: linear-gradient(to bottom,@color-white,@color-white);
+      background-image: -moz-linear-gradient(top,@color-white,@color-white);
+  }
+  
+  .stickyChainOn{
+      text-shadow: none;
+      font-size: 13px;
+      height: 28px;
+      color: @color-B1;
+      background-color: @color-B7;
+      background-image: -webkit-gradient(linear,0 0,0 100%,from(@color-B7),to(@color-B7));
+      background-image: -webkit-linear-gradient(top,@color-B7,@color-B7);
+      background-image: -o-linear-gradient(top,@color-B7,@color-B7);
+      background-image: linear-gradient(to bottom,@color-B7,@color-B7);
+      background-image: -moz-linear-gradient(top,@color-B7,@color-B7);
+  }
 }
-
-#stickyChain-btn{
-      position: relative;
-    }
 
 .stickyChainPopover{
 

@@ -61,7 +61,11 @@
 		"select_measure": "Select Measure",
 		"show_all": "Show All",
 		"state": "State",
+		"student": "Student",
+		"students": "Students",
 		"student_filters": "Student Filters",
+		"student_selected": "Student Selected",
+		"students_selected": "Students Selected",
 		"teacher": "Teacher",
 		"viewing": "Viewing",
 		"asmt": {

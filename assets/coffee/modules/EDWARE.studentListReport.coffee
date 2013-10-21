@@ -1,4 +1,4 @@
-require ["EDWARE.studentList", "edwareFilter", "edwareDataProxy", "edwareUtil"], (edwareStudentList, edwareFilter, edwareDataProxy, edwareUtil) ->
+require ["EDWARE.studentList", "edwareFilter", "edwareDataProxy"], (edwareStudentList, edwareFilter, edwareDataProxy) ->
 
   studentGrid = new edwareStudentList.StudentGrid()
   # Add filter to the page
@@ -6,7 +6,6 @@ require ["EDWARE.studentList", "edwareFilter", "edwareDataProxy", "edwareUtil"],
 
   ( () ->
     configs = edwareDataProxy.getDataForFilter()
-    edwareUtil.reRenderBody configs.labels
   )()
 
   filter = $('#losFilter').edwareFilter $('.filter_label'), configs, (param)->

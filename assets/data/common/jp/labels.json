@@ -61,7 +61,11 @@
 		"select_measure": "セレクトメジャー",
 		"show_all": "表示",
 		"state": "州",
+		"student": "学生",
+		"students": "学生",
 		"student_filters": "学生フィルタ",
+		"student_selected": "選択した生徒",
+        "students_selected": "選択した生徒",
 		"teacher": "教師",
 		"viewing": "表示表示",
 		"asmt": {

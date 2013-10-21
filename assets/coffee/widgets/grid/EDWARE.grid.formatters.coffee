@@ -18,8 +18,27 @@ define [
 
   math_count = 1
   ela_count = 1
-    
+  
+  setToolTip = (options, value) ->
+    # Set cell value tooltip
+    options.colModel.cellattr = (rowId, val, rawObject, cm, rdata) ->
+      "title='" + value + "'"
+
+  getParamsString = (rowObject, options ) ->
+    params = ""
+    i = 0 
+    for k, v of rowObject.params
+      if (i != 0)
+        params = params + "&"
+      if k == "id"
+        k = options.colModel.formatoptions.id_name
+      params = params + k + "=" + v
+      i++
+    params
+        
+        
   showlink = (value, options, rowObject) ->
+    # this formatter is used in cpop
     labels = options.colModel.labels
     link = options.colModel.formatoptions.linkUrl
     cssClass = options.colModel.formatoptions.style
@@ -28,34 +47,41 @@ define [
       displayValue = "Grade " + value
     displayValue = $.jgrid.htmlEncode(displayValue)
     
-    # Set cell value tooltip
-    options.colModel.cellattr = (rowId, val, rawObject, cm, rdata) ->
-      'title="' + displayValue + '"'
+    setToolTip options, displayValue
     
     # Build url query param
     unless rowObject.header
-      params = ""
-      i = 0 
-      for k, v of rowObject.params
-        if (i != 0)
-          params = params + "&"
-        if k == "id"
-          k = options.colModel.formatoptions.id_name
-        params = params + k + "=" + v
-        i++
-      if options.colModel.formatoptions.id_name is "asmtGrade"
-         "<a class="+cssClass+" href=\"" + link + "?" + params + "\">" + displayValue + "</a>"
-      else if options.colModel.formatoptions.id_name in ["districtGuid", "schoolGuid"]
+      params = getParamsString rowObject, options
+      formatter = ""
+      if options.colModel.formatoptions.id_name in ["districtGuid", "schoolGuid"]
+        # sticky comparison is not activated, show checkbox
         if not options.colModel.stickyCompareEnabled
-          # sticky comparison is not activated, show checkbox
-          "<div class='marginLeft20 paddingBottom17'><input class='stickyCheckbox' id='sticky_" + rowObject.rowId + "' type='checkbox' data-value=\"" + rowObject.rowId + "\" data-name=\"" + displayValue + "\"></input><label class='stickyCompareLabel'>" + labels.compare + "</label></div><a class="+cssClass+" href=\"" + link + "?" + params + "\">" + displayValue + "</a>"
+          formatter = "<div class='marginLeft20 paddingBottom17'>" + 
+          "<input class='stickyCheckbox' id='sticky_" + rowObject.rowId + "' type='checkbox' data-value=\"" + rowObject.rowId + "\" data-name=\"" + displayValue + "\"></input>" + 
+          "<label class='stickyCompareLabel'>" + labels.compare + "</label>" +
+          "</div>"
         else
-          "<div class='marginLeft20 paddingBottom17'><div class='removeIcon stickyCompareRemove' data-value=\"" + rowObject.rowId + "\"></div><label class='stickyRemoveLabel'>" + labels.remove + "</label></div><a class="+cssClass+" href=\"" + link + "?" + params + "\">" + displayValue + "</a>"
-      else
-        "<a class="+cssClass+" href=\"" + link + "?" + params + "\">" + displayValue + "</a>"
+          formatter = "<div class='marginLeft20 paddingBottom17'><div class='removeIcon stickyCompareRemove' data-value=\"" + rowObject.rowId + "\"></div>" +
+          "<label class='stickyRemoveLabel'>" + labels.remove + "</label></div>"
+      formatter += "<a class=" + cssClass + " href=\"" + link + "?" + params + "\">" + displayValue + "</a>"
     else
       # This is for summary row (grid footer)
-      "<div class="+cssClass+"><span class=summarySubtitle>" + rowObject.subtitle + ":</span><br/><span class='summaryTitle'>"+value+"</span></div>"
+      "<div class=" + cssClass + "><span class=summarySubtitle>" + rowObject.subtitle + ":</span><br/><span class='summaryTitle'>" + value + "</span></div>"
+
+  showStudentLink = (value, options, rowObject) ->
+    # this formatter is used in los
+    link = options.colModel.formatoptions.linkUrl
+    displayValue = $.jgrid.htmlEncode(value)
+    params = getParamsString rowObject, options
+    setToolTip options, displayValue
+    
+    if not options.colModel.stickyCompareEnabled
+      "<div class='marginLeft20'>" + 
+      "<input class='stickyCheckbox marginRight10' id='sticky_" + rowObject.rowId + "' type='checkbox' data-value=\"" + rowObject.rowId + "\" data-name=\"" + displayValue + "\"></input>" + 
+      "<a class='verticalAlignMiddle' href=\"" + link + "?" + params + "\">" + displayValue + "</a></div>"
+    else
+      "<div class='marginLeft20'><div class='removeIcon stickyCompareRemove marginRight10' data-value=\"" + rowObject.rowId + "\"></div>" + 
+      "<a href=\"" + link + "?" + params + "\">" + displayValue + "</a>"
 
   showOverallConfidence = (value, options, rowObject) ->
     names = options.colModel.name.split "."
@@ -125,6 +151,7 @@ define [
     subject
 
   showlink: showlink
+  showStudentLink: showStudentLink
   showOverallConfidence: showOverallConfidence
   showConfidence: showConfidence
   performanceBar: performanceBar

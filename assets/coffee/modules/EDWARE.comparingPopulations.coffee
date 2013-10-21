@@ -204,18 +204,7 @@ define [
     renderGrid: () ->
       $('#gridTable').jqGrid('GridUnload')
       # Filter out selected rows, if any
-      gridData = [] 
-      selectedRows = this.stickyCompare.getSelectedRows()
-      stickyCompareEnabled = false
-      if selectedRows.length > 0
-        stickyCompareEnabled = true
-        for data in this.populationData
-          if gridData.length is selectedRows.length
-            break
-          if data.rowId in selectedRows
-            gridData.push data
-      else
-        gridData = this.populationData
+      filteredInfo = this.stickyCompare.getFilteredInfo(this.populationData)
 
       # Change the column name and link url based on the type of report the user is querying for
       gridConfig = new ConfigBuilder(this.configTemplate, this.asmtSubjectsData)
@@ -225,13 +214,13 @@ define [
       self = this
       # Create compare population grid for State/District/School view
       edwareGrid.create {
-        data: gridData
+        data: filteredInfo.data
         columns: gridConfig
         footer: this.summaryData
         options:
           gridHeight: this.gridHeight
           labels: this.labels 
-          stickyCompareEnabled: stickyCompareEnabled
+          stickyCompareEnabled: filteredInfo.enabled
           sort: this.sort
           gridComplete: () ->
             self.afterGridLoadComplete()

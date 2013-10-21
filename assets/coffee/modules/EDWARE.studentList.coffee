@@ -11,7 +11,8 @@ define [
   "edwareHeader"
   "edwarePreferences"
   "edwareDisclaimer"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwarePreferences, edwareDisclaimer) ->
+  "edwareGridStickyCompare"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwarePreferences, edwareDisclaimer, edwareStickyCompare) ->
 
   REPORT_NAME = 'studentList'
   
@@ -36,7 +37,9 @@ define [
       this.legendInfo = config.legendInfo
       this.labels = config.labels
       this.gridHeight = window.innerHeight - 235
-
+      edwareUtil.reRenderBody this.labels
+      this.stickyCompare = new edwareStickyCompare.EdwareGridStickyCompare this.labels, this.reloadCurrentView.bind(this)
+      
     reload: (params) ->
       self = this
       this.fetchData params, (data)->
@@ -49,6 +52,7 @@ define [
         self.columnData = self.createColumns()
         #  append cutpoints into each individual assessment data
         self.formatAssessmentsData self.cutPointsData
+        self.stickyCompare.setReportInfo "los", "student", params
         # process breadcrumbs
         self.renderBreadcrumbs(data.context)
         self.createHeaderAndFooter()
@@ -103,11 +107,14 @@ define [
       this.createDropdown() if not this.asmtTypeDropdown
       this.createDisclaimer() if not this.disclaimer
       # Get asmtType from storage
-      asmtType = edwarePreferences.getAsmtPreference() || 'Summative'
-      currentView = this.data.subjects.subject1 + "_" + this.data.subjects.subject2      
-      this.updateView asmtType, currentView
+      this.asmtType = edwarePreferences.getAsmtPreference() || 'Summative'
+      this.currentView = this.data.subjects.subject1 + "_" + this.data.subjects.subject2      
+      this.updateView this.asmtType, this.currentView
     
     updateView: (asmtType, viewName) ->
+      # Save asmtType and viewName
+      this.asmtType = asmtType
+      this.viewName = viewName
       # set dropdown text
       this.asmtTypeDropdown.setSelectedText asmtType, viewName
       # save preference to storage
@@ -116,6 +123,10 @@ define [
       this.renderGrid asmtType, viewName
       # show the content upon rendering complete to prevent seeing the pre-templated text on the html
       $('.gridControls').show()
+   
+    reloadCurrentView: () ->
+      # this is the callback function for sticky compare to reload current view
+      this.updateView this.asmtType, this.viewName
       
     fetchData: (params, callback) ->
       # Determine if the report is state, district or school view"
@@ -161,15 +172,23 @@ define [
               this.cache[asmtType][value] = [] if not this.cache[asmtType][value]
               this.cache[asmtType][value].push row
 
+    afterGridLoadComplete: () ->
+      this.stickyCompare.update()
+ 
     renderGrid: (asmtType, viewName) ->
       $('#gridTable').jqGrid('GridUnload')
+      filteredInfo = this.stickyCompare.getFilteredInfo(this.getAsmtData asmtType, viewName)
       
+      self = this
       edwareGrid.create {
-        data: this.getAsmtData(asmtType, viewName)
+        data: filteredInfo.data
         columns: this.columnData[viewName]
         options:
           gridHeight: this.gridHeight
           labels: this.labels
+          stickyCompareEnabled: filteredInfo.enabled
+          gridComplete: () ->
+            self.afterGridLoadComplete()
       }
       #TODO Add dark border color between Math and ELA section to emphasize the division
       $('.jqg-second-row-header th:nth-child(1), .jqg-second-row-header th:nth-child(2), .ui-jqgrid .ui-jqgrid-htable th.ui-th-column:nth-child(1), .ui-jqgrid .ui-jqgrid-htable th.ui-th-column:nth-child(3), .ui-jqgrid tr.jqgrow td:nth-child(1), .ui-jqgrid tr.jqgrow td:nth-child(3)').css("border-right", "solid 1px #B1B1B1")

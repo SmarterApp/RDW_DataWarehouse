@@ -162,10 +162,24 @@ define [
       this.compareMode = this.selectedRows.length > 0
       this.selectedRows
     
+    getFilteredInfo: (allData) ->
+      # client passes in data and this will return rows that user have selected and whether stickyCompare is enabled
+      returnData = []
+      selectedRows = this.getSelectedRows()
+      if selectedRows.length > 0
+        for data in allData
+          if returnData.length is selectedRows.length
+            break
+          if data.rowId in selectedRows
+            returnData.push data
+      else
+        returnData = allData
+      return {'data': returnData, 'enabled': selectedRows.length > 0}
+    
     getDataForReport: () ->
       # Gets the rows selected for the current report view
       data = this.getDataFromStorage()[this.reportType] || {}
-      data[this.getOrgId()] || []
+      data[this.getKey()] || []
     
     # Saves to storage
     # Reset compare mode depending on whether any rows are selected
@@ -215,21 +229,23 @@ define [
     
     # Update session storage for selected rows
     saveSelectedRowsToStorage: () ->
-      if this.reportType in ['state', 'district']
-        data = this.getDataFromStorage()
-        reportData = data[this.reportType]
-        reportData = {} if not reportData
-        reportData[this.getOrgId()] = this.selectedRows
-        data[this.reportType] = reportData
-        this.storage.save data
+      data = this.getDataFromStorage()
+      reportData = data[this.reportType]
+      reportData = {} if not reportData
+      reportData[this.getKey()] = this.selectedRows
+      data[this.reportType] = reportData
+      this.storage.save data
    
     getDataFromStorage: () ->
       data = JSON.parse(this.storage.load())
       if not data then data = {}
       data
       
-    getOrgId: () ->
-      if this.params['districtGuid']
+    getKey: () ->
+      if this.params['schoolGuid'] and this.params['asmtGrade']
+        # cache key for los is a combination of schoolguid and asmtGrade
+        id = this.params['schoolGuid'] + "_" + this.params['asmtGrade']
+      else if this.params['districtGuid']
         id  = this.params['districtGuid']
       else if this.params['stateCode']
         id  = this.params['stateCode']

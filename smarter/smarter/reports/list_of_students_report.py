@@ -105,7 +105,7 @@ def get_list_of_students_report(params):
 
     subjects_map = get_subjects_map(asmtSubject)
     students = {}
-
+    rowId = 0
     # Formatting data for Front End
     for result in results:
         student_guid = result['student_guid']
@@ -120,6 +120,8 @@ def get_list_of_students_report(params):
             student['student_middle_name'] = result['student_middle_name']
             student['student_last_name'] = result['student_last_name']
             student['enrollment_grade'] = result['enrollment_grade']
+            student[Constants.ROWID] = rowId
+            rowId +=1
 
         assessment = {}
         assessment['teacher_full_name'] = format_full_name_rev(result['teacher_first_name'], result['teacher_middle_name'], result['teacher_last_name'])

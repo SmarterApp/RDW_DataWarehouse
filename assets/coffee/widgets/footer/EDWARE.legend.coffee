@@ -127,11 +127,11 @@ define [
     $.fn.createLegend = (reportName, data) ->
       legend = undefined
       # create legend object
-      if reportName is Constants.REPORT_TYPE.ISR
+      if reportName is Constants.REPORT_NAME.ISR
         legend = new ISRLegend(data)
-      if reportName is Constants.REPORT_TYPE.LOS
+      if reportName is Constants.REPORT_NAME.LOS
         legend = new LOSLegend(data)
-      if reportName is Constants.REPORT_TYPE.CPOP
+      if reportName is Constants.REPORT_NAME.CPOP
         legend = new CPopLegend(data)
       # create legend section
       legend.create $(this) if legend

@@ -161,7 +161,7 @@ define [
 
     createHeaderAndFooter: ()->
       this.config.colorsData = this.data.metadata
-      this.footer = new edwareFooter.EdwareFooter(Constants.REPORT_TYPE.CPOP, this.config) unless this.footer
+      this.footer = new edwareFooter.EdwareFooter(Constants.REPORT_NAME.CPOP, this.config) unless this.footer
       this.header = edwareHeader.create(this.data, this.config, "comparing_populations_" + this.reportType) unless this.header
 
     fetchData: (params, callback)->

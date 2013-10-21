@@ -249,7 +249,7 @@ define [
           e.find(".claims_tooltip").html() # template location: templates/individualStudent_report/claimsInfo.html
       
       # Generate footer links
-      this.isrFooter = new edwareFooter.EdwareFooter(Constants.REPORT_TYPE.ISR, {
+      this.isrFooter = new edwareFooter.EdwareFooter(Constants.REPORT_NAME.ISR, {
         reportInfo: this.reportInfo
         legendInfo: this.legendInfo,
         subject: this.createSampleInterval this.data.items[asmtType][0], this.legendInfo.sample_intervals

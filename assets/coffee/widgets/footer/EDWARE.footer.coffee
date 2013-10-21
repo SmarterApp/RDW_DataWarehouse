@@ -102,7 +102,7 @@ define [
 
     createPrint: () ->
       # show "Print" only on ISR
-      if this.reportName isnt Constants.REPORT_TYPE.ISR
+      if this.reportName isnt Constants.REPORT_NAME.ISR
         $('#print').hide()
         return
       $("#print").popover
@@ -118,7 +118,7 @@ define [
         content: $(".printPopup").html()
 
     createExport: () ->
-      if this.reportName is Constants.REPORT_TYPE.ISR
+      if this.reportName is Constants.REPORT_NAME.ISR
         $('#export').hide()
         return
       $("#export").popover

@@ -113,6 +113,7 @@ define [
       colModelItem.title = column.title
       colModelItem.classes = column.style if column.style
       colModelItem.frozen = column.frozen if column.frozen
+      colModelItem.export = column.export
       colModelItem.stickyCompareEnabled = this.options.stickyCompareEnabled
 
       #Hide column if the value is true
@@ -131,8 +132,8 @@ define [
 
 
     $.fn.edwareGrid = (columns, options, footer) ->
-      grid = new EdwareGrid(this, columns, options, footer)
-      grid.render()
+      this.grid = new EdwareGrid(this, columns, options, footer)
+      this.grid.render()
       # trigger gridComplete event
       options.gridComplete() if options.gridComplete
 
@@ -147,7 +148,6 @@ define [
 
         # change the mouse cursor on the columns which are non-sortable
         else $(this).find(">div.ui-jqgrid-sortable").css cursor: "default"  if not cmi.sortable and colName isnt "rn" and colName isnt "cb" and colName isnt "subgrid"
-
 
     $.fn.sortBySubject = (subject, index, order) ->
       order = order || 'asc'

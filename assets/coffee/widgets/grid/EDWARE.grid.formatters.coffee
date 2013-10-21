@@ -8,7 +8,7 @@ define [
   'edwareLOSConfidenceLevelBar'
 ], ($, Mustache, jqGrid, edwareUtil, edwarePopulationBar, edwareConfidenceLevelBar, edwareLOSConfidenceLevelBar) ->
 
-  POPULATION_BAR_TEMPLATE = "<div class='barContainer default'><div class='alignmentHighlightSection'><div class ='populationBar' data-margin-left='{{alignment}}'>{{{populationBar}}}</div></div><div class='studentsTotal'>{{total}}</div>{{#unfilteredTotal}}<div class='unfilteredTotal'>{{ratio}}% of {{unfilteredTotal}}</div>{{/unfilteredTotal}}<div class='alignmentLine' style='margin-left:{{alignmentLine}}px;'></div></div>"
+  POPULATION_BAR_TEMPLATE = "<div class='barContainer default'><div class='alignmentHighlightSection'><div class ='populationBar' data-margin-left='{{alignment}}'>{{{populationBar}}}</div></div><div class='studentsTotal'>{{total}}</div>{{#unfilteredTotal}}<div class='unfilteredTotal'>{{ratio}}% of {{unfilteredTotal}}</div>{{/unfilteredTotal}}<div class='alignmentLine' style='margin-left:{{alignmentLine}}px;'></div>{{#export}}<div class='export'><span>{{value}}</span><span>{{title}}</span></div>{{/export}}</div>"
 
   
   #
@@ -100,11 +100,12 @@ define [
     if parseInt(value) <= 0
       return options.colModel.labels['insufficient_data']
     asmt_type = options.colModel.formatoptions.asmt_type
+    export_filed = options.colModel.export #check if export current field
     subject = rowObject.results[asmt_type]
     if not subject
       return ""
 
-    subject = formatSubject subject
+    subject = formatSubject subject    
     return Mustache.to_html POPULATION_BAR_TEMPLATE, {
       alignment: subject.alignment,
       alignmentLine: subject.alignmentLine,
@@ -112,9 +113,13 @@ define [
       unfilteredTotal: subject.unfilteredTotal,
       ratio: subject.ratio,
       populationBar: edwarePopulationBar.create(subject)
+      export: { #export fields
+        value: subject.total
+        title: subject.asmt_subject
+      } if export_filed
     }
 
-  formatSubject = (subject)->
+  formatSubject = (subject) ->
     subject.total = edwareUtil.formatNumber(subject.total)
     subject.unfilteredTotal = edwareUtil.formatNumber(subject.unfilteredTotal)
     ratio = subject.total * 100.0 / subject.unfilteredTotal

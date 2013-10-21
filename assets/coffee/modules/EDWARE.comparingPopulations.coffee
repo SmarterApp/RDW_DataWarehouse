@@ -161,21 +161,9 @@ define [
 
     createHeaderAndFooter: ()->
       this.config.colorsData = this.data.metadata
-      this.footer = new edwareFooter.EdwareFooter(Constants.REPORT_TYPE.CPOP, this.config, this.fetchExportData.bind(this)) unless this.footer
+      this.footer = new edwareFooter.EdwareFooter(Constants.REPORT_TYPE.CPOP, this.config) unless this.footer
       this.header = edwareHeader.create(this.data, this.config, "comparing_populations_" + this.reportType) unless this.header
 
-    fetchExportData: () ->
-      gridDataIDs = $("#gridTable").getDataIDs()
-      mapping = {}
-      $.each this.populationData, () ->
-        mapping[this.id] = this
-      data = $.map gridDataIDs, (id)->
-        mapping[id]
-      return {
-        data: data,
-        config: this.gridConfig
-      }
-        
     fetchData: (params, callback)->
       # Determine if the report is state, district or school view"
       options =

@@ -6,70 +6,39 @@ define [
 
   class CSVBuilder
   
-    constructor: (@reportType) ->
+    constructor: (@table, @reportType) ->
 
-    build: (@data) ->
+    build: () ->
+      records = []
+      # build header
+      records = records.concat this.buildHeader()
+      # build body
+      records = records.concat this.buildContent()
+      records.join Constants.DELIMITOR.NEWLINE 
+
+    buildHeader: () ->
+      result = []
+      footer = this.table.footerData()
+      for key, value of footer
+        exportField = $(value).find('.export')
+        result.push exportField.find('span:eq(1)').html() if exportField[0]
+      result.join Constants.DELIMITOR.COMMA
+
+    buildContent: () ->
+      # summary
+      data = []
+      data = data.concat this.table.footerData()
+      # table body
+      data = data.concat this.table.getRowData()
+      $.map data, (record)->
+        result = []
+        for key, value of record
+          exportField = $(value).find('.export')
+          result.push exportField.find('span:eq(0)').html() if exportField[0]
+        result.join Constants.DELIMITOR.COMMA
 
     getFileName: () ->
       this.reportType + '_' + new Date().getTime()
-
-    CSVBuilder::getPropertyByString = (object, fields)->
-      # fields = fields.replace(/\[(\w+)\]/g, '.$1'); # convert indexefields to propertiefields
-      # fields = fields.replace(/^\./, '');           # fieldstrip a leading dot
-      properties = fields.split('.')
-      while properties.length
-        property = properties.shift()
-        if object[property]
-          object = object[property]
-        else
-          return
-      return object
-
-
-  class ISRBuilder extends CSVBuilder
-  
-    build: (data) ->
-      'hello world'
-      
-
-  class LOSBuilder extends CSVBuilder
-  
-    build: (data) ->
-      return 'this,is,los'
-      records = data.map (record)->
-        result = []
-        result.push record.name
-        result.push record.results.subject1.asmt_subject
-        result.push record.results.subject1.total
-        result.push record.results.subject2.asmt_subject
-        result.push record.results.subject2.total
-        result.join Constants.DELIMITOR.COMMA
-      records.join Constants.DELIMITOR.NEWLINE      
-
-
-  class CPopBuilder extends CSVBuilder
-  
-    build: (data, config) ->
-      columns = this.toExportColumns config
-      records = data.map (record)->
-        result = []
-        for column in columns
-          result.push CSVBuilder::getPropertyByString(record, column.field) if column.export
-        result.join Constants.DELIMITOR.COMMA
-      records.join Constants.DELIMITOR.NEWLINE
-
-    toExportColumns: (config)->
-      columns = []
-      for column in config
-        $.map column.items, (item)->
-          columns.push item
-      columns
-      
-  builderFactory = (reportType)->
-    switch reportType
-      when Constants.REPORT_TYPE.CPOP then new CPopBuilder(reportType)
-      when Constants.REPORT_TYPE.LOS then new LOSBuilder(reportType)
-      when Constants.REPORT_TYPE.ISR then new ISRBuilder(reportType)
 
   download = (content, filename) ->
     uri = 'data:application/csv;charset=UTF-8,' + encodeURIComponent(content)
@@ -84,9 +53,7 @@ define [
       # download as anonymous file
       window.open(uri, '_parent')
 
-  exportCSV = (reportType, model) ->
-    builder = builderFactory(reportType)
-    download builder.build(model.data, model.config), builder.getFileName()
-
-
-  exportCSV: exportCSV
+  
+  $.fn.edwareExport = (reportType)->
+    builder = new CSVBuilder(this, reportType)
+    download builder.build(), builder.getFileName()

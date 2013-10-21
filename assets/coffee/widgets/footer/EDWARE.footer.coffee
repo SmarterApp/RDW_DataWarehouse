@@ -15,7 +15,7 @@ define [
 
   class EdwareFooter
   
-    constructor: (@reportName, config, @fetchExportData) ->
+    constructor: (@reportName, config) ->
       this.initialize(config)
       # Generate footer
       this.create()
@@ -166,8 +166,7 @@ define [
 
       # bind export event
       $(document).on 'click', '#exportButton', ->
-        data = self.fetchExportData()
-        edwareExport.exportCSV self.reportName, data
+        $('#gridTable').edwareExport self.reportName
 
 
   EdwareFooter: EdwareFooter

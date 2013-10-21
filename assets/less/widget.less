@@ -1426,15 +1426,32 @@ th.ui-th-column div {
     #stickyChainSelectedList {
       margin: 23px 0 0;
     }
-    .dropdown-menu::after {
+    
+    .dropdown-menu::before, .dropdown-menu::after{
+      content: '';
+      position: absolute;
+      display: inline-block;
+      border-style: solid;
+      border-color:transparent;
+      width: 0;
+      height: 0;
+      border-top: 0;
+    }
+    
+    .dropdown-menu::before {
       position: absolute;
       top: -10px;
       left: 30px;
-      display: inline-block;
-      border-right: 10px solid transparent;
-      border-bottom: 10px solid white;
-      border-left: 10px solid transparent;
-      content: '';
+      border-bottom-color: rgba(0, 0, 0, 0.2);
+      border-width: 10px;
+    }
+    
+    .dropdown-menu::after {
+      position: absolute;
+      top: -9px;
+      left: 31px;
+      border-bottom-color: @color-white;
+      border-width: 9px;
     }
     .removeStickyChainIcon {
       background-image: url("../images/remove_button.png");

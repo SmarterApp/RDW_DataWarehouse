@@ -119,6 +119,8 @@ def get_list_of_students_report(params):
             student['student_middle_name'] = result['student_middle_name']
             student['student_last_name'] = result['student_last_name']
             student['enrollment_grade'] = result['enrollment_grade']
+            student['district_name'] = result['district_name']
+            student['school_name'] = result['school_name']
 
         assessment = {}
         assessment['teacher_full_name'] = format_full_name_rev(result['teacher_first_name'], result['teacher_middle_name'], result['teacher_last_name'])
@@ -180,6 +182,8 @@ def get_list_of_students(params):
                                     dim_student.c.first_name.label('student_first_name'),
                                     dim_student.c.middle_name.label('student_middle_name'),
                                     dim_student.c.last_name.label('student_last_name'),
+                                    dim_inst_hier.c.district_name.label('district_name'),
+                                    dim_inst_hier.c.school_name.label('school_name'),
                                     fact_asmt_outcome.c.enrl_grade.label('enrollment_grade'),
                                     dim_staff.c.first_name.label('teacher_first_name'),
                                     dim_staff.c.middle_name.label('teacher_middle_name'),

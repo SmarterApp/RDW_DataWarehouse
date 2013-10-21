@@ -11,7 +11,7 @@ import sys
 import grp
 
 
-def _group_exits(name):
+def _group_exists(name):
     """
     Check if group exists
     :param name: Name of SFTP group
@@ -30,7 +30,7 @@ def _group_has_members(name):
     :param name: Name of SFTP group
     :return: True if group has members else False
     """
-    return True if _group_exits(name) and len((grp.getgrnam(name)).gr_mem) > 0 else False
+    return True if _group_exists(name) and len((grp.getgrnam(name)).gr_mem) > 0 else False
 
 
 def _create_group(name):
@@ -39,7 +39,7 @@ def _create_group(name):
     :param name: Name of SFTP group to be created
     :return: None
     """
-    if not _group_exits(name):
+    if not _group_exists(name):
         # Run groupadd group_name
         command_opts = ['groupadd', name]
         if sys.platform == 'linux':
@@ -59,10 +59,17 @@ def _remove_group(name):
     :param name: Name of SFTP group to be removed
     :return: None
     """
-    if _group_exits(name):
+    if _group_exists(name):
         if not _group_has_members(name):
-            pass
-            print('Group %s removed successfully' % name)
+            # Run groupdel group_name
+            command_opts = ['groupdel', name]
+            if sys.platform == 'linux':
+                rtn_code = subprocess.call(command_opts)
+                if rtn_code != 0:
+                    print('groupdel %s failed' % name)
+                print('Group %s removed successfully' % name)
+            else:
+                print('Not a Unix machine. Not removing group: %s' % name)
         else:
             print('Can not remove group %s . Group has members' % name)
     else:

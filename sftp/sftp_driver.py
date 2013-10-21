@@ -7,8 +7,8 @@ Module to initialize sftp zones and creating groups
 __author__ = 'sravi'
 
 import argparse
-from src.configure_sftp_zone import initialize as sftp_init, cleanup as sftp_cleanup
-from src.configure_sftp_groups import initialize as sftp_groups_init
+from src.configure_sftp_zone import initialize as sftp_zone_init, cleanup as sftp_zone_cleanup
+from src.configure_sftp_groups import initialize as sftp_groups_init, cleanup as sftp_groups_cleanup
 from src.sftp_config import sftp_conf
 
 if __name__ == "__main__":
@@ -22,7 +22,8 @@ if __name__ == "__main__":
     parser.set_defaults(driver_init_action=True)
     args = parser.parse_args()
     if args.driver_init_action:
-        sftp_init(sftp_conf)
+        sftp_zone_init(sftp_conf)
         sftp_groups_init(sftp_conf)
     else:
-        sftp_cleanup(sftp_conf)
+        sftp_groups_cleanup(sftp_conf)
+        sftp_zone_cleanup(sftp_conf)

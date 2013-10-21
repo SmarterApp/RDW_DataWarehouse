@@ -7,6 +7,7 @@ Module to configure sftp groups
 __author__ = 'sravi'
 
 import subprocess
+import sys
 
 def _create_group(name):
     """
@@ -16,9 +17,12 @@ def _create_group(name):
     """
     # Run groupadd group_name
     command_opts = ['groupadd', name]
-    rtn_code = subprocess.call(command_opts)
-    if rtn_code != 0:
-        print('groupadd %s failed' % name)
+    if sys.platform == 'linux':
+        rtn_code = subprocess.call(command_opts)
+        if rtn_code != 0:
+            print('groupadd %s failed' % name)
+    else:
+        None
 
 
 def initialize(sftp_conf):

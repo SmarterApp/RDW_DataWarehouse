@@ -1386,10 +1386,9 @@ th.ui-th-column div {
 
 #stickyCompareSection {
   height: 38px;
-  background-color: @color-B5;
+  background-color: @color-B12;
   vertical-align: middle;
-  border-bottom: 1px solid @color-B4;
-  border-top: 1px solid @color-B4;
+  border-top: 1px solid @color-B14;
   
   
   .stickyControls {
@@ -1405,8 +1404,8 @@ th.ui-th-column div {
     &>li {
       display: inline-block;
       vertical-align: middle;
-      border-left: solid 1px @color-B3;
-      padding-left:15px;
+      border-left: solid 1px @color-B14;
+      padding-left: 15px;
     }
   }
   
@@ -1463,11 +1462,20 @@ th.ui-th-column div {
         background-position: initial;
       }
   }
+  .stickyChainIcon{
+    background-image: url("../images/stickyChainIcon.png") !important;
+    background-repeat: no-repeat !important;
+    background-position: 5px center !important;
+    background-size: 18px 12px !important;
+    padding-left: 28px !important;
+    border-color: @color-B15;
+    font-size: 13px;
+    height: 24px;
+    line-height: 10px;
+    color: @color-B1;
+  }
   .stickyChainOff{
       text-shadow: none;
-      font-size: 13px;
-      height: 28px;
-      color: @color-B1;
       background-color: @color-white;
       background-image: -webkit-gradient(linear,0 0,0 100%,from(@color-white),to(@color-white));
       background-image: -webkit-linear-gradient(top,@color-white,@color-white);
@@ -1478,15 +1486,12 @@ th.ui-th-column div {
   
   .stickyChainOn{
       text-shadow: none;
-      font-size: 13px;
-      height: 28px;
-      color: @color-B1;
-      background-color: @color-B7;
-      background-image: -webkit-gradient(linear,0 0,0 100%,from(@color-B7),to(@color-B7));
-      background-image: -webkit-linear-gradient(top,@color-B7,@color-B7);
-      background-image: -o-linear-gradient(top,@color-B7,@color-B7);
-      background-image: linear-gradient(to bottom,@color-B7,@color-B7);
-      background-image: -moz-linear-gradient(top,@color-B7,@color-B7);
+      background-color: @color-B13;
+      background-image: -webkit-gradient(linear,0 0,0 100%,from(@color-B13),to(@color-B13));
+      background-image: -webkit-linear-gradient(top,@color-B13,@color-B13);
+      background-image: -o-linear-gradient(top,@color-B13,@color-B13);
+      background-image: linear-gradient(to bottom,@color-B13,@color-B13);
+      background-image: -moz-linear-gradient(top,@color-B13,@color-B13);
   }
 }
 

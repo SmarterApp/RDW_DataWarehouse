@@ -11,6 +11,15 @@ import sys
 import grp
 
 
+def _valid_group_name(name):
+    """
+    Check if group name is valid
+    :param name: Name of SFTP group
+    :return: True if group name is valid else False
+    """
+    return True if (name is not None) and len(name) > 0 else False
+
+
 def _group_exists(name):
     """
     Check if group exists
@@ -37,8 +46,11 @@ def _create_group(name):
     """
     create the group if not exists
     :param name: Name of SFTP group to be created
-    :return: None
+    :return: True if group created else false
     """
+    if not _valid_group_name(name):
+        print('Group name invalid')
+        return False
     if not _group_exists(name):
         # Run groupadd group_name
         command_opts = ['groupadd', name]
@@ -46,18 +58,21 @@ def _create_group(name):
             rtn_code = subprocess.call(command_opts)
             if rtn_code != 0:
                 print('groupadd %s failed' % name)
-            print('Group %s added successfully' % name)
+                return False
         else:
             print('Not a Unix machine. Not adding group: %s' % name)
+            return False
     else:
         print('Group %s already exists' % name)
+        return False
+    return True
 
 
 def _remove_group(name):
     """
     remove the sftp group if exists
     :param name: Name of SFTP group to be removed
-    :return: None
+    :return: True if group removed else false
     """
     if _group_exists(name):
         if not _group_has_members(name):
@@ -67,20 +82,26 @@ def _remove_group(name):
                 rtn_code = subprocess.call(command_opts)
                 if rtn_code != 0:
                     print('groupdel %s failed' % name)
-                print('Group %s removed successfully' % name)
+                    return False
             else:
                 print('Not a Unix machine. Not removing group: %s' % name)
+                return False
         else:
             print('Can not remove group %s . Group has members' % name)
+            return False
     else:
         print('Group %s does not exists' % name)
+        return False
+    return True
 
 
 def initialize(sftp_conf):
     for group_name in sftp_conf['groups']:
-        _create_group(group_name)
+        if _create_group(group_name):
+            print('Group %s added successfully' % group_name)
 
 
 def cleanup(sftp_conf):
     for group_name in sftp_conf['groups']:
-        _remove_group(group_name)
+        if _remove_group(group_name):
+            print('Group %s removed successfully' % group_name)

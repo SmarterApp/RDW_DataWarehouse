@@ -8,7 +8,7 @@ define [
   "edwareLegend"
   "edwarePreferences"
 ], ($, Mustache, bootstrap, edwareConfidenceLevelBar, edwareClientStorage, footerTemplate, edwareLegend, edwarePreferences) ->
-  
+
   $.fn.generateFooter = (reportName, content, legend, labels) ->
     this.html Mustache.to_html footerTemplate, {
       'report_info': content,
@@ -17,24 +17,25 @@ define [
     # show "Print" only on ISR
     if reportName isnt 'individual_student_report'
       $('#print').hide()
-    if reportName isnt 'list_of_students'
+    # we should collect all definitions of constants in a file. but that may create more code
+    if reportName not in ['list_of_students', 'comparing_populations']
       $('#export').hide()
     createPopover(labels)
     # create legend
     $('.legendPopup').createLegend(reportName, legend)
-  
+
   createConfidenceLevelBar = (subject) ->
-    # use mustache template to display the json data 
+    # use mustache template to display the json data
     # show 300px performance bar on html page
     output = edwareConfidenceLevelBar.create subject, 300
     $('#legendTemplate .losPerfBar').html(output)
     # show 640px performance bar on pdf
     output = edwareConfidenceLevelBar.create subject, 640
     $('#legendTemplate .confidenceLevel').html(output)
-                
+
   hidePopover = (id) ->
     $(id).popover("hide")
-   
+
   createPopover =(labels) ->
     # Survey monkey popup
     $("#feedback").popover
@@ -46,7 +47,7 @@ define [
       template: '<div class="popover footerPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
       content: ->
         $(".surveyMonkeyPopup").html()
-        
+
     $("#legend").popover
       html: true
       placement: "top"
@@ -56,17 +57,17 @@ define [
       template: '<div class="popover footerPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
       content: ->
         $("#footerLinks .legendPopup").html()
-              
+
     $("#aboutReport").popover
       html: true
       placement: "top"
-      container: 'body'      
+      container: 'body'
       title: ->
         '<div class="pull-right hideButton"><a class="pull-right" href="#" id="close" data-id="aboutReport">'+labels.hide+' <img src="../images/hide_x.png"></img></i></a></div><div class="lead">'+labels.report_info+'</div>'
       template: '<div class="popover footerPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
       content: ->
         $("#footerLinks .aboutReportPopup").html()
-        
+
     $("#help").popover
       html: true
       placement: "top"
@@ -86,7 +87,7 @@ define [
       template: '<div class="popover footerPopover printFooterPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
       content: ->
         $(".printPopup").html()
-   
+
     # TODO:  export is temporary placed in the footer.  If it's permanent, we need to update template.html for hiding another popovers
     $("#export").popover
       html: true
@@ -96,15 +97,15 @@ define [
       template: '<div class="popover footerPopover exportFooterPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
       content: ->
         $(".exportPopup").html()
-     
+
   # Make the footer button active when associate popup opens up
   $(document).on
     click: ->
       $("#footer .nav li a").not($(this)).removeClass("active")
       $(this).toggleClass("active")
     , "#footer .nav li a"
-    
-  
+
+
   # Popup will close if user clicks popup hide button
   $(document).on
     click: ->
@@ -137,7 +138,7 @@ define [
       url = window.location.protocol + "//" + window.location.host + "/data/list_of_students_csv?" + $.param(params, true) + "&content-type=text/csv"
       $("#export").popover "hide"
       $("#footer .nav li a").removeClass("active")
-      
+
       window.open(url, "_blank",'toolbar=0,location=0,menubar=0,status=0,resizable=yes')
     , "#exportButton"
 

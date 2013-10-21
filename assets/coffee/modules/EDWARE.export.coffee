@@ -20,7 +20,7 @@ define [
       result = []
       footer = this.table.footerData()
       for key, value of footer
-        exportField = $(value).find('.export')
+        exportField = $(value).find('div.export')
         result.push exportField.find('span:eq(1)').html() if exportField[0]
       result.join Constants.DELIMITOR.COMMA
 
@@ -33,7 +33,7 @@ define [
       $.map data, (record)->
         result = []
         for key, value of record
-          exportField = $(value).find('.export')
+          exportField = $(value).find('div.export')
           result.push exportField.find('span:eq(0)').html() if exportField[0]
         result.join Constants.DELIMITOR.COMMA
 

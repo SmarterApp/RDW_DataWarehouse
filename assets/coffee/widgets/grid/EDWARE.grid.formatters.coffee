@@ -8,58 +8,84 @@ define [
   'edwareLOSConfidenceLevelBar'
 ], ($, Mustache, jqGrid, edwareUtil, edwarePopulationBar, edwareConfidenceLevelBar, edwareLOSConfidenceLevelBar) ->
 
-  POPULATION_BAR_TEMPLATE = "<div class='barContainer default'><div class='alignmentHighlightSection'><div class ='populationBar' data-margin-left='{{alignment}}'>{{{populationBar}}}</div></div><div class='studentsTotal'>{{total}}</div>{{#unfilteredTotal}}<div class='unfilteredTotal'>{{ratio}}% of {{unfilteredTotal}}</div>{{/unfilteredTotal}}<div class='alignmentLine' style='margin-left:{{alignmentLine}}px;'></div>{{#export}}<div class='export'><span>{{value}}</span><span>{{title}}</span></div>{{/export}}</div>"
+  EXPORT_TEMPLATE = "<div class='export'><span>{{value}}</span><span>{{title}}</span></div>"
 
+  SUMMARY_TEMPLATE = "<div class='{{cssClass}}'><span class=summarySubtitle>{{subTitle}}:</span><br/><span class='summaryTitle'>{{summaryTitle}}</span>{{{export}}}</div>"
+
+  POPULATION_BAR_TEMPLATE = "<div class='barContainer default'>" +
+    "<div class='alignmentHighlightSection'><div class ='populationBar' data-margin-left='{{alignment}}'>{{{populationBar}}}</div></div>" +
+    "<div class='studentsTotal'>{{total}}</div>" +
+    "{{#unfilteredTotal}}<div class='unfilteredTotal'>{{ratio}}% of {{unfilteredTotal}}</div>{{/unfilteredTotal}}" +
+    "<div class='alignmentLine' style='margin-left:{{alignmentLine}}px;'></div>" +
+    "{{{export}}}" +
+    "</div>"
+
+  NAME_TEMPLATE = "{{#isStateViewOrDistrictView}}" +
+    "<div class='marginLeft20 paddingBottom17'>" +
+    "{{#isSticky}}" +
+    "<div class='removeIcon stickyCompareRemove' value='{{rowId}}' data-value='{{rowId}}'></div><label class='stickyRemoveLabel'>Remove</label>" +
+    "{{/isSticky}}" +
+    "{{^isSticky}}" +
+    "<input class='stickyCheckbox' type='checkbox' value='{{rowId}}' data-value='{{rowId}}'></input><label class='stickyCompareLabel'>Compare</label>" +
+    "{{/isSticky}}" +
+    "</div>" +
+    "{{/isStateViewOrDistrictView}}" +
+    "{{{export}}}" +
+    "<a class='{{cssClass}}' href='{{link}}?{{params}}'>{{displayValue}}</a>"
   
   #
   # * EDWARE grid formatters
   # * Handles all the methods for displaying cutpoints, link in the grid
   # 
-
-  math_count = 1
-  ela_count = 1
-    
   showlink = (value, options, rowObject) ->
-    link = options.colModel.formatoptions.linkUrl
-    cssClass = options.colModel.formatoptions.style
-    displayValue = value
-    if options.colModel.formatoptions.id_name is "asmtGrade"
-      displayValue = "Grade " + value
-    displayValue = $.jgrid.htmlEncode(displayValue)
-    
-    # Set cell value tooltip
-    options.colModel.cellattr = (rowId, val, rawObject, cm, rdata) ->
-      'title="' + displayValue + '"'
-    
-    # Build url query param
-    unless rowObject.header
-      params = ""
-      i = 0 
-      for k, v of rowObject.params
-        if (i != 0)
-          params = params + "&"
-        if k == "id"
-          k = options.colModel.formatoptions.id_name
-        params = params + k + "=" + v
-        i++
+    # check if export current field
+    exportValue = formatExport value, "" if options.colModel.export
+        
+    # draw summary row (grid footer)
+    isHeader = rowObject.header
+    return Mustache.to_html SUMMARY_TEMPLATE, {
+      cssClass: options.colModel.formatoptions.style
+      subTitle: rowObject.subtitle
+      summaryTitle: value
+      export: exportValue
+    } if isHeader
+
+    # draw name columns
+    showTooltip = (displayValue) ->
+      (rowId, val, rawObject, cm, rdata) ->
+        'title="' + displayValue + '"'
+
+    getDisplayValue = () ->
+      displayValue = value
       if options.colModel.formatoptions.id_name is "asmtGrade"
-         "<a class="+cssClass+" href=\"" + link + "?" + params + "\">" + displayValue + "</a>"
-      else if options.colModel.formatoptions.id_name in ["districtGuid", "schoolGuid"]
-        if not options.colModel.stickyCompareEnabled
-          # sticky comparison is not activated, show checkbox
-          "<div class='marginLeft20 paddingBottom17'><input class='stickyCheckbox' type='checkbox' value=\"" + rowObject.id + "\" data-value=\"" + rowObject.id + "\"></input><label class='stickyCompareLabel'>Compare</label></div><a class="+cssClass+" href=\"" + link + "?" + params + "\">" + displayValue + "</a>"
-        else
-          "<div class='marginLeft20 paddingBottom17'><div class='removeIcon stickyCompareRemove' value=\"" + rowObject.id + "\" data-value=\"" + rowObject.id + "\"></div><label class='stickyRemoveLabel'>Remove</label></div><a class="+cssClass+" href=\"" + link + "?" + params + "\">" + displayValue + "</a>"
-      else
-        "<a class="+cssClass+" href=\"" + link + "?" + params + "\">" + displayValue + "</a>"
-    else
-      # This is for summary row (grid footer)
-      "<div class="+cssClass+"><span class=summarySubtitle>" + rowObject.subtitle + ":</span><br/><span class='summaryTitle'>"+value+"</span></div>"
+        displayValue = "Grade " + value
+      displayValue = $.jgrid.htmlEncode(displayValue)
+      # Set cell value tooltip
+      options.colModel.cellattr = showTooltip displayValue
+      displayValue
+
+    buildUrl = ()->
+      # Build url query param
+      params = for k, v of rowObject.params
+        k = options.colModel.formatoptions.id_name if k == "id"
+        k + "=" + v
+      params.join "&"
+
+    # sticky comparison is not activated, show checkbox
+    Mustache.to_html NAME_TEMPLATE, {
+      isStateViewOrDistrictView: options.colModel.formatoptions.id_name in ["districtGuid", "schoolGuid"]
+      isSticky: options.colModel.stickyCompareEnabled
+      rowId: rowObject.id
+      cssClass: options.colModel.formatoptions.style
+      link: options.colModel.formatoptions.linkUrl
+      params: buildUrl()
+      export: exportValue
+      displayValue: getDisplayValue(value)
+    }
 
   showOverallConfidence = (value, options, rowObject) ->
     names = options.colModel.name.split "."
     subject = rowObject[names[0]][names[1]]
-    
     if subject
       "<div>P" + subject.asmt_perf_lvl + " [" + subject.asmt_score_range_min + "] " + value + " [" + subject.asmt_score_range_max + "]</div>"
     else
@@ -105,7 +131,8 @@ define [
     if not subject
       return ""
 
-    subject = formatSubject subject    
+    subject = formatSubject subject
+    exportValue = formatExport subject.total, subject.asmt_subject if export_filed
     return Mustache.to_html POPULATION_BAR_TEMPLATE, {
       alignment: subject.alignment,
       alignmentLine: subject.alignmentLine,
@@ -113,10 +140,14 @@ define [
       unfilteredTotal: subject.unfilteredTotal,
       ratio: subject.ratio,
       populationBar: edwarePopulationBar.create(subject)
-      export: { #export fields
-        value: subject.total
-        title: subject.asmt_subject
-      } if export_filed
+      export: exportValue
+    }
+
+  formatExport = (value, title) ->
+    #export fields
+    Mustache.to_html EXPORT_TEMPLATE, {
+      value: value
+      title: title
     }
 
   formatSubject = (subject) ->
@@ -127,6 +158,7 @@ define [
     for interval in subject.intervals
       interval.count = edwareUtil.formatNumber(interval.count) if interval
     subject
+
 
   showlink: showlink
   showOverallConfidence: showOverallConfidence

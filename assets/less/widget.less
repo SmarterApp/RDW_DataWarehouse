@@ -1443,19 +1443,25 @@ th.ui-th-column div {
       width: 12px;
       cursor: pointer;
     }
-    .stickyChainTable {
-      display: table;
-      .tableRow {
-        display:table-row;
-          .tableCellLeft {
-            display:table-cell;
-            font-size: 13px;
-            padding-left: 10px;
-          }
-          .tableCellRight {
-            display:table-cell;
-            padding-left: 25px;
-          }
+    .stickyChainScrollable {
+      max-height: 300px;
+      padding: 0 5px 0 5px;
+      width: 300px;
+      overflow-y: auto;
+      .stickyChainTable {
+        display: table;
+        .tableRow {
+          display:table-row;
+            .tableCellLeft {
+              display:table-cell;
+              font-size: 13px;
+              width: 250px
+            }
+            .tableCellRight {
+              display:table-cell;
+              padding-right: 10px;
+            }
+        }
       }
     }
   }

@@ -261,16 +261,19 @@ define [
       # Sort based on names
       names = Object.keys(data).sort()
       idx = 0
-      table = $('<div class="stickyChainTable"></div>')
+      scrollable =$('<div class="stickyChainScrollable"></div>')
+      table = $('<div class=" stickyChainTable"></div>')
       for name in names
         table.append $('<div id="stickyChain_' + idx + '" class="tableRow"><div class="tableCellLeft">' + name + '</div><div data-id="' + idx + '" class="tableCellRight removeStickyChainIcon"></div></div>')
+        idx++
         #element.append $('<div class="tableRow"><hr class="tableCellHR"/><hr class="tableCellHR"/></div>') if idx > 0
         #row = $('<div id="stickyChain_' + idx + '" class="tableRow"></div>')
         #row.append $('<div class="tableCellLeft">' + name + '</div>')
         #row.append $('<div data-id="' + idx + '" class="tableCellRight removeStickyChainIcon"></div>')
         #element.append row
         #idx++
-      element.append table
+      scrollable.append table
+      element.append scrollable
       
       
   

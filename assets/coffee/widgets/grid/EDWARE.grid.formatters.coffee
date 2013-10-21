@@ -20,7 +20,10 @@ define [
     "{{{export}}}" +
     "</div>"
 
-  NAME_TEMPLATE = "{{#isStateViewOrDistrictView}}" +
+  INSUFFICIENT_TEMPLATE = "<div>{{value}}{{{export}}}</div>"
+
+  NAME_TEMPLATE = "<div>" +
+    "{{#isStateViewOrDistrictView}}" +
     "<div class='marginLeft20 paddingBottom17'>" +
     "{{#isSticky}}" +
     "<div class='removeIcon stickyCompareRemove' value='{{rowId}}' data-value='{{rowId}}'></div><label class='stickyRemoveLabel'>Remove</label>" +
@@ -31,7 +34,8 @@ define [
     "</div>" +
     "{{/isStateViewOrDistrictView}}" +
     "{{{export}}}" +
-    "<a class='{{cssClass}}' href='{{link}}?{{params}}'>{{displayValue}}</a>"
+    "<a class='{{cssClass}}' href='{{link}}?{{params}}'>{{displayValue}}</a>" +
+    "</div>"
   
   #
   # * EDWARE grid formatters
@@ -124,7 +128,11 @@ define [
 
   populationBar = (value, options, rowObject) ->
     if parseInt(value) <= 0
-      return options.colModel.labels['insufficient_data']
+      text = options.colModel.labels['insufficient_data']
+      return Mustache.to_html INSUFFICIENT_TEMPLATE, {
+        value: text,
+        export: formatExport(text, '')
+      }
     asmt_type = options.colModel.formatoptions.asmt_type
     export_filed = options.colModel.export #check if export current field
     subject = rowObject.results[asmt_type]

@@ -45,7 +45,7 @@ PARAMS = merge_dict({
     Constants.ASMTGRADE: {
         "type": "string",
         "maxLength": 2,
-        "required": True,
+        "required": False,
         "pattern": "^[K0-9]+$",
     },
     Constants.ASMTSUBJECT: {
@@ -95,11 +95,10 @@ def get_list_of_students_report(params):
     stateCode = str(params[Constants.STATECODE])
     districtGuid = str(params[Constants.DISTRICTGUID])
     schoolGuid = str(params[Constants.SCHOOLGUID])
-    asmtGrade = str(params[Constants.ASMTGRADE])
+    asmtGrade = params.get(Constants.ASMTGRADE, None)
     asmtSubject = params.get(Constants.ASMTSUBJECT, None)
 
     results = get_list_of_students(params)
-
     if not results and not has_filters(params):
         raise NotFoundException("There are no results")
 
@@ -167,13 +166,15 @@ def get_list_of_students(params):
     stateCode = str(params[Constants.STATECODE])
     districtGuid = str(params[Constants.DISTRICTGUID])
     schoolGuid = str(params[Constants.SCHOOLGUID])
-    asmtGrade = str(params[Constants.ASMTGRADE])
+    asmtGrade = params.get(Constants.ASMTGRADE, None)
     asmtSubject = params.get(Constants.ASMTSUBJECT, None)
     with SmarterDBConnection() as connector:
         # get handle to tables
         dim_student = connector.get_table('dim_student')
         dim_staff = connector.get_table('dim_staff')
         dim_asmt = connector.get_table('dim_asmt')
+        dim_section = connector.get_table('dim_section')
+        dim_inst_hier = connector.get_table('dim_inst_hier')
         fact_asmt_outcome = connector.get_table('fact_asmt_outcome')
         query = select_with_context([dim_student.c.student_guid.label('student_guid'),
                                     dim_student.c.first_name.label('student_first_name'),
@@ -212,15 +213,20 @@ def get_list_of_students(params):
                                               .join(dim_student, and_(dim_student.c.student_guid == fact_asmt_outcome.c.student_guid,
                                                                       dim_student.c.most_recent,
                                                                       dim_student.c.section_guid == fact_asmt_outcome.c.section_guid))
-                                              .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id, dim_asmt.c.asmt_type.in_([AssessmentType.SUMMATIVE, AssessmentType.COMPREHENSIVE_INTERIM])))
+                                              .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id,
+                                                                   dim_asmt.c.asmt_type.in_([AssessmentType.SUMMATIVE, AssessmentType.COMPREHENSIVE_INTERIM])))
                                               .join(dim_staff, and_(dim_staff.c.staff_guid == fact_asmt_outcome.c.teacher_guid,
-                                                    dim_staff.c.most_recent, dim_staff.c.section_guid == fact_asmt_outcome.c.section_guid))])
+                                                                    dim_staff.c.most_recent, dim_staff.c.section_guid == fact_asmt_outcome.c.section_guid))
+                                              .join(dim_inst_hier, and_(dim_inst_hier.c.district_guid == fact_asmt_outcome.c.district_guid,
+                                                                        dim_inst_hier.c.school_guid == fact_asmt_outcome.c.school_guid))])
         query = query.where(fact_asmt_outcome.c.state_code == stateCode)
         query = query.where(and_(fact_asmt_outcome.c.school_guid == schoolGuid))
-        query = query.where(and_(fact_asmt_outcome.c.asmt_grade == asmtGrade))
         query = query.where(and_(fact_asmt_outcome.c.district_guid == districtGuid))
         query = query.where(and_(fact_asmt_outcome.c.most_recent))
         query = query.where(and_(fact_asmt_outcome.c.status == 'C'))
+
+        if asmtGrade is not None:
+            query = query.where(and_(fact_asmt_outcome.c.asmt_grade == asmtGrade))
 
         if asmtSubject is not None:
             query = query.where(and_(dim_asmt.c.asmt_subject.in_(asmtSubject)))
@@ -228,7 +234,6 @@ def get_list_of_students(params):
         # Apply demographics to the query
         query = apply_filter_to_query(query, fact_asmt_outcome, params)
         query = query.order_by(dim_student.c.last_name).order_by(dim_student.c.first_name)
-
         return connector.get_result(query)
 
 

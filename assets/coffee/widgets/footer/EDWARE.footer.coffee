@@ -25,6 +25,7 @@ define [
       this.labels = config.labels
       this.reportInfo = config.reportInfo
       legendInfo = config.legendInfo
+      this.exportOption = 'csv' # default value for all users
       this.legend = {
         legendInfo: legendInfo,
         subject: config.subject || (()->
@@ -164,9 +165,17 @@ define [
           window.open(url, "_blank",'toolbar=0,location=0,menubar=0,status=0,resizable=yes')
         , "#printButton"
 
+      # bind export radio button event
+      $(document).on 'change', 'input[name=export_options]', ->
+        self.exportOption = this.value
+
       # bind export event
       $(document).on 'click', '#exportButton', ->
-        $('#gridTable').edwareExport self.reportName
+        if self.exportOption == 'csv'
+          $('#gridTable').edwareExport self.reportName
+        else if self.exportOption == 'extract'
+          # add more code from master branch for old extraction code
+          undefined
 
 
   EdwareFooter: EdwareFooter

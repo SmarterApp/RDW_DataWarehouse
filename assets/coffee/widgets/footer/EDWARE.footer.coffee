@@ -7,7 +7,8 @@ define [
   "edwarePreferences"
   "edwareExport"
   "edwareConstants"
-], ($, Mustache, bootstrap, footerTemplate, edwareLegend, edwarePreferences, edwareExport, Constants) ->
+  "edwareClientStorage"
+], ($, Mustache, bootstrap, footerTemplate, edwareLegend, edwarePreferences, edwareExport, Constants, edwareClientStorage) ->
 
   POPOVER_TEMPLATE = '<div class="popover footerPopover {{class}}"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
 
@@ -175,7 +176,8 @@ define [
           $('#gridTable').edwareExport self.reportName
         else if self.exportOption == 'extract'
           # add more code from master branch for old extraction code
-          undefined
-
+          params = JSON.parse edwareClientStorage.filterStorage.load()
+          url = window.location.protocol + "//" + window.location.host + "/data/list_of_students_csv?" + $.param(params, true) + "&content-type=text/csv"
+          window.open(url, "_blank",'toolbar=0,location=0,menubar=0,status=0,resizable=yes,width=0,height=0')
 
   EdwareFooter: EdwareFooter

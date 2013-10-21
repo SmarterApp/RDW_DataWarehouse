@@ -1407,6 +1407,12 @@ th.ui-th-column div {
       border-left: solid 1px @color-B14;
       padding-left: 15px;
     }
+    
+    .btn-group, .open button{
+      // sticky chain button is pressed
+      text-shadow: none;
+      background-color: @color-B13;
+    } 
   }
 
   #compareEnabledActions{
@@ -1495,36 +1501,20 @@ th.ui-th-column div {
       }
   }
   .stickyChainIcon{
-    background-image: url("../images/stickyChainIcon.png") !important;
-    background-repeat: no-repeat !important;
-    background-position: 5px center !important;
-    background-size: 18px 12px !important;
-    padding-left: 28px !important;
+    background-image: url("../images/stickyChainIcon.png");
+    background-repeat: no-repeat;
+    background-position: 5px center;
+    background-size: 18px 12px;
+    padding-left: 28px;
     border-color: @color-B15;
     font-size: 13px;
     height: 24px;
     line-height: 10px;
     color: @color-B1;
-  }
-  .stickyChainOff{
-      text-shadow: none;
-      background-color: @color-white;
-      background-image: -webkit-gradient(linear,0 0,0 100%,from(@color-white),to(@color-white));
-      background-image: -webkit-linear-gradient(top,@color-white,@color-white);
-      background-image: -o-linear-gradient(top,@color-white,@color-white);
-      background-image: linear-gradient(to bottom,@color-white,@color-white);
-      background-image: -moz-linear-gradient(top,@color-white,@color-white);
+    text-shadow: none;
+    background-color: @color-white;
   }
   
-  .stickyChainOn{
-      text-shadow: none;
-      background-color: @color-B13;
-      background-image: -webkit-gradient(linear,0 0,0 100%,from(@color-B13),to(@color-B13));
-      background-image: -webkit-linear-gradient(top,@color-B13,@color-B13);
-      background-image: -o-linear-gradient(top,@color-B13,@color-B13);
-      background-image: linear-gradient(to bottom,@color-B13,@color-B13);
-      background-image: -moz-linear-gradient(top,@color-B13,@color-B13);
-  }
 }
 
 // Interim Disclaimer 

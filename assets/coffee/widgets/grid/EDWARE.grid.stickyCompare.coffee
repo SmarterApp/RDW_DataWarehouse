@@ -93,13 +93,6 @@ define [
         self.removeCurrentRow row
         self.updateSelection()
      
-      # Sticky chain list
-      $(document).on 'click', '#stickyChain-btn', (e) ->
-        $(this).toggleClass("stickyChainOn stickyChainOff")
-        self.displayStickyChainPopover()
-        $('#stickyChain-btn').popover('toggle')
-        self.setPosition()
-      
       # remove icon on sticky chain
       $(document).on 'click', '.removeStickyChainIcon', () ->
         rowId = $(this).data('id')
@@ -107,8 +100,7 @@ define [
         element = $('#sticky_' + rowId)
         element.attr('checked', false)
         self.uncheckedEvent element
-        # Remove this row from popover
-        self.removeStickyChainItem($(this).parent())
+        self.renderStickyChainRows()
       
       # On logout, clear storage
       $(document).on 'click', '#logout_button', () ->
@@ -119,7 +111,6 @@ define [
     compare: () ->
       this.compareMode = true
       this.updateSelection() if this.selectedRows.length > 0
-      this.removeStickyChainPopover()
     
     # uncheck of checkbox event
     uncheckedEvent: (element) ->
@@ -186,43 +177,6 @@ define [
         this.hideCompareSection()
       # calls a callback function (render grid)
       this.callback()
-      
-    displayStickyChainPopover: () ->
-      element = $('#stickyChain-btn').parent().append(this.renderStickyChainRows())
-      #self = this
-      #$('#stickyChain-btn').popover
-      #  html: true
-      #  placement: "bottom"
-      #  trigger: "manual"
-      #  template: '<div class="popover stickyChainPopover"><div class="arrow"></div><div class="popover-inner"><div class="popover-content"><p></p></div></div></div>'
-      #  content: ->
-      #    self.renderStickyChainRows()
-    
-    setPosition: () ->
-      popover = $('.stickyChainPopover')
-      popover.appendTo('#compareSelectedActions')
-      popover.removeAttr('style').css {
-        top: 0
-        left: -10
-      }
-      # update arrow
-      arrow = $(".arrow", popover)
-      width = $('#stickyChain-btn').width()
-      arrow.removeAttr('style').css {
-        left: ( width/2 ) + 25
-      } 
-    
-    removeStickyChainPopover: () ->
-      $('#stickyChain-btn').popover('destroy')
-    
-    removeStickyChainItem: (element) ->
-      parent = element.parent()
-      element.remove()
-      #make sure border is also deleted
-      children = parent.children()
-      children[children.length-1].remove() if children[children.length-1].id is ""
-      children[0].remove() if children[0].id is ""
-      
     
     # Update session storage for selected rows
     saveSelectedRowsToStorage: () ->
@@ -278,8 +232,6 @@ define [
    
     hideCompareSection: () ->
       this.compareSection.hide()
-      # TODO: Verify that we can destroy popover
-      this.removeStickyChainPopover()
     
     showCompareSection: () ->
       this.compareSection.show()

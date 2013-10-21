@@ -53,15 +53,11 @@ define [
       self = this  
       # checkboxes in each row
       $(document).on 'click', '.stickyCheckbox', () ->
-        # TODO: Hide popover - valid?
-        self.removeStickyChainPopover()
         if not $(this).is(':checked')
           self.uncheckedEvent this
-          # Remove the item from the sticky chain list
-          #$('#stickyChainHR_'+ $(this).data('value')).remove()
-          self.removeStickyChainItem $('#stickyChain_'+ $(this).data('value'))
         else
           self.checkedEvent this
+        self.renderStickyChainRows()
   
       # Binds to compare button in summary row
       $(document).on 'click', '#stickyCompare-btn', () ->
@@ -192,14 +188,15 @@ define [
       this.callback()
       
     displayStickyChainPopover: () ->
-      self = this
-      $('#stickyChain-btn').popover
-        html: true
-        placement: "bottom"
-        trigger: "manual"
-        template: '<div class="popover stickyChainPopover"><div class="arrow"></div><div class="popover-inner"><div class="popover-content"><p></p></div></div></div>'
-        content: ->
-          self.renderStickyChainRows()
+      element = $('#stickyChain-btn').parent().append(this.renderStickyChainRows())
+      #self = this
+      #$('#stickyChain-btn').popover
+      #  html: true
+      #  placement: "bottom"
+      #  trigger: "manual"
+      #  template: '<div class="popover stickyChainPopover"><div class="arrow"></div><div class="popover-inner"><div class="popover-content"><p></p></div></div></div>'
+      #  content: ->
+      #    self.renderStickyChainRows()
     
     setPosition: () ->
       popover = $('.stickyChainPopover')
@@ -303,7 +300,8 @@ define [
       this.compareEnabledActions.show()
 
     renderStickyChainRows: () ->
-      element = $('<div id="stickyChainTable" class="nav"></div>')
+      element = $('#stickyChainSelectedList')
+      element.empty()
       data = {}
       for row in this.selectedRows
         name = $('#sticky_' + row).data("name")
@@ -311,14 +309,18 @@ define [
       # Sort based on names
       names = Object.keys(data).sort()
       idx = 0
+      table = $('<div class="stickyChainTable"></div>')
       for name in names
-        element.append $('<div class="tableRow"><hr class="tableCellHR"/><hr class="tableCellHR"/></div>') if idx > 0
-        row = $('<div id="stickyChain_' + idx + '" class="tableRow"></div>')
-        row.append $('<div class="tableCellLeft">' + name + '</div>')
-        row.append $('<div data-id="' + idx + '" class="tableCellRight removeStickyChainIcon"></div>')
-        element.append row
-        idx++
-      $('<div></div>').append(element).html()
+        table.append $('<div id="stickyChain_' + idx + '" class="tableRow"><div class="tableCellLeft">' + name + '</div><div data-id="' + idx + '" class="tableCellRight removeStickyChainIcon"></div></div>')
+        #element.append $('<div class="tableRow"><hr class="tableCellHR"/><hr class="tableCellHR"/></div>') if idx > 0
+        #row = $('<div id="stickyChain_' + idx + '" class="tableRow"></div>')
+        #row.append $('<div class="tableCellLeft">' + name + '</div>')
+        #row.append $('<div data-id="' + idx + '" class="tableCellRight removeStickyChainIcon"></div>')
+        #element.append row
+        #idx++
+      element.append table
+      
+      
   
   
   EdwareGridStickyCompare:EdwareGridStickyCompare

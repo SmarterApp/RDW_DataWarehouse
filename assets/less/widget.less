@@ -1408,20 +1408,52 @@ th.ui-th-column div {
       padding-left: 15px;
     }
   }
-  
-  #compareSelectedActions{
-    position: relative;
-    margin-top: 4px;
-    .popover-content {
-      padding-left: 10px;
-      max-height: 40px;
-      overflow-y: auto;
-    }
-  }
-  
+
   #compareEnabledActions{
     margin-top: 4px;
   }
+  
+  #compareSelectedActions {
+    position: relative;
+    margin-top: 4px;
+
+    #stickyChainSelectedList {
+      margin: 23px 0 0;
+    }
+    .dropdown-menu::after {
+      position: absolute;
+      top: -10px;
+      left: 30px;
+      display: inline-block;
+      border-right: 10px solid transparent;
+      border-bottom: 10px solid white;
+      border-left: 10px solid transparent;
+      content: '';
+    }
+    .removeStickyChainIcon {
+      background-image: url("../images/remove_button.png");
+      background-repeat: no-repeat;
+      background-position: center;
+      width: 12px;
+      cursor: pointer;
+    }
+    .stickyChainTable {
+      display: table;
+      .tableRow {
+        display:table-row;
+          .tableCellLeft {
+            display:table-cell;
+            font-size: 13px;
+            padding-left: 10px;
+          }
+          .tableCellRight {
+            display:table-cell;
+            padding-left: 25px;
+          }
+      }
+    }
+  }
+
   
   #stickyEnabledDescription{
     display:inline;
@@ -1495,34 +1527,6 @@ th.ui-th-column div {
   }
 }
 
-.stickyChainPopover{
-
-    display: block;
-    position: relative;
-    width: 250px;
- 
-    .removeStickyChainIcon {
-      background-image: url("../images/remove_button.png");
-      background-repeat: no-repeat;
-      background-position: center;
-      width: 12px;
-      cursor: pointer;
-    }
-    
-    table {
-      font-size: 13px;
-      tr {
-        border-bottom: 1px solid @color-B4;
-        display: block;
-        padding: 4px;
-      }
-      tr:last-child {
-        border-bottom: none;
-      }
-    }
-    
-}
-
 // Interim Disclaimer 
 .interimDisclaimerIcon {
     background-image: url("../images/interim_infoicon.png");
@@ -1546,23 +1550,5 @@ th.ui-th-column div {
     .popover-content {
   width: 400px;
     }
-}
-#stickyChainTable {
-  display: table;
-  .tableRow {
-    display:table-row;
-      .tableCellLeft {
-        display:table-cell;
-        width: 210px;
-      }
-      .tableCellRight {
-        display:table-cell;
-        width: 20px;
-      }
-      .tableCellHR {
-        display:table-cell;
-      }
-  }
-
 }
 

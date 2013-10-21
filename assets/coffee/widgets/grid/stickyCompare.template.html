@@ -1,8 +1,16 @@
 <div id="compareSelectedActions" class="marginLeft20">
 	<ul class='stickyControls'>
-	<li><button id ="stickyChain-btn" type="button" class="btn stickyChainOff stickyChainIcon">
-		{{labels.selected}}
-	</button></li>
+	<li>
+		<span class="btn-group">
+			<button id ="stickyChain-btn" type="button" class="btn btn-default dropdown-toggle stickyChainOff stickyChainIcon" data-toggle="dropdown">
+				{{labels.selected}}
+			</button>
+			<ul id="stickyChainSelectedList" class="dropdown-menu">
+				
+			</ul>
+
+		</span>
+	</li>
 	<li><button id="stickyCompare-btn" type="button" class="btn btn-primary">
 		{{labels.compare}}
 	</button>

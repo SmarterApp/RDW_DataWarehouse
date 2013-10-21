@@ -10,11 +10,11 @@ define [
 ], ($, Mustache, bootstrap, footerTemplate, edwareLegend, edwarePreferences, edwareExport, Constants) ->
 
   POPOVER_TEMPLATE = '<div class="popover footerPopover {{class}}"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
-  
+
   TITLE_TEMPLATE = '<div class="pull-right hideButton"><a class="pull-right" href="#" id="close" data-selector="{{selector}}">{{hide}}<img src="../images/hide_x.png"></img></i></a></div><div class="lead">{{title}}</div>'
 
   class EdwareFooter
-  
+
     constructor: (@reportName, config) ->
       this.initialize(config)
       # Generate footer
@@ -35,7 +35,7 @@ define [
           legendInfo.sample_intervals
         )()
       }
-      
+
     create: () ->
       $('#footer').html Mustache.to_html footerTemplate, {
         report_info: this.reportInfo
@@ -66,7 +66,7 @@ define [
     createLegend: () ->
       # create legend
       $('.legendPopup').createLegend this.reportName, this.legend
-      # create popover      
+      # create popover
       $("#legend").popover
         html: true
         title: Mustache.to_html TITLE_TEMPLATE, {

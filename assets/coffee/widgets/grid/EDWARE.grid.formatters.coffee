@@ -182,16 +182,14 @@ define [
 
 
   formatExport = (value, title) ->
-    if typeof(value) is 'string'
-      # escape double quote
-      value = value.replace(/"/g, '\\"')
-      value = '"' + value + '"'
+    # escape double quote
+    value = value.replace(/"/g, '\\"') if typeof(value) is 'string'
     #export fields
     Mustache.to_html EXPORT_TEMPLATE, {
-      value: value
+      value: '"' + value + '"' if value
       title: title
     }
-    
+
 
   formatSubject = (subject) ->
     subject.total = edwareUtil.formatNumber(subject.total)

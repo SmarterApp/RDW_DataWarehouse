@@ -20,7 +20,7 @@ define [
     "{{{export}}}" +
     "</div>"
 
-  INSUFFICIENT_TEMPLATE = "<div>{{value}}{{{export}}}</div>"
+  TEXT_TEMPLATE = "<div>{{value}}{{{export}}}</div>"
 
   NAME_TEMPLATE = "<div>" +
     "{{#isStateViewOrDistrictView}}" +
@@ -36,6 +36,12 @@ define [
     "{{{export}}}" +
     "<a class='{{cssClass}}' href='{{link}}?{{params}}'>{{displayValue}}</a>" +
     "</div>"
+
+  TOOLTIP_TEMPLATE =  "<div class='losTooltip hide'><div class='js-popupTitle hide'>{{student_name}} | {{subject.asmt_type}} {{overall_score}}</div><div class='summary'><div class='title left'>{{labels.overall_score}}</div><div class='score left' style='background:{{subject.score_bg_color}};color:{{subject.score_text_color}}'><span>{{subject.asmt_score}}</span></div><div class='description' style='color:{{subject.score_bg_color}}'>{{score_ALD}}</div></div><hr/><div class='losPerfBar'>{{{confidenceLevelBar}}}</div><div class='errorBand'>{{labels.error_band}}: <strong>{{subject.asmt_score_range_min}}-{{subject.asmt_score_range_max}}</strong></div></div>"
+
+  PERFORMANCE_BAR_TEMPLATE = "<div class='asmtScore' style='background-color:{{subject.score_bg_color}}; color: {{subject.score_text_color}};'>{{subject.asmt_score}}{{{export}}}</div><div class = 'confidenceLevel'>{{{confidenceLevelBar}}}</div>{{{toolTip}}}"
+
+  CONFIDENCE_TEMPLATE = "<div>{{{export}}}<strong>{{value}}</strong> (&#177;{{confidence}})</div>"
   
   #
   # * EDWARE grid formatters
@@ -89,6 +95,16 @@ define [
       displayValue: displayValue
     }
 
+  showText = (value, options, rowObject) ->
+    exportable = options.colModel.export
+
+    return Mustache.to_html TEXT_TEMPLATE, {
+      value: value,
+      export: formatExport(value, '')
+    } if exportable
+
+    return value
+
   showOverallConfidence = (value, options, rowObject) ->
     names = options.colModel.name.split "."
     subject = rowObject[names[0]][names[1]]
@@ -100,33 +116,43 @@ define [
   showConfidence = (value, options, rowObject) ->
     names = options.colModel.name.split "."
     subject = rowObject[names[0]][names[1]]
-    if subject
-      confidence = subject[names[2]][names[3]]['confidence']
-      "<div><strong>" + value + "</strong> (&#177;" + confidence + ")</div>"
-    else
-      ""
+    return '' if not subject
 
-  #TODO refactor performance bar code
+    confidence = subject[names[2]][names[3]]['confidence']
+    Mustache.to_html CONFIDENCE_TEMPLATE, {
+      value: value,
+      confidence: confidence
+      export: formatExport(value, '') if options.colModel.export
+    }
+
+
   performanceBar = (value, options, rowObject) ->
     subject_type = options.colModel.formatoptions.asmt_type
     subject = rowObject.assessments[subject_type]
     labels = options.colModel.labels
-    if subject
-      score_ALD = if not subject.cut_point_intervals[subject.asmt_perf_lvl-1] then "" else subject.cut_point_intervals[subject.asmt_perf_lvl-1]["name"] 
-      subject.score_color = subject.score_bg_color
-      results =  edwareLOSConfidenceLevelBar.create subject, 120
-      results2 =  edwareConfidenceLevelBar.create subject, 300
-      
-      student_name = rowObject.student_first_name if rowObject.student_first_name
-      student_name = student_name + " " + rowObject.student_middle_name[0] + "." if rowObject.student_middle_name
-      student_name = student_name + " " + rowObject.student_last_name if rowObject.student_last_name
-      perfBar = "<div class='asmtScore' style='background-color:"+ subject.score_bg_color + "; color: "+ subject.score_text_color + ";'>" + subject.asmt_score + "</div><div class = 'confidenceLevel'>" +results+ "</div>"
-      toolTip = "<div class='losTooltip hide'><div class='js-popupTitle hide'>"+student_name+ " | " + subject.asmt_type + " " + labels.overall_score + "</div>"
-      toolTip = toolTip + "<div class='summary'><div class='title left'>" + labels.overall_score + "</div><div class='score left' style='background:"+subject.score_bg_color+";color:"+subject.score_text_color+"'><span>"+subject.asmt_score+"</span></div><div class='description' style='color:"+subject.score_bg_color+"'>"+score_ALD+"</div></div><hr/><div class='losPerfBar'>"+results2+"</div><div class='errorBand'>" + labels.error_band + ": <strong>"+subject.asmt_score_range_min+"-"+subject.asmt_score_range_max+"</strong></div></div>"
-        
-      output = perfBar + toolTip
-    else
-      "" 
+    return showText(value, options, rowObject) if not subject
+    
+    score_ALD = if not subject.cut_point_intervals[subject.asmt_perf_lvl-1] then "" else subject.cut_point_intervals[subject.asmt_perf_lvl-1]["name"] 
+
+    student_name = rowObject.student_first_name if rowObject.student_first_name
+    student_name = student_name + " " + rowObject.student_middle_name[0] + "." if rowObject.student_middle_name
+    student_name = student_name + " " + rowObject.student_last_name if rowObject.student_last_name
+
+    toolTip = Mustache.to_html TOOLTIP_TEMPLATE, {
+      student_name: student_name
+      subject: subject
+      labels: labels
+      score_ALD: score_ALD
+      confidenceLevelBar: edwareConfidenceLevelBar.create(subject, 300)
+    }
+    perfBar = Mustache.to_html PERFORMANCE_BAR_TEMPLATE, {
+      subject: subject
+      confidenceLevelBar: edwareLOSConfidenceLevelBar.create subject, 120
+      toolTip: toolTip
+      export: formatExport(value, '') if options.colModel.export
+    }
+    perfBar
+
 
   populationBar = (value, options, rowObject) ->
     asmt_type = options.colModel.formatoptions.asmt_type
@@ -136,7 +162,7 @@ define [
     return '' if not subject
     # display insufficient data message
     text = options.colModel.labels['insufficient_data']
-    return Mustache.to_html INSUFFICIENT_TEMPLATE, {
+    return Mustache.to_html TEXT_TEMPLATE, {
       value: text,
       export: formatExport(text, subject.asmt_subject) 
     } if parseInt(value) <= 0
@@ -154,12 +180,18 @@ define [
       export: exportValue
     }
 
+
   formatExport = (value, title) ->
+    if typeof(value) is 'string'
+      # escape double quote
+      value = value.replace(/"/g, '\\"')
+      value = '"' + value + '"'
     #export fields
     Mustache.to_html EXPORT_TEMPLATE, {
       value: value
       title: title
     }
+    
 
   formatSubject = (subject) ->
     subject.total = edwareUtil.formatNumber(subject.total)
@@ -172,6 +204,7 @@ define [
 
 
   showlink: showlink
+  showText: showText
   showOverallConfidence: showOverallConfidence
   showConfidence: showConfidence
   performanceBar: performanceBar

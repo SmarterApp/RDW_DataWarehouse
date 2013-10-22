@@ -52,7 +52,7 @@ define [
         self.columnData = self.createColumns()
         #  append cutpoints into each individual assessment data
         self.formatAssessmentsData self.cutPointsData
-        self.stickyCompare.setReportInfo "los", "student", params
+        self.stickyCompare.setReportInfo REPORT_NAME, "student", params
         # process breadcrumbs
         self.renderBreadcrumbs(data.context)
         self.createHeaderAndFooter()

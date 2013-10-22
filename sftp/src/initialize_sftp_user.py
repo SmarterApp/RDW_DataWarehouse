@@ -46,6 +46,16 @@ def create_user(user, home_folder, role):
     subprocess.call(add_user_cmd, shell=True)
 
 
+def delete_user(user):
+    """
+    Delete the given user from the system and remove thier home folder
+    :param user: the user name of the user to delete
+    :return: None
+    """
+    del_user_cmd = "userdel -r {}".format(user)
+    subprocess.call(del_user_cmd, shell=True)
+
+
 def verify_user_tenant_and_role(tenant_path, username, role, sftp_conf):
     """
     Verify that the username does not already exist and that the tenant does exist

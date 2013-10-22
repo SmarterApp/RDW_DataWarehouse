@@ -5,5 +5,9 @@ sftp_conf = {
     'sftp_base_dir': 'sftp',
     'sftp_arrivals_dir': 'arrivals',
     'sftp_departures_dir': 'departures',
-    'groups': ['sftparrivals', 'tenantadmin']
+    'groups': ['sftparrivals', 'tenantadmin'],
+    'group_directories': {
+        'sftparrivals': 'arrivals',
+        'tenantadmin': 'departures'
+    }
 }

@@ -9,7 +9,7 @@ define [
     constructor: (@table, @reportType) ->
 
     build: () ->
-      records = []
+      records = ('' for i in [1..10]) # fixed first 10 rows
       # build header
       records = records.concat this.buildHeader()
       # build body

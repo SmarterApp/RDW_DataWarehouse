@@ -42,8 +42,6 @@ define [
   # * Handles all the methods for displaying cutpoints, link in the grid
   # 
   showlink = (value, options, rowObject) ->
-    # check if export current field
-    exportValue = formatExport value, "" if options.colModel.export
         
     # draw summary row (grid footer)
     isHeader = rowObject.header
@@ -51,14 +49,21 @@ define [
       cssClass: options.colModel.formatoptions.style
       subTitle: rowObject.subtitle
       summaryTitle: value
-      export: exportValue
+      export: formatExport(value, '')
     } if isHeader
+
+    buildUrl = ()->
+      # Build url query param
+      params = for k, v of rowObject.params
+        k = options.colModel.formatoptions.id_name if k == "id"
+        k + "=" + v
+      params.join "&"
 
     # draw name columns
     showTooltip = (displayValue) ->
       (rowId, val, rawObject, cm, rdata) ->
         'title="' + displayValue + '"'
-
+    
     getDisplayValue = () ->
       displayValue = value
       if options.colModel.formatoptions.id_name is "asmtGrade"
@@ -68,12 +73,9 @@ define [
       options.colModel.cellattr = showTooltip displayValue
       displayValue
 
-    buildUrl = ()->
-      # Build url query param
-      params = for k, v of rowObject.params
-        k = options.colModel.formatoptions.id_name if k == "id"
-        k + "=" + v
-      params.join "&"
+    displayValue = getDisplayValue()
+    # check if export current field
+    exportValue = formatExport displayValue, "" if options.colModel.export
 
     # sticky comparison is not activated, show checkbox
     Mustache.to_html NAME_TEMPLATE, {
@@ -84,7 +86,7 @@ define [
       link: options.colModel.formatoptions.linkUrl
       params: buildUrl()
       export: exportValue
-      displayValue: getDisplayValue(value)
+      displayValue: displayValue
     }
 
   showOverallConfidence = (value, options, rowObject) ->
@@ -127,19 +129,20 @@ define [
       "" 
 
   populationBar = (value, options, rowObject) ->
-    if parseInt(value) <= 0
-      text = options.colModel.labels['insufficient_data']
-      return Mustache.to_html INSUFFICIENT_TEMPLATE, {
-        value: text,
-        export: formatExport(text, '')
-      }
     asmt_type = options.colModel.formatoptions.asmt_type
-    export_filed = options.colModel.export #check if export current field
     subject = rowObject.results[asmt_type]
-    if not subject
-      return ""
+
+    # display empty message
+    return '' if not subject
+    # display insufficient data message
+    text = options.colModel.labels['insufficient_data']
+    return Mustache.to_html INSUFFICIENT_TEMPLATE, {
+      value: text,
+      export: formatExport(text, subject.asmt_subject) 
+    } if parseInt(value) <= 0
 
     subject = formatSubject subject
+    export_filed = options.colModel.export #check if export current field
     exportValue = formatExport subject.total, subject.asmt_subject if export_filed
     return Mustache.to_html POPULATION_BAR_TEMPLATE, {
       alignment: subject.alignment,

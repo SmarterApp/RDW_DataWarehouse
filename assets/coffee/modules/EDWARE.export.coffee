@@ -55,5 +55,7 @@ define [
 
   
   $.fn.edwareExport = (reportType)->
+    this.eagerLoad()
     builder = new CSVBuilder(this, reportType)
     download builder.build(), builder.getFileName()
+    this.lazyLoad()

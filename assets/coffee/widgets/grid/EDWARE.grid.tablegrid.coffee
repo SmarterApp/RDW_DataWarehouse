@@ -157,7 +157,14 @@ define [
           colModel.sorttype = edwareGridSorters.create(index) if colModel.index == subject
       this.sortGrid(subject, true, order)
 
+    $.fn.eagerLoad = () ->
+      # load all data at once
+      this.jqGrid('setGridParam', {scroll: false, rowNum: 100000}).trigger("reloadGrid")
 
+    $.fn.lazyLoad = () ->
+      # dynamically load data when scrolling down
+      this.jqGrid('setGridParam', {scroll: 1, rowNum: 100}).trigger("reloadGrid")
+      
   #
   #    * Creates EDWARE grid
   #    * @param tableId - The container id for grid

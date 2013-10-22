@@ -38,7 +38,7 @@ define [
         result.join Constants.DELIMITOR.COMMA
 
     getFileName: () ->
-      this.reportType + '_' + new Date().getTime()
+      this.reportType + '_' + new Date().getTime() + '.csv'
 
   download = (content, filename) ->
     uri = 'data:application/csv;charset=UTF-8,' + encodeURIComponent(content)

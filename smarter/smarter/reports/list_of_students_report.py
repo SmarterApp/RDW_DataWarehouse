@@ -121,7 +121,7 @@ def get_list_of_students_report(params):
             student['student_last_name'] = result['student_last_name']
             student['enrollment_grade'] = result['enrollment_grade']
             student[Constants.ROWID] = rowId
-            rowId +=1
+            rowId += 1
 
         assessment = {}
         assessment['teacher_full_name'] = format_full_name_rev(result['teacher_first_name'], result['teacher_middle_name'], result['teacher_last_name'])

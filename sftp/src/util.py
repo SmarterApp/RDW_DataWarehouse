@@ -2,6 +2,7 @@ __author__ = 'swimberly'
 
 import os
 import shutil
+import grp
 
 
 def create_path(path):
@@ -23,3 +24,16 @@ def cleanup_directory(sftp_dir_path):
     """
     if os.path.exists(sftp_dir_path):
         shutil.rmtree(sftp_dir_path, True)
+
+
+def group_exists(name):
+    """
+    Check if group exists
+    :param name: Name of SFTP group
+    :return: True if group exists else False
+    """
+    try:
+        grp.getgrnam(name)
+        return True
+    except KeyError:
+        return False

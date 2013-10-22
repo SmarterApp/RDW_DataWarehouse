@@ -6,6 +6,8 @@ import os
 import subprocess
 import pwd
 
+from sftp.src.util import group_exists
+
 
 __author__ = 'swimberly'
 
@@ -56,7 +58,7 @@ def delete_user(user):
     subprocess.call(del_user_cmd, shell=True)
 
 
-def verify_user_tenant_and_role(tenant_path, username, role, sftp_conf):
+def verify_user_tenant_and_role(tenant_path, username, role):
     """
     Verify that the username does not already exist and that the tenant does exist
 
@@ -70,7 +72,7 @@ def verify_user_tenant_and_role(tenant_path, username, role, sftp_conf):
         return False, 'Tenant does not exist!'
 
     # check that the role has been created as a group on the system
-    if role not in sftp_conf['groups']:
+    if not group_exists(role):
         return False, 'Role does not exist as a group in the system'
 
     # Verify that user does not already exist

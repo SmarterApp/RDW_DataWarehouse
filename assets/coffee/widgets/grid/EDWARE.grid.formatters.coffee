@@ -37,18 +37,18 @@ define [
     "<a class='{{cssClass}}' href='{{link}}?{{params}}'>{{displayValue}}</a>" +
     "</div>"
 
-  TOOLTIP_TEMPLATE =  "<div class='losTooltip hide'><div class='js-popupTitle hide'>{{student_name}} | {{subject.asmt_type}} {{overall_score}}</div><div class='summary'><div class='title left'>{{labels.overall_score}}</div><div class='score left' style='background:{{subject.score_bg_color}};color:{{subject.score_text_color}}'><span>{{subject.asmt_score}}</span></div><div class='description' style='color:{{subject.score_bg_color}}'>{{score_ALD}}</div></div><hr/><div class='losPerfBar'>{{{confidenceLevelBar}}}</div><div class='errorBand'>{{labels.error_band}}: <strong>{{subject.asmt_score_range_min}}-{{subject.asmt_score_range_max}}</strong></div></div>"
+  TOOLTIP_TEMPLATE =  "<div class='losTooltip hide'><div class='js-popupTitle hide'>{{student_name}} | {{subject.asmt_type}} {{labels.overall_score}}</div><div class='summary'><div class='title left'>{{labels.overall_score}}</div><div class='score left' style='background:{{subject.score_bg_color}};color:{{subject.score_text_color}}'><span>{{subject.asmt_score}}</span></div><div class='description' style='color:{{subject.score_bg_color}}'>{{score_ALD}}</div></div><hr/><div class='losPerfBar'>{{{confidenceLevelBar}}}</div><div class='errorBand'>{{labels.error_band}}: <strong>{{subject.asmt_score_range_min}}-{{subject.asmt_score_range_max}}</strong></div></div>"
 
   PERFORMANCE_BAR_TEMPLATE = "<div class='asmtScore' style='background-color:{{subject.score_bg_color}}; color: {{subject.score_text_color}};'>{{subject.asmt_score}}{{{export}}}</div><div class = 'confidenceLevel'>{{{confidenceLevelBar}}}</div>{{{toolTip}}}"
 
   CONFIDENCE_TEMPLATE = "<div>{{{export}}}<strong>{{value}}</strong> (&#177;{{confidence}})</div>"
-  
+
   #
   # * EDWARE grid formatters
   # * Handles all the methods for displaying cutpoints, link in the grid
-  # 
+  #
   showlink = (value, options, rowObject) ->
-        
+
     # draw summary row (grid footer)
     isHeader = rowObject.header
     return Mustache.to_html SUMMARY_TEMPLATE, {
@@ -69,7 +69,7 @@ define [
     showTooltip = (displayValue) ->
       (rowId, val, rawObject, cm, rdata) ->
         'title="' + displayValue + '"'
-    
+
     getDisplayValue = () ->
       displayValue = value
       if options.colModel.formatoptions.id_name is "asmtGrade"
@@ -112,7 +112,7 @@ define [
       "<div>P" + subject.asmt_perf_lvl + " [" + subject.asmt_score_range_min + "] " + value + " [" + subject.asmt_score_range_max + "]</div>"
     else
       ""
-  
+
   showConfidence = (value, options, rowObject) ->
     names = options.colModel.name.split "."
     subject = rowObject[names[0]][names[1]]
@@ -131,8 +131,8 @@ define [
     subject = rowObject.assessments[subject_type]
     labels = options.colModel.labels
     return showText(value, options, rowObject) if not subject
-    
-    score_ALD = if not subject.cut_point_intervals[subject.asmt_perf_lvl-1] then "" else subject.cut_point_intervals[subject.asmt_perf_lvl-1]["name"] 
+
+    score_ALD = if not subject.cut_point_intervals[subject.asmt_perf_lvl-1] then "" else subject.cut_point_intervals[subject.asmt_perf_lvl-1]["name"]
 
     student_name = rowObject.student_first_name if rowObject.student_first_name
     student_name = student_name + " " + rowObject.student_middle_name[0] + "." if rowObject.student_middle_name
@@ -164,7 +164,7 @@ define [
     text = options.colModel.labels['insufficient_data']
     return Mustache.to_html TEXT_TEMPLATE, {
       value: text,
-      export: formatExport(text, subject.asmt_subject) 
+      export: formatExport(text, subject.asmt_subject)
     } if parseInt(value) <= 0
 
     subject = formatSubject subject

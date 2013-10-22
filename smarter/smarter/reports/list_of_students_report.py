@@ -172,12 +172,11 @@ def get_list_of_students(params):
     asmtSubject = params.get(Constants.ASMTSUBJECT, None)
     with SmarterDBConnection() as connector:
         # get handle to tables
-        dim_student = connector.get_table('dim_student')
-        dim_staff = connector.get_table('dim_staff')
-        dim_asmt = connector.get_table('dim_asmt')
-        dim_section = connector.get_table('dim_section')
-        dim_inst_hier = connector.get_table('dim_inst_hier')
-        fact_asmt_outcome = connector.get_table('fact_asmt_outcome')
+        dim_student = connector.get_table(Constants.DIM_STUDENT)
+        dim_staff = connector.get_table(Constants.DIM_STAFF)
+        dim_asmt = connector.get_table(Constants.DIM_ASMT)
+        dim_inst_hier = connector.get_table(Constants.DIM_INST_HIER)
+        fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
         query = select_with_context([dim_student.c.student_guid.label('student_guid'),
                                     dim_student.c.first_name.label('student_first_name'),
                                     dim_student.c.middle_name.label('student_middle_name'),

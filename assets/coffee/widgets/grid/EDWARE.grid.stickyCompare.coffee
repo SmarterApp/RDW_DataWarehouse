@@ -107,6 +107,8 @@ define [
         # clear session storage
         self.storage.clear()
         
+      $(document).on 'click', '.dropdown-menu .stickyChainScrollable', (e)->
+        e.stopPropagation();
  
     # rows have been selected, compare the selections
     compare: () ->
@@ -266,14 +268,8 @@ define [
       table = $('<div class=" stickyChainTable"></div>')
       for name in names
         table.append $('<div class="tableRow"><hr class="tableCellHR"/><hr class="tableCellHR"/></div>') if idx > 0
-        table.append $('<div id="stickyChain_' + idx + '" class="tableRow"><div class="tableCellLeft">' + name + '</div><div data-id="' + data[name] + '" class="tableCellRight removeStickyChainIcon"></div></div>')
+        table.append $('<div class="tableRow"><div class="tableCellLeft">' + name + '</div><div data-id="' + data[name] + '" class="tableCellRight removeStickyChainIcon"></div></div>')
         idx++
-        #element.append $('<div class="tableRow"><hr class="tableCellHR"/><hr class="tableCellHR"/></div>') if idx > 0
-        #row = $('<div id="stickyChain_' + idx + '" class="tableRow"></div>')
-        #row.append $('<div class="tableCellLeft">' + name + '</div>')
-        #row.append $('<div data-id="' + idx + '" class="tableCellRight removeStickyChainIcon"></div>')
-        #element.append row
-        #idx++
       scrollable.append table
       element.append scrollable
       

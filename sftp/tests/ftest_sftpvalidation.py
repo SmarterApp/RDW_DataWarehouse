@@ -56,7 +56,7 @@ class sftpvalidation(unittest.TestCase):
                         self.assertFalse(configure_sftp_groups._group_exists(name))
 
     def test_sftp_tenant(self):
-        initialize_sftp_tenant.create_tenant('ca', self.test_sftp_conf)
+        initialize_sftp_tenant.create_tenant('tenant_dir', self.test_sftp_conf)
         self.assertTrue(os.path.exists(self.sftp_arrivals_tenant_path))
         self.assertTrue(os.path.exists(self.sftp_departures_tenant_path))
 

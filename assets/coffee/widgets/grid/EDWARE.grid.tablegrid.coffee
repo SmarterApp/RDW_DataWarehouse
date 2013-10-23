@@ -10,9 +10,9 @@ define [
     tableId: 'gridTable'
     data: undefined
     options:
-      gridHeight: window.innerHeight * 0.6 #default grid height
+      gridHeight: '100%' #window.innerHeight * 0.6 #default grid height
       datatype: "local"
-      height: "auto"
+      height: "90%"
       viewrecords: true
       autoencode: true
       rowNum: 100
@@ -45,9 +45,9 @@ define [
     afterLoadComplete: () ->
       # Move footer row to the top of the table
       $("div.ui-jqgrid-sdiv").insertBefore $("div.ui-jqgrid-bdiv")
-      $("#gview_gridTable > .ui-jqgrid-bdiv").css {
-          'min-height': 100, 'height': this.options.gridHeight
-      }
+      # $("#gview_gridTable > .ui-jqgrid-bdiv").css {
+      #     'min-height': 100, 'height': this.options.gridHeight
+      # }
 
     render: ()->
       this.renderBody()

@@ -116,6 +116,9 @@ define [
         
       $(document).on 'click', '.dropdown-menu .stickyChainScrollable', (e)->
         e.stopPropagation();
+      
+      $(document).on 'mouseenter', '#stickyChain-btn', ()->
+        $('#stickyChain-btn').dropdown('toggle')
 
     clearSelectedRows: () ->
       this.selectedRows = {}

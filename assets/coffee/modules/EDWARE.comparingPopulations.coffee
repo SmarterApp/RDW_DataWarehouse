@@ -29,10 +29,10 @@ define [
 
   class ConfigBuilder
     ### Grid configuration builder. ###
-    
+
     constructor: (template, subjects) ->
       ###
-      
+
       ###
       output = Mustache.render(JSON.stringify(template), subjects)
       this.gridConfig = JSON.parse(output)
@@ -77,7 +77,7 @@ define [
       this.stickyCompare = new edwareStickyCompare.EdwareGridStickyCompare this.renderGrid.bind(this)
       this.asmtTypes = for asmtType in config.students.customViews.asmtTypes
         asmtType.name
-      
+
     # Create assessment type dropdown
     createAsmtDropdown: () ->
       if this.reportType isnt 'school'
@@ -95,15 +95,15 @@ define [
       this.asmtDropdown.create()
       # select default asmt type
       this.asmtDropdown.setSelectedValue this.currentAsmtType
-    
+
     createDisclaimer: () ->
       if this.reportType is 'school'
         this.disclaimer = $('.disclaimerInfo').edwareDisclaimer this.config.interimDisclaimer
         this.updateDisclaimer()
-    
+
     updateDisclaimer: () ->
       this.disclaimer.update this.currentAsmtType
- 
+
     setFilter: (filter) ->
       this.filter = filter
 
@@ -161,7 +161,7 @@ define [
 
     createHeaderAndFooter: ()->
       this.config.colorsData = this.data.metadata
-      this.footer = new edwareFooter.EdwareFooter(Constants.REPORT_NAME.CPOP, this.config) unless this.footer
+      this.footer = new edwareFooter.EdwareFooter(Constants.REPORT_NAME.CPOP, this.config, this.reportType) unless this.footer
       this.header = edwareHeader.create(this.data, this.config, "comparing_populations_" + this.reportType) unless this.header
 
     fetchData: (params, callback)->
@@ -169,7 +169,7 @@ define [
       options =
         method: "POST"
         params: params
-      
+
       studentsData = undefined
       edwareDataProxy.getDatafromSource "/data/comparing_populations", options, callback
 
@@ -183,7 +183,7 @@ define [
         reportType = 'state'
       reportType
 
-    createGrid: () -> 
+    createGrid: () ->
       # Append colors to records and summary section
       # Do not format data, or get breadcrumbs if the result is empty
       preprocessor = new DataProcessor(this.summaryData[0], this.asmtSubjectsData, this.data.metadata, this.defaultColors)
@@ -202,11 +202,11 @@ define [
         order: $('#gridTable').getGridParam('sortorder')
         name: $('#gridTable').getGridParam('sortname')
       }
-    
+
     renderGrid: () ->
       $('#gridTable').jqGrid('GridUnload')
       # Filter out selected rows, if any
-      gridData = [] 
+      gridData = []
       selectedRows = this.stickyCompare.getSelectedRows()
       stickyCompareEnabled = false
       if selectedRows.length > 0
@@ -232,7 +232,7 @@ define [
         footer: this.summaryData
         options:
           gridHeight: this.gridHeight
-          labels: this.labels 
+          labels: this.labels
           stickyCompareEnabled: stickyCompareEnabled
           sort: this.sort
           gridComplete: () ->
@@ -262,7 +262,7 @@ define [
       # .mouseleave (e) ->
       #   e.stopImmediatePropagation()
       #   $(this).popover('hide')
-                
+
       self = this
       $('#gridTable_name').click ()->
         # Get the current sort column and reset cpop sorting dropdown if the current sort column is the first column
@@ -273,7 +273,7 @@ define [
       this.edwareDropdown = this.createDropdown(this.config.comparingPopulations.customALDDropdown) if not this.edwareDropdown
       # update dropdown menus status
       this.edwareDropdown.update(this.summaryData, this.asmtSubjectsData, this.data.metadata)
-          
+
     createDropdown: (customALDDropdown)->
       self = this
       $('.dropdownSection').edwareDropdown customALDDropdown, (subject, index)->
@@ -287,7 +287,7 @@ define [
       for k of summaryData.results
         name = 'results.' + k + '.total'
         data[name] = summaryData.results[k].total
-        
+
       data['subtitle'] = this.labels['reference_point']#'Reference Point'
       # Set header row to be true to indicate that it's the summary row
       data['header'] = true
@@ -302,7 +302,7 @@ define [
       # Render breadcrumbs on the page
       $('#breadcrumb').breadcrumbs(breadcrumbsData, breadcrumbsConfigs)
       this.initialize()
-      
+
     initialize: () ->
       if this.reportType is 'state'
         this.orgType = this.breadcrumbsData.items[0].name
@@ -313,10 +313,10 @@ define [
       else if this.reportType is 'school'
         this.orgType = this.breadcrumbsData.items[2].name
         this.displayType = "Grade"
-    
+
     getOrgType: () ->
       this.orgType
-    
+
     getDisplayType: () ->
       this.displayType
 
@@ -352,7 +352,7 @@ define [
 
 
   class DataProcessor
-  
+
     constructor: (@summaryData, @asmtSubjectsData, @colorsData, @defaultColors) ->
 
     # Traverse through to intervals to prepare to append color to data
@@ -404,13 +404,13 @@ define [
           element.color = colors[i]
         else
           element.color = defaultColors[i]
-          
+
         # if percentage is less than 9 then remove the percentage text from the bar
         if element.percentage > 9
           element.showPercentage = true
         else
           element.showPercentage = false
-        
+
         # calculate sort
         sort = calculateTotalPercentage sort, i, element.percentage
         i++
@@ -437,7 +437,7 @@ define [
         percentages[j] = 0
         j++
       percentages[intervalLength-1] = total
-      percentages      
+      percentages
 
 
   class Alignment
@@ -471,7 +471,7 @@ define [
 
     hideAlignment: () ->
       $(".barContainer").addClass('default').removeClass('alignment')
-      $(".populationBar").removeAttr('style')    
+      $(".populationBar").removeAttr('style')
 
-      
+
   PopulationGrid: PopulationGrid

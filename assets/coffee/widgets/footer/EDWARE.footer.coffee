@@ -16,7 +16,7 @@ define [
 
   class EdwareFooter
 
-    constructor: (@reportName, config) ->
+    constructor: (@reportName, config, @reportType) ->
       this.initialize(config)
       # Generate footer
       this.create()
@@ -123,6 +123,8 @@ define [
       if this.reportName is Constants.REPORT_NAME.ISR
         $('#export').hide()
         return
+      # this is critical to ensure class properties are accessible inside the content closure function's scope
+      self = this
       $("#export").popover
         html: true
         title: Mustache.to_html TITLE_TEMPLATE, {
@@ -131,7 +133,17 @@ define [
           title: 'Export'
         }
         template: POPOVER_TEMPLATE
-        content: $(".exportPopup").html()
+        content: () ->
+          # this is ugly. show only the export raw data button in CPOP school level and LOS and only
+          # for administrator
+          # todo list, add school admin identfication
+          if ((self.reportName is Constants.REPORT_NAME.CPOP and self.reportType is 'school') or
+             (self.reportName is Constants.REPORT_NAME.LOS))
+            $('.exportPopup #raw_extraction_option').show()
+          else
+            $('.exportPopup #raw_extraction_option').hide()
+          $(".exportPopup").html()
+
 
     bindEvents: ()->
       self = this
@@ -141,7 +153,7 @@ define [
           $this = $(this)
           $this.removeClass("active")
           $('#' + $this.attr('id')).popover('hide')
-        $(this).toggleClass("active")
+          $(this).toggleClass("active")
 
       # Popup will close if user clicks popup hide button
       $(document).on 'click', '.hideButton a', ->

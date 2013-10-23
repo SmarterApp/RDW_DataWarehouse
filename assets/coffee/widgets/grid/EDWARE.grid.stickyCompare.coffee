@@ -16,7 +16,7 @@ define [
       this.storage = edwareClientStorage.stickyCompStorage
       this.bindEvents()
       this.createButtonBar()
-      this.selectedRows = []
+      this.selectedRows = {}
       this.compareSelectedActions = $('#compareSelectedActions')
       this.compareEnabledActions = $('#compareEnabledActions')
       this.stickyEnabledDescription = $('#stickyEnabledDescription')
@@ -35,18 +35,20 @@ define [
       # Hide buttons based on whether any selection is already made
       # Only perform when compare mode is active
       if this.compareMode
-        if this.selectedRows.length > 0
+        if this.getRowsCount() > 0
           this.showCompareEnabledButtons()
         else
           this.hideCompareSection()
       else
         # We may reach to this state when user selects some checkbox, and then submit a filter that cause grid to re-render
-        if this.selectedRows.length is 0
+        if this.getRowsCount() is 0
           this.hideCompareSection()
         else
-          # This happens when grid re-renders on sort and we need to reapply checkboxes to true
-          for row in this.selectedRows
-            $('#sticky_' + row).attr('checked', true)
+          # This happens when grid re-renders and we need to reapply selected rows with checkboxes to true and update its text
+          for row of this.selectedRows
+            element = $('#sticky_' + row)
+            element.attr('checked', true)
+            this.checkedEvent element
         
     # All events related to grid filtering of rows
     bindEvents: () ->
@@ -54,8 +56,10 @@ define [
       # checkboxes in each row
       $(document).on 'click', '.stickyCheckbox', () ->
         if not $(this).is(':checked')
+          self.removeCurrentRow this
           self.uncheckedEvent this
         else
+          self.addCurrentRow this
           self.checkedEvent this
         self.renderStickyChainRows()
   
@@ -69,7 +73,7 @@ define [
       
       # Deselect Button in summary row
       $(document).on 'click', '#stickyDeselect-btn', () ->
-        self.selectedRows = []
+        self.clearSelectedRows()
         $('.stickyCheckbox').attr('checked', false)  
         # Remove class of checkedlabel, add class of regular label and then set the text
         label = $('.stickyCheckbox').siblings("label")
@@ -79,7 +83,7 @@ define [
       
       # Show all district button
       $(document).on 'click', '#stickyShowAll-btn', () ->
-        self.selectedRows = []
+        self.clearSelectedRows()
         self.updateSelection()
       
       # Remove button on each row in grid 
@@ -99,6 +103,9 @@ define [
         # Uncheck the checkbox in the grid
         element = $('#sticky_' + rowId)
         element.attr('checked', false)
+        # We need to explicitly remove the rows
+        # because we may run into the case where the row isn't loaded in the grid
+        self.removeRowFromSelectedRows rowId
         self.uncheckedEvent element
         self.renderStickyChainRows()
       
@@ -109,53 +116,69 @@ define [
         
       $(document).on 'click', '.dropdown-menu .stickyChainScrollable', (e)->
         e.stopPropagation();
- 
+
+    clearSelectedRows: () ->
+      this.selectedRows = {}
+    
+    getRows: () ->
+      keys = []
+      for key, value of this.selectedRows
+        keys.push(parseInt(key))
+      keys
+    
+    getRowsCount: () ->
+      Object.keys(this.selectedRows).length
+      
     # rows have been selected, compare the selections
     compare: () ->
       this.compareMode = true
-      this.updateSelection() if this.selectedRows.length > 0
+      this.updateSelection() if this.getRowsCount() > 0
     
     # uncheck of checkbox event
     uncheckedEvent: (element) ->
       label = $(element).siblings("label")
       label.text(this.labels.compare)
       label.toggleClass("stickyCompareLabel stickyCompareLabelChecked")
-      this.removeCurrentRow element
+      
       this.resetCompareRowControls()
     
     # checkbox has been checked
     checkedEvent: (element) ->
       $(element).siblings("label").toggleClass("stickyCompareLabelChecked stickyCompareLabel")
-      this.addCurrentRow element
       this.resetCompareRowControls()
               
     # Given a row in the grid, add its value to selectedRows
     addCurrentRow: (row) ->
-      value = this.getCurrentRowValue row
-      this.selectedRows.push value
+      info = this.getCurrentRowInfo row
+      this.selectedRows[info.id] = info.name
     
     # Given a row in the grid, remove its value from selectedRows
     removeCurrentRow: (row) ->
-      value = this.getCurrentRowValue row
-      index = this.selectedRows.indexOf(value)
-      this.selectedRows.splice(index, 1) if index > -1
+      info = this.getCurrentRowInfo row
+      this.removeRowFromSelectedRows info.id
     
-    # Returns the value of a row
-    getCurrentRowValue: (row) ->
-      parseInt($(row).data('value'))
+    removeRowFromSelectedRows: (id) ->
+      delete this.selectedRows[id]
     
-    getSelectedRows: () ->
+    # Returns the id and name of a row
+    getCurrentRowInfo: (row) ->
+      {'id': parseInt($(row).data('value')), 'name': $(row).data('name')}
+    
+    getSelectedRowsFromStorage: () ->
       # When this gets called, it means we should read from storage
       # Set the mode based on whether any rows are returned
       # Gets the rows selected for the current report view
-      this.selectedRows = this.getDataForReport()
-      this.compareMode = this.selectedRows.length > 0
-      this.selectedRows
+      rows = this.getDataForReport()
+      this.selectedRows = {}
+      for row in rows
+        this.selectedRows[row] = ""
+      this.compareMode = rows.length > 0
+      this.getRows()
     
     getFilteredInfo: (allData) ->
       # client passes in data and this will return rows that user have selected and whether stickyCompare is enabled
       returnData = []
-      selectedRows = this.getSelectedRows()
+      selectedRows = this.getSelectedRowsFromStorage()
       if selectedRows.length > 0
         for data in allData
           if returnData.length is selectedRows.length
@@ -175,7 +198,7 @@ define [
     # Reset compare mode depending on whether any rows are selected
     updateSelection: () ->
       this.saveSelectedRowsToStorage()
-      if this.selectedRows.length is 0 and this.compareMode
+      if this.getRowsCount() is 0 and this.compareMode
         this.compareMode = false
         this.hideCompareSection()
       # calls a callback function (render grid)
@@ -186,7 +209,7 @@ define [
       data = this.getDataFromStorage()
       reportData = data[this.reportType]
       reportData = {} if not reportData
-      reportData[this.getKey()] = this.selectedRows
+      reportData[this.getKey()] = this.getRows()
       data[this.reportType] = reportData
       this.storage.save data
    
@@ -213,7 +236,7 @@ define [
     resetCompareRowControls: () ->
       text = this.labels.compare
       labelNameKey = this.displayType
-      count = this.selectedRows.length
+      count = this.getRowsCount()
       if count > 0
         labelNameKey = this.getDisplayTypes() if count > 1
         countText = count + " " + this.labels[labelNameKey]
@@ -247,7 +270,7 @@ define [
     showCompareEnabledButtons: () ->
       this.showCompareSection()
       this.stickyShowAllBtn.text(this.labels.show_all + " " + this.labels[this.getDisplayTypes()])
-      count = this.selectedRows.length
+      count = this.getRowsCount()
       text = this.labels.viewing + " " + String(count) + " " 
       if count > 1 then text += this.labels[this.getDisplayTypes()] else text += this.labels[this.displayType]
       this.stickyEnabledDescription.text(text)
@@ -257,23 +280,19 @@ define [
     renderStickyChainRows: () ->
       element = $('#stickyChainSelectedList')
       element.empty()
-      data = {}
-      for row in this.selectedRows
-        name = $('#sticky_' + row).data("name")
-        data[name] = row
-      # Sort based on names
-      names = Object.keys(data).sort()
+      reverse = {}
+      for key, value of this.selectedRows
+        reverse[value] = key
+        
+      names = Object.keys(reverse).sort()
       idx = 0
       scrollable =$('<div class="stickyChainScrollable"></div>')
       table = $('<div class=" stickyChainTable"></div>')
       for name in names
         table.append $('<div class="tableRow"><hr class="tableCellHR"/><hr class="tableCellHR"/></div>') if idx > 0
-        table.append $('<div class="tableRow"><div class="tableCellLeft">' + name + '</div><div data-id="' + data[name] + '" class="tableCellRight removeStickyChainIcon"></div></div>')
+        table.append $('<div class="tableRow"><div class="tableCellLeft">' + name + '</div><div data-id="' + reverse[name] + '" data-name="' + name + '" class="tableCellRight removeStickyChainIcon"></div></div>')
         idx++
       scrollable.append table
       element.append scrollable
       
-      
-  
-  
   EdwareGridStickyCompare:EdwareGridStickyCompare

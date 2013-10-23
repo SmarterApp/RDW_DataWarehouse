@@ -25,7 +25,7 @@ if __name__ == "__main__":
     parser.add_argument('-a', '--add_user', action='store_true', help='create the given username')
     parser.add_argument('-s', '--add_tenant', action='store_true', help='create the given tenant name')
     parser.add_argument('-u', '--username', help='The username to add')
-    parser.add_argument('-t', '--tenant-name', help='The tenant name to use')
+    parser.add_argument('-t', '--tenant_name', help='The tenant name to use')
     parser.add_argument('-r', '--role-name', help='The role that the user should have')
     parser.add_argument('--remove-user', action='store_true', help='Delete the user defined by the -u option')
     parser.add_argument('--remove-tenant', action='store_true', help='Remove the tenant specified by the -t option')

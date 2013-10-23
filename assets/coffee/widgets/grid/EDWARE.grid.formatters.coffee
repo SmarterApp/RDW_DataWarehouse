@@ -26,10 +26,10 @@ define [
     "{{#isStateViewOrDistrictView}}" +
     "<div class='marginLeft20 paddingBottom17'>" +
     "{{#isSticky}}" +
-    "<div class='removeIcon stickyCompareRemove' data-value='{{rowId}}'></div><label class='stickyRemoveLabel'>Remove</label>" +
+    "<div class='removeIcon stickyCompareRemove' data-value='{{rowId}}'></div><label class='stickyRemoveLabel'>{{labels.remove}}</label>" +
     "{{/isSticky}}" +
     "{{^isSticky}}" +
-    "<input class='stickyCheckbox' id='sticky_{{rowId}}' type='checkbox' data-name='{{displayValue}}' data-value='{{rowId}}'></input><label class='stickyCompareLabel'>Compare</label>" +
+    "<input class='stickyCheckbox' id='sticky_{{rowId}}' type='checkbox' data-name='{{displayValue}}' data-value='{{rowId}}'></input><label class='stickyCompareLabel'>{{labels.compare}}</label>" +
     "{{/isSticky}}" +
     "</div>" +
     "{{/isStateViewOrDistrictView}}" +
@@ -93,6 +93,7 @@ define [
       params: buildUrl rowObject, options
       export: exportValue
       displayValue: displayValue
+      labels: options.colModel.labels 
     }
   
   showStudentLink = (value, options, rowObject) ->

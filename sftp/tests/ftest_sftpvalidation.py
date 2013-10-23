@@ -75,7 +75,7 @@ class sftpvalidation(unittest.TestCase):
         self.assertFalse(os.path.exists(self.sftp_arrivals_path))
         self.assertFalse(os.path.exists(self.sftp_departures_path))
         #for clean up tenant
-        initialize_sftp_tenant.remove_tenant('ca', self.test_sftp_conf)
+        initialize_sftp_tenant.remove_tenant('tenant_dir', self.test_sftp_conf)
 
         #for clean up users
         initialize_sftp_user. delete_user('arrival_user')

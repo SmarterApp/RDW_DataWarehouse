@@ -14,7 +14,8 @@ define [
   "edwareAsmtDropdown"
   "edwarePreferences"
   "edwareDisclaimer"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareConfidenceLevelBar, edwareClaimsBar, indivStudentReportTemplate, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwareAsmtDropdown, edwarePreferences, edwareDisclaimer) ->
+  "edwareConstants"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareConfidenceLevelBar, edwareClaimsBar, indivStudentReportTemplate, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwareAsmtDropdown, edwarePreferences, edwareDisclaimer, Constants) ->
   
   # claim score weight in percentage
   claimScoreWeightArray = {
@@ -248,10 +249,12 @@ define [
           e.find(".claims_tooltip").html() # template location: templates/individualStudent_report/claimsInfo.html
       
       # Generate footer links
-      this.isrFooter = $('#footer').generateFooter('individual_student_report', this.reportInfo, {
-        'legendInfo': this.legendInfo,
-        'subject': this.createSampleInterval this.data.items[asmtType][0], this.legendInfo.sample_intervals
-      }, this.configData.labels) unless this.isrFooter
+      this.isrFooter = new edwareFooter.EdwareFooter(Constants.REPORT_NAME.ISR, {
+        reportInfo: this.reportInfo
+        legendInfo: this.legendInfo,
+        subject: this.createSampleInterval this.data.items[asmtType][0], this.legendInfo.sample_intervals
+        labels: this.configData.labels
+      }) unless this.isrFooter
       
       this.isrHeader = edwareHeader.create(this.data, this.configData, "individual_student_report") unless this.isrHeader
      

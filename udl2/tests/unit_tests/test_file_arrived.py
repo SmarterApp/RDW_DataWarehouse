@@ -9,37 +9,31 @@ from filearrived import file_arrived
 
 class TestFileArrived(unittest.TestCase):
 
-    def setUp(self):
-        pass
-
-    def tearDown(self):
-        pass
-
     def test__get_tenant_name_regular_directory(self):
         dir_name = '/home/person1/arrivals/ri/some_file.tgz'
         expected = 'ri'
-        result = file_arrived._get_tenant_name(dir_name)
+        result = file_arrived.get_tenant_name(dir_name)
 
         self.assertEqual(result, expected)
 
     def test__get_tenant_name_no_directory(self):
         dir_name = 'shortstring'
         expected = ''
-        result = file_arrived._get_tenant_name(dir_name)
+        result = file_arrived.get_tenant_name(dir_name)
 
         self.assertEqual(result, expected)
 
     def test__create_directory_paths_length(self):
         tenant_name = 'bob'
         batch_guid = 'guid123'
-        result = file_arrived._create_directory_paths(tenant_name, batch_guid)
+        result = file_arrived.create_directory_paths(tenant_name, batch_guid)
 
         self.assertEqual(len(result), 5)
 
     def test__create_directory_paths_dir_name(self):
         tenant_name = 'bob'
         batch_guid = 'guid123'
-        result = file_arrived._create_directory_paths(tenant_name, batch_guid)
+        result = file_arrived.create_directory_paths(tenant_name, batch_guid)
 
         dir_ending = os.path.split(result[mk.ARRIVED])[-1]
         expected = {
@@ -62,7 +56,7 @@ class TestFileArrived(unittest.TestCase):
         for directory in directories.values():
             self.assertFalse(os.path.isdir(directory))
 
-        file_arrived._create_batch_directories(directories)
+        file_arrived.create_batch_directories(directories)
 
         for directory in directories.values():
             self.assertTrue(os.path.isdir(directory))
@@ -76,7 +70,7 @@ class TestFileArrived(unittest.TestCase):
         os.mkdir(history_dir)
         open(incoming_file, 'w')
         self.assertTrue(os.path.isfile(incoming_file))
-        file_arrived._move_file_to_work_and_history(incoming_file, arrived_dir, history_dir)
+        file_arrived.move_file_to_work_and_history(incoming_file, arrived_dir, history_dir)
 
         self.assertFalse(os.path.isfile(incoming_file))
         self.assertTrue(os.path.isfile(os.path.join(arrived_dir, 'udl2_test1.txt')))

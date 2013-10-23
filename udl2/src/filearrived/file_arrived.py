@@ -15,14 +15,14 @@ def move_file_from_arrivals(incoming_file, batch_guid):
     :param batch_guid: the guid for the current batch
     :return: A dictionary containing all the created directories
     """
-    tenant_name = _get_tenant_name(incoming_file)
-    tenant_directory_paths = _create_directory_paths(tenant_name, batch_guid)
-    _create_batch_directories(tenant_directory_paths)
-    _move_file_to_work_and_history(incoming_file, tenant_directory_paths[mk.ARRIVED], tenant_directory_paths[mk.HISTORY])
+    tenant_name = get_tenant_name(incoming_file)
+    tenant_directory_paths = create_directory_paths(tenant_name, batch_guid)
+    create_batch_directories(tenant_directory_paths)
+    move_file_to_work_and_history(incoming_file, tenant_directory_paths[mk.ARRIVED], tenant_directory_paths[mk.HISTORY])
     return tenant_directory_paths
 
 
-def _move_file_to_work_and_history(incoming_file, arrived_dir, history_dir):
+def move_file_to_work_and_history(incoming_file, arrived_dir, history_dir):
     """
     Move the incoming file to its arrived directory under the work folder
         and move it to its history directory
@@ -35,7 +35,7 @@ def _move_file_to_work_and_history(incoming_file, arrived_dir, history_dir):
     shutil.move(incoming_file, history_dir)
 
 
-def _get_tenant_name(incoming_file):
+def get_tenant_name(incoming_file):
     """
     Given the incoming files path return the name of the tenant
     :param incoming_file: the path to the incoming file
@@ -44,7 +44,7 @@ def _get_tenant_name(incoming_file):
     return os.path.split(os.path.dirname(incoming_file))[-1]
 
 
-def _create_directory_paths(tenant_name, batch_guid):
+def create_directory_paths(tenant_name, batch_guid):
     """
     Create the path strings to all directories that need to be created for the batch
     :param tenant_name: The name of the tenant
@@ -68,7 +68,7 @@ def _create_directory_paths(tenant_name, batch_guid):
     return directories
 
 
-def _create_batch_directories(directory_dict):
+def create_batch_directories(directory_dict):
     """
     Create all the directories in the given dict
     :param directory_dict: a dictionary of directories

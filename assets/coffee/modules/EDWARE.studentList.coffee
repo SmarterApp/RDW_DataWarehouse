@@ -11,8 +11,9 @@ define [
   "edwareHeader"
   "edwarePreferences"
   "edwareDisclaimer"
+  "edwareConstants"
   "edwareGridStickyCompare"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwarePreferences, edwareDisclaimer, edwareStickyCompare) ->
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwarePreferences, edwareDisclaimer, Constants, edwareStickyCompare) ->
 
   REPORT_NAME = 'studentList'
   
@@ -94,9 +95,13 @@ define [
       , ".asmtScore"
 
     createHeaderAndFooter: () ->
-      this.footer = edwareFooter.create('list_of_students', this.cutPointsData, this.config) unless this.footer
+      this.config.colorsData = this.cutPointsData
+      this.footer = new edwareFooter.EdwareFooter(Constants.REPORT_NAME.LOS, this.config, this.fetchExportData.bind(this)) unless this.footer
       this.header = edwareHeader.create(this.data, this.config, 'list_of_students') unless this.header
 
+    fetchExportData: () ->
+      this.assessmentsData
+  
     renderBreadcrumbs: () ->
       $('#breadcrumb').breadcrumbs(this.contextData, this.breadcrumbsConfigs)
       

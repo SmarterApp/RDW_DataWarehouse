@@ -10,9 +10,9 @@ define [
     tableId: 'gridTable'
     data: undefined
     options:
-      gridHeight: window.innerHeight * 0.6 #default grid height
+      gridHeight: '100%' #window.innerHeight * 0.6 #default grid height
       datatype: "local"
-      height: "auto"
+      height: "90%"
       viewrecords: true
       autoencode: true
       rowNum: 100
@@ -45,9 +45,9 @@ define [
     afterLoadComplete: () ->
       # Move footer row to the top of the table
       $("div.ui-jqgrid-sdiv").insertBefore $("div.ui-jqgrid-bdiv")
-      $("#gview_gridTable > .ui-jqgrid-bdiv").css {
-          'min-height': 100, 'height': this.options.gridHeight
-      }
+      # $("#gview_gridTable > .ui-jqgrid-bdiv").css {
+      #     'min-height': 100, 'height': this.options.gridHeight
+      # }
 
     render: ()->
       this.renderBody()
@@ -113,6 +113,7 @@ define [
       colModelItem.title = column.title
       colModelItem.classes = column.style if column.style
       colModelItem.frozen = column.frozen if column.frozen
+      colModelItem.export = column.export
       colModelItem.stickyCompareEnabled = this.options.stickyCompareEnabled
 
       #Hide column if the value is true
@@ -131,8 +132,8 @@ define [
 
 
     $.fn.edwareGrid = (columns, options, footer) ->
-      grid = new EdwareGrid(this, columns, options, footer)
-      grid.render()
+      this.grid = new EdwareGrid(this, columns, options, footer)
+      this.grid.render()
       # trigger gridComplete event
       options.gridComplete() if options.gridComplete
 
@@ -148,7 +149,6 @@ define [
         # change the mouse cursor on the columns which are non-sortable
         else $(this).find(">div.ui-jqgrid-sortable").css cursor: "default"  if not cmi.sortable and colName isnt "rn" and colName isnt "cb" and colName isnt "subgrid"
 
-
     $.fn.sortBySubject = (subject, index, order) ->
       order = order || 'asc'
       colModels = this.jqGrid("getGridParam", "colModel")
@@ -157,7 +157,14 @@ define [
           colModel.sorttype = edwareGridSorters.create(index) if colModel.index == subject
       this.sortGrid(subject, true, order)
 
+    $.fn.eagerLoad = () ->
+      # load all data at once
+      this.jqGrid('setGridParam', {scroll: false, rowNum: 100000}).trigger("reloadGrid")
 
+    $.fn.lazyLoad = () ->
+      # dynamically load data when scrolling down
+      this.jqGrid('setGridParam', {scroll: 1, rowNum: 100}).trigger("reloadGrid")
+      
   #
   #    * Creates EDWARE grid
   #    * @param tableId - The container id for grid

@@ -34,7 +34,7 @@ class sftpvalidation(unittest.TestCase):
         self.sftp_zone_path = os.path.join(self.test_sftp_conf['sftp_home'], self.test_sftp_conf['sftp_base_dir'])
         self.sftp_arrivals_path = os.path.join(self.sftp_zone_path, self.test_sftp_conf['sftp_arrivals_dir'])
         self.sftp_departures_path = os.path.join(self.sftp_zone_path, self.test_sftp_conf['sftp_departures_dir'])
-        self.sftp_arrivals_tenant_path = os.path.join(self.sftp_arrivals_path, 'tenant_di')
+        self.sftp_arrivals_tenant_path = os.path.join(self.sftp_arrivals_path, 'tenant_dir')
         self.sftp_departures_tenant_path = os.path.join(self.sftp_departures_path, 'tenant_dir')
         self.sftp_arrivals_users = os.path.join(self.sftp_arrivals_tenant_path, 'arrival_user')
         self.sftp_departures_users = os.path.join(self.sftp_departures_tenant_path, 'departure_user')

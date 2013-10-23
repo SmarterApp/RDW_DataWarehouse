@@ -18,7 +18,7 @@ from sftp.src import initialize_sftp_user
 
 class sftpvalidation(unittest.TestCase):
     def setUp(self):
-
+        shutil.rmtree('/tmp/sftp_functional_test/sftp')
         if not os.path.exists("/tmp/sftp_functional_test"):
             os.mkdir("/tmp/sftp_functional_test", 0o755)
         self.test_sftp_conf = {

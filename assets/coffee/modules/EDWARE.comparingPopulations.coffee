@@ -331,13 +331,13 @@ define [
         return this.breadcrumbsData.items[0].id + ' State Overall'
       else if this.reportType is 'district'
         districtName = this.breadcrumbsData.items[1].name
-        districtName = districtName.replace(/(Schools)|(Public Schools)$/, '').trimRight()
-        districtName = districtName.replace(/District$/, '').trimRight()
-        districtName = districtName.replace(/School$/, '').trimRight()
+        districtName = $.trim districtName.replace(/(Schools)|(Public Schools)$/, '')
+        districtName = $.trim districtName.replace(/District$/, '')
+        districtName = $.trim districtName.replace(/School$/, '')
         return districtName + ' District Overall'
       else if this.reportType is 'school'
         schoolName = this.breadcrumbsData.items[2].name
-        schoolName = schoolName.replace(/School$/, '').trimRight()
+        schoolName = $.trim schoolName.replace(/School$/, '')
         return schoolName + ' School Overall'
       else
         return this.breadcrumbsData.items[3].name + ' Overall'

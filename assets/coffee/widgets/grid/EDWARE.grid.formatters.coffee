@@ -26,10 +26,10 @@ define [
     "{{#isStateViewOrDistrictView}}" +
     "<div class='marginLeft20 paddingBottom17'>" +
     "{{#isSticky}}" +
-    "<div class='removeIcon stickyCompareRemove' value='{{rowId}}' data-value='{{rowId}}'></div><label class='stickyRemoveLabel'>Remove</label>" +
+    "<div class='removeIcon stickyCompareRemove' data-value='{{rowId}}'></div><label class='stickyRemoveLabel'>Remove</label>" +
     "{{/isSticky}}" +
     "{{^isSticky}}" +
-    "<input class='stickyCheckbox' type='checkbox' value='{{rowId}}' data-value='{{rowId}}'></input><label class='stickyCompareLabel'>Compare</label>" +
+    "<input class='stickyCheckbox' id='sticky_{{rowId}}' type='checkbox' data-name='{{displayValue}}' data-value='{{rowId}}'></input><label class='stickyCompareLabel'>Compare</label>" +
     "{{/isSticky}}" +
     "</div>" +
     "{{/isStateViewOrDistrictView}}" +
@@ -87,7 +87,7 @@ define [
     Mustache.to_html NAME_TEMPLATE, {
       isStateViewOrDistrictView: options.colModel.formatoptions.id_name in ["districtGuid", "schoolGuid"]
       isSticky: options.colModel.stickyCompareEnabled
-      rowId: rowObject.id
+      rowId: rowObject.rowId
       cssClass: options.colModel.formatoptions.style
       link: options.colModel.formatoptions.linkUrl
       params: buildUrl rowObject, options

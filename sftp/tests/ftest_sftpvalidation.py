@@ -74,7 +74,12 @@ class sftpvalidation(unittest.TestCase):
         self.assertFalse(os.path.exists(self.sftp_zone_path))
         self.assertFalse(os.path.exists(self.sftp_arrivals_path))
         self.assertFalse(os.path.exists(self.sftp_departures_path))
+        #for clean up tenant
+        initialize_sftp_tenant.remove_tenant('ca', self.test_sftp_conf)
 
+        #for clean up users
+        initialize_sftp_user. delete_user('arrival_user')
+        initialize_sftp_user. delete_user('departure_user')
         #  clean up the groups
         configure_sftp_groups.cleanup(self.test_sftp_conf)
         for name in self.test_sftp_conf['groups']:
@@ -82,10 +87,3 @@ class sftpvalidation(unittest.TestCase):
                 self.assertFalse(configure_sftp_groups._group_exists(name))
             else:
                 self.assertFalse(configure_sftp_groups._group_exists(name))
-
-        #for clean up tenant
-        initialize_sftp_tenant.remove_tenant('ca', self.test_sftp_conf)
-
-        #for clean up users
-        initialize_sftp_user. delete_user('arrival_user')
-        initialize_sftp_user. delete_user('departure_user')

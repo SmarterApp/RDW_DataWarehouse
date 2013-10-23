@@ -6,7 +6,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.txt')).read()
 
 install_requires = [
-    'pyramid >= 1.3.1',
+    'pyramid == 1.4',
     'SQLAlchemy',
     'PyCrypto>=2.6',
     'apscheduler',

@@ -8,7 +8,8 @@ define [
   "text!ISRTemplate"
   "text!LOSTemplate"
   "text!CPopTemplate"
-], ($, Mustache, edwareDataProxy, edwareConfidenceLevelBar, edwarePopulationBar, edwareLOSConfidenceLevelBar, ISRTemplate, LOSTemplate, CPopTemplate) ->
+  "edwareConstants"
+], ($, Mustache, edwareDataProxy, edwareConfidenceLevelBar, edwarePopulationBar, edwareLOSConfidenceLevelBar, ISRTemplate, LOSTemplate, CPopTemplate, Constants) ->
 
   # Legend base class.
   # This is an abstract class, derived class should implement two functions: getTemplate() and createBar()
@@ -126,11 +127,11 @@ define [
     $.fn.createLegend = (reportName, data) ->
       legend = undefined
       # create legend object
-      if reportName is 'individual_student_report'
+      if reportName is Constants.REPORT_NAME.ISR
         legend = new ISRLegend(data)
-      if reportName is 'list_of_students'
+      if reportName is Constants.REPORT_NAME.LOS
         legend = new LOSLegend(data)
-      if reportName is 'comparing_populations'
+      if reportName is Constants.REPORT_NAME.CPOP
         legend = new CPopLegend(data)
       # create legend section
       legend.create $(this) if legend

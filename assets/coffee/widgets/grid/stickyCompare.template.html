@@ -1,14 +1,29 @@
-<div id="compareSelectedActions" class="marginLeft20">
-	<button id="stickyCompare-btn" type="button" class="btn btn-primary">
-		Compare
+<div id="compareSelectedActions">
+	<ul class='stickyControls'>
+	<li>
+		<span class="btn-group">
+			<button id ="stickyChain-btn" type="button" class="btn btn-default dropdown-toggle stickyChainIcon" data-toggle="dropdown">
+				{{labels.selected}}
+			</button>
+			<ul id="stickyChainSelectedList" class="dropdown-menu">
+				
+			</ul>
+
+		</span>
+	</li>
+	<li><button id="stickyCompare-btn" type="button" class="btn btn-primary">
+		{{labels.compare}}
 	</button>
 	<button id="stickyDeselect-btn" type="button" class="btn btn-deselect">
-		Deselect All
-	</button>
+		{{labels.deselect_all}}
+	</button></li>
+	</ul>
 </div>
-<div id ="compareEnabledActions"  class ="marginLeft20">
-	<button id="stickyShowAll-btn" type="button" class="btn btn-primary">
-		Show All
-	</button>
-	<label id="stickyEnabledDescription">test</label>
+<div id ="compareEnabledActions">
+	<ul class='stickyControls'>
+	<li><label id="stickyEnabledDescription"></label></li>
+	<li><button id="stickyShowAll-btn" type="button" class="btn btn-primary">
+		{{labels.show_all}}
+	</button></li>
+	</ul>
 </div>

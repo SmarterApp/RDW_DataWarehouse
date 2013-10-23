@@ -18,7 +18,8 @@ define [
   "edwarePreferences"
   "edwareAsmtDropdown"
   "edwareDisclaimer"
-], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwareDropdown, edwareStickyCompare, edwarePreferences, edwareAsmtDropdown, edwareDisclaimer) ->
+  "edwareConstants"
+], ($, bootstrap, Mustache, edwareDataProxy, edwareGrid, edwareBreadcrumbs, edwareUtil, edwareFooter, edwareHeader, edwareDropdown, edwareStickyCompare, edwarePreferences, edwareAsmtDropdown, edwareDisclaimer, Constants) ->
 
   REPORT_NAME = "comparingPopulationsReport"
 
@@ -28,10 +29,10 @@ define [
 
   class ConfigBuilder
     ### Grid configuration builder. ###
-    
+
     constructor: (template, subjects) ->
       ###
-      
+
       ###
       output = Mustache.render(JSON.stringify(template), subjects)
       this.gridConfig = JSON.parse(output)
@@ -73,10 +74,10 @@ define [
         order: 'asc'
         index: 0
       }
-      this.stickyCompare = new edwareStickyCompare.EdwareGridStickyCompare this.renderGrid.bind(this)
+      this.stickyCompare = new edwareStickyCompare.EdwareGridStickyCompare this.labels, this.renderGrid.bind(this)
       this.asmtTypes = for asmtType in config.students.customViews.asmtTypes
         asmtType.name
-      
+
     # Create assessment type dropdown
     createAsmtDropdown: () ->
       if this.reportType isnt 'school'
@@ -94,15 +95,15 @@ define [
       this.asmtDropdown.create()
       # select default asmt type
       this.asmtDropdown.setSelectedValue this.currentAsmtType
-    
+
     createDisclaimer: () ->
       if this.reportType is 'school'
         this.disclaimer = $('.disclaimerInfo').edwareDisclaimer this.config.interimDisclaimer
         this.updateDisclaimer()
-    
+
     updateDisclaimer: () ->
       this.disclaimer.update this.currentAsmtType
- 
+
     setFilter: (filter) ->
       this.filter = filter
 
@@ -137,7 +138,7 @@ define [
 
         # process breadcrumbs
         self.renderBreadcrumbs(self.data.context)
-        self.stickyCompare.setReportInfo self.reportType, self.breadcrumbs.getOrgType(), self.breadcrumbs.getDisplayType(), self.param
+        self.stickyCompare.setReportInfo self.reportType, self.breadcrumbs.getDisplayType(), self.param
         self.createGrid()
         self.updateDropdown()
         self.updateFilter()
@@ -159,7 +160,8 @@ define [
       this.filter.update this.notStatedData
 
     createHeaderAndFooter: ()->
-      this.footer = edwareFooter.create('comparing_populations', this.data.metadata, this.config) unless this.footer
+      this.config.colorsData = this.data.metadata
+      this.footer = new edwareFooter.EdwareFooter(Constants.REPORT_NAME.CPOP, this.config, this.reportType) unless this.footer
       this.header = edwareHeader.create(this.data, this.config, "comparing_populations_" + this.reportType) unless this.header
 
     fetchData: (params, callback)->
@@ -167,7 +169,7 @@ define [
       options =
         method: "POST"
         params: params
-      
+
       studentsData = undefined
       edwareDataProxy.getDatafromSource "/data/comparing_populations", options, callback
 
@@ -181,7 +183,7 @@ define [
         reportType = 'state'
       reportType
 
-    createGrid: () -> 
+    createGrid: () ->
       # Append colors to records and summary section
       # Do not format data, or get breadcrumbs if the result is empty
       preprocessor = new DataProcessor(this.summaryData[0], this.asmtSubjectsData, this.data.metadata, this.defaultColors)
@@ -200,38 +202,27 @@ define [
         order: $('#gridTable').getGridParam('sortorder')
         name: $('#gridTable').getGridParam('sortname')
       }
-    
+
     renderGrid: () ->
       $('#gridTable').jqGrid('GridUnload')
       # Filter out selected rows, if any
-      gridData = [] 
-      selectedRows = this.stickyCompare.getSelectedRows()
-      stickyCompareEnabled = false
-      if selectedRows.length > 0
-        stickyCompareEnabled = true
-        for data in this.populationData
-          if gridData.length is selectedRows.length
-            break
-          if data.id in selectedRows
-            gridData.push data
-      else
-        gridData = this.populationData
+      filteredInfo = this.stickyCompare.getFilteredInfo(this.populationData)
 
       # Change the column name and link url based on the type of report the user is querying for
-      gridConfig = new ConfigBuilder(this.configTemplate, this.asmtSubjectsData)
+      this.gridConfig = new ConfigBuilder(this.configTemplate, this.asmtSubjectsData)
                              .customize(this.customViews[this.reportType])
                              .build()
 
       self = this
       # Create compare population grid for State/District/School view
       edwareGrid.create {
-        data: gridData
-        columns: gridConfig
+        data: filteredInfo.data
+        columns: this.gridConfig
         footer: this.summaryData
         options:
           gridHeight: this.gridHeight
-          labels: this.labels 
-          stickyCompareEnabled: stickyCompareEnabled
+          labels: this.labels
+          stickyCompareEnabled: filteredInfo.enabled
           sort: this.sort
           gridComplete: () ->
             self.afterGridLoadComplete()
@@ -260,7 +251,7 @@ define [
       # .mouseleave (e) ->
       #   e.stopImmediatePropagation()
       #   $(this).popover('hide')
-                
+
       self = this
       $('#gridTable_name').click ()->
         # Get the current sort column and reset cpop sorting dropdown if the current sort column is the first column
@@ -271,7 +262,7 @@ define [
       this.edwareDropdown = this.createDropdown(this.config.comparingPopulations.customALDDropdown) if not this.edwareDropdown
       # update dropdown menus status
       this.edwareDropdown.update(this.summaryData, this.asmtSubjectsData, this.data.metadata)
-          
+
     createDropdown: (customALDDropdown)->
       self = this
       $('.dropdownSection').edwareDropdown customALDDropdown, (subject, index)->
@@ -285,7 +276,7 @@ define [
       for k of summaryData.results
         name = 'results.' + k + '.total'
         data[name] = summaryData.results[k].total
-        
+
       data['subtitle'] = this.labels['reference_point']#'Reference Point'
       # Set header row to be true to indicate that it's the summary row
       data['header'] = true
@@ -300,7 +291,7 @@ define [
       # Render breadcrumbs on the page
       $('#breadcrumb').breadcrumbs(breadcrumbsData, breadcrumbsConfigs)
       this.initialize()
-      
+
     initialize: () ->
       if this.reportType is 'state'
         this.orgType = this.breadcrumbsData.items[0].name
@@ -311,10 +302,10 @@ define [
       else if this.reportType is 'school'
         this.orgType = this.breadcrumbsData.items[2].name
         this.displayType = "Grade"
-    
+
     getOrgType: () ->
       this.orgType
-    
+
     getDisplayType: () ->
       this.displayType
 
@@ -329,13 +320,13 @@ define [
         return this.breadcrumbsData.items[0].id + ' State Overall'
       else if this.reportType is 'district'
         districtName = this.breadcrumbsData.items[1].name
-        districtName = districtName.replace(/(Schools)|(Public Schools)$/, '').trimRight()
-        districtName = districtName.replace(/District$/, '').trimRight()
-        districtName = districtName.replace(/School$/, '').trimRight()
+        districtName = $.trim districtName.replace(/(Schools)|(Public Schools)$/, '')
+        districtName = $.trim districtName.replace(/District$/, '')
+        districtName = $.trim districtName.replace(/School$/, '')
         return districtName + ' District Overall'
       else if this.reportType is 'school'
         schoolName = this.breadcrumbsData.items[2].name
-        schoolName = schoolName.replace(/School$/, '').trimRight()
+        schoolName = $.trim schoolName.replace(/School$/, '')
         return schoolName + ' School Overall'
       else
         return this.breadcrumbsData.items[3].name + ' Overall'
@@ -350,7 +341,7 @@ define [
 
 
   class DataProcessor
-  
+
     constructor: (@summaryData, @asmtSubjectsData, @colorsData, @defaultColors) ->
 
     # Traverse through to intervals to prepare to append color to data
@@ -402,13 +393,13 @@ define [
           element.color = colors[i]
         else
           element.color = defaultColors[i]
-          
+
         # if percentage is less than 9 then remove the percentage text from the bar
         if element.percentage > 9
           element.showPercentage = true
         else
           element.showPercentage = false
-        
+
         # calculate sort
         sort = calculateTotalPercentage sort, i, element.percentage
         i++
@@ -435,7 +426,7 @@ define [
         percentages[j] = 0
         j++
       percentages[intervalLength-1] = total
-      percentages      
+      percentages
 
 
   class Alignment
@@ -469,7 +460,7 @@ define [
 
     hideAlignment: () ->
       $(".barContainer").addClass('default').removeClass('alignment')
-      $(".populationBar").removeAttr('style')    
+      $(".populationBar").removeAttr('style')
 
-      
+
   PopulationGrid: PopulationGrid

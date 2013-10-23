@@ -2,17 +2,18 @@
 import argparse
 import subprocess
 
-from pyinotify import WatchManager, Notifier, ProcessEvent, IN_CLOSE_WRITE
+from pyinotify import WatchManager, Notifier, ProcessEvent, IN_MOVED_TO
 
 __author__ = 'swimberly'
 
 
 class EventHandler(ProcessEvent):
 
-    def process_IN_CLOSE_WRITE(self, event):
-        print("file created and written:", event.pathname)
-        cmd = 'driver.py -a {}'.format(event.pathname)
-        subprocess.call(cmd, shell=True)
+    def process_IN_MOVED_TO(self, event):
+        if not event.dir:
+            print("file created and written:", event.pathname)
+            cmd = 'driver.py -a {}'.format(event.pathname)
+            subprocess.call(cmd, shell=True)
 
 
 def monitor_directory(directory_path):
@@ -24,11 +25,13 @@ def monitor_directory(directory_path):
     """
     wm = WatchManager()
 
-    mask = IN_CLOSE_WRITE  # watched events
+    # sftp/scp modules usually create temporary files during transfer and move them to permanent
+    # file after entire transfer is complete. This way we only need to watch for IN_MOVE_TO events
+    mask = IN_MOVED_TO  # watched events
 
     handler = EventHandler()
     notifier = Notifier(wm, handler)
-    _wdd = wm.add_watch(directory_path, mask, rec=True)
+    _wdd = wm.add_watch(directory_path, mask, rec=True, auto_add=True)
 
     notifier.loop()
 

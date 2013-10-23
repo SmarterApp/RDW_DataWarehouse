@@ -54,6 +54,14 @@ table td {
     padding-bottom: 17px;
   }
   
+  .marginRight10 {
+    margin-right: 10px;
+  }
+  
+  .verticalAlignMiddle{
+    vertical-align: middle;
+  }
+  
   .stickyCompareLabel {
     display: inline-block;
     margin-left: 5px;
@@ -1378,23 +1386,111 @@ th.ui-th-column div {
 
 #stickyCompareSection {
   height: 38px;
-  background-color: @color-B5;
+  background-color: @color-B12;
   vertical-align: middle;
-  border-bottom: 1px solid @color-B4;
-  border-top: 1px solid @color-B4;
+  border-top: 1px solid @color-B14;
   
-  #compareSelectedActions{
-    margin-top: 4px;
+  
+  .stickyControls {
+    list-style: none;
+    margin: 0px;
+    
+    &>li:first-child {
+      border-left: none;
+      padding-left: 20px;
+      padding-right: 15px;
+    }
+
+    &>li {
+      display: inline-block;
+      vertical-align: middle;
+      border-left: solid 1px @color-B14;
+      padding-left: 18px;
+    }
+    
+    .btn-group, .open button{
+      // sticky chain button is pressed
+      text-shadow: none;
+      background-color: @color-B13;
+    } 
   }
-  
+
   #compareEnabledActions{
     margin-top: 4px;
   }
   
+  #compareSelectedActions {
+    position: relative;
+    margin-top: 4px;
+
+    #stickyChainSelectedList {
+      margin: 23px 0 0;
+      z-index: 3001;
+    }
+    .dropdown-menu::before, .dropdown-menu::after{
+      content: '';
+      position: absolute;
+      display: inline-block;
+      border-style: solid;
+      border-color:transparent;
+      width: 0;
+      height: 0;
+      border-top: 0;
+    }
+    
+    .dropdown-menu::before {
+      position: absolute;
+      top: -10px;
+      left: 30px;
+      border-bottom-color: rgba(0, 0, 0, 0.2);
+      border-width: 10px;
+    }
+    
+    .dropdown-menu::after {
+      position: absolute;
+      top: -9px;
+      left: 31px;
+      border-bottom-color: @color-white;
+      border-width: 9px;
+    }
+    .removeStickyChainIcon {
+      background-image: url("../images/remove_button.png");
+      background-repeat: no-repeat;
+      background-position: center;
+      width: 12px;
+      cursor: pointer;
+    }
+    .stickyChainScrollable {
+      max-height: 300px;
+      padding: 0 5px 0 5px;
+      width: 280px;
+      overflow-y: auto;
+      .stickyChainTable {
+        display: table;
+        .tableRow {
+          display:table-row;
+            .tableCellLeft {
+              display:table-cell;
+              font-size: 13px;
+              width: 250px;
+              padding: 4px;
+            }
+            .tableCellRight {
+              display:table-cell;
+              padding-right: 10px;
+            }
+            .tableCellHR {
+              display:table-cell;
+            }
+        }
+      }
+    }
+  }
+
+  
   #stickyEnabledDescription{
     display:inline;
     vertical-align: middle;
-    margin-left: 10px;
     font-size: 13px;
     color: @color-B1;
   }
@@ -1419,6 +1515,7 @@ th.ui-th-column div {
       font-size: 13px;
       height: 28px;
       color: @color-A2;
+      margin-left: 8px;
       background-color: @color-white;
       background-image: -webkit-gradient(linear,0 0,0 100%,from(@color-white),to(@color-white));
       background-image: -webkit-linear-gradient(top,@color-white,@color-white);
@@ -1430,6 +1527,21 @@ th.ui-th-column div {
         background-position: initial;
       }
   }
+  .stickyChainIcon{
+    background-image: url("../images/stickyChainIcon.png");
+    background-repeat: no-repeat;
+    background-position: 5px center;
+    background-size: 18px 12px;
+    padding-left: 28px;
+    border-color: @color-B15;
+    font-size: 13px;
+    height: 24px;
+    line-height: 10px;
+    color: @color-B1;
+    text-shadow: none;
+    background-color: @color-white;
+  }
+  
 }
 
 // Interim Disclaimer 
@@ -1456,3 +1568,4 @@ th.ui-th-column div {
   width: 400px;
     }
 }
+

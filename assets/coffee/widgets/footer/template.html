@@ -1,61 +1,64 @@
 <ul class="nav">
-	<li>
-		<a id="help" rel="popover" class="pull-right" onclick='$("#aboutReport").popover("hide");$("#legend").popover("hide");$("#feedback").popover("hide");$("#print").popover("hide");'><i class="icon-question-sign icon-white"></i> {{labels.help}}</a>
-	</li>
-	<li>
-		<a id="print" rel="popover" class="pull-right" onclick='$("#aboutReport").popover("hide");$("#help").popover("hide");$("#legend").popover("hide");$("#feedback").popover("hide");'><i class="icon-print icon-white"></i> {{labels.print}}</a>
-	</li>
-	<li>
-		<a id="legend" rel="popover" class="pull-right" onclick='$("#aboutReport").popover("hide");$("#help").popover("hide");$("#feedback").popover("hide");$("#print").popover("hide");'><i class="icon-book icon-white"></i> {{labels.legend}}</a>
-	</li>
-	<li>
-		<a id="aboutReport" rel="popover" class="pull-right" onclick='$("#help").popover("hide");$("#legend").popover("hide");$("#feedback").popover("hide");$("#print").popover("hide");'><i class="icon-info-sign icon-white"></i> {{labels.report_info}}</a>
-	</li>
-	<li>
-		<a id="feedback" rel="popover" class="pull-right" onclick='$("#aboutReport").popover("hide");$("#legend").popover("hide");$("#help").popover("hide");$("#print").popover("hide");'><i class="icon-comment icon-white"></i> {{labels.feedback}}</a>
-	</li>
-	<li>
-		<a id="export" rel="popover" class="pull-right" onclick='$("#aboutReport").popover("hide");$("#legend").popover("hide");$("#help").popover("hide");$("#print").popover("hide");'><i class="icon-file icon-white"></i> Export</a>
-	</li>
-	<li>
-		<div id="copyright">
+    <li>
+	<a id="help" rel="popover" class="pull-right"><i class="icon-question-sign icon-white"></i> {{labels.help}}</a>
+    </li>
+    <li>
+	<a id="print" rel="popover" class="pull-right"><i class="icon-print icon-white"></i> {{labels.print}}</a>
+    </li>
+    <li>
+	<a id="legend" rel="popover" class="pull-right"><i class="icon-book icon-white"></i> {{labels.legend}}</a>
+    </li>
+    <li>
+	<a id="aboutReport" rel="popover" class="pull-right"><i class="icon-info-sign icon-white"></i> {{labels.report_info}}</a>
+    </li>
+    <li>
+	<a id="feedback" rel="popover" class="pull-right"><i class="icon-comment icon-white"></i> {{labels.feedback}}</a>
+    </li>
+    <li>
+	<a id="export" rel="popover" class="pull-right"><i class="icon-file icon-white"></i> Export</a>
+    </li>
+    <li>
+	<div id="copyright">
 			Smarter Balanced &#169; Copyright 2013 <br/>
 			DRAFT: All images and data are <span class="underline">unofficial</span> and for internal testing purposes only
-		</div>
-	</li>
+	</div>
+    </li>
 </ul>
 <div id="footerLinks">
-	<div class="surveyMonkeyPopup" id="survey">
-		<div id="surveyMonkeyInfo"></div>
-	</div>
-	<div class="aboutReportPopup">
-		<div class="reportInfoWrapper">
-			<h3 class="printContent">{{labels.report_info}}:</h3>
+    <div class="surveyMonkeyPopup" id="survey">
+	<div id="surveyMonkeyInfo"></div>
+    </div>
+    <div class="aboutReportPopup">
+	<div class="reportInfoWrapper">
+	    <h3 class="printContent">{{labels.report_info}}:</h3>
 			{{{report_info}}}
-		</div>
 	</div>
-	<div class="legendPopup">
-	</div>
-	<div class="helpPopup">
-		<p>
+    </div>
+    <div class="legendPopup">
+    </div>
+    <div class="helpPopup">
+	<p>
 			{{{labels.help_message}}}
-		</p>
+	</p>
+    </div>
+    <div class="printPopup">
+	<div>
+	    <input type="radio" name="print_options" value="color" checked> {{labels.color}}<br/>
+	    <input type="radio" name="print_options" value="gray"> {{labels.grayscale}} ({{{labels.grayscale_message}}})
 	</div>
-	<div class="printPopup">
-		<div>
-			<input type="radio" name="print_options" value="color" checked> {{labels.color}}<br/>
-			<input type="radio" name="print_options" value="gray"> {{labels.grayscale}} ({{{labels.grayscale_message}}})
-		</div>
-		<div id='printButtonContent'>
-			<button id="printButton" type="button" class="btn btn-info">{{labels.print}}</button>
-		</div>
+	<div id='printButtonContent'>
+	    <button id="printButton" type="button" class="btn btn-info">{{labels.print}}</button>
 	</div>
-	<div class="exportPopup">
-		<div>
-			<input type="radio" name="export_options" value="csv" checked>Export to CSV format<br/>
-		</div>
-		<div id='exportButtonContent'>
-			<button id="exportButton" type="button" class="btn btn-info">Export</button>
-		</div>
+    </div>
+    <div class="exportPopup">
+	<div>
+	    <input type="radio" name="export_options" value="csv" checked>Export to CSV format<br/>
 	</div>
+	<div id="raw_extraction_option">
+		<input type="radio" name="export_options" value="extract">Extract Raw Data to CSV format<br/>
+	</div>
+	<div id='exportButtonContent'>
+	    <button id="exportButton" type="button" class="btn btn-info">Export</button>
+	</div>
+    </div>
 </div>

@@ -1,7 +1,8 @@
 __author__ = 'swimberly'
 
 import os
-from sftp.src.util import create_path, cleanup_directory
+
+from src.util import create_path, cleanup_directory
 
 
 def create_tenant(tenant, sftp_conf):
@@ -42,3 +43,15 @@ def create_tenant_path_string(tenant, sftp_conf, is_arrivals=True):
     zone_str = sftp_conf['sftp_arrivals_dir'] if is_arrivals else sftp_conf['sftp_departures_dir']
     tenant_path = os.path.join(sftp_conf['sftp_home'], sftp_conf['sftp_base_dir'], zone_str, tenant)
     return tenant_path
+
+
+#if __name__ == "__main__":
+#    parser = argparse.ArgumentParser(description="Script to create a tenant in the sftp system")
+#    parser.add_argument('-t', '--tenant', required=True, help="The name of the tenant")
+#    parser.add_argument('-d', '--delete', action='store_true', help="Delete the given tenant")
+#    args = parser.parse_args()
+#
+#    if args.delete:
+#        remove_tenant(args.tenant, sftp.src.sftp_config)
+#    else:
+#        create_tenant(args.tenant, sftp.src.sftp_config)

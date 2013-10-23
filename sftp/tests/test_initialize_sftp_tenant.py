@@ -5,7 +5,6 @@ import os
 import shutil
 
 from sftp.src import initialize_sftp_tenant
-from sftp.src.util import cleanup_directory
 
 
 class TestInitializeTenant(unittest.TestCase):

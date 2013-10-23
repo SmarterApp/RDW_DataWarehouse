@@ -6,7 +6,7 @@ import os
 import subprocess
 import pwd
 
-from sftp.src.util import group_exists
+from src.util import group_exists
 
 
 __author__ = 'swimberly'
@@ -81,3 +81,20 @@ def verify_user_tenant_and_role(tenant_path, username, role):
         return False, 'User already exists!'
     except KeyError:
         return True, ""
+
+
+#if __name__ == "__main__":
+#    parser = argparse.ArgumentParser(description="Script to create a user in the sftp system")
+#    parser.add_argument('-u', '--user', required=True, help='The user name')
+#    parser.add_argument('-t', '--tenant', help="The name of the tenant")
+#    parser.add_argument('-r', '--role', help='The role for the user being created')
+#    parser.add_argument('-d', '--delete', action='store_true', help="Delete the given tenant")
+#    args = parser.parse_args()
+#
+#    if args.delete:
+#        delete_user(args.user)
+#    else:
+#        if args.tenant and args.role:
+#            create_sftp_user(args.tenant, args.user, args.role, sftp.src.sftp_config)
+#        else:
+#            exit('Please supply role and tenant: python initialize_sftp_user.py -h')

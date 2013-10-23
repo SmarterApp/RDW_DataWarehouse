@@ -32,6 +32,7 @@ def create_sftp_user(tenant, user, role, sftp_conf):
 
     user_path = os.path.join(tenant_path, user)
     create_user(user, user_path, role)
+    print('User created:\n\tuser: %s\n\thome dir: %s\n\trole: %s' % (user, user_path, role))
     return True, ""
 
 
@@ -56,6 +57,7 @@ def delete_user(user):
     """
     del_user_cmd = "userdel -r {}".format(user)
     subprocess.call(del_user_cmd, shell=True)
+    print('user removed:', user)
 
 
 def verify_user_tenant_and_role(tenant_path, username, role):

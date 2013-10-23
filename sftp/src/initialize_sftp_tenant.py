@@ -17,6 +17,9 @@ def create_tenant(tenant, sftp_conf):
     departures_path = create_tenant_path_string(tenant, sftp_conf, False)
     create_path(arrivals_path)
     create_path(departures_path)
+    print('Directories created for tenant:')
+    print('\t', arrivals_path)
+    print('\t', departures_path)
 
 
 def remove_tenant(tenant, sftp_conf):
@@ -31,6 +34,9 @@ def remove_tenant(tenant, sftp_conf):
     try:
         os.rmdir(arrivals_path)
         os.rmdir(departures_path)
+        print('Directories removed for tenant:')
+        print('\t', arrivals_path)
+        print('\t', departures_path)
     except OSError:
         print("All users must be removed before tenant can be removed")
 

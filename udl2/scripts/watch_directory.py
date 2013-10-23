@@ -12,8 +12,8 @@ class EventHandler(ProcessEvent):
     def process_IN_MOVED_TO(self, event):
         if not event.dir:
             print("file created and written:", event.pathname)
-        cmd = 'driver.py -a {}'.format(event.pathname)
-        subprocess.call(cmd, shell=True)
+            cmd = 'driver.py -a {}'.format(event.pathname)
+            subprocess.call(cmd, shell=True)
 
 
 def monitor_directory(directory_path):

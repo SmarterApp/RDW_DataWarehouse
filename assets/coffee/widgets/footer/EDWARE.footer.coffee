@@ -153,7 +153,7 @@ define [
           $this = $(this)
           $this.removeClass("active")
           $('#' + $this.attr('id')).popover('hide')
-          $(this).toggleClass("active")
+        $(this).toggleClass("active")
 
       # Popup will close if user clicks popup hide button
       $(document).on 'click', '.hideButton a', ->

@@ -63,7 +63,8 @@ define [
           title: this.labels.feedback
         }
         template: POPOVER_TEMPLATE
-        content: $(".surveyMonkeyPopup").html()
+        content: () ->
+          $(".surveyMonkeyPopup").html()
 
     createLegend: () ->
       # create legend

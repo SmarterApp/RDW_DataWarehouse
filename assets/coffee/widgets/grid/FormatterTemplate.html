@@ -36,7 +36,7 @@
     </div>
 
     <div id="NAME_TEMPLATE">
-        <div class='marginLeft20 {{export}}'>
+        <div class='marginLeft20 {{cssClass}} {{export}}'>
             {{#isSticky}}
             <div class='removeIcon stickyCompareRemove' data-value='{{rowId}}'></div>
             <label class='stickyRemoveLabel'>{{labels.remove}}</label>
@@ -45,7 +45,7 @@
             <input class='stickyCheckbox' id='sticky_{{rowId}}' type='checkbox' data-name='{{displayValue}}' data-value='{{rowId}}'></input>
             <label class='stickyCompareLabel'>{{labels.compare}}</label>
             {{/isSticky}}
-            <a class='{{cssClass}}' href='{{link}}?{{params}}'>{{displayValue}}</a>
+            <a href='{{link}}?{{params}}'>{{displayValue}}</a>
             <span class='hidden' data-export-name='{{columnName}}' data-export-value='{{displayValue}}'></span>
         </div>
     </div>

@@ -78,21 +78,6 @@ define [
       labels: options.colModel.labels
       columnName: options.colModel.columnName
     }
-  
-  showStudentLink = (value, options, rowObject) ->
-    # this formatter is used in los
-    link = options.colModel.formatoptions.linkUrl
-    displayValue = $.jgrid.htmlEncode(value)
-    params = buildUrl rowObject, options
-    showTooltip options, displayValue
-    
-    if not options.colModel.stickyCompareEnabled
-      "<div class='marginLeft20'>" + 
-      "<input class='stickyCheckbox marginRight10' id='sticky_" + rowObject.rowId + "' type='checkbox' data-value=\"" + rowObject.rowId + "\" data-name=\"" + displayValue + "\"></input>" + 
-      "<a class='verticalAlignMiddle' href=\"" + link + "?" + params + "\">" + displayValue + "</a></div>"
-    else
-      "<div class='marginLeft20'><div class='removeIcon stickyCompareRemove marginRight10' data-value=\"" + rowObject.rowId + "\"></div>" + 
-      "<a href=\"" + link + "?" + params + "\">" + displayValue + "</a>"
 
   showText = (value, options, rowObject) ->
     return Mustache.to_html TEXT_TEMPLATE, {
@@ -191,7 +176,6 @@ define [
 
 
   showlink: showlink
-  showStudentLink: showStudentLink
   showText: showText
   showOverallConfidence: showOverallConfidence
   showConfidence: showConfidence

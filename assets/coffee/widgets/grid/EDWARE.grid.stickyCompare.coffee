@@ -115,6 +115,7 @@ define [
         self.storage.clear()
         
       $(document).on 'click', '.dropdown-menu .stickyChainScrollable', (e)->
+        # To prevent the dropdown from closing when clicking inside dropdown menu
         e.stopPropagation();
       
       $(document).on 'mouseenter', '#stickyChain-btn', ()->
@@ -293,7 +294,7 @@ define [
       table = $('<div class=" stickyChainTable"></div>')
       for name in names
         table.append $('<div class="tableRow"><hr class="tableCellHR"/><hr class="tableCellHR"/></div>') if idx > 0
-        table.append $('<div class="tableRow"><div class="tableCellLeft">' + name + '</div><div data-id="' + reverse[name] + '" data-name="' + name + '" class="tableCellRight removeStickyChainIcon"></div></div>')
+        table.append $('<div class="tableRow"><div class="tableCellLeft">' + name + '</div><div data-id="' + reverse[name] + '" class="tableCellRight removeStickyChainIcon"></div></div>')
         idx++
       scrollable.append table
       element.append scrollable

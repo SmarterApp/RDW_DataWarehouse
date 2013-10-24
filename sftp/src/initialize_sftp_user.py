@@ -5,8 +5,9 @@ Methods for adding a user that is able to run the UDL
 import os
 import subprocess
 import pwd
+import shutil
 
-from src.util import group_exists
+from src.util import group_exists, create_path
 
 
 __author__ = 'swimberly'
@@ -31,22 +32,41 @@ def create_sftp_user(tenant, user, role, sftp_conf):
         return False, valid_user[1]
 
     user_path = os.path.join(tenant_path, user)
-    create_user(user, user_path, role)
+    create_user(user, user_path, role, sftp_conf['file_drop'])
     print('User created:\n\tuser: %s\n\thome dir: %s\n\trole: %s' % (user, user_path, role))
     return True, ""
 
 
-def create_user(user, home_folder, role):
+def create_user(user, home_folder, role, file_drop_name):
     """
     create the given user with the specified home-folder and group
 
     :param user: the username of the user to create
     :param home_folder: the path to the users home folder
     :param role: the name of the user's role which will be used to assign a user to a group
-    :return:
+    :return: None
     """
+    create_path(home_folder)
+
     add_user_cmd = "adduser -d {} -g {} -s /sbin/nologin {}".format(home_folder, role, user)
     subprocess.call(add_user_cmd, shell=True)
+    _create_file_drop_folder(user, home_folder, role, file_drop_name)
+
+
+def _create_file_drop_folder(user, home_folder, role, file_drop_name):
+    """
+    Create the directory and set the permissions for the file drop folder
+    :param user: the username of the user to create
+    :param home_folder: the path to the users home folder
+    :param role: the name of the user's role which will be used to assign a user to a group
+    :param file_drop_name: the name of the file drop folder (should be in the sftp_config dict)
+    :return: None
+    """
+    file_drop_loc = os.path.join(home_folder, file_drop_name)
+    # create file drop location and set proper permission
+    create_path(file_drop_loc)
+    shutil.chown(file_drop_loc, user, role)
+    os.chmod(file_drop_loc, 0o777)
 
 
 def delete_user(user):
@@ -83,3 +103,14 @@ def verify_user_tenant_and_role(tenant_path, username, role):
         return False, 'User already exists!'
     except KeyError:
         return True, ""
+
+
+def set_ssh_key(home_folder, pub_key_str=None, pub_key_file=None):
+    """
+    Add the given public key to the users home folder
+    :param home_folder:
+    :param pub_key_str: The string containing the public key
+    :param pub_key_file: The file containing the public key
+    :return: None
+    """
+    pass

@@ -3,6 +3,7 @@ __author__ = 'swimberly'
 import unittest
 import pwd
 import sys
+import os
 
 from sftp.src.initialize_sftp_user import create_user, create_sftp_user, delete_user, verify_user_tenant_and_role
 from sftp.src.configure_sftp_groups import initialize, cleanup
@@ -22,7 +23,8 @@ class TestInitSFTPUser(unittest.TestCase):
             'group_directories': {
                 'testgrp1': 'arrivals',
                 'testgrp2': 'departures'
-            }
+            },
+            'file_drop': 'tst_file_drop',
         }
 
     def test_create_sftp_user(self):
@@ -35,7 +37,6 @@ class TestInitSFTPUser(unittest.TestCase):
             create_tenant(tenant, self.sftp_conf)
             initialize(self.sftp_conf)
             create_sftp_user(tenant, user, role, self.sftp_conf)
-
             self.assertIsNotNone(pwd.getpwnam(user))
 
             # cleanup
@@ -49,8 +50,15 @@ class TestInitSFTPUser(unittest.TestCase):
         if sys.platform == 'linux':
             initialize(self.sftp_conf)
             self.check_user_does_not_exist(user)
-            create_user(user, home_folder, 'testgrp1')
+            create_user(user, home_folder, 'testgrp1', 'file_drop')
             self.assertIsNotNone(pwd.getpwnam(user))
+
+            file_drop_folder = os.path.join(home_folder, self.sftp_conf['file_drop'])
+
+            # check that directory exists and that owner and permission are correct
+            self.assertTrue(os.path.exists(file_drop_folder))
+            self.assertEqual(pwd.getpwuid(os.stat(file_drop_folder).st_uid), user)
+            self.assertEqual((os.stat(file_drop_folder).st_mode & 0o777), 0o777)
             delete_user(user)
             self.check_user_does_not_exist(user)
             cleanup(self.sftp_conf)

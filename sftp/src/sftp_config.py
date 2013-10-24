@@ -9,5 +9,6 @@ sftp_conf = {
     'group_directories': {
         'sftparrivals': 'arrivals',
         'tenantadmin': 'departures'
-    }
+    },
+    'file_drop': 'file_drop'
 }

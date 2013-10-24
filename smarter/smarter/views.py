@@ -7,6 +7,9 @@ Created on Apr 19, 2013
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPMovedPermanently, HTTPNotFound, HTTPError
 from pyramid.security import NO_PERMISSION_REQUIRED
+from smarter.remote_config import config_to_json
+from smarter import ini_file
+import configparser
 
 
 @view_config(context=HTTPError, permission=NO_PERMISSION_REQUIRED, content_type='text/html')
@@ -50,3 +53,11 @@ def error_handler_catchall_exc_json(request):
     All exceptions appear as 404
     '''
     return HTTPNotFound()
+
+
+@view_config(route_name='get_config', renderer='json', permission=NO_PERMISSION_REQUIRED)
+def get_config_from_ini(request):
+    envName = request.matchdict['envName']
+    config = configparser.ConfigParser()
+    config.read(ini_file)
+    return config_to_json(config, envName)

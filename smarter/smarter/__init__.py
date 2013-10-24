@@ -16,9 +16,11 @@ from smarter import services, trigger
 from smarter.database import initialize_db
 from smarter.database.smarter_connector import SmarterDBConnection
 from smarter.database.udl_stats_connector import StatsDBConnection
+from smarter.remote_config import get_remote_config
 
 logger = logging.getLogger(__name__)
 CAKE_PROC = None
+ini_file = None
 
 
 def main(global_config, **settings):
@@ -29,6 +31,10 @@ def main(global_config, **settings):
 
     Returns a Pyramid WSGI application.
     """
+    global ini_file
+    ini_file = global_config.get('__file__')
+    if 'edware.remote_ini.url' in settings:
+        settings = get_remote_config(settings['edware.remote_ini.url'])
     # Prepare for environment specific
     if 'smarter.PATH' in settings:
         os.environ['PATH'] += os.pathsep + settings['smarter.PATH']
@@ -77,6 +83,8 @@ def main(global_config, **settings):
     config.add_static_view('assets/html', os.path.join(assets_dir, 'html'), cache_max_age=0, permission='view')
     # route for error
     config.add_route('error', '/assets/public/error.html')
+    # add fake
+    config.add_route('get_config', '/config/{envName}')
 
     # include add routes from smarter.services. Calls includeme
     config.include(services)

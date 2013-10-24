@@ -2,7 +2,7 @@ __author__ = 'swimberly'
 
 import os
 
-from src.util import create_path, cleanup_directory
+from src.util import create_path
 
 
 def create_tenant(tenant, sftp_conf):

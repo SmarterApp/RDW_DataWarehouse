@@ -1,3 +1,13 @@
+{{#insufficient}}
+  {{#intervals}}
+<div class="{{export}} hidden">
+    <span class='hidden' data-export-value='{{insufficientText}}' data-export-name='{{asmt_subject}}_Level_{{level}}_Total'></span>
+    <span class='hidden' data-export-value='{{insufficientText}}' data-export-name='{{asmt_subject}}_Level_{{level}}_Percentage'></span>
+</div>
+  {{/intervals}}
+{{/insufficient}}
+
+{{^insufficient}}
 <div class="leftPercentageTotal hide">
   {{leftTotalPercentage}}{{#leftTotalPercentage}}%{{/leftTotalPercentage}}
 </div>
@@ -26,3 +36,4 @@
 	</ul>
     </div>
 </div>
+{{/insufficient}}

@@ -111,27 +111,31 @@ define [
 
 
   performanceBar = (value, options, rowObject) ->
+
+    getScoreALD = (subject) ->
+      return '' if not subject
+      if not subject.cut_point_intervals[subject.asmt_perf_lvl-1] then "" else subject.cut_point_intervals[subject.asmt_perf_lvl-1]["name"]
+
+    getStudentName = () ->
+      name = rowObject.student_first_name if rowObject.student_first_name
+      name = name + " " + rowObject.student_middle_name[0] + "." if rowObject.student_middle_name
+      name = name + " " + rowObject.student_last_name if rowObject.student_last_name
+      name
+
     subject_type = options.colModel.formatoptions.asmt_type
     subject = rowObject.assessments[subject_type]
-    labels = options.colModel.labels
-    return showText(value, options, rowObject) if not subject
-
-    score_ALD = if not subject.cut_point_intervals[subject.asmt_perf_lvl-1] then "" else subject.cut_point_intervals[subject.asmt_perf_lvl-1]["name"]
-
-    student_name = rowObject.student_first_name if rowObject.student_first_name
-    student_name = student_name + " " + rowObject.student_middle_name[0] + "." if rowObject.student_middle_name
-    student_name = student_name + " " + rowObject.student_last_name if rowObject.student_last_name
-
+    score_ALD = getScoreALD(subject)
+    student_name = getStudentName()
     toolTip = Mustache.to_html TOOLTIP_TEMPLATE, {
       student_name: student_name
       subject: subject
-      labels: labels
+      labels: options.colModel.labels
       score_ALD: score_ALD
-      confidenceLevelBar: edwareConfidenceLevelBar.create(subject, 300)
+      confidenceLevelBar: edwareConfidenceLevelBar.create(subject, 300) if subject
     }
     perfBar = Mustache.to_html PERFORMANCE_BAR_TEMPLATE, {
       subject: subject
-      confidenceLevelBar: edwareLOSConfidenceLevelBar.create subject, 120
+      confidenceLevelBar: edwareLOSConfidenceLevelBar.create(subject, 120)  if subject
       toolTip: toolTip
       columnName: $('<div>').html(options.colModel.columnName).text() # to filter html code in JSON
       export: 'export' if options.colModel.export
@@ -145,20 +149,20 @@ define [
 
     # display empty message
     return '' if not subject
-    
-    # display insufficient data message
-    if parseInt(value) <= 0                            
-      text = options.colModel.labels['insufficient_data']
-      options.colModel.columnName = subject.asmt_subject
-      return showText(text, options, rowObject) 
 
     subject = formatSubject subject
     exportable = options.colModel.export
+    insufficient = parseInt(value) <= 0
+    insufficientText = options.colModel.labels['insufficient_data']
     subject.export = 'export' if exportable
+    subject.insufficient = insufficient
+    subject.insufficientText = insufficientText
     return Mustache.to_html POPULATION_BAR_TEMPLATE, {
       subject: subject,
       populationBar: edwarePopulationBar.create(subject)
       export: 'export' if exportable
+      insufficient: insufficient
+      insufficientText: insufficientText
     }
 
 

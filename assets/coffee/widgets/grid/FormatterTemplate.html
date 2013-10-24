@@ -16,8 +16,19 @@
             <div class='alignmentHighlightSection'>
                 <div class ='populationBar' data-margin-left='{{subject.alignment}}'>{{{populationBar}}}</div>
             </div>
+            
+            {{#insufficient}}
+            <div>{{insufficientText}}</div>
+            <span class='hidden' data-export-value='{{insufficientText}}' data-export-name='{{subject.asmt_subject}}_Total_Students'></span>
+            {{#subject.unfilteredTotal}}
+            <span class='hidden' data-export-value='{{insufficientText}}' data-export-name='{{subject.asmt_subject}}_Total_Percentage'></span>
+            <span class='hidden' data-export-value='{{insufficientText}}' data-export-name='{{subject.asmt_subject}}_Unfiltered_Total_Students'></span>
+            {{/subject.unfilteredTotal}}
+            {{/insufficient}}
+
+            {{^insufficient}}
             <div class='studentsTotal'>{{subject.total}}</div>
-            <span class='hidden' data-export-value={{subject.total}} data-export-name='{{subject.asmt_subject}}_Total_Students'></span>
+            <span class='hidden' data-export-value='{{subject.total}}' data-export-name='{{subject.asmt_subject}}_Total_Students'></span>
             {{#subject.unfilteredTotal}}
             <div class='unfilteredTotal'>{{subject.ratio}}% of {{subject.unfilteredTotal}}
                 <span class='hidden' data-export-value={{subject.ratio}} data-export-name='{{subject.asmt_subject}}_Total_Percentage'></span>
@@ -25,6 +36,7 @@
             </div>
             {{/subject.unfilteredTotal}}
             <div class='alignmentLine' style='margin-left:{{subject.alignmentLine}}px;'></div>
+            {{/insufficient}}
         </div>
     </div>
 
@@ -53,6 +65,7 @@
     </div>
 
     <div id="TOOLTIP_TEMPLATE">
+        {{#subject}}
         <div class='losTooltip hide'>
             <div class='js-popupTitle hide'>{{student_name}} | {{subject.asmt_type}} {{labels.overall_score}}</div>
             <div class='summary'>
@@ -69,6 +82,10 @@
                 <strong>{{subject.asmt_score_range_min}}-{{subject.asmt_score_range_max}}</strong>
             </div>
         </div>
+        {{/subject}}
+        {{^subject}}
+        <span class='hidden' data-export-value='{{score_ALD}}' data-export-name='{{subject.asmt_type}} Performance Level'></span>
+        {{/subject}}
     </div>
 
     <div id="PERFORMANCE_BAR_TEMPLATE">

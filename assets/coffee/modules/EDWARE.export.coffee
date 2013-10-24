@@ -22,7 +22,7 @@ define [
       }
       this.title =  $('.title h2').text()
       this.sortBy = this.table.jqGrid('getGridParam','sortname');
-      this.asmtType = $('#selectedAsmtType').text()
+      this.asmtType = $('#selectedAsmtType').text() || 'Summative'
       this.isSticky = $('.stickyState').data('label')
       
     build: () ->
@@ -60,7 +60,9 @@ define [
       result.push this.getColumnNames(rowData[0]) # row 0 is header
       # build summary
       footerData = this.table.footerData()
-      result.push this.getColumnValues(footerData)
+      if not $.isEmptyObject(footerData)
+        result.push this.getColumnValues(footerData)
+      # build table grid
       for record, index in rowData
         result.push this.getColumnValues(record)
       result

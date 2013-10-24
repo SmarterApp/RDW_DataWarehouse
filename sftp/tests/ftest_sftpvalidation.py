@@ -39,14 +39,21 @@ class sftpvalidation(unittest.TestCase):
         self.sftp_arrivals_users = os.path.join(self.sftp_arrivals_tenant_path, 'arrival_user')
         self.sftp_departures_users = os.path.join(self.sftp_departures_tenant_path, 'departure_user')
 
-    def test_sftp_azones(self):
+    def test_sftp(self):
+        self.sftp_zones()
+        self.sftp_groups()
+        self.sftp_tenant()
+        self.sftp_users()
+        self.sftp_cleanup()
+
+    def sftp_zones(self):
 
         configure_sftp_zone.initialize(self.test_sftp_conf)
         self.assertTrue(os.path.exists(self.sftp_zone_path))
         self.assertTrue(os.path.exists(self.sftp_arrivals_path))
         self.assertTrue(os.path.exists(self.sftp_departures_path))
 
-    def test_sftp_groups(self):
+    def sftp_groups(self):
 
         configure_sftp_groups.initialize(self.test_sftp_conf)
         for name in self.test_sftp_conf['groups']:
@@ -55,31 +62,33 @@ class sftpvalidation(unittest.TestCase):
                     else:
                         self.assertFalse(configure_sftp_groups._group_exists(name))
 
-    def test_sftp_tenant(self):
+    def sftp_tenant(self):
         initialize_sftp_tenant.create_tenant('tenant_dir', self.test_sftp_conf)
         self.assertTrue(os.path.exists(self.sftp_arrivals_tenant_path))
         self.assertTrue(os.path.exists(self.sftp_departures_tenant_path))
 
-    def test_sftp_users(self):
+    def sftp_users(self):
             initialize_sftp_user.create_sftp_user('tenant_dir', 'arrival_user', 'sftparrivals', self.test_sftp_conf)
             initialize_sftp_user.create_sftp_user('tenant_dir', 'departure_user', 'tenantadmin', self.test_sftp_conf)
             if sys.platform == 'linux':
                     self.assertTrue(os.path.exists(self.sftp_arrivals_users))
                     self.assertTrue(os.path.exists(self.sftp_departures_users))
 
-    def test_sftp_zcleanup(self):
+    def sftp_cleanup(self):
 
         #For clean up zones and base directories
         configure_sftp_zone.cleanup(self.test_sftp_conf)
         self.assertFalse(os.path.exists(self.sftp_zone_path))
         self.assertFalse(os.path.exists(self.sftp_arrivals_path))
         self.assertFalse(os.path.exists(self.sftp_departures_path))
-        #for clean up tenant
-        initialize_sftp_tenant.remove_tenant('tenant_dir', self.test_sftp_conf)
 
         #for clean up users
         initialize_sftp_user. delete_user('arrival_user')
         initialize_sftp_user. delete_user('departure_user')
+
+        #for clean up tenant
+        initialize_sftp_tenant.remove_tenant('tenant_dir', self.test_sftp_conf)
+
         #  clean up the groups
         configure_sftp_groups.cleanup(self.test_sftp_conf)
         for name in self.test_sftp_conf['groups']:

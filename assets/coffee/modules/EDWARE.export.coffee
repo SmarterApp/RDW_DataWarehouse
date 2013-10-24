@@ -41,30 +41,32 @@ define [
 
     buildContent: () ->
       result = []
-      # summary
-      data = this.getContent()
-      for record, index in data
-        columnNames = []
-        columnValues = []
-        for key, value of record
-          exportField = $(value)
-          continue if not exportField.hasClass('export')
-          exportField.find('span.hidden').each () ->
-            $this = $(this)
-            columnValues.push $this.data('export-value')
-            columnNames.push $this.data('export-name') if index is 0
-        columnValues = edwareUtil.escapeCSV columnValues
-        columnNames = edwareUtil.escapeCSV columnNames
-        result.push columnNames.join(Constants.DELIMITOR.COMMA) if columnNames.length > 0 
-        result.push columnValues.join(Constants.DELIMITOR.COMMA)
+      rowData = this.table.getRowData()
+      # build column names
+      result.push this.getColumnNames(rowData[0]) # row 0 is header
+      # build summary
+      footerData = this.table.footerData()
+      result.push this.getColumnValues(footerData)
+      for record, index in rowData
+        result.push this.getColumnValues(record)
       result
 
-    getContent: () ->
-      data = []
-      data = data.concat this.table.footerData()
-      # table body
-      data = data.concat this.table.getRowData()
-      data
+    getColumnNames: (record) ->
+      this.buildRow(record, 'export-name')
+
+    getColumnValues: (record) ->
+      this.buildRow(record, 'export-value')
+
+    buildRow: (record, field) ->
+      columnValues = []
+      for key, value of record
+        exportField = $(value)
+        continue if not exportField.hasClass('export')
+        exportField.find('span.hidden').each () ->
+          $this = $(this)
+          columnValues.push $this.data(field)
+      columnValues = edwareUtil.escapeCSV columnValues
+      columnValues.join(Constants.DELIMITOR.COMMA)
       
     getFileName: () ->
       this.reportType + '_' + this.timestamp + '.csv'

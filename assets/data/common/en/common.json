@@ -249,7 +249,7 @@
 						"field": "student_full_name",
 						"width": 205,
 						"style": "ui-ellipsis bold",
-						"formatter": "showStudentLink",
+						"formatter": "showlink",
 						"options": {
 							"linkUrl": "indivStudentReport.html"
 						},
@@ -324,7 +324,7 @@
 						"field": "student_full_name",
 						"width": 205,
 						"style": "ui-ellipsis bold",
-						"formatter": "showStudentLink",
+						"formatter": "showlink",
 						"options": {
 							"linkUrl": "indivStudentReport.html"
 						},
@@ -414,7 +414,7 @@
 						"field": "student_full_name",
 						"width": 205,
 						"style": "ui-ellipsis bold",
-						"formatter": "showStudentLink",
+						"formatter": "showlink",
 						"options": {
 							"linkUrl": "indivStudentReport.html"
 						},
@@ -532,7 +532,7 @@
 						"formatter": "showlink",
 						"options": {
 							"linkUrl": "studentList.html",
-							"style": "marginLeft20"
+							"style": ""
 						},
 						"hidden": true,
 						"sortorder": "asc",

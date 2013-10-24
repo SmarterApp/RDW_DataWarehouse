@@ -4,10 +4,10 @@
     </div>
 
     <div id="SUMMARY_TEMPLATE">
-        <div class='{{cssClass}} {{export}}'>
+        <div class='marginLeft20 {{cssClass}} {{export}}'>
             <span class=summarySubtitle>{{subTitle}}:</span><br/>
             <span class='summaryTitle'>{{summaryTitle}}</span>
-            <span class='hidden' data-export-value='{{summaryTitle}}' data-export-name='{{display}}'></span>
+            <span class='hidden' data-export-value='{{summaryTitle}}' data-export-name='{{columnName}}'></span>
         </div>
     </div>
 
@@ -17,7 +17,7 @@
                 <div class ='populationBar' data-margin-left='{{subject.alignment}}'>{{{populationBar}}}</div>
             </div>
             <div class='studentsTotal'>{{subject.total}}</div>
-            <span class='hidden' data-export-value={{subject.total}} data-export-name='{{subject.asmt_subject}} Total Count'></span>
+            <span class='hidden' data-export-value={{subject.total}} data-export-name='{{subject.asmt_subject}}'></span>
             {{#subject.unfilteredTotal}}
             <div class='unfilteredTotal'>{{subject.ratio}}% of {{subject.unfilteredTotal}}
                 <span class='hidden' data-export-value={{subject.unfilteredTotal}} data-export-name='{{subject.asmt_subject}} Unfiltered Total Count'></span>
@@ -36,21 +36,17 @@
     </div>
 
     <div id="NAME_TEMPLATE">
-        <div class='{{export}}'>
-     {{#isStateViewOrDistrictView}}
-            <div class='marginLeft20 paddingBottom17'>
-     {{#isSticky}}
-                <div class='removeIcon stickyCompareRemove' data-value='{{rowId}}'></div>
-                <label class='stickyRemoveLabel'>{{labels.remove}}</label>
-     {{/isSticky}}
-     {{^isSticky}}
-                <input class='stickyCheckbox' id='sticky_{{rowId}}' type='checkbox' data-name='{{displayValue}}' data-value='{{rowId}}'></input>
-                <label class='stickyCompareLabel'>{{labels.compare}}</label>
-     {{/isSticky}}
-            </div>
-     {{/isStateViewOrDistrictView}}
+        <div class='marginLeft20 {{export}}'>
+            {{#isSticky}}
+            <div class='removeIcon stickyCompareRemove' data-value='{{rowId}}'></div>
+            <label class='stickyRemoveLabel'>{{labels.remove}}</label>
+            {{/isSticky}}
+            {{^isSticky}}
+            <input class='stickyCheckbox' id='sticky_{{rowId}}' type='checkbox' data-name='{{displayValue}}' data-value='{{rowId}}'></input>
+            <label class='stickyCompareLabel'>{{labels.compare}}</label>
+            {{/isSticky}}
             <a class='{{cssClass}}' href='{{link}}?{{params}}'>{{displayValue}}</a>
-            <span class='hidden' data-export-name='Name' data-export-value='{{displayValue}}'></span>
+            <span class='hidden' data-export-name='{{columnName}}' data-export-value='{{displayValue}}'></span>
         </div>
     </div>
 
@@ -73,10 +69,18 @@
     </div>
 
     <div id="PERFORMANCE_BAR_TEMPLATE">
-        <div class='asmtScore' style='background-color:{{subject.score_bg_color}}; color: {{subject.score_text_color}};'>{{subject.asmt_score}}{{{export}}}</div><div class = 'confidenceLevel'>{{{confidenceLevelBar}}}</div>{{{toolTip}}}
+        <div class='{{export}}'>
+            <div class='asmtScore' style='background-color:{{subject.score_bg_color}}; color: {{subject.score_text_color}};'>{{subject.asmt_score}}</div>
+            <span class='hidden' data-export-value='{{subject.asmt_score}}' data-export-name='Hello'></span>
+            <div class = 'confidenceLevel'>{{{confidenceLevelBar}}}</div>
+            {{{toolTip}}}
+        </div>
     </div>
 
     <div id="CONFIDENCE_TEMPLATE">
-        <div>{{{export}}}<strong>{{value}}</strong> (&#177;{{confidence}})</div>
+        <div class='{{export}}'>
+            <strong>{{value}}</strong> (&#177;{{confidence}})
+            <span class='hidden' data-export-name='{{columnName}}' data-export-value='{{value}}'></span>
+        </div>
     </div>
 </div>

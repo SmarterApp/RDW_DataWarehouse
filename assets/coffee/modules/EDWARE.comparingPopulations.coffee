@@ -181,6 +181,7 @@ define [
         reportType = 'district'
       else if params['stateCode']
         reportType = 'state'
+      $('body').addClass reportType
       reportType
 
     createGrid: () ->

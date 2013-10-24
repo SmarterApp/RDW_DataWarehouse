@@ -53,7 +53,7 @@ define [
       cssClass: options.colModel.formatoptions.style
       subTitle: rowObject.subtitle
       summaryTitle: value
-      display: options.colModel.display
+      columnName: options.colModel.columnName
       export: 'export' if exportable
     } if isHeader
     
@@ -68,7 +68,6 @@ define [
 
     # sticky comparison is not activated, show checkbox
     Mustache.to_html NAME_TEMPLATE, {
-      isStateViewOrDistrictView: options.colModel.formatoptions.id_name in ["districtGuid", "schoolGuid"]
       isSticky: options.colModel.stickyCompareEnabled
       rowId: rowObject.rowId
       cssClass: options.colModel.formatoptions.style
@@ -76,7 +75,8 @@ define [
       params: buildUrl rowObject, options
       export: 'export' if exportable # check if export current field
       displayValue: getDisplayValue()
-      labels: options.colModel.labels 
+      labels: options.colModel.labels
+      columnName: options.colModel.columnName
     }
   
   showStudentLink = (value, options, rowObject) ->
@@ -97,7 +97,7 @@ define [
   showText = (value, options, rowObject) ->
     return Mustache.to_html TEXT_TEMPLATE, {
       value: value
-      columnName: 'Hello'
+      columnName: options.colModel.columnName
       export: 'export' if options.colModel.export
     } 
 
@@ -117,8 +117,9 @@ define [
     confidence = subject[names[2]][names[3]]['confidence']
     Mustache.to_html CONFIDENCE_TEMPLATE, {
       value: value
+      columnName: options.colModel.columnName
       confidence: confidence
-      export: formatExport(value, '') if options.colModel.export
+      export: 'export' if options.colModel.export
     }
 
 
@@ -145,7 +146,8 @@ define [
       subject: subject
       confidenceLevelBar: edwareLOSConfidenceLevelBar.create subject, 120
       toolTip: toolTip
-      export: formatExport(value, '') if options.colModel.export
+      columnName: options.colModel.columnName
+      export: 'export' if options.colModel.export
     }
     perfBar
 
@@ -156,9 +158,12 @@ define [
 
     # display empty message
     return '' if not subject
+    
     # display insufficient data message
-    text = options.colModel.labels['insufficient_data']
-    return showText(text, options, rowObject) if parseInt(value) <= 0
+    if parseInt(value) <= 0                            
+      text = options.colModel.labels['insufficient_data']
+      options.colModel.columnName = subject.asmt_subject
+      return showText(text, options, rowObject) 
 
     subject = formatSubject subject
     return Mustache.to_html POPULATION_BAR_TEMPLATE, {

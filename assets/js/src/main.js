@@ -52,7 +52,8 @@ require({
     edwareFooterHtml: '../widgets/footer/template.html',
     edwareFilterTemplate: '../widgets/filter/template.html',
     edwareDropdownTemplate: '../widgets/dropdown/template.html',
-    edwareStickyCompareTemplate: '../widgets/grid/stickyCompare.template.html'
+    edwareStickyCompareTemplate: '../widgets/grid/stickyCompare.template.html',
+    edwareFormatterTemplate: '../widgets/grid/FormatterTemplate.html'
 
   },
   shim: {

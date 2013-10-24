@@ -153,6 +153,18 @@ define [
     }
     $('body').html output
 
+  escapeCSV = (value) ->
+    if typeof(value) is 'string'
+      # escape double quote
+      return '"' + value + '"'
+    else if typeof(value) is 'number'
+      return '"' + value + '"'
+    else if $.isArray(value)
+      for item in value
+        escapeCSV item
+    else
+      value
+    
   getConstants: getConstants
   displayErrorMessage: displayErrorMessage
   getUrlParams: getUrlParams 
@@ -169,3 +181,4 @@ define [
   formatNumber: formatNumber
   displayNoResultsMessage: displayNoResultsMessage
   reRenderBody: reRenderBody
+  escapeCSV: escapeCSV

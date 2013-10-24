@@ -6,42 +6,27 @@ define [
   'edwarePopulationBar'
   'edwareConfidenceLevelBar'
   'edwareLOSConfidenceLevelBar'
-], ($, Mustache, jqGrid, edwareUtil, edwarePopulationBar, edwareConfidenceLevelBar, edwareLOSConfidenceLevelBar) ->
+  'text!edwareFormatterTemplate'
+], ($, Mustache, jqGrid, edwareUtil, edwarePopulationBar, edwareConfidenceLevelBar, edwareLOSConfidenceLevelBar, edwareFormatterTemplate) ->
 
-  EXPORT_TEMPLATE = "<div class='export'><span>{{value}}</span><span>{{title}}</span></div>"
+  getTemplate = (name) ->
+    $(edwareFormatterTemplate).find('div#' + name).html()
 
-  SUMMARY_TEMPLATE = "<div class='{{cssClass}}'><span class=summarySubtitle>{{subTitle}}:</span><br/><span class='summaryTitle'>{{summaryTitle}}</span>{{{export}}}</div>"
+  EXPORT_TEMPLATE = getTemplate('EXPORT_TEMPLATE')
 
-  POPULATION_BAR_TEMPLATE = "<div class='barContainer default'>" +
-    "<div class='alignmentHighlightSection'><div class ='populationBar' data-margin-left='{{alignment}}'>{{{populationBar}}}</div></div>" +
-    "<div class='studentsTotal'>{{total}}</div>" +
-    "{{#unfilteredTotal}}<div class='unfilteredTotal'>{{ratio}}% of {{unfilteredTotal}}</div>{{/unfilteredTotal}}" +
-    "<div class='alignmentLine' style='margin-left:{{alignmentLine}}px;'></div>" +
-    "{{{export}}}" +
-    "</div>"
+  SUMMARY_TEMPLATE = getTemplate('SUMMARY_TEMPLATE')
 
-  TEXT_TEMPLATE = "<div>{{value}}{{{export}}}</div>"
+  POPULATION_BAR_TEMPLATE = getTemplate('POPULATION_BAR_TEMPLATE')
 
-  NAME_TEMPLATE = "<div>" +
-    "{{#isStateViewOrDistrictView}}" +
-    "<div class='marginLeft20 paddingBottom17'>" +
-    "{{#isSticky}}" +
-    "<div class='removeIcon stickyCompareRemove' data-value='{{rowId}}'></div><label class='stickyRemoveLabel'>{{labels.remove}}</label>" +
-    "{{/isSticky}}" +
-    "{{^isSticky}}" +
-    "<input class='stickyCheckbox' id='sticky_{{rowId}}' type='checkbox' data-name='{{displayValue}}' data-value='{{rowId}}'></input><label class='stickyCompareLabel'>{{labels.compare}}</label>" +
-    "{{/isSticky}}" +
-    "</div>" +
-    "{{/isStateViewOrDistrictView}}" +
-    "{{{export}}}" +
-    "<a class='{{cssClass}}' href='{{link}}?{{params}}'>{{displayValue}}</a>" +
-    "</div>"
+  NAME_TEMPLATE = getTemplate('NAME_TEMPLATE')
 
-  TOOLTIP_TEMPLATE =  "<div class='losTooltip hide'><div class='js-popupTitle hide'>{{student_name}} | {{subject.asmt_type}} {{labels.overall_score}}</div><div class='summary'><div class='title left'>{{labels.overall_score}}</div><div class='score left' style='background:{{subject.score_bg_color}};color:{{subject.score_text_color}}'><span>{{subject.asmt_score}}</span></div><div class='description' style='color:{{subject.score_bg_color}}'>{{score_ALD}}</div></div><hr/><div class='losPerfBar'>{{{confidenceLevelBar}}}</div><div class='errorBand'>{{labels.error_band}}: <strong>{{subject.asmt_score_range_min}}-{{subject.asmt_score_range_max}}</strong></div></div>"
+  TOOLTIP_TEMPLATE = getTemplate('TOOLTIP_TEMPLATE')
 
-  PERFORMANCE_BAR_TEMPLATE = "<div class='asmtScore' style='background-color:{{subject.score_bg_color}}; color: {{subject.score_text_color}};'>{{subject.asmt_score}}{{{export}}}</div><div class = 'confidenceLevel'>{{{confidenceLevelBar}}}</div>{{{toolTip}}}"
+  CONFIDENCE_TEMPLATE = getTemplate('CONFIDENCE_TEMPLATE')
 
-  CONFIDENCE_TEMPLATE = "<div>{{{export}}}<strong>{{value}}</strong> (&#177;{{confidence}})</div>"
+  TEXT_TEMPLATE = getTemplate('TEXT_TEMPLATE')
+
+  PERFORMANCE_BAR_TEMPLATE = getTemplate('PERFORMANCE_BAR_TEMPLATE')
 
   #
   # * EDWARE grid formatters
@@ -60,14 +45,16 @@ define [
       'title="' + displayValue + '"'
 
   showlink = (value, options, rowObject) ->
-
+    exportable = options.colModel.export #check if export current field
+    
     # draw summary row (grid footer)
     isHeader = rowObject.header
     return Mustache.to_html SUMMARY_TEMPLATE, {
       cssClass: options.colModel.formatoptions.style
       subTitle: rowObject.subtitle
       summaryTitle: value
-      export: formatExport(value, '')
+      display: options.colModel.display
+      export: 'export' if exportable
     } if isHeader
     
     getDisplayValue = () ->
@@ -79,10 +66,6 @@ define [
       options.colModel.cellattr = showTooltip options, displayValue
       displayValue
 
-    displayValue = getDisplayValue()
-    # check if export current field
-    exportValue = formatExport displayValue, "" if options.colModel.export
-
     # sticky comparison is not activated, show checkbox
     Mustache.to_html NAME_TEMPLATE, {
       isStateViewOrDistrictView: options.colModel.formatoptions.id_name in ["districtGuid", "schoolGuid"]
@@ -91,8 +74,8 @@ define [
       cssClass: options.colModel.formatoptions.style
       link: options.colModel.formatoptions.linkUrl
       params: buildUrl rowObject, options
-      export: exportValue
-      displayValue: displayValue
+      export: 'export' if exportable # check if export current field
+      displayValue: getDisplayValue()
       labels: options.colModel.labels 
     }
   
@@ -112,14 +95,11 @@ define [
       "<a href=\"" + link + "?" + params + "\">" + displayValue + "</a>"
 
   showText = (value, options, rowObject) ->
-    exportable = options.colModel.export
-
     return Mustache.to_html TEXT_TEMPLATE, {
-      value: value,
-      export: formatExport(value, '')
-    } if exportable
-
-    return value
+      value: value
+      columnName: 'Hello'
+      export: 'export' if options.colModel.export
+    } 
 
   showOverallConfidence = (value, options, rowObject) ->
     names = options.colModel.name.split "."
@@ -136,7 +116,7 @@ define [
 
     confidence = subject[names[2]][names[3]]['confidence']
     Mustache.to_html CONFIDENCE_TEMPLATE, {
-      value: value,
+      value: value
       confidence: confidence
       export: formatExport(value, '') if options.colModel.export
     }
@@ -178,34 +158,22 @@ define [
     return '' if not subject
     # display insufficient data message
     text = options.colModel.labels['insufficient_data']
-    return Mustache.to_html TEXT_TEMPLATE, {
-      value: text,
-      export: formatExport(text, subject.asmt_subject)
-    } if parseInt(value) <= 0
+    return showText(text, options, rowObject) if parseInt(value) <= 0
 
     subject = formatSubject subject
-    export_filed = options.colModel.export #check if export current field
-    exportValue = formatExport subject.total, subject.asmt_subject if export_filed
     return Mustache.to_html POPULATION_BAR_TEMPLATE, {
-      alignment: subject.alignment,
-      alignmentLine: subject.alignmentLine,
-      total: subject.total,
-      unfilteredTotal: subject.unfilteredTotal,
-      ratio: subject.ratio,
+      subject: subject,
       populationBar: edwarePopulationBar.create(subject)
-      export: exportValue
+      export: 'export' if options.colModel.export
     }
 
 
   formatExport = (value, title) ->
-    # escape double quote
-    value = value.replace(/"/g, '\\"') if typeof(value) is 'string'
     #export fields
     Mustache.to_html EXPORT_TEMPLATE, {
-      value: '"' + value + '"' if value
+      value: value
       title: title
     }
-
 
   formatSubject = (subject) ->
     subject.total = edwareUtil.formatNumber(subject.total)

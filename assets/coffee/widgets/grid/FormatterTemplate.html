@@ -1,0 +1,82 @@
+<div>
+    <div id="EXPORT_TEMPLATE">
+        <div class='export'><span class='hidden' data-export-value='{{value}}' data-export-name='{{title}}'></span></div>
+    </div>
+
+    <div id="SUMMARY_TEMPLATE">
+        <div class='{{cssClass}} {{export}}'>
+            <span class=summarySubtitle>{{subTitle}}:</span><br/>
+            <span class='summaryTitle'>{{summaryTitle}}</span>
+            <span class='hidden' data-export-value='{{summaryTitle}}' data-export-name='{{display}}'></span>
+        </div>
+    </div>
+
+    <div id="POPULATION_BAR_TEMPLATE">
+        <div class='barContainer default {{export}}'>
+            <div class='alignmentHighlightSection'>
+                <div class ='populationBar' data-margin-left='{{subject.alignment}}'>{{{populationBar}}}</div>
+            </div>
+            <div class='studentsTotal'>{{subject.total}}</div>
+            <span class='hidden' data-export-value={{subject.total}} data-export-name='{{subject.asmt_subject}} Total Count'></span>
+            {{#subject.unfilteredTotal}}
+            <div class='unfilteredTotal'>{{subject.ratio}}% of {{subject.unfilteredTotal}}
+                <span class='hidden' data-export-value={{subject.unfilteredTotal}} data-export-name='{{subject.asmt_subject}} Unfiltered Total Count'></span>
+                <span class='hidden' data-export-value={{subject.ratio}} data-export-name='{{subject.asmt_subject}} Ratio'></span>
+            </div>
+            {{/subject.unfilteredTotal}}
+            <div class='alignmentLine' style='margin-left:{{subject.alignmentLine}}px;'></div>
+        </div>
+    </div>
+
+    <div id="TEXT_TEMPLATE">
+        <div class='{{export}}'>
+            {{value}}
+            <span class='hidden' data-export-value='{{value}}' data-export-name='{{columnName}}'></span>
+        </div>
+    </div>
+
+    <div id="NAME_TEMPLATE">
+        <div class='{{export}}'>
+     {{#isStateViewOrDistrictView}}
+            <div class='marginLeft20 paddingBottom17'>
+     {{#isSticky}}
+                <div class='removeIcon stickyCompareRemove' data-value='{{rowId}}'></div>
+                <label class='stickyRemoveLabel'>{{labels.remove}}</label>
+     {{/isSticky}}
+     {{^isSticky}}
+                <input class='stickyCheckbox' id='sticky_{{rowId}}' type='checkbox' data-name='{{displayValue}}' data-value='{{rowId}}'></input>
+                <label class='stickyCompareLabel'>{{labels.compare}}</label>
+     {{/isSticky}}
+            </div>
+     {{/isStateViewOrDistrictView}}
+            <a class='{{cssClass}}' href='{{link}}?{{params}}'>{{displayValue}}</a>
+            <span class='hidden' data-export-name='Name' data-export-value='{{displayValue}}'></span>
+        </div>
+    </div>
+
+    <div id="TOOLTIP_TEMPLATE">
+        <div class='losTooltip hide'>
+            <div class='js-popupTitle hide'>{{student_name}} | {{subject.asmt_type}} {{labels.overall_score}}</div>
+            <div class='summary'>
+                <div class='title left'>{{labels.overall_score}}</div>
+                <div class='score left' style='background:{{subject.score_bg_color}};color:{{subject.score_text_color}}'>
+                    <span>{{subject.asmt_score}}</span>
+                </div>
+                <div class='dedivion' style='color:{{subject.score_bg_color}}'>{{score_ALD}}</div>
+            </div>
+            <hr/>
+            <div class='losPerfBar'>{{{confidenceLevelBar}}}</div>
+            <div class='errorBand'>{{labels.error_band}}:
+                <strong>{{subject.asmt_score_range_min}}-{{subject.asmt_score_range_max}}</strong>
+            </div>
+        </div>
+    </div>
+
+    <div id="PERFORMANCE_BAR_TEMPLATE">
+        <div class='asmtScore' style='background-color:{{subject.score_bg_color}}; color: {{subject.score_text_color}};'>{{subject.asmt_score}}{{{export}}}</div><div class = 'confidenceLevel'>{{{confidenceLevelBar}}}</div>{{{toolTip}}}
+    </div>
+
+    <div id="CONFIDENCE_TEMPLATE">
+        <div>{{{export}}}<strong>{{value}}</strong> (&#177;{{confidence}})</div>
+    </div>
+</div>

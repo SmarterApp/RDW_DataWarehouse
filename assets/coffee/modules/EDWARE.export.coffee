@@ -2,43 +2,72 @@ define [
   "jquery"
   "mustache"
   "edwareConstants"
-], ($, Mustache, Constants) ->
+  "edwareClientStorage"
+  "edwareUtil"
+], ($, Mustache, Constants, edwareClientStorage, edwareUtil) ->
 
   class CSVBuilder
   
     constructor: (@table, @reportType) ->
+      this.timestamp = new Date().getTime()
 
     build: () ->
-      records = ('' for i in [1..10]) # fixed first 10 rows
+      records = [] # fixed first 10 rows
       # build header
-      records = records.concat this.buildHeader()
+      records = records.concat this.buildTitle()
       # build body
       records = records.concat this.buildContent()
       records.join Constants.DELIMITOR.NEWLINE
 
-    buildHeader: () ->
-      result = []
-      footer = this.table.footerData()
-      for key, value of footer
-        exportField = $(value).find('div.export')
-        result.push exportField.find('span:eq(1)').html() if exportField[0]
-      result.join Constants.DELIMITOR.COMMA
+    buildTitle: () ->
+      records = []
+      # build title
+      records.push $('.title h2').text()
+      #TODO build academic year
+      # build assessment type
+      records.push this.reportType
+      # build timestamp and username
+      records.push this.timestamp
+      # build filters
+      records.push this.buildFilters()
+      for i in [records.length .. 9] # fix first 10 rows as headers
+        records.push ''
+      records = edwareUtil.escapeCSV records
+      
+    buildFilters: () ->
+      params = edwareClientStorage.filterStorage.load()
+      for key, value of JSON.parse(params)
+        key + ":" + value
 
     buildContent: () ->
+      result = []
       # summary
+      data = this.getContent()
+      for record, index in data
+        columnNames = []
+        columnValues = []
+        for key, value of record
+          exportField = $(value)
+          continue if not exportField.hasClass('export')
+          exportField.find('span.hidden').each () ->
+            $this = $(this)
+            columnValues.push $this.data('export-value')
+            columnNames.push $this.data('export-name') if index is 0
+        columnValues = edwareUtil.escapeCSV columnValues
+        columnNames = edwareUtil.escapeCSV columnNames
+        result.push columnNames.join(Constants.DELIMITOR.COMMA) if columnNames.length > 0 
+        result.push columnValues.join(Constants.DELIMITOR.COMMA)
+      result
+
+    getContent: () ->
       data = []
       data = data.concat this.table.footerData()
       # table body
       data = data.concat this.table.getRowData()
-      $.map data, (record)->
-        result = []
-        for key, value of record
-          exportField = $(value).find('div.export')
-          result.push exportField.find('span:eq(0)').html() if exportField[0]
-        result.join Constants.DELIMITOR.COMMA
-
+      data
+      
     getFileName: () ->
-      this.reportType + '_' + new Date().getTime() + '.csv'
+      this.reportType + '_' + this.timestamp + '.csv'
 
 
   class EdwareDownload
@@ -52,6 +81,7 @@ define [
       window.saveAs = window.saveAs || window.webkitSaveAs || window.mozSaveAs || window.msSaveAs;
 
     saveAsBlob: (data, name, mimeType) ->
+      # Support IE10+
       blob = this.makeBlob data, mimeType
       if (window.saveAs)
         window.saveAs(blob, name)
@@ -59,6 +89,7 @@ define [
         navigator.saveBlob(blob, name)
 
     saveAsURI: (data, filename, mimetype) ->
+      # Support Chrome, FF, Safari
       url = 'data:application/csv;charset=UTF-8,' + encodeURIComponent(data)
       link = $('<a>').html(filename).attr('href', url).attr('download', filename)[0]
       if link.download
@@ -69,6 +100,7 @@ define [
         window.open(url, '_blank', '')
 
     saveAsWindow: (data, filename, mimetype) ->
+      # Suppport other browsers
       x = window.open();
       x.document.open(mimetype, "replace");
       x.document.write(data);

@@ -100,6 +100,7 @@ define [
     getColumnModel: (column) ->
       colModelItem =
         name: column.field
+        display: column.name
         index: column.index
         width: column.width
         resizable: false # prevent the user from manually resizing the columns

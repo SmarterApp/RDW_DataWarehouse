@@ -66,15 +66,17 @@ define [
       options.colModel.cellattr = showTooltip options, displayValue
       displayValue
 
-    # sticky comparison is not activated, show checkbox
+    displayValue = getDisplayValue()
+    params = buildUrl(rowObject, options)
+    # for some reason, link doesn't work well in old version of FF, have to construct manually here
+    link = "<a href='" + options.colModel.formatoptions.linkUrl + "?" + params + "'>" + displayValue + "</a>"
     Mustache.to_html NAME_TEMPLATE, {
       isSticky: options.colModel.stickyCompareEnabled
       rowId: rowObject.rowId
       cssClass: options.colModel.formatoptions.style
-      link: options.colModel.formatoptions.linkUrl
-      params: buildUrl rowObject, options
+      link: link
       export: 'export' if exportable # check if export current field
-      displayValue: getDisplayValue()
+      displayValue: displayValue
       labels: options.colModel.labels
       columnName: options.colModel.columnName
     }

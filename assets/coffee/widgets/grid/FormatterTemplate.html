@@ -51,12 +51,12 @@
         <div class='marginLeft20 {{cssClass}} {{export}}'>
             {{#isSticky}}
             <div class='removeIcon stickyCompareRemove' data-value='{{rowId}}'></div>
-            <label class='stickyRemoveLabel'>{{labels.remove}}</label>
+            <label class='stickyRemoveLabel paddingBottom9'>{{labels.remove}}</label>
             <div class='hidden stickyState' data-label='On'></div>
             {{/isSticky}}
             {{^isSticky}}
             <input class='stickyCheckbox' id='sticky_{{rowId}}' type='checkbox' data-name='{{displayValue}}' data-value='{{rowId}}'></input>
-            <label class='stickyCompareLabel'>{{labels.compare}}</label>
+            <label class='stickyCompareLabel paddingBottom9'>{{labels.compare}}</label>
             <div class='hidden stickyState' data-label='Off'></div>
             {{/isSticky}}
             {{{link}}}

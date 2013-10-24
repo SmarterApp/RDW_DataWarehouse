@@ -133,7 +133,7 @@ define [
       subject: subject
       confidenceLevelBar: edwareLOSConfidenceLevelBar.create subject, 120
       toolTip: toolTip
-      columnName: options.colModel.columnName
+      columnName: $('<div>').html(options.colModel.columnName).text() # to filter html code in JSON
       export: 'export' if options.colModel.export
     }
     perfBar
@@ -153,10 +153,12 @@ define [
       return showText(text, options, rowObject) 
 
     subject = formatSubject subject
+    exportable = options.colModel.export
+    subject.export = 'export' if exportable
     return Mustache.to_html POPULATION_BAR_TEMPLATE, {
       subject: subject,
       populationBar: edwarePopulationBar.create(subject)
-      export: 'export' if options.colModel.export
+      export: 'export' if exportable
     }
 
 

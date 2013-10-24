@@ -282,7 +282,7 @@
 						"formatter": "showText",
 						"style": "ui-ellipsis",
 						"resizable": false,
-						"export": true
+						"export": false
 					}
 				]
 			}, {
@@ -309,7 +309,7 @@
 						"formatter": "showText",
 						"style": "ui-ellipsis",
 						"resizable": false,
-						"export": true
+						"export": false
 					}
 				]
 			}
@@ -357,7 +357,7 @@
 						"formatter": "showText",
 						"style": "ui-ellipsis",
 						"resizable": false,
-						"export": true
+						"export": false
 					}
 				]
 			}, {
@@ -447,7 +447,7 @@
 						"formatter": "showText",
 						"style": "ui-ellipsis",
 						"resizable": false,
-						"export": true
+						"export": false
 					}
 				]
 			}, {

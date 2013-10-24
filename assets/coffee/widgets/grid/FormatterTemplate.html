@@ -17,11 +17,11 @@
                 <div class ='populationBar' data-margin-left='{{subject.alignment}}'>{{{populationBar}}}</div>
             </div>
             <div class='studentsTotal'>{{subject.total}}</div>
-            <span class='hidden' data-export-value={{subject.total}} data-export-name='{{subject.asmt_subject}}'></span>
+            <span class='hidden' data-export-value={{subject.total}} data-export-name='{{subject.asmt_subject}}_Total_Students'></span>
             {{#subject.unfilteredTotal}}
             <div class='unfilteredTotal'>{{subject.ratio}}% of {{subject.unfilteredTotal}}
-                <span class='hidden' data-export-value={{subject.unfilteredTotal}} data-export-name='{{subject.asmt_subject}} Unfiltered Total Count'></span>
-                <span class='hidden' data-export-value={{subject.ratio}} data-export-name='{{subject.asmt_subject}} Ratio'></span>
+                <span class='hidden' data-export-value={{subject.ratio}} data-export-name='{{subject.asmt_subject}}_Total_Percentage'></span>
+                <span class='hidden' data-export-value={{subject.unfilteredTotal}} data-export-name='{{subject.asmt_subject}}_Unfiltered_Total_Students'></span>
             </div>
             {{/subject.unfilteredTotal}}
             <div class='alignmentLine' style='margin-left:{{subject.alignmentLine}}px;'></div>
@@ -40,10 +40,12 @@
             {{#isSticky}}
             <div class='removeIcon stickyCompareRemove' data-value='{{rowId}}'></div>
             <label class='stickyRemoveLabel'>{{labels.remove}}</label>
+            <div class='hidden stickyState' data-label='On'></div>
             {{/isSticky}}
             {{^isSticky}}
             <input class='stickyCheckbox' id='sticky_{{rowId}}' type='checkbox' data-name='{{displayValue}}' data-value='{{rowId}}'></input>
             <label class='stickyCompareLabel'>{{labels.compare}}</label>
+            <div class='hidden stickyState' data-label='Off'></div>
             {{/isSticky}}
             {{{link}}}
             <span class='hidden' data-export-name='{{columnName}}' data-export-value='{{displayValue}}'></span>
@@ -59,6 +61,7 @@
                     <span>{{subject.asmt_score}}</span>
                 </div>
                 <div class='dedivion' style='color:{{subject.score_bg_color}}'>{{score_ALD}}</div>
+                <span class='hidden' data-export-value='{{score_ALD}}' data-export-name='{{subject.asmt_type}} Performance Level'></span>             
             </div>
             <hr/>
             <div class='losPerfBar'>{{{confidenceLevelBar}}}</div>
@@ -71,7 +74,7 @@
     <div id="PERFORMANCE_BAR_TEMPLATE">
         <div class='{{export}}'>
             <div class='asmtScore' style='background-color:{{subject.score_bg_color}}; color: {{subject.score_text_color}};'>{{subject.asmt_score}}</div>
-            <span class='hidden' data-export-value='{{subject.asmt_score}}' data-export-name='Hello'></span>
+            <span class='hidden' data-export-value='{{subject.asmt_score}}' data-export-name='{{subject.asmt_type}} {{columnName}}'></span>
             <div class = 'confidenceLevel'>{{{confidenceLevelBar}}}</div>
             {{{toolTip}}}
         </div>
@@ -81,6 +84,7 @@
         <div class='{{export}}'>
             <strong>{{value}}</strong> (&#177;{{confidence}})
             <span class='hidden' data-export-name='{{columnName}}' data-export-value='{{value}}'></span>
+            <span class='hidden' data-export-name='{{columnName}} Error Band' data-export-value='{{confidence}}'></span>
         </div>
     </div>
 </div>

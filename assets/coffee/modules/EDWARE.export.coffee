@@ -20,6 +20,10 @@ define [
         MM: current.getMinutes()
         ss: current.getSeconds()
       }
+      this.title =  $('.title h2').text()
+      this.sortBy = this.table.jqGrid('getGridParam','sortname');
+      this.asmtType = $('#selectedAsmtType').text()
+      this.isSticky = $('.stickyState').data('label')
       
     build: () ->
       records = [] # fixed first 10 rows
@@ -32,18 +36,18 @@ define [
     buildTitle: () ->
       records = []
       # build title
-      records.push $('.title h2').text()
-      #TODO build academic year
-      # build assessment type
-      records.push this.reportType
+      records.push edwareUtil.escapeCSV ['Report Name', this.title]
       # build timestamp and username
-      records.push this.timestamp
+      records.push edwareUtil.escapeCSV ['Generated Date', this.timestamp]
       # build filters
-      records.push this.buildFilters()
+      records.push edwareUtil.escapeCSV ['Filters', this.buildFilters()]
+      records.push edwareUtil.escapeCSV ['Sort By', this.sortBy]
+      records.push edwareUtil.escapeCSV ['Comparison', this.isSticky]
+      records.push edwareUtil.escapeCSV ['Assessment Type', this.asmtType]
       for i in [records.length .. 9] # fix first 10 rows as headers
         records.push ''
-      records = edwareUtil.escapeCSV records
-      
+      records
+
     buildFilters: () ->
       params = edwareClientStorage.filterStorage.load()
       for key, value of JSON.parse(params)

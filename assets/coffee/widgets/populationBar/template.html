@@ -1,24 +1,28 @@
 <div class="leftPercentageTotal hide">
-{{leftTotalPercentage}}{{#leftTotalPercentage}}%{{/leftTotalPercentage}}
+  {{leftTotalPercentage}}{{#leftTotalPercentage}}%{{/leftTotalPercentage}}
 </div>
 <div class="rightPercentageTotal hide">
-{{rightTotalPercentage}}{{#rightTotalPercentage}}%{{/rightTotalPercentage}}
+  {{rightTotalPercentage}}{{#rightTotalPercentage}}%{{/rightTotalPercentage}}
 </div>
 <div class="progress">
 	{{#intervals}}
-  	<div class="bar" style="background-color: {{#color}}{{bg_color}}; background-image: -moz-linear-gradient(center top , {{start_gradient_bg_color}}, {{end_gradient_bg_color}}); background-image: -webkit-linear-gradient(top , {{start_gradient_bg_color}}, {{end_gradient_bg_color}}); background-image: -ms-linear-gradient(top , {{start_gradient_bg_color}}, {{end_gradient_bg_color}}); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr={{start_gradient_bg_color}}, endColorstr={{end_gradient_bg_color}}, GradientType=0); background-repeat: repeat-x; color: {{text_color}}{{/color}}; width: {{percentage}}%;">
+    <div class="bar" style="background-color: {{#color}}{{bg_color}}; background-image: -moz-linear-gradient(center top , {{start_gradient_bg_color}}, {{end_gradient_bg_color}}); background-image: -webkit-linear-gradient(top , {{start_gradient_bg_color}}, {{end_gradient_bg_color}}); background-image: -ms-linear-gradient(top , {{start_gradient_bg_color}}, {{end_gradient_bg_color}}); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr={{start_gradient_bg_color}}, endColorstr={{end_gradient_bg_color}}, GradientType=0); background-repeat: repeat-x; color: {{text_color}}{{/color}}; width: {{percentage}}%;">
   		{{#showPercentage}}
-  			<span class="marginRight5 percentageOnBar">{{percentage}}%</span>
+  	<span class="marginRight5 percentageOnBar">{{percentage}}%</span>
   		{{/showPercentage}}
-  	</div>
+    </div>
   	{{/intervals}}
-  	<div class="progressBar_tooltip hide">
-  		<ul class="unstyled inline">
+    <div class="progressBar_tooltip hide">
+  	<ul class="unstyled inline">
 		{{#intervals}}
-			<li>
-				<div style="width: 10px; height: 10px; background-color:{{color.bg_color}}; display: inline-block;"></div> <strong>{{count}}</strong> ({{percentage}}%)
-			</li>
+	    <li>
+		<div style="width: 10px; height: 10px; background-color:{{color.bg_color}}; display: inline-block;"></div> <strong>{{count}}</strong> ({{percentage}}%)
+                <div class="{{export}}">
+                    <span class='hidden' data-export-value='{{count}}' data-export-name='{{asmt_subject}}_Level_{{level}}_Total'></span>
+                    <span class='hidden' data-export-value='{{percentage}}%' data-export-name='{{asmt_subject}}_Level_{{level}}_Percentage'></span>
+                </div>
+	    </li>
 		{{/intervals}}
-		</ul>
-	</div>
+	</ul>
+    </div>
 </div>

@@ -304,6 +304,6 @@ define [
     
     setSelectedText:(asmtType, view) ->
       name = this.formatAsmt asmtType
-      $('#select_measure_current_view').text $('#'+ name + '_' + view).text()
+      $('#selectedAsmtType').text $('#'+ name + '_' + view).text()
 
   StudentGrid: StudentGrid

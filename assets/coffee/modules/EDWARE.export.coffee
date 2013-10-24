@@ -6,11 +6,21 @@ define [
   "edwareUtil"
 ], ($, Mustache, Constants, edwareClientStorage, edwareUtil) ->
 
+  TIMESTAMP_TEMPLATE = '{{mm}}-{{dd}}-{{yyyy}} {{hh}}:{{MM}}:{{ss}}'
+
   class CSVBuilder
   
     constructor: (@table, @reportType) ->
-      this.timestamp = new Date().getTime()
-
+      current = new Date()
+      this.timestamp = Mustache.to_html TIMESTAMP_TEMPLATE, {
+        yyyy: current.getFullYear()
+        mm: current.getMonth()
+        dd: current.getDate()
+        hh: current.getHours()
+        MM: current.getMinutes()
+        ss: current.getSeconds()
+      }
+      
     build: () ->
       records = [] # fixed first 10 rows
       # build header

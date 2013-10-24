@@ -27,17 +27,28 @@ def create_sftp_user(tenant, user, role, sftp_conf):
     tenant_path = os.path.join(sftp_conf['sftp_home'], sftp_conf['sftp_base_dir'],
                                arrive_depart_dir, tenant)
 
-    valid_user = verify_user_tenant_and_role(tenant_path, user, role)
+    valid_user = _verify_user_tenant_and_role(tenant_path, user, role)
     if not valid_user[0]:
         return False, valid_user[1]
 
     user_path = os.path.join(tenant_path, user)
-    create_user(user, user_path, role, sftp_conf['file_drop'])
+    _create_user(user, user_path, role, sftp_conf['file_drop'])
     print('User created:\n\tuser: %s\n\thome dir: %s\n\trole: %s' % (user, user_path, role))
     return True, ""
 
 
-def create_user(user, home_folder, role, file_drop_name):
+def delete_user(user):
+    """
+    Delete the given user from the system and remove thier home folder
+    :param user: the user name of the user to delete
+    :return: None
+    """
+    del_user_cmd = "userdel -r {}".format(user)
+    subprocess.call(del_user_cmd, shell=True)
+    print('user removed:', user)
+
+
+def _create_user(user, home_folder, role, file_drop_name):
     """
     create the given user with the specified home-folder and group
 
@@ -69,18 +80,7 @@ def _create_file_drop_folder(user, home_folder, role, file_drop_name):
     os.chmod(file_drop_loc, 0o777)
 
 
-def delete_user(user):
-    """
-    Delete the given user from the system and remove thier home folder
-    :param user: the user name of the user to delete
-    :return: None
-    """
-    del_user_cmd = "userdel -r {}".format(user)
-    subprocess.call(del_user_cmd, shell=True)
-    print('user removed:', user)
-
-
-def verify_user_tenant_and_role(tenant_path, username, role):
+def _verify_user_tenant_and_role(tenant_path, username, role):
     """
     Verify that the username does not already exist and that the tenant does exist
 
@@ -105,7 +105,7 @@ def verify_user_tenant_and_role(tenant_path, username, role):
         return True, ""
 
 
-def set_ssh_key(home_folder, pub_key_str=None, pub_key_file=None):
+def _set_ssh_key(home_folder, pub_key_str=None, pub_key_file=None):
     """
     Add the given public key to the users home folder
     :param home_folder:

@@ -5,7 +5,7 @@ import pwd
 import sys
 import os
 
-from sftp.src.initialize_sftp_user import create_user, create_sftp_user, delete_user, verify_user_tenant_and_role
+from sftp.src.initialize_sftp_user import _create_user, create_sftp_user, delete_user, _verify_user_tenant_and_role
 from sftp.src.configure_sftp_groups import initialize, cleanup
 from sftp.src.util import create_path, cleanup_directory
 from sftp.src.initialize_sftp_tenant import create_tenant, remove_tenant
@@ -50,7 +50,7 @@ class TestInitSFTPUser(unittest.TestCase):
         if sys.platform == 'linux':
             initialize(self.sftp_conf)
             self.check_user_does_not_exist(user)
-            create_user(user, home_folder, 'testgrp1', 'file_drop')
+            _create_user(user, home_folder, 'testgrp1', 'file_drop')
             self.assertIsNotNone(pwd.getpwnam(user))
 
             file_drop_folder = os.path.join(home_folder, self.sftp_conf['file_drop'])
@@ -66,7 +66,7 @@ class TestInitSFTPUser(unittest.TestCase):
     def test_verify_user_tenant_and_role_tenant_path(self):
         home_folder = '/tmp/does_not_exist'
         expected_result = (False, 'Tenant does not exist!')
-        result = verify_user_tenant_and_role(home_folder, 'test_user', 'some_role')
+        result = _verify_user_tenant_and_role(home_folder, 'test_user', 'some_role')
 
         self.assertEqual(expected_result, result)
 
@@ -74,7 +74,7 @@ class TestInitSFTPUser(unittest.TestCase):
         tenant_folder = '/tmp/test_does_exist'
         create_path(tenant_folder)
         expected_result = (False, 'Role does not exist as a group in the system')
-        result = verify_user_tenant_and_role(tenant_folder, 'some_user', 'made_up_role')
+        result = _verify_user_tenant_and_role(tenant_folder, 'some_user', 'made_up_role')
 
         self.assertEqual(result, expected_result)
         cleanup_directory(tenant_folder)
@@ -83,7 +83,7 @@ class TestInitSFTPUser(unittest.TestCase):
         tenant_folder = '/tmp/test_does_exist'
         create_path(tenant_folder)
         expected_result = (False, 'User already exists!')
-        result = verify_user_tenant_and_role(tenant_folder, 'root', 'wheel')
+        result = _verify_user_tenant_and_role(tenant_folder, 'root', 'wheel')
 
         self.assertEqual(expected_result, result)
         cleanup_directory(tenant_folder)
@@ -92,7 +92,7 @@ class TestInitSFTPUser(unittest.TestCase):
         tenant_folder = '/tmp/test_does_exist'
         create_path(tenant_folder)
         expected_result = True, ""
-        result = verify_user_tenant_and_role(tenant_folder, 'the_roots', 'wheel')
+        result = _verify_user_tenant_and_role(tenant_folder, 'the_roots', 'wheel')
 
         self.assertEqual(expected_result, result)
         cleanup_directory(tenant_folder)

@@ -45,7 +45,7 @@ def create_user(user, home_folder, role):
     :param role: the name of the user's role which will be used to assign a user to a group
     :return:
     """
-    add_user_cmd = "adduser --home {} -g {} {}".format(home_folder, role, user)
+    add_user_cmd = "adduser -d {} -g {} -s /sbin/nologin {}".format(home_folder, role, user)
     subprocess.call(add_user_cmd, shell=True)
 
 

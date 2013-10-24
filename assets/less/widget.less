@@ -460,26 +460,11 @@ th.ui-th-column div {
         }
         img {
           vertical-align: middle;
+          padding-left: 5px;
         }
       }
     }
  }
-.footerPopover {
-    bottom: 35px !important;
-    position: fixed;
-    top: auto !important;
-    margin-top: 0;
-    left: 35% !important;
-    padding: 0;
-    
-    .arrow {
-      display: none;
-    }
-    .popover-content {
-      overflow-y: scroll;
-      height: 304px;
-    }
-}
 .printFooterPopover {
     left: 60% !important;
     .popover-content {
@@ -514,7 +499,7 @@ th.ui-th-column div {
     display: none;
   }
   
-  a {
+  .footerLink {
     font-size: 13px;
     color: @color-B5;
     width: 90px;
@@ -542,6 +527,28 @@ th.ui-th-column div {
     font-size: 10px;
     line-height: 13px;
   }
+  
+  .footerPopover {
+    bottom: 45px !important;
+    position: fixed;
+    top: auto !important;
+    margin-top: 0;
+    left: 35% !important;
+    padding: 0;
+    max-width: 630px;
+    width: 630px;
+    
+    .arrow {
+      display: none;
+    }
+    .popover-content {
+      overflow-y: scroll;
+      height: 304px;
+      color: @color-B2;
+      font-size: 14px;
+    }
+    
+}
 }
 
 #legendTemplate {

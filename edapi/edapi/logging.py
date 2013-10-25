@@ -12,7 +12,7 @@ import re
 import logging
 from edapi.utils import adopt_to_method_and_func
 from pyramid.security import effective_principals,\
-    unauthenticated_userid
+    authenticated_userid
 from pyramid.threadlocal import get_current_request
 from collections import OrderedDict
 import inspect
@@ -61,10 +61,10 @@ def audit_event(logger_name="audit", blacklist_args=[]):
             args_dict = dict(zip(arg_names, list(args)))
             params.update(kwds)
             allargs['params'] = params
-            session_id = unauthenticated_userid(get_current_request())
+            user = authenticated_userid(get_current_request())
+            guid = user.get_guid() if user else "Unknown guid"
             if not 'user_session' in allargs.keys():
-                if session_id is not None:
-                    allargs['session_id'] = session_id
+                allargs['session_id'] = guid
             if not 'principals' in allargs.keys():
                 allargs['principals'] = effective_principals(get_current_request())
 
@@ -81,14 +81,14 @@ def audit_event(logger_name="audit", blacklist_args=[]):
             log.info(allargs)
             smarter_log = logging.getLogger('smarter')
 
-            smarter_log.info(str.format('Entered {0} report, session_id = {1}', report_name, session_id))
+            smarter_log.info(str.format('Entered {0} report, user_guid {1} ', report_name, guid))
 
             report_start_time = datetime.datetime.now().strftime('%s.%f')
             result = original_func(*args, **kwds)
             finish_time = datetime.datetime.now().strftime('%s.%f')
             report_duration_in_seconds = round(float(finish_time) - float(report_start_time), 3)
 
-            smarter_log.info(str.format('Exited {0} report, generating the report took {1} seconds, session_id = {2}', report_name, report_duration_in_seconds, session_id))
+            smarter_log.info(str.format('Exited {0} report, generating the report took {1} seconds, user_guid {2}', report_name, report_duration_in_seconds, guid))
 
             return result
         return __wrapped

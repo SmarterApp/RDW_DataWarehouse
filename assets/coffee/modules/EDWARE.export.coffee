@@ -22,7 +22,7 @@ define [
       }
       this.title =  $('.title h2').text()
       this.sortBy = this.table.jqGrid('getGridParam','sortname');
-      this.asmtType = $('#selectedAsmtType').text() || 'Summative'
+      this.asmtType = $('#selectedAsmtType').text() || this.labels.summative
       this.isSticky = $('.stickyState').data('label')
       
     build: () ->

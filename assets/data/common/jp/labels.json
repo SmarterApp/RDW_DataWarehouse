@@ -75,6 +75,7 @@
         "students_total": "総学生",
 		"students_percentage": "生徒の割合",
 		"students_unfiltered_total": "フィルタなし総学生",
+		"summative" : "累積的な",
 		"teacher": "教師",
 		"total": "合計",
 		"viewing": "表示表示",

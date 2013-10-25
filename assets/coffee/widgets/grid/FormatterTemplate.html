@@ -19,20 +19,20 @@
             
             {{#insufficient}}
             <div>{{insufficientText}}</div>
-            <span class='hidden' data-export-value='{{insufficientText}}' data-export-name='{{subject.asmt_subject}}_Total_Students'></span>
+            <span class='hidden' data-export-value='{{insufficientText}}' data-export-name='{{subject.asmt_subject}} {{labels.students_total}}'></span>
             {{#subject.unfilteredTotal}}
-            <span class='hidden' data-export-value='{{insufficientText}}' data-export-name='{{subject.asmt_subject}}_Total_Percentage'></span>
-            <span class='hidden' data-export-value='{{insufficientText}}' data-export-name='{{subject.asmt_subject}}_Unfiltered_Total_Students'></span>
+            <span class='hidden' data-export-value='{{insufficientText}}' data-export-name='{{subject.asmt_subject}} {{labels.students_percentage}}'></span>
+            <span class='hidden' data-export-value='{{insufficientText}}' data-export-name='{{subject.asmt_subject}} {{labels.students_unfiltered_total}}'></span>
             {{/subject.unfilteredTotal}}
             {{/insufficient}}
 
             {{^insufficient}}
             <div class='studentsTotal'>{{subject.total}}</div>
-            <span class='hidden' data-export-value='{{subject.total}}' data-export-name='{{subject.asmt_subject}}_Total_Students'></span>
+            <span class='hidden' data-export-value='{{subject.total}}' data-export-name='{{subject.asmt_subject}} {{labels.students_total}}'></span>
             {{#subject.unfilteredTotal}}
             <div class='unfilteredTotal'>{{subject.ratio}}% of {{subject.unfilteredTotal}}
-                <span class='hidden' data-export-value={{subject.ratio}} data-export-name='{{subject.asmt_subject}}_Total_Percentage'></span>
-                <span class='hidden' data-export-value={{subject.unfilteredTotal}} data-export-name='{{subject.asmt_subject}}_Unfiltered_Total_Students'></span>
+                <span class='hidden' data-export-value={{subject.ratio}} data-export-name='{{subject.asmt_subject}} {{labels.students_percentage}}'></span>
+                <span class='hidden' data-export-value={{subject.unfilteredTotal}} data-export-name='{{subject.asmt_subject}} {{labels.students_unfiltered_total}}'></span>
             </div>
             {{/subject.unfilteredTotal}}
             <div class='alignmentLine' style='margin-left:{{subject.alignmentLine}}px;'></div>
@@ -52,12 +52,12 @@
             {{#isSticky}}
             <div class='removeIcon stickyCompareRemove' data-value='{{rowId}}'></div>
             <label class='stickyRemoveLabel paddingBottom9'>{{labels.remove}}</label>
-            <div class='hidden stickyState' data-label='On'></div>
+            <div class='hidden stickyState' data-label='{{labels.on}}'></div>
             {{/isSticky}}
             {{^isSticky}}
             <input class='stickyCheckbox' id='sticky_{{rowId}}' type='checkbox' data-name='{{displayValue}}' data-value='{{rowId}}'></input>
             <label class='stickyCompareLabel paddingBottom9'>{{labels.compare}}</label>
-            <div class='hidden stickyState' data-label='Off'></div>
+            <div class='hidden stickyState' data-label='{{labels.off}}'></div>
             {{/isSticky}}
             {{{link}}}
             <span class='hidden' data-export-name='{{columnName}}' data-export-value='{{displayValue}}'></span>
@@ -74,7 +74,7 @@
                     <span>{{subject.asmt_score}}</span>
                 </div>
                 <div class='description' style='color:{{subject.score_bg_color}}'>{{score_ALD}}</div>
-                <span class='hidden' data-export-value='{{score_ALD}}' data-export-name='{{subject.asmt_type}} Performance Level'></span>             
+                <span class='hidden' data-export-value='{{score_ALD}}' data-export-name='{{subject.asmt_type}} {{labels.performance_level}}'></span>             
             </div>
             <hr/>
             <div class='losPerfBar'>{{{confidenceLevelBar}}}</div>
@@ -84,7 +84,7 @@
         </div>
         {{/subject}}
         {{^subject}}
-        <span class='hidden' data-export-value='{{score_ALD}}' data-export-name='{{subject.asmt_type}} Performance Level'></span>
+        <span class='hidden' data-export-value='{{score_ALD}}' data-export-name='{{subject.asmt_type}} {{labels.performance_level}}'></span>
         {{/subject}}
     </div>
 
@@ -101,7 +101,7 @@
         <div class='{{export}}'>
             <strong>{{value}}</strong> (&#177;{{confidence}})
             <span class='hidden' data-export-name='{{columnName}}' data-export-value='{{value}}'></span>
-            <span class='hidden' data-export-name='{{columnName}} Error Band' data-export-value='{{confidence}}'></span>
+            <span class='hidden' data-export-name='{{columnName}} {{labels.error_band}}' data-export-value='{{confidence}}'></span>
         </div>
     </div>
 </div>

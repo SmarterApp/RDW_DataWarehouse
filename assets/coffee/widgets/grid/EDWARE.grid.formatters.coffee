@@ -103,6 +103,7 @@ define [
 
     confidence = subject[names[2]][names[3]]['confidence']
     Mustache.to_html CONFIDENCE_TEMPLATE, {
+      labels: options.colModel.labels
       value: value
       columnName: options.colModel.columnName
       confidence: confidence
@@ -157,8 +158,10 @@ define [
     subject.export = 'export' if exportable
     subject.insufficient = insufficient
     subject.insufficientText = insufficientText
+    subject.labels = options.colModel.labels
     return Mustache.to_html POPULATION_BAR_TEMPLATE, {
       subject: subject,
+      labels: options.colModel.labels
       populationBar: edwarePopulationBar.create(subject)
       export: 'export' if exportable
       insufficient: insufficient

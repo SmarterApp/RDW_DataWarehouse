@@ -186,7 +186,7 @@ define [
       # bind export event
       $(document).on 'click', '#exportButton', ->
         if self.exportOption is 'csv'
-          $('#gridTable').edwareExport self.reportName
+          $('#gridTable').edwareExport self.reportName, self.labels
         else if self.exportOption is 'extract'
           # add more code from master branch for old extraction code
           params = JSON.parse edwareClientStorage.filterStorage.load()

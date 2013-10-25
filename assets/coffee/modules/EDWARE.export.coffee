@@ -10,7 +10,7 @@ define [
 
   class CSVBuilder
   
-    constructor: (@table, @reportType) ->
+    constructor: (@table, @reportType, @labels) ->
       current = new Date()
       this.timestamp = Mustache.to_html TIMESTAMP_TEMPLATE, {
         yyyy: current.getFullYear()
@@ -36,14 +36,14 @@ define [
     buildTitle: () ->
       records = []
       # build title
-      records.push edwareUtil.escapeCSV ['Report Name', this.title]
+      records.push edwareUtil.escapeCSV [this.labels.report_name, this.title]
       # build timestamp and username
-      records.push edwareUtil.escapeCSV ['Generated Date', this.timestamp]
+      records.push edwareUtil.escapeCSV [this.labels.date, this.timestamp]
       # build filters
-      records.push edwareUtil.escapeCSV ['Filters', this.buildFilters()]
-      records.push edwareUtil.escapeCSV ['Sort By', this.sortBy]
-      records.push edwareUtil.escapeCSV ['Comparison', this.isSticky]
-      records.push edwareUtil.escapeCSV ['Assessment Type', this.asmtType]
+      records.push edwareUtil.escapeCSV [this.labels.filterd_by, this.buildFilters()]
+      records.push edwareUtil.escapeCSV [this.labels.sort_by, this.sortBy]
+      records.push edwareUtil.escapeCSV [this.labels.compare, this.isSticky]
+      records.push edwareUtil.escapeCSV [this.labels.asmt_type, this.asmtType]
       for i in [records.length .. 9] # fix first 10 rows as headers
         records.push ''
       records
@@ -149,8 +149,8 @@ define [
     save = new EdwareDownload().create()
     save content, filename, 'application/csv'
 
-  $.fn.edwareExport = (reportType)->
+  $.fn.edwareExport = (reportType, labels)->
     this.eagerLoad()
-    builder = new CSVBuilder(this, reportType)
+    builder = new CSVBuilder(this, reportType, labels)
     download builder.build(), builder.getFileName()
     this.lazyLoad()

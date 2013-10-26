@@ -86,21 +86,21 @@ define [
     getColumnNames: () ->
       columnNames = []
       for column in this.columns
-        for item in column['items'] 
-          columnNames.push item.name
+        for item in column['items']
+          columnNames.push this.getColumnName(item)
       columnNames
 
     getColumnModels: () ->
       models = []
       for column in this.columns
-        for item in column['items'] 
-         models.push this.getColumnModel item 
+        for item in column['items']
+          models.push this.getColumnModel item 
       models
       
     getColumnModel: (column) ->
       colModelItem =
         name: column.field
-        columnName: column.name
+        label: column.name
         index: column.index
         width: column.width
         resizable: false # prevent the user from manually resizing the columns
@@ -124,6 +124,9 @@ define [
       this.options.sortorder = column.sortorder  if column.sortorder
       this.options.sortname = column.index  if column.sortorder
       colModelItem
+
+    getColumnName: (column) ->
+      column.name + column.displayTpl
 
     getHeaders: () ->
       for column in this.columns
@@ -152,8 +155,8 @@ define [
 
     $.fn.sortBySubject = (subject, index, order) ->
       order = order || 'asc'
-      colModels = this.jqGrid("getGridParam", "colModel")
-      if subject != 'name' and colModels != undefined
+      colModels = this.getGridParam('colModel')
+      if subject != 'name'
         for colModel in colModels
           colModel.sorttype = edwareGridSorters.create(index) if colModel.index == subject
       this.sortGrid(subject, true, order)

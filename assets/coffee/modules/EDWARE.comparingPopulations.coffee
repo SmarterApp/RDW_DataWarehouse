@@ -41,6 +41,7 @@ define [
     customize: (customView) ->
       firstColumn = this.gridConfig[0].items[0]
       firstColumn.name = customView.name
+      firstColumn.exportName = customView.exportName
       firstColumn.options.linkUrl = customView.link
       firstColumn.options.id_name = customView.id_name
       firstColumn.sorttype = "int" if customView.name is "Grade"
@@ -246,12 +247,6 @@ define [
             template: '<div class="popover"><div class="arrow"></div><div class="popover-inner"><div class="popover-content"><p></p></div></div></div>'
             content: ->
               $(this).find(".progressBar_tooltip").html() # template location: widgets/populatoinBar/template.html
-      # .mouseenter (e)->
-      #   e.stopImmediatePropagation()
-      #   $(this).popover('show')
-      # .mouseleave (e) ->
-      #   e.stopImmediatePropagation()
-      #   $(this).popover('hide')
 
       self = this
       $('#gridTable_name').click ()->

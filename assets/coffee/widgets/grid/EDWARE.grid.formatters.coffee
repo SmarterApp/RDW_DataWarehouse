@@ -12,8 +12,6 @@ define [
   getTemplate = (name) ->
     $(edwareFormatterTemplate).find('div#' + name).html()
 
-  EXPORT_TEMPLATE = getTemplate('EXPORT_TEMPLATE')
-
   SUMMARY_TEMPLATE = getTemplate('SUMMARY_TEMPLATE')
 
   POPULATION_BAR_TEMPLATE = getTemplate('POPULATION_BAR_TEMPLATE')
@@ -53,7 +51,7 @@ define [
       cssClass: options.colModel.formatoptions.style
       subTitle: rowObject.subtitle
       summaryTitle: value
-      columnName: options.colModel.columnName
+      columnName: options.colModel.label
       export: 'export' if exportable
     } if isHeader
     
@@ -78,15 +76,15 @@ define [
       export: 'export' if exportable # check if export current field
       displayValue: displayValue
       labels: options.colModel.labels
-      columnName: options.colModel.columnName
+      columnName: options.colModel.label
     }
 
   showText = (value, options, rowObject) ->
     return Mustache.to_html TEXT_TEMPLATE, {
       value: value
-      columnName: options.colModel.columnName
+      columnName: options.colModel.label
       export: 'export' if options.colModel.export
-    } 
+    }
 
   showOverallConfidence = (value, options, rowObject) ->
     names = options.colModel.name.split "."
@@ -105,7 +103,7 @@ define [
     Mustache.to_html CONFIDENCE_TEMPLATE, {
       labels: options.colModel.labels
       value: value
-      columnName: options.colModel.columnName
+      columnName: options.colModel.label
       confidence: confidence
       export: 'export' if options.colModel.export
     }
@@ -138,7 +136,7 @@ define [
       subject: subject
       confidenceLevelBar: edwareLOSConfidenceLevelBar.create(subject, 120)  if subject
       toolTip: toolTip
-      columnName: $('<div>').html(options.colModel.columnName).text() # to filter html code in JSON
+      columnName: options.colModel.label
       export: 'export' if options.colModel.export
     }
     perfBar
@@ -166,14 +164,6 @@ define [
       export: 'export' if exportable
       insufficient: insufficient
       insufficientText: insufficientText
-    }
-
-
-  formatExport = (value, title) ->
-    #export fields
-    Mustache.to_html EXPORT_TEMPLATE, {
-      value: value
-      title: title
     }
 
   formatSubject = (subject) ->

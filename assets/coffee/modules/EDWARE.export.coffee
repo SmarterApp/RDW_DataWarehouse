@@ -21,9 +21,19 @@ define [
         ss: current.getSeconds()
       }
       this.title =  $('.title h2').text()
-      this.sortBy = this.table.jqGrid('getGridParam','sortname');
+      this.sortBy = this.getSortBy()
       this.asmtType = $('#selectedAsmtType').text() || this.labels.summative
       this.isSticky = $('.stickyState').data('label')
+      this.filters = this.buildFilters()
+
+    getSortBy: () ->
+      sortName = this.table.getGridParam('sortname');
+      models = this.table.getGridParam('colModel')
+      sortBy = ''
+      $.each models, (idx, model)->
+        sortBy = model.label if model.index is sortName
+      sortBy
+
       
     build: () ->
       records = [] # fixed first 10 rows
@@ -40,7 +50,7 @@ define [
       # build timestamp and username
       records.push edwareUtil.escapeCSV [this.labels.date, this.timestamp]
       # build filters
-      records.push edwareUtil.escapeCSV [this.labels.filterd_by, this.buildFilters()]
+      records.push edwareUtil.escapeCSV [this.labels.filterd_by, this.filters] if this.filters
       records.push edwareUtil.escapeCSV [this.labels.sort_by, this.sortBy]
       records.push edwareUtil.escapeCSV [this.labels.compare, this.isSticky]
       records.push edwareUtil.escapeCSV [this.labels.asmt_type, this.asmtType]
@@ -49,9 +59,18 @@ define [
       records
 
     buildFilters: () ->
+      result = []
       params = edwareClientStorage.filterStorage.load()
-      for key, value of JSON.parse(params)
-        key + ":" + value
+      if params
+        $.each JSON.parse(params), (key, value) ->
+          filter = $('.filter-group[data-name=' + key + ']')
+          if filter[0]
+            filterData = []
+            filterName = filter.data('display') #filter name
+            $('input', filter).each ->
+              filterData.push $(this).data('label') if $(this).val() in value
+            result.push filterName + ': ' + filterData.join(Constants.DELIMITOR.COMMA)
+      result
 
     buildContent: () ->
       result = []

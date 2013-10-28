@@ -24,7 +24,7 @@
     <Dimension name="DimStudent" type="StandardDimension" foreignKey="student_guid">
       <Hierarchy name="Student Hierarchy" primaryKey="student_guid" hasAll="true" allMemberName="All Students">
         <Table name="dim_student" schema="edware_sds_1_0"/>
-        <Level name="GUID" column="student_guid" type="Integer" uniqueMembers="true"/>
+        <Level name="GUID" column="student_guid" type="String" uniqueMembers="true"/>
         <Level name="Gender" column="gender" type="String" uniqueMembers="false"/>
         <Level name="Grade" column="grade" type="String" uniqueMembers="false"/>
         <Level name="State Code" column="state_code" type="String" uniqueMembers="false"/>
@@ -32,7 +32,7 @@
         <Level name="Student" column="student_guid" type="Numeric" uniqueMembers="false">
           <NameExpression>
             <SQL dialect="generic">
-"first_name" || ' ' || "last_name"
+"dim_student"."first_name" || ' ' || "dim_student"."last_name"
             </SQL>
           </NameExpression>
         </Level>
@@ -41,7 +41,7 @@
     <Dimension name="DimSection" type="StandardDimension" foreignKey="section_guid">
       <Hierarchy name="Section Hierarchy" primaryKey="section_guid" hasAll="true" allMemberName="All Sections">
         <Table name="dim_section" schema="edware_sds_1_0"/>
-        <Level name="GUID" column="section_guid" type="Integer" uniqueMembers="true"/>
+        <Level name="GUID" column="section_guid" type="String" uniqueMembers="true"/>
         <Level name="Class" column="class_name" type="String" uniqueMembers="false"/>
         <Level name="Subject" column="subject_name" type="String" uniqueMembers="false"/>
       </Hierarchy>
@@ -59,24 +59,24 @@
     <Dimension  name="DimStaff" type="StandardDimension" foreignKey="teacher_guid">
       <Hierarchy name="StaffHierarchy" primaryKey="staff_guid" hasAll="true" allMemberName="All Staff">
         <Table name="dim_staff" schema="edware_sds_1_0"/>
-        <Level name="GUID" column="staff_guid" type="Integer" uniqueMembers="true"/>
+        <Level name="GUID" column="staff_guid" type="String" uniqueMembers="true"/>
         <Level name="User Type" column="hier_user_type" type="String" uniqueMembers="false"/>
         <Level name="State Code" column="state_code" type="String" uniqueMembers="false"/>
         <Level name="Teacher" column="staff_guid" type="Numeric" uniqueMembers="false">
           <NameExpression>
             <SQL dialect="generic">
-"first_name" || ' ' || "last_name"
+"dim_staff"."first_name" || ' ' || "dim_staff"."last_name"
             </SQL>
           </NameExpression>
         </Level>  
       </Hierarchy>
     </Dimension>
     <Measure name="MeasureCountAsmt" column="asmt_rec_id" datatype="Integer" formatString="####" aggregator="distinct-count" />
-    <Measure name="MeasureCountStudent" column="student_guid" datatype="Integer" formatString="####" aggregator="distinct-count" />
+    <Measure name="MeasureCountStudent" column="student_guid" datatype="String" formatString="####" aggregator="distinct-count" />
     <Measure name="MeasureSumStudent" column="student_rec_id" datatype="Integer" formatString="####" aggregator="sum" />
-    <Measure name="MeasureCountSection" column="section_guid" datatype="Integer" formatString="####" aggregator="distinct-count" />
+    <Measure name="MeasureCountSection" column="section_guid" datatype="String" formatString="####" aggregator="distinct-count" />
     <Measure name="MeasureCountInstitution" column="inst_hier_rec_id" datatype="Integer" formatString="####" aggregator="distinct-count" />
-    <Measure name="MeasureTeacher" column="teacher_guid" datatype="Integer" formatString="####" aggregator="distinct-count" />
+    <Measure name="MeasureTeacher" column="teacher_guid" datatype="String" formatString="####" aggregator="distinct-count" />
     <Measure name="MeasureMaxPerfLevel" column="asmt_perf_lvl" datatype="Integer" formatString="####.##" aggregator="max" />
     <Measure name="MeasureMinPerfLevel" column="asmt_perf_lvl" datatype="Integer" formatString="####.##" aggregator="min" />
     <Measure name="MeasureAvgPerfLevel" column="asmt_perf_lvl" datatype="Integer" formatString="####.##" aggregator="avg" />

@@ -17,7 +17,8 @@ require ["jquery", "edwareFilter"], ($, edwareFilter) ->
     filterBtn = $('#filterBtn')
     callback = ->
       
-    filterArea.edwareFilter filterBtn, callback 
+    filterArea.edwareFilter filterBtn, callback
+    # assertions
     ok not $(filterArea).is(":empty"), "$.fn.edwareFilter function should create filter slide down div"
     notEqual $(filterBtn).find('.filter'), undefined, "filter area should not be empty"
     equal $(filterArea).find('.filter-group').length, 7, "there should be 7 filters in total"

@@ -1,8 +1,8 @@
 {{#insufficient}}
   {{#intervals}}
-<div class="{{export}} hidden">
-    <span class='hidden' data-export-value='{{insufficientText}}' data-export-name='{{asmt_subject}} {{labels.level}} {{level}} {{labels.total}}'></span>
-    <span class='hidden' data-export-value='{{insufficientText}}' data-export-name='{{asmt_subject}} {{labels.level}} {{level}} {{labels.percentage}}'></span>
+<div class="{{export}} edwareExportField">
+    <span class='edwareExportField' data-export-value='{{insufficientText}}' data-export-name='{{asmt_subject}} {{labels.level}} {{level}} {{labels.total}}'></span>
+    <span class='edwareExportField' data-export-value='{{insufficientText}}' data-export-name='{{asmt_subject}} {{labels.level}} {{level}} {{labels.percentage}}'></span>
 </div>
   {{/intervals}}
 {{/insufficient}}
@@ -28,8 +28,8 @@
 	    <li>
 		<div style="width: 10px; height: 10px; background-color:{{color.bg_color}}; display: inline-block;"></div> <strong>{{count}}</strong> ({{percentage}}%)
                 <div class="{{export}}">
-                    <span class='hidden' data-export-value='{{count}}' data-export-name='{{asmt_subject}} {{labels.level}} {{level}} {{labels.total}}'></span>
-                    <span class='hidden' data-export-value='{{percentage}}%' data-export-name='{{asmt_subject}} {{labels.level}} {{level}} {{labels.percentage}}'></span>
+                    <span class='edwareExportField' data-export-value='{{count}}' data-export-name='{{asmt_subject}} {{labels.level}} {{level}} {{labels.total}}'></span>
+                    <span class='edwareExportField' data-export-value='{{percentage}}%' data-export-name='{{asmt_subject}} {{labels.level}} {{level}} {{labels.percentage}}'></span>
                 </div>
 	    </li>
 		{{/intervals}}

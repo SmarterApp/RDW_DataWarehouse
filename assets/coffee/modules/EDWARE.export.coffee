@@ -6,20 +6,13 @@ define [
   "edwareUtil"
 ], ($, Mustache, Constants, edwareClientStorage, edwareUtil) ->
 
-  TIMESTAMP_TEMPLATE = '{{mm}}-{{dd}}-{{yyyy}} {{hh}}:{{MM}}:{{ss}}'
 
   class CSVBuilder
   
     constructor: (@table, @reportType, @labels) ->
       current = new Date()
-      this.timestamp = Mustache.to_html TIMESTAMP_TEMPLATE, {
-        yyyy: current.getFullYear()
-        mm: current.getMonth() + 1
-        dd: current.getDate()
-        hh: current.getHours()
-        MM: current.getMinutes()
-        ss: current.getSeconds()
-      }
+      this.timestamp = (current.getMonth() + 1) + '-' + current.getDate() + '-' + current.getFullYear() + ' ' + current.getHours() + ':' + current.getMinutes() + ':' + current.getSeconds()
+      
       this.title =  $('.title h2').text()
       this.sortBy = this.getSortBy()
       this.asmtType = $('#selectedAsmtType').text() || this.labels.summative
@@ -107,8 +100,8 @@ define [
       columnValues = []
       for key, value of record
         exportField = $(value)
-        continue if not exportField.hasClass('export')
-        exportField.find('span.hidden').each () ->
+        continue if not exportField.hasClass('edwareExportColumn')
+        exportField.find('span.edwareExportField').each () ->
           $this = $(this)
           columnValues.push $this.data(field)
       columnValues = edwareUtil.escapeCSV columnValues

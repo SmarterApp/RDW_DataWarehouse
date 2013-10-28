@@ -52,7 +52,7 @@ define [
       subTitle: rowObject.subtitle
       summaryTitle: value
       columnName: options.colModel.label
-      export: 'export' if exportable
+      export: 'edwareExportColumn' if exportable
     } if isHeader
     
     getDisplayValue = () ->
@@ -73,7 +73,7 @@ define [
       rowId: rowObject.rowId
       cssClass: options.colModel.formatoptions.style
       link: link
-      export: 'export' if exportable # check if export current field
+      export: 'edwareExportColumn' if exportable # check if export current field
       displayValue: displayValue
       labels: options.colModel.labels
       columnName: options.colModel.label
@@ -83,7 +83,7 @@ define [
     return Mustache.to_html TEXT_TEMPLATE, {
       value: value
       columnName: options.colModel.label
-      export: 'export' if options.colModel.export
+      export: 'edwareExportColumn' if options.colModel.export
     }
 
   showOverallConfidence = (value, options, rowObject) ->
@@ -107,7 +107,7 @@ define [
       columnName: options.colModel.label
       parentName: $(options.colModel.parentLabel).text()
       confidence: confidence
-      export: 'export' if options.colModel.export
+      export: 'edwareExportColumn' if options.colModel.export
     }
 
 
@@ -139,7 +139,7 @@ define [
       confidenceLevelBar: edwareLOSConfidenceLevelBar.create(subject, 120)  if subject
       toolTip: toolTip
       columnName: options.colModel.label
-      export: 'export' if options.colModel.export
+      export: 'edwareExportColumn' if options.colModel.export
     }
     perfBar
 
@@ -155,7 +155,7 @@ define [
     exportable = options.colModel.export
     insufficient = parseInt(value) <= 0
     insufficientText = options.colModel.labels['insufficient_data']
-    subject.export = 'export' if exportable
+    subject.export = 'edwareExportColumn' if exportable
     subject.insufficient = insufficient
     subject.insufficientText = insufficientText
     subject.labels = options.colModel.labels
@@ -163,7 +163,7 @@ define [
       subject: subject,
       labels: options.colModel.labels
       populationBar: edwarePopulationBar.create(subject)
-      export: 'export' if exportable
+      export: 'edwareExportColumn' if exportable
       insufficient: insufficient
       insufficientText: insufficientText
     }

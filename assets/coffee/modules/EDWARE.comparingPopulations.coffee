@@ -241,17 +241,10 @@ define [
       $(".progress").popover
             html: true
             placement: 'top'
-            container: 'body'
+            container: '#content'
             trigger: 'hover'
-            template: '<div class="popover"><div class="arrow"></div><div class="popover-inner"><div class="popover-content"><p></p></div></div></div>'
             content: ->
               $(this).find(".progressBar_tooltip").html() # template location: widgets/populatoinBar/template.html
-      # .mouseenter (e)->
-      #   e.stopImmediatePropagation()
-      #   $(this).popover('show')
-      # .mouseleave (e) ->
-      #   e.stopImmediatePropagation()
-      #   $(this).popover('hide')
 
       self = this
       $('#gridTable_name').click ()->

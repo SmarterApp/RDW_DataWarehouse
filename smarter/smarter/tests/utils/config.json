@@ -1,0 +1,317 @@
+{
+  "properties": [
+    {
+      "encrypt": true,
+      "propertyValue": "../../resource/idp_metadata.xml",
+      "propertyKey": "auth.idp.metadata"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "edware",
+      "propertyKey": "auth.policy.cookie_name"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "sha512",
+      "propertyKey": "auth.policy.hashalg"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "True",
+      "propertyKey": "auth.policy.http_only"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "edware_secret",
+      "propertyKey": "auth.policy.secret"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "1200",
+      "propertyKey": "auth.policy.timeout"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/SSORedirect/metaAlias/idp",
+      "propertyKey": "auth.saml.idp_server_login_url"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "http://edwappsrv4.poc.dum.edwdc.net:18080/opensso/IDPSloRedirect/metaAlias/idp",
+      "propertyKey": "auth.saml.idp_server_logout_url"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "http://localhost:6543/sp.xml",
+      "propertyKey": "auth.saml.issuer_name"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "http://edwappsrv4.poc.dum.edwdc.net:18080/opensso",
+      "propertyKey": "auth.saml.name_qualifier"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "1200",
+      "propertyKey": "auth.session.timeout"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "False",
+      "propertyKey": "auth.skip.verify"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "long_secret_for_redirects1111234",
+      "propertyKey": "auth.state.secret"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "300000",
+      "propertyKey": "batch.user.session.timeout"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "3600",
+      "propertyKey": "cache.expire"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "/tmp/memcache",
+      "propertyKey": "cache.lock_dir"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "10",
+      "propertyKey": "cache.public.data.expire"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "15552000",
+      "propertyKey": "cache.public.filtered_data.expire"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "7776000",
+      "propertyKey": "cache.public.shortlived.expire"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "public.data, public.filtered_data, public.shortlived, session",
+      "propertyKey": "cache.regions"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "1200",
+      "propertyKey": "cache.session.expire"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "memory",
+      "propertyKey": "cache.type"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "True",
+      "propertyKey": "celery.celery_always_eager"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "True",
+      "propertyKey": "disable.context.security"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "False",
+      "propertyKey": "disable_stack_trace"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "edware_sds_1_0",
+      "propertyKey": "edware.db.cat.schema_name"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware",
+      "propertyKey": "edware.db.cat.url"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "edware_sds_1_0_dog",
+      "propertyKey": "edware.db.dog.schema_name"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware",
+      "propertyKey": "edware.db.dog.url"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "False",
+      "propertyKey": "edware.db.echo"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "10",
+      "propertyKey": "edware.db.max_overflow"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "20",
+      "propertyKey": "edware.db.pool_size"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "edware_sds_1_0",
+      "propertyKey": "edware_stats.db.schema_name"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "postgresql+psycopg2://edware:edware2013@edwdbsrv1.poc.dum.edwdc.net:5432/edware_stats",
+      "propertyKey": "edware_stats.db.url"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "ou=environment,dc=edwdc,dc=net",
+      "propertyKey": "ldap.base.dn"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "dev",
+      "propertyKey": "mode"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "True",
+      "propertyKey": "pdf.always_generate"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "http://localhost:6543/assets/html/",
+      "propertyKey": "pdf.base.url"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "batch_pdf_gen",
+      "propertyKey": "pdf.batch.job.queue"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "30",
+      "propertyKey": "pdf.celery_timeout"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "10",
+      "propertyKey": "pdf.generate_timeout"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "health_check",
+      "propertyKey": "pdf.health_check.job.queue"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "59000",
+      "propertyKey": "pdf.minimum_file_size"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "/tmp/pdf",
+      "propertyKey": "pdf.report_base_dir"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "1",
+      "propertyKey": "pdf.retries_allowed"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "0",
+      "propertyKey": "pdf.retry_delay"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "False",
+      "propertyKey": "pyramid.debug_all"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "False",
+      "propertyKey": "pyramid.debug_authorization"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "False",
+      "propertyKey": "pyramid.debug_notfound"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "False",
+      "propertyKey": "pyramid.debug_routematch"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "en",
+      "propertyKey": "pyramid.default_locale_name"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "pyramid_tm pyramid_exclog pyramid_beaker",
+      "propertyKey": "pyramid.includes"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "True",
+      "propertyKey": "pyramid.reload_templates"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "True",
+      "propertyKey": "run.npm.update"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "/usr/local/bin",
+      "propertyKey": "smarter.path"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "0",
+      "propertyKey": "smarter.resources.static.max_age"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "False",
+      "propertyKey": "trigger.pdf.enable"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "*/1",
+      "propertyKey": "trigger.pdf.schedule.cron.day"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "False",
+      "propertyKey": "trigger.recache.enable"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "../config/comparing_populations_precache_filters.json",
+      "propertyKey": "trigger.recache.filter.file"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "*/1",
+      "propertyKey": "trigger.recache.schedule.cron.day"
+    },
+    {
+      "encrypt": true,
+      "propertyValue": "egg:smarter",
+      "propertyKey": "use"
+    }
+  ],
+  "id": "8bc6dad5-f013-4ae5-9b8a-5fd4dd2cae6d",
+  "envName": "app:main",
+  "name": "ini"
+}

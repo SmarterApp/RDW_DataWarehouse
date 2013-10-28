@@ -14,7 +14,7 @@ define [
       current = new Date()
       this.timestamp = Mustache.to_html TIMESTAMP_TEMPLATE, {
         yyyy: current.getFullYear()
-        mm: current.getMonth()
+        mm: current.getMonth() + 1
         dd: current.getDate()
         hh: current.getHours()
         MM: current.getMinutes()

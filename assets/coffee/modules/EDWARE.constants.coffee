@@ -8,5 +8,5 @@ define [], () ->
 
   DELIMITOR: {
     COMMA: ','
-    NEWLINE: '\r\n'
+    NEWLINE: '\n'
   }

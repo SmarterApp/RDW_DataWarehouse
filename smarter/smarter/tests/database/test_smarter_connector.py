@@ -24,7 +24,7 @@ class TestSmarterConnector(Unittest_with_smarter_sqlite):
 
     def test_get_datasource_name_without_tenant(self):
         name = SmarterDBConnection.get_datasource_name()
-        self.assertEquals(name, config_namespace)
+        self.assertEquals(name, None)
 
     def test_get_db_config_prefix(self):
         name = SmarterDBConnection.get_db_config_prefix('dummy')

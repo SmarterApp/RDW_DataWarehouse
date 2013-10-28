@@ -24,10 +24,14 @@ class SmarterDBConnection(DBConnection):
             __user = authenticated_userid(get_current_request())
             if __user:
                 tenant = __user.get_tenant()
-            else:
-                # TODO: have to fix this edge case
-                pass
         super().__init__(name=self.get_datasource_name(tenant))
+
+    @staticmethod
+    def get_namespace():
+        '''
+        Returns the namespace of smarter database connection
+        '''
+        return config_namespace + '.'
 
     @staticmethod
     def get_datasource_name(tenant=None):
@@ -35,8 +39,9 @@ class SmarterDBConnection(DBConnection):
         Returns datasource name for a tenant
         '''
         if tenant is None:
-            return config_namespace
-        return config_namespace + '.' + tenant
+            # Returns None will raise an Exception in base class
+            return None
+        return SmarterDBConnection.get_namespace() + tenant
 
     @staticmethod
     def get_db_config_prefix(tenant=None):
@@ -44,8 +49,9 @@ class SmarterDBConnection(DBConnection):
         Returns database config prefix based on tenant name
         '''
         if tenant is None:
-            return config_namespace + '.'
-        return config_namespace + '.' + tenant + '.'
+            # Returns None will raise an Exception in base class
+            return None
+        return SmarterDBConnection.get_namespace() + tenant + '.'
 
     @staticmethod
     def generate_metadata(schema_name=None, bind=None):

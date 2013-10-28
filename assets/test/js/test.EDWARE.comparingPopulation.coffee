@@ -5,6 +5,4 @@ require ["jquery", "EDWARE.comparingPopulations"], ($, edwareComparingPopulation
 
     teardown: ->
 
-  test "Test create method", ->
-    ok edwareComparingPopulations.createPopulationGrid isnt "undefined", "edwareSchoolList.createPopulationGrid method should be defined"
-    ok typeof edwareComparingPopulations.createPopulationGrid is "function", "edwareSchoolList.createPopulationGrid method should be function"
+

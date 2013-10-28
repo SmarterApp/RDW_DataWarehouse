@@ -25,6 +25,15 @@ define [
       this.asmtType = $('#selectedAsmtType').text() || this.labels.summative
       this.isSticky = $('.stickyState').data('label')
       this.filters = this.buildFilters()
+      this.breadcrumb = this.getBreadcrumb()
+
+    getBreadcrumb: () ->
+      path = []
+      $('#breadcrumb').contents().each ()->
+        #district name and school name
+        level = $(this).text()
+        path.push level if level
+      path.join Constants.DELIMITOR.COMMA
 
     getSortBy: () ->
       sortName = this.table.getGridParam('sortname');
@@ -49,11 +58,13 @@ define [
       records.push edwareUtil.escapeCSV [this.labels.report_name, this.title]
       # build timestamp and username
       records.push edwareUtil.escapeCSV [this.labels.date, this.timestamp]
+      records.push edwareUtil.escapeCSV [this.labels.report_info, this.breadcrumb]
       # build filters
       records.push edwareUtil.escapeCSV [this.labels.filterd_by, this.filters] if this.filters
       records.push edwareUtil.escapeCSV [this.labels.sort_by, this.sortBy]
       records.push edwareUtil.escapeCSV [this.labels.compare, this.isSticky]
       records.push edwareUtil.escapeCSV [this.labels.asmt_type, this.asmtType]
+      records.push edwareUtil.escapeCSV [this.labels.total_count, this.table.getGridParam("reccount")]
       for i in [records.length .. 9] # fix first 10 rows as headers
         records.push ''
       records

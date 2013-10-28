@@ -62,6 +62,7 @@
 		"schools": "Schools",
 		"school_selected": "School Selected",
         "schools_selected": "Schools Selected",
+        "score": "Score",
 		"score_range": "Score Range",
 		"select_measure": "Select Measure",
 		"show_all": "Show All",
@@ -78,6 +79,7 @@
 		"summative" : "Summative",
 		"teacher": "Teacher",
 		"total": "Total",
+		"total_count": "Total Count",
 		"viewing": "Viewing",
 		"asmt": {
 			"Communicating Reasoning": "Communicating Reasoning",

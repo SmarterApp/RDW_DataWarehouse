@@ -62,6 +62,7 @@
 		"schools": "学校",
 		"school_selected": "学校付",
 		"schools_selected": "学校付",
+		"score": "スコア",
 		"score_range": "スコア範囲",
 		"select_measure": "セレクトメジャー",
 		"show_all": "表示",
@@ -78,6 +79,7 @@
 		"summative" : "累積的な",
 		"teacher": "教師",
 		"total": "合計",
+		"total_count": "総数",
 		"viewing": "表示表示",
 		"asmt": {
 			"Communicating Reasoning": "推論",

@@ -101,9 +101,11 @@ define [
 
     confidence = subject[names[2]][names[3]]['confidence']
     Mustache.to_html CONFIDENCE_TEMPLATE, {
+      asmtType: subject.asmt_type,
       labels: options.colModel.labels
       value: value
       columnName: options.colModel.label
+      parentName: $(options.colModel.parentLabel).text()
       confidence: confidence
       export: 'export' if options.colModel.export
     }

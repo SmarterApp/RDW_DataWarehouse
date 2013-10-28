@@ -1585,7 +1585,12 @@ th.ui-th-column div {
 }
 
 // Interim Disclaimer 
-.interimDisclaimerIcon {
+
+
+.disclaimerInfo {
+  padding-left: 10px;
+  padding-right: 15px;
+  .interimDisclaimerIcon {
     background-image: url("../images/interim_infoicon.png");
     background-repeat: no-repeat;
     width: 14px;
@@ -1595,17 +1600,10 @@ th.ui-th-column div {
     top: 50%;
     margin-top: -8px;
   }
-
-.disclaimerInfo {
-    padding-left: 10px;
-    padding-right: 15px;
 }
-
-.interimDisclaimerPopover {
-    display: block;
-
-    .popover-content {
-      width: 400px;
-    }
+#interimDisclaimerPopover {
+  .popover {
+    max-width: 400px;
+    z-index: 4999;
+  }
 }
-

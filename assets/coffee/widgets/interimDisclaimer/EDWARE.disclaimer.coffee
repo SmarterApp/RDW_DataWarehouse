@@ -4,13 +4,7 @@ define [
   "edwarePreferences"
 ], ($, Mustache, edwarePreferences) ->
   
-  DISCLAIMER_TEMPLATE =  
-    '<div class="interimDisclaimerIcon">' +
-      '<div class="interimDisclaimer hide">{{{content}}}</div>' +
-    '</div>'
 
-  DISCLAIMER_POPOVER_TEMPLATE = '<div class="popover interimDisclaimerPopover"><div class="arrow"></div><div class="popover-inner"><div class="popover-content"><p></p></div></div></div>'
-  
   class EdwareDisclaimer
     
     constructor: (@disclaimerSection, @content) ->
@@ -37,33 +31,28 @@ define [
         html: true
         placement: "bottom"
         trigger: "manual"
-        template: DISCLAIMER_POPOVER_TEMPLATE
-        content: ->
-          $(this).find(".interimDisclaimer").html()
+        container: '#interimDisclaimerPopover'
+        content: self.content
       .mouseenter ()->
         # move popover
-        $(this).popover('show')
+        $(this).popover 'show'
         self.setPosition()
       .mouseleave ()->
-        $(this).popover('hide')
+        $(this).popover "hide"
 
     setPosition: ()->
       offset = this.icon.offset()
-      popover = $('.interimDisclaimerPopover')
-      popover.removeAttr('style').css {
-        top: offset.top + 20
-        left: offset.left - 400
-      }
+      popover = $('#interimDisclaimerPopover .popover')
+      popover.css "left", offset.left + 17 - popover.width()
+
       # update arrow
       arrow = $(".arrow", popover)
-      arrow.removeAttr('style').css {
-        left: 407
-      }      
+      arrow.css "left", popover.width() - 10
 
     # Call this to create the disclaimer icon
     initialize: () ->
-      output = Mustache.to_html DISCLAIMER_TEMPLATE, {'content': this.content}
-      this.disclaimerSection.html output
+      interimDisclaimerIcon = $('<div class="interimDisclaimerIcon"></div>')
+      this.disclaimerSection.append interimDisclaimerIcon
       this.icon = $('.interimDisclaimerIcon')
       this.container = $('.disclaimerInfo')
    

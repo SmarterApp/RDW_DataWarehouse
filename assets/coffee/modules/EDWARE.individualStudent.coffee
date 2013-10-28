@@ -236,7 +236,7 @@ define [
       # Show tooltip for claims on mouseover
       $(".arrowBox").popover
         html: true
-        container: "body"
+        container: "#content"
         trigger: "hover"
         placement: (tip, element) ->
           edwareUtil.popupPlacement(element, 400, 276)

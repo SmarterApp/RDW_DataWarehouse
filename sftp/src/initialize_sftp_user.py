@@ -13,7 +13,7 @@ from src.util import group_exists, create_path
 __author__ = 'swimberly'
 
 
-def create_sftp_user(tenant, user, role, sftp_conf):
+def create_sftp_user(tenant, user, role, sftp_conf, ssh_key_str=None, ssh_key_file=None):
     """
     Create an sftp user
     :param tenant: the name of the tenant that the user will belong to
@@ -24,16 +24,20 @@ def create_sftp_user(tenant, user, role, sftp_conf):
         as a string
     """
     arrive_depart_dir = sftp_conf['group_directories'][role]
-    tenant_path = os.path.join(sftp_conf['sftp_home'], sftp_conf['sftp_base_dir'],
-                               arrive_depart_dir, tenant)
+    tenant_sftp_path = os.path.join(sftp_conf['sftp_home'], sftp_conf['sftp_base_dir'],
+                                    arrive_depart_dir, tenant)
+    tenant_home_path = os.path.join(sftp_conf['sftp_home'], arrive_depart_dir, tenant)
 
-    valid_user = _verify_user_tenant_and_role(tenant_path, user, role)
+    valid_user = _verify_user_tenant_and_role(tenant_sftp_path, user, role)
     if not valid_user[0]:
         return False, valid_user[1]
 
-    user_path = os.path.join(tenant_path, user)
-    _create_user(user, user_path, role, sftp_conf['file_drop'])
-    print('User created:\n\tuser: %s\n\thome dir: %s\n\trole: %s' % (user, user_path, role))
+    user_sftp_path = os.path.join(tenant_sftp_path, user)
+    user_home_path = os.path.join(tenant_home_path, user)
+    _create_user(user, user_home_path, user_sftp_path, role, sftp_conf['file_drop'])
+    _set_ssh_key(user_home_path, ssh_key_str, ssh_key_file)
+    print('User created:\n\tuser: {}\n\thome dir: {}\n\tsftp dir: {}\n\trole: {}'.format(user, user_home_path,
+                                                                                         user_sftp_path, role))
     return True, ""
 
 
@@ -48,7 +52,7 @@ def delete_user(user):
     print('user removed:', user)
 
 
-def _create_user(user, home_folder, role, file_drop_name):
+def _create_user(user, home_folder, sftp_folder, role, file_drop_name):
     """
     create the given user with the specified home-folder and group
 
@@ -57,23 +61,24 @@ def _create_user(user, home_folder, role, file_drop_name):
     :param role: the name of the user's role which will be used to assign a user to a group
     :return: None
     """
-    create_path(home_folder)
+    create_path(sftp_folder)
 
     add_user_cmd = "adduser -d {} -g {} -s /sbin/nologin {}".format(home_folder, role, user)
     subprocess.call(add_user_cmd, shell=True)
-    _create_file_drop_folder(user, home_folder, role, file_drop_name)
+    _create_file_drop_folder(user, sftp_folder, role, file_drop_name)
 
 
-def _create_file_drop_folder(user, home_folder, role, file_drop_name):
+def _create_file_drop_folder(user, sftp_user_folder, role, file_drop_name):
     """
     Create the directory and set the permissions for the file drop folder
     :param user: the username of the user to create
-    :param home_folder: the path to the users home folder
+    :param sftp_user_folder: the path to the users home folder
     :param role: the name of the user's role which will be used to assign a user to a group
     :param file_drop_name: the name of the file drop folder (should be in the sftp_config dict)
     :return: None
     """
-    file_drop_loc = os.path.join(home_folder, file_drop_name)
+    file_drop_loc = os.path.join(sftp_user_folder, file_drop_name)
+
     # create file drop location and set proper permission
     create_path(file_drop_loc)
     shutil.chown(file_drop_loc, user, role)
@@ -113,4 +118,17 @@ def _set_ssh_key(home_folder, pub_key_str=None, pub_key_file=None):
     :param pub_key_file: The file containing the public key
     :return: None
     """
-    pass
+    create_path(os.path.join(home_folder, '.ssh'))
+    auth_keys_path = os.path.join(home_folder, '.ssh', 'authorized_keys')
+
+    pub_key = pub_key_str
+    if not pub_key_str:
+        with open(pub_key_file, 'r') as f:
+            pub_key = f.read()
+    with open(auth_keys_path, 'a') as f:
+        f.write(pub_key)
+        if pub_key[-1] != '\n':
+            f.write('\n')
+
+
+

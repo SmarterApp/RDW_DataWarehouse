@@ -26,17 +26,19 @@ class rsynch_validation(unittest.TestCase):
 
         # Make no file is on remote server(app server 5)
         data = srv.listdir('/filedrop')
-        for i in data:
-                print(i)
+        self.assertEqual(0, len(data))
 
         # To upload the file
         srv.put(local_file, 'filedrop/' + os.path.basename(local_file))
 
         #Assert file is loded to remote server (appserver5)
+
         data = srv.listdir('/filedrop')
-        for i in data:
-            self.assertEqual(i, 'test_source_file_tar_gzipped.tar.gz.gpg')
-            print(i)
+        print("new file")
+        print(len(data))
+        if (len(data) != 0):
+            for i in data:
+                self.assertEqual(i, 'test_source_file_tar_gzipped.tar.gz.gpg')
 
         # Closes the connection
         srv.close()

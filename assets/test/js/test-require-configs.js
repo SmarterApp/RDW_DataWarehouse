@@ -2,7 +2,6 @@
 var baseConfigs = {
   paths : {
     // libraries
-    cs: '../../js/3p/cs',
     'coffee-script': '../../js/3p/coffee-script',
     jquery: '../../js/3p/jquery-1.7.2.min',
     jqGrid: '../../js/3p/jquery.jqGrid.min',
@@ -69,18 +68,3 @@ var baseConfigs = {
 };
 
 require.config(baseConfigs);
-
-function getTestFile() {
-  var scriptTags = document.getElementsByTagName("script"), i, testfile = [], fileName;
-
-  for( i = 0; i < scriptTags.length; i++) {
-    fileName = scriptTags[i].getAttribute("data-testfile");
-    if(fileName) {
-      testfile.push(fileName);
-    }
-  }
-
-  return testfile;
-}
-
-require(getTestFile());

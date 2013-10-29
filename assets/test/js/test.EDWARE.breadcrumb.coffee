@@ -1,17 +1,18 @@
 #globals ok $ EDWARE test require module equals deepEqual
-require ["jquery", "edwareBreadcrumbs"], ($, edwareBreadcrumbs) ->
+define ["jquery", "edwareBreadcrumbs"], ($, edwareBreadcrumbs) ->
+
   module "EDWARE.breadcrumbs.create",
     setup: ->
       $("body").append "<div id='breadcrumbs'></div>"
 
     teardown: ->
       $("#breadcrumbs").remove()
-      
 
   test "Test create method", ->
     stop()
-    ok edwareBreadcrumbs.create isnt `undefined`, "edwareBreadcrumbs.create method should be defined"
-    ok typeof edwareBreadcrumbs.create is "function", "edwareBreadcrumbs.create method should be function"
+    create = edwareBreadcrumbs.create
+    ok create isnt `undefined`, "edwareBreadcrumbs.create method should be defined"
+    ok typeof create is "function", "edwareBreadcrumbs.create method should be function"
     
     breadcrumb = items : [
       type : "state"

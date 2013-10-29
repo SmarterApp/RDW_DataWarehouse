@@ -355,13 +355,13 @@ function generate_docs {
 
 function run_javascript_tests {
     echo "Running javascript phantomjs tests"
-    cd "$WORKSPACE/assets/js/3p/"
+    cd "$WORKSPACE/assets/test/js/3p"
     phantomjs run-qunit.js http://localhost/assets/test/TEST.EDWARE.test.html?coverage=true
 }
 
 function run_javascript_yslow_tests {
     echo "Running javascript phantomjs yslow tests"
-    cd "$WORKSPACE/assetes/js/3p"
+    cd "$WORKSPACE/assets/test/js/3p"
     phantomjs /opt/yslow/yslow.js --help
 }
 

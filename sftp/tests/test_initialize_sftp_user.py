@@ -103,7 +103,7 @@ class TestInitSFTPUser(unittest.TestCase):
         if sys.platform == 'linux':
             init_group(self.sftp_conf)
             self.check_user_does_not_exist(user)
-            _create_user(user, home_folder, sftp_folder, 'testgrp1', 'file_drop')
+            _create_user(user, home_folder, sftp_folder, 'testgrp1', self.sftp_conf['file_drop'])
             self.assertIsNotNone(pwd.getpwnam(user))
 
             file_drop_folder = os.path.join(sftp_folder, self.sftp_conf['file_drop'])

@@ -4,6 +4,7 @@ Created on Jan 24, 2013
 @author: tosako
 '''
 
+from datetime import datetime
 from edapi.decorators import report_config, user_info
 from smarter.reports.helpers.name_formatter import format_full_name_rev
 from sqlalchemy.sql import select
@@ -110,6 +111,14 @@ def get_list_of_students_extract_report(params):
     CSV version of list of student
     '''
     # Get results from db
+    asmtGrade = params.get(Constants.ASMTGRADE, None)
+    timestamp = datetime.now().isoformat()
+    timestamp = timestamp[:timestamp.index('.')]
+    extract_file_name = ''
+    if asmtGrade is None:
+        extract_file_name = 'school_asmt_results_' + timestamp + '.csv'
+    else:
+        extract_file_name = 'grade_' + str(asmtGrade) + '_asmt_data_' + timestamp + '.csv'
     results = get_list_of_students(params)
     header = []
     rows = []
@@ -119,7 +128,7 @@ def get_list_of_students_extract_report(params):
             header = list(result.keys())
         rows.append(list(result.values()))
 
-    return {'header': header, 'rows': rows, 'file_name': 'list_of_students.csv'}
+    return {'header': header, 'rows': rows, 'file_name': extract_file_name}
 
 
 @report_config(
@@ -260,7 +269,7 @@ def get_list_of_students(params):
                                     fact_asmt_outcome.c.asmt_claim_4_score_range_max.label('asmt_claim_4_score_range_max')],
                                     from_obj=[fact_asmt_outcome
                                               .join(dim_student, and_(dim_student.c.student_guid == fact_asmt_outcome.c.student_guid,
-                                                                      dim_student.c.most_recent,
+                                                                      #dim_student.c.most_recent,
                                                                       dim_student.c.section_guid == fact_asmt_outcome.c.section_guid))
                                               .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id,
                                                                    dim_asmt.c.asmt_type.in_([AssessmentType.SUMMATIVE, AssessmentType.COMPREHENSIVE_INTERIM])))
@@ -273,7 +282,7 @@ def get_list_of_students(params):
 
         query = query.where(and_(fact_asmt_outcome.c.status == 'C'))
 
-        # raw export ignore most_recent
+        # raw export ignore most_recentß
         if raw == 'false':
             query = query.where(and_(fact_asmt_outcome.c.most_recent))
 

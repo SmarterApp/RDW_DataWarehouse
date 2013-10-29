@@ -245,6 +245,7 @@
 				"items": [
 					{
 						"name": "学生",
+						"displayTpl": "",
 						"index": "student_full_name",
 						"field": "student_full_name",
 						"width": 205,
@@ -254,14 +255,16 @@
 							"linkUrl": "indivStudentReport.html"
 						},
 						"hidden": true,
-						"sortorder": "asc"
+						"sortorder": "asc",
+						"export": true
 					}
 				]
 			}, {
 				"name": "{{subject1}}",
 				"items": [
 					{
-						"name": "総合評点<div id='subject1_perfBar' class='header_perfBar'></div>",
+						"name": "総合評点",
+						"displayTpl": "<div id='subject1_perfBar' class='header_perfBar'></div>",
 						"index": "assessments.subject1.asmt_score",
 						"field": "assessments.subject1.asmt_score",
 						"width": 170,
@@ -271,9 +274,11 @@
 						},
 						"sorttype": "int",
 						"align": "center",
-						"title": false
+						"title": false,
+						"export": true
 					}, {
 						"name": "先生",
+						"displayTpl": "",
 						"index": "assessments.subject1.teacher_full_name",
 						"field": "assessments.subject1.teacher_full_name",
 						"width": 204,
@@ -285,7 +290,8 @@
 				"name": "{{subject2}}",
 				"items": [
 					{
-						"name": "総合評点<div id='subject2_perfBar' class='header_perfBar'></div>",
+						"name": "総合評点",
+						"displayTpl": "<div id='subject2_perfBar' class='header_perfBar'></div>",
 						"index": "assessments.subject2.asmt_score",
 						"field": "assessments.subject2.asmt_score",
 						"width": 170,
@@ -295,9 +301,11 @@
 						},
 						"sorttype": "int",
 						"align": "center",
-						"title": false
+						"title": false,
+						"export": true
 					}, {
 						"name": "先生",
+						"displayTpl": "",
 						"index": "assessments.subject2.teacher_full_name",
 						"field": "assessments.subject2.teacher_full_name",
 						"width": 204,
@@ -313,6 +321,7 @@
 				"items": [
 					{
 						"name": "学生",
+						"displayTpl": "",
 						"index": "student_full_name",
 						"field": "student_full_name",
 						"width": 205,
@@ -322,14 +331,16 @@
 							"linkUrl": "indivStudentReport.html"
 						},
 						"hidden": true,
-						"sortorder": "asc"
+						"sortorder": "asc",
+						"export": true
 					}
 				]
 			}, {
 				"name": "{{subject1}}",
 				"items": [
 					{
-						"name": "総合評点<div id='subject1_perfBar' class='header_perfBar'></div>",
+						"name": "総合評点",
+						"displayTpl": "<div id='subject1_perfBar' class='header_perfBar'></div>",
 						"index": "assessments.subject1.asmt_score",
 						"field": "assessments.subject1.asmt_score",
 						"width": 170,
@@ -339,9 +350,11 @@
 						},
 						"sorttype": "int",
 						"align": "center",
-						"title": false
+						"title": false,
+						"export": true
 					}, {
 						"name": "先生",
+						"displayTpl": "",
 						"index": "assessments.subject1.teacher_full_name",
 						"field": "assessments.subject1.teacher_full_name",
 						"width": 155,
@@ -354,12 +367,14 @@
 				"items": [
 					{
 						"name": "{{claims.subject1.0.name2}}",
+						"displayTpl": "",
 						"index": "assessments.subject1.claims.0.score",
 						"field": "assessments.subject1.claims.0.score",
 						"width": 140,
 						"formatter": "showConfidence",
 						"sorttype": "int",
-						"align": "center"
+						"align": "center",
+						"export": true
 					}
 				]
 			}, {
@@ -367,12 +382,14 @@
 				"items": [
 					{
 						"name": "{{claims.subject1.1.name2}}",
+						"displayTpl": "",
 						"index": "assessments.subject1.claims.1.score",
 						"field": "assessments.subject1.claims.1.score",
 						"width": 140,
 						"formatter": "showConfidence",
 						"sorttype": "int",
-						"align": "center"
+						"align": "center",
+						"export": true
 					}
 				]
 			}, {
@@ -380,12 +397,14 @@
 				"items": [
 					{
 						"name": "{{claims.subject1.2.name2}}",
+						"displayTpl": "",
 						"index": "assessments.subject1.claims.2.score",
 						"field": "assessments.subject1.claims.2.score",
 						"width": 140,
 						"formatter": "showConfidence",
 						"sorttype": "int",
-						"align": "center"
+						"align": "center",
+						"export": true
 					}
 				]
 			}
@@ -396,6 +415,7 @@
 				"items": [
 					{
 						"name": "学生",
+						"displayTpl": "",
 						"index": "student_full_name",
 						"field": "student_full_name",
 						"width": 205,
@@ -405,14 +425,16 @@
 							"linkUrl": "indivStudentReport.html"
 						},
 						"hidden": true,
-						"sortorder": "asc"
+						"sortorder": "asc",
+						"export": true
 					}
 				]
 			}, {
 				"name": "{{subject2}}",
 				"items": [
 					{
-						"name": "総合評点<div id='subject2_perfBar' class='header_perfBar'></div>",
+						"name": "総合評点",
+						"displayTpl": "<div id='subject2_perfBar' class='header_perfBar'></div>",
 						"index": "assessments.subject2.asmt_score",
 						"field": "assessments.subject2.asmt_score",
 						"width": 170,
@@ -422,9 +444,11 @@
 						},
 						"sorttype": "int",
 						"align": "center",
-						"title": false
+						"title": false,
+						"export": true
 					}, {
 						"name": "Teacher",
+						"displayTpl": "",
 						"index": "assessments.subject2.teacher_full_name",
 						"field": "assessments.subject2.teacher_full_name",
 						"width": 155,
@@ -437,12 +461,14 @@
 				"items": [
 					{
 						"name": "{{claims.subject2.0.name2}}",
+						"displayTpl": "",
 						"index": "assessments.subject2.claims.0.score",
 						"field": "assessments.subject2.claims.0.score",
 						"width": 103,
 						"formatter": "showConfidence",
 						"sorttype": "int",
-						"align": "center"
+						"align": "center",
+						"export": true
 					}
 				]
 			}, {
@@ -450,12 +476,14 @@
 				"items": [
 					{
 						"name": "{{claims.subject2.1.name2}}",
+						"displayTpl": "",
 						"index": "assessments.subject2.claims.1.score",
 						"field": "assessments.subject2.claims.1.score",
 						"width": 104,
 						"formatter": "showConfidence",
 						"sorttype": "int",
-						"align": "center"
+						"align": "center",
+						"export": true
 					}
 				]
 			}, {
@@ -463,12 +491,14 @@
 				"items": [
 					{
 						"name": "{{claims.subject2.2.name2}}",
+						"displayTpl": "",
 						"index": "assessments.subject2.claims.2.score",
 						"field": "assessments.subject2.claims.2.score",
 						"width": 104,
 						"formatter": "showConfidence",
 						"sorttype": "int",
-						"align": "center"
+						"align": "center",
+						"export": true
 					}
 				]
 			}, {
@@ -476,12 +506,14 @@
 				"items": [
 					{
 						"name": "{{claims.subject2.3.name2}}",
+						"displayTpl": "",
 						"index": "assessments.subject2.claims.3.score",
 						"field": "assessments.subject2.claims.3.score",
 						"width": 104,
 						"formatter": "showConfidence",
 						"sorttype": "int",
-						"align": "center"
+						"align": "center",
+						"export": true
 					}
 				]
 			}
@@ -503,6 +535,7 @@
 				"items": [
 					{
 						"name": "学名",
+						"displayTpl": "",
 						"index": "name",
 						"field": "name",
 						"width": 186,
@@ -513,14 +546,16 @@
 							"style": "marginLeft20"
 						},
 						"hidden": true,
-						"sortorder": "asc"
+						"sortorder": "asc",
+						"export": true
 					}
 				]
 			}, {
 				"name": "{{subject1}}",
 				"items": [
 					{
-						"name": "<div id='{{subject1}}_sort' style='display: inline'></div>",
+						"name": "{{subject1}}",
+						"displayTpl": "<div id='{{subject1}}_sort' style='display: inline'></div>",
 						"index": "{{subject1}}",
 						"field": "results.subject1.total",
 						"width": 388,
@@ -530,14 +565,16 @@
 							"asmt_type": "subject1"
 						},
 						"title": false,
-						"align": "center"
+						"align": "center",
+						"export": true
 					}
 				]
 			}, {
 				"name": "{{subject2}}",
 				"items": [
 					{
-						"name": "<div id='{{subject2}}_sort' style='display: inline'></div>",
+						"name": "{{subject2}}",
+						"displayTpl": "<div id='{{subject2}}_sort' style='display: inline'></div>",
 						"index": "{{subject2}}",
 						"field": "results.subject2.total",
 						"width": 388,
@@ -547,7 +584,8 @@
 							"asmt_type": "subject2"
 						},
 						"title": false,
-						"align": "center"
+						"align": "center",
+						"export": true
 					}
 				]
 			}

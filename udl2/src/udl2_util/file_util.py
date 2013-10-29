@@ -107,3 +107,31 @@ def get_file_type_from_dir(extension, directory):
     # TODO: Might want to extend this to handle multiple files
     # For now, just return the first file found
     return os.path.join(directory, files[0]) if files else None
+
+
+def convert_path_to_list(path):
+    """
+    Given a path convert its elements to a list and return the list
+    if the path is '/bob/tom', ['/', 'bob', 'tom'] will be returned
+
+    :param path: The path
+    :return: A list of strings that constitute each directory in the path (including a file if one is given)
+    """
+    folders = []
+
+    # this check will allow the rest of the code to work even when the string ends with a '/'
+    if os.path.split(path)[1] == "":
+        path = os.path.split(path)[0]
+
+    # loop the other folders in the dir
+    while True:
+        path, folder = os.path.split(path)
+
+        if folder != "":
+            folders.append(folder)
+        else:
+            if path != "":
+                folders.append(path)
+            break
+    folders.reverse()
+    return folders

@@ -16,6 +16,7 @@ from smarter import services, trigger
 from smarter.database import initialize_db
 from smarter.database.smarter_connector import SmarterDBConnection
 from smarter.database.udl_stats_connector import StatsDBConnection
+from smarter.utils.remote_config import get_remote_config
 
 logger = logging.getLogger(__name__)
 CAKE_PROC = None
@@ -29,6 +30,13 @@ def main(global_config, **settings):
 
     Returns a Pyramid WSGI application.
     """
+    mode = settings.get('mode', 'prod').upper()
+
+    # read remote config
+    if mode == 'PROD' and 'edware.remote_config.url' in settings:
+        url = settings['edware.remote_config.url']
+        settings = get_remote_config(url)
+
     # Prepare for environment specific
     if 'smarter.PATH' in settings:
         os.environ['PATH'] += os.pathsep + settings['smarter.PATH']
@@ -64,7 +72,6 @@ def main(global_config, **settings):
     config.add_static_view('assets/public', os.path.join(assets_dir, 'public'), cache_max_age=static_max_age, permission=pyramid.security.NO_PERMISSION_REQUIRED)
 
     # Only expose test in non-production modes
-    mode = settings.get('mode', 'prod').upper()
     if mode != 'PROD':
         config.add_static_view('assets/test', os.path.join(assets_dir, 'test'), cache_max_age=static_max_age)
 

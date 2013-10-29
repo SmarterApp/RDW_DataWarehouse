@@ -109,7 +109,8 @@ udl2_conf = {
     },
     'quiet_mode': False,
     'gpg_home': '/opt/wgen/edware-udl/zones/datafiles/keys',
-    'passphrase': 'sbac udl2'
+    'passphrase': 'sbac udl2',
+    'tenant_position': -4,
 }
 
 

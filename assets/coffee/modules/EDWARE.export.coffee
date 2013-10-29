@@ -6,24 +6,36 @@ define [
   "edwareUtil"
 ], ($, Mustache, Constants, edwareClientStorage, edwareUtil) ->
 
-  TIMESTAMP_TEMPLATE = '{{mm}}-{{dd}}-{{yyyy}} {{hh}}:{{MM}}:{{ss}}'
 
   class CSVBuilder
   
-    constructor: (@table, @reportType) ->
+    constructor: (@table, @reportType, @labels) ->
       current = new Date()
-      this.timestamp = Mustache.to_html TIMESTAMP_TEMPLATE, {
-        yyyy: current.getFullYear()
-        mm: current.getMonth()
-        dd: current.getDate()
-        hh: current.getHours()
-        MM: current.getMinutes()
-        ss: current.getSeconds()
-      }
+      this.timestamp = (current.getMonth() + 1) + '-' + current.getDate() + '-' + current.getFullYear() + ' ' + current.getHours() + ':' + current.getMinutes() + ':' + current.getSeconds()
+      
       this.title =  $('.title h2').text()
-      this.sortBy = this.table.jqGrid('getGridParam','sortname');
-      this.asmtType = $('#selectedAsmtType').text() || 'Summative'
+      this.sortBy = this.getSortBy()
+      this.asmtType = $('#selectedAsmtType').text() || this.labels.summative
       this.isSticky = $('.stickyState').data('label')
+      this.filters = this.buildFilters()
+      this.breadcrumb = this.getBreadcrumb()
+
+    getBreadcrumb: () ->
+      path = []
+      $('#breadcrumb').contents().each ()->
+        #district name and school name
+        level = $(this).text()
+        path.push level if level
+      path.join Constants.DELIMITOR.COMMA
+
+    getSortBy: () ->
+      sortName = this.table.getGridParam('sortname');
+      models = this.table.getGridParam('colModel')
+      sortBy = ''
+      $.each models, (idx, model)->
+        sortBy = model.label if model.index is sortName
+      sortBy
+
       
     build: () ->
       records = [] # fixed first 10 rows
@@ -36,22 +48,33 @@ define [
     buildTitle: () ->
       records = []
       # build title
-      records.push edwareUtil.escapeCSV ['Report Name', this.title]
+      records.push edwareUtil.escapeCSV [this.labels.report_name, this.title]
       # build timestamp and username
-      records.push edwareUtil.escapeCSV ['Generated Date', this.timestamp]
+      records.push edwareUtil.escapeCSV [this.labels.date, this.timestamp]
+      records.push edwareUtil.escapeCSV [this.labels.report_info, this.breadcrumb]
       # build filters
-      records.push edwareUtil.escapeCSV ['Filters', this.buildFilters()]
-      records.push edwareUtil.escapeCSV ['Sort By', this.sortBy]
-      records.push edwareUtil.escapeCSV ['Comparison', this.isSticky]
-      records.push edwareUtil.escapeCSV ['Assessment Type', this.asmtType]
+      records.push edwareUtil.escapeCSV [this.labels.filterd_by, this.filters] if this.filters
+      records.push edwareUtil.escapeCSV [this.labels.sort_by, this.sortBy]
+      records.push edwareUtil.escapeCSV [this.labels.compare, this.isSticky]
+      records.push edwareUtil.escapeCSV [this.labels.asmt_type, this.asmtType]
+      records.push edwareUtil.escapeCSV [this.labels.total_count, this.table.getGridParam("reccount")]
       for i in [records.length .. 9] # fix first 10 rows as headers
         records.push ''
       records
 
     buildFilters: () ->
+      result = []
       params = edwareClientStorage.filterStorage.load()
-      for key, value of JSON.parse(params)
-        key + ":" + value
+      if params
+        $.each JSON.parse(params), (key, value) ->
+          filter = $('.filter-group[data-name=' + key + ']')
+          if filter[0]
+            filterData = []
+            filterName = filter.data('display') #filter name
+            $('input', filter).each ->
+              filterData.push $(this).data('label') if $(this).val() in value
+            result.push filterName + ': ' + filterData.join(Constants.DELIMITOR.COMMA)
+      result
 
     buildContent: () ->
       result = []
@@ -77,8 +100,8 @@ define [
       columnValues = []
       for key, value of record
         exportField = $(value)
-        continue if not exportField.hasClass('export')
-        exportField.find('span.hidden').each () ->
+        continue if not exportField.hasClass('edwareExportColumn')
+        exportField.find('span.edwareExportField').each () ->
           $this = $(this)
           columnValues.push $this.data(field)
       columnValues = edwareUtil.escapeCSV columnValues
@@ -149,8 +172,8 @@ define [
     save = new EdwareDownload().create()
     save content, filename, 'application/csv'
 
-  $.fn.edwareExport = (reportType)->
+  $.fn.edwareExport = (reportType, labels)->
     this.eagerLoad()
-    builder = new CSVBuilder(this, reportType)
+    builder = new CSVBuilder(this, reportType, labels)
     download builder.build(), builder.getFileName()
     this.lazyLoad()

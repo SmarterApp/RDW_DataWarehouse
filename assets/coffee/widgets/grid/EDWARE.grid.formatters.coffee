@@ -12,8 +12,6 @@ define [
   getTemplate = (name) ->
     $(edwareFormatterTemplate).find('div#' + name).html()
 
-  EXPORT_TEMPLATE = getTemplate('EXPORT_TEMPLATE')
-
   SUMMARY_TEMPLATE = getTemplate('SUMMARY_TEMPLATE')
 
   POPULATION_BAR_TEMPLATE = getTemplate('POPULATION_BAR_TEMPLATE')
@@ -53,8 +51,8 @@ define [
       cssClass: options.colModel.formatoptions.style
       subTitle: rowObject.subtitle
       summaryTitle: value
-      columnName: options.colModel.columnName
-      export: 'export' if exportable
+      columnName: options.colModel.label
+      export: 'edwareExportColumn' if exportable
     } if isHeader
     
     getDisplayValue = () ->
@@ -75,18 +73,18 @@ define [
       rowId: rowObject.rowId
       cssClass: options.colModel.formatoptions.style
       link: link
-      export: 'export' if exportable # check if export current field
+      export: 'edwareExportColumn' if exportable # check if export current field
       displayValue: displayValue
       labels: options.colModel.labels
-      columnName: options.colModel.columnName
+      columnName: options.colModel.label
     }
 
   showText = (value, options, rowObject) ->
     return Mustache.to_html TEXT_TEMPLATE, {
       value: value
-      columnName: options.colModel.columnName
-      export: 'export' if options.colModel.export
-    } 
+      columnName: options.colModel.label
+      export: 'edwareExportColumn' if options.colModel.export
+    }
 
   showOverallConfidence = (value, options, rowObject) ->
     names = options.colModel.name.split "."
@@ -103,10 +101,13 @@ define [
 
     confidence = subject[names[2]][names[3]]['confidence']
     Mustache.to_html CONFIDENCE_TEMPLATE, {
+      asmtType: subject.asmt_type,
+      labels: options.colModel.labels
       value: value
-      columnName: options.colModel.columnName
+      columnName: options.colModel.label
+      parentName: $(options.colModel.parentLabel).text()
       confidence: confidence
-      export: 'export' if options.colModel.export
+      export: 'edwareExportColumn' if options.colModel.export
     }
 
 
@@ -137,8 +138,8 @@ define [
       subject: subject
       confidenceLevelBar: edwareLOSConfidenceLevelBar.create(subject, 120)  if subject
       toolTip: toolTip
-      columnName: $('<div>').html(options.colModel.columnName).text() # to filter html code in JSON
-      export: 'export' if options.colModel.export
+      columnName: options.colModel.label
+      export: 'edwareExportColumn' if options.colModel.export
     }
     perfBar
 
@@ -154,23 +155,17 @@ define [
     exportable = options.colModel.export
     insufficient = parseInt(value) <= 0
     insufficientText = options.colModel.labels['insufficient_data']
-    subject.export = 'export' if exportable
+    subject.export = 'edwareExportColumn' if exportable
     subject.insufficient = insufficient
     subject.insufficientText = insufficientText
+    subject.labels = options.colModel.labels
     return Mustache.to_html POPULATION_BAR_TEMPLATE, {
       subject: subject,
+      labels: options.colModel.labels
       populationBar: edwarePopulationBar.create(subject)
-      export: 'export' if exportable
+      export: 'edwareExportColumn' if exportable
       insufficient: insufficient
       insufficientText: insufficientText
-    }
-
-
-  formatExport = (value, title) ->
-    #export fields
-    Mustache.to_html EXPORT_TEMPLATE, {
-      value: value
-      title: title
     }
 
   formatSubject = (subject) ->

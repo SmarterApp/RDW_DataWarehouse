@@ -6,7 +6,7 @@ Created on Mar 4, 2013
 import unittest
 from database.generic_connector import setup_db_connection_from_ini
 from zope import component
-from database.connector import IDbUtil
+from database.connector import IDbUtil, DBConnection
 
 
 class TestGenericConnector(unittest.TestCase):
@@ -34,6 +34,8 @@ class TestGenericConnector(unittest.TestCase):
         dbUtil = component.queryUtility(IDbUtil)
         self.assertIsNone(dbUtil)
 
+    def test_name_as_none(self):
+        self.assertRaises(Exception, DBConnection, name=None)
 
 if __name__ == "__main__":
     unittest.main()

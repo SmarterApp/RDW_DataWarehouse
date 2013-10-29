@@ -17,16 +17,16 @@ class TestStatsDbConnection(Unittest_with_stats_sqlite):
         self.assertEqual(udl_stats.name, 'udl_stats')
 
     def test_get_datasource_name(self):
-        name = StatsDBConnection.get_datasource_name('dummy')
-        self.assertEqual(name, config_namespace + '.dummy')
+        name = StatsDBConnection.get_datasource_name(tenant='dummy')
+        self.assertEqual(name, config_namespace)
 
     def test_get_datasource_name_without_tenant(self):
         name = StatsDBConnection.get_datasource_name()
         self.assertEquals(name, config_namespace)
 
     def test_get_db_config_prefix(self):
-        name = StatsDBConnection.get_db_config_prefix('dummy')
-        self.assertEqual(name, config_namespace + '.dummy.')
+        name = StatsDBConnection.get_db_config_prefix(tenant='dummy')
+        self.assertEqual(name, config_namespace + '.')
 
     def test_generate_metadata(self):
         metadata = StatsDBConnection.generate_metadata()

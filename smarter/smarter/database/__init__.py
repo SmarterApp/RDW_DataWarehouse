@@ -16,7 +16,7 @@ def initialize_db(connector_cls, settings, allow_schema_create=False):
     options = {}
     tenants = []
     # Get all the generic edware db configurations
-    config_prefix = connector_cls.get_db_config_prefix()
+    config_prefix = connector_cls.get_namespace()
     config_prefix_len = len(config_prefix)
     for key, val in settings.items():
         if key.startswith(config_prefix):
@@ -29,7 +29,7 @@ def initialize_db(connector_cls, settings, allow_schema_create=False):
     if tenants:
         # Merge with tenant specific configurations
         for tenant in tenants:
-            prefix = connector_cls.get_db_config_prefix(tenant)
+            prefix = connector_cls.get_db_config_prefix(tenant=tenant)
             tenant_options = {}
             for key, val in options.items():
                 # if it's a tenant specific config, there will be a period in the key

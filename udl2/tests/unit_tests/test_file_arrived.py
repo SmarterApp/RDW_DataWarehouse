@@ -10,16 +10,9 @@ from filearrived import file_arrived
 class TestFileArrived(unittest.TestCase):
 
     def test__get_tenant_name_regular_directory(self):
-        dir_name = '/home/person1/arrivals/ri/some_file.tgz'
+        dir_name = '/home/person1/arrivals/ri/some_user/file_drop/some_file.tgz'
         expected = 'ri'
-        result = file_arrived.get_tenant_name(dir_name)
-
-        self.assertEqual(result, expected)
-
-    def test__get_tenant_name_no_directory(self):
-        dir_name = 'shortstring'
-        expected = ''
-        result = file_arrived.get_tenant_name(dir_name)
+        result = file_arrived.get_tenant_name(dir_name, -4)
 
         self.assertEqual(result, expected)
 
@@ -87,7 +80,7 @@ class TestFileArrived(unittest.TestCase):
         batch_guid = 'guid1234'
         open(incoming_file, 'w')
 
-        result = file_arrived.move_file_from_arrivals(incoming_file, batch_guid)
+        result = file_arrived.move_file_from_arrivals(incoming_file, batch_guid, -2)
         self.assertEqual(len(result), 5)
 
         # cleanup

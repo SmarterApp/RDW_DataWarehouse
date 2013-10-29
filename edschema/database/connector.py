@@ -45,6 +45,9 @@ class DBConnection(ConnectionBase):
         name is an empty string by default
         '''
         self.__name = name
+        if name is None:
+            # we don't have a valid name to lookup for database routing
+            raise Exception()
         dbUtil = component.queryUtility(IDbUtil, name=name)
         engine = dbUtil.get_engine()
         self.__connection = engine.connect()

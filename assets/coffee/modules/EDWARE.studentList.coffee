@@ -182,7 +182,8 @@ define [
  
     renderGrid: (asmtType, viewName) ->
       $('#gridTable').jqGrid('GridUnload')
-      filteredInfo = this.stickyCompare.getFilteredInfo(this.getAsmtData asmtType, viewName)
+      # get filtered data and we pass in the first columns' grid config field name for sticky chain list
+      filteredInfo = this.stickyCompare.getFilteredInfo(this.getAsmtData(asmtType, viewName), this.columnData[viewName][0]["items"][0]["field"])
       
       self = this
       edwareGrid.create {

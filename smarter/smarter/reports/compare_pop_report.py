@@ -292,7 +292,7 @@ class RecordManager():
                 if total > (min_cell_size if min_cell_size else DEFAULT_MIN_CELL_SIZE):
                     results[alias] = {Constants.ASMT_SUBJECT: name, Constants.INTERVALS: self.adjust_percentages(intervals), Constants.TOTAL: total}
                 else:
-                    results[alias] = {Constants.ASMT_SUBJECT: name, Constants.INTERVALS: [{Constants.PERCENTAGE: -1} for _ in range(0, len(intervals))], Constants.TOTAL: -1}
+                    results[alias] = {Constants.ASMT_SUBJECT: name, Constants.INTERVALS: [{Constants.PERCENTAGE: -1, Constants.LEVEL: interval.get('level')} for interval in intervals], Constants.TOTAL: -1}
 
         return results
 

@@ -45,11 +45,14 @@ define [
           this.hideCompareSection()
         else
           # This happens when grid re-renders and we need to reapply selected rows with checkboxes to true and update its text
-          for row of this.selectedRows
-            element = $('#sticky_' + row)
-            element.attr('checked', true)
-            this.checkedEvent element
-        
+          this.applyCheckboxValues()
+
+    applyCheckboxValues: () ->
+      for row of this.selectedRows
+        element = $('#sticky_' + row)
+        element.attr('checked', true)
+        this.checkedEvent element
+              
     # All events related to grid filtering of rows
     bindEvents: () ->
       self = this  
@@ -83,8 +86,14 @@ define [
       
       # Show all district button
       $(document).on 'click', '#stickyShowAll-btn', () ->
+        # temporary save the selected rows to allow all the rows to appear in the grid
+        selectedRows = self.selectedRows
         self.clearSelectedRows()
         self.updateSelection()
+        self.selectedRows = selectedRows
+        # Reapply checkbox value to the selected rows and then build chain list
+        self.applyCheckboxValues()
+        self.renderStickyChainRows()
       
       # Remove button on each row in grid 
       $(document).on 'click', '.stickyCompareRemove', () ->
@@ -179,8 +188,9 @@ define [
       this.compareMode = rows.length > 0
       this.getRows()
     
-    getFilteredInfo: (allData) ->
+    getFilteredInfo: (allData, columnField) ->
       # client passes in data and this will return rows that user have selected and whether stickyCompare is enabled
+      # We need the columnField that corresponds to each data row to build sticky chain list
       returnData = []
       selectedRows = this.getSelectedRowsFromStorage()
       if selectedRows.length > 0
@@ -189,6 +199,8 @@ define [
             break
           if data.rowId in selectedRows
             returnData.push data
+            # We need to repopulate the names of the rows for sticky chain in the case of user clicking on "show all"
+            this.selectedRows[data.rowId] = data[columnField]
       else
         returnData = allData
       return {'data': returnData, 'enabled': selectedRows.length > 0}

@@ -24,3 +24,31 @@ class TestUdl2Util(unittest.TestCase):
         expected_result = os.path.join(os.getcwd(), 'this', 'is', 'a', 'fake', 'path')
         actual_result = file_util.abs_path_join(*path)
         self.assertEquals(expected_result, actual_result)
+
+    def test_convert_path_to_list(self):
+        test_path = '/abc/123/def/456/hij/789'
+        expected = ['/', 'abc', '123', 'def', '456', 'hij', '789']
+        result = file_util.convert_path_to_list(test_path)
+
+        self.assertListEqual(result, expected)
+
+    def test_convert_path_to_list_2(self):
+        test_path = 'abc/123/def/456/hij/789'
+        expected = ['abc', '123', 'def', '456', 'hij', '789']
+        result = file_util.convert_path_to_list(test_path)
+
+        self.assertListEqual(result, expected)
+
+    def test_convert_path_to_list_3(self):
+        test_path = '/abc/123/def/456/hij/789/'
+        expected = ['/', 'abc', '123', 'def', '456', 'hij', '789']
+        result = file_util.convert_path_to_list(test_path)
+
+        self.assertListEqual(result, expected)
+
+    def test_convert_path_to_list_4(self):
+        test_path = '/abc/123/def/456/hij/789/bob.txt'
+        expected = ['/', 'abc', '123', 'def', '456', 'hij', '789', 'bob.txt']
+        result = file_util.convert_path_to_list(test_path)
+
+        self.assertListEqual(result, expected)

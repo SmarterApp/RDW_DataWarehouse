@@ -41,6 +41,7 @@ define [
     customize: (customView) ->
       firstColumn = this.gridConfig[0].items[0]
       firstColumn.name = customView.name
+      firstColumn.exportName = customView.exportName
       firstColumn.options.linkUrl = customView.link
       firstColumn.options.id_name = customView.id_name
       firstColumn.sorttype = "int" if customView.name is "Grade"
@@ -206,13 +207,13 @@ define [
 
     renderGrid: () ->
       $('#gridTable').jqGrid('GridUnload')
-      # Filter out selected rows, if any
-      filteredInfo = this.stickyCompare.getFilteredInfo(this.populationData)
-
       # Change the column name and link url based on the type of report the user is querying for
       this.gridConfig = new ConfigBuilder(this.configTemplate, this.asmtSubjectsData)
                              .customize(this.customViews[this.reportType])
                              .build()
+      
+      # Filter out selected rows, if any, we pass in the first columns' grid config field name for sticky chain list
+      filteredInfo = this.stickyCompare.getFilteredInfo this.populationData, this.gridConfig[0]["items"][0]["field"]
 
       self = this
       # Create compare population grid for State/District/School view

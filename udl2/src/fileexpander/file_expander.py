@@ -72,11 +72,14 @@ def _extract_tar_file_contents(file_to_expand, expanded_dir):
     # verify tar file contents and throw exception if csv/json file is missing
     if not _verify_tar_file_contents(tar.getnames()):
         raise Exception('Expected 2 files not found in the tar archive')
-    for tarinfo in tar:
-        tar_file_contents.append(expanded_dir + tarinfo.name)
-        print(tarinfo.name, tarinfo.size, " bytes in size, is a regular file: ", tarinfo.isreg())
-    # TODO: how to deal with file's which are archived with absolute paths
-    tar.extractall(expanded_dir)
+
+    # Go over each file in the tar and extract the file alone to the desired destination directory
+    for member in tar.getmembers():
+        if member.isreg():  # skip if the TarInfo is not files
+            member.name = os.path.basename(member.name)  # update the member name to handle absolute paths
+            tar_file_contents.append(expanded_dir + member.name)
+            print(member.name, member.size, " bytes in size, is a regular file: ", member.isreg())
+            tar.extract(member, expanded_dir)  # extract
     tar.close()
     return tar_file_contents
 

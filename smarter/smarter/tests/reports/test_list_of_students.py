@@ -4,7 +4,7 @@ Created on Feb 4, 2013
 @author: tosako
 '''
 import unittest
-from smarter.reports.list_of_students_report import get_list_of_students_report
+from smarter.reports.list_of_students_report import get_list_of_students_report, get_list_of_students_extract_report
 from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite,\
     UnittestSmarterDBConnection, get_unittest_tenant_name
 from edapi.exceptions import NotFoundException
@@ -152,6 +152,16 @@ class TestLOS(Unittest_with_smarter_sqlite):
         self.assertEqual(len(results['assessments']), 35)
         self.assertIsNotNone(results['assessments'][0]['Comprehensive Interim']['subject1'])
         self.assertIsNotNone(results['assessments'][0]['Summative']['subject1'])
+
+    def test_get_list_of_students_extract_report_with_grade(self):
+        testParam = {'asmtGrade': '3', 'stateCode': 'NY', 'districtGuid': '228', 'schoolGuid': '242'}
+        result = get_list_of_students_extract_report(testParam)
+        self.assertEqual(result['file_name'][:len('grade_3_asmt_data_')],'grade_3_asmt_data_')
+
+    def test_get_list_of_students_extract_report_without_grade(self):
+        testParam = {'stateCode': 'NY', 'districtGuid': '228', 'schoolGuid': '242'}
+        result = get_list_of_students_extract_report(testParam)
+        self.assertEqual(result['file_name'][:len('school_data_')],'school_data_')
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testReport']

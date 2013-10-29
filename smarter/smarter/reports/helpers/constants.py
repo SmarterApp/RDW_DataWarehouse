@@ -3,8 +3,6 @@ Created on Mar 12, 2013
 
 @author: dip
 '''
-
-
 class AssessmentType():
     '''
     constants for asmt types

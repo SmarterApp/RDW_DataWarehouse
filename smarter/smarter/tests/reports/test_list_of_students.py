@@ -156,12 +156,12 @@ class TestLOS(Unittest_with_smarter_sqlite):
     def test_get_list_of_students_extract_report_with_grade(self):
         testParam = {'asmtGrade': '3', 'stateCode': 'NY', 'districtGuid': '228', 'schoolGuid': '242'}
         result = get_list_of_students_extract_report(testParam)
-        self.assertEqual(result['file_name'][:len('grade_3_asmt_data_')],'grade_3_asmt_data_')
+        self.assertEqual(result['file_name'][:len('grade_3_asmt_data_')], 'grade_3_asmt_data_')
 
     def test_get_list_of_students_extract_report_without_grade(self):
         testParam = {'stateCode': 'NY', 'districtGuid': '228', 'schoolGuid': '242'}
         result = get_list_of_students_extract_report(testParam)
-        self.assertEqual(result['file_name'][:len('school_data_')],'school_data_')
+        self.assertEqual(result['file_name'][:len('school_data_')], 'school_data_')
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testReport']

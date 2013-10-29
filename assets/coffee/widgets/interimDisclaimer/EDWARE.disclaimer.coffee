@@ -7,55 +7,40 @@ define [
 
   class EdwareDisclaimer
     
-    constructor: (@disclaimerSection, @content) ->
-      this.initialize()
-      this.bindEvents()
-      this.displayPopover()
-      this
+    constructor: (@content) ->
+      @interimDisclaimerIcon = $('.interimDisclaimerIcon')
+      @bindEvents()
+      @
 
     displayPopover: ()->
       if this.hasLoaded()
         return
+      self = this
       # make popup and make it stay
-      this.icon.mouseenter()
-      setTimeout ()->
-        $('.interimDisclaimerPopover').fadeOut(150)
-      , 10000
+      @interimDisclaimerIcon.popover('show')
+      setTimeout (->
+        self.interimDisclaimerIcon.popover('hide')
+      ), 10000
       # This will save that we've loaded it the first time
-      this.saveLoadedInfo()
+      @saveLoadedInfo()
       
     bindEvents: () ->
       self = this
       # Show tooltip on mouseover
-      this.icon.popover
+      @interimDisclaimerIcon.popover
         html: true
         placement: "bottom"
-        trigger: "manual"
+        trigger: "hover"
         container: '#interimDisclaimerPopover'
-        content: self.content
-      .mouseenter ()->
-        # move popover
-        $(this).popover 'show'
-        self.setPosition()
-      .mouseleave ()->
-        $(this).popover "hide"
+        content: @content
+      .on 'shown.bs.popover', ->
+        offset = self.interimDisclaimerIcon.offset()
+        popover = $('#interimDisclaimerPopover .popover')
+        popover.css "left", offset.left + 17 - popover.width()
+        # update arrow
+        arrow = $(".arrow", popover)
+        arrow.css "left", popover.width() - 10
 
-    setPosition: ()->
-      offset = this.icon.offset()
-      popover = $('#interimDisclaimerPopover .popover')
-      popover.css "left", offset.left + 17 - popover.width()
-
-      # update arrow
-      arrow = $(".arrow", popover)
-      arrow.css "left", popover.width() - 10
-
-    # Call this to create the disclaimer icon
-    initialize: () ->
-      interimDisclaimerIcon = $('<div class="interimDisclaimerIcon"></div>')
-      this.disclaimerSection.append interimDisclaimerIcon
-      this.icon = $('.interimDisclaimerIcon')
-      this.container = $('.disclaimerInfo')
-   
     hasLoaded: () ->
       edwarePreferences.getInterimInfo()
     
@@ -64,11 +49,12 @@ define [
     
     update: (asmtType) ->
       if asmtType is "Comprehensive Interim"
-        this.disclaimerSection.show()
+        @interimDisclaimerIcon.show()
       else
-        this.disclaimerSection.hide()
+        @interimDisclaimerIcon.hide()
+      @displayPopover()
         
   (($)->
     $.fn.edwareDisclaimer = (content) ->
-      new EdwareDisclaimer($(this), content)
+      new EdwareDisclaimer(content)
   ) jQuery

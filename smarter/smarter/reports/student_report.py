@@ -5,7 +5,6 @@ Created on Jan 13, 2013
 '''
 from edapi.decorators import report_config, user_info
 from smarter.reports.helpers.name_formatter import format_full_name
-from sqlalchemy.sql import select
 from sqlalchemy.sql.expression import and_
 from edapi.exceptions import NotFoundException
 from string import capwords
@@ -168,7 +167,6 @@ def __arrange_results(results, subjects_map, custom_metadata_map):
                        "required": True,
                        "pattern": "^[a-zA-Z0-9\-]{0,50}$"},
                    "assessmentGuid": {
-                       "name": "student_assessments_report",
                        "type": "string",
                        "required": False,
                        "pattern": "^[a-zA-Z0-9\-]{0,50}$",

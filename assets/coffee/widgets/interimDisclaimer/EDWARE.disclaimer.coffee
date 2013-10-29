@@ -13,16 +13,15 @@ define [
       @
 
     displayPopover: ()->
-      if this.hasLoaded()
-        return
-      self = this
-      # make popup and make it stay
-      @interimDisclaimerIcon.popover('show')
-      setTimeout (->
-        self.interimDisclaimerIcon.popover('hide')
-      ), 10000
-      # This will save that we've loaded it the first time
-      @saveLoadedInfo()
+      unless @hasLoaded()
+        self = this
+        # make popup and make it stay
+        @interimDisclaimerIcon.popover 'show'
+        setTimeout (->
+          self.interimDisclaimerIcon.popover 'hide'
+        ), 10000
+        # This will save that we've loaded it the first time
+        @saveLoadedInfo()
       
     bindEvents: () ->
       self = this

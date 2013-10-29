@@ -11,8 +11,10 @@ import subprocess
 import shutil
 
 
-ARCHIVED_FILE = '/opt/wgen/edware-udl/zones/datafiles/test_empty_jsonfile.tar.gz.asc'
+ARCHIVED_FILE = '/opt/wgen/edware-udl/zones/datafiles/test_corrupted_json_file.tar.gz.gpg'
 TENANT_DIR = '/opt/wgen/edware-udl/zones/landing/arrivals/test_tenant/'
+
+# TODO validate that UDL fail at some point
 
 
 class ValidateTableData(unittest.TestCase):

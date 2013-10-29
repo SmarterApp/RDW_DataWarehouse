@@ -36,7 +36,7 @@ class TestInitSFTPUser(unittest.TestCase):
         for user in self.user_dels:
             delete_user(user, self.sftp_conf)
         for tenant in self.tenant_dels:
-            remove_tenant(tenant)
+            remove_tenant(tenant, self.sftp_conf)
         for directory in self.cleanup_dirs:
             cleanup_directory(directory)
         if self.del_groups:

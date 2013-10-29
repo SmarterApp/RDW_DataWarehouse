@@ -8,7 +8,8 @@ import imp
 
 class TestFileExpander(unittest.TestCase):
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         try:
             config_path = dict(os.environ)['UDL2_CONF']
         except Exception:
@@ -21,13 +22,20 @@ class TestFileExpander(unittest.TestCase):
         self.test_source_file_2 = self.conf['zones']['datafiles'] + 'test_corrupted_source_file_tar_gzipped.tar.gz'
         self.test_source_file_3 = self.conf['zones']['datafiles'] + 'test_absolute_path_coded_files.tar.gz'
         self.test_source_file_4 = self.conf['zones']['datafiles'] + 'test_missing_json_file.tar.gz'
+
+        # temp directory for testing expander
+        self.expander_test_dir = self.conf['zones']['tests'] + 'expander_test/'
+        if not os.path.exists(self.expander_test_dir):
+            os.makedirs(self.expander_test_dir)
+
         # test files in tests zone
-        self.test_valid_file = self.conf['zones']['tests'] + 'test_source_file_tar_gzipped.tar.gz'
-        self.test_invalid_file = self.conf['zones']['tests'] + 'test_non_existing_file_tar_gzipped.tar.gz'
-        self.test_corrupted_file = self.conf['zones']['tests'] + 'test_corrupted_source_file_tar_gzipped.tar.gz'
-        self.test_absolute_path_file = self.conf['zones']['tests'] + 'test_absolute_path_coded_files.tar.gz'
-        self.test_missing_json_file = self.conf['zones']['tests'] + 'test_missing_json_file.tar.gz'
-        self.expanded_dir = self.conf['zones']['tests'] + 'expander_test/'
+        self.test_valid_file = self.expander_test_dir + 'test_source_file_tar_gzipped.tar.gz'
+        self.test_invalid_file = self.expander_test_dir + 'test_non_existing_file_tar_gzipped.tar.gz'
+        self.test_corrupted_file = self.expander_test_dir + 'test_corrupted_source_file_tar_gzipped.tar.gz'
+        self.test_absolute_path_file = self.expander_test_dir + 'test_absolute_path_coded_files.tar.gz'
+        self.test_missing_json_file = self.expander_test_dir + 'test_missing_json_file.tar.gz'
+        self.expanded_dir = self.expander_test_dir + 'expanded/'
+
         # copy files to tests zone
         shutil.copyfile(self.test_source_file_1, self.test_valid_file)
         shutil.copyfile(self.test_source_file_2, self.test_corrupted_file)
@@ -76,5 +84,12 @@ class TestFileExpander(unittest.TestCase):
         self.assertTrue(os.path.join(self.expanded_dir, expected_csv_file) in tar_file_contents)
 
     def tearDown(self):
+        # cleanup the expanded_dir for the next test to run and write its output cleanly
         if os.path.exists(self.expanded_dir):
             shutil.rmtree(self.expanded_dir)
+
+    @classmethod
+    def tearDownClass(self):
+        # cleanup the entire expander_test_dir after all tests are done
+        if os.path.exists(self.expander_test_dir):
+            shutil.rmtree(self.expander_test_dir)

@@ -112,8 +112,7 @@ def get_list_of_students_extract_report(params):
     '''
     # Get results from db
     asmtGrade = params.get(Constants.ASMTGRADE, None)
-    timestamp = datetime.now().isoformat()
-    timestamp = timestamp[:timestamp.index('.')]
+    timestamp = datetime.now().strftime("%m-%d-%Y_%H_%M_%S")
     extract_file_name = ''
     if asmtGrade is None:
         extract_file_name = 'school_asmt_results_' + timestamp + '.csv'

@@ -72,7 +72,7 @@ class TestInitSFTPUser(unittest.TestCase):
 
             create_sftp_user(tenant, user, role, self.sftp_conf, ssh_key)
             ssh_file = os.path.join(self.sftp_conf['sftp_home'], self.sftp_conf['sftp_arrivals_dir'],
-                                    tenant, '.ssh', 'authorized_keys')
+                                    tenant, user,  '.ssh', 'authorized_keys')
             self.assertTrue(os.path.isfile(ssh_file))
 
             # cleanup

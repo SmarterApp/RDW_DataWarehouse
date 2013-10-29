@@ -18,7 +18,6 @@ from smarter.database.smarter_connector import SmarterDBConnection
 from smarter.reports.helpers.constants import Constants
 from smarter.reports.helpers.metadata import get_custom_metadata,\
     get_subjects_map
-from smarter.reports.distribution import get_summary_distribution
 
 REPORT_NAME = 'individual_student_report'
 
@@ -215,7 +214,8 @@ def get_student_report(params):
                params={
                    "studentGuid": {
                        "type": "string",
-                       "required": True}
+                       "required": True,
+                       "pattern": "^[a-zA-Z0-9\-]{0,50}$"}
                })
 def get_student_assessment(params):
     '''

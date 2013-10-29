@@ -79,6 +79,11 @@ class TestInitSFTPUser(unittest.TestCase):
                 create_path(directory)
                 self.cleanup_dirs.append(directory)
 
+            # cleanup
+            self.user_dels.append(user)
+            self.tenant_dels.append(tenant)
+            self.del_groups = True
+
             create_tenant(tenant, self.sftp_conf)
             init_group(self.sftp_conf)
             ssh_key = "blahblahblahblahblah" * 20
@@ -88,20 +93,15 @@ class TestInitSFTPUser(unittest.TestCase):
                                     tenant, user,  '.ssh', 'authorized_keys')
             self.assertTrue(os.path.isfile(ssh_file))
 
-            # cleanup
-            self.user_dels.append(user)
-            self.tenant_dels.append(tenant)
-            self.del_groups = True
-            #delete_user(user, self.sftp_conf)
-            #remove_tenant(tenant, self.sftp_conf)
-            #cleanup(self.sftp_conf)
-
     def test_create_user_and_delete_user(self):
         user = 'test_user1'
         home_folder = '/tmp/test_sftp_user'
         sftp_folder = '/tmp/test_sftp_folder'
         if sys.platform == 'linux':
             init_group(self.sftp_conf)
+            self.del_groups = True
+            self.user_dels.append(user)
+
             self.check_user_does_not_exist(user)
             _create_user(user, home_folder, sftp_folder, 'testgrp1', self.sftp_conf['file_drop'])
             self.assertIsNotNone(pwd.getpwnam(user))
@@ -115,8 +115,6 @@ class TestInitSFTPUser(unittest.TestCase):
             delete_user(user, {'sftp_home': '/', 'sftp_base_dir': 'tmp', 'sftp_arrivals_dir': 'test_sftp_folder',
                                'sftp_departures_dir': 'test_sftp_folder'})
             self.check_user_does_not_exist(user)
-            self.del_groups = True
-            #clean_group(self.sftp_conf)
 
     def test_verify_user_tenant_and_role_tenant_path(self):
         home_folder = '/tmp/does_not_exist'
@@ -127,53 +125,50 @@ class TestInitSFTPUser(unittest.TestCase):
 
     def test_verify_user_tenant_and_role__role(self):
         tenant_folder = '/tmp/test_does_exist'
+        self.cleanup_dirs.append(tenant_folder)
         create_path(tenant_folder)
         expected_result = (False, 'Role does not exist as a group in the system')
         result = _verify_user_tenant_and_role(tenant_folder, 'some_user', 'made_up_role')
 
         self.assertEqual(result, expected_result)
-        self.cleanup_dirs.append(tenant_folder)
-        #cleanup_directory(tenant_folder)
 
     def test_verify_user_tenant_and_role__user(self):
         tenant_folder = '/tmp/test_does_exist'
         create_path(tenant_folder)
+        self.cleanup_dirs.append(tenant_folder)
+
         expected_result = (False, 'User already exists!')
         result = _verify_user_tenant_and_role(tenant_folder, 'root', 'wheel')
 
         self.assertEqual(expected_result, result)
-        #cleanup_directory(tenant_folder)
-        self.cleanup_dirs.append(tenant_folder)
 
     def test_verify_user_tenant_and_role__valid_input(self):
         tenant_folder = '/tmp/test_does_exist'
         create_path(tenant_folder)
+        self.cleanup_dirs.append(tenant_folder)
+
         expected_result = True, ""
         result = _verify_user_tenant_and_role(tenant_folder, 'the_roots', 'wheel')
 
         self.assertEqual(expected_result, result)
-        #cleanup_directory(tenant_folder)
-        self.cleanup_dirs.append(tenant_folder)
 
     def test__set_ssh_key_exists(self):
         create_path('/tmp/test_sftp_user')
+        self.cleanup_dirs.append('/tmp/test_sftp_user')
+
         public_key_str = "blahblahblahblahblah" * 20
         _set_ssh_key('/tmp/test_sftp_user', public_key_str)
         self.assertTrue(os.path.exists('/tmp/test_sftp_user/.ssh/authorized_keys'))
 
-        #cleanup_directory('/tmp/test_sftp_user')
-        self.cleanup_dirs.append('/tmp/test_sftp_user')
-
     def test__set_ssh_key(self):
         create_path('/tmp/test_sftp_user')
+        self.cleanup_dirs.append('/tmp/test_sftp_user')
+
         public_key_str = "blahblahblahblahblah" * 20
         _set_ssh_key('/tmp/test_sftp_user', public_key_str)
         with open('/tmp/test_sftp_user/.ssh/authorized_keys') as key_file:
             public_key_str += '\n'
             self.assertEqual(key_file.read(), public_key_str)
-
-        #cleanup_directory('/tmp/test_sftp_user')
-        self.cleanup_dirs.append('/tmp/test_sftp_user')
 
     def check_user_does_not_exist(self, user):
         with self.assertRaises(KeyError):

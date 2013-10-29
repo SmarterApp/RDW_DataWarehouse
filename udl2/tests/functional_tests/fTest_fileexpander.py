@@ -20,16 +20,19 @@ class TestFileExpander(unittest.TestCase):
         self.test_source_file_1 = self.conf['zones']['datafiles'] + 'test_source_file_tar_gzipped.tar.gz'
         self.test_source_file_2 = self.conf['zones']['datafiles'] + 'test_corrupted_source_file_tar_gzipped.tar.gz'
         self.test_source_file_3 = self.conf['zones']['datafiles'] + 'test_absolute_path_coded_files.tar.gz'
+        self.test_source_file_4 = self.conf['zones']['datafiles'] + 'test_missing_json_file.tar.gz'
         # test files in tests zone
         self.test_valid_file = self.conf['zones']['tests'] + 'test_source_file_tar_gzipped.tar.gz'
         self.test_invalid_file = self.conf['zones']['tests'] + 'test_non_existing_file_tar_gzipped.tar.gz'
         self.test_corrupted_file = self.conf['zones']['tests'] + 'test_corrupted_source_file_tar_gzipped.tar.gz'
         self.test_absolute_path_file = self.conf['zones']['tests'] + 'test_absolute_path_coded_files.tar.gz'
+        self.test_missing_json_file = self.conf['zones']['tests'] + 'test_missing_json_file.tar.gz'
         self.expanded_dir = self.conf['zones']['tests'] + 'expander_test/'
         # copy files to tests zone
         shutil.copyfile(self.test_source_file_1, self.test_valid_file)
         shutil.copyfile(self.test_source_file_2, self.test_corrupted_file)
         shutil.copyfile(self.test_source_file_3, self.test_absolute_path_file)
+        shutil.copyfile(self.test_source_file_4, self.test_missing_json_file)
 
     def test_expander_for_valid_file(self):
         assert os.path.isfile(self.test_valid_file)
@@ -46,19 +49,18 @@ class TestFileExpander(unittest.TestCase):
 
     def test_expander_for_invalid_file(self):
         assert not os.path.isfile(self.test_invalid_file)
-        try:
+        with self.assertRaises(Exception):
             file_expander.expand_file(self.test_invalid_file, self.expanded_dir)
-        except Exception as e:
-            print('Exception -- ', e)
-        assert not os.path.exists(self.expanded_dir)
 
     def test_expander_for_corrupted_file(self):
         assert os.path.isfile(self.test_corrupted_file)
-        try:
+        with self.assertRaises(Exception):
             file_expander.expand_file(self.test_corrupted_file, self.expanded_dir)
-        except Exception as e:
-            print('Exception -- ', e)
-        assert not os.path.exists(self.expanded_dir)
+
+    def test_expander_for_missing_file(self):
+        assert os.path.isfile(self.test_missing_json_file)
+        with self.assertRaises(Exception):
+            file_expander.expand_file(self.test_missing_json_file, self.expanded_dir)
 
     def test_expander_for_absolute_path_coded_file(self):
         assert os.path.isfile(self.test_absolute_path_file)
@@ -74,9 +76,5 @@ class TestFileExpander(unittest.TestCase):
         self.assertTrue(os.path.join(self.expanded_dir, expected_csv_file) in tar_file_contents)
 
     def tearDown(self):
-        if os.path.isfile(self.test_valid_file):
-            os.remove(self.test_valid_file)
-        if os.path.isfile(self.test_corrupted_file):
-            os.remove(self.test_corrupted_file)
         if os.path.exists(self.expanded_dir):
             shutil.rmtree(self.expanded_dir)

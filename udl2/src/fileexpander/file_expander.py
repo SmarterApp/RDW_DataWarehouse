@@ -48,6 +48,18 @@ def _is_valid__tar_file(file_to_expand):
     return valid
 
 
+def _verify_tar_file_contents(tar_file_member_names):
+    """
+    Verifies the tar file contents for presence of exactly two files [one csv and one JSON file]
+    :param tar_file_member_names: list of contents returned by tar module
+    :return: false if verification fails
+    """
+    file_extensions = [os.path.splitext(file)[1][1:].strip().lower() for file in tar_file_member_names]
+    if len(file_extensions) != 2 or 'csv' not in file_extensions or 'json' not in file_extensions:
+        return False
+    return True
+
+
 def _extract_tar_file_contents(file_to_expand, expanded_dir):
     """
     extract file contents to the destination directory
@@ -57,11 +69,17 @@ def _extract_tar_file_contents(file_to_expand, expanded_dir):
     """
     tar_file_contents = []
     tar = tarfile.open(file_to_expand, "r:gz")
-    for tarinfo in tar:
-        tar_file_contents.append(expanded_dir + tarinfo.name)
-        print(tarinfo.name, tarinfo.size, " bytes in size, is a regular file: ", tarinfo.isreg())
-    # TODO: how to deal with file's which are archived with absolute paths
-    tar.extractall(expanded_dir)
+    # verify tar file contents and throw exception if csv/json file is missing
+    if not _verify_tar_file_contents(tar.getnames()):
+        raise Exception('Expected 2 files not found in the tar archive')
+
+    # Go over each file in the tar and extract the file alone to the desired destination directory
+    for member in tar.getmembers():
+        if member.isreg():  # skip if the TarInfo is not files
+            member.name = os.path.basename(member.name)  # update the member name to handle absolute paths
+            tar_file_contents.append(expanded_dir + member.name)
+            print(member.name, member.size, " bytes in size, is a regular file: ", member.isreg())
+            tar.extract(member, expanded_dir)  # extract
     tar.close()
     return tar_file_contents
 

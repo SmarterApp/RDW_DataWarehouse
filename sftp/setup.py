@@ -9,7 +9,7 @@ README = open(os.path.join(here, 'README.txt')).read()
 requires = []
 
 tests_require = requires + [
-    'nose >= 1.2.1',
+    'nose == 1.3.0',
     'coverage', ]
 
 setup(name='sftp',

@@ -47,6 +47,11 @@ def delete_user(user, sftp_conf):
     :param user: the user name of the user to delete
     :return: None
     """
+
+    # if the user does not exist return immediately
+    if _check_user_not_exists(user)[0]:
+        return
+
     tenant_name = os.path.split(os.path.dirname(pwd.getpwnam(user).pw_dir))[-1]
 
     del_user_cmd = "userdel -r {}".format(user)
@@ -114,6 +119,15 @@ def _verify_user_tenant_and_role(tenant_path, username, role):
         return False, 'Role does not exist as a group in the system'
 
     # Verify that user does not already exist
+    return _check_user_not_exists(username)
+
+
+def _check_user_not_exists(username):
+    """
+    Check that a user does not _check_user_not_exists
+    If the user exists return false and a string.
+    If the user does not exist true and an empty string are returned
+    """
     try:
         pwd.getpwnam(username)
         return False, 'User already exists!'

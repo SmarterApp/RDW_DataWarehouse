@@ -98,6 +98,7 @@ setup(name='udl2',
                                                              'tests/data/test_source_file_tar_gzipped.tar.gz',
                                                              'tests/data/test_corrupted_source_file_tar_gzipped.tar.gz',
                                                              'tests/data/test_source_file_tar_gzipped.tar.gz.gpg',
+                                                             'tests/data/test_empty_jsonfile.tar.gz.asc',
                                                              'tests/data/test_corrupted_source_file_tar_gzipped.tar.gz.gpg']),
                   ],
       )

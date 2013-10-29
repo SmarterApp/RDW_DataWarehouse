@@ -35,8 +35,8 @@ class TestInitSFTPUser(unittest.TestCase):
         self.check_user_does_not_exist(user)
 
         if sys.platform == 'linux':
-            os.mkdir('/tmp/arrivals')
-            os.mkdir('/tmp/departures')
+            create_path('/tmp/arrivals')
+            create_path('/tmp/departures')
             create_tenant(tenant, self.sftp_conf)
             initialize(self.sftp_conf)
             create_sftp_user(tenant, user, role, self.sftp_conf)
@@ -56,6 +56,8 @@ class TestInitSFTPUser(unittest.TestCase):
         self.check_user_does_not_exist(user)
 
         if sys.platform == 'linux':
+            create_path('/tmp/sftp/arrivals')
+            create_path('/tmp/sftp/departures')
             create_tenant(tenant, self.sftp_conf)
             initialize(self.sftp_conf)
             ssh_key = "blahblahblahblahblah" * 20
@@ -69,6 +71,8 @@ class TestInitSFTPUser(unittest.TestCase):
             delete_user(user, self.sftp_conf)
             remove_tenant(tenant, self.sftp_conf)
             cleanup(self.sftp_conf)
+            cleanup_directory('/tmp/sftp/departures')
+            cleanup_directory('/tmp/sftp/arrivals')
 
     def test_create_user_and_delete_user(self):
         user = 'test_user1'

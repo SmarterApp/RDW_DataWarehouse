@@ -281,7 +281,7 @@ def get_list_of_students(params):
 
         query = query.where(and_(fact_asmt_outcome.c.status == 'C'))
 
-        # raw export ignore most_recentß
+        # raw export ignore most_recent
         if raw == 'false':
             query = query.where(and_(fact_asmt_outcome.c.most_recent))
 
@@ -292,8 +292,10 @@ def get_list_of_students(params):
         if raw == 'false' and asmtSubject is not None:
             query = query.where(and_(dim_asmt.c.asmt_subject.in_(asmtSubject)))
 
-        # Apply demographics to the query
-        query = apply_filter_to_query(query, fact_asmt_outcome, params)
+        # Apply demographics to the query when not raw export
+        if raw == 'false':
+            query = apply_filter_to_query(query, fact_asmt_outcome, params)
+
         query = query.order_by(dim_student.c.last_name).order_by(dim_student.c.first_name)
         return connector.get_result(query)
 

@@ -34,7 +34,7 @@ class TestInitSFTPUser(unittest.TestCase):
 
     def tearDown(self):
         for user in self.user_dels:
-            delete_user(user)
+            delete_user(user, self.sftp_conf)
         for tenant in self.tenant_dels:
             remove_tenant(tenant)
         for directory in self.cleanup_dirs:

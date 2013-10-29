@@ -43,7 +43,7 @@ class TestInitSFTPUser(unittest.TestCase):
             self.assertIsNotNone(pwd.getpwnam(user))
 
             # cleanup
-            delete_user(user)
+            delete_user(user, self.sftp_conf)
             remove_tenant(tenant, self.sftp_conf)
             cleanup_directory('/tmp/arrivals')
             cleanup_directory('/tmp/departures')
@@ -66,7 +66,7 @@ class TestInitSFTPUser(unittest.TestCase):
             self.assertTrue(os.path.isfile(ssh_file))
 
             # cleanup
-            delete_user(user)
+            delete_user(user, self.sftp_conf)
             remove_tenant(tenant, self.sftp_conf)
             cleanup(self.sftp_conf)
 
@@ -86,7 +86,8 @@ class TestInitSFTPUser(unittest.TestCase):
             self.assertTrue(os.path.exists(file_drop_folder))
             self.assertEqual(pwd.getpwuid(os.stat(file_drop_folder).st_uid), user)
             self.assertEqual((os.stat(file_drop_folder).st_mode & 0o777), 0o777)
-            delete_user(user)
+            delete_user(user, {'sftp_home': '/', 'sftp_base_dir': 'tmp', 'sftp_arrivals_dir': 'test_sftp_folder',
+                               'sftp_departures_dir': 'test_sftp_folder'})
             self.check_user_does_not_exist(user)
             cleanup(self.sftp_conf)
 

@@ -31,11 +31,11 @@ define [
         html: true
         placement: "bottom"
         trigger: "hover"
-        container: '#interimDisclaimerPopover'
+        container: '#content'
         content: @content
       .on 'shown.bs.popover', ->
         offset = self.interimDisclaimerIcon.offset()
-        popover = $('#interimDisclaimerPopover .popover')
+        popover = $('#content .popover')
         popover.css "left", offset.left + 17 - popover.width()
         # update arrow
         arrow = $(".arrow", popover)

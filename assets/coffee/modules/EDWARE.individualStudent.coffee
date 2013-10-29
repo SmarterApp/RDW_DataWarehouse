@@ -90,6 +90,7 @@ define [
         self.dataByType = {}
         
         self.processData()
+        self.render self.currentAsmtType
         if not self.isPdf
           self.createBreadcrumb()
           self.createDropdown()
@@ -98,7 +99,6 @@ define [
           self.currentAsmtType = self.asmtTypes[0] if self.asmtTypes.indexOf("Summative") is -1
           self.updateDisclaimer()
           
-        self.render self.currentAsmtType
 
     processData: () ->
       for asmt of this.data.items

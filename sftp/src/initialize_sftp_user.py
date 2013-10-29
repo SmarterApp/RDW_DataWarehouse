@@ -7,7 +7,7 @@ import subprocess
 import pwd
 import shutil
 
-from src.util import group_exists, create_path
+from src.util import group_exists, create_path, cleanup_directory
 
 
 __author__ = 'swimberly'
@@ -41,7 +41,7 @@ def create_sftp_user(tenant, user, role, sftp_conf, ssh_key_str=None, ssh_key_fi
     return True, ""
 
 
-def delete_user(user):
+def delete_user(user, tenant, sftp_conf):
     """
     Delete the given user from the system and remove thier home folder
     :param user: the user name of the user to delete
@@ -49,6 +49,15 @@ def delete_user(user):
     """
     del_user_cmd = "userdel -r {}".format(user)
     subprocess.call(del_user_cmd, shell=True)
+
+    # check both arrivals and departures in the sftp directores to delete user
+    sftp_path_1 = os.path.join(sftp_conf['sftp_home'], sftp_conf['sftp_base_dir'],
+                               sftp_conf['sftp_arrivals_dir'], tenant, user)
+    sftp_path_2 = os.path.join(sftp_conf['sftp_home'], sftp_conf['sftp_base_dir'],
+                               sftp_conf['sftp_departures_dir'], tenant, user)
+    cleanup_directory(sftp_path_1)
+    cleanup_directory(sftp_path_2)
+
     print('user removed:', user)
 
 

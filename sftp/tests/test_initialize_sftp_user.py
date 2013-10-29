@@ -45,16 +45,38 @@ class TestInitSFTPUser(unittest.TestCase):
             remove_tenant(tenant, self.sftp_conf)
             cleanup(self.sftp_conf)
 
+    def test_create_sftp_user(self):
+        tenant = 'test_tenant1'
+        user = 'test_user1'
+        role = 'testgrp1'
+        self.check_user_does_not_exist(user)
+
+        if sys.platform == 'linux':
+            create_tenant(tenant, self.sftp_conf)
+            initialize(self.sftp_conf)
+            ssh_key = "blahblahblahblahblah" * 20
+
+            create_sftp_user(tenant, user, role, self.sftp_conf, ssh_key)
+            ssh_file = os.path.join(self.sftp_conf['sftp_home'], self.sftp_conf['sftp_arrivals_dir'],
+                                    tenant, '.ssh', 'authorized_keys')
+            self.assertTrue(os.path.isfile(ssh_file))
+
+            # cleanup
+            delete_user(user)
+            remove_tenant(tenant, self.sftp_conf)
+            cleanup(self.sftp_conf)
+
     def test_create_user_and_delete_user(self):
         user = 'test_user1'
         home_folder = '/tmp/test_sftp_user'
+        sftp_folder = '/tmp/test_sftp_folder'
         if sys.platform == 'linux':
             initialize(self.sftp_conf)
             self.check_user_does_not_exist(user)
-            _create_user(user, home_folder, 'testgrp1', 'file_drop')
+            _create_user(user, home_folder, sftp_folder, 'testgrp1', 'file_drop')
             self.assertIsNotNone(pwd.getpwnam(user))
 
-            file_drop_folder = os.path.join(home_folder, self.sftp_conf['file_drop'])
+            file_drop_folder = os.path.join(sftp_folder, self.sftp_conf['file_drop'])
 
             # check that directory exists and that owner and permission are correct
             self.assertTrue(os.path.exists(file_drop_folder))
@@ -111,7 +133,7 @@ class TestInitSFTPUser(unittest.TestCase):
         public_key_str = "blahblahblahblahblah" * 20
         _set_ssh_key('/tmp/test_sftp_user', public_key_str)
         with open('/tmp/test_sftp_user/.ssh/authorized_keys') as key_file:
-            public_key_str = public_key_str + '\n'
+            public_key_str += '\n'
             self.assertEqual(key_file.read(), public_key_str)
 
         cleanup_directory('/tmp/test_sftp_user')

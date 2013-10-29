@@ -116,7 +116,7 @@ def get_list_of_students_extract_report(params):
     timestamp = timestamp[:timestamp.index('.')]
     extract_file_name = ''
     if asmtGrade is None:
-        extract_file_name = 'school_data_' + timestamp + '.csv'
+        extract_file_name = 'school_asmt_results_' + timestamp + '.csv'
     else:
         extract_file_name = 'grade_' + str(asmtGrade) + '_asmt_data_' + timestamp + '.csv'
     results = get_list_of_students(params)

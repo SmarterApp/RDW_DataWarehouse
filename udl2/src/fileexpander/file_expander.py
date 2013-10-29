@@ -48,15 +48,16 @@ def _is_valid__tar_file(file_to_expand):
     return valid
 
 
-def _verify_tar_file_contents(tar_file):
+def _verify_tar_file_contents(tar_file_member_names):
     """
     Verifies the tar file contents for presence of exactly two files [one csv and one JSON file]
-    :param tar_file: list of contents returned by tar module
-    :return: raises exception if verification fails
+    :param tar_file_member_names: list of contents returned by tar module
+    :return: false if verification fails
     """
-    file_extensions = set([os.path.splitext(file)[1][1:].strip().lower() for file in tar_file.getnames()])
+    file_extensions = [os.path.splitext(file)[1][1:].strip().lower() for file in tar_file_member_names]
     if len(file_extensions) != 2 or 'csv' not in file_extensions or 'json' not in file_extensions:
-        raise Exception('Expected 2 files not found in the tar archive')
+        return False
+    return True
 
 
 def _extract_tar_file_contents(file_to_expand, expanded_dir):
@@ -68,7 +69,9 @@ def _extract_tar_file_contents(file_to_expand, expanded_dir):
     """
     tar_file_contents = []
     tar = tarfile.open(file_to_expand, "r:gz")
-    _verify_tar_file_contents(tar)
+    # verify tar file contents and throw exception if csv/json file is missing
+    if not _verify_tar_file_contents(tar.getnames()):
+        raise Exception('Expected 2 files not found in the tar archive')
     for tarinfo in tar:
         tar_file_contents.append(expanded_dir + tarinfo.name)
         print(tarinfo.name, tarinfo.size, " bytes in size, is a regular file: ", tarinfo.isreg())

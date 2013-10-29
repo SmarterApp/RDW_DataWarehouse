@@ -27,6 +27,11 @@ class TestInitSFTPUser(unittest.TestCase):
             },
             'file_drop': 'tst_file_drop',
         }
+        self.cleanup_dirs = []
+
+    def tearDown(self):
+        for directory in self.cleanup_dirs:
+            cleanup_directory(directory)
 
     def test_create_sftp_user(self):
         tenant = 'test_tenant1'
@@ -56,8 +61,11 @@ class TestInitSFTPUser(unittest.TestCase):
         self.check_user_does_not_exist(user)
 
         if sys.platform == 'linux':
-            create_path('/tmp/sftp/arrivals')
-            create_path('/tmp/sftp/departures')
+            create_dirs = ['/tmp/sftp/arrivals', '/tmp/sftp/departures', '/tmp/arrivals', '/tmp/departures']
+            for directory in create_dirs:
+                create_path(directory)
+                self.cleanup_dirs.append(directory)
+
             create_tenant(tenant, self.sftp_conf)
             initialize(self.sftp_conf)
             ssh_key = "blahblahblahblahblah" * 20
@@ -71,8 +79,6 @@ class TestInitSFTPUser(unittest.TestCase):
             delete_user(user, self.sftp_conf)
             remove_tenant(tenant, self.sftp_conf)
             cleanup(self.sftp_conf)
-            cleanup_directory('/tmp/sftp/departures')
-            cleanup_directory('/tmp/sftp/arrivals')
 
     def test_create_user_and_delete_user(self):
         user = 'test_user1'

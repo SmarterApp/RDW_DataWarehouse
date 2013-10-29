@@ -353,6 +353,18 @@ function generate_docs {
     echo "Docs created in $WORKSPACE/$1/docs/_build/html"
 }
 
+function run_javascript_tests {
+    echo "Running javascript phantomjs tests"
+    cd "$WORKSPACE/assets/test/js/3p"
+    phantomjs run-qunit.js http://localhost/assets/test/TEST.EDWARE.test.html?coverage=true
+}
+
+function run_javascript_yslow_tests {
+    echo "Running javascript phantomjs yslow tests"
+    cd "$WORKSPACE/assets/test/js/3p"
+    phantomjs /opt/yslow/yslow.js --help
+}
+
 function main {
 	
     get_opts $@

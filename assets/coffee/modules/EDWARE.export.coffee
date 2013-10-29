@@ -138,7 +138,7 @@ define [
         event.initMouseEvent('click', true, true, window, 1, 0, 0, 0, 0, false, false, false, false, 0, null)
         link.dispatchEvent(event)
       else
-        window.open(url, '_blank', '')
+        window.open(url, '_parent', '')
 
     saveAsWindow: (data, filename, mimetype) ->
       # Suppport other browsers

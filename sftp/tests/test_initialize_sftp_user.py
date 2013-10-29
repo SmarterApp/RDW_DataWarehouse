@@ -61,11 +61,6 @@ class TestInitSFTPUser(unittest.TestCase):
             self.user_dels.append(user)
             self.tenant_dels.append(tenant)
             self.del_groups = True
-            #delete_user(user, self.sftp_conf)
-            #remove_tenant(tenant, self.sftp_conf)
-            #cleanup_directory('/tmp/arrivals')
-            #cleanup_directory('/tmp/departures')
-            #clean_group(self.sftp_conf)
 
     def test_create_sftp_user(self):
         tenant = 'test_tenant1'

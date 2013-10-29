@@ -110,7 +110,7 @@ class TestInitSFTPUser(unittest.TestCase):
 
             # check that directory exists and that owner and permission are correct
             self.assertTrue(os.path.exists(file_drop_folder))
-            self.assertEqual(pwd.getpwuid(os.stat(file_drop_folder).st_uid), user)
+            self.assertEqual(pwd.getpwuid(os.stat(file_drop_folder).st_uid).pw_name, user)
             self.assertEqual((os.stat(file_drop_folder).st_mode & 0o777), 0o777)
             delete_user(user, {'sftp_home': '/', 'sftp_base_dir': 'tmp', 'sftp_arrivals_dir': 'test_sftp_folder',
                                'sftp_departures_dir': 'test_sftp_folder'})

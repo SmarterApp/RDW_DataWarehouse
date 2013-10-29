@@ -49,7 +49,7 @@ def delete_user(user, sftp_conf):
     """
 
     # if the user does not exist return immediately
-    if _check_user_not_exists(user):
+    if _check_user_not_exists(user)[0]:
         return
 
     tenant_name = os.path.split(os.path.dirname(pwd.getpwnam(user).pw_dir))[-1]

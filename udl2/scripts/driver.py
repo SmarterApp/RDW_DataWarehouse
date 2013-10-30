@@ -14,7 +14,7 @@ from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from preetl.pre_etl import pre_etl_job
 
 
-def start_pipeline(archive_file, udl2_conf, load_type='Assessment', file_parts=4, **kwargs):
+def start_pipeline(archive_file, udl2_conf, load_type='Assessment', file_parts=4, batch_guid_forced=None, **kwargs):
     '''
     Begins the UDL Pipeline process by copying the file found at 'archive_file' to the landing zone arrivals dir and
     initiating our main pipeline chain.
@@ -26,7 +26,7 @@ def start_pipeline(archive_file, udl2_conf, load_type='Assessment', file_parts=4
     '''
 
     # Prepare parameters for task msgs
-    guid_batch = pre_etl_job(udl2_conf, load_type=load_type)
+    guid_batch = pre_etl_job(udl2_conf, load_type=load_type, batch_guid_forced)
     if guid_batch is None:
         print("CANNOT GENERATE guid_batch in PRE ETL, UDL2 PIPELINE STOPPED")
         return

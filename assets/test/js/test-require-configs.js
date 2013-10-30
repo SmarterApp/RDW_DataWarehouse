@@ -1,8 +1,9 @@
 /*globals require */
-var baseConfigs = {
+require({
   paths : {
     // libraries
-    'coffee-script': '../../js/3p/coffee-script',
+    cs: '3p/cs',
+    'coffee-script': '3p/coffee-script',
     jquery: '../../js/3p/jquery-1.7.2.min',
     jqGrid: '../../js/3p/jquery.jqGrid.min',
     sourceJS: '../../js',
@@ -65,6 +66,4 @@ var baseConfigs = {
       exports: 'jqGrid'
     }
   }
-};
-
-require.config(baseConfigs);
+}, ['cs!test.EDWARE']);

@@ -31,7 +31,7 @@
                 <span class='edwareExportField' data-export-value={{subject.unfilteredTotal}} data-export-name='{{subject.asmt_subject}} {{labels.students_unfiltered_total}}'></span>
             </div>
             {{/subject.unfilteredTotal}}
-            <div class='alignmentLine' style='margin-left:{{subject.alignmentLine}}px;'></div>
+            <div data-alignment-offset="{{subject.alignmentLine}}" style="{{subject.alignmentLine}}" class="alignmentLine"></div>
             {{/insufficient}}
         </div>
     </div>

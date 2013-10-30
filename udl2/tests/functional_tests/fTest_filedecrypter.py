@@ -10,6 +10,7 @@ import gnupg
 
 class TestFileDecrypter(unittest.TestCase):
 
+    @classmethod
     def setUp(self):
         try:
             config_path = dict(os.environ)['UDL2_CONF']
@@ -37,8 +38,6 @@ class TestFileDecrypter(unittest.TestCase):
 
     def test_decrypter_for_valid_file(self):
         assert os.path.isfile(self.test_valid_file)
-        decrypted_file = None
-        status = None
         status, decrypted_file = file_decrypter.decrypt_file(self.test_valid_file, self.decrypter_test_dir, 'sbac udl2', self.gpg_test_home)
         assert os.path.isfile(decrypted_file)
         assert status.ok is True
@@ -49,36 +48,20 @@ class TestFileDecrypter(unittest.TestCase):
 
     def test_decrypter_for_invalid_file(self):
         assert not os.path.isfile(self.test_invalid_file)
-        decrypted_file = None
-        status = None
-        try:
-            status, decrypted_file = file_decrypter.decrypt_file(self.test_invalid_file, self.decrypter_test_dir, 'sbac udl2', self.gpg_test_home)
-        except Exception as e:
-            print('Exception -- ', e)
-        assert decrypted_file is None
+        with self.assertRaises(Exception):
+            file_decrypter.decrypt_file(self.test_invalid_file, self.decrypter_test_dir, 'sbac udl2', self.gpg_test_home)
 
     def test_decrypter_for_corrupted_file(self):
         assert os.path.isfile(self.test_corrupted_file)
-        decrypted_file = None
-        status = None
-        try:
-            status, decrypted_file = file_decrypter.decrypt_file(self.test_corrupted_file, self.decrypter_test_dir, 'sbac udl2', self.gpg_test_home)
-        except Exception as e:
-            print('Exception -- ', e)
-        assert decrypted_file is None
-        assert status is None
+        with self.assertRaises(Exception):
+            file_decrypter.decrypt_file(self.test_corrupted_file, self.decrypter_test_dir, 'sbac udl2', self.gpg_test_home)
 
     def test_decrypter_with_wrong_passphrase(self):
         assert os.path.isfile(self.test_valid_file)
-        decrypted_file = None
-        status = None
-        try:
-            status, decrypted_file = file_decrypter.decrypt_file(self.test_valid_file, self.decrypter_test_dir, 'wrong passphrase', self.gpg_test_home)
-        except Exception as e:
-            print('Exception -- ', e)
-        assert decrypted_file is None
-        assert status is None
+        with self.assertRaises(Exception):
+            file_decrypter.decrypt_file(self.test_valid_file, self.decrypter_test_dir, 'wrong passphrase', self.gpg_test_home)
 
-    def tearDown(self):
+    @classmethod
+    def tearDownClass(self):
         if os.path.exists(self.decrypter_test_dir):
             shutil.rmtree(self.decrypter_test_dir)

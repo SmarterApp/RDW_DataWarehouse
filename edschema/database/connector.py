@@ -8,6 +8,7 @@ from database.interfaces import ConnectionBase
 from zope import interface, component
 from zope.interface.declarations import implementer
 from sqlalchemy import Table
+from collections import OrderedDict
 import logging
 
 
@@ -70,7 +71,7 @@ class DBConnection(ConnectionBase):
         rows = result.fetchall()
         if rows is not None:
             for row in rows:
-                result_row = {}
+                result_row = OrderedDict()
                 for key in row.keys():
                     result_row[key] = row[key]
                 result_rows.append(result_row)

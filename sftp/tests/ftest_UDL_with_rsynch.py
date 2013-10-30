@@ -8,6 +8,7 @@ import pysftp
 import sys
 import os
 import argparse
+import paramiko
 
 
 class rsynch_validation(unittest.TestCase):
@@ -42,5 +43,15 @@ class rsynch_validation(unittest.TestCase):
 
         # Closes the connection
         srv.close()
+
+# SSH to app server 6 to make sure that file copied over.
+    def testnew(self):
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.load_host_keys(os.path.expanduser(os.path.join("~", ".ssh", "known_hosts")))
+        ssh.connect('edwappsrv6.poc.dum.edwdc.net', username='udl2', password="udl2")
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('ls /opt/wgen/edware-udl/zones/landing/history/test_tenant')
+        print ("output", ssh_stdout.read())
+        ssh.close()
 if __name__ == '__main__':
     unittest.main()

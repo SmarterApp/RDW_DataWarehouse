@@ -80,3 +80,4 @@ class Constants():
     DMG_ETH_PCF = 'dmg_eth_pcf'
     DMG_ETH_WHT = 'dmg_eth_wht'
     NOT_STATED = 'not_stated'
+    RAW_EXPORT = 'raw'

@@ -5,7 +5,7 @@ Created on Jan 17, 2013
 '''
 
 import unittest
-from smarter.reports.student_report import get_student_report, get_student_assessment
+from smarter.reports.student_report import get_student_report
 from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite,\
     UnittestSmarterDBConnection, get_unittest_tenant_name
 from edapi.exceptions import NotFoundException
@@ -56,16 +56,6 @@ class TestStudentReport(Unittest_with_smarter_sqlite):
         self.assertEqual('ELA', result[0]['asmt_subject'], 'asmt_subject')
         self.assertEqual('2200', result[0]['claims'][0]['score'], 'asmt_claim_1_score 88')
         self.assertEqual('Research & Inquiry', result[0]['claims'][3]['name'], 'asmt_claim_4_name Spelling')
-
-    def test_student_assessment_id(self):
-        params = {"studentGuid": 'dae1acf4-afb0-4013-90ba-9dcde4b25621'}
-        result = get_student_assessment(params)
-
-        self.assertEqual(6, len(result), "studentGuid should have 4 assessments")
-        self.assertEqual('ELA', result[0]['asmt_subject'], 'asmt_subject ELA')
-        self.assertEqual('ELA', result[1]['asmt_subject'], 'asmt_subject ELA')
-        self.assertEqual('ELA', result[2]['asmt_subject'], 'asmt_subject Math')
-        self.assertEqual('Math', result[3]['asmt_subject'], 'asmt_subject Math')
 
     def test_assessment_header_info(self):
         params = {"studentGuid": 'dae1acf4-afb0-4013-90ba-9dcde4b25621'}

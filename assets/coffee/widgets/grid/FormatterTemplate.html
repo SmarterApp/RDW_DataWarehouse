@@ -31,7 +31,7 @@
                 <span class='edwareExportField' data-export-value={{subject.unfilteredTotal}} data-export-name='{{subject.asmt_subject}} {{labels.students_unfiltered_total}}'></span>
             </div>
             {{/subject.unfilteredTotal}}
-            <div class='alignmentLine' style='margin-left:{{subject.alignmentLine}}px;'></div>
+            <div data-alignment-offset="{{subject.alignmentLine}}" style="{{subject.alignmentLine}}" class="alignmentLine"></div>
             {{/insufficient}}
         </div>
     </div>
@@ -70,16 +70,19 @@
                     <span>{{subject.asmt_score}}</span>
                 </div>
                 <div class='description' style='color:{{subject.score_bg_color}}'>{{score_ALD}}</div>
-                <span class='edwareExportField' data-export-value='{{score_ALD}}' data-export-name='{{subject.asmt_type}} {{labels.performance_level}}'></span>             
             </div>
             <hr/>
             <div class='losPerfBar'>{{{confidenceLevelBar}}}</div>
             <div class='errorBand'>{{labels.error_band}}:
                 <strong>{{subject.asmt_score_range_min}}-{{subject.asmt_score_range_max}}</strong>
             </div>
+            <span class='edwareExportField' data-export-value='{{subject.asmt_score_range_min}}-{{subject.asmt_score_range_max}}'
+                      data-export-name='{{subject.asmt_type}} {{labels.error_band}}'></span>   
+            <span class='edwareExportField' data-export-value='{{score_ALD}}' data-export-name='{{subject.asmt_type}} {{labels.performance_level}}'></span>   
         </div>
         {{/subject}}
         {{^subject}}
+        <span class='edwareExportField' data-export-value='' data-export-name='{{subject.asmt_type}} {{labels.error_band}}'></span>
         <span class='edwareExportField' data-export-value='{{score_ALD}}' data-export-name='{{subject.asmt_type}} {{labels.performance_level}}'></span>
         {{/subject}}
     </div>

@@ -6,7 +6,7 @@ from udl2.errorcodes import BATCH_REC_FAILED
 from udl2 import message_keys as mk
 
 
-def pre_etl_job(udl2_conf, log_file=None, load_type='Assessment', guid_batch_forced=None):
+def pre_etl_job(udl2_conf, log_file=None, load_type='Assessment', batch_guid_forced=None):
     '''
     PRE ETL function: create a new guid_batch and insert one row into batch table
     @param udl2_conf: udl2 config, which is got from udl.udl2_conf
@@ -17,7 +17,7 @@ def pre_etl_job(udl2_conf, log_file=None, load_type='Assessment', guid_batch_for
 
     try:
         # generate a guid_batch
-        guid_batch = str(uuid4()) if guid_batch_forced is None else guid_batch_forced
+        guid_batch = str(uuid4()) if batch_guid_forced is None else batch_guid_forced
 
         # prepare content to be inserted into batch table
         parm = {mk.GUID_BATCH: guid_batch,

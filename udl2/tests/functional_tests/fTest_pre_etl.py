@@ -56,12 +56,12 @@ class PreEtlTest(unittest.TestCase):
     def test_pre_etl_job(self):
         # read log file, should be empty
         self._check_log_file(is_empty=True)
-        guid_batch_forced= str(uuid4())
-        batch_guid = pre_etl_job(self.udl2_conf, log_file=self.test_error_log_file,  guid_batch_forced=guid_batch_forced)
+        batch_guid_forced = str(uuid4())
+        batch_guid = pre_etl_job(self.udl2_conf, log_file=self.test_error_log_file,  batch_guid_forced=batch_guid_forced)
         self._check_log_file(is_empty=True)
 
         # make sure that the forced batch guid passed is same as the one pre_etc_job returns
-        self.assertEqual(guid_batch_forced, batch_guid)
+        self.assertEqual(batch_guid_forced, batch_guid)
 
         # check one row is inserted in batch table
         query = 'SELECT COUNT(*) from "{schema}"."{batch_table}" WHERE guid_batch = \'{batch_guid}\''.format(batch_guid=batch_guid,

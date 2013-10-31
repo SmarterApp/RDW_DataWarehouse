@@ -8,7 +8,7 @@ import imp
 
 from celery import chain
 from udl2 import (W_file_arrived, W_file_decrypter, W_file_expander, W_simple_file_validator, W_file_splitter, W_file_content_validator,
-                  W_load_json_to_integration, W_load_to_integration_table, W_load_from_integration_to_star, W_parallel_csv_load, W_all_done)
+                  W_load_json_to_integration, W_load_to_integration_table, W_load_from_integration_to_star, W_parallel_csv_load, W_post_etl , W_all_done)
 from udl2 import message_keys as mk
 from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from preetl.pre_etl import pre_etl_job
@@ -47,6 +47,7 @@ def start_pipeline(archive_file, udl2_conf, load_type='Assessment', file_parts=4
                              W_load_to_integration_table.task.s(),
                              W_load_from_integration_to_star.explode_to_dims.s(),
                              W_load_from_integration_to_star.explode_to_fact.s(),
+                             W_post_etl.task.s(),
                              W_all_done.task.si(all_done_msg))
 
     if kwargs.get('callback'):

@@ -6,7 +6,7 @@ from sqlalchemy.sql.expression import label, case
 from smarter.reports.helpers.constants import Constants, AssessmentType
 from edapi.cache import cache_region
 from sqlalchemy.sql.functions import count
-from edcore.database.smarter_connector import SmarterDBConnection
+from edcore.database.edcore_connector import EdCoreDBConnection
 
 BUCKET_SIZE = 20
 
@@ -16,7 +16,7 @@ def get_summary_distribution(state_code, district_guid=None, school_guid=None, a
     '''
     Get a bucketed distribution of scores
     '''
-    with SmarterDBConnection() as connection:
+    with EdCoreDBConnection() as connection:
         fact_asmt_outcome = connection.get_table('fact_asmt_outcome')
         #  should it be always for summative?
         query = select([label(Constants.SCORE_BUCKET, (fact_asmt_outcome.c.asmt_score / get_bucket_size()) * get_bucket_size()),

@@ -7,7 +7,7 @@ import unittest
 from zope import component
 from database.connector import IDbUtil
 from edcore.database import get_data_source_names, initialize_db
-from edcore.database.smarter_connector import SmarterDBConnection
+from edcore.database.edcore_connector import EdCoreDBConnection
 from edcore.database.datasource import setup_tenant_db_connection
 from edcore.database.udl_stats_connector import StatsDBConnection
 
@@ -29,7 +29,7 @@ class TestDatasource(unittest.TestCase):
                     'edware.db.dummyTenant.url': 'sqlite:///:memory:',
                     'other': 'setting',
                     'dummy': 'other settings'}
-        initialize_db(SmarterDBConnection, settings)
+        initialize_db(EdCoreDBConnection, settings)
         dbUtil = component.queryUtility(IDbUtil, 'edware.db.dummyTenant')
         self.assertIsNotNone(dbUtil)
         self.assertEqual(dbUtil.get_engine().echo, True)
@@ -42,7 +42,7 @@ class TestDatasource(unittest.TestCase):
                     'edware.db.dummyTenant.url': 'sqlite:///:memory:',
                     'ignoreMe': 'setting',
                     'dummy': 'other settings'}
-        initialize_db(SmarterDBConnection, settings)
+        initialize_db(EdCoreDBConnection, settings)
         dbUtil = component.queryUtility(IDbUtil, 'edware.db.dummyTenant')
         self.assertIsNotNone(dbUtil)
         self.assertEqual(dbUtil.get_engine().echo, True)
@@ -56,7 +56,7 @@ class TestDatasource(unittest.TestCase):
                     'edware.db.dummyTenant.url': 'sqlite:///:memory:',
                     'ignoreMe': 'setting',
                     'dummy': 'other settings'}
-        initialize_db(SmarterDBConnection, settings)
+        initialize_db(EdCoreDBConnection, settings)
         dbUtil = component.queryUtility(IDbUtil, 'edware.db.dummyTenant')
         self.assertIsNotNone(dbUtil)
         self.assertEqual(dbUtil.get_engine().echo, True)
@@ -74,7 +74,7 @@ class TestDatasource(unittest.TestCase):
                     'edware.db.bTenant.echo': 'True',
                     'ignoreMe': 'setting',
                     'dummy': 'other settings'}
-        initialize_db(SmarterDBConnection, settings)
+        initialize_db(EdCoreDBConnection, settings)
         self.assertEquals(len(get_data_source_names()), 3)
         self.assertIn('edware.db.dummyTenant', get_data_source_names())
         self.assertIn('edware.db.aTenant', get_data_source_names())
@@ -99,7 +99,7 @@ class TestDatasource(unittest.TestCase):
         settings = {'edware.db.dummyTenant.echo': 'False',
                     'edware.db.dummyTenant.schema_name': 'dummySchema',
                     'edware.db.dummyTenant.url': 'sqlite:///:memory:'}
-        setup_tenant_db_connection(SmarterDBConnection, 'dummyTenant', settings)
+        setup_tenant_db_connection(EdCoreDBConnection, 'dummyTenant', settings)
         dbUtil = component.queryUtility(IDbUtil, 'edware.db.dummyTenant')
         self.assertIsNotNone(dbUtil)
         self.assertEqual(dbUtil.get_engine().echo, False)

@@ -8,14 +8,14 @@ from pyramid.security import authenticated_userid
 import pyramid
 from smarter.reports.helpers.constants import Constants
 from smarter.security.context_role_map import ContextRoleMap
-from edcore.database.smarter_connector import SmarterDBConnection
+from edcore.database.edcore_connector import EdCoreDBConnection
 
 
 def select_with_context(columns=None, whereclause=None, from_obj=[], **kwargs):
     '''
     Returns a SELECT clause statement with context security attached in the WHERE clause
     '''
-    with SmarterDBConnection() as connector:
+    with EdCoreDBConnection() as connector:
         # Get user role and guid
         (guid, roles) = __get_user_info(connector)
 
@@ -49,7 +49,7 @@ def check_context(student_guids):
     if len(student_guids) is 0:
         return False
 
-    with SmarterDBConnection() as connector:
+    with EdCoreDBConnection() as connector:
         # Get user role and guid
         (guid, roles) = __get_user_info(connector)
 

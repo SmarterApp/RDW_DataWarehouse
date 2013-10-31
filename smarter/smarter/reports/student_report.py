@@ -16,7 +16,7 @@ from smarter.security.context import select_with_context
 from smarter.reports.helpers.constants import Constants
 from smarter.reports.helpers.metadata import get_custom_metadata,\
     get_subjects_map
-from edcore.database.smarter_connector import SmarterDBConnection
+from edcore.database.edcore_connector import EdCoreDBConnection
 
 REPORT_NAME = 'individual_student_report'
 
@@ -186,7 +186,7 @@ def get_student_report(params):
     if 'assessmentGuid' in params:
         assessment_guid = str(params['assessmentGuid'])
 
-    with SmarterDBConnection() as connection:
+    with EdCoreDBConnection() as connection:
         query = __prepare_query(connection, student_guid, assessment_guid)
 
         result = connection.get_result(query)

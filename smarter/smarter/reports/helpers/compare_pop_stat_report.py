@@ -12,7 +12,7 @@ from sqlalchemy.sql.expression import and_, true, select
 from smarter.reports.helpers import filters
 from sqlalchemy.sql.functions import count
 from edapi.cache import cache_region
-from edcore.database.smarter_connector import SmarterDBConnection
+from edcore.database.edcore_connector import EdCoreDBConnection
 
 
 def get_not_stated_count(params):
@@ -96,7 +96,7 @@ class ComparingPopStatReport:
         :rtype: dict
         :returns:  results from database
         '''
-        with SmarterDBConnection(tenant=self.tenant) as connector:
+        with EdCoreDBConnection(tenant=self.tenant) as connector:
             query = self.get_query(connector, filters)
             results = connector.get_result(query)
         return results[0].get(Constants.COUNT) if results else 0

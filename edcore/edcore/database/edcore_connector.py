@@ -11,7 +11,7 @@ from edschema.metadata.ed_metadata import generate_ed_metadata
 config_namespace = 'edware.db'
 
 
-class SmarterDBConnection(DBConnection):
+class EdCoreDBConnection(DBConnection):
     '''
     DBConnector for Smarter Project
     This is used for database connection for reports
@@ -41,7 +41,7 @@ class SmarterDBConnection(DBConnection):
         if tenant is None:
             # Returns None will raise an Exception in base class
             return None
-        return SmarterDBConnection.get_namespace() + tenant
+        return EdCoreDBConnection.get_namespace() + tenant
 
     @staticmethod
     def get_db_config_prefix(tenant=None):
@@ -51,7 +51,7 @@ class SmarterDBConnection(DBConnection):
         if tenant is None:
             # Returns None will raise an Exception in base class
             return None
-        return SmarterDBConnection.get_namespace() + tenant + '.'
+        return EdCoreDBConnection.get_namespace() + tenant + '.'
 
     @staticmethod
     def generate_metadata(schema_name=None, bind=None):

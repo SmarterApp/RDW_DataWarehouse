@@ -21,7 +21,7 @@ from smarter.reports.helpers.filters import FILTERS_CONFIG, has_filters,\
     apply_filter_to_query
 from smarter.reports.helpers.utils import merge_dict
 from smarter.reports.helpers.compare_pop_stat_report import get_not_stated_count
-from edcore.database.smarter_connector import SmarterDBConnection
+from edcore.database.edcore_connector import EdCoreDBConnection
 
 REPORT_NAME = "comparing_populations"
 CACHE_REGION_PUBLIC_DATA = 'public.data'
@@ -184,7 +184,7 @@ class ComparingPopReport(object):
         :rtype: dict
         :returns:  results from database
         '''
-        with SmarterDBConnection(tenant=self.tenant) as connector:
+        with EdCoreDBConnection(tenant=self.tenant) as connector:
             query_helper = QueryHelper(connector, **params)
             query = query_helper.get_query()
             results = connector.get_result(query)

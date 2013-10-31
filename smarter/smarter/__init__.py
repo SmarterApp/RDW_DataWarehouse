@@ -15,7 +15,7 @@ from services.celery import setup_celery
 from smarter import services, trigger
 from smarter.utils.remote_config import get_remote_config
 from edcore.database import initialize_db
-from edcore.database.smarter_connector import SmarterDBConnection
+from edcore.database.edcore_connector import EdCoreDBConnection
 from edcore.database.udl_stats_connector import StatsDBConnection
 
 logger = logging.getLogger(__name__)
@@ -46,7 +46,7 @@ def main(global_config, **settings):
     set_cache_regions_from_settings(settings)
     config = Configurator(settings=settings, root_factory=RootFactory)
 
-    initialize_db(SmarterDBConnection, settings)
+    initialize_db(EdCoreDBConnection, settings)
     initialize_db(StatsDBConnection, settings, allow_schema_create=True)
 
     # setup celery

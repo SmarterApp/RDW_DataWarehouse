@@ -7,7 +7,7 @@ from smarter.reports.helpers.constants import Constants
 from sqlalchemy.sql import select
 import json
 from edapi.cache import cache_region
-from edcore.database.smarter_connector import SmarterDBConnection
+from edcore.database.edcore_connector import EdCoreDBConnection
 
 
 @cache_region('public.shortlived')
@@ -21,7 +21,7 @@ def get_custom_metadata(stateCode, tenant=None):
     :returns: dict of custom metadata with subject id as key and metadata as its value
     '''
     cstm_meta_map = {}
-    with SmarterDBConnection(tenant) as connector:
+    with EdCoreDBConnection(tenant) as connector:
         # query custom metadata by state code
         dim_asmt_cstm = connector.get_table(Constants.CUSTOM_METADATA)
         query = select([dim_asmt_cstm.c.asmt_custom_metadata.label(Constants.ASMT_CUSTOM_METADATA),

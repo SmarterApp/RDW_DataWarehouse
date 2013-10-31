@@ -10,7 +10,7 @@ Created on Mar 8, 2013
 from sqlalchemy.sql import and_, select
 from sqlalchemy.sql.expression import true
 from smarter.reports.helpers.constants import Constants
-from edcore.database.smarter_connector import SmarterDBConnection
+from edcore.database.edcore_connector import EdCoreDBConnection
 
 
 def get_breadcrumbs_context(state_code=None, district_guid=None, school_guid=None, asmt_grade=None, student_name=None, tenant=None):
@@ -18,7 +18,7 @@ def get_breadcrumbs_context(state_code=None, district_guid=None, school_guid=Non
     Given certain known information, returns breadcrumbs context
     '''
     formatted_results = []
-    with SmarterDBConnection(tenant=tenant) as connector:
+    with EdCoreDBConnection(tenant=tenant) as connector:
         dim_inst_hier = connector.get_table('dim_inst_hier')
 
         # Limit result count to one

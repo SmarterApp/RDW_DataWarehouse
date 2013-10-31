@@ -10,8 +10,8 @@ import logging
 from smarter.trigger.utils import run_cron_job
 from smarter.trigger.database import constants
 from smarter.reports.helpers.constants import Constants, AssessmentType
-from edcore.database.smarter_connector import SmarterDBConnection
 from edcore.database.udl_stats_connector import StatsDBConnection
+from edcore.database.edcore_connector import EdCoreDBConnection
 
 
 logger = logging.getLogger('smarter')
@@ -45,7 +45,7 @@ def prepare_pre_pdf(tenant, state_code, batch_guid):
     :rType: list
     :return:  list of results containing student information used to generate pdf
     '''
-    with SmarterDBConnection(tenant=tenant) as connector:
+    with EdCoreDBConnection(tenant=tenant) as connector:
         fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
         dim_asmt = connector.get_table(Constants.DIM_ASMT)
         query = select([distinct(fact_asmt_outcome.c.student_guid).label(Constants.STUDENT_GUID),

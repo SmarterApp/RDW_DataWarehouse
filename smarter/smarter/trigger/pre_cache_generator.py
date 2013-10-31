@@ -12,7 +12,7 @@ from smarter.reports.helpers.constants import Constants
 import json
 import os
 from edcore.database.udl_stats_connector import StatsDBConnection
-from edcore.database.smarter_connector import SmarterDBConnection
+from edcore.database.edcore_connector import EdCoreDBConnection
 
 
 logger = logging.getLogger('smarter')
@@ -46,7 +46,7 @@ def prepare_pre_cache(tenant, state_code, batch_guid):
     :rType: list
     :return:  list of results containing district guids
     '''
-    with SmarterDBConnection(tenant=tenant) as connector:
+    with EdCoreDBConnection(tenant=tenant) as connector:
         fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
         query = select([distinct(fact_asmt_outcome.c.district_guid).label(Constants.DISTRICT_GUID)], from_obj=[fact_asmt_outcome])
         query = query.where(fact_asmt_outcome.c.state_code == state_code)

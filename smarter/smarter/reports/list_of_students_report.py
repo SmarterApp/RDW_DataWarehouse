@@ -24,7 +24,7 @@ from smarter.reports.helpers.filters import apply_filter_to_query,\
 from smarter.reports.helpers.utils import merge_dict, multi_delete
 from smarter.reports.helpers.compare_pop_stat_report import get_not_stated_count
 from string import capwords
-from edcore.database.smarter_connector import SmarterDBConnection
+from edcore.database.edcore_connector import EdCoreDBConnection
 
 REPORT_NAME = "list_of_students"
 EXPORT_PARAMS = merge_dict({
@@ -226,7 +226,7 @@ def get_list_of_students(params):
     if raw is None:
         raw = 'false'
     raw = raw.lower()
-    with SmarterDBConnection() as connector:
+    with EdCoreDBConnection() as connector:
         # get handle to tables
         dim_student = connector.get_table(Constants.DIM_STUDENT)
         dim_staff = connector.get_table(Constants.DIM_STAFF)
@@ -307,7 +307,7 @@ def __get_asmt_data(asmtSubject, stateCode):
     '''
     Queries dim_asmt for cutpoint and custom metadata
     '''
-    with SmarterDBConnection() as connector:
+    with EdCoreDBConnection() as connector:
         dim_asmt = connector.get_table(Constants.DIM_ASMT)
 
         # construct the query

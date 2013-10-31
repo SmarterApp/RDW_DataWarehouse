@@ -8,22 +8,22 @@ from database.tests.utils.unittest_with_sqlite import Unittest_with_sqlite,\
 
 from sqlalchemy.types import BigInteger
 from sqlalchemy.ext.compiler import compiles
-from edcore.database.smarter_connector import SmarterDBConnection
+from edcore.database.edcore_connector import EdCoreDBConnection
 
 
 class Unittest_with_smarter_sqlite(Unittest_with_sqlite):
     @classmethod
     def setUpClass(cls):
-        super().setUpClass(SmarterDBConnection.get_datasource_name(get_unittest_tenant_name()))
+        super().setUpClass(EdCoreDBConnection.get_datasource_name(get_unittest_tenant_name()))
 
 
 class Unittest_with_smarter_sqlite_no_data_load(Unittest_with_sqlite_no_data_load):
     @classmethod
     def setUpClass(cls):
-        super().setUpClass(SmarterDBConnection.get_datasource_name(get_unittest_tenant_name()))
+        super().setUpClass(EdCoreDBConnection.get_datasource_name(get_unittest_tenant_name()))
 
 
-class UnittestSmarterDBConnection(SmarterDBConnection):
+class UnittestSmarterDBConnection(EdCoreDBConnection):
     def __init__(self):
         super().__init__(tenant=get_unittest_tenant_name())
 

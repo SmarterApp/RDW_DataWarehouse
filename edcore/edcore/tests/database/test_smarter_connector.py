@@ -4,10 +4,10 @@ Created on Jun 25, 2013
 @author: dip
 '''
 import unittest
-from smarter.database.smarter_connector import SmarterDBConnection,\
-    config_namespace
 from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite,\
     get_unittest_tenant_name
+from edcore.database.smarter_connector import SmarterDBConnection,\
+    config_namespace
 
 
 class TestSmarterConnector(Unittest_with_smarter_sqlite):

@@ -7,7 +7,7 @@ import unittest
 from smarter.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite
 from sqlalchemy.sql.expression import select, and_
 from smarter.trigger.pre_pdf_generator import update_ed_stats_for_prepdf
-from smarter.database.udl_stats_connector import StatsDBConnection
+from edcore.database.udl_stats_connector import StatsDBConnection
 
 
 class Test(Unittest_with_stats_sqlite):

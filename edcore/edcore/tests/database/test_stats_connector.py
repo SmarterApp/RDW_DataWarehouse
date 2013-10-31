@@ -5,7 +5,7 @@ Created on Jun 22, 2013
 '''
 import unittest
 from smarter.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite
-from smarter.database.udl_stats_connector import StatsDBConnection,\
+from edcore.database.udl_stats_connector import StatsDBConnection,\
     config_namespace
 
 

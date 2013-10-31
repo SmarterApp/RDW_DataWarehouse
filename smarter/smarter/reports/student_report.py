@@ -13,10 +13,10 @@ from smarter.reports.helpers.breadcrumbs import get_breadcrumbs_context
 from smarter.reports.helpers.assessments import get_cut_points, \
     get_overall_asmt_interval, get_claims
 from smarter.security.context import select_with_context
-from smarter.database.smarter_connector import SmarterDBConnection
 from smarter.reports.helpers.constants import Constants
 from smarter.reports.helpers.metadata import get_custom_metadata,\
     get_subjects_map
+from edcore.database.smarter_connector import SmarterDBConnection
 
 REPORT_NAME = 'individual_student_report'
 

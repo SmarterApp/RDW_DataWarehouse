@@ -16,7 +16,6 @@ from smarter.reports.helpers.assessments import get_overall_asmt_interval, \
     get_cut_points, get_claims
 from edapi.exceptions import NotFoundException
 from smarter.security.context import select_with_context
-from smarter.database.smarter_connector import SmarterDBConnection
 from smarter.reports.helpers.metadata import get_subjects_map,\
     get_custom_metadata
 from edapi.cache import cache_region
@@ -25,6 +24,7 @@ from smarter.reports.helpers.filters import apply_filter_to_query,\
 from smarter.reports.helpers.utils import merge_dict, multi_delete
 from smarter.reports.helpers.compare_pop_stat_report import get_not_stated_count
 from string import capwords
+from edcore.database.smarter_connector import SmarterDBConnection
 
 REPORT_NAME = "list_of_students"
 EXPORT_PARAMS = merge_dict({

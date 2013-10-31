@@ -8,7 +8,7 @@ from database.tests.utils.unittest_with_sqlite import Unittest_with_sqlite,\
 
 from sqlalchemy.types import BigInteger
 from sqlalchemy.ext.compiler import compiles
-from smarter.database.smarter_connector import SmarterDBConnection
+from edcore.database.smarter_connector import SmarterDBConnection
 
 
 class Unittest_with_smarter_sqlite(Unittest_with_sqlite):

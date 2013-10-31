@@ -6,10 +6,10 @@ Created on Jun 3, 2013
 import unittest
 from zope import component
 from database.connector import IDbUtil
-from smarter.database import initialize_db, get_data_source_names
-from smarter.database.smarter_connector import SmarterDBConnection
-from smarter.database.datasource import setup_tenant_db_connection
-from smarter.database.udl_stats_connector import StatsDBConnection
+from edcore.database import get_data_source_names, initialize_db
+from edcore.database.smarter_connector import SmarterDBConnection
+from edcore.database.datasource import setup_tenant_db_connection
+from edcore.database.udl_stats_connector import StatsDBConnection
 
 
 class TestDatasource(unittest.TestCase):

@@ -8,7 +8,7 @@ from pyramid.security import authenticated_userid
 import pyramid
 from smarter.reports.helpers.constants import Constants
 from smarter.security.context_role_map import ContextRoleMap
-from smarter.database.smarter_connector import SmarterDBConnection
+from edcore.database.smarter_connector import SmarterDBConnection
 
 
 def select_with_context(columns=None, whereclause=None, from_obj=[], **kwargs):

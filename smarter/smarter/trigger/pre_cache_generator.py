@@ -8,11 +8,11 @@ from smarter.trigger.cache.recache import CacheTrigger
 import logging
 from smarter.trigger.utils import run_cron_job
 from smarter.trigger.database import constants
-from smarter.database.smarter_connector import SmarterDBConnection
-from smarter.database.udl_stats_connector import StatsDBConnection
 from smarter.reports.helpers.constants import Constants
 import json
 import os
+from edcore.database.udl_stats_connector import StatsDBConnection
+from edcore.database.smarter_connector import SmarterDBConnection
 
 
 logger = logging.getLogger('smarter')

@@ -3,7 +3,6 @@ Created on Sep 16, 2013
 
 @author: dawu
 '''
-from smarter.database.smarter_connector import SmarterDBConnection
 from smarter.reports.helpers.constants import Constants, AssessmentType
 from smarter.reports.helpers.filters import NOT_STATED, \
     apply_filter_to_query, FILTERS_PROGRAM_504, FILTERS_PROGRAM_IEP, \
@@ -13,6 +12,7 @@ from sqlalchemy.sql.expression import and_, true, select
 from smarter.reports.helpers import filters
 from sqlalchemy.sql.functions import count
 from edapi.cache import cache_region
+from edcore.database.smarter_connector import SmarterDBConnection
 
 
 def get_not_stated_count(params):

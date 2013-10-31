@@ -1,7 +1,7 @@
 from database.generic_connector import setup_db_connection_from_ini
-from smarter.database.datasource import setup_tenant_db_connection
 from database.connector import IDbUtil
 from zope.component import getUtilitiesFor
+from edcore.database.datasource import setup_tenant_db_connection
 
 
 def get_data_source_names():

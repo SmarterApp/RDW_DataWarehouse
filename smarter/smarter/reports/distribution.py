@@ -3,10 +3,10 @@ Created on Jan 13, 2013
 '''
 from sqlalchemy.sql import select
 from sqlalchemy.sql.expression import label, case
-from smarter.database.smarter_connector import SmarterDBConnection
 from smarter.reports.helpers.constants import Constants, AssessmentType
 from edapi.cache import cache_region
 from sqlalchemy.sql.functions import count
+from edcore.database.smarter_connector import SmarterDBConnection
 
 BUCKET_SIZE = 20
 

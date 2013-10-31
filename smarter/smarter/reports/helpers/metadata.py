@@ -3,11 +3,11 @@ Created on Aug 1, 2013
 
 @author: dawu
 '''
-from smarter.database.smarter_connector import SmarterDBConnection
 from smarter.reports.helpers.constants import Constants
 from sqlalchemy.sql import select
 import json
 from edapi.cache import cache_region
+from edcore.database.smarter_connector import SmarterDBConnection
 
 
 @cache_region('public.shortlived')

@@ -10,7 +10,7 @@ Created on Mar 8, 2013
 from sqlalchemy.sql import and_, select
 from sqlalchemy.sql.expression import true
 from smarter.reports.helpers.constants import Constants
-from smarter.database.smarter_connector import SmarterDBConnection
+from edcore.database.smarter_connector import SmarterDBConnection
 
 
 def get_breadcrumbs_context(state_code=None, district_guid=None, school_guid=None, asmt_grade=None, student_name=None, tenant=None):

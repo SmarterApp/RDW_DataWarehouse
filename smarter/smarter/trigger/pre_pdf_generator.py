@@ -9,9 +9,9 @@ from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_absolute
 import logging
 from smarter.trigger.utils import run_cron_job
 from smarter.trigger.database import constants
-from smarter.database.smarter_connector import SmarterDBConnection
-from smarter.database.udl_stats_connector import StatsDBConnection
 from smarter.reports.helpers.constants import Constants, AssessmentType
+from edcore.database.smarter_connector import SmarterDBConnection
+from edcore.database.udl_stats_connector import StatsDBConnection
 
 
 logger = logging.getLogger('smarter')

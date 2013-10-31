@@ -1,27 +1,21 @@
-import os
-import argparse
 import logging
+import os
+import shutil
 
 __author__ = 'sravi'
 
 logger = logging.getLogger(__name__)
 
 
-def cleanup_work_zone(batch_guid):
+def cleanup_work_zone(work_zone_directories_to_cleanup):
+
+    """
+    Remove all the directories in the given dict
+    :param work_zone_directories_to_cleanup: a dictionary of directories
+    :return:
+    """
+    for directory in work_zone_directories_to_cleanup.values():
+        # cleanup the entire directory recursively
+        if os.path.exists(directory):
+            shutil.rmtree(directory)
     return True
-
-if __name__ == "__main__":
-    """
-    Entry point to post_etl to run as stand alone script
-    """
-    parser = argparse.ArgumentParser(description='Process post etl args')
-    parser.add_argument('-g', '--batch_guid', dest='batch_guid',
-                        help='Batch GUID of the process work zone which needs cleanup')
-
-    args = parser.parse_args()
-    if args.batch_guid:
-        print('Cleanup work zone for process with GUID: ' + args.batch_guid)
-        if cleanup_work_zone(args.batch_guid):
-            print('Cleanup complete successfully')
-        else:
-            print('Cleanup failed')

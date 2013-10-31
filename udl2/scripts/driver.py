@@ -14,7 +14,7 @@ from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from preetl.pre_etl import pre_etl_job
 
 
-def start_pipeline(archive_file, udl2_conf, load_type='Assessment', file_parts=4, **kwargs):
+def start_pipeline(archive_file, udl2_conf, load_type='Assessment', file_parts=4, batch_guid_forced=None, **kwargs):
     '''
     Begins the UDL Pipeline process by copying the file found at 'archive_file' to the landing zone arrivals dir and
     initiating our main pipeline chain.
@@ -26,7 +26,8 @@ def start_pipeline(archive_file, udl2_conf, load_type='Assessment', file_parts=4
     '''
 
     # Prepare parameters for task msgs
-    guid_batch = pre_etl_job(udl2_conf, load_type=load_type)
+    guid_batch = pre_etl_job(udl2_conf, load_type=load_type, batch_guid_forced=batch_guid_forced)
+    #guid_batch = pre_etl_job(udl2_conf, load_type=load_type)
     if guid_batch is None:
         print("CANNOT GENERATE guid_batch in PRE ETL, UDL2 PIPELINE STOPPED")
         return
@@ -117,6 +118,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-a', dest='archive_file', required=True, help="path to the source archive file.")
+    parser.add_argument('-g', dest='batch_guid_forced', default=None, help="force the udl2 pipeline to use this batch guid")
     parser.add_argument('-t', dest='apply_transformation_rules', default='True', help="apply transformation rules or not")
     parser.add_argument('-f', dest='config_file', default=UDL2_DEFAULT_CONFIG_PATH_FILE, help="configuration file for UDL2")
     parser.add_argument('-p', dest='file_parts', default=4, type=int, help="The number or parts that the given csv file should be split into. Default=4")
@@ -128,4 +130,4 @@ if __name__ == '__main__':
         config_path_file = args.config_file
     udl2_conf = imp.load_source('udl2_conf', config_path_file)
     from udl2_conf import udl2_conf
-    start_pipeline(args.archive_file, udl2_conf, file_parts=args.file_parts)
+    start_pipeline(args.archive_file, udl2_conf, file_parts=args.file_parts, batch_guid_forced=args.batch_guid_forced)

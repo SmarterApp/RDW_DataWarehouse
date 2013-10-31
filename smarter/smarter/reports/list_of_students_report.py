@@ -22,7 +22,7 @@ from smarter.reports.helpers.metadata import get_subjects_map,\
 from edapi.cache import cache_region
 from smarter.reports.helpers.filters import apply_filter_to_query,\
     has_filters, FILTERS_CONFIG
-from smarter.reports.helpers.utils import merge_dict
+from smarter.reports.helpers.utils import merge_dict, multi_delete
 from smarter.reports.helpers.compare_pop_stat_report import get_not_stated_count
 from string import capwords
 
@@ -112,18 +112,19 @@ def get_list_of_students_extract_report(params):
     '''
     # Get results from db
     asmtGrade = params.get(Constants.ASMTGRADE, None)
-    timestamp = datetime.now().isoformat()
-    timestamp = timestamp[:timestamp.index('.')]
+    timestamp = datetime.now().strftime("%m-%d-%Y_%H-%M-%S")
     extract_file_name = ''
     if asmtGrade is None:
-        extract_file_name = 'school_asmt_results_' + timestamp + '.csv'
+        extract_file_name = 'SCHOOL_ASMT_RESULTS_' + timestamp + '.csv'
     else:
-        extract_file_name = 'grade_' + str(asmtGrade) + '_asmt_data_' + timestamp + '.csv'
+        extract_file_name = 'ASMT_GRADE_' + str(asmtGrade) + '_' + timestamp + '.csv'
     results = get_list_of_students(params)
     header = []
     rows = []
     # Reformat data
     for result in results:
+        # remove teacher names from results
+        results = multi_delete(result, ['teacher_first_name', 'teacher_middle_name', 'teacher_last_name'])
         if len(header) is 0:
             header = list(result.keys())
         rows.append(list(result.values()))
@@ -282,7 +283,7 @@ def get_list_of_students(params):
 
         query = query.where(and_(fact_asmt_outcome.c.status == 'C'))
 
-        # raw export ignore most_recentß
+        # raw export ignore most_recent
         if raw == 'false':
             query = query.where(and_(fact_asmt_outcome.c.most_recent))
 
@@ -293,8 +294,10 @@ def get_list_of_students(params):
         if raw == 'false' and asmtSubject is not None:
             query = query.where(and_(dim_asmt.c.asmt_subject.in_(asmtSubject)))
 
-        # Apply demographics to the query
-        query = apply_filter_to_query(query, fact_asmt_outcome, params)
+        # Apply demographics to the query when not raw export
+        if raw == 'false':
+            query = apply_filter_to_query(query, fact_asmt_outcome, params)
+
         query = query.order_by(dim_student.c.last_name).order_by(dim_student.c.first_name)
         return connector.get_result(query)
 

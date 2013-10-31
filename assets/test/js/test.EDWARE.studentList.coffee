@@ -8,6 +8,3 @@ require ["jquery", "EDWARE.studentList"], ($, edwareStudentList) ->
   teardown: ->
     $(".ui-jqgrid").remove()
   
-  test "Test createStudentGrid method", ->
-    ok edwareStudentList.createStudentGrid isnt undefined, "edwareStudentList createStudentGrid method should be defined"
-    ok typeof edwareStudentList.createStudentGrid is "function", "edwareStudentList createStudentGrid method should be function"

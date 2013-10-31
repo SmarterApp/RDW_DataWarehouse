@@ -27,6 +27,9 @@ if __name__ == "__main__":
     parser.add_argument('-u', '--username', help='The username to add')
     parser.add_argument('-t', '--tenant-name', help='The tenant name to use')
     parser.add_argument('-r', '--role-name', help='The role that the user should have')
+    parser.add_argument('--ssh-key', help='The ssh key for the new user')
+    parser.add_argument('--ssh-key-file', help='The path to the file where the ssh key is located. '
+                                               'Will not be used if -ssh-key is specified')
     parser.add_argument('--remove-user', action='store_true', help='Delete the user defined by the -u option')
     parser.add_argument('--remove-tenant', action='store_true', help='Remove the tenant specified by the -t option')
     args = parser.parse_args()
@@ -44,7 +47,7 @@ if __name__ == "__main__":
     elif args.add_user:
         if args.username is None or args.tenant_name is None or args.role_name is None:
             parser.error('Username (-u), tenant name (-t) and role name (-r) are required to add a new user (-a)')
-        create_sftp_user(args.tenant_name, args.username, args.role_name, sftp_conf)
+        create_sftp_user(args.tenant_name, args.username, args.role_name, sftp_conf, args.ssh_key)
     elif args.remove_user:
         if args.username is None:
             parser.error('Must specify a username (-u) to delete a user')

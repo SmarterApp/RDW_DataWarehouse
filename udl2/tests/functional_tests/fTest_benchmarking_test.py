@@ -61,7 +61,7 @@ class ValidateTableData(unittest.TestCase):
     def get_data_from_batch_table(self, db_connection):
         time.sleep(40)
         result = db_connection.execute('SELECT * FROM udl2."UDL_BATCH";').fetchall()
-        print (len(result))
+        print(len(result))
         number_of_row = len(result)
         if number_of_row < 20:
             time.sleep(30)

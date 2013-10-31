@@ -5,7 +5,6 @@ Created on Jan 13, 2013
 '''
 from edapi.decorators import report_config, user_info
 from smarter.reports.helpers.name_formatter import format_full_name
-from sqlalchemy.sql import select
 from sqlalchemy.sql.expression import and_
 from edapi.exceptions import NotFoundException
 from string import capwords
@@ -168,7 +167,6 @@ def __arrange_results(results, subjects_map, custom_metadata_map):
                        "required": True,
                        "pattern": "^[a-zA-Z0-9\-]{0,50}$"},
                    "assessmentGuid": {
-                       "name": "student_assessments_report",
                        "type": "string",
                        "required": False,
                        "pattern": "^[a-zA-Z0-9\-]{0,50}$",
@@ -208,33 +206,3 @@ def get_student_report(params):
 
         result['context'] = context
     return result
-
-
-@report_config(name='student_assessments_report',
-               params={
-                   "studentGuid": {
-                       "type": "string",
-                       "required": True,
-                       "pattern": "^[a-zA-Z0-9\-]{0,50}$"}
-               })
-def get_student_assessment(params):
-    '''
-    Given a student id, return student assessment
-    '''
-    student_guid = params['studentGuid']
-
-    with SmarterDBConnection() as connection:
-        dim_asmt = connection.get_table('dim_asmt')
-        fact_asmt_outcome = connection.get_table('fact_asmt_outcome')
-
-        query = select([dim_asmt.c.asmt_guid,
-                        dim_asmt.c.asmt_subject,
-                        dim_asmt.c.asmt_type,
-                        dim_asmt.c.asmt_period,
-                        dim_asmt.c.asmt_version,
-                        fact_asmt_outcome.c.asmt_grade],
-                       from_obj=[fact_asmt_outcome.join(dim_asmt, fact_asmt_outcome.c.asmt_rec_id == dim_asmt.c.asmt_rec_id)])
-        query = query.where(fact_asmt_outcome.c.student_guid == student_guid)
-        query = query.order_by(dim_asmt.c.asmt_subject)
-        result = connection.get_result(query)
-        return result

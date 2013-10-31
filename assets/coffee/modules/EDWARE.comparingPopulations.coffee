@@ -449,6 +449,11 @@ define [
     # Change population bar width as per alignment on/off status
     showAlignment: () ->
       $(".barContainer").addClass('alignment').removeClass('default')
+      # have to set offset for alignment line manually because IE doesn't contain those information for some reason
+      $(".alignmentLine").each ()->
+        $this = $(this)
+        $this.css "margin-left", $this.data('alignment-offset')
+      # update population bar offset
       $(".populationBar").each ()->
         $this = $(this)
         $this.css "margin-left", $this.data('margin-left')

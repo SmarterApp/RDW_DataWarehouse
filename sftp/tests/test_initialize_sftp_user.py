@@ -157,13 +157,16 @@ class TestInitSFTPUser(unittest.TestCase):
 
     def test__set_ssh_key(self):
         create_path('/tmp/test_sftp_user')
+        init_group(self.sftp_conf)
         self.cleanup_dirs.append('/tmp/test_sftp_user')
 
         public_key_str = "blahblahblahblahblah" * 20
-        _set_ssh_key('/tmp/test_sftp_user', public_key_str)
+        _set_ssh_key('test_sftp_user', 'testgrp1', '/tmp/test_sftp_user', public_key_str)
         with open('/tmp/test_sftp_user/.ssh/authorized_keys') as key_file:
             public_key_str += '\n'
             self.assertEqual(key_file.read(), public_key_str)
+        
+        self.del_groups = True
 
     def check_user_does_not_exist(self, user):
         with self.assertRaises(KeyError):

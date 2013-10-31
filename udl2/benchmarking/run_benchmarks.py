@@ -72,7 +72,7 @@ def run_pipeline(msg):
     json_file = os.path.join(directory, JSON_FILES[file_index])
 
     # run pipeline with the two files and the newly constructed message
-    start_pipeline(csv_file, json_file, udl2_conf, **new_msg)
+    start_pipeline(csv_file, json_file, udl2_conf, batch_guid_forced=None, **new_msg)
 
 
 @celery.task(name="benchmarking.run_benchmarking.error_handler")

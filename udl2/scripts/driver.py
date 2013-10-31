@@ -27,7 +27,6 @@ def start_pipeline(archive_file, udl2_conf, load_type='Assessment', file_parts=4
 
     # Prepare parameters for task msgs
     guid_batch = pre_etl_job(udl2_conf, load_type=load_type, batch_guid_forced=batch_guid_forced)
-    #guid_batch = pre_etl_job(udl2_conf, load_type=load_type)
     if guid_batch is None:
         print("CANNOT GENERATE guid_batch in PRE ETL, UDL2 PIPELINE STOPPED")
         return

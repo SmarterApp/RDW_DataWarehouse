@@ -8,7 +8,7 @@ from beaker.cache import CacheManager, cache_managers
 from beaker.util import parse_cache_config_options
 from smarter.trigger.cache.recache import CacheTrigger,\
     flush_report_in_cache_region
-from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite,\
+from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
     get_unittest_tenant_name
 from edapi.cache import cache_region, region_invalidate
 
@@ -18,7 +18,7 @@ def dummy_method(state_code):
     return True
 
 
-class TestRecache(Unittest_with_smarter_sqlite):
+class TestRecache(Unittest_with_edcore_sqlite):
 
     def setUp(self):
         cache_managers.clear()

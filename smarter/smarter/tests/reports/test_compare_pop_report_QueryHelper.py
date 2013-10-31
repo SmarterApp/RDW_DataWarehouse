@@ -4,8 +4,8 @@ Created on Mar 8, 2013
 @author: tosako
 '''
 import unittest
-from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite_no_data_load,\
-    UnittestSmarterDBConnection, get_unittest_tenant_name
+from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite_no_data_load,\
+    UnittestEdcoreDBConnection, get_unittest_tenant_name
 from smarter.reports.compare_pop_report import QueryHelper,\
     set_default_min_cell_size
 from smarter.reports.helpers.constants import Constants
@@ -17,13 +17,13 @@ from smarter.security.roles.teacher import Teacher  # @UnusedImport
 from smarter.security.constants import RolesConstants
 
 
-class Test(Unittest_with_smarter_sqlite_no_data_load):
+class Test(Unittest_with_edcore_sqlite_no_data_load):
 
     def setUp(self):
         self.__request = DummyRequest()
         # Must set hook_zca to false to work with uniittest_with_sqlite
         self.__config = testing.setUp(request=self.__request, hook_zca=False)
-        with UnittestSmarterDBConnection() as connection:
+        with UnittestEdcoreDBConnection() as connection:
             # Insert into user_mapping table
             user_mapping = connection.get_table('user_mapping')
             connection.execute(user_mapping.insert(), user_id='272', guid='272')
@@ -39,12 +39,12 @@ class Test(Unittest_with_smarter_sqlite_no_data_load):
         testing.tearDown()
 
         # delete user_mapping entries
-        with UnittestSmarterDBConnection() as connection:
+        with UnittestEdcoreDBConnection() as connection:
             user_mapping = connection.get_table('user_mapping')
             connection.execute(user_mapping.delete())
 
     def test_build_columns_state_view(self):
-        with UnittestSmarterDBConnection() as connection:
+        with UnittestEdcoreDBConnection() as connection:
             helper = QueryHelper(connection, **get_param_state_view())
             query = helper.get_query_for_state_view()
             columns = query._raw_columns
@@ -62,7 +62,7 @@ class Test(Unittest_with_smarter_sqlite_no_data_load):
         self.assertEqual(columns[2].name, Constants.ASMT_SUBJECT, 'test for alias name')
 
     def test_build_columns_district_view(self):
-        with UnittestSmarterDBConnection() as connection:
+        with UnittestEdcoreDBConnection() as connection:
             helper = QueryHelper(connection, **get_param_district_view())
             query = helper.get_query_for_district_view()
             columns = query._raw_columns
@@ -81,7 +81,7 @@ class Test(Unittest_with_smarter_sqlite_no_data_load):
         self.assertEqual(columns[2].name, Constants.ASMT_SUBJECT, 'test for alias name')
 
     def test_build_columns_school_view(self):
-        with UnittestSmarterDBConnection() as connection:
+        with UnittestEdcoreDBConnection() as connection:
             helper = QueryHelper(connection, **get_param_school_view())
             query = helper.get_query_for_school_view()
             columns = query._raw_columns

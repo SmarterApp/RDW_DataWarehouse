@@ -10,7 +10,7 @@ import logging
 from smarter.trigger.utils import run_cron_job
 from smarter.trigger.database import constants
 from smarter.reports.helpers.constants import Constants, AssessmentType
-from edcore.database.udl_stats_connector import StatsDBConnection
+from edcore.database.stats_connector import StatsDBConnection
 from edcore.database.edcore_connector import EdCoreDBConnection
 
 

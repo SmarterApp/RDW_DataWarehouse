@@ -11,12 +11,12 @@ from smarter.services.cache import cache_flush_session, cache_flush_data, \
 from edauth.security.session import Session
 from zope import component
 from beaker.util import parse_cache_config_options
-from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite
+from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite
 from beaker.cache import CacheManager
 from pyramid.testing import DummyRequest
 
 
-class TestCache(Unittest_with_smarter_sqlite):
+class TestCache(Unittest_with_edcore_sqlite):
 
     def setUp(self):
         reg = {}

@@ -4,7 +4,7 @@ Created on May 17, 2013
 @author: tosako
 '''
 import unittest
-from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite,\
+from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
     get_unittest_tenant_name
 from edapi.exceptions import NotFoundException
 import os
@@ -19,7 +19,7 @@ from pyramid.testing import DummyRequest
 from edauth.security.session import Session
 
 
-class TestISRPdfNameFormatter(Unittest_with_smarter_sqlite):
+class TestISRPdfNameFormatter(Unittest_with_edcore_sqlite):
 
     def setUp(self):
         self.__request = DummyRequest()

@@ -9,8 +9,8 @@ from pyramid import testing
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed, \
     EdApiHTTPForbiddenAccess, EdApiHTTPNotFound, EdApiHTTPInternalServerError
 from edapi.tests.test_views import DummyValueError
-from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite,\
-    UnittestSmarterDBConnection, get_unittest_tenant_name
+from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
+    UnittestEdcoreDBConnection, get_unittest_tenant_name
 import services
 from pyramid.response import Response
 from smarter.services.pdf import post_pdf_service, get_pdf_service, send_pdf_request, \
@@ -28,7 +28,7 @@ from smarter.security.roles.teacher import Teacher  # @UnusedImport
 from services.tests.tasks.test_pdf import get_cmd
 
 
-class TestServices(Unittest_with_smarter_sqlite):
+class TestServices(Unittest_with_edcore_sqlite):
 
     def setUp(self):
         self.__request = DummyRequest()
@@ -39,7 +39,7 @@ class TestServices(Unittest_with_smarter_sqlite):
         reg.settings['pdf.report_base_dir'] = self.__temp_dir
         self.__config = testing.setUp(registry=reg, request=self.__request, hook_zca=False)
         self.__tenant_name = get_unittest_tenant_name()
-        with UnittestSmarterDBConnection() as connection:
+        with UnittestEdcoreDBConnection() as connection:
             # Insert into user_mapping table
             user_mapping = connection.get_table('user_mapping')
             connection.execute(user_mapping.insert(), user_id='272', guid='272')
@@ -59,7 +59,7 @@ class TestServices(Unittest_with_smarter_sqlite):
         self.__request = None
         testing.tearDown()
         # delete user_mapping entries
-        with UnittestSmarterDBConnection() as connection:
+        with UnittestEdcoreDBConnection() as connection:
             user_mapping = connection.get_table('user_mapping')
             connection.execute(user_mapping.delete())
 

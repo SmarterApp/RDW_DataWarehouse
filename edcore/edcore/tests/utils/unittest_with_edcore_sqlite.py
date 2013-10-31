@@ -11,19 +11,19 @@ from sqlalchemy.ext.compiler import compiles
 from edcore.database.edcore_connector import EdCoreDBConnection
 
 
-class Unittest_with_smarter_sqlite(Unittest_with_sqlite):
+class Unittest_with_edcore_sqlite(Unittest_with_sqlite):
     @classmethod
     def setUpClass(cls):
         super().setUpClass(EdCoreDBConnection.get_datasource_name(get_unittest_tenant_name()))
 
 
-class Unittest_with_smarter_sqlite_no_data_load(Unittest_with_sqlite_no_data_load):
+class Unittest_with_edcore_sqlite_no_data_load(Unittest_with_sqlite_no_data_load):
     @classmethod
     def setUpClass(cls):
         super().setUpClass(EdCoreDBConnection.get_datasource_name(get_unittest_tenant_name()))
 
 
-class UnittestSmarterDBConnection(EdCoreDBConnection):
+class UnittestEdcoreDBConnection(EdCoreDBConnection):
     def __init__(self):
         super().__init__(tenant=get_unittest_tenant_name())
 

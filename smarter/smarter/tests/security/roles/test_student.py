@@ -4,17 +4,17 @@ Created on May 9, 2013
 @author: dip
 '''
 import unittest
-from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite,\
-    UnittestSmarterDBConnection
+from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
+    UnittestEdcoreDBConnection
 from sqlalchemy.sql.expression import select
 from smarter.reports.helpers.constants import Constants
 from smarter.security.roles.student import Student
 
 
-class TestStudentContextSecurity(Unittest_with_smarter_sqlite):
+class TestStudentContextSecurity(Unittest_with_edcore_sqlite):
 
     def test_get_student_invalid_guid(self):
-        with UnittestSmarterDBConnection() as connection:
+        with UnittestEdcoreDBConnection() as connection:
             guid = "invalid-guid"
             student_context = Student(connection)
 
@@ -27,7 +27,7 @@ class TestStudentContextSecurity(Unittest_with_smarter_sqlite):
             self.assertEqual(len(results), 0)
 
     def test_get_student_context(self):
-        with UnittestSmarterDBConnection() as connection:
+        with UnittestEdcoreDBConnection() as connection:
             guid = '61ec47de-e8b5-4e78-9beb-677c44dd9b50'
 
             student_context = Student(connection)

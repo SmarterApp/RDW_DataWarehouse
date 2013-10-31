@@ -5,8 +5,8 @@ Created on Mar 11, 2013
 '''
 import unittest
 from smarter.reports.compare_pop_report import set_default_min_cell_size
-from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite,\
-    UnittestSmarterDBConnection, get_unittest_tenant_name
+from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
+    UnittestEdcoreDBConnection, get_unittest_tenant_name
 from smarter.reports.helpers.constants import Constants
 from beaker.util import parse_cache_config_options
 from beaker.cache import CacheManager
@@ -17,7 +17,7 @@ from smarter.security.roles.teacher import Teacher  # @UnusedImport
 from smarter.reports.helpers.compare_pop_stat_report import ComparingPopStatReport
 
 
-class TestComparingPopulationsStat(Unittest_with_smarter_sqlite):
+class TestComparingPopulationsStat(Unittest_with_edcore_sqlite):
 
     def setUp(self):
         cache_opts = {
@@ -29,7 +29,7 @@ class TestComparingPopulationsStat(Unittest_with_smarter_sqlite):
         self.__request = DummyRequest()
         # Must set hook_zca to false to work with unittest_with_sqlite
         self.__config = testing.setUp(request=self.__request, hook_zca=False)
-        with UnittestSmarterDBConnection() as connection:
+        with UnittestEdcoreDBConnection() as connection:
             # Insert into user_mapping table
             user_mapping = connection.get_table('user_mapping')
             connection.execute(user_mapping.insert(), user_id='272', guid='272')
@@ -46,7 +46,7 @@ class TestComparingPopulationsStat(Unittest_with_smarter_sqlite):
         testing.tearDown()
 
         # delete user_mapping entries
-        with UnittestSmarterDBConnection() as connection:
+        with UnittestEdcoreDBConnection() as connection:
             user_mapping = connection.get_table('user_mapping')
             connection.execute(user_mapping.delete())
 

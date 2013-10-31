@@ -3,7 +3,7 @@ Created on Aug 29, 2013
 
 @author: dawu
 '''
-from smarter.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite_no_data_load
+from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite_no_data_load
 from edapi.tests.dummy import DummyRequest
 from pyramid.registry import Registry
 from pyramid import testing

@@ -4,8 +4,8 @@ Created on May 7, 2013
 @author: dip
 '''
 import unittest
-from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite,\
-    UnittestSmarterDBConnection, get_unittest_tenant_name
+from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
+    UnittestEdcoreDBConnection, get_unittest_tenant_name
 from pyramid import testing
 from pyramid.testing import DummyRequest
 from smarter.security.context import select_with_context, check_context
@@ -20,7 +20,7 @@ from smarter.security.roles.teacher import Teacher  # @UnusedImport
 from smarter.security.roles.student import Student  # @UnusedImport
 
 
-class TestContext(Unittest_with_smarter_sqlite):
+class TestContext(Unittest_with_edcore_sqlite):
 
     def setUp(self):
         self.__request = DummyRequest()
@@ -33,7 +33,7 @@ class TestContext(Unittest_with_smarter_sqlite):
         testing.tearDown()
 
         # delete user_mapping entries
-        with UnittestSmarterDBConnection() as connection:
+        with UnittestEdcoreDBConnection() as connection:
             user_mapping = connection.get_table(Constants.USER_MAPPING)
             connection.execute(user_mapping.delete())
 
@@ -43,7 +43,7 @@ class TestContext(Unittest_with_smarter_sqlite):
         dummy_session.set_uid('272')
         dummy_session.set_tenant(self.__tenant_name)
         self.__config.testing_securitypolicy(dummy_session)
-        with UnittestSmarterDBConnection() as connection:
+        with UnittestEdcoreDBConnection() as connection:
             fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
             self.assertRaises(ForbiddenError, select_with_context, [fact_asmt_outcome.c.section_guid], from_obj=([fact_asmt_outcome]))
 
@@ -53,7 +53,7 @@ class TestContext(Unittest_with_smarter_sqlite):
         dummy_session.set_uid('272')
         dummy_session.set_tenant(self.__tenant_name)
         self.__config.testing_securitypolicy(dummy_session)
-        with UnittestSmarterDBConnection() as connection:
+        with UnittestEdcoreDBConnection() as connection:
             # Insert into user_mapping table
             user_mapping = connection.get_table(Constants.USER_MAPPING)
             connection.execute(user_mapping.insert(), user_id='272', guid='272')
@@ -72,7 +72,7 @@ class TestContext(Unittest_with_smarter_sqlite):
         dummy_session.set_uid(uid)
         dummy_session.set_tenant(self.__tenant_name)
         self.__config.testing_securitypolicy(dummy_session)
-        with UnittestSmarterDBConnection() as connection:
+        with UnittestEdcoreDBConnection() as connection:
             # Insert into user_mapping table
             user_mapping = connection.get_table(Constants.USER_MAPPING)
             connection.execute(user_mapping.insert(), user_id=uid, guid=uid)
@@ -91,7 +91,7 @@ class TestContext(Unittest_with_smarter_sqlite):
         dummy_session.set_uid(uid)
         dummy_session.set_tenant(self.__tenant_name)
         self.__config.testing_securitypolicy(dummy_session)
-        with UnittestSmarterDBConnection() as connection:
+        with UnittestEdcoreDBConnection() as connection:
             # Insert into user_mapping table
             user_mapping = connection.get_table(Constants.USER_MAPPING)
             connection.execute(user_mapping.insert(), user_id=uid, guid=uid)
@@ -110,7 +110,7 @@ class TestContext(Unittest_with_smarter_sqlite):
         dummy_session.set_uid(uid)
         dummy_session.set_tenant(self.__tenant_name)
         self.__config.testing_securitypolicy(dummy_session)
-        with UnittestSmarterDBConnection() as connection:
+        with UnittestEdcoreDBConnection() as connection:
             # Insert into user_mapping table
             user_mapping = connection.get_table(Constants.USER_MAPPING)
             connection.execute(user_mapping.insert(), user_id=uid, guid=uid)
@@ -135,7 +135,7 @@ class TestContext(Unittest_with_smarter_sqlite):
         dummy_session.set_uid('272')
         dummy_session.set_tenant(self.__tenant_name)
         self.__config.testing_securitypolicy(dummy_session)
-        with UnittestSmarterDBConnection() as connection:
+        with UnittestEdcoreDBConnection() as connection:
             # Insert into user_mapping table
             user_mapping = connection.get_table(Constants.USER_MAPPING)
             connection.execute(user_mapping.insert(), user_id='272', guid='272')
@@ -150,7 +150,7 @@ class TestContext(Unittest_with_smarter_sqlite):
         dummy_session.set_uid(uid)
         dummy_session.set_tenant(self.__tenant_name)
         self.__config.testing_securitypolicy(dummy_session)
-        with UnittestSmarterDBConnection() as connection:
+        with UnittestEdcoreDBConnection() as connection:
             # Insert into user_mapping table
             user_mapping = connection.get_table(Constants.USER_MAPPING)
             connection.execute(user_mapping.insert(), user_id=uid, guid=uid)
@@ -165,7 +165,7 @@ class TestContext(Unittest_with_smarter_sqlite):
         dummy_session.set_uid(uid)
         dummy_session.set_tenant(self.__tenant_name)
         self.__config.testing_securitypolicy(dummy_session)
-        with UnittestSmarterDBConnection() as connection:
+        with UnittestEdcoreDBConnection() as connection:
             # Insert into user_mapping table
             user_mapping = connection.get_table(Constants.USER_MAPPING)
             connection.execute(user_mapping.insert(), user_id=uid, guid=uid)
@@ -180,7 +180,7 @@ class TestContext(Unittest_with_smarter_sqlite):
         dummy_session.set_uid(uid)
         dummy_session.set_tenant(self.__tenant_name)
         self.__config.testing_securitypolicy(dummy_session)
-        with UnittestSmarterDBConnection() as connection:
+        with UnittestEdcoreDBConnection() as connection:
             # Insert into user_mapping table
             user_mapping = connection.get_table(Constants.USER_MAPPING)
             connection.execute(user_mapping.insert(), user_id=uid, guid=uid)

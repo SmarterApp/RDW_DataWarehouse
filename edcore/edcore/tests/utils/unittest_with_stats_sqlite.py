@@ -9,7 +9,7 @@ from database.tests.utils.unittest_with_sqlite import Unittest_with_sqlite,\
 from sqlalchemy.types import BigInteger
 from sqlalchemy.ext.compiler import compiles
 from edschema.metadata.stats_metadata import generate_stats_metadata
-from edcore.database.udl_stats_connector import StatsDBConnection
+from edcore.database.stats_connector import StatsDBConnection
 
 
 class Unittest_with_stats_sqlite(Unittest_with_sqlite):

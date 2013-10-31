@@ -5,8 +5,6 @@ Created on Feb 4, 2013
 '''
 import unittest
 from smarter.reports.list_of_students_report import get_list_of_students_report, get_list_of_students_extract_report
-from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite,\
-    UnittestSmarterDBConnection, get_unittest_tenant_name
 from edapi.exceptions import NotFoundException
 from pyramid.testing import DummyRequest
 from pyramid import testing
@@ -14,9 +12,11 @@ from edauth.security.session import Session
 from smarter.security.roles.teacher import Teacher  # @UnusedImport
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
+from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
+    UnittestEdcoreDBConnection, get_unittest_tenant_name
 
 
-class TestLOS(Unittest_with_smarter_sqlite):
+class TestLOS(Unittest_with_edcore_sqlite):
 
     def setUp(self):
         cache_opts = {
@@ -31,7 +31,7 @@ class TestLOS(Unittest_with_smarter_sqlite):
         # Must set hook_zca to false to work with unittest_with_sqlite
         self.__config = testing.setUp(request=self.__request, hook_zca=False)
         # Set up context security
-        with UnittestSmarterDBConnection() as connection:
+        with UnittestEdcoreDBConnection() as connection:
             # Insert into user_mapping table
             user_mapping = connection.get_table('user_mapping')
             connection.execute(user_mapping.insert(), user_id='272', guid='272')
@@ -46,7 +46,7 @@ class TestLOS(Unittest_with_smarter_sqlite):
         testing.tearDown()
 
         # delete user_mapping entries
-        with UnittestSmarterDBConnection() as connection:
+        with UnittestEdcoreDBConnection() as connection:
             user_mapping = connection.get_table('user_mapping')
             connection.execute(user_mapping.delete())
 

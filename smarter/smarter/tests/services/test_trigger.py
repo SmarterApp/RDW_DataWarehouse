@@ -9,7 +9,7 @@ from pyramid.registry import Registry
 from pyramid import testing
 from edauth.security.session import Session
 from smarter.services.trigger import trigger
-from smarter.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite_no_data_load
+from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite_no_data_load
 from edapi.httpexceptions import EdApiHTTPNotFound
 
 

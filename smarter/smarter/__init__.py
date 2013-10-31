@@ -16,7 +16,7 @@ from smarter import services, trigger
 from smarter.utils.remote_config import get_remote_config
 from edcore.database import initialize_db
 from edcore.database.edcore_connector import EdCoreDBConnection
-from edcore.database.udl_stats_connector import StatsDBConnection
+from edcore.database.stats_connector import StatsDBConnection
 
 logger = logging.getLogger(__name__)
 CAKE_PROC = None

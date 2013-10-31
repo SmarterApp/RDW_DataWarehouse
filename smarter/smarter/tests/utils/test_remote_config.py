@@ -9,7 +9,7 @@ from smarter.utils.remote_config import get_remote_config, json_to_config,\
     config_to_json
 import json
 import configparser
-from smarter.utils.constats import Constants
+from smarter.utils.constants import Constants
 
 
 class Test(unittest.TestCase):

@@ -4,13 +4,13 @@ Created on Apr 18, 2013
 @author: dip
 '''
 import unittest
-from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite_no_data_load
+from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite_no_data_load
 from smarter.services import heartbeat
 from pyramid.testing import DummyRequest
 from pyramid.httpexceptions import HTTPOk, HTTPServerError
 
 
-class TestHeartbeat(Unittest_with_smarter_sqlite_no_data_load):
+class TestHeartbeat(Unittest_with_edcore_sqlite_no_data_load):
 
     def setUp(self):
         pass

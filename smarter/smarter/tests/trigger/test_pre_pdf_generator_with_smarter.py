@@ -4,7 +4,7 @@ Created on Jun 24, 2013
 @author: dip
 '''
 import unittest
-from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite,\
+from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
     get_unittest_tenant_name
 from smarter.trigger.pre_pdf_generator import prepare_pre_pdf, trigger_pre_pdf
 import services
@@ -13,7 +13,7 @@ from edauth.security.session_backend import ISessionBackend, SessionBackend
 from services.celery import setup_celery
 
 
-class TestPrePdfGenerator(Unittest_with_smarter_sqlite):
+class TestPrePdfGenerator(Unittest_with_edcore_sqlite):
 
     def setUp(self):
         self.tenant = get_unittest_tenant_name()

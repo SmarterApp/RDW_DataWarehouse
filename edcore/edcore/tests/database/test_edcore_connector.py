@@ -4,13 +4,13 @@ Created on Jun 25, 2013
 @author: dip
 '''
 import unittest
-from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite,\
+from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
     get_unittest_tenant_name
 from edcore.database.edcore_connector import EdCoreDBConnection,\
     config_namespace
 
 
-class TestSmarterConnector(Unittest_with_smarter_sqlite):
+class TestEdcoreConnector(Unittest_with_edcore_sqlite):
 
     def test_connector(self):
         conn = EdCoreDBConnection(get_unittest_tenant_name())

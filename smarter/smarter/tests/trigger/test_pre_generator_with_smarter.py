@@ -4,7 +4,7 @@ Created on Jun 22, 2013
 @author: tosako
 '''
 import unittest
-from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite,\
+from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
     get_unittest_tenant_name
 from beaker.cache import cache_managers, CacheManager, cache_regions
 from beaker.util import parse_cache_config_options
@@ -13,7 +13,7 @@ from smarter.trigger.pre_cache_generator import prepare_pre_cache, \
 import os
 
 
-class TestPreCacheGenerator(Unittest_with_smarter_sqlite):
+class TestPreCacheGenerator(Unittest_with_edcore_sqlite):
 
     def setUp(self):
         cache_managers.clear()

@@ -9,7 +9,7 @@ from database.connector import IDbUtil
 from edcore.database import get_data_source_names, initialize_db
 from edcore.database.edcore_connector import EdCoreDBConnection
 from edcore.database.datasource import setup_tenant_db_connection
-from edcore.database.udl_stats_connector import StatsDBConnection
+from edcore.database.stats_connector import StatsDBConnection
 
 
 class TestDatasource(unittest.TestCase):

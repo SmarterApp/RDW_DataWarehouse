@@ -11,7 +11,7 @@ from smarter.trigger.database import constants
 from smarter.reports.helpers.constants import Constants
 import json
 import os
-from edcore.database.udl_stats_connector import StatsDBConnection
+from edcore.database.stats_connector import StatsDBConnection
 from edcore.database.edcore_connector import EdCoreDBConnection
 
 

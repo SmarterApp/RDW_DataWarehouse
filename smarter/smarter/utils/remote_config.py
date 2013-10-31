@@ -8,7 +8,7 @@ from urllib import request
 import configparser
 import json
 import uuid
-from smarter.utils.constats import Constants
+from smarter.utils.constants import Constants
 
 
 def get_remote_config(remote_url):

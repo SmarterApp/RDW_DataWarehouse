@@ -10,12 +10,12 @@ from smarter.reports.helpers.filters import _get_filter,\
     FILTERS_GENDER_FEMALE, FILTERS_ETHNICITY, FILTERS_ETHNICITY_MULTI,\
     FILTERS_GENDER_MALE, FILTERS_ETHNICITY_AMERICAN, FILTERS_PROGRAM_TT1,\
     FILTERS_PROGRAM_504, FILTERS_PROGRAM_LEP, FILTERS_GRADE, YES, NOT_STATED, NO
-from smarter.tests.utils.unittest_with_smarter_sqlite import Unittest_with_smarter_sqlite_no_data_load,\
-    UnittestSmarterDBConnection
+from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite_no_data_load,\
+    UnittestEdcoreDBConnection
 from smarter.reports.helpers.constants import Constants
 
 
-class TestDemographics(Unittest_with_smarter_sqlite_no_data_load):
+class TestDemographics(Unittest_with_edcore_sqlite_no_data_load):
 
     def test_get_demographic_program_filter(self):
         test_filter = {}
@@ -53,7 +53,7 @@ class TestDemographics(Unittest_with_smarter_sqlite_no_data_load):
         self.assertTrue(has_filters({FILTERS_GRADE: 'a'}))
 
     def test_apply_filter_to_query_with_no_filters(self):
-        with UnittestSmarterDBConnection() as connection:
+        with UnittestEdcoreDBConnection() as connection:
             fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
             query = select([fact_asmt_outcome.c.school_guid],
                            from_obj=([fact_asmt_outcome]))
@@ -61,7 +61,7 @@ class TestDemographics(Unittest_with_smarter_sqlite_no_data_load):
             self.assertIsNone(query._whereclause)
 
     def test_apply_filter_to_query_with_grade_filters(self):
-        with UnittestSmarterDBConnection() as connection:
+        with UnittestEdcoreDBConnection() as connection:
             fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
             query = select([fact_asmt_outcome.c.school_guid],
                            from_obj=([fact_asmt_outcome]))
@@ -70,7 +70,7 @@ class TestDemographics(Unittest_with_smarter_sqlite_no_data_load):
             self.assertIn("fact_asmt_outcome.asmt_grade", str(query._whereclause))
 
     def test_apply_filter_to_query_with_iep_filters(self):
-        with UnittestSmarterDBConnection() as connection:
+        with UnittestEdcoreDBConnection() as connection:
             fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
             query = select([fact_asmt_outcome.c.school_guid],
                            from_obj=([fact_asmt_outcome]))
@@ -79,7 +79,7 @@ class TestDemographics(Unittest_with_smarter_sqlite_no_data_load):
             self.assertIn("fact_asmt_outcome.dmg_prg_iep", str(query._whereclause))
 
     def test_apply_filter_to_query_with_lep_filters(self):
-        with UnittestSmarterDBConnection() as connection:
+        with UnittestEdcoreDBConnection() as connection:
             fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
             query = select([fact_asmt_outcome.c.school_guid],
                            from_obj=([fact_asmt_outcome]))
@@ -88,7 +88,7 @@ class TestDemographics(Unittest_with_smarter_sqlite_no_data_load):
             self.assertIn("fact_asmt_outcome.dmg_prg_lep", str(query._whereclause))
 
     def test_apply_filter_to_query_with_504_filters(self):
-        with UnittestSmarterDBConnection() as connection:
+        with UnittestEdcoreDBConnection() as connection:
             fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
             query = select([fact_asmt_outcome.c.school_guid],
                            from_obj=([fact_asmt_outcome]))
@@ -97,7 +97,7 @@ class TestDemographics(Unittest_with_smarter_sqlite_no_data_load):
             self.assertIn("fact_asmt_outcome.dmg_prg_504", str(query._whereclause))
 
     def test_apply_filter_to_query_with_tt1_filters(self):
-        with UnittestSmarterDBConnection() as connection:
+        with UnittestEdcoreDBConnection() as connection:
             fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
             query = select([fact_asmt_outcome.c.school_guid],
                            from_obj=([fact_asmt_outcome]))
@@ -106,7 +106,7 @@ class TestDemographics(Unittest_with_smarter_sqlite_no_data_load):
             self.assertIn("fact_asmt_outcome.dmg_prg_tt1", str(query._whereclause))
 
     def test_apply_filter_to_query_with_ethnic_filters(self):
-        with UnittestSmarterDBConnection() as connection:
+        with UnittestEdcoreDBConnection() as connection:
             fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
             query = select([fact_asmt_outcome.c.school_guid],
                            from_obj=([fact_asmt_outcome]))
@@ -115,7 +115,7 @@ class TestDemographics(Unittest_with_smarter_sqlite_no_data_load):
             self.assertIn("fact_asmt_outcome.dmg_eth_derived", str(query._whereclause))
 
     def test_apply_filter_to_query_with_gender_filters(self):
-        with UnittestSmarterDBConnection() as connection:
+        with UnittestEdcoreDBConnection() as connection:
             fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
             query = select([fact_asmt_outcome.c.school_guid],
                            from_obj=([fact_asmt_outcome]))
@@ -124,7 +124,7 @@ class TestDemographics(Unittest_with_smarter_sqlite_no_data_load):
             self.assertIn("fact_asmt_outcome.gender", str(query._whereclause))
 
     def test_apply_filter_to_query_with_multi_filters(self):
-        with UnittestSmarterDBConnection() as connection:
+        with UnittestEdcoreDBConnection() as connection:
             fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
             query = select([fact_asmt_outcome.c.school_guid],
                            from_obj=([fact_asmt_outcome]))

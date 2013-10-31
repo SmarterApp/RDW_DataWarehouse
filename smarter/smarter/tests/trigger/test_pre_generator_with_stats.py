@@ -4,10 +4,10 @@ Created on Jun 22, 2013
 @author: tosako
 '''
 import unittest
-from smarter.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite
+from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite
 from sqlalchemy.sql.expression import select, and_
 from smarter.trigger.pre_cache_generator import update_ed_stats_for_precached
-from edcore.database.udl_stats_connector import StatsDBConnection
+from edcore.database.stats_connector import StatsDBConnection
 
 
 class Test(Unittest_with_stats_sqlite):

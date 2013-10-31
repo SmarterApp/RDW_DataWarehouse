@@ -12,7 +12,6 @@ tests_require = [
     'coverage',
     'virtualenv']  # for scaffolding tests
 
-
 docs_extras = [
     'Sphinx',
     'docutils',

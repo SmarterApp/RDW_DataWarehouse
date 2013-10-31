@@ -112,19 +112,19 @@ def get_list_of_students_extract_report(params):
     '''
     # Get results from db
     asmtGrade = params.get(Constants.ASMTGRADE, None)
-    timestamp = datetime.now().strftime("%m-%d-%Y_%H_%M_%S")
+    timestamp = datetime.now().strftime("%m-%d-%Y_%H-%M-%S")
     extract_file_name = ''
     if asmtGrade is None:
-        extract_file_name = 'school_asmt_results_' + timestamp + '.csv'
+        extract_file_name = 'SCHOOL_ASMT_RESULTS_' + timestamp + '.csv'
     else:
-        extract_file_name = 'grade_' + str(asmtGrade) + '_asmt_data_' + timestamp + '.csv'
+        extract_file_name = 'ASMT_GRADE_' + str(asmtGrade) + '_' + timestamp + '.csv'
     results = get_list_of_students(params)
     header = []
     rows = []
     # Reformat data
     for result in results:
         # remove teacher names from results
-        multi_delete(result, ['teacher_first_name', 'teacher_middle_name', 'teacher_last_name'])
+        results = multi_delete(result, ['teacher_first_name', 'teacher_middle_name', 'teacher_last_name'])
         if len(header) is 0:
             header = list(result.keys())
         rows.append(list(result.values()))

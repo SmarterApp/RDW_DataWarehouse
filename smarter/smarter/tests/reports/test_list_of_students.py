@@ -153,15 +153,15 @@ class TestLOS(Unittest_with_smarter_sqlite):
         self.assertIsNotNone(results['assessments'][0]['Comprehensive Interim']['subject1'])
         self.assertIsNotNone(results['assessments'][0]['Summative']['subject1'])
 
-    def test_get_list_of_students_extract_report_with_grade(self):
+    def test_get_list_of_students_extract_report_grade_level(self):
         testParam = {'asmtGrade': '3', 'stateCode': 'NY', 'districtGuid': '228', 'schoolGuid': '242'}
         result = get_list_of_students_extract_report(testParam)
-        self.assertEqual(result['file_name'][:len('grade_3_asmt_data_')], 'grade_3_asmt_data_')
+        self.assertEqual(result['file_name'][:len('ASMT_GRADE_3_')], 'ASMT_GRADE_3_')
 
-    def test_get_list_of_students_extract_report_without_grade(self):
+    def test_get_list_of_students_extract_report_school_level(self):
         testParam = {'stateCode': 'NY', 'districtGuid': '228', 'schoolGuid': '242'}
         result = get_list_of_students_extract_report(testParam)
-        self.assertEqual(result['file_name'][:len('school_asmt_results_')], 'school_asmt_results_')
+        self.assertEqual(result['file_name'][:len('SCHOOL_ASMT_RESULTS_')], 'SCHOOL_ASMT_RESULTS_')
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testReport']

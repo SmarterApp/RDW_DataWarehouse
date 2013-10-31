@@ -17,11 +17,12 @@ def merge_dict(d1, d2):
 
 
 def multi_delete(dictionary, list_of_field_names):
-	'''
-	remove list of fields from any dictionary object`
-	'''
-	for field_name in list_of_field_names:
-		try:
-			del dictionary[field_name]
-		except e:
-			continue
+    '''
+    remove list of fields from any dictionary object
+    '''
+    for field_name in list_of_field_names:
+        try:
+            del dictionary[field_name]
+        except Exception as e:
+            pass
+    return dictionary

@@ -21,4 +21,15 @@ def generate_stats_metadata(schema_name=None, bind=None):
                       Column('last_pdf_task_requested', DateTime, nullable=True, default=datetime.datetime.strptime('20000101000000', '%Y%m%d%H%M%S')),
                       Column('last_pre_cached', DateTime, nullable=True, default=datetime.datetime.strptime('20000101000000', '%Y%m%d%H%M%S'))
                       )
+
+    extract_stats = Table('extract_stats', metadata,
+                          Column('state_code', String(2), nullable=False),
+                          Column('tenant', String(32), nullable=True),
+                          Column('user_guid', String(32), nullable=True),
+                          Column('extract_start', DateTime, nullable=False),
+                          Column('extract_end', DateTime, nullable=False),
+                          Column('extract_status', String(32), nullable=False),
+                          Column('task_id', String(50), nullable=False),
+                          Column('extract_params', String(256), nullable=False)
+                          )
     return metadata

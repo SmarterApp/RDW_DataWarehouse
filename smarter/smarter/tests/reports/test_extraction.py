@@ -48,7 +48,7 @@ class TestExtraction(Unittest_with_edcore_sqlite):
             connection.execute(user_mapping.insert(),
                                user_id='272', guid='272')
         dummy_session = Session()
-        dummy_session.set_roles(['TEACHER'])
+        dummy_session.set_roles(['STATE_EDUCATION_ADMINISTRATOR_1'])
         dummy_session.set_uid('272')
         dummy_session.set_tenant(get_unittest_tenant_name())
         self.__config.testing_securitypolicy(dummy_session)

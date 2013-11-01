@@ -27,12 +27,12 @@ def get_extract_query(params):
         # should be found. should check more before really execute those
         # useless query
         if asmt_type is None or asmt_subject is None:
-            query = Select([fact_asmt_outcome.c.asmnt_outcome_rec_id.label('asmnt_outcome_rec_id')],
+            query = select_with_context([fact_asmt_outcome.c.asmnt_outcome_rec_id.label('asmnt_outcome_rec_id')],
                            from_obj=[fact_asmt_outcome])
             query = query.where(fact_asmt_outcome.c.asmt_year == 0)
             query = query.limit(0)
         else:
-            query = Select([fact_asmt_outcome.c.asmnt_outcome_rec_id.label('asmnt_outcome_rec_id')],
+            query = select_with_context([fact_asmt_outcome.c.asmnt_outcome_rec_id.label('asmnt_outcome_rec_id')],
                            from_obj=[fact_asmt_outcome])
 
             query = query.where(fact_asmt_outcome.c.asmt_type == asmt_type)
@@ -40,7 +40,6 @@ def get_extract_query(params):
             query = query.where(and_(fact_asmt_outcome.c.most_recent == most_recent))
             if limit is not None:
                 query = query.limit(limit)
-
         return query
 
 

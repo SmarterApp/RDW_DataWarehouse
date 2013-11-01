@@ -1570,3 +1570,95 @@ th.ui-th-column div {
     }
 }
 
+#CSVModal {
+
+    font-size: 14px;
+
+    h2 {
+	color: @color-A1;
+    }
+
+    table.csv_options_table {
+
+	margin: 0 auto;
+
+	tr {
+
+	    td {
+		padding: 5px 5px;
+		
+		&:first-child {
+		    color: #333;
+		    text-align: right;
+		}
+	    }
+
+	    button.dropdown-toggle {
+		width: 225px;
+		height: 28px;
+		text-align: left;
+		font-size: 14px;
+
+		.dropdown-display {
+		    display: inline-block;
+		    text-overflow: ellipsis;
+		    width: 190px;
+		    overflow: hidden;
+		    white-space: nowrap;
+		}
+
+		.caret {
+		    float: right;
+		}
+	    }
+
+	    ul.dropdown-menu {
+		width: 225px;
+
+		label {
+		    display: inline-block;
+		    margin-top: 5px;
+		    color: @color-black;
+		    width: 100%;
+		    
+		    input {
+			width: 15px;
+			height: 15px;
+			margin-right: 5px;
+			position: relative;
+			top: -4px;
+		    }
+		}
+		
+		li {
+		    margin-left: 10px;
+		    margin-right: 10px;
+		}
+	    }
+	}
+    }
+
+    .modal-body {
+	height: 340px;
+
+	#message {
+	    font-size: 13px;
+	    
+	    div {
+		padding: 15px;
+		border-radius: 5px;
+		margin-bottom: 13px;
+	    }
+	    
+	    .success {
+		background-color: rgb(220,241,217);
+		color: rgb(35,126,57);
+	    }
+
+	    .error {
+		background-color: rgb(244, 222, 222);
+		color: rgb(178, 71, 68);
+	    }
+	}
+    }
+}

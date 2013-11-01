@@ -44,6 +44,7 @@ require({
     edwareClientStorage: '../../js/src/widgets/clientStorage/EDWARE.clientStorage',
     edwareLegend: '../../js/src/widgets/footer/EDWARE.legend',
     edwareLanguageSelector: '../../js/src/widgets/languageSelector/EDWARE.languageSelector',
+    edwareDownload: '../../js/src/widgets/download/EDWARE.download',
 
     // templates
     edwareBreadcrumbsTemplate: '../../js/src/widgets/breadcrumb/template.html',
@@ -55,7 +56,8 @@ require({
     edwareClaimsBarTemplate: '../../js/src/widgets/claimsBar/template.html',
     edwareAssessmentDropdownViewSelectionTemplate: '../../js/templates/assessment_dropdown_view_selection.html',
     edwareLOSHeaderConfidenceLevelBarTemplate: '../../js/templates/LOS_header_perf_bar.html',
-    edwareFilterTemplate: '../../js/src/widgets/filter/template.html'
+    edwareFilterTemplate: '../../js/src/widgets/filter/template.html',
+    CSVOptionsTemplate: '../../js/src/widgets/download/CSVOptionsTemplate.html'
 
   },
   shim: {

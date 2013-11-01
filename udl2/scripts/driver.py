@@ -37,7 +37,6 @@ def start_pipeline(archive_file, udl2_conf, load_type='Assessment', file_parts=4
     # generate common message for each stage
     common_msg = generate_common_message(jc_batch_table, guid_batch, load_type, file_parts)
     arrival_msg = generate_message_for_file_arrived(archive_file, lzw, common_msg)
-    all_done_msg = generate_all_done_msg(common_msg)
 
     pipeline_chain_1 = chain(W_file_arrived.task.si(arrival_msg), 
                              W_file_decrypter.task.s(), W_file_expander.task.s(),
@@ -48,7 +47,7 @@ def start_pipeline(archive_file, udl2_conf, load_type='Assessment', file_parts=4
                              W_load_from_integration_to_star.explode_to_dims.s(),
                              W_load_from_integration_to_star.explode_to_fact.s(),
                              W_post_etl.task.s(),
-                             W_all_done.task.si(all_done_msg))
+                             W_all_done.task.s())
 
     if kwargs.get('callback'):
         back_msg = {key: val for key, val in kwargs.items() if key != 'callback'}
@@ -67,7 +66,8 @@ def generate_common_message(jc_batch_table, guid_batch, load_type, file_parts):
             mk.BATCH_TABLE: jc_batch_table,
             mk.GUID_BATCH: guid_batch,
             mk.LOAD_TYPE: load_type,
-            mk.PARTS: file_parts
+            mk.PARTS: file_parts,
+            mk.START_TIMESTAMP: datetime.datetime.now()
         }
 
 
@@ -75,13 +75,6 @@ def generate_message_for_file_arrived(archive_file, lzw, common_message):
     msg = {
         mk.INPUT_FILE_PATH: archive_file,
         mk.LANDING_ZONE_WORK_DIR: lzw
-    }
-    return combine_messages(common_message, msg)
-
-
-def generate_all_done_msg(common_message):
-    msg = {
-        mk.START_TIMESTAMP: datetime.datetime.now()
     }
     return combine_messages(common_message, msg)
 

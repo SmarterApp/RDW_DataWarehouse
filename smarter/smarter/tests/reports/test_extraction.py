@@ -4,15 +4,15 @@ Created on Jan 24, 2013
 @author: tosako
 '''
 import unittest
-from smarter.reports.extraction import get_extract_query,\
-    get_check_ela_interim_existence_query,\
-    get_check_math_interim_existence_query,\
-    get_check_ela_summative_existence_query,\
-    get_check_math_summative_existence_query,\
-    get_ela_interim_query,\
-    get_math_interim_query,\
-    get_ela_summative_query,\
-    get_math_summative_query
+from smarter.reports.extraction import _get_extract_assessment_query,\
+    get_check_ela_interim_assessment_existence_query,\
+    get_check_math_interim_assessment_existence_query,\
+    get_check_ela_summative_assessment_existence_query,\
+    get_check_math_summative_assessment_existence_query,\
+    get_ela_interim_assessment_query,\
+    get_math_interim_assessment_query,\
+    get_ela_summative_assessment_query,\
+    get_math_summative_assessment_query
 
 from edapi.exceptions import NotFoundException
 from pyramid.testing import DummyRequest
@@ -62,56 +62,56 @@ class TestExtraction(Unittest_with_edcore_sqlite):
             user_mapping = connection.get_table('user_mapping')
             connection.execute(user_mapping.delete())
 
-    def test_get_check_ela_interim_existence_query(self):
-        query = get_check_ela_interim_existence_query(2015)
+    def test_get_check_ela_interim_assessment_existence_query(self):
+        query = get_check_ela_interim_assessment_existence_query(2015)
         with UnittestEdcoreDBConnection() as connection:
             result = connection.execute(query).fetchall()
             self.assertEqual(len(result), 1)
 
-    def test_get_check_math_interim_existence_query(self):
-        query = get_check_math_interim_existence_query(2015)
+    def test_get_check_math_interim_assessment_existence_query(self):
+        query = get_check_math_interim_assessment_existence_query(2015)
         with UnittestEdcoreDBConnection() as connection:
             result = connection.execute(query).fetchall()
             self.assertEqual(len(result), 1)
 
-    def test_get_check_ela_summative_existence_query(self):
-        query = get_check_ela_summative_existence_query(2015)
+    def test_get_check_ela_summative_assessment_existence_query(self):
+        query = get_check_ela_summative_assessment_existence_query(2015)
         with UnittestEdcoreDBConnection() as connection:
             result = connection.execute(query).fetchall()
             self.assertEqual(len(result), 1)
 
-    def test_get_check_math_summative_existence_query(self):
-        query = get_check_math_summative_existence_query(2015)
+    def test_get_check_math_summative_assessment_existence_query(self):
+        query = get_check_math_summative_assessment_existence_query(2015)
         with UnittestEdcoreDBConnection() as connection:
             result = connection.execute(query).fetchall()
             self.assertEqual(len(result), 1)
 
-    def test_get_ela_interim_query(self):
-        query = get_ela_interim_query(2015)
+    def test_get_ela_interim_assessment_query(self):
+        query = get_ela_interim_assessment_query(2015)
         with UnittestEdcoreDBConnection() as connection:
             result = connection.execute(query).fetchall()
             self.assertEqual(len(result), 86)
 
-    def test_get_math_interim_query(self):
-        query = get_math_interim_query(2015)
+    def test_get_math_interim_assessment_query(self):
+        query = get_math_interim_assessment_query(2015)
         with UnittestEdcoreDBConnection() as connection:
             result = connection.execute(query).fetchall()
             self.assertEqual(len(result), 94)
 
-    def test_get_ela_summative_query(self):
-        query = get_ela_summative_query(2015)
+    def test_get_ela_summative_assessment_query(self):
+        query = get_ela_summative_assessment_query(2015)
         with UnittestEdcoreDBConnection() as connection:
             result = connection.execute(query).fetchall()
             self.assertEqual(len(result), 449)
 
-    def test_get_math_summative_query(self):
-        query = get_math_summative_query(2015)
+    def test_get_math_summative_assessment_query(self):
+        query = get_math_summative_assessment_query(2015)
         with UnittestEdcoreDBConnection() as connection:
             result = connection.execute(query).fetchall()
             self.assertEqual(len(result), 480)
 
-    def test_extract_query(self):
-        query = get_extract_query({})
+    def test_get_extract_assessment_query(self):
+        query = _get_extract_assessment_query({})
         with UnittestEdcoreDBConnection() as connection:
             result = connection.execute(query).fetchall()
             self.assertEqual(len(result), 0)

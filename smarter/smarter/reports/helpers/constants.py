@@ -5,6 +5,13 @@ Created on Mar 12, 2013
 '''
 
 
+class ExtractType():
+    studentAssessment = 'student assessment result'
+    itemLevel = 'item level'
+    studentCompletion = 'student assessment completion'
+    studentRegistion = 'student registration statistics'
+
+
 class AssessmentType():
     '''
     constants for asmt types

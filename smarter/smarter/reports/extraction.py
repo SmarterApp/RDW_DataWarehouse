@@ -11,12 +11,12 @@ from smarter.reports.helpers.constants import Constants, AssessmentType
 from smarter.security.context import select_with_context
 
 
-def get_extract_query(params):
+def _get_extract_assessment_query(params):
     """
     """
     asmt_type = params.get(Constants.ASMT_TYPE, None)
     asmt_subject = params.get(Constants.ASMT_SUBJECT, None)
-    asmt_year = params.get(Constants.ASMT_YEAR, None)
+    asmt_year = params.get(Constants.ASMT_YEAR, 2015)
     limit = params.get(Constants.LIMIT, None)
     most_recent = params.get(Constants.MOST_RECENT, True)
 
@@ -28,12 +28,12 @@ def get_extract_query(params):
         # useless query
         if asmt_type is None or asmt_subject is None:
             query = select_with_context([fact_asmt_outcome.c.asmnt_outcome_rec_id.label('asmnt_outcome_rec_id')],
-                           from_obj=[fact_asmt_outcome])
+                                        from_obj=[fact_asmt_outcome])
             query = query.where(fact_asmt_outcome.c.asmt_year == 0)
             query = query.limit(0)
         else:
             query = select_with_context([fact_asmt_outcome.c.asmnt_outcome_rec_id.label('asmnt_outcome_rec_id')],
-                           from_obj=[fact_asmt_outcome])
+                                        from_obj=[fact_asmt_outcome])
 
             query = query.where(fact_asmt_outcome.c.asmt_type == asmt_type)
             query = query.where(and_(fact_asmt_outcome.c.asmt_subject == asmt_subject))
@@ -43,61 +43,69 @@ def get_extract_query(params):
         return query
 
 
-def get_check_ela_interim_existence_query(asmt_year):
+def get_check_ela_interim_assessment_existence_query(asmt_year):
     """
     """
-    return get_extract_query({Constants.ASMT_TYPE: AssessmentType.COMPREHENSIVE_INTERIM,
-                             Constants.ASMT_SUBJECT: Constants.ELA,
-                             Constants.LIMIT: 1})
+    return _get_extract_assessment_query({Constants.ASMT_TYPE: AssessmentType.COMPREHENSIVE_INTERIM,
+                                         Constants.ASMT_SUBJECT: Constants.ELA,
+                                         Constants.ASMT_YEAR: asmt_year,
+                                         Constants.LIMIT: 1})
 
 
-def get_check_ela_summative_existence_query(asmt_year):
+def get_check_ela_summative_assessment_existence_query(asmt_year):
     """
     """
-    return get_extract_query({Constants.ASMT_TYPE: AssessmentType.SUMMATIVE,
-                             Constants.ASMT_SUBJECT: Constants.ELA,
-                             Constants.LIMIT: 1})
+    return _get_extract_assessment_query({Constants.ASMT_TYPE: AssessmentType.SUMMATIVE,
+                                         Constants.ASMT_SUBJECT: Constants.ELA,
+                                         Constants.ASMT_YEAR: asmt_year,
+                                         Constants.LIMIT: 1})
 
 
-def get_check_math_interim_existence_query(asmt_year):
+def get_check_math_interim_assessment_existence_query(asmt_year):
     """
     """
-    return get_extract_query({Constants.ASMT_TYPE: AssessmentType.COMPREHENSIVE_INTERIM,
-                             Constants.ASMT_SUBJECT: Constants.MATH,
-                             Constants.LIMIT: 1})
+    return _get_extract_assessment_query({Constants.ASMT_TYPE: AssessmentType.COMPREHENSIVE_INTERIM,
+                                         Constants.ASMT_SUBJECT: Constants.MATH,
+                                         Constants.ASMT_YEAR: asmt_year,
+                                         Constants.LIMIT: 1})
 
 
-def get_check_math_summative_existence_query(asmt_year):
+def get_check_math_summative_assessment_existence_query(asmt_year):
     """
     """
-    return get_extract_query({Constants.ASMT_TYPE: AssessmentType.SUMMATIVE,
-                             Constants.ASMT_SUBJECT: Constants.MATH,
-                             Constants.LIMIT: 1})
+    return _get_extract_assessment_query({Constants.ASMT_TYPE: AssessmentType.SUMMATIVE,
+                                         Constants.ASMT_SUBJECT: Constants.MATH,
+                                         Constants.ASMT_YEAR: asmt_year,
+                                         Constants.LIMIT: 1})
 
 
-def get_ela_interim_query(asmt_year):
+def get_ela_interim_assessment_query(asmt_year):
     """
     """
-    return get_extract_query({Constants.ASMT_TYPE: AssessmentType.COMPREHENSIVE_INTERIM,
-                             Constants.ASMT_SUBJECT: Constants.ELA})
+    return _get_extract_assessment_query({Constants.ASMT_TYPE: AssessmentType.COMPREHENSIVE_INTERIM,
+                                         Constants.ASMT_YEAR: asmt_year,
+                                         Constants.ASMT_SUBJECT: Constants.ELA})
 
 
-def get_ela_summative_query(asmt_year):
+def get_ela_summative_assessment_query(asmt_year):
     """
     """
-    return get_extract_query({Constants.ASMT_TYPE: AssessmentType.SUMMATIVE,
-                             Constants.ASMT_SUBJECT: Constants.ELA})
+    return _get_extract_assessment_query({Constants.ASMT_TYPE: AssessmentType.SUMMATIVE,
+                                          Constants.ASMT_YEAR: asmt_year,
+                                          Constants.ASMT_SUBJECT: Constants.ELA})
 
 
-def get_math_interim_query(asmt_year):
+def get_math_interim_assessment_query(asmt_year):
     """
     """
-    return get_extract_query({Constants.ASMT_TYPE: AssessmentType.COMPREHENSIVE_INTERIM,
-                             Constants.ASMT_SUBJECT: Constants.MATH})
+    return _get_extract_assessment_query({Constants.ASMT_TYPE: AssessmentType.COMPREHENSIVE_INTERIM,
+                                         Constants.ASMT_YEAR: asmt_year,
+                                         Constants.ASMT_SUBJECT: Constants.MATH})
 
 
-def get_math_summative_query(asmt_year):
+def get_math_summative_assessment_query(asmt_year):
     """
     """
-    return get_extract_query({Constants.ASMT_TYPE: AssessmentType.SUMMATIVE,
-                             Constants.ASMT_SUBJECT: Constants.MATH})
+    return _get_extract_assessment_query({Constants.ASMT_TYPE: AssessmentType.SUMMATIVE,
+                                         Constants.ASMT_YEAR: asmt_year,
+                                         Constants.ASMT_SUBJECT: Constants.MATH})

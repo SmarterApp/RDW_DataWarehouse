@@ -22,3 +22,6 @@ def includeme(config):
 
     # Add user information endpoints
     config.add_route('user_info', '/services/userinfo')
+
+    # Add extrac
+    config.add_route('extract', '/services/extract')

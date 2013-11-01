@@ -25,6 +25,6 @@ class CSVRenderer(object):
 
             response = system['request'].response
             response.content_type = 'text/csv'
-            response.headers['Content-Disposition'] = ("attachment; filename=%s" % value['file_name'])
+            response.headers['Content-Disposition'] = ("attachment; filename=\"%s\"" % value['file_name'])
             content = out_stream.getvalue()
         return content

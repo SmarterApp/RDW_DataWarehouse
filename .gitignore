@@ -37,12 +37,11 @@ udl2/dist/
 udl2/MANIFEST
 udl2/*.pyc
 udl2/.project
+udl2/.pydevproject
 udl2/test.log
 udl2/src/test.log
 smarter.egg-info
 .idea/
-.project
-.pydevproject
 .settings/
 
 #########################

@@ -36,7 +36,7 @@ def task(incoming_msg):
     load_type = incoming_msg[mk.LOAD_TYPE]
 
     logger.info('W_FILE_ARRIVED: received file <%s> with guid_batch = <%s>' % (input_source_file, guid_batch))
-
+    input_file_size = os.path.getsize(input_source_file)
     # move the files to work and history zone
     # create all the folders needed for the current run inside work zone
     tenant_directory_paths = move_file_from_arrivals(input_source_file, guid_batch)
@@ -52,5 +52,6 @@ def task(incoming_msg):
     outgoing_msg.update(incoming_msg)
     outgoing_msg.update({
         mk.FILE_TO_DECRYPT: tenant_directory_paths[mk.ARRIVED] + '/' + os.path.basename(input_source_file),
+        mk.INPUT_FILE_SIZE: input_file_size,
         mk.TENANT_DIRECTORY_PATHS: tenant_directory_paths})
     return outgoing_msg

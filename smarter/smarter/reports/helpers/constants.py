@@ -91,3 +91,4 @@ class Constants():
     MOST_RECENT = 'most_recent'
     ASMT_YEAR = 'asmt_year'
     LIMIT = 'limit'
+    OK = 'ok'

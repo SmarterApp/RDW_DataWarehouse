@@ -5,9 +5,14 @@ Created on May 15, 2013
 '''
 import unittest
 from services.celery import setup_celery, celery
+import services
+import os
 
 
 class TestCelery(unittest.TestCase):
+
+    def tearDown(self):
+        os.environ.unsetenv("CELERY_PROD_CONFIG")
 
     def test_setup_celery(self):
         celery_config = {'celery.BROKER_URL': 'amqp://guest:guest@localhost:1234//',
@@ -15,6 +20,16 @@ class TestCelery(unittest.TestCase):
         setup_celery(celery_config, 'celery')
         self.assertEqual(celery.conf['BROKER_URL'], celery_config['celery.BROKER_URL'])
         self.assertEqual(celery.conf['CELERY_ALWAYS_EAGER'], True)
+
+    def test_setup_celery_test_timeout(self):
+        settings = {'pdf.generate_timeout': '50'}
+        setup_celery(settings=settings, prefix="celery")
+        self.assertEqual(services.celery.TIMEOUT, 50)
+
+    def test_setup_celery_test_default_timeout(self):
+        settings = {}
+        setup_celery(settings=settings, prefix="celery")
+        self.assertEqual(services.celery.TIMEOUT, 20)
 
 
 if __name__ == "__main__":

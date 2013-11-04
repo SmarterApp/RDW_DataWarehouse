@@ -18,7 +18,7 @@ RETRY_DELAY = 5
 
 def setup_celery(settings, prefix='celery'):
     '''
-    Setup celery based on parameters defined in setting (ini file).  
+    Setup celery based on parameters defined in setting (ini file).
     This calls by client application when dictionary of settings is given
 
     :param settings:  dict of configurations
@@ -45,7 +45,6 @@ def setup_global_settings(settings):
 
 # Create an instance of celery, check if it's for prod celeryd mode and configure it for prod mode if so
 celery = configure_celeryd('services.celery', prefix='celery')
-prod_config  = get_config_file()
+prod_config = get_config_file()
 if prod_config:
     setup_global_settings(prod_config)
-

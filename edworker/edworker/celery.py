@@ -24,7 +24,6 @@ def configure_celeryd(name, prefix='celery'):
     celery = Celery(name)
     # Read environment variable that is set in prod mode that stores path of smarter.ini
     prod_config = get_config_file()
-    
     if prod_config:
         # This is the entry point for celeryd daemon
         print("Reading config for production mode")
@@ -45,5 +44,5 @@ def configure_celeryd(name, prefix='celery'):
 def get_config_file():
     # Read environment variable that is set in prod mode that stores path of smarter.ini
     prod_config = os.environ.get("CELERY_PROD_CONFIG")
-    file_name = prod_config if prod_config and os.path.exists(prod_config) else None
+    file_name = prod_config if (prod_config is not None and os.path.exists(prod_config)) else None
     return file_name

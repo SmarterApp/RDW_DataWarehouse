@@ -338,6 +338,24 @@ UDL_METADATA = {
             'indexes': [],
             'keys': {},
         },
+        'MASTER_METADATA': {
+            'columns': [
+                #('column name', 'is a primary key', 'type', 'default value', 'Nullalbe', 'Comments')
+                ('metadata_sid', True, 'bigserial', '', False, 'Primary key for the table'),
+                ('tenant_code', False, 'varchar(10)', '', False, 'the code for the tenant'),
+                ('tenant_name', False, 'varchar(255)', '', True, 'the name of the tenant'),
+                ('udl_tenant_schema', False, 'varchar(255)', '', True, 'the name of the target schema'),
+                ('target_db_host', False, 'varchar(255)', '', False, 'the host where the target schema is located'),
+                ('target_db_name', False, 'varchar(255)', '', False, 'the name of the target database'),
+                ('target_schema_name', False, 'varchar(255)', '', False, 'name of the target schema'),
+                ('target_schema_port', False, 'smallint', '5432', False, 'the port to connect to'),
+                ('target_schema_user_name', False, 'varchar(255)', '', False, 'username for target schema'),
+                ('target_schema_passwd', False, 'varchar(255)', '', False, 'password for target schema'),
+                ('created_date', False, 'timestamp with time zone', 'now()', False, 'Date that the record was adddd'),
+            ],
+            'indexes': [],
+            'keys': {},
+        }
     },
     'SEQUENCES': {
         # This are for sequences that is not associated with any specific tables for our usage
@@ -387,7 +405,6 @@ def map_sql_type_to_sqlalchemy_type(sql_type):
         'timestamp with time zone': TIMESTAMP(True),
         'bigint': BIGINT,
         'smallint': SMALLINT,
-        'bigint': BIGINT,
         'bigserial': BIGINT,
         'varchar': VARCHAR,
         'double': FLOAT,

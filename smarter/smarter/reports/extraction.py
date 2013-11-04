@@ -1,7 +1,7 @@
 '''
-Created on Jan 24, 2013
+Created on Nov 1, 2013
 
-@author: tosako
+@author: ejen
 '''
 from edcore.database.edcore_connector import EdCoreDBConnection
 from sqlalchemy.sql.expression import Select, and_

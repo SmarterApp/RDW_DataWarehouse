@@ -105,14 +105,14 @@ def validate_params(method, schema):
                 if type(arg) == pyramid.request.Request:
                     if method == 'GET':
                         query_string = arg.GET
-                        # flat construsct json
+                        # flatten construsct json
                         for k, v in query_string.items():
                             if params.get(k) is not None:
                                 params[k].append(v)
                             else:
                                 params[k] = [v]
 
-                    # jsonify request params in GET
+                    # parse request params in POST
                     elif method == 'POST':
                         try:
                             params = json.loads(arg.json_body)

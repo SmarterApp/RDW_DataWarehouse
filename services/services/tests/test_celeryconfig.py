@@ -4,9 +4,10 @@ Created on May 10, 2013
 @author: dawu
 '''
 import unittest
-from services import celeryconfig
 import services
-from services.celeryconfig import convert_to_celery_options
+from edworker.celeryconfig import convert_to_celery_options
+from edworker import celeryconfig
+from services.celery import setup_celery
 
 
 class TestCeleryConfig(unittest.TestCase):
@@ -28,13 +29,13 @@ class TestCeleryConfig(unittest.TestCase):
 
     def test_get_config_test_timeout(self):
         settings = {'pdf.generate_timeout': '50'}
-        celeryconfig.get_config(settings=settings, prefix="celery")
-        self.assertEqual(services.celeryconfig.TIMEOUT, 50)
+        setup_celery(settings=settings, prefix="celery")
+        self.assertEqual(services.celery.TIMEOUT, 50)
 
     def test_get_config_test_default_timeout(self):
         settings = {}
-        celeryconfig.get_config(settings=settings, prefix="celery")
-        self.assertEqual(services.celeryconfig.TIMEOUT, 20)
+        setup_celery(settings=settings, prefix="celery")
+        self.assertEqual(services.celery.TIMEOUT, 20)
 
     def test_convert_to_celery_options_of_tuple(self):
         config = {'CELERY_IMPORTS': '("tasks", "moretasks")'}

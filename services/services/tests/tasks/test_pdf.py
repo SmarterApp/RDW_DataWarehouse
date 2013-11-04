@@ -7,7 +7,7 @@ import unittest
 import services
 from services.tasks.pdf import generate, OK, \
     prepare_path, get, is_valid, delete
-from services.celeryconfig import setup_global_settings
+from services.celery import setup_global_settings
 import platform
 import os
 import tempfile

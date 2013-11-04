@@ -17,7 +17,7 @@ from edapi.httpexceptions import EdApiHTTPPreconditionFailed, \
 from services.exceptions import PdfGenerationError
 from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_report_path_by_student_guid
 from smarter.reports.helpers.constants import AssessmentType
-import services.celeryconfig
+import services.celery
 from edauth.utils import to_bool
 
 
@@ -113,7 +113,7 @@ def get_pdf_content(params):
     (cookie_name, cookie_value) = get_session_cookie()
     celery_timeout = int(pyramid.threadlocal.get_current_registry().settings.get('pdf.celery_timeout', '30'))
     always_generate = to_bool(pyramid.threadlocal.get_current_registry().settings.get('pdf.always_generate', False))
-    celery_response = get.delay(cookie_value, url, file_name, cookie_name=cookie_name, timeout=services.celeryconfig.TIMEOUT, grayscale=is_grayscale, always_generate=always_generate)  # @UndefinedVariable
+    celery_response = get.delay(cookie_value, url, file_name, cookie_name=cookie_name, timeout=services.celery.TIMEOUT, grayscale=is_grayscale, always_generate=always_generate)  # @UndefinedVariable
     pdf_stream = celery_response.get(timeout=celery_timeout)
 
     return Response(body=pdf_stream, content_type='application/pdf')

@@ -11,12 +11,13 @@ import atexit
 import signal
 from pyramid_beaker import set_cache_regions_from_settings
 import sys
-from services.celery import setup_celery
 from smarter import services, trigger
 from smarter.utils.remote_config import get_remote_config
 from edcore.database import initialize_db
 from edcore.database.edcore_connector import EdCoreDBConnection
 from edcore.database.stats_connector import StatsDBConnection
+from services.celery import setup_celery as setup_services_celery
+from edextract.celery import setup_celery as setup_extract_celery
 
 logger = logging.getLogger(__name__)
 CAKE_PROC = None
@@ -50,7 +51,8 @@ def main(global_config, **settings):
     initialize_db(StatsDBConnection, settings, allow_schema_create=True)
 
     # setup celery
-    setup_celery(settings=settings, prefix="celery")
+    setup_services_celery(settings, prefix="celery")
+    setup_extract_celery(settings, prefix="extract.celery")
 
     # include edauth. Calls includeme
     config.include(edauth)

@@ -1,43 +1,51 @@
 '''
-Created on May 14, 2013
+Created on Nov 4, 2013
 
 @author: dip
 '''
-import os
-from celery import Celery
-import configparser
-from services.celeryconfig import get_config
+from edworker.celery import setup_celery as setup, configure_celeryd,\
+    get_config_file
+
+# default timeout 20 seconds
+TIMEOUT = 20
+# default number of pdf generation retries
+MAX_RETRIES = 1
+# minimum file size of pdf generated
+MINIMUM_FILE_SIZE = 80000
+# delay in retry. Default to 5 seconds
+RETRY_DELAY = 5
 
 
 def setup_celery(settings, prefix='celery'):
     '''
-    Setup celery based on parameters defined in setting (ini file)
+    Setup celery based on parameters defined in setting (ini file).  
+    This calls by client application when dictionary of settings is given
 
     :param settings:  dict of configurations
     :param prefix: prefix in configurations used for configuring celery
     '''
-    celery_config = get_config(settings, prefix)
-    celery.config_from_object(celery_config)
+    setup(celery, settings, prefix)
+    setup_global_settings(settings)
 
 
-celery = Celery('services.celery')
+def setup_global_settings(settings):
+    '''
+    Setup global settings for pdf tasks
 
-# Read environment variable that is set in prod mode that stores path of smarter.ini
-prod_config = os.environ.get("CELERY_PROD_CONFIG")
+    :param settings:  dict of configurations
+    '''
+    global TIMEOUT
+    global MINIMUM_FILE_SIZE
+    global MAX_RETRIES
+    global RETRY_DELAY
+    TIMEOUT = int(settings.get('pdf.generate_timeout', TIMEOUT))
+    MINIMUM_FILE_SIZE = int(settings.get('pdf.minimum_file_size', MINIMUM_FILE_SIZE))
+    MAX_RETRIES = int(settings.get('pdf.retries_allowed', MAX_RETRIES))
+    RETRY_DELAY = int(settings.get('pdf.retry_delay', RETRY_DELAY))
 
+# Create an instance of celery, check if it's for prod celeryd mode and configure it for prod mode if so
+celery = configure_celeryd('services.celery', prefix='celery')
+prod_config  = get_config_file()
 if prod_config:
-    # This is the entry point for celeryd daemon
-    print("Reading config for production mode")
+    setup_global_settings(prod_config)
 
-    if os.path.exists(prod_config):
-        # Read from ini then pass the object here
-        config = configparser.RawConfigParser()
-        config.read(prod_config)
-        conf = {}
-        section_name = 'app:main'
-        options = config.options(section_name)
-        for option in options:
-            conf[option] = config.get(section_name, option)
-        if 'smarter.path' in conf:
-            os.environ['PATH'] += os.pathsep + conf['smarter.path']
-        setup_celery(conf)

@@ -21,7 +21,7 @@ import tempfile
 from pyramid.registry import Registry
 from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_report_path_by_student_guid
 from services.tasks.pdf import prepare_path
-from services.celeryconfig import get_config
+#from services.celeryconfig import get_config
 import shutil
 from edauth.security.session import Session
 from smarter.security.roles.teacher import Teacher  # @UnusedImport
@@ -159,8 +159,6 @@ class TestServices(Unittest_with_edcore_sqlite):
         self.__request.matchdict['report'] = 'indivStudentReport.html'
         self.__request.cookies = {'edware': '123'}
         services.tasks.pdf.pdf_procs = get_cmd()
-        settings = {'celery.CELERY_ALWAYS_EAGER': True, 'pdf.generate.timeout': 1}
-        get_config(settings)
         self.assertRaises(EdApiHTTPInternalServerError, send_pdf_request, params)
 
     def test_get_pdf_content_with_missing_student_guid(self):
@@ -199,8 +197,6 @@ class TestServices(Unittest_with_edcore_sqlite):
         self.__request.matchdict['report'] = 'indivStudentReport.html'
         self.__request.cookies = {'edware': '123'}
         services.tasks.pdf.pdf_procs = get_cmd()
-        settings = {'celery.CELERY_ALWAYS_EAGER': True, 'pdf_generate_timeout': 1, 'pdf.minimum_file_size': 1}
-        get_config(settings)
         # prepare empty file to mimic a pdf was generated
         pdf_file = generate_isr_report_path_by_student_guid(pdf_report_base_dir=self.__temp_dir, student_guid=studentGuid, asmt_type='SUMMATIVE')
         prepare_path(pdf_file)

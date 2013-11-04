@@ -10,8 +10,10 @@ dependencies = [
     'edapi',
     'edschema',
     'edauth',
+    'edworker',
     'services',
-    'edcore']
+    'edcore',
+    'edextract']
 
 
 for dependency in dependencies:

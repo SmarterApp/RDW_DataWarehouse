@@ -8,16 +8,6 @@ import ast
 from celery.utils import strtobool
 
 
-# default timeout 20 seconds
-TIMEOUT = 20
-# default number of pdf generation retries
-MAX_RETRIES = 1
-# minimum file size of pdf generated
-MINIMUM_FILE_SIZE = 80000
-# delay in retry. Default to 5 seconds
-RETRY_DELAY = 5
-
-
 def get_celeryconfig(settings, prefix='celery'):
     '''
     Returns celery configuration from setting dict.
@@ -46,26 +36,9 @@ def get_config(settings, prefix='celery'):
     :param settings:  dict of configurations
     :param prefix: prefix in configurations used for configuring celery
     '''
-    setup_global_settings(settings)
     # load celery config
     celery_config = get_celeryconfig(settings, prefix)
     return celery_config
-
-
-def setup_global_settings(settings):
-    '''
-    Setup global settings for pdf tasks
-
-    :param settings:  dict of configurations
-    '''
-    global TIMEOUT
-    global MINIMUM_FILE_SIZE
-    global MAX_RETRIES
-    global RETRY_DELAY
-    TIMEOUT = int(settings.get('pdf.generate_timeout', TIMEOUT))
-    MINIMUM_FILE_SIZE = int(settings.get('pdf.minimum_file_size', MINIMUM_FILE_SIZE))
-    MAX_RETRIES = int(settings.get('pdf.retries_allowed', MAX_RETRIES))
-    RETRY_DELAY = int(settings.get('pdf.retry_delay', RETRY_DELAY))
 
 
 def convert_to_celery_options(config):

@@ -13,7 +13,7 @@ import platform
 from services.celery import celery
 from services.exceptions import PdfGenerationError
 import copy
-from services.celeryconfig import TIMEOUT
+from services.celery import TIMEOUT
 import services
 from celery.exceptions import MaxRetriesExceededError
 
@@ -26,7 +26,7 @@ FAIL = 1
 log = logging.getLogger('smarter')
 
 
-@celery.task(name='tasks.pdf.generate', max_retries=services.celeryconfig.MAX_RETRIES, default_retry_delay=services.celeryconfig.RETRY_DELAY)
+@celery.task(name='tasks.pdf.generate', max_retries=services.celery.MAX_RETRIES, default_retry_delay=services.celery.RETRY_DELAY)
 def generate(cookie, url, outputfile, options=pdf_defaults, timeout=TIMEOUT, cookie_name='edware', grayscale=False):
     '''
     Generates pdf from given url. Returns exist status code from shell command.
@@ -128,7 +128,7 @@ def is_valid(path):
     :return:  True if file is valid, else False
     :rtype: Boolean
     '''
-    return os.path.exists(path) and (os.path.getsize(path) > services.celeryconfig.MINIMUM_FILE_SIZE)
+    return os.path.exists(path) and (os.path.getsize(path) > services.celery.MINIMUM_FILE_SIZE)
 
 
 def delete(path):

@@ -9,7 +9,9 @@ define [
 
   SUCCESS_TEMPLATE = $(CSVOptionsTemplate).children('#SuccessMessageTemplate').html()
 
-  NONE_EMPTY_TEMPLATE = $(CSVOptionsTemplate).children('#NoneEmptyValidTemplate').html()
+  INDIVIDUAL_VALID_TEMPLATE = $(CSVOptionsTemplate).children('#IndividualValidationTemplate').html()
+
+  COMBINED_VALID_TEMPLATE = $(CSVOptionsTemplate).children('#CombinedValidationTemplate').html()
   
   class CSVDownloadModal
   
@@ -28,6 +30,7 @@ define [
       this.message = $('#message', this.container)
       this.dropdownMenu = $('ul.dropdown-menu, ul.checkbox-menu', this.container)
       this.submitBtn = $('.btn-primary', this.container)
+      this.asmtTypeBox = $('div#asmtType', this.container)
       this.selectDefault()
 
     bindEvents: ()->
@@ -48,17 +51,18 @@ define [
           $dropdown.removeClass('invalid')
 
       this.submitBtn.click ()->
-        valid = true
         # remove ealier error messages
         $('div.error', self.messages).remove()
         # validate each selection group
+        invalidFields = []
         $('div.btn-group', self.container).each ()->
           $dropdown = $(this)
           if not self.validate($dropdown)
             $dropdown.addClass('invalid')
-            self.showNoneEmptyMessage $dropdown.data('option-name')
-            valid = false
-        if valid
+            invalidFields.push $dropdown.data('option-name')
+        if invalidFields.length isnt 0
+          self.showCombinedErrorMessage invalidFields
+        else
           $(this).attr('disabled','disabled')
           self.sendRequest "/services/extract"
 
@@ -101,13 +105,20 @@ define [
         response: response
       }
       this.message.append errorMessage
+      this.asmtTypeBox.addClass('invalid')
 
     showNoneEmptyMessage: (optionName)->
-      validationMsg = Mustache.to_html NONE_EMPTY_TEMPLATE, {
-        optionName: optionName
+      validationMsg = Mustache.to_html INDIVIDUAL_VALID_TEMPLATE, {
+        optionName: optionName.toLowerCase()
       }
       this.message.append validationMsg
-        
+
+    showCombinedErrorMessage: (optionNames)->
+      validationMsg = Mustache.to_html COMBINED_VALID_TEMPLATE, {
+        optionNames: optionNames
+      }
+      this.message.append validationMsg
+                
     getParams: ()->
       params = {}
       this.dropdownMenu.each (index, param)->
@@ -116,7 +127,6 @@ define [
         params[key] = []
         $param.find('input:checked').each ()->
           params[key].push $(this).attr('value')
-      console.log(params);
       params
 
     show: () ->

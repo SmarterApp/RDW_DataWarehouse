@@ -30,7 +30,7 @@
             <tr>
                 <td>{{name}}</td>
                 <td>
-                    <div class="btn-group" data-option-name="{{name}}">
+                    <div id="asmtType" class="btn-group" data-option-name="{{name}}">
                         <ul class="checkbox-menu" data-key="{{key}}">
                             {{#options}}
                             <li><label><input type="checkbox" value="{{value}}" data-label="{{display}}">{{display}}</label></li>
@@ -53,7 +53,7 @@
                     </div>
                 </td>
             </tr>
-            {{/subject}}            
+            {{/subject}}
         </table>
     </div>
     <div class="modal-footer">
@@ -68,7 +68,18 @@
      <div class="success">Your request for <strong>{{state}} {{asmtYear}} {{subject}}</strong> Test Results made on {{requestDate}} at {{requestTime}} successful! Please visit your <a href="#">some-FTP-site.com</a> in 2 hours to download the requested file.</div>
     </script>
 
-    <script type="text/template" id="NoneEmptyValidTemplate">
-     <div class="error">{{optionName}} cannot be empty. Please select something.</div>
+    <script type="text/template" id="IndividualValidationTemplate">
+       <div class="error">Please select at least one {{optionName}} to continue.</div>
     </script>    
+
+    <script type="text/template" id="CombinedValidationTemplate">
+       <div class="error">
+          Please select values for the following fields to continue.
+          <ul>
+             {{#optionNames}}
+             <li>{{.}}</li>
+             {{/optionNames}}
+          </ul>
+       </div>
+    </script>  
 </div>

@@ -27,45 +27,6 @@ from string import capwords
 from edcore.database.edcore_connector import EdCoreDBConnection
 
 REPORT_NAME = "list_of_students"
-EXPORT_PARAMS = merge_dict({
-    Constants.STATECODE: {
-        "type": "string",
-        "required": True,
-        "pattern": "^[a-zA-Z0-9\-]{0,50}$",
-    },
-    Constants.DISTRICTGUID: {
-        "type": "string",
-        "required": True,
-        "pattern": "^[a-zA-Z0-9\-]{0,50}$",
-    },
-    Constants.SCHOOLGUID: {
-        "type": "string",
-        "required": True,
-        "pattern": "^[a-zA-Z0-9\-]{0,50}$",
-    },
-    Constants.ASMTGRADE: {
-        "type": "string",
-        "maxLength": 2,
-        "required": False,
-        "pattern": "^[K0-9]+$",
-    },
-    Constants.ASMTSUBJECT: {
-        "type": "array",
-        "required": False,
-        "minLength": 1,
-        "maxLength": 100,
-        "pattern": "^[a-zA-Z0-9\.]+$",
-        "items": {
-            "type": "string"
-        },
-    },
-    Constants.RAW_EXPORT: {
-        "type": "string",
-        "required": False,
-        "pattern": "^[a-zA-Z0-9\.]+$",
-
-    }
-}, FILTERS_CONFIG)
 
 REPORT_PARAMS = merge_dict({
     Constants.STATECODE: {
@@ -100,6 +61,16 @@ REPORT_PARAMS = merge_dict({
         },
     }
 }, FILTERS_CONFIG)
+
+EXPORT_PARAMS = merge_dict(
+    REPORT_PARAMS,
+    {Constants.RAW_EXPORT: {
+        "type": "string",
+        "required": False,
+        "pattern": "^[a-zA-Z0-9\.]+$",
+
+    }}
+)
 
 
 @report_config(

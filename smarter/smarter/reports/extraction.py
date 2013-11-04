@@ -4,9 +4,7 @@ Created on Nov 1, 2013
 @author: ejen
 '''
 from edcore.database.edcore_connector import EdCoreDBConnection
-from sqlalchemy.sql.expression import Select, and_
-from sqlalchemy.sql import compiler
-from edapi.logging import audit_event
+from sqlalchemy.sql.expression import and_
 from smarter.reports.helpers.constants import Constants, AssessmentType
 from smarter.security.context import select_with_context
 

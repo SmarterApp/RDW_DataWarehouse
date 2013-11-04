@@ -6,7 +6,6 @@ Created on Nov 1, 2013
 from pyramid.view import view_config
 from edapi.logging import audit_event
 from edapi.decorators import validate_params
-#from services.tasks.pdf import get
 from smarter.reports.extraction import get_check_ela_interim_assessment_existence_query,\
     get_check_math_interim_assessment_existence_query,\
     get_check_ela_summative_assessment_existence_query,\
@@ -15,17 +14,9 @@ from smarter.reports.extraction import get_check_ela_interim_assessment_existenc
     get_math_interim_assessment_query,\
     get_ela_summative_assessment_query,\
     get_math_summative_assessment_query
-from urllib.parse import urljoin
 from pyramid.response import Response
-from smarter.security.context import check_context
-from edapi.exceptions import InvalidParameterError, ForbiddenError
-from edauth.security.utils import get_session_cookie
-import urllib.parse
-import pyramid.threadlocal
-from edapi.httpexceptions import EdApiHTTPPreconditionFailed, \
-    EdApiHTTPForbiddenAccess, EdApiHTTPInternalServerError, EdApiHTTPNotFound
-from smarter.reports.helpers.constants import AssessmentType, ExtractType, Constants
-from edauth.utils import to_bool
+from edapi.httpexceptions import EdApiHTTPPreconditionFailed
+from smarter.reports.helpers.constants import Constants
 import json
 
 EXTRACT_POST_PARAMS = {
@@ -75,12 +66,7 @@ EXTRACT_POST_PARAMS = {
             },
             "minItems": 1,
             "uniqueItems": True
-        },
-        'sl': {
-            "type": "string",
-            "pattern": "^\d+$",
-            "required": False
-        },
+        }
     },
     "required": ["reportType", "asmtSubject", "asmtType", "asmtYear", "asmtState"]
 }
@@ -107,7 +93,7 @@ def post_extract_service(context, request):
     :param request:  Pyramid request object
     '''
     try:
-        params = json.loads(srequest.json_body)
+        params = json.loads(request.json_body)
     except ValueError:
         raise EdApiHTTPPreconditionFailed('Payload cannot be parsed')
 

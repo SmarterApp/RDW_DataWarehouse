@@ -10,7 +10,7 @@ import venusian
 import pyramid
 from functools import wraps
 from pyramid.security import authenticated_userid
-
+from edapi.httpexceptions import EdApiHTTPPreconditionFailed
 
 class report_config(object):
     '''
@@ -80,3 +80,27 @@ def user_info(orig_func):
             results['user_info'] = user.__dict__
         return results
     return wrap
+
+
+def validate_params(schema):
+  '''
+  :param schema: validictory style parameter schema
+  '''
+  def request_wrap(request_handler):
+    '''
+    :param request_handler: pyramid request handler
+    '''
+    def validate_wrap(*args, **kwargs):
+      '''
+      :param args: function to accept an arbitrary number of arguments.
+      :param kwargs: function to accept an arbitrary number of keyword arguments.
+      '''
+      validation = True
+      # validate params agains schema
+
+      if validation:
+        return request_handler(*args, **kwargs)
+      else:
+        raise EdApiHTTPPreconditionFailed
+    return validate_wrap
+  return request_wrap

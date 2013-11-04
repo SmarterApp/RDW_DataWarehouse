@@ -5,7 +5,7 @@ Created on May 17, 2013
 '''
 from pyramid.view import view_config
 from edapi.logging import audit_event
-from edapi.decorators import user_info
+from edapi.decorators import validate_params
 #from services.tasks.pdf import get
 from urllib.parse import urljoin
 from pyramid.response import Response
@@ -25,6 +25,7 @@ import json
 
 @view_config(route_name='extract', request_method='POST', content_type='application/json')
 @audit_event()
+@validate_params(schema={})
 def post_extract_service(context, request):
     '''
     Handles POST request to /services/extract
@@ -41,14 +42,14 @@ def post_extract_service(context, request):
 
 @view_config(route_name='extract', request_method='GET')
 @audit_event()
+@validate_params(schema={})
 def get_extract_service(context, request):
     '''
     Handles GET request to /services/extract
 
     :param request:  Pyramid request object
     '''
-    #print(security)
-    print(request)
+    print(request.GET)
     return send_extraction_request(request.GET)
 
 

@@ -6,7 +6,6 @@ Created on Jan 24, 2013
 from setuptools import setup, find_packages
 
 requires = [
-    'edcore',
     'SQLAlchemy',
     "celery",
     "anyjson",

@@ -19,4 +19,4 @@ def setup_celery(settings, prefix=PREFIX):
     setup(celery, settings, prefix)
 
 # Create an instance of celery, check if it's for prod celeryd mode and configure it for prod mode if so
-celery = configure_celeryd('extract.celery', prefix=PREFIX)
+celery = configure_celeryd(PREFIX, prefix=PREFIX)

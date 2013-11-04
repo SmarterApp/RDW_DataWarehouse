@@ -8,9 +8,14 @@ Created on Mar 13, 2013
 '''
 import venusian
 import pyramid
+import types
+import validictory
+import json
 from functools import wraps
 from pyramid.security import authenticated_userid
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed
+from edapi.validation import Validator
+
 
 class report_config(object):
     '''
@@ -82,25 +87,46 @@ def user_info(orig_func):
     return wrap
 
 
-def validate_params(schema):
-  '''
-  :param schema: validictory style parameter schema
-  '''
-  def request_wrap(request_handler):
+def validate_params(method, schema):
     '''
-    :param request_handler: pyramid request handler
+    :param schema: validictory style parameter schema
     '''
-    def validate_wrap(*args, **kwargs):
-      '''
-      :param args: function to accept an arbitrary number of arguments.
-      :param kwargs: function to accept an arbitrary number of keyword arguments.
-      '''
-      validation = True
-      # validate params agains schema
+    def request_wrap(request_handler):
+        '''
+        :param request_handler: pyramid request handler
+        '''
+        def validate_wrap(*args, **kwargs):
+            '''
+            :param args: function to accept an arbitrary number of arguments.
+            :param kwargs: function to accept an arbitrary number of keyword arguments.
+            '''
+            params = {}
+            for arg in args:
+                if type(arg) == pyramid.request.Request:
+                    if method == 'GET':
+                        query_string = arg.GET
+                        # flat construsct json
+                        for k, v in query_string.items():
+                            if params.get(k) is not None:
+                                params[k].append(v)
+                            else:
+                                params[k] = [v]
 
-      if validation:
-        return request_handler(*args, **kwargs)
-      else:
-        raise EdApiHTTPPreconditionFailed
-    return validate_wrap
-  return request_wrap
+                    # jsonify request params in GET
+                    elif method == 'POST':
+                        try:
+                            params = json.loads(arg.json_body)
+                        except ValueError:
+                            raise EdApiHTTPPreconditionFailed('Payload cannot be parsed')
+            # validate params against schema
+
+            try:
+                validictory.validate(params, schema)
+            except Exception as e:
+                raise EdApiHTTPPreconditionFailed("Parameters validation failed")
+
+            return request_handler(*args, **kwargs)
+
+        return validate_wrap
+
+    return request_wrap

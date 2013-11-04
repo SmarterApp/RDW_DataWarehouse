@@ -17,6 +17,7 @@ requires = [
     'waitress',
     'edauth',
     'edapi',
+    'edworker',
     'edschema',
     'py-postgresql',
     'psycopg2',

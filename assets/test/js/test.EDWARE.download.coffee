@@ -83,3 +83,16 @@ define ["jquery", "edwareDownload"], ($, edwareDownload) ->
       ok $('#message').find('.success')[0], "Clicking request button should trigger request and display success message"
       start()
     , 2000
+  
+  test "Test validating parameters", ->    
+    model = new CSVDownloadModal('#CSVDownloadContainer', config)
+    $('.dropdown-menu input').removeAttr 'checked'
+    $('.btn-primary').trigger 'click'
+    ok $('#message').find('.error')[0], "Should display invalid message"
+  
+  test "Test invalid selection", ->
+    model = new CSVDownloadModal('#CSVDownloadContainer', config)
+    $('.dropdown-menu input').removeAttr 'checked'
+    # uncheck all selection of report type
+    $('input[value="summative"]').trigger('click').trigger('click')
+    ok $('#message').find('.error')[0], "Should display invalid message"

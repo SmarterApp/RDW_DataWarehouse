@@ -54,7 +54,6 @@ define [
         # validate each selection group
         $('div.btn-group', self.container).each ()->
           $dropdown = $(this)
-          console.log $dropdown.data('option-name')
           if not self.validate($dropdown)
             $dropdown.addClass('invalid')
             self.showNoneEmptyMessage $dropdown.data('option-name')

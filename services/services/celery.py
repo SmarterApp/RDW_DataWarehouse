@@ -14,9 +14,10 @@ MAX_RETRIES = 1
 MINIMUM_FILE_SIZE = 80000
 # delay in retry. Default to 5 seconds
 RETRY_DELAY = 5
+PREFIX = 'services.celery'
 
 
-def setup_celery(settings, prefix='celery'):
+def setup_celery(settings, prefix=PREFIX):
     '''
     Setup celery based on parameters defined in setting (ini file).
     This calls by client application when dictionary of settings is given
@@ -44,7 +45,7 @@ def setup_global_settings(settings):
     RETRY_DELAY = int(settings.get('pdf.retry_delay', RETRY_DELAY))
 
 # Create an instance of celery, check if it's for prod celeryd mode and configure it for prod mode if so
-celery = configure_celeryd('services.celery', prefix='celery')
+celery = configure_celeryd('services.celery', prefix=PREFIX)
 prod_config = get_config_file()
 if prod_config:
     setup_global_settings(prod_config)

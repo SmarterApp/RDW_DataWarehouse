@@ -50,7 +50,7 @@ class TestServices(Unittest_with_edcore_sqlite):
         dummy_session.set_tenant(self.__tenant_name)
         self.__config.testing_securitypolicy(dummy_session)
         # celery settings for UT
-        settings = {'celery.CELERY_ALWAYS_EAGER': True}
+        settings = {'services.celery.CELERY_ALWAYS_EAGER': True}
         self.__request.matchdict['report'] = 'indivStudentReport.html'
         setup_celery(settings)
 

@@ -31,7 +31,7 @@ class TestPdfGenerator(unittest.TestCase):
         self.settings['auth.policy.cookie_name'] = 'myName'
         self.settings['auth.policy.hashalg'] = 'sha1'
         self.settings['application.url'] = 'dummy:1234'
-        self.settings['celery.CELERY_ALWAYS_EAGER'] = True
+        self.settings['services.celery.CELERY_ALWAYS_EAGER'] = True
         self.settings['pdf.base.url'] = 'http://dummy:8234'
         self.settings['pdf.batch.job.queue'] = 'dummyQueue'
         self.settings['pdf.health_check.job.queue'] = 'dummyQueue'

@@ -8,6 +8,8 @@ define [
   ERROR_TEMPLATE = $(CSVOptionsTemplate).children('#ErrorMessageTemplate').html()
 
   SUCCESS_TEMPLATE = $(CSVOptionsTemplate).children('#SuccessMessageTemplate').html()
+
+  NONE_EMPTY_TEMPLATE = $(CSVOptionsTemplate).children('#NoneEmptyValidTemplate').html()
   
   class CSVDownloadModal
   
@@ -18,30 +20,65 @@ define [
     initialize: ()->
       this.container = $(this.container)
       output = Mustache.to_html CSVOptionsTemplate, {
-        CSVOptions: this.config
+        extractType: this.config['extractType']
+        asmtType: this.config['asmtType']
+        subject: this.config['asmtSubject']
       }
       this.container.html output
       this.message = $('#message', this.container)
-      this.dropdownMenu = $('.dropdown-menu', this.container)
+      this.dropdownMenu = $('ul.dropdown-menu, ul.checkbox-menu', this.container)
+      this.submitBtn = $('.btn-primary', this.container)
+      this.selectDefault()
 
     bindEvents: ()->
+      self = this
       # prevent dropdown memu from disappearing
       $(this.dropdownMenu).click (e) ->
         e.stopPropagation()
       
-      $('input:checkbox', this.container).click ()->
+      $('input:checkbox', this.container).click (e)->
         $this = $(this)
         $dropdown = $this.closest('.btn-group')
-        $display = $dropdown.find('span.dropdown-display')
-        # get selected option text
-        checked = []
-        $dropdown.find('input:checked').each () ->
-          checked.push $(this).data('label')
-        $display.text checked.join(Constants.DELIMITOR.COMMA)
+        # remove ealier error messages
+        $('div.error', self.messages).remove()
+        if not self.validate($dropdown)
+          $dropdown.addClass('invalid')
+          self.showNoneEmptyMessage $dropdown.data('option-name')
+        else
+          $dropdown.removeClass('invalid')
 
-      self = this
-      $('.btn-primary', this.container).click ()->
-        self.sendRequest "/services/extract"
+      this.submitBtn.click ()->
+        valid = true
+        # remove ealier error messages
+        $('div.error', self.messages).remove()
+        # validate each selection group
+        $('div.btn-group', self.container).each ()->
+          $dropdown = $(this)
+          console.log $dropdown.data('option-name')
+          if not self.validate($dropdown)
+            $dropdown.addClass('invalid')
+            self.showNoneEmptyMessage $dropdown.data('option-name')
+            valid = false
+        if valid
+          $(this).attr('disabled','disabled')
+          self.sendRequest "/services/extract"
+
+    validate: ($dropdown) ->
+      # check selected options
+      checked = this.getSelectedOptions $dropdown
+      checked.length isnt 0
+
+    getSelectedOptions: ($dropdown)->
+      # get selected option text
+      checked = []
+      $dropdown.find('input:checked').each () ->
+        checked.push $(this).data('label')
+      checked
+                
+    selectDefault: ()->
+      # check first option of each dropdown
+      $('ul li:nth-child(1) input',this.container).each ()->
+        $(this).trigger 'click'
 
     sendRequest: (url)->
       params = this.getParams()
@@ -65,6 +102,12 @@ define [
         response: response
       }
       this.message.append errorMessage
+
+    showNoneEmptyMessage: (optionName)->
+      validationMsg = Mustache.to_html NONE_EMPTY_TEMPLATE, {
+        optionName: optionName
+      }
+      this.message.append validationMsg
         
     getParams: ()->
       params = {}

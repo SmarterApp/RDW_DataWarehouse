@@ -8,11 +8,11 @@
             <p>Once requested your CSV will become available in 24 hours at <a>your secure FTP site</a>.</p>
         </div>
         <table class='csv_options_table'>
-            {{#CSVOptions}}
+            {{#extractType}}
             <tr>
                 <td>{{name}}</td>
                 <td>
-                    <div class="btn-group">
+                    <div class="btn-group" data-option-name="{{name}}">
                         <button class="btn dropdown-toggle btn-small" data-toggle="dropdown">
                             <span class='dropdown-display'>{{options.0.display}}</span>
                             <span class="caret"></span>
@@ -25,7 +25,35 @@
                     </div>
                 </td>
             </tr>
-            {{/CSVOptions}}
+            {{/extractType}}
+            {{#asmtType}}
+            <tr>
+                <td>{{name}}</td>
+                <td>
+                    <div class="btn-group" data-option-name="{{name}}">
+                        <ul class="checkbox-menu" data-key="{{key}}">
+                            {{#options}}
+                            <li><label><input type="checkbox" value="{{value}}" data-label="{{display}}">{{display}}</label></li>
+                            {{/options}}
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+            {{/asmtType}}
+            {{#subject}}
+            <tr>
+                <td>{{name}}</td>
+                <td>
+                    <div class="btn-group" data-option-name="{{name}}">
+                        <ul class="checkbox-menu" data-key="{{key}}">
+                            {{#options}}
+                            <li><label><input type="checkbox" value="{{value}}" data-label="{{display}}">{{display}}</label></li>
+                            {{/options}}
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+            {{/subject}}            
         </table>
     </div>
     <div class="modal-footer">
@@ -39,4 +67,8 @@
     <script type="text/template" id="SuccessMessageTemplate">
      <div class="success">Your request for <strong>{{state}} {{asmtYear}} {{subject}}</strong> Test Results made on {{requestDate}} at {{requestTime}} successful! Please visit your <a href="#">some-FTP-site.com</a> in 2 hours to download the requested file.</div>
     </script>
+
+    <script type="text/template" id="NoneEmptyValidTemplate">
+     <div class="error">{{optionName}} cannot be empty. Please select something.</div>
+    </script>    
 </div>

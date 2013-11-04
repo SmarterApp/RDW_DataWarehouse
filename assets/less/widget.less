@@ -1585,9 +1585,11 @@ th.ui-th-column div {
 	tr {
 
 	    td {
+		vertical-align: top;
 		padding: 5px 5px;
 		
 		&:first-child {
+		    padding-top: 10px;
 		    color: #333;
 		    text-align: right;
 		}
@@ -1605,6 +1607,7 @@ th.ui-th-column div {
 		    width: 190px;
 		    overflow: hidden;
 		    white-space: nowrap;
+		    float: left;
 		}
 
 		.caret {
@@ -1612,7 +1615,8 @@ th.ui-th-column div {
 		}
 	    }
 
-	    ul.dropdown-menu {
+	    ul {
+		margin: 0px 0px;
 		width: 225px;
 
 		label {
@@ -1634,6 +1638,15 @@ th.ui-th-column div {
 		    margin-left: 10px;
 		    margin-right: 10px;
 		}
+
+		&.checkbox-menu {
+		    border: solid 1px;
+		    border-radius: 5px;
+		}
+	    }
+	    
+	    .invalid ul{
+		border-color: red;
 	    }
 	}
     }

@@ -7,17 +7,18 @@
         "desc3": "The width of a colored segment is proportional to the number of students in that segment. If a colored segment represents less than 10% of the students tested, then no percentage is displayed.",
         "notes": ["Rollover/Tap bar for breakdown of population numbers", "Percentages are rounded to the nearest whole number. Therefore, small percentages may be reported as '0'."]
     },
-    "CSVOptions": [
-        {
+    "CSVOptions": {
+        "extractType": {
             "name": "Report Type",
-            "key": "reportType",
+            "key": "extractType",
             "options": [
                 {
                     "display": "Student Assessment Results",
-                    "value": "student_asmt_results"
+                    "value": "studentAssessment"
                 }
             ]
-        }, {
+        }, 
+        "asmtType": {
             "name": "Assessment Type",
             "key": "asmtType",
             "options": [
@@ -29,9 +30,10 @@
                     "value": "interim"
                 }
             ]
-        }, {
+        }, 
+        "asmtSubject": {
             "name": "Subject",
-            "key": "subject",
+            "key": "asmtSubject",
             "options": [
                 {
                     "display": "Math",
@@ -42,5 +44,5 @@
                 }
             ]
         }
-    ]
+    }
 }

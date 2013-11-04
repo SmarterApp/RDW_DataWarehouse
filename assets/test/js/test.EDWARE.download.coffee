@@ -29,14 +29,14 @@ define ["jquery", "edwareDownload"], ($, edwareDownload) ->
     ok $('body').hasClass('modal-open'), "Modal should set up a backdrop on body element"
 
   test "Test create function", ->
-    CSVDownload = edwareDownload.create '#CSVDownloadContainer'
+    CSVDownload = edwareDownload.create '#CSVDownloadContainer', config
     ok CSVDownload, "create function should create a CSVDownload object"
 
   test "Test CSVDownloadModal", ->
     model = new CSVDownloadModal('#CSVDownloadContainer', config)
     notEqual $('#CSVDownloadContainer').html(), '', "CSV modal container should be populated with template"
     equal $('#CSVModal').size(), 1, "CSV template should contain modal trigger"
-    equal $('.btn-group').size(), 3, "CSV template should contain 3 dropdown menus"
+    equal $('ul').size(), 3, "CSV template should contain 3 dropdown menus"
 
   test "Test click events", ->
     model = new CSVDownloadModal('#CSVDownloadContainer', config)
@@ -48,12 +48,12 @@ define ["jquery", "edwareDownload"], ($, edwareDownload) ->
     
   test "Test send request", ->
     model = new CSVDownloadModal('#CSVDownloadContainer', config)
-    $('.dropdown-menu input').trigger 'click'
+    $('ul input').attr('checked','')
     params = model.getParams()
     expectParams = {
       "asmtType": ["summative","interim"],
-      "reportType": ["student_asmt_results"],
-      "subject": ["Math","ELA"]
+      "extractType": ["studentAssessment"],
+      "asmtSubject": ["Math","ELA"]
     }
     deepEqual params, expectParams, "Should be able to get all user selected parameters"
 

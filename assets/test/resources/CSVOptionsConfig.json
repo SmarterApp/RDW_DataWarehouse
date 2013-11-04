@@ -1,15 +1,16 @@
 {
-    "CSVOptions": [
-        {
+    "CSVOptions": {
+        "extractType": {
             "name": "Report Type",
-            "key": "reportType",
+            "key": "extractType",
             "options": [
                 {
                     "display": "Student Assessment Results",
-                    "value": "student_asmt_results"
+                    "value": "studentAssessment"
                 }
             ]
-        }, {
+        },
+        "asmtType": {
             "name": "Assessment Type",
             "key": "asmtType",
             "options": [
@@ -21,9 +22,10 @@
                     "value": "interim"
                 }
             ]
-        }, {
+        },
+        "asmtSubject": {
             "name": "Subject",
-            "key": "subject",
+            "key": "asmtSubject",
             "options": [
                 {
                     "display": "Math",
@@ -34,5 +36,5 @@
                 }
             ]
         }
-    ]
+    }
 }

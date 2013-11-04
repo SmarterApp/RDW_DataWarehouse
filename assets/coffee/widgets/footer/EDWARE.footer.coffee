@@ -21,8 +21,6 @@ define [
       this.initialize(config)
       # Generate footer
       this.create()
-      # create CSV file download popover
-      this.CSVDownload = edwareDownload.create('.CSVDownloadContainer', config.CSVOptions)
       this.bindEvents()
 
     initialize: (config)->
@@ -40,6 +38,7 @@ define [
           legendInfo.sample_intervals
         )()
       }
+      this.CSVOptions = config.CSVOptions
 
     create: (config) ->
       $('#footer').html Mustache.to_html footerTemplate, {
@@ -191,7 +190,8 @@ define [
       $(document).on 'click', '#exportButton', ->
         if self.exportOption is 'file'
           # display file download options
-          self.CSVDownload.show()
+          CSVDownload = edwareDownload.create('.CSVDownloadContainer', self.CSVOptions)
+          CSVDownload.show()
         else if self.exportOption is 'csv'
           $('#gridTable').edwareExport self.reportName, self.labels
         else if self.exportOption is 'extract'

@@ -6,6 +6,7 @@ Created on Oct 31, 2013
 from edcore.database.stats_connector import StatsDBConnection
 from edextract.constants import Constants
 from edcore.database import initialize_db
+from edcore.database.edcore_connector import EdCoreDBConnection
 
 
 def insert_extract_stats(values):
@@ -29,4 +30,5 @@ def setup_db_connection(settings):
     '''
     Given ini key/value pair, initialize db for stats table
     '''
+    initialize_db(EdCoreDBConnection, settings)
     initialize_db(StatsDBConnection, settings, allow_schema_create=True)

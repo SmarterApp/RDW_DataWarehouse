@@ -15,9 +15,13 @@ from udl2_util.measurement import BatchTableBenchmark
 logger = get_task_logger(__name__)
 
 
-def report_udl_batch_metrics_to_log(msg):
-    logger.info('UDL process complete. Some Stats follows')
-    logger.info('Input file size: ' + msg[mk.INPUT_FILE_SIZE] + ' guid: ' + msg[mk.GUID_BATCH])
+def report_udl_batch_metrics_to_log(msg, end_time):
+    logger.info('UDL Batch Summary:')
+    logger.info('Input file size: ' + str(round(msg[mk.INPUT_FILE_SIZE]/(1024*1024.0), 3)) + 'MB')
+    logger.info('Batch Guid: ' + msg[mk.GUID_BATCH])
+    logger.info('Start time: ' + str(msg[mk.START_TIMESTAMP]))
+    logger.info('End time: ' + str(end_time))
+    logger.info('Total Records Processed: ' + str(msg[mk.FACT_ROWS_LOADED]))
 
 
 @celery.task(name='udl2.W_all_done.task')
@@ -30,7 +34,7 @@ def task(msg):
     benchmark = BatchTableBenchmark(guid_batch, load_type, 'UDL_COMPLETE', start_time, end_time)
     benchmark.record_benchmark()
     # report the batch metrics in Human readable format to the UDL log
-    report_udl_batch_metrics_to_log(msg)
+    report_udl_batch_metrics_to_log(msg, end_time)
     return msg
 
 

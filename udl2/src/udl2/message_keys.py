@@ -7,6 +7,7 @@ GUID_BATCH = 'guid_batch'
 
 # file_arrived to file_decrypter
 FILE_TO_DECRYPT = 'file_to_decrypt'
+INPUT_FILE_SIZE = 'input_file_size'
 TENANT_DIRECTORY_PATHS = 'tenant_directory_paths'
 ARRIVED = 'arrived'
 DECRYPTED = 'decrypted'
@@ -73,6 +74,8 @@ INT_TABLE_TYPE = 'load_to_integration_table_type'
 
 # move to target
 MOVE_TO_TARGET = 'move_to_target'
+
+FACT_ROWS_LOADED = 'fact_rows_loaded'
 
 # for benchmarking
 UDL_PHASE = 'udl_phase'

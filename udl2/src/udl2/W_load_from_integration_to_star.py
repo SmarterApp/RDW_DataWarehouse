@@ -148,7 +148,12 @@ def explode_to_fact(msg):
                                     udl_phase_step=udl_phase_step, size_records=affected_rows, task_id=str(explode_to_fact.request.id),
                                     working_schema=conf[mk.TARGET_DB_SCHEMA])
     benchmark.record_benchmark()
-    return msg
+
+    # Outgoing message to be piped to the file decrypter
+    outgoing_msg = {}
+    outgoing_msg.update(msg)
+    outgoing_msg.update({mk.FACT_ROWS_LOADED: affected_rows})
+    return outgoing_msg
 
 
 @celery.task(name="udl2.W_load_from_integration_to_star.error_handler")

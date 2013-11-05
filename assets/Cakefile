@@ -85,9 +85,7 @@ task 'build', ->
     invoke 'build:coffee'
     invoke 'build:less'
  
-task 'watch', ->
-    flour.minifiers.disable 'js'
-    
+task 'watch', ->    
     invoke 'build'
     
     lessWatcher = chokidar.watch(lesspath, {persistent: true, ignoreInitial: true})
@@ -138,6 +136,8 @@ task 'setup', 'Compile assets into smarter', (options) ->
     assetsDest = path.join(smarterDir, 'assets')    
     # Delete old css
     deleteExistingCss assetsDir
+    # Prevent from minify, because we are not able to include unit test coverage on uglifed code.
+    flour.minifiers.disable 'js'
     
     if mode == 'DEV'
       if watch == 'TRUE'

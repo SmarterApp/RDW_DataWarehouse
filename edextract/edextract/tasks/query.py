@@ -18,7 +18,7 @@ from edextract.celery import TIMEOUT
 import services
 from celery.exceptions import MaxRetriesExceededError
 from edcore.database.stats_connector import StatsDBConnection
-from edextract.extract_status import insert_extract_stats
+from edextract.status.status import insert_extract_stats
 from edcore.database.edcore_connector import EdCoreDBConnection
 
 OK = 0

@@ -91,6 +91,9 @@ common:
     ldap.base.dn: ou=environment,dc=edwdc,dc=net
     # Use context security
     disable.context.security: True
+    extract:
+      retry_delay: 60
+      retries_allowed: 1
 
   '[server:main]':
     use: 'egg:waitress#main'

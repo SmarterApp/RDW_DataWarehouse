@@ -5,7 +5,7 @@ Created on Nov 4, 2013
 '''
 from edworker.celery import setup_celery as setup, configure_celeryd,\
     get_config_file
-from edextract.extract_status import setup_db_connection
+from edextract.status.status import setup_db_connection
 
 # default timeout 20 seconds
 TIMEOUT = 20

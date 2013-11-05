@@ -4,7 +4,7 @@ Created on Oct 31, 2013
 @author: dip
 '''
 from edcore.database.stats_connector import StatsDBConnection
-from edextract.constants import Constants
+from edextract.status.constants import Constants
 from edcore.database import initialize_db
 from edcore.database.edcore_connector import EdCoreDBConnection
 
@@ -37,6 +37,7 @@ def update_extract_stats(task_id, values):
     '''
     Update extract status table
 
+    :params string task_id:  celery task id
     :params dict values:  dictionary of values to update
 
     ex. values = {Constants.STATE_CODE, "EX"}

@@ -12,10 +12,11 @@ shell = require 'shelljs'
 coffeepath = 'coffee'
 lesspath = 'less'
 jspath = 'js/src'
+test_path = 'test/src'
 coffeedoc = 'coffeedoc'
 
-buildCoffee = (source) ->
-    destDir = path.dirname source.replace(coffeepath, jspath)
+buildCoffee = (source, target) ->
+    destDir = path.dirname source.replace(coffeepath, target)
     mkdir destDir
     basename = path.basename source, '.coffee'
     if path.extname(source) == '.coffee'
@@ -63,7 +64,9 @@ copyScripts = () ->
       wrench.rmdirSyncRecursive buildDir
 
 task 'build:coffee', ->
-    walkDir coffeepath, (source) -> buildCoffee source
+    walkDir coffeepath, (source) -> 
+      buildCoffee(source, jspath)
+      buildCoffee(source, test_path)
     # genereate coffee doc
     shell.exec('coffeedoc --parser requirejs ' + coffeepath)
 
@@ -91,9 +94,11 @@ task 'watch', ->
     coffeeWatcher = chokidar.watch(coffeepath, {persistent: true, ignoreInitial: true})
     
     coffeeWatcher.on 'add', (path, stats) ->
-        buildCoffee path
+        buildCoffee(path, jspath)
+        buildCoffee(path, test_path)
     coffeeWatcher.on 'change', (path, stats) ->
-        buildCoffee path
+        buildCoffee(path, jspath)
+        buildCoffee(path, test_path)
     
     lessWatcher.on 'add', (path, stats) ->
         invoke 'build:less'

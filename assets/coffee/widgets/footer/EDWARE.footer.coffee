@@ -190,8 +190,6 @@ define [
         else if self.exportOption is 'extract'
           # add more code from master branch for old extraction code
           params = JSON.parse edwareClientStorage.filterStorage.load()
-          params['raw'] = true
-          console.log(params)
           url = window.location.protocol + "//" + window.location.host + "/data/list_of_students_csv?" + $.param(params, true) + "&content-type=text/csv"
           download = window.open(url, "_blank",'toolbar=0,location=0,menubar=0,status=0,resizable=yes')
           setTimeout ( ->

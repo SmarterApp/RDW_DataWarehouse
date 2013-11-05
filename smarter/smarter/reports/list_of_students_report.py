@@ -62,20 +62,10 @@ REPORT_PARAMS = merge_dict({
     }
 }, FILTERS_CONFIG)
 
-EXPORT_PARAMS = merge_dict(
-    REPORT_PARAMS,
-    {Constants.RAW_EXPORT: {
-        "type": "string",
-        "required": False,
-        "pattern": "^[a-zA-Z0-9\.]+$",
-
-    }}
-)
-
 
 @report_config(
     name=REPORT_NAME + '_csv',
-    params=EXPORT_PARAMS)
+    params=REPORT_PARAMS)
 @audit_event()
 def get_list_of_students_extract_report(params):
     '''

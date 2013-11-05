@@ -4,21 +4,16 @@ Created on Nov 5, 2013
 @author: dip
 '''
 import unittest
+from edcore.tests.utils.unittest_with_stats_sqlite import Unittest_with_stats_sqlite
+from edextract.status.status import insert_extract_stats
+from edextract.status.constants import Constants
 
 
-class Test(unittest.TestCase):
+class TestStatus(Unittest_with_stats_sqlite):
 
-
-    def setUp(self):
-        pass
-
-
-    def tearDown(self):
-        pass
-
-
-    def testName(self):
-        pass
+    def test_insert_status(self):
+        values = {Constants.TASK_ID, 'abc'}
+        insert_extract_stats(values)
 
 
 if __name__ == "__main__":

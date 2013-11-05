@@ -33,9 +33,10 @@ log = logging.getLogger('smarter')
 def handle_request(cookie=None, task_queries=None, output_uri=None):
     '''
     '''
-    celery_result = is_available.delay(query=task_queries[0])
-    if celery_result.get():
-        generate_csv(query=task_queries[1]).delay()
+    print('execute tasks.extract.handle_request')
+    celery_check_result = is_available.delay(check_query=task_queries[0])
+    if celery_check_result.get():
+        celery_extract_result = generate_csv.delay(extract_query=task_queries[1])
         return True
     else:
         return False

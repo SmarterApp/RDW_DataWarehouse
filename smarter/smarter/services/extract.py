@@ -143,35 +143,27 @@ def send_extraction_request(params):
             queries.append(q(params['asmtYear'][0]))
         tasks.append({'key': l, 'queries': queries})
 
-    for task in tasks:
-        #celery_response = is_available.delay(query=task['queries'][0])
-        celery_response = handle_request(query=task['queries'][0])
-        task_id = celery_response.task_id
-        key_parts = task['key'].split('_')
-        task_responses.append({
-            'status': Constants.OK,
-            'id': task_id,
-            'asmtYear': params['asmtYear'][0],
-            'asmtState': params['asmtState'][0],
-            'extractType': key_parts[0],
-            'asmtSubject': key_parts[1],
-            'asmtType': key_parts[2]
-        })
-
-    #report = pyramid.threadlocal.get_current_request().matchdict['report'].lower()
-    #if report not in KNOWN_REPORTS:
-    #    raise EdApiHTTPNotFound("Not Found")
-
-    #try:
-    #    response = get_pdf_content(params)
-    #except InvalidParameterError as e:
-    #    raise EdApiHTTPPreconditionFailed(e.msg)
-    #except ForbiddenError as e:
-    #    raise EdApiHTTPForbiddenAccess(e.msg)
-    #except PdfGenerationError as e:
-    #    raise EdApiHTTPInternalServerError(e.msg)
-    #except TimeoutError as e:
+    try:
+        for task in tasks:
+            celery_response = handle_request.delay(task_queries=task['queries'])
+            task_id = celery_response.task_id
+            key_parts = task['key'].split('_')
+            task_responses.append({
+                'status': Constants.OK,
+                'id': task_id,
+                'asmtYear': params['asmtYear'][0],
+                'asmtState': params['asmtState'][0],
+                'extractType': key_parts[0],
+                'asmtSubject': key_parts[1],
+                'asmtType': key_parts[2]
+            })
+        return Response(body=json.dumps(task_responses), content_type='application/json')
+    except InvalidParameterError as e:
+        raise EdApiHTTPPreconditionFailed(e.msg)
+    except ForbiddenError as e:
+        raise EdApiHTTPForbiddenAccess(e.msg)
+    except PdfGenerationError as e:
+        raise EdApiHTTPInternalServerError(e.msg)
+    except TimeoutError as e:
         # if celery get task got timed out...
-    #    raise EdApiHTTPInternalServerError(e.msg)
-    #response = Response(body='here', content_type='text/plain')
-    return Response(body=json.dumps(task_responses), content_type='application/json')
+        raise EdApiHTTPInternalServerError(e.msg)

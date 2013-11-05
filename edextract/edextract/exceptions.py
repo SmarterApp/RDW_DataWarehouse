@@ -5,9 +5,9 @@ Created on Nov 5, 2013
 '''
 
 
-class ServicesError(Exception):
+class EdExtractError(Exception):
     '''
-    a general EdApi error.
+    a general EdExtract Eerror.
     '''
     def __init__(self, msg):
         '''
@@ -16,9 +16,9 @@ class ServicesError(Exception):
         self.msg = msg
 
 
-class ExtractionError(ServicesError):
+class ExtractionError(EdExtractError):
     '''
     a custom exception raised when a request extraction failed
     '''
     def __init__(self):
-        self.msg = 'Requestion Extraction Generation failed'
+        self.msg = 'Request for Extraction failed'

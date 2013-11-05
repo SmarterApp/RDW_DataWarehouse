@@ -79,6 +79,8 @@ def get_list_of_students_extract_report(params):
         extract_file_name = 'SCHOOL_ASMT_RESULTS_' + timestamp + '.csv'
     else:
         extract_file_name = 'ASMT_GRADE_' + str(asmtGrade) + '_' + timestamp + '.csv'
+    # Set raw to be true so we get most recent is false
+    params['raw'] = True
     results = get_list_of_students(params)
     header = []
     rows = []
@@ -183,10 +185,7 @@ def get_list_of_students(params):
     schoolGuid = str(params[Constants.SCHOOLGUID])
     asmtGrade = params.get(Constants.ASMTGRADE, None)
     asmtSubject = params.get(Constants.ASMTSUBJECT, None)
-    raw = params.get(Constants.RAW_EXPORT, None)
-    if raw is None:
-        raw = 'false'
-    raw = raw.lower()
+    raw = params.get(Constants.RAW_EXPORT, False)
     with EdCoreDBConnection() as connector:
         # get handle to tables
         dim_student = connector.get_table(Constants.DIM_STUDENT)
@@ -244,20 +243,15 @@ def get_list_of_students(params):
 
         query = query.where(and_(fact_asmt_outcome.c.status == 'C'))
 
-        # raw export ignore most_recent
-        if raw == 'false':
+        # Only apply most_recent, filters and asmtSubject when it's NOT a raw extract
+        if not raw:
             query = query.where(and_(fact_asmt_outcome.c.most_recent))
-
+            query = apply_filter_to_query(query, fact_asmt_outcome, params)
+            if asmtSubject is not None:
+                query = query.where(and_(dim_asmt.c.asmt_subject.in_(asmtSubject)))
+            
         if asmtGrade is not None:
             query = query.where(and_(fact_asmt_outcome.c.asmt_grade == asmtGrade))
-
-        # raw export ignore asm_subjects
-        if raw == 'false' and asmtSubject is not None:
-            query = query.where(and_(dim_asmt.c.asmt_subject.in_(asmtSubject)))
-
-        # Apply demographics to the query when not raw export
-        if raw == 'false':
-            query = apply_filter_to_query(query, fact_asmt_outcome, params)
 
         query = query.order_by(dim_student.c.last_name).order_by(dim_student.c.first_name)
         return connector.get_result(query)

@@ -18,7 +18,7 @@ from pyramid.response import Response
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed
 from smarter.reports.helpers.constants import Constants
 import json
-from edextract.tasks.query import is_available, generate
+from edextract.tasks.query import handle_request
 from celery.result import AsyncResult
 
 EXTRACT_POST_PARAMS = {
@@ -144,7 +144,8 @@ def send_extraction_request(params):
         tasks.append({'key': l, 'queries': queries})
 
     for task in tasks:
-        celery_response = is_available.delay(query=task['queries'][0])
+        #celery_response = is_available.delay(query=task['queries'][0])
+        celery_response = handle_request(query=task['queries'][0])
         task_id = celery_response.task_id
         key_parts = task['key'].split('_')
         task_responses.append({

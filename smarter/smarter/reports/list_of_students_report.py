@@ -249,7 +249,7 @@ def get_list_of_students(params):
             query = apply_filter_to_query(query, fact_asmt_outcome, params)
             if asmtSubject is not None:
                 query = query.where(and_(dim_asmt.c.asmt_subject.in_(asmtSubject)))
-            
+
         if asmtGrade is not None:
             query = query.where(and_(fact_asmt_outcome.c.asmt_grade == asmtGrade))
 

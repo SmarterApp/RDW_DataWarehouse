@@ -18,6 +18,7 @@ from pyramid.response import Response
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed
 from smarter.reports.helpers.constants import Constants
 import json
+from edextract.tasks.query import is_available, generate
 
 EXTRACT_POST_PARAMS = {
     "type": "object",
@@ -85,7 +86,7 @@ EXTRACT_QUERY_MAP = {
 
 @view_config(route_name='extract', request_method='POST', content_type='application/json')
 @validate_params(method='POST', schema=EXTRACT_POST_PARAMS)
-@audit_event()
+#@audit_event()
 def post_extract_service(context, request):
     '''
     Handles POST request to /services/extract
@@ -102,7 +103,7 @@ def post_extract_service(context, request):
 
 @view_config(route_name='extract', request_method='GET')
 @validate_params(method='GET', schema=EXTRACT_POST_PARAMS)
-@audit_event()
+#@audit_event()
 def get_extract_service(context, request):
     '''
     Handles GET request to /services/extract
@@ -140,6 +141,7 @@ def send_extraction_request(params):
             queries.append(q(params['asmtYear']))
         tasks.append(queries)
 
+    celery_response = is_available.delay()
     response = {
         'status': Constants.OK,
         'id': 'id'

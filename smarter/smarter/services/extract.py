@@ -19,6 +19,7 @@ from edapi.httpexceptions import EdApiHTTPPreconditionFailed
 from smarter.reports.helpers.constants import Constants
 import json
 from edextract.tasks.query import is_available, generate
+from celery.result import AsyncResult
 
 EXTRACT_POST_PARAMS = {
     "type": "object",
@@ -133,19 +134,28 @@ def send_extraction_request(params):
             for t in params['asmtType']:
                 query_lookups.append(e + '_' + s + '_' + t)
     tasks = []
-    print(query_lookups)
+    task_responses = []
+
     for l in query_lookups:
         query_calls = EXTRACT_QUERY_MAP[l]
         queries = []
         for q in query_calls:
-            queries.append(q(params['asmtYear']))
-        tasks.append(queries)
+            queries.append(q(params['asmtYear'][0]))
+        tasks.append({'key': l, 'queries': queries})
 
-    celery_response = is_available.delay()
-    response = {
-        'status': Constants.OK,
-        'id': 'id'
-    }
+    for task in tasks:
+        celery_response = is_available.delay(query=task['queries'][0])
+        task_id = celery_response.task_id
+        key_parts = task['key'].split('_')
+        task_responses.append({
+            'status': Constants.OK,
+            'id': task_id,
+            'asmtYear': params['asmtYear'][0],
+            'asmtState': params['asmtState'][0],
+            'extractType': key_parts[0],
+            'asmtSubject': key_parts[1],
+            'asmtType': key_parts[2]
+        })
 
     #report = pyramid.threadlocal.get_current_request().matchdict['report'].lower()
     #if report not in KNOWN_REPORTS:
@@ -163,4 +173,4 @@ def send_extraction_request(params):
         # if celery get task got timed out...
     #    raise EdApiHTTPInternalServerError(e.msg)
     #response = Response(body='here', content_type='text/plain')
-    return Response(body=json.dumps(response), content_type='application/json')
+    return Response(body=json.dumps(task_responses), content_type='application/json')

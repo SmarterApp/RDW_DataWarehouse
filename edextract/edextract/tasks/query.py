@@ -29,29 +29,29 @@ log = logging.getLogger('smarter')
 @celery.task(name="tasks.extract.is_available",
              max_retries=services.celery.MAX_RETRIES,
              default_retry_delay=services.celery.RETRY_DELAY)
-def is_available(cookie = None, db_info = None, sql_object = None):
+def is_available(cookie=None, query=None):
     '''
     '''
     print('execute tasks.extract.is_available')
-    #EdCoreDBConnection
-    #with EdCoreDBConnection() as connection:
-    #    result = connection.execute(query).fetchone()
-    #if len(result) >= 1:
-    #    return True
-    #else:
-    #    return False
+    with EdCoreDBConnection() as connection:
+        result = connection.execute(query).fetchone()
+    if len(result) >= 1:
+        return True
+    else:
+        return False
 
 
 @celery.task(name="tasks.extract.generate",
              max_retries=services.celery.MAX_RETRIES,
              default_retry_delay=services.celery.RETRY_DELAY)
-def generate(cookie = None, db_info = None, sql_object = None, output_uri = None):
+def generate(cookie=None, query=None, output_uri=None):
     '''
     '''
     print('execute tasks.extract.generate')
-    #with EdCoreDBConnection() as connection:
-    #    result = connection.execute(query)
-
-    #return
-
-
+    EdCoreDBConnection
+    with EdCoreDBConnection() as connection:
+        result = connection.execute(query).fetchone()
+    if len(result) >= 1:
+        return True
+    else:
+        return False

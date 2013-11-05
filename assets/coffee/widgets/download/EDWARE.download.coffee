@@ -25,6 +25,7 @@ define [
         extractType: this.config['extractType']
         asmtType: this.config['asmtType']
         subject: this.config['asmtSubject']
+        labels: this.config['labels']
       }
       this.container.html output
       this.message = $('#message', this.container)

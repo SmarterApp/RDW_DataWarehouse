@@ -61,7 +61,6 @@ define [
     # merge legend
     getDatafromSource report_json_url, options, (tmp_data)->
       data['reportInfo'] = tmp_data['reportInfo']
-      data['CSVOptions'] = tmp_data['CSVOptions']
       for key of tmp_data['legendInfo']
         data['legendInfo'][key] = tmp_data['legendInfo'][key] if tmp_data['legendInfo'].hasOwnProperty(key)
       data['legendInfo'] = JSON.parse(Mustache.render(JSON.stringify(data['legendInfo']), {"labels":data.labels}))

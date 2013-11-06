@@ -9,11 +9,10 @@ from edapi.decorators import validate_params
 from edapi.exceptions import InvalidParameterError, ForbiddenError
 from edextract.exceptions import ExtractionError
 from pyramid.response import Response
-from edapi.httpexceptions import EdApiHTTPPreconditionFailed
-from smarter.reports.helpers.constants import Constants
+from edapi.httpexceptions import EdApiHTTPPreconditionFailed,\
+    EdApiHTTPForbiddenAccess, EdApiHTTPInternalServerError
 import json
 from edextract.tasks.smarter_query import process_extraction_request
-from celery.result import AsyncResult
 from edauth.security.utils import get_session_cookie
 
 EXTRACT_POST_PARAMS = {
@@ -98,11 +97,8 @@ def get_extract_service(context, request):
     # flatten the parameters
     query_string = request.GET
     params = {}
-    for k, v in query_string.items():
-        if params.get(k) is None:
-            params[k] = [v]
-        else:
-            params[k].append(v)
+    for k in query_string.keys():
+        params[k] = query_string.getall(k)
     return send_extraction_request(params)
 
 
@@ -114,7 +110,7 @@ def send_extraction_request(params):
     '''
     cookie = get_session_cookie()
     try:
-        celery_result = process_extraction_request.delay(cookie, params)
+        celery_result = process_extraction_request.delay(cookie, params)  # @UndefinedVariable
         task_responses = celery_result.get()
         return Response(body=json.dumps(task_responses), content_type='application/json')
     except InvalidParameterError as e:

@@ -28,8 +28,8 @@ log = logging.getLogger('smarter')
 
 
 @celery.task(name="tasks.extract.handle_request",
-             max_retries=edextract.celery.MAX_RETRIES,
-             default_retry_delay=edextract.celery.RETRY_DELAY)
+             max_retries=MAX_RETRIES,
+             default_retry_delay=RETRY_DELAY)
 def handle_request(cookie=None, task_queries=None):
     '''
     celery entry point to take request extraction request from service endpoint.
@@ -41,9 +41,8 @@ def handle_request(cookie=None, task_queries=None):
     '''
     current_task_id = handle_request.request.id
     celery_check_result = is_available.delay(cookie=cookie, check_query=task_queries[0])
-    print(celery_check_result)
+
     if celery_check_result.get():
-        print('data exists')
         output_uri = '/tmp/extract_' + current_task_id + '.csv'
         celery_extract_result = generate_csv.delay(cookie=cookie, extract_query=task_queries[1], output_uri=output_uri)
         return True
@@ -52,8 +51,8 @@ def handle_request(cookie=None, task_queries=None):
 
 
 @celery.task(name="tasks.extract.is_available",
-             max_retries=edextract.celery.MAX_RETRIES,
-             default_retry_delay=edextract.celery.RETRY_DELAY)
+             max_retries=MAX_RETRIES,
+             default_retry_delay=RETRY_DELAY)
 def is_available(cookie=None, check_query=None):
     '''
     celery entry point to execute data availability check query.
@@ -63,7 +62,6 @@ def is_available(cookie=None, check_query=None):
     '''
     with EdCoreDBConnection() as connection:
         result = connection.execute(check_query).fetchone()
-        #result.close()
     if len(result) >= 1:
         return True
     else:
@@ -71,8 +69,8 @@ def is_available(cookie=None, check_query=None):
 
 
 @celery.task(name="tasks.extract.generate_csv",
-             max_retries=edextract.celery.MAX_RETRIES,
-             default_retry_delay=edextract.celery.RETRY_DELAY)
+             max_retries=MAX_RETRIES,
+             default_retry_delay=RETRY_DELAY)
 def generate_csv(cookie=None, extract_query=None, output_uri=None):
     '''
     celery entry point to execute data extraction query.
@@ -92,4 +90,3 @@ def generate_csv(cookie=None, extract_query=None, output_uri=None):
             for row in rows:
                 csvwriter.writerow(row)
         csvfile.close()
-        result.close()

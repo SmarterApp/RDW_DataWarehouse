@@ -150,8 +150,9 @@ def send_extraction_request(params):
             celery_response = handle_request.delay(cookie=cookie, task_queries=task['queries'])
             task_id = celery_response.task_id
             key_parts = task['key'].split('_')
+            status = celery_response.get()
             task_responses.append({
-                'status': Constants.OK,
+                'status': Constants.OK if status else Constants.FAIL,
                 'id': task_id,
                 'asmtYear': params['asmtYear'][0],
                 'asmtState': params['asmtState'][0],

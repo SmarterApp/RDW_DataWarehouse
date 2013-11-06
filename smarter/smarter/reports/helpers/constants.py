@@ -92,3 +92,4 @@ class Constants():
     ASMT_YEAR = 'asmt_year'
     LIMIT = 'limit'
     OK = 'ok'
+    FAIL = 'fail'

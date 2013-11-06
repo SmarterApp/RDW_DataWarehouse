@@ -1,0 +1,40 @@
+{
+    "CSVOptions": {
+        "extractType": {
+            "name": "Report Type",
+            "key": "extractType",
+            "options": [
+                {
+                    "display": "Student Assessment Results",
+                    "value": "studentAssessment"
+                }
+            ]
+        },
+        "asmtType": {
+            "name": "Assessment Type",
+            "key": "asmtType",
+            "options": [
+                {
+                    "display": "Summative",
+                    "value": "summative"
+                }, {
+                    "display": "Interim Comprehensive",
+                    "value": "interim"
+                }
+            ]
+        },
+        "asmtSubject": {
+            "name": "Subject",
+            "key": "asmtSubject",
+            "options": [
+                {
+                    "display": "Math",
+                    "value": "Math"
+                }, {
+                    "display": "ELA",
+                    "value": "ELA"
+                }
+            ]
+        }
+    }
+}

@@ -10,7 +10,9 @@ require ["cs!test.EDWARE.dataProxy",
 "cs!test.EDWARE.populationBar",
 "cs!test.EDWARE.comparingPopulation",
 "cs!test.EDWARE.breadcrumb",
-"cs!test.EDWARE.edwareFilter"
+"cs!test.EDWARE.edwareFilter",
+"cs!test.EDWARE.download",
+"cs!test.EDWARE.footer"
 ], ()->
   QUnit.start()
 

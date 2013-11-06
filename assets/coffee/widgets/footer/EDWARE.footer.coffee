@@ -8,7 +8,8 @@ define [
   "edwareExport"
   "edwareConstants"
   "edwareClientStorage"
-], ($, Mustache, bootstrap, footerTemplate, edwareLegend, edwarePreferences, edwareExport, Constants, edwareClientStorage) ->
+  "edwareDownload"
+], ($, Mustache, bootstrap, footerTemplate, edwareLegend, edwarePreferences, edwareExport, Constants, edwareClientStorage, edwareDownload) ->
 
   POPOVER_TEMPLATE = '<div class="popover footerPopover"><div class="arrow"></div><div class="popover-inner large"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
 
@@ -37,12 +38,14 @@ define [
           legendInfo.sample_intervals
         )()
       }
+      this.CSVOptions = config.CSVOptions
 
-    create: () ->
+    create: (config) ->
       $('#footer').html Mustache.to_html footerTemplate, {
         report_info: this.reportInfo
         labels: this.labels
       }
+      # create popover      
       this.createPopover()
 
     createPopover: () ->
@@ -185,7 +188,11 @@ define [
 
       # bind export event
       $(document).on 'click', '#exportButton', ->
-        if self.exportOption is 'csv'
+        if self.exportOption is 'file'
+          # display file download options
+          CSVDownload = edwareDownload.create('.CSVDownloadContainer', self.CSVOptions)
+          CSVDownload.show()
+        else if self.exportOption is 'csv'
           $('#gridTable').edwareExport self.reportName, self.labels
         else if self.exportOption is 'extract'
           # add more code from master branch for old extraction code

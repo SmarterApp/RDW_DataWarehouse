@@ -51,8 +51,13 @@ def task(incoming_msg):
     outgoing_msg = {}
     outgoing_msg.update(incoming_msg)
     outgoing_msg.update({
+<<<<<<< HEAD
+        mk.FILE_TO_DECRYPT: tenant_directory_paths[mk.ARRIVED] + '/' + os.path.basename(input_source_file),
         mk.INPUT_FILE_SIZE: input_file_size,
+        mk.TENANT_DIRECTORY_PATHS: tenant_directory_paths})
+=======
         mk.FILE_TO_DECRYPT: os.path.join(tenant_directory_paths[mk.ARRIVED], os.path.basename(input_source_file)),
         mk.TENANT_DIRECTORY_PATHS: tenant_directory_paths,
         mk.TENANT_NAME: tenant_name})
+>>>>>>> updating pipeline for multi tenancy
     return outgoing_msg

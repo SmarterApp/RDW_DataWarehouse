@@ -16,14 +16,14 @@ def move_file_from_arrivals(incoming_file, batch_guid, tenant_name_pos=None):
     :param batch_guid: the guid for the current batch
     :param tenant_name_pos: the position of where the tenant name is located in the incoming_file
         path
-    :return: A dictionary containing all the created directories
+    :return: a tuple of (A dictionary containing all the created directories, the tenant name)
     """
     tenant_name_pos = tenant_name_pos if tenant_name_pos else udl2_conf['tenant_position']
     tenant_name = get_tenant_name(incoming_file, tenant_name_pos)
     tenant_directory_paths = create_directory_paths(tenant_name, batch_guid)
     create_batch_directories(tenant_directory_paths)
     move_file_to_work_and_history(incoming_file, tenant_directory_paths[mk.ARRIVED], tenant_directory_paths[mk.HISTORY])
-    return tenant_directory_paths
+    return tenant_directory_paths, tenant_name
 
 
 def move_file_to_work_and_history(incoming_file, arrived_dir, history_dir):

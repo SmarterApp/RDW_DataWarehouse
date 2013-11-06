@@ -1,0 +1,85 @@
+<div id="CSVModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h2 id="myModalLabel">CSV File Download Options</h2>
+    </div>
+    <div class="modal-body">
+        <div id="message">
+            <p>Once requested your CSV will become available in 24 hours at <a>your secure FTP site</a>.</p>
+        </div>
+        <table class='csv_options_table'>
+            {{#extractType}}
+            <tr>
+                <td>{{name}}</td>
+                <td>
+                    <div class="btn-group" data-option-name="{{name}}">
+                        <button class="btn dropdown-toggle btn-small" data-toggle="dropdown">
+                            <span class='dropdown-display'>{{options.0.display}}</span>
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" data-key="{{key}}">
+                            {{#options}}
+                            <li><label><input type="checkbox" value="{{value}}" data-label="{{display}}">{{display}}</label></li>
+                            {{/options}}
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+            {{/extractType}}
+            {{#asmtType}}
+            <tr>
+                <td>{{name}}</td>
+                <td>
+                    <div id="asmtType" class="btn-group" data-option-name="{{name}}">
+                        <ul class="checkbox-menu" data-key="{{key}}">
+                            {{#options}}
+                            <li><label><input type="checkbox" value="{{value}}" data-label="{{display}}">{{display}}</label></li>
+                            {{/options}}
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+            {{/asmtType}}
+            {{#subject}}
+            <tr>
+                <td>{{name}}</td>
+                <td>
+                    <div class="btn-group" data-option-name="{{name}}">
+                        <ul class="checkbox-menu" data-key="{{key}}">
+                            {{#options}}
+                            <li><label><input type="checkbox" value="{{value}}" data-label="{{display}}">{{display}}</label></li>
+                            {{/options}}
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+            {{/subject}}
+        </table>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary">Request Files</button>
+    </div>
+
+    <script type="text/template" id="ErrorMessageTemplate">
+     <div class="error">Your request could not go through. <strong>{{reportType}}</strong> results are not available for <strong>{{state}} {{asmtYear}} {{subject}}</strong>. Please select other options or try again at a later date, when data becomes available.</div>
+    </script>
+
+    <script type="text/template" id="SuccessMessageTemplate">
+     <div class="success">Your request for <strong>{{state}} {{asmtYear}} {{subject}}</strong> Test Results made on {{requestDate}} at {{requestTime}} successful! Please visit your <a href="#">some-FTP-site.com</a> in 2 hours to download the requested file.</div>
+    </script>
+
+    <script type="text/template" id="IndividualValidationTemplate">
+       <div class="error">Please select at least one {{optionName}} to continue.</div>
+    </script>    
+
+    <script type="text/template" id="CombinedValidationTemplate">
+       <div class="error">
+          Please select values for the following fields to continue.
+          <ul>
+             {{#optionNames}}
+             <li>{{.}}</li>
+             {{/optionNames}}
+          </ul>
+       </div>
+    </script>  
+</div>

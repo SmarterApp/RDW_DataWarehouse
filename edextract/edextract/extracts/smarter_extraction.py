@@ -8,6 +8,7 @@ from sqlalchemy.sql.expression import and_
 from smarter.reports.helpers.constants import Constants, AssessmentType
 from smarter.security.context import select_with_context
 
+
 def _get_extract_assessment_query(params):
     """
     private method to generate SQLAlchemy object for extraction

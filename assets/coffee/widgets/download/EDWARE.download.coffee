@@ -66,7 +66,7 @@ define [
         if invalidFields.length isnt 0
           self.showCombinedErrorMessage invalidFields
         else
-          $(this).attr('disabled','disabled')
+          # $(this).attr('disabled','disabled')
           self.sendRequest "/services/extract"
 
     validate: ($dropdown) ->
@@ -98,9 +98,32 @@ define [
       request.done this.showSuccessMessage.bind(this)
       request.fail this.showFailureMessage.bind(this)
 
+    toDisplay: (item)->
+      # convert server response to display text
+      # create key and display text mapping
+      configMap = {}
+      for key, value of this.config
+        for option in value.options
+          configMap[option.value] = option.display
+      for key, value of item
+        item[key] = configMap[value] if configMap[value]
+      item
+
     showSuccessMessage: (response)->
+      response = response.map this.toDisplay.bind(this)
+      success = response.filter (item)->
+        item['status'] is 'ok'
+      failure = response.filter (item)->
+        item['status'] is 'fail'
       this.message.html Mustache.to_html SUCCESS_TEMPLATE, {
-        response: response
+        # success messages
+        success: success
+        singleSuccess: success.length == 1
+        multipleSuccess: success.length > 1
+        # failure messages
+        failure: failure
+        singleFailure: failure.length == 1
+        multipleFailure: failure.length > 1
       }
 
     showFailureMessage: (response)->

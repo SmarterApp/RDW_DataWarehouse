@@ -25,6 +25,7 @@ from smarter.reports.helpers.utils import merge_dict, multi_delete
 from smarter.reports.helpers.compare_pop_stat_report import get_not_stated_count
 from string import capwords
 from edcore.database.edcore_connector import EdCoreDBConnection
+from sqlalchemy.sql.expression import true
 
 REPORT_NAME = "list_of_students"
 
@@ -245,7 +246,7 @@ def get_list_of_students(params):
 
         # Only apply most_recent, filters and asmtSubject when it's NOT a raw extract
         if not raw:
-            query = query.where(and_(fact_asmt_outcome.c.most_recent))
+            query = query.where(and_(fact_asmt_outcome.c.most_recent == true()))
             query = apply_filter_to_query(query, fact_asmt_outcome, params)
             if asmtSubject is not None:
                 query = query.where(and_(dim_asmt.c.asmt_subject.in_(asmtSubject)))

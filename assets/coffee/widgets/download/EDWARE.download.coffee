@@ -25,6 +25,8 @@ define [
         extractType: this.config['extractType']
         asmtType: this.config['asmtType']
         subject: this.config['asmtSubject']
+        asmtYear: this.config['asmtYear']
+        asmtState: this.config['asmtState']
         labels: this.config['labels']
       }
       this.container.html output

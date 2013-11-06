@@ -26,6 +26,34 @@
                 </td>
             </tr>
             {{/extractType}}
+            {{#asmtState}}
+            <tr>
+                <td>{{name}}</td>
+                <td>
+                    <div id="asmtState" class="btn-group" data-option-name="{{name}}">
+                        <ul class="checkbox-menu" data-key="{{key}}">
+                            {{#options}}
+                            <li><label><input type="checkbox" value="{{value}}" data-label="{{display}}">{{display}}</label></li>
+                            {{/options}}
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+            {{/asmtState}}
+            {{#asmtYear}}
+            <tr>
+                <td>{{name}}</td>
+                <td>
+                    <div id="asmtYear" class="btn-group" data-option-name="{{name}}">
+                        <ul class="checkbox-menu" data-key="{{key}}">
+                            {{#options}}
+                            <li><label><input type="checkbox" value="{{value}}" data-label="{{display}}">{{display}}</label></li>
+                            {{/options}}
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+            {{/asmtYear}}
             {{#asmtType}}
             <tr>
                 <td>{{name}}</td>

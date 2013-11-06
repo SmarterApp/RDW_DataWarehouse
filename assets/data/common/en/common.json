@@ -633,16 +633,36 @@
                 }
             ]
         }, 
+        "asmtState": {
+            "name": "State",
+            "key": "asmtState",
+            "options": [
+                {
+                    "display": "New York",
+                    "value": "NY"
+                }
+            ]
+        },
+        "asmtYear": {
+            "name": "Assessment Year",
+            "key": "asmtYear",
+            "options": [
+                {
+                    "display": "2013 - 2014",
+                    "value": "2013"
+                }
+            ]
+        },
         "asmtType": {
             "name": "Assessment Type",
             "key": "asmtType",
             "options": [
                 {
                     "display": "Summative",
-                    "value": "summative"
+                    "value": "SUMMATIVE"
                 }, {
                     "display": "Interim Comprehensive",
-                    "value": "interim"
+                    "value": "INTERIM"
                 }
             ]
         }, 

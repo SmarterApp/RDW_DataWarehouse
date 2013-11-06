@@ -17,28 +17,10 @@ from edcore.database.stats_connector import StatsDBConnection
 from edextract.status.status import insert_extract_stats
 from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.reports.helpers.constants import Constants
-from edextract.extracts.smarter_extraction import get_check_ela_interim_assessment_existence_query,\
-    get_check_math_interim_assessment_existence_query,\
-    get_check_ela_summative_assessment_existence_query,\
-    get_check_math_summative_assessment_existence_query,\
-    get_ela_interim_assessment_query,\
-    get_math_interim_assessment_query,\
-    get_ela_summative_assessment_query,\
-    get_math_summative_assessment_query
+from edextract.extracts.smarter_extraction import QUERY_MAP
 from edextract.tasks.query import handle_request
 
 log = logging.getLogger('smarter')
-
-EXTRACT_QUERY_MAP = {
-    'studentAssessment_Math_INTERIM': (get_check_math_interim_assessment_existence_query,
-                                       get_math_interim_assessment_query),
-    'studentAssessment_ELA_INTERIM': (get_check_ela_interim_assessment_existence_query,
-                                      get_ela_interim_assessment_query),
-    'studentAssessment_Math_SUMMATIVE': (get_check_math_summative_assessment_existence_query,
-                                         get_math_summative_assessment_query),
-    'studentAssessment_ELA_SUMMATIVE': (get_check_ela_summative_assessment_existence_query,
-                                        get_ela_summative_assessment_query)
-}
 
 
 @celery.task(name="tasks.send_extraction_request",
@@ -54,15 +36,15 @@ def process_extraction_request(cookie, params):
     task_responses = []
 
     for l in query_lookups:
-        query_calls = EXTRACT_QUERY_MAP[l]
+        query_calls = QUERY_MAP[l]
         queries = []
         for q in query_calls:
-            queries.append(q(params['asmtYear'][0]))
-        tasks.append({'key': l, 'queries': queries})
+            queries.append(q)
+        tasks.append({'key': l, 'queries': queries, 'params': params})
 
 
     for task in tasks:
-        celery_response = handle_request.delay(cookie=cookie, task_queries=task['queries'])
+        celery_response = handle_request.delay(cookie=cookie, task_queries=task['queries'], params=params)
         task_id = celery_response.task_id
         key_parts = task['key'].split('_')
         status = celery_response.get()

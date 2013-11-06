@@ -8,7 +8,6 @@ from sqlalchemy.sql.expression import and_
 from smarter.reports.helpers.constants import Constants, AssessmentType
 from smarter.security.context import select_with_context
 
-
 def _get_extract_assessment_query(params):
     """
     private method to generate SQLAlchemy object for extraction
@@ -223,3 +222,25 @@ def get_math_summative_assessment_query(asmt_year):
     return _get_extract_assessment_query({Constants.ASMT_TYPE: AssessmentType.SUMMATIVE,
                                          Constants.ASMT_YEAR: asmt_year,
                                          Constants.ASMT_SUBJECT: Constants.MATH})
+
+QUERY_MAP = {
+    'studentAssessment_Math_INTERIM': ('get_check_math_interim_assessment_existence_query',
+                                       'get_math_interim_assessment_query'),
+    'studentAssessment_ELA_INTERIM': ('get_check_ela_interim_assessment_existence_query',
+                                      'get_ela_interim_assessment_query'),
+    'studentAssessment_Math_SUMMATIVE': ('get_check_math_summative_assessment_existence_query',
+                                         'get_math_summative_assessment_query'),
+    'studentAssessment_ELA_SUMMATIVE': ('get_check_ela_summative_assessment_existence_query',
+                                        'get_ela_summative_assessment_query')
+}
+
+FUNCTION_MAP = {
+    'get_check_ela_interim_assessment_existence_query': get_check_ela_interim_assessment_existence_query,
+    'get_check_math_interim_assessment_existence_query': get_check_math_interim_assessment_existence_query,
+    'get_check_ela_summative_assessment_existence_query': get_check_ela_summative_assessment_existence_query,
+    'get_check_math_summative_assessment_existence_query': get_check_math_summative_assessment_existence_query,
+    'get_ela_interim_assessment_query': get_ela_interim_assessment_query,
+    'get_math_interim_assessment_query': get_math_interim_assessment_query,
+    'get_ela_summative_assessment_query': get_ela_summative_assessment_query,
+    'get_math_summative_assessment_query': get_math_summative_assessment_query
+}

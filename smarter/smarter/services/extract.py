@@ -6,6 +6,8 @@ Created on Nov 1, 2013
 from pyramid.view import view_config
 from edapi.logging import audit_event
 from edapi.decorators import validate_params
+from edapi.exceptions import InvalidParameterError, ForbiddenError
+from edextract.exceptions import ExtractionError
 from pyramid.response import Response
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed
 from smarter.reports.helpers.constants import Constants
@@ -119,7 +121,7 @@ def send_extraction_request(params):
         raise EdApiHTTPPreconditionFailed(e.msg)
     except ForbiddenError as e:
         raise EdApiHTTPForbiddenAccess(e.msg)
-    except PdfGenerationError as e:
+    except ExtractionError as e:
         raise EdApiHTTPInternalServerError(e.msg)
     except TimeoutError as e:
         # if celery get task got timed out...

@@ -115,8 +115,10 @@ def validate_params(method, schema):
                     # parse request params in POST
                     elif method == 'POST':
                         try:
-                            params = json.loads(arg.json_body)
+                            params = arg.json_body
                         except ValueError:
+                            raise EdApiHTTPPreconditionFailed('Payload cannot be parsed')
+                        except Exception as e:
                             raise EdApiHTTPPreconditionFailed('Payload cannot be parsed')
             # validate params against schema
 
@@ -124,7 +126,6 @@ def validate_params(method, schema):
                 validictory.validate(params, schema)
             except Exception as e:
                 raise EdApiHTTPPreconditionFailed("Parameters validation failed")
-
             return request_handler(*args, **kwargs)
 
         return validate_wrap

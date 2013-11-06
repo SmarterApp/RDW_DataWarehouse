@@ -96,7 +96,7 @@ def post_extract_service(context, request):
     :param request:  Pyramid request object
     '''
     try:
-        params = json.loads(request.json_body)
+        params = request.json_body
     except ValueError:
         raise EdApiHTTPPreconditionFailed('Payload cannot be parsed')
 

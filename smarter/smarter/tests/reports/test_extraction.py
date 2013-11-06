@@ -102,13 +102,13 @@ class TestExtraction(Unittest_with_edcore_sqlite):
         query = get_ela_summative_assessment_query(2015)
         with UnittestEdcoreDBConnection() as connection:
             result = connection.execute(query).fetchall()
-            self.assertEqual(len(result), 427)
+            self.assertEqual(len(result), 347)
 
     def test_get_math_summative_assessment_query(self):
         query = get_math_summative_assessment_query(2015)
         with UnittestEdcoreDBConnection() as connection:
             result = connection.execute(query).fetchall()
-            self.assertEqual(len(result), 480)
+            self.assertEqual(len(result), 402)
 
     def test_get_extract_assessment_query(self):
         query = _get_extract_assessment_query({})

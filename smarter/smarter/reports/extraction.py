@@ -127,6 +127,7 @@ def _get_extract_assessment_query(params):
             query = query.where(fact_asmt_outcome.c.asmt_type == asmt_type)
             query = query.where(and_(fact_asmt_outcome.c.asmt_subject == asmt_subject))
             query = query.where(and_(fact_asmt_outcome.c.most_recent == most_recent))
+            query = query.where(and_(fact_asmt_outcome.c.asmt_year == asmt_year))
             if limit is not None:
                 query = query.limit(limit)
         return query

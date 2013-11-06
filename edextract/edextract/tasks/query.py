@@ -64,10 +64,10 @@ def is_available(cookie=None, check_query=None, batch_id=None):
     log.info('extract check query for task ' + batch_id)
     with EdCoreDBConnection() as connection:
         result = connection.execute(check_query).fetchone()
-    if len(result) >= 1:
-        return True
-    else:
+    if result is None or len(result) < 1:
         return False
+    else:
+        return True
 
 
 @celery.task(name="tasks.extract.generate_csv",
@@ -83,11 +83,13 @@ def generate_csv(cookie=None, extract_query=None, output_uri=None, batch_id=None
     :param batch_id: batch_id for tracking
     '''
     log.info('execute tasks.extract.generate_csv for task ' + batch_id)
-
     with EdCoreDBConnection() as connection:
         counter = 0
         result = connection.execute(extract_query)
-        rows = result.fetchall()
+        if result is not None:
+            rows = result.fetchall()
+        else:
+            rows = []
         with open(output_uri, 'w') as csvfile:
             csvwriter = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
             for row in rows:

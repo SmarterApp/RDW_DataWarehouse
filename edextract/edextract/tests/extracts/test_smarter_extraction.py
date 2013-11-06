@@ -24,9 +24,10 @@ from beaker.util import parse_cache_config_options
 from edcore.tests.utils.unittest_with_edcore_sqlite import \
     Unittest_with_edcore_sqlite,\
     UnittestEdcoreDBConnection, get_unittest_tenant_name
+from smarter.reports.helpers.constants import Constants
 
 
-class TestExtraction(Unittest_with_edcore_sqlite):
+class TestSmarterExtraction(Unittest_with_edcore_sqlite):
 
     def setUp(self):
         cache_opts = {
@@ -63,49 +64,49 @@ class TestExtraction(Unittest_with_edcore_sqlite):
             connection.execute(user_mapping.delete())
 
     def test_get_check_ela_interim_assessment_existence_query(self):
-        query = get_check_ela_interim_assessment_existence_query(2015)
+        query = get_check_ela_interim_assessment_existence_query({Constants.ASMTYEAR: [2015]})
         with UnittestEdcoreDBConnection() as connection:
             result = connection.execute(query).fetchall()
             self.assertEqual(len(result), 1)
 
     def test_get_check_math_interim_assessment_existence_query(self):
-        query = get_check_math_interim_assessment_existence_query(2015)
+        query = get_check_math_interim_assessment_existence_query({Constants.ASMTYEAR: [2015]})
         with UnittestEdcoreDBConnection() as connection:
             result = connection.execute(query).fetchall()
             self.assertEqual(len(result), 1)
 
     def test_get_check_ela_summative_assessment_existence_query(self):
-        query = get_check_ela_summative_assessment_existence_query(2015)
+        query = get_check_ela_summative_assessment_existence_query({Constants.ASMTYEAR: [2015]})
         with UnittestEdcoreDBConnection() as connection:
             result = connection.execute(query).fetchall()
             self.assertEqual(len(result), 1)
 
     def test_get_check_math_summative_assessment_existence_query(self):
-        query = get_check_math_summative_assessment_existence_query(2015)
+        query = get_check_math_summative_assessment_existence_query({Constants.ASMTYEAR: [2015]})
         with UnittestEdcoreDBConnection() as connection:
             result = connection.execute(query).fetchall()
             self.assertEqual(len(result), 1)
 
     def test_get_ela_interim_assessment_query(self):
-        query = get_ela_interim_assessment_query(2015)
+        query = get_ela_interim_assessment_query({Constants.ASMTYEAR: [2015]})
         with UnittestEdcoreDBConnection() as connection:
             result = connection.execute(query).fetchall()
             self.assertEqual(len(result), 86)
 
     def test_get_math_interim_assessment_query(self):
-        query = get_math_interim_assessment_query(2015)
+        query = get_math_interim_assessment_query({Constants.ASMTYEAR: [2015]})
         with UnittestEdcoreDBConnection() as connection:
             result = connection.execute(query).fetchall()
             self.assertEqual(len(result), 94)
 
     def test_get_ela_summative_assessment_query(self):
-        query = get_ela_summative_assessment_query(2015)
+        query = get_ela_summative_assessment_query({Constants.ASMTYEAR: [2015]})
         with UnittestEdcoreDBConnection() as connection:
             result = connection.execute(query).fetchall()
             self.assertEqual(len(result), 347)
 
     def test_get_math_summative_assessment_query(self):
-        query = get_math_summative_assessment_query(2015)
+        query = get_math_summative_assessment_query({Constants.ASMTYEAR: [2015]})
         with UnittestEdcoreDBConnection() as connection:
             result = connection.execute(query).fetchall()
             self.assertEqual(len(result), 402)

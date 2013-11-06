@@ -9,13 +9,9 @@ import os
 import sys
 import csv
 import logging
-import subprocess
-import platform
 from edextract.celery import celery
 from edextract.exceptions import ExtractionError
-import copy
 from edextract.celery import TIMEOUT, MAX_RETRIES, RETRY_DELAY
-import services
 from celery.exceptions import MaxRetriesExceededError
 from edcore.database.stats_connector import StatsDBConnection
 from edextract.status.status import insert_extract_stats
@@ -25,7 +21,6 @@ OK = 0
 FAIL = 1
 
 log = logging.getLogger('smarter')
-
 
 @celery.task(name="tasks.extract.handle_request",
              max_retries=MAX_RETRIES,

@@ -6,19 +6,11 @@ Created on Nov 1, 2013
 from pyramid.view import view_config
 from edapi.logging import audit_event
 from edapi.decorators import validate_params
-from edextract.extracts.smarter_extraction import get_check_ela_interim_assessment_existence_query,\
-    get_check_math_interim_assessment_existence_query,\
-    get_check_ela_summative_assessment_existence_query,\
-    get_check_math_summative_assessment_existence_query,\
-    get_ela_interim_assessment_query,\
-    get_math_interim_assessment_query,\
-    get_ela_summative_assessment_query,\
-    get_math_summative_assessment_query
 from pyramid.response import Response
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed
 from smarter.reports.helpers.constants import Constants
 import json
-from edextract.tasks.query import handle_request
+from edextract.tasks.smarter_query import process_extraction_request
 from celery.result import AsyncResult
 from edauth.security.utils import get_session_cookie
 
@@ -74,17 +66,6 @@ EXTRACT_POST_PARAMS = {
     "required": ["extractType", "asmtSubject", "asmtType", "asmtYear", "asmtState"]
 }
 
-EXTRACT_QUERY_MAP = {
-    'studentAssessment_Math_INTERIM': (get_check_math_interim_assessment_existence_query,
-                                       get_math_interim_assessment_query),
-    'studentAssessment_ELA_INTERIM': (get_check_ela_interim_assessment_existence_query,
-                                      get_ela_interim_assessment_query),
-    'studentAssessment_Math_SUMMATIVE': (get_check_math_summative_assessment_existence_query,
-                                         get_math_summative_assessment_query),
-    'studentAssessment_ELA_SUMMATIVE': (get_check_ela_summative_assessment_existence_query,
-                                        get_ela_summative_assessment_query)
-}
-
 
 @view_config(route_name='extract', request_method='POST', content_type='application/json')
 @validate_params(method='POST', schema=EXTRACT_POST_PARAMS)
@@ -130,48 +111,9 @@ def send_extraction_request(params):
     :param params: python dict that contains query parameters from the request
     '''
     cookie = get_session_cookie()
-    query_lookups = []
-    for e in params['extractType']:
-        for s in params['asmtSubject']:
-            for t in params['asmtType']:
-                query_lookups.append(e + '_' + s + '_' + t)
-    tasks = []
-    task_responses = []
-
-    for l in query_lookups:
-        query_calls = EXTRACT_QUERY_MAP[l]
-        queries = []
-        for q in query_calls:
-            queries.append(q(params['asmtYear'][0]))
-        tasks.append({'key': l, 'queries': queries})
-
     try:
-        for task in tasks:
-            celery_response = handle_request.delay(cookie=cookie, task_queries=task['queries'])
-            task_id = celery_response.task_id
-            key_parts = task['key'].split('_')
-            status = celery_response.get()
-            if status:
-                task_responses.append({
-                    'status': Constants.OK,
-                    'id': task_id,
-                    'asmtYear': params['asmtYear'][0],
-                    'asmtState': params['asmtState'][0],
-                    'extractractType': key_parts[0],
-                    'asmtSubject': key_parts[1],
-                    'asmtType': key_parts[2]
-                })
-            else:
-                task_responses.append({
-                    'status': Constants.FAIL,
-                    'message': 'Data is not available',
-                    'id': task_id,
-                    'asmtYear': params['asmtYear'][0],
-                    'asmtState': params['asmtState'][0],
-                    'extractractType': key_parts[0],
-                    'asmtSubject': key_parts[1],
-                    'asmtType': key_parts[2]
-                })
+        celery_result = process_extraction_request.delay(cookie, params)
+        task_responses = celery_result.get()
         return Response(body=json.dumps(task_responses), content_type='application/json')
     except InvalidParameterError as e:
         raise EdApiHTTPPreconditionFailed(e.msg)

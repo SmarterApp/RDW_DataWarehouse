@@ -4,7 +4,7 @@ Created on Jan 24, 2013
 @author: tosako
 '''
 import unittest
-from smarter.reports.extraction import _get_extract_assessment_query,\
+from edextract.extracts.smarter_extraction import _get_extract_assessment_query,\
     get_check_ela_interim_assessment_existence_query,\
     get_check_math_interim_assessment_existence_query,\
     get_check_ela_summative_assessment_existence_query,\

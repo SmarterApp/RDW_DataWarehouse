@@ -6,7 +6,7 @@ Created on Nov 1, 2013
 from pyramid.view import view_config
 from edapi.logging import audit_event
 from edapi.decorators import validate_params
-from smarter.reports.extraction import get_check_ela_interim_assessment_existence_query,\
+from edextract.extracts.smarter_extraction import get_check_ela_interim_assessment_existence_query,\
     get_check_math_interim_assessment_existence_query,\
     get_check_ela_summative_assessment_existence_query,\
     get_check_math_summative_assessment_existence_query,\
@@ -151,15 +151,27 @@ def send_extraction_request(params):
             task_id = celery_response.task_id
             key_parts = task['key'].split('_')
             status = celery_response.get()
-            task_responses.append({
-                'status': Constants.OK if status else Constants.FAIL,
-                'id': task_id,
-                'asmtYear': params['asmtYear'][0],
-                'asmtState': params['asmtState'][0],
-                'extractType': key_parts[0],
-                'asmtSubject': key_parts[1],
-                'asmtType': key_parts[2]
-            })
+            if status:
+                task_responses.append({
+                    'status': Constants.OK,
+                    'id': task_id,
+                    'asmtYear': params['asmtYear'][0],
+                    'asmtState': params['asmtState'][0],
+                    'extractractType': key_parts[0],
+                    'asmtSubject': key_parts[1],
+                    'asmtType': key_parts[2]
+                })
+            else:
+                task_responses.append({
+                    'status': Constants.FAIL,
+                    'message': 'Data is not available',
+                    'id': task_id,
+                    'asmtYear': params['asmtYear'][0],
+                    'asmtState': params['asmtState'][0],
+                    'extractractType': key_parts[0],
+                    'asmtSubject': key_parts[1],
+                    'asmtType': key_parts[2]
+                })
         return Response(body=json.dumps(task_responses), content_type='application/json')
     except InvalidParameterError as e:
         raise EdApiHTTPPreconditionFailed(e.msg)

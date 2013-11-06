@@ -132,7 +132,7 @@ def _get_extract_assessment_query(params):
         return query
 
 
-def get_check_ela_interim_assessment_existence_query(asmt_year):
+def get_check_ela_interim_assessment_existence_query(params):
     """
     get SQLAlchemy object for checking available data for ela interim asessments
 
@@ -140,11 +140,11 @@ def get_check_ela_interim_assessment_existence_query(asmt_year):
     """
     return _get_extract_assessment_query({Constants.ASMT_TYPE: AssessmentType.COMPREHENSIVE_INTERIM,
                                          Constants.ASMT_SUBJECT: Constants.ELA,
-                                         Constants.ASMT_YEAR: asmt_year,
+                                         Constants.ASMT_YEAR: params[Constants.ASMTYEAR][0],
                                          Constants.LIMIT: 1})
 
 
-def get_check_ela_summative_assessment_existence_query(asmt_year):
+def get_check_ela_summative_assessment_existence_query(params):
     """
     get SQLAlchemy object for checking available data for ela summative asessments
 
@@ -152,11 +152,11 @@ def get_check_ela_summative_assessment_existence_query(asmt_year):
     """
     return _get_extract_assessment_query({Constants.ASMT_TYPE: AssessmentType.SUMMATIVE,
                                          Constants.ASMT_SUBJECT: Constants.ELA,
-                                         Constants.ASMT_YEAR: asmt_year,
+                                         Constants.ASMT_YEAR: params[Constants.ASMTYEAR][0],
                                          Constants.LIMIT: 1})
 
 
-def get_check_math_interim_assessment_existence_query(asmt_year):
+def get_check_math_interim_assessment_existence_query(params):
     """
     get SQLAlchemy object for checking available data for math interim asessments
 
@@ -164,11 +164,11 @@ def get_check_math_interim_assessment_existence_query(asmt_year):
     """
     return _get_extract_assessment_query({Constants.ASMT_TYPE: AssessmentType.COMPREHENSIVE_INTERIM,
                                          Constants.ASMT_SUBJECT: Constants.MATH,
-                                         Constants.ASMT_YEAR: asmt_year,
+                                         Constants.ASMT_YEAR: params[Constants.ASMTYEAR][0],
                                          Constants.LIMIT: 1})
 
 
-def get_check_math_summative_assessment_existence_query(asmt_year):
+def get_check_math_summative_assessment_existence_query(params):
     """
     get SQLAlchemy object for checking available data for math summative asessments
 
@@ -176,51 +176,51 @@ def get_check_math_summative_assessment_existence_query(asmt_year):
     """
     return _get_extract_assessment_query({Constants.ASMT_TYPE: AssessmentType.SUMMATIVE,
                                          Constants.ASMT_SUBJECT: Constants.MATH,
-                                         Constants.ASMT_YEAR: asmt_year,
+                                         Constants.ASMT_YEAR: params[Constants.ASMTYEAR][0],
                                          Constants.LIMIT: 1})
 
 
-def get_ela_interim_assessment_query(asmt_year):
+def get_ela_interim_assessment_query(params):
     """
     get SQLAlchemy object for dumping all ela interim asessments
 
     :param asmt_year: school year for extraction
     """
     return _get_extract_assessment_query({Constants.ASMT_TYPE: AssessmentType.COMPREHENSIVE_INTERIM,
-                                         Constants.ASMT_YEAR: asmt_year,
+                                         Constants.ASMT_YEAR: params[Constants.ASMTYEAR][0],
                                          Constants.ASMT_SUBJECT: Constants.ELA})
 
 
-def get_ela_summative_assessment_query(asmt_year):
+def get_ela_summative_assessment_query(params):
     """
     get SQLAlchemy object for dumping all ela summative asessments
 
     :param asmt_year: school year for extraction
     """
     return _get_extract_assessment_query({Constants.ASMT_TYPE: AssessmentType.SUMMATIVE,
-                                          Constants.ASMT_YEAR: asmt_year,
+                                          Constants.ASMT_YEAR: params[Constants.ASMTYEAR][0],
                                           Constants.ASMT_SUBJECT: Constants.ELA})
 
 
-def get_math_interim_assessment_query(asmt_year):
+def get_math_interim_assessment_query(params):
     """
     get SQLAlchemy object for dumping all math interim asessments
 
     :param asmt_year: school year for extraction
     """
     return _get_extract_assessment_query({Constants.ASMT_TYPE: AssessmentType.COMPREHENSIVE_INTERIM,
-                                         Constants.ASMT_YEAR: asmt_year,
+                                         Constants.ASMT_YEAR: params[Constants.ASMTYEAR][0],
                                          Constants.ASMT_SUBJECT: Constants.MATH})
 
 
-def get_math_summative_assessment_query(asmt_year):
+def get_math_summative_assessment_query(params):
     """
     get SQLAlchemy object for dumping all math summative asessments
 
     :param asmt_year: school year for extraction
     """
     return _get_extract_assessment_query({Constants.ASMT_TYPE: AssessmentType.SUMMATIVE,
-                                         Constants.ASMT_YEAR: asmt_year,
+                                         Constants.ASMT_YEAR: params[Constants.ASMTYEAR][0],
                                          Constants.ASMT_SUBJECT: Constants.MATH})
 
 QUERY_MAP = {

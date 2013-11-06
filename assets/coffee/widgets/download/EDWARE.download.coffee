@@ -66,7 +66,7 @@ define [
         if invalidFields.length isnt 0
           self.showCombinedErrorMessage invalidFields
         else
-          # $(this).attr('disabled','disabled')
+          $(this).attr('disabled','disabled')
           self.sendRequest "/services/extract"
 
     validate: ($dropdown) ->

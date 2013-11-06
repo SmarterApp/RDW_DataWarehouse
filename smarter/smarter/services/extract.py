@@ -20,6 +20,7 @@ from smarter.reports.helpers.constants import Constants
 import json
 from edextract.tasks.query import handle_request
 from celery.result import AsyncResult
+from edauth.security.utils import get_session_cookie
 
 EXTRACT_POST_PARAMS = {
     "type": "object",
@@ -128,6 +129,7 @@ def send_extraction_request(params):
 
     :param params: python dict that contains query parameters from the request
     '''
+    cookie = get_session_cookie()
     query_lookups = []
     for e in params['extractType']:
         for s in params['asmtSubject']:
@@ -145,7 +147,7 @@ def send_extraction_request(params):
 
     try:
         for task in tasks:
-            celery_response = handle_request.delay(task_queries=task['queries'])
+            celery_response = handle_request.delay(cookie=cookie, task_queries=task['queries'])
             task_id = celery_response.task_id
             key_parts = task['key'].split('_')
             task_responses.append({

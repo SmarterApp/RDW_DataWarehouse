@@ -7,6 +7,8 @@ from edworker.celery import setup_celery as setup, configure_celeryd,\
     get_config_file
 from edextract.status.status import setup_db_connection
 
+# default timeout 20 seconds
+TIMEOUT = 20
 # default number of extract retries
 MAX_RETRIES = 1
 # delay in retry. Default to 60 seconds

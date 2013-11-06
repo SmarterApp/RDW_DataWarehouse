@@ -18,6 +18,7 @@ from edextract.status.status import insert_extract_stats
 from edcore.database.edcore_connector import EdCoreDBConnection
 from edextract.extracts.smarter_extraction import FUNCTION_MAP
 from pyramid.security import authenticated_userid
+from smarter.reports.helpers.utils import multi_delete
 
 OK = 0
 FAIL = 1
@@ -69,7 +70,7 @@ def is_available(session=None, check_query=None, params=None, batch_id=None):
     if tenant is None:
         return False
     with EdCoreDBConnection(tenant) as connection:
-        result = connection.execute(FUNCTION_MAP[check_query](params)).fetchone()
+        result = connection.get_result(FUNCTION_MAP[check_query](params))
     if result is None or len(result) < 1:
         return False
     else:
@@ -97,13 +98,18 @@ def generate_csv(session=None, extract_query=None, params=None, output_uri=None,
         return False
     with EdCoreDBConnection(tenant) as connection:
         counter = 0
-        result = connection.execute(FUNCTION_MAP[extract_query](params))
-        if result is not None:
-            rows = result.fetchall()
-        else:
-            rows = []
+        results = connection.get_result(FUNCTION_MAP[extract_query](params))
+        rows = []
+        header = []
+        for result in results:
+            # remove teacher names from results
+            results = multi_delete(result, ['teacher_first_name', 'teacher_middle_name', 'teacher_last_name'])
+            if len(header) is 0:
+                header = list(result.keys())
+            rows.append(list(result.values()))
         with open(output_uri, 'w') as csvfile:
             csvwriter = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+            csvwriter.writerow(header)
             for row in rows:
                 csvwriter.writerow(row)
         csvfile.close()

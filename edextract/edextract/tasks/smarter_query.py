@@ -26,7 +26,11 @@ log = logging.getLogger('smarter')
 @celery.task(name="tasks.send_extraction_request",
              max_retries=MAX_RETRIES,
              default_retry_delay=RETRY_DELAY)
-def process_extraction_request(cookie, params):
+def process_extraction_request(session, params):
+    '''
+    :param session:
+    :param params:
+    '''
     query_lookups = []
     for e in params['extractType']:
         for s in params['asmtSubject']:
@@ -44,7 +48,7 @@ def process_extraction_request(cookie, params):
 
 
     for task in tasks:
-        celery_response = handle_request.delay(cookie=cookie, task_queries=task['queries'], params=params)
+        celery_response = handle_request.delay(session=session, task_queries=task['queries'], params=params)
         task_id = celery_response.task_id
         key_parts = task['key'].split('_')
         status = celery_response.get()

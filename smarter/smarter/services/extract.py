@@ -83,7 +83,7 @@ def post_extract_service(context, request):
     except ValueError:
         raise EdApiHTTPPreconditionFailed('Payload cannot be parsed')
 
-    return send_extraction_request(params)
+    return send_extraction_request(request.session, params)
 
 
 @view_config(route_name='extract', request_method='GET')
@@ -103,18 +103,20 @@ def get_extract_service(context, request):
             params[k] = [v]
         else:
             params[k].append(v)
-    return send_extraction_request(params)
+
+    return send_extraction_request(request.session, params)
 
 
-def send_extraction_request(params):
+def send_extraction_request(session, params):
     '''
     Requests for data extraction, throws http exceptions when error occurs
 
+    :param session: session for this user reqest
     :param params: python dict that contains query parameters from the request
     '''
-    cookie = get_session_cookie()
+    print(session)
     try:
-        celery_result = process_extraction_request.delay(cookie, params)
+        celery_result = process_extraction_request.delay(session, params)
         task_responses = celery_result.get()
         return Response(body=json.dumps(task_responses), content_type='application/json')
     except InvalidParameterError as e:

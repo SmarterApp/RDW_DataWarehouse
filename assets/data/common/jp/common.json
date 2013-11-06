@@ -627,7 +627,7 @@
         }, 
         "asmtState": {
             "name": "State",
-            "key": "asmtState",
+            "key": "stateCode",
             "options": [
                 {
                     "display": "New York",

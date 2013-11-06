@@ -64,49 +64,57 @@ class TestSmarterExtraction(Unittest_with_edcore_sqlite):
             connection.execute(user_mapping.delete())
 
     def test_get_check_ela_interim_assessment_existence_query(self):
-        query = get_check_ela_interim_assessment_existence_query({Constants.ASMTYEAR: [2015]})
+        query = get_check_ela_interim_assessment_existence_query({Constants.ASMTYEAR: [2015],
+                                                                 Constants.STATECODE: ['NY']})
         with UnittestEdcoreDBConnection() as connection:
             result = connection.execute(query).fetchall()
             self.assertEqual(len(result), 1)
 
     def test_get_check_math_interim_assessment_existence_query(self):
-        query = get_check_math_interim_assessment_existence_query({Constants.ASMTYEAR: [2015]})
+        query = get_check_math_interim_assessment_existence_query({Constants.ASMTYEAR: [2015],
+                                                                  Constants.STATECODE: ['NY']})
         with UnittestEdcoreDBConnection() as connection:
             result = connection.execute(query).fetchall()
             self.assertEqual(len(result), 1)
 
     def test_get_check_ela_summative_assessment_existence_query(self):
-        query = get_check_ela_summative_assessment_existence_query({Constants.ASMTYEAR: [2015]})
+        query = get_check_ela_summative_assessment_existence_query({Constants.ASMTYEAR: [2015],
+                                                                   Constants.STATECODE: ['NY']})
         with UnittestEdcoreDBConnection() as connection:
             result = connection.execute(query).fetchall()
             self.assertEqual(len(result), 1)
 
     def test_get_check_math_summative_assessment_existence_query(self):
-        query = get_check_math_summative_assessment_existence_query({Constants.ASMTYEAR: [2015]})
+        query = get_check_math_summative_assessment_existence_query({Constants.ASMTYEAR: [2015],
+                                                                    Constants.STATECODE: ['NY']})
         with UnittestEdcoreDBConnection() as connection:
             result = connection.execute(query).fetchall()
             self.assertEqual(len(result), 1)
 
     def test_get_ela_interim_assessment_query(self):
-        query = get_ela_interim_assessment_query({Constants.ASMTYEAR: [2015]})
+        query = get_ela_interim_assessment_query({Constants.ASMTYEAR: [2015],
+                                                 Constants.STATECODE: ['NY']})
         with UnittestEdcoreDBConnection() as connection:
             result = connection.execute(query).fetchall()
             self.assertEqual(len(result), 86)
 
     def test_get_math_interim_assessment_query(self):
-        query = get_math_interim_assessment_query({Constants.ASMTYEAR: [2015]})
+        query = get_math_interim_assessment_query({Constants.ASMTYEAR: [2015],
+                                                  Constants.STATECODE: ['NY']})
         with UnittestEdcoreDBConnection() as connection:
             result = connection.execute(query).fetchall()
             self.assertEqual(len(result), 94)
 
     def test_get_ela_summative_assessment_query(self):
-        query = get_ela_summative_assessment_query({Constants.ASMTYEAR: [2015]})
+        query = get_ela_summative_assessment_query({Constants.ASMTYEAR: [2015],
+                                                   Constants.STATECODE: ['NY']})
         with UnittestEdcoreDBConnection() as connection:
             result = connection.execute(query).fetchall()
             self.assertEqual(len(result), 347)
 
     def test_get_math_summative_assessment_query(self):
-        query = get_math_summative_assessment_query({Constants.ASMTYEAR: [2015]})
+        query = get_math_summative_assessment_query({Constants.ASMTYEAR: [2015],
+                                                    Constants.STATECODE: ['NY']})
         with UnittestEdcoreDBConnection() as connection:
             result = connection.execute(query).fetchall()
             self.assertEqual(len(result), 402)

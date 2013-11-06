@@ -4,6 +4,8 @@ Created on Nov 1, 2013
 @author: ejen
 '''
 from pyramid.view import view_config
+from pyramid.security import authenticated_userid
+from pyramid.threadlocal import get_current_request
 from edapi.logging import audit_event
 from edapi.decorators import validate_params
 from edapi.exceptions import InvalidParameterError, ForbiddenError
@@ -54,7 +56,7 @@ EXTRACT_POST_PARAMS = {
             "minItems": 1,
             "uniqueItems": True
         },
-        'asmtState': {
+        'stateCode': {
             "type": "array",
             "items": {
                 "type": "string",
@@ -64,7 +66,7 @@ EXTRACT_POST_PARAMS = {
             "uniqueItems": True
         }
     },
-    "required": ["extractType", "asmtSubject", "asmtType", "asmtYear", "asmtState"]
+    "required": ["extractType", "asmtSubject", "asmtType", "asmtYear", "stateCode"]
 }
 
 
@@ -81,8 +83,8 @@ def post_extract_service(context, request):
         params = request.json_body
     except ValueError:
         raise EdApiHTTPPreconditionFailed('Payload cannot be parsed')
-
-    return send_extraction_request(request.session, params)
+    user = authenticated_userid(get_current_request())
+    return send_extraction_request(user, params)
 
 
 @view_config(route_name='extract', request_method='GET')
@@ -99,8 +101,8 @@ def get_extract_service(context, request):
     params = {}
     for k in query_string.keys():
         params[k] = query_string.getall(k)
-
-    return send_extraction_request(request.session, params)
+    user = authenticated_userid(get_current_request())
+    return send_extraction_request(user, params)
 
 
 def send_extraction_request(session, params):
@@ -110,7 +112,6 @@ def send_extraction_request(session, params):
     :param session: session for this user reqest
     :param params: python dict that contains query parameters from the request
     '''
-    print(session)
     try:
         celery_result = process_extraction_request.delay(session, params)
         task_responses = celery_result.get()

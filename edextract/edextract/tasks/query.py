@@ -17,6 +17,7 @@ from edcore.database.stats_connector import StatsDBConnection
 from edextract.status.status import insert_extract_stats
 from edcore.database.edcore_connector import EdCoreDBConnection
 from edextract.extracts.smarter_extraction import FUNCTION_MAP
+from pyramid.security import authenticated_userid
 
 OK = 0
 FAIL = 1

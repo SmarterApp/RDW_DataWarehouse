@@ -20,6 +20,7 @@ from smarter.reports.helpers.constants import Constants
 from edextract.extracts.smarter_extraction import QUERY_MAP
 from edextract.tasks.query import handle_request
 
+
 log = logging.getLogger('smarter')
 
 
@@ -57,7 +58,7 @@ def process_extraction_request(session, params):
                 'status': Constants.OK,
                 'id': task_id,
                 'asmtYear': params['asmtYear'][0],
-                'asmtState': params['asmtState'][0],
+                'stateCode': params['stateCode'][0],
                 'extractractType': key_parts[0],
                 'asmtSubject': key_parts[1],
                 'asmtType': key_parts[2]
@@ -68,7 +69,7 @@ def process_extraction_request(session, params):
                 'message': 'Data is not available',
                 'id': task_id,
                 'asmtYear': params['asmtYear'][0],
-                'asmtState': params['asmtState'][0],
+                'stateCode': params['stateCode'][0],
                 'extractractType': key_parts[0],
                 'asmtSubject': key_parts[1],
                 'asmtType': key_parts[2]

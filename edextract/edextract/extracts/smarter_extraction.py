@@ -17,6 +17,7 @@ def _get_extract_assessment_query(params):
     asmt_type = params.get(Constants.ASMT_TYPE, None)
     asmt_subject = params.get(Constants.ASMT_SUBJECT, None)
     asmt_year = params.get(Constants.ASMT_YEAR, 2015)
+    state_code = params.get(Constants.STATECODE)
     limit = params.get(Constants.LIMIT, None)
     most_recent = params.get(Constants.MOST_RECENT, True)
 
@@ -127,6 +128,7 @@ def _get_extract_assessment_query(params):
             query = query.where(and_(fact_asmt_outcome.c.asmt_subject == asmt_subject))
             query = query.where(and_(fact_asmt_outcome.c.most_recent == most_recent))
             query = query.where(and_(fact_asmt_outcome.c.asmt_year == asmt_year))
+            query = query.where(and_(fact_asmt_outcome.c.state_code == state_code))
             if limit is not None:
                 query = query.limit(limit)
         return query
@@ -141,6 +143,7 @@ def get_check_ela_interim_assessment_existence_query(params):
     return _get_extract_assessment_query({Constants.ASMT_TYPE: AssessmentType.COMPREHENSIVE_INTERIM,
                                          Constants.ASMT_SUBJECT: Constants.ELA,
                                          Constants.ASMT_YEAR: params[Constants.ASMTYEAR][0],
+                                         Constants.STATECODE: params[Constants.STATECODE][0],
                                          Constants.LIMIT: 1})
 
 
@@ -153,6 +156,7 @@ def get_check_ela_summative_assessment_existence_query(params):
     return _get_extract_assessment_query({Constants.ASMT_TYPE: AssessmentType.SUMMATIVE,
                                          Constants.ASMT_SUBJECT: Constants.ELA,
                                          Constants.ASMT_YEAR: params[Constants.ASMTYEAR][0],
+                                         Constants.STATECODE: params[Constants.STATECODE][0],
                                          Constants.LIMIT: 1})
 
 
@@ -165,6 +169,7 @@ def get_check_math_interim_assessment_existence_query(params):
     return _get_extract_assessment_query({Constants.ASMT_TYPE: AssessmentType.COMPREHENSIVE_INTERIM,
                                          Constants.ASMT_SUBJECT: Constants.MATH,
                                          Constants.ASMT_YEAR: params[Constants.ASMTYEAR][0],
+                                         Constants.STATECODE: params[Constants.STATECODE][0],
                                          Constants.LIMIT: 1})
 
 
@@ -177,6 +182,7 @@ def get_check_math_summative_assessment_existence_query(params):
     return _get_extract_assessment_query({Constants.ASMT_TYPE: AssessmentType.SUMMATIVE,
                                          Constants.ASMT_SUBJECT: Constants.MATH,
                                          Constants.ASMT_YEAR: params[Constants.ASMTYEAR][0],
+                                         Constants.STATECODE: params[Constants.STATECODE][0],
                                          Constants.LIMIT: 1})
 
 
@@ -188,6 +194,7 @@ def get_ela_interim_assessment_query(params):
     """
     return _get_extract_assessment_query({Constants.ASMT_TYPE: AssessmentType.COMPREHENSIVE_INTERIM,
                                          Constants.ASMT_YEAR: params[Constants.ASMTYEAR][0],
+                                         Constants.STATECODE: params[Constants.STATECODE][0],
                                          Constants.ASMT_SUBJECT: Constants.ELA})
 
 
@@ -199,6 +206,7 @@ def get_ela_summative_assessment_query(params):
     """
     return _get_extract_assessment_query({Constants.ASMT_TYPE: AssessmentType.SUMMATIVE,
                                           Constants.ASMT_YEAR: params[Constants.ASMTYEAR][0],
+                                          Constants.STATECODE: params[Constants.STATECODE][0],
                                           Constants.ASMT_SUBJECT: Constants.ELA})
 
 
@@ -210,6 +218,7 @@ def get_math_interim_assessment_query(params):
     """
     return _get_extract_assessment_query({Constants.ASMT_TYPE: AssessmentType.COMPREHENSIVE_INTERIM,
                                          Constants.ASMT_YEAR: params[Constants.ASMTYEAR][0],
+                                         Constants.STATECODE: params[Constants.STATECODE][0],
                                          Constants.ASMT_SUBJECT: Constants.MATH})
 
 
@@ -221,6 +230,7 @@ def get_math_summative_assessment_query(params):
     """
     return _get_extract_assessment_query({Constants.ASMT_TYPE: AssessmentType.SUMMATIVE,
                                          Constants.ASMT_YEAR: params[Constants.ASMTYEAR][0],
+                                         Constants.STATECODE: params[Constants.STATECODE][0],
                                          Constants.ASMT_SUBJECT: Constants.MATH})
 
 QUERY_MAP = {

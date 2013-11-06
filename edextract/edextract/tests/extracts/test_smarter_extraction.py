@@ -1,7 +1,7 @@
 '''
-Created on Jan 24, 2013
+Created on Nov 5, 2013
 
-@author: tosako
+@author: ejen
 '''
 import unittest
 from edextract.extracts.smarter_extraction import _get_extract_assessment_query,\

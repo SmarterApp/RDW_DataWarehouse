@@ -190,7 +190,7 @@ define [
       $(document).on 'click', '#exportButton', ->
         if self.exportOption is 'file'
           # display file download options
-          CSVDownload = edwareDownload.create('.CSVDownloadContainer', self.CSVOptions)
+          CSVDownload = edwareDownload.create('.exportPopup .CSVDownloadContainer', self.CSVOptions)
           CSVDownload.show()
         else if self.exportOption is 'csv'
           $('#gridTable').edwareExport self.reportName, self.labels

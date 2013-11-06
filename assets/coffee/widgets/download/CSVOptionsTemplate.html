@@ -30,8 +30,12 @@
             <tr>
                 <td>{{name}}</td>
                 <td>
-                    <div id="asmtState" class="btn-group" data-option-name="{{name}}">
-                        <ul class="checkbox-menu" data-key="{{key}}">
+                    <div class="btn-group" data-option-name="{{name}}">
+                        <button class="btn dropdown-toggle btn-small" data-toggle="dropdown">
+                            <span class='dropdown-display'>{{options.0.display}}</span>
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" data-key="{{key}}">
                             {{#options}}
                             <li><label><input type="checkbox" value="{{value}}" data-label="{{display}}">{{display}}</label></li>
                             {{/options}}
@@ -44,8 +48,12 @@
             <tr>
                 <td>{{name}}</td>
                 <td>
-                    <div id="asmtYear" class="btn-group" data-option-name="{{name}}">
-                        <ul class="checkbox-menu" data-key="{{key}}">
+                    <div class="btn-group" data-option-name="{{name}}">
+                        <button class="btn dropdown-toggle btn-small" data-toggle="dropdown">
+                            <span class='dropdown-display'>{{options.0.display}}</span>
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" data-key="{{key}}">
                             {{#options}}
                             <li><label><input type="checkbox" value="{{value}}" data-label="{{display}}">{{display}}</label></li>
                             {{/options}}
@@ -89,11 +97,48 @@
     </div>
 
     <script type="text/template" id="ErrorMessageTemplate">
-     <div class="error">Your request could not go through. <strong>{{reportType}}</strong> results are not available for <strong>{{state}} {{asmtYear}} {{subject}}</strong>. Please select other options or try again at a later date, when data becomes available.</div>
+     System Error.
     </script>
 
     <script type="text/template" id="SuccessMessageTemplate">
-     <div class="success">Your request for <strong>{{state}} {{asmtYear}} {{subject}}</strong> Test Results made on {{requestDate}} at {{requestTime}} successful! Please visit your <a href="#">some-FTP-site.com</a> in 2 hours to download the requested file.</div>
+     {{#singleSuccess}}
+     <div class="success">
+       {{#success.0}}
+       Your request for {{asmtState}} {{asmtYear}} {{asmtType}} {{asmtSubject}} Tests Results made on {{requestDate}} at {{requestTime}} successful!
+       Please visit your <a href="#">some-FTP-site.com</a> in 2 hours to download the requested reports.
+       {{/success.0}}
+     </div>
+     {{/singleSuccess}}
+     {{#multipleSuccess}}
+     <div class="success">
+         Your request made on {{requestDate}} at {{requestTime}} successful! <br/>
+         Please visit your <a href="#">some-FTP-site.com</a> in 2 hours to download the requested reports.
+         <ul>
+           {{#success}}
+           <li>{{asmtState}} {{asmtYear}} {{asmtType}} {{asmtSubject}}</li>
+           {{/success}}
+         </ul>
+     </div>
+     {{/multipleSuccess}}
+     {{#singleFailure}}
+     <div class="error">
+         {{#failure.0}}
+         Your request could not go through. <strong>{{asmtType}}</strong> results are not available for <strong>{{asmtState}} {{asmtYear}} {{asmtSubject}}</strong>.
+         Please select other options or try again at a later date, when data become available.
+         {{/failure.0}}
+     </div>
+     {{/singleFailure}}
+     {{#multipleFailure}}
+     <div class="error">
+         Your request could not go through. Data are not available for the following reports:
+         <ul>
+             {{#failure}}
+             <li><strong>{{asmtState}} {{asmtYear}} {{asmtType}} {{asmtSubject}}</strong></li>
+             {{/failure}}
+         </ul>
+         Please select other options or try again at a later date, when data become available.
+     </div>
+     {{/multipleFailure}}
     </script>
 
     <script type="text/template" id="IndividualValidationTemplate">

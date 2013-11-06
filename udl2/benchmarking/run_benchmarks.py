@@ -18,10 +18,11 @@ from celery.utils.log import get_task_logger
 from udl2_util.database_util import connect_db, get_sqlalch_table_object
 
 
-CSV_FILES = ['REALDATA_RECORDS_10K.csv', 'REALDATA_RECORDS_50K.csv', 'REALDATA_RECORDS_100K.csv',
-             'REALDATA_RECORDS_500K.csv', 'REALDATA_RECORDS_2M.csv', 'REALDATA_RECORDS_5M.csv']
-JSON_FILES = ['METADATA_RECORDS_10K.json', 'METADATA_RECORDS_50K.json', 'METADATA_RECORDS_100K.json',
-              'METADATA_RECORDS_500K.json', 'METADATA_RECORDS_2M.json', 'METADATA_RECORDS_5M.json']
+FILES = ['ASMT_ID_2M.tar.gz.asc', 'ASMT_ID_5M.tar.gz.asc', 'ASMT_ID_10K.tar.gz.asc', 'ASMT_ID_50K.tar.gz.asc', 'ASMT_ID_100K.tar.gz.asc', 'ASMT_ID_500K.tar.gz.asc']
+#CSV_FILES = ['REALDATA_RECORDS_10K.csv', 'REALDATA_RECORDS_50K.csv', 'REALDATA_RECORDS_100K.csv',
+#             'REALDATA_RECORDS_500K.csv', 'REALDATA_RECORDS_2M.csv', 'REALDATA_RECORDS_5M.csv']
+#JSON_FILES = ['METADATA_RECORDS_10K.json', 'METADATA_RECORDS_50K.json', 'METADATA_RECORDS_100K.json',
+#              'METADATA_RECORDS_500K.json', 'METADATA_RECORDS_2M.json', 'METADATA_RECORDS_5M.json']
 HISTORY_TABLE = 'HISTORY_TABLE'
 BATCH_TABLE = 'UDL_BATCH'
 
@@ -57,7 +58,7 @@ def run_pipeline(msg):
         file_index = msg['file_index'] + 1
 
     # Exit if all tests have completed
-    if file_index >= len(CSV_FILES):
+    if file_index >= len(FILES):
         logger.info('All Tests Complete')
         return
 
@@ -68,11 +69,13 @@ def run_pipeline(msg):
     new_msg = dict(list(msg.items()) + list({'file_index': file_index, 'callback': run_pipeline}.items()))
 
     # define csv and json file
-    csv_file = os.path.join(directory, CSV_FILES[file_index])
-    json_file = os.path.join(directory, JSON_FILES[file_index])
+    #csv_file = os.path.join(directory, CSV_FILES[file_index])
+    #json_file = os.path.join(directory, JSON_FILES[file_index])
+    files = os.path.join(directory, FILES[file_index])
 
     # run pipeline with the two files and the newly constructed message
-    start_pipeline(csv_file, json_file, udl2_conf, batch_guid_forced=None, **new_msg)
+#     start_pipeline(csv_file, json_file, udl2_conf, batch_guid_forced=None, **new_msg)
+    start_pipeline(files, udl2_conf, batch_guid_forced=None, **new_msg)
 
 
 @celery.task(name="benchmarking.run_benchmarking.error_handler")

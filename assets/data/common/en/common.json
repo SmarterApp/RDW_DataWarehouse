@@ -648,10 +648,6 @@
             "key": "asmtYear",
             "options": [
                 {
-                    "display": "2013 - 2014",
-                    "value": "2013"
-                },
-                {
                     "display": "2014 - 2015",
                     "value": "2015"
                 }

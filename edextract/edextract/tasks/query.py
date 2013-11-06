@@ -63,7 +63,12 @@ def is_available(session=None, check_query=None, params=None, batch_id=None):
     :param batch_id: the batch_id for tracking
     '''
     log.info('extract check query for task ' + batch_id)
-    with EdCoreDBConnection() as connection:
+    if session is None:
+        return False
+    tenant = session.get_tenant()
+    if tenant is None:
+        return False
+    with EdCoreDBConnection(tenant) as connection:
         result = connection.execute(FUNCTION_MAP[check_query](params)).fetchone()
     if result is None or len(result) < 1:
         return False
@@ -85,7 +90,12 @@ def generate_csv(session=None, extract_query=None, params=None, output_uri=None,
     :param batch_id: batch_id for tracking
     '''
     log.info('execute tasks.extract.generate_csv for task ' + batch_id)
-    with EdCoreDBConnection() as connection:
+    if session is None:
+        return False
+    tenant = session.get_tenant()
+    if tenant is None:
+        return False
+    with EdCoreDBConnection(tenant) as connection:
         counter = 0
         result = connection.execute(FUNCTION_MAP[extract_query](params))
         if result is not None:

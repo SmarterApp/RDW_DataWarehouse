@@ -51,11 +51,15 @@
 	</div>
     </div>
     <div class="exportPopup">
+        <div class="CSVDownloadContainer"></div>
 	<div>
 	    <input type="radio" name="export_options" value="csv" checked>Export to CSV format<br/>
 	</div>
 	<div id="raw_extraction_option">
-		<input type="radio" name="export_options" value="extract">Extract Raw Data to CSV format<br/>
+	    <input type="radio" name="export_options" value="extract">Extract Raw Data to CSV format<br/>
+	</div>
+        <div id="file_download_option">
+	    <input type="radio" name="export_options" value="file">CSV File Download<br/>
 	</div>
 	<div id='exportButtonContent'>
 	    <button id="exportButton" type="button" class="btn btn-info">Export</button>

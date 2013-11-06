@@ -17,7 +17,7 @@ FACT_OUTCOME_FILE_PATTERN = '/opt/wgen/edware-udl/zones/datafiles/BENCHMARK_DATA
 UDL2_DEFAULT_CONFIG_PATH_FILE = '/opt/wgen/edware-udl/etc/udl2_conf.py'
 #TODO: use encrypted version of the two files above
 ARCHIVED_FILE = '/opt/wgen/edware-udl/zones/datafiles/test_source_file_tar_gzipped.tar.gz.gpg'
-TENANT_DIR = '/opt/wgen/edware-udl/zones/landing/arrivals/test_tenant/'
+TENANT_DIR = '/opt/wgen/edware-udl/zones/landing/arrivals/ftest_test_tenant/'
 
 
 class ValidateTableData(unittest.TestCase):
@@ -63,10 +63,10 @@ class ValidateTableData(unittest.TestCase):
         result = db_connection.execute('SELECT * FROM udl2."UDL_BATCH";').fetchall()
         print(len(result))
         number_of_row = len(result)
-        if number_of_row < 20:
+        if number_of_row < 22:
             time.sleep(30)
             print(number_of_row)
-        self.assertEqual(number_of_row, 23)
+        self.assertEqual(number_of_row, 24)
 
         output = db_connection.execute('SELECT udl_phase FROM udl2."UDL_BATCH";').fetchall()
         tuple_str = ('UDL_COMPLETE',)

@@ -1,7 +1,6 @@
 import csv
 from udl2_util.database_util import execute_queries
-from move_to_target import move_to_target
-from udl2 import W_load_from_integration_to_star
+from move_to_target import move_to_target, move_to_target_setup
 from tests.functional_tests.util import UDLTestHelper
 
 
@@ -46,14 +45,14 @@ class IntToStarFTest(UDLTestHelper):
 
         # explode to dim tables
         guid_batch = '2411183a-dfb7-42f7-9b3e-bb7a597aa3e7'
-        conf = W_load_from_integration_to_star.generate_conf(guid_batch, 4, 'Assessment')
-        table_map, column_map = W_load_from_integration_to_star.get_table_and_column_mapping(conf, 'dim_')
+        conf = move_to_target_setup.generate_conf(guid_batch, 4, 'Assessment', 'ts')
+        table_map, column_map = move_to_target_setup.get_table_and_column_mapping(conf, 'dim_')
         for target in table_map.keys():
             target_columns = column_map[target]
             column_types = move_to_target.get_table_column_types(conf, target, list(target_columns.keys()))
             move_to_target.explode_data_to_dim_table(conf, table_map[target], target, target_columns, column_types)
         # explode to fact table
-        table_map, column_map = W_load_from_integration_to_star.get_table_and_column_mapping(conf, 'fact_')
+        table_map, column_map = move_to_target_setup.get_table_and_column_mapping(conf, 'fact_')
         column_types = move_to_target.get_table_column_types(conf, list(table_map.keys())[0], list(column_map['fact_asmt_outcome'].keys()))
         move_to_target.explode_data_to_fact_table(conf, list(table_map.values())[0], list(table_map.keys())[0], column_map['fact_asmt_outcome'], column_types)
 

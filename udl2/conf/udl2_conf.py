@@ -15,8 +15,8 @@ udl2_conf = {
                            'udl2.W_load_json_to_integration',
                            'udl2.W_load_to_integration_table',
                            'udl2.W_load_from_integration_to_star',
+                           'udl2.W_post_etl',
                            'udl2.W_report_error_or_success',
-                           'udl2.W_final_cleanup',
                            'udl2.W_all_done',
                            'benchmarking.run_benchmarks',
                            ],
@@ -77,6 +77,9 @@ udl2_conf = {
         'audit': '/var/log/wgen/edware-udl/logs/udl2.audit.log',  # for status log for everything
         'error': '/var/log/wgen/edware-udl/logs/udl2.error.log',  # for error message and exceptions,
     },
+    'multi_tenant': {
+        'on': False,
+    },
     'udl2_db': {
         'csv_schema': 'udl2',  # PostgresQL for UDL2 processing. This is not the target database.
         'reference_schema': 'udl2',
@@ -95,6 +98,7 @@ udl2_conf = {
         'db_driver': 'postgresql',
         'json_lz_table': 'LZ_JSON',
         'csv_lz_table': 'LZ_CSV',
+        'master_metadata_table': 'MASTER_METADATA'
     },
     'target_db': {
         'db_schema': 'edware',

@@ -71,7 +71,7 @@ EXTRACT_POST_PARAMS = {
             "uniqueItems": True
         }
     },
-    "required": ["reportType", "asmtSubject", "asmtType", "asmtYear", "asmtState"]
+    "required": ["extractType", "asmtSubject", "asmtType", "asmtYear", "asmtState"]
 }
 
 EXTRACT_QUERY_MAP = {

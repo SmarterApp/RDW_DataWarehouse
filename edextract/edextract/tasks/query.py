@@ -82,7 +82,7 @@ def generate_csv(cookie=None, extract_query=None, output_uri=None, batch_id=None
     :param output_uri: output file uri
     :param batch_id: batch_id for tracking
     '''
-    log.info('execute tasks.extract.generate_csv for task + ' + batch_id)
+    log.info('execute tasks.extract.generate_csv for task ' + batch_id)
 
     with EdCoreDBConnection() as connection:
         counter = 0

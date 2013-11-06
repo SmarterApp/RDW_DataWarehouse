@@ -14,7 +14,7 @@ import platform
 from edextract.celery import celery
 from edextract.exceptions import ExtractionError
 import copy
-from edextract.celery import TIMEOUT
+from edextract.celery import TIMEOUT, MAX_RETRIES, RETRY_DELAY
 import services
 from celery.exceptions import MaxRetriesExceededError
 from edcore.database.stats_connector import StatsDBConnection
@@ -28,8 +28,8 @@ log = logging.getLogger('smarter')
 
 
 @celery.task(name="tasks.extract.handle_request",
-             max_retries=services.celery.MAX_RETRIES,
-             default_retry_delay=services.celery.RETRY_DELAY)
+             max_retries=edextract.celery.MAX_RETRIES,
+             default_retry_delay=edextract.celery.RETRY_DELAY)
 def handle_request(cookie=None, task_queries=None):
     '''
     celery entry point to take request extraction request from service endpoint.
@@ -52,8 +52,8 @@ def handle_request(cookie=None, task_queries=None):
 
 
 @celery.task(name="tasks.extract.is_available",
-             max_retries=services.celery.MAX_RETRIES,
-             default_retry_delay=services.celery.RETRY_DELAY)
+             max_retries=edextract.celery.MAX_RETRIES,
+             default_retry_delay=edextract.celery.RETRY_DELAY)
 def is_available(cookie=None, check_query=None):
     '''
     celery entry point to execute data availability check query.
@@ -71,8 +71,8 @@ def is_available(cookie=None, check_query=None):
 
 
 @celery.task(name="tasks.extract.generate_csv",
-             max_retries=services.celery.MAX_RETRIES,
-             default_retry_delay=services.celery.RETRY_DELAY)
+             max_retries=edextract.celery.MAX_RETRIES,
+             default_retry_delay=edextract.celery.RETRY_DELAY)
 def generate_csv(cookie=None, extract_query=None, output_uri=None):
     '''
     celery entry point to execute data extraction query.

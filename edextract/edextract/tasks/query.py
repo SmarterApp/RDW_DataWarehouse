@@ -108,7 +108,7 @@ def generate_csv(session=None, extract_query=None, params=None, output_uri=None,
                 header = list(result.keys())
             rows.append(list(result.values()))
         with open(output_uri, 'w') as csvfile:
-            csvwriter = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+            csvwriter = csv.writer(csvfile, delimiter=',', quoting=csv.QUOTE_NONE)
             csvwriter.writerow(header)
             for row in rows:
                 csvwriter.writerow(row)

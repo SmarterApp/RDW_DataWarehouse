@@ -41,6 +41,7 @@ class Test(unittest.TestCase):
         self.assertEqual(b'hello b.txt', file_b)
         file_c = zipfile.read('c.txt')
         self.assertEqual(b'hello c.txt', file_c)
+        zipfile.close()
 
 
 if __name__ == "__main__":

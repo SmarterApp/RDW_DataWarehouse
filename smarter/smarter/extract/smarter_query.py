@@ -10,60 +10,58 @@ from smarter.reports.helpers.constants import Constants
 from edextract.tasks.query import handle_request
 from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.extract.smarter_extraction import get_extract_assessment_query
+from pyramid.security import authenticated_userid
+from pyramid.threadlocal import get_current_request
+from uuid import uuid4
 
 
 log = logging.getLogger('smarter')
 
 
-def process_extraction_request(session, params):
+def process_extraction_request(params):
     '''
-    :param session:
     :param params:
     '''
     tasks = []
-    for e in params['extractType']:
+    for e in params[Constants.EXTRACTTYPE]:
         for s in params[Constants.ASMTSUBJECT]:
             for t in params[Constants.ASMTTYPE]:
-                #  We'll need to reimplement for year and stateCode, or just add a for loop
-                # TODO: define constants
-                # TODO: copy constnats from smarter to edextract
-                tasks.append({'extractType': e, Constants.ASMTSUBJECT: s, Constants.ASMTTYPE: t, Constants.ASMTYEAR: params[Constants.ASMTYEAR][0], Constants.STATECODE: params[Constants.STATECODE][0]})
+                # TODO: handle year and stateCode/tenant
+                tasks.append({Constants.EXTRACTTYPE: e,
+                              Constants.ASMTSUBJECT: s,
+                              Constants.ASMTTYPE: t,
+                              Constants.ASMTYEAR: params[Constants.ASMTYEAR][0],
+                              Constants.STATECODE: params[Constants.STATECODE][0]})
     task_responses = []
-
-    # TODO: Generate an id, to identify the batch_id here
+    request_id = str(uuid4())
 
     for task in tasks:
-        # TODO: use constants
         response = {Constants.ASMTYEAR: task[Constants.ASMTYEAR],
                     Constants.STATECODE: task[Constants.STATECODE],
-                    'extractType': task["extractType"],
+                    Constants.EXTRACTTYPE: task[Constants.EXTRACTTYPE],
                     Constants.ASMTSUBJECT: task[Constants.ASMTSUBJECT],
-                    Constants.ASMTTYPE: task[Constants.ASMTTYPE]}
+                    Constants.ASMTTYPE: task[Constants.ASMTTYPE],
+                    Constants.REQUESTID: request_id}
         extract_query = get_extract_assessment_query(task, compiled=True)
         check_query = get_extract_assessment_query(task, limit=1)
 
-        if has_data(session, check_query):
-            celery_response = handle_request.delay(session, extract_query)    # @UndefinedVariable
-            task_id = celery_response.task_id
-            response['status'] = Constants.OK
-            response[Constants.ID] = task_id
+        if has_data(check_query, request_id):
+            user = authenticated_userid(get_current_request())
+            # Call async celery task
+            celery_response = handle_request.delay(user, extract_query, request_id)    # @UndefinedVariable
+            response[Constants.STATUS] = Constants.OK
+            response[Constants.ID] = celery_response.task_id
         else:
-            response['status'] = Constants.FAIL
-            response['message'] = "Data is not available"
+            response[Constants.STATUS] = Constants.FAIL
+            response[Constants.MESSAGE] = "Data is not available"
         task_responses.append(response)
     return task_responses
 
 
-# TODO:  do we need batch id here?
-def has_data(session, query, batch_id="TODO"):
-    log.info('extract check query for task ' + batch_id)
-    if session is None:
-        return False
-    tenant = session.get_tenant()
-    if tenant is None:
-        return False
-    with EdCoreDBConnection(tenant) as connection:
-        result = connection.get_result(query)
+def has_data(query, request_id):
+    log.info('extract check query for extract request ' + request_id)
+    with EdCoreDBConnection() as connection:
+        result = connection.get_result(query.limit(1))
     if result is None or len(result) < 1:
         return False
     else:

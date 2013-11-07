@@ -4,7 +4,6 @@ Created on Nov 1, 2013
 @author: ejen
 '''
 from pyramid.view import view_config
-from pyramid.security import authenticated_userid
 from edapi.logging import audit_event
 from edapi.decorators import validate_params
 from edapi.exceptions import InvalidParameterError, ForbiddenError

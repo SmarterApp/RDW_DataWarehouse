@@ -23,14 +23,14 @@ def generate_stats_metadata(schema_name=None, bind=None):
                       )
 
     extract_stats = Table('extract_stats', metadata,
-                          Column('state_code', String(2), nullable=False),
                           Column('tenant', String(32), nullable=False),
-                          Column('user_guid', String(32), nullable=False),
+                          Column('user_guid', String(50), nullable=False),
                           Column('request_guid', String(50), nullable=False),
-                          Column('extract_start', DateTime, nullable=False),
+                          Column('extract_start', DateTime, nullable=True),
                           Column('extract_end', DateTime, nullable=True),
                           Column('extract_status', String(32), nullable=False),
-                          Column('task_id', String(50), nullable=False),
+                          Column('task_id', String(50), nullable=True),
+                          Column('celery_task_id', String(50), nullable=True),
                           Column('extract_params', String(256), nullable=False)
                           )
     return metadata

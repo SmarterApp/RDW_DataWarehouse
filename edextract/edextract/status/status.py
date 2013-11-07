@@ -7,11 +7,12 @@ from edcore.database.stats_connector import StatsDBConnection
 from edextract.status.constants import Constants
 from edcore.database import initialize_db
 from edcore.database.edcore_connector import EdCoreDBConnection
+import json
+from uuid import uuid4
 
 
 class ExtractStatus():
     QUEUED = 'QUEUED'               # Extract is queued in broker
-    STARTED = 'STARTED'             # Celery Worker has dequeued the task
     EXTRACTING = 'EXTRACTING'       # Extracting is in progress
     EXTRACTED = 'EXTRACTED'         # File has been extracted in work zone
     COPYING = 'COPYING'             # File is being copied to pick up zone
@@ -56,3 +57,15 @@ def setup_db_connection(settings):
     '''
     initialize_db(EdCoreDBConnection, settings)
     initialize_db(StatsDBConnection, settings, allow_schema_create=True)
+
+
+def create_new_status(user, request_id, params, status=ExtractStatus.QUEUED):
+    task_id = str(uuid4())
+
+    insert_extract_stats({Constants.REQUEST_GUID: request_id,
+                          Constants.EXTRACT_PARAMS: json.dumps(params),
+                          Constants.TENANT: user.get_tenant(),
+                          Constants.EXTRACT_STATUS: status,
+                          Constants.USER_GUID: user.get_guid(),
+                          Constants.TASK_ID: task_id})
+    return task_id

@@ -13,6 +13,7 @@ from smarter.extract.smarter_extraction import get_extract_assessment_query
 from pyramid.security import authenticated_userid
 from pyramid.threadlocal import get_current_request
 from uuid import uuid4
+from edextract.status.status import create_new_status, ExtractStatus
 
 
 log = logging.getLogger('smarter')
@@ -33,6 +34,7 @@ def process_extraction_request(params):
                               Constants.ASMTYEAR: params[Constants.ASMTYEAR][0],
                               Constants.STATECODE: params[Constants.STATECODE][0]})
     task_responses = []
+    # Generate an uuid for this extract request
     request_id = str(uuid4())
 
     for task in tasks:
@@ -47,10 +49,13 @@ def process_extraction_request(params):
 
         if has_data(check_query, request_id):
             user = authenticated_userid(get_current_request())
+            task_id = create_new_status(user, request_id, task, ExtractStatus.QUEUED)
             # Call async celery task
-            celery_response = handle_request.delay(user, extract_query, request_id)    # @UndefinedVariable
+            celery_response = handle_request.delay(user, extract_query, request_id, task_id)    # @UndefinedVariable
+            #TODO: Send to specific queue
+            task_id = celery_response.task_id
             response[Constants.STATUS] = Constants.OK
-            response[Constants.ID] = celery_response.task_id
+            response[Constants.ID] = task_id
         else:
             response[Constants.STATUS] = Constants.FAIL
             response[Constants.MESSAGE] = "Data is not available"

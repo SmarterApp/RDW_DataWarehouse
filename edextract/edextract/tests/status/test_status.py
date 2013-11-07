@@ -17,7 +17,6 @@ class TestStatus(Unittest_with_stats_sqlite):
 
     def test_insert_status(self):
         values = {Constants.TASK_ID: 'abc',
-                  Constants.STATE_CODE: 'NY',
                   Constants.TENANT: 'dummy',
                   Constants.USER_GUID: '1234',
                   Constants.EXTRACT_PARAMS: '{}',
@@ -36,7 +35,6 @@ class TestStatus(Unittest_with_stats_sqlite):
 
     def test_update_status(self):
         values = {Constants.TASK_ID: 'abcd',
-                  Constants.STATE_CODE: 'NY',
                   Constants.TENANT: 'dummy',
                   Constants.USER_GUID: '1234',
                   Constants.EXTRACT_PARAMS: '{}',

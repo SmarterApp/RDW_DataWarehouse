@@ -11,6 +11,9 @@ from edextract.celery import celery
 from edextract.celery import MAX_RETRIES, RETRY_DELAY
 from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.reports.helpers.utils import multi_delete
+from edextract.status.status import update_extract_stats, ExtractStatus
+from edextract.status.constants import Constants
+from datetime import datetime
 
 
 log = logging.getLogger('smarter')
@@ -19,7 +22,7 @@ log = logging.getLogger('smarter')
 @celery.task(name="tasks.extract.handle_request",
              max_retries=MAX_RETRIES,
              default_retry_delay=RETRY_DELAY)
-def handle_request(session, query, request_id):
+def handle_request(session, query, request_id, task_id):
     '''
     celery entry point to take request extraction request from service endpoint.
     it checks availiablity of data, then replies to smarter service point.
@@ -32,18 +35,18 @@ def handle_request(session, query, request_id):
     current_task_id = handle_request.request.id
     output_uri = '/tmp/extract_' + current_task_id + '.csv'
 
-    celery_extract_result = generate_csv.delay(session=session,
-                                               query=query,
-                                               output_uri=output_uri,
-                                               request_id=request_id,
-                                               task_id=current_task_id)
+    celery_extract_result = generate_csv.delay(session,
+                                               query,
+                                               task_id,
+                                               request_id,
+                                               output_uri)
     return True
 
 
 @celery.task(name="tasks.extract.generate_csv",
              max_retries=MAX_RETRIES,
              default_retry_delay=RETRY_DELAY)
-def generate_csv(session, query, output_uri=None, request_id=None, task_id=None):
+def generate_csv(session, query, task_id, request_id, output_uri):
     '''
     celery entry point to execute data extraction query.
     it execute extraction query and dump data into csv file that specified in output_uri
@@ -54,7 +57,7 @@ def generate_csv(session, query, output_uri=None, request_id=None, task_id=None)
     :param batch_id: batch_id for tracking
     '''
     log.info('execute tasks.extract.generate_csv for task ' + task_id)
-
+    update_extract_stats(task_id, {Constants.EXTRACT_STATUS: ExtractStatus.EXTRACTING, Constants.EXTRACT_START: datetime.now(), Constants.CELERY_TASK_ID: generate_csv.request.id})
     if session is None:
         return False
     tenant = session.get_tenant()
@@ -77,3 +80,4 @@ def generate_csv(session, query, output_uri=None, request_id=None, task_id=None)
             for row in rows:
                 csvwriter.writerow(row)
         csvfile.close()
+        update_extract_stats(task_id, {Constants.EXTRACT_STATUS: ExtractStatus.EXTRACTED, Constants.EXTRACT_END: datetime.now()})

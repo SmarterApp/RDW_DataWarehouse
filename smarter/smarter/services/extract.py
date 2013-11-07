@@ -5,7 +5,6 @@ Created on Nov 1, 2013
 '''
 from pyramid.view import view_config
 from pyramid.security import authenticated_userid
-from pyramid.threadlocal import get_current_request
 from edapi.logging import audit_event
 from edapi.decorators import validate_params
 from edapi.exceptions import InvalidParameterError, ForbiddenError
@@ -15,9 +14,9 @@ from edapi.httpexceptions import EdApiHTTPPreconditionFailed,\
     EdApiHTTPForbiddenAccess, EdApiHTTPInternalServerError
 import json
 from edextract.tasks.smarter_query import process_extraction_request
-from edauth.security.utils import get_session_cookie
+from smarter.reports.helpers.constants import AssessmentType, Constants
 
-EXTRACT_POST_PARAMS = {
+EXTRACT_PARAMS = {
     "type": "object",
     "properties": {
         'extractType': {
@@ -33,7 +32,7 @@ EXTRACT_POST_PARAMS = {
             "type": "array",
             "items": {
                 "type": "string",
-                "pattern": "^SUMMATIVE$|^INTERIM$"
+                "pattern": "^(" + AssessmentType.SUMMATIVE + "|" + AssessmentType.COMPREHENSIVE_INTERIM + ")$"
             },
             "minItems": 1,
             "uniqueItems": True
@@ -42,7 +41,7 @@ EXTRACT_POST_PARAMS = {
             "type": "array",
             "items": {
                 "type": "string",
-                "pattern": "^Math$|^ELA$"
+                "pattern": "^(" + Constants.MATH + "|" + Constants.ELA + ")$"
             },
             "minItems": 1,
             "uniqueItems": True
@@ -71,7 +70,7 @@ EXTRACT_POST_PARAMS = {
 
 
 @view_config(route_name='extract', request_method='POST', content_type='application/json')
-@validate_params(method='POST', schema=EXTRACT_POST_PARAMS)
+@validate_params(method='POST', schema=EXTRACT_PARAMS)
 #@audit_event()
 def post_extract_service(context, request):
     '''
@@ -83,12 +82,12 @@ def post_extract_service(context, request):
         params = request.json_body
     except ValueError:
         raise EdApiHTTPPreconditionFailed('Payload cannot be parsed')
-    user = authenticated_userid(get_current_request())
+    user = authenticated_userid(request)
     return send_extraction_request(user, params)
 
 
 @view_config(route_name='extract', request_method='GET')
-@validate_params(method='GET', schema=EXTRACT_POST_PARAMS)
+@validate_params(method='GET', schema=EXTRACT_PARAMS)
 #@audit_event()
 def get_extract_service(context, request):
     '''
@@ -96,13 +95,8 @@ def get_extract_service(context, request):
 
     :param request:  Pyramid request object
     '''
-    # flatten the parameters
-    query_string = request.GET
-    params = {}
-    for k in query_string.keys():
-        params[k] = query_string.getall(k)
-    user = authenticated_userid(get_current_request())
-    return send_extraction_request(user, params)
+    user = authenticated_userid(request)
+    return send_extraction_request(user, request.GET.mixed())
 
 
 def send_extraction_request(session, params):
@@ -113,7 +107,7 @@ def send_extraction_request(session, params):
     :param params: python dict that contains query parameters from the request
     '''
     try:
-        celery_result = process_extraction_request.delay(session, params)
+        celery_result = process_extraction_request.delay(session, params)   # @UndefinedVariable
         task_responses = celery_result.get()
         return Response(body=json.dumps(task_responses), content_type='application/json')
     except InvalidParameterError as e:

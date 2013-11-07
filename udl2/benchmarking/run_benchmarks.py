@@ -18,7 +18,7 @@ from celery.utils.log import get_task_logger
 from udl2_util.database_util import connect_db, get_sqlalch_table_object
 
 
-FILES = ['ASMT_ID_2M.tar.gz.asc', 'ASMT_ID_5M.tar.gz.asc', 'ASMT_ID_10K.tar.gz.asc', 'ASMT_ID_50K.tar.gz.asc', 'ASMT_ID_100K.tar.gz.asc', 'ASMT_ID_500K.tar.gz.asc']
+FILES = ['BENCHMARK_RECORDS_10K.tar.gz.asc', 'BENCHMARK_RECORDS_50K.tar.gz.asc', 'BENCHMARK_RECORDS_100K.tar.gz.asc', 'BENCHMARK_RECORDS_500K.tar.gz.asc', 'BENCHMARK_RECORDS_2M.tar.gz.asc', 'BENCHMARK_RECORDS_5M.tar.gz.asc']
 #CSV_FILES = ['REALDATA_RECORDS_10K.csv', 'REALDATA_RECORDS_50K.csv', 'REALDATA_RECORDS_100K.csv',
 #             'REALDATA_RECORDS_500K.csv', 'REALDATA_RECORDS_2M.csv', 'REALDATA_RECORDS_5M.csv']
 #JSON_FILES = ['METADATA_RECORDS_10K.json', 'METADATA_RECORDS_50K.json', 'METADATA_RECORDS_100K.json',
@@ -74,7 +74,7 @@ def run_pipeline(msg):
     files = os.path.join(directory, FILES[file_index])
 
     # run pipeline with the two files and the newly constructed message
-#     start_pipeline(csv_file, json_file, udl2_conf, batch_guid_forced=None, **new_msg)
+    #start_pipeline(csv_file, json_file, udl2_conf, batch_guid_forced=None, **new_msg)
     start_pipeline(files, udl2_conf, batch_guid_forced=None, **new_msg)
 
 

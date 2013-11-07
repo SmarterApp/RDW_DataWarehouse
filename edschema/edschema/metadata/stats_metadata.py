@@ -26,6 +26,7 @@ def generate_stats_metadata(schema_name=None, bind=None):
                           Column('state_code', String(2), nullable=False),
                           Column('tenant', String(32), nullable=False),
                           Column('user_guid', String(32), nullable=False),
+                          Column('request_guid', String(50), nullable=False),
                           Column('extract_start', DateTime, nullable=False),
                           Column('extract_end', DateTime, nullable=True),
                           Column('extract_status', String(32), nullable=False),

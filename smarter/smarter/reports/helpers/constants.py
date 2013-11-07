@@ -91,3 +91,7 @@ class Constants():
     LIMIT = 'limit'
     OK = 'ok'
     FAIL = 'fail'
+    EXTRACTTYPE = 'extractType'
+    STATUS = 'status'
+    MESSAGE = 'message'
+    REQUESTID = 'requestId'

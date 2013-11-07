@@ -18,7 +18,7 @@ log = logging.getLogger('smarter')
 @celery.task(name="tasks.extract.handle_request",
              max_retries=MAX_RETRIES,
              default_retry_delay=RETRY_DELAY)
-def handle_request(session, query):
+def handle_request(session, query, request_id):
     '''
     celery entry point to take request extraction request from service endpoint.
     it checks availiablity of data, then replies to smarter service point.
@@ -31,14 +31,14 @@ def handle_request(session, query):
     current_task_id = handle_request.request.id
     output_uri = '/tmp/extract_' + current_task_id + '.csv'
     celery_extract_result = generate_csv.delay(session, query,
-                                               output_uri=output_uri, batch_id=current_task_id)
+                                               output_uri=output_uri, request_id=request_id, task_id=current_task_id)
     return True
 
 
 @celery.task(name="tasks.extract.generate_csv",
              max_retries=MAX_RETRIES,
              default_retry_delay=RETRY_DELAY)
-def generate_csv(session, query, output_uri=None, batch_id=None):
+def generate_csv(session, query, output_uri=None, request_id=None, task_id=None):
     '''
     celery entry point to execute data extraction query.
     it execute extraction query and dump data into csv file that specified in output_uri
@@ -48,7 +48,7 @@ def generate_csv(session, query, output_uri=None, batch_id=None):
     :param output_uri: output file uri
     :param batch_id: batch_id for tracking
     '''
-    log.info('execute tasks.extract.generate_csv for task ' + batch_id)
+    log.info('execute tasks.extract.generate_csv for task ' + task_id)
     if session is None:
         return False
     tenant = session.get_tenant()

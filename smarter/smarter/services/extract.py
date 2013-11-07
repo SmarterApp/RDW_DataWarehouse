@@ -90,12 +90,11 @@ def post_extract_service(context, request):
     '''
     try:
         params = request.json_body
-        user = authenticated_userid(request)
     except ValueError:
         raise EdApiHTTPPreconditionFailed('Payload cannot be parsed')
     except Exception as e:
         raise EdApiHTTPPreconditionFailed(e)
-    return send_extraction_request(user, params)
+    return send_extraction_request(params)
 
 
 @view_config(route_name='extract', request_method='GET')
@@ -108,16 +107,15 @@ def get_extract_service(context, request):
     :param request:  Pyramid request object
     '''
     try:
-        user = authenticated_userid(request)
         params = convert_query_string_to_dict_arrays(request.GET)
     except ValueError:
         raise EdApiHTTPPreconditionFailed('Payload cannot be parsed')
     except Exception as e:
         raise EdApiHTTPPreconditionFailed(e)
-    return send_extraction_request(user, params)
+    return send_extraction_request(params)
 
 
-def send_extraction_request(session, params):
+def send_extraction_request(params):
     '''
     Requests for data extraction, throws http exceptions when error occurs
 
@@ -125,7 +123,7 @@ def send_extraction_request(session, params):
     :param params: python dict that contains query parameters from the request
     '''
     try:
-        results = process_extraction_request(session, params)
+        results = process_extraction_request(params)
         return Response(body=json.dumps(results), content_type='application/json')
     # TODO: currently we dont' even throw any of these exceptions
     except InvalidParameterError as e:

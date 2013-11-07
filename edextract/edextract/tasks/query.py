@@ -12,6 +12,7 @@ from edextract.celery import MAX_RETRIES, RETRY_DELAY
 from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.reports.helpers.utils import multi_delete
 
+
 log = logging.getLogger('smarter')
 
 
@@ -25,13 +26,15 @@ def handle_request(session, query):
     if data is available, it executes extraction query.
     it also handles book keeping for tasks.
     :param session: session for caller, for context security checkings
-    :param task_queries: queries from caller
+    :param queries: query that are going to be executed
     :param params: request extration input parameters
     '''
     current_task_id = handle_request.request.id
     output_uri = '/tmp/extract_' + current_task_id + '.csv'
-    celery_extract_result = generate_csv.delay(session, query,
-                                               output_uri=output_uri, batch_id=current_task_id)
+    celery_extract_result = generate_csv.delay(session=session,
+                                               query=query,
+                                               output_uri=output_uri,
+                                               batch_id=current_task_id)
     return True
 
 
@@ -43,12 +46,13 @@ def generate_csv(session, query, output_uri=None, batch_id=None):
     celery entry point to execute data extraction query.
     it execute extraction query and dump data into csv file that specified in output_uri
     :param session: cookie for caller, for context security checkings
-    :param extract_queries: extraction query to dump data
+    :param query: extraction query to dump data
     :param params: request extraction input parameters
     :param output_uri: output file uri
     :param batch_id: batch_id for tracking
     '''
     log.info('execute tasks.extract.generate_csv for task ' + batch_id)
+
     if session is None:
         return False
     tenant = session.get_tenant()

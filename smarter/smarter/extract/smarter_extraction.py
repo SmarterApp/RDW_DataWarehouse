@@ -7,13 +7,29 @@ from edcore.database.edcore_connector import EdCoreDBConnection
 from sqlalchemy.sql.expression import and_
 from smarter.reports.helpers.constants import Constants, AssessmentType
 from smarter.security.context import select_with_context
+from psycopg2.extensions import adapt as sqlescape
 
 
-def get_extract_assessment_query(params, limit=None):
+def bind_sqlalchemy_vars(unbound_sql_code, params):
+    '''
+    This function bind sqlalchemy sql expression's free variable with its params
+    :param unbound_sql_code: a sqlalchemy object
+    :param params: dictionary of free variables and their values
+    '''
+    escaped_params = {}
+    for k, v in params.items():
+        unbound_sql_code = unbound_sql_code.replace(':' + k, str(sqlescape(v)))
+
+    return unbound_sql_code
+
+
+def get_extract_assessment_query(params, limit=None, compiled=False):
     """
-    private method to generate SQLAlchemy object for extraction
+    private method to generate SQLAlchemy object or sql code for extraction
 
     :param params: for query parameters asmt_type, asmt_subject, asmt_year, limit, most_recent
+    :param limit: for set up limit of result
+    :param compile: True to return SQL code, otherwise just SQLALchemy object
     """
     asmt_type = params.get(Constants.ASMTTYPE, None)
     asmt_subject = params.get(Constants.ASMTSUBJECT, None)
@@ -92,4 +108,8 @@ def get_extract_assessment_query(params, limit=None):
             query = query.where(and_(fact_asmt_outcome.c.state_code == state_code))
             if limit is not None:
                 query = query.limit(limit)
+
+            if compiled:
+                query = bind_sqlalchemy_vars(str(query), query.compile().params)
+
         return query

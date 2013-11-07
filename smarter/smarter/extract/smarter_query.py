@@ -39,9 +39,11 @@ def process_extraction_request(session, params):
                     'extractType': task["extractType"],
                     Constants.ASMTSUBJECT: task[Constants.ASMTSUBJECT],
                     Constants.ASMTTYPE: task[Constants.ASMTTYPE]}
-        query = get_extract_assessment_query(task)
-        if has_data(session, query):
-            celery_response = handle_request.delay(session, query)    # @UndefinedVariable
+        extract_query = get_extract_assessment_query(task, compiled=True)
+        check_query = get_extract_assessment_query(task, limit=1)
+
+        if has_data(session, check_query):
+            celery_response = handle_request.delay(session, extract_query)    # @UndefinedVariable
             task_id = celery_response.task_id
             response['status'] = Constants.OK
             response[Constants.ID] = task_id
@@ -61,7 +63,7 @@ def has_data(session, query, batch_id="TODO"):
     if tenant is None:
         return False
     with EdCoreDBConnection(tenant) as connection:
-        result = connection.get_result(query.limit(1))
+        result = connection.get_result(query)
     if result is None or len(result) < 1:
         return False
     else:

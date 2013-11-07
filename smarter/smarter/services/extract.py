@@ -13,8 +13,9 @@ from pyramid.response import Response
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed,\
     EdApiHTTPForbiddenAccess, EdApiHTTPInternalServerError
 import json
-from edextract.tasks.smarter_query import process_extraction_request
-from smarter.reports.helpers.constants import AssessmentType, Constants
+from smarter.reports.helpers.constants import AssessmentType, Constants,\
+    ExtractType
+from smarter.extract.smarter_query import process_extraction_request
 
 EXTRACT_PARAMS = {
     "type": "object",
@@ -23,7 +24,7 @@ EXTRACT_PARAMS = {
             "type": "array",
             "items": {
                 "type": "string",
-                "pattern": "^studentAssessment$"
+                "pattern": "^" + ExtractType.studentAssessment + "$"
             },
             "minItems": 1,
             "uniqueItems": True
@@ -107,9 +108,9 @@ def send_extraction_request(session, params):
     :param params: python dict that contains query parameters from the request
     '''
     try:
-        celery_result = process_extraction_request.delay(session, params)   # @UndefinedVariable
-        task_responses = celery_result.get()
-        return Response(body=json.dumps(task_responses), content_type='application/json')
+        results = process_extraction_request(session, params)
+        return Response(body=json.dumps(results), content_type='application/json')
+    # TODO: currently we dont' even throw any of these exceptions
     except InvalidParameterError as e:
         raise EdApiHTTPPreconditionFailed(e.msg)
     except ForbiddenError as e:

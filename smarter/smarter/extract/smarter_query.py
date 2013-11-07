@@ -7,13 +7,13 @@ Created on Nov 5, 2013
 '''
 import logging
 from smarter.reports.helpers.constants import Constants
-from edextract.tasks.query import handle_request
 from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.extract.smarter_extraction import get_extract_assessment_query
 from pyramid.security import authenticated_userid
 from pyramid.threadlocal import get_current_request
 from uuid import uuid4
 from edextract.status.status import create_new_status, ExtractStatus
+from edextract.tasks.extract import generate
 
 
 log = logging.getLogger('smarter')
@@ -50,9 +50,10 @@ def process_extraction_request(params):
         if has_data(check_query, request_id):
             user = authenticated_userid(get_current_request())
             task_id = create_new_status(user, request_id, task, ExtractStatus.QUEUED)
+            file_name = __get_file_name(task)
             # Call async celery task
-            celery_response = handle_request.delay(user, extract_query, request_id, task_id)    # @UndefinedVariable
-            #TODO: Send to specific queue
+            # TODO: diff queue
+            celery_response = generate.delay(user, extract_query, request_id, task_id, file_name)  # @UndefinedVariable
             task_id = celery_response.task_id
             response[Constants.STATUS] = Constants.OK
             response[Constants.ID] = task_id
@@ -71,3 +72,7 @@ def has_data(query, request_id):
         return False
     else:
         return True
+
+
+def __get_file_name(param):
+    return 'ASMT_' + param[Constants.STATECODE] + '_' + param[Constants.ASMTSUBJECT] + '_' + param[Constants.ASMTTYPE] + "_"

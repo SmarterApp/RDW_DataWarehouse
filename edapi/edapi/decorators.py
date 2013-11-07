@@ -108,8 +108,7 @@ def validate_params(method, schema):
                         if method == 'GET':
                             # flatten construsct json
                             params = convert_query_string_to_dict_arrays(arg.GET)
-                         # parse request params in POST
-                        elif method == 'POST':
+                        elif method == 'POST':  # parse request params in POST
                             params = arg.json_body
                     except ValueError:
                         raise EdApiHTTPPreconditionFailed('Payload cannot be parsed')

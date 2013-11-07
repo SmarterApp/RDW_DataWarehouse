@@ -8,6 +8,7 @@ from pyramid.security import authenticated_userid
 from edapi.logging import audit_event
 from edapi.decorators import validate_params
 from edapi.exceptions import InvalidParameterError, ForbiddenError
+from edapi.utils import convert_query_string_to_dict_arrays
 from edextract.exceptions import ExtractionError
 from pyramid.response import Response
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed,\
@@ -64,6 +65,14 @@ EXTRACT_PARAMS = {
             },
             "minItems": 1,
             "uniqueItems": True
+        },
+        'sl': {  # this is added by GET request inside browsers
+            "type": "array",
+            "items": {
+                "type": "string",
+                "pattern": "^\d+$"
+            },
+            "required": False
         }
     },
     "required": ["extractType", "asmtSubject", "asmtType", "asmtYear", "stateCode"]
@@ -81,9 +90,11 @@ def post_extract_service(context, request):
     '''
     try:
         params = request.json_body
+        user = authenticated_userid(request)
     except ValueError:
         raise EdApiHTTPPreconditionFailed('Payload cannot be parsed')
-    user = authenticated_userid(request)
+    except Exception as e:
+        raise EdApiHTTPPreconditionFailed(e)
     return send_extraction_request(user, params)
 
 
@@ -96,8 +107,14 @@ def get_extract_service(context, request):
 
     :param request:  Pyramid request object
     '''
-    user = authenticated_userid(request)
-    return send_extraction_request(user, request.GET.mixed())
+    try:
+        user = authenticated_userid(request)
+        params = convert_query_string_to_dict_arrays(request.GET)
+    except ValueError:
+        raise EdApiHTTPPreconditionFailed('Payload cannot be parsed')
+    except Exception as e:
+        raise EdApiHTTPPreconditionFailed(e)
+    return send_extraction_request(user, params)
 
 
 def send_extraction_request(session, params):

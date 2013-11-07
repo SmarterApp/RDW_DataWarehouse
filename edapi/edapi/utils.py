@@ -101,3 +101,18 @@ def adopt_to_method_and_func(decorator):
     def adapter(func):
         return decorator_adapter(decorator, func)
     return adapter
+
+
+def convert_query_string_to_dict_arrays(request_query_string):
+    '''
+    Becuase pyramid.GET.mixed() doesn't put param1=value1 as params1:[values1],
+    so we need this to convert query string parameters into what we want.
+    :param request_query_string: pyramid.request's query string dictionary object
+    '''
+    params = {}
+    for k, v in request_query_string.items():
+        if params.get(k) is not None:
+            params[k].append(v)
+        else:
+            params[k] = [v]
+    return params

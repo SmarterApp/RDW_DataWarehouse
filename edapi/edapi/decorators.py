@@ -15,6 +15,7 @@ from functools import wraps
 from pyramid.security import authenticated_userid
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed
 from edapi.validation import Validator
+from edapi.utils import convert_query_string_to_dict_arrays
 
 
 class report_config(object):
@@ -103,29 +104,23 @@ def validate_params(method, schema):
             params = {}
             for arg in args:
                 if type(arg) == pyramid.request.Request:
-                    if method == 'GET':
-                        query_string = arg.GET
-                        # flatten construsct json
-                        for k, v in query_string.items():
-                            if params.get(k) is not None:
-                                params[k].append(v)
-                            else:
-                                params[k] = [v]
-
-                    # parse request params in POST
-                    elif method == 'POST':
-                        try:
+                    try:
+                        if method == 'GET':
+                            # flatten construsct json
+                            params = convert_query_string_to_dict_arrays(arg.GET)
+                         # parse request params in POST
+                        elif method == 'POST':
                             params = arg.json_body
-                        except ValueError:
-                            raise EdApiHTTPPreconditionFailed('Payload cannot be parsed')
-                        except Exception as e:
-                            raise EdApiHTTPPreconditionFailed('Payload cannot be parsed')
+                    except ValueError:
+                        raise EdApiHTTPPreconditionFailed('Payload cannot be parsed')
+                    except Exception as e:
+                        raise EdApiHTTPPreconditionFailed('Payload cannot be parsed')
             # validate params against schema
 
             try:
                 validictory.validate(params, schema)
             except Exception as e:
-                raise EdApiHTTPPreconditionFailed("Parameters validation failed")
+                raise EdApiHTTPPreconditionFailed(e)
             return request_handler(*args, **kwargs)
 
         return validate_wrap

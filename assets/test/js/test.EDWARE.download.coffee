@@ -9,14 +9,24 @@ define ["jquery", "edwareDownload"], ($, edwareDownload) ->
     url: "resources/CSVOptionsConfig.json"
     success: (data) ->
       config = data.CSVOptions
-  }  
+  }
 
   module "EDWARE.download",
     setup: ->
       $("body").append "<div id='CSVDownloadContainer'></div>"
+      # mock ajax call
+      options = {}
+      $.ajaxBackup = $.ajax
+      $.ajax = (url, param) ->
+        options = param
+        done: (callback) ->
+          callback.call(this)
+        fail: (callback) ->
+          callback.call(this)
 
     teardown: ->
       $("#CSVDownloadContainer").remove()
+      $.ajax = $.ajaxBackup
 
   test "Test download widget", ->
     ok edwareDownload, "Should define download widget"
@@ -60,30 +70,18 @@ define ["jquery", "edwareDownload"], ($, edwareDownload) ->
   test "Test failed request", 1, ->
     model = new CSVDownloadModal('#CSVDownloadContainer', config)
     model.sendRequest '/data/dummy'
-    stop()
-    setTimeout () ->
-      ok $('#message').find('.error')[0], "Should display error message"
-      start()
-    , 2000
+    ok $('#message').find('.error')[0], "Should display error message"
 
   test "Test success request", 1, ->
     model = new CSVDownloadModal('#CSVDownloadContainer', config)
     model.sendRequest '/services/extract'
-    stop()
-    setTimeout () ->
-      ok $('#message').find('.success')[0], "Should display success message"
-      start()
-    , 2000
+    ok $('#message').find('.success')[0], "Should display success message"
 
   test "Test request button click event", 1, ->
     model = new CSVDownloadModal('#CSVDownloadContainer', config)
     $('.btn-primary').trigger 'click'
-    stop()
-    setTimeout () ->
-      ok $('#message').find('.success')[0], "Clicking request button should trigger request and display success message"
-      start()
-    , 2000
-  
+    ok $('#message').find('.success')[0], "Clicking request button should trigger request and display success message"
+        
   test "Test validating parameters", ->    
     model = new CSVDownloadModal('#CSVDownloadContainer', config)
     $('.dropdown-menu input').removeAttr 'checked'

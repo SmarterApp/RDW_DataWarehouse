@@ -84,7 +84,6 @@ def generate_conf(guid_batch, phase_number, load_type, tenant_code):
     :return: A dictionary of the config details
     """
     tenant_db_info = get_tenant_target_db_information(tenant_code)
-
     conf = {  # add guid_batch from msg
               mk.GUID_BATCH: guid_batch,
 
@@ -127,8 +126,8 @@ def get_tenant_target_db_information(tenant_code):
         table_meta = get_sqlalch_table_object(engine, udl2_conf['udl2_db']['reference_schema'],
                                               udl2_conf['udl2_db']['master_metadata_table'])
 
-        (_, _, _, _, db_host, db_name, schema, port, user, passwd, _) = conn.execute(select([table_meta]).where(table_meta.c.tenant_code == tenant_code)).fetchone()
-        print('got tenant information from db', db_host, db_name, schema, port, user, passwd)
+        select_object = select([table_meta]).where(table_meta.c.tenant_code == tenant_code)
+        (_, _, _, _, db_host, db_name, schema, port, user, passwd, _) = conn.execute(select_object).fetchone()
     else:
         db_host = udl2_conf['target_db']['db_host']
         port = udl2_conf['target_db']['db_port']

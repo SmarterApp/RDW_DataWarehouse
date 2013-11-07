@@ -473,7 +473,7 @@ jenkins_dev:
         name_qualifier: http://edwappsrv4.poc.dum.edwdc.net:18080/opensso
     mode: test
     pdf:
-      report_base_dir: /opt/edware/pdf
+      report_base_dir: /tmp/pdf
       base.url: http://edwappsrv1.poc.dum.edwdc.net/assets/html/
       health_check.job.queue: health_check
     cache:

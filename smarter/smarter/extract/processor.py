@@ -39,7 +39,6 @@ def process_extraction_request(params):
     task_responses = []
     # Generate an uuid for this extract request
     request_id = str(uuid4())
-    sftp_server_address = get_current_registry().settings.get('extract.sftp_server_address')
     request_time = datetime.now()
 
     for task in tasks:
@@ -65,7 +64,7 @@ def process_extraction_request(params):
             response[Extract.STATUS] = Extract.FAIL
             response[Extract.MESSAGE] = "Data is not available"
         task_responses.append(response)
-    return {"server": sftp_server_address, "tasks": task_responses, "requestDate": request_time.strftime("%b %-d"), "requestTime": request_time.strftime("%-I:%M%p").lower()}
+    return task_responses
 
 
 def has_data(query, request_id):

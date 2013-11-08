@@ -5,7 +5,7 @@
     </div>
     <div class="modal-body">
         <div id="message">
-            <p>Once requested your CSV will become available in 24 hours at <a>your secure FTP site</a>.</p>
+            <p>Once requested your CSV will become available in 24 hours at your secured FTP site</p>
         </div>
         <table class='csv_options_table'>
             {{#extractType}}
@@ -107,14 +107,14 @@
      <div class="success">
        {{#success.0}}
        Your request for <b>{{asmtState}} {{asmtYear}} {{asmtType}} {{asmtSubject}}</b> Tests Results made on {{requestDate}} at {{requestTime}} was successful!
-       Please visit your SFTP site at <a href="#">{{server}}</a> in 24 hours to download the requested report.
+       Please contact your site administrator in 24 hours to download the requested report.
        {{/success.0}}
      </div>
      {{/singleSuccess}}
      {{#multipleSuccess}}
      <div class="success">
-         Your request made on {{requestDate}} at {{requestTime}} was successful! <br/>
-         Please visit your SFTP site at <a href="#">{{server}}</a> in 24 hours to download the requested reports.
+         Your request made on {{requestDate}} at {{requestTime}} was successful! <br/><br/>
+         Please contact your site administrator in 24 hours to download the requested reports.
          <ul>
            {{#success}}
            <li><b>{{asmtState}} {{asmtYear}} {{asmtType}} {{asmtSubject}}</b></li>

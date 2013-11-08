@@ -1,9 +1,10 @@
 define [
   "jquery"
   "mustache"
+  "moment"
   "text!CSVOptionsTemplate"
   "edwareConstants"
-], ($, Mustache, CSVOptionsTemplate, Constants) ->
+], ($, Mustache, moment, CSVOptionsTemplate, Constants) ->
 
   ERROR_TEMPLATE = $(CSVOptionsTemplate).children('#ErrorMessageTemplate').html()
 
@@ -68,7 +69,9 @@ define [
           if invalidFields.length isnt 0
             self.showCombinedErrorMessage invalidFields
           else
+            # disable button and all the input checkboxes
             $(this).attr('disabled','disabled')
+            $('input:checkbox', this.container).attr('disabled', 'disabled')
             self.sendRequest "/services/extract"
 
     validate: ($dropdown) ->
@@ -90,6 +93,10 @@ define [
 
     sendRequest: (url)->
       params = this.getParams()
+      # Get request time
+      currentTime = moment()
+      this.requestDate = currentTime.format 'MMM Do' 
+      this.requestTime = currentTime.format 'h:mma'
       # send request to backend
       request = $.ajax url, {
         type: 'POST'
@@ -118,15 +125,14 @@ define [
 
     showSuccessMessage: (response)->
       this.showCloseButton()
-      task_response = response['tasks'].map this.toDisplay.bind(this)
+      task_response = response.map this.toDisplay.bind(this)
       success = task_response.filter (item)->
         item['status'] is 'ok'
       failure = task_response.filter (item)->
         item['status'] is 'fail'
       this.message.html Mustache.to_html SUCCESS_TEMPLATE, {
-        server: response['server']
-        requestTime: response['requestTime']
-        requestDate: response['requestDate']
+        requestTime: this.requestTime
+        requestDate: this.requestDate
         # success messages
         success: success
         singleSuccess: success.length == 1

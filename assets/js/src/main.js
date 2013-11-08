@@ -7,6 +7,7 @@ require({
     bootstrap: '../../3p/bootstrap.min',
     text: '../../3p/text',
     mustache: '../../3p/mustache',
+    moment: '../../3p/moment.min',
     templates: '../../templates',
     edwareUtil: 'EDWARE.util',
     edwareConstants: 'EDWARE.constants',

@@ -14,7 +14,7 @@ class Test(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def testName(self):
+    def test_generate(self):
         pass
 
 if __name__ == "__main__":

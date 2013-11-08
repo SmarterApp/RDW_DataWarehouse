@@ -6,16 +6,15 @@ Created on Nov 1, 2013
 from pyramid.view import view_config
 from edapi.logging import audit_event
 from edapi.decorators import validate_params
-from edapi.exceptions import InvalidParameterError, ForbiddenError
 from edapi.utils import convert_query_string_to_dict_arrays
 from edextract.exceptions import ExtractionError
 from pyramid.response import Response
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed,\
-    EdApiHTTPForbiddenAccess, EdApiHTTPInternalServerError
+    EdApiHTTPInternalServerError
 import json
-from smarter.reports.helpers.constants import AssessmentType, Constants,\
-    ExtractType
-from smarter.extract.smarter_query import process_extraction_request
+from smarter.reports.helpers.constants import AssessmentType, Constants
+from smarter.extract.processor import process_extraction_request
+from smarter.extract.constants import ExtractType
 
 EXTRACT_PARAMS = {
     "type": "object",
@@ -125,12 +124,8 @@ def send_extraction_request(params):
         results = process_extraction_request(params)
         return Response(body=json.dumps(results), content_type='application/json')
     # TODO: currently we dont' even throw any of these exceptions
-    except InvalidParameterError as e:
-        raise EdApiHTTPPreconditionFailed(e.msg)
-    except ForbiddenError as e:
-        raise EdApiHTTPForbiddenAccess(e.msg)
     except ExtractionError as e:
         raise EdApiHTTPInternalServerError(e.msg)
     except TimeoutError as e:
-        # if celery get task got timed out...
+        # if celery timed out...
         raise EdApiHTTPInternalServerError(e.msg)

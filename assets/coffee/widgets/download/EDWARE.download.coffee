@@ -54,20 +54,22 @@ define [
           $dropdown.removeClass('invalid')
 
       this.submitBtn.click ()->
-        # remove ealier error messages
+        # remove earlier error messages
         $('div.error', self.messages).remove()
         # validate each selection group
         invalidFields = []
-        $('div.btn-group', self.container).each ()->
-          $dropdown = $(this)
-          if not self.validate($dropdown)
-            $dropdown.addClass('invalid')
-            invalidFields.push $dropdown.data('option-name')
-        if invalidFields.length isnt 0
-          self.showCombinedErrorMessage invalidFields
-        else
-          $(this).attr('disabled','disabled')
-          self.sendRequest "/services/extract"
+        # check if button is 'Close' or 'Request'
+        if $(this).data('dismiss') != 'modal'
+          $('div.btn-group', self.container).each ()->
+            $dropdown = $(this)
+            if not self.validate($dropdown)
+              $dropdown.addClass('invalid')
+              invalidFields.push $dropdown.data('option-name')
+          if invalidFields.length isnt 0
+            self.showCombinedErrorMessage invalidFields
+          else
+            $(this).attr('disabled','disabled')
+            self.sendRequest "/services/extract"
 
     validate: ($dropdown) ->
       # check selected options
@@ -108,14 +110,23 @@ define [
       for key, value of item
         item[key] = configMap[value] if configMap[value]
       item
+      
+    showCloseButton: () ->
+      this.submitBtn.text 'Close'
+      this.submitBtn.removeAttr 'disabled'
+      this.submitBtn.attr 'data-dismiss', 'modal'
 
     showSuccessMessage: (response)->
-      response = response.map this.toDisplay.bind(this)
-      success = response.filter (item)->
+      this.showCloseButton()
+      task_response = response['tasks'].map this.toDisplay.bind(this)
+      success = task_response.filter (item)->
         item['status'] is 'ok'
-      failure = response.filter (item)->
+      failure = task_response.filter (item)->
         item['status'] is 'fail'
       this.message.html Mustache.to_html SUCCESS_TEMPLATE, {
+        server: response['server']
+        requestTime: response['requestTime']
+        requestDate: response['requestDate']
         # success messages
         success: success
         singleSuccess: success.length == 1
@@ -127,6 +138,7 @@ define [
       }
 
     showFailureMessage: (response)->
+      this.showCloseButton()
       errorMessage = Mustache.to_html ERROR_TEMPLATE, {
         response: response
       }

@@ -5,10 +5,6 @@ Created on Mar 12, 2013
 '''
 
 
-class ExtractType():
-    studentAssessment = 'studentAssessment'
-
-
 class AssessmentType():
     '''
     constants for asmt types
@@ -88,10 +84,3 @@ class Constants():
     RAW_EXPORT = 'raw'
     MOST_RECENT = 'most_recent'
     ASMT_YEAR = 'asmt_year'
-    LIMIT = 'limit'
-    OK = 'ok'
-    FAIL = 'fail'
-    EXTRACTTYPE = 'extractType'
-    STATUS = 'status'
-    MESSAGE = 'message'
-    REQUESTID = 'requestId'

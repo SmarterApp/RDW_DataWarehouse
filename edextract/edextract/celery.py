@@ -13,8 +13,11 @@ TIMEOUT = 20
 MAX_RETRIES = 1
 # delay in retry. Default to 60 seconds
 RETRY_DELAY = 60
+# KWARGS for celery apply_async calls
+KWARGS = {}
 
 PREFIX = 'extract.celery'
+QUEUE_NAME = 'extract'
 
 
 def setup_celery(settings, prefix=PREFIX):
@@ -48,3 +51,5 @@ if prod_config:
     # We should only need to setup db connection in prod mode
     setup_db_connection(prod_config)
     setup_global_settings(prod_config)
+    # Set up queue name
+    KWARGS = {'queue': QUEUE_NAME}

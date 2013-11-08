@@ -94,6 +94,7 @@ common:
     extract:
       retry_delay: 60
       retries_allowed: 1
+      sftp_server_address: sbac-sftp.com
 
   '[server:main]':
     use: 'egg:waitress#main'

@@ -106,18 +106,18 @@
      {{#singleSuccess}}
      <div class="success">
        {{#success.0}}
-       Your request for {{asmtState}} {{asmtYear}} {{asmtType}} {{asmtSubject}} Tests Results made on {{requestDate}} at {{requestTime}} successful!
-       Please visit your <a href="#">some-FTP-site.com</a> in 2 hours to download the requested reports.
+       Your request for <b>{{asmtState}} {{asmtYear}} {{asmtType}} {{asmtSubject}}</b> Tests Results made on {{requestDate}} at {{requestTime}} was successful!
+       Please visit your SFTP site at <a href="#">{{server}}</a> in 24 hours to download the requested report.
        {{/success.0}}
      </div>
      {{/singleSuccess}}
      {{#multipleSuccess}}
      <div class="success">
-         Your request made on {{requestDate}} at {{requestTime}} successful! <br/>
-         Please visit your <a href="#">some-FTP-site.com</a> in 2 hours to download the requested reports.
+         Your request made on {{requestDate}} at {{requestTime}} was successful! <br/>
+         Please visit your SFTP site at <a href="#">{{server}}</a> in 24 hours to download the requested reports.
          <ul>
            {{#success}}
-           <li>{{asmtState}} {{asmtYear}} {{asmtType}} {{asmtSubject}}</li>
+           <li><b>{{asmtState}} {{asmtYear}} {{asmtType}} {{asmtSubject}}</b></li>
            {{/success}}
          </ul>
      </div>

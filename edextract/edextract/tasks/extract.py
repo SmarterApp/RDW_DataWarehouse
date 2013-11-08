@@ -22,11 +22,11 @@ log = logging.getLogger('edextract')
 @celery.task(name="tasks.extract.generate",
              max_retries=MAX_RETRIES,
              default_retry_delay=RETRY_DELAY)
-def generate(session, query, request_id, task_id, file_name):
+def generate(tenant, query, request_id, task_id, file_name):
     '''
     celery entry point to execute data extraction query.
     it execute extraction query and dump data into csv file that specified in output_uri
-    :param session: cookie for caller, for context security checkings
+    :param tenant: tenant of the user
     :param query: extraction query to dump data
     :param params: request extraction input parameters
     :param output_uri: output file uri
@@ -36,9 +36,6 @@ def generate(session, query, request_id, task_id, file_name):
     output_uri = '/tmp/' + file_name + str(start_time.strftime("%m-%d-%Y_%H-%M-%S")) + '.csv'
     log.info('execute tasks.extract.generate_csv for task ' + task_id)
     update_extract_stats(task_id, {Constants.EXTRACT_STATUS: ExtractStatus.EXTRACTING, Constants.EXTRACT_START: start_time, Constants.CELERY_TASK_ID: generate.request.id})
-    if session is None:
-        return False
-    tenant = session.get_tenant()
     if tenant is None:
         return False
 

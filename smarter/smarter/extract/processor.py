@@ -51,10 +51,11 @@ def process_extraction_request(params):
 
         if has_data(check_query, request_id):
             user = authenticated_userid(get_current_request())
+            tenant = user.get_tenant()
             task_id = create_new_status(user, request_id, task, ExtractStatus.QUEUED)
             file_name = __get_file_name(task)
             # Call async celery task.  Kwargs set up queue name in prod mode
-            celery_response = generate.delay(user, extract_query, request_id, task_id, file_name, **edextract.celery.KWARGS)  # @UndefinedVariable
+            celery_response = generate.delay(tenant, extract_query, request_id, task_id, file_name, **edextract.celery.KWARGS)  # @UndefinedVariable
             task_id = celery_response.task_id
             response[Extract.STATUS] = Extract.OK
             response[Constants.ID] = task_id

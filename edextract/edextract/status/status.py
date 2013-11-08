@@ -69,3 +69,7 @@ def create_new_status(user, request_id, params, status=ExtractStatus.QUEUED):
                           Constants.USER_GUID: user.get_guid(),
                           Constants.TASK_ID: task_id})
     return task_id
+
+
+def update_status():
+    pass

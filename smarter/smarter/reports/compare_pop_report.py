@@ -19,9 +19,9 @@ from smarter.reports.helpers.metadata import get_custom_metadata
 from edapi.cache import cache_region
 from smarter.reports.helpers.filters import FILTERS_CONFIG, has_filters,\
     apply_filter_to_query
-from smarter.reports.helpers.utils import merge_dict
 from smarter.reports.helpers.compare_pop_stat_report import get_not_stated_count
 from edcore.database.edcore_connector import EdCoreDBConnection
+from edcore.utils.utils import merge_dict
 
 REPORT_NAME = "comparing_populations"
 CACHE_REGION_PUBLIC_DATA = 'public.data'

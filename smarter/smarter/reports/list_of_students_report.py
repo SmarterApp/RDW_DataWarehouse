@@ -21,7 +21,7 @@ from smarter.reports.helpers.metadata import get_subjects_map,\
 from edapi.cache import cache_region
 from smarter.reports.helpers.filters import apply_filter_to_query,\
     has_filters, FILTERS_CONFIG
-from smarter.reports.helpers.utils import merge_dict, multi_delete
+from edcore.utils.utils import merge_dict, multi_delete
 from smarter.reports.helpers.compare_pop_stat_report import get_not_stated_count
 from string import capwords
 from edcore.database.edcore_connector import EdCoreDBConnection

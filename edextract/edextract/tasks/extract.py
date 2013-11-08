@@ -10,16 +10,16 @@ import logging
 from edextract.celery import celery
 from edextract.celery import MAX_RETRIES, RETRY_DELAY
 from edcore.database.edcore_connector import EdCoreDBConnection
-from smarter.reports.helpers.utils import multi_delete
+from edcore.utils.utils import multi_delete
 from edextract.status.status import update_extract_stats, ExtractStatus
 from edextract.status.constants import Constants
 from datetime import datetime
 
 
-log = logging.getLogger('smarter')
+log = logging.getLogger('edextract')
 
 
-@celery.task(name="tasks.extract.generate_csv",
+@celery.task(name="tasks.extract.generate",
              max_retries=MAX_RETRIES,
              default_retry_delay=RETRY_DELAY)
 def generate(session, query, request_id, task_id, file_name):
@@ -41,11 +41,13 @@ def generate(session, query, request_id, task_id, file_name):
     tenant = session.get_tenant()
     if tenant is None:
         return False
+    # TODO: add try/catch, update extract status
     with EdCoreDBConnection(tenant) as connection:
         results = connection.get_result(query)
         rows = []
         header = []
         # TODO: why is this here?
+        # TODO: collapse into one loop
         for result in results:
             # remove teacher names from results
             results = multi_delete(result, ['teacher_first_name', 'teacher_middle_name', 'teacher_last_name'])
@@ -59,3 +61,5 @@ def generate(session, query, request_id, task_id, file_name):
                 csvwriter.writerow(row)
         csvfile.close()
         update_extract_stats(task_id, {Constants.EXTRACT_STATUS: ExtractStatus.EXTRACTED, Constants.EXTRACT_END: datetime.now()})
+        # TODO: what does the return values do?
+        return True

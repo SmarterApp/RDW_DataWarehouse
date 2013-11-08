@@ -4,7 +4,7 @@ Created on Sep 1, 2013
 @author: dip
 '''
 import unittest
-from smarter.reports.helpers.utils import merge_dict, multi_delete
+from edcore.utils.utils import merge_dict, multi_delete
 
 
 class TestUtils(unittest.TestCase):

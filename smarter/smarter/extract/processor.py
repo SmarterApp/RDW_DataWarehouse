@@ -11,12 +11,11 @@ from smarter.extract.constants import Constants as Extract
 from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.extract.student_assessment import get_extract_assessment_query
 from pyramid.security import authenticated_userid
-from pyramid.threadlocal import get_current_request, get_current_registry
 from uuid import uuid4
 from edextract.status.status import create_new_status, ExtractStatus
 from edextract.tasks.extract import generate
-from datetime import datetime
 import edextract
+from pyramid.threadlocal import get_current_request
 
 
 log = logging.getLogger('smarter')
@@ -39,7 +38,6 @@ def process_extraction_request(params):
     task_responses = []
     # Generate an uuid for this extract request
     request_id = str(uuid4())
-    request_time = datetime.now()
 
     for task in tasks:
         response = {Constants.STATECODE: task[Constants.STATECODE],

@@ -46,7 +46,7 @@ define [
       $('input:checkbox', this.container).click (e)->
         $this = $(this)
         $dropdown = $this.closest('.btn-group')
-        # remove ealier error messages
+        # remove earlier error messages
         $('div.error', self.messages).remove()
         if not self.validate($dropdown)
           $dropdown.addClass('invalid')
@@ -70,8 +70,7 @@ define [
             self.showCombinedErrorMessage invalidFields
           else
             # disable button and all the input checkboxes
-            $(this).attr('disabled','disabled')
-            $('input:checkbox', this.container).attr('disabled', 'disabled')
+            self.disableInput()
             self.sendRequest "/services/extract"
 
     validate: ($dropdown) ->
@@ -122,14 +121,25 @@ define [
       this.submitBtn.text 'Close'
       this.submitBtn.removeAttr 'disabled'
       this.submitBtn.attr 'data-dismiss', 'modal'
+    
+    enableInput: () ->
+      this.submitBtn.removeAttr 'disabled'
+      $('input:checkbox', this.container).removeAttr 'disabled'
+    
+    disableInput: () ->
+      this.submitBtn.attr('disabled','disabled')
+      $('input:checkbox', this.container).attr('disabled', 'disabled') 
 
     showSuccessMessage: (response)->
-      this.showCloseButton()
       task_response = response.map this.toDisplay.bind(this)
       success = task_response.filter (item)->
         item['status'] is 'ok'
       failure = task_response.filter (item)->
         item['status'] is 'fail'
+      if success.length > 0
+        this.showCloseButton()
+      else
+        this.enableInput()
       this.message.html Mustache.to_html SUCCESS_TEMPLATE, {
         requestTime: this.requestTime
         requestDate: this.requestDate

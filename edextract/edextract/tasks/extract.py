@@ -41,25 +41,26 @@ def generate(session, query, request_id, task_id, file_name):
     tenant = session.get_tenant()
     if tenant is None:
         return False
+
     # TODO: add try/catch, update extract status
     with EdCoreDBConnection(tenant) as connection:
-        results = connection.get_result(query)
-        rows = []
+        results = connection.get_streaming_result(query)
+        #print(results)
         header = []
         # TODO: why is this here?
         # TODO: collapse into one loop
-        for result in results:
-            # remove teacher names from results
-            results = multi_delete(result, ['teacher_first_name', 'teacher_middle_name', 'teacher_last_name'])
-            if len(header) is 0:
-                header = list(result.keys())
-            rows.append(list(result.values()))
         with open(output_uri, 'w') as csvfile:
             csvwriter = csv.writer(csvfile, delimiter=',', quoting=csv.QUOTE_NONE)
-            csvwriter.writerow(header)
-            for row in rows:
+            for result in results:
+                #print(result)
+                # remove teacher names from results
+                result = multi_delete(result, ['teacher_first_name', 'teacher_middle_name', 'teacher_last_name'])
+                if len(header) is 0:
+                    header = list(result.keys())
+                    csvwriter.writerow(header)
+                row = list(result.values())
                 csvwriter.writerow(row)
-        csvfile.close()
+            csvfile.close()
         update_extract_stats(task_id, {Constants.EXTRACT_STATUS: ExtractStatus.EXTRACTED, Constants.EXTRACT_END: datetime.now()})
         # TODO: what does the return values do?
         return True

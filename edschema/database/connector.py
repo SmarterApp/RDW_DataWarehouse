@@ -62,9 +62,12 @@ class DBConnection(ConnectionBase):
     def __del__(self):
         self.close_connection()
 
-    # query and get result
-    # Convert from result_set to dictionary.
     def get_result(self, query):
+        '''
+        query and get result
+        Convert from result_set to dictionary.
+        :param query: A select query to be executed
+        '''
         result = self.execute(query)
         result_rows = []
 
@@ -76,6 +79,25 @@ class DBConnection(ConnectionBase):
                     result_row[key] = row[key]
                 result_rows.append(result_row)
         return result_rows
+
+    def get_streaming_result(self, query, fetch_size=1024):
+        '''
+        Query and get result
+        Convert from result_set to dictionary
+        Also do it in streaming way it wont use up memory
+        :param query: A select query to be execute
+        :param fetch_size: max number of rows to be returned
+        '''
+        result = self.execute(query)
+        # we should make this configurable in the long run
+        rows = result.fetchmany(fetch_size)
+        while len(rows) > 0:
+            for row in rows:
+                result_row = OrderedDict()
+                for key in row.keys():
+                    result_row[key] = row[key]
+                yield result_row
+            rows = result.fetchmany(fetch_size)
 
     # return Table Metadata
     def get_table(self, table_name):

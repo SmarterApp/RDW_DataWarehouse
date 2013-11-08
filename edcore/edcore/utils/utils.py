@@ -19,8 +19,9 @@ def merge_dict(d1, d2):
 def multi_delete(dictionary, list_of_key_names):
     '''
     remove list of fields from any dictionary object
+    also suppress delete not existing exceptions to make code easier to run
     :param dictionary: a dict object
-    :param list_of_key_name: an array of dictionary key
+    :param list_of_key_name: an array of dictionary keys that we try to delete
     '''
     for key_name in list_of_key_names:
         try:

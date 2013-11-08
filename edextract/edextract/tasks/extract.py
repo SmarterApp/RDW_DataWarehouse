@@ -38,6 +38,7 @@ def generate(tenant, query, request_id, task_id, file_name):
     try:
         update_extract_stats(task_id, {Constants.EXTRACT_STATUS: ExtractStatus.EXTRACTING, Constants.EXTRACT_START: start_time, Constants.CELERY_TASK_ID: generate.request.id})
         if tenant is None:
+            update_extract_stats(task_id, {Constants.EXTRACT_STATUS: ExtractStatus.NO_TENANT, Constants.EXTRACT_END: datetime.now()})
             return False
 
         with EdCoreDBConnection(tenant) as connection, open(output_uri, 'w') as csvfile:

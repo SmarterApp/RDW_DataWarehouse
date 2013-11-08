@@ -19,6 +19,7 @@ class ExtractStatus():
     COPIED = 'COPIED'               # File has been copied to pick up zone
     COMPLETED = 'COMPLETED'         # Extract process is completed
     FAIL = 'FAILED'                 # Extract process failed
+    NO_TENANT = 'NO_TENANT'         # Extract process failed due to no tenant given
 
 
 def insert_extract_stats(values):

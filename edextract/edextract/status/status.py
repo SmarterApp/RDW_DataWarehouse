@@ -18,7 +18,7 @@ class ExtractStatus():
     COPYING = 'COPYING'             # File is being copied to pick up zone
     COPIED = 'COPIED'               # File has been copied to pick up zone
     COMPLETED = 'COMPLETED'         # Extract process is completed
-    FAIL = 'FAILED'                 # Extract process failed
+    FAILED = 'FAILED'                 # Extract process failed
     NO_TENANT = 'NO_TENANT'         # Extract process failed due to no tenant given
 
 

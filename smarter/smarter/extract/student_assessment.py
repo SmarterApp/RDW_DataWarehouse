@@ -16,7 +16,6 @@ def bind_sqlalchemy_vars(unbound_sql_code, params):
     :param unbound_sql_code: a sqlalchemy object
     :param params: dictionary of free variables and their values
     '''
-    escaped_params = {}
     for k, v in params.items():
         unbound_sql_code = unbound_sql_code.replace(':' + k, str(sqlescape(v)))
 

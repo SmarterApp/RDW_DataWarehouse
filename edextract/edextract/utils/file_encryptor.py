@@ -63,7 +63,8 @@ class FileEncryptor:
             self.__bufferedwriter.close()
             self.__input_thread.join()
             self.__output_thread.join()
-        status = self.__proc.poll()
+        self.__proc.wait(timeout=15)
+        status = self.__proc.returncode
         if status != 0:
             raise FileEncryptorException(self.__proc.stderr.read().decode())
 

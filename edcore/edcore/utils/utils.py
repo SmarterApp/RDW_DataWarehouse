@@ -16,13 +16,15 @@ def merge_dict(d1, d2):
     return combined
 
 
-def multi_delete(dictionary, list_of_field_names):
+def multi_delete(dictionary, list_of_key_names):
     '''
     remove list of fields from any dictionary object
+    :param dictionary: a dict object
+    :param list_of_key_name: an array of dictionary key
     '''
-    for field_name in list_of_field_names:
+    for key_name in list_of_key_names:
         try:
-            del dictionary[field_name]
+            del dictionary[key_name]
         except Exception as e:
             pass
     return dictionary

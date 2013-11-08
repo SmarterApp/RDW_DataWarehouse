@@ -18,6 +18,7 @@ class ExtractStatus():
     COPYING = 'COPYING'             # File is being copied to pick up zone
     COPIED = 'COPIED'               # File has been copied to pick up zone
     COMPLETED = 'COMPLETED'         # Extract process is completed
+    FAIL = 'FAILED'                 # Extract process failed
 
 
 def insert_extract_stats(values):

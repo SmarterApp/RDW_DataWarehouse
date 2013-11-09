@@ -57,6 +57,10 @@ class FileEncryptor:
         self.__bufferedwriter.write(data.encode())
 
     def write(self, data):
+        '''
+        Write data to be encrypted, anything with write method that take data is a file object in python.
+        :param data: data to be encrypted
+        '''
         self.encrypt(data)
 
     def close(self):

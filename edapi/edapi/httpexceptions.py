@@ -17,7 +17,7 @@ def generate_exception_response(msg):
     :param msg: the error message
     :type msg: string
     '''
-    return {'text': json.dumps({'error': msg}), 'content_type': "application/json"}
+    return {'text': json.dumps({'error': str(msg)}), 'content_type': "application/json"}
 
 
 class EdApiHTTPNotFound(HTTPNotFound):

@@ -88,8 +88,6 @@ def post_extract_service(context, request):
     '''
     try:
         params = request.json_body
-    except ValueError:
-        raise EdApiHTTPPreconditionFailed('Payload cannot be parsed')
     except Exception as e:
         raise EdApiHTTPPreconditionFailed(e)
     return send_extraction_request(params)
@@ -106,8 +104,6 @@ def get_extract_service(context, request):
     '''
     try:
         params = convert_query_string_to_dict_arrays(request.GET)
-    except ValueError:
-        raise EdApiHTTPPreconditionFailed('Payload cannot be parsed')
     except Exception as e:
         raise EdApiHTTPPreconditionFailed(e)
     return send_extraction_request(params)

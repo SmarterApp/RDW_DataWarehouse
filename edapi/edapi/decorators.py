@@ -103,7 +103,7 @@ def validate_params(method, schema):
             '''
             params = {}
             for arg in args:
-                if type(arg) == pyramid.request.Request:
+                if type(arg) == pyramid.request.Request or type(arg) == pyramid.testing.DummyRequest:
                     try:
                         if method == 'GET':
                             # flatten construsct json

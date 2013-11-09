@@ -54,7 +54,7 @@ def process_extraction_request(params):
             tenant = user.get_tenant()
             user_name = user.get_uid()
             task_id = create_new_status(user, request_id, task, ExtractStatus.QUEUED)
-            file_name = __get_file_name(task)
+            file_name = get_file_name(task)
             # Call async celery task.  Kwargs set up queue name in prod mode
             celery_response = generate.delay(tenant, user_name, extract_query, request_id, task_id, file_name, **edextract.celery.KWARGS)  # @UndefinedVariable
             task_id = celery_response.task_id
@@ -70,12 +70,12 @@ def process_extraction_request(params):
 def has_data(query, request_id):
     log.info('Extract: data availability check for request ' + request_id)
     with EdCoreDBConnection() as connection:
-        result = connection.get_result(query.limit(1))
+        result = connection.get_result(query)
     if result is None or len(result) < 1:
         return False
     else:
         return True
 
 
-def __get_file_name(param):
-    return 'ASMT_' + param[Constants.STATECODE] + '_' + param[Constants.ASMTSUBJECT] + '_' + param[Constants.ASMTTYPE] + "_"
+def get_file_name(param):
+    return 'ASMT_' + param[Constants.STATECODE].upper() + '_' + param[Constants.ASMTSUBJECT].upper() + '_' + param[Constants.ASMTTYPE].upper() + "_"

@@ -94,7 +94,12 @@ common:
     extract:
       retry_delay: 60
       retries_allowed: 1
-
+      
+    sftp.jail.base_path: /sftp
+    pickup:
+      home.base_path: /opt/edware/home/departure
+      gatekeeper.cat: kswimberly
+      gatekeeper.dog: skong
   '[server:main]':
     use: 'egg:waitress#main'
     host: 0.0.0.0
@@ -431,6 +436,9 @@ development:
       always_generate: True
       health_check.job.queue: health_check
     trigger.recache.filter.file:  ../config/comparing_populations_precache_filters.json
+    extract.disable.sftp: False
+    sftp.jail.base_path: /tmp
+      
 test:
   '[app:main]':
     cache:

@@ -19,3 +19,4 @@ class Constants():
     USER_GUID = 'user_guid'
     REQUEST_GUID = 'request_guid'
     CELERY_TASK_ID = 'celery_task_id'
+    OUTPUT_FILE = 'output_file'

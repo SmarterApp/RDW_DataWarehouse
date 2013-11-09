@@ -31,6 +31,7 @@ def generate_stats_metadata(schema_name=None, bind=None):
                           Column('extract_status', String(32), nullable=False),
                           Column('task_id', String(50), nullable=True),
                           Column('celery_task_id', String(50), nullable=True),
-                          Column('extract_params', String(256), nullable=False)
+                          Column('extract_params', String(256), nullable=False),
+                          Column('output_file', String(256), nullable=True)
                           )
     return metadata

@@ -35,7 +35,7 @@ def generate(tenant, user_name, query, request_id, task_id, file_name):
     :param batch_id: batch_id for tracking
     '''
     start_time = datetime.now()
-    output_uri = '/tmp/' + file_name + str(start_time.strftime("%m-%d-%Y_%H-%M-%S")) + '.csv'
+    output_uri = '/tmp/' + file_name + str(start_time.strftime("%m-%d-%Y_%H-%M-%S")) + '.csv.gz.pgp'
     log.info('execute tasks.extract.generate_csv for task ' + task_id)
     try:
         update_extract_stats(task_id, {Constants.EXTRACT_STATUS: ExtractStatus.EXTRACTING, Constants.EXTRACT_START: start_time, Constants.CELERY_TASK_ID: generate.request.id})
@@ -43,7 +43,7 @@ def generate(tenant, user_name, query, request_id, task_id, file_name):
             update_extract_stats(task_id, {Constants.EXTRACT_STATUS: ExtractStatus.NO_TENANT, Constants.EXTRACT_END: datetime.now()})
             return False
         # TODO: Better way to manage file name extension and retrieve public from specific user.
-        with EdCoreDBConnection(tenant) as connection, FileEncryptor(output_file=output_uri + '.gz.pgp', recipient='Example User') as csvfile:
+        with EdCoreDBConnection(tenant) as connection, FileEncryptor(output_file=output_uri, recipient='Example User') as csvfile:
             results = connection.get_streaming_result(query)  # this result is a generator
             csvwriter = csv.writer(csvfile, delimiter=',', quoting=csv.QUOTE_NONE)
             header = []
@@ -56,7 +56,9 @@ def generate(tenant, user_name, query, request_id, task_id, file_name):
                 row = list(result.values())
                 csvwriter.writerow(row)
             csvfile.close()
-            update_extract_stats(task_id, {Constants.EXTRACT_STATUS: ExtractStatus.EXTRACTED, Constants.EXTRACT_END: datetime.now()})
+            update_extract_stats(task_id, {Constants.EXTRACT_STATUS: ExtractStatus.EXTRACTED,
+                                           Constants.EXTRACT_END: datetime.now(),
+                                           Constants.OUTPUT_FILE: output_uri})
             # TODO: what does the return values do?
             return True
     except Exception as e:

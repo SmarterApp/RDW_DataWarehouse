@@ -154,7 +154,7 @@ define [
       }
 
     showFailureMessage: (response)->
-      this.showCloseButton()
+      this.enableInput()
       errorMessage = Mustache.to_html ERROR_TEMPLATE, {
         response: response
       }

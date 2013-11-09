@@ -42,11 +42,11 @@ def generate(tenant, user_name, query, request_id, task_id, file_name):
         if tenant is None:
             update_extract_stats(task_id, {Constants.EXTRACT_STATUS: ExtractStatus.NO_TENANT, Constants.EXTRACT_END: datetime.now()})
             return False
+        # TODO: Better way to manage file name extension and retrieve public from specific user.
         with EdCoreDBConnection(tenant) as connection, FileEncryptor(output_file=output_uri + '.gz.pgp', recipient='Example User') as csvfile:
             results = connection.get_streaming_result(query)  # this result is a generator
             csvwriter = csv.writer(csvfile, delimiter=',', quoting=csv.QUOTE_NONE)
             header = []
-            # TODO: why is this here?
             for result in results:
                 # remove teacher names from results
                 result = multi_delete(result, ['teacher_first_name', 'teacher_middle_name', 'teacher_last_name'])

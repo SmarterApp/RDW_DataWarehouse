@@ -23,7 +23,9 @@ class FileEncryptor:
 
     def __init__(self, output_file=None, recipient=None, compress_level='9', binaryfile='gpg'):
         # GPG process
-        self.__proc = subprocess.Popen([binaryfile, '--encrypt', '--recipient', recipient, '--compress-level', compress_level], bufsize=FileEncryptor.BUFFER_SIZE, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        self.__proc = subprocess.Popen([binaryfile, '--encrypt', '--recipient', recipient,
+                                       '--compress-level', compress_level], bufsize=FileEncryptor.BUFFER_SIZE,
+                                       stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # input buffer buffer size is 1M
         reader, writer = os.pipe()
@@ -53,6 +55,9 @@ class FileEncryptor:
         this method is re-usable for incoming stream data.
         '''
         self.__bufferedwriter.write(data.encode())
+
+    def write(self, data):
+        self.encrypt(data)
 
     def close(self):
         '''

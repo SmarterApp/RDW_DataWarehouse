@@ -13,6 +13,7 @@ from edcore.database.edcore_connector import EdCoreDBConnection
 from edcore.utils.utils import multi_delete
 from edextract.status.status import update_extract_stats, ExtractStatus
 from edextract.status.constants import Constants
+from edextract.utils.file_encryptor import FileEncryptor
 from datetime import datetime
 
 
@@ -22,11 +23,12 @@ log = logging.getLogger('edextract')
 @celery.task(name="tasks.extract.generate",
              max_retries=MAX_RETRIES,
              default_retry_delay=RETRY_DELAY)
-def generate(tenant, query, request_id, task_id, file_name):
+def generate(tenant, user_name, query, request_id, task_id, file_name):
     '''
     celery entry point to execute data extraction query.
     it execute extraction query and dump data into csv file that specified in output_uri
     :param tenant: tenant of the user
+    :param user_name: user_id of the user
     :param query: extraction query to dump data
     :param params: request extraction input parameters
     :param output_uri: output file uri
@@ -40,8 +42,7 @@ def generate(tenant, query, request_id, task_id, file_name):
         if tenant is None:
             update_extract_stats(task_id, {Constants.EXTRACT_STATUS: ExtractStatus.NO_TENANT, Constants.EXTRACT_END: datetime.now()})
             return False
-
-        with EdCoreDBConnection(tenant) as connection, open(output_uri, 'w') as csvfile:
+        with EdCoreDBConnection(tenant) as connection, FileEncryptor(output_file=output_uri + '.gz.pgp', recipient='Example User') as csvfile:
             results = connection.get_streaming_result(query)  # this result is a generator
             csvwriter = csv.writer(csvfile, delimiter=',', quoting=csv.QUOTE_NONE)
             header = []

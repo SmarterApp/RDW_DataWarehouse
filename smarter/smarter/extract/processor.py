@@ -12,7 +12,7 @@ from edcore.database.edcore_connector import EdCoreDBConnection
 from smarter.extract.student_assessment import get_extract_assessment_query
 from pyramid.security import authenticated_userid
 from uuid import uuid4
-from edextract.status.status import create_new_status, ExtractStatus
+from edextract.status.status import create_new_entry, ExtractStatus
 from edextract.tasks.extract import generate
 import edextract
 from pyramid.threadlocal import get_current_request
@@ -53,7 +53,7 @@ def process_extraction_request(params):
             user = authenticated_userid(get_current_request())
             tenant = user.get_tenant()
             user_name = user.get_uid()
-            task_id = create_new_status(user, request_id, task, ExtractStatus.QUEUED)
+            task_id = create_new_entry(user, request_id, task, ExtractStatus.QUEUED)
             file_name = get_file_name(task)
             # Call async celery task.  Kwargs set up queue name in prod mode
             celery_response = generate.delay(tenant, user_name, extract_query, request_id, task_id, file_name, **edextract.celery.KWARGS)  # @UndefinedVariable

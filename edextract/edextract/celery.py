@@ -9,7 +9,6 @@ from edextract.status.status import setup_db_connection
 from edextract.settings.config import setup_settings
 
 PREFIX = 'extract.celery'
-QUEUE_NAME = 'extract'
 # Used to supplied extra args to calling edextract celery tasks
 KWARGS = {}
 
@@ -34,4 +33,4 @@ if prod_config:
     setup_db_connection(prod_config)
     setup_settings(prod_config)
     # Set up queue name
-    KWARGS = {'queue': QUEUE_NAME}
+    KWARGS = {'queue': 'extract'}

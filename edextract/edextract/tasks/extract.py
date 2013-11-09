@@ -14,15 +14,15 @@ from edextract.status.status import update_extract_stats, ExtractStatus
 from edextract.status.constants import Constants
 from edextract.utils.file_encryptor import FileEncryptor
 from datetime import datetime
-from edextract.settings.config import Config, settings
+from edextract.settings.config import Config, get_setting
 
 
 log = logging.getLogger('edextract')
 
 
 @celery.task(name="tasks.extract.generate",
-             max_retries=settings.get(Config.MAX_RETRIES),
-             default_retry_delay=settings.get(Config.RETRY_DELAY))
+             max_retries=get_setting(Config.MAX_RETRIES),
+             default_retry_delay=get_setting(Config.RETRY_DELAY))
 def generate(tenant, user_name, query, request_id, task_id, file_name):
     '''
     celery entry point to execute data extraction query.

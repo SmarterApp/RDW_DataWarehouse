@@ -8,21 +8,21 @@ Created on Nov 5, 2013
 import csv
 import logging
 from edextract.celery import celery
-from edextract.celery import MAX_RETRIES, RETRY_DELAY
 from edcore.database.edcore_connector import EdCoreDBConnection
 from edcore.utils.utils import multi_delete
 from edextract.status.status import update_extract_stats, ExtractStatus
 from edextract.status.constants import Constants
 from edextract.utils.file_encryptor import FileEncryptor
 from datetime import datetime
+from edextract.settings.config import Config, settings
 
 
 log = logging.getLogger('edextract')
 
 
 @celery.task(name="tasks.extract.generate",
-             max_retries=MAX_RETRIES,
-             default_retry_delay=RETRY_DELAY)
+             max_retries=settings.get(Config.MAX_RETRIES),
+             default_retry_delay=settings.get(Config.RETRY_DELAY))
 def generate(tenant, user_name, query, request_id, task_id, file_name):
     '''
     celery entry point to execute data extraction query.

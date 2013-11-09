@@ -6,18 +6,12 @@ Created on Nov 4, 2013
 from edworker.celery import setup_celery as setup, configure_celeryd,\
     get_config_file
 from edextract.status.status import setup_db_connection
-
-# default timeout 20 seconds
-TIMEOUT = 20
-# default number of extract retries
-MAX_RETRIES = 1
-# delay in retry. Default to 60 seconds
-RETRY_DELAY = 60
-# KWARGS for celery apply_async calls
-KWARGS = {}
+from edextract.settings.config import setup_settings
 
 PREFIX = 'extract.celery'
 QUEUE_NAME = 'extract'
+# Used to supplied extra args to calling edextract celery tasks
+KWARGS = {}
 
 
 def setup_celery(settings, prefix=PREFIX):
@@ -29,19 +23,7 @@ def setup_celery(settings, prefix=PREFIX):
     :param prefix: prefix in configurations used for configuring celery
     '''
     setup(celery, settings, prefix)
-    setup_global_settings(settings)
-
-
-def setup_global_settings(settings):
-    '''
-    Setup configuration settings for extract
-
-    :param settings:  dict of configurations
-    '''
-    global MAX_RETRIES
-    global RETRY_DELAY
-    MAX_RETRIES = int(settings.get('extract.retries_allowed', MAX_RETRIES))
-    RETRY_DELAY = int(settings.get('extract.retry_delay', RETRY_DELAY))
+    setup_settings(settings)
 
 
 # Create an instance of celery, check if it's for prod celeryd mode and configure it for prod mode if so
@@ -50,6 +32,6 @@ prod_config = get_config_file()
 if prod_config:
     # We should only need to setup db connection in prod mode
     setup_db_connection(prod_config)
-    setup_global_settings(prod_config)
+    setup_settings(prod_config)
     # Set up queue name
     KWARGS = {'queue': QUEUE_NAME}

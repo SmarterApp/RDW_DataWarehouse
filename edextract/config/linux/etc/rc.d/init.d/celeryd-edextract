@@ -17,7 +17,7 @@ DEFAULT_LOG_LEVEL="INFO"
 DEFAULT_NODES="celery"
 DEFAULT_CELERYD="-m celery.bin.celeryd_detach"
 
-CELERY_DEFAULTS=${CELERY_DEFAULTS:-"/opt/edware/conf/celeryd.conf"}
+CELERY_DEFAULTS=${CELERY_DEFAULTS:-"/opt/edware/conf/celeryd-edextract.conf"}
 
 test -f "$CELERY_DEFAULTS" && . "$CELERY_DEFAULTS"
 

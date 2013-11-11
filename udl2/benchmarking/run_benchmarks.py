@@ -167,7 +167,7 @@ def convert_results_to_dict(results, table):
     containing all the results
     '''
     columns = table.columns.keys()
-    return [{columns[i]: row[i] for i in range(len(columns))} for row in results]
+    return [{columns[i]: row[i] for i in range(len(columns)) if columns[i] != 'batch_sid'} for row in results]
 
 
 if __name__ == '__main__':

@@ -8,6 +8,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 
 dependencies = [
     'edworker',
+    'edschema',
     'edcore']
 
 

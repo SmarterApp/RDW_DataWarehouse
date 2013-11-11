@@ -10,9 +10,9 @@ import argparse
 import configparser
 from database.connector import DBConnection
 from edschema.metadata.ed_metadata import generate_ed_metadata
-from smarter.database import get_data_source_names
-from smarter.database import initialize_db
-from smarter.database.smarter_connector import SmarterDBConnection
+from edcore.database import get_data_source_names
+from edcore.database import initialize_db
+from edcore.database.edcore_connector import EdCoreDBConnection
 
 def main(config_file, resource_dir):
     '''
@@ -21,7 +21,7 @@ def main(config_file, resource_dir):
     config = configparser.ConfigParser()
     config.read(config_file)
 
-    initialize_db(SmarterDBConnection, config['app:main'])
+    initialize_db(EdCoreDBConnection, config['app:main'])
     for tenant in get_data_source_names():
         delete_data(tenant)
         import_csv_dir(resource_dir, tenant)

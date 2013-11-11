@@ -67,4 +67,3 @@ class ValidateTableData(unittest.TestCase):
         self.connect_to_star_shema()
 if __name__ == '__main__':
     unittest.main()
-

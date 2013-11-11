@@ -57,7 +57,7 @@ class PreEtlTest(unittest.TestCase):
         # read log file, should be empty
         self._check_log_file(is_empty=True)
         batch_guid_forced = str(uuid4())
-        batch_guid = pre_etl_job(self.udl2_conf, log_file=self.test_error_log_file,  batch_guid_forced=batch_guid_forced)
+        batch_guid = pre_etl_job(self.udl2_conf, log_file=self.test_error_log_file, batch_guid_forced=batch_guid_forced)
         self._check_log_file(is_empty=True)
 
         # make sure that the forced batch guid passed is same as the one pre_etc_job returns

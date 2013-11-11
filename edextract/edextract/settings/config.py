@@ -9,11 +9,15 @@ class Config():
     MAX_RETRIES = 'extract.retries_allowed'
     RETRY_DELAY = 'extract.retry_delay'
     TIMEOUT = 'extract.timeout'
+    HOMEDIR = 'extract.gpg.homedir'
+    BINARYFILE = 'extract.gpg.path'
 
 # list of configurations that are specific to edextract
 LIST_OF_CONFIG = [(Config.MAX_RETRIES, int, 1),
                   (Config.RETRY_DELAY, int, 60),
                   (Config.TIMEOUT, int, 20),
+                  (Config.HOMEDIR, str, '~/.gpg'),
+                  (Config.BINARYFILE, str, 'gpg')
                   ]
 
 # Keeps track of configuration related to edextract that is read off from ini
@@ -34,10 +38,10 @@ def setup_settings(config):
         settings[key] = to_type(config.get(key, default))
 
 
-def get_setting(key):
+def get_setting(key, default_value=None):
     '''
     Given a key, look up value in settings
 
     :params string key:  lookup key
     '''
-    return settings.get(key, None)
+    return settings.get(key, default_value)

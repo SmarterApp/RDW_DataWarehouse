@@ -63,7 +63,9 @@ def generate(tenant, request_id, public_key_id, task_id, query, output_file):
             update_extract_stats(task_id, {Constants.EXTRACT_STATUS: ExtractStatus.NO_TENANT, Constants.EXTRACT_END: datetime.now()})
             return False
         prepare_path(output_file)
-        with EdCoreDBConnection(tenant) as connection, FileEncryptor(output_file, public_key_id) as csvfile:
+        gpg_binary_file = get_setting(Config.BINARYFILE)
+        homedir = get_setting(Config.HOMEDIR)
+        with EdCoreDBConnection(tenant) as connection, FileEncryptor(output_file, public_key_id, homedir=homedir, binaryfile=gpg_binary_file) as csvfile:
             results = connection.get_streaming_result(query)  # this result is a generator
             csvwriter = csv.writer(csvfile, delimiter=',', quoting=csv.QUOTE_NONE)
             header = []

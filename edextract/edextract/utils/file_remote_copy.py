@@ -22,10 +22,10 @@ def copy(filename, hostname, tenant, gatekeeper, sftp_username, private_key_file
     destination_dir = os.path.join(REMOTE_BASE_DIR, tenant, gatekeeper)
     proc.stdin.write(bytes('-mkdir ' + destination_dir + '\n', 'UTF-8'))
     final_destination_file = os.path.join(destination_dir, os.path.basename(filename))
-    tmp_detination_file = final_destination_file + '.partial'
-    proc.stdin.write(bytes('put ' + filename + ' ' + tmp_detination_file + '\n', 'UTF-8'))
-    proc.stdin.write(bytes('chmod 600 ' + tmp_detination_file + '\n', 'UTF-8'))
-    proc.stdin.write(bytes('rename ' + tmp_detination_file + ' ' + final_destination_file + '\n', 'UTF-8'))
+    tmp_destination_file = final_destination_file + '.partial'
+    proc.stdin.write(bytes('put ' + filename + ' ' + tmp_destination_file + '\n', 'UTF-8'))
+    proc.stdin.write(bytes('chmod 600 ' + tmp_destination_file + '\n', 'UTF-8'))
+    proc.stdin.write(bytes('rename ' + tmp_destination_file + ' ' + final_destination_file + '\n', 'UTF-8'))
     proc.stdin.close()
     proc.wait(timeout=10)
     status = proc.returncode

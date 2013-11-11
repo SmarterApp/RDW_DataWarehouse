@@ -8,13 +8,10 @@ Created on Mar 13, 2013
 '''
 import venusian
 import pyramid
-import types
 import validictory
-import json
 from functools import wraps
 from pyramid.security import authenticated_userid
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed
-from edapi.validation import Validator
 from edapi.utils import convert_query_string_to_dict_arrays
 
 

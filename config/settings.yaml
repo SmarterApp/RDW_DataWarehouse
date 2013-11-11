@@ -94,12 +94,15 @@ common:
     extract:
       retry_delay: 60
       retries_allowed: 1
-      
+      work_zone_base_dir: /tmp
     sftp.jail.base_path: /sftp
     pickup:
       home.base_path: /opt/edware/home/departure
       gatekeeper.cat: kswimberly
       gatekeeper.dog: skong
+    gpg:
+      home_dir: ~/gpg
+      public_key.cat: Kimberly Swimberly
   '[server:main]':
     use: 'egg:waitress#main'
     host: 0.0.0.0

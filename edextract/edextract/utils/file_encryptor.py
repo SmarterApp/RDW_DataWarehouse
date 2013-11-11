@@ -21,7 +21,7 @@ class FileEncryptor:
     '''
     BUFFER_SIZE = 1024 * 1024
 
-    def __init__(self, output_file=None, recipient=None, compress_level='9', binaryfile='gpg'):
+    def __init__(self, output_file, recipient, compress_level='9', binaryfile='gpg'):
         # GPG process
         self.__proc = subprocess.Popen([binaryfile, '--encrypt', '--recipient', recipient,
                                        '--compress-level', compress_level], bufsize=FileEncryptor.BUFFER_SIZE,
@@ -65,7 +65,7 @@ class FileEncryptor:
 
     def close(self):
         '''
-        close stream. Destructor also call this function before Object is destroied.
+        close stream. Destructor also call this function before Object is destroyed.
         '''
         if not self.__bufferedwriter.closed:
             self.__bufferedwriter.flush()

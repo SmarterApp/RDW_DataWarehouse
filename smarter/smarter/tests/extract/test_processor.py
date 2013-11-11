@@ -11,17 +11,28 @@ from edcore.tests.utils.unittest_with_edcore_sqlite import \
     Unittest_with_edcore_sqlite,\
     UnittestEdcoreDBConnection, get_unittest_tenant_name
 from smarter.extract.processor import process_extraction_request, has_data,\
-    get_file_name
+    get_file_path, get_extract_work_zone_path,\
+    get_encryption_public_key_identifier, get_archive_file_path,\
+    get_pick_up_zone_path
 from sqlalchemy.sql.expression import select
+from pyramid.registry import Registry
+import os
 
 
 class TestProcessor(Unittest_with_edcore_sqlite):
 
     def setUp(self):
+        self.reg = Registry()
+        self.reg.settings = {'extract.work_zone_base_dir': '/tmp/work_zone',
+                             'sftp.jail.base_path': '/sftp/ut/jail',
+                             'pickup.home.base_path': '/opt/ut',
+                             'pickup.gatekeeper.t1': '/t/acb',
+                             'pickup.gatekeeper.t2': '/a/df',
+                             'pickup.gatekeeper.y': '/a/c'}
         # Set up user context
         self.__request = DummyRequest()
         # Must set hook_zca to false to work with unittest_with_sqlite
-        self.__config = testing.setUp(request=self.__request, hook_zca=False)
+        self.__config = testing.setUp(registry=self.reg, request=self.__request, hook_zca=False)
         # Set up context security
         with UnittestEdcoreDBConnection() as connection:
             # Insert into user_mapping table
@@ -50,9 +61,10 @@ class TestProcessor(Unittest_with_edcore_sqlite):
                   'asmtSubject': ['Math', 'ELA'],
                   'extractType': ['studentAssessment']}
         results = process_extraction_request(params)
-        self.assertEqual(len(results), 4)
-        self.assertEqual(results[0]['status'], 'fail')
-        self.assertEqual(results[3]['status'], 'fail')
+        tasks = results['tasks']
+        self.assertEqual(len(tasks), 4)
+        self.assertEqual(tasks[0]['status'], 'fail')
+        self.assertEqual(tasks[3]['status'], 'fail')
 
     def test_has_data_false(self):
         with UnittestEdcoreDBConnection() as connection:
@@ -72,4 +84,25 @@ class TestProcessor(Unittest_with_edcore_sqlite):
         params = {'stateCode': 'CA',
                   'asmtSubject': 'UUUU',
                   'asmtType': 'abc'}
-        self.assertEqual('ASMT_CA_UUUU_ABC_', get_file_name(params))
+        path = get_file_path(params, 'tenant', 'request_id')
+        self.assertIn('/tmp/work_zone/tenant/request_id/csv/ASMT_CA_UUUU_ABC_', path)
+        self.assertIn('.csv.gpg', path)
+
+    def test_get_extract_work_zone_path(self):
+        path = get_extract_work_zone_path('tenant', 'request')
+        self.assertEqual(path, '/tmp/work_zone/tenant/request/csv')
+
+    def test_get_encryption_public_key_identifier(self):
+        self.assertIsNone(get_encryption_public_key_identifier("tenant"))
+
+    def test_get_archive_file_path(self):
+        self.assertIn("/tmp/work_zone/tenant/requestId/zip/user", get_archive_file_path("user", "tenant", "requestId"))
+
+    def test_gatekeepers(self):
+        config = self.reg.settings
+        sftp = config.get('sftp.jail.base_path')
+        pickup = config.get('pickup.home.base_path')
+        self.assertEqual(get_pick_up_zone_path('t1'), os.path.join(sftp, pickup, config['pickup.gatekeeper.t1']))
+        self.assertEqual(get_pick_up_zone_path('t2'), os.path.join(sftp, pickup, config['pickup.gatekeeper.t2']))
+        self.assertEqual(get_pick_up_zone_path('y'), os.path.join(sftp, pickup, config['pickup.gatekeeper.y']))
+        self.assertEqual(get_pick_up_zone_path('doesnotexist'), None)

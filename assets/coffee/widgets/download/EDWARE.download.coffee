@@ -131,10 +131,11 @@ define [
       $('input:checkbox', this.container).attr('disabled', 'disabled') 
 
     showSuccessMessage: (response)->
-      task_response = response.map this.toDisplay.bind(this)
-      success = task_response.filter (item)->
+      taskResponse = response['tasks'].map this.toDisplay.bind(this)
+      fileName = response['fileName']
+      success = taskResponse.filter (item)->
         item['status'] is 'ok'
-      failure = task_response.filter (item)->
+      failure = taskResponse.filter (item)->
         item['status'] is 'fail'
       if success.length > 0
         this.showCloseButton()
@@ -143,6 +144,7 @@ define [
       this.message.html Mustache.to_html SUCCESS_TEMPLATE, {
         requestTime: this.requestTime
         requestDate: this.requestDate
+        fileName: fileName
         # success messages
         success: success
         singleSuccess: success.length == 1

@@ -68,8 +68,8 @@ class TestExtract(Unittest_with_edcore_sqlite):
         self.__config.testing_securitypolicy(dummy_session)
         results = post_extract_service(None, self.__request)
         self.assertIsInstance(results, Response)
-        self.assertEqual(len(results.json_body), 1)
-        self.assertEqual(results.json_body[0][Constants.STATUS], Constants.FAIL)
+        self.assertEqual(len(results.json_body['tasks']), 1)
+        self.assertEqual(results.json_body['tasks'][0][Constants.STATUS], Constants.FAIL)
 
     def test_get_invalid_param(self):
         self.__request.GET['stateCode'] = 'NY'
@@ -91,8 +91,9 @@ class TestExtract(Unittest_with_edcore_sqlite):
         self.__config.testing_securitypolicy(dummy_session)
         results = get_extract_service(None, self.__request)
         self.assertIsInstance(results, Response)
-        self.assertEqual(len(results.json_body), 1)
-        self.assertEqual(results.json_body[0][Constants.STATUS], Constants.FAIL)
+        tasks = results.json_body['tasks']
+        self.assertEqual(len(tasks), 1)
+        self.assertEqual(tasks[0][Constants.STATUS], Constants.FAIL)
 
     def test_multi_tasks(self):
         self.__request.json_body = {'stateCode': ['CA'],
@@ -107,9 +108,10 @@ class TestExtract(Unittest_with_edcore_sqlite):
         self.__config.testing_securitypolicy(dummy_session)
         results = post_extract_service(None, self.__request)
         self.assertIsInstance(results, Response)
-        self.assertEqual(len(results.json_body), 2)
-        self.assertEqual(results.json_body[0][Constants.STATUS], Constants.FAIL)
-        self.assertEqual(results.json_body[1][Constants.STATUS], Constants.FAIL)
+        tasks = results.json_body['tasks']
+        self.assertEqual(len(tasks), 2)
+        self.assertEqual(tasks[0][Constants.STATUS], Constants.FAIL)
+        self.assertEqual(tasks[1][Constants.STATUS], Constants.FAIL)
 
 
 if __name__ == "__main__":

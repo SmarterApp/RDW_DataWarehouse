@@ -13,9 +13,10 @@ from smarter.extract.student_assessment import get_extract_assessment_query
 from pyramid.security import authenticated_userid
 from uuid import uuid4
 from edextract.status.status import create_new_entry
-from edextract.tasks.extract import generate
-import edextract
-from pyramid.threadlocal import get_current_request
+from edextract.tasks.extract import start_extract
+from pyramid.threadlocal import get_current_request, get_current_registry
+from datetime import datetime
+import os
 
 
 log = logging.getLogger('smarter')
@@ -26,45 +27,56 @@ def process_extraction_request(params):
     :param dict params: contains query parameter.  Value for each pair is expected to be a list
     '''
     tasks = []
+    response = {}
+    task_responses = []
+    # Generate an uuid for this extract request
+    request_id = str(uuid4())
+    user = authenticated_userid(get_current_request())
+    tenant = user.get_tenant()
+
     for e in params[Extract.EXTRACTTYPE]:
         for s in params[Constants.ASMTSUBJECT]:
             for t in params[Constants.ASMTTYPE]:
                 # TODO: handle year and stateCode/tenant
-                tasks.append({Extract.EXTRACTTYPE: e,
-                              Constants.ASMTSUBJECT: s,
-                              Constants.ASMTTYPE: t,
-                              Constants.ASMTYEAR: params[Constants.ASMTYEAR][0],
-                              Constants.STATECODE: params[Constants.STATECODE][0]})
-    task_responses = []
-    # Generate an uuid for this extract request
-    request_id = str(uuid4())
+                param = ({Extract.EXTRACTTYPE: e,
+                         Constants.ASMTSUBJECT: s,
+                         Constants.ASMTTYPE: t,
+                         Constants.ASMTYEAR: params[Constants.ASMTYEAR][0],
+                         Constants.STATECODE: params[Constants.STATECODE][0]})
 
-    for task in tasks:
-        response = {Constants.STATECODE: task[Constants.STATECODE],
-                    Extract.EXTRACTTYPE: task[Extract.EXTRACTTYPE],
-                    Constants.ASMTSUBJECT: task[Constants.ASMTSUBJECT],
-                    Constants.ASMTTYPE: task[Constants.ASMTTYPE],
-                    #Constants.ASMTYEAR: task[Constants.ASMTYEAR],
-                    Extract.REQUESTID: request_id}
-        extract_query = get_extract_assessment_query(task, compiled=True)
-        check_query = get_extract_assessment_query(task, limit=1)
+                task_response = {Constants.STATECODE: param[Constants.STATECODE],
+                                 Extract.EXTRACTTYPE: param[Extract.EXTRACTTYPE],
+                                 Constants.ASMTSUBJECT: param[Constants.ASMTSUBJECT],
+                                 Constants.ASMTTYPE: param[Constants.ASMTTYPE],
+                                 #Constants.ASMTYEAR: task[Constants.ASMTYEAR],
+                                 Extract.REQUESTID: request_id}
 
-        if has_data(check_query, request_id):
-            user = authenticated_userid(get_current_request())
-            tenant = user.get_tenant()
-            user_name = user.get_uid()
-            task_id = create_new_entry(user, request_id, task)
-            file_name = get_file_name(task)
-            # Call async celery task.  Kwargs set up queue name in prod mode
-            celery_response = generate.delay(tenant, user_name, extract_query, request_id, task_id, file_name, **edextract.celery.KWARGS)  # @UndefinedVariable
-            task_id = celery_response.task_id
-            response[Extract.STATUS] = Extract.OK
-            response[Constants.ID] = task_id
-        else:
-            response[Extract.STATUS] = Extract.FAIL
-            response[Extract.MESSAGE] = "Data is not available"
-        task_responses.append(response)
-    return task_responses
+                check_query = get_extract_assessment_query(param, limit=1)
+
+                if has_data(check_query, request_id):
+                    extract_query = get_extract_assessment_query(param, compiled=True)
+                    task = {}
+                    task['task_id'] = create_new_entry(user, request_id, param)
+                    task['file_name'] = get_file_path(param, tenant, request_id)
+                    task['query'] = extract_query
+                    tasks.append(task)
+                    task_response[Extract.STATUS] = Extract.OK
+                else:
+                    task_response[Extract.STATUS] = Extract.FAIL
+                    task_response[Extract.MESSAGE] = "Data is not available"
+                task_responses.append(task_response)
+
+    response['tasks'] = task_responses
+    if len(tasks) > 0:
+        # TODO: handle empty public key
+        public_key_id = get_encryption_public_key_identifier(tenant)
+        archive_file_name = get_archive_file_path(user.get_uid(), tenant, request_id)
+        response['fileName'] = os.path.basename(archive_file_name)
+        directory_to_archive = get_extract_work_zone_path(tenant, request_id)
+        # TODO: build sftp data
+        tenant_pickup_zone_path = get_pick_up_zone_path(tenant)
+        start_extract.apply_async(args=[tenant, request_id, public_key_id, archive_file_name, directory_to_archive, tasks], queue='extract')     # @UndefinedVariable
+    return response
 
 
 def has_data(query, request_id):
@@ -77,5 +89,50 @@ def has_data(query, request_id):
         return True
 
 
-def get_file_name(param):
-    return 'ASMT_' + param[Constants.STATECODE].upper() + '_' + param[Constants.ASMTSUBJECT].upper() + '_' + param[Constants.ASMTTYPE].upper() + "_"
+def __get_extract_work_zone_base_dir():
+    return get_current_registry().settings.get('extract.work_zone_base_dir', '/tmp')
+
+
+def get_extract_work_zone_path(tenant, request_id):
+    base = __get_extract_work_zone_base_dir()
+    return os.path.join(base, tenant, request_id, 'csv')
+
+
+def get_file_path(param, tenant, request_id):
+    file_name = 'ASMT_{stateCode}_{asmtSubject}_{asmtType}_{currentTime}.csv.gpg'.format(stateCode=param[Constants.STATECODE].upper(),
+                                                                                         asmtSubject=param[Constants.ASMTSUBJECT].upper(),
+                                                                                         asmtType=param[Constants.ASMTTYPE].upper(),
+                                                                                         currentTime=str(datetime.now().strftime("%m-%d-%Y_%H-%M-%S")))
+    return os.path.join(get_extract_work_zone_path(tenant, request_id), file_name)
+
+
+def get_encryption_public_key_identifier(tenant):
+    return get_current_registry().settings.get('gpg.public_key.' + tenant)
+
+
+def get_archive_file_path(user_name, tenant, request_id):
+    base = __get_extract_work_zone_base_dir()
+    file_name = '{user_name}_{current_time}.zip'.format(user_name=user_name, current_time=str(datetime.now().strftime("%m-%d-%Y_%H-%M-%S")))
+    return os.path.join(base, tenant, request_id, 'zip', file_name)
+
+
+def get_pick_up_zone_path(tenant):
+    '''
+    Give a tenant name, return the path of gatekeeper's jail acct path
+
+    :params string tenant:  name of tenant
+    '''
+    base = get_jail_base_path()
+    home = get_pickup_zone_base_path()
+    tenant_path = get_current_registry().settings.get('pickup.gatekeeper.' + tenant)
+    if base and home and tenant_path:
+        return os.path.join(base, home, tenant_path)
+    return None
+
+
+def get_jail_base_path():
+    return get_current_registry().settings.get('sftp.jail.base_path', '/sftp')
+
+
+def get_pickup_zone_base_path():
+    return get_current_registry().settings.get('pickup.home.base_path', '/opt/edware/home/departure')

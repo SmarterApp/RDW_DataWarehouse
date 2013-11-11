@@ -107,14 +107,14 @@
      <div class="success">
        {{#success.0}}
        Your request for <b>{{asmtState}} {{asmtYear}} {{asmtType}} {{asmtSubject}}</b> Tests Results made on {{requestDate}} at {{requestTime}} was successful!
-       Please contact your site administrator in 24 hours to download the requested report.
+       Please contact your site administrator in 24 hours to download the requested report.  The name of your file is {{fileName}}.
        {{/success.0}}
      </div>
      {{/singleSuccess}}
      {{#multipleSuccess}}
      <div class="success">
          Your request made on {{requestDate}} at {{requestTime}} was successful! <br/><br/>
-         Please contact your site administrator in 24 hours to download the requested reports.
+         Please contact your site administrator in 24 hours to download the requested reports.  The name of your file is {{fileName}}.
          <ul>
            {{#success}}
            <li><b>{{asmtState}} {{asmtYear}} {{asmtType}} {{asmtSubject}}</b></li>

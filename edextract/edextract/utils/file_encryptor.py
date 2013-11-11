@@ -21,10 +21,12 @@ class FileEncryptor:
     '''
     BUFFER_SIZE = 1024 * 1024
 
-    def __init__(self, output_file, recipient, compress_level='9', binaryfile='gpg'):
+    def __init__(self, output_file, recipient, homedir=None, compress_level='9', binaryfile='gpg'):
         # GPG process
-        self.__proc = subprocess.Popen([binaryfile, '--encrypt', '--recipient', recipient,
-                                       '--compress-level', compress_level], bufsize=FileEncryptor.BUFFER_SIZE,
+        gpg_command_lines = [binaryfile, '--encrypt', '--recipient', recipient, '--compress-level', compress_level]
+        if homedir is not None:
+            gpg_command_lines += ['--homedir', homedir]
+        self.__proc = subprocess.Popen(gpg_command_lines, bufsize=FileEncryptor.BUFFER_SIZE,
                                        stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # input buffer buffer size is 1M

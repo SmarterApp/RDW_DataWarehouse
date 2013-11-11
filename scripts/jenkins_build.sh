@@ -22,7 +22,6 @@ function set_vars {
     FUNC_DIR="edware_test/edware_test/functional_tests"
     SMARTER_INI="/opt/edware/conf/smarter.ini"
     PRECACHE_FILTER_JSON="/opt/edware/conf/comparing_populations_precache_filters.json"
-    CELERY_CONF="/opt/edware/conf/celeryd.conf"
     EGG_REPO="/opt/edware/pynest"
     PYNEST_SERVER="repo0.qa.dum.edwdc.net"
     PYNEST_DIR="/opt/wgen/pyrepos/pynest"
@@ -247,8 +246,11 @@ function create_sym_link_for_apache {
         rm -rf ${EDWARE_VENV_DIR}
     fi
     /bin/ln -sf ${VIRTUALENV_DIR} ${EDWARE_VENV_DIR}
-    sed -i.bak "s/CELERYD_USER=\"celery\"/CELERYD_USER=\"jenkins\"/" ${WORKSPACE}/services/config/linux/opt/edware/conf/celeryd.conf
-    sed -i.bak "s/CELERYD_GROUP=\"celery\"/CELERYD_GROUP=\"functional_test\"/" ${WORKSPACE}/services/config/linux/opt/edware/conf/celeryd.conf
+    sed -i.bak "s/CELERYD_USER=\"celery\"/CELERYD_USER=\"jenkins\"/" ${WORKSPACE}/services/config/linux/opt/edware/conf/celeryd-services.conf
+    sed -i.bak "s/CELERYD_GROUP=\"celery\"/CELERYD_GROUP=\"functional_test\"/" ${WORKSPACE}/services/config/linux/opt/edware/conf/celeryd-services.conf
+   
+    sed -i.bak "s/CELERYD_USER=\"celery\"/CELERYD_USER=\"jenkins\"/" ${WORKSPACE}/edextract/config/linux/opt/edware/conf/celeryd-edextract.conf
+    sed -i.bak "s/CELERYD_GROUP=\"celery\"/CELERYD_GROUP=\"functional_test\"/" ${WORKSPACE}/edextract/config/linux/opt/edware/conf/celeryd-edextract.conf
 }
 
 function compile_assets {
@@ -273,7 +275,8 @@ function restart_apache {
 }
 
 function restart_celeryd {
-   /usr/bin/sudo /etc/init.d/celeryd restart
+   /usr/bin/sudo /etc/init.d/celeryd-services restart
+   /usr/bin/sudo /etc/init.d/celeryd-edextract restart
    RES=$?
    if [ $RES != 0 ]; then
       echo "celeryd failed to restart"

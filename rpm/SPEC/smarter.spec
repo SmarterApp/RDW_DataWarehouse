@@ -33,8 +33,8 @@ mkdir -p %{buildroot}/etc/rc.d/init.d
 cp ${WORKSPACE}/config/generate_ini.py %{buildroot}/opt/edware/conf/
 cp ${WORKSPACE}/config/settings.yaml %{buildroot}/opt/edware/conf/
 cp ${WORKSPACE}/config/comparing_populations_precache_filters.json %{buildroot}/opt/edware/conf/
-cp ${WORKSPACE}/services/config/linux/opt/edware/conf/celeryd.conf %{buildroot}/opt/edware/conf/
-cp ${WORKSPACE}/services/config/linux/etc/rc.d/init.d/celeryd %{buildroot}/etc/rc.d/init.d/
+cp ${WORKSPACE}/services/config/linux/opt/edware/conf/celeryd-services.conf %{buildroot}/opt/edware/conf/
+cp ${WORKSPACE}/services/config/linux/etc/rc.d/init.d/celeryd-services %{buildroot}/etc/rc.d/init.d/
 
 
 
@@ -87,7 +87,7 @@ cp -r virtualenv %{buildroot}/opt
 /opt/edware/conf/generate_ini.py
 /opt/edware/conf/settings.yaml
 /opt/edware/conf/comparing_populations_precache_filters.json
-/opt/edware/conf/celeryd.conf
+/opt/edware/conf/celeryd-services.conf
 /opt/virtualenv/include/*
 /opt/virtualenv/lib/*
 /opt/virtualenv/lib64
@@ -120,7 +120,7 @@ cp -r virtualenv %{buildroot}/opt
 %attr(755,root,root) /opt/virtualenv/bin/celeryev
 /opt/virtualenv/bin/python
 /opt/virtualenv/bin/python3
-%attr(755,root,root) /etc/rc.d/init.d/celeryd
+%attr(755,root,root) /etc/rc.d/init.d/celeryd-services
 
 %pre
 id celery > /dev/null 2>&1

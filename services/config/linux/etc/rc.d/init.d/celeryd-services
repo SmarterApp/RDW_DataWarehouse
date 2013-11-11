@@ -4,7 +4,7 @@
 # chkconfig: 345 90 10
 #
 # :Usage: /etc/init.d/celeryd {start|stop|force-reload|restart|try-restart|status}
-# :Configuration file: /opt/edware/conf/celeryd.conf
+# :Configuration file: /opt/edware/conf/celeryd-services.conf
 #
 # See http://docs.celeryproject.org/en/latest/tutorials/daemonizing.html#generic-init-scripts
 

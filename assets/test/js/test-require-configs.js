@@ -6,6 +6,7 @@ require({
     'coffee-script': '3p/coffee-script',
     jquery: '../../js/3p/jquery-1.7.2.min',
     jqGrid: '../../js/3p/jquery.jqGrid.min',
+    moment: '../../js/3p/moment.min',
     sourceJS: '../../js',
     text: '../../js/3p/text',
     mustache: '../../js/3p/mustache',

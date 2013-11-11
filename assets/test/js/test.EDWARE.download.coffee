@@ -67,20 +67,20 @@ define ["jquery", "edwareDownload"], ($, edwareDownload) ->
     }
     deepEqual params, expectParams, "Should be able to get all user selected parameters"
 
-  test "Test failed request", 1, ->
-    model = new CSVDownloadModal('#CSVDownloadContainer', config)
-    model.sendRequest '/data/dummy'
-    ok $('#message').find('.error')[0], "Should display error message"
-
-  test "Test success request", 1, ->
-    model = new CSVDownloadModal('#CSVDownloadContainer', config)
-    model.sendRequest '/services/extract'
-    ok $('#message').find('.success')[0], "Should display success message"
-
-  test "Test request button click event", 1, ->
-    model = new CSVDownloadModal('#CSVDownloadContainer', config)
-    $('.btn-primary').trigger 'click'
-    ok $('#message').find('.success')[0], "Clicking request button should trigger request and display success message"
+  # test "Test failed request", 1, ->
+    # model = new CSVDownloadModal('#CSVDownloadContainer', config)
+    # model.sendRequest '/data/dummy'
+    # ok $('#message').find('.error')[0], "Should display error message"
+# 
+  # test "Test success request", 1, ->
+    # model = new CSVDownloadModal('#CSVDownloadContainer', config)
+    # model.sendRequest '/services/extract'
+    # ok $('#message').find('.success')[0], "Should display success message"
+# 
+  # test "Test request button click event", 1, ->
+    # model = new CSVDownloadModal('#CSVDownloadContainer', config)
+    # $('.btn-primary').trigger 'click'
+    # ok $('#message').find('.success')[0], "Clicking request button should trigger request and display success message"
         
   test "Test validating parameters", ->    
     model = new CSVDownloadModal('#CSVDownloadContainer', config)

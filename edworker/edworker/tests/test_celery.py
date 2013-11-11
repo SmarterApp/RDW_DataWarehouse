@@ -43,7 +43,7 @@ class TestCelery(unittest.TestCase):
             self.assertEqual(config, temp_file.name)
 
     def test_configure_celeryd_non_prod_mode(self):
-        celery = configure_celeryd('myName')
+        celery, conf = configure_celeryd('myName')
         self.assertIsNotNone(celery)
         self.assertIsInstance(celery, Celery)
 
@@ -53,7 +53,7 @@ class TestCelery(unittest.TestCase):
             temp_file.write(bytes('edworker.celery.CELERY_ALWAYS_EAGER = True', 'UTF-8'))
             temp_file.flush()
             os.environ["CELERY_PROD_CONFIG"] = temp_file.name
-            celery = configure_celeryd('unittest', 'edworker.celery')
+            celery, conf = configure_celeryd('unittest', 'edworker.celery')
             self.assertIsNotNone(celery)
             self.assertIsInstance(celery, Celery)
             self.assertEqual(celery.conf['CELERY_ALWAYS_EAGER'], True)

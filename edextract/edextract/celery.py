@@ -24,9 +24,9 @@ def setup_celery(settings, prefix=PREFIX):
 
 
 # Create an instance of celery, check if it's for prod celeryd mode and configure it for prod mode if so
-celery = configure_celeryd(PREFIX, prefix=PREFIX)
+celery, conf = configure_celeryd(PREFIX, prefix=PREFIX)
 prod_config = get_config_file()
 if prod_config:
     # We should only need to setup db connection in prod mode
-    setup_db_connection(prod_config)
-    setup_settings(prod_config)
+    setup_db_connection(conf)
+    setup_settings(conf)

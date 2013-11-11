@@ -45,7 +45,7 @@ def setup_global_settings(settings):
     RETRY_DELAY = int(settings.get('pdf.retry_delay', RETRY_DELAY))
 
 # Create an instance of celery, check if it's for prod celeryd mode and configure it for prod mode if so
-celery = configure_celeryd(PREFIX, prefix=PREFIX)
+celery, conf = configure_celeryd(PREFIX, prefix=PREFIX)
 prod_config = get_config_file()
 if prod_config:
-    setup_global_settings(prod_config)
+    setup_global_settings(conf)

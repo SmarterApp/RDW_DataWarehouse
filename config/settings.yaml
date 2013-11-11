@@ -479,9 +479,9 @@ jenkins_dev:
       CELERY_RESULT_BACKEND: amqp
       CELERY_TASK_RESULT_EXPIRES: 18000 # 5 hours
       CELERYD_CONCURRENCY: 8
-    services.celery:
+    extract.celery:
       BROKER_URL: amqp://edware:edware1234@localhost//
-      CELERY_IMPORTS: ('extract.tasks.extract',)
+      CELERY_IMPORTS: ('edextract.tasks.extract',)
       CELERY_RESULT_BACKEND: amqp
       CELERY_TASK_RESULT_EXPIRES: 18000 # 5 hours
       CELERYD_CONCURRENCY: 8

@@ -16,8 +16,8 @@ from smarter.utils.remote_config import get_remote_config
 from edcore.database import initialize_db
 from edcore.database.edcore_connector import EdCoreDBConnection
 from edcore.database.stats_connector import StatsDBConnection
-from services.celery import setup_celery as setup_services_celery
-from edextract.celery import setup_celery as setup_extract_celery
+from services.celery import setup_celery as setup_services_celery, PREFIX as servicesPrefix
+from edextract.celery import setup_celery as setup_extract_celery, PREFIX as edextractPrefix
 
 logger = logging.getLogger(__name__)
 CAKE_PROC = None
@@ -51,8 +51,8 @@ def main(global_config, **settings):
     initialize_db(StatsDBConnection, settings, allow_schema_create=True)
 
     # setup celery
-    setup_services_celery(settings, prefix="celery")
-    setup_extract_celery(settings, prefix="extract.celery")
+    setup_services_celery(settings, prefix=servicesPrefix)
+    setup_extract_celery(settings, prefix=edextractPrefix)
 
     # include edauth. Calls includeme
     config.include(edauth)

@@ -16,7 +16,7 @@ def merge_dict(d1, d2):
     return combined
 
 
-def multi_delete(dictionary, list_of_key_names):
+def delete_multiple_entries_from_dictionary_by_list_of_keys(dictionary, list_of_key_names):
     '''
     remove list of fields from any dictionary object
     also suppress delete not existing exceptions to make code easier to run

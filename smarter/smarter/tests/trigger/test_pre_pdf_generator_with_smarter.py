@@ -45,7 +45,7 @@ class TestPrePdfGenerator(Unittest_with_edcore_sqlite):
                     'auth.policy.secret': 'dummySecret',
                     'auth.policy.cookie_name': 'dummy',
                     'auth.policy.hashalg': 'sha1',
-                    'celery.CELERY_ALWAYS_EAGER': True,
+                    'services.celery.CELERY_ALWAYS_EAGER': True,
                     'pdf.minimum_file_size': 0,
                     'cache.regions': 'public.data, session',
                     'cache.type': 'memory'

@@ -21,7 +21,7 @@ from smarter.reports.helpers.metadata import get_subjects_map,\
 from edapi.cache import cache_region
 from smarter.reports.helpers.filters import apply_filter_to_query,\
     has_filters, FILTERS_CONFIG
-from edcore.utils.utils import merge_dict, multi_delete
+from edcore.utils.utils import merge_dict, delete_multiple_entries_from_dictionary_by_list_of_keys
 from smarter.reports.helpers.compare_pop_stat_report import get_not_stated_count
 from string import capwords
 from edcore.database.edcore_connector import EdCoreDBConnection
@@ -88,7 +88,7 @@ def get_list_of_students_extract_report(params):
     # Reformat data
     for result in results:
         # remove teacher names from results
-        results = multi_delete(result, ['teacher_first_name', 'teacher_middle_name', 'teacher_last_name'])
+        results = delete_multiple_entries_from_dictionary_by_list_of_keys(result, ['teacher_first_name', 'teacher_middle_name', 'teacher_last_name'])
         if len(header) is 0:
             header = list(result.keys())
         rows.append(list(result.values()))

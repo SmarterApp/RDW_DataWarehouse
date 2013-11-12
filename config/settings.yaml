@@ -95,13 +95,14 @@ common:
       retry_delay: 60
       retries_allowed: 1
       work_zone_base_dir: /tmp
+      gpg.homedir: ~/.gnupg
     sftp.jail.base_path: /sftp
     pickup:
       home.base_path: /opt/edware/home/departure
       gatekeeper.cat: kswimberly
       gatekeeper.dog: skong
     gpg:
-      home_dir: ~/gpg
+      home_dir: ~/.gnupg
       public_key.cat: Kimberly Swimberly
   '[server:main]':
     use: 'egg:waitress#main'
@@ -479,12 +480,14 @@ jenkins_dev:
       CELERY_RESULT_BACKEND: amqp
       CELERY_TASK_RESULT_EXPIRES: 18000 # 5 hours
       CELERYD_CONCURRENCY: 8
-    extract.celery:
-      BROKER_URL: amqp://edware:edware1234@localhost//
-      CELERY_IMPORTS: ('edextract.tasks.extract',)
-      CELERY_RESULT_BACKEND: amqp
-      CELERY_TASK_RESULT_EXPIRES: 18000 # 5 hours
-      CELERYD_CONCURRENCY: 8
+    extract:
+      celery:
+        BROKER_URL: amqp://edware:edware1234@localhost//
+        CELERY_IMPORTS: ('edextract.tasks.extract',)
+        CELERY_RESULT_BACKEND: amqp
+        CELERY_TASK_RESULT_EXPIRES: 18000 # 5 hours
+        CELERYD_CONCURRENCY: 8
+      gpg.homedir : /var/lib/jenkins/.gnupg
     edware:
       db:
         cat:

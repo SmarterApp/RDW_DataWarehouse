@@ -32,9 +32,9 @@ def start_extract(tenant, request_id, public_key_id, archive_file_name, director
     entry point to start an extract request for one or more extract tasks
     it groups the generation of csv into a celery task group and then chains it to the next task to archive the files into one zip
     '''
-    generate_tasks = group(generate.si(tenant, request_id, public_key_id, task['task_id'], task['query'], task['file_name']) for task in tasks)
+    generate_tasks = group(generate.subtask((tenant, request_id, public_key_id, task['task_id'], task['query'], task['file_name']), queue='extract', immutable=True) for task in tasks)
     workflow = chain(generate_tasks,
-                     archive.si(archive_file_name, directory_to_archive),
+                     archive.subtask((archive_file_name, directory_to_archive), queue='extract', immutable=True),
                      #remote_copy.si(archive_file_name, target_host_name, tenant, gatekeeper, sftp_user, private_key_path)
                      )
     workflow.apply_async(queue='extract')

@@ -12,11 +12,10 @@ from edcore.tests.utils.unittest_with_edcore_sqlite import \
     UnittestEdcoreDBConnection, get_unittest_tenant_name
 from smarter.extract.processor import process_extraction_request, has_data,\
     get_file_path, get_extract_work_zone_path,\
-    get_encryption_public_key_identifier, get_archive_file_path,\
-    get_pick_up_zone_path
+    get_encryption_public_key_identifier, get_archive_file_path, get_gatekeeper,\
+    get_pickup_zone_info
 from sqlalchemy.sql.expression import select
 from pyramid.registry import Registry
-import os
 
 
 class TestProcessor(Unittest_with_edcore_sqlite):
@@ -24,11 +23,12 @@ class TestProcessor(Unittest_with_edcore_sqlite):
     def setUp(self):
         self.reg = Registry()
         self.reg.settings = {'extract.work_zone_base_dir': '/tmp/work_zone',
-                             'sftp.jail.base_path': '/sftp/ut/jail',
-                             'pickup.home.base_path': '/opt/ut',
                              'pickup.gatekeeper.t1': '/t/acb',
                              'pickup.gatekeeper.t2': '/a/df',
-                             'pickup.gatekeeper.y': '/a/c'}
+                             'pickup.gatekeeper.y': '/a/c',
+                             'pickup.sftp.hostname': 'hostname.local.net',
+                             'pickup.sftp.user': 'myUser',
+                             'pickup.sftp.private_key_file': '/home/users/myUser/.ssh/id_rsa'}
         # Set up user context
         self.__request = DummyRequest()
         # Must set hook_zca to false to work with unittest_with_sqlite
@@ -98,11 +98,18 @@ class TestProcessor(Unittest_with_edcore_sqlite):
     def test_get_archive_file_path(self):
         self.assertIn("/tmp/work_zone/tenant/requestId/zip/user", get_archive_file_path("user", "tenant", "requestId"))
 
-    def test_gatekeepers(self):
+    def test_gatekeeper(self):
         config = self.reg.settings
-        sftp = config.get('sftp.jail.base_path')
-        pickup = config.get('pickup.home.base_path')
-        self.assertEqual(get_pick_up_zone_path('t1'), os.path.join(sftp, pickup, config['pickup.gatekeeper.t1']))
-        self.assertEqual(get_pick_up_zone_path('t2'), os.path.join(sftp, pickup, config['pickup.gatekeeper.t2']))
-        self.assertEqual(get_pick_up_zone_path('y'), os.path.join(sftp, pickup, config['pickup.gatekeeper.y']))
-        self.assertEqual(get_pick_up_zone_path('doesnotexist'), None)
+        pickup = config.get('pickup.gatekeeper.t1')
+        self.assertEqual(pickup, get_gatekeeper('t1'))
+        self.assertEqual(None, get_gatekeeper('dne'))
+
+    def test_get_pickup_zone_info(self):
+        config = self.reg.settings
+        host = config.get('pickup.sftp.hostname')
+        user = config.get('pickup.sftp.user')
+        private_key = config.get('pickup.sftp.private_key_file')
+        pickup = get_pickup_zone_info('t1')
+        self.assertEqual(host, pickup[0])
+        self.assertEqual(user, pickup[1])
+        self.assertEqual(private_key, pickup[2])

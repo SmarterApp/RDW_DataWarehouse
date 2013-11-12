@@ -9,7 +9,6 @@ import csv
 import logging
 from edextract.celery import celery
 from edcore.database.edcore_connector import EdCoreDBConnection
-from edcore.utils.utils import multi_delete
 from edextract.status.status import update_extract_stats, ExtractStatus
 from edextract.status.constants import Constants
 from edextract.utils.file_encryptor import FileEncryptor

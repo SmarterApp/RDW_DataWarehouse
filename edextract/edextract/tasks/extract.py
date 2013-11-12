@@ -70,8 +70,6 @@ def generate(tenant, request_id, public_key_id, task_id, query, output_file):
             csvwriter = csv.writer(csvfile, delimiter=',', quoting=csv.QUOTE_NONE)
             header = []
             for result in results:
-                # remove teacher names from results
-                result = multi_delete(result, ['teacher_first_name', 'teacher_middle_name', 'teacher_last_name'])
                 if len(header) is 0:
                     header = list(result.keys())
                     csvwriter.writerow(header)

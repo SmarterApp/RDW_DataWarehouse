@@ -6,8 +6,9 @@ Created on Mar 14, 2013
 import unittest
 from pyramid import testing
 from pyramid.testing import DummyRequest
-from edapi.decorators import user_info
+from edapi.decorators import user_info, validate_params
 from edapi.tests.dummy import DummyUser
+from edapi.httpexceptions import EdApiHTTPPreconditionFailed
 
 
 @user_info
@@ -48,6 +49,45 @@ class TestDecorators(unittest.TestCase):
         self.assertEquals(len(results), 2)
         self.assertDictContainsSubset(some_func_with_some_results(), results)
         self.assertDictContainsSubset({'user_info': dummy_user.__dict__}, results)
+
+    def test_validate_params(self):
+        # test with value
+        dummy_request = DummyRequest({'param0': 'value0'})
+
+        def dummy_handler(*args, **kwargs):
+            return args[0]
+
+        request_handler = validate_params('GET', {
+            'type': 'object',
+            'properties': {
+                'param0': {
+                    'type': 'array',
+                    'items': {
+                        'type': 'string'
+                    }
+                }
+            },
+            'required': ['param0']
+        })(dummy_handler)
+        self.assertEqual(request_handler(dummy_request), dummy_request)
+        # test without value
+        try:
+            dummy_request = DummyRequest({'param0': 'value0'})
+            request_handler = validate_params('GET', {
+                'type': 'object',
+                'properties': {
+                    'param1': {
+                        'type': 'array',
+                        'items': {
+                            'type': 'string'
+                        }
+                    }
+                },
+                'required': ['param1']
+            })(dummy_handler)
+        except EdApiHTTPPreconditionFailed as e:
+            self.assertEqual(True, True)
+
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

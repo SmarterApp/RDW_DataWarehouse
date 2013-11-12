@@ -27,7 +27,7 @@ log = logging.getLogger('edextract')
 @celery.task(name='task.extract.start_extract',
              max_retries=get_setting(Config.MAX_RETRIES),
              default_retry_delay=get_setting(Config.RETRY_DELAY))
-def start_extract(tenant, request_id, public_key_id, archive_file_name, directory_to_archive, tasks):
+def start_extract(tenant, request_id, public_key_id, archive_file_name, directory_to_archive, gatekeeper_id, pickup_zone_info, tasks):
     '''
     entry point to start an extract request for one or more extract tasks
     it groups the generation of csv into a celery task group and then chains it to the next task to archive the files into one zip
@@ -35,9 +35,9 @@ def start_extract(tenant, request_id, public_key_id, archive_file_name, director
     generate_tasks = group(generate.subtask((tenant, request_id, public_key_id, task['task_id'], task['query'], task['file_name']), queue='extract', immutable=True) for task in tasks)
     workflow = chain(generate_tasks,
                      archive.subtask((archive_file_name, directory_to_archive), queue='extract', immutable=True),
-                     #remote_copy.si(archive_file_name, target_host_name, tenant, gatekeeper, sftp_user, private_key_path)
+                     #remote_copy.subtask((archive_file_name, tenant, gatekeeper_id, pickup_zone_info), queue='extract', immutable=True),
                      )
-    workflow.apply_async(queue='extract')
+    workflow.apply_async()
 
 
 @celery.task(name="tasks.extract.generate",
@@ -87,7 +87,7 @@ def generate(tenant, request_id, public_key_id, task_id, query, output_file):
         return False
 
 
-@celery.task(name="tasks.extract.remote_copy",
+@celery.task(name="tasks.extract.archive",
              max_retries=get_setting(Config.MAX_RETRIES),
              default_retry_delay=get_setting(Config.RETRY_DELAY))
 def archive(zip_file_name, directory):
@@ -98,9 +98,11 @@ def archive(zip_file_name, directory):
     archive_files(zip_file_name, directory)
 
 
-@celery.task(name="tasks.extract.remote_copys",
+@celery.task(name="tasks.extract.remote_copy",
              max_retries=get_setting(Config.MAX_RETRIES),
              default_retry_delay=get_setting(Config.RETRY_DELAY))
-def remote_copy(src_file_name, hostname, tenant, gatekeeper, sftp_user, private_key_path):
+def remote_copy(src_file_name, tenant, gatekeeper, sftp_info):
     #TODO check return code
-    copy(src_file_name, hostname, tenant, gatekeeper, sftp_user, private_key_path)
+    rtn_code = copy(src_file_name, sftp_info[0], tenant, gatekeeper, sftp_info[1], sftp_info[2])
+    if rtn_code != 0:
+        log.info("Non zero return code received in remote copy task. Return code of {0}".format(rtn_code))

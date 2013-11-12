@@ -12,6 +12,7 @@ import csv
 import re
 
 from sfv import error_codes
+from sfv import config
 from udl2_util.file_util import abs_path_join
 
 
@@ -31,6 +32,7 @@ class CsvValidator():
                                 IsFileBlank(),
                                 DoesSourceFileContainHeaders(),
                                 DoesSourceFileContainDuplicateHeaders(),
+                                DoesSourceFileInExpectedFormat(),
                                 IsSourceFileCommaDelimited(),
                                 DoesSourceFileHaveData(),
                                 IsCsvWellFormed()
@@ -388,6 +390,48 @@ class DoesSourceFileHaveData(object):
             file_reader = csv.reader(file_to_validate)
             next(file_reader)
             next(file_reader)
+        except StopIteration:
+            return (error_codes.SRC_FILE_HAS_NO_DATA, dir_path, file_name, batch_sid)
+        except FileNotFoundError as e:
+            return (error_codes.SRC_FILE_NOT_ACCESSIBLE_SFV, dir_path, file_name, batch_sid)
+        except Exception as e1:
+            return (error_codes.STATUS_UNKNOWN_ERROR, dir_path, file_name, batch_sid)
+
+        return (error_codes.STATUS_OK, dir_path, file_name, batch_sid)
+
+
+class DoesSourceFileInExpectedFormat(object):
+    """Check if source file is in the expected format with all the columns expected"""
+
+    def __init__(self, csv_fields=None):
+        self.expected_csv_fields = config.CSV_FIELD_MAPPINGS if csv_fields is None else csv_fields
+
+    def are_eq(self, a, b):
+        return len(a) == len(b) and set(a) == set(b)
+
+    def execute(self, dir_path, file_name, batch_sid):
+        """Check if file has only and all the columns expected to be present
+           the validator does not care about case and order of the columns
+
+        @param dir_path: path of the file
+        @type dir_path: string
+        @param file_name: name of the file
+        @type file_name: string
+        @param batch_sid: batch id of the file
+        @type batch_sid: integer
+        @return: tuple of the form: (status_code, dir_path, file_name, batch_sid)
+        """
+        full_path = abs_path_join(dir_path, file_name)
+
+        try:
+            # open file and get the header
+            file_to_validate = open(full_path, 'rU')
+            file_reader = csv.reader(file_to_validate)
+            header_row = next(file_reader)
+            file_to_validate.close()
+            if not self.are_eq(header_row, self.expected_csv_fields):
+                return (error_codes.SRC_FILE_HAS_HEADERS_MISMATCH_EXPECTED_FORMAT, dir_path, file_name, batch_sid)
+
         except StopIteration:
             return (error_codes.SRC_FILE_HAS_NO_DATA, dir_path, file_name, batch_sid)
         except FileNotFoundError as e:

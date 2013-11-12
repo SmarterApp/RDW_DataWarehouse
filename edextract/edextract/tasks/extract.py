@@ -37,7 +37,7 @@ def start_extract(tenant, request_id, public_key_id, archive_file_name, director
                      archive.subtask((archive_file_name, directory_to_archive), queue='extract', immutable=True),
                      #remote_copy.si(archive_file_name, target_host_name, tenant, gatekeeper, sftp_user, private_key_path)
                      )
-    workflow.apply_async(queue='extract')
+    workflow.apply_async()
 
 
 @celery.task(name="tasks.extract.generate",

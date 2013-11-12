@@ -73,9 +73,9 @@ def process_extraction_request(params):
         archive_file_name = get_archive_file_path(user.get_uid(), tenant, request_id)
         response['fileName'] = os.path.basename(archive_file_name)
         directory_to_archive = get_extract_work_zone_path(tenant, request_id)
-        # TODO: build sftp data
-        tenant_pickup_zone_path = get_pick_up_zone_path(tenant)
-        start_extract.apply_async(args=[tenant, request_id, public_key_id, archive_file_name, directory_to_archive, tasks], queue='extract')     # @UndefinedVariable
+        gatekeeper_id = get_gatekeeper(tenant)
+        pickup_zone_info = get_pickup_zone_info(tenant)
+        start_extract.apply_async(args=[tenant, request_id, public_key_id, archive_file_name, directory_to_archive, gatekeeper_id, pickup_zone_info, tasks], queue='extract')     # @UndefinedVariable
     return response
 
 
@@ -107,7 +107,7 @@ def get_file_path(param, tenant, request_id):
 
 
 def get_encryption_public_key_identifier(tenant):
-    return get_current_registry().settings.get('gpg.public_key.' + tenant)
+    return get_current_registry().settings.get('extract.gpg.public_key.' + tenant)
 
 
 def get_archive_file_path(user_name, tenant, request_id):
@@ -116,23 +116,21 @@ def get_archive_file_path(user_name, tenant, request_id):
     return os.path.join(base, tenant, request_id, 'zip', file_name)
 
 
-def get_pick_up_zone_path(tenant):
+def get_gatekeeper(tenant):
     '''
     Give a tenant name, return the path of gatekeeper's jail acct path
 
     :params string tenant:  name of tenant
     '''
-    base = get_jail_base_path()
-    home = get_pickup_zone_base_path()
-    tenant_path = get_current_registry().settings.get('pickup.gatekeeper.' + tenant)
-    if base and home and tenant_path:
-        return os.path.join(base, home, tenant_path)
-    return None
+    return get_current_registry().settings.get('pickup.gatekeeper.' + tenant)
 
 
-def get_jail_base_path():
-    return get_current_registry().settings.get('sftp.jail.base_path', '/sftp')
-
-
-def get_pickup_zone_base_path():
-    return get_current_registry().settings.get('pickup.home.base_path', '/opt/edware/home/departure')
+def get_pickup_zone_info(tenant):
+    '''
+    Returns a tuple containing of sftp hostname, user, private key path
+    '''
+    reg = get_current_registry().settings
+    server = reg.get('pickup.sftp.hostname', 'localhost')
+    user = reg.get('pickup.sftp.user')
+    private_key_path = reg.get('pickup.sftp.private_key_file')
+    return (server, user, private_key_path)

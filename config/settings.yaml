@@ -96,14 +96,14 @@ common:
       retries_allowed: 1
       work_zone_base_dir: /tmp
       gpg.homedir: ~/.gnupg
+      public_key.cat: Kimberly Swimberly
     sftp.jail.base_path: /sftp
     pickup:
-      home.base_path: /opt/edware/home/departure
+      sftp.hostname: edwappsrv5.poc.dum.edwdc.net
+      sftp.user: filerouter
+      sftp.private_key_file: /home/users/filerouter/.ssh/id_rsa
       gatekeeper.cat: kswimberly
       gatekeeper.dog: skong
-    gpg:
-      home_dir: ~/.gnupg
-      public_key.cat: Kimberly Swimberly
   '[server:main]':
     use: 'egg:waitress#main'
     host: 0.0.0.0

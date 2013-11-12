@@ -53,14 +53,14 @@ def generate(tenant, request_id, public_key_id, task_id, query, output_file):
     :param output_uri: output file uri
     :param batch_id: batch_id for tracking
     '''
-    start_time = datetime.now()
+    start_time = datetime.utcnow()
     log.info('execute tasks.extract.generate for task ' + task_id)
     try:
         update_extract_stats(task_id, {Constants.EXTRACT_STATUS: ExtractStatus.EXTRACTING,
                                        Constants.EXTRACT_START: start_time,
                                        Constants.CELERY_TASK_ID: generate.request.id})
         if tenant is None:
-            update_extract_stats(task_id, {Constants.EXTRACT_STATUS: ExtractStatus.NO_TENANT, Constants.EXTRACT_END: datetime.now()})
+            update_extract_stats(task_id, {Constants.EXTRACT_STATUS: ExtractStatus.NO_TENANT, Constants.EXTRACT_END: datetime.utcnow()})
             return False
         prepare_path(output_file)
         gpg_binary_file = get_setting(Config.BINARYFILE)
@@ -78,12 +78,12 @@ def generate(tenant, request_id, public_key_id, task_id, query, output_file):
                 row = list(result.values())
                 csvwriter.writerow(row)
             update_extract_stats(task_id, {Constants.EXTRACT_STATUS: ExtractStatus.EXTRACTED,
-                                           Constants.EXTRACT_END: datetime.now(),
+                                           Constants.EXTRACT_END: datetime.utcnow(),
                                            Constants.OUTPUT_FILE: output_file})
             return True
     except Exception as e:
         log.error(e)
-        update_extract_stats(task_id, {Constants.EXTRACT_STATUS: ExtractStatus.FAILED, Constants.EXTRACT_END: datetime.now()})
+        update_extract_stats(task_id, {Constants.EXTRACT_STATUS: ExtractStatus.FAILED, Constants.EXTRACT_END: datetime.utcnow()})
         return False
 
 

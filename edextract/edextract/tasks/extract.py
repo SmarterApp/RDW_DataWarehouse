@@ -87,7 +87,7 @@ def generate(tenant, request_id, public_key_id, task_id, query, output_file):
         return False
 
 
-@celery.task(name="tasks.extract.remote_copy",
+@celery.task(name="tasks.extract.archive",
              max_retries=get_setting(Config.MAX_RETRIES),
              default_retry_delay=get_setting(Config.RETRY_DELAY))
 def archive(zip_file_name, directory):
@@ -98,7 +98,7 @@ def archive(zip_file_name, directory):
     archive_files(zip_file_name, directory)
 
 
-@celery.task(name="tasks.extract.remote_copys",
+@celery.task(name="tasks.extract.remote_copy",
              max_retries=get_setting(Config.MAX_RETRIES),
              default_retry_delay=get_setting(Config.RETRY_DELAY))
 def remote_copy(src_file_name, hostname, tenant, gatekeeper, sftp_user, private_key_path):

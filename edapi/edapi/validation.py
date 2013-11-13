@@ -76,6 +76,9 @@ class Validator:
                 if (config is None):
                     continue
                 result[key] = []
+                # this works due to arg.GET return (key, value) where key and value are
+                # always str type. otherwise, the intent here is to convert all an item
+                # into an array with 1 item
                 if (isinstance(value, str)):
                     value = [value]
                 for list_val in value:

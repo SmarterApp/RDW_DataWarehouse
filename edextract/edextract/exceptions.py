@@ -22,3 +22,11 @@ class ExtractionError(EdExtractError):
     '''
     def __init__(self):
         self.msg = 'Request for Extraction failed'
+
+
+class RemoteCopyError(EdExtractError):
+    '''
+    a custom exception raised when a sftp failed
+    '''
+    def __init__(self):
+        self.msg = 'Remote Copy for Extraction failed'

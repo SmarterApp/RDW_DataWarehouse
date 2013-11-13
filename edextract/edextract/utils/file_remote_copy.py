@@ -5,17 +5,17 @@ Created on Nov 7, 2013
 '''
 import os
 import subprocess
+from edextract.exceptions import RemoteCopyError
 
 REMOTE_BASE_DIR = 'route'
 
 
 def copy(filename, hostname, tenant, gatekeeper, sftp_username, private_key_file, binaryfile='sftp'):
-    status = -1
     sftp_command_line = [binaryfile, '-b', '-']
     if private_key_file is not None:
-        sftp_command_line += ['-i', private_key_file]
+        sftp_command_line += ['-oIdentityFile=' + private_key_file]
     sftp_command_line.append(sftp_username + '@' + hostname)
-    proc = subprocess.Popen(sftp_command_line, stdin=subprocess.PIPE, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    proc = subprocess.Popen(sftp_command_line, stdin=subprocess.PIPE, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
     proc.stdin.write(bytes('-mkdir ' + REMOTE_BASE_DIR + '\n', 'UTF-8'))
     proc.stdin.write(bytes('-mkdir ' + os.path.join(REMOTE_BASE_DIR, tenant) + '\n', 'UTF-8'))
     destination_dir = os.path.join(REMOTE_BASE_DIR, tenant, gatekeeper)
@@ -28,4 +28,6 @@ def copy(filename, hostname, tenant, gatekeeper, sftp_username, private_key_file
     proc.stdin.close()
     proc.wait(timeout=10)
     status = proc.returncode
+    if status != 0:
+        raise RemoteCopyError(proc.stderr.read().decode())
     return status

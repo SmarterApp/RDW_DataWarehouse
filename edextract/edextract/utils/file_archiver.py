@@ -5,6 +5,9 @@ Created on Nov 1, 2013
 '''
 import os
 from zipfile import ZipFile
+import logging
+
+log = logging.getLogger('edextract')
 
 
 def archive_files(zip_filename, directory):
@@ -19,3 +22,4 @@ def archive_files(zip_filename, directory):
         files = [os.path.join(directory, f) for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
         for file in files:
             zipfile.write(file, arcname=os.path.basename(file))
+    log.info("Finish archiving")

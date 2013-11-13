@@ -18,6 +18,7 @@ from edextract.utils.file_utils import prepare_path
 from edextract.utils.file_archiver import archive_files
 from celery.canvas import group, chain
 from edextract.utils.file_remote_copy import copy
+from edextract.exceptions import RemoteCopyError
 
 
 log = logging.getLogger('edextract')
@@ -31,11 +32,10 @@ def start_extract(tenant, request_id, public_key_id, archive_file_name, director
     entry point to start an extract request for one or more extract tasks
     it groups the generation of csv into a celery task group and then chains it to the next task to archive the files into one zip
     '''
-    generate_tasks = group(generate.subtask((tenant, request_id, public_key_id, task['task_id'], task['query'], task['file_name']), queue='extract', immutable=True) for task in tasks)
+    generate_tasks = group(generate.subtask(args=[tenant, request_id, public_key_id, task['task_id'], task['query'], task['file_name']], queue='extract', immutable=True) for task in tasks)
     workflow = chain(generate_tasks,
-                     archive.subtask((archive_file_name, directory_to_archive), queue='extract', immutable=True),
-                     #remote_copy.subtask((archive_file_name, tenant, gatekeeper_id, pickup_zone_info), queue='extract', immutable=True),
-                     )
+                     archive.subtask(args=[archive_file_name, directory_to_archive], queue='extract', immutable=True),
+                     remote_copy.subtask(args=[archive_file_name, tenant, gatekeeper_id, pickup_zone_info], queue='extract', immutable=True))
     workflow.apply_async()
 
 
@@ -99,7 +99,8 @@ def archive(zip_file_name, directory):
              max_retries=get_setting(Config.MAX_RETRIES),
              default_retry_delay=get_setting(Config.RETRY_DELAY))
 def remote_copy(src_file_name, tenant, gatekeeper, sftp_info):
-    #TODO check return code
-    rtn_code = copy(src_file_name, sftp_info[0], tenant, gatekeeper, sftp_info[1], sftp_info[2])
-    if rtn_code != 0:
-        log.info("Non zero return code received in remote copy task. Return code of {0}".format(rtn_code))
+    try:
+        rtn_code = copy(src_file_name, sftp_info[0], tenant, gatekeeper, sftp_info[1], sftp_info[2])
+    except RemoteCopyError as e:
+        log.error("Exception happened in remote copy. " + e)
+    return rtn_code

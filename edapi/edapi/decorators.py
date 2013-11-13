@@ -12,7 +12,7 @@ import validictory
 from functools import wraps
 from pyramid.security import authenticated_userid
 from edapi.httpexceptions import EdApiHTTPPreconditionFailed
-from edapi.utils import convert_query_string_to_dict_arrays
+from edapi.validation import Validator
 
 
 class report_config(object):
@@ -102,11 +102,9 @@ def validate_params(method, schema):
             for arg in args:
                 if type(arg) == pyramid.request.Request or type(arg) == pyramid.testing.DummyRequest:
                     try:
-                        if method == 'GET':
-                            # flatten construsct json
-                            params = convert_query_string_to_dict_arrays(arg.GET)
-                        elif method == 'POST':  # parse request params in POST
-                            params = arg.json_body
+                        params = Validator.fix_types_for_schema(schema.get('properties'), arg.GET)
+                        if method == 'POST' and len(arg.json_body) > 0:  # parse request params in POST
+                            params.update(arg.json_body)
                     except ValueError:
                         raise EdApiHTTPPreconditionFailed('Payload cannot be parsed')
                     except Exception as e:

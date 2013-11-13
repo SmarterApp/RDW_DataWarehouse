@@ -45,16 +45,16 @@ class TestPrePdfGenerator(Unittest_with_edcore_sqlite):
                     'auth.policy.secret': 'dummySecret',
                     'auth.policy.cookie_name': 'dummy',
                     'auth.policy.hashalg': 'sha1',
-                    'services.celery.CELERY_ALWAYS_EAGER': True,
+                    'celery.CELERY_ALWAYS_EAGER': True,
                     'pdf.minimum_file_size': 0,
                     'cache.regions': 'public.data, session',
                     'cache.type': 'memory'
                     }
         component.provideUtility(SessionBackend(settings), ISessionBackend)
         services.tasks.pdf.pdf_procs = ['echo', 'dummy']
-        setup_celery(settings)
+        setup_celery(settings, "celery")
 
-        results = [{'school_guid': '242', 'district_guid': '228', 'asmt_period_year': 2012, 'asmt_grade': '3', 'student_guid': '34140997-8949-497e-bbbb-5d72aa7dc9cb'}]
+        results = [{'school_guid': '242', 'district_guid': '228', 'asmt_period_year': '2012', 'asmt_grade': '3', 'student_guid': '34140997-8949-497e-bbbb-5d72aa7dc9cb'}]
         triggered = trigger_pre_pdf(settings, self.tenant, 'NY', results)
         self.assertTrue(triggered)
 

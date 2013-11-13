@@ -78,7 +78,7 @@ class TestServices(Unittest_with_edcore_sqlite):
         dummy_session.set_tenant(self.__tenant_name)
         self.__config.testing_securitypolicy(dummy_session)
 
-        self.assertRaises(EdApiHTTPForbiddenAccess, post_pdf_service, self.__request)
+        self.assertRaises(EdApiHTTPForbiddenAccess, post_pdf_service, None, self.__request)
 
     def test_post_pdf_service_post_valid_payload(self):
         studentGuid = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
@@ -91,7 +91,7 @@ class TestServices(Unittest_with_edcore_sqlite):
         prepare_path(pdf_file)
         with open(pdf_file, 'w') as file:
             file.write('%PDF-1.4')
-        response = post_pdf_service(self.__request)
+        response = post_pdf_service(None, self.__request)
         self.assertIsInstance(response, Response)
         self.assertIsNotNone(response.body)
         self.assertEqual(response.content_type, 'application/pdf')
@@ -103,7 +103,7 @@ class TestServices(Unittest_with_edcore_sqlite):
     def test_get_pdf_service_invalid_report_name(self):
         self.__request.GET = {}
         self.__request.matchdict['report'] = 'newReport'
-        self.assertRaises(EdApiHTTPNotFound, get_pdf_service, self.__request)
+        self.assertRaises(EdApiHTTPPreconditionFailed, get_pdf_service, self.__request)
 
     def test_get_pdf_service_no_context(self):
         self.__request.GET = {'studentGuid': 'a016a4c1-5aca-4146-a85b-ed1172a01a4d'}
@@ -114,7 +114,7 @@ class TestServices(Unittest_with_edcore_sqlite):
         self.__config.testing_securitypolicy(dummy_session)
         self.__request.matchdict['report'] = 'indivStudentReport.html'
 
-        self.assertRaises(EdApiHTTPForbiddenAccess, get_pdf_service, self.__request)
+        self.assertRaises(EdApiHTTPForbiddenAccess, get_pdf_service, None, self.__request)
 
     def test_get_pdf_valid_params(self):
         studentGuid = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
@@ -128,7 +128,7 @@ class TestServices(Unittest_with_edcore_sqlite):
             file.write('%PDF-1.4')
         # Override the wkhtmltopdf command
         services.tasks.pdf.pdf_procs = ['echo', 'dummy']
-        response = get_pdf_service(self.__request)
+        response = get_pdf_service(None, self.__request)
         self.assertIsInstance(response, Response)
         self.assertIsNotNone(response.body)
         self.assertEqual(response.content_type, 'application/pdf')

@@ -16,16 +16,43 @@ from edapi.httpexceptions import EdApiHTTPPreconditionFailed, \
     EdApiHTTPForbiddenAccess, EdApiHTTPInternalServerError, EdApiHTTPNotFound
 from services.exceptions import PdfGenerationError
 from smarter.reports.helpers.ISR_pdf_name_formatter import generate_isr_report_path_by_student_guid
-from smarter.reports.helpers.constants import AssessmentType
+from smarter.reports.helpers.constants import AssessmentType, Constants
 import services.celery
 from edauth.utils import to_bool
+from edapi.decorators import validate_params
 
 
 KNOWN_REPORTS = ['indivstudentreport.html']
 
+PDF_PARAMS = {
+    "type": "object",
+    "properties": {
+        Constants.STUDENTGUID: {
+            "type": "string",
+            "required": True,
+            "pattern": "^[a-zA-Z0-9\-]{0,50}$"},
+        Constants.ASMTTYPE: {
+            "type": "string",
+            "required": False,
+            "pattern": "^[a-zA-Z0-9 ]{0,50}$",
+        },
+        Constants.GRAYSCALE: {
+            "type": "string",
+            "required": False,
+            "pattern": "^(true|false|TRUE|FALSE)$",
+        },
+        Constants.LANG: {
+            "type": "string",
+            "required": False,
+            "pattern": "^[a-z]{2}$",
+        }
+    }
+}
+
 
 @view_config(route_name='pdf', request_method='POST', content_type='application/json')
-def post_pdf_service(request):
+@validate_params(method='POST', schema=PDF_PARAMS)
+def post_pdf_service(context, request):
     '''
     Handles POST request to /services/pdf
 
@@ -40,7 +67,8 @@ def post_pdf_service(request):
 
 
 @view_config(route_name='pdf', request_method='GET')
-def get_pdf_service(request):
+@validate_params(method='GET', schema=PDF_PARAMS)
+def get_pdf_service(context, request):
     '''
     Handles GET request to /services/pdf
 

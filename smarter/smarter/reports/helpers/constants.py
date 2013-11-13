@@ -17,9 +17,13 @@ class Constants():
     '''
     constants for reports
     '''
+
+    LANG = 'lang'
+    GRAYSCALE = 'grayscale'
     STATECODE = 'stateCode'
     DISTRICTGUID = 'districtGuid'
     SCHOOLGUID = 'schoolGuid'
+    STUDENTGUID = 'studentGuid'
     ASMTSUBJECT = 'asmtSubject'
     ASMT_SUBJECT = 'asmt_subject'
     ASMTTYPE = 'asmtType'

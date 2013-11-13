@@ -47,11 +47,23 @@ class Validator:
         :param report_name: the report name to be generated
         :type report_name: string
         '''
-        result = {}
         report = get_dict_value(registry, report_name, ReportNotFoundError)
         params_config = get_dict_value(report, PARAMS_REFERENCE_FIELD_NAME, InvalidParameterError)
+        return Validator.fix_types_for_schema(params_config, params)
+
+    @staticmethod
+    def fix_types_for_schema(schema, params):
+        '''
+        This method checks String types and attempt to convert them to the defined type.
+        This handles 'GET' requests when all parameters are converted into string.
+
+        :param registry: the report registry
+        :param report_name: schema for params
+        :type report_name: string
+        '''
+        result = {}
         for (key, value) in params.items():
-            config = params_config.get(key)
+            config = schema.get(key)
             if (config is None):
                 continue
 
@@ -64,6 +76,8 @@ class Validator:
                 if (config is None):
                     continue
                 result[key] = []
+                if (isinstance(value, str)):
+                    value = [value]
                 for list_val in value:
                     result[key].append(Validator.fix_type_one_val(list_val, config))
 

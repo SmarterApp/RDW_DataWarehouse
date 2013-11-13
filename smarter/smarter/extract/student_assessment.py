@@ -10,15 +10,15 @@ from smarter.security.context import select_with_context
 from psycopg2.extensions import adapt as sqlescape
 
 
-def bind_sqlalchemy_vars(unbound_sql_code, params):
+def compile_query_to_sql_text(query):
     '''
-    This function bind sqlalchemy sql expression's free variable with its params
-    :param unbound_sql_code: a sqlalchemy object
-    :param params: dictionary of free variables and their values
+    This function compile sql object by binding expression's free variable with its params
+    :param sqlalchemy query object
     '''
+    unbound_sql_code = str(query)
+    params = query.compile().params
     for k, v in params.items():
         unbound_sql_code = unbound_sql_code.replace(':' + k, str(sqlescape(v)))
-
     return unbound_sql_code
 
 
@@ -89,10 +89,5 @@ def get_extract_assessment_query(params, limit=None, compiled=False):
         query = query.where(and_(fact_asmt_outcome.c.asmt_subject == asmt_subject))
         query = query.where(and_(fact_asmt_outcome.c.asmt_year == asmt_year))
         query = query.where(and_(fact_asmt_outcome.c.state_code == state_code))
-        if limit is not None:
-            query = query.limit(limit)
-
-        if compiled:
-            query = bind_sqlalchemy_vars(str(query), query.compile().params)
 
     return query

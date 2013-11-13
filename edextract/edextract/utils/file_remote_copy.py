@@ -6,7 +6,6 @@ Created on Nov 7, 2013
 import os
 import subprocess
 
-
 REMOTE_BASE_DIR = 'route'
 
 

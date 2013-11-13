@@ -5,7 +5,7 @@ Created on Nov 8, 2013
 '''
 import unittest
 from smarter.extract.student_assessment import get_extract_assessment_query,\
-    bind_sqlalchemy_vars
+    compile_query_to_sql_text
 from pyramid.testing import DummyRequest
 from pyramid import testing
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
@@ -71,7 +71,7 @@ class TestStudentAssessment(Unittest_with_edcore_sqlite):
                   'asmtType': ['SUMMATIVE'],
                   'asmtSubject': ['Math'],
                   'extractType': ['studentAssessment']}
-        query = get_extract_assessment_query(params, limit=541)
+        query = get_extract_assessment_query(params).limit(541)
         self.assertIsNotNone(query)
         self.assertIn('541', str(query._limit))
 
@@ -87,17 +87,17 @@ class TestStudentAssessment(Unittest_with_edcore_sqlite):
                   'asmtType': ['SUMMATIVE'],
                   'asmtSubject': ['Math'],
                   'extractType': ['studentAssessment']}
-        query = get_extract_assessment_query(params, compiled=True)
+        query = compile_query_to_sql_text(get_extract_assessment_query(params))
         self.assertIsNotNone(query)
         self.assertIsInstance(query, str)
         self.assertIn('SUMMATIVE', query)
 
-    def test_bind_sqlalchemy_vars(self):
+    def test_compile_query_to_sql_text(self):
         with UnittestEdcoreDBConnection() as connection:
             fact = connection.get_table('fact_asmt_outcome')
             query = select([fact.c.state_code], from_obj=[fact])
             query = query.where(fact.c.state_code == 'UT')
-            str_query = bind_sqlalchemy_vars(str(query), query.compile().params)
+            str_query = compile_query_to_sql_text(query)
             self.assertIn("fact_asmt_outcome.state_code = 'UT'", str_query)
 
 

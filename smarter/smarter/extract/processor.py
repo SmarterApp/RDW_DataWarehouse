@@ -9,7 +9,7 @@ import logging
 from smarter.reports.helpers.constants import Constants
 from smarter.extract.constants import Constants as Extract
 from edcore.database.edcore_connector import EdCoreDBConnection
-from smarter.extract.student_assessment import get_extract_assessment_query
+from smarter.extract.student_assessment import get_extract_assessment_query, compile_query_to_sql_text
 from pyramid.security import authenticated_userid
 from uuid import uuid4
 from edextract.status.status import create_new_entry
@@ -17,6 +17,7 @@ from edextract.tasks.extract import start_extract
 from pyramid.threadlocal import get_current_request, get_current_registry
 from datetime import datetime
 import os
+import tempfile
 
 
 log = logging.getLogger('smarter')
@@ -51,10 +52,11 @@ def process_extraction_request(params):
                                  #Constants.ASMTYEAR: task[Constants.ASMTYEAR],
                                  Extract.REQUESTID: request_id}
 
-                check_query = get_extract_assessment_query(param, limit=1)
+                query = get_extract_assessment_query(param)
+                check_query = query.limit(1)
 
                 if has_data(check_query, request_id):
-                    extract_query = get_extract_assessment_query(param, compiled=True)
+                    extract_query = compile_query_to_sql_text(query)
                     task = {}
                     task['task_id'] = create_new_entry(user, request_id, param)
                     task['file_name'] = get_file_path(param, tenant, request_id)
@@ -90,7 +92,7 @@ def has_data(query, request_id):
 
 
 def __get_extract_work_zone_base_dir():
-    return get_current_registry().settings.get('extract.work_zone_base_dir', '/tmp')
+    return get_current_registry().settings.get('extract.work_zone_base_dir', tempfile.gettempdir())
 
 
 def get_extract_work_zone_path(tenant, request_id):

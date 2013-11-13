@@ -4,7 +4,7 @@ Created on Nov 7, 2013
 @author: dip
 '''
 import unittest
-from edextract.tasks.extract import archive
+from edextract.tasks.extract import archive, generate, start_extract
 import tempfile
 import os
 import shutil
@@ -44,6 +44,17 @@ class TestExtractTask(unittest.TestCase):
         file_c = zipfile.read('c.txt')
         self.assertEqual(b'hello c.txt', file_c)
         zipfile.close()
+
+    def test_start_generate(self):
+        # we probably can only test failure cases
+        # test tenant is
+        try:
+            result = generate(tenant=None, request_id='0', public_key_id='swimberly',
+                              task_id='1', query='select 0 from dual', output_file='/tmp/unittest.csv.gz.pgp')
+            self.assertEqual(result, False)
+        except Exception as e:
+            self.assertEqual(True, True)
+
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

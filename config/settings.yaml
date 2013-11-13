@@ -97,6 +97,7 @@ common:
       work_zone_base_dir: /tmp
       gpg.homedir: ~/.gnupg
       gpg.public_key.cat: Kimberly Swimberly
+      sftp.route.base_dir: route
     sftp.jail.base_path: /sftp
     pickup:
       sftp.hostname: edwappsrv5.poc.dum.edwdc.net
@@ -440,7 +441,6 @@ development:
       always_generate: True
       health_check.job.queue: health_check
     trigger.recache.filter.file:  ../config/comparing_populations_precache_filters.json
-    extract.disable.sftp: False
     sftp.jail.base_path: /tmp
       
 test:

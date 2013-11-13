@@ -11,13 +11,15 @@ class Config():
     TIMEOUT = 'extract.timeout'
     HOMEDIR = 'extract.gpg.homedir'
     BINARYFILE = 'extract.gpg.path'
+    PICKUP_ROUTE_BASE_DIR = 'extract.sftp.route.base_dir'
 
 # list of configurations that are specific to edextract
 LIST_OF_CONFIG = [(Config.MAX_RETRIES, int, 1),
                   (Config.RETRY_DELAY, int, 60),
                   (Config.TIMEOUT, int, 20),
                   (Config.HOMEDIR, str, '~/.gpg'),
-                  (Config.BINARYFILE, str, 'gpg')
+                  (Config.BINARYFILE, str, 'gpg'),
+                  (Config.PICKUP_ROUTE_BASE_DIR, str, 'route')
                   ]
 
 # Keeps track of configuration related to edextract that is read off from ini

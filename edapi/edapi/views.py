@@ -97,10 +97,10 @@ def generate_report(request, validator=None):
     reportName = request.matchdict['name']
 
     params = request.GET.copy()
-    if getattr(request, 'method', 'GET') == 'POST':
-        params.update(get_request_body(request))
 
     try:
+        if getattr(request, 'method', 'GET') == 'POST':
+            params.update(get_request_body(request))
         report = reports.generate_report(get_report_registry(request, reportName), reportName, params, validator)
     except ReportNotFoundError as e:
         return EdApiHTTPNotFound(e.msg)

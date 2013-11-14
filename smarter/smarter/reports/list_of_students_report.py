@@ -66,7 +66,11 @@ REPORT_PARAMS = merge_dict({
 
 @report_config(
     name=REPORT_NAME + '_csv',
-    params=REPORT_PARAMS)
+    params=merge_dict(REPORT_PARAMS,
+                      {Constants.ASMTTYPE: {"type": "string",
+                                            "require": True,
+                                            "pattern": "^(" + AssessmentType.SUMMATIVE + "|" + AssessmentType.COMPREHENSIVE_INTERIM + ")$"}
+                       }))
 @audit_event()
 def get_list_of_students_extract_report(params):
     '''
@@ -74,12 +78,10 @@ def get_list_of_students_extract_report(params):
     '''
     # Get results from db
     asmtGrade = params.get(Constants.ASMTGRADE, None)
-    timestamp = datetime.now().strftime("%m-%d-%Y_%H-%M-%S")
-    extract_file_name = ''
-    if asmtGrade is None:
-        extract_file_name = 'SCHOOL_ASMT_RESULTS_' + timestamp + '.csv'
-    else:
-        extract_file_name = 'ASMT_GRADE_' + str(asmtGrade) + '_' + timestamp + '.csv'
+    level = 'GRADE_' + str(asmtGrade) if asmtGrade is not None else 'SCHOOL'
+    extract_file_name = "ASMT_{level}_{asmtType}_{timestamp}.csv".format(level=level,
+                                                                         asmtType=params.get(Constants.ASMTTYPE),
+                                                                         timestamp=datetime.now().strftime("%m-%d-%Y_%H-%M-%S"))
     # Set raw to be true so we get most recent is false
     params['raw'] = True
     results = get_list_of_students(params)
@@ -187,6 +189,7 @@ def get_list_of_students(params):
     asmtGrade = params.get(Constants.ASMTGRADE, None)
     asmtSubject = params.get(Constants.ASMTSUBJECT, None)
     raw = params.get(Constants.RAW_EXPORT, False)
+    asmtType = params.get(Constants.ASMTTYPE)
     with EdCoreDBConnection() as connector:
         # get handle to tables
         dim_student = connector.get_table(Constants.DIM_STUDENT)
@@ -194,6 +197,10 @@ def get_list_of_students(params):
         dim_asmt = connector.get_table(Constants.DIM_ASMT)
         dim_inst_hier = connector.get_table(Constants.DIM_INST_HIER)
         fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
+        # use IN if asmtType is not specified, else use Equals
+        asmt_clause = dim_asmt.c.asmt_type.in_([AssessmentType.SUMMATIVE, AssessmentType.COMPREHENSIVE_INTERIM])
+        if asmtType is not None:
+            asmt_clause = dim_asmt.c.asmt_type == asmtType
         query = select_with_context([dim_student.c.student_guid.label('student_guid'),
                                     dim_student.c.first_name.label('student_first_name'),
                                     dim_student.c.middle_name.label('student_middle_name'),
@@ -231,10 +238,9 @@ def get_list_of_students(params):
                                     fact_asmt_outcome.c.asmt_claim_4_score_range_max.label('asmt_claim_4_score_range_max')],
                                     from_obj=[fact_asmt_outcome
                                               .join(dim_student, and_(dim_student.c.student_guid == fact_asmt_outcome.c.student_guid,
-                                                                      #dim_student.c.most_recent,
                                                                       dim_student.c.section_guid == fact_asmt_outcome.c.section_guid))
                                               .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id,
-                                                                   dim_asmt.c.asmt_type.in_([AssessmentType.SUMMATIVE, AssessmentType.COMPREHENSIVE_INTERIM])))
+                                                                   asmt_clause))
                                               .join(dim_staff, and_(dim_staff.c.staff_guid == fact_asmt_outcome.c.teacher_guid,
                                                                     dim_staff.c.most_recent, dim_staff.c.section_guid == fact_asmt_outcome.c.section_guid))
                                               .join(dim_inst_hier, and_(dim_inst_hier.c.inst_hier_rec_id == fact_asmt_outcome.c.inst_hier_rec_id))])

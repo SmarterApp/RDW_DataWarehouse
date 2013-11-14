@@ -96,7 +96,7 @@ def generate_report(request, validator=None):
     # gets the name of the report from the URL
     reportName = request.matchdict['name']
 
-    params = request.GET
+    params = request.GET.copy()
     if getattr(request, 'method', 'GET') == 'POST':
         params.update(get_request_body(request))
 

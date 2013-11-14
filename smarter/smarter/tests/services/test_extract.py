@@ -56,6 +56,7 @@ class TestExtract(Unittest_with_edcore_sqlite):
         self.assertRaises(EdApiHTTPPreconditionFailed, post_extract_service, self.__request)
 
     def test_post_valid_response(self):
+        self.__request.method = 'POST'
         self.__request.json_body = {'stateCode': ['CA'],
                                     'asmtYear': ['2015'],
                                     'asmtType': ['SUMMATIVE'],
@@ -96,6 +97,7 @@ class TestExtract(Unittest_with_edcore_sqlite):
         self.assertEqual(tasks[0][Constants.STATUS], Constants.FAIL)
 
     def test_multi_tasks(self):
+        self.__request.method = 'POST'
         self.__request.json_body = {'stateCode': ['CA'],
                                     'asmtYear': ['2015', '2011'],
                                     'asmtType': ['SUMMATIVE'],

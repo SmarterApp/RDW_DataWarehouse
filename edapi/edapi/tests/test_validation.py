@@ -224,6 +224,15 @@ class TestReportConfig(unittest.TestCase):
         fixed_params = validator.fix_types(registry, report_name, params)
         self.assertEqual(not fixed_params, True)
 
+    def test_fix_types_for_schema_allow_additional_properties(self):
+        schema = {"id1": {"type": "integer"}}
+        params = {"id2": "1", "id1": "2"}
+        validator = Validator()
+        fixed_params = validator.fix_types_for_schema(schema, params)
+        self.assertEqual({"id1": 2}, fixed_params)
+        fixed_params = validator.fix_types_for_schema(schema, params, True)
+        self.assertEqual({"id2": "1", "id1": 2}, fixed_params)
+
     def test_fix_types_for_int_array(self):
         report_name = "test"
         config = {"id1": {"type": "array", "items": {"type": "integer"}}}

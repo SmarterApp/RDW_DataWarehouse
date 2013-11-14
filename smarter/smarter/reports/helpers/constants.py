@@ -18,6 +18,8 @@ class Constants():
     constants for reports
     '''
 
+    SL = 'sl'
+    PDF = 'pdf'
     LANG = 'lang'
     GRAYSCALE = 'grayscale'
     STATECODE = 'stateCode'

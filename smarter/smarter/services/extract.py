@@ -18,6 +18,7 @@ from smarter.extract.constants import ExtractType
 
 EXTRACT_PARAMS = {
     "type": "object",
+    "additionalProperties": False,
     "properties": {
         'extractType': {
             "type": "array",
@@ -78,7 +79,7 @@ EXTRACT_PARAMS = {
 
 
 @view_config(route_name='extract', request_method='POST', content_type='application/json')
-@validate_params(method='POST', schema=EXTRACT_PARAMS)
+@validate_params(schema=EXTRACT_PARAMS)
 #@audit_event()
 def post_extract_service(context, request):
     '''
@@ -94,7 +95,7 @@ def post_extract_service(context, request):
 
 
 @view_config(route_name='extract', request_method='GET')
-@validate_params(method='GET', schema=EXTRACT_PARAMS)
+@validate_params(schema=EXTRACT_PARAMS)
 #@audit_event()
 def get_extract_service(context, request):
     '''

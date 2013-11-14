@@ -26,6 +26,7 @@ KNOWN_REPORTS = ['indivstudentreport.html']
 
 PDF_PARAMS = {
     "type": "object",
+    "additionalProperties": False,
     "properties": {
         Constants.STUDENTGUID: {
             "type": "string",
@@ -45,13 +46,23 @@ PDF_PARAMS = {
             "type": "string",
             "required": False,
             "pattern": "^[a-z]{2}$",
+        },
+        Constants.PDF: {
+            "type": "string",
+            "required": False,
+            "pattern": "^(true|false|TRUE|FALSE)$",
+        },
+        Constants.SL: {
+            "type": "string",
+            "required": False,
+            "pattern": "^\d+$",
         }
     }
 }
 
 
 @view_config(route_name='pdf', request_method='POST', content_type='application/json')
-@validate_params(method='POST', schema=PDF_PARAMS)
+@validate_params(schema=PDF_PARAMS)
 def post_pdf_service(context, request):
     '''
     Handles POST request to /services/pdf
@@ -67,7 +78,7 @@ def post_pdf_service(context, request):
 
 
 @view_config(route_name='pdf', request_method='GET')
-@validate_params(method='GET', schema=PDF_PARAMS)
+@validate_params(schema=PDF_PARAMS)
 def get_pdf_service(context, request):
     '''
     Handles GET request to /services/pdf

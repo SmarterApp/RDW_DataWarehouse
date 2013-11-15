@@ -93,6 +93,7 @@ def validate_params(schema):
         '''
         :param request_handler: pyramid request handler
         '''
+        @wraps(request_wrap)
         def validate_wrap(*args, **kwargs):
             '''
             :param args: function to accept an arbitrary number of arguments.

@@ -80,7 +80,7 @@ EXTRACT_PARAMS = {
 
 @view_config(route_name='extract', request_method='POST', content_type='application/json')
 @validate_params(schema=EXTRACT_PARAMS)
-#@audit_event()
+@audit_event()
 def post_extract_service(context, request):
     '''
     Handles POST request to /services/extract

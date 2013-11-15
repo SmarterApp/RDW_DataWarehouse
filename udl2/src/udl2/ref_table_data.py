@@ -3,7 +3,6 @@ CLEAN = 'clean'
 CLEAN_UP = 'cleanUpper'
 DATE = 'date'
 SCHOOL_TY = 'schoolType'
-STAFF_TY = 'staffType'
 GENDER = 'gender'
 YN = 'yn'
 

@@ -12,7 +12,8 @@ import csv
 import re
 
 from sfv import error_codes
-from sfv import config
+from sfv import sfv_util
+from udl2.celery import udl2_conf
 from udl2_util.file_util import abs_path_join
 
 
@@ -404,7 +405,8 @@ class DoesSourceFileInExpectedFormat(object):
     """Check if source file is in the expected format with all the columns expected"""
 
     def __init__(self, csv_fields=None):
-        self.expected_csv_fields = config.CSV_FIELD_MAPPINGS if csv_fields is None else csv_fields
+        self.expected_csv_fields = sfv_util.get_source_column_values_from_ref_column_mapping(
+            udl2_conf['udl2_db']['csv_lz_table']) if csv_fields is None else csv_fields
 
     def are_eq(self, a, b):
         return len(a) == len(b) and set(a) == set(b)
@@ -429,6 +431,7 @@ class DoesSourceFileInExpectedFormat(object):
             file_reader = csv.reader(file_to_validate)
             header_row = next(file_reader)
             file_to_validate.close()
+            header_row = [column.lower() for column in header_row]
             if not self.are_eq(header_row, self.expected_csv_fields):
                 return (error_codes.SRC_FILE_HAS_HEADERS_MISMATCH_EXPECTED_FORMAT, dir_path, file_name, batch_sid)
 

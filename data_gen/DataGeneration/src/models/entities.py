@@ -253,7 +253,7 @@ class AssessmentOutcome(object):
 
     def getRow(self):
         return [self.asmnt_outcome_rec_id, self.asmt_rec_id,
-                self.student_guid, self.teacher_guid, self.state_code,
+                self.student_guid, self.state_code,  # removed: self.teacher_guid,
                 self.district_guid, self.school_guid, self.section_guid,
                 self.inst_hier_rec_id, self.section_rec_id,
                 self.where_taken_id, self.where_taken_name, self.asmt_grade, self.enrl_grade,
@@ -273,7 +273,7 @@ class AssessmentOutcome(object):
     @classmethod
     def getHeader(cls):
         return ['asmnt_outcome_rec_id', 'asmt_rec_id',
-                'student_guid', 'teacher_guid', 'state_code',
+                'student_guid', 'state_code',  # removed: 'teacher_guid',
                 'district_guid', 'school_guid', 'section_guid',
                 'inst_hier_rec_id', 'section_rec_id',
                 'where_taken_id', 'where_taken_name', 'asmt_grade', 'enrl_grade',

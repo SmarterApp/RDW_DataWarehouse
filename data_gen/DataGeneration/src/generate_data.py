@@ -69,7 +69,8 @@ NAMES_TO_PATH_DICT = {BIRDS: os.path.join(DATAFILE_PATH, 'datafiles', 'name_list
                       }
 
 
-def generate_data_from_config_file(config_module, output_dict, do_pld_adjustment=True, star_format=True, landing_zone_format=False, single_file=True, district_chunk_size=0):
+def generate_data_from_config_file(config_module, output_dict, do_pld_adjustment=True, star_format=True,
+                                   landing_zone_format=False, single_file=True, district_chunk_size=0, gen_dim_asmt=False):
     '''
     Main function that drives the data generation process
     Collects all relevant info from the config files and calls methods to generate states and remaining data
@@ -93,7 +94,7 @@ def generate_data_from_config_file(config_module, output_dict, do_pld_adjustment
     if star_format:
         prepare_csv_files(output_dict)
         create_csv(assessments, output_dict[Assessment])
-    else:
+    if landing_zone_format:
         prepare_lz_csv_file(output_dict, assessments, single_file)
         output_generated_asmts_to_json(assessments, output_dict)
 
@@ -107,19 +108,21 @@ def generate_data_from_config_file(config_module, output_dict, do_pld_adjustment
         # generate districts in chunks and write to file
         district_chunk_size = district_chunk_size if district_chunk_size >= 1 else calculate_dist_chunk(state_population)
         print('district_chunk size', district_chunk_size)
-        generate_districts_in_chunks(state_population, assessments, error_band_dict, district_names, school_names, demographics_info,
-                                     from_date, most_recent, to_date, street_names, batch_guid, output_dict, max_chunk=district_chunk_size,
-                                     star_format=star_format, landing_zone_format=landing_zone_format, single_file=single_file)
+        generate_districts_in_chunks(state_population, assessments, error_band_dict, district_names, school_names,
+                                     demographics_info, from_date, most_recent, to_date, street_names, batch_guid,
+                                     output_dict, max_chunk=district_chunk_size, star_format=star_format,
+                                     landing_zone_format=landing_zone_format, single_file=single_file,
+                                     gen_dim_asmt=gen_dim_asmt)
 
         state = generate_state(state_population.state_name, state_population.state_code)
         create_state_level_staff(state, from_date, most_recent, to_date, number_of_state_level_staff=10)
-        if star_format:
+        if star_format and gen_dim_asmt:
             output_state_staff_to_csv(state, batch_guid, output_dict, from_date, most_recent, to_date)
 
     return True
 
 
-def output_generated_data_to_csv(states, assessments, batch_guid, output_dict, from_date, most_recent, to_date):
+def output_generated_data_to_csv(states, assessments, batch_guid, output_dict, from_date, most_recent, to_date, gen_dim_asmt=False):
     '''
     '''
     # First thing: prep the csv files by deleting their contents and adding appropriate headers
@@ -151,7 +154,9 @@ def output_generated_data_to_csv(states, assessments, batch_guid, output_dict, f
 
     create_csv(institution_hierarchies, output_dict[InstitutionHierarchy])
     create_csv(sections, output_dict[Section])
-    create_csv(staff, output_dict[Staff])
+
+    if gen_dim_asmt:
+        create_csv(staff, output_dict[Staff])
 
 
 def output_state_staff_to_csv(state, batch_guid, output_dict, from_date, most_recent, to_date):
@@ -161,20 +166,32 @@ def output_state_staff_to_csv(state, batch_guid, output_dict, from_date, most_re
     create_csv(state_staff, output_dict[Staff])
 
 
-def output_data_to_selected_format(districts, state, batch_guid, output_dict, from_date, most_recent, to_date, star_format=True, landing_zone_format=False, single_file=True):
-    '''
-    '''
+def output_data_to_selected_format(districts, state, batch_guid, output_dict, from_date, most_recent, to_date,
+                                   star_format=True, landing_zone_format=False, single_file=True, gen_dim_asmt=False):
+    """
+    """
     print('Writing data to file: %s districts' % len(districts))
     if star_format:
-        output_generated_districts_to_csv(districts, state, batch_guid, output_dict, from_date, most_recent, to_date)
+        output_generated_districts_to_csv(districts, state, batch_guid, output_dict, from_date,
+                                          most_recent, to_date, gen_dim_asmt)
     if landing_zone_format:
-        output_generated_districts_to_lz_format(districts, state, batch_guid, output_dict, from_date, most_recent, to_date, single_file)
+        output_generated_districts_to_lz_format(districts, state, batch_guid, output_dict, from_date,
+                                                most_recent, to_date, single_file)
     print('Data write complete')
 
 
-def output_generated_districts_to_csv(districts, state, batch_guid, output_dict, from_date, most_recent, to_date):
-    '''
-    '''
+def output_generated_districts_to_csv(districts, state, batch_guid, output_dict, from_date, most_recent, to_date, gen_dim_asmt=False):
+    """
+
+    :param districts:
+    :param state:
+    :param batch_guid:
+    :param output_dict:
+    :param from_date:
+    :param most_recent:
+    :param to_date:
+    :param gen_dim_asmt:
+    """
     staff = []
     sections = []
     institution_hierarchies = []
@@ -195,7 +212,8 @@ def output_generated_districts_to_csv(districts, state, batch_guid, output_dict,
 
     create_csv(institution_hierarchies, output_dict[InstitutionHierarchy])
     create_csv(sections, output_dict[Section])
-    create_csv(staff, output_dict[Staff])
+    if gen_dim_asmt:
+        create_csv(staff, output_dict[Staff])
 
 
 def get_values_from_config(config_module):
@@ -277,17 +295,20 @@ def generate_state_populations(states, state_types, demographics_info, assessmen
     return state_populations
 
 
-def generate_districts_in_chunks(state_population, assessments, error_band_dict, district_names, school_names, demographics_info, from_date, most_recent,
-                                 to_date, street_names, batch_guid, output_dict, max_chunk=10, star_format=True, landing_zone_format=False, single_file=True):
-    '''
-    '''
+def generate_districts_in_chunks(state_population, assessments, error_band_dict, district_names, school_names,
+                                 demographics_info, from_date, most_recent, to_date, street_names, batch_guid,
+                                 output_dict, max_chunk=10, star_format=True, landing_zone_format=False,
+                                 single_file=True, gen_dim_asmt=False):
+    """
+    """
     for chunk_position in range(0, len(state_population.districts), max_chunk):
         new_state_population = get_district_chunk(state_population, max_chunk, chunk_position)
         print('Generating %s districts' % len(new_state_population.districts))
         districts = generate_districts_for_state_population_chunk(new_state_population, assessments, error_band_dict, district_names, school_names,
                                                                   demographics_info, from_date, most_recent, to_date, street_names)
         # write district to file
-        output_data_to_selected_format(districts, state_population, batch_guid, output_dict, from_date, most_recent, to_date, star_format, landing_zone_format, single_file)
+        output_data_to_selected_format(districts, state_population, batch_guid, output_dict, from_date, most_recent,
+                                       to_date, star_format, landing_zone_format, single_file, gen_dim_asmt)
 
 
 def get_district_chunk(state_population, chunk_size, start_pos):
@@ -859,16 +880,21 @@ def generate_name_list_dictionary(list_name_to_path_dictionary):
     return name_list_dictionary
 
 
-def main(config_mod_name='dg_types', output_path=None, do_pld_adjustment=True, star_format=True, landing_zone_format=False, single_file=True, district_chunk_size=0):
+def main(config_mod_name='dg_types', output_path=None, do_pld_adjustment=True, star_format=True,
+         landing_zone_format=False, single_file=True, district_chunk_size=0, gen_dim_staff=False):
     t1 = datetime.datetime.now()
     config_module = import_module(config_mod_name)
 
     # setup output path dict
     output_dict = ENTITY_TO_PATH_DICT
+    if not gen_dim_staff and Staff in output_dict:
+        del output_dict[Staff]
+
     if output_path:
         output_dict = create_output_dict(output_path)
     # generate_data
-    generate_data_from_config_file(config_module, output_dict, do_pld_adjustment, star_format, landing_zone_format, single_file, district_chunk_size)
+    generate_data_from_config_file(config_module, output_dict, do_pld_adjustment, star_format, landing_zone_format,
+                                   single_file, district_chunk_size, gen_dim_staff)
 
     # print time
     t2 = datetime.datetime.now()
@@ -885,11 +911,13 @@ if __name__ == '__main__':
     # Argument parsing
     parser = argparse.ArgumentParser(description='Generate fixture data from a configuration file.')
     parser.add_argument('--config', dest='config_module', action='store', default='configs.dg_types',
-                        help='Specify the configuration module that informs that data creation process.', required=False)
+                        help='Specify the configuration module that informs that data creation process.',
+                        required=False)
     parser.add_argument('--output', dest='output_path', action='store',
                         help='Specify the location of the output csv files', required=False)
     parser.add_argument('-d', '--district-chunk-size', type=int, default=0,
-                        help='The number of district to generate and output at a time. If this value is less than 1 this will be calculated at run time. Default: 0')
+                        help='The number of district to generate and output at a time. If this value is'
+                             ' less than 1 this will be calculated at run time. Default: 0')
     parser.add_argument('-N', '--no-pld-adjustment', dest='do_pld_adjustment', action='store_false',
                         help='Specify this flag to generate data without applying the performance level adjustments')
     parser.add_argument('-l', '--lz-format', action='store_true', dest='lz_format',
@@ -898,10 +926,12 @@ if __name__ == '__main__':
                         help='create both star schema and landing zone output file')
     parser.add_argument('-m', '--multi-lz-files', action='store_true',
                         help='write the landing zone csv files to multiple files instead of one single file')
+    parser.add_argument('-s', '--staff', action='store_true', help='generate dim_staff file in output')
     args = parser.parse_args()
 
     star_format = True if args.star_and_lz or not args.lz_format else False
     landing_zone = True if args.star_and_lz or args.lz_format else False
     single_file = not args.multi_lz_files
 
-    main(args.config_module, args.output_path, args.do_pld_adjustment, star_format, landing_zone, single_file, args.district_chunk_size)
+    main(args.config_module, args.output_path, args.do_pld_adjustment, star_format, landing_zone, single_file,
+         args.district_chunk_size, args.staff)

@@ -50,6 +50,7 @@ def get_extract_assessment_query(params, limit=None, compiled=False):
         dim_inst_hier = connector.get_table(Constants.DIM_INST_HIER)
         fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
         # TODO:  Defect, asmt_guid is not mapping correctly from ref_table_data
+        # guid_asmt_location is currently missing
         query = select_with_context([dim_asmt.c.asmt_guid.label(dim_asmt_label.get('asmt_guid', 'guid_asmt')),
                                     fact_asmt_outcome.c.where_taken_name.label(dim_asmt_label.get('where_taken_name', 'name_asmt_location')),
                                     fact_asmt_outcome.c.asmt_grade.label(fact_asmt_outcome_label.get('asmt_grade', 'asmt_grade')),

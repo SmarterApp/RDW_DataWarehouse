@@ -100,11 +100,12 @@ class DataValidationErrorCode(unittest.TestCase):
         print("Passed: TC10: Validation Code for JSON file formate")
 
     def test_multiple_errorcode(self):
-        #test#11 --> test multiple errors in one csv file (Error: 3008 & 3011)
-        multierror_list = [error_codes.SRC_FILE_HAS_DUPLICATE_HEADERS, error_codes.SRC_FILE_HEADERS_MISMATCH_DATA]
+        #test#11 --> test multiple errors in one csv file (Error: 3006, 3008 & 3011)
+        multierror_list = [error_codes.SRC_FILE_HAS_DUPLICATE_HEADERS, error_codes.SRC_FILE_HEADERS_MISMATCH_DATA, error_codes.SRC_FILE_HAS_HEADERS_MISMATCH_EXPECTED_FORMAT]
         errorcode_list = []
         expected_error_code = csv_validator.CsvValidator().execute(self.conf['zones']['datafiles'], "realdata_3008_3011.csv", 123)
         for i in range(len(expected_error_code)):
             errorcode_list.append(expected_error_code[i][0])
-        assert multierror_list == errorcode_list, "Error codes are incorrect for duplicate headers and for data mismatch"
+        assert len(multierror_list) == len(errorcode_list)
+        assert set(multierror_list) == set(errorcode_list), "Error codes are incorrect for duplicate headers and for data mismatch"
         print("Passed: TC11: Multiple Validation code in single csv file")

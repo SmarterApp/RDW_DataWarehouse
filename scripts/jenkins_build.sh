@@ -154,8 +154,13 @@ function show_help {
 
 function setup_functional_test_dependencies {
     echo "Setup functional test dependencies"
+    # Remove the pdf directory
     if [ -d /opt/edware/pdf/NY ]; then
         rm -rf /opt/edware/pdf/NY
+    fi
+    # Remove the extract directory
+    if [ -d /tmp/cat ]; then
+        rm -rf /tmp/cat
     fi
     rm -rf $WORKSPACE/edware_test
     mkdir  $WORKSPACE/edware_test

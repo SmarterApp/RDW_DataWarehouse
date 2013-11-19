@@ -26,6 +26,7 @@ from smarter.reports.helpers.compare_pop_stat_report import get_not_stated_count
 from string import capwords
 from edcore.database.edcore_connector import EdCoreDBConnection
 from sqlalchemy.sql.expression import true
+from smarter.extract.student_assessment import get_extract_assessment_query
 
 REPORT_NAME = "list_of_students"
 
@@ -82,9 +83,11 @@ def get_list_of_students_extract_report(params):
     extract_file_name = "ASMT_{level}_{asmtType}_{timestamp}.csv".format(level=level,
                                                                          asmtType=params.get(Constants.ASMTTYPE),
                                                                          timestamp=datetime.now().strftime("%m-%d-%Y_%H-%M-%S"))
-    # Set raw to be true so we get most recent is false
-    params['raw'] = True
-    results = get_list_of_students(params)
+    with EdCoreDBConnection() as connector:
+        query = get_extract_assessment_query(params)
+        results = connector.get_result(query)
+        if not results:
+            raise NotFoundException("There are no results")
     header = []
     rows = []
     # Reformat data
@@ -187,8 +190,6 @@ def get_list_of_students(params):
     schoolGuid = str(params[Constants.SCHOOLGUID])
     asmtGrade = params.get(Constants.ASMTGRADE, None)
     asmtSubject = params.get(Constants.ASMTSUBJECT, None)
-    raw = params.get(Constants.RAW_EXPORT, False)
-    asmtType = params.get(Constants.ASMTTYPE)
     with EdCoreDBConnection() as connector:
         # get handle to tables
         dim_student = connector.get_table(Constants.DIM_STUDENT)
@@ -196,10 +197,6 @@ def get_list_of_students(params):
         dim_asmt = connector.get_table(Constants.DIM_ASMT)
         dim_inst_hier = connector.get_table(Constants.DIM_INST_HIER)
         fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
-        # use IN if asmtType is not specified, else use Equals
-        asmt_clause = dim_asmt.c.asmt_type.in_([AssessmentType.SUMMATIVE, AssessmentType.COMPREHENSIVE_INTERIM])
-        if asmtType is not None:
-            asmt_clause = dim_asmt.c.asmt_type == asmtType
         query = select_with_context([dim_student.c.student_guid.label('student_guid'),
                                     dim_student.c.first_name.label('student_first_name'),
                                     dim_student.c.middle_name.label('student_middle_name'),
@@ -236,21 +233,16 @@ def get_list_of_students(params):
                                               .join(dim_student, and_(dim_student.c.student_guid == fact_asmt_outcome.c.student_guid,
                                                                       dim_student.c.section_guid == fact_asmt_outcome.c.section_guid))
                                               .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id,
-                                                                   asmt_clause))
+                                                                   dim_asmt.c.asmt_type.in_([AssessmentType.SUMMATIVE, AssessmentType.COMPREHENSIVE_INTERIM])))
                                               .join(dim_inst_hier, and_(dim_inst_hier.c.inst_hier_rec_id == fact_asmt_outcome.c.inst_hier_rec_id))])
         query = query.where(fact_asmt_outcome.c.state_code == stateCode)
         query = query.where(and_(fact_asmt_outcome.c.school_guid == schoolGuid))
         query = query.where(and_(fact_asmt_outcome.c.district_guid == districtGuid))
-
         query = query.where(and_(fact_asmt_outcome.c.status == 'C'))
-
-        # Only apply most_recent, filters and asmtSubject when it's NOT a raw extract
-        if not raw:
-            query = query.where(and_(fact_asmt_outcome.c.most_recent == true()))
-            query = apply_filter_to_query(query, fact_asmt_outcome, params)
-            if asmtSubject is not None:
-                query = query.where(and_(dim_asmt.c.asmt_subject.in_(asmtSubject)))
-
+        query = query.where(and_(fact_asmt_outcome.c.most_recent == true()))
+        query = apply_filter_to_query(query, fact_asmt_outcome, params)
+        if asmtSubject is not None:
+            query = query.where(and_(dim_asmt.c.asmt_subject.in_(asmtSubject)))
         if asmtGrade is not None:
             query = query.where(and_(fact_asmt_outcome.c.asmt_grade == asmtGrade))
 

@@ -29,7 +29,7 @@ import argparse
 from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from udl2_util.database_util import connect_db, execute_queries
 from udl2.populate_ref_info import populate_ref_column_map, populate_stored_proc
-from udl2 import ref_table_data
+from config import ref_table_data
 
 #
 # UDL_METADATA stores all udl2 related database objects, which includes staging tables and table-independent sequeuces
@@ -188,11 +188,6 @@ UDL_METADATA = {
                 ('asmt_type', False, 'varchar(256)', '', True, "Assessment Type"),
                 ('asmt_subject', False, 'varchar(256)', '', True, "Assessment Subject"),
                 ('asmt_year', False, 'varchar(256)', '', True, 'Assessment Year'),
-                ('guid_staff', False, 'varchar(256)', '', True, "Staff GUID"),
-                ('name_staff_first', False, 'varchar(256)', '', True, "Staff First Name"),
-                ('name_staff_middle', False, 'varchar(256)', '', True, "Staff Middle Name"),
-                ('name_staff_last', False, 'varchar(256)', '', True, "Staff Last Name"),
-                ('type_staff', False, 'varchar(256)', '', True, "User Type - Staff, Teacher"),
                 ('created_date', False, 'timestamp', 'now()', False, "Date on which record is inserted"),
             ],
             'indexes': [],
@@ -312,11 +307,6 @@ UDL_METADATA = {
                 ('asmt_type', False, 'varchar(16)', '', False, "Assessment Type - SUMMATIVE or INTERIM"),
                 ('asmt_subject', False, 'varchar(32)', '', False, "Math, ELA ..."),
                 ('asmt_year', False, 'smallint', '', False, "Assessment year"),
-                ('guid_staff', False, 'varchar(50)', '', True, "Staff GUID"),
-                ('name_staff_first', False, 'varchar(256)', '', True, "Staff First Name"),
-                ('name_staff_middle', False, 'varchar(256)', '', True, "Staff Middle Name"),
-                ('name_staff_last', False, 'varchar(256)', '', True, "Staff Last Name"),
-                ('type_staff', False, 'varchar(10)', '', True, "User Type - Staff, Teacher"),
                 ('created_date', False, 'timestamp with time zone', 'now()', False, "Date on which record is inserted"),
             ],
             'indexes': [],

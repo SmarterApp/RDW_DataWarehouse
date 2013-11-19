@@ -17,7 +17,7 @@ logger = get_task_logger(__name__)
 
 def report_udl_batch_metrics_to_log(msg, end_time):
     logger.info('UDL Batch Summary:')
-    logger.info('Input file size: ' + str(round(msg[mk.INPUT_FILE_SIZE]/(1024*1024.0), 3)) + 'MB')
+    logger.info('Input file size: ' + str(round(msg[mk.INPUT_FILE_SIZE] / (1024 * 1024.0), 3)) + 'MB')
     logger.info('Batch Guid: ' + msg[mk.GUID_BATCH])
     logger.info('Start time: ' + str(msg[mk.START_TIMESTAMP]))
     logger.info('End time: ' + str(end_time))

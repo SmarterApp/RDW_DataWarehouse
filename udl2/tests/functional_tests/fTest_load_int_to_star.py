@@ -58,7 +58,7 @@ class IntToStarFTest(UDLTestHelper):
 
         # check star schema table counts
         count_template = """ SELECT COUNT(*) FROM "{schema}"."{table}" """
-        tables_to_check = {'dim_asmt': 1, 'dim_inst_hier': 71, 'dim_staff': 71, 'dim_student': 94, 'fact_asmt_outcome': 99}
+        tables_to_check = {'dim_asmt': 1, 'dim_inst_hier': 71, 'dim_student': 94, 'fact_asmt_outcome': 99}
         for entry in tables_to_check.keys():
             sql = count_template.format(schema=self.udl2_conf['target_db']['db_schema'], table=entry)
             result = self.target_conn.execute(sql)

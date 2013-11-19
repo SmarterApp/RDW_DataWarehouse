@@ -24,12 +24,29 @@ class FileRouterException(Exception):
     pass
 
 
-class GatekeeprException(FileRouterException):
+class GatekeeperException(FileRouterException):
     def __init__(self, message):
         self.__message = message
 
     def __repr__(self):
         return repr(self.__message)
+
+
+class FileInfo():
+    '''
+    Given full path filename, reads tenant, gatekeeper, and filenamd
+    '''
+    def __init__(self, filename):
+        path = filename.split(os.path.sep)
+        self.__filename = path.pop()
+        self.__gatekeeper = path.pop()
+        self.__tenant = path.pop()
+
+    def get_file_info(self):
+        '''
+        reading file directory structure and return filename, gatekeeper username, and tenant name
+        '''
+        return self.__filename, self.__gatekeeper, self.__tenant
 
 
 def _route_for_error_file(original_file_name, route_dir, error_dir):
@@ -51,22 +68,30 @@ def _route_for_error_file(original_file_name, route_dir, error_dir):
     syslog.syslog(syslog.LOG_INFO, 'File moved: [{}] to [{}]'.format(original_file_name, error_file))
 
 
+def _mkdir(directory, gatekeeper_uid, gatekeeper_gid):
+    if not os.path.isdir(directory):
+        os.makedirs(directory, mode=(stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR), exist_ok=True)
+        if gatekeeper_uid is not None and gatekeeper_gid is not None:
+            os.chown(directory, gatekeeper_uid, gatekeeper_gid)
+
+
 def _route_file_for_gatekeeper(gatekeeper_jailed_home_base, original_file_name, home_base, gatekeeper_reports_subdir, archive_dir, set_file_owner=True):
     '''
     copy file to gatekeeper account.
     '''
     # find destination file name
     # the functino will throw exception if gatekeeper account has not created or file is already existed in the acconut.
-    destination_file_name = _get_destination_filename_for_gatekeeper(gatekeeper_jailed_home_base, gatekeeper_reports_subdir, original_file_name)
+    original_file_info = FileInfo(original_file_name)
+    destination_file_name = _get_destination_filename_for_gatekeeper(gatekeeper_jailed_home_base, gatekeeper_reports_subdir, original_file_info)
     destination_file_dir = os.path.dirname(destination_file_name)
-    (_filename, _gatekeeper, _tenant) = _get_info_from_file(original_file_name)
+    (_filename, _gatekeeper, _tenant) = original_file_info.get_file_info()
+    gatekeeper_uid = None
+    gatekeeper_gid = None
     if set_file_owner:
         gatekeeper_uid = pwd.getpwnam(_gatekeeper).pw_uid
         gatekeeper_gid = pwd.getpwnam(_gatekeeper).pw_gid
-    if not os.path.isdir(destination_file_dir):
-        os.makedirs(destination_file_dir, mode=(stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR), exist_ok=True)
-        if set_file_owner:
-            os.chown(destination_file_dir, gatekeeper_uid, gatekeeper_gid)
+    _mkdir(destination_file_dir, gatekeeper_uid, gatekeeper_gid)
+
     # rename file to indicate that file is being copying.
     working_file = original_file_name + PROCESS_SUFFIX
     filedir, filename = os.path.split(destination_file_name)
@@ -77,12 +102,9 @@ def _route_file_for_gatekeeper(gatekeeper_jailed_home_base, original_file_name, 
     shutil.copyfile(working_file, hidden_to_file)
 
     # archive file
-    archive_file_name = _get_archive_filename_for_gatekeeper(home_base, archive_dir, original_file_name)
+    archive_file_name = _get_archive_filename_for_gatekeeper(home_base, archive_dir, original_file_info)
     full_archive_dir = os.path.dirname(archive_file_name)
-    if not os.path.isdir(full_archive_dir):
-        os.makedirs(full_archive_dir, mode=(stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR), exist_ok=True)
-        if set_file_owner:
-            os.chown(full_archive_dir, gatekeeper_uid, gatekeeper_gid)
+    _mkdir(full_archive_dir, gatekeeper_uid, gatekeeper_gid)
     shutil.copyfile(working_file, archive_file_name)
 
     # make sure copied hidden file is readable to owner
@@ -98,39 +120,28 @@ def _route_file_for_gatekeeper(gatekeeper_jailed_home_base, original_file_name, 
     syslog.syslog(syslog.LOG_INFO, 'File moved: [{}] to [{}]'.format(original_file_name, destination_file_name))
 
 
-def _get_info_from_file(original_file_name):
-    '''
-    reading file directory structure and return filename, gatekeeper username, and tenant name
-    '''
-    path = original_file_name.split(os.path.sep)
-    filename = path.pop()
-    gatekeeper = path.pop()
-    tenant = path.pop()
-    return filename, gatekeeper, tenant
-
-
-def _find_files(base, suffix='.zip'):
+def _find_files(path, suffix='.zip'):
     '''
     find "*.zip" file recursively by given base dir.
     '''
     filenames = []
-    if base is not None:
-        mode = os.stat(base).st_mode
+    if path is not None:
+        mode = os.stat(path).st_mode
         if stat.S_ISREG(mode):
-            if os.path.basename(base).endswith(suffix):
-                filenames.append(base)
+            if os.path.basename(path).endswith(suffix):
+                filenames.append(path)
         elif stat.S_ISDIR(mode):
-            dirs = os.listdir(base)
+            dirs = os.listdir(path)
             for file in dirs:
-                filenames += _find_files(os.path.join(base, file))
+                filenames += _find_files(os.path.join(path, file), suffix=suffix)
     return filenames
 
 
-def _get_destination_filename_for_gatekeeper(gatekeeper_jailed_home_base, gatekeeper_reports_subdir, original_file_name):
+def _get_destination_filename_for_gatekeeper(gatekeeper_jailed_home_base, gatekeeper_reports_subdir, file_info):
     '''
     copy file from router account to gatekeeper jailed account
     '''
-    (filename, gatekeeper, tenant) = _get_info_from_file(original_file_name)
+    (filename, gatekeeper, tenant) = file_info.get_file_info()
     # check if jailed account path exist.
     gatekeeper_home_dir = os.path.join(gatekeeper_jailed_home_base, tenant, gatekeeper)
     if os.path.isdir(gatekeeper_home_dir):
@@ -139,19 +150,19 @@ def _get_destination_filename_for_gatekeeper(gatekeeper_jailed_home_base, gateke
         if os.path.isfile(destination_filename):
             # file should not be existed there.
             # failed condition
-            raise GatekeeprException('File name[{}] has already existed'.format(destination_filename))
+            raise GatekeeperException('File name[{}] has already existed'.format(destination_filename))
     else:
         # most likely sftp jailed account has not created.
         # failed condition
-        raise GatekeeprException('Gatekeeper[{}] has not created for SFTP jailed account[{}]'.format(gatekeeper, gatekeeper_home_dir))
+        raise GatekeeperException('Gatekeeper[{}] has not created for SFTP jailed account[{}]'.format(gatekeeper, gatekeeper_home_dir))
     return destination_filename
 
 
-def _get_archive_filename_for_gatekeeper(home_base, archive_dir, original_file_name):
+def _get_archive_filename_for_gatekeeper(home_base, archive_dir, fileinfo):
     '''
     compose archive filename
     '''
-    (filename, gatekeeper, tenant) = _get_info_from_file(original_file_name)
+    (filename, gatekeeper, tenant) = fileinfo.get_file_info()
     # check if jailed account path exist.
     return os.path.join(home_base, tenant, gatekeeper, archive_dir, filename)
 

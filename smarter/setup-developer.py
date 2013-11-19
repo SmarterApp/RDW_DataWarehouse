@@ -13,7 +13,8 @@ dependencies = [
     'edworker',
     'services',
     'edcore',
-    'edextract']
+    'edextract',
+    'config']
 
 
 for dependency in dependencies:

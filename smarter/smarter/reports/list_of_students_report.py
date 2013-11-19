@@ -26,6 +26,7 @@ from smarter.reports.helpers.compare_pop_stat_report import get_not_stated_count
 from string import capwords
 from edcore.database.edcore_connector import EdCoreDBConnection
 from sqlalchemy.sql.expression import true
+from smarter.extract.student_assessment import get_extract_assessment_query
 
 REPORT_NAME = "list_of_students"
 
@@ -66,7 +67,11 @@ REPORT_PARAMS = merge_dict({
 
 @report_config(
     name=REPORT_NAME + '_csv',
-    params=REPORT_PARAMS)
+    params=merge_dict(REPORT_PARAMS,
+                      {Constants.ASMTTYPE: {"type": "string",
+                                            "require": True,
+                                            "pattern": "^(" + AssessmentType.SUMMATIVE + "|" + AssessmentType.COMPREHENSIVE_INTERIM + ")$"}
+                       }))
 @audit_event()
 def get_list_of_students_extract_report(params):
     '''
@@ -74,15 +79,15 @@ def get_list_of_students_extract_report(params):
     '''
     # Get results from db
     asmtGrade = params.get(Constants.ASMTGRADE, None)
-    timestamp = datetime.now().strftime("%m-%d-%Y_%H-%M-%S")
-    extract_file_name = ''
-    if asmtGrade is None:
-        extract_file_name = 'SCHOOL_ASMT_RESULTS_' + timestamp + '.csv'
-    else:
-        extract_file_name = 'ASMT_GRADE_' + str(asmtGrade) + '_' + timestamp + '.csv'
-    # Set raw to be true so we get most recent is false
-    params['raw'] = True
-    results = get_list_of_students(params)
+    level = 'GRADE_' + str(asmtGrade) if asmtGrade is not None else 'SCHOOL'
+    extract_file_name = "ASMT_{level}_{asmtType}_{timestamp}.csv".format(level=level,
+                                                                         asmtType=params.get(Constants.ASMTTYPE),
+                                                                         timestamp=datetime.now().strftime("%m-%d-%Y_%H-%M-%S"))
+    with EdCoreDBConnection() as connector:
+        query = get_extract_assessment_query(params)
+        results = connector.get_result(query)
+        if not results:
+            raise NotFoundException("There are no results")
     header = []
     rows = []
     # Reformat data
@@ -186,7 +191,6 @@ def get_list_of_students(params):
     schoolGuid = str(params[Constants.SCHOOLGUID])
     asmtGrade = params.get(Constants.ASMTGRADE, None)
     asmtSubject = params.get(Constants.ASMTSUBJECT, None)
-    raw = params.get(Constants.RAW_EXPORT, False)
     with EdCoreDBConnection() as connector:
         # get handle to tables
         dim_student = connector.get_table(Constants.DIM_STUDENT)
@@ -231,7 +235,6 @@ def get_list_of_students(params):
                                     fact_asmt_outcome.c.asmt_claim_4_score_range_max.label('asmt_claim_4_score_range_max')],
                                     from_obj=[fact_asmt_outcome
                                               .join(dim_student, and_(dim_student.c.student_guid == fact_asmt_outcome.c.student_guid,
-                                                                      #dim_student.c.most_recent,
                                                                       dim_student.c.section_guid == fact_asmt_outcome.c.section_guid))
                                               .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id,
                                                                    dim_asmt.c.asmt_type.in_([AssessmentType.SUMMATIVE, AssessmentType.COMPREHENSIVE_INTERIM])))
@@ -241,16 +244,11 @@ def get_list_of_students(params):
         query = query.where(fact_asmt_outcome.c.state_code == stateCode)
         query = query.where(and_(fact_asmt_outcome.c.school_guid == schoolGuid))
         query = query.where(and_(fact_asmt_outcome.c.district_guid == districtGuid))
-
         query = query.where(and_(fact_asmt_outcome.c.status == 'C'))
-
-        # Only apply most_recent, filters and asmtSubject when it's NOT a raw extract
-        if not raw:
-            query = query.where(and_(fact_asmt_outcome.c.most_recent == true()))
-            query = apply_filter_to_query(query, fact_asmt_outcome, params)
-            if asmtSubject is not None:
-                query = query.where(and_(dim_asmt.c.asmt_subject.in_(asmtSubject)))
-
+        query = query.where(and_(fact_asmt_outcome.c.most_recent == true()))
+        query = apply_filter_to_query(query, fact_asmt_outcome, params)
+        if asmtSubject is not None:
+            query = query.where(and_(dim_asmt.c.asmt_subject.in_(asmtSubject)))
         if asmtGrade is not None:
             query = query.where(and_(fact_asmt_outcome.c.asmt_grade == asmtGrade))
 

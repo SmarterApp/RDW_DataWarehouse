@@ -7,8 +7,7 @@ import unittest
 from edapi.views import (get_report_registry,
                          get_list_of_reports,
                          get_report_config,
-                         generate_report_get,
-                         generate_report_post,
+                         generate_report,
                          get_request_body)
 
 from edapi.utils import ContentTypePredicate
@@ -93,7 +92,7 @@ class TestViews(unittest.TestCase):
         self.request.registry[EDAPI_REPORTS_PLACEHOLDER]["test"] = {"some": "thing"}
 
         self.request.matchdict['name'] = "testNotFound"
-        response = generate_report_get(self.request)
+        response = generate_report(self.request)
         self.assertIs(type(response), EdApiHTTPNotFound)
 
     def test_generate_report_get_for_report_with_no_params(self):
@@ -101,7 +100,7 @@ class TestViews(unittest.TestCase):
         self.request.registry[EDAPI_REPORTS_PLACEHOLDER]["test"] = {"some": "thing"}
 
         self.request.matchdict['name'] = "test"
-        response = generate_report_get(self.request)
+        response = generate_report(self.request)
         self.assertIs(type(response), EdApiHTTPPreconditionFailed)
 
     def test_generate_report_get_for_valid_request(self):
@@ -112,7 +111,7 @@ class TestViews(unittest.TestCase):
         params = {"studentId": {"type": "integer", "required": True}}
         self.request.GET = {"studentId": 123}
         self.request.registry[EDAPI_REPORTS_PLACEHOLDER]["test"] = {"params": params, "reference": (Dummy, Dummy.some_func)}
-        response = generate_report_get(self.request, validator)
+        response = generate_report(self.request, validator)
         self.assertEqual(response, {"report": self.request.GET})
 
     def test_generate_report_post_for_report_not_in_registry(self):
@@ -122,7 +121,7 @@ class TestViews(unittest.TestCase):
         self.request.json_body = "{'a':1}"
 
         self.request.matchdict['name'] = "testNotFound"
-        response = generate_report_post(self.request)
+        response = generate_report(self.request)
         self.assertIs(type(response), EdApiHTTPNotFound)
 
     def test_generate_report_post_for_report_with_no_param(self):
@@ -132,11 +131,12 @@ class TestViews(unittest.TestCase):
         self.request.json_body = "{'a':1}"
 
         self.request.matchdict['name'] = "test"
-        response = generate_report_post(self.request)
+        response = generate_report(self.request)
         self.assertIs(type(response), EdApiHTTPPreconditionFailed)
 
     def test_generate_report_post_for_valid_request(self):
         self.request.content_type = "application/json"
+        self.request.method = 'POST'
         self.request.registry[EDAPI_REPORTS_PLACEHOLDER] = {}
         self.request.registry[EDAPI_REPORTS_PLACEHOLDER]["test"] = {"some": "thing"}
         self.request.matchdict['name'] = "test"
@@ -145,7 +145,7 @@ class TestViews(unittest.TestCase):
         self.request.json_body = {"studentId": "123"}
         validator = DummyValidator()
         self.request.registry[EDAPI_REPORTS_PLACEHOLDER]["test"] = {"params": params, "reference": (Dummy, Dummy.some_func)}
-        response = generate_report_post(self.request, validator)
+        response = generate_report(self.request, validator)
         self.assertEqual(response, {"report": self.request.json_body})
 
     # tests for add_report_config from __init__.py
@@ -165,7 +165,7 @@ class TestViews(unittest.TestCase):
 
     def test_url_too_long_in_get_request(self):
         self.request.url = 'h' * 2001
-        response = generate_report_get(self.request)
+        response = generate_report(self.request)
         self.assertIs(type(response), EdApiHTTPRequestURITooLong)
 
 

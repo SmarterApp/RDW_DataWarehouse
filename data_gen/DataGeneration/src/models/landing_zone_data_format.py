@@ -353,8 +353,9 @@ class RealDataFormat(object):
                 self.address_student_city, self.address_student_zip, self.gender_student, self.email_student, self.dob_student, self.grade_enrolled, self.date_assessed, self.score_asmt, self.score_asmt_min,
                 self.score_asmt_max, self.score_perf_level, self.score_claim_1, self.score_claim_1_min, self.score_claim_1_max, self.score_claim_2, self.score_claim_2_min, self.score_claim_2_max, self.score_claim_3,
                 self.score_claim_3_min, self.score_claim_3_max, self.score_claim_4, self.score_claim_4_min, self.score_claim_4_max, self.dmg_eth_hsp, self.dmg_eth_ami, self.dmg_eth_asn, self.dmg_eth_blk,
-                self.dmg_eth_pcf, self.dmg_eth_wht, self.dmg_prg_iep, self.dmg_prg_lep, self.dmg_prg_504, self.dmg_prg_tt1, self.guid_staff, self.name_staff_first, self.name_staff_middle, self.name_staff_last,
-                self.type_staff, self.asmt_type, self.asmt_year, self.asmt_subject]
+                self.dmg_eth_pcf, self.dmg_eth_wht, self.dmg_prg_iep, self.dmg_prg_lep, self.dmg_prg_504, self.dmg_prg_tt1,
+                #self.guid_staff, self.name_staff_first, self.name_staff_middle, self.name_staff_last, self.type_staff,
+                self.asmt_type, self.asmt_year, self.asmt_subject]
 
     @classmethod
     def getHeader(cls):
@@ -363,5 +364,6 @@ class RealDataFormat(object):
                 'address_student_city', 'address_student_zip', 'gender_student', 'email_student', 'dob_student', 'grade_enrolled', 'date_assessed', 'score_asmt', 'score_asmt_min',
                 'score_asmt_max', 'score_perf_level', 'score_claim_1', 'score_claim_1_min', 'score_claim_1_max', 'score_claim_2', 'score_claim_2_min', 'score_claim_2_max', 'score_claim_3',
                 'score_claim_3_min', 'score_claim_3_max', 'score_claim_4', 'score_claim_4_min', 'score_claim_4_max', 'dmg_eth_hsp', 'dmg_eth_ami', 'dmg_eth_asn', 'dmg_eth_blk',
-                'dmg_eth_pcf', 'dmg_eth_wht', 'dmg_prg_iep', 'dmg_prg_lep', 'dmg_prg_504', 'dmg_prg_tt1', 'guid_staff', 'name_staff_first', 'name_staff_middle', 'name_staff_last',
-                'type_staff', 'asmt_type', 'asmt_year', 'asmt_subject']
+                'dmg_eth_pcf', 'dmg_eth_wht', 'dmg_prg_iep', 'dmg_prg_lep', 'dmg_prg_504', 'dmg_prg_tt1',
+                #'guid_staff', 'name_staff_first', 'name_staff_middle', 'name_staff_last', 'type_staff',
+                'asmt_type', 'asmt_year', 'asmt_subject']

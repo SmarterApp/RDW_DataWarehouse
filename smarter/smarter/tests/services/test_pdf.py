@@ -71,6 +71,7 @@ class TestServices(Unittest_with_edcore_sqlite):
         self.assertRaises(EdApiHTTPPreconditionFailed, post_pdf_service, self.__request)
 
     def test_post_pdf_service_no_context(self):
+        self.__request.method = 'POST'
         self.__request.json_body = {'studentGuid': 'a016a4c1-5aca-4146-a85b-ed1172a01a4d'}
         dummy_session = Session()
         dummy_session.set_roles(['TEACHER'])
@@ -82,6 +83,7 @@ class TestServices(Unittest_with_edcore_sqlite):
 
     def test_post_pdf_service_post_valid_payload(self):
         studentGuid = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
+        self.__request.method = 'POST'
         self.__request.json_body = {'studentGuid': studentGuid}
         self.__request.cookies = {'edware': '123'}
         # Override the wkhtmltopdf command
@@ -106,6 +108,7 @@ class TestServices(Unittest_with_edcore_sqlite):
         self.assertRaises(EdApiHTTPPreconditionFailed, get_pdf_service, self.__request)
 
     def test_get_pdf_service_no_context(self):
+        self.__request.method
         self.__request.GET = {'studentGuid': 'a016a4c1-5aca-4146-a85b-ed1172a01a4d'}
         dummy_session = Session()
         dummy_session.set_roles(['TEACHER'])

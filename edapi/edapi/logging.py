@@ -96,6 +96,16 @@ def audit_event(logger_name="audit", blacklist_args=[]):
     return audit_event_wrapper
 
 
+class SkipUnsupportedEncoder(json.JSONEncoder):
+    '''
+    Default encoder for everything supported by simplejson and name encoding for unsupported
+    '''
+    def default(self, obj):
+        if isinstance(obj, (dict, list, tuple, str, int, float, bool, type(None))):
+            return json.JSONEncoder.default(self, obj)
+        return {obj.__class__.__name__: 'Not Serializable'}
+
+
 class JsonDictLoggingFormatter(logging.Formatter):
     '''
     Json logging formatter
@@ -126,4 +136,5 @@ class JsonDictLoggingFormatter(logging.Formatter):
             loggable['asctime'] = self.formatTime(record, self.datefmt)
         if isinstance(record.msg, dict):
             loggable['msg'] = record.msg
-        return json.dumps(loggable)
+
+        return json.dumps(loggable, cls=SkipUnsupportedEncoder)

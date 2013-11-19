@@ -85,7 +85,7 @@ def user_info(orig_func):
     return wrap
 
 
-def validate_params(method, schema):
+def validate_params(schema):
     '''
     :param schema: validictory style parameter schema
     '''
@@ -93,6 +93,7 @@ def validate_params(method, schema):
         '''
         :param request_handler: pyramid request handler
         '''
+        @wraps(request_wrap)
         def validate_wrap(*args, **kwargs):
             '''
             :param args: function to accept an arbitrary number of arguments.
@@ -102,8 +103,8 @@ def validate_params(method, schema):
             for arg in args:
                 if type(arg) == pyramid.request.Request or type(arg) == pyramid.testing.DummyRequest:
                     try:
-                        params = Validator.fix_types_for_schema(schema.get('properties'), arg.GET)
-                        if method == 'POST' and len(arg.json_body) > 0:  # parse request params in POST
+                        params = Validator.fix_types_for_schema(schema.get('properties'), arg.GET, True)
+                        if getattr(arg, 'method', 'GET') == 'POST' and len(arg.json_body) > 0:  # parse request params in POST
                             params.update(arg.json_body)
                     except ValueError:
                         raise EdApiHTTPPreconditionFailed('Payload cannot be parsed')

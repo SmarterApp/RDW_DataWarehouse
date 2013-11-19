@@ -3,6 +3,7 @@
 	<name>smarter</name>
 	<comment></comment>
 	<projects>
+		<project>config</project>
 		<project>edapi</project>
 		<project>edauth</project>
 		<project>edcore</project>

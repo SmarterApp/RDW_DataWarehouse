@@ -52,7 +52,7 @@ class Validator:
         return Validator.fix_types_for_schema(params_config, params)
 
     @staticmethod
-    def fix_types_for_schema(schema, params):
+    def fix_types_for_schema(schema, params, allow_additional_properties=False):
         '''
         This method checks String types and attempt to convert them to the defined type.
         This handles 'GET' requests when all parameters are converted into string.
@@ -65,6 +65,8 @@ class Validator:
         for (key, value) in params.items():
             config = schema.get(key)
             if (config is None):
+                if allow_additional_properties:  # if doesn't exist and additional properties are allowed, preserve as is
+                    result[key] = value
                 continue
 
             # if single value, convert.

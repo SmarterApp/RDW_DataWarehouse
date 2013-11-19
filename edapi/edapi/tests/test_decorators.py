@@ -57,7 +57,7 @@ class TestDecorators(unittest.TestCase):
         def dummy_handler(*args, **kwargs):
             return args[0]
 
-        request_handler = validate_params('GET', {
+        request_handler = validate_params({
             'type': 'object',
             'properties': {
                 'param0': {
@@ -73,7 +73,7 @@ class TestDecorators(unittest.TestCase):
         # test without value
         try:
             dummy_request = DummyRequest({'param0': 'value0'})
-            request_handler = validate_params('GET', {
+            request_handler = validate_params({
                 'type': 'object',
                 'properties': {
                     'param1': {

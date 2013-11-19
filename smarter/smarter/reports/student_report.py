@@ -82,16 +82,10 @@ def __prepare_query(connector, student_guid, assessment_guid):
                                 fact_asmt_outcome.c.asmt_claim_1_score_range_max.label('asmt_claim_1_score_range_max'),
                                 fact_asmt_outcome.c.asmt_claim_2_score_range_max.label('asmt_claim_2_score_range_max'),
                                 fact_asmt_outcome.c.asmt_claim_3_score_range_max.label('asmt_claim_3_score_range_max'),
-                                fact_asmt_outcome.c.asmt_claim_4_score_range_max.label('asmt_claim_4_score_range_max'),
-                                dim_staff.c.first_name.label('teacher_first_name'),
-                                dim_staff.c.middle_name.label('teacher_middle_name'),
-                                dim_staff.c.last_name.label('teacher_last_name')],
+                                fact_asmt_outcome.c.asmt_claim_4_score_range_max.label('asmt_claim_4_score_range_max')],
                                 from_obj=[fact_asmt_outcome
                                           .join(dim_student, and_(fact_asmt_outcome.c.student_guid == dim_student.c.student_guid,
                                                                   fact_asmt_outcome.c.section_guid == dim_student.c.section_guid))
-                                          .join(dim_staff, and_(fact_asmt_outcome.c.teacher_guid == dim_staff.c.staff_guid,
-                                                                fact_asmt_outcome.c.section_guid == dim_staff.c.section_guid,
-                                                                dim_staff.c.most_recent))
                                           .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id,
                                                                dim_asmt.c.most_recent))])
     query = query.where(and_(fact_asmt_outcome.c.most_recent, fact_asmt_outcome.c.status == 'C', fact_asmt_outcome.c.student_guid == student_guid))
@@ -133,7 +127,6 @@ def __arrange_results(results, subjects_map, custom_metadata_map):
     new_results = {}
     for result in results:
 
-        result['teacher_full_name'] = format_full_name(result['teacher_first_name'], result['teacher_middle_name'], result['teacher_last_name'])
         result['student_full_name'] = format_full_name(result['student_first_name'], result['student_middle_name'], result['student_last_name'])
 
         # asmt_type is an enum, so we would to capitalize it to make it presentable

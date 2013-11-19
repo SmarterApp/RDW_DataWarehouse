@@ -156,7 +156,7 @@ def _get_archive_filename_for_gatekeeper(home_base, archive_dir, original_file_n
     return os.path.join(home_base, tenant, gatekeeper, archive_dir, filename)
 
 
-def file_routing(gatekeeper_jailed_home_base, gatekeeper_home_base, filerouter_home_dir, gatekeeper_reports_subdir, route_dir, error_dir, archive_dir, set_file_owner=True):
+def file_routing(gatekeeper_jailed_home_base, gatekeeper_home_base, filerouter_jailed_home_dir, gatekeeper_reports_subdir, route_dir, error_dir, archive_dir, set_file_owner=True):
     '''
     main file routing function
     1. find routable file
@@ -164,7 +164,7 @@ def file_routing(gatekeeper_jailed_home_base, gatekeeper_home_base, filerouter_h
     3. archive
     4. delete file
     '''
-    filerouter_home_dir_route = os.path.join(filerouter_home_dir, route_dir)
+    filerouter_home_dir_route = os.path.join(filerouter_jailed_home_dir, route_dir)
     files = _find_files(filerouter_home_dir_route)
     for file in files:
         try:
@@ -239,10 +239,10 @@ def delete_pid_file(pid_file):
     os.unlink(pid_file)
 
 
-def call_file_routing(interval, gatekeeper_jailed_home_base, gatekeeper_home_base, filerouter_home_dir, gatekeeper_reports_subdir, route_dir, error_dir, archive_dir):
+def call_file_routing(interval, gatekeeper_jailed_home_base, gatekeeper_home_base, filerouter_jailed_home_dir, gatekeeper_reports_subdir, route_dir, error_dir, archive_dir):
     global LOOP
     try:
-        file_routing(gatekeeper_jailed_home_base, gatekeeper_home_base, filerouter_home_dir, gatekeeper_reports_subdir, route_dir, error_dir, archive_dir)
+        file_routing(gatekeeper_jailed_home_base, gatekeeper_home_base, filerouter_jailed_home_dir, gatekeeper_reports_subdir, route_dir, error_dir, archive_dir)
         if interval > -1:
             time.sleep(interval)
     except OSError as e:
@@ -258,7 +258,7 @@ def main():
     parser.add_argument('-j', '--gatekeeper_jailed_home_base', default='/sftp/opt/edware/home/departures', help='sftp base dir [/sftp/opt/edware/home/departures]')
     parser.add_argument('-g', '--gatekeeper_home_base', default='/opt/edware/home/departures', help='gatekeeper home base dir. [/opt/edware/home/departures]')
     parser.add_argument('-s', '--gatekeeper_report_subdir', default='reports', help='reports directory which saves requesting reports. [reports]')
-    parser.add_argument('-f', '--filerouter_home_dir', default='/opt/edware/home/filerouter', help='filerouter username. [/opt/edware/home/filerouter]')
+    parser.add_argument('-f', '--filerouter_jailed_home_dir', default='/sftp/opt/edware/home/filerouter', help='filerouter username. [/sftp/opt/edware/home/filerouter]')
     parser.add_argument('-i', '--interval', default=5, help='Time interval between file checking calls for daemon mode. [5] seconds')
     parser.add_argument('-r', '--route', default='route', help='route directory. [route]')
     parser.add_argument('-e', '--error', default='error', help='error directory. [error]')
@@ -271,18 +271,18 @@ def main():
     gatekeeper_jailed_home_base = args.gatekeeper_jailed_home_base
     gatekeeper_home_base = args.gatekeeper_home_base
     gatekeeper_reports_subdir = args.gatekeeper_report_subdir
-    filerouter_home_dir = args.filerouter_home_dir
+    filerouter_jailed_home_dir = args.filerouter_jailed_home_dir
     interval = args.interval
     batch_process = args.batch
 
     if batch_process:
         syslog.syslog('Starting filerouter program as batch mode')
-        call_file_routing(-1, gatekeeper_jailed_home_base, gatekeeper_home_base, filerouter_home_dir, gatekeeper_reports_subdir, route_dir, error_dir, archive_dir)
+        call_file_routing(-1, gatekeeper_jailed_home_base, gatekeeper_home_base, filerouter_jailed_home_dir, gatekeeper_reports_subdir, route_dir, error_dir, archive_dir)
     else:
         daemonize()
         syslog.syslog('Starting filerouter program as daemon mode')
         while LOOP:
-            call_file_routing(interval, gatekeeper_jailed_home_base, gatekeeper_home_base, filerouter_home_dir, gatekeeper_reports_subdir, route_dir, error_dir, archive_dir)
+            call_file_routing(interval, gatekeeper_jailed_home_base, gatekeeper_home_base, filerouter_jailed_home_dir, gatekeeper_reports_subdir, route_dir, error_dir, archive_dir)
     syslog.syslog('Exiting filerouter program...')
     sys.exit(0)
 

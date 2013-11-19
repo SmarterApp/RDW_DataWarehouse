@@ -20,6 +20,7 @@ The work zone directories created for this batch are available as part of the in
 The output of this worker will serve as the input to the subsequent worker [W_all_done].
 '''
 
+
 @celery.task(name="udl2.W_post_etl.task")
 def task(incoming_msg):
     """

@@ -309,11 +309,3 @@ ref_table_conf = {
 
     ]
 }
-
-
-if __name__ == '__main__':
-
-    from udl2 import populate_ref_info
-    from udl2_util.database_util import connect_db
-    conn, db_engine = connect_db('postgresql', 'udl2', 'udl2abc1234', 'localhost', 5432, 'udl2')
-    populate_ref_info.populate_ref_column_map(ref_table_conf, db_engine, conn, 'udl2', 'REF_COLUMN_MAPPING')

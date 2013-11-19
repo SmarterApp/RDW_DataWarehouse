@@ -29,7 +29,7 @@ import argparse
 from udl2.defaults import UDL2_DEFAULT_CONFIG_PATH_FILE
 from udl2_util.database_util import connect_db, execute_queries
 from udl2.populate_ref_info import populate_ref_column_map, populate_stored_proc
-from udl2 import ref_table_data
+from config import ref_table_data
 
 #
 # UDL_METADATA stores all udl2 related database objects, which includes staging tables and table-independent sequeuces

@@ -50,13 +50,19 @@ def _route_for_error_file(original_file_name, route_dir, error_dir):
     syslog.syslog(syslog.LOG_INFO, 'File moved: [{}] to [{}]'.format(original_file_name, error_file))
 
 
-def _route_file_for_gatekeeper(gatekeeper_jailed_home_base, original_file_name, home_base, archive_dir, set_file_owner=True):
+def _route_file_for_gatekeeper(gatekeeper_jailed_home_base, original_file_name, home_base, gatekeeper_reports_subdir, archive_dir, set_file_owner=True):
     '''
     copy file to gatekeeper account.
     '''
     # find destination file name
     # the functino will throw exception if gatekeeper account has not created or file is already existed in the acconut.
-    destination_file_name = _get_destination_filename_for_gatekeeper(gatekeeper_jailed_home_base, original_file_name)
+    destination_file_name = _get_destination_filename_for_gatekeeper(gatekeeper_jailed_home_base, gatekeeper_reports_subdir, original_file_name)
+    destination_file_dir = os.path.dirname(destination_file_name)
+    (_filename, _gatekeeper, _tenant) = _get_info_from_file(original_file_name)
+    if not os.path.isdir(destination_file_dir):
+        os.makedirs(destination_file_dir, mode=0o700, exist_ok=True)
+        if set_file_owner:
+            os.chown(destination_file_dir, _gatekeeper, -1)
     # rename file to indicate that file is being copying.
     working_file = original_file_name + PROCESS_SUFFIX
     filedir, filename = os.path.split(destination_file_name)
@@ -66,7 +72,6 @@ def _route_file_for_gatekeeper(gatekeeper_jailed_home_base, original_file_name, 
     os.rename(original_file_name, working_file)
     shutil.copyfile(working_file, hidden_to_file)
 
-    (_filename, _gatekeeper, _tenant) = _get_info_from_file(original_file_name)
     # archive file
     archive_file_name = _get_archive_filename_for_gatekeeper(home_base, archive_dir, original_file_name)
     full_archive_dir = os.path.dirname(archive_file_name)
@@ -117,7 +122,7 @@ def _find_files(base, suffix='.zip'):
     return filenames
 
 
-def _get_destination_filename_for_gatekeeper(gatekeeper_jailed_home_base, original_file_name):
+def _get_destination_filename_for_gatekeeper(gatekeeper_jailed_home_base, gatekeeper_reports_subdir, original_file_name):
     '''
     copy file from router account to gatekeeper jailed account
     '''
@@ -126,7 +131,7 @@ def _get_destination_filename_for_gatekeeper(gatekeeper_jailed_home_base, origin
     gatekeeper_home_dir = os.path.join(gatekeeper_jailed_home_base, tenant, gatekeeper)
     if os.path.isdir(gatekeeper_home_dir):
         # check the file has existed already.
-        destination_filename = os.path.join(gatekeeper_home_dir, filename)
+        destination_filename = os.path.join(gatekeeper_home_dir, gatekeeper_reports_subdir, filename)
         if os.path.isfile(destination_filename):
             # file should not be existed there.
             # failed condition
@@ -147,7 +152,7 @@ def _get_archive_filename_for_gatekeeper(home_base, archive_dir, original_file_n
     return os.path.join(home_base, tenant, gatekeeper, archive_dir, filename)
 
 
-def file_routing(gatekeeper_jailed_home_base, gatekeeper_home_base, filerouter_home_dir, route_dir, error_dir, archive_dir, set_file_owner=True):
+def file_routing(gatekeeper_jailed_home_base, gatekeeper_home_base, filerouter_home_dir, gatekeeper_reports_subdir, route_dir, error_dir, archive_dir, set_file_owner=True):
     '''
     main file routing function
     1. find routable file
@@ -159,7 +164,7 @@ def file_routing(gatekeeper_jailed_home_base, gatekeeper_home_base, filerouter_h
     files = _find_files(filerouter_home_dir_route)
     for file in files:
         try:
-            _route_file_for_gatekeeper(gatekeeper_jailed_home_base, file, gatekeeper_home_base, archive_dir, set_file_owner)
+            _route_file_for_gatekeeper(gatekeeper_jailed_home_base, file, gatekeeper_home_base, gatekeeper_reports_subdir, archive_dir, set_file_owner)
         except Exception as e:
             # failed at copy. revert filename and route file to error.
             syslog.syslog(syslog.LOG_ERR, str(e))
@@ -233,23 +238,31 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-j', '--gatekeeper_jailed_home_base', default='/sftp/opt/edware/home/departure', help='sftp base dir [/sftp/opt/edware/home/departure]')
     parser.add_argument('-g', '--gatekeeper_home_base', default='/opt/edware/home/departure', help='gatekeeper home base dir. [/opt/edware/home/departure]')
+    parser.add_argument('-s', '--gatekeeper_report_subdir', default='reports', help='reports directory which saves requesting reports. [reports]')
     parser.add_argument('-f', '--filerouter_home_dir', default='/opt/edware/home/filerouter', help='filerouter username. [/opt/edware/home/filerouter]')
     parser.add_argument('-i', '--interval', default=5, help='Time interval between file checking calls. [5] seconds')
     parser.add_argument('-r', '--route', default='route', help='route directory. [route]')
     parser.add_argument('-e', '--error', default='error', help='error directory. [error]')
     parser.add_argument('-a', '--archive', default='archive', help='archive directory. [archive]')
+    parser.add_argument('-b', '--batch', default=False, action='store_true', help='Batch process [False]')
     args = parser.parse_args()
     route_dir = args.route
     error_dir = args.error
     archive_dir = args.archive
     gatekeeper_jailed_home_base = args.gatekeeper_jailed_home_base
     gatekeeper_home_base = args.gatekeeper_home_base
+    gatekeeper_reports_subdir = args.gatekeeper_report_subdir
     filerouter_home_dir = args.filerouter_home_dir
     interval = args.interval
-    daemonize()
-    while LOOP:
-        file_routing(gatekeeper_jailed_home_base, gatekeeper_home_base, filerouter_home_dir, route_dir, error_dir, archive_dir)
-        time.sleep(interval)
+    batch_process = args.batch
+    syslog.syslog('Starting filerouter program...')
+    if batch_process:
+        file_routing(gatekeeper_jailed_home_base, gatekeeper_home_base, filerouter_home_dir, gatekeeper_reports_subdir, route_dir, error_dir, archive_dir)
+    else:
+        daemonize()
+        while LOOP:
+            file_routing(gatekeeper_jailed_home_base, gatekeeper_home_base, filerouter_home_dir, gatekeeper_reports_subdir, route_dir, error_dir, archive_dir)
+            time.sleep(interval)
     syslog.syslog('Exiting filerouter program...')
     sys.exit(0)
 

@@ -17,7 +17,6 @@ ENTITY_TO_PATH_DICT = {'InstitutionHierarchy': os.path.join(DATAFILE_PATH, 'data
                        'Section': os.path.join(DATAFILE_PATH, 'datafiles', 'csv', 'dim_section.csv'),
                        'Assessment': os.path.join(DATAFILE_PATH, 'datafiles', 'csv', 'dim_asmt.csv'),
                        'AssessmentOutcome': os.path.join(DATAFILE_PATH, 'datafiles', 'csv', 'fact_asmt_outcome.csv'),
-                       'Staff': os.path.join(DATAFILE_PATH, 'datafiles', 'csv', 'dim_staff.csv'),
                        'ExternalUserStudent': os.path.join(DATAFILE_PATH, 'datafiles', 'csv', 'external_user_student_rel.csv'),
                        'Student': os.path.join(DATAFILE_PATH, 'datafiles', 'csv', 'dim_student.csv')}
 
@@ -33,14 +32,12 @@ class DataGenerationValidation(unittest.TestCase):
 # Store CSV path in respective variables for each csv
     dim_asmt_csv = os.path.join(__location__, '..', 'datafiles', 'csv', 'dim_asmt.csv')
     dim_inst_hier_csv = os.path.join(__location__, '..', 'datafiles', 'csv', 'dim_inst_hier.csv')
-    dim_staff_csv = os.path.join(__location__, '..', 'datafiles', 'csv', 'dim_staff.csv')
     dim_student_csv = os.path.join(__location__, '..', 'datafiles', 'csv', 'dim_student.csv')
     dim_section_csv = os.path.join(__location__, '..', 'datafiles', 'csv', 'dim_section.csv')
     fact_asmt_outcome_csv = os.path.join(__location__, '..', 'datafiles', 'csv', 'fact_asmt_outcome.csv')
 
 # Get header values from Entities file
     dim_inst_hier = entities.InstitutionHierarchy.getHeader()
-    dim_staff = entities.Staff.getHeader()
     dim_student = entities.Student.getHeader()
     dim_section = entities.Section.getHeader()
     dim_asmt = entities.Assessment.getHeader()
@@ -50,7 +47,6 @@ class DataGenerationValidation(unittest.TestCase):
     # Create dictionary to store Headers
     header_dict = {}
     header_dict['dim_inst_hier'] = dim_inst_hier
-    header_dict['dim_staff'] = dim_staff
     header_dict['dim_student'] = dim_student
     header_dict['dim_section'] = dim_section
     header_dict['dim_asmt'] = dim_asmt
@@ -271,7 +267,7 @@ class DataGenerationValidation(unittest.TestCase):
     # TC7: Count number of discticts from CSVs and compare with Config file
     def test_number_of_districts(self):
         csv_files = [DataGenerationValidation.dim_inst_hier_csv, DataGenerationValidation.fact_asmt_outcome_csv,
-                     DataGenerationValidation.dim_section_csv, DataGenerationValidation.dim_staff_csv, DataGenerationValidation.dim_student_csv]
+                     DataGenerationValidation.dim_section_csv,  DataGenerationValidation.dim_student_csv]
         for each_csv in csv_files:
             district_set = set()
             with open(each_csv, 'r') as csvfile:
@@ -320,7 +316,7 @@ class DataGenerationValidation(unittest.TestCase):
 #                min_schools += min_district_num
 #                max_schools += max_district_num
         csv_files = [DataGenerationValidation.dim_inst_hier_csv, DataGenerationValidation.fact_asmt_outcome_csv,
-                     DataGenerationValidation.dim_section_csv, DataGenerationValidation.dim_staff_csv, DataGenerationValidation.dim_student_csv]
+                     DataGenerationValidation.dim_section_csv, DataGenerationValidation.dim_student_csv]
         for each_csv in csv_files:
             school_set = set()
             with open(each_csv, 'r') as csvfile:

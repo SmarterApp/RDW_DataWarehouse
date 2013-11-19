@@ -32,9 +32,6 @@ transform_rules = {
                                      INLIST  : ['M', 'B', 'MALE', 'BOY', 'F', 'G', 'FEMALE', 'GIRL' , 'NS', 'NOT_SPECIFIED', 'NOT SPECIFIED'],
                                      OUTLIST : ['male', 'male', 'male', 'male', 'female', 'female', 'female', 'female', 'NS', 'NS', 'NS']     },
 
-                   'staffType'   : { PCLEAN  : [UPPER, REMNL, TRIM],
-                                     INLIST  : ['Staff', 'Teacher'], COMPARE_LENGTH : '1' },
-
                    'calcWeight'  : { CALCULATE  : '( 1 - ( {claim_1} + {claim_2} + {claim_3} ) )' ,
                                      PCLEAN : [ TRIM, REMNL],
                                      VCLEAN : UPPER,

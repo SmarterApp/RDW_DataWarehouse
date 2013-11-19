@@ -91,8 +91,6 @@ class MyTestCase(unittest.TestCase):
                                                     'fact_asmt_outcome')
         self.target_dim_student = get_sqlalch_table_object(self.target_engine, self.tenant_info['target_schema_name'],
                                                            'dim_student')
-        self.target_dim_staff = get_sqlalch_table_object(self.target_engine, self.tenant_info['target_schema_name'],
-                                                         'dim_staff')
         self.target_dim_asmt = get_sqlalch_table_object(self.target_engine, self.tenant_info['target_schema_name'],
                                                         'dim_asmt')
 
@@ -151,9 +149,9 @@ class MyTestCase(unittest.TestCase):
     def verify_target_schema(self, is_empty=False):
         counts = self.get_counts()
         if is_empty:
-            self.assertEqual(counts, (0, 0, 0, 0, 0))
+            self.assertEqual(counts, (0, 0, 0, 0))
         else:
-            self.assertEqual(counts, (99, 1, 71, 71, 94))
+            self.assertEqual(counts, (99, 1, 71, 94))
         return
 
     def get_counts(self):
@@ -162,17 +160,15 @@ class MyTestCase(unittest.TestCase):
         fact_select = select([func.count()]).select_from(self.target_fact)
         asmt_selct = select([func.count()]).select_from(self.target_dim_asmt)
         inst_select = select([func.count()]).select_from(self.target_dim_inst)
-        staff_select = select([func.count()]).select_from(self.target_dim_staff)
         stud_select = select([func.count()]).select_from(self.target_dim_student)
 
         fact_count = new_conn.execute(fact_select).fetchall()[0][0]
         asmt_count = new_conn.execute(asmt_selct).fetchall()[0][0]
         inst_count = new_conn.execute(inst_select).fetchall()[0][0]
-        staff_count = new_conn.execute(staff_select).fetchall()[0][0]
         stud_count = new_conn.execute(stud_select).fetchall()[0][0]
         new_conn.close()
 
-        return fact_count, asmt_count, inst_count, staff_count, stud_count
+        return fact_count, asmt_count, inst_count, stud_count
 
     def read_csv_data_to_dict(self):
         asmt_outcome_dict_list = get_csv_dict_list(ASMT_OUTCOME_FILE)

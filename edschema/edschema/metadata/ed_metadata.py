@@ -107,26 +107,6 @@ def generate_ed_metadata(schema_name=None, bind=None):
     Index('dim_external_user_student_idx', external_user_student.c.external_user_student_guid, unique=True)
     Index('dim_external_user_student_student_x', external_user_student.c.external_user_guid, external_user_student.c.student_guid, unique=True)
 
-    staff = Table('dim_staff', metadata,
-                  Column('staff_rec_id', BigInteger, primary_key=True),
-                  Column('staff_guid', String(50), nullable=False),
-                  Column('first_name', String(256), nullable=False),
-                  Column('middle_name', String(256), nullable=True),
-                  Column('last_name', String(256), nullable=False),
-                  Column('section_guid', String(50), nullable=False),
-                  Column('hier_user_type', String(10), nullable=False),
-                  Column('state_code', String(2), nullable=False),
-                  Column('district_guid', String(50), nullable=False),
-                  Column('school_guid', String(50), nullable=False),
-                  Column('from_date', String(8), nullable=False),
-                  Column('to_date', String(8), nullable=True),
-                  Column('most_recent', Boolean),
-                  )
-
-    Index('dim_staff_idx', staff.c.staff_rec_id, unique=True)
-    Index('dim_staff_id_currentx', staff.c.staff_guid, staff.c.most_recent, unique=False)
-    Index('dim_staff_dim_inst_hier_idx', staff.c.state_code, staff.c.district_guid, staff.c.school_guid, staff.c.from_date, staff.c.to_date, unique=False)
-
     user_mapping = Table('user_mapping', metadata,
                          Column('user_id', String(50), primary_key=True),
                          Column('guid', String(50), nullable=False),
@@ -187,7 +167,6 @@ def generate_ed_metadata(schema_name=None, bind=None):
                                Column('asmnt_outcome_rec_id', BigInteger, primary_key=True),
                                Column('asmt_rec_id', BigInteger, ForeignKey(assessment.c.asmt_rec_id), nullable=False),
                                Column('student_guid', String(50), nullable=False),
-                               Column('teacher_guid', String(50), nullable=False),
                                Column('state_code', String(2), nullable=False),
                                Column('district_guid', String(50), nullable=False),
                                Column('school_guid', String(50), nullable=False),

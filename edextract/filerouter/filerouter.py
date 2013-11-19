@@ -12,6 +12,7 @@ import signal
 import time
 import atexit
 import argparse
+import pwd
 
 PID_DIR = '/var/run/filerouter'
 PID_FILE = 'filerouter.pid'
@@ -44,7 +45,7 @@ def _route_for_error_file(original_file_name, route_dir, error_dir):
     # check error directory first.  If the directory does not exist, then mkdir.
     error_dir = os.path.dirname(error_file)
     if not os.path.isdir(error_dir):
-        os.makedirs(error_dir, mode=0o700, exist_ok=True)
+        os.makedirs(error_dir, mode=(stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR), exist_ok=True)
     # move file to error directory
     os.rename(original_file_name, error_file)
     syslog.syslog(syslog.LOG_INFO, 'File moved: [{}] to [{}]'.format(original_file_name, error_file))
@@ -59,10 +60,13 @@ def _route_file_for_gatekeeper(gatekeeper_jailed_home_base, original_file_name, 
     destination_file_name = _get_destination_filename_for_gatekeeper(gatekeeper_jailed_home_base, gatekeeper_reports_subdir, original_file_name)
     destination_file_dir = os.path.dirname(destination_file_name)
     (_filename, _gatekeeper, _tenant) = _get_info_from_file(original_file_name)
+    if set_file_owner:
+        gatekeeper_uid = pwd.getpwnam(_gatekeeper).pw_uid
+        gatekeeper_gid = pwd.getpwnam(_gatekeeper).pw_gid
     if not os.path.isdir(destination_file_dir):
-        os.makedirs(destination_file_dir, mode=0o700, exist_ok=True)
+        os.makedirs(destination_file_dir, mode=(stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR), exist_ok=True)
         if set_file_owner:
-            os.chown(destination_file_dir, _gatekeeper, -1)
+            os.chown(destination_file_dir, gatekeeper_uid, gatekeeper_gid)
     # rename file to indicate that file is being copying.
     working_file = original_file_name + PROCESS_SUFFIX
     filedir, filename = os.path.split(destination_file_name)
@@ -76,16 +80,16 @@ def _route_file_for_gatekeeper(gatekeeper_jailed_home_base, original_file_name, 
     archive_file_name = _get_archive_filename_for_gatekeeper(home_base, archive_dir, original_file_name)
     full_archive_dir = os.path.dirname(archive_file_name)
     if not os.path.isdir(full_archive_dir):
-        os.makedirs(full_archive_dir, mode=0o700, exist_ok=True)
+        os.makedirs(full_archive_dir, mode=(stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR), exist_ok=True)
         if set_file_owner:
-            os.chown(full_archive_dir, _gatekeeper, -1)
+            os.chown(full_archive_dir, gatekeeper_uid, gatekeeper_gid)
     shutil.copyfile(working_file, archive_file_name)
 
     # make sure copied hidden file is readable to owner
-    os.chmod(hidden_to_file, mode=0o700)
+    os.chmod(hidden_to_file, mode=(stat.S_IRUSR | stat.S_IWUSR))
     if set_file_owner:
-        os.chown(hidden_to_file, _gatekeeper, -1)
-        os.chown(archive_file_name, _gatekeeper, -1)
+        os.chown(hidden_to_file, gatekeeper_uid, gatekeeper_gid)
+        os.chown(archive_file_name, gatekeeper_uid, gatekeeper_gid)
     # make file visible
     os.rename(hidden_to_file, destination_file_name)
 
@@ -139,7 +143,7 @@ def _get_destination_filename_for_gatekeeper(gatekeeper_jailed_home_base, gateke
     else:
         # most likely sftp jailed account has not created.
         # failed condition
-        raise GatekeeprException('Gatekeeper[{}] has not created for SFTP jailed account'.format(gatekeeper))
+        raise GatekeeprException('Gatekeeper[{}] has not created for SFTP jailed account[{}]'.format(gatekeeper, gatekeeper_home_dir))
     return destination_filename
 
 
@@ -185,7 +189,6 @@ def daemonize():
         # bye-bye parent
         sys.exit(0)
     # hello child.
-
     # change working directory to root directory
     os.chdir('/')
     # creating a unique session id
@@ -197,7 +200,7 @@ def daemonize():
     if not os.path.isdir(PID_DIR):
         os.mkdir(PID_DIR)
     pid_file = os.path.join(PID_DIR, PID_FILE)
-    if os.path.isfile(pid_file):
+    if os.path.exists(pid_file):
         sys.stderr.write("File[{}] is already existed.\n".format(pid_file))
         sys.exit(1)
     # running mutual exclusion and running a single copy
@@ -228,19 +231,34 @@ def sig_handle(signum, frame):
     global LOOP
     # received signal.  Terminate the process gracefully
     LOOP = False
+    syslog.syslog('Received signal[{}]'.format(signum))
 
 
 def delete_pid_file(pid_file):
+    syslog.syslog('Removing file[{}]'.format(pid_file))
     os.unlink(pid_file)
+
+
+def call_file_routing(interval, gatekeeper_jailed_home_base, gatekeeper_home_base, filerouter_home_dir, gatekeeper_reports_subdir, route_dir, error_dir, archive_dir):
+    try:
+        file_routing(gatekeeper_jailed_home_base, gatekeeper_home_base, filerouter_home_dir, gatekeeper_reports_subdir, route_dir, error_dir, archive_dir)
+        if interval > -1:
+            time.sleep(interval)
+    except OSError as e:
+        syslog.syslog('Unexpected error [{}].  Check your configuration.'.format(str(e)))
+        LOOP = False
+    except Exception as e:
+        syslog.syslog('Unexpected exception [{}].  Check your configuration.'.format(str(e)))
+        LOOP = False
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-j', '--gatekeeper_jailed_home_base', default='/sftp/opt/edware/home/departure', help='sftp base dir [/sftp/opt/edware/home/departure]')
-    parser.add_argument('-g', '--gatekeeper_home_base', default='/opt/edware/home/departure', help='gatekeeper home base dir. [/opt/edware/home/departure]')
+    parser.add_argument('-j', '--gatekeeper_jailed_home_base', default='/sftp/opt/edware/home/departures', help='sftp base dir [/sftp/opt/edware/home/departures]')
+    parser.add_argument('-g', '--gatekeeper_home_base', default='/opt/edware/home/departures', help='gatekeeper home base dir. [/opt/edware/home/departures]')
     parser.add_argument('-s', '--gatekeeper_report_subdir', default='reports', help='reports directory which saves requesting reports. [reports]')
     parser.add_argument('-f', '--filerouter_home_dir', default='/opt/edware/home/filerouter', help='filerouter username. [/opt/edware/home/filerouter]')
-    parser.add_argument('-i', '--interval', default=5, help='Time interval between file checking calls. [5] seconds')
+    parser.add_argument('-i', '--interval', default=5, help='Time interval between file checking calls for daemon mode. [5] seconds')
     parser.add_argument('-r', '--route', default='route', help='route directory. [route]')
     parser.add_argument('-e', '--error', default='error', help='error directory. [error]')
     parser.add_argument('-a', '--archive', default='archive', help='archive directory. [archive]')
@@ -255,14 +273,16 @@ def main():
     filerouter_home_dir = args.filerouter_home_dir
     interval = args.interval
     batch_process = args.batch
-    syslog.syslog('Starting filerouter program...')
+
     if batch_process:
-        file_routing(gatekeeper_jailed_home_base, gatekeeper_home_base, filerouter_home_dir, gatekeeper_reports_subdir, route_dir, error_dir, archive_dir)
+        syslog.syslog('Starting filerouter program as batch mode')
+        call_file_routing(-1, gatekeeper_jailed_home_base, gatekeeper_home_base, filerouter_home_dir, gatekeeper_reports_subdir, route_dir, error_dir, archive_dir)
     else:
         daemonize()
+        global LOOP
+        syslog.syslog('Starting filerouter program as daemon mode')
         while LOOP:
-            file_routing(gatekeeper_jailed_home_base, gatekeeper_home_base, filerouter_home_dir, gatekeeper_reports_subdir, route_dir, error_dir, archive_dir)
-            time.sleep(interval)
+            call_file_routing(interval, gatekeeper_jailed_home_base, gatekeeper_home_base, filerouter_home_dir, gatekeeper_reports_subdir, route_dir, error_dir, archive_dir)
     syslog.syslog('Exiting filerouter program...')
     sys.exit(0)
 

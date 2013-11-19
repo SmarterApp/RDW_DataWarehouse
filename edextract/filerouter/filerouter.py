@@ -240,6 +240,7 @@ def delete_pid_file(pid_file):
 
 
 def call_file_routing(interval, gatekeeper_jailed_home_base, gatekeeper_home_base, filerouter_home_dir, gatekeeper_reports_subdir, route_dir, error_dir, archive_dir):
+    global LOOP
     try:
         file_routing(gatekeeper_jailed_home_base, gatekeeper_home_base, filerouter_home_dir, gatekeeper_reports_subdir, route_dir, error_dir, archive_dir)
         if interval > -1:
@@ -279,7 +280,6 @@ def main():
         call_file_routing(-1, gatekeeper_jailed_home_base, gatekeeper_home_base, filerouter_home_dir, gatekeeper_reports_subdir, route_dir, error_dir, archive_dir)
     else:
         daemonize()
-        global LOOP
         syslog.syslog('Starting filerouter program as daemon mode')
         while LOOP:
             call_file_routing(interval, gatekeeper_jailed_home_base, gatekeeper_home_base, filerouter_home_dir, gatekeeper_reports_subdir, route_dir, error_dir, archive_dir)

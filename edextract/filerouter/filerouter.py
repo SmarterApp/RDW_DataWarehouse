@@ -37,7 +37,7 @@ def _route_for_error_file(original_file_name, route_dir, error_dir):
     Route from file in route directory to error directory
     '''
     # replace /route/ to /error/
-    error_file = original_file_name.replace('/' + route_dir + '/', '/' + error_dir + '/')
+    error_file = original_file_name.replace(os.sep + route_dir + os.sep, os.sep + error_dir + os.sep)
 
     # if error file already exist, delete it.
     if os.path.isfile(error_file):

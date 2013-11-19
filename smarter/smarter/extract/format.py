@@ -4,7 +4,7 @@ Created on Nov 14, 2013
 @author: dip
 '''
 from smarter.reports.helpers.constants import Constants
-from config import ref_table_data
+from ref_table_data import ref_table_conf
 
 
 # A map of map that contains star schema table name, column to udl input name
@@ -17,16 +17,16 @@ def setup_input_file_format():
     Read from udl input file format from ref_column_mapping tables to get column mapping for star schema columns
     '''
     global column_mapping
-    ref_table_conf = ref_table_data.ref_table_conf
+    ref_table = ref_table_conf
     mapping = {}
     phases = {}
     # Create a dict of list that separates each phase of udl pipeline
-    for row in ref_table_conf['column_mappings']:
+    for row in ref_table['column_mappings']:
         current_phase = row[0]
         if phases.get(current_phase) is None:
             phases[current_phase] = []
         # converts tuple into dictionary
-        phases[current_phase].append(dict(zip(ref_table_conf['column_definitions'], row)))
+        phases[current_phase].append(dict(zip(ref_table['column_definitions'], row)))
 
     keys = sorted(list(phases.keys()), key=int)
     initial_load = False

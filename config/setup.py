@@ -3,39 +3,17 @@ import os
 from setuptools import setup, find_packages
 
 here = os.path.abspath(os.path.dirname(__file__))
-README = open(os.path.join(here, 'README.txt')).read()
-CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 
-requires = [
-    'pyramid == 1.4',
-    'pyramid_beaker',
-    'SQLAlchemy',
-    'transaction',
-    'pyramid_tm',
-    'pyramid_debugtoolbar',
-    'zope.sqlalchemy',
-    'waitress',
-    'config',
-    'edauth',
-    'edapi',
-    'edworker',
-    'edschema',
-    'py-postgresql',
-    'psycopg2',
-    'pyramid_exclog',
-    'pyyaml',
-    'services',
-    'python3-memcached']
+requires = []
 
 docs_extras = [
     'Sphinx',
     'docutils',
     'repoze.sphinx.autointerface']
 
-setup(name='smarter',
+setup(name='config',
       version='0.1',
-      description='smarter',
-      long_description=README + '\n\n' + CHANGES,
+      description='config',
       classifiers=[
           "Programming Language :: Python",
           "Framework :: Pyramid",
@@ -53,9 +31,5 @@ setup(name='smarter',
       extras_require={
           'docs': docs_extras, },
       entry_points="""\
-      [paste.app_factory]
-      main = smarter:main
-      [console_scripts]
-      initialize_smarter_db = smarter.scripts.initializedb:main
-      """
+      """,
       )

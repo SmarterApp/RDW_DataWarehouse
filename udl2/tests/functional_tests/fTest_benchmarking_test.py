@@ -65,7 +65,7 @@ class ValidateTableData(unittest.TestCase):
         if number_of_row < 22:
             time.sleep(30)
             print(number_of_row)
-        self.assertEqual(number_of_row, 24)
+        self.assertEqual(number_of_row, 23)
 
         output = db_connection.execute('SELECT udl_phase FROM udl2."UDL_BATCH";').fetchall()
         tuple_str = ('UDL_COMPLETE',)

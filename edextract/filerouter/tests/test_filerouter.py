@@ -24,6 +24,9 @@ class Test(unittest.TestCase):
     TESTFILE2 = 'testfile2.zip'
     TESTFILE3 = 'testfile3.zip'
     REPORTS = 'reports'
+    ROUTE = 'route'
+    ERROR = 'error'
+    ARCHIVE = 'archive'
 
     def setUp(self):
         self.temp_dir = tempfile.mkdtemp(suffix='.test_filerouter')
@@ -31,7 +34,7 @@ class Test(unittest.TestCase):
         self.jailed_home_base = os.path.join(self.temp_dir, self.SFTP_BASE, self.HOME_BASE, self.GATEKEEPER_ACCOUNT_BASE)
         extra_file = False
         for gatekeeper in [self.GATEKEEPER_TEST_USERNAME1, self.GATEKEEPER_TEST_USERNAME2, self.GATEKEEPER_TEST_USERNAME3]:
-            route_path = os.path.join(self.file_router_home_dir, 'route', gatekeeper)
+            route_path = os.path.join(self.file_router_home_dir, self.ROUTE, gatekeeper)
             os.makedirs(route_path, mode=0o700, exist_ok=True)
             # create empty files for test
             open(os.path.join(route_path, self.TESTFILE1), 'a').close()
@@ -56,22 +59,22 @@ class Test(unittest.TestCase):
         shutil.rmtree(self.temp_dir)
 
     def test_find_files(self):
-        files = filerouter._find_files(os.path.join(self.file_router_home_dir, 'route'))
+        files = filerouter._find_files(os.path.join(self.file_router_home_dir, self.ROUTE))
         self.assertEqual(4, len(files))
-        route_dir = os.path.join(self.file_router_home_dir, 'route')
+        route_dir = os.path.join(self.file_router_home_dir, self.ROUTE)
         self.assertIn(os.path.join(route_dir, self.GATEKEEPER_TEST_USERNAME1, self.TESTFILE1), files)
         self.assertIn(os.path.join(route_dir, self.GATEKEEPER_TEST_USERNAME1, self.TESTFILE2), files)
         self.assertIn(os.path.join(route_dir, self.GATEKEEPER_TEST_USERNAME2, self.TESTFILE1), files)
         self.assertIn(os.path.join(route_dir, self.GATEKEEPER_TEST_USERNAME3, self.TESTFILE1), files)
 
     def test_get_destination_filename_for_gatekeeper(self):
-        route_dir = os.path.join(self.file_router_home_dir, 'route')
+        route_dir = os.path.join(self.file_router_home_dir, self.ROUTE)
         test_file1 = os.path.join(route_dir, self.GATEKEEPER_TEST_USERNAME1, self.TESTFILE1)
         test_file2 = os.path.join(route_dir, self.GATEKEEPER_TEST_USERNAME1, self.TESTFILE2)
         test_file3 = os.path.join(route_dir, self.GATEKEEPER_TEST_USERNAME2, self.TESTFILE1)
         test_file4 = os.path.join(route_dir, self.GATEKEEPER_TEST_USERNAME3, self.TESTFILE1)
 
-        dest_file1 = filerouter._get_destination_filename_for_gatekeeper(self.jail_gatekeeper_account_home, 'reports', test_file1)
+        dest_file1 = filerouter._get_destination_filename_for_gatekeeper(self.jail_gatekeeper_account_home, self.REPORTS, test_file1)
         self.assertEqual(os.path.join(self.jail_gatekeeper_account_home, self.GATEKEEPER_TEST_USERNAME1, self.REPORTS, self.TESTFILE1), dest_file1)
         self.assertRaises(GatekeeprException, filerouter._get_destination_filename_for_gatekeeper, self.jail_gatekeeper_account_home, self.REPORTS, test_file2)
         dest_file3 = filerouter._get_destination_filename_for_gatekeeper(self.jail_gatekeeper_account_home, self.REPORTS, test_file3)
@@ -79,14 +82,14 @@ class Test(unittest.TestCase):
         self.assertRaises(GatekeeprException, filerouter._get_destination_filename_for_gatekeeper, self.jail_gatekeeper_account_home, self.REPORTS, test_file4)
 
     def test_file_routing(self):
-        filerouter.file_routing(self.jailed_home_base, self.gatekeeper_home_base, self.file_router_home_dir, self.REPORTS, 'route', 'error', 'archive', False)
+        filerouter.file_routing(self.jailed_home_base, self.gatekeeper_home_base, self.file_router_home_dir, self.REPORTS, self.ROUTE, self.ERROR, self.ARCHIVE, False)
         self.assertTrue(os.path.isfile(os.path.join(self.jail_gatekeeper_account_home, self.GATEKEEPER_TEST_USERNAME1, self.REPORTS, self.TESTFILE1)))
-        self.assertTrue(os.path.isfile(os.path.join(self.file_router_home_dir, 'error', self.GATEKEEPER_TEST_USERNAME1, self.TESTFILE2)))
+        self.assertTrue(os.path.isfile(os.path.join(self.file_router_home_dir, self.ERROR, self.GATEKEEPER_TEST_USERNAME1, self.TESTFILE2)))
         self.assertTrue(os.path.isfile(os.path.join(self.jail_gatekeeper_account_home, self.GATEKEEPER_TEST_USERNAME2, self.REPORTS, self.TESTFILE1)))
-        self.assertTrue(os.path.isfile(os.path.join(self.file_router_home_dir, 'error', self.GATEKEEPER_TEST_USERNAME3, self.TESTFILE1)))
-        files = filerouter._find_files(os.path.join(self.file_router_home_dir, 'route'))
+        self.assertTrue(os.path.isfile(os.path.join(self.file_router_home_dir, self.ERROR, self.GATEKEEPER_TEST_USERNAME3, self.TESTFILE1)))
+        files = filerouter._find_files(os.path.join(self.file_router_home_dir, self.ROUTE))
         self.assertEqual(0, len(files))
-        files = filerouter._find_files(os.path.join(self.file_router_home_dir, 'route'), suffix='.process')
+        files = filerouter._find_files(os.path.join(self.file_router_home_dir, self.ROUTE), suffix='.process')
         self.assertEqual(0, len(files))
 
 if __name__ == "__main__":

@@ -118,7 +118,6 @@ define [
       this.updateAsmtTypePreference()
       # create assessment type dropdown list
       this.createAsmtDropdown() if not this.asmtDropdown
-      this.createDisclaimer() if not this.disclaimer
       # set current query assessment type
       param.asmtType = this.currentAsmtType.toUpperCase()
       self = this
@@ -141,6 +140,7 @@ define [
         self.renderBreadcrumbs(self.data.context)
         self.stickyCompare.setReportInfo self.reportType, self.breadcrumbs.getDisplayType(), self.param
         self.createGrid()
+        self.createDisclaimer() if not this.disclaimer
         self.updateDropdown()
         self.updateFilter()
         self.createHeaderAndFooter()
@@ -242,9 +242,8 @@ define [
       $(".progress").popover
             html: true
             placement: 'top'
-            container: 'body'
+            container: '#content'
             trigger: 'hover'
-            template: '<div class="popover"><div class="arrow"></div><div class="popover-inner"><div class="popover-content"><p></p></div></div></div>'
             content: ->
               $(this).find(".progressBar_tooltip").html() # template location: widgets/populatoinBar/template.html
 

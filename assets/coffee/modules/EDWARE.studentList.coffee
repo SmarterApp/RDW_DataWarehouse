@@ -78,7 +78,7 @@ define [
           elem.popover
             html: true
             trigger: "manual"
-            container: 'body'
+            container: '#content'
             placement: (tip, element) ->
               edwareUtil.popupPlacement(element, 400, 220)
             title: ->
@@ -124,10 +124,10 @@ define [
       this.asmtTypeDropdown.setSelectedText asmtType, viewName
       # save preference to storage
       edwarePreferences.saveAsmtPreference asmtType
-      this.updateDisclaimer asmtType
       this.renderGrid asmtType, viewName
       # show the content upon rendering complete to prevent seeing the pre-templated text on the html
       $('.gridControls').show()
+      this.updateDisclaimer asmtType
    
     reloadCurrentView: () ->
       # this is the callback function for sticky compare to reload current view

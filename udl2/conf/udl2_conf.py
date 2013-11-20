@@ -115,6 +115,7 @@ udl2_conf = {
     'gpg_home': '/opt/wgen/edware-udl/zones/datafiles/keys',
     'passphrase': 'sbac udl2',
     'tenant_position': -4,
+    'search_wait_time': 10,
 }
 
 

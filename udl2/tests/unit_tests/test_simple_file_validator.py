@@ -22,17 +22,17 @@ class UnitTestSimpleFileValidator(unittest.TestCase):
         results = validator.execute(self.conf['zones']['datafiles'],
                                     'test_data_valid_latest_11122013/'
                                     'REALDATA_ASMT_ID_4e1c189b-782c-4b9f-a0a7-cd521bff1f62.csv', 1)
-        assert len(results) == 0
+        self.assertEqual(len(results), 0)
 
     def test_simple_file_validator_fails_for_missing_csv(self):
         validator = simple_file_validator.SimpleFileValidator()
         results = validator.execute(self.conf['zones']['datafiles'], 'nonexistent.csv', 1)
-        assert results[0][0] == error_codes.SRC_FILE_NOT_ACCESSIBLE_SFV, "Wrong error code"
+        self.assertEqual(results[0][0], error_codes.SRC_FILE_NOT_ACCESSIBLE_SFV, "Wrong error code")
 
     def test_simple_file_validator_invalid_extension(self):
         validator = simple_file_validator.SimpleFileValidator()
         results = validator.execute(self.conf['zones']['datafiles'], 'invalid_ext.xls', 1)
-        assert results[0][0] == error_codes.SRC_FILE_TYPE_NOT_SUPPORTED
+        self.assertEqual(results[0][0], error_codes.SRC_FILE_TYPE_NOT_SUPPORTED)
 
     def test_for_source_file_with_less_number_of_columns(self):
         test_csv_fields = {'guid_batch', 'student_guid'}
@@ -40,8 +40,8 @@ class UnitTestSimpleFileValidator(unittest.TestCase):
         error_code_expected = error_codes.SRC_FILE_HAS_HEADERS_MISMATCH_EXPECTED_FORMAT
         results = [validator.execute(self.conf['zones']['datafiles'],
                                      'invalid_csv.csv', 1)]
-        assert len(results) == 1
-        assert results[0][0] == error_code_expected
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0][0], error_code_expected)
 
     def test_for_source_file_with_matching_columns(self):
         test_csv_fields = ['date_assessed', 'dob_student', 'type_school', 'address_student_city', 'address_student_line1', 'address_student_line2', 'address_student_zip',
@@ -55,5 +55,5 @@ class UnitTestSimpleFileValidator(unittest.TestCase):
         results = [validator.execute(self.conf['zones']['datafiles'],
                                      'test_data_valid_latest_11122013/'
                                      'REALDATA_ASMT_ID_4e1c189b-782c-4b9f-a0a7-cd521bff1f62.csv', 1)]
-        assert len(results) == 1
-        assert results[0][0] == '0'
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0][0], '0')

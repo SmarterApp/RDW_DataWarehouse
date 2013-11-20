@@ -49,8 +49,8 @@ define [
       
       # Adjust score dot marker and error band if score is at the edege of the bar.
       items.asmt_errorband_width = 5 if items.asmt_errorband_width <= 5            
-      items.asmt_errorband_min_range = 115 if items.asmt_errorband_min_range >= 115        
-      items.asmt_score_pos = 117 if items.asmt_score_pos >= 117
+      items.asmt_errorband_min_range = barWidth - 2 if items.asmt_errorband_min_range >= barWidth - 2        
+      items.asmt_score_pos = barWidth if items.asmt_score_pos >= barWidth
       
       # use mustache template to display the json data  
       output = Mustache.to_html losConfidenceLevelBarTemplate, items 

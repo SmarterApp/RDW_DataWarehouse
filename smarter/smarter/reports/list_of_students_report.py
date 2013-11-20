@@ -92,8 +92,6 @@ def get_list_of_students_extract_report(params):
     rows = []
     # Reformat data
     for result in results:
-        # remove teacher names from results
-        results = delete_multiple_entries_from_dictionary_by_list_of_keys(result, ['teacher_first_name', 'teacher_middle_name', 'teacher_last_name'])
         if len(header) is 0:
             header = list(result.keys())
         rows.append(list(result.values()))
@@ -144,7 +142,6 @@ def get_list_of_students_report(params):
             rowId += 1
 
         assessment = {}
-        assessment['teacher_full_name'] = format_full_name_rev(result['teacher_first_name'], result['teacher_middle_name'], result['teacher_last_name'])
         assessment['asmt_grade'] = result['asmt_grade']
         assessment['asmt_score'] = result['asmt_score']
         assessment['asmt_type'] = capwords(result['asmt_type'], ' ')
@@ -194,7 +191,6 @@ def get_list_of_students(params):
     with EdCoreDBConnection() as connector:
         # get handle to tables
         dim_student = connector.get_table(Constants.DIM_STUDENT)
-        dim_staff = connector.get_table(Constants.DIM_STAFF)
         dim_asmt = connector.get_table(Constants.DIM_ASMT)
         dim_inst_hier = connector.get_table(Constants.DIM_INST_HIER)
         fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
@@ -205,9 +201,6 @@ def get_list_of_students(params):
                                     dim_inst_hier.c.district_name.label('district_name'),
                                     dim_inst_hier.c.school_name.label('school_name'),
                                     fact_asmt_outcome.c.enrl_grade.label('enrollment_grade'),
-                                    dim_staff.c.first_name.label('teacher_first_name'),
-                                    dim_staff.c.middle_name.label('teacher_middle_name'),
-                                    dim_staff.c.last_name.label('teacher_last_name'),
                                     fact_asmt_outcome.c.asmt_grade.label('asmt_grade'),
                                     dim_asmt.c.asmt_subject.label('asmt_subject'),
                                     fact_asmt_outcome.c.asmt_score.label('asmt_score'),
@@ -238,8 +231,6 @@ def get_list_of_students(params):
                                                                       dim_student.c.section_guid == fact_asmt_outcome.c.section_guid))
                                               .join(dim_asmt, and_(dim_asmt.c.asmt_rec_id == fact_asmt_outcome.c.asmt_rec_id,
                                                                    dim_asmt.c.asmt_type.in_([AssessmentType.SUMMATIVE, AssessmentType.COMPREHENSIVE_INTERIM])))
-                                              .join(dim_staff, and_(dim_staff.c.staff_guid == fact_asmt_outcome.c.teacher_guid,
-                                                                    dim_staff.c.most_recent, dim_staff.c.section_guid == fact_asmt_outcome.c.section_guid))
                                               .join(dim_inst_hier, and_(dim_inst_hier.c.inst_hier_rec_id == fact_asmt_outcome.c.inst_hier_rec_id))])
         query = query.where(fact_asmt_outcome.c.state_code == stateCode)
         query = query.where(and_(fact_asmt_outcome.c.school_guid == schoolGuid))

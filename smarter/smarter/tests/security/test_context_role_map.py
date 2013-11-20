@@ -4,7 +4,7 @@ Created on May 9, 2013
 @author: dip
 '''
 import unittest
-from smarter.security.roles.teacher import Teacher
+from smarter.security.roles.student import Student
 from smarter.security.roles.default import DefaultRole
 from smarter.security.context_role_map import ContextRoleMap
 from pyramid.testing import DummyRequest
@@ -30,8 +30,8 @@ class TestContextRoleMap(unittest.TestCase):
         self.assertEqual(context, DefaultRole)
 
     def test_get_context_with_valid_role(self):
-        context = ContextRoleMap.get_context('TEACHER')
-        self.assertEqual(context, Teacher)
+        context = ContextRoleMap.get_context('STUDENT')
+        self.assertEqual(context, Student)
 
     def test_get_context_with_context_security_disabled(self):
         self.__config.registry.settings['disable.context.security'] = 'True'

@@ -37,33 +37,33 @@ class TestContext(Unittest_with_edcore_sqlite):
             user_mapping = connection.get_table(Constants.USER_MAPPING)
             connection.execute(user_mapping.delete())
 
-    def test_select_with_context_as_teacher_with_no_user_mapping(self):
-        dummy_session = Session()
-        dummy_session.set_roles([RolesConstants.TEACHER])
-        dummy_session.set_uid('272')
-        dummy_session.set_tenant(self.__tenant_name)
-        self.__config.testing_securitypolicy(dummy_session)
-        with UnittestEdcoreDBConnection() as connection:
-            fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
-            self.assertRaises(ForbiddenError, select_with_context, [fact_asmt_outcome.c.section_guid], from_obj=([fact_asmt_outcome]))
+#    def test_select_with_context_as_teacher_with_no_user_mapping(self):
+#        dummy_session = Session()
+#        dummy_session.set_roles([RolesConstants.TEACHER])
+#        dummy_session.set_uid('272')
+#        dummy_session.set_tenant(self.__tenant_name)
+#        self.__config.testing_securitypolicy(dummy_session)
+#        with UnittestEdcoreDBConnection() as connection:
+#            fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
+#            self.assertRaises(ForbiddenError, select_with_context, [fact_asmt_outcome.c.section_guid], from_obj=([fact_asmt_outcome]))
 
-    def test_select_with_context_as_teacher(self):
-        dummy_session = Session()
-        dummy_session.set_roles([RolesConstants.TEACHER])
-        dummy_session.set_uid('272')
-        dummy_session.set_tenant(self.__tenant_name)
-        self.__config.testing_securitypolicy(dummy_session)
-        with UnittestEdcoreDBConnection() as connection:
-            # Insert into user_mapping table
-            user_mapping = connection.get_table(Constants.USER_MAPPING)
-            connection.execute(user_mapping.insert(), user_id='272', guid='272')
-
-            fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
-            query = select_with_context([fact_asmt_outcome.c.section_guid],
-                                        from_obj=([fact_asmt_outcome]))
-            results = connection.get_result(query)
-            for result in results:
-                self.assertEquals(result[Constants.SECTION_GUID], '345')
+#    def test_select_with_context_as_teacher(self):
+#        dummy_session = Session()
+#        dummy_session.set_roles([RolesConstants.TEACHER])
+#        dummy_session.set_uid('272')
+#        dummy_session.set_tenant(self.__tenant_name)
+#        self.__config.testing_securitypolicy(dummy_session)
+#        with UnittestEdcoreDBConnection() as connection:
+#            # Insert into user_mapping table
+#            user_mapping = connection.get_table(Constants.USER_MAPPING)
+#            connection.execute(user_mapping.insert(), user_id='272', guid='272')
+#
+#            fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
+#            query = select_with_context([fact_asmt_outcome.c.section_guid],
+#                                        from_obj=([fact_asmt_outcome]))
+#            results = connection.get_result(query)
+#            for result in results:
+#                self.assertEquals(result[Constants.SECTION_GUID], '345')
 
     def test_select_with_context_as_student(self):
         uid = "61ec47de-e8b5-4e78-9beb-677c44dd9b50"
@@ -84,43 +84,43 @@ class TestContext(Unittest_with_edcore_sqlite):
             for result in results:
                 self.assertEquals(result[Constants.STUDENT_GUID], uid)
 
-    def test_select_with_context_as_school_admin_one(self):
-        uid = "951"
-        dummy_session = Session()
-        dummy_session.set_roles([RolesConstants.SCHOOL_EDUCATION_ADMINISTRATOR_1])
-        dummy_session.set_uid(uid)
-        dummy_session.set_tenant(self.__tenant_name)
-        self.__config.testing_securitypolicy(dummy_session)
-        with UnittestEdcoreDBConnection() as connection:
-            # Insert into user_mapping table
-            user_mapping = connection.get_table(Constants.USER_MAPPING)
-            connection.execute(user_mapping.insert(), user_id=uid, guid=uid)
+#    def test_select_with_context_as_school_admin_one(self):
+#        uid = "951"
+#        dummy_session = Session()
+#        dummy_session.set_roles([RolesConstants.SCHOOL_EDUCATION_ADMINISTRATOR_1])
+#        dummy_session.set_uid(uid)
+#        dummy_session.set_tenant(self.__tenant_name)
+#        self.__config.testing_securitypolicy(dummy_session)
+#        with UnittestEdcoreDBConnection() as connection:
+#            # Insert into user_mapping table
+#            user_mapping = connection.get_table(Constants.USER_MAPPING)
+#            connection.execute(user_mapping.insert(), user_id=uid, guid=uid)
+#
+#            fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
+#            query = select_with_context([fact_asmt_outcome.c.school_guid],
+#                                        from_obj=([fact_asmt_outcome]))
+#            results = connection.get_result(query)
+#            for result in results:
+#                self.assertEquals(result[Constants.SCHOOL_GUID], '229')
 
-            fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
-            query = select_with_context([fact_asmt_outcome.c.school_guid],
-                                        from_obj=([fact_asmt_outcome]))
-            results = connection.get_result(query)
-            for result in results:
-                self.assertEquals(result[Constants.SCHOOL_GUID], '229')
-
-    def test_select_with_context_as_school_admin_two(self):
-        uid = "270"
-        dummy_session = Session()
-        dummy_session.set_roles([RolesConstants.SCHOOL_EDUCATION_ADMINISTRATOR_2])
-        dummy_session.set_uid(uid)
-        dummy_session.set_tenant(self.__tenant_name)
-        self.__config.testing_securitypolicy(dummy_session)
-        with UnittestEdcoreDBConnection() as connection:
-            # Insert into user_mapping table
-            user_mapping = connection.get_table(Constants.USER_MAPPING)
-            connection.execute(user_mapping.insert(), user_id=uid, guid=uid)
-
-            fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
-            query = select_with_context([fact_asmt_outcome.c.school_guid],
-                                        from_obj=([fact_asmt_outcome]))
-            results = connection.get_result(query)
-            for result in results:
-                self.assertEquals(result[Constants.SCHOOL_GUID], '242')
+#    def test_select_with_context_as_school_admin_two(self):
+#        uid = "270"
+#        dummy_session = Session()
+#        dummy_session.set_roles([RolesConstants.SCHOOL_EDUCATION_ADMINISTRATOR_2])
+#        dummy_session.set_uid(uid)
+#        dummy_session.set_tenant(self.__tenant_name)
+#        self.__config.testing_securitypolicy(dummy_session)
+#        with UnittestEdcoreDBConnection() as connection:
+#            # Insert into user_mapping table
+#            user_mapping = connection.get_table(Constants.USER_MAPPING)
+#            connection.execute(user_mapping.insert(), user_id=uid, guid=uid)
+#
+#            fact_asmt_outcome = connection.get_table(Constants.FACT_ASMT_OUTCOME)
+#            query = select_with_context([fact_asmt_outcome.c.school_guid],
+#                                        from_obj=([fact_asmt_outcome]))
+#            results = connection.get_result(query)
+#            for result in results:
+#                self.assertEquals(result[Constants.SCHOOL_GUID], '242')
 
     def test_select_with_context_with_multi_roles(self):
         pass
@@ -129,19 +129,19 @@ class TestContext(Unittest_with_edcore_sqlite):
         context = check_context([])
         self.assertFalse(context)
 
-    def test_check_context_with_context_as_teacher(self):
-        dummy_session = Session()
-        dummy_session.set_roles([RolesConstants.TEACHER])
-        dummy_session.set_uid('272')
-        dummy_session.set_tenant(self.__tenant_name)
-        self.__config.testing_securitypolicy(dummy_session)
-        with UnittestEdcoreDBConnection() as connection:
-            # Insert into user_mapping table
-            user_mapping = connection.get_table(Constants.USER_MAPPING)
-            connection.execute(user_mapping.insert(), user_id='272', guid='272')
-
-        context = check_context(['8b315698-7436-40f3-8cc1-28d4734b57e1'])
-        self.assertTrue(context)
+#    def test_check_context_with_context_as_teacher(self):
+#        dummy_session = Session()
+#        dummy_session.set_roles([RolesConstants.TEACHER])
+#        dummy_session.set_uid('272')
+#        dummy_session.set_tenant(self.__tenant_name)
+#        self.__config.testing_securitypolicy(dummy_session)
+#        with UnittestEdcoreDBConnection() as connection:
+#            # Insert into user_mapping table
+#            user_mapping = connection.get_table(Constants.USER_MAPPING)
+#            connection.execute(user_mapping.insert(), user_id='272', guid='272')
+#
+#        context = check_context(['8b315698-7436-40f3-8cc1-28d4734b57e1'])
+#        self.assertTrue(context)
 
     def test_check_context_as_student(self):
         uid = '61ec47de-e8b5-4e78-9beb-677c44dd9b50'
@@ -158,35 +158,35 @@ class TestContext(Unittest_with_edcore_sqlite):
         context = check_context(['61ec47de-e8b5-4e78-9beb-677c44dd9b50'])
         self.assertTrue(context)
 
-    def test_check_context_as_school_admin_with_no_context(self):
-        uid = "273"
-        dummy_session = Session()
-        dummy_session.set_roles([RolesConstants.SCHOOL_EDUCATION_ADMINISTRATOR_1])
-        dummy_session.set_uid(uid)
-        dummy_session.set_tenant(self.__tenant_name)
-        self.__config.testing_securitypolicy(dummy_session)
-        with UnittestEdcoreDBConnection() as connection:
-            # Insert into user_mapping table
-            user_mapping = connection.get_table(Constants.USER_MAPPING)
-            connection.execute(user_mapping.insert(), user_id=uid, guid=uid)
+#    def test_check_context_as_school_admin_with_no_context(self):
+#        uid = "273"
+#        dummy_session = Session()
+#        dummy_session.set_roles([RolesConstants.SCHOOL_EDUCATION_ADMINISTRATOR_1])
+#        dummy_session.set_uid(uid)
+#        dummy_session.set_tenant(self.__tenant_name)
+#        self.__config.testing_securitypolicy(dummy_session)
+#        with UnittestEdcoreDBConnection() as connection:
+#            # Insert into user_mapping table
+#            user_mapping = connection.get_table(Constants.USER_MAPPING)
+#            connection.execute(user_mapping.insert(), user_id=uid, guid=uid)
+#
+#        context = check_context(['c95bbd44-bc4e-4441-a451-8f0b6aec8c37'])
+#        self.assertFalse(context)
 
-        context = check_context(['c95bbd44-bc4e-4441-a451-8f0b6aec8c37'])
-        self.assertFalse(context)
-
-    def test_check_context_as_school_admin_two_with_no_context(self):
-        uid = "273"
-        dummy_session = Session()
-        dummy_session.set_roles([RolesConstants.SCHOOL_EDUCATION_ADMINISTRATOR_2])
-        dummy_session.set_uid(uid)
-        dummy_session.set_tenant(self.__tenant_name)
-        self.__config.testing_securitypolicy(dummy_session)
-        with UnittestEdcoreDBConnection() as connection:
-            # Insert into user_mapping table
-            user_mapping = connection.get_table(Constants.USER_MAPPING)
-            connection.execute(user_mapping.insert(), user_id=uid, guid=uid)
-
-        context = check_context(['61ec47de-e8b5-4e78-9beb-677c44dd9b50', '34140997-8949-497e-bbbb-5d72aa7dc9cb'])
-        self.assertTrue(context)
+#    def test_check_context_as_school_admin_two_with_no_context(self):
+#        uid = "273"
+#        dummy_session = Session()
+#        dummy_session.set_roles([RolesConstants.SCHOOL_EDUCATION_ADMINISTRATOR_2])
+#        dummy_session.set_uid(uid)
+#        dummy_session.set_tenant(self.__tenant_name)
+#        self.__config.testing_securitypolicy(dummy_session)
+#        with UnittestEdcoreDBConnection() as connection:
+#            # Insert into user_mapping table
+#            user_mapping = connection.get_table(Constants.USER_MAPPING)
+#            connection.execute(user_mapping.insert(), user_id=uid, guid=uid)
+#
+#        context = check_context(['61ec47de-e8b5-4e78-9beb-677c44dd9b50', '34140997-8949-497e-bbbb-5d72aa7dc9cb'])
+#        self.assertTrue(context)
 
 
 if __name__ == "__main__":

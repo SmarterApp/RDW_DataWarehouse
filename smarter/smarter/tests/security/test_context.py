@@ -14,9 +14,7 @@ from smarter.security.constants import RolesConstants
 from smarter.reports.helpers.constants import Constants
 from edauth.security.session import Session
 # Import the roles below so test can run as a standalone
-from smarter.security.roles.school_admin import SchoolAdmin  # @UnusedImport
 from smarter.security.roles.default import DefaultRole  # @UnusedImport
-from smarter.security.roles.teacher import Teacher  # @UnusedImport
 from smarter.security.roles.student import Student  # @UnusedImport
 
 

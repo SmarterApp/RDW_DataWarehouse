@@ -12,7 +12,7 @@ from edapi.exceptions import NotFoundException
 from pyramid.testing import DummyRequest
 from pyramid import testing
 from edauth.security.session import Session
-from smarter.security.roles.teacher import Teacher  # @UnusedImport
+from smarter.security.roles.default import DefaultRole  # @UnusedImport
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
 

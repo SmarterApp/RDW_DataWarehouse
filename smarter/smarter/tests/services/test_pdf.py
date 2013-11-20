@@ -24,7 +24,7 @@ from services.tasks.pdf import prepare_path
 #from services.celeryconfig import get_config
 import shutil
 from edauth.security.session import Session
-from smarter.security.roles.teacher import Teacher  # @UnusedImport
+from smarter.security.roles.default import DefaultRole  # @UnusedImport
 from services.tests.tasks.test_pdf import get_cmd
 
 

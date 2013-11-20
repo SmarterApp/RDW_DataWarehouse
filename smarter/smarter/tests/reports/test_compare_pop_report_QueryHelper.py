@@ -13,7 +13,7 @@ from smarter.reports.exceptions.parameter_exception import InvalidParameterExcep
 from edauth.security.session import Session
 from pyramid import testing
 from pyramid.testing import DummyRequest
-from smarter.security.roles.teacher import Teacher  # @UnusedImport
+from smarter.security.roles.default import DefaultRole  # @UnusedImport
 from smarter.security.constants import RolesConstants
 
 

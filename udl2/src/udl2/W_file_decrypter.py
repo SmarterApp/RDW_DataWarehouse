@@ -5,6 +5,7 @@ import udl2.message_keys as mk
 from udl2.celery import udl2_conf
 from udl2_util.measurement import BatchTableBenchmark
 import datetime
+from udl2.udl2_base_task import Udl2BaseTask
 
 
 __author__ = 'sravi'
@@ -20,7 +21,7 @@ The output of this worker will serve as the input to the subsequent worker [W_fi
 logger = get_task_logger(__name__)
 
 
-@celery.task(name="udl2.W_file_decrypter.task")
+@celery.task(name="udl2.W_file_decrypter.task", base=Udl2BaseTask)
 def task(incoming_msg):
     """
     This is the celery task to decrypt the source file

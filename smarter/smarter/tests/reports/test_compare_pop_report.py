@@ -11,13 +11,12 @@ from smarter.reports.compare_pop_report import get_comparing_populations_report,
 from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_sqlite,\
     UnittestEdcoreDBConnection, get_unittest_tenant_name
 from smarter.reports.helpers.constants import Constants, AssessmentType
-from edapi.exceptions import NotFoundException
 from beaker.util import parse_cache_config_options
 from beaker.cache import CacheManager
 from pyramid.testing import DummyRequest
 from pyramid import testing
 from edauth.security.session import Session
-from smarter.security.roles.teacher import Teacher  # @UnusedImport
+from smarter.security.roles.default import DefaultRole  # @UnusedImport
 from smarter.reports.helpers import filters
 
 

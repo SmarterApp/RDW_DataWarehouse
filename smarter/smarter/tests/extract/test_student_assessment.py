@@ -12,7 +12,7 @@ from edcore.tests.utils.unittest_with_edcore_sqlite import Unittest_with_edcore_
     UnittestEdcoreDBConnection, get_unittest_tenant_name
 from pyramid.registry import Registry
 from edauth.security.session import Session
-from smarter.security.roles.school_admin import SchoolAdmin  # @UnusedImport
+from smarter.security.roles.default import DefaultRole  # @UnusedImport
 from sqlalchemy.sql.expression import select
 
 

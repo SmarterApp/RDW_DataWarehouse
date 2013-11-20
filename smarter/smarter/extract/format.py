@@ -35,7 +35,7 @@ def setup_input_file_format():
             src_table = row['source_table']
             src_col = row['source_column']
             # Sometimes, source table or source column are placeholders and have no value
-            if src_table is None or src_col is None:
+            if src_table is not 'LZ_JSON' and (src_table is None or src_col is None):
                 continue
             src_key = src_table + "|" + src_col
             tar_key = row['target_table'] + "|" + row['target_column']

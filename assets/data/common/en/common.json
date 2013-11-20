@@ -248,7 +248,7 @@
 						"displayTpl": "",
 						"index": "student_full_name",
 						"field": "student_full_name",
-						"width": 205,
+						"width": 210,
 						"style": "ui-ellipsis bold",
 						"formatter": "showlink",
 						"options": {
@@ -267,7 +267,7 @@
 						"displayTpl": "<div id='subject1_perfBar' class='header_perfBar'></div>",
 						"index": "assessments.subject1.asmt_score",
 						"field": "assessments.subject1.asmt_score",
-						"width": 170,
+						"width": 374,
 						"formatter": "performanceBar",
 						"options": {
 							"asmt_type": "subject1"
@@ -276,16 +276,6 @@
 						"align": "center",
 						"title": false,
 						"export": true
-					}, {
-						"name": "Teacher",
-						"displayTpl": "",
-						"index": "assessments.subject1.teacher_full_name",
-						"field": "assessments.subject1.teacher_full_name",
-						"width": 204,
-						"formatter": "showText",
-						"style": "ui-ellipsis",
-						"resizable": false,
-						"export": false
 					}
 				]
 			}, {
@@ -296,7 +286,7 @@
 						"displayTpl": "<div id='subject2_perfBar' class='header_perfBar'></div>",
 						"index": "assessments.subject2.asmt_score",
 						"field": "assessments.subject2.asmt_score",
-						"width": 170,
+						"width": 374,
 						"formatter": "performanceBar",
 						"options": {
 							"asmt_type": "subject2"
@@ -305,16 +295,6 @@
 						"align": "center",
 						"title": false,
 						"export": true
-					}, {
-						"name": "Teacher",
-						"displayTpl": "",
-						"index": "assessments.subject2.teacher_full_name",
-						"field": "assessments.subject2.teacher_full_name",
-						"width": 204,
-						"formatter": "showText",
-						"style": "ui-ellipsis",
-						"resizable": false,
-						"export": false
 					}
 				]
 			}
@@ -328,7 +308,7 @@
 						"displayTpl": "",
 						"index": "student_full_name",
 						"field": "student_full_name",
-						"width": 205,
+						"width": 210,
 						"style": "ui-ellipsis bold",
 						"formatter": "showlink",
 						"options": {
@@ -347,7 +327,7 @@
 						"displayTpl": "<div id='subject1_perfBar' class='header_perfBar'></div>",
 						"index": "assessments.subject1.asmt_score",
 						"field": "assessments.subject1.asmt_score",
-						"width": 170,
+						"width": 325,
 						"formatter": "performanceBar",
 						"options": {
 							"asmt_type": "subject1"
@@ -356,16 +336,6 @@
 						"align": "center",
 						"title": false,
 						"export": true
-					}, {
-						"name": "Teacher",
-						"displayTpl": "",
-						"index": "assessments.subject1.teacher_full_name",
-						"field": "assessments.subject1.teacher_full_name",
-						"width": 155,
-						"formatter": "showText",
-						"style": "ui-ellipsis",
-						"resizable": false,
-						"export": false
 					}
 				]
 			}, {
@@ -424,7 +394,7 @@
 						"displayTpl": "",
 						"index": "student_full_name",
 						"field": "student_full_name",
-						"width": 205,
+						"width": 210,
 						"style": "ui-ellipsis bold",
 						"formatter": "showlink",
 						"options": {
@@ -443,7 +413,7 @@
 						"displayTpl": "<div id='subject2_perfBar' class='header_perfBar'></div>",
 						"index": "assessments.subject2.asmt_score",
 						"field": "assessments.subject2.asmt_score",
-						"width": 170,
+						"width": 325,
 						"formatter": "performanceBar",
 						"options": {
 							"asmt_type": "subject2"
@@ -452,16 +422,6 @@
 						"align": "center",
 						"title": false,
 						"export": true
-					}, {
-						"name": "Teacher",
-						"displayTpl": "",
-						"index": "assessments.subject2.teacher_full_name",
-						"field": "assessments.subject2.teacher_full_name",
-						"width": 155,
-						"formatter": "showText",
-						"style": "ui-ellipsis",
-						"resizable": false,
-						"export": false
 					}
 				]
 			}, {

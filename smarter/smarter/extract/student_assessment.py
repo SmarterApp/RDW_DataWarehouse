@@ -49,19 +49,18 @@ def get_extract_assessment_query(params, limit=None, compiled=False):
         dim_asmt = connector.get_table(Constants.DIM_ASMT)
         dim_inst_hier = connector.get_table(Constants.DIM_INST_HIER)
         fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)
-        # TODO:  Defect, asmt_guid is not mapping correctly from ref_table_data
-        # guid_asmt_location is currently missing
-        query = select_with_context([dim_asmt.c.asmt_guid.label(dim_asmt_label.get('asmt_guid', 'guid_asmt')),
+        query = select_with_context([dim_asmt.c.asmt_guid.label(dim_asmt_label.get(Constants.ASMT_GUID, Constants.ASMT_GUID)),
+                                    fact_asmt_outcome.c.where_taken_id.label(fact_asmt_outcome_label.get('where_taken_id', 'guid_asmt_location')),
                                     fact_asmt_outcome.c.where_taken_name.label(dim_asmt_label.get('where_taken_name', 'name_asmt_location')),
-                                    fact_asmt_outcome.c.asmt_grade.label(fact_asmt_outcome_label.get('asmt_grade', 'asmt_grade')),
-                                    dim_inst_hier.c.state_name.label(dim_inst_hier_label.get('state_name', 'name_state')),
-                                    dim_inst_hier.c.state_code.label(dim_inst_hier_label.get('state_code', 'code_state')),
-                                    dim_inst_hier.c.district_guid.label(dim_inst_hier_label.get('district_guid', 'name_distrct')),
-                                    dim_inst_hier.c.district_name.label(dim_inst_hier_label.get('district_name', 'name_distrct')),
-                                    dim_inst_hier.c.school_guid.label(dim_inst_hier_label.get('school_guid', 'guid_school')),
-                                    dim_inst_hier.c.school_name.label(dim_inst_hier_label.get('school_name', 'name_school')),
+                                    fact_asmt_outcome.c.asmt_grade.label(fact_asmt_outcome_label.get(Constants.ASMT_GRADE, Constants.ASMT_GRADE)),
+                                    dim_inst_hier.c.state_name.label(dim_inst_hier_label.get(Constants.STATE_NAME, 'name_state')),
+                                    dim_inst_hier.c.state_code.label(dim_inst_hier_label.get(Constants.STATE_CODE, 'code_state')),
+                                    dim_inst_hier.c.district_guid.label(dim_inst_hier_label.get(Constants.DISTRICT_GUID, 'name_distrct')),
+                                    dim_inst_hier.c.district_name.label(dim_inst_hier_label.get(Constants.DISTRICT_NAME, 'name_distrct')),
+                                    dim_inst_hier.c.school_guid.label(dim_inst_hier_label.get(Constants.SCHOOL_GUID, 'guid_school')),
+                                    dim_inst_hier.c.school_name.label(dim_inst_hier_label.get(Constants.SCHOOL_NAME, 'name_school')),
                                     dim_inst_hier.c.school_category.label(dim_inst_hier_label.get('school_category', 'school_category')),
-                                    dim_student.c.student_guid.label(dim_student_label.get('student_guid', 'guid_student')),
+                                    dim_student.c.student_guid.label(dim_student_label.get(Constants.STUDENT_GUID, 'guid_student')),
                                     dim_student.c.first_name.label(dim_student_label.get('first_name', 'student_first_name')),
                                     dim_student.c.middle_name.label(dim_student_label.get('middle_name', 'student_middle_name')),
                                     dim_student.c.last_name.label(dim_student_label.get('last_name', 'student_last_name')),
@@ -90,19 +89,19 @@ def get_extract_assessment_query(params, limit=None, compiled=False):
                                     fact_asmt_outcome.c.asmt_claim_4_score.label(fact_asmt_outcome_label.get('asmt_claim_4_score', 'asmt_claim_4_score')),
                                     fact_asmt_outcome.c.asmt_claim_4_score_range_min.label(fact_asmt_outcome_label.get('asmt_claim_4_score_range_min', 'asmt_claim_4_score_range_min')),
                                     fact_asmt_outcome.c.asmt_claim_4_score_range_max.label(fact_asmt_outcome_label.get('asmt_claim_4_score_range_max', 'asmt_claim_4_score_range_max')),
-                                    fact_asmt_outcome.c.dmg_eth_hsp.label(fact_asmt_outcome_label.get('dmg_eth_hsp', 'dmg_eth_hsp')),
-                                    fact_asmt_outcome.c.dmg_eth_ami.label(fact_asmt_outcome_label.get('dmg_eth_ami', 'dmg_eth_ami')),
-                                    fact_asmt_outcome.c.dmg_eth_asn.label(fact_asmt_outcome_label.get('dmg_eth_asn', 'dmg_eth_asn')),
-                                    fact_asmt_outcome.c.dmg_eth_blk.label(fact_asmt_outcome_label.get('dmg_eth_blk', 'dmg_eth_blk')),
-                                    fact_asmt_outcome.c.dmg_eth_pcf.label(fact_asmt_outcome_label.get('dmg_eth_pcf', 'dmg_eth_pcf')),
-                                    fact_asmt_outcome.c.dmg_eth_wht.label(fact_asmt_outcome_label.get('dmg_eth_wht', 'dmg_eth_wht')),
+                                    fact_asmt_outcome.c.dmg_eth_hsp.label(fact_asmt_outcome_label.get(Constants.DMG_ETH_HSP, Constants.DMG_ETH_HSP)),
+                                    fact_asmt_outcome.c.dmg_eth_ami.label(fact_asmt_outcome_label.get(Constants.DMG_ETH_AMI, Constants.DMG_ETH_AMI)),
+                                    fact_asmt_outcome.c.dmg_eth_asn.label(fact_asmt_outcome_label.get(Constants.DMG_ETH_ASN, Constants.DMG_ETH_ASN)),
+                                    fact_asmt_outcome.c.dmg_eth_blk.label(fact_asmt_outcome_label.get(Constants.DMG_ETH_BLK, Constants.DMG_ETH_BLK)),
+                                    fact_asmt_outcome.c.dmg_eth_pcf.label(fact_asmt_outcome_label.get(Constants.DMG_ETH_PCF, Constants.DMG_ETH_PCF)),
+                                    fact_asmt_outcome.c.dmg_eth_wht.label(fact_asmt_outcome_label.get(Constants.DMG_ETH_WHT, Constants.DMG_ETH_WHT)),
                                     fact_asmt_outcome.c.dmg_prg_iep.label(fact_asmt_outcome_label.get('dmg_prg_iep', 'dmg_prg_iep')),
                                     fact_asmt_outcome.c.dmg_prg_lep.label(fact_asmt_outcome_label.get('dmg_prg_lep', 'dmg_prg_lep')),
                                     fact_asmt_outcome.c.dmg_prg_504.label(fact_asmt_outcome_label.get('dmg_prg_504', 'dmg_prg_504')),
                                     fact_asmt_outcome.c.dmg_prg_tt1.label(fact_asmt_outcome_label.get('dmg_prg_tt1', 'dmg_prg_tt1')),
-                                    fact_asmt_outcome.c.asmt_type.label(fact_asmt_outcome_label.get('asmt_type', 'asmt_type')),
-                                    fact_asmt_outcome.c.asmt_year.label(fact_asmt_outcome_label.get('asmt_year', 'asmt_year')),
-                                    fact_asmt_outcome.c.asmt_subject.label(fact_asmt_outcome_label.get('asmt_subject', 'asmt_subject'))],
+                                    fact_asmt_outcome.c.asmt_type.label(fact_asmt_outcome_label.get(Constants.ASMT_TYPE, Constants.ASMT_TYPE)),
+                                    fact_asmt_outcome.c.asmt_year.label(fact_asmt_outcome_label.get(Constants.ASMT_YEAR, Constants.ASMT_YEAR)),
+                                    fact_asmt_outcome.c.asmt_subject.label(fact_asmt_outcome_label.get(Constants.ASMT_SUBJECT, Constants.ASMT_SUBJECT))],
                                     from_obj=[fact_asmt_outcome
                                               .join(dim_student, and_(dim_student.c.student_guid == fact_asmt_outcome.c.student_guid,
                                                                       dim_student.c.section_guid == fact_asmt_outcome.c.section_guid))
@@ -119,7 +118,7 @@ def get_extract_assessment_query(params, limit=None, compiled=False):
         if asmt_year is not None:
             query = query.where(and_(fact_asmt_outcome.c.asmt_year == asmt_year))
         if asmt_subject is not None:
-            query = query.where(and_(dim_asmt.c.asmt_subject.in_(asmt_subject)))
+            query = query.where(and_(fact_asmt_outcome.c.asmt_subject == asmt_subject))
         if asmt_grade is not None:
             query = query.where(and_(fact_asmt_outcome.c.asmt_grade == asmt_grade))
 

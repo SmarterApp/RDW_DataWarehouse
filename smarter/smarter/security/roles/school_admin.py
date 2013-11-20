@@ -10,7 +10,8 @@ from smarter.security.roles.base import BaseRole, verify_context
 from smarter.security.context_role_map import ContextRoleMap
 
 
-@ContextRoleMap.register([RolesConstants.SCHOOL_EDUCATION_ADMINISTRATOR_1, RolesConstants.SCHOOL_EDUCATION_ADMINISTRATOR_2])
+# Temp disable context security registration
+#@ContextRoleMap.register([RolesConstants.SCHOOL_EDUCATION_ADMINISTRATOR_1, RolesConstants.SCHOOL_EDUCATION_ADMINISTRATOR_2])
 class SchoolAdmin(BaseRole):
 
     def __init__(self, connector):
@@ -25,14 +26,14 @@ class SchoolAdmin(BaseRole):
         fact_asmt_outcome = self.connector.get_table(Constants.FACT_ASMT_OUTCOME)
         context = []
         expr = None
-        if guid:
-            dim_staff = self.connector.get_table(Constants.DIM_STAFF)
-            context_query = select([dim_staff.c.school_guid],
-                                   from_obj=[dim_staff])
-            context_query = context_query.where(and_(dim_staff.c.staff_guid == guid, dim_staff.c.most_recent))
-            results = self.connector.get_result(context_query)
-            for result in results:
-                context.append(result[Constants.SCHOOL_GUID])
+#        if guid:
+#            dim_staff = self.connector.get_table(Constants.DIM_STAFF)
+#            context_query = select([dim_staff.c.school_guid],
+#                                   from_obj=[dim_staff])
+#            context_query = context_query.where(and_(dim_staff.c.staff_guid == guid, dim_staff.c.most_recent))
+#            results = self.connector.get_result(context_query)
+#            for result in results:
+#                context.append(result[Constants.SCHOOL_GUID])
         if context:
             expr = fact_asmt_outcome.c.school_guid.in_(context)
         return expr

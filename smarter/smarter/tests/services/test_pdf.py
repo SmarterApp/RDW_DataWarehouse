@@ -24,7 +24,8 @@ from services.tasks.pdf import prepare_path
 #from services.celeryconfig import get_config
 import shutil
 from edauth.security.session import Session
-from smarter.security.roles.teacher import Teacher  # @UnusedImport
+from smarter.security.roles.default import DefaultRole  # @UnusedImport
+from smarter.security.roles.student import Student  # @UnusedImport
 from services.tests.tasks.test_pdf import get_cmd
 
 
@@ -44,9 +45,10 @@ class TestServices(Unittest_with_edcore_sqlite):
             user_mapping = connection.get_table('user_mapping')
             connection.execute(user_mapping.insert(), user_id='272', guid='272')
             connection.execute(user_mapping.insert(), user_id='1020', guid='1020')
+            connection.execute(user_mapping.insert(), user_id='a5ddfe12-740d-4487-9179-de70f6ac33be', guid='a5ddfe12-740d-4487-9179-de70f6ac33be')
         dummy_session = Session()
-        dummy_session.set_roles(['TEACHER'])
-        dummy_session.set_uid('272')
+        dummy_session.set_roles(['STUDENT'])
+        dummy_session.set_uid('a5ddfe12-740d-4487-9179-de70f6ac33be')
         dummy_session.set_tenant(self.__tenant_name)
         self.__config.testing_securitypolicy(dummy_session)
         # celery settings for UT
@@ -74,7 +76,7 @@ class TestServices(Unittest_with_edcore_sqlite):
         self.__request.method = 'POST'
         self.__request.json_body = {'studentGuid': 'a016a4c1-5aca-4146-a85b-ed1172a01a4d'}
         dummy_session = Session()
-        dummy_session.set_roles(['TEACHER'])
+        dummy_session.set_roles(['STUDENT'])
         dummy_session.set_uid('1020')
         dummy_session.set_tenant(self.__tenant_name)
         self.__config.testing_securitypolicy(dummy_session)
@@ -111,7 +113,7 @@ class TestServices(Unittest_with_edcore_sqlite):
         self.__request.method
         self.__request.GET = {'studentGuid': 'a016a4c1-5aca-4146-a85b-ed1172a01a4d'}
         dummy_session = Session()
-        dummy_session.set_roles(['TEACHER'])
+        dummy_session.set_roles(['STUDENT'])
         dummy_session.set_uid('1020')
         dummy_session.set_tenant(self.__tenant_name)
         self.__config.testing_securitypolicy(dummy_session)
@@ -155,6 +157,11 @@ class TestServices(Unittest_with_edcore_sqlite):
         self.assertIsInstance(response.body, bytes)
 
     def test_send_pdf_request_with_pdf_generation_fail(self):
+        dummy_session = Session()
+        dummy_session.set_roles(['TEACHER'])
+        dummy_session.set_uid('1020')
+        dummy_session.set_tenant(self.__tenant_name)
+        self.__config.testing_securitypolicy(dummy_session)
         params = {}
         # Important, this pdf must not exist in directory
         params['studentGuid'] = '3181376a-f3a8-40d3-bbde-e65fdd9f4494'
@@ -170,11 +177,11 @@ class TestServices(Unittest_with_edcore_sqlite):
 
     def test_get_pdf_content_with_no_context(self):
         params = {}
-        params['studentGuid'] = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
+        params['studentGuid'] = 'a016a4c1-5aca-4146-a85b-ed1172a01a4d'
         self.__request.matchdict['report'] = 'indivStudentReport.html'
         self.__request.cookies = {'edware': '123'}
         dummy_session = Session()
-        dummy_session.set_roles(['TEACHER'])
+        dummy_session.set_roles(['STUDENT'])
         dummy_session.set_uid('1020')
         dummy_session.set_tenant(self.__tenant_name)
         self.__config.testing_securitypolicy(dummy_session)
@@ -193,7 +200,7 @@ class TestServices(Unittest_with_edcore_sqlite):
 
     def test_send_pdf_request_with_always_generate_flag(self):
         self.__config.registry.settings['pdf.always_generate'] = 'True'
-        studentGuid = '3181376a-f3a8-40d3-bbde-e65fdd9f4494'
+        studentGuid = 'a5ddfe12-740d-4487-9179-de70f6ac33be'
         params = {}
         params['studentGuid'] = studentGuid
         params['dummy'] = 'dummy'

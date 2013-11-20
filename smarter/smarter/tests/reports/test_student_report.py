@@ -12,7 +12,7 @@ from edapi.exceptions import NotFoundException
 from pyramid.testing import DummyRequest
 from pyramid import testing
 from edauth.security.session import Session
-from smarter.security.roles.teacher import Teacher  # @UnusedImport
+from smarter.security.roles.default import DefaultRole  # @UnusedImport
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
 
@@ -63,9 +63,6 @@ class TestStudentReport(Unittest_with_edcore_sqlite):
         student_report = result[0]
 
         self.assertEqual('Math', student_report['asmt_subject'], 'asmt_subject')
-        self.assertEqual('Susan', student_report['teacher_first_name'], 'teacher first name')
-        self.assertEqual(None, student_report['teacher_middle_name'], 'teacher middle name')
-        self.assertEqual('Hall', student_report['teacher_last_name'], 'teacher last name')
         self.assertEqual(21, student_report['date_taken_day'])
         self.assertEqual(9, student_report['date_taken_month'])
         self.assertEqual(2012, student_report['date_taken_year'])

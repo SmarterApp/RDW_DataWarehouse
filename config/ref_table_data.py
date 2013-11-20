@@ -239,7 +239,7 @@ ref_table_conf = {
         ('4', 'INT_SBAC_ASMT_OUTCOME', "''", 'fact_asmt_outcome', 'section_guid', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', '-1', 'fact_asmt_outcome', 'inst_hier_rec_id', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', None, 'fact_asmt_outcome', 'section_rec_id', None, None),
-        ('4', 'INT_SBAC_ASMT_OUTCOME', 'name_asmt_location', 'fact_asmt_outcome', 'where_taken_id', None, None),
+        ('4', 'INT_SBAC_ASMT_OUTCOME', 'guid_asmt_location', 'fact_asmt_outcome', 'where_taken_id', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'name_asmt_location', 'fact_asmt_outcome', 'where_taken_name', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'grade_asmt', 'fact_asmt_outcome', 'asmt_grade', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'grade_enrolled', 'fact_asmt_outcome', 'enrl_grade', None, None),
@@ -281,6 +281,7 @@ ref_table_conf = {
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'dmg_prg_504', 'fact_asmt_outcome', 'dmg_prg_504', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'dmg_prg_tt1', 'fact_asmt_outcome', 'dmg_prg_tt1', None, None),
         ('4', 'INT_SBAC_ASMT_OUTCOME', 'dmg_eth_derived', 'fact_asmt_outcome', 'dmg_eth_derived', None, None),
-
+        # Used only in reporting app, smarter.  udl should never pick this up
+        ('1000', 'INT_SBAC_ASMT_OUTCOME', 'guid_asmt', 'dim_asmt', 'asmt_guid', None, None),
     ]
 }

@@ -33,6 +33,7 @@ class Constants():
     ASMT_TYPE = 'asmt_type'
     ASMT_GRADE = 'asmt_grade'
     ASMT_GRADE_NAME = 'asmt_grade_name'
+    ASMT_GUID = 'asmt_guid'
     ASMTGRADE = 'asmtGrade'
     STATE_NAME = 'state_name'
     STATE_CODE = 'state_code'

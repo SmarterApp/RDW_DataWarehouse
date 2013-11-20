@@ -16,7 +16,7 @@ class TestFormat(unittest.TestCase):
     def test_dim_asmt_mapping(self):
         dim_asmt = get_column_mapping(Constants.DIM_ASMT)
         self.assertIsNotNone(dim_asmt)
-        self.assertEqual(dim_asmt['asmt_guid'], 'identification.guid')
+        self.assertEqual(dim_asmt['asmt_guid'], 'guid_asmt')
         self.assertEqual(dim_asmt['asmt_claim_1_name'], 'claims.claim_1.name')
         self.assertEqual(dim_asmt['asmt_perf_lvl_name_1'], 'performance_levels.level_1.name')
         self.assertEqual(dim_asmt['asmt_score_min'], 'overall.min_score')
@@ -50,7 +50,7 @@ class TestFormat(unittest.TestCase):
         fact = get_column_mapping(Constants.FACT_ASMT_OUTCOME)
         self.assertIsNotNone(fact)
         self.assertEqual(fact['student_guid'], 'guid_student')
-        self.assertEqual(fact['where_taken_id'], 'name_asmt_location')
+        self.assertEqual(fact['where_taken_id'], 'guid_asmt_location')
         self.assertEqual(fact['where_taken_name'], 'name_asmt_location')
         self.assertEqual(fact['enrl_grade'], 'grade_enrolled')
         self.assertEqual(fact['date_taken'], 'date_assessed')

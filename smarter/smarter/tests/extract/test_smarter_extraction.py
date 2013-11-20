@@ -7,7 +7,7 @@ Created on Nov 5, 2013
 from pyramid.testing import DummyRequest
 from pyramid import testing
 from edauth.security.session import Session
-from smarter.security.roles.teacher import Teacher  # @UnusedImport
+from smarter.security.roles.default import DefaultRole  # @UnusedImport
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
 from edcore.tests.utils.unittest_with_edcore_sqlite import \

@@ -56,3 +56,9 @@ data_gen/CreateGenerateLoad/build
 data_gen/.settings
 data_gen/CreateGenerateLoad/src/henshin_out
 data_gen/DataGeneration/build
+
+data_gen/DataGeneration/.pydevproject
+
+.pydevproject
+
+.project

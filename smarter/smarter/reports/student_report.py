@@ -28,7 +28,6 @@ def __prepare_query(connector, student_guid, assessment_guid):
     fact_asmt_outcome = connector.get_table('fact_asmt_outcome')
     dim_student = connector.get_table('dim_student')
     dim_asmt = connector.get_table('dim_asmt')
-    dim_staff = connector.get_table('dim_staff')
     query = select_with_context([fact_asmt_outcome.c.student_guid,
                                 dim_student.c.first_name.label('student_first_name'),
                                 dim_student.c.middle_name.label('student_middle_name'),
@@ -128,7 +127,6 @@ def __arrange_results(results, subjects_map, custom_metadata_map):
     for result in results:
 
         result['student_full_name'] = format_full_name(result['student_first_name'], result['student_middle_name'], result['student_last_name'])
-
         # asmt_type is an enum, so we would to capitalize it to make it presentable
         result['asmt_type'] = capwords(result['asmt_type'], ' ')
 

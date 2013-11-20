@@ -18,7 +18,6 @@ ENTITY_TO_PATH_DICT = {'dim_inst_hier': os.path.join(DATAFILE_PATH, 'datafiles',
                        'dim_section': os.path.join(DATAFILE_PATH, 'datafiles', 'csv', 'dim_section.csv'),
                        'dim_asmt': os.path.join(DATAFILE_PATH, 'datafiles', 'csv', 'dim_asmt.csv'),
                        'fact_asmt_outcome': os.path.join(DATAFILE_PATH, 'datafiles', 'csv', 'fact_asmt_outcome.csv'),
-                       'dim_staff': os.path.join(DATAFILE_PATH, 'datafiles', 'csv', 'dim_staff.csv'),
                        'external_user_student_rel': os.path.join(DATAFILE_PATH, 'datafiles', 'csv', 'external_user_student_rel.csv'),
                        'dim_student': os.path.join(DATAFILE_PATH, 'datafiles', 'csv', 'dim_student.csv')}
 

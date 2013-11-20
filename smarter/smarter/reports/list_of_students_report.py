@@ -92,8 +92,6 @@ def get_list_of_students_extract_report(params):
     rows = []
     # Reformat data
     for result in results:
-        # remove teacher names from results
-        results = delete_multiple_entries_from_dictionary_by_list_of_keys(result, ['teacher_first_name', 'teacher_middle_name', 'teacher_last_name'])
         if len(header) is 0:
             header = list(result.keys())
         rows.append(list(result.values()))
@@ -193,7 +191,6 @@ def get_list_of_students(params):
     with EdCoreDBConnection() as connector:
         # get handle to tables
         dim_student = connector.get_table(Constants.DIM_STUDENT)
-        dim_staff = connector.get_table(Constants.DIM_STAFF)
         dim_asmt = connector.get_table(Constants.DIM_ASMT)
         dim_inst_hier = connector.get_table(Constants.DIM_INST_HIER)
         fact_asmt_outcome = connector.get_table(Constants.FACT_ASMT_OUTCOME)

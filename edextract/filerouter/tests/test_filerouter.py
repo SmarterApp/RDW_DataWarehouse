@@ -8,7 +8,7 @@ import tempfile
 import os
 import shutil
 from filerouter import filerouter
-from filerouter.filerouter import GatekeeprException
+from filerouter.filerouter import GatekeeperException, FileInfo
 
 
 class Test(unittest.TestCase):
@@ -74,12 +74,16 @@ class Test(unittest.TestCase):
         test_file3 = os.path.join(route_dir, self.GATEKEEPER_TEST_USERNAME2, self.TESTFILE1)
         test_file4 = os.path.join(route_dir, self.GATEKEEPER_TEST_USERNAME3, self.TESTFILE1)
 
-        dest_file1 = filerouter._get_destination_filename_for_gatekeeper(self.jail_gatekeeper_account_home, self.REPORTS, test_file1)
+        file_info = FileInfo(test_file1)
+        dest_file1 = filerouter._get_destination_filename_for_gatekeeper(self.jail_gatekeeper_account_home, self.REPORTS, file_info)
         self.assertEqual(os.path.join(self.jail_gatekeeper_account_home, self.GATEKEEPER_TEST_USERNAME1, self.REPORTS, self.TESTFILE1), dest_file1)
-        self.assertRaises(GatekeeprException, filerouter._get_destination_filename_for_gatekeeper, self.jail_gatekeeper_account_home, self.REPORTS, test_file2)
-        dest_file3 = filerouter._get_destination_filename_for_gatekeeper(self.jail_gatekeeper_account_home, self.REPORTS, test_file3)
+        file_info = FileInfo(test_file2)
+        self.assertRaises(GatekeeperException, filerouter._get_destination_filename_for_gatekeeper, self.jail_gatekeeper_account_home, self.REPORTS, file_info)
+        file_info = FileInfo(test_file3)
+        dest_file3 = filerouter._get_destination_filename_for_gatekeeper(self.jail_gatekeeper_account_home, self.REPORTS, file_info)
         self.assertEqual(os.path.join(self.jail_gatekeeper_account_home, self.GATEKEEPER_TEST_USERNAME2, self.REPORTS, self.TESTFILE1), dest_file3)
-        self.assertRaises(GatekeeprException, filerouter._get_destination_filename_for_gatekeeper, self.jail_gatekeeper_account_home, self.REPORTS, test_file4)
+        file_info = FileInfo(test_file4)
+        self.assertRaises(GatekeeperException, filerouter._get_destination_filename_for_gatekeeper, self.jail_gatekeeper_account_home, self.REPORTS, file_info)
 
     def test_file_routing(self):
         filerouter.file_routing(self.jailed_home_base, self.gatekeeper_home_base, self.file_router_home_dir, self.REPORTS, self.ROUTE, self.ERROR, self.ARCHIVE, False)

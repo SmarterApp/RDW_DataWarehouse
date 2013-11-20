@@ -519,6 +519,8 @@ jenkins_dev:
       public.filtered_data.url: edwappsrv1.poc.dum.edwdc.net:11211
       public.data.url: edwappsrv1.poc.dum.edwdc.net:11211
       session.url: edwappsrv2.poc.dum.edwdc.net:11211
+    pickup:
+      sftp.hostname: localhost
 
 air:
   '[app:main]':

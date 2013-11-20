@@ -116,7 +116,7 @@ define [
         # because we may run into the case where the row isn't loaded in the grid
         self.removeRowFromSelectedRows rowId
         self.uncheckedEvent element
-        $('.stickyChainScrollable').html(self.getStickyChainContent().html())
+        self.renderStickyChainRows()
       
       # On logout, clear storage
       $(document).on 'click', '#logout_button', () ->
@@ -126,6 +126,9 @@ define [
       $(document).on 'click', '.dropdown-menu .stickyChainScrollable', (e)->
         # To prevent the dropdown from closing when clicking inside dropdown menu
         e.stopPropagation();
+      
+      $(document).on 'mouseenter', '#stickyChain-btn', ()->
+        $('#stickyChain-btn').dropdown('toggle')
 
     clearSelectedRows: () ->
       this.selectedRows = {}
@@ -270,9 +273,6 @@ define [
       this.hideCompareSection()
    
     hideCompareSection: () ->
-      if @stickyChainBtn isnt undefined and @stickyChainBtn.parent().find(".popover").length isnt 0
-        @stickyChainBtn.popover "hide"
-        @stickyChainBtn.parent().removeClass "open"
       this.compareSection.hide()
     
     showCompareSection: () ->
@@ -293,10 +293,13 @@ define [
       this.compareSelectedActions.hide()
       this.compareEnabledActions.show()
 
-    getStickyChainContent: ()->
+    renderStickyChainRows: () ->
+      element = $('#stickyChainSelectedList')
+      element.empty()
       reverse = {}
       for key, value of this.selectedRows
         reverse[value] = key
+        
       names = Object.keys(reverse).sort()
       idx = 0
       scrollable =$('<div class="stickyChainScrollable"></div>')
@@ -305,25 +308,7 @@ define [
         table.append $('<div class="tableRow"><hr class="tableCellHR"/><hr class="tableCellHR"/></div>') if idx > 0
         table.append $('<div class="tableRow"><div class="tableCellLeft">' + name + '</div><div data-id="' + reverse[name] + '" class="tableCellRight removeStickyChainIcon"></div></div>')
         idx++
-      scrollable.append table 
-      
-    renderStickyChainRows: () ->
-      self = this
-      @stickyChainBtn.popover
-        html: true
-        placement: 'bottom'
-        trigger: 'manual'
-        content: -> $('<div></div>').append(self.getStickyChainContent()).html()
-      .mouseover ->
-        if $(this).parent().find('.popover').length is 0
-          btnGroupElement = $(this).parent()
-          btnGroupElement.addClass 'open'
-          $(this).popover 'show'
-          popoverElement = $(this).parent().find('.popover')
-          popoverElement.css 'left', 0
-          popoverElement.find('.arrow').css 'left', self.stickyChainBtn.width()/2
-          btnGroupElement.parent().mouseleave ->
-            self.stickyChainBtn.popover 'hide'
-            btnGroupElement.removeClass 'open'
+      scrollable.append table
+      element.append scrollable
       
   EdwareGridStickyCompare:EdwareGridStickyCompare

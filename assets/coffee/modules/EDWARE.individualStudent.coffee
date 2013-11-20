@@ -90,7 +90,6 @@ define [
         self.dataByType = {}
         
         self.processData()
-        self.render self.currentAsmtType
         if not self.isPdf
           self.createBreadcrumb()
           self.createDropdown()
@@ -99,6 +98,7 @@ define [
           self.currentAsmtType = self.asmtTypes[0] if self.asmtTypes.indexOf("Summative") is -1
           self.updateDisclaimer()
           
+        self.render self.currentAsmtType
 
     processData: () ->
       for asmt of this.data.items
@@ -236,7 +236,7 @@ define [
       # Show tooltip for claims on mouseover
       $(".arrowBox").popover
         html: true
-        container: "#content"
+        container: "body"
         trigger: "hover"
         placement: (tip, element) ->
           edwareUtil.popupPlacement(element, 400, 276)
